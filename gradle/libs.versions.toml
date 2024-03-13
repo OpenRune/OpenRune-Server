@@ -13,6 +13,8 @@ progress = "0.9.2"
 jbcrypt = "0.4"
 gson = "_"
 cache = "_"
+displee = "7.1.0"
+lzma = "0.0.1"
 kotlinxSerializationCore = "_"
 junit = "4.+"
 kotlinTestJunit = "_"
@@ -26,6 +28,8 @@ logback = "1.4.11"
 
 [libraries]
 fastutil = { group = "it.unimi.dsi", name = "fastutil", version.ref = "fastutil" }
+lzma = { group = "lzma", name = "lzma", version.ref = "lzma" }
+displee = { group = "com.displee", name = "rs-cache-library", version.ref = "displee" }
 progress-bar = { group = "me.tongfei", name = "progressbar", version.ref = "progress" }
 kotlin-stdlib-jdk8 = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib-jdk8", version.ref = "kotlinStdlibJdk8" }
 

@@ -13,11 +13,9 @@ val lib = rootProject.project.libs
 dependencies {
     runtimeOnly(project(":game:plugins"))
 
-
     with(lib) {
         implementation(projects.util)
         implementation(projects.net)
-
         implementation(kotlin.scripting)
         implementation(kotlin.script.runtime)
         implementation(kotlinx.coroutines)
