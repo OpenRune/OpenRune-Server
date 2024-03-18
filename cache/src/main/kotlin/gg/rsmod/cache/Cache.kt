@@ -1,5 +1,7 @@
 package gg.rsmod.cache
 
+import java.io.File
+import java.nio.file.Path
 import java.util.*
 
 interface Cache {
@@ -41,9 +43,9 @@ interface Cache {
     fun close()
 
     companion object {
-        fun load(live: Boolean): Cache {
+        fun load(location : Path, live: Boolean): Cache {
             val loader = if (live) MemoryCache else FileCache
-            return loader.load("data/cache/")
+            return loader.load(location.toFile().absolutePath)
         }
     }
 }

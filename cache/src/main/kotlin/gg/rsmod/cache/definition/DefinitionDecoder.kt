@@ -1,11 +1,14 @@
-package gg.rsmod.cache
+package gg.rsmod.cache.definition
 
 import com.github.michaelbull.logging.InlineLogger
-import gg.rsmod.cache.buffer.read.BufferReader
-import gg.rsmod.cache.buffer.read.Reader
+import gg.rsmod.cache.Cache
+import gg.rsmod.cache.buffer.BufferReader
+import gg.rsmod.cache.buffer.Reader
 import java.nio.BufferUnderflowException
 
 abstract class DefinitionDecoder<T : Definition>(val index: Int) {
+
+    val configArchive = 2
 
     abstract fun create(size: Int): Array<T>
 
@@ -36,19 +39,16 @@ abstract class DefinitionDecoder<T : Definition>(val index: Int) {
     }
 
     open fun size(cache: Cache): Int {
-        return cache.lastArchiveId(2) * 256 + (cache.fileCount(2, cache.lastArchiveId(2)))
+        return cache.fileCount(configArchive,index)
     }
 
     open fun load(definitions: Array<T>, cache: Cache, id: Int) {
-        val archive = getArchive(id)
         val file = getFile(id)
-        val data = cache.data(2, index, file) ?: return
+        val data = cache.data(configArchive, index, file) ?: return
         read(definitions, id, BufferReader(data))
     }
 
     open fun getFile(id: Int) = id
-
-    open fun getArchive(id: Int) = id
 
     protected fun read(definitions: Array<T>, id: Int, reader: Reader) {
         val definition = definitions[id]
@@ -74,52 +74,5 @@ abstract class DefinitionDecoder<T : Definition>(val index: Int) {
     companion object {
         internal val logger = InlineLogger()
 
-        fun byteToChar(b: Byte): Char {
-            var i = 0xff and b.toInt()
-            require(i != 0) { "Non cp1252 character 0x" + i.toString(16) + " provided" }
-            if (i in 128..159) {
-                var char = UNICODE_TABLE[i - 128].code
-                if (char == 0) {
-                    char = 63
-                }
-                i = char
-            }
-            return i.toChar()
-        }
-
-        private var UNICODE_TABLE = charArrayOf(
-            '\u20ac',
-            '\u0000',
-            '\u201a',
-            '\u0192',
-            '\u201e',
-            '\u2026',
-            '\u2020',
-            '\u2021',
-            '\u02c6',
-            '\u2030',
-            '\u0160',
-            '\u2039',
-            '\u0152',
-            '\u0000',
-            '\u017d',
-            '\u0000',
-            '\u0000',
-            '\u2018',
-            '\u2019',
-            '\u201c',
-            '\u201d',
-            '\u2022',
-            '\u2013',
-            '\u2014',
-            '\u02dc',
-            '\u2122',
-            '\u0161',
-            '\u203a',
-            '\u0153',
-            '\u0000',
-            '\u017e',
-            '\u0178'
-        )
     }
 }

@@ -1,7 +1,7 @@
 package gg.rsmod.cache.compress
 
 import com.github.michaelbull.logging.InlineLogger
-import gg.rsmod.cache.buffer.read.BufferReader
+import gg.rsmod.cache.buffer.BufferReader
 import gg.rsmod.cache.secure.Xtea
 import lzma.sdk.lzma.Decoder
 import java.io.ByteArrayInputStream

@@ -2,10 +2,11 @@ package gg.rsmod.cache
 
 import com.github.michaelbull.logging.InlineLogger
 import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap
-import gg.rsmod.cache.buffer.read.BufferReader
+import gg.rsmod.cache.buffer.BufferReader
 import gg.rsmod.cache.compress.DecompressionContext
 import gg.rsmod.cache.secure.VersionTableBuilder
 import gg.rsmod.cache.secure.Whirlpool
+import gg.rsmod.cache.util.Index
 import java.io.RandomAccessFile
 
 /**

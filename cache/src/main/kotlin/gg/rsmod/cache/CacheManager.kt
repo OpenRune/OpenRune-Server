@@ -1,37 +1,55 @@
 package gg.rsmod.cache
 
-import com.github.michaelbull.logging.InlineLogger
-import gg.rsmod.cache.definition.data.NPCDefinition
-import gg.rsmod.cache.definition.decoder.NPCDecoder
+import gg.rsmod.cache.definition.data.*
+import gg.rsmod.cache.definition.decoder.*
+import gg.rsmod.cache.util.Index
+import java.nio.file.Path
 
 object CacheManager {
 
-    var npcs : Array<NPCDefinition> = emptyArray()
+    lateinit var cache : Cache
+    private var npcs : Array<NPCDefinition> = emptyArray()
+    private var objects : Array<ObjectDefinition> = emptyArray()
+    private var items : Array<ItemDefinition> = emptyArray()
+    private var varbit : Array<VarBitDefinition> = emptyArray()
+    private var varps : Array<VarpDefinition> = emptyArray()
+    private var anim : Array<AnimDefinition> = emptyArray()
+    private var enum : Array<EnumDefinition> = emptyArray()
 
-    fun init() {
-        val cache = timed("cache") { Cache.load(false) }
-        timed("npcLoader") {
-            npcs = NPCDecoder().load(cache)
-            println(getNpc(5512).name)
-        }
+    fun init(cachePath : Path) {
+        cache = Cache.load(cachePath,false)
+
+        npcs = NPCDecoder().load(cache)
+        objects = ObjectDecoder().load(cache)
+        items = ItemDecoder().load(cache)
+        varbit = VarBitDecoder().load(cache)
+        varps = VarDecoder().load(cache)
+        anim = AnimDecoder().load(cache)
+        enum = EnumDecoder().load(cache)
     }
 
-    private fun getNpc(id : Int) = npcs[id]
+    fun npc(id : Int) = npcs[id]
 
+    fun npcCount() = npcs.size
 
-    private val logger = InlineLogger("TimedLoader")
+    fun objects(id : Int) = objects[id]
 
-    fun <R> timed(name: String, block: () -> R): R {
-        val start = System.currentTimeMillis()
-        val result = block.invoke()
-        val duration = System.currentTimeMillis() - start
-        logger.info { "Loaded $name in ${duration}ms" }
-        return result
-    }
+    fun objectCount() = objects.size
 
+    fun item(id : Int) = items[id]
 
-}
+    fun itemCount() = items.size
 
-fun main() {
-    CacheManager.init()
+    fun varbit(id : Int) = varbit[id]
+
+    fun varp(id : Int) = varps[id]
+
+    fun varpCount() = varps.size
+
+    fun varbitCount() = varbit.size
+
+    fun anim(id : Int) = anim[id]
+
+    fun enum(id : Int) = enum[id]
+    
 }

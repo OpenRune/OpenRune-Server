@@ -1,8 +1,8 @@
 package gg.rsmod.cache.definition.decoder
 
-import gg.rsmod.cache.DefinitionDecoder
-import gg.rsmod.cache.Index.NPCS
-import gg.rsmod.cache.buffer.read.Reader
+import gg.rsmod.cache.definition.DefinitionDecoder
+import gg.rsmod.cache.util.Index.NPCS
+import gg.rsmod.cache.buffer.Reader
 import gg.rsmod.cache.definition.data.NPCDefinition
 
 class NPCDecoder : DefinitionDecoder<NPCDefinition>(NPCS) {
@@ -24,15 +24,15 @@ class NPCDecoder : DefinitionDecoder<NPCDefinition>(NPCS) {
             }
             2 -> name = buffer.readString()
             12 -> size = buffer.readUnsignedByte()
-            13 -> standingAnimation = buffer.readUnsignedShort()
-            14 -> walkingAnimation = buffer.readUnsignedShort()
-            15 -> rotateLeftAnimation = buffer.readUnsignedShort()
-            16 -> rotateRightAnimation = buffer.readUnsignedShort()
+            13 -> standAnim = buffer.readUnsignedShort()
+            14 -> walkAnim = buffer.readUnsignedShort()
+            15 -> render3 = buffer.readUnsignedShort()
+            16 -> render4 = buffer.readUnsignedShort()
             17 -> {
-                walkingAnimation = buffer.readUnsignedShort()
-                rotate180Animation = buffer.readUnsignedShort()
-                rotate90RightAnimation = buffer.readUnsignedShort()
-                rotate90LeftAnimation = buffer.readUnsignedShort()
+                walkAnim = buffer.readUnsignedShort()
+                render5 = buffer.readUnsignedShort()
+                render6 = buffer.readUnsignedShort()
+                render7 = buffer.readUnsignedShort()
             }
             18 -> category = buffer.readUnsignedShort()
             in 30..34 -> {

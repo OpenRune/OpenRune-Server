@@ -15,6 +15,7 @@ dependencies {
 
     with(lib) {
         implementation(projects.util)
+        implementation(projects.cache)
         implementation(projects.net)
         implementation(kotlin.scripting)
         implementation(kotlin.script.runtime)

@@ -1,7 +1,6 @@
 package gg.rsmod.cache.definition
 
-import gg.rsmod.cache.buffer.read.Reader
-import gg.rsmod.cache.buffer.write.Writer
+import gg.rsmod.cache.buffer.Reader
 
 interface Recolourable {
     var originalColours: ShortArray?
@@ -29,19 +28,4 @@ interface Recolourable {
         }
     }
 
-    fun writeColoursTextures(writer: Writer) {
-        writeArray(writer, 40, originalColours, modifiedColours)
-        writeArray(writer, 41, originalTextureColours, modifiedTextureColours)
-    }
-
-    private fun writeArray(writer: Writer, opcode: Int, original: ShortArray?, modified: ShortArray?) {
-        if (original != null && modified != null) {
-            writer.writeByte(opcode)
-            writer.writeByte(original.size)
-            for (i in original.indices) {
-                writer.writeShort(original[i].toInt())
-                writer.writeShort(modified[i].toInt())
-            }
-        }
-    }
 }

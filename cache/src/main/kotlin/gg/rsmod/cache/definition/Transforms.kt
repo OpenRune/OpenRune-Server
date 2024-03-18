@@ -1,7 +1,6 @@
 package gg.rsmod.cache.definition
 
-import gg.rsmod.cache.buffer.read.Reader
-import gg.rsmod.cache.buffer.write.Writer
+import gg.rsmod.cache.buffer.Reader
 
 interface Transforms {
     var varbit: Int
@@ -33,25 +32,5 @@ interface Transforms {
             }
         }
         transforms!![length + 1] = last
-    }
-
-
-    fun writeTransforms(writer: Writer, smaller: Int, larger: Int) {
-        val configIds = transforms
-        if (configIds != null && (varbit != -1 || varp != -1)) {
-            val last = configIds.last()
-            val extended = last != -1
-            writer.writeByte(if (extended) larger else smaller)
-            writer.writeShort(varbit)
-            writer.writeShort(varp)
-
-            if (extended) {
-                writer.writeShort(last)
-            }
-            writer.writeByte(configIds.size - 2)
-            for (i in 0 until configIds.size - 1) {
-                writer.writeShort(configIds[i])
-            }
-        }
     }
 }

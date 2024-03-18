@@ -1,7 +1,6 @@
 package gg.rsmod.cache.definition
 
-import gg.rsmod.cache.buffer.read.Reader
-import gg.rsmod.cache.buffer.write.Writer
+import gg.rsmod.cache.buffer.Reader
 import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap
 
 interface Parameterized {
@@ -22,19 +21,4 @@ interface Parameterized {
         this.params = params
     }
 
-    fun writeParameters(writer: Writer) {
-        params?.let { params ->
-            writer.writeByte(249)
-            writer.writeByte(params.size)
-            params.forEach { (id, value) ->
-                writer.writeByte(value is String)
-                writer.writeMedium(id)
-                if (value is String) {
-                    writer.writeString(value)
-                } else if (value is Int) {
-                    writer.writeInt(value)
-                }
-            }
-        }
-    }
 }

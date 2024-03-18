@@ -1,4 +1,4 @@
-package gg.rsmod.cache.buffer.read
+package gg.rsmod.cache.buffer
 
 interface Reader {
 
