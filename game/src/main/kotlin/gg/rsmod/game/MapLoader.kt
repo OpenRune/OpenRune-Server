@@ -1,5 +1,6 @@
 package gg.rsmod.game
 
+import dev.openrune.cache.CacheManager.cache
 import dev.openrune.cache.util.Index
 import gg.rsmod.game.model.Direction
 import gg.rsmod.game.model.Tile
@@ -51,7 +52,7 @@ object MapLoader {
         val x = id shr 8
         val z = id and 0xFF
 
-        val mapData = dev.openrune.cache.CacheManager.cache.data(Index.MAPS,"m${x}_${z}")
+        val mapData = cache.data(Index.MAPS,"m${x}_${z}")
 
         if (mapData == null) {
             logger.error { "Map data null for region $id ($x, $z)" }
@@ -111,7 +112,7 @@ object MapLoader {
 
         val keys = xteaService?.get(id) ?: XteaKeyService.EMPTY_KEYS
         try {
-            val landData = dev.openrune.cache.CacheManager.cache.data(Index.MAPS ,"l${x}_$z",keys)
+            val landData = cache.data(Index.MAPS ,"l${x}_$z",keys)
             val locDef = LocationsLoader().load(x, z, landData)
             cacheRegion.loadLocations(locDef)
 

@@ -1,6 +1,7 @@
 package gg.rsmod.game
 
 import com.google.common.base.Stopwatch
+import dev.openrune.cache.CacheManager
 import gg.rsmod.game.model.Tile
 import gg.rsmod.game.model.World
 import gg.rsmod.game.model.entity.GroundItem
@@ -116,7 +117,7 @@ class Server {
          */
         individualStopwatch.reset().start()
 
-        dev.openrune.cache.CacheManager.init(filestore)
+        CacheManager.init(filestore)
         world.filestore = Store(filestore.toFile())
         world.filestore.load()
         logger.info("Loaded filestore from path {} in {}ms.", filestore, individualStopwatch.elapsed(TimeUnit.MILLISECONDS))

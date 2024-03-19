@@ -11,7 +11,8 @@ mssqlJdbc = "6.4.0.jre7"
 json = "20220320"
 jbcrypt = "0.4"
 gson = "_"
-cache = "_"
+cacheor = "1.0.0"
+cacherl = "_"
 kotlinxSerializationCore = "_"
 junit = "4.+"
 kotlinTestJunit = "_"
@@ -47,7 +48,8 @@ json = { group = "org.json", name = "json", version.ref = "json" }
 reflection = {group = "org.reflections", name = "reflections", version = "_"}
 jbcrypt = { group = "org.mindrot", name = "jbcrypt", version.ref = "jbcrypt" }
 gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }
-cache = { group = "net.runelite", name = "cache", version.ref = "cache" }
+cache-rl = { group = "net.runelite", name = "cache", version.ref = "cacherl" }
+cache-or = { group = "dev.openrune", name= "filestore", version.ref = "cacheor"}
 kotlin-scripting = {group = "org.jetbrains.kotlin", name = "kotlin-scripting-common", version = "_"}
 kotlin-script-runtime = { group = "org.jetbrains.kotlin", name = "kotlin-script-runtime", version.ref = "kotlin"}
 kotlinx-coroutines = {group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version = "_"}
