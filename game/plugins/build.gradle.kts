@@ -2,5 +2,5 @@ dependencies {
     implementation(project(":game"))
     implementation(project(":net"))
     implementation(project(":util"))
-    implementation(project(":cache"))
+    implementation("dev.openrune:filestore:1.0.0")
 }

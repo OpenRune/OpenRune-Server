@@ -8,7 +8,6 @@ enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 include(":util")
 include(":net")
 include(":game")
-include(":cache")
 include(":game:plugins")
 
 dependencyResolutionManagement {
