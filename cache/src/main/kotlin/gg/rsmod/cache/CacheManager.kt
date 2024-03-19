@@ -7,18 +7,17 @@ import java.nio.file.Path
 
 object CacheManager {
 
-    lateinit var cache : Cache
-    private var npcs : Array<NPCDefinition> = emptyArray()
-    private var objects : Array<ObjectDefinition> = emptyArray()
-    private var items : Array<ItemDefinition> = emptyArray()
-    private var varbit : Array<VarBitDefinition> = emptyArray()
-    private var varps : Array<VarpDefinition> = emptyArray()
-    private var anim : Array<AnimDefinition> = emptyArray()
-    private var enum : Array<EnumDefinition> = emptyArray()
+    lateinit var cache: Cache
+    private lateinit var npcs: Array<NPCDefinition>
+    private lateinit var objects: Array<ObjectDefinition>
+    private lateinit var items: Array<ItemDefinition>
+    private lateinit var varbit: Array<VarBitDefinition>
+    private lateinit var varps: Array<VarpDefinition>
+    private lateinit var anim: Array<AnimDefinition>
+    private lateinit var enum: Array<EnumDefinition>
 
-    fun init(cachePath : Path) {
-        cache = Cache.load(cachePath,false)
-
+    fun init(cachePath: Path) {
+        cache = Cache.load(cachePath, false)
         npcs = NPCDecoder().load(cache)
         objects = ObjectDecoder().load(cache)
         items = ItemDecoder().load(cache)
@@ -28,28 +27,22 @@ object CacheManager {
         enum = EnumDecoder().load(cache)
     }
 
-    fun npc(id : Int) = npcs[id]
+    fun npc(id: Int): NPCDefinition = npcs[id]
+    fun npcCount(): Int = npcs.size
 
-    fun npcCount() = npcs.size
+    fun objects(id: Int): ObjectDefinition = objects[id]
+    fun objectCount(): Int = objects.size
 
-    fun objects(id : Int) = objects[id]
+    fun item(id: Int): ItemDefinition = items[id]
+    fun itemCount(): Int = items.size
 
-    fun objectCount() = objects.size
+    fun varbit(id: Int): VarBitDefinition = varbit[id]
+    fun varbitCount(): Int = varbit.size
 
-    fun item(id : Int) = items[id]
+    fun varp(id: Int): VarpDefinition = varps[id]
+    fun varpCount(): Int = varps.size
 
-    fun itemCount() = items.size
+    fun anim(id: Int): AnimDefinition = anim[id]
 
-    fun varbit(id : Int) = varbit[id]
-
-    fun varp(id : Int) = varps[id]
-
-    fun varpCount() = varps.size
-
-    fun varbitCount() = varbit.size
-
-    fun anim(id : Int) = anim[id]
-
-    fun enum(id : Int) = enum[id]
-    
+    fun enum(id: Int): EnumDefinition = enum[id]
 }
