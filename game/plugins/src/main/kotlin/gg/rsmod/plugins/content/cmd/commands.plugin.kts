@@ -1,11 +1,10 @@
 package gg.rsmod.plugins.content.cmd
 
-import gg.rsmod.cache.CacheManager.item
-import gg.rsmod.cache.CacheManager.itemCount
-import gg.rsmod.cache.CacheManager.varbit
-import gg.rsmod.cache.CacheManager.varbitCount
-import gg.rsmod.cache.CacheManager.varpCount
-import gg.rsmod.cache.definition.data.VarBitDefinition
+import dev.openrune.cache.CacheManager.item
+import dev.openrune.cache.CacheManager.itemCount
+import dev.openrune.cache.CacheManager.varbit
+import dev.openrune.cache.CacheManager.varbitCount
+import dev.openrune.cache.filestore.definition.data.VarBitDefinition
 import gg.rsmod.game.model.attr.NO_CLIP_ATTR
 import gg.rsmod.game.model.bits.INFINITE_VARS_STORAGE
 import gg.rsmod.game.model.bits.InfiniteVarsType

@@ -1,9 +1,9 @@
 package gg.rsmod.game.model
 
 import com.google.common.base.Stopwatch
-import gg.rsmod.cache.CacheManager.item
-import gg.rsmod.cache.CacheManager.npc
-import gg.rsmod.cache.CacheManager.objects
+import dev.openrune.cache.CacheManager.item
+import dev.openrune.cache.CacheManager.npc
+import dev.openrune.cache.CacheManager.objects
 import gg.rsmod.game.DevContext
 import gg.rsmod.game.GameContext
 import gg.rsmod.game.Server

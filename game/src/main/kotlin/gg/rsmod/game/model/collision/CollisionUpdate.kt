@@ -1,7 +1,7 @@
 package gg.rsmod.game.model.collision
 
-import gg.rsmod.cache.CacheManager.objects
-import gg.rsmod.cache.definition.data.ObjectDefinition
+import dev.openrune.cache.CacheManager.objects
+import dev.openrune.cache.filestore.definition.data.ObjectDefinition
 import gg.rsmod.game.model.Direction
 import gg.rsmod.game.model.Tile
 import gg.rsmod.game.model.entity.GameObject

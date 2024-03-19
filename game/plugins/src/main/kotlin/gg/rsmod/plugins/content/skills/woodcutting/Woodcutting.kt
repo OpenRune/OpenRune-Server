@@ -1,6 +1,6 @@
 package gg.rsmod.plugins.content.skills.woodcutting
 
-import gg.rsmod.cache.CacheManager.objects
+import dev.openrune.cache.CacheManager.objects
 import gg.rsmod.game.model.entity.DynamicObject
 import gg.rsmod.game.model.entity.GameObject
 import gg.rsmod.game.model.entity.Player

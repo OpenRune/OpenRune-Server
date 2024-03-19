@@ -1,6 +1,6 @@
 package gg.rsmod.game.sync.segment
 
-import gg.rsmod.cache.CacheManager.npc
+import dev.openrune.cache.CacheManager.npc
 import gg.rsmod.game.model.ChatMessage
 import gg.rsmod.game.model.Tile
 import gg.rsmod.game.model.entity.Player

@@ -1,6 +1,6 @@
 package gg.rsmod.game.action
 
-import gg.rsmod.cache.CacheManager.item
+import dev.openrune.cache.CacheManager.item
 import gg.rsmod.game.message.impl.SetMapFlagMessage
 import gg.rsmod.game.model.MovementQueue
 import gg.rsmod.game.model.attr.GROUNDITEM_PICKUP_TRANSACTION

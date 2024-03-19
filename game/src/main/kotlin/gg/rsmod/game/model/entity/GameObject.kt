@@ -1,9 +1,9 @@
 package gg.rsmod.game.model.entity
 
 import com.google.common.base.MoreObjects
-import gg.rsmod.cache.CacheManager.objects
-import gg.rsmod.cache.CacheManager.varbit
-import gg.rsmod.cache.definition.data.ObjectDefinition
+import dev.openrune.cache.CacheManager.objects
+import dev.openrune.cache.CacheManager.varbit
+import dev.openrune.cache.filestore.definition.data.ObjectDefinition
 import gg.rsmod.game.model.Tile
 import gg.rsmod.game.model.World
 import gg.rsmod.game.model.attr.AttributeMap

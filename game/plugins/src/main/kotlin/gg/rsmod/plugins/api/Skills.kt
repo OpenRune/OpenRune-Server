@@ -1,6 +1,6 @@
 package gg.rsmod.plugins.api
 
-import gg.rsmod.cache.CacheManager.enum
+import dev.openrune.cache.CacheManager.enum
 
 
 /**

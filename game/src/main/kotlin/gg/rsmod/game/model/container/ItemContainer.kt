@@ -1,6 +1,6 @@
 package gg.rsmod.game.model.container
 
-import gg.rsmod.cache.CacheManager.item
+import dev.openrune.cache.CacheManager.item
 import gg.rsmod.game.model.container.key.ContainerKey
 import gg.rsmod.game.model.item.Item
 import gg.rsmod.game.model.item.SlotItem

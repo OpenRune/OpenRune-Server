@@ -1,7 +1,7 @@
 package gg.rsmod.plugins.content.magic
 
-import gg.rsmod.cache.CacheManager.enum
-import gg.rsmod.cache.CacheManager.item
+import dev.openrune.cache.CacheManager.enum
+import dev.openrune.cache.CacheManager.item
 import gg.rsmod.game.model.World
 import gg.rsmod.game.model.entity.Player
 import gg.rsmod.game.model.item.Item

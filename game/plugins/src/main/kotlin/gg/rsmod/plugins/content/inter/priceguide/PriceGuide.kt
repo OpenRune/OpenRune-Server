@@ -1,6 +1,6 @@
 package gg.rsmod.plugins.content.inter.priceguide
 
-import gg.rsmod.cache.CacheManager.item
+import dev.openrune.cache.CacheManager.item
 import gg.rsmod.game.model.ExamineEntityType
 import gg.rsmod.game.model.attr.AttributeKey
 import gg.rsmod.game.model.container.ContainerStackType

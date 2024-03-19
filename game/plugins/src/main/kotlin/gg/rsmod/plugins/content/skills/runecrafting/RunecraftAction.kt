@@ -1,6 +1,6 @@
 package gg.rsmod.plugins.content.skills.runecrafting
 
-import gg.rsmod.cache.CacheManager.item
+import dev.openrune.cache.CacheManager.item
 import gg.rsmod.game.model.Graphic
 import gg.rsmod.game.model.queue.QueueTask
 import gg.rsmod.plugins.api.EquipmentType

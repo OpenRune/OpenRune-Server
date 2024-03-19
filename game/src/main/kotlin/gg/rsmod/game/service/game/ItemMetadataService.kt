@@ -4,8 +4,8 @@ import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.PropertyNamingStrategy
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
-import gg.rsmod.cache.CacheManager.item
-import gg.rsmod.cache.CacheManager.itemCount
+import dev.openrune.cache.CacheManager.item
+import dev.openrune.cache.CacheManager.itemCount
 import gg.rsmod.game.Server
 import gg.rsmod.game.model.World
 import gg.rsmod.game.service.Service

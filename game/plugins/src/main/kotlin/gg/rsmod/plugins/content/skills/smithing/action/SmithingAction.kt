@@ -1,6 +1,6 @@
 package gg.rsmod.plugins.content.skills.smithing.action
 
-import gg.rsmod.cache.CacheManager.item
+import dev.openrune.cache.CacheManager.item
 import gg.rsmod.game.model.queue.QueueTask
 import gg.rsmod.plugins.api.Skills
 import gg.rsmod.plugins.api.cfg.Items

@@ -1,6 +1,6 @@
 package gg.rsmod.plugins.content.items.food
 
-import gg.rsmod.cache.CacheManager.item
+import dev.openrune.cache.CacheManager.item
 import gg.rsmod.game.model.entity.Player
 import gg.rsmod.game.model.timer.ATTACK_DELAY
 import gg.rsmod.game.model.timer.COMBO_FOOD_DELAY

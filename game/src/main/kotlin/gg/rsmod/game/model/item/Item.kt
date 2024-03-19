@@ -1,7 +1,7 @@
 package gg.rsmod.game.model.item
 
 import com.google.common.base.MoreObjects
-import gg.rsmod.cache.CacheManager.item
+import dev.openrune.cache.CacheManager.item
 
 /**
  * @author Tom <rspsmods@gmail.com>

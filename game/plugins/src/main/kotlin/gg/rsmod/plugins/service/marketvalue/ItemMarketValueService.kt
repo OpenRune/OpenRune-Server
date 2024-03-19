@@ -1,7 +1,7 @@
 package gg.rsmod.plugins.service.marketvalue
 
-import gg.rsmod.cache.CacheManager.item
-import gg.rsmod.cache.CacheManager.itemCount
+import dev.openrune.cache.CacheManager.item
+import dev.openrune.cache.CacheManager.itemCount
 import gg.rsmod.game.Server
 import gg.rsmod.game.model.World
 import gg.rsmod.game.service.Service

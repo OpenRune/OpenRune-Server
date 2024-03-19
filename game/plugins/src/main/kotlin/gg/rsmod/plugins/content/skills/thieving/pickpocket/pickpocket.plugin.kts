@@ -1,6 +1,6 @@
 package gg.rsmod.plugins.content.skills.thieving.pickpocket
 
-import gg.rsmod.cache.CacheManager.npc
+import dev.openrune.cache.CacheManager.npc
 import gg.rsmod.plugins.content.combat.isAttacking
 import gg.rsmod.plugins.content.combat.isBeingAttacked
 

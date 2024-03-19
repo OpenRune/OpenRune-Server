@@ -1,8 +1,8 @@
 package gg.rsmod.plugins.api.ext
 
 import com.google.common.primitives.Ints
-import gg.rsmod.cache.CacheManager.item
-import gg.rsmod.cache.CacheManager.varbit
+import dev.openrune.cache.CacheManager.item
+import dev.openrune.cache.CacheManager.varbit
 import gg.rsmod.game.message.impl.*
 import gg.rsmod.game.model.World
 import gg.rsmod.game.model.attr.CURRENT_SHOP_ATTR

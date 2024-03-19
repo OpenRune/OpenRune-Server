@@ -1,11 +1,11 @@
 package gg.rsmod.game.service.game
 
-import gg.rsmod.cache.CacheManager.item
-import gg.rsmod.cache.CacheManager.itemCount
-import gg.rsmod.cache.CacheManager.npc
-import gg.rsmod.cache.CacheManager.npcCount
-import gg.rsmod.cache.CacheManager.objectCount
-import gg.rsmod.cache.CacheManager.objects
+import dev.openrune.cache.CacheManager.item
+import dev.openrune.cache.CacheManager.itemCount
+import dev.openrune.cache.CacheManager.npc
+import dev.openrune.cache.CacheManager.npcCount
+import dev.openrune.cache.CacheManager.objectCount
+import dev.openrune.cache.CacheManager.objects
 import gg.rsmod.game.Server
 import gg.rsmod.game.model.World
 import gg.rsmod.game.service.Service

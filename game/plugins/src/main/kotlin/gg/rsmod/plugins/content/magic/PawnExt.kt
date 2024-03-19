@@ -1,6 +1,6 @@
 package gg.rsmod.plugins.content.magic
 
-import gg.rsmod.cache.CacheManager.anim
+import dev.openrune.cache.CacheManager.anim
 import gg.rsmod.game.model.LockState
 import gg.rsmod.game.model.Tile
 import gg.rsmod.game.model.entity.Pawn

@@ -5,7 +5,7 @@ import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.PropertyNamingStrategy
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
-import gg.rsmod.cache.CacheManager.npc
+import dev.openrune.cache.CacheManager.npc
 import gg.rsmod.game.Server
 import gg.rsmod.game.model.World
 import gg.rsmod.game.service.Service

@@ -1,7 +1,7 @@
 package gg.rsmod.plugins.api.ext
 
-import gg.rsmod.cache.CacheManager.item
-import gg.rsmod.cache.CacheManager.npc
+import dev.openrune.cache.CacheManager.item
+import dev.openrune.cache.CacheManager.npc
 import gg.rsmod.game.message.impl.ResumePauseButtonMessage
 import gg.rsmod.game.model.Appearance
 import gg.rsmod.game.model.attr.INTERACTING_NPC_ATTR

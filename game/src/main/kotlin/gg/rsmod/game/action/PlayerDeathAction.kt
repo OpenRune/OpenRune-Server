@@ -1,6 +1,6 @@
 package gg.rsmod.game.action
 
-import gg.rsmod.cache.CacheManager.anim
+import dev.openrune.cache.CacheManager.anim
 import gg.rsmod.game.model.attr.KILLER_ATTR
 import gg.rsmod.game.model.entity.Player
 import gg.rsmod.game.model.queue.QueueTask

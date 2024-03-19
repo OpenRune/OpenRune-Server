@@ -1,6 +1,6 @@
 package gg.rsmod.plugins.api.ext
 
-import gg.rsmod.cache.CacheManager.item
+import dev.openrune.cache.CacheManager.item
 import gg.rsmod.game.model.World
 import gg.rsmod.game.model.container.ItemContainer
 import gg.rsmod.game.model.container.ItemTransaction

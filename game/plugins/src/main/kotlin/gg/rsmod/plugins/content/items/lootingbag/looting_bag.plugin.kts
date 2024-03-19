@@ -1,6 +1,6 @@
 package gg.rsmod.plugins.content.items.lootingbag
 
-import gg.rsmod.cache.CacheManager.item
+import dev.openrune.cache.CacheManager.item
 import gg.rsmod.game.model.attr.GROUNDITEM_PICKUP_TRANSACTION
 import gg.rsmod.game.model.attr.INTERACTING_ITEM_SLOT
 import gg.rsmod.plugins.service.marketvalue.ItemMarketValueService

@@ -1,6 +1,6 @@
 package gg.rsmod.game.action
 
-import gg.rsmod.cache.CacheManager.objects
+import dev.openrune.cache.CacheManager.objects
 import gg.rsmod.game.message.impl.SetMapFlagMessage
 import gg.rsmod.game.model.Direction
 import gg.rsmod.game.model.MovementQueue

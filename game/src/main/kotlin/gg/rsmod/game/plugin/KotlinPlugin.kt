@@ -1,9 +1,9 @@
 package gg.rsmod.game.plugin
 
 import com.google.gson.GsonBuilder
-import gg.rsmod.cache.CacheManager.item
-import gg.rsmod.cache.CacheManager.npc
-import gg.rsmod.cache.CacheManager.objects
+import dev.openrune.cache.CacheManager.item
+import dev.openrune.cache.CacheManager.npc
+import dev.openrune.cache.CacheManager.objects
 import gg.rsmod.game.Server
 import gg.rsmod.game.event.Event
 import gg.rsmod.game.model.Direction

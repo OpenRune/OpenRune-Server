@@ -1,6 +1,6 @@
 package gg.rsmod.plugins.content.npcs.sheep
 
-import gg.rsmod.cache.CacheManager.npc
+import dev.openrune.cache.CacheManager.npc
 
 Sheep.SHEEP_NPCS.forEach { sheep ->
     if (npc(sheep).actions.contains("Shear")) {

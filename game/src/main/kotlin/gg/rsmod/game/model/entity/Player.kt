@@ -1,7 +1,7 @@
 package gg.rsmod.game.model.entity
 
 import com.google.common.base.MoreObjects
-import gg.rsmod.cache.CacheManager.varpCount
+import dev.openrune.cache.CacheManager.varpCount
 import gg.rsmod.game.message.Message
 import gg.rsmod.game.message.impl.*
 import gg.rsmod.game.model.*

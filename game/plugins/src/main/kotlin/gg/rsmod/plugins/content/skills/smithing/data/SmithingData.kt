@@ -1,7 +1,7 @@
 package gg.rsmod.plugins.content.skills.smithing.data
 
-import gg.rsmod.cache.CacheManager.enum
-import gg.rsmod.cache.CacheManager.item
+import dev.openrune.cache.CacheManager.enum
+import dev.openrune.cache.CacheManager.item
 
 /**
  * @author Triston Plummer ("Dread")

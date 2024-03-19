@@ -1,9 +1,9 @@
 package gg.rsmod.game.model.entity
 
 import com.google.common.base.MoreObjects
-import gg.rsmod.cache.CacheManager.npc
-import gg.rsmod.cache.CacheManager.varbit
-import gg.rsmod.cache.definition.data.NPCDefinition
+import dev.openrune.cache.CacheManager.npc
+import dev.openrune.cache.CacheManager.varbit
+import dev.openrune.cache.filestore.definition.data.NPCDefinition
 import gg.rsmod.game.model.EntityType
 import gg.rsmod.game.model.Tile
 import gg.rsmod.game.model.World

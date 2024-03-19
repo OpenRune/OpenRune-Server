@@ -1,6 +1,6 @@
 package gg.rsmod.plugins.content.items.essencepouch
 
-import gg.rsmod.cache.CacheManager.item
+import dev.openrune.cache.CacheManager.item
 
 /**
  * The set of essence pouch definitions

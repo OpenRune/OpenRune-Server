@@ -1,6 +1,6 @@
 package gg.rsmod.plugins.content.skills.runecrafting
 
-import gg.rsmod.cache.CacheManager.item
+import dev.openrune.cache.CacheManager.item
 
 private val enterOption = "Enter"
 
