@@ -1,6 +1,7 @@
 package gg.rsmod.game.service.xtea
 
 import com.google.gson.Gson
+import dev.openrune.cache.CacheManager
 import gg.rsmod.game.Server
 import gg.rsmod.game.model.World
 import gg.rsmod.game.service.Service
@@ -28,7 +29,7 @@ class XteaKeyService : Service {
         get() = keys.keys.toIntArray()
 
     override fun init(server: Server, world: World, serviceProperties: ServerProperties) {
-        val path = Paths.get(serviceProperties.getOrDefault("path", "../data/xteas/"))
+        val path = Paths.get(serviceProperties.getOrDefault("path", "../data/cache/"))
         val singleFile = path.resolve("xteas.json")
         if (Files.exists(singleFile)) {
             loadSingleFile(singleFile)

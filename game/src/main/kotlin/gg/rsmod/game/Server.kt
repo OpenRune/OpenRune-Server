@@ -2,6 +2,9 @@ package gg.rsmod.game
 
 import com.google.common.base.Stopwatch
 import dev.openrune.cache.CacheManager
+import dev.openrune.cache.CacheManager.item
+import dev.openrune.cache.tools.Builder
+import dev.openrune.cache.tools.tasks.TaskType
 import gg.rsmod.game.fs.MapLoader
 import gg.rsmod.game.model.Tile
 import gg.rsmod.game.model.World
@@ -19,6 +22,7 @@ import io.netty.channel.ChannelOption
 import io.netty.channel.nio.NioEventLoopGroup
 import io.netty.channel.socket.nio.NioServerSocketChannel
 import net.runelite.cache.fs.Store
+import java.io.File
 import java.net.InetSocketAddress
 import java.nio.file.Files
 import java.nio.file.Path
@@ -122,7 +126,6 @@ class Server {
         world.filestore = Store(filestore.toFile())
         world.filestore.load()
         logger.info("Loaded filestore from path {} in {}ms.", filestore, individualStopwatch.elapsed(TimeUnit.MILLISECONDS))
-
         /*
          * Load the services required to run the server.
          */
