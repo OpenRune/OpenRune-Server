@@ -98,8 +98,8 @@ object ObjectPathAction {
         val tile = obj.tile
         val type = obj.type
         val rot = obj.rot
-        var width = def.width
-        var length = def.length
+        var width = def.sizeX
+        var length = def.sizeY
         val clipMask = def.clipMask
 
         val wall = type == ObjectType.LENGTHWISE_WALL.value || type == ObjectType.DIAGONAL_WALL.value
@@ -111,8 +111,8 @@ object ObjectPathAction {
             width = 0
             length = 0
         } else if (!wall && (rot == 1 || rot == 3)) {
-            width = def.length
-            length = def.width
+            width = def.sizeY
+            length = def.sizeX
         }
 
         /*
@@ -260,11 +260,11 @@ object ObjectPathAction {
                 pawn.faceTile(pawn.tile.step(dir))
             }
             else -> {
-                var width = def.width
-                var length = def.length
+                var width = def.sizeX
+                var length = def.sizeY
                 if (rot == 1 || rot == 3) {
-                    width = def.length
-                    length = def.width
+                    width = def.sizeY
+                    length = def.sizeX
                 }
                 pawn.faceTile(obj.tile.transform(width shr 1, length shr 1), width, length)
             }

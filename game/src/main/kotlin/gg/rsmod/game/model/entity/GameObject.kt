@@ -78,13 +78,13 @@ abstract class GameObject : Entity {
     }
 
     fun getRotatedWidth(): Int = when {
-        (rot and 0x1) == 1 -> getDef().length
-        else -> getDef().width
+        (rot and 0x1) == 1 -> getDef().sizeX
+        else -> getDef().sizeX
     }
 
     fun getRotatedLength(): Int = when {
-        (rot and 0x1) == 1 -> getDef().width
-        else -> getDef().length
+        (rot and 0x1) == 1 -> getDef().sizeY
+        else -> getDef().sizeY
     }
 
     override fun toString(): String = MoreObjects.toStringHelper(this).add("id", id).add("type", type).add("rot", rot).add("tile", tile.toString()).toString()

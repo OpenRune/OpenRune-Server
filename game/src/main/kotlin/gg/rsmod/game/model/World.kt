@@ -7,9 +7,11 @@ import dev.openrune.cache.CacheManager.objects
 import gg.rsmod.game.DevContext
 import gg.rsmod.game.GameContext
 import gg.rsmod.game.Server
+import gg.rsmod.game.fs.MapLoader
 import gg.rsmod.game.message.impl.LogoutFullMessage
 import gg.rsmod.game.message.impl.UpdateRebootTimerMessage
 import gg.rsmod.game.model.attr.AttributeMap
+import gg.rsmod.game.model.attr.TERMINAL_ARGS
 import gg.rsmod.game.model.collision.CollisionManager
 import gg.rsmod.game.model.combat.NpcCombatDef
 import gg.rsmod.game.model.entity.*
@@ -30,11 +32,12 @@ import gg.rsmod.game.service.xtea.XteaKeyService
 import gg.rsmod.game.sync.block.UpdateBlockSet
 import gg.rsmod.util.HuffmanCodec
 import gg.rsmod.util.ServerProperties
-import io.github.oshai.kotlinlogging.KotlinLogging
 import it.unimi.dsi.fastutil.objects.ObjectArrayList
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
+
+import io.github.oshai.kotlinlogging.KotlinLogging
 import net.runelite.cache.IndexType
 import net.runelite.cache.fs.Store
 import java.io.File
@@ -56,6 +59,8 @@ class World(val gameContext: GameContext, val devContext: DevContext) {
      * The [Store] is responsible for handling the data in our cache.
      */
     lateinit var filestore: Store
+
+    lateinit var settings : Any
 
     /**
      * The [HuffmanCodec] used to compress and decompress public chat messages.
@@ -219,7 +224,7 @@ class World(val gameContext: GameContext, val devContext: DevContext) {
     internal fun cycle() {
         if (currentCycle++ >= Int.MAX_VALUE - 1) {
             currentCycle = 0
-            logger.info { "World cycle has been reset." }
+            logger.info("World cycle has been reset.")
         }
 
         /*
@@ -227,7 +232,7 @@ class World(val gameContext: GameContext, val devContext: DevContext) {
          * the [timers] during its execution, which isn't uncommon.
          */
         val timersCopy = timers.getTimers().toMutableMap()
-        timersCopy.forEach { (key, time) ->
+        timersCopy.forEach { key, time ->
             if (time <= 0) {
                 plugins.executeWorldTimer(this, key)
                 if (!timers.has(key)) {
@@ -260,7 +265,7 @@ class World(val gameContext: GameContext, val devContext: DevContext) {
 
             groundItem.currentCycle++
 
-            if (groundItem.isPublic() && groundItem.currentCycle >= gameContext.gItemDespawnDelay) {
+            if (groundItem.isPublic() && groundItem.currentCycle >= gameContext.gItemDespawnDelay && groundItem.respawnCycles == -1) {
                 /*
                  * If the ground item is public and its cycle count has reached the
                  * despawn delay set by our game, we add it to our removal queue.
@@ -391,9 +396,7 @@ class World(val gameContext: GameContext, val devContext: DevContext) {
     fun spawn(item: GroundItem) {
         val tile = item.tile
         val chunk = chunks.getOrCreate(tile)
-
         val def = item(item.item)
-
         if (def.stackable) {
             val oldItem = chunk.getEntities<GroundItem>(tile, EntityType.GROUND_ITEM).firstOrNull { it.item == item.item && it.ownerUID == item.ownerUID }
             if (oldItem != null) {
@@ -404,7 +407,6 @@ class World(val gameContext: GameContext, val devContext: DevContext) {
                 return
             }
         }
-
         groundItems.add(item)
         chunk.addEntity(this, item, tile)
     }
@@ -495,6 +497,8 @@ class World(val gameContext: GameContext, val devContext: DevContext) {
     fun getPlayerForUid(uid: PlayerUID): Player? = players.firstOrNull { it.uid.value == uid.value }
 
     fun getShop(name: String): Shop? = plugins.shops.getOrDefault(name, null)
+
+    fun getShop(shopId: Int): Shop? = plugins.shops.values.elementAt(shopId)
 
     fun getMultiCombatChunks(): Set<Int> = plugins.multiCombatChunks
 
@@ -639,6 +643,10 @@ class World(val gameContext: GameContext, val devContext: DevContext) {
      */
     internal fun bindServices(server: Server) {
         services.forEach { it.bindNet(server, this) }
+    }
+
+    fun getTerminalArgs() : Array<String>? {
+        return this.attr[TERMINAL_ARGS]
     }
 
     companion object {

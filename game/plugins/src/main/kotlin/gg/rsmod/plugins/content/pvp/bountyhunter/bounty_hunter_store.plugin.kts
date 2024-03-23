@@ -36,7 +36,7 @@ val ITEM_PRICES = hashMapOf(
         Items.PADDEWWA_TELEPORT to 10_000,
         Items.SENNTISTEN_TELEPORT to 10_000,
         Items.ANNAKARL_TELEPORT to 10_000,
-        Items.CARRALLANGAR_TELEPORT to 10_000,
+        Items.CARRALLANGER_TELEPORT to 10_000,
         Items.DAREEYAK_TELEPORT to 10_000,
         Items.GHORROCK_TELEPORT to 10_000,
         Items.KHARYRLL_TELEPORT to 10_000,
@@ -57,7 +57,6 @@ val ITEM_PRICES = hashMapOf(
         Items.CLUE_BOX to 100_000,
         Items.CLIMBING_BOOTS to 5400,
         Items.GRANITE_CLAMP to 250_000,
-        Items.BOUNTY_TELEPORT_SCROLL to 8_000_000,
         Items.HUNTERS_HONOUR to 2_500_000
 )
 

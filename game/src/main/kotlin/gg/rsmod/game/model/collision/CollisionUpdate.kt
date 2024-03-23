@@ -65,14 +65,14 @@ class CollisionUpdate private constructor(val type: Type, val flags: Object2Obje
             val x = tile.x
             val z = tile.z
             val height = tile.height
-            var width = def.width
-            var length = def.length
+            var width = def.sizeX
+            var length = def.sizeY
             val impenetrable = def.impenetrable
             val orientation = obj.rot
 
             if (orientation == 1 || orientation == 3) {
-                width = def.length
-                length = def.width
+                width = def.sizeY
+                length = def.sizeX
             }
 
             if (type == ObjectType.FLOOR_DECORATION.value) {

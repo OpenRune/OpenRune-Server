@@ -2,6 +2,10 @@ package gg.rsmod.game
 
 import com.google.common.base.Stopwatch
 import dev.openrune.cache.CacheManager
+import dev.openrune.cache.CacheManager.item
+import dev.openrune.cache.tools.Builder
+import dev.openrune.cache.tools.tasks.TaskType
+import gg.rsmod.game.fs.MapLoader
 import gg.rsmod.game.model.Tile
 import gg.rsmod.game.model.World
 import gg.rsmod.game.model.entity.GroundItem
@@ -18,6 +22,7 @@ import io.netty.channel.ChannelOption
 import io.netty.channel.nio.NioEventLoopGroup
 import io.netty.channel.socket.nio.NioServerSocketChannel
 import net.runelite.cache.fs.Store
+import java.io.File
 import java.net.InetSocketAddress
 import java.nio.file.Files
 import java.nio.file.Path
@@ -71,7 +76,7 @@ class Server {
      * Due to being decoupled from the API logic that will always be used, you
      * can start multiple servers with different game property files.
      */
-    fun startGame(filestore: Path, gameProps: Path, packets: Path, blocks: Path, devProps: Path?, args: Array<String>): World {
+    fun startGame(filestore: Path, gameProps: Path, packets: Path, blocks: Path, devProps: Path?): World {
         val stopwatch = Stopwatch.createStarted()
         val individualStopwatch = Stopwatch.createUnstarted()
 
@@ -91,24 +96,24 @@ class Server {
          * Create a game context for our configurations and services to run.
          */
         val gameContext = GameContext(initialLaunch = initialLaunch,
-                name = gameProperties.get<String>("name")!!,
-                revision = gameProperties.get<Int>("revision")!!,
-                cycleTime = gameProperties.getOrDefault("cycle-time", 600),
-                playerLimit = gameProperties.getOrDefault("max-players", 2048),
-                home = Tile(gameProperties.get<Int>("home-x")!!, gameProperties.get<Int>("home-z")!!, gameProperties.getOrDefault("home-height", 0)),
-                skillCount = gameProperties.getOrDefault("skill-count", SkillSet.DEFAULT_SKILL_COUNT),
-                npcStatCount = gameProperties.getOrDefault("npc-stat-count", Npc.Stats.DEFAULT_NPC_STAT_COUNT),
-                runEnergy = gameProperties.getOrDefault("run-energy", true),
-                gItemPublicDelay = gameProperties.getOrDefault("gitem-public-spawn-delay", GroundItem.DEFAULT_PUBLIC_SPAWN_CYCLES),
-                gItemDespawnDelay = gameProperties.getOrDefault("gitem-despawn-delay", GroundItem.DEFAULT_DESPAWN_CYCLES),
-                preloadMaps = gameProperties.getOrDefault("preload-maps", false))
+            name = gameProperties.get<String>("name")!!,
+            revision = gameProperties.get<Int>("revision")!!,
+            cycleTime = gameProperties.getOrDefault("cycle-time", 600),
+            playerLimit = gameProperties.getOrDefault("max-players", 2048),
+            home = Tile(gameProperties.get<Int>("home-x")!!, gameProperties.get<Int>("home-z")!!, gameProperties.getOrDefault("home-height", 0)),
+            skillCount = gameProperties.getOrDefault("skill-count", SkillSet.DEFAULT_SKILL_COUNT),
+            npcStatCount = gameProperties.getOrDefault("npc-stat-count", Npc.Stats.DEFAULT_NPC_STAT_COUNT),
+            runEnergy = gameProperties.getOrDefault("run-energy", true),
+            gItemPublicDelay = gameProperties.getOrDefault("gitem-public-spawn-delay", GroundItem.DEFAULT_PUBLIC_SPAWN_CYCLES),
+            gItemDespawnDelay = gameProperties.getOrDefault("gitem-despawn-delay", GroundItem.DEFAULT_DESPAWN_CYCLES),
+            preloadMaps = gameProperties.getOrDefault("preload-maps", false))
 
         val devContext = DevContext(
-                debugExamines = devProperties.getOrDefault("debug-examines", false),
-                debugObjects = devProperties.getOrDefault("debug-objects", false),
-                debugButtons = devProperties.getOrDefault("debug-buttons", false),
-                debugItemActions = devProperties.getOrDefault("debug-items", false),
-                debugMagicSpells = devProperties.getOrDefault("debug-spells", false))
+            debugExamines = devProperties.getOrDefault("debug-examines", false),
+            debugObjects = devProperties.getOrDefault("debug-objects", false),
+            debugButtons = devProperties.getOrDefault("debug-buttons", false),
+            debugItemActions = devProperties.getOrDefault("debug-items", false),
+            debugMagicSpells = devProperties.getOrDefault("debug-spells", false))
 
         val world = World(gameContext, devContext)
 
@@ -117,11 +122,10 @@ class Server {
          */
         individualStopwatch.reset().start()
 
-        CacheManager.init(filestore)
+        CacheManager.init(filestore,gameContext.revision)
         world.filestore = Store(filestore.toFile())
         world.filestore.load()
         logger.info("Loaded filestore from path {} in {}ms.", filestore, individualStopwatch.elapsed(TimeUnit.MILLISECONDS))
-
         /*
          * Load the services required to run the server.
          */
@@ -173,8 +177,8 @@ class Server {
          */
         individualStopwatch.reset().start()
         world.plugins.init(
-                server = this, world = world,
-                jarPluginsDirectory = gameProperties.getOrDefault("plugin-packed-path", "./plugins"))
+            server = this, world = world,
+            jarPluginsDirectory = gameProperties.getOrDefault("plugin-packed-path", "./plugins"))
         logger.info {
             "${"Loaded {} plugins in {}ms."} ${DecimalFormat().format(world.plugins.getPluginCount())} ${
                 individualStopwatch.elapsed(
@@ -198,8 +202,8 @@ class Server {
          */
         val rsaService = world.getService(RsaService::class.java)
         val clientChannelInitializer = ClientChannelInitializer(revision = gameContext.revision,
-                rsaExponent = rsaService?.getExponent(), rsaModulus = rsaService?.getModulus(),
-                filestore = world.filestore, world = world)
+            rsaExponent = rsaService?.getExponent(), rsaModulus = rsaService?.getModulus(),
+            filestore = world.filestore, world = world)
 
         bootstrap.group(acceptGroup, ioGroup)
         bootstrap.channel(NioServerSocketChannel::class.java)

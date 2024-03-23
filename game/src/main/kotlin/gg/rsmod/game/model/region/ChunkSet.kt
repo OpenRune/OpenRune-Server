@@ -1,6 +1,6 @@
 package gg.rsmod.game.model.region
 
-import gg.rsmod.game.MapLoader
+import gg.rsmod.game.fs.MapLoader
 import gg.rsmod.game.model.Tile
 import gg.rsmod.game.model.World
 import gg.rsmod.game.model.collision.CollisionMatrix

@@ -16,10 +16,11 @@ import gg.rsmod.game.task.sequential.SequentialPlayerCycleTask
 import gg.rsmod.game.task.sequential.SequentialPlayerPostCycleTask
 import gg.rsmod.game.task.sequential.SequentialSynchronizationTask
 import gg.rsmod.util.ServerProperties
-import io.github.oshai.kotlinlogging.KotlinLogging
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.asCoroutineDispatcher
+
+import io.github.oshai.kotlinlogging.KotlinLogging
 import java.util.concurrent.ConcurrentLinkedQueue
 import java.util.concurrent.Executors
 import java.util.concurrent.ScheduledExecutorService
@@ -157,7 +158,7 @@ class GameService : Service {
                     SequentialSynchronizationTask(),
                     SequentialPlayerPostCycleTask()
             ))
-            logger.info { "${"Sequential tasks preference enabled. {} tasks will be handled per cycle."} ${tasks.size}" }
+            logger.info("Sequential tasks preference enabled. {} tasks will be handled per cycle.", tasks.size)
         } else {
             val executor = Executors.newFixedThreadPool(processors, ThreadFactoryBuilder()
                     .setNameFormat("game-task-thread")
@@ -207,7 +208,7 @@ class GameService : Service {
             try {
                 job()
             } catch (e: Exception) {
-                logger.error(e) { "Error executing game-thread job." }
+                logger.error("Error executing game-thread job.", e)
             }
         }
         /*
@@ -226,7 +227,7 @@ class GameService : Service {
             try {
                 task.execute(world, this)
             } catch (e: Exception) {
-                logger.error(e) { "Error with task ${task.javaClass.simpleName}." }
+                logger.error("Error with task ${task.javaClass.simpleName}.", e)
             }
             taskTimes[task.javaClass] = System.currentTimeMillis() - taskStart
         }
@@ -275,31 +276,19 @@ class GameService : Service {
              * R: reserved memory, in megabytes
              * M: max memory available, in megabytes
              */
-            logger.info {
-                "${"[Cycle time: {}ms] [Entities: {}p / {}n] [Map: {}c / {}r / {}i] [Queues: {}p / {}n / {}w] [Mem usage: U={}MB / R={}MB / M={}MB]."} ${
-                    arrayOf<Any?>(
-                        cycleTime / TICKS_PER_DEBUG_LOG,
-                        world.players.count(),
-                        world.npcs.count(),
-                        world.chunks.getActiveChunkCount(),
-                        world.chunks.getActiveRegionCount(),
-                        world.instanceAllocator.activeMapCount,
-                        totalPlayerQueues,
-                        totalNpcQueues,
-                        totalWorldQueues,
-                        (totalMemory - freeMemory) / (1024 * 1024),
-                        totalMemory / (1024 * 1024),
-                        maxMemory / (1024 * 1024)
-                    )
-                }"
-            }
+            //logger.info("[Cycle time: {}ms] [Entities: {}p / {}n] [Map: {}c / {}r / {}i] [Queues: {}p / {}n / {}w] [Mem usage: U={}MB / R={}MB / M={}MB].",
+            //        cycleTime / TICKS_PER_DEBUG_LOG, world.players.count(), world.npcs.count(),
+            //        world.chunks.getActiveChunkCount(), world.chunks.getActiveRegionCount(), world.instanceAllocator.activeMapCount,
+            //        totalPlayerQueues, totalNpcQueues, totalWorldQueues,
+            //        (totalMemory - freeMemory) / (1024 * 1024), totalMemory / (1024 * 1024), maxMemory / (1024 * 1024))
             debugTick = 0
             cycleTime = 0
         }
 
         val freeTime = world.gameContext.cycleTime - (System.currentTimeMillis() - start)
         if (freeTime < 0) {
-            /*
+            /**
+             * @TODO
              * If the cycle took more than [GameContext.cycleTime]ms, we log the
              * occurrence as well as the time each [GameTask] took to complete,
              * as well as how long each [gg.rsmod.game.model.entity.Player] took

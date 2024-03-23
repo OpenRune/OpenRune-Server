@@ -4,12 +4,15 @@ import gg.rsmod.game.Server
 import gg.rsmod.game.model.World
 import gg.rsmod.game.service.Service
 import gg.rsmod.util.ServerProperties
+
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.bouncycastle.jce.provider.BouncyCastleProvider
 import org.bouncycastle.util.io.pem.PemObject
 import org.bouncycastle.util.io.pem.PemReader
 import org.bouncycastle.util.io.pem.PemWriter
+import java.io.File
 import java.io.IOException
+import java.io.PrintWriter
 import java.math.BigInteger
 import java.nio.file.Files
 import java.nio.file.Path
@@ -20,6 +23,7 @@ import java.security.Security
 import java.security.interfaces.RSAPrivateKey
 import java.security.interfaces.RSAPublicKey
 import java.security.spec.PKCS8EncodedKeySpec
+import java.text.SimpleDateFormat
 import java.util.*
 
 /**
@@ -46,7 +50,7 @@ class RsaService : Service {
 
             val create = if (scanner.hasNext()) scanner.nextLine() in arrayOf("yes", "y", "true") else true
             if (create) {
-                logger.info { "Generating RSA key pair..." }
+                logger.info("Generating RSA key pair...")
                 createPair(bitCount = serviceProperties.getOrDefault("bit-count", 2048))
                 println("Please follow the instructions on console and continue once you've done so.")
                 scanner.next()
@@ -104,7 +108,19 @@ class RsaService : Service {
         println("--------------------")
         println("public key: " + publicKey.publicExponent.toString(radix))
         println("modulus: " + publicKey.modulus.toString(radix))
-        println("")
+
+        try {
+            val writer = PrintWriter(File("./modulus"))
+            writer.println("/* Auto-generated file using ${this::class.java} ${SimpleDateFormat("dd/M/yyyy hh:mm:ss").format(Date())} */")
+            writer.println("")
+            writer.println("Place these keys in the client (find BigInteger(\"10001\" in client code):")
+            writer.println("--------------------")
+            writer.println("public key: " + publicKey.publicExponent.toString(radix))
+            writer.println("modulus: " + publicKey.modulus.toString(radix))
+            writer.close()
+        } catch (e: Exception) {
+            logger.error(e.toString())
+        }
 
         try {
             PemWriter(Files.newBufferedWriter(keyPath)).use { writer ->
@@ -120,7 +136,6 @@ class RsaService : Service {
     fun getModulus(): BigInteger = modulus
 
     companion object {
-
         private val logger = KotlinLogging.logger{}
 
         @JvmStatic
@@ -138,7 +153,7 @@ class RsaService : Service {
                 Files.createDirectory(directory)
             }
 
-            logger.info { "Generating RSA key pair..." }
+            logger.info("Generating RSA key pair...")
             service.createPair(bitCount)
         }
     }

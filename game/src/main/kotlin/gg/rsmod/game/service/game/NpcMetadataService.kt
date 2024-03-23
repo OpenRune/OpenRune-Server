@@ -24,15 +24,14 @@ class NpcMetadataService : Service {
     private lateinit var path: Path
 
     override fun init(server: Server, world: World, serviceProperties: ServerProperties) {
-        path = Paths.get(serviceProperties.getOrDefault("path", "../data/cfg/npcs.yml"))
+
+        path = Paths.get(serviceProperties.getOrDefault("path", "../data/cfg/npcs.csv"))
         if (!Files.exists(path)) {
             throw FileNotFoundException("Path does not exist. $path")
         }
-
-        Files.newBufferedReader(path).use { reader ->
-            load(reader)
-        }
+        load()
     }
+
 
     override fun postLoad(server: Server, world: World) {
     }
@@ -43,16 +42,16 @@ class NpcMetadataService : Service {
     override fun terminate(server: Server, world: World) {
     }
 
-    private fun load(reader: BufferedReader) {
-        val mapper = ObjectMapper(YAMLFactory())
-        mapper.propertyNamingStrategy = PropertyNamingStrategy.CAMEL_CASE_TO_LOWER_CASE_WITH_UNDERSCORES
-        mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL)
-
-        val reference = object : TypeReference<List<Metadata>>() {}
-        mapper.readValue<List<Metadata>>(reader, reference)?.let { metadataSet ->
-            metadataSet.forEach { metadata ->
-                val def = npc(metadata.id)
-                def.examine = metadata.examine?: ""
+    private fun load() {
+        path.toFile().forEachLine { line ->
+            val parts = line.split(',')
+            if (parts.size >= 2) {
+                val id = parts[0].toIntOrNull()
+                val examine = line.substringAfter(',').trim()
+                if (id != null) {
+                    val def = npc(id)
+                    def.examine = examine.replace("\"", "")
+                }
             }
         }
     }

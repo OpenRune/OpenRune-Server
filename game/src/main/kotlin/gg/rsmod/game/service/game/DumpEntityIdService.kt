@@ -1,11 +1,6 @@
 package gg.rsmod.game.service.game
 
-import dev.openrune.cache.CacheManager.item
-import dev.openrune.cache.CacheManager.itemCount
-import dev.openrune.cache.CacheManager.npc
-import dev.openrune.cache.CacheManager.npcCount
-import dev.openrune.cache.CacheManager.objectCount
-import dev.openrune.cache.CacheManager.objects
+import dev.openrune.cache.CacheManager
 import gg.rsmod.game.Server
 import gg.rsmod.game.model.World
 import gg.rsmod.game.service.Service
@@ -62,17 +57,17 @@ class DumpEntityIdService : Service {
     }
 
     private fun writeItems(namer: Namer) {
-        val count = itemCount()
+        val count = CacheManager.itemCount()
         val items = generateWriter("Items.kt")
         for (i in 0 until count) {
-            val item = item(i)
+            val item = CacheManager.item(i)
             /*
              * Skip placeholder items.
              */
             if (item.isPlaceholder) {
                 continue
             }
-            val rawName = if (item.noteTemplateId > 0) item(item.noteLinkId).name + "_NOTED" else item.name
+            val rawName = if (item.noteTemplateId > 0) CacheManager.item(item.noteLinkId).name + "_NOTED" else item.name
             if (rawName.isNotBlank()) {
                 val name = namer.name(rawName, i)
                 write(items, "const val $name = $i")
@@ -82,10 +77,10 @@ class DumpEntityIdService : Service {
     }
 
     private fun writeNpcs(namer: Namer) {
-        val count = npcCount()
+        val count = CacheManager.npcCount()
         val npcs = generateWriter("Npcs.kt")
         for (i in 0 until count) {
-            val npc = npc(i)
+            val npc = CacheManager.npc(i)
             val rawName = npc.name.replace("?", "")
             if (rawName.isNotEmpty() && rawName.isNotBlank()) {
                 val name = namer.name(npc.name, i)
@@ -96,10 +91,10 @@ class DumpEntityIdService : Service {
     }
 
     private fun writeObjs(namer: Namer) {
-        val count = objectCount()
+        val count = CacheManager.objectCount()
         val objs = generateWriter("Objs.kt")
         for (i in 0 until count) {
-            val npc = objects(i) ?: continue
+            val npc = CacheManager.objects(i) ?: continue
             val rawName = npc.name.replace("?", "")
             if (rawName.isNotEmpty() && rawName.isNotBlank()) {
                 val name = namer.name(npc.name, i)
@@ -130,6 +125,6 @@ class DumpEntityIdService : Service {
     }
 
     companion object {
-        private val logger = KotlinLogging.logger{}
+        private val logger = KotlinLogging.logger {}
     }
 }

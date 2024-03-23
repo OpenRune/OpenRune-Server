@@ -8,6 +8,7 @@ gradlew
 gradlew.bat
 
 /data/saves/
+/data/cfg/items/equippable/
 /data/rsa/
 /data/xteas/
 
@@ -21,3 +22,5 @@ error.log
 first-launch
 first-launch-example
 data/xteas/xteas.json
+modulus
+custom/

@@ -18,12 +18,12 @@ class SkillSet(val maxSkills: Int) {
     /**
      * Sum up the max level for all your skills.
      */
-    val calculateTotalLevel: Int get() = skills.sumBy { skill -> getMaxLevel(skill.id) }
+    val calculateTotalLevel: Int get() = skills.sumOf { skill -> getMaxLevel(skill.id) }
 
     /**
      * Sum up the experience for all your skills.
      */
-    val calculateTotalXp: Double get() = skills.sumByDouble { skill -> getCurrentXp(skill.id) }
+    val calculateTotalXp: Double get() = skills.sumOf { skill -> getCurrentXp(skill.id) }
 
     /**
      * Get the [Skill] in [skills] with [skill] as its index
@@ -166,7 +166,7 @@ class SkillSet(val maxSkills: Int) {
         /**
          * The default amount of trainable skills by players.
          */
-        const val DEFAULT_SKILL_COUNT = 23
+        const val DEFAULT_SKILL_COUNT = 25 //23
 
         /**
          * Gets the level correspondent to the [xp] given.

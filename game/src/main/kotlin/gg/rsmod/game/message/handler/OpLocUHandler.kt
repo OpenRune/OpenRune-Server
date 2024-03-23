@@ -7,6 +7,7 @@ import gg.rsmod.game.model.EntityType
 import gg.rsmod.game.model.Tile
 import gg.rsmod.game.model.World
 import gg.rsmod.game.model.attr.INTERACTING_ITEM
+import gg.rsmod.game.model.attr.INTERACTING_ITEM_SLOT
 import gg.rsmod.game.model.attr.INTERACTING_OBJ_ATTR
 import gg.rsmod.game.model.entity.Client
 import gg.rsmod.game.model.entity.GameObject
@@ -53,7 +54,7 @@ class OpLocUHandler : MessageHandler<OpLocUMessage> {
 
         if (message.movementType == 1 && world.privileges.isEligible(client.privilege, Privilege.ADMIN_POWER)) {
             val def = obj.getDef()
-            client.moveTo(world.findRandomTileAround(obj.tile, radius = 1, centreWidth = def.width, centreLength = def.length) ?: obj.tile)
+            client.moveTo(world.findRandomTileAround(obj.tile, radius = 1, centreWidth = def.sizeX, centreLength = def.sizeY) ?: obj.tile)
         }
 
         log(client, "Item on object: item=%d, slot=%d, obj=%d, x=%d, z=%d", message.item, message.slot, message.obj, message.x, message.z)
@@ -64,6 +65,7 @@ class OpLocUHandler : MessageHandler<OpLocUMessage> {
         client.resetInteractions()
 
         client.attr[INTERACTING_ITEM] = WeakReference(item)
+        client.attr[INTERACTING_ITEM_SLOT] = message.slot
         client.attr[INTERACTING_OBJ_ATTR] = WeakReference(obj)
 
         client.executePlugin(ObjectPathAction.itemOnObjectPlugin)

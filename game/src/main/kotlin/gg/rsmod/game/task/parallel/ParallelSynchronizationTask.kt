@@ -6,6 +6,7 @@ import gg.rsmod.game.service.GameService
 import gg.rsmod.game.sync.SynchronizationTask
 import gg.rsmod.game.sync.task.*
 import gg.rsmod.game.task.GameTask
+
 import io.github.oshai.kotlinlogging.KotlinLogging
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Phaser

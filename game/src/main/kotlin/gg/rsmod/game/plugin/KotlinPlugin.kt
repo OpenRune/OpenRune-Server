@@ -6,14 +6,10 @@ import dev.openrune.cache.CacheManager.npc
 import dev.openrune.cache.CacheManager.objects
 import gg.rsmod.game.Server
 import gg.rsmod.game.event.Event
-import gg.rsmod.game.model.Direction
-import gg.rsmod.game.model.Tile
-import gg.rsmod.game.model.World
+import gg.rsmod.game.model.*
 import gg.rsmod.game.model.combat.NpcCombatDef
 import gg.rsmod.game.model.container.key.ContainerKey
-import gg.rsmod.game.model.entity.DynamicObject
-import gg.rsmod.game.model.entity.GroundItem
-import gg.rsmod.game.model.entity.Npc
+import gg.rsmod.game.model.entity.*
 import gg.rsmod.game.model.shop.PurchasePolicy
 import gg.rsmod.game.model.shop.Shop
 import gg.rsmod.game.model.shop.ShopCurrency
@@ -22,7 +18,7 @@ import gg.rsmod.game.model.timer.TimerKey
 import gg.rsmod.game.service.Service
 import java.nio.file.Files
 import java.nio.file.Paths
-import java.util.*
+import kotlin.reflect.KClass
 import kotlin.script.experimental.annotations.KotlinScript
 
 /**
@@ -37,17 +33,7 @@ import kotlin.script.experimental.annotations.KotlinScript
 )
 abstract class KotlinPlugin(private val r: PluginRepository, val world: World, val server: Server) {
 
-    /**
-     * A map of properties that will be copied from the [PluginMetadata] and
-     * exposed to the plugin.
-     */
-    private lateinit var properties: MutableMap<String, Any>
-
-    /**
-     * Get property associated with [key] casted as [T].
-     */
-    @Suppress("UNCHECKED_CAST")
-    fun <T> getProperty(key: String): T? = properties[key] as? T?
+    private val METADATA_PATH = Paths.get("./plugins", "configs")
 
     /**
      * Set the [PluginMetadata] for this plugin.
@@ -57,9 +43,9 @@ abstract class KotlinPlugin(private val r: PluginRepository, val world: World, v
 
         val file = METADATA_PATH.resolve("${metadata.propertyFileName}.json")
         val gson = GsonBuilder()
-                .setPrettyPrinting()
-                .disableHtmlEscaping()
-                .create()
+            .setPrettyPrinting()
+            .disableHtmlEscaping()
+            .create()
 
         if (!Files.exists(file)) {
             Files.createDirectories(METADATA_PATH)
@@ -78,6 +64,18 @@ abstract class KotlinPlugin(private val r: PluginRepository, val world: World, v
             }
         }
     }
+
+    /**
+     * A map of properties that will be copied from the [PluginMetadata] and
+     * exposed to the plugin.
+     */
+    private lateinit var properties: MutableMap<String, Any>
+
+    /**
+     * Get property associated with [key] casted as [T].
+     */
+    @Suppress("UNCHECKED_CAST")
+    fun <T> getProperty(key: String): T? = properties[key] as? T?
 
     /**
      * Load [service] on plugin start-up.
@@ -106,9 +104,10 @@ abstract class KotlinPlugin(private val r: PluginRepository, val world: World, v
      * Set the [NpcCombatDef] for npcs with [Npc.id] of [npc].
      */
     fun set_combat_def(npc: Int, def: NpcCombatDef) {
-        check(!r.npcCombatDefs.containsKey(npc)) { "Npc combat definition has been previously set: $npc" }
+
         r.npcCombatDefs[npc] = def
     }
+
 
     /**
      * Set the [NpcCombatDef] for npcs with [Npc.id] of [npc] and [others].
@@ -149,6 +148,17 @@ abstract class KotlinPlugin(private val r: PluginRepository, val world: World, v
     }
 
     /**
+     * Spawn an [Npc] on the given [tile].
+     */
+    fun spawn_npc(npc: Int, tile: Tile, walkRadius: Int = 0, direction: Direction = Direction.SOUTH) {
+        val n = Npc(npc, tile, world)
+        n.respawns = true
+        n.walkRadius = walkRadius
+        n.lastFacingDirection = direction
+        r.npcSpawns.add(n)
+    }
+
+    /**
      * Spawn a [DynamicObject] on the given coordinates.
      */
     fun spawn_obj(obj: Int, x: Int, z: Int, height: Int = 0, type: Int = 10, rot: Int = 0) {
@@ -166,6 +176,24 @@ abstract class KotlinPlugin(private val r: PluginRepository, val world: World, v
     }
 
     /**
+     * Spawn a [GroundItem] on the given coordinates.
+     */
+    fun spawn_item(item: Int, amount: Int, tile: Tile, respawnCycles: Int = GroundItem.DEFAULT_RESPAWN_CYCLES) {
+        val ground = GroundItem(item, amount, Tile(tile))
+        ground.respawnCycles = respawnCycles
+        r.itemSpawns.add(ground)
+    }
+
+    /**
+     * Spawn a [GroundItem] on the given coordinates for player
+     */
+    fun spawn_item(item: Int, amount: Int, tile: Tile, owner: Player) {
+        val ground = GroundItem(item, amount, Tile(tile))
+        ground.ownerUID = owner.uid
+        r.itemSpawns.add(ground)
+    }
+
+    /**
      * Invoke [logic] when the [option] option is clicked on an inventory
      * [gg.rsmod.game.model.item.Item].
      *
@@ -174,13 +202,10 @@ abstract class KotlinPlugin(private val r: PluginRepository, val world: World, v
     fun on_item_option(item: Int, option: String, logic: (Plugin).() -> Unit) {
         val opt = option.lowercase()
         val def = item(item)
-        val slot = def.interfaceOptions.indexOfFirst { it?.lowercase() == opt }
+        val option = def.options.indexOfFirst { it?.lowercase() == opt }
 
-        check(slot != -1) { "Option \"$option\" not found for item $item [options=${def.interfaceOptions.filterNotNull().filter { it.isNotBlank() }}]" }
-
-        r.bindItem(item, slot + 1, logic)
+        r.bindItem(item, option + 1, logic)
     }
-
     /**
      * Invoke [logic] when the [option] option is clicked on an equipment
      * [gg.rsmod.game.model.item.Item].
@@ -206,8 +231,6 @@ abstract class KotlinPlugin(private val r: PluginRepository, val world: World, v
         val def = objects(obj)
         val slot = def.actions.indexOfFirst { it?.lowercase() == opt }
 
-        check(slot != -1) { "Option \"$option\" not found for object $obj [options=${def.actions.filterNotNull().filter { it.isNotBlank() }}]" }
-
         r.bindObject(obj, slot + 1, lineOfSightDistance, logic)
     }
 
@@ -226,8 +249,6 @@ abstract class KotlinPlugin(private val r: PluginRepository, val world: World, v
         val def = npc(npc)
         val slot = def.actions.indexOfFirst { it?.lowercase() == opt }
 
-        check(slot != -1) { "Option \"$option\" not found for npc $npc [options=${def.actions.filterNotNull().filter { it.isNotBlank() }}]" }
-
         r.bindNpc(npc, slot + 1, lineOfSightDistance, logic)
     }
 
@@ -241,10 +262,10 @@ abstract class KotlinPlugin(private val r: PluginRepository, val world: World, v
         val def = item(item)
         val slot = def.options.indexOfFirst { it?.lowercase() == opt }
 
-        check(slot != -1) { "Option \"$option\" not found for ground item $item [options=${def.options.filterNotNull().filter { it.isNotBlank() }}]" }
-
         r.bindGroundItem(item, slot + 1, logic)
     }
+
+
 
     /**
      * Invoke [logic] when an [item] is used on a [gg.rsmod.game.model.entity.GameObject]
@@ -359,6 +380,12 @@ abstract class KotlinPlugin(private val r: PluginRepository, val world: World, v
      */
     fun on_npc_death(npc: Int, plugin: Plugin.() -> Unit) = r.bindNpcDeath(npc, plugin)
 
+
+    /**
+     * Completely overrides the npc death mechanic.
+     */
+    fun full_npc_death(npc: Int, plugin: Plugin.() -> Unit) = r.bindNpcFullDeath(npc, plugin)
+
     /**
      * Set the combat logic for [npc] and [others], which will override the [set_combat_logic]
      * logic.
@@ -372,6 +399,11 @@ abstract class KotlinPlugin(private val r: PluginRepository, val world: World, v
      * Invoke [logic] when [gg.rsmod.game.message.impl.OpNpcTMessage] is handled.
      */
     fun on_spell_on_npc(parent: Int, child: Int, logic: (Plugin).() -> Unit) = r.bindSpellOnNpc(parent, child, logic)
+
+    /**
+     * Invoke [logic] when [gg.rsmod.game.message.impl.OpNpcTMessage] is handled.
+     */
+    fun on_spell_on_player(parent: Int, child: Int, logic: (Plugin).() -> Unit) = r.bindSpellOnPlayer(parent, child, logic)
 
     /**
      * Invoke [logic] when [gg.rsmod.game.message.impl.IfOpenSubMessage] is handled.
@@ -388,6 +420,13 @@ abstract class KotlinPlugin(private val r: PluginRepository, val world: World, v
      * Invoke [logic] when [gg.rsmod.game.message.impl.IfButtonMessage] is handled.
      */
     fun on_button(interfaceId: Int, component: Int, logic: (Plugin).() -> Unit) = r.bindButton(interfaceId, component, logic)
+
+    fun on_button(interfaceId: Int, vararg components: Int, logic: (Plugin).() -> Unit) {
+        components.forEach {
+            on_button(interfaceId, it, logic)
+        }
+    }
+
 
     /**
      * Invoke [logic] when [key] reaches a time value of 0.
@@ -413,7 +452,7 @@ abstract class KotlinPlugin(private val r: PluginRepository, val world: World, v
     /**
      * Invoke [logic] when [gg.rsmod.game.message.impl.ClientCheatMessage] is handled.
      */
-    fun on_command(command: String, powerRequired: String? = null, logic: (Plugin).() -> Unit) = r.bindCommand(command, powerRequired, logic)
+    fun on_command(command: String, powerRequired: String? = null, description: String? = null, logic: (Plugin).() -> Unit) = r.bindCommand(command, powerRequired, description, logic)
 
     /**
      * Invoke [logic] when an item is equipped onto equipment slot [equipSlot].
@@ -434,6 +473,15 @@ abstract class KotlinPlugin(private val r: PluginRepository, val world: World, v
      * Invoke [logic] when [item] is equipped.
      */
     fun on_item_equip(item: Int, logic: (Plugin).() -> Unit) = r.bindEquipItem(item, logic)
+
+    /**
+     * Invoke [logic] when attacking with that [item].
+     * @TODO
+     * Add check if dealhit was done. -> If u have {BERSERKER_RING} and weap without overrides it wont execute or just split weapons and items
+     */
+    fun set_item_combat_logic(item: Int, logic: (Plugin).() -> Unit) {
+        r.setItemCombatLogic(item, logic)
+    }
 
     /**
      * Invoke [logic] when [item] is removed from equipment.
@@ -489,35 +537,71 @@ abstract class KotlinPlugin(private val r: PluginRepository, val world: World, v
 
     /**
      * Invoke [logic] when the the option in index [option] is clicked on a [GroundItem].
-     *
      * String option method should be used over this method whenever possible.
      */
     fun on_ground_item_option(item: Int, option: Int, logic: (Plugin).() -> Unit) = r.bindGroundItem(item, option, logic)
 
     /**
      * Set the condition of whether [item] can be picked up as a ground item.
-     *
      * @return false if the item can not be picked up.
      */
-    fun set_ground_item_condition(item: Int, plugin: Plugin.() -> Boolean) = r.setGroundItemPickupCondition(item, plugin)
+    fun setGroundItemCondition(item: Int, plugin: Plugin.() -> Boolean) = r.setGroundItemPickupCondition(item, plugin)
 
     /**
      * Invoke [plugin] when a spell is used on an item.
      */
-    fun on_spell_on_item(fromInterface: Int, fromComponent: Int, toInterface: Int, toComponent: Int, plugin: Plugin.() -> Unit) = r.bindSpellOnItem((fromInterface shl 16) or fromComponent, (toInterface shl 16) or toComponent, plugin)
+    fun onSpellOnItem(fromInterface: Int, fromComponent: Int, toInterface: Int, toComponent: Int, plugin: Plugin.() -> Unit) = r.bindSpellOnItem((fromInterface shl 16) or fromComponent, (toInterface shl 16) or toComponent, plugin)
 
     /**
      * Returns true if the item can be dropped on the floor via the 'drop' menu
      * option - return false otherwise.
      */
-    fun can_drop_item(item: Int, plugin: (Plugin).() -> Boolean) = r.bindCanItemDrop(item, plugin)
+    fun canDropItem(item: Int, plugin: (Plugin).() -> Boolean) = r.bindCanItemDrop(item, plugin)
 
     /**
      * Invoke [plugin] when [item] is used on [npc].
      */
-    fun on_item_on_npc(item: Int, npc: Int, plugin: Plugin.() -> Unit) = r.bindItemOnNpc(npc = npc, item = item, plugin = plugin)
+    fun onItemOnNpc(item: Int, npc: Int, plugin: Plugin.() -> Unit) = r.bindItemOnNpc(npc = npc, item = item, plugin = plugin)
 
-    companion object {
-        private val METADATA_PATH = Paths.get("./plugins", "configs")
+    fun onAnimation(animid: Int, plugin: Plugin.() -> Unit) = r.bindOnAnimation(animid, plugin)
+
+    fun getNpcCombatDef(npc: Int): NpcCombatDef? {
+        return world.plugins.npcCombatDefs.getOrDefault(npc, null)
     }
+
+    fun getNpcFromTile(tile: Tile): Npc? {
+        val chunk = world.chunks.get(tile)
+        return chunk?.getEntities<Npc>(tile, EntityType.NPC)?.firstOrNull()
+    }
+
+    /**
+     * Returns how many times @param from to @param range contains.
+     * ex: @param value = 5
+     * ex: @param range = 0..90
+     * @return returns 18
+     */
+    fun every(value: Int, range: Int, from: Int = 0): Int {
+        var times = 0
+        for (index in from until range) {
+            if (index % value == 0) {
+                times++
+            }
+        }
+        return times
+    }
+
+
+    fun getPluginRepository(): PluginRepository {
+        return r
+    }
+
+    fun obj_has_option(obj: Int, option: String): Boolean {
+        val objDefs = objects(obj)
+        return objDefs.actions.contains(option)
+    }
+    fun npc_has_option(npc: Int, option: String): Boolean {
+        val npcDefs = npc(npc)
+        return npcDefs.actions.contains(option)
+    }
+
 }

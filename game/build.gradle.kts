@@ -72,7 +72,7 @@ tasks.register("install") {
         javaexec {
             workingDir = rootProject.projectDir
             classpath = sourceSets["main"].runtimeClasspath
-            mainClass.set("gg.rsmod.game.service.cache.CacheService")
+            mainClass.set("gg.rsmod.game.service.cache.InstallService")
         }
     }
     doLast {

@@ -19,10 +19,9 @@ object EquipAction {
     //  3) Load skill names via external configs which would be used throughout
     //      the game and plugins module
     private val SKILL_NAMES = arrayOf(
-            "attack", "defence", "strength", "hitpoints", "ranged", "prayer",
-            "magic", "cooking", "woodcutting", "fletching", "fishing", "firemaking",
-            "crafting", "Smithing", "mining", "herblore", "agility", "thieving",
-            "slayer", "farming", "runecrafting", "hunter", "construction"
+        "attack", "defence", "strength", "hitpoints", "ranged", "prayer", "magic", "cooking",
+        "woodcutting", "fletching", "fishing", "firemaking", "crafting", "Smithing", "mining", "herblore",
+        "agility", "thieving", "slayer", "farming", "runecrafting", "hunter", "construction"
     )
 
     /**
@@ -196,11 +195,6 @@ object EquipAction {
                     val transaction = p.inventory.add(equipment.id, equipment.amount, beginSlot = if (initialSlot != -1) initialSlot else 0)
                     transaction.items.firstOrNull()?.item?.copyAttr(equipment)
                     initialSlot = -1
-
-                    /*
-                     * The item in equipSlot will be removed afterwards, so don't
-                     * remove it here!
-                     */
                     if (slot != equipSlot) {
                         p.equipment[slot] = null
                     }

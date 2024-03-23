@@ -19,6 +19,7 @@ import gg.rsmod.net.codec.game.GamePacketEncoder
 import gg.rsmod.net.codec.login.LoginRequest
 import gg.rsmod.util.ServerProperties
 import gg.rsmod.util.io.IsaacRandom
+
 import io.github.oshai.kotlinlogging.KotlinLogging
 import java.util.concurrent.Executors
 import java.util.concurrent.LinkedBlockingQueue

@@ -27,7 +27,6 @@ class OpLoc1Handler : MessageHandler<OpLoc1Message> {
         if (!tile.viewableFrom(client.tile, Player.TILE_VIEW_DISTANCE)) {
             return
         }
-
         /*
          * If player can't move, we don't do anything.
          */
@@ -50,7 +49,7 @@ class OpLoc1Handler : MessageHandler<OpLoc1Message> {
 
         if (message.movementType == 1 && world.privileges.isEligible(client.privilege, Privilege.ADMIN_POWER)) {
             val def = obj.getDef()
-            client.moveTo(world.findRandomTileAround(obj.tile, radius = 1, centreWidth = def.width, centreLength = def.length) ?: obj.tile)
+            client.moveTo(world.findRandomTileAround(obj.tile, radius = 1, centreWidth = def.sizeX, centreLength = def.sizeY) ?: obj.tile)
         }
 
         client.attr[INTERACTING_OPT_ATTR] = 1

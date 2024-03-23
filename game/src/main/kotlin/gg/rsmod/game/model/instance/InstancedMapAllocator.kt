@@ -67,8 +67,8 @@ class InstancedMapAllocator {
     }
 
     private fun allocate(x: Int, z: Int, chunks: InstancedChunkSet, configs: InstancedMapConfiguration): InstancedMap =
-            InstancedMap(Area(x, z, x + chunks.regionSize * Chunk.REGION_SIZE, z + chunks.regionSize * Chunk.REGION_SIZE), chunks,
-                    configs.exitTile, configs.owner, configs.attributes)
+        InstancedMap(Area(x, z, x + chunks.regionSize * Chunk.REGION_SIZE, z + chunks.regionSize * Chunk.REGION_SIZE), chunks,
+            configs.exitTile, configs.owner, configs.attributes)
 
     private fun deallocate(world: World, map: InstancedMap) {
         if (maps.remove(map)) {
