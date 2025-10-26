@@ -2,17 +2,36 @@ package org.alter.game.pluginnew.event.impl
 
 import net.rsprot.protocol.util.CombinedId
 import org.alter.game.model.entity.Player
+import org.alter.game.pluginnew.MenuOption
 import org.alter.game.pluginnew.event.PlayerEvent
+import org.alter.rscm.RSCM.asRSCM
 
-class ButtonClickEvent(
+enum class ContainerType(val id: String) {
+    INVENTORY("interfaces.inventory"),
+    WORN_EQUIPMENT("interfaces.wornitems"),
+    EQUIPMENT("interfaces.equipment"),
+
+    UNKNOWN("unknown");
+
+    companion object {
+        fun fromId(id: Int): ContainerType = ContainerType.entries.find { it.id.asRSCM() == id } ?: UNKNOWN
+    }
+}
+
+data class ButtonClickEvent(
     val component: CombinedId,
     val option: Int,
     val item: Int,
     val slot: Int,
-    player: Player
+    override val player: Player
 ) : PlayerEvent(player) {
-    val itemId: Int = item
-    val slotId: Int = slot
-    val optionId: Int = option
+
+    init {
+        if (item != -1) {
+            val containerType = ContainerType.fromId(component.interfaceId)
+            val option = MenuOption.fromId(option)
+            ItemClickEvent(item, option, containerType, player).post()
+        }
+    }
 }
 

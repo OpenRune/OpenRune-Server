@@ -37,6 +37,8 @@ class IfButton1Handler : MessageHandler<If3Button> {
         client.attr[INTERACTING_ITEM_ID] = message.obj
         client.attr[INTERACTING_SLOT_ATTR] = message.sub
 
+        ButtonClickEvent(CombinedId(interfaceId, component), option, message.obj, message.sub, client).post()
+
         if (client.world.plugins.executeButton(client, interfaceId, component)) {
             return
         }
@@ -46,7 +48,6 @@ class IfButton1Handler : MessageHandler<If3Button> {
                 "Unhandled button action: [component=[$interfaceId:$component], option=$option, slot=${message.sub}, item=${message.obj}]",
             )
         }
-        
-        ButtonClickEvent(CombinedId(interfaceId, component), option, message.obj, message.sub, client).post()
+
     }
 }

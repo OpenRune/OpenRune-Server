@@ -130,6 +130,12 @@ fun Player.setInterfaceUnderlay(
     runClientScript(CommonClientScripts.MAIN_MODAL_OPEN, color, transparency)
 }
 
+private fun splitEventMask(events: Int): Pair<Int, Int> {
+    val events1 = events and 0x7FE.inv()
+    val events2 = (events ushr 1) and 0x3FF
+    return events1 to events2
+}
+
 fun Player.setInterfaceEvents(
     interfaceId: Int,
     component: Int,
@@ -137,7 +143,17 @@ fun Player.setInterfaceEvents(
     to: Int,
     setting: Int,
 ) {
-    write(IfSetEventsV2(interfaceId = interfaceId, componentId = component, start = from, end = to, events1 = setting, events2 = setting))
+    val (events1, events2) = splitEventMask(setting)
+    write(
+        IfSetEventsV2(
+            interfaceId = interfaceId,
+            componentId = component,
+            start = from,
+            end = to,
+            events1 = events1,
+            events2 = events2,
+        )
+    )
 }
 
 fun Player.setInterfaceEvents(
@@ -146,7 +162,17 @@ fun Player.setInterfaceEvents(
     range: IntRange,
     setting: Int,
 ) {
-    write(IfSetEventsV2(interfaceId = interfaceId, componentId = component, start = range.first, end = range.last, events1 = setting, events2 = setting))
+    val (events1, events2) = splitEventMask(setting)
+    write(
+        IfSetEventsV2(
+            interfaceId = interfaceId,
+            componentId = component,
+            start = range.first,
+            end = range.last,
+            events1 = events1,
+            events2 = events2,
+        )
+    )
 }
 
 fun Player.setInterfaceEvents(
@@ -155,12 +181,18 @@ fun Player.setInterfaceEvents(
     range: IntRange,
     vararg setting: InterfaceEvent,
 ) {
-    val list = arrayListOf<Int>()
-    setting.forEach {
-        list.add(it.flag)
-    }
-    val settings = list.reduce(Int::or)
-    write(IfSetEventsV2(interfaceId = interfaceId, componentId = component, start = range.first, end = range.last, events1 = settings, events2 = settings))
+    val combined = setting.fold(0) { acc, it -> acc or it.flag }
+    val (events1, events2) = splitEventMask(combined)
+    write(
+        IfSetEventsV2(
+            interfaceId = interfaceId,
+            componentId = component,
+            start = range.first,
+            end = range.last,
+            events1 = events1,
+            events2 = events2,
+        )
+    )
 }
 
 fun Player.setInterfaceEvents(
@@ -169,8 +201,19 @@ fun Player.setInterfaceEvents(
     range: IntRange,
     setting: InterfaceEvent,
 ) {
-    write(IfSetEventsV2(interfaceId = interfaceId, componentId = component, start = range.first, end = range.last, events1 = setting.flag,setting.flag))
+    val (events1, events2) = splitEventMask(setting.flag)
+    write(
+        IfSetEventsV2(
+            interfaceId = interfaceId,
+            componentId = component,
+            start = range.first,
+            end = range.last,
+            events1 = events1,
+            events2 = events2,
+        )
+    )
 }
+
 
 fun Player.setComponentText(
     interfaceId: Int,
