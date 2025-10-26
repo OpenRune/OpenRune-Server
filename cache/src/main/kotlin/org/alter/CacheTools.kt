@@ -1,11 +1,19 @@
 package org.alter
 
+import dev.openrune.cache.gameval.Format
+import dev.openrune.cache.gameval.GameValHandler
+import dev.openrune.cache.gameval.dump
 import dev.openrune.cache.tools.Builder
 import dev.openrune.cache.tools.CacheEnvironment
+import dev.openrune.cache.tools.dbtables.PackDBTables
 import dev.openrune.cache.tools.tasks.CacheTask
 import dev.openrune.cache.tools.tasks.TaskType
+import dev.openrune.cache.tools.tasks.impl.defs.PackConfig
+import dev.openrune.definition.GameValGroupTypes
+import dev.openrune.filesystem.Cache
 import dev.openrune.tools.PackServerConfig
 import io.github.oshai.kotlinlogging.KotlinLogging
+import org.alter.impl.PrayerTable
 import java.io.File
 import java.nio.file.Files
 import java.nio.file.StandardCopyOption
@@ -30,18 +38,24 @@ fun downloadRev(type : TaskType) {
 
     logger.error { "Using Revision: $rev" }
 
-    val tasks : MutableList<CacheTask> = listOf(
-        PackServerConfig()
+    val tasks : List<CacheTask> = listOf(
+        PackConfig(File("../data/raw-cache/configs/")),
+        PackServerConfig(),
     ).toMutableList()
 
     when(type) {
         TaskType.FRESH_INSTALL -> {
             val builder = Builder(type = TaskType.FRESH_INSTALL, File(getCacheLocation()))
+            builder.registerRSCM(File("../data/cfg/rscm2"))
             builder.revision(rev.first)
             builder.subRevision(rev.second)
             builder.removeXteas(false)
             builder.environment(CacheEnvironment.valueOf(rev.third))
-            builder.extraTasks(*tasks.toTypedArray()).build().initialize()
+
+            val tasksNew = tasks.toMutableList()
+            tasksNew.add(PackDBTables(listOf(PrayerTable.skillTable())))
+
+            builder.extraTasks(*tasksNew.toTypedArray()).build().initialize()
 
             Files.move(
                 File(getCacheLocation(), "xteas.json").toPath(),
@@ -51,10 +65,24 @@ fun downloadRev(type : TaskType) {
         }
         TaskType.BUILD -> {
             val builder = Builder(type = TaskType.BUILD, cacheLocation = File(getCacheLocation()))
+            builder.registerRSCM(File("../data/cfg/rscm2"))
             builder.revision(rev.first)
-            builder.extraTasks(*tasks.toTypedArray()).build().initialize()
+
+            val tasksNew = tasks.toMutableList()
+            tasksNew.add(PackDBTables(listOf(PrayerTable.skillTable())))
+
+            builder.extraTasks(*tasksNew.toTypedArray()).build().initialize()
+
+            GameValGroupTypes.entries.forEach {
+                val type = GameValHandler.readGameVal(it, cache = Cache.load(File(getCacheLocation()).toPath(), true),rev.first)
+                type.dump(Format.RSCM_V2, File("../data/cfg/rscm2"), it)
+                    .packed(true)
+                    .write()
         }
     }
+
+    }
+
 
 
 }

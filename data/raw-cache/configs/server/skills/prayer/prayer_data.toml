@@ -1,0 +1,9 @@
+[[enum]]
+id="enums.bone_data"
+keyType="OBJ"
+valueType="DBROW"
+
+default = "dbrows.bones"
+
+[enum.values]
+"items.bones" = "dbrows.bones"
