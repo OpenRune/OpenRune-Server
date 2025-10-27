@@ -22,7 +22,7 @@ allprojects {
 
     val lib = rootProject.project.libs
     dependencies {
-        implementation("dev.or2:all:2.2.4")
+        implementation("dev.or2:all:2.2.5")
         implementation(lib.kotlin.logging)
         implementation(lib.logback.classic)
         implementation(lib.fastutil)
