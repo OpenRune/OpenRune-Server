@@ -14,8 +14,8 @@ data class Graphic(val id: Int, val height: Int, val delay: Int = 0)
  *
  * @author Tom <rspsmods@gmail.com>
  */
-class TileGraphic private constructor(val id: Int, val height: Int, val delay: Int) : Entity() {
-    constructor(tile: Tile, id: Int, height: Int, delay: Int = 0) : this(id = id, height = height, delay = delay) {
+class TileGraphic(val id: Int, val height: Int, val delay: Int) : Entity() {
+    constructor(tile: Tile, id: Int, height: Int = 0, delay: Int = 0) : this(id = id, height = height, delay = delay) {
         this.tile = tile
     }
 

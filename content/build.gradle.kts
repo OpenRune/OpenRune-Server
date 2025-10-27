@@ -9,6 +9,9 @@ dependencies {
     implementation(kotlin("script-runtime"))
     implementation(kotlin("scripting-jvm"))
     implementation(kotlin("scripting-jvm-host"))
+    implementation(project(":cache"))
+    implementation("dev.or2:server-utils:0.7")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.9.0")
     implementation(rootProject.project.libs.rsprot)
 }
 

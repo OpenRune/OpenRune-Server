@@ -511,6 +511,10 @@ open class Player(world: World) : Pawn(world) {
         }
     }
 
+    fun addXp(skill: Int, xp: Int) {
+        addXp(skill,xp.toDouble())
+    }
+
     fun addXp(
         skill: Int,
         xp: Double,

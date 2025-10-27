@@ -100,5 +100,7 @@ object ServerCacheManager {
     fun getHealthBars() = healthBars.toMap()
     fun getStructs() = structs.toMap()
     fun getAnims() = sequences.toMap()
+    fun getRows() = dbrows.toMap()
+
 
 }

@@ -6,6 +6,7 @@ import org.alter.game.pluginnew.MenuOption
 
 open class ItemClickEvent(
     open val item: Int,
+    val slot : Int,
     open val op: MenuOption,
     val container: ContainerType,
     player: Player

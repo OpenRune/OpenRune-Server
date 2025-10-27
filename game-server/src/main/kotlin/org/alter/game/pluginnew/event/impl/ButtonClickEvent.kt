@@ -30,7 +30,7 @@ data class ButtonClickEvent(
         if (item != -1) {
             val containerType = ContainerType.fromId(component.interfaceId)
             val option = MenuOption.fromId(option)
-            ItemClickEvent(item, option, containerType, player).post()
+            ItemClickEvent(item, slot, option, containerType, player).post()
         }
     }
 }

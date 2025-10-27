@@ -75,10 +75,59 @@ data class QueueTask(val ctx: Any, val priority: TaskPriority) : Continuation<Un
         terminateAction?.invoke(this)
     }
 
+
     /**
      * If the task has been "paused" (aka suspended).
      */
     fun suspended(): Boolean = nextStep != null
+
+    /**
+     * Repeatedly executes [logic] every [delay] game cycles until [predicate] returns true.
+     *
+     * This uses the same suspend/resume system as [wait], ensuring that the logic
+     * continues across game ticks properly without blocking the game thread.
+     *
+     * @param delay The number of game cycles between each iteration.
+     * @param immediate If true, runs [logic] once immediately before waiting.
+     * @param predicate A suspendable condition that ends the repetition when true.
+     * @param logic The logic block to execute on each iteration.
+     */
+    suspend fun repeatUntil(
+        delay: Int,
+        immediate: Boolean = false,
+        predicate: suspend () -> Boolean,
+        logic: suspend QueueTask.() -> Unit
+    ) {
+        if (immediate) {
+            logic()
+        }
+
+        while (true) {
+            if (predicate()) break
+            wait(delay)
+            if (predicate()) break
+            logic()
+        }
+    }
+
+    /**
+     * Repeatedly executes [logic] every [delay] game cycles while [predicate] remains true.
+     *
+     * This is a convenience wrapper around [repeatUntil].
+     *
+     * @param delay The number of game cycles between each iteration.
+     * @param immediate If true, runs [logic] once immediately before waiting.
+     * @param predicate A suspendable condition that keeps running while true.
+     * @param logic The logic block to execute on each iteration.
+     */
+    suspend fun repeatWhile(
+        delay: Int,
+        immediate: Boolean = false,
+        predicate: suspend () -> Boolean,
+        logic: suspend QueueTask.() -> Unit
+    ) {
+        repeatUntil(delay, immediate, { !predicate() }, logic)
+    }
 
     /**
      * Wait for the specified amount of game cycles [cycles] before

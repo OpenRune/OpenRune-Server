@@ -36,7 +36,7 @@ object PluginManager {
                         val instance = clazz.getDeclaredConstructor().newInstance()
                         scripts.add(clazz.getDeclaredConstructor())
                     } catch (ex: Exception) {
-                        error { "${"Error loading plugin {}"} ${classInfo.name} $ex" }
+                        ex.printStackTrace()
                     }
                 }
 
