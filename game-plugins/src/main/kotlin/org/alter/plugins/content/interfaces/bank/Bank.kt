@@ -12,28 +12,15 @@ import org.alter.plugins.content.interfaces.bank.BankTabs.SELECTED_TAB_VARBIT
 import org.alter.plugins.content.interfaces.bank.BankTabs.getTabsItems
 import org.alter.plugins.content.interfaces.equipstats.EquipmentStats
 import org.alter.plugins.content.interfaces.equipstats.EquipmentStats.bonusTextMap
+import org.alter.plugins.content.interfaces.bank.config.Interfaces
+import org.alter.plugins.content.interfaces.bank.config.Components
+import org.alter.plugins.content.interfaces.bank.config.Varbits
+import org.alter.rscm.RSCM.asRSCM
 
 /**
  * @author Tom <rspsmods@gmail.com>
  */
 object Bank {
-    const val BANK_INTERFACE_ID = 12
-    const val BANK_MAINTAB_COMPONENT = 13
-    const val INV_INTERFACE_ID = 15
-    const val INV_INTERFACE_CHILD = 3
-
-    const val WITHDRAW_AS_VARBIT = 3958
-    const val REARRANGE_MODE_VARBIT = 3959
-    const val ALWAYS_PLACEHOLD_VARBIT = 3755
-    const val LAST_X_INPUT = 3960
-    const val QUANTITY_VARBIT = 6590
-    const val INCINERATOR_VARBIT = 5102
-
-    /**
-     * Visual varbit for the "Bank your loot" tab area interface when storing
-     * items from a looting bag into the bank.
-     */
-    private const val BANK_YOUR_LOOT_VARBIT = 4139
 
     fun withdraw(
         p: Player,
@@ -46,7 +33,7 @@ object Bank {
         val from = p.bank
         val to = p.inventory
         val amount = Math.min(from.getItemCount(id), amt)
-        val note = p.getVarbit(WITHDRAW_AS_VARBIT) == 1
+        val note = p.getVarbit(Varbits.WITHDRAW_NOTES) == 1
         for (i in slot until from.capacity) {
             val item = from[i] ?: continue
             if (item.id != id) {
@@ -63,7 +50,7 @@ object Bank {
             val transfer = from.transfer(to, item = copy, fromSlot = i, note = note, unnote = false)
             withdrawn += transfer?.completed ?: 0
             if (from[i] == null) {
-                if (placehold || p.getVarbit(ALWAYS_PLACEHOLD_VARBIT) == 1) {
+                if (placehold || p.getVarbit(Varbits.LEAVEPLACEHOLDERS) == 1) {
                     val def = item.getDef()
                     /**
                      * Make sure the item has a valid placeholder item in its
@@ -136,10 +123,10 @@ object Bank {
 
     fun open(p: Player) {
         p.setInterfaceUnderlay(-1, -2)
-        p.openInterface(BANK_INTERFACE_ID, InterfaceDestination.MAIN_SCREEN)
-        p.openInterface(INV_INTERFACE_ID, InterfaceDestination.TAB_AREA)
+        p.openInterface(Interfaces.BANK_MAIN, InterfaceDestination.MAIN_SCREEN)
+        p.openInterface(Interfaces.BANKSIDE, InterfaceDestination.TAB_AREA)
         p.setVarp(262, -1)
-        p.setComponentText(interfaceId = BANK_INTERFACE_ID, component = 9, text = p.bank.capacity.toString())
+        p.setComponentText(interfaceId = Interfaces.BANK_MAIN, component = Components.BACK_CAPACITY, text = p.bank.capacity.toString())
         p.runClientScript(
             ClientScript(id = 1495),
             "Non-members' capacity: 400<br>Become a member for 400 more.<br>A banker can sell you up to 360 more.<br>+20 for your PIN.<br>Set an Authenticator for 20 more.",
@@ -148,8 +135,8 @@ object Bank {
         )
         sendBonuses(p)
         p.setInterfaceEvents(
-            interfaceId = INV_INTERFACE_ID,
-            component = 3,
+            interfaceId = Interfaces.BANKSIDE,
+            component = Components.TITLE,
             0..27,
             InterfaceEvent.ClickOp1,
             InterfaceEvent.ClickOp2,
@@ -164,10 +151,10 @@ object Bank {
             InterfaceEvent.DRAG_DEPTH1,
             InterfaceEvent.DragTargetable,
         )
-        p.setInterfaceEvents(interfaceId = BANK_INTERFACE_ID, component = 47, 1..1200, InterfaceEvent.ClickOp1)
+        p.setInterfaceEvents(interfaceId = Interfaces.BANK_MAIN, component = Components.DEPOSIT_WORN, 1..1200, InterfaceEvent.ClickOp1)
         p.setInterfaceEvents(
-            interfaceId = INV_INTERFACE_ID,
-            component = 19,
+            interfaceId = Interfaces.BANKSIDE,
+            component = Components.SWAP,
             0..27,
             InterfaceEvent.ClickOp1,
             InterfaceEvent.ClickOp2,
@@ -176,8 +163,8 @@ object Bank {
             InterfaceEvent.ClickOp10,
         )
         p.setInterfaceEvents(
-            interfaceId = BANK_INTERFACE_ID,
-            component = 13,
+            interfaceId = Interfaces.BANK_MAIN,
+            component = Components.BANK_MAINTAB_COMPONENT,
             0..1199,
             InterfaceEvent.ClickOp1,
             InterfaceEvent.ClickOp2,
@@ -192,18 +179,18 @@ object Bank {
             InterfaceEvent.DRAG_DEPTH2,
             InterfaceEvent.DragTargetable,
         )
-        p.setInterfaceEvents(interfaceId = BANK_INTERFACE_ID, 13, 1218..1227, InterfaceEvent.DragTargetable)
+        p.setInterfaceEvents(interfaceId = Interfaces.BANK_MAIN, Components.BANK_MAINTAB_COMPONENT, 1218..1227, InterfaceEvent.DragTargetable)
         p.setInterfaceEvents(
-            interfaceId = BANK_INTERFACE_ID,
-            11,
+            interfaceId = Interfaces.BANK_MAIN,
+            Components.TABS,
             10..10,
             InterfaceEvent.ClickOp1,
             InterfaceEvent.ClickOp7,
             InterfaceEvent.DragTargetable,
         )
         p.setInterfaceEvents(
-            interfaceId = BANK_INTERFACE_ID,
-            11,
+            interfaceId = Interfaces.BANK_MAIN,
+            Components.TABS,
             11..19,
             InterfaceEvent.ClickOp1,
             InterfaceEvent.ClickOp6,
@@ -212,18 +199,18 @@ object Bank {
             InterfaceEvent.DragTargetable,
         )
         p.setInterfaceEvents(
-            interfaceId = INV_INTERFACE_ID,
-            4,
+            interfaceId = Interfaces.BANKSIDE,
+            Components.TUT,
             0..27,
             InterfaceEvent.ClickOp1,
             InterfaceEvent.ClickOp10,
             InterfaceEvent.DRAG_DEPTH1,
             InterfaceEvent.DragTargetable,
         )
-        p.setInterfaceEvents(interfaceId = BANK_INTERFACE_ID, component = 50, 0..3, InterfaceEvent.ClickOp1)
+        p.setInterfaceEvents(interfaceId = Interfaces.BANK_MAIN, component = 50, 0..3, InterfaceEvent.ClickOp1)
         p.setInterfaceEvents(
-            interfaceId = INV_INTERFACE_ID,
-            component = 13,
+            interfaceId = Interfaces.BANKSIDE,
+            component = Components.BANK_MAINTAB_COMPONENT,
             0..27,
             InterfaceEvent.ClickOp1,
             InterfaceEvent.ClickOp2,
@@ -231,7 +218,6 @@ object Bank {
             InterfaceEvent.ClickOp4,
             InterfaceEvent.ClickOp10,
         )
-        p.setVarbit(BANK_YOUR_LOOT_VARBIT, 0)
     }
 
     fun sendBonuses(p: Player) {
@@ -263,10 +249,11 @@ object Bank {
             786538,
             "Increases your effective accuracy and damage against undead creatures. For multi-target Ranged and Magic attacks, this applies only to the primary target. It does not stack with the Slayer multiplier.",
         )
-        p.setComponentText(interfaceId = BANK_INTERFACE_ID, component = 107, text = "Slayer: 0%") // @TODO
+        p.setComponentText(interfaceId = Interfaces.BANK_MAIN, component = 107, text = "Slayer: 0%") // @TODO
     }
     private fun Player.setBankEquipCompText(component: Int, text: String) {
-        this.setComponentText(interfaceId = BANK_INTERFACE_ID, component = component, text = text)
+        this.setComponentText(interfaceId = Interfaces.BANK_MAIN, component = component, text = text)
+
     }
 
     fun ItemContainer.removePlaceholder(

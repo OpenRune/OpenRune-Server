@@ -19,9 +19,6 @@ import org.alter.game.model.queue.*
 import org.alter.game.model.shop.*
 import org.alter.game.model.timer.*
 import org.alter.game.plugin.*
-import org.alter.plugins.content.interfaces.bank.Bank.BANK_INTERFACE_ID
-import org.alter.plugins.content.interfaces.bank.Bank.BANK_MAINTAB_COMPONENT
-import org.alter.plugins.content.interfaces.bank.Bank.REARRANGE_MODE_VARBIT
 import org.alter.plugins.content.interfaces.bank.Bank.insert
 import org.alter.plugins.content.interfaces.bank.BankTabs.BANK_TABLIST_ID
 import org.alter.plugins.content.interfaces.bank.BankTabs.BANK_TAB_ROOT_VARBIT
@@ -31,6 +28,9 @@ import org.alter.plugins.content.interfaces.bank.BankTabs.insertionPoint
 import org.alter.plugins.content.interfaces.bank.BankTabs.numTabsUnlocked
 import org.alter.plugins.content.interfaces.bank.BankTabs.shiftTabs
 import org.alter.plugins.content.interfaces.bank.BankTabs.startPoint
+import org.alter.plugins.content.interfaces.bank.config.Components
+import org.alter.plugins.content.interfaces.bank.config.Interfaces
+import org.alter.plugins.content.interfaces.bank.config.Varbits
 
 class BankTabsPlugin(
     r: PluginRepository,
@@ -45,7 +45,7 @@ class BankTabsPlugin(
          *
          * When you take out to inv from bank -> It leaves empty gaps -> But when you put everything via Bank All -> The empty gaps get subtracted.
          */
-        onButton(BANK_INTERFACE_ID, BANK_TABLIST_ID) {
+        onButton(Interfaces.BANK_MAIN, BANK_TABLIST_ID) {
             val dstTab = player.getInteractingSlot() - 10
             val opt = player.getInteractingOption()
             when (opt) {
@@ -64,14 +64,14 @@ class BankTabsPlugin(
                 }
                 else -> {
                     player.printAndMessageIfHasPower(
-                        ("Unknown option from component: [$BANK_INTERFACE_ID:$BANK_TABLIST_ID]: $opt"),
+                        ("Unknown option from component: [$Interfaces.BANK_MAIN:$BANK_TABLIST_ID]: $opt"),
                         Privilege.ADMIN_POWER,
                     )
                 }
             }
         }
 
-        onButton(BANK_INTERFACE_ID, 113) {
+        onButton(Interfaces.BANK_MAIN, 113) {
             // player.setVarbit(386, 1)
             // player.closeInterface(dest = InterfaceDestination.TAB_AREA)
             // player.openInterface(INV_INTERFACE_ID, 4)
@@ -81,9 +81,9 @@ class BankTabsPlugin(
          * Moving items to tabs via the top tabs bar.
          */
         onComponentToComponentItemSwap(
-            srcInterfaceId = BANK_INTERFACE_ID,
-            srcComponent = BANK_MAINTAB_COMPONENT,
-            dstInterfaceId = BANK_INTERFACE_ID,
+            srcInterfaceId = Interfaces.BANK_MAIN,
+            srcComponent = Components.BANK_MAINTAB_COMPONENT,
+            dstInterfaceId = Interfaces.BANK_MAIN,
             dstComponent = BANK_TABLIST_ID,
         ) {
             val srcComponent = player.attr[INTERACTING_COMPONENT_CHILD]!!
@@ -99,9 +99,9 @@ class BankTabsPlugin(
          * Moving tabs via the top tabs bar to swap/insert their order.
          */
         onComponentToComponentItemSwap(
-            srcInterfaceId = BANK_INTERFACE_ID,
+            srcInterfaceId = Interfaces.BANK_MAIN,
             srcComponent = BANK_TABLIST_ID,
-            dstInterfaceId = BANK_INTERFACE_ID,
+            dstInterfaceId = Interfaces.BANK_MAIN,
             dstComponent = BANK_TABLIST_ID,
         ) {
             val container = player.bank
@@ -123,7 +123,7 @@ class BankTabsPlugin(
             }
             val srcSize = player.getVarbit(BANK_TAB_ROOT_VARBIT + srcTab)
             val dstSize = player.getVarbit(BANK_TAB_ROOT_VARBIT + dstTab)
-            val insertMode = player.getVarbit(REARRANGE_MODE_VARBIT) == 1
+            val insertMode = player.getVarbit(Varbits.INSERTMODE) == 1
             if (insertMode) {
                 if (dstTab < srcTab) { // insert each of the items in srcTab directly before dstTab moving index up each time to account for shifts
                     var destination = startPoint(player, dstTab)
