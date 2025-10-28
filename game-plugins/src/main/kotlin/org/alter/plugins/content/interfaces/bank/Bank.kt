@@ -70,7 +70,7 @@ object Bank {
                      * definition.
                      */
                     if (def.placeholderLink > 0) {
-                        p.bank[i] = Item(def.placeholderLink, -2)
+                        p.bank[i] = Item(def.placeholderLink, 0)
                     }
                 }
             }
@@ -274,7 +274,7 @@ object Bank {
         item: Item,
     ): Int {
         val def = item.toUnnoted().getDef()
-        val slot = if (def.placeholderLink > 0) indexOfFirst { it?.id == def.placeholderLink && it.amount == -2 } else -1
+        val slot = if (def.placeholderLink > 0) indexOfFirst { it?.id == def.placeholderLink && it.amount == 0 } else -1
         if (slot != -1) {
             this[slot] = null
         }
