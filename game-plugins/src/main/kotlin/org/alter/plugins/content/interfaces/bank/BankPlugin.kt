@@ -302,7 +302,7 @@ class BankPlugin(
                  * Placeholders' "release" option uses the same option
                  * as "withdraw-x" would.
                  */
-                if (item.amount == -2) {
+                if (item.amount == 0) {
                     player.bank[slot] = null
                     return@p
                 }
