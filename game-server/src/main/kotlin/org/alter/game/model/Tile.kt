@@ -5,6 +5,7 @@ import org.alter.game.model.region.Chunk
 import org.alter.game.model.region.ChunkCoords
 import kotlin.math.abs
 import kotlin.math.max
+import kotlin.random.Random
 
 /**
  * A 3D point in the world. It wraps an internal bit-packed integer that
@@ -190,6 +191,8 @@ value class Tile(val coordinate: Int) {
 
     operator fun plus(other: Tile): Tile = Tile(x + other.x, z + other.z, height + other.height)
 
+    fun radius(radius: Int): TileArea = TileArea(this, radius)
+
     companion object {
         /**
          * The total amount of height levels that can be used in the game.
@@ -216,4 +219,49 @@ value class Tile(val coordinate: Int) {
             return Tile(x, z)
         }
     }
+}
+
+data class TileArea(val center: Tile, val radius: Int) : Iterable<Tile> {
+
+    val minX: Int get() = center.x - radius
+    val maxX: Int get() = center.x + radius
+    val minZ: Int get() = center.z - radius
+    val maxZ: Int get() = center.z + radius
+    val height: Int get() = center.height
+
+    /**
+     * Returns all tiles within this square area.
+     */
+    val tiles: List<Tile> by lazy {
+        buildList {
+            for (x in minX..maxX) {
+                for (z in minZ..maxZ) {
+                    add(Tile(x, z, height))
+                }
+            }
+        }
+    }
+
+    override fun iterator(): Iterator<Tile> = tiles.iterator()
+
+    /**
+     * Checks if a tile is inside this area.
+     */
+    operator fun contains(tile: Tile): Boolean {
+        return tile.height == height &&
+                tile.x in minX..maxX &&
+                tile.z in minZ..maxZ
+    }
+
+    /**
+     * Returns a random tile within this area.
+     */
+    fun random(random: Random = Random): Tile {
+        val x = random.nextInt(minX, maxX + 1)
+        val z = random.nextInt(minZ, maxZ + 1)
+        return Tile(x, z, height)
+    }
+
+    override fun toString(): String =
+        "TileArea(center=$center, radius=$radius, size=${tiles.size})"
 }

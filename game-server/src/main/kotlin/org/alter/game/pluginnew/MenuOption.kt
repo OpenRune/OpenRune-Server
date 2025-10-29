@@ -1,12 +1,13 @@
 package org.alter.game.pluginnew
 
 enum class MenuOption(val id: Int) {
-    OP1(0),
-    OP2(1),
-    OP3(2),
-    OP4(3),
-    OP5(4),
-    OP6(5),
+    OP0(0),
+    OP1(1),
+    OP2(2),
+    OP3(3),
+    OP4(4),
+    OP5(5),
+    OP6(6),
     OP7(7),
     OP8(8),
     OP9(9),

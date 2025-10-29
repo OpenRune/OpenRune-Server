@@ -614,7 +614,7 @@ open class Player(world: World) : Pawn(world) {
         write(MessageGame(type = 0, message = message))
     }
 
-    internal fun playSound(
+    fun playSound(
         id: Int,
         volume: Int = 1,
         delay: Int = 0,

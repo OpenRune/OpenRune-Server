@@ -3,6 +3,7 @@ package org.alter.plugins.content.magic
 import dev.openrune.ServerCacheManager.getAnim
 import org.alter.api.ext.getWildernessLevel
 import org.alter.api.ext.message
+import org.alter.api.ext.prepareForTeleport
 import org.alter.game.model.LockState
 import org.alter.game.model.Tile
 import org.alter.game.model.entity.Pawn
@@ -25,11 +26,6 @@ fun Player.canTeleport(type: TeleportType): Boolean {
     }
 
     return true
-}
-
-fun Pawn.prepareForTeleport() {
-    resetInteractions()
-    clearHits()
 }
 
 fun Pawn.teleport(

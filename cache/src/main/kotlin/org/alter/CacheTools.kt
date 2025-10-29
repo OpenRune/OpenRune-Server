@@ -40,7 +40,6 @@ fun downloadRev(type : TaskType) {
     logger.error { "Using Revision: $rev" }
 
     val tasks : List<CacheTask> = listOf(
-        PackConfig(File("../data/raw-cache/configs/")),
         PackServerConfig(),
     ).toMutableList()
 

@@ -12,6 +12,11 @@ import java.util.concurrent.ConcurrentHashMap
 fun <K, V> DbHelper.column(name: String, type: VarTypeImpl<K, V>): V =
     getNValue(name, type, 0)
 
+
+fun <K, V> DbHelper.columnOptional(name: String, type: VarTypeImpl<K, V>): V? =
+    getNValueOrNull(name, type, 0)
+
+
 fun row(row: String) = DbHelper.row(row)
 
 /**
@@ -42,6 +47,41 @@ fun <K1, V1, K2, V2> DbHelper.multiColumn(
     return result
 }
 
+fun <K1, V1, K2, V2> DbHelper.multiColumnOptional(
+    columnName: String,
+    type1: VarTypeImpl<K1, V1>,
+    type2: VarTypeImpl<K2, V2>
+): List<EnumPair<V1?, V2?>> {
+    val column = try {
+        getColumn(columnName)
+    } catch (_: Exception) {
+        return emptyList()
+    }
+
+    val values = column.column.values ?: return emptyList()
+    val result = mutableListOf<EnumPair<V1?, V2?>>()
+
+    var i = 0
+    while (i < values.size - 1) {
+        val v1 = try {
+            column.get(i, type1) as V1
+        } catch (_: Exception) {
+            null
+        }
+
+        val v2 = try {
+            column.get(i + 1, type2) as V2
+        } catch (_: Exception) {
+            null
+        }
+
+        result.add(EnumPair(v1, v2))
+        i += 2
+    }
+
+    return result
+}
+
 @Suppress("UNCHECKED_CAST")
 class DbHelper private constructor(private val row: DBRowType) {
 
@@ -50,6 +90,15 @@ class DbHelper private constructor(private val row: DBRowType) {
 
     override fun toString(): String =
         "DbHelper(id=$id, table=$tableId, columns=${row.columns.keys.joinToString()})"
+
+    fun <K, V> DbHelper.getNValueOrNull(name: String, type: VarTypeImpl<K, V>, index: Int = 0): V? =
+        try {
+            val value = getColumn(name).get(index, type)
+            @Suppress("UNCHECKED_CAST")
+            if (type is BooleanVarType) type.convertToAny(value) as V else type.convertTo(value as K)
+        } catch (_: Exception) {
+            null
+        }
 
     fun <K, V> getNValue(name: String, type: VarTypeImpl<K, V>, index: Int): V {
         val value = getColumn(name).get(index, type)
