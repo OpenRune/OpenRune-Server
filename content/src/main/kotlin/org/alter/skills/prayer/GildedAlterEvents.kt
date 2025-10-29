@@ -5,9 +5,6 @@ import org.alter.api.Skills
 import org.alter.api.ext.message
 import org.alter.api.ext.playSound
 import org.alter.api.ext.random
-import org.alter.game.fs.DBHelper
-import org.alter.game.fs.EnumManager
-import org.alter.game.fs.EnumManager.forEachTyped
 import org.alter.game.model.Area
 import org.alter.game.model.Tile
 import org.alter.game.model.TileGraphic
@@ -29,20 +26,16 @@ class GildedAlterEvents : PluginEvent() {
     }
 
     override fun init() {
-        EnumManager.lookup("enums.bone_data").forEachTyped<Int, Int> { boneId, dbRowId ->
-            val row = DBHelper.getRow(dbRowId)
-            val xp = row.column("columns.skill_prayer:exp").getInt()
-            val isAshes = row.column("columns.skill_prayer:ashes").getBoolean()
-
-            if (!isAshes) {
+        Bones.bones.forEach { bone ->
+            if (!bone.isAshes) {
                 on<ItemOnObject> {
-                    where { item.id == boneId && gameObject.id == "objects.chaosaltar".asRSCM() }
-                    then { startAlter(player, boneId, xp, true, gameObject) }
+                    where { item.id == bone.id && gameObject.id == "objects.chaosaltar".asRSCM() }
+                    then { startAlter(player, bone.id, bone.xp, true, gameObject) }
                 }
 
                 on<ItemOnObject> {
-                    where { item.id == boneId && GILDED_ALTERS.contains(gameObject.id) }
-                    then { startAlter(player, boneId, xp, false, gameObject) }
+                    where { item.id == bone.id && GILDED_ALTERS.contains(gameObject.id) }
+                    then { startAlter(player, bone.id, bone.xp, false, gameObject) }
                 }
             }
         }

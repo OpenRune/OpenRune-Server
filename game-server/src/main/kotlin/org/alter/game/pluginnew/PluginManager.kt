@@ -32,7 +32,7 @@ object PluginManager {
                         val clazz = classInfo.loadClass(PluginEvent::class.java)
                         val ctor = clazz.getDeclaredConstructor()
                         val instance = ctor.newInstance()
-                        
+
                         val initMethod = clazz.methods.find { it.name == "init" && it.parameterCount == 0 }
                         if (initMethod != null) {
                             initMethod.invoke(instance)

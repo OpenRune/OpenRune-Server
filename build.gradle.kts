@@ -12,7 +12,7 @@ allprojects {
     version = "0.0.5"
 
     repositories {
-        mavenLocal()
+        //mavenLocal()
         mavenCentral()
         maven("https://repo.maven.apache.org/maven2")
         maven("https://jitpack.io")
@@ -22,7 +22,7 @@ allprojects {
 
     val lib = rootProject.project.libs
     dependencies {
-        implementation("dev.or2:all:2.2.5")
+        implementation("dev.or2:all:2.2.6")
         implementation(lib.kotlin.logging)
         implementation(lib.logback.classic)
         implementation(lib.fastutil)
