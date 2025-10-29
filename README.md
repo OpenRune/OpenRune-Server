@@ -2,7 +2,7 @@
 
 
 # Alter
-[![revision: 234.2][rev-badge]][patch] [![Discord](https://badgen.net/badge/icon/discord?icon=discord&label)](https://discord.com/invite/sAzCuuwkpN) ![jdk-badge] ![](https://tokei.rs/b1/github/AlterRSPS/Alter)
+[![revision: 235][rev-badge]][patch] [![Discord](https://badgen.net/badge/icon/discord?icon=discord&label)](https://discord.com/invite/sAzCuuwkpN) ![jdk-badge] ![](https://tokei.rs/b1/github/AlterRSPS/Alter)
 
 **Alter** is a modified version of [RSMod](https://github.com/Tomm0017/rsmod) a highly flexible user-friendly game server for use with the OSRS client. Implemented in a modular way,
 the framework allows developers to make and create any sort of plugin they wish without having to modify the core game module.
@@ -48,9 +48,9 @@ Due to the plugin capabilities, even owners without programming experience can j
 > config:  
 >   - id: 1  
 >     name: Alter  
->     jav_config_url: https://client.blurite.io/jav_local_234.ws  
+>     jav_config_url: https://client.blurite.io/jav_local_235.ws  
 >     varp_count: 15000  
->     revision: 234.2  
+>     revision: 235  
 >     modulus: YOUR_MODULUS_KEY_HERE  
 > ```  
 > Modulus key will be found inside Alter Project root directory make sure to copy every character, And replace `YOUR_MODULUS_KEY_HERE` inside `proxy-targets.yaml` with your modulus key. For more information on it you can find at: [RSProx-Private-Server-Usage](https://github.com/blurite/rsprox?tab=readme-ov-file#private-server-usage)
@@ -67,6 +67,6 @@ Due to the plugin capabilities, even owners without programming experience can j
 * Credits are given out to everyone who helped out with information or contributed in some form to the project. And can be found in: [Here](https://github.com/AlterRSPS)
 
 [patch]: https://oldschool.runescape.wiki/w/Update:Leagues_V:_Raging_Echos_Rewards_Are_Here
-[rev-badge]: https://img.shields.io/badge/Revision-234.2-blueviolet
+[rev-badge]: https://img.shields.io/badge/Revision-235-blueviolet
 [license-badge]: https://img.shields.io/badge/license-ISC-informational
 [jdk-badge]: https://img.shields.io/badge/JDK-17-blue
