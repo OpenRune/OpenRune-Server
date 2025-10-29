@@ -7,6 +7,7 @@ import dev.openrune.definition.util.VarType
 import org.alter.game.util.vars.BooleanVarType
 import org.alter.game.util.vars.VarTypeImpl
 import org.alter.rscm.RSCM.asRSCM
+import java.util.concurrent.ConcurrentHashMap
 
 fun <K, V> DbHelper.column(name: String, type: VarTypeImpl<K, V>): V =
     getNValue(name, type, 0)
@@ -104,11 +105,67 @@ class DbHelper private constructor(private val row: DBRowType) {
     }
 
     companion object {
+
+        fun table(table: String): List<DbHelper> {
+            require(table.startsWith("tables.")) { "Expected table reference to start with 'tables.', got '$table'" }
+
+            return DbQueryCache.getTable(table) {
+                val tableId = table.asRSCM()
+                ServerCacheManager.getRows()
+                    .asSequence()
+                    .filter { it.value.tableId == tableId }
+                    .map { DbHelper(it.value) }
+                    .distinctBy { it.id }
+                    .toList()
+            }
+        }
+
+        fun <K, V> dbFind(column: String, value: V, type: VarTypeImpl<K, V>): List<DbHelper> {
+            require(column.startsWith("columns.")) { "Expected column reference starting with 'columns.', got '$column'" }
+
+            return DbQueryCache.getColumn(column, value, type) {
+                val tableName = "tables." + column.removePrefix("columns.").substringBefore(':')
+                val tableId = tableName.asRSCM()
+                val columnId = column.asRSCM() and 0xFFFF
+
+                ServerCacheManager.getRows()
+                    .asSequence()
+                    .filter { it.value.tableId == tableId }
+                    .filter { (_, row) ->
+                        val col = row.columns[columnId] ?: return@filter false
+                        val values = col.values ?: return@filter false
+                        values.any { raw -> type.convertTo(raw as K) == value }
+                    }
+                    .map { (_, row) -> DbHelper(row) }
+                    .distinctBy { it.id }
+                    .toList()
+            }
+        }
+
         private fun load(rowId: Int): DbHelper =
             ServerCacheManager.getDbrow(rowId)?.let(::DbHelper)
                 ?: throw NoSuchElementException("DBRow $rowId not found")
 
         fun row(ref: String): DbHelper = load(ref.asRSCM())
         fun row(rowId: Int): DbHelper = load(rowId)
+    }
+}
+
+object DbQueryCache {
+    private val tableCache = ConcurrentHashMap<String, List<DbHelper>>()
+    private val columnCache = ConcurrentHashMap<Triple<String, Any, VarTypeImpl<*, *>>, List<DbHelper>>()
+
+    fun getTable(table: String, supplier: () -> List<DbHelper>): List<DbHelper> {
+        return tableCache.computeIfAbsent(table) { supplier() }
+    }
+
+    fun <K, V> getColumn(column: String, value: V, type: VarTypeImpl<K, V>, supplier: () -> List<DbHelper>): List<DbHelper> {
+        val key = Triple(column, value as Any, type as VarTypeImpl<*, *>)
+        return columnCache.computeIfAbsent(key) { supplier() }
+    }
+
+    fun clear() {
+        tableCache.clear()
+        columnCache.clear()
     }
 }

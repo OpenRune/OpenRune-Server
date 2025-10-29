@@ -2,7 +2,9 @@ package org.alter.skills.prayer
 
 import org.alter.api.ChatMessageType
 import org.alter.api.Skills
-import org.alter.api.ext.*
+import org.alter.api.ext.message
+import org.alter.api.ext.options
+import org.alter.api.ext.playSound
 import org.alter.game.model.LockState
 import org.alter.game.model.entity.Player
 import org.alter.game.model.move.stopMovement
@@ -57,3 +59,4 @@ class PrayerBuryEvents : PluginEvent() {
     }
 
 }
+

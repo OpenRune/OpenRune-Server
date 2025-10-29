@@ -14,6 +14,7 @@ import dev.openrune.filesystem.Cache
 import dev.openrune.tools.PackServerConfig
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.alter.impl.PrayerTable
+import org.alter.impl.TeleTabs
 import java.io.File
 import java.nio.file.Files
 import java.nio.file.StandardCopyOption
@@ -53,7 +54,10 @@ fun downloadRev(type : TaskType) {
             builder.environment(CacheEnvironment.valueOf(rev.third))
 
             val tasksNew = tasks.toMutableList()
-            tasksNew.add(PackDBTables(listOf(PrayerTable.skillTable())))
+            tasksNew.add(PackDBTables(listOf(
+                PrayerTable.skillTable(),
+                TeleTabs.teleTabs()
+            )))
 
             builder.extraTasks(*tasksNew.toTypedArray()).build().initialize()
 
@@ -69,7 +73,10 @@ fun downloadRev(type : TaskType) {
             builder.revision(rev.first)
 
             val tasksNew = tasks.toMutableList()
-            tasksNew.add(PackDBTables(listOf(PrayerTable.skillTable())))
+            tasksNew.add(PackDBTables(listOf(
+                PrayerTable.skillTable(),
+                TeleTabs.teleTabs()
+            )))
 
             builder.extraTasks(*tasksNew.toTypedArray()).build().initialize()
 
