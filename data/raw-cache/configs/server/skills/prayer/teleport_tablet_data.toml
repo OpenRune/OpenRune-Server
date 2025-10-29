@@ -1,0 +1,48 @@
+[[enum]]
+id="enums.teleport_tablets"
+keyType="OBJ"
+valueType="DBROW"
+
+default = "dbrows.bones"
+
+[enum.values]
+"items.varrock_teleport_tablet" = "dbrows.varrock_teleport_tablet"
+"items.lumbridge_teleport_tablet" = "dbrows.lumbridge_teleport_tablet"
+"items.falador_teleport_tablet" = "dbrows.falador_teleport_tablet"
+"items.camelot_teleport_tablet" = "dbrows.camelot_teleport_tablet"
+"items.kourend_castle_teleport_tablet" = "dbrows.kourend_castle_teleport_tablet"
+"items.ardougne_teleport_tablet" = "dbrows.ardougne_teleport_tablet"
+"items.civitas_illa_fortis_teleport_tablet" = "dbrows.civitas_illa_fortis_teleport_tablet"
+"items.watchtower_teleport_tablet" = "dbrows.watchtower_teleport_tablet"
+"items.teleport_to_house_tablet" = "dbrows.teleport_to_house_tablet"
+
+
+"items.arceuus_library_teleport_tablet" = "dbrows.arceuus_library_teleport_tablet"
+"items.draynor_manor_teleport_tablet" = "dbrows.draynor_manor_teleport_tablet"
+"items.battlefront_teleport_tablet" = "dbrows.battlefront_teleport_tablet"
+"items.mind_altar_teleport_tablet" = "dbrows.mind_altar_teleport_tablet"
+"items.salve_graveyard_teleport_tablet" = "dbrows.salve_graveyard_teleport_tablet"
+"items.fenkenstrains_castle_teleport_tablet" = "dbrows.fenkenstrains_castle_teleport_tablet"
+"items.west_ardougne_teleport_tablet" = "dbrows.west_ardougne_teleport_tablet"
+"items.harmony_island_teleport_tablet" = "dbrows.harmony_island_teleport_tablet"
+"items.cemetery_teleport_tablet" = "dbrows.cemetery_teleport_tablet"
+"items.barrows_teleport_tablet" = "dbrows.barrows_teleport_tablet"
+"items.ape_atoll_teleport_tablet" = "dbrows.ape_atoll_teleport_tablet"
+
+"items.paddewwa_teleport_tablet" = "dbrows.paddewwa_teleport_tablet"
+"items.senntisten_teleport_tablet" = "dbrows.senntisten_teleport_tablet"
+"items.kharyrll_teleport_tablet" = "dbrows.kharyrll_teleport_tablet"
+"items.lassar_teleport_tablet" = "dbrows.lassar_teleport_tablet"
+"items.dareeyak_teleport_tablet" = "dbrows.dareeyak_teleport_tablet"
+"items.carrallanger_teleport_tablet" = "dbrows.carrallanger_teleport_tablet"
+"items.annakarl_teleport_tablet" = "dbrows.annakarl_teleport_tablet"
+"items.ghorrock_teleport_tablet" = "dbrows.ghorrock_teleport_tablet"
+
+"items.moonclan_teleport_tablet" = "dbrows.moonclan_teleport_tablet"
+"items.ourania_teleport_tablet" = "dbrows.ourania_teleport_tablet"
+"items.waterbirth_teleport_tablet" = "dbrows.waterbirth_teleport_tablet"
+"items.barbarian_teleport_tablet" = "dbrows.barbarian_teleport_tablet"
+"items.khazard_teleport_tablet" = "dbrows.khazard_teleport_tablet"
+"items.fishing_guild_teleport_tablet" = "dbrows.fishing_guild_teleport_tablet"
+"items.catherby_teleport_tablet" = "dbrows.catherby_teleport_tablet"
+"items.ice_plateau_teleport_tablet" = "dbrows.ice_plateau_teleport_tablet"
