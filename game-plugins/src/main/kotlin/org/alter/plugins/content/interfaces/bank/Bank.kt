@@ -8,7 +8,6 @@ import org.alter.game.model.World
 import org.alter.game.model.container.ItemContainer
 import org.alter.game.model.entity.Player
 import org.alter.game.model.item.Item
-import org.alter.plugins.content.interfaces.bank.BankTabs.SELECTED_TAB_VARBIT
 import org.alter.plugins.content.interfaces.bank.BankTabs.getTabsItems
 import org.alter.plugins.content.interfaces.equipstats.EquipmentStats
 import org.alter.plugins.content.interfaces.equipstats.EquipmentStats.bonusTextMap
@@ -57,7 +56,7 @@ object Bank {
                      * definition.
                      */
                     if (def.placeholderLink > 0) {
-                        p.bank[i] = Item(def.placeholderLink, -2)
+                        p.bank[i] = Item(def.placeholderLink, 0)
                     }
                 }
             }
@@ -87,7 +86,7 @@ object Bank {
             if (deposited >= amount) {
                 break
             }
-            val curTab = player.getVarbit(SELECTED_TAB_VARBIT)
+            val curTab = player.getVarbit(Varbits.CURRENTTAB)
             val hasEmptySlot = getTabsItems(player, curTab).contains(null)
 
             val left = amount - deposited
@@ -261,7 +260,7 @@ object Bank {
         item: Item,
     ): Int {
         val def = item.toUnnoted().getDef()
-        val slot = if (def.placeholderLink > 0) indexOfFirst { it?.id == def.placeholderLink && it.amount == -2 } else -1
+        val slot = if (def.placeholderLink > 0) indexOfFirst { it?.id == def.placeholderLink && it.amount == 0 } else -1
         if (slot != -1) {
             this[slot] = null
         }

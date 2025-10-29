@@ -18,22 +18,18 @@ import org.alter.game.model.queue.*
 import org.alter.game.model.shop.*
 import org.alter.game.model.timer.*
 import org.alter.game.plugin.*
-import org.alter.plugins.content.interfaces.bank.config.Interfaces.BANK_MAIN
-import org.alter.plugins.content.interfaces.bank.config.Components.BANK_MAINTAB_COMPONENT
-import org.alter.plugins.content.interfaces.bank.config.Interfaces.BANKSIDE
 import org.alter.plugins.content.interfaces.bank.Bank.deposit
 import org.alter.plugins.content.interfaces.bank.Bank.insert
 import org.alter.plugins.content.interfaces.bank.Bank.removePlaceholder
 import org.alter.plugins.content.interfaces.bank.Bank.withdraw
-import org.alter.plugins.content.interfaces.bank.BankTabs.BANK_TAB_ROOT_VARBIT
-import org.alter.plugins.content.interfaces.bank.BankTabs.SELECTED_TAB_VARBIT
 import org.alter.plugins.content.interfaces.bank.BankTabs.dropToTab
 import org.alter.plugins.content.interfaces.bank.BankTabs.getCurrentTab
 import org.alter.plugins.content.interfaces.bank.BankTabs.numTabsUnlocked
 import org.alter.plugins.content.interfaces.bank.BankTabs.shiftTabs
-import org.alter.plugins.content.interfaces.bank.config.Components
 import org.alter.plugins.content.interfaces.bank.config.Interfaces
+import org.alter.plugins.content.interfaces.bank.config.Components
 import org.alter.plugins.content.interfaces.bank.config.Varbits
+
 
 class BankPlugin(
     r: PluginRepository,
@@ -45,12 +41,12 @@ class BankPlugin(
         onInterfaceOpen(Interfaces.BANK_MAIN) {
             var slotOffset = 0
             for (tab in 1..9) {
-                val size = player.getVarbit(BANK_TAB_ROOT_VARBIT + tab)
+                val size = player.getVarbit(Varbits.TAB_DISPLAY + tab)
                 for (slot in slotOffset until slotOffset + size) {
                     if (player.bank[slot] == null) {
-                        player.setVarbit(BANK_TAB_ROOT_VARBIT + tab, player.getVarbit(BANK_TAB_ROOT_VARBIT + tab) - 1)
+                        player.setVarbit(Varbits.TAB_DISPLAY + tab, player.getVarbit(Varbits.TAB_DISPLAY + tab) - 1)
                         // check for empty tab shift
-                        if (player.getVarbit(BANK_TAB_ROOT_VARBIT + tab) == 0 && tab <= numTabsUnlocked(player)) {
+                        if (player.getVarbit(Varbits.TAB_DISPLAY + tab) == 0 && tab <= numTabsUnlocked(player)) {
                             shiftTabs(player, tab)
                         }
                     }
@@ -104,7 +100,7 @@ class BankPlugin(
 
             player.playSound(Sound.FIREBREATH)
             player.bank.remove(destroyItems, assureFullRemoval = true)
-            player.setVarbit(BANK_TAB_ROOT_VARBIT + tabAffected, player.getVarbit(BANK_TAB_ROOT_VARBIT + tabAffected) - 1)
+            player.setVarbit(Varbits.TAB_DISPLAY + tabAffected, player.getVarbit(Varbits.TAB_DISPLAY + tabAffected) - 1)
             player.bank.shift()
         }
 
@@ -138,7 +134,7 @@ class BankPlugin(
 
                 var toSlot = to.removePlaceholder(world, item)
                 var placeholder = true
-                val curTab = player.getVarbit(SELECTED_TAB_VARBIT)
+                val curTab = player.getVarbit(Varbits.CURRENTTAB)
                 if (toSlot == -1) {
                     placeholder = false
                     toSlot = to.getLastFreeSlot()
@@ -229,7 +225,7 @@ class BankPlugin(
         }
 
 // withdraw
-        onButton(interfaceId = Interfaces.BANK_MAIN, component = BANK_MAINTAB_COMPONENT) p@{
+        onButton(interfaceId = Interfaces.BANK_MAIN, component = Components.BANK_MAINTAB_COMPONENT) p@{
             val opt = player.getInteractingOption()
             val slot = player.getInteractingSlot()
 
@@ -346,9 +342,9 @@ class BankPlugin(
          */
         onComponentToComponentItemSwap(
             srcInterfaceId = Interfaces.BANK_MAIN,
-            srcComponent = BANK_MAINTAB_COMPONENT,
+            srcComponent = Components.BANK_MAINTAB_COMPONENT,
             dstInterfaceId = Interfaces.BANK_MAIN,
-            dstComponent = BANK_MAINTAB_COMPONENT,
+            dstComponent = Components.BANK_MAINTAB_COMPONENT,
         ) {
             val srcSlot = player.attr[INTERACTING_ITEM_SLOT]!!
             val dstSlot = player.attr[OTHER_ITEM_SLOT_ATTR]!!
@@ -379,11 +375,11 @@ class BankPlugin(
                         }
 
                         if (dstTab != 0) {
-                            player.setVarbit(BANK_TAB_ROOT_VARBIT + dstTab, player.getVarbit(BANK_TAB_ROOT_VARBIT + dstTab) + 1)
+                            player.setVarbit(Varbits.TAB_DISPLAY + dstTab, player.getVarbit(Varbits.TAB_DISPLAY + dstTab) + 1)
                         }
                         if (curTab != 0) {
-                            player.setVarbit(BANK_TAB_ROOT_VARBIT + curTab, player.getVarbit(BANK_TAB_ROOT_VARBIT + curTab) - 1)
-                            if (player.getVarbit(BANK_TAB_ROOT_VARBIT + curTab) == 0 && curTab <= numTabsUnlocked(player)) {
+                            player.setVarbit(Varbits.TAB_DISPLAY + curTab, player.getVarbit(Varbits.TAB_DISPLAY + curTab) - 1)
+                            if (player.getVarbit(Varbits.TAB_DISPLAY + curTab) == 0 && curTab <= numTabsUnlocked(player)) {
                                 shiftTabs(player, curTab)
                             }
                         }

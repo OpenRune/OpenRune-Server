@@ -16,6 +16,7 @@ import org.alter.game.model.queue.*
 import org.alter.game.model.shop.*
 import org.alter.game.model.timer.*
 import org.alter.game.plugin.*
+import org.alter.plugins.content.interfaces.bank.config.Varbits
 
 class CommandsPlugin(
     r: PluginRepository,
@@ -34,8 +35,8 @@ class CommandsPlugin(
          */
         onCommand("tabreset") {
             for (tab in 1..9)
-                player.setVarbit(BankTabs.BANK_TAB_ROOT_VARBIT + tab, 0)
-            player.setVarbit(BankTabs.SELECTED_TAB_VARBIT, 0)
+                player.setVarbit(Varbits.TAB_DISPLAY + tab, 0)
+            player.setVarbit(Varbits.CURRENTTAB, 0)
         }
     }
 }

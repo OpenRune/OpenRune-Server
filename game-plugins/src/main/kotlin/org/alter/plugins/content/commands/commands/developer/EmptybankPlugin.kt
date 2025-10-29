@@ -17,6 +17,7 @@ import org.alter.game.model.shop.*
 import org.alter.game.model.timer.*
 import org.alter.game.plugin.*
 import org.alter.plugins.content.interfaces.bank.BankTabs
+import org.alter.plugins.content.interfaces.bank.config.Varbits
 
 class EmptybankPlugin(
     r: PluginRepository,
@@ -28,7 +29,7 @@ class EmptybankPlugin(
         onCommand("emptybank", Privilege.DEV_POWER, description = "Empty your bank") {
             player.bank.removeAll()
             for (i in 1..9) {
-                player.setVarbit(BankTabs.BANK_TAB_ROOT_VARBIT + i, 0)
+                player.setVarbit(Varbits.TAB_DISPLAY + i, 0)
             }
         }
     }
