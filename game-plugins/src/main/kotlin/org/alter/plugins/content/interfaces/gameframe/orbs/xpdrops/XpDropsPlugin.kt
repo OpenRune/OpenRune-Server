@@ -1,20 +1,12 @@
-package org.alter.plugins.content.interfaces.gameframe.xpdrops
+package org.alter.plugins.content.interfaces.gameframe.orbs.xpdrops
 
 import org.alter.api.*
 import org.alter.api.cfg.*
-import org.alter.api.dsl.*
 import org.alter.api.ext.*
 import org.alter.game.*
 import org.alter.game.model.*
-import org.alter.game.model.attr.*
-import org.alter.game.model.container.*
-import org.alter.game.model.container.key.*
-import org.alter.game.model.entity.*
-import org.alter.game.model.item.*
-import org.alter.game.model.queue.*
-import org.alter.game.model.shop.*
-import org.alter.game.model.timer.*
 import org.alter.game.plugin.*
+import org.alter.plugins.content.interfaces.gameframe.config.Orbs
 import org.alter.plugins.content.interfaces.xpdrops.XpSettings
 
 class XpDropsPlugin(
@@ -24,19 +16,18 @@ class XpDropsPlugin(
 ) : KotlinPlugin(r, world, server) {
         
     init {
-        val INTERFACE_ID = 122
 
-        onButton(interfaceId = 160, component = 5) {
+        onButton(interfaceId = Orbs.ORBS_UNIVERSE, component = Orbs.XP_ORB) {
             val option = player.getInteractingOption()
             player.playSound(Sound.INTERFACE_SELECT1)
 
             when (option) {
                 1 -> {
-                    player.toggleVarbit(Varbit.XP_DROPS_VISIBLE_VARBIT)
-                    if (player.getVarbit(Varbit.XP_DROPS_VISIBLE_VARBIT) == 1) {
-                        player.openInterface(INTERFACE_ID, InterfaceDestination.XP_COUNTER)
+                    player.toggleVarbit(Orbs.XPDROPSENABLED)
+                    if (player.getVarbit(Orbs.XPDROPSENABLED) == 1) {
+                        player.openInterface(Orbs.XP_DROPS, InterfaceDestination.XP_COUNTER)
                     } else {
-                        player.closeInterface(INTERFACE_ID)
+                        player.closeInterface(Orbs.XP_DROPS)
                     }
                 }
                 2 -> {
