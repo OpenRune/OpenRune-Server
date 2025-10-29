@@ -18,26 +18,18 @@ import org.alter.game.model.queue.*
 import org.alter.game.model.shop.*
 import org.alter.game.model.timer.*
 import org.alter.game.plugin.*
-import org.alter.plugins.content.interfaces.bank.Bank.ALWAYS_PLACEHOLD_VARBIT
-import org.alter.plugins.content.interfaces.bank.Bank.BANK_INTERFACE_ID
-import org.alter.plugins.content.interfaces.bank.Bank.BANK_MAINTAB_COMPONENT
-import org.alter.plugins.content.interfaces.bank.Bank.INCINERATOR_VARBIT
-import org.alter.plugins.content.interfaces.bank.Bank.INV_INTERFACE_CHILD
-import org.alter.plugins.content.interfaces.bank.Bank.INV_INTERFACE_ID
-import org.alter.plugins.content.interfaces.bank.Bank.LAST_X_INPUT
-import org.alter.plugins.content.interfaces.bank.Bank.QUANTITY_VARBIT
-import org.alter.plugins.content.interfaces.bank.Bank.REARRANGE_MODE_VARBIT
-import org.alter.plugins.content.interfaces.bank.Bank.WITHDRAW_AS_VARBIT
 import org.alter.plugins.content.interfaces.bank.Bank.deposit
 import org.alter.plugins.content.interfaces.bank.Bank.insert
 import org.alter.plugins.content.interfaces.bank.Bank.removePlaceholder
 import org.alter.plugins.content.interfaces.bank.Bank.withdraw
-import org.alter.plugins.content.interfaces.bank.BankTabs.BANK_TAB_ROOT_VARBIT
-import org.alter.plugins.content.interfaces.bank.BankTabs.SELECTED_TAB_VARBIT
 import org.alter.plugins.content.interfaces.bank.BankTabs.dropToTab
 import org.alter.plugins.content.interfaces.bank.BankTabs.getCurrentTab
 import org.alter.plugins.content.interfaces.bank.BankTabs.numTabsUnlocked
 import org.alter.plugins.content.interfaces.bank.BankTabs.shiftTabs
+import org.alter.plugins.content.interfaces.bank.config.Interfaces
+import org.alter.plugins.content.interfaces.bank.config.Components
+import org.alter.plugins.content.interfaces.bank.config.Varbits
+
 
 class BankPlugin(
     r: PluginRepository,
@@ -46,15 +38,15 @@ class BankPlugin(
 ) : KotlinPlugin(r, world, server) {
 
     init {
-        onInterfaceOpen(BANK_INTERFACE_ID) {
+        onInterfaceOpen(Interfaces.BANK_MAIN) {
             var slotOffset = 0
             for (tab in 1..9) {
-                val size = player.getVarbit(BANK_TAB_ROOT_VARBIT + tab)
+                val size = player.getVarbit(Varbits.TAB_DISPLAY + tab)
                 for (slot in slotOffset until slotOffset + size) {
                     if (player.bank[slot] == null) {
-                        player.setVarbit(BANK_TAB_ROOT_VARBIT + tab, player.getVarbit(BANK_TAB_ROOT_VARBIT + tab) - 1)
+                        player.setVarbit(Varbits.TAB_DISPLAY + tab, player.getVarbit(Varbits.TAB_DISPLAY + tab) - 1)
                         // check for empty tab shift
-                        if (player.getVarbit(BANK_TAB_ROOT_VARBIT + tab) == 0 && tab <= numTabsUnlocked(player)) {
+                        if (player.getVarbit(Varbits.TAB_DISPLAY + tab) == 0 && tab <= numTabsUnlocked(player)) {
                             shiftTabs(player, tab)
                         }
                     }
@@ -64,56 +56,56 @@ class BankPlugin(
             player.bank.shift()
         }
 
-        onInterfaceClose(BANK_INTERFACE_ID) {
+        onInterfaceClose(Interfaces.BANK_MAIN) {
             player.closeInterface(dest = InterfaceDestination.TAB_AREA)
             player.closeInputDialog()
         }
 
         intArrayOf(19, 21).forEachIndexed { index, button ->
-            onButton(interfaceId = BANK_INTERFACE_ID, component = button) {
-                player.setVarbit(REARRANGE_MODE_VARBIT, index)
+            onButton(interfaceId = Interfaces.BANK_MAIN, component = button) {
+                player.setVarbit(Varbits.INSERTMODE, index)
             }
         }
 
         intArrayOf(24, 26).forEachIndexed { index, button ->
-            onButton(interfaceId = BANK_INTERFACE_ID, component = button) {
-                player.setVarbit(WITHDRAW_AS_VARBIT, index)
+            onButton(interfaceId = Interfaces.BANK_MAIN, component = button) {
+                player.setVarbit(Varbits.WITHDRAW_NOTES, index)
             }
         }
 
-        onButton(interfaceId = BANK_INTERFACE_ID, component = 40) {
-            player.toggleVarbit(ALWAYS_PLACEHOLD_VARBIT)
+        onButton(interfaceId = Interfaces.BANK_MAIN, component = 40) {
+            player.toggleVarbit(Varbits.LEAVEPLACEHOLDERS)
         }
 
         intArrayOf(30,32,34,36,38).forEach { quantity ->
-            onButton(interfaceId = BANK_INTERFACE_ID, component = quantity) {
+            onButton(interfaceId = Interfaces.BANK_MAIN, component = quantity) {
                 val state = (quantity - 27) / 2 // wat?
                 player.message("You clicked? $quantity")
                 player.message("You clicked? Also state: $state")
-                player.setVarbit(QUANTITY_VARBIT, state - 1)
+                player.setVarbit(Varbits.QUANITY_TYPE, state - 1)
             }
         }
 
         /**
          * Added incinerator support.
          */
-        onButton(interfaceId = BANK_INTERFACE_ID, component = 53) {
-            player.toggleVarbit(INCINERATOR_VARBIT)
+        onButton(interfaceId = Interfaces.BANK_MAIN, component = 53) {
+            player.toggleVarbit(Varbits.SHOW_INCINERATOR)
         }
 
-        onButton(interfaceId = BANK_INTERFACE_ID, component = 47) {
+        onButton(interfaceId = Interfaces.BANK_MAIN, component = Components.DEPOSIT_WORN) {
             val slot = player.getInteractingSlot() - 1
             val destroyItems = player.bank[slot]!!
             val tabAffected = getCurrentTab(player, slot)
 
             player.playSound(Sound.FIREBREATH)
             player.bank.remove(destroyItems, assureFullRemoval = true)
-            player.setVarbit(BANK_TAB_ROOT_VARBIT + tabAffected, player.getVarbit(BANK_TAB_ROOT_VARBIT + tabAffected) - 1)
+            player.setVarbit(Varbits.TAB_DISPLAY + tabAffected, player.getVarbit(Varbits.TAB_DISPLAY + tabAffected) - 1)
             player.bank.shift()
         }
 
 // bank inventory
-        onButton(interfaceId = BANK_INTERFACE_ID, component = 44) {
+        onButton(interfaceId = Interfaces.BANK_MAIN, component = 44) {
             val from = player.inventory
             val to = player.bank
             for (i in 0 until from.capacity) {
@@ -130,7 +122,7 @@ class BankPlugin(
             }
         }
 // bank equipment
-        onButton(interfaceId = BANK_INTERFACE_ID, component = 46) {
+        onButton(interfaceId = Interfaces.BANK_MAIN, component = 46) {
             val from = player.equipment
             val to = player.bank
 
@@ -142,7 +134,7 @@ class BankPlugin(
 
                 var toSlot = to.removePlaceholder(world, item)
                 var placeholder = true
-                val curTab = player.getVarbit(SELECTED_TAB_VARBIT)
+                val curTab = player.getVarbit(Varbits.CURRENTTAB)
                 if (toSlot == -1) {
                     placeholder = false
                     toSlot = to.getLastFreeSlot()
@@ -168,7 +160,7 @@ class BankPlugin(
         }
 
 // deposit
-        onButton(interfaceId = INV_INTERFACE_ID, component = INV_INTERFACE_CHILD) p@{
+        onButton(interfaceId = Interfaces.BANKSIDE, component = Components.BANKSIDE_CHILD) p@{
             val opt = player.getInteractingOption()
             val slot = player.getInteractingSlot()
 
@@ -179,7 +171,7 @@ class BankPlugin(
                 return@p
             }
 
-            val quantityVarbit = player.getVarbit(QUANTITY_VARBIT)
+            val quantityVarbit = player.getVarbit(Varbits.QUANITY_TYPE)
             var amount: Int
 
             when {
@@ -189,7 +181,7 @@ class BankPlugin(
                             2 -> 1
                             4 -> 5
                             5 -> 10
-                            6 -> player.getVarbit(LAST_X_INPUT)
+                            6 -> player.getVarbit(Varbits.REQUESTEDQUANTITY)
                             7 -> -1 // X
                             8 -> 0 // All
                             else -> return@p
@@ -199,7 +191,7 @@ class BankPlugin(
                         when (quantityVarbit) {
                             1 -> 5
                             2 -> 10
-                            3 -> if (player.getVarbit(LAST_X_INPUT) == 0) -1 else player.getVarbit(LAST_X_INPUT)
+                            3 -> if (player.getVarbit(Varbits.REQUESTEDQUANTITY) == 0) -1 else player.getVarbit(Varbits.REQUESTEDQUANTITY)
                             4 -> 0 // All
                             else -> return@p
                         }
@@ -209,7 +201,7 @@ class BankPlugin(
                             3 -> 1
                             4 -> 5
                             5 -> 10
-                            6 -> player.getVarbit(LAST_X_INPUT)
+                            6 -> player.getVarbit(Varbits.REQUESTEDQUANTITY)
                             7 -> -1 // X
                             8 -> 0 // All
                             else -> return@p
@@ -223,7 +215,7 @@ class BankPlugin(
                 player.queue(TaskPriority.WEAK) {
                     amount = inputInt(player, "How many would you like to bank?")
                     if (amount > 0) {
-                        player.setVarbit(LAST_X_INPUT, amount)
+                        player.setVarbit(Varbits.REQUESTEDQUANTITY, amount)
                         deposit(player, item.id, amount)
                     }
                 }
@@ -233,7 +225,7 @@ class BankPlugin(
         }
 
 // withdraw
-        onButton(interfaceId = BANK_INTERFACE_ID, component = BANK_MAINTAB_COMPONENT) p@{
+        onButton(interfaceId = Interfaces.BANK_MAIN, component = Components.BANK_MAINTAB_COMPONENT) p@{
             val opt = player.getInteractingOption()
             val slot = player.getInteractingSlot()
 
@@ -247,7 +239,7 @@ class BankPlugin(
             var amount: Int
             var placehold = false
 
-            val quantityVarbit = player.getVarbit(QUANTITY_VARBIT)
+            val quantityVarbit = player.getVarbit(Varbits.QUANITY_TYPE)
             when {
                 quantityVarbit == 0 ->
                     amount =
@@ -255,7 +247,7 @@ class BankPlugin(
                             1 -> 1
                             3 -> 5
                             4 -> 10
-                            5 -> player.getVarbit(LAST_X_INPUT)
+                            5 -> player.getVarbit(Varbits.REQUESTEDQUANTITY)
                             6 -> -1 // X
                             7 -> item.amount
                             8 -> item.amount - 1
@@ -271,7 +263,7 @@ class BankPlugin(
                             0 -> 1
                             1 -> 5
                             2 -> 10
-                            3 -> if (player.getVarbit(LAST_X_INPUT) == 0) -1 else player.getVarbit(LAST_X_INPUT)
+                            3 -> if (player.getVarbit(Varbits.REQUESTEDQUANTITY) == 0) -1 else player.getVarbit(Varbits.REQUESTEDQUANTITY)
                             4 -> item.amount
                             8 -> {
                                 placehold = true
@@ -285,7 +277,7 @@ class BankPlugin(
                             2 -> 1
                             3 -> 5
                             4 -> 10
-                            5 -> player.getVarbit(LAST_X_INPUT)
+                            5 -> player.getVarbit(Varbits.REQUESTEDQUANTITY)
                             6 -> -1 // X
                             7 -> item.amount
                             8 -> item.amount - 1
@@ -312,7 +304,7 @@ class BankPlugin(
                 player.queue(TaskPriority.WEAK) {
                     amount = inputInt(player, "How many would you like to withdraw?")
                     if (amount > 0) {
-                        player.setVarbit(LAST_X_INPUT, amount)
+                        player.setVarbit(Varbits.REQUESTEDQUANTITY, amount)
                         withdraw(player, item.id, amount, slot, placehold)
                     }
                 }
@@ -329,10 +321,10 @@ class BankPlugin(
          * Swap items in bank inventory interface.
          */
         onComponentToComponentItemSwap(
-            srcInterfaceId = INV_INTERFACE_ID,
-            srcComponent = INV_INTERFACE_CHILD,
-            dstInterfaceId = INV_INTERFACE_ID,
-            dstComponent = INV_INTERFACE_CHILD,
+            srcInterfaceId = Interfaces.BANKSIDE,
+            srcComponent = Components.BANKSIDE_CHILD,
+            dstInterfaceId = Interfaces.BANKSIDE,
+            dstComponent = Components.BANKSIDE_CHILD,
         ) {
             println("Here")
             val srcSlot = player.attr[INTERACTING_ITEM_SLOT]!!
@@ -349,10 +341,10 @@ class BankPlugin(
          * Swap items in main bank tab.
          */
         onComponentToComponentItemSwap(
-            srcInterfaceId = BANK_INTERFACE_ID,
-            srcComponent = BANK_MAINTAB_COMPONENT,
-            dstInterfaceId = BANK_INTERFACE_ID,
-            dstComponent = BANK_MAINTAB_COMPONENT,
+            srcInterfaceId = Interfaces.BANK_MAIN,
+            srcComponent = Components.BANK_MAINTAB_COMPONENT,
+            dstInterfaceId = Interfaces.BANK_MAIN,
+            dstComponent = Components.BANK_MAINTAB_COMPONENT,
         ) {
             val srcSlot = player.attr[INTERACTING_ITEM_SLOT]!!
             val dstSlot = player.attr[OTHER_ITEM_SLOT_ATTR]!!
@@ -369,7 +361,7 @@ class BankPlugin(
             }
 
             if (srcSlot in 0 until container.occupiedSlotCount && dstSlot in 0 until container.occupiedSlotCount) {
-                val insertMode = player.getVarbit(REARRANGE_MODE_VARBIT) == 1
+                val insertMode = player.getVarbit(Varbits.INSERTMODE) == 1
                 if (!insertMode) {
                     container.swap(srcSlot, dstSlot)
                 } else { // insert mode patch for movement between bank tabs and updating varbits
@@ -383,11 +375,11 @@ class BankPlugin(
                         }
 
                         if (dstTab != 0) {
-                            player.setVarbit(BANK_TAB_ROOT_VARBIT + dstTab, player.getVarbit(BANK_TAB_ROOT_VARBIT + dstTab) + 1)
+                            player.setVarbit(Varbits.TAB_DISPLAY + dstTab, player.getVarbit(Varbits.TAB_DISPLAY + dstTab) + 1)
                         }
                         if (curTab != 0) {
-                            player.setVarbit(BANK_TAB_ROOT_VARBIT + curTab, player.getVarbit(BANK_TAB_ROOT_VARBIT + curTab) - 1)
-                            if (player.getVarbit(BANK_TAB_ROOT_VARBIT + curTab) == 0 && curTab <= numTabsUnlocked(player)) {
+                            player.setVarbit(Varbits.TAB_DISPLAY + curTab, player.getVarbit(Varbits.TAB_DISPLAY + curTab) - 1)
+                            if (player.getVarbit(Varbits.TAB_DISPLAY + curTab) == 0 && curTab <= numTabsUnlocked(player)) {
                                 shiftTabs(player, curTab)
                             }
                         }
@@ -413,7 +405,7 @@ class BankPlugin(
         bind_unequip(EquipmentType.BOOTS, 84)
         bind_unequip(EquipmentType.RING, 85)
 
-        onButton(interfaceId = INV_INTERFACE_ID, component = 4) {
+        onButton(interfaceId = Interfaces.BANKSIDE, component = 4) {
             val slot = player.getInteractingSlot()
             val opt = player.getInteractingOption()
             val item = player.inventory[slot] ?: return@onButton
@@ -435,7 +427,7 @@ class BankPlugin(
         equipment: EquipmentType,
         component: Int,
     ) {
-        onButton(interfaceId = BANK_INTERFACE_ID, component = component) {
+        onButton(interfaceId = Interfaces.BANK_MAIN, component = component) {
             val opt = player.getInteractingOption()
             if (opt == 0) {
                 EquipAction.unequip(player, equipment.id)
@@ -450,7 +442,7 @@ class BankPlugin(
                     val slot = player.getInteractingSlot()
                     if (world.devContext.debugButtons) {
                         player.message(
-                            "Unhandled button action: [component=[${BANK_INTERFACE_ID}:$component], option=$opt, slot=$slot, item=${item.id}]",
+                            "Unhandled button action: [component=[${Interfaces.BANK_MAIN}:$component], option=$opt, slot=$slot, item=${item.id}]",
                         )
                     }
                 }
