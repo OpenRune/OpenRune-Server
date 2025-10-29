@@ -1,13 +1,13 @@
 package org.alter.impl
 
 import dev.openrune.definition.dbtables.dbTable
-import dev.openrune.definition.util.Type
+import dev.openrune.definition.util.VarType
 
 object PrayerTable {
 
     fun skillTable() = dbTable("tables.skill_prayer") {
-        column("exp", 0, arrayOf(Type.INT))
-        column("ashes", 1, arrayOf(Type.BOOLEAN))
+        column("exp", 0, arrayOf(VarType.INT))
+        column("ashes", 1, arrayOf(VarType.BOOLEAN))
         
         row("dbrows.bones") {
             column(0, arrayOf(5))

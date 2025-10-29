@@ -5,20 +5,16 @@ import org.alter.api.Skills
 import org.alter.api.ext.message
 import org.alter.api.ext.playSound
 import org.alter.api.ext.random
-import org.alter.game.fs.DBHelper
-import org.alter.game.fs.EnumManager
-import org.alter.game.fs.EnumManager.forEachTyped
 import org.alter.game.model.Area
 import org.alter.game.model.Tile
 import org.alter.game.model.TileGraphic
 import org.alter.game.model.entity.GameObject
 import org.alter.game.model.entity.Player
-import org.alter.game.pluginnew.Script
+import org.alter.game.pluginnew.PluginEvent
 import org.alter.game.pluginnew.event.impl.ItemOnObject
 import org.alter.rscm.RSCM.asRSCM
-import kotlin.random.Random
 
-class GildedAlterEvents : Script() {
+class GildedAlterEvents : PluginEvent() {
 
     companion object {
         val CHAOS_ALTAR_AREA = Area(2946, 3825, 2957, 3816, true)
@@ -29,21 +25,17 @@ class GildedAlterEvents : Script() {
         )
     }
 
-    init {
-        EnumManager.lookup("enums.bone_data").forEachTyped<Int, Int> { boneId, dbRowId ->
-            val row = DBHelper.getRow(dbRowId)
-            val xp = row.column("columns.skill_prayer:exp").getInt()
-            val isAshes = row.column("columns.skill_prayer:ashes").getBoolean()
-
-            if (!isAshes) {
+    override fun init() {
+        Bones.bones.forEach { bone ->
+            if (!bone.isAshes) {
                 on<ItemOnObject> {
-                    where { item.id == boneId && gameObject.id == "objects.chaosaltar".asRSCM() }
-                    then { startAlter(player, boneId, xp, true, gameObject) }
+                    where { item.id == bone.id && gameObject.id == "objects.chaosaltar".asRSCM() }
+                    then { startAlter(player, bone.id, bone.xp, true, gameObject) }
                 }
 
                 on<ItemOnObject> {
-                    where { item.id == boneId && GILDED_ALTERS.contains(gameObject.id) }
-                    then { startAlter(player, boneId, xp, false, gameObject) }
+                    where { item.id == bone.id && GILDED_ALTERS.contains(gameObject.id) }
+                    then { startAlter(player, bone.id, bone.xp, false, gameObject) }
                 }
             }
         }

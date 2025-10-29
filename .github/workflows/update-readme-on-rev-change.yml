@@ -1,0 +1,86 @@
+name: Sync Revision with README
+
+permissions:
+  contents: write
+
+on:
+  push:
+    paths:
+      - "game.example.yml"
+  workflow_dispatch:
+    inputs:
+      new_revision:
+        description: "Manually set a new revision (e.g., 236.2)"
+        required: false
+        type: string
+
+jobs:
+  update-files:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Determine revision
+        id: determine_rev
+        run: |
+          if [ -n "${{ github.event.inputs.new_revision }}" ]; then
+            REVISION="${{ github.event.inputs.new_revision }}"
+            echo "Manual mode — setting revision to $REVISION"
+            sed -i -E "s/^revision: .*/revision: ${REVISION}/" game.example.yml
+          else
+            REVISION_LINE=$(grep '^revision:' game.example.yml)
+            REVISION=$(echo "$REVISION_LINE" | awk '{print $2}')
+          fi
+
+          echo "revision=$REVISION" >> $GITHUB_OUTPUT
+
+          # Extract integer part for jav_config_url
+          REV_INT=$(echo "$REVISION" | cut -d'.' -f1)
+          echo "revision_int=$REV_INT" >> $GITHUB_OUTPUT
+
+      - name: Update README.md
+        id: update_readme
+        run: |
+          REV=${{ steps.determine_rev.outputs.revision }}
+          REV_INT=${{ steps.determine_rev.outputs.revision_int }}
+
+          cp README.md README.md.bak
+
+          # Update inline badge text
+          sed -i -E "s/\[!\[revision: [0-9.]+\]\[rev-badge\]\]/[![revision: ${REV}][rev-badge]]/g" README.md
+
+          # Update badge URL with full revision
+          sed -i -E "s|(\[rev-badge\]: https://img\.shields\.io/badge/Revision-)[0-9.]+(-blueviolet)|\1${REV}\2|g" README.md
+
+          # Update jav_config_url integer part only
+          sed -i -E "s|(jav_config_url: https://client\.blurite\.io/jav_local_)[0-9]+(\.ws)|\1${REV_INT}\2|g" README.md
+
+          # Update all revision: lines (indented or not)
+          sed -i -E "s|([[:space:]]*revision: )[0-9.]+|\1${REV}|" README.md
+
+          if diff -q README.md README.md.bak > /dev/null; then
+            echo "README.md already up-to-date."
+            echo "changed=false" >> $GITHUB_OUTPUT
+          else
+            echo "README.md updated."
+            echo "changed=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Commit and push changes
+        if: steps.update_readme.outputs.changed == 'true' || github.event_name == 'workflow_dispatch'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add README.md game.example.yml
+          git commit -m "Sync revision to ${{ steps.determine_rev.outputs.revision }}"
+          git push
+
+      - name: Fail if no changes
+        if: steps.update_readme.outputs.changed == 'false' && github.event_name != 'workflow_dispatch'
+        run: |
+          echo "No changes were needed — README already matches the current revision."
+          exit 1

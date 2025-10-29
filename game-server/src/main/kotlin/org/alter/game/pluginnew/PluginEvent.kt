@@ -7,13 +7,14 @@ import kotlin.reflect.KClass
 import kotlin.script.experimental.annotations.KotlinScript
 
 @KotlinScript(fileExtension = "plugin.kts", compilationConfiguration = PluginConfig::class)
-abstract class Script  {
+abstract class PluginEvent  {
+
+    abstract fun init()
 
     inline fun <reified K : Event> on(config: EventListener<K>.() -> EventListener<K>): EventListener<K> {
         return config.invoke(EventListener(K::class)).submit()
     }
-    
-    // Shorthand syntax: onEvent<EventType> { ...code... } treats code as the action
+
     inline fun <reified K : Event> onEvent(noinline action: suspend K.() -> Unit): EventListener<K> {
         val listener = EventListener(K::class)
         listener.action = action

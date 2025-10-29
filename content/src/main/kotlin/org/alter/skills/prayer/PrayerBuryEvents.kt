@@ -3,36 +3,29 @@ package org.alter.skills.prayer
 import org.alter.api.ChatMessageType
 import org.alter.api.Skills
 import org.alter.api.ext.*
-import org.alter.game.fs.DBHelper
-import org.alter.game.fs.EnumManager
-import org.alter.game.fs.EnumManager.forEachTyped
 import org.alter.game.model.LockState
 import org.alter.game.model.entity.Player
 import org.alter.game.model.move.stopMovement
-import org.alter.game.pluginnew.Script
+import org.alter.game.pluginnew.PluginEvent
 import org.alter.game.pluginnew.event.impl.ItemClickEvent
 import org.alter.rscm.RSCM.asRSCM
 import org.alter.skills.prayer.GildedAlterEvents.Companion.CHAOS_ALTAR_AREA
 
-class PrayerBuryEvents : Script() {
+class PrayerBuryEvents : PluginEvent() {
 
-    init {
-        EnumManager.lookup("enums.bone_data").forEachTyped<Int, Int> { boneId, dbRowId ->
-            val row = DBHelper.getRow(dbRowId)
-            val xp = row.column("columns.skill_prayer:exp").getInt()
-            val isAshes = row.column("columns.skill_prayer:ashes").getBoolean()
-
+    override fun init() {
+        Bones.bones.forEach { bone ->
             on<ItemClickEvent> {
-                where { item == boneId && !player.isLocked() }
+                where { item == bone.id && !player.isLocked() }
                 then {
-                    if (CHAOS_ALTAR_AREA.contains(player.tile) && !isAshes) {
+                    if (CHAOS_ALTAR_AREA.contains(player.tile) && !bone.isAshes) {
                         player.queue {
                             when (options(player, "Bury the Bone", "Cancel", title = "Are you sure you want to do that?")) {
-                                1 -> buryBone(player, false, item, slot, xp)
+                                1 -> buryBone(player, false, item, slot, bone.xp)
                             }
                         }
                     } else {
-                        buryBone(player, isAshes, item, slot, xp)
+                        buryBone(player, bone.isAshes, item, slot, bone.xp)
                     }
                 }
             }
@@ -62,4 +55,5 @@ class PrayerBuryEvents : Script() {
             player.unlock()
         }
     }
+
 }

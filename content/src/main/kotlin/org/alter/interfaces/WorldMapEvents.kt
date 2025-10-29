@@ -18,13 +18,13 @@ import org.alter.game.model.entity.Player
 import org.alter.game.model.move.moveTo
 import org.alter.game.model.priv.Privilege
 import org.alter.game.model.timer.TimerKey
-import org.alter.game.pluginnew.Script
+import org.alter.game.pluginnew.PluginEvent
 import org.alter.game.pluginnew.event.impl.ButtonClickEvent
 import org.alter.game.pluginnew.event.impl.ClickWorldMapEvent
 import org.alter.game.pluginnew.event.impl.TimerEvent
 import org.alter.rscm.RSCM.asRSCM
 
-class WorldMapEvents : Script() {
+class WorldMapEvents : PluginEvent() {
 
     companion object {
         val UPDATE_TIMER = TimerKey()
@@ -34,7 +34,7 @@ class WorldMapEvents : Script() {
     }
 
 
-    init {
+    override fun init() {
 
         on<ClickWorldMapEvent> {
             where { player.world.privileges.isEligible(player.privilege, Privilege.ADMIN_POWER) }
@@ -68,6 +68,7 @@ class WorldMapEvents : Script() {
                 player.timers.remove(UPDATE_TIMER)
             }
         }
+
 
         on<ButtonClickEvent> {
             where { component.combinedId == "components.orbs:store_icon".asRSCM() }
