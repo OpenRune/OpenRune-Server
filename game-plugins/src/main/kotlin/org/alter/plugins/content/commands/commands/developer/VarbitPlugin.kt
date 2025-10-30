@@ -28,14 +28,12 @@ class VarbitPlugin(
                 return@onCommand
             }
 
-            // Alleen uitlezen
             if (args.size == 1) {
                 val currentValue = player.getVarbit(varbitId)
                 player.message("Varbit (<col=801700>$varbitId</col>) = <col=801700>$currentValue</col>")
                 return@onCommand
             }
 
-            // Uitlezen én instellen
             val newValue = args[1].toIntOrNull()
             if (newValue == null) {
                 player.message("Invalid value. Must be a number.")
