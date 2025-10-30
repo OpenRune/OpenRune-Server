@@ -49,7 +49,7 @@ class ShatteredCanePlugin(
             if (checkForItems(player)) {
                 player.queue {
                     player.lock()
-                    player.graphic(2020, 92)
+                    player.graphic("spotanims.league_3_relic_unlock_spot", 92)
                     player.animate(8524, 60)
                     player.playSound(4215, 100, 8)
                     player.playSound(4211, 100, 44)

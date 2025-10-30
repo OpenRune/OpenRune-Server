@@ -28,7 +28,7 @@ class MindShieldPlugin(
                 player.animate(-1)
                 player.graphic(-1)
                 player.animate(3996, 3)
-                player.graphic(809, 90, 3)
+                player.graphic("spotanims.elemental_mind_shield_equip", 90, 3)
             }
         }
     }

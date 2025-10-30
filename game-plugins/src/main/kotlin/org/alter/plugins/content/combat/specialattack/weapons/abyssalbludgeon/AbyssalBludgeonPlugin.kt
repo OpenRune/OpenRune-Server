@@ -24,7 +24,7 @@ class AbyssalBludgeonPlugin(
 
         SpecialAttacks.register("items.abyssal_bludgeon", SPECIAL_REQUIREMENT) {
             player.animate(id = 3299)
-            player.graphic(id = 1284)
+            player.graphic(id = "spotanims.abyssal_miasma_spotanim_bludgeon")
 
             world.spawn(AreaSound(tile = player.tile, id = 2715, radius = 10, volume = 1, delay = 10))
             world.spawn(AreaSound(tile = player.tile, id = 1930, radius = 10, volume = 1, delay = 30))
