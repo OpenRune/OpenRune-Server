@@ -35,6 +35,8 @@ import org.alter.game.model.timer.SKULL_ICON_DURATION_TIMER
 import org.alter.game.rsprot.RsModIndexedObjectProvider
 import org.alter.game.rsprot.RsModObjectProvider
 import org.alter.rscm.RSCM.asRSCM
+import org.alter.rscm.RSCM.requireRSCM
+import org.alter.rscm.RSCMType
 import kotlin.math.floor
 
 /**
@@ -144,9 +146,7 @@ fun Player.setInterfaceEvents(
     to: Int,
     setting: Int,
 ) {
-    require(componentName.startsWith("components")) {
-        "Component name must start with 'components', got '$componentName'"
-    }
+    requireRSCM(RSCMType.COMPONENTS,componentName)
     val combined = CombinedId(componentName.asRSCM())
     setInterfaceEvents(combined.interfaceId,combined.combinedId,from,to,setting)
 }
@@ -216,9 +216,7 @@ fun Player.setInterfaceEvents(
     range: IntRange,
     setting: InterfaceEvent,
 ) {
-    require(componentName.startsWith("components")) {
-        "Component name must start with 'components', got '$componentName'"
-    }
+    requireRSCM(RSCMType.COMPONENTS,componentName)
     val combined = CombinedId(componentName.asRSCM())
     setInterfaceEvents(combined.interfaceId,combined.combinedId,range,setting)
 }
@@ -308,10 +306,7 @@ fun Player.openInterface(
     dest: InterfaceDestination,
     fullscreen: Boolean = false
 ) {
-    require(interfaceName.startsWith("interfaces")) {
-        "Interface name must start with 'interfaces', got '$interfaceName'"
-    }
-
+    requireRSCM(RSCMType.INTERFACES,interfaceName)
     openInterface(interfaceName.asRSCM(), dest, fullscreen)
 }
 
@@ -333,10 +328,7 @@ fun Player.openInterface(
     fullscreen: Boolean = false,
     isModal: Boolean = false
 ) {
-    require(interfaceName.startsWith("interfaces")) {
-        "Interface name must start with 'interfaces', got '$interfaceName'"
-    }
-
+    requireRSCM(RSCMType.INTERFACES,interfaceName)
     openInterface(interfaceName.asRSCM(), dest, fullscreen, isModal)
 }
 

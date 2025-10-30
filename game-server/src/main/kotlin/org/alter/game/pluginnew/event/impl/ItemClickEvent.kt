@@ -6,6 +6,8 @@ import org.alter.game.pluginnew.MenuOption
 import org.alter.game.pluginnew.PluginEvent
 import org.alter.game.pluginnew.event.EventListener
 import org.alter.rscm.RSCM.asRSCM
+import org.alter.rscm.RSCM.requireRSCM
+import org.alter.rscm.RSCMType
 
 open class ItemClickEvent(
     open val item: Int,
@@ -37,7 +39,7 @@ fun PluginEvent.onItemOption(
     action: suspend ItemClickEvent.() -> Unit
 ): EventListener<ItemClickEvent> {
     require(!(option != null && op != null)) { "You cannot provide both `option` and `op` at the same time." }
-
+    requireRSCM(RSCMType.OBJTYPES,item)
     val rscmItem = item.asRSCM()
     return on<ItemClickEvent> {
         where {

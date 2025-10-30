@@ -9,6 +9,8 @@ import org.alter.game.pluginnew.event.EventListener
 import org.alter.game.pluginnew.event.PlayerEvent
 import org.alter.rscm.RSCM
 import org.alter.rscm.RSCM.asRSCM
+import org.alter.rscm.RSCM.requireRSCM
+import org.alter.rscm.RSCMType
 
 enum class ContainerType(val id: String) {
     INVENTORY("interfaces.inventory"),
@@ -53,9 +55,7 @@ fun PluginEvent.onButton(
     componentID: String,
     action: suspend ButtonClickEvent.() -> Unit
 ): EventListener<ButtonClickEvent> {
-    require(componentID.startsWith("components.")) {
-        "Invalid component ID '$componentID'. Must start with 'components.'."
-    }
+    requireRSCM(RSCMType.COMPONENTS,componentID)
     return on<ButtonClickEvent> {
         where { component.combinedId == componentID.asRSCM() }
         then { action(this) }

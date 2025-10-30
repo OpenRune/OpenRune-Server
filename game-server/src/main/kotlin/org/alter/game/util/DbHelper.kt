@@ -7,6 +7,8 @@ import dev.openrune.definition.util.VarType
 import org.alter.game.util.vars.BooleanVarType
 import org.alter.game.util.vars.VarTypeImpl
 import org.alter.rscm.RSCM.asRSCM
+import org.alter.rscm.RSCM.requireRSCM
+import org.alter.rscm.RSCMType
 import java.util.concurrent.ConcurrentHashMap
 
 fun <K, V> DbHelper.column(name: String, type: VarTypeImpl<K, V>): V =
@@ -107,7 +109,7 @@ class DbHelper private constructor(private val row: DBRowType) {
     }
 
     fun getColumn(name: String): Column {
-        require(name.startsWith("column")) { "Expected 'column' prefix in $name" }
+        requireRSCM(RSCMType.COLUMNS,name)
         return getColumn(name.asRSCM() and 0xFFFF)
     }
 
@@ -156,7 +158,7 @@ class DbHelper private constructor(private val row: DBRowType) {
     companion object {
 
         fun table(table: String): List<DbHelper> {
-            require(table.startsWith("tables.")) { "Expected table reference to start with 'tables.', got '$table'" }
+            requireRSCM(RSCMType.TABLETYPES,table)
 
             return DbQueryCache.getTable(table) {
                 val tableId = table.asRSCM()
@@ -170,7 +172,7 @@ class DbHelper private constructor(private val row: DBRowType) {
         }
 
         fun <K, V> dbFind(column: String, value: V, type: VarTypeImpl<K, V>): List<DbHelper> {
-            require(column.startsWith("columns.")) { "Expected column reference starting with 'columns.', got '$column'" }
+            requireRSCM(RSCMType.COLUMNS,column)
 
             return DbQueryCache.getColumn(column, value, type) {
                 val tableName = "tables." + column.removePrefix("columns.").substringBefore(':')

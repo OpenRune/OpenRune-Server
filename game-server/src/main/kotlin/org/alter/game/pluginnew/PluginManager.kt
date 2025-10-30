@@ -5,6 +5,7 @@ import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.coroutines.DelicateCoroutinesApi
 import java.io.File
 import java.lang.reflect.Constructor
+import kotlin.system.exitProcess
 
 object PluginManager {
 
@@ -42,7 +43,8 @@ object PluginManager {
 
                         scripts.add(ctor)
                     } catch (ex: Exception) {
-                        logger.error(ex) { "Error loading plugin class: ${classInfo.name}" }
+                        ex.printStackTrace()
+                        exitProcess(1)
                     }
                 }
 
