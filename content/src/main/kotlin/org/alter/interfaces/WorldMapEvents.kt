@@ -60,7 +60,7 @@ class WorldMapEvents : PluginEvent() {
         }
 
         on<ButtonClickEvent> {
-            where { component.combinedId == "components.worldmap:universe".asRSCM() }
+            where { component.combinedId == "components.worldmap:close".asRSCM() }
             then {
                 player.closeInterface(WORLD_MAP_INTERFACE_ID)
                 player.openOverlayInterface(player.interfaces.displayMode)
@@ -71,7 +71,7 @@ class WorldMapEvents : PluginEvent() {
 
 
         on<ButtonClickEvent> {
-            where { component.combinedId == "components.orbs:store_icon".asRSCM() }
+            where { component.combinedId == "components.orbs:worldmap".asRSCM() }
             then {
                 if (!player.lock.canInterfaceInteract()) {
                     return@then

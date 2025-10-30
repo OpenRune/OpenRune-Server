@@ -12,6 +12,7 @@ import org.alter.game.model.entity.GameObject
 import org.alter.game.model.entity.Player
 import org.alter.game.pluginnew.PluginEvent
 import org.alter.game.pluginnew.event.impl.ItemOnObject
+import org.alter.game.pluginnew.event.impl.ObjectClickEvent
 import org.alter.rscm.RSCM.asRSCM
 
 class GildedAlterEvents : PluginEvent() {
@@ -28,6 +29,7 @@ class GildedAlterEvents : PluginEvent() {
     override fun init() {
         Bones.bones.forEach { bone ->
             if (!bone.isAshes) {
+
                 on<ItemOnObject> {
                     where { item.id == bone.id && gameObject.id == "objects.chaosaltar".asRSCM() }
                     then { startAlter(player, bone.id, bone.xp, true, gameObject) }

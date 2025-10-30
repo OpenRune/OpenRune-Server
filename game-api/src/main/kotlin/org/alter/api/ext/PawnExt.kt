@@ -15,6 +15,11 @@ import org.alter.game.model.move.stopMovement
 import org.alter.game.model.timer.FROZEN_TIMER
 import org.alter.game.model.timer.STUN_TIMER
 
+fun Pawn.prepareForTeleport() {
+    resetInteractions()
+    clearHits()
+}
+
 fun Pawn.getCommandArgs(): Array<String> = attr[COMMAND_ARGS_ATTR]!!
 
 fun Pawn.getInteractingSlot(): Int = attr[INTERACTING_SLOT_ATTR]!!

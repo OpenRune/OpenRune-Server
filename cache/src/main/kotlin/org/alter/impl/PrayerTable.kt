@@ -6,189 +6,224 @@ import dev.openrune.definition.util.VarType
 object PrayerTable {
 
     fun skillTable() = dbTable("tables.skill_prayer") {
-        column("exp", 0, arrayOf(VarType.INT))
-        column("ashes", 1, arrayOf(VarType.BOOLEAN))
-        
+        column("item", 0, arrayOf(VarType.OBJ))
+        column("exp", 1, arrayOf(VarType.INT))
+        column("ashes", 2, arrayOf(VarType.BOOLEAN))
+
         row("dbrows.bones") {
-            column(0, arrayOf(5))
-            column(1, arrayOf(false))
+            columnRSCM(0, arrayOf("items.bones"))
+            column(1, arrayOf(5))
+            column(2, arrayOf(false))
         }
 
         row("dbrows.wolfbones") {
-            column(0, arrayOf(5))
-            column(1, arrayOf(false))
+            columnRSCM(0, arrayOf("items.wolf_bones"))
+            column(1, arrayOf(5))
+            column(2, arrayOf(false))
         }
 
         row("dbrows.burntbones") {
-            column(0, arrayOf(5))
-            column(1, arrayOf(false))
+            columnRSCM(0, arrayOf("items.bones_burnt"))
+            column(1, arrayOf(5))
+            column(2, arrayOf(false))
         }
 
         row("dbrows.monkeybones") {
-            column(0, arrayOf(5))
-            column(1, arrayOf(false))
+            columnRSCM(0, arrayOf("items.mm_normal_monkey_bones"))
+            column(1, arrayOf(5))
+            column(2, arrayOf(false))
         }
 
         row("dbrows.batbones") {
-            column(0, arrayOf(5))
-            column(1, arrayOf(false))
+            columnRSCM(0, arrayOf("items.bat_bones"))
+            column(1, arrayOf(5))
+            column(2, arrayOf(false))
         }
 
         row("dbrows.bigbones") {
-            column(0, arrayOf(15))
-            column(1, arrayOf(false))
+            columnRSCM(0, arrayOf("items.big_bones"))
+            column(1, arrayOf(15))
+            column(2, arrayOf(false))
         }
 
         row("dbrows.jogrebones") {
-            column(0, arrayOf(15))
-            column(1, arrayOf(false))
+            columnRSCM(0, arrayOf("items.tbwt_jogre_bones"))
+            column(1, arrayOf(15))
+            column(2, arrayOf(false))
         }
 
         row("dbrows.wyrmlingbones") {
-            column(0, arrayOf(21))
-            column(1, arrayOf(false))
+            columnRSCM(0, arrayOf("items.babywyrm_bones"))
+            column(1, arrayOf(21))
+            column(2, arrayOf(false))
         }
 
         row("dbrows.zogrebones") {
-            column(0, arrayOf(23))
-            column(1, arrayOf(false))
+            columnRSCM(0, arrayOf("items.zogre_bones"))
+            column(1, arrayOf(23))
+            column(2, arrayOf(false))
         }
 
         row("dbrows.shaikahanbones") {
-            column(0, arrayOf(25))
-            column(1, arrayOf(false))
+            columnRSCM(0, arrayOf("items.tbwt_beast_bones"))
+            column(1, arrayOf(25))
+            column(2, arrayOf(false))
         }
 
         row("dbrows.babydragonbones") {
-            column(0, arrayOf(30))
-            column(1, arrayOf(false))
+            columnRSCM(0, arrayOf("items.babydragon_bones"))
+            column(1, arrayOf(30))
+            column(2, arrayOf(false))
         }
 
         row("dbrows.wyrmbones") {
-            column(0, arrayOf(50))
-            column(1, arrayOf(false))
+            columnRSCM(0, arrayOf("items.wyrm_bones"))
+            column(1, arrayOf(50))
+            column(2, arrayOf(false))
         }
 
         row("dbrows.wyvernbones") {
-            column(0, arrayOf(72))
-            column(1, arrayOf(false))
+            columnRSCM(0, arrayOf("items.wyvern_bones"))
+            column(1, arrayOf(72))
+            column(2, arrayOf(false))
         }
 
         row("dbrows.dragonbones") {
-            column(0, arrayOf(72))
-            column(1, arrayOf(false))
+            columnRSCM(0, arrayOf("items.dragon_bones"))
+            column(1, arrayOf(72))
+            column(2, arrayOf(false))
         }
 
         row("dbrows.drakebones") {
-            column(0, arrayOf(80))
-            column(1, arrayOf(false))
+            columnRSCM(0, arrayOf("items.drake_bones"))
+            column(1, arrayOf(80))
+            column(2, arrayOf(false))
         }
 
         row("dbrows.fayrgbones") {
-            column(0, arrayOf(84))
-            column(1, arrayOf(false))
+            columnRSCM(0, arrayOf("items.zogre_ancestral_bones_fayg"))
+            column(1, arrayOf(84))
+            column(2, arrayOf(false))
         }
 
         row("dbrows.lavadragonbones") {
-            column(0, arrayOf(85))
-            column(1, arrayOf(false))
+            columnRSCM(0, arrayOf("items.lava_dragon_bones"))
+            column(1, arrayOf(85))
+            column(2, arrayOf(false))
         }
 
         row("dbrows.raurgbones") {
-            column(0, arrayOf(96))
-            column(1, arrayOf(false))
+            columnRSCM(0, arrayOf("items.zogre_ancestral_bones_raurg"))
+            column(1, arrayOf(96))
+            column(2, arrayOf(false))
         }
 
         row("dbrows.hydrabones") {
-            column(0, arrayOf(110))
-            column(1, arrayOf(false))
+            columnRSCM(0, arrayOf("items.hydra_bones"))
+            column(1, arrayOf(110))
+            column(2, arrayOf(false))
         }
 
         row("dbrows.dagannothbones") {
-            column(0, arrayOf(125))
-            column(1, arrayOf(false))
+            columnRSCM(0, arrayOf("items.dagannoth_king_bones"))
+            column(1, arrayOf(125))
+            column(2, arrayOf(false))
         }
 
         row("dbrows.ourgbones") {
-            column(0, arrayOf(140))
-            column(1, arrayOf(false))
+            columnRSCM(0, arrayOf("items.zogre_ancestral_bones_ourg"))
+            column(1, arrayOf(140))
+            column(2, arrayOf(false))
         }
 
         row("dbrows.superiordragonbones") {
-            column(0, arrayOf(150))
-            column(1, arrayOf(false))
+            columnRSCM(0, arrayOf("items.dragon_bones_superior"))
+            column(1, arrayOf(150))
+            column(2, arrayOf(false))
         }
 
         row("dbrows.alansbones") {
-            column(0, arrayOf(3))
-            column(1, arrayOf(false))
+            columnRSCM(0, arrayOf("items.alan_bones"))
+            column(1, arrayOf(3))
+            column(2, arrayOf(false))
         }
 
         row("dbrows.bonesapeatoll") {
-            column(0, arrayOf(3))
-            column(1, arrayOf(false))
+            columnRSCM(0, arrayOf("items.mm_skeleton_bones"))
+            column(1, arrayOf(3))
+            column(2, arrayOf(false))
         }
 
         row("dbrows.bleachedbones") {
-            column(0, arrayOf(5))
-            column(1, arrayOf(false))
+            columnRSCM(0, arrayOf("items.shade_bleached_bones"))
+            column(1, arrayOf(5))
+            column(2, arrayOf(false))
         }
 
         row("dbrows.smallzombiemonkeybones") {
-            column(0, arrayOf(5))
-            column(1, arrayOf(false))
+            columnRSCM(0, arrayOf("items.mm_small_zombie_monkey_bones"))
+            column(1, arrayOf(5))
+            column(2, arrayOf(false))
         }
 
         row("dbrows.largezombiemonkeybones") {
-            column(0, arrayOf(5))
-            column(1, arrayOf(false))
+            columnRSCM(0, arrayOf("items.mm_large_zombie_monkey_bones"))
+            column(1, arrayOf(5))
+            column(2, arrayOf(false))
         }
 
         row("dbrows.smallninjamonkeybones") {
-            column(0, arrayOf(16))
-            column(1, arrayOf(false))
+            columnRSCM(0, arrayOf("items.mm_small_ninja_monkey_bones"))
+            column(1, arrayOf(16))
+            column(2, arrayOf(false))
         }
 
         row("dbrows.mediumninjamonkeybones") {
-            column(0, arrayOf(18))
-            column(1, arrayOf(false))
+            columnRSCM(0, arrayOf("items.mm_medium_ninja_monkey_bones"))
+            column(1, arrayOf(18))
+            column(2, arrayOf(false))
         }
 
         row("dbrows.gorillabones") {
-            column(0, arrayOf(18))
-            column(1, arrayOf(false))
+            columnRSCM(0, arrayOf("items.mm_normal_gorilla_monkey_bones"))
+            column(1, arrayOf(18))
+            column(2, arrayOf(false))
         }
 
         row("dbrows.beardedgorillabones") {
-            column(0, arrayOf(18))
-            column(1, arrayOf(true))
+            columnRSCM(0, arrayOf("items.mm_bearded_gorilla_monkey_bones"))
+            column(1, arrayOf(18))
+            column(2, arrayOf(true))
         }
 
         row("dbrows.fiendishashes") {
-            column(0, arrayOf(10))
-            column(1, arrayOf(true))
+            columnRSCM(0, arrayOf("items.fiendish_ashes"))
+            column(1, arrayOf(10))
+            column(2, arrayOf(true))
         }
 
         row("dbrows.vileashes") {
-            column(0, arrayOf(25))
-            column(1, arrayOf(true))
+            columnRSCM(0, arrayOf("items.vile_ashes"))
+            column(1, arrayOf(25))
+            column(2, arrayOf(true))
         }
 
         row("dbrows.maliciousashes") {
-            column(0, arrayOf(65))
-            column(1, arrayOf(true))
+            columnRSCM(0, arrayOf("items.malicious_ashes"))
+            column(1, arrayOf(65))
+            column(2, arrayOf(true))
         }
 
         row("dbrows.abyssalashes") {
-            column(0, arrayOf(85))
-            column(1, arrayOf(true))
+            columnRSCM(0, arrayOf("items.abyssal_ashes"))
+            column(1, arrayOf(85))
+            column(2, arrayOf(true))
         }
 
         row("dbrows.infernalashes") {
-            column(0, arrayOf(110))
-            column(1, arrayOf(true))
+            columnRSCM(0, arrayOf("items.infernal_ashes"))
+            column(1, arrayOf(110))
+            column(2, arrayOf(true))
         }
-
     }
-
 }
