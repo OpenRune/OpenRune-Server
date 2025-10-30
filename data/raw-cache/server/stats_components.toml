@@ -1,0 +1,9 @@
+[[enum]]
+id="enums.stats_components"
+keyType="COMPONENT"
+valueType="STAT"
+
+default = "components.stats:agility"
+
+[enum.values]
+"components.stats:agility" = "stats.agility"

@@ -14,6 +14,7 @@ import dev.openrune.filesystem.Cache
 import dev.openrune.tools.PackServerConfig
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.alter.impl.PrayerTable
+import org.alter.impl.StatComponents
 import org.alter.impl.TeleTabs
 import java.io.File
 import java.nio.file.Files
@@ -40,6 +41,7 @@ fun downloadRev(type : TaskType) {
     logger.error { "Using Revision: $rev" }
 
     val tasks : List<CacheTask> = listOf(
+        PackConfig(File("../data/raw-cache/server")),
         PackServerConfig(),
     ).toMutableList()
 
@@ -55,7 +57,8 @@ fun downloadRev(type : TaskType) {
             val tasksNew = tasks.toMutableList()
             tasksNew.add(PackDBTables(listOf(
                 PrayerTable.skillTable(),
-                TeleTabs.teleTabs()
+                TeleTabs.teleTabs(),
+                StatComponents.statsComponents()
             )))
 
             builder.extraTasks(*tasksNew.toTypedArray()).build().initialize()
@@ -74,7 +77,8 @@ fun downloadRev(type : TaskType) {
             val tasksNew = tasks.toMutableList()
             tasksNew.add(PackDBTables(listOf(
                 PrayerTable.skillTable(),
-                TeleTabs.teleTabs()
+                TeleTabs.teleTabs(),
+                StatComponents.statsComponents()
             )))
 
             builder.extraTasks(*tasksNew.toTypedArray()).build().initialize()
