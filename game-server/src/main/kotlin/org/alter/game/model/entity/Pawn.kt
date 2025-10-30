@@ -405,6 +405,13 @@ abstract class Pawn(val world: World) : Entity() {
         delay: Int = 0,
     )
 
+    abstract fun graphic(
+        id: String,
+        height: Int = 0,
+        delay: Int = 0,
+    )
+
+
     fun applyTint(
         hue: Int = 0,
         saturation: Int = 0,

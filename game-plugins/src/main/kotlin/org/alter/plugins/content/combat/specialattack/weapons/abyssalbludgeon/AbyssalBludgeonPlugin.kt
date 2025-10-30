@@ -1,7 +1,6 @@
 package org.alter.plugins.content.combat.specialattack.weapons.abyssalbludgeon
 
 import org.alter.api.Skills
-import org.alter.api.cfg.Graphic
 import org.alter.api.ext.getTarget
 import org.alter.api.ext.player
 import org.alter.game.Server
@@ -39,7 +38,7 @@ class AbyssalBludgeonPlugin(
         setItemCombatLogic("items.abyssal_bludgeon") {
             val target = player.getTarget()
             if (target != null) {
-                target.graphic(Graphic.ABYSSAL_BLUDGEON_SPECIAL)
+                target.graphic("spotanims.abyssal_miasma_spotanim_bludgeon")
                 player.dealHit(target = target, maxHit = 10, landHit = true, delay = 1)
             }
         }
