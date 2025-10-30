@@ -1,7 +1,6 @@
 package org.alter.game.fs
 
 import dev.openrune.cache.*
-import dev.openrune.filesystem.Cache
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.alter.game.Server
 import org.alter.game.model.Tile

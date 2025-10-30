@@ -22,7 +22,6 @@ allprojects {
 
     val lib = rootProject.project.libs
     dependencies {
-        implementation("dev.or2:all:2.2.8")
         implementation(lib.kotlin.logging)
         implementation(lib.logback.classic)
         implementation(lib.fastutil)
@@ -39,17 +38,6 @@ allprojects {
         testImplementation(lib.junit)
         testImplementation(lib.kotlin.test.junit)
     }
-
-    tasks.withType<KotlinCompile>().all {
-        compilerOptions {
-            languageVersion.set(KotlinVersion.KOTLIN_2_0)
-            freeCompilerArgs = listOf(
-                "-Xuse-fir-lt=false",
-                "-Xallow-any-scripts-in-source-roots"
-            )
-        }
-    }
-
 
     java {
         toolchain {

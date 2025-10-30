@@ -1,8 +1,6 @@
 package org.alter.game
 
 import dev.openrune.ServerCacheManager
-import dev.openrune.cache.tools.dbtables.DBManager
-import dev.openrune.definition.constants.CompositeMappingProvider
 import dev.openrune.definition.constants.ConstantProvider
 import dev.openrune.filesystem.Cache
 import gg.rsmod.util.ServerProperties

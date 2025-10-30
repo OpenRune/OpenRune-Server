@@ -1,6 +1,5 @@
 package org.alter.api
 
-import dev.openrune.ServerCacheManager
 import dev.openrune.cache.CLIENTSCRIPT
 import dev.openrune.filesystem.Cache
 import org.alter.game.Server

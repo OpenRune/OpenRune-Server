@@ -11,9 +11,7 @@ application {
 val lib = rootProject.project.libs
 dependencies {
     implementation(project(":cache"))
-    implementation("dev.or2:server-utils:0.7")
-    implementation("joda-time:joda-time:2.14.0")
-    implementation("io.github.classgraph:classgraph:4.8.184")
+
 
 
     with(lib) {
@@ -32,9 +30,14 @@ dependencies {
         implementation(kotlin.csv)
         implementation(mongo.bson)
         implementation(mongo.driver)
-        testImplementation(junit)
+        testRuntimeOnly(junit)
         implementation(rootProject.project.libs.rsprot)
         implementation(lib.routefinder)
+        implementation(or2.server.utils)
+        implementation(joda.time)
+        implementation(or2.definition)
+        implementation(or2.filesystem)
+        implementation(or2.filestore)
     }
 }
 sourceSets {
