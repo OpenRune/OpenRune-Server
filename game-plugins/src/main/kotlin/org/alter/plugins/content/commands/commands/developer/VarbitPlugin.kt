@@ -12,20 +12,43 @@ class VarbitPlugin(
     world: World,
     server: Server
 ) : KotlinPlugin(r, world, server) {
-        
+
     init {
-        onCommand("varbit", Privilege.DEV_POWER, description = "Set varbit to amount") {
+        onCommand("varbit", Privilege.DEV_POWER, description = "Get or set varbit value") {
             val args = player.getCommandArgs()
-            val varbit = args[0].toInt()
-            val state = args[1].toInt()
-            val oldState = player.getVarbit(varbit)
-            player.setVarbit(varbit, state)
+
+            if (args.isEmpty()) {
+                player.message("Usage: ::varbit <id> [value]")
+                return@onCommand
+            }
+
+            val varbitId = args[0].toIntOrNull()
+            if (varbitId == null) {
+                player.message("Invalid varbit id. Must be a number.")
+                return@onCommand
+            }
+
+            // Alleen uitlezen
+            if (args.size == 1) {
+                val currentValue = player.getVarbit(varbitId)
+                player.message("Varbit (<col=801700>$varbitId</col>) = <col=801700>$currentValue</col>")
+                return@onCommand
+            }
+
+            // Uitlezen én instellen
+            val newValue = args[1].toIntOrNull()
+            if (newValue == null) {
+                player.message("Invalid value. Must be a number.")
+                return@onCommand
+            }
+
+            val oldValue = player.getVarbit(varbitId)
+            player.setVarbit(varbitId, newValue)
+            val updatedValue = player.getVarbit(varbitId)
+
             player.message(
-                "Set varbit (<col=801700>$varbit</col>) from <col=801700>$oldState</col> to <col=801700>${
-                    player.getVarbit(
-                        varbit
-                    )
-                }</col>",
+                "Set varbit (<col=801700>$varbitId</col>) from " +
+                        "<col=801700>$oldValue</col> to <col=801700>$updatedValue</col>"
             )
         }
     }
