@@ -6,6 +6,7 @@ import org.alter.api.InterfaceDestination
 import org.alter.api.ext.*
 import org.alter.game.pluginnew.PluginEvent
 import org.alter.game.pluginnew.event.impl.ButtonClickEvent
+import org.alter.game.pluginnew.event.impl.onButton
 import org.alter.game.util.DbHelper.Companion.table
 import org.alter.game.util.column
 import org.alter.game.util.vars.ComponentType
@@ -18,6 +19,7 @@ class SkillGuidEvents : PluginEvent() {
         table("tables.stat_components").forEach { row ->
             val componentID = row.column("columns.stat_components:component", ComponentType)
             val skillBit = row.column("columns.stat_components:bit", IntType)
+
 
             on<ButtonClickEvent> {
                 where { component.combinedId == componentID }
@@ -43,11 +45,8 @@ class SkillGuidEvents : PluginEvent() {
             }
         }
 
-        on<ButtonClickEvent> {
-            where { component.combinedId == "components.skill_guide_v2:close".asRSCM() }
-            then {
-                player.closeInterface(InterfaceDestination.MAIN_SCREEN)
-            }
+        onButton("components.skill_guide_v2:close") {
+            player.closeInterface(InterfaceDestination.MAIN_SCREEN)
         }
 
     }

@@ -4,6 +4,8 @@ import io.github.oshai.kotlinlogging.KotlinLogging
 import net.rsprot.protocol.util.CombinedId
 import org.alter.game.model.entity.Player
 import org.alter.game.pluginnew.MenuOption
+import org.alter.game.pluginnew.PluginEvent
+import org.alter.game.pluginnew.event.EventListener
 import org.alter.game.pluginnew.event.PlayerEvent
 import org.alter.rscm.RSCM
 import org.alter.rscm.RSCM.asRSCM
@@ -44,6 +46,19 @@ data class ButtonClickEvent(
                 ItemClickEvent(item, slot, option, containerType, player).post()
             }
         }
+    }
+}
+
+fun PluginEvent.onButton(
+    componentID: String,
+    action: suspend ButtonClickEvent.() -> Unit
+): EventListener<ButtonClickEvent> {
+    require(componentID.startsWith("components.")) {
+        "Invalid component ID '$componentID'. Must start with 'components.'."
+    }
+    return on<ButtonClickEvent> {
+        where { component.combinedId == componentID.asRSCM() }
+        then { action(this) }
     }
 }
 
