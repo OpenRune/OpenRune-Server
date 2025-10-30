@@ -73,7 +73,7 @@ class BankPlugin(
             }
         }
 
-        onButton(interfaceId = Interfaces.BANK_MAIN, component = 40) {
+        onButton(interfaceId = Interfaces.BANK_MAIN, component = Components.PLACEHOLDER) {
             player.toggleVarbit(Varbits.LEAVEPLACEHOLDERS)
         }
 
@@ -93,7 +93,7 @@ class BankPlugin(
             player.toggleVarbit(Varbits.SHOW_INCINERATOR)
         }
 
-        onButton(interfaceId = Interfaces.BANK_MAIN, component = Components.DEPOSIT_WORN) {
+        onButton(interfaceId = Interfaces.BANK_MAIN, component = 47) {
             val slot = player.getInteractingSlot() - 1
             val destroyItems = player.bank[slot]!!
             val tabAffected = getCurrentTab(player, slot)
@@ -105,7 +105,7 @@ class BankPlugin(
         }
 
 // bank inventory
-        onButton(interfaceId = Interfaces.BANK_MAIN, component = 44) {
+        onButton(interfaceId = Interfaces.BANK_MAIN, component = Components.DEPOSITINV) {
             val from = player.inventory
             val to = player.bank
             for (i in 0 until from.capacity) {
@@ -122,7 +122,7 @@ class BankPlugin(
             }
         }
 // bank equipment
-        onButton(interfaceId = Interfaces.BANK_MAIN, component = 46) {
+        onButton(interfaceId = Interfaces.BANK_MAIN, component = Components.DEPOSIT_WORN) {
             val from = player.equipment
             val to = player.bank
 

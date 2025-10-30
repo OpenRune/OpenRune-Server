@@ -8,7 +8,7 @@ import org.alter.game.*
 import org.alter.game.model.*
 import org.alter.game.plugin.*
 import org.alter.plugins.content.interfaces.gameframe.config.Orbs
-import org.alter.plugins.content.interfaces.xpdrops.XpSettings
+
 
 class RunOrbPlugin(
     r: PluginRepository,
@@ -21,7 +21,12 @@ class RunOrbPlugin(
         onButton(interfaceId = Orbs.ORBS_UNIVERSE, component = Orbs.RUN_ORB) {
             val option = player.getInteractingOption()
             player.playSound(Sound.INTERFACE_SELECT1)
-            player.toggleVarp(Orbs.RUNVARP)
+            if (player.runEnergy >= 100.0) {
+                player.toggleVarp(Orbs.RUNVARP)
+            } else {
+                player.setVarp(Orbs.RUNVARP, 0)
+                player.message("You don't have enough run energy left.")
+            }
         }
     }
 }
