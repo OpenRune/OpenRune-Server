@@ -35,7 +35,7 @@ class RunEnergyPlugin(
         /**
          * Button by minimap.
          */
-        onButton(interfaceId = 160, component = 27) {
+        onButton(interfaceId = 160, component = 26) {
             RunEnergy.toggle(player)
         }
 
