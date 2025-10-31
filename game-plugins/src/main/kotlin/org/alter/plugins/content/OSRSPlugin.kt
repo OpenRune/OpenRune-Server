@@ -4,18 +4,10 @@ import org.alter.api.*
 import org.alter.api.CommonClientScripts
 import org.alter.api.InterfaceDestination
 import org.alter.api.cfg.*
-import org.alter.api.dsl.*
 import org.alter.api.ext.*
 import org.alter.game.*
 import org.alter.game.model.*
-import org.alter.game.model.attr.*
-import org.alter.game.model.container.*
-import org.alter.game.model.container.key.*
 import org.alter.game.model.entity.*
-import org.alter.game.model.item.*
-import org.alter.game.model.queue.*
-import org.alter.game.model.shop.*
-import org.alter.game.model.timer.*
 import org.alter.game.plugin.*
 
 class OSRSPlugin(
@@ -85,12 +77,12 @@ class OSRSPlugin(
                 setVarbit(Varbit.COMBAT_LEVEL_VARBIT, combatLevel)
                 setVarbit(Varbit.CHATBOX_UNLOCKED, 1)
                 runClientScript(CommonClientScripts.INTRO_MUSIC_RESTORE)
-                if (getVarp(Varp.PLAYER_HAS_DISPLAY_NAME) == 0 && username.isNotBlank()) {
-                    syncVarp(Varp.PLAYER_HAS_DISPLAY_NAME)
+                if (getVarp("varp.chat_filter_assist") == 0 && username.isNotBlank()) {
+                    syncVarp("varp.chat_filter_assist")
                 }
                 // Sync attack priority options.
-                syncVarp(Varp.NPC_ATTACK_PRIORITY_VARP)
-                syncVarp(Varp.PLAYER_ATTACK_PRIORITY_VARP)
+                syncVarp("varp.option_attackpriority_npc")
+                syncVarp("varp.option_attackpriority")
                 // Send player interaction options.
                 sendOption("Follow", 3)
                 sendOption("Trade with", 4)

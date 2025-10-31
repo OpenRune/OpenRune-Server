@@ -17,7 +17,6 @@ import net.rsprot.protocol.util.CombinedId
 import org.alter.api.*
 import org.alter.api.cfg.Song
 import org.alter.api.cfg.Varbit
-import org.alter.api.cfg.Varp
 import org.alter.game.model.World
 import org.alter.game.model.attr.CHANGE_LOGGING
 import org.alter.game.model.attr.COMBAT_TARGET_FOCUS_ATTR
@@ -34,6 +33,7 @@ import org.alter.rscm.RSCM.getRSCM
 import org.alter.game.model.timer.SKULL_ICON_DURATION_TIMER
 import org.alter.game.rsprot.RsModIndexedObjectProvider
 import org.alter.game.rsprot.RsModObjectProvider
+import org.alter.rscm.RSCM
 import org.alter.rscm.RSCM.asRSCM
 import org.alter.rscm.RSCM.requireRSCM
 import org.alter.rscm.RSCMType
@@ -688,23 +688,29 @@ fun Player.playJingle(id: Int) {
     write(MidiJingle(id))
 }
 
-fun Player.getVarp(id: Int): Int = varps.getState(id)
+fun Player.getVarp(id: String): Int {
+    requireRSCM(RSCMType.VARPTYPES, id)
+    return varps.getState(id.asRSCM())
+}
 
 fun Player.setVarp(
-    id: Int,
+    id: String,
     value: Int,
 ) {
+    requireRSCM(RSCMType.VARPTYPES, id)
     if (attr.has(CHANGE_LOGGING) && getVarp(id) != value) {
         message("Varp: $id was changed from: ${getVarp(id)} to $value")
     }
-    varps.setState(id, value)
+    varps.setState(id.asRSCM(), value)
 }
 
-fun Player.toggleVarp(id: Int) {
-    varps.setState(id, varps.getState(id) xor 1)
+fun Player.toggleVarp(id: String) {
+    requireRSCM(RSCMType.VARPTYPES, id)
+    varps.setState(id.asRSCM(), varps.getState(id.asRSCM()) xor 1)
 }
 
-fun Player.syncVarp(id: Int) {
+fun Player.syncVarp(id: String) {
+    requireRSCM(RSCMType.VARPTYPES, id)
     setVarp(id, getVarp(id))
 }
 
@@ -854,7 +860,7 @@ fun Player.setSpellbook(book: Spellbook) = setVarbit(Varbit.PLAYER_SPELL_BOOK, b
 
 fun Player.getWeaponType(): Int = getVarbit(Varbit.WEAPON_TYPE_VARBIT)
 
-fun Player.getAttackStyle(): Int = getVarp(Varp.WEAPON_ATTACK_STYLE)
+fun Player.getAttackStyle(): Int = getVarp("varp.com_mode")
 
 fun Player.hasWeaponType(
     type: WeaponType,

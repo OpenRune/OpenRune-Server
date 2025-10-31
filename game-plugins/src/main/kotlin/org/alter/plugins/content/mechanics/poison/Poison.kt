@@ -13,7 +13,7 @@ import org.alter.game.model.timer.POISON_TIMER
  * @author Tom <rspsmods@gmail.com>
  */
 object Poison {
-    private const val HP_ORB_VARP = 102
+    private const val HP_ORB_VARP = "varp.poison"
 
     fun getDamageForTicks(ticks: Int) = (ticks / 5) + 1
 

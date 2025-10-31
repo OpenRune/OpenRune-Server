@@ -22,8 +22,8 @@ object Prayers {
 
     private const val DEACTIVATE_PRAYER_SOUND = 2663
 
-    private const val ACTIVE_PRAYERS_VARP = 83
-    private const val SELECTED_QUICK_PRAYERS_VARP = 84
+    private const val ACTIVE_PRAYERS_VARP = "varp.prayer0"
+    private const val SELECTED_QUICK_PRAYERS_VARP = "varp.prayer1"
 
     // const val INF_PRAY_VARBIT = 5314
     private const val QUICK_PRAYERS_ACTIVE_VARBIT = 4103
