@@ -176,6 +176,7 @@ class Server {
          * Initialize RSCM
          */
         ConstantProvider.load(Paths.get("../data", "cfg","rscm2").toFile())
+        RSCM.init()
 
         /*
          * Load the privileges for the game.

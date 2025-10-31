@@ -1,6 +1,7 @@
 package org.alter.rscm
 
 import dev.openrune.definition.constants.ConstantProvider
+import io.github.oshai.kotlinlogging.KotlinLogging
 import org.alter.rscm.RSCMType.Companion.RSCM_PREFIXES
 import kotlin.system.exitProcess
 
@@ -28,6 +29,23 @@ enum class RSCMType(val prefix: String) {
 
 object RSCM {
 
+    val logger = KotlinLogging.logger {}
+
+    private val reverseCache = mutableMapOf<RSCMType, MutableMap<Int, String>>()
+
+    fun init() {
+        reverseCache.clear()
+
+        for ((key, value) in ConstantProvider.mappings) {
+            val prefix = key.removePrefix("$").substringBefore(".")
+            val type = RSCMType.entries.find { it.prefix == prefix } ?: continue
+
+            reverseCache.getOrPut(type) { mutableMapOf() }[value] = key
+        }
+
+        logger.info { "RSCM: Loaded reverse cache for ${reverseCache.size} tables " + "(${reverseCache.values.sumOf { it.size }} total entries)" }
+    }
+
     val NONE = "NONE"
 
     fun getRSCM(entity: Array<String>): List<Int> = entity.map { getRSCM(it) }
@@ -41,9 +59,7 @@ object RSCM {
     }
 
     fun getReverseMapping(table: RSCMType, value: Int): String? {
-        return ConstantProvider.mappings.entries
-            .find { it.key.startsWith("$${table.prefix}.") && it.value == value }
-            ?.key
+        return reverseCache[table]?.get(value)
     }
 
     fun getRSCM(entity: String): Int {
