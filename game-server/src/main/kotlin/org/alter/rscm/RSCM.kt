@@ -15,6 +15,7 @@ enum class RSCMType(val prefix: String) {
     SEQTYPES("sequences"),
     SPOTTYPES("spotanims"),
     ROWTYPES("dbrows"),
+    JINGLES("jingles"),
     TABLETYPES("tables"),
     COMPONENTS("components"),
     ENUMS("enums"),
@@ -53,7 +54,7 @@ object RSCM {
     fun String.asRSCM(): Int = getRSCM(this)
 
     fun requireRSCM(type: RSCMType, entity: String) {
-        if (!entity.startsWith(type.prefix)) {
+        if (!entity.startsWith(type.prefix) && entity != NONE) {
             error("Invalid RSCM key. Expected prefix '${type.prefix}', got '${entity.substringBefore(".")}'")
         }
     }

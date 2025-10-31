@@ -1,7 +1,9 @@
 package org.alter.game.pluginnew.event.impl
 
+import dev.openrune.ServerCacheManager
 import io.github.oshai.kotlinlogging.KotlinLogging
 import net.rsprot.protocol.util.CombinedId
+import org.alter.game.model.ExamineEntityType
 import org.alter.game.model.entity.Player
 import org.alter.game.pluginnew.MenuOption
 import org.alter.game.pluginnew.PluginEvent
@@ -41,11 +43,25 @@ data class ButtonClickEvent(
 ) : PlayerEvent(player) {
 
     init {
+
         if (item != -1) {
             val containerType = ContainerType.fromId(component.interfaceId)
-            val option = MenuOption.fromId(option)
+            val menuOption = MenuOption.fromId(option)
+
             if (containerType != null) {
-                ItemClickEvent(item, slot, option, containerType, player).post()
+                when (menuOption) {
+                    MenuOption.OP3 -> {
+                        val itemDef = ServerCacheManager.getItem(item)
+                        if (itemDef?.equipment != null) {
+                            EquipEvent(item, slot, containerType, player)
+                        } else {
+                            ItemClickEvent(item, slot, menuOption, containerType, player)
+                        }
+                    }
+                    MenuOption.OP7 -> ItemDropEvent(item, slot, containerType, player)
+                    MenuOption.OP10 -> ExamineEvent(item, ExamineEntityType.ITEM, player)
+                    else -> ItemClickEvent(item, slot, menuOption, containerType, player)
+                }.post()
             }
         }
     }
