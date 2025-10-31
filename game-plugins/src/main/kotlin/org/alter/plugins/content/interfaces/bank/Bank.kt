@@ -124,7 +124,7 @@ object Bank {
         p.setInterfaceUnderlay(-1, -2)
         p.openInterface(Interfaces.BANK_MAIN, InterfaceDestination.MAIN_SCREEN)
         p.openInterface(Interfaces.BANKSIDE, InterfaceDestination.TAB_AREA)
-        p.setVarp(262, -1)
+        p.setVarp("varp.if2", -1)
         p.setComponentText(interfaceId = Interfaces.BANK_MAIN, component = Components.BACK_CAPACITY, text = p.bank.capacity.toString())
         p.runClientScript(
             ClientScript(id = 1495),

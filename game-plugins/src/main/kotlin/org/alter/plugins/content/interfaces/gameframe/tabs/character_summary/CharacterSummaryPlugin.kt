@@ -3,7 +3,6 @@ package org.alter.plugins.content.interfaces.gameframe.tabs.character_summary
 import org.alter.api.CommonClientScripts
 import org.alter.api.InterfaceDestination
 import org.alter.api.cfg.Varbit
-import org.alter.api.cfg.Varp
 import org.alter.api.ext.*
 import org.alter.game.Server
 import org.alter.game.model.World
@@ -26,7 +25,7 @@ class CharacterSummaryPlugin(
         onLogin {
             player.openInterface(InterfaceDestination.QUEST_ROOT.interfaceId, 43, player.getQuestRootTab(), 1)
             player.setVarbit(Varbit.TOTAL_QUEST_POINT_COUNT, 123) // @TODO
-            player.setVarp(Varp.QUEST_POINTS, 100) // @TODO
+            player.setVarp("varp.qp", 100) // @TODO
             player.setVarbit(Varbit.TOTAL_QUEST_COUNT, 100) // @TODO
             player.setVarbit(Varbit.COMPLETED_QUESTS_COUNT, 58) // @TODO
             player.runClientScript(CommonClientScripts.TIME_PLAYED, 1, 1, 10) // @TODO Time played

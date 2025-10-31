@@ -7,7 +7,7 @@ object Orbs {
     val XP_ORB = "components.orbs:xp_drops".asRSCM() //Component 6
     val XPDROPSENABLED = "varbits.xpdrops_enabled".asRSCM() //XP_DROPS_VISIBLE_VARBIT = 4702
     val XP_DROPS = "interfaces.xp_drops".asRSCM() //Interface_id = 12
-    val RUNVARP = "varp.option_run".asRSCM() //VARP 173
+    val RUNVARP = "varp.option_run"
     val RUN_ORB = "components.orbs:runbutton".asRSCM() //160:28
     val POISON = "varp.poison".asRSCM() //VARP = 102 / HEALTHY = 0 POISON = 1 VENOM = 1000000
     val DISEASED = "varp.disease".asRSCM() //VARP 456 / HEALTHY = 0 DISEASED = 1

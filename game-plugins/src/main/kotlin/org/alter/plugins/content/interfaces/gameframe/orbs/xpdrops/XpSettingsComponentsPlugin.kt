@@ -73,8 +73,8 @@ class XpSettingsComponentsPlugin(
             }
             player.setVarbit(Varbit.EXPERIENCE_TRACKER_CONFIGURED_SKILL, 1) // Actl on osrs they set this one to wut it was before but i aint wasting memory on that shit.
             player.setVarbit(Varbit.EXPERIENCE_TRACKER_CONFIGURED_SKILL, 0)
-            player.setVarp(261, -1)
-            player.setVarp(262, -1)
+            player.setVarp("varp.if1", -1)
+            player.setVarp("varp.if2", -1)
         }
 // No tracker or Goal
         on_xp_button(NO_TRACKER_OR_GOAL_COMPONENT_ID) {
@@ -83,20 +83,18 @@ class XpSettingsComponentsPlugin(
 
 // Tracker
         on_xp_button(TRACKER_COMPONENT_ID) {
-            player.setVarp(262, -1) // Tf Makes 61512 ?
-            player.setVarp(261, -1) // Tf Makes 61512 ?
+            player.setVarp("varp.if2", -1) // Tf Makes 61512 ?
+            player.setVarp("varp.if1", -1) // Tf Makes 61512 ?
             player.setVarbit(Varbit.EXPERIENCE_TRACKER_CONFIGURED_MODE, 1)
             val slot = player.getVarbit(Varbit.EXPERIENCE_TRACKER_CONFIGURED_SKILL)
             when {
                 slot in 0..23 -> {
                     val skillEnum = getEnumOrDefault(681)
-                    player.setVarp(
-                        261,
-                        player.getSkills()[skillEnum.getInt(player.getVarbit(Varbit.EXPERIENCE_TRACKER_CONFIGURED_SKILL))].xp.roundToInt(),
+                    player.setVarp("varp.if1", player.getSkills()[skillEnum.getInt(player.getVarbit(Varbit.EXPERIENCE_TRACKER_CONFIGURED_SKILL))].xp.roundToInt(),
                     )
                 }
                 slot == 24 -> {
-                    player.setVarp(261, player.getSkills().calculateTotalXp.roundToInt())
+                    player.setVarp("varp.if1", player.getSkills().calculateTotalXp.roundToInt())
                 }
                 else -> {
                     println("Unknown Slot $slot by Player: ${player.username}") // @TODO No logger yet..
@@ -112,19 +110,19 @@ class XpSettingsComponentsPlugin(
          */
         on_xp_button(GOAL_COMPONENT_ID) {
             player.playSound(Sound.INTERFACE_SELECT1)
-            player.setVarp(261, -1)
+            player.setVarp("varp.if1", -1)
             player.setVarbit(Varbit.EXPERIENCE_TRACKER_CONFIGURED_MODE, 2)
             val slot = player.getVarbit(Varbit.EXPERIENCE_TRACKER_CONFIGURED_SKILL)
             when {
                 slot in 0..23 -> {
 
                     val skill = player.getSkills()[skillEnum.getInt(player.getVarbit(Varbit.EXPERIENCE_TRACKER_CONFIGURED_SKILL))]
-                    player.setVarp(261, skill.xp.roundToInt())
-                    player.setVarp(262, SkillSet.getXpForLevel(skill.currentLevel + 1).roundToInt())
+                    player.setVarp("varp.if1", skill.xp.roundToInt())
+                    player.setVarp("varp.if2", SkillSet.getXpForLevel(skill.currentLevel + 1).roundToInt())
                 }
                 slot == 24 -> {
-                    player.setVarp(261, 0)
-                    player.setVarp(262, getClosestNumber(player.getSkills().calculateTotalXp.roundToInt()))
+                    player.setVarp("varp.if1", 0)
+                    player.setVarp("varp.if2", getClosestNumber(player.getSkills().calculateTotalXp.roundToInt()))
                 }
                 else -> {
                     println("Unknown Slot $slot by Player: ${player.username}") // @TODO No logger yet..
@@ -150,9 +148,7 @@ class XpSettingsComponentsPlugin(
                     }
                 }
                 9 ->
-                    player.setVarp(
-                        261,
-                        player.getSkills()[skillEnum.getInt(player.getVarbit(Varbit.EXPERIENCE_TRACKER_CONFIGURED_SKILL))].xp.roundToInt(),
+                    player.setVarp("varp.if1", player.getSkills()[skillEnum.getInt(player.getVarbit(Varbit.EXPERIENCE_TRACKER_CONFIGURED_SKILL))].xp.roundToInt(),
                     )
                 else -> "Something went wrong! method: on_xp_button(TRACKER_SET) Interaction slot: ${player.getInteractingOption()}"
             }
