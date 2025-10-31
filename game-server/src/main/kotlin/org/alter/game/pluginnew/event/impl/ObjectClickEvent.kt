@@ -37,7 +37,7 @@ open class ObjectClickEvent(
     val id : Int = gameObject.internalID
 
     override fun resolveOptionName(): String {
-        val def = getObject(id) ?: error("Object not found for id=$id")
-        return def.actions.getOrNull(op.id - 1) ?: error("No action found at index ${op.id} for object id=$id")
+        val def = getObject(gameObject.internalID) ?: error("Object not found for id=${gameObject.id}[${gameObject.id}]")
+        return def.actions.getOrNull(op.id - 1) ?: error("No action found at index ${op.id} for object id=${gameObject.id}[${gameObject.id}]")
     }
 }
