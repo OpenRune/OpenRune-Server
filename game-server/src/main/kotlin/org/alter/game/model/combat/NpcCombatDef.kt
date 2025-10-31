@@ -15,9 +15,9 @@ data class NpcCombatDef(
     val ranged: Int,
     val magic: Int,
     val attackSpeed: Int,
-    val attackAnimation: Int,
-    val blockAnimation: Int,
-    val deathAnimation: List<Int>,
+    val attackAnimation: String,
+    val blockAnimation: String,
+    val deathAnimation: List<String>,
     val defaultAttackSound: Int,
     val defaultAttackSoundArea: Boolean,
     val defaultAttackSoundRadius: Int,
@@ -50,9 +50,9 @@ data class NpcCombatDef(
         private const val DEFAULT_HITPOINTS = 10
         private const val DEFAULT_ATTACK_SPEED = 4
         private const val DEFAULT_RESPAWN_DELAY = 25
-        private const val DEFAULT_ATTACK_ANIMATION = 422
-        private const val DEFAULT_BLOCK_ANIMATION = 424
-        private const val DEFAULT_DEATH_ANIMATION = 836
+        private const val DEFAULT_ATTACK_ANIMATION = "sequences.human_unarmedpunch"
+        private const val DEFAULT_BLOCK_ANIMATION = "sequences.human_unarmedblock"
+        private const val DEFAULT_DEATH_ANIMATION = "sequences.human_death"
 
         val DEFAULT =
             NpcCombatDef(

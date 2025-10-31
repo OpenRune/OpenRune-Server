@@ -14,7 +14,7 @@ class SpadePlugin(
         
     init {
         onItemOption(item = "items.spade", "dig") {
-            player.animate(830)
+            player.animate("sequences.human_dig")
             if (player.tile.x == 3229 && player.tile.z == 3209 && player.inventory.contains(getRSCM("items.cluequest_clue1"))) {
                 player.queue {
                     player.inventory.remove(23067, 1)

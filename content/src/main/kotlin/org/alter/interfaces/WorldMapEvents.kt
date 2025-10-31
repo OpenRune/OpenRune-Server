@@ -86,10 +86,10 @@ class WorldMapEvents : PluginEvent() {
                         }
                         3 -> {
                             player.queue {
-                                player.animate("sequences.qip_watchtower_read_scroll".asRSCM())
+                                player.animate("sequences.qip_watchtower_read_scroll")
                                 wait(1)
                                 player.message("Fullscreen minimap was temporarily disabled.")
-                                player.animate("sequences.qip_watchtower_stop_reading_scroll".asRSCM())
+                                player.animate("sequences.qip_watchtower_stop_reading_scroll")
                             }
                         }
                         4 -> player.toggleVarbit("varbits.minimap_toggle".asRSCM())

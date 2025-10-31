@@ -66,26 +66,26 @@ class AlkharidGate(
     }
 
     suspend fun QueueTask.dialog(player: Player) {
-        chatPlayer(player, "Can I come through this gate?", animation = 588)
+        chatPlayer(player, "Can I come through this gate?", animation = "sequences.chatneu1")
         chatNpc(
-            player = player, npc = guard, message = "You must pay a toll of 10 gold coins to pass.", animation = 590
+            player = player, npc = guard, message = "You must pay a toll of 10 gold coins to pass.", animation = "sequences.chatneu3"
         )
 
         when (options(player, "No thank you, I'll walk around.", "Who does my money go to?", "Yes, ok.")) {
             1 -> {
-                chatPlayer(player, "No thank you, I'll walk around.", animation = 554)
-                chatNpc(player = player, npc = guard, message = "Ok suit yourself.", animation = 588)
+                chatPlayer(player, "No thank you, I'll walk around.", animation = "sequences.chathap1")
+                chatNpc(player = player, npc = guard, message = "Ok suit yourself.", animation = "sequences.chatneu1")
             }
 
             2 -> {
-                chatPlayer(player, "Who does my money go to?", animation = 554)
+                chatPlayer(player, "Who does my money go to?", animation = "sequences.chathap1")
                 chatNpc(
-                    player = player, npc = guard, message = "The money goes to the city of Al-Kharid.", animation = 590
+                    player = player, npc = guard, message = "The money goes to the city of Al-Kharid.", animation = "sequences.chatneu3"
                 )
             }
 
             3 -> {
-                chatPlayer(player, "Yes, ok.", animation = 554)
+                chatPlayer(player, "Yes, ok.", animation = "sequences.chathap1")
                 handleGate(player, world)
 
                 /** TODO

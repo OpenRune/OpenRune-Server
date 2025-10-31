@@ -31,7 +31,7 @@ class DragonPickaxePlugin(
         SpecialAttacks.register("items.dragon_pickaxe", 100, true) {
             player.getSkills().alterCurrentLevel(Skills.MINING, +3, 120)
             player.forceChat("Smashing!")
-            player.animate(Animation.DRAGON_PICKAXE_SPECIAL)
+            player.animate("sequences.rockknocker")
         }
     }
 }

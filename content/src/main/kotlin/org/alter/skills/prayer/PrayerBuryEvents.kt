@@ -44,7 +44,7 @@ class PrayerBuryEvents : PluginEvent() {
 
         val animation = if (isAshes) "sequences.farming_ingredient_sprinkle" else "sequences.human_openchest"
 
-        player.animate(animation.asRSCM())
+        player.animate(animation)
         player.playSound(2738)
 
         player.queue {

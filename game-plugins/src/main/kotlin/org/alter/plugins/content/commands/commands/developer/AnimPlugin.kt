@@ -16,6 +16,8 @@ import org.alter.game.model.queue.*
 import org.alter.game.model.shop.*
 import org.alter.game.model.timer.*
 import org.alter.game.plugin.*
+import org.alter.rscm.RSCM
+import org.alter.rscm.RSCMType
 
 class AnimPlugin(
     r: PluginRepository,
@@ -27,7 +29,13 @@ class AnimPlugin(
         onCommand("anim", Privilege.DEV_POWER, description = "Play animation") {
             val args = player.getCommandArgs()
             val id = args[0].toInt()
-            player.animate(id)
+
+            val name = RSCM.getReverseMapping(RSCMType.SEQTYPES, id) ?: run {
+                player.message("Could not find a seq animation with ID $id. Please check if the ID is valid.")
+                return@onCommand
+            }
+
+            player.animate(name)
             player.message("Animate: $id")
         }
     }

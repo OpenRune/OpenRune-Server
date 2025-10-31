@@ -16,6 +16,8 @@ import org.alter.game.model.queue.*
 import org.alter.game.model.shop.*
 import org.alter.game.model.timer.*
 import org.alter.game.plugin.*
+import org.alter.rscm.RSCM
+import org.alter.rscm.RSCMType
 
 class ChatanimPlugin(
     r: PluginRepository,
@@ -29,8 +31,13 @@ class ChatanimPlugin(
             val key = args[0].toInt()
             val npcId = args[1].toInt()
 
+            val name = RSCM.getReverseMapping(RSCMType.SEQTYPES, key) ?: run {
+                player.message("Could not find a seq animation with ID $key. Please check if the ID is valid.")
+                return@onCommand
+            }
+
             player.queue {
-                chatNpc(player, "Hello World", npcId, animation = key, "hi")
+                chatNpc(player, "Hello World", npcId, animation = name, "hi")
             }
             player.message("$key opened in a dialog", ChatMessageType.ENGINE)
         }

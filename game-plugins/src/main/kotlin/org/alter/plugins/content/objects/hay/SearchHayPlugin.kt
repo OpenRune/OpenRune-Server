@@ -40,7 +40,7 @@ class SearchHayPlugin(
     ) {
         p.lock()
         p.message("You search the $obj...")
-        p.animate(827)
+        p.animate("sequences.human_pickupfloor")
         it.wait(3)
         p.unlock()
         when (world.random(100)) {

@@ -24,7 +24,7 @@ enum class ContainerType(val id: String) {
         fun fromId(id: Int): ContainerType? {
             val entry = entries.find { it.id.asRSCM() == id }
             return entry ?: run {
-                val reverseName = RSCM.getReverseMapping("interfaces", id)
+                val reverseName = RSCM.getReverseMapping(RSCMType.INTERFACES, id)
                 logger.info { "Missing mapping for id=$id (reverse: $reverseName) in ContainerType." }
                 null
             }

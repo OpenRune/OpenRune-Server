@@ -42,10 +42,12 @@ class AhrimPlugin(
             }
 
             anims {
-                attack = 729
-                block = 2079
-                death = 2925
-            }
+
+attack = "sequences.human_caststun"
+block = "sequences.barrows_quarterstaff_defend"
+death = "sequences.champions_zombie_death"
+
+}
         }
     }
 }

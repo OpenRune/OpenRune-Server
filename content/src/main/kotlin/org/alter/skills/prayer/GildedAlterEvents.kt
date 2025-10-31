@@ -48,7 +48,7 @@ class GildedAlterEvents : PluginEvent() {
             repeatUntil(delay = 3, immediate = true, predicate = { canSacrifice(player, bone) }) {
                 val removeBone = random(0..2) == 1
 
-                player.animate("sequences.human_bone_sacrifice".asRSCM())
+                player.animate("sequences.human_bone_sacrifice")
                 player.playSound(1628)
                 player.world.spawn(TileGraphic(tile = gameObject.tile, id = "spotanims.poh_bone_sacrifice".asRSCM()))
                 player.addXp(Skills.PRAYER, (xp * 3.5).toInt())

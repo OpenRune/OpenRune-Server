@@ -59,13 +59,13 @@ class BankerPlugin(
         it.chatNpc(
             player,
             "This is a branch of the Bank of Gielinor. We have<br>branches in many towns.",
-            animation = 568
+            animation = "sequences.chathap2"
         )
-        it.chatPlayer(player, "And what do you do?", animation = 554)
+        it.chatPlayer(player, "And what do you do?", animation = "sequences.chathap1")
         it.chatNpc(
             player,
             "We will look after your items and money for you.<br>Leave your valuables with us if you want to keep them<br>safe.",
-            animation = 569,
+            animation = "sequences.chathap3",
         )
     }
 

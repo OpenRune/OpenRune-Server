@@ -40,17 +40,15 @@ object RSCM {
         }
     }
 
-    fun getReverseMapping(table: String, value: Int): String? {
-        require(RSCM_PREFIXES.any { table.startsWith(it) }) { "Prefix not found for '$table'" }
-
+    fun getReverseMapping(table: RSCMType, value: Int): String? {
         return ConstantProvider.mappings.entries
-            .find { it.key.startsWith("$table.") && it.value == value }
+            .find { it.key.startsWith("$${table.prefix}.") && it.value == value }
             ?.key
     }
 
     fun getRSCM(entity: String): Int {
-        require(RSCM_PREFIXES.any { entity.startsWith(it) }) { "Prefix not found for '${entity.substringBefore(".")}'" }
         if (entity == NONE) return -1
+        require(RSCM_PREFIXES.any { entity.startsWith(it) }) { "Prefix not found for '${entity.substringBefore(".")}'" }
         return ConstantProvider.getMapping(entity)
     }
 }

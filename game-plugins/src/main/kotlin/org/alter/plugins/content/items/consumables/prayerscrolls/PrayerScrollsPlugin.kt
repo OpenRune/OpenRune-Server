@@ -5,6 +5,7 @@ import org.alter.game.*
 import org.alter.game.model.*
 import org.alter.game.plugin.*
 import org.alter.plugins.content.mechanics.prayer.Prayers
+import org.alter.rscm.RSCM
 import org.alter.rscm.RSCM.getRSCM
 
 class PrayerScrollsPlugin(
@@ -22,7 +23,7 @@ class PrayerScrollsPlugin(
                     )
                     return@queue
                 }
-                player.animate(id = 7403)
+                player.animate(id = "sequences.qip_watchtower_read_scroll_and_stop")
                 itemMessageBox(player,
                     "You can make out some faded words on the ancient parchment. It appears to be an archaic invocation of the gods! Would you like to absorb its power? <br>(Warning: This will consume the scroll.)</b>",
                     item = "items.raids_prayerscroll",
@@ -32,7 +33,7 @@ class PrayerScrollsPlugin(
                         if (player.inventory.contains(getRSCM("items.raids_prayerscroll"))) {
                             player.inventory.remove(item = "items.raids_prayerscroll")
                             player.setVarbit(id = Prayers.RIGOUR_UNLOCK_VARBIT, value = 1)
-                            player.animate(id = -1)
+                            player.animate(id = RSCM.NONE)
                             itemMessageBox(player,
                                 "You study the scroll and learn a new prayer: <col=8B0000>Rigour</col>",
                                 item = "items.raids_prayerscroll",
@@ -40,7 +41,7 @@ class PrayerScrollsPlugin(
                         }
                     }
                     2 -> {
-                        player.animate(id = -1)
+                        player.animate(id = RSCM.NONE)
                     }
                 }
             }
@@ -54,7 +55,7 @@ class PrayerScrollsPlugin(
                     )
                     return@queue
                 }
-                player.animate(id = 7403)
+                player.animate(id = "sequences.qip_watchtower_read_scroll_and_stop")
                 itemMessageBox(player,
                     "You can make out some faded words on the ancient parchment. It appears to be an archaic invocation of the gods! Would you like to absorb its power? <br>(Warning: This will consume the scroll.)</b>",
                     item = "items.raids_prayerscroll_augury",
@@ -64,7 +65,7 @@ class PrayerScrollsPlugin(
                         if (player.inventory.contains("items.raids_prayerscroll_augury")) {
                             player.inventory.remove(item = "items.raids_prayerscroll_augury")
                             player.setVarbit(id = Prayers.AUGURY_UNLOCK_VARBIT, value = 1)
-                            player.animate(id = -1)
+                            player.animate(id = RSCM.NONE)
                             itemMessageBox(player,
                                 "You study the scroll and learn a new prayer: <col=8B0000>Augury</col>",
                                 item = "items.raids_prayerscroll_augury",
@@ -72,7 +73,7 @@ class PrayerScrollsPlugin(
                         }
                     }
                     2 -> {
-                        player.animate(id = -1)
+                        player.animate(id = RSCM.NONE)
                     }
                 }
             }
@@ -86,7 +87,7 @@ class PrayerScrollsPlugin(
                     )
                     return@queue
                 }
-                player.animate(id = 7403)
+                player.animate(id = "sequences.qip_watchtower_read_scroll_and_stop")
                 itemMessageBox(player,
                     "You can make out some faded words on the ancient parchment. It appears to be an archaic invocation of the gods! Would you like to absorb its power? <br>(Warning: This will consume the scroll.)</b>",
                     item = "items.raids_prayerscroll_preserve",
@@ -96,7 +97,7 @@ class PrayerScrollsPlugin(
                         if (player.inventory.contains("items.raids_prayerscroll_preserve")) {
                             player.inventory.remove(item = "items.raids_prayerscroll_preserve")
                             player.setVarbit(id = Prayers.PRESERVE_UNLOCK_VARBIT, value = 1)
-                            player.animate(id = -1)
+                            player.animate(id = RSCM.NONE)
                             itemMessageBox(player,
                                 "You study the scroll and learn a new prayer: <col=8B0000>Preserve</col>",
                                 item = "items.raids_prayerscroll_preserve",
@@ -104,7 +105,7 @@ class PrayerScrollsPlugin(
                         }
                     }
                     2 -> {
-                        player.animate(id = -1)
+                        player.animate(id = RSCM.NONE)
                     }
                 }
             }

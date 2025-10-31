@@ -20,7 +20,7 @@ class ArmadylGodswordPlugin(
         val SPECIAL_REQUIREMENT = 50
 
         SpecialAttacks.register("items.ags", SPECIAL_REQUIREMENT) {
-            player.animate(id = 7644)
+            player.animate(id = "sequences.ags_special_player")
             player.graphic(id = "spotanims.dh_sword_update_armadyl_special_spotanim")
 
             world.spawn(AreaSound(tile = player.tile, id = 3869, radius = 10, volume = 1))
@@ -33,7 +33,7 @@ class ArmadylGodswordPlugin(
         }
 
         SpecialAttacks.register("items.agsg", SPECIAL_REQUIREMENT) {
-            player.animate(id = 7644)
+            player.animate(id = "sequences.ags_special_player")
             player.graphic(id = "spotanims.dh_sword_update_armadyl_special_spotanim")
             world.spawn(AreaSound(tile = player.tile, id = 3869, radius = 10, volume = 1))
 

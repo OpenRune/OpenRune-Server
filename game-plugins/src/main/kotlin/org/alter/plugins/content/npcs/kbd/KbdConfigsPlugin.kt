@@ -60,9 +60,11 @@ class KbdConfigsPlugin(
             }
 
             anims {
-                block = 89
-                death = 92
-            }
+
+block = "sequences.dragon_block"
+                death = "sequences.dragon_death"
+
+}
 
             //slayerData {
             // /**

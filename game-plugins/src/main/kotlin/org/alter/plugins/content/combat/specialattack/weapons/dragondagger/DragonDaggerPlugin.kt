@@ -20,7 +20,7 @@ class DragonDaggerPlugin(
         val SPECIAL_REQUIREMENT = 25
 
         SpecialAttacks.register("items.dragon_dagger", SPECIAL_REQUIREMENT) {
-            player.animate(id = 1062)
+            player.animate(id = "sequences.puncture")
             player.graphic(id = "spotanims.sp_attack_puncture_spotanim", height = 92)
             world.spawn(AreaSound(tile = player.tile, id = 2537, radius = 10, volume = 1))
 

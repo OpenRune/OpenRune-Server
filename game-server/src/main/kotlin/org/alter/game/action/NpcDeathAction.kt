@@ -16,6 +16,7 @@ import org.alter.game.model.queue.TaskPriority
 import org.alter.game.model.weightedTableBuilder.roll
 import org.alter.game.plugin.Plugin
 import org.alter.game.service.log.LoggerService
+import org.alter.rscm.RSCM.asRSCM
 import java.lang.ref.WeakReference
 
 /**
@@ -62,8 +63,8 @@ object NpcDeathAction {
          * @TODO add interruption for this block if we would want to execute a plugin during it's death animation
          */
         deathAnimation.forEach { anim ->
-            val def = getAnim(anim)?: return
-            npc.animate(def.id, def.animationLength)
+            val def = getAnim(anim.asRSCM())?: return
+            npc.animate(anim, def.animationLength)
             wait(def.animationLength)
         }
         world.plugins.executeNpcDeath(npc)

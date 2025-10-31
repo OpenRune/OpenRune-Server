@@ -23,7 +23,7 @@ class DoomsayerPlugin(
     }
 
     suspend fun QueueTask.dialog(player: Player) {
-        chatNpc(player, "Dooooom!", animation = 588)
+        chatNpc(player, "Dooooom!", animation = "sequences.chatneu1")
         chatPlayer(player, "Where?")
         chatNpc(
             player, "All around us! I can feel it in the air, hear it on the<br><br>wind, smell it... also in the air!"

@@ -268,7 +268,7 @@ suspend fun QueueTask.chatNpc(
     player: Player,
     message: String,
     npc: Int = -1,
-    animation: Int = 588,
+    animation: String = "sequences.chatneu1",
     title: String? = null,
 ) {
     val npcId =
@@ -306,7 +306,7 @@ suspend fun QueueTask.chatNpc(
 suspend fun QueueTask.chatPlayer(
     player: Player,
     message: String,
-    animation: Int = 588,
+    animation: String = "sequences.chatneu1",
     title: String? = null,
 ) {
     val dialogTitle = title ?: player.username

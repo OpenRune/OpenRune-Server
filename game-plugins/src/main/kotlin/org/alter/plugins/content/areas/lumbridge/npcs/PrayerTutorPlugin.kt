@@ -1,7 +1,6 @@
 package org.alter.plugins.content.areas.lumbridge.npcs
 
 import org.alter.api.GameframeTab
-import org.alter.api.cfg.Animation
 import org.alter.api.ext.*
 import org.alter.game.Server
 import org.alter.game.model.World
@@ -36,7 +35,7 @@ class PrayerTutorPlugin (
     }
 
     private suspend fun QueueTask.noThanks(player: Player) {
-        chatPlayer(player, "No, thank you.", animation = Animation.CHAT_QUIZ1)
+        chatPlayer(player, "No, thank you.", animation = "sequences.chatneu1")
         chatNpc(player, "Very well. Saradomin be with you!")
     }
 
