@@ -18,8 +18,9 @@ open class ItemClickEvent(
 ) : EntityInteractionEvent<Int>(item, op, player) {
 
     public override fun resolveOptionName(): String {
+        val indexSlot = op.id - 2
         val def = getItem(item) ?: error("Item not found for id=$item")
-        return def.interfaceOptions.getOrNull(op.id) ?: error("No action found at index ${op.id} for item id=$item")
+        return def.interfaceOptions.getOrNull(indexSlot) ?: error("No action found at index $indexSlot for item id=$item")
     }
 
     fun isContainer(type: ContainerType): Boolean = container == type
@@ -53,3 +54,17 @@ fun PluginEvent.onItemOption(
         then { action(this) }
     }
 }
+
+class ItemDropEvent(
+    val itemId: Int,
+    val slot: Int,
+    val container: ContainerType,
+    player: Player
+) : ValueEvent<Int>(itemId, player)
+
+class EquipEvent(
+    val itemId: Int,
+    val slot: Int,
+    val container: ContainerType,
+    player: Player
+) : ValueEvent<Int>(itemId, player)
