@@ -8,10 +8,10 @@ import org.alter.game.model.Tile
  *
  * @author Tom <rspsmods@gmail.com>
  */
-class DynamicObject(id: Int, type: Int, rot: Int, tile: Tile) : GameObject(id, type, rot, tile) {
+class DynamicObject(id: String, type: Int, rot: Int, tile: Tile) : GameObject(id, type, rot, tile) {
     constructor(other: GameObject) : this(other.id, other.type, other.rot, other.tile)
 
-    constructor(other: GameObject, id: Int) : this(id, other.type, other.rot, other.tile)
+    constructor(other: GameObject, id: String) : this(id, other.type, other.rot, other.tile)
 
     override val entityType: EntityType = EntityType.DYNAMIC_OBJECT
 }

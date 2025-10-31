@@ -3,7 +3,6 @@ package org.alter.skills.prayer
 import org.alter.api.ChatMessageType
 import org.alter.api.Skills
 import org.alter.api.ext.message
-import org.alter.api.ext.playSound
 import org.alter.api.ext.random
 import org.alter.game.model.Area
 import org.alter.game.model.Tile
@@ -12,7 +11,6 @@ import org.alter.game.model.entity.GameObject
 import org.alter.game.model.entity.Player
 import org.alter.game.pluginnew.PluginEvent
 import org.alter.game.pluginnew.event.impl.ItemOnObject
-import org.alter.game.pluginnew.event.impl.ObjectClickEvent
 import org.alter.rscm.RSCM.asRSCM
 
 class GildedAlterEvents : PluginEvent() {
@@ -20,9 +18,9 @@ class GildedAlterEvents : PluginEvent() {
     companion object {
         val CHAOS_ALTAR_AREA = Area(2946, 3825, 2957, 3816, true)
         val GILDED_ALTERS = listOf(
-            "objects.poh_altar_saradomin_7".asRSCM(),
-            "objects.poh_altar_zamorak_7".asRSCM(),
-            "objects.poh_altar_gnomechild_7".asRSCM()
+            "objects.poh_altar_saradomin_7",
+            "objects.poh_altar_zamorak_7",
+            "objects.poh_altar_gnomechild_7"
         )
     }
 
@@ -31,7 +29,7 @@ class GildedAlterEvents : PluginEvent() {
             if (!bone.isAshes) {
 
                 on<ItemOnObject> {
-                    where { item.id == bone.id && gameObject.id == "objects.chaosaltar".asRSCM() }
+                    where { item.id == bone.id && gameObject.id == "objects.chaosaltar" }
                     then { startAlter(player, bone.id, bone.xp, true, gameObject) }
                 }
 

@@ -1,6 +1,5 @@
 package org.alter.game.model.instance
 
-import dev.openrune.definition.type.ObjectType
 import dev.openrune.types.ObjectServerType
 import org.alter.game.model.Area
 import org.alter.game.model.EntityType

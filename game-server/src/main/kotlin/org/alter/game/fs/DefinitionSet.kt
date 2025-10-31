@@ -10,6 +10,8 @@ import org.alter.game.model.collision.BRIDGE_TILE
 import org.alter.game.model.entity.StaticObject
 import org.alter.game.model.region.ChunkSet
 import org.alter.game.service.xtea.XteaKeyService
+import org.alter.rscm.RSCM
+import org.alter.rscm.RSCMType
 import org.rsmod.routefinder.flag.CollisionFlag
 import java.io.IOException
 
@@ -137,7 +139,7 @@ class DefinitionSet {
                         .takeUnless { it in bridges && loc.height == 0 }
                         ?.let { tile ->
                             val adjustedTile = if (tile in bridges) tile.transform(-1) else tile
-                            val obj = StaticObject(loc.id, loc.type, loc.orientation, adjustedTile)
+                            val obj = StaticObject(RSCM.getReverseMapping(RSCMType.LOCTYPES,loc.id)!!, loc.type, loc.orientation, adjustedTile)
                             world.chunks.getOrCreate(adjustedTile).addEntity(world, obj, adjustedTile)
                         }
                 }

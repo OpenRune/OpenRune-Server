@@ -14,7 +14,6 @@ import org.alter.plugins.content.interfaces.bank.BankTabs.insertionPoint
 import org.alter.plugins.content.interfaces.bank.BankTabs.numTabsUnlocked
 import org.alter.plugins.content.interfaces.bank.BankTabs.shiftTabs
 import org.alter.plugins.content.interfaces.bank.BankTabs.startPoint
-import org.alter.plugins.content.interfaces.bank.config.Interfaces
 import org.alter.rscm.RSCM
 import org.alter.rscm.RSCM.asRSCM
 import org.alter.rscm.RSCMType
@@ -51,7 +50,7 @@ class BankTabsPlugin(
                 }
                 else -> {
                     player.printAndMessageIfHasPower(
-                        ("Unknown option from component: [$Interfaces.BANK_MAIN:${"components.bankmain:tabs".asRSCM()}]: $opt"),
+                        ("Unknown option from component: [${"components.bankmain:tabs".asRSCM()}]: $opt"),
                         Privilege.ADMIN_POWER,
                     )
                 }

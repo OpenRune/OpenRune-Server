@@ -4,12 +4,15 @@ import org.alter.game.model.World
 import org.alter.game.model.collision.WALL_DIAGONAL
 import org.alter.game.model.entity.DynamicObject
 import org.alter.game.model.entity.GameObject
+import org.alter.rscm.RSCM
+import org.alter.rscm.RSCM.asRSCM
 import org.alter.rscm.RSCM.getRSCM
+import org.alter.rscm.RSCMType
 import kotlin.math.abs
 
 fun World.openDoor(
     obj: GameObject,
-    opened: Int = obj.id + 1,
+    opened: Int,
     invertRot: Boolean = false,
     invertTransform: Boolean = false,
 ): GameObject {
@@ -26,7 +29,7 @@ fun World.openDoor(
             else -> throw IllegalStateException("Invalid door rotation: [currentRot=$oldRot, replaceRot=$newRot]")
         }
 
-    val newDoor = DynamicObject(id = opened, type = obj.type, rot = newRot, tile = newTile)
+    val newDoor = DynamicObject(id = RSCM.getReverseMapping(RSCMType.LOCTYPES,opened)!!, type = obj.type, rot = newRot, tile = newTile)
     remove(obj)
     spawn(newDoor)
     return newDoor
@@ -37,12 +40,12 @@ fun World.openDoor(
     opened: String,
     invertRot: Boolean = false,
     invertTransform: Boolean = false,
-): GameObject = this.openDoor(obj, getRSCM(opened), invertRot, invertTransform)
+): GameObject = this.openDoor(obj, opened.asRSCM() + 1, invertRot, invertTransform)
 
 
 fun World.closeDoor(
     obj: GameObject,
-    closed: Int = obj.id - 1,
+    closed: Int,
     invertRot: Boolean = false,
     invertTransform: Boolean = false,
 ): GameObject {
@@ -59,7 +62,7 @@ fun World.closeDoor(
             else -> throw IllegalStateException("Invalid door rotation: [currentRot=$oldRot, replaceRot=$newRot]")
         }
 
-    val newDoor = DynamicObject(id = closed, type = obj.type, rot = newRot, tile = newTile)
+    val newDoor = DynamicObject(id = RSCM.getReverseMapping(RSCMType.LOCTYPES,closed)!!, type = obj.type, rot = newRot, tile = newTile)
     remove(obj)
     spawn(newDoor)
     return newDoor
@@ -70,7 +73,7 @@ fun World.closeDoor(
     closed: String,
     invertRot: Boolean = false,
     invertTransform: Boolean = false,
-): GameObject = this.closeDoor(obj, getRSCM(closed), invertRot, invertTransform)
+): GameObject = this.closeDoor(obj, closed.asRSCM() - 1, invertRot, invertTransform)
 
 //
 // fun World.getSettings() : Settings {

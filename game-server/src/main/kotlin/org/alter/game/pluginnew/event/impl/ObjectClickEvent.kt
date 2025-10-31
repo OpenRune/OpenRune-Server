@@ -13,10 +13,9 @@ class ItemOnObject(
     val slot : Int,
     override val player: Player
 ) : PlayerEvent(player) {
-    val id : Int = gameObject.id
 
     val option: String
-        get() = resolveOptionName(id, MenuOption.OP1.id)
+        get() = resolveOptionName(gameObject.internalID, MenuOption.OP1.id)
 
     companion object {
         private fun resolveOptionName(id: Int, opId: Int): String {
@@ -35,7 +34,7 @@ open class ObjectClickEvent(
     player: Player
 ) : EntityInteractionEvent<GameObject>(gameObject, op, player) {
 
-    val id : Int = gameObject.id
+    val id : Int = gameObject.internalID
 
     override fun resolveOptionName(): String {
         val def = getObject(id) ?: error("Object not found for id=$id")

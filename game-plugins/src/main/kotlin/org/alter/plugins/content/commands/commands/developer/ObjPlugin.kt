@@ -16,6 +16,8 @@ import org.alter.game.model.queue.*
 import org.alter.game.model.shop.*
 import org.alter.game.model.timer.*
 import org.alter.game.plugin.*
+import org.alter.rscm.RSCM
+import org.alter.rscm.RSCMType
 
 class ObjPlugin(
     r: PluginRepository,
@@ -27,9 +29,16 @@ class ObjPlugin(
         onCommand("obj", Privilege.DEV_POWER, description = "Spawn object by id") {
             val values = player.getCommandArgs()
             val id = values[0].toInt()
+
+            val name = RSCM.getReverseMapping(RSCMType.LOCTYPES, id) ?: run {
+                player.message("Could not find a object with ID $id. Please check if the ID is valid.")
+                return@onCommand
+            }
+
+
             val type = if (values.size > 1) values[1].toInt() else 10
             val rot = if (values.size > 2) values[2].toInt() else 0
-            val obj = DynamicObject(id, type, rot, player.tile)
+            val obj = DynamicObject(name, type, rot, player.tile)
             player.message("Adding object to: ")
             world.spawn(obj)
         }

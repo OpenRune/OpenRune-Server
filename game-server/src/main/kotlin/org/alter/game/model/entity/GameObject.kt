@@ -9,6 +9,8 @@ import org.alter.game.model.Tile
 import org.alter.game.model.World
 import org.alter.game.model.attr.AttributeMap
 import org.alter.game.model.timer.TimerMap
+import org.alter.rscm.RSCM
+import org.alter.rscm.RSCMType
 
 /**
  * A [GameObject] is any type of map object that can occupy a tile.
@@ -16,10 +18,17 @@ import org.alter.game.model.timer.TimerMap
  * @author Tom <rspsmods@gmail.com>
  */
 abstract class GameObject : Entity {
+
     /**
      * The object id.
      */
-    val id: Int
+    val id: String
+
+    /**
+     * The object id.
+     */
+    internal val internalID: Int
+        get() = RSCM.getRSCM(id)
 
     /**
      * A bit-packed byte that holds the object "type" and "rotation".
@@ -67,16 +76,17 @@ abstract class GameObject : Entity {
 
     val rot: Int get() = settings.toInt() and 3
 
-    private constructor(id: Int, settings: Int, tile: Tile) {
+    private constructor(id: String, settings: Int, tile: Tile) {
+        RSCM.requireRSCM(RSCMType.LOCTYPES,id)
         this.id = id
         this.settings = settings.toByte()
         this.tile = tile
     }
 
-    constructor(id: Int, type: Int, rot: Int, tile: Tile) : this(id, (type shl 2) or rot, tile)
+    constructor(id: String, type: Int, rot: Int, tile: Tile) : this(id, (type shl 2) or rot, tile)
 
-    fun getDef(): ObjectServerType = getObject(id) ?: run {
-        println("Object $id not found, using default NPC 0")
+    fun getDef(): ObjectServerType = getObject(internalID) ?: run {
+        println("Object $internalID not found, using default NPC 0")
         getObject(0)!!
     }
 
@@ -94,7 +104,7 @@ abstract class GameObject : Entity {
         val def = getDef()
 
         if (def.varbit != -1) {
-            val varbitDef = ServerCacheManager.getVarbit(def.varbit)?: return id
+            val varbitDef = ServerCacheManager.getVarbit(def.varbit)?: return internalID
             val state = player.varps.getBit(varbitDef.varp, varbitDef.startBit, varbitDef.endBit)
             return def.transforms!![state]
         }
@@ -104,9 +114,9 @@ abstract class GameObject : Entity {
             return def.transforms!![state]
         }
 
-        return id
+        return internalID
     }
 
     override fun toString(): String =
-        toStringHelper().add("id", id).add("type", type).add("rot", rot).add("tile", tile.toString()).toString()
+        toStringHelper().add("id", internalID).add("type", type).add("rot", rot).add("tile", tile.toString()).toString()
 }

@@ -9,9 +9,7 @@ import org.alter.game.model.attr.INTERACTING_OBJ_ATTR
 import org.alter.game.model.entity.Client
 import org.alter.game.model.entity.Entity
 import org.alter.game.model.entity.Player
-import org.alter.game.model.item.Item
 import org.alter.game.plugin.Plugin
-import org.alter.game.pluginnew.event.impl.ItemOnGroundItemEvent
 
 class OpObjTHandler : MessageHandler<OpObjT> {
     override fun consume(
@@ -54,14 +52,14 @@ class OpObjTHandler : MessageHandler<OpObjT> {
 
         val item = player.attr[INTERACTING_ITEM]!!.get()!!
         val obj = player.attr[INTERACTING_OBJ_ATTR]!!.get()!!
-        val lineOfSightRange = player.world.plugins.getObjInteractionDistance(obj.id)
+        val lineOfSightRange = player.world.plugins.getObjInteractionDistance(obj.internalID)
 
         ObjectPathAction.walk(player, obj, lineOfSightRange) {
             if (!player.world.plugins.executeItemOnObject(player, obj.getTransform(player), item.id)) {
                 player.writeMessage(Entity.NOTHING_INTERESTING_HAPPENS)
                 if (player.world.devContext.debugObjects) {
                     player.writeMessage(
-                        "Unhandled item on object: [item=$item, id=${obj.id}, type=${obj.type}, rot=${obj.rot}, x=${obj.tile.x}, y=${obj.tile.z}]",
+                        "Unhandled item on object: [item=$item, id=${obj.internalID}, type=${obj.type}, rot=${obj.rot}, x=${obj.tile.x}, y=${obj.tile.z}]",
                     )
                 }
             }
