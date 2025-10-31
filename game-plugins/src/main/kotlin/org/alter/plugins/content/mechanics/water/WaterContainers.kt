@@ -12,7 +12,7 @@
 //        // always succeeds
 //        player.autoReplace(unfilled, filled, growingDelay = false, slotAware = true, perform = {
 //            player.queue {
-//                player.animate(832)
+//                player.animate("sequences.human_pickuptable")
 //                player.playSound(2609, 1, 0)
 //            }
 //        }, success = { player.message(message) })

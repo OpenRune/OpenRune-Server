@@ -285,9 +285,9 @@ fun Player.setComponentPlayerHead(
 fun Player.setComponentAnim(
     interfaceId: Int,
     component: Int,
-    anim: Int,
+    anim: String,
 ) {
-    write(IfSetAnim(interfaceId = interfaceId, componentId = component, anim = anim))
+    write(IfSetAnim(interfaceId = interfaceId, componentId = component, anim = anim.asRSCM()))
 }
 
 /**

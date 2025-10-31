@@ -27,22 +27,22 @@ class CraftingTutorPlugin (
     }
 
     suspend fun QueueTask.dialog(player: Player) {
-        chatPlayer(player,"Can you teach me the basics of crafting please?", animation = 554)
+        chatPlayer(player,"Can you teach me the basics of crafting please?", animation = "sequences.chathap1")
         chatNpc(player,
             "Firstly, you should know that not all places associated<br>with crafting will be marked on your minimap. Some<br>take quite a bit of hunting down to find, don't lose<br>heart!",
-            animation = 591,
+            animation = "sequences.chatneu4",
         )
-        chatPlayer(player,"I see... so where should I start?", animation = 554)
+        chatPlayer(player,"I see... so where should I start?", animation = "sequences.chathap1")
         chatNpc(player,
             "I suggest you help Farmer Fred out with his sheep<br>shearing, you can find him northwest of Lumbridge at<br>his sheep farm, this will give you experience using the<br>spinning wheel here in this room.",
-            animation = 570,
+            animation = "sequences.chathap4",
         )
         chatNpc(player,
             "It's fairly easy, simply gather your wool from sheep in<br>the field near Lumbridge using the shears sold in<br>general stores, then click on the spinning wheel and you<br>will be given a choice of what to spin. Right-clicking on",
-            animation = 570,
+            animation = "sequences.chathap4",
         )
-        chatNpc(player,"the choices will allow you to make multiple spins and<br>therefore save you time.", animation = 568)
-        chatNpc(player,"When you have a full inventory, take it to the bank,<br>you can find it on the roof of this very castle.", animation = 568)
+        chatNpc(player,"the choices will allow you to make multiple spins and<br>therefore save you time.", animation = "sequences.chathap2")
+        chatNpc(player,"When you have a full inventory, take it to the bank,<br>you can find it on the roof of this very castle.", animation = "sequences.chathap2")
         itemMessageBox(player,
             "To find a bank, look for this symbol on your minimap<br>after climbing the stairs of the Lumbridge Castle to the<br>top. There are banks all over the world with this symbol.",
             item = "items.bank_icon_dummy",

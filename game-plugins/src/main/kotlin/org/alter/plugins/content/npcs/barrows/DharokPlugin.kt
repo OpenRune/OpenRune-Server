@@ -43,10 +43,12 @@ class DharokPlugin(
             }
 
             anims {
-                attack = 2067
-                block = 424
-                death = 2925
-            }
+
+attack = "sequences.barrow_dharok_crush"
+block = "sequences.human_unarmedblock"
+death = "sequences.champions_zombie_death"
+
+}
         }
     }
 }

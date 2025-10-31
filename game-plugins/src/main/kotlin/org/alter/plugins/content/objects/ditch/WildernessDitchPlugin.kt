@@ -60,7 +60,7 @@ class WildernessDitchPlugin(
     fun Player.crossDitch(movement: ForcedMovement) {
         queue {
             playSound(2452)
-            animate(6132)
+            animate("sequences.wild_ditch_jump")
             forceMove(this, movement)
         }
     }

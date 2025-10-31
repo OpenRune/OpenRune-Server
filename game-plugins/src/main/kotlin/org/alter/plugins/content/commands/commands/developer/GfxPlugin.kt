@@ -17,6 +17,7 @@ import org.alter.game.model.shop.*
 import org.alter.game.model.timer.*
 import org.alter.game.plugin.*
 import org.alter.rscm.RSCM
+import org.alter.rscm.RSCMType
 
 class GfxPlugin(
     r: PluginRepository,
@@ -29,7 +30,7 @@ class GfxPlugin(
             val values = player.getCommandArgs()
             val id = values[0].toInt()
 
-            val name = RSCM.getReverseMapping("spotanims", id) ?: run {
+            val name = RSCM.getReverseMapping(RSCMType.SPOTTYPES, id) ?: run {
                 player.message("Could not find a spot animation with ID $id. Please check if the ID is valid.")
                 return@onCommand
             }

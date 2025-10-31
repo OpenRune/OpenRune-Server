@@ -19,8 +19,8 @@ import org.alter.plugins.content.items.food.Food
  * @author Tom <rspsmods@gmail.com>
  */
 object Foods {
-    private const val EAT_FOOD_ANIM = 829
-    private const val EAT_FOOD_ON_SLED_ANIM = 1469
+    private const val EAT_FOOD_ANIM = "sequences.human_eat"
+    private const val EAT_FOOD_ON_SLED_ANIM = "sequences.trollromance_toboggan_eat"
     private const val EAT_FOOD_SOUND = 2393
 
     fun canEat(

@@ -115,7 +115,7 @@ object CombatConfigs {
         return null
     }
 
-    fun getAttackAnimation(pawn: Pawn): Int {
+    fun getAttackAnimation(pawn: Pawn): String {
         if (pawn is Npc) {
             return pawn.combatDef.attackAnimation
         }
@@ -124,67 +124,67 @@ object CombatConfigs {
             val style = pawn.getAttackStyle()
 
             return when {
-                pawn.hasEquipped(EquipmentType.WEAPON, *GODSWORDS) -> 7045
-                pawn.hasWeaponType(WeaponType.AXE) -> if (style == 1) 401 else 395
-                pawn.hasWeaponType(WeaponType.HAMMER) -> 401
-                pawn.hasWeaponType(WeaponType.BULWARK) -> 7511
-                pawn.hasWeaponType(WeaponType.SCYTHE) -> 8056
-                pawn.hasWeaponType(WeaponType.BOW) -> 426
-                pawn.hasWeaponType(WeaponType.CROSSBOW) -> 4230
-                pawn.hasWeaponType(WeaponType.LONG_SWORD) -> if (style == 2) 386 else 390
-                pawn.hasWeaponType(WeaponType.TWO_HANDED) -> if (style == 2) 406 else 407
-                pawn.hasWeaponType(WeaponType.PICKAXE) -> if (style == 2) 400 else 401
-                pawn.hasWeaponType(WeaponType.DAGGER) -> if (style == 2) 390 else 386
-                pawn.hasWeaponType(WeaponType.MAGIC_STAFF) || pawn.hasWeaponType(WeaponType.STAFF) -> 419
-                pawn.hasWeaponType(WeaponType.MACE) -> if (style == 2) 400 else 401
-                pawn.hasWeaponType(WeaponType.CHINCHOMPA) -> 7618
-                pawn.hasWeaponType(WeaponType.THROWN) -> if (pawn.hasEquipped(EquipmentType.WEAPON, "items.tzhaar_throwingring")) 7558 else 929
-                pawn.hasWeaponType(WeaponType.WHIP) -> 1658
+                pawn.hasEquipped(EquipmentType.WEAPON, *GODSWORDS) -> "sequences.dh_sword_update_slash"
+                pawn.hasWeaponType(WeaponType.AXE) -> if (style == 1) "sequences.human_blunt_pound" else "sequences.human_axe_hack"
+                pawn.hasWeaponType(WeaponType.HAMMER) -> "sequences.human_blunt_pound"
+                pawn.hasWeaponType(WeaponType.BULWARK) -> "sequences.human_dinhs_bulwark_bash"
+                pawn.hasWeaponType(WeaponType.SCYTHE) -> "sequences.scythe_of_vitur_attack"
+                pawn.hasWeaponType(WeaponType.BOW) -> "sequences.human_bow"
+                pawn.hasWeaponType(WeaponType.CROSSBOW) -> "sequences.xbows_human_fire_and_reload"
+                pawn.hasWeaponType(WeaponType.LONG_SWORD) -> if (style == 2) "sequences.human_sword_stab" else "sequences.human_sword_slash"
+                pawn.hasWeaponType(WeaponType.TWO_HANDED) -> if (style == 2) "sequences.human_dhsword_chop" else "sequences.human_dhsword_slash"
+                pawn.hasWeaponType(WeaponType.PICKAXE) -> if (style == 2) "sequences.human_blunt_spike" else "sequences.human_blunt_pound"
+                pawn.hasWeaponType(WeaponType.DAGGER) -> if (style == 2) "sequences.human_sword_slash" else "sequences.human_sword_stab"
+                pawn.hasWeaponType(WeaponType.MAGIC_STAFF) || pawn.hasWeaponType(WeaponType.STAFF) -> "sequences.human_stafforb_pummel"
+                pawn.hasWeaponType(WeaponType.MACE) -> if (style == 2) "sequences.human_blunt_spike" else "sequences.human_blunt_pound"
+                pawn.hasWeaponType(WeaponType.CHINCHOMPA) -> "sequences.human_chinchompa_attack_pvn"
+                pawn.hasWeaponType(WeaponType.THROWN) -> if (pawn.hasEquipped(EquipmentType.WEAPON, "items.tzhaar_throwingring")) "sequences.thzarr_ring_chuck_pvn" else "sequences.human_stake2"
+                pawn.hasWeaponType(WeaponType.WHIP) -> "sequences.slayer_abyssal_whip_attack"
                 pawn.hasWeaponType(WeaponType.SPEAR) || pawn.hasWeaponType(WeaponType.HALBERD) ->
                     if (style == 1) {
-                        440
+                        "sequences.human_scythe_sweep"
                     } else if (style == 2) {
-                        429
+                        "sequences.human_spear_lunge"
                     } else {
-                        428
+                        "sequences.human_spear_spike"
                     }
-                pawn.hasWeaponType(WeaponType.CLAWS) -> 393
-                else -> if (style == 1) 423 else 422
+                pawn.hasWeaponType(WeaponType.CLAWS) -> "sequences.human_axe_chop"
+                else -> if (style == 1) "sequences.human_unarmedkick" else "sequences.human_unarmedpunch"
             }
         }
 
         throw IllegalArgumentException("Invalid pawn type.")
     }
 
-    fun getBlockAnimation(pawn: Pawn): Int {
+    fun getBlockAnimation(pawn: Pawn): String {
         if (pawn is Npc) {
             return pawn.combatDef.blockAnimation
         }
 
         if (pawn is Player) {
             return when {
-                pawn.hasEquipped(EquipmentType.SHIELD, *BOOKS) -> 420
-                pawn.hasEquipped(EquipmentType.WEAPON, "items.trollromance_toboggon_waxed") -> 1466
-                pawn.hasEquipped(EquipmentType.WEAPON, "items.easter_basket_2005") -> 1834
-                pawn.hasEquipped(EquipmentType.SHIELD, *DEFENDERS) -> 4177
-                pawn.getEquipment(EquipmentType.SHIELD) != null -> 1156 // If wearing any shield, this animation is used
+                pawn.hasEquipped(EquipmentType.SHIELD, *BOOKS) -> "sequences.human_stafforb_block"
+                pawn.hasEquipped(EquipmentType.WEAPON, "items.trollromance_toboggon_waxed") -> "sequences.trollromance_toboggan_defend"
+                pawn.hasEquipped(EquipmentType.WEAPON, "items.easter_basket_2005") -> "sequences.human_rubber_chicken_block"
+                pawn.hasEquipped(EquipmentType.SHIELD, *DEFENDERS) -> "sequences.warguild_parry_defend"
+                pawn.getEquipment(EquipmentType.SHIELD) != null -> "sequences.human_shield_defence" // If wearing any shield, this animation is used
 
-                pawn.hasEquipped(EquipmentType.WEAPON, *BOXING_GLOVES) -> 3679
-                pawn.hasEquipped(EquipmentType.WEAPON, *GODSWORDS) -> 7056
-                pawn.hasEquipped(EquipmentType.WEAPON, "items.light_ballista", "items.heavy_ballista") -> 7219
-                pawn.hasEquipped(EquipmentType.WEAPON, "items.zamorak_spear") -> 1709
+                pawn.hasEquipped(EquipmentType.WEAPON, *BOXING_GLOVES) -> "sequences.human_boxing_block"
+                pawn.hasEquipped(EquipmentType.WEAPON, *GODSWORDS) -> "sequences.dh_sword_update_defend"
+                pawn.hasEquipped(EquipmentType.WEAPON, "items.light_ballista", "items.heavy_ballista") -> "sequences.ballista_defend"
+                pawn.hasEquipped(EquipmentType.WEAPON, "items.zamorak_spear") -> "sequences.human_zamorakspear_block"
 
-                pawn.hasWeaponType(WeaponType.DAGGER) -> 378
-                pawn.hasWeaponType(WeaponType.LONG_SWORD) -> 388
-                pawn.hasWeaponType(WeaponType.PICKAXE, WeaponType.CLAWS) -> 397
-                pawn.hasWeaponType(WeaponType.MACE) -> 403
-                pawn.hasWeaponType(WeaponType.TWO_HANDED) -> 410
-                pawn.hasWeaponType(WeaponType.MAGIC_STAFF) -> 420
-                pawn.hasWeaponType(WeaponType.BOW) -> 424
-                pawn.hasWeaponType(WeaponType.SPEAR, WeaponType.HALBERD) -> 430
-                pawn.hasWeaponType(WeaponType.WHIP) -> 1659
-                pawn.hasWeaponType(WeaponType.BULWARK) -> 7512
-                else -> 424
+                pawn.hasWeaponType(WeaponType.DAGGER) -> "sequences.human_ddagger_block"
+                pawn.hasWeaponType(WeaponType.LONG_SWORD) -> "human_sword_def"
+                pawn.hasWeaponType(WeaponType.PICKAXE, WeaponType.CLAWS) -> "sequences.human_axe_block"
+                pawn.hasWeaponType(WeaponType.MACE) -> "sequences.human_blunt_block"
+                pawn.hasWeaponType(WeaponType.TWO_HANDED) -> "sequences.human_dhsword_block"
+                pawn.hasWeaponType(WeaponType.MAGIC_STAFF) -> "sequences.human_stafforb_block"
+                pawn.hasWeaponType(WeaponType.BOW) -> "sequences.human_unarmedblock"
+                pawn.hasWeaponType(WeaponType.SPEAR, WeaponType.HALBERD) -> "sequences.human_spear_block"
+                pawn.hasWeaponType(WeaponType.WHIP) -> "sequences.slayer_abyssal_whip_defend"
+                pawn.hasWeaponType(WeaponType.BULWARK) -> "sequences.human_dinhs_bulwark_block"
+                else -> "sequences.human_unarmedblock"
             }
         }
 

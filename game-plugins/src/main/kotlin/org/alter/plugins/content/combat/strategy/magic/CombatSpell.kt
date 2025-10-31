@@ -8,7 +8,7 @@ import org.alter.game.model.Graphic
 enum class CombatSpell(
     val id: Int,
     val maxHit: Int,
-    val castAnimation: Int,
+    val castAnimation: String,
     val castSound: Int,
     val castGfx: Graphic?,
     val projectile: Int,
@@ -23,7 +23,7 @@ enum class CombatSpell(
     WIND_STRIKE(
         id = 3273,
         maxHit = 2,
-        castAnimation = 711,
+        castAnimation = "sequences.human_caststrike",
         castSound = 220,
         castGfx = Graphic(id = "spotanims.windstrike_casting", height = 92),
         projectile = 91,
@@ -35,7 +35,7 @@ enum class CombatSpell(
     WATER_STRIKE(
         id = 3275,
         maxHit = 4,
-        castAnimation = 711,
+        castAnimation = "sequences.human_caststrike",
         castSound = 211,
         castGfx = Graphic(id = "spotanims.waterstrike_casting", height = 92),
         projectile = 94,
@@ -47,7 +47,7 @@ enum class CombatSpell(
     EARTH_STRIKE(
         id = 3277,
         maxHit = 6,
-        castAnimation = 711,
+        castAnimation = "sequences.human_caststrike",
         castSound = 132,
         castGfx = Graphic(id = "spotanims.earthstrike_casting", height = 92),
         projectile = 97,
@@ -59,7 +59,7 @@ enum class CombatSpell(
     FIRE_STRIKE(
         id = 3279,
         maxHit = 8,
-        castAnimation = 711,
+        castAnimation = "sequences.human_caststrike",
         castSound = 160,
         castGfx = Graphic(id = "spotanims.firestrike_casting", height = 92),
         projectile = 100,
@@ -71,7 +71,7 @@ enum class CombatSpell(
     WIND_BOLT(
         id = 3281,
         maxHit = 9,
-        castAnimation = 711,
+        castAnimation = "sequences.human_caststrike",
         castSound = 218,
         castGfx = Graphic(id = "spotanims.windbolt_casting", height = 92),
         projectile = 118,
@@ -83,7 +83,7 @@ enum class CombatSpell(
     WATER_BOLT(
         id = 3285,
         maxHit = 10,
-        castAnimation = 711,
+        castAnimation = "sequences.human_caststrike",
         castSound = 209,
         castGfx = Graphic(id = "spotanims.waterbolt_casting", height = 92),
         projectile = 121,
@@ -95,7 +95,7 @@ enum class CombatSpell(
     EARTH_BOLT(
         id = 3288,
         maxHit = 11,
-        castAnimation = 711,
+        castAnimation = "sequences.human_caststrike",
         castSound = 130,
         castGfx = Graphic(id = "spotanims.earthbolt_casting", height = 92),
         projectile = 124,
@@ -107,7 +107,7 @@ enum class CombatSpell(
     FIRE_BOLT(
         id = 3291,
         maxHit = 12,
-        castAnimation = 711,
+        castAnimation = "sequences.human_caststrike",
         castSound = 157,
         castGfx = Graphic(id = "spotanims.firebolt_casting", height = 92),
         projectile = 127,
@@ -119,7 +119,7 @@ enum class CombatSpell(
     WIND_BLAST(
         id = 3294,
         maxHit = 13,
-        castAnimation = 711,
+        castAnimation = "sequences.human_caststrike",
         castSound = 216,
         castGfx = Graphic(id = "spotanims.windblast_casting", height = 92),
         projectile = 133,
@@ -131,7 +131,7 @@ enum class CombatSpell(
     WATER_BLAST(
         id = 3297,
         maxHit = 14,
-        castAnimation = 711,
+        castAnimation = "sequences.human_caststrike",
         castSound = 207,
         castGfx = Graphic(id = "spotanims.waterblast_casting", height = 92),
         projectile = 136,
@@ -143,7 +143,7 @@ enum class CombatSpell(
     EARTH_BLAST(
         id = 3302,
         maxHit = 15,
-        castAnimation = 711,
+        castAnimation = "sequences.human_caststrike",
         castSound = 128,
         castGfx = Graphic(id = "spotanims.earthblast_casting", height = 92),
         projectile = 139,
@@ -155,7 +155,7 @@ enum class CombatSpell(
     FIRE_BLAST(
         id = 3307,
         maxHit = 16,
-        castAnimation = 711,
+        castAnimation = "sequences.human_caststrike",
         castSound = 155,
         castGfx = Graphic(id = "spotanims.fireblast_casting", height = 92),
         projectile = 130,
@@ -167,7 +167,7 @@ enum class CombatSpell(
     WIND_WAVE(
         id = 3313,
         maxHit = 17,
-        castAnimation = 727,
+        castAnimation = "sequences.human_castwave",
         castSound = 222,
         castGfx = Graphic(id = "spotanims.windwave_casting", height = 92),
         projectile = 159,
@@ -179,7 +179,7 @@ enum class CombatSpell(
     WATER_WAVE(
         id = 3315,
         maxHit = 18,
-        castAnimation = 727,
+        castAnimation = "sequences.human_castwave",
         castSound = 213,
         castGfx = Graphic(id = "spotanims.waterwave_casting", height = 92),
         projectile = 162,
@@ -191,7 +191,7 @@ enum class CombatSpell(
     EARTH_WAVE(
         id = 3319,
         maxHit = 19,
-        castAnimation = 727,
+        castAnimation = "sequences.human_castwave",
         castSound = 134,
         castGfx = Graphic(id = "spotanims.earthwave_casting", height = 92),
         projectile = 165,
@@ -203,7 +203,7 @@ enum class CombatSpell(
     FIRE_WAVE(
         id = 3321,
         maxHit = 20,
-        castAnimation = 727,
+        castAnimation = "sequences.human_castwave",
         castSound = 162,
         castGfx = Graphic(id = "spotanims.firewave_casting", height = 92),
         projectile = 156,
@@ -215,7 +215,7 @@ enum class CombatSpell(
     WIND_SURGE(
         id = 21876,
         maxHit = 21,
-        castAnimation = 7855,
+        castAnimation = "sequences.human_cast_surge",
         castSound = 4028,
         castGfx = Graphic(id = "spotanims.windsurge_casting", height = 92),
         projectile = 1456,
@@ -227,7 +227,7 @@ enum class CombatSpell(
     WATER_SURGE(
         id = 21877,
         maxHit = 22,
-        castAnimation = 7855,
+        castAnimation = "sequences.human_cast_surge",
         castSound = 4030,
         castGfx = Graphic(id = "spotanims.watersurge_casting", height = 92),
         projectile = 1459,
@@ -239,7 +239,7 @@ enum class CombatSpell(
     EARTH_SURGE(
         id = 21878,
         maxHit = 23,
-        castAnimation = 7855,
+        castAnimation = "sequences.human_cast_surge",
         castSound = 4025,
         castGfx = Graphic(id = "spotanims.earthsurge_casting", height = 92),
         projectile = 1462,
@@ -251,7 +251,7 @@ enum class CombatSpell(
     FIRE_SURGE(
         id = 21879,
         maxHit = 24,
-        castAnimation = 7855,
+        castAnimation = "sequences.human_cast_surge",
         castSound = 4032,
         castGfx = Graphic(id = "spotanims.firesurge_casting", height = 92),
         projectile = 1465,
@@ -266,7 +266,7 @@ enum class CombatSpell(
     SMOKE_RUSH(
         id = 4629,
         maxHit = 14,
-        castAnimation = 1978,
+        castAnimation = "sequences.zaros_casting",
         castSound = 183,
         castGfx = null,
         projectile = 384,
@@ -278,7 +278,7 @@ enum class CombatSpell(
     SHADOW_RUSH(
         id = 4630,
         maxHit = 15,
-        castAnimation = 1978,
+        castAnimation = "sequences.zaros_casting",
         castSound = 178,
         castGfx = null,
         projectile = 378,
@@ -290,7 +290,7 @@ enum class CombatSpell(
     BLOOD_RUSH(
         id = 4632,
         maxHit = 16,
-        castAnimation = 1978,
+        castAnimation = "sequences.zaros_casting",
         castSound = 106,
         castGfx = null,
         projectile = 0,
@@ -302,7 +302,7 @@ enum class CombatSpell(
     ICE_RUSH(
         id = 4633,
         maxHit = 17,
-        castAnimation = 1978,
+        castAnimation = "sequences.zaros_casting",
         castSound = 171,
         castGfx = null,
         projectile = 360,
@@ -315,7 +315,7 @@ enum class CombatSpell(
     SMOKE_BURST(
         id = 4635,
         maxHit = 18,
-        castAnimation = 1979,
+        castAnimation = "sequences.zaros_vertical_casting",
         castSound = 183,
         castGfx = null,
         projectile = 388,
@@ -327,7 +327,7 @@ enum class CombatSpell(
     SHADOW_BURST(
         id = 4636,
         maxHit = 19,
-        castAnimation = 1979,
+        castAnimation = "sequences.zaros_vertical_casting",
         castSound = 178,
         castGfx = null,
         projectile = 0,
@@ -339,7 +339,7 @@ enum class CombatSpell(
     BLOOD_BURST(
         id = 4638,
         maxHit = 21,
-        castAnimation = 1979,
+        castAnimation = "sequences.zaros_vertical_casting",
         castSound = 469,
         castGfx = null,
         projectile = 0,
@@ -351,7 +351,7 @@ enum class CombatSpell(
     ICE_BURST(
         id = 4639,
         maxHit = 22,
-        castAnimation = 1979,
+        castAnimation = "sequences.zaros_vertical_casting",
         castSound = 171,
         castGfx = null,
         projectile = 366,
@@ -364,7 +364,7 @@ enum class CombatSpell(
     SMOKE_BLITZ(
         id = 4641,
         maxHit = 23,
-        castAnimation = 1978,
+        castAnimation = "sequences.zaros_casting",
         castSound = 183,
         castGfx = null,
         projectile = 386,
@@ -376,7 +376,7 @@ enum class CombatSpell(
     SHADOW_BLITZ(
         id = 4642,
         maxHit = 24,
-        castAnimation = 1978,
+        castAnimation = "sequences.zaros_casting",
         castSound = 178,
         castGfx = null,
         projectile = 380,
@@ -389,7 +389,7 @@ enum class CombatSpell(
     BLOOD_BLITZ(
         id = 4644,
         maxHit = 25,
-        castAnimation = 1978,
+        castAnimation = "sequences.zaros_casting",
         castSound = 106,
         castGfx = null,
         projectile = 374,
@@ -402,7 +402,7 @@ enum class CombatSpell(
     ICE_BLITZ(
         id = 4645,
         maxHit = 26,
-        castAnimation = 1978,
+        castAnimation = "sequences.zaros_casting",
         castSound = 171,
         castGfx = null,
         projectile = 0,
@@ -414,7 +414,7 @@ enum class CombatSpell(
     SMOKE_BARRAGE(
         id = 4647,
         maxHit = 27,
-        castAnimation = 1979,
+        castAnimation = "sequences.zaros_vertical_casting",
         castSound = 183,
         castGfx = null,
         projectile = 390,
@@ -426,7 +426,7 @@ enum class CombatSpell(
     SHADOW_BARRAGE(
         id = 4648,
         maxHit = 28,
-        castAnimation = 1979,
+        castAnimation = "sequences.zaros_vertical_casting",
         castSound = 178,
         castGfx = null,
         projectile = 0,
@@ -438,7 +438,7 @@ enum class CombatSpell(
     BLOOD_BARRAGE(
         id = 4650,
         maxHit = 29,
-        castAnimation = 1979,
+        castAnimation = "sequences.zaros_vertical_casting",
         castSound = 106,
         castGfx = null,
         projectile = 0,
@@ -450,7 +450,7 @@ enum class CombatSpell(
     ICE_BARRAGE(
         id = 4651,
         maxHit = 30,
-        castAnimation = 1979,
+        castAnimation = "sequences.zaros_vertical_casting",
         castSound = 171,
         castGfx = null,
         projectile = 368,

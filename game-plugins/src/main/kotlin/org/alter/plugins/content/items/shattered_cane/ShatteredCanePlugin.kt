@@ -50,7 +50,7 @@ class ShatteredCanePlugin(
                 player.queue {
                     player.lock()
                     player.graphic("spotanims.league_3_relic_unlock_spot", 92)
-                    player.animate(8524, 60)
+                    player.animate("sequences.human_relic_unlock", 60)
                     player.playSound(4215, 100, 8)
                     player.playSound(4211, 100, 44)
                     player.playSound(4213, 100, 80)
@@ -76,7 +76,7 @@ class ShatteredCanePlugin(
         player.queue {
             player.lock()
             player.graphic(gfx, 0)
-            player.animate(9208, 60)
+            player.animate("sequences.league03_area_unlock_emote_player", 60)
             player.playSound(2344, 100, 116)
             player.playSound(2330, 100, 241)
             player.playSound(2331, 100, 273)

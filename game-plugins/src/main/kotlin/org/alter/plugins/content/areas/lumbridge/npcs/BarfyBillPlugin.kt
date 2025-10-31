@@ -27,46 +27,46 @@ class BarfyBillPlugin(
     }
 
     suspend fun QueueTask.dialog(player: Player) {
-        chatPlayer(player, "Hello there.", animation = 588)
-        chatNpc(player, "Oh! Hello there.", animation = 588)
+        chatPlayer(player, "Hello there.", animation = "sequences.chatneu1")
+        chatNpc(player, "Oh! Hello there.", animation = "sequences.chatneu1")
         when (options(player, "Who are you?", "Can you teach me about Canoeing?")) {
             1 -> {
-                chatPlayer(player, "Who are you?", animation = 588)
-                chatNpc(player, "My name is Ex Sea Captain Barfy Bill.", animation = 588)
-                chatPlayer(player, "Ex sea captain?", animation = 554)
+                chatPlayer(player, "Who are you?", animation = "sequences.chatneu1")
+                chatNpc(player, "My name is Ex Sea Captain Barfy Bill.", animation = "sequences.chatneu1")
+                chatPlayer(player, "Ex sea captain?", animation = "sequences.chathap1")
                 chatNpc(
                     player,
                     "Yeah, I bought a lovely ship and was planning to make<br>a fortune running her as a merchant vessel.",
-                    animation = 611
+                    animation = "sequences.chatsad2"
                 )
-                chatPlayer(player, "Why are you not still sailing?", animation = 554)
+                chatPlayer(player, "Why are you not still sailing?", animation = "sequences.chathap1")
                 chatNpc(
                     player,
                     "Chronic sea sickness. My first, and only, voyage was<br>spent dry heaving over the rails.",
-                    animation = 611
+                    animation = "sequences.chatsad2"
                 )
                 chatNpc(
                     player,
                     "If I had known about the sea sickness I could have<br>saved myself a lot of money.",
-                    animation = 589
+                    animation = "sequences.chatneu2"
                 )
-                chatPlayer(player, "What are you up to now then?", animation = 575)
+                chatPlayer(player, "What are you up to now then?", animation = "sequences.chatcon1")
                 chatNpc(
                     player,
                     "Well my ship had a little fire related problem.<br>Fortunately it was well insured.",
-                    animation = 593
+                    animation = "sequences.chatshifty2"
                 )
                 chatNpc(
                     player,
                     "Anyway, I don't have to work anymore so I've taken to<br>canoeing on the river.",
-                    animation = 589
+                    animation = "sequences.chatneu2"
                 )
-                chatNpc(player, "I don't get river sick!", animation = 567)
-                chatNpc(player, "Would you like to know how to make a canoe?", animation = 554)
+                chatNpc(player, "I don't get river sick!", animation = "sequences.chathap1")
+                chatNpc(player, "Would you like to know how to make a canoe?", animation = "sequences.chathap1")
 
                 when (options(player, "Yes", "No")) {
                     1 -> teach(player)
-                    2 -> chatPlayer(player, "No thanks, not right now.", animation = 588)
+                    2 -> chatPlayer(player, "No thanks, not right now.", animation = "sequences.chatneu1")
                 }
             }
 
@@ -76,16 +76,16 @@ class BarfyBillPlugin(
 
     private suspend fun QueueTask.teach(player: Player) {
         if (player.getSkills().getCurrentLevel(Skills.WOODCUTTING) < 12) {
-            chatPlayer(player, "Could you teach me about canoes?", animation = 554)
-            chatNpc(player, "Well, you don't look like you have the skill to make a<br>canoe.", animation = 589)
-            chatNpc(player, "You need to have at least level 12 woodcutting.", animation = 588) // TODO
+            chatPlayer(player, "Could you teach me about canoes?", animation = "sequences.chathap1")
+            chatNpc(player, "Well, you don't look like you have the skill to make a<br>canoe.", animation = "sequences.chatneu2")
+            chatNpc(player, "You need to have at least level 12 woodcutting.", animation = "sequences.chatneu1") // TODO
             chatNpc(
                 player,
                 "Once you are able to make a canoe it makes travel<br>along the river much quicker!",
-                animation = 589
+                animation = "sequences.chatneu2"
             )
         } else {
-            chatPlayer(player, "Could you teach me about canoes?", animation = 554)
+            chatPlayer(player, "Could you teach me about canoes?", animation = "sequences.chathap1")
             chatNpc(player, "It's really quite simple. Just walk down to that tree on<br>the bank and chop it down.")
             chatNpc(player, "When you have done that you can shape the log<br>further with your axe to make a canoe.")
             if (player.getSkills().getCurrentLevel(Skills.WOODCUTTING) < 27) {

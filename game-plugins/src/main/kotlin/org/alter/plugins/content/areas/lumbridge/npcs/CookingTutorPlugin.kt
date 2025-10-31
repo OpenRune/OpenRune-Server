@@ -28,12 +28,12 @@ class CookingTutorPlugin(
             "Goodbye."
         )) {
             1 -> {
-                chatPlayer(player, "Can you teach me the basics of cooking please?", animation = 554)
-                chatNpc(player, "The simplest thing to cook is raw meat or fish.", animation = 588)
+                chatPlayer(player, "Can you teach me the basics of cooking please?", animation = "sequences.chathap1")
+                chatNpc(player, "The simplest thing to cook is raw meat or fish.", animation = "sequences.chatneu1")
                 chatNpc(
                     player,
                     "Fish can be caught, speak to the fishing tutor south of<br>here in the swamp. Killing cows or chickens will yield<br>raw meat to cook too.",
-                    animation = 569,
+                    animation = "sequences.chathap3",
                 )
                 itemMessageBox(
                     player,
@@ -44,12 +44,12 @@ class CookingTutorPlugin(
                 chatNpc(
                     player,
                     "You can use your own fire... but it's not as effective<br>and you'll burn more. To build a fire use a tinderbox<br>on logs.",
-                    animation = 569,
+                    animation = "sequences.chathap3",
                 )
                 chatNpc(
                     player,
                     "Once you've found your range, click on it. This will<br>bring up a menu of the food you can cook.",
-                    animation = 589
+                    animation = "sequences.chatneu2"
                 )
                 itemMessageBox(
                     player,
@@ -71,11 +71,11 @@ class CookingTutorPlugin(
             }
 
             2 -> {
-                chatPlayer(player, "Tell me about different foods.", animation = 554)
+                chatPlayer(player, "Tell me about different foods.", animation = "sequences.chathap1")
                 foodStuffs(player)
             }
 
-            3 -> chatPlayer(player, "Goodbye.", animation = 588)
+            3 -> chatPlayer(player, "Goodbye.", animation = "sequences.chatneu1")
         }
     }
 
@@ -113,12 +113,12 @@ class CookingTutorPlugin(
                 chatNpc(
                     player,
                     "Finally cook your pie by using the unbaked pie on a<br>cooking range. Mmmm...pie.",
-                    animation = 568
+                    animation = "sequences.chathap2"
                 )
                 chatNpc(
                     player,
                     "There's pizza too! Find yourself some tomato and<br>cheese, use on the Pizza dough. Cook the pizza on a<br>range then add any other toppings you want, such as<br>anchovies.",
-                    animation = 570,
+                    animation = "sequences.chathap4",
                 )
                 foodStuffs(player)
             }

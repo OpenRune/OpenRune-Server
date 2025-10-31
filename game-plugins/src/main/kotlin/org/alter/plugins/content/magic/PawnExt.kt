@@ -10,6 +10,8 @@ import org.alter.game.model.entity.Pawn
 import org.alter.game.model.entity.Player
 import org.alter.game.model.move.moveTo
 import org.alter.game.model.queue.TaskPriority
+import org.alter.rscm.RSCM
+import org.alter.rscm.RSCM.asRSCM
 
 fun Player.canTeleport(type: TeleportType): Boolean {
     val currWildLvl = tile.getWildernessLevel()
@@ -55,11 +57,11 @@ fun Pawn.teleport(
         }
 
         type.endAnimation?.let {
-            val def = getAnim(it)
+            val def = getAnim(it.asRSCM())
             wait(def!!.animationLength)
         }
 
-        animate(-1)
+        animate(RSCM.NONE)
         unlock()
     }
 }

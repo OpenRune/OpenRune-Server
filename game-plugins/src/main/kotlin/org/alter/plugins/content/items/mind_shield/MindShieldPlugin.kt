@@ -26,9 +26,9 @@ class MindShieldPlugin(
     init {
         onItemEquip("items.elemental_mind_shield") {
             player.queue {
-                player.animate(-1)
+                player.animate(RSCM.NONE)
                 player.graphic(RSCM.NONE)
-                player.animate(3996, 3)
+                player.animate("sequences.elemental_equip_left_human_ready", 3)
                 player.graphic("spotanims.elemental_mind_shield_equip", 90, 3)
             }
         }

@@ -3,6 +3,7 @@ package org.alter.api
 import org.alter.api.ext.enumSetOf
 import org.alter.game.model.combat.NpcCombatDef
 import org.alter.game.model.weightedTableBuilder.LootTable
+import org.alter.rscm.RSCM
 
 /**
  * @author Cl0udS3c
@@ -72,11 +73,11 @@ class NpcCombatBuilder {
     private var ranged : Int = 0
     private var magic : Int = 0
 
-    private var defaultAttackAnim = -1
+    private var defaultAttackAnim = RSCM.NONE
 
-    private var defaultBlockAnim = -1
+    private var defaultBlockAnim = RSCM.NONE
 
-    private val deathAnimList = mutableListOf<Int>()
+    private val deathAnimList = mutableListOf<String>()
 
     private var defaultAttackSound = -1
     private var defaultAttackSoundArea: Boolean = false
@@ -298,21 +299,21 @@ class NpcCombatBuilder {
         defaultDeathSound = sound
     }
 
-    fun setDefaultAttackAnimation(animation: Int): NpcCombatBuilder {
-        check(defaultAttackAnim == -1) { "Default attack animation already set. ${Throwable().stackTrace[2].fileName}" }
+    fun setDefaultAttackAnimation(animation: String): NpcCombatBuilder {
+        check(defaultAttackAnim == RSCM.NONE) { "Default attack animation already set. ${Throwable().stackTrace[2].fileName}" }
         defaultAttackAnim = animation
         return this
     }
 
-    fun setDefaultBlockAnimation(animation: Int): NpcCombatBuilder {
-        check(defaultBlockAnim == -1) { "Default block animation already set. ${Throwable().stackTrace[2].fileName}" }
+    fun setDefaultBlockAnimation(animation: String): NpcCombatBuilder {
+        check(defaultBlockAnim == RSCM.NONE) { "Default block animation already set. ${Throwable().stackTrace[2].fileName}" }
         defaultBlockAnim = animation
         return this
     }
 
     fun setCombatAnimations(
-        attackAnimation: Int,
-        blockAnimation: Int,
+        attackAnimation: String,
+        blockAnimation: String,
     ): NpcCombatBuilder {
         setDefaultAttackAnimation(attackAnimation)
         setDefaultBlockAnimation(blockAnimation)
@@ -327,7 +328,7 @@ class NpcCombatBuilder {
         setDefaultBlockSound(blockSound)
     }
 
-    fun setDeathAnimation(vararg anims: Int): NpcCombatBuilder {
+    fun setDeathAnimation(vararg anims: String): NpcCombatBuilder {
         check(anims.isNotEmpty()) { "Animations not assigned. Caused by: ${Throwable().stackTrace[2].fileName} " }
         check(deathAnimList.isEmpty()) { "Death animation(s) already set." }
         anims.forEach { deathAnimList.add(it) }

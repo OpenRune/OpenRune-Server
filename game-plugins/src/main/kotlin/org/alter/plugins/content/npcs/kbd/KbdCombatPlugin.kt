@@ -62,11 +62,11 @@ class KbdCombatPlugin(
         if (this.world.chance(1, 2)) {
             // Headbutt attack
             prepareAttack(CombatClass.MELEE, CombatStyle.STAB, AttackStyle.ACCURATE)
-            animate(91)
+            animate("sequences.dragon_head_attack")
         } else {
             // Claw attack
             prepareAttack(CombatClass.MELEE, CombatStyle.SLASH, AttackStyle.AGGRESSIVE)
-            animate(80)
+            animate("sequences.dragon_attack")
         }
         if (MeleeCombatFormula.getAccuracy(this, target) >= this.world.randomDouble()) {
             target.hit(this.world.random(26), type = HitType.HIT, delay = 1)
@@ -81,7 +81,7 @@ class KbdCombatPlugin(
     ) {
         val projectile = npc.createProjectile(target, gfx = 393, startHeight = 43, endHeight = 31, delay = 51, angle = 15, steepness = 127)
         npc.prepareAttack(CombatClass.MAGIC, CombatStyle.MAGIC, AttackStyle.ACCURATE)
-        npc.animate(81)
+        npc.animate("sequences.dragon_firebreath_all_attack")
         world.spawn(projectile)
         npc.dealHit(
             target = target,
@@ -95,7 +95,7 @@ class KbdCombatPlugin(
     ) {
         val projectile = createProjectile(target, gfx = 394, startHeight = 43, endHeight = 31, delay = 51, angle = 15, steepness = 127)
         prepareAttack(CombatClass.MAGIC, CombatStyle.MAGIC, AttackStyle.ACCURATE)
-        animate(82)
+        animate("sequences.dragon_firebreath_left_attack")
         this.world.spawn(projectile)
         val hit =
             dealHit(
@@ -121,7 +121,7 @@ class KbdCombatPlugin(
     ) {
         val projectile = createProjectile(target, gfx = 395, startHeight = 43, endHeight = 31, delay = 51, angle = 15, steepness = 127)
         prepareAttack(CombatClass.MAGIC, CombatStyle.MAGIC, AttackStyle.ACCURATE)
-        animate(83)
+        animate("sequences.dragon_firebreath_right_attack")
         this.world.spawn(projectile)
         val hit =
             dealHit(
@@ -147,7 +147,7 @@ class KbdCombatPlugin(
     ) {
         val projectile = createProjectile(target, gfx = 396, startHeight = 43, endHeight = 31, delay = 51, angle = 15, steepness = 127)
         prepareAttack(CombatClass.MAGIC, CombatStyle.MAGIC, AttackStyle.ACCURATE)
-        animate(84)
+        animate("sequences.dragon_firebreath_middle_attack")
         this.world.spawn(projectile)
         val hit =
             dealHit(

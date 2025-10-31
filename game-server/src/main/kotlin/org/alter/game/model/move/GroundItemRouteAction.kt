@@ -52,7 +52,7 @@ object GroundItemRouteAction {
                 player.lock()
                 player.faceTile(item.tile)
                 if (!player.isRouteBlocked(item.tile)) {
-                    player.animate(832, 4)
+                    player.animate("sequences.human_pickuptable", 4)
                     wait(2)
                     handleAction(player, item, opt)
                 } else {

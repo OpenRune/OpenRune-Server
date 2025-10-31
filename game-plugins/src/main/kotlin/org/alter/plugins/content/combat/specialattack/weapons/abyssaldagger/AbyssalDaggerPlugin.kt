@@ -27,7 +27,7 @@ class AbyssalDaggerPlugin(
             "items.abyssal_dagger_p++"
         )) {
             SpecialAttacks.register(item, SPECIAL_REQUIREMENT) {
-                player.animate(id = 3300)
+                player.animate(id = "sequences.abyssal_dagger_special")
                 player.graphic(id = "spotanims.abyssal_dagger_special_spotanim")
                 world.spawn(AreaSound(tile = player.tile, id = 2537, radius = 10, volume = 1))
 

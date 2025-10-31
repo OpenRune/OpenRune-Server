@@ -42,7 +42,7 @@ class PickCabbagePlugin(
 //            }
 //            if (obj.isSpawned(world)) {
 //                val item = if (world.percentChance(5.0)) Items.CABBAGE_SEED else Items.CABBAGE
-//                player.animate(827)
+//                player.animate("sequences.human_pickupfloor")
 //                player.inventory.add(item = item)
 //                world.remove(obj)
 //                world.queue {
