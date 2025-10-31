@@ -1,7 +1,6 @@
 package org.alter.plugins.content.interfaces.gameframe.tabs.settings.options.tabs
 
 import org.alter.api.ClientScript
-import org.alter.api.cfg.*
 import org.alter.api.ext.*
 import org.alter.game.*
 import org.alter.game.model.*
@@ -112,9 +111,7 @@ class OptionsTabFirstPlugin(
             val mode =
                 when (change) {
                     2 ->
-                        if (player.getVarbit(
-                                Varbit.SIDESTONES_ARRAGEMENT_VARBIT,
-                            ) == 1
+                        if (player.getVarbit("varbits.resizable_stone_arrangement", ) == 1
                         ) {
                             DisplayMode.RESIZABLE_LIST
                         } else {
@@ -130,11 +127,11 @@ class OptionsTabFirstPlugin(
             val mode =
                 when (slot) {
                     2 -> {
-                        player.setVarbit(Varbit.SIDESTONES_ARRAGEMENT_VARBIT, 0)
+                        player.setVarbit("varbits.resizable_stone_arrangement", 0)
                         DisplayMode.RESIZABLE_NORMAL
                     }
                     3 -> {
-                        player.setVarbit(Varbit.SIDESTONES_ARRAGEMENT_VARBIT, 1)
+                        player.setVarbit("varbits.resizable_stone_arrangement", 1)
                         DisplayMode.RESIZABLE_LIST
                     }
                     else -> DisplayMode.FIXED
@@ -163,17 +160,17 @@ class OptionsTabFirstPlugin(
             player.toggleVarp("varp.option_aid")
         }
         bind_setting(child = SKULL_PROTECTION_BUTTON) {
-            player.toggleVarbit(Varbit.PK_PREVENT_SKULL)
+            player.toggleVarbit("varbits.skull_prevent_enabled")
         }
 
         bind_setting(63) {
-            player.setVarbit(Varbit.SETTINGS_TAB_FOCUS, 0)
+            player.setVarbit("varbits.settings_side_panel_tab", 0)
         }
         bind_setting(68) {
-            player.setVarbit(Varbit.SETTINGS_TAB_FOCUS, 1)
+            player.setVarbit("varbits.settings_side_panel_tab", 1)
         }
         bind_setting(69) {
-            player.setVarbit(Varbit.SETTINGS_TAB_FOCUS, 2)
+            player.setVarbit("varbits.settings_side_panel_tab", 2)
         }
         bind_setting(MUSIC_BAR) {
             player.setVarp("varp.option_music", player.getInteractingSlot() * 5)
@@ -199,7 +196,7 @@ class OptionsTabFirstPlugin(
 
 
         bind_setting(ZOOM_TOGGLE_BUTTON) {
-            player.toggleVarbit(Varbit.DISABLE_ZOOM)
+            player.toggleVarbit("varbits.camera_zoom_mouse_disabled")
         }
 
         bind_setting(MUTE_MASTER_SOUND) {

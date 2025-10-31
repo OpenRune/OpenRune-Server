@@ -2,7 +2,6 @@ package org.alter.plugins.content.interfaces.gameframe.tabs.character_summary
 
 import org.alter.api.CommonClientScripts
 import org.alter.api.InterfaceDestination
-import org.alter.api.cfg.Varbit
 import org.alter.api.ext.*
 import org.alter.game.Server
 import org.alter.game.model.World
@@ -24,29 +23,29 @@ class CharacterSummaryPlugin(
         val DIARY_PROGRESS_TAB_INTERFACE = 259
         onLogin {
             player.openInterface(InterfaceDestination.QUEST_ROOT.interfaceId, 43, player.getQuestRootTab(), 1)
-            player.setVarbit(Varbit.TOTAL_QUEST_POINT_COUNT, 123) // @TODO
+            player.setVarbit("varbits.qp_max", 123) // @TODO
             player.setVarp("varp.qp", 100) // @TODO
-            player.setVarbit(Varbit.TOTAL_QUEST_COUNT, 100) // @TODO
-            player.setVarbit(Varbit.COMPLETED_QUESTS_COUNT, 58) // @TODO
+            player.setVarbit("varbits.quests_total_count", 100) // @TODO
+            player.setVarbit("varbits.quests_completed_count", 58) // @TODO
             player.runClientScript(CommonClientScripts.TIME_PLAYED, 1, 1, 10) // @TODO Time played
         }
         onButton(InterfaceDestination.QUEST_ROOT.interfaceId, 2) {
             player.closeInterface(player.getQuestRootTab())
-            player.setVarbit(Varbit.PLAYER_SUMMARY_FOCUS_TAB, 0)
+            player.setVarbit("varbits.side_journal_tab", 0)
             player.openInterface(InterfaceDestination.QUEST_ROOT.interfaceId, 43, CHARACTER_SUMMARY_TAB_INTERFACE, 1)
         }
         onButton(InterfaceDestination.QUEST_ROOT.interfaceId, 10) {
             player.closeInterface(player.getQuestRootTab())
-            player.setVarbit(Varbit.PLAYER_SUMMARY_FOCUS_TAB, 1)
+            player.setVarbit("varbits.side_journal_tab", 1)
             player.openInterface(InterfaceDestination.QUEST_ROOT.interfaceId, 43, QUEST_JOURNY_TAB_INTERFACE, 1)
         }
         onButton(InterfaceDestination.QUEST_ROOT.interfaceId, 18) {
             player.closeInterface(player.getQuestRootTab())
-            player.setVarbit(Varbit.PLAYER_SUMMARY_FOCUS_TAB, 2)
+            player.setVarbit("varbits.side_journal_tab", 2)
             player.openInterface(InterfaceDestination.QUEST_ROOT.interfaceId, 43, DIARY_PROGRESS_TAB_INTERFACE, 1)
         }
         onButton(712, 3) {
-            player.toggleVarbit(Varbit.DISPLAY_TIME_PLAYED)
+            player.toggleVarbit("varbits.account_summary_display_playtime")
         }
 
         onInterfaceOpen(CHARACTER_SUMMARY_TAB_INTERFACE) {
@@ -95,7 +94,7 @@ class CharacterSummaryPlugin(
      * 4 -> "Leagues"
      * else -> "Character Summary"
      */
-    private fun Player.getQuestRootTab(): Int = when (getVarbit(Varbit.PLAYER_SUMMARY_FOCUS_TAB)) {
+    private fun Player.getQuestRootTab(): Int = when (getVarbit("varbits.side_journal_tab")) {
         1 -> 399
         2 -> 259
         else -> 712

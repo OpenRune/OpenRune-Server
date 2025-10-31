@@ -21,12 +21,12 @@ object Components {
 }
 
 object Varbits {
-    val WITHDRAW_NOTES = "varbits.bank_withdrawnotes".asRSCM()
-    val INSERTMODE = "varbits.bank_insertmode".asRSCM()
-    val LEAVEPLACEHOLDERS = "varbits.bank_leaveplaceholders".asRSCM()
-    val REQUESTEDQUANTITY = "varbits.bank_requestedquantity".asRSCM()
-    val QUANITY_TYPE = "varbits.bank_quantity_type".asRSCM()
-    val SHOW_INCINERATOR = "varbits.bank_showincinerator".asRSCM()
-    val CURRENTTAB =  "varbits.bank_currenttab".asRSCM()
-    val TAB_DISPLAY = "varbits.bank_tab_display".asRSCM()
+    val WITHDRAW_NOTES = "varbits.bank_withdrawnotes"
+    val INSERTMODE = "varbits.bank_insertmode"
+    val LEAVEPLACEHOLDERS = "varbits.bank_leaveplaceholders"
+    val REQUESTEDQUANTITY = "varbits.bank_requestedquantity"
+    val QUANITY_TYPE = "varbits.bank_quantity_type"
+    val SHOW_INCINERATOR = "varbits.bank_showincinerator"
+    val CURRENTTAB =  "varbits.bank_currenttab"
+    val TAB_DISPLAY = "varbits.bank_tab_display"
 }

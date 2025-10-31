@@ -23,7 +23,7 @@ class MultiwayCombatPlugin(
 ) : KotlinPlugin(r, world, server) {
         
     init {
-        val MULTIWAY_VARBIT = 4605
+        val MULTIWAY_VARBIT = "varbits.multiway_indicator"
 
         onWorldInit {
             world.getMultiCombatRegions().forEach { region ->

@@ -28,6 +28,8 @@ import org.alter.plugins.content.interfaces.bank.BankTabs.startPoint
 import org.alter.plugins.content.interfaces.bank.config.Components
 import org.alter.plugins.content.interfaces.bank.config.Interfaces
 import org.alter.plugins.content.interfaces.bank.config.Varbits
+import org.alter.rscm.RSCM
+import org.alter.rscm.RSCMType
 
 class BankTabsPlugin(
     r: PluginRepository,
@@ -135,12 +137,16 @@ class BankTabsPlugin(
                     if (dstTab == srcTab + 1) {
                         return@onComponentToComponentItemSwap
                     }
+
+                    val varbitID = 4169 + dstTab
+                    val varBitName = RSCM.getReverseMapping(RSCMType.VARBITTYPES,varbitID)!!
+
                     val destination = startPoint(player, dstTab) - 1
                     val srcStart = startPoint(player, srcTab)
                     for (item in 1..srcSize)
                         container.insert(srcStart, destination)
-                    var holder = player.getVarbit(4169 + dstTab)
-                    player.setVarbit(4169 + dstTab, srcSize)
+                    var holder = player.getVarbit(varBitName)
+                    player.setVarbit(varBitName, srcSize)
                     for (tab in dstTab - 2 downTo srcTab) {
                         val temp = player.getVarbit(Varbits.TAB_DISPLAY + tab)
                         player.setVarbit(Varbits.TAB_DISPLAY + tab, holder)

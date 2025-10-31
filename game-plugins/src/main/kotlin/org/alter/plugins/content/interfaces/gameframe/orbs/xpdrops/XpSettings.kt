@@ -2,7 +2,6 @@ package org.alter.plugins.content.interfaces.xpdrops
 
 import org.alter.api.CommonClientScripts
 import org.alter.api.InterfaceDestination
-import org.alter.api.cfg.Varbit
 import org.alter.api.ext.*
 import org.alter.game.model.entity.Player
 
@@ -22,8 +21,8 @@ object XpSettings {
         p.setInterfaceEvents(interfaceId = 137, component = 54, 1..32, InterfaceEvent.ClickOp1)
         p.setInterfaceEvents(interfaceId = 137, component = 53, 1..4, InterfaceEvent.ClickOp1)
         p.setInterfaceEvents(interfaceId = 137, component = 52, 1..3, InterfaceEvent.ClickOp1)
-        if (p.getVarbit(Varbit.EXPERIENCE_TRACKER_CONFIGURED_SKILL) > 0) {
-            p.setVarbit(Varbit.EXPERIENCE_TRACKER_CONFIGURED_SKILL, 0)
+        if (p.getVarbit("varbits.xpdrops_setup_skill") > 0) {
+            p.setVarbit("varbits.xpdrops_setup_skill", 0)
         }
     }
 }

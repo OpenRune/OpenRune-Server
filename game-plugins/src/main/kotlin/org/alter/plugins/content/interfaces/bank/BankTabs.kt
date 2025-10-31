@@ -7,6 +7,9 @@ import org.alter.game.model.entity.Player
 import org.alter.game.model.item.Item
 import org.alter.plugins.content.interfaces.bank.Bank.insert
 import org.alter.plugins.content.interfaces.bank.config.Varbits
+import org.alter.rscm.RSCM
+import org.alter.rscm.RSCM.asRSCM
+import org.alter.rscm.RSCMType
 
 /**
  * @author bmyte <bmytescape@gmail.com>
@@ -272,11 +275,17 @@ object BankTabs {
     fun getTabsItems(p: Player, tab: Int) : List<Item?> {
         var container = p.bank.toMutableList()
         var tabsItems = mutableListOf<Item?>()
-        for (currentTab in Varbits.TAB_DISPLAY + 1.. Varbits.TAB_DISPLAY + tab) {
-            if (Varbits.TAB_DISPLAY+tab == currentTab) {
-                tabsItems = container.take(p.getVarbit(currentTab)).toMutableList()
+
+
+        val varBitID = Varbits.TAB_DISPLAY.asRSCM()
+
+        for (currentTab in varBitID + 1.. varBitID + tab) {
+            val currentVarbit = RSCM.getReverseMapping(RSCMType.VARBITTYPES, currentTab)!!
+
+            if (varBitID+tab == currentTab) {
+                tabsItems = container.take(p.getVarbit(currentVarbit)).toMutableList()
             } else {
-                container = container.drop(p.getVarbit(currentTab)).toMutableList()
+                container = container.drop(p.getVarbit(currentVarbit)).toMutableList()
             }
         }
         return tabsItems
