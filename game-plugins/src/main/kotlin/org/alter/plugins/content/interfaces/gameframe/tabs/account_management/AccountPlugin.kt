@@ -54,7 +54,7 @@ class AccountPlugin(
             player.setComponentText(interfaceId = 589, component = 6, text = "Next free change:")
             player.setComponentText(interfaceId = 589, component = 7, text = "Now!") // Make this a method to pull last updated date from your database, return that date, or "Now!"
             player.setInterfaceEvents(interfaceId = 589, component = 18, range = 0..9, setting = 0)
-            player.setVarbit(5605, 1)
+            player.setVarbit("varbits.displayname_status", 1)
         }
 
         buttons.forEach {
@@ -65,7 +65,7 @@ class AccountPlugin(
 
         listOf(6, 11, 16).forEachIndexed { index, it ->
             onButton(109, it) {
-                player.setVarbit(10060, index)
+                player.setVarbit("varbits.account_current_tab", index)
             }
         }
     }

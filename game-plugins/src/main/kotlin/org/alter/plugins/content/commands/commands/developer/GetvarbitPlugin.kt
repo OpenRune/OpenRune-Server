@@ -17,6 +17,8 @@ import org.alter.game.model.queue.*
 import org.alter.game.model.shop.*
 import org.alter.game.model.timer.*
 import org.alter.game.plugin.*
+import org.alter.rscm.RSCM
+import org.alter.rscm.RSCMType
 
 class GetvarbitPlugin(
     r: PluginRepository,
@@ -28,7 +30,14 @@ class GetvarbitPlugin(
         onCommand("getvarbit", Privilege.DEV_POWER, description = "Get varbit state") {
             val args = player.getCommandArgs()
             val varbit = args[0].toInt()
-            val state = player.getVarbit(varbit)
+
+            val name = RSCM.getReverseMapping(RSCMType.VARBITTYPES, varbit) ?: run {
+                player.message("Could not find a varbit with ID $varbit. Please check if the ID is valid.")
+                return@onCommand
+            }
+
+
+            val state = player.getVarbit(name)
             player.message("Get varbit (<col=801700>$varbit</col>): <col=801700>$state</col>")
         }
 

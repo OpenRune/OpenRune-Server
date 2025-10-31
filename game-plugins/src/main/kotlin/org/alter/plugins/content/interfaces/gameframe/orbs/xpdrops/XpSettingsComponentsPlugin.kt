@@ -42,15 +42,15 @@ class XpSettingsComponentsPlugin(
         val skillEnum = getEnumOrDefault(681)
 
         listOf(
-            Pair(POSITION_DROPDOWN_ID, Varbit.EXPERIENCE_TRACKER_POSITION),
-            Pair(SIZE_DROPDOWN_ID, Varbit.EXPERIENCE_TRACKER_SIZE),
-            Pair(SPEED_DROPDOWN_ID, Varbit.EXPERIENCE_TRACKER_SPEED),
-            Pair(DURATION_DROPDOWN_ID, Varbit.EXPERIENCE_TRACKER_DURATION),
-            Pair(COUNTER_DROPDOWN_ID, Varbit.EXPERIENCE_TRACKER_COUNTER),
-            Pair(PROGRESS_BAR_DROPDOWN_ID, Varbit.EXPERIENCE_TRACKER_PROGRESS_BAR),
-            Pair(COLOUR_BAR_DROPDOWN_ID, Varbit.EXPERIENCE_TRACKER_COLOUR),
-            Pair(GROUP_BAR_DROPDOWN_ID, Varbit.EXPERIENCE_TRACKER_GROUP),
-            Pair(FAKE_DROPS_DROPDOWN_ID, Varbit.EXPERIENCE_TRACKER_FAKE_DROPS),
+            Pair(POSITION_DROPDOWN_ID, "varbits.xpdrops_position"),
+            Pair(SIZE_DROPDOWN_ID, "varbits.xpdrops_size"),
+            Pair(SPEED_DROPDOWN_ID, "varbits.xpdrops_speed"),
+            Pair(DURATION_DROPDOWN_ID, "varbits.xpdrops_duration"),
+            Pair(COUNTER_DROPDOWN_ID, "varbits.xpdrops_counter_type"),
+            Pair(PROGRESS_BAR_DROPDOWN_ID, "varbits.xpdrops_progress_type"),
+            Pair(COLOUR_BAR_DROPDOWN_ID, "varbits.xpdrops_colour"),
+            Pair(GROUP_BAR_DROPDOWN_ID, "varbits.xpdrops_groupskills"),
+            Pair(FAKE_DROPS_DROPDOWN_ID, "varbits.xpdrops_fakesoff"),
         ).forEach { (button, varbit) ->
             on_xp_button(button) {
                 player.setVarbit(varbit, player.getInteractingSlot() - 1)
@@ -60,37 +60,37 @@ class XpSettingsComponentsPlugin(
 
 // Skill Selection
         on_xp_button(CONFIGURE_SKILL) {
-            player.setVarbit(Varbit.EXPERIENCE_TRACKER_CONFIGURED_SKILL, player.getInteractingSlot() + 1)
-            player.setVarbit(Varbit.EXPERIENCE_TRACKER_CONFIGURED_SKILL, 0)
-            player.setVarbit(Varbit.EXPERIENCE_TRACKER_CONFIGURED_SKILL, player.getInteractingSlot() + 1)
+            player.setVarbit("varbits.xpdrops_setup_skill", player.getInteractingSlot() + 1)
+            player.setVarbit("varbits.xpdrops_setup_skill", 0)
+            player.setVarbit("varbits.xpdrops_setup_skill", player.getInteractingSlot() + 1)
         }
 
 // Reset when we Discard.
         on_xp_button(RETURN_TO_SETTINGS) {
-            player.setVarbit(Varbit.EXPERIENCE_TRACKER_CONFIGURED_SKILL, 0)
-            if (player.getVarbit(Varbit.EXPERIENCE_TRACKER_CONFIGURED_MODE) > 0) {
-                player.setVarbit(Varbit.EXPERIENCE_TRACKER_CONFIGURED_MODE, 0)
+            player.setVarbit("varbits.xpdrops_setup_skill", 0)
+            if (player.getVarbit("varbits.xpdrops_setup_type") > 0) {
+                player.setVarbit("varbits.xpdrops_setup_type", 0)
             }
-            player.setVarbit(Varbit.EXPERIENCE_TRACKER_CONFIGURED_SKILL, 1) // Actl on osrs they set this one to wut it was before but i aint wasting memory on that shit.
-            player.setVarbit(Varbit.EXPERIENCE_TRACKER_CONFIGURED_SKILL, 0)
+            player.setVarbit("varbits.xpdrops_setup_skill", 1) // Actl on osrs they set this one to wut it was before but i aint wasting memory on that shit.
+            player.setVarbit("varbits.xpdrops_setup_skill", 0)
             player.setVarp("varp.if1", -1)
             player.setVarp("varp.if2", -1)
         }
 // No tracker or Goal
         on_xp_button(NO_TRACKER_OR_GOAL_COMPONENT_ID) {
-            player.setVarbit(Varbit.EXPERIENCE_TRACKER_CONFIGURED_MODE, 0)
+            player.setVarbit("varbits.xpdrops_setup_type", 0)
         }
 
 // Tracker
         on_xp_button(TRACKER_COMPONENT_ID) {
             player.setVarp("varp.if2", -1) // Tf Makes 61512 ?
             player.setVarp("varp.if1", -1) // Tf Makes 61512 ?
-            player.setVarbit(Varbit.EXPERIENCE_TRACKER_CONFIGURED_MODE, 1)
-            val slot = player.getVarbit(Varbit.EXPERIENCE_TRACKER_CONFIGURED_SKILL)
+            player.setVarbit("varbits.xpdrops_setup_type", 1)
+            val slot = player.getVarbit("varbits.xpdrops_setup_skill")
             when {
                 slot in 0..23 -> {
                     val skillEnum = getEnumOrDefault(681)
-                    player.setVarp("varp.if1", player.getSkills()[skillEnum.getInt(player.getVarbit(Varbit.EXPERIENCE_TRACKER_CONFIGURED_SKILL))].xp.roundToInt(),
+                    player.setVarp("varp.if1", player.getSkills()[skillEnum.getInt(player.getVarbit("varbits.xpdrops_setup_skill"))].xp.roundToInt(),
                     )
                 }
                 slot == 24 -> {
@@ -111,12 +111,12 @@ class XpSettingsComponentsPlugin(
         on_xp_button(GOAL_COMPONENT_ID) {
             player.playSound(Sound.INTERFACE_SELECT1)
             player.setVarp("varp.if1", -1)
-            player.setVarbit(Varbit.EXPERIENCE_TRACKER_CONFIGURED_MODE, 2)
-            val slot = player.getVarbit(Varbit.EXPERIENCE_TRACKER_CONFIGURED_SKILL)
+            player.setVarbit("varbits.xpdrops_setup_type", 2)
+            val slot = player.getVarbit("varbits.xpdrops_setup_skill")
             when {
                 slot in 0..23 -> {
 
-                    val skill = player.getSkills()[skillEnum.getInt(player.getVarbit(Varbit.EXPERIENCE_TRACKER_CONFIGURED_SKILL))]
+                    val skill = player.getSkills()[skillEnum.getInt(player.getVarbit("varbits.xpdrops_setup_skill"))]
                     player.setVarp("varp.if1", skill.xp.roundToInt())
                     player.setVarp("varp.if2", SkillSet.getXpForLevel(skill.currentLevel + 1).roundToInt())
                 }
@@ -148,7 +148,7 @@ class XpSettingsComponentsPlugin(
                     }
                 }
                 9 ->
-                    player.setVarp("varp.if1", player.getSkills()[skillEnum.getInt(player.getVarbit(Varbit.EXPERIENCE_TRACKER_CONFIGURED_SKILL))].xp.roundToInt(),
+                    player.setVarp("varp.if1", player.getSkills()[skillEnum.getInt(player.getVarbit("varbits.xpdrops_setup_skill"))].xp.roundToInt(),
                     )
                 else -> "Something went wrong! method: on_xp_button(TRACKER_SET) Interaction slot: ${player.getInteractingOption()}"
             }

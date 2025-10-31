@@ -5,7 +5,7 @@ import org.alter.rscm.RSCM.asRSCM
 object Orbs {
     val ORBS_UNIVERSE = "interfaces.orbs".asRSCM() //interface 160
     val XP_ORB = "components.orbs:xp_drops".asRSCM() //Component 6
-    val XPDROPSENABLED = "varbits.xpdrops_enabled".asRSCM() //XP_DROPS_VISIBLE_VARBIT = 4702
+    val XPDROPSENABLED = "varbits.xpdrops_enabled"
     val XP_DROPS = "interfaces.xp_drops".asRSCM() //Interface_id = 12
     val RUNVARP = "varp.option_run"
     val RUN_ORB = "components.orbs:runbutton".asRSCM() //160:28

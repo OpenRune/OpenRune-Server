@@ -40,7 +40,7 @@ class AppearanceInterfacePlugin(
 // * Change [Gender] to [Gender.MALE]
 // */
 // on_button(APPEARANCE_INTERFACE_ID, 65) {
-//    player.setVarbit(11697, 0)
+//    player.setVarbit("varbits.fsw_active", 0)
 //    player.appearance = Appearance.DEFAULT_MALE
 //    player.addBlock(UpdateBlockType.APPEARANCE)
 // }
@@ -49,7 +49,7 @@ class AppearanceInterfacePlugin(
 // * Change [Gender] to [Gender.FEMALE]
 // */
 // on_button(APPEARANCE_INTERFACE_ID, 66) {
-//    player.setVarbit(11697, 1)
+//    player.setVarbit("varbits.fsw_active", 1)
 //    player.appearance = Appearance.DEFAULT_FEMALE
 //    player.addBlock(UpdateBlockType.APPEARANCE)
 // }

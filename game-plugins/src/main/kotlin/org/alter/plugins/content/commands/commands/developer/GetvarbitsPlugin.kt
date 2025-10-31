@@ -19,6 +19,8 @@ import org.alter.game.model.queue.*
 import org.alter.game.model.shop.*
 import org.alter.game.model.timer.*
 import org.alter.game.plugin.*
+import org.alter.rscm.RSCM
+import org.alter.rscm.RSCMType
 
 class GetvarbitsPlugin(
     r: PluginRepository,
@@ -40,7 +42,8 @@ class GetvarbitsPlugin(
             }
             player.message("Varbits for varp <col=801700>$varp</col>:")
             varbits.forEach { varbit ->
-                player.message("  ${varbit.id} [bits ${varbit.startBit}-${varbit.endBit}] [current ${player.getVarbit(varbit.id)}]")
+                val varBitName = RSCM.getReverseMapping(RSCMType.VARBITTYPES, varbit.id)!!
+                player.message("  ${varbit.id} [bits ${varbit.startBit}-${varbit.endBit}] [current ${player.getVarbit(varBitName)}]")
             }
         }
     }

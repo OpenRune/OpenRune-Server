@@ -1,7 +1,6 @@
 package org.alter.plugins.content.interfaces.emotes
 
 import org.alter.api.EquipmentType
-import org.alter.api.cfg.Varbit
 import org.alter.api.ext.*
 import org.alter.game.model.entity.Player
 import org.alter.game.model.queue.TaskPriority
@@ -15,39 +14,39 @@ object EmotesTab {
     const val COMPONENT_ID = 216
 
     fun unlockAll(p: Player) {
-        p.setVarbit(Varbit.GOBLIN_EMOTES_VARBIT, 7)
-        p.setVarbit(Varbit.GLASS_BOX_EMOTE_VARBIT, 1)
-        p.setVarbit(Varbit.CLIMB_ROPE_EMOTE_VARBIT, 1)
-        p.setVarbit(Varbit.LEAN_EMOTE_VARBIT, 1)
-        p.setVarbit(Varbit.GLASS_WALL_EMOTE_VARBIT, 1)
-        p.setVarbit(Varbit.IDEA_EMOTE_VARBIT, 1)
-        p.setVarbit(Varbit.STAMP_EMOTE_VARBIT, 1)
-        p.setVarbit(Varbit.FLAP_EMOTE_VARBIT, 1)
-        p.setVarbit(Varbit.SLAP_HEAD_EMOTE_VARBIT, 1)
-        p.setVarbit(Varbit.ZOMBIE_WALK_EMOTE_VARBIT, 1)
-        p.setVarbit(Varbit.ZOMBIE_DANCE_EMOTE_VARBIT, 1)
-        p.setVarbit(Varbit.SCARED_EMOTE_VARBIT, 1)
-        p.setVarbit(Varbit.RABBIT_HOP_EMOTE_VARBIT, 1)
-        p.setVarbit(Varbit.EXERCISE_EMOTES, 1)
-        p.setVarbit(Varbit.ZOMBIE_HAND_EMOTE_VARBIT, 1)
-        p.setVarbit(Varbit.HYPERMOBILE_DRINKER_EMOTE_VARBIT, 1)
-        p.setVarbit(Varbit.SKILLCAPE_EMOTE_VARBIT, 1)
-        p.setVarbit(Varbit.AIR_GUITAR_EMOTE_VARBIT, 1)
-        p.setVarbit(Varbit.URI_TRANSFORM_EMOTE_VARBIT, 1)
-        p.setVarbit(Varbit.SMOOTH_DANCE_EMOTE_VARBIT, 1)
-        p.setVarbit(Varbit.CRAZY_DANCE_EMOTE_VARBIT, 1)
-        p.setVarbit(Varbit.PREMIER_SHIELD_EMOTE_VARBIT, 1)
-        p.setVarbit(Varbit.EXPLORE_VARBIT, 1)
-        p.setVarbit(Varbit.FLEX_EMOTE_VARBIT, 1)
-        p.setVarbit(Varbit.RELIC_UNLOCKED_EMOTE_VARBIT, 9)
-        p.setVarbit(Varbit.PARTY_EMOTE_VARBIT, 1)
+        p.setVarbit("varbits.lost_tribe_quest", 7)
+        p.setVarbit("varbits.emote_glassbox", 1)
+        p.setVarbit("varbits.emote_climbrope", 1)
+        p.setVarbit("varbits.emote_lean", 1)
+        p.setVarbit("varbits.emote_glasswall", 1)
+        p.setVarbit("varbits.sos_emote_idea", 1)
+        p.setVarbit("varbits.sos_emote_stamp", 1)
+        p.setVarbit("varbits.sos_emote_flap", 1)
+        p.setVarbit("varbits.sos_emote_doh", 1)
+        p.setVarbit("varbits.emote_zombie_walk", 1)
+        p.setVarbit("varbits.emote_zombie_dance", 1)
+        p.setVarbit("varbits.emote_terrified", 1)
+        p.setVarbit("varbits.emote_bunny_hop", 1)
+        p.setVarbit("varbits.emote_drilldemon", 1)
+        p.setVarbit("varbits.emote_zombie_hand", 1)
+        p.setVarbit("varbits.emote_ash", 1)
+        p.setVarbit("varbits.emote_maxcape", 1)
+        p.setVarbit("varbits.emote_musiccape", 1)
+        p.setVarbit("varbits.emote_uri_transform", 1)
+        p.setVarbit("varbits.emote_hotline_bling", 1)
+        p.setVarbit("varbits.emote_gangnam", 1)
+        p.setVarbit("varbits.emote_premier_club_2018", 1)
+        p.setVarbit("varbits.emote_explore", 1)
+        p.setVarbit("varbits.emote_flex", 1)
+        p.setVarbit("varbits.poh_leaguehall_outfitstand_relichunter_type", 9)
+        p.setVarbit("varbits.emote_party", 1)
     }
 
     fun performEmote(
         p: Player,
         emote: Emote,
     ) {
-        if (emote.varbit != -1 && p.getVarbit(emote.varbit) != emote.requiredVarbitValue) {
+        if (emote.varbit != RSCM.NONE && p.getVarbit(emote.varbit) != emote.requiredVarbitValue) {
             val description = emote.unlockDescription ?: "You have not unlocked this emote yet."
             p.queue { messageBox(p, description) }
             return

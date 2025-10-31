@@ -2,20 +2,11 @@ package org.alter.plugins.content.interfaces.gameframe.chat
 
 import org.alter.api.*
 import org.alter.api.CommonClientScripts
-import org.alter.api.cfg.*
-import org.alter.api.dsl.*
 import org.alter.api.ext.*
 import org.alter.game.*
 import org.alter.game.model.*
-import org.alter.game.model.attr.*
-import org.alter.game.model.container.*
-import org.alter.game.model.container.key.*
-import org.alter.game.model.entity.*
-import org.alter.game.model.item.*
 import org.alter.game.model.entity.Player
 import org.alter.game.model.queue.*
-import org.alter.game.model.shop.*
-import org.alter.game.model.timer.*
 import org.alter.game.plugin.*
 
 /**
@@ -39,13 +30,13 @@ class ChatBoxFilterPlugin(
         val REPORT_BUG_BUTTON_COMPONENT = 31
 
         onLogin {
-            player.setVarbit(Varbit.CHATBOX_UNLOCKED, 1)
+            player.setVarbit("varbits.has_displayname_transmitter", 1)
         }
 
         onButton(PARENT_CHAT_BOX_INTERFACE, GAME_BUTTON_COMPONENT) {
             when (player.getInteractingOption()) {
                 1 -> {
-                    player.toggleVarbit(26)
+                    player.toggleVarbit("varbits.game_filter")
                 }
                 2 -> {
                     player.queue { dialog(player, this) }
@@ -57,9 +48,9 @@ class ChatBoxFilterPlugin(
             onButton(PARENT_CHAT_BOX_INTERFACE, it) {
                 player.setVarbit(
                     when (it) {
-                        PRIVATE_BUTTON_COMPONENT -> 13674
-                        CHANNEL_BUTTON_COMPONENT -> 928
-                        CLAN_BUTTON_COMPONENT -> 929
+                        PRIVATE_BUTTON_COMPONENT -> "varbits.chat_filter_private"
+                        CHANNEL_BUTTON_COMPONENT -> "varbits.chat_filter_friendschat"
+                        CLAN_BUTTON_COMPONENT -> "varbits.chat_filter_clanchat"
                         else -> {
                             return@onButton
                         }
