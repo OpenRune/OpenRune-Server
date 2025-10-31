@@ -5,6 +5,7 @@ import org.alter.api.cfg.Varbit
 import org.alter.api.ext.*
 import org.alter.game.model.entity.Player
 import org.alter.game.model.queue.TaskPriority
+import org.alter.rscm.RSCM
 import org.alter.rscm.RSCM.getRSCM
 
 /**
@@ -197,7 +198,7 @@ object EmotesTab {
 
         if (emote == Emote.RELIC_UNLOCKED) {
             p.queue(TaskPriority.STANDARD) {
-                p.graphic(-1)
+                p.graphic(RSCM.NONE)
                 p.graphic(emote.gfx, 100)
                 p.unlock()
             }
@@ -209,9 +210,9 @@ object EmotesTab {
                 p.unlock()
             }
         }
-        if (emote.gfx != -1 && emote != Emote.RELIC_UNLOCKED) {
+        if (emote.gfx != RSCM.NONE && emote != Emote.RELIC_UNLOCKED) {
             p.queue(TaskPriority.STANDARD) {
-                p.graphic(-1)
+                p.graphic(RSCM.NONE)
                 p.graphic(emote.gfx)
                 p.unlock()
             }

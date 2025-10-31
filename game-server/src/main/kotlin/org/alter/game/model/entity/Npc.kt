@@ -150,14 +150,6 @@ class Npc private constructor(val id: Int, world: World, val spawnTile: Tile) : 
     }
 
     override fun graphic(
-        id: Int,
-        height: Int,
-        delay: Int,
-    ) {
-        NpcInfo(this).setSpotAnim(0, id, delay, height)
-    }
-
-    override fun graphic(
         id: String,
         height: Int,
         delay: Int,

@@ -13,9 +13,9 @@ enum class TeleportType(
     val endGraphic: Graphic? = null,
     val wildLvlRestriction: Int = 20,
 ) {
-    MODERN(teleportDelay = 4, animation = 714, graphic = Graphic(111, 92)),
-    GLORY(teleportDelay = 4, animation = 714, graphic = Graphic(111, 92), wildLvlRestriction = 30),
-    ANCIENT(teleportDelay = 5, animation = 1979, graphic = Graphic(392, 0)),
-    LUNAR(teleportDelay = 4, animation = 1816, graphic = Graphic(747, 120)),
-    ARCEUUS(teleportDelay = 4, animation = 1816, graphic = Graphic(747, 120)),
+    MODERN(teleportDelay = 4, animation = 714, graphic = Graphic("spotanims.teleport_casting", 92)),
+    GLORY(teleportDelay = 4, animation = 714, graphic = Graphic("spotanims.teleport_casting", 92), wildLvlRestriction = 30),
+    ANCIENT(teleportDelay = 5, animation = 1979, graphic = Graphic("spotanims.zaros_teleport", 0)),
+    LUNAR(teleportDelay = 4, animation = 1816, graphic = Graphic("spotanims.lunar_teleport_spotanim", 120)),
+    ARCEUUS(teleportDelay = 4, animation = 1816, graphic = Graphic("spotanims.lunar_teleport_spotanim", 120)),
 }

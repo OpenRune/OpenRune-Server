@@ -32,17 +32,17 @@ class ShatteredCanePlugin(
     init {
         onEquipmentOption("items.league_3_cane", "Skill Emote") {
             if (checkForItems(player)) {
-                doEmote(player, 2021)
+                doEmote(player, "spotanims.league_3_unlock_spotanim_skill")
             }
         }
         onEquipmentOption("items.league_3_cane", "Boss Emote") {
             if (checkForItems(player)) {
-                doEmote(player, 2022)
+                doEmote(player, "spotanims.league_3_unlock_spotanim_pvm")
             }
         }
         onEquipmentOption("items.league_3_cane", "Quest Emote") {
             if (checkForItems(player)) {
-                doEmote(player, 2023)
+                doEmote(player, "spotanims.league_3_unlock_spotanim_quest")
             }
         }
         onEquipmentOption("items.league_3_cane", "Fragment Emote") {
@@ -71,7 +71,7 @@ class ShatteredCanePlugin(
 
     fun doEmote(
         player: Player,
-        gfx: Int,
+        gfx: String,
     ) {
         player.queue {
             player.lock()
