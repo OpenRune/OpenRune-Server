@@ -33,7 +33,7 @@ enum class Food(
     MONKFISH("items.monkfish", heal = 16, dbRowId = "dbrows.monkfish_food"),
     CURRY("items.curry", "items.bowl_empty", heal = 19, dbRowId = "dbrows.curry_food"),
     COOKED_PYRE_FOX("items.curry", heal = 11, dbRowId = "dbrows.cooked_pyre_fox_food"),
-    SHARK("items.shark", heal = 0, dbRowId = "dbrows.shark_food"),
+    SHARK("items.shark", heal = 20, dbRowId = "dbrows.shark_food"),
     SEA_TURTLE("items.seaturtle", heal = 21, dbRowId = "dbrows.sea_turtle_food"),
     MANTA_RAY("items.mantaray", heal = 22, dbRowId = "dbrows.manta_ray_food"),
     TUNA_POTATO("items.potato_tuna+sweetcorn", heal = 22, dbRowId = "dbrows.tuna_potato_food"),

@@ -23,6 +23,8 @@ open class ItemClickEvent(
         return def.interfaceOptions.getOrNull(indexSlot) ?: error("No action found at index $indexSlot for item id=$item")
     }
 
+    fun hasOption(option : String) = optionName.equals(optionName,true)
+
     fun isContainer(type: ContainerType): Boolean = container == type
 
     fun isInventory(): Boolean = container == ContainerType.INVENTORY

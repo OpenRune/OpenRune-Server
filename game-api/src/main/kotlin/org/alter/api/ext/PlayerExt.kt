@@ -912,7 +912,7 @@ fun Player.hasSkullIcon(icon: SkullIcon): Boolean = skullIcon == icon.id
 fun Player.isClientResizable(): Boolean =
     interfaces.displayMode == DisplayMode.RESIZABLE_NORMAL || interfaces.displayMode == DisplayMode.RESIZABLE_LIST
 
-fun Player.inWilderness(): Boolean = getInterfaceAt(InterfaceDestination.OVERLAY) != -1
+fun Player.inWilderness(): Boolean = tile.getWildernessLevel() != 0
 
 fun Player.sendWorldMapTile() {
     runClientScript(CommonClientScripts.WORLD_MAP_TILE, tile.as30BitInteger)
