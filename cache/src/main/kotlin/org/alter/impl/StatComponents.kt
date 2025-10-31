@@ -18,9 +18,9 @@ object StatComponents {
 
     fun statsComponents() = dbTable("tables.stat_components") {
 
-        column("component", COL_COMPONENT, arrayOf(VarType.COMPONENT))
-        column("stat", COL_STAT, arrayOf(VarType.STAT))
-        column("bit", COL_BIT, arrayOf(VarType.INT))
+        column("component", COL_COMPONENT, VarType.COMPONENT)
+        column("stat", COL_STAT, VarType.STAT)
+        column("bit", COL_BIT, VarType.INT)
 
         val skillsWithBits = listOf(
             StatRow("dbrows.agility_stat", "components.stats:agility", "stats.agility", 8),
@@ -50,9 +50,9 @@ object StatComponents {
 
         skillsWithBits.forEach { row ->
             row(row.rowName) {
-                columnRSCM(COL_COMPONENT, arrayOf(row.componentId))
-                columnRSCM(COL_STAT, arrayOf(row.statString))
-                column(COL_BIT, arrayOf(row.bit))
+                columnRSCM(COL_COMPONENT, row.componentId)
+                columnRSCM(COL_STAT, row.statString)
+                column(COL_BIT, row.bit)
             }
         }
     }
