@@ -27,16 +27,12 @@ class TeleportTabEvents : PluginEvent() {
             on<ItemClickEvent> {
                 where { item == itemId }
                 then {
-
-
-                    println("OPTION: ${option}")
-
                     when (option) {
-                        MenuOption.OP1 -> location?.let {
+                        MenuOption.OP2 -> location?.let {
                             teleport(player, item, it)
                         } ?: teleportSpecial(player, item, MenuOption.OP3)
 
-                        MenuOption.OP2,MenuOption.OP3 -> teleportSpecial(player, item, option)
+                        MenuOption.OP3,MenuOption.OP4 -> teleportSpecial(player, item, option)
                         else -> player.message("Unhandled teleport tablet option: ${option.name.lowercase()} ($item)")
                     }
                 }
@@ -46,10 +42,10 @@ class TeleportTabEvents : PluginEvent() {
 
     private fun teleportSpecial(player: Player, item: Int, option: MenuOption) {
         val targetLocation = when {
-            item == "items.poh_tablet_varrockteleport".asRSCM() && option == MenuOption.OP2 -> Tile(3213, 3424)
-            item == "items.poh_tablet_watchtowerteleport".asRSCM() && option == MenuOption.OP2 -> Tile(2549, 3112, 2)
-            item == "items.poh_tablet_varrockteleport".asRSCM() && option == MenuOption.OP3 -> Tile(3165, 3479)
-            item == "items.poh_tablet_watchtowerteleport".asRSCM() && option == MenuOption.OP3 -> Tile(2584, 3097)
+            item == "items.poh_tablet_varrockteleport".asRSCM() && option == MenuOption.OP3 -> Tile(3213, 3424)
+            item == "items.poh_tablet_watchtowerteleport".asRSCM() && option == MenuOption.OP3 -> Tile(2549, 3112, 2)
+            item == "items.poh_tablet_varrockteleport".asRSCM() && option == MenuOption.OP4 -> Tile(3165, 3479)
+            item == "items.poh_tablet_watchtowerteleport".asRSCM() && option == MenuOption.OP4 -> Tile(2584, 3097)
             else -> null
         }
 
