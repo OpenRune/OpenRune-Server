@@ -15,6 +15,7 @@ import org.alter.game.model.queue.*
 import org.alter.game.model.shop.*
 import org.alter.game.model.timer.*
 import org.alter.game.plugin.*
+import org.alter.rscm.RSCM
 
 class MindShieldPlugin(
     r: PluginRepository,
@@ -26,9 +27,9 @@ class MindShieldPlugin(
         onItemEquip("items.elemental_mind_shield") {
             player.queue {
                 player.animate(-1)
-                player.graphic(-1)
+                player.graphic(RSCM.NONE)
                 player.animate(3996, 3)
-                player.graphic(809, 90, 3)
+                player.graphic("spotanims.elemental_mind_shield_equip", 90, 3)
             }
         }
     }

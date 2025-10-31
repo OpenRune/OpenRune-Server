@@ -398,9 +398,8 @@ abstract class Pawn(val world: World) : Entity() {
         }
     }
 
-    // @TODO
     abstract fun graphic(
-        id: Int,
+        id: String,
         height: Int = 0,
         delay: Int = 0,
     )

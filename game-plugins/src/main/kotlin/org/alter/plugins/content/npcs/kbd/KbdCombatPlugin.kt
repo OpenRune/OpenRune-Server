@@ -112,7 +112,7 @@ class KbdCombatPlugin(
                 }
             }
         if (hit.blocked()) {
-            target.graphic(id = 85, height = 124, delay = hit.getClientHitDelay())
+            target.graphic(id = "spotanims.failedspell_impact", height = 124, delay = hit.getClientHitDelay())
         }
     }
 
@@ -138,7 +138,7 @@ class KbdCombatPlugin(
                 }
             }
         if (hit.blocked()) {
-            target.graphic(id = 85, height = 124, delay = hit.getClientHitDelay())
+            target.graphic(id = "spotanims.failedspell_impact", height = 124, delay = hit.getClientHitDelay())
         }
     }
 
@@ -165,7 +165,7 @@ class KbdCombatPlugin(
                 }
             }
         if (hit.blocked()) {
-            target.graphic(id = 85, height = 124, delay = hit.getClientHitDelay())
+            target.graphic(id = "spotanims.failedspell_impact", height = 124, delay = hit.getClientHitDelay())
         }
     }
 

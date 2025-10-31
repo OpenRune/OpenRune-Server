@@ -43,6 +43,9 @@ import org.alter.game.model.timer.FORCE_DISCONNECTION_TIMER
 import org.alter.game.model.varp.VarpSet
 import org.alter.game.rsprot.RsModObjectProvider
 import org.alter.game.service.log.LoggerService
+import org.alter.rscm.RSCM
+import org.alter.rscm.RSCM.asRSCM
+import org.alter.rscm.RSCMType
 import java.util.*
 
 /**
@@ -197,11 +200,12 @@ open class Player(world: World) : Pawn(world) {
     val avatar: PlayerAvatar get() = playerInfo.avatar
 
     override fun graphic(
-        id: Int,
+        id: String,
         height: Int,
         delay: Int,
     ) {
-        avatar.extendedInfo.setSpotAnim(0, id, delay, height)
+        RSCM.requireRSCM(RSCMType.SPOTTYPES,id)
+        avatar.extendedInfo.setSpotAnim(0, id.asRSCM(), delay, height)
     }
 
     fun forceMove(movement: ForcedMovement) {

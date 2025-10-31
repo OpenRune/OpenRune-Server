@@ -63,7 +63,7 @@ class TeleportTabEvents : PluginEvent() {
             player.playSound("jingles.artistry".asRSCM(), volume = 1, delay = 15)
 
             wait(cycles = 3)
-            player.graphic("spotanims.poh_absorb_tablet_magic".asRSCM())
+            player.graphic("spotanims.poh_absorb_tablet_magic")
             player.animate("sequences.poh_absorb_tablet_teleport".asRSCM())
 
             wait(cycles = 2)

@@ -14,6 +14,9 @@ import org.alter.game.model.combat.AttackStyle
 import org.alter.game.model.combat.CombatClass
 import org.alter.game.model.combat.CombatStyle
 import org.alter.game.model.combat.NpcCombatDef
+import org.alter.rscm.RSCM
+import org.alter.rscm.RSCM.asRSCM
+import org.alter.rscm.RSCMType
 
 /**
  * @author Tom <rspsmods@gmail.com>
@@ -147,11 +150,12 @@ class Npc private constructor(val id: Int, world: World, val spawnTile: Tile) : 
     }
 
     override fun graphic(
-        id: Int,
+        id: String,
         height: Int,
         delay: Int,
     ) {
-        NpcInfo(this).setSpotAnim(0, id, delay, height)
+        RSCM.requireRSCM(RSCMType.SPOTTYPES,id)
+        NpcInfo(this).setSpotAnim(0, id.asRSCM(), delay, height)
     }
 
     override fun cycle() {

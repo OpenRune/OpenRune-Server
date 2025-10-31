@@ -15,6 +15,7 @@ import org.alter.game.model.queue.*
 import org.alter.game.model.shop.*
 import org.alter.game.model.timer.*
 import org.alter.game.plugin.*
+import org.alter.rscm.RSCM
 
 class ElementalShieldPlugin(
     r: PluginRepository,
@@ -26,10 +27,10 @@ class ElementalShieldPlugin(
         onItemEquip("items.elemental_shield") {
             player.queue {
                 player.animate(-1)
-                player.graphic(-1)
+                player.graphic(RSCM.NONE)
 
                 player.animate(3996, 3)
-                player.graphic(244, 95, 3)
+                player.graphic("spotanims.elemental_shield_equip", 95, 3)
             }
         }
     }

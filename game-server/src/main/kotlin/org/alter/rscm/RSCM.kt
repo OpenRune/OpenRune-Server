@@ -28,6 +28,8 @@ enum class RSCMType(val prefix: String) {
 
 object RSCM {
 
+    val NONE = "NONE"
+
     fun getRSCM(entity: Array<String>): List<Int> = entity.map { getRSCM(it) }
 
     fun String.asRSCM(): Int = getRSCM(this)
@@ -48,6 +50,7 @@ object RSCM {
 
     fun getRSCM(entity: String): Int {
         require(RSCM_PREFIXES.any { entity.startsWith(it) }) { "Prefix not found for '${entity.substringBefore(".")}'" }
+        if (entity == NONE) return -1
         return ConstantProvider.getMapping(entity)
     }
 }

@@ -29,7 +29,7 @@ class AncientWyvernShieldPlugin(
 //    player.animate(3996)
 //    player.queue {
 //        wait(1)
-//        player.graphic(1395, 98)
+//        player.graphic("spotanims.wyvern_shield_equip", 98)
 //    }
 //}
 ///**
