@@ -53,9 +53,11 @@ object RSCM {
 
     fun String.asRSCM(): Int = getRSCM(this)
 
-    fun requireRSCM(type: RSCMType, entity: String) {
-        if (!entity.startsWith(type.prefix) && entity != NONE) {
-            error("Invalid RSCM key. Expected prefix '${type.prefix}', got '${entity.substringBefore(".")}'")
+    fun requireRSCM(type: RSCMType, vararg entities: String) {
+        for (entity in entities) {
+            if (!entity.startsWith(type.prefix) && entity != NONE) {
+                error("Invalid RSCM key. Expected prefix '${type.prefix}', got '${entity.substringBefore(".")}'")
+            }
         }
     }
 

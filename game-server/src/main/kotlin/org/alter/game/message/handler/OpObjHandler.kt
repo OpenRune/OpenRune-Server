@@ -11,6 +11,7 @@ import org.alter.game.model.attr.INTERACTING_OPT_ATTR
 import org.alter.game.model.entity.Client
 import org.alter.game.model.entity.GroundItem
 import org.alter.game.model.entity.Player
+import org.alter.game.pluginnew.MenuOption
 import org.alter.game.pluginnew.event.impl.GroundItemClickEvent
 import java.lang.ref.WeakReference
 
@@ -53,6 +54,6 @@ class OpObjHandler : MessageHandler<OpObj> {
         client.attr[INTERACTING_OPT_ATTR] = message.op
         client.attr[INTERACTING_GROUNDITEM_ATTR] = WeakReference(item)
         client.executePlugin(GroundItemRouteAction.walkPlugin)
-        GroundItemClickEvent(item, message.op, tile, client).post()
+        GroundItemClickEvent(item, MenuOption.fromId(message.op), tile, client).post()
     }
 }
