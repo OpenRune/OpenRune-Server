@@ -27,7 +27,7 @@ class DepositBoxPlugin(
 
     private val DEPOSIT_INTERFACE_ID = 192
     private val DEPOSIT_EQUIPMENT_SFX = 2238
-    private val DEPOSIT_ANIMATION = 834
+    private val DEPOSIT_ANIMATION = "sequences.human_leverdown"
 
     init {
 

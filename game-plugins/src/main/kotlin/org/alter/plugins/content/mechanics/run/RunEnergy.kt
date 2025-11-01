@@ -2,7 +2,6 @@ package org.alter.plugins.content.mechanics.run
 
 import org.alter.api.EquipmentType
 import org.alter.api.Skills
-import org.alter.api.cfg.Varp
 import org.alter.api.ext.*
 import org.alter.game.model.bits.INFINITE_VARS_STORAGE
 import org.alter.game.model.bits.InfiniteVarsType
@@ -23,7 +22,7 @@ object RunEnergy {
      */
     val STAMINA_BOOST = TimerKey("stamina_boost", tickOffline = false)
 
-    const val RUN_ENABLED_VARP = Varp.RUN_MODE_VARP
+    const val RUN_ENABLED_VARP = "varp.option_run"
 
     fun toggle(p: Player) {
         if (p.runEnergy >= 100.0) {
@@ -44,7 +43,7 @@ object RunEnergy {
                 }
                 p.runEnergy = max(0.0, (p.runEnergy - decrement))
                 if (p.runEnergy <= 0) {
-                    p.varps.setState(RUN_ENABLED_VARP, 0)
+                    p.setVarp(RUN_ENABLED_VARP, 0)
                 }
                 p.sendRunEnergy(p.runEnergy.toInt())
             }

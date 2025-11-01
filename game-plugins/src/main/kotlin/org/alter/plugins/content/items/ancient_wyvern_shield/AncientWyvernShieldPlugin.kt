@@ -26,10 +26,10 @@ class AncientWyvernShieldPlugin(
         
     }
     //on_item_equip(Items.ANCIENT_WYVERN_SHIELD) {
-//    player.animate(3996)
+//    player.animate("sequences.elemental_equip_left_human_ready")
 //    player.queue {
 //        wait(1)
-//        player.graphic(1395, 98)
+//        player.graphic("spotanims.wyvern_shield_equip", 98)
 //    }
 //}
 ///**

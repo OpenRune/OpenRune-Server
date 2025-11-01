@@ -6,6 +6,8 @@ import org.alter.game.pluginnew.MenuOption
 import org.alter.game.pluginnew.PluginEvent
 import org.alter.game.pluginnew.event.EventListener
 import org.alter.rscm.RSCM.asRSCM
+import org.alter.rscm.RSCM.requireRSCM
+import org.alter.rscm.RSCMType
 
 open class ItemClickEvent(
     open val item: Int,
@@ -16,9 +18,12 @@ open class ItemClickEvent(
 ) : EntityInteractionEvent<Int>(item, op, player) {
 
     public override fun resolveOptionName(): String {
+        val indexSlot = op.id - 2
         val def = getItem(item) ?: error("Item not found for id=$item")
-        return def.interfaceOptions.getOrNull(op.id) ?: error("No action found at index ${op.id} for item id=$item")
+        return def.interfaceOptions.getOrNull(indexSlot) ?: error("No action found at index $indexSlot for item id=$item")
     }
+
+    fun hasOption(option : String) = optionName.equals(optionName,true)
 
     fun isContainer(type: ContainerType): Boolean = container == type
 
@@ -37,7 +42,7 @@ fun PluginEvent.onItemOption(
     action: suspend ItemClickEvent.() -> Unit
 ): EventListener<ItemClickEvent> {
     require(!(option != null && op != null)) { "You cannot provide both `option` and `op` at the same time." }
-
+    requireRSCM(RSCMType.OBJTYPES,item)
     val rscmItem = item.asRSCM()
     return on<ItemClickEvent> {
         where {
@@ -51,3 +56,17 @@ fun PluginEvent.onItemOption(
         then { action(this) }
     }
 }
+
+class ItemDropEvent(
+    val itemId: Int,
+    val slot: Int,
+    val container: ContainerType,
+    player: Player
+) : ValueEvent<Int>(itemId, player)
+
+class EquipEvent(
+    val itemId: Int,
+    val slot: Int,
+    val container: ContainerType,
+    player: Player
+) : ValueEvent<Int>(itemId, player)

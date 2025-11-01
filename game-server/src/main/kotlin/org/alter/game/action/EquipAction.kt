@@ -92,7 +92,6 @@ object EquipAction {
             return Result.INVALID_ITEM
         }
         if (def.equipment == null) {
-            println("Invalid Item Equipment for: ${item.id}")
             return Result.INVALID_ITEM
         }
         val plugins = p.world.plugins

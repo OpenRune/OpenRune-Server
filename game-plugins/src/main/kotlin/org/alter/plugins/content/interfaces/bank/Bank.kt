@@ -1,6 +1,5 @@
 package org.alter.plugins.content.interfaces.bank
 
-import org.alter.api.BonusSlot
 import org.alter.api.ClientScript
 import org.alter.api.InterfaceDestination
 import org.alter.api.ext.*
@@ -9,11 +8,7 @@ import org.alter.game.model.container.ItemContainer
 import org.alter.game.model.entity.Player
 import org.alter.game.model.item.Item
 import org.alter.plugins.content.interfaces.bank.BankTabs.getTabsItems
-import org.alter.plugins.content.interfaces.equipstats.EquipmentStats
 import org.alter.plugins.content.interfaces.equipstats.EquipmentStats.bonusTextMap
-import org.alter.plugins.content.interfaces.bank.config.Interfaces
-import org.alter.plugins.content.interfaces.bank.config.Components
-import org.alter.plugins.content.interfaces.bank.config.Varbits
 import org.alter.rscm.RSCM.asRSCM
 
 /**
@@ -32,7 +27,7 @@ object Bank {
         val from = p.bank
         val to = p.inventory
         val amount = Math.min(from.getItemCount(id), amt)
-        val note = p.getVarbit(Varbits.WITHDRAW_NOTES) == 1
+        val note = p.getVarbit("varbits.bank_withdrawnotes") == 1
         for (i in slot until from.capacity) {
             val item = from[i] ?: continue
             if (item.id != id) {
@@ -49,7 +44,7 @@ object Bank {
             val transfer = from.transfer(to, item = copy, fromSlot = i, note = note, unnote = false)
             withdrawn += transfer?.completed ?: 0
             if (from[i] == null) {
-                if (placehold || p.getVarbit(Varbits.LEAVEPLACEHOLDERS) == 1) {
+                if (placehold || p.getVarbit("varbits.bank_leaveplaceholders") == 1) {
                     val def = item.getDef()
                     /**
                      * Make sure the item has a valid placeholder item in its
@@ -86,7 +81,7 @@ object Bank {
             if (deposited >= amount) {
                 break
             }
-            val curTab = player.getVarbit(Varbits.CURRENTTAB)
+            val curTab = player.getVarbit("varbits.bank_currenttab")
             val hasEmptySlot = getTabsItems(player, curTab).contains(null)
 
             val left = amount - deposited
@@ -122,10 +117,11 @@ object Bank {
 
     fun open(p: Player) {
         p.setInterfaceUnderlay(-1, -2)
-        p.openInterface(Interfaces.BANK_MAIN, InterfaceDestination.MAIN_SCREEN)
-        p.openInterface(Interfaces.BANKSIDE, InterfaceDestination.TAB_AREA)
-        p.setVarp(262, -1)
-        p.setComponentText(interfaceId = Interfaces.BANK_MAIN, component = Components.BACK_CAPACITY, text = p.bank.capacity.toString())
+        p.openInterface("interfaces.bankmain".asRSCM(), InterfaceDestination.MAIN_SCREEN)
+        p.openInterface("interfaces.bankside".asRSCM(), InterfaceDestination.TAB_AREA)
+        p.setVarp("varp.if2", -1)
+        p.setComponentText(interfaceId = "interfaces.bankmain".asRSCM(),
+            component = "components.bankmain:capacity".asRSCM(), text = p.bank.capacity.toString())
         p.runClientScript(
             ClientScript(id = 1495),
             "Non-members' capacity: 400<br>Become a member for 400 more.<br>A banker can sell you up to 360 more.<br>+20 for your PIN.<br>Set an Authenticator for 20 more.",
@@ -134,8 +130,8 @@ object Bank {
         )
         sendBonuses(p)
         p.setInterfaceEvents(
-            interfaceId = Interfaces.BANKSIDE,
-            component = Components.TITLE,
+            interfaceId = "interfaces.bankside".asRSCM(),
+            component = "components.bankmain:title".asRSCM(),
             0..27,
             InterfaceEvent.ClickOp1,
             InterfaceEvent.ClickOp2,
@@ -150,10 +146,11 @@ object Bank {
             InterfaceEvent.DRAG_DEPTH1,
             InterfaceEvent.DragTargetable,
         )
-        p.setInterfaceEvents(interfaceId = Interfaces.BANK_MAIN, component = Components.DEPOSIT_WORN, 1..1200, InterfaceEvent.ClickOp1)
+        p.setInterfaceEvents(interfaceId = "interfaces.bankmain".asRSCM(),
+            component = "components.bankmain:depositworn".asRSCM(), 1..1200, InterfaceEvent.ClickOp1)
         p.setInterfaceEvents(
-            interfaceId = Interfaces.BANKSIDE,
-            component = Components.SWAP,
+            interfaceId = "interfaces.bankside".asRSCM(),
+            component = "components.bankmain:swap".asRSCM(),
             0..27,
             InterfaceEvent.ClickOp1,
             InterfaceEvent.ClickOp2,
@@ -162,8 +159,8 @@ object Bank {
             InterfaceEvent.ClickOp10,
         )
         p.setInterfaceEvents(
-            interfaceId = Interfaces.BANK_MAIN,
-            component = Components.BANK_MAINTAB_COMPONENT,
+            interfaceId = "interfaces.bankmain".asRSCM(),
+            component = "components.bankmain:items".asRSCM(),
             0..1199,
             InterfaceEvent.ClickOp1,
             InterfaceEvent.ClickOp2,
@@ -178,18 +175,19 @@ object Bank {
             InterfaceEvent.DRAG_DEPTH2,
             InterfaceEvent.DragTargetable,
         )
-        p.setInterfaceEvents(interfaceId = Interfaces.BANK_MAIN, Components.BANK_MAINTAB_COMPONENT, 1218..1227, InterfaceEvent.DragTargetable)
+        p.setInterfaceEvents(interfaceId = "interfaces.bankmain".asRSCM(),
+            "components.bankmain:items".asRSCM(), 1218..1227, InterfaceEvent.DragTargetable)
         p.setInterfaceEvents(
-            interfaceId = Interfaces.BANK_MAIN,
-            Components.TABS,
+            interfaceId = "interfaces.bankmain".asRSCM(),
+            "components.bankmain:tabs".asRSCM(),
             10..10,
             InterfaceEvent.ClickOp1,
             InterfaceEvent.ClickOp7,
             InterfaceEvent.DragTargetable,
         )
         p.setInterfaceEvents(
-            interfaceId = Interfaces.BANK_MAIN,
-            Components.TABS,
+            interfaceId = "interfaces.bankmain".asRSCM(),
+            "components.bankmain:tabs".asRSCM(),
             11..19,
             InterfaceEvent.ClickOp1,
             InterfaceEvent.ClickOp6,
@@ -198,18 +196,18 @@ object Bank {
             InterfaceEvent.DragTargetable,
         )
         p.setInterfaceEvents(
-            interfaceId = Interfaces.BANKSIDE,
-            Components.TUT,
+            interfaceId = "interfaces.bankside".asRSCM(),
+            "components.bankmain:bank_tut".asRSCM(),
             0..27,
             InterfaceEvent.ClickOp1,
             InterfaceEvent.ClickOp10,
             InterfaceEvent.DRAG_DEPTH1,
             InterfaceEvent.DragTargetable,
         )
-        p.setInterfaceEvents(interfaceId = Interfaces.BANK_MAIN, component = 50, 0..3, InterfaceEvent.ClickOp1)
+        p.setInterfaceEvents(interfaceId = "interfaces.bankmain".asRSCM(), component = 50, 0..3, InterfaceEvent.ClickOp1)
         p.setInterfaceEvents(
-            interfaceId = Interfaces.BANKSIDE,
-            component = Components.BANK_MAINTAB_COMPONENT,
+            interfaceId = "interfaces.bankside".asRSCM(),
+            component = "components.bankmain:items".asRSCM(),
             0..27,
             InterfaceEvent.ClickOp1,
             InterfaceEvent.ClickOp2,
@@ -248,10 +246,10 @@ object Bank {
             786538,
             "Increases your effective accuracy and damage against undead creatures. For multi-target Ranged and Magic attacks, this applies only to the primary target. It does not stack with the Slayer multiplier.",
         )
-        p.setComponentText(interfaceId = Interfaces.BANK_MAIN, component = 107, text = "Slayer: 0%") // @TODO
+        p.setComponentText(interfaceId = "interfaces.bankmain".asRSCM(), component = 107, text = "Slayer: 0%") // @TODO
     }
     private fun Player.setBankEquipCompText(component: Int, text: String) {
-        this.setComponentText(interfaceId = Interfaces.BANK_MAIN, component = component, text = text)
+        this.setComponentText(interfaceId = "interfaces.bankmain".asRSCM(), component = component, text = text)
 
     }
 

@@ -8,8 +8,8 @@ import org.alter.game.model.entity.Player
  * @author Tom <rspsmods@gmail.com>
  */
 object KeyBinding {
-    const val FOCUSED_HOTKEY_VARBIT = 4690
-    const val ESC_CLOSES_INTERFACES = 4681
+    const val FOCUSED_HOTKEY_VARBIT = "varbits.keybinding_stone_selection"
+    const val ESC_CLOSES_INTERFACES = "varbits.keybinding_esc_to_close"
 
     private fun disableAny(
         p: Player,

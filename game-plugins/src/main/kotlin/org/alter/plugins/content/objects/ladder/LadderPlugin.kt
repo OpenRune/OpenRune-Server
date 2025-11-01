@@ -95,7 +95,7 @@ class LadderPlugin(
 
     fun climbupladder(player: Player) {
         player.queue {
-            player.animate(828)
+            player.animate("sequences.human_reachforladder")
             player.lock()
             wait(2)
             player.moveTo(player.tile.x, player.tile.z, player.tile.height + 1)
@@ -105,7 +105,7 @@ class LadderPlugin(
 
     fun climbdownladder(player: Player) {
         player.queue {
-            player.animate(828)
+            player.animate("sequences.human_reachforladder")
             player.lock()
             wait(2)
             player.moveTo(player.tile.x, player.tile.z, player.tile.height - 1)

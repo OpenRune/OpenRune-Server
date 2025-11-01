@@ -1,23 +1,12 @@
 package org.alter.plugins.content.interfaces.bank
 
-import org.alter.api.*
-import org.alter.api.cfg.*
-import org.alter.api.dsl.*
 import org.alter.api.ext.*
 import org.alter.game.*
 import org.alter.game.model.*
-import org.alter.game.model.attr.*
 import org.alter.game.model.attr.INTERACTING_COMPONENT_CHILD
 import org.alter.game.model.attr.INTERACTING_ITEM_SLOT
 import org.alter.game.model.attr.OTHER_ITEM_SLOT_ATTR
-import org.alter.game.model.container.*
-import org.alter.game.model.container.key.*
-import org.alter.game.model.entity.*
-import org.alter.game.model.item.*
 import org.alter.game.model.priv.Privilege
-import org.alter.game.model.queue.*
-import org.alter.game.model.shop.*
-import org.alter.game.model.timer.*
 import org.alter.game.plugin.*
 import org.alter.plugins.content.interfaces.bank.Bank.insert
 import org.alter.plugins.content.interfaces.bank.BankTabs.dropToTab
@@ -25,9 +14,9 @@ import org.alter.plugins.content.interfaces.bank.BankTabs.insertionPoint
 import org.alter.plugins.content.interfaces.bank.BankTabs.numTabsUnlocked
 import org.alter.plugins.content.interfaces.bank.BankTabs.shiftTabs
 import org.alter.plugins.content.interfaces.bank.BankTabs.startPoint
-import org.alter.plugins.content.interfaces.bank.config.Components
-import org.alter.plugins.content.interfaces.bank.config.Interfaces
-import org.alter.plugins.content.interfaces.bank.config.Varbits
+import org.alter.rscm.RSCM
+import org.alter.rscm.RSCM.asRSCM
+import org.alter.rscm.RSCMType
 
 class BankTabsPlugin(
     r: PluginRepository,
@@ -42,13 +31,13 @@ class BankTabsPlugin(
          *
          * When you take out to inv from bank -> It leaves empty gaps -> But when you put everything via Bank All -> The empty gaps get subtracted.
          */
-        onButton(Interfaces.BANK_MAIN, Components.TABS) {
+        onButton("interfaces.bankmain".asRSCM(), "components.bankmain:tabs".asRSCM()) {
             val dstTab = player.getInteractingSlot() - 10
             val opt = player.getInteractingOption()
             when (opt) {
                 1 -> {
                     if (dstTab <= numTabsUnlocked(player)) {
-                        player.setVarbit(Varbits.CURRENTTAB, dstTab)
+                        player.setVarbit("varbits.bank_currenttab", dstTab)
                     }
                 }
                 5 -> {
@@ -61,27 +50,27 @@ class BankTabsPlugin(
                 }
                 else -> {
                     player.printAndMessageIfHasPower(
-                        ("Unknown option from component: [$Interfaces.BANK_MAIN:${Components.TABS}]: $opt"),
+                        ("Unknown option from component: [${"components.bankmain:tabs".asRSCM()}]: $opt"),
                         Privilege.ADMIN_POWER,
                     )
                 }
             }
         }
 
-        onButton(Interfaces.BANK_MAIN, 113) {
+        onButton("interfaces.bankmain".asRSCM(), 113) {
         }
 
         /**
          * Moving items to tabs via the top tabs bar.
          */
         onComponentToComponentItemSwap(
-            srcInterfaceId = Interfaces.BANK_MAIN,
-            srcComponent = Components.BANK_MAINTAB_COMPONENT,
-            dstInterfaceId = Interfaces.BANK_MAIN,
-            dstComponent = Components.TABS,
+            srcInterfaceId = "interfaces.bankmain".asRSCM(),
+            srcComponent = "components.bankmain:items".asRSCM(),
+            dstInterfaceId = "interfaces.bankmain".asRSCM(),
+            dstComponent = "components.bankmain:tabs".asRSCM(),
         ) {
             val srcComponent = player.attr[INTERACTING_COMPONENT_CHILD]!!
-            if (srcComponent == Components.TABS) { // attempting to drop tab on bank!!
+            if (srcComponent == "components.bankmain:tabs".asRSCM()) { // attempting to drop tab on bank!!
                 return@onComponentToComponentItemSwap
             } else { // perform drop to tab
                 val dstSlot = player.attr[OTHER_ITEM_SLOT_ATTR]!!
@@ -93,10 +82,10 @@ class BankTabsPlugin(
          * Moving tabs via the top tabs bar to swap/insert their order.
          */
         onComponentToComponentItemSwap(
-            srcInterfaceId = Interfaces.BANK_MAIN,
-            srcComponent = Components.TABS,
-            dstInterfaceId = Interfaces.BANK_MAIN,
-            dstComponent = Components.TABS,
+            srcInterfaceId = "interfaces.bankmain".asRSCM(),
+            srcComponent = "components.bankmain:tabs".asRSCM(),
+            dstInterfaceId = "interfaces.bankmain".asRSCM(),
+            dstComponent = "components.bankmain:tabs".asRSCM(),
         ) {
             val container = player.bank
             val srcTab = player.attr[INTERACTING_ITEM_SLOT]!!
@@ -107,51 +96,55 @@ class BankTabsPlugin(
                 while (item != end) {
                     container.insert(item, container.nextFreeSlot - 1)
                     end--
-                    player.setVarbit(Varbits.TAB_DISPLAY + srcTab, player.getVarbit(Varbits.TAB_DISPLAY + srcTab) - 1)
+                    player.setVarbit("varbits.bank_tab_display" + srcTab, player.getVarbit("varbits.bank_tab_display" + srcTab) - 1)
                     // check for empty tab shift
-                    if (player.getVarbit(Varbits.TAB_DISPLAY + srcTab) == 0 && srcTab <= numTabsUnlocked(player)) {
+                    if (player.getVarbit("varbits.bank_tab_display" + srcTab) == 0 && srcTab <= numTabsUnlocked(player)) {
                         shiftTabs(player, srcTab)
                     }
                 }
                 return@onComponentToComponentItemSwap
             }
-            val srcSize = player.getVarbit(Varbits.TAB_DISPLAY + srcTab)
-            val dstSize = player.getVarbit(Varbits.TAB_DISPLAY + dstTab)
-            val insertMode = player.getVarbit(Varbits.INSERTMODE) == 1
+            val srcSize = player.getVarbit("varbits.bank_tab_display" + srcTab)
+            val dstSize = player.getVarbit("varbits.bank_tab_display" + dstTab)
+            val insertMode = player.getVarbit("varbits.bank_insertmode") == 1
             if (insertMode) {
                 if (dstTab < srcTab) { // insert each of the items in srcTab directly before dstTab moving index up each time to account for shifts
                     var destination = startPoint(player, dstTab)
                     for (item in startPoint(player, srcTab) until insertionPoint(player, srcTab))
                         container.insert(item, destination++)
                     // update tab size varbits according to insertion location
-                    var holder = player.getVarbit(Varbits.TAB_DISPLAY + dstTab)
-                    player.setVarbit(Varbits.TAB_DISPLAY + dstTab, srcSize)
+                    var holder = player.getVarbit("varbits.bank_tab_display" + dstTab)
+                    player.setVarbit("varbits.bank_tab_display" + dstTab, srcSize)
                     for (tab in dstTab + 1..srcTab) {
-                        val temp = player.getVarbit(Varbits.TAB_DISPLAY + tab)
-                        player.setVarbit(Varbits.TAB_DISPLAY + tab, holder)
+                        val temp = player.getVarbit("varbits.bank_tab_display" + tab)
+                        player.setVarbit("varbits.bank_tab_display" + tab, holder)
                         holder = temp
                     }
                 } else { // insert each item in srcTab before dstTab consuming index move in the shifts already in insert()
                     if (dstTab == srcTab + 1) {
                         return@onComponentToComponentItemSwap
                     }
+
+                    val varbitID = 4169 + dstTab
+                    val varBitName = RSCM.getReverseMapping(RSCMType.VARBITTYPES,varbitID)!!
+
                     val destination = startPoint(player, dstTab) - 1
                     val srcStart = startPoint(player, srcTab)
                     for (item in 1..srcSize)
                         container.insert(srcStart, destination)
-                    var holder = player.getVarbit(4169 + dstTab)
-                    player.setVarbit(4169 + dstTab, srcSize)
+                    var holder = player.getVarbit(varBitName)
+                    player.setVarbit(varBitName, srcSize)
                     for (tab in dstTab - 2 downTo srcTab) {
-                        val temp = player.getVarbit(Varbits.TAB_DISPLAY + tab)
-                        player.setVarbit(Varbits.TAB_DISPLAY + tab, holder)
+                        val temp = player.getVarbit("varbits.bank_tab_display" + tab)
+                        player.setVarbit("varbits.bank_tab_display" + tab, holder)
                         holder = temp
                     }
                 }
             } else { // swap tabs in place
                 val smallerTab = if (dstSize <= srcSize) dstTab else srcTab
-                val smallSize = player.getVarbit(Varbits.TAB_DISPLAY + smallerTab)
+                val smallSize = player.getVarbit("varbits.bank_tab_display" + smallerTab)
                 val largerTab = if (dstSize > srcSize) dstTab else srcTab
-                val largeSize = player.getVarbit(Varbits.TAB_DISPLAY + largerTab)
+                val largeSize = player.getVarbit("varbits.bank_tab_display" + largerTab)
                 val smallStart = startPoint(player, smallerTab)
                 val largeStart = startPoint(player, largerTab)
 
@@ -172,8 +165,8 @@ class BankTabsPlugin(
                     }
                 }
                 // update each tab's size to reflect new contents
-                player.setVarbit(Varbits.TAB_DISPLAY + smallerTab, largeSize)
-                player.setVarbit(Varbits.TAB_DISPLAY + largerTab, smallSize)
+                player.setVarbit("varbits.bank_tab_display" + smallerTab, largeSize)
+                player.setVarbit("varbits.bank_tab_display" + largerTab, smallSize)
             }
         }
     }

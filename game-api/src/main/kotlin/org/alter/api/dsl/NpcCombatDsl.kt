@@ -7,6 +7,7 @@ import org.alter.api.ext.NPC_RANGED_STRENGTH_BONUS_INDEX
 import org.alter.api.ext.NPC_STRENGTH_BONUS_INDEX
 import org.alter.api.ext.enumSetOf
 import org.alter.game.plugin.KotlinPlugin
+import org.alter.rscm.RSCM
 
 fun KotlinPlugin.setCombatDef(
     npc: String,
@@ -169,7 +170,7 @@ object NpcCombatDsl {
 
             combatBuilder.setDefaultAttackAnimation(builder.attack)
             combatBuilder.setDefaultBlockAnimation(builder.block)
-            combatBuilder.setDeathAnimation(*builder.getDeathList().toIntArray())
+            combatBuilder.setDeathAnimation(*builder.getDeathList().toTypedArray())
         }
 
         fun sound(init: SoundBuilder.() -> Unit) {
@@ -426,11 +427,11 @@ object NpcCombatDsl {
 
     @CombatDslMarker
     class AnimationBuilder {
-        var attack = -1
-        var block = -1
-        private val deathList = mutableListOf<Int>()
+        var attack = RSCM.NONE
+        var block = RSCM.NONE
+        private val deathList = mutableListOf<String>()
 
-        var death: Int = 0
+        var death: String = "sequences.human_death"
             set(value) {
                 check(deathList.isEmpty()) { "Death animation already set. Use `death { }` to set multiple animations instead." }
                 deathList.add(value)
@@ -443,11 +444,11 @@ object NpcCombatDsl {
             init(builder)
         }
 
-        fun getDeathList(): List<Int> = deathList
+        fun getDeathList(): List<String> = deathList
 
         @CombatDslMarker
-        class DeathBuilder(private val anims: MutableList<Int>) {
-            infix fun add(anim: Int) {
+        class DeathBuilder(private val anims: MutableList<String>) {
+            infix fun add(anim: String) {
                 anims.add(anim)
             }
         }

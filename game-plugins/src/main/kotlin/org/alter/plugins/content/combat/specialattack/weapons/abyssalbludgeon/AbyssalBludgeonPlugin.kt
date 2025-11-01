@@ -1,7 +1,6 @@
 package org.alter.plugins.content.combat.specialattack.weapons.abyssalbludgeon
 
 import org.alter.api.Skills
-import org.alter.api.cfg.Graphic
 import org.alter.api.ext.getTarget
 import org.alter.api.ext.player
 import org.alter.game.Server
@@ -24,8 +23,8 @@ class AbyssalBludgeonPlugin(
         val SPECIAL_REQUIREMENT = 50
 
         SpecialAttacks.register("items.abyssal_bludgeon", SPECIAL_REQUIREMENT) {
-            player.animate(id = 3299)
-            player.graphic(id = 1284)
+            player.animate(id = "sequences.abyssal_bludgeon_special_attack")
+            player.graphic(id = "spotanims.abyssal_miasma_spotanim_bludgeon")
 
             world.spawn(AreaSound(tile = player.tile, id = 2715, radius = 10, volume = 1, delay = 10))
             world.spawn(AreaSound(tile = player.tile, id = 1930, radius = 10, volume = 1, delay = 30))
@@ -39,7 +38,7 @@ class AbyssalBludgeonPlugin(
         setItemCombatLogic("items.abyssal_bludgeon") {
             val target = player.getTarget()
             if (target != null) {
-                target.graphic(Graphic.ABYSSAL_BLUDGEON_SPECIAL)
+                target.graphic("spotanims.abyssal_miasma_spotanim_bludgeon")
                 player.dealHit(target = target, maxHit = 10, landHit = true, delay = 1)
             }
         }

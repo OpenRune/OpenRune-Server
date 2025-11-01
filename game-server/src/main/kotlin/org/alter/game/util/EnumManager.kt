@@ -6,6 +6,8 @@ import dev.openrune.definition.util.BaseVarType
 import dev.openrune.definition.util.VarType
 import org.alter.game.util.vars.VarTypeImpl
 import org.alter.rscm.RSCM.asRSCM
+import org.alter.rscm.RSCM.requireRSCM
+import org.alter.rscm.RSCMType
 
 /**
  * Represents a typed key/value pair from an enum.
@@ -119,7 +121,7 @@ class EnumHelper private constructor(val enum: EnumType) {
          * Load an EnumType from the server cache by name.
          */
         fun load(name: String): EnumType {
-            require(name.startsWith("enums")) { "Invalid enum name '$name' — must start with 'enums'" }
+            requireRSCM(RSCMType.ENUMS,name)
             return ServerCacheManager.getEnum(name.asRSCM())
                 ?: throw NoSuchElementException("Enum '$name' not found")
         }

@@ -1,11 +1,10 @@
-repositories {
-    mavenLocal()
-}
-
 dependencies {
-    implementation("dev.or2:all:2.2.3")
-    implementation("dev.or2:tools:2.2.3")
-    implementation("dev.or2:server-utils:0.7")
+    implementation(rootProject.project.libs.or2.all.cache)
+    implementation(rootProject.project.libs.or2.tools)
+    implementation(rootProject.project.libs.or2.server.utils)
+    api(libs.or2.definition)
+    api(libs.or2.filestore)
+    api(libs.or2.filesystem)
 }
 
 tasks {

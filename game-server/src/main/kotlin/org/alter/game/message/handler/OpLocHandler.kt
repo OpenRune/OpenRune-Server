@@ -49,7 +49,7 @@ class OpLocHandler : MessageHandler<OpLoc> {
         val chunk = client.world.chunks.getOrCreate(tile)
         val obj = chunk
             .getEntities<GameObject>(tile, EntityType.STATIC_OBJECT, EntityType.DYNAMIC_OBJECT)
-            .firstOrNull { it.id == message.id }
+            .firstOrNull { it.internalID == message.id }
             ?: return
 
         log(client, "Object action %d: id=%d, x=%d, y=%d, movement=%b", message.op, message.id, message.x, message.z, message.controlKey)
@@ -68,7 +68,7 @@ class OpLocHandler : MessageHandler<OpLoc> {
 
         client.attr[INTERACTING_OPT_ATTR] = message.op
         client.attr[INTERACTING_OBJ_ATTR] = WeakReference(obj)
-        val lineOfSightRange = client.world.plugins.getObjInteractionDistance(obj.id)
+        val lineOfSightRange = client.world.plugins.getObjInteractionDistance(obj.internalID)
 
         walk(client, obj, lineOfSightRange) {
             val handledByNewSystem = EventManager.postWithResult(ObjectClickEvent(obj, MenuOption.fromId(message.op), client))
@@ -78,7 +78,7 @@ class OpLocHandler : MessageHandler<OpLoc> {
                 client.writeMessage(Entity.NOTHING_INTERESTING_HAPPENS)
                 if (client.world.devContext.debugObjects) {
                     client.writeMessage(
-                        "Unhandled object action: [opt=${message.op}, id=${obj.id}, type=${obj.type}, rot=${obj.rot}, x=${obj.tile.x}, y=${obj.tile.z}]",
+                        "Unhandled object action: [opt=${message.op}, id=${obj.internalID}, type=${obj.type}, rot=${obj.rot}, x=${obj.tile.x}, y=${obj.tile.z}]",
                     )
                 }
             }

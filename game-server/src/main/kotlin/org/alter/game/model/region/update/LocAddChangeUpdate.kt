@@ -15,7 +15,7 @@ class LocAddChangeUpdate(
 ) : EntityUpdate<GameObject>(entity) {
     override fun toMessage(): ZoneProt =
         LocAddChange(
-            entity.id,
+            entity.internalID,
             (entity.tile.x and 0x7),
             (entity.tile.z and 0x7),
             entity.type,

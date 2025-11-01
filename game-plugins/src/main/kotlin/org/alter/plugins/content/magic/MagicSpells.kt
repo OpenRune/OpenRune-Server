@@ -16,7 +16,7 @@ import org.alter.rscm.RSCM.getRSCM
  * @author Tom <rspsmods@gmail.com>
  */
 object MagicSpells {
-    const val INF_RUNES_VARBIT = 4145
+    const val INF_RUNES_VARBIT = "varbits.fountain_of_rune_active"
 
     private const val SPELLBOOK_POINTER_ENUM = 1981
 

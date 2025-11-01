@@ -22,6 +22,9 @@ import org.alter.game.plugin.Plugin
 import org.alter.game.pluginnew.event.EventManager
 import org.alter.game.pluginnew.event.impl.TimerEvent
 import org.alter.game.service.log.LoggerService
+import org.alter.rscm.RSCM
+import org.alter.rscm.RSCM.asRSCM
+import org.alter.rscm.RSCMType
 import org.rsmod.routefinder.RouteCoordinates
 import java.lang.ref.WeakReference
 import java.util.*
@@ -365,42 +368,37 @@ abstract class Pawn(val world: World) : Entity() {
         return if (fill == 0 && percentage != 0.0) return 0 else fill
     }
 
-    /**
-     * @param id = Animation id
-     * @param startDelay = when to start anim
-     * @param interruptable = if Anim can be interrupted by other anim masks
-     */
     fun animate(
-        id: Int,
+        id: String,
         delay: Int = 0,
         interruptable: Boolean = false,
     ) {
+        RSCM.requireRSCM(RSCMType.SEQTYPES,id)
         if (previouslySetAnim == -1 || interruptable) {
             if (entityType.isPlayer) {
-                previouslySetAnim = id
+                previouslySetAnim = id.asRSCM()
             }
             if (this is Player) {
-                world.plugins.executeOnAnimation(this, id)
+                world.plugins.executeOnAnimation(this, id.asRSCM())
             }
         }
-        animateSend(-1, 0)
+        animateSend(RSCM.NONE, 0)
         animateSend(id, delay)
     }
 
     private fun animateSend(
-        id: Int,
+        id: String,
         startDelay: Int = 0,
     ) {
         if (entityType.isNpc) {
-            NpcInfo(this as Npc).setSequence(id, startDelay)
+            NpcInfo(this as Npc).setSequence(id.asRSCM(), startDelay)
         } else if (entityType.isPlayer) {
-            PlayerInfo(this as Player).setSequence(id, startDelay)
+            PlayerInfo(this as Player).setSequence(id.asRSCM(), startDelay)
         }
     }
 
-    // @TODO
     abstract fun graphic(
-        id: Int,
+        id: String,
         height: Int = 0,
         delay: Int = 0,
     )

@@ -10,13 +10,15 @@ import org.alter.game.model.queue.QueueTask
 import org.alter.game.model.queue.TaskPriority
 import org.alter.game.plugin.Plugin
 import org.alter.game.service.log.LoggerService
+import org.alter.rscm.RSCM
+import org.alter.rscm.RSCM.asRSCM
 import java.lang.ref.WeakReference
 
 /**
  * @author Tom <rspsmods@gmail.com>
  */
 object PlayerDeathAction {
-    private const val DEATH_ANIMATION = 836
+    private const val DEATH_ANIMATION = "sequences.human_death"
 
     val deathPlugin: Plugin.() -> Unit = {
         val player = ctx as Player
@@ -32,7 +34,7 @@ object PlayerDeathAction {
 
     private suspend fun QueueTask.death(player: Player) {
         val world = player.world
-        val deathAnim = getAnim(DEATH_ANIMATION)?: return
+        val deathAnim = getAnim(DEATH_ANIMATION.asRSCM())?: return
         val instancedMap = world.instanceAllocator.getMap(player.tile)
         player.write(MidiJingle(90))
         player.damageMap.getMostDamage()?.let { killer ->
@@ -45,10 +47,10 @@ object PlayerDeathAction {
         world.plugins.executePlayerPreDeath(player)
         player.resetFacePawn()
         wait(2)
-        player.animate(deathAnim.id)
+        player.animate(DEATH_ANIMATION)
         wait(deathAnim.animationLength + 1)
         player.getSkills().restoreAll()
-        player.animate(-1)
+        player.animate(RSCM.NONE)
         if (instancedMap == null) {
             // Note: maybe add a player attribute for death locations
             player.moveTo(player.world.gameContext.home)

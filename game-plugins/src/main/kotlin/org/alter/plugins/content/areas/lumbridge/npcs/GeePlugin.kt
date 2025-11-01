@@ -26,7 +26,7 @@ class GeePlugin(
     }
 
     suspend fun QueueTask.dialog(player: Player) {
-        chatNpc(player, "Hello there, can I help you?", animation = 591)
+        chatNpc(player, "Hello there, can I help you?", animation = "sequences.chatneu4")
         when (world.random(3)) {
             0 -> conversationFlow0(player)
             1 -> conversationFlow1(player)

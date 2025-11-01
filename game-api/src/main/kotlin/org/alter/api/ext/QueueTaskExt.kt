@@ -58,7 +58,7 @@ suspend fun QueueTask.options(
     fullSize: Boolean = true
 ): Int {
     player.runClientScript(CommonClientScripts.CHATBOX_RESET_BACKGROUND)
-    player.sendTempVarbit(10670, if (fullSize) 1 else 0)
+    player.sendTempVarbit("varbits.chatmodal_unclamp", if (fullSize) 1 else 0)
     player.openInterface(parent = 162, child = CHATBOX_CHILD, interfaceId = 219)
     player.runClientScript(CommonClientScripts.CHATBOX_MULTI, title, options.joinToString("|"))
     player.setInterfaceEvents(interfaceId = 219, component = 1, from = 1, to = options.size, setting = 1)
@@ -201,7 +201,7 @@ suspend fun QueueTask.searchItemWithPrevious(
     player: Player,
     message: String
 ): Int {
-    player.setVarbit(4439, 1)
+    player.setVarbit("varbits.ge_selectedslot", 1)
     player.message("All these Scripts are wrong for searchItemWithPrevious remember to set them")
     player.runClientScript(CommonClientScripts.GE_OFFER_SET_DESC, "", "", 30474256, 30474258)
     player.runClientScript(CommonClientScripts.GE_OFFER_SET_DESC, "Click the icon on the left to search for items.", "", 30474266, 30474268)
@@ -268,7 +268,7 @@ suspend fun QueueTask.chatNpc(
     player: Player,
     message: String,
     npc: Int = -1,
-    animation: Int = 588,
+    animation: String = "sequences.chatneu1",
     title: String? = null,
 ) {
     val npcId =
@@ -306,7 +306,7 @@ suspend fun QueueTask.chatNpc(
 suspend fun QueueTask.chatPlayer(
     player: Player,
     message: String,
-    animation: Int = 588,
+    animation: String = "sequences.chatneu1",
     title: String? = null,
 ) {
     val dialogTitle = title ?: player.username
@@ -523,7 +523,7 @@ suspend fun QueueTask.produceItemBox(
         nameArray[it.index] = "|${def.name}"
     }
 
-    player.sendTempVarbit(5983, 1)
+    player.sendTempVarbit("varbits.settings_barbarian_potion_makex", 1)
     player.openInterface(parent = 162, child = CHATBOX_CHILD, interfaceId = 270)
     player.runClientScript(CommonClientScripts.SKILL_MULTI_SETUP, 0, "$title${nameArray.joinToString("")}", maxProducable, *itemArray)
 

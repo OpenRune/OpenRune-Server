@@ -95,7 +95,7 @@ fun Pawn.stun(
 fun Pawn.stun(cycles: Int) {
     stun(cycles) {
         if (this is Player) {
-            graphic(245, 124)
+            graphic("spotanims.stunned_thieving", 124)
             resetInteractions()
             interruptQueues()
             message("You have been stunned!")

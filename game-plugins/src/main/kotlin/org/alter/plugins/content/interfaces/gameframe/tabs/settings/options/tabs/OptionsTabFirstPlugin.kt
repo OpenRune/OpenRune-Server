@@ -1,23 +1,13 @@
 package org.alter.plugins.content.interfaces.gameframe.tabs.settings.options.tabs
 
-import org.alter.api.*
 import org.alter.api.ClientScript
-import org.alter.api.cfg.*
-import org.alter.api.dsl.*
 import org.alter.api.ext.*
 import org.alter.game.*
 import org.alter.game.model.*
 import org.alter.game.model.attr.*
 import org.alter.game.model.attr.DISPLAY_MODE_CHANGE_ATTR
 import org.alter.game.model.attr.INTERACTING_SLOT_ATTR
-import org.alter.game.model.container.*
-import org.alter.game.model.container.key.*
-import org.alter.game.model.entity.*
 import org.alter.game.model.interf.DisplayMode
-import org.alter.game.model.item.*
-import org.alter.game.model.queue.*
-import org.alter.game.model.shop.*
-import org.alter.game.model.timer.*
 import org.alter.game.plugin.*
 import org.alter.plugins.content.interfaces.options.OptionsTab
 
@@ -121,9 +111,7 @@ class OptionsTabFirstPlugin(
             val mode =
                 when (change) {
                     2 ->
-                        if (player.getVarbit(
-                                Varbit.SIDESTONES_ARRAGEMENT_VARBIT,
-                            ) == 1
+                        if (player.getVarbit("varbits.resizable_stone_arrangement", ) == 1
                         ) {
                             DisplayMode.RESIZABLE_LIST
                         } else {
@@ -139,11 +127,11 @@ class OptionsTabFirstPlugin(
             val mode =
                 when (slot) {
                     2 -> {
-                        player.setVarbit(Varbit.SIDESTONES_ARRAGEMENT_VARBIT, 0)
+                        player.setVarbit("varbits.resizable_stone_arrangement", 0)
                         DisplayMode.RESIZABLE_NORMAL
                     }
                     3 -> {
-                        player.setVarbit(Varbit.SIDESTONES_ARRAGEMENT_VARBIT, 1)
+                        player.setVarbit("varbits.resizable_stone_arrangement", 1)
                         DisplayMode.RESIZABLE_LIST
                     }
                     else -> DisplayMode.FIXED
@@ -156,85 +144,85 @@ class OptionsTabFirstPlugin(
 
         bind_setting(child = PLAYER_ATTACK_OPTION) {
             val slot = player.attr[INTERACTING_SLOT_ATTR]!!.toInt() - 1
-            player.setVarp(Varp.PLAYER_ATTACK_PRIORITY_VARP, slot)
+            player.setVarp("varp.option_attackpriority", slot)
         }
 
         bind_setting(child = NPC_ATTACK_OPTION) {
             val slot = player.attr[INTERACTING_SLOT_ATTR]!!.toInt() - 1
-            player.setVarp(Varp.NPC_ATTACK_PRIORITY_VARP, slot)
+            player.setVarp("varp.option_attackpriority_npc", slot)
         }
 
         bind_setting(child = RUN_MODE_BUTTON) {
-            player.toggleVarp(Varp.RUN_MODE_VARP)
+            player.toggleVarp("varp.option_run")
         }
 
         bind_setting(child = ACCEPT_AID_BUTTON) {
-            player.toggleVarp(Varp.ACCEPT_AID_VARP)
+            player.toggleVarp("varp.option_aid")
         }
         bind_setting(child = SKULL_PROTECTION_BUTTON) {
-            player.toggleVarbit(Varbit.PK_PREVENT_SKULL)
+            player.toggleVarbit("varbits.skull_prevent_enabled")
         }
 
         bind_setting(63) {
-            player.setVarbit(Varbit.SETTINGS_TAB_FOCUS, 0)
+            player.setVarbit("varbits.settings_side_panel_tab", 0)
         }
         bind_setting(68) {
-            player.setVarbit(Varbit.SETTINGS_TAB_FOCUS, 1)
+            player.setVarbit("varbits.settings_side_panel_tab", 1)
         }
         bind_setting(69) {
-            player.setVarbit(Varbit.SETTINGS_TAB_FOCUS, 2)
+            player.setVarbit("varbits.settings_side_panel_tab", 2)
         }
         bind_setting(MUSIC_BAR) {
-            player.setVarp(Varp.AUDIO_MUSIC_VOLUME, player.getInteractingSlot() * 5)
+            player.setVarp("varp.option_music", player.getInteractingSlot() * 5)
         }
         bind_setting(SOUND_BAR) {
-            player.setVarp(Varp.AUDIO_SOUND_EFFECT_VOLUME, player.getInteractingSlot() * 5)
+            player.setVarp("varp.option_sounds", player.getInteractingSlot() * 5)
         }
         bind_setting(AREA_SOUND_BAR) {
-            player.setVarp(Varp.AUDIO_AREA_SOUND_VOLUME, player.getInteractingSlot() * 5)
+            player.setVarp("varp.option_areasounds", player.getInteractingSlot() * 5)
         }
 
         bind_setting(MUTE_MASTER_SOUND_BAR) {
-            player.setVarp(Varp.MASTER_SOUND_VOLUME, player.getInteractingSlot() * 5)
+            player.setVarp("varp.option_master_volume", player.getInteractingSlot() * 5)
         }
         bind_setting(MUTE_MUSIC) {
-            if (player.getVarp(Varp.AUDIO_MUSIC_VOLUME) == 0) {
-                player.setVarp(Varp.AUDIO_MUSIC_VOLUME, player.attr[AUDIO_MUSIC_VOLUME] ?: 100)
+            if (player.getVarp("varp.option_music") == 0) {
+                player.setVarp("varp.option_music", player.attr[AUDIO_MUSIC_VOLUME] ?: 100)
             } else {
-                player.attr[AUDIO_MUSIC_VOLUME] = player.getVarp(Varp.AUDIO_MUSIC_VOLUME)
-                player.setVarp(Varp.AUDIO_MUSIC_VOLUME, 0)
+                player.attr[AUDIO_MUSIC_VOLUME] = player.getVarp("varp.option_music")
+                player.setVarp("varp.option_music", 0)
             }
         }
 
 
         bind_setting(ZOOM_TOGGLE_BUTTON) {
-            player.toggleVarbit(Varbit.DISABLE_ZOOM)
+            player.toggleVarbit("varbits.camera_zoom_mouse_disabled")
         }
 
         bind_setting(MUTE_MASTER_SOUND) {
-            if (player.getVarp(Varp.MASTER_SOUND_VOLUME) == 0) {
-                player.setVarp(Varp.MASTER_SOUND_VOLUME, player.attr[MASTER_SOUND_VOLUME] ?: 100)
+            if (player.getVarp("varp.option_master_volume") == 0) {
+                player.setVarp("varp.option_master_volume", player.attr[MASTER_SOUND_VOLUME] ?: 100)
             } else {
-                player.attr[MASTER_SOUND_VOLUME] = player.getVarp(Varp.MASTER_SOUND_VOLUME)
-                player.setVarp(Varp.MASTER_SOUND_VOLUME, 0)
+                player.attr[MASTER_SOUND_VOLUME] = player.getVarp("varp.option_master_volume")
+                player.setVarp("varp.option_master_volume", 0)
             }
         }
 
         bind_setting(MUTE_SOUND) {
-            if (player.getVarp(Varp.AUDIO_SOUND_EFFECT_VOLUME) == 0) {
-                player.setVarp(Varp.AUDIO_SOUND_EFFECT_VOLUME, player.attr[SOUND_EFFECT_VOLUME] ?: 100)
+            if (player.getVarp("varp.option_sounds") == 0) {
+                player.setVarp("varp.option_sounds", player.attr[SOUND_EFFECT_VOLUME] ?: 100)
             } else {
-                player.attr[SOUND_EFFECT_VOLUME] = player.getVarp(Varp.AUDIO_SOUND_EFFECT_VOLUME)
-                player.setVarp(Varp.AUDIO_SOUND_EFFECT_VOLUME, 0)
+                player.attr[SOUND_EFFECT_VOLUME] = player.getVarp("varp.option_sounds")
+                player.setVarp("varp.option_sounds", 0)
             }
         }
 
         bind_setting(MUTE_AREA_SOUND) {
-            if (player.getVarp(Varp.AUDIO_AREA_SOUND_VOLUME) == 0) {
-                player.setVarp(Varp.AUDIO_AREA_SOUND_VOLUME, player.attr[AREA_SOUND_VOLUME] ?: 100)
+            if (player.getVarp("varp.option_areasounds") == 0) {
+                player.setVarp("varp.option_areasounds", player.attr[AREA_SOUND_VOLUME] ?: 100)
             } else {
-                player.attr[AREA_SOUND_VOLUME] = player.getVarp(Varp.AUDIO_AREA_SOUND_VOLUME)
-                player.setVarp(Varp.AUDIO_AREA_SOUND_VOLUME, 0)
+                player.attr[AREA_SOUND_VOLUME] = player.getVarp("varp.option_areasounds")
+                player.setVarp("varp.option_areasounds", 0)
             }
         }
 

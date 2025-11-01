@@ -6,9 +6,6 @@ import gg.rsmod.util.DataConstants
 import net.rsprot.protocol.game.outgoing.misc.player.SetMapFlag
 import org.alter.game.model.Direction
 import org.alter.game.model.Tile
-import org.alter.game.model.attr.INTERACTING_ITEM
-import org.alter.game.model.attr.INTERACTING_OBJ_ATTR
-import org.alter.game.model.attr.INTERACTING_OPT_ATTR
 import org.alter.game.model.entity.Entity
 import org.alter.game.model.entity.GameObject
 import org.alter.game.model.entity.Pawn
@@ -260,8 +257,8 @@ object ObjectPathAction {
         pawn: Player,
         obj: GameObject,
     ) {
-        val def = getObject(obj.id) ?: run {
-            pawn.writeMessage("Object definition not found for id=${obj.id}")
+        val def = getObject(obj.internalID) ?: run {
+            pawn.writeMessage("Object definition not found for id=${obj.internalID}")
             return
         }
         val rot = obj.rot

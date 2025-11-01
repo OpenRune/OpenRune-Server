@@ -14,6 +14,7 @@ import org.alter.game.util.column
 import org.alter.game.util.columnOptional
 import org.alter.game.util.vars.IntType
 import org.alter.game.util.vars.ObjType
+import org.alter.rscm.RSCM
 import org.alter.rscm.RSCM.asRSCM
 
 class TeleportTabEvents : PluginEvent() {
@@ -59,15 +60,15 @@ class TeleportTabEvents : PluginEvent() {
             player.prepareForTeleport()
             player.lock = LockState.FULL_WITH_DAMAGE_IMMUNITY
 
-            player.animate("sequences.poh_smash_magic_tablet".asRSCM(), delay = 16)
+            player.animate("sequences.poh_smash_magic_tablet", delay = 16)
             player.playSound("jingles.artistry".asRSCM(), volume = 1, delay = 15)
 
             wait(cycles = 3)
-            player.graphic("spotanims.poh_absorb_tablet_magic".asRSCM())
-            player.animate("sequences.poh_absorb_tablet_teleport".asRSCM())
+            player.graphic("spotanims.poh_absorb_tablet_magic")
+            player.animate("sequences.poh_absorb_tablet_teleport")
 
             wait(cycles = 2)
-            player.animate(-1)
+            player.animate(RSCM.NONE)
             player.unlock()
 
             val destination = Tile.from30BitHash(location).radius(2).random()

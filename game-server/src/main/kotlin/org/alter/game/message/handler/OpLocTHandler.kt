@@ -1,7 +1,6 @@
 package org.alter.game.message.handler
 
 import net.rsprot.protocol.game.incoming.locs.OpLocT
-import org.alter.game.model.move.ObjectPathAction
 import org.alter.game.message.MessageHandler
 import org.alter.game.model.EntityType
 import org.alter.game.model.Tile
@@ -16,10 +15,8 @@ import org.alter.game.model.move.ObjectPathAction.walk
 import org.alter.game.model.move.moveTo
 import org.alter.game.model.move.stopMovement
 import org.alter.game.model.priv.Privilege
-import org.alter.game.pluginnew.MenuOption
 import org.alter.game.pluginnew.event.EventManager
 import org.alter.game.pluginnew.event.impl.ItemOnObject
-import org.alter.game.pluginnew.event.impl.ObjectClickEvent
 import java.lang.ref.WeakReference
 
 class OpLocTHandler : MessageHandler<OpLocT> {
@@ -60,7 +57,7 @@ class OpLocTHandler : MessageHandler<OpLocT> {
         val chunk = client.world.chunks.getOrCreate(tile)
         val obj =
             chunk.getEntities<GameObject>(tile, EntityType.STATIC_OBJECT, EntityType.DYNAMIC_OBJECT).firstOrNull {
-                it.id == message.id
+                it.internalID == message.id
             } ?: return
 
         if (message.controlKey && client.world.privileges.isEligible(client.privilege, Privilege.ADMIN_POWER)) {
@@ -82,7 +79,7 @@ class OpLocTHandler : MessageHandler<OpLocT> {
         client.attr[INTERACTING_OBJ_ATTR] = WeakReference(obj)
 
 
-        val lineOfSightRange = client.world.plugins.getObjInteractionDistance(obj.id)
+        val lineOfSightRange = client.world.plugins.getObjInteractionDistance(obj.internalID)
 
         walk(client, obj, lineOfSightRange) {
             val handledByNewSystem = EventManager.postWithResult( ItemOnObject(item,obj,slot,client))
@@ -92,7 +89,7 @@ class OpLocTHandler : MessageHandler<OpLocT> {
                 client.writeMessage(Entity.NOTHING_INTERESTING_HAPPENS)
                 if (client.world.devContext.debugObjects) {
                     client.writeMessage(
-                        "Unhandled item on object: [item=$item, id=${obj.id}, type=${obj.type}, rot=${obj.rot}, x=${obj.tile.x}, y=${obj.tile.z}]",
+                        "Unhandled item on object: [item=$item, id=${obj.internalID}, type=${obj.type}, rot=${obj.rot}, x=${obj.tile.x}, y=${obj.tile.z}]",
                     )
                 }
             }

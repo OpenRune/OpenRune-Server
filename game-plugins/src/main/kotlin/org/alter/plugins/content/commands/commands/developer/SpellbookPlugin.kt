@@ -23,7 +23,7 @@ class SpellbookPlugin(
             if (id > 3) {
                 player.message("SpellBook does not exist.")
             }
-            player.setVarbit(4070, id)
+            player.setVarbit("varbits.spellbook", id)
         }
     }
 }

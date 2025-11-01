@@ -6,6 +6,8 @@ import org.alter.game.model.World
 import org.alter.game.model.priv.Privilege
 import org.alter.game.plugin.KotlinPlugin
 import org.alter.game.plugin.PluginRepository
+import org.alter.rscm.RSCM
+import org.alter.rscm.RSCMType
 
 class VarbitPlugin(
     r: PluginRepository,
@@ -16,37 +18,21 @@ class VarbitPlugin(
     init {
         onCommand("varbit", Privilege.DEV_POWER, description = "Get or set varbit value") {
             val args = player.getCommandArgs()
+            val varbit = args[0].toInt()
+            val state = args[1].toInt()
 
-            if (args.isEmpty()) {
-                player.message("Usage: ::varbit <id> [value]")
+
+            val name = RSCM.getReverseMapping(RSCMType.VARBITTYPES, varbit) ?: run {
+                player.message("Could not find a varbit with ID $varbit. Please check if the ID is valid.")
                 return@onCommand
             }
 
-            val varbitId = args[0].toIntOrNull()
-            if (varbitId == null) {
-                player.message("Invalid varbit id. Must be a number.")
-                return@onCommand
-            }
-
-            if (args.size == 1) {
-                val currentValue = player.getVarbit(varbitId)
-                player.message("Varbit (<col=801700>$varbitId</col>) = <col=801700>$currentValue</col>")
-                return@onCommand
-            }
-
-            val newValue = args[1].toIntOrNull()
-            if (newValue == null) {
-                player.message("Invalid value. Must be a number.")
-                return@onCommand
-            }
-
-            val oldValue = player.getVarbit(varbitId)
-            player.setVarbit(varbitId, newValue)
-            val updatedValue = player.getVarbit(varbitId)
-
+            val oldState = player.getVarbit(name)
+            player.setVarbit(name, state)
             player.message(
-                "Set varbit (<col=801700>$varbitId</col>) from " +
-                        "<col=801700>$oldValue</col> to <col=801700>$updatedValue</col>"
+                "Set varbit (<col=801700>$varbit</col>) from <col=801700>$oldState</col> to <col=801700>${
+                    player.getVarbit(name)
+                }</col>",
             )
         }
     }

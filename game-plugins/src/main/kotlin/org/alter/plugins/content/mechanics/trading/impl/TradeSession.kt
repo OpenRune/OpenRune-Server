@@ -440,12 +440,12 @@ class TradeSession(private val player: Player, private val partner: Player) {
         /**
          * The varbit that handles the 'Trade modified' text for the player's trade container
          */
-        const val PLAYER_TRADE_MODIFIED_VARBIT = 4374
+        const val PLAYER_TRADE_MODIFIED_VARBIT = "varbits.trade_this_player_removed"
 
         /**
          * The varbit that handles the 'Trade modified' text for the partner's trade container
          */
-        const val PARTNER_TRADE_MODIFIED_VARBIT = 4375
+        const val PARTNER_TRADE_MODIFIED_VARBIT = "varbits.trade_other_player_removed"
 
         /**
          * The id of the ClientScript used to display the red exclamation marks when

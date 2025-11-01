@@ -2,13 +2,9 @@
 fastutil = "8.2.1"
 sparkCore = "2.3"
 kotlinStdlibJdk8 = "1.8.20-RC2"
-slf4jApi = "2.0.9"
-log4jSlf4jImpl = "2.20.0"
 kotlinLogging = "5.1.0"
-jacksonDataformatYaml = "2.13.0"
 jacksonDataformatToml = "2.13.0"
 jacksonDatabind = "2.13.0"
-mssqlJdbc = "6.4.0.jre7"
 json = "20220320"
 jbcrypt = "0.4"
 gson = "_"
@@ -17,25 +13,21 @@ mongo = "5.1.2"
 junit = "4.+"
 kotlinTestJunit = "_"
 kotlin = "2.0.20"
-openrs2 = "0.1.0-SNAPSHOT"
 nettyAll = "4.1.109.Final"
-slf4j = "2.0.0-alpha0"
 csv = "0.7.3"
 logback = "1.4.11"
-ktlint = "12.1.0"
-openrune-filestore = "1.3.6"
 rsprot = "1.0.0-ALPHA-20251027"
 routefinder = "6.0.0"
+or2 = "2.2.9.1"
+or2ServerUtils = "0.7"
+jodatime = "2.14.0"
+classgraph = "4.8.184"
 
 [libraries]
 fastutil = { group = "it.unimi.dsi", name = "fastutil", version.ref = "fastutil" }
 spark-core = { group = "com.sparkjava", name = "spark-core", version.ref = "sparkCore" }
 kotlin-stdlib-jdk8 = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib-jdk8", version.ref = "kotlinStdlibJdk8" }
 
-# Leaving for now, will be removed in the future
-slf4j-api = { group = "org.slf4j", name = "slf4j-api", version.ref = "slf4jApi" }
-log4j-slf4j-impl = { group = "org.apache.logging.log4j", name = "log4j-slf4j-impl", version.ref = "log4jSlf4jImpl" }
-slf4j = { group = "org.slf4j", name = "slf4j-simple", version.ref = "slf4j" }
 
 kotlin-scripting = {group = "org.jetbrains.kotlin", name = "kotlin-scripting-common", version = "_"}
 kotlin-script-runtime = { group = "org.jetbrains.kotlin", name = "kotlin-script-runtime", version.ref = "kotlin"}
@@ -45,7 +37,6 @@ jackson-dataformat-yaml = { group = "com.fasterxml.jackson.dataformat", name = "
 jackson-dataformat-toml = { group = "com.fasterxml.jackson.dataformat", name = "jackson-dataformat-toml", version.ref = "jacksonDataformatToml" }
 jackson-databind = { group = "com.fasterxml.jackson.core", name = "jackson-databind", version.ref = "jacksonDatabind" }
 jackson-module-kotlin = {group ="com.fasterxml.jackson.module" , name = "jackson-module-kotlin", version = "2.13.0" }
-mssql-jdbc = { group = "com.microsoft.sqlserver", name = "mssql-jdbc", version.ref = "mssqlJdbc" }
 json = { group = "org.json", name = "json", version.ref = "json" }
 reflection = {group = "org.reflections", name = "reflections", version = "_"}
 jbcrypt = { group = "org.mindrot", name = "jbcrypt", version.ref = "jbcrypt" }
@@ -53,31 +44,30 @@ gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }
 kotlinx-coroutines = {group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version = "_"}
 kotlinx-serialization-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-core", version.ref = "kotlinxSerializationCore" }
 commons = { group = "commons-io", name = "commons-io", version = "_"}
-implementation = { group = "io.github.classgraph", name  = "classgraph", version = "_"}
 bouncycastle = { group = "org.bouncycastle", name =  "bcprov-jdk15on",version = "_"}
-classgraph = { group = "io.github.classgraph", name = "classgraph", version = "4.8.157"}
+classgraph = { group = "io.github.classgraph", name = "classgraph", version.ref = "classgraph"}
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 kotlin-test-junit = { group = "org.jetbrains.kotlin", name = "kotlin-test-junit", version.ref = "kotlinTestJunit"}
 kotlin-csv = { group = "com.github.doyaaaaaken", name = "kotlin-csv", version.ref = "csv"}
 
-openrs2-cache = { module = "org.openrs2:openrs2-cache", version.ref = "openrs2"}
-openrs2-buffer = { module = "org.openrs2:openrs2-buffer", version.ref = "openrs2"}
-openrs2-crypto = { module = "org.openrs2:openrs2-crypto", version.ref = "openrs2"}
-openrs2-compress = { module = "org.openrs2:openrs2-compress", version.ref = "openrs2"}
-
 netty-all = { group = "io.netty", name = "netty-all", version.ref = "nettyAll" }
 
 logback-classic = { group ="ch.qos.logback", name = "logback-classic", version.ref = "logback"}
-openrune-filestore = { group = "dev.openrune", name = "filestore", version.ref = "openrune-filestore"}
 rsprot = { group = "net.rsprot", name = "osrs-235-api", version.ref = "rsprot"}
 routefinder = { group = "org.rsmod", name = "rsmod-routefinder", version.ref = "routefinder"}
 
 mongo-bson = { group = "org.mongodb", name = "bson", version.ref = "mongo"}
 mongo-driver = { group = "org.mongodb", name = "mongodb-driver-sync", version.ref = "mongo"}
 
+# Additional libraries migrated to catalog
+or2-all-cache = { group = "dev.or2", name = "all", version.ref = "or2" }
+or2-tools = { group = "dev.or2", name = "tools", version.ref = "or2" }
+or2-server-utils = { group = "dev.or2", name = "server-utils", version.ref = "or2ServerUtils" }
+joda-time = { group = "joda-time", name = "joda-time", version.ref = "jodatime" }
+or2-definition = { group = "dev.or2", name = "definition", version.ref = "or2" }
+or2-filesystem = { group = "dev.or2", name = "filesystem", version.ref = "or2" }
+or2-filestore = { group = "dev.or2", name = "filestore", version.ref = "or2" }
+
 [plugins]
-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
-dokka = { id = "org.jetbrains.dokka", version =  "0.9.18"}
 shadow = { id ="com.github.johnrengelman.shadow", version = "8.1.1"}
-ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint" }

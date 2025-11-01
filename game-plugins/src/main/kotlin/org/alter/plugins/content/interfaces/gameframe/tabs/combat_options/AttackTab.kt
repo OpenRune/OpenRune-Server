@@ -12,10 +12,10 @@ import org.alter.game.model.timer.TimerKey
  */
 object AttackTab {
     const val ATTACK_TAB_INTERFACE_ID = 593
-    const val ATTACK_STYLE_VARP = 43
-    const val DISABLE_AUTO_RETALIATE_VARP = 172
-    private const val SPECIAL_ATTACK_ENERGY_VARP = 300
-    const val SPECIAL_ATTACK_VARP = 301
+    const val ATTACK_STYLE_VARP = "varp.com_mode"
+    const val DISABLE_AUTO_RETALIATE_VARP = "varp.option_nodef"
+    private const val SPECIAL_ATTACK_ENERGY_VARP = "varp.sa_energy"
+    const val SPECIAL_ATTACK_VARP = "varp.sa_attack"
 
     val SPEC_RESTORE = TimerKey()
 

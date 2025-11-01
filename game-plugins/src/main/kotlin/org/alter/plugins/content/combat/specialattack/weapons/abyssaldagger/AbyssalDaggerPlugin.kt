@@ -27,8 +27,8 @@ class AbyssalDaggerPlugin(
             "items.abyssal_dagger_p++"
         )) {
             SpecialAttacks.register(item, SPECIAL_REQUIREMENT) {
-                player.animate(id = 3300)
-                player.graphic(id = 1283)
+                player.animate(id = "sequences.abyssal_dagger_special")
+                player.graphic(id = "spotanims.abyssal_dagger_special_spotanim")
                 world.spawn(AreaSound(tile = player.tile, id = 2537, radius = 10, volume = 1))
 
                 val accuracy = MeleeCombatFormula.getAccuracy(player, target, specialAttackMultiplier = 1.25)

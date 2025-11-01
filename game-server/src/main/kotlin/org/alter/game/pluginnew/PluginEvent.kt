@@ -6,7 +6,6 @@ import org.alter.game.pluginnew.event.EventManager
 import kotlin.reflect.KClass
 import kotlin.script.experimental.annotations.KotlinScript
 
-@KotlinScript(fileExtension = "plugin.kts", compilationConfiguration = PluginConfig::class)
 abstract class PluginEvent  {
 
     abstract fun init()

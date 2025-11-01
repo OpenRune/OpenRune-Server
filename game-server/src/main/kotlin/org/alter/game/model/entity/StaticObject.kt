@@ -9,6 +9,6 @@ import org.alter.game.model.Tile
  *
  * @author Tom <rspsmods@gmail.com>
  */
-class StaticObject(id: Int, type: Int, rot: Int, tile: Tile) : GameObject(id, type, rot, tile) {
+class StaticObject(id: String, type: Int, rot: Int, tile: Tile) : GameObject(id, type, rot, tile) {
     override val entityType: EntityType = EntityType.STATIC_OBJECT
 }

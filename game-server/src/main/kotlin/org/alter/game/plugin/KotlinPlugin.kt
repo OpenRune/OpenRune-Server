@@ -23,6 +23,8 @@ import org.alter.game.model.shop.ShopCurrency
 import org.alter.game.model.shop.StockType
 import org.alter.game.model.timer.TimerKey
 import org.alter.game.service.Service
+import org.alter.rscm.RSCM
+import org.alter.rscm.RSCMType
 import kotlin.script.experimental.annotations.KotlinScript
 
 /**
@@ -165,7 +167,8 @@ abstract class KotlinPlugin(
         type: Int = 10,
         rot: Int = 0,
     ) {
-        val o = DynamicObject(getRSCM(obj), type, rot, Tile(x, z, height))
+        RSCM.requireRSCM(RSCMType.LOCTYPES,obj)
+        val o = DynamicObject(obj, type, rot, Tile(x, z, height))
         r.objSpawns.add(o)
     }
 

@@ -126,10 +126,6 @@ class PlayerInfo(var player: Player) {
         info.setFacePathingEntity(index)
     }
 
-    fun graphic(id: Int, height: Int, delay: Int) {
-        info.setSpotAnim(0, id, delay, height)
-    }
-
     fun forceMove(movement: ForcedMovement) {
         info.setExactMove(
             deltaX1 = movement.diffX1,

@@ -13,6 +13,7 @@ import dev.openrune.definition.GameValGroupTypes
 import dev.openrune.filesystem.Cache
 import dev.openrune.tools.PackServerConfig
 import io.github.oshai.kotlinlogging.KotlinLogging
+import org.alter.impl.FoodTable
 import org.alter.impl.PrayerTable
 import org.alter.impl.StatComponents
 import org.alter.impl.TeleTabs
@@ -58,7 +59,8 @@ fun downloadRev(type : TaskType) {
             tasksNew.add(PackDBTables(listOf(
                 PrayerTable.skillTable(),
                 TeleTabs.teleTabs(),
-                StatComponents.statsComponents()
+                StatComponents.statsComponents(),
+                FoodTable.consumableFood()
             )))
 
             builder.extraTasks(*tasksNew.toTypedArray()).build().initialize()
@@ -78,7 +80,8 @@ fun downloadRev(type : TaskType) {
             tasksNew.add(PackDBTables(listOf(
                 PrayerTable.skillTable(),
                 TeleTabs.teleTabs(),
-                StatComponents.statsComponents()
+                StatComponents.statsComponents(),
+                FoodTable.consumableFood()
             )))
 
             builder.extraTasks(*tasksNew.toTypedArray()).build().initialize()

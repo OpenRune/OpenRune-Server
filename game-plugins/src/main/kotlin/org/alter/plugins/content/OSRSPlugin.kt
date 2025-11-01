@@ -3,19 +3,10 @@ package org.alter.plugins.content
 import org.alter.api.*
 import org.alter.api.CommonClientScripts
 import org.alter.api.InterfaceDestination
-import org.alter.api.cfg.*
-import org.alter.api.dsl.*
 import org.alter.api.ext.*
 import org.alter.game.*
 import org.alter.game.model.*
-import org.alter.game.model.attr.*
-import org.alter.game.model.container.*
-import org.alter.game.model.container.key.*
 import org.alter.game.model.entity.*
-import org.alter.game.model.item.*
-import org.alter.game.model.queue.*
-import org.alter.game.model.shop.*
-import org.alter.game.model.timer.*
 import org.alter.game.plugin.*
 
 class OSRSPlugin(
@@ -82,15 +73,15 @@ class OSRSPlugin(
                         ),
                 )
                 player.openDefaultInterfaces()
-                setVarbit(Varbit.COMBAT_LEVEL_VARBIT, combatLevel)
-                setVarbit(Varbit.CHATBOX_UNLOCKED, 1)
+                setVarbit("varbits.combatlevel_transmit", combatLevel)
+                setVarbit("varbits.has_displayname_transmitter", 1)
                 runClientScript(CommonClientScripts.INTRO_MUSIC_RESTORE)
-                if (getVarp(Varp.PLAYER_HAS_DISPLAY_NAME) == 0 && username.isNotBlank()) {
-                    syncVarp(Varp.PLAYER_HAS_DISPLAY_NAME)
+                if (getVarp("varp.chat_filter_assist") == 0 && username.isNotBlank()) {
+                    syncVarp("varp.chat_filter_assist")
                 }
                 // Sync attack priority options.
-                syncVarp(Varp.NPC_ATTACK_PRIORITY_VARP)
-                syncVarp(Varp.PLAYER_ATTACK_PRIORITY_VARP)
+                syncVarp("varp.option_attackpriority_npc")
+                syncVarp("varp.option_attackpriority")
                 // Send player interaction options.
                 sendOption("Follow", 3)
                 sendOption("Trade with", 4)
@@ -100,15 +91,15 @@ class OSRSPlugin(
                 message("Welcome to ${world.gameContext.name}.", ChatMessageType.GAME_MESSAGE)
                 // player.social.pushFriends(player)
                 // player.social.pushIgnores(player)
-                setVarbit(Varbit.ESC_CLOSES_CURRENT_INTERFACE, 1)
+                setVarbit("varbits.keybinding_esc_to_close", 1)
 
                 /**
                  * @TODO
                  * As for now these varbit's disable Black bar on right side for Native client,
                  * The black bar is for loot tracker n whatnot
                  */
-                setVarbit(13982, 1)
-                setVarbit(13981, 1)
+                setVarbit("varbits.popout_panel_desktop_disabled", 1)
+                setVarbit("varbits.popout_panel_mobile_enabled", 1)
             }
         }
 
@@ -132,9 +123,9 @@ class OSRSPlugin(
         fullscreen: Boolean = false,
     ) {
         InterfaceDestination.getModals().forEach { pane ->
-            if (pane == InterfaceDestination.XP_COUNTER && player.getVarbit(Varbit.XP_DROPS_VISIBLE_VARBIT) == 0) {
+            if (pane == InterfaceDestination.XP_COUNTER && player.getVarbit("varbits.xpdrops_enabled") == 0) {
                 return@forEach
-            } else if (pane == InterfaceDestination.MINI_MAP && player.getVarbit(Varbit.HIDE_DATA_ORBS_VARBIT) == 1) {
+            } else if (pane == InterfaceDestination.MINI_MAP && player.getVarbit("varbits.orbs_disabled") == 1) {
                 return@forEach
             }
             player.openInterface(pane.interfaceId, pane, fullscreen)

@@ -77,9 +77,9 @@ class CowPlugin(
                 }
 
                 anims {
-                    attack = Animation.COW_ATTACK
-                    block = Animation.COW_HIT
-                    death = Animation.COW_DEATH
+                    attack = "sequences.cow_update_attack"
+                    block = "sequences.cow_update_defend"
+                    death = "sequences.cow_update_death"
                 }
 
                 sound {

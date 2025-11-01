@@ -1,13 +1,26 @@
 package org.alter.game.util
 
 import dev.openrune.ServerCacheManager
+import dev.openrune.definition.constants.ConstantProvider
 import dev.openrune.definition.type.DBRowType
 import dev.openrune.definition.type.DBColumnType
 import dev.openrune.definition.util.VarType
+import dev.openrune.filesystem.Cache
+import org.alter.game.util.DbHelper.Companion.table
 import org.alter.game.util.vars.BooleanVarType
+import org.alter.game.util.vars.ComponentType
+import org.alter.game.util.vars.IntType
+import org.alter.game.util.vars.NpcType
+import org.alter.game.util.vars.ObjType
 import org.alter.game.util.vars.VarTypeImpl
+import org.alter.rscm.RSCM
 import org.alter.rscm.RSCM.asRSCM
+import org.alter.rscm.RSCM.requireRSCM
+import org.alter.rscm.RSCMType
+import java.io.File
+import java.nio.file.Paths
 import java.util.concurrent.ConcurrentHashMap
+import kotlin.io.path.Path
 
 fun <K, V> DbHelper.column(name: String, type: VarTypeImpl<K, V>): V =
     getNValue(name, type, 0)
@@ -27,59 +40,62 @@ fun row(row: String) = DbHelper.row(row)
  * returns [[8, 35], [4, 30]]
  */
 
-fun <K1, V1, K2, V2> DbHelper.multiColumn(
+@Suppress("UNCHECKED_CAST")
+fun <K, V> DbHelper.multiColumn(
     columnName: String,
-    type1: VarTypeImpl<K1, V1>,
-    type2: VarTypeImpl<K2, V2>
-): List<EnumPair<V1, V2>> {
+    vararg types: VarTypeImpl<K, V>
+): List<V?> {
     val column = getColumn(columnName)
     val values = column.column.values ?: return emptyList()
-    val result = mutableListOf<EnumPair<V1, V2>>()
 
-    var i = 0
-    while (i < values.size - 1) {
-        val v1 = column.get(i, type1) as V1
-        val v2 = column.get(i + 1, type2) as V2
-        result.add(EnumPair(v1, v2))
-        i += 2
+    require(types.isNotEmpty()) { "At least one VarTypeImpl must be provided" }
+
+    return values.mapIndexed { i, raw ->
+        val type = types[i % types.size]
+        try {
+            run {
+                val value = column.get(i, type)
+                type.convertTo(value as K)
+            }
+        } catch (e: DbException) {
+            throw e
+        } catch (_: Exception) {
+            null
+        }
     }
-
-    return result
 }
 
-fun <K1, V1, K2, V2> DbHelper.multiColumnOptional(
+@Suppress("UNCHECKED_CAST")
+fun <K, V> DbHelper.multiColumnOptional(
     columnName: String,
-    type1: VarTypeImpl<K1, V1>,
-    type2: VarTypeImpl<K2, V2>
-): List<EnumPair<V1?, V2?>> {
+    vararg types: VarTypeImpl<K, V>
+): List<V?> {
     val column = try {
         getColumn(columnName)
+    } catch (e: DbException.MissingColumn) {
+        return emptyList()
+    } catch (e: DbException) {
+        throw e
     } catch (_: Exception) {
         return emptyList()
     }
 
     val values = column.column.values ?: return emptyList()
-    val result = mutableListOf<EnumPair<V1?, V2?>>()
+    require(types.isNotEmpty()) { "At least one VarTypeImpl must be provided" }
 
-    var i = 0
-    while (i < values.size - 1) {
-        val v1 = try {
-            column.get(i, type1) as V1
+    return values.mapIndexed { i, raw ->
+        val type = types[i % types.size]
+        try {
+            run {
+                val value = column.get(i, type)
+                type.convertTo(value as K)
+            }
+        } catch (e: DbException) {
+            throw e
         } catch (_: Exception) {
             null
         }
-
-        val v2 = try {
-            column.get(i + 1, type2) as V2
-        } catch (_: Exception) {
-            null
-        }
-
-        result.add(EnumPair(v1, v2))
-        i += 2
     }
-
-    return result
 }
 
 @Suppress("UNCHECKED_CAST")
@@ -107,14 +123,15 @@ class DbHelper private constructor(private val row: DBRowType) {
     }
 
     fun getColumn(name: String): Column {
-        require(name.startsWith("column")) { "Expected 'column' prefix in $name" }
+        requireRSCM(RSCMType.COLUMNS,name)
         return getColumn(name.asRSCM() and 0xFFFF)
     }
 
     fun getColumn(id: Int): Column {
-        val col = row.columns[id] ?: throw NoSuchElementException("Column $id not found in row $id")
+        val col = row.columns[id] ?: throw DbException.MissingColumn(tableId, id, id)
         return Column(col, rowId = id, columnId = id, tableId = tableId)
     }
+
 
     class Column(
         val column: DBColumnType,
@@ -128,19 +145,18 @@ class DbHelper private constructor(private val row: DBRowType) {
 
         fun <K, V> get(index: Int = 0, type: VarTypeImpl<K, V>): Any {
             val values = column.values
-                ?: throw NoSuchElementException("No values in column $columnId for row $rowId")
+                ?: throw DbException.EmptyColumnValues(tableId, rowId, columnId)
 
             if (index !in values.indices) {
-                throw IndexOutOfBoundsException("Index $index out of bounds for column $columnId in row $rowId")
+                throw DbException.IndexOutOfRange(tableId, rowId, columnId, index, values.size)
             }
 
             val actualType = types.getOrNull(index % types.size)
-                ?: throw IllegalStateException("No VarType available at index $index (types size = ${types.size})")
+                ?: throw DbException.MissingVarType(tableId, rowId, columnId, index)
 
             if (actualType != type.type) {
-                throw IllegalArgumentException(
-                    "Type mismatch in table '$tableId', column '$columnId', row '$rowId', index $index: " +
-                            "expected '${actualType}', found '${type.type}'."
+                throw DbException.TypeMismatch(
+                    tableId, rowId, columnId, expected = actualType, actual = type.type
                 )
             }
 
@@ -156,7 +172,7 @@ class DbHelper private constructor(private val row: DBRowType) {
     companion object {
 
         fun table(table: String): List<DbHelper> {
-            require(table.startsWith("tables.")) { "Expected table reference to start with 'tables.', got '$table'" }
+            requireRSCM(RSCMType.TABLETYPES,table)
 
             return DbQueryCache.getTable(table) {
                 val tableId = table.asRSCM()
@@ -170,7 +186,7 @@ class DbHelper private constructor(private val row: DBRowType) {
         }
 
         fun <K, V> dbFind(column: String, value: V, type: VarTypeImpl<K, V>): List<DbHelper> {
-            require(column.startsWith("columns.")) { "Expected column reference starting with 'columns.', got '$column'" }
+            requireRSCM(RSCMType.COLUMNS,column)
 
             return DbQueryCache.getColumn(column, value, type) {
                 val tableName = "tables." + column.removePrefix("columns.").substringBefore(':')
@@ -193,7 +209,7 @@ class DbHelper private constructor(private val row: DBRowType) {
 
         private fun load(rowId: Int): DbHelper =
             ServerCacheManager.getDbrow(rowId)?.let(::DbHelper)
-                ?: throw NoSuchElementException("DBRow $rowId not found")
+                ?: throw DbException.MissingRow(rowId)
 
         fun row(ref: String): DbHelper = load(ref.asRSCM())
         fun row(rowId: Int): DbHelper = load(rowId)
@@ -217,4 +233,30 @@ object DbQueryCache {
         tableCache.clear()
         columnCache.clear()
     }
+}
+
+sealed class DbException(message: String) : RuntimeException(message) {
+
+    class MissingColumn(tableId: Int, rowId: Int, columnId: Int) :
+        DbException("Column $columnId not found in row $rowId (table $tableId)")
+
+    class EmptyColumnValues(
+        tableId: Int,
+        rowId: Int,
+        columnId: Int
+    ) : DbException("No values found in column $columnId (row $rowId, table $tableId)")
+
+    class IndexOutOfRange(tableId: Int, rowId: Int, columnId: Int, index: Int, max: Int) :
+        DbException("Index $index out of bounds (size=$max) in column $columnId (row $rowId, table $tableId)")
+
+    class MissingVarType(tableId: Int, rowId: Int, columnId: Int, index: Int) :
+        DbException("No VarType available at index $index in column $columnId (row $rowId, table $tableId)")
+
+    class TypeMismatch(tableId: Int, rowId: Int, columnId: Int, expected: VarType, actual: VarType) :
+        DbException("Type mismatch in table $tableId, row $rowId, column $columnId: expected $expected but found $actual")
+
+    class MissingRow(rowId: Int) :
+        DbException("DBRow $rowId not found")
+
+
 }

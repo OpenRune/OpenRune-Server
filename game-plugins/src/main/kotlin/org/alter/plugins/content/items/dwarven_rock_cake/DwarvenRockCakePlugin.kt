@@ -1,22 +1,10 @@
 package org.alter.plugins.content.items.dwarven_rock_cake
 
 import kotlin.math.ceil
-import org.alter.api.*
-import org.alter.api.cfg.*
-import org.alter.api.cfg.Animation
 import org.alter.api.cfg.Sound
-import org.alter.api.dsl.*
 import org.alter.api.ext.*
 import org.alter.game.*
 import org.alter.game.model.*
-import org.alter.game.model.attr.*
-import org.alter.game.model.container.*
-import org.alter.game.model.container.key.*
-import org.alter.game.model.entity.*
-import org.alter.game.model.item.*
-import org.alter.game.model.queue.*
-import org.alter.game.model.shop.*
-import org.alter.game.model.timer.*
 import org.alter.game.plugin.*
 
 /**
@@ -35,7 +23,7 @@ class DwarvenRockCakePlugin(
                 player.queue {
                     player.filterableMessage("Ow! You nearly broke a tooth!")
                     player.filterableMessage("The rock cake resists all attempts to eat it.")
-                    player.animate(Animation.CONSUME)
+                    player.animate("sequences.human_eat")
                     player.playSound(Sound.EAT_ROCKCAKE)
                     if (player.getCurrentHp() - 1 != 0) {
                         player.hit(1)
@@ -48,7 +36,7 @@ class DwarvenRockCakePlugin(
                 player.queue {
                     player.filterableMessage("You bite hard into the rock cake to guzzle it down.")
                     player.filterableMessage("OW! A terrible shock jars through your skull.")
-                    player.animate(Animation.CONSUME)
+                    player.animate("sequences.human_eat")
                     player.playSound(Sound.EAT_ROCKCAKE)
                     val incomingDamage =
                         when (player.getCurrentHp()) {
