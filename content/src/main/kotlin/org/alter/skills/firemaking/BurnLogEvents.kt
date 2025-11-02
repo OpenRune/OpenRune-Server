@@ -12,11 +12,15 @@ import org.alter.game.model.entity.Player
 import org.alter.game.model.move.walkTo
 import org.alter.game.pluginnew.MenuOption
 import org.alter.game.pluginnew.PluginEvent
+import org.alter.game.pluginnew.PluginSetting
 import org.alter.game.pluginnew.event.impl.GroundItemClickEvent
 import org.alter.game.pluginnew.event.impl.onItemOnItem
 import org.alter.rscm.RSCM
 import org.alter.rscm.RSCM.asRSCM
+import org.alter.settings.FiremakingSettings
 
+
+@PluginSetting("firemaking.yml")
 class BurnLogEvents : PluginEvent() {
 
     companion object {
@@ -24,6 +28,12 @@ class BurnLogEvents : PluginEvent() {
     }
 
     override fun init() {
+
+        val setting = getSetting<FiremakingSettings>()
+
+        println("MAX FIRES: "+ setting.maxFires)
+
+
         Logs.logs.forEach { log ->
             onItemOnItem("items.tinderbox", log.logItem) {
                 burnLog(player, log.logItem, null, log.xp, log.level)

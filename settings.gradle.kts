@@ -3,6 +3,11 @@ import java.nio.file.Path
 
 rootProject.name = "Alter"
 pluginManagement {
+    repositories {
+        google()
+        mavenCentral()
+        gradlePluginPortal()
+    }
     plugins {
         kotlin("jvm")
     }
@@ -26,6 +31,7 @@ include(":game-api")
 include(":game-server")
 include(":cache")
 include(":content")
+include(":plugin-settings-processor")
 
 fun includePlugins(pluginProject: ProjectDescriptor) {
     val pluginPath = pluginProject.projectDir.toPath()
