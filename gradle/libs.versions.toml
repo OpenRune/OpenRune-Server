@@ -13,6 +13,7 @@ mongo = "5.1.2"
 junit = "4.+"
 kotlinTestJunit = "_"
 kotlin = "2.0.20"
+ksp = "2.0.20-1.0.24"
 nettyAll = "4.1.109.Final"
 csv = "0.7.3"
 logback = "1.4.11"
@@ -70,4 +71,5 @@ or2-filestore = { group = "dev.or2", name = "filestore", version.ref = "or2" }
 
 [plugins]
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 shadow = { id ="com.github.johnrengelman.shadow", version = "8.1.1"}

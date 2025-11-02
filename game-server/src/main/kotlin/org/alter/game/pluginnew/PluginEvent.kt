@@ -8,6 +8,18 @@ import kotlin.script.experimental.annotations.KotlinScript
 
 abstract class PluginEvent  {
 
+    var settings: PluginSettings? = null
+        internal set
+
+    inline fun <reified T : PluginSettings> getSetting(): T {
+        return settings as? T
+            ?: throw IllegalStateException(
+                "Settings not assigned or wrong type for ${this::class.simpleName}, expected ${T::class.simpleName}"
+            )
+    }
+
+    open fun isEnabled() = settings?.isEnabled?: true
+
     abstract fun init()
 
     inline fun <reified K : Event> on(config: EventListener<K>.() -> EventListener<K>): EventListener<K> {
