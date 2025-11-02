@@ -28,7 +28,7 @@ class ConsumeFood : PluginEvent() {
     private val EAT_FOOD_SOUND = 2393
 
     override fun init() {
-        DbHelper.Companion.table("tables.consumable_food").forEach { food ->
+        DbHelper.table("tables.consumable_food").forEach { food ->
             val itemIds = food.multiColumn("columns.consumable_food:items", ObjType)
             val comboFood = food.column("columns.consumable_food:combo", BooleanType)
 

@@ -239,12 +239,8 @@ class World(val gameContext: GameContext, val devContext: DevContext) {
             logger.info {"World cycle has been reset." }
         }
 
-        /*
-         * Copy the timers to a mutable map just in case a timer has to modify
-         * the [timers] during its execution, which isn't uncommon.
-         */
         val timersCopy = timers.getTimers().toMutableMap()
-        timersCopy.forEach { key, time ->
+        timersCopy.forEach { (key, time) ->
             if (time <= 0) {
                 plugins.executeWorldTimer(this, key)
                 if (!timers.has(key)) {
@@ -257,6 +253,11 @@ class World(val gameContext: GameContext, val devContext: DevContext) {
          * Tick all timers down by one cycle.
          */
         timers.getTimers().entries.forEach { timer -> timer.setValue(timer.value - 1) }
+
+        /*
+         * Cycle through objects with timers and tick them down.
+         */
+        ObjectTimerMap.tick()
 
         /*
          * Cycle through ground items to handle any despawn or respawn.
@@ -413,15 +414,17 @@ class World(val gameContext: GameContext, val devContext: DevContext) {
         val tile = obj.tile
         val chunk = chunks.getOrCreate(tile)
 
-        val oldObj =
-            chunk.getEntities<GameObject>(
-                tile,
-                EntityType.STATIC_OBJECT,
-                EntityType.DYNAMIC_OBJECT,
-            ).firstOrNull { it.type == obj.type }
+        val oldObj = chunk.getEntities<GameObject>(
+            tile,
+            EntityType.STATIC_OBJECT,
+            EntityType.DYNAMIC_OBJECT,
+        ).firstOrNull { it.type == obj.type }
+
         if (oldObj != null) {
             chunk.removeEntity(this, oldObj, tile)
+            ObjectTimerMap.removeObject(oldObj)
         }
+
         chunk.addEntity(this, obj, tile)
     }
 
@@ -429,7 +432,10 @@ class World(val gameContext: GameContext, val devContext: DevContext) {
         val tile = obj.tile
         val chunk = chunks.getOrCreate(tile)
 
-        chunk.removeEntity(this, obj, tile)
+        if (obj.isSpawned(this)) {
+            ObjectTimerMap.removeObject(obj)
+            chunk.removeEntity(this, obj, tile)
+        }
     }
 
     fun spawn(item: GroundItem) {

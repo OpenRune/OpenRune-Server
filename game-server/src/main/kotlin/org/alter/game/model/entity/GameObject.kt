@@ -8,15 +8,94 @@ import gg.rsmod.util.toStringHelper
 import org.alter.game.model.Tile
 import org.alter.game.model.World
 import org.alter.game.model.attr.AttributeMap
+import org.alter.game.model.entity.ObjectTimerMap
+import org.alter.game.model.timer.TimerKey
 import org.alter.game.model.timer.TimerMap
 import org.alter.rscm.RSCM
 import org.alter.rscm.RSCMType
+import java.util.concurrent.ConcurrentHashMap
 
 /**
  * A [GameObject] is any type of map object that can occupy a tile.
  *
  * @author Tom <rspsmods@gmail.com>
  */
+
+object ObjectTimerMap {
+
+    // Set of GameObjects that currently have active timers
+    private val objectsWithTimers: MutableSet<GameObject> = ConcurrentHashMap.newKeySet()
+
+    /**
+     * Registers an object as having timers (called automatically when timers are added).
+     */
+    internal fun registerObject(obj: GameObject) {
+        objectsWithTimers.add(obj)
+    }
+
+    /**
+     * Unregisters an object if it no longer has timers.
+     */
+    internal fun unregisterIfEmpty(obj: GameObject) {
+        if (!obj.hasTimers()) {
+            objectsWithTimers.remove(obj)
+        }
+    }
+
+    /**
+     * Removes an object completely from the timer registry.
+     */
+    fun removeObject(obj: GameObject) {
+        objectsWithTimers.remove(obj)
+    }
+
+    /**
+     * Checks if an object has any active timers.
+     */
+    fun hasTimers(obj: GameObject): Boolean = obj.hasTimers()
+
+    /**
+     * Iterates over all objects that have timers.
+     */
+    fun forEach(block: (obj: GameObject) -> Unit) {
+        objectsWithTimers.forEach { block(it) }
+    }
+
+    /**
+     * Clears all tracked objects (but doesn't clear their timers).
+     */
+    fun clear() {
+        objectsWithTimers.clear()
+    }
+
+    /**
+     * Global tick update for all timers.
+     * Call this every game cycle.
+     */
+    fun tick() {
+        val iterator = objectsWithTimers.iterator()
+        while (iterator.hasNext()) {
+            val obj = iterator.next()
+            val timers = obj.timers ?: continue
+
+            val timerIterator = timers.getTimers().entries.iterator()
+            while (timerIterator.hasNext()) {
+                val entry = timerIterator.next()
+                val remaining = entry.value - 1
+                if (remaining <= 0) {
+                    timerIterator.remove()
+                } else {
+                    timers[entry.key] = remaining
+                }
+            }
+
+            // Remove from registry if no timers remain
+            if (!timers.isNotEmpty) {
+                iterator.remove()
+            }
+        }
+    }
+}
 abstract class GameObject : Entity {
 
     /**
@@ -41,9 +120,27 @@ abstract class GameObject : Entity {
     val attr = AttributeMap()
 
     /**
-     * @see [TimerMap]
+     * The timer map for this object. Lazily initialized when first accessed.
+     * Objects with timers are automatically registered in [ObjectTimerMap].
      */
-    val timers = TimerMap()
+    var timers: TimerMap? = null
+        private set
+
+    /**
+     * Gets or creates the timer map for this object.
+     */
+    private fun getOrCreateTimers(): TimerMap {
+        if (timers == null) {
+            timers = TimerMap()
+            ObjectTimerMap.registerObject(this)
+        }
+        return timers!!
+    }
+
+    /**
+     * Checks if this object has any active timers.
+     */
+    fun hasTimers(): Boolean = timers?.isNotEmpty == true
 
     /**
      * Thanks to <a href="https://www.rune-server.ee/members/maxi/">Maxi</a> for this information:
@@ -115,6 +212,121 @@ abstract class GameObject : Entity {
         }
 
         return internalID
+    }
+
+
+    /**
+     * Replaces this object in the world with another game object.
+     *
+     * If this object is dynamic, the replacement will also be dynamic.
+     * Otherwise, a static replacement is spawned.
+     *
+     * @param world The [World] instance the object exists in.
+     * @param obj The name or identifier of the replacement object.
+     * @param removeAfter Optional: number of game ticks after which the replacement
+     * should be removed. Default is 0 (permanent).
+     * @param restoreOriginal Whether to restore the original object after [removeAfter] ticks. Default is true.
+     * @return The newly created [GameObject] that replaced the original.
+     */
+    fun replaceWith(
+        world: World,
+        obj: String,
+        removeAfter: Int = 0,
+        restoreOriginal: Boolean = false
+    ): GameObject {
+        world.remove(this)
+
+        val replacement: GameObject = when (this) {
+            is DynamicObject -> DynamicObject(this, obj)
+            else -> StaticObject(obj, type, rot, tile)
+        }
+
+        world.spawn(replacement)
+
+        if (removeAfter > 0) {
+            world.queue {
+                wait(removeAfter)
+                world.remove(replacement)
+                if (restoreOriginal) {
+                    world.spawn(this@GameObject)
+                }
+            }
+        }
+
+        return replacement
+    }
+
+    /**
+     * Replaces this object in the world with another game object.
+     *
+     * The replacement will persist until the specified [TimerKey] expires.
+     *
+     * @param world The [World] instance the object exists in.
+     * @param obj The name or identifier of the replacement object.
+     * @param key The [TimerKey] controlling how long the replacement lasts.
+     * @param restoreOriginal Whether to restore the original object after the timer expires. Default is true.
+     * @return The newly created [GameObject] that replaced the original.
+     */
+    fun replaceWith(
+        world: World,
+        obj: String,
+        key: TimerKey,
+        restoreOriginal: Boolean = false
+    ): GameObject {
+        val replacement: GameObject = when (this) {
+            is DynamicObject -> DynamicObject(obj, type, rot, tile)
+            else -> StaticObject(obj, type, rot, tile)
+        }
+
+        world.remove(this)
+        world.spawn(replacement)
+
+        world.queue {
+            repeatUntil(1,true,{false}) {
+                if (replacement.getTimeLeft(key) == 0) {
+                    world.remove(replacement)
+                    if (restoreOriginal) {
+                        world.spawn(this@GameObject)
+                    }
+                }
+            }
+        }
+
+        return replacement
+    }
+
+    fun setTimer(key: TimerKey, value: Int) {
+        val timerMap = getOrCreateTimers()
+        timerMap[key] = value
+    }
+
+    fun getTimeLeft(key: TimerKey): Int {
+        return timers?.getTimers()?.get(key) ?: 0
+    }
+
+    fun removeTimer(key: TimerKey) {
+        timers?.remove(key)
+        ObjectTimerMap.unregisterIfEmpty(this)
+    }
+
+    fun addTimer(key: TimerKey, amount: Int = 1) {
+        val timerMap = getOrCreateTimers()
+        val current = if (timerMap.exists(key)) timerMap[key] else 0
+
+        timerMap[key] = current + amount
+    }
+
+    fun reduceTimer(key: TimerKey, amount: Int = 1) {
+        val timerMap = timers ?: return
+        if (!timerMap.exists(key)) return
+
+        val newValue = timerMap[key] - amount
+        if (newValue <= 0) {
+            timerMap.remove(key)
+            ObjectTimerMap.unregisterIfEmpty(this)
+        } else {
+            timerMap[key] = newValue
+        }
     }
 
     override fun toString(): String =

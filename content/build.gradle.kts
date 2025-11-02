@@ -9,6 +9,7 @@ dependencies {
     api(project(":game-server"))
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.9.0")
     implementation(rootProject.project.libs.rsprot)
+    implementation(rootProject.project.libs.routefinder)
 }
 
 tasks.withType<KotlinCompile> {
