@@ -1,0 +1,10 @@
+camp_fire_delay_ticks = 9
+
+[rs2_bonfire]
+enabled = false
+
+[rs2_bonfire.xp_boost_players]
+2 = 1
+3 = 2
+4 = 3
+5 = 4

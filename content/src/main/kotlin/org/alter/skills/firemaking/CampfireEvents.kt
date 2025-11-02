@@ -1,24 +1,27 @@
 package org.alter.skills.firemaking
 
 import dev.openrune.ServerCacheManager.getItem
-import net.rsprot.protocol.game.outgoing.misc.client.HintArrow
 import org.alter.api.Skills
 import org.alter.api.ext.filterableMessage
-import org.alter.api.ext.message
 import org.alter.api.ext.produceItemBox
 import org.alter.game.model.EntityType
 import org.alter.game.model.TileGraphic
 import org.alter.game.model.attr.AttributeKey
+import org.alter.game.model.attr.INTERACTING_OBJ_ATTR
 import org.alter.game.model.entity.GameObject
 import org.alter.game.model.entity.Player
 import org.alter.game.model.timer.TimerKey
 import org.alter.game.pluginnew.MenuOption
+import org.alter.game.pluginnew.PluginConfig
 import org.alter.game.pluginnew.PluginEvent
+import org.alter.game.pluginnew.event.impl.InterruptActionEvent
 import org.alter.game.pluginnew.event.impl.ItemOnObject
 import org.alter.game.pluginnew.event.impl.ObjectClickEvent
 import org.alter.rscm.RSCM
+import org.alter.settings.FiremakingSettings
 import org.alter.skills.firemaking.ColoredLogs.Companion.CAMPFIRE_OBJECTS
 
+@PluginConfig("firemaking.toml")
 class CampfireEvents : PluginEvent() {
 
     companion object {
@@ -30,12 +33,18 @@ class CampfireEvents : PluginEvent() {
         )
 
         private val CAMPFIRE_TIMER = TimerKey()
-        val PLAYERS_ON_FIRE = AttributeKey<Int>()
+
+        // Attribute for tracking number of players tending the fire
+        val PLAYERS_COUNT_ATTR = AttributeKey<Int>()
     }
 
     private val VALID_FIRES = ColoredLogs.COLOURED_LOGS.values.map { it.second } + "objects.fire"
 
+    val firemakingSettings: FiremakingSettings
+        get() = getSetting<FiremakingSettings>()
+
     override fun init() {
+
         on<ObjectClickEvent> {
             where { ColoredLogs.CAMPFIRE_OBJECTS.containsValue(gameObject.id) }
             then {
@@ -46,6 +55,11 @@ class CampfireEvents : PluginEvent() {
                     else -> {}
                 }
             }
+        }
+
+        on<InterruptActionEvent> {
+            where { ColoredLogs.CAMPFIRE_OBJECTS.containsValue(player.attr[INTERACTING_OBJ_ATTR]?.get()?.id) }
+            then { removePlayerFromFire(player.attr[INTERACTING_OBJ_ATTR]?.get() ?: return@then) }
         }
 
         Logs.logs.forEach { log ->
@@ -65,8 +79,8 @@ class CampfireEvents : PluginEvent() {
     private fun tendFireAction(player: Player, gameObject: GameObject) {
         val validLogs = Logs.logs.filter { log ->
             player.inventory.contains(log.logItem) &&
-            log.animation != RSCM.NONE &&
-            player.getSkills().getCurrentLevel(Skills.FIREMAKING) >= log.level
+                    log.animation != RSCM.NONE &&
+                    player.getSkills().getCurrentLevel(Skills.FIREMAKING) >= log.level
         }
 
         if (validLogs.isEmpty()) return
@@ -95,7 +109,6 @@ class CampfireEvents : PluginEvent() {
     }
 
     private fun lightFire(player: Player, gameObject: GameObject, log: Int, initialTicks: Int) {
-
         val entities = player.world.chunks.get(player.tile)!!.getEntities<GameObject>(EntityType.DYNAMIC_OBJECT)
 
         val isFireNearby = entities.any { fire ->
@@ -126,32 +139,49 @@ class CampfireEvents : PluginEvent() {
         }
 
         player.inventory.remove(log)
-        replacement.attr[PLAYERS_ON_FIRE] = 0
         replacement.setTimer(CAMPFIRE_TIMER, initialTicks)
     }
 
     private fun tendFire(player: Player, gameObject: GameObject, logData: Logs.LogData, logsToAdd: Int) {
+        addPlayerToFire(gameObject)
 
-
-        gameObject.attr[PLAYERS_ON_FIRE] = (gameObject.attr[PLAYERS_ON_FIRE] ?: 0) + 1
+        val ticks = firemakingSettings.campFireDelayTicks
 
         player.queue {
             var logsAdded = 0
 
-            repeatUntil(delay = 9, true, {
+            repeatUntil(delay = ticks, immediate = true, predicate = {
                 !canAddLog(player, gameObject, logData) || logsAdded >= logsToAdd
             }) {
                 player.animate(logData.animation)
-                player.addXp(Skills.FIREMAKING, logData.xp)
+                val playersUsingFire = gameObject.attr[PLAYERS_COUNT_ATTR] ?: 1
+                player.addXp(Skills.FIREMAKING, calculateXp(logData.xp, playersUsingFire))
                 player.inventory.remove(logData.logItem)
 
                 logsAdded++
-
                 wait(3)
                 player.world.spawn(TileGraphic(tile = gameObject.tile, id = "spotanims.forestry_campfire_burning_spotanim"))
             }
+
+            removePlayerFromFire(gameObject)
             stopTending(player, gameObject)
         }
+    }
+
+    private fun calculateXp(xp: Int, playersUsingFire: Int): Double {
+        val bonfire = firemakingSettings.rs2Bonfire?.takeIf { it.enabled } ?: return xp.toDouble()
+
+        val xpBoostMap: Map<Int, Double> = bonfire.xpBoostPlayers.mapKeys { it.key.toInt() }
+            .mapValues { it.value / 100.0 }
+
+        println("PLAYERS USING FIRE: ${playersUsingFire}")
+
+        val applicableBoost = xpBoostMap
+            .filterKeys { it <= (playersUsingFire - 1) }
+            .maxByOrNull { it.key }
+            ?.value ?: 0.0
+
+        return (xp * (1 + applicableBoost))
     }
 
     private fun canAddLog(player: Player, gameObject: GameObject, logData: Logs.LogData): Boolean {
@@ -179,7 +209,16 @@ class CampfireEvents : PluginEvent() {
 
     private fun stopTending(player: Player, gameObject: GameObject, message: String? = null) {
         player.animate(RSCM.NONE)
-        gameObject.attr[PLAYERS_ON_FIRE] = (gameObject.attr[PLAYERS_ON_FIRE] ?: 0) - 1
         message?.let(player::filterableMessage)
+    }
+
+    private fun addPlayerToFire(gameObject: GameObject) {
+        val count = gameObject.attr.getOrPut(PLAYERS_COUNT_ATTR) { 0 }
+        gameObject.attr[PLAYERS_COUNT_ATTR] = count + 1
+    }
+
+    private fun removePlayerFromFire(gameObject: GameObject) {
+        val count = gameObject.attr.getOrPut(PLAYERS_COUNT_ATTR) { 0 }
+        gameObject.attr[PLAYERS_COUNT_ATTR] = (count - 1).coerceAtLeast(0)
     }
 }

@@ -59,4 +59,43 @@ class AttributeMap {
         attributes.filterKeys {
             it.persistenceKey != null && !it.temp
         }.mapKeys { it.key.persistenceKey!! }
+
+    fun increment(key: AttributeKey<Int>, amount: Int = 1) {
+        val current = getOrDefault(key, 0)
+        put(key, current + amount)
+    }
+
+    /** Decrement an integer attribute by a value (default 1). */
+    fun decrement(key: AttributeKey<Int>, amount: Int = 1) {
+        val current = getOrDefault(key, 0)
+        put(key, (current - amount).coerceAtLeast(0))
+    }
+
+    /** Add an element to a set attribute, initializing the set if needed. */
+    fun <T> addToSet(key: AttributeKey<MutableSet<T>>, element: T) {
+        val set = getOrPut(key) { mutableSetOf() }
+        set.add(element)
+    }
+
+    /** Remove an element from a set attribute. */
+    fun <T> removeFromSet(key: AttributeKey<MutableSet<T>>, element: T) {
+        val set = get<MutableSet<T>>(key)
+        set?.remove(element)
+    }
+
+    /** Check if a set attribute contains an element. */
+    fun <T> setContains(key: AttributeKey<MutableSet<T>>, element: T): Boolean {
+        val set = get<MutableSet<T>>(key)
+        return set?.contains(element) ?: false
+    }
+
+    /** Get the size of a set attribute, 0 if not present. */
+    fun <T> setSize(key: AttributeKey<MutableSet<T>>): Int {
+        return get<MutableSet<T>>(key)?.size ?: 0
+    }
+
+    /** Get or put a default value */
+    fun <T> getOrPut(key: AttributeKey<T>, default: () -> T): T {
+        return get(key) ?: default().also { put(key, it) }
+    }
 }

@@ -10,6 +10,8 @@ import org.alter.game.model.entity.Npc
 import org.alter.game.model.move.MovementQueue.Step
 import org.alter.game.model.entity.Pawn
 import org.alter.game.model.entity.Player
+import org.alter.game.pluginnew.event.EventManager
+import org.alter.game.pluginnew.event.impl.InterruptActionEvent
 import org.rsmod.routefinder.RouteFinding
 import org.rsmod.routefinder.collision.CollisionStrategy
 import java.util.*
@@ -143,6 +145,7 @@ class MovementQueue(val pawn: Pawn) {
                 pawn.tile = tile
                 if (pawn is Player) {
                     PlayerInfo(pawn).setMoveSpeed(if (pawn.isRunning() && pathSize > 0) MovementType.RUN else MovementType.WALK)
+                    EventManager.post(InterruptActionEvent(pawn))
                 }
                 if (pawn.entityType.isNpc) {
                     pawn as Npc
