@@ -1,8 +1,11 @@
 package org.alter.game.pluginnew
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.dataformat.toml.TomlFactory
 import io.github.classgraph.ClassGraph
 import io.github.oshai.kotlinlogging.KotlinLogging
+import org.alter.rscm.RSCM
+import org.alter.rscm.RSCMType
 import org.yaml.snakeyaml.Yaml
 import java.io.File
 import kotlin.system.exitProcess
@@ -19,7 +22,9 @@ object PluginManager {
 
     private val logger = KotlinLogging.logger {}
     const val PLUGIN_PACKAGE = "org.alter"
+
     private val objectMapper = ObjectMapper().findAndRegisterModules()
+    private val tomlMapper = ObjectMapper(TomlFactory()).findAndRegisterModules()
     private val yaml = Yaml()
 
     val scripts = mutableListOf<PluginEvent>()
@@ -82,22 +87,26 @@ object PluginManager {
         val annotation = clazz.getAnnotation(PluginConfig::class.java) ?: return null
         val baseName = annotation.yamlFile.substringBeforeLast('.', annotation.yamlFile)
 
-        val yamlName = findYamlFilename(baseName, resourcesDir) ?: run {
-            logger.warn { "YAML file not found for plugin ${clazz.name}: $baseName(.yml/.yaml)" }
+        val configFileName = findConfigFilename(baseName, resourcesDir) ?: run {
+            logger.warn { "Config file not found for plugin ${clazz.name}: $baseName(.yml/.yaml/.toml)" }
             return null
         }
 
-        settingsCache[yamlName]?.let {
-            return it
-        }
+        settingsCache[configFileName]?.let { return it }
 
-        val yamlMap = yamlCache.getOrPut(yamlName) {
-            val yamlFile = File(resourcesDir, yamlName)
+        val configMap = yamlCache.getOrPut(configFileName) {
+            val file = File(resourcesDir, configFileName)
+
+            val fileText = postProcessSettings(file.readText())
 
             runCatching {
-                yaml.load<Map<String, Any>>(yamlFile.readText())
+                when (file.extension.lowercase()) {
+                    "yml", "yaml" -> yaml.load(fileText)
+                    "toml" -> tomlMapper.readValue(fileText, Map::class.java) as Map<String, Any>
+                    else -> emptyMap()
+                }
             }.getOrElse {
-                logger.error(it) { "Failed to parse YAML for ${clazz.name}" }
+                logger.error(it) { "Failed to parse config for ${clazz.name}" }
                 return null
             }
         }
@@ -112,27 +121,41 @@ object PluginManager {
         val settingsClazz = settingsClassInfo.loadClass()
 
         val settingsInstance = runCatching {
-            objectMapper.convertValue(yamlMap, settingsClazz) as PluginSettings
+            objectMapper.convertValue(configMap, settingsClazz) as PluginSettings
         }.getOrElse {
             logger.error(it) { "Failed to map settings for ${clazz.name}" }
             return null
         }
 
-        settingsCache[yamlName] = settingsInstance
+        settingsCache[configFileName] = settingsInstance
         return settingsInstance
     }
 
+    fun postProcessSettings(content: String): String {
+        val prefixes = RSCMType.entries.map { it.prefix }
+        if (prefixes.isEmpty()) return content
+
+        val combinedRegex = Regex("""["']?\b(${prefixes.joinToString("|")})\.[\w.]+["']?""")
+
+        return combinedRegex.replace(content) { matchResult ->
+            val raw = matchResult.value.trim('"', '\'')
+            RSCM.getRSCM(raw).toString()
+        }
+    }
+
     /**
-     * Attempts to locate a YAML file supporting the following variations:
+     * Attempts to locate a config file supporting the following variations:
      *   - <name>
      *   - <name>.yml
      *   - <name>.yaml
+     *   - <name>.toml
      */
-    private fun findYamlFilename(baseName: String, resourcesDir: File): String? {
+    private fun findConfigFilename(baseName: String, resourcesDir: File): String? {
         val candidates = listOf(
             File(resourcesDir, baseName),
             File(resourcesDir, "$baseName.yml"),
-            File(resourcesDir, "$baseName.yaml")
+            File(resourcesDir, "$baseName.yaml"),
+            File(resourcesDir, "$baseName.toml")
         )
         return candidates.firstOrNull { it.exists() }?.name
     }
