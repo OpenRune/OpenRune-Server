@@ -15,7 +15,7 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.9.0")
     implementation(rootProject.project.libs.rsprot)
     implementation(rootProject.project.libs.routefinder)
-    ksp(project(":plugin-settings-processor"))
+    ksp(project(":ksp-processor"))
 }
 
 tasks.withType<KotlinCompile> {
@@ -25,7 +25,6 @@ tasks.withType<KotlinCompile> {
 
 ksp {
     arg("moduleDir", projectDir.absolutePath)
-    arg("plugin-settings-package", "org.alter.game.pluginnew")
 }
 
 tasks.named<Jar>("jar") {

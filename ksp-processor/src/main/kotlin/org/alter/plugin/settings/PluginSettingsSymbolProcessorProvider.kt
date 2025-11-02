@@ -6,7 +6,6 @@ import com.google.devtools.ksp.processing.SymbolProcessorProvider
 
 class PluginSettingsSymbolProcessorProvider : SymbolProcessorProvider {
     override fun create(environment: SymbolProcessorEnvironment): SymbolProcessor {
-        print("")
         return PluginSettingsSymbolProcessor(environment)
     }
 }

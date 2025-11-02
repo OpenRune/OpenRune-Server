@@ -9,28 +9,32 @@ import kotlin.system.exitProcess
 
 @Target(AnnotationTarget.CLASS)
 @Retention(AnnotationRetention.RUNTIME)
-annotation class PluginSetting(val yamlFile: String)
+annotation class PluginConfig(val yamlFile: String)
+
+open class PluginSettings {
+    open val isEnabled: Boolean = true
+}
 
 object PluginManager {
 
     private val logger = KotlinLogging.logger {}
-    public val pkg = "org.alter"
-
-    val scripts = mutableListOf<PluginEvent>()
-
+    const val PLUGIN_PACKAGE = "org.alter"
     private val objectMapper = ObjectMapper().findAndRegisterModules()
     private val yaml = Yaml()
 
-    /** Load all plugins and assign their settings */
+    val scripts = mutableListOf<PluginEvent>()
+
+    private val yamlCache = mutableMapOf<String, Map<String, Any>>()
+    private val settingsCache = mutableMapOf<String, PluginSettings>()
+
     fun load() {
         val start = System.currentTimeMillis()
-
-        val otherModuleClasses = File("../content/build/classes/kotlin/main")
-        val settingsFolder = File("content/build/resources/main/")
+        val classOutputDir = File("../content/build/classes/kotlin/main")
+        val resourcesDir = File("../content/build/resources/main/")
 
         ClassGraph()
-            .overrideClasspath(otherModuleClasses)
-            .acceptPackages(pkg)
+            .overrideClasspath(classOutputDir)
+            .acceptPackages(PLUGIN_PACKAGE)
             .enableClassInfo()
             .scan().use { scanResult ->
 
@@ -38,52 +42,98 @@ object PluginManager {
                     .getSubclasses(PluginEvent::class.java.name)
                     .directOnly()
 
-                pluginClasses.forEach { classInfo ->
+                for (classInfo in pluginClasses) {
                     try {
                         val clazz = classInfo.loadClass(PluginEvent::class.java)
-                        val ctor = clazz.getDeclaredConstructor()
-                        val instance = ctor.newInstance()
+                        val instance = clazz.getDeclaredConstructor().newInstance()
 
-                        // --- Handle @PluginSetting ---
-                        val annotation = clazz.getAnnotation(PluginSetting::class.java)
-                        if (annotation != null) {
-                            val yamlFile = File("C:\\Users\\Home\\Desktop\\Alter-feature-support-231\\Alter-feature-support-231\\content\\build\\resources\\main\\", annotation.yamlFile)
-                            if (yamlFile.exists()) {
-                                val map = yaml.load<Map<String, Any>>(yamlFile.readText())
-
-                                val baseName = annotation.yamlFile.substringBeforeLast(".")
-                                val settingsClassName = baseName.replaceFirstChar { it.uppercase() } + "Settings"
-                                val settingsClassInfo = scanResult.getClassInfo("org.alter.settings.$settingsClassName")
-
-                                if (settingsClassInfo != null) {
-                                    val settingsClazz = settingsClassInfo.loadClass() as Class<out Any>
-                                    val settingsInstance = objectMapper.convertValue(map, settingsClazz)
-                                    instance.settings = settingsInstance
-                                    logger.info { "Loaded settings for plugin ${clazz.name} from ${annotation.yamlFile}" }
-                                } else {
-                                    logger.warn { "Settings class not found: org.alter.settings.$settingsClassName" }
-                                }
-
-                                logger.info { "Loaded settings for plugin ${clazz.name} from ${annotation.yamlFile}" }
-                            }
+                        loadPluginSettings(clazz, scanResult, resourcesDir)?.let { settings ->
+                            instance.settings = settings
                         }
 
-                        // --- Call init() ---
-                        val initMethod = clazz.methods.find { it.name == "init" && it.parameterCount == 0 }
-                        initMethod?.invoke(instance)
-
-                        scripts.add(instance)
-                        logger.info { "Loaded plugin: ${clazz.name}" }
+                        if (instance.isEnabled()) {
+                            instance.init()
+                            scripts.add(instance)
+                        }
 
                     } catch (ex: Exception) {
                         logger.error(ex) { "Failed to load plugin: ${classInfo.name}" }
-                        ex.printStackTrace()
                         exitProcess(1)
                     }
                 }
-
-                val totalTime = System.currentTimeMillis() - start
-                logger.info { "Finished loading ${scripts.size} plugins in $totalTime ms." }
             }
+
+        clear()
+        val totalTime = System.currentTimeMillis() - start
+        logger.info { "Finished loading ${scripts.size} plugins in ${totalTime}ms." }
+    }
+
+    private fun clear() {
+        settingsCache.clear()
+        yamlCache.clear()
+    }
+
+    private fun loadPluginSettings(
+        clazz: Class<out PluginEvent>,
+        scanResult: io.github.classgraph.ScanResult,
+        resourcesDir: File
+    ): PluginSettings? {
+
+        val annotation = clazz.getAnnotation(PluginConfig::class.java) ?: return null
+        val baseName = annotation.yamlFile.substringBeforeLast('.', annotation.yamlFile)
+
+        val yamlName = findYamlFilename(baseName, resourcesDir) ?: run {
+            logger.warn { "YAML file not found for plugin ${clazz.name}: $baseName(.yml/.yaml)" }
+            return null
+        }
+
+        settingsCache[yamlName]?.let {
+            return it
+        }
+
+        val yamlMap = yamlCache.getOrPut(yamlName) {
+            val yamlFile = File(resourcesDir, yamlName)
+
+            runCatching {
+                yaml.load<Map<String, Any>>(yamlFile.readText())
+            }.getOrElse {
+                logger.error(it) { "Failed to parse YAML for ${clazz.name}" }
+                return null
+            }
+        }
+
+        val settingsClassName = "org.alter.settings.${baseName.replaceFirstChar { it.uppercase() }}Settings"
+        val settingsClassInfo = scanResult.getClassInfo(settingsClassName)
+        if (settingsClassInfo == null) {
+            logger.warn { "Settings class not found: $settingsClassName" }
+            return null
+        }
+
+        val settingsClazz = settingsClassInfo.loadClass()
+
+        val settingsInstance = runCatching {
+            objectMapper.convertValue(yamlMap, settingsClazz) as PluginSettings
+        }.getOrElse {
+            logger.error(it) { "Failed to map settings for ${clazz.name}" }
+            return null
+        }
+
+        settingsCache[yamlName] = settingsInstance
+        return settingsInstance
+    }
+
+    /**
+     * Attempts to locate a YAML file supporting the following variations:
+     *   - <name>
+     *   - <name>.yml
+     *   - <name>.yaml
+     */
+    private fun findYamlFilename(baseName: String, resourcesDir: File): String? {
+        val candidates = listOf(
+            File(resourcesDir, baseName),
+            File(resourcesDir, "$baseName.yml"),
+            File(resourcesDir, "$baseName.yaml")
+        )
+        return candidates.firstOrNull { it.exists() }?.name
     }
 }

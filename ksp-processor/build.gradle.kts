@@ -5,7 +5,7 @@ plugins {
     alias(libs.plugins.ksp)
 }
 
-description = "Plugin Settings KSP Processor"
+description = "KSP Processor"
 
 dependencies {
     implementation(project(":game-server"))
@@ -17,10 +17,3 @@ dependencies {
     implementation(libs.jackson.module.kotlin)
     implementation(libs.classgraph)
 }
-
-tasks.withType<KotlinCompile> {
-    kotlinOptions {
-        jvmTarget = "17"
-    }
-}
-
