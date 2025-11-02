@@ -13,14 +13,7 @@ import org.alter.game.model.move.walkTo
 import org.alter.game.pluginnew.MenuOption
 import org.alter.game.pluginnew.PluginEvent
 import org.alter.game.pluginnew.event.impl.GroundItemClickEvent
-import org.alter.game.pluginnew.event.impl.ItemOnGroundItemEvent
-import org.alter.game.pluginnew.event.impl.ItemOnItemEvent
-import org.alter.game.pluginnew.event.impl.SatisfyType
 import org.alter.game.pluginnew.event.impl.onItemOnItem
-import org.alter.game.util.DbHelper
-import org.alter.game.util.column
-import org.alter.game.util.vars.IntType
-import org.alter.game.util.vars.ObjType
 import org.alter.rscm.RSCM
 import org.alter.rscm.RSCM.asRSCM
 
@@ -28,49 +21,28 @@ class BurnLogEvents : PluginEvent() {
 
     companion object {
         private val WALK_DIRECTIONS = listOf(Direction.WEST, Direction.EAST, Direction.SOUTH, Direction.NORTH)
-
-        val COLOURED_LOGS = mapOf(
-            "items.blue_logs".asRSCM() to ("items.gnomish_firelighter_blue" to "objects.blue_fire"),
-            "items.green_logs".asRSCM() to ("items.gnomish_firelighter_green" to "objects.green_fire"),
-            "items.trail_logs_purple".asRSCM() to ("items.trail_gnomish_firelighter_purple" to "objects.trail_purple_fire"),
-            "items.red_logs".asRSCM() to ("items.gnomish_firelighter_red" to "objects.red_fire"),
-            "items.trail_logs_white".asRSCM() to ("items.trail_gnomish_firelighter_white" to "objects.trail_white_fire")
-        )
-
     }
 
     override fun init() {
-        DbHelper.table("tables.firemaking_logs").forEach { logTable ->
-            val log = logTable.column("columns.firemaking_logs:item", ObjType)
-            val xp = logTable.column("columns.firemaking_logs:xp", IntType)
-            val level = logTable.column("columns.firemaking_logs:level", IntType)
-
-            // Fire logs using tinderbox on inventory
-            onItemOnItem("items.tinderbox", log) {
-                startFiremaking(player, log, null, xp, level)
+        Logs.logs.forEach { log ->
+            onItemOnItem("items.tinderbox", log.logItem) {
+                burnLog(player, log.logItem, null, log.xp, log.level)
             }
 
-            // Fire logs on the ground
             on<GroundItemClickEvent> {
-                where { groundItem.item == log && option == MenuOption.OP4 && player.inventory.contains("items.tinderbox") }
-                then { startFiremaking(player, log, groundItem, xp, level) }
-            }
-
-            // TODO: handle item on ground item
-            on<ItemOnGroundItemEvent> {
-                where { item.id == "items.tinderbox".asRSCM() && groundItemId == log }
-                then { }
+                where {
+                    groundItem.item == log.logItem &&
+                            option == MenuOption.OP4 &&
+                            player.inventory.contains("items.tinderbox")
+                }
+                then { burnLog(player, log.logItem, groundItem, log.xp, log.level) }
             }
         }
     }
 
-    private fun startFiremaking(player: Player, log: Int, groundItem: GroundItem?, xp: Int, level: Int) {
-        burnLog(player, log, groundItem, xp, level)
-    }
-
     private fun burnLog(player: Player, log: Int, groundItem: GroundItem?, xp: Int, level: Int) {
+        val logDrop = groundItem ?: GroundItem(log, 1, player.tile, player)
         val isGroundBurning = groundItem != null
-        var logDrop = groundItem ?: GroundItem(log, 1, player.tile, player)
 
         if (!canBurn(player, isGroundBurning, log, logDrop, level)) {
             player.animate(RSCM.NONE)
@@ -99,7 +71,7 @@ class BurnLogEvents : PluginEvent() {
                 }
 
                 val firemakingLevel = player.getSkills().getCurrentLevel(Skills.FIREMAKING)
-                val success = COLOURED_LOGS.contains(log) || success(64, 512, 1, firemakingLevel)
+                val success = ColoredLogs.isColoredLog(log) || success(64, 512, 1, firemakingLevel)
                 if (success) {
                     handleFireSuccess(player, logDrop, xp)
                     return@repeatUntil
@@ -111,9 +83,8 @@ class BurnLogEvents : PluginEvent() {
     private fun handleFireSuccess(player: Player, logDrop: GroundItem, xp: Int) {
         val world = player.world
         world.queue {
-            val fireId = COLOURED_LOGS[logDrop.item]?.second ?: "objects.fire"
+            val fireId = ColoredLogs.COLOURED_LOGS[logDrop.item]?.second ?: "objects.fire"
             val fire = DynamicObject(fireId, 10, 0, logDrop.tile)
-
             val burnTicks = (150..300).random()
 
             world.remove(logDrop)
@@ -123,9 +94,7 @@ class BurnLogEvents : PluginEvent() {
 
             wait(burnTicks)
             world.remove(fire)
-
-            val ashes = GroundItem("items.ashes".asRSCM(), 1, fire.tile)
-            world.spawn(ashes)
+            world.spawn(GroundItem("items.ashes".asRSCM(), 1, fire.tile))
         }
 
         player.animate(RSCM.NONE)
@@ -138,11 +107,10 @@ class BurnLogEvents : PluginEvent() {
     }
 
     private fun movePlayerAwayFromFire(player: Player) {
-        val world = player.world
         for (dir in WALK_DIRECTIONS) {
+            val world = player.world
             if (world.canTraverse(player.tile, dir, player)) {
-                val tile = player.tile.step(dir, 1)
-                player.walkTo(tile)
+                player.walkTo(player.tile.step(dir, 1))
                 player.lock()
                 break
             }
@@ -157,8 +125,7 @@ class BurnLogEvents : PluginEvent() {
             return false
         }
 
-        val firemakingLevel = player.getSkills().getCurrentLevel(Skills.FIREMAKING)
-        if (firemakingLevel < level) {
+        if (player.getSkills().getCurrentLevel(Skills.FIREMAKING) < level) {
             player.filterableMessage("You need a Firemaking level of $level to burn ${getItem(log)} logs.")
             return false
         }
@@ -179,12 +146,12 @@ class BurnLogEvents : PluginEvent() {
 
     private fun isWithinBankArea(player: Player): Boolean {
         val (x, z) = player.tile
-        return bankAreas.any { (xRange, zRange) ->
+        return BANK_AREAS.any { (xRange, zRange) ->
             x in xRange.first..xRange.second && z in zRange.first..zRange.second
         }
     }
 
-    private val bankAreas = listOf(
+    private val BANK_AREAS = listOf(
         (3091 to 3098) to (3488 to 3499),  // Edgeville
         (3179 to 3194) to (3432 to 3446),  // Varrock west
         (3250 to 3257) to (3416 to 3423),  // Varrock east

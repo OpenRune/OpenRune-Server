@@ -510,12 +510,12 @@ suspend fun QueueTask.produceItemBox(
     maxProducable: Int = player.inventory.capacity,
     logic: Player.(Int, Int) -> Unit,
 ) {
-    val defs = player.world.definitions
+
     val itemDefs = items.map { getItem(it) }
 
-    val baseChild = 14
-    val itemArray = Array(10) { -1 }
-    val nameArray = Array(10) { "|" }
+    val baseChild = 15
+    val itemArray = Array(15) { -1 }
+    val nameArray = Array(15) { "|" }
 
     itemDefs.withIndex().forEach {
         val def = it.value
@@ -523,7 +523,8 @@ suspend fun QueueTask.produceItemBox(
         nameArray[it.index] = "|${def.name}"
     }
 
-    player.sendTempVarbit("varbits.settings_barbarian_potion_makex", 1)
+    player.runClientScript(CommonClientScripts.CHATBOX_RESET_BACKGROUND)
+    player.sendTempVarbit("varbits.chatmodal_unclamp", 1)
     player.openInterface(parent = 162, child = CHATBOX_CHILD, interfaceId = 270)
     player.runClientScript(CommonClientScripts.SKILL_MULTI_SETUP, 0, "$title${nameArray.joinToString("")}", maxProducable, *itemArray)
 
@@ -532,6 +533,7 @@ suspend fun QueueTask.produceItemBox(
     terminateAction!!(this)
 
     val msg = requestReturnValue as? ResumePauseButton ?: return
+
     val child = msg.componentId
 
     if (child < baseChild || child >= baseChild + items.size) {
