@@ -22,3 +22,4 @@ first-launch-example
 dump.hprof
 /.kotlin/
 /data/cache
+/ksp-processor/bin

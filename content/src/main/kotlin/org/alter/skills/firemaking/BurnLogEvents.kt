@@ -2,6 +2,7 @@ package org.alter.skills.firemaking
 
 import dev.openrune.ServerCacheManager.getItem
 import org.alter.api.Skills
+import org.alter.api.computeSkillingSuccess
 import org.alter.api.ext.filterableMessage
 import org.alter.api.ext.message
 import org.alter.api.success
@@ -73,7 +74,7 @@ class BurnLogEvents : PluginEvent() {
                 }
 
                 val firemakingLevel = player.getSkills().getCurrentLevel(Skills.FIREMAKING)
-                val success = ColoredLogs.isColoredLog(log) || success(64, 512, 1, firemakingLevel)
+                val success = ColoredLogs.isColoredLog(log) || success(64, 512, firemakingLevel)
                 if (success) {
                     handleFireSuccess(player, logDrop, xp)
                     return@repeatUntil
