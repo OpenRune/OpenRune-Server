@@ -64,8 +64,9 @@ object NpcDeathAction {
          */
         deathAnimation.forEach { anim ->
             val def = getAnim(anim.asRSCM())?: return
-            npc.animate(anim, def.animationLength)
-            wait(def.animationLength)
+
+            npc.animate(anim, def.animationLength + 1)
+            wait(def.animationLength + 1)
         }
         world.plugins.executeNpcDeath(npc)
         world.plugins.anyNpcDeath.forEach {
