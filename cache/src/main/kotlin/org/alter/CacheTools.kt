@@ -89,15 +89,14 @@ fun downloadRev(type : TaskType) {
 
             builder.extraTasks(*tasksNew.toTypedArray()).build().initialize()
 
+            GameValGroupTypes.entries.forEach {
+                val type = GameValHandler.readGameVal(it, cache = Cache.load(File(getCacheLocation()).toPath(), true),rev.first)
+                type.dump(Format.RSCM_V2, File("../data/cfg/rscm2"), it)
+                    .packed(true)
+                    .write()
         }
     }
 
-    GameValGroupTypes.entries.forEach {
-        val type =
-            GameValHandler.readGameVal(it, cache = Cache.load(File(getCacheLocation()).toPath(), true), rev.first)
-        type.dump(Format.RSCM_V2, File("../data/cfg/rscm2"), it)
-            .packed(true)
-            .write()
     }
 
 
