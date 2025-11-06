@@ -46,7 +46,7 @@ object StatComponents {
             StatRow("dbrows.strength_stat", "components.stats:strength", "stats.strength", 2),
             StatRow("dbrows.thieving_stat", "components.stats:thieving", "stats.thieving", 10),
             StatRow("dbrows.woodcutting_stat", "components.stats:woodcutting", "stats.woodcutting", 18),
-            StatRow("dbrows.sailing_stat", "components.stats:sailing", "stats.sailing", 19)
+            StatRow("dbrows.sailing_stat", "components.stats:sailing", "stats.sailing", 24)
         )
 
         skillsWithBits.forEach { row ->
