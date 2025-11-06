@@ -127,7 +127,7 @@ fun Player.replaceItemWithSkillRequirement(
     skill: Int,
     minLvl: Int = 1,
     slot: Int = -1,
-    minLvlMessage: String = "You need level $minLvl ${Skills.getSkillName(world, skill)} to do that.",
+    minLvlMessage: String = "You need level $minLvl ${Skills.getSkillName(skill)} to do that.",
     boostable: Boolean = true,
     container: ItemContainer = inventory,
 ): Boolean {
@@ -171,7 +171,7 @@ fun Player.replaceItemWithItemAndSkillRequirement(
     minLvl: Int = 1,
     slot: Int = -1,
     missingItemMessage: String = "You do not have the #ITEM needed to do that.",
-    minLvlMessage: String = "You need level $minLvl ${Skills.getSkillName(world, skill)} to do that.",
+    minLvlMessage: String = "You need level $minLvl ${Skills.getSkillName(skill)} to do that.",
     unboosted: Boolean = false,
     container: ItemContainer = inventory,
 ): Boolean {
@@ -234,7 +234,7 @@ fun Player.replaceItemAndRemoveAnotherWithSkillRequirement(
     minLvl: Int = 1,
     slot: Int = -1,
     otherSlot: Int = -1,
-    minLvlMessage: String = "You need level $minLvl ${Skills.getSkillName(world, skill)} to do that.",
+    minLvlMessage: String = "You need level $minLvl ${Skills.getSkillName(skill)} to do that.",
     boostable: Boolean = true,
     container: ItemContainer = inventory,
 ): Boolean {
@@ -257,7 +257,7 @@ fun Player.replaceItemAndRemoveAnotherWithItemAndSkillRequirement(
     slot: Int = -1,
     otherSlot: Int = -1,
     missingItemMessage: String = "You do not have the #ITEM needed to do that.",
-    minLvlMessage: String = "You need level $minLvl ${Skills.getSkillName(world, skill)} to do that.",
+    minLvlMessage: String = "You need level $minLvl ${Skills.getSkillName(skill)} to do that.",
     boostable: Boolean = true,
     container: ItemContainer = inventory,
 ): Boolean {

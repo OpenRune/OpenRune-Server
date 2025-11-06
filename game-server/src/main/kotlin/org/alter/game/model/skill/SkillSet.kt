@@ -129,11 +129,11 @@ class SkillSet(val maxSkills: Int) {
         }
         val altered =
             when {
-                capValue > 0 -> Math.min(getCurrentLevel(skill) + value, getBaseLevel(skill) + capValue)
-                capValue < 0 -> Math.max(getCurrentLevel(skill) + value, getBaseLevel(skill) + capValue)
-                else -> Math.min(getBaseLevel(skill), getCurrentLevel(skill) + value)
+                capValue > 0 -> (getCurrentLevel(skill) + value).coerceAtMost(getBaseLevel(skill) + capValue)
+                capValue < 0 -> (getCurrentLevel(skill) + value).coerceAtLeast(getBaseLevel(skill) + capValue)
+                else -> getBaseLevel(skill).coerceAtMost(getCurrentLevel(skill) + value)
             }
-        val newLevel = Math.max(0, altered)
+        val newLevel = 0.coerceAtLeast(altered)
         val curLevel = getCurrentLevel(skill)
 
         if (newLevel != curLevel) {
@@ -208,7 +208,7 @@ class SkillSet(val maxSkills: Int) {
         /**
          * The default amount of trainable skills by players.
          */
-        const val DEFAULT_SKILL_COUNT = 25 // 23
+        const val DEFAULT_SKILL_COUNT = 25
 
         /**
          * Gets the level correspondent to the [xp] given.

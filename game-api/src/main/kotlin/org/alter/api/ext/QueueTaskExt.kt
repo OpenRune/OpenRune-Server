@@ -440,7 +440,7 @@ suspend fun QueueTask.levelUpMessageBox(
             player.setComponentHidden(interfaceId = 233, component = value, hidden = skill != key)
         }
 
-        val skillName = Skills.getSkillName(player.world, skill)
+        val skillName = Skills.getSkillName(skill)
         val initialChar = Character.toLowerCase(skillName.toCharArray().first())
         val vowel = initialChar == 'a' || initialChar == 'e' || initialChar == 'i' || initialChar == 'o' || initialChar == 'u'
         val levelFormat = if (levelIncrement == 1) (if (vowel) "an" else "a") else "$levelIncrement"

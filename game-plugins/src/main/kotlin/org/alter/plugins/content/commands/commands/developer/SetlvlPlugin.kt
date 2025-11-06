@@ -37,7 +37,7 @@ class SetlvlPlugin(
                     "rc" -> name = "runecrafting"
                     "fm" -> name = "firemaking"
                 }
-                skill = Skills.getSkillForName(world, player.getSkills().maxSkills, name)
+                skill = Skills.getSkillForName(player.getSkills().maxSkills, name)
             }
             if (skill != -1) {
                 val level = values[1].toInt()
