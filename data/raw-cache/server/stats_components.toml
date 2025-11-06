@@ -7,3 +7,4 @@ default = "components.stats:agility"
 
 [enum.values]
 "components.stats:agility" = "stats.agility"
+"components.stats:sailing" = "stats.sailing"

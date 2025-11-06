@@ -41,8 +41,8 @@ class PlayerController(req: Request, resp: Response, auth: Boolean) : Controller
 
                 for (i in 0..22) {
                     val skill = JsonObject()
-                    skill.addProperty("name", Skills.getSkillName(world, player.getSkills().get(i).id))
-                    skill.addProperty("currentLevel", player.getSkills().get(i).currentLevel)
+                    skill.addProperty("name", Skills.getSkillName(player.getSkills().get(i).id))
+                    skill.addProperty("currentLevel", player.getSkills()[i].currentLevel)
                     skillArr.add(skill)
                 }
 

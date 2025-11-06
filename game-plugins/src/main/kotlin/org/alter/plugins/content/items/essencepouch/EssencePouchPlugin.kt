@@ -53,7 +53,7 @@ fun fillPouch(
     pouch: EssencePouch,
 ) {
     if (player.getSkills().getBaseLevel(Skills.RUNECRAFTING) < pouch.levelReq) {
-        player.message("This pouch requires level ${pouch.levelReq} ${Skills.getSkillName(world, Skills.RUNECRAFTING)} to use.")
+        player.message("This pouch requires level ${pouch.levelReq} ${Skills.getSkillName(Skills.RUNECRAFTING)} to use.")
         return
     }
 

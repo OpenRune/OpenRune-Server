@@ -30,12 +30,12 @@ object Skills {
     const val RUNECRAFTING = 20
     const val HUNTER = 21
     const val CONSTRUCTION = 22
+    const val SAILING = 23
 
     const val MIN_COMBAT_LVL = 3
     const val MAX_COMBAT_LVL = 126
 
     fun getSkillName(
-        world: World,
         skill: Int,
     ): String {
         val enum = getEnum(680)!!
@@ -51,12 +51,11 @@ object Skills {
         }
 
     fun getSkillForName(
-        world: World,
         maxSkills: Int,
         skillName: String,
     ): Int {
         for (i in 0 until maxSkills) {
-            if (getSkillName(world, i).lowercase() == skillName) {
+            if (getSkillName(i).lowercase() == skillName) {
                 return i
             }
         }
