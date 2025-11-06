@@ -46,6 +46,7 @@ class OSRSPlugin(
                 if (getSkills().getBaseLevel(Skills.HITPOINTS) < 10) {
                     getSkills().setBaseLevel(Skills.HITPOINTS, 10)
                 }
+                runClientScript(CommonClientScripts.CAMERA)
                 calculateAndSetCombatLevel()
                 sendWeaponComponentInformation()
                 sendCombatLevelText()
