@@ -6,8 +6,14 @@ import org.alter.game.model.Direction
 import org.alter.game.model.World
 import org.alter.game.model.entity.Player
 import org.alter.game.model.queue.QueueTask
+import org.alter.game.model.shop.PurchasePolicy
+import org.alter.game.model.shop.ShopItem
 import org.alter.game.plugin.KotlinPlugin
 import org.alter.game.plugin.PluginRepository
+import org.alter.plugins.content.mechanics.shops.CoinCurrency
+import org.alter.rscm.RSCM.getRSCM
+import java.time.LocalDate
+import java.time.temporal.ChronoUnit
 
 
 class HansPlugin(
@@ -69,38 +75,38 @@ class HansPlugin(
     }
 
     suspend fun QueueTask.age(player: Player) {
-//        val seconds = (player.playtime * 0.6).toInt()
-//        val days = seconds / 86400
-//        val hours = (seconds / 3600) - (days * 24)
-//        val minutes = (seconds / 60) - (days * 1440) - (hours * 60)
-//        val daysSinceReg = player.registryDate.until(LocalDate.now(), ChronoUnit.DAYS).toInt()
-//
-//        val timeString = buildString {
-//            append("You've spent ")
-//            append("$days${if (days != 1) " days" else " day"}")
-//            append(", ")
-//            append("$hours${if (hours != 1) " hours" else " hour"}")
-//            append(", ")
-//            append("$minutes${if (minutes != 1) " minutes" else " minute"}")
-//            append(" in the world since you arrived ")
-//
-//            when (daysSinceReg) {
-//                0 -> {
-//                    append("today.")
-//                }
-//
-//                1 -> {
-//                    append("yesterday.")
-//                }
-//
-//                else -> {
-//                    append(daysSinceReg)
-//                    append(" days ago.")
-//                }
-//            }
-//        }
+       val seconds = (player.playtime * 0.6).toInt()
+       val days = seconds / 86400
+       val hours = (seconds / 3600) - (days * 24)
+       val minutes = (seconds / 60) - (days * 1440) - (hours * 60)
+       val daysSinceReg = player.registryDate?.until(LocalDate.now(), ChronoUnit.DAYS)?.toInt() ?: 0
+
+       val timeString = buildString {
+           append("You've spent ")
+           append("$days${if (days != 1) " days" else " day"}")
+           append(", ")
+           append("$hours${if (hours != 1) " hours" else " hour"}")
+           append(", ")
+           append("$minutes${if (minutes != 1) " minutes" else " minute"}")
+           append(" in the world since you arrived ")
+
+           when (daysSinceReg) {
+               0 -> {
+                   append("today.")
+               }
+
+               1 -> {
+                   append("yesterday.")
+               }
+
+               else -> {
+                   append(daysSinceReg.toString())
+                   append(" days ago.")
+               }
+           }
+       }
 
         chatPlayer(player, "Can you tell me how long I've been here?")
-        chatNpc(player, "Not implemented.")
+        chatNpc(player, timeString)
     }
 }

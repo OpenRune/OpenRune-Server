@@ -8,6 +8,7 @@ import org.alter.game.GameContext
 import org.alter.game.model.PlayerUID
 import org.alter.game.model.attr.APPEARANCE_SET_ATTR
 import org.alter.game.model.attr.NEW_ACCOUNT_ATTR
+import org.alter.game.model.attr.PLAYTIME_ATTR
 import org.alter.game.model.entity.Client
 import org.alter.game.saving.impl.*
 import org.alter.game.saving.formats.FormatHandler
@@ -137,5 +138,7 @@ object PlayerSaving {
             client.passwordHash = BCrypt.hashpw(passwordAuth.password.asString(), BCrypt.gensalt(16))
         }
         client.tile = client.world.gameContext.home
+
+        client.attr.put(PLAYTIME_ATTR, 0)
     }
 }

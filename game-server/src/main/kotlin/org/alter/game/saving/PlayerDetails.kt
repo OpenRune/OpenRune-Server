@@ -5,18 +5,21 @@ import org.alter.game.GameContext
 import org.alter.game.model.entity.Client
 import org.alter.game.saving.formats.FormatHandler
 import org.bson.Document
+import java.time.LocalDate
 import java.util.concurrent.TimeUnit
 
 data class DisplayName(
     var currentDisplayName: String = "",
     var previousDisplayName: String = "",
-    var dateChanged: Long = -1
+    var dateChanged: Long = -1,
+    var registryDate: String = LocalDate.now().toString()
 ) {
     fun asDocument(): Document {
         return Document().apply {
             append("currentDisplayName", currentDisplayName)
             append("previousDisplayName", previousDisplayName)
             append("dateChanged", dateChanged)
+            append("registryDate", registryDate)
         }
     }
 
@@ -31,7 +34,8 @@ data class DisplayName(
             return DisplayName(
                 currentDisplayName = doc["currentDisplayName"] as String,
                 previousDisplayName = doc["previousDisplayName"] as String,
-                dateChanged = (doc["dateChanged"] as Number).toLong()
+                dateChanged = (doc["dateChanged"] as Number).toLong(),
+                registryDate = doc.getString("registryDate") ?: LocalDate.now().toString()
             )
         }
     }
