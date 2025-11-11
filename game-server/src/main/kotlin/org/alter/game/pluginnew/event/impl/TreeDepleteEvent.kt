@@ -2,7 +2,7 @@ package org.alter.game.pluginnew.event.impl
 
 import org.alter.game.model.entity.GameObject
 import org.alter.game.model.entity.Player
-import org.alter.game.pluginnew.event.PlayerEvent
+import org.alter.game.pluginnew.event.impl.SkillingActionCompletedEvent
 
 /**
  * Event triggered when a tree is depleted (chopped down) during woodcutting.
@@ -15,6 +15,6 @@ import org.alter.game.pluginnew.event.PlayerEvent
 class TreeDepleteEvent(
     override val player: Player,
     val treeObject: GameObject,
-    val treeRscm: String
-) : PlayerEvent(player)
+    override val actionRscm: String
+) : SkillingActionCompletedEvent(player, treeObject, actionRscm)
 

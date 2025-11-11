@@ -179,6 +179,22 @@ val INTERACTING_NPC_ATTR = AttributeKey<WeakReference<Npc>>()
 val INTERACTING_PLAYER_ATTR = AttributeKey<WeakReference<Player>>()
 
 /**
+ * Data class for tracking looping animation state.
+ */
+data class LoopingAnimationData(
+    val animId: String,
+    val animIdInt: Int,
+    val duration: Int, // Duration in cycles
+    var currentTick: Int = 0 // Current tick count
+)
+
+/**
+ * Indicates if a pawn is currently looping an animation.
+ * Contains the animation data needed to loop it.
+ */
+val LOOPING_ANIMATION_ATTR = AttributeKey<LoopingAnimationData>()
+
+/**
  * The slot of the interacting item in its item container.
  */
 val INTERACTING_ITEM_SLOT = AttributeKey<Int>()

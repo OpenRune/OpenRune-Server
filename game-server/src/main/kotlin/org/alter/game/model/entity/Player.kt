@@ -27,6 +27,7 @@ import org.alter.game.model.attr.CURRENT_SHOP_ATTR
 import org.alter.game.model.attr.LEVEL_UP_INCREMENT
 import org.alter.game.model.attr.LEVEL_UP_OLD_XP
 import org.alter.game.model.attr.LEVEL_UP_SKILL_ID
+import org.alter.game.model.attr.LOOPING_ANIMATION_ATTR
 import org.alter.game.model.container.ItemContainer
 import org.alter.game.model.container.key.*
 import org.alter.game.model.interf.InterfaceSet
@@ -350,6 +351,15 @@ open class Player(world: World) : Pawn(world) {
 
         if (timers.isNotEmpty) {
             timerCycle()
+        }
+
+        val loopData = attr[LOOPING_ANIMATION_ATTR]
+        if (loopData != null) {
+            loopData.currentTick += 1
+            if (loopData.currentTick >= loopData.duration) {
+                animate(loopData.animId)
+                loopData.currentTick = 0
+            }
         }
 
         hitsCycle()

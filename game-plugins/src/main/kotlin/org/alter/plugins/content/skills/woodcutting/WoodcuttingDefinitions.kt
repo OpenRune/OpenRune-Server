@@ -1,279 +1,241 @@
 package org.alter.plugins.content.skills.woodcutting
 
+import org.alter.game.util.DbHelper.Companion.table
+import org.alter.game.util.column
+import org.alter.game.util.vars.IntType
+import org.alter.game.util.vars.ObjType
+import org.alter.rscm.RSCM
+import org.alter.rscm.RSCMType
+
 /**
  * Definitions for woodcutting trees, stumps, and axes.
  * Contains all mappings and data structures used by the WoodcuttingPlugin.
+ * Tree data is loaded from cache tables for easy modification.
  */
 object WoodcuttingDefinitions {
     /**
-     * Defines how a tree depletes (is chopped down).
-     * Most trees use a countdown timer that starts on first chop and counts down while being chopped.
+     * Tree data loaded from cache table.
+     * Similar to Logs.LogData in firemaking.
      */
-    sealed class DepleteMechanic {
-        /**
-         * Countdown timer: tree depletes when timer reaches 0.
-         * Timer counts down 1 tick per game tick only while ≥1 player is actively chopping.
-         * Timer regenerates at same rate when no one is chopping.
-         * @param despawnTicks Base despawn time in ticks (e.g., 45 ticks = 27 seconds)
-         */
-        data class Countdown(val despawnTicks: Int) : DepleteMechanic()
-
-        /**
-         * Always depletes (e.g., regular trees after 1 log)
-         */
-        object Always : DepleteMechanic()
-    }
-
-    /**
-     * Enum defining tree types with their associated rates and data.
-     * This provides a simple enum experience for tree <> rates.
-     */
-    enum class TreeType(
+    data class TreeData(
+        val treeObject: Int, // Representative tree object ID (for cache lookup)
         val levelReq: Int,
         val xp: Double,
         val logRscm: String,
         val respawnCycles: Int,
         val successRateLow: Int,
         val successRateHigh: Int,
-        val depleteMechanic: DepleteMechanic
+        val despawnTicks: Int, // 0 = Always deplete, >0 = Countdown timer
+        val depleteMechanic: Int // 0 = Always, 1 = Countdown
     ) {
-        REGULAR(
-            levelReq = 1,
-            xp = 25.0,
-            logRscm = "items.logs",
-            respawnCycles = 60,
-            successRateLow = 64,
-            successRateHigh = 256,
-            depleteMechanic = DepleteMechanic.Always
-        ),
-        OAK(
-            levelReq = 15,
-            xp = 37.5,
-            logRscm = "items.oak_logs",
-            respawnCycles = 60,
-            successRateLow = 64,
-            successRateHigh = 256,
-            depleteMechanic = DepleteMechanic.Countdown(45)
-        ),
-        WILLOW(
-            levelReq = 30,
-            xp = 67.5,
-            logRscm = "items.willow_logs",
-            respawnCycles = 100,
-            successRateLow = 32,
-            successRateHigh = 256,
-            depleteMechanic = DepleteMechanic.Countdown(50)
-        ),
-        TEAK(
-            levelReq = 35,
-            xp = 85.0,
-            logRscm = "items.teak_logs",
-            respawnCycles = 100,
-            successRateLow = 20,
-            successRateHigh = 256,
-            depleteMechanic = DepleteMechanic.Countdown(50)
-        ),
-        JUNIPER(
-            levelReq = 42,
-            xp = 35.0,
-            logRscm = "items.juniper_logs",
-            respawnCycles = 100,
-            successRateLow = 18,
-            successRateHigh = 256,
-            depleteMechanic = DepleteMechanic.Countdown(50)
-        ),
-        MAPLE(
-            levelReq = 45,
-            xp = 100.0,
-            logRscm = "items.maple_logs",
-            respawnCycles = 100,
-            successRateLow = 16,
-            successRateHigh = 256,
-            depleteMechanic = DepleteMechanic.Countdown(100)
-        ),
-        MAHOGANY(
-            levelReq = 50,
-            xp = 125.0,
-            logRscm = "items.mahogany_logs",
-            respawnCycles = 120,
-            successRateLow = 12,
-            successRateHigh = 256,
-            depleteMechanic = DepleteMechanic.Countdown(100)
-        ),
-        BLISTERWOOD(
-            levelReq = 62,
-            xp = 76.0,
-            logRscm = "items.blisterwood_logs",
-            respawnCycles = 0,
-            successRateLow = 10,
-            successRateHigh = 256,
-            depleteMechanic = DepleteMechanic.Countdown(50)
-        ),
-        YEW(
-            levelReq = 60,
-            xp = 175.0,
-            logRscm = "items.yew_logs",
-            respawnCycles = 120,
-            successRateLow = 8,
-            successRateHigh = 256,
-            depleteMechanic = DepleteMechanic.Countdown(190)
-        ),
-        MAGIC(
-            levelReq = 75,
-            xp = 250.0,
-            logRscm = "items.magic_logs",
-            respawnCycles = 120,
-            successRateLow = 4,
-            successRateHigh = 256,
-            depleteMechanic = DepleteMechanic.Countdown(390)
+        /**
+         * Returns true if this tree uses a countdown timer.
+         */
+        fun usesCountdown(): Boolean = depleteMechanic == 1 && despawnTicks > 0
+    }
+
+    /**
+     * Loads tree data from cache table.
+     * Maps representative tree object IDs to their tree data.
+     */
+    val TREE_DATA_BY_OBJECT: Map<Int, TreeData> = table("tables.woodcutting_trees").associate { treeTable ->
+        val treeObject = treeTable.column("columns.woodcutting_trees:tree_object", ObjType)
+        val level = treeTable.column("columns.woodcutting_trees:level", IntType)
+        val xp = treeTable.column("columns.woodcutting_trees:xp", IntType).toDouble()
+        val logItem = treeTable.column("columns.woodcutting_trees:log_item", ObjType)
+        val respawnCycles = treeTable.column("columns.woodcutting_trees:respawn_cycles", IntType)
+        val successRateLow = treeTable.column("columns.woodcutting_trees:success_rate_low", IntType)
+        val successRateHigh = treeTable.column("columns.woodcutting_trees:success_rate_high", IntType)
+        val despawnTicks = treeTable.column("columns.woodcutting_trees:despawn_ticks", IntType)
+        val depleteMechanic = treeTable.column("columns.woodcutting_trees:deplete_mechanic", IntType)
+
+        val logRscm = RSCM.getReverseMapping(RSCMType.OBJTYPES, logItem) ?: "items.logs"
+
+        treeObject to TreeData(
+            treeObject = treeObject,
+            levelReq = level,
+            xp = xp,
+            logRscm = logRscm,
+            respawnCycles = respawnCycles,
+            successRateLow = successRateLow,
+            successRateHigh = successRateHigh,
+            despawnTicks = despawnTicks,
+            depleteMechanic = depleteMechanic
         )
     }
 
     /**
-     * Maps tree RSCM identifiers to their tree type.
-     * Supports many:one relationship (multiple tree variants -> one tree type).
+     * Maps tree RSCM identifiers to their representative tree object RSCM (for cache lookup).
+     * Supports many:one relationship (multiple tree variants -> one representative tree).
      */
-    val TREE_RSCM_TO_TYPE = buildMap {
-        put("objects.tree", TreeType.REGULAR)
-        put("objects.lighttree", TreeType.REGULAR)
-        put("objects.tree2", TreeType.REGULAR)
-        put("objects.tree3", TreeType.REGULAR)
-        put("objects.tree4", TreeType.REGULAR)
-        put("objects.tree5", TreeType.REGULAR)
-        put("objects.lighttree2", TreeType.REGULAR)
-        put("objects.evergreen", TreeType.REGULAR)
-        put("objects.evergreen_large", TreeType.REGULAR)
-        put("objects.jungletree1", TreeType.REGULAR)
-        put("objects.jungletree2", TreeType.REGULAR)
-        put("objects.jungletree1_karamja", TreeType.REGULAR)
-        put("objects.jungletree2_karamja", TreeType.REGULAR)
-        put("objects.achey_tree", TreeType.REGULAR)
-        put("objects.hollowtree", TreeType.REGULAR)
-        put("objects.hollow_tree", TreeType.REGULAR)
-        put("objects.hollow_tree_big", TreeType.REGULAR)
-        put("objects.arctic_pine", TreeType.REGULAR)
-        put("objects.arctic_pine_snowy", TreeType.REGULAR)
-        put("objects.deadtree1", TreeType.REGULAR)
-        put("objects.deadtree1_large", TreeType.REGULAR)
-        put("objects.lightdeadtree1", TreeType.REGULAR)
-        put("objects.deadtree2", TreeType.REGULAR)
-        put("objects.deadtree2_web_r", TreeType.REGULAR)
-        put("objects.deadtree2_web_l", TreeType.REGULAR)
-        put("objects.deadtree2_dark", TreeType.REGULAR)
-        put("objects.deadtree3", TreeType.REGULAR)
-        put("objects.deadtree2_snowy", TreeType.REGULAR)
-        put("objects.deadtree_with_vine", TreeType.REGULAR)
-        put("objects.deadtree2_swamp", TreeType.REGULAR)
-        put("objects.deadtree4", TreeType.REGULAR)
-        put("objects.deadtree6", TreeType.REGULAR)
-        put("objects.deadtree_burnt", TreeType.REGULAR)
-        put("objects.deadtree4swamp", TreeType.REGULAR)
-        put("objects.deadtree3_snowy", TreeType.REGULAR)
+    val TREE_RSCM_TO_REPRESENTATIVE = buildMap<String, String> {
+        // Regular trees -> "objects.tree"
+        put("objects.tree", "objects.tree")
+        put("objects.lighttree", "objects.tree")
+        put("objects.tree2", "objects.tree")
+        put("objects.tree3", "objects.tree")
+        put("objects.tree4", "objects.tree")
+        put("objects.tree5", "objects.tree")
+        put("objects.lighttree2", "objects.tree")
+        put("objects.evergreen", "objects.tree")
+        put("objects.evergreen_large", "objects.tree")
+        put("objects.jungletree1", "objects.tree")
+        put("objects.jungletree2", "objects.tree")
+        put("objects.jungletree1_karamja", "objects.tree")
+        put("objects.jungletree2_karamja", "objects.tree")
+        put("objects.achey_tree", "objects.tree")
+        put("objects.hollowtree", "objects.tree")
+        put("objects.hollow_tree", "objects.tree")
+        put("objects.hollow_tree_big", "objects.tree")
+        put("objects.arctic_pine", "objects.tree")
+        put("objects.arctic_pine_snowy", "objects.tree")
+        put("objects.deadtree1", "objects.tree")
+        put("objects.deadtree1_large", "objects.tree")
+        put("objects.lightdeadtree1", "objects.tree")
+        put("objects.deadtree2", "objects.tree")
+        put("objects.deadtree2_web_r", "objects.tree")
+        put("objects.deadtree2_web_l", "objects.tree")
+        put("objects.deadtree2_dark", "objects.tree")
+        put("objects.deadtree3", "objects.tree")
+        put("objects.deadtree2_snowy", "objects.tree")
+        put("objects.deadtree_with_vine", "objects.tree")
+        put("objects.deadtree2_swamp", "objects.tree")
+        put("objects.deadtree4", "objects.tree")
+        put("objects.deadtree6", "objects.tree")
+        put("objects.deadtree_burnt", "objects.tree")
+        put("objects.deadtree4swamp", "objects.tree")
+        put("objects.deadtree3_snowy", "objects.tree")
 
-        put("objects.oaktree", TreeType.OAK)
-        put("objects.oak_tree_1", TreeType.OAK)
-        put("objects.oak_tree_2", TreeType.OAK)
-        put("objects.oak_tree_3", TreeType.OAK)
-        put("objects.oak_tree_3_top", TreeType.OAK)
-        put("objects.oak_tree_fullygrown_1", TreeType.OAK)
-        put("objects.oak_tree_fullygrown_2", TreeType.OAK)
+        // Oak trees -> "objects.oaktree"
+        put("objects.oaktree", "objects.oaktree")
+        put("objects.oak_tree_1", "objects.oaktree")
+        put("objects.oak_tree_2", "objects.oaktree")
+        put("objects.oak_tree_3", "objects.oaktree")
+        put("objects.oak_tree_3_top", "objects.oaktree")
+        put("objects.oak_tree_fullygrown_1", "objects.oaktree")
+        put("objects.oak_tree_fullygrown_2", "objects.oaktree")
 
-        put("objects.willowtree", TreeType.WILLOW)
-        put("objects.willow_tree_1", TreeType.WILLOW)
-        put("objects.willow_tree_2", TreeType.WILLOW)
-        put("objects.willow_tree_3", TreeType.WILLOW)
-        put("objects.willow_tree_4", TreeType.WILLOW)
-        put("objects.willow_tree_5", TreeType.WILLOW)
-        put("objects.willow_tree_fullygrown_1", TreeType.WILLOW)
-        put("objects.willow_tree_fullygrown_2", TreeType.WILLOW)
-        put("objects.willow_tree2", TreeType.WILLOW)
-        put("objects.willow_tree3", TreeType.WILLOW)
-        put("objects.willow_tree4", TreeType.WILLOW)
+        // Willow trees -> "objects.willowtree"
+        put("objects.willowtree", "objects.willowtree")
+        put("objects.willow_tree_1", "objects.willowtree")
+        put("objects.willow_tree_2", "objects.willowtree")
+        put("objects.willow_tree_3", "objects.willowtree")
+        put("objects.willow_tree_4", "objects.willowtree")
+        put("objects.willow_tree_5", "objects.willowtree")
+        put("objects.willow_tree_fullygrown_1", "objects.willowtree")
+        put("objects.willow_tree_fullygrown_2", "objects.willowtree")
+        put("objects.willow_tree2", "objects.willowtree")
+        put("objects.willow_tree3", "objects.willowtree")
+        put("objects.willow_tree4", "objects.willowtree")
 
-        put("objects.mature_juniper_tree", TreeType.JUNIPER)
+        // Juniper trees -> "objects.mature_juniper_tree"
+        put("objects.mature_juniper_tree", "objects.mature_juniper_tree")
 
-        put("objects.teaktree", TreeType.TEAK)
-        put("objects.teak_tree_1", TreeType.TEAK)
-        put("objects.teak_tree_2", TreeType.TEAK)
-        put("objects.teak_tree_3", TreeType.TEAK)
-        put("objects.teak_tree_4", TreeType.TEAK)
-        put("objects.teak_tree_5", TreeType.TEAK)
-        put("objects.teak_tree_6", TreeType.TEAK)
-        put("objects.teak_tree_5_top", TreeType.TEAK)
-        put("objects.teak_tree_6_top", TreeType.TEAK)
-        put("objects.teak_tree_fullygrown", TreeType.TEAK)
-        put("objects.teak_tree_fullygrown_top", TreeType.TEAK)
+        // Teak trees -> "objects.teaktree"
+        put("objects.teaktree", "objects.teaktree")
+        put("objects.teak_tree_1", "objects.teaktree")
+        put("objects.teak_tree_2", "objects.teaktree")
+        put("objects.teak_tree_3", "objects.teaktree")
+        put("objects.teak_tree_4", "objects.teaktree")
+        put("objects.teak_tree_5", "objects.teaktree")
+        put("objects.teak_tree_6", "objects.teaktree")
+        put("objects.teak_tree_5_top", "objects.teaktree")
+        put("objects.teak_tree_6_top", "objects.teaktree")
+        put("objects.teak_tree_fullygrown", "objects.teaktree")
+        put("objects.teak_tree_fullygrown_top", "objects.teaktree")
 
-        put("objects.mapletree", TreeType.MAPLE)
-        put("objects.maple_tree_1", TreeType.MAPLE)
-        put("objects.maple_tree_2", TreeType.MAPLE)
-        put("objects.maple_tree_3", TreeType.MAPLE)
-        put("objects.maple_tree_4", TreeType.MAPLE)
-        put("objects.maple_tree_5", TreeType.MAPLE)
-        put("objects.maple_tree_6", TreeType.MAPLE)
-        put("objects.maple_tree_7", TreeType.MAPLE)
-        put("objects.maple_tree_fullygrown_1", TreeType.MAPLE)
-        put("objects.maple_tree_fullygrown_2", TreeType.MAPLE)
+        // Maple trees -> "objects.mapletree"
+        put("objects.mapletree", "objects.mapletree")
+        put("objects.maple_tree_1", "objects.mapletree")
+        put("objects.maple_tree_2", "objects.mapletree")
+        put("objects.maple_tree_3", "objects.mapletree")
+        put("objects.maple_tree_4", "objects.mapletree")
+        put("objects.maple_tree_5", "objects.mapletree")
+        put("objects.maple_tree_6", "objects.mapletree")
+        put("objects.maple_tree_7", "objects.mapletree")
+        put("objects.maple_tree_fullygrown_1", "objects.mapletree")
+        put("objects.maple_tree_fullygrown_2", "objects.mapletree")
 
-        put("objects.yew_tree_1", TreeType.YEW)
-        put("objects.yew_tree_2", TreeType.YEW)
-        put("objects.yew_tree_3", TreeType.YEW)
-        put("objects.yew_tree_4", TreeType.YEW)
-        put("objects.yew_tree_5", TreeType.YEW)
-        put("objects.yew_tree_6", TreeType.YEW)
-        put("objects.yew_tree_7", TreeType.YEW)
-        put("objects.yew_tree_8", TreeType.YEW)
-        put("objects.yew_tree_9", TreeType.YEW)
-        put("objects.yew_tree_fullygrown_1", TreeType.YEW)
-        put("objects.yew_tree_fullygrown_2", TreeType.YEW)
-        put("objects.yewtree", TreeType.YEW)
+        // Yew trees -> "objects.yewtree"
+        put("objects.yewtree", "objects.yewtree")
+        put("objects.yew_tree_1", "objects.yewtree")
+        put("objects.yew_tree_2", "objects.yewtree")
+        put("objects.yew_tree_3", "objects.yewtree")
+        put("objects.yew_tree_4", "objects.yewtree")
+        put("objects.yew_tree_5", "objects.yewtree")
+        put("objects.yew_tree_6", "objects.yewtree")
+        put("objects.yew_tree_7", "objects.yewtree")
+        put("objects.yew_tree_8", "objects.yewtree")
+        put("objects.yew_tree_9", "objects.yewtree")
+        put("objects.yew_tree_fullygrown_1", "objects.yewtree")
+        put("objects.yew_tree_fullygrown_2", "objects.yewtree")
 
-        put("objects.mahoganytree", TreeType.MAHOGANY)
-        put("objects.mahogany_tree_1", TreeType.MAHOGANY)
-        put("objects.mahogany_tree_2", TreeType.MAHOGANY)
-        put("objects.mahogany_tree_3", TreeType.MAHOGANY)
-        put("objects.mahogany_tree_4", TreeType.MAHOGANY)
-        put("objects.mahogany_tree_5", TreeType.MAHOGANY)
-        put("objects.mahogany_tree_6", TreeType.MAHOGANY)
-        put("objects.mahogany_tree_7", TreeType.MAHOGANY)
-        put("objects.mahogany_tree_8", TreeType.MAHOGANY)
-        put("objects.mahogany_tree_9", TreeType.MAHOGANY)
-        put("objects.mahogany_tree_fullygrown", TreeType.MAHOGANY)
+        // Mahogany trees -> "objects.mahoganytree"
+        put("objects.mahoganytree", "objects.mahoganytree")
+        put("objects.mahogany_tree_1", "objects.mahoganytree")
+        put("objects.mahogany_tree_2", "objects.mahoganytree")
+        put("objects.mahogany_tree_3", "objects.mahoganytree")
+        put("objects.mahogany_tree_4", "objects.mahoganytree")
+        put("objects.mahogany_tree_5", "objects.mahoganytree")
+        put("objects.mahogany_tree_6", "objects.mahoganytree")
+        put("objects.mahogany_tree_7", "objects.mahoganytree")
+        put("objects.mahogany_tree_8", "objects.mahoganytree")
+        put("objects.mahogany_tree_9", "objects.mahoganytree")
+        put("objects.mahogany_tree_fullygrown", "objects.mahoganytree")
 
-        put("objects.magic_tree_1", TreeType.MAGIC)
-        put("objects.magic_tree_2", TreeType.MAGIC)
-        put("objects.magic_tree_3", TreeType.MAGIC)
-        put("objects.magic_tree_4", TreeType.MAGIC)
-        put("objects.magic_tree_5", TreeType.MAGIC)
-        put("objects.magic_tree_6", TreeType.MAGIC)
-        put("objects.magic_tree_7", TreeType.MAGIC)
-        put("objects.magic_tree_8", TreeType.MAGIC)
-        put("objects.magic_tree_9", TreeType.MAGIC)
-        put("objects.magic_tree_10", TreeType.MAGIC)
-        put("objects.magic_tree_11", TreeType.MAGIC)
-        put("objects.magic_tree_fullygrown_1", TreeType.MAGIC)
-        put("objects.magic_tree_fullygrown_2", TreeType.MAGIC)
-        put("objects.magictree", TreeType.MAGIC)
+        // Magic trees -> "objects.magictree"
+        put("objects.magictree", "objects.magictree")
+        put("objects.magic_tree_1", "objects.magictree")
+        put("objects.magic_tree_2", "objects.magictree")
+        put("objects.magic_tree_3", "objects.magictree")
+        put("objects.magic_tree_4", "objects.magictree")
+        put("objects.magic_tree_5", "objects.magictree")
+        put("objects.magic_tree_6", "objects.magictree")
+        put("objects.magic_tree_7", "objects.magictree")
+        put("objects.magic_tree_8", "objects.magictree")
+        put("objects.magic_tree_9", "objects.magictree")
+        put("objects.magic_tree_10", "objects.magictree")
+        put("objects.magic_tree_11", "objects.magictree")
+        put("objects.magic_tree_fullygrown_1", "objects.magictree")
+        put("objects.magic_tree_fullygrown_2", "objects.magictree")
 
-        put("objects.blisterwood_tree", TreeType.BLISTERWOOD)
+        // Blisterwood trees -> "objects.blisterwood_tree"
+        put("objects.blisterwood_tree", "objects.blisterwood_tree")
     }
 
     /**
-     * Maps tree type to their corresponding stump RSCM identifier.
-     * One-to-one relationship: tree type -> stump.
+     * Maps representative tree RSCM identifiers to their tree type identifier (for handlers/stumps).
+     * Used for identifying tree types when we need to look up handlers or stumps.
+     */
+    val REPRESENTATIVE_TO_TREE_TYPE_ID = mapOf(
+        "objects.tree" to "regular",
+        "objects.oaktree" to "oak",
+        "objects.willowtree" to "willow",
+        "objects.mature_juniper_tree" to "juniper",
+        "objects.teaktree" to "teak",
+        "objects.mapletree" to "maple",
+        "objects.mahoganytree" to "mahogany",
+        "objects.yewtree" to "yew",
+        "objects.magictree" to "magic",
+        "objects.blisterwood_tree" to "blisterwood"
+    )
+
+    /**
+     * Maps tree type identifier to their corresponding stump RSCM identifier.
+     * One-to-one relationship: tree type ID -> stump.
      * Note: Blisterwood doesn't create a stump (returns null).
      */
-    val TREE_TYPE_TO_STUMP_RSCM: Map<TreeType, String?> = mapOf(
-        TreeType.REGULAR to "objects.treestump",
-        TreeType.OAK to "objects.oak_tree_stump",
-        TreeType.WILLOW to "objects.willow_tree_stump",
-        TreeType.TEAK to "objects.teak_tree_stump",
-        TreeType.JUNIPER to "objects.mature_juniper_tree_stump",
-        TreeType.MAPLE to "objects.maple_tree_stump",
-        TreeType.MAHOGANY to "objects.mahogany_tree_stump",
-        TreeType.BLISTERWOOD to null,
-        TreeType.YEW to "objects.yew_tree_stump",
-        TreeType.MAGIC to "objects.magic_tree_stump"
+    val TREE_TYPE_ID_TO_STUMP_RSCM: Map<String, String?> = mapOf(
+        "regular" to "objects.treestump",
+        "oak" to "objects.oak_tree_stump",
+        "willow" to "objects.willow_tree_stump",
+        "teak" to "objects.teak_tree_stump",
+        "juniper" to "objects.mature_juniper_tree_stump",
+        "maple" to "objects.maple_tree_stump",
+        "mahogany" to "objects.mahogany_tree_stump",
+        "blisterwood" to null,
+        "yew" to "objects.yew_tree_stump",
+        "magic" to "objects.magic_tree_stump"
     )
 
     /**

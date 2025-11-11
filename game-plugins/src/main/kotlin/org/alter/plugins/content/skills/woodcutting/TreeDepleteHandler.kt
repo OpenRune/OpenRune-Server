@@ -10,7 +10,11 @@ import org.alter.game.model.World
  * Each tree type can have its own handler that defines what happens when the tree depletes.
  */
 interface TreeDepleteHandler {
-    val treeType: WoodcuttingDefinitions.TreeType
+    /**
+     * The tree type identifier (e.g., "blisterwood", "oak", "magic")
+     */
+    val treeTypeId: String
+
     /**
      * Handles the tree depletion event.
      *

@@ -18,6 +18,7 @@ import org.alter.impl.FoodTable
 import org.alter.impl.PrayerTable
 import org.alter.impl.StatComponents
 import org.alter.impl.TeleTabs
+import org.alter.impl.Woodcutting
 import java.io.File
 import java.nio.file.Files
 import java.nio.file.StandardCopyOption
@@ -62,7 +63,8 @@ fun downloadRev(type : TaskType) {
                 TeleTabs.teleTabs(),
                 StatComponents.statsComponents(),
                 FoodTable.consumableFood(),
-                Firemaking.logs()
+                Firemaking.logs(),
+                Woodcutting.trees()
             )))
 
             builder.extraTasks(*tasksNew.toTypedArray()).build().initialize()
@@ -84,7 +86,8 @@ fun downloadRev(type : TaskType) {
                 TeleTabs.teleTabs(),
                 StatComponents.statsComponents(),
                 FoodTable.consumableFood(),
-                Firemaking.logs()
+                Firemaking.logs(),
+                Woodcutting.trees()
             )))
 
             builder.extraTasks(*tasksNew.toTypedArray()).build().initialize()

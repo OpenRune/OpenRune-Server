@@ -10,7 +10,6 @@ import org.alter.game.model.queue.QueueTask
 import org.alter.game.model.World
 import org.alter.game.model.timer.TimeConstants
 import org.alter.plugins.content.skills.woodcutting.TreeDepleteHandler
-import org.alter.plugins.content.skills.woodcutting.WoodcuttingDefinitions
 import org.alter.rscm.RSCM
 import org.alter.rscm.RSCM.getRSCM
 
@@ -24,7 +23,7 @@ import org.alter.rscm.RSCM.getRSCM
  * @see https://oldschool.runescape.wiki/w/Blisterwood_tree
  */
 class BlisterwoodTreeDepleteHandler : TreeDepleteHandler {
-    override val treeType: WoodcuttingDefinitions.TreeType = WoodcuttingDefinitions.TreeType.BLISTERWOOD
+    override val treeTypeId: String = "blisterwood"
 
     override suspend fun handleDeplete(
         queueTask: QueueTask,

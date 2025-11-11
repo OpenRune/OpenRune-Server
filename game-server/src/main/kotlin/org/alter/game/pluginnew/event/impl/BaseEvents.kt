@@ -17,7 +17,6 @@ abstract class EntityInteractionEvent<T>(
 ) : PlayerEvent(player) {
     val optionName: String
         get() = resolveOptionName()
-    
     protected abstract fun resolveOptionName(): String
 }
 
@@ -43,6 +42,22 @@ abstract class MessageEvent(
 abstract class LocationEvent(
     open val tile: Tile,
     player: Player
+) : PlayerEvent(player)
+
+/**
+ * Base class for skill action completion events.
+ * These events are triggered when a skilling action completes (e.g., tree depleted, ore mined, fish caught).
+ *
+ * This allows different skills to share common event handling patterns.
+ *
+ * @param player The player who performed the action
+ * @param actionObject The GameObject/NPC/Entity that was interacted with
+ * @param actionRscm The RSCM identifier of the action object
+ */
+abstract class SkillingActionCompletedEvent(
+    override val player: Player,
+    open val actionObject: Any, // GameObject, Npc, or other entity
+    open val actionRscm: String
 ) : PlayerEvent(player)
 
 
