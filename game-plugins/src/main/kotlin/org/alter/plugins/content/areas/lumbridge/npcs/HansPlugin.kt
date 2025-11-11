@@ -12,8 +12,6 @@ import org.alter.game.plugin.KotlinPlugin
 import org.alter.game.plugin.PluginRepository
 import org.alter.plugins.content.mechanics.shops.CoinCurrency
 import org.alter.rscm.RSCM.getRSCM
-import java.time.LocalDate
-import java.time.temporal.ChronoUnit
 
 
 class HansPlugin(
@@ -79,7 +77,10 @@ class HansPlugin(
        val days = seconds / 86400
        val hours = (seconds / 3600) - (days * 24)
        val minutes = (seconds / 60) - (days * 1440) - (hours * 60)
-       val daysSinceReg = player.registryDate?.until(LocalDate.now(), ChronoUnit.DAYS)?.toInt() ?: 0
+       val daysSinceReg = player.registryDate?.let {
+           val now = System.currentTimeMillis()
+           ((now - it) / (1000 * 60 * 60 * 24)).toInt()
+       } ?: 0
 
        val timeString = buildString {
            append("You've spent ")

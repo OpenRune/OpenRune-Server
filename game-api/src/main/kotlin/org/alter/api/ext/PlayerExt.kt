@@ -22,8 +22,6 @@ import org.alter.game.model.attr.COMBAT_TARGET_FOCUS_ATTR
 import org.alter.game.model.attr.CURRENT_SHOP_ATTR
 import org.alter.game.model.attr.PLAYTIME_ATTR
 import org.alter.game.saving.PlayerDetails
-import java.time.LocalDate
-import java.time.temporal.ChronoUnit
 import org.alter.game.model.bits.BitStorage
 import org.alter.game.model.bits.StorageBits
 import org.alter.game.model.container.ItemContainer
@@ -1010,17 +1008,12 @@ val Player.playtime: Int
     get() = attr[PLAYTIME_ATTR] ?: 0
 
 /**
- * Gets the player's registration date as a LocalDate.
- * Returns null if the registration date is not set or invalid.
+ * Gets the player's registration date as epoch milliseconds (Long).
+ * Returns null if the registration date is not set.
  * This is stored in the accounts/ save (PlayerDetails), not in game attributes.
  */
-val Player.registryDate: LocalDate?
+val Player.registryDate: Long?
     get() {
         val displayName = PlayerDetails.getDisplayName((this as? org.alter.game.model.entity.Client)?.loginUsername ?: username)
-        val dateStr = displayName?.registryDate ?: return null
-        return try {
-            LocalDate.parse(dateStr)
-        } catch (e: Exception) {
-            null
-        }
+        return displayName?.registryDate
     }

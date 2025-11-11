@@ -5,14 +5,13 @@ import org.alter.game.GameContext
 import org.alter.game.model.entity.Client
 import org.alter.game.saving.formats.FormatHandler
 import org.bson.Document
-import java.time.LocalDate
 import java.util.concurrent.TimeUnit
 
 data class DisplayName(
     var currentDisplayName: String = "",
     var previousDisplayName: String = "",
     var dateChanged: Long = -1,
-    var registryDate: String = LocalDate.now().toString()
+    var registryDate: Long = System.currentTimeMillis()
 ) {
     fun asDocument(): Document {
         return Document().apply {
@@ -31,11 +30,26 @@ data class DisplayName(
 
     companion object {
         fun fromDocument(doc: Document): DisplayName {
+            // Handle migration from String (ISO date) to Long (epoch milliseconds)
+            val registryDateValue = when (val value = doc["registryDate"]) {
+                is String -> {
+                    // Legacy format: try to parse ISO date string and convert to epoch
+                    try {
+                        java.time.LocalDate.parse(value).atStartOfDay(java.time.ZoneId.systemDefault()).toInstant().toEpochMilli()
+                    } catch (e: Exception) {
+                        System.currentTimeMillis()
+                    }
+                }
+                is Number -> value.toLong()
+                null -> System.currentTimeMillis()
+                else -> System.currentTimeMillis()
+            }
+
             return DisplayName(
                 currentDisplayName = doc["currentDisplayName"] as String,
                 previousDisplayName = doc["previousDisplayName"] as String,
                 dateChanged = (doc["dateChanged"] as Number).toLong(),
-                registryDate = doc.getString("registryDate") ?: LocalDate.now().toString()
+                registryDate = registryDateValue
             )
         }
     }
