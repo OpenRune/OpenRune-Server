@@ -6,6 +6,7 @@ import org.alter.game.model.attr.INTERACTING_ITEM_SLOT
 import org.alter.game.model.entity.Player
 import org.alter.game.model.item.Item
 import org.alter.plugins.content.interfaces.bank.Bank.insert
+import org.alter.plugins.content.interfaces.bank.BankTabsPlugin.Companion.tabVarbit
 import org.alter.rscm.RSCM
 import org.alter.rscm.RSCM.asRSCM
 import org.alter.rscm.RSCMType
@@ -40,9 +41,9 @@ object BankTabs {
             if (dstTab == 0) { // add to main tab don't insert
                 println(":test 1")
                 container.insert(srcSlot, container.nextFreeSlot - 1)
-                player.setVarbit("varbits.bank_tab_display" + curTab, player.getVarbit("varbits.bank_tab_display" + curTab) - 1)
+                player.setVarbit(tabVarbit(curTab), player.getVarbit(tabVarbit(curTab)) - 1)
                 // check for empty tab shift
-                if (player.getVarbit("varbits.bank_tab_display" + curTab) == 0 && curTab <= numTabsUnlocked(player)) {
+                if (player.getVarbit(tabVarbit(curTab)) == 0 && curTab <= numTabsUnlocked(player)) {
                     shiftTabs(player, curTab)
                 }
             } else {
@@ -53,12 +54,12 @@ object BankTabs {
                     println(":test 3")
                     container.insert(srcSlot, insertionPoint(player, dstTab) - 1)
                 }
-                player.setVarbit("varbits.bank_tab_display" + dstTab, player.getVarbit("varbits.bank_tab_display" + dstTab) + 1)
+                player.setVarbit(tabVarbit(dstTab), player.getVarbit(tabVarbit(dstTab)) + 1)
                 if (curTab != 0) {
                     println(":test 4")
-                    player.setVarbit("varbits.bank_tab_display" + curTab, player.getVarbit("varbits.bank_tab_display" + curTab) - 1)
+                    player.setVarbit(tabVarbit(curTab), player.getVarbit(tabVarbit(curTab)) - 1)
                     // check for empty tab shift
-                    if (player.getVarbit("varbits.bank_tab_display" + curTab) == 0 && curTab <= numTabsUnlocked(player)) {
+                    if (player.getVarbit(tabVarbit(curTab)) == 0 && curTab <= numTabsUnlocked(player)) {
                         shiftTabs(player, curTab)
                     }
                 }
@@ -85,9 +86,9 @@ object BankTabs {
         } else {
             if (dstTab == 0) { // add to main tab don't insert
                 container.insert(srcSlot, container.nextFreeSlot - 1)
-                player.setVarbit("varbits.bank_tab_display" + curTab, player.getVarbit("varbits.bank_tab_display" + curTab) - 1)
+                player.setVarbit(tabVarbit(curTab), player.getVarbit(tabVarbit(curTab)) - 1)
                 // check for empty tab shift
-                if (player.getVarbit("varbits.bank_tab_display" + curTab) == 0 && curTab <= numTabsUnlocked(player)) {
+                if (player.getVarbit(tabVarbit(curTab)) == 0 && curTab <= numTabsUnlocked(player)) {
                     shiftTabs(player, curTab)
                 }
             } else {
@@ -100,12 +101,12 @@ object BankTabs {
                     container.insert(srcSlot, insertionPoint.first - 1)
                 }
                 if (!hasEmptySlot) {
-                    player.setVarbit("varbits.bank_tab_display" + dstTab, player.getVarbit("varbits.bank_tab_display" + dstTab) + 1)
+                    player.setVarbit(tabVarbit(dstTab), player.getVarbit(tabVarbit(dstTab)) + 1)
                 }
 
                 if (curTab != 0) {
                     println("HERE 4")
-                    if (player.getVarbit("varbits.bank_tab_display" + curTab) == 0 && curTab <= numTabsUnlocked(player)) {
+                    if (player.getVarbit(tabVarbit(curTab)) == 0 && curTab <= numTabsUnlocked(player)) {
                         shiftTabs(player, curTab)
                     }
                 }
@@ -131,7 +132,7 @@ object BankTabs {
     ): Int {
         var current = 0
         for (tab in 1..9) {
-            current += player.getVarbit("varbits.bank_tab_display" + tab)
+            current += player.getVarbit(tabVarbit(tab))
             if (slot < current) {
                 return tab
             }
@@ -152,7 +153,7 @@ object BankTabs {
     fun numTabsUnlocked(player: Player): Int {
         var tabsUnlocked = 0
         for (tab in 1..9)
-            if (player.getVarbit("varbits.bank_tab_display" + tab) > 0) {
+            if (player.getVarbit(tabVarbit(tab)) > 0) {
                 tabsUnlocked++
             }
         return tabsUnlocked
@@ -184,7 +185,7 @@ object BankTabs {
         var dex = 0
         for (tab in 1..tabIndex) {
             prevDex = dex
-            dex += player.getVarbit("varbits.bank_tab_display" + tab)
+            dex += player.getVarbit(tabVarbit(tab))
         }
 
         // truncate empty spots, but stay in current tab
@@ -209,7 +210,7 @@ object BankTabs {
         var dex = 0
         for (tab in 1..tabIndex) {
             prevDex = dex
-            dex += player.getVarbit("varbits.bank_tab_display" + tab)
+            dex += player.getVarbit(tabVarbit(tab))
         }
 
         // truncate empty spots, but stay in current tab
@@ -243,10 +244,10 @@ object BankTabs {
         var dex = 0
         if (tabIndex == 0) {
             for (tab in 1..9)
-                dex += player.getVarbit("varbits.bank_tab_display" + tab)
+                dex += player.getVarbit(tabVarbit(tab))
         } else {
             for (tab in 1 until tabIndex)
-                dex += player.getVarbit("varbits.bank_tab_display" + tab)
+                dex += player.getVarbit(tabVarbit(tab))
         }
         return dex
     }
@@ -267,8 +268,8 @@ object BankTabs {
     ) {
         val numUnlocked = numTabsUnlocked(player)
         for (tab in emptyTabIdx..numUnlocked)
-            player.setVarbit("varbits.bank_tab_display" + tab, player.getVarbit("varbits.bank_tab_display" + tab + 1))
-        player.setVarbit("varbits.bank_tab_display" + numUnlocked + 1, 0)
+            player.setVarbit(tabVarbit(tab), player.getVarbit(tabVarbit(tab + 1)))
+        player.setVarbit(tabVarbit(numUnlocked + 1), 0)
     }
 
     fun getTabsItems(p: Player, tab: Int) : List<Item?> {
@@ -281,7 +282,7 @@ object BankTabs {
         for (currentTab in varBitID + 1.. varBitID + tab) {
             val currentVarbit = RSCM.getReverseMapping(RSCMType.VARBITTYPES, currentTab)!!
 
-            if (varBitID+tab == currentTab) {
+            if (p.getVarbit(tabVarbit(tab)) == currentTab) {
                 tabsItems = container.take(p.getVarbit(currentVarbit)).toMutableList()
             } else {
                 container = container.drop(p.getVarbit(currentVarbit)).toMutableList()

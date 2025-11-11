@@ -171,6 +171,8 @@ class BankTabsPlugin(
         }
     }
 
-    fun tabVarbit(tab : Int) = "varbits.bank_tab_$tab"
+    companion object {
+        fun tabVarbit(tab : Int) = "varbits.bank_tab_$tab"
+    }
 
 }
