@@ -84,6 +84,7 @@ object PlayerSaving {
             }
 
             client.username = PlayerDetails.getDisplayName(client.loginUsername)?.currentDisplayName?: client.loginUsername
+            client.registryDate = PlayerDetails.getDisplayName(client.loginUsername)?.registryDate?: client.registryDate
 
             client.uid = PlayerUID(client.username)
 

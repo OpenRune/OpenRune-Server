@@ -42,6 +42,7 @@ import org.alter.game.model.timer.ACTIVE_COMBAT_TIMER
 import org.alter.game.model.timer.FORCE_DISCONNECTION_TIMER
 import org.alter.game.model.varp.VarpSet
 import org.alter.game.rsprot.RsModObjectProvider
+import org.alter.game.saving.PlayerDetails
 import org.alter.game.service.log.LoggerService
 import org.alter.rscm.RSCM
 import org.alter.rscm.RSCM.asRSCM
@@ -65,6 +66,13 @@ open class Player(world: World) : Pawn(world) {
      * The name that was used when the player logged into the game.
      */
     var username = ""
+
+    /**
+     * Gets the player's registration date as epoch milliseconds (Long).
+     * Returns 0L if the registration date is not set.
+     * This is stored in the accounts/ save (PlayerDetails), not in game attributes.
+     */
+    var registryDate: Long = 0L
 
     /**
      * @see Privilege

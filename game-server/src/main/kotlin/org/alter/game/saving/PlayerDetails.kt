@@ -8,10 +8,10 @@ import org.bson.Document
 import java.util.concurrent.TimeUnit
 
 data class DisplayName(
-    var currentDisplayName: String = "",
+    var currentDisplayName: String,
     var previousDisplayName: String = "",
     var dateChanged: Long = -1,
-    var registryDate: Long = System.currentTimeMillis()
+    var registryDate: Long
 ) {
     fun asDocument(): Document {
         return Document().apply {
@@ -30,26 +30,11 @@ data class DisplayName(
 
     companion object {
         fun fromDocument(doc: Document): DisplayName {
-            // Handle migration from String (ISO date) to Long (epoch milliseconds)
-            val registryDateValue = when (val value = doc["registryDate"]) {
-                is String -> {
-                    // Legacy format: try to parse ISO date string and convert to epoch
-                    try {
-                        java.time.LocalDate.parse(value).atStartOfDay(java.time.ZoneId.systemDefault()).toInstant().toEpochMilli()
-                    } catch (e: Exception) {
-                        System.currentTimeMillis()
-                    }
-                }
-                is Number -> value.toLong()
-                null -> System.currentTimeMillis()
-                else -> System.currentTimeMillis()
-            }
-
             return DisplayName(
                 currentDisplayName = doc["currentDisplayName"] as String,
                 previousDisplayName = doc["previousDisplayName"] as String,
                 dateChanged = (doc["dateChanged"] as Number).toLong(),
-                registryDate = registryDateValue
+                registryDate = doc.getLong("registryDate")
             )
         }
     }
@@ -103,7 +88,7 @@ object PlayerDetails {
     }
 
     fun registerAccount(client: Client): Boolean {
-        val displayName = DisplayName(client.loginUsername)
+        val displayName = DisplayName(currentDisplayName = client.loginUsername, registryDate = System.currentTimeMillis())
         displayNames[client.loginUsername.lowercase()] = displayName
         serialization.saveDocument(client,displayName.asDocument())
         return true
