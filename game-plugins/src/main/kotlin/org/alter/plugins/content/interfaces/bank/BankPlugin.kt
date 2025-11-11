@@ -18,6 +18,7 @@ import org.alter.plugins.content.interfaces.bank.BankTabs.dropToTab
 import org.alter.plugins.content.interfaces.bank.BankTabs.getCurrentTab
 import org.alter.plugins.content.interfaces.bank.BankTabs.numTabsUnlocked
 import org.alter.plugins.content.interfaces.bank.BankTabs.shiftTabs
+import org.alter.plugins.content.interfaces.bank.BankTabsPlugin.Companion.tabVarbit
 import org.alter.rscm.RSCM.asRSCM
 
 
@@ -31,12 +32,12 @@ class BankPlugin(
         onInterfaceOpen("interfaces.bankmain".asRSCM()) {
             var slotOffset = 0
             for (tab in 1..9) {
-                val size = player.getVarbit("varbits.bank_tab_display" + tab)
+                val size = player.getVarbit(tabVarbit(tab))
                 for (slot in slotOffset until slotOffset + size) {
                     if (player.bank[slot] == null) {
-                        player.setVarbit("varbits.bank_tab_display" + tab, player.getVarbit("varbits.bank_tab_display" + tab) - 1)
+                        player.setVarbit(tabVarbit(tab), player.getVarbit(tabVarbit(tab)) - 1)
                         // check for empty tab shift
-                        if (player.getVarbit("varbits.bank_tab_display" + tab) == 0 && tab <= numTabsUnlocked(player)) {
+                        if (player.getVarbit(tabVarbit(tab)) == 0 && tab <= numTabsUnlocked(player)) {
                             shiftTabs(player, tab)
                         }
                     }
@@ -90,7 +91,7 @@ class BankPlugin(
 
             player.playSound(Sound.FIREBREATH)
             player.bank.remove(destroyItems, assureFullRemoval = true)
-            player.setVarbit("varbits.bank_tab_display" + tabAffected, player.getVarbit("varbits.bank_tab_display" + tabAffected) - 1)
+            player.setVarbit(tabVarbit(tabAffected), player.getVarbit(tabVarbit(tabAffected)) - 1)
             player.bank.shift()
         }
 
@@ -367,11 +368,11 @@ class BankPlugin(
                         }
 
                         if (dstTab != 0) {
-                            player.setVarbit("varbits.bank_tab_display" + dstTab, player.getVarbit("varbits.bank_tab_display" + dstTab) + 1)
+                            player.setVarbit(tabVarbit(dstTab), player.getVarbit(tabVarbit(dstTab)) + 1)
                         }
                         if (curTab != 0) {
-                            player.setVarbit("varbits.bank_tab_display" + curTab, player.getVarbit("varbits.bank_tab_display" + curTab) - 1)
-                            if (player.getVarbit("varbits.bank_tab_display" + curTab) == 0 && curTab <= numTabsUnlocked(player)) {
+                            player.setVarbit(tabVarbit(curTab), player.getVarbit(tabVarbit(curTab)) - 1)
+                            if (player.getVarbit(tabVarbit(curTab)) == 0 && curTab <= numTabsUnlocked(player)) {
                                 shiftTabs(player, curTab)
                             }
                         }
