@@ -12,6 +12,7 @@ import org.alter.game.plugin.KotlinPlugin
 import org.alter.game.plugin.PluginRepository
 import org.alter.plugins.content.mechanics.shops.CoinCurrency
 import org.alter.rscm.RSCM.getRSCM
+import java.util.concurrent.TimeUnit
 
 
 class HansPlugin(
@@ -73,39 +74,29 @@ class HansPlugin(
     }
 
     suspend fun QueueTask.age(player: Player) {
-       val seconds = (player.playtime * 0.6).toInt()
-       val days = seconds / 86400
-       val hours = (seconds / 3600) - (days * 24)
-       val minutes = (seconds / 60) - (days * 1440) - (hours * 60)
-       val daysSinceReg = player.registryDate?.let {
-           val now = System.currentTimeMillis()
-           ((now - it) / (1000 * 60 * 60 * 24)).toInt()
-       } ?: 0
+        val seconds = (player.playtime * 0.6).toInt()
 
-       val timeString = buildString {
-           append("You've spent ")
-           append("$days${if (days != 1) " days" else " day"}")
-           append(", ")
-           append("$hours${if (hours != 1) " hours" else " hour"}")
-           append(", ")
-           append("$minutes${if (minutes != 1) " minutes" else " minute"}")
-           append(" in the world since you arrived ")
+        val days = seconds / 86_400
+        val hours = (seconds % 86_400) / 3_600
+        val minutes = (seconds % 3_600) / 60
 
-           when (daysSinceReg) {
-               0 -> {
-                   append("today.")
-               }
+        val daysSinceReg = TimeUnit.MILLISECONDS
+            .toDays(System.currentTimeMillis() - player.registryDate)
+            .toInt()
 
-               1 -> {
-                   append("yesterday.")
-               }
+        val timeString = buildString {
+            append("You've spent ")
+            append("$days ${if (days == 1) "day" else "days"}, ")
+            append("$hours ${if (hours == 1) "hour" else "hours"}, ")
+            append("$minutes ${if (minutes == 1) "minute" else "minutes"} ")
+            append("in the world since you arrived ")
 
-               else -> {
-                   append(daysSinceReg.toString())
-                   append(" days ago.")
-               }
-           }
-       }
+            when (daysSinceReg) {
+                0 -> append("today.")
+                1 -> append("yesterday.")
+                else -> append("$daysSinceReg days ago.")
+            }
+        }
 
         chatPlayer(player, "Can you tell me how long I've been here?")
         chatNpc(player, timeString)

@@ -1006,14 +1006,3 @@ fun Player.format_bonus_with_sign(value: Int): String = if (value < 0) value.toS
  */
 val Player.playtime: Int
     get() = attr[PLAYTIME_ATTR] ?: 0
-
-/**
- * Gets the player's registration date as epoch milliseconds (Long).
- * Returns null if the registration date is not set.
- * This is stored in the accounts/ save (PlayerDetails), not in game attributes.
- */
-val Player.registryDate: Long?
-    get() {
-        val displayName = PlayerDetails.getDisplayName((this as? org.alter.game.model.entity.Client)?.loginUsername ?: username)
-        return displayName?.registryDate
-    }
