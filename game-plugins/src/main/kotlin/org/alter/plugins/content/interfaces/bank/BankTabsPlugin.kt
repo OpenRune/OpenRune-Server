@@ -96,16 +96,16 @@ class BankTabsPlugin(
                 while (item != end) {
                     container.insert(item, container.nextFreeSlot - 1)
                     end--
-                    player.setVarbit("varbits.bank_tab_display" + srcTab, player.getVarbit("varbits.bank_tab_display" + srcTab) - 1)
+                    player.setVarbit(tabVarbit(srcTab), player.getVarbit(tabVarbit(srcTab)) - 1)
                     // check for empty tab shift
-                    if (player.getVarbit("varbits.bank_tab_display" + srcTab) == 0 && srcTab <= numTabsUnlocked(player)) {
+                    if (player.getVarbit(tabVarbit(srcTab)) == 0 && srcTab <= numTabsUnlocked(player)) {
                         shiftTabs(player, srcTab)
                     }
                 }
                 return@onComponentToComponentItemSwap
             }
-            val srcSize = player.getVarbit("varbits.bank_tab_display" + srcTab)
-            val dstSize = player.getVarbit("varbits.bank_tab_display" + dstTab)
+            val srcSize = player.getVarbit(tabVarbit(srcTab))
+            val dstSize = player.getVarbit(tabVarbit(dstTab))
             val insertMode = player.getVarbit("varbits.bank_insertmode") == 1
             if (insertMode) {
                 if (dstTab < srcTab) { // insert each of the items in srcTab directly before dstTab moving index up each time to account for shifts
@@ -113,11 +113,11 @@ class BankTabsPlugin(
                     for (item in startPoint(player, srcTab) until insertionPoint(player, srcTab))
                         container.insert(item, destination++)
                     // update tab size varbits according to insertion location
-                    var holder = player.getVarbit("varbits.bank_tab_display" + dstTab)
-                    player.setVarbit("varbits.bank_tab_display" + dstTab, srcSize)
+                    var holder = player.getVarbit(tabVarbit(dstTab))
+                    player.setVarbit(tabVarbit(dstTab), srcSize)
                     for (tab in dstTab + 1..srcTab) {
-                        val temp = player.getVarbit("varbits.bank_tab_display" + tab)
-                        player.setVarbit("varbits.bank_tab_display" + tab, holder)
+                        val temp = player.getVarbit(tabVarbit(tab))
+                        player.setVarbit(tabVarbit(tab), holder)
                         holder = temp
                     }
                 } else { // insert each item in srcTab before dstTab consuming index move in the shifts already in insert()
@@ -135,16 +135,16 @@ class BankTabsPlugin(
                     var holder = player.getVarbit(varBitName)
                     player.setVarbit(varBitName, srcSize)
                     for (tab in dstTab - 2 downTo srcTab) {
-                        val temp = player.getVarbit("varbits.bank_tab_display" + tab)
-                        player.setVarbit("varbits.bank_tab_display" + tab, holder)
+                        val temp = player.getVarbit(tabVarbit(tab))
+                        player.setVarbit(tabVarbit(tab), holder)
                         holder = temp
                     }
                 }
             } else { // swap tabs in place
                 val smallerTab = if (dstSize <= srcSize) dstTab else srcTab
-                val smallSize = player.getVarbit("varbits.bank_tab_display" + smallerTab)
+                val smallSize = player.getVarbit(tabVarbit(smallerTab))
                 val largerTab = if (dstSize > srcSize) dstTab else srcTab
-                val largeSize = player.getVarbit("varbits.bank_tab_display" + largerTab)
+                val largeSize = player.getVarbit(tabVarbit(largerTab))
                 val smallStart = startPoint(player, smallerTab)
                 val largeStart = startPoint(player, largerTab)
 
@@ -165,9 +165,12 @@ class BankTabsPlugin(
                     }
                 }
                 // update each tab's size to reflect new contents
-                player.setVarbit("varbits.bank_tab_display" + smallerTab, largeSize)
-                player.setVarbit("varbits.bank_tab_display" + largerTab, smallSize)
+                player.setVarbit(tabVarbit(smallerTab), largeSize)
+                player.setVarbit(tabVarbit(largerTab), smallSize)
             }
         }
     }
+
+    fun tabVarbit(tab : Int) = "varbits.bank_tab_$tab"
+
 }
