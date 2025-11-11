@@ -69,7 +69,7 @@ open class Player(world: World) : Pawn(world) {
 
     /**
      * Gets the player's registration date as epoch milliseconds (Long).
-     * Returns OL if the registration date is not set.
+     * Returns 0L if the registration date is not set.
      * This is stored in the accounts/ save (PlayerDetails), not in game attributes.
      */
     var registryDate: Long = 0L

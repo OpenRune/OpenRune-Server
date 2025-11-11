@@ -30,21 +30,6 @@ data class DisplayName(
 
     companion object {
         fun fromDocument(doc: Document): DisplayName {
-            // Handle migration from String (ISO date) to Long (epoch milliseconds)
-            val registryDateValue = when (val value = doc["registryDate"]) {
-                is String -> {
-                    // Legacy format: try to parse ISO date string and convert to epoch
-                    try {
-                        java.time.LocalDate.parse(value).atStartOfDay(java.time.ZoneId.systemDefault()).toInstant().toEpochMilli()
-                    } catch (e: Exception) {
-                        System.currentTimeMillis()
-                    }
-                }
-                is Number -> value.toLong()
-                null -> System.currentTimeMillis()
-                else -> System.currentTimeMillis()
-            }
-
             return DisplayName(
                 currentDisplayName = doc["currentDisplayName"] as String,
                 previousDisplayName = doc["previousDisplayName"] as String,

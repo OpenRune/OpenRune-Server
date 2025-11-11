@@ -21,7 +21,6 @@ import org.alter.game.model.attr.CHANGE_LOGGING
 import org.alter.game.model.attr.COMBAT_TARGET_FOCUS_ATTR
 import org.alter.game.model.attr.CURRENT_SHOP_ATTR
 import org.alter.game.model.attr.PLAYTIME_ATTR
-import org.alter.game.saving.PlayerDetails
 import org.alter.game.model.bits.BitStorage
 import org.alter.game.model.bits.StorageBits
 import org.alter.game.model.container.ItemContainer
