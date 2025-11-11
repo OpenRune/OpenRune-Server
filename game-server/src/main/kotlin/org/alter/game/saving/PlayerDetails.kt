@@ -8,15 +8,17 @@ import org.bson.Document
 import java.util.concurrent.TimeUnit
 
 data class DisplayName(
-    var currentDisplayName: String = "",
+    var currentDisplayName: String,
     var previousDisplayName: String = "",
-    var dateChanged: Long = -1
+    var dateChanged: Long = -1,
+    var registryDate: Long
 ) {
     fun asDocument(): Document {
         return Document().apply {
             append("currentDisplayName", currentDisplayName)
             append("previousDisplayName", previousDisplayName)
             append("dateChanged", dateChanged)
+            append("registryDate", registryDate)
         }
     }
 
@@ -31,7 +33,8 @@ data class DisplayName(
             return DisplayName(
                 currentDisplayName = doc["currentDisplayName"] as String,
                 previousDisplayName = doc["previousDisplayName"] as String,
-                dateChanged = (doc["dateChanged"] as Number).toLong()
+                dateChanged = (doc["dateChanged"] as Number).toLong(),
+                registryDate = doc.getLong("registryDate")
             )
         }
     }
@@ -85,7 +88,7 @@ object PlayerDetails {
     }
 
     fun registerAccount(client: Client): Boolean {
-        val displayName = DisplayName(client.loginUsername)
+        val displayName = DisplayName(currentDisplayName = client.loginUsername, registryDate = System.currentTimeMillis())
         displayNames[client.loginUsername.lowercase()] = displayName
         serialization.saveDocument(client,displayName.asDocument())
         return true

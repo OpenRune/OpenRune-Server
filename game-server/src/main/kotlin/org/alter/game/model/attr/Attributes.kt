@@ -43,6 +43,12 @@ val NEW_ACCOUNT_ATTR = AttributeKey<Boolean>()
 val FREE_BOND_CLAIMED_ATTR = AttributeKey<String>("bond_claimed")
 
 /**
+ * Indicates the total playtime in game cycles (600ms per cycle).
+ * This is incremented every game cycle while the player is online.
+ */
+val PLAYTIME_ATTR = AttributeKey<Int>(persistenceKey = "playtime")
+
+/**
  * A flag which indicates if the player's appearance has been set by the player.
  * Opting for persistence and modifying on_login behavior this will allow OSRS-like
  * behavior such that player can logout and will still be allowed to set appearance

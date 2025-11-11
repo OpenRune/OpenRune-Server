@@ -20,6 +20,8 @@ import org.alter.game.model.World
 import org.alter.game.model.attr.CHANGE_LOGGING
 import org.alter.game.model.attr.COMBAT_TARGET_FOCUS_ATTR
 import org.alter.game.model.attr.CURRENT_SHOP_ATTR
+import org.alter.game.model.attr.PLAYTIME_ATTR
+import org.alter.game.saving.PlayerDetails
 import org.alter.game.model.bits.BitStorage
 import org.alter.game.model.bits.StorageBits
 import org.alter.game.model.container.ItemContainer
@@ -997,3 +999,10 @@ fun Player.getMagicDamageBonus(): Int = equipmentBonuses[12]
 fun Player.getPrayerBonus(): Int = equipmentBonuses[13]
 
 fun Player.format_bonus_with_sign(value: Int): String = if (value < 0) value.toString() else "+$value"
+
+/**
+ * Gets the player's total playtime in game cycles.
+ * Each cycle is approximately 600ms.
+ */
+val Player.playtime: Int
+    get() = attr[PLAYTIME_ATTR] ?: 0
