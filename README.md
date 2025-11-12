@@ -1,72 +1,91 @@
 
 
 
-# Alter
-[![revision: 235.2][rev-badge]][patch] [![Discord](https://badgen.net/badge/icon/discord?icon=discord&label)](https://discord.com/invite/sAzCuuwkpN) ![jdk-badge] ![](https://tokei.rs/b1/github/AlterRSPS/Alter)
+<h1 align="center">
+  <img src="https://raw.githubusercontent.com/AlterRSPS/Resources/main/docs/resources/ReadMe_Alter/Alter_Successfully_initialized.png" alt="Alter" width="720">
+</h1>
 
-**Alter** is a modified version of [RSMod](https://github.com/Tomm0017/rsmod) a highly flexible user-friendly game server for use with the OSRS client. Implemented in a modular way,
-the framework allows developers to make and create any sort of plugin they wish without having to modify the core game module.
-Due to the plugin capabilities, even owners without programming experience can just have others make plugins for them and simply drop them into the plugins module to be automatically loaded on the next startup!
-#### I found a bug, where can I report it?
-- You can report them by creating Issue on [GitHub](https://github.com/AlterRSPS/Alter/issues) or in Alter's [Discord Server](https://discord.gg/kdhBuRaduw)
-#  Server setup
+<p align="center">
+  <a href="https://github.com/AlterRSPS/Alter/blob/master/LICENSE"><img alt="License" src="https://img.shields.io/github/license/AlterRSPS/Alter?style=for-the-badge&color=6f42c1"/></a>
+  <a href="https://oldschool.runescape.wiki/w/Update:Leagues_V:_Raging_Echos_Rewards_Are_Here"><img alt="Revision 235.2" src="https://img.shields.io/badge/Revision-235.2-blueviolet?style=for-the-badge"/></a>
+  <a href="https://trello.com/b/A0LefFDs/later"><img alt="Roadmap" src="https://img.shields.io/badge/Trello-Roadmap-026AA7?style=for-the-badge&logo=trello&logoColor=white"/></a>
+  <a href="https://github.com/Mark7625/Alter-custom/"><img alt="Lines of Code" src="https://img.shields.io/endpoint?url=https%3A%2F%2Fghloc.vercel.app%2Fapi%2FMark7625%2FAlter-custom%2Fbadge%3Fformat%3Dhuman&style=for-the-badge&color=teal"/></a>
+</p>
 
-### First of all Download:
-* Youtube tutorial: https://www.youtube.com/watch?v=2Tu-NTzMbf0
-* Make sure you have [Intellij](https://www.jetbrains.com/idea/download/#section=windows) installed, how to install intellij: [Youtube](https://www.youtube.com/watch?v=t8T5Qwa5d_o)
+<p align="center">Alter is a modular fork of RSMod that powers an OSRS-compatible server with a plug-and-play plugin ecosystem focused on extensibility and ease of use.</p>
 
-* First open Intellij, (If you already have a project open, either do `File -> Close`, or `File -> New -> Project from Version Control`)
-* If you decided to use `Close method` you will see this window, click on `Get from VCS`
-  ![tutor1](https://raw.githubusercontent.com/AlterRSPS/Resources/main/docs/resources/ReadMe_Alter/tutor1.png)
-* Second paste `https://github.com/AlterRSPS/Alter` in URL Field and hit Clone. </br>
-  ![tutor2](https://raw.githubusercontent.com/AlterRSPS/Resources/main/docs/resources/ReadMe_Alter/tuor2.png)
-* Hit `Clone` and let the project fully load.
-* Now click on `Gradle` button on right side. </br>
-  ![tutor4](https://raw.githubusercontent.com/AlterRSPS/Resources/main/docs/resources/ReadMe_Alter/Tutor4.png)
-* Expand `Alter` -> `other` and double click `install`
-  ![tutor5](https://raw.githubusercontent.com/AlterRSPS/Resources/main/docs/resources/ReadMe_Alter/Tutori5.png)
-* And now wait until you get this result in your `Terminal` at the bottom:
-  ![tutor7](https://raw.githubusercontent.com/AlterRSPS/Resources/main/docs/resources/ReadMe_Alter/tutor7.png)
-* Now instead of `Install` task do Run `Gradle -> Alter -> game -> Tasks -> Application - Run`
-* Now the server should be running, you should see inside your terminal:
-  ![tutor8](https://raw.githubusercontent.com/AlterRSPS/Resources/main/docs/resources/ReadMe_Alter/Alter_Successfully_initialized.png)
-* If you only see `Alter Loaded up in x ms.` you messed up somewhere.
-* You can connect whatever client you want (of course it has to follow OSRS protocols.)
+## 🤔 What is Alter?
+Alter builds on the foundation laid by [RSMod](https://github.com/Tomm0017/rsmod) to deliver a flexible, developer-friendly OSRS game server. Its modular architecture lets you ship new gameplay features as standalone plugins without touching core engine code. Server owners with little to no programming experience can rely on contributors to drop prebuilt plugins into the `content` module and have them load automatically at runtime.
+
+## 🚀 Why Choose Alter?
+### 🔧 Modular by design
+Alter loads plugins dynamically, making it simple to extend gameplay, content, or systems while keeping the base server clean.
+
+### 👥 Community-driven
+Active maintainers review contributions, publish roadmap updates, and support users through Discord and Trello.
+
+### 📏 OSRS-compatible
+Alter adheres to OSRS protocols, giving you the freedom to connect any compliant client and customize server-side behavior.
+
+## 🛠️ Getting Started
 
 
-> [!NOTE]
-> When you have Intellij Open, navigate to `File` -> `Project Structure` -> And make sure SDK is set to `17 java version 17.x.x`
-> 
-> It is also recommended to install the [rscm-plugin](https://github.com/blurite/rscm-plugin) in IntelliJ for enhanced Entity references support. 
-# Client setup:
-> [!TIP]  
-> As for now, [RSProx](https://github.com/blurite/rsprox/releases) is the only OSRS client that should be used. It's developed by the most trusted and experienced developers in the RSPS scene.
-> 
-> For Windows users: Just press `⊞ + R` and in text field area write: `%USERPROFILE%` and locate folder named `.rsprox` create a new file named: `proxy-targets.yaml` and inside paste:  
->  
-> ```yaml  
-> config:  
->   - id: 1  
->     name: Alter  
->     jav_config_url: https://client.blurite.io/jav_local_235.ws  
->     varp_count: 15000  
->     revision: 235.2  
->     modulus: YOUR_MODULUS_KEY_HERE  
-> ```  
-> Modulus key will be found inside Alter Project root directory make sure to copy every character, And replace `YOUR_MODULUS_KEY_HERE` inside `proxy-targets.yaml` with your modulus key. For more information on it you can find at: [RSProx-Private-Server-Usage](https://github.com/blurite/rsprox?tab=readme-ov-file#private-server-usage)
-> 
-> If you haven't used RSProx before, You won't have `.rsprox` folder inside `%USERPROFILE%`
+
+1. **Clone the repository**  
+   - `File → New → Project from Version Control` in IntelliJ, then paste `https://github.com/AlterRSPS/Alter`.
+   - Alternatively, clone via Git CLI and open the project manually.
+
+2. **Install dependencies**  
+   - Ensure you have [IntelliJ IDEA](https://www.jetbrains.com/idea/download/#section=windows).  
+   - Set the project SDK to Java 17: `File → Project Structure → SDK`.
+   - Recommended: install the [rscm-plugin](https://github.com/blurite/rscm-plugin) for better entity reference tooling.
+
+3. **Gradle bootstrap**  
+   - Open the Gradle tool window.  
+   - Run `Alter → other → install`.  
+   - When the task completes, run `Alter → game → Tasks → application → run`.
+
+4. **Verify startup**  
+   - A successful boot prints `Alter Successfully initialized` in the terminal.  
+   - If you only see `Alter Loaded up in x ms.` you likely skipped a step.
+
+Screenshots showcasing each step are available in the repo under `Resources/main/docs/resources/ReadMe_Alter/`.
+
+## 🎮 Client Setup
+> [!TIP]
+> Use [RSProx](https://github.com/blurite/rsprox/releases) to connect; it is actively maintained by trusted developers and supports the required OSRS protocols.
+
+For Windows:
+1. Press `⊞ + R` and enter `%USERPROFILE%`.
+2. Locate (or create) the `.rsprox` directory.
+3. Create `proxy-targets.yaml` with:
+
+```yaml
+config:
+  - id: 1
+    name: Alter
+    jav_config_url: https://client.blurite.io/jav_local_235.ws
+    varp_count: 15000
+    revision: 235.2
+    modulus: YOUR_MODULUS_KEY_HERE
+```
+
+Find the modulus in the project root, copy it exactly, and replace `YOUR_MODULUS_KEY_HERE`. If `.rsprox` does not exist, launching RSProx once will create it.  
 
 > [!WARNING]
 > And stay away from client's like Devious, as they have been caught adding Account Stealer into their client.
-## Acknowledgments
-- This project uses [OpenRune-FileStore](https://github.com/OpenRune/OpenRune-FileStore) for cache management.
-- RsMod2 Route finder: [RouteFinder](https://github.com/rsmod/rsmod/tree/main/engine/routefinder)
+## 🗺️ Project Planning
+- Public roadmap and task board: [Alter Trello](https://trello.com/b/A0LefFDs/later).  
+- Trello write access and contributor listing are reserved for active maintainers—contact Chris via Discord with a short summary of your work if you need access.
 
-### Credits:
-* Credits are given out to everyone who helped out with information or contributed in some form to the project. And can be found in: [Here](https://github.com/AlterRSPS)
+## 💬 Bug Reports & Support
+- Open an issue on [GitHub](https://github.com/AlterRSPS/Alter/issues) with reproduction details.
+- Reach the team directly in the [Discord server](https://discord.com/invite/sAzCuuwkpN).
 
-[patch]: https://oldschool.runescape.wiki/w/Update:Leagues_V:_Raging_Echos_Rewards_Are_Here
-[rev-badge]: https://img.shields.io/badge/Revision-235.2-blueviolet
-[license-badge]: https://img.shields.io/badge/license-ISC-informational
-[jdk-badge]: https://img.shields.io/badge/JDK-17-blue
+## 🙏 Acknowledgments
+- Cache management powered by [OpenRune-FileStore](https://github.com/OpenRune/OpenRune-FileStore).
+- Pathfinding based on [RsMod2 RouteFinder](https://github.com/rsmod/rsmod/tree/main/engine/routefinder).
+- Original Base [AlterRSPS GitHub organization](https://github.com/AlterRSPS).
+
+## 💙 Contributors
+<a href="https://github.com/Mark7625/Alter-custom/graphs/contributors" target="_blank"><img src="https://contrib.rocks/image?repo=Mark7625/Alter-custom&columns=18" alt="Avatars of all contributors"></a>
