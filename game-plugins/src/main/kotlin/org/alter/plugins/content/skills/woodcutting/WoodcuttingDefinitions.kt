@@ -227,15 +227,15 @@ object WoodcuttingDefinitions {
      */
     val TREE_TYPE_ID_TO_STUMP_RSCM: Map<String, String?> = mapOf(
         "regular" to "objects.treestump",
-        "oak" to "objects.oak_tree_stump",
-        "willow" to "objects.willow_tree_stump",
+        "oak" to "objects.oaktree_stump",
+        "willow" to "objects.willow_tree_stump_new", //willow_tree2or3or4_stump
         "teak" to "objects.teak_tree_stump",
         "juniper" to "objects.mature_juniper_tree_stump",
-        "maple" to "objects.maple_tree_stump",
+        "maple" to "objects.maple_tree_stump_new",
         "mahogany" to "objects.mahogany_tree_stump",
         "blisterwood" to null,
-        "yew" to "objects.yew_tree_stump",
-        "magic" to "objects.magic_tree_stump"
+        "yew" to "objects.yew_tree_stump_new",
+        "magic" to "objects.magic_tree_stump_new",
     )
 
     /**
@@ -243,19 +243,14 @@ object WoodcuttingDefinitions {
      * Regular trees have specific stumps that match their variant.
      */
     val REGULAR_TREE_TO_STUMP_RSCM = mapOf(
-        "objects.tree" to "objects.treestump",
+        "objects.tree" to "objects.treestump2",
         "objects.lighttree" to "objects.treestump2_light",
         "objects.tree2" to "objects.treestump2",
-        "objects.tree3" to "objects.treestump2",
-        "objects.tree4" to "objects.treestump2",
-        "objects.tree5" to "objects.treestump2",
+        "objects.tree3" to "objects.treestump2_small",
+        "objects.tree5" to "objects.treestump2_small",
         "objects.lighttree2" to "objects.treestump2_light",
-        "objects.evergreen" to "objects.evergreen_large_stump",
+        "objects.evergreen" to "objects.treestump2_green",
         "objects.evergreen_large" to "objects.evergreen_large_stump",
-        "objects.jungletree1" to "objects.junglestump_kharazi",
-        "objects.jungletree2" to "objects.junglestump_kharazi",
-        "objects.jungletree1_karamja" to "objects.junglestump_kharazi",
-        "objects.jungletree2_karamja" to "objects.junglestump_kharazi",
         "objects.achey_tree" to "objects.achey_tree_stump",
         "objects.hollowtree" to "objects.hollow_tree_stump",
         "objects.hollow_tree" to "objects.hollow_tree_stump",
