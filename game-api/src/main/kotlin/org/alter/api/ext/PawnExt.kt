@@ -17,6 +17,7 @@ import org.alter.game.model.queue.QueueTask
 import org.alter.game.model.timer.FROZEN_TIMER
 import org.alter.game.model.timer.STUN_TIMER
 import org.alter.rscm.RSCM
+import org.alter.rscm.RSCM.asRSCM
 import org.alter.rscm.RSCM.getRSCM
 
 fun Pawn.prepareForTeleport() {
@@ -116,13 +117,11 @@ fun Pawn.stun(cycles: Int) {
 fun Pawn.loopAnim(animId: String) {
     stopLoopAnim()
 
-    val animIdInt = getRSCM(animId)
-    val rawAnimationLength = getAnim(animIdInt)?.animationLength ?: 60
+    val rawAnimationLength = getAnim(animId.asRSCM())?.animationLength ?: 60
     val animationDuration = ((rawAnimationLength + 29) / 30).coerceAtLeast(1)
 
     attr[LOOPING_ANIMATION_ATTR] = LoopingAnimationData(
         animId = animId,
-        animIdInt = animIdInt,
         duration = animationDuration,
         currentTick = animationDuration
     )

@@ -1,10 +1,8 @@
-package org.alter.plugins.content.skills.woodcutting
+package org.alter.skills.woodcutting
 
 import org.alter.api.*
 import org.alter.api.success
 import org.alter.api.ext.*
-import org.alter.game.Server
-import org.alter.game.model.World
 import org.alter.game.model.attr.AttributeKey
 import org.alter.game.model.attr.INTERACTING_OBJ_ATTR
 import org.alter.game.model.entity.GameObject
@@ -13,15 +11,22 @@ import org.alter.game.model.entity.Player
 import org.alter.game.model.item.Item
 import org.alter.game.model.queue.QueueTask
 import org.alter.game.model.timer.TimerKey
-import org.alter.game.plugin.KotlinPlugin
-import org.alter.game.plugin.PluginRepository
 import org.alter.game.pluginnew.event.EventManager
-import org.alter.game.pluginnew.event.impl.TreeDepleteEvent
-import org.alter.plugins.content.skills.woodcutting.handlers.BlisterwoodTreeDepleteHandler
+import org.alter.skills.woodcutting.handlers.BlisterwoodTreeDepleteHandler
 import org.alter.rscm.RSCM
 import org.alter.rscm.RSCM.getRSCM
 import org.alter.rscm.RSCMType
 import io.github.oshai.kotlinlogging.KotlinLogging
+import org.alter.game.pluginnew.PluginEvent
+import org.alter.game.pluginnew.event.ReturnableEventListener
+import org.alter.game.pluginnew.event.impl.onObjectOption
+import org.alter.game.util.DbHelper
+import org.alter.game.util.DbHelper.Companion.table
+import org.alter.game.util.enumKey
+import org.alter.game.util.multiColumn
+import org.alter.game.util.vars.LocType
+import org.alter.skills.woodcutting.WoodcuttingDefinitions.axeData
+import org.alter.skills.woodcutting.WoodcuttingDefinitions.tableToTreeData
 
 /**
  * TODO: Remaining features for Woodcutting to be feature-complete:
@@ -35,11 +40,7 @@ import io.github.oshai.kotlinlogging.KotlinLogging
  *
  * Reference: https://oldschool.runescape.wiki/w/Woodcutting
  */
-class WoodcuttingPlugin(
-    r: PluginRepository,
-    world: World,
-    server: Server
-) : KotlinPlugin(r, world, server) {
+class WoodcuttingPlugin : PluginEvent() {
 
     companion object {
         private val logger = KotlinLogging.logger {}
@@ -67,12 +68,6 @@ class WoodcuttingPlugin(
     }
 
     /**
-     * Registry of tree deplete handlers.
-     * Each tree type can have a custom handler that defines what happens when it depletes.
-     */
-    private val treeDepleteHandlers: MutableMap<String, TreeDepleteHandler> = mutableMapOf()
-
-    /**
      * Registers a tree deplete handler for a specific tree type.
      * This allows custom behavior when a tree depletes (e.g., spawning NPCs, special messages, etc.).
      *
@@ -81,12 +76,32 @@ class WoodcuttingPlugin(
      */
     fun onDeplete(treeTypeId: String, handler: TreeDepleteHandler) {
         require(handler.treeTypeId == treeTypeId) { "Handler tree type (${handler.treeTypeId}) must match provided tree type ($treeTypeId)" }
-        treeDepleteHandlers[treeTypeId] = handler
+        RSCM.requireRSCM(RSCMType.ROWTYPES, treeTypeId)
+        val columnId = getRSCM(treeTypeId)
+        ReturnableEventListener.on<TreeDepleteEvent, Boolean> {
+            where { treeType == columnId }
+            then {
+                return@then handler.handleDeplete(player, treeObject, world)
+            }
+        }
     }
 
-    init {
-        registerTreeHandlers()
+    override fun init() {
         registerDepleteHandlers()
+
+        table("tables.woodcutting_trees").forEach { tree ->
+            val treeObject = tree.multiColumn("columns.woodcutting_trees:tree_object", LocType)
+            treeObject.forEach { treeID ->
+                try {
+                    onObjectOption(treeID,"chop down","chop") {
+                        player.queue { chopTree(player, tree) }
+                    }
+                } catch (e: Exception) {
+                    logger.warn { "Tree object '${treeID}' not found in cache or option not available, skipping registration: ${e.message}" }
+                }
+            }
+        }
+
         startTimerUpdateTask()
     }
 
@@ -150,92 +165,32 @@ class WoodcuttingPlugin(
      * Registers default tree deplete handlers.
      */
     private fun registerDepleteHandlers() {
-        onDeplete("blisterwood", BlisterwoodTreeDepleteHandler())
-    }
-
-    /**
-     * Registers chop handlers for all tree variants.
-     * Uses RSCM identifiers exclusively.
-     */
-    private fun registerTreeHandlers() {
-        WoodcuttingDefinitions.TREE_RSCM_TO_REPRESENTATIVE.forEach { (treeRscm, _) ->
-            try {
-                // Use RSCM string directly (onObjOption handles conversion internally)
-                if (objHasOption(obj = treeRscm, option = "chop down")) {
-                    onObjOption(obj = treeRscm, option = "chop down") {
-                        player.queue { chopTree(player, treeRscm) }
-                    }
-                } else if (objHasOption(obj = treeRscm, option = "chop")) {
-                    onObjOption(obj = treeRscm, option = "chop") {
-                        player.queue { chopTree(player, treeRscm) }
-                    }
-                }
-            } catch (e: Exception) {
-                logger.warn { "Tree object '$treeRscm' not found in cache or option not available, skipping registration: ${e.message}" }
-            }
-        }
-    }
-
-    /**
-     * Gets the tree data for a given tree RSCM identifier.
-     * Returns null if the tree is not recognized.
-     */
-    private fun getTreeDataForRscm(treeRscm: String): WoodcuttingDefinitions.TreeData? {
-        val representativeRscm = WoodcuttingDefinitions.TREE_RSCM_TO_REPRESENTATIVE[treeRscm] ?: return null
-        val representativeId = try {
-            getRSCM(representativeRscm)
-        } catch (e: Exception) {
-            return null
-        }
-        return WoodcuttingDefinitions.TREE_DATA_BY_OBJECT[representativeId]
-    }
-
-    /**
-     * Gets the tree type identifier for a given tree RSCM identifier.
-     * Returns null if the tree is not recognized.
-     */
-    private fun getTreeTypeIdForRscm(treeRscm: String): String? {
-        val representativeRscm = WoodcuttingDefinitions.TREE_RSCM_TO_REPRESENTATIVE[treeRscm] ?: return null
-        return WoodcuttingDefinitions.REPRESENTATIVE_TO_TREE_TYPE_ID[representativeRscm]
+        onDeplete("dbrows.woodcutting_blisterwood_tree", BlisterwoodTreeDepleteHandler())
     }
 
     /**
      * Gets the stump RSCM identifier for a given tree RSCM identifier.
      * Regular and dead trees have specific stump mappings that take precedence over tree type mappings.
      */
-    private fun getStumpRscmForTreeRscm(treeRscm: String): String? {
-        // Check for regular tree specific stump mapping first
-        WoodcuttingDefinitions.REGULAR_TREE_TO_STUMP_RSCM[treeRscm]?.let { return it }
+    private fun getStumpForTree(tree: Int, fallback: Int?): Int? {
+        enumKey("enums.regular_tree_stumps", tree, LocType, LocType)?.let { return it }
+        enumKey("enums.dead_tree_stumps", tree, LocType, LocType)?.let { return it }
 
-        // Check for dead tree specific stump mapping
-        WoodcuttingDefinitions.DEAD_TREE_TO_STUMP_RSCM[treeRscm]?.let { return it }
-
-        // Fall back to tree type mapping
-        val treeTypeId = getTreeTypeIdForRscm(treeRscm) ?: return null
-        return WoodcuttingDefinitions.TREE_TYPE_ID_TO_STUMP_RSCM[treeTypeId]
+        return fallback
     }
+
 
     /**
      * Checks if the player has any axe available (equipped or in inventory).
      */
     private fun hasAnyAxe(player: Player): Boolean {
-        val equippedWeapon = player.equipment[EquipmentType.WEAPON.id]
-        equippedWeapon?.let {
-            val axeId = getAxeIdentifier(it.id)
-            if (axeId != null) {
-                return true
-            }
+        player.equipment[EquipmentType.WEAPON.id]?.let { weapon ->
+            if (axeData.containsKey(weapon.id)) return true
         }
 
-        for (i in 0 until player.inventory.capacity) {
-            val item = player.inventory[i] ?: continue
-            val axeId = getAxeIdentifier(item.id)
-            if (axeId != null) {
-                return true
-            }
-        }
-
-        return false
+        return player.inventory.asSequence()
+            .filterNotNull()
+            .any { axeData.containsKey(it.id) }
     }
 
     /**
@@ -243,48 +198,19 @@ class WoodcuttingPlugin(
      * Checks both equipped weapon and inventory.
      * Returns null if the player has no usable axe.
      */
-    private fun getBestAxe(player: Player): String? {
+    private fun getBestAxe(player: Player): WoodcuttingDefinitions.AxeData? {
         val wcLevel = player.getSkills().getBaseLevel(Skills.WOODCUTTING)
-        val equippedWeapon = player.equipment[EquipmentType.WEAPON.id]
-        equippedWeapon?.let {
-            val axeId = getAxeIdentifier(it.id)
-            if (axeId != null) {
-                val axeData = WoodcuttingDefinitions.AXE_DATA[axeId]
-                if (axeData != null && wcLevel >= axeData.levelReq) {
-                    return axeId
-                }
-            }
+
+
+        player.equipment[EquipmentType.WEAPON.id]?.let { weapon ->
+            axeData[weapon.id]?.takeIf { wcLevel >= it.levelReq }?.let { return it }
         }
 
-        var bestAxe: String? = null
-        var bestLevel = -1
-
-        for (i in 0 until player.inventory.capacity) {
-            val item = player.inventory[i] ?: continue
-            val axeId = getAxeIdentifier(item.id)
-            if (axeId != null) {
-                val axeData = WoodcuttingDefinitions.AXE_DATA[axeId]
-                if (axeData != null && axeData.levelReq > bestLevel && wcLevel >= axeData.levelReq) {
-                    bestLevel = axeData.levelReq
-                    bestAxe = axeId
-                }
-            }
-        }
-
-        return bestAxe
-    }
-
-    /**
-     * Gets the RSCM identifier for an axe item ID.
-     * Returns null if the item is not an axe.
-     */
-    private fun getAxeIdentifier(itemId: Int): String? {
-        return try {
-            val axeId = RSCM.getReverseMapping(RSCMType.OBJTYPES, itemId)?.lowercase() ?: return null
-            if (axeId in WoodcuttingDefinitions.AXE_DATA) axeId else null
-        } catch (e: Exception) {
-            null
-        }
+        return player.inventory.asSequence()
+            .filterNotNull()
+            .mapNotNull { axeData[it.id] }
+            .filter { wcLevel >= it.levelReq }
+            .maxByOrNull { it.levelReq }
     }
 
     /**
@@ -299,16 +225,15 @@ class WoodcuttingPlugin(
      * Adds the log to inventory, gives XP, and shows a message.
      * Returns true if log was successfully added, false if inventory is full.
      */
-    private suspend fun QueueTask.handleLogObtained(
+    private fun handleLogObtained(
         player: Player,
         treeData: WoodcuttingDefinitions.TreeData
     ): Boolean {
-        val logItem = treeData.logRscm
+        val logItem = treeData.log
         if (player.inventory.add(logItem, 1).hasSucceeded()) {
             player.addXp(Skills.WOODCUTTING, treeData.xp)
             try {
-                val logItemId = getRSCM(logItem)
-                val logName = Item(logItemId).getName().lowercase()
+                val logName = Item(logItem).getName().lowercase()
                 player.message("You get some $logName.")
             } catch (e: Exception) {
                 // Fallback to generic message if item name lookup fails
@@ -333,34 +258,32 @@ class WoodcuttingPlugin(
      *
      * Returns true if depletion was handled, false if handler prevented default behavior.
      */
-    private suspend fun QueueTask.depleteTree(
+    private fun QueueTask.depleteTree(
         player: Player,
         obj: GameObject,
-        treeRscm: String,
+        columnID : Int,
         treeData: WoodcuttingDefinitions.TreeData
     ): Boolean {
-        val eventHandled = EventManager.postWithResult(TreeDepleteEvent(player, obj, treeRscm))
 
-        val treeTypeId = getTreeTypeIdForRscm(treeRscm)
-        val handler = treeTypeId?.let { treeDepleteHandlers[it] }
-        val handled = if (handler != null) {
-            handler.handleDeplete(this@depleteTree, player, obj, treeRscm, world)
-        } else {
-            false
-        }
+        val specialTree = EventManager.postWithResult(TreeDepleteEvent(
+            player = player,
+            treeObject = obj,
+            treeRscm = obj.id,
+            treeType = columnID,
+            logItemId = treeData.log,
+            experiencePerLog = treeData.xp,
+            logsObtained = 1,
+            queueTask = this@depleteTree,
+            world = world
+        ))
 
-        // If event system or handler processed the depletion, stop here (no stump creation)
-        if (eventHandled || handled) {
+        if (specialTree) {
+            println("Special Tree Return")
             return true
         }
 
-        val stumpRscm = getStumpRscmForTreeRscm(treeRscm)
-        if (stumpRscm != null) {
-            try {
-                obj.replaceWith(world, stumpRscm, treeData.respawnCycles, restoreOriginal = true)
-            } catch (_: Exception) {
-                logger.warn { "Stump RSCM '$stumpRscm' for tree '$treeRscm' not found, skipping stump creation" }
-            }
+        getStumpForTree(obj.internalID, treeData.stumpObject)?.let { stump ->
+            obj.replaceWith(world, stump, treeData.respawnCycles, restoreOriginal = true)
         }
 
         player.message("You have cut down this tree.")
@@ -374,8 +297,8 @@ class WoodcuttingPlugin(
      * Uses RSCM identifiers exclusively - no hardcoded IDs.
      * Timers are stored directly on the GameObject.
      */
-    suspend fun QueueTask.chopTree(player: Player, treeRscm: String) {
-        val treeData = getTreeDataForRscm(treeRscm) ?: return
+    suspend fun QueueTask.chopTree(player: Player, treeTable: DbHelper) {
+        val treeData = tableToTreeData(treeTable)
         val wcLevel = player.getSkills().getBaseLevel(Skills.WOODCUTTING)
 
         if (wcLevel < treeData.levelReq) {
@@ -388,27 +311,19 @@ class WoodcuttingPlugin(
           return
       }
 
-        val axeId = getBestAxe(player)
-        if (axeId == null) {
+        val axeData = getBestAxe(player)
+        if (axeData == null) {
           player.message("You do not have an axe which you have the woodcutting level to use.")
           return
         }
 
-        val axeData = WoodcuttingDefinitions.AXE_DATA[axeId] ?: return
         val obj = player.attr[INTERACTING_OBJ_ATTR]?.get() ?: return
 
         if (!obj.isSpawned(world)) {
             return
         }
 
-        val stumpRscm = getStumpRscmForTreeRscm(treeRscm)
-        val stumpId = stumpRscm?.let {
-            try {
-                getRSCM(it)
-            } catch (e: Exception) {
-                null
-            }
-        } ?: -1
+        val stumpId = getStumpForTree(obj.internalID,treeData.stumpObject)?: -1
 
         val nearestTile = obj.findNearestTile(player.tile)
         player.faceTile(nearestTile)
@@ -460,7 +375,7 @@ class WoodcuttingPlugin(
                     if (treeData.usesCountdown()) {
                         obj.attr[ACTIVE_CHOPPERS_ATTR]?.remove(player)
                     }
-                    depleteTree(player, obj, treeRscm, treeData)
+                    depleteTree(player, obj, treeTable.id, treeData)
                     return@repeatUntil
                 }
             }

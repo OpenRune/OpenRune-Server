@@ -1,0 +1,46 @@
+[[enum]]
+id="enums.dead_tree_stumps"
+keyType="LOC"
+valueType="LOC"
+
+default = "objects.deadtree1"
+
+[enum.values]
+"objects.deadtree1" = "objects.deadtree1_large_stump"
+"objects.deadtree1_large" = "objects.deadtree1_large_stump"
+"objects.lightdeadtree1" = "objects.deadtree1_light_stump"
+"objects.deadtree2" = "objects.deadtree2_stump"
+"objects.deadtree2_web_r" = "objects.deadtree2_stump"
+"objects.deadtree2_web_l" = "objects.deadtree2_stump"
+"objects.deadtree2_dark" = "objects.deadtree2_stump_dark"
+"objects.deadtree3" = "objects.deadtree3_stump"
+"objects.deadtree2_snowy" = "objects.deadtree2_stump"
+"objects.deadtree2_swamp" = "objects.deadtree2_stump_swamp"
+"objects.deadtree4" = "objects.deadtree4_stump"
+"objects.deadtree6" = "objects.deadtree6_stump"
+"objects.deadtree_burnt" = "objects.deadtree_burnt_stump"
+"objects.deadtree4swamp" = "objects.deadtree4_stump"
+"objects.deadtree3_snowy" = "objects.deadtree3_stump"
+
+[[enum]]
+id="enums.regular_tree_stumps"
+keyType="LOC"
+valueType="LOC"
+
+default = "objects.tree"
+
+[enum.values]
+"objects.tree" = "objects.treestump2"
+"objects.lighttree" = "objects.treestump2_light"
+"objects.tree2" = "objects.treestump2"
+"objects.tree3" = "objects.treestump2_small"
+"objects.tree5" = "objects.treestump2_small"
+"objects.lighttree2" = "objects.treestump2_light"
+"objects.evergreen" = "objects.treestump2_green"
+"objects.evergreen_large" = "objects.evergreen_large_stump"
+"objects.achey_tree" = "objects.achey_tree_stump"
+"objects.hollowtree" = "objects.hollow_tree_stump"
+"objects.hollow_tree" = "objects.hollow_tree_stump"
+"objects.hollow_tree_big" = "objects.hollow_tree_stump_big"
+"objects.arctic_pine" = "objects.arctic_pine_tree_stump"
+"objects.arctic_pine_snowy" = "objects.arctic_pine_tree_stump"

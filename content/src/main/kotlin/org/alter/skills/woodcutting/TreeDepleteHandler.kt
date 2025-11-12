@@ -1,4 +1,4 @@
-package org.alter.plugins.content.skills.woodcutting
+package org.alter.skills.woodcutting
 
 import org.alter.game.model.entity.GameObject
 import org.alter.game.model.entity.Player
@@ -26,10 +26,8 @@ interface TreeDepleteHandler {
      * @return true if the handler processed the depletion (prevents default stump creation), false otherwise
      */
     suspend fun handleDeplete(
-        queueTask: QueueTask,
         player: Player,
         treeObject: GameObject,
-        treeRscm: String,
         world: World
     ): Boolean
 }

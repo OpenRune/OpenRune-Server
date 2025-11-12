@@ -205,7 +205,7 @@ class Server {
          */
         world.postLoad()
 
-        PluginManager.load()
+        PluginManager.load(world)
 
         /*
          * Inform the time it took to load up all non-network logic.

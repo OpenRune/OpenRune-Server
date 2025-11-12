@@ -183,7 +183,6 @@ val INTERACTING_PLAYER_ATTR = AttributeKey<WeakReference<Player>>()
  */
 data class LoopingAnimationData(
     val animId: String,
-    val animIdInt: Int,
     val duration: Int, // Duration in cycles
     var currentTick: Int = 0 // Current tick count
 )

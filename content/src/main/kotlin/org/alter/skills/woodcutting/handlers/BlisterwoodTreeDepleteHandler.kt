@@ -1,4 +1,4 @@
-package org.alter.plugins.content.skills.woodcutting.handlers
+package org.alter.skills.woodcutting.handlers
 
 import org.alter.api.ext.findClosestWalkableTile
 import org.alter.api.ext.message
@@ -9,7 +9,7 @@ import org.alter.game.model.move.stopMovement
 import org.alter.game.model.queue.QueueTask
 import org.alter.game.model.World
 import org.alter.game.model.timer.TimeConstants
-import org.alter.plugins.content.skills.woodcutting.TreeDepleteHandler
+import org.alter.skills.woodcutting.TreeDepleteHandler
 import org.alter.rscm.RSCM
 import org.alter.rscm.RSCM.getRSCM
 
@@ -23,13 +23,11 @@ import org.alter.rscm.RSCM.getRSCM
  * @see https://oldschool.runescape.wiki/w/Blisterwood_tree
  */
 class BlisterwoodTreeDepleteHandler : TreeDepleteHandler {
-    override val treeTypeId: String = "blisterwood"
+    override val treeTypeId: String = "dbrows.woodcutting_blisterwood_tree"
 
     override suspend fun handleDeplete(
-        queueTask: QueueTask,
         player: Player,
         treeObject: GameObject,
-        treeRscm: String,
         world: World
     ): Boolean {
         // Stop the player's current action

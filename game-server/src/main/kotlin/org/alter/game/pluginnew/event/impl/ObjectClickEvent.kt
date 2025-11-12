@@ -5,7 +5,12 @@ import org.alter.game.model.entity.GameObject
 import org.alter.game.model.entity.Player
 import org.alter.game.model.item.Item
 import org.alter.game.pluginnew.MenuOption
+import org.alter.game.pluginnew.PluginEvent
+import org.alter.game.pluginnew.event.EventListener
 import org.alter.game.pluginnew.event.PlayerEvent
+import org.alter.rscm.RSCM.asRSCM
+import org.alter.rscm.RSCM.requireRSCM
+import org.alter.rscm.RSCMType
 
 class ItemOnObject(
     val item : Item,
@@ -39,5 +44,46 @@ open class ObjectClickEvent(
     override fun resolveOptionName(): String {
         val def = getObject(gameObject.internalID) ?: error("Object not found for id=${gameObject.id}[${gameObject.id}]")
         return def.actions.getOrNull(op.id - 1) ?: error("No action found at index ${op.id} for object id=${gameObject.id}[${gameObject.id}]")
+    }
+
+    fun objHasOption(option: String, ignoreCase: Boolean = true): Boolean {
+        val def = getObject(gameObject.internalID) ?: return false
+        return def.actions.any { it?.equals(option, ignoreCase) == true }
+    }
+
+    fun objHasOption(options: Iterable<String>, ignoreCase: Boolean = true): Boolean {
+        return options.any { objHasOption(it, ignoreCase) }
+    }
+
+    fun objHasOption(vararg options: String): Boolean {
+        return objHasOption(options.asList())
+    }
+}
+
+
+fun PluginEvent.onObjectOption(
+    obj: String,
+    vararg options: String,
+    action: suspend ObjectClickEvent.() -> Unit
+): EventListener<ObjectClickEvent> {
+    requireRSCM(RSCMType.LOCTYPES,obj)
+    return on<ObjectClickEvent> {
+        where {
+            gameObject.id == obj && options.any { it.equals(optionName, ignoreCase = true) }
+        }
+        then { action(this) }
+    }
+}
+
+fun PluginEvent.onObjectOption(
+    obj: Int,
+    vararg options: String,
+    action: suspend ObjectClickEvent.() -> Unit
+): EventListener<ObjectClickEvent> {
+    return on<ObjectClickEvent> {
+        where {
+            gameObject.internalID == obj && options.any { it.equals(optionName, ignoreCase = true) }
+        }
+        then { action(this) }
     }
 }
