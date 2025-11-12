@@ -1,72 +1,72 @@
+<h1 align="center">
+  <a href="http://atlasos.net" target="_blank"><img src="https://gcore.jsdelivr.net/gh/Atlas-OS/branding@main/banners/banner-v3.png" alt="Atlas" width="800"></a>
+</h1>
+  <p align="center">
+    <a href="https://github.com/Atlas-OS/Atlas/blob/main/LICENSE"><img alt="License" src="https://img.shields.io/github/license/atlas-os/atlas?style=for-the-badge&logo=github&color=1A91FF"/></a>
+    <a href="https://github.com/Atlas-OS/Atlas/graphs/contributors"><img alt="Contributors" src="https://img.shields.io/github/contributors/atlas-os/atlas?style=for-the-badge&color=1A91FF" /></a>
+    <a href="https://github.com/Atlas-OS/Atlas/releases/latest"><img alt="Release" src="https://img.shields.io/github/release/atlas-os/atlas?style=for-the-badge&color=1A91FF" /></a>
+    <a href="https://github.com/Atlas-OS/.github/blob/main/profile/CODE_OF_CONDUCT.md"><img alt="Code of Conduct" src="https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg?style=for-the-badge&color=1A91FF" /></a>
+  </p>
+<p align="center">A transparent and lightweight modification to Windows, designed to optimize performance, privacy and usability.</p>
 
+<p align="center">
+  <a href="https://atlasos.net" target="_blank">🌐 Website</a>
+  •
+  <a href="https://docs.atlasos.net" target="_blank">📚 Documentation</a>
+  •
+  <a href="https://discord.atlasos.net" target="_blank">☎️ Discord</a>
+  •
+  <a href="https://github.com/Atlas-OS/Atlas/discussions" target="_blank">💬 Discussions</a>
+</p>
 
+## 📚 **Important Documentation**
+- [Installation](https://docs.atlasos.net/getting-started/installation/)
+- [Install FAQ](https://docs.atlasos.net/install-faq/removed-features/)
+- [General FAQ](https://docs.atlasos.net/general-faq/atlas-and-security/)
+- [Contribution Guidelines](https://docs.atlasos.net/contributing/contribution-guidelines/)
+- [Branding](https://docs.atlasos.net/branding/)
 
-# Alter
-[![revision: 235.2][rev-badge]][patch] [![Discord](https://badgen.net/badge/icon/discord?icon=discord&label)](https://discord.com/invite/sAzCuuwkpN) ![jdk-badge] ![](https://tokei.rs/b1/github/AlterRSPS/Alter)
+## 🤔 What is Atlas?
 
-**Alter** is a modified version of [RSMod](https://github.com/Tomm0017/rsmod) a highly flexible user-friendly game server for use with the OSRS client. Implemented in a modular way,
-the framework allows developers to make and create any sort of plugin they wish without having to modify the core game module.
-Due to the plugin capabilities, even owners without programming experience can just have others make plugins for them and simply drop them into the plugins module to be automatically loaded on the next startup!
-#### I found a bug, where can I report it?
-- You can report them by creating Issue on [GitHub](https://github.com/AlterRSPS/Alter/issues) or in Alter's [Discord Server](https://discord.gg/kdhBuRaduw)
-#  Server setup
+AtlasOS, or Atlas, is an open-source project that enhances Windows by conveniently applying privacy, usability, and performance optimizations, all while maintaining functionality and [customizability](https://docs.atlasos.net/getting-started/post-installation/atlas-folder/general-configuration/).
 
-### First of all Download:
-* Youtube tutorial: https://www.youtube.com/watch?v=2Tu-NTzMbf0
-* Make sure you have [Intellij](https://www.jetbrains.com/idea/download/#section=windows) installed, how to install intellij: [Youtube](https://www.youtube.com/watch?v=t8T5Qwa5d_o)
+## 👀 Why Atlas?
+### 🔒 Enhanced Privacy
+Atlas removes the majority of telemetry embedded within Windows and implements numerous group policies to minimize data collection. However, it cannot ensure privacy outside the scope of Windows, such as browsers and other third-party applications.
 
-* First open Intellij, (If you already have a project open, either do `File -> Close`, or `File -> New -> Project from Version Control`)
-* If you decided to use `Close method` you will see this window, click on `Get from VCS`
-  ![tutor1](https://raw.githubusercontent.com/AlterRSPS/Resources/main/docs/resources/ReadMe_Alter/tutor1.png)
-* Second paste `https://github.com/AlterRSPS/Alter` in URL Field and hit Clone. </br>
-  ![tutor2](https://raw.githubusercontent.com/AlterRSPS/Resources/main/docs/resources/ReadMe_Alter/tuor2.png)
-* Hit `Clone` and let the project fully load.
-* Now click on `Gradle` button on right side. </br>
-  ![tutor4](https://raw.githubusercontent.com/AlterRSPS/Resources/main/docs/resources/ReadMe_Alter/Tutor4.png)
-* Expand `Alter` -> `other` and double click `install`
-  ![tutor5](https://raw.githubusercontent.com/AlterRSPS/Resources/main/docs/resources/ReadMe_Alter/Tutori5.png)
-* And now wait until you get this result in your `Terminal` at the bottom:
-  ![tutor7](https://raw.githubusercontent.com/AlterRSPS/Resources/main/docs/resources/ReadMe_Alter/tutor7.png)
-* Now instead of `Install` task do Run `Gradle -> Alter -> game -> Tasks -> Application - Run`
-* Now the server should be running, you should see inside your terminal:
-  ![tutor8](https://raw.githubusercontent.com/AlterRSPS/Resources/main/docs/resources/ReadMe_Alter/Alter_Successfully_initialized.png)
-* If you only see `Alter Loaded up in x ms.` you messed up somewhere.
-* You can connect whatever client you want (of course it has to follow OSRS protocols.)
+### 📈 Optimized Performance
+Atlas strikes a balance between performance and compatibility. It implements numerous meaningful changes to improve Windows performance and responsiveness without breaking essential features. Atlas will not do tweaks for a placebo effect or marginal gains, making Atlas more stable and compatible.
 
+### 🛡️ Security Features
+Most Windows modifications remove key security features most users need to maintain a secure system. On the other hand, Atlas allows users to customize their security at their own risk while informing users about each option's [pros and cons](https://docs.atlasos.net/getting-started/post-installation/atlas-folder/security/).
 
-> [!NOTE]
-> When you have Intellij Open, navigate to `File` -> `Project Structure` -> And make sure SDK is set to `17 java version 17.x.x`
-> 
-> It is also recommended to install the [rscm-plugin](https://github.com/blurite/rscm-plugin) in IntelliJ for enhanced Entity references support. 
-# Client setup:
-> [!TIP]  
-> As for now, [RSProx](https://github.com/blurite/rsprox/releases) is the only OSRS client that should be used. It's developed by the most trusted and experienced developers in the RSPS scene.
-> 
-> For Windows users: Just press `⊞ + R` and in text field area write: `%USERPROFILE%` and locate folder named `.rsprox` create a new file named: `proxy-targets.yaml` and inside paste:  
->  
-> ```yaml  
-> config:  
->   - id: 1  
->     name: Alter  
->     jav_config_url: https://client.blurite.io/jav_local_235.ws  
->     varp_count: 15000  
->     revision: 235.2  
->     modulus: YOUR_MODULUS_KEY_HERE  
-> ```  
-> Modulus key will be found inside Alter Project root directory make sure to copy every character, And replace `YOUR_MODULUS_KEY_HERE` inside `proxy-targets.yaml` with your modulus key. For more information on it you can find at: [RSProx-Private-Server-Usage](https://github.com/blurite/rsprox?tab=readme-ov-file#private-server-usage)
-> 
-> If you haven't used RSProx before, You won't have `.rsprox` folder inside `%USERPROFILE%`
+Some optional security features are:
 
-> [!WARNING]
-> And stay away from client's like Devious, as they have been caught adding Account Stealer into their client.
-## Acknowledgments
-- This project uses [OpenRune-FileStore](https://github.com/OpenRune/OpenRune-FileStore) for cache management.
-- RsMod2 Route finder: [RouteFinder](https://github.com/rsmod/rsmod/tree/main/engine/routefinder)
+- Windows Defender & SmartScreen
+- Windows Update
+- Automatic updates are toggleable
+- CPU mitigations
+- User Account Control
+- Core isolation features
 
-### Credits:
-* Credits are given out to everyone who helped out with information or contributed in some form to the project. And can be found in: [Here](https://github.com/AlterRSPS)
+### ✅ Increased Usability
+Atlas applies many modifications and default settings to make Windows easier to use. This includes removing commonly unneeded applications (which are reinstallable), configuring many aspects of the interface, disabling advertisements, and much more.
 
-[patch]: https://oldschool.runescape.wiki/w/Update:Leagues_V:_Raging_Echos_Rewards_Are_Here
-[rev-badge]: https://img.shields.io/badge/Revision-235.2-blueviolet
-[license-badge]: https://img.shields.io/badge/license-ISC-informational
-[jdk-badge]: https://img.shields.io/badge/JDK-17-blue
+### 🔍 Open Source and Transparent
+
+Unlike custom Windows ISOs, Atlas is more straightforward to audit due to the use of [AME Wizard](https://amelabs.net). AME Wizard is controlled by Playbooks, a customizable script-esque system that can perform various tasks.
+
+Playbooks are renamed **.zip** archives, with the password [`malte`](https://docs.amelabs.net/developers/getting-started/creation.html). As they primarily consist of plain text, Playbooks enable transparency, unlike custom Windows ISOs, which have many entry points for malicious activity.
+
+The few binaries in the Playbook are open source in our [`utilities` repository](https://github.com/Atlas-OS/utilities), with the [hashes listed here](https://github.com/Atlas-OS/Atlas/blob/main/src/playbook/Executables/AtlasModules/README.md).
+
+Although the GUI is not open source for AME Wizard, AME Wizard's entire backend (called [TrustedUninstaller](https://github.com/Ameliorated-LLC/trusted-uninstaller-cli)) is open source under MIT, which contains each action used to run Atlas. The Atlas Playbook is open source under the [GPLv3 license](https://github.com/Atlas-OS/Atlas/blob/main/LICENSE).
+
+### 🔒 Legal Compliance
+As Atlas doesn't redistribute a modified Windows ISO, it complies with the [Microsoft Windows Usage Terms](https://www.microsoft.com/content/dam/microsoft/usetm/documents/windows/11/oem-(pre-installed)/UseTerms_OEM_Windows_11_English.pdf). In addition, Atlas does not alter activation in Windows.
+
+## 🎨 Brand kit
+Want to create your own Atlas wallpaper with some original creative designs? Visit our [Branding Kit on Docs](https://docs.atlasos.net/branding/) and share your creations on our [GitHub Discussions](https://github.com/Atlas-OS/Atlas/discussions/categories/community-artwork)!
+
+## 💙 Contributors
+<a href="https://github.com/Atlas-OS/Atlas/graphs/contributors" target="_blank"><img src="https://contrib.rocks/image?repo=Atlas-OS/Atlas&columns=18" alt="Avatars of all contributors"></a>
