@@ -28,18 +28,6 @@ import org.alter.game.util.vars.LocType
 import org.alter.skills.woodcutting.WoodcuttingDefinitions.axeData
 import org.alter.skills.woodcutting.WoodcuttingDefinitions.tableToTreeData
 
-/**
- * TODO: Remaining features for Woodcutting to be feature-complete:
- * - Bird nests (random drops while chopping)
- * - Forestry system (group bonuses, events like Rising Roots)
- * - Canoes (travel system)
- * - Woodcutting Guild (level 60+ area with bonuses)
- * - Woodcutting pet (Beaver)
- * - Temporary boosts (dragon axe special, stews, etc.)
- * - Additional tree types (redwood, jungle, etc.)
- *
- * Reference: https://oldschool.runescape.wiki/w/Woodcutting
- */
 class WoodcuttingPlugin : PluginEvent() {
 
     companion object {
@@ -270,10 +258,6 @@ class WoodcuttingPlugin : PluginEvent() {
             treeObject = obj,
             treeRscm = obj.id,
             treeType = columnID,
-            logItemId = treeData.log,
-            experiencePerLog = treeData.xp,
-            logsObtained = 1,
-            queueTask = this@depleteTree,
             world = world
         ))
 
@@ -357,6 +341,7 @@ class WoodcuttingPlugin : PluginEvent() {
             val success = success(low, high, wcLevel)
 
             if (success) {
+                TreeLogObtainedEvent(player,obj,treeData,treeTable.id).post()
                 val logObtained = handleLogObtained(player, treeData)
                 if (!logObtained) {
                     if (treeData.usesCountdown()) {

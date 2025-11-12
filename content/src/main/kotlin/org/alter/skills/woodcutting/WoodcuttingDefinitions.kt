@@ -29,7 +29,8 @@ object WoodcuttingDefinitions {
         val successRateHigh: Int,
         val despawnTicks: Int,
         val depleteMechanic: Int,
-        val stumpObject : Int?
+        val stumpObject : Int?,
+        val clueBaseChance : Int
     ) {
         /**
          * Returns true if this tree uses a countdown timer.
@@ -51,6 +52,7 @@ object WoodcuttingDefinitions {
         val despawnTicks = treeTable.column("columns.woodcutting_trees:despawn_ticks", IntType)
         val depleteMechanic = treeTable.column("columns.woodcutting_trees:deplete_mechanic", IntType)
         val stumpObject = treeTable.columnOptional("columns.woodcutting_trees:stump_object", LocType)
+        val clueBaseChance = treeTable.columnOptional("columns.woodcutting_trees:clue_base_chance", IntType)?: -1
 
         return TreeData(
             levelReq = level,
@@ -61,7 +63,8 @@ object WoodcuttingDefinitions {
             successRateHigh = successRateHigh,
             despawnTicks = despawnTicks,
             depleteMechanic = depleteMechanic,
-            stumpObject
+            stumpObject,
+            clueBaseChance
         )
     }
 

@@ -6,7 +6,6 @@ import dev.openrune.definition.type.ObjectType
 import dev.openrune.types.ObjectServerType
 import gg.rsmod.util.toStringHelper
 import io.github.oshai.kotlinlogging.KotlinLogging
-import org.alter.game.model.EntityType
 import org.alter.game.model.Tile
 import org.alter.game.model.World
 import org.alter.game.model.attr.AttributeMap
@@ -285,7 +284,7 @@ abstract class GameObject : Entity {
         ObjectTimerMap.unregisterIfEmpty(this)
     }
 
-    fun addTimer(key: TimerKey, amount: Int = 1) {
+    fun increaseTimer(key: TimerKey, amount: Int = 1) {
         val timerMap = getOrCreateTimers()
         val current = if (timerMap.exists(key)) timerMap[key] else 0
 

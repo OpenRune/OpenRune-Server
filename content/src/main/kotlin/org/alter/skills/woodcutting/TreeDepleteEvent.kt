@@ -5,6 +5,7 @@ import org.alter.game.model.World
 import org.alter.game.model.entity.GameObject
 import org.alter.game.model.entity.Player
 import org.alter.game.model.queue.QueueTask
+import org.alter.game.pluginnew.event.PlayerEvent
 import org.alter.game.pluginnew.event.impl.SkillingActionCompletedGatheringEvent
 
 /**
@@ -20,17 +21,36 @@ class TreeDepleteEvent(
     val treeObject: GameObject,
     val treeRscm: String,
     val treeType: Int,
-    val logItemId: Int,
-    val experiencePerLog: Double,
-    val logsObtained: Int = 1,
-    val queueTask: QueueTask,
     val world: World
+) : PlayerEvent(player)
+
+/**
+ * Event triggered when a player successfully obtains a log from a tree.
+ *
+ * This event is fired as part of the woodcutting skilling action once a player
+ * has gathered a log from a tree. It extends [SkillingActionCompletedGatheringEvent],
+ * providing details about the player, the tree object, the type of tree, and the
+ * log obtained.
+ *
+ * @property player The [Player] who obtained the log.
+ * @property treeObject The [GameObject] representing the tree that was cut.
+ * @property treeData The [WoodcuttingDefinitions.TreeData] containing information
+ * about the tree type, including the log ID and experience points awarded.
+ *
+ * @see SkillingActionCompletedGatheringEvent
+ */
+class TreeLogObtainedEvent(
+    override val player: Player,
+    treeObject: GameObject,
+    treeData: WoodcuttingDefinitions.TreeData,
+    val treeType : Int,
+    val clueBaseChance : Int = treeData.clueBaseChance
 ) : SkillingActionCompletedGatheringEvent(
     player = player,
     skill = Skills.WOODCUTTING,
     actionObject = treeObject,
-    experienceGained = experiencePerLog * logsObtained,
-    resourceId = logItemId,
-    amountGathered = logsObtained
+    experienceGained = treeData.xp,
+    resourceId = treeData.log,
+    amountGathered = 1
 )
 

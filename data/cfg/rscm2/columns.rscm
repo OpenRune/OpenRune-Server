@@ -1684,6 +1684,7 @@ woodcutting_trees:success_rate_high=80478214
 woodcutting_trees:despawn_ticks=80478215
 woodcutting_trees:deplete_mechanic=80478216
 woodcutting_trees:stump_object=80478217
+woodcutting_trees:clue_base_chance=80478218
 woodcutting_axes:item=80543744
 woodcutting_axes:level=80543745
 woodcutting_axes:delay=80543746
