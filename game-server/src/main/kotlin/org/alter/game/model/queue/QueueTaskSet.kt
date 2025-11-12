@@ -52,7 +52,7 @@ abstract class QueueTaskSet {
      * before-hand.
      */
     fun terminateTasks() {
-        queue.forEach { it.terminate() }
+        queue.toList().forEach { it.terminate() }
         queue.clear()
     }
 }
