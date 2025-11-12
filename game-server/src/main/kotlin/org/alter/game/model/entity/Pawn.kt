@@ -20,6 +20,7 @@ import org.alter.game.model.queue.impl.PawnQueueTaskSet
 import org.alter.game.model.timer.*
 import org.alter.game.plugin.Plugin
 import org.alter.game.pluginnew.event.EventManager
+import org.alter.game.pluginnew.event.impl.InterruptActionEvent
 import org.alter.game.pluginnew.event.impl.TimerEvent
 import org.alter.game.service.log.LoggerService
 import org.alter.rscm.RSCM
@@ -515,8 +516,24 @@ abstract class Pawn(val world: World) : Entity() {
      * Terminates any on-going [QueueTask]s that are being executed by this [Pawn].
      */
     fun interruptQueues() {
+        if (this is Player) {
+            InterruptActionEvent(this).post()
+        }
+
+        stopLoopAnimIfActive()
         queues.terminateTasks()
     }
+
+    /**
+     * Stops any active looping animation by removing the attribute and setting animation to NONE.
+     * This is called when actions are interrupted to ensure animations don't continue playing.
+     */
+    fun stopLoopAnimIfActive() {
+        if (attr.has(LOOPING_ANIMATION_ATTR)) {
+            attr.remove(LOOPING_ANIMATION_ATTR)
+        }
+    }
+
 
     /**
      * Executes a plugin with this [Pawn] as its context.

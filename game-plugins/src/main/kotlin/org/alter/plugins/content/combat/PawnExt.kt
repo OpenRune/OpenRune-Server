@@ -73,7 +73,12 @@ fun Pawn.dealHit(
 ): PawnHit {
     val hit =
         if (landHit) {
-            val hit = world.random(maxHit)
+            val hit = if (this@dealHit.attr[Combat.ALWAYS_MAX_HIT] == true) {
+                // Always hit the target's max HP (one-shot kill)
+                target.getMaxHp()
+            } else {
+                world.random(maxHit)
+            }
             if (hit == maxHit && this@dealHit is Player) {
                 target.hit(damage = hit, type = HitType.HIT_MAX, delay = delay, attackersIndex = this.index) // maxhit type
             } else {

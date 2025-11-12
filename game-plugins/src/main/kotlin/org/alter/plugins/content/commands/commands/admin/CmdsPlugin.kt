@@ -22,7 +22,7 @@ class CmdsPlugin(
     world: World,
     server: Server
 ) : KotlinPlugin(r, world, server) {
-        
+
     init {
 
         onCommand(command = "cmds", powerRequired = Privilege.ADMIN_POWER, description = "Display commands") {
@@ -35,6 +35,27 @@ class CmdsPlugin(
              */
             TODO("CMDS")
             //player.runClientScript(CommonClientScripts.INTERFACE_MENU, "Command List:", getCommands(getPluginRepository()).joinToString("|").removePrefix("(").removePrefix(")"))
+        }
+
+        onCommand(command = "cs", powerRequired = Privilege.OWNER_POWER, description = "Run client script by ID with optional arguments") {
+            val args = player.getCommandArgs()
+            if (args.isEmpty()) {
+                player.message("Usage: ::cs <script_id> [args...]")
+            } else {
+                try {
+                    val scriptId = args[0].toInt()
+                    // Convert remaining arguments to appropriate types (int if numeric, string otherwise)
+                    val clientArgs = mutableListOf<Any>()
+                    for (i in 1 until args.size) {
+                        val arg = args[i]
+                        clientArgs.add(arg.toIntOrNull() ?: arg)
+                    }
+                    player.runClientScript(ClientScript(id = scriptId), *clientArgs.toTypedArray())
+                    player.message("Executed client script: $scriptId${if (clientArgs.isNotEmpty()) " with args: ${clientArgs.joinToString()}" else ""}")
+                } catch (e: NumberFormatException) {
+                    player.message("Invalid script ID. Must be an integer.")
+                }
+            }
         }
 
         fun getCommands(r: PluginRepository): List<String> {

@@ -1,5 +1,6 @@
 package org.alter.api.ext
 
+import dev.openrune.ServerCacheManager.getAnim
 import org.alter.api.BonusSlot
 import org.alter.api.HitType
 import org.alter.api.HitbarType
@@ -12,8 +13,12 @@ import org.alter.game.model.entity.Pawn
 import org.alter.game.model.entity.Player
 import org.alter.game.model.item.Item
 import org.alter.game.model.move.stopMovement
+import org.alter.game.model.queue.QueueTask
 import org.alter.game.model.timer.FROZEN_TIMER
 import org.alter.game.model.timer.STUN_TIMER
+import org.alter.rscm.RSCM
+import org.alter.rscm.RSCM.asRSCM
+import org.alter.rscm.RSCM.getRSCM
 
 fun Pawn.prepareForTeleport() {
     resetInteractions()
@@ -101,4 +106,30 @@ fun Pawn.stun(cycles: Int) {
             message("You have been stunned!")
         }
     }
+}
+
+/**
+ * Starts looping an animation continuously.
+ * The animation will restart automatically when it finishes.
+ *
+ * @param animId The RSCM animation identifier (e.g., "sequences.human_chop")
+ */
+fun Pawn.loopAnim(animId: String) {
+    stopLoopAnim()
+
+    val rawAnimationLength = getAnim(animId.asRSCM())?.animationLength ?: 60
+    val animationDuration = ((rawAnimationLength + 29) / 30).coerceAtLeast(1)
+
+    attr[LOOPING_ANIMATION_ATTR] = LoopingAnimationData(
+        animId = animId,
+        duration = animationDuration,
+        currentTick = animationDuration
+    )
+
+    animate(animId)
+}
+
+fun Pawn.stopLoopAnim() {
+    attr.remove(LOOPING_ANIMATION_ATTR)
+    animate(RSCM.NONE)
 }

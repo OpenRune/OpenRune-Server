@@ -44,7 +44,7 @@ fun row(row: String) = DbHelper.row(row)
 fun <K, V> DbHelper.multiColumn(
     columnName: String,
     vararg types: VarTypeImpl<K, V>
-): List<V?> {
+): List<V> {
     val column = getColumn(columnName)
     val values = column.column.values ?: return emptyList()
 
@@ -52,16 +52,8 @@ fun <K, V> DbHelper.multiColumn(
 
     return values.mapIndexed { i, raw ->
         val type = types[i % types.size]
-        try {
-            run {
-                val value = column.get(i, type)
-                type.convertTo(value as K)
-            }
-        } catch (e: DbException) {
-            throw e
-        } catch (_: Exception) {
-            null
-        }
+        val value = column.get(i, type)
+        type.convertTo(value as K)
     }
 }
 

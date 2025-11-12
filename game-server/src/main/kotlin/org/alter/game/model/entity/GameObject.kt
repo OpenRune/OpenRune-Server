@@ -5,10 +5,10 @@ import dev.openrune.ServerCacheManager.getObject
 import dev.openrune.definition.type.ObjectType
 import dev.openrune.types.ObjectServerType
 import gg.rsmod.util.toStringHelper
+import io.github.oshai.kotlinlogging.KotlinLogging
 import org.alter.game.model.Tile
 import org.alter.game.model.World
 import org.alter.game.model.attr.AttributeMap
-import org.alter.game.model.entity.ObjectTimerMap
 import org.alter.game.model.timer.TimerKey
 import org.alter.game.model.timer.TimerMap
 import org.alter.rscm.RSCM
@@ -96,6 +96,9 @@ object ObjectTimerMap {
         }
     }
 }
+
+private val logger = KotlinLogging.logger {}
+
 abstract class GameObject : Entity {
 
     /**
@@ -106,7 +109,7 @@ abstract class GameObject : Entity {
     /**
      * The object id.
      */
-    internal val internalID: Int
+    val internalID: Int
         get() = RSCM.getRSCM(id)
 
     /**
@@ -215,79 +218,51 @@ abstract class GameObject : Entity {
     }
 
 
-    /**
-     * Replaces this object in the world with another game object.
-     *
-     * If this object is dynamic, the replacement will also be dynamic.
-     * Otherwise, a static replacement is spawned.
-     *
-     * @param world The [World] instance the object exists in.
-     * @param obj The name or identifier of the replacement object.
-     * @param removeAfter Optional: number of game ticks after which the replacement
-     * should be removed. Default is 0 (permanent).
-     * @param restoreOriginal Whether to restore the original object after [removeAfter] ticks. Default is true.
-     * @return The newly created [GameObject] that replaced the original.
-     */
-    fun replaceWith(
+    fun replaceWith(world: World, obj: String, lifetime: Int = 0, restoreOriginal: Boolean = false) =
+        replace(world, obj, lifetime, null, restoreOriginal)
+
+    fun replaceWith(world: World, obj: Int, lifetime: Int = 0, restoreOriginal: Boolean = false) =
+        replace(world, obj, lifetime, null, restoreOriginal)
+
+    fun replaceWith(world: World, obj: String, key: TimerKey, restoreOriginal: Boolean = false) =
+        replace(world, obj, 0, key, restoreOriginal)
+
+    fun replaceWith(world: World, obj: Int, key: TimerKey, restoreOriginal: Boolean = false) =
+        replace(world, obj, 0, key, restoreOriginal)
+
+    internal fun replace(
         world: World,
-        obj: String,
-        removeAfter: Int = 0,
+        obj: Any,
+        lifetime: Int = 0,
+        key: TimerKey? = null,
         restoreOriginal: Boolean = false
     ): GameObject {
-        world.remove(this)
+        require(obj is String || obj is Int) { "obj must be either a String or an Int, got ${obj::class.simpleName}" }
 
-        val replacement: GameObject = when (this) {
-            is DynamicObject -> DynamicObject(this, obj)
-            else -> StaticObject(obj, type, rot, tile)
-        }
+        val id = obj as? String ?: RSCM.getReverseMapping(RSCMType.LOCTYPES, obj as Int)!!
 
+        val original = this
+        world.remove(original)
+
+        val replacement = DynamicObject(id, type, rot, tile)
         world.spawn(replacement)
 
-        if (removeAfter > 0) {
+        if (key != null) {
             world.queue {
-                wait(removeAfter)
-                world.remove(replacement)
-                if (restoreOriginal) {
-                    world.spawn(this@GameObject)
+                repeatUntil(1, true, { false }) {
+                    if (replacement.getTimeLeft(key) == 0) {
+                        world.remove(replacement)
+                        if (restoreOriginal) world.spawn(original)
+                        return@repeatUntil
+                    }
                 }
             }
-        }
-
-        return replacement
-    }
-
-    /**
-     * Replaces this object in the world with another game object.
-     *
-     * The replacement will persist until the specified [TimerKey] expires.
-     *
-     * @param world The [World] instance the object exists in.
-     * @param obj The name or identifier of the replacement object.
-     * @param key The [TimerKey] controlling how long the replacement lasts.
-     * @param restoreOriginal Whether to restore the original object after the timer expires. Default is true.
-     * @return The newly created [GameObject] that replaced the original.
-     */
-    fun replaceWith(
-        world: World,
-        obj: String,
-        key: TimerKey,
-        restoreOriginal: Boolean = false
-    ): GameObject {
-        val replacement: GameObject = when (this) {
-            is DynamicObject -> DynamicObject(obj, type, rot, tile)
-            else -> StaticObject(obj, type, rot, tile)
-        }
-
-        world.remove(this)
-        world.spawn(replacement)
-
-        world.queue {
-            repeatUntil(1,true,{false}) {
-                if (replacement.getTimeLeft(key) == 0) {
-                    world.remove(replacement)
-                    if (restoreOriginal) {
-                        world.spawn(this@GameObject)
-                    }
+        } else if (lifetime > 0) {
+            world.queue {
+                wait(lifetime)
+                world.remove(replacement)
+                if (restoreOriginal) {
+                    world.spawn(DynamicObject(original.id, original.type, original.rot, original.tile))
                 }
             }
         }
@@ -309,7 +284,7 @@ abstract class GameObject : Entity {
         ObjectTimerMap.unregisterIfEmpty(this)
     }
 
-    fun addTimer(key: TimerKey, amount: Int = 1) {
+    fun increaseTimer(key: TimerKey, amount: Int = 1) {
         val timerMap = getOrCreateTimers()
         val current = if (timerMap.exists(key)) timerMap[key] else 0
 

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.dataformat.toml.TomlFactory
 import io.github.classgraph.ClassGraph
 import io.github.oshai.kotlinlogging.KotlinLogging
+import org.alter.game.model.World
 import org.alter.rscm.RSCM
 import org.alter.rscm.RSCMType
 import org.yaml.snakeyaml.Yaml
@@ -32,7 +33,7 @@ object PluginManager {
     private val yamlCache = mutableMapOf<String, Map<String, Any>>()
     private val settingsCache = mutableMapOf<String, PluginSettings>()
 
-    fun load() {
+    fun load(world : World) {
         val start = System.currentTimeMillis()
         val classOutputDir = File("../content/build/classes/kotlin/main")
         val resourcesDir = File("../content/build/resources/main/")
@@ -55,6 +56,8 @@ object PluginManager {
                         loadPluginSettings(clazz, scanResult, resourcesDir)?.let { settings ->
                             instance.settings = settings
                         }
+
+                        instance.world = world
 
                         if (instance.isEnabled()) {
                             instance.init()

@@ -1,4 +1,4 @@
-package org.alter.impl
+package org.alter.impl.misc
 
 import dev.openrune.definition.dbtables.dbTable
 import dev.openrune.definition.util.VarType

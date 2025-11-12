@@ -13,11 +13,12 @@ import dev.openrune.definition.GameValGroupTypes
 import dev.openrune.filesystem.Cache
 import dev.openrune.tools.PackServerConfig
 import io.github.oshai.kotlinlogging.KotlinLogging
-import org.alter.impl.Firemaking
-import org.alter.impl.FoodTable
-import org.alter.impl.PrayerTable
+import org.alter.impl.skills.Firemaking
+import org.alter.impl.misc.FoodTable
+import org.alter.impl.skills.PrayerTable
 import org.alter.impl.StatComponents
-import org.alter.impl.TeleTabs
+import org.alter.impl.misc.TeleTabs
+import org.alter.impl.skills.Woodcutting
 import java.io.File
 import java.nio.file.Files
 import java.nio.file.StandardCopyOption
@@ -62,7 +63,9 @@ fun downloadRev(type : TaskType) {
                 TeleTabs.teleTabs(),
                 StatComponents.statsComponents(),
                 FoodTable.consumableFood(),
-                Firemaking.logs()
+                Firemaking.logs(),
+                Woodcutting.trees(),
+                Woodcutting.axes()
             )))
 
             builder.extraTasks(*tasksNew.toTypedArray()).build().initialize()
@@ -84,7 +87,9 @@ fun downloadRev(type : TaskType) {
                 TeleTabs.teleTabs(),
                 StatComponents.statsComponents(),
                 FoodTable.consumableFood(),
-                Firemaking.logs()
+                Firemaking.logs(),
+                Woodcutting.trees(),
+                Woodcutting.axes()
             )))
 
             builder.extraTasks(*tasksNew.toTypedArray()).build().initialize()

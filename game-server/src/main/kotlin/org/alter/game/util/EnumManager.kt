@@ -4,10 +4,13 @@ import dev.openrune.ServerCacheManager
 import dev.openrune.definition.type.EnumType
 import dev.openrune.definition.util.BaseVarType
 import dev.openrune.definition.util.VarType
+import io.github.oshai.kotlinlogging.KotlinLogging
 import org.alter.game.util.vars.VarTypeImpl
 import org.alter.rscm.RSCM.asRSCM
 import org.alter.rscm.RSCM.requireRSCM
 import org.alter.rscm.RSCMType
+
+private val logger = KotlinLogging.logger {}
 
 /**
  * Represents a typed key/value pair from an enum.
@@ -32,16 +35,13 @@ fun <K1, V1, K2, V2> enum(
 ): List<EnumPair<V1, V2>> =
     EnumHelper.of(enumName).getEnum(keyType, valueType)
 
+
 fun <K, V> enumKey(
     enumName: String,
     key: K,
     keyType: VarTypeImpl<*, K>,
     valueType: VarTypeImpl<*, V>
-): V {
-    return enum(enumName, keyType, valueType)
-        .firstOrNull { it.key == key }
-        ?.value ?: throw NoSuchElementException("Key '$key' not found in enum '$enumName'")
-}
+): V? = enum(enumName, keyType, valueType).firstOrNull { it.key == key }?.value
 
 /**
  * Type-safe helper for working with an EnumType.

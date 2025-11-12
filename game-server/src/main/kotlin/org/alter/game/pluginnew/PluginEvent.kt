@@ -1,5 +1,6 @@
 package org.alter.game.pluginnew
 
+import org.alter.game.model.World
 import org.alter.game.pluginnew.event.Event
 import org.alter.game.pluginnew.event.EventListener
 import org.alter.game.pluginnew.event.EventManager
@@ -7,6 +8,8 @@ import kotlin.reflect.KClass
 import kotlin.script.experimental.annotations.KotlinScript
 
 abstract class PluginEvent  {
+
+    lateinit var world : World
 
     var settings: PluginSettings? = null
         internal set
