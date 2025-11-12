@@ -3,8 +3,8 @@ package org.alter.game.model.move
 import org.alter.game.model.attr.*
 import org.alter.game.model.entity.*
 import org.alter.game.model.queue.QueueTask
-import org.alter.game.model.queue.TaskPriority
 import org.alter.game.model.timer.RESET_PAWN_FACING_TIMER
+import org.alter.game.model.wait
 import org.alter.game.plugin.Plugin
 import org.rsmod.routefinder.collision.CollisionStrategy
 import java.lang.ref.WeakReference
@@ -29,8 +29,8 @@ object PawnPathAction {
         } else {
             null
         }
-        pawn.queue(TaskPriority.STANDARD) {
-            terminateAction = {
+        pawn.queue {
+            pawn.terminateAction = {
                 pawn.stopMovement()
                 if (pawn is Player) {
                     pawn.setMapFlag()
@@ -52,7 +52,7 @@ object PawnPathAction {
          */
         val lineOfSightRange = if (other is Npc) world.plugins.getNpcInteractionDistance(other.id) else null
         pawn.queue {
-            terminateAction = {
+            pawn.terminateAction = {
                 pawn.stopMovement()
                 if (pawn is Player) {
                     pawn.setMapFlag()

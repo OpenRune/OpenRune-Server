@@ -7,7 +7,6 @@ import org.alter.game.model.entity.Player
 import org.alter.game.model.item.Item
 import org.alter.game.model.priv.Privilege
 import org.alter.game.model.queue.QueueTask
-import org.alter.game.model.queue.TaskPriority
 import org.alter.game.plugin.KotlinPlugin
 import org.alter.game.plugin.PluginRepository
 
@@ -20,8 +19,8 @@ class SpawnItemPlugin(
     init {
 
         onCommand("spawn", Privilege.ADMIN_POWER, description = "Spawn items with ui") {
-            player.queue(TaskPriority.STRONG) {
-                val item = spawn(player) ?: return@queue
+            player.strongQueue {
+                val item = spawn(player) ?: return@strongQueue
                 if (item.amount > 0) {
                     player.message("You have spawned ${item.amount} x ${item.getName()}.")
                 } else {
@@ -31,8 +30,8 @@ class SpawnItemPlugin(
         }
 
         onCommand("spawn2", Privilege.ADMIN_POWER, description = "Spawn untradable items with ui") {
-            player.queue(TaskPriority.STRONG) {
-                val item = spawn2(player) ?: return@queue
+            player.strongQueue {
+                val item = spawn2(player) ?: return@strongQueue
                 if (item.amount > 0) {
                     player.message("You have spawned ${item.amount} x ${item.getName()}.")
                 } else {

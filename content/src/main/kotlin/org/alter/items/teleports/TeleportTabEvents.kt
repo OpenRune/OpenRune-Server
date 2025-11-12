@@ -6,6 +6,7 @@ import org.alter.game.model.LockState
 import org.alter.game.model.Tile
 import org.alter.game.model.entity.Player
 import org.alter.game.model.move.moveTo
+import org.alter.game.model.wait
 import org.alter.game.pluginnew.MenuOption
 import org.alter.game.pluginnew.PluginEvent
 import org.alter.game.pluginnew.event.impl.ItemClickEvent

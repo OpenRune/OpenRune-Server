@@ -10,7 +10,9 @@ import org.alter.game.model.attr.AttributeKey
 import org.alter.game.model.attr.INTERACTING_OBJ_ATTR
 import org.alter.game.model.entity.GameObject
 import org.alter.game.model.entity.Player
+import org.alter.game.model.repeatWhile
 import org.alter.game.model.timer.TimerKey
+import org.alter.game.model.wait
 import org.alter.game.pluginnew.MenuOption
 import org.alter.game.pluginnew.PluginConfig
 import org.alter.game.pluginnew.PluginEvent
@@ -133,7 +135,7 @@ class CampfireEvents : PluginEvent() {
 
         world.queue {
             val graphicId = CAMPFIRE_ROTATIONS[replacement.rot].second
-            repeatUntil(delay = 3, immediate = true, predicate = { !replacement.isSpawned(world) }) {
+            repeatWhile(delay = 3, immediate = true, canRepeat = { replacement.isSpawned(world) }) {
                 world.spawn(TileGraphic(tile = replacement.tile, id = graphicId))
             }
         }
@@ -150,8 +152,8 @@ class CampfireEvents : PluginEvent() {
         player.queue {
             var logsAdded = 0
 
-            repeatUntil(delay = ticks, immediate = true, predicate = {
-                !canAddLog(player, gameObject, logData) || logsAdded >= logsToAdd
+            repeatWhile(delay = ticks, immediate = true, canRepeat = {
+                canAddLog(player, gameObject, logData) && logsAdded < logsToAdd
             }) {
                 player.animate(logData.animation)
                 val playersUsingFire = gameObject.attr[PLAYERS_COUNT_ATTR] ?: 1

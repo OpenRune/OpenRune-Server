@@ -4,6 +4,7 @@ import net.rsprot.protocol.game.incoming.resumed.ResumePauseButton
 import net.rsprot.protocol.util.CombinedId
 import org.alter.game.message.MessageHandler
 import org.alter.game.model.entity.Client
+import org.alter.game.model.queue.ContinueDialogue
 import org.alter.game.pluginnew.event.impl.DialogPauseEvent
 
 /**
@@ -15,7 +16,9 @@ class ResumePauseButtonHandler : MessageHandler<ResumePauseButton> {
         message: ResumePauseButton,
     ) {
         log(client, "Continue dialog: component=[%d:%d], slot=%d", message.interfaceId, message.componentId, message.sub)
-        client.queues.submitReturnValue(message)
+
+        val event = ContinueDialogue(message.interfaceId, message.componentId, message.sub)
+        client.queues.submitReturnValue(event)
         DialogPauseEvent(CombinedId(message.interfaceId, message.componentId), message.sub, client).post()
     }
 }

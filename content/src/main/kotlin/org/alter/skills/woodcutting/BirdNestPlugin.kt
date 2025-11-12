@@ -9,6 +9,7 @@ import org.alter.api.ext.replaceItem
 import org.alter.api.ext.toItem
 import org.alter.game.model.entity.GroundItem
 import org.alter.game.model.entity.Player
+import org.alter.game.model.repeatWhile
 import org.alter.game.model.weight.impl.WeightItem
 import org.alter.game.pluginnew.MenuOption
 import org.alter.game.pluginnew.PluginEvent
@@ -97,29 +98,32 @@ class BirdNestPlugin : PluginEvent() {
 
     private fun handleNestSearch(player: Player) {
         player.queue {
-            repeatUntil(delay = 4, immediate = true, predicate = { !hasNest(player) }) {
-
+            repeatWhile(delay = 4, immediate = true, canRepeat = { hasNest(player) }) {
                 val nestItem = player.inventory.firstOrNull { it != null && NestType.nestIDss.contains(it.id) }
-                    ?: return@repeatUntil
+                if (nestItem == null) {
+                    stop()
+                }
 
-                val nestType = NestType.entries.find { it.nestID == nestItem.id } ?: run {
+                val nestType = NestType.entries.find { it.nestID == nestItem.id }
+                if (nestType == null) {
                     player.filterableMessage("This nest cannot be searched.")
-                    return@repeatUntil
+                    stop()
                 }
 
                 val reward = nestType.rewards.random()
-
                 if (player.inventory.add(reward.item).hasFailed()) {
                     player.filterableMessage("<col=B50A11>You need more room to search this.")
-                    return@repeatUntil
+                    stop()
                 }
 
                 player.replaceItem(nestType.nestID, "items.bird_nest_empty".asRSCM())
-                player.message("You take a ${reward.item.toItem().getName()} out of the bird's nest.",ChatMessageType.GAME_MESSAGE)
+                player.message(
+                    "You take a ${reward.item.toItem().getName()} out of the bird's nest.",
+                    ChatMessageType.GAME_MESSAGE
+                )
             }
         }
     }
-
     private fun hasNest(player: Player) = player.inventory.any { it != null && NestType.nestIDss.contains(it.id) }
 
     private fun rollBirdNest(player: Player, clueBaseChance: Int) {

@@ -1,7 +1,6 @@
 package org.alter.game.model
 
 import dev.openrune.ServerCacheManager.getItem
-import dev.openrune.ServerCacheManager.getNpc
 import dev.openrune.filesystem.Cache
 import gg.rsmod.util.ServerProperties
 import gg.rsmod.util.Stopwatch
@@ -9,7 +8,6 @@ import io.github.oshai.kotlinlogging.KotlinLogging
 import it.unimi.dsi.fastutil.objects.ObjectArrayList
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.CoroutineScope
 import net.rsprot.protocol.api.NetworkService
 import net.rsprot.protocol.game.outgoing.logout.Logout
 import net.rsprot.protocol.game.outgoing.misc.client.UpdateRebootTimer
@@ -24,10 +22,8 @@ import org.alter.game.model.combat.NpcCombatDef
 import org.alter.game.model.entity.*
 import org.alter.game.model.instance.InstancedMapAllocator
 import org.alter.game.model.priv.PrivilegeSet
+import org.alter.game.model.queue.GameQueueList
 import org.alter.game.model.queue.QueueTask
-import org.alter.game.model.queue.QueueTaskSet
-import org.alter.game.model.queue.TaskPriority
-import org.alter.game.model.queue.impl.WorldQueueTaskSet
 import org.alter.game.model.region.ChunkSet
 import org.alter.game.model.shop.Shop
 import org.alter.game.model.timer.TimerMap
@@ -36,6 +32,7 @@ import org.alter.game.plugin.PluginRepository
 import org.alter.game.service.GameService
 import org.alter.game.service.Service
 import org.alter.game.service.xtea.XteaKeyService
+import org.rsmod.coroutine.GameCoroutine
 import org.rsmod.routefinder.LineValidator
 import org.rsmod.routefinder.RouteFinding
 import org.rsmod.routefinder.StepValidator
@@ -45,6 +42,80 @@ import org.rsmod.routefinder.reach.ReachStrategy
 import java.security.SecureRandom
 import java.util.*
 import java.util.concurrent.TimeUnit
+
+/**
+ * Repeatedly runs [logic] while [canRepeat] returns true.
+ *
+ * Suspends for [delay] ticks between each iteration.
+ * Optionally runs [logic] immediately before the first delay if [immediate] is true.
+ *
+ * @param delay Number of ticks to wait between iterations.
+ * @param immediate If true, runs [logic] immediately.
+ * @param canRepeat Suspended function that determines whether to keep repeating.
+ * @param logic The repeated task logic executed each iteration.
+ */
+public suspend fun QueueTask.repeatWhile(
+    delay: Int,
+    immediate: Boolean = false,
+    canRepeat: suspend () -> Boolean,
+    logic: suspend QueueTask.(StopControl) -> Unit
+) {
+    repeatWhile(delay, immediate, canRepeat, logic, onFinished = null)
+}
+
+/**
+ * Repeatedly runs [logic] while [canRepeat] returns true.
+ *
+ * Suspends for [delay] ticks between each iteration.
+ * Optionally runs [logic] immediately before the first delay if [immediate] is true.
+ * Invokes [onFinished] once after the loop ends.
+ *
+ * @param delay Number of ticks to wait between iterations.
+ * @param immediate If true, runs [logic] immediately.
+ * @param canRepeat Suspended function that determines whether to keep repeating.
+ * @param logic The repeated task logic executed each iteration.
+ * @param onFinished Optional callback invoked once after the loop ends.
+ */
+public suspend fun QueueTask.repeatWhile(
+    delay: Int,
+    immediate: Boolean = false,
+    canRepeat: suspend () -> Boolean,
+    logic: suspend QueueTask.(StopControl) -> Unit,
+    onFinished: (suspend QueueTask.() -> Unit)? = null
+) {
+    val stopControl = StopControl()
+
+    if (immediate) logic(stopControl)
+
+    while (canRepeat() && !stopControl.stopped) {
+        wait(delay)
+        logic(stopControl)
+    }
+
+    onFinished?.invoke(this)
+}
+
+/** Helper object to allow stopping the loop from inside logic */
+class StopControl {
+    var stopped: Boolean = false
+        private set
+
+    fun stop() {
+        stopped = true
+    }
+}
+
+
+
+/**
+ * Wait for the specified amount of game cycles [cycles] before
+ * continuing the logic associated with this task.
+ */
+suspend fun GameCoroutine.wait(cycles: Int) {
+    check(cycles > 0) { "Wait cycles must be greater than 0." }
+    var remaining = cycles
+    pause { remaining-- == 0 }
+}
 
 /**
  * The game world, which stores all the entities and nodes that the world
@@ -70,7 +141,7 @@ class World(val gameContext: GameContext, val devContext: DevContext) {
 
     lateinit var coroutineDispatcher: CoroutineDispatcher
 
-    internal var queues: QueueTaskSet = WorldQueueTaskSet()
+    internal var queues: GameQueueList = GameQueueList()
 
     val players = PawnList(arrayOfNulls<Player>(gameContext.playerLimit))
 
@@ -607,8 +678,8 @@ class World(val gameContext: GameContext, val devContext: DevContext) {
         return null
     }
 
-    fun queue(logic: suspend QueueTask.(CoroutineScope) -> Unit) {
-        queues.queue(this, coroutineDispatcher, TaskPriority.STANDARD, logic)
+    fun queue(logic: suspend GameCoroutine.() -> Unit) {
+        queues.queue(logic)
     }
 
     fun executePlugin(

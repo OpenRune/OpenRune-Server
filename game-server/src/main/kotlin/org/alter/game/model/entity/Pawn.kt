@@ -13,10 +13,9 @@ import org.alter.game.model.bits.InfiniteVarsType
 import org.alter.game.model.collision.rayCast
 import org.alter.game.model.combat.DamageMap
 import org.alter.game.model.move.MovementQueue
+import org.alter.game.model.queue.QueueStack
 import org.alter.game.model.queue.QueueTask
-import org.alter.game.model.queue.QueueTaskSet
-import org.alter.game.model.queue.TaskPriority
-import org.alter.game.model.queue.impl.PawnQueueTaskSet
+import org.alter.game.model.queue.QueueType
 import org.alter.game.model.timer.*
 import org.alter.game.plugin.Plugin
 import org.alter.game.pluginnew.event.EventManager
@@ -26,6 +25,7 @@ import org.alter.game.service.log.LoggerService
 import org.alter.rscm.RSCM
 import org.alter.rscm.RSCM.asRSCM
 import org.alter.rscm.RSCMType
+import org.rsmod.coroutine.GameCoroutine
 import org.rsmod.routefinder.RouteCoordinates
 import java.lang.ref.WeakReference
 import java.util.*
@@ -98,7 +98,7 @@ abstract class Pawn(val world: World) : Entity() {
      */
     val timers = TimerMap()
 
-    internal val queues: QueueTaskSet = PawnQueueTaskSet()
+    internal abstract val queues: QueueStack
 
     /**
      * The equipment bonus for the pawn.
@@ -505,12 +505,23 @@ abstract class Pawn(val world: World) : Entity() {
         resetFacePawn()
     }
 
-    fun queue(
-        priority: TaskPriority = TaskPriority.STANDARD,
-        logic: suspend QueueTask.(CoroutineScope) -> Unit,
-    ) {
-        queues.queue(this, world.coroutineDispatcher, priority, logic)
+    fun weakQueue(logic: suspend QueueTask.() -> Unit) {
+        queues.queue(QueueType.Weak, logic)
     }
+
+    fun queue(priority: QueueType = QueueType.Normal, logic: suspend QueueTask.() -> Unit) {
+        queues.queue(priority, logic)
+    }
+
+    fun strongQueue(logic: suspend QueueTask.() -> Unit) {
+        queues.queue(QueueType.Strong, logic)
+    }
+
+    /**
+     * Represents an action that should be executed if, and only if, this task
+     * was terminated via [terminate].
+     */
+    var terminateAction: ((GameCoroutine).() -> Unit)? = null
 
     /**
      * Terminates any on-going [QueueTask]s that are being executed by this [Pawn].
@@ -520,8 +531,10 @@ abstract class Pawn(val world: World) : Entity() {
             InterruptActionEvent(this).post()
         }
 
+        try {
+            queues.terminateTasks()
+        }catch (e: Exception) {}
         stopLoopAnimIfActive()
-        queues.terminateTasks()
     }
 
     /**

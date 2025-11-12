@@ -98,7 +98,7 @@ class TradingPlugin(
                 val item = inventory[slot] ?: return@onButton
 
                 // Queue the action, as we might need to access queued dialogue
-                player.queue(TaskPriority.WEAK) {
+                player.weakQueue {
 
                     // The amount being traded
                     val amount =
@@ -131,7 +131,7 @@ class TradingPlugin(
                 val item = container[slot] ?: return@onButton
 
                 // Queue the action, as we might need to access queued dialogue
-                player.queue(TaskPriority.WEAK) {
+                player.weakQueue {
 
                     // The amount being traded
                     val amount =

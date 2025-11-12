@@ -60,13 +60,13 @@ class AmuletOfGloryPlugin(
 //GLORY.forEach { glory ->
 //    LOCATIONS.forEach { location, tile ->
 //        onEquipmentOption(glory, option = location) {
-//            player.queue(TaskPriority.STRONG) {
+//            player.strongQueue {
 //                player.teleport(tile)
 //            }
 //        }
 //    }
 //    onItemOption(glory, option = 4) {
-//        player.queue(TaskPriority.STRONG) {
+//        player.strongQueue {
 //            when (options("Edgeville", "Karamja", "Draynor Village", "Al kharid", title = "Where Would You Like To Go")) {
 //                1 -> player.teleport(Tile(3086, 3500), TeleportType.GLORY)
 //                2 -> player.teleport(Tile(2917, 3176), TeleportType.GLORY)

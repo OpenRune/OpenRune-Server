@@ -129,7 +129,9 @@ fun Pawn.walkTo(
             return
         }
         this.closeInterfaceModal()
-        this.interruptQueues()
+        try {
+            this.interruptQueues()
+        }catch (e : Exception) {}
         this.resetInteractions()
     }
 

@@ -205,7 +205,7 @@ class BankPlugin(
             if (amount == 0) {
                 amount = player.inventory.getItemCount(item.id)
             } else if (amount == -1) {
-                player.queue(TaskPriority.WEAK) {
+                player.weakQueue {
                     amount = inputInt(player, "How many would you like to bank?")
                     if (amount > 0) {
                         player.setVarbit("varbits.bank_requestedquantity", amount)
@@ -294,7 +294,7 @@ class BankPlugin(
             }
 
             if (amount == -1) {
-                player.queue(TaskPriority.WEAK) {
+                player.weakQueue {
                     amount = inputInt(player, "How many would you like to withdraw?")
                     if (amount > 0) {
                         player.setVarbit("varbits.bank_requestedquantity", amount)

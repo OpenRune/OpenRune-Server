@@ -9,7 +9,7 @@ import org.alter.game.model.Tile
 import org.alter.game.model.entity.Pawn
 import org.alter.game.model.entity.Player
 import org.alter.game.model.move.moveTo
-import org.alter.game.model.queue.TaskPriority
+import org.alter.game.model.wait
 import org.alter.rscm.RSCM
 import org.alter.rscm.RSCM.asRSCM
 
@@ -36,7 +36,7 @@ fun Pawn.teleport(
 ) {
     lock = LockState.FULL_WITH_DAMAGE_IMMUNITY
 
-    queue(TaskPriority.STRONG) {
+    strongQueue {
         prepareForTeleport()
 
         animate(type.animation)

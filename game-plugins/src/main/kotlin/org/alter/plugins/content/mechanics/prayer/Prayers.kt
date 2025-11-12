@@ -12,6 +12,7 @@ import org.alter.game.model.bits.InfiniteVarsType
 import org.alter.game.model.entity.Player
 import org.alter.game.model.queue.QueueTask
 import org.alter.game.model.timer.TimerKey
+import org.alter.game.model.wait
 import org.alter.game.plugin.Plugin
 
 object Prayers {
@@ -69,7 +70,7 @@ object Prayers {
             return
         }
 
-        it.terminateAction = { p.syncVarp(ACTIVE_PRAYERS_VARP) }
+        p.terminateAction = { p.syncVarp(Prayers.ACTIVE_PRAYERS_VARP) }
         while (p.lock.delaysPrayer()) {
             it.wait(1)
         }

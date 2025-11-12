@@ -9,7 +9,7 @@ import org.alter.game.model.entity.Entity
 import org.alter.game.model.entity.GroundItem
 import org.alter.game.model.entity.Player
 import org.alter.game.model.item.Item
-import org.alter.game.model.queue.TaskPriority
+import org.alter.game.model.wait
 import org.alter.game.plugin.Plugin
 import org.alter.game.service.log.LoggerService
 import java.lang.ref.WeakReference
@@ -29,8 +29,8 @@ object GroundItemRouteAction {
         val player = ctx as Player
         val item = player.attr[INTERACTING_GROUNDITEM_ATTR]!!.get()!!
         val opt = player.attr[INTERACTING_OPT_ATTR]!!
-        player.queue(TaskPriority.WEAK) {
-            terminateAction = {
+        player.queue{
+            player.terminateAction = {
                 player.stopMovement()
                 player.setMapFlag()
             }

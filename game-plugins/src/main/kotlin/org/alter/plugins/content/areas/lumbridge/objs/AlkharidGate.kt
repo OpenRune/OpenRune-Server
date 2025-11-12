@@ -8,6 +8,7 @@ import org.alter.game.model.entity.Player
 import org.alter.game.model.move.MovementQueue
 import org.alter.game.model.move.walkTo
 import org.alter.game.model.queue.QueueTask
+import org.alter.game.model.wait
 import org.alter.game.plugin.KotlinPlugin
 import org.alter.game.plugin.PluginRepository
 import org.alter.rscm.RSCM.getRSCM

@@ -14,6 +14,8 @@ import org.alter.game.model.combat.AttackStyle
 import org.alter.game.model.combat.CombatClass
 import org.alter.game.model.combat.CombatStyle
 import org.alter.game.model.combat.NpcCombatDef
+import org.alter.game.model.queue.PawnQueueTaskSet
+import org.alter.game.model.queue.QueueStack
 import org.alter.rscm.RSCM
 import org.alter.rscm.RSCM.asRSCM
 import org.alter.rscm.RSCMType
@@ -157,6 +159,8 @@ class Npc private constructor(val id: Int, world: World, val spawnTile: Tile) : 
         RSCM.requireRSCM(RSCMType.SPOTTYPES,id)
         NpcInfo(this).setSpotAnim(0, id.asRSCM(), delay, height)
     }
+
+    override val queues: QueueStack = PawnQueueTaskSet(this)
 
     override fun cycle() {
         if (timers.isNotEmpty) {

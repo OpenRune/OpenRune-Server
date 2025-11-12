@@ -36,6 +36,8 @@ import org.alter.game.model.item.Item
 import org.alter.game.model.move.MovementQueue
 import org.alter.game.model.move.moveTo
 import org.alter.game.model.priv.Privilege
+import org.alter.game.model.queue.PawnQueueTaskSet
+import org.alter.game.model.queue.QueueStack
 import org.alter.game.model.queue.QueueTask
 import org.alter.game.model.skill.SkillSet
 import org.alter.game.model.social.Social
@@ -117,6 +119,8 @@ open class Player(world: World) : Pawn(world) {
      * when [pendingLogout] logic is handled.
      */
     @Volatile private var setDisconnectionTimer = false
+
+    override val queues: QueueStack = PawnQueueTaskSet(this)
 
     val bonds = ItemContainer(BOND_POUCH_KEY)
 

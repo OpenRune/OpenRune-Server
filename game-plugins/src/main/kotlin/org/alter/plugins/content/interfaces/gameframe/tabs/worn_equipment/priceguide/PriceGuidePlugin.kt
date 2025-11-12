@@ -45,13 +45,13 @@ class PriceGuidePlugin(
         }
 
         onButton(interfaceId = PRICE_GUIDE_TAB_INTERFACE_ID, component = 0) {
-            player.queue(TaskPriority.WEAK) {
+            player.weakQueue {
                 add(player, this, player.getInteractingSlot(), player.getInteractingOption())
             }
         }
 
         onButton(interfaceId = PRICE_GUIDE_INTERFACE_ID, component = 2) {
-            player.queue(TaskPriority.WEAK) {
+            player.weakQueue {
                 remove(player,this, player.getInteractingSlot(), player.getInteractingOption())
             }
         }
@@ -61,7 +61,7 @@ class PriceGuidePlugin(
         }
 
         onButton(interfaceId = PRICE_GUIDE_INTERFACE_ID, component = 5) {
-            player.queue(TaskPriority.WEAK) {
+            player.weakQueue {
                 val item = searchItemInput(player, "Select an item to ask about its price:")
                 search(player, item)
             }
