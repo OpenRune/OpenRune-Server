@@ -7,6 +7,7 @@ import org.alter.game.Server
 import org.alter.game.model.World
 import org.alter.game.model.attr.AttributeKey
 import org.alter.game.model.attr.INTERACTING_OBJ_ATTR
+import org.alter.game.model.entity.DynamicObject
 import org.alter.game.model.entity.GameObject
 import org.alter.game.model.entity.ObjectTimerMap
 import org.alter.game.model.entity.Player
@@ -15,6 +16,7 @@ import org.alter.game.model.queue.QueueTask
 import org.alter.game.model.timer.TimerKey
 import org.alter.game.plugin.KotlinPlugin
 import org.alter.game.plugin.PluginRepository
+import org.alter.game.pluginnew.event.EventListener
 import org.alter.game.pluginnew.event.EventManager
 import org.alter.game.pluginnew.event.impl.TreeDepleteEvent
 import org.alter.plugins.content.skills.woodcutting.TreeDepleteHandler
@@ -53,12 +55,6 @@ class WoodcuttingPlugin(
          * Timers are stored directly on the GameObject.
          */
         private val TREE_COUNTDOWN_TIMER = TimerKey()
-
-        /**
-         * Timer key for stump respawn timers.
-         * Used by replaceWith to automatically respawn trees.
-         */
-        private val STUMP_TIMER = TimerKey()
 
         /**
          * Attribute key for tracking players actively chopping a tree.
@@ -364,10 +360,36 @@ class WoodcuttingPlugin(
         val stumpRscm = getStumpRscmForTreeRscm(treeRscm)
         if (stumpRscm != null) {
             try {
-                val replacement = obj.replaceWith(world, stumpRscm, STUMP_TIMER, restoreOriginal = true)
-                replacement.setTimer(STUMP_TIMER, treeData.respawnCycles)
+                ObjectTimerMap.removeObject(obj)
+                val originalTreeId = obj.id
+                val originalTreeTile = obj.tile
+                val originalTreeType = obj.type
+                val originalTreeRot = obj.rot
+
+                world.remove(obj)
+
+                val stump = DynamicObject(stumpRscm, originalTreeType, originalTreeRot, originalTreeTile)
+                world.spawn(stump)
+
+                world.queue {
+                    wait(treeData.respawnCycles)
+                    if (stump.isSpawned(world)) {
+                        world.remove(stump)
+                    }
+                    val restoredTree = DynamicObject(originalTreeId, originalTreeType, originalTreeRot, originalTreeTile)
+                    if (!restoredTree.isSpawned(world)) {
+                        world.spawn(restoredTree)
+                    }
+                }
             } catch (e: Exception) {
-                logger.warn { "Stump RSCM '$stumpRscm' for tree '$treeRscm' not found, skipping stump creation" }
+                logger.warn { "Stump RSCM '$stumpRscm' for tree '$treeRscm' not found, skipping stump creation: ${e.message}" }
+                world.queue {
+                    wait(treeData.respawnCycles)
+                    val restoredTree = DynamicObject(obj.id, obj.type, obj.rot, obj.tile)
+                    if (!restoredTree.isSpawned(world)) {
+                        world.spawn(restoredTree)
+                    }
+                }
             }
         }
 
@@ -392,14 +414,14 @@ class WoodcuttingPlugin(
         }
 
         if (!hasAnyAxe(player)) {
-          player.message("You need an axe to chop down this tree.")
-          return
-      }
+            player.message("You need an axe to chop down this tree.")
+            return
+        }
 
         val axeId = getBestAxe(player)
         if (axeId == null) {
-          player.message("You do not have an axe which you have the woodcutting level to use.")
-          return
+            player.message("You do not have an axe which you have the woodcutting level to use.")
+            return
         }
 
         val axeData = WoodcuttingDefinitions.AXE_DATA[axeId] ?: return
