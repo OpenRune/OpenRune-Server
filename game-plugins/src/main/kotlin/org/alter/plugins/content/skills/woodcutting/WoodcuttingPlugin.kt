@@ -17,7 +17,6 @@ import org.alter.game.plugin.KotlinPlugin
 import org.alter.game.plugin.PluginRepository
 import org.alter.game.pluginnew.event.EventManager
 import org.alter.game.pluginnew.event.impl.TreeDepleteEvent
-import org.alter.plugins.content.skills.woodcutting.TreeDepleteHandler
 import org.alter.plugins.content.skills.woodcutting.handlers.BlisterwoodTreeDepleteHandler
 import org.alter.rscm.RSCM
 import org.alter.rscm.RSCM.getRSCM
@@ -53,12 +52,6 @@ class WoodcuttingPlugin(
          * Timers are stored directly on the GameObject.
          */
         private val TREE_COUNTDOWN_TIMER = TimerKey()
-
-        /**
-         * Timer key for stump respawn timers.
-         * Used by replaceWith to automatically respawn trees.
-         */
-        private val STUMP_TIMER = TimerKey()
 
         /**
          * Attribute key for tracking players actively chopping a tree.
@@ -364,9 +357,8 @@ class WoodcuttingPlugin(
         val stumpRscm = getStumpRscmForTreeRscm(treeRscm)
         if (stumpRscm != null) {
             try {
-                val replacement = obj.replaceWith(world, stumpRscm, STUMP_TIMER, restoreOriginal = true)
-                replacement.setTimer(STUMP_TIMER, treeData.respawnCycles)
-            } catch (e: Exception) {
+                obj.replaceWith(world, stumpRscm, treeData.respawnCycles, restoreOriginal = true)
+            } catch (_: Exception) {
                 logger.warn { "Stump RSCM '$stumpRscm' for tree '$treeRscm' not found, skipping stump creation" }
             }
         }

@@ -5,10 +5,11 @@ import dev.openrune.ServerCacheManager.getObject
 import dev.openrune.definition.type.ObjectType
 import dev.openrune.types.ObjectServerType
 import gg.rsmod.util.toStringHelper
+import io.github.oshai.kotlinlogging.KotlinLogging
+import org.alter.game.model.EntityType
 import org.alter.game.model.Tile
 import org.alter.game.model.World
 import org.alter.game.model.attr.AttributeMap
-import org.alter.game.model.entity.ObjectTimerMap
 import org.alter.game.model.timer.TimerKey
 import org.alter.game.model.timer.TimerMap
 import org.alter.rscm.RSCM
@@ -96,6 +97,9 @@ object ObjectTimerMap {
         }
     }
 }
+
+private val logger = KotlinLogging.logger {}
+
 abstract class GameObject : Entity {
 
     /**
@@ -228,27 +232,37 @@ abstract class GameObject : Entity {
      * @param restoreOriginal Whether to restore the original object after [removeAfter] ticks. Default is true.
      * @return The newly created [GameObject] that replaced the original.
      */
+    /**
+     * Replaces this object in the world with another game object.
+     *
+     * This function always spawns a dynamic replacement (`DynamicObject`).
+     *
+     * @param world The [World] instance the object exists in.
+     * @param obj The name or identifier of the replacement object.
+     * @param lifetime The number of game ticks the replacement should exist for (0 = permanent).
+     * @param restoreOriginal Whether to restore the original object after [lifetime] ticks. Default is false.
+     * @return The newly created [GameObject] that replaced the original.
+     */
     fun replaceWith(
         world: World,
         obj: String,
-        removeAfter: Int = 0,
-        restoreOriginal: Boolean = false
+        lifetime: Int = 0,
+        restoreOriginal: Boolean = false,
     ): GameObject {
-        world.remove(this)
+        val original = this
+        world.remove(original)
 
-        val replacement: GameObject = when (this) {
-            is DynamicObject -> DynamicObject(this, obj)
-            else -> StaticObject(obj, type, rot, tile)
-        }
-
+        val replacement = DynamicObject(obj, type, rot, tile)
         world.spawn(replacement)
 
-        if (removeAfter > 0) {
+        if (lifetime > 0) {
             world.queue {
-                wait(removeAfter)
+                wait(lifetime)
                 world.remove(replacement)
+
                 if (restoreOriginal) {
-                    world.spawn(this@GameObject)
+                    val restored = DynamicObject(original.id, original.type, original.rot, original.tile)
+                    world.spawn(restored)
                 }
             }
         }
@@ -259,34 +273,34 @@ abstract class GameObject : Entity {
     /**
      * Replaces this object in the world with another game object.
      *
-     * The replacement will persist until the specified [TimerKey] expires.
+     * This function always spawns a dynamic replacement (`DynamicObject`).
+     * The replacement will remain until the timer specified by [key] reaches zero.
+     * Optionally, the original object can be restored afterward.
      *
      * @param world The [World] instance the object exists in.
      * @param obj The name or identifier of the replacement object.
-     * @param key The [TimerKey] controlling how long the replacement lasts.
-     * @param restoreOriginal Whether to restore the original object after the timer expires. Default is true.
+     * @param key The [TimerKey] used to determine when the replacement expires.
+     * @param restoreOriginal Whether to restore the original object after expiration. Default is false.
      * @return The newly created [GameObject] that replaced the original.
      */
     fun replaceWith(
         world: World,
         obj: String,
         key: TimerKey,
-        restoreOriginal: Boolean = false
+        restoreOriginal: Boolean = false,
     ): GameObject {
-        val replacement: GameObject = when (this) {
-            is DynamicObject -> DynamicObject(obj, type, rot, tile)
-            else -> StaticObject(obj, type, rot, tile)
-        }
+        val original = this
+        val replacement = DynamicObject(obj, type, rot, tile)
 
-        world.remove(this)
+        world.remove(original)
         world.spawn(replacement)
 
         world.queue {
-            repeatUntil(1,true,{false}) {
+            repeatUntil(1, true, { false }) {
                 if (replacement.getTimeLeft(key) == 0) {
                     world.remove(replacement)
                     if (restoreOriginal) {
-                        world.spawn(this@GameObject)
+                        world.spawn(original)
                     }
                 }
             }
