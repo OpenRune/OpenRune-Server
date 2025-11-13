@@ -43,7 +43,7 @@ class GildedAlterEvents : PluginEvent() {
 
     private fun startAlter(player: Player, bone: Int, xp: Int, isChaosAltar: Boolean, gameObject: GameObject) {
         player.queue {
-            repeatUntil(delay = 3, immediate = true, predicate = { canSacrifice(player, bone) }) {
+            repeatWhile(delay = 4, immediate = true, canRepeat = { canSacrifice(player, bone) }) {
                 val removeBone = random(0..2) == 1
 
                 player.animate("sequences.human_bone_sacrifice")
@@ -64,10 +64,8 @@ class GildedAlterEvents : PluginEvent() {
         }
     }
 
-    private fun canSacrifice(player: Player, bone: Int): Boolean {
-        if (!player.inventory.contains(bone)) return false
-        if (!player.tile.isWithinRadius(Tile(2947, 3821), 1)) return false
-        if (CHAOS_ALTAR_AREA.contains(player.tile)) return false
-        return true
-    }
+    private fun canSacrifice(player: Player, bone: Int) =
+        player.inventory.contains(bone) &&
+                player.tile.isWithinRadius(Tile(2947, 3821), 1) &&
+                CHAOS_ALTAR_AREA.contains(player.tile)
 }

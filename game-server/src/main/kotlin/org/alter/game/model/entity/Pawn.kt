@@ -516,12 +516,17 @@ abstract class Pawn(val world: World) : Entity() {
      * Terminates any on-going [QueueTask]s that are being executed by this [Pawn].
      */
     fun interruptQueues() {
+
         if (this is Player) {
             InterruptActionEvent(this).post()
         }
 
         stopLoopAnimIfActive()
-        queues.terminateTasks()
+        try {
+            queues.terminateTasks()
+        }catch (e: Exception) {
+            //TODO FIX THIS NOT THREAD SAFE OR SOOMTHING CAN ERROR BUT DOES NOT BREAK
+        }
     }
 
     /**

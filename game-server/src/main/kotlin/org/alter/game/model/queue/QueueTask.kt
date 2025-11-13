@@ -7,6 +7,16 @@ import org.alter.game.model.entity.Player
 import org.alter.game.model.queue.coroutine.*
 import kotlin.coroutines.*
 
+
+class StopControlScope(val task: QueueTask) {
+    private var stopped = false
+    fun stop() { stopped = true }
+    internal fun isStopped() = stopped
+
+    suspend fun wait(cycles: Int) = task.wait(cycles)
+}
+
+
 /**
  * Represents a task that can be paused, or suspended, and resumed at any point
  * in the future.
@@ -82,52 +92,57 @@ data class QueueTask(val ctx: Any, val priority: TaskPriority) : Continuation<Un
     fun suspended(): Boolean = nextStep != null
 
     /**
-     * Repeatedly executes [logic] every [delay] game cycles until [predicate] returns true.
+     * Repeatedly runs [logic] while [canRepeat] returns true.
      *
-     * This uses the same suspend/resume system as [wait], ensuring that the logic
-     * continues across game ticks properly without blocking the game thread.
+     * Suspends for [delay] ticks between each iteration.
+     * Optionally runs [logic] immediately before the first delay if [immediate] is true.
      *
-     * @param delay The number of game cycles between each iteration.
-     * @param immediate If true, runs [logic] once immediately before waiting.
-     * @param predicate A suspendable condition that ends the repetition when true.
-     * @param logic The logic block to execute on each iteration.
+     * @param delay Number of ticks to wait between iterations.
+     * @param immediate If true, runs [logic] immediately.
+     * @param canRepeat Suspended function that determines whether to keep repeating.
+     * @param logic The repeated task logic executed each iteration.
      */
-    suspend fun repeatUntil(
+    public suspend fun repeatWhile(
         delay: Int,
         immediate: Boolean = false,
-        predicate: suspend () -> Boolean,
-        logic: suspend QueueTask.() -> Unit
+        canRepeat: suspend () -> Boolean,
+        logic: suspend StopControlScope.() -> Unit,
     ) {
-        if (immediate) {
-            logic()
-        }
-
-        while (true) {
-            if (predicate()) break
-            wait(delay)
-            if (predicate()) break
-            logic()
-        }
+        repeatWhile(delay, immediate, canRepeat, logic, onFinished = null)
     }
 
     /**
-     * Repeatedly executes [logic] every [delay] game cycles while [predicate] remains true.
+     * Repeatedly runs [logic] while [canRepeat] returns true.
      *
-     * This is a convenience wrapper around [repeatUntil].
+     * Suspends for [delay] ticks between each iteration.
+     * Optionally runs [logic] immediately before the first delay if [immediate] is true.
+     * Invokes [onFinished] once after the loop ends.
      *
-     * @param delay The number of game cycles between each iteration.
-     * @param immediate If true, runs [logic] once immediately before waiting.
-     * @param predicate A suspendable condition that keeps running while true.
-     * @param logic The logic block to execute on each iteration.
+     * @param delay Number of ticks to wait between iterations.
+     * @param immediate If true, runs [logic] immediately.
+     * @param canRepeat Suspended function that determines whether to keep repeating.
+     * @param logic The repeated task logic executed each iteration.
+     * @param onFinished Optional callback invoked once after the loop ends.
      */
-    suspend fun repeatWhile(
+    public suspend fun repeatWhile(
         delay: Int,
         immediate: Boolean = false,
-        predicate: suspend () -> Boolean,
-        logic: suspend QueueTask.() -> Unit
+        canRepeat: suspend () -> Boolean,
+        logic: suspend StopControlScope.() -> Unit,
+        onFinished: (suspend QueueTask.() -> Unit)? = null
     ) {
-        repeatUntil(delay, immediate, { !predicate() }, logic)
+        val scope = StopControlScope(this)
+
+        if (immediate) scope.logic()
+
+        while (canRepeat() && !scope.isStopped()) {
+            wait(delay)
+            scope.logic()
+        }
+
+        onFinished?.invoke(this)
     }
+
 
     /**
      * Wait for the specified amount of game cycles [cycles] before

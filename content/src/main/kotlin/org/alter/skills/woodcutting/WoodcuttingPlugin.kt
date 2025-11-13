@@ -329,14 +329,13 @@ class WoodcuttingPlugin : PluginEvent() {
             }
         }
 
-        repeatUntil(delay = tickDelay, immediate = false, predicate = {
+        repeatWhile(delay = tickDelay, immediate = false, canRepeat = {
             val currentNearestTile = obj.findNearestTile(player.tile)
-            !player.tile.isWithinRadius(currentNearestTile, 1) ||
-            player.inventory.isFull ||
-            !obj.isSpawned(world) ||
-            isStump(obj, stumpId, player)
+            player.tile.isWithinRadius(currentNearestTile, 1) &&
+            !player.inventory.isFull
+            obj.isSpawned(world) &&
+            !isStump(obj, stumpId, player)
         }) {
-            player.playSound(CHOP_SOUND, volume = 1, delay = 0)
 
             val success = success(low, high, wcLevel)
 
@@ -347,7 +346,7 @@ class WoodcuttingPlugin : PluginEvent() {
                     if (treeData.usesCountdown()) {
                         obj.attr[ACTIVE_CHOPPERS_ATTR]?.remove(player)
                     }
-                    return@repeatUntil
+                    return@repeatWhile
                 }
 
                 val shouldDeplete = if (treeData.usesCountdown()) {
@@ -361,7 +360,7 @@ class WoodcuttingPlugin : PluginEvent() {
                         obj.attr[ACTIVE_CHOPPERS_ATTR]?.remove(player)
                     }
                     depleteTree(player, obj, treeTable.id, treeData)
-                    return@repeatUntil
+                    return@repeatWhile
                 }
             }
         }

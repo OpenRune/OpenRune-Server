@@ -2,7 +2,6 @@ package org.alter.skills.firemaking
 
 import dev.openrune.ServerCacheManager.getItem
 import org.alter.api.Skills
-import org.alter.api.computeSkillingSuccess
 import org.alter.api.ext.filterableMessage
 import org.alter.api.ext.message
 import org.alter.api.success
@@ -13,7 +12,6 @@ import org.alter.game.model.entity.Player
 import org.alter.game.model.move.walkTo
 import org.alter.game.pluginnew.MenuOption
 import org.alter.game.pluginnew.PluginEvent
-import org.alter.game.pluginnew.PluginConfig
 import org.alter.game.pluginnew.event.impl.GroundItemClickEvent
 import org.alter.game.pluginnew.event.impl.onItemOnItem
 import org.alter.rscm.RSCM
@@ -60,24 +58,24 @@ class BurnLogEvents : PluginEvent() {
         player.filterableMessage("You attempt to light the logs.")
 
         player.queue {
-            repeatUntil(delay = 3, immediate = true, predicate = { false }) {
+            repeatWhile(delay = 3, immediate = true, canRepeat = { true }) {
                 if (!player.world.isSpawned(logDrop)) {
                     player.animate(RSCM.NONE)
-                    return@repeatUntil
+                    return@repeatWhile
                 }
 
                 player.animate("sequences.human_createfire")
 
                 if (!canBurn(player, isGroundBurning, log, logDrop, level)) {
                     player.animate(RSCM.NONE)
-                    return@repeatUntil
+                    return@repeatWhile
                 }
 
                 val firemakingLevel = player.getSkills().getCurrentLevel(Skills.FIREMAKING)
                 val success = ColoredLogs.isColoredLog(log) || success(64, 512, firemakingLevel)
                 if (success) {
                     handleFireSuccess(player, logDrop, xp)
-                    return@repeatUntil
+                    return@repeatWhile
                 }
             }
         }

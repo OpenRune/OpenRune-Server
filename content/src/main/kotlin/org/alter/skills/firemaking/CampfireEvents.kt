@@ -133,7 +133,7 @@ class CampfireEvents : PluginEvent() {
 
         world.queue {
             val graphicId = CAMPFIRE_ROTATIONS[replacement.rot].second
-            repeatUntil(delay = 3, immediate = true, predicate = { !replacement.isSpawned(world) }) {
+            repeatWhile(delay = 3, immediate = true, canRepeat = { replacement.isSpawned(world) }) {
                 world.spawn(TileGraphic(tile = replacement.tile, id = graphicId))
             }
         }
@@ -150,8 +150,8 @@ class CampfireEvents : PluginEvent() {
         player.queue {
             var logsAdded = 0
 
-            repeatUntil(delay = ticks, immediate = true, predicate = {
-                !canAddLog(player, gameObject, logData) || logsAdded >= logsToAdd
+            repeatWhile(delay = ticks, immediate = true, canRepeat = {
+                canAddLog(player, gameObject, logData) && logsAdded < logsToAdd
             }) {
                 player.animate(logData.animation)
                 val playersUsingFire = gameObject.attr[PLAYERS_COUNT_ATTR] ?: 1

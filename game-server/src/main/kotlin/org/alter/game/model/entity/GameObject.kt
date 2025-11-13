@@ -249,11 +249,11 @@ abstract class GameObject : Entity {
 
         if (key != null) {
             world.queue {
-                repeatUntil(1, true, { false }) {
+                repeatWhile(1, true, { false }) {
                     if (replacement.getTimeLeft(key) == 0) {
                         world.remove(replacement)
                         if (restoreOriginal) world.spawn(original)
-                        return@repeatUntil
+                        return@repeatWhile
                     }
                 }
             }
