@@ -84,7 +84,7 @@ object Mining {
         column("deplete_mechanic", COL_DEPLETE_MECHANIC, VarType.INT)
         column("empty_rock_object", COL_EMPTY_ROCK, VarType.LOC)
         column("clue_base_chance", CLUE_BASE_CHANCE, VarType.INT)
-        column("type", COL_TYPE, VarType.INT)
+        column("type", COL_TYPE, VarType.STRING)
 
         // Clayrocks (level 1)
         row("dbrows.mining_clayrock") {
@@ -96,7 +96,7 @@ object Mining {
             column(COL_SUCCESS_RATE_LOW, 64)
             column(COL_SUCCESS_RATE_HIGH, 256)
             column(COL_DESPAWN_TICKS, 0)
-            column(COL_DEPLETE_MECHANIC, 0) // Always
+            column(COL_DEPLETE_MECHANIC, 3) // Always
             columnRSCM(COL_EMPTY_ROCK, "objects.rocks2")
             column(CLUE_BASE_CHANCE, 317647)
             column(COL_TYPE, "rock")
@@ -125,11 +125,11 @@ object Mining {
             column(COL_RESPAWN_CYCLES, 4)
             column(COL_SUCCESS_RATE_LOW, 64)
             column(COL_SUCCESS_RATE_HIGH, 256)
-            column(COL_DESPAWN_TICKS, 0)
-            column(COL_DEPLETE_MECHANIC, 0) // Always
+            column(COL_DESPAWN_TICKS, 45)
+            column(COL_DEPLETE_MECHANIC, 1) // Always
             columnRSCM(COL_EMPTY_ROCK, "objects.rocks2")
             column(CLUE_BASE_CHANCE, 317647)
-            column(COL_TYPE, "rock")
+            column(COL_TYPE, "wall")
         }
 
 //        // Oak trees
@@ -256,28 +256,22 @@ object Mining {
 //        }
 //
 //        // Yew trees
-//        row("dbrows.woodcutting_yew_tree") {
-//            columnRSCM(COL_TREE_OBJECT,
-//                "objects.yewtree", "objects.yew_tree_1",
-//                "objects.yew_tree_2", "objects.yew_tree_3",
-//                "objects.yew_tree_4", "objects.yew_tree_5",
-//                "objects.yew_tree_6", "objects.yew_tree_7",
-//                "objects.yew_tree_8", "objects.yew_tree_9",
-//                "objects.yew_tree_fullygrown_1", "objects.yew_tree_fullygrown_2"
-//            )
-//            column(COL_LEVEL, 60)
-//            column(COL_XP, 175)
-//            columnRSCM(COL_LOG_ITEM, "items.yew_logs")
-//            column(COL_RESPAWN_CYCLES, 120)
-//            column(COL_SUCCESS_RATE_LOW, 8)
-//            column(COL_SUCCESS_RATE_HIGH, 256)
-//            column(COL_DESPAWN_TICKS, 190)
-//            column(COL_DEPLETE_MECHANIC, 1) // Countdown
-//            columnRSCM(COL_STUMP, "objects.yew_tree_stump_new")
-//            column(CLUE_BASE_CHANCE, 145013)
-//        }
+        row("dbrows.mining_amethystrock") {
+            columnRSCM(COL_ROCK_OBJECT, "objects.amethystrock1", "objects.amethystrock2")
+            column(COL_LEVEL, 92)
+            column(COL_XP, 240)
+            columnRSCM(COL_ORE_ITEM, "items.amethyst")
+            column(COL_RESPAWN_CYCLES, 125)
+            column(COL_SUCCESS_RATE_LOW, 8)
+            column(COL_SUCCESS_RATE_HIGH, 512)
+            column(COL_DESPAWN_TICKS, 45)
+            column(COL_DEPLETE_MECHANIC, 1) // Always
+            columnRSCM(COL_EMPTY_ROCK, "objects.amethystrock_empty")
+            column(CLUE_BASE_CHANCE, 317647)
+            column(COL_TYPE, "wall")
+        }
 //
-//        // Magic trees
+//        // Amethyst trees
 //        row("dbrows.woodcutting_magic_tree") {
 //            columnRSCM(COL_TREE_OBJECT,
 //                "objects.magictree", "objects.magic_tree_1",

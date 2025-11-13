@@ -31,8 +31,10 @@ class MiningPlugin : PluginEvent() {
     companion object {
         private val logger = KotlinLogging.logger {}
 
-        private const val MINE_SOUND = 2654
-        private const val ORE_OBTAINED_SOUND = 2718
+        /**
+         * Sounds
+         */
+        const val ORE_OBTAINED_SOUND = 3600
 
         /**
          * Timer key for rock countdown timers.
@@ -250,7 +252,6 @@ class MiningPlugin : PluginEvent() {
         val nearestTile = obj.findNearestTile(player.tile)
         player.faceTile(nearestTile)
         player.message("You swing your pickaxe at the rock.")
-        player.playSound(MINE_SOUND, volume = 1, delay = 0)
 
         val tickDelay = pickaxe.tickDelay
         val (low, high) = rockData.successRateLow to rockData.successRateHigh
