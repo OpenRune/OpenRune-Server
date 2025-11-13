@@ -6,7 +6,6 @@ import org.alter.api.ext.filterableMessage
 import org.alter.api.ext.message
 import org.alter.game.model.entity.Entity
 import org.alter.game.model.entity.Player
-import org.alter.game.model.repeatWhile
 import org.alter.game.pluginnew.PluginEvent
 import org.alter.game.pluginnew.event.impl.ItemOnItemEvent
 import org.alter.rscm.RSCM
