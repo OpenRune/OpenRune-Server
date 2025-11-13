@@ -262,8 +262,8 @@ object Mining {
             column(COL_XP, 240)
             columnRSCM(COL_ORE_ITEM, "items.amethyst")
             column(COL_RESPAWN_CYCLES, 125)
-            column(COL_SUCCESS_RATE_LOW, 8)
-            column(COL_SUCCESS_RATE_HIGH, 512)
+            column(COL_SUCCESS_RATE_LOW, -18)
+            column(COL_SUCCESS_RATE_HIGH, 10)
             column(COL_DESPAWN_TICKS, 45)
             column(COL_DEPLETE_MECHANIC, 1) // Always
             columnRSCM(COL_EMPTY_ROCK, "objects.amethystrock_empty")
