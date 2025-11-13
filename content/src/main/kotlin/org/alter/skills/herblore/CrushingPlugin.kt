@@ -17,16 +17,11 @@ import org.alter.rscm.RSCM.asRSCM
  */
 class CrushingPlugin : PluginEvent() {
 
-    companion object {
-        private const val PESTLE_AND_MORTAR = "items.pestle_and_mortar"
-        private val PESTLE_AND_MORTAR_ID = PESTLE_AND_MORTAR.asRSCM()
-    }
-
     override fun init() {
         // Register specific item-on-item interactions for each crushable item
         // This ensures these handlers are checked before generic event handlers
         HerbloreDefinitions.crushingRecipes.forEach { crushingData ->
-            onItemOnItem(PESTLE_AND_MORTAR_ID, crushingData.item) {
+            onItemOnItem("items.pestle_and_mortar", crushingData.item) {
                 crushItem(player, crushingData)
             }
         }
@@ -49,7 +44,7 @@ class CrushingPlugin : PluginEvent() {
         }
 
         // Check if player has pestle and mortar and crushable item
-        val hasPestle = player.inventory.contains(PESTLE_AND_MORTAR_ID)
+        val hasPestle = player.inventory.contains("items.pestle_and_mortar")
         val hasItem = player.inventory.contains(crushingData.item)
 
         if (!hasPestle || !hasItem) {
@@ -70,7 +65,7 @@ class CrushingPlugin : PluginEvent() {
             // Repeat while player has items to crush (auto-crush every 3 ticks)
             repeatWhile(delay = 3, immediate = true, canRepeat = {
                 // Check if player still has pestle and crushable item
-                player.inventory.contains(PESTLE_AND_MORTAR_ID) &&
+                player.inventory.contains("items.pestle_and_mortar") &&
                 player.inventory.contains(crushingData.item) &&
                 // Check inventory space (removing 1 item, adding 1)
                 (player.inventory.freeSlotCount >= 1 || player.inventory.contains(crushingData.crushedItem))

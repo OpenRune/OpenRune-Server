@@ -1,6 +1,5 @@
 package org.alter.skills.herblore
 
-import org.alter.game.util.DbHelper
 import org.alter.game.util.DbHelper.Companion.table
 import org.alter.game.util.column
 import org.alter.game.util.columnOptional
@@ -227,9 +226,5 @@ object HerbloreDefinitions {
         CrushingData(item, level, xp, crushedItem)
     }
 
-    /**
-     * Map for quick lookup of crushing recipes by item
-     */
-    val crushingLookup: Map<Int, CrushingData> = crushingRecipes.associateBy { it.item }
 }
 
