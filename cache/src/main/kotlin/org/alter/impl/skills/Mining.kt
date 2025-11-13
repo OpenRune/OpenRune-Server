@@ -28,7 +28,7 @@ object Mining {
         "items.bronze_pickaxe" to Triple(1, 8, Triple("sequences.human_mining_bronze_pickaxe", "sequences.human_mining_bronze_pickaxe_wall", "dbrows.mining_bronze_pickaxe")),
         "items.iron_pickaxe" to Triple(1, 7, Triple("sequences.human_mining_iron_pickaxe", "sequences.human_mining_iron_pickaxe_wall","dbrows.mining_iron_pickaxe")),
         "items.steel_pickaxe" to Triple(6, 6, Triple("sequences.human_mining_steel_pickaxe", "sequences.human_mining_steel_pickaxe_wall", "dbrows.mining_steel_pickaxe")),
-        "items.black_pickaxe" to Triple(11, 5, Triple("sequences.human_human_mining_black_pickaxe", "sequences.human_human_mining_black_pickaxe_wall", "dbrows.mining_black_pickaxe")),
+        "items.black_pickaxe" to Triple(11, 5, Triple("sequences.human_mining_black_pickaxe", "sequences.human_mining_black_pickaxe_wall", "dbrows.mining_black_pickaxe")),
         "items.mithril_pickaxe" to Triple(21, 5, Triple("sequences.human_mining_mithril_pickaxe","sequences.human_mining_mithril_pickaxe_wall",  "dbrows.mining_mithril_pickaxe")),
         "items.adamant_pickaxe" to Triple(31, 4, Triple("sequences.human_mining_adamant_pickaxe","sequences.human_mining_adamant_pickaxe_wall", "dbrows.mining_adamant_pickaxe")),
         "items.rune_pickaxe" to Triple(41, 3, Triple("sequences.human_mining_rune_pickaxe", "sequences.human_mining_rune_pickaxe_wall", "dbrows.mining_rune_pickaxe")),

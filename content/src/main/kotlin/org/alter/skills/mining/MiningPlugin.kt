@@ -1,8 +1,9 @@
 package org.alter.skills.mining
 
+import io.github.oshai.kotlinlogging.KotlinLogging
 import org.alter.api.*
-import org.alter.api.success
 import org.alter.api.ext.*
+import org.alter.api.success
 import org.alter.game.model.attr.AttributeKey
 import org.alter.game.model.attr.INTERACTING_OBJ_ATTR
 import org.alter.game.model.entity.GameObject
@@ -11,69 +12,55 @@ import org.alter.game.model.entity.Player
 import org.alter.game.model.item.Item
 import org.alter.game.model.queue.QueueTask
 import org.alter.game.model.timer.TimerKey
-import org.alter.game.pluginnew.event.EventManager
-import org.alter.skills.woodcutting.handlers.BlisterwoodTreeDepleteHandler
-import org.alter.rscm.RSCM
-import org.alter.rscm.RSCM.getRSCM
-import org.alter.rscm.RSCMType
-import io.github.oshai.kotlinlogging.KotlinLogging
 import org.alter.game.pluginnew.PluginEvent
+import org.alter.game.pluginnew.event.EventManager
 import org.alter.game.pluginnew.event.ReturnableEventListener
 import org.alter.game.pluginnew.event.impl.onObjectOption
 import org.alter.game.util.DbHelper
 import org.alter.game.util.DbHelper.Companion.table
-import org.alter.game.util.enumKey
 import org.alter.game.util.multiColumn
 import org.alter.game.util.vars.LocType
-import org.alter.skills.woodcutting.TreeDepleteEvent
-import org.alter.skills.woodcutting.TreeDepleteHandler
-import org.alter.skills.woodcutting.TreeLogObtainedEvent
-import org.alter.skills.woodcutting.WoodcuttingDefinitions
-import org.alter.skills.woodcutting.WoodcuttingDefinitions.axeData
-import org.alter.skills.woodcutting.WoodcuttingDefinitions.tableToTreeData
+import org.alter.rscm.RSCM
+import org.alter.rscm.RSCM.getRSCM
+import org.alter.rscm.RSCMType
+import org.alter.skills.mining.MiningDefinitions.pickaxeData
+import org.alter.skills.mining.MiningDefinitions.tableToRockData
 
 class MiningPlugin : PluginEvent() {
 
     companion object {
         private val logger = KotlinLogging.logger {}
 
-        val CHOP_SOUND = 2053
-        val LOG_OBTAINED_SOUND = 2734
+        private const val MINE_SOUND = 2654
+        private const val ORE_OBTAINED_SOUND = 2718
 
         /**
-         * Timer key for tree countdown timers.
-         * Timers are stored directly on the GameObject.
+         * Timer key for rock countdown timers.
          */
-        private val TREE_COUNTDOWN_TIMER = TimerKey()
+        private val ROCK_COUNTDOWN_TIMER = TimerKey()
 
         /**
-         * Attribute key for tracking players actively chopping a tree.
-         * Similar to PLAYERS_COUNT_ATTR in campfires.
+         * Attribute key for tracking players actively mining a rock.
          */
-        val ACTIVE_CHOPPERS_ATTR = AttributeKey<MutableSet<Player>>()
+        val ACTIVE_MINERS_ATTR = AttributeKey<MutableSet<Player>>()
 
         /**
-         * Attribute key for storing the max countdown value for a tree.
-         * Used to know when to stop regenerating the timer.
+         * Attribute key for storing the max countdown value for a rock.
          */
         val MAX_COUNTDOWN_ATTR = AttributeKey<Int>()
     }
 
     /**
-     * Registers a tree deplete handler for a specific tree type.
-     * This allows custom behavior when a tree depletes (e.g., spawning NPCs, special messages, etc.).
-     *
-     * @param treeTypeId The tree type identifier (e.g., "blisterwood", "oak")
-     * @param handler The handler to register
+     * Registers a rock deplete handler for a specific rock type.
      */
-    fun onDeplete(treeTypeId: String, handler: TreeDepleteHandler) {
-        require(handler.treeTypeId == treeTypeId) { "Handler tree type (${handler.treeTypeId}) must match provided tree type ($treeTypeId)" }
-        RSCM.requireRSCM(RSCMType.ROWTYPES, treeTypeId)
-        val columnId = getRSCM(treeTypeId)
-        ReturnableEventListener.on<TreeDepleteEvent, Boolean> {
-            where { treeType == columnId }
+    fun onDeplete(rockTypeId: String, handler: RockDepleteHandler) {
+        require(handler.rockTypeId == rockTypeId) { "Handler rock type (${handler.rockTypeId}) must match provided rock type ($rockTypeId)" }
+        RSCM.requireRSCM(RSCMType.ROWTYPES, rockTypeId)
+        val columnId = getRSCM(rockTypeId)
+        ReturnableEventListener.on<RockDepleteEvent, Boolean> {
+            where { rockType == columnId }
             then {
-                return@then handler.handleDeplete(player, treeObject, world)
+                return@then handler.handleDeplete(player, rockObject, world)
             }
         }
     }
@@ -81,15 +68,15 @@ class MiningPlugin : PluginEvent() {
     override fun init() {
         registerDepleteHandlers()
 
-        table("tables.woodcutting_trees").forEach { tree ->
-            val treeObject = tree.multiColumn("columns.woodcutting_trees:tree_object", LocType)
-            treeObject.forEach { treeID ->
+        table("tables.mining_rocks").forEach { rock ->
+            val rockObjects = rock.multiColumn("columns.mining_rocks:rock_object", LocType)
+            rockObjects.forEach { rockId ->
                 try {
-                    onObjectOption(treeID,"chop down","chop") {
-                        player.queue { chopTree(player, tree) }
+                    onObjectOption(rockId, "mine") {
+                        player.queue { mineRock(player, rock) }
                     }
                 } catch (e: Exception) {
-                    logger.warn { "Tree object '${treeID}' not found in cache or option not available, skipping registration: ${e.message}" }
+                    logger.warn { "Rock object '$rockId' not found in cache or option not available, skipping registration: ${e.message}" }
                 }
             }
         }
@@ -97,214 +84,159 @@ class MiningPlugin : PluginEvent() {
         startTimerUpdateTask()
     }
 
-    /**
-     * Starts a periodic task to update tree countdown timers.
-     * Timers count down while chopping, regenerate when idle.
-     * Runs every game tick via ObjectTimerMap, but we need to handle the countdown logic.
-     */
     private fun startTimerUpdateTask() {
         world.queue {
             while (true) {
-                wait(1) // Every game tick
-                updateAllTreeTimers()
+                wait(1)
+                updateAllRockTimers()
             }
         }
     }
 
-    /**
-     * Updates all tree timers that have active choppers or are regenerating.
-     * Timers count down 1 tick per game tick while chopping, regenerate when idle.
-     *
-     * Performance optimizations:
-     * - Only processes objects with our tree-specific attributes (fast attribute check first)
-     * - Skips objects that don't have TREE_COUNTDOWN_TIMER (filters out campfires, other skills)
-     * - ObjectTimerMap only tracks objects with timers, not all objects in the world
-     */
-    private fun updateAllTreeTimers() {
+    private fun updateAllRockTimers() {
         ObjectTimerMap.forEach { obj ->
-            val activeChoppers = obj.attr[ACTIVE_CHOPPERS_ATTR] ?: return@forEach
+            val activeMiners = obj.attr[ACTIVE_MINERS_ATTR] ?: return@forEach
             val maxCountdown = obj.attr[MAX_COUNTDOWN_ATTR] ?: return@forEach
 
-            val currentTime = obj.getTimeLeft(TREE_COUNTDOWN_TIMER)
+            val currentTime = obj.getTimeLeft(ROCK_COUNTDOWN_TIMER)
             if (currentTime == 0) {
-                if (activeChoppers.isEmpty()) {
-                    obj.attr.remove(ACTIVE_CHOPPERS_ATTR)
+                if (activeMiners.isEmpty()) {
+                    obj.attr.remove(ACTIVE_MINERS_ATTR)
                     obj.attr.remove(MAX_COUNTDOWN_ATTR)
                 }
                 return@forEach
             }
 
-            if (activeChoppers.isNotEmpty()) {
+            if (activeMiners.isNotEmpty()) {
                 val newTime = (currentTime - 1).coerceAtLeast(0)
                 if (newTime > 0) {
-                    obj.setTimer(TREE_COUNTDOWN_TIMER, newTime)
+                    obj.setTimer(ROCK_COUNTDOWN_TIMER, newTime)
                 } else {
-                    obj.removeTimer(TREE_COUNTDOWN_TIMER)
+                    obj.removeTimer(ROCK_COUNTDOWN_TIMER)
                 }
             } else {
                 if (currentTime < maxCountdown) {
-                    obj.setTimer(TREE_COUNTDOWN_TIMER, (currentTime + 1).coerceAtMost(maxCountdown))
+                    obj.setTimer(ROCK_COUNTDOWN_TIMER, (currentTime + 1).coerceAtMost(maxCountdown))
                 } else {
-                    obj.removeTimer(TREE_COUNTDOWN_TIMER)
+                    obj.removeTimer(ROCK_COUNTDOWN_TIMER)
                     obj.attr.remove(MAX_COUNTDOWN_ATTR)
-                    obj.attr.remove(ACTIVE_CHOPPERS_ATTR)
+                    obj.attr.remove(ACTIVE_MINERS_ATTR)
                 }
             }
         }
     }
 
-    /**
-     * Registers default tree deplete handlers.
-     */
     private fun registerDepleteHandlers() {
-        onDeplete("dbrows.woodcutting_blisterwood_tree", BlisterwoodTreeDepleteHandler())
+        // Placeholder for custom rock-specific handlers when required.
     }
 
-    /**
-     * Gets the stump RSCM identifier for a given tree RSCM identifier.
-     * Regular and dead trees have specific stump mappings that take precedence over tree type mappings.
-     */
-    private fun getStumpForTree(tree: Int, fallback: Int?): Int? {
-        enumKey("enums.regular_tree_stumps", tree, LocType, LocType)?.let { return it }
-        enumKey("enums.dead_tree_stumps", tree, LocType, LocType)?.let { return it }
+    private fun getDepletedRock(rockData: MiningDefinitions.RockData): Int? = rockData.depletedRock
 
-        return fallback
-    }
-
-
-    /**
-     * Checks if the player has any axe available (equipped or in inventory).
-     */
-    private fun hasAnyAxe(player: Player): Boolean {
+    private fun hasAnyPickaxe(player: Player): Boolean {
         player.equipment[EquipmentType.WEAPON.id]?.let { weapon ->
-            if (axeData.containsKey(weapon.id)) return true
+            if (pickaxeData.containsKey(weapon.id)) return true
         }
 
         return player.inventory.asSequence()
             .filterNotNull()
-            .any { axeData.containsKey(it.id) }
+            .any { pickaxeData.containsKey(it.id) }
     }
 
-    /**
-     * Gets the best axe the player can use based on their woodcutting level.
-     * Checks both equipped weapon and inventory.
-     * Returns null if the player has no usable axe.
-     */
-    private fun getBestAxe(player: Player): WoodcuttingDefinitions.AxeData? {
-        val wcLevel = player.getSkills().getBaseLevel(Skills.WOODCUTTING)
-
+    private fun getBestPickaxe(player: Player): MiningDefinitions.PickaxeData? {
+        val miningLevel = player.getSkills().getBaseLevel(Skills.MINING)
 
         player.equipment[EquipmentType.WEAPON.id]?.let { weapon ->
-            axeData[weapon.id]?.takeIf { wcLevel >= it.levelReq }?.let { return it }
+            pickaxeData[weapon.id]?.takeIf { miningLevel >= it.levelReq }?.let { return it }
         }
 
         return player.inventory.asSequence()
             .filterNotNull()
-            .mapNotNull { axeData[it.id] }
-            .filter { wcLevel >= it.levelReq }
+            .mapNotNull { pickaxeData[it.id] }
+            .filter { miningLevel >= it.levelReq }
             .maxByOrNull { it.levelReq }
     }
 
-    /**
-     * Checks if the object is a stump by comparing its transform to the expected stump ID.
-     */
-    private fun isStump(obj: GameObject, stumpId: Int, player: Player): Boolean {
-        return obj.getTransform(player) == stumpId
+    private fun isDepletedRock(obj: GameObject, depletedId: Int, player: Player): Boolean {
+        return obj.getTransform(player) == depletedId
     }
 
-    /**
-     * Handles when a player successfully obtains a log from a tree.
-     * Adds the log to inventory, gives XP, and shows a message.
-     * Returns true if log was successfully added, false if inventory is full.
-     */
-    private fun handleLogObtained(
+    private fun handleOreObtained(
         player: Player,
-        treeData: WoodcuttingDefinitions.TreeData
+        rockData: MiningDefinitions.RockData,
     ): Boolean {
-        val logItem = treeData.log
-        if (player.inventory.add(logItem, 1).hasSucceeded()) {
-            player.addXp(Skills.WOODCUTTING, treeData.xp)
+        val oreItem = rockData.ore
+        if (player.inventory.add(oreItem, 1).hasSucceeded()) {
+            player.addXp(Skills.MINING, rockData.xp)
             try {
-                val logName = Item(logItem).getName().lowercase()
-                player.message("You get some $logName.")
+                val oreName = Item(oreItem).getName().lowercase()
+                player.message("You manage to mine some $oreName.")
             } catch (e: Exception) {
-                // Fallback to generic message if item name lookup fails
-                player.message("You get some logs.")
+                player.message("You manage to mine some ore.")
             }
-            player.playSound(LOG_OBTAINED_SOUND, volume = 1, delay = 0)
+            player.playSound(ORE_OBTAINED_SOUND, volume = 1, delay = 0)
             return true
         } else {
-            player.message("Your inventory is too full to hold any more logs.")
+            player.message("Your inventory is too full to hold any more ore.")
             player.animate(RSCM.NONE)
             return false
         }
     }
 
-
-    /**
-     * Handles tree depletion: creates stump, removes tree, and schedules respawn.
-     *
-     * Tree depletes when:
-     * - Countdown timer reaches 0 (for countdown trees: depletes on next successful log)
-     * - Always (for regular trees: depletes after 1 log)
-     *
-     * Returns true if depletion was handled, false if handler prevented default behavior.
-     */
-    private fun QueueTask.depleteTree(
+    private suspend fun QueueTask.depleteRock(
         player: Player,
         obj: GameObject,
-        columnID : Int,
-        treeData: WoodcuttingDefinitions.TreeData
+        columnId: Int,
+        rockData: MiningDefinitions.RockData,
     ): Boolean {
-
-        val specialTree = EventManager.postWithResult(
-            TreeDepleteEvent(
+        val specialRock = EventManager.postWithResult(
+            RockDepleteEvent(
                 player = player,
-                treeObject = obj,
-                treeRscm = obj.id,
-                treeType = columnID,
-                world = world
-            )
+                rockObject = obj,
+                rockRscm = obj.id,
+                rockType = columnId,
+                world = world,
+            ),
         )
 
-        if (specialTree) {
-            println("Special Tree Return")
+        if (specialRock) {
             return true
         }
 
-        getStumpForTree(obj.internalID, treeData.stumpObject)?.let { stump ->
-            obj.replaceWith(world, stump, treeData.respawnCycles, restoreOriginal = true)
+        getDepletedRock(rockData)?.let { depleted ->
+            obj.replaceWith(world, depleted, rockData.respawnCycles, restoreOriginal = true)
         }
 
-        player.message("You have cut down this tree.")
+        player.message("The rock is now depleted.")
         player.animate(RSCM.NONE)
 
         return false
     }
 
-    /**
-     * Main tree chopping logic.
-     * Uses RSCM identifiers exclusively - no hardcoded IDs.
-     * Timers are stored directly on the GameObject.
-     */
-    suspend fun QueueTask.chopTree(player: Player, treeTable: DbHelper) {
-        val treeData = tableToTreeData(treeTable)
-        val wcLevel = player.getSkills().getBaseLevel(Skills.WOODCUTTING)
+    private fun resolveAnimationId(pickaxe: MiningDefinitions.PickaxeData, rockType: String): Int {
+        if (rockType == "wall") {
+            pickaxe.wallAnimationId?.let { return it }
+        }
+        return pickaxe.animationId
+    }
 
-        if (wcLevel < treeData.levelReq) {
-            player.message("You need a Woodcutting level of ${treeData.levelReq} to cut this tree.")
+    suspend fun QueueTask.mineRock(player: Player, rockTable: DbHelper) {
+        val rockData = tableToRockData(rockTable)
+        val miningLevel = player.getSkills().getBaseLevel(Skills.MINING)
+
+        if (miningLevel < rockData.levelReq) {
+            player.message("You need a Mining level of ${rockData.levelReq} to mine this rock.")
             return
         }
 
-        if (!hasAnyAxe(player)) {
-          player.message("You need an axe to chop down this tree.")
-          return
-      }
+        if (!hasAnyPickaxe(player)) {
+            player.message("You need a pickaxe to mine this rock.")
+            return
+        }
 
-        val axeData = getBestAxe(player)
-        if (axeData == null) {
-          player.message("You do not have an axe which you have the woodcutting level to use.")
-          return
+        val pickaxe = getBestPickaxe(player)
+        if (pickaxe == null) {
+            player.message("You do not have a pickaxe which you have the Mining level to use.")
+            return
         }
 
         val obj = player.attr[INTERACTING_OBJ_ATTR]?.get() ?: return
@@ -313,68 +245,71 @@ class MiningPlugin : PluginEvent() {
             return
         }
 
-        val stumpId = getStumpForTree(obj.internalID,treeData.stumpObject)?: -1
+        val depletedId = getDepletedRock(rockData) ?: -1
 
         val nearestTile = obj.findNearestTile(player.tile)
         player.faceTile(nearestTile)
-        player.message("You swing your axe at the tree.")
+        player.message("You swing your pickaxe at the rock.")
+        player.playSound(MINE_SOUND, volume = 1, delay = 0)
 
-        val tickDelay = axeData.tickDelay
-        val (low, high) = treeData.successRateLow to treeData.successRateHigh
-        val chopAnimation = RSCM.getReverseMapping(RSCMType.SEQTYPES, axeData.animationId) ?: return
+        val tickDelay = pickaxe.tickDelay
+        val (low, high) = rockData.successRateLow to rockData.successRateHigh
+        val animationId = resolveAnimationId(pickaxe, rockData.rockType)
+        val miningAnimation = RSCM.getReverseMapping(RSCMType.SEQTYPES, animationId) ?: return
 
-        player.loopAnim(chopAnimation)
+        player.loopAnim(miningAnimation)
 
-        if (treeData.usesCountdown()) {
-            val activeChoppers = obj.attr.getOrPut(ACTIVE_CHOPPERS_ATTR) { mutableSetOf() }
-            activeChoppers.add(player)
+        if (rockData.usesCountdown()) {
+            val activeMiners = obj.attr.getOrPut(ACTIVE_MINERS_ATTR) { mutableSetOf() }
+            activeMiners.add(player)
 
-            if (!obj.hasTimers() || obj.getTimeLeft(TREE_COUNTDOWN_TIMER) == 0) {
-                obj.setTimer(TREE_COUNTDOWN_TIMER, treeData.despawnTicks)
-                obj.attr[MAX_COUNTDOWN_ATTR] = treeData.despawnTicks
+            if (!obj.hasTimers() || obj.getTimeLeft(ROCK_COUNTDOWN_TIMER) == 0) {
+                obj.setTimer(ROCK_COUNTDOWN_TIMER, rockData.despawnTicks)
+                obj.attr[MAX_COUNTDOWN_ATTR] = rockData.despawnTicks
             }
         }
 
         repeatWhile(delay = tickDelay, immediate = false, canRepeat = {
             val currentNearestTile = obj.findNearestTile(player.tile)
             player.tile.isWithinRadius(currentNearestTile, 1) &&
-            !player.inventory.isFull
-            obj.isSpawned(world) &&
-            !isStump(obj, stumpId, player)
+                !player.inventory.isFull &&
+                obj.isSpawned(world) &&
+                !isDepletedRock(obj, depletedId, player)
         }) {
 
-            val success = success(low, high, wcLevel)
+            val success = success(low, high, miningLevel)
 
             if (success) {
-                TreeLogObtainedEvent(player, obj, treeData, treeTable.id).post()
-                val logObtained = handleLogObtained(player, treeData)
-                if (!logObtained) {
-                    if (treeData.usesCountdown()) {
-                        obj.attr[ACTIVE_CHOPPERS_ATTR]?.remove(player)
+                RockOreObtainedEvent(player, obj, rockData, rockTable.id).post()
+                val oreObtained = handleOreObtained(player, rockData)
+                if (!oreObtained) {
+                    if (rockData.usesCountdown()) {
+                        obj.attr[ACTIVE_MINERS_ATTR]?.remove(player)
                     }
                     return@repeatWhile
                 }
 
-                val shouldDeplete = if (treeData.usesCountdown()) {
-                    obj.getTimeLeft(TREE_COUNTDOWN_TIMER) <= 0
-                } else {
-                    true
+                val shouldDeplete = when {
+                    rockData.isInfiniteResource() -> false
+                    rockData.usesCountdown() -> obj.getTimeLeft(ROCK_COUNTDOWN_TIMER) <= 0
+                    else -> true
                 }
 
                 if (shouldDeplete) {
-                    if (treeData.usesCountdown()) {
-                        obj.attr[ACTIVE_CHOPPERS_ATTR]?.remove(player)
+                    if (rockData.usesCountdown()) {
+                        obj.attr[ACTIVE_MINERS_ATTR]?.remove(player)
                     }
-                    depleteTree(player, obj, treeTable.id, treeData)
+                    depleteRock(player, obj, rockTable.id, rockData)
                     return@repeatWhile
                 }
             }
         }
 
-        if (treeData.usesCountdown()) {
-            obj.attr[ACTIVE_CHOPPERS_ATTR]?.remove(player)
+        if (rockData.usesCountdown()) {
+            obj.attr[ACTIVE_MINERS_ATTR]?.remove(player)
         }
 
         player.stopLoopAnim()
     }
 }
+
