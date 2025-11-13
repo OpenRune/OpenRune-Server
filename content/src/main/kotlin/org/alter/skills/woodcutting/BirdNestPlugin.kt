@@ -3,6 +3,7 @@ package org.alter.skills.woodcutting
 import org.alter.api.ChatMessageType
 import org.alter.api.Skills
 import org.alter.api.ext.filterableMessage
+import org.alter.api.ext.findClosestWalkableTile
 import org.alter.api.ext.inWilderness
 import org.alter.api.ext.message
 import org.alter.api.ext.replaceItem
@@ -138,7 +139,8 @@ class BirdNestPlugin : PluginEvent() {
             }
 
             nestID?.let {
-                player.world.spawn(GroundItem(it, 1, player.tile, player).apply { timeUntilDespawn = 200 })
+                val spawnTile = player.findClosestWalkableTile() ?: player.tile
+                player.world.spawn(GroundItem(it, 1, spawnTile, player).apply { timeUntilDespawn = 200 })
             }
         }
     }
