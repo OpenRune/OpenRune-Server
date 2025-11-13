@@ -17,7 +17,6 @@ import org.alter.game.model.move.hasMoveDestination
 import org.alter.game.model.move.stopMovement
 import org.alter.game.model.move.walkRoute
 import org.alter.game.model.queue.QueueTask
-import org.alter.game.model.wait
 import org.alter.game.plugin.KotlinPlugin
 import org.alter.game.plugin.PluginRepository
 import org.alter.plugins.content.combat.specialattack.SpecialAttacks

@@ -9,7 +9,6 @@ import org.alter.game.model.move.stopMovement
 import org.alter.game.model.queue.QueueTask
 import org.alter.game.model.World
 import org.alter.game.model.timer.TimeConstants
-import org.alter.game.model.wait
 import org.alter.skills.woodcutting.TreeDepleteHandler
 import org.alter.rscm.RSCM
 import org.alter.rscm.RSCM.getRSCM

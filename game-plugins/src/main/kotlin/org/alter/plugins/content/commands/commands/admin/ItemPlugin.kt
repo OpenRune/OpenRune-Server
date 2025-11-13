@@ -9,6 +9,7 @@ import org.alter.game.model.entity.Player
 import org.alter.game.model.item.Item
 import org.alter.game.model.priv.Privilege
 import org.alter.game.model.queue.QueueTask
+import org.alter.game.model.queue.TaskPriority
 import org.alter.game.plugin.KotlinPlugin
 import org.alter.game.plugin.PluginRepository
 import java.text.DecimalFormat
@@ -36,8 +37,8 @@ class ItemPlugin(
                     player.message("Item $item does not exist in cache.")
                 }
             } catch (e: Exception) {
-                player.strongQueue {
-                    val item = spawn(player) ?: return@strongQueue
+                player.queue(TaskPriority.STRONG) {
+                    val item = spawn(player) ?: return@queue
                     if (item.amount > 0) {
                         player.message("You have spawned ${item.amount} x ${item.getName()}.")
                     } else {

@@ -9,10 +9,8 @@ import io.github.oshai.kotlinlogging.KotlinLogging
 import org.alter.game.model.Tile
 import org.alter.game.model.World
 import org.alter.game.model.attr.AttributeMap
-import org.alter.game.model.repeatWhile
 import org.alter.game.model.timer.TimerKey
 import org.alter.game.model.timer.TimerMap
-import org.alter.game.model.wait
 import org.alter.rscm.RSCM
 import org.alter.rscm.RSCMType
 import java.util.concurrent.ConcurrentHashMap
@@ -251,11 +249,11 @@ abstract class GameObject : Entity {
 
         if (key != null) {
             world.queue {
-                repeatWhile(1, true, { true }) {
+                repeatUntil(1, true, { false }) {
                     if (replacement.getTimeLeft(key) == 0) {
                         world.remove(replacement)
                         if (restoreOriginal) world.spawn(original)
-                        return@repeatWhile
+                        return@repeatUntil
                     }
                 }
             }

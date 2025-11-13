@@ -18,13 +18,10 @@ allprojects {
         maven("https://jitpack.io")
         maven("https://raw.githubusercontent.com/OpenRune/hosting/master")
         maven("https://repo.openrs2.org/repository/openrs2-snapshots")
-        maven("https://raw.githubusercontent.com/MatthewBishop/rsmod-shenanigans/refs/heads/main/artifacts/")
-
     }
 
     val lib = rootProject.project.libs
     dependencies {
-        implementation("org.rsmod:rsmod-extra:1.0.0")
         implementation(lib.kotlin.logging)
         implementation(lib.logback.classic)
         implementation(lib.fastutil)

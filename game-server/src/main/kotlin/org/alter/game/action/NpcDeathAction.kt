@@ -12,7 +12,8 @@ import org.alter.game.model.entity.Player
 import org.alter.game.model.move.moveTo
 import org.alter.game.model.move.stopMovement
 import org.alter.game.model.queue.QueueTask
-import org.alter.game.model.wait
+import org.alter.game.model.queue.TaskPriority
+import org.alter.game.model.weightedTableBuilder.roll
 import org.alter.game.plugin.Plugin
 import org.alter.game.service.log.LoggerService
 import org.alter.rscm.RSCM.asRSCM
@@ -30,7 +31,7 @@ object NpcDeathAction {
             npc.interruptQueues()
             npc.stopMovement()
             npc.lock()
-            npc.strongQueue {
+            npc.queue(TaskPriority.STRONG) {
                 death(npc)
             }
         }

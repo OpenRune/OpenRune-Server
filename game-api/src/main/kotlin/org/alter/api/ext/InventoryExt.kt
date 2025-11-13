@@ -6,7 +6,6 @@ import org.alter.game.model.attr.OTHER_ITEM_SLOT_ATTR
 import org.alter.game.model.container.ItemContainer
 import org.alter.game.model.entity.Player
 import org.alter.game.model.item.Item
-import org.alter.game.model.wait
 
 /**
  * As the "inventory" itself is a specific [ItemContainer] of a [Player], extension functions

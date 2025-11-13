@@ -8,7 +8,6 @@ import org.alter.api.ext.playSound
 import org.alter.game.model.LockState
 import org.alter.game.model.entity.Player
 import org.alter.game.model.move.stopMovement
-import org.alter.game.model.wait
 import org.alter.game.pluginnew.PluginEvent
 import org.alter.game.pluginnew.event.impl.ItemClickEvent
 import org.alter.rscm.RSCM.asRSCM

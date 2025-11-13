@@ -50,14 +50,14 @@ class RingOfWealthPlugin(
         RING_OF_WEALTH.forEach { wealth ->
             LOCATIONS.forEach { location, tile ->
                 onEquipmentOption(wealth, option = location) {
-                    player.strongQueue {
+                    player.queue(TaskPriority.STRONG) {
                         player.teleport(tile)
                     }
                 }
             }
             OPTIONS.forEach { options, open ->
                 onEquipmentOption(wealth, option = options) {
-                    player.strongQueue {
+                    player.queue(TaskPriority.STRONG) {
                         player.message("Placeholder for both boss log and coin collector. mapof($open)", ChatMessageType.ENGINE)
                     }
                 }

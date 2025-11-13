@@ -17,8 +17,6 @@ import org.alter.rscm.RSCM
 import org.alter.rscm.RSCM.getRSCM
 import org.alter.rscm.RSCMType
 import io.github.oshai.kotlinlogging.KotlinLogging
-import org.alter.game.model.repeatWhile
-import org.alter.game.model.wait
 import org.alter.game.pluginnew.PluginEvent
 import org.alter.game.pluginnew.event.ReturnableEventListener
 import org.alter.game.pluginnew.event.impl.onObjectOption
@@ -331,12 +329,12 @@ class WoodcuttingPlugin : PluginEvent() {
             }
         }
 
-        repeatWhile(delay = tickDelay, immediate = false, canRepeat = {
+        repeatUntil(delay = tickDelay, immediate = false, predicate = {
             val currentNearestTile = obj.findNearestTile(player.tile)
-            player.tile.isWithinRadius(currentNearestTile, 1) &&
-            !player.inventory.isFull
-            obj.isSpawned(world) &&
-            !isStump(obj, stumpId, player)
+            !player.tile.isWithinRadius(currentNearestTile, 1) ||
+            player.inventory.isFull ||
+            !obj.isSpawned(world) ||
+            isStump(obj, stumpId, player)
         }) {
             player.playSound(CHOP_SOUND, volume = 1, delay = 0)
 
@@ -349,7 +347,7 @@ class WoodcuttingPlugin : PluginEvent() {
                     if (treeData.usesCountdown()) {
                         obj.attr[ACTIVE_CHOPPERS_ATTR]?.remove(player)
                     }
-                    return@repeatWhile
+                    return@repeatUntil
                 }
 
                 val shouldDeplete = if (treeData.usesCountdown()) {
@@ -363,7 +361,7 @@ class WoodcuttingPlugin : PluginEvent() {
                         obj.attr[ACTIVE_CHOPPERS_ATTR]?.remove(player)
                     }
                     depleteTree(player, obj, treeTable.id, treeData)
-                    return@repeatWhile
+                    return@repeatUntil
                 }
             }
         }

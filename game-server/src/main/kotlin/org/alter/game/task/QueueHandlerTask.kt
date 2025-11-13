@@ -2,7 +2,6 @@ package org.alter.game.task
 
 import org.alter.game.model.World
 import org.alter.game.service.GameService
-import kotlin.collections.forEach
 
 /**
  * A [GameTask] responsible for going over all the active
@@ -11,21 +10,12 @@ import kotlin.collections.forEach
  * @author Tom <rspsmods@gmail.com>
  */
 class QueueHandlerTask : GameTask {
-
-    override fun execute(world: World, service: GameService) {
+    override fun execute(
+        world: World,
+        service: GameService,
+    ) {
         var playerQueues = 0
         var npcQueues = 0
-
-        world.players.forEach { player ->
-            player.queues.cycle()
-            playerQueues += player.queues.size
-        }
-
-        world.npcs.forEach { npc ->
-            npc.queues.cycle()
-            npcQueues += npc.queues.size
-        }
-
         val worldQueues: Int = world.queues.size
         world.queues.cycle()
 

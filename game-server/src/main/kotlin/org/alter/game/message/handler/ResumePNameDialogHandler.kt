@@ -3,7 +3,6 @@ package org.alter.game.message.handler
 import net.rsprot.protocol.game.incoming.resumed.ResumePNameDialog
 import org.alter.game.message.MessageHandler
 import org.alter.game.model.entity.Client
-import org.alter.game.model.queue.NameChatInput
 import org.alter.game.model.queue.QueueTask
 import org.alter.game.pluginnew.event.impl.DialogPlayerEvent
 
@@ -20,8 +19,7 @@ class ResumePNameDialogHandler : MessageHandler<ResumePNameDialog> {
 
         log(client, "Player username input dialog: username=%s", name)
 
-        val event = NameChatInput(name)
-        client.queues.submitReturnValue(event)
+        client.queues.submitReturnValue(target ?: QueueTask.EMPTY_RETURN_VALUE)
         DialogPlayerEvent(name,target,client).post()
     }
 }
