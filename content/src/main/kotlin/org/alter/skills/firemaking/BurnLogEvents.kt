@@ -10,8 +10,6 @@ import org.alter.game.model.entity.DynamicObject
 import org.alter.game.model.entity.GroundItem
 import org.alter.game.model.entity.Player
 import org.alter.game.model.move.walkTo
-import org.alter.game.model.repeatWhile
-import org.alter.game.model.wait
 import org.alter.game.pluginnew.MenuOption
 import org.alter.game.pluginnew.PluginEvent
 import org.alter.game.pluginnew.event.impl.GroundItemClickEvent
@@ -60,24 +58,24 @@ class BurnLogEvents : PluginEvent() {
         player.filterableMessage("You attempt to light the logs.")
 
         player.queue {
-            repeatWhile(delay = 6, immediate = true, canRepeat = { true }) {
+            repeatWhile(delay = 3, immediate = true, canRepeat = { true }) {
                 if (!player.world.isSpawned(logDrop)) {
                     player.animate(RSCM.NONE)
-                    stop()
+                    return@repeatWhile
                 }
 
                 player.animate("sequences.human_createfire")
 
                 if (!canBurn(player, isGroundBurning, log, logDrop, level)) {
                     player.animate(RSCM.NONE)
-                    stop()
+                    return@repeatWhile
                 }
 
                 val firemakingLevel = player.getSkills().getCurrentLevel(Skills.FIREMAKING)
                 val success = ColoredLogs.isColoredLog(log) || success(64, 512, firemakingLevel)
                 if (success) {
                     handleFireSuccess(player, logDrop, xp)
-                    stop()
+                    return@repeatWhile
                 }
             }
         }

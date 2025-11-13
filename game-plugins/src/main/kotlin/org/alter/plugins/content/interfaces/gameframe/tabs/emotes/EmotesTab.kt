@@ -1,10 +1,9 @@
-package org.alter.plugins.content.interfaces.gameframe.tabs.emotes
+package org.alter.plugins.content.interfaces.emotes
 
 import org.alter.api.EquipmentType
 import org.alter.api.ext.*
 import org.alter.game.model.entity.Player
-import org.alter.game.model.wait
-import org.alter.plugins.content.interfaces.emotes.Emote
+import org.alter.game.model.queue.TaskPriority
 import org.alter.rscm.RSCM
 import org.alter.rscm.RSCM.getRSCM
 
@@ -197,21 +196,21 @@ object EmotesTab {
         }
 
         if (emote == Emote.RELIC_UNLOCKED) {
-            p.queue {
+            p.queue(TaskPriority.STANDARD) {
                 p.graphic(RSCM.NONE)
                 p.graphic(emote.gfx, 100)
                 p.unlock()
             }
         }
         if (emote.anim != RSCM.NONE) {
-            p.queue {
+            p.queue(TaskPriority.STANDARD) {
                 p.animate(RSCM.NONE)
                 p.animate(emote.anim, 1)
                 p.unlock()
             }
         }
         if (emote.gfx != RSCM.NONE && emote != Emote.RELIC_UNLOCKED) {
-            p.queue {
+            p.queue(TaskPriority.STANDARD) {
                 p.graphic(RSCM.NONE)
                 p.graphic(emote.gfx)
                 p.unlock()

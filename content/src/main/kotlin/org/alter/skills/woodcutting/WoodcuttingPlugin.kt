@@ -17,8 +17,6 @@ import org.alter.rscm.RSCM
 import org.alter.rscm.RSCM.getRSCM
 import org.alter.rscm.RSCMType
 import io.github.oshai.kotlinlogging.KotlinLogging
-import org.alter.game.model.repeatWhile
-import org.alter.game.model.wait
 import org.alter.game.pluginnew.PluginEvent
 import org.alter.game.pluginnew.event.ReturnableEventListener
 import org.alter.game.pluginnew.event.impl.onObjectOption
@@ -343,7 +341,6 @@ class WoodcuttingPlugin : PluginEvent() {
             obj.isSpawned(world) &&
             !isStump(obj, stumpId, player)
         }) {
-            player.playSound(CHOP_SOUND, volume = 1, delay = 0)
 
             val success = success(low, high, wcLevel)
 

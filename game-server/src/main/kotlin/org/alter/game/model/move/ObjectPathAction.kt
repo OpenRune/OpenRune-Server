@@ -11,9 +11,9 @@ import org.alter.game.model.entity.GameObject
 import org.alter.game.model.entity.Pawn
 import org.alter.game.model.entity.Player
 import org.alter.game.model.queue.QueueTask
+import org.alter.game.model.queue.TaskPriority
 import org.alter.game.model.timer.FROZEN_TIMER
 import org.alter.game.model.timer.STUN_TIMER
-import org.alter.game.model.wait
 import org.alter.game.plugin.Plugin
 import org.rsmod.routefinder.Route
 import org.rsmod.routefinder.collision.CollisionStrategy
@@ -33,8 +33,8 @@ object ObjectPathAction {
         lineOfSightRange: Int?,
         logic: Plugin.() -> Unit,
     ) {
-        player.queue {
-            player.terminateAction = {
+        player.queue(TaskPriority.STANDARD) {
+            terminateAction = {
                 player.stopMovement()
                 player.write(SetMapFlag(255, 255))
             }

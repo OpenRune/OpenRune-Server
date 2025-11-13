@@ -302,13 +302,13 @@ class LootingBagPlugin(
     }
 
     fun set_queue(p: Player) {
-        p.strongQueue {
-            p.terminateAction = {
+        p.queue(TaskPriority.STRONG) {
+            terminateAction = {
                 if (p.interfaces.isVisible(TAB_INTERFACE_ID)) {
                     p.closeInterface(TAB_INTERFACE_ID)
                 }
             }
-            waitInterfaceClose(p,TAB_INTERFACE_ID)
+            waitInterfaceClose(TAB_INTERFACE_ID)
         }
     }
 

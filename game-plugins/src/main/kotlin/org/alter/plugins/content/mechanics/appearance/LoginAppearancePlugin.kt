@@ -25,7 +25,7 @@ class LoginAppearancePlugin(
     init {
         onLogin {
 //    if (player.attr[APPEARANCE_SET_ATTR] == false) {
-//        player.strongQueue {
+//        player.queue(TaskPriority.STRONG) {
 //            player.lock = LockState.FULL_WITH_LOGOUT
 //            selectAppearance()
 //        }

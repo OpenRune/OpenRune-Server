@@ -10,7 +10,6 @@ import org.alter.api.ext.replaceItem
 import org.alter.api.ext.toItem
 import org.alter.game.model.entity.GroundItem
 import org.alter.game.model.entity.Player
-import org.alter.game.model.repeatWhile
 import org.alter.game.model.weight.impl.WeightItem
 import org.alter.game.pluginnew.MenuOption
 import org.alter.game.pluginnew.PluginEvent
@@ -100,15 +99,17 @@ class BirdNestPlugin : PluginEvent() {
     private fun handleNestSearch(player: Player) {
         player.queue {
             repeatWhile(delay = 4, immediate = true, canRepeat = { hasNest(player) }) {
-                val nestItem = player.inventory.firstOrNull { it != null && NestType.nestIDss.contains(it.id) }
+                val nestItem = player.inventory.firstOrNull { nest -> nest != null && NestType.nestIDss.contains(nest.id) }
                 if (nestItem == null) {
                     stop()
+                    return@repeatWhile
                 }
 
                 val nestType = NestType.entries.find { it.nestID == nestItem.id }
                 if (nestType == null) {
                     player.filterableMessage("This nest cannot be searched.")
                     stop()
+                    return@repeatWhile
                 }
 
                 val reward = nestType.rewards.random()

@@ -6,7 +6,6 @@ import org.alter.game.Server
 import org.alter.game.model.World
 import org.alter.game.model.priv.Privilege
 import org.alter.game.model.timer.FORCE_DISCONNECTION_TIMER
-import org.alter.game.model.wait
 import org.alter.game.plugin.KotlinPlugin
 import org.alter.game.plugin.PluginRepository
 import kotlin.system.exitProcess

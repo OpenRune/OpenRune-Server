@@ -10,9 +10,7 @@ import org.alter.game.model.attr.AttributeKey
 import org.alter.game.model.attr.INTERACTING_OBJ_ATTR
 import org.alter.game.model.entity.GameObject
 import org.alter.game.model.entity.Player
-import org.alter.game.model.repeatWhile
 import org.alter.game.model.timer.TimerKey
-import org.alter.game.model.wait
 import org.alter.game.pluginnew.MenuOption
 import org.alter.game.pluginnew.PluginConfig
 import org.alter.game.pluginnew.PluginEvent
