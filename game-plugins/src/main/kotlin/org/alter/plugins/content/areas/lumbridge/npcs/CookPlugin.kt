@@ -19,15 +19,6 @@ class CookPlugin (
 
     init {
         spawnNpc("npcs.cook", x = 3209, z = 3215, direction = Direction.SOUTH)
-
-        onNpcOption("npcs.cook", option = "talk-to") {
-            player.queue { dialog(player) }
-        }
     }
 
-    suspend fun QueueTask.dialog(player: Player) {
-        chatPlayer(player, "Hello there, cook!")
-        chatPlayer(player, "Do you have anything for me?")
-        chatNpc(player, "Sorry, not yet.")
-    }
 }

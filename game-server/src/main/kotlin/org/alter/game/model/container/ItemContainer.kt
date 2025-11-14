@@ -52,7 +52,8 @@ class ItemContainer(val key: ContainerKey) : Iterable<Item?> {
      */
     fun contains(item: Int): Boolean = items.any { it?.id == item }
 
-    fun contains(item: String): Boolean = items.any {it?.id == getRSCM(item)}
+    fun contains(vararg itemIds: String): Boolean =
+        itemIds.all { id -> items.any { it?.id == getRSCM(id) } }
     /**
      * Checks if the container has an [Item] which has the same [Item.id] as
      * [item] or any of the values (if any) in [others].
