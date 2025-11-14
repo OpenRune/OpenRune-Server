@@ -1,37 +1,31 @@
 package org.alter.plugins.content.objects.dairy
 
-import org.alter.api.ext.*
-import org.alter.game.Server
-import org.alter.game.model.World
+import org.alter.api.ext.loopAnim
+import org.alter.api.ext.message
+import org.alter.api.ext.stopLoopAnim
 import org.alter.game.model.entity.GroundItem
-import org.alter.game.plugin.KotlinPlugin
-import org.alter.game.plugin.PluginRepository
+import org.alter.game.pluginnew.PluginEvent
+import org.alter.game.pluginnew.event.impl.onObjectOption
 import org.alter.rscm.RSCM.getRSCM
 
-class DairyCowPlugin(
-    r: PluginRepository,
-    world: World,
-    server: Server
-) : KotlinPlugin(r, world, server) {
+class DairyCowPlugin : PluginEvent() {
 
-    init {
+    override fun init() {
         val bucketEmpty = getRSCM("items.bucket_empty")
         val bucketMilk = getRSCM("items.bucket_milk")
         val pengCowbell = getRSCM("items.peng_cowbell")
 
         // Milk option
-        onObjOption("objects.fat_cow", option = "milk") {
-            val obj = player.getInteractingGameObj()
-
+        onObjectOption("objects.fat_cow", "milk") {
             // Check if player has empty bucket
             if (!player.inventory.contains(bucketEmpty)) {
                 player.message("You'll need a bucket to put the milk in.")
-                return@onObjOption
+                return@onObjectOption
             }
 
             player.queue {
                 // Face the cow
-                player.faceTile(obj.tile)
+                player.faceTile(gameObject.tile)
                 wait(1)
 
                 player.loopAnim("sequences.milkit")
@@ -50,11 +44,9 @@ class DairyCowPlugin(
         }
 
         // Steal cowbell option
-        onObjOption("objects.fat_cow", option = "steal-cowbell") {
-            val obj = player.getInteractingGameObj()
-
+        onObjectOption("objects.fat_cow", "steal-cowbell") {
             player.queue {
-                player.faceTile(obj.tile)
+                player.faceTile(gameObject.tile)
 
                 // Perform pickup animation
                 player.animate("sequences.human_pickuptable", interruptable = true)
@@ -67,7 +59,7 @@ class DairyCowPlugin(
                 if (!(addResult.completed > 0)) {
                     // Inventory is full, drop on floor
                     val groundItem: GroundItem = GroundItem(pengCowbell, 1, player.tile, player)
-                    world.spawn(groundItem)
+                    player.world.spawn(groundItem)
                 }
             }
         }
