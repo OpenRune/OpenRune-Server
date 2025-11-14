@@ -1,4 +1,4 @@
-package org.alter.plugins.content.mechanics.run
+package org.alter.mechanics.run
 
 import org.alter.api.EquipmentType
 import org.alter.api.Skills

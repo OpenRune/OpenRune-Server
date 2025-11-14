@@ -152,10 +152,6 @@ class OptionsTabFirstPlugin(
             player.setVarp("varp.option_attackpriority_npc", slot)
         }
 
-        bind_setting(child = RUN_MODE_BUTTON) {
-            player.toggleVarp("varp.option_run")
-        }
-
         bind_setting(child = ACCEPT_AID_BUTTON) {
             player.toggleVarp("varp.option_aid")
         }
