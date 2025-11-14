@@ -200,8 +200,8 @@ object Mining {
             column(COL_RESPAWN_CYCLES, 99)
             column(COL_SUCCESS_RATE_LOW, 27)
             column(COL_SUCCESS_RATE_HIGH, 70)
-            column(COL_DESPAWN_TICKS, 0)
-            column(COL_DEPLETE_MECHANIC, 0) // Normal
+            column(COL_DESPAWN_TICKS, 99)
+            column(COL_DEPLETE_MECHANIC, 1) // Normal
             columnRSCM(COL_EMPTY_ROCK, "objects.rocks2")
             column(CLUE_BASE_CHANCE, 317647)
             column(COL_TYPE, "rock")
@@ -288,7 +288,7 @@ object Mining {
             column(COL_SUCCESS_RATE_HIGH, 256)
             column(COL_DESPAWN_TICKS, 0)
             column(COL_DEPLETE_MECHANIC, 3) // Always
-            column(COL_EMPTY_ROCK, "null")
+            column(COL_EMPTY_ROCK, "objects.amethystrock_empty")
             column(CLUE_BASE_CHANCE, 317647)
             column(COL_TYPE, "wall")
         }
