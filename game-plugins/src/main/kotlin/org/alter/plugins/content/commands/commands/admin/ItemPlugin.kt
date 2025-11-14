@@ -13,6 +13,7 @@ import org.alter.game.model.queue.TaskPriority
 import org.alter.game.plugin.KotlinPlugin
 import org.alter.game.plugin.PluginRepository
 import java.text.DecimalFormat
+import org.alter.api.Colors
 
 class ItemPlugin(
     r: PluginRepository,
@@ -31,7 +32,7 @@ class ItemPlugin(
                     val def = getItemOrDefault(Item(item).toUnnoted().id)
                     val result = player.inventory.add(item = item, amount = amount, assureFullInsertion = false)
                     player.message(
-                        "You have spawned <col=801700>${DecimalFormat().format(result.completed)} x ${def.name}</col></col> ($item).",
+                        "You have spawned <col=${Colors.RED}>${DecimalFormat().format(result.completed)} x ${def.name}</col> (ID: <col=${Colors.GREEN}>$item</col>).",
                     )
                 } else {
                     player.message("Item $item does not exist in cache.")
