@@ -96,7 +96,7 @@ object Mining {
             column(COL_SUCCESS_RATE_LOW, 64)
             column(COL_SUCCESS_RATE_HIGH, 256)
             column(COL_DESPAWN_TICKS, 0)
-            column(COL_DEPLETE_MECHANIC, 3) // Always
+            column(COL_DEPLETE_MECHANIC, 0) // Normal
             columnRSCM(COL_EMPTY_ROCK, "objects.rocks2")
             column(CLUE_BASE_CHANCE, 317647)
             column(COL_TYPE, "rock")
@@ -108,10 +108,10 @@ object Mining {
             column(COL_XP, 17.5)
             columnRSCM(COL_ORE_ITEM, "items.copper_ore")
             column(COL_RESPAWN_CYCLES, 4)
-            column(COL_SUCCESS_RATE_LOW, 64)
-            column(COL_SUCCESS_RATE_HIGH, 256)
+            column(COL_SUCCESS_RATE_LOW, 127)
+            column(COL_SUCCESS_RATE_HIGH, 255)
             column(COL_DESPAWN_TICKS, 0)
-            column(COL_DEPLETE_MECHANIC, 0) // Always
+            column(COL_DEPLETE_MECHANIC, 0) // Normal
             columnRSCM(COL_EMPTY_ROCK, "objects.rocks2")
             column(CLUE_BASE_CHANCE, 317647)
             column(COL_TYPE, "rock")
@@ -123,190 +123,175 @@ object Mining {
             column(COL_XP, 17.5)
             columnRSCM(COL_ORE_ITEM, "items.tin_ore")
             column(COL_RESPAWN_CYCLES, 4)
-            column(COL_SUCCESS_RATE_LOW, 64)
-            column(COL_SUCCESS_RATE_HIGH, 256)
-            column(COL_DESPAWN_TICKS, 45)
-            column(COL_DEPLETE_MECHANIC, 1) // Always
+            column(COL_SUCCESS_RATE_LOW, 99)
+            column(COL_SUCCESS_RATE_HIGH, 255)
+            column(COL_DESPAWN_TICKS, 0)
+            column(COL_DEPLETE_MECHANIC, 0) // Normal
             columnRSCM(COL_EMPTY_ROCK, "objects.rocks2")
             column(CLUE_BASE_CHANCE, 317647)
-            column(COL_TYPE, "wall")
+            column(COL_TYPE, "rock")
         }
-
-//        // Oak trees
-//        row("dbrows.woodcutting_oak_tree") {
-//            columnRSCM(COL_TREE_OBJECT,
-//                "objects.oaktree",
-//                "objects.oaktree", "objects.oak_tree_1",
-//                "objects.oak_tree_2", "objects.oak_tree_3",
-//                "objects.oak_tree_3_top", "objects.oak_tree_fullygrown_1",
-//                "objects.oak_tree_fullygrown_2"
-//            )
-//            column(COL_LEVEL, 15)
-//            column(COL_XP, 37)
-//            columnRSCM(COL_LOG_ITEM, "items.oak_logs")
-//            column(COL_RESPAWN_CYCLES, 60)
-//            column(COL_SUCCESS_RATE_LOW, 64)
-//            column(COL_SUCCESS_RATE_HIGH, 256)
-//            column(COL_DESPAWN_TICKS, 45)
-//            column(COL_DEPLETE_MECHANIC, 1) // Countdown
-//            columnRSCM(COL_STUMP, "objects.oaktree_stump")
-//            column(CLUE_BASE_CHANCE, 361146)
-//        }
-//
-//        // Willow trees
-//        row("dbrows.woodcutting_willow_tree") {
-//            columnRSCM(COL_TREE_OBJECT,
-//                "objects.willowtree", "objects.willow_tree_1",
-//                "objects.willow_tree_2", "objects.willow_tree_3",
-//                "objects.willow_tree_4", "objects.willow_tree_5",
-//                "objects.willow_tree_fullygrown_1", "objects.willow_tree_fullygrown_2",
-//                "objects.willow_tree2", "objects.willow_tree3",
-//                "objects.willow_tree4"
-//            )
-//            column(COL_LEVEL, 30)
-//            column(COL_XP, 67)
-//            columnRSCM(COL_LOG_ITEM, "items.willow_logs")
-//            column(COL_RESPAWN_CYCLES, 100)
-//            column(COL_SUCCESS_RATE_LOW, 32)
-//            column(COL_SUCCESS_RATE_HIGH, 256)
-//            column(COL_DESPAWN_TICKS, 50)
-//            column(COL_DEPLETE_MECHANIC, 1) // Countdown
-//            columnRSCM(COL_STUMP, "objects.willow_tree_stump_new")
-//            column(CLUE_BASE_CHANCE, 289286)
-//        }
-//
-//        // Teak trees
-//        row("dbrows.woodcutting_teak_tree") {
-//            columnRSCM(COL_TREE_OBJECT,
-//                "objects.teaktree", "objects.teak_tree_1",
-//                "objects.teak_tree_2", "objects.teak_tree_3",
-//                "objects.teak_tree_4", "objects.teak_tree_5",
-//                "objects.teak_tree_6", "objects.teak_tree_5_top",
-//                "objects.teak_tree_6_top", "objects.teak_tree_fullygrown",
-//                "objects.teak_tree_fullygrown_top"
-//            )
-//            column(COL_LEVEL, 35)
-//            column(COL_XP, 85)
-//            columnRSCM(COL_LOG_ITEM, "items.teak_logs")
-//            column(COL_RESPAWN_CYCLES, 100)
-//            column(COL_SUCCESS_RATE_LOW, 20)
-//            column(COL_SUCCESS_RATE_HIGH, 256)
-//            column(COL_DESPAWN_TICKS, 50)
-//            column(COL_DEPLETE_MECHANIC, 1) // Countdown
-//            columnRSCM(COL_STUMP, "objects.teak_tree_stump")
-//            column(CLUE_BASE_CHANCE, 264336)
-//        }
-//
-//        // Juniper trees
-//        row("dbrows.woodcutting_juniper_tree") {
-//            columnRSCM(COL_TREE_OBJECT, "objects.mature_juniper_tree")
-//            column(COL_LEVEL, 42)
-//            column(COL_XP, 35)
-//            columnRSCM(COL_LOG_ITEM, "items.juniper_logs")
-//            column(COL_RESPAWN_CYCLES, 100)
-//            column(COL_SUCCESS_RATE_LOW, 18)
-//            column(COL_SUCCESS_RATE_HIGH, 256)
-//            column(COL_DESPAWN_TICKS, 50)
-//            column(COL_DEPLETE_MECHANIC, 1) // Countdown
-//            columnRSCM(COL_STUMP, "objects.mature_juniper_tree_stump")
-//            column(CLUE_BASE_CHANCE, 360000)
-//        }
-//
-//        // Maple trees
-//        row("dbrows.woodcutting_maple_tree") {
-//            columnRSCM(COL_TREE_OBJECT,
-//                "objects.mapletree", "objects.maple_tree_1",
-//                "objects.maple_tree_2", "objects.maple_tree_3",
-//                "objects.maple_tree_4", "objects.maple_tree_5",
-//                "objects.maple_tree_6", "objects.maple_tree_7",
-//                "objects.maple_tree_fullygrown_1", "objects.maple_tree_fullygrown_2"
-//            )
-//            column(COL_LEVEL, 45)
-//            column(COL_XP, 100)
-//            columnRSCM(COL_LOG_ITEM, "items.maple_logs")
-//            column(COL_RESPAWN_CYCLES, 100)
-//            column(COL_SUCCESS_RATE_LOW, 16)
-//            column(COL_SUCCESS_RATE_HIGH, 256)
-//            column(COL_DESPAWN_TICKS, 100)
-//            column(COL_DEPLETE_MECHANIC, 1) // Countdown
-//            columnRSCM(COL_STUMP, "objects.maple_tree_stump_new")
-//            column(CLUE_BASE_CHANCE, 221918)
-//        }
-//
-//        // Mahogany trees
-//        row("dbrows.woodcutting_mahogany_tree") {
-//            columnRSCM(COL_TREE_OBJECT,
-//                "objects.mahoganytree", "objects.mahogany_tree_1",
-//                "objects.mahogany_tree_2", "objects.mahogany_tree_3",
-//                "objects.mahogany_tree_4", "objects.mahogany_tree_5",
-//                "objects.mahogany_tree_6", "objects.mahogany_tree_7",
-//                "objects.mahogany_tree_8", "objects.mahogany_tree_9",
-//                "objects.mahogany_tree_fullygrown"
-//            )
-//            column(COL_LEVEL, 50)
-//            column(COL_XP, 125)
-//            columnRSCM(COL_LOG_ITEM, "items.mahogany_logs")
-//            column(COL_RESPAWN_CYCLES, 120)
-//            column(COL_SUCCESS_RATE_LOW, 12)
-//            column(COL_SUCCESS_RATE_HIGH, 256)
-//            column(COL_DESPAWN_TICKS, 100)
-//            column(COL_DEPLETE_MECHANIC, 1) // Countdown
-//            columnRSCM(COL_STUMP, "objects.mahogany_tree_stump")
-//            column(CLUE_BASE_CHANCE, 220623)
-//        }
-//
-//        // Yew trees
+        // Blurite (level 10)
+        row("dbrows.mining_bluriterock") {
+            columnRSCM(COL_ROCK_OBJECT, "objects.blurite_rock_1", "objects.blurite_rock_2")
+            column(COL_LEVEL, 10)
+            column(COL_XP, 17.5)
+            columnRSCM(COL_ORE_ITEM, "items.blurite_ore")
+            column(COL_RESPAWN_CYCLES, 42)
+            column(COL_SUCCESS_RATE_LOW, 99)
+            column(COL_SUCCESS_RATE_HIGH, 255)
+            column(COL_DESPAWN_TICKS, 0)
+            column(COL_DEPLETE_MECHANIC, 0) // Normal
+            columnRSCM(COL_EMPTY_ROCK, "objects.rocks2")
+            column(CLUE_BASE_CHANCE, 317647)
+            column(COL_TYPE, "rock")
+        }
+        // Iron (level 15)
+        row("dbrows.mining_ironrock") {
+            columnRSCM(COL_ROCK_OBJECT, "objects.ironrock1", "objects.ironrock2")
+            column(COL_LEVEL, 15)
+            column(COL_XP, 35)
+            columnRSCM(COL_ORE_ITEM, "items.iron_ore")
+            column(COL_RESPAWN_CYCLES, 9)
+            column(COL_SUCCESS_RATE_LOW, 110)
+            column(COL_SUCCESS_RATE_HIGH, 255)
+            column(COL_DESPAWN_TICKS, 0)
+            column(COL_DEPLETE_MECHANIC, 0) // Normal
+            columnRSCM(COL_EMPTY_ROCK, "objects.rocks2")
+            column(CLUE_BASE_CHANCE, 317647)
+            column(COL_TYPE, "rock")
+        }
+        // Silver (level 20)
+        row("dbrows.mining_silverrock") {
+            columnRSCM(COL_ROCK_OBJECT, "objects.silverrock1", "objects.silverrock2")
+            column(COL_LEVEL, 20)
+            column(COL_XP, 40)
+            columnRSCM(COL_ORE_ITEM, "items.silver_ore")
+            column(COL_RESPAWN_CYCLES, 100)
+            column(COL_SUCCESS_RATE_LOW, 24)
+            column(COL_SUCCESS_RATE_HIGH, 200)
+            column(COL_DESPAWN_TICKS, 0)
+            column(COL_DEPLETE_MECHANIC, 0) // Normal
+            columnRSCM(COL_EMPTY_ROCK, "objects.rocks2")
+            column(CLUE_BASE_CHANCE, 317647)
+            column(COL_TYPE, "rock")
+        }
+        // Coal (level 30)
+        row("dbrows.mining_coalrock") {
+            columnRSCM(COL_ROCK_OBJECT, "objects.coalrock1", "objects.coalrock2")
+            column(COL_LEVEL, 30)
+            column(COL_XP, 50)
+            columnRSCM(COL_ORE_ITEM, "items.coal")
+            column(COL_RESPAWN_CYCLES, 50)
+            column(COL_SUCCESS_RATE_LOW, 15)
+            column(COL_SUCCESS_RATE_HIGH, 100)
+            column(COL_DESPAWN_TICKS, 0)
+            column(COL_DEPLETE_MECHANIC, 0) // Normal
+            columnRSCM(COL_EMPTY_ROCK, "objects.rocks2")
+            column(CLUE_BASE_CHANCE, 317647)
+            column(COL_TYPE, "rock")
+        }
+        // Gem (level 40)
+        row("dbrows.mining_gemrock") {
+            columnRSCM(COL_ROCK_OBJECT, "objects.gemrock1", "objects.gemrock")
+            column(COL_LEVEL, 40)
+            column(COL_XP, 65)
+            column(COL_ORE_ITEM, "null")
+            column(COL_RESPAWN_CYCLES, 99)
+            column(COL_SUCCESS_RATE_LOW, 27)
+            column(COL_SUCCESS_RATE_HIGH, 70)
+            column(COL_DESPAWN_TICKS, 0)
+            column(COL_DEPLETE_MECHANIC, 0) // Normal
+            columnRSCM(COL_EMPTY_ROCK, "objects.rocks2")
+            column(CLUE_BASE_CHANCE, 317647)
+            column(COL_TYPE, "rock")
+        }
+        row("dbrows.mining_goldrock") {
+            columnRSCM(COL_ROCK_OBJECT, "objects.goldrock1", "objects.goldrock2")
+            column(COL_LEVEL, 40)
+            column(COL_XP, 65)
+            columnRSCM(COL_ORE_ITEM, "items.gold_ore")
+            column(COL_RESPAWN_CYCLES, 100)
+            column(COL_SUCCESS_RATE_LOW, 6)
+            column(COL_SUCCESS_RATE_HIGH, 75)
+            column(COL_DESPAWN_TICKS, 0)
+            column(COL_DEPLETE_MECHANIC, 0) // Normal
+            columnRSCM(COL_EMPTY_ROCK, "objects.rocks2")
+            column(CLUE_BASE_CHANCE, 317647)
+            column(COL_TYPE, "rock")
+        }
+        row("dbrows.mining_mithrilrock") {
+            columnRSCM(COL_ROCK_OBJECT, "objects.mithrilrock1", "objects.mithrilrock2")
+            column(COL_LEVEL, 55)
+            column(COL_XP, 80)
+            columnRSCM(COL_ORE_ITEM, "items.mithril_ore")
+            column(COL_RESPAWN_CYCLES, 200)
+            column(COL_SUCCESS_RATE_LOW, 2)
+            column(COL_SUCCESS_RATE_HIGH, 50)
+            column(COL_DESPAWN_TICKS, 0)
+            column(COL_DEPLETE_MECHANIC, 0) // Normal
+            columnRSCM(COL_EMPTY_ROCK, "objects.rocks2")
+            column(CLUE_BASE_CHANCE, 317647)
+            column(COL_TYPE, "rock")
+        }
+        row("dbrows.mining_adamantiterock") {
+            columnRSCM(COL_ROCK_OBJECT, "objects.adamantiterock1", "objects.adamantiterock2")
+            column(COL_LEVEL, 70)
+            column(COL_XP, 95)
+            columnRSCM(COL_ORE_ITEM, "items.adamantite_ore")
+            column(COL_RESPAWN_CYCLES, 400)
+            column(COL_SUCCESS_RATE_LOW, -1)
+            column(COL_SUCCESS_RATE_HIGH, 25)
+            column(COL_DESPAWN_TICKS, 0)
+            column(COL_DEPLETE_MECHANIC, 0) // Normal
+            columnRSCM(COL_EMPTY_ROCK, "objects.rocks2")
+            column(CLUE_BASE_CHANCE, 317647)
+            column(COL_TYPE, "rock")
+        }
+        row("dbrows.mining_runiterock") {
+            columnRSCM(COL_ROCK_OBJECT, "objects.runiterock1", "objects.runiterock2")
+            column(COL_LEVEL, 85)
+            column(COL_XP, 125)
+            columnRSCM(COL_ORE_ITEM, "items.runite_ore")
+            column(COL_RESPAWN_CYCLES, 312)
+            column(COL_SUCCESS_RATE_LOW, -1)
+            column(COL_SUCCESS_RATE_HIGH, 18)
+            column(COL_DESPAWN_TICKS, 0)
+            column(COL_DEPLETE_MECHANIC, 0) // Normal
+            columnRSCM(COL_EMPTY_ROCK, "objects.rocks2")
+            column(CLUE_BASE_CHANCE, 317647)
+            column(COL_TYPE, "rock")
+        }
+        // Amethystrock (level 92
         row("dbrows.mining_amethystrock") {
             columnRSCM(COL_ROCK_OBJECT, "objects.amethystrock1", "objects.amethystrock2")
             column(COL_LEVEL, 92)
             column(COL_XP, 240)
             columnRSCM(COL_ORE_ITEM, "items.amethyst")
             column(COL_RESPAWN_CYCLES, 125)
-            column(COL_SUCCESS_RATE_LOW, -18)
-            column(COL_SUCCESS_RATE_HIGH, 10)
+            column(COL_SUCCESS_RATE_LOW, -64)
+            column(COL_SUCCESS_RATE_HIGH, 13)
             column(COL_DESPAWN_TICKS, 45)
-            column(COL_DEPLETE_MECHANIC, 1) // Always
+            column(COL_DEPLETE_MECHANIC, 1) // Timer
             columnRSCM(COL_EMPTY_ROCK, "objects.amethystrock_empty")
             column(CLUE_BASE_CHANCE, 317647)
             column(COL_TYPE, "wall")
         }
-//
-//        // Amethyst trees
-//        row("dbrows.woodcutting_magic_tree") {
-//            columnRSCM(COL_TREE_OBJECT,
-//                "objects.magictree", "objects.magic_tree_1",
-//                "objects.magic_tree_2", "objects.magic_tree_3",
-//                "objects.magic_tree_4", "objects.magic_tree_5",
-//                "objects.magic_tree_6", "objects.magic_tree_7",
-//                "objects.magic_tree_8", "objects.magic_tree_9",
-//                "objects.magic_tree_10", "objects.magic_tree_11",
-//                "objects.magic_tree_fullygrown_1", "objects.magic_tree_fullygrown_2"
-//            )
-//            column(COL_LEVEL, 75)
-//            column(COL_XP, 250)
-//            columnRSCM(COL_LOG_ITEM, "items.magic_logs")
-//            column(COL_RESPAWN_CYCLES, 120)
-//            column(COL_SUCCESS_RATE_LOW, 4)
-//            column(COL_SUCCESS_RATE_HIGH, 256)
-//            column(COL_DESPAWN_TICKS, 390)
-//            column(COL_DEPLETE_MECHANIC, 1) // Countdown
-//            columnRSCM(COL_STUMP, "objects.magic_tree_stump_new")
-//            column(CLUE_BASE_CHANCE, 72321)
-//        }
-//
-//        // Blisterwood trees
-//        row("dbrows.woodcutting_blisterwood_tree") {
-//            columnRSCM(COL_TREE_OBJECT, "objects.blisterwood_tree")
-//            column(COL_LEVEL, 62)
-//            column(COL_XP, 76)
-//            columnRSCM(COL_LOG_ITEM, "items.blisterwood_logs")
-//            column(COL_RESPAWN_CYCLES, 0)
-//            column(COL_SUCCESS_RATE_LOW, 10)
-//            column(COL_SUCCESS_RATE_HIGH, 256)
-//            column(COL_DESPAWN_TICKS, 50)
-//            column(COL_DEPLETE_MECHANIC, 1) // Countdown
-//            column(CLUE_BASE_CHANCE, 0)
-//        }
+        // Essence (level )
+        row("dbrows.mining_essence") {
+            columnRSCM(COL_ROCK_OBJECT, "objects.blankrunestone")
+            column(COL_LEVEL, 1)
+            column(COL_XP, 5)
+            columnRSCM(COL_ORE_ITEM, "items.blankrune")
+            column(COL_RESPAWN_CYCLES, 0)
+            column(COL_SUCCESS_RATE_LOW, 256)
+            column(COL_SUCCESS_RATE_HIGH, 256)
+            column(COL_DESPAWN_TICKS, 0)
+            column(COL_DEPLETE_MECHANIC, 3) // Always
+            column(COL_EMPTY_ROCK, "null")
+            column(CLUE_BASE_CHANCE, 317647)
+            column(COL_TYPE, "wall")
+        }
     }
 }
 
