@@ -1,4 +1,4 @@
-package org.alter.plugins.content.items.other.essencepouch
+package org.alter.items.essencepouch
 
 /**
  * @author Triston Plummer ("Dread')

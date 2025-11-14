@@ -41,4 +41,6 @@ enum class ItemAttribute {
      * three attacks.
      */
     ATTACK_COUNT,
+
+    ESSENCE_POUCH_THRESHOLD
 }
