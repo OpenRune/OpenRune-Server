@@ -391,12 +391,10 @@ fun Player.openInterface(
  * Closes chat dialogue if an interface is being opened that's not on the chatbox component.
  */
 private fun Player.closeChatDialogueIfOpen(parent: Int, child: Int) {
-    val CHATBOX_PARENT = InterfaceDestination.CHAT_BOX.interfaceId
-    val CHATBOX_CHILD_ID = org.alter.api.ext.CHATBOX_CHILD
-    if (!(parent == CHATBOX_PARENT && child == CHATBOX_CHILD_ID)) {
+    if (!(parent == InterfaceDestination.CHAT_BOX.interfaceId && child == CHATBOX_CHILD)) {
         // If chatbox component is currently occupied, close it
-        if (interfaces.isOccupied(CHATBOX_PARENT, CHATBOX_CHILD_ID)) {
-            closeComponent(CHATBOX_PARENT, CHATBOX_CHILD_ID)
+        if (interfaces.isOccupied(InterfaceDestination.CHAT_BOX.interfaceId, CHATBOX_CHILD)) {
+            closeComponent(InterfaceDestination.CHAT_BOX.interfaceId, CHATBOX_CHILD)
         }
         // Also close any input dialogs that might be open
         closeInputDialog()

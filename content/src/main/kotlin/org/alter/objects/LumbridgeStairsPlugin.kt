@@ -7,7 +7,6 @@ import org.alter.game.pluginnew.event.impl.onObjectOption
 class LumbridgeStairsPlugin : PluginEvent() {
 
     override fun init() {
-        // Handle spiralstairsbottom_3
         onObjectOption("objects.spiralstairsbottom_3", "climb-up") {
             player.queue {
                 player.moveTo(player.tile.x, player.tile.z, player.tile.height + 1)
@@ -20,7 +19,6 @@ class LumbridgeStairsPlugin : PluginEvent() {
             }
         }
 
-        // Handle spiralstairstop_3
         onObjectOption("objects.spiralstairstop_3", "climb-down") {
             player.queue {
                 player.moveTo(player.tile.x, player.tile.z, player.tile.height - 1)

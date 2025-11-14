@@ -1,23 +1,24 @@
-package org.alter.plugins.content.items.consumables.prayerscrolls
+package org.alter.items.consumables.prayerscrolls
 
+import org.alter.api.ClientScript
 import org.alter.api.ext.*
-import org.alter.game.*
-import org.alter.game.model.*
-import org.alter.game.plugin.*
-import org.alter.plugins.content.mechanics.prayer.Prayers
+import org.alter.game.pluginnew.PluginEvent
+import org.alter.game.pluginnew.event.impl.onItemOption
 import org.alter.rscm.RSCM
 import org.alter.rscm.RSCM.getRSCM
 
-class PrayerScrollsPlugin(
-    r: PluginRepository,
-    world: World,
-    server: Server
-) : KotlinPlugin(r, world, server) {
-        
-    init {
+class PrayerScrollsPlugin : PluginEvent() {
+
+    companion object {
+        private const val RIGOUR_UNLOCK_VARBIT = "varbits.prayer_rigour_unlocked"
+        private const val AUGURY_UNLOCK_VARBIT = "varbits.prayer_augury_unlocked"
+        private const val PRESERVE_UNLOCK_VARBIT = "varbits.prayer_preserve_unlocked"
+    }
+
+    override fun init() {
         onItemOption("items.raids_prayerscroll", "read") {
             player.queue {
-                if (player.getVarbit(Prayers.RIGOUR_UNLOCK_VARBIT) == 1) {
+                if (player.getVarbit(RIGOUR_UNLOCK_VARBIT) == 1) {
                     messageBox(player,
                         "You can make out some faded words on the ancient parchment. It appears to be an archaic invocation of the gods. However there's nothing more for you to learn.",
                     )
@@ -32,8 +33,10 @@ class PrayerScrollsPlugin(
                     1 -> {
                         if (player.inventory.contains(getRSCM("items.raids_prayerscroll"))) {
                             player.inventory.remove(item = "items.raids_prayerscroll")
-                            player.setVarbit(id = Prayers.RIGOUR_UNLOCK_VARBIT, value = 1)
-                            player.animate(id = RSCM.NONE)
+                            player.setVarbit(id = RIGOUR_UNLOCK_VARBIT, value = 1)
+                            // Run client script to update prayer interface
+                            player.runClientScript(ClientScript(id = 2158))
+                            player.animate(RSCM.NONE)
                             itemMessageBox(player,
                                 "You study the scroll and learn a new prayer: <col=8B0000>Rigour</col>",
                                 item = "items.raids_prayerscroll",
@@ -41,7 +44,7 @@ class PrayerScrollsPlugin(
                         }
                     }
                     2 -> {
-                        player.animate(id = RSCM.NONE)
+                        player.animate(RSCM.NONE)
                     }
                 }
             }
@@ -49,7 +52,7 @@ class PrayerScrollsPlugin(
 
         onItemOption("items.raids_prayerscroll_augury", "read") {
             player.queue {
-                if (player.getVarbit(Prayers.AUGURY_UNLOCK_VARBIT) == 1) {
+                if (player.getVarbit(AUGURY_UNLOCK_VARBIT) == 1) {
                     messageBox(player,
                         "You can make out some faded words on the ancient parchment. It appears to be an archaic invocation of the gods. However there's nothing more for you to learn.",
                     )
@@ -64,8 +67,10 @@ class PrayerScrollsPlugin(
                     1 -> {
                         if (player.inventory.contains("items.raids_prayerscroll_augury")) {
                             player.inventory.remove(item = "items.raids_prayerscroll_augury")
-                            player.setVarbit(id = Prayers.AUGURY_UNLOCK_VARBIT, value = 1)
-                            player.animate(id = RSCM.NONE)
+                            player.setVarbit(id = AUGURY_UNLOCK_VARBIT, value = 1)
+                            // Run client script to update prayer interface
+                            player.runClientScript(ClientScript(id = 2158))
+                            player.animate(RSCM.NONE)
                             itemMessageBox(player,
                                 "You study the scroll and learn a new prayer: <col=8B0000>Augury</col>",
                                 item = "items.raids_prayerscroll_augury",
@@ -73,7 +78,7 @@ class PrayerScrollsPlugin(
                         }
                     }
                     2 -> {
-                        player.animate(id = RSCM.NONE)
+                        player.animate(RSCM.NONE)
                     }
                 }
             }
@@ -81,7 +86,7 @@ class PrayerScrollsPlugin(
 
         onItemOption("items.raids_prayerscroll_preserve", "read") {
             player.queue {
-                if (player.getVarbit(Prayers.PRESERVE_UNLOCK_VARBIT) == 1) {
+                if (player.getVarbit(PRESERVE_UNLOCK_VARBIT) == 1) {
                     messageBox(player,
                         "You can make out some faded words on the ancient parchment. It appears to be an archaic invocation of the gods. However there's nothing more for you to learn.",
                     )
@@ -96,8 +101,10 @@ class PrayerScrollsPlugin(
                     1 -> {
                         if (player.inventory.contains("items.raids_prayerscroll_preserve")) {
                             player.inventory.remove(item = "items.raids_prayerscroll_preserve")
-                            player.setVarbit(id = Prayers.PRESERVE_UNLOCK_VARBIT, value = 1)
-                            player.animate(id = RSCM.NONE)
+                            player.setVarbit(id = PRESERVE_UNLOCK_VARBIT, value = 1)
+                            // Run client script to update prayer interface
+                            player.runClientScript(ClientScript(id = 2158))
+                            player.animate(RSCM.NONE)
                             itemMessageBox(player,
                                 "You study the scroll and learn a new prayer: <col=8B0000>Preserve</col>",
                                 item = "items.raids_prayerscroll_preserve",
@@ -105,7 +112,7 @@ class PrayerScrollsPlugin(
                         }
                     }
                     2 -> {
-                        player.animate(id = RSCM.NONE)
+                        player.animate(RSCM.NONE)
                     }
                 }
             }
