@@ -207,8 +207,7 @@ class MiningPlugin : PluginEvent() {
         getDepletedRock(rockData)?.let { depleted ->
             obj.replaceWith(world, depleted, rockData.respawnCycles, restoreOriginal = true)
         }
-
-        player.message("You manage to mine some ${rockData.ore}.")
+        
         player.animate(RSCM.NONE)
 
         return false
