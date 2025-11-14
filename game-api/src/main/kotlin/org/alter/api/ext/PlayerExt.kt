@@ -33,6 +33,7 @@ import org.alter.rscm.RSCM.getRSCM
 import org.alter.game.model.timer.SKULL_ICON_DURATION_TIMER
 import org.alter.game.rsprot.RsModIndexedObjectProvider
 import org.alter.game.rsprot.RsModObjectProvider
+import org.alter.rscm.RSCM
 import org.alter.rscm.RSCM.asRSCM
 import org.alter.rscm.RSCM.requireRSCM
 import org.alter.rscm.RSCMType
@@ -242,6 +243,16 @@ fun Player.setInterfaceEvents(
 
 
 fun Player.setComponentText(
+    interfaceId: String,
+    text: String,
+) {
+    requireRSCM(RSCMType.COMPONENTS, interfaceId)
+    val component = CombinedId(RSCM.getRSCM(interfaceId))
+    write(IfSetText(component.interfaceId, component.componentId, text))
+}
+
+
+fun Player.setComponentText(
     interfaceId: Int,
     component: Int,
     text: String,
@@ -256,6 +267,16 @@ fun Player.setComponentHidden(
 ) {
     write(IfSetHide(interfaceId = interfaceId, componentId = component, hidden = hidden))
 }
+
+fun Player.setComponentHidden(
+    interfaceId: String,
+    hidden: Boolean,
+) {
+    requireRSCM(RSCMType.COMPONENTS, interfaceId)
+    val component = CombinedId(RSCM.getRSCM(interfaceId))
+    write(IfSetHide(interfaceId = component.interfaceId, componentId = component.componentId, hidden = hidden))
+}
+
 
 fun Player.setComponentItem(
     interfaceId: Int,
