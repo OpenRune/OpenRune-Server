@@ -54,7 +54,7 @@ object Herblore {
 
         // Guam leaf
         row("dbrows.herblore_guam_unfinished") {
-            columnRSCM(COL_HERB_ITEM, "items.unidentified_guam")
+            columnRSCM(COL_HERB_ITEM, "items.guam_leaf")
             column(COL_LEVEL, 3)
             column(COL_XP, 2)
             columnRSCM(COL_UNFINISHED_POTION, "items.guamvial")
@@ -62,7 +62,7 @@ object Herblore {
 
         // Marrentill
         row("dbrows.herblore_marrentill_unfinished") {
-            columnRSCM(COL_HERB_ITEM, "items.unidentified_marentill")
+            columnRSCM(COL_HERB_ITEM, "items.marentill")
             column(COL_LEVEL, 5)
             column(COL_XP, 3)
             columnRSCM(COL_UNFINISHED_POTION, "items.marrentillvial")
@@ -70,7 +70,7 @@ object Herblore {
 
         // Tarromin
         row("dbrows.herblore_tarromin_unfinished") {
-            columnRSCM(COL_HERB_ITEM, "items.unidentified_tarromin")
+            columnRSCM(COL_HERB_ITEM, "items.tarromin")
             column(COL_LEVEL, 11)
             column(COL_XP, 5)
             columnRSCM(COL_UNFINISHED_POTION, "items.tarrominvial")
@@ -78,7 +78,7 @@ object Herblore {
 
         // Harralander
         row("dbrows.herblore_harralander_unfinished") {
-            columnRSCM(COL_HERB_ITEM, "items.unidentified_harralander")
+            columnRSCM(COL_HERB_ITEM, "items.harralander")
             column(COL_LEVEL, 20)
             column(COL_XP, 6)
             columnRSCM(COL_UNFINISHED_POTION, "items.harralandervial")
@@ -86,7 +86,7 @@ object Herblore {
 
         // Ranarr weed
         row("dbrows.herblore_ranarr_unfinished") {
-            columnRSCM(COL_HERB_ITEM, "items.unidentified_ranarr")
+            columnRSCM(COL_HERB_ITEM, "items.ranarr_weed")
             column(COL_LEVEL, 25)
             column(COL_XP, 8)
             columnRSCM(COL_UNFINISHED_POTION, "items.ranarrvial")
@@ -94,7 +94,7 @@ object Herblore {
 
         // Toadflax
         row("dbrows.herblore_toadflax_unfinished") {
-            columnRSCM(COL_HERB_ITEM, "items.unidentified_toadflax")
+            columnRSCM(COL_HERB_ITEM, "items.toadflax")
             column(COL_LEVEL, 30)
             column(COL_XP, 8)
             columnRSCM(COL_UNFINISHED_POTION, "items.toadflaxvial")
@@ -102,7 +102,7 @@ object Herblore {
 
         // Irit leaf
         row("dbrows.herblore_irit_unfinished") {
-            columnRSCM(COL_HERB_ITEM, "items.unidentified_irit")
+            columnRSCM(COL_HERB_ITEM, "items.irit_leaf")
             column(COL_LEVEL, 40)
             column(COL_XP, 9)
             columnRSCM(COL_UNFINISHED_POTION, "items.iritvial")
@@ -110,7 +110,7 @@ object Herblore {
 
         // Avantoe
         row("dbrows.herblore_avantoe_unfinished") {
-            columnRSCM(COL_HERB_ITEM, "items.unidentified_avantoe")
+            columnRSCM(COL_HERB_ITEM, "items.avantoe")
             column(COL_LEVEL, 48)
             column(COL_XP, 10)
             columnRSCM(COL_UNFINISHED_POTION, "items.avantoevial")
@@ -118,7 +118,7 @@ object Herblore {
 
         // Kwuarm
         row("dbrows.herblore_kwuarm_unfinished") {
-            columnRSCM(COL_HERB_ITEM, "items.unidentified_kwuarm")
+            columnRSCM(COL_HERB_ITEM, "items.kwuarm")
             column(COL_LEVEL, 54)
             column(COL_XP, 11)
             columnRSCM(COL_UNFINISHED_POTION, "items.kwuarmvial")
@@ -126,7 +126,7 @@ object Herblore {
 
         // Snapdragon
         row("dbrows.herblore_snapdragon_unfinished") {
-            columnRSCM(COL_HERB_ITEM, "items.unidentified_snapdragon")
+            columnRSCM(COL_HERB_ITEM, "items.snapdragon")
             column(COL_LEVEL, 59)
             column(COL_XP, 12)
             columnRSCM(COL_UNFINISHED_POTION, "items.snapdragonvial")
@@ -134,7 +134,7 @@ object Herblore {
 
         // Cadantine
         row("dbrows.herblore_cadantine_unfinished") {
-            columnRSCM(COL_HERB_ITEM, "items.unidentified_cadantine")
+            columnRSCM(COL_HERB_ITEM, "items.cadantine")
             column(COL_LEVEL, 65)
             column(COL_XP, 13)
             columnRSCM(COL_UNFINISHED_POTION, "items.cadantinevial")
@@ -142,7 +142,7 @@ object Herblore {
 
         // Lantadyme
         row("dbrows.herblore_lantadyme_unfinished") {
-            columnRSCM(COL_HERB_ITEM, "items.unidentified_lantadyme")
+            columnRSCM(COL_HERB_ITEM, "items.lantadyme")
             column(COL_LEVEL, 67)
             column(COL_XP, 13)
             columnRSCM(COL_UNFINISHED_POTION, "items.lantadymevial")
@@ -150,7 +150,7 @@ object Herblore {
 
         // Dwarf weed
         row("dbrows.herblore_dwarf_weed_unfinished") {
-            columnRSCM(COL_HERB_ITEM, "items.unidentified_dwarf_weed")
+            columnRSCM(COL_HERB_ITEM, "items.dwarf_weed")
             column(COL_LEVEL, 70)
             column(COL_XP, 13)
             columnRSCM(COL_UNFINISHED_POTION, "items.dwarfweedvial")
@@ -158,7 +158,7 @@ object Herblore {
 
         // Torstol
         row("dbrows.herblore_torstol_unfinished") {
-            columnRSCM(COL_HERB_ITEM, "items.unidentified_torstol")
+            columnRSCM(COL_HERB_ITEM, "items.torstol")
             column(COL_LEVEL, 75)
             column(COL_XP, 14)
             columnRSCM(COL_UNFINISHED_POTION, "items.torstolvial")

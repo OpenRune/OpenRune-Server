@@ -4,6 +4,7 @@ import dev.openrune.ServerCacheManager.getItem
 import org.alter.api.Skills
 import org.alter.api.ext.filterableMessage
 import org.alter.api.ext.message
+import org.alter.api.ext.produceItemBox
 import org.alter.game.model.entity.Entity
 import org.alter.game.model.entity.Player
 import org.alter.game.pluginnew.PluginEvent
@@ -60,30 +61,66 @@ class FinishedPotionsPlugin : PluginEvent() {
                 return@onEvent
             }
 
-            // Filter candidates to only those where player has ALL required ingredients
-            // Use pre-computed requiredItems set from FinishedPotionData
+            val herbloreLevel = player.getSkills().getCurrentLevel(Skills.HERBLORE)
+
+            // Filter candidates to only those where player has ALL required ingredients AND meets level requirement
             val validCandidates = candidates.filter { potion ->
-                potion.requiredItems.all { itemId -> player.inventory.contains(itemId) }
+                herbloreLevel >= potion.level &&
+                potion.requiredItems.all { itemId -> player.inventory.contains(itemId) } &&
+                potion.finishedPotion != null
             }
 
             if (validCandidates.isEmpty()) {
                 return@onEvent
             }
 
-            // Select the potion with the highest level (as per user requirement)
-            val selectedPotion = validCandidates.maxByOrNull { it.level } ?: return@onEvent
+            // Calculate max producible for each candidate and create a map
+            val candidatesWithMax = validCandidates.map { potion ->
+                // Calculate max producible: minimum of all ingredient counts
+                val unfinishedCount = player.inventory.getItemCount(potion.unfinishedPotion)
+                val secondaryCounts = potion.secondaries.map { secondaryId ->
+                    player.inventory.getItemCount(secondaryId)
+                }
+                val allCounts = listOf(unfinishedCount) + secondaryCounts
+                val maxProducible = allCounts.minOrNull() ?: 0
+                potion to maxProducible
+            }.filter { (_, max) -> max > 0 }
 
-            createFinishedPotion(player, selectedPotion)
+            if (candidatesWithMax.isEmpty()) {
+                return@onEvent
+            }
+
+            // Show interface to select potion and quantity
+            player.queue {
+                val potionItems = candidatesWithMax.map { (potion, _) -> potion.finishedPotion!! }.toIntArray()
+                val maxProducible = candidatesWithMax.maxOf { (_, max) -> max }
+
+                produceItemBox(
+                    player,
+                    *potionItems,
+                    title = "What would you like to make?",
+                    maxProducable = maxProducible
+                ) { selectedItemId: Int, quantity: Int ->
+                    // Find the selected potion
+                    val selectedPotion = candidatesWithMax.firstOrNull { (potion, _) ->
+                        potion.finishedPotion == selectedItemId
+                    }?.first ?: return@produceItemBox
+
+                    // Create the specified quantity (up to what they can make)
+                    createFinishedPotion(player, selectedPotion, quantity)
+                }
+            }
         }
     }
 
     /**
      * Creates a finished potion from an unfinished potion and all required secondary ingredients.
-     * Consumes all ingredients at once. Repeats every 2 ticks if multiple ingredient sets are available.
+     * Creates the specified quantity (up to what the player can make).
      */
     private fun createFinishedPotion(
         player: Player,
-        potionData: HerbloreDefinitions.FinishedPotionData
+        potionData: HerbloreDefinitions.FinishedPotionData,
+        quantity: Int
     ) {
         val herbloreLevel = player.getSkills().getCurrentLevel(Skills.HERBLORE)
 
@@ -111,11 +148,12 @@ class FinishedPotionsPlugin : PluginEvent() {
         player.queue {
             // Cache level check to avoid repeated skill lookups
             var cachedLevel = player.getSkills().getCurrentLevel(Skills.HERBLORE)
+            var created = 0
 
-            // Repeat while player has multiple sets of ingredients
+            // Repeat until we've created the requested quantity or run out of ingredients
             repeatWhile(delay = 4, immediate = true, canRepeat = {
+                created < quantity &&
                 // Check if player still has all required items for another potion
-                // Check unfinished potion
                 player.inventory.contains(potionData.unfinishedPotion) &&
                 // Check all secondaries (preserving duplicates)
                 potionData.secondaries.all { itemId -> player.inventory.contains(itemId) } &&
@@ -158,7 +196,7 @@ class FinishedPotionsPlugin : PluginEvent() {
 
                 if (!allRemoved) {
                     // Restore items if any removal failed
-                    removedItems.forEach { (itemId, wasRemoved) ->
+                    removedItems.forEach { (itemId: Int, wasRemoved: Boolean) ->
                         if (wasRemoved) {
                             player.inventory.add(itemId, 1)
                         }
@@ -197,6 +235,8 @@ class FinishedPotionsPlugin : PluginEvent() {
                 }
                 val itemName = getItem(itemForMessage)?.name ?: "ingredient"
                 player.filterableMessage("You mix the ${itemName.lowercase()} into your potion.")
+
+                created++
             }
 
             // Stop animation when done
