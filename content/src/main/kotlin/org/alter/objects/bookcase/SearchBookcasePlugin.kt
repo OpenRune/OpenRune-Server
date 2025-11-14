@@ -1,4 +1,4 @@
-package org.alter.plugins.content.objects.bookcase
+package org.alter.objects.bookcase
 
 import org.alter.api.*
 import org.alter.api.cfg.*
@@ -15,18 +15,16 @@ import org.alter.game.model.queue.*
 import org.alter.game.model.shop.*
 import org.alter.game.model.timer.*
 import org.alter.game.plugin.*
+import org.alter.game.pluginnew.PluginEvent
+import org.alter.game.pluginnew.event.impl.onObjectOption
 
-class SearchBookcasePlugin(
-    r: PluginRepository,
-    world: World,
-    server: Server
-) : KotlinPlugin(r, world, server) {
+class SearchBookcasePlugin() : PluginEvent() {
 
-    init {
-        val BOOKCASES = setOf("objects.bookcase", "objects.bookcase2")
+    val BOOKCASES = setOf("objects.bookcase", "objects.bookcase2")
 
+    override fun init() {
         BOOKCASES.forEach { case ->
-            onObjOption(obj = case, option = "search") {
+            onObjectOption(obj = case, "search") {
                 player.queue {
                     search(this, player)
                 }
@@ -35,10 +33,7 @@ class SearchBookcasePlugin(
 
     }
 
-    suspend fun search(
-        it: QueueTask,
-        p: Player,
-    ) {
+    suspend fun search(it: QueueTask, p: Player, ) {
         p.lock()
         p.message("You search the books...")
         it.wait(3)
