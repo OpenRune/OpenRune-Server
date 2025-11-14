@@ -1,4 +1,4 @@
-package org.alter.plugins.content.areas.lumbridge.npcs
+package org.alter.areas.lumbridge.npcs
 
 import org.alter.api.ext.*
 import org.alter.game.Server
@@ -6,20 +6,14 @@ import org.alter.game.model.Direction
 import org.alter.game.model.World
 import org.alter.game.model.entity.Player
 import org.alter.game.model.queue.QueueTask
-import org.alter.game.model.shop.PurchasePolicy
-import org.alter.game.model.shop.ShopItem
 import org.alter.game.plugin.KotlinPlugin
 import org.alter.game.plugin.PluginRepository
-import org.alter.plugins.content.mechanics.shops.CoinCurrency
-import org.alter.rscm.RSCM.getRSCM
+import org.alter.game.pluginnew.PluginEvent
+import org.alter.game.pluginnew.event.impl.onNpcOption
 import java.util.concurrent.TimeUnit
 
 
-class HansPlugin(
-    r: PluginRepository,
-    world: World,
-    server: Server
-) : KotlinPlugin(r, world, server) {
+class HansPlugin() : PluginEvent() {
 
     val dialogOptions: List<String> = listOf(
         "I'm looking for whoever is in charge of this place.",
@@ -29,16 +23,14 @@ class HansPlugin(
         "Nothing.",
     )
 
-    init {
+    override fun init() {
         spawnNpc("npcs.hans", 3221, 3219, 0, 0, Direction.EAST)
 
-        onNpcOption("npcs.hans", option = "talk-to")
-        {
+        onNpcOption("npcs.hans", "talk-to") {
             player.queue { dialog(player) }
         }
 
-        onNpcOption("npcs.hans", option = "age")
-        {
+        onNpcOption("npcs.hans", "age") {
             player.queue { age(player) }
         }
     }

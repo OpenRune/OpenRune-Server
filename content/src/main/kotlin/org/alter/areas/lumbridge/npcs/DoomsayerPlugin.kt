@@ -1,4 +1,4 @@
-package org.alter.plugins.content.areas.lumbridge.npcs
+package org.alter.areas.lumbridge.npcs
 
 import org.alter.api.InterfaceDestination
 import org.alter.api.ext.*
@@ -9,15 +9,15 @@ import org.alter.game.model.entity.Player
 import org.alter.game.model.queue.QueueTask
 import org.alter.game.plugin.KotlinPlugin
 import org.alter.game.plugin.PluginRepository
+import org.alter.game.pluginnew.PluginEvent
+import org.alter.game.pluginnew.event.impl.onNpcOption
 
-class DoomsayerPlugin(
-    r: PluginRepository, world: World, server: Server
-) : KotlinPlugin(r, world, server) {
+class DoomsayerPlugin() : PluginEvent() {
 
-    init {
+    override fun init() {
         spawnNpc("npcs.doomsayer_normal", x = 3232, z = 3223, direction = Direction.EAST)
 
-        onNpcOption(npc = "npcs.doomsayer_normal", option = "Talk-to") {
+        onNpcOption("npcs.doomsayer_normal", "Talk-to") {
             player.queue { dialog(player) }
         }
     }
@@ -45,10 +45,7 @@ class DoomsayerPlugin(
         )
         chatPlayer(player, "But what if I want to see the warnings again?")
         chatNpc(player, "That's why im waiting here!")
-        chatNpc(player, "If you want to see the warning messages again, I can<br><br>turn them back on for you.")/*if (player.warning == 0) {
-            chatPlayer("Thanks, I'll remember that if I see any warning<br><br>messages.")
-            chatNpc("You're welcome!")
-        } else */
+        chatNpc(player, "If you want to see the warning messages again, I can<br><br>turn them back on for you.")
         chatNpc(player, "Do you need to turn on any warnings right now?")
         when (options(player, "Yes, I do.", "Not right now.")) {
             1 -> {
@@ -63,31 +60,4 @@ class DoomsayerPlugin(
             }
         }
     }
-
-    /*0 starting 7 Disabled 6 Enabled
-    if 6 "You have toggled this warning screen on. You will see this interface again."
-    if 7 "You have toggles this warning screen off. You will no longer see this warning screen"
-    Varbits value to what it does
-    3851 is Dagannoth Kings' ladder
-    3852 is Contact Dungeon Ladder
-    3853 is Falador Mole Lair
-    3854 is Stronghold of Security Ladders
-    3855 is Player-Owned Houses
-    3856 is Dropped Items in Random Events
-    3857 is Wilderness Ditch
-    3858 is Trollheim Wilderness Entrance
-    3859 is Observatory Stairs
-    3860 is Shantay Pass
-    3861 is Icy Path Area
-    3862 is Watchtower Shaman Cave
-    3863 is Lumbridge Swamp Cave Rope
-    3864 is H.A.M Tunnel from Mill
-    3865 is Fairy Ring to Dorgesh-Raan
-    3866 is Lumbridge Cellar
-    3867 is Elid Genie Cave
-    3868 is Dorgesh-kaan Tunnel to Kalphites
-    3869 is Dorgesh-kaan City Exit
-    3870 is Mort-Myre
-    3871 is Ranging Guild Towner
-    3872 is Death Plateau*/
 }

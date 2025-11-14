@@ -4,6 +4,7 @@ import org.alter.api.Skills
 import org.alter.api.ext.chatNpc
 import org.alter.api.ext.chatPlayer
 import org.alter.api.ext.options
+import org.alter.game.model.Direction
 import org.alter.game.model.entity.Player
 import org.alter.game.model.queue.QueueTask
 import org.alter.game.model.skill.Skill
@@ -24,6 +25,8 @@ class CooksAssistant : QuestScript("dbrows.quest_cooksassistant", "varp.cookques
     private val GIVEN_FLOUR = quest.attribute(name = "GIVEN_FLOUR", default = false)
 
     override fun init() {
+        spawnNpc("npcs.cook", x = 3209, z = 3215, direction = Direction.SOUTH)
+
         on<NpcClickEvent> {
             where { npc.id == "npcs.cook".asRSCM() }
             then {

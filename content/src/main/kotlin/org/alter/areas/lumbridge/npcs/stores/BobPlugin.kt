@@ -1,24 +1,18 @@
-package org.alter.plugins.content.areas.lumbridge.npcs.stores
+package org.alter.areas.lumbridge.npcs.stores
 
 import org.alter.api.ext.*
-import org.alter.game.Server
 import org.alter.game.model.Direction
-import org.alter.game.model.World
 import org.alter.game.model.entity.Player
 import org.alter.game.model.queue.QueueTask
 import org.alter.game.model.shop.PurchasePolicy
 import org.alter.game.model.shop.ShopItem
-import org.alter.game.plugin.KotlinPlugin
-import org.alter.game.plugin.PluginRepository
-import org.alter.plugins.content.mechanics.shops.CoinCurrency
+import org.alter.game.pluginnew.PluginEvent
+import org.alter.game.pluginnew.event.impl.onNpcOption
+import org.alter.mechanics.shops.CoinCurrency
 import org.alter.rscm.RSCM.getRSCM
 
 
-class BobPlugin(
-    r: PluginRepository,
-    world: World,
-    server: Server
-) : KotlinPlugin(r, world, server) {
+class BobPlugin() : PluginEvent() {
 
     private val dialogOptions: List<String> = listOf(
         "Give me a quest!",
@@ -36,7 +30,7 @@ class BobPlugin(
         ShopItem(getRSCM("items.mithril_battleaxe"), 1, 1690, 1014),
     )
 
-    init {
+    override fun init() {
         spawnNpc("npcs.bob", 3230, 3203, 0, 2, Direction.EAST)
 
         createShop("Bob's Brilliant Axes.", CoinCurrency(), purchasePolicy = PurchasePolicy.BUY_STOCK) {
@@ -45,13 +39,11 @@ class BobPlugin(
             }
         }
 
-        onNpcOption("npcs.bob", option = "talk-to")
-        {
+        onNpcOption("npcs.bob", "talk-to") {
             player.queue { dialog(player) }
         }
 
-        onNpcOption("npcs.bob", option = "trade")
-        {
+        onNpcOption("npcs.bob", "trade") {
             player.shop()
         }
     }

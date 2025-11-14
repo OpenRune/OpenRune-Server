@@ -1,22 +1,20 @@
-package org.alter.plugins.content.areas.lumbridge.spawns
+package org.alter.areas.lumbridge.spawns
 
 import org.alter.game.Server
 import org.alter.game.model.Direction
 import org.alter.game.model.World
 import org.alter.game.plugin.KotlinPlugin
 import org.alter.game.plugin.PluginRepository
+import org.alter.game.pluginnew.PluginEvent
 
 /**Example
  *spawnNpc(npc = "npcs.ID", x = xxxx, y = zzzz, height = 0, walk = 0, direction = Direction.NORTH)
  */
 
 
-class SpawnPlugin(
-    r: PluginRepository,
-    world: World,
-    server: Server
-) : KotlinPlugin(r, world, server) {
-    init {
+class SpawnPlugin : PluginEvent() {
+
+    override fun init() {
         spawnNpc(npc = "npcs.man", x = 3206, z = 3219, walkRadius = 20, height = 1, direction = Direction.SOUTH)
         spawnNpc(npc = "npcs.man", x = 3216, z = 3219, walkRadius = 20, direction = Direction.EAST)
         spawnNpc(npc = "npcs.man", x = 3207, z = 3227, walkRadius = 20, direction = Direction.EAST)

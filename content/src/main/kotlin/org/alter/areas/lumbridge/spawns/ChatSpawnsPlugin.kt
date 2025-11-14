@@ -1,22 +1,12 @@
-package org.alter.plugins.content.areas.lumbridge.spawns
+package org.alter.areas.lumbridge.spawns
 
-import org.alter.game.Server
 import org.alter.game.model.Direction
-import org.alter.game.model.World
-import org.alter.game.plugin.KotlinPlugin
-import org.alter.game.plugin.PluginRepository
+import org.alter.game.pluginnew.PluginEvent
 
 
-class ChatSpawnsPlugin(
-    r: PluginRepository,
-    world: World,
-    server: Server
-) : KotlinPlugin(r, world, server) {
+class ChatSpawnsPlugin() : PluginEvent() {
 
-    init {
-        // Will slowly remove stuff from here and move it to the respective NPC plugins
-
-        // Outside
+    override fun init() {
         spawnNpc("npcs.lumbridge_guide2_woman", 3228, 3222, 0, 10, Direction.SOUTH)
         spawnNpc("npcs.father_aereck", 3243, 3206, 0, 3)
         spawnNpc("npcs.hatius_lumbridge_diary", 3233, 3215, 0, 1)

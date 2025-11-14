@@ -1,4 +1,4 @@
-package org.alter.plugins.content.areas.lumbridge.npcs
+package org.alter.areas.lumbridge.npcs
 
 import org.alter.api.ext.chatNpc
 import org.alter.api.ext.player
@@ -9,17 +9,15 @@ import org.alter.game.model.entity.Player
 import org.alter.game.model.queue.QueueTask
 import org.alter.game.plugin.KotlinPlugin
 import org.alter.game.plugin.PluginRepository
+import org.alter.game.pluginnew.PluginEvent
+import org.alter.game.pluginnew.event.impl.onNpcOption
 
-class GoblinCookPlugin (
-    r: PluginRepository,
-    world: World,
-    server: Server
-) : KotlinPlugin(r, world, server) {
+class GoblinCookPlugin() : PluginEvent() {
 
-    init {
+    override fun init() {
         spawnNpc(npc = "npcs.goblin_cook_charred", x = 3246, z = 3246, walkRadius = 2, direction = Direction.WEST)
 
-        onNpcOption("npcs.goblin_cook_charred", option = "talk-to") {
+        onNpcOption("npcs.goblin_cook_charred", "talk-to") {
             player.queue { dialog(player) }
         }
     }

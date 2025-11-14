@@ -418,6 +418,20 @@ fun Player.openInterface(
     write(IfOpenSub(parent, child, interfaceId, type))
 }
 
+fun Player.closeInterface(interfaceId: String) {
+    requireRSCM(RSCMType.INTERFACES,interfaceId)
+    val infId = interfaceId.asRSCM()
+    if (infId == interfaces.getModal()) {
+        interfaces.setModal(-1)
+    }
+    val hash = interfaces.close(infId)
+    if (hash != -1) {
+        val parent = hash shr 16
+        val child = hash and 0xFFFF
+        write(IfCloseSub(interfaceId = parent, componentId = child))
+    }
+}
+
 fun Player.closeInterface(interfaceId: Int) {
     if (interfaceId == interfaces.getModal()) {
         interfaces.setModal(-1)

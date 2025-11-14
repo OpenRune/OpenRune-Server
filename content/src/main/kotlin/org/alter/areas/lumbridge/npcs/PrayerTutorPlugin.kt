@@ -1,4 +1,4 @@
-package org.alter.plugins.content.areas.lumbridge.npcs
+package org.alter.areas.lumbridge.npcs
 
 import org.alter.api.GameframeTab
 import org.alter.api.ext.*
@@ -8,17 +8,15 @@ import org.alter.game.model.entity.Player
 import org.alter.game.model.queue.QueueTask
 import org.alter.game.plugin.KotlinPlugin
 import org.alter.game.plugin.PluginRepository
+import org.alter.game.pluginnew.PluginEvent
+import org.alter.game.pluginnew.event.impl.onNpcOption
 
-class PrayerTutorPlugin (
-    r: PluginRepository,
-    world: World,
-    server: Server
-) : KotlinPlugin(r, world, server) {
+class PrayerTutorPlugin() : PluginEvent() {
 
-    init {
+    override fun init() {
         spawnNpc("npcs.aide_tutor_prayer", x = 3242, z = 3214, walkRadius = 3)
 
-        onNpcOption("npcs.aide_tutor_prayer", option = "talk-to") {
+        onNpcOption("npcs.aide_tutor_prayer", "talk-to") {
             player.queue { dialog(player) }
         }
     }

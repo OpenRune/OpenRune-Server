@@ -1,4 +1,4 @@
-package org.alter.plugins.content.areas.lumbridge.npcs
+package org.alter.areas.lumbridge.npcs
 
 import org.alter.api.ext.chatNpc
 import org.alter.api.ext.chatPlayer
@@ -11,17 +11,15 @@ import org.alter.game.model.entity.Player
 import org.alter.game.model.queue.QueueTask
 import org.alter.game.plugin.KotlinPlugin
 import org.alter.game.plugin.PluginRepository
+import org.alter.game.pluginnew.PluginEvent
+import org.alter.game.pluginnew.event.impl.onNpcOption
 
-class CraftingTutorPlugin (
-    r: PluginRepository,
-    world: World,
-    server: Server
-) : KotlinPlugin(r, world, server) {
+class CraftingTutorPlugin() : PluginEvent() {
 
-    init {
+    override fun init() {
         spawnNpc("npcs.aide_tutor_crafting", x = 3211, z = 3212, 1, 1, Direction.WEST)
 
-        onNpcOption(npc = "npcs.aide_tutor_crafting", option = "talk-to") {
+        onNpcOption("npcs.aide_tutor_crafting", "talk-to") {
             player.queue { dialog(player) }
         }
     }

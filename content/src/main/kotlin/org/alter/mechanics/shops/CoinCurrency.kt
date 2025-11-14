@@ -1,4 +1,4 @@
-package org.alter.plugins.content.mechanics.shops
+package org.alter.mechanics.shops
 
 import org.alter.rscm.RSCM.getRSCM
 

@@ -1,4 +1,4 @@
-package org.alter.plugins.content.areas.lumbridge.npcs
+package org.alter.areas.lumbridge.npcs
 
 import org.alter.api.ext.chatNpc
 import org.alter.api.ext.chatPlayer
@@ -11,16 +11,16 @@ import org.alter.game.model.entity.Player
 import org.alter.game.model.queue.QueueTask
 import org.alter.game.plugin.KotlinPlugin
 import org.alter.game.plugin.PluginRepository
+import org.alter.game.pluginnew.PluginEvent
+import org.alter.game.pluginnew.event.impl.onNpcOption
 
-class GeePlugin(
-    r: PluginRepository, world: World, server: Server
-) : KotlinPlugin(r, world, server) {
+class GeePlugin() : PluginEvent() {
 
-    init {
+    override fun init() {
         spawnNpc("npcs.lumbridge_guide2_man", x = 3223, z = 3229, walkRadius = 19, direction = Direction.SOUTH)
         spawnNpc("npcs.lumbridge_guide2_man", 3243, 3265, walkRadius = 22)
 
-        onNpcOption("npcs.lumbridge_guide2_man", option = "talk-to") {
+        onNpcOption("npcs.lumbridge_guide2_man", "talk-to") {
             player.queue { dialog(player) }
         }
     }
