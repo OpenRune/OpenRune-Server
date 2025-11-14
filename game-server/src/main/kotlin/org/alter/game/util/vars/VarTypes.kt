@@ -5,6 +5,7 @@ import dev.openrune.definition.util.VarType
 data object IntType : NumericIntegerVarType(VarType.INT)
 data object BooleanType : BooleanVarType(VarType.BOOLEAN)
 data object StringType : GenericStringVarType(VarType.STRING)
+data object MapElementType : NumericIntegerVarType(VarType.MAPELEMENT)
 data object LongType : NumericLongVarType(VarType.LONG)
 data object ComponentType : NumericIntegerVarType(VarType.COMPONENT)
 data object ObjType : NumericIntegerVarType(VarType.OBJ)

@@ -42,6 +42,7 @@ import org.alter.game.model.social.Social
 import org.alter.game.model.timer.ACTIVE_COMBAT_TIMER
 import org.alter.game.model.timer.FORCE_DISCONNECTION_TIMER
 import org.alter.game.model.varp.VarpSet
+import org.alter.game.pluginnew.event.impl.LoginEvent
 import org.alter.game.rsprot.RsModObjectProvider
 import org.alter.game.saving.PlayerDetails
 import org.alter.game.service.log.LoggerService
@@ -473,6 +474,7 @@ open class Player(world: World) : Pawn(world) {
         org.alter.game.info.PlayerInfo(this).syncAppearance()
         initiated = true
         world.plugins.executeLogin(this)
+        LoginEvent(this).post()
         social.updateStatus(this)
     }
 
