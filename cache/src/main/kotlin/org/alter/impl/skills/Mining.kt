@@ -288,7 +288,7 @@ object Mining {
             column(COL_SUCCESS_RATE_HIGH, 256)
             column(COL_DESPAWN_TICKS, 0)
             column(COL_DEPLETE_MECHANIC, 3) // Always
-            column(COL_EMPTY_ROCK, "objects.amethystrock_empty")
+            columnRSCM(COL_EMPTY_ROCK, "objects.amethystrock_empty")
             column(CLUE_BASE_CHANCE, 317647)
             column(COL_TYPE, "wall")
         }
