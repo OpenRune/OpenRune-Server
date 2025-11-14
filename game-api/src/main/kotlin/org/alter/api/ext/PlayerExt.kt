@@ -387,6 +387,20 @@ fun Player.openInterface(
     openInterface(parent, child, dest.interfaceId, if (dest.clickThrough) 1 else 0, isModal = dest == InterfaceDestination.MAIN_SCREEN)
 }
 
+/**
+ * Closes chat dialogue if an interface is being opened that's not on the chatbox component.
+ */
+private fun Player.closeChatDialogueIfOpen(parent: Int, child: Int) {
+    if (!(parent == InterfaceDestination.CHAT_BOX.interfaceId && child == CHATBOX_CHILD)) {
+        // If chatbox component is currently occupied, close it
+        if (interfaces.isOccupied(InterfaceDestination.CHAT_BOX.interfaceId, CHATBOX_CHILD)) {
+            closeComponent(InterfaceDestination.CHAT_BOX.interfaceId, CHATBOX_CHILD)
+        }
+        // Also close any input dialogs that might be open
+        closeInputDialog()
+    }
+}
+
 fun Player.openInterface(
     parent: Int,
     child: Int,
@@ -394,6 +408,8 @@ fun Player.openInterface(
     type: Int = 0,
     isModal: Boolean = false,
 ) {
+    closeChatDialogueIfOpen(parent, child)
+
     if (isModal) {
         interfaces.openModal(parent, child, interfaceId)
     } else {

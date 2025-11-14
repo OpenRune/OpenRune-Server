@@ -1,4 +1,4 @@
-package org.alter.plugins.content.objects.dairy
+package org.alter.objects
 
 import org.alter.api.ext.loopAnim
 import org.alter.api.ext.message
