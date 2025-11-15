@@ -4,6 +4,7 @@ import org.alter.api.*
 import org.alter.api.ext.*
 import org.alter.game.model.Tile
 import org.alter.game.model.attr.AttributeKey
+import org.alter.game.model.attr.COMBAT_ATTACKERS_ATTR
 import org.alter.game.model.attr.COMBAT_TARGET_FOCUS_ATTR
 import org.alter.game.model.attr.LAST_HIT_ATTR
 import org.alter.game.model.attr.LAST_HIT_BY_ATTR
@@ -44,6 +45,11 @@ object Combat {
     const val DEFENSIVE_MAGIC_CAST_VARBIT = "varbits.autocast_defmode"
 
     fun reset(pawn: Pawn) {
+        // Remove this pawn from the target's attacker list
+        val target = pawn.attr[COMBAT_TARGET_FOCUS_ATTR]?.get()
+        if (target != null) {
+            target.attr.removeFromSet(COMBAT_ATTACKERS_ATTR, WeakReference(pawn))
+        }
         pawn.attr.remove(COMBAT_TARGET_FOCUS_ATTR)
     }
 

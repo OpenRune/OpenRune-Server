@@ -57,6 +57,14 @@ class CombatPlugin(
      */
     suspend fun cycle(pawn: Pawn, queue: QueueTask): Boolean {
         val target = pawn.getCombatTarget() ?: return false
+
+        // Check if target is dead - if so, end combat immediately
+        if (target.isDead() || !target.isAlive()) {
+            Combat.reset(pawn)
+            pawn.resetFacePawn()
+            return false
+        }
+
         val strategy = CombatConfigs.getCombatStrategy(pawn)
         val attackRange = strategy.getAttackRange(pawn)
         var routeLogic = 1
