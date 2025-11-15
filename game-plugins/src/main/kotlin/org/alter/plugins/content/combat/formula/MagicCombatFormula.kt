@@ -247,8 +247,19 @@ object MagicCombatFormula : CombatFormula {
     }
 
     private fun getEffectiveAttackLevel(player: Player): Double {
-        var effectiveLevel = Math.floor(player.getSkills().getCurrentLevel(Skills.MAGIC) * getPrayerAttackMultiplier(player))
+        // OSRS Formula: floor((floor(floor(Magic Level + Potion Bonus) × Prayer Bonus) + Style Bonus + 8) × Void Bonus)
+        val baseLevel = player.getSkills().getBaseLevel(Skills.MAGIC).toDouble()
+        val currentLevel = player.getSkills().getCurrentLevel(Skills.MAGIC).toDouble()
+        // Calculate potion bonus (difference between current and base level)
+        val potionBonus = Math.max(0.0, currentLevel - baseLevel)
 
+        // Add potion bonus to base level
+        var effectiveLevel = Math.floor(baseLevel + potionBonus)
+
+        // Apply prayer multiplier
+        effectiveLevel = Math.floor(effectiveLevel * getPrayerAttackMultiplier(player))
+
+        // Add style bonus (only for trident)
         if (player.hasWeaponType(WeaponType.TRIDENT)) {
             effectiveLevel +=
                 when (CombatConfigs.getAttackStyle(player)) {
@@ -258,19 +269,31 @@ object MagicCombatFormula : CombatFormula {
                 }
         }
 
+        // Add 8
         effectiveLevel += 8.0
 
+        // Apply void bonus (magic void: 1.45 multiplier for accuracy)
         if (player.hasEquipped(MAGE_VOID) || player.hasEquipped(MAGE_ELITE_VOID)) {
-            effectiveLevel *= 1.45
-            effectiveLevel = Math.floor(effectiveLevel)
+            effectiveLevel = Math.floor(effectiveLevel * 1.45)
         }
 
         return Math.floor(effectiveLevel)
     }
 
     private fun getEffectiveDefenceLevel(player: Player): Double {
-        var effectiveLevel = Math.floor(player.getSkills().getCurrentLevel(Skills.DEFENCE) * getPrayerDefenceMultiplier(player))
+        // OSRS Formula: floor((floor(floor(Defence Level + Potion Bonus) × Prayer Bonus) + Style Bonus + 8))
+        val baseLevel = player.getSkills().getBaseLevel(Skills.DEFENCE).toDouble()
+        val currentLevel = player.getSkills().getCurrentLevel(Skills.DEFENCE).toDouble()
+        // Calculate potion bonus (difference between current and base level)
+        val potionBonus = Math.max(0.0, currentLevel - baseLevel)
 
+        // Add potion bonus to base level
+        var effectiveLevel = Math.floor(baseLevel + potionBonus)
+
+        // Apply prayer multiplier
+        effectiveLevel = Math.floor(effectiveLevel * getPrayerDefenceMultiplier(player))
+
+        // Add style bonus
         effectiveLevel +=
             when (CombatConfigs.getAttackStyle(player)) {
                 AttackStyle.DEFENSIVE -> 3.0
@@ -285,13 +308,15 @@ object MagicCombatFormula : CombatFormula {
     }
 
     private fun getEffectiveAttackLevel(npc: Npc): Double {
-        var effectiveLevel = npc.stats.getCurrentLevel(NpcSkills.MAGIC).toDouble()
+        // NPC effective magic attack = base magic + 8
+        var effectiveLevel = npc.combatDef.magic.toDouble()
         effectiveLevel += 8
         return effectiveLevel
     }
 
     private fun getEffectiveDefenceLevel(npc: Npc): Double {
-        var effectiveLevel = npc.stats.getCurrentLevel(NpcSkills.DEFENCE).toDouble()
+        // NPC effective defence = base defence + 8
+        var effectiveLevel = npc.combatDef.defence.toDouble()
         effectiveLevel += 8
         return effectiveLevel
     }

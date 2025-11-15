@@ -84,9 +84,16 @@ object MeleeCombatFormula : CombatFormula {
         hit *= specialAttackMultiplier
         hit = Math.floor(hit)
 
+        // Protection prayers: 100% reduction in PvM, 40% reduction (0.6 multiplier) in PvP
         if (target.hasPrayerIcon(PrayerIcon.PROTECT_FROM_MELEE)) {
-            hit *= 0.6
-            hit = Math.floor(hit)
+            if (target.entityType.isNpc) {
+                // PvM: 100% damage reduction (0 damage)
+                hit = 0.0
+            } else {
+                // PvP: 40% damage reduction (multiply by 0.6)
+                hit *= 0.6
+                hit = Math.floor(hit)
+            }
         }
 
         if (specialPassiveMultiplier == 1.0) {
@@ -110,6 +117,10 @@ object MeleeCombatFormula : CombatFormula {
         var hit = base
 
         hit *= getEquipmentMultiplier(player)
+        hit = Math.floor(hit)
+
+        // Apply slayer helmet/black mask bonus for accuracy
+        hit *= getSlayerHelmetMultiplier(player, target)
         hit = Math.floor(hit)
 
         hit *= (if (player.hasEquipped(EquipmentType.WEAPON, "items.arclight") && isDemon(target)) 1.7 else specialAttackMultiplier)
@@ -160,46 +171,88 @@ object MeleeCombatFormula : CombatFormula {
     }
 
     private fun getEffectiveStrengthLevel(player: Player): Double {
-        var effectiveLevel = Math.floor(player.getSkills().getCurrentLevel(Skills.STRENGTH) * getPrayerStrengthMultiplier(player))
+        // OSRS Formula: floor((floor(floor(Strength Level + Potion Bonus + Dragon Battleaxe Bonus) × Prayer Bonus) + Style Bonus + 8) × Void Bonus)
+        val baseLevel = player.getSkills().getBaseLevel(Skills.STRENGTH).toDouble()
+        val currentLevel = player.getSkills().getCurrentLevel(Skills.STRENGTH).toDouble()
+        // Calculate potion bonus (difference between current and base level)
+        var potionBonus = Math.max(0.0, currentLevel - baseLevel)
 
+        // Add dragon battleaxe special attack bonus if active
+        // Formula: 10 + floor(0.25 × (floor(10% magic) + floor(10% range) + floor(10% defence) + floor(10% attack)))
+        val dragonBattleaxeBonus = player.attr[Combat.DRAGON_BATTLEAXE_BONUS] ?: 0.0
+        if (dragonBattleaxeBonus > 0.0) {
+            potionBonus += dragonBattleaxeBonus
+        }
+
+        // Add potion bonus (and dragon battleaxe bonus) to base level
+        var effectiveLevel = Math.floor(baseLevel + potionBonus)
+
+        // Apply prayer multiplier
+        effectiveLevel = Math.floor(effectiveLevel * getPrayerStrengthMultiplier(player))
+
+        // Add style bonus
         effectiveLevel += when (CombatConfigs.getAttackStyle(player)){
             AttackStyle.AGGRESSIVE -> 3.0
             AttackStyle.CONTROLLED -> 1.0
             else -> 0.0
         }
 
+        // Add 8
         effectiveLevel += 8.0
 
+        // Apply void bonus
         if (player.hasEquipped(MELEE_VOID) || player.hasEquipped(MELEE_ELITE_VOID)) {
-            effectiveLevel *= 1.10
-            effectiveLevel = Math.floor(effectiveLevel)
+            effectiveLevel = Math.floor(effectiveLevel * 1.10)
         }
 
         return Math.floor(effectiveLevel)
     }
 
     private fun getEffectiveAttackLevel(player: Player): Double {
-        var effectiveLevel = Math.floor(player.getSkills().getCurrentLevel(Skills.ATTACK) * getPrayerAttackMultiplier(player))
+        // OSRS Formula: floor((floor(floor(Attack Level + Potion Bonus) × Prayer Bonus) + Style Bonus + 8) × Void Bonus)
+        val baseLevel = player.getSkills().getBaseLevel(Skills.ATTACK).toDouble()
+        val currentLevel = player.getSkills().getCurrentLevel(Skills.ATTACK).toDouble()
+        // Calculate potion bonus (difference between current and base level)
+        val potionBonus = Math.max(0.0, currentLevel - baseLevel)
 
+        // Add potion bonus to base level
+        var effectiveLevel = Math.floor(baseLevel + potionBonus)
+
+        // Apply prayer multiplier
+        effectiveLevel = Math.floor(effectiveLevel * getPrayerAttackMultiplier(player))
+
+        // Add style bonus
         effectiveLevel += when (CombatConfigs.getAttackStyle(player)){
             AttackStyle.ACCURATE -> 3.0
             AttackStyle.CONTROLLED -> 1.0
             else -> 0.0
         }
 
+        // Add 8
         effectiveLevel += 8.0
 
+        // Apply void bonus
         if (player.hasEquipped(MELEE_VOID) || player.hasEquipped(MELEE_ELITE_VOID)) {
-            effectiveLevel *= 1.10
-            effectiveLevel = Math.floor(effectiveLevel)
+            effectiveLevel = Math.floor(effectiveLevel * 1.10)
         }
 
-        return effectiveLevel
+        return Math.floor(effectiveLevel)
     }
 
     private fun getEffectiveDefenceLevel(player: Player): Double {
-        var effectiveLevel = Math.floor(player.getSkills().getCurrentLevel(Skills.DEFENCE) * getPrayerDefenceMultiplier(player))
+        // OSRS Formula: floor((floor(floor(Defence Level + Potion Bonus) × Prayer Bonus) + Style Bonus + 8))
+        val baseLevel = player.getSkills().getBaseLevel(Skills.DEFENCE).toDouble()
+        val currentLevel = player.getSkills().getCurrentLevel(Skills.DEFENCE).toDouble()
+        // Calculate potion bonus (difference between current and base level)
+        val potionBonus = Math.max(0.0, currentLevel - baseLevel)
 
+        // Add potion bonus to base level
+        var effectiveLevel = Math.floor(baseLevel + potionBonus)
+
+        // Apply prayer multiplier
+        effectiveLevel = Math.floor(effectiveLevel * getPrayerDefenceMultiplier(player))
+
+        // Add style bonus
         effectiveLevel += when (CombatConfigs.getAttackStyle(player)){
             AttackStyle.DEFENSIVE -> 3.0
             AttackStyle.CONTROLLED -> 1.0
@@ -207,25 +260,29 @@ object MeleeCombatFormula : CombatFormula {
             else -> 0.0
         }
 
+        // Add 8
         effectiveLevel += 8.0
 
         return Math.floor(effectiveLevel)
     }
 
     private fun getEffectiveStrengthLevel(npc: Npc): Double {
-        var effectiveLevel = npc.stats.getCurrentLevel(NpcSkills.STRENGTH).toDouble()
+        // NPC effective strength = base strength + 8
+        var effectiveLevel = npc.combatDef.strength.toDouble()
         effectiveLevel += 8
         return effectiveLevel
     }
 
     private fun getEffectiveAttackLevel(npc: Npc): Double {
-        var effectiveLevel = npc.stats.getCurrentLevel(NpcSkills.ATTACK).toDouble()
+        // NPC effective attack = base attack + 8
+        var effectiveLevel = npc.combatDef.attack.toDouble()
         effectiveLevel += 8
         return effectiveLevel
     }
 
     private fun getEffectiveDefenceLevel(npc: Npc): Double {
-        var effectiveLevel = npc.stats.getCurrentLevel(NpcSkills.DEFENCE).toDouble()
+        // NPC effective defence = base defence + 8
+        var effectiveLevel = npc.combatDef.defence.toDouble()
         effectiveLevel += 8
         return effectiveLevel
     }
@@ -262,15 +319,44 @@ object MeleeCombatFormula : CombatFormula {
     private fun getEquipmentMultiplier(player: Player): Double = when {
         player.hasEquipped(EquipmentType.AMULET, "items.crystalshard_necklace") -> 7.0 / 6.0 // These should only apply if the target is undead..
         player.hasEquipped(EquipmentType.AMULET, "items.lotr_crystalshard_necklace_upgrade") -> 1.2 // These should only apply if the target is undead..
-        // TODO: this should only apply when target is slayer task?
-        player.hasEquipped(EquipmentType.HEAD, *BLACK_MASKS) || player.hasEquipped(EquipmentType.HEAD, *BLACK_MASKS_I) -> 7.0 / 6.0 // This should only apply if you have the target || his category as a Slayer Task
         else -> 1.0
+    }
+
+    /**
+     * Check if black mask/slayer helmet bonus should apply.
+     * Bonus only applies when player is on a slayer task for the target NPC.
+     */
+    private fun hasSlayerTaskBonus(player: Player, target: Pawn): Boolean {
+        // TODO: Implement slayer task system check
+        // Should check if:
+        // 1. Player has an active slayer task
+        // 2. Target NPC matches the slayer task (exact match or category match)
+        // 3. Task is not completed
+        // For now, return false until slayer task system is implemented
+        return false
+    }
+
+    /**
+     * Get black mask/slayer helmet multiplier if applicable.
+     * Black mask: 16.67% (7/6) boost
+     * Slayer helmet (imbued): 16.67% (7/6) boost
+     * Slayer helmet (regular): 15% boost
+     */
+    private fun getSlayerHelmetMultiplier(player: Player, target: Pawn): Double {
+        if (!hasSlayerTaskBonus(player, target)) {
+            return 1.0
+        }
+        return when {
+            player.hasEquipped(EquipmentType.HEAD, *BLACK_MASKS) || player.hasEquipped(EquipmentType.HEAD, *BLACK_MASKS_I) -> 7.0 / 6.0
+            // TODO: Add slayer helmet checks when items are identified
+            else -> 1.0
+        }
     }
 
     private fun applyPassiveMultiplier(pawn: Pawn, target: Pawn, base: Double): Double {
         if (pawn is Player) {
             val world = pawn.world
-            val multiplier = when {
+            var multiplier = when {
                 pawn.hasEquipped(EquipmentType.AMULET, "items.jewl_beserker_necklace") -> 1.2
                 isWearingDharok(pawn) -> {
                     val lost = (pawn.getMaxHp() - pawn.getCurrentHp()) / 100.0
@@ -281,6 +367,10 @@ object MeleeCombatFormula : CombatFormula {
                 pawn.hasEquipped(EquipmentType.WEAPON, "items.contact_keris", "items.contact_keris_p") && (isKalphite(target) || isScarab(target)) -> if (world.chance(1, 51)) 3.0 else (4.0 / 3.0)
                 else -> 1.0
             }
+
+            // Apply slayer helmet/black mask bonus
+            multiplier *= getSlayerHelmetMultiplier(pawn, target)
+
             if (multiplier == 1.0 && isWearingVerac(pawn)) {
                 return base + 1.0
             }
