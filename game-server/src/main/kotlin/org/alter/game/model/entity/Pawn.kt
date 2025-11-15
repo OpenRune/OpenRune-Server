@@ -225,6 +225,10 @@ abstract class Pawn(val world: World) : Entity() {
         resetInteractions()
         interruptQueues()
         attr[COMBAT_TARGET_FOCUS_ATTR] = WeakReference(target)
+
+        // Track that we are attacking this target
+        target.attr.addToSet(COMBAT_ATTACKERS_ATTR, WeakReference(this))
+
         /*
          * Players always have the default combat, and npcs will use default
          * combat <strong>unless</strong> they have a custom npc combat plugin
@@ -499,6 +503,11 @@ abstract class Pawn(val world: World) : Entity() {
      * Resets any interaction this pawn had with another pawn.
      */
     fun resetInteractions() {
+        // Remove this pawn from the target's attacker list
+        val target = attr[COMBAT_TARGET_FOCUS_ATTR]?.get()
+        if (target != null) {
+            target.attr.removeFromSet(COMBAT_ATTACKERS_ATTR, WeakReference(this))
+        }
         attr.remove(COMBAT_TARGET_FOCUS_ATTR)
         attr.remove(INTERACTING_NPC_ATTR)
         attr.remove(INTERACTING_PLAYER_ATTR)
