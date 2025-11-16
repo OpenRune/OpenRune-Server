@@ -16,4 +16,10 @@ dependencies {
     implementation(libs.jackson.databind)
     implementation(libs.jackson.module.kotlin)
     implementation(libs.classgraph)
+    implementation(rootProject.project.libs.or2.all.cache)
+    implementation(rootProject.project.libs.or2.tools)
+    implementation(rootProject.project.libs.or2.server.utils)
+    api(libs.or2.definition)
+    api(libs.or2.filestore)
+    api(libs.or2.filesystem)
 }

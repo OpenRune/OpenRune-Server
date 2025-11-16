@@ -25,6 +25,7 @@ tasks.withType<KotlinCompile> {
 
 ksp {
     arg("moduleDir", projectDir.absolutePath)
+    arg("rscmDir", rootDir.absolutePath + "/data/cfg/rscm2/")
 }
 
 tasks.named<Jar>("jar") {

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dialogue>
+    <npcMeta value="ram_bartender">
+        <position x="-220" y="60"/>
+    </npcMeta>
+    <nodes>
+        <npc id="dialogue_1763224740968_0" order="0" orientation="horizontal">
+            <text>Welcome to the Sheared Ram. What can I do for you?</text>
+            <position x="-194" y="-444"/>
+        </npc>
+        <optionsNode id="dialogue_1763224774631_2" order="2" title="Select an Option" orientation="horizontal">
+            <position x="-601" y="-231"/>
+            <options>
+                <option id="dialogue_1763224774631_2_option_0" title="I'll have a beer please."/>
+                <option id="dialogue_1763224774631_2_option_1" title="Heard any rumors recently?"/>
+                <option id="dialogue_1763224774631_2_option_1763224795848" title="Nothing, I'm fine."/>
+            </options>
+        </optionsNode>
+        <player id="dialogue_1763224803680_4" order="4" orientation="horizontal">
+            <text>I'll have a beer please</text>
+            <position x="-155" y="-215"/>
+        </player>
+        <npc id="dialogue_1763224826997_6" order="6" orientation="horizontal">
+            <text>That'll be two coins please.</text>
+            <position x="116" y="-221"/>
+        </npc>
+        <player id="dialogue_1763224848988_8" order="8" orientation="horizontal">
+            <text>Heard any rumors recently?</text>
+            <position x="-132" y="-35"/>
+        </player>
+        <npc id="dialogue_1763224905071_12" order="12" orientation="horizontal">
+            <text>One of the patrons here is looking for treasure,&lt;br&gt;&lt;br&gt; apparently. A chap by the name of Veos.</text>
+            <position x="181" y="-30"/>
+        </npc>
+        <player id="dialogue_1763224929631_14" order="14" orientation="horizontal">
+            <text>Nothing, I'm fine.</text>
+            <position x="-392" y="105"/>
+        </player>
+        <container id="container_1763309119292" containerType="inventory" orientation="horizontal">
+            <position x="264" y="-449"/>
+            <items>
+                <item id="item_1763309122185" itemName="coins" amount="2"/>
+            </items>
+        </container>
+        <player id="dialogue_1763309138322_0" order="0" orientation="horizontal">
+            <text>Oh dear, I don't seem to have enough money.</text>
+            <position x="525" y="-267"/>
+        </player>
+        <action id="action_1763309154513" actionType="remove_item" itemName="coins" amount="2" containerType="inventory" orientation="horizontal">
+            <position x="612" y="-456"/>
+        </action>
+        <action id="action_1763309166413" actionType="add_item" itemName="beer" amount="1" containerType="inventory" orientation="horizontal">
+            <position x="931" y="-456"/>
+        </action>
+        <npc id="dialogue_1763309190046_2" order="2" orientation="horizontal">
+            <text>Here you go. Enjoy!</text>
+            <position x="810" y="-344"/>
+        </npc>
+    </nodes>
+    <edges>
+        <edge id="edge-npc_meta_node-dialogue_1763224740968_0" source="npc_meta_node" target="dialogue_1763224740968_0"/>
+        <edge id="reactflow__edge-dialogue_1763224740968_0-dialogue_1763224774631_2" source="dialogue_1763224740968_0" target="dialogue_1763224774631_2"/>
+        <edge id="reactflow__edge-dialogue_1763224774631_2dialogue_1763224774631_2_option_0-dialogue_1763224803680_4" source="dialogue_1763224774631_2" sourceHandle="dialogue_1763224774631_2_option_0" target="dialogue_1763224803680_4"/>
+        <edge id="reactflow__edge-dialogue_1763224803680_4-dialogue_1763224826997_6" source="dialogue_1763224803680_4" target="dialogue_1763224826997_6"/>
+        <edge id="reactflow__edge-dialogue_1763224774631_2dialogue_1763224774631_2_option_1-dialogue_1763224848988_8" source="dialogue_1763224774631_2" sourceHandle="dialogue_1763224774631_2_option_1" target="dialogue_1763224848988_8"/>
+        <edge id="reactflow__edge-dialogue_1763224848988_8-dialogue_1763224905071_12" source="dialogue_1763224848988_8" target="dialogue_1763224905071_12"/>
+        <edge id="reactflow__edge-dialogue_1763224774631_2dialogue_1763224774631_2_option_1763224795848-dialogue_1763224929631_14" source="dialogue_1763224774631_2" sourceHandle="dialogue_1763224774631_2_option_1763224795848" target="dialogue_1763224929631_14"/>
+        <edge id="reactflow__edge-dialogue_1763224826997_6-container_1763309119292" source="dialogue_1763224826997_6" target="container_1763309119292"/>
+        <edge id="reactflow__edge-container_1763309119292false-dialogue_1763309138322_0" source="container_1763309119292" sourceHandle="false" target="dialogue_1763309138322_0"/>
+        <edge id="reactflow__edge-container_1763309119292true-action_1763309154513" source="container_1763309119292" sourceHandle="true" target="action_1763309154513"/>
+        <edge id="reactflow__edge-action_1763309154513-action_1763309166413" source="action_1763309154513" target="action_1763309166413"/>
+        <edge id="reactflow__edge-action_1763309166413-dialogue_1763309190046_2" source="action_1763309166413" target="dialogue_1763309190046_2"/>
+    </edges>
+</dialogue>
