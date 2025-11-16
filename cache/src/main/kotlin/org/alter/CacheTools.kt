@@ -28,6 +28,22 @@ import kotlin.system.exitProcess
 fun getCacheLocation() = File("../data/","cache").path
 fun getRawCacheLocation(dir : String) = File("../data/","raw-cache/$dir/")
 
+fun tablesToPack() = listOf(
+    PrayerTable.skillTable(),
+    TeleTabs.teleTabs(),
+    StatComponents.statsComponents(),
+    FoodTable.consumableFood(),
+    Firemaking.logs(),
+    Woodcutting.trees(),
+    Woodcutting.axes(),
+    Herblore.unfinishedPotions(),
+    Herblore.finishedPotions(),
+    Herblore.cleaningHerbs(),
+    Herblore.barbarianMixes(),
+    Herblore.swampTar(),
+    Herblore.crushing()
+)
+
 private val logger = KotlinLogging.logger {}
 
 fun main(args : Array<String>) {
@@ -59,21 +75,7 @@ fun downloadRev(type : TaskType) {
             builder.environment(CacheEnvironment.valueOf(rev.third))
 
             val tasksNew = tasks.toMutableList()
-            tasksNew.add(PackDBTables(listOf(
-                PrayerTable.skillTable(),
-                TeleTabs.teleTabs(),
-                StatComponents.statsComponents(),
-                FoodTable.consumableFood(),
-                Firemaking.logs(),
-                Woodcutting.trees(),
-                Woodcutting.axes(),
-                Herblore.unfinishedPotions(),
-                Herblore.finishedPotions(),
-                Herblore.cleaningHerbs(),
-                Herblore.barbarianMixes(),
-                Herblore.swampTar(),
-                Herblore.crushing()
-            )))
+            tasksNew.add(PackDBTables(tablesToPack()))
 
             builder.extraTasks(*tasksNew.toTypedArray()).build().initialize()
 
@@ -89,21 +91,7 @@ fun downloadRev(type : TaskType) {
             builder.revision(rev.first)
 
             val tasksNew = tasks.toMutableList()
-            tasksNew.add(PackDBTables(listOf(
-                PrayerTable.skillTable(),
-                TeleTabs.teleTabs(),
-                StatComponents.statsComponents(),
-                FoodTable.consumableFood(),
-                Firemaking.logs(),
-                Woodcutting.trees(),
-                Woodcutting.axes(),
-                Herblore.unfinishedPotions(),
-                Herblore.finishedPotions(),
-                Herblore.cleaningHerbs(),
-                Herblore.barbarianMixes(),
-                Herblore.swampTar(),
-                Herblore.crushing()
-            )))
+            tasksNew.add(PackDBTables(tablesToPack()))
 
             builder.extraTasks(*tasksNew.toTypedArray()).build().initialize()
 
