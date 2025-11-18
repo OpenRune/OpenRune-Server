@@ -67,7 +67,7 @@ fun startGeneration(elements: List<GameValElement>,rows : MutableMap<Int, DBRowT
             columns = generatedColumns
         )
 
-        generateTable(tableDef, File("../content/build/generated/ksp/main/kotlin/"))
+        generateTable(tableDef, File("../content/src/main/kotlin/generated"))
     }
 }
 
