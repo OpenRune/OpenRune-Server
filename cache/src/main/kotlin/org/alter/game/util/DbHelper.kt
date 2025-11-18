@@ -25,7 +25,6 @@ import kotlin.io.path.Path
 fun <K, V> DbHelper.column(name: String, type: VarTypeImpl<K, V>): V =
     getNValue(name, type, 0)
 
-
 fun <K, V> DbHelper.columnOptional(name: String, type: VarTypeImpl<K, V>): V? =
     getNValueOrNull(name, type, 0)
 
@@ -91,7 +90,7 @@ fun <K, V> DbHelper.multiColumnOptional(
 }
 
 @Suppress("UNCHECKED_CAST")
-class DbHelper private constructor(private val row: DBRowType) {
+class DbHelper(private val row: DBRowType) {
 
     val id: Int get() = row.id
     val tableId: Int get() = row.tableId
@@ -155,6 +154,20 @@ class DbHelper private constructor(private val row: DBRowType) {
             return values[index]
         }
 
+        fun get(index: Int = 0): Any {
+            val values = column.values
+                ?: throw DbException.EmptyColumnValues(tableId, rowId, columnId)
+
+            if (index !in values.indices) {
+                throw DbException.IndexOutOfRange(tableId, rowId, columnId, index, values.size)
+            }
+
+            val actualType = types.getOrNull(index % types.size)
+                ?: throw DbException.MissingVarType(tableId, rowId, columnId, index)
+
+            return values[index]
+        }
+
         override fun toString(): String {
             val vals = column.values?.joinToString(", ") ?: "empty"
             return "Column(id=$columnId, row=$rowId, size=$size, values=[$vals])"
@@ -168,6 +181,18 @@ class DbHelper private constructor(private val row: DBRowType) {
 
             return DbQueryCache.getTable(table) {
                 val tableId = table.asRSCM()
+                ServerCacheManager.getRows()
+                    .asSequence()
+                    .filter { it.value.tableId == tableId }
+                    .map { DbHelper(it.value) }
+                    .distinctBy { it.id }
+                    .toList()
+            }
+        }
+
+        fun table(tableId: Int): List<DbHelper> {
+
+            return DbQueryCache.getTable(tableId.toString()) {
                 ServerCacheManager.getRows()
                     .asSequence()
                     .filter { it.value.tableId == tableId }
