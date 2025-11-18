@@ -16,19 +16,18 @@ import org.alter.game.util.vars.IntType
 import org.alter.game.util.vars.ObjType
 import org.alter.rscm.RSCM
 import org.alter.rscm.RSCM.asRSCM
+import org.alter.tables.TeleportTabletsRow
 
 class TeleportTabEvents : PluginEvent() {
 
     override fun init() {
-        table("tables.teleport_tablets").forEach { tablet ->
-            val itemId = tablet.column("columns.teleport_tablets:item", ObjType)
-            val location = tablet.columnOptional("columns.teleport_tablets:location", IntType)
+        TeleportTabletsRow.all().forEach { tablet ->
 
             on<ItemClickEvent> {
-                where { item == itemId }
+                where { item == tablet.item }
                 then {
                     when (option) {
-                        MenuOption.OP2 -> location?.let {
+                        MenuOption.OP2 -> tablet.location?.let {
                             teleport(player, item, it)
                         } ?: teleportSpecial(player, item, MenuOption.OP3)
 

@@ -9,6 +9,7 @@ import org.alter.game.util.vars.IntType
 import org.alter.game.util.vars.LocType
 import org.alter.game.util.vars.ObjType
 import org.alter.game.util.vars.SeqType
+import org.alter.tables.woodcutting.WoodcuttingAxesRow
 
 /**
  * Definitions for woodcutting trees, stumps, and axes.
@@ -68,20 +69,7 @@ object WoodcuttingDefinitions {
         )
     }
 
-    data class AxeData(
-        val levelReq: Int,
-        val tickDelay: Int,
-        val animationId: Int
-    )
-
-    val axeData: Map<Int, AxeData> = table("tables.woodcutting_axes").associate { row ->
-        val axeID = row.column("columns.woodcutting_axes:item", ObjType)
-        val levelReq = row.column("columns.woodcutting_axes:level", IntType)
-        val tickDelay = row.column("columns.woodcutting_axes:delay", IntType)
-        val animationId = row.column("columns.woodcutting_axes:animation", SeqType)
-
-        axeID to AxeData(levelReq, tickDelay, animationId)
-    }
+    val axeData: List<WoodcuttingAxesRow> = WoodcuttingAxesRow.all()
 
 }
 

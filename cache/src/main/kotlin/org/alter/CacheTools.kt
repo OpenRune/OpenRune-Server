@@ -82,6 +82,8 @@ fun downloadRev(type: TaskType) {
             builder.removeXteas(false)
             builder.environment(CacheEnvironment.valueOf(rev.third))
 
+            builder.build().initialize()
+
             Files.move(
                 File(getCacheLocation(), "xteas.json").toPath(),
                 File("../data/", "xteas.json").toPath(),

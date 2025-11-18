@@ -27,6 +27,7 @@ import org.alter.game.util.multiColumn
 import org.alter.game.util.vars.LocType
 import org.alter.skills.woodcutting.WoodcuttingDefinitions.axeData
 import org.alter.skills.woodcutting.WoodcuttingDefinitions.tableToTreeData
+import org.alter.tables.woodcutting.WoodcuttingAxesRow
 
 class WoodcuttingPlugin : PluginEvent() {
 
@@ -173,12 +174,12 @@ class WoodcuttingPlugin : PluginEvent() {
      */
     private fun hasAnyAxe(player: Player): Boolean {
         player.equipment[EquipmentType.WEAPON.id]?.let { weapon ->
-            if (axeData.containsKey(weapon.id)) return true
+            if (axeData.any { it.item == weapon.id }) return true
         }
 
         return player.inventory.asSequence()
             .filterNotNull()
-            .any { axeData.containsKey(it.id) }
+            .any { axeData.any { axeData -> axeData.item == it.id } }
     }
 
     /**
@@ -186,19 +187,19 @@ class WoodcuttingPlugin : PluginEvent() {
      * Checks both equipped weapon and inventory.
      * Returns null if the player has no usable axe.
      */
-    private fun getBestAxe(player: Player): WoodcuttingDefinitions.AxeData? {
+    private fun getBestAxe(player: Player): WoodcuttingAxesRow? {
         val wcLevel = player.getSkills().getBaseLevel(Skills.WOODCUTTING)
 
 
         player.equipment[EquipmentType.WEAPON.id]?.let { weapon ->
-            axeData[weapon.id]?.takeIf { wcLevel >= it.levelReq }?.let { return it }
+            axeData[weapon.id].takeIf { wcLevel >= it.level }?.let { return it }
         }
 
         return player.inventory.asSequence()
             .filterNotNull()
-            .mapNotNull { axeData[it.id] }
-            .filter { wcLevel >= it.levelReq }
-            .maxByOrNull { it.levelReq }
+            .map { axeData[it.id] }
+            .filter { wcLevel >= it.level }
+            .maxByOrNull { it.level }
     }
 
     /**
@@ -318,9 +319,9 @@ class WoodcuttingPlugin : PluginEvent() {
         player.faceTile(nearestTile)
         player.message("You swing your axe at the tree.")
 
-        val tickDelay = axeData.tickDelay
+        val tickDelay = axeData.delay
         val (low, high) = treeData.successRateLow to treeData.successRateHigh
-        val chopAnimation = RSCM.getReverseMapping(RSCMType.SEQTYPES, axeData.animationId) ?: return
+        val chopAnimation = RSCM.getReverseMapping(RSCMType.SEQTYPES, axeData.animation) ?: return
 
         player.loopAnim(chopAnimation)
 

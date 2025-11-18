@@ -6,22 +6,19 @@ import org.alter.game.util.columnOptional
 import org.alter.game.util.multiColumnOptional
 import org.alter.game.util.vars.IntType
 import org.alter.game.util.vars.ObjType
+import org.alter.skills.herblore.HerbloreDefinitions.FinishedPotionData
+import org.alter.skills.herblore.HerbloreDefinitions.itemToPotions
+import org.alter.tables.herblore.HerbloreBarbarianMixesRow
+import org.alter.tables.herblore.HerbloreCleaningRow
+import org.alter.tables.herblore.HerbloreFinishedRow
+import org.alter.tables.herblore.HerbloreSwampTarRow
+import org.alter.tables.herblore.HerbloreUnfinishedRow
 
 /**
  * Definitions for herblore potions.
  * Contains data structures for unfinished and finished potions loaded from cache tables.
  */
 object HerbloreDefinitions {
-
-    /**
-     * Data for creating unfinished potions (herb + vial of water)
-     */
-    data class UnfinishedPotionData(
-        val herbItem: Int,
-        val level: Int,
-        val xp: Int,
-        val unfinishedPotion: Int
-    )
 
     /**
      * Data for creating finished potions (unfinished potion + secondary ingredients)
@@ -41,37 +38,9 @@ object HerbloreDefinitions {
     }
 
     /**
-     * Data for cleaning grimy herbs (unidentified -> clean)
-     */
-    data class CleaningHerbData(
-        val grimyHerb: Int,
-        val level: Int,
-        val xp: Int,
-        val cleanHerb: Int
-    )
-
-    /**
-     * Data for creating barbarian mixes (two-dose potion + roe/caviar)
-     */
-    data class BarbarianMixData(
-        val twoDosePotion: Int,
-        val mixIngredient: Int,
-        val level: Int,
-        val xp: Int,
-        val barbarianMix: Int
-    )
-
-    /**
      * Loads unfinished potion data from cache table.
      */
-    val unfinishedPotions: List<UnfinishedPotionData> = table("tables.herblore_unfinished").map { row ->
-        val herbItem = row.column("columns.herblore_unfinished:herb_item", ObjType)
-        val level = row.column("columns.herblore_unfinished:level", IntType)
-        val xp = row.column("columns.herblore_unfinished:xp", IntType)
-        val unfinishedPotion = row.column("columns.herblore_unfinished:unfinished_potion", ObjType)
-
-        UnfinishedPotionData(herbItem, level, xp, unfinishedPotion)
-    }
+    val unfinishedPotions: List<HerbloreUnfinishedRow> = HerbloreUnfinishedRow.all()
 
     /**
      * Loads finished potion data from cache table.
@@ -118,113 +87,58 @@ object HerbloreDefinitions {
     /**
      * Loads cleaning herb data from cache table.
      */
-    val cleaningHerbs: List<CleaningHerbData> = table("tables.herblore_cleaning").map { row ->
-        val grimyHerb = row.column("columns.herblore_cleaning:grimy_herb", ObjType)
-        val level = row.column("columns.herblore_cleaning:level", IntType)
-        val xp = row.column("columns.herblore_cleaning:xp", IntType)
-        val cleanHerb = row.column("columns.herblore_cleaning:clean_herb", ObjType)
+    val cleaningHerbs: List<HerbloreCleaningRow> = HerbloreCleaningRow.all()
+}
 
-        CleaningHerbData(grimyHerb, level, xp, cleanHerb)
-    }
+/**
+ * Loads barbarian mix data from cache table.
+ */
+val barbarianMixes: List<HerbloreBarbarianMixesRow> = HerbloreBarbarianMixesRow.all()
 
-    /**
-     * Loads barbarian mix data from cache table.
-     */
-    val barbarianMixes: List<BarbarianMixData> = table("tables.herblore_barbarian_mixes").map { row ->
-        val twoDosePotion = row.column("columns.herblore_barbarian_mixes:two_dose_potion", ObjType)
-        val mixIngredient = row.column("columns.herblore_barbarian_mixes:mix_ingredient", ObjType)
-        val level = row.column("columns.herblore_barbarian_mixes:level", IntType)
-        val xp = row.column("columns.herblore_barbarian_mixes:xp", IntType)
-        val barbarianMix = row.column("columns.herblore_barbarian_mixes:barbarian_mix", ObjType)
+/**
+ * Map for quick lookup of barbarian mixes by two-dose potion and ingredient
+ */
+val mixLookup: Map<Pair<Int, Int>, HerbloreBarbarianMixesRow> = barbarianMixes.associateBy { mix ->
+    Pair(mix.twoDosePotion, mix.mixIngredient)
+}
 
-        BarbarianMixData(twoDosePotion, mixIngredient, level, xp, barbarianMix)
-    }
+/**
+ * Finds all potion recipes that could match the given two items.
+ * Returns candidates that need to be checked for all required ingredients.
+ * Uses reverse lookup map for O(1) lookup instead of O(n) filtering.
+ *
+ * Note: ANY of the required items (unfinished potion or any secondary)
+ * can be used to trigger the interaction. For example, with Super Combat Potion, you can
+ * use super_strength_3 (secondary) on torstol_potion_unf (unfinished) and it will still work
+ * as long as you have all required ingredients.
+ */
+fun findPotionCandidates(item1: Int, item2: Int): List<FinishedPotionData> {
+    val potions1 = itemToPotions[item1] ?: emptyList()
+    val potions2 = itemToPotions[item2] ?: emptyList()
+    return (potions1 + potions2).distinct()
+}
 
-    /**
-     * Map for quick lookup of barbarian mixes by two-dose potion and ingredient
-     */
-    val mixLookup: Map<Pair<Int, Int>, BarbarianMixData> = barbarianMixes.associateBy { mix ->
-        Pair(mix.twoDosePotion, mix.mixIngredient)
-    }
+/**
+ * Finds a barbarian mix recipe for the given two items.
+ */
+fun findBarbarianMix(potion: Int, ingredient: Int): HerbloreBarbarianMixesRow? {
+    return mixLookup[Pair(potion, ingredient)] ?: mixLookup[Pair(ingredient, potion)]
+}
 
-    /**
-     * Finds all potion recipes that could match the given two items.
-     * Returns candidates that need to be checked for all required ingredients.
-     * Uses reverse lookup map for O(1) lookup instead of O(n) filtering.
-     *
-     * Note: ANY of the required items (unfinished potion or any secondary)
-     * can be used to trigger the interaction. For example, with Super Combat Potion, you can
-     * use super_strength_3 (secondary) on torstol_potion_unf (unfinished) and it will still work
-     * as long as you have all required ingredients.
-     */
-    fun findPotionCandidates(item1: Int, item2: Int): List<FinishedPotionData> {
-        val potions1 = itemToPotions[item1] ?: emptyList()
-        val potions2 = itemToPotions[item2] ?: emptyList()
-        return (potions1 + potions2).distinct()
-    }
+/**
+ * Loads swamp tar data from cache table.
+ */
+val swampTars: List<HerbloreSwampTarRow> = HerbloreSwampTarRow.all()
 
-    /**
-     * Finds a barbarian mix recipe for the given two items.
-     */
-    fun findBarbarianMix(potion: Int, ingredient: Int): BarbarianMixData? {
-        return mixLookup[Pair(potion, ingredient)] ?: mixLookup[Pair(ingredient, potion)]
-    }
+/**
+ * Map for quick lookup of swamp tar recipes by herb
+ */
+val swampTarLookup: Map<Int, HerbloreSwampTarRow> = swampTars.associateBy { it.herb }
 
-    /**
-     * Data for creating swamp tar (herb + 15x swamp tar = 15x finished tar)
-     */
-    data class SwampTarData(
-        val herb: Int,
-        val level: Int,
-        val xp: Int,
-        val finishedTar: Int
-    )
-
-    /**
-     * Loads swamp tar data from cache table.
-     */
-    val swampTars: List<SwampTarData> = table("tables.herblore_swamp_tar").map { row ->
-        val herb = row.column("columns.herblore_swamp_tar:herb", ObjType)
-        val level = row.column("columns.herblore_swamp_tar:level", IntType)
-        val xp = row.column("columns.herblore_swamp_tar:xp", IntType)
-        val finishedTar = row.column("columns.herblore_swamp_tar:finished_tar", ObjType)
-
-        SwampTarData(herb, level, xp, finishedTar)
-    }
-
-    /**
-     * Map for quick lookup of swamp tar recipes by herb
-     */
-    val swampTarLookup: Map<Int, SwampTarData> = swampTars.associateBy { it.herb }
-
-    /**
-     * Finds a swamp tar recipe for the given herb.
-     */
-    fun findSwampTar(herb: Int): SwampTarData? {
-        return swampTarLookup[herb]
-    }
-
-    /**
-     * Data for crushing items with pestle and mortar
-     */
-    data class CrushingData(
-        val item: Int,
-        val level: Int,
-        val xp: Int,
-        val crushedItem: Int
-    )
-
-    /**
-     * Loads crushing data from cache table.
-     */
-    val crushingRecipes: List<CrushingData> = table("tables.herblore_crushing").map { row ->
-        val item = row.column("columns.herblore_crushing:item", ObjType)
-        val level = row.column("columns.herblore_crushing:level", IntType)
-        val xp = row.column("columns.herblore_crushing:xp", IntType)
-        val crushedItem = row.column("columns.herblore_crushing:crushed_item", ObjType)
-
-        CrushingData(item, level, xp, crushedItem)
-    }
-
+/**
+ * Finds a swamp tar recipe for the given herb.
+ */
+fun findSwampTar(herb: Int): HerbloreSwampTarRow? {
+    return swampTarLookup[herb]
 }
 

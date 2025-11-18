@@ -13,7 +13,7 @@ object TeleTabs {
 
         column("item", COL_ITEM, VarType.OBJ)
         column("magic_level", COL_MAGIC_LEVEL, VarType.INT)
-        column("location", COL_LOCATION, VarType.INT)
+        column("location", COL_LOCATION, VarType.COORDGRID)
 
         // Standard Teleport Tablets
         row("dbrows.varrock_teleport_tablet") {
