@@ -10,11 +10,15 @@ import dev.openrune.cache.gameval.dump
 import dev.openrune.cache.gameval.impl.Table
 import dev.openrune.cache.tools.Builder
 import dev.openrune.cache.tools.CacheEnvironment
+import dev.openrune.cache.tools.dbtables.PackDBTables
+import dev.openrune.cache.tools.tasks.CacheTask
 import dev.openrune.cache.tools.tasks.TaskType
+import dev.openrune.cache.tools.tasks.impl.defs.PackConfig
 import dev.openrune.definition.GameValGroupTypes
 import dev.openrune.definition.type.DBRowType
 import dev.openrune.definition.util.VarType
 import dev.openrune.filesystem.Cache
+import dev.openrune.tools.PackServerConfig
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.alter.codegen.TableColumn
 import org.alter.codegen.TableDef
@@ -98,19 +102,19 @@ data class ColInfo(
 
 fun buildCache(rev: Triple<Int, Int, String>) {
 
-//    val tasks: List<CacheTask> = listOf(
-//        PackConfig(File("../data/raw-cache/server")),
-//        PackServerConfig(),
-//    ).toMutableList()
-//
-//    val builder = Builder(type = TaskType.BUILD, cacheLocation = File(getCacheLocation()))
-//    builder.registerRSCM(File("../data/cfg/rscm2"))
-//    builder.revision(rev.first)
-//
-//    val tasksNew = tasks.toMutableList()
-//    tasksNew.add(PackDBTables(tablesToPack()))
-//
-//    builder.extraTasks(*tasksNew.toTypedArray()).build().initialize()
+    val tasks: List<CacheTask> = listOf(
+        PackConfig(File("../data/raw-cache/server")),
+        PackServerConfig(),
+    ).toMutableList()
+
+    val builder = Builder(type = TaskType.BUILD, cacheLocation = File(getCacheLocation()))
+    builder.registerRSCM(File("../data/cfg/rscm2"))
+    builder.revision(rev.first)
+
+    val tasksNew = tasks.toMutableList()
+    tasksNew.add(PackDBTables(tablesToPack()))
+
+    builder.extraTasks(*tasksNew.toTypedArray()).build().initialize()
 
 
     val cache = Cache.load(File(getCacheLocation()).toPath(), true)

@@ -18,8 +18,11 @@ import org.alter.game.pluginnew.event.impl.InterruptActionEvent
 import org.alter.game.pluginnew.event.impl.ItemOnObject
 import org.alter.game.pluginnew.event.impl.ObjectClickEvent
 import org.alter.rscm.RSCM
+import org.alter.rscm.RSCMType
 import org.alter.settings.FiremakingSettings
+import org.alter.skills.firemaking.BurnLogEvents.Companion.logs
 import org.alter.skills.firemaking.ColoredLogs.Companion.CAMPFIRE_OBJECTS
+import org.alter.tables.FiremakingLogsRow
 
 @PluginConfig("firemaking.toml")
 class CampfireEvents : PluginEvent() {
@@ -62,12 +65,12 @@ class CampfireEvents : PluginEvent() {
             then { removePlayerFromFire(player.attr[INTERACTING_OBJ_ATTR]?.get() ?: return@then) }
         }
 
-        Logs.logs.forEach { log ->
+        logs.forEach { log ->
             on<ItemOnObject> {
-                where { item.id == log.logItem && log.animation != RSCM.NONE }
+                where { item.id == log.item && log.foresterAnimation != -1 }
                 then {
                     if (VALID_FIRES.contains(gameObject.id)) {
-                        lightFire(player, gameObject, log.logItem, log.initialTicks)
+                        lightFire(player, gameObject, log.item, log.foresterLogTicks?:0)
                     } else if (ColoredLogs.CAMPFIRE_OBJECTS.containsValue(gameObject.id)) {
                         tendFireAction(player, gameObject)
                     }
@@ -77,19 +80,19 @@ class CampfireEvents : PluginEvent() {
     }
 
     private fun tendFireAction(player: Player, gameObject: GameObject) {
-        val validLogs = Logs.logs.filter { log ->
-            player.inventory.contains(log.logItem) &&
-                    log.animation != RSCM.NONE &&
+        val validLogs = logs.filter { log ->
+            player.inventory.contains(log.item) &&
+                    log.foresterLogTicks != -1 &&
                     player.getSkills().getCurrentLevel(Skills.FIREMAKING) >= log.level
         }
 
         if (validLogs.isEmpty()) return
 
-        val maxQuantity = validLogs.maxOf { log -> player.inventory.getItemCount(log.logItem) }
+        val maxQuantity = validLogs.maxOf { log -> player.inventory.getItemCount(log.item) }
 
         player.queue {
-            produceItemBox(player, *validLogs.map { it.logItem }.toIntArray(), maxProducable = maxQuantity) { itemId, amt ->
-                val logData = validLogs.first { it.logItem == itemId }
+            produceItemBox(player, *validLogs.map { it.item }.toIntArray(), maxProducable = maxQuantity) { itemId, amt ->
+                val logData = validLogs.first { it.item == itemId }
                 tendFire(player, gameObject, logData, amt)
             }
         }
@@ -142,7 +145,7 @@ class CampfireEvents : PluginEvent() {
         replacement.setTimer(CAMPFIRE_TIMER, initialTicks)
     }
 
-    private fun tendFire(player: Player, gameObject: GameObject, logData: Logs.LogData, logsToAdd: Int) {
+    private fun tendFire(player: Player, gameObject: GameObject, logData: FiremakingLogsRow, logsToAdd: Int) {
         addPlayerToFire(gameObject)
 
         val ticks = firemakingSettings.campFireDelayTicks
@@ -153,15 +156,15 @@ class CampfireEvents : PluginEvent() {
             repeatWhile(delay = ticks, immediate = true, canRepeat = {
                 canAddLog(player, gameObject, logData) && logsAdded < logsToAdd
             }) {
-                player.animate(logData.animation)
+                player.animate(RSCM.getReverseMapping(RSCMType.SEQTYPES, logData.foresterAnimation?: -1)?: RSCM.NONE)
                 val playersUsingFire = gameObject.attr[PLAYERS_COUNT_ATTR] ?: 1
 
                 val currentTime = gameObject.getTimeLeft(CAMPFIRE_TIMER)
-                val newTime = (currentTime + logData.perLogTicks).coerceAtMost(300)
+                val newTime = (currentTime + (logData.foresterLogTicks?: 4)).coerceAtMost(300)
                 gameObject.increaseTimer(CAMPFIRE_TIMER, newTime)
 
                 player.addXp(Skills.FIREMAKING, calculateXp(logData.xp, playersUsingFire))
-                player.inventory.remove(logData.logItem)
+                player.inventory.remove(logData.item)
 
                 logsAdded++
                 wait(3)
@@ -187,7 +190,7 @@ class CampfireEvents : PluginEvent() {
         return (xp * (1 + applicableBoost))
     }
 
-    private fun canAddLog(player: Player, gameObject: GameObject, logData: Logs.LogData): Boolean {
+    private fun canAddLog(player: Player, gameObject: GameObject, logData: FiremakingLogsRow): Boolean {
         if (!player.inventory.contains("items.tinderbox")) {
             stopTending(player, gameObject, "You need a Tinderbox to do this.")
             return false
@@ -197,12 +200,12 @@ class CampfireEvents : PluginEvent() {
             stopTending(
                 player,
                 gameObject,
-                "You need a Firemaking level of ${logData.level} to burn ${getItem(logData.logItem)} logs."
+                "You need a Firemaking level of ${logData.level} to burn ${getItem(logData.item)} logs."
             )
             return false
         }
 
-        if (!gameObject.isSpawned(player.world) || !player.inventory.contains(logData.logItem)) {
+        if (!gameObject.isSpawned(player.world) || !player.inventory.contains(logData.item)) {
             stopTending(player, gameObject)
             return false
         }
