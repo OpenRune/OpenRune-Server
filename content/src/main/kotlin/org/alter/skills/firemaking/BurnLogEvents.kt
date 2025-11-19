@@ -16,7 +16,7 @@ import org.alter.game.pluginnew.event.impl.GroundItemClickEvent
 import org.alter.game.pluginnew.event.impl.onItemOnItem
 import org.alter.rscm.RSCM
 import org.alter.rscm.RSCM.asRSCM
-import org.alter.tables.FiremakingLogsRow
+import org.generated.tables.FiremakingLogsRow
 
 class BurnLogEvents : PluginEvent() {
 

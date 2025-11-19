@@ -4,15 +4,13 @@ import org.alter.api.ChatMessageType
 import org.alter.api.Skills
 import org.alter.api.ext.message
 import org.alter.api.ext.options
-import org.alter.api.ext.playSound
 import org.alter.game.model.LockState
 import org.alter.game.model.entity.Player
 import org.alter.game.model.move.stopMovement
 import org.alter.game.pluginnew.PluginEvent
 import org.alter.game.pluginnew.event.impl.ItemClickEvent
-import org.alter.rscm.RSCM.asRSCM
 import org.alter.skills.prayer.GildedAlterEvents.Companion.CHAOS_ALTAR_AREA
-import org.alter.tables.prayer.SkillPrayerRow
+import org.generated.tables.prayer.SkillPrayerRow
 
 class PrayerBuryEvents : PluginEvent() {
 

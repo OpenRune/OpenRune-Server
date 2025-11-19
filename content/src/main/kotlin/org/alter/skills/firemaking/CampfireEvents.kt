@@ -22,7 +22,7 @@ import org.alter.rscm.RSCMType
 import org.alter.settings.FiremakingSettings
 import org.alter.skills.firemaking.BurnLogEvents.Companion.logs
 import org.alter.skills.firemaking.ColoredLogs.Companion.CAMPFIRE_OBJECTS
-import org.alter.tables.FiremakingLogsRow
+import org.generated.tables.FiremakingLogsRow
 
 @PluginConfig("firemaking.toml")
 class CampfireEvents : PluginEvent() {

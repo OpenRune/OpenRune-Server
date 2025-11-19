@@ -26,3 +26,4 @@ dump.hprof
 /web-api/website/.next
 /web-api/website/node_modules
 /content/src/main/kotlin/generated/org/alter/tables
+/content/src/main/kotlin/org/generated

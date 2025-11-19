@@ -50,9 +50,30 @@ fun <K, V> DbHelper.multiColumn(
     require(types.isNotEmpty()) { "At least one VarTypeImpl must be provided" }
 
     return values.mapIndexed { i, raw ->
-        val type = types[i % types.size]
+        val type = types[i]
         val value = column.get(i, type)
         type.convertTo(value as K)
+    }
+}
+
+fun DbHelper.multiColumnMixed(columnName: String, vararg types: VarTypeImpl<*, *>): List<Any?> {
+    val column = try {
+        getColumn(columnName)
+    } catch (e: DbException.MissingColumn) {
+        return emptyList()
+    } catch (e: DbException) {
+        throw e
+    } catch (_: Exception) {
+        return emptyList()
+    }
+
+    val values = column.column.values ?: return emptyList()
+    require(types.isNotEmpty()) { "At least one VarTypeImpl must be provided" }
+
+    return values.mapIndexed { i, raw ->
+        val type = types[i]
+        val value = column.get(i, type as VarTypeImpl<Any?, Any?>)
+        type.convertTo(value)
     }
 }
 
@@ -75,7 +96,7 @@ fun <K, V> DbHelper.multiColumnOptional(
     require(types.isNotEmpty()) { "At least one VarTypeImpl must be provided" }
 
     return values.mapIndexed { i, raw ->
-        val type = types[i % types.size]
+        val type = types[i]
         try {
             run {
                 val value = column.get(i, type)

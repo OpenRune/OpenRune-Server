@@ -7,13 +7,7 @@ import org.alter.api.ext.*
 import org.alter.game.pluginnew.PluginEvent
 import org.alter.game.pluginnew.event.impl.ButtonClickEvent
 import org.alter.game.pluginnew.event.impl.onButton
-import org.alter.game.util.DbHelper.Companion.table
-import org.alter.game.util.column
-import org.alter.game.util.vars.ComponentType
-import org.alter.game.util.vars.IntType
-import org.alter.impl.StatComponents
-import org.alter.rscm.RSCM.asRSCM
-import org.alter.tables.StatComponentsRow
+import org.generated.tables.StatComponentsRow
 
 class SkillGuidEvents : PluginEvent() {
 

@@ -98,8 +98,9 @@ fun downloadRev(type: TaskType) {
 }
 
 data class ColInfo(
-    val types: MutableSet<VarType> = mutableSetOf(),
-    var optional: Boolean = false
+    val types: MutableMap<Int,VarType> = mutableMapOf(),
+    var optional: Boolean = false,
+    var noData: Boolean = false
 )
 
 fun buildCache(rev: Triple<Int, Int, String>) {

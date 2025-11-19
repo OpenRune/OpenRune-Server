@@ -14,20 +14,18 @@ import org.alter.game.model.timer.TimerKey
 import org.alter.game.pluginnew.event.EventManager
 import org.alter.skills.woodcutting.handlers.BlisterwoodTreeDepleteHandler
 import org.alter.rscm.RSCM
-import org.alter.rscm.RSCM.getRSCM
 import org.alter.rscm.RSCMType
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.alter.game.pluginnew.PluginEvent
 import org.alter.game.pluginnew.event.ReturnableEventListener
 import org.alter.game.pluginnew.event.impl.onObjectOption
-import org.alter.game.util.DbHelper
-import org.alter.game.util.DbHelper.Companion.table
 import org.alter.game.util.enumKey
-import org.alter.game.util.multiColumn
 import org.alter.game.util.vars.LocType
 import org.alter.skills.woodcutting.WoodcuttingDefinitions.axeData
-import org.alter.skills.woodcutting.WoodcuttingDefinitions.tableToTreeData
-import org.alter.tables.woodcutting.WoodcuttingAxesRow
+import org.alter.skills.woodcutting.WoodcuttingDefinitions.treeData
+import org.alter.skills.woodcutting.WoodcuttingDefinitions.usesCountdown
+import org.generated.tables.woodcutting.WoodcuttingAxesRow
+import org.generated.tables.woodcutting.WoodcuttingTreesRow
 
 class WoodcuttingPlugin : PluginEvent() {
 
@@ -64,11 +62,9 @@ class WoodcuttingPlugin : PluginEvent() {
      * @param handler The handler to register
      */
     fun onDeplete(treeTypeId: String, handler: TreeDepleteHandler) {
-        require(handler.treeTypeId == treeTypeId) { "Handler tree type (${handler.treeTypeId}) must match provided tree type ($treeTypeId)" }
-        RSCM.requireRSCM(RSCMType.ROWTYPES, treeTypeId)
-        val columnId = getRSCM(treeTypeId)
+        require(handler.treeType == treeTypeId) { "Handler tree type (${handler.treeType}) must match provided tree type ($treeTypeId)" }
         ReturnableEventListener.on<TreeDepleteEvent, Boolean> {
-            where { treeType == columnId }
+            where { treeType == handler.treeType }
             then {
                 return@then handler.handleDeplete(player, treeObject, world)
             }
@@ -78,9 +74,8 @@ class WoodcuttingPlugin : PluginEvent() {
     override fun init() {
         registerDepleteHandlers()
 
-        table("tables.woodcutting_trees").forEach { tree ->
-            val treeObject = tree.multiColumn("columns.woodcutting_trees:tree_object", LocType)
-            treeObject.forEach { treeID ->
+        treeData.forEach { tree ->
+            tree.treeObject.forEach { treeID ->
                 try {
                     onObjectOption(treeID,"chop down","chop") {
                         player.queue { chopTree(player, tree) }
@@ -154,7 +149,7 @@ class WoodcuttingPlugin : PluginEvent() {
      * Registers default tree deplete handlers.
      */
     private fun registerDepleteHandlers() {
-        onDeplete("dbrows.woodcutting_blisterwood_tree", BlisterwoodTreeDepleteHandler())
+        onDeplete("blisterwood_tree", BlisterwoodTreeDepleteHandler())
     }
 
     /**
@@ -190,14 +185,15 @@ class WoodcuttingPlugin : PluginEvent() {
     private fun getBestAxe(player: Player): WoodcuttingAxesRow? {
         val wcLevel = player.getSkills().getBaseLevel(Skills.WOODCUTTING)
 
-
+        // Check equipped weapon first
         player.equipment[EquipmentType.WEAPON.id]?.let { weapon ->
-            axeData[weapon.id].takeIf { wcLevel >= it.level }?.let { return it }
+            axeData.find { it.item == weapon.id }?.takeIf { wcLevel >= it.level }?.let { return it }
         }
 
+        // Check inventory
         return player.inventory.asSequence()
             .filterNotNull()
-            .map { axeData[it.id] }
+            .mapNotNull { invItem -> axeData.find { it.item == invItem.id } }
             .filter { wcLevel >= it.level }
             .maxByOrNull { it.level }
     }
@@ -216,9 +212,9 @@ class WoodcuttingPlugin : PluginEvent() {
      */
     private fun handleLogObtained(
         player: Player,
-        treeData: WoodcuttingDefinitions.TreeData
+        treeData: WoodcuttingTreesRow
     ): Boolean {
-        val logItem = treeData.log
+        val logItem = treeData.logItem
         if (player.inventory.add(logItem, 1).hasSucceeded()) {
             player.addXp(Skills.WOODCUTTING, treeData.xp)
             try {
@@ -250,15 +246,14 @@ class WoodcuttingPlugin : PluginEvent() {
     private fun QueueTask.depleteTree(
         player: Player,
         obj: GameObject,
-        columnID : Int,
-        treeData: WoodcuttingDefinitions.TreeData
+        treeData: WoodcuttingTreesRow
     ): Boolean {
 
         val specialTree = EventManager.postWithResult(TreeDepleteEvent(
             player = player,
             treeObject = obj,
             treeRscm = obj.id,
-            treeType = columnID,
+            treeType = treeData.treeType,
             world = world
         ))
 
@@ -282,12 +277,11 @@ class WoodcuttingPlugin : PluginEvent() {
      * Uses RSCM identifiers exclusively - no hardcoded IDs.
      * Timers are stored directly on the GameObject.
      */
-    suspend fun QueueTask.chopTree(player: Player, treeTable: DbHelper) {
-        val treeData = tableToTreeData(treeTable)
+    suspend fun QueueTask.chopTree(player: Player, treeData: WoodcuttingTreesRow) {
         val wcLevel = player.getSkills().getBaseLevel(Skills.WOODCUTTING)
 
-        if (wcLevel < treeData.levelReq) {
-            player.message("You need a Woodcutting level of ${treeData.levelReq} to cut this tree.")
+        if (wcLevel < treeData.level) {
+            player.message("You need a Woodcutting level of ${treeData.level} to cut this tree.")
             return
         }
 
@@ -346,7 +340,7 @@ class WoodcuttingPlugin : PluginEvent() {
             val success = success(low, high, wcLevel)
 
             if (success) {
-                TreeLogObtainedEvent(player,obj,treeData,treeTable.id).post()
+                TreeLogObtainedEvent(player,obj,treeData).post()
                 val logObtained = handleLogObtained(player, treeData)
                 if (!logObtained) {
                     if (treeData.usesCountdown()) {
@@ -365,7 +359,7 @@ class WoodcuttingPlugin : PluginEvent() {
                     if (treeData.usesCountdown()) {
                         obj.attr[ACTIVE_CHOPPERS_ATTR]?.remove(player)
                     }
-                    depleteTree(player, obj, treeTable.id, treeData)
+                    depleteTree(player, obj, treeData)
                     return@repeatWhile
                 }
             }
