@@ -25,7 +25,6 @@ import kotlin.io.path.Path
 fun <K, V> DbHelper.column(name: String, type: VarTypeImpl<K, V>): V =
     getNValue(name, type, 0)
 
-
 fun <K, V> DbHelper.columnOptional(name: String, type: VarTypeImpl<K, V>): V? =
     getNValueOrNull(name, type, 0)
 
@@ -51,9 +50,30 @@ fun <K, V> DbHelper.multiColumn(
     require(types.isNotEmpty()) { "At least one VarTypeImpl must be provided" }
 
     return values.mapIndexed { i, raw ->
-        val type = types[i % types.size]
+        val type = types[i]
         val value = column.get(i, type)
         type.convertTo(value as K)
+    }
+}
+
+fun DbHelper.multiColumnMixed(columnName: String, vararg types: VarTypeImpl<*, *>): List<Any?> {
+    val column = try {
+        getColumn(columnName)
+    } catch (e: DbException.MissingColumn) {
+        return emptyList()
+    } catch (e: DbException) {
+        throw e
+    } catch (_: Exception) {
+        return emptyList()
+    }
+
+    val values = column.column.values ?: return emptyList()
+    require(types.isNotEmpty()) { "At least one VarTypeImpl must be provided" }
+
+    return values.mapIndexed { i, raw ->
+        val type = types[i]
+        val value = column.get(i, type as VarTypeImpl<Any?, Any?>)
+        type.convertTo(value)
     }
 }
 
@@ -76,7 +96,7 @@ fun <K, V> DbHelper.multiColumnOptional(
     require(types.isNotEmpty()) { "At least one VarTypeImpl must be provided" }
 
     return values.mapIndexed { i, raw ->
-        val type = types[i % types.size]
+        val type = types[i]
         try {
             run {
                 val value = column.get(i, type)
@@ -91,7 +111,7 @@ fun <K, V> DbHelper.multiColumnOptional(
 }
 
 @Suppress("UNCHECKED_CAST")
-class DbHelper private constructor(private val row: DBRowType) {
+class DbHelper(private val row: DBRowType) {
 
     val id: Int get() = row.id
     val tableId: Int get() = row.tableId

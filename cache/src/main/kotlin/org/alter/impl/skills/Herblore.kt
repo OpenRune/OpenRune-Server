@@ -12,11 +12,11 @@ object Herblore {
     const val COL_UNFINISHED_POTION = 3
 
     // Finished potions table columns (in order of definition)
-    const val COL_POT_PRIMARY = 0
+    const val COL_UNF_POT = 0
     const val COL_SECONDARIES = 1
     const val COL_LEVEL_REQUIRED = 2
     const val COL_XP_FINISHED = 3
-    const val COL_FINISHED_POTION = 4
+    const val COL_OUTPUT_POTION = 4
 
     // Cleaning herbs table columns (in order of definition)
     const val COL_GRIMY_HERB = 0
@@ -170,262 +170,262 @@ object Herblore {
      * Supports multi-step potions with additional ingredients
      */
     fun finishedPotions() = dbTable("tables.herblore_finished") {
-        column("pot_primary", COL_POT_PRIMARY, VarType.OBJ)
+        column("unf_pot", COL_UNF_POT, VarType.OBJ)
         column("secondaries", COL_SECONDARIES, VarType.OBJ)
         column("level_required", COL_LEVEL_REQUIRED, VarType.INT)
         column("xp", COL_XP_FINISHED, VarType.INT)
-        column("finished_potion", COL_FINISHED_POTION, VarType.OBJ)
+        column("output_potion", COL_OUTPUT_POTION, VarType.OBJ)
 
         // Attack potion (Guam + Eye of newt)
         row("dbrows.herblore_attack_potion") {
-            columnRSCM(COL_POT_PRIMARY, "items.guamvial")
+            columnRSCM(COL_UNF_POT, "items.guamvial")
             columnRSCM(COL_SECONDARIES, "items.eye_of_newt")
             column(COL_LEVEL_REQUIRED, 3)
             column(COL_XP_FINISHED, 25)
-            columnRSCM(COL_FINISHED_POTION, "items.3dose1attack")
+            columnRSCM(COL_OUTPUT_POTION, "items.3dose1attack")
         }
 
         // Antipoison (Marrentill + Unicorn horn dust)
         row("dbrows.herblore_antipoison") {
-            columnRSCM(COL_POT_PRIMARY, "items.marrentillvial")
+            columnRSCM(COL_UNF_POT, "items.marrentillvial")
             columnRSCM(COL_SECONDARIES, "items.unicorn_horn_dust")
             column(COL_LEVEL_REQUIRED, 5)
             column(COL_XP_FINISHED, 38)
-            columnRSCM(COL_FINISHED_POTION, "items.3doseantipoison")
+            columnRSCM(COL_OUTPUT_POTION, "items.3doseantipoison")
         }
 
         // Strength potion (Tarromin + Limpwurt root)
         row("dbrows.herblore_strength_potion") {
-            columnRSCM(COL_POT_PRIMARY, "items.tarrominvial")
+            columnRSCM(COL_UNF_POT, "items.tarrominvial")
             columnRSCM(COL_SECONDARIES, "items.limpwurt_root")
             column(COL_LEVEL_REQUIRED, 12)
             column(COL_XP_FINISHED, 50)
-            columnRSCM(COL_FINISHED_POTION, "items.3dose1strength")
+            columnRSCM(COL_OUTPUT_POTION, "items.3dose1strength")
         }
 
         // Restore potion (Harralander + Red spiders' eggs)
         row("dbrows.herblore_restore_potion") {
-            columnRSCM(COL_POT_PRIMARY, "items.harralandervial")
+            columnRSCM(COL_UNF_POT, "items.harralandervial")
             columnRSCM(COL_SECONDARIES, "items.red_spiders_eggs")
             column(COL_LEVEL_REQUIRED, 22)
             column(COL_XP_FINISHED, 63)
-            columnRSCM(COL_FINISHED_POTION, "items.3dosestatrestore")
+            columnRSCM(COL_OUTPUT_POTION, "items.3dosestatrestore")
         }
 
         // Energy potion (Harralander + Chocolate dust)
         row("dbrows.herblore_energy_potion") {
-            columnRSCM(COL_POT_PRIMARY, "items.harralandervial")
+            columnRSCM(COL_UNF_POT, "items.harralandervial")
             columnRSCM(COL_SECONDARIES, "items.chocolate_dust")
             column(COL_LEVEL_REQUIRED, 26)
             column(COL_XP_FINISHED, 68)
-            columnRSCM(COL_FINISHED_POTION, "items.3dose1energy")
+            columnRSCM(COL_OUTPUT_POTION, "items.3dose1energy")
         }
 
         // Prayer potion (Ranarr + Snape grass)
         row("dbrows.herblore_prayer_potion") {
-            columnRSCM(COL_POT_PRIMARY, "items.ranarrvial")
+            columnRSCM(COL_UNF_POT, "items.ranarrvial")
             columnRSCM(COL_SECONDARIES, "items.snape_grass")
             column(COL_LEVEL_REQUIRED, 38)
             column(COL_XP_FINISHED, 88)
-            columnRSCM(COL_FINISHED_POTION, "items.3doseprayerrestore")
+            columnRSCM(COL_OUTPUT_POTION, "items.3doseprayerrestore")
         }
 
         // Super attack (Irit + Eye of newt)
         row("dbrows.herblore_super_attack") {
-            columnRSCM(COL_POT_PRIMARY, "items.iritvial")
+            columnRSCM(COL_UNF_POT, "items.iritvial")
             columnRSCM(COL_SECONDARIES, "items.eye_of_newt")
             column(COL_LEVEL_REQUIRED, 45)
             column(COL_XP_FINISHED, 100)
-            columnRSCM(COL_FINISHED_POTION, "items.3dose2attack")
+            columnRSCM(COL_OUTPUT_POTION, "items.3dose2attack")
         }
 
         // Superantipoison (Irit + Unicorn horn dust)
         row("dbrows.herblore_superantipoison") {
-            columnRSCM(COL_POT_PRIMARY, "items.iritvial")
+            columnRSCM(COL_UNF_POT, "items.iritvial")
             columnRSCM(COL_SECONDARIES, "items.unicorn_horn_dust")
             column(COL_LEVEL_REQUIRED, 48)
             column(COL_XP_FINISHED, 105)
-            columnRSCM(COL_FINISHED_POTION, "items.3dose2antipoison")
+            columnRSCM(COL_OUTPUT_POTION, "items.3dose2antipoison")
         }
 
         // Fishing potion (Avantoe + Snape grass)
         row("dbrows.herblore_fishing_potion") {
-            columnRSCM(COL_POT_PRIMARY, "items.avantoevial")
+            columnRSCM(COL_UNF_POT, "items.avantoevial")
             columnRSCM(COL_SECONDARIES, "items.snape_grass")
             column(COL_LEVEL_REQUIRED, 50)
             column(COL_XP_FINISHED, 113)
-            columnRSCM(COL_FINISHED_POTION, "items.3dosefisherspotion")
+            columnRSCM(COL_OUTPUT_POTION, "items.3dosefisherspotion")
         }
 
         // Super energy (Avantoe + Mort myre fungus)
         row("dbrows.herblore_super_energy") {
-            columnRSCM(COL_POT_PRIMARY, "items.avantoevial")
+            columnRSCM(COL_UNF_POT, "items.avantoevial")
             columnRSCM(COL_SECONDARIES, "items.mortmyremushroom")
             column(COL_LEVEL_REQUIRED, 52)
             column(COL_XP_FINISHED, 118)
-            columnRSCM(COL_FINISHED_POTION, "items.3dose2energy")
+            columnRSCM(COL_OUTPUT_POTION, "items.3dose2energy")
         }
 
         // Super strength (Kwuarm + Limpwurt root)
         row("dbrows.herblore_super_strength") {
-            columnRSCM(COL_POT_PRIMARY, "items.kwuarmvial")
+            columnRSCM(COL_UNF_POT, "items.kwuarmvial")
             columnRSCM(COL_SECONDARIES, "items.limpwurt_root")
             column(COL_LEVEL_REQUIRED, 55)
             column(COL_XP_FINISHED, 125)
-            columnRSCM(COL_FINISHED_POTION, "items.3dose2strength")
+            columnRSCM(COL_OUTPUT_POTION, "items.3dose2strength")
         }
 
         // Weapon poison (Kwuarm + Dragon scale dust)
         row("dbrows.herblore_weapon_poison") {
-            columnRSCM(COL_POT_PRIMARY, "items.kwuarmvial")
+            columnRSCM(COL_UNF_POT, "items.kwuarmvial")
             columnRSCM(COL_SECONDARIES, "items.dragon_scale_dust")
             column(COL_LEVEL_REQUIRED, 60)
             column(COL_XP_FINISHED, 138)
-            columnRSCM(COL_FINISHED_POTION, "items.weapon_poison")
+            columnRSCM(COL_OUTPUT_POTION, "items.weapon_poison")
         }
 
         // Super restore (Snapdragon + Red spiders' eggs)
         row("dbrows.herblore_super_restore") {
-            columnRSCM(COL_POT_PRIMARY, "items.snapdragonvial")
+            columnRSCM(COL_UNF_POT, "items.snapdragonvial")
             columnRSCM(COL_SECONDARIES, "items.red_spiders_eggs")
             column(COL_LEVEL_REQUIRED, 63)
             column(COL_XP_FINISHED, 143)
-            columnRSCM(COL_FINISHED_POTION, "items.3dose2restore")
+            columnRSCM(COL_OUTPUT_POTION, "items.3dose2restore")
         }
 
         // Super defence (Cadantine + White berries)
         row("dbrows.herblore_super_defence") {
-            columnRSCM(COL_POT_PRIMARY, "items.cadantinevial")
+            columnRSCM(COL_UNF_POT, "items.cadantinevial")
             columnRSCM(COL_SECONDARIES, "items.white_berries")
             column(COL_LEVEL_REQUIRED, 66)
             column(COL_XP_FINISHED, 150)
-            columnRSCM(COL_FINISHED_POTION, "items.3dose2defense")
+            columnRSCM(COL_OUTPUT_POTION, "items.3dose2defense")
         }
 
         // Antifire (Lantadyme + Dragon scale dust)
         row("dbrows.herblore_antifire") {
-            columnRSCM(COL_POT_PRIMARY, "items.lantadymevial")
+            columnRSCM(COL_UNF_POT, "items.lantadymevial")
             columnRSCM(COL_SECONDARIES, "items.dragon_scale_dust")
             column(COL_LEVEL_REQUIRED, 69)
             column(COL_XP_FINISHED, 158)
-            columnRSCM(COL_FINISHED_POTION, "items.3dose1antidragon")
+            columnRSCM(COL_OUTPUT_POTION, "items.3dose1antidragon")
         }
 
         // Super antifire (Lantadyme + Crushed superior dragon bones)
         row("dbrows.herblore_super_antifire") {
-            columnRSCM(COL_POT_PRIMARY, "items.lantadymevial")
+            columnRSCM(COL_UNF_POT, "items.lantadymevial")
             columnRSCM(COL_SECONDARIES, "items.crushed_dragon_bones")
             column(COL_LEVEL_REQUIRED, 92)
             column(COL_XP_FINISHED, 180)
-            columnRSCM(COL_FINISHED_POTION, "items.3dose2antidragon")
+            columnRSCM(COL_OUTPUT_POTION, "items.3dose2antidragon")
         }
 
         // Ranging potion (Dwarf weed + Wine of zamorak)
         row("dbrows.herblore_ranging_potion") {
-            columnRSCM(COL_POT_PRIMARY, "items.dwarfweedvial")
+            columnRSCM(COL_UNF_POT, "items.dwarfweedvial")
             columnRSCM(COL_SECONDARIES, "items.wine_of_zamorak")
             column(COL_LEVEL_REQUIRED, 72)
             column(COL_XP_FINISHED, 163)
-            columnRSCM(COL_FINISHED_POTION, "items.3doserangerspotion")
+            columnRSCM(COL_OUTPUT_POTION, "items.3doserangerspotion")
         }
 
         // Magic potion (Lantadyme + Potato cactus)
         row("dbrows.herblore_magic_potion") {
-            columnRSCM(COL_POT_PRIMARY, "items.lantadymevial")
+            columnRSCM(COL_UNF_POT, "items.lantadymevial")
             columnRSCM(COL_SECONDARIES, "items.cactus_potato")
             column(COL_LEVEL_REQUIRED, 76)
             column(COL_XP_FINISHED, 173)
-            columnRSCM(COL_FINISHED_POTION, "items.3dose1magic")
+            columnRSCM(COL_OUTPUT_POTION, "items.3dose1magic")
         }
 
         // Zamorak brew (Torstol + Jangerberries)
         row("dbrows.herblore_zamorak_brew") {
-            columnRSCM(COL_POT_PRIMARY, "items.torstolvial")
+            columnRSCM(COL_UNF_POT, "items.torstolvial")
             columnRSCM(COL_SECONDARIES, "items.jangerberries")
             column(COL_LEVEL_REQUIRED, 78)
             column(COL_XP_FINISHED, 175)
-            columnRSCM(COL_FINISHED_POTION, "items.3dosepotionofzamorak")
+            columnRSCM(COL_OUTPUT_POTION, "items.3dosepotionofzamorak")
         }
 
         // Saradomin brew (Toadflax + Crushed nest)
         row("dbrows.herblore_saradomin_brew") {
-            columnRSCM(COL_POT_PRIMARY, "items.toadflaxvial")
+            columnRSCM(COL_UNF_POT, "items.toadflaxvial")
             columnRSCM(COL_SECONDARIES, "items.crushed_bird_nest")
             column(COL_LEVEL_REQUIRED, 81)
             column(COL_XP_FINISHED, 180)
-            columnRSCM(COL_FINISHED_POTION, "items.3dosepotionofsaradomin")
+            columnRSCM(COL_OUTPUT_POTION, "items.3dosepotionofsaradomin")
         }
 
         // Defence potion (Ranarr + White berries)
         row("dbrows.herblore_defence_potion") {
-            columnRSCM(COL_POT_PRIMARY, "items.ranarrvial")
+            columnRSCM(COL_UNF_POT, "items.ranarrvial")
             columnRSCM(COL_SECONDARIES, "items.white_berries")
             column(COL_LEVEL_REQUIRED, 30)
             column(COL_XP_FINISHED, 75)
-            columnRSCM(COL_FINISHED_POTION, "items.3dose1defense")
+            columnRSCM(COL_OUTPUT_POTION, "items.3dose1defense")
         }
 
         // Agility potion (Toadflax + Toad's legs)
         row("dbrows.herblore_agility_potion") {
-            columnRSCM(COL_POT_PRIMARY, "items.toadflaxvial")
+            columnRSCM(COL_UNF_POT, "items.toadflaxvial")
             columnRSCM(COL_SECONDARIES, "items.toads_legs")
             column(COL_LEVEL_REQUIRED, 34)
             column(COL_XP_FINISHED, 80)
-            columnRSCM(COL_FINISHED_POTION, "items.3dose1agility")
+            columnRSCM(COL_OUTPUT_POTION, "items.3dose1agility")
         }
 
         // Combat potion (Harralander + Goat horn dust)
         row("dbrows.herblore_combat_potion") {
-            columnRSCM(COL_POT_PRIMARY, "items.harralandervial")
+            columnRSCM(COL_UNF_POT, "items.harralandervial")
             columnRSCM(COL_SECONDARIES, "items.ground_desert_goat_horn")
             column(COL_LEVEL_REQUIRED, 36)
             column(COL_XP_FINISHED, 84)
-            columnRSCM(COL_FINISHED_POTION, "items.3dosecombat")
+            columnRSCM(COL_OUTPUT_POTION, "items.3dosecombat")
         }
 
         // Hunter potion (Avantoe + Kebbit teeth)
         row("dbrows.herblore_hunter_potion") {
-            columnRSCM(COL_POT_PRIMARY, "items.avantoevial")
+            columnRSCM(COL_UNF_POT, "items.avantoevial")
             columnRSCM(COL_SECONDARIES, "items.huntingbeast_sabreteeth")
             column(COL_LEVEL_REQUIRED, 53)
             column(COL_XP_FINISHED, 120)
-            columnRSCM(COL_FINISHED_POTION, "items.3dosehunting")
+            columnRSCM(COL_OUTPUT_POTION, "items.3dosehunting")
         }
 
         // Bastion potion: Cadantine (unf) + Wine of zamorak + Crushed superior dragon bones → Bastion (3)
         row("dbrows.herblore_bastion_potion") {
-            columnRSCM(COL_POT_PRIMARY, "items.cadantinevial")
+            columnRSCM(COL_UNF_POT, "items.cadantinevial")
             columnRSCM(COL_SECONDARIES, "items.wine_of_zamorak", "items.crushed_dragon_bones")
             column(COL_LEVEL_REQUIRED, 80)
             column(COL_XP_FINISHED, 155)
-            columnRSCM(COL_FINISHED_POTION, "items.3dosebastion")
+            columnRSCM(COL_OUTPUT_POTION, "items.3dosebastion")
         }
 
         // Battlemage potion: Cadantine (unf) + Potato cactus + Crushed superior dragon bones → Battlemage (3)
         row("dbrows.herblore_battlemage_potion") {
-            columnRSCM(COL_POT_PRIMARY, "items.cadantinevial")
+            columnRSCM(COL_UNF_POT, "items.cadantinevial")
             columnRSCM(COL_SECONDARIES, "items.cactus_potato", "items.crushed_dragon_bones")
             column(COL_LEVEL_REQUIRED, 79)
             column(COL_XP_FINISHED, 155)
-            columnRSCM(COL_FINISHED_POTION, "items.3dosebattlemage")
+            columnRSCM(COL_OUTPUT_POTION, "items.3dosebattlemage")
         }
 
         // Super combat potion: Torstol (unf) + Super attack (3) + Super strength (3) + Super defence (3) = Super combat (3)
         row("dbrows.herblore_super_combat_potion") {
-            columnRSCM(COL_POT_PRIMARY, "items.torstol")
+            columnRSCM(COL_UNF_POT, "items.torstol")
             columnRSCM(COL_SECONDARIES, "items.3dose2attack", "items.3dose2strength", "items.3dose2defense")
             column(COL_LEVEL_REQUIRED, 90)
             column(COL_XP_FINISHED, 150)
-            columnRSCM(COL_FINISHED_POTION, "items.3dose2combat")
+            columnRSCM(COL_OUTPUT_POTION, "items.3dose2combat")
         }
 
         // Extended anti-venom+ (Anti-venom+ (3) + Zulrah's scales)
         row("dbrows.herblore_extended_antivenom_plus") {
-            columnRSCM(COL_POT_PRIMARY, "items.antivenom+3")
+            columnRSCM(COL_UNF_POT, "items.antivenom+3")
             columnRSCM(COL_SECONDARIES, "items.snakeboss_scale")
             column(COL_LEVEL_REQUIRED, 94)
             column(COL_XP_FINISHED, 160)
-            columnRSCM(COL_FINISHED_POTION, "items.extended_antivenom+3")
+            columnRSCM(COL_OUTPUT_POTION, "items.extended_antivenom+3")
         }
     }
 

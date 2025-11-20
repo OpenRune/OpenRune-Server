@@ -23,7 +23,7 @@ import org.alter.rscm.RSCM.getRSCM
  * @see https://oldschool.runescape.wiki/w/Blisterwood_tree
  */
 class BlisterwoodTreeDepleteHandler : TreeDepleteHandler {
-    override val treeTypeId: String = "dbrows.woodcutting_blisterwood_tree"
+    override val treeType: String = "blisterwood_tree"
 
     override suspend fun handleDeplete(
         player: Player,

@@ -8,23 +8,21 @@ import org.alter.api.ext.openInterface
 import org.alter.api.ext.setComponentText
 import org.alter.api.ext.setVarp
 import org.alter.api.ext.toItem
+import org.alter.game.model.Tile
 import org.alter.game.model.attr.AttributeKey
 import org.alter.game.model.attr.QUEST_STAGE_MAP_ATTR
 import org.alter.game.model.entity.GroundItem
 import org.alter.game.model.entity.Player
-import org.alter.game.model.skill.Skill
-import org.alter.game.util.DbHelper
-import org.alter.game.util.column
-import org.alter.game.util.vars.*
 import org.alter.rscm.RSCM.asRSCM
+import org.generated.tables.QuestRow
 
 data class Quest(
     val id: Int,
     val key: String,
-    val rowID: Int,
+    val rowID : Int,
     val displayName: String,
-    val mapElement: Int,
-    val startCoord: Int,
+    val mapElement: Int?,
+    val startCoord: Tile?,
     val maxSteps: Int,
     val questPoints: Int,
     val questVarp: String,
@@ -36,17 +34,19 @@ data class Quest(
     companion object {
         private val logger = KotlinLogging.logger {}
 
-        fun register(rowKey: String, varp: String, rewards : QuestReward): Quest {
-            val db = DbHelper.row(rowKey)
+        fun register(rowKey: String,varp: String, rewards : QuestReward): Quest {
+
+            val rowKeyID = rowKey.asRSCM()
+            val questRow = QuestRow.getRow(rowKeyID)
             return Quest(
-                id = db.column("columns.quest:id", IntType),
+                id = questRow.id,
+                rowID = rowKeyID,
                 key = rowKey.replace("dbrows.",""),
-                rowID = db.id,
-                displayName = db.column("columns.quest:displayname", StringType),
-                mapElement = db.column("columns.quest:mapelement", MapElementType),
-                startCoord = db.column("columns.quest:startcoord", CoordType),
-                maxSteps = db.column("columns.quest:endstate", IntType),
-                questPoints = db.column("columns.quest:questpoints", IntType),
+                displayName = questRow.displayname,
+                mapElement = questRow.mapelement,
+                startCoord = questRow.startcoord,
+                maxSteps = questRow.endstate,
+                questPoints = questRow.questpoints,
                 questVarp = varp,
                 rewards = rewards
             )
