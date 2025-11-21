@@ -6,6 +6,7 @@ import org.alter.game.model.entity.GameObject
 import org.alter.game.model.entity.Player
 import org.alter.game.pluginnew.event.PlayerEvent
 import org.alter.game.pluginnew.event.impl.SkillingActionCompletedGatheringEvent
+import org.generated.tables.mining.MiningRocksRow
 
 /**
  * Event triggered when a rock is depleted during mining.
@@ -19,8 +20,7 @@ import org.alter.game.pluginnew.event.impl.SkillingActionCompletedGatheringEvent
 class RockDepleteEvent(
     override val player: Player,
     val rockObject: GameObject,
-    val rockRscm: String,
-    val rockType: Int,
+    val rockType: String,
     val world: World,
 ) : PlayerEvent(player)
 
@@ -30,15 +30,15 @@ class RockDepleteEvent(
 class RockOreObtainedEvent(
     override val player: Player,
     rockObject: GameObject,
-    rockData: MiningDefinitions.RockData,
-    val rockType: Int,
+    rockData: MiningRocksRow,
+    val rockType: String = rockData.type,
     val clueBaseChance: Int = rockData.clueBaseChance,
 ) : SkillingActionCompletedGatheringEvent(
     player = player,
     skill = Skills.MINING,
     actionObject = rockObject,
-    experienceGained = rockData.xp,
-    resourceId = rockData.ore,
+    experienceGained = rockData.xp.toDouble(),
+    resourceId = rockData.oreItem?: -1,
     amountGathered = 1,
 )
 

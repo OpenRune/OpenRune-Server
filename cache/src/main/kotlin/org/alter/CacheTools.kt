@@ -33,6 +33,7 @@ import org.alter.impl.StatComponents
 import org.alter.impl.misc.TeleTabs
 import org.alter.impl.skills.Woodcutting
 import org.alter.impl.skills.Herblore
+import org.alter.impl.skills.Mining
 import java.io.File
 import java.nio.file.Files
 import java.nio.file.StandardCopyOption

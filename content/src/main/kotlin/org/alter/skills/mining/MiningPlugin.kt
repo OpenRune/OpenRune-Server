@@ -3,7 +3,6 @@ package org.alter.skills.mining
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.alter.api.*
 import org.alter.api.ext.*
-import org.alter.api.success
 import org.alter.game.model.attr.AttributeKey
 import org.alter.game.model.attr.INTERACTING_OBJ_ATTR
 import org.alter.game.model.entity.GameObject
@@ -16,15 +15,14 @@ import org.alter.game.pluginnew.PluginEvent
 import org.alter.game.pluginnew.event.EventManager
 import org.alter.game.pluginnew.event.ReturnableEventListener
 import org.alter.game.pluginnew.event.impl.onObjectOption
-import org.alter.game.util.DbHelper
-import org.alter.game.util.DbHelper.Companion.table
-import org.alter.game.util.multiColumn
-import org.alter.game.util.vars.LocType
 import org.alter.rscm.RSCM
-import org.alter.rscm.RSCM.getRSCM
 import org.alter.rscm.RSCMType
+import org.alter.skills.mining.MiningDefinitions.isInfiniteResource
 import org.alter.skills.mining.MiningDefinitions.pickaxeData
-import org.alter.skills.mining.MiningDefinitions.tableToRockData
+import org.alter.skills.mining.MiningDefinitions.usesCountdown
+import org.alter.skills.woodcutting.WoodcuttingDefinitions.axeData
+import org.generated.tables.mining.MiningPickaxesRow
+import org.generated.tables.mining.MiningRocksRow
 
 class MiningPlugin : PluginEvent() {
 
@@ -56,11 +54,9 @@ class MiningPlugin : PluginEvent() {
      * Registers a rock deplete handler for a specific rock type.
      */
     fun onDeplete(rockTypeId: String, handler: RockDepleteHandler) {
-        require(handler.rockTypeId == rockTypeId) { "Handler rock type (${handler.rockTypeId}) must match provided rock type ($rockTypeId)" }
-        RSCM.requireRSCM(RSCMType.ROWTYPES, rockTypeId)
-        val columnId = getRSCM(rockTypeId)
+        require(handler.rockType == rockTypeId) { "Handler rock type (${handler.rockType}) must match provided rock type ($rockTypeId)" }
         ReturnableEventListener.on<RockDepleteEvent, Boolean> {
-            where { rockType == columnId }
+            where { rockType == handler.rockType }
             then {
                 return@then handler.handleDeplete(player, rockObject, world)
             }
@@ -70,9 +66,8 @@ class MiningPlugin : PluginEvent() {
     override fun init() {
         registerDepleteHandlers()
 
-        table("tables.mining_rocks").forEach { rock ->
-            val rockObjects = rock.multiColumn("columns.mining_rocks:rock_object", LocType)
-            rockObjects.forEach { rockId ->
+        MiningDefinitions.miningRocks.forEach { rock ->
+            rock.rockObject.forEach { rockId ->
                 try {
                     onObjectOption(rockId, "mine") {
                         player.queue { mineRock(player, rock) }
@@ -132,30 +127,30 @@ class MiningPlugin : PluginEvent() {
         // Placeholder for custom rock-specific handlers when required.
     }
 
-    private fun getDepletedRock(rockData: MiningDefinitions.RockData): Int? = rockData.depletedRock
+    private fun getDepletedRock(rockData: MiningRocksRow): Int = rockData.emptyRockObject
 
     private fun hasAnyPickaxe(player: Player): Boolean {
         player.equipment[EquipmentType.WEAPON.id]?.let { weapon ->
-            if (pickaxeData.containsKey(weapon.id)) return true
+            if (pickaxeData.any { it.item == weapon.id }) return true
         }
 
         return player.inventory.asSequence()
             .filterNotNull()
-            .any { pickaxeData.containsKey(it.id) }
+            .any { axeData.any { axeData -> axeData.item == it.id } }
     }
 
-    private fun getBestPickaxe(player: Player): MiningDefinitions.PickaxeData? {
+    private fun getBestPickaxe(player: Player): MiningPickaxesRow? {
         val miningLevel = player.getSkills().getBaseLevel(Skills.MINING)
 
         player.equipment[EquipmentType.WEAPON.id]?.let { weapon ->
-            pickaxeData[weapon.id]?.takeIf { miningLevel >= it.levelReq }?.let { return it }
+            pickaxeData.find { it.item == weapon.id }?.takeIf { miningLevel >= it.level }?.let { return it }
         }
 
         return player.inventory.asSequence()
             .filterNotNull()
-            .mapNotNull { pickaxeData[it.id] }
-            .filter { miningLevel >= it.levelReq }
-            .maxByOrNull { it.levelReq }
+            .mapNotNull { invItem -> pickaxeData.find { it.item == invItem.id } }
+            .filter { miningLevel >= it.level }
+            .maxByOrNull { it.level }
     }
 
     private fun isDepletedRock(obj: GameObject, depletedId: Int, player: Player): Boolean {
@@ -164,9 +159,9 @@ class MiningPlugin : PluginEvent() {
 
     private fun handleOreObtained(
         player: Player,
-        rockData: MiningDefinitions.RockData,
+        rockData: MiningRocksRow,
     ): Boolean {
-        val oreItem = rockData.ore
+        val oreItem = rockData.oreItem?: return false
         if (player.inventory.add(oreItem, 1).hasSucceeded()) {
             player.addXp(Skills.MINING, rockData.xp)
             try {
@@ -187,15 +182,13 @@ class MiningPlugin : PluginEvent() {
     private suspend fun QueueTask.depleteRock(
         player: Player,
         obj: GameObject,
-        columnId: Int,
-        rockData: MiningDefinitions.RockData,
+        rockData: MiningRocksRow,
     ): Boolean {
         val specialRock = EventManager.postWithResult(
             RockDepleteEvent(
                 player = player,
                 rockObject = obj,
-                rockRscm = obj.id,
-                rockType = columnId,
+                rockType = rockData.type,
                 world = world,
             ),
         )
@@ -204,7 +197,7 @@ class MiningPlugin : PluginEvent() {
             return true
         }
 
-        getDepletedRock(rockData)?.let { depleted ->
+        getDepletedRock(rockData).let { depleted ->
             obj.replaceWith(world, depleted, rockData.respawnCycles, restoreOriginal = true)
         }
         
@@ -213,19 +206,18 @@ class MiningPlugin : PluginEvent() {
         return false
     }
 
-    private fun resolveAnimationId(pickaxe: MiningDefinitions.PickaxeData, rockType: String): Int {
+    private fun resolveAnimationId(pickaxe: MiningPickaxesRow, rockType: String): Int {
         if (rockType == "wall") {
-            pickaxe.wallAnimationId?.let { return it }
+            pickaxe.wallAnimation.let { return it }
         }
-        return pickaxe.animationId
+        return pickaxe.animation
     }
 
-    suspend fun QueueTask.mineRock(player: Player, rockTable: DbHelper) {
-        val rockData = tableToRockData(rockTable)
+    suspend fun QueueTask.mineRock(player: Player, rockData: MiningRocksRow) {
         val miningLevel = player.getSkills().getBaseLevel(Skills.MINING)
 
-        if (miningLevel < rockData.levelReq) {
-            player.message("You need a Mining level of ${rockData.levelReq} to mine this rock.")
+        if (miningLevel < rockData.level) {
+            player.message("You need a Mining level of ${rockData.level} to mine this rock.")
             return
         }
 
@@ -246,15 +238,15 @@ class MiningPlugin : PluginEvent() {
             return
         }
 
-        val depletedId = getDepletedRock(rockData) ?: -1
+        val depletedId = getDepletedRock(rockData)
 
         val nearestTile = obj.findNearestTile(player.tile)
         player.faceTile(nearestTile)
         player.message("You swing your pickaxe at the rock.")
 
-        val tickDelay = pickaxe.tickDelay
+        val tickDelay = pickaxe.delay
         val (low, high) = rockData.successRateLow to rockData.successRateHigh
-        val animationId = resolveAnimationId(pickaxe, rockData.rockType)
+        val animationId = resolveAnimationId(pickaxe, rockData.type)
         val miningAnimation = RSCM.getReverseMapping(RSCMType.SEQTYPES, animationId) ?: return
 
         player.loopAnim(miningAnimation)
@@ -280,7 +272,7 @@ class MiningPlugin : PluginEvent() {
             val success = success(low, high, miningLevel)
 
             if (success) {
-                RockOreObtainedEvent(player, obj, rockData, rockTable.id).post()
+                RockOreObtainedEvent(player, obj, rockData).post()
                 val oreObtained = handleOreObtained(player, rockData)
                 if (!oreObtained) {
                     if (rockData.usesCountdown()) {
@@ -299,7 +291,7 @@ class MiningPlugin : PluginEvent() {
                     if (rockData.usesCountdown()) {
                         obj.attr[ACTIVE_MINERS_ATTR]?.remove(player)
                     }
-                    depleteRock(player, obj, rockTable.id, rockData)
+                    depleteRock(player, obj, rockData)
                     return@repeatWhile
                 }
             }

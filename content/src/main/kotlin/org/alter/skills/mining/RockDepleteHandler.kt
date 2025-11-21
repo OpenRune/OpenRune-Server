@@ -12,7 +12,7 @@ interface RockDepleteHandler {
     /**
      * The rock type identifier (e.g., "copper", "tin").
      */
-    val rockTypeId: String
+    val rockType: String
 
     /**
      * Handles the rock depletion event.

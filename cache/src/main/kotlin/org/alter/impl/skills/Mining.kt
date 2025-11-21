@@ -18,12 +18,6 @@ object Mining {
     const val CLUE_BASE_CHANCE = 10
     const val COL_TYPE = 11
 
-    data class AnimData(
-        val animation: String,
-        val wallAnimation: String?,
-        val dbrow: String
-    )
-
     val PICKAXE_DATA = mapOf(
         "items.bronze_pickaxe" to Triple(1, 8, Triple("sequences.human_mining_bronze_pickaxe", "sequences.human_mining_bronze_pickaxe_wall", "dbrows.mining_bronze_pickaxe")),
         "items.iron_pickaxe" to Triple(1, 7, Triple("sequences.human_mining_iron_pickaxe", "sequences.human_mining_iron_pickaxe_wall","dbrows.mining_iron_pickaxe")),
@@ -62,10 +56,7 @@ object Mining {
                 column(LEVEL, level)
                 column(DELAY, delay)
                 columnRSCM(ANIMATION, animation)
-
-                if (wallAnimation != null) {
-                    columnRSCM(WALL_ANIMATION, wallAnimation)
-                }
+                columnRSCM(WALL_ANIMATION, wallAnimation)
             }
         }
     }
@@ -196,7 +187,6 @@ object Mining {
             columnRSCM(COL_ROCK_OBJECT, "objects.gemrock1", "objects.gemrock")
             column(COL_LEVEL, 40)
             column(COL_XP, 65)
-            column(COL_ORE_ITEM, "null")
             column(COL_RESPAWN_CYCLES, 99)
             column(COL_SUCCESS_RATE_LOW, 27)
             column(COL_SUCCESS_RATE_HIGH, 70)
