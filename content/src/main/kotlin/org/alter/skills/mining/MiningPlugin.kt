@@ -25,6 +25,7 @@ import org.alter.skills.woodcutting.WoodcuttingDefinitions.axeData
 import org.generated.tables.mining.MiningPickaxesRow
 import org.generated.tables.mining.MiningRocksRow
 import kotlin.random.Random
+import org.alter.rscm.RSCM.getRSCM
 
 class MiningPlugin : PluginEvent() {
 
@@ -239,6 +240,15 @@ class MiningPlugin : PluginEvent() {
             pickaxe.wallAnimation.let { return it }
         }
         return pickaxe.animation
+    }
+    private fun resolveOreItem(player: Player, rockData: MiningRocksRow): Int? {
+        val oreItem = rockData.oreItem ?: return null
+
+        if (oreItem == getRSCM("items.blankrune") && player.getSkills().getBaseLevel(Skills.MINING) >= 30) {
+            return getRSCM("items.blankrune_high")
+        }
+
+        return oreItem
     }
 
     suspend fun QueueTask.mineRock(player: Player, rockData: MiningRocksRow) {
