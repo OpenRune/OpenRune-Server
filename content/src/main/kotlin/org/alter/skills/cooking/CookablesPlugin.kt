@@ -7,9 +7,7 @@ import org.alter.game.model.entity.Player
 import org.alter.game.model.queue.QueueTask
 import org.alter.game.pluginnew.PluginEvent
 import org.alter.game.pluginnew.event.impl.ItemOnObject
-import org.alter.game.util.DbHelper
-import org.alter.game.util.multiColumn
-import org.alter.game.util.vars.ObjType
+import org.generated.tables.ConsumableFoodRow
 import org.alter.skills.cooking.CookingDefinitions.calculateBurnChance
 import org.alter.skills.cooking.CookingDefinitions.recipes
 import org.alter.skills.firemaking.ColoredLogs
@@ -169,9 +167,8 @@ class CookablesPlugin : PluginEvent() {
         val cookedItemId = recipe.cookedItem
 
         // Check if consumable definition exists
-        val hasDefinition = DbHelper.table("tables.consumable_food").any { food ->
-            val itemIds = food.multiColumn("columns.consumable_food:items", ObjType)
-            itemIds.contains(cookedItemId)
+        val hasDefinition = ConsumableFoodRow.all().any { food ->
+            food.items.contains(cookedItemId)
         }
 
         if (!hasDefinition) {

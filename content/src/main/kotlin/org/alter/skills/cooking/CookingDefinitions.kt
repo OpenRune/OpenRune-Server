@@ -1,11 +1,6 @@
 package org.alter.skills.cooking
 
-import org.alter.game.util.DbHelper.Companion.table
-import org.alter.game.util.column
-import org.alter.game.util.columnOptional
-import org.alter.game.util.vars.IntType
-import org.alter.game.util.vars.ObjType
-import org.alter.rscm.RSCM.asRSCM
+import org.generated.tables.cooking.CookingRecipesRow
 
 /**
  * Base data class for cooking recipes
@@ -25,23 +20,15 @@ data class CookingRecipe(
  */
 object CookingDefinitions {
 
-    val recipes: List<CookingRecipe> = table("tables.cooking_recipes").map { recipeTable ->
-        val rawItem = recipeTable.column("columns.cooking_recipes:raw_item", ObjType)
-        val cookedItem = recipeTable.column("columns.cooking_recipes:cooked_item", ObjType)
-        val burntItem = recipeTable.columnOptional("columns.cooking_recipes:burnt_item", ObjType)
-        val level = recipeTable.column("columns.cooking_recipes:level", IntType)
-        val xp = recipeTable.column("columns.cooking_recipes:xp", IntType).toDouble()
-        val heal = recipeTable.column("columns.cooking_recipes:heal", IntType)
-        val burnChance = recipeTable.columnOptional("columns.cooking_recipes:burn_chance", IntType) ?: 50
-
+    val recipes: List<CookingRecipe> = CookingRecipesRow.all().map { row ->
         CookingRecipe(
-            rawItem = rawItem,
-            cookedItem = cookedItem,
-            burntItem = burntItem,
-            level = level,
-            xp = xp,
-            heal = heal,
-            burnChance = burnChance
+            rawItem = row.rawItem,
+            cookedItem = row.cookedItem,
+            burntItem = row.burntItem,
+            level = row.level,
+            xp = row.xp.toDouble(),
+            heal = row.heal,
+            burnChance = row.burnChance ?: 50
         )
     }
 
