@@ -153,7 +153,8 @@ class MiningPlugin : PluginEvent() {
         // Placeholder for custom rock-specific handlers when required.
     }
 
-    private fun getDepletedRock(rockData: MiningRocksRow): Int = rockData.emptyRockObject
+    private fun getDepletedRock(rockData: MiningRocksRow): Int =
+        requireNotNull(rockData.emptyRockObject) { "Empty rock object missing for ${rockData.type}" }
 
     private fun hasAnyPickaxe(player: Player): Boolean {
         player.equipment[EquipmentType.WEAPON.id]?.let { weapon ->
