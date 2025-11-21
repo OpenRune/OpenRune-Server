@@ -23,6 +23,7 @@ import org.alter.skills.mining.MiningDefinitions.usesCountdown
 import org.alter.skills.woodcutting.WoodcuttingDefinitions.axeData
 import org.generated.tables.mining.MiningPickaxesRow
 import org.generated.tables.mining.MiningRocksRow
+import org.alter.rscm.RSCM.getRSCM
 
 class MiningPlugin : PluginEvent() {
 
@@ -161,7 +162,7 @@ class MiningPlugin : PluginEvent() {
         player: Player,
         rockData: MiningRocksRow,
     ): Boolean {
-        val oreItem = rockData.oreItem?: return false
+        val oreItem = resolveOreItem(player, rockData) ?: return false
         if (player.inventory.add(oreItem, 1).hasSucceeded()) {
             player.addXp(Skills.MINING, rockData.xp)
             try {
@@ -211,6 +212,15 @@ class MiningPlugin : PluginEvent() {
             pickaxe.wallAnimation.let { return it }
         }
         return pickaxe.animation
+    }
+    private fun resolveOreItem(player: Player, rockData: MiningRocksRow): Int? {
+        val oreItem = rockData.oreItem ?: return null
+
+        if (oreItem == getRSCM("items.blankrune") && player.getSkills().getBaseLevel(Skills.MINING) >= 30) {
+            return getRSCM("items.blankrune_high")
+        }
+
+        return oreItem
     }
 
     suspend fun QueueTask.mineRock(player: Player, rockData: MiningRocksRow) {
