@@ -50,7 +50,7 @@ class MiningPlugin : PluginEvent() {
          */
         val MAX_COUNTDOWN_ATTR = AttributeKey<Int>()
 
-        private val GEM_DROP_TABLE = mapOf(
+        private val GEM_DROP_TABLE: Map<Int, Double> = mapOf(
             getRSCM("items.uncut_opal") to 1.0 / 2.133,
             getRSCM("items.uncut_jade") to 1.0 / 4.267,
             getRSCM("items.uncut_red_topaz") to 1.0 / 8.533,
