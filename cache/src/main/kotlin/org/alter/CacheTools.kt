@@ -55,7 +55,9 @@ fun tablesToPack() = listOf(
     Herblore.cleaningHerbs(),
     Herblore.barbarianMixes(),
     Herblore.swampTar(),
-    Herblore.crushing()
+    Herblore.crushing(),
+    Mining.pickaxes(),
+    Mining.rocks()
 )
 
 private val logger = KotlinLogging.logger {}
