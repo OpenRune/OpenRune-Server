@@ -6,6 +6,7 @@ import dev.openrune.filesystem.Cache
 import gg.rsmod.util.ServerProperties
 import gg.rsmod.util.Stopwatch
 import io.github.oshai.kotlinlogging.KotlinLogging
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap
 import it.unimi.dsi.fastutil.objects.ObjectArrayList
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet
 import kotlinx.coroutines.CoroutineDispatcher
@@ -53,6 +54,13 @@ import java.util.concurrent.TimeUnit
  * @author Tom <rspsmods@gmail.com>
  */
 class World(val gameContext: GameContext, val devContext: DevContext) {
+
+    /**
+     * Holds all valid shops set from plugins for this [PluginRepository].
+     */
+    val shops = Object2ObjectOpenHashMap<String, Shop>()
+
+
     lateinit var network: NetworkService<Client>
 
     /**
@@ -336,7 +344,7 @@ class World(val gameContext: GameContext, val devContext: DevContext) {
         /*
          * Cycle through shops for their resupply ticks.
          */
-        plugins.shops.values.forEach { it.cycle(this) }
+        shops.values.forEach { it.cycle(this) }
 
         /*
          * Cycle through instanced maps.
@@ -558,9 +566,9 @@ class World(val gameContext: GameContext, val devContext: DevContext) {
 
     fun getPlayerForUid(uid: PlayerUID): Player? = players.firstOrNull { it.uid.value == uid.value }
 
-    fun getShop(name: String): Shop? = plugins.shops.getOrDefault(name, null)
+    fun getShop(name: String): Shop? = shops.getOrDefault(name, null)
 
-    fun getShop(shopId: Int): Shop? = plugins.shops.values.elementAt(shopId)
+    fun getShop(shopId: Int): Shop? = shops.values.elementAt(shopId)
 
     fun getMultiCombatChunks(): Set<Int> = plugins.multiCombatChunks
 

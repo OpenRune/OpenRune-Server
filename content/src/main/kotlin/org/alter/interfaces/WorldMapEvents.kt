@@ -8,7 +8,6 @@ import org.alter.api.ext.isInterfaceVisible
 import org.alter.api.ext.message
 import org.alter.api.ext.openInterface
 import org.alter.api.ext.openOverlayInterface
-import org.alter.api.ext.playSound
 import org.alter.api.ext.sendWorldMapTile
 import org.alter.api.ext.setInterfaceEvents
 import org.alter.api.ext.toggleVarbit
@@ -46,7 +45,7 @@ class WorldMapEvents : PluginEvent() {
         on<TimerEvent> {
             where { timer == UPDATE_TIMER }
             then {
-                val player = pawn as Player
+                val player = player as Player
                 if (player.isInterfaceVisible(WORLD_MAP_INTERFACE_ID)) {
                     val lastTile = player.attr[LAST_TILE]
                     if (lastTile == null || !lastTile.sameAs(player.tile)) {

@@ -294,7 +294,7 @@ enum class Prayer(
     SMITE(
         named = "Smite",
         child = 26,
-        quickPrayerSlot = 26,
+        quickPrayerSlot = 17,
         varbit = "varbits.prayer_smite",
         level = 52,
         sound = 2686,

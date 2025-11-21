@@ -16,6 +16,7 @@ object Woodcutting {
     const val COL_DEPLETE_MECHANIC = 8
     const val COL_STUMP = 9
     const val CLUE_BASE_CHANCE = 10
+    const val TREE_TYPE = 11
 
     val AXE_DATA = mapOf(
         "items.bronze_axe" to Triple(1, 4, Pair("sequences.human_woodcutting_bronze_axe", "dbrows.woodcutting_bronze_axe")),
@@ -74,6 +75,7 @@ object Woodcutting {
         column("deplete_mechanic", COL_DEPLETE_MECHANIC, VarType.INT)
         column("stump_object", COL_STUMP, VarType.LOC)
         column("clue_base_chance", CLUE_BASE_CHANCE, VarType.INT)
+        column("tree_type", TREE_TYPE, VarType.STRING)
 
         // Regular trees (level 1)
         row("dbrows.woodcutting_regular_tree") {
@@ -107,6 +109,7 @@ object Woodcutting {
             column(COL_DEPLETE_MECHANIC, 0) // Always
             columnRSCM(COL_STUMP, "objects.treestump")
             column(CLUE_BASE_CHANCE, 317647)
+            column(TREE_TYPE, "normal_tree")
         }
 
         // Oak trees
@@ -128,6 +131,7 @@ object Woodcutting {
             column(COL_DEPLETE_MECHANIC, 1) // Countdown
             columnRSCM(COL_STUMP, "objects.oaktree_stump")
             column(CLUE_BASE_CHANCE, 361146)
+            column(TREE_TYPE, "oak_tree")
         }
 
         // Willow trees
@@ -150,6 +154,7 @@ object Woodcutting {
             column(COL_DEPLETE_MECHANIC, 1) // Countdown
             columnRSCM(COL_STUMP, "objects.willow_tree_stump_new")
             column(CLUE_BASE_CHANCE, 289286)
+            column(TREE_TYPE, "willow_tree")
         }
 
         // Teak trees
@@ -172,6 +177,7 @@ object Woodcutting {
             column(COL_DEPLETE_MECHANIC, 1) // Countdown
             columnRSCM(COL_STUMP, "objects.teak_tree_stump")
             column(CLUE_BASE_CHANCE, 264336)
+            column(TREE_TYPE, "teak_tree")
         }
 
         // Juniper trees
@@ -187,6 +193,7 @@ object Woodcutting {
             column(COL_DEPLETE_MECHANIC, 1) // Countdown
             columnRSCM(COL_STUMP, "objects.mature_juniper_tree_stump")
             column(CLUE_BASE_CHANCE, 360000)
+            column(TREE_TYPE, "juniper_tree")
         }
 
         // Maple trees
@@ -208,6 +215,7 @@ object Woodcutting {
             column(COL_DEPLETE_MECHANIC, 1) // Countdown
             columnRSCM(COL_STUMP, "objects.maple_tree_stump_new")
             column(CLUE_BASE_CHANCE, 221918)
+            column(TREE_TYPE, "maple_tree")
         }
 
         // Mahogany trees
@@ -230,6 +238,7 @@ object Woodcutting {
             column(COL_DEPLETE_MECHANIC, 1) // Countdown
             columnRSCM(COL_STUMP, "objects.mahogany_tree_stump")
             column(CLUE_BASE_CHANCE, 220623)
+            column(TREE_TYPE, "mahogany_tree")
         }
 
         // Yew trees
@@ -252,6 +261,7 @@ object Woodcutting {
             column(COL_DEPLETE_MECHANIC, 1) // Countdown
             columnRSCM(COL_STUMP, "objects.yew_tree_stump_new")
             column(CLUE_BASE_CHANCE, 145013)
+            column(TREE_TYPE, "yew_tree")
         }
 
         // Magic trees
@@ -275,6 +285,7 @@ object Woodcutting {
             column(COL_DEPLETE_MECHANIC, 1) // Countdown
             columnRSCM(COL_STUMP, "objects.magic_tree_stump_new")
             column(CLUE_BASE_CHANCE, 72321)
+            column(TREE_TYPE, "magic_tree")
         }
 
         // Blisterwood trees
@@ -289,6 +300,7 @@ object Woodcutting {
             column(COL_DESPAWN_TICKS, 50)
             column(COL_DEPLETE_MECHANIC, 1) // Countdown
             column(CLUE_BASE_CHANCE, 0)
+            column(TREE_TYPE, "blisterwood_tree")
         }
     }
 }

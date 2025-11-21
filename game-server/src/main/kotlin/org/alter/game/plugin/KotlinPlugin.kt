@@ -98,22 +98,6 @@ abstract class KotlinPlugin(
     }
 
     /**
-     * Create a [Shop] in our world.
-     */
-    fun createShop(
-        name: String,
-        currency: ShopCurrency,
-        stockType: StockType = StockType.NORMAL,
-        stockSize: Int = Shop.DEFAULT_STOCK_SIZE,
-        purchasePolicy: PurchasePolicy = PurchasePolicy.BUY_TRADEABLES,
-        init: Shop.() -> Unit,
-    ) {
-        val shop = Shop(name, stockType, purchasePolicy, currency, arrayOfNulls(stockSize))
-        r.shops[name] = shop
-        init(shop)
-    }
-
-    /**
      * Create a [ContainerKey] to register to the [World] for serialization
      * later on.
      */

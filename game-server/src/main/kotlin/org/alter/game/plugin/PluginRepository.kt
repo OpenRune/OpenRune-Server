@@ -389,11 +389,6 @@ class PluginRepository(
     val npcCombatDefs = Int2ObjectOpenHashMap<NpcCombatDef>()
 
     /**
-     * Holds all valid shops set from plugins for this [PluginRepository].
-     */
-    val shops = Object2ObjectOpenHashMap<String, Shop>()
-
-    /**
      * A list of [Service]s that have been requested for loading by a [KotlinPlugin].
      */
     internal val services = mutableListOf<Service>()

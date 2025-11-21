@@ -1,5 +1,6 @@
 package org.alter.plugins.content.mechanics.prayer
 
+import org.alter.api.ClientScript
 import org.alter.api.GameframeTab
 import org.alter.api.InterfaceDestination
 import org.alter.api.PrayerIcon
@@ -31,6 +32,8 @@ object Prayers {
     const val RIGOUR_UNLOCK_VARBIT = "varbits.prayer_rigour_unlocked"
     const val AUGURY_UNLOCK_VARBIT = "varbits.prayer_augury_unlocked"
     const val PRESERVE_UNLOCK_VARBIT = "varbits.prayer_preserve_unlocked"
+    const val HUMBLE_CHIVALRY_VARBIT = "varbits.humble_chivalry"
+    const val HUMBLE_PIETY_VARBIT = "varbits.humble_piety"
 
     fun disableOverheads(
         p: Player,
@@ -59,7 +62,7 @@ object Prayers {
         if (p.isDead() || !p.lock.canUsePrayer()) {
             p.syncVarp(ACTIVE_PRAYERS_VARP)
             return
-        } else if (!checkRequirements(p, it, prayer)) {
+        } else if (!checkRequirements(p, prayer)) {
             return
         } else if (prayer.group == PrayerGroup.OVERHEAD && p.timers.has(DISABLE_OVERHEADS)) {
             p.syncVarp(ACTIVE_PRAYERS_VARP)
@@ -85,44 +88,35 @@ object Prayers {
     fun activate(
         p: Player,
         prayer: Prayer,
+        playSound: Boolean = true,
     ) {
         if (!isActive(p, prayer)) {
-            val others =
-                Prayer.values.filter { other ->
-                    prayer != other && other.group != null &&
-                        (prayer.group == other.group || prayer.overlap.contains(other.group))
-                }
-            others.forEach { other ->
-                if (p.getVarbit(other.varbit) != 0) {
-                    p.setVarbit(other.varbit, 0)
-                }
-            }
-
+            deactivateConflictingPrayers(p, prayer)
             p.setVarbit(prayer.varbit, 1)
-            if (prayer.sound != -1) {
+
+            if (playSound && prayer.sound != -1) {
                 p.playSound(prayer.sound)
             }
 
             setOverhead(p)
-
-            if (prayer == Prayer.PROTECT_ITEM) {
-                p.attr[PROTECT_ITEM_ATTR] = true
-            }
+            handlePrayerAttributes(p, prayer, activate = true)
         }
     }
 
     fun deactivate(
         p: Player,
         prayer: Prayer,
+        playSound: Boolean = true,
     ) {
         if (isActive(p, prayer)) {
             p.setVarbit(prayer.varbit, 0)
-            p.playSound(DEACTIVATE_PRAYER_SOUND)
-            setOverhead(p)
 
-            if (prayer == Prayer.PROTECT_ITEM) {
-                p.attr[PROTECT_ITEM_ATTR] = false
+            if (playSound) {
+                p.playSound(DEACTIVATE_PRAYER_SOUND)
             }
+
+            setOverhead(p)
+            handlePrayerAttributes(p, prayer, activate = false)
         }
     }
 
@@ -167,7 +161,7 @@ object Prayers {
 
         it.player.queue {
             if (!enabled) {
-                if (checkRequirements(player,this, prayer)) {
+                if (checkRequirements(player, prayer)) {
                     val others =
                         Prayer.values.filter { other ->
                             prayer != other && other.group != null &&
@@ -183,6 +177,8 @@ object Prayers {
                         }
                     }
                     player.setVarp(SELECTED_QUICK_PRAYERS_VARP, player.getVarp(SELECTED_QUICK_PRAYERS_VARP) or (1 shl slot))
+                    // Sync interface state after selection
+                    syncQuickPrayerInterface(player)
                 }
             } else {
                 player.setVarp(SELECTED_QUICK_PRAYERS_VARP, player.getVarp(SELECTED_QUICK_PRAYERS_VARP) and (1 shl slot).inv())
@@ -200,10 +196,10 @@ object Prayers {
         }
 
         if (opt == 1) {
-            val quickPrayers = p.getVarp(SELECTED_QUICK_PRAYERS_VARP)
+            val selectedQuickPrayers = p.getVarp(SELECTED_QUICK_PRAYERS_VARP)
 
             when {
-                quickPrayers == 0 -> {
+                selectedQuickPrayers == 0 -> {
                     p.setVarbit(QUICK_PRAYERS_ACTIVE_VARBIT, 0)
                     p.message("You haven't selected any quick-prayers.")
                 }
@@ -211,24 +207,27 @@ object Prayers {
                     p.setVarbit(QUICK_PRAYERS_ACTIVE_VARBIT, 0)
                     p.message("You have run out of prayer points, you can recharge at an altar.")
                 }
-                p.getVarp(ACTIVE_PRAYERS_VARP) == quickPrayers -> {
+                p.getVarbit(QUICK_PRAYERS_ACTIVE_VARBIT) == 1 -> {
                     /*
-                     * All active prayers are quick-prayers - so we turn them off.
+                     * Quick prayers are currently active - turn them off.
                      */
-                    p.setVarp(ACTIVE_PRAYERS_VARP, 0)
-                    p.setVarbit(QUICK_PRAYERS_ACTIVE_VARBIT, 0)
-                    setOverhead(p)
+                    deactivateQuickPrayers(p, selectedQuickPrayers)
                 }
                 else -> {
-                    p.setVarp(ACTIVE_PRAYERS_VARP, quickPrayers)
-                    p.setVarbit(QUICK_PRAYERS_ACTIVE_VARBIT, 1)
-                    setOverhead(p)
+                    /*
+                     * Quick prayers are not active - turn them on.
+                     */
+                    activateQuickPrayers(p, selectedQuickPrayers)
                 }
             }
         } else if (opt == 2) {
+            // Open quick prayer setup interface
+            p.runClientScript(ClientScript(id = 915), 5)
             p.setInterfaceEvents(interfaceId = 77, component = 4, from = 0, to = 29, setting = 2)
             p.openInterface(interfaceId = 77, dest = InterfaceDestination.PRAYER)
             p.focusTab(GameframeTab.PRAYER)
+            // Sync the quick prayer selections to the interface
+            syncQuickPrayerInterface(p)
         }
     }
 
@@ -237,50 +236,91 @@ object Prayers {
         prayer: Prayer,
     ): Boolean = p.getVarbit(prayer.varbit) != 0
 
+    /**
+     * Builds the ACTIVE_PRAYERS_VARP value from currently active prayer varbits.
+     * Uses quickPrayerSlot to determine which bit to set in the varp.
+     */
+    private fun buildActivePrayersVarp(p: Player): Int {
+        var activePrayersVarp = 0
+        Prayer.values.forEach { prayer ->
+            if (prayer.quickPrayerSlot >= 0 && isActive(p, prayer)) {
+                activePrayersVarp = activePrayersVarp or (1 shl prayer.quickPrayerSlot)
+            }
+        }
+        return activePrayersVarp
+    }
+
+    /**
+     * Syncs the quick prayer interface state based on the player's saved selections.
+     * This updates the client-side interface to show which prayers are selected.
+     */
+    fun syncQuickPrayerInterface(p: Player) {
+        // Sync the varp to the client so the interface reflects the selections
+        p.syncVarp(SELECTED_QUICK_PRAYERS_VARP)
+    }
+
+    /**
+     * Syncs prayer unlock varbits to the client and updates the prayer interface.
+     * This ensures unlocked prayers (Rigour, Augury, Preserve, etc.) are visible in the interface.
+     */
+    fun syncPrayerUnlocks(p: Player) {
+        // Sync all prayer unlock varbits
+        p.setVarbit(RIGOUR_UNLOCK_VARBIT, p.getVarbit(RIGOUR_UNLOCK_VARBIT))
+        p.setVarbit(AUGURY_UNLOCK_VARBIT, p.getVarbit(AUGURY_UNLOCK_VARBIT))
+        p.setVarbit(PRESERVE_UNLOCK_VARBIT, p.getVarbit(PRESERVE_UNLOCK_VARBIT))
+        p.setVarbit(KING_RANSOMS_QUEST_VARBIT, p.getVarbit(KING_RANSOMS_QUEST_VARBIT))
+        p.setVarbit(HUMBLE_CHIVALRY_VARBIT, p.getVarbit(HUMBLE_CHIVALRY_VARBIT))
+        p.setVarbit(HUMBLE_PIETY_VARBIT, p.getVarbit(HUMBLE_PIETY_VARBIT))
+
+        // Run client script 2158 to update the prayer interface to show unlocked prayers
+        p.runClientScript(ClientScript(id = 2158))
+    }
+
+    /**
+     * Checks if a player can activate a prayer for quick prayers (without showing dialogue).
+     */
+    private fun canActivateQuickPrayer(p: Player, prayer: Prayer): Boolean {
+        return checkPrayerLevel(p, prayer) && checkPrayerUnlocks(p, prayer)
+    }
+
     private suspend fun checkRequirements(
         p: Player,
-        it: QueueTask,
         prayer: Prayer,
     ): Boolean {
-
-        if (p.getSkills().getBaseLevel(Skills.PRAYER) < prayer.level) {
+        if (!checkPrayerLevel(p, prayer)) {
             p.syncVarp(ACTIVE_PRAYERS_VARP)
-            it.messageBox(p, "You need a <col=000080>Prayer</col> level of ${prayer.level} to use <col=000080>${prayer.named}.")
+            p.message("You need a Prayer level of ${prayer.level} to use ${prayer.named}.")
             return false
         }
 
-        // TODO(Tom): get correct messages for these unlockable
-        if (prayer == Prayer.PRESERVE && p.getVarbit(PRESERVE_UNLOCK_VARBIT) == 0) {
+        if (!checkPrayerUnlocks(p, prayer)) {
             p.syncVarp(ACTIVE_PRAYERS_VARP)
-            it.messageBox(p, "You have not unlocked this prayer.")
-            return false
-        }
-
-        if (prayer == Prayer.CHIVALRY && p.getVarbit(KING_RANSOMS_QUEST_VARBIT) < 8) {
-            p.syncVarp(ACTIVE_PRAYERS_VARP)
-            it.messageBox(p,"You have not unlocked this prayer.")
-            return false
-        }
-
-        if (prayer == Prayer.PIETY && p.getVarbit(KING_RANSOMS_QUEST_VARBIT) < 8) {
-            p.syncVarp(ACTIVE_PRAYERS_VARP)
-            it.messageBox(p,"You have not unlocked this prayer.")
-            return false
-        }
-
-        if (prayer == Prayer.RIGOUR && p.getVarbit(RIGOUR_UNLOCK_VARBIT) == 0) {
-            p.syncVarp(ACTIVE_PRAYERS_VARP)
-            it.messageBox(p,"You have not unlocked this prayer.")
-            return false
-        }
-
-        if (prayer == Prayer.AUGURY && p.getVarbit(AUGURY_UNLOCK_VARBIT) == 0) {
-            p.syncVarp(ACTIVE_PRAYERS_VARP)
-            it.messageBox(p,"You have not unlocked this prayer.")
+            p.message("You have not unlocked this prayer.")
             return false
         }
 
         return true
+    }
+
+    /**
+     * Checks if the player has the required prayer level.
+     */
+    private fun checkPrayerLevel(p: Player, prayer: Prayer): Boolean {
+        return p.getSkills().getBaseLevel(Skills.PRAYER) >= prayer.level
+    }
+
+    /**
+     * Checks if the player has unlocked the prayer (for special prayers like Rigour, Augury, etc.).
+     */
+    private fun checkPrayerUnlocks(p: Player, prayer: Prayer): Boolean {
+        return when (prayer) {
+            Prayer.PRESERVE -> p.getVarbit(PRESERVE_UNLOCK_VARBIT) != 0
+            Prayer.CHIVALRY -> p.getVarbit(KING_RANSOMS_QUEST_VARBIT) >= 8
+            Prayer.PIETY -> p.getVarbit(KING_RANSOMS_QUEST_VARBIT) >= 8
+            Prayer.RIGOUR -> p.getVarbit(RIGOUR_UNLOCK_VARBIT) != 0
+            Prayer.AUGURY -> p.getVarbit(AUGURY_UNLOCK_VARBIT) != 0
+            else -> true // Other prayers don't require unlocks
+        }
     }
 
     private fun setOverhead(p: Player) {
@@ -302,4 +342,123 @@ object Prayers {
     }
 
     private fun calculateDrainRate(p: Player): Int = Prayer.values.filter { isActive(p, it) }.sumOf { it.drainEffect }
+
+    /**
+     * Activates all selected quick prayers. Only plays sound once regardless of how many prayers are activated.
+     */
+    private fun activateQuickPrayers(p: Player, selectedQuickPrayers: Int) {
+        // First, deactivate any prayers that are currently active but not in the quick prayer selection
+        deactivateNonSelectedPrayers(p, selectedQuickPrayers)
+
+        // Then activate all selected quick prayers (without playing sounds individually)
+        val prayersBySlot = Prayer.values.filter { it.quickPrayerSlot >= 0 }
+            .groupBy { it.quickPrayerSlot }
+
+        var anyActivated = false
+        val firstPrayerSoundHolder = intArrayOf(-1) // Use array to avoid closure capture issues
+
+        prayersBySlot.forEach { (slot, prayers) ->
+            val isSelected = (selectedQuickPrayers and (1 shl slot)) != 0
+            if (isSelected) {
+                // If multiple prayers share the slot, prefer Smite over Piety (Piety isn't implemented)
+                val prayer = prayers.firstOrNull { it != Prayer.PIETY } ?: prayers.firstOrNull()
+                if (prayer != null && !isActive(p, prayer)) {
+                    // Check requirements before activating
+                    if (canActivateQuickPrayer(p, prayer)) {
+                        activate(p, prayer, playSound = false)
+                        anyActivated = true
+                        // Store the first prayer's sound to play once at the end
+                        if (firstPrayerSoundHolder[0] == -1 && prayer.sound != -1) {
+                            firstPrayerSoundHolder[0] = prayer.sound
+                        }
+                    }
+                }
+            }
+        }
+
+        // Play sound once if any prayers were activated
+        if (anyActivated && firstPrayerSoundHolder[0] != -1) {
+            p.playSound(firstPrayerSoundHolder[0])
+        }
+
+        // Update varp to reflect active prayers
+        p.setVarp(ACTIVE_PRAYERS_VARP, buildActivePrayersVarp(p))
+        p.setVarbit(QUICK_PRAYERS_ACTIVE_VARBIT, 1)
+        setOverhead(p)
+    }
+
+    /**
+     * Deactivates all selected quick prayers. Only plays sound once regardless of how many prayers are deactivated.
+     */
+    private fun deactivateQuickPrayers(p: Player, selectedQuickPrayers: Int) {
+        val prayersBySlot = Prayer.values.filter { it.quickPrayerSlot >= 0 }
+            .groupBy { it.quickPrayerSlot }
+
+        var anyDeactivated = false
+
+        prayersBySlot.forEach { (slot, prayers) ->
+            val isSelected = (selectedQuickPrayers and (1 shl slot)) != 0
+            if (isSelected) {
+                // If multiple prayers share the slot, prefer Smite over Piety (Piety isn't implemented)
+                val prayer = prayers.firstOrNull { it != Prayer.PIETY } ?: prayers.firstOrNull()
+                if (prayer != null && isActive(p, prayer)) {
+                    deactivate(p, prayer, playSound = false)
+                    anyDeactivated = true
+                }
+            }
+        }
+
+        // Play sound once if any prayers were deactivated
+        if (anyDeactivated) {
+            p.playSound(DEACTIVATE_PRAYER_SOUND)
+        }
+
+        // Update varp to reflect remaining active prayers (if any)
+        p.setVarp(ACTIVE_PRAYERS_VARP, buildActivePrayersVarp(p))
+        p.setVarbit(QUICK_PRAYERS_ACTIVE_VARBIT, 0)
+        setOverhead(p)
+    }
+
+    /**
+     * Deactivates prayers that are currently active but not in the quick prayer selection.
+     */
+    private fun deactivateNonSelectedPrayers(p: Player, selectedQuickPrayers: Int) {
+        Prayer.values.forEach { prayer ->
+            if (prayer.quickPrayerSlot >= 0) {
+                val isSelected = (selectedQuickPrayers and (1 shl prayer.quickPrayerSlot)) != 0
+                if (!isSelected && isActive(p, prayer)) {
+                    deactivate(p, prayer, playSound = false)
+                }
+            } else {
+                // Also deactivate prayers that don't have a quick prayer slot (shouldn't happen, but be safe)
+                if (isActive(p, prayer)) {
+                    deactivate(p, prayer, playSound = false)
+                }
+            }
+        }
+    }
+
+    /**
+     * Deactivates prayers that conflict with the prayer being activated.
+     */
+    private fun deactivateConflictingPrayers(p: Player, prayer: Prayer) {
+        val conflicting = Prayer.values.filter { other ->
+            prayer != other && other.group != null &&
+                (prayer.group == other.group || prayer.overlap.contains(other.group))
+        }
+        conflicting.forEach { other ->
+            if (p.getVarbit(other.varbit) != 0) {
+                p.setVarbit(other.varbit, 0)
+            }
+        }
+    }
+
+    /**
+     * Handles prayer-specific attributes (e.g., PROTECT_ITEM_ATTR).
+     */
+    private fun handlePrayerAttributes(p: Player, prayer: Prayer, activate: Boolean) {
+        if (prayer == Prayer.PROTECT_ITEM) {
+            p.attr[PROTECT_ITEM_ATTR] = activate
+        }
+    }
 }

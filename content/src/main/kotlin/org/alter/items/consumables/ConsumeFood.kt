@@ -15,28 +15,20 @@ import org.alter.game.model.timer.COMBO_FOOD_DELAY
 import org.alter.game.model.timer.FOOD_DELAY
 import org.alter.game.pluginnew.PluginEvent
 import org.alter.game.pluginnew.event.impl.ItemClickEvent
-import org.alter.game.util.DbHelper
-import org.alter.game.util.column
-import org.alter.game.util.multiColumn
-import org.alter.game.util.multiColumnOptional
-import org.alter.game.util.vars.BooleanType
-import org.alter.game.util.vars.IntType
-import org.alter.game.util.vars.ObjType
+import org.generated.tables.ConsumableFoodRow
 
 class ConsumeFood : PluginEvent() {
 
     private val EAT_FOOD_SOUND = 2393
 
     override fun init() {
-        DbHelper.table("tables.consumable_food").forEach { food ->
-            val itemIds = food.multiColumn("columns.consumable_food:items", ObjType)
-            val comboFood = food.column("columns.consumable_food:combo", BooleanType)
+        ConsumableFoodRow.all().forEach { food ->
 
             on<ItemClickEvent> {
-                where { itemIds.contains(item) && hasOption("eat") && !player.timers.has(getDelayType(comboFood)) }
+                where { food.items.contains(item) && hasOption("eat") && !player.timers.has(getDelayType(food.combo)) }
                 then {
                     if (player.inventory.remove(item = item, beginSlot = slot).hasSucceeded()) {
-                        eat(player, food, itemIds.indexOf(item), slot)
+                        eat(player, food, food.items.indexOf(item), slot)
                     }
                 }
             }
@@ -48,8 +40,8 @@ class ConsumeFood : PluginEvent() {
             "sequences.trollromance_toboggan_eat" else "sequences.human_eat"
     }
 
-    private fun eat(player: Player, food: DbHelper, foodConsumedIndex: Int, slot: Int) {
-        val itemIds = food.multiColumn("columns.consumable_food:items", ObjType)
+    private fun eat(player: Player, food: ConsumableFoodRow, foodConsumedIndex: Int, slot: Int) {
+        val itemIds = food.items
         val itemId = itemIds.getOrNull(foodConsumedIndex) ?: return
         val foodName = ServerCacheManager.getItem(itemId)?.name ?: return
         val isBlighted = foodName.contains("Blighted", true)
@@ -62,11 +54,11 @@ class ConsumeFood : PluginEvent() {
 
         val anim = getAnimation(player)
 
-        var healAmount = food.column("columns.consumable_food:heal", IntType)
-        val overheal = food.column("columns.consumable_food:overheal", BooleanType) && !player.inWilderness()
-        val comboFood = food.column("columns.consumable_food:combo", BooleanType)
-        val foodDelays = food.multiColumnOptional("columns.consumable_food:eatdelay", IntType)
-        val combatDelays = food.multiColumnOptional("columns.consumable_food:combatdelay", IntType)
+        var healAmount = food.heal
+        val overheal = food.overheal && !player.inWilderness()
+        val comboFood = food.combo
+        val foodDelays = food.eatdelay
+        val combatDelays = food.combatdelay
 
         if (healAmount == -1) {
             healAmount = when {

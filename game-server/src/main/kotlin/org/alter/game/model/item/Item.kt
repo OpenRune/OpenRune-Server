@@ -3,12 +3,20 @@ package org.alter.game.model.item
 import dev.openrune.ServerCacheManager.getItem
 import dev.openrune.ServerCacheManager.getItemOrDefault
 import gg.rsmod.util.toStringHelper
+import org.alter.rscm.RSCM
+import org.alter.rscm.RSCM.asRSCM
+import org.alter.rscm.RSCMType
 import org.bson.Document
 
 /**
  * @author Tom <rspsmods@gmail.com>
  */
 class Item(val id: Int, var amount: Int = 1) {
+
+    constructor(id: String, amount: Int = 1) : this(Item(id.asRSCM(), amount)) {
+        RSCM.requireRSCM(RSCMType.OBJTYPES, id)
+    }
+
     constructor(other: Item) : this(other.id, other.amount) {
         copyAttr(other)
     }

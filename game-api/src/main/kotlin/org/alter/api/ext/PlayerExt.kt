@@ -33,6 +33,7 @@ import org.alter.rscm.RSCM.getRSCM
 import org.alter.game.model.timer.SKULL_ICON_DURATION_TIMER
 import org.alter.game.rsprot.RsModIndexedObjectProvider
 import org.alter.game.rsprot.RsModObjectProvider
+import org.alter.rscm.RSCM
 import org.alter.rscm.RSCM.asRSCM
 import org.alter.rscm.RSCM.requireRSCM
 import org.alter.rscm.RSCMType
@@ -242,6 +243,16 @@ fun Player.setInterfaceEvents(
 
 
 fun Player.setComponentText(
+    interfaceId: String,
+    text: String,
+) {
+    requireRSCM(RSCMType.COMPONENTS, interfaceId)
+    val component = CombinedId(RSCM.getRSCM(interfaceId))
+    write(IfSetText(component.interfaceId, component.componentId, text))
+}
+
+
+fun Player.setComponentText(
     interfaceId: Int,
     component: Int,
     text: String,
@@ -256,6 +267,16 @@ fun Player.setComponentHidden(
 ) {
     write(IfSetHide(interfaceId = interfaceId, componentId = component, hidden = hidden))
 }
+
+fun Player.setComponentHidden(
+    interfaceId: String,
+    hidden: Boolean,
+) {
+    requireRSCM(RSCMType.COMPONENTS, interfaceId)
+    val component = CombinedId(RSCM.getRSCM(interfaceId))
+    write(IfSetHide(interfaceId = component.interfaceId, componentId = component.componentId, hidden = hidden))
+}
+
 
 fun Player.setComponentItem(
     interfaceId: Int,
@@ -366,6 +387,20 @@ fun Player.openInterface(
     openInterface(parent, child, dest.interfaceId, if (dest.clickThrough) 1 else 0, isModal = dest == InterfaceDestination.MAIN_SCREEN)
 }
 
+/**
+ * Closes chat dialogue if an interface is being opened that's not on the chatbox component.
+ */
+private fun Player.closeChatDialogueIfOpen(parent: Int, child: Int) {
+    if (!(parent == InterfaceDestination.CHAT_BOX.interfaceId && child == CHATBOX_CHILD)) {
+        // If chatbox component is currently occupied, close it
+        if (interfaces.isOccupied(InterfaceDestination.CHAT_BOX.interfaceId, CHATBOX_CHILD)) {
+            closeComponent(InterfaceDestination.CHAT_BOX.interfaceId, CHATBOX_CHILD)
+        }
+        // Also close any input dialogs that might be open
+        closeInputDialog()
+    }
+}
+
 fun Player.openInterface(
     parent: Int,
     child: Int,
@@ -373,12 +408,28 @@ fun Player.openInterface(
     type: Int = 0,
     isModal: Boolean = false,
 ) {
+    closeChatDialogueIfOpen(parent, child)
+
     if (isModal) {
         interfaces.openModal(parent, child, interfaceId)
     } else {
         interfaces.open(parent, child, interfaceId)
     }
     write(IfOpenSub(parent, child, interfaceId, type))
+}
+
+fun Player.closeInterface(interfaceId: String) {
+    requireRSCM(RSCMType.INTERFACES,interfaceId)
+    val infId = interfaceId.asRSCM()
+    if (infId == interfaces.getModal()) {
+        interfaces.setModal(-1)
+    }
+    val hash = interfaces.close(infId)
+    if (hash != -1) {
+        val parent = hash shr 16
+        val child = hash and 0xFFFF
+        write(IfCloseSub(interfaceId = parent, componentId = child))
+    }
 }
 
 fun Player.closeInterface(interfaceId: Int) {

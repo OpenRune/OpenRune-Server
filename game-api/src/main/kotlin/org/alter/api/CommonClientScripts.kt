@@ -26,6 +26,9 @@ enum class CommonClientScripts(identifier : String = "", scriptID : Int = -1) {
     GE_OFFER_SET_DESC("ge_offers_setdesc"),
     LOOTING_BAG_SETUP("wilderness_lootingbag_setup"),
     TIME_PLAYED("TimePlayed", 3970),
+    QUEST_OVERVIEW("questjournal_overview_setup"),
+    QUEST_JOURNAL_RESET("quest_journal_reset"),
+    WORLD_MAP_GOTO(scriptID = 3331),
     CAMERA(scriptID = 626)
     ;
 

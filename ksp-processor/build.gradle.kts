@@ -8,6 +8,7 @@ plugins {
 description = "KSP Processor"
 
 dependencies {
+    implementation(project(":cache"))
     implementation(project(":game-server"))
     implementation("com.squareup:kotlinpoet:1.16.0")
     implementation("com.squareup:kotlinpoet-ksp:1.16.0")
@@ -16,4 +17,10 @@ dependencies {
     implementation(libs.jackson.databind)
     implementation(libs.jackson.module.kotlin)
     implementation(libs.classgraph)
+    implementation(rootProject.project.libs.or2.all.cache)
+    implementation(rootProject.project.libs.or2.tools)
+    implementation(rootProject.project.libs.or2.server.utils)
+    api(libs.or2.definition)
+    api(libs.or2.filestore)
+    api(libs.or2.filesystem)
 }

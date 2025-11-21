@@ -100,6 +100,12 @@ val CURRENT_SHOP_ATTR = AttributeKey<Shop>()
 val COMBAT_TARGET_FOCUS_ATTR = AttributeKey<WeakReference<Pawn>>()
 
 /**
+ * A set of [Pawn]s that are currently attacking this pawn.
+ * Used to efficiently clear combat targets when this pawn dies.
+ */
+val COMBAT_ATTACKERS_ATTR = AttributeKey<MutableSet<WeakReference<Pawn>>>()
+
+/**
  * The [Pawn] that killed another pawn.
  */
 val KILLER_ATTR = AttributeKey<WeakReference<Pawn>>()

@@ -1,0 +1,136 @@
+package org.alter.areas.lumbridge.npcs
+
+import org.alter.api.Skills
+import org.alter.api.ext.chatNpc
+import org.alter.api.ext.chatPlayer
+import org.alter.api.ext.options
+import org.alter.game.model.entity.Player
+import org.alter.game.model.queue.QueueTask
+import org.alter.game.pluginnew.PluginEvent
+import org.alter.game.pluginnew.event.impl.onNpcOption
+
+class BarfyBillPlugin : PluginEvent() {
+
+    override fun init() {
+        spawnNpc("npcs.canoeing_bill", x = 3243, z = 3237, walkRadius = 3, height = 0)
+
+        onNpcOption("npcs.canoeing_bill", "talk-to") {
+            player.queue { dialog(player) }
+        }
+    }
+
+    private suspend fun QueueTask.dialog(player: Player) {
+        chatPlayer(player, "Hello there.", animation = "sequences.chatneu1")
+        chatNpc(player, "Oh! Hello there.", animation = "sequences.chatneu1")
+
+        when (options(player, "Who are you?", "Can you teach me about Canoeing?")) {
+
+            1 -> {
+                chatPlayer(player, "Who are you?", animation = "sequences.chatneu1")
+                chatNpc(player, "My name is Ex Sea Captain Barfy Bill.", animation = "sequences.chatneu1")
+
+                chatPlayer(player, "Ex sea captain?", animation = "sequences.chathap1")
+                chatNpc(
+                    player,
+                    "Yeah, I bought a lovely ship and was planning to make<br>a fortune running her as a merchant vessel.",
+                    animation = "sequences.chatsad2"
+                )
+
+                chatPlayer(player, "Why are you not still sailing?", animation = "sequences.chathap1")
+                chatNpc(
+                    player,
+                    "Chronic sea sickness. My first, and only, voyage was<br>spent dry heaving over the rails.",
+                    animation = "sequences.chatsad2"
+                )
+                chatNpc(
+                    player,
+                    "If I had known about the sea sickness I could have<br>saved myself a lot of money.",
+                    animation = "sequences.chatneu2"
+                )
+
+                chatPlayer(player, "What are you up to now then?", animation = "sequences.chatcon1")
+                chatNpc(
+                    player,
+                    "Well my ship had a little fire-related problem.<br>Fortunately it was well insured.",
+                    animation = "sequences.chatshifty2"
+                )
+                chatNpc(
+                    player,
+                    "Anyway, I don't have to work anymore so I've taken to<br>canoeing on the river.",
+                    animation = "sequences.chatneu2"
+                )
+                chatNpc(player, "I don't get river sick!", animation = "sequences.chathap1")
+                chatNpc(player, "Would you like to know how to make a canoe?", animation = "sequences.chathap1")
+
+                when (options(player, "Yes", "No")) {
+                    1 -> teach(player)
+                    2 -> chatPlayer(player, "No thanks, not right now.", animation = "sequences.chatneu1")
+                }
+            }
+
+            2 -> teach(player)
+        }
+    }
+
+    private suspend fun QueueTask.teach(player: Player) {
+        val wc = player.getSkills().getCurrentLevel(Skills.WOODCUTTING)
+
+        chatPlayer(player, "Could you teach me about canoes?", animation = "sequences.chathap1")
+
+        if (wc < 12) {
+            chatNpc(player, "Well, you don't look like you have the skill to make a<br>canoe.", animation = "sequences.chatneu2")
+            chatNpc(player, "You need to have at least level 12 woodcutting.", animation = "sequences.chatneu1")
+            chatNpc(
+                player,
+                "Once you are able to make a canoe it makes travel<br>along the river much quicker!",
+                animation = "sequences.chatneu2"
+            )
+            return
+        }
+
+        chatNpc(player, "It's really quite simple. Just walk down to that tree on<br>the bank and chop it down.")
+        chatNpc(player, "When you have done that you can shape the log<br>further with your axe to make a canoe.")
+
+        when {
+            wc < 27 -> {
+                chatNpc(player, "Hah! I can tell just by looking that you lack talent in<br>woodcutting.")
+                chatPlayer(player, "What do you mean?")
+                chatNpc(player, "No callouses! No splinters! No camp fires littering the<br>trail behind you.")
+                chatNpc(
+                    player,
+                    "Anyway, the only 'canoe' you can make is a log. You'll<br>be able to travel 1 stop along the river."
+                )
+            }
+
+            wc < 42 -> {
+                chatNpc(
+                    player,
+                    "With your skill in woodcutting you could make my<br>favourite canoe, the Dugout. They might not be the<br>best canoe on the river, but they get you where you're<br>going."
+                )
+                chatPlayer(player, "How far will I be able to go in a Dugout canoe?")
+                chatNpc(player, "You will be able to travel 2 stops on the river.")
+            }
+
+            wc < 57 -> {
+                chatNpc(player, "The best canoe you can make is a Stable Dugout, one<br>step beyond a normal Dugout.")
+                chatNpc(player, "With a Stable Dugout you can travel to any place on<br>the river.")
+                chatPlayer(player, "Even into the Wilderness?")
+                chatNpc(
+                    player,
+                    "Not likely! I've heard tell of a man near Edgeville<br>who claims he can use a Waka to get into the<br>Wilderness."
+                )
+                chatNpc(player, "I can't think why anyone would wish to venture into<br>that hellish landscape though.")
+            }
+
+            else -> {
+                chatNpc(player, "Hoo! You look like you know which end of an axe is<br>which!")
+                chatNpc(
+                    player,
+                    "You can easily build one of those Wakas. Be careful if<br>you travel into the Wilderness though."
+                )
+                chatNpc(player, "I've heard tell of great evil in that blasted wasteland.")
+                chatPlayer(player, "Thanks for the warning Bill.")
+            }
+        }
+    }
+}

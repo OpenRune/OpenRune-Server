@@ -12,6 +12,7 @@ import org.alter.game.model.entity.Player
 import org.alter.game.pluginnew.PluginEvent
 import org.alter.game.pluginnew.event.impl.ItemOnObject
 import org.alter.rscm.RSCM.asRSCM
+import org.alter.skills.prayer.PrayerBuryEvents.Companion.bones
 
 class GildedAlterEvents : PluginEvent() {
 
@@ -25,17 +26,17 @@ class GildedAlterEvents : PluginEvent() {
     }
 
     override fun init() {
-        Bones.bones.forEach { bone ->
-            if (!bone.isAshes) {
+        bones.forEach { bone ->
+            if (!bone.ashes) {
 
                 on<ItemOnObject> {
-                    where { item.id == bone.id && gameObject.id == "objects.chaosaltar" }
-                    then { startAlter(player, bone.id, bone.xp, true, gameObject) }
+                    where { item.id == bone.item && gameObject.id == "objects.chaosaltar" }
+                    then { startAlter(player, bone.item, bone.exp, true, gameObject) }
                 }
 
                 on<ItemOnObject> {
-                    where { item.id == bone.id && GILDED_ALTERS.contains(gameObject.id) }
-                    then { startAlter(player, bone.id, bone.xp, false, gameObject) }
+                    where { item.id == bone.item && GILDED_ALTERS.contains(gameObject.id) }
+                    then { startAlter(player, bone.item, bone.exp, false, gameObject) }
                 }
             }
         }

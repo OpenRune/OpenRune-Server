@@ -4,6 +4,7 @@ import org.alter.api.*
 import org.alter.api.ext.*
 import org.alter.game.model.Tile
 import org.alter.game.model.attr.AttributeKey
+import org.alter.game.model.attr.COMBAT_ATTACKERS_ATTR
 import org.alter.game.model.attr.COMBAT_TARGET_FOCUS_ATTR
 import org.alter.game.model.attr.LAST_HIT_ATTR
 import org.alter.game.model.attr.LAST_HIT_BY_ATTR
@@ -21,6 +22,12 @@ import org.alter.plugins.content.combat.strategy.MagicCombatStrategy
 import org.alter.plugins.content.combat.strategy.MeleeCombatStrategy
 import org.alter.plugins.content.combat.strategy.RangedCombatStrategy
 import org.alter.plugins.content.combat.strategy.magic.CombatSpell
+import org.alter.plugins.content.combat.CombatConfigs
+import org.alter.plugins.content.interfaces.attack.AttackTab
+import org.alter.game.model.move.MovementQueue.StepType
+import org.alter.game.model.move.walkRoute
+import org.alter.game.model.move.hasMoveDestination
+import org.alter.game.model.move.stopMovement
 import java.lang.ref.WeakReference
 
 /**
@@ -32,11 +39,17 @@ object Combat {
     val DAMAGE_TAKE_MULTIPLIER = AttributeKey<Double>()
     val BOLT_ENCHANTMENT_EFFECT = AttributeKey<Boolean>()
     val ALWAYS_MAX_HIT = AttributeKey<Boolean>()
+    val DRAGON_BATTLEAXE_BONUS = AttributeKey<Double>()
     const val PRIORITY_PID_VARP = "varp.playertarget"
     const val SELECTED_AUTOCAST_VARBIT = "varbits.autocast_spell"
     const val DEFENSIVE_MAGIC_CAST_VARBIT = "varbits.autocast_defmode"
 
     fun reset(pawn: Pawn) {
+        // Remove this pawn from the target's attacker list
+        val target = pawn.attr[COMBAT_TARGET_FOCUS_ATTR]?.get()
+        if (target != null) {
+            target.attr.removeFromSet(COMBAT_ATTACKERS_ATTR, WeakReference(pawn))
+        }
         pawn.attr.remove(COMBAT_TARGET_FOCUS_ATTR)
     }
 
@@ -109,28 +122,61 @@ object Combat {
                     target.attack(pawn)
                 }
             } else if (target is Player) {
-                val strategy = CombatConfigs.getCombatStrategy(target)
-                val attackRange = strategy.getAttackRange(target)
-                if (/** target.getVarp(AttackTab.DISABLE_AUTO_RETALIATE_VARP) == 0 && */ target.getCombatTarget() != pawn && target.tile.isWithinRadius(pawn.tile, attackRange)) {
-                    target.attack(pawn)
-                } /**
-                    * @TODO Auto Retaliate
-                    */
-                    //else {
-                  //  val route = target.pathToRange(pawn)
-                  //  target.queue(TaskPriority.WEAK) {
-                  //      println("From here 124")
-                  //      awaitArrivalRanged(route, attackRange)
-                  //  }
-               // }
+                // Auto retaliate: check if enabled and target is not already in combat
+                val autoRetaliateEnabled = target.getVarp(AttackTab.DISABLE_AUTO_RETALIATE_VARP) == 0
+                if (autoRetaliateEnabled && target.getCombatTarget() != pawn) {
+                    val strategy = CombatConfigs.getCombatStrategy(target)
+                    val attackRange = strategy.getAttackRange(target)
+
+                    // If within range, attack immediately
+                    if (target.tile.isWithinRadius(pawn.tile, attackRange + pawn.getSize())) {
+                        target.attack(pawn)
+                    } else {
+                        // Pathfind to attacker and then attack
+                        target.queue {
+                            val route = target.world.smartRouteFinder.findRoute(
+                                level = target.tile.height,
+                                srcX = target.tile.x,
+                                srcZ = target.tile.z,
+                                destX = pawn.tile.x,
+                                destZ = pawn.tile.z,
+                                locShape = -2,
+                                destWidth = pawn.getSize(),
+                                destLength = pawn.getSize()
+                            )
+                            target.walkRoute(route, StepType.NORMAL)
+
+                            // Wait until in range or timeout
+                            var ticksWaited = 0
+                            val maxTicks = 50
+                            while (ticksWaited < maxTicks && target.hasMoveDestination()) {
+                                wait(1)
+                                ticksWaited++
+                                if (!pawn.isAlive() || !target.isAlive()) {
+                                    return@queue
+                                }
+                                if (target.tile.isWithinRadius(pawn.tile, attackRange + pawn.getSize())) {
+                                    target.stopMovement()
+                                    target.attack(pawn)
+                                    return@queue
+                                }
+                            }
+
+                            // Final check
+                            if (target.tile.isWithinRadius(pawn.tile, attackRange + pawn.getSize())) {
+                                target.attack(pawn)
+                            }
+                        }
+                    }
+                }
             }
         }
     }
 
     fun getNpcXpMultiplier(npc: Npc): Double {
-        val attackLvl = npc.stats.getMaxLevel(NpcSkills.ATTACK)
-        val strengthLvl = npc.stats.getMaxLevel(NpcSkills.STRENGTH)
-        val defenceLvl = npc.stats.getMaxLevel(NpcSkills.DEFENCE)
+        val attackLvl = npc.combatDef.attack
+        val strengthLvl = npc.combatDef.strength
+        val defenceLvl = npc.combatDef.defence
         val hitpoints = npc.getMaxHp()
 
         val averageLvl = Math.floor((attackLvl + strengthLvl + defenceLvl + hitpoints) / 4.0)
@@ -159,7 +205,7 @@ object Combat {
     }
 
     suspend fun moveToAttackRange(
-        it: QueueTask,
+        queue: QueueTask,
         pawn: Pawn,
         target: Pawn,
         distance: Int,
@@ -179,7 +225,50 @@ object Combat {
                 areBordering(start.x, start.z, srcSize, srcSize, end.x, end.z, dstSize, dstSize)
             }
         val withinRange = touching && world.lineValidator.rayCast(start, end, projectile = projectile)
-        return withinRange //|| pawn.walkToInteract(it, target, lineOfSightRange = distance)
+        if (withinRange) {
+            return true
+        }
+
+        // Pathfind to target if not in range
+        val route = world.smartRouteFinder.findRoute(
+            level = pawn.tile.height,
+            srcX = pawn.tile.x,
+            srcZ = pawn.tile.z,
+            destX = target.tile.x,
+            destZ = target.tile.z,
+            locShape = -2,
+            destWidth = target.getSize(),
+            destLength = target.getSize()
+        )
+        pawn.walkRoute(route, StepType.NORMAL)
+
+        // Wait until we reach the target or timeout
+        var ticksWaited = 0
+        val maxTicks = 50 // Maximum ticks to wait for pathfinding
+        while (ticksWaited < maxTicks && pawn.hasMoveDestination()) {
+            queue.wait(1)
+            ticksWaited++
+            if (!target.isAlive() || !pawn.isAlive()) {
+                return false
+            }
+            // Check if we're now in range
+            val newTouching = if (distance > 1) {
+                areOverlapping(pawn.tile.x, pawn.tile.z, srcSize, srcSize, target.tile.x, target.tile.z, dstSize, dstSize)
+            } else {
+                areBordering(pawn.tile.x, pawn.tile.z, srcSize, srcSize, target.tile.x, target.tile.z, dstSize, dstSize)
+            }
+            if (newTouching && world.lineValidator.rayCast(pawn.tile, target.tile, projectile = projectile)) {
+                return true
+            }
+        }
+
+        // Check final range
+        val finalTouching = if (distance > 1) {
+            areOverlapping(pawn.tile.x, pawn.tile.z, srcSize, srcSize, target.tile.x, target.tile.z, dstSize, dstSize)
+        } else {
+            areBordering(pawn.tile.x, pawn.tile.z, srcSize, srcSize, target.tile.x, target.tile.z, dstSize, dstSize)
+        }
+        return finalTouching && world.lineValidator.rayCast(pawn.tile, target.tile, projectile = projectile)
     }
 
     fun getProjectileLifespan(

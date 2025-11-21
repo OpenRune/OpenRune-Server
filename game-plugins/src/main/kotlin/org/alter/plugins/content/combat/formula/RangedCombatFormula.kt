@@ -153,7 +153,7 @@ object RangedCombatFormula : CombatFormula {
                         val magic =
                             when (target) {
                                 is Player -> target.getSkills().getCurrentLevel(Skills.MAGIC)
-                                is Npc -> target.stats.getCurrentLevel(NpcSkills.MAGIC)
+                                is Npc -> target.combatDef.magic
                                 else -> throw IllegalStateException("Invalid pawn type. [$target]")
                             }
                         val modifier =
@@ -172,9 +172,16 @@ object RangedCombatFormula : CombatFormula {
             hit = Math.floor(hit)
         }
 
+        // Protection prayers: 100% reduction in PvM, 40% reduction (0.6 multiplier) in PvP
         if (target.hasPrayerIcon(PrayerIcon.PROTECT_FROM_MISSILES)) {
-            hit *= 0.6
-            hit = Math.floor(hit)
+            if (target.entityType.isNpc) {
+                // PvM: 100% damage reduction (0 damage)
+                hit = 0.0
+            } else {
+                // PvP: 40% damage reduction (multiply by 0.6)
+                hit *= 0.6
+                hit = Math.floor(hit)
+            }
         }
 
         if (specialPassiveMultiplier == 1.0) {
@@ -215,7 +222,7 @@ object RangedCombatFormula : CombatFormula {
                         val magic =
                             when (target) {
                                 is Player -> target.getSkills().getCurrentLevel(Skills.MAGIC)
-                                is Npc -> target.stats.getCurrentLevel(NpcSkills.MAGIC)
+                                is Npc -> target.combatDef.magic
                                 else -> throw IllegalStateException("Invalid pawn type. [$target]")
                             }
                         val modifier =
@@ -269,49 +276,83 @@ object RangedCombatFormula : CombatFormula {
     }
 
     private fun getEffectiveRangedLevel(player: Player): Double {
-        var effectiveLevel = Math.floor(player.getSkills().getCurrentLevel(Skills.RANGED) * getPrayerRangedMultiplier(player))
+        // OSRS Formula: floor((floor(floor(Ranged Level + Potion Bonus) × Prayer Bonus) + Style Bonus + 8) × Void Bonus)
+        val baseLevel = player.getSkills().getBaseLevel(Skills.RANGED).toDouble()
+        val currentLevel = player.getSkills().getCurrentLevel(Skills.RANGED).toDouble()
+        // Calculate potion bonus (difference between current and base level)
+        val potionBonus = Math.max(0.0, currentLevel - baseLevel)
 
+        // Add potion bonus to base level
+        var effectiveLevel = Math.floor(baseLevel + potionBonus)
+
+        // Apply prayer multiplier
+        effectiveLevel = Math.floor(effectiveLevel * getPrayerRangedMultiplier(player))
+
+        // Add style bonus
         effectiveLevel +=
             when (CombatConfigs.getAttackStyle(player)) {
                 AttackStyle.ACCURATE -> 3.0
                 else -> 0.0
             }
 
+        // Add 8
         effectiveLevel += 8.0
 
+        // Apply void bonus
         if (player.hasEquipped(RANGED_VOID)) {
-            effectiveLevel *= 1.10
-            effectiveLevel = Math.floor(effectiveLevel)
+            effectiveLevel = Math.floor(effectiveLevel * 1.10)
         } else if (player.hasEquipped(RANGED_ELITE_VOID)) {
-            effectiveLevel *= 1.125
-            effectiveLevel = Math.floor(effectiveLevel)
+            effectiveLevel = Math.floor(effectiveLevel * 1.125)
         }
 
         return Math.floor(effectiveLevel)
     }
 
     private fun getEffectiveAttackLevel(player: Player): Double {
-        var effectiveLevel = Math.floor(player.getSkills().getCurrentLevel(Skills.RANGED) * getPrayerAttackMultiplier(player))
+        // OSRS Formula: floor((floor(floor(Ranged Level + Potion Bonus) × Prayer Bonus) + Style Bonus + 8) × Void Bonus)
+        val baseLevel = player.getSkills().getBaseLevel(Skills.RANGED).toDouble()
+        val currentLevel = player.getSkills().getCurrentLevel(Skills.RANGED).toDouble()
+        // Calculate potion bonus (difference between current and base level)
+        val potionBonus = Math.max(0.0, currentLevel - baseLevel)
 
+        // Add potion bonus to base level
+        var effectiveLevel = Math.floor(baseLevel + potionBonus)
+
+        // Apply prayer multiplier
+        effectiveLevel = Math.floor(effectiveLevel * getPrayerAttackMultiplier(player))
+
+        // Add style bonus
         effectiveLevel +=
             when (CombatConfigs.getAttackStyle(player)) {
                 AttackStyle.ACCURATE -> 3.0
                 else -> 0.0
             }
 
+        // Add 8
         effectiveLevel += 8.0
 
+        // Apply void bonus
         if (player.hasEquipped(RANGED_VOID) || player.hasEquipped(RANGED_ELITE_VOID)) {
-            effectiveLevel *= 1.10
-            effectiveLevel = Math.floor(effectiveLevel)
+            effectiveLevel = Math.floor(effectiveLevel * 1.10)
         }
 
         return Math.floor(effectiveLevel)
     }
 
     private fun getEffectiveDefenceLevel(player: Player): Double {
-        var effectiveLevel = Math.floor(player.getSkills().getCurrentLevel(Skills.DEFENCE) * getPrayerDefenceMultiplier(player))
+        // OSRS Formula: floor((floor(floor(Defence Level + Potion Bonus) × Prayer Bonus) + Style Bonus + 8))
+        val baseLevel = player.getSkills().getBaseLevel(Skills.DEFENCE).toDouble()
+        val currentLevel = player.getSkills().getCurrentLevel(Skills.DEFENCE).toDouble()
+        // Calculate potion bonus (difference between current and base level)
+        val potionBonus = Math.max(0.0, currentLevel - baseLevel)
 
+        // Add potion bonus to base level
+        var effectiveLevel = Math.floor(baseLevel + potionBonus)
+
+        // Apply prayer multiplier
+        effectiveLevel = Math.floor(effectiveLevel * getPrayerDefenceMultiplier(player))
+
+        // Add style bonus
         effectiveLevel +=
             when (CombatConfigs.getAttackStyle(player)) {
                 AttackStyle.DEFENSIVE -> 3.0
@@ -320,25 +361,29 @@ object RangedCombatFormula : CombatFormula {
                 else -> 0.0
             }
 
+        // Add 8
         effectiveLevel += 8.0
 
         return Math.floor(effectiveLevel)
     }
 
     private fun getEffectiveRangedLevel(npc: Npc): Double {
-        var effectiveLevel = npc.stats.getCurrentLevel(NpcSkills.RANGED).toDouble()
+        // NPC effective ranged = base ranged + 8
+        var effectiveLevel = npc.combatDef.ranged.toDouble()
         effectiveLevel += 8
         return effectiveLevel
     }
 
     private fun getEffectiveAttackLevel(npc: Npc): Double {
-        var effectiveLevel = npc.stats.getCurrentLevel(NpcSkills.RANGED).toDouble()
+        // NPC effective attack = base ranged + 8 (for ranged attacks)
+        var effectiveLevel = npc.combatDef.ranged.toDouble()
         effectiveLevel += 8
         return effectiveLevel
     }
 
     private fun getEffectiveDefenceLevel(npc: Npc): Double {
-        var effectiveLevel = npc.stats.getCurrentLevel(NpcSkills.DEFENCE).toDouble()
+        // NPC effective defence = base defence + 8
+        var effectiveLevel = npc.combatDef.defence.toDouble()
         effectiveLevel += 8
         return effectiveLevel
     }

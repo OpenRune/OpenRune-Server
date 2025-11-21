@@ -70,3 +70,16 @@ class EquipEvent(
     val container: ContainerType,
     player: Player
 ) : ValueEvent<Int>(itemId, player)
+
+
+
+fun PluginEvent.onItemEquip(
+    item: String,
+    action: suspend EquipEvent.() -> Unit
+): EventListener<EquipEvent> {
+    requireRSCM(RSCMType.OBJTYPES,item)
+    return on<EquipEvent> {
+        where { item.asRSCM() == itemId }
+        then { action(this) }
+    }
+}

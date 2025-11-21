@@ -9,6 +9,7 @@ import org.alter.rscm.RSCM
 import org.alter.rscm.RSCMType
 import org.yaml.snakeyaml.Yaml
 import java.io.File
+import java.lang.reflect.Modifier
 import kotlin.system.exitProcess
 
 @Target(AnnotationTarget.CLASS)
@@ -33,7 +34,7 @@ object PluginManager {
     private val yamlCache = mutableMapOf<String, Map<String, Any>>()
     private val settingsCache = mutableMapOf<String, PluginSettings>()
 
-    fun load(world : World) {
+    fun load(world: World) {
         val start = System.currentTimeMillis()
         val classOutputDir = File("../content/build/classes/kotlin/main")
         val resourcesDir = File("../content/build/resources/main/")
@@ -44,31 +45,46 @@ object PluginManager {
             .enableClassInfo()
             .scan().use { scanResult ->
 
+                // Get all subclasses of PluginEvent (including indirect)
                 val pluginClasses = scanResult
                     .getSubclasses(PluginEvent::class.java.name)
-                    .directOnly()
 
-                for (classInfo in pluginClasses) {
-                    try {
-                        val clazz = classInfo.loadClass(PluginEvent::class.java)
-                        val instance = clazz.getDeclaredConstructor().newInstance()
+                pluginClasses
+                    .mapNotNull { classInfo ->
+                        try {
+                            val clazz = classInfo.loadClass()
 
-                        loadPluginSettings(clazz, scanResult, resourcesDir)?.let { settings ->
-                            instance.settings = settings
+                            // Only concrete classes that are assignable to PluginEvent
+                            if (!PluginEvent::class.java.isAssignableFrom(clazz)) return@mapNotNull null
+                            if (Modifier.isAbstract(clazz.modifiers)) return@mapNotNull null
+
+                            @Suppress("UNCHECKED_CAST")
+                            clazz as Class<out PluginEvent>
+                        } catch (ex: Exception) {
+                            logger.error(ex) { "Failed to load class: ${classInfo.name}" }
+                            null
                         }
-
-                        instance.world = world
-
-                        if (instance.isEnabled()) {
-                            instance.init()
-                            scripts.add(instance)
-                        }
-
-                    } catch (ex: Exception) {
-                        logger.error(ex) { "Failed to load plugin: ${classInfo.name}" }
-                        exitProcess(1)
                     }
-                }
+                    .forEach { pluginClass ->
+                        try {
+                            val instance = pluginClass.getDeclaredConstructor().newInstance()
+
+                            // Load plugin settings if available
+                            loadPluginSettings(pluginClass, scanResult, resourcesDir)?.let { settings ->
+                                instance.settings = settings
+                            }
+
+                            instance.world = world
+
+                            if (instance.isEnabled()) {
+                                instance.init()
+                                scripts.add(instance)
+                            }
+                        } catch (ex: Exception) {
+                            logger.error(ex) { "Failed to instantiate plugin: ${pluginClass.name}" }
+                            exitProcess(1)
+                        }
+                    }
             }
 
         clear()
