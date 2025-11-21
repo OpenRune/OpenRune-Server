@@ -8,6 +8,7 @@ import org.alter.game.pluginnew.MenuOption
 import org.alter.game.pluginnew.PluginEvent
 import org.alter.game.pluginnew.event.EventListener
 import org.alter.game.pluginnew.event.PlayerEvent
+import org.alter.rscm.RSCM
 import org.alter.rscm.RSCM.asRSCM
 import org.alter.rscm.RSCM.requireRSCM
 import org.alter.rscm.RSCMType
@@ -36,18 +37,23 @@ class ItemOnObject(
 open class ObjectClickEvent(
     open val gameObject: GameObject,
     open val op: MenuOption,
+    val id : Int = gameObject.internalID,
     player: Player
 ) : EntityInteractionEvent<GameObject>(gameObject, op, player) {
 
-    val id : Int = gameObject.internalID
+
+    init {
+        gameObject.internalID == id
+        gameObject.id = RSCM.getReverseMapping(RSCMType.LOCTYPES, id)!!
+    }
 
     override fun resolveOptionName(): String {
-        val def = getObject(gameObject.internalID) ?: error("Object not found for id=${gameObject.id}[${gameObject.id}]")
-        return def.actions.getOrNull(op.id - 1) ?: error("No action found at index ${op.id} for object id=${gameObject.id}[${gameObject.id}]")
+        val def = getObject(id) ?: error("Object not found for id=${id}[${id}]")
+        return def.actions.getOrNull(op.id - 1) ?: error("No action found at index ${op.id} for object id=${id}[${id}]")
     }
 
     fun objHasOption(option: String, ignoreCase: Boolean = true): Boolean {
-        val def = getObject(gameObject.internalID) ?: return false
+        val def = getObject(id) ?: return false
         return def.actions.any { it?.equals(option, ignoreCase) == true }
     }
 

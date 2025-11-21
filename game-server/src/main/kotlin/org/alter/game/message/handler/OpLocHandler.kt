@@ -71,7 +71,7 @@ class OpLocHandler : MessageHandler<OpLoc> {
         val lineOfSightRange = client.world.plugins.getObjInteractionDistance(obj.internalID)
 
         walk(client, obj, lineOfSightRange) {
-            val handledByNewSystem = EventManager.postWithResult(ObjectClickEvent(obj, MenuOption.fromId(message.op), client))
+            val handledByNewSystem = EventManager.postWithResult(ObjectClickEvent(obj, MenuOption.fromId(message.op), obj.getTransform(client),client))
             val handledByOldSystem = client.world.plugins.executeObject(client, obj.getTransform(client), message.op)
 
             if (!handledByNewSystem && !handledByOldSystem) {
