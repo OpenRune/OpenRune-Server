@@ -27,9 +27,10 @@ class NpcRandomWalkPlugin(
         onTimer(routeSearchTimer) {
             if (npc.isActive() && npc.lock.canMove()) {
                 val facing = npc.attr[FACING_PAWN_ATTR]?.get()
+                val combatTarget = npc.attr[COMBAT_TARGET_FOCUS_ATTR]?.get()
 
-                // The npc is not facing a player, so it can walk.
-                if (facing == null) {
+                // The npc is not facing a player and not in combat, so it can walk.
+                if (facing == null && combatTarget == null) {
                     val rx = world.random(-npc.walkRadius..npc.walkRadius)
                     val rz = world.random(-npc.walkRadius..npc.walkRadius)
 

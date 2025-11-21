@@ -40,9 +40,31 @@ object Combat {
     val BOLT_ENCHANTMENT_EFFECT = AttributeKey<Boolean>()
     val ALWAYS_MAX_HIT = AttributeKey<Boolean>()
     val DRAGON_BATTLEAXE_BONUS = AttributeKey<Double>()
+    // Tracks the world cycle when the player last engaged in combat (attacked or was attacked)
+    val LAST_COMBAT_CYCLE_ATTR = AttributeKey<Int>(temp = true)
+    // Tracks whether the pawn was in range when they stopped moving (to prevent unnecessary recursion)
+    val WAS_IN_RANGE_WHEN_STOPPED_ATTR = AttributeKey<Boolean>(temp = true)
+    // Tracks the target's position when path was last calculated (to detect if target moved significantly)
+    val LAST_PATH_TARGET_POSITION_ATTR = AttributeKey<Tile>(temp = true)
+    // Tracks when path was last calculated (to throttle recalculation)
+    val LAST_PATH_CALCULATION_CYCLE_ATTR = AttributeKey<Int>(temp = true)
+    // Tracks the target's position when we successfully completed walking to it (for dumb pathfinding condition)
+    val LAST_SUCCESSFUL_WALK_TARGET_POSITION_ATTR = AttributeKey<Tile>(temp = true)
+    // Flag to control whether NPCs can get stuck behind obstacles (default: true)
+    // When true: NPCs will stop pathfinding if they get stuck behind walls/obstacles (allows players to trap NPCs)
+    // When false: NPCs will always try to path around obstacles (ultra-smart pathfinding)
+    val CAN_BE_STUCK_ATTR = AttributeKey<Boolean>(temp = true)
+    // Tracks the target's position when the pawn last got stuck (to avoid recalculating when stuck and target hasn't moved)
+    val STUCK_TARGET_POSITION_ATTR = AttributeKey<Tile>(temp = true)
+    // Tracks the pawn's position when it last got stuck (to detect if pawn moved from blocked position)
+    val STUCK_PAWN_POSITION_ATTR = AttributeKey<Tile>(temp = true)
+    // Tracks consecutive fallback route attempts (when smart route is empty)
+    val CONSECUTIVE_FALLBACK_ATTEMPTS_ATTR = AttributeKey<Int>(temp = true)
     const val PRIORITY_PID_VARP = "varp.playertarget"
     const val SELECTED_AUTOCAST_VARBIT = "varbits.autocast_spell"
     const val DEFENSIVE_MAGIC_CAST_VARBIT = "varbits.autocast_defmode"
+    // 10 seconds = 100 ticks (600ms per tick, 10 seconds = 10000ms / 100ms per tick = 100 ticks)
+    const val COMBAT_TIMEOUT_TICKS = 100
 
     fun reset(pawn: Pawn) {
         // Remove this pawn from the target's attacker list
@@ -51,6 +73,14 @@ object Combat {
             target.attr.removeFromSet(COMBAT_ATTACKERS_ATTR, WeakReference(pawn))
         }
         pawn.attr.remove(COMBAT_TARGET_FOCUS_ATTR)
+        // Clear movement tracking attributes
+        pawn.attr.remove(WAS_IN_RANGE_WHEN_STOPPED_ATTR)
+        pawn.attr.remove(LAST_PATH_TARGET_POSITION_ATTR)
+        pawn.attr.remove(LAST_PATH_CALCULATION_CYCLE_ATTR)
+        pawn.attr.remove(LAST_SUCCESSFUL_WALK_TARGET_POSITION_ATTR)
+        pawn.attr.remove(STUCK_TARGET_POSITION_ATTR)
+        pawn.attr.remove(STUCK_PAWN_POSITION_ATTR)
+        pawn.attr.remove(CONSECUTIVE_FALLBACK_ATTEMPTS_ATTR)
     }
 
     fun canAttack(
@@ -78,6 +108,11 @@ object Combat {
         pawn.attr[LAST_HIT_ATTR] = WeakReference(target)
         target.attr[LAST_HIT_BY_ATTR] = WeakReference(pawn)
 
+        // Track combat time for both pawn and target (for 10-second timeout logic)
+        val currentCycle = pawn.world.currentCycle
+        pawn.attr[LAST_COMBAT_CYCLE_ATTR] = currentCycle
+        target.attr[LAST_COMBAT_CYCLE_ATTR] = currentCycle
+
         if (pawn.attr.has(CASTING_SPELL) && pawn is Player && pawn.getVarbit(SELECTED_AUTOCAST_VARBIT) == 0) {
             reset(pawn)
             pawn.attr.remove(CASTING_SPELL)
@@ -93,9 +128,17 @@ object Combat {
         pawn: Pawn,
         target: Pawn,
     ) {
-        if (target.isDead()) {
+        // If target or attacker is dead, end combat immediately
+        if (target.isDead() || !target.isAlive() || pawn.isDead() || !pawn.isAlive()) {
+            Combat.reset(pawn)
+            pawn.resetFacePawn()
             return
         }
+
+        // Track combat time when damage is dealt (for 10-second timeout logic)
+        val currentCycle = pawn.world.currentCycle
+        pawn.attr[LAST_COMBAT_CYCLE_ATTR] = currentCycle
+        target.attr[LAST_COMBAT_CYCLE_ATTR] = currentCycle
 
         /*
          * Don't override the animation if one is already set. @Z-Kris
@@ -152,7 +195,7 @@ object Combat {
                             while (ticksWaited < maxTicks && target.hasMoveDestination()) {
                                 wait(1)
                                 ticksWaited++
-                                if (!pawn.isAlive() || !target.isAlive()) {
+                                if (!pawn.isAlive() || !target.isAlive() || pawn.isDead() || target.isDead()) {
                                     return@queue
                                 }
                                 if (target.tile.isWithinRadius(pawn.tile, attackRange + pawn.getSize())) {
@@ -338,6 +381,61 @@ object Combat {
                 pawn.message("You need a higher Slayer level to know how to wound this monster.")
                 return false
             }
+
+            // Single-combat check: If player is trying to attack an NPC, check if player is already in combat with another NPC
+            if (pawn is Player && !pawn.tile.isMulti(pawn.world)) {
+                val currentTarget = pawn.getCombatTarget()
+                if (currentTarget is Npc && currentTarget != target) {
+                    // Check if the previous target is dead - if so, allow immediate attack (no cooldown after killing)
+                    if (currentTarget.isDead() || !currentTarget.isAlive()) {
+                        // Player just killed an NPC - allow immediate attack on other NPCs
+                        Combat.reset(pawn)
+                    } else {
+                        // Check if 10 seconds have passed since player's last combat action
+                        val lastCombatCycle = pawn.attr[LAST_COMBAT_CYCLE_ATTR] ?: 0
+                        val currentCycle = pawn.world.currentCycle
+                        val cyclesSinceCombat = currentCycle - lastCombatCycle
+
+                        if (cyclesSinceCombat < COMBAT_TIMEOUT_TICKS) {
+                            pawn.message("You're already in combat!")
+                            return false
+                        }
+                        // 10 seconds have passed - allow targeting new NPC and reset old target
+                        Combat.reset(pawn)
+                    }
+                }
+
+                // Check if NPC is already in combat with another player (and < 10 seconds have passed since NPC's last combat)
+                val npcAttackers = target.attr[COMBAT_ATTACKERS_ATTR]
+                if (npcAttackers != null && npcAttackers.isNotEmpty()) {
+                    val otherPlayerAttacker = npcAttackers.firstOrNull { attackerRef ->
+                        val attacker = attackerRef.get()
+                        attacker != null && attacker is Player && attacker != pawn && attacker.isAttacking()
+                    }?.get() as? Player
+
+                    if (otherPlayerAttacker != null) {
+                        // Check if the other player is dead - if so, allow immediate attack (no cooldown after player death)
+                        if (otherPlayerAttacker.isDead() || !otherPlayerAttacker.isAlive()) {
+                            // Player that was fighting this NPC is dead - allow immediate attack
+                            // No need to check timeout, the NPC is now free
+                        } else {
+                            // Check if 10 seconds have passed since the NPC's last combat action (when it received hits)
+                            // If NPC has never been in combat, LAST_COMBAT_CYCLE_ATTR will be 0, making cyclesSinceCombat huge (>= timeout)
+                            val npcLastCombatCycle = target.attr[LAST_COMBAT_CYCLE_ATTR] ?: 0
+                            val currentCycle = pawn.world.currentCycle
+                            val npcCyclesSinceCombat = currentCycle - npcLastCombatCycle
+
+                            // If NPC has never been in combat (npcLastCombatCycle == 0), npcCyclesSinceCombat will be huge and >= timeout
+                            // Only check timeout if NPC has actually been in combat (npcLastCombatCycle > 0)
+                            if (npcLastCombatCycle > 0 && npcCyclesSinceCombat < COMBAT_TIMEOUT_TICKS) {
+                                pawn.message("Someone else is fighting that!")
+                                return false
+                            }
+                            // 10 seconds have passed since NPC's last combat (or NPC has never been in combat) - allow attacking
+                        }
+                    }
+                }
+            }
         } else if (target is Player) {
             if (!target.isOnline || target.invisible) {
                 return false
@@ -345,6 +443,57 @@ object Combat {
 
             if (!target.lock.canBeAttacked()) {
                 return false
+            }
+
+            // Single-combat check: If NPC is trying to attack a player, check if player is already in combat with another NPC
+            if (pawn is Npc && !target.tile.isMulti(pawn.world)) {
+                // NPCs should ALWAYS be able to attack players they're already in combat with
+                val isAlreadyInCombat = pawn.isAttacking() && pawn.getCombatTarget() == target
+                // NPCs should ALWAYS be able to attack players who just attacked them
+                val playerTarget = target.getCombatTarget()
+                val playerJustAttackedThisNpc = playerTarget == pawn
+
+                if (!isAlreadyInCombat && !playerJustAttackedThisNpc) {
+                    // Check if this NPC's previous target (if it was a player) is dead
+                    // If so, allow immediate aggression (no cooldown after killing player)
+                    val npcPreviousTarget = pawn.getCombatTarget()
+                    val previousTargetIsDead = npcPreviousTarget is Player && (npcPreviousTarget.isDead() || !npcPreviousTarget.isAlive())
+                    val npcCanAggressImmediately = previousTargetIsDead
+
+                    // Check if this NPC has been out of combat for 10+ seconds (no received hits)
+                    // If not, it can only aggress if the player is not in combat with another NPC
+                    val npcLastCombatCycle = pawn.attr[LAST_COMBAT_CYCLE_ATTR] ?: 0
+                    val currentCycle = target.world.currentCycle
+                    val npcCyclesSinceCombat = currentCycle - npcLastCombatCycle
+                    val npcCanAggressNewTarget = npcCanAggressImmediately || npcCyclesSinceCombat >= COMBAT_TIMEOUT_TICKS
+
+                    // Check if player is already in combat with another NPC
+                    val attackers = target.attr[COMBAT_ATTACKERS_ATTR]
+                    if (attackers != null) {
+                        val hasOtherNpcAttacker = attackers.any { attackerRef ->
+                            val attacker = attackerRef.get()
+                            attacker != null && attacker is Npc && attacker != pawn && attacker.isAttacking()
+                        }
+                        if (hasOtherNpcAttacker) {
+                            // Player is in combat with another NPC
+                            // Only allow this NPC to aggress if it has been out of combat for 10+ seconds OR its previous target (player) is dead
+                            if (!npcCanAggressNewTarget) {
+                                return false
+                            }
+                            // NPC has been out of combat for 10+ seconds OR killed its previous target - allow aggression even though player is targeted by another NPC
+                        }
+                    }
+
+                    // Check if player is already attacking another NPC (but allow if it's this NPC)
+                    if (playerTarget is Npc && playerTarget != pawn) {
+                        // Player is attacking another NPC
+                        // Only allow this NPC to aggress if it has been out of combat for 10+ seconds OR its previous target (player) is dead
+                        if (!npcCanAggressNewTarget) {
+                            return false
+                        }
+                        // NPC has been out of combat for 10+ seconds OR killed its previous target - allow aggression even though player is attacking another NPC
+                    }
+                }
             }
 
             if (pvp) {

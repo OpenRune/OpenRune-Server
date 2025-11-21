@@ -1,12 +1,338 @@
 [
   {
-    "opened": {
-      "hinge": 1559,
-      "extension": 1567
-    },
     "closed": {
-      "hinge": 1558,
-      "extension": 1560
+      "hinge": "objects.burgh_fencegate_r",
+      "extension": "objects.burgh_fencegate_l"
+    },
+    "opened": {
+      "hinge": "objects.burgh_openfencegate_r",
+      "extension": "objects.burgh_openfencegate_l"
+    }
+  },
+  {
+    "closed": {
+      "hinge": "objects.deal_gate_closed"
+    },
+    "opened": {
+      "hinge": "objects.deal_gate_open"
+    }
+  },
+  {
+    "closed": {
+      "hinge": "objects.death_fencegate_r",
+      "extension": "objects.death_fencegate_l"
+    },
+    "opened": {
+      "hinge": "objects.death_openfencegate_r",
+      "extension": "objects.death_openfencegate_l"
+    }
+  },
+  {
+    "closed": {
+      "hinge": "objects.dt2_ghorrock_diamond_gate_closed"
+    },
+    "opened": {
+      "hinge": "objects.dt2_ghorrock_diamond_gate_open"
+    }
+  },
+  {
+    "closed": {
+      "hinge": "objects.dt2_ghorrock_dragonstone_gate_closed"
+    },
+    "opened": {
+      "hinge": "objects.dt2_ghorrock_dragonstone_gate_open"
+    }
+  },
+  {
+    "closed": {
+      "hinge": "objects.dt2_ghorrock_emerald_gate_closed"
+    },
+    "opened": {
+      "hinge": "objects.dt2_ghorrock_emerald_gate_open"
+    }
+  },
+  {
+    "closed": {
+      "hinge": "objects.dt2_ghorrock_gate_closed"
+    },
+    "opened": {
+      "hinge": "objects.dt2_ghorrock_gate_open"
+    }
+  },
+  {
+    "closed": {
+      "hinge": "objects.dt2_ghorrock_onyx_gate_closed"
+    },
+    "opened": {
+      "hinge": "objects.dt2_ghorrock_onyx_gate_open"
+    }
+  },
+  {
+    "closed": {
+      "hinge": "objects.dt2_ghorrock_padlock_gate_closed"
+    },
+    "opened": {
+      "hinge": "objects.dt2_ghorrock_padlock_gate_open"
+    }
+  },
+  {
+    "closed": {
+      "hinge": "objects.dt2_ghorrock_ruby_gate_closed"
+    },
+    "opened": {
+      "hinge": "objects.dt2_ghorrock_ruby_gate_open"
+    }
+  },
+  {
+    "closed": {
+      "hinge": "objects.dt2_ghorrock_sapphire_gate_closed"
+    },
+    "opened": {
+      "hinge": "objects.dt2_ghorrock_sapphire_gate_open"
+    }
+  },
+  {
+    "closed": {
+      "hinge": "objects.farming_fencegate_r",
+      "extension": "objects.farming_fencegate_l"
+    },
+    "opened": {
+      "hinge": "objects.farming_openfencegate_r",
+      "extension": "objects.farming_openfencegate_l"
+    }
+  },
+  {
+    "closed": {
+      "hinge": "objects.fencegate_r",
+      "extension": "objects.fencegate_l"
+    },
+    "opened": {
+      "hinge": "objects.openfencegate_r",
+      "extension": "objects.openfencegate_l"
+    }
+  },
+  {
+    "closed": {
+      "hinge": "objects.fossil_pool_gate_closed"
+    },
+    "opened": {
+      "hinge": "objects.fossil_pool_gate_open"
+    }
+  },
+  {
+    "closed": {
+      "hinge": "objects.ghorrock_metal_gate_closed"
+    },
+    "opened": {
+      "hinge": "objects.ghorrock_metal_gate_open"
+    }
+  },
+  {
+    "closed": {
+      "hinge": "objects.guidorgaterclosed",
+      "extension": "objects.guidorgatelclosed"
+    },
+    "opened": {
+      "hinge": "objects.guidorgateropen",
+      "extension": "objects.guidorgatelopen"
+    }
+  },
+  {
+    "closed": {
+      "hinge": "objects.kr_camelot_metalgateclosedr",
+      "extension": "objects.kr_camelot_metalgateclosedl"
+    },
+    "opened": {
+      "hinge": "objects.kr_camelot_metalgateopenr",
+      "extension": "objects.kr_camelot_metalgateopenl"
+    }
+  },
+  {
+    "closed": {
+      "hinge": "objects.lgmagictrialgateclosed"
+    },
+    "opened": {
+      "hinge": "objects.lgmagictrialgateopen"
+    }
+  },
+  {
+    "closed": {
+      "hinge": "objects.luc2_dwt_jailbars_gate_closed"
+    },
+    "opened": {
+      "hinge": "objects.luc2_dwt_jailbars_gate_open"
+    }
+  },
+  {
+    "closed": {
+      "hinge": "objects.luc2_dwt_jailbars_outer_gate_closed"
+    },
+    "opened": {
+      "hinge": "objects.luc2_dwt_jailbars_outer_gate_open"
+    }
+  },
+  {
+    "closed": {
+      "hinge": "objects.mah3_base_gate_closed"
+    },
+    "opened": {
+      "hinge": "objects.mah3_base_gate_open"
+    }
+  },
+  {
+    "closed": {
+      "hinge": "objects.mah3_base_gate_closed2"
+    },
+    "opened": {
+      "hinge": "objects.mah3_base_gate_open2"
+    }
+  },
+  {
+    "closed": {
+      "hinge": "objects.memberfencegate_r",
+      "extension": "objects.memberfencegate_l"
+    },
+    "opened": {
+      "hinge": "objects.farming_fence_gate_perm_open_r",
+      "extension": "objects.farming_fence_gate_perm_open_l"
+    }
+  },
+  {
+    "closed": {
+      "hinge": "objects.metalgateclosedr",
+      "extension": "objects.metalgateclosedl"
+    },
+    "opened": {
+      "hinge": "objects.metalgateopenr",
+      "extension": "objects.metalgateopenl"
+    }
+  },
+  {
+    "closed": {
+      "hinge": "objects.mourning_orchard_fencegate_r",
+      "extension": "objects.mourning_orchard_fencegate_l"
+    },
+    "opened": {
+      "hinge": "objects.mourning_orchard_fencegate_open_r",
+      "extension": "objects.mourning_orchard_fencegate_open_l"
+    }
+  },
+  {
+    "closed": {
+      "hinge": "objects.murder_qip_metalgateclosedr",
+      "extension": "objects.murder_qip_metalgateclosedl"
+    },
+    "opened": {
+      "hinge": "objects.murder_qip_metalgateopenr",
+      "extension": "objects.murder_qip_metalgateopenl"
+    }
+  },
+  {
+    "closed": {
+      "hinge": "objects.pvpa_desertgate_closed"
+    },
+    "opened": {
+      "hinge": "objects.pvpa_desertgate_open"
+    }
+  },
+  {
+    "closed": {
+      "hinge": "objects.qip_sheep_shearer_fencegate_r",
+      "extension": "objects.qip_sheep_shearer_fencegate_l"
+    },
+    "opened": {
+      "hinge": "objects.qip_sheep_shearer_openfencegate_r",
+      "extension": "objects.qip_sheep_shearer_openfencegate_l"
+    }
+  },
+  {
+    "closed": {
+      "hinge": "objects.rustic_fencegate_r",
+      "extension": "objects.rustic_fencegate_l"
+    },
+    "opened": {
+      "hinge": "objects.rustic_openfencegate_r",
+      "extension": "objects.rustic_openfencegate_l"
+    }
+  },
+  {
+    "closed": {
+      "hinge": "objects.ii_fencegate_rc",
+      "extension": "objects.ii_fencegate_lc"
+    },
+    "opened": {
+      "hinge": "objects.ii_fencegate_r",
+      "extension": "objects.ii_fencegate_l"
+    }
+  },
+  {
+    "closed": {
+      "hinge": "objects.fai_varrock_gate_r",
+      "extension": "objects.fai_varrock_gate_l"
+    },
+    "opened": {
+      "hinge": "objects.fai_varrock_gate_rc",
+      "extension": "objects.fai_varrock_gate_lc"
+    }
+  },
+  {
+    "closed": {
+      "hinge": "objects.qip_watchtower_gate_r",
+      "extension": "objects.qip_watchtower_gate_l"
+    },
+    "opened": {
+      "hinge": "objects.qip_watchtower_gate_r_open",
+      "extension": "objects.qip_watchtower_gate_l_open"
+    }
+  },
+  {
+    "closed": {
+      "hinge": "objects.wildy_hub_gate_r",
+      "extension": "objects.wildy_hub_gate_l"
+    },
+    "opened": {
+      "hinge": "objects.wildy_hub_gate_r_open",
+      "extension": "objects.wildy_hub_gate_l_open"
+    }
+  },
+  {
+    "closed": {
+      "hinge": "objects.dorgesh_caves_kalphite_r",
+      "extension": "objects.dorgesh_caves_kalphite_l"
+    },
+    "opened": {
+      "hinge": "objects.dorgesh_caves_kalphite_r_open",
+      "extension": "objects.dorgesh_caves_kalphite_l_open"
+    }
+  },
+  {
+    "closed": {
+      "hinge": "objects.elemental_workshop_oddwall_r",
+      "extension": "objects.elemental_workshop_oddwall_l"
+    },
+    "opened": {
+      "hinge": "objects.elemental_workshop_oddwall_r_open",
+      "extension": "objects.elemental_workshop_oddwall_l_open"
+    }
+  },
+  {
+    "closed": {
+      "hinge": "objects.kebos_farming_guild_gate_t2_right_closed",
+      "extension": "objects.kebos_farming_guild_gate_t2_left_closed"
+    },
+    "opened": {
+      "hinge": "objects.kebos_farming_guild_gate_t2_right_open",
+      "extension": "objects.kebos_farming_guild_gate_t2_left_open"
+    }
+    },
+  {
+    "closed": {
+      "hinge": "objects.kebos_farming_guild_gate_t3_right_closed",
+      "extension": "objects.kebos_farming_guild_gate_t3_left_closed"
+    },
+    "opened": {
+      "hinge": "objects.kebos_farming_guild_gate_t3_right_open",
+      "extension": "objects.kebos_farming_guild_gate_t3_left_open"
     }
   }
 ]

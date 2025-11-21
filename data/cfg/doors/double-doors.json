@@ -1,42 +1,42 @@
 [
   {
-    "opened": {
-      "left": 1522,
-      "right": 1525
-    },
     "closed": {
-      "left": 1521,
-      "right": 1524
+      "left": "objects.castledoubledoorl",
+      "right": "objects.castledoubledoorr"
+    },
+    "opened": {
+      "left": "objects.opencastledoubledoorl",
+      "right": "objects.opencastledoubledoorr"
     }
-  },
-  {
-    "opened": {
-      "left": 2547,
-      "right": 2549
     },
+  {
     "closed": {
-      "left": 2546,
-      "right": 2548
+      "left": "objects.w_ardougnedoubledoorl",
+      "right": "objects.w_ardougnedoubledoorr"
+  },
+    "opened": {
+      "left": "objects.w_ardougnedoubledoorlopen",
+      "right": "objects.w_ardougnedoubledoorropen"
     }
-  },
-  {
-    "opened": {
-      "left": 25816,
-      "right": 25815
     },
+  {
     "closed": {
-      "left": 25814,
-      "right": 25813
+      "left": "objects.fai_falador_castledoubledoorl",
+      "right": "objects.fai_falador_castledoubledoorr"
+  },
+    "opened": {
+      "left": "objects.fai_falador_opencastledoubledoorl",
+      "right": "objects.fai_falador_opencastledoubledoorr"
     }
-  },
-  {
-    "opened": {
-      "left": 24065,
-      "right": 24066
     },
+  {
     "closed": {
-      "left": 24059,
-      "right": 24064
+      "left": "objects.kr_churchdoor_l",
+      "right": "objects.kr_churchdoor_r"
+  },
+    "opened": {
+      "left": "objects.kr_openchurchdoor_l",
+      "right": "objects.kr_openchurchdoor_r"
     }
   }
 ]

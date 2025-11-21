@@ -17,6 +17,7 @@ import org.alter.game.model.timer.*
 import org.alter.game.plugin.*
 import org.alter.plugins.content.combat.getCombatTarget
 import org.alter.plugins.content.combat.isAttacking
+import org.alter.game.model.attr.COMBAT_ATTACKERS_ATTR
 
 class NpcAggroPlugin(
     r: PluginRepository,
@@ -41,7 +42,7 @@ class NpcAggroPlugin(
             npc.timers[AGGRO_CHECK_TIMER] = npc.combatDef.aggroTargetDelay
         }
     }
-    
+
 
 
 val defaultAggressiveness: (Npc, Player) -> Boolean = boolean@{ n, p ->
@@ -94,6 +95,58 @@ fun canAttack(
     if (!target.isOnline || target.invisible) {
         return false
     }
+
+    // Single-combat check: In single-combat zones, prevent multiple NPCs from attacking the same player
+    if (!target.tile.isMulti(world)) {
+        // NPCs should ALWAYS be able to aggress players they're already in combat with
+        val isAlreadyInCombat = npc.isAttacking() && npc.getCombatTarget() == target
+        // NPCs should ALWAYS be able to aggress players who just attacked them
+        val playerTarget = target.getCombatTarget()
+        val playerJustAttackedThisNpc = playerTarget == npc
+
+        if (!isAlreadyInCombat && !playerJustAttackedThisNpc) {
+            // Check if this NPC's previous target (if it was a player) is dead
+            // If so, allow immediate aggression (no cooldown after killing player)
+            val npcPreviousTarget = npc.getCombatTarget()
+            val previousTargetIsDead = npcPreviousTarget is Player && (npcPreviousTarget.isDead() || !npcPreviousTarget.isAlive())
+            val npcCanAggressImmediately = previousTargetIsDead
+
+            // Check if this NPC has been out of combat for 10+ seconds (no received hits)
+            // If not, it can only aggress if the player is not in combat with another NPC
+            val npcLastCombatCycle = npc.attr[org.alter.plugins.content.combat.Combat.LAST_COMBAT_CYCLE_ATTR] ?: 0
+            val currentCycle = world.currentCycle
+            val npcCyclesSinceCombat = currentCycle - npcLastCombatCycle
+            val npcCanAggressNewTarget = npcCanAggressImmediately || npcCyclesSinceCombat >= org.alter.plugins.content.combat.Combat.COMBAT_TIMEOUT_TICKS
+
+            // Check if player is already in combat with another NPC
+            val attackers = target.attr[COMBAT_ATTACKERS_ATTR]
+            if (attackers != null) {
+                val hasOtherNpcAttacker = attackers.any { attackerRef ->
+                    val attacker = attackerRef.get()
+                    attacker != null && attacker is Npc && attacker != npc && attacker.isAttacking()
+                }
+                if (hasOtherNpcAttacker) {
+                    // Player is in combat with another NPC
+                    // Only allow this NPC to aggress if it has been out of combat for 10+ seconds OR its previous target (player) is dead
+                    if (!npcCanAggressNewTarget) {
+                        return false
+                    }
+                    // NPC has been out of combat for 10+ seconds OR killed its previous target - allow aggression even though player is targeted by another NPC
+                }
+            }
+
+            // Check if player is already attacking another NPC (but allow if it's this NPC)
+            if (playerTarget is Npc && playerTarget != npc) {
+                // Player is attacking another NPC
+                // Only allow this NPC to aggress if it has been out of combat for 10+ seconds OR its previous target (player) is dead
+                if (!npcCanAggressNewTarget) {
+                    return false
+                }
+                // NPC has been out of combat for 10+ seconds OR killed its previous target - allow aggression even though player is attacking another NPC
+            }
+        }
+    }
+
     return npc.aggroCheck == null || npc.aggroCheck?.invoke(npc, target) == true
 }
 

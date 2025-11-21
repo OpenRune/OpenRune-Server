@@ -8,6 +8,7 @@ import org.alter.game.model.Tile
 import org.alter.game.model.combat.AttackStyle
 import org.alter.game.model.combat.PawnHit
 import org.alter.game.model.combat.XpMode
+import org.alter.game.model.collision.rayCast
 import org.alter.game.model.entity.*
 import org.alter.rscm.RSCM.getRSCM
 import org.alter.plugins.content.combat.Combat
@@ -78,7 +79,15 @@ object RangedCombatStrategy : CombatStrategy {
                 return false
             }
         }
-        return true
+        
+        // Check line of sight - ranged requires clear line of sight
+        val attackRange = getAttackRange(pawn)
+        val distance = pawn.tile.getDistance(target.tile)
+        if (distance > attackRange) {
+            return false
+        }
+        // Check line of sight (projectiles can pass through some objects, but not walls)
+        return pawn.world.lineValidator.rayCast(pawn.tile, target.tile, projectile = true)
     }
 
     override fun attack(

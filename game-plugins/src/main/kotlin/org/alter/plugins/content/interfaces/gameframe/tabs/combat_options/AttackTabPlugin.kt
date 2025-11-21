@@ -29,7 +29,7 @@ class AttackTabPlugin(
     world: World,
     server: Server
 ) : KotlinPlugin(r, world, server) {
-        
+
     init {
         /**
          * First log-in logic (when accounts have just been made).
@@ -67,11 +67,15 @@ class AttackTabPlugin(
 
         /**
          * Toggle auto-retaliate button.
+         * Component 31 and 32 both handle auto-retaliate (different client layouts).
          */
         onButton(interfaceId = ATTACK_TAB_INTERFACE_ID, component = 31) {
             player.toggleVarp(DISABLE_AUTO_RETALIATE_VARP)
         }
 
+        onButton(interfaceId = ATTACK_TAB_INTERFACE_ID, component = 32) {
+            player.toggleVarp(DISABLE_AUTO_RETALIATE_VARP)
+        }
 
         /**
          * Toggle special attack.

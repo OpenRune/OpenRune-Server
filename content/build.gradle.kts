@@ -15,6 +15,7 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.9.0")
     implementation(rootProject.project.libs.rsprot)
     implementation(rootProject.project.libs.routefinder)
+    implementation(rootProject.project.libs.jackson.module.kotlin)
     ksp(project(":ksp-processor"))
 }
 

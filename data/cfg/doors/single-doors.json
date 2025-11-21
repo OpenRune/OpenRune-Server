@@ -1,34 +1,1366 @@
 [
   {
-    "closed": 1535,
-    "opened": 1536
+    "closed": "objects.ikov_luciendoor",
+    "opened": "objects.ikov_luciendoor_open"
   },
   {
-    "closed": 1540,
-    "opened": 1541
+    "closed": "objects.mm2_lab_door_right",
+    "opened": "objects.mm2_lab_door_right_open"
   },
   {
-    "closed": 1543,
-    "opened": 1544
+    "closed": "objects.mm2_lab_door_left",
+    "opened": "objects.mm2_lab_door_left_open"
   },
   {
-    "closed": 24050,
-    "opened": 24051
+    "closed": "objects.archeddoorclosed",
+    "opened": "objects.archeddooropen"
   },
   {
-    "closed": 24054,
-    "opened": 24055
+    "closed": "objects.bankdoor_r",
+    "opened": "objects.openbankdoor_r"
   },
   {
-    "closed": 24057,
-    "opened": 24058
+    "closed": "objects.bankdoor_l",
+    "opened": "objects.openbankdoor_l"
   },
   {
-    "closed": 11773,
-    "opened": 11772
+    "closed": "objects.castledoor",
+    "opened": "objects.opencastledoor"
   },
   {
-    "closed": 11775,
-    "opened": 11774
+    "closed": "objects.thickpoordoor",
+    "opened": "objects.openthickpoordoor"
+  },
+  {
+    "closed": "objects.desertdoorclosed",
+    "opened": "objects.desertdooropen"
+  },
+  {
+    "closed": "objects.poordoor",
+    "opened": "objects.poordooropen"
+  },
+  {
+    "closed": "objects.poordoor_cross",
+    "opened": "objects.poordoor_crossopen"
+  },
+  {
+    "closed": "objects.poshdoor",
+    "opened": "objects.poshdooropen"
+  },
+  {
+    "closed": "objects.elfdoor",
+    "opened": "objects.elfdooropen"
+  },
+  {
+    "closed": "objects.prisondoor",
+    "opened": "objects.prisondooropen"
+  },
+  {
+    "closed": "objects.prisondoor_r",
+    "opened": "objects.prisondooropen_r"
+  },
+  {
+    "closed": "objects.prisondoor_l",
+    "opened": "objects.prisondooropen_l"
+  },
+  {
+    "closed": "objects.palacedoor_r",
+    "opened": "objects.openpalacedoor_r"
+  },
+  {
+    "closed": "objects.palacedoor_l",
+    "opened": "objects.openpalacedoor_l"
+  },
+  {
+    "closed": "objects.secretdoor",
+    "opened": "objects.secretdooropen"
+  },
+  {
+    "closed": "objects.secretdoor2",
+    "opened": "objects.secretdooropen2"
+  },
+  {
+    "closed": "objects.championdoor",
+    "opened": "objects.championdoor_open"
+  },
+  {
+    "closed": "objects.treedoorl",
+    "opened": "objects.treedoorl_open"
+  },
+  {
+    "closed": "objects.treedoorr",
+    "opened": "objects.treedoorr_open"
+  },
+  {
+    "closed": "objects.guidordoor",
+    "opened": "objects.guidordooropen"
+  },
+  {
+    "closed": "objects.mournerstewdoorup",
+    "opened": "objects.mournerstewdoorupopen"
+  },
+  {
+    "closed": "objects.mournerstewdoor",
+    "opened": "objects.mournerstewdooropen"
+  },
+  {
+    "closed": "objects.elenadoor2",
+    "opened": "objects.elenadoor2open"
+  },
+  {
+    "closed": "objects.wydindoor",
+    "opened": "objects.wydindooropen"
+  },
+  {
+    "closed": "objects.slayertower_small_door",
+    "opened": "objects.slayertower_small_door_open"
+  },
+  {
+    "closed": "objects.slayertower_door",
+    "opened": "objects.slayertower_door_open"
+  },
+  {
+    "closed": "objects.blackarmdoor",
+    "opened": "objects.blackarmdoor_open"
+  },
+  {
+    "closed": "objects.zanarisdoor",
+    "opened": "objects.zanarisdoor_open"
+  },
+  {
+    "closed": "objects.famcrest_doori2h1",
+    "opened": "objects.famcrest_doori2h1_open"
+  },
+  {
+    "closed": "objects.reddoor",
+    "opened": "objects.reddoor_open"
+  },
+  {
+    "closed": "objects.orangedoor",
+    "opened": "objects.orangedoor_open"
+  },
+  {
+    "closed": "objects.yellowdoor",
+    "opened": "objects.yellowdoor_open"
+  },
+  {
+    "closed": "objects.bluedoor",
+    "opened": "objects.bluedoor_open"
+  },
+  {
+    "closed": "objects.magentadoor",
+    "opened": "objects.magentadoor_open"
+  },
+  {
+    "closed": "objects.greendoor",
+    "opened": "objects.greendoor_open"
+  },
+  {
+    "closed": "objects.dragonsecretdoor",
+    "opened": "objects.dragonsecretdoor_open"
+  },
+  {
+    "closed": "objects.bedabin_tentdoor",
+    "opened": "objects.bedabin_tentdoor_open"
+  },
+  {
+    "closed": "objects.upass_templedoor_closed_right",
+    "opened": "objects.upass_templedoor_open_right"
+  },
+  {
+    "closed": "objects.upass_templedoor_closed_left",
+    "opened": "objects.upass_templedoor_open_left"
+  },
+  {
+    "closed": "objects.elem2_stairs_door",
+    "opened": "objects.elem2_stairs_door_open"
+  },
+  {
+    "closed": "objects.troll_celldoor",
+    "opened": "objects.troll_celldoor_open"
+  },
+  {
+    "closed": "objects.troll_celldoor_eadgar",
+    "opened": "objects.troll_celldoor_eadgar_open"
+  },
+  {
+    "closed": "objects.troll_celldoor_godric",
+    "opened": "objects.troll_celldoor_godric_open"
+  },
+  {
+    "closed": "objects.troll_stronghold_interior_door",
+    "opened": "objects.troll_stronghold_interior_door_open"
+  },
+  {
+    "closed": "objects.troll_stronghold_prison_door_closed",
+    "opened": "objects.troll_stronghold_prison_door_open"
+  },
+  {
+    "closed": "objects.eadgar_storeroomdoor",
+    "opened": "objects.eadgar_storeroomdoor_open"
+  },
+  {
+    "closed": "objects.viking_abode_door",
+    "opened": "objects.viking_abode_door_open"
+  },
+  {
+    "closed": "objects.viking_fur_door",
+    "opened": "objects.viking_fur_door_open"
+  },
+  {
+    "closed": "objects.castlewars_saradomin_maindoorr",
+    "opened": "objects.castlewars_saradomin_maindoorr_open"
+  },
+  {
+    "closed": "objects.castlewars_saradomin_maindoorl",
+    "opened": "objects.castlewars_saradomin_maindoorl_open"
+  },
+  {
+    "closed": "objects.castlewars_zamorak_maindoorr",
+    "opened": "objects.castlewars_zamorak_maindoorr_open"
+  },
+  {
+    "closed": "objects.castlewars_zamorak_maindoorl",
+    "opened": "objects.castlewars_zamorak_maindoorl_open"
+  },
+  {
+    "closed": "objects.castlewars_saradomin_sidedoor",
+    "opened": "objects.castlewars_saradomin_sidedoor_open"
+  },
+  {
+    "closed": "objects.castlewars_zamorak_sidedoor",
+    "opened": "objects.castlewars_zamorak_sidedoor_open"
+  },
+  {
+    "closed": "objects.elfdoor_reverse",
+    "opened": "objects.elfdooropen_reverse"
+  },
+  {
+    "closed": "objects.misc_viking_abode_door_low",
+    "opened": "objects.misc_viking_abode_door_low_open"
+  },
+  {
+    "closed": "objects.mm_bamboo_largedoor",
+    "opened": "objects.mm_bamboo_largedoor_open"
+  },
+  {
+    "closed": "objects.fenk_mausoleum_door",
+    "opened": "objects.fenk_mausoleum_door_open"
+  },
+  {
+    "closed": "objects.fenk_tower_door",
+    "opened": "objects.fenk_tower_door_open"
+  },
+  {
+    "closed": "objects.fenk_shed_door",
+    "opened": "objects.fenk_shed_door_open"
+  },
+  {
+    "closed": "objects.fenk_door",
+    "opened": "objects.fenk_door_open"
+  },
+  {
+    "closed": "objects.ahoy_harbour_door",
+    "opened": "objects.ahoy_harbour_door_open"
+  },
+  {
+    "closed": "objects.ahoy_town_walldoor_left",
+    "opened": "objects.ahoy_town_walldoor_left_open"
+  },
+  {
+    "closed": "objects.ahoy_town_walldoor_right",
+    "opened": "objects.ahoy_town_walldoor_right_open"
+  },
+  {
+    "closed": "objects.mdaughter_tent_door",
+    "opened": "objects.mdaughter_tent_door_open"
+  },
+  {
+    "closed": "objects.mdaughter_rocktent_door",
+    "opened": "objects.mdaughter_rocktent_door_open"
+  },
+  {
+    "closed": "objects.dwarf_keldagrim_door_interior_palace",
+    "opened": "objects.dwarf_keldagrim_door_interior_palace_open"
+  },
+  {
+    "closed": "objects.dwarf_keldagrim_door_interior_poor",
+    "opened": "objects.dwarf_keldagrim_door_interior_poor_open"
+  },
+  {
+    "closed": "objects.dwarf_keldagrim_door_interior",
+    "opened": "objects.dwarf_keldagrim_door_interior_open"
+  },
+  {
+    "closed": "objects.dwarf_keldagrim_door",
+    "opened": "objects.dwarf_keldagrim_door_open"
+  },
+  {
+    "closed": "objects.dwarf_keldagrim_door_poor",
+    "opened": "objects.dwarf_keldagrim_door_poor_open"
+  },
+  {
+    "closed": "objects.dwarf_keldagrim_door_ornate",
+    "opened": "objects.dwarf_keldagrim_door_ornate_open"
+  },
+  {
+    "closed": "objects.dwarf_keldagrim_door_ornate_mirror",
+    "opened": "objects.dwarf_keldagrim_door_ornate_mirror_open"
+  },
+  {
+    "closed": "objects.dwarf_keldagrim_door_palace",
+    "opened": "objects.dwarf_keldagrim_door_palace_open"
+  },
+  {
+    "closed": "objects.feud_closed_door_left",
+    "opened": "objects.feud_open_door_left"
+  },
+  {
+    "closed": "objects.feud_closed_door_right",
+    "opened": "objects.feud_open_door_right"
+  },
+  {
+    "closed": "objects.four_diamonds_door_1",
+    "opened": "objects.four_diamonds_dooropen_1"
+  },
+  {
+    "closed": "objects.four_diamonds_door_mirror",
+    "opened": "objects.four_diamonds_dooropen_mirror"
+  },
+  {
+    "closed": "objects.icthalarins_door",
+    "opened": "objects.icthalarins_door_open"
+  },
+  {
+    "closed": "objects.dwarf_keldagrim_door_interior_factory",
+    "opened": "objects.dwarf_keldagrim_door_interior_factory_open"
+  },
+  {
+    "closed": "objects.dwarf_keldagrim_factory_door",
+    "opened": "objects.dwarf_keldagrim_factory_door_open"
+  },
+  {
+    "closed": "objects.roguesden_door_to_pub",
+    "opened": "objects.roguesden_door_to_pub_open"
+  },
+  {
+    "closed": "objects.rd_stone_door",
+    "opened": "objects.rd_stone_door_opened"
+  },
+  {
+    "closed": "objects.rd_door",
+    "opened": "objects.rd_door_open"
+  },
+  {
+    "closed": "objects.kore2_hos_door_closed",
+    "opened": "objects.kore2_hos_door_open"
+  },
+  {
+    "closed": "objects.farmdoor",
+    "opened": "objects.farmdooropen"
+  },
+  {
+    "closed": "objects.ardougnedoor_l",
+    "opened": "objects.ardougnedoor_l_open"
+  },
+  {
+    "closed": "objects.ardougnedoor_r",
+    "opened": "objects.ardougnedoor_r_open"
+  },
+  {
+    "closed": "objects.mourning_hideout_trap_door",
+    "opened": "objects.mourning_hideout_trap_door_open"
+  },
+  {
+    "closed": "objects.mourner_hideout_door1",
+    "opened": "objects.mourner_hideout_door1_open"
+  },
+  {
+    "closed": "objects.mourner_hideout_door2",
+    "opened": "objects.mourner_hideout_door2_open"
+  },
+  {
+    "closed": "objects.mourner_hideout_door3",
+    "opened": "objects.mourner_hideout_door3_open"
+  },
+  {
+    "closed": "objects.mourner_hideout_door4",
+    "opened": "objects.mourner_hideout_door4_open"
+  },
+  {
+    "closed": "objects.mourning_poordoor",
+    "opened": "objects.mourning_poordooropen"
+  },
+  {
+    "closed": "objects.mourning_prisondoor",
+    "opened": "objects.mourning_prisondooropen"
+  },
+  {
+    "closed": "objects.prisonbarsdoor",
+    "opened": "objects.prisonbarsdoor_open"
+  },
+  {
+    "closed": "objects.makinghistory_door",
+    "opened": "objects.makinghistory_door_open"
+  },
+  {
+    "closed": "objects.vc_elfdoor",
+    "opened": "objects.vc_elfdooropen"
+  },
+  {
+    "closed": "objects.elid_underground_lake_door",
+    "opened": "objects.elid_underground_lake_door_open"
+  },
+  {
+    "closed": "objects.elid_underground_robe_door",
+    "opened": "objects.elid_underground_robe_door_open"
+  },
+  {
+    "closed": "objects.elid_genie_door",
+    "opened": "objects.elid_genie_door_open"
+  },
+  {
+    "closed": "objects.champions_trap_door_closed",
+    "opened": "objects.champions_trap_door_open"
+  },
+  {
+    "closed": "objects.draynor_panelled_door",
+    "opened": "objects.draynor_panelled_door_open"
+  },
+  {
+    "closed": "objects.fai_barbarian_poordoor",
+    "opened": "objects.fai_barbarian_poordooropen"
+  },
+  {
+    "closed": "objects.fai_varrock_castle_door",
+    "opened": "objects.fai_varrock_castle_door_open"
+  },
+  {
+    "closed": "objects.fai_varrock_door",
+    "opened": "objects.fai_varrock_door_open"
+  },
+  {
+    "closed": "objects.fai_varrock_poor_door",
+    "opened": "objects.fai_varrock_poor_door_open"
+  },
+  {
+    "closed": "objects.fai_varrock_poor_door_flipped",
+    "opened": "objects.fai_varrock_poor_door_open_flipped"
+  },
+  {
+    "closed": "objects.fai_varrock_shanty_door",
+    "opened": "objects.fai_varrock_shanty_door_open"
+  },
+  {
+    "closed": "objects.tzhaar_cave_door_closed",
+    "opened": "objects.tzhaar_cave_door_open"
+  },
+  {
+    "closed": "objects.100_osman_door_summer",
+    "opened": "objects.100_osman_door_summer_open"
+  },
+  {
+    "closed": "objects.fairy_mushroom_gate_door_l",
+    "opened": "objects.fairy_mushroom_gate_door_l_open"
+  },
+  {
+    "closed": "objects.fairy_mushroom_gate_door_r",
+    "opened": "objects.fairy_mushroom_gate_door_r_open"
+  },
+  {
+    "closed": "objects.pen_wall_doorl",
+    "opened": "objects.pen_wall_doorl_open"
+  },
+  {
+    "closed": "objects.pen_wall_doorr",
+    "opened": "objects.pen_wall_doorr_open"
+  },
+  {
+    "closed": "objects.100_osman_door_winter",
+    "opened": "objects.100_osman_door_winter_open"
+  },
+  {
+    "closed": "objects.100_osman_door_autumn",
+    "opened": "objects.100_osman_door_autumn_open"
+  },
+  {
+    "closed": "objects.swan_building_door",
+    "opened": "objects.swan_building_door_open"
+  },
+  {
+    "closed": "objects.100_osman_door_spring",
+    "opened": "objects.100_osman_door_spring_open"
+  },
+  {
+    "closed": "objects.qip_sheep_shearer_poordoor",
+    "opened": "objects.qip_sheep_shearer_poordooropen"
+  },
+  {
+    "closed": "objects.desert_door_l",
+    "opened": "objects.desert_door_l_open"
+  },
+  {
+    "closed": "objects.desert_door_r",
+    "opened": "objects.desert_door_r_open"
+  },
+  {
+    "closed": "objects.timberwall_door",
+    "opened": "objects.timberwall_door_open"
+  },
+  {
+    "closed": "objects.timberwall_doorl",
+    "opened": "objects.timberwall_doorl_open"
+  },
+  {
+    "closed": "objects.poordoor_double_inner",
+    "opened": "objects.openpoordoor_double_inner"
+  },
+  {
+    "closed": "objects.poordoor_doubler_inner",
+    "opened": "objects.openpoordoor_doubler_inner"
+  },
+  {
+    "closed": "objects.village_door_l",
+    "opened": "objects.village_door_l_open"
+  },
+  {
+    "closed": "objects.village_door_r",
+    "opened": "objects.village_door_r_open"
+  },
+  {
+    "closed": "objects.yanille_poh_double_door",
+    "opened": "objects.yanille_poh_double_door_open"
+  },
+  {
+    "closed": "objects.yanille_poh_double_doorl",
+    "opened": "objects.yanille_poh_double_doorl_open"
+  },
+  {
+    "closed": "objects.poh_cage_dungeon_oak_door",
+    "opened": "objects.poh_cage_dungeon_oak_door_open"
+  },
+  {
+    "closed": "objects.poh_cage_dungeon_oak+steel_door",
+    "opened": "objects.poh_cage_dungeon_oak+steel_door_open"
+  },
+  {
+    "closed": "objects.poh_cage_dungeon_steel_door",
+    "opened": "objects.poh_cage_dungeon_steel_door_open"
+  },
+  {
+    "closed": "objects.poh_cage_dungeon_steel+spikes_door",
+    "opened": "objects.poh_cage_dungeon_steel+spikes_door_open"
+  },
+  {
+    "closed": "objects.poh_cage_dungeon_bones_door",
+    "opened": "objects.poh_cage_dungeon_bones_door_open"
+  },
+  {
+    "closed": "objects.poh_dungeon_ldoor_oak",
+    "opened": "objects.poh_dungeon_ldoor_oak_open"
+  },
+  {
+    "closed": "objects.poh_dungeon_rdoor_oak",
+    "opened": "objects.poh_dungeon_rdoor_oak_open"
+  },
+  {
+    "closed": "objects.poh_dungeon_ldoor_steel",
+    "opened": "objects.poh_dungeon_ldoor_steel_open"
+  },
+  {
+    "closed": "objects.poh_dungeon_rdoor_steel",
+    "opened": "objects.poh_dungeon_rdoor_steel_open"
+  },
+  {
+    "closed": "objects.poh_dungeon_ldoor_marble",
+    "opened": "objects.poh_dungeon_ldoor_marble_open"
+  },
+  {
+    "closed": "objects.poh_dungeon_rdoor_marble",
+    "opened": "objects.poh_dungeon_rdoor_marble_open"
+  },
+  {
+    "closed": "objects.wild_door",
+    "opened": "objects.wild_door_open"
+  },
+  {
+    "closed": "objects.royal_village_door",
+    "opened": "objects.royal_village_door_open"
+  },
+  {
+    "closed": "objects.lotr_ruins_tran_door_closed",
+    "opened": "objects.lotr_ruins_tran_door_open"
+  },
+  {
+    "closed": "objects.lotr_ruins_cage_door_closed",
+    "opened": "objects.lotr_ruins_cage_door_open"
+  },
+  {
+    "closed": "objects.lunar_moonclan_door",
+    "opened": "objects.lunar_moonclan_door_open"
+  },
+  {
+    "closed": "objects.quest_lunar_galleon_pirate_door",
+    "opened": "objects.quest_lunar_galleon_pirate_door_open"
+  },
+  {
+    "closed": "objects.sos_fam_door_face",
+    "opened": "objects.sos_fam_door_face_open"
+  },
+  {
+    "closed": "objects.sos_fam_door_face_mirr",
+    "opened": "objects.sos_fam_door_face_mirr_open"
+  },
+  {
+    "closed": "objects.pest_poordoor",
+    "opened": "objects.pest_poordooropen"
+  },
+  {
+    "closed": "objects.qip_digsite_poshdoor",
+    "opened": "objects.qip_digsite_poshdoor_open"
+  },
+  {
+    "closed": "objects.myq3_lab_door_locked_l",
+    "opened": "objects.myq3_lab_door_locked_l_open"
+  },
+  {
+    "closed": "objects.myq3_lab_door_locked_r",
+    "opened": "objects.myq3_lab_door_locked_r_open"
+  },
+  {
+    "closed": "objects.elemental_waterdoor_closed_retracted_none",
+    "opened": "objects.elemental_waterdoor_open_retracted_none"
+  },
+  {
+    "closed": "objects.elemental_waterdoor_closed_retracted_hotbar",
+    "opened": "objects.elemental_waterdoor_open_retracted_hotbar"
+  },
+  {
+    "closed": "objects.elemental_waterdoor_closed_retracted_coldbar",
+    "opened": "objects.elemental_waterdoor_open_retracted_coldbar"
+  },
+  {
+    "closed": "objects.elem2_door_mind",
+    "opened": "objects.elem2_door_mind_open"
+  },
+  {
+    "closed": "objects.elem2_door_mindl",
+    "opened": "objects.elem2_door_mindl_open"
+  },
+  {
+    "closed": "objects.sos_war_door_face",
+    "opened": "objects.sos_war_door_face_open"
+  },
+  {
+    "closed": "objects.sos_war_door_face_mirr",
+    "opened": "objects.sos_war_door_face_mirr_open"
+  },
+  {
+    "closed": "objects.eaglepeak_entrance_door_multi",
+    "opened": "objects.eaglepeak_entrance_dooropen_multi"
+  },
+  {
+    "closed": "objects.lotr_trap_trap_door_closed",
+    "opened": "objects.lotr_trap_trap_door_open"
+  },
+  {
+    "closed": "objects.lotr_trap_trap_door_closed_lvl1",
+    "opened": "objects.lotr_trap_trap_door_open_lvl1"
+  },
+  {
+    "closed": "objects.lotr_trap_trap_door_closed_lvl2",
+    "opened": "objects.lotr_trap_trap_door_open_lvl2"
+  },
+  {
+    "closed": "objects.lotr_trap_trap_door_closed_lvl3",
+    "opened": "objects.lotr_trap_trap_door_open_lvl3"
+  },
+  {
+    "closed": "objects.grab_evil_twin_poor_door",
+    "opened": "objects.grab_evil_twin_poor_door_open"
+  },
+  {
+    "closed": "objects.peng_base_door",
+    "opened": "objects.peng_base_door_open"
+  },
+  {
+    "closed": "objects.peng_base_door_bard",
+    "opened": "objects.peng_base_door_bard_open"
+  },
+  {
+    "closed": "objects.peng_base_door_agility",
+    "opened": "objects.peng_base_door_agility_open"
+  },
+  {
+    "closed": "objects.peng_agility_fencing_door",
+    "opened": "objects.peng_agility_fencing_door_open"
+  },
+  {
+    "closed": "objects.peng_ardougne_enclosure_door",
+    "opened": "objects.peng_ardougne_enclosure_door_open"
+  },
+  {
+    "closed": "objects.frisb_abode_door",
+    "opened": "objects.frisb_abode_door_open"
+  },
+  {
+    "closed": "objects.frisd_turret_door",
+    "opened": "objects.frisd_turret_door_open"
+  },
+  {
+    "closed": "objects.frisd_town_wall_door",
+    "opened": "objects.frisd_town_wall_door_open"
+  },
+  {
+    "closed": "objects.frisd_outer_city_wall_door_left",
+    "opened": "objects.frisd_outer_city_wall_door_left_open"
+  },
+  {
+    "closed": "objects.frisd_outer_city_wall_door_right",
+    "opened": "objects.frisd_outer_city_wall_door_right_open"
+  },
+  {
+    "closed": "objects.tol_tower_wall_door",
+    "opened": "objects.tol_tower_wall_door_open"
+  },
+  {
+    "closed": "objects.dorgesh_nursery_door_closed",
+    "opened": "objects.dorgesh_nursery_door_open"
+  },
+  {
+    "closed": "objects.dorgesh_inner_door_closed",
+    "opened": "objects.dorgesh_inner_door_open"
+  },
+  {
+    "closed": "objects.dorgesh_inner_door_posh_closed",
+    "opened": "objects.dorgesh_inner_door_posh_open"
+  },
+  {
+    "closed": "objects.sos_pest_door_face",
+    "opened": "objects.sos_pest_door_face_open"
+  },
+  {
+    "closed": "objects.sos_pest_door_face_mirr",
+    "opened": "objects.sos_pest_door_face_mirr_open"
+  },
+  {
+    "closed": "objects.sos_death_door_face",
+    "opened": "objects.sos_death_door_face_open"
+  },
+  {
+    "closed": "objects.sos_death_door_face_mirr",
+    "opened": "objects.sos_death_door_face_mirr_open"
+  },
+  {
+    "closed": "objects.fai_wiztower_poor_door",
+    "opened": "objects.fai_wiztower_poor_door_open"
+  },
+  {
+    "closed": "objects.fai_falador_poor_door",
+    "opened": "objects.fai_falador_poor_door_open"
+  },
+  {
+    "closed": "objects.fai_falador_poor_door_closed_m",
+    "opened": "objects.fai_falador_poor_door_open_m"
+  },
+  {
+    "closed": "objects.fai_falador_poor_door_flip",
+    "opened": "objects.fai_falador_poor_door_open_flip"
+  },
+  {
+    "closed": "objects.fai_falador_poor_castle_door",
+    "opened": "objects.fai_falador_poor_castle_door_open"
+  },
+  {
+    "closed": "objects.fai_falador_double_door_l",
+    "opened": "objects.fai_falador_double_door_l_open"
+  },
+  {
+    "closed": "objects.fai_falador_double_door_r",
+    "opened": "objects.fai_falador_double_door_r_open"
+  },
+  {
+    "closed": "objects.warguild_door_armour_l",
+    "opened": "objects.warguild_dooropen_armour_l"
+  },
+  {
+    "closed": "objects.warguild_door_armour_r",
+    "opened": "objects.warguild_dooropen_armour_r"
+  },
+  {
+    "closed": "objects.warguild_door_catapult",
+    "opened": "objects.warguild_dooropen_catapult"
+  },
+  {
+    "closed": "objects.warguild_door_dummy",
+    "opened": "objects.warguild_dooropen_dummy"
+  },
+  {
+    "closed": "objects.warguild_door_front",
+    "opened": "objects.warguild_dooropen_front"
+  },
+  {
+    "closed": "objects.canafis_door",
+    "opened": "objects.canafis_door_open"
+  },
+  {
+    "closed": "objects.canafis_door_ground",
+    "opened": "objects.canafis_door_ground_open"
+  },
+  {
+    "closed": "objects.fai_varrock_museum_door_closed_l",
+    "opened": "objects.fai_varrock_museum_door_open_l"
+  },
+  {
+    "closed": "objects.fai_varrock_museum_door_closed_r",
+    "opened": "objects.fai_varrock_museum_door_open_r"
+  },
+  {
+    "closed": "objects.grim_witch_house_door",
+    "opened": "objects.grim_witch_house_door_open"
+  },
+  {
+    "closed": "objects.chefdoor",
+    "opened": "objects.chefdoor_open"
+  },
+  {
+    "closed": "objects.dragon_slayer_qip_magic_door",
+    "opened": "objects.dragon_slayer_qip_magic_door_open"
+  },
+  {
+    "closed": "objects.qip_obs_reception_door",
+    "opened": "objects.qip_obs_reception_door_open"
+  },
+  {
+    "closed": "objects.kr_cam_poshdoor",
+    "opened": "objects.kr_cam_poshdoor_open"
+  },
+  {
+    "closed": "objects.kr_sin_poordoor",
+    "opened": "objects.kr_sin_poordooropen"
+  },
+  {
+    "closed": "objects.kr_sin_poshdoor",
+    "opened": "objects.kr_sin_poshdooropen"
+  },
+  {
+    "closed": "objects.kr_poshdoor",
+    "opened": "objects.kr_poshdooropen"
+  },
+  {
+    "closed": "objects.kr_poordoor",
+    "opened": "objects.kr_poordooropen"
+  },
+  {
+    "closed": "objects.kr_courthouse_double_door_l",
+    "opened": "objects.kr_courthouse_double_door_l_open"
+  },
+  {
+    "closed": "objects.kr_courthouse_double_door_r",
+    "opened": "objects.kr_courthouse_double_door_r_open"
+  },
+  {
+    "closed": "objects.deathly_poh_double_door",
+    "opened": "objects.deathly_poh_double_door_open"
+  },
+  {
+    "closed": "objects.deathly_poh_double_doorl",
+    "opened": "objects.deathly_poh_double_doorl_open"
+  },
+  {
+    "closed": "objects.hosidius_door",
+    "opened": "objects.hosidius_door_open"
+  },
+  {
+    "closed": "objects.vine_glass_house_door",
+    "opened": "objects.vine_glass_house_door_open"
+  },
+  {
+    "closed": "objects.archeuus_door_double_left_turquoise",
+    "opened": "objects.archeuus_door_double_left_turquoise_open"
+  },
+  {
+    "closed": "objects.archeuus_door_double_left_green",
+    "opened": "objects.archeuus_door_double_left_green_open"
+  },
+  {
+    "closed": "objects.archeuus_door_double_left_red",
+    "opened": "objects.archeuus_door_double_left_red_open"
+  },
+  {
+    "closed": "objects.archeuus_door_double_left_blue",
+    "opened": "objects.archeuus_door_double_left_blue_open"
+  },
+  {
+    "closed": "objects.archeuus_door_double_right_turquoise",
+    "opened": "objects.archeuus_door_double_right_turquoise_open"
+  },
+  {
+    "closed": "objects.archeuus_door_double_right_green",
+    "opened": "objects.archeuus_door_double_right_green_open"
+  },
+  {
+    "closed": "objects.archeuus_door_double_right_red",
+    "opened": "objects.archeuus_door_double_right_red_open"
+  },
+  {
+    "closed": "objects.archeuus_door_double_right_blue",
+    "opened": "objects.archeuus_door_double_right_blue_open"
+  },
+  {
+    "closed": "objects.ds2_varrock_door",
+    "opened": "objects.ds2_varrock_door_open"
+  },
+  {
+    "closed": "objects.myq4_serafina_door",
+    "opened": "objects.myq4_serafina_door_open"
+  },
+  {
+    "closed": "objects.lovaquest_tower_entry_door",
+    "opened": "objects.lovaquest_tower_entry_door_open"
+  },
+  {
+    "closed": "objects.lovaquest_inner_door",
+    "opened": "objects.lovaquest_inner_door_open"
+  },
+  {
+    "closed": "objects.arcquest_tower_door_right",
+    "opened": "objects.arcquest_tower_door_right_open"
+  },
+  {
+    "closed": "objects.arcquest_tower_door_left",
+    "opened": "objects.arcquest_tower_door_left_open"
+  },
+  {
+    "closed": "objects.kebos_farming_guild_door_left_closed",
+    "opened": "objects.kebos_farming_guild_door_left_open"
+  },
+  {
+    "closed": "objects.kebos_farming_guild_door_right_closed",
+    "opened": "objects.kebos_farming_guild_door_right_open"
+  },
+  {
+    "closed": "objects.karuulm_hydra_room_door",
+    "opened": "objects.karuulm_hydra_room_door_open"
+  },
+  {
+    "closed": "objects.karuulm_hydra_room_door_m",
+    "opened": "objects.karuulm_hydra_room_door_m_open"
+  },
+  {
+    "closed": "objects.prif_house_door_closed",
+    "opened": "objects.prif_house_door_open"
+  },
+  {
+    "closed": "objects.prif_house_square_door_closed",
+    "opened": "objects.prif_house_square_door_open"
+  },
+  {
+    "closed": "objects.prif_house_door_stone_closed",
+    "opened": "objects.prif_house_door_stone_open"
+  },
+  {
+    "closed": "objects.darkm_poor_door_closed",
+    "opened": "objects.darkm_poor_door_open"
+  },
+  {
+    "closed": "objects.darkm_middle_door_closed",
+    "opened": "objects.darkm_middle_door_open"
+  },
+  {
+    "closed": "objects.darkm_middle_door_closed_noop",
+    "opened": "objects.darkm_middle_door_open_noop"
+  },
+  {
+    "closed": "objects.darkm_rich_door_closed",
+    "opened": "objects.darkm_rich_door_open"
+  },
+  {
+    "closed": "objects.slp_dungeon_door",
+    "opened": "objects.slp_dungeon_door_open"
+  },
+  {
+    "closed": "objects.ig_mausoleum_door",
+    "opened": "objects.ig_mausoleum_door_open"
+  },
+  {
+    "closed": "objects.akd_rose_basement_door",
+    "opened": "objects.akd_rose_basement_door_open"
+  },
+  {
+    "closed": "objects.wallkit_shayzien_door01_l",
+    "opened": "objects.wallkit_shayzien_door01_l_open"
+  },
+  {
+    "closed": "objects.wallkit_shayzien_door01_r",
+    "opened": "objects.wallkit_shayzien_door01_r_open"
+  },
+  {
+    "closed": "objects.wallkit_shayzien_door01_l_reverse",
+    "opened": "objects.wallkit_shayzien_door01_l_reverse_open"
+  },
+  {
+    "closed": "objects.wallkit_shayzien_door01_r_reverse",
+    "opened": "objects.wallkit_shayzien_door01_r_reverse_open"
+  },
+  {
+    "closed": "objects.wallkit_shayzien_door01_double_l",
+    "opened": "objects.wallkit_shayzien_door01_double_l_open"
+  },
+  {
+    "closed": "objects.wallkit_shayzien_door01_double_r",
+    "opened": "objects.wallkit_shayzien_door01_double_r_open"
+  },
+  {
+    "closed": "objects.akd_temple_door",
+    "opened": "objects.akd_temple_door_open"
+  },
+  {
+    "closed": "objects.lotg_temple_jaildoor_closed",
+    "opened": "objects.lotg_temple_jaildoor_open"
+  },
+  {
+    "closed": "objects.greybox_tomb_door01_closed",
+    "opened": "objects.greybox_tomb_door01_open"
+  },
+  {
+    "closed": "objects.greybox_tomb_door02_closed",
+    "opened": "objects.greybox_tomb_door02_open"
+  },
+  {
+    "closed": "objects.greybox_tomb_door03_closed",
+    "opened": "objects.greybox_tomb_door03_open"
+  },
+  {
+    "closed": "objects.greybox_tomb_door04_closed",
+    "opened": "objects.greybox_tomb_door04_open"
+  },
+  {
+    "closed": "objects.pvpa_desertdoor_closed",
+    "opened": "objects.pvpa_desertdoor_open"
+  },
+  {
+    "closed": "objects.toa_nexus_wardens_door",
+    "opened": "objects.toa_nexus_wardens_door_open"
+  },
+  {
+    "closed": "objects.poshdoor_reverse",
+    "opened": "objects.poshdooropen_reverse"
+  },
+  {
+    "closed": "objects.lassar_locked_door_normal_closed_l",
+    "opened": "objects.lassar_locked_door_normal_open_l"
+  },
+  {
+    "closed": "objects.lassar_locked_door_normal_closed_r",
+    "opened": "objects.lassar_locked_door_normal_open_r"
+  },
+  {
+    "closed": "objects.lassar_locked_door_shadow_closed_l",
+    "opened": "objects.lassar_locked_door_shadow_open_l"
+  },
+  {
+    "closed": "objects.lassar_locked_door_shadow_closed_r",
+    "opened": "objects.lassar_locked_door_shadow_open_r"
+  },
+  {
+    "closed": "objects.lassar_door_closed",
+    "opened": "objects.lassar_door_open"
+  },
+  {
+    "closed": "objects.lassar_door_closed_noop",
+    "opened": "objects.lassar_door_open_noop"
+  },
+  {
+    "closed": "objects.lassar_door_closed_l",
+    "opened": "objects.lassar_door_open_l"
+  },
+  {
+    "closed": "objects.lassar_door_closed_r",
+    "opened": "objects.lassar_door_open_r"
+  },
+  {
+    "closed": "objects.lassar_door_closed_l_noop",
+    "opened": "objects.lassar_door_open_l_noop"
+  },
+  {
+    "closed": "objects.lassar_door_closed_r_noop",
+    "opened": "objects.lassar_door_open_r_noop"
+  },
+  {
+    "closed": "objects.lassar_door_closed_shadow",
+    "opened": "objects.lassar_door_open_shadow"
+  },
+  {
+    "closed": "objects.lassar_door_closed_noop_shadow",
+    "opened": "objects.lassar_door_open_noop_shadow"
+  },
+  {
+    "closed": "objects.lassar_door_closed_l_shadow",
+    "opened": "objects.lassar_door_open_l_shadow"
+  },
+  {
+    "closed": "objects.lassar_door_closed_r_shadow",
+    "opened": "objects.lassar_door_open_r_shadow"
+  },
+  {
+    "closed": "objects.lassar_door_closed_l_noop_shadow",
+    "opened": "objects.lassar_door_open_l_noop_shadow"
+  },
+  {
+    "closed": "objects.lassar_door_closed_r_noop_shadow",
+    "opened": "objects.lassar_door_open_r_noop_shadow"
+  },
+  {
+    "closed": "objects.lassar_door_closed_alt",
+    "opened": "objects.lassar_door_open_alt"
+  },
+  {
+    "closed": "objects.lassar_door_closed_l_alt",
+    "opened": "objects.lassar_door_open_l_alt"
+  },
+  {
+    "closed": "objects.lassar_door_closed_r_alt",
+    "opened": "objects.lassar_door_open_r_alt"
+  },
+  {
+    "closed": "objects.dt2_stranglewood_temple_door_l",
+    "opened": "objects.dt2_stranglewood_temple_door_l_open"
+  },
+  {
+    "closed": "objects.dt2_stranglewood_temple_door_r",
+    "opened": "objects.dt2_stranglewood_temple_door_r_open"
+  },
+  {
+    "closed": "objects.pog_hatch_closed_door",
+    "opened": "objects.pog_hatch_open_door"
+  },
+  {
+    "closed": "objects.pog_gate_door",
+    "opened": "objects.pog_gate_door_open"
+  },
+  {
+    "closed": "objects.pog_sewer_grate_door_closed",
+    "opened": "objects.pog_sewer_grate_door_open"
+  },
+  {
+    "closed": "objects.pog_sewer_grate_door_instance_closed",
+    "opened": "objects.pog_sewer_grate_door_instance_open"
+  },
+  {
+    "closed": "objects.vmq1_bandit_door",
+    "opened": "objects.vmq1_bandit_door_open"
+  },
+  {
+    "closed": "objects.vmq1_prisondoor",
+    "opened": "objects.vmq1_prisondoor_open"
+  },
+  {
+    "closed": "objects.dov_base_door_closed",
+    "opened": "objects.dov_base_door_open"
+  },
+  {
+    "closed": "objects.mah3_door_to_tapestry",
+    "opened": "objects.mah3_door_to_tapestry_open"
+  },
+  {
+    "closed": "objects.mah3_base_door",
+    "opened": "objects.mah3_base_door_open"
+  },
+  {
+    "closed": "objects.mah3_base_door_mirror",
+    "opened": "objects.mah3_base_door_mirror_open"
+  },
+  {
+    "closed": "objects.wooden_fur_door",
+    "opened": "objects.wooden_fur_door_open"
+  },
+  {
+    "closed": "objects.wooden_fur_door_always_closed",
+    "opened": "objects.wooden_fur_door_always_open"
+  },
+  {
+    "closed": "objects.fortis_door_l",
+    "opened": "objects.fortis_door_l_open"
+  },
+  {
+    "closed": "objects.fortis_door_r",
+    "opened": "objects.fortis_door_r_open"
+  },
+  {
+    "closed": "objects.fortis_door_l_reverse",
+    "opened": "objects.fortis_door_l_reverse_open"
+  },
+  {
+    "closed": "objects.fortis_door_r_reverse",
+    "opened": "objects.fortis_door_r_reverse_open"
+  },
+  {
+    "closed": "objects.fortis_door_double_l",
+    "opened": "objects.fortis_door_double_l_open"
+  },
+  {
+    "closed": "objects.fortis_door_double_r",
+    "opened": "objects.fortis_door_double_r_open"
+  },
+  {
+    "closed": "objects.wallkit_easter24_door01_closed_r",
+    "opened": "objects.wallkit_easter24_door01_open_r"
+  },
+  {
+    "closed": "objects.wallkit_easter24_door01_closed_l",
+    "opened": "objects.wallkit_easter24_door01_open_l"
+  },
+  {
+    "closed": "objects.luc2_darksquall_cell_door_closed",
+    "opened": "objects.luc2_darksquall_cell_door_open"
+  },
+  {
+    "closed": "objects.luc2_mov_door_closed",
+    "opened": "objects.luc2_mov_door_open"
+  },
+  {
+    "closed": "objects.luc2_movario_main_base_door_closed",
+    "opened": "objects.luc2_movario_main_base_door_open"
+  },
+  {
+    "closed": "objects.luc2_mov_khazard_cell_door_closed",
+    "opened": "objects.luc2_mov_khazard_cell_door_open"
+  },
+  {
+    "closed": "objects.vm_store_room_door",
+    "opened": "objects.vm_store_room_door_open"
+  },
+  {
+    "closed": "objects.civitas_poh_door_l",
+    "opened": "objects.civitas_poh_door_l_open"
+  },
+  {
+    "closed": "objects.civitas_poh_door_r",
+    "opened": "objects.civitas_poh_door_r_open"
+  },
+  {
+    "closed": "objects.poordoor_m",
+    "opened": "objects.poordooropen_m"
+  },
+  {
+    "closed": "objects.vmq4_janus_house_front_door_right",
+    "opened": "objects.vmq4_janus_house_front_door_right_open"
+  },
+  {
+    "closed": "objects.vmq4_janus_house_front_door_left",
+    "opened": "objects.vmq4_janus_house_front_door_left_open"
+  },
+  {
+    "closed": "objects.vmq4_janus_house_puzzle_door",
+    "opened": "objects.vmq4_janus_house_puzzle_door_open"
+  },
+  {
+    "closed": "objects.twilight_temple_door_closed",
+    "opened": "objects.twilight_temple_door_open"
+  },
+  {
+    "closed": "objects.vmq4_queen_chamber_door_l",
+    "opened": "objects.vmq4_queen_chamber_door_l_open"
+  },
+  {
+    "closed": "objects.vmq4_queen_chamber_door_r",
+    "opened": "objects.vmq4_queen_chamber_door_r_open"
+  },
+  {
+    "closed": "objects.vmq4_crypt_door_to_moki",
+    "opened": "objects.vmq4_crypt_door_to_moki_open"
+  },
+  {
+    "closed": "objects.vmq4_crypt_door_to_moki_closed",
+    "opened": "objects.vmq4_crypt_door_to_moki_open"
+  },
+  {
+    "closed": "objects.pandemonium_door",
+    "opened": "objects.pandemonium_door_open"
+  },
+  {
+    "closed": "objects.pandemonium_door_reverse",
+    "opened": "objects.pandemonium_door_reverse_open"
+  },
+  {
+    "closed": "objects.wallkit_wooden01_default01_door",
+    "opened": "objects.wallkit_wooden01_default01_door_open"
+  },
+  {
+    "closed": "objects.rocko_prison_door01",
+    "opened": "objects.rocko_prison_door01_open"
+  },
+  {
+    "closed": "objects.rocko_prison_door02",
+    "opened": "objects.rocko_prison_door02_open"
+  },
+  {
+    "closed": "objects.wallkit_red_rock_door01_closed_r",
+    "opened": "objects.wallkit_red_rock_door01_open_r"
+  },
+  {
+    "closed": "objects.wallkit_red_rock_door01_closed_l",
+    "opened": "objects.wallkit_red_rock_door01_open_l"
+  },
+  {
+    "closed": "objects.ghorrock_metal_gate_padlock_closed",
+    "opened": "objects.ghorrock_metal_gate_padlock_open"
+  },
+  {
+    "closed": "objects.ror_gate_bloodmoon_closed",
+    "opened": "objects.ror_gate_bloodmoon_open"
+  },
+  {
+    "closed": "objects.ror_gate_bluemoon_closed",
+    "opened": "objects.ror_gate_bluemoon_open"
+  },
+  {
+    "closed": "objects.ror_gate_solareclipse_closed",
+    "opened": "objects.ror_gate_solareclipse_open"
+  },
+  {
+    "closed": "objects.ror_gate_newmoon_closed",
+    "opened": "objects.ror_gate_newmoon_open"
+  },
+  {
+    "closed": "objects.ror_gate_fullmoon_closed",
+    "opened": "objects.ror_gate_fullmoon_open"
+  },
+  {
+    "closed": "objects.ror_gate_waxmoon_closed",
+    "opened": "objects.ror_gate_waxmoon_open"
+  },
+  {
+    "closed": "objects.ror_gate_wanmoon_closed",
+    "opened": "objects.ror_gate_wanmoon_open"
+  },
+  {
+    "closed": "objects.wallkit_colosseum01_gate02_closed",
+    "opened": "objects.wallkit_colosseum01_gate02_open"
+  },
+  {
+    "closed": "objects.wallkit_colosseum01_gate02_closed_m",
+    "opened": "objects.wallkit_colosseum01_gate02_open_m"
+  },
+  {
+    "closed": "objects.wallkit_colosseum03_gate02_closed01",
+    "opened": "objects.wallkit_colosseum03_gate02_open01"
+  },
+  {
+    "closed": "objects.wallkit_colosseum03_gate02_closed01_m",
+    "opened": "objects.wallkit_colosseum03_gate02_open01_m"
+  },
+  {
+    "closed": "objects.tapo_gateway_portcullis01_closed01",
+    "opened": "objects.tapo_gateway_portcullis01_open01"
+  },
+  {
+    "closed": "objects.pvpa_access_gate_l_closed",
+    "opened": "objects.pvpa_access_gate_l_open"
+  },
+  {
+    "closed": "objects.pvpa_access_gate_r_closed",
+    "opened": "objects.pvpa_access_gate_r_open"
   }
 ]

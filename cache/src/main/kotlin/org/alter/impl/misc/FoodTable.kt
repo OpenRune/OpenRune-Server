@@ -14,11 +14,15 @@ enum class Food(
     val dbRowId: String
 ) {
     SHRIMPS("items.shrimp", heal = 3, dbRowId = "dbrows.shrimps_food"),
+    SARDINE("items.sardine", heal = 4, dbRowId = "dbrows.sardine_food"),
+    // ANCHOVY("items.anchovy", heal = 1, dbRowId = "dbrows.anchovy_food"), // TODO: Add items.anchovy to items.rscm
     COOKED_CHICKEN("items.cooked_chicken", heal = 3, dbRowId = "dbrows.cooked_chicken_food"),
     COOKED_MEAT("items.cooked_meat", heal = 3, dbRowId = "dbrows.cooked_meat_food"),
+    UGTHANKI_MEAT("items.cooked_ugthanki_meat", heal = 3, dbRowId = "dbrows.ugthanki_meat_food"),
     BREAD("items.bread", heal = 5, dbRowId = "dbrows.bread_food"),
     HERRING("items.herring", heal = 5, dbRowId = "dbrows.herring_food"),
     MACKEREL("items.mackerel", heal = 6, dbRowId = "dbrows.mackerel_food"),
+    COD("items.cod", heal = 7, dbRowId = "dbrows.cod_food"),
     TROUT("items.trout", heal = 7, dbRowId = "dbrows.trout_food"),
     PIKE("items.pike", heal = 8, dbRowId = "dbrows.pike_food"),
     PEACH("items.peach", heal = 8, dbRowId = "dbrows.peach_food"),

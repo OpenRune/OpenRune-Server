@@ -65,6 +65,10 @@ object RSCM {
         return reverseCache[table]?.get(value)
     }
 
+    fun getReverseCache(table: RSCMType): Map<Int, String>? {
+        return reverseCache[table]
+    }
+
     fun getRSCM(entity: String): Int {
         if (entity == NONE) return -1
         require(RSCM_PREFIXES.any { entity.startsWith(it) }) { "Prefix not found for '${entity.substringBefore(".")}'" }

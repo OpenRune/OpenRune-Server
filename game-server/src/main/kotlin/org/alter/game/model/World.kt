@@ -18,6 +18,7 @@ import org.alter.game.DevContext
 import org.alter.game.GameContext
 import org.alter.game.Server
 import org.alter.game.fs.DefinitionSet
+import org.alter.game.fs.NpcExamineHolder
 import org.alter.game.fs.ObjectExamineHolder
 import org.alter.game.model.attr.AttributeMap
 import org.alter.game.model.collision.isClipped
@@ -632,11 +633,10 @@ class World(val gameContext: GameContext, val devContext: DevContext) {
         id: Int,
         type: ExamineEntityType,
     ) {
-        //TODO NEW EXAMINES
         val examine =
             when (type) {
                 ExamineEntityType.ITEM -> getItem(id)?.examine
-                ExamineEntityType.NPC -> "TODO ADD EXMAINES"
+                ExamineEntityType.NPC -> NpcExamineHolder.EXAMINES.get(id)
                 ExamineEntityType.OBJECT -> ObjectExamineHolder.EXAMINES.get(id)
             }
 

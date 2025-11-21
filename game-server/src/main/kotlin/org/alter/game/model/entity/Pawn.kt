@@ -7,12 +7,16 @@ import org.alter.game.event.Event
 import org.alter.game.info.NpcInfo
 import org.alter.game.info.PlayerInfo
 import org.alter.game.model.*
+import org.alter.game.model.attr.COMBAT_ATTACKERS_ATTR
+import org.alter.game.model.attr.COMBAT_TARGET_FOCUS_ATTR
 import org.alter.game.model.attr.*
 import org.alter.game.model.bits.INFINITE_VARS_STORAGE
 import org.alter.game.model.bits.InfiniteVarsType
 import org.alter.game.model.collision.rayCast
 import org.alter.game.model.combat.DamageMap
 import org.alter.game.model.move.MovementQueue
+import org.alter.game.model.move.hasMoveDestination
+import org.alter.game.model.move.walkTo
 import org.alter.game.model.queue.QueueTask
 import org.alter.game.model.queue.QueueTaskSet
 import org.alter.game.model.queue.TaskPriority
@@ -224,6 +228,74 @@ abstract class Pawn(val world: World) : Entity() {
     fun attack(target: Pawn) {
         resetInteractions()
         interruptQueues()
+
+        // If player is standing on the same tile as the target, walk away first
+        if (this is Player && this.tile.x == target.tile.x && this.tile.z == target.tile.z && this.tile.height == target.tile.height) {
+            // Find an adjacent walkable tile
+            val directions = listOf(
+                org.alter.game.model.Direction.NORTH,
+                org.alter.game.model.Direction.SOUTH,
+                org.alter.game.model.Direction.EAST,
+                org.alter.game.model.Direction.WEST
+            )
+
+            var adjacentTile: org.alter.game.model.Tile? = null
+            for (direction in directions) {
+                val testTile = this.tile.transform(direction.getDeltaX(), direction.getDeltaZ())
+                if (world.canTraverse(this.tile, direction, this, this.getSize())) {
+                    adjacentTile = testTile
+                    break
+                }
+            }
+
+            if (adjacentTile != null) {
+                // Walk to adjacent tile first, THEN set combat target and start combat
+                // This ensures the combat cycle starts after we've moved away
+                // Note: We create the queue task AFTER interruptQueues() has been called
+                (this as Player).queue {
+                    val player = this@Pawn as Player
+                    val targetId = if (target is Npc) (target as Npc).id else "Player"
+                    println("[SAME-TILE] Player ${player.username} starting walk-away from ${if (target is Npc) "NPC" else "Player"} $targetId at tile (${player.tile.x},${player.tile.z}) to (${adjacentTile.x},${adjacentTile.z})")
+                    player.walkTo(adjacentTile)
+                    var waitCount = 0
+                    val maxWait = 50 // Safety limit to prevent infinite loop
+                    while (player.hasMoveDestination() && waitCount < maxWait) {
+                        wait(1)
+                        waitCount++
+                        if (!target.isAlive()) {
+                            println("[SAME-TILE] Target died during walk-away")
+                            return@queue
+                        }
+                    }
+                    if (waitCount >= maxWait) {
+                        println("[SAME-TILE] Walk-away timeout after $maxWait ticks, player still has move destination")
+                        return@queue
+                    }
+                    // Wait one more tick to ensure movement is fully complete and position is updated
+                    wait(1)
+                    println("[SAME-TILE] Walk-away complete. Player at (${player.tile.x},${player.tile.z}), target at (${target.tile.x},${target.tile.z}). Setting combat target and starting combat cycle.")
+                    // Now that we've moved away, set combat target BEFORE calling executeCombat
+                    // This ensures the combat target is set when the combat cycle starts
+                    player.attr[COMBAT_TARGET_FOCUS_ATTR] = WeakReference(target)
+                    target.attr.addToSet(COMBAT_ATTACKERS_ATTR, WeakReference(player))
+
+                    // Verify target is set before starting combat
+                    val hasTargetBefore = player.attr[COMBAT_TARGET_FOCUS_ATTR]?.get() != null
+                    println("[SAME-TILE] Target set: hasTarget=$hasTargetBefore, target=${player.attr[COMBAT_TARGET_FOCUS_ATTR]?.get()}")
+
+                    // Start combat cycle immediately - no need for nested queue
+                    // executeCombat will start its own queue task
+                    println("[SAME-TILE] Executing combat. Player at (${player.tile.x},${player.tile.z}), target at (${target.tile.x},${target.tile.z})")
+                    player.world.plugins.executeCombat(player)
+
+                    // Verify combat started
+                    val hasTargetAfter = player.attr[COMBAT_TARGET_FOCUS_ATTR]?.get() != null
+                    println("[SAME-TILE] executeCombat called. After call: hasTarget=$hasTargetAfter")
+                }
+                return
+            }
+        }
+
         attr[COMBAT_TARGET_FOCUS_ATTR] = WeakReference(target)
 
         // Track that we are attacking this target
@@ -234,8 +306,15 @@ abstract class Pawn(val world: World) : Entity() {
          * combat <strong>unless</strong> they have a custom npc combat plugin
          * bound to their npc id.
          */
-        if (entityType.isPlayer || this is Npc && !world.plugins.executeNpcCombat(this)) {
+        // Always execute combat to ensure the combat cycle starts
+        // This will start a new queue that runs the combat cycle
+        if (entityType.isPlayer) {
             world.plugins.executeCombat(this)
+        } else if (this is Npc) {
+            // For NPCs, only execute if executeNpcCombat returns false (meaning no custom combat handler)
+            if (!world.plugins.executeNpcCombat(this)) {
+                world.plugins.executeCombat(this)
+            }
         }
     }
 

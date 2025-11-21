@@ -7,6 +7,7 @@ import org.alter.api.ext.playSound
 import org.alter.game.model.Graphic
 import org.alter.game.model.Tile
 import org.alter.game.model.combat.XpMode
+import org.alter.game.model.collision.rayCast
 import org.alter.game.model.entity.Npc
 import org.alter.game.model.entity.Pawn
 import org.alter.game.model.entity.Player
@@ -35,7 +36,15 @@ object MagicCombatStrategy : CombatStrategy {
                 return false
             }
         }
-        return true
+        
+        // Check line of sight - magic requires clear line of sight
+        val attackRange = getAttackRange(pawn)
+        val distance = pawn.tile.getDistance(target.tile)
+        if (distance > attackRange) {
+            return false
+        }
+        // Check line of sight (magic projectiles can pass through some objects, but not walls)
+        return pawn.world.lineValidator.rayCast(pawn.tile, target.tile, projectile = true)
     }
 
     override fun attack(
