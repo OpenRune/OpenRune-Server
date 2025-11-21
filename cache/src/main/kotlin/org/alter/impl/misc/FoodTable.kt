@@ -1,5 +1,6 @@
 package org.alter.impl.misc
 
+import dev.openrune.cache.VARBIT
 import dev.openrune.definition.dbtables.dbTable
 import dev.openrune.definition.util.VarType
 
@@ -492,7 +493,7 @@ object FoodTable {
 
     fun consumableFood() = dbTable("tables.consumable_food") {
 
-        column("items", ITEMS, VarType.OBJ)
+        column("items", ITEMS, VarType.OBJ.count(Food.entries.maxOf { it.items.size }))
         column("heal", HEAL, VarType.INT)
 
         column("combo", COMBO_FOOD, VarType.BOOLEAN)

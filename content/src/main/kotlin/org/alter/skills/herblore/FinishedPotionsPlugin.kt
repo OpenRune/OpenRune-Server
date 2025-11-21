@@ -11,6 +11,8 @@ import org.alter.game.pluginnew.PluginEvent
 import org.alter.game.pluginnew.event.impl.ItemOnItemEvent
 import org.alter.rscm.RSCM
 import org.alter.rscm.RSCM.asRSCM
+import org.alter.skills.herblore.HerbloreDefinitions.requiredItems
+import org.generated.tables.herblore.HerbloreFinishedRow
 
 /**
  * Plugin for creating finished potions (unfinished potion + secondary ingredients)
@@ -65,9 +67,8 @@ class FinishedPotionsPlugin : PluginEvent() {
 
             // Filter candidates to only those where player has ALL required ingredients AND meets level requirement
             val validCandidates = candidates.filter { potion ->
-                herbloreLevel >= potion.level &&
-                potion.requiredItems.all { itemId -> player.inventory.contains(itemId) } &&
-                potion.finishedPotion != null
+                herbloreLevel >= potion.levelRequired &&
+                potion.requiredItems.all { itemId -> player.inventory.contains(itemId) }
             }
 
             if (validCandidates.isEmpty()) {
@@ -77,7 +78,7 @@ class FinishedPotionsPlugin : PluginEvent() {
             // Calculate max producible for each candidate and create a map
             val candidatesWithMax = validCandidates.map { potion ->
                 // Calculate max producible: minimum of all ingredient counts
-                val unfinishedCount = player.inventory.getItemCount(potion.unfinishedPotion)
+                val unfinishedCount = player.inventory.getItemCount(potion.unfPot)
                 val secondaryCounts = potion.secondaries.map { secondaryId ->
                     player.inventory.getItemCount(secondaryId)
                 }
@@ -92,7 +93,7 @@ class FinishedPotionsPlugin : PluginEvent() {
 
             // Show interface to select potion and quantity
             player.queue {
-                val potionItems = candidatesWithMax.map { (potion, _) -> potion.finishedPotion!! }.toIntArray()
+                val potionItems = candidatesWithMax.map { (potion, _) -> potion.outputPotion }.toIntArray()
                 val maxProducible = candidatesWithMax.maxOf { (_, max) -> max }
 
                 produceItemBox(
@@ -103,7 +104,7 @@ class FinishedPotionsPlugin : PluginEvent() {
                 ) { selectedItemId: Int, quantity: Int ->
                     // Find the selected potion
                     val selectedPotion = candidatesWithMax.firstOrNull { (potion, _) ->
-                        potion.finishedPotion == selectedItemId
+                        potion.outputPotion == selectedItemId
                     }?.first ?: return@produceItemBox
 
                     // Create the specified quantity (up to what they can make)
@@ -119,20 +120,20 @@ class FinishedPotionsPlugin : PluginEvent() {
      */
     private fun createFinishedPotion(
         player: Player,
-        potionData: HerbloreDefinitions.FinishedPotionData,
+        potionData: HerbloreFinishedRow,
         quantity: Int
     ) {
         val herbloreLevel = player.getSkills().getCurrentLevel(Skills.HERBLORE)
 
         // Check level requirement
-        if (herbloreLevel < potionData.level) {
-            player.filterableMessage("You need a Herblore level of ${potionData.level} to make this potion.")
+        if (herbloreLevel < potionData.levelRequired) {
+            player.filterableMessage("You need a Herblore level of ${potionData.levelRequired} to make this potion.")
             return
         }
 
         // Check if player has all required items
         // Check unfinished potion
-        if (!player.inventory.contains(potionData.unfinishedPotion)) {
+        if (!player.inventory.contains(potionData.unfPot)) {
             player.message(Entity.NOTHING_INTERESTING_HAPPENS)
             return
         }
@@ -143,7 +144,7 @@ class FinishedPotionsPlugin : PluginEvent() {
             return
         }
 
-        val outputPotion = potionData.finishedPotion ?: return
+        val outputPotion = potionData.outputPotion
 
         player.queue {
             // Cache level check to avoid repeated skill lookups
@@ -154,7 +155,7 @@ class FinishedPotionsPlugin : PluginEvent() {
             repeatWhile(delay = 4, immediate = true, canRepeat = {
                 created < quantity &&
                 // Check if player still has all required items for another potion
-                player.inventory.contains(potionData.unfinishedPotion) &&
+                player.inventory.contains(potionData.unfPot) &&
                 // Check all secondaries (preserving duplicates)
                 potionData.secondaries.all { itemId -> player.inventory.contains(itemId) } &&
                 // Check inventory space (removing N items, adding 1)
@@ -165,9 +166,9 @@ class FinishedPotionsPlugin : PluginEvent() {
 
                 // Check level requirement again (in case it changed)
                 // Only update cache if we need to check (optimization: check once per loop)
-                if (cachedLevel < potionData.level) {
+                if (cachedLevel < potionData.levelRequired) {
                     cachedLevel = player.getSkills().getCurrentLevel(Skills.HERBLORE)
-                    if (cachedLevel < potionData.level) {
+                    if (cachedLevel < potionData.levelRequired) {
                         stop()
                         return@repeatWhile
                     }
@@ -179,8 +180,8 @@ class FinishedPotionsPlugin : PluginEvent() {
                 var allRemoved = true
 
                 // Remove unfinished potion (1x)
-                val unfinishedRemoved = player.inventory.remove(potionData.unfinishedPotion, 1)
-                removedItems.add(potionData.unfinishedPotion to unfinishedRemoved.hasSucceeded())
+                val unfinishedRemoved = player.inventory.remove(potionData.unfPot, 1)
+                removedItems.add(potionData.unfPot to unfinishedRemoved.hasSucceeded())
                 if (!unfinishedRemoved.hasSucceeded()) {
                     allRemoved = false
                 }
@@ -211,7 +212,7 @@ class FinishedPotionsPlugin : PluginEvent() {
                 if (!addResult.hasSucceeded()) {
                     // Restore all items if adding failed
                     // Restore unfinished potion
-                    player.inventory.add(potionData.unfinishedPotion, 1)
+                    player.inventory.add(potionData.unfPot, 1)
                     // Restore all secondaries (preserving duplicates)
                     potionData.secondaries.forEach { itemId ->
                         player.inventory.add(itemId, 1)
@@ -229,9 +230,9 @@ class FinishedPotionsPlugin : PluginEvent() {
                 // Determine which item name to use for the message
                 // If multiple secondaries, use primary (unfinished potion), otherwise use the secondary
                 val itemForMessage = if (potionData.secondaries.size > 1) {
-                    potionData.unfinishedPotion
+                    potionData.unfPot
                 } else {
-                    potionData.secondaries.firstOrNull() ?: potionData.unfinishedPotion
+                    potionData.secondaries.firstOrNull() ?: potionData.unfPot
                 }
                 val itemName = getItem(itemForMessage)?.name ?: "ingredient"
                 player.filterableMessage("You mix the ${itemName.lowercase()} into your potion.")

@@ -16,27 +16,29 @@ import org.alter.game.pluginnew.event.impl.GroundItemClickEvent
 import org.alter.game.pluginnew.event.impl.onItemOnItem
 import org.alter.rscm.RSCM
 import org.alter.rscm.RSCM.asRSCM
+import org.generated.tables.FiremakingLogsRow
 
 class BurnLogEvents : PluginEvent() {
 
     companion object {
         private val WALK_DIRECTIONS = listOf(Direction.WEST, Direction.EAST, Direction.SOUTH, Direction.NORTH)
+        val logs: List<FiremakingLogsRow> = FiremakingLogsRow.all()
     }
 
     override fun init() {
 
-        Logs.logs.forEach { log ->
-            onItemOnItem("items.tinderbox", log.logItem) {
-                burnLog(player, log.logItem, null, log.xp, log.level)
+        logs.forEach { log ->
+            onItemOnItem("items.tinderbox", log.item) {
+                burnLog(player, log.item, null, log.xp, log.level)
             }
 
             on<GroundItemClickEvent> {
                 where {
-                    groundItem.item == log.logItem &&
+                    groundItem.item == log.item &&
                             option == MenuOption.OP4 &&
                             player.inventory.contains("items.tinderbox")
                 }
-                then { burnLog(player, log.logItem, groundItem, log.xp, log.level) }
+                then { burnLog(player, log.item, groundItem, log.xp, log.level) }
             }
         }
     }

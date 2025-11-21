@@ -144,11 +144,46 @@ tasks.withType<ProcessResources> {
 }
 
 
+tasks.register("checkPrerequisites") {
+    description = "Check if required files exist"
+    doFirst {
+        val gameYml = file("${rootProject.projectDir}/game.yml")
+        val gameExampleYml = file("${rootProject.projectDir}/game.example.yml")
+        val devSettingsYml = file("${rootProject.projectDir}/dev-settings.yml")
+        val cacheDir = file("${rootProject.projectDir}/data/cache")
+        val rsaKey = file("${rootProject.projectDir}/data/rsa/key.pem")
+        val rsaDir = file("${rootProject.projectDir}/data/rsa")
+        
+        val missingFiles = mutableListOf<String>()
+        
+        if (!gameYml.exists() && !gameExampleYml.exists()) {
+            missingFiles.add("game.yml or game.example.yml")
+        }
+        if (!devSettingsYml.exists()) {
+            missingFiles.add("dev-settings.yml")
+        }
+        if (!cacheDir.exists() || !cacheDir.isDirectory || cacheDir.listFiles()?.isEmpty() != false) {
+            missingFiles.add("data/cache (directory missing or empty)")
+        }
+        if (!rsaDir.exists() || !rsaDir.isDirectory) {
+            missingFiles.add("data/rsa (directory missing)")
+        }
+        if (!rsaKey.exists()) {
+            missingFiles.add("data/rsa/key.pem")
+        }
+        
+        if (missingFiles.isNotEmpty()) {
+            throw GradleException("Please run 'Install Server' first to set up the project.")
+        }
+    }
+}
+
 tasks.named<JavaExec>("run") {
     group = "application"
 
     // Ensure content is built before running
     dependsOn(":content:build")
+    dependsOn("checkPrerequisites")
 
     // Optional: print message if content is being built
     doFirst {

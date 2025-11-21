@@ -2,7 +2,6 @@ package org.alter.skills.woodcutting
 
 import org.alter.game.model.entity.GameObject
 import org.alter.game.model.entity.Player
-import org.alter.game.model.queue.QueueTask
 import org.alter.game.model.World
 
 /**
@@ -13,7 +12,7 @@ interface TreeDepleteHandler {
     /**
      * The tree type identifier (e.g., "blisterwood", "oak", "magic")
      */
-    val treeTypeId: String
+    val treeType: String
 
     /**
      * Handles the tree depletion event.

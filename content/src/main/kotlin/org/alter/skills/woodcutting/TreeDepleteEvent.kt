@@ -7,6 +7,7 @@ import org.alter.game.model.entity.Player
 import org.alter.game.model.queue.QueueTask
 import org.alter.game.pluginnew.event.PlayerEvent
 import org.alter.game.pluginnew.event.impl.SkillingActionCompletedGatheringEvent
+import org.generated.tables.woodcutting.WoodcuttingTreesRow
 
 /**
  * Event triggered when a tree is depleted (chopped down) during woodcutting.
@@ -20,7 +21,7 @@ class TreeDepleteEvent(
     override val player: Player,
     val treeObject: GameObject,
     val treeRscm: String,
-    val treeType: Int,
+    val treeType : String,
     val world: World
 ) : PlayerEvent(player)
 
@@ -42,15 +43,14 @@ class TreeDepleteEvent(
 class TreeLogObtainedEvent(
     override val player: Player,
     treeObject: GameObject,
-    treeData: WoodcuttingDefinitions.TreeData,
-    val treeType : Int,
+    val treeData: WoodcuttingTreesRow,
     val clueBaseChance : Int = treeData.clueBaseChance
 ) : SkillingActionCompletedGatheringEvent(
     player = player,
     skill = Skills.WOODCUTTING,
     actionObject = treeObject,
-    experienceGained = treeData.xp,
-    resourceId = treeData.log,
+    experienceGained = treeData.xp.toDouble(),
+    resourceId = treeData.logItem,
     amountGathered = 1
 )
 

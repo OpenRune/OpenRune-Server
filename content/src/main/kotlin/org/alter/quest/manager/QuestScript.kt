@@ -19,6 +19,7 @@ import org.alter.interfaces.WorldMapEvents.Companion.WORLD_MAP_INTERFACE_ID
 import org.alter.rscm.RSCM
 import org.alter.rscm.RSCM.asRSCM
 import org.alter.rscm.RSCMType
+import org.generated.tables.QuestRow
 import toRs
 
 /**
@@ -132,12 +133,14 @@ abstract class QuestScript(questKey: String, val questVarp : String, val rewards
                 range = 0..4,
                 setting = InterfaceEvent.ClickOp1
             )
-            player.runClientScript(
-                CommonClientScripts.WORLD_MAP_GOTO,
-                RSCM.getRSCM("components.worldmap:map_noclick"),
-                quest.startCoord,
-                quest.mapElement
-            )
+            if (quest.startCoord != null && quest.mapElement != null) {
+                player.runClientScript(
+                    CommonClientScripts.WORLD_MAP_GOTO,
+                    RSCM.getRSCM("components.worldmap:map_noclick"),
+                    quest.startCoord.as30BitInteger,
+                    quest.mapElement
+                )
+            }
         }
     }
 

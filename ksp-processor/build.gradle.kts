@@ -8,6 +8,7 @@ plugins {
 description = "KSP Processor"
 
 dependencies {
+    implementation(project(":cache"))
     implementation(project(":game-server"))
     implementation("com.squareup:kotlinpoet:1.16.0")
     implementation("com.squareup:kotlinpoet-ksp:1.16.0")
