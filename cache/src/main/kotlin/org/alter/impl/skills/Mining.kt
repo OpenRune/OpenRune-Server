@@ -194,7 +194,7 @@ object Mining {
             column(COL_DEPLETE_MECHANIC, 1) // Normal
             columnRSCM(COL_EMPTY_ROCK, "objects.rocks2")
             column(CLUE_BASE_CHANCE, 317647)
-            column(COL_TYPE, "rock")
+            column(COL_TYPE, "gemrock")
         }
         row("dbrows.mining_goldrock") {
             columnRSCM(COL_ROCK_OBJECT, "objects.goldrock1", "objects.goldrock2")
@@ -278,7 +278,6 @@ object Mining {
             column(COL_SUCCESS_RATE_HIGH, 256)
             column(COL_DESPAWN_TICKS, 0)
             column(COL_DEPLETE_MECHANIC, 3) // Always
-            columnRSCM(COL_EMPTY_ROCK, "objects.amethystrock_empty")
             column(CLUE_BASE_CHANCE, 317647)
             column(COL_TYPE, "wall")
         }

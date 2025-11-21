@@ -16,6 +16,7 @@ import org.alter.game.pluginnew.event.EventManager
 import org.alter.game.pluginnew.event.ReturnableEventListener
 import org.alter.game.pluginnew.event.impl.onObjectOption
 import org.alter.rscm.RSCM
+import org.alter.rscm.RSCM.getRSCM
 import org.alter.rscm.RSCMType
 import org.alter.skills.mining.MiningDefinitions.isInfiniteResource
 import org.alter.skills.mining.MiningDefinitions.pickaxeData
@@ -23,6 +24,7 @@ import org.alter.skills.mining.MiningDefinitions.usesCountdown
 import org.alter.skills.woodcutting.WoodcuttingDefinitions.axeData
 import org.generated.tables.mining.MiningPickaxesRow
 import org.generated.tables.mining.MiningRocksRow
+import kotlin.random.Random
 import org.alter.rscm.RSCM.getRSCM
 
 class MiningPlugin : PluginEvent() {
@@ -49,6 +51,31 @@ class MiningPlugin : PluginEvent() {
          * Attribute key for storing the max countdown value for a rock.
          */
         val MAX_COUNTDOWN_ATTR = AttributeKey<Int>()
+
+        private val GEM_DROP_TABLE: Map<Int, Double> = mapOf(
+            getRSCM("items.uncut_opal") to 1.0 / 2.133,
+            getRSCM("items.uncut_jade") to 1.0 / 4.267,
+            getRSCM("items.uncut_red_topaz") to 1.0 / 8.533,
+            getRSCM("items.uncut_sapphire") to 1.0 / 14.22,
+            getRSCM("items.uncut_emerald") to 1.0 / 25.6,
+            getRSCM("items.uncut_ruby") to 1.0 / 25.6,
+            getRSCM("items.uncut_diamond") to 1.0 / 32.0,
+        )
+
+        private fun rollGem(): Int {
+            val totalWeight = GEM_DROP_TABLE.values.sum()
+            val roll = Random.nextDouble(totalWeight)
+
+            var cumulative = 0.0
+            for ((itemId, weight) in GEM_DROP_TABLE) {
+                cumulative += weight
+                if (roll <= cumulative) {
+                    return itemId
+                }
+            }
+
+            return GEM_DROP_TABLE.keys.last()
+        }
     }
 
     /**
@@ -128,7 +155,8 @@ class MiningPlugin : PluginEvent() {
         // Placeholder for custom rock-specific handlers when required.
     }
 
-    private fun getDepletedRock(rockData: MiningRocksRow): Int = rockData.emptyRockObject
+    private fun getDepletedRock(rockData: MiningRocksRow): Int =
+        requireNotNull(rockData.emptyRockObject) { "Empty rock object missing for ${rockData.type}" }
 
     private fun hasAnyPickaxe(player: Player): Boolean {
         player.equipment[EquipmentType.WEAPON.id]?.let { weapon ->
@@ -161,8 +189,8 @@ class MiningPlugin : PluginEvent() {
     private fun handleOreObtained(
         player: Player,
         rockData: MiningRocksRow,
-    ): Boolean {
-        val oreItem = resolveOreItem(player, rockData) ?: return false
+    ): Int? {
+        val oreItem = if (rockData.type == "gemrock") rollGem() else rockData.oreItem ?: return null
         if (player.inventory.add(oreItem, 1).hasSucceeded()) {
             player.addXp(Skills.MINING, rockData.xp)
             try {
@@ -172,11 +200,11 @@ class MiningPlugin : PluginEvent() {
                 player.message("You manage to mine some ore.")
             }
             player.playSound(ORE_OBTAINED_SOUND, volume = 1, delay = 0)
-            return true
+            return oreItem
         } else {
             player.message("Your inventory is too full to hold any more ore.")
             player.animate(RSCM.NONE)
-            return false
+            return null
         }
     }
 
@@ -282,14 +310,15 @@ class MiningPlugin : PluginEvent() {
             val success = success(low, high, miningLevel)
 
             if (success) {
-                RockOreObtainedEvent(player, obj, rockData).post()
-                val oreObtained = handleOreObtained(player, rockData)
-                if (!oreObtained) {
+                val oreId = handleOreObtained(player, rockData)
+                if (oreId == null) {
                     if (rockData.usesCountdown()) {
                         obj.attr[ACTIVE_MINERS_ATTR]?.remove(player)
                     }
                     return@repeatWhile
                 }
+
+                RockOreObtainedEvent(player, obj, rockData, resourceId = oreId).post()
 
                 val shouldDeplete = when {
                     rockData.isInfiniteResource() -> false
