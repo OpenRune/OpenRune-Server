@@ -187,6 +187,7 @@ object Mining {
             columnRSCM(COL_ROCK_OBJECT, "objects.gemrock1", "objects.gemrock")
             column(COL_LEVEL, 40)
             column(COL_XP, 65)
+            columnRSCM(COL_ORE_ITEM, "items.uncut_opal")
             column(COL_RESPAWN_CYCLES, 99)
             column(COL_SUCCESS_RATE_LOW, 27)
             column(COL_SUCCESS_RATE_HIGH, 70)
@@ -194,7 +195,7 @@ object Mining {
             column(COL_DEPLETE_MECHANIC, 1) // Normal
             columnRSCM(COL_EMPTY_ROCK, "objects.rocks2")
             column(CLUE_BASE_CHANCE, 317647)
-            column(COL_TYPE, "rock")
+            column(COL_TYPE, "gemrock")
         }
         row("dbrows.mining_goldrock") {
             columnRSCM(COL_ROCK_OBJECT, "objects.goldrock1", "objects.goldrock2")
