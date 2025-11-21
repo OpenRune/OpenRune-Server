@@ -187,7 +187,6 @@ object Mining {
             columnRSCM(COL_ROCK_OBJECT, "objects.gemrock1", "objects.gemrock")
             column(COL_LEVEL, 40)
             column(COL_XP, 65)
-            columnRSCM(COL_ORE_ITEM, "items.uncut_opal")
             column(COL_RESPAWN_CYCLES, 99)
             column(COL_SUCCESS_RATE_LOW, 27)
             column(COL_SUCCESS_RATE_HIGH, 70)
@@ -279,7 +278,6 @@ object Mining {
             column(COL_SUCCESS_RATE_HIGH, 256)
             column(COL_DESPAWN_TICKS, 0)
             column(COL_DEPLETE_MECHANIC, 3) // Always
-            columnRSCM(COL_EMPTY_ROCK, "objects.amethystrock_empty")
             column(CLUE_BASE_CHANCE, 317647)
             column(COL_TYPE, "wall")
         }

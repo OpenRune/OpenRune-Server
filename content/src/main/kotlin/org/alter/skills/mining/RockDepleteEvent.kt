@@ -33,7 +33,7 @@ class RockOreObtainedEvent(
     rockData: MiningRocksRow,
     val rockType: String = rockData.type,
     val clueBaseChance: Int = rockData.clueBaseChance,
-    val resourceId: Int = rockData.oreItem ?: -1,
+    override val resourceId: Int = rockData.oreItem ?: -1,
 ) : SkillingActionCompletedGatheringEvent(
     player = player,
     skill = Skills.MINING,

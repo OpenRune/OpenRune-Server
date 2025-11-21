@@ -16,6 +16,7 @@ import org.alter.game.pluginnew.event.EventManager
 import org.alter.game.pluginnew.event.ReturnableEventListener
 import org.alter.game.pluginnew.event.impl.onObjectOption
 import org.alter.rscm.RSCM
+import org.alter.rscm.RSCM.getRSCM
 import org.alter.rscm.RSCMType
 import org.alter.skills.mining.MiningDefinitions.isInfiniteResource
 import org.alter.skills.mining.MiningDefinitions.pickaxeData
