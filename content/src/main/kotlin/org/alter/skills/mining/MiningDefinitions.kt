@@ -33,8 +33,8 @@ object MiningDefinitions {
             return 1..1
         }
 
-        val minAmount = depleteMinAmount ?: 1
-        val maxAmount = depleteMaxAmount ?: minAmount
+        val minAmount = depleteMinAmount?.toInt() ?: 1
+        val maxAmount = depleteMaxAmount?.toInt() ?: minAmount
         val (min, max) = if (maxAmount < minAmount) minAmount to minAmount else minAmount to maxAmount
 
         return min..max
