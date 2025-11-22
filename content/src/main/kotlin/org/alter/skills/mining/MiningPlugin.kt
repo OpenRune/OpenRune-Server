@@ -97,7 +97,7 @@ class MiningPlugin : PluginEvent() {
         MiningDefinitions.miningRocks.forEach { rock ->
             rock.rockObject.forEach { rockId ->
                 try {
-                    onObjectOption(rockId, "mine") {
+                    onObjectOption(rockId, "mine", "Mine") {
                         player.queue { mineRock(player, rock) }
                     }
                 } catch (e: Exception) {
