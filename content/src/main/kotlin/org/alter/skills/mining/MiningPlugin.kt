@@ -6,11 +6,9 @@ import org.alter.api.ext.*
 import org.alter.game.model.attr.AttributeKey
 import org.alter.game.model.attr.INTERACTING_OBJ_ATTR
 import org.alter.game.model.entity.GameObject
-import org.alter.game.model.entity.ObjectTimerMap
 import org.alter.game.model.entity.Player
 import org.alter.game.model.item.Item
 import org.alter.game.model.queue.QueueTask
-import org.alter.game.model.timer.TimerKey
 import org.alter.game.pluginnew.PluginEvent
 import org.alter.game.pluginnew.event.EventManager
 import org.alter.game.pluginnew.event.ReturnableEventListener
@@ -18,14 +16,13 @@ import org.alter.game.pluginnew.event.impl.onObjectOption
 import org.alter.rscm.RSCM
 import org.alter.rscm.RSCM.getRSCM
 import org.alter.rscm.RSCMType
+import org.alter.skills.mining.MiningDefinitions.getDepletionRange
 import org.alter.skills.mining.MiningDefinitions.isInfiniteResource
 import org.alter.skills.mining.MiningDefinitions.pickaxeData
-import org.alter.skills.mining.MiningDefinitions.usesCountdown
 import org.alter.skills.woodcutting.WoodcuttingDefinitions.axeData
 import org.generated.tables.mining.MiningPickaxesRow
 import org.generated.tables.mining.MiningRocksRow
 import kotlin.random.Random
-import org.alter.rscm.RSCM.getRSCM
 
 class MiningPlugin : PluginEvent() {
 
@@ -38,19 +35,14 @@ class MiningPlugin : PluginEvent() {
         const val ORE_OBTAINED_SOUND = 3600
 
         /**
-         * Timer key for rock countdown timers.
+         * Attribute key for tracking how many ores have been mined from a rock before depletion.
          */
-        private val ROCK_COUNTDOWN_TIMER = TimerKey()
+        val MINED_ORE_COUNT_ATTR = AttributeKey<Int>()
 
         /**
-         * Attribute key for tracking players actively mining a rock.
+         * Attribute key for the randomly selected threshold at which a rock depletes for mechanic 2.
          */
-        val ACTIVE_MINERS_ATTR = AttributeKey<MutableSet<Player>>()
-
-        /**
-         * Attribute key for storing the max countdown value for a rock.
-         */
-        val MAX_COUNTDOWN_ATTR = AttributeKey<Int>()
+        val DEPLETION_THRESHOLD_ATTR = AttributeKey<Int>()
 
         private const val RANDOM_GEM_CHANCE = 1.0 / 256
 
@@ -105,55 +97,11 @@ class MiningPlugin : PluginEvent() {
         MiningDefinitions.miningRocks.forEach { rock ->
             rock.rockObject.forEach { rockId ->
                 try {
-                    onObjectOption(rockId, "mine") {
+                    onObjectOption(rockId, "mine", "Mine") {
                         player.queue { mineRock(player, rock) }
                     }
                 } catch (e: Exception) {
                     logger.warn { "Rock object '$rockId' not found in cache or option not available, skipping registration: ${e.message}" }
-                }
-            }
-        }
-
-        startTimerUpdateTask()
-    }
-
-    private fun startTimerUpdateTask() {
-        world.queue {
-            while (true) {
-                wait(1)
-                updateAllRockTimers()
-            }
-        }
-    }
-
-    private fun updateAllRockTimers() {
-        ObjectTimerMap.forEach { obj ->
-            val activeMiners = obj.attr[ACTIVE_MINERS_ATTR] ?: return@forEach
-            val maxCountdown = obj.attr[MAX_COUNTDOWN_ATTR] ?: return@forEach
-
-            val currentTime = obj.getTimeLeft(ROCK_COUNTDOWN_TIMER)
-            if (currentTime == 0) {
-                if (activeMiners.isEmpty()) {
-                    obj.attr.remove(ACTIVE_MINERS_ATTR)
-                    obj.attr.remove(MAX_COUNTDOWN_ATTR)
-                }
-                return@forEach
-            }
-
-            if (activeMiners.isNotEmpty()) {
-                val newTime = (currentTime - 1).coerceAtLeast(0)
-                if (newTime > 0) {
-                    obj.setTimer(ROCK_COUNTDOWN_TIMER, newTime)
-                } else {
-                    obj.removeTimer(ROCK_COUNTDOWN_TIMER)
-                }
-            } else {
-                if (currentTime < maxCountdown) {
-                    obj.setTimer(ROCK_COUNTDOWN_TIMER, (currentTime + 1).coerceAtMost(maxCountdown))
-                } else {
-                    obj.removeTimer(ROCK_COUNTDOWN_TIMER)
-                    obj.attr.remove(MAX_COUNTDOWN_ATTR)
-                    obj.attr.remove(ACTIVE_MINERS_ATTR)
                 }
             }
         }
@@ -306,16 +254,6 @@ class MiningPlugin : PluginEvent() {
 
         player.loopAnim(miningAnimation)
 
-        if (rockData.usesCountdown()) {
-            val activeMiners = obj.attr.getOrPut(ACTIVE_MINERS_ATTR) { mutableSetOf() }
-            activeMiners.add(player)
-
-            if (!obj.hasTimers() || obj.getTimeLeft(ROCK_COUNTDOWN_TIMER) == 0) {
-                obj.setTimer(ROCK_COUNTDOWN_TIMER, rockData.despawnTicks)
-                obj.attr[MAX_COUNTDOWN_ATTR] = rockData.despawnTicks
-            }
-        }
-
         repeatWhile(delay = tickDelay, immediate = false, canRepeat = {
             val currentNearestTile = obj.findNearestTile(player.tile)
             player.tile.isWithinRadius(currentNearestTile, 1) &&
@@ -328,33 +266,33 @@ class MiningPlugin : PluginEvent() {
 
             if (success) {
                 val oreId = handleOreObtained(player, rockData)
-                if (oreId == null) {
-                    if (rockData.usesCountdown()) {
-                        obj.attr[ACTIVE_MINERS_ATTR]?.remove(player)
-                    }
-                    return@repeatWhile
-                }
+                if (oreId == null) return@repeatWhile
 
                 RockOreObtainedEvent(player, obj, rockData, resourceId = oreId).post()
 
                 val shouldDeplete = when {
                     rockData.isInfiniteResource() -> false
-                    rockData.usesCountdown() -> obj.getTimeLeft(ROCK_COUNTDOWN_TIMER) <= 0
+                    rockData.depleteMechanic == 2 -> {
+                        val depletionRange = rockData.getDepletionRange()
+                        val depletionThreshold = obj.attr.getOrPut(DEPLETION_THRESHOLD_ATTR) {
+                            Random.nextInt(depletionRange.first, depletionRange.last + 1)
+                        }
+
+                        val newCount = obj.attr.getOrPut(MINED_ORE_COUNT_ATTR) { 0 } + 1
+                        obj.attr[MINED_ORE_COUNT_ATTR] = newCount
+
+                        newCount >= depletionThreshold
+                    }
                     else -> true
                 }
 
                 if (shouldDeplete) {
-                    if (rockData.usesCountdown()) {
-                        obj.attr[ACTIVE_MINERS_ATTR]?.remove(player)
-                    }
+                    obj.attr.remove(MINED_ORE_COUNT_ATTR)
+                    obj.attr.remove(DEPLETION_THRESHOLD_ATTR)
                     depleteRock(player, obj, rockData)
                     return@repeatWhile
                 }
             }
-        }
-
-        if (rockData.usesCountdown()) {
-            obj.attr[ACTIVE_MINERS_ATTR]?.remove(player)
         }
 
         player.stopLoopAnim()

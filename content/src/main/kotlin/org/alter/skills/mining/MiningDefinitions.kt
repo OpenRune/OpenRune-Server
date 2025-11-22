@@ -20,15 +20,25 @@ import org.generated.tables.mining.MiningRocksRow
 object MiningDefinitions {
 
     /**
-     * Returns true if this rock uses a countdown timer before depletion.
-     */
-    fun MiningRocksRow.usesCountdown(): Boolean =
-        depleteMechanic == 1 && despawnTicks > 0
-
-    /**
      * Returns true if this rock never depletes (until the inventory is full).
      */
     fun MiningRocksRow.isInfiniteResource(): Boolean = depleteMechanic == 3
+
+    /**
+     * Computes the depletion range for rocks that use mechanic 2, defaulting to a single
+     * ore for other mechanics so definitions don't need to populate the new columns.
+     */
+    fun MiningRocksRow.getDepletionRange(): IntRange {
+        if (depleteMechanic != 2) {
+            return 1..1
+        }
+
+        val minAmount = depleteMinAmount?.toInt() ?: 1
+        val maxAmount = depleteMaxAmount?.toInt() ?: minAmount
+        val (min, max) = if (maxAmount < minAmount) minAmount to minAmount else minAmount to maxAmount
+
+        return min..max
+    }
 
     val pickaxeData: List<MiningPickaxesRow> = MiningPickaxesRow.all()
 

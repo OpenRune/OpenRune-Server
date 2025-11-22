@@ -12,11 +12,12 @@ object Mining {
     const val COL_RESPAWN_CYCLES = 4
     const val COL_SUCCESS_RATE_LOW = 5
     const val COL_SUCCESS_RATE_HIGH = 6
-    const val COL_DESPAWN_TICKS = 7
-    const val COL_DEPLETE_MECHANIC = 8
-    const val COL_EMPTY_ROCK = 9
-    const val CLUE_BASE_CHANCE = 10
-    const val COL_TYPE = 11
+    const val COL_DEPLETE_MECHANIC = 7
+    const val COL_EMPTY_ROCK = 8
+    const val CLUE_BASE_CHANCE = 9
+    const val COL_TYPE = 10
+    const val COL_DEPLETE_MIN_AMOUNT = 11
+    const val COL_DEPLETE_MAX_AMOUNT = 12
 
     val PICKAXE_DATA = mapOf(
         "items.bronze_pickaxe" to Triple(1, 8, Triple("sequences.human_mining_bronze_pickaxe", "sequences.human_mining_bronze_pickaxe_wall", "dbrows.mining_bronze_pickaxe")),
@@ -71,11 +72,12 @@ object Mining {
         column("respawn_cycles", COL_RESPAWN_CYCLES, VarType.INT)
         column("success_rate_low", COL_SUCCESS_RATE_LOW, VarType.INT)
         column("success_rate_high", COL_SUCCESS_RATE_HIGH, VarType.INT)
-        column("despawn_ticks", COL_DESPAWN_TICKS, VarType.INT)
         column("deplete_mechanic", COL_DEPLETE_MECHANIC, VarType.INT)
         column("empty_rock_object", COL_EMPTY_ROCK, VarType.LOC)
         column("clue_base_chance", CLUE_BASE_CHANCE, VarType.INT)
         column("type", COL_TYPE, VarType.STRING)
+        column("deplete_min_amount", COL_DEPLETE_MIN_AMOUNT, VarType.INT)
+        column("deplete_max_amount", COL_DEPLETE_MAX_AMOUNT, VarType.INT)
 
         // Clayrocks (level 1)
         row("dbrows.mining_clayrock") {
@@ -86,8 +88,7 @@ object Mining {
             column(COL_RESPAWN_CYCLES, 2)
             column(COL_SUCCESS_RATE_LOW, 64)
             column(COL_SUCCESS_RATE_HIGH, 256)
-            column(COL_DESPAWN_TICKS, 0)
-            column(COL_DEPLETE_MECHANIC, 0) // Normal
+            column(COL_DEPLETE_MECHANIC, 1) // Normal
             columnRSCM(COL_EMPTY_ROCK, "objects.rocks2")
             column(CLUE_BASE_CHANCE, 741600)
             column(COL_TYPE, "rock")
@@ -101,8 +102,7 @@ object Mining {
             column(COL_RESPAWN_CYCLES, 4)
             column(COL_SUCCESS_RATE_LOW, 127)
             column(COL_SUCCESS_RATE_HIGH, 255)
-            column(COL_DESPAWN_TICKS, 0)
-            column(COL_DEPLETE_MECHANIC, 0) // Normal
+            column(COL_DEPLETE_MECHANIC, 1) // Normal
             columnRSCM(COL_EMPTY_ROCK, "objects.rocks2")
             column(CLUE_BASE_CHANCE, 741600)
             column(COL_TYPE, "rock")
@@ -116,8 +116,7 @@ object Mining {
             column(COL_RESPAWN_CYCLES, 4)
             column(COL_SUCCESS_RATE_LOW, 99)
             column(COL_SUCCESS_RATE_HIGH, 255)
-            column(COL_DESPAWN_TICKS, 0)
-            column(COL_DEPLETE_MECHANIC, 0) // Normal
+            column(COL_DEPLETE_MECHANIC, 1) // Normal
             columnRSCM(COL_EMPTY_ROCK, "objects.rocks2")
             column(CLUE_BASE_CHANCE, 741600)
             column(COL_TYPE, "rock")
@@ -131,8 +130,7 @@ object Mining {
             column(COL_RESPAWN_CYCLES, 42)
             column(COL_SUCCESS_RATE_LOW, 99)
             column(COL_SUCCESS_RATE_HIGH, 255)
-            column(COL_DESPAWN_TICKS, 0)
-            column(COL_DEPLETE_MECHANIC, 0) // Normal
+            column(COL_DEPLETE_MECHANIC, 1) // Normal
             columnRSCM(COL_EMPTY_ROCK, "objects.rocks2")
             column(CLUE_BASE_CHANCE, 741600)
             column(COL_TYPE, "rock")
@@ -146,8 +144,7 @@ object Mining {
             column(COL_RESPAWN_CYCLES, 9)
             column(COL_SUCCESS_RATE_LOW, 110)
             column(COL_SUCCESS_RATE_HIGH, 255)
-            column(COL_DESPAWN_TICKS, 0)
-            column(COL_DEPLETE_MECHANIC, 0) // Normal
+            column(COL_DEPLETE_MECHANIC, 1) // Normal
             columnRSCM(COL_EMPTY_ROCK, "objects.rocks2")
             column(CLUE_BASE_CHANCE, 741600)
             column(COL_TYPE, "rock")
@@ -161,8 +158,7 @@ object Mining {
             column(COL_RESPAWN_CYCLES, 100)
             column(COL_SUCCESS_RATE_LOW, 24)
             column(COL_SUCCESS_RATE_HIGH, 200)
-            column(COL_DESPAWN_TICKS, 0)
-            column(COL_DEPLETE_MECHANIC, 0) // Normal
+            column(COL_DEPLETE_MECHANIC, 1) // Normal
             columnRSCM(COL_EMPTY_ROCK, "objects.rocks2")
             column(CLUE_BASE_CHANCE, 741600)
             column(COL_TYPE, "rock")
@@ -176,8 +172,7 @@ object Mining {
             column(COL_RESPAWN_CYCLES, 10)
             column(COL_SUCCESS_RATE_LOW, 110)
             column(COL_SUCCESS_RATE_HIGH, 255)
-            column(COL_DESPAWN_TICKS, 0)
-            column(COL_DEPLETE_MECHANIC, 0) // Normal
+            column(COL_DEPLETE_MECHANIC, 1) // Normal
             columnRSCM(COL_EMPTY_ROCK, "objects.leadrock1_empty")
             column(CLUE_BASE_CHANCE, 290641)
             column(COL_TYPE, "rock")
@@ -191,8 +186,7 @@ object Mining {
             column(COL_RESPAWN_CYCLES, 50)
             column(COL_SUCCESS_RATE_LOW, 15)
             column(COL_SUCCESS_RATE_HIGH, 100)
-            column(COL_DESPAWN_TICKS, 0)
-            column(COL_DEPLETE_MECHANIC, 0) // Normal
+            column(COL_DEPLETE_MECHANIC, 1) // Normal
             columnRSCM(COL_EMPTY_ROCK, "objects.rocks2")
             column(CLUE_BASE_CHANCE, 290640)
             column(COL_TYPE, "rock")
@@ -205,11 +199,12 @@ object Mining {
             column(COL_RESPAWN_CYCLES, 99)
             column(COL_SUCCESS_RATE_LOW, 27)
             column(COL_SUCCESS_RATE_HIGH, 70)
-            column(COL_DESPAWN_TICKS, 99)
-            column(COL_DEPLETE_MECHANIC, 1) // Normal
-            columnRSCM(COL_EMPTY_ROCK, "objects.rocks2")
+            column(COL_DEPLETE_MECHANIC, 2) // Normal
+            columnRSCM(COL_EMPTY_ROCK, "objects.rocks1")
             column(CLUE_BASE_CHANCE, 211866)
             column(COL_TYPE, "gemrock")
+            column(COL_DEPLETE_MIN_AMOUNT, 3)
+            column(COL_DEPLETE_MAX_AMOUNT, 3)
         }
         //Gold (level 40)
         row("dbrows.mining_goldrock") {
@@ -220,8 +215,7 @@ object Mining {
             column(COL_RESPAWN_CYCLES, 100)
             column(COL_SUCCESS_RATE_LOW, 6)
             column(COL_SUCCESS_RATE_HIGH, 75)
-            column(COL_DESPAWN_TICKS, 0)
-            column(COL_DEPLETE_MECHANIC, 0) // Normal
+            column(COL_DEPLETE_MECHANIC, 1) // Normal
             columnRSCM(COL_EMPTY_ROCK, "objects.rocks2")
             column(CLUE_BASE_CHANCE, 296640)
             column(COL_TYPE, "rock")
@@ -235,8 +229,7 @@ object Mining {
             column(COL_RESPAWN_CYCLES, 200)
             column(COL_SUCCESS_RATE_LOW, 2)
             column(COL_SUCCESS_RATE_HIGH, 50)
-            column(COL_DESPAWN_TICKS, 0)
-            column(COL_DEPLETE_MECHANIC, 0) // Normal
+            column(COL_DEPLETE_MECHANIC, 1) // Normal
             columnRSCM(COL_EMPTY_ROCK, "objects.rocks2")
             column(CLUE_BASE_CHANCE, 148320)
             column(COL_TYPE, "rock")
@@ -250,8 +243,7 @@ object Mining {
             column(COL_RESPAWN_CYCLES, 59)
             column(COL_SUCCESS_RATE_LOW, 2)
             column(COL_SUCCESS_RATE_HIGH, 50)
-            column(COL_DESPAWN_TICKS, 0)
-            column(COL_DEPLETE_MECHANIC, 0) // Normal
+            column(COL_DEPLETE_MECHANIC, 1) // Normal
             columnRSCM(COL_EMPTY_ROCK, "objects.rocks2")
             column(CLUE_BASE_CHANCE, 245562)
             column(COL_TYPE, "rock")
@@ -265,8 +257,7 @@ object Mining {
             column(COL_RESPAWN_CYCLES, 400)
             column(COL_SUCCESS_RATE_LOW, -1)
             column(COL_SUCCESS_RATE_HIGH, 25)
-            column(COL_DESPAWN_TICKS, 0)
-            column(COL_DEPLETE_MECHANIC, 0) // Normal
+            column(COL_DEPLETE_MECHANIC, 1) // Normal
             columnRSCM(COL_EMPTY_ROCK, "objects.rocks2")
             column(CLUE_BASE_CHANCE, 59328)
             column(COL_TYPE, "rock")
@@ -280,8 +271,7 @@ object Mining {
             column(COL_RESPAWN_CYCLES, 200)
             column(COL_SUCCESS_RATE_LOW, -1)
             column(COL_SUCCESS_RATE_HIGH, 25)
-            column(COL_DESPAWN_TICKS, 0)
-            column(COL_DEPLETE_MECHANIC, 0) // Normal
+            column(COL_DEPLETE_MECHANIC, 1) // Normal
             columnRSCM(COL_EMPTY_ROCK, "objects.nickelrock1_empty")
             column(CLUE_BASE_CHANCE, 59328)
             column(COL_TYPE, "rock")
@@ -294,11 +284,11 @@ object Mining {
             column(COL_RESPAWN_CYCLES, 312)
             column(COL_SUCCESS_RATE_LOW, -1)
             column(COL_SUCCESS_RATE_HIGH, 18)
-            column(COL_DESPAWN_TICKS, 0)
-            column(COL_DEPLETE_MECHANIC, 0) // Normal
+            column(COL_DEPLETE_MECHANIC, 1) // Normal
             columnRSCM(COL_EMPTY_ROCK, "objects.rocks2")
             column(CLUE_BASE_CHANCE, 42377)
             column(COL_TYPE, "rock")
+
         }
         // Amethystrock (level 92
         row("dbrows.mining_amethystrock") {
@@ -309,11 +299,12 @@ object Mining {
             column(COL_RESPAWN_CYCLES, 125)
             column(COL_SUCCESS_RATE_LOW, -64)
             column(COL_SUCCESS_RATE_HIGH, 13)
-            column(COL_DESPAWN_TICKS, 45)
-            column(COL_DEPLETE_MECHANIC, 1) // Timer
+            column(COL_DEPLETE_MECHANIC, 2)
             columnRSCM(COL_EMPTY_ROCK, "objects.amethystrock_empty")
             column(CLUE_BASE_CHANCE, 46350)
             column(COL_TYPE, "wall")
+            column(COL_DEPLETE_MIN_AMOUNT, 2)
+            column(COL_DEPLETE_MAX_AMOUNT, 3)
         }
         // Essence (level )
         row("dbrows.mining_essence") {
@@ -324,7 +315,6 @@ object Mining {
             column(COL_RESPAWN_CYCLES, 0)
             column(COL_SUCCESS_RATE_LOW, 256)
             column(COL_SUCCESS_RATE_HIGH, 256)
-            column(COL_DESPAWN_TICKS, 0)
             column(COL_DEPLETE_MECHANIC, 3) // Always
             column(CLUE_BASE_CHANCE, 317647)
             column(COL_TYPE, "wall")
