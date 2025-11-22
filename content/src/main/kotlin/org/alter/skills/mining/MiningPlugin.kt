@@ -52,7 +52,9 @@ class MiningPlugin : PluginEvent() {
          */
         val MAX_COUNTDOWN_ATTR = AttributeKey<Int>()
 
-        private val GEM_DROP_TABLE: Map<Int, Double> = mapOf(
+        private const val RANDOM_GEM_CHANCE = 1.0 / 256
+
+        private val GEM_ROCK_DROP_TABLE: Map<Int, Double> = mapOf(
             getRSCM("items.uncut_opal") to 1.0 / 2.133,
             getRSCM("items.uncut_jade") to 1.0 / 4.267,
             getRSCM("items.uncut_red_topaz") to 1.0 / 8.533,
@@ -61,20 +63,26 @@ class MiningPlugin : PluginEvent() {
             getRSCM("items.uncut_ruby") to 1.0 / 25.6,
             getRSCM("items.uncut_diamond") to 1.0 / 32.0,
         )
+        private val RANDOM_GEM_DROP_TABLE: Map<Int, Double> = mapOf(
+            getRSCM("items.uncut_sapphire") to 1.0 / 14.22,
+            getRSCM("items.uncut_emerald") to 1.0 / 25.6,
+            getRSCM("items.uncut_ruby") to 1.0 / 25.6,
+            getRSCM("items.uncut_diamond") to 1.0 / 32.0,
+        )
 
-        private fun rollGem(): Int {
-            val totalWeight = GEM_DROP_TABLE.values.sum()
+        private fun rollGem(dropTable: Map<Int, Double>): Int {
+            val totalWeight = dropTable.values.sum()
             val roll = Random.nextDouble(totalWeight)
 
             var cumulative = 0.0
-            for ((itemId, weight) in GEM_DROP_TABLE) {
+            for ((itemId, weight) in dropTable) {
                 cumulative += weight
                 if (roll <= cumulative) {
                     return itemId
                 }
             }
 
-            return GEM_DROP_TABLE.keys.last()
+            return dropTable.keys.last()
         }
     }
 
@@ -190,7 +198,11 @@ class MiningPlugin : PluginEvent() {
         player: Player,
         rockData: MiningRocksRow,
     ): Int? {
-        val oreItem = if (rockData.type == "gemrock") rollGem() else rockData.oreItem ?: return null
+        val oreItem = when {
+            rockData.type == "gemrock" -> rollGem(GEM_ROCK_DROP_TABLE)
+            shouldRollRandomGem(rockData) -> rollGem(RANDOM_GEM_DROP_TABLE)
+            else -> resolveOreItem(player, rockData) ?: return null
+        }
         if (player.inventory.add(oreItem, 1).hasSucceeded()) {
             player.addXp(Skills.MINING, rockData.xp)
             try {
@@ -240,6 +252,11 @@ class MiningPlugin : PluginEvent() {
             pickaxe.wallAnimation.let { return it }
         }
         return pickaxe.animation
+    }
+    private fun shouldRollRandomGem(rockData: MiningRocksRow): Boolean {
+        if (rockData.type == "gemrock") return false
+        if (rockData.oreItem == null) return false
+        return Random.nextDouble() < RANDOM_GEM_CHANCE
     }
     private fun resolveOreItem(player: Player, rockData: MiningRocksRow): Int? {
         val oreItem = rockData.oreItem ?: return null
