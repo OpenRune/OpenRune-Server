@@ -89,7 +89,7 @@ object Mining {
             column(COL_DESPAWN_TICKS, 0)
             column(COL_DEPLETE_MECHANIC, 0) // Normal
             columnRSCM(COL_EMPTY_ROCK, "objects.rocks2")
-            column(CLUE_BASE_CHANCE, 317647)
+            column(CLUE_BASE_CHANCE, 741600)
             column(COL_TYPE, "rock")
         }
         // Copper (level 1)
@@ -104,7 +104,7 @@ object Mining {
             column(COL_DESPAWN_TICKS, 0)
             column(COL_DEPLETE_MECHANIC, 0) // Normal
             columnRSCM(COL_EMPTY_ROCK, "objects.rocks2")
-            column(CLUE_BASE_CHANCE, 317647)
+            column(CLUE_BASE_CHANCE, 741600)
             column(COL_TYPE, "rock")
         }
         // Tin (level 1)
@@ -119,7 +119,7 @@ object Mining {
             column(COL_DESPAWN_TICKS, 0)
             column(COL_DEPLETE_MECHANIC, 0) // Normal
             columnRSCM(COL_EMPTY_ROCK, "objects.rocks2")
-            column(CLUE_BASE_CHANCE, 317647)
+            column(CLUE_BASE_CHANCE, 741600)
             column(COL_TYPE, "rock")
         }
         // Blurite (level 10)
@@ -134,7 +134,7 @@ object Mining {
             column(COL_DESPAWN_TICKS, 0)
             column(COL_DEPLETE_MECHANIC, 0) // Normal
             columnRSCM(COL_EMPTY_ROCK, "objects.rocks2")
-            column(CLUE_BASE_CHANCE, 317647)
+            column(CLUE_BASE_CHANCE, 741600)
             column(COL_TYPE, "rock")
         }
         // Iron (level 15)
@@ -149,7 +149,7 @@ object Mining {
             column(COL_DESPAWN_TICKS, 0)
             column(COL_DEPLETE_MECHANIC, 0) // Normal
             columnRSCM(COL_EMPTY_ROCK, "objects.rocks2")
-            column(CLUE_BASE_CHANCE, 317647)
+            column(CLUE_BASE_CHANCE, 741600)
             column(COL_TYPE, "rock")
         }
         // Silver (level 20)
@@ -164,7 +164,7 @@ object Mining {
             column(COL_DESPAWN_TICKS, 0)
             column(COL_DEPLETE_MECHANIC, 0) // Normal
             columnRSCM(COL_EMPTY_ROCK, "objects.rocks2")
-            column(CLUE_BASE_CHANCE, 317647)
+            column(CLUE_BASE_CHANCE, 741600)
             column(COL_TYPE, "rock")
         }
         // Lead (level 25)
@@ -179,7 +179,7 @@ object Mining {
             column(COL_DESPAWN_TICKS, 0)
             column(COL_DEPLETE_MECHANIC, 0) // Normal
             columnRSCM(COL_EMPTY_ROCK, "objects.leadrock1_empty")
-            column(CLUE_BASE_CHANCE, 317647)
+            column(CLUE_BASE_CHANCE, 290641)
             column(COL_TYPE, "rock")
         }
         // Coal (level 30)
@@ -194,7 +194,7 @@ object Mining {
             column(COL_DESPAWN_TICKS, 0)
             column(COL_DEPLETE_MECHANIC, 0) // Normal
             columnRSCM(COL_EMPTY_ROCK, "objects.rocks2")
-            column(CLUE_BASE_CHANCE, 317647)
+            column(CLUE_BASE_CHANCE, 290640)
             column(COL_TYPE, "rock")
         }
         // Gem (level 40)
@@ -208,7 +208,7 @@ object Mining {
             column(COL_DESPAWN_TICKS, 99)
             column(COL_DEPLETE_MECHANIC, 1) // Normal
             columnRSCM(COL_EMPTY_ROCK, "objects.rocks2")
-            column(CLUE_BASE_CHANCE, 317647)
+            column(CLUE_BASE_CHANCE, 211866)
             column(COL_TYPE, "gemrock")
         }
         //Gold (level 40)
@@ -223,7 +223,7 @@ object Mining {
             column(COL_DESPAWN_TICKS, 0)
             column(COL_DEPLETE_MECHANIC, 0) // Normal
             columnRSCM(COL_EMPTY_ROCK, "objects.rocks2")
-            column(CLUE_BASE_CHANCE, 317647)
+            column(CLUE_BASE_CHANCE, 296640)
             column(COL_TYPE, "rock")
         }
         //Mith (level 55)
@@ -238,7 +238,7 @@ object Mining {
             column(COL_DESPAWN_TICKS, 0)
             column(COL_DEPLETE_MECHANIC, 0) // Normal
             columnRSCM(COL_EMPTY_ROCK, "objects.rocks2")
-            column(CLUE_BASE_CHANCE, 317647)
+            column(CLUE_BASE_CHANCE, 148320)
             column(COL_TYPE, "rock")
         }
         //Lovakite (level 65)
@@ -253,7 +253,7 @@ object Mining {
             column(COL_DESPAWN_TICKS, 0)
             column(COL_DEPLETE_MECHANIC, 0) // Normal
             columnRSCM(COL_EMPTY_ROCK, "objects.rocks2")
-            column(CLUE_BASE_CHANCE, 317647)
+            column(CLUE_BASE_CHANCE, 245562)
             column(COL_TYPE, "rock")
         }
         //Addy (Level 70)
@@ -268,7 +268,7 @@ object Mining {
             column(COL_DESPAWN_TICKS, 0)
             column(COL_DEPLETE_MECHANIC, 0) // Normal
             columnRSCM(COL_EMPTY_ROCK, "objects.rocks2")
-            column(CLUE_BASE_CHANCE, 317647)
+            column(CLUE_BASE_CHANCE, 59328)
             column(COL_TYPE, "rock")
         }
         //Nickel (Level 74)
@@ -283,7 +283,7 @@ object Mining {
             column(COL_DESPAWN_TICKS, 0)
             column(COL_DEPLETE_MECHANIC, 0) // Normal
             columnRSCM(COL_EMPTY_ROCK, "objects.nickelrock1_empty")
-            column(CLUE_BASE_CHANCE, 317647)
+            column(CLUE_BASE_CHANCE, 59328)
             column(COL_TYPE, "rock")
         }
         row("dbrows.mining_runiterock") {
@@ -297,7 +297,7 @@ object Mining {
             column(COL_DESPAWN_TICKS, 0)
             column(COL_DEPLETE_MECHANIC, 0) // Normal
             columnRSCM(COL_EMPTY_ROCK, "objects.rocks2")
-            column(CLUE_BASE_CHANCE, 317647)
+            column(CLUE_BASE_CHANCE, 42377)
             column(COL_TYPE, "rock")
         }
         // Amethystrock (level 92
@@ -312,7 +312,7 @@ object Mining {
             column(COL_DESPAWN_TICKS, 45)
             column(COL_DEPLETE_MECHANIC, 1) // Timer
             columnRSCM(COL_EMPTY_ROCK, "objects.amethystrock_empty")
-            column(CLUE_BASE_CHANCE, 317647)
+            column(CLUE_BASE_CHANCE, 46350)
             column(COL_TYPE, "wall")
         }
         // Essence (level )
