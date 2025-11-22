@@ -178,7 +178,7 @@ object Mining {
             column(COL_SUCCESS_RATE_HIGH, 255)
             column(COL_DESPAWN_TICKS, 0)
             column(COL_DEPLETE_MECHANIC, 0) // Normal
-            columnRSCM(COL_EMPTY_ROCK, "objects.rocks2")
+            columnRSCM(COL_EMPTY_ROCK, "objects.leadrock1_empty")
             column(CLUE_BASE_CHANCE, 317647)
             column(COL_TYPE, "rock")
         }
@@ -277,7 +277,7 @@ object Mining {
             column(COL_LEVEL, 70)
             column(COL_XP, 95)
             columnRSCM(COL_ORE_ITEM, "items.nickel_ore")
-            column(COL_RESPAWN_CYCLES, 400)
+            column(COL_RESPAWN_CYCLES, 200)
             column(COL_SUCCESS_RATE_LOW, -1)
             column(COL_SUCCESS_RATE_HIGH, 25)
             column(COL_DESPAWN_TICKS, 0)
