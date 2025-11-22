@@ -204,6 +204,7 @@ sailing_salvaging_hook_animations=204
 thieving_chest=205
 chartering_destinations=206
 chartering_costs=207
+runecrafting_runes=1220
 runecrafting_altars=1221
 runecrafting_tiara=1222
 firemaking_logs=1223

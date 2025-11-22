@@ -17,11 +17,12 @@ class ItemOnObject(
     val item : Item,
     val gameObject: GameObject,
     val slot : Int,
+    val id : Int = gameObject.internalID,
     override val player: Player
 ) : PlayerEvent(player) {
 
     val option: String
-        get() = resolveOptionName(gameObject.internalID, MenuOption.OP1.id)
+        get() = resolveOptionName(id, MenuOption.OP1.id)
 
     companion object {
         private fun resolveOptionName(id: Int, opId: Int): String {
@@ -37,15 +38,14 @@ class ItemOnObject(
 open class ObjectClickEvent(
     open val gameObject: GameObject,
     open val op: MenuOption,
+    /**
+     * The ID of the object.
+     * Note: This returns the transformed ID if the object has a varbit/varp transform applied,
+     * not necessarily the original internal ID.
+     */
     val id : Int = gameObject.internalID,
     player: Player
 ) : EntityInteractionEvent<GameObject>(gameObject, op, player) {
-
-
-    init {
-        gameObject.internalID == id
-        gameObject.id = RSCM.getReverseMapping(RSCMType.LOCTYPES, id)!!
-    }
 
     override fun resolveOptionName(): String {
         val def = getObject(id) ?: error("Object not found for id=${id}[${id}]")
@@ -75,7 +75,7 @@ fun PluginEvent.onObjectOption(
     requireRSCM(RSCMType.LOCTYPES,obj)
     return on<ObjectClickEvent> {
         where {
-            gameObject.id == obj && options.any { it.equals(optionName, ignoreCase = true) }
+            RSCM.getReverseMapping(RSCMType.LOCTYPES, id) == obj && options.any { it.equals(optionName, ignoreCase = true) }
         }
         then { action(this) }
     }
@@ -88,7 +88,7 @@ fun PluginEvent.onObjectOption(
 ): EventListener<ObjectClickEvent> {
     return on<ObjectClickEvent> {
         where {
-            gameObject.internalID == obj && options.any { it.equals(optionName, ignoreCase = true) }
+            id == obj && options.any { it.equals(optionName, ignoreCase = true) }
         }
         then { action(this) }
     }

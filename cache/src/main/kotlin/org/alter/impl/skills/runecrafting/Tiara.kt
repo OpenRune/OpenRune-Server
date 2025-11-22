@@ -7,7 +7,7 @@ object Tiara {
 
     const val ITEM = 0
     const val ALTER = 1
-    const val XP = 3
+    const val XP = 2
 
     fun tiara() = dbTable("tables.runecrafting_tiara") {
         column("item", ITEM, VarType.OBJ)
