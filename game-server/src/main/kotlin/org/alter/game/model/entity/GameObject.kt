@@ -216,7 +216,6 @@ abstract class GameObject : Entity {
     }
 
 
-
     fun replaceWith(world: World, obj: String, lifetime: Int = 0, restoreOriginal: Boolean = false) =
         replace(world, obj, lifetime, null, restoreOriginal)
 
