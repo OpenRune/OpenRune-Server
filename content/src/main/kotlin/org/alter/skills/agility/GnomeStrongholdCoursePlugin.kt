@@ -15,7 +15,7 @@ import org.alter.rscm.RSCM
 class GnomeStrongholdCoursePlugin : PluginEvent() {
 
     private val MAX_STAGES = 7
-    private val BONUS_XP = 39.0
+    private val BONUS_XP = 50.0
 
     private fun Player.getStage(): Int = attr[GNOME_AGILITY_STAGE] ?: 0
     private fun Player.setStage(v: Int) { attr[GNOME_AGILITY_STAGE] = v }
