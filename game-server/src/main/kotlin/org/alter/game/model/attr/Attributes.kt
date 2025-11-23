@@ -260,3 +260,8 @@ val CHANGE_LOGGING = AttributeKey<Boolean>()
  * Instead of running tp
  */
 val CLIENT_KEY_COMBINATION = AttributeKey<Int>()
+
+/**
+ * Agility course stages
+ */
+val GNOME_AGILITY_STAGE = AttributeKey<Int>()
