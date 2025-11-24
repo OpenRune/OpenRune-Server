@@ -264,4 +264,4 @@ val CLIENT_KEY_COMBINATION = AttributeKey<Int>()
 /**
  * Agility course stages
  */
-val GNOME_AGILITY_STAGE = AttributeKey<Int>()
+val GNOME_AGILITY_STAGE = AttributeKey<Int>("GnomeAgilityStage")
