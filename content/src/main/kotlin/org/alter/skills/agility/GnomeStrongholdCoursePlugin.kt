@@ -5,7 +5,8 @@ import org.alter.api.ext.filterableMessage
 import org.alter.game.model.Direction
 import org.alter.game.model.ForcedMovement
 import org.alter.game.model.Tile
-import org.alter.game.model.attr.GNOME_AGILITY_STAGE
+import org.alter.game.model.attr.AttributeKey
+import org.alter.game.model.entity.GroundItem
 import org.alter.game.model.entity.Player
 import org.alter.game.model.move.moveTo
 import org.alter.game.pluginnew.PluginEvent
@@ -16,7 +17,14 @@ class GnomeStrongholdCoursePlugin : PluginEvent() {
 
     private val MAX_STAGES = 7
     private val BONUS_XP = 50.0
+    private val DROP_CHANCE = 0.15 // 15% kans per obstacle //100% test
 
+    private val MARK_SPAWN_TILES = listOf(
+        Tile(2471, 3422, 1),
+        Tile(2474, 3418, 2),
+        Tile(2488, 3421, 2)
+    )
+    val GNOME_AGILITY_STAGE = AttributeKey<Int>("GnomeAgilityStage")
     private fun Player.getStage(): Int = attr[GNOME_AGILITY_STAGE] ?: 0
     private fun Player.setStage(v: Int) { attr[GNOME_AGILITY_STAGE] = v }
 
@@ -169,8 +177,8 @@ class GnomeStrongholdCoursePlugin : PluginEvent() {
 
         val current = player.getStage()
 
-        val isNext = current + 1 == stage       // normale progress
-        val isRepeat = current == stage         // opnieuw klikken/spammen
+        val isNext = current + 1 == stage
+        val isRepeat = current == stage
 
         if (isNext) {
             player.setStage(stage)
@@ -208,6 +216,7 @@ class GnomeStrongholdCoursePlugin : PluginEvent() {
             if (xp > 0.0) player.addXp(Skills.AGILITY, xp)
             messageEnd?.let { player.filterableMessage(it) }
 
+            maybeSpawnMark(player)
             handleStage(player, stage, endStage)
         }
     }
@@ -234,8 +243,30 @@ class GnomeStrongholdCoursePlugin : PluginEvent() {
                 player.filterableMessage("You have completed the Gnome Agility Course!")
             }
 
-            player.setStage(0) // altijd resetten
+            player.setStage(0)
             return
         }
     }
+    private fun maybeSpawnMark(player: Player) {
+
+        val agilityLevel = player.getSkills().getBaseLevel(Skills.AGILITY)
+        val extraChance = agilityLevel / 200.0 // +0.5% per 10 levels
+
+        val rng = Math.random()
+        val totalChance = DROP_CHANCE + extraChance
+
+        if (rng > totalChance) return
+
+        val gracetile = MARK_SPAWN_TILES.random()
+        player.world.spawn(
+            GroundItem(
+                item = 11849,
+                amount =1,
+                tile = gracetile,
+                owner =player,
+                ))
+
+        player.filterableMessage("A Mark of Grace appears.")
+    }
+
 }
