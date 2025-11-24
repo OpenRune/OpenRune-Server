@@ -20,7 +20,6 @@ class GnomeStrongholdCoursePlugin : PluginEvent() {
     private fun Player.getStage(): Int = attr[GNOME_AGILITY_STAGE] ?: 0
     private fun Player.setStage(v: Int) { attr[GNOME_AGILITY_STAGE] = v }
 
-
     override fun init() {
 
         //Balance Log
@@ -39,14 +38,9 @@ class GnomeStrongholdCoursePlugin : PluginEvent() {
             )
         }
 
-
-        //First net
+        //Net 1
         onObjectOption("objects.obstical_net2", "climb-over") {
-
-            if (player.tile.x !in 2471..2476) {
-                return@onObjectOption
-            }
-
+            if (player.tile.x !in 2471..2476) return@onObjectOption
             handleObstacle(
                 player = player,
                 destination = Tile(player.tile.x, 3424, 1),
@@ -57,9 +51,10 @@ class GnomeStrongholdCoursePlugin : PluginEvent() {
                 stage = 2
             )
         }
-        //First Tree Branch
+
+        //Tree Branch
         onObjectOption("objects.climbing_branch", "climb") {
-                handleObstacle(
+            handleObstacle(
                 player = player,
                 destination = Tile(2473, 3420, 2),
                 anim = "sequences.human_reachforladder",
@@ -70,6 +65,7 @@ class GnomeStrongholdCoursePlugin : PluginEvent() {
                 stage = 3
             )
         }
+
         //Balance Rope
         onObjectOption("objects.balancing_rope", "walk-on") {
             handleObstacle(
@@ -84,7 +80,8 @@ class GnomeStrongholdCoursePlugin : PluginEvent() {
                 stage = 4
             )
         }
-        //Second Tree Branch 1
+
+        //Climbing Tree (2 objects)
         onObjectOption("objects.climbing_tree", "climb-down") {
             handleObstacle(
                 player = player,
@@ -97,7 +94,6 @@ class GnomeStrongholdCoursePlugin : PluginEvent() {
                 stage = 5
             )
         }
-        //Second Tree Branch 2
         onObjectOption("objects.climbing_tree2", "climb-down") {
             handleObstacle(
                 player = player,
@@ -110,13 +106,10 @@ class GnomeStrongholdCoursePlugin : PluginEvent() {
                 stage = 5
             )
         }
-        //Second net
+
+        //Net 2
         onObjectOption("objects.obstical_net3", "climb-over") {
-
-            if (player.tile.x !in 2483..2488) {
-                return@onObjectOption
-            }
-
+            if (player.tile.x !in 2483..2488) return@onObjectOption
             handleObstacle(
                 player = player,
                 destination = Tile(player.tile.x, 3428, 0),
@@ -127,14 +120,15 @@ class GnomeStrongholdCoursePlugin : PluginEvent() {
                 stage = 6
             )
         }
-        //Pipes
+
+        //Pipe (2 objects) — EndStage
         onObjectOption("objects.obstical_pipe3_1", "squeeze-through") {
             handleObstacle(
                 player = player,
                 destination = Tile(2484, 3437, 0),
                 anim = "sequences.human_pipesqueeze",
-                duration1 = 5,
-                duration2 = 250,
+                duration1 = 30,
+                duration2 = 210,
                 angle = Direction.NORTH.angle,
                 xp = 10.0,
                 stage = 7,
@@ -146,8 +140,8 @@ class GnomeStrongholdCoursePlugin : PluginEvent() {
                 player = player,
                 destination = Tile(2487, 3437, 0),
                 anim = "sequences.human_pipesqueeze",
-                duration1 = 5,
-                duration2 = 250,
+                duration1 = 30,
+                duration2 = 210,
                 angle = Direction.NORTH.angle,
                 xp = 10.0,
                 stage = 7,
@@ -171,22 +165,26 @@ class GnomeStrongholdCoursePlugin : PluginEvent() {
         endStage: Boolean = false
     ) {
 
-        val doForcedMove =
-            angle != null && duration1 != null && duration2 != null
+        val doForcedMove = angle != null && duration1 != null && duration2 != null
 
-        if (stage >= 0) {
-            val current = player.getStage()
-            if (current + 1 != stage) {
-                player.setStage(0)
-                return
-            }
+        val current = player.getStage()
+
+        val isNext = current + 1 == stage       // normale progress
+        val isRepeat = current == stage         // opnieuw klikken/spammen
+
+        if (isNext) {
+            player.setStage(stage)
+        } else if (!isRepeat) {
+            player.setStage(0)
         }
+
 
 
         player.queue {
 
             messageStart?.let { player.filterableMessage(it) }
             anim?.let { player.animate(it) }
+
             if (doForcedMove) {
                 val movement = ForcedMovement.of(
                     src = player.tile,
@@ -200,13 +198,16 @@ class GnomeStrongholdCoursePlugin : PluginEvent() {
                 player.animate(RSCM.NONE)
             }
             else if (simpleMove) {
+                wait(2)
                 player.moveTo(destination)
                 wait(1)
                 player.animate(RSCM.NONE)
             }
+
             wait(1)
             if (xp > 0.0) player.addXp(Skills.AGILITY, xp)
             messageEnd?.let { player.filterableMessage(it) }
+
             handleStage(player, stage, endStage)
         }
     }
@@ -216,20 +217,25 @@ class GnomeStrongholdCoursePlugin : PluginEvent() {
         stage: Int,
         endStage: Boolean
     ) {
-        val current = player.getStage()
+        val cur = player.getStage()
 
         if (!endStage && stage >= 0) {
-            player.setStage(stage)
+            if (stage == cur + 1) {
+                player.setStage(stage)
+            }
             return
         }
 
         if (endStage) {
-            player.setStage(MAX_STAGES)
-            if (player.getStage() >= MAX_STAGES) {
+            val completed = cur == MAX_STAGES
+
+            if (completed) {
                 player.addXp(Skills.AGILITY, BONUS_XP)
-                player.setStage(0)
                 player.filterableMessage("You have completed the Gnome Agility Course!")
             }
+
+            player.setStage(0) // altijd resetten
+            return
         }
     }
 }
