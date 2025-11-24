@@ -28,6 +28,11 @@ class GnomeStrongholdCoursePlugin : PluginEvent() {
     private fun Player.getStage(): Int = attr[GNOME_AGILITY_STAGE] ?: 0
     private fun Player.setStage(v: Int) { attr[GNOME_AGILITY_STAGE] = v }
 
+    val GNOME_LAPS = AttributeKey<Int>("GnomeAgilityLaps")
+    private fun Player.getLaps(): Int = attr[GNOME_LAPS] ?: 0
+    private fun Player.setLaps(v: Int) { attr[GNOME_LAPS] = v }
+
+
     override fun init() {
 
         //Balance Log
@@ -240,11 +245,16 @@ class GnomeStrongholdCoursePlugin : PluginEvent() {
 
             if (completed) {
                 player.addXp(Skills.AGILITY, BONUS_XP)
-                player.filterableMessage("You have completed the Gnome Agility Course!")
+
+                val laps = player.getLaps() + 1
+                player.setLaps(laps)
+
+                player.filterableMessage("Your Gnome Stronghold Agility lap count is: <col=ff0000>$laps</col>.")
             }
 
             player.setStage(0)
             return
+
         }
     }
     private fun maybeSpawnMark(player: Player) {
