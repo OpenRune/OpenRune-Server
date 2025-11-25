@@ -14,7 +14,6 @@ import org.alter.game.pluginnew.event.EventManager
 import org.alter.game.pluginnew.event.ReturnableEventListener
 import org.alter.game.pluginnew.event.impl.onObjectOption
 import org.alter.rscm.RSCM
-import org.alter.rscm.RSCM.asRSCM
 import org.alter.rscm.RSCM.getRSCM
 import org.alter.rscm.RSCMType
 import org.alter.skills.mining.MiningDefinitions.getDepletionRange
@@ -47,23 +46,23 @@ class MiningPlugin : PluginEvent() {
 
         private const val RANDOM_GEM_CHANCE = 1.0 / 256
 
-        private val GEM_ROCK_DROP_TABLE: Map<String, Double> = mapOf(
-            "items.uncut_opal" to 1.0 / 2.133,
-            "items.uncut_jade" to 1.0 / 4.267,
-            "items.uncut_red_topaz" to 1.0 / 8.533,
-            "items.uncut_sapphire" to 1.0 / 14.22,
-            "items.uncut_emerald" to 1.0 / 25.6,
-            "items.uncut_ruby" to 1.0 / 25.6,
-            "items.uncut_diamond" to 1.0 / 32.0,
+        private val GEM_ROCK_DROP_TABLE: Map<Int, Double> = mapOf(
+            getRSCM("items.uncut_opal") to 1.0 / 2.133,
+            getRSCM("items.uncut_jade") to 1.0 / 4.267,
+            getRSCM("items.uncut_red_topaz") to 1.0 / 8.533,
+            getRSCM("items.uncut_sapphire") to 1.0 / 14.22,
+            getRSCM("items.uncut_emerald") to 1.0 / 25.6,
+            getRSCM("items.uncut_ruby") to 1.0 / 25.6,
+            getRSCM("items.uncut_diamond") to 1.0 / 32.0,
         )
-        private val RANDOM_GEM_DROP_TABLE: Map<String, Double> = mapOf(
-            "items.uncut_sapphire" to 1.0 / 14.22,
-            "items.uncut_emerald" to 1.0 / 25.6,
-            "items.uncut_ruby" to 1.0 / 25.6,
-            "items.uncut_diamond" to 1.0 / 32.0,
+        private val RANDOM_GEM_DROP_TABLE: Map<Int, Double> = mapOf(
+            getRSCM("items.uncut_sapphire") to 1.0 / 14.22,
+            getRSCM("items.uncut_emerald") to 1.0 / 25.6,
+            getRSCM("items.uncut_ruby") to 1.0 / 25.6,
+            getRSCM("items.uncut_diamond") to 1.0 / 32.0,
         )
 
-        private fun rollGem(dropTable: Map<String, Double>): String {
+        private fun rollGem(dropTable: Map<Int, Double>): Int {
             val totalWeight = dropTable.values.sum()
             val roll = Random.nextDouble(totalWeight)
 
@@ -148,8 +147,8 @@ class MiningPlugin : PluginEvent() {
         rockData: MiningRocksRow,
     ): Int? {
         val oreItem = when {
-            rockData.type == "gemrock" -> rollGem(GEM_ROCK_DROP_TABLE).asRSCM()
-            shouldRollRandomGem(rockData) -> rollGem(RANDOM_GEM_DROP_TABLE).asRSCM()
+            rockData.type == "gemrock" -> rollGem(GEM_ROCK_DROP_TABLE)
+            shouldRollRandomGem(rockData) -> rollGem(RANDOM_GEM_DROP_TABLE)
             else -> resolveOreItem(player, rockData) ?: return null
         }
         if (player.inventory.add(oreItem, 1).hasSucceeded()) {

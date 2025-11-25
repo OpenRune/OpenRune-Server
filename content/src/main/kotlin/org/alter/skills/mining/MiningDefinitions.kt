@@ -1,5 +1,14 @@
 package org.alter.skills.mining
 
+import org.alter.game.util.DbHelper
+import org.alter.game.util.DbHelper.Companion.table
+import org.alter.game.util.column
+import org.alter.game.util.columnOptional
+import org.alter.game.util.vars.IntType
+import org.alter.game.util.vars.LocType
+import org.alter.game.util.vars.ObjType
+import org.alter.game.util.vars.SeqType
+import org.alter.game.util.vars.StringType
 import org.generated.tables.mining.MiningPickaxesRow
 import org.generated.tables.mining.MiningRocksRow
 
