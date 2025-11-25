@@ -111,8 +111,8 @@ class MiningPlugin : PluginEvent() {
         // Placeholder for custom rock-specific handlers when required.
     }
 
-    private fun getDepletedRock(rockData: MiningRocksRow): Int =
-        requireNotNull(rockData.emptyRockObject) { "Empty rock object missing for ${rockData.type}" }
+    private fun getDepletedRock(rockData: MiningRocksRow): Int? =
+        rockData.emptyRockObject
 
     private fun hasAnyPickaxe(player: Player): Boolean {
         player.equipment[EquipmentType.WEAPON.id]?.let { weapon ->
@@ -186,7 +186,7 @@ class MiningPlugin : PluginEvent() {
             return true
         }
 
-        getDepletedRock(rockData).let { depleted ->
+        getDepletedRock(rockData)?.let { depleted ->
             obj.replaceWith(world, depleted, rockData.respawnCycles, restoreOriginal = true)
         }
         
@@ -254,19 +254,21 @@ class MiningPlugin : PluginEvent() {
 
         player.loopAnim(miningAnimation)
 
-        repeatWhile(delay = tickDelay, immediate = false, canRepeat = {
-            val currentNearestTile = obj.findNearestTile(player.tile)
-            player.tile.isWithinRadius(currentNearestTile, 1) &&
-                !player.inventory.isFull &&
-                obj.isSpawned(world) &&
-                !isDepletedRock(obj, depletedId, player)
-        }) {
+        repeatWhile(
+            delay = tickDelay,
+            immediate = false,
+            canRepeat = {
+                val currentNearestTile = obj.findNearestTile(player.tile)
+                val notDepleted = depletedId == null || !isDepletedRock(obj, depletedId, player)
+                player.tile.isWithinRadius(currentNearestTile, 1) && !player.inventory.isFull &&
+                        obj.isSpawned(world) &&
+                        notDepleted }
+        ) {
 
             val success = success(low, high, miningLevel)
 
             if (success) {
-                val oreId = handleOreObtained(player, rockData)
-                if (oreId == null) return@repeatWhile
+                val oreId = handleOreObtained(player, rockData) ?: return@repeatWhile
 
                 RockOreObtainedEvent(player, obj, rockData, resourceId = oreId).post()
 
