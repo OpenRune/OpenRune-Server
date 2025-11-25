@@ -39,6 +39,7 @@ import org.alter.impl.skills.runecrafting.RunecraftRune
 import org.alter.impl.skills.runecrafting.Tiara
 
 import org.alter.impl.skills.Mining
+import org.alter.impl.skills.runecrafting.CombinationRune
 import java.io.File
 import java.nio.file.Files
 import java.nio.file.StandardCopyOption
@@ -64,6 +65,7 @@ fun tablesToPack() = listOf(
     Alters.altars(),
     Tiara.tiara(),
     RunecraftRune.runecraftRune(),
+    CombinationRune.runecraftComboRune(),
     Mining.pickaxes(),
     Mining.rocks(),
     Mining.miningEnhancers()
@@ -132,7 +134,7 @@ fun buildCache(rev: Triple<Int, Int, String>) {
     builder.extraTasks(*tasksNew.toTypedArray()).build().initialize()
 
 
-    val cache = Cache.load(File(getCacheLocation()).toPath(), true)
+    val cache = Cache.load(File(getCacheLocation()).toPath())
 
     GameValGroupTypes.entries.forEach {
         val type = GameValHandler.readGameVal(it, cache = cache, rev.first)

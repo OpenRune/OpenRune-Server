@@ -16,7 +16,8 @@ enum class AltarData(
     val entrance: Int? = null,
     val exit: Int? = null,
     val option: String = "craft-rune",
-    val row : String
+    val row : String,
+    val combo : List<CombinationRuneData> = emptyList()
 ) {
     AIR(
         ruins = listOf("objects.airtemple_ruined_old", "objects.airtemple_ruined_new"),
@@ -28,7 +29,8 @@ enum class AltarData(
         rune = Rune.AIR,
         entrance = Coords(2841, 4830),
         exit = Coords(2983, 3288),
-        row = "dbrows.runecrafting_altar_air"
+        row = "dbrows.runecrafting_altar_air",
+        combo = listOf(CombinationRuneData.MIST_AIR, CombinationRuneData.SMOKE_AIR)
     ),
     MIND(
         ruins = listOf("objects.mindtemple_ruined_old", "objects.mindtemple_ruined_new"),
@@ -52,7 +54,8 @@ enum class AltarData(
         rune = Rune.WATER,
         entrance = Coords(2725, 4832),
         exit = Coords(3182, 3162),
-        row = "dbrows.runecrafting_altar_water"
+        row = "dbrows.runecrafting_altar_water",
+        combo = listOf(CombinationRuneData.MUD_WATER, CombinationRuneData.MIST_WATER,CombinationRuneData.STEAM_WATER)
     ),
     EARTH(
         ruins = listOf("objects.earthtemple_ruined_old", "objects.earthtemple_ruined_new"),
@@ -64,7 +67,8 @@ enum class AltarData(
         rune = Rune.EARTH,
         entrance = Coords(2657, 4830),
         exit = Coords(3302, 3477),
-        row = "dbrows.runecrafting_altar_earth"
+        row = "dbrows.runecrafting_altar_earth",
+        combo = listOf(CombinationRuneData.DUST_EARTH, CombinationRuneData.MUD_EARTH,CombinationRuneData.LAVA_EARTH)
     ),
     FIRE(
         ruins = listOf("objects.firetemple_ruined_old", "objects.firetemple_ruined_new"),
@@ -76,7 +80,8 @@ enum class AltarData(
         rune = Rune.FIRE,
         entrance = Coords(2576, 4848),
         exit = Coords(3310, 3252),
-        row = "dbrows.runecrafting_altar_fire"
+        row = "dbrows.runecrafting_altar_fire",
+        combo = listOf(CombinationRuneData.LAVA_FIRE, CombinationRuneData.SMOKE_FIRE,CombinationRuneData.STEAM_FIRE)
     ),
     BODY(
         ruins = listOf("objects.bodytemple_ruined_old", "objects.bodytemple_ruined_new"),
@@ -197,6 +202,7 @@ object Alters {
     const val ENTRANCE = 6
     const val EXIT = 7
     const val RUINS = 8
+    const val COMBO = 9
 
     fun altars() = dbTable("tables.runecrafting_altars") {
 
@@ -209,6 +215,7 @@ object Alters {
         column("entrance", ENTRANCE, VarType.COORDGRID)
         column("exit", EXIT, VarType.COORDGRID)
         column("ruins", RUINS, VarType.LOC)
+        column("combo", COMBO, VarType.DBROW)
 
         AltarData.values.forEach {
             row(it.row) {
@@ -241,6 +248,10 @@ object Alters {
 
                 if (it.varbit != null) {
                     columnRSCM(VARBIT, it.varbit)
+                }
+
+                if (it.combo.isNotEmpty()) {
+                    columnRSCM(COMBO, *it.combo.map { combo -> combo.row }.toTypedArray())
                 }
 
             }

@@ -8,12 +8,14 @@ import org.alter.game.model.entity.Player
 import org.alter.game.model.move.moveTo
 import org.alter.game.pluginnew.PluginEvent
 import org.alter.game.pluginnew.event.impl.ItemOnObject
+import org.alter.game.pluginnew.event.impl.ObjectClickEvent
 import org.alter.game.pluginnew.event.impl.onItemEquip
 import org.alter.game.pluginnew.event.impl.onItemOption
 import org.alter.game.pluginnew.event.impl.onItemUnequip
 import org.alter.game.pluginnew.event.impl.onLogin
 import org.alter.game.pluginnew.event.impl.onObjectOption
 import org.generated.tables.runecrafting.RunecraftingAltarsRow
+import org.generated.tables.runecrafting.RunecraftingRunesRow
 import org.generated.tables.runecrafting.RunecraftingTiaraRow
 
 inline fun <A, B> bothNotNull(a: A?, b: B?, block: (A, B) -> Unit) {
@@ -35,8 +37,16 @@ class RunecraftingEvents : PluginEvent() {
                         then {  player.moveTo(altar.entrance) }
                     }
                 }
-
             }
+
+            on<ObjectClickEvent> {
+                where { gameObject.internalID == altar.altarObject }
+                then {
+                    val rune = RunecraftingRunesRow.getRow(altar.rune)
+                    RunecraftAction.craftRune(player,rune)
+                }
+            }
+
             // Exit portal handling
             if (altar.exitPortal != null && altar.exit != null) {
                 onObjectOption(altar.exitPortal, "use") {

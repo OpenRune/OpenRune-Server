@@ -5,7 +5,9 @@ import org.alter.api.Skills
 import org.alter.api.ext.message
 import org.alter.game.model.entity.Player
 import org.alter.game.pluginnew.PluginEvent
+import org.alter.game.pluginnew.event.impl.ItemOnItemEvent
 import org.alter.game.pluginnew.event.impl.ItemOnObject
+import org.alter.game.pluginnew.event.impl.onItemOnItem
 import org.alter.rscm.RSCM.asRSCM
 import org.generated.tables.runecrafting.RunecraftingAltarsRow
 import org.generated.tables.runecrafting.RunecraftingTiaraRow
@@ -17,15 +19,9 @@ class TiaraEvents : PluginEvent() {
             val tiaraId = altar.tiara!!
             val talismanId = altar.talisman!!
             val tiaraDef = RunecraftingTiaraRow.getRow(tiaraId)
-            fun registerHandler(matchItemId: Int) {
-                on<ItemOnObject> {
-                    where { altar.altarObject == gameObject.internalID && item.id == matchItemId }
-                    then { createTiara(player, talismanId, tiaraDef) }
-                }
+            onItemOnItem(altar.talisman,"items.tiara") {
+                createTiara(player, talismanId, tiaraDef)
             }
-
-            registerHandler("items.tiara".asRSCM())
-            registerHandler(talismanId)
         }
     }
 }
