@@ -86,8 +86,8 @@ object Mining {
             column(COL_XP, 5)
             columnRSCM(COL_ORE_ITEM, "items.clay")
             column(COL_RESPAWN_CYCLES, 2)
-            column(COL_SUCCESS_RATE_LOW, 64)
-            column(COL_SUCCESS_RATE_HIGH, 256)
+            column(COL_SUCCESS_RATE_LOW, 128)
+            column(COL_SUCCESS_RATE_HIGH, 400)
             column(COL_DEPLETE_MECHANIC, 1) // Normal
             columnRSCM(COL_EMPTY_ROCK, "objects.rocks2")
             column(CLUE_BASE_CHANCE, 741600)
@@ -142,8 +142,8 @@ object Mining {
             column(COL_XP, 35)
             columnRSCM(COL_ORE_ITEM, "items.iron_ore")
             column(COL_RESPAWN_CYCLES, 9)
-            column(COL_SUCCESS_RATE_LOW, 110)
-            column(COL_SUCCESS_RATE_HIGH, 255)
+            column(COL_SUCCESS_RATE_LOW, 96)
+            column(COL_SUCCESS_RATE_HIGH, 350)
             column(COL_DEPLETE_MECHANIC, 1) // Normal
             columnRSCM(COL_EMPTY_ROCK, "objects.rocks2")
             column(CLUE_BASE_CHANCE, 741600)
@@ -156,7 +156,7 @@ object Mining {
             column(COL_XP, 40)
             columnRSCM(COL_ORE_ITEM, "items.silver_ore")
             column(COL_RESPAWN_CYCLES, 100)
-            column(COL_SUCCESS_RATE_LOW, 24)
+            column(COL_SUCCESS_RATE_LOW, 25)
             column(COL_SUCCESS_RATE_HIGH, 200)
             column(COL_DEPLETE_MECHANIC, 1) // Normal
             columnRSCM(COL_EMPTY_ROCK, "objects.rocks2")
@@ -184,7 +184,7 @@ object Mining {
             column(COL_XP, 50)
             columnRSCM(COL_ORE_ITEM, "items.coal")
             column(COL_RESPAWN_CYCLES, 50)
-            column(COL_SUCCESS_RATE_LOW, 15)
+            column(COL_SUCCESS_RATE_LOW, 16)
             column(COL_SUCCESS_RATE_HIGH, 100)
             column(COL_DEPLETE_MECHANIC, 1) // Normal
             columnRSCM(COL_EMPTY_ROCK, "objects.rocks2")
@@ -197,7 +197,7 @@ object Mining {
             column(COL_LEVEL, 40)
             column(COL_XP, 65)
             column(COL_RESPAWN_CYCLES, 99)
-            column(COL_SUCCESS_RATE_LOW, 27)
+            column(COL_SUCCESS_RATE_LOW, 28)
             column(COL_SUCCESS_RATE_HIGH, 70)
             column(COL_DEPLETE_MECHANIC, 2) // Normal
             columnRSCM(COL_EMPTY_ROCK, "objects.rocks1")
@@ -213,7 +213,7 @@ object Mining {
             column(COL_XP, 65)
             columnRSCM(COL_ORE_ITEM, "items.gold_ore")
             column(COL_RESPAWN_CYCLES, 100)
-            column(COL_SUCCESS_RATE_LOW, 6)
+            column(COL_SUCCESS_RATE_LOW, 7)
             column(COL_SUCCESS_RATE_HIGH, 75)
             column(COL_DEPLETE_MECHANIC, 1) // Normal
             columnRSCM(COL_EMPTY_ROCK, "objects.rocks2")
@@ -227,7 +227,7 @@ object Mining {
             column(COL_XP, 80)
             columnRSCM(COL_ORE_ITEM, "items.mithril_ore")
             column(COL_RESPAWN_CYCLES, 200)
-            column(COL_SUCCESS_RATE_LOW, 2)
+            column(COL_SUCCESS_RATE_LOW, 4)
             column(COL_SUCCESS_RATE_HIGH, 50)
             column(COL_DEPLETE_MECHANIC, 1) // Normal
             columnRSCM(COL_EMPTY_ROCK, "objects.rocks2")
@@ -255,7 +255,7 @@ object Mining {
             column(COL_XP, 95)
             columnRSCM(COL_ORE_ITEM, "items.adamantite_ore")
             column(COL_RESPAWN_CYCLES, 400)
-            column(COL_SUCCESS_RATE_LOW, -1)
+            column(COL_SUCCESS_RATE_LOW, 2)
             column(COL_SUCCESS_RATE_HIGH, 25)
             column(COL_DEPLETE_MECHANIC, 1) // Normal
             columnRSCM(COL_EMPTY_ROCK, "objects.rocks2")
@@ -282,7 +282,7 @@ object Mining {
             column(COL_XP, 125)
             columnRSCM(COL_ORE_ITEM, "items.runite_ore")
             column(COL_RESPAWN_CYCLES, 312)
-            column(COL_SUCCESS_RATE_LOW, -1)
+            column(COL_SUCCESS_RATE_LOW, 1)
             column(COL_SUCCESS_RATE_HIGH, 18)
             column(COL_DEPLETE_MECHANIC, 1) // Normal
             columnRSCM(COL_EMPTY_ROCK, "objects.rocks2")
@@ -297,8 +297,8 @@ object Mining {
             column(COL_XP, 240)
             columnRSCM(COL_ORE_ITEM, "items.amethyst")
             column(COL_RESPAWN_CYCLES, 125)
-            column(COL_SUCCESS_RATE_LOW, -64)
-            column(COL_SUCCESS_RATE_HIGH, 13)
+            column(COL_SUCCESS_RATE_LOW, -18)
+            column(COL_SUCCESS_RATE_HIGH, 10)
             column(COL_DEPLETE_MECHANIC, 2)
             columnRSCM(COL_EMPTY_ROCK, "objects.amethystrock_empty")
             column(CLUE_BASE_CHANCE, 46350)
