@@ -100,8 +100,8 @@ object Mining {
             column(COL_XP, 17.5)
             columnRSCM(COL_ORE_ITEM, "items.copper_ore")
             column(COL_RESPAWN_CYCLES, 4)
-            column(COL_SUCCESS_RATE_LOW, 127)
-            column(COL_SUCCESS_RATE_HIGH, 255)
+            column(COL_SUCCESS_RATE_LOW, 100)
+            column(COL_SUCCESS_RATE_HIGH, 350)
             column(COL_DEPLETE_MECHANIC, 1) // Normal
             columnRSCM(COL_EMPTY_ROCK, "objects.rocks2")
             column(CLUE_BASE_CHANCE, 741600)
@@ -128,8 +128,8 @@ object Mining {
             column(COL_XP, 17.5)
             columnRSCM(COL_ORE_ITEM, "items.blurite_ore")
             column(COL_RESPAWN_CYCLES, 42)
-            column(COL_SUCCESS_RATE_LOW, 99)
-            column(COL_SUCCESS_RATE_HIGH, 255)
+            column(COL_SUCCESS_RATE_LOW, 90)
+            column(COL_SUCCESS_RATE_HIGH, 350)
             column(COL_DEPLETE_MECHANIC, 1) // Normal
             columnRSCM(COL_EMPTY_ROCK, "objects.rocks2")
             column(CLUE_BASE_CHANCE, 741600)
@@ -243,7 +243,7 @@ object Mining {
             column(COL_RESPAWN_CYCLES, 59)
             column(COL_SUCCESS_RATE_LOW, 2)
             column(COL_SUCCESS_RATE_HIGH, 50)
-            column(COL_DEPLETE_MECHANIC, 1) // Normal
+            column(COL_DEPLETE_MECHANIC, 1)
             columnRSCM(COL_EMPTY_ROCK, "objects.rocks2")
             column(CLUE_BASE_CHANCE, 245562)
             column(COL_TYPE, "rock")
