@@ -114,8 +114,8 @@ object Mining {
             column(COL_XP, 17.5)
             columnRSCM(COL_ORE_ITEM, "items.tin_ore")
             column(COL_RESPAWN_CYCLES, 4)
-            column(COL_SUCCESS_RATE_LOW, 99)
-            column(COL_SUCCESS_RATE_HIGH, 255)
+            column(COL_SUCCESS_RATE_LOW, 100)
+            column(COL_SUCCESS_RATE_HIGH, 350)
             column(COL_DEPLETE_MECHANIC, 1) // Normal
             columnRSCM(COL_EMPTY_ROCK, "objects.rocks2")
             column(CLUE_BASE_CHANCE, 741600)
