@@ -1,6 +1,7 @@
 package org.alter.skills.mining
 
 import org.alter.api.ext.findClosestWalkableTile
+import org.alter.api.ext.inWilderness
 import org.alter.api.ext.message
 import org.alter.rscm.RSCM.asRSCM
 import org.alter.game.model.entity.GroundItem
@@ -23,7 +24,13 @@ class ClueGeodePlugin : PluginEvent() {
 
     override fun init() {
         on<RockOreObtainedEvent> {
-            then { rollClueGeode(player, clueBaseChance) }
+            then {
+                var chance = clueBaseChance
+                if (player.equipment.contains("items.ring_of_wealth_i") && player.inWilderness()) {
+                    chance /= 2
+                }
+                rollClueGeode(player, chance)
+            }
         }
     }
 

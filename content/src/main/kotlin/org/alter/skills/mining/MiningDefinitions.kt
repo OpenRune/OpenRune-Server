@@ -1,14 +1,6 @@
 package org.alter.skills.mining
 
-import org.alter.game.util.DbHelper
-import org.alter.game.util.DbHelper.Companion.table
-import org.alter.game.util.column
-import org.alter.game.util.columnOptional
-import org.alter.game.util.vars.IntType
-import org.alter.game.util.vars.LocType
-import org.alter.game.util.vars.ObjType
-import org.alter.game.util.vars.SeqType
-import org.alter.game.util.vars.StringType
+
 import org.generated.tables.mining.MiningPickaxesRow
 import org.generated.tables.mining.MiningRocksRow
 
@@ -33,8 +25,8 @@ object MiningDefinitions {
             return 1..1
         }
 
-        val minAmount = depleteMinAmount?.toInt() ?: 1
-        val maxAmount = depleteMaxAmount?.toInt() ?: minAmount
+        val minAmount = depleteMinAmount ?: 1
+        val maxAmount = depleteMaxAmount ?: minAmount
         val (min, max) = if (maxAmount < minAmount) minAmount to minAmount else minAmount to maxAmount
 
         return min..max

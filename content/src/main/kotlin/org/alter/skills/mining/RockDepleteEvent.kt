@@ -30,7 +30,7 @@ class RockDepleteEvent(
 class RockOreObtainedEvent(
     override val player: Player,
     rockObject: GameObject,
-    rockData: MiningRocksRow,
+    val rockData: MiningRocksRow,
     val rockType: String = rockData.type,
     val clueBaseChance: Int = rockData.clueBaseChance,
     override val resourceId: Int = rockData.oreItem ?: -1,

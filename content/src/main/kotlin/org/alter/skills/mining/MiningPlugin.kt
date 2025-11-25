@@ -14,17 +14,32 @@ import org.alter.game.pluginnew.event.EventManager
 import org.alter.game.pluginnew.event.ReturnableEventListener
 import org.alter.game.pluginnew.event.impl.onObjectOption
 import org.alter.rscm.RSCM
+import org.alter.rscm.RSCM.asRSCM
 import org.alter.rscm.RSCM.getRSCM
 import org.alter.rscm.RSCMType
 import org.alter.skills.mining.MiningDefinitions.getDepletionRange
 import org.alter.skills.mining.MiningDefinitions.isInfiniteResource
 import org.alter.skills.mining.MiningDefinitions.pickaxeData
 import org.alter.skills.woodcutting.WoodcuttingDefinitions.axeData
+import org.generated.tables.mining.MiningEnhancersRow
 import org.generated.tables.mining.MiningPickaxesRow
 import org.generated.tables.mining.MiningRocksRow
 import kotlin.random.Random
 
 class MiningPlugin : PluginEvent() {
+
+    val amuletOfGlorys = listOf(
+        "items.amulet_of_glory_1",
+        "items.amulet_of_glory_2",
+        "items.amulet_of_glory_3",
+        "items.amulet_of_glory_4"
+    )
+
+    private val miningGloves = listOf(
+        "items.mguild_gloves" to 1,
+        "items.mguild_gloves_expert" to 2,
+        "items.mguild_gloves_superior" to 3
+    )
 
     companion object {
         private val logger = KotlinLogging.logger {}
@@ -38,6 +53,11 @@ class MiningPlugin : PluginEvent() {
          * Attribute key for tracking how many ores have been mined from a rock before depletion.
          */
         val MINED_ORE_COUNT_ATTR = AttributeKey<Int>()
+
+        /**
+         * Attribute key for tracking how many ores have been mined from a rock before depletion.
+         */
+        val DEPLETE_GLOVE_COUNT_ATTR = AttributeKey<Int>()
 
         /**
          * Attribute key for the randomly selected threshold at which a rock depletes for mechanic 2.
@@ -75,6 +95,37 @@ class MiningPlugin : PluginEvent() {
             }
 
             return dropTable.keys.last()
+        }
+
+        fun calculateMiningXP(baseXP: Double, hasVarrockDiary: Boolean = false, player: Player): Double {
+            val xpBoosts = mapOf(
+                "items.motherlode_reward_hat" to 0.004,
+                "items.fossil_motherlode_reward_hat" to 0.004,
+                "items.motherlode_reward_top" to 0.008,
+                "items.fossil_motherlode_reward_top" to 0.008,
+                "items.motherlode_reward_legs" to 0.006,
+                "items.fossil_motherlode_reward_legs" to 0.006,
+                "items.motherlode_reward_boots" to 0.002
+            )
+
+            val setBonus = 0.025
+
+            val equippedItems = xpBoosts.keys.filter { player.equipment.contains(it) }
+
+            val totalBoost = equippedItems.sumOf { xpBoosts[it] ?: 0.0 }
+
+            val requiredSlots = listOf(
+                listOf("items.motherlode_reward_hat", "items.fossil_motherlode_reward_hat"),
+                listOf("items.motherlode_reward_top", "items.fossil_motherlode_reward_top").let { tops ->
+                    if (hasVarrockDiary) tops + listOf("items.varrock_armour_elite") else tops
+                },
+                listOf("items.motherlode_reward_legs", "items.fossil_motherlode_reward_legs"),
+                listOf("items.motherlode_reward_boots", "items.fossil_motherlode_reward_boots")
+            )
+
+            val hasFullSet = requiredSlots.all { slotOptions -> slotOptions.any { player.equipment.contains(it) } }
+
+            return baseXP * (1 + totalBoost + if (hasFullSet) setBonus else 0.0)
         }
     }
 
@@ -144,15 +195,26 @@ class MiningPlugin : PluginEvent() {
 
     private fun handleOreObtained(
         player: Player,
-        rockData: MiningRocksRow,
+        rockData: MiningRocksRow
     ): Int? {
-        val oreItem = when {
+        var oreItem = when {
             rockData.type == "gemrock" -> rollGem(GEM_ROCK_DROP_TABLE)
-            shouldRollRandomGem(rockData) -> rollGem(RANDOM_GEM_DROP_TABLE)
+            shouldRollRandomGem(rockData,player.equipment.contains(*amuletOfGlorys.toTypedArray())) -> rollGem(RANDOM_GEM_DROP_TABLE)
             else -> resolveOreItem(player, rockData) ?: return null
         }
-        if (player.inventory.add(oreItem, 1).hasSucceeded()) {
-            player.addXp(Skills.MINING, rockData.xp)
+
+        var total = 1
+
+        if (player.equipment.contains("items.jewl_bracelet_of_clay")) {
+            oreItem = "items.softclay".asRSCM()
+            if (rockData.rockObject.any { it in listOf("objects.softclayrock1".asRSCM(), "objects.softclayrock2".asRSCM()) }) {
+                total = 2
+            }
+        }
+
+
+        if (player.inventory.add(oreItem, total).hasSucceeded()) {
+            player.addXp(Skills.MINING, calculateMiningXP(rockData.xp.toDouble(),false,player))
             try {
                 val oreName = Item(oreItem).getName().lowercase()
                 player.message("You manage to mine some $oreName.")
@@ -168,7 +230,7 @@ class MiningPlugin : PluginEvent() {
         }
     }
 
-    private suspend fun QueueTask.depleteRock(
+    private fun depleteRock(
         player: Player,
         obj: GameObject,
         rockData: MiningRocksRow,
@@ -189,7 +251,7 @@ class MiningPlugin : PluginEvent() {
         getDepletedRock(rockData)?.let { depleted ->
             obj.replaceWith(world, depleted, rockData.respawnCycles, restoreOriginal = true)
         }
-        
+
         player.animate(RSCM.NONE)
 
         return false
@@ -201,11 +263,15 @@ class MiningPlugin : PluginEvent() {
         }
         return pickaxe.animation
     }
-    private fun shouldRollRandomGem(rockData: MiningRocksRow): Boolean {
+
+    private fun shouldRollRandomGem(rockData: MiningRocksRow, hasAmuletOfGlory: Boolean): Boolean {
         if (rockData.type == "gemrock") return false
         if (rockData.oreItem == null) return false
-        return Random.nextDouble() < RANDOM_GEM_CHANCE
+
+        val chance = if (hasAmuletOfGlory) 1.0 / 86 else RANDOM_GEM_CHANCE
+        return Random.nextDouble() < chance
     }
+
     private fun resolveOreItem(player: Player, rockData: MiningRocksRow): Int? {
         val oreItem = rockData.oreItem ?: return null
 
@@ -262,12 +328,14 @@ class MiningPlugin : PluginEvent() {
                 val notDepleted = depletedId == null || !isDepletedRock(obj, depletedId, player)
                 player.tile.isWithinRadius(currentNearestTile, 1) && !player.inventory.isFull &&
                         obj.isSpawned(world) &&
-                        notDepleted }
+                        notDepleted
+            }
         ) {
 
             val success = success(low, high, miningLevel)
 
             if (success) {
+
                 val oreId = handleOreObtained(player, rockData) ?: return@repeatWhile
 
                 RockOreObtainedEvent(player, obj, rockData, resourceId = oreId).post()
@@ -285,8 +353,10 @@ class MiningPlugin : PluginEvent() {
 
                         newCount >= depletionThreshold
                     }
-                    else -> true
+
+                    else -> handleNormalDeplete(player, obj, rockData)
                 }
+
 
                 if (shouldDeplete) {
                     obj.attr.remove(MINED_ORE_COUNT_ATTR)
@@ -299,5 +369,33 @@ class MiningPlugin : PluginEvent() {
 
         player.stopLoopAnim()
     }
+
+
+    private fun handleNormalDeplete(player: Player, obj: GameObject, rockData: MiningRocksRow): Boolean {
+        val gloveInfo = rockData.miningEnhancers
+            ?.let { MiningEnhancersRow.getRow(it).miningGloves }
+            ?.let { mapGlove(it) }
+
+        val currentCount = obj.attr[DEPLETE_GLOVE_COUNT_ATTR] ?: 0
+
+        return if (gloveInfo != null && player.equipment.contains(gloveInfo.first)) {
+            if (currentCount != gloveInfo.second) {
+                obj.attr.increment(DEPLETE_GLOVE_COUNT_ATTR, 1)
+                false
+            } else {
+                true
+            }
+        } else {
+            true
+        }
+    }
+
+    private fun mapGlove(type: String): Pair<String, Int> = when (type) {
+        "standard" -> miningGloves[0]
+        "expert" -> miningGloves[1]
+        "superior" -> miningGloves[2]
+        else -> miningGloves[1]
+    }
+
 }
 

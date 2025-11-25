@@ -18,6 +18,7 @@ object Mining {
     const val COL_TYPE = 10
     const val COL_DEPLETE_MIN_AMOUNT = 11
     const val COL_DEPLETE_MAX_AMOUNT = 12
+    const val COL_MINING_ENHANCERS = 13
 
     val PICKAXE_DATA = mapOf(
         "items.bronze_pickaxe" to Triple(1, 8, Triple("sequences.human_mining_bronze_pickaxe", "sequences.human_mining_bronze_pickaxe_wall", "dbrows.mining_bronze_pickaxe")),
@@ -78,6 +79,7 @@ object Mining {
         column("type", COL_TYPE, VarType.STRING)
         column("deplete_min_amount", COL_DEPLETE_MIN_AMOUNT, VarType.INT)
         column("deplete_max_amount", COL_DEPLETE_MAX_AMOUNT, VarType.INT)
+        column("mining_enhancers", COL_MINING_ENHANCERS, VarType.DBROW)
 
         // Clayrocks (level 1)
         row("dbrows.mining_clayrock") {
@@ -92,6 +94,7 @@ object Mining {
             columnRSCM(COL_EMPTY_ROCK, "objects.rocks2")
             column(CLUE_BASE_CHANCE, 741600)
             column(COL_TYPE, "rock")
+            columnRSCM(COL_MINING_ENHANCERS,"dbrows.mining_enhancers_clay")
         }
         // Copper (level 1)
         row("dbrows.mining_copperrock") {
@@ -106,6 +109,7 @@ object Mining {
             columnRSCM(COL_EMPTY_ROCK, "objects.rocks2")
             column(CLUE_BASE_CHANCE, 741600)
             column(COL_TYPE, "rock")
+            columnRSCM(COL_MINING_ENHANCERS,"dbrows.mining_enhancers_copper")
         }
         // Tin (level 1)
         row("dbrows.mining_tinrock") {
@@ -120,6 +124,7 @@ object Mining {
             columnRSCM(COL_EMPTY_ROCK, "objects.rocks2")
             column(CLUE_BASE_CHANCE, 741600)
             column(COL_TYPE, "rock")
+            columnRSCM(COL_MINING_ENHANCERS,"dbrows.mining_enhancers_tin")
         }
         // Blurite (level 10)
         row("dbrows.mining_bluriterock") {
@@ -134,6 +139,7 @@ object Mining {
             columnRSCM(COL_EMPTY_ROCK, "objects.rocks2")
             column(CLUE_BASE_CHANCE, 741600)
             column(COL_TYPE, "rock")
+            columnRSCM(COL_MINING_ENHANCERS,"dbrows.mining_enhancers_blurite")
         }
         // Iron (level 15)
         row("dbrows.mining_ironrock") {
@@ -148,6 +154,7 @@ object Mining {
             columnRSCM(COL_EMPTY_ROCK, "objects.rocks2")
             column(CLUE_BASE_CHANCE, 741600)
             column(COL_TYPE, "rock")
+            columnRSCM(COL_MINING_ENHANCERS,"dbrows.mining_enhancers_iron")
         }
         // Silver (level 20)
         row("dbrows.mining_silverrock") {
@@ -162,6 +169,7 @@ object Mining {
             columnRSCM(COL_EMPTY_ROCK, "objects.rocks2")
             column(CLUE_BASE_CHANCE, 741600)
             column(COL_TYPE, "rock")
+            columnRSCM(COL_MINING_ENHANCERS,"dbrows.mining_enhancers_silver")
         }
         // Lead (level 25)
         row("dbrows.mining_leadrock") {
@@ -176,6 +184,7 @@ object Mining {
             columnRSCM(COL_EMPTY_ROCK, "objects.leadrock1_empty")
             column(CLUE_BASE_CHANCE, 290641)
             column(COL_TYPE, "rock")
+            columnRSCM(COL_MINING_ENHANCERS,"dbrows.mining_enhancers_lead")
         }
         // Coal (level 30)
         row("dbrows.mining_coalrock") {
@@ -190,6 +199,7 @@ object Mining {
             columnRSCM(COL_EMPTY_ROCK, "objects.rocks2")
             column(CLUE_BASE_CHANCE, 290640)
             column(COL_TYPE, "rock")
+            columnRSCM(COL_MINING_ENHANCERS,"dbrows.mining_enhancers_coal")
         }
         // Gem (level 40)
         row("dbrows.mining_gemrock") {
@@ -219,6 +229,7 @@ object Mining {
             columnRSCM(COL_EMPTY_ROCK, "objects.rocks2")
             column(CLUE_BASE_CHANCE, 296640)
             column(COL_TYPE, "rock")
+            columnRSCM(COL_MINING_ENHANCERS,"dbrows.mining_enhancers_gold")
         }
         //Mith (level 55)
         row("dbrows.mining_mithrilrock") {
@@ -233,6 +244,7 @@ object Mining {
             columnRSCM(COL_EMPTY_ROCK, "objects.rocks2")
             column(CLUE_BASE_CHANCE, 148320)
             column(COL_TYPE, "rock")
+            columnRSCM(COL_MINING_ENHANCERS,"dbrows.mining_enhancers_mithril")
         }
         //Lovakite (level 65)
         row("dbrows.mining_lovakiterock") {
@@ -247,6 +259,7 @@ object Mining {
             columnRSCM(COL_EMPTY_ROCK, "objects.rocks2")
             column(CLUE_BASE_CHANCE, 245562)
             column(COL_TYPE, "rock")
+            columnRSCM(COL_MINING_ENHANCERS,"dbrows.mining_enhancers_lovakite")
         }
         //Addy (Level 70)
         row("dbrows.mining_adamantiterock") {
@@ -261,6 +274,7 @@ object Mining {
             columnRSCM(COL_EMPTY_ROCK, "objects.rocks2")
             column(CLUE_BASE_CHANCE, 59328)
             column(COL_TYPE, "rock")
+            columnRSCM(COL_MINING_ENHANCERS,"dbrows.mining_enhancers_adamantite")
         }
         //Nickel (Level 74)
         row("dbrows.mining_nickelrock") {
@@ -275,6 +289,7 @@ object Mining {
             columnRSCM(COL_EMPTY_ROCK, "objects.nickelrock1_empty")
             column(CLUE_BASE_CHANCE, 59328)
             column(COL_TYPE, "rock")
+            columnRSCM(COL_MINING_ENHANCERS,"dbrows.mining_enhancers_nickel")
         }
         row("dbrows.mining_runiterock") {
             columnRSCM(COL_ROCK_OBJECT, "objects.runiterock1", "objects.runiterock2")
@@ -288,6 +303,7 @@ object Mining {
             columnRSCM(COL_EMPTY_ROCK, "objects.rocks2")
             column(CLUE_BASE_CHANCE, 42377)
             column(COL_TYPE, "rock")
+            columnRSCM(COL_MINING_ENHANCERS,"dbrows.mining_enhancers_runite")
 
         }
         // Amethystrock (level 92
@@ -305,6 +321,7 @@ object Mining {
             column(COL_TYPE, "wall")
             column(COL_DEPLETE_MIN_AMOUNT, 2)
             column(COL_DEPLETE_MAX_AMOUNT, 3)
+            columnRSCM(COL_MINING_ENHANCERS,"dbrows.mining_enhancers_amethyst")
         }
         // Essence (level )
         row("dbrows.mining_essence") {
@@ -318,6 +335,168 @@ object Mining {
             column(COL_DEPLETE_MECHANIC, 3) // Always
             column(CLUE_BASE_CHANCE, 317647)
             column(COL_TYPE, "wall")
+        }
+    }
+
+
+    const val MINING_GLOVES = 0
+    const val VARROCK_ARMOUR = 1
+    const val RINGORSIGNET = 2
+    const val MINING_CAPE = 3
+
+    fun miningEnhancers() = dbTable("tables.mining_enhancers") {
+        column("mining_gloves", MINING_GLOVES, VarType.STRING)
+        column("varrock_armour_level", VARROCK_ARMOUR, VarType.INT)
+        column("ring_or_signet", RINGORSIGNET, VarType.BOOLEAN)
+        column("mining_cape", MINING_CAPE, VarType.BOOLEAN)
+
+        row("dbrows.mining_enhancers_clay") {
+            column(VARROCK_ARMOUR, 1)
+            column(RINGORSIGNET, true)
+            column(MINING_CAPE, true)
+        }
+
+        row("dbrows.mining_enhancers_copper") {
+            column(MINING_GLOVES, "standard")
+            column(VARROCK_ARMOUR, 1)
+            column(RINGORSIGNET, true)
+            column(MINING_CAPE, true)
+        }
+
+        row("dbrows.mining_enhancers_tin") {
+            column(MINING_GLOVES, "standard")
+            column(VARROCK_ARMOUR, 1)
+            column(RINGORSIGNET, true)
+            column(MINING_CAPE, true)
+        }
+
+        row("dbrows.mining_enhancers_guardian_remains") {
+            column(VARROCK_ARMOUR, 1)
+            column(RINGORSIGNET, true)
+            column(MINING_CAPE, true)
+        }
+
+        row("dbrows.mining_enhancers_tephra") {
+            column(VARROCK_ARMOUR, 1)
+            column(RINGORSIGNET, true)
+            column(MINING_CAPE, true)
+        }
+
+        row("dbrows.mining_enhancers_blurite") {
+            column(VARROCK_ARMOUR, 1)
+            column(RINGORSIGNET, true)
+            column(MINING_CAPE, true)
+        }
+
+        row("dbrows.mining_enhancers_limestone") {
+            column(VARROCK_ARMOUR, 1)
+            column(RINGORSIGNET, true)
+            column(MINING_CAPE, true)
+        }
+
+        row("dbrows.mining_enhancers_iron") {
+            column(MINING_GLOVES, "standard")
+            column(VARROCK_ARMOUR, 1)
+            column(RINGORSIGNET, true)
+            column(MINING_CAPE, true)
+        }
+
+        row("dbrows.mining_enhancers_silver") {
+            column(MINING_GLOVES, "standard")
+            column(VARROCK_ARMOUR, 1)
+            column(RINGORSIGNET, true)
+            column(MINING_CAPE, true)
+        }
+
+        row("dbrows.mining_enhancers_lead") {
+            column(MINING_GLOVES, "standard")
+            column(VARROCK_ARMOUR, 1)
+            column(RINGORSIGNET, true)
+            column(MINING_CAPE, true)
+        }
+
+        row("dbrows.mining_enhancers_coal") {
+            column(MINING_GLOVES, "standard")
+            column(VARROCK_ARMOUR, 1)
+            column(RINGORSIGNET, true)
+            column(MINING_CAPE, true)
+        }
+
+        row("dbrows.mining_enhancers_sandstone") {
+            column(MINING_GLOVES, "expert")
+            column(VARROCK_ARMOUR, 2)
+            column(RINGORSIGNET, true)
+            column(MINING_CAPE, true)
+        }
+
+        row("dbrows.mining_enhancers_gold") {
+            column(MINING_GLOVES, "standard")
+            column(VARROCK_ARMOUR, 1)
+            column(RINGORSIGNET, true)
+            column(MINING_CAPE, true)
+        }
+
+        row("dbrows.mining_enhancers_volcanic_sulphur") {
+            column(MINING_CAPE, true)
+            column(RINGORSIGNET, true)
+        }
+
+        row("dbrows.mining_enhancers_granite") {
+            column(VARROCK_ARMOUR, 2)
+            column(RINGORSIGNET, true)
+            column(MINING_CAPE, true)
+        }
+
+        row("dbrows.mining_enhancers_mithril") {
+            column(MINING_GLOVES, "superior")
+            column(VARROCK_ARMOUR, 2)
+            column(RINGORSIGNET, true)
+            column(MINING_CAPE, true)
+        }
+
+        row("dbrows.mining_enhancers_lovakite") {
+            column(VARROCK_ARMOUR, 2)
+            column(RINGORSIGNET, true)
+            column(MINING_CAPE, true)
+        }
+
+        row("dbrows.mining_enhancers_amalgamation") {
+            column(VARROCK_ARMOUR, 3)
+            column(RINGORSIGNET, true)
+            column(MINING_CAPE, true)
+        }
+
+        row("dbrows.mining_enhancers_adamantite") {
+            column(MINING_GLOVES, "superior")
+            column(VARROCK_ARMOUR, 3)
+            column(RINGORSIGNET, true)
+            column(MINING_CAPE, true)
+        }
+
+        row("dbrows.mining_enhancers_soft_clay") {
+            column(VARROCK_ARMOUR, 2)
+            column(RINGORSIGNET, true)
+            column(MINING_CAPE, true)
+        }
+
+        row("dbrows.mining_enhancers_nickel") {
+            column(VARROCK_ARMOUR, 4)
+            column(RINGORSIGNET, false)
+            column(MINING_CAPE, false)
+        }
+
+        row("dbrows.mining_enhancers_runite") {
+            column(MINING_GLOVES, "expert")
+            column(VARROCK_ARMOUR, 4)
+            column(RINGORSIGNET, false)
+            column(MINING_CAPE, false)
+        }
+
+        row("dbrows.mining_enhancers_amethyst") {
+            column(MINING_GLOVES, "expert")
+            column(VARROCK_ARMOUR, 4)
+            column(RINGORSIGNET, false)
+            column(MINING_CAPE, false)
         }
     }
 }
