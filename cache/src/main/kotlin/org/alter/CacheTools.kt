@@ -33,9 +33,12 @@ import org.alter.impl.StatComponents
 import org.alter.impl.misc.TeleTabs
 import org.alter.impl.skills.Woodcutting
 import org.alter.impl.skills.Herblore
+
 import org.alter.impl.skills.runecrafting.Alters
 import org.alter.impl.skills.runecrafting.RunecraftRune
 import org.alter.impl.skills.runecrafting.Tiara
+
+import org.alter.impl.skills.Mining
 import java.io.File
 import java.nio.file.Files
 import java.nio.file.StandardCopyOption
@@ -60,7 +63,10 @@ fun tablesToPack() = listOf(
     Herblore.crushing(),
     Alters.altars(),
     Tiara.tiara(),
-    RunecraftRune.runecraftRune()
+    RunecraftRune.runecraftRune(),
+    Mining.pickaxes(),
+    Mining.rocks(),
+    Mining.miningEnhancers()
 )
 
 private val logger = KotlinLogging.logger {}
