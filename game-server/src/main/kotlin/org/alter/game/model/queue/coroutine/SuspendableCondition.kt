@@ -24,8 +24,22 @@ abstract class SuspendableCondition {
  */
 class WaitCondition(cycles: Int) : SuspendableCondition() {
     private val cyclesLeft = AtomicInteger(cycles)
+    private var hasBeenChecked = AtomicInteger(0) // Track if resume() has been called at least once
 
-    override fun resume(): Boolean = cyclesLeft.decrementAndGet() <= 0
+    override fun resume(): Boolean {
+        val checkCount = hasBeenChecked.getAndIncrement()
+
+        // On the first call (same tick as wait), return false to wait for next tick
+        // On subsequent calls, decrement and check if ready
+        return if (checkCount == 0) {
+            // First call in the same tick - don't resume yet, but decrement for next tick
+            cyclesLeft.decrementAndGet()
+            false
+        } else {
+            // Subsequent calls - decrement and check if cyclesLeft < 0
+            cyclesLeft.decrementAndGet() < 0
+        }
+    }
 
     override fun toString(): String = toStringHelper().add("cycles", cyclesLeft).toString()
 }

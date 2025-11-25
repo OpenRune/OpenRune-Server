@@ -7,14 +7,13 @@ import org.alter.game.Server
 import org.alter.game.model.Direction
 import org.alter.game.model.Tile
 import org.alter.game.model.World
-import org.alter.game.model.attr.COMBAT_ATTACKERS_ATTR
-import org.alter.game.model.attr.COMBAT_TARGET_FOCUS_ATTR
-import org.alter.game.model.attr.FACING_PAWN_ATTR
-import org.alter.game.model.attr.INTERACTING_PLAYER_ATTR
+import org.alter.game.model.attr.*
 import org.alter.game.model.entity.Npc
 import org.alter.game.model.entity.Pawn
 import org.alter.game.model.entity.Player
 import org.alter.game.model.move.MovementQueue.StepType
+import org.alter.game.model.move.getMoveDestination
+import org.alter.game.model.move.getMovementPath
 import org.alter.game.model.move.hasMoveDestination
 import org.alter.game.model.move.stopMovement
 import org.alter.game.model.move.walkRoute
@@ -26,6 +25,9 @@ import org.alter.plugins.content.combat.specialattack.SpecialAttacks
 import org.alter.plugins.content.combat.strategy.CombatStrategy
 import org.alter.plugins.content.combat.strategy.magic.CombatSpell
 import org.alter.plugins.content.interfaces.attack.AttackTab
+import org.rsmod.routefinder.RouteCoordinates
+import org.rsmod.routefinder.collision.CollisionStrategy
+import java.lang.ref.WeakReference
 import java.util.LinkedList
 
 /**
@@ -39,27 +41,67 @@ class CombatPlugin(
 
     companion object {
         private val logger = KotlinLogging.logger {}
-        // Hack: Force attack if within this distance for melee (to make NPC stop and face player if they are running away)
-        private const val FORCE_ATTACK_DISTANCE_MELEE = 4
+
+        /**
+         * Grace distance for combat while moving.
+         * In OSRS, due to the tick system (600ms), there's a visual discrepancy between where entities appear
+         * and where they actually are (true tile). This grace distance accounts for that by allowing attacks
+         * when entities are moving and will be in range within 1-2 ticks.
+         *
+         * This prevents the issue where you visually look adjacent to an NPC but are actually 3-4 tiles away
+         * on the server (true tile), making combat feel unresponsive.
+         *
+         * Set to 3 to allow attacks at distance 4 (1 + 3) during chase, matching OSRS behavior.
+         */
+        private const val MOVEMENT_GRACE_DISTANCE = 3
     }
 
     init {
         setCombatLogic {
             pawn.queue {
-                while (true) {
-                    // Check if target is still valid (not logged out or teleported away)
-                    val target = pawn.getCombatTarget()
-                    if (target == null) {
-                        Combat.reset(pawn)
-                        pawn.resetFacePawn()
-                        break
+                try {
+                    // Store attack initiation time when combat starts (if not already set by attack())
+                    // attack() sets it using reflection before calling executeCombat()
+                    // If reflection fails or attack() didn't set it, we set it here as a fallback
+                    if (pawn.attr[ATTACK_INITIATED_TIME_ATTR] == null) {
+                        pawn.attr[ATTACK_INITIATED_TIME_ATTR] = System.currentTimeMillis()
                     }
 
-                    // Check if target is a player and if they're still in the area (render distance)
-                    // If player is too far away (teleported/logged out), stop combat
+                    // IMMEDIATE FIRST CYCLE: Check if we can attack immediately without waiting
+                    // This allows instant attacks when already in range
+                    val target = pawn.getCombatTarget()
+                    if (target != null && !target.isDead() && target.isAlive()) {
+                        val firstCycleResult = try {
+                            cycle(pawn, this)
+                        } catch (e: Exception) {
+                            false
+                        }
+                        if (!firstCycleResult) {
+                            Combat.reset(pawn)
+                            pawn.resetFacePawn()
+                            return@queue
+                        }
+                    }
+
+                    while (true) {
+                        // Check if target is still valid (not logged out or teleported away)
+                        val target = pawn.getCombatTarget()
+                        if (target == null) {
+                            Combat.reset(pawn)
+                            pawn.resetFacePawn()
+                            break
+                        }
+
+                        // Check if target is dead - END COMBAT IMMEDIATELY
+                        if (target.isDead() || !target.isAlive()) {
+                            Combat.reset(pawn)
+                            pawn.resetFacePawn()
+                            break
+                        }
+
+                    // Check if target is still in the world
                     if (target is Player) {
                         // Safely check if player is still registered in the world
-                        // Use try-catch to handle cases where player is being removed
                         val isPlayerInWorld = try {
                             target.index >= 0 && world.players.contains(target)
                         } catch (e: Exception) {
@@ -67,7 +109,6 @@ class CombatPlugin(
                         }
 
                         if (!isPlayerInWorld) {
-                            logger.info { "[COMBAT] Target player ${target.username} is no longer in world, resetting combat" }
                             Combat.reset(pawn)
                             pawn.resetFacePawn()
                             break
@@ -77,23 +118,43 @@ class CombatPlugin(
                         val distance = try {
                             pawn.tile.getDistance(target.tile)
                         } catch (e: Exception) {
-                            // If we can't calculate distance, player is likely gone
                             999
                         }
 
                         if (distance > 15) {
-                            logger.info { "[COMBAT] Target player ${target.username} is too far away (distance=$distance), resetting combat" }
                             Combat.reset(pawn)
                             pawn.resetFacePawn()
                             break
                         }
+                    } else if (target is Npc) {
+                        // Check if NPC is dead or removed from world
+                        val isNpcDead = target.isDead() || !target.isAlive()
+                        val isNpcInWorld = try {
+                            target.index >= 0 && world.npcs.contains(target)
+                        } catch (e: Exception) {
+                            false
+                        }
 
+                        if (isNpcDead || !isNpcInWorld) {
+                            Combat.reset(pawn)
+                            pawn.resetFacePawn()
+                            break
+                        }
                     }
 
-                    if (!cycle(pawn, this)) {
-                        break
+                        val cycleResult = try {
+                            cycle(pawn, this)
+                        } catch (e: Exception) {
+                            false
+                        }
+                        if (!cycleResult) {
+                            break
+                        }
+                        wait(1)
                     }
-                    wait(1)
+                } catch (e: Exception) {
+                    Combat.reset(pawn)
+                    pawn.resetFacePawn()
                 }
             }
         }
@@ -114,20 +175,49 @@ class CombatPlugin(
      *    - If path ends but not reached -> recalculate
      */
     suspend fun cycle(pawn: Pawn, queue: QueueTask): Boolean {
-        val startTime = System.currentTimeMillis()
         val target = pawn.getCombatTarget() ?: return false
-        val pawnName = if (pawn is Player) "Player(${(pawn as Player).username})" else "NPC(${(pawn as Npc).id})"
-        val targetName = if (target is Player) "Player(${(target as Player).username})" else "NPC(${(target as Npc).id})"
+        val pawnTile = pawn.tile
+        val targetTile = target.tile
+        val pawnName = if (pawn is Player) "Player(${pawn.username})" else "NPC(${(pawn as? Npc)?.id ?: "unknown"})"
+        val targetName = if (target is Player) "Player(${target.username})" else "NPC(${(target as? Npc)?.id ?: "unknown"})"
+
+        // Calculate distance first (needed for render distance check)
+        val distance = pawnTile.getDistance(targetTile)
+
+        // Update combat state based on time since last action
+        val currentTime = System.currentTimeMillis()
+        val lastActionTime = pawn.attr[LAST_COMBAT_ACTION_TIME_ATTR] ?: currentTime
+        val timeSinceAction = currentTime - lastActionTime
+        val currentState = pawn.attr[COMBAT_STATE_ATTR] ?: CombatState.IDLE
+
+        // Transition ACTIVE → ENGAGING after 5 seconds of no combat action
+        if (currentState == CombatState.ACTIVE && timeSinceAction > COMBAT_STATE_TIMEOUT_MS) {
+            pawn.attr[COMBAT_STATE_ATTR] = CombatState.ENGAGING
+            logger.info {
+                "[COMBAT-CYCLE] $pawnName -> $targetName: State transition ACTIVE → ENGAGING " +
+                "(${timeSinceAction}ms since last action)"
+            }
+        }
+
+        // Check if target is out of render distance - END COMBAT
+        val renderDistance = 15 // OSRS render distance is 15 tiles
+        if (distance > renderDistance) {
+            logger.info {
+                "[COMBAT-CYCLE] $pawnName -> $targetName: Target out of render distance " +
+                "(distance=$distance > $renderDistance), ending combat"
+            }
+            Combat.reset(pawn)
+            pawn.resetFacePawn()
+            return false
+        }
 
         // Check if pawn or target is dead - END COMBAT IMMEDIATELY
         if (pawn.isDead() || !pawn.isAlive()) {
-            logger.info { "[COMBAT] $pawnName -> $targetName: Pawn is dead, ending combat" }
             Combat.reset(pawn)
             pawn.resetFacePawn()
             return false
         }
         if (target.isDead() || !target.isAlive()) {
-            logger.info { "[COMBAT] $pawnName -> $targetName: Target is dead, ending combat" }
             Combat.reset(pawn)
             pawn.resetFacePawn()
             return false
@@ -138,9 +228,10 @@ class CombatPlugin(
         val attackRange = strategy.getAttackRange(pawn)
         val pawnSize = pawn.getSize()
         val targetSize = target.getSize()
-        val pawnTile = pawn.tile
-        val targetTile = target.tile
-        val distance = pawnTile.getDistance(targetTile)
+        // pawnTile, targetTile, and distance already set above
+        val targetMoving = target.hasMoveDestination()
+
+        // Verbose logging removed - use debug level if needed
 
         // Get route logic (smart vs dumb pathfinding)
         var routeLogic = 1 // Default to smart
@@ -166,108 +257,157 @@ class CombatPlugin(
             true
         }
 
-        val isDiagonalForMelee = isMelee && dx > 0 && dz > 0 && !isCardinallyAdjacent
-
         // Handle same-tile case
         val areOnSameTile = pawnTile.x == targetTile.x && pawnTile.z == targetTile.z && pawnTile.height == targetTile.height
+
         if (areOnSameTile) {
+            // If already moving, wait for movement to complete (don't queue another walk)
+            if (pawn.hasMoveDestination()) {
+                return true
+            }
             val adjacentTile = findAdjacentWalkableTile(pawn)
             if (adjacentTile != null) {
-                pawn.walkTo(adjacentTile)
-                while (pawn.hasMoveDestination()) {
-                    queue.wait(1)
-                    if (!target.isAlive() || !pawn.isAlive()) {
-                        return false
-                    }
-                }
-                return cycle(pawn, queue) // Restart cycle after moving away
+                // Use walkRoute instead of walkTo to avoid interrupting queues
+                // walkRoute just sets up movement without calling interruptQueues
+                val route = LinkedList<Tile>()
+                route.add(adjacentTile)
+                pawn.walkRoute(route, StepType.NORMAL)
+                // Return true to continue the cycle - it will check again next tick
+                // When movement completes, the cycle will naturally continue with combat
+                return true
             }
         }
 
-        // Check if we're in attack range
-        val reached = if (distance <= attackRange && (!isMelee || (isCardinallyAdjacent && !isDiagonalForMelee))) {
-            pawn.world.reachStrategy.reached(
-                flags = pawn.world.collision,
-                level = pawnTile.height,
-                srcX = pawnTile.x,
-                srcZ = pawnTile.z,
-                destX = targetTile.x,
-                destZ = targetTile.z,
-                destWidth = targetSize,
-                destLength = targetSize,
-                srcSize = pawnSize,
-                locShape = -2
-            )
+        // If player is moving (from same-tile walk-away), wait for movement to complete before pathfinding
+        // This prevents pathfinding from interrupting the walk-away movement
+        // Once movement completes, the cycle will naturally continue and check range
+        // Check if we're in attack range with grace distance for moving entities
+        //
+        // OSRS True Tile System:
+        // - Visual position (client animation) != True tile (server position)
+        // - Movement happens in discrete ticks (600ms)
+        // - Client animates smoothly between ticks, creating visual discrepancy
+        // - You may LOOK adjacent to an NPC but actually be 3-4 tiles away (true tile)
+        //
+        // Solution: Grace distance ONLY for PLAYERS chasing (not NPCs)
+        // - If PLAYER is chasing: Allow attack within (attackRange + MOVEMENT_GRACE_DISTANCE)
+        // - If NPC is attacking: Use exact attackRange (no grace, must be in true range)
+        // - If stationary: Use exact attackRange
+        // - This accounts for the fact that entities will move closer on the next tick
+        // - "isChasing" includes having a move destination, since movement completes at end of tick
+        val isPlayerChasing = pawn is Player && (targetMoving || pawn.hasMoveDestination())
+        val effectiveRange = if (isPlayerChasing) attackRange + MOVEMENT_GRACE_DISTANCE else attackRange
+
+        // NPCs must have line of sight - cannot attack through walls/objects
+        // For melee: Check if NPC can actually reach the target (no wall between them)
+        // For ranged/magic: Check projectile line of sight
+        val hasLineOfSight = if (pawn is Npc) {
+            if (isMelee && isCardinallyAdjacent) {
+                // For melee when cardinally adjacent, check if we can traverse to target
+                // This catches walls between adjacent tiles
+                val direction = Direction.between(pawnTile, targetTile)
+                pawn.world.canTraverse(pawnTile, direction, pawn, pawnSize)
+            } else if (isMelee) {
+                // For melee at distance, check if we can reach
+                pawn.hasLineOfSightTo(target, projectile = false, maximumDistance = effectiveRange)
+            } else {
+                // For ranged/magic, check projectile line of sight
+                pawn.hasLineOfSightTo(target, projectile = true, maximumDistance = effectiveRange)
+            }
         } else {
-            false
+            true // Players always have line of sight (handled differently)
         }
+        val reached = distance <= effectiveRange && hasLineOfSight
 
-        // Hack: Force attack if within 4 tiles for melee (to make NPC stop and face player)
-        // This helps catch moving targets by forcing them to stop and turn around
-        // Only apply this when NPC is actively moving and BEFORE combat has started (first attack)
-        val hasCombatStarted = pawn.attr[Combat.LAST_COMBAT_CYCLE_ATTR] != null
-        val pawnIsMoving = pawn.hasMoveDestination()
-        val forceAttack = !reached && isMelee && distance <= FORCE_ATTACK_DISTANCE_MELEE && !hasCombatStarted && pawnIsMoving
+        // Verbose logging removed - use debug level if needed
 
-        // Single-combat check: If NPC is in attack range and player is already in combat with someone else, de-aggress
-        // This must happen when NPC is within range, not immediately when combat starts
-        if (pawn is Npc && target is Player && !target.tile.isMulti(world) && (reached || forceAttack || distance <= attackRange + 1)) {
+        // No force attack - using grace distance system instead
+        val forceAttack = false
+
+        // Single-combat check: If NPC has reached the player and player is in ACTIVE combat with someone else, de-aggress
+        // This check only happens when NPC reaches attack range, allowing NPCs to continue chasing until they arrive
+        // Uses state-based logic: only de-aggress if player is ACTUALLY in combat (dealt/received damage) with another NPC
+        // Just targeting another NPC is NOT enough - they must have exchanged damage
+        if (pawn is Npc && target is Player && !target.tile.isMulti(world) && reached) {
             val playerCombatTarget = target.getCombatTarget()
-            val playerAttackers = target.attr[COMBAT_ATTACKERS_ATTR]
+            val playerLastActionTime = target.attr[LAST_COMBAT_ACTION_TIME_ATTR] ?: 0L
+            val timeSincePlayerAction = System.currentTimeMillis() - playerLastActionTime
 
-            // Check if player is in combat with someone else (not this NPC)
-            val isPlayerInCombatWithOther = (playerCombatTarget != null && playerCombatTarget != pawn) ||
-                (playerAttackers != null && playerAttackers.any { attackerRef ->
-                    val attacker = attackerRef.get()
-                    attacker != null && attacker != pawn && attacker.isAttacking()
-                })
+            // Only de-aggress if:
+            // 1. Player has a different target
+            // 2. Player has exchanged damage with that target within the last 5 seconds
+            // 3. That target is a different NPC (not this one)
+            if (playerCombatTarget != null && playerCombatTarget != pawn && playerCombatTarget is Npc) {
+                // Check if the other NPC is actually in combat (has recent action time)
+                val otherNpcLastActionTime = playerCombatTarget.attr[LAST_COMBAT_ACTION_TIME_ATTR] ?: 0L
+                val timeSinceOtherNpcAction = System.currentTimeMillis() - otherNpcLastActionTime
 
-            if (isPlayerInCombatWithOther) {
-                logger.info { "[COMBAT] NPC ${(pawn as Npc).id} is in range of player ${target.username} who is already in combat in single-combat area, de-aggressing" }
-                Combat.reset(pawn)
-                pawn.resetFacePawn()
-                return false
+                // Both player and the other NPC must have recent combat actions (within 5 seconds)
+                val playerInActiveCombat = timeSincePlayerAction < COMBAT_STATE_TIMEOUT_MS
+                val otherNpcInActiveCombat = timeSinceOtherNpcAction < COMBAT_STATE_TIMEOUT_MS
+
+                if (playerInActiveCombat && otherNpcInActiveCombat) {
+                    logger.info {
+                        "[COMBAT-CYCLE] $pawnName -> $targetName: Player is in ACTIVE combat with NPC(${playerCombatTarget.id}) " +
+                        "(playerAction=${timeSincePlayerAction}ms ago, npcAction=${timeSinceOtherNpcAction}ms ago), de-aggressing"
+                    }
+                    Combat.reset(pawn)
+                    pawn.resetFacePawn()
+                    return false
+                }
             }
         }
-
-        val cycleTime = System.currentTimeMillis() - startTime
-        logger.info { "[COMBAT] $pawnName -> $targetName: cycle start - distance=$distance, attackRange=$attackRange, reached=$reached, forceAttack=$forceAttack, pawnTile=(${pawnTile.x},${pawnTile.z}), targetTile=(${targetTile.x},${targetTile.z}), cycleTime=${cycleTime}ms" }
 
         // If reached or force attack, attack
         if (reached || forceAttack) {
-            return handleAttack(pawn, target, strategy, queue, pawnName, targetName)
+            return handleAttack(pawn, target, strategy, pawnName, targetName)
         }
 
         // Not reached - need to pathfind
-        return handlePathfinding(pawn, target, attackRange, isMelee, pawnSize, targetSize, routeLogic, queue, pawnName, targetName)
+        handlePathfinding(pawn, target, attackRange, isMelee, pawnSize, targetSize)
+
+        // Return true to continue the combat loop
+        // The main loop will wait(1) and call cycle() again next tick
+        // DON'T wait(1) here - that would cause double-waiting (main loop already waits)
+        return true
     }
 
     /**
      * Handle attack when in range
      */
-    private suspend fun handleAttack(pawn: Pawn, target: Pawn, strategy: CombatStrategy, queue: QueueTask, pawnName: String, targetName: String): Boolean {
-        val attackStartTime = System.currentTimeMillis()
-        logger.info { "[ATTACK] $pawnName -> $targetName: Starting attack at (${pawn.tile.x},${pawn.tile.z})" }
+    private fun handleAttack(pawn: Pawn, target: Pawn, strategy: CombatStrategy, pawnName: String, targetName: String): Boolean {
 
         // Check if pawn or target is dead - END COMBAT IMMEDIATELY
         if (pawn.isDead() || !pawn.isAlive() || target.isDead() || !target.isAlive()) {
-            logger.info { "[ATTACK] $pawnName -> $targetName: Pawn or target is dead, ending combat" }
             Combat.reset(pawn)
             pawn.resetFacePawn()
             return false
         }
 
-        pawn.stopMovement()
+        // Don't stop movement - allow attacking while moving (keep pace with target)
         pawn.facePawn(target)
 
         val canEngage = Combat.canEngage(pawn, target)
         if (!canEngage) {
-            val isAlreadyInCombat = pawn.isAttacking() && pawn.getCombatTarget() == target
-            if (!isAlreadyInCombat) {
-                Combat.reset(pawn)
-                pawn.resetFacePawn()
+            // canEngage returned false - could be:
+            // 1. Player tried to switch targets while in combat (blocked by single-combat rule)
+            // 2. Can't attack this NPC for other reasons (slayer, etc.)
+            //
+            // In case 1: DON'T reset combat - player is still in combat with original partner
+            // In case 2: Reset combat
+            //
+            // Check if player has a combat partner (meaning they're in active combat)
+            val combatPartner = pawn.attr[COMBAT_PARTNER_ATTR]?.get()
+            if (combatPartner != null && combatPartner != target) {
+                // Player is in combat with someone else - this was a blocked switch attempt
+                // DON'T reset combat, just return false to end THIS combat queue
+                // The original combat with combatPartner continues via NPC retaliation
                 return false
             }
+            // Otherwise, combat was legitimately blocked (e.g., can't attack this NPC)
+            Combat.reset(pawn)
+            pawn.resetFacePawn()
+            return false
         }
 
         val canAttackLock = pawn.lock.canAttack()
@@ -287,30 +427,60 @@ class CombatPlugin(
         }
 
         // Face target
-        if (target != pawn.attr[FACING_PAWN_ATTR]?.get()) {
+        val currentFacing = pawn.attr[FACING_PAWN_ATTR]?.get()
+        if (target != currentFacing) {
             pawn.facePawn(target)
         }
 
-        // Attack if delay is ready
-        if (Combat.isAttackDelayReady(pawn)) {
-            if (pawn is Player && AttackTab.isSpecialEnabled(pawn) && pawn.getEquipment(EquipmentType.WEAPON) != null) {
-                AttackTab.disableSpecial(pawn)
-                if (SpecialAttacks.execute(pawn, target, pawn.world)) {
-                    Combat.postAttack(pawn, target)
-                    val attackTime = System.currentTimeMillis() - attackStartTime
-                    logger.info { "[ATTACK] $pawnName -> $targetName: Special attack executed, time=${attackTime}ms" }
-                    return true
-                }
-                pawn.message("You don't have enough power left.")
-            }
-            strategy.attack(pawn, target)
-            Combat.postAttack(pawn, target)
-            val attackTime = System.currentTimeMillis() - attackStartTime
-            logger.info { "[ATTACK] $pawnName -> $targetName: Regular attack executed, time=${attackTime}ms" }
-        } else {
-            logger.info { "[ATTACK] $pawnName -> $targetName: Attack delay not ready" }
+        // Check if attack delay is ready (respects weapon speed)
+        if (!Combat.isAttackDelayReady(pawn)) {
+            return true // Stay in combat but wait for attack delay
         }
 
+        // Attack if delay is ready
+        val currentTime = System.currentTimeMillis()
+        if (pawn is Player && AttackTab.isSpecialEnabled(pawn) && pawn.getEquipment(EquipmentType.WEAPON) != null) {
+            AttackTab.disableSpecial(pawn)
+            if (SpecialAttacks.execute(pawn, target, pawn.world)) {
+                // Update combat state, action time, and COMBAT PARTNER for both
+                pawn.attr[COMBAT_STATE_ATTR] = CombatState.ACTIVE
+                pawn.attr[LAST_COMBAT_ACTION_TIME_ATTR] = currentTime
+                pawn.attr[COMBAT_PARTNER_ATTR] = WeakReference(target)
+                target.attr[COMBAT_STATE_ATTR] = CombatState.ACTIVE
+                target.attr[LAST_COMBAT_ACTION_TIME_ATTR] = currentTime
+                target.attr[COMBAT_PARTNER_ATTR] = WeakReference(pawn)
+                logger.info { "[COMBAT] $pawnName ATTACK (special) -> $targetName | actionTime=$currentTime" }
+                Combat.postAttack(pawn, target)
+                return true
+            }
+            pawn.message("You don't have enough power left.")
+        }
+
+        // ========================================
+        // ATTACK IS GOING THROUGH - SET ALL COMBAT STATE NOW
+        // ========================================
+
+        // Track that we are ACTUALLY attacking this target (only set when attack executes)
+        target.attr.addToSet(COMBAT_ATTACKERS_ATTR, WeakReference(pawn))
+
+        // If attacking an NPC that is currently moving, stop their movement
+        // This matches OSRS behavior where NPCs stop their path when attacked
+        if (target.entityType.isNpc && target.hasMoveDestination()) {
+            target.stopMovement()
+        }
+
+        // Update combat state, action time, and COMBAT PARTNER for both
+        // This is the KEY - COMBAT_PARTNER_ATTR tracks who we're ACTUALLY fighting
+        pawn.attr[COMBAT_STATE_ATTR] = CombatState.ACTIVE
+        pawn.attr[LAST_COMBAT_ACTION_TIME_ATTR] = currentTime
+        pawn.attr[COMBAT_PARTNER_ATTR] = WeakReference(target)
+        target.attr[COMBAT_STATE_ATTR] = CombatState.ACTIVE
+        target.attr[LAST_COMBAT_ACTION_TIME_ATTR] = currentTime
+        target.attr[COMBAT_PARTNER_ATTR] = WeakReference(pawn)
+        logger.info { "[COMBAT] $pawnName ATTACK -> $targetName | partner set | actionTime=$currentTime" }
+
+        strategy.attack(pawn, target)
+        Combat.postAttack(pawn, target)
         return true
     }
 
@@ -323,273 +493,120 @@ class CombatPlugin(
      * This allows players to trap NPCs behind walls/bushes. Set canBeStuck = false
      * on an NPC to make it ultra-smart and always path around obstacles.
      */
-    private suspend fun handlePathfinding(
+    private fun handlePathfinding(
         pawn: Pawn,
         target: Pawn,
         attackRange: Int,
         isMelee: Boolean,
         pawnSize: Int,
-        targetSize: Int,
-        routeLogic: Int,
-        queue: QueueTask,
-        pawnName: String,
-        targetName: String
+        targetSize: Int
     ): Boolean {
         // Check if pawn or target is dead - END COMBAT IMMEDIATELY
         if (pawn.isDead() || !pawn.isAlive() || target.isDead() || !target.isAlive()) {
-            logger.info { "[PATHFIND] $pawnName -> $targetName: Pawn or target is dead, ending combat" }
             Combat.reset(pawn)
             pawn.resetFacePawn()
             return false
         }
 
-        val pathfindStartTime = System.currentTimeMillis()
         val pawnTile = pawn.tile
         val targetTile = target.tile
         val lastPathTargetPos = pawn.attr[Combat.LAST_PATH_TARGET_POSITION_ATTR]
-        val lastSuccessfulWalkPos = pawn.attr[Combat.LAST_SUCCESSFUL_WALK_TARGET_POSITION_ATTR]
 
-        // Check if target moved from last path position, or from last successful walk if no path position
-        // Cache position differences to avoid recalculating
-        val comparePos = lastPathTargetPos ?: lastSuccessfulWalkPos
-        val targetMoved = if (comparePos != null) {
-            comparePos.x != targetTile.x ||
-            comparePos.z != targetTile.z ||
-            comparePos.height != targetTile.height
+        // Check if target moved AT ALL from last path position
+        val targetMoved = if (lastPathTargetPos != null) {
+            lastPathTargetPos.x != targetTile.x ||
+            lastPathTargetPos.z != targetTile.z ||
+            lastPathTargetPos.height != targetTile.height
         } else {
-            true // No previous position, assume target moved
+            true // No previous position, need initial path
         }
-
-        // Calculate how far target moved (in tiles) - reuse position differences
-        val targetMoveDistance = if (comparePos != null) {
-            val dx = Math.abs(targetTile.x - comparePos.x)
-            val dz = Math.abs(targetTile.z - comparePos.z)
-            val dh = Math.abs(targetTile.height - comparePos.height)
-            dx + dz + dh // Manhattan distance
-        } else {
-            // No previous position at all - need new path
-            Int.MAX_VALUE
-        }
-
-        // Check if target moved exactly 1 tile from last successful walk position (for dumb pathfinding)
-        val targetMovedOneTile = lastSuccessfulWalkPos != null && targetMoveDistance == 1
-
-        // Determine which pathfinding to use
-        // Use dumb pathfinding ONLY if:
-        // 1. Original routeLogic is 0 (dumb) AND
-        // 2. Target moved exactly 1 tile from last successful walk position
-        val useDumbPathfinding = routeLogic == 0 && targetMovedOneTile && lastSuccessfulWalkPos != null
-        val actualRouteLogic = if (useDumbPathfinding) 0 else 1
 
         // Check if we're currently stuck (path calculation failed previously)
         val stuckTargetPos = pawn.attr[Combat.STUCK_TARGET_POSITION_ATTR]
         val stuckPawnPos = pawn.attr[Combat.STUCK_PAWN_POSITION_ATTR]
         val isStuck = stuckTargetPos != null && stuckPawnPos != null
 
-        // If we're stuck, only recalculate if target OR pawn moved from the stuck position
-        // This prevents constant recalculation when stuck and neither is moving
-        val shouldRecalculateWhenStuck = if (isStuck && stuckTargetPos != null && stuckPawnPos != null) {
-            // Check if target moved from stuck position
+        val canBeStuck = pawn.attr[Combat.CAN_BE_STUCK_ATTR] ?: true
+
+        // Pathfinding priority:
+        // 1. Players/NPCs with canBeStuck=false: Smart (A*/Dijkstra)
+        // 2. NPCs: Dumb pathfinding (diagonal first, then cardinal)
+        val actualRouteLogic = when {
+            pawn is Player || !canBeStuck -> 1 // Smart pathfinding
+            else -> 0 // Dumb pathfinding for NPCs
+        }
+
+        // If stuck, check if target or pawn moved - if so, clear stuck state and retry
+        if (isStuck && stuckTargetPos != null && stuckPawnPos != null) {
             val targetMovedFromStuck = stuckTargetPos.x != targetTile.x ||
                 stuckTargetPos.z != targetTile.z ||
                 stuckTargetPos.height != targetTile.height
-            // Check if pawn moved from stuck position
             val pawnMovedFromStuck = stuckPawnPos.x != pawnTile.x ||
                 stuckPawnPos.z != pawnTile.z ||
                 stuckPawnPos.height != pawnTile.height
-            // Recalculate if either moved
-            targetMovedFromStuck || pawnMovedFromStuck
-        } else {
-            true // Not stuck, can recalculate normally
+
+            if (!targetMovedFromStuck && !pawnMovedFromStuck) {
+                // Still stuck and neither moved - just face target, don't recalculate
+                pawn.facePawn(target)
+                return true
+            }
+            // Target or pawn moved - clear stuck state to retry pathfinding
+            pawn.attr.remove(Combat.STUCK_TARGET_POSITION_ATTR)
+            pawn.attr.remove(Combat.STUCK_PAWN_POSITION_ATTR)
         }
 
-        // Early exit: If we're stuck and neither has moved, skip recalculation entirely
-        if (isStuck && !shouldRecalculateWhenStuck) {
-            // Still stuck and neither moved - don't recalculate
-            // But keep facing the target
-            pawn.facePawn(target)
-            logger.info { "[PATHFIND] $pawnName -> $targetName: Still stuck, neither moved - skipping path calculation" }
-            return true // Continue cycle but don't recalculate
+        // Determine if we need a new path
+        // ALWAYS recalculate when:
+        // 1. No current path (NPC finished walking or never started)
+        // 2. Target moved (even 1 tile - a new path might be available)
+        val needsNewPath = when {
+            // No current path - always need to calculate
+            !pawn.hasMoveDestination() -> true
+            // Target moved - recalculate (new parallel/direct path might be available)
+            targetMoved -> true
+            // Otherwise, keep following current path
+            else -> false
         }
 
-        // If target is moving, be more aggressive about recalculating paths to catch up
-        // This helps us catch up to targets moving in a straight line
-        val targetIsMoving = target.hasMoveDestination()
-        val needsNewPath = if (targetIsMoving) {
-            // Target is moving - recalculate if we don't have a path OR if target moved at all
-            // This ensures we're always pathing to catch up to moving targets
-            (!pawn.hasMoveDestination() || targetMoved) && shouldRecalculateWhenStuck
-        } else {
-            // Target is stationary - only recalculate if we don't have a path or target moved significantly
-            (!pawn.hasMoveDestination() || targetMoved) && shouldRecalculateWhenStuck
-        }
 
         if (needsNewPath) {
-            // Stop existing movement
-            if (pawn.hasMoveDestination()) {
-                pawn.stopMovement()
-            }
+            // Don't stop movement - allow attacking while moving
+            // The new path will override the old one automatically
 
-            logger.info { "[PATHFIND] $pawnName -> $targetName: Calculating new path. Target moved: $targetMoved, moveDistance: $targetMoveDistance, hasMoveDestination: ${pawn.hasMoveDestination()}, useDumbPathfinding: $useDumbPathfinding, targetMovedOneTile: $targetMovedOneTile" }
             // Calculate and execute path
             val pathExecuted = calculateAndExecutePath(
-                pawn, target, attackRange, isMelee, pawnSize, targetSize, actualRouteLogic, pawnName, targetName
+                pawn, attackRange, isMelee, pawnSize, targetSize, actualRouteLogic
             )
-
             if (pathExecuted) {
-                // Immediately check if we're already in range (target might be moving towards us or we're close enough)
-                // This allows us to start attacking immediately instead of following until target stops
-                if (isInRange(pawn, target, attackRange, isMelee, pawnSize, targetSize)) {
-                    logger.info { "[PATHFIND] $pawnName -> $targetName: Already in range after path calculation, stopping movement to attack immediately" }
-                    pawn.stopMovement()
-                    pawn.attr[Combat.LAST_PATH_TARGET_POSITION_ATTR] = targetTile
-                    pawn.attr.remove(Combat.STUCK_TARGET_POSITION_ATTR)
-                    pawn.attr.remove(Combat.STUCK_PAWN_POSITION_ATTR)
-                    // Continue cycle to attack immediately
-                    return true
-                }
-
-                // Check if path actually gets us closer to target
-                // If we're still at the same distance or further, we're effectively stuck
-                val currentDistance = pawnTile.getDistance(targetTile)
-                val lastStuckTargetPos = pawn.attr[Combat.STUCK_TARGET_POSITION_ATTR]
-                val lastStuckPawnPos = pawn.attr[Combat.STUCK_PAWN_POSITION_ATTR]
-                val wasStuck = lastStuckTargetPos != null && lastStuckPawnPos != null
-
-                // If we were stuck and target hasn't moved, check if we're still stuck
-                if (wasStuck && lastStuckTargetPos != null && lastStuckPawnPos != null) {
-                    // Check if target hasn't moved from stuck position
-                    val targetNotMoved = lastStuckTargetPos.x == targetTile.x &&
-                        lastStuckTargetPos.z == targetTile.z &&
-                        lastStuckTargetPos.height == targetTile.height
-                    // Check if pawn hasn't moved from stuck position
-                    val pawnNotMoved = lastStuckPawnPos.x == pawnTile.x &&
-                        lastStuckPawnPos.z == pawnTile.z &&
-                        lastStuckPawnPos.height == pawnTile.height
-
-                    // If neither moved and we're still out of range, we're still stuck
-                    if (targetNotMoved && pawnNotMoved && currentDistance > attackRange) {
-                        logger.info { "[PATHFIND] $pawnName -> $targetName: Path found but still stuck at distance=$currentDistance (neither moved), keeping stuck state" }
-                        // Keep stuck state - path didn't help
-                        return true // Continue cycle but stay stuck
-                    }
-                }
-
-                // Check if NPC actually has a move destination after path execution
-                // If not, and we're out of range, we might be blocked (fallback route found but can't move)
-                // Mark as stuck to prevent constant recalculation
-                val hasMoveDestination = pawn.hasMoveDestination()
-                val targetIsMoving = target.hasMoveDestination()
-
-                if (!hasMoveDestination && !targetIsMoving && currentDistance > attackRange) {
-                    // Path was "executed" but NPC doesn't have a move destination
-                    // This likely means fallback route was used but NPC is blocked
-                    // Mark as stuck to prevent constant recalculation
-                    val canBeStuck = pawn.attr[Combat.CAN_BE_STUCK_ATTR] ?: true
-                    if (canBeStuck) {
-                        pawn.attr[Combat.STUCK_TARGET_POSITION_ATTR] = targetTile
-                        pawn.attr[Combat.STUCK_PAWN_POSITION_ATTR] = pawnTile
-                        logger.info { "[PATHFIND] $pawnName -> $targetName: Path executed but no move destination (likely blocked by wall), marking as stuck at pawn (${pawnTile.x},${pawnTile.z}) target (${targetTile.x},${targetTile.z})" }
-                        return true // Continue cycle but stay stuck
-                    }
-                }
-
-                // Also check: if we have a move destination but we were previously stuck and neither moved,
-                // the movement might be queued but will fail. Check on next cycle if we actually moved.
-                // For now, if we were stuck and still at same position, keep stuck state
-                if (wasStuck && lastStuckPawnPos != null) {
-                    val pawnNotMoved = lastStuckPawnPos.x == pawnTile.x &&
-                        lastStuckPawnPos.z == pawnTile.z &&
-                        lastStuckPawnPos.height == pawnTile.height
-                    if (pawnNotMoved && currentDistance > attackRange) {
-                        // Still at same position - keep stuck state
-                        logger.info { "[PATHFIND] $pawnName -> $targetName: Path executed but still at same position, keeping stuck state" }
-                        return true // Continue cycle but stay stuck
-                    }
-                }
-
                 // Track target position when we successfully start a path
                 pawn.attr[Combat.LAST_PATH_TARGET_POSITION_ATTR] = targetTile
-                // Clear stuck state - we successfully found a path that helps
+                // Clear stuck state - we successfully found a path
                 pawn.attr.remove(Combat.STUCK_TARGET_POSITION_ATTR)
                 pawn.attr.remove(Combat.STUCK_PAWN_POSITION_ATTR)
-                // Clear fallback counter on successful path
-                pawn.attr.remove(Combat.CONSECUTIVE_FALLBACK_ATTEMPTS_ATTR)
-                val pathfindTime = System.currentTimeMillis() - pathfindStartTime
-                logger.info { "[PATHFIND] $pawnName -> $targetName: Path executed successfully, tracking target at (${targetTile.x},${targetTile.z}), time=${pathfindTime}ms" }
-                // Path executed - continue cycle to check if we're in range
                 return true
             } else {
-                val pathfindTime = System.currentTimeMillis() - pathfindStartTime
-                logger.info { "[PATHFIND] $pawnName -> $targetName: Path execution failed, time=${pathfindTime}ms" }
-                // Path calculation failed - mark as stuck and check canBeStuck
+                // Path calculation failed - mark as stuck
                 val canBeStuck = pawn.attr[Combat.CAN_BE_STUCK_ATTR] ?: true
                 if (canBeStuck) {
-                    // Mark as stuck at current target and pawn positions - only recalculate when either moves
                     pawn.attr[Combat.STUCK_TARGET_POSITION_ATTR] = targetTile
                     pawn.attr[Combat.STUCK_PAWN_POSITION_ATTR] = pawnTile
-                    logger.info { "[PATHFIND] $pawnName -> $targetName: Path failed and canBeStuck=true - NPC is stuck at pawn (${pawnTile.x},${pawnTile.z}) target (${targetTile.x},${targetTile.z}), will wait for movement" }
-                    return true // Continue cycle but NPC stays stuck until target or pawn moves
                 } else {
-                    // Don't mark as stuck if canBeStuck=false - keep trying
-                    logger.info { "[PATHFIND] $pawnName -> $targetName: Path failed but canBeStuck=false - will retry next cycle" }
-                    return true // Continue cycle to retry
                 }
+                return true
             }
         } else {
-            // Already have a path - CONTINUOUSLY check if we're in range while following
-            // This allows us to catch up to moving targets and start combat immediately
-            // Check range BEFORE checking if we're stuck, so we can attack immediately when in range
-            if (isInRange(pawn, target, attackRange, isMelee, pawnSize, targetSize)) {
-                logger.info { "[PATHFIND] $pawnName -> $targetName: Reached range while following path, stopping movement to attack" }
+            // Already have a path - check if we're in range
+            val inRange = isInRange(pawn, target, attackRange, isMelee, pawnSize, targetSize)
+            if (inRange) {
                 pawn.stopMovement()
-                // Clear stuck state when we reach target
                 pawn.attr.remove(Combat.STUCK_TARGET_POSITION_ATTR)
                 pawn.attr.remove(Combat.STUCK_PAWN_POSITION_ATTR)
-                return true // Continue cycle to attack immediately
+                return true // Continue cycle to attack
             }
 
-            // Calculate current distance for logging
-            val currentDistance = pawnTile.getDistance(targetTile)
-
-            // If target is moving, recalculate path every cycle to catch up
-            // This is essential for catching moving targets - we need to update our path constantly
-            if (target.hasMoveDestination() && targetMoved) {
-                // Target is moving and has moved - recalculate path to catch up
-                logger.info { "[PATHFIND] $pawnName -> $targetName: Target is moving (distance=$currentDistance), recalculating path to catch up" }
-                pawn.stopMovement()
-                // Force recalculation by clearing the last path position
-                pawn.attr.remove(Combat.LAST_PATH_TARGET_POSITION_ATTR)
-                return true // Continue cycle to recalculate
-            }
-
-            // Check if we're stuck and neither target nor pawn has moved - don't recalculate
-            val currentStuckTargetPos = pawn.attr[Combat.STUCK_TARGET_POSITION_ATTR]
-            val currentStuckPawnPos = pawn.attr[Combat.STUCK_PAWN_POSITION_ATTR]
-            if (currentStuckTargetPos != null && currentStuckPawnPos != null) {
-                val targetDx = Math.abs(targetTile.x - currentStuckTargetPos.x)
-                val targetDz = Math.abs(targetTile.z - currentStuckTargetPos.z)
-                val targetDh = Math.abs(targetTile.height - currentStuckTargetPos.height)
-                val targetNotMoved = targetDx + targetDz + targetDh == 0
-
-                val pawnDx = Math.abs(pawnTile.x - currentStuckPawnPos.x)
-                val pawnDz = Math.abs(pawnTile.z - currentStuckPawnPos.z)
-                val pawnDh = Math.abs(pawnTile.height - currentStuckPawnPos.height)
-                val pawnNotMoved = pawnDx + pawnDz + pawnDh == 0
-
-                if (targetNotMoved && pawnNotMoved) {
-                    // Still stuck and neither has moved - don't recalculate
-                    // But keep facing the target
-                    pawn.facePawn(target)
-                    logger.info { "[PATHFIND] $pawnName -> $targetName: Still stuck, neither moved - waiting for movement" }
-                    return true // Continue cycle but don't recalculate
-                }
-            }
-
-            // Not in range yet, continue following path - keep facing target
-            // Check range again next cycle (continuous checking while moving)
+            // Continue following current path
             pawn.facePawn(target)
-            return true // Continue cycle to check again
+            return true
         }
     }
 
@@ -599,36 +616,24 @@ class CombatPlugin(
      */
     private fun calculateAndExecutePath(
         pawn: Pawn,
-        target: Pawn,
         attackRange: Int,
         isMelee: Boolean,
         pawnSize: Int,
         targetSize: Int,
-        routeLogic: Int,
-        pawnName: String,
-        targetName: String
+        routeLogic: Int
     ): Boolean {
-        val calcStartTime = System.currentTimeMillis()
         val pawnTile = pawn.tile
+        val target = pawn.getCombatTarget() ?: return false
         val targetTile = target.tile
 
         // Calculate destination tile based on attack range
+        // For melee: pass target's tile directly to BFS - BFS will calculate requested tiles (adjacent to target)
+        // For ranged/magic: calculate a destination within attack range
         val destinationTile = if (isMelee) {
-            // For melee, find the closest cardinal adjacent tile (not diagonal)
-            // Try all cardinal directions and pick the closest walkable one
-            val directions = listOf(Direction.NORTH, Direction.SOUTH, Direction.EAST, Direction.WEST)
-            directions.mapNotNull { dir ->
-                val testTile = targetTile.transform(dir.getDeltaX(), dir.getDeltaZ())
-                // Check if this tile is walkable and would put us in cardinal adjacency
-                if (pawn.world.canTraverse(testTile, dir.getOpposite(), pawn, pawnSize)) {
-                    testTile
-                } else {
-                    null
-                }
-            }.minByOrNull { it.getDistance(pawnTile) } ?: run {
-                // If no cardinal adjacent tile found, try findCardinalAdjacentTile as fallback
-                findCardinalAdjacentTile(pawn, target, pawnSize) ?: targetTile
-            }
+            // For melee, pass the target's tile directly to BFS
+            // BFS will calculate requested tiles as all tiles adjacent to the target (within melee range)
+            // For dumb pathfinding, executeDumbRoute will handle moving 1 tile towards target
+            targetTile
         } else {
             // For ranged/magic, calculate a destination that's within attackRange from target
             // Don't pathfind to the target's tile - stop when we're in range
@@ -660,237 +665,161 @@ class CombatPlugin(
             }
         }
 
-        val result = when (routeLogic) {
-            1 -> executeSmartRoute(pawn, pawnTile, destinationTile, targetSize, isMelee, pawnSize, pawnName, targetName)
-            0 -> executeDumbRoute(pawn, pawnTile, destinationTile, targetSize, isMelee, pawnSize, pawnName, targetName)
-            else -> false
+        return when (routeLogic) {
+            1 -> executeSmartRoute(pawn, pawnTile, destinationTile, targetSize, pawnSize)
+            0 -> executeDumbRoute(pawn, pawnTile, isMelee)
+            else -> executeDumbRoute(pawn, pawnTile, isMelee)
         }
-        val calcTime = System.currentTimeMillis() - calcStartTime
-        logger.info { "[PATHFIND] $pawnName -> $targetName: Path calculation completed, result=$result, time=${calcTime}ms" }
-        return result
     }
 
     /**
-     * Execute smart route (A* pathfinding)
+     * Execute smart route (A-star/Dijkstra pathfinding)
+     * Used for players or NPCs with canBeStuck=false
      */
     private fun executeSmartRoute(
         pawn: Pawn,
         pawnTile: Tile,
         destinationTile: Tile,
         targetSize: Int,
-        isMelee: Boolean,
-        pawnSize: Int,
-        pawnName: String,
-        targetName: String
+        pawnSize: Int
     ): Boolean {
-        val routeStartTime = System.currentTimeMillis()
+        // Use smart pathfinding (A*/Dijkstra) - available for players or NPCs with canBeStuck=false
         val route = pawn.world.smartRouteFinder.findRoute(
             level = pawnTile.height,
             srcX = pawnTile.x,
             srcZ = pawnTile.z,
             destX = destinationTile.x,
             destZ = destinationTile.z,
-            locShape = -2,
             destWidth = targetSize,
-            destLength = targetSize
+            destLength = targetSize,
+            srcSize = pawnSize,
+            collision = CollisionStrategy.Normal,
+            locShape = -2
         )
-        val routeTime = System.currentTimeMillis() - routeStartTime
 
-        if (route.isNotEmpty()) {
-            logger.info { "[PATHFIND] $pawnName -> $targetName: Smart route found with ${route.size} tiles from (${pawnTile.x},${pawnTile.z}) to (${destinationTile.x},${destinationTile.z}), routeTime=${routeTime}ms" }
-            // Smart route found - reset fallback counter
-            pawn.attr.remove(Combat.CONSECUTIVE_FALLBACK_ATTEMPTS_ATTR)
+        if (route.success && route.waypoints.isNotEmpty()) {
+
             // Face target while pathfinding
             pawn.facePawn(pawn.getCombatTarget() ?: return false)
-            pawn.walkRoute(route, StepType.NORMAL)
+
+            // Convert RouteCoordinates to Tiles for walkRoute
+            val tilePath = route.waypoints.map { Tile(it.x, it.z, it.level) }
+            pawn.walkRoute(LinkedList(tilePath), StepType.NORMAL)
             return true
         }
 
-        // Route is empty - this is okay, pathfinding across walls doesn't need to be perfect
-        // Try fallback, but if that also fails, it's fine - the NPC will get stuck behind walls
-        // which is allowed behavior
-        logger.info { "[PATHFIND] $pawnName -> $targetName: Smart route empty, trying fallback, routeTime=${routeTime}ms" }
-
-        // Track consecutive fallback attempts
-        val consecutiveFallbacks = pawn.attr[Combat.CONSECUTIVE_FALLBACK_ATTEMPTS_ATTR] ?: 0
-        val newConsecutiveFallbacks = consecutiveFallbacks + 1
-        pawn.attr[Combat.CONSECUTIVE_FALLBACK_ATTEMPTS_ATTR] = newConsecutiveFallbacks
-
-        // If we've tried fallback 5 times in a row, stop recalculating until player moves
-        if (newConsecutiveFallbacks >= 5) {
-            logger.info { "[PATHFIND] $pawnName -> $targetName: 5 consecutive fallback attempts, marking as stuck and stopping recalculation until player moves" }
-            val target = pawn.getCombatTarget()
-            if (target != null) {
-                pawn.attr[Combat.STUCK_TARGET_POSITION_ATTR] = target.tile
-                pawn.attr[Combat.STUCK_PAWN_POSITION_ATTR] = pawnTile
-            }
-            return false // Return false to trigger stuck handling
-        }
-
-        val fallbackResult = executeFallbackMove(pawn, pawnTile, destinationTile, isMelee, pawnSize, pawnName, targetName)
-        if (fallbackResult) {
-            // Face target while pathfinding
-            pawn.facePawn(pawn.getCombatTarget() ?: return false)
-            // Check if NPC actually has a move destination after fallback route
-            // If not, the fallback route didn't actually work (NPC is blocked)
-            if (!pawn.hasMoveDestination()) {
-                logger.info { "[PATHFIND] $pawnName -> $targetName: Fallback route found but NPC cannot move (blocked), marking as stuck" }
-                // Reset fallback counter since we're marking as stuck
-                pawn.attr.remove(Combat.CONSECUTIVE_FALLBACK_ATTEMPTS_ATTR)
-                return false // Return false to trigger stuck handling
-            }
-            // Fallback succeeded - reset counter
-            pawn.attr.remove(Combat.CONSECUTIVE_FALLBACK_ATTEMPTS_ATTR)
-        } else {
-            logger.info { "[PATHFIND] $pawnName -> $targetName: No path found - NPC may be stuck behind wall (this is allowed)" }
-            // Fallback failed - counter will continue on next attempt
-        }
-        return fallbackResult
+        // No path found
+        return false
     }
 
     /**
-     * Execute dumb route (simple pathfinding)
-     * Note: destinationTile here should be the destination tile (already calculated for attack range)
+     * Execute dumb route (RuneScape authentic NPC pathfinding)
+     *
+     * Behavior:
+     * 1. TRY DIAGONAL: If both X and Z need adjustment, try diagonal first
+     * 2. FALLBACK TO CARDINAL: If diagonal blocked, try horizontal or vertical
+     * 3. Builds a FULL PATH to target (not just 1 tile) to avoid stuttering
+     *
+     * This allows NPCs to move diagonally when possible, making movement faster and more natural.
      */
     private fun executeDumbRoute(
         pawn: Pawn,
         pawnTile: Tile,
-        destinationTile: Tile,
-        targetSize: Int,
-        isMelee: Boolean,
-        pawnSize: Int,
-        pawnName: String,
-        targetName: String
+        isMelee: Boolean
     ): Boolean {
-        val dumbStartTime = System.currentTimeMillis()
-        val destination = pawn.world.dumbRouteFinder.naiveDestination(
-            sourceX = pawnTile.x,
-            sourceZ = pawnTile.z,
-            sourceWidth = pawnSize,
-            sourceLength = pawnSize,
-            targetX = destinationTile.x,
-            targetZ = destinationTile.z,
-            targetWidth = targetSize,
-            targetLength = targetSize
-        )
+        val target = pawn.getCombatTarget() ?: return false
+        val pawnSize = pawn.getSize()
+        val targetTile = target.tile
+        val targetIsMoving = target.hasMoveDestination()
 
-        val dx = destination.x - pawnTile.x
-        val dz = destination.z - pawnTile.z
+        val dx = targetTile.x - pawnTile.x
+        val dz = targetTile.z - pawnTile.z
         val route = LinkedList<Tile>()
 
-        if (isMelee) {
-            // Cardinal moves only
-            val horizontalMove = Tile(pawnTile.x + dx.coerceIn(-1, 1), pawnTile.z, pawnTile.height)
-            if (pawn.world.canTraverse(pawnTile, Direction.between(pawnTile, horizontalMove), pawn, pawnSize)) {
-                route.add(horizontalMove)
-            } else {
-                val verticalMove = Tile(pawnTile.x, pawnTile.z + dz.coerceIn(-1, 1), pawnTile.height)
-                if (pawn.world.canTraverse(pawnTile, Direction.between(pawnTile, verticalMove), pawn, pawnSize)) {
-                    route.add(verticalMove)
+        // Chebyshev distance
+        val currentDistance = Math.max(Math.abs(dx), Math.abs(dz))
+
+        // If already within melee range (1 tile) for melee attacks AND target is not moving, don't move closer
+        if (isMelee && currentDistance <= 1 && !targetIsMoving) {
+            return false
+        }
+
+        // Build a FULL PATH to target
+        var currentTile = pawnTile
+        val maxSteps = 10
+        var steps = 0
+
+        while (steps < maxSteps) {
+            val curDx = targetTile.x - currentTile.x
+            val curDz = targetTile.z - currentTile.z
+            val curDistance = Math.max(Math.abs(curDx), Math.abs(curDz))
+
+            // Stop if we've reached melee range (for melee) or the target tile
+            if (isMelee && curDistance <= 1) {
+                break
+            }
+            if (curDistance == 0) {
+                break
+            }
+
+            var nextTile: Tile? = null
+            val stepX = curDx.coerceIn(-1, 1)
+            val stepZ = curDz.coerceIn(-1, 1)
+
+            // If both axes need adjustment, try DIAGONAL first
+            if (curDx != 0 && curDz != 0) {
+                val diagonalMove = Tile(currentTile.x + stepX, currentTile.z + stepZ, currentTile.height)
+                if (pawn.world.canTraverse(currentTile, Direction.between(currentTile, diagonalMove), pawn, pawnSize)) {
+                    nextTile = diagonalMove
                 }
             }
-        } else {
-            // Try diagonal, then horizontal, then vertical
-            val diagonalMove = Tile(pawnTile.x + dx.coerceIn(-1, 1), pawnTile.z + dz.coerceIn(-1, 1), pawnTile.height)
-            if (pawn.world.canTraverse(pawnTile, Direction.between(pawnTile, diagonalMove), pawn, pawnSize)) {
-                route.add(diagonalMove)
-            } else {
-                val horizontalMove = Tile(pawnTile.x + dx.coerceIn(-1, 1), pawnTile.z, pawnTile.height)
-                if (pawn.world.canTraverse(pawnTile, Direction.between(pawnTile, horizontalMove), pawn, pawnSize)) {
-                    route.add(horizontalMove)
-                } else {
-                    val verticalMove = Tile(pawnTile.x, pawnTile.z + dz.coerceIn(-1, 1), pawnTile.height)
-                    if (pawn.world.canTraverse(pawnTile, Direction.between(pawnTile, verticalMove), pawn, pawnSize)) {
-                        route.add(verticalMove)
+
+            // If diagonal failed or not applicable, try cardinal directions
+            if (nextTile == null) {
+                // Prefer the axis with smaller distance (align first)
+                if (Math.abs(curDx) <= Math.abs(curDz) && curDx != 0) {
+                    // Try horizontal first
+                    val horizontalMove = Tile(currentTile.x + stepX, currentTile.z, currentTile.height)
+                    if (pawn.world.canTraverse(currentTile, Direction.between(currentTile, horizontalMove), pawn, pawnSize)) {
+                        nextTile = horizontalMove
+                    }
+                }
+
+                if (nextTile == null && curDz != 0) {
+                    // Try vertical
+                    val verticalMove = Tile(currentTile.x, currentTile.z + stepZ, currentTile.height)
+                    if (pawn.world.canTraverse(currentTile, Direction.between(currentTile, verticalMove), pawn, pawnSize)) {
+                        nextTile = verticalMove
+                    }
+                }
+
+                if (nextTile == null && curDx != 0) {
+                    // Try horizontal as last resort
+                    val horizontalMove = Tile(currentTile.x + stepX, currentTile.z, currentTile.height)
+                    if (pawn.world.canTraverse(currentTile, Direction.between(currentTile, horizontalMove), pawn, pawnSize)) {
+                        nextTile = horizontalMove
                     }
                 }
             }
+
+            if (nextTile != null) {
+                route.add(nextTile)
+                currentTile = nextTile
+                steps++
+            } else {
+                // Can't move - stuck
+                break
+            }
         }
 
-        val dumbTime = System.currentTimeMillis() - dumbStartTime
         if (route.isNotEmpty()) {
-            logger.info { "[PATHFIND] $pawnName -> $targetName: Dumb route found with ${route.size} tiles, time=${dumbTime}ms" }
-            // Face target while pathfinding
-            pawn.facePawn(pawn.getCombatTarget() ?: return false)
+            pawn.facePawn(target)
             pawn.walkRoute(route, stepType = StepType.NORMAL)
             return true
         }
 
-        logger.info { "[PATHFIND] $pawnName -> $targetName: Dumb route empty, time=${dumbTime}ms" }
         return false
     }
-
-    /**
-     * Fallback: try a single cardinal move towards destination
-     */
-    private fun executeFallbackMove(
-        pawn: Pawn,
-        pawnTile: Tile,
-        destinationTile: Tile,
-        isMelee: Boolean,
-        pawnSize: Int,
-        pawnName: String,
-        targetName: String
-    ): Boolean {
-        val dx = destinationTile.x - pawnTile.x
-        val dz = destinationTile.z - pawnTile.z
-        val fallbackRoute = LinkedList<Tile>()
-
-        if (isMelee) {
-            // Cardinal moves only
-            if (Math.abs(dx) >= Math.abs(dz)) {
-                val horizontalMove = Tile(pawnTile.x + dx.coerceIn(-1, 1), pawnTile.z, pawnTile.height)
-                if (pawn.world.canTraverse(pawnTile, Direction.between(pawnTile, horizontalMove), pawn, pawnSize)) {
-                    fallbackRoute.add(horizontalMove)
-                } else {
-                    val verticalMove = Tile(pawnTile.x, pawnTile.z + dz.coerceIn(-1, 1), pawnTile.height)
-                    if (pawn.world.canTraverse(pawnTile, Direction.between(pawnTile, verticalMove), pawn, pawnSize)) {
-                        fallbackRoute.add(verticalMove)
-                    }
-                }
-            } else {
-                val verticalMove = Tile(pawnTile.x, pawnTile.z + dz.coerceIn(-1, 1), pawnTile.height)
-                if (pawn.world.canTraverse(pawnTile, Direction.between(pawnTile, verticalMove), pawn, pawnSize)) {
-                    fallbackRoute.add(verticalMove)
-                } else {
-                    val horizontalMove = Tile(pawnTile.x + dx.coerceIn(-1, 1), pawnTile.z, pawnTile.height)
-                    if (pawn.world.canTraverse(pawnTile, Direction.between(pawnTile, horizontalMove), pawn, pawnSize)) {
-                        fallbackRoute.add(horizontalMove)
-                    }
-                }
-            }
-        } else {
-            // Try diagonal, then horizontal, then vertical
-            val diagonalMove = Tile(pawnTile.x + dx.coerceIn(-1, 1), pawnTile.z + dz.coerceIn(-1, 1), pawnTile.height)
-            if (pawn.world.canTraverse(pawnTile, Direction.between(pawnTile, diagonalMove), pawn, pawnSize)) {
-                fallbackRoute.add(diagonalMove)
-            } else {
-                val horizontalMove = Tile(pawnTile.x + dx.coerceIn(-1, 1), pawnTile.z, pawnTile.height)
-                if (pawn.world.canTraverse(pawnTile, Direction.between(pawnTile, horizontalMove), pawn, pawnSize)) {
-                    fallbackRoute.add(horizontalMove)
-                } else {
-                    val verticalMove = Tile(pawnTile.x, pawnTile.z + dz.coerceIn(-1, 1), pawnTile.height)
-                    if (pawn.world.canTraverse(pawnTile, Direction.between(pawnTile, verticalMove), pawn, pawnSize)) {
-                        fallbackRoute.add(verticalMove)
-                    }
-                }
-            }
-        }
-
-        if (fallbackRoute.isNotEmpty()) {
-            logger.info { "[PATHFIND] $pawnName -> $targetName: Fallback route found with ${fallbackRoute.size} tiles" }
-            // Face target while pathfinding
-            pawn.facePawn(pawn.getCombatTarget() ?: return false)
-            pawn.walkRoute(fallbackRoute, StepType.NORMAL)
-            return true
-        }
-
-        logger.info { "[PATHFIND] $pawnName -> $targetName: Fallback route also empty" }
-        return false
-    }
-
-    // Removed followPathUntilReached - pathfinding is now handled directly in handlePathfinding
-    // No more waiting loops - immediate recalculation on every cycle
 
     /**
      * Check if pawn is in attack range of target
@@ -915,13 +844,22 @@ class CombatPlugin(
             )
             val isCardinallyAdjacent = touching && (horizontallyAdjacent || verticallyAdjacent)
             val isDiagonal = dx > 0 && dz > 0 && !isCardinallyAdjacent
-
-            if (!isCardinallyAdjacent || isDiagonal) {
-                return false
-            }
+            val reachResult = pawn.world.reachStrategy.reached(
+                flags = pawn.world.collision,
+                level = pawnTile.height,
+                srcX = pawnTile.x,
+                srcZ = pawnTile.z,
+                destX = targetTile.x,
+                destZ = targetTile.z,
+                destWidth = targetSize,
+                destLength = targetSize,
+                srcSize = pawnSize,
+                locShape = -2
+            )
+            return isCardinallyAdjacent && !isDiagonal && reachResult
         }
 
-        return pawn.world.reachStrategy.reached(
+        val reachResult = pawn.world.reachStrategy.reached(
             flags = pawn.world.collision,
             level = pawnTile.height,
             srcX = pawnTile.x,
@@ -933,6 +871,7 @@ class CombatPlugin(
             srcSize = pawnSize,
             locShape = -2
         )
+        return reachResult
     }
 
     /**
@@ -947,7 +886,6 @@ class CombatPlugin(
         val pawnSize = pawn.getSize()
 
         return directions.firstOrNull { dir ->
-            val testTile = pawnTile.transform(dir.getDeltaX(), dir.getDeltaZ())
             pawn.world.canTraverse(pawnTile, dir, pawn, pawnSize)
         }?.let { dir ->
             pawnTile.transform(dir.getDeltaX(), dir.getDeltaZ())
@@ -955,18 +893,139 @@ class CombatPlugin(
     }
 
     /**
-     * Find a cardinal (non-diagonal) adjacent tile next to target for melee combat
+     * Find a cardinal (non-diagonal) adjacent tile next to target for melee combat.
+     * Properly considers both pawn size and target size.
+     *
+     * For a target of size N, we need to find a position where:
+     * 1. The pawn (with its size) can be placed
+     * 2. The pawn's bounding box is cardinally adjacent to the target's bounding box (bordering)
+     * 3. The adjacency is cardinal (not diagonal) - exactly one axis is adjacent
+     * 4. The position is walkable
      */
     private fun findCardinalAdjacentTile(pawn: Pawn, target: Pawn, pawnSize: Int): Tile? {
         val targetTile = target.tile
         val targetSize = target.getSize()
+        val pawnTile = pawn.tile
+
+        // Target's bounding box
+        val targetMinX = targetTile.x
+        val targetMaxX = targetTile.x + targetSize - 1
+        val targetMinZ = targetTile.z
+        val targetMaxZ = targetTile.z + targetSize - 1
+
+        // Try each cardinal direction
         val directions = listOf(Direction.NORTH, Direction.SOUTH, Direction.EAST, Direction.WEST)
 
-        return directions.firstOrNull { dir ->
-            val testTile = targetTile.transform(dir.getDeltaX(), dir.getDeltaZ())
-            pawn.world.canTraverse(testTile, dir.getOpposite(), pawn, pawnSize)
-        }?.let { dir ->
-            targetTile.transform(dir.getDeltaX(), dir.getDeltaZ())
+        for (dir in directions) {
+            // Calculate candidate tiles for this direction
+            // For cardinal adjacency, pawn must be exactly 1 tile away in this direction
+            // and overlap on the perpendicular axis
+            val candidateTiles = when (dir) {
+                Direction.NORTH -> {
+                    // Pawn's maxZ must be targetMinZ - 1 (exactly 1 tile north)
+                    // Pawn's z = targetMinZ - pawnSize
+                    // Pawn's x must overlap with target's x range for adjacency
+                    // Overlap means: pawnMinX <= targetMaxX && pawnMaxX >= targetMinX
+                    // So: x <= targetMaxX && x + pawnSize - 1 >= targetMinX
+                    // Therefore: x >= targetMinX - pawnSize + 1 && x <= targetMaxX
+                    val minX = targetMinX - pawnSize + 1
+                    val maxX = targetMaxX
+                    (minX..maxX).map { x ->
+                        Tile(x, targetMinZ - pawnSize, targetTile.height)
+                    }
+                }
+                Direction.SOUTH -> {
+                    // Pawn's minZ must be targetMaxZ + 1 (exactly 1 tile south)
+                    // Pawn's z = targetMaxZ + 1
+                    // Same X overlap logic as NORTH
+                    val minX = targetMinX - pawnSize + 1
+                    val maxX = targetMaxX
+                    (minX..maxX).map { x ->
+                        Tile(x, targetMaxZ + 1, targetTile.height)
+                    }
+                }
+                Direction.EAST -> {
+                    // Pawn's minX must be targetMaxX + 1 (exactly 1 tile east)
+                    // Pawn's x = targetMaxX + 1
+                    // Pawn's z must overlap with target's z range for adjacency
+                    // Overlap means: pawnMinZ <= targetMaxZ && pawnMaxZ >= targetMinZ
+                    // So: z <= targetMaxZ && z + pawnSize - 1 >= targetMinZ
+                    // Therefore: z >= targetMinZ - pawnSize + 1 && z <= targetMaxZ
+                    val minZ = targetMinZ - pawnSize + 1
+                    val maxZ = targetMaxZ
+                    (minZ..maxZ).map { z ->
+                        Tile(targetMaxX + 1, z, targetTile.height)
+                    }
+                }
+                Direction.WEST -> {
+                    // Pawn's maxX must be targetMinX - 1 (exactly 1 tile west)
+                    // Pawn's x = targetMinX - pawnSize
+                    // Same Z overlap logic as EAST
+                    val minZ = targetMinZ - pawnSize + 1
+                    val maxZ = targetMaxZ
+                    (minZ..maxZ).map { z ->
+                        Tile(targetMinX - pawnSize, z, targetTile.height)
+                    }
+                }
+                else -> emptyList()
+            }
+
+            // Try each candidate tile
+            for (candidateTile in candidateTiles) {
+                // Check if pawn can traverse to this tile
+                val directionToCandidate = Direction.between(pawnTile, candidateTile)
+                if (directionToCandidate == Direction.NONE) {
+                    continue
+                }
+                if (!pawn.world.canTraverse(pawnTile, directionToCandidate, pawn, pawnSize)) {
+                    continue
+                }
+
+                // Calculate pawn's bounding box at candidate position
+                val pawnMinX = candidateTile.x
+                val pawnMaxX = candidateTile.x + pawnSize - 1
+                val pawnMinZ = candidateTile.z
+                val pawnMaxZ = candidateTile.z + pawnSize - 1
+
+                // Check if bordering (adjacent, not overlapping) - use original sizes for areBordering
+                val isBordering = Combat.areBordering(
+                    candidateTile.x, candidateTile.z, pawnSize, pawnSize,
+                    targetTile.x, targetTile.z, targetSize, targetSize
+                )
+
+                if (!isBordering) {
+                    continue
+                }
+
+                // Check cardinal adjacency: exactly one axis should be adjacent, not both
+                // For NORTH/SOUTH: pawn should be adjacent on Z axis, overlap on X axis
+                // For EAST/WEST: pawn should be adjacent on X axis, overlap on Z axis
+                val isCardinal = when (dir) {
+                    Direction.NORTH, Direction.SOUTH -> {
+                        // Vertical adjacency: pawn's Z edge touches target's Z edge
+                        val zAdjacent = (dir == Direction.NORTH && pawnMaxZ == targetMinZ - 1) ||
+                                      (dir == Direction.SOUTH && pawnMinZ == targetMaxZ + 1)
+                        // Must overlap on X axis (not diagonal)
+                        val xOverlaps = pawnMinX <= targetMaxX && pawnMaxX >= targetMinX
+                        zAdjacent && xOverlaps
+                    }
+                    Direction.EAST, Direction.WEST -> {
+                        // Horizontal adjacency: pawn's X edge touches target's X edge
+                        val xAdjacent = (dir == Direction.WEST && pawnMaxX == targetMinX - 1) ||
+                                       (dir == Direction.EAST && pawnMinX == targetMaxX + 1)
+                        // Must overlap on Z axis (not diagonal)
+                        val zOverlaps = pawnMinZ <= targetMaxZ && pawnMaxZ >= targetMinZ
+                        xAdjacent && zOverlaps
+                    }
+                    else -> false
+                }
+
+                if (isCardinal) {
+                    return candidateTile
+                }
+            }
         }
+
+        return null
     }
 }

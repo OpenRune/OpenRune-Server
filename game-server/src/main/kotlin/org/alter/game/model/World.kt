@@ -38,6 +38,7 @@ import org.alter.game.plugin.PluginRepository
 import org.alter.game.service.GameService
 import org.alter.game.service.Service
 import org.alter.game.service.xtea.XteaKeyService
+import org.alter.game.model.pathfinding.BfsPathfinder
 import org.rsmod.routefinder.LineValidator
 import org.rsmod.routefinder.RouteFinding
 import org.rsmod.routefinder.StepValidator
@@ -93,6 +94,7 @@ class World(val gameContext: GameContext, val devContext: DevContext) {
     val stepValidator = StepValidator(collision)
     val smartRouteFinder = RouteFinding(collision)
     val dumbRouteFinder = RouteFinding
+    val bfsPathfinder = BfsPathfinder(collision)
     val reachStrategy = ReachStrategy
 
     fun canTraverse(

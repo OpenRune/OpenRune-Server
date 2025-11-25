@@ -25,7 +25,7 @@ enum class ProjectileType(
             ARROW, BOLT -> Math.max(10, distance * 5)
             JAVELIN -> (distance * 3) + 2
         /*
-         * Handled in [org.alter.plugins.content.combat.Combat.getProjectileLifespan].
+         * Handled in [org.alter.combat.Combat.getProjectileLifespan].
          */
             MAGIC -> -1
         }

@@ -358,7 +358,7 @@ open class Player(world: World) : Pawn(world) {
         if (loopData != null) {
             loopData.currentTick += 1
             if (loopData.currentTick >= loopData.duration) {
-                animate(loopData.animId)
+                animate(loopData.animId, interruptable = loopData.interruptable)
                 loopData.currentTick = 0
             }
         }

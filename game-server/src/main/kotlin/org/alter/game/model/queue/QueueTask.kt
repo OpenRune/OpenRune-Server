@@ -24,6 +24,7 @@ class StopControlScope(val task: QueueTask) {
  * @author Tom <rspsmods@gmail.com>
  */
 data class QueueTask(val ctx: Any, val priority: TaskPriority) : Continuation<Unit> {
+    private val logger = KotlinLogging.logger {}
     lateinit var coroutine: Continuation<Unit>
 
     /**
@@ -69,7 +70,9 @@ data class QueueTask(val ctx: Any, val priority: TaskPriority) : Continuation<Un
     internal fun cycle() {
         val next = nextStep ?: return
 
-        if (next.condition.resume()) {
+        val shouldResume = next.condition.resume()
+        if (shouldResume) {
+            nextStep = null // Clear nextStep before resuming to prevent double-resume
             next.continuation.resume(Unit)
             requestReturnValue = null
         }
@@ -149,9 +152,9 @@ data class QueueTask(val ctx: Any, val priority: TaskPriority) : Continuation<Un
      * continuing the logic associated with this task.
      */
     suspend fun wait(cycles: Int): Unit =
-        suspendCoroutine {
+        suspendCoroutine { continuation ->
             check(cycles > 0) { "Wait cycles must be greater than 0." }
-            nextStep = SuspendableStep(WaitCondition(cycles), it)
+            nextStep = SuspendableStep(WaitCondition(cycles), continuation)
         }
 
     /**

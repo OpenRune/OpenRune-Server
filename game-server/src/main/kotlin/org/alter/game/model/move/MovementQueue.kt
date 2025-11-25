@@ -35,6 +35,11 @@ class MovementQueue(val pawn: Pawn) {
 
     fun peekLastStep(): Step? = if (steps.isNotEmpty()) steps.peekLast() else null
 
+    /**
+     * Get all steps in the movement queue (for interception calculations)
+     */
+    fun getAllSteps(): List<Tile> = steps.map { it.tile }
+
     fun clear() {
         steps.clear()
     }

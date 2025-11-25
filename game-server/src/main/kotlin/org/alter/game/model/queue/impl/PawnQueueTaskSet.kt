@@ -13,11 +13,16 @@ import kotlin.coroutines.resume
  */
 class PawnQueueTaskSet : QueueTaskSet() {
     override fun cycle() {
-        while (true) {
-            val task = queue.peekFirst() ?: break
+        // Always process tasks, even if queue appears empty (tasks might be suspended)
+        if (queue.isEmpty()) {
+            return
+        }
+
+        loop@ while (true) {
+            val task = queue.peekFirst() ?: break@loop
 
             if (task.priority == TaskPriority.STANDARD && task.ctx is Player && task.ctx.hasMenuOpen()) {
-                break
+                break@loop
             }
 
             if (!task.invoked) {
@@ -25,6 +30,7 @@ class PawnQueueTaskSet : QueueTaskSet() {
                 task.coroutine.resume(Unit)
             }
 
+            // Always call task.cycle() to check if suspended conditions are met
             task.cycle()
 
             if (!task.suspended()) {
@@ -37,9 +43,10 @@ class PawnQueueTaskSet : QueueTaskSet() {
                  * Since this task is complete, let's handle any upcoming
                  * task now instead of waiting until next cycle.
                  */
-                continue
+                continue@loop
             }
-            break
+            // Task is still suspended - keep it in queue so it gets checked next cycle
+            break@loop
         }
     }
 

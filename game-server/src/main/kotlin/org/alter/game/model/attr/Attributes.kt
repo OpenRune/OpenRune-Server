@@ -190,7 +190,8 @@ val INTERACTING_PLAYER_ATTR = AttributeKey<WeakReference<Player>>()
 data class LoopingAnimationData(
     val animId: String,
     val duration: Int, // Duration in cycles
-    var currentTick: Int = 0 // Current tick count
+    var currentTick: Int = 0, // Current tick count
+    val interruptable: Boolean = false // Whether the animation is interruptable
 )
 
 /**
@@ -260,3 +261,58 @@ val CHANGE_LOGGING = AttributeKey<Boolean>()
  * Instead of running tp
  */
 val CLIENT_KEY_COMBINATION = AttributeKey<Int>()
+
+// ============================================================================
+// Combat State Attributes
+// ============================================================================
+
+/**
+ * Combat state enum to track the current state of combat for a pawn.
+ */
+enum class CombatState {
+    IDLE,      // Not in combat, available for new combat
+    ENGAGING,  // In combat but no recent action (5+ seconds), others can attack this NPC
+    ACTIVE     // In combat with recent action (< 5 seconds), exclusive
+}
+
+/**
+ * The current combat state of the pawn.
+ */
+val COMBAT_STATE_ATTR = AttributeKey<CombatState>(temp = true)
+
+/**
+ * Timestamp (in milliseconds) of the last combat action (damage dealt or received).
+ * Used for the 5-second cooldown when switching targets in single-combat zones.
+ */
+val LAST_COMBAT_ACTION_TIME_ATTR = AttributeKey<Long>(temp = true)
+
+/**
+ * Timestamp (in milliseconds) when an attack was initiated.
+ */
+val ATTACK_INITIATED_TIME_ATTR = AttributeKey<Long>(temp = true)
+
+/**
+ * Tracks the target we're switching FROM (to check cooldown when reaching new target).
+ * Used in single-combat zones to enforce the 5-second cooldown.
+ */
+val SWITCHING_FROM_TARGET_ATTR = AttributeKey<WeakReference<Pawn>>(temp = true)
+
+/**
+ * The NPC/Player that this pawn is ACTUALLY in combat with.
+ * This is set when damage is dealt/received and only cleared by:
+ * 1. 5 seconds passing with no combat action
+ * 2. Death of either combatant
+ * 3. Explicit combat reset
+ * This is MORE RELIABLE than COMBAT_TARGET_FOCUS_ATTR which gets cleared by queue interruptions.
+ */
+val COMBAT_PARTNER_ATTR = AttributeKey<WeakReference<Pawn>>(temp = true)
+
+/**
+ * Tracks the world cycle when the pawn last engaged in combat (attacked or was attacked).
+ */
+val LAST_COMBAT_CYCLE_ATTR = AttributeKey<Int>(temp = true)
+
+/**
+ * 5 seconds in milliseconds for combat state transitions.
+ */
+const val COMBAT_STATE_TIMEOUT_MS = 5000L

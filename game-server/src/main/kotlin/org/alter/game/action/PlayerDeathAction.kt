@@ -27,6 +27,17 @@ object PlayerDeathAction {
         player.stopMovement()
         player.lock()
 
+        // Reset combat state on death using reflection (Combat is in plugins module)
+        try {
+            val combatClass = Class.forName("org.alter.combat.Combat")
+            val resetMethod = combatClass.getDeclaredMethod("reset", org.alter.game.model.entity.Pawn::class.java)
+            resetMethod.invoke(null, player)
+        } catch (e: Exception) {
+            // If reflection fails, manually clear combat attributes
+            player.attr.remove(org.alter.game.model.attr.COMBAT_TARGET_FOCUS_ATTR)
+            player.resetFacePawn()
+        }
+
         player.queue(TaskPriority.STRONG) {
             death(player)
         }

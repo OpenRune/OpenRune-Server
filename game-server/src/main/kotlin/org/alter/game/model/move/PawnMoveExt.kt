@@ -154,3 +154,15 @@ fun Pawn.walkTo(
 }
 
 fun Pawn.hasMoveDestination(): Boolean = movementQueue.hasDestination()
+
+/**
+ * Get the destination tile where this pawn is moving to.
+ * Returns null if the pawn is not moving or has no destination.
+ */
+fun Pawn.getMoveDestination(): Tile? = if (hasMoveDestination()) movementQueue.peekLast() else null
+
+/**
+ * Get the entire movement path for this pawn.
+ * Returns an empty list if the pawn is not moving.
+ */
+fun Pawn.getMovementPath(): List<Tile> = movementQueue.getAllSteps()

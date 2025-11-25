@@ -113,23 +113,33 @@ fun Pawn.stun(cycles: Int) {
  * The animation will restart automatically when it finishes.
  *
  * @param animId The RSCM animation identifier (e.g., "sequences.human_chop")
+ * @param interruptable If true, the animation can be interrupted by other animations or actions
  */
-fun Pawn.loopAnim(animId: String) {
+fun Pawn.loopAnim(animId: String, interruptable: Boolean = false) {
     stopLoopAnim()
 
-    val rawAnimationLength = getAnim(animId.asRSCM())?.animationLength ?: 60
-    val animationDuration = ((rawAnimationLength + 29) / 30).coerceAtLeast(1)
+    // animationLength is already in cycles (from seq.lengthInCycles)
+    val animationDuration = getAnim(animId.asRSCM())?.animationLength ?: 60
 
     attr[LOOPING_ANIMATION_ATTR] = LoopingAnimationData(
         animId = animId,
         duration = animationDuration,
-        currentTick = animationDuration
+        currentTick = animationDuration, // Start at duration so first tick increments and restarts
+        interruptable = interruptable
     )
 
-    animate(animId)
+    animate(animId, interruptable = interruptable)
 }
 
-fun Pawn.stopLoopAnim() {
+/**
+ * Stops looping an animation.
+ *
+ * @param allowFinish If true, stops looping but allows the current animation to finish naturally.
+ *                    If false (default), immediately cancels the animation.
+ */
+fun Pawn.stopLoopAnim(allowFinish: Boolean = false) {
     attr.remove(LOOPING_ANIMATION_ATTR)
-    animate(RSCM.NONE)
+    if (!allowFinish) {
+        animate(RSCM.NONE)
+    }
 }

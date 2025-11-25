@@ -1,5 +1,6 @@
 package org.alter.game.model.entity
 
+import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.coroutines.CoroutineScope
 import org.alter.game.action.NpcDeathAction
 import org.alter.game.action.PlayerDeathAction
@@ -224,94 +225,40 @@ abstract class Pawn(val world: World) : Entity() {
 
     /**
      * Initiate combat with [target].
+     *
+     * This sets up the PENDING target and executes the combat plugin.
+     * - COMBAT_TARGET_FOCUS_ATTR = who we're TRYING to attack (for pathfinding)
+     * - COMBAT_PARTNER_ATTR = who we're ACTUALLY fighting (set only when damage is dealt)
+     * - COMBAT_ATTACKERS_ATTR = set only when attack actually goes through (in handleAttack)
+     *
+     * The actual combat checks (single-combat, cooldowns) are done in canEngage().
      */
     fun attack(target: Pawn) {
+        val logger = KotlinLogging.logger {}
+        val attackerName = if (this is Player) "Player(${username})" else "NPC(${(this as? Npc)?.id ?: "unknown"})"
+        val targetName = if (target is Player) "Player(${target.username})" else "NPC(${(target as? Npc)?.id ?: "unknown"})"
+
+        logger.info { "[COMBAT] $attackerName attack() -> $targetName" }
+
+        // Always face the target
+        facePawn(target)
+
+        // Clear old interactions and queues
         resetInteractions()
         interruptQueues()
 
-        // If player is standing on the same tile as the target, walk away first
-        if (this is Player && this.tile.x == target.tile.x && this.tile.z == target.tile.z && this.tile.height == target.tile.height) {
-            // Find an adjacent walkable tile
-            val directions = listOf(
-                org.alter.game.model.Direction.NORTH,
-                org.alter.game.model.Direction.SOUTH,
-                org.alter.game.model.Direction.EAST,
-                org.alter.game.model.Direction.WEST
-            )
-
-            var adjacentTile: org.alter.game.model.Tile? = null
-            for (direction in directions) {
-                val testTile = this.tile.transform(direction.getDeltaX(), direction.getDeltaZ())
-                if (world.canTraverse(this.tile, direction, this, this.getSize())) {
-                    adjacentTile = testTile
-                    break
-                }
-            }
-
-            if (adjacentTile != null) {
-                // Walk to adjacent tile first, THEN set combat target and start combat
-                // This ensures the combat cycle starts after we've moved away
-                // Note: We create the queue task AFTER interruptQueues() has been called
-                (this as Player).queue {
-                    val player = this@Pawn as Player
-                    val targetId = if (target is Npc) (target as Npc).id else "Player"
-                    println("[SAME-TILE] Player ${player.username} starting walk-away from ${if (target is Npc) "NPC" else "Player"} $targetId at tile (${player.tile.x},${player.tile.z}) to (${adjacentTile.x},${adjacentTile.z})")
-                    player.walkTo(adjacentTile)
-                    var waitCount = 0
-                    val maxWait = 50 // Safety limit to prevent infinite loop
-                    while (player.hasMoveDestination() && waitCount < maxWait) {
-                        wait(1)
-                        waitCount++
-                        if (!target.isAlive()) {
-                            println("[SAME-TILE] Target died during walk-away")
-                            return@queue
-                        }
-                    }
-                    if (waitCount >= maxWait) {
-                        println("[SAME-TILE] Walk-away timeout after $maxWait ticks, player still has move destination")
-                        return@queue
-                    }
-                    // Wait one more tick to ensure movement is fully complete and position is updated
-                    wait(1)
-                    println("[SAME-TILE] Walk-away complete. Player at (${player.tile.x},${player.tile.z}), target at (${target.tile.x},${target.tile.z}). Setting combat target and starting combat cycle.")
-                    // Now that we've moved away, set combat target BEFORE calling executeCombat
-                    // This ensures the combat target is set when the combat cycle starts
-                    player.attr[COMBAT_TARGET_FOCUS_ATTR] = WeakReference(target)
-                    target.attr.addToSet(COMBAT_ATTACKERS_ATTR, WeakReference(player))
-
-                    // Verify target is set before starting combat
-                    val hasTargetBefore = player.attr[COMBAT_TARGET_FOCUS_ATTR]?.get() != null
-                    println("[SAME-TILE] Target set: hasTarget=$hasTargetBefore, target=${player.attr[COMBAT_TARGET_FOCUS_ATTR]?.get()}")
-
-                    // Start combat cycle immediately - no need for nested queue
-                    // executeCombat will start its own queue task
-                    println("[SAME-TILE] Executing combat. Player at (${player.tile.x},${player.tile.z}), target at (${target.tile.x},${target.tile.z})")
-                    player.world.plugins.executeCombat(player)
-
-                    // Verify combat started
-                    val hasTargetAfter = player.attr[COMBAT_TARGET_FOCUS_ATTR]?.get() != null
-                    println("[SAME-TILE] executeCombat called. After call: hasTarget=$hasTargetAfter")
-                }
-                return
-            }
-        }
-
+        // Set PENDING target (who we're TRYING to attack - needed for pathfinding)
+        // This does NOT mean we're in combat with them yet
         attr[COMBAT_TARGET_FOCUS_ATTR] = WeakReference(target)
 
-        // Track that we are attacking this target
-        target.attr.addToSet(COMBAT_ATTACKERS_ATTR, WeakReference(this))
+        // DON'T add to COMBAT_ATTACKERS_ATTR here - that happens in handleAttack when attack goes through
+        // DON'T stop NPC movement here - that happens in handleAttack when attack goes through
 
-        /*
-         * Players always have the default combat, and npcs will use default
-         * combat <strong>unless</strong> they have a custom npc combat plugin
-         * bound to their npc id.
-         */
-        // Always execute combat to ensure the combat cycle starts
-        // This will start a new queue that runs the combat cycle
+        // Execute the combat plugin - it will handle canEngage() checks
+        // Players always use default combat; NPCs use custom combat if available, otherwise default
         if (entityType.isPlayer) {
             world.plugins.executeCombat(this)
         } else if (this is Npc) {
-            // For NPCs, only execute if executeNpcCombat returns false (meaning no custom combat handler)
             if (!world.plugins.executeNpcCombat(this)) {
                 world.plugins.executeCombat(this)
             }
@@ -361,19 +308,43 @@ abstract class Pawn(val world: World) : Entity() {
 
     /**
      * Handle a single cycle for [pendingHits].
+     *
+     * TICK EATING: In OSRS, eating happens BEFORE damage is applied in the same tick.
+     * The cycle order is: queues.cycle() (eating) -> cycle() -> hitsCycle() (damage)
+     * This means if you eat on the same tick damage would kill you, you survive.
+     *
+     * damageDelay: Number of ticks before damage is applied.
+     * - 0 = damage applies this tick
+     * - 1 = damage applies next tick
+     * - etc.
      */
     fun hitsCycle() {
         val hitIterator = pendingHits.iterator()
         iterator@ while (hitIterator.hasNext()) {
             if (isDead()) {
+                // Clear all pending hits when dead
+                pendingHits.clear()
                 break
             }
+            // For NPCs, also check if they've been removed from the world
+            if (entityType.isNpc) {
+                val npc = this as Npc
+                if (!npc.world.npcs.contains(npc)) {
+                    // NPC has been removed from the world, clear pending hits
+                    pendingHits.clear()
+                    break
+                }
+            }
             val hit = hitIterator.next()
+
+            // Check if damage is delayed
+            if (hit.damageDelay > 0) {
+                hit.damageDelay--
+                continue // Skip this hit, process next tick
+            }
+
             if (lock.delaysDamage()) {
-                /**
-                 * @TODO Need to confirm that this block is true.
-                 */
-                hit.damageDelay = Math.max(0, hit.damageDelay - 1)
+                // Lock delays damage further
                 continue
             }
             if (!hit.cancelCondition()) {
@@ -423,6 +394,13 @@ abstract class Pawn(val world: World) : Entity() {
                     if (INFINITE_VARS_STORAGE.get(this, InfiniteVarsType.HP) == 0) {
                         setCurrentHp(hp - hitmark.damage)
                     }
+
+                    // Update combat state when damage is dealt/received
+                    if (hitmark.damage > 0) {
+                        attr[COMBAT_STATE_ATTR] = CombatState.ACTIVE
+                        attr[LAST_COMBAT_ACTION_TIME_ATTR] = System.currentTimeMillis()
+                    }
+
                     /*
                      * If the pawn has less than or equal to 0 health,
                      * terminate all queues and begin the death logic.

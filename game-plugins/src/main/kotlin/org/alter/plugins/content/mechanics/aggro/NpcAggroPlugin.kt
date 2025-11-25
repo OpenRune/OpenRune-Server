@@ -113,7 +113,7 @@ fun canAttack(
 
             // Check if this NPC has been out of combat for 10+ seconds (no received hits)
             // If not, it can only aggress if the player is not in combat with another NPC
-            val npcLastCombatCycle = npc.attr[org.alter.plugins.content.combat.Combat.LAST_COMBAT_CYCLE_ATTR] ?: 0
+            val npcLastCombatCycle = npc.attr[LAST_COMBAT_CYCLE_ATTR] ?: 0
             val currentCycle = world.currentCycle
             val npcCyclesSinceCombat = currentCycle - npcLastCombatCycle
             val npcCanAggressNewTarget = npcCanAggressImmediately || npcCyclesSinceCombat >= org.alter.plugins.content.combat.Combat.COMBAT_TIMEOUT_TICKS

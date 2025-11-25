@@ -18,6 +18,13 @@ import org.alter.game.plugin.Plugin
 object Prayers {
     private val PRAYER_DRAIN_COUNTER = AttributeKey<Int>()
 
+    /**
+     * Tracks the cycle when prayers were last active.
+     * Used for 1-tick prayer flicking - if prayers were only active for part of a tick,
+     * no drain occurs. This matches OSRS behavior.
+     */
+    private val PRAYER_ACTIVE_START_CYCLE = AttributeKey<Int>()
+
     val PRAYER_DRAIN = TimerKey()
     private val DISABLE_OVERHEADS = TimerKey()
 
@@ -46,6 +53,8 @@ object Prayers {
         p.setVarp(ACTIVE_PRAYERS_VARP, 0)
         p.setVarbit(QUICK_PRAYERS_ACTIVE_VARBIT, 0)
         p.attr.remove(PROTECT_ITEM_ATTR)
+        p.attr.remove(PRAYER_ACTIVE_START_CYCLE)
+        p.attr.remove(PRAYER_DRAIN_COUNTER)
 
         if (p.prayerIcon != -1) {
             p.prayerIcon = -1
@@ -91,6 +100,10 @@ object Prayers {
         playSound: Boolean = true,
     ) {
         if (!isActive(p, prayer)) {
+            // Track when prayers become active for 1-tick flicking
+            // If no prayers were active before, record the start cycle
+            val wasAnyActive = p.getVarp(ACTIVE_PRAYERS_VARP) != 0
+
             deactivateConflictingPrayers(p, prayer)
             p.setVarbit(prayer.varbit, 1)
 
@@ -100,6 +113,11 @@ object Prayers {
 
             setOverhead(p)
             handlePrayerAttributes(p, prayer, activate = true)
+
+            // If this is the first prayer activated this tick, record the cycle
+            if (!wasAnyActive) {
+                p.attr[PRAYER_ACTIVE_START_CYCLE] = p.world.currentCycle
+            }
         }
     }
 
@@ -120,9 +138,39 @@ object Prayers {
         }
     }
 
+    /**
+     * Drains prayer points based on active prayers.
+     *
+     * 1-TICK PRAYER FLICKING:
+     * In OSRS, prayer drain only occurs if prayers were active for the FULL tick.
+     * If you activate a prayer and deactivate it within the same tick (before drain),
+     * no prayer points are drained. This is called "1-tick flicking" or "prayer flicking".
+     *
+     * The protection from prayers still applies when damage is calculated (checked via hasPrayerIcon),
+     * but the drain is avoided by turning off the prayer before this drain check.
+     */
     fun drainPrayer(p: Player) {
-        if (p.isDead() || p.getVarp(ACTIVE_PRAYERS_VARP) == 0 || p.hasStorageBit(INFINITE_VARS_STORAGE, InfiniteVarsType.PRAY)) {
+        if (p.isDead() || p.hasStorageBit(INFINITE_VARS_STORAGE, InfiniteVarsType.PRAY)) {
             p.attr.remove(PRAYER_DRAIN_COUNTER)
+            p.attr.remove(PRAYER_ACTIVE_START_CYCLE)
+            return
+        }
+
+        // No prayers active - reset counters
+        if (p.getVarp(ACTIVE_PRAYERS_VARP) == 0) {
+            p.attr.remove(PRAYER_DRAIN_COUNTER)
+            p.attr.remove(PRAYER_ACTIVE_START_CYCLE)
+            return
+        }
+
+        // 1-TICK FLICKING CHECK:
+        // If prayers were activated THIS tick (same cycle), don't drain yet.
+        // This allows players to flick prayers on and off within a single tick
+        // to get protection without drain.
+        val activationCycle = p.attr[PRAYER_ACTIVE_START_CYCLE]
+        if (activationCycle != null && activationCycle == p.world.currentCycle) {
+            // Prayers were just activated this tick - no drain yet
+            // Protection still applies (checked via hasPrayerIcon when damage is calculated)
             return
         }
 

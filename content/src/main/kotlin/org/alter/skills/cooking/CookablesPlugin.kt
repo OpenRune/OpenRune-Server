@@ -1,12 +1,12 @@
 package org.alter.skills.cooking
 
 import org.alter.api.Skills
-import org.alter.api.ext.filterableMessage
-import org.alter.api.ext.produceItemBox
+import org.alter.api.ext.*
 import org.alter.game.model.entity.Player
 import org.alter.game.model.queue.QueueTask
 import org.alter.game.pluginnew.PluginEvent
 import org.alter.game.pluginnew.event.impl.ItemOnObject
+import org.alter.game.pluginnew.event.impl.onObjectOption
 import org.generated.tables.ConsumableFoodRow
 import org.alter.skills.cooking.CookingDefinitions.calculateBurnChance
 import org.alter.skills.cooking.CookingDefinitions.recipes
@@ -14,7 +14,7 @@ import org.alter.skills.firemaking.ColoredLogs
 
 /**
  * Cooking plugin for all cookable items (meat, fish, etc.)
- * Handles cooking raw items on fires and ranges
+ * Handles cooking raw items on fires and ranges/stoves
  */
 class CookablesPlugin : PluginEvent() {
 
@@ -22,19 +22,19 @@ class CookablesPlugin : PluginEvent() {
         // Reuse fire definitions from firemaking
         private val VALID_FIRES = ColoredLogs.COLOURED_LOGS.values.map { it.second } + "objects.fire"
 
-        private val VALID_RANGES = listOf(
+        private val VALID_STOVES = listOf(
             "objects.range",
             "objects.cooking_range",
             "objects.stove",
             "objects.fireplace",
         )
 
-        private val ALL_COOKING_OBJECTS = VALID_FIRES + VALID_RANGES
-        private val VALID_RANGES_NAMES = VALID_RANGES.toSet()
+        private val ALL_COOKING_OBJECTS = VALID_FIRES + VALID_STOVES
+        private val VALID_STOVES_NAMES = VALID_STOVES.toSet()
     }
 
     override fun init() {
-        // Register cooking for all recipes from database
+        // Register cooking for all recipes from database (item on object)
         recipes.forEach { recipe ->
             on<ItemOnObject> {
                 where {
@@ -43,17 +43,60 @@ class CookablesPlugin : PluginEvent() {
                 }
                 then {
                     player.queue {
-                        cookItem(player, recipe, gameObject.id in VALID_RANGES_NAMES)
+                        startCooking(player, recipe, gameObject.id in VALID_STOVES_NAMES)
                     }
+                }
+            }
+        }
+
+        // Register "Cook" option on stoves
+        VALID_STOVES.forEach { stoveId ->
+            onObjectOption(stoveId, "Cook", "cook") {
+                player.queue {
+                    handleStoveCook(player)
                 }
             }
         }
     }
 
-    private suspend fun QueueTask.cookItem(player: Player, recipe: CookingRecipe, isRange: Boolean) {
-        val cookingLevel = player.getSkills().getCurrentLevel(Skills.COOKING)
+    /**
+     * Handles clicking "Cook" option on a stove
+     * Shows a menu of all cookable items in inventory
+     */
+    private suspend fun QueueTask.handleStoveCook(player: Player) {
+        val cookableItems = recipes.mapNotNull { recipe ->
+            if (player.inventory.contains(recipe.rawItem)) {
+                recipe to player.inventory.getItemCount(recipe.rawItem)
+            } else {
+                null
+            }
+        }
 
-        // Check level requirement
+        if (cookableItems.isEmpty()) {
+            player.filterableMessage("You don't have anything to cook.")
+            return
+        }
+
+        // If only one type of cookable item, start cooking it directly
+        if (cookableItems.size == 1) {
+            val (recipe, _) = cookableItems.first()
+            startCooking(player, recipe, isStove = true)
+            return
+        }
+
+        // TODO: Show menu to select which item to cook
+        // For now, just cook the first item
+        val (recipe, _) = cookableItems.first()
+        startCooking(player, recipe, isStove = true)
+    }
+
+    /**
+     * Starts the cooking process - always shows production menu
+     */
+    private suspend fun QueueTask.startCooking(player: Player, recipe: CookingRecipe, isStove: Boolean) {
+        val cookingLevel = player.getSkills().getBaseLevel(Skills.COOKING)
+
+        // Check level requirement (allow exact level match)
         if (cookingLevel < recipe.level) {
             player.filterableMessage("You need a Cooking level of ${recipe.level} to cook this.")
             return
@@ -69,36 +112,42 @@ class CookablesPlugin : PluginEvent() {
         // Get count of raw items
         val rawItemCount = player.inventory.getItemCount(rawItemId)
 
-        if (rawItemCount == 1) {
-            // Single item - cook immediately
-            cookMultipleItems(player, recipe, isRange, cookingLevel, 1)
-        } else {
-            // Multiple items - show produce box
-            produceItemBox(
-                player,
-                rawItemId,
-                maxProducable = rawItemCount
-            ) { _, amount ->
-                player.queue {
-                    cookMultipleItems(player, recipe, isRange, cookingLevel, amount)
-                }
+        // Always show production menu
+        produceItemBox(
+            player,
+            rawItemId,
+            maxProducable = rawItemCount
+        ) { _, amount ->
+            player.queue {
+                cookMultipleItems(player, recipe, isStove, cookingLevel, amount)
             }
         }
     }
 
+    /**
+     * Cooks multiple items in a loop with animation
+     */
     private suspend fun QueueTask.cookMultipleItems(
         player: Player,
         recipe: CookingRecipe,
-        isRange: Boolean,
+        isStove: Boolean,
         cookingLevel: Int,
         amount: Int
     ) {
         var cooked = 0
         var burnt = 0
 
+        // Start looping animation based on cooking type (interruptable)
+        val animation = if (isStove) {
+            "sequences.human_cooking"
+        } else {
+            "sequences.human_firecooking"
+        }
+        player.loopAnim(animation, interruptable = true)
+
         repeatWhile(
             delay = 2,
-            immediate = true,
+            immediate = false,
             canRepeat = {
                 player.inventory.contains(recipe.rawItem) && cooked + burnt < amount
             }
@@ -111,11 +160,8 @@ class CookablesPlugin : PluginEvent() {
                 return@repeatWhile
             }
 
-            // Animate
-            player.animate("sequences.cooking")
-
             // Calculate burn chance
-            val burnChance = calculateBurnChance(recipe, cookingLevel, isRange)
+            val burnChance = calculateBurnChance(recipe, cookingLevel, isStove)
             val didBurn = player.world.random(100) < burnChance
 
             // Remove raw item (use -1 to find any slot)
@@ -144,6 +190,9 @@ class CookablesPlugin : PluginEvent() {
             }
         }
 
+        // Stop looping but let current animation finish (don't cancel it)
+        player.stopLoopAnim(allowFinish = true)
+
         // Summary message
         if (cooked > 0 && burnt > 0) {
             player.filterableMessage("You cook $cooked ${if (cooked == 1) "item" else "items"} successfully. However, you burn $burnt ${if (burnt == 1) "item" else "items"}.")
@@ -166,9 +215,15 @@ class CookablesPlugin : PluginEvent() {
     private fun ensureConsumableDefinition(recipe: CookingRecipe) {
         val cookedItemId = recipe.cookedItem
 
-        // Check if consumable definition exists
-        val hasDefinition = ConsumableFoodRow.all().any { food ->
-            food.items.contains(cookedItemId)
+        // Check if consumable definition exists using generated table classes
+        // Note: This requires the cache to be built to generate the table classes
+        val hasDefinition = try {
+            ConsumableFoodRow.all().any { food ->
+                food.items.any { it != null && it == cookedItemId }
+            }
+        } catch (e: Exception) {
+            // Generated classes might not exist yet, skip check
+            true
         }
 
         if (!hasDefinition) {
