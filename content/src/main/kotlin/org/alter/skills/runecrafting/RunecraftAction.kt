@@ -10,7 +10,7 @@ import org.alter.game.model.attr.AttributeKey
 import org.alter.game.model.entity.Player
 import org.alter.rscm.RSCM.asRSCM
 import org.alter.skills.runecrafting.BloodEssenceEvents.Companion.BLOOD_ESSENCE
-import org.generated.tables.runecrafting.RunecraftingCombonationRunesRow
+import org.generated.tables.ComboruneRecipeRow
 import org.generated.tables.runecrafting.RunecraftingRunesRow
 import kotlin.math.floor
 
@@ -159,18 +159,18 @@ object RunecraftAction {
         else -> 1.0
     }
 
-    fun craftCombination(player: Player, combo: RunecraftingCombonationRunesRow) {
+    fun craftCombination(player: Player, combo: ComboruneRecipeRow) {
         if (!canCraftCombo(player, combo)) return
 
         preCraft(player)
 
         val inv = player.inventory
-        val craftCount = minOf(inv.getItemCount("items.blankrune_high"), inv.getItemCount(combo.runeInput))
+        val craftCount = minOf(inv.getItemCount("items.blankrune_high"), inv.getItemCount(combo.runeInput!!))
         if (craftCount <= 0) return
 
-        if (!inv.remove(combo.talisman).hasSucceeded()) return
+        if (!inv.remove(combo.talisman!!).hasSucceeded()) return
         if (!inv.remove("items.blankrune_high", craftCount).hasSucceeded()) return
-        val removedRunes = inv.remove(combo.runeInput, craftCount)
+        val removedRunes = inv.remove(combo.runeInput!!, craftCount)
         if (!removedRunes.hasSucceeded()) return
 
         val wearingNecklace = player.equipment.contains("items.magic_emerald_necklace")
@@ -178,17 +178,17 @@ object RunecraftAction {
 
         if (inv.contains("items.scar_extract_twisted")) finalCount += runecraftingExtract["items.scar_extract_twisted".asRSCM()] ?: 0
 
-        inv.add(combo.runeOutput, finalCount)
-        player.addXp(Skills.RUNECRAFTING, finalCount * combo.xp)
+        inv.add(combo.runeOutput!!, finalCount)
+        player.addXp(Skills.RUNECRAFTING, finalCount * combo.xp!!)
     }
 
-    private fun canCraftCombo(player: Player, combo: RunecraftingCombonationRunesRow): Boolean {
+    private fun canCraftCombo(player: Player, combo: ComboruneRecipeRow): Boolean {
         val level = player.getSkills().getBaseLevel(Skills.RUNECRAFTING)
-        val outputName = combo.runeOutput.getItemName()
-        val inputName = combo.runeInput.getItemName()
-        val talismanName = combo.talisman.getItemName()
+        val outputName = combo.runeOutput!!.getItemName()
+        val inputName = combo.runeInput!!.getItemName()
+        val talismanName = combo.talisman!!.getItemName()
 
-        if (level < combo.level) {
+        if (level < combo.level!!) {
             player.queue { messageBox(player, "You need Runecrafting level ${combo.level} to craft ${outputName}s.") }
             return false
         }

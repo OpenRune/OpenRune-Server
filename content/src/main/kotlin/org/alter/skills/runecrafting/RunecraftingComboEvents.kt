@@ -2,8 +2,8 @@ package org.alter.skills.runecrafting
 
 import org.alter.game.pluginnew.PluginEvent
 import org.alter.game.pluginnew.event.impl.ItemOnObject
+import org.generated.tables.ComboruneRecipeRow
 import org.generated.tables.runecrafting.RunecraftingAltarsRow
-import org.generated.tables.runecrafting.RunecraftingCombonationRunesRow
 
 class RunecraftingComboEvents : PluginEvent() {
 
@@ -12,7 +12,7 @@ class RunecraftingComboEvents : PluginEvent() {
 
             val combos = altar.combo
                 .filterNotNull()
-                .map { RunecraftingCombonationRunesRow.getRow(it) }
+                .map { ComboruneRecipeRow.getRow(it) }
 
             if (combos.isEmpty()) return@forEach
 

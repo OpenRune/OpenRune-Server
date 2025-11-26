@@ -154,8 +154,7 @@ object RunecraftRune {
         Rune.entries.forEach {
             row(it.dbId) {
                 columnRSCM(ITEM, it.id)
-                columnRSCM(ESSENCE, "items.blankrune_high","items.blankrune")
-                //columnRSCM(ESSENCE, *it.essence.toTypedArray()) BREAKS ? ^ DOES NOT
+                columnRSCM(ESSENCE, *it.essence.toTypedArray())
                 column(LEVEL, it.level)
                 column(XP, it.xp)
                 columnRSCM(EXTRACT, it.extract)

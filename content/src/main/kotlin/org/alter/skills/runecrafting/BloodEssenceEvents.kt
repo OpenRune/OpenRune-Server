@@ -7,7 +7,6 @@ import org.alter.game.pluginnew.PluginEvent
 import org.alter.game.pluginnew.event.impl.ItemOnObject
 import org.alter.game.pluginnew.event.impl.onItemOption
 import org.generated.tables.runecrafting.RunecraftingAltarsRow
-import org.generated.tables.runecrafting.RunecraftingCombonationRunesRow
 
 class BloodEssenceEvents : PluginEvent() {
 
