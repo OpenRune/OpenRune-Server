@@ -1,12 +1,11 @@
 package org.alter
 
-import com.squareup.kotlinpoet.INT
+import com.squareup.kotlinpoet.CHAR
 import dev.openrune.OsrsCacheProvider
-import dev.openrune.ServerCacheManager
-import dev.openrune.cache.gameval.Format
 import dev.openrune.cache.gameval.GameValHandler
 import dev.openrune.cache.gameval.GameValHandler.elementAs
-import dev.openrune.cache.gameval.dump
+import dev.openrune.cache.gameval.impl.Interface
+import dev.openrune.cache.gameval.impl.Sprite
 import dev.openrune.cache.gameval.impl.Table
 import dev.openrune.cache.tools.Builder
 import dev.openrune.cache.tools.CacheEnvironment
@@ -15,17 +14,15 @@ import dev.openrune.cache.tools.tasks.CacheTask
 import dev.openrune.cache.tools.tasks.TaskType
 import dev.openrune.cache.tools.tasks.impl.defs.PackConfig
 import dev.openrune.definition.GameValGroupTypes
+import dev.openrune.definition.constants.use
 import dev.openrune.definition.type.DBRowType
 import dev.openrune.definition.util.VarType
 import dev.openrune.filesystem.Cache
 import dev.openrune.tools.PackServerConfig
 import io.github.oshai.kotlinlogging.KotlinLogging
-import org.alter.codegen.TableColumn
-import org.alter.codegen.TableDef
-import org.alter.codegen.generateTable
 import org.alter.codegen.startGeneration
-import org.alter.game.util.DbException
-import org.alter.game.util.DbHelper.Companion.table
+import org.alter.gamevals.GameValProvider
+import org.alter.gamevals.GamevalDumper
 import org.alter.impl.skills.Firemaking
 import org.alter.impl.misc.FoodTable
 import org.alter.impl.skills.PrayerTable
@@ -34,7 +31,9 @@ import org.alter.impl.misc.TeleTabs
 import org.alter.impl.skills.Woodcutting
 import org.alter.impl.skills.Herblore
 import org.alter.impl.skills.Mining
+import java.io.DataOutputStream
 import java.io.File
+import java.io.FileOutputStream
 import java.nio.file.Files
 import java.nio.file.StandardCopyOption
 import kotlin.system.exitProcess
@@ -77,10 +76,11 @@ fun downloadRev(type: TaskType) {
 
     logger.error { "Using Revision: $rev" }
 
+    GameValProvider.load()
+
     when (type) {
         TaskType.FRESH_INSTALL -> {
             val builder = Builder(type = TaskType.FRESH_INSTALL, File(getCacheLocation()))
-            builder.registerRSCM(File("../data/cfg/rscm2"))
             builder.revision(rev.first)
             builder.subRevision(rev.second)
             builder.removeXteas(false)
@@ -93,13 +93,22 @@ fun downloadRev(type: TaskType) {
                 File("../data/", "xteas.json").toPath(),
                 StandardCopyOption.REPLACE_EXISTING
             )
+
+            val cache = Cache.load(File(getCacheLocation()).toPath())
+
+            GamevalDumper.dumpGamevals(cache,rev.first)
+
+
             buildCache(rev)
 
         }
 
-        TaskType.BUILD -> buildCache(rev)
+        TaskType.BUILD -> {
+            buildCache(rev)
+        }
     }
 }
+
 
 data class ColInfo(
     val types: MutableMap<Int,VarType> = mutableMapOf(),
@@ -108,6 +117,7 @@ data class ColInfo(
 )
 
 fun buildCache(rev: Triple<Int, Int, String>) {
+    GameValProvider.load()
 
     val tasks: List<CacheTask> = listOf(
         PackConfig(File("../data/raw-cache/server")),
@@ -115,7 +125,6 @@ fun buildCache(rev: Triple<Int, Int, String>) {
     ).toMutableList()
 
     val builder = Builder(type = TaskType.BUILD, cacheLocation = File(getCacheLocation()))
-    builder.registerRSCM(File("../data/cfg/rscm2"))
     builder.revision(rev.first)
 
     val tasksNew = tasks.toMutableList()
@@ -123,13 +132,9 @@ fun buildCache(rev: Triple<Int, Int, String>) {
 
     builder.extraTasks(*tasksNew.toTypedArray()).build().initialize()
 
+    val cache = Cache.load(File(getCacheLocation()).toPath())
 
-    val cache = Cache.load(File(getCacheLocation()).toPath(), true)
-
-    GameValGroupTypes.entries.forEach {
-        val type = GameValHandler.readGameVal(it, cache = cache, rev.first)
-        type.dump(Format.RSCM_V2, File("../data/cfg/rscm2"), it).packed(true).write()
-    }
+    GamevalDumper.dumpCols(cache,rev.first)
 
     val type = GameValHandler.readGameVal(GameValGroupTypes.TABLETYPES, cache = cache, rev.first)
 
