@@ -12,10 +12,6 @@ import java.io.FileInputStream
 import java.nio.file.Paths
 import kotlin.io.use
 
-fun main() {
-    GameValProvider.load("C:\\Users\\chris\\Desktop\\Alter\\")
-}
-
 class GameValProvider : MappingProvider {
 
     private val tomlMapper = ObjectMapper(TomlFactory()).findAndRegisterModules()
