@@ -48,7 +48,7 @@ object GamevalDumper {
             }
         }
 
-        encodeGameValDat("../data/gamevals.dat", gamevals)
+        encodeGameValDat("../data/cfg/gamevals-binary/gamevals.dat", gamevals)
         dumpCols(cache, rev)
     }
 
@@ -63,7 +63,7 @@ object GamevalDumper {
             }
         }
 
-        encodeGameValDat("../data/gamevals_columns.dat", mapOf("columns" to data))
+        encodeGameValDat("../data/cfg/gamevals-binary/gamevals_columns.dat", mapOf("columns" to data))
     }
 
     private fun encodeGameValDat(output: String, tables: Map<String, List<String>>) {

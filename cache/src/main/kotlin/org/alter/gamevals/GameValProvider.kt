@@ -22,10 +22,10 @@ class GameValProvider : MappingProvider {
         fun load(rootDir: String = "../") {
             val provider = GameValProvider()
             provider.use(
-                Paths.get("${rootDir}data", "gamevals.dat").toFile(),
-                Paths.get("${rootDir}data", "gamevals_columns.dat").toFile(),
+                Paths.get("${rootDir}data", "cfg", "gamevals-binary", "gamevals.dat").toFile(),
+                Paths.get("${rootDir}data", "cfg", "gamevals-binary", "gamevals_columns.dat").toFile(),
                 Paths.get("${rootDir}content", "src", "main", "resources", "org", "alter").toFile(),
-                Paths.get("${rootDir}data", "cfg", "gamevals-custom").toFile()
+                Paths.get("${rootDir}data", "cfg", "gamevals").toFile()
             )
         }
     }
