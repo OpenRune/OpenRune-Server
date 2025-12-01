@@ -1,4 +1,4 @@
-package org.alter.skills.agility
+package org.alter.skills.agility.rooftopcourses
 
 import org.alter.api.Skills
 import org.alter.api.ext.filterableMessage
@@ -6,12 +6,12 @@ import org.alter.game.model.Direction
 import org.alter.game.model.ForcedMovement
 import org.alter.game.model.Tile
 import org.alter.game.model.attr.AttributeKey
-import org.alter.game.model.entity.GroundItem
 import org.alter.game.model.entity.Player
 import org.alter.game.model.move.moveTo
 import org.alter.game.pluginnew.PluginEvent
 import org.alter.game.pluginnew.event.impl.onObjectOption
 import org.alter.rscm.RSCM
+import org.alter.skills.agility.MarkOfGraceService
 
 class DraynorRooftopCoursePlugin : PluginEvent() {
 
@@ -175,7 +175,7 @@ class DraynorRooftopCoursePlugin : PluginEvent() {
             anim?.let { player.animate(it) }
 
             if (doForcedMove) {
-                val movement = ForcedMovement.of(
+                val movement = ForcedMovement.Companion.of(
                     src = player.tile,
                     dst = destination,
                     clientDuration1 = duration1,
@@ -236,4 +236,3 @@ class DraynorRooftopCoursePlugin : PluginEvent() {
     }
 
 }
-
