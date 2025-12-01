@@ -13,7 +13,7 @@ class MarkOfGraceService(
     private val despawnSeconds: Int = 600
 ) {
 
-    private val itemId = itemName.asRSCM() // convert to int once
+    private val itemId = itemName.asRSCM()
 
     fun spawnMarkofGrace(player: Player) {
         if (Math.random() > dropChance) return
@@ -21,7 +21,7 @@ class MarkOfGraceService(
         val tile = spawnTiles.random()
 
         val existing = player.world.groundItems.firstOrNull {
-            it.item == itemId && it.tile == tile
+            it.item == itemId && it.tile == tile && it.isOwnedBy(player)
         }
 
         if (existing != null) {
@@ -34,7 +34,6 @@ class MarkOfGraceService(
                 tile = tile,
                 owner = player
             )
-
             mark.timeUntilDespawn = despawnSeconds
             player.world.spawn(mark)
         }
