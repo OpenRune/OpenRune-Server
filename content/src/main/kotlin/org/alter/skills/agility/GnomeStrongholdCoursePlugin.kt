@@ -221,7 +221,7 @@ class GnomeStrongholdCoursePlugin : PluginEvent() {
             if (xp > 0.0) player.addXp(Skills.AGILITY, xp)
             messageEnd?.let { player.filterableMessage(it) }
 
-            maybeSpawnMark(player)
+            //maybeSpawnMark(player)
             handleStage(player, stage, endStage)
         }
     }
@@ -250,6 +250,8 @@ class GnomeStrongholdCoursePlugin : PluginEvent() {
                 player.setLaps(laps)
 
                 player.filterableMessage("Your Gnome Stronghold Agility lap count is: <col=ff0000>$laps</col>.")
+
+                maybeSpawnMark(player)
             }
 
             player.setStage(0)
@@ -260,23 +262,17 @@ class GnomeStrongholdCoursePlugin : PluginEvent() {
     private fun maybeSpawnMark(player: Player) {
 
         val agilityLevel = player.getSkills().getBaseLevel(Skills.AGILITY)
-        val extraChance = agilityLevel / 200.0 // +0.5% per 10 levels
+        val extraChance = agilityLevel / 200.0
 
-        val rng = Math.random()
-        val totalChance = DROP_CHANCE + extraChance
+        if (Math.random() > DROP_CHANCE + extraChance) return
 
-        if (rng > totalChance) return
+        val alreadyExists = player.world.groundItems.any { getitem ->
+            getitem.item == 11849 && getitem.tile in MARK_SPAWN_TILES
+        }
+        if (alreadyExists) return
 
-        val gracetile = MARK_SPAWN_TILES.random()
-        player.world.spawn(
-            GroundItem(
-                item = 11849,
-                amount =1,
-                tile = gracetile,
-                owner =player,
-                ))
-
+        val tile = MARK_SPAWN_TILES.random()
+        player.world.spawn(GroundItem(11849, 1, tile, player))
         player.filterableMessage("A Mark of Grace appears.")
     }
-
 }
