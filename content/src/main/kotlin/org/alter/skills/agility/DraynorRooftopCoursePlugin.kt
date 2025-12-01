@@ -22,6 +22,10 @@ class DraynorRooftopCoursePlugin : PluginEvent() {
     private val MARK_SPAWN_TILES = listOf(
         Tile(3088, 3275, 3),
     )
+    private val GraceService = MarkOfGraceService(
+        spawnTiles = MARK_SPAWN_TILES,
+        dropChance = DROP_CHANCE
+    )
     val DRAYNOR_AGILITY_STAGE = AttributeKey<Int>("DraynorAgilityStage")
     private fun Player.getStage(): Int = attr[DRAYNOR_AGILITY_STAGE] ?: 0
     private fun Player.setStage(v: Int) { attr[DRAYNOR_AGILITY_STAGE] = v }
@@ -193,7 +197,6 @@ class DraynorRooftopCoursePlugin : PluginEvent() {
             if (xp > 0.0) player.addXp(Skills.AGILITY, xp)
             messageEnd?.let { player.filterableMessage(it) }
 
-            maybeSpawnMark(player)
             handleStage(player, stage, endStage)
         }
     }
@@ -222,33 +225,14 @@ class DraynorRooftopCoursePlugin : PluginEvent() {
                 player.setLaps(laps)
 
                 player.filterableMessage("Your Draynor Rooftop Agility lap count is: <col=ff0000>$laps</col>.")
+
+                GraceService.spawnMarkofGrace(player)
             }
 
             player.setStage(0)
             return
 
         }
-    }
-    private fun maybeSpawnMark(player: Player) {
-
-        val agilityLevel = player.getSkills().getBaseLevel(Skills.AGILITY)
-        val extraChance = agilityLevel / 200.0 // +0.5% per 10 levels
-
-        val rng = Math.random()
-        val totalChance = DROP_CHANCE + extraChance
-
-        if (rng > totalChance) return
-
-        val gracetile = MARK_SPAWN_TILES.random()
-        player.world.spawn(
-            GroundItem(
-                item = 11849,
-                amount =1,
-                tile = gracetile,
-                owner =player,
-                ))
-
-        player.filterableMessage("A Mark of Grace appears.")
     }
 
 }

@@ -24,6 +24,10 @@ class GnomeStrongholdCoursePlugin : PluginEvent() {
         Tile(2474, 3418, 2),
         Tile(2488, 3421, 2)
     )
+    private val GraceService = MarkOfGraceService(
+        spawnTiles = MARK_SPAWN_TILES,
+        dropChance = DROP_CHANCE
+    )
     val GNOME_AGILITY_STAGE = AttributeKey<Int>("GnomeAgilityStage")
     private fun Player.getStage(): Int = attr[GNOME_AGILITY_STAGE] ?: 0
     private fun Player.setStage(v: Int) { attr[GNOME_AGILITY_STAGE] = v }
@@ -221,7 +225,6 @@ class GnomeStrongholdCoursePlugin : PluginEvent() {
             if (xp > 0.0) player.addXp(Skills.AGILITY, xp)
             messageEnd?.let { player.filterableMessage(it) }
 
-            //maybeSpawnMark(player)
             handleStage(player, stage, endStage)
         }
     }
@@ -251,7 +254,7 @@ class GnomeStrongholdCoursePlugin : PluginEvent() {
 
                 player.filterableMessage("Your Gnome Stronghold Agility lap count is: <col=ff0000>$laps</col>.")
 
-                maybeSpawnMark(player)
+                GraceService.spawnMarkofGrace(player)
             }
 
             player.setStage(0)
@@ -259,20 +262,5 @@ class GnomeStrongholdCoursePlugin : PluginEvent() {
 
         }
     }
-    private fun maybeSpawnMark(player: Player) {
-        val rng = Math.random()
 
-        if (rng > DROP_CHANCE) return
-
-        val gracetile = MARK_SPAWN_TILES.random()
-        player.world.spawn(
-            GroundItem(
-                item = 11849,
-                amount =1,
-                tile = gracetile,
-                owner =player,
-            ))
-
-        player.filterableMessage("A Mark of Grace appears.")
-    }
 }
