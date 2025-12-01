@@ -17,7 +17,7 @@ class GnomeStrongholdCoursePlugin : PluginEvent() {
 
     private val MAX_STAGES = 7
     private val BONUS_XP = 50.0
-    private val DROP_CHANCE = 0.15 // 15% kans per obstacle //100% test
+    private val DROP_CHANCE = 1.0 / 3.0 // 1/3 chance per lap completion
 
     private val MARK_SPAWN_TILES = listOf(
         Tile(2471, 3422, 1),
@@ -260,19 +260,19 @@ class GnomeStrongholdCoursePlugin : PluginEvent() {
         }
     }
     private fun maybeSpawnMark(player: Player) {
+        val rng = Math.random()
 
-        val agilityLevel = player.getSkills().getBaseLevel(Skills.AGILITY)
-        val extraChance = agilityLevel / 200.0
+        if (rng > DROP_CHANCE) return
 
-        if (Math.random() > DROP_CHANCE + extraChance) return
+        val gracetile = MARK_SPAWN_TILES.random()
+        player.world.spawn(
+            GroundItem(
+                item = 11849,
+                amount =1,
+                tile = gracetile,
+                owner =player,
+            ))
 
-        val alreadyExists = player.world.groundItems.any { getitem ->
-            getitem.item == 11849 && getitem.tile in MARK_SPAWN_TILES
-        }
-        if (alreadyExists) return
-
-        val tile = MARK_SPAWN_TILES.random()
-        player.world.spawn(GroundItem(11849, 1, tile, player))
         player.filterableMessage("A Mark of Grace appears.")
     }
 }
