@@ -195,8 +195,6 @@ class GnomeStrongholdCoursePlugin : PluginEvent() {
             player.setStage(0)
         }
 
-
-
         player.queue {
 
             messageStart?.let { player.filterableMessage(it) }
@@ -262,5 +260,4 @@ class GnomeStrongholdCoursePlugin : PluginEvent() {
 
         }
     }
-
 }
