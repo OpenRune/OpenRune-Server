@@ -22,17 +22,17 @@ import java.util.*
  *
  * @author Tom <rspsmods@gmail.com>
  */
-class GroundItem private constructor(val item: Int, var amount: Int, internal var ownerUID: PlayerUID?) : Entity() {
+class GroundItem(val item: Int, var amount: Int, internal var ownerUID: PlayerUID?) : Entity() {
     constructor(item: Int, amount: Int, tile: Tile, owner: Player? = null) : this(item, amount, owner?.uid) {
         this.tile = tile
     }
 
-    constructor(itemName: String, amount: Int, ownerUID: PlayerUID?) : this(itemName.asRSCM(), amount, ownerUID) {
-        RSCM.requireRSCM(RSCMType.OBJTYPES, itemName)
+    constructor(item: String, amount: Int, ownerUID: PlayerUID?) : this(item.asRSCM(), amount, ownerUID) {
+        RSCM.requireRSCM(RSCMType.OBJTYPES, item)
     }
 
-    constructor(itemName: String, amount: Int, tile: Tile, owner: Player? = null) : this(itemName.asRSCM(), amount, owner?.uid) {
-        RSCM.requireRSCM(RSCMType.OBJTYPES, itemName)
+    constructor(item: String, amount: Int, tile: Tile, owner: Player? = null) : this(item.asRSCM(), amount, owner?.uid) {
+        RSCM.requireRSCM(RSCMType.OBJTYPES, item)
         this.tile = tile
     }
 
