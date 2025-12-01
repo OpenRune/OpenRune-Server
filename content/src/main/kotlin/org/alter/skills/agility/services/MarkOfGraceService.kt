@@ -18,7 +18,7 @@ class MarkOfGraceService(
 
         player.world.spawn(
             GroundItem(
-                itemName = itemName,
+                item = itemName,
                 amount = 1,
                 tile = tile,
                 owner = player
