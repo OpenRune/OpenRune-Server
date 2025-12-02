@@ -59,7 +59,7 @@ class DraynorRooftopCoursePlugin : PluginEvent() {
                 anim = "sequences.human_walk_logbalance_loop",
                 duration1 = 5,
                 duration2 = 250,
-                angle = Direction.EAST.angle,
+                angle = Direction.WEST.angle,
                 xp = 8.0,
                 messageStart = "You carefully cross the tightrope.",
                 stage = 2
@@ -74,7 +74,7 @@ class DraynorRooftopCoursePlugin : PluginEvent() {
                 anim = "sequences.human_walk_logbalance_loop",
                 duration1 = 5,
                 duration2 = 250,
-                angle = Direction.EAST.angle,
+                angle = Direction.SOUTH.angle,
                 xp = 8.0,
                 messageStart = "You carefully cross the tightrope.",
                 stage = 3
@@ -89,7 +89,7 @@ class DraynorRooftopCoursePlugin : PluginEvent() {
                 anim = "sequences.human_walk_logbalance_loop",
                 duration1 = 5,
                 duration2 = 250,
-                angle = Direction.EAST.angle,
+                angle = Direction.SOUTH.angle,
                 xp = 8.0,
                 messageStart = "You balance across the narrow wall.",
                 stage = 4
@@ -100,7 +100,7 @@ class DraynorRooftopCoursePlugin : PluginEvent() {
         onObjectOption("objects.rooftops_draynor_wallscramble", "jump-up") {
             handleObstacle(
                 player = player,
-                destination = Tile(3089, 3254, 3),
+                destination = Tile(3088, 3254, 3),
                 anim = "sequences.agility_shortcut_wall_jump",
                 simpleMove = true,
                 xp = 8.0,
@@ -113,7 +113,7 @@ class DraynorRooftopCoursePlugin : PluginEvent() {
         onObjectOption("objects.rooftops_draynor_leapdown", "jump") {
             handleObstacle(
                 player = player,
-                destination = Tile(3096, 3257, 3),
+                destination = Tile(3096, 3256, 3),
                 anim = "sequences.agility_shortcut_wall_jumpdown",
                 simpleMove = true,
                 xp = 8.0,
