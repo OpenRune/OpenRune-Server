@@ -18,7 +18,8 @@ data class TableColumn(
     val name: String,
     val simpleName: String,
     val varTypes: Map<Int, VarType>? = null,
-    val optional: Boolean = false
+    val optional: Boolean = false,
+    val maxValues : Int = 0
 )
 
 data class TableDef(
@@ -45,13 +46,27 @@ fun startGeneration(elements: List<GameValElement>, rows: MutableMap<Int, DBRowT
             }
         }
 
+        val maxSizesByColumn: Map<String, Int> =
+            table.columns.associate { col ->
+                val maxSize = table(table.id, rows).maxOfOrNull { row ->
+                    try {
+                        row.getColumn(col.id).column.values?.size ?: 0
+                    } catch (e: DbException.MissingColumn) {
+                        0
+                    }
+                } ?: 0
+
+                col.name to maxSize
+            }
+
         val generatedColumns = table.columns.map { col ->
             val info = colInfoMap[col.name]!!
             TableColumn(
                 name = "columns.${table.name}:${col.name}",
                 simpleName = col.name,
                 varTypes = info.types,
-                optional = info.optional
+                optional = info.optional,
+                maxValues = maxSizesByColumn[col.name] ?: 0
             )
         }
 
@@ -188,7 +203,8 @@ fun generateTable(table: TableDef, outputDir: File) {
         if (sortedVarTypes.isEmpty()) return@forEach
 
         val firstVarType = sortedVarTypes.first()
-        val isList = sortedVarTypes.size > 1
+        val isList = col.maxValues > 1
+
         val isMixed = sortedVarTypes.toSet().size > 1
         val isCoordType = firstVarType == VarType.COORDGRID
         val propertyName = toCamelCase(col.simpleName)

@@ -325,7 +325,7 @@ object Mining {
         }
         // Essence (level )
         row("dbrows.mining_essence") {
-            columnRSCM(COL_ROCK_OBJECT, "objects.blankrunestone", "objects.deadman_flax")//Temp. added deadman flax cause it cant read only one object.
+            columnRSCM(COL_ROCK_OBJECT, "objects.blankrunestone")
             column(COL_LEVEL, 1)
             column(COL_XP, 5)
             columnRSCM(COL_ORE_ITEM, "items.blankrune")
