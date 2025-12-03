@@ -37,12 +37,16 @@ object RSCM {
     fun init() {
         reverseCache.clear()
 
-        for ((key, value) in ConstantProvider.mappings) {
-            val prefix = key.removePrefix("$").substringBefore(".")
-            val type = RSCMType.entries.find { it.prefix == prefix } ?: continue
+        for ((outerKey, innerMap) in ConstantProvider.mappings) {
+            val type = RSCMType.entries.find { it.prefix == outerKey } ?: continue
 
-            reverseCache.getOrPut(type) { mutableMapOf() }[value] = key
+            val cache = reverseCache.getOrPut(type) { mutableMapOf() }
+
+            for ((innerKey, value) in innerMap) {
+                cache[value] = innerKey  // Reverse: Int -> String
+            }
         }
+
 
         logger.info { "RSCM: Loaded reverse cache for ${reverseCache.size} tables " + "(${reverseCache.values.sumOf { it.size }} total entries)" }
     }
