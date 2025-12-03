@@ -50,7 +50,13 @@ fun <K, V> DbHelper.multiColumn(
     require(types.isNotEmpty()) { "At least one VarTypeImpl must be provided" }
 
     return values.mapIndexed { i, raw ->
-        val type = types[i]
+        val type =
+            if (types.size == 1) types[0]
+            else types.getOrNull(i)
+                ?: throw ArrayIndexOutOfBoundsException(
+                    "No VarTypeImpl supplied for index $i (types.size=${types.size})"
+                )
+
         val value = column.get(i, type)
         type.convertTo(value as K)
     }
@@ -96,12 +102,12 @@ fun <K, V> DbHelper.multiColumnOptional(
     require(types.isNotEmpty()) { "At least one VarTypeImpl must be provided" }
 
     return values.mapIndexed { i, raw ->
-        val type = types[i]
+        val type = if (types.size == 1) types[0] else types.getOrNull(i)
+            ?: return@mapIndexed null
+
         try {
-            run {
-                val value = column.get(i, type)
-                type.convertTo(value as K)
-            }
+            val value = column.get(i, type)
+            type.convertTo(value as K)
         } catch (e: DbException) {
             throw e
         } catch (_: Exception) {
