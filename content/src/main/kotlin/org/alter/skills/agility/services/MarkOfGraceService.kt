@@ -5,6 +5,7 @@ import org.alter.game.model.Tile
 import org.alter.game.model.entity.GroundItem
 import org.alter.game.model.entity.Player
 import org.alter.rscm.RSCM.asRSCM
+import org.alter.game.model.EntityType
 
 class MarkOfGraceService(
     private val spawnTiles: List<Tile>,
@@ -15,6 +16,14 @@ class MarkOfGraceService(
 
     private val itemId = itemName.asRSCM()
 
+    fun hasMarksSpawned(player: Player, item: String): Boolean {
+        val chunk = player.world.chunks.getOrCreate(player.tile)
+
+        return chunk.getEntities<GroundItem>(player.tile, types = EntityType.GROUND_ITEM).count {
+            it.item == itemId && it.isOwnedBy(player)
+        } != 0
+    }
+
     fun spawnMarkofGrace(player: Player) {
         if (Math.random() > dropChance) return
 
@@ -22,6 +31,7 @@ class MarkOfGraceService(
 
         val existing = player.world.groundItems.firstOrNull {
             it.item == itemId && it.tile == tile && it.isOwnedBy(player)
+
         }
 
         if (existing != null) {
@@ -41,3 +51,5 @@ class MarkOfGraceService(
         player.filterableMessage("A Mark of Grace appears.")
     }
 }
+
+
