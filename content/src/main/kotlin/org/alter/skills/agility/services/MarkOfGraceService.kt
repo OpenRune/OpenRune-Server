@@ -16,12 +16,12 @@ class MarkOfGraceService(
 
     private val itemId = itemName.asRSCM()
 
-    fun hasMarksSpawned(player: Player, item: String): Boolean {
-        val chunk = player.world.chunks.getOrCreate(player.tile)
+    fun hasMarksSpawned(player: Player, tile: Tile = player.tile): Boolean {
+        val chunk = player.world.chunks.getOrCreate(tile)
 
-        return chunk.getEntities<GroundItem>(player.tile, types = EntityType.GROUND_ITEM).count {
-            it.item == itemId && it.isOwnedBy(player)
-        } != 0
+        return chunk.getEntities<GroundItem>(tile, EntityType.GROUND_ITEM).any {
+            it.item == itemId && it.tile == tile && it.isOwnedBy(player)
+        }
     }
 
     fun spawnMarkofGrace(player: Player) {
@@ -29,9 +29,14 @@ class MarkOfGraceService(
 
         val tile = spawnTiles.random()
 
-        val existing = player.world.groundItems.firstOrNull {
-            it.item == itemId && it.tile == tile && it.isOwnedBy(player)
+        val chunk = player.world.chunks.getOrCreate(tile)
 
+        val existing = if (hasMarksSpawned(player, tile)) {
+            chunk.getEntities<GroundItem>(tile, EntityType.GROUND_ITEM).firstOrNull {
+                it.item == itemId && it.tile == tile && it.isOwnedBy(player)
+            }
+        } else {
+            null
         }
 
         if (existing != null) {
@@ -51,5 +56,4 @@ class MarkOfGraceService(
         player.filterableMessage("A Mark of Grace appears.")
     }
 }
-
 
