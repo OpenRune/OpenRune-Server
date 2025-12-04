@@ -32,21 +32,6 @@ object RSCM {
 
     val logger = KotlinLogging.logger {}
 
-    private val reverseCache = mutableMapOf<RSCMType, MutableMap<Int, String>>()
-
-    fun init() {
-        reverseCache.clear()
-
-        for ((key, value) in ConstantProvider.mappings) {
-            val prefix = key.removePrefix("$").substringBefore(".")
-            val type = RSCMType.entries.find { it.prefix == prefix } ?: continue
-
-            reverseCache.getOrPut(type) { mutableMapOf() }[value] = key
-        }
-
-        logger.info { "RSCM: Loaded reverse cache for ${reverseCache.size} tables " + "(${reverseCache.values.sumOf { it.size }} total entries)" }
-    }
-
     val NONE = "NONE"
 
     fun getRSCM(entity: Array<String>): List<Int> = entity.map { getRSCM(it) }
@@ -61,8 +46,8 @@ object RSCM {
         }
     }
 
-    fun getReverseMapping(table: RSCMType, value: Int): String? {
-        return reverseCache[table]?.get(value)
+    fun getReverseMapping(table: RSCMType, value: Int): String {
+        return ConstantProvider.getReverseMapping(table.prefix,value)
     }
 
     fun getRSCM(entity: String): Int {

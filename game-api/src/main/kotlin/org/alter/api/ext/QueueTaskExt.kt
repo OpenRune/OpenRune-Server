@@ -11,6 +11,7 @@ import org.alter.game.model.attr.INTERACTING_NPC_ATTR
 import org.alter.game.model.entity.Player
 import org.alter.game.model.item.Item
 import org.alter.game.model.queue.QueueTask
+import org.alter.rscm.RSCM.asRSCM
 import org.alter.rscm.RSCM.getRSCM
 
 /**
@@ -231,16 +232,19 @@ suspend fun QueueTask.messageBox(
     lineSpacing: Int = 31,
     continues: Boolean = false,
 ) {
-    player.openInterface(parent = 162, child = CHATBOX_CHILD, interfaceId = 229)
-    player.setComponentText(interfaceId = 229, component = 1, text = message)
-    player.runClientScript(CommonClientScripts.SET_TEXT_ALIGN, 1, 1, lineSpacing, 15007745)
-    player.setInterfaceEvents(interfaceId = 229, component = 2, range = -1..-1, setting = 1)
 
+    player.openInterface(parent = 162, child = CHATBOX_CHILD, interfaceId = "interfaces.messagebox".asRSCM())
+    player.sendTempVarbit("varbits.chatmodal_unclamp", 0)
+
+    player.setComponentText("components.messagebox:text", text = message)
+    player.runClientScript(CommonClientScripts.SET_TEXT_ALIGN, 1, 1, lineSpacing, "components.messagebox:continue")
     if (continues) {
-        player.setComponentText(interfaceId = 229, component = 2, text = "")
+        player.setComponentText("components.messagebox:continue", text = "")
         return
     }
-    player.setComponentText(interfaceId = 229, component = 2, text = "Click here to continue")
+    player.setComponentText("components.messagebox:continue", text = "Click here to continue")
+    // player.setInterfaceEvents("components.messagebox:continue", range = -1..-1, setting = 1)
+
 
     terminateAction = closeDialog(player)
     waitReturnValue()
