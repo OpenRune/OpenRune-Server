@@ -5,7 +5,9 @@ import com.google.devtools.ksp.symbol.KSAnnotated
 import com.squareup.kotlinpoet.*
 import com.squareup.kotlinpoet.ksp.writeTo
 import dev.openrune.definition.constants.ConstantProvider
+import dev.openrune.definition.constants.use
 import org.alter.game.model.DialogueExpression
+import org.alter.gamevals.GameValProvider
 import org.alter.rscm.RSCM
 import org.alter.rscm.RSCM.asRSCM
 import org.w3c.dom.Element
@@ -270,8 +272,7 @@ class DialogueGeneratorSymbolProcessor(
         val moduleDir = environment.options["moduleDir"]
             ?: throw IllegalArgumentException("moduleDir KSP option not provided!")
 
-        ConstantProvider.load(File(environment.options["rscmDir"].toString()))
-        RSCM.init()
+        GameValProvider.load(environment.options["rootDir"].toString())
 
         val resourcesDir = File(moduleDir, "src/main/resources/dialogue")
         if (!resourcesDir.exists()) {

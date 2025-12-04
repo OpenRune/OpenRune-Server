@@ -2,6 +2,7 @@ package org.alter.game
 
 import dev.openrune.ServerCacheManager
 import dev.openrune.definition.constants.ConstantProvider
+import dev.openrune.definition.constants.use
 import dev.openrune.filesystem.Cache
 import gg.rsmod.util.ServerProperties
 import gg.rsmod.util.Stopwatch
@@ -21,6 +22,8 @@ import org.alter.rscm.RSCM
 import org.alter.game.rsprot.CacheJs5GroupProvider
 import org.alter.game.rsprot.NetworkServiceFactory
 import org.alter.game.service.xtea.XteaKeyService
+import org.alter.gamevals.GameValProvider
+import java.io.File
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
@@ -175,8 +178,7 @@ class Server {
         /**
          * Initialize RSCM
          */
-        ConstantProvider.load(Paths.get("../data", "cfg","rscm2").toFile())
-        RSCM.init()
+        GameValProvider.load()
 
         /*
          * Load the privileges for the game.
