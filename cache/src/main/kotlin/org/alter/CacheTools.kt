@@ -87,8 +87,6 @@ fun downloadRev(type: TaskType) {
     when (type) {
         TaskType.FRESH_INSTALL -> {
 
-            GameValProvider.load()
-
             val builder = Builder(type = TaskType.FRESH_INSTALL, File(getCacheLocation()))
             builder.revision(rev.first)
             builder.subRevision(rev.second)
