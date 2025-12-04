@@ -1,0 +1,182 @@
+package org.alter.skills.agility.regularcourses
+
+import org.alter.api.Skills
+import org.alter.api.ext.filterableMessage
+import org.alter.game.model.Direction
+import org.alter.game.model.ForcedMovement
+import org.alter.game.model.Tile
+import org.alter.game.model.attr.AttributeKey
+import org.alter.game.model.entity.Player
+import org.alter.game.model.move.moveTo
+import org.alter.game.pluginnew.PluginEvent
+import org.alter.game.pluginnew.event.impl.onObjectOption
+import org.alter.rscm.RSCM
+import org.alter.skills.agility.MarkOfGraceService
+// TODO: Add Fail obstacle
+// TODO: Correct all animation data
+// TODO: Add all right messages
+
+class BarbianOutpostCoursePlugin : PluginEvent() {
+
+    private val MAX_STAGES = 8
+    private val BONUS_XP = 46.3
+    private val STRENGTH_XP = 41.3
+    private val DROP_CHANCE = 1.0 / 5.0 // 1/5 chance per lap completion
+
+    private val MARK_SPAWN_TILES = listOf(
+        Tile(2504, 3545, 1),
+        Tile(2533, 3555, 0)
+    )
+    private val GraceService = MarkOfGraceService(
+        spawnTiles = MARK_SPAWN_TILES,
+        dropChance = DROP_CHANCE
+    )
+    val BARBARIAN_AGILITY_STAGE = AttributeKey<Int>("BarbarianAgilityStage")
+    private fun Player.getStage(): Int = attr[BARBARIAN_AGILITY_STAGE] ?: 0
+    private fun Player.setStage(v: Int) { attr[BARBARIAN_AGILITY_STAGE] = v }
+
+    val BARBARIAN_LAPS = AttributeKey<Int>("BarbarianAgilityLaps")
+    private fun Player.getLaps(): Int = attr[BARBARIAN_LAPS] ?: 0
+    private fun Player.setLaps(v: Int) { attr[BARBARIAN_LAPS] = v }
+
+
+    override fun init() {
+
+        onObjectOption("objects.obstical_ropeswing1", "Swing-on") {
+            handleObstacle(
+                player = player,
+                destination = Tile(2551, 3549, 0),
+                anim = "sequences.human_ropeswing_long",
+                duration1 = 5,
+                duration2 = 250,
+                angle = Direction.SOUTH.angle,
+                xp = 7.5,
+                messageStart = "You walk carefully across the slippery log...",
+                messageEnd = "... and make it safely to the other side.",
+                stage = 1
+            )
+        }
+        onObjectOption("objects.barbarian_log_balance1", "walk-across") {
+            handleObstacle(
+                player = player,
+                destination = Tile(2504, 3504, 0),
+                anim = "sequences.human_walk_logbalance_loop",
+                duration1 = 5,
+                duration2 = 250,
+                angle = Direction.WEST.angle,
+                xp = 7.5,
+                messageStart = "You walk carefully across the slippery log...",
+                messageEnd = "... and make it safely to the other side.",
+                stage = 2
+            )
+        }
+        onObjectOption("objects.agility_obstical_net_barbarian", "climb-over") {
+            if (player.tile.z !in 3545..3546) return@onObjectOption
+            handleObstacle(
+                player = player,
+                destination = Tile(2537, player.tile.z, 1),
+                anim = "sequences.human_reachforladder",
+                simpleMove = true,
+                xp = 10.0,
+                messageStart = "You climb up the netting...",
+                stage = 3
+            )
+        }
+        //TODO: Add all objects
+    }
+
+    private fun handleObstacle(
+        player: Player,
+        destination: Tile,
+        simpleMove: Boolean = false,
+        angle: Int? = null,
+        duration1: Int? = null,
+        duration2: Int? = null,
+        anim: String? = null,
+        xp: Double = 0.0,
+        messageStart: String? = null,
+        messageEnd: String? = null,
+        stage: Int = -1,
+        endStage: Boolean = false
+    ) {
+
+        val doForcedMove = angle != null && duration1 != null && duration2 != null
+
+        val current = player.getStage()
+
+        val isNext = current + 1 == stage
+        val isRepeat = current == stage
+
+        if (isNext) {
+            player.setStage(stage)
+        } else if (!isRepeat) {
+            player.setStage(0)
+        }
+
+        player.queue {
+
+            messageStart?.let { player.filterableMessage(it) }
+            anim?.let { player.animate(it) }
+
+            if (doForcedMove) {
+                val movement = ForcedMovement.Companion.of(
+                    src = player.tile,
+                    dst = destination,
+                    clientDuration1 = duration1,
+                    clientDuration2 = duration2,
+                    directionAngle = angle
+                )
+                player.forceMove(this, movement)
+                wait(1)
+                player.animate(RSCM.NONE)
+            }
+            else if (simpleMove) {
+                wait(2)
+                player.moveTo(destination)
+                wait(1)
+                player.animate(RSCM.NONE)
+            }
+
+            wait(1)
+            if (xp > 0.0) player.addXp(Skills.AGILITY, xp)
+            messageEnd?.let { player.filterableMessage(it) }
+
+            handleStage(player, stage, endStage)
+        }
+    }
+
+    private fun handleStage(
+        player: Player,
+        stage: Int,
+        endStage: Boolean
+    ) {
+        val cur = player.getStage()
+
+        if (!endStage && stage >= 0) {
+            if (stage == cur + 1) {
+                player.setStage(stage)
+            }
+            return
+        }
+
+        if (endStage) {
+            val completed = cur == MAX_STAGES
+
+            if (completed) {
+                player.addXp(Skills.AGILITY, BONUS_XP)
+                player.addXp(Skills.STRENGTH, STRENGTH_XP)
+
+                val laps = player.getLaps() + 1
+                player.setLaps(laps)
+
+                player.filterableMessage("Your Gnome Stronghold Agility lap count is: <col=ff0000>$laps</col>.")
+
+                GraceService.spawnMarkofGrace(player)
+            }
+
+            player.setStage(0)
+            return
+
+        }
+    }
+}
