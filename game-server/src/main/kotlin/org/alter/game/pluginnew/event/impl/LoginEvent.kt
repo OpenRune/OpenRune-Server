@@ -15,3 +15,13 @@ fun PluginEvent.onLogin(
         then { action(this) }
     }
 }
+
+class EngineLoginEvent(player: Player) : PlayerEvent(player)
+
+fun PluginEvent.onEngineLogin(
+    action: suspend EngineLoginEvent.() -> Unit
+): EventListener<EngineLoginEvent> {
+    return on<EngineLoginEvent> {
+        then { action(this) }
+    }
+}

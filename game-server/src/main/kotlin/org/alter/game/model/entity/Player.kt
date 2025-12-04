@@ -43,9 +43,12 @@ import org.alter.game.model.timer.ACTIVE_COMBAT_TIMER
 import org.alter.game.model.timer.FORCE_DISCONNECTION_TIMER
 import org.alter.game.model.varp.VarpSet
 import org.alter.game.pluginnew.event.impl.LoginEvent
+import org.alter.game.pluginnew.event.impl.PlayerTickEvent
+import org.alter.game.pluginnew.event.impl.WorldTickEvent
 import org.alter.game.rsprot.RsModObjectProvider
 import org.alter.game.saving.PlayerDetails
 import org.alter.game.service.log.LoggerService
+import org.alter.game.ui.UserInterfaceMap
 import org.alter.rscm.RSCM
 import org.alter.rscm.RSCM.asRSCM
 import org.alter.rscm.RSCMType
@@ -118,6 +121,12 @@ open class Player(world: World) : Pawn(world) {
      * when [pendingLogout] logic is handled.
      */
     @Volatile private var setDisconnectionTimer = false
+
+    var gameframeTopLevel : String = "interfaces.toplevel"
+
+    var stoneArrangements : Boolean = false
+
+    public val ui: UserInterfaceMap = UserInterfaceMap()
 
     val bonds = ItemContainer(BOND_POUCH_KEY)
 
@@ -390,6 +399,7 @@ open class Player(world: World) : Pawn(world) {
                 )
                 getSkills().clean(i)
             }
+            PlayerTickEvent(this).post()
         }
     }
 

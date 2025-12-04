@@ -19,10 +19,13 @@ class IfButton1Handler : MessageHandler<If3Button> {
     ) {
         val interfaceId = message.interfaceId
         val component = message.componentId
+
         val option = message.op
-        if (!client.interfaces.isVisible(interfaceId)) {
-            return
-        }
+        client.interfaces.isVisible(interfaceId)
+        //todo re add blocking
+//        if (!client.interfaces.isVisible(interfaceId)) {
+//            return
+//        }
         log(
             client,
             "Click button: component=[%d:%d], option=%d, slot=%d, item=%d",

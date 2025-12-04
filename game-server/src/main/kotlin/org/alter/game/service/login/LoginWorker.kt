@@ -6,6 +6,7 @@ import net.rsprot.protocol.loginprot.outgoing.LoginResponse
 import net.rsprot.protocol.loginprot.outgoing.util.AuthenticatorResponse
 import org.alter.game.message.DisconnectionHook
 import org.alter.game.model.entity.Client
+import org.alter.game.pluginnew.event.impl.EngineLoginEvent
 import org.alter.game.service.GameService
 import org.alter.game.saving.PlayerLoadResult
 import org.alter.game.saving.PlayerSaving
@@ -61,12 +62,9 @@ class LoginWorker(private val boss: LoginService, private val verificationServic
                                 client.session = this
                                 client.playerInfo = client.world.network.playerInfoProtocol.alloc(client.index, OldSchoolClientType.DESKTOP)
                                 client.npcInfo = client.world.network.npcInfoProtocol.alloc(client.index, OldSchoolClientType.DESKTOP)
-                                client.worldEntityInfo =
-                                    client.world.network.worldEntityInfoProtocol.alloc(
-                                        client.index,
-                                        OldSchoolClientType.DESKTOP,
-                                    )
+                                client.worldEntityInfo = client.world.network.worldEntityInfoProtocol.alloc(client.index, OldSchoolClientType.DESKTOP)
                                 setDisconnectionHook(DisconnectionHook(client))
+                                EngineLoginEvent(client).post()
                                 client.login()
                             }
                         } else {

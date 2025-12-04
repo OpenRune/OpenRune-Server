@@ -422,13 +422,6 @@ abstract class KotlinPlugin(
     ) = r.bindItemOnGroundItem(getRSCM(item), getRSCM(groundItem), plugin)
 
     /**
-     * Set the logic to execute when Message Class -> WindowStateMessage
-     * is handled.
-     * @TODO
-     */
-    fun setWindowStatusLogic(logic: (Plugin).() -> Unit) = r.bindWindowStatus(logic)
-
-    /**
      * Set the logic to execute when [net.rsprot.protocol.game.incoming.misc.user.CloseModal]
      * is handled.
      */

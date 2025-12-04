@@ -1,0 +1,11 @@
+[[enum]]
+id="enums.gameframe_dbrows"
+keyType="INT"
+valueType="DBROW"
+
+default = 0
+
+[enum.values]
+0 = "dbrows.gameframe_toplevel"
+1 = "dbrows.gameframe_osrs_stretch"
+2 = "dbrows.gameframe_pre_eoc"

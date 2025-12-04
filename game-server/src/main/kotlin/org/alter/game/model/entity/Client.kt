@@ -48,15 +48,6 @@ class Client(world: World) : Player(world) {
      */
     var appletFocused = true
 
-    /**
-     * The applet's current width.
-     */
-    var clientWidth = 765
-
-    /**
-     * The applet's current height.
-     */
-    var clientHeight = 503
 
     /**
      * The pitch of the camera in the client's game UI.
@@ -133,8 +124,11 @@ class Client(world: World) : Player(world) {
             block: LoginBlock<*>,
         ): Client {
             val client = Client(world)
-            client.clientWidth = block.width
-            client.clientHeight = block.height
+            client.ui.setWindowStatus(
+                width = block.width,
+                height = block.height,
+                resizable = block.resizable,
+            )
             client.loginUsername = block.username
             client.username = block.username
             client.uuid = block.uuid.toString()

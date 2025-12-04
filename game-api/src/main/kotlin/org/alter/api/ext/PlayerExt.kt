@@ -38,6 +38,8 @@ import org.alter.rscm.RSCM.asRSCM
 import org.alter.rscm.RSCM.requireRSCM
 import org.alter.rscm.RSCMType
 import kotlin.math.floor
+import kotlin.properties.ReadWriteProperty
+import kotlin.reflect.KProperty
 
 /**
  * The id of the script used to initialise the interface overlay options. The 'big' variant of this script
@@ -378,7 +380,7 @@ fun Player.openInterface(
     dest: InterfaceDestination,
     autoClose: Boolean = false,
 ) {
-    val displayMode = if (!autoClose || dest.fullscreenChildId == -1) interfaces.displayMode else DisplayMode.FULLSCREEN
+    val displayMode = DisplayMode.FIXED
     val child = getChildId(dest, displayMode)
     val parent = getDisplayComponentId(displayMode)
     if (displayMode == DisplayMode.FULLSCREEN) {
@@ -464,7 +466,7 @@ fun Player.closeComponent(
 }
 
 fun Player.closeInputDialog() {
-    write(net.rsprot.protocol.game.outgoing.misc.player.TriggerOnDialogAbort)
+    write(TriggerOnDialogAbort)
 }
 
 fun Player.getInterfaceAt(dest: InterfaceDestination): Int {
@@ -758,6 +760,12 @@ fun Player.toggleVarp(id: String) {
     requireRSCM(RSCMType.VARPTYPES, id)
     varps.setState(id.asRSCM(), varps.getState(id.asRSCM()) xor 1)
 }
+
+fun Player.syncVarbit(id: String) {
+    requireRSCM(RSCMType.VARBITTYPES, id)
+    setVarbit(id, getVarbit(id))
+}
+
 
 fun Player.syncVarp(id: String) {
     requireRSCM(RSCMType.VARPTYPES, id)
@@ -1073,3 +1081,43 @@ fun Player.format_bonus_with_sign(value: Int): String = if (value < 0) value.toS
  */
 val Player.playtime: Int
     get() = attr[PLAYTIME_ATTR] ?: 0
+
+fun intVarp(varpName: String) = object : ReadWriteProperty<Player, Int> {
+    override fun getValue(thisRef: Player, property: KProperty<*>) = thisRef.getVarp(varpName)
+    override fun setValue(thisRef: Player, property: KProperty<*>, value: Int) =
+        thisRef.setVarp(varpName, value)
+}
+
+fun intVarBit(varbitName: String) = object : ReadWriteProperty<Player, Int> {
+    override fun getValue(thisRef: Player, property: KProperty<*>) = thisRef.getVarbit(varbitName)
+    override fun setValue(thisRef: Player, property: KProperty<*>, value: Int) =
+        thisRef.setVarbit(varbitName, value)
+}
+
+fun boolVarBit(varbitName: String) = object : ReadWriteProperty<Player, Boolean> {
+    override fun getValue(thisRef: Player, property: KProperty<*>) = thisRef.getVarbit(varbitName) != 0
+    override fun setValue(thisRef: Player, property: KProperty<*>, value: Boolean) =
+        thisRef.setVarbit(varbitName, if (value) 1 else 0)
+}
+
+fun boolVarp(varpName: String) = object : ReadWriteProperty<Player, Boolean> {
+    override fun getValue(thisRef: Player, property: KProperty<*>) = thisRef.getVarp(varpName) != 0
+    override fun setValue(thisRef: Player, property: KProperty<*>, value: Boolean) =
+        thisRef.setVarp(varpName, if (value) 1 else 0)
+}
+
+inline fun <reified T> enumVarp(varpName: String)
+        where T : Enum<T> = object : ReadWriteProperty<Player, T> {
+
+    override fun getValue(thisRef: Player, property: KProperty<*>): T {
+        val raw = thisRef.getVarp(varpName)
+        val values = enumValues<T>()
+        return values.getOrElse(raw) {
+            error("Invalid enum index $raw for ${T::class.simpleName}")
+        }
+    }
+
+    override fun setValue(thisRef: Player, property: KProperty<*>, value: T) {
+        thisRef.setVarp(varpName, value.ordinal)
+    }
+}

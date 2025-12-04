@@ -19,9 +19,11 @@ class IfModelOp1Handler : MessageHandler<If1Button> {
         val option = 0
         val item = -1
         val slot = -1
-        if (!client.interfaces.isVisible(interfaceId)) {
-            return
-        }
+        client.interfaces.isVisible(interfaceId)
+        //todo re add blocking
+//        if (!client.interfaces.isVisible(interfaceId)) {
+//            return
+//        }
         log(client, "Click button: component=[%d:%d], option=%d, slot=%d, item=%d", interfaceId, component, option, slot, item)
 
         client.attr[INTERACTING_OPT_ATTR] = option

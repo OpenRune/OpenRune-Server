@@ -17,6 +17,7 @@ enum class CommonClientScripts(identifier : String = "", scriptID : Int = -1) {
     GE_SEARCH_ITEMS("meslayer_mode14"),
     INTERFACE_MENU("menu"),
     CHATBOX_MULTI("chatbox_multi_init"),
+    MENU("csat_init"),
     SHOP_INIT("shop_main_init"),
     MAIN_MODAL_BACKGROUND("toplevel_mainmodal_background"),
     MAIN_MODAL_OPEN("toplevel_mainmodal_open"),
@@ -25,11 +26,19 @@ enum class CommonClientScripts(identifier : String = "", scriptID : Int = -1) {
     INTRO_MUSIC_RESTORE("league_3_intro_music_restore"),
     GE_OFFER_SET_DESC("ge_offers_setdesc"),
     LOOTING_BAG_SETUP("wilderness_lootingbag_setup"),
+    ACCOUNT_INFO_UPDATE("account_info_update"),
     TIME_PLAYED("TimePlayed", 3970),
+    ORBS_WORLDMAP_KEY("orbs_worldmap_key"),
+    MEMBERS("playermember"),
+    PLUGINS(scriptID = 876),
     QUEST_OVERVIEW("questjournal_overview_setup"),
     QUEST_JOURNAL_RESET("quest_journal_reset"),
+    CLIENT_MODE("settings_client_mode"),
+    CONFIRM_DESTROY("confirmdestroy_init"),
     WORLD_MAP_GOTO(scriptID = 3331),
-    CAMERA(scriptID = 626)
+    SCRIPT_1508(scriptID = 1508),
+    CAMERA(scriptID = 626),
+    CONFIRM(scriptID = 4212)
     ;
 
     val script : ClientScript = ClientScript(identifier, scriptID)

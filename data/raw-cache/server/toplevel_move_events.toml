@@ -1,0 +1,22 @@
+[[enum]]
+id="enums.toplevel_move_events"
+keyType="COMPONENT"
+valueType="COMPONENT"
+
+default = "components.toplevel_osrs_stretch:side0"
+
+[enum.values]
+"components.toplevel_osrs_stretch:side0" = "components.toplevel_osrs_stretch:stone0"
+"components.toplevel_osrs_stretch:side1" = "components.toplevel_osrs_stretch:stone1"
+"components.toplevel_osrs_stretch:side2" = "components.toplevel_osrs_stretch:stone2"
+"components.toplevel_osrs_stretch:side3" = "components.toplevel_osrs_stretch:stone3"
+"components.toplevel_osrs_stretch:side4" = "components.toplevel_osrs_stretch:stone4"
+"components.toplevel_osrs_stretch:side5" = "components.toplevel_osrs_stretch:stone5"
+"components.toplevel_osrs_stretch:side6" = "components.toplevel_osrs_stretch:stone6"
+"components.toplevel_osrs_stretch:side7" = "components.toplevel_osrs_stretch:stone7"
+"components.toplevel_osrs_stretch:side8" = "components.toplevel_osrs_stretch:stone8"
+"components.toplevel_osrs_stretch:side9" = "components.toplevel_osrs_stretch:stone9"
+"components.toplevel_osrs_stretch:side10" = "components.toplevel_osrs_stretch:stone10"
+"components.toplevel_osrs_stretch:side11" = "components.toplevel_osrs_stretch:stone11"
+"components.toplevel_osrs_stretch:side12" = "components.toplevel_osrs_stretch:stone12"
+"components.toplevel_osrs_stretch:side13" = "components.toplevel_osrs_stretch:stone13"

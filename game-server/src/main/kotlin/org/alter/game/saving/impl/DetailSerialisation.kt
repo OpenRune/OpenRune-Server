@@ -13,7 +13,7 @@ class DetailSerialisation(override val name: String = "details") : DocumentHandl
         client.tile = Tile(doc["tile"] as List<Int>)
         client.privilege = client.world.privileges.get(doc.getString("privilege"))?: Privilege.DEFAULT
         client.runEnergy = doc.getDouble("runEnergy") ?: 10000.00
-        client.interfaces.displayMode = DisplayMode.values.firstOrNull { it.name == doc.getString("displayMode") } ?: DisplayMode.FIXED
+        //client.interfaces.displayMode = DisplayMode.values.firstOrNull { it.name == doc.getString("displayMode") } ?: DisplayMode.FIXED
     }
 
     override fun asDocument(client: Client): Document = Document()
