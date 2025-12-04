@@ -8,6 +8,7 @@ import dev.openrune.cache.gameval.impl.Table
 import dev.openrune.definition.GameValGroupTypes
 import dev.openrune.filesystem.Cache
 import java.io.DataOutputStream
+import java.io.File
 import java.io.FileOutputStream
 
 object GamevalDumper {
@@ -48,6 +49,10 @@ object GamevalDumper {
             }
         }
 
+        if (!File("../data/cfg/gamevals-binary/").exists()) {
+            File("../data/cfg/gamevals-binary/").mkdirs()
+        }
+        
         encodeGameValDat("../data/cfg/gamevals-binary/gamevals.dat", gamevals)
         dumpCols(cache, rev)
     }
