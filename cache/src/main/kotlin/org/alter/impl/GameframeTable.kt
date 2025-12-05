@@ -44,7 +44,7 @@ object GameframeTable {
 
         row("dbrows.gameframe_pre_eoc") {
             columnRSCM(COL_TOP_LEVEL,"interfaces.toplevel_pre_eoc")
-            columnRSCM(COL_MAPPINGS,"enums.resizable_basic_pane_redirect")
+            columnRSCM(COL_MAPPINGS,"enums.side_panels_resizable_pane_redirect")
             column(COL_CLIENT_MODE,2)
 
             column(COL_RESIZABLE,true)
