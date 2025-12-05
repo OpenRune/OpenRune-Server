@@ -6,6 +6,7 @@ import net.rsprot.protocol.loginprot.outgoing.LoginResponse
 import net.rsprot.protocol.loginprot.outgoing.util.AuthenticatorResponse
 import org.alter.game.message.DisconnectionHook
 import org.alter.game.model.entity.Client
+import org.alter.game.model.priv.Privilege
 import org.alter.game.pluginnew.event.impl.EngineLoginEvent
 import org.alter.game.service.GameService
 import org.alter.game.saving.PlayerLoadResult
@@ -47,7 +48,7 @@ class LoginWorker(private val boss: LoginService, private val verificationServic
                                 LoginResponse.Ok(
                                     authenticatorResponse = AuthenticatorResponse.NoAuthenticator,
                                     staffModLevel = client.privilege.id,
-                                    playerMod = true,
+                                    playerMod = client.world.privileges.isEligible(client.privilege, "mod"),
                                     index = client.index,
                                     member = true,
                                     accountHash = 0,
@@ -56,9 +57,6 @@ class LoginWorker(private val boss: LoginService, private val verificationServic
                                 ),
                                 request.block,
                             ).apply {
-                                if (this == null) {
-                                    return@apply
-                                }
                                 client.session = this
                                 client.playerInfo = client.world.network.playerInfoProtocol.alloc(client.index, OldSchoolClientType.DESKTOP)
                                 client.npcInfo = client.world.network.npcInfoProtocol.alloc(client.index, OldSchoolClientType.DESKTOP)
