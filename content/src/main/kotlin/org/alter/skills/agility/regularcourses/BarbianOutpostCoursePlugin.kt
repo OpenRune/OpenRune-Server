@@ -50,7 +50,7 @@ class BarbianOutpostCoursePlugin : PluginEvent() {
                 duration1 = 5,
                 duration2 = 250,
                 angle = Direction.SOUTH.angle,
-                xp = 7.5,
+                xp = 22.0,
                 messageStart = "You walk carefully across the slippery log...",
                 messageEnd = "... and make it safely to the other side.",
                 stage = 1
@@ -59,12 +59,12 @@ class BarbianOutpostCoursePlugin : PluginEvent() {
         onObjectOption("objects.barbarian_log_balance1", "walk-across") {
             handleObstacle(
                 player = player,
-                destination = Tile(2504, 3504, 0),
+                destination = Tile(2541, 3546, 0),
                 anim = "sequences.human_walk_logbalance_loop",
                 duration1 = 5,
                 duration2 = 250,
                 angle = Direction.WEST.angle,
-                xp = 7.5,
+                xp = 13.7,
                 messageStart = "You walk carefully across the slippery log...",
                 messageEnd = "... and make it safely to the other side.",
                 stage = 2
@@ -77,12 +77,72 @@ class BarbianOutpostCoursePlugin : PluginEvent() {
                 destination = Tile(2537, player.tile.z, 1),
                 anim = "sequences.human_reachforladder",
                 simpleMove = true,
-                xp = 10.0,
+                xp = 8.2,
                 messageStart = "You climb up the netting...",
                 stage = 3
             )
         }
-        //TODO: Add all objects
+        onObjectOption("objects.balancing_ledge1", "Walk-across") {
+            handleObstacle(
+                player = player,
+                destination = Tile(2532, 3547, 1),
+                anim = "sequences.human_walk_sidestepl",
+                duration1 = 5,
+                duration2 = 250,
+                angle = Direction.WEST.angle,
+                xp = 22.0,
+                messageStart = "You walk carefully across the slippery log...",
+                stage = 4
+            )
+        }
+        onObjectOption("objects.barbarian_laddertop_norim", "Climb-down") {
+            handleObstacle(
+                player = player,
+                destination = Tile(2532, 3546, 0),
+                anim = "sequences.human_reachforladder",
+                simpleMove = true,
+                messageStart = "You climb up the netting...",
+                stage = 5
+            )
+        }
+        onObjectOption("objects.castlecrumbly1", "climb-over") {
+            when (player.tile.x) {
+                2535, 2536 -> {
+                    handleObstacle(
+                        player = player,
+                        destination = Tile(2537, 3553, 0),
+                        anim = "sequences.human_walk_crumbledwall",
+                        simpleMove = true,
+                        xp = 13.7,
+                        messageStart = "You climb up the netting...",
+                        stage = 6
+                    )
+                }
+                2538, 2539 -> {
+                    handleObstacle(
+                        player = player,
+                        destination = Tile(2540, 3553, 0),
+                        anim = "sequences.human_walk_crumbledwall",
+                        simpleMove = true,
+                        xp = 13.7,
+                        messageStart = "You climb up the netting...",
+                        stage = 7
+                    )
+                }
+                2541, 2542 -> {
+                    handleObstacle(
+                        player = player,
+                        destination = Tile(2543, 3553, 0),
+                        anim = "sequences.human_walk_crumbledwall",
+                        simpleMove = true,
+                        xp = 13.7,
+                        messageStart = "You climb up the netting...",
+                        stage = 8,
+                        endStage = true
+                    )
+                }
+            }
+        }
     }
 
     private fun handleObstacle(
