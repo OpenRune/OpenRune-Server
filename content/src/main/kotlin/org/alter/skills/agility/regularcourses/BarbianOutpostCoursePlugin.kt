@@ -79,7 +79,7 @@ class BarbianOutpostCoursePlugin : PluginEvent() {
                 player = player,
                 destination = Tile(2541, 3546, 0),
                 anim = "sequences.human_walk_logbalance_loop",
-                duration1 = 5,
+                duration1 = 250,
                 duration2 = 250,
                 angle = Direction.WEST.angle,
                 xp = 13.7,
@@ -291,7 +291,7 @@ class BarbianOutpostCoursePlugin : PluginEvent() {
                 val laps = player.getLaps() + 1
                 player.setLaps(laps)
 
-                player.filterableMessage("Your Gnome Stronghold Agility lap count is: <col=ff0000>$laps</col>.")
+                player.filterableMessage("Your Barbarian Agility lap count is: <col=ff0000>$laps</col>.")
 
                 GraceService.spawnMarkofGrace(player)
             }
