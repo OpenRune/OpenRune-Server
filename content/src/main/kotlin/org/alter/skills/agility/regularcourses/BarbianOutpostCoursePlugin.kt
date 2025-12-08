@@ -1,7 +1,9 @@
 package org.alter.skills.agility.regularcourses
 
+import org.alter.api.HitType
 import org.alter.api.Skills
 import org.alter.api.ext.filterableMessage
+import org.alter.api.ext.hit
 import org.alter.game.model.Direction
 import org.alter.game.model.ForcedMovement
 import org.alter.game.model.Tile
@@ -21,7 +23,7 @@ class BarbianOutpostCoursePlugin : PluginEvent() {
 
     private val DROP_CHANCE = 1.0 / 5.0   // 20%
 
-    private val FAIL_ROPE = 1.0 / 1.0
+    private val FAIL_ROPE = 1.0 / 3.0
     private val FAIL_LOG = 1.0 / 10.0
     private val FAIL_LEDGE = 1.0 / 7.0
 
@@ -59,11 +61,15 @@ class BarbianOutpostCoursePlugin : PluginEvent() {
 
                 failChance = FAIL_ROPE,
                 onFail = { p ->
-                    p.filterableMessage("You lose your grip and fall the pit below!")
-                    p.animate("sequences.human_ropeswing_long_miss")
-                    p.moveTo(Tile(2552, 9950, 0))
-                    p.animate(RSCM.NONE)
-                    player.damageMap.add(player, 2)
+                    p.queue {
+                        p.filterableMessage("You lose your grip and fall the pit below!")
+                        p.animate("sequences.human_ropeswing_long_miss")
+                        wait(3)
+                        p.moveTo(Tile(2552, 9950, 0))
+                        wait(1)
+                        p.animate(RSCM.NONE)
+                        p.hit(damage = 2, type = HitType.HIT)
+                    }
                 }
             )
         }
@@ -83,11 +89,16 @@ class BarbianOutpostCoursePlugin : PluginEvent() {
 
                 failChance = FAIL_LOG,
                 onFail = { p ->
-                    p.filterableMessage("You lose your footing and fall off the log!")
-                    p.animate("sequences.human_walk_logbalance_stumble")
-                    p.animate("sequences.human_drowning")
-                    p.moveTo(Tile(2545, 3546, 0))
-                    player.damageMap.add(player, 3)
+                    p.queue {
+                        p.filterableMessage("You lose your footing and fall off the log!")
+                        p.animate("sequences.human_walk_logbalance_stumble")
+                        wait(1)
+                        p.animate("sequences.human_drowning")
+                        wait(2)
+                        p.moveTo(Tile(2545, 3546, 0))
+                        wait(1)
+                        p.hit(damage = 3, type = HitType.HIT)
+                    }
                 }
             )
         }
@@ -119,11 +130,17 @@ class BarbianOutpostCoursePlugin : PluginEvent() {
 
                 failChance = FAIL_LEDGE,
                 onFail = { p ->
-                    p.filterableMessage("You lose your balance and fall!")
-                    p.animate("sequences.human_sidestep_fall")
-                    p.moveTo(Tile(2534, 3546, 0))
-                    player.damageMap.add(player, 2)
+                    p.queue {
+                        p.filterableMessage("You lose your balance and fall!")
+                        p.animate("sequences.human_sidestep_fall")
+                        wait(2)
+                        p.moveTo(Tile(2534, 3546, 0))
+                        wait(1)
+                        p.hit(damage = 2, type = HitType.HIT)
+                        p.animate(RSCM.NONE)
+                    }
                 }
+
             )
         }
 
