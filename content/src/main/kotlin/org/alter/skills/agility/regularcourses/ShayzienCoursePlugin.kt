@@ -2,6 +2,8 @@ package org.alter.skills.agility.regularcourses
 
 import org.alter.api.Skills
 import org.alter.api.ext.filterableMessage
+import org.alter.api.ext.loopAnim
+import org.alter.api.ext.stopLoopAnim
 import org.alter.game.model.Direction
 import org.alter.game.model.ForcedMovement
 import org.alter.game.model.Tile
@@ -19,7 +21,7 @@ class ShayzienCoursePlugin : PluginEvent() {
     private val DROP_CHANCE = 1.0 / 5.0
 
     private val MARK_SPAWN_TILES = listOf(
-        Tile(2504, 3545, 1),
+        Tile(1525, 3636, 2),
         Tile(2533, 3555, 0)
     )
 
@@ -42,7 +44,6 @@ class ShayzienCoursePlugin : PluginEvent() {
             val dest = Tile(1554, 3632, 3)
 
             player.queue {
-                player.filterableMessage("You climb up the netting...")
                 player.animate("sequences.human_reachforladder")
 
                 wait(2)
@@ -56,29 +57,31 @@ class ShayzienCoursePlugin : PluginEvent() {
         }
 
         onObjectOption("objects.shayzien_agility_both_rope_climb", "Climb") {
-            val dest = Tile(1541, 3633, 2)
+            val realDest = Tile(1541, 3633, 2)
+            val fakeDest = Tile(realDest.x, realDest.z, player.tile.height)
 
             player.queue {
-                player.filterableMessage("You grab the rope...")
-                player.animate("sequences.human_ropeswing_long")
-
+                player.animate("sequences.human_monkeybars_on")
+                wait(1)
+                player.loopAnim("sequences.human_monkeybars_walk")
                 val fm = ForcedMovement.of(
                     src = player.tile,
-                    dst = dest,
+                    dst = fakeDest,
                     clientDuration1 = 5,
-                    clientDuration2 = 250,
-                    directionAngle = Direction.EAST.angle
+                    clientDuration2 = 350,
+                    directionAngle = Direction.WEST.angle
                 )
                 player.forceMove(this, fm)
-
+                player.stopLoopAnim()
+                player.animate("sequences.human_monkeybars_off")
                 wait(1)
+                player.moveTo(realDest)
                 player.animate(RSCM.NONE)
-
                 player.addXp(Skills.AGILITY, 8.0)
-                player.filterableMessage("... and land safely.")
                 player.setStage(2)
             }
         }
+
 
         onObjectOption("objects.shayzien_agility_both_rope_walk", "Cross") {
             val dest = Tile(1528, 3633, 2)
