@@ -1,5 +1,6 @@
 package org.alter.skills.agility.regularcourses
 
+import org.alter.api.ChatMessageType
 import org.alter.api.Skills
 import org.alter.api.ext.filterableMessage
 import org.alter.api.ext.loopAnim
@@ -218,6 +219,32 @@ class ShayzienCoursePlugin : PluginEvent() {
                 }
 
                 player.setStage(0)
+            }
+        }
+        //Advanced
+        onObjectOption("objects.shayzien_agility_up_swing_jump_1", "Grapple") {
+            val dest = Tile(1511, 3637, 2)
+
+            //TODO: Add crossbow and mithrill grapple requirements
+
+            player.queue {
+                player.filterableMessage("You fire your grapple at the pylon...")
+                player.animate("sequences.dorgesh_xbow_swing", 6)
+                player.graphic("spotanims.dorgesh_grapple_spot",82, 6)
+                wait(1)
+                val fm = ForcedMovement.of(
+                    src = player.tile,
+                    dst = dest,
+                    clientDuration1 = 5,
+                    clientDuration2 = 250,
+                    directionAngle = Direction.WEST.angle
+                )
+                player.forceMove(this, fm)
+                player.moveTo(dest)
+                player.animate(RSCM.NONE)
+                player.addXp(Skills.AGILITY, 7.0)
+                player.setStage(4)
+                player.setAdvancedStage(0)
             }
         }
     }
