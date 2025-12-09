@@ -18,11 +18,10 @@ import org.alter.skills.agility.MarkOfGraceService
 class ShayzienCoursePlugin : PluginEvent() {
 
     private val MAX_STAGES = 7
-    private val DROP_CHANCE = 1.0 / 5.0
+    private val DROP_CHANCE = 1.0 / 10.0
 
     private val MARK_SPAWN_TILES = listOf(
-        Tile(1525, 3636, 2),
-        Tile(2533, 3555, 0)
+        Tile(1525, 3636, 2)
     )
 
     private val GraceService = MarkOfGraceService(
@@ -87,23 +86,21 @@ class ShayzienCoursePlugin : PluginEvent() {
             val dest = Tile(1528, 3633, 2)
 
             player.queue {
-                player.filterableMessage("You grab the rope...")
-                player.animate("sequences.human_ropeswing_long")
-
+                player.animate("sequences.human_walk_logbalance_ready")
+                wait(1)
+                player.loopAnim("sequences.human_walk_logbalance_loop")
                 val fm = ForcedMovement.of(
                     src = player.tile,
                     dst = dest,
                     clientDuration1 = 5,
                     clientDuration2 = 250,
-                    directionAngle = Direction.EAST.angle
+                    directionAngle = Direction.WEST.angle
                 )
                 player.forceMove(this, fm)
-
+                player.stopLoopAnim()
                 wait(1)
                 player.animate(RSCM.NONE)
-
                 player.addXp(Skills.AGILITY, 9.0)
-                player.filterableMessage("... and land safely.")
                 player.setStage(3)
             }
         }
@@ -112,34 +109,34 @@ class ShayzienCoursePlugin : PluginEvent() {
             val dest = Tile(1523, 3643, 3)
 
             player.queue {
-                player.filterableMessage("You grab the rope...")
-                player.animate("sequences.human_ropeswing_long")
-
+                player.animate("sequences.human_monkeybars_on")
+                wait(1)
+                player.loopAnim("sequences.human_monkeybars_walk")
                 val fm = ForcedMovement.of(
                     src = player.tile,
                     dst = dest,
                     clientDuration1 = 5,
                     clientDuration2 = 250,
-                    directionAngle = Direction.EAST.angle
+                    directionAngle = Direction.NORTH.angle
                 )
                 player.forceMove(this, fm)
-
+                player.stopLoopAnim()
+                player.animate("sequences.human_monkeybars_off")
                 wait(1)
+                player.moveTo(dest)
                 player.animate(RSCM.NONE)
-
                 player.addXp(Skills.AGILITY, 7.0)
-                player.filterableMessage("... and land safely.")
                 player.setStage(4)
             }
         }
 
         onObjectOption("objects.shayzien_agility_low_rope_walk_1", "Cross") {
-            val dest = Tile(1539, 3644, 2)
+            val dest = Tile(1538, 3644, 3)
 
             player.queue {
-                player.filterableMessage("You grab the rope...")
-                player.animate("sequences.human_ropeswing_long")
-
+                player.animate("sequences.human_walk_logbalance_ready")
+                wait(1)
+                player.loopAnim("sequences.human_walk_logbalance_loop")
                 val fm = ForcedMovement.of(
                     src = player.tile,
                     dst = dest,
@@ -148,12 +145,15 @@ class ShayzienCoursePlugin : PluginEvent() {
                     directionAngle = Direction.EAST.angle
                 )
                 player.forceMove(this, fm)
-
+                player.stopLoopAnim()
                 wait(1)
+                player.animate("sequences.agility_shortcut_wall_jumpdown")
+                wait(1)
+                player.moveTo(1539, 3644, 2)
+                player.animate("sequences.agility_shortcut_wall_jumpdown2")
+                wait(2)
                 player.animate(RSCM.NONE)
-
                 player.addXp(Skills.AGILITY, 9.0)
-                player.filterableMessage("... and land safely.")
                 player.setStage(5)
             }
         }
@@ -162,9 +162,9 @@ class ShayzienCoursePlugin : PluginEvent() {
             val dest = Tile(1552, 3644, 2)
 
             player.queue {
-                player.filterableMessage("You grab the rope...")
-                player.animate("sequences.human_ropeswing_long")
-
+                player.animate("sequences.human_walk_logbalance_ready")
+                wait(1)
+                player.loopAnim("sequences.human_walk_logbalance_loop")
                 val fm = ForcedMovement.of(
                     src = player.tile,
                     dst = dest,
@@ -173,10 +173,9 @@ class ShayzienCoursePlugin : PluginEvent() {
                     directionAngle = Direction.EAST.angle
                 )
                 player.forceMove(this, fm)
-
+                player.stopLoopAnim()
                 wait(1)
                 player.animate(RSCM.NONE)
-
                 player.addXp(Skills.AGILITY, 9.0)
                 player.filterableMessage("... and land safely.")
                 player.setStage(6)
@@ -187,29 +186,20 @@ class ShayzienCoursePlugin : PluginEvent() {
             val dest = Tile(1554, 3640, 0)
 
             player.queue {
-                player.filterableMessage("You grab the rope...")
-                player.animate("sequences.human_ropeswing_long")
-
-                val fm = ForcedMovement.of(
-                    src = player.tile,
-                    dst = dest,
-                    clientDuration1 = 5,
-                    clientDuration2 = 250,
-                    directionAngle = Direction.EAST.angle
-                )
-                player.forceMove(this, fm)
-
+                player.faceDirection(Direction.NORTH)
+                player.animate("sequences.agility_shortcut_wall_jumpdown")
+                wait(2)
+                player.moveTo(dest)
+                player.animate("sequences.agility_shortcut_wall_jumpdown2")
                 wait(1)
                 player.animate(RSCM.NONE)
-
                 player.addXp(Skills.AGILITY, 106.0)
-                player.filterableMessage("... and land safely.")
 
                 // LAP CHECK
                 if (player.stage() == MAX_STAGES) {
                     val laps = player.laps() + 1
                     player.setLaps(laps)
-                    player.filterableMessage("Your Shayzien lap count is: <col=ff0000>$laps</col>.")
+                    player.filterableMessage("Your Shayzien Basic Agility Cource lap count is: <col=ff0000>$laps</col>.")
 
                     GraceService.spawnMarkofGrace(player)
                 }
