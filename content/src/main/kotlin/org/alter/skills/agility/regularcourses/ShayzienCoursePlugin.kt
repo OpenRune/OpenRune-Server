@@ -242,9 +242,37 @@ class ShayzienCoursePlugin : PluginEvent() {
                 player.forceMove(this, fm)
                 player.moveTo(dest)
                 player.animate(RSCM.NONE)
-                player.addXp(Skills.AGILITY, 7.0)
-                player.setStage(4)
-                player.setAdvancedStage(0)
+                player.addXp(Skills.AGILITY, 23.0)
+                player.setStage(0)
+                player.setAdvancedStage(4)
+            }
+        }
+        onObjectOption("objects.shayzien_agility_up_jump_platform_1", "Jump") {
+            val dest = Tile(1510, 3630, 2)
+
+
+            player.queue {
+                player.loopAnim("sequences.human_walk_b")
+                player.moveTo(1510, 3636, 2)
+                wait(3)
+                player.stopLoopAnim()
+                player.loopAnim("sequences.ic_running")
+                player.moveTo(1510, 3635, 2)
+                wait(1)
+                player.stopLoopAnim()
+                val fm = ForcedMovement.of(
+                    src = player.tile,
+                    dst = dest,
+                    clientDuration1 = 5,
+                    clientDuration2 = 250,
+                    directionAngle = Direction.SOUTH.angle
+                )
+                player.animate("sequences.human_jump_hurdle")
+                player.forceMove(this, fm)
+                player.moveTo(dest)
+                player.animate(RSCM.NONE)
+                player.addXp(Skills.AGILITY, 18.0)
+                player.setAdvancedStage(5)
             }
         }
     }
