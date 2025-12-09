@@ -18,6 +18,7 @@ import org.alter.skills.agility.MarkOfGraceService
 class ShayzienCoursePlugin : PluginEvent() {
 
     private val MAX_STAGES = 7
+    private val ADVANCED_STAGES = 8
     private val DROP_CHANCE = 1.0 / 10.0
 
     private val MARK_SPAWN_TILES = listOf(
@@ -37,6 +38,14 @@ class ShayzienCoursePlugin : PluginEvent() {
     fun Player.laps() = attr[LAPS] ?: 0
     fun Player.setLaps(v: Int) { attr[LAPS] = v }
 
+    val ADVANCEDSTAGE = AttributeKey<Int>("AdvancedShayzienAgilityStage")
+    fun Player.advancedstage() = attr[ADVANCEDSTAGE] ?: 0
+    fun Player.setAdvancedStage(v: Int) { attr[ADVANCEDSTAGE] = v }
+
+    val ADVANCEDLAPS = AttributeKey<Int>("AdvancedShayzienAgilityLaps")
+    fun Player.advancedlaps() = attr[ADVANCEDLAPS] ?: 0
+    fun Player.setAdvancedLaps(v: Int) { attr[ADVANCEDLAPS] = v }
+
     override fun init() {
 
         onObjectOption("objects.shayzien_agility_both_start_ladder", "climb") {
@@ -52,6 +61,7 @@ class ShayzienCoursePlugin : PluginEvent() {
 
                 player.addXp(Skills.AGILITY, 5.5)
                 player.setStage(1)
+                player.setAdvancedStage(1)
             }
         }
 
@@ -78,6 +88,7 @@ class ShayzienCoursePlugin : PluginEvent() {
                 player.animate(RSCM.NONE)
                 player.addXp(Skills.AGILITY, 8.0)
                 player.setStage(2)
+                player.setAdvancedStage(2)
             }
         }
 
@@ -102,6 +113,7 @@ class ShayzienCoursePlugin : PluginEvent() {
                 player.animate(RSCM.NONE)
                 player.addXp(Skills.AGILITY, 9.0)
                 player.setStage(3)
+                player.setAdvancedStage(3)
             }
         }
 
@@ -127,6 +139,7 @@ class ShayzienCoursePlugin : PluginEvent() {
                 player.animate(RSCM.NONE)
                 player.addXp(Skills.AGILITY, 7.0)
                 player.setStage(4)
+                player.setAdvancedStage(0)
             }
         }
 
