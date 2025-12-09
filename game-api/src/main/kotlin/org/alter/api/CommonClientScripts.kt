@@ -30,6 +30,7 @@ enum class CommonClientScripts(identifier : String = "", scriptID : Int = -1) {
     TIME_PLAYED("TimePlayed", 3970),
     ORBS_WORLDMAP_KEY("orbs_worldmap_key"),
     MEMBERS("playermember"),
+    STAT_GROUP("stat_group_tooltip"),
     PLUGINS(scriptID = 876),
     QUEST_OVERVIEW("questjournal_overview_setup"),
     QUEST_JOURNAL_RESET("quest_journal_reset"),

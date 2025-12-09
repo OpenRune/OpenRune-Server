@@ -8,7 +8,6 @@ import org.alter.game.model.container.ItemContainer
 import org.alter.game.model.entity.Player
 import org.alter.game.model.item.Item
 import org.alter.plugins.content.interfaces.bank.BankTabs.getTabsItems
-import org.alter.plugins.content.interfaces.equipstats.EquipmentStats.bonusTextMap
 import org.alter.rscm.RSCM.asRSCM
 
 /**
@@ -219,27 +218,6 @@ object Bank {
 
     fun sendBonuses(p: Player) {
 
-        with(p) {
-            setBankEquipCompText(component = 98, text = bonusTextMap()[0])
-            setBankEquipCompText(component = 99, text = bonusTextMap()[1])
-            setBankEquipCompText(component = 100, text = bonusTextMap()[2])
-            setBankEquipCompText(component = 101, text = bonusTextMap()[3])
-            setBankEquipCompText(component = 102, text = bonusTextMap()[4])
-            setBankEquipCompText(component = 132, text = bonusTextMap()[5])
-            setBankEquipCompText(component = 133, text = bonusTextMap()[6])
-            setBankEquipCompText(component = 104, text = bonusTextMap()[7])
-            setBankEquipCompText(component = 105, text = bonusTextMap()[8])
-            setBankEquipCompText(component = 106, text = bonusTextMap()[9])
-            setBankEquipCompText(component = 108, text = bonusTextMap()[10])
-            setBankEquipCompText(component = 107, text = bonusTextMap()[11])
-            setBankEquipCompText(component = 110, text = bonusTextMap()[12])
-            setBankEquipCompText(component = 111, text = bonusTextMap()[13])
-            setBankEquipCompText(component = 112, text = bonusTextMap()[14])
-            setBankEquipCompText(component = 113, text = bonusTextMap()[15])
-            setBankEquipCompText(component = 115, text = bonusTextMap()[16])
-            setBankEquipCompText(component = 116, text = bonusTextMap()[17])
-
-        }
         p.runClientScript(
             ClientScript(id = 7065),
             786549,

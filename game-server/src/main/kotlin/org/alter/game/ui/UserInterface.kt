@@ -1,12 +1,13 @@
 package org.alter.game.ui
 
+import dev.openrune.cache.filestore.definition.InterfaceType
+
 
 @JvmInline
-value class UserInterface(val id: String) {
+public value class UserInterface(public val id: Int) {
+    public constructor(type: InterfaceType) : this(type.id)
 
-    constructor(id: Int) : this(id.toString())
-
-    companion object {
-        val NULL = UserInterface("NULL")
+    public companion object {
+        public val NULL: UserInterface = UserInterface(-1)
     }
 }

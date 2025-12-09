@@ -1,13 +1,19 @@
 package org.alter.game.ui
 
+import dev.openrune.cache.filestore.definition.InterfaceType
+import dev.openrune.definition.type.widget.Component
+import dev.openrune.definition.type.widget.ComponentType
+import dev.openrune.definition.type.widget.IfEvent
 import it.unimi.dsi.fastutil.ints.Int2IntMap
 import it.unimi.dsi.fastutil.ints.IntArraySet
-import net.rsprot.protocol.util.CombinedId
 import org.alter.game.ui.collection.ComponentEventMap
 import org.alter.game.ui.collection.ComponentTargetMap
 import org.alter.game.ui.collection.ComponentTranslationMap
-import org.alter.game.ui.type.IfEvent
 import org.alter.rscm.RSCM.asRSCM
+import kotlin.and
+import kotlin.collections.containsValue
+import kotlin.contracts.ExperimentalContracts
+import kotlin.contracts.contract
 
 public class UserInterfaceMap(
     public var topLevel: UserInterface = UserInterface.NULL,
@@ -15,7 +21,7 @@ public class UserInterfaceMap(
     public val modals: ComponentTargetMap = ComponentTargetMap(),
     public val events: ComponentEventMap = ComponentEventMap(),
     public val gameframe: ComponentTranslationMap = ComponentTranslationMap(),
-    public val closeQueue: MutableSet<String> = emptySet<String>().toMutableSet()
+    public val closeQueue: IntArraySet = IntArraySet(),
 ) {
     @InternalApi public var closeModal: Boolean = false
 
@@ -27,55 +33,52 @@ public class UserInterfaceMap(
     public var frameHeight: Int = 0
         private set
 
-    public fun queueClose(target: String) {
-        closeQueue.add(target)
+    public fun queueClose(target: Component) {
+        closeQueue.add(target.packed)
     }
 
-    public fun removeQueuedCloseSub(target: String) {
-        closeQueue.remove(target)
+    public fun removeQueuedCloseSub(target: ComponentType) {
+        closeQueue.remove(target.packed)
     }
 
-    public operator fun contains(type: String): Boolean {
+    public operator fun contains(type: InterfaceType): Boolean {
         return containsModal(type) ||
                 containsOverlay(type) ||
                 containsTopLevel(type) ||
                 containsGameframe(type)
     }
 
-    public fun containsTopLevel(topLevel: String): Boolean = this.topLevel.id == topLevel
+    public fun containsTopLevel(topLevel: InterfaceType): Boolean = this.topLevel.id == topLevel.id
 
-    public fun containsOverlay(overlay: String): Boolean =
-        overlays.backing.containsValue(overlay)
+    public fun containsOverlay(overlay: InterfaceType): Boolean =
+        overlays.backing.containsValue(overlay.id)
 
-    public fun containsModal(modal: String): Boolean = modals.backing.containsValue(modal)
+    public fun containsModal(modal: InterfaceType): Boolean = modals.backing.containsValue(modal.id)
 
-    public fun containsGameframe(type: String): Boolean =
-        gameframe.backing.containsValue(type)
+    public fun containsGameframe(type: InterfaceType): Boolean =
+        gameframe.backing.containsValue(type.id)
 
-    public fun getOverlay(key: String): String? = overlays.backing[key]
+    public fun getOverlay(key: ComponentType): Component = overlays.backing.get(key)
 
-    public fun getOverlayOrNull(key: String): String? =
-        runCatching { getOverlay(key) }.getOrNull()
+    public fun getOverlayOrNull(key: ComponentType): Component? = getOverlay(key).orNull()
 
-    public fun getModal(key: String): String? = modals.backing[key]
+    public fun getModal(key: ComponentType): Component = modals.backing.get(key)
 
-    public fun getModalOrNull(key: String): String? =
-        runCatching { getModal(key) }.getOrNull()
+    public fun getModalOrNull(key: ComponentType): Component? = getModal(key).orNull()
 
-    public fun getGameframe(key: String): String? = gameframe.backing.get(key)
+    public fun getGameframe(key: ComponentType): Component = gameframe.backing.get(key)
 
-    public fun getGameframeOrNull(key: String): Component? =
-        getGameframe(key)?.toIntOrNull()?.let { Component(it) }
+    public fun getGameframeOrNull(key: ComponentType): Component? = getGameframe(key).orNull()
 
-    public fun hasEvent(component: CombinedId, slot: Int, event: IfEvent): Boolean {
+    public fun hasEvent(component: ComponentType, slot: Int, event: IfEvent): Boolean {
         val events = events[component, slot]
         return (events and event.bitmask) != 0L
     }
 
     private fun Component.orNull(): Component? = if (this == Component.NULL) null else this
 
-    private fun Int2IntMap.get(key: String): Component {
-        val packed = getOrDefault(key.asRSCM(), null) ?: return Component.NULL
+    private fun Int2IntMap.get(key: ComponentType): Component {
+        val packed = getOrDefault(key.packed, null) ?: return Component.NULL
         return Component(packed)
     }
 
@@ -85,3 +88,4 @@ public class UserInterfaceMap(
         this.frameResizable = resizable
     }
 }
+

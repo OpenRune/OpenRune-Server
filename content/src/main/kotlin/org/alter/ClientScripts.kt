@@ -2,6 +2,7 @@ package org.alter
 
 import org.alter.api.CommonClientScripts
 import org.alter.api.ext.runClientScript
+import org.alter.game.model.container.ItemContainer
 import org.alter.game.model.entity.Player
 import org.alter.rscm.RSCM
 import org.alter.rscm.RSCM.asRSCM
@@ -28,7 +29,9 @@ public fun topLevelMainModalBackground(
     player: Player,
     colour: Int = -1,
     transparency: Int = -1,
-): Unit = player.runClientScript(CommonClientScripts.MAIN_MODAL_BACKGROUND, colour, transparency)
+) {
+    player.runClientScript(CommonClientScripts.MAIN_MODAL_BACKGROUND, colour, transparency)
+}
 
 public fun topLevelChatboxResetBackground(player: Player): Unit = player.runClientScript(CommonClientScripts.CHATBOX_RESET_BACKGROUND)
 
@@ -57,3 +60,42 @@ public fun confirmDestroyInit(
 
 public fun objboxSetButtons(player: Player, text: String): Unit =
     player.runClientScript(CommonClientScripts.SET_OPTIONS, text)
+
+public fun interfaceInvInit(
+    player: Player,
+    inv: ItemContainer,
+    target: String,
+    objRowCount: Int,
+    objColCount: Int,
+    dragType: Int = 0,
+    dragComponent: String? = null,
+    op1: String? = null,
+    op2: String? = null,
+    op3: String? = null,
+    op4: String? = null,
+    op5: String? = null,
+) {
+    player.runClientScript(
+        CommonClientScripts.INTERFACE_INV_INIT,
+        target.asRSCM(),
+        inv.key.internalID,
+        objRowCount,
+        objColCount,
+        dragType,
+        dragComponent?.asRSCM() ?: -1,
+        op1 ?: "",
+        op2 ?: "",
+        op3 ?: "",
+        op4 ?: "",
+        op5 ?: "",
+    )
+}
+
+public fun statGroupTooltip(
+    player: Player,
+    tooltip: String,
+    container: String,
+    text: String,
+) {
+    player.runClientScript(CommonClientScripts.STAT_GROUP, tooltip.asRSCM(), container.asRSCM(), text)
+}

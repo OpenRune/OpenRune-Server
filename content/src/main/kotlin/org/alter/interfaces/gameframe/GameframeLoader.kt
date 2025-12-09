@@ -1,5 +1,7 @@
 package org.alter.interfaces.gameframe
 
+import dev.openrune.ServerCacheManager
+import dev.openrune.definition.type.widget.Component
 import org.alter.game.ui.Gameframe
 import org.alter.game.ui.GameframeOverlay
 import org.alter.game.util.enum
@@ -7,6 +9,7 @@ import org.alter.game.util.vars.ComponentType
 import org.alter.game.util.vars.IntType
 import org.alter.game.util.vars.RowType
 import org.alter.rscm.RSCM
+import org.alter.rscm.RSCM.asRSCM
 import org.alter.rscm.RSCMType
 import org.generated.tables.GameframeRow
 
@@ -34,9 +37,7 @@ object GameframeLoader {
 
     private fun loadGameframe(row: GameframeRow): Gameframe {
         val mappings = enum(row.mappings, ComponentType, ComponentType).associate {
-            val key = RSCM.getReverseMapping(RSCMType.COMPONENTS, it.key)
-            val value = RSCM.getReverseMapping(RSCMType.COMPONENTS, it.value)
-            key to value
+            Component(it.key) to Component(it.value)
         }
 
         return Gameframe(
@@ -84,39 +85,40 @@ object GameframeLoader {
         GameframeOverlay("interfaces.combat_interface", "components.toplevel_osrs_stretch:side0"),
     )
 
-    val move: List<String> = listOf(
-        "components.toplevel_osrs_stretch:chat_container",
-        "components.toplevel_osrs_stretch:mainmodal",
-        "components.toplevel_osrs_stretch:maincrm",
-        "components.toplevel_osrs_stretch:overlay_atmosphere",
-        "components.toplevel_osrs_stretch:overlay_hud",
-        "components.toplevel_osrs_stretch:sidemodal",
-        "components.toplevel_osrs_stretch:side0",
-        "components.toplevel_osrs_stretch:side1",
-        "components.toplevel_osrs_stretch:side2",
-        "components.toplevel_osrs_stretch:side3",
-        "components.toplevel_osrs_stretch:side4",
-        "components.toplevel_osrs_stretch:side5",
-        "components.toplevel_osrs_stretch:side6",
-        "components.toplevel_osrs_stretch:side7",
-        "components.toplevel_osrs_stretch:side8",
-        "components.toplevel_osrs_stretch:side9",
-        "components.toplevel_osrs_stretch:side10",
-        "components.toplevel_osrs_stretch:side11",
-        "components.toplevel_osrs_stretch:side12",
-        "components.toplevel_osrs_stretch:side13",
-        "components.toplevel_osrs_stretch:sidecrm",
-        "components.toplevel_osrs_stretch:pvp_icons",
-        "components.toplevel_osrs_stretch:pm_container",
-        "components.toplevel_osrs_stretch:orbs",
-        "components.toplevel_osrs_stretch:xp_drops",
-        "components.toplevel_osrs_stretch:zeah",
-        "components.toplevel_osrs_stretch:floater",
-        "components.toplevel_osrs_stretch:buff_bar",
-        "components.toplevel_osrs_stretch:stat_boosts_hud",
-        "components.toplevel_osrs_stretch:helper_content",
-        "components.toplevel_osrs_stretch:hpbar_hud",
-        "components.toplevel_osrs_stretch:popout",
-        "components.toplevel_osrs_stretch:ehc_listener",
+    val move: List<dev.openrune.definition.type.widget.ComponentType> = listOf(
+        ServerCacheManager.fromComponent("components.toplevel_osrs_stretch:chat_container"),
+        ServerCacheManager.fromComponent("components.toplevel_osrs_stretch:mainmodal"),
+        ServerCacheManager.fromComponent("components.toplevel_osrs_stretch:maincrm"),
+        ServerCacheManager.fromComponent("components.toplevel_osrs_stretch:overlay_atmosphere"),
+        ServerCacheManager.fromComponent("components.toplevel_osrs_stretch:overlay_hud"),
+        ServerCacheManager.fromComponent("components.toplevel_osrs_stretch:sidemodal"),
+        ServerCacheManager.fromComponent("components.toplevel_osrs_stretch:side0"),
+        ServerCacheManager.fromComponent("components.toplevel_osrs_stretch:side1"),
+        ServerCacheManager.fromComponent("components.toplevel_osrs_stretch:side2"),
+        ServerCacheManager.fromComponent("components.toplevel_osrs_stretch:side3"),
+        ServerCacheManager.fromComponent("components.toplevel_osrs_stretch:side4"),
+        ServerCacheManager.fromComponent("components.toplevel_osrs_stretch:side5"),
+        ServerCacheManager.fromComponent("components.toplevel_osrs_stretch:side6"),
+        ServerCacheManager.fromComponent("components.toplevel_osrs_stretch:side7"),
+        ServerCacheManager.fromComponent("components.toplevel_osrs_stretch:side8"),
+        ServerCacheManager.fromComponent("components.toplevel_osrs_stretch:side9"),
+        ServerCacheManager.fromComponent("components.toplevel_osrs_stretch:side10"),
+        ServerCacheManager.fromComponent("components.toplevel_osrs_stretch:side11"),
+        ServerCacheManager.fromComponent("components.toplevel_osrs_stretch:side12"),
+        ServerCacheManager.fromComponent("components.toplevel_osrs_stretch:side13"),
+        ServerCacheManager.fromComponent("components.toplevel_osrs_stretch:sidecrm"),
+        ServerCacheManager.fromComponent("components.toplevel_osrs_stretch:pvp_icons"),
+        ServerCacheManager.fromComponent("components.toplevel_osrs_stretch:pm_container"),
+        ServerCacheManager.fromComponent("components.toplevel_osrs_stretch:orbs"),
+        ServerCacheManager.fromComponent("components.toplevel_osrs_stretch:xp_drops"),
+        ServerCacheManager.fromComponent("components.toplevel_osrs_stretch:zeah"),
+        ServerCacheManager.fromComponent("components.toplevel_osrs_stretch:floater"),
+        ServerCacheManager.fromComponent("components.toplevel_osrs_stretch:buff_bar"),
+        ServerCacheManager.fromComponent("components.toplevel_osrs_stretch:stat_boosts_hud"),
+        ServerCacheManager.fromComponent("components.toplevel_osrs_stretch:helper_content"),
+        ServerCacheManager.fromComponent("components.toplevel_osrs_stretch:hpbar_hud"),
+        ServerCacheManager.fromComponent("components.toplevel_osrs_stretch:popout"),
+        ServerCacheManager.fromComponent("components.toplevel_osrs_stretch:ehc_listener"),
     )
+
 }

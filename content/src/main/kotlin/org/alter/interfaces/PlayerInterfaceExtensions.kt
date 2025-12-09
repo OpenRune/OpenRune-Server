@@ -1,5 +1,11 @@
 package org.alter.interfaces
 
+import dev.openrune.ServerCacheManager
+import dev.openrune.cache.filestore.definition.InterfaceType
+import dev.openrune.cache.gameval.impl.Interface
+import dev.openrune.definition.type.widget.Component
+import dev.openrune.definition.type.widget.ComponentType
+import dev.openrune.definition.type.widget.IfEvent
 import net.rsprot.protocol.game.outgoing.interfaces.IfCloseSub
 import net.rsprot.protocol.game.outgoing.interfaces.IfMoveSub
 import net.rsprot.protocol.game.outgoing.interfaces.IfOpenSub
@@ -23,12 +29,12 @@ import org.alter.confirmDestroyInit
 import org.alter.confirmOverlayInit
 import org.alter.game.model.entity.Player
 import org.alter.game.pluginnew.event.EventManager
+import org.alter.game.pluginnew.event.impl.CloseSubEvent
 import org.alter.game.pluginnew.event.impl.IfMoveTopEvent
-import org.alter.game.ui.Component
+import org.alter.game.pluginnew.event.impl.MoveSubEvent
 import org.alter.game.ui.InternalApi
 import org.alter.game.ui.UserInterface
 import org.alter.game.ui.UserInterfaceMap
-import org.alter.game.ui.type.IfEvent
 import org.alter.ifSetTextAlign
 import org.alter.game.ui.IfSubType
 import org.alter.menu
@@ -40,6 +46,8 @@ import org.alter.rscm.RSCMType
 import org.alter.topLevelChatboxResetBackground
 import org.alter.topLevelMainModalBackground
 import org.alter.topLevelMainModalOpen
+import kotlin.collections.remove
+import kotlin.text.clear
 
 private var Player.chatModalUnclamp: Int by intVarBit("varbits.chatmodal_unclamp")
 
@@ -53,9 +61,10 @@ public fun Player.ifSetEvents(component: String, range: IntRange, vararg event: 
     RSCM.requireRSCM(RSCMType.COMPONENTS, component)
 
     val target = CombinedId(component.asRSCM())
+    val targetComponent = ServerCacheManager.fromComponent(component)
 
     val packed = event.fold(0L) { sum, element -> sum or element.bitmask }
-    ui.events.add(target, range, packed)
+    ui.events.add(targetComponent, range, packed)
 
     val packedHigh = (packed shr 32).toInt()
     val packedLow = packed.toInt()
@@ -121,54 +130,61 @@ public fun topLevelMainModalOpen(
 ): Unit = player.runClientScript(CommonClientScripts.MAIN_MODAL_OPEN, colour, transparency)
 
 
-private fun Player.openModal(interf: String, target: String) {
+private fun Player.openModal(interfID: String, targetID: String) {
 
-    RSCM.requireRSCM(RSCMType.INTERFACES,interf)
-    RSCM.requireRSCM(RSCMType.COMPONENTS,target)
+    requireRSCM(RSCMType.INTERFACES,interfID)
+    requireRSCM(RSCMType.COMPONENTS,targetID)
+
+    val interf: InterfaceType = ServerCacheManager.fromInterface(interfID.asRSCM())
+    val target: ComponentType = ServerCacheManager.fromComponent(targetID.asRSCM())
 
     val idComponent = target.toIdComponent()
     val idInterface = interf.toIdInterface()
 
-    triggerCloseSubs(target)
+    triggerCloseSubs(idComponent)
     ui.removeQueuedCloseSub(target)
     ui.modals[idComponent] = idInterface
 
     // Translate any gameframe target component when sent to the client. As far as the server is
     // aware, the interface is being opened on the "base" target component. (when applicable)
-    val translated = ui.translate(target)
-    write(IfOpenSub(translated.parent, translated.child, interf.asRSCM(), IfSubType.Modal.id))
+    val translated = ui.translate(idComponent)
+    write(IfOpenSub(translated.parent, translated.child, interf.id, IfSubType.Modal.id))
 
-    org.alter.game.pluginnew.event.impl.OpenSub(this, interf, target, IfSubType.Modal).post()
+    org.alter.game.pluginnew.event.impl.OpenSub(this, interfID, targetID, IfSubType.Modal).post()
 }
 
-private fun Player.openOverlay(interf: String, target: String) {
-    RSCM.requireRSCM(RSCMType.INTERFACES,interf)
-    RSCM.requireRSCM(RSCMType.COMPONENTS,target)
+private fun Player.openOverlay(interfID: String, targetID: String) {
+    RSCM.requireRSCM(RSCMType.INTERFACES,interfID)
+    RSCM.requireRSCM(RSCMType.COMPONENTS,targetID)
+
+    val interf: InterfaceType = ServerCacheManager.fromInterface(interfID.asRSCM())
+    val target: ComponentType = ServerCacheManager.fromComponent(targetID.asRSCM())
 
     val idComponent = target.toIdComponent()
     val idInterface = interf.toIdInterface()
-    triggerCloseSubs(target)
+
+    triggerCloseSubs(idComponent)
     ui.removeQueuedCloseSub(target)
     ui.overlays[idComponent] = idInterface
 
     // Translate any gameframe target component when sent to the client. As far as the server is
     // aware, the interface is being opened on the "base" target component. (when applicable)
 
-    val translated = ui.translate(target)
+    val translated = ui.translate(idComponent)
 
-    write(IfOpenSub(translated.parent, translated.child, interf.asRSCM(), IfSubType.Overlay.id))
-    org.alter.game.pluginnew.event.impl.OpenSub(this, interf, target, IfSubType.Overlay).post()
+    write(IfOpenSub(translated.parent, translated.child, interf.id, IfSubType.Overlay.id))
+    org.alter.game.pluginnew.event.impl.OpenSub(this, interfID, targetID, IfSubType.Overlay).post()
 }
 
 
 
-private fun String.toIdInterface() = UserInterface(this)
+private fun InterfaceType.toIdInterface() = UserInterface(id)
 
-private fun String.toIdComponent() = Component(this.asRSCM())
+private fun ComponentType.toIdComponent() = Component(packed)
 
 
-private fun UserInterfaceMap.translate(component: String): Component =
-    gameframe.getOrNull(component) ?: Component(component.asRSCM())
+private fun UserInterfaceMap.translate(component: Component): Component =
+    gameframe.getOrNull(component) ?: component
 
 public fun Player.ifSetObj(target: String, obj: String, zoomOrCount: Int) {
     requireRSCM(RSCMType.COMPONENTS, target)
@@ -207,16 +223,6 @@ public fun Player.ifSetNpcHeadActive(target: String, npcSlotId: Int) {
     write(IfSetNpcHeadActive(combined.interfaceId, combined.combinedId, npcSlotId))
 }
 
-public fun Player.ifOpenMainSidePair(
-    main: String,
-    side: String,
-    colour: Int,
-    transparency: Int,
-) {
-    topLevelMainModalBackground(this, colour, transparency)
-    openModal(main, "components.toplevel_osrs_stretch:mainmodal")
-    openModal(side, "components.toplevel_osrs_stretch:sidemodal")
-}
 
 public fun Player.ifOpenOverlay(interf: String) {
     ifOpenOverlay(interf, "components.toplevel_osrs_stretch:floater")
@@ -244,7 +250,9 @@ public fun Player.ifCloseModals() {
     // closing them.
     val modalEntries = ui.modals.entries()
     for ((key, value) in modalEntries) {
-        closeModal(value, key)
+        val interf = UserInterface(value)
+        val target = Component(key)
+        closeModal(interf, target)
     }
     // Make sure _all_ modals were closed. If not, then something is wrong, and we'd rather force
     // the player to disconnect than to allow them to keep modals open when they shouldn't.
@@ -292,13 +300,14 @@ public fun Player.ifCloseOverlay(interf: String) {
 
 private fun Player.closeModal(interf: String) {
     requireRSCM(RSCMType.INTERFACES, interf)
-    val target = ui.modals.getComponentString(interf)
+    val idInterface = ServerCacheManager.fromInterface(interf.asRSCM()).toIdInterface()
+    val target = ui.modals.getComponent(idInterface)
     if (target != null) {
-        closeModal(interf, target)
+        closeModal(idInterface, target)
     }
 }
 
-private fun Player.closeModal(interf: String, target: String) {
+private fun Player.closeModal(interf: UserInterface, target: Component) {
     ui.modals.remove(target)
     ui.events.clear(interf)
 
@@ -312,13 +321,14 @@ private fun Player.closeModal(interf: String, target: String) {
 
 private fun Player.closeOverlay(interf: String) {
     requireRSCM(RSCMType.INTERFACES, interf)
-    val target = ui.overlays.getComponentString(interf)
+    val idInterface = ServerCacheManager.fromInterface(interf.asRSCM()).toIdInterface()
+    val target = ui.overlays.getComponent(idInterface)
     if (target != null) {
-        closeOverlay(interf, target)
+        closeOverlay(idInterface, target)
     }
 }
 
-private fun Player.closeOverlay(interf: String, target: String) {
+private fun Player.closeOverlay(interf: UserInterface, target: Component) {
     ui.overlays.remove(target)
     ui.events.clear(interf)
 
@@ -330,19 +340,20 @@ private fun Player.closeOverlay(interf: String, target: String) {
     closeOverlayChildren(interf)
 }
 
-private fun Player.closeOverlayChildren(parent: String) {
-    // This gives us an iterable copy of the entries, so we are safe to modify `ui.overlays` while
+private fun Player.closeOverlayChildren(parent: UserInterface) {
     // closing them.
     val overlayEntries = ui.overlays.entries()
     for ((key, value) in overlayEntries) {
-        if (key == parent) {
-            closeOverlay(value, key)
+        val interf = UserInterface(value)
+        val target = Component(key)
+        if (target.parent == parent.id) {
+            closeOverlay(interf, target)
         }
     }
 }
 
 @InternalApi("Usage of this function should only be used internally")
-public fun Player.closeSubs(from: String) {
+public fun Player.closeSubs(from: Component) {
     val remove = ui.modals.remove(from) ?: ui.overlays.remove(from)
     if (remove != null) {
         ui.events.clear(remove)
@@ -360,7 +371,7 @@ public fun Player.closeSubs(from: String) {
  * Similar to [closeSubs], but only triggers "close sub" scripts and does _not_ send [IfCloseSub]
  * packet to the client.
  */
-private fun Player.triggerCloseSubs(from: String) {
+private fun Player.triggerCloseSubs(from: Component) {
     val remove = ui.modals.remove(from) ?: ui.overlays.remove(from)
     if (remove != null) {
         ui.events.clear(remove)
@@ -372,13 +383,15 @@ private fun Player.triggerCloseSubs(from: String) {
  * Similar to [closeOverlayChildren], but only triggers "close sub" scripts and does _not_ send
  * [IfCloseSub] packet to the client.
  */
-private fun Player.triggerCloseOverlayChildren(parent: String) {
+private fun Player.triggerCloseOverlayChildren(parent: UserInterface) {
     // This gives us an iterable copy of the entries, so we are safe to modify `ui.overlays` while
     // closing them.
     val overlayEntries = ui.overlays.entries()
     for ((key, value) in overlayEntries) {
-        if (key == parent) {
-            triggerCloseOverlay(value, key)
+        val interf = UserInterface(value)
+        val target = Component(key)
+        if (target.parent == parent.id) {
+            triggerCloseOverlay(interf, target)
         }
     }
 }
@@ -387,25 +400,26 @@ private fun Player.triggerCloseOverlayChildren(parent: String) {
  * Similar to [closeOverlay], but only triggers "close sub" scripts and does _not_ send [IfCloseSub]
  * packet to the client.
  */
+
 private fun Player.triggerCloseOverlay(
-    interf: String,
-    target: String,
+    interf: UserInterface,
+    target: Component
 ) {
     ui.overlays.remove(target)
     ui.events.clear(interf)
+    CloseSubEvent(interf, target,this).post()
     triggerCloseOverlayChildren(interf)
 }
 
+
 public fun Player.ifMoveSub(
-    source: String,
-    dest: String,
-    base: String,
+    source: Component,
+    dest: Component,
+    base: Component
 ) {
+    write(IfMoveSub(source.packed, dest.packed))
 
-    requireRSCM(RSCMType.COMPONENTS, source)
-    requireRSCM(RSCMType.COMPONENTS, dest)
-
-    write(IfMoveSub(source.asRSCM(), dest.asRSCM()))
+    MoveSubEvent(base.packed, this).post()
 }
 
 /*
@@ -589,3 +603,13 @@ private fun Player.ifSetObj(target: String, obj: Int, zoomOrCount: Int) {
     write(IfSetObject(Component(combined.interfaceId, combined.combinedId).packed, obj, zoomOrCount))
 }
 
+public fun Player.ifOpenMainSidePair(
+    main: String,
+    side: String,
+    colour: Int = -1,
+    transparency: Int = -1,
+) {
+    topLevelMainModalBackground(this, colour, transparency)
+    openModal(main, "components.toplevel_osrs_stretch:mainmodal")
+    openModal(side, "components.toplevel_osrs_stretch:sidemodal")
+}

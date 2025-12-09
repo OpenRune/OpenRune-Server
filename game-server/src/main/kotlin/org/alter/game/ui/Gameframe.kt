@@ -1,9 +1,11 @@
 package org.alter.game.ui
 
+import dev.openrune.definition.type.widget.Component
+
 data class Gameframe(
     val topLevel: String,
     val overlays: List<GameframeOverlay>,
-    val mappings: Map<String, String>,
+    val mappings: Map<Component, Component>,
     val clientMode: Int,
     val resizable: Boolean,
     val isDefault: Boolean,

@@ -7,7 +7,9 @@ import org.alter.game.model.attr.INTERACTING_ITEM_ID
 import org.alter.game.model.attr.INTERACTING_OPT_ATTR
 import org.alter.game.model.attr.INTERACTING_SLOT_ATTR
 import org.alter.game.model.entity.Client
+import org.alter.game.pluginnew.MenuOption
 import org.alter.game.pluginnew.event.impl.ButtonClickEvent
+import org.alter.game.pluginnew.event.impl.IfModalButton
 
 /**
  * @author Tom <rspsmods@gmail.com>
@@ -41,6 +43,7 @@ class IfButton1Handler : MessageHandler<If3Button> {
         client.attr[INTERACTING_SLOT_ATTR] = message.sub
 
         ButtonClickEvent(CombinedId(interfaceId, component), option, message.obj, message.sub, client).post()
+        IfModalButton(CombinedId(interfaceId, component), MenuOption.fromId(option), message.obj, message.sub, client).post()
 
         if (client.world.plugins.executeButton(client, interfaceId, component)) {
             return

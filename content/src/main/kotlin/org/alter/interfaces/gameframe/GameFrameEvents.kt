@@ -1,5 +1,7 @@
 package org.alter.interfaces.gameframe
 
+import dev.openrune.definition.type.widget.Component
+import dev.openrune.definition.type.widget.IfEvent
 import org.alter.api.CommonClientScripts
 import org.alter.api.ext.runClientScript
 import org.alter.api.ext.syncVarp
@@ -15,7 +17,6 @@ import org.alter.game.ui.GameframeMove
 import org.alter.game.ui.IfSubType
 import org.alter.game.ui.InternalApi
 import org.alter.game.ui.UserInterfaceMap
-import org.alter.game.ui.type.IfEvent
 import org.alter.interfaces.closeSubs
 import org.alter.interfaces.gameframe.GameframeLoader.move
 import org.alter.interfaces.ifClose
@@ -25,7 +26,6 @@ import org.alter.interfaces.ifOpenSub
 import org.alter.interfaces.ifOpenTop
 import org.alter.interfaces.ifSetEvents
 import org.alter.rscm.RSCM.asRSCM
-import kotlin.text.clear
 
 class GameFrameEvents : PluginEvent() {
 
@@ -65,7 +65,8 @@ class GameFrameEvents : PluginEvent() {
     @OptIn(InternalApi::class)
     private fun processIfCloseQueue(player: Player) {
         for (target in player.ui.closeQueue.iterator()) {
-            player.closeSubs(target)
+            val component = Component(target)
+            player.closeSubs(component)
         }
         player.ui.closeQueue.clear()
     }
@@ -104,10 +105,16 @@ class GameFrameEvents : PluginEvent() {
         ifOpenTop(dest.topLevel.asRSCM())
         ui.setGameframe(dest.mappings)
 
-        move.forEach { key ->
-            val source = from.mappings[key] ?: error("Missing source mapping for '$key'")
-            val target = dest.mappings[key] ?: error("Missing dest mapping for '$key'")
-            ifMoveSub(source, target, key)
+        val moveComponents = move
+        for (moveComponent in moveComponents) {
+            val target = Component(moveComponent.packed)
+            val sourceComponent =
+                from.mappings[target]
+                    ?: error("Expected move target in source mapping: '${moveComponent.internalName}'")
+            val destComponent =
+                dest.mappings[target]
+                    ?: error("Expected move target in dest mapping: '${moveComponent.internalName}'")
+            ifMoveSub(sourceComponent, destComponent, target)
         }
     }
 
@@ -177,9 +184,11 @@ class GameFrameEvents : PluginEvent() {
         }
     }
 
-    private fun UserInterfaceMap.setGameframe(mappings: Map<String, String>) {
+    private fun UserInterfaceMap.setGameframe(mappings: Map<Component, Component>) {
         gameframe.clear()
-        mappings.forEach { (from, to) -> gameframe[from] = to }
+        for ((original, translated) in mappings) {
+            gameframe[original] = translated
+        }
     }
 
     private fun loadAll() {

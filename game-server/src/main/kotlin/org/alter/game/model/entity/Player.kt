@@ -14,6 +14,7 @@ import net.rsprot.protocol.game.outgoing.inv.UpdateInvFull
 import net.rsprot.protocol.game.outgoing.map.RebuildLogin
 import net.rsprot.protocol.game.outgoing.misc.client.UpdateRebootTimer
 import net.rsprot.protocol.game.outgoing.misc.player.MessageGame
+import net.rsprot.protocol.game.outgoing.misc.player.TriggerOnDialogAbort
 import net.rsprot.protocol.game.outgoing.misc.player.UpdateRunWeight
 import net.rsprot.protocol.game.outgoing.misc.player.UpdateStat
 import net.rsprot.protocol.game.outgoing.sound.SynthSound
@@ -44,9 +45,7 @@ import org.alter.game.model.timer.FORCE_DISCONNECTION_TIMER
 import org.alter.game.model.varp.VarpSet
 import org.alter.game.pluginnew.event.impl.LoginEvent
 import org.alter.game.pluginnew.event.impl.PlayerTickEvent
-import org.alter.game.pluginnew.event.impl.WorldTickEvent
 import org.alter.game.rsprot.RsModObjectProvider
-import org.alter.game.saving.PlayerDetails
 import org.alter.game.service.log.LoggerService
 import org.alter.game.ui.UserInterfaceMap
 import org.alter.rscm.RSCM
@@ -115,6 +114,10 @@ open class Player(world: World) : Pawn(world) {
     @Volatile private var pendingLogout = false
 
     fun getPendingLogout() = pendingLogout
+
+    fun ifCloseInputDialog() {
+        write(TriggerOnDialogAbort)
+    }
 
     /**
      * A flag which indicates that our [FORCE_DISCONNECTION_TIMER] must be set
@@ -486,6 +489,10 @@ open class Player(world: World) : Pawn(world) {
         world.plugins.executeLogin(this)
         LoginEvent(this).post()
         social.updateStatus(this)
+    }
+
+    public fun stopAction() {
+        //TODO STOP ACTION
     }
 
     /**

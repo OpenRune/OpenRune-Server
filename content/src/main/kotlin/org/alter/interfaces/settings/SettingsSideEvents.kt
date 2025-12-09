@@ -1,11 +1,11 @@
 package org.alter.interfaces.settings
 
+import dev.openrune.definition.type.widget.IfEvent
 import org.alter.api.ext.setVarbit
 import org.alter.game.model.entity.Player
 import org.alter.game.pluginnew.PluginEvent
 import org.alter.game.pluginnew.event.impl.onButton
 import org.alter.game.pluginnew.event.impl.onIfOpen
-import org.alter.game.ui.type.IfEvent
 import org.alter.interfaces.ifOpenOverlay
 import org.alter.interfaces.ifSetEvents
 import org.alter.interfaces.settings.configs.setting_components
