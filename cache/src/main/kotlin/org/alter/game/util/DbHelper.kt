@@ -1,26 +1,15 @@
 package org.alter.game.util
 
 import dev.openrune.ServerCacheManager
-import dev.openrune.definition.constants.ConstantProvider
 import dev.openrune.definition.type.DBRowType
 import dev.openrune.definition.type.DBColumnType
 import dev.openrune.definition.util.VarType
-import dev.openrune.filesystem.Cache
-import org.alter.game.util.DbHelper.Companion.table
-import org.alter.game.util.vars.BooleanVarType
-import org.alter.game.util.vars.ComponentType
-import org.alter.game.util.vars.IntType
-import org.alter.game.util.vars.NpcType
-import org.alter.game.util.vars.ObjType
+import org.alter.game.util.vars.NumericBooleanVarType
 import org.alter.game.util.vars.VarTypeImpl
-import org.alter.rscm.RSCM
 import org.alter.rscm.RSCM.asRSCM
 import org.alter.rscm.RSCM.requireRSCM
 import org.alter.rscm.RSCMType
-import java.io.File
-import java.nio.file.Paths
 import java.util.concurrent.ConcurrentHashMap
-import kotlin.io.path.Path
 
 fun <K, V> DbHelper.column(name: String, type: VarTypeImpl<K, V>): V =
     getNValue(name, type, 0)
@@ -129,7 +118,7 @@ class DbHelper(private val row: DBRowType) {
         try {
             val value = getColumn(name).get(index, type)
             @Suppress("UNCHECKED_CAST")
-            if (type is BooleanVarType) type.convertToAny(value) as V else type.convertTo(value as K)
+            if (type is NumericBooleanVarType) type.convertToAny(value) as V else type.convertTo(value as K)
         } catch (_: Exception) {
             null
         }
@@ -137,7 +126,7 @@ class DbHelper(private val row: DBRowType) {
     fun <K, V> getNValue(name: String, type: VarTypeImpl<K, V>, index: Int): V {
         val value = getColumn(name).get(index, type)
         @Suppress("UNCHECKED_CAST")
-        return if (type is BooleanVarType) type.convertToAny(value) as V else type.convertTo(value as K)
+        return if (type is NumericBooleanVarType) type.convertToAny(value) as V else type.convertTo(value as K)
     }
 
     fun getColumn(name: String): Column {

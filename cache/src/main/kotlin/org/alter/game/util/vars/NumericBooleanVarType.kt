@@ -3,7 +3,7 @@ package org.alter.game.util.vars
 import dev.openrune.definition.util.BaseVarType
 import dev.openrune.definition.util.VarType
 
-abstract class BooleanVarType(
+abstract class NumericBooleanVarType(
     protected val varType: VarType
 ) : IntegerVarType<Boolean> {
 

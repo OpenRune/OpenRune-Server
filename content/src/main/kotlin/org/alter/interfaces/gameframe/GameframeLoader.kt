@@ -5,11 +5,10 @@ import dev.openrune.definition.type.widget.Component
 import org.alter.game.ui.Gameframe
 import org.alter.game.ui.GameframeOverlay
 import org.alter.game.util.enum
-import org.alter.game.util.vars.ComponentType
+import org.alter.game.util.vars.ComponentVarType
 import org.alter.game.util.vars.IntType
 import org.alter.game.util.vars.RowType
 import org.alter.rscm.RSCM
-import org.alter.rscm.RSCM.asRSCM
 import org.alter.rscm.RSCMType
 import org.generated.tables.GameframeRow
 
@@ -36,7 +35,7 @@ object GameframeLoader {
     }
 
     private fun loadGameframe(row: GameframeRow): Gameframe {
-        val mappings = enum(row.mappings, ComponentType, ComponentType).associate {
+        val mappings = enum(row.mappings, ComponentVarType, ComponentVarType).associate {
             Component(it.key) to Component(it.value)
         }
 
@@ -52,7 +51,7 @@ object GameframeLoader {
     }
 
     fun loadMoveEvents(): Map<String, String> =
-        enum("enums.toplevel_move_events", ComponentType, ComponentType).associate {
+        enum("enums.toplevel_move_events", ComponentVarType, ComponentVarType).associate {
             val from = RSCM.getReverseMapping(RSCMType.COMPONENTS, it.key)
             val to = RSCM.getReverseMapping(RSCMType.COMPONENTS, it.value)
             from to to

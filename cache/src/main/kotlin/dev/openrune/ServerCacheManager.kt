@@ -1,11 +1,9 @@
 package dev.openrune
 
-import dev.openrune.Index.INTERFACES
 import dev.openrune.OsrsCacheProvider.*
 import dev.openrune.cache.CacheManager
 import dev.openrune.cache.filestore.definition.ComponentDecoder
 import dev.openrune.cache.filestore.definition.InterfaceType
-import dev.openrune.cache.gameval.impl.Interface
 import dev.openrune.filesystem.Cache
 import java.nio.BufferUnderflowException
 import dev.openrune.cache.getOrDefault
@@ -19,7 +17,6 @@ import dev.openrune.definition.type.widget.ComponentType
 import dev.openrune.server.impl.item.ItemRenderDataManager
 import dev.openrune.types.*
 import io.github.oshai.kotlinlogging.KotlinLogging
-import org.alter.game.util.vars.InvType
 import org.alter.rscm.RSCM.asRSCM
 import java.nio.file.Path
 

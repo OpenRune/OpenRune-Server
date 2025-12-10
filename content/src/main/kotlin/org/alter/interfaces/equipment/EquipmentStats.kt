@@ -2,15 +2,12 @@ package org.alter.interfaces.equipment
 
 import dev.openrune.definition.type.widget.IfEvent
 import org.alter.api.BonusSlot
-import org.alter.api.CommonClientScripts
 import org.alter.api.ext.getBonus
-import org.alter.api.ext.getInteractingOption
 import org.alter.api.ext.getMagicDamageBonus
 import org.alter.api.ext.getPrayerBonus
 import org.alter.api.ext.getRangedStrengthBonus
 import org.alter.api.ext.getStrengthBonus
 import org.alter.api.ext.message
-import org.alter.api.ext.runClientScript
 import org.alter.game.action.EquipAction
 import org.alter.game.model.ExamineEntityType
 import org.alter.game.model.entity.Player
@@ -18,12 +15,11 @@ import org.alter.game.model.move.stopMovement
 import org.alter.game.pluginnew.MenuOption
 import org.alter.game.pluginnew.PluginEvent
 import org.alter.game.pluginnew.event.impl.ContainerType
-import org.alter.game.pluginnew.event.impl.IfModalDrag
 import org.alter.game.pluginnew.event.impl.onButton
 import org.alter.game.pluginnew.event.impl.onIfModalButton
 import org.alter.game.pluginnew.event.impl.onIfModalDrag
 import org.alter.game.util.enum
-import org.alter.game.util.vars.ComponentType
+import org.alter.game.util.vars.ComponentVarType
 import org.alter.game.util.vars.IntType
 import org.alter.interfaceInvInit
 import org.alter.interfaces.ifClose
@@ -32,7 +28,6 @@ import org.alter.interfaces.ifSetEvents
 import org.alter.interfaces.ifSetText
 import org.alter.rscm.RSCM
 import org.alter.statGroupTooltip
-import kotlin.inv
 
 class EquipmentStats : PluginEvent() {
 
@@ -41,7 +36,7 @@ class EquipmentStats : PluginEvent() {
             selectStats(player)
         }
 
-        enum("enums.equipment_stats_to_slots_map", IntType, ComponentType).forEach {
+        enum("enums.equipment_stats_to_slots_map", IntType, ComponentVarType).forEach {
             onIfModalButton(it.value) { opWornMain(player,it.key, option) }
         }
 
