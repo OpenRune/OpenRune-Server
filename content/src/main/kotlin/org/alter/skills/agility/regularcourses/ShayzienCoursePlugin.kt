@@ -253,6 +253,8 @@ class ShayzienCoursePlugin : PluginEvent() {
 
             player.queue {
                 player.loopAnim("sequences.human_walk_b")
+                player.lock
+                player.unlock()
                 player.moveTo(1510, 3636, 2)
                 wait(3)
                 player.stopLoopAnim()
@@ -273,6 +275,104 @@ class ShayzienCoursePlugin : PluginEvent() {
                 player.animate(RSCM.NONE)
                 player.addXp(Skills.AGILITY, 18.0)
                 player.setAdvancedStage(5)
+            }
+        }
+        onObjectOption("objects.shayzien_agility_up_jump_platform_2", "Jump") {
+            val dest1 = Tile(1510, 3625, 2)
+            val dest2 = Tile(1510, 3622, 2)
+            val dest3 = Tile(1510, 3620, 2)
+
+
+            player.queue {
+                val fm1 = ForcedMovement.of(
+                    src = player.tile,
+                    dst = dest1,
+                    clientDuration1 = 5,
+                    clientDuration2 = 50,
+                    directionAngle = Direction.SOUTH.angle
+                )
+                player.animate("sequences.human_jump_hurdle")
+                player.forceMove(this, fm1)
+                wait(2)
+                val fm2 = ForcedMovement.of(
+                    src = player.tile,
+                    dst = dest2,
+                    clientDuration1 = 5,
+                    clientDuration2 = 50,
+                    directionAngle = Direction.SOUTH.angle
+                )
+                player.animate("sequences.human_jump_hurdle")
+                player.forceMove(this, fm2)
+                wait (2)
+                val fm3 = ForcedMovement.of(
+                    src = player.tile,
+                    dst = dest3,
+                    clientDuration1 = 5,
+                    clientDuration2 = 50,
+                    directionAngle = Direction.SOUTH.angle
+                )
+                player.animate("sequences.human_jump_hurdle")
+                player.forceMove(this, fm3)
+                wait(5)
+                player.animate(RSCM.NONE)
+                player.addXp(Skills.AGILITY, 21.0)
+                player.setAdvancedStage(6)
+            }
+        }
+        onObjectOption("objects.shayzien_agility_up_swing_jump_2", "Grapple") {
+            val dest = Tile(1521, 3619, 2)
+
+            //TODO: Add crossbow and mithrill grapple requirements
+
+            player.queue {
+                player.filterableMessage("You fire your grapple at the pylon...")
+                player.animate("sequences.dorgesh_xbow_swing", 6)
+                player.graphic("spotanims.dorgesh_grapple_spot",82, 6)
+                wait(2)
+                val fm = ForcedMovement.of(
+                    src = player.tile,
+                    dst = dest,
+                    clientDuration1 = 0,
+                    clientDuration2 = 150,
+                    directionAngle = Direction.EAST.angle
+                )
+                player.forceMove(this, fm)
+                player.animate(RSCM.NONE)
+                player.addXp(Skills.AGILITY, 23.0)
+                player.setStage(0)
+                player.setAdvancedStage(7)
+            }
+        }
+        onObjectOption("objects.shayzien_agility_up_end_jump", "Slide") {
+            val realDest = Tile(1522, 3625, 0)
+            val fakeDest = Tile(realDest.x, realDest.z, player.tile.height)
+
+            player.queue {
+                player.faceDirection(Direction.NORTH)
+                player.animate("sequences.human_monkeybars_on")
+                wait(2)
+                val fm = ForcedMovement.of(
+                    src = player.tile,
+                    dst = fakeDest,
+                    clientDuration1 = 0,
+                    clientDuration2 = 100,
+                    directionAngle = Direction.NORTH.angle
+                )
+                wait(1)
+                player.animate("sequences.human_monkeybars_off")
+                player.moveTo(realDest)
+                player.animate(RSCM.NONE)
+                player.addXp(Skills.AGILITY, 400.0)
+
+                if (player.stage() == ADVANCED_STAGES) {
+                    val advancedlaps = player.advancedlaps() + 1
+                    player.setAdvancedLaps(advancedlaps)
+                    player.filterableMessage("Your Shayzien Advanced Agility Cource lap count is: <col=ff0000>$advancedlaps</col>.")
+
+                    GraceService.spawnMarkofGrace(player)
+                }
+
+                player.setStage(0)
             }
         }
     }
