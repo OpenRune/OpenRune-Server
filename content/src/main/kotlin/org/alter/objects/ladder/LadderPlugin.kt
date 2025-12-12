@@ -50,7 +50,23 @@ class LadderPlugin : PluginEvent() {
             player.moveTo(3210, 9616, 0)
         }
         onObjectOption("objects.ladder_from_cellar", "climb-up") {
-            player.moveTo(3210, 3216, 0)
+            when(player.tile.regionId) {
+                10139 -> {
+                    player.moveTo(2547, 3552, 0)
+                }
+                12950 -> {
+                    player.moveTo(3210, 3216, 0)
+                }
+                else -> player.message("Nothing interesting happens.")
+            }
+        }
+        onObjectOption("objects.ladder_outside_to_underground", "climb-down") {
+            when(player.tile.regionId) {
+                10039 -> {
+                    player.moveTo(2548, 9951, 0)
+                }
+                else -> player.message("Nothing interesting happens.")
+            }
         }
     }
 

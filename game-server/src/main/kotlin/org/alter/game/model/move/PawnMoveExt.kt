@@ -154,3 +154,8 @@ fun Pawn.walkTo(
 }
 
 fun Pawn.hasMoveDestination(): Boolean = movementQueue.hasDestination()
+
+fun Pawn.forceStep(dest: Tile) {
+    movementQueue.clear()
+    movementQueue.addStep(dest, StepType.FORCED_WALK, false)
+}
