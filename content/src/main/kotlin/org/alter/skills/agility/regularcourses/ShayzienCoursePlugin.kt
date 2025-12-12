@@ -125,8 +125,9 @@ class ShayzienCoursePlugin : PluginEvent() {
 
             player.queue {
                 player.animate("sequences.human_monkeybars_on")
-                wait(1)
                 player.loopAnim("sequences.human_monkeybars_walk")
+                wait(1)
+                org.alter.game.info.PlayerInfo(player).syncAppearance()
                 val fm = ForcedMovement.of(
                     src = player.tile,
                     dst = dest,
