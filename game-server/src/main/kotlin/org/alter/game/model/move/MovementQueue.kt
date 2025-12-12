@@ -42,9 +42,10 @@ class MovementQueue(val pawn: Pawn) {
     fun addStep(
         step: Tile,
         type: StepType,
+        clip: Boolean = true
     ) {
         val current = if (steps.any()) steps.peekLast().tile else pawn.tile
-        addStep(current, step, type)
+        addStep(current, step, type, clip)
     }
 
     /**
@@ -107,7 +108,7 @@ class MovementQueue(val pawn: Pawn) {
             var runDirection: Direction? = null
             walkDirection = Direction.between(tile, next.tile)
             if (walkDirection != Direction.NONE &&
-                (pawn.world.canTraverse(tile, walkDirection, pawn))
+                (!next.clip || pawn.world.canTraverse(tile, walkDirection, pawn))
             ) {
                 tile = next.tile
                 pawn.lastFacingDirection = walkDirection
@@ -121,7 +122,7 @@ class MovementQueue(val pawn: Pawn) {
                     next = steps.poll()
                     if (next != null) {
                         runDirection = Direction.between(tile, next.tile)
-                        if (pawn.world.canTraverse(tile, runDirection, pawn)) {
+                        if (!next.clip || pawn.world.canTraverse(tile, runDirection, pawn)) {
                             tile = next.tile
                             pawn.lastFacingDirection = runDirection
                         } else {
@@ -151,6 +152,7 @@ class MovementQueue(val pawn: Pawn) {
         current: Tile,
         next: Tile,
         type: StepType,
+        clip: Boolean = true
     ) {
         var dx = next.x - current.x
         var dy = next.z - current.z
@@ -170,13 +172,13 @@ class MovementQueue(val pawn: Pawn) {
             }
 
             val step = next.transform(-dx, -dy)
-            steps.add(Step(step, type))
+            steps.add(Step(step, type, clip))
         }
     }
 
     data class StepDirection(val walkDirection: Direction?, val runDirection: Direction?)
 
-    data class Step(val tile: Tile, val type: StepType)
+    data class Step(val tile: Tile, val type: StepType, val clip: Boolean)
 
     enum class StepType {
         NORMAL,
