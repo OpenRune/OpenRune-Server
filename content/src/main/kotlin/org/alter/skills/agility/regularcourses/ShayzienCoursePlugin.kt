@@ -73,9 +73,9 @@ class ShayzienCoursePlugin : PluginEvent() {
             val fakeDest = Tile(realDest.x, realDest.z, player.tile.height)
 
             player.queue {
+                player.walkAnimOverride("sequences.human_monkeybars_walk")
                 player.animate("sequences.human_monkeybars_on")
                 wait(1)
-                player.walkAnimOverride("sequences.human_monkeybars_walk")
                 val fm = ForcedMovement.of(
                     src = player.tile,
                     dst = fakeDest,
@@ -124,9 +124,9 @@ class ShayzienCoursePlugin : PluginEvent() {
             val dest = Tile(1523, 3643, 3)
 
             player.queue {
+                player.walkAnimOverride("sequences.human_monkeybars_walk")
                 player.animate("sequences.human_monkeybars_on")
                 wait(1)
-                player.loopAnim("sequences.human_monkeybars_walk")
                 val fm = ForcedMovement.of(
                     src = player.tile,
                     dst = dest,
@@ -135,7 +135,7 @@ class ShayzienCoursePlugin : PluginEvent() {
                     directionAngle = Direction.NORTH.angle
                 )
                 player.forceMove(this, fm)
-                player.stopLoopAnim()
+                player.stopWalkAnimOverride()
                 player.animate("sequences.human_monkeybars_off")
                 wait(1)
                 player.moveTo(dest)
