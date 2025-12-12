@@ -1,6 +1,7 @@
 package org.alter.api.ext
 
 import dev.openrune.ServerCacheManager
+import dev.openrune.ServerCacheManager.getAnim
 import dev.openrune.ServerCacheManager.getItem
 import gg.rsmod.util.BitManipulation
 import net.rsprot.protocol.game.outgoing.interfaces.*
@@ -1073,3 +1074,14 @@ fun Player.format_bonus_with_sign(value: Int): String = if (value < 0) value.toS
  */
 val Player.playtime: Int
     get() = attr[PLAYTIME_ATTR] ?: 0
+
+
+fun Player.walkAnimOverride(animId: String) {
+    walkAnimOverride = animId.asRSCM()
+    org.alter.game.info.PlayerInfo(this).syncAppearance()
+}
+
+fun Player.stopWalkAnimOverride() {
+    walkAnimOverride = null
+    org.alter.game.info.PlayerInfo(this).syncAppearance()
+}

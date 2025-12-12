@@ -5,6 +5,8 @@ import org.alter.api.Skills
 import org.alter.api.ext.filterableMessage
 import org.alter.api.ext.loopAnim
 import org.alter.api.ext.stopLoopAnim
+import org.alter.api.ext.stopWalkAnimOverride
+import org.alter.api.ext.walkAnimOverride
 import org.alter.game.model.Direction
 import org.alter.game.model.ForcedMovement
 import org.alter.game.model.Tile
@@ -73,7 +75,7 @@ class ShayzienCoursePlugin : PluginEvent() {
             player.queue {
                 player.animate("sequences.human_monkeybars_on")
                 wait(1)
-                player.loopAnim("sequences.human_monkeybars_walk")
+                player.walkAnimOverride("sequences.human_monkeybars_walk")
                 val fm = ForcedMovement.of(
                     src = player.tile,
                     dst = fakeDest,
@@ -82,7 +84,7 @@ class ShayzienCoursePlugin : PluginEvent() {
                     directionAngle = Direction.WEST.angle
                 )
                 player.forceMove(this, fm)
-                player.stopLoopAnim()
+                player.stopWalkAnimOverride()
                 player.animate("sequences.human_monkeybars_off")
                 wait(1)
                 player.moveTo(realDest)
