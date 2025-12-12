@@ -78,14 +78,16 @@ class PlayerInfo(var player: Player) {
 
     fun syncAnimationSet() {
         if(walkAnimOverride != null) {
+            player.writeMessage("Overriding walk with anim $walkAnimOverride")
+            val plusOne = walkAnimOverride + 1
             info.setBaseAnimationSet(
-                readyAnim = walkAnimOverride,
-                turnAnim = walkAnimOverride,
+                readyAnim = plusOne,
+                turnAnim = plusOne,
                 walkAnim = walkAnimOverride,
-                walkAnimBack = walkAnimOverride,
-                walkAnimLeft = walkAnimOverride,
-                walkAnimRight = walkAnimOverride,
-                runAnim = walkAnimOverride,
+                walkAnimBack = plusOne,
+                walkAnimLeft = plusOne,
+                walkAnimRight = plusOne,
+                runAnim = -1,
             )
         } else {
             info.setBaseAnimationSet(
