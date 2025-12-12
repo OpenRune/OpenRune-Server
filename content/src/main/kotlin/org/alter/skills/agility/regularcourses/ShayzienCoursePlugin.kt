@@ -303,7 +303,6 @@ class ShayzienCoursePlugin : PluginEvent() {
                 )
                 player.animate("sequences.human_jump_hurdle")
                 player.forceMove(this, fm2)
-                wait (2)
                 val fm3 = ForcedMovement.of(
                     src = player.tile,
                     dst = dest3,
