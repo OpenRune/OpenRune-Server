@@ -12,6 +12,7 @@ import org.alter.game.model.ForcedMovement
 import org.alter.game.model.Tile
 import org.alter.game.model.attr.AttributeKey
 import org.alter.game.model.entity.Player
+import org.alter.game.model.move.forceStep
 import org.alter.game.model.move.moveTo
 import org.alter.game.pluginnew.PluginEvent
 import org.alter.game.pluginnew.event.impl.onObjectOption
@@ -75,15 +76,9 @@ class ShayzienCoursePlugin : PluginEvent() {
             player.queue {
                 player.walkAnimOverride("sequences.human_monkeybars_walk")
                 player.animate("sequences.human_monkeybars_on")
-                wait(1)
-                val fm = ForcedMovement.of(
-                    src = player.tile,
-                    dst = fakeDest,
-                    clientDuration1 = 5,
-                    clientDuration2 = 350,
-                    directionAngle = Direction.WEST.angle
-                )
-                player.forceMove(this, fm)
+                player.avatar.extendedInfo.setTempMoveSpeed(1)
+                player.forceStep(fakeDest)
+                wait (13)
                 player.stopWalkAnimOverride()
                 player.animate("sequences.human_monkeybars_off")
                 wait(1)
