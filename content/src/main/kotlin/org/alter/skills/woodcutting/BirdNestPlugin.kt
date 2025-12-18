@@ -11,6 +11,7 @@ import org.alter.api.ext.toItem
 import org.alter.game.model.entity.GroundItem
 import org.alter.game.model.entity.Player
 import org.alter.game.model.weight.impl.WeightItem
+import org.alter.game.model.weight.impl.WeightItemSet
 import org.alter.game.pluginnew.MenuOption
 import org.alter.game.pluginnew.PluginEvent
 import org.alter.game.pluginnew.event.impl.ItemClickEvent
@@ -39,37 +40,37 @@ private const val UNCOMMON = 32
 private const val RARE = 8
 private const val VERY_RARE = 1
 
-enum class NestType(val item: String, val rewards: List<WeightItem> = emptyList()) {
+enum class NestType(val item: String, val rewards: WeightItemSet = WeightItemSet()) {
     SEED(
-        "items.bird_nest_seeds", rewards = listOf(
-            WeightItem("items.acorn", 1, COMMON),
-            WeightItem("items.apple_tree_seed", 1, COMMON),
-            WeightItem("items.banana_tree_seed", 1, COMMON),
-            WeightItem("items.orange_tree_seed", 1, UNCOMMON),
-            WeightItem("items.willow_seed", 1, UNCOMMON),
-            WeightItem("items.curry_tree_seed", 1, UNCOMMON),
-            WeightItem("items.maple_seed", 1, UNCOMMON),
-            WeightItem("items.pineapple_tree_seed", 1, RARE),
-            WeightItem("items.papaya_tree_seed", 1, RARE),
-            WeightItem("items.palm_tree_seed", 1, RARE),
-            WeightItem("items.calquat_tree_seed", 1, RARE),
-            WeightItem("items.yew_seed", 1, RARE),
-            WeightItem("items.magic_tree_seed", 1, VERY_RARE),
-            WeightItem("items.spirit_tree_seed", 1, VERY_RARE)
-        )
+        "items.bird_nest_seeds", rewards = WeightItemSet().apply {
+            add(WeightItem("items.acorn", 1, COMMON))
+            add(WeightItem("items.apple_tree_seed", 1, COMMON))
+            add(WeightItem("items.banana_tree_seed", 1, COMMON))
+            add(WeightItem("items.orange_tree_seed", 1, UNCOMMON))
+            add(WeightItem("items.willow_seed", 1, UNCOMMON))
+            add(WeightItem("items.curry_tree_seed", 1, UNCOMMON))
+            add(WeightItem("items.maple_seed", 1, UNCOMMON))
+            add(WeightItem("items.pineapple_tree_seed", 1, RARE))
+            add(WeightItem("items.papaya_tree_seed", 1, RARE))
+            add(WeightItem("items.palm_tree_seed", 1, RARE))
+            add(WeightItem("items.calquat_tree_seed", 1, RARE))
+            add(WeightItem("items.yew_seed", 1, RARE))
+            add(WeightItem("items.magic_tree_seed", 1, VERY_RARE))
+            add(WeightItem("items.spirit_tree_seed", 1, VERY_RARE))
+        }
     ),
     RING(
-        "items.bird_nest_ring", rewards = listOf(
-            WeightItem("items.gold_ring", 1, COMMON),
-            WeightItem("items.sapphire_ring", 1, COMMON),
-            WeightItem("items.emerald_ring", 1, COMMON),
-            WeightItem("items.ruby_ring", 1, COMMON),
-            WeightItem("items.diamond_ring", 1, COMMON)
-        )
+        "items.bird_nest_ring", rewards = WeightItemSet().apply {
+            add(WeightItem("items.gold_ring", 1, COMMON))
+            add(WeightItem("items.sapphire_ring", 1, COMMON))
+            add(WeightItem("items.emerald_ring", 1, COMMON))
+            add(WeightItem("items.ruby_ring", 1, COMMON))
+            add(WeightItem("items.diamond_ring", 1, COMMON))
+        }
     ),
-    EGG_BLUE("items.bird_nest_egg_blue", listOf(WeightItem("items.bird_egg_blue", 1, ALWAYS))),
-    EGG_RED("items.bird_nest_egg_red", listOf(WeightItem("items.bird_egg_red", 1, ALWAYS))),
-    EGG_GREEN("items.bird_nest_egg_green", listOf(WeightItem("items.bird_egg_green", 1, ALWAYS))),
+    EGG_BLUE("items.bird_nest_egg_blue", WeightItemSet().apply { add(WeightItem("items.bird_egg_blue", 1, ALWAYS)) }),
+    EGG_RED("items.bird_nest_egg_red", WeightItemSet().apply { add(WeightItem("items.bird_egg_red", 1, ALWAYS)) }),
+    EGG_GREEN("items.bird_nest_egg_green", WeightItemSet().apply { add(WeightItem("items.bird_egg_green", 1, ALWAYS)) }),
     CLUE("items.bird_nest_egg_green"); // No rewards for clue nests
 
     val nestID = item.asRSCM()
@@ -112,15 +113,15 @@ class BirdNestPlugin : PluginEvent() {
                     return@repeatWhile
                 }
 
-                val reward = nestType.rewards.random()
-                if (player.inventory.add(reward.item).hasFailed()) {
+                val reward = nestType.rewards.getRandom()
+                if (player.inventory.add(reward).hasFailed()) {
                     player.filterableMessage("<col=B50A11>You need more room to search this.")
                     stop()
                 }
 
                 player.replaceItem(nestType.nestID, "items.bird_nest_empty".asRSCM())
                 player.message(
-                    "You take a ${reward.item.toItem().getName()} out of the bird's nest.",
+                    "You take a ${reward.getName()} out of the bird's nest.",
                     ChatMessageType.GAME_MESSAGE
                 )
             }
