@@ -14,6 +14,7 @@ class PlayerInfo(var player: Player) {
 
     val DEFAULT_ANIM_SET = AnimationSet(readyAnim = 808, turnAnim = 823, walkAnim = 819, walkAnimBack = 820, walkAnimLeft = 821, walkAnimRight = 822, runAnim = 824)
     var animSequance = DEFAULT_ANIM_SET
+    val walkAnimOverride = player.walkAnimOverride;
 
     fun syncAppearance() {
         if (player.getTransmogId() == -1) {
@@ -76,15 +77,29 @@ class PlayerInfo(var player: Player) {
     }
 
     fun syncAnimationSet() {
-        info.setBaseAnimationSet(
-            readyAnim = animSequance.readyAnim,
-            turnAnim = animSequance.turnAnim,
-            walkAnim = animSequance.walkAnim,
-            walkAnimBack = animSequance.walkAnimBack,
-            walkAnimLeft = animSequance.walkAnimLeft,
-            walkAnimRight = animSequance.walkAnimRight,
-            runAnim = animSequance.runAnim,
-        )
+        if(walkAnimOverride != null) {
+            player.writeMessage("Overriding walk with anim $walkAnimOverride")
+            val plusOne = walkAnimOverride + 1
+            info.setBaseAnimationSet(
+                readyAnim = plusOne,
+                turnAnim = plusOne,
+                walkAnim = walkAnimOverride,
+                walkAnimBack = plusOne,
+                walkAnimLeft = plusOne,
+                walkAnimRight = plusOne,
+                runAnim = -1,
+            )
+        } else {
+            info.setBaseAnimationSet(
+                readyAnim = animSequance.readyAnim,
+                turnAnim = animSequance.turnAnim,
+                walkAnim = animSequance.walkAnim,
+                walkAnimBack = animSequance.walkAnimBack,
+                walkAnimLeft = animSequance.walkAnimLeft,
+                walkAnimRight = animSequance.walkAnimRight,
+                runAnim = animSequance.runAnim,
+            )
+        }
     }
 
     fun setSequence(id: Int, delay: Int) {
