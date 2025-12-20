@@ -68,15 +68,14 @@ public fun Player.ifSetEvents(component: String, range: IntRange, vararg event: 
 
     val packedHigh = (packed shr 32).toInt()
     val packedLow = packed.toInt()
-    val prot =
-        IfSetEventsV2(
-            interfaceId = target.interfaceId,
-            componentId = target.componentId,
-            start = range.first,
-            end = range.last,
-            events1 = packedLow,
-            events2 = packedHigh,
-        )
+    val prot = IfSetEventsV2(
+        interfaceId = target.interfaceId,
+        componentId = target.componentId,
+        start = range.first,
+        end = range.last,
+        events1 = packedLow,
+        events2 = packedHigh,
+    )
     write(prot)
 }
 
@@ -122,13 +121,6 @@ public fun Player.ifOpenMainModal(
 public fun Player.ifOpenMain(interf: String) {
     openModal(interf, "components.toplevel_osrs_stretch:mainmodal")
 }
-
-public fun topLevelMainModalOpen(
-    player: Player,
-    colour: Int = -1,
-    transparency: Int = -1,
-): Unit = player.runClientScript(CommonClientScripts.MAIN_MODAL_OPEN, colour, transparency)
-
 
 private fun Player.openModal(interfID: String, targetID: String) {
 
