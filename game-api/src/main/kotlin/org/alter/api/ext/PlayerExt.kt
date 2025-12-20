@@ -1106,6 +1106,22 @@ fun boolVarp(varpName: String) = object : ReadWriteProperty<Player, Boolean> {
         thisRef.setVarp(varpName, if (value) 1 else 0)
 }
 
+inline fun <reified T> enumVarBit(varpName: String)
+        where T : Enum<T> = object : ReadWriteProperty<Player, T> {
+
+    override fun getValue(thisRef: Player, property: KProperty<*>): T {
+        val raw = thisRef.getVarbit(varpName)
+        val values = enumValues<T>()
+        return values.getOrElse(raw) {
+            error("Invalid enum index $raw for ${T::class.simpleName}")
+        }
+    }
+
+    override fun setValue(thisRef: Player, property: KProperty<*>, value: T) {
+        thisRef.setVarbit(varpName, value.ordinal)
+    }
+}
+
 inline fun <reified T> enumVarp(varpName: String)
         where T : Enum<T> = object : ReadWriteProperty<Player, T> {
 
