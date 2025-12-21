@@ -3,6 +3,7 @@ package dev.openrune
 import dev.openrune.OsrsCacheProvider.*
 import dev.openrune.cache.CacheManager
 import dev.openrune.cache.filestore.definition.ComponentDecoder
+import dev.openrune.cache.filestore.definition.FontDecoder
 import dev.openrune.cache.filestore.definition.InterfaceType
 import dev.openrune.filesystem.Cache
 import java.nio.BufferUnderflowException
@@ -47,6 +48,8 @@ object ServerCacheManager {
     fun init(cache : Cache) {
         ItemRenderDataManager.init()
         CacheManager.init(OsrsCacheProvider(cache,235))
+
+        fonts = FontDecoder(cache).loadAllFonts()
 
         try {
             EnumDecoder().load(cache, enums)
