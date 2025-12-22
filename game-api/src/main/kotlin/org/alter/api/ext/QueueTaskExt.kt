@@ -6,8 +6,6 @@ import net.rsprot.protocol.game.incoming.resumed.ResumePauseButton
 import net.rsprot.protocol.game.outgoing.misc.player.TriggerOnDialogAbort
 import org.alter.api.ClientScript
 import org.alter.api.CommonClientScripts
-import org.alter.api.InterfaceDestination
-import org.alter.api.Skills
 import org.alter.game.model.attr.INTERACTING_NPC_ATTR
 import org.alter.game.model.entity.Player
 import org.alter.game.model.item.Item
@@ -19,10 +17,7 @@ import org.alter.game.pluginnew.event.impl.DialogMessageOption
 import org.alter.game.pluginnew.event.impl.DialogNpcOpen
 import org.alter.game.pluginnew.event.impl.DialogPlayerOpen
 import org.alter.game.pluginnew.event.impl.DialogSkillMulti
-import org.alter.rscm.RSCM
 import org.alter.rscm.RSCM.asRSCM
-import org.alter.rscm.RSCM.getRSCM
-import org.alter.rscm.RSCMType
 
 /**
  * The child id of the chat box in the gameframe interface. This can change
@@ -36,7 +31,7 @@ const val CHATBOX_CHILD = 566
  */
 private fun closeDialog(player: Player): QueueTask.() -> Unit =
     {
-        player.closeComponent(parent = 162, child = CHATBOX_CHILD)
+
         player.write(TriggerOnDialogAbort)
     }
 

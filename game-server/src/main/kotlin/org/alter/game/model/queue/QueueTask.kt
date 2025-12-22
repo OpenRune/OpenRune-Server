@@ -187,12 +187,6 @@ data class QueueTask(val ctx: Any, val priority: TaskPriority) : Continuation<Un
         wait { src.sameAs(tile) }
     }
 
-
-    /**
-     * Wait for our [ctx] as [Player] to close the [interfaceId].
-     */
-    suspend fun waitInterfaceClose(interfaceId: Int): Unit = wait { !(ctx as Player).interfaces.isVisible(interfaceId) }
-
     /**
      * Wait for <strong>any</strong> return value to be available before
      * continuing.

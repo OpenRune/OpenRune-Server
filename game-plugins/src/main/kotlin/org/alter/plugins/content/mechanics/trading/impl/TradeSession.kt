@@ -7,8 +7,12 @@ import org.alter.api.ext.getInterfaceHash
 import org.alter.game.model.container.ContainerStackType
 import org.alter.game.model.container.ItemContainer
 import org.alter.game.model.entity.Player
-import org.alter.plugins.content.mechanics.trading.*
+import org.alter.plugins.content.mechanics.trading.TRADE_ACCEPTED_ATTR
+import org.alter.plugins.content.mechanics.trading.getTradeSession
+import org.alter.plugins.content.mechanics.trading.hasAcceptedTrade
+import org.alter.plugins.content.mechanics.trading.removeTradeSession
 import org.alter.plugins.service.marketvalue.ItemMarketValueService
+
 
 /**
  * @author Triston Plummer ("Dread")
@@ -30,7 +34,7 @@ class TradeSession(private val player: Player, private val partner: Player) {
     val container = ItemContainer(player.inventory.capacity, ContainerStackType.NORMAL)
 
     /**
-     * The [ItemMarketValueService] instance for this trade session
+     * The [org.alter.plugins.service.marketvalue.ItemMarketValueService] instance for this trade session
      */
     private val priceService = player.world.getService(ItemMarketValueService::class.java)
 
@@ -56,40 +60,40 @@ class TradeSession(private val player: Player, private val partner: Player) {
      * Opens the trade session, and configures the interfaces
      */
     fun open() {
-        // Ensure the player isn't still marked as having accepted the trade
-        player.attr[TRADE_ACCEPTED_ATTR] = false
 
-        // Reset the trade modified varbit
-        player.setVarbit(PLAYER_TRADE_MODIFIED_VARBIT, 0)
-        player.setVarbit(PARTNER_TRADE_MODIFIED_VARBIT, 0)
+        player.message("DISABLED DUE TO DUPE")
 
-        // Configure the trade text
-        player.setComponentText(TRADE_INTERFACE, 31, "Trading with: ${partner.username}")
+//        // Ensure the player isn't still marked as having accepted the trade
+//        player.attr[TRADE_ACCEPTED_ATTR] = false
+//
+//        // Reset the trade modified varbit
+//        player.setVarbit(PLAYER_TRADE_MODIFIED_VARBIT, 0)
+//        player.setVarbit(PARTNER_TRADE_MODIFIED_VARBIT, 0)
+//
+//        // Configure the trade text
+//        player.setComponentText(TRADE_INTERFACE, 31, "Trading with: ${partner.username}")
+//
+//        // Open the inventory overlay
+//        player.sendItemContainer(key = PLAYER_INVENTORY_KEY, container = inventory)
+//        player.runClientScript(
+//            INTERFACE_INV_INIT_BIG,
+//            OVERLAY_INTERFACE.getInterfaceHash(),
+//            PLAYER_INVENTORY_KEY,
+//            4,
+//            7,
+//            0,
+//            -1,
+//            "Offer",
+//            "Offer-5",
+//            "Offer-10",
+//            "Offer-All",
+//            "Offer-X",
+//        )
+//        player.setInterfaceEvents(interfaceId = OVERLAY_INTERFACE, component = 0, range = 0..container.capacity, setting = 1086)
+//
 
-        // Open the inventory overlay
-        player.sendItemContainer(key = PLAYER_INVENTORY_KEY, container = inventory)
-        player.runClientScript(
-            INTERFACE_INV_INIT_BIG,
-            OVERLAY_INTERFACE.getInterfaceHash(),
-            PLAYER_INVENTORY_KEY,
-            4,
-            7,
-            0,
-            -1,
-            "Offer",
-            "Offer-5",
-            "Offer-10",
-            "Offer-All",
-            "Offer-X",
-        )
-        player.setInterfaceEvents(interfaceId = OVERLAY_INTERFACE, component = 0, range = 0..container.capacity, setting = 1086)
-        player.openInterface(OVERLAY_INTERFACE, InterfaceDestination.TAB_AREA)
-
-        // Open the trade screen interface
-        player.openInterface(TRADE_INTERFACE, InterfaceDestination.MAIN_SCREEN)
-
-        // Initialise the trade containers
-        initTradeContainers()
+//        // Initialise the trade containers
+//        initTradeContainers()
     }
 
     /**
@@ -138,18 +142,7 @@ class TradeSession(private val player: Player, private val partner: Player) {
      * Initialises the trade containers and enables the item container components for the player
      */
     private fun initTradeContainers() {
-        player.setInterfaceEvents(
-            interfaceId = TRADE_INTERFACE,
-            component = PLAYER_TRADE_HASH,
-            range = 0..container.capacity,
-            setting = 1086,
-        )
-        player.setInterfaceEvents(
-            interfaceId = TRADE_INTERFACE,
-            component = PARTNER_TRADE_HASH,
-            range = 0..container.capacity,
-            setting = 1024,
-        )
+
 
         refresh()
     }
@@ -165,13 +158,7 @@ class TradeSession(private val player: Player, private val partner: Player) {
 
             // Inform the player that they've declined the trade, and close the trade window
             if (!forced) player.message("You declined the trade")
-            player.closeInterface(InterfaceDestination.MAIN_SCREEN)
-            player.closeInterface(OVERLAY_INTERFACE)
 
-            // Inform the partner that the player has declined the trade, and close their window
-            if (!forced) partner.message(TRADE_DECLINED_MESSAGE)
-            partner.closeInterface(InterfaceDestination.MAIN_SCREEN)
-            partner.closeInterface(OVERLAY_INTERFACE)
         }
     }
 
@@ -294,36 +281,35 @@ class TradeSession(private val player: Player, private val partner: Player) {
      * Opens the accept screen for each player
      */
     private fun openAcceptScreen() {
-        // If we don't have enough inventory space for the partner's container
-        if (player.inventory.freeSlotCount < partner.getTradeSession()!!.container.occupiedSlotCount) {
-            player.message("You don't have enough inventory space for this trade.")
-            partner.message("Other player doesn't have enough inventory space for this trade.")
-            decline(forced = true)
-            return
-        }
+//        // If we don't have enough inventory space for the partner's container
+//        if (player.inventory.freeSlotCount < partner.getTradeSession()!!.container.occupiedSlotCount) {
+//            player.message("You don't have enough inventory space for this trade.")
+//            partner.message("Other player doesn't have enough inventory space for this trade.")
+//            decline(forced = true)
+//            return
+//        }
+//
+//        // Set the trade stage
+//        stage = TradeStage.ACCEPT_SCREEN
+//
+//        // Send the default component text values
+//        player.setComponentText(ACCEPT_INTERFACE, 4, "Are you sure you want to make this trade?")
+//        player.setComponentText(ACCEPT_INTERFACE, 30, "Trading with:<br>${partner.username}")
+//        player.setComponentText(ACCEPT_INTERFACE, 23, "You are about to give:<br>(Value: <col=FFFFFF>${container.getValue()}</col> coins)")
+//        partner.setComponentText(
+//            ACCEPT_INTERFACE,
+//            24,
+//            "In return you will receive:<br>(Value: <col=FFFFFF>${container.getValue()}</col> coins)",
+//        )
+//
+//        // Send the item containers
+//        player.sendItemContainer(ACCEPT_CONTAINER_KEY, container)
+//        partner.getTradeSession()?.let { player.sendItemContainerOther(ACCEPT_CONTAINER_KEY, it.container) }
+//
 
-        // Set the trade stage
-        stage = TradeStage.ACCEPT_SCREEN
-
-        // Send the default component text values
-        player.setComponentText(ACCEPT_INTERFACE, 4, "Are you sure you want to make this trade?")
-        player.setComponentText(ACCEPT_INTERFACE, 30, "Trading with:<br>${partner.username}")
-        player.setComponentText(ACCEPT_INTERFACE, 23, "You are about to give:<br>(Value: <col=FFFFFF>${container.getValue()}</col> coins)")
-        partner.setComponentText(
-            ACCEPT_INTERFACE,
-            24,
-            "In return you will receive:<br>(Value: <col=FFFFFF>${container.getValue()}</col> coins)",
-        )
-
-        // Send the item containers
-        player.sendItemContainer(ACCEPT_CONTAINER_KEY, container)
-        partner.getTradeSession()?.let { player.sendItemContainerOther(ACCEPT_CONTAINER_KEY, it.container) }
-
-        // Open the accept screen interface
-        player.openInterface(ACCEPT_INTERFACE, InterfaceDestination.MAIN_SCREEN)
-
-        // Reset the accept state
-        player.attr[TRADE_ACCEPTED_ATTR] = false
+//
+//        // Reset the accept state
+//        player.attr[TRADE_ACCEPTED_ATTR] = false
     }
 
     /**
@@ -362,10 +348,7 @@ class TradeSession(private val player: Player, private val partner: Player) {
 
         // Remove the trade session
         player.removeTradeSession()
-
-        // Close the trade interface
-        player.closeInterface(InterfaceDestination.MAIN_SCREEN)
-        player.closeInterface(OVERLAY_INTERFACE)
+        
 
         // Inform the player that the trade has been accepted
         player.message("Accepted trade.")

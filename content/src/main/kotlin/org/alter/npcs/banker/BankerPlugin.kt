@@ -1,18 +1,17 @@
-package org.alter.plugins.content.npcs.banker
+package org.alter.npcs.banker
 
-import org.alter.api.InterfaceDestination
-import org.alter.api.ext.*
-import org.alter.game.Server
-import org.alter.game.model.World
+import org.alter.api.ext.chatNpc
+import org.alter.api.ext.chatPlayer
+import org.alter.api.ext.options
 import org.alter.game.model.entity.Player
 import org.alter.game.model.queue.QueueTask
-import org.alter.game.plugin.KotlinPlugin
-import org.alter.game.plugin.PluginRepository
-import org.alter.plugins.content.interfaces.bank.openBank
+import org.alter.game.pluginnew.PluginEvent
+import org.alter.game.pluginnew.event.impl.onNpcOption
+import org.alter.interfaces.bank.openBank
+import org.alter.interfaces.ifOpenMainModal
 
-class BankerPlugin(
-    r: PluginRepository, world: World, server: Server
-) : KotlinPlugin(r, world, server) {
+
+class BankerPlugin() : PluginEvent() {
 
     private val bankers = listOf(
         "npcs.mourning_elf_bankerm",
@@ -20,17 +19,17 @@ class BankerPlugin(
         "npcs.banker1_new",
     )
 
-    init {
+    override fun init() {
         bankers.forEach { banker ->
-            onNpcOption(npc = banker, option = "talk-to", lineOfSightDistance = 2) {
+            onNpcOption(banker, "talk-to") {
                 player.queue {
                     dialog(player, this)
                 }
             }
-            onNpcOption(npc = banker, option = "bank", lineOfSightDistance = 2) {
+            onNpcOption(banker, "bank") {
                 player.openBank()
             }
-            onNpcOption(npc = banker, option = "collect", lineOfSightDistance = 2) {
+            onNpcOption(banker, "collect") {
                 openCollect(player)
             }
         }
@@ -70,13 +69,11 @@ class BankerPlugin(
     }
 
     private fun openCollect(p: Player) {
-        p.setInterfaceUnderlay(color = -1, transparency = -1)
-        p.openInterface(interfaceId = 402, dest = InterfaceDestination.MAIN_SCREEN)
+        p.ifOpenMainModal("interfaces.ge_collect",-1,-1)
     }
 
     private fun openPin(p: Player) {
-        p.setInterfaceUnderlay(color = -1, transparency = -1)
-        p.openInterface(interfaceId = 14, dest = InterfaceDestination.MAIN_SCREEN)
+        p.ifOpenMainModal("interfaces.bankpin_settings",-1,-1)
     }
 
 }

@@ -1,4 +1,4 @@
-package org.alter.plugins.content.commands.commands.developer
+package org.alter.interfaces.gameframe.emotes
 
 import org.alter.api.*
 import org.alter.api.cfg.*
@@ -11,23 +11,27 @@ import org.alter.game.model.container.*
 import org.alter.game.model.container.key.*
 import org.alter.game.model.entity.*
 import org.alter.game.model.item.*
-import org.alter.game.model.priv.Privilege
 import org.alter.game.model.queue.*
 import org.alter.game.model.shop.*
 import org.alter.game.model.timer.*
 import org.alter.game.plugin.*
-import org.alter.plugins.content.interfaces.emotes.EmotesTab
+import org.alter.plugins.content.interfaces.emotes.Emote
+import org.alter.plugins.content.interfaces.emotes.EmotesTab.COMPONENT_ID
+import org.alter.plugins.content.interfaces.emotes.EmotesTab.performEmote
 
-class EmotesPlugin(
+class EmotesTabPlugin(
     r: PluginRepository,
     world: World,
     server: Server
 ) : KotlinPlugin(r, world, server) {
         
     init {
-        onCommand("emotes", Privilege.DEV_POWER, description = "Unlock all emotes") {
-            EmotesTab.unlockAll(player)
-            player.message("All emotes were unlocked.")
+       
+
+        onButton(interfaceId = COMPONENT_ID, component = 2) p@{
+            val slot = player.getInteractingSlot()
+            val emote = Emote.values.firstOrNull { e -> e.slot == slot } ?: return@p
+            performEmote(player, emote)
         }
     }
 }

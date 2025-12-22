@@ -54,11 +54,9 @@ fun Player.openShop(shop: String) {
     if (s != null) {
         attr[CURRENT_SHOP_ATTR] = s
         shopDirty = true
-        openInterface(interfaceId = 300, dest = InterfaceDestination.MAIN_SCREEN)
-        openInterface(interfaceId = 301, dest = InterfaceDestination.TAB_AREA)
+
         runClientScript(CommonClientScripts.SHOP_INIT, 3, s.name, -1, 0, 1)
-        setInterfaceEvents(interfaceId = 300, component = 16, range = 0..s.items.size, setting = 1086)
-        setInterfaceEvents(interfaceId = 301, component = 0, range = 0 until inventory.capacity, setting = 1086)
+
     } else {
         World.logger.warn { "Player \"$username\" is unable to open shop \"$shop\" as it does not exist." }
     }
@@ -69,11 +67,9 @@ fun Player.openShop(shopId: Int) {
     if (s != null) {
         attr[CURRENT_SHOP_ATTR] = s
         shopDirty = true
-        openInterface(interfaceId = 300, dest = InterfaceDestination.MAIN_SCREEN)
-        openInterface(interfaceId = 301, dest = InterfaceDestination.TAB_AREA)
+
         runClientScript(CommonClientScripts.SHOP_INIT, 3, s.name, -1, 0, 1)
-        setInterfaceEvents(interfaceId = 300, component = 16, range = 0..s.items.size, setting = 1086)
-        setInterfaceEvents(interfaceId = 301, component = 0, range = 0 until inventory.capacity, setting = 1086)
+
     } else {
         World.logger.warn { "Player \"$username\" is unable to open shop \"$shopId\" as it does not exist." }
     }
@@ -174,76 +170,6 @@ fun Player.setInterfaceEvents(
     )
 }
 
-fun Player.setInterfaceEvents(
-    interfaceId: Int,
-    component: Int,
-    range: IntRange,
-    setting: Int,
-) {
-    val (events1, events2) = splitEventMask(setting)
-    write(
-        IfSetEventsV2(
-            interfaceId = interfaceId,
-            componentId = component,
-            start = range.first,
-            end = range.last,
-            events1 = events1,
-            events2 = events2,
-        )
-    )
-}
-
-fun Player.setInterfaceEvents(
-    interfaceId: Int,
-    component: Int,
-    range: IntRange,
-    vararg setting: InterfaceEvent,
-) {
-    val combined = setting.fold(0) { acc, it -> acc or it.flag }
-    val (events1, events2) = splitEventMask(combined)
-    write(
-        IfSetEventsV2(
-            interfaceId = interfaceId,
-            componentId = component,
-            start = range.first,
-            end = range.last,
-            events1 = events1,
-            events2 = events2,
-        )
-    )
-}
-
-fun Player.setInterfaceEvents(
-    componentName: String,
-    range: IntRange,
-    setting: InterfaceEvent,
-) {
-    requireRSCM(RSCMType.COMPONENTS,componentName)
-    val combined = CombinedId(componentName.asRSCM())
-    setInterfaceEvents(combined.interfaceId,combined.combinedId,range,setting)
-}
-
-
-fun Player.setInterfaceEvents(
-    interfaceId: Int,
-    component: Int,
-    range: IntRange,
-    setting: InterfaceEvent,
-) {
-    val (events1, events2) = splitEventMask(setting.flag)
-    write(
-        IfSetEventsV2(
-            interfaceId = interfaceId,
-            componentId = component,
-            start = range.first,
-            end = range.last,
-            events1 = events1,
-            events2 = events2,
-        )
-    )
-}
-
-
 fun Player.setComponentText(
     interfaceId: String,
     text: String,
@@ -312,278 +238,8 @@ fun Player.setComponentAnim(
     write(IfSetAnim(interfaceId = interfaceId, componentId = component, anim = anim.asRSCM()))
 }
 
-/**
- * Use this method to open an interface id on top of an [InterfaceDestination]. This
- * method should always be preferred over
- *
- * ```
- * openInterface(parent: Int, child: Int, component: Int, type: Int, isMainComponent: Boolean)
- * ```
- *
- * as it holds logic that must be handled for certain [InterfaceDestination]s.
- */
-
-fun Player.openInterface(
-    interfaceName: String,
-    dest: InterfaceDestination,
-    fullscreen: Boolean = false
-) {
-    requireRSCM(RSCMType.INTERFACES,interfaceName)
-    openInterface(interfaceName.asRSCM(), dest, fullscreen)
-}
-
-fun Player.openInterface(
-    interfaceId: Int,
-    dest: InterfaceDestination,
-    fullscreen: Boolean = false,
-) {
-
-    val displayMode = if (!fullscreen || dest.fullscreenChildId == -1) interfaces.displayMode else DisplayMode.FULLSCREEN
-    val child = getChildId(dest, displayMode)
-    val parent = getDisplayComponentId(displayMode)
-    openInterface(parent, child, interfaceId, if (dest.clickThrough) 1 else 0, isModal = dest == InterfaceDestination.MAIN_SCREEN)
-}
-
-fun Player.openInterface(
-    interfaceName: String,
-    dest: InterfaceDestination,
-    fullscreen: Boolean = false,
-    isModal: Boolean = false
-) {
-    requireRSCM(RSCMType.INTERFACES,interfaceName)
-    openInterface(interfaceName.asRSCM(), dest, fullscreen, isModal)
-}
-
-fun Player.openInterface(
-    interfaceId: Int,
-    dest: InterfaceDestination,
-    fullscreen: Boolean = false,
-    isModal: Boolean = false
-) {
-    val displayMode = if (!fullscreen || dest.fullscreenChildId == -1) interfaces.displayMode else DisplayMode.FULLSCREEN
-    val child = getChildId(dest, displayMode)
-    val parent = getDisplayComponentId(displayMode)
-    openInterface(parent, child, interfaceId, if (dest.clickThrough) 1 else 0, isModal = isModal)
-}
-
-/**
- * Use this method to "re-open" an [InterfaceDestination]. This method should always
- * be preferred over
- *
- * ```
- * openInterface(parent: Int, child: Int, interfaceId: Int, type: Int, mainInterface: Boolean)
- * ````
- *
- * as it holds logic that must be handled for certain [InterfaceDestination]s.
- */
-fun Player.openInterface(
-    dest: InterfaceDestination,
-    autoClose: Boolean = false,
-) {
-    val displayMode = DisplayMode.FIXED
-    val child = getChildId(dest, displayMode)
-    val parent = getDisplayComponentId(displayMode)
-    if (displayMode == DisplayMode.FULLSCREEN) {
-        openOverlayInterface(displayMode)
-    }
-    openInterface(parent, child, dest.interfaceId, if (dest.clickThrough) 1 else 0, isModal = dest == InterfaceDestination.MAIN_SCREEN)
-}
-
-/**
- * Closes chat dialogue if an interface is being opened that's not on the chatbox component.
- */
-private fun Player.closeChatDialogueIfOpen(parent: Int, child: Int) {
-    if (!(parent == InterfaceDestination.CHAT_BOX.interfaceId && child == CHATBOX_CHILD)) {
-        // If chatbox component is currently occupied, close it
-        if (interfaces.isOccupied(InterfaceDestination.CHAT_BOX.interfaceId, CHATBOX_CHILD)) {
-            closeComponent(InterfaceDestination.CHAT_BOX.interfaceId, CHATBOX_CHILD)
-        }
-        // Also close any input dialogs that might be open
-        closeInputDialog()
-    }
-}
-
-fun Player.openInterface(
-    parent: Int,
-    child: Int,
-    interfaceId: Int,
-    type: Int = 0,
-    isModal: Boolean = false,
-) {
-    closeChatDialogueIfOpen(parent, child)
-
-    if (isModal) {
-        interfaces.openModal(parent, child, interfaceId)
-    } else {
-        interfaces.open(parent, child, interfaceId)
-    }
-    write(IfOpenSub(parent, child, interfaceId, type))
-}
-
-fun Player.closeInterface(interfaceId: String) {
-    requireRSCM(RSCMType.INTERFACES,interfaceId)
-    val infId = interfaceId.asRSCM()
-    if (infId == interfaces.getModal()) {
-        interfaces.setModal(-1)
-    }
-    val hash = interfaces.close(infId)
-    if (hash != -1) {
-        val parent = hash shr 16
-        val child = hash and 0xFFFF
-        write(IfCloseSub(interfaceId = parent, componentId = child))
-    }
-}
-
-fun Player.closeInterface(interfaceId: Int) {
-    if (interfaceId == interfaces.getModal()) {
-        interfaces.setModal(-1)
-    }
-    val hash = interfaces.close(interfaceId)
-    if (hash != -1) {
-        // this is retarded
-        val parent = hash shr 16
-        val child = hash and 0xFFFF
-        write(IfCloseSub(interfaceId = parent, componentId = child))
-    }
-}
-
-fun Player.closeInterface(dest: InterfaceDestination) {
-    val displayMode = interfaces.displayMode
-    val child = getChildId(dest, displayMode)
-    val parent = getDisplayComponentId(displayMode)
-    val hash = interfaces.close(parent, child)
-    if (hash != -1) {
-        write(IfCloseSub(interfaceId = parent, componentId = child))
-    }
-}
-
-fun Player.closeComponent(
-    parent: Int,
-    child: Int,
-) {
-    interfaces.close(parent, child)
-    write(IfCloseSub(interfaceId = parent, componentId = child))
-}
-
 fun Player.closeInputDialog() {
     write(TriggerOnDialogAbort)
-}
-
-fun Player.getInterfaceAt(dest: InterfaceDestination): Int {
-    val displayMode = interfaces.displayMode
-    val child = getChildId(dest, displayMode)
-    val parent = getDisplayComponentId(displayMode)
-    return interfaces.getInterfaceAt(parent, child)
-}
-
-fun Player.isInterfaceVisible(interfaceId: Int): Boolean = interfaces.isVisible(interfaceId)
-
-fun Player.toggleDisplayInterface(newMode: DisplayMode) {
-    if (interfaces.displayMode != newMode) {
-        val oldMode = interfaces.displayMode
-        interfaces.displayMode = newMode
-
-        openOverlayInterface(newMode)
-        initInterfaces(newMode)
-
-        InterfaceDestination.values.filter { it.isSwitchable() }.forEach { pane ->
-            val fromParent = getDisplayComponentId(oldMode)
-            val fromChild = getChildId(pane, oldMode)
-            val toParent = getDisplayComponentId(newMode)
-            val toChild = getChildId(pane, newMode)
-
-            /*
-             * Remove the interfaces from the old display mode's children and add
-             * them to the new display mode's children.
-             */
-            if (interfaces.isOccupied(parent = fromParent, child = fromChild)) {
-                val oldComponent = interfaces.close(parent = fromParent, child = fromChild)
-                if (oldComponent != -1) {
-                    if (pane != InterfaceDestination.MAIN_SCREEN) {
-                        interfaces.open(parent = toParent, child = toChild, interfaceId = oldComponent)
-                    } else {
-                        interfaces.openModal(parent = toParent, child = toChild, interfaceId = oldComponent)
-                    }
-                }
-            }
-
-            write(
-                IfMoveSub(
-                    sourceInterfaceId = fromParent,
-                    sourceComponentId = fromChild,
-                    destinationInterfaceId = toParent,
-                    destinationComponentId = toChild,
-                ),
-            )
-        }
-    }
-}
-
-fun Player.openOverlayInterface(displayMode: DisplayMode) {
-    if (displayMode != interfaces.displayMode) {
-        interfaces.setVisible(
-            parent = getDisplayComponentId(interfaces.displayMode),
-            child = getChildId(InterfaceDestination.MAIN_SCREEN, interfaces.displayMode),
-            visible = false,
-        )
-    }
-    val component = getDisplayComponentId(displayMode)
-    interfaces.setVisible(parent = getDisplayComponentId(displayMode), child = 0, visible = true)
-    write(IfOpenTop(component))
-}
-
-fun Player.initInterfaces(displayMode: DisplayMode) {
-    when (displayMode) {
-        DisplayMode.FIXED -> {
-            setInterfaceEvents(interfaceId = 548, component = 51, range = -1..-1, setting = 2)
-            setInterfaceEvents(interfaceId = 548, component = 52, range = -1..-1, setting = 2)
-            setInterfaceEvents(interfaceId = 548, component = 53, range = -1..-1, setting = 2)
-            setInterfaceEvents(interfaceId = 548, component = 54, range = -1..-1, setting = 2)
-            setInterfaceEvents(interfaceId = 548, component = 55, range = -1..-1, setting = 2)
-            setInterfaceEvents(interfaceId = 548, component = 56, range = -1..-1, setting = 2)
-            setInterfaceEvents(interfaceId = 548, component = 57, range = -1..-1, setting = 6)
-            setInterfaceEvents(interfaceId = 548, component = 34, range = -1..-1, setting = 2)
-            setInterfaceEvents(interfaceId = 548, component = 35, range = -1..-1, setting = 2)
-            setInterfaceEvents(interfaceId = 548, component = 36, range = -1..-1, setting = 2)
-            setInterfaceEvents(interfaceId = 548, component = 37, range = -1..-1, setting = 2)
-            setInterfaceEvents(interfaceId = 548, component = 38, range = -1..-1, setting = 2)
-            setInterfaceEvents(interfaceId = 548, component = 39, range = -1..-1, setting = 2)
-            setInterfaceEvents(interfaceId = 548, component = 40, range = -1..-1, setting = 2)
-        }
-        DisplayMode.RESIZABLE_NORMAL -> {
-            setInterfaceEvents(interfaceId = 161, component = 54, range = -1..-1, setting = 2)
-            setInterfaceEvents(interfaceId = 161, component = 55, range = -1..-1, setting = 2)
-            setInterfaceEvents(interfaceId = 161, component = 56, range = -1..-1, setting = 2)
-            setInterfaceEvents(interfaceId = 161, component = 57, range = -1..-1, setting = 2)
-            setInterfaceEvents(interfaceId = 161, component = 58, range = -1..-1, setting = 2)
-            setInterfaceEvents(interfaceId = 161, component = 59, range = -1..-1, setting = 2)
-            setInterfaceEvents(interfaceId = 161, component = 60, range = -1..-1, setting = 6)
-            setInterfaceEvents(interfaceId = 161, component = 38, range = -1..-1, setting = 2)
-            setInterfaceEvents(interfaceId = 161, component = 39, range = -1..-1, setting = 2)
-            setInterfaceEvents(interfaceId = 161, component = 40, range = -1..-1, setting = 2)
-            setInterfaceEvents(interfaceId = 161, component = 41, range = -1..-1, setting = 2)
-            setInterfaceEvents(interfaceId = 161, component = 42, range = -1..-1, setting = 2)
-            setInterfaceEvents(interfaceId = 161, component = 43, range = -1..-1, setting = 2)
-            setInterfaceEvents(interfaceId = 161, component = 44, range = -1..-1, setting = 2)
-        }
-        DisplayMode.RESIZABLE_LIST -> {
-            setInterfaceEvents(interfaceId = 164, component = 53, range = -1..-1, setting = 2)
-            setInterfaceEvents(interfaceId = 164, component = 54, range = -1..-1, setting = 2)
-            setInterfaceEvents(interfaceId = 164, component = 55, range = -1..-1, setting = 2)
-            setInterfaceEvents(interfaceId = 164, component = 56, range = -1..-1, setting = 2)
-            setInterfaceEvents(interfaceId = 164, component = 57, range = -1..-1, setting = 2)
-            setInterfaceEvents(interfaceId = 164, component = 58, range = -1..-1, setting = 2)
-            setInterfaceEvents(interfaceId = 164, component = 59, range = -1..-1, setting = 6)
-            setInterfaceEvents(interfaceId = 164, component = 38, range = -1..-1, setting = 2)
-            setInterfaceEvents(interfaceId = 164, component = 39, range = -1..-1, setting = 2)
-            setInterfaceEvents(interfaceId = 164, component = 40, range = -1..-1, setting = 2)
-            setInterfaceEvents(interfaceId = 164, component = 32, range = -1..-1, setting = 2)
-            setInterfaceEvents(interfaceId = 164, component = 41, range = -1..-1, setting = 2)
-            setInterfaceEvents(interfaceId = 164, component = 42, range = -1..-1, setting = 2)
-            setInterfaceEvents(interfaceId = 164, component = 43, range = -1..-1, setting = 2)
-        }
-        else -> return
-    }
 }
 
 fun Player.sendItemContainer(
@@ -985,9 +641,6 @@ fun Player.skull(
 }
 
 fun Player.hasSkullIcon(icon: SkullIcon): Boolean = skullIcon == icon.id
-
-fun Player.isClientResizable(): Boolean =
-    interfaces.displayMode == DisplayMode.RESIZABLE_NORMAL || interfaces.displayMode == DisplayMode.RESIZABLE_LIST
 
 fun Player.inWilderness(): Boolean = tile.getWildernessLevel() != 0
 

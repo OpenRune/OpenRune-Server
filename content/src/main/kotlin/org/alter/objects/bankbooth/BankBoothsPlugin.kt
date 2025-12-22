@@ -1,29 +1,14 @@
-package org.alter.plugins.content.objects.bankbooth
+package org.alter.objects.bankbooth
 
-import org.alter.api.*
-import org.alter.api.cfg.*
-import org.alter.api.dsl.*
-import org.alter.api.ext.*
-import org.alter.game.*
-import org.alter.game.model.*
-import org.alter.game.model.attr.*
-import org.alter.game.model.container.*
-import org.alter.game.model.container.key.*
-import org.alter.game.model.entity.*
-import org.alter.game.model.item.*
-import org.alter.game.model.queue.*
-import org.alter.game.model.shop.*
-import org.alter.game.model.timer.*
-import org.alter.game.plugin.*
-import org.alter.plugins.content.interfaces.bank.openBank
+import org.alter.game.pluginnew.PluginEvent
+import org.alter.game.pluginnew.event.impl.onObjectOption
+import org.alter.interfaces.bank.openBank
 
-class BankBoothsPlugin(
-    r: PluginRepository,
-    world: World,
-    server: Server
-) : KotlinPlugin(r, world, server) {
-        
-    init {
+
+class BankBoothsPlugin() : PluginEvent() {
+
+    //TODO THESE SHARE A CAT 684
+    override fun init() {
         val BOOTHS =
             setOf(
                 "objects.dwarf_keldagrim_bankbooth",
@@ -69,20 +54,12 @@ class BankBoothsPlugin(
             )
 
         BOOTHS.forEach { booth ->
-            onObjOption(obj = booth, option = "bank") {
+            onObjectOption(booth, "bank") {
                 player.openBank()
             }
-            if (objHasOption(booth, "Collect")) {
-                onObjOption(obj = booth, option = "Collect") {
-                    open_collect(player)
-                }
+            onObjectOption(obj = booth, "Collect") {
+                //open_collect(player)
             }
         }
     }
-
-fun open_collect(p: Player) {
-    p.setInterfaceUnderlay(color = -1, transparency = -1)
-    p.openInterface(interfaceId = 402, dest = InterfaceDestination.MAIN_SCREEN)
-}
-
 }

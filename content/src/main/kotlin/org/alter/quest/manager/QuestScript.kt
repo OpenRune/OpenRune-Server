@@ -1,10 +1,7 @@
 package org.alter.quest.manager
 
 import org.alter.api.*
-import org.alter.api.ext.InterfaceEvent
-import org.alter.api.ext.closeInterface
 import org.alter.api.ext.getVarp
-import org.alter.api.ext.openInterface
 import org.alter.api.ext.runClientScript
 import org.alter.api.ext.setComponentText
 import org.alter.api.ext.setInterfaceEvents
@@ -15,11 +12,12 @@ import org.alter.game.pluginnew.PluginEvent
 import org.alter.game.pluginnew.event.impl.ButtonClickEvent
 import org.alter.game.pluginnew.event.impl.LoginEvent
 import org.alter.game.pluginnew.event.impl.onButton
-import org.alter.interfaces.WorldMapEvents.Companion.WORLD_MAP_INTERFACE_ID
+import org.alter.interfaces.ifCloseModals
+import org.alter.interfaces.ifOpenMain
+import org.alter.interfaces.ifOpenOverlay
 import org.alter.rscm.RSCM
 import org.alter.rscm.RSCM.asRSCM
 import org.alter.rscm.RSCMType
-import org.generated.tables.QuestRow
 import toRs
 
 /**
@@ -114,25 +112,21 @@ abstract class QuestScript(questKey: String, val questVarp : String, val rewards
         onButton("components.questjournal_overview:switch") { openJournal(player, JournalState.LOG) }
 
         onButton("components.questjournal:close") {
-            player.closeInterface(InterfaceDestination.MAIN_SCREEN)
+            player.ifCloseModals()
         }
 
         onButton("components.questjournal_overview:close") {
-            player.closeInterface(InterfaceDestination.MAIN_SCREEN)
+            player.ifCloseModals()
         }
 
         onButton("components.questjournal_overview:content_inner") {
-            player.openInterface(
-                interfaceId = WORLD_MAP_INTERFACE_ID,
-                dest = InterfaceDestination.WORLD_MAP,
-                fullscreen = false
-            )
-            player.setInterfaceEvents(
-                interfaceId = WORLD_MAP_INTERFACE_ID,
-                component = 21,
-                range = 0..4,
-                setting = InterfaceEvent.ClickOp1
-            )
+            player.ifOpenOverlay("interfaces.worldmap")
+//            player.setInterfaceEvents(
+//                interfaceId = WORLD_MAP_INTERFACE_ID,
+//                component = 21,
+//                range = 0..4,
+//                setting = InterfaceEvent.ClickOp1
+//            )
             if (quest.startCoord != null && quest.mapElement != null) {
                 player.runClientScript(
                     CommonClientScripts.WORLD_MAP_GOTO,
@@ -152,8 +146,8 @@ abstract class QuestScript(questKey: String, val questVarp : String, val rewards
     }
 
     private fun openJournalOverview(player: Player) {
-        player.openInterface("interfaces.questjournal_overview", InterfaceDestination.MAIN_SCREEN)
-        player.setInterfaceEvents("components.questjournal_overview:content_inner", 0..27, InterfaceEvent.ClickOp1)
+        player.ifOpenMain("interfaces.questjournal_overview")
+        //player.setInterfaceEvents("components.questjournal_overview:content_inner", 0..27, InterfaceEvent.ClickOp1)
         player.setComponentText("components.questjournal_overview:title", "<col=7f0000>${quest.displayName}</col>")
 
         player.runClientScript(
@@ -176,7 +170,7 @@ abstract class QuestScript(questKey: String, val questVarp : String, val rewards
             .lines()
             .flatMap { it.toRs(inheritPreviousTags = true, wrapAt = 64).split("<br>") }
 
-        player.openInterface("interfaces.questjournal", InterfaceDestination.MAIN_SCREEN)
+        player.ifOpenMain("interfaces.questjournal")
         player.runClientScript(CommonClientScripts.QUEST_JOURNAL_RESET)
         player.setComponentText("components.questjournal:title", "<col=7f0000>${quest.displayName}</col>")
 

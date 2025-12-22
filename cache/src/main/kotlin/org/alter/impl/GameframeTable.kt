@@ -52,6 +52,17 @@ object GameframeTable {
             column(COL_STONE_ARRANGEMENT,true)
         }
 
+        row("dbrows.gameframe_fullscreen") {
+            columnRSCM(COL_TOP_LEVEL,"interfaces.toplevel_display")
+            columnRSCM(COL_MAPPINGS,"enums.fullscreen_pane")
+            column(COL_CLIENT_MODE,2)
+
+            column(COL_RESIZABLE,true)
+            column(COL_IS_DEFAULT,false)
+            column(COL_STONE_ARRANGEMENT,true)
+        }
+
+
 
     }
 

@@ -29,10 +29,6 @@ import org.alter.rscm.RSCM.asRSCM
 
 class GameFrameEvents : PluginEvent() {
 
-    private lateinit var gameframes: Map<String, Gameframe>
-    private lateinit var moveEvents: List<MoveEvent>
-    private lateinit var defaultGameframe: Gameframe
-
     override fun init() {
         loadAll()
 
@@ -118,37 +114,56 @@ class GameFrameEvents : PluginEvent() {
         }
     }
 
-    private fun Player.queueGameframeMove(dest: Gameframe) {
-        val clientModeChanged = ui.frameResizable != dest.resizable
-        if (clientModeChanged) {
-            runClientScript(CommonClientScripts.CLIENT_MODE, dest.clientMode)
+    companion object {
+
+        lateinit var gameframes: Map<String, Gameframe>
+        private lateinit var moveEvents: List<MoveEvent>
+        private lateinit var defaultGameframe: Gameframe
+
+
+        fun Player.queueGameframeMove(dest: Gameframe) {
+            gameframeTopLevelLastKnown = gameframeTopLevel
+            val clientModeChanged = ui.frameResizable != dest.resizable
+            if (clientModeChanged) {
+                runClientScript(CommonClientScripts.CLIENT_MODE, dest.clientMode)
+            }
+
+            val isFullScreen = dest.topLevel == "interfaces.toplevel_display"
+
+            val previous = gameframes.getValue(gameframeTopLevel)
+            gameframeTopLevel = dest.topLevel
+            if (!isFullScreen) {
+                ui.frameResizable = dest.resizable
+            }
+            val gameframeMove = resolveGameframeMove(previous, dest)
+            val delay = if (clientModeChanged) 2 else 1
+
+            queue {
+                wait(delay)
+                ClientModeSwapped(gameframeMove, this@queueGameframeMove).post()
+            }
         }
 
-        val previous = gameframes.getValue(gameframeTopLevel)
-        gameframeTopLevel = dest.topLevel
-        ui.frameResizable = dest.resizable
+        private fun Player.resolveGameframeMove(from: Gameframe, dest: Gameframe): GameframeMove =
+            GameframeMove(from, dest, resolveIntermediate(from, dest))
 
-        val gameframeMove = resolveGameframeMove(previous, dest)
-        val delay = if (clientModeChanged) 2 else 1
+        private fun Player.resolveIntermediate(from: Gameframe, dest: Gameframe): Gameframe? {
+            val mismatch = dest.resizable && !from.resizable &&
+                    stoneArrangements != dest.stoneArrangement
 
-        queue {
-            wait(delay)
-            ClientModeSwapped(gameframeMove, this@queueGameframeMove).post()
+            return if (mismatch)
+                gameframes.values.first { it.hasFlags(resizable = true, stoneArrangements) }
+            else
+                null
         }
+
+
+        private fun Gameframe.hasFlags(resizable: Boolean, stoneArrangements: Boolean): Boolean =
+            this.resizable == resizable && this.stoneArrangement == stoneArrangements
+
+
     }
 
-    private fun Player.resolveGameframeMove(from: Gameframe, dest: Gameframe): GameframeMove =
-        GameframeMove(from, dest, resolveIntermediate(from, dest))
-
-    private fun Player.resolveIntermediate(from: Gameframe, dest: Gameframe): Gameframe? {
-        val mismatch = dest.resizable && !from.resizable &&
-                stoneArrangements != dest.stoneArrangement
-
-        return if (mismatch)
-            gameframes.values.first { it.hasFlags(resizable = true, stoneArrangements) }
-        else
-            null
-    }
 
     private fun Player.moveSetEvents(component: String) {
         ifSetEvents(component, -1..-1, IfEvent.Op1)

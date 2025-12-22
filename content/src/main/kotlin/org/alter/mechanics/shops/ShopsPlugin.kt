@@ -56,7 +56,7 @@ class ShopsPlugin : PluginEvent() {
             val shop = player.attr[CURRENT_SHOP_ATTR] ?: return@onInterfaceClose
 
             shop.viewers.remove(player.uid)
-            player.closeInterface("interfaces.shopside")
+
         }
 
         onButton("components.shopmain:items") {

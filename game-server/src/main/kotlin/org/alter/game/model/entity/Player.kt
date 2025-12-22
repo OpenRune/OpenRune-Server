@@ -44,6 +44,7 @@ import org.alter.game.model.timer.ACTIVE_COMBAT_TIMER
 import org.alter.game.model.timer.FORCE_DISCONNECTION_TIMER
 import org.alter.game.model.varp.VarpSet
 import org.alter.game.pluginnew.event.impl.LoginEvent
+import org.alter.game.pluginnew.event.impl.LogoutEvent
 import org.alter.game.pluginnew.event.impl.PlayerTickEvent
 import org.alter.game.rsprot.RsModObjectProvider
 import org.alter.game.service.log.LoggerService
@@ -126,6 +127,7 @@ open class Player(world: World) : Pawn(world) {
     @Volatile private var setDisconnectionTimer = false
 
     var gameframeTopLevel : String = "interfaces.toplevel"
+    var gameframeTopLevelLastKnown : String = "interfaces.toplevel"
 
     var stoneArrangements : Boolean = false
 
@@ -149,8 +151,6 @@ open class Player(world: World) : Pawn(world) {
             put(EQUIPMENT_KEY, equipment)
             put(BANK_KEY, bank)
         }
-
-    val interfaces by lazy { InterfaceSet(PlayerInterfaceListener(this, world.plugins)) }
 
     val varps = VarpSet(maxVarps = varpSize())
 
@@ -515,6 +515,7 @@ open class Player(world: World) : Pawn(world) {
     internal open fun handleLogout() {
         interruptQueues()
         world.instanceAllocator.logout(this)
+        LogoutEvent(this).post()
         world.plugins.executeLogout(this)
         world.unregister(this)
         social.updateStatus(this)

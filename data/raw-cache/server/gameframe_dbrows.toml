@@ -9,3 +9,4 @@ default = 0
 0 = "dbrows.gameframe_toplevel"
 1 = "dbrows.gameframe_osrs_stretch"
 2 = "dbrows.gameframe_pre_eoc"
+3 = "dbrows.gameframe_fullscreen"

@@ -1,4 +1,4 @@
-package org.alter.plugins.content.interfaces.bank
+package org.alter.interfaces.bank
 
 import org.alter.game.model.entity.Player
 
@@ -6,5 +6,5 @@ import org.alter.game.model.entity.Player
  * @author Tom <rspsmods@gmail.com>
  */
 fun Player.openBank() {
-    Bank.open(this)
+    //TODO MAKE BANK OPEN
 }

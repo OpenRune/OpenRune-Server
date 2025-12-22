@@ -83,10 +83,6 @@ object Combat {
             pawn.attr.remove(CASTING_SPELL)
         }
 
-        if (target is Player && target.interfaces.getModal() != -1) {
-            target.closeInterface(target.interfaces.getModal())
-            target.interfaces.setModal(-1)
-        }
     }
 
     fun postDamage(

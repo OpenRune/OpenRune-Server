@@ -4,11 +4,12 @@ toplevel_move_events=29998
 fixed_pane_redirect=1129
 resizable_basic_pane_redirect=1130
 side_panels_resizable_pane_redirect=1131
-
+fullscreen_pane=1132
 [gamevals.tables]
 gameframe=1214
 
 [gamevals.dbrows]
+gameframe_fullscreen=96710
 gameframe_toplevel=96711
 gameframe_osrs_stretch=96712
 gameframe_pre_eoc=96713

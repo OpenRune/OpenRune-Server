@@ -7,6 +7,8 @@ import org.alter.api.ext.*
 import org.alter.game.pluginnew.PluginEvent
 import org.alter.game.pluginnew.event.impl.ButtonClickEvent
 import org.alter.game.pluginnew.event.impl.onButton
+import org.alter.interfaces.ifCloseModal
+import org.alter.interfaces.ifCloseOverlay
 import org.alter.interfaces.ifOpenMainModal
 import org.alter.interfaces.ifOpenOverlay
 import org.alter.interfaces.ifSetEvents
@@ -31,7 +33,7 @@ class SkillGuidEvents : PluginEvent() {
                         player.setVarbit("varbits.skill_guide_subsection", 0)
                         player.ifOpenMainModal("interfaces.skill_guide",-1,-1)
                     } else {
-                        player.ifOpenMainModal("interfaces.skill_guide_v2",-1,-1)
+                        player.ifOpenOverlay("interfaces.skill_guide_v2")
                         player.ifSetEvents("components.skill_guide_v2:tabs", 0..200, IfEvent.Op1)
                     }
                 }
@@ -39,7 +41,7 @@ class SkillGuidEvents : PluginEvent() {
         }
 
         onButton("components.skill_guide_v2:close") {
-            player.closeInterface(InterfaceDestination.MAIN_SCREEN)
+            player.ifCloseOverlay("interfaces.skill_guide_v2")
         }
 
     }
