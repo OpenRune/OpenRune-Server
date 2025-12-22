@@ -10,6 +10,8 @@ import org.alter.game.model.attr.INTERACTING_NPC_ATTR
 import org.alter.game.model.entity.Player
 import org.alter.game.model.item.Item
 import org.alter.game.model.queue.QueueTask
+
+
 import org.alter.game.pluginnew.event.impl.DialogCloseAll
 import org.alter.game.pluginnew.event.impl.DialogItem
 import org.alter.game.pluginnew.event.impl.DialogItemDouble
@@ -19,6 +21,7 @@ import org.alter.game.pluginnew.event.impl.DialogNpcOpen
 import org.alter.game.pluginnew.event.impl.DialogPlayerOpen
 import org.alter.game.pluginnew.event.impl.DialogSkillMulti
 import org.alter.rscm.RSCM.asRSCM
+
 
 /**
  * The child id of the chat box in the gameframe interface. This can change
@@ -155,7 +158,7 @@ suspend fun QueueTask.messageBox(
     message: String,
     continues: Boolean = true,
 ) {
-
+    
     DialogMessageOpen(message, continues,player).post()
 
     terminateAction = closeDialog(player)
