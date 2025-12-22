@@ -36,6 +36,36 @@ enum class ContainerType(val id: String) {
     }
 }
 
+data class IfModalButton(
+    val component: CombinedId,
+    val option: MenuOption,
+    val item: Int,
+    val slot: Int,
+    override val player: Player
+) : PlayerEvent(player)
+
+fun PluginEvent.onIfModalButton(
+    componentID: Int,
+    action: suspend IfModalButton.() -> Unit
+): EventListener<IfModalButton> {
+    return on<IfModalButton> {
+        where { component.combinedId == componentID }
+        then { action(this) }
+    }
+}
+
+
+fun PluginEvent.onIfModalButton(
+    componentID: String,
+    action: suspend IfModalButton.() -> Unit
+): EventListener<IfModalButton> {
+    requireRSCM(RSCMType.COMPONENTS,componentID)
+    return on<IfModalButton> {
+        where { component.combinedId == componentID.asRSCM() }
+        then { action(this) }
+    }
+}
+
 data class ButtonClickEvent(
     val component: CombinedId,
     val option: Int,

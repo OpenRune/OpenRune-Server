@@ -101,34 +101,7 @@ tasks.named<Copy>("applicationDistribution") {
         rename("game.example.yml", "game.yml")
     }
 }
-tasks.named<Zip>("shadowDistZip") {
-    from("$rootDir/data/") {
-        into("game-shadow-${project.version}/bin/data/")
-        include("**")
-        exclude("saves/*")
-    }
-    from("$rootDir") {
-        into("game-shadow-${project.version}/bin/")
-        include("/game-plugins/*")
-        include("game.example.yml")
-        rename("game.example.yml", "game.yml")
-    }
-}
-tasks.register<Tar>("myShadowDistTar") {
-    archiveFileName.set("game-shadow-${project.version}.tar")
-    destinationDirectory.set(file("build/distributions/"))
-    from("$rootDir/data/") {
-        into("game-shadow-${project.version}/bin/data/")
-        include("**")
-        exclude("saves/*")
-    }
-    from("$rootDir") {
-        into("game-shadow-${project.version}/bin/")
-        include("/game-plugins/*")
-        include("game.example.yml")
-        rename("game.example.yml", "game.yml")
-    }
-}
+
 
 tasks.named("build") {
     finalizedBy("extractDependencies")

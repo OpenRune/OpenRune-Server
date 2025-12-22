@@ -1,12 +1,7 @@
 package org.alter
 
-import com.squareup.kotlinpoet.CHAR
 import dev.openrune.OsrsCacheProvider
 import dev.openrune.cache.gameval.GameValHandler
-import dev.openrune.cache.gameval.GameValHandler.elementAs
-import dev.openrune.cache.gameval.impl.Interface
-import dev.openrune.cache.gameval.impl.Sprite
-import dev.openrune.cache.gameval.impl.Table
 import dev.openrune.cache.tools.Builder
 import dev.openrune.cache.tools.CacheEnvironment
 import dev.openrune.cache.tools.dbtables.PackDBTables
@@ -14,7 +9,6 @@ import dev.openrune.cache.tools.tasks.CacheTask
 import dev.openrune.cache.tools.tasks.TaskType
 import dev.openrune.cache.tools.tasks.impl.defs.PackConfig
 import dev.openrune.definition.GameValGroupTypes
-import dev.openrune.definition.constants.use
 import dev.openrune.definition.type.DBRowType
 import dev.openrune.definition.util.VarType
 import dev.openrune.filesystem.Cache
@@ -23,6 +17,7 @@ import io.github.oshai.kotlinlogging.KotlinLogging
 import org.alter.codegen.startGeneration
 import org.alter.gamevals.GameValProvider
 import org.alter.gamevals.GamevalDumper
+import org.alter.impl.GameframeTable
 import org.alter.impl.skills.Firemaking
 import org.alter.impl.misc.FoodTable
 import org.alter.impl.skills.PrayerTable
@@ -35,9 +30,7 @@ import org.alter.impl.skills.runecrafting.Alters
 import org.alter.impl.skills.runecrafting.CombinationRune
 import org.alter.impl.skills.runecrafting.RunecraftRune
 import org.alter.impl.skills.runecrafting.Tiara
-import java.io.DataOutputStream
 import java.io.File
-import java.io.FileOutputStream
 import java.nio.file.Files
 import java.nio.file.StandardCopyOption
 import kotlin.system.exitProcess
@@ -66,6 +59,7 @@ fun tablesToPack() = listOf(
     Tiara.tiara(),
     RunecraftRune.runecraftRune(),
     CombinationRune.runecraftComboRune(),
+    GameframeTable.gameframe()
 )
 
 private val logger = KotlinLogging.logger {}

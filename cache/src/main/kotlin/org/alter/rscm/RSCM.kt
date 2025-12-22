@@ -20,6 +20,7 @@ enum class RSCMType(val prefix: String) {
     COMPONENTS("components"),
     ENUMS("enums"),
     COLUMNS("columns"),
+    FONTS("fonts"),
     INTERFACES("interfaces");
 
     companion object {
@@ -47,6 +48,9 @@ object RSCM {
     }
 
     fun getReverseMapping(table: RSCMType, value: Int): String {
+        if (value == -1) {
+            return "-1"
+        }
         return ConstantProvider.getReverseMapping(table.prefix,value)
     }
 

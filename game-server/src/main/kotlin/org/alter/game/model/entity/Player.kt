@@ -14,6 +14,7 @@ import net.rsprot.protocol.game.outgoing.inv.UpdateInvFull
 import net.rsprot.protocol.game.outgoing.map.RebuildLogin
 import net.rsprot.protocol.game.outgoing.misc.client.UpdateRebootTimer
 import net.rsprot.protocol.game.outgoing.misc.player.MessageGame
+import net.rsprot.protocol.game.outgoing.misc.player.TriggerOnDialogAbort
 import net.rsprot.protocol.game.outgoing.misc.player.UpdateRunWeight
 import net.rsprot.protocol.game.outgoing.misc.player.UpdateStat
 import net.rsprot.protocol.game.outgoing.sound.SynthSound
@@ -43,9 +44,11 @@ import org.alter.game.model.timer.ACTIVE_COMBAT_TIMER
 import org.alter.game.model.timer.FORCE_DISCONNECTION_TIMER
 import org.alter.game.model.varp.VarpSet
 import org.alter.game.pluginnew.event.impl.LoginEvent
+import org.alter.game.pluginnew.event.impl.LogoutEvent
+import org.alter.game.pluginnew.event.impl.PlayerTickEvent
 import org.alter.game.rsprot.RsModObjectProvider
-import org.alter.game.saving.PlayerDetails
 import org.alter.game.service.log.LoggerService
+import org.alter.game.ui.UserInterfaceMap
 import org.alter.rscm.RSCM
 import org.alter.rscm.RSCM.asRSCM
 import org.alter.rscm.RSCMType
@@ -113,11 +116,22 @@ open class Player(world: World) : Pawn(world) {
 
     fun getPendingLogout() = pendingLogout
 
+    fun ifCloseInputDialog() {
+        write(TriggerOnDialogAbort)
+    }
+
     /**
      * A flag which indicates that our [FORCE_DISCONNECTION_TIMER] must be set
      * when [pendingLogout] logic is handled.
      */
     @Volatile private var setDisconnectionTimer = false
+
+    var gameframeTopLevel : String = "interfaces.toplevel"
+    var gameframeTopLevelLastKnown : String = "interfaces.toplevel"
+
+    var stoneArrangements : Boolean = false
+
+    public val ui: UserInterfaceMap = UserInterfaceMap()
 
     val bonds = ItemContainer(BOND_POUCH_KEY)
 
@@ -137,8 +151,6 @@ open class Player(world: World) : Pawn(world) {
             put(EQUIPMENT_KEY, equipment)
             put(BANK_KEY, bank)
         }
-
-    val interfaces by lazy { InterfaceSet(PlayerInterfaceListener(this, world.plugins)) }
 
     val varps = VarpSet(maxVarps = varpSize())
 
@@ -390,6 +402,7 @@ open class Player(world: World) : Pawn(world) {
                 )
                 getSkills().clean(i)
             }
+            PlayerTickEvent(this).post()
         }
     }
 
@@ -478,6 +491,10 @@ open class Player(world: World) : Pawn(world) {
         social.updateStatus(this)
     }
 
+    public fun stopAction() {
+        //TODO STOP ACTION
+    }
+
     /**
      * Requests for this player to log out. However, the player may not be able
      * to log out immediately under certain circumstances.
@@ -498,6 +515,7 @@ open class Player(world: World) : Pawn(world) {
     internal open fun handleLogout() {
         interruptQueues()
         world.instanceAllocator.logout(this)
+        LogoutEvent(this).post()
         world.plugins.executeLogout(this)
         world.unregister(this)
         social.updateStatus(this)

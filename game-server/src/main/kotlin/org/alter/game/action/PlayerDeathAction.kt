@@ -9,6 +9,7 @@ import org.alter.game.model.move.stopMovement
 import org.alter.game.model.queue.QueueTask
 import org.alter.game.model.queue.TaskPriority
 import org.alter.game.plugin.Plugin
+import org.alter.game.pluginnew.event.impl.PlayerDeathEvent
 import org.alter.game.service.log.LoggerService
 import org.alter.rscm.RSCM
 import org.alter.rscm.RSCM.asRSCM
@@ -65,5 +66,6 @@ object PlayerDeathAction {
         player.timers.removeIf { it.resetOnDeath }
 
         world.plugins.executePlayerDeath(player)
+        PlayerDeathEvent(player).post()
     }
 }

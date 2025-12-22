@@ -35,6 +35,14 @@ fun <K1, V1, K2, V2> enum(
 ): List<EnumPair<V1, V2>> =
     EnumHelper.of(enumName).getEnum(keyType, valueType)
 
+fun <K1, V1, K2, V2> enum(
+    enumName: Int,
+    keyType: VarTypeImpl<K1, V1>,
+    valueType: VarTypeImpl<K2, V2>
+): List<EnumPair<V1, V2>> =
+    EnumHelper.of(enumName).getEnum(keyType, valueType)
+
+
 
 fun <K, V> enumKey(
     enumName: String,
@@ -120,6 +128,12 @@ class EnumHelper private constructor(val enum: EnumType) {
         /**
          * Load an EnumType from the server cache by name.
          */
+
+        fun load(enum: Int): EnumType {
+            return ServerCacheManager.getEnum(enum)
+                ?: throw NoSuchElementException("Enum '$enum' not found")
+        }
+
         fun load(name: String): EnumType {
             requireRSCM(RSCMType.ENUMS,name)
             return ServerCacheManager.getEnum(name.asRSCM())
@@ -130,5 +144,7 @@ class EnumHelper private constructor(val enum: EnumType) {
          * Creates an [EnumHelper] from an enum name.
          */
         fun of(name: String): EnumHelper = EnumHelper(load(name))
+
+        fun of(name: Int): EnumHelper = EnumHelper(load(name))
     }
 }

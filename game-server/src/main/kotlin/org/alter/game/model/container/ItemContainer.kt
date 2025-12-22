@@ -16,8 +16,9 @@ import org.alter.rscm.RSCMType
  * @author Tom <rspsmods@gmail.com>
  */
 class ItemContainer(val key: ContainerKey) : Iterable<Item?> {
+
     constructor(capacity: Int, stackType: ContainerStackType) :
-        this(ContainerKey("", capacity, stackType))
+        this(ContainerKey("","", capacity, stackType))
 
     constructor(other: ItemContainer) : this(other.capacity, other.stackType) {
         for (i in 0 until capacity) {
@@ -34,6 +35,9 @@ class ItemContainer(val key: ContainerKey) : Iterable<Item?> {
     private val stackType = key.stackType
 
     private val items = Array<Item?>(capacity) { null }
+
+    public val indices: IntRange
+        get() = items.indices
 
     /**
      * A flag which indicates that the [items] has been modified since the last

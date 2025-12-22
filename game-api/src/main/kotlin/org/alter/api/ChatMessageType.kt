@@ -31,5 +31,12 @@ enum class ChatMessageType(val id: Int) {
     SPAM(105),
     PLAYER_RELATED(106),
     TEN_SEC_TIMEOUT(107),
+    WELCOME(108),
     FILTERED(109),
+    ClanWarsChallenge(110),
+    GimFormGroup(111),
+    GimGroupWith(112),
+    GimGroupReqTrade(113),
+    Dialogue(114),
+    Mesbox(115)
 }

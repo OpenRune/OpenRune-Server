@@ -4,7 +4,6 @@ import io.github.oshai.kotlinlogging.KotlinLogging
 import org.alter.api.InterfaceDestination
 import org.alter.api.Skills
 import org.alter.api.ext.getVarp
-import org.alter.api.ext.openInterface
 import org.alter.api.ext.setComponentText
 import org.alter.api.ext.setVarp
 import org.alter.api.ext.toItem
@@ -13,6 +12,7 @@ import org.alter.game.model.attr.AttributeKey
 import org.alter.game.model.attr.QUEST_STAGE_MAP_ATTR
 import org.alter.game.model.entity.GroundItem
 import org.alter.game.model.entity.Player
+import org.alter.interfaces.ifOpenMain
 import org.alter.rscm.RSCM.asRSCM
 import org.generated.tables.QuestRow
 
@@ -133,7 +133,7 @@ data class Quest(
     }
 
     private fun completedQuest(player: Player) {
-        player.openInterface("interfaces.questscroll", InterfaceDestination.MAIN_SCREEN)
+        player.ifOpenMain("interfaces.questscroll")
         player.setComponentText("components.questscroll:quest_title", "You have completed ${displayName}!")
         player.setComponentText("components.questscroll:quest_reward1", "$questPoints Quest Point")
 

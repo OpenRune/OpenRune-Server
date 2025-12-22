@@ -68,10 +68,6 @@ val NO_CLIP_ATTR = AttributeKey<Boolean>()
  */
 val PROTECT_ITEM_ATTR = AttributeKey<Boolean>()
 
-/**
- * The display mode that the player has submitted as a message.
- */
-val DISPLAY_MODE_CHANGE_ATTR = AttributeKey<Int>()
 
 /**
  * The distance a [Pawm] keeps facing their [FACING_PAWN_ATTR].

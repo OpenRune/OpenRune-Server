@@ -48,11 +48,6 @@ class PluginRepository(
     private val worldInitPlugins = mutableListOf<Plugin.() -> Unit>()
 
     /**
-     * The plugin that will executed when changing display modes.
-     */
-    private var windowStatusPlugin: (Plugin.() -> Unit)? = null
-
-    /**
      * The plugin that will be executed when the core module wants
      * close the main modal the player has opened.
      *
@@ -731,22 +726,6 @@ class PluginRepository(
         spellOnPlayerPlugins[hash] = plugin
     }
 
-    fun bindWindowStatus(plugin: Plugin.() -> Unit) {
-        if (windowStatusPlugin != null) {
-            logger.error { "Window status is already bound to a plugin" }
-            throw IllegalStateException("Window status is already bound to a plugin")
-        }
-        windowStatusPlugin = plugin
-    }
-
-    fun executeWindowStatus(p: Player) {
-        if (windowStatusPlugin != null) {
-            p.executePlugin(windowStatusPlugin!!)
-        } else {
-            logger.warn { "Window status is not bound to a plugin." }
-        }
-    }
-
     fun bindModalClose(plugin: Plugin.() -> Unit) {
         if (closeModalPlugin != null) {
             logger.error { "Modal close is already bound to a plugin" }
@@ -758,8 +737,6 @@ class PluginRepository(
     fun executeModalClose(p: Player) {
         if (closeModalPlugin != null) {
             p.executePlugin(closeModalPlugin!!)
-        } else {
-            logger.warn { "Modal close is not bound to a plugin." }
         }
     }
 

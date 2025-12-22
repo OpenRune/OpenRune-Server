@@ -11,6 +11,7 @@ import org.alter.game.plugin.KotlinPlugin
 import org.alter.game.plugin.PluginRepository
 import org.alter.game.pluginnew.PluginEvent
 import org.alter.game.pluginnew.event.impl.onNpcOption
+import org.alter.interfaces.ifOpenMain
 
 class DoomsayerPlugin() : PluginEvent() {
 
@@ -50,7 +51,7 @@ class DoomsayerPlugin() : PluginEvent() {
         when (options(player, "Yes, I do.", "Not right now.")) {
             1 -> {
                 chatPlayer(player, "Yes, I do.")
-                player.openInterface(interfaceId = 583, dest = InterfaceDestination.MAIN_SCREEN)
+                player.ifOpenMain("interfaces.cws_doomsayer")
             }
 
             2 -> {
