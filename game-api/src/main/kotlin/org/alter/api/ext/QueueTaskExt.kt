@@ -10,6 +10,7 @@ import org.alter.game.model.attr.INTERACTING_NPC_ATTR
 import org.alter.game.model.entity.Player
 import org.alter.game.model.item.Item
 import org.alter.game.model.queue.QueueTask
+import org.alter.game.pluginnew.event.impl.DialogCloseAll
 import org.alter.game.pluginnew.event.impl.DialogItem
 import org.alter.game.pluginnew.event.impl.DialogItemDouble
 import org.alter.game.pluginnew.event.impl.DialogMessageOpen
@@ -31,7 +32,7 @@ const val CHATBOX_CHILD = 566
  */
 private fun closeDialog(player: Player): QueueTask.() -> Unit =
     {
-
+        DialogCloseAll(player).post()
         player.write(TriggerOnDialogAbort)
     }
 

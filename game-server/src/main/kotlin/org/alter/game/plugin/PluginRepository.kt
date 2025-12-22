@@ -737,8 +737,6 @@ class PluginRepository(
     fun executeModalClose(p: Player) {
         if (closeModalPlugin != null) {
             p.executePlugin(closeModalPlugin!!)
-        } else {
-            logger.warn { "Modal close is not bound to a plugin." }
         }
     }
 

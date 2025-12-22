@@ -11,10 +11,14 @@ import org.alter.rscm.RSCMType
 
 class DialogueTempEvent : PluginEvent() {
 
-
-
-
     override fun init() {
+
+        on<DialogCloseAll> {
+            then {
+                player.ifCloseModals()
+            }
+        }
+
         on<DialogPlayerOpen> {
             then {
                 val pages = TextAlignment.generateChatPageList(message)

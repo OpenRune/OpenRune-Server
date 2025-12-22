@@ -4,6 +4,10 @@ import net.rsprot.protocol.util.CombinedId
 import org.alter.game.model.entity.Player
 import org.alter.game.pluginnew.event.PlayerEvent
 
+class DialogCloseAll(
+    player: Player
+) : PlayerEvent(player)
+
 class DialogPlayerOpen(
     val message : String,
     val animation: String,
