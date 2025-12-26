@@ -38,6 +38,7 @@ class ItemPlugin(
                     player.message("Item $item does not exist in cache.")
                 }
             } catch (e: Exception) {
+                e.printStackTrace()
                 player.queue(TaskPriority.STRONG) {
                     val item = spawn(player) ?: return@queue
                     if (item.amount > 0) {

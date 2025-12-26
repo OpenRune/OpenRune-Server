@@ -11,7 +11,7 @@ import org.bson.Document
 /**
  * @author Tom <rspsmods@gmail.com>
  */
-class Item(val id: Int, var amount: Int = 1) {
+class Item(val id: Int, var amount: Int = 1, var vars : Int = 0) {
 
     constructor(id: String, amount: Int = 1) : this(Item(id.asRSCM(), amount)) {
         RSCM.requireRSCM(RSCMType.OBJTYPES, id)
@@ -83,7 +83,7 @@ class Item(val id: Int, var amount: Int = 1) {
     override fun toString(): String = toStringHelper().add("id", id).add("amount", amount).toString()
 
     fun asDocument(): Document {
-        return Document("id", id).apply {
+        return Document("id", RSCM.getReverseMapping(RSCMType.OBJTYPES,id)).apply {
             append("amount", amount)
 
             if (attr.isNotEmpty()) {
@@ -97,7 +97,7 @@ class Item(val id: Int, var amount: Int = 1) {
 
     companion object {
         fun fromDocument(doc: Document): Item {
-            val id = doc.getInteger("id")
+            val id = doc.getString("id")
             val amount = doc.getInteger("amount")
             val item = Item(id, amount)
 

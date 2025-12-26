@@ -1,0 +1,8 @@
+[[inventory]]
+id = "inv.inv"
+inherit = "inv.inv"
+
+stack = "Normal"
+scope = "Perm"
+protect = false
+runWeight = true

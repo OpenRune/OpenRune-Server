@@ -5,8 +5,10 @@ dependencies {
     api(libs.or2.definition)
     api(libs.or2.filestore)
     api(libs.or2.filesystem)
-
+    implementation("cc.ekblad:4koma:1.2.2-openrune")
+    implementation("com.michael-bull.kotlin-inline-logger:kotlin-inline-logger:1.0.6")
     implementation("com.squareup:kotlinpoet:2.2.0")
+    implementation("me.tongfei:progressbar:0.9.2")
 }
 
 tasks {

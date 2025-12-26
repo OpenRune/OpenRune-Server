@@ -1,6 +1,7 @@
 package org.alter.game.model.entity
 
 import dev.openrune.ServerCacheManager.varpSize
+import dev.openrune.types.InvScope
 import dev.openrune.types.getInt
 import gg.rsmod.util.toStringHelper
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet
@@ -10,12 +11,10 @@ import net.rsprot.protocol.game.outgoing.info.playerinfo.PlayerAvatar
 import net.rsprot.protocol.game.outgoing.info.playerinfo.PlayerInfo
 import net.rsprot.protocol.game.outgoing.info.util.BuildArea
 import net.rsprot.protocol.game.outgoing.info.worldentityinfo.WorldEntityInfo
-import net.rsprot.protocol.game.outgoing.inv.UpdateInvFull
 import net.rsprot.protocol.game.outgoing.map.RebuildLogin
 import net.rsprot.protocol.game.outgoing.misc.client.UpdateRebootTimer
 import net.rsprot.protocol.game.outgoing.misc.player.MessageGame
 import net.rsprot.protocol.game.outgoing.misc.player.TriggerOnDialogAbort
-import net.rsprot.protocol.game.outgoing.misc.player.UpdateRunWeight
 import net.rsprot.protocol.game.outgoing.misc.player.UpdateStat
 import net.rsprot.protocol.game.outgoing.sound.SynthSound
 import net.rsprot.protocol.game.outgoing.varp.VarpLarge
@@ -24,16 +23,12 @@ import net.rsprot.protocol.message.OutgoingGameMessage
 import org.alter.ParamMapper
 import org.alter.game.model.*
 import org.alter.game.model.appearance.Appearance
-import org.alter.game.model.attr.CURRENT_SHOP_ATTR
 import org.alter.game.model.attr.LEVEL_UP_INCREMENT
 import org.alter.game.model.attr.LEVEL_UP_OLD_XP
 import org.alter.game.model.attr.LEVEL_UP_SKILL_ID
 import org.alter.game.model.attr.LOOPING_ANIMATION_ATTR
-import org.alter.game.model.container.ItemContainer
-import org.alter.game.model.container.key.*
-import org.alter.game.model.interf.InterfaceSet
-import org.alter.game.model.interf.listener.PlayerInterfaceListener
-import org.alter.game.model.item.Item
+import org.alter.game.model.inv.Inventory
+import org.alter.game.model.inv.map.InventoryMap
 import org.alter.game.model.move.MovementQueue
 import org.alter.game.model.move.moveTo
 import org.alter.game.model.priv.Privilege
@@ -46,7 +41,6 @@ import org.alter.game.model.varp.VarpSet
 import org.alter.game.pluginnew.event.impl.LoginEvent
 import org.alter.game.pluginnew.event.impl.LogoutEvent
 import org.alter.game.pluginnew.event.impl.PlayerTickEvent
-import org.alter.game.rsprot.RsModObjectProvider
 import org.alter.game.service.log.LoggerService
 import org.alter.game.ui.UserInterfaceMap
 import org.alter.rscm.RSCM
@@ -133,24 +127,57 @@ open class Player(world: World) : Pawn(world) {
 
     public val ui: UserInterfaceMap = UserInterfaceMap()
 
-    val bonds = ItemContainer(BOND_POUCH_KEY)
+    public lateinit var inventory: Inventory
+    public lateinit var equipment: Inventory
 
-    val inventory = ItemContainer(INVENTORY_KEY)
+    public var pendingRunWeight: Boolean = false
+    public val invMap: InventoryMap = InventoryMap()
+    public val transmittedInvs: ObjectOpenHashSet<String> = ObjectOpenHashSet()
+    public val transmittedInvAddQueue: ObjectOpenHashSet<String> = ObjectOpenHashSet()
 
-    val equipment = ItemContainer(EQUIPMENT_KEY)
+    public fun startInvTransmit(inventory: Inventory) {
+        val name = RSCM.getReverseMapping(RSCMType.INVTYPES, inventory.type.id)
 
-    val bank = ItemContainer(BANK_KEY)
-
-    /**
-     * A map that contains all the [ItemContainer]s a player can have.
-     */
-    val containers =
-        HashMap<ContainerKey, ItemContainer>().apply {
-            put(BOND_POUCH_KEY, bonds)
-            put(INVENTORY_KEY, inventory)
-            put(EQUIPMENT_KEY, equipment)
-            put(BANK_KEY, bank)
+        check(inventory.type.scope != InvScope.Shared || !invMap.contains(name)) {
+            "`inv` should have previously been removed from cached inv map: ${this@Player.inventory}"
         }
+        /*
+         * Reorders the given `inv` in the list of transmitted inventories. This ensures that updates
+         * for inventories are sent in the order they were added when this function was called, even if
+         * they were first added during login (e.g., `worn` and `inv`).
+         *
+         * This is done to emulate the behavior observed in os, where the transmitted inventory order
+         * can change dynamically. For example, equipping an item will have the update order of `inv`
+         * and `worn`. If you open a shop and then equip an item, the new order will be `worn` -> `inv`.
+         *
+         * This logic guarantees that updates sent from this point onward respect the new order.
+         */
+        transmittedInvs.remove(name)
+        transmittedInvAddQueue.add(name)
+        invMap[name] = inventory
+    }
+
+
+    public fun invTransmit(inv: Inventory) {
+        startInvTransmit(inv)
+    }
+
+    public fun invStopTransmit(inv: Inventory) {
+        stopInvTransmit(inv)
+    }
+
+    public fun stopInvTransmit(inventory: Inventory) {
+
+        val name = RSCM.getReverseMapping(RSCMType.INVTYPES, inventory.type.id)
+
+        if (inventory.type.scope == InvScope.Shared) {
+            val removed = invMap.remove(name)
+            check(removed == inventory) { "Mismatch with cached value: (cached=$removed, inv=${this@Player.inventory})" }
+        }
+        transmittedInvs.remove(name)
+        transmittedInvAddQueue.remove(name)
+        UpdateInventory.updateInvStopTransmit(this, inventory)
+    }
 
     val varps = VarpSet(maxVarps = varpSize())
 
@@ -267,8 +294,7 @@ open class Player(world: World) : Pawn(world) {
      * conditions if any logic may modify other [Pawn]s.
      */
     override fun cycle() {
-        var calculateWeight = false
-        var calculateBonuses = false
+
 
         if (pendingLogout) {
             /*
@@ -311,56 +337,8 @@ open class Player(world: World) : Pawn(world) {
             }
             world.plugins.executeRegionEnter(this, tile.regionId)
         }
-        if (inventory.dirty) {
-            val items = inventory.rawItems
-            write(
-                UpdateInvFull(
-//                    interfaceId = 149,
-//                    componentId = 0,
-                    inventoryId = 93,
-                    capacity = items.size,
-                    provider = RsModObjectProvider(items),
-                ),
-            )
 
-            inventory.dirty = false
-            calculateWeight = true
-        }
-
-        if (equipment.dirty) {
-            val items = equipment.rawItems
-            write(UpdateInvFull(inventoryId = 94, capacity = items.size, provider = RsModObjectProvider(items)))
-            equipment.dirty = false
-            calculateWeight = true
-            calculateBonuses = true
-            org.alter.game.info.PlayerInfo(this).syncAppearance()
-        }
-
-        if (bank.dirty) {
-            val items = bank.rawItems
-            write(UpdateInvFull(inventoryId = 95, capacity = items.size, provider = RsModObjectProvider(items)))
-            bank.dirty = false
-        }
-        if (shopDirty) {
-            val shop = this.attr[CURRENT_SHOP_ATTR]
-            if (shop != null) {
-                    val items = shop.items.map { if (it != null) Item(it.item, it.currentAmount) else null }.toTypedArray()
-                    write(UpdateInvFull(
-                        inventoryId = 3,
-                        capacity = items.size,
-                        provider = RsModObjectProvider(items)
-                    ))
-            }
-            shopDirty = false
-        }
-
-        if (calculateWeight) {
-            calculateWeight()
-        }
-
-        if (calculateBonuses) {
-            calculateBonuses()
-        }
+        PlayerInvUpdateProcessor.process(this)
 
         if (timers.isNotEmpty) {
             timerCycle()
@@ -389,6 +367,7 @@ open class Player(world: World) : Pawn(world) {
             }
         }
         varps.clean()
+        PlayerInvUpdateProcessor.cleanUp()
 
         for (i in 0 until getSkills().maxSkills) {
             if (getSkills().isDirty(i)) {
@@ -405,6 +384,32 @@ open class Player(world: World) : Pawn(world) {
             PlayerTickEvent(this).post()
         }
     }
+
+    fun calculateBonuses() {
+        Arrays.fill(equipmentBonuses, 0)
+        for (i in 0 until equipment.size) {
+            val item = equipment[i] ?: continue
+            val params = item.getDef().params?: continue
+            val bonuses = intArrayOf(
+                params.getInt(ParamMapper.item.STAB_ATTACK_BONUS),
+                params.getInt(ParamMapper.item.SLASH_ATTACK_BONUS),
+                params.getInt(ParamMapper.item.CRUSH_ATTACK_BONUS),
+                params.getInt(ParamMapper.item.MAGIC_ATTACK_BONUS),
+                params.getInt(ParamMapper.item.RANGED_ATTACK_BONUS),
+                params.getInt(ParamMapper.item.STAB_DEFENCE_BONUS),
+                params.getInt(ParamMapper.item.SLASH_DEFENCE_BONUS),
+                params.getInt(ParamMapper.item.CRUSH_DEFENCE_BONUS),
+                params.getInt(ParamMapper.item.MAGIC_DEFENCE_BONUS),
+                params.getInt(ParamMapper.item.RANGED_DEFENCE_BONUS),
+                params.getInt(ParamMapper.item.MELEE_STRENGTH),
+                params.getInt(ParamMapper.item.RANGED_STRENGTH_BONUS),
+                params.getInt(ParamMapper.item.MAGIC_DAMAGE_STRENGTH) / 10,
+                params.getInt(ParamMapper.item.PRAYER_BONUS),
+            )
+            bonuses.forEachIndexed { index, bonus -> equipmentBonuses[index] += bonus }
+        }
+    }
+
 
     /**
      * Logic that should be executed every game cycle, after updating occurs.
@@ -521,37 +526,6 @@ open class Player(world: World) : Pawn(world) {
         social.updateStatus(this)
     }
 
-    fun calculateWeight() {
-        val inventoryWeight = inventory.filterNotNull().sumOf { it.getDef().weight }
-        val equipmentWeight = equipment.filterNotNull().sumOf { it.getDef().weight }
-        this.weight = inventoryWeight + equipmentWeight
-        write(UpdateRunWeight(this.weight.toInt()))
-    }
-
-    fun calculateBonuses() {
-        Arrays.fill(equipmentBonuses, 0)
-        for (i in 0 until equipment.capacity) {
-            val item = equipment[i] ?: continue
-            val params = item.getDef().params?: continue
-            val bonuses = intArrayOf(
-                params.getInt(ParamMapper.item.STAB_ATTACK_BONUS),
-                params.getInt(ParamMapper.item.SLASH_ATTACK_BONUS),
-                params.getInt(ParamMapper.item.CRUSH_ATTACK_BONUS),
-                params.getInt(ParamMapper.item.MAGIC_ATTACK_BONUS),
-                params.getInt(ParamMapper.item.RANGED_ATTACK_BONUS),
-                params.getInt(ParamMapper.item.STAB_DEFENCE_BONUS),
-                params.getInt(ParamMapper.item.SLASH_DEFENCE_BONUS),
-                params.getInt(ParamMapper.item.CRUSH_DEFENCE_BONUS),
-                params.getInt(ParamMapper.item.MAGIC_DEFENCE_BONUS),
-                params.getInt(ParamMapper.item.RANGED_DEFENCE_BONUS),
-                params.getInt(ParamMapper.item.MELEE_STRENGTH),
-                params.getInt(ParamMapper.item.RANGED_STRENGTH_BONUS),
-                params.getInt(ParamMapper.item.MAGIC_DAMAGE_STRENGTH) / 10,
-                params.getInt(ParamMapper.item.PRAYER_BONUS),
-            )
-            bonuses.forEachIndexed { index, bonus -> equipmentBonuses[index] += bonus }
-        }
-    }
 
     fun addXp(skill: Int, xp: Int) {
         addXp(skill,xp.toDouble())
@@ -691,3 +665,4 @@ open class Player(world: World) : Pawn(world) {
 
     var social = Social()
 }
+

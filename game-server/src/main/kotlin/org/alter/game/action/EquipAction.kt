@@ -9,7 +9,6 @@ import org.alter.game.pluginnew.event.impl.ContainerType
 import org.alter.game.pluginnew.event.impl.EquipEvent
 import org.alter.game.pluginnew.event.impl.UnequipEvent
 
-
 /**
  * This class is responsible for handling armor equip and unequip related
  * actions.
@@ -196,7 +195,7 @@ object EquipAction {
              * that items like shields will make sure 2h swords are unequipped even
              * though shields don't have a 'secondary' equipment slot (equipment type).
              */
-            for (i in 0 until p.equipment.capacity) {
+            for (i in 0 until p.equipment.size) {
                 val equip = p.equipment[i] ?: continue
                 val otherDef = getItem(equip.id) ?: run {
                     p.writeMessage("Item definition not found for id=${equip.id}")
@@ -317,3 +316,9 @@ object EquipAction {
         p.world.plugins.executeUnequipSlot(p, slot)
     }
 }
+
+
+
+
+
+

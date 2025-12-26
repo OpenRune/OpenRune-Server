@@ -9,6 +9,7 @@ import org.alter.game.pluginnew.MenuOption
 import org.alter.game.pluginnew.PluginEvent
 import org.alter.game.pluginnew.event.EventListener
 import org.alter.game.pluginnew.event.PlayerEvent
+import org.alter.game.ui.IfSubType
 import org.alter.rscm.RSCM
 import org.alter.rscm.RSCM.asRSCM
 import org.alter.rscm.RSCM.requireRSCM
@@ -36,19 +37,39 @@ enum class ContainerType(val id: String) {
     }
 }
 
-data class IfModalButton(
+data class ButtonClickEvent(
     val component: CombinedId,
-    val option: MenuOption,
+    val option: Int,
     val item: Int,
     val slot: Int,
+    val type : IfSubType,
     override val player: Player
-) : PlayerEvent(player)
+) : PlayerEvent(player) {
+
+    val op = MenuOption.fromId(option)
+}
+
+fun PluginEvent.onIfOverlayButton(
+    componentID: String,
+    action: suspend ButtonClickEvent.() -> Unit
+): EventListener<ButtonClickEvent> {
+    requireRSCM(RSCMType.COMPONENTS,componentID)
+    return on<ButtonClickEvent> {
+        where { component.combinedId == componentID.asRSCM() }
+        then { action(this) }
+    }
+}
+
+fun PluginEvent.onButton(
+    componentID: String,
+    action: suspend ButtonClickEvent.() -> Unit
+): EventListener<ButtonClickEvent> = onIfModalButton(componentID,action)
 
 fun PluginEvent.onIfModalButton(
     componentID: Int,
-    action: suspend IfModalButton.() -> Unit
-): EventListener<IfModalButton> {
-    return on<IfModalButton> {
+    action: suspend ButtonClickEvent.() -> Unit
+): EventListener<ButtonClickEvent> {
+    return on<ButtonClickEvent> {
         where { component.combinedId == componentID }
         then { action(this) }
     }
@@ -57,20 +78,21 @@ fun PluginEvent.onIfModalButton(
 
 fun PluginEvent.onIfModalButton(
     componentID: String,
-    action: suspend IfModalButton.() -> Unit
-): EventListener<IfModalButton> {
+    action: suspend ButtonClickEvent.() -> Unit
+): EventListener<ButtonClickEvent> {
     requireRSCM(RSCMType.COMPONENTS,componentID)
-    return on<IfModalButton> {
-        where { component.combinedId == componentID.asRSCM() }
+    return on<ButtonClickEvent> {
+        where { component.combinedId == componentID.asRSCM()}
         then { action(this) }
     }
 }
 
-data class ButtonClickEvent(
+data class EquipToSlot(
     val component: CombinedId,
     val option: Int,
     val item: Int,
     val slot: Int,
+    val type : IfSubType,
     override val player: Player
 ) : PlayerEvent(player) {
 
@@ -91,14 +113,12 @@ data class ButtonClickEvent(
     }
 }
 
-fun PluginEvent.onButton(
-    componentID: String,
-    action: suspend ButtonClickEvent.() -> Unit
-): EventListener<ButtonClickEvent> {
-    requireRSCM(RSCMType.COMPONENTS,componentID)
-    return on<ButtonClickEvent> {
-        where { component.combinedId == componentID.asRSCM() }
+fun PluginEvent.onEquipToSlot(
+    wp: Int,
+    action: suspend EquipToSlot.() -> Unit
+): EventListener<EquipToSlot> {
+    return on<EquipToSlot> {
+        where { false }
         then { action(this) }
     }
 }
-

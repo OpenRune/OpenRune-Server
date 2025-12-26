@@ -21,7 +21,6 @@ import org.alter.game.pluginnew.event.impl.onIfModalDrag
 import org.alter.game.util.enum
 import org.alter.game.util.vars.ComponentVarType
 import org.alter.game.util.vars.IntType
-import org.alter.interfaceInvInit
 import org.alter.interfaces.ifClose
 import org.alter.interfaces.ifOpenMainSidePair
 import org.alter.interfaces.ifSetEvents
@@ -37,10 +36,10 @@ class EquipmentStats : PluginEvent() {
         }
 
         enum("enums.equipment_stats_to_slots_map", IntType, ComponentVarType).forEach {
-            onIfModalButton(it.value) { opWornMain(player,it.key, option) }
+            onIfModalButton(it.value) { opWornMain(player,it.key, op) }
         }
 
-        onIfModalButton("components.equipment_side:items") { opHeldSide(player,slot, option) }
+        onIfModalButton("components.equipment_side:items") { opHeldSide(player,slot, op) }
         onIfModalDrag("components.equipment_side:items") { dragHeldButton(player,selectedSlot,targetSlot) }
 
     }
@@ -51,15 +50,7 @@ class EquipmentStats : PluginEvent() {
         player.animate(RSCM.NONE)
         player.graphic(RSCM.NONE)
         player.ifOpenMainSidePair(main = "interfaces.equipment", side = "interfaces.equipment_side")
-        interfaceInvInit(
-            player = player,
-            inv = player.inventory,
-            target = "components.equipment_side:items",
-            objRowCount = 4,
-            objColCount = 7,
-            dragType = 1,
-            op1 = "Equip",
-        )
+        player.invTransmit(player.inventory)
         player.ifSetEvents(
             component = "components.equipment_side:items",
             range = player.inventory.indices,
@@ -103,7 +94,8 @@ class EquipmentStats : PluginEvent() {
     private fun dragHeldButton(player: Player,selectedSlot: Int?,targetSlot : Int?) {
         val fromSlot = selectedSlot ?: return
         val intoSlot = targetSlot ?: return
-        player.inventory.swap(fromSlot,intoSlot)
+        //TODO ITEMS
+        //player.inventory.swap(fromSlot,intoSlot)
     }
 
     private fun opWornMain(player: Player,wornSlot: Int, op: MenuOption) {

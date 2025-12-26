@@ -596,24 +596,6 @@ abstract class KotlinPlugin(
         logic: (Plugin).() -> Unit,
     ) = r.bindInterfaceClose(interfaceId, logic)
 
-    /**
-     * Invoke [logic] when [net.rsprot.protocol.game.incoming.buttons.If1Button] is handled.
-     */
-    fun onButton(
-        interfaceId: Int,
-        component: Int,
-        logic: (Plugin).() -> Unit,
-    ) = r.bindButton(interfaceId, component, logic)
-
-    fun onButton(
-        interfaceId: Int,
-        vararg components: Int,
-        logic: (Plugin).() -> Unit,
-    ) {
-        components.forEach {
-            onButton(interfaceId, it, logic)
-        }
-    }
 
     /**
      * Invoke [logic] when [key] reaches a time value of 0.

@@ -326,7 +326,7 @@ class MiningPlugin : PluginEvent() {
             canRepeat = {
                 val currentNearestTile = obj.findNearestTile(player.tile)
                 val notDepleted = depletedId == null || !isDepletedRock(obj, depletedId, player)
-                player.tile.isWithinRadius(currentNearestTile, 1) && !player.inventory.isFull &&
+                player.tile.isWithinRadius(currentNearestTile, 1) && !player.inventory.isFull() &&
                         obj.isSpawned(world) &&
                         notDepleted
             }

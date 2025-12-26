@@ -8,6 +8,7 @@ import org.alter.game.model.attr.INTERACTING_OPT_ATTR
 import org.alter.game.model.attr.INTERACTING_SLOT_ATTR
 import org.alter.game.model.entity.Client
 import org.alter.game.pluginnew.event.impl.ButtonClickEvent
+import org.alter.game.ui.IfSubType
 
 class IfModelOp1Handler : MessageHandler<If1Button> {
     override fun consume(
@@ -20,20 +21,19 @@ class IfModelOp1Handler : MessageHandler<If1Button> {
         val item = -1
         val slot = -1
 
+
+        println("THIS")
+
         log(client, "Click button: component=[%d:%d], option=%d, slot=%d, item=%d", interfaceId, component, option, slot, item)
 
         client.attr[INTERACTING_OPT_ATTR] = option
         client.attr[INTERACTING_ITEM_ID] = item
         client.attr[INTERACTING_SLOT_ATTR] = slot
 
-        if (client.world.plugins.executeButton(client, interfaceId, component)) {
-            return
-        }
-
         if (client.world.devContext.debugButtons) {
             client.writeMessage("Unhandled button action: [component=[$interfaceId:$component], option=$option, slot=$slot, item=$item]")
         }
-        
-        ButtonClickEvent(CombinedId(interfaceId, component), option, item, slot, client).post()
+
+        ButtonClickEvent(CombinedId(interfaceId, component), option, item, slot, IfSubType.Overlay,client).post()
     }
 }

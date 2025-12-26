@@ -11,7 +11,6 @@ import net.rsprot.protocol.game.outgoing.misc.player.SetPlayerOp
 import net.rsprot.protocol.game.outgoing.misc.player.UpdateRunEnergy
 import net.rsprot.protocol.game.outgoing.varp.VarpReset
 import org.alter.api.ChatMessageType
-import org.alter.api.ClientScript
 import org.alter.api.CommonClientScripts
 import org.alter.api.ext.boolVarBit
 import org.alter.api.ext.message
@@ -53,6 +52,8 @@ class LoginEvent : PluginEvent() {
     }
 
     private fun sendLowPriority(player: Player) {
+        player.startInvTransmit(player.inventory)
+        player.startInvTransmit(player.equipment)
 
         player.runClientScript(CommonClientScripts.ACCOUNT_INFO_UPDATE, 1, 0, 0)
         player.write(CamReset)

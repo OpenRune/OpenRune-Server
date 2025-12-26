@@ -294,7 +294,7 @@ suspend fun QueueTask.produceItemBox(
     player: Player,
     vararg items: Int,
     title: String = "What would you like to make?",
-    maxProducable: Int = player.inventory.capacity,
+    maxProducable: Int = player.inventory.size,
     logic: Player.(Int, Int) -> Unit,
 ) {
 

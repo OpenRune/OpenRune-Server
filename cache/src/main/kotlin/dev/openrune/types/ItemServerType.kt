@@ -15,6 +15,7 @@ data class ItemServerType(
     var noteLinkId: Int = -1,
     var noteTemplateId: Int = -1,
     var placeholderLink: Int = -1,
+    var dummyitem : Int = 0,
     var placeholderTemplate: Int = -1,
     var stacks: Int = 0,
     var appearanceOverride1: Int = -1,
@@ -24,10 +25,16 @@ data class ItemServerType(
     var alchable: Boolean = true,
     var exchangeCost: Int = -1,
 
+    var transformlink : Int = -1,
+    var transformtemplate: Int = -1,
     var equipment: Equipment? = null,
     var weapon: Weapon? = null,
     var params: MutableMap<String, Any>? = null,
 ) : Definition {
+
+    public val resolvedDummyitem: Dummyitem?
+        get() = Dummyitem[dummyitem]
+
 
     val stackable: Boolean
         get() = stacks == 1 || noteTemplateId > 0
@@ -40,6 +47,7 @@ data class ItemServerType(
      */
     val isPlaceholder
         get() = placeholderTemplate > 0 && placeholderLink > 0
+
 }
 
 data class EquipmentStats(
@@ -100,5 +108,21 @@ fun Map<String, Any?>.getInt(key: Int): Int = when (val v = this[key.toString()]
     is Number -> v.toInt()
     is String -> v.toIntOrNull() ?: 0
     else -> 0
+}
+
+public enum class Dummyitem(public val id: Int) {
+    /** Cannot be added into inventories or dropped on floor. */
+    GraphicOnly(id = 1),
+    /** Can be added into inventories, but cannot be dropped on floor. */
+    InvOnly(id = 2);
+
+    public companion object {
+        public operator fun get(id: Int): Dummyitem? =
+            when (id) {
+                GraphicOnly.id -> GraphicOnly
+                InvOnly.id -> InvOnly
+                else -> null
+            }
+    }
 }
 

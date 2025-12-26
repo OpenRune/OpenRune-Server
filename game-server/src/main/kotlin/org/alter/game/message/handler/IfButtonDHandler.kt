@@ -29,8 +29,6 @@ class IfButtonDHandler : MessageHandler<IfButtonD> {
 
     override fun consume(client: Client, message: IfButtonD) {
 
-        //OLD
-
         val fromSlot = message.selectedSub
         val fromItemId = message.selectedObj
 
@@ -53,20 +51,13 @@ class IfButtonDHandler : MessageHandler<IfButtonD> {
             toItemId,
         )
 
+        if (!client.lock.canItemInteract()) {
+            return
+        }
+
         client.attr[INTERACTING_ITEM_SLOT] = fromSlot
         client.attr[OTHER_ITEM_SLOT_ATTR] = toSlot
         client.attr[INTERACTING_COMPONENT_CHILD] = fromComponent
-
-        client.world.plugins.executeComponentToComponentItemSwap(
-            client,
-            fromInterfaceId,
-            fromComponent,
-            toInterfaceId,
-            toComponent
-        )
-
-
-        //NEW
 
         val selectedComponent = CombinedId(message.selectedInterfaceId, message.selectedComponentId)
         val selectedComponentType = ServerCacheManager.fromComponent(selectedComponent.combinedId)

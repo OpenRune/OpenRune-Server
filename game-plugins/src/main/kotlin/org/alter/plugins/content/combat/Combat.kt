@@ -22,7 +22,6 @@ import org.alter.plugins.content.combat.strategy.MagicCombatStrategy
 import org.alter.plugins.content.combat.strategy.MeleeCombatStrategy
 import org.alter.plugins.content.combat.strategy.RangedCombatStrategy
 import org.alter.plugins.content.combat.strategy.magic.CombatSpell
-import org.alter.plugins.content.combat.CombatConfigs
 import org.alter.plugins.content.interfaces.attack.AttackTab
 import org.alter.game.model.move.MovementQueue.StepType
 import org.alter.game.model.move.walkRoute
