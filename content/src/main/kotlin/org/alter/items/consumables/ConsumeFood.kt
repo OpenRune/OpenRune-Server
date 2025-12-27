@@ -23,7 +23,6 @@ class ConsumeFood : PluginEvent() {
 
     override fun init() {
         ConsumableFoodRow.all().forEach { food ->
-
             on<ItemClickEvent> {
                 where { food.items.contains(item) && hasOption("eat") && !player.timers.has(getDelayType(food.combo)) }
                 then {

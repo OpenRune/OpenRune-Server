@@ -12,8 +12,10 @@ import dev.openrune.definition.type.*
 import dev.openrune.codec.osrs.ItemDecoder
 import dev.openrune.codec.osrs.ObjectDecoder
 import dev.openrune.codec.osrs.HealthBarDecoder
+import dev.openrune.codec.osrs.InventoryDecoder
 import dev.openrune.codec.osrs.NpcDecoder
 import dev.openrune.codec.osrs.SequenceDecoder
+import dev.openrune.codec.osrs.impl.InventoryServerCodec
 import dev.openrune.definition.type.widget.ComponentType
 import dev.openrune.server.impl.item.ItemRenderDataManager
 import dev.openrune.types.*
@@ -36,7 +38,7 @@ object ServerCacheManager {
     private val sequences = mutableMapOf<Int, SequenceServerType>()
     private var fonts = mutableMapOf<Int, FontType>()
     private var interfaces = mutableMapOf<Int, InterfaceType>()
-    private var inv = mutableMapOf<Int, InventoryType>()
+    private var inv = mutableMapOf<Int, InventoryServerType>()
 
     val logger = KotlinLogging.logger {}
 
@@ -57,13 +59,13 @@ object ServerCacheManager {
             HealthBarDecoder().load(cache, healthBars)
             NpcDecoder().load(cache, npcs)
             ItemDecoder().load(cache, items)
+            InventoryDecoder().load(cache,inv)
             SequenceDecoder().load(cache,sequences)
             VarBitDecoder().load(cache, varbits)
             VarDecoder().load(cache, varps)
             StructDecoder().load(cache, structs)
             DBRowDecoder().load(cache, dbrows)
             DBTableDecoder().load(cache, dbtables)
-            InventoryDecoder().load(cache,inv)
             ComponentDecoder(cache).load(interfaces)
         } catch (e: BufferUnderflowException) {
             logger.error(e) { "Error reading definitions" }

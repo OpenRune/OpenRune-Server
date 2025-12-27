@@ -29,7 +29,7 @@ class OpLocTHandler : MessageHandler<OpLocT> {
         val sobj = message.selectedObj
         val sloc = message.id
 
-        if (slot < 0 || slot >= client.inventory.capacity) {
+        if (slot < 0 || slot >= client.inventory.size) {
             return
         }
 

@@ -122,10 +122,19 @@ fun PluginEvent.onItemEquip(
     return onItemEquipInternal(matchesItem = { it.itemId == rscmItem }, action = action)
 }
 
+
 fun PluginEvent.onItemEquip(
     item: Int,
     action: suspend EquipEvent.() -> Unit
 ) = onItemEquipInternal(matchesItem = { it.itemId == item }, action = action)
+
+fun PluginEvent.onItemEquipSlot(
+    sloteq: Int,
+    action: suspend EquipEvent.() -> Unit
+) = on<EquipEvent> {
+    where { slot == sloteq }
+    then { action(this) }
+}
 
 private fun PluginEvent.onItemUnequipInternal(
     matchesItem: (UnequipEvent) -> Boolean,

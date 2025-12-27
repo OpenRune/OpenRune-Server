@@ -143,13 +143,15 @@ class Server {
          */
         individualStopwatch.reset().start()
         cache = Cache.load(filestore)
-        ServerCacheManager.init(cache)
-        logger.info{"Loaded filestore from path ${filestore} in ${individualStopwatch.elapsed(TimeUnit.MILLISECONDS)}ms."}
 
         /**
          * Initialize RSCM
          */
         GameValProvider.load()
+
+        ServerCacheManager.init(cache)
+        logger.info{"Loaded filestore from path ${filestore} in ${individualStopwatch.elapsed(TimeUnit.MILLISECONDS)}ms."}
+
 
         val world = World(gameContext, devContext)
 

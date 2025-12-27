@@ -122,7 +122,7 @@ fun buildCache(rev: Triple<Int, Int, String>) {
 
     val tasks: List<CacheTask> = listOf(
         PackConfig(File("../data/raw-cache/server")),
-        PackServerConfig(),
+        PackServerConfig(File("../data/raw-cache/server")),
     ).toMutableList()
 
     val builder = Builder(type = TaskType.BUILD, cacheLocation = File(getCacheLocation()))

@@ -1,0 +1,15 @@
+[[inventory]]
+id = "inv.inv"
+inherit = "inv.inv"
+
+scope = "Perm"
+protect = false
+runWeight = true
+
+[[inventory]]
+id = "inv.worn"
+inherit = "inv.worn"
+
+scope = "Perm"
+protect = false
+runWeight = true

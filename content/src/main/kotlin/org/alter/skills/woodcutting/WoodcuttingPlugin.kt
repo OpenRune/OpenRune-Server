@@ -302,7 +302,7 @@ class WoodcuttingPlugin : PluginEvent() {
             return
         }
 
-        if (player.inventory.isFull) {
+        if (player.inventory.isFull()) {
             player.message("Your inventory is too full to hold more logs.")
             return
         }
@@ -332,7 +332,7 @@ class WoodcuttingPlugin : PluginEvent() {
         repeatWhile(delay = tickDelay, immediate = false, canRepeat = {
             val currentNearestTile = obj.findNearestTile(player.tile)
             player.tile.isWithinRadius(currentNearestTile, 1) &&
-            !player.inventory.isFull &&
+            !player.inventory.isFull() &&
             obj.isSpawned(world) &&
             !isStump(obj, stumpId, player)
         }) {

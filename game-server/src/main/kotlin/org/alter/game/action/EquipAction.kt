@@ -9,7 +9,6 @@ import org.alter.game.pluginnew.event.impl.ContainerType
 import org.alter.game.pluginnew.event.impl.EquipEvent
 import org.alter.game.pluginnew.event.impl.UnequipEvent
 
-
 /**
  * This class is responsible for handling armor equip and unequip related
  * actions.
@@ -196,7 +195,7 @@ object EquipAction {
              * that items like shields will make sure 2h swords are unequipped even
              * though shields don't have a 'secondary' equipment slot (equipment type).
              */
-            for (i in 0 until p.equipment.capacity) {
+            for (i in 0 until p.equipment.size) {
                 val equip = p.equipment[i] ?: continue
                 val otherDef = getItem(equip.id) ?: run {
                     p.writeMessage("Item definition not found for id=${equip.id}")
@@ -252,6 +251,9 @@ object EquipAction {
                     val equipment = p.equipment[slot] ?: return@forEach
                     val equipmentId = equipment.id
 
+
+                    println("initialSlot: ${initialSlot}")
+
                     val transaction = p.inventory.add(
                         equipment.id,
                         equipment.amount,
@@ -284,7 +286,7 @@ object EquipAction {
         equipmentSlot: Int,
         containerType : ContainerType
     ): Result {
-        val item = p.equipment[equipmentSlot] ?: return Result.INVALID_ITEM
+        val item = p.equipment.getValue(equipmentSlot)
 
         val addition = p.inventory.add(item.id, item.amount, assureFullInsertion = false)
 
@@ -293,8 +295,8 @@ object EquipAction {
             return Result.NO_FREE_SPACE
         }
 
+
         if (addition.getLeftOver() == 0) {
-            addition.items.firstOrNull()?.item?.copyAttr(item)
             p.equipment[equipmentSlot] = null
         } else {
             val leftover = Item(item, addition.getLeftOver())
@@ -317,3 +319,9 @@ object EquipAction {
         p.world.plugins.executeUnequipSlot(p, slot)
     }
 }
+
+
+
+
+
+

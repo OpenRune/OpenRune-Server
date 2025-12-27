@@ -1,62 +1,59 @@
 package org.alter.game.saving.impl
 
+import dev.openrune.ServerCacheManager
+import dev.openrune.types.InvScope
 import io.github.oshai.kotlinlogging.KotlinLogging
-import org.alter.game.model.container.ItemContainer
 import org.alter.game.model.entity.Client
+import org.alter.game.model.inv.Inventory
 import org.alter.game.model.item.Item
 import org.alter.game.saving.DocumentHandler
+import org.alter.rscm.RSCM
+import org.alter.rscm.RSCM.asRSCM
+import org.alter.rscm.RSCMType
 import org.bson.Document
 
 private val logger = KotlinLogging.logger {}
-class ContainersSerialisation(override val name: String = "containers") : DocumentHandler {
+
+class ContainersSerialisation(
+    override val name: String = "containers"
+) : DocumentHandler {
 
     override fun fromDocument(client: Client, doc: Document) {
-        doc.forEach { (containerKey, itemsList) ->
-            val key = client.world.plugins.containerKeys.firstOrNull { it.name == containerKey }
+        doc.forEach { (containerKey, value) ->
+            val id = containerKey.asRSCM()
+            val containerDoc = value as? Document ?: return@forEach
+            val container = client.invMap.getOrPut(ServerCacheManager.getInventory(id)!!)
+            decodeItems(container, containerDoc)
+        }
+    }
 
-            if (key == null) {
-                logger.error { "Container found in serialized data, but is not registered to our World. [key=$containerKey]" }
-                return@forEach
-            }
+    private fun decodeItems(container: Inventory, containerDoc: Document) {
+        containerDoc.forEach { (slotKey, value) ->
+            val slot = slotKey.toIntOrNull() ?: return@forEach
+            val itemDoc = value as? Document ?: return@forEach
 
-            val container = client.containers.getOrPut(key) { ItemContainer(key) }
-
-            if (itemsList is Document) {
-                itemsList.forEach { (slotString, itemDoc) ->
-                    val slot = slotString.toIntOrNull()
-                    if (slot != null) {
-                        val item = Item.fromDocument(itemDoc as Document)
-                        container[slot] = item
-                    }
-                }
-            }
+            container[slot] = Item.fromDocument(itemDoc)
         }
     }
 
     override fun asDocument(client: Client): Document {
-        return Document().apply {
-            client.getPersistentContainers().forEach { container ->
-                val itemsDoc = Document()
-                container.items.forEach { (slot, item) ->
-                    itemsDoc.append(slot.toString(), item.asDocument())
+        val root = Document()
+
+        client.invMap.backing
+            .asSequence()
+            .filter { (_, container) -> container.type.scope == InvScope.Perm }
+            .forEach { (key, container) ->
+                val items = Document()
+
+                container.objs.forEachIndexed { slot, item ->
+                    if (item != null) {
+                        items[slot.toString()] = item.asDocument()
+                    }
                 }
-                put(container.name, itemsDoc)
+
+                root[RSCM.getReverseMapping(RSCMType.INVTYPES,key)] = items
             }
-        }
+
+        return root
     }
-
-    private fun Client.getPersistentContainers(): List<PersistentContainer> {
-        val persistent = mutableListOf<PersistentContainer>()
-
-        containers.forEach { (key, container) ->
-            if (!container.isEmpty) {
-                persistent.add(PersistentContainer(key.name, container.toMap()))
-            }
-        }
-
-        return persistent
-    }
-
-    data class PersistentContainer(val name: String, val items: Map<Int, Item>)
-
 }

@@ -11,7 +11,7 @@ import org.bson.Document
 /**
  * @author Tom <rspsmods@gmail.com>
  */
-class Item(val id: Int, var amount: Int = 1) {
+class Item(val id: Int, var amount: Int = 1, var vars : Int = 0) {
 
     constructor(id: String, amount: Int = 1) : this(Item(id.asRSCM(), amount)) {
         RSCM.requireRSCM(RSCMType.OBJTYPES, id)

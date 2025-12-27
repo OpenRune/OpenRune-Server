@@ -7,7 +7,6 @@ import org.alter.api.ext.findClosestWalkableTile
 import org.alter.api.ext.inWilderness
 import org.alter.api.ext.message
 import org.alter.api.ext.replaceItem
-import org.alter.api.ext.toItem
 import org.alter.game.model.entity.GroundItem
 import org.alter.game.model.entity.Player
 import org.alter.game.model.weight.impl.WeightItem
@@ -226,7 +225,7 @@ class BirdNestPlugin : PluginEvent() {
         return null
     }
 
-    private fun Player.hasClueOfType(type: ClueType) = inventory.contains(type.clueNestID) || bank.contains(type.clueNestID)
+    private fun Player.hasClueOfType(type: ClueType) = inventory.contains(type.clueNestID)
 
     private fun isWearingWoodcuttingCape(player: Player) = player.equipment.containsAny(
         "items.skillcape_woodcutting",

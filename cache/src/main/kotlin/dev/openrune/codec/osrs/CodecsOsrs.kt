@@ -9,3 +9,4 @@ class HealthBarDecoder : ConfigDefinitionDecoder<HealthBarServerType>(HealthBarS
 class SequenceDecoder : ConfigDefinitionDecoder<SequenceServerType>(SequenceServerCodec(), 57)
 class NpcDecoder : ConfigDefinitionDecoder<NpcServerType>(NpcServerCodec(), 58)
 class ItemDecoder : ConfigDefinitionDecoder<ItemServerType>(ItemServerCodec(), 59)
+class InventoryDecoder : ConfigDefinitionDecoder<InventoryServerType>(InventoryServerCodec(), 60)

@@ -2,6 +2,7 @@ package org.alter.game.model.container.key
 
 import dev.openrune.ServerCacheManager
 import dev.openrune.definition.type.InventoryType
+import dev.openrune.types.InventoryServerType
 import org.alter.game.model.container.ContainerStackType
 import org.alter.rscm.RSCM
 import org.alter.rscm.RSCM.asRSCM
@@ -17,7 +18,7 @@ data class ContainerKey(val name: String, val internalName: String, val capacity
 
     var internalID by Delegates.notNull<Int>()
 
-    var type: InventoryType
+    var type: InventoryServerType
 
     init {
         RSCM.requireRSCM(RSCMType.INVTYPES, internalName)

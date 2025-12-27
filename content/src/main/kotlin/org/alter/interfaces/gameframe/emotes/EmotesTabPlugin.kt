@@ -26,12 +26,6 @@ class EmotesTabPlugin(
 ) : KotlinPlugin(r, world, server) {
         
     init {
-       
 
-        onButton(interfaceId = COMPONENT_ID, component = 2) p@{
-            val slot = player.getInteractingSlot()
-            val emote = Emote.values.firstOrNull { e -> e.slot == slot } ?: return@p
-            performEmote(player, emote)
-        }
     }
 }

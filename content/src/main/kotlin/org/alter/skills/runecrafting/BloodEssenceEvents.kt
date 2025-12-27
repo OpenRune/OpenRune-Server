@@ -16,7 +16,7 @@ class BloodEssenceEvents : PluginEvent() {
 
     override fun init() {
         onItemOption("items.blood_essence_inactive","activate") {
-            val alreadyHave = player.bank.contains("items.blood_essence_active") || player.inventory.contains("items.blood_essence_active")
+            val alreadyHave = player.inventory.contains("items.blood_essence_active")
             if (alreadyHave) {
                 player.message("You can only have one active blood essence at a time.")
             } else {
