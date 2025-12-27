@@ -97,7 +97,7 @@ class PackServerConfig(
                 "object" -> {
                     val codec = ObjectServerCodec(
                         CacheManager.getObjects(),
-                        InfoBoxObject.load(File("C:\\Users\\chris\\Desktop\\Alter\\data\\raw-cache\\extra-dump//object-examines.csv").toPath())
+                        InfoBoxObject.load(File("../data/raw-cache/extra-dump/object-examines.csv").toPath())
                     )
                     CacheManager.getObjects().forEach {
                         cache.write(CONFIGS, 55, it.key, codec.encodeToBuffer(ObjectServerType(it.key)))
@@ -119,7 +119,7 @@ class PackServerConfig(
                     val codec = ItemServerCodec(
                         CacheManager.getItems(),
                         CacheManager.getEnums(),
-                        InfoBoxItem.load(    File("C:\\Users\\chris\\Desktop\\Alter\\data\\raw-cache\\extra-dump//item-data.json").toPath()))
+                        InfoBoxItem.load(File("../data/raw-cache/extra-dump/item-data.json").toPath()))
 
                     CacheManager.getItems().forEach {
                         cache.write(CONFIGS, 59, it.key, codec.encodeToBuffer(ItemServerType(it.key)))
