@@ -21,9 +21,6 @@ class IfModelOp1Handler : MessageHandler<If1Button> {
         val item = -1
         val slot = -1
 
-
-        println("THIS")
-
         log(client, "Click button: component=[%d:%d], option=%d, slot=%d, item=%d", interfaceId, component, option, slot, item)
 
         client.attr[INTERACTING_OPT_ATTR] = option

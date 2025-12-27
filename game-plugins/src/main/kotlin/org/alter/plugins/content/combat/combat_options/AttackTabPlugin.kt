@@ -9,7 +9,6 @@ import org.alter.game.model.entity.Player
 import org.alter.game.plugin.*
 import org.alter.game.pluginnew.PluginEvent
 import org.alter.game.pluginnew.event.impl.onButton
-import org.alter.game.pluginnew.event.impl.onEquipToSlot
 import org.alter.game.pluginnew.event.impl.onLogin
 import org.alter.game.pluginnew.event.impl.onLogout
 import org.alter.game.pluginnew.event.impl.onTimer
@@ -19,6 +18,7 @@ import org.alter.plugins.content.interfaces.attack.AttackTab.DISABLE_AUTO_RETALI
 import org.alter.plugins.content.interfaces.attack.AttackTab.SPECIAL_ATTACK_VARP
 import org.alter.plugins.content.interfaces.attack.AttackTab.setEnergy
 import org.alter.plugins.content.combat.specialattack.SpecialAttacks
+import org.alter.game.pluginnew.event.impl.onItemEquipSlot
 
 class AttackTabPlugin() : PluginEvent() {
 
@@ -84,7 +84,7 @@ class AttackTabPlugin() : PluginEvent() {
         /**
          * Disable special attack when switching weapons.
          */
-        onEquipToSlot(EquipmentType.WEAPON.id) {
+        onItemEquipSlot(EquipmentType.WEAPON.id) {
             player.setVarp(SPECIAL_ATTACK_VARP, 0)
         }
 
