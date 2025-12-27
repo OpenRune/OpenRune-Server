@@ -11,9 +11,11 @@ import org.alter.api.ext.message
 import org.alter.game.action.EquipAction
 import org.alter.game.model.ExamineEntityType
 import org.alter.game.model.entity.Player
+import org.alter.game.model.entity.UpdateInventory.resendSlot
 import org.alter.game.model.move.stopMovement
 import org.alter.game.pluginnew.MenuOption
 import org.alter.game.pluginnew.PluginEvent
+import org.alter.game.pluginnew.event.impl.ButtonClickEvent
 import org.alter.game.pluginnew.event.impl.ContainerType
 import org.alter.game.pluginnew.event.impl.onButton
 import org.alter.game.pluginnew.event.impl.onIfModalButton
@@ -21,21 +23,29 @@ import org.alter.game.pluginnew.event.impl.onIfModalDrag
 import org.alter.game.util.enum
 import org.alter.game.util.vars.ComponentVarType
 import org.alter.game.util.vars.IntType
+import org.alter.interfaceInvInit
 import org.alter.interfaces.ifClose
 import org.alter.interfaces.ifOpenMainSidePair
 import org.alter.interfaces.ifSetEvents
 import org.alter.interfaces.ifSetText
+import org.alter.invMoveToSlot
 import org.alter.rscm.RSCM
 import org.alter.statGroupTooltip
+import kotlin.inv
 
 class EquipmentStats : PluginEvent() {
 
     override fun init() {
+
         onButton("components.wornitems:equipment") {
             selectStats(player)
         }
 
         enum("enums.equipment_stats_to_slots_map", IntType, ComponentVarType).forEach {
+            onIfModalButton(it.value) { opWornMain(player,it.key, op) }
+        }
+
+        enum("enums.equipment_tab_to_slots_map", IntType, ComponentVarType).forEach {
             onIfModalButton(it.value) { opWornMain(player,it.key, op) }
         }
 
@@ -51,6 +61,17 @@ class EquipmentStats : PluginEvent() {
         player.graphic(RSCM.NONE)
         player.ifOpenMainSidePair(main = "interfaces.equipment", side = "interfaces.equipment_side")
         player.invTransmit(player.inventory)
+
+        interfaceInvInit(
+            player = player,
+            inv = player.inventory,
+            target = "components.equipment_side:items",
+            objRowCount = 4,
+            objColCount = 7,
+            dragType = 1,
+            op1 = "Equip",
+        )
+
         player.ifSetEvents(
             component = "components.equipment_side:items",
             range = player.inventory.indices,
@@ -94,11 +115,12 @@ class EquipmentStats : PluginEvent() {
     private fun dragHeldButton(player: Player,selectedSlot: Int?,targetSlot : Int?) {
         val fromSlot = selectedSlot ?: return
         val intoSlot = targetSlot ?: return
-        //TODO ITEMS
-        //player.inventory.swap(fromSlot,intoSlot)
+
+        player.invMoveToSlot(player.inventory, player.inventory, fromSlot, intoSlot)
     }
 
     private fun opWornMain(player: Player,wornSlot: Int, op: MenuOption) {
+        resendSlot(player.equipment, 0)
         when (op.id) {
             1 -> {
                 EquipAction.unequip(player, wornSlot, ContainerType.WORN_EQUIPMENT)
@@ -119,7 +141,12 @@ class EquipmentStats : PluginEvent() {
     private fun opHeldSide(player: Player,invSlot: Int, op: MenuOption) {
         val item = player.inventory[invSlot] ?: return
 
-        if (op.id == 1) {
+        if (op == MenuOption.OP10) {
+            world.sendExamine(player, item.id, ExamineEntityType.ITEM)
+            return
+        }
+
+        if (op == MenuOption.OP1) {
             val result = EquipAction.equip(player, item, inventorySlot = invSlot, ContainerType.WORN_EQUIPMENT)
             if (result == EquipAction.Result.SUCCESS) {
                 player.calculateBonuses()
@@ -127,8 +154,6 @@ class EquipmentStats : PluginEvent() {
             } else if (result == EquipAction.Result.UNHANDLED) {
                 player.message("You can't equip that.")
             }
-        } else if (op.id == 10) {
-            world.sendExamine(player, item.id, ExamineEntityType.ITEM)
         }
     }
 

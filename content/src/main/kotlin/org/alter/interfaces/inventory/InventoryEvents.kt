@@ -4,6 +4,7 @@ import dev.openrune.definition.type.widget.IfEvent
 import org.alter.api.ext.message
 import org.alter.game.action.EquipAction
 import org.alter.game.model.ExamineEntityType
+import org.alter.game.model.entity.GroundItem
 import org.alter.game.model.entity.Player
 import org.alter.game.model.entity.UpdateInventory
 import org.alter.game.model.item.Item
@@ -55,15 +56,36 @@ class InventoryEvents : PluginEvent() {
 
         when(op) {
             MenuOption.OP10 -> world.sendExamine(player, item, ExamineEntityType.ITEM)
-            MenuOption.OP7 -> ItemDropEvent(item, slot, containerType, player)
+
+            MenuOption.OP7 -> {
+                val item = player.inventory[slot] ?: return
+                if (world.plugins.canDropItem(player, item.id)) {
+                    if (!world.plugins.executeItem(player, item.id, op.id)) {
+                        val remove = player.inventory.remove(item.id,item.amount, assureFullRemoval = false, beginSlot = slot)
+                        if (remove.completed > 0) {
+                            val floor = GroundItem(item.id, remove.completed, player.tile, player)
+                            floor.timeUntilPublic = world.gameContext.gItemPublicDelay
+                            floor.timeUntilDespawn = world.gameContext.gItemDespawnDelay
+                            floor.ownerShipType = 1
+                            remove.firstOrNull()?.let { removed ->
+                                floor.copyAttr(removed.item.attr)
+                            }
+                            world.spawn(floor)
+                            ItemDropEvent(item.id, slot, containerType, player)
+                        }
+                    }
+                }
+            }
+
             MenuOption.OP3 -> {
-                val item = player.inventory.get(slot) ?: return
+                val item = player.inventory[slot] ?: return
                 val result = EquipAction.equip(player, item, slot, ContainerType.INVENTORY)
                 if (result == EquipAction.Result.UNHANDLED && world.devContext.debugItemActions) {
                     player.message("Unhandled item action: [item=${item}, slot=$slot, option=$op]")
                 }
             }
-            else -> ItemClickEvent(item, slot, op, containerType, player)
+
+            else -> ItemClickEvent(item, slot, op, containerType, player).post()
         }
     }
 

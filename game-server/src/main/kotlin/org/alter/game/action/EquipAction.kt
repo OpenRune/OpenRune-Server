@@ -251,6 +251,9 @@ object EquipAction {
                     val equipment = p.equipment[slot] ?: return@forEach
                     val equipmentId = equipment.id
 
+
+                    println("initialSlot: ${initialSlot}")
+
                     val transaction = p.inventory.add(
                         equipment.id,
                         equipment.amount,
@@ -283,7 +286,7 @@ object EquipAction {
         equipmentSlot: Int,
         containerType : ContainerType
     ): Result {
-        val item = p.equipment[equipmentSlot] ?: return Result.INVALID_ITEM
+        val item = p.equipment.getValue(equipmentSlot)
 
         val addition = p.inventory.add(item.id, item.amount, assureFullInsertion = false)
 
@@ -292,8 +295,8 @@ object EquipAction {
             return Result.NO_FREE_SPACE
         }
 
+
         if (addition.getLeftOver() == 0) {
-            addition.items.firstOrNull()?.item?.copyAttr(item)
             p.equipment[equipmentSlot] = null
         } else {
             val leftover = Item(item, addition.getLeftOver())

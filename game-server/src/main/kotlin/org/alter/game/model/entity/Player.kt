@@ -4,6 +4,7 @@ import dev.openrune.ServerCacheManager.varpSize
 import dev.openrune.types.InvScope
 import dev.openrune.types.getInt
 import gg.rsmod.util.toStringHelper
+import it.unimi.dsi.fastutil.ints.IntArraySet
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet
 import net.rsprot.protocol.api.Session
 import net.rsprot.protocol.game.outgoing.info.npcinfo.NpcInfo
@@ -47,6 +48,8 @@ import org.alter.rscm.RSCM
 import org.alter.rscm.RSCM.asRSCM
 import org.alter.rscm.RSCMType
 import java.util.*
+import kotlin.collections.remove
+import kotlin.text.set
 
 /**
  * A [Pawn] that represents a player.
@@ -132,14 +135,12 @@ open class Player(world: World) : Pawn(world) {
 
     public var pendingRunWeight: Boolean = false
     public val invMap: InventoryMap = InventoryMap()
-    public val transmittedInvs: ObjectOpenHashSet<String> = ObjectOpenHashSet()
-    public val transmittedInvAddQueue: ObjectOpenHashSet<String> = ObjectOpenHashSet()
+    public val transmittedInvs: IntArraySet = IntArraySet()
+    public val transmittedInvAddQueue: IntArraySet = IntArraySet()
 
-    public fun startInvTransmit(inventory: Inventory) {
-        val name = RSCM.getReverseMapping(RSCMType.INVTYPES, inventory.type.id)
-
-        check(inventory.type.scope != InvScope.Shared || !invMap.contains(name)) {
-            "`inv` should have previously been removed from cached inv map: ${this@Player.inventory}"
+    public fun startInvTransmit(inv: Inventory) {
+        check(inv.type.scope != InvScope.Shared || !invMap.contains(inv.type)) {
+            "`inv` should have previously been removed from cached inv map: $inv"
         }
         /*
          * Reorders the given `inv` in the list of transmitted inventories. This ensures that updates
@@ -152,9 +153,9 @@ open class Player(world: World) : Pawn(world) {
          *
          * This logic guarantees that updates sent from this point onward respect the new order.
          */
-        transmittedInvs.remove(name)
-        transmittedInvAddQueue.add(name)
-        invMap[name] = inventory
+        transmittedInvs.remove(inv.type.id)
+        transmittedInvAddQueue.add(inv.type.id)
+        invMap[inv.type] = inv
     }
 
 
@@ -166,18 +167,16 @@ open class Player(world: World) : Pawn(world) {
         stopInvTransmit(inv)
     }
 
-    public fun stopInvTransmit(inventory: Inventory) {
-
-        val name = RSCM.getReverseMapping(RSCMType.INVTYPES, inventory.type.id)
-
-        if (inventory.type.scope == InvScope.Shared) {
-            val removed = invMap.remove(name)
-            check(removed == inventory) { "Mismatch with cached value: (cached=$removed, inv=${this@Player.inventory})" }
+    public fun Player.stopInvTransmit(inv: Inventory) {
+        if (inv.type.scope == InvScope.Shared) {
+            val removed = invMap.remove(inv.type)
+            check(removed == inv) { "Mismatch with cached value: (cached=$removed, inv=$inv)" }
         }
-        transmittedInvs.remove(name)
-        transmittedInvAddQueue.remove(name)
-        UpdateInventory.updateInvStopTransmit(this, inventory)
+        transmittedInvs.remove(inv.type.id)
+        transmittedInvAddQueue.remove(inv.type.id)
+        UpdateInventory.updateInvStopTransmit(this, inv)
     }
+
 
     val varps = VarpSet(maxVarps = varpSize())
 

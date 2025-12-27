@@ -115,9 +115,11 @@ public class Inventory(public val type: InventoryServerType, public val objs: Ar
         amount: Int = 1,
         assureFullInsertion: Boolean = true,
         forceNoStack: Boolean = false,
-        beginSlot: Int = -1
+        beginSlot: Int? = null
     ): ItemTransaction {
-        val transaction = invAdd(obj = item, count = amount, slot = beginSlot).results.first()
+
+        val transaction = invAdd(obj = item, count = amount, slot = beginSlot, strict = assureFullInsertion).results.first()
+
         return if (transaction.isOk()) {
             ItemTransaction(transaction.requested,transaction.completed, emptyList())
         } else {
@@ -132,10 +134,10 @@ public class Inventory(public val type: InventoryServerType, public val objs: Ar
         amount: Int = 1,
         assureFullInsertion: Boolean = true,
         forceNoStack: Boolean = false,
-        beginSlot: Int = -1
+        beginSlot: Int? = null
     ): ItemTransaction {
         RSCM.requireRSCM(RSCMType.OBJTYPES, item)
-        val transaction = invAdd(obj = item.asRSCM(), count = amount, slot = beginSlot).results.first()
+        val transaction = invAdd(obj = item.asRSCM(), count = amount, slot = beginSlot, strict = assureFullInsertion).results.first()
         return if (transaction.isOk()) {
             ItemTransaction(transaction.requested,transaction.completed, emptyList())
         } else {
@@ -156,7 +158,7 @@ public class Inventory(public val type: InventoryServerType, public val objs: Ar
         item: String,
         amount: Int = 1,
         assureFullRemoval: Boolean = false,
-        beginSlot: Int = -1
+        beginSlot: Int? = null
     ): ItemTransaction {
         return remove(getRSCM(item), amount, assureFullRemoval, beginSlot)
     }
@@ -166,9 +168,9 @@ public class Inventory(public val type: InventoryServerType, public val objs: Ar
         item: Int,
         amount: Int = 1,
         assureFullRemoval: Boolean = false,
-        beginSlot: Int = -1,
+        beginSlot: Int? = null
     ): ItemTransaction {
-        val transaction = invDel(obj = item, count = amount, slot = beginSlot).results.first()
+        val transaction = invDel(obj = item, count = amount, slot = beginSlot, strict = assureFullRemoval).results.first()
         return if (transaction.isOk()) {
             ItemTransaction(transaction.requested,transaction.completed, emptyList())
         } else {
@@ -249,21 +251,15 @@ public class Inventory(public val type: InventoryServerType, public val objs: Ar
 
     public companion object {
 
-        public fun create(type: String): Inventory {
-            val invType = ServerCacheManager.getInventory(type.asRSCM())
-                ?: error(
-                    "Unknown inventory type '$type'. " +
-                            "No entry found in ServerCacheManager (RSCM INVTYPES)."
-                )
-
-            val objs = arrayOfNulls<Item>(invType.size)
-            if (invType.stock.isNotEmpty()) {
-                for (i in invType.stock.indices) {
-                    val copy = invType.stock[i]
+        public fun create(type: InventoryServerType): Inventory {
+            val objs = arrayOfNulls<Item>(type.size)
+            if (type.stock != null) {
+                for (i in type.stock.indices) {
+                    val copy = type.stock[i] ?: continue
                     objs[i] = Item(copy.obj, copy.count)
                 }
             }
-            return Inventory(invType, objs)
+            return Inventory(type, objs)
         }
 
         private inline fun <T : MutableCollection<Int>> Array<Item?>.mapSlotsTo(

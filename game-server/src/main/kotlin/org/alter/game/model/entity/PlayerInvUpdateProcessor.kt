@@ -2,6 +2,8 @@ package org.alter.game.model.entity
 
 import org.alter.game.model.inv.Inventory
 import kotlin.collections.plusAssign
+import kotlin.text.clear
+import kotlin.text.get
 
 object PlayerInvUpdateProcessor {
     private val processedInvs = hashSetOf<Inventory>()
@@ -17,31 +19,26 @@ object PlayerInvUpdateProcessor {
     }
 
     private fun Player.updateTransmittedInvs() {
-        transmittedInvs.forEach { transmitted ->
-            val inv = inventory
+        for (transmitted in transmittedInvs.iterator()) {
+            val inv = invMap.backing[transmitted]
             checkNotNull(inv) { "Inv expected in `invMap`: $transmitted (invMap=${invMap})" }
             if (!inv.hasModifiedSlots()) {
-                return
+                continue
             }
-
             UpdateInventory.updateInvPartial(this, inv)
             updatePendingRunWeight(inv)
-            if (transmitted == "inv.worn") {
-                calculateBonuses()
-            }
             processedInvs += inv
         }
     }
 
     private fun Player.processQueuedTransmissions() {
-        transmittedInvAddQueue.forEach { add ->
-            UpdateInventory.updateInvFull(this, inventory)
-            updatePendingRunWeight(inventory)
-            if (add == "inv.worn") {
-                calculateBonuses()
-            }
+        for (add in transmittedInvAddQueue.iterator()) {
+            val inv = invMap.backing[add]
+            checkNotNull(inv) { "Inv expected in `invMap`: $add (invMap=${invMap})" }
+            UpdateInventory.updateInvFull(this, inv)
+            updatePendingRunWeight(inv)
             transmittedInvs.add(add)
-            processedInvs += inventory
+            processedInvs += inv
         }
         transmittedInvAddQueue.clear()
     }

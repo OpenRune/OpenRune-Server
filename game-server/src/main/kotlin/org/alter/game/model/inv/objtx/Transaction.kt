@@ -254,6 +254,7 @@ public class Transaction<T>(
                 return TransactionResult.Ok(requested = count, completed = count)
             }
             val strictSlot = strictSlot
+
             if (strictSlot != null && this[strictSlot] != null) {
                 return TransactionResult.StrictSlotTaken
             }

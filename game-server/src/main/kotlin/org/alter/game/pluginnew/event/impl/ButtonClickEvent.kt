@@ -104,10 +104,13 @@ data class EquipToSlot(
 
             if (containerType != null) {
                 when (menuOption) {
-                    MenuOption.OP7 -> ItemDropEvent(item, slot, containerType, player)
-                    MenuOption.OP10 -> ExamineEvent(item, ExamineEntityType.ITEM, player)
-                    else -> ItemClickEvent(item, slot, menuOption, containerType, player)
-                }.post()
+                    MenuOption.OP7 -> ItemDropEvent(item, slot, containerType, player).post()
+                    MenuOption.OP10 -> ExamineEvent(item, ExamineEntityType.ITEM, player).post()
+                    else -> {
+                        println("ITEM: ${item}")
+                        ItemClickEvent(item, slot, menuOption, containerType, player).post()
+                    }
+                }
             }
         }
     }

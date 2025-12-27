@@ -1,11 +1,15 @@
 package org.alter.game.saving.impl
 
+import dev.openrune.ServerCacheManager
 import dev.openrune.types.InvScope
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.alter.game.model.entity.Client
 import org.alter.game.model.inv.Inventory
 import org.alter.game.model.item.Item
 import org.alter.game.saving.DocumentHandler
+import org.alter.rscm.RSCM
+import org.alter.rscm.RSCM.asRSCM
+import org.alter.rscm.RSCMType
 import org.bson.Document
 
 private val logger = KotlinLogging.logger {}
@@ -16,8 +20,9 @@ class ContainersSerialisation(
 
     override fun fromDocument(client: Client, doc: Document) {
         doc.forEach { (containerKey, value) ->
+            val id = containerKey.asRSCM()
             val containerDoc = value as? Document ?: return@forEach
-            val container = client.invMap.getOrPut(containerKey)
+            val container = client.invMap.getOrPut(ServerCacheManager.getInventory(id)!!)
             decodeItems(container, containerDoc)
         }
     }
@@ -46,7 +51,7 @@ class ContainersSerialisation(
                     }
                 }
 
-                root[key] = items
+                root[RSCM.getReverseMapping(RSCMType.INVTYPES,key)] = items
             }
 
         return root

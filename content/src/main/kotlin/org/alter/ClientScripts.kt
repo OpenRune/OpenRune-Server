@@ -4,6 +4,7 @@ import org.alter.api.CommonClientScripts
 import org.alter.api.ext.runClientScript
 import org.alter.game.model.container.ItemContainer
 import org.alter.game.model.entity.Player
+import org.alter.game.model.inv.Inventory
 import org.alter.rscm.RSCM
 import org.alter.rscm.RSCM.asRSCM
 import org.alter.rscm.RSCMType
@@ -63,7 +64,7 @@ public fun objboxSetButtons(player: Player, text: String): Unit =
 
 public fun interfaceInvInit(
     player: Player,
-    inv: ItemContainer,
+    inv: Inventory,
     target: String,
     objRowCount: Int,
     objColCount: Int,
@@ -78,7 +79,7 @@ public fun interfaceInvInit(
     player.runClientScript(
         CommonClientScripts.INTERFACE_INV_INIT,
         target.asRSCM(),
-        inv.key.internalID,
+        inv.type.id,
         objRowCount,
         objColCount,
         dragType,

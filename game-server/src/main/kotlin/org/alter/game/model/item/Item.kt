@@ -83,7 +83,7 @@ class Item(val id: Int, var amount: Int = 1, var vars : Int = 0) {
     override fun toString(): String = toStringHelper().add("id", id).add("amount", amount).toString()
 
     fun asDocument(): Document {
-        return Document("id", RSCM.getReverseMapping(RSCMType.OBJTYPES,id)).apply {
+        return Document("id", id).apply {
             append("amount", amount)
 
             if (attr.isNotEmpty()) {
@@ -97,7 +97,7 @@ class Item(val id: Int, var amount: Int = 1, var vars : Int = 0) {
 
     companion object {
         fun fromDocument(doc: Document): Item {
-            val id = doc.getString("id")
+            val id = doc.getInteger("id")
             val amount = doc.getInteger("amount")
             val item = Item(id, amount)
 

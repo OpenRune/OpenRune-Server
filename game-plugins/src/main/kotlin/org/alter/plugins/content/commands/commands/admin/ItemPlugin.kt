@@ -1,5 +1,6 @@
 package org.alter.plugins.content.commands.commands.admin
 
+import dev.openrune.ServerCacheManager
 import dev.openrune.ServerCacheManager.getItemOrDefault
 import dev.openrune.ServerCacheManager.itemSize
 import org.alter.api.ext.*
@@ -25,29 +26,35 @@ class ItemPlugin(
 
         onCommand("item", Privilege.ADMIN_POWER, description = "Spawn items") {
             val values = player.getCommandArgs()
-            try {
-                val item = values[0].toInt()
-                val amount = if (values.size > 1) Math.min(Int.MAX_VALUE.toLong(), values[1].parseAmount()).toInt() else 1
-                if (item < itemSize()) {
-                    val def = getItemOrDefault(Item(item).toUnnoted().id)
-                    val result = player.inventory.add(item = item, amount = amount, assureFullInsertion = false)
-                    player.message(
-                        "You have spawned <col=${Colors.RED}>${DecimalFormat().format(result.completed)} x ${def.name}</col> (ID: <col=${Colors.GREEN}>$item</col>).",
-                    )
-                } else {
-                    player.message("Item $item does not exist in cache.")
-                }
-            } catch (e: Exception) {
-                e.printStackTrace()
-                player.queue(TaskPriority.STRONG) {
-                    val item = spawn(player) ?: return@queue
-                    if (item.amount > 0) {
-                        player.message("You have spawned ${item.amount} x ${item.getName()}.")
-                    } else {
-                        player.message("You don't have enough inventory space.")
-                    }
-                }
+
+            val itemId = values.getOrNull(0)?.toIntOrNull() ?: run {
+                player.message("Invalid item id.")
+                return@onCommand
             }
+
+            if (itemId !in 0 until itemSize()) {
+                player.message("Item $itemId does not exist in cache.")
+                return@onCommand
+            }
+
+            val def = ServerCacheManager.getItem(itemId) ?: run {
+                player.message("Item $itemId does not exist in cache.")
+                return@onCommand
+            }
+
+            val amount = values.getOrNull(1)?.parseAmount()?.coerceAtMost(Int.MAX_VALUE.toLong())?.toInt() ?: 1
+
+            val result = player.inventory.add(
+                item = itemId,
+                amount = amount,
+                assureFullInsertion = false
+            )
+
+            val formattedAmount = DecimalFormat().format(result.completed)
+
+            player.message("You have spawned <col=${Colors.RED}>$formattedAmount x ${def.name}</col> " +
+                    "(ID: <col=${Colors.GREEN}>$itemId</col>)."
+            )
         }
     }
 
