@@ -1,7 +1,7 @@
 import java.nio.file.Files
 import java.nio.file.Path
 
-rootProject.name = "Alter"
+rootProject.name = "OpenRune-Server"
 pluginManagement {
     plugins {
         kotlin("jvm")
