@@ -10,7 +10,7 @@
   <a href="https://oldschool.runescape.wiki/w/Update:Leagues_V:_Raging_Echos_Rewards_Are_Here"><img alt="Revision 235.2" src="https://img.shields.io/badge/Revision-235.2-blueviolet?style=for-the-badge"/></a>
   <a href="https://trello.com/b/A0LefFDs/later"><img alt="Roadmap" src="https://img.shields.io/badge/Trello-Roadmap-026AA7?style=for-the-badge&logo=trello&logoColor=white"/></a>
   <a href="https://github.com/Mark7625/OpenRune-Server/"><img alt="Lines of Code" src="https://img.shields.io/endpoint?url=https%3A%2F%2Fghloc.vercel.app%2Fapi%2FOpenRune%2FOpenRune-Server%2Fbadge%3Fformat%3Dhuman&style=for-the-badge&color=teal"/></a>
-  <a href="https://discord.gg/HAwN6N8F">
+  <a href="https://discord.gg/mPaZwcSNe">
     <img alt="Discord" src="https://img.shields.io/discord/1445802914156249241?label=Discord&logo=discord&logoColor=white&style=for-the-badge&color=5865F2"/>
   </a>
 </p>
