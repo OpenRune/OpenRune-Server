@@ -2,7 +2,7 @@ package org.alter.items.consumables
 
 import dev.openrune.ServerCacheManager
 import org.alter.api.ChatMessageType
-import org.alter.api.EquipmentType
+import org.alter.api.Wearpos
 import org.alter.api.Skills
 import org.alter.api.ext.hasEquipped
 import org.alter.api.ext.heal
@@ -35,7 +35,7 @@ class ConsumeFood : PluginEvent() {
     }
 
     fun getAnimation(player: Player): String {
-        return if (player.hasEquipped(EquipmentType.WEAPON, "items.trollromance_toboggon"))
+        return if (player.hasEquipped(Wearpos.RightHand, "items.trollromance_toboggon"))
             "sequences.trollromance_toboggan_eat" else "sequences.human_eat"
     }
 

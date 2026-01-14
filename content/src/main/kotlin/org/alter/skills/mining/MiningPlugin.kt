@@ -166,7 +166,7 @@ class MiningPlugin : PluginEvent() {
         rockData.emptyRockObject
 
     private fun hasAnyPickaxe(player: Player): Boolean {
-        player.equipment[EquipmentType.WEAPON.id]?.let { weapon ->
+        player.equipment[Wearpos.RightHand.slot]?.let { weapon ->
             if (pickaxeData.any { it.item == weapon.id }) return true
         }
 
@@ -178,7 +178,7 @@ class MiningPlugin : PluginEvent() {
     private fun getBestPickaxe(player: Player): MiningPickaxesRow? {
         val miningLevel = player.getSkills().getBaseLevel(Skills.MINING)
 
-        player.equipment[EquipmentType.WEAPON.id]?.let { weapon ->
+        player.equipment[Wearpos.RightHand.slot]?.let { weapon ->
             pickaxeData.find { it.item == weapon.id }?.takeIf { miningLevel >= it.level }?.let { return it }
         }
 

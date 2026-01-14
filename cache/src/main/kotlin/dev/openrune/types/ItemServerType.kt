@@ -1,7 +1,13 @@
 package dev.openrune.types
 
+import dev.openrune.ServerCacheManager
 import dev.openrune.definition.Definition
+import dev.openrune.definition.type.ItemType
+import dev.openrune.definition.type.ParamType
 import dev.openrune.server.impl.item.WeaponTypes
+import org.alter.rscm.RSCM
+import org.alter.rscm.RSCM.asRSCM
+import org.alter.rscm.RSCMType
 
 data class ItemServerType(
     override var id: Int = -1,
@@ -48,6 +54,50 @@ data class ItemServerType(
     val isPlaceholder
         get() = placeholderTemplate > 0 && placeholderLink > 0
 
+    public val hasPlaceholder: Boolean
+        get() = placeholderLink > 0 && placeholderTemplate == 0
+
+    public val canCert: Boolean
+        get() = !stackable && noteLinkId > 0 && noteTemplateId == 0
+
+    public val isCert: Boolean
+        get() = noteTemplateId != 0
+
+    public val isTransformation: Boolean
+        get() = transformtemplate != 0
+
+
+    fun param(param: String): Int {
+        RSCM.requireRSCM(RSCMType.PARAM, param)
+
+        val key = param.asRSCM().toString()
+        return params?.get(key) as? Int ?: 0
+    }
+
+    public fun isCategoryType(cat: String): Boolean {
+        RSCM.requireRSCM(RSCMType.CATEGORY,cat)
+        return category == cat.asRSCM()
+    }
+
+    companion object {
+        public fun placeholder(type: ItemServerType): ItemServerType {
+            if (!type.hasPlaceholder) {
+                return type
+            }
+            val link = type.placeholderLink
+            return ServerCacheManager.getItem(link) ?: throw NoSuchElementException("Type is missing in the map: $link.")
+        }
+
+        public fun untransform(type: ItemServerType): ItemServerType {
+            if (!type.isTransformation) {
+                return type
+            }
+            val link = type.transformlink
+            return ServerCacheManager.getItem(link) ?: throw NoSuchElementException("Type is missing in the map: $link.")
+        }
+
+    }
+
 }
 
 data class EquipmentStats(
@@ -72,7 +122,11 @@ data class EquipmentStats(
     var silverStrength: Int = 0,
     var corpBoost: Int = 0,
     var golemDamage: Int = 0,
-    var kalphiteDamage: Int = 0
+    var kalphiteDamage: Int = 0,
+    var undead: Int = 0,
+    var slayer: Int = 0,
+    var undeadMeleeOnly : Boolean = true,
+    var slayerMeleeOnly : Boolean = true
 )
 
 

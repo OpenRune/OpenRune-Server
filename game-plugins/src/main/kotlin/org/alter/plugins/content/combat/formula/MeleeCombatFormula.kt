@@ -123,7 +123,7 @@ object MeleeCombatFormula : CombatFormula {
         hit *= getSlayerHelmetMultiplier(player, target)
         hit = Math.floor(hit)
 
-        hit *= (if (player.hasEquipped(EquipmentType.WEAPON, "items.arclight") && isDemon(target)) 1.7 else specialAttackMultiplier)
+        hit *= (if (player.hasEquipped(Wearpos.RightHand, "items.arclight") && isDemon(target)) 1.7 else specialAttackMultiplier)
         hit = Math.floor(hit)
 
         return hit
@@ -132,7 +132,7 @@ object MeleeCombatFormula : CombatFormula {
     private fun applyDefenceSpecials(target: Pawn, base: Double): Double {
         var hit = base
 
-        if (target is Player && isWearingTorag(target) && target.hasEquipped(EquipmentType.AMULET, "items.damned_amulet")) {
+        if (target is Player && isWearingTorag(target) && target.hasEquipped(Wearpos.Front, "items.damned_amulet")) {
             val lost = (target.getMaxHp() - target.getCurrentHp()) / 100.0
             val max = target.getMaxHp() / 100.0
             hit *= (1.0 + (lost * max))
@@ -150,24 +150,14 @@ object MeleeCombatFormula : CombatFormula {
 
     private fun getEquipmentAttackBonus(pawn: Pawn): Double {
         val combatStyle = CombatConfigs.getCombatStyle(pawn)
-        val bonus = when (combatStyle) {
-            CombatStyle.STAB -> BonusSlot.ATTACK_STAB
-            CombatStyle.SLASH -> BonusSlot.ATTACK_SLASH
-            CombatStyle.CRUSH -> BonusSlot.ATTACK_CRUSH
-            else -> throw IllegalStateException("Invalid combat style. $combatStyle")
-        }
-        return pawn.getBonus(bonus).toDouble()
+        val bonus = 0
+        return 0.0
     }
 
     private fun getEquipmentDefenceBonus(pawn: Pawn, target: Pawn): Double {
         val combatStyle = CombatConfigs.getCombatStyle(pawn)
-        val bonus = when (combatStyle) {
-            CombatStyle.STAB -> BonusSlot.DEFENCE_STAB
-            CombatStyle.SLASH -> BonusSlot.DEFENCE_SLASH
-            CombatStyle.CRUSH -> BonusSlot.DEFENCE_CRUSH
-            else -> throw IllegalStateException("Invalid combat style. $combatStyle")
-        }
-        return target.getBonus(bonus).toDouble()
+
+        return 0.0
     }
 
     private fun getEffectiveStrengthLevel(player: Player): Double {
@@ -190,12 +180,6 @@ object MeleeCombatFormula : CombatFormula {
         // Apply prayer multiplier
         effectiveLevel = Math.floor(effectiveLevel * getPrayerStrengthMultiplier(player))
 
-        // Add style bonus
-        effectiveLevel += when (CombatConfigs.getAttackStyle(player)){
-            AttackStyle.AGGRESSIVE -> 3.0
-            AttackStyle.CONTROLLED -> 1.0
-            else -> 0.0
-        }
 
         // Add 8
         effectiveLevel += 8.0
@@ -221,12 +205,6 @@ object MeleeCombatFormula : CombatFormula {
         // Apply prayer multiplier
         effectiveLevel = Math.floor(effectiveLevel * getPrayerAttackMultiplier(player))
 
-        // Add style bonus
-        effectiveLevel += when (CombatConfigs.getAttackStyle(player)){
-            AttackStyle.ACCURATE -> 3.0
-            AttackStyle.CONTROLLED -> 1.0
-            else -> 0.0
-        }
 
         // Add 8
         effectiveLevel += 8.0
@@ -252,13 +230,6 @@ object MeleeCombatFormula : CombatFormula {
         // Apply prayer multiplier
         effectiveLevel = Math.floor(effectiveLevel * getPrayerDefenceMultiplier(player))
 
-        // Add style bonus
-        effectiveLevel += when (CombatConfigs.getAttackStyle(player)){
-            AttackStyle.DEFENSIVE -> 3.0
-            AttackStyle.CONTROLLED -> 1.0
-            AttackStyle.LONG_RANGE -> 3.0
-            else -> 0.0
-        }
 
         // Add 8
         effectiveLevel += 8.0
@@ -317,8 +288,8 @@ object MeleeCombatFormula : CombatFormula {
     }
 
     private fun getEquipmentMultiplier(player: Player): Double = when {
-        player.hasEquipped(EquipmentType.AMULET, "items.crystalshard_necklace") -> 7.0 / 6.0 // These should only apply if the target is undead..
-        player.hasEquipped(EquipmentType.AMULET, "items.lotr_crystalshard_necklace_upgrade") -> 1.2 // These should only apply if the target is undead..
+        player.hasEquipped(Wearpos.Front, "items.crystalshard_necklace") -> 7.0 / 6.0 // These should only apply if the target is undead..
+        player.hasEquipped(Wearpos.Front, "items.lotr_crystalshard_necklace_upgrade") -> 1.2 // These should only apply if the target is undead..
         else -> 1.0
     }
 
@@ -347,7 +318,7 @@ object MeleeCombatFormula : CombatFormula {
             return 1.0
         }
         return when {
-            player.hasEquipped(EquipmentType.HEAD, *BLACK_MASKS) || player.hasEquipped(EquipmentType.HEAD, *BLACK_MASKS_I) -> 7.0 / 6.0
+            player.hasEquipped(Wearpos.Hat, *BLACK_MASKS) || player.hasEquipped(Wearpos.Hat, *BLACK_MASKS_I) -> 7.0 / 6.0
             // TODO: Add slayer helmet checks when items are identified
             else -> 1.0
         }
@@ -357,14 +328,14 @@ object MeleeCombatFormula : CombatFormula {
         if (pawn is Player) {
             val world = pawn.world
             var multiplier = when {
-                pawn.hasEquipped(EquipmentType.AMULET, "items.jewl_beserker_necklace") -> 1.2
+                pawn.hasEquipped(Wearpos.Front, "items.jewl_beserker_necklace") -> 1.2
                 isWearingDharok(pawn) -> {
                     val lost = (pawn.getMaxHp() - pawn.getCurrentHp()) / 100.0
                     val max = pawn.getMaxHp() / 100.0
                     1.0 + (lost * max)
                 }
-                pawn.hasEquipped(EquipmentType.WEAPON, "items.gadderanks_warhammer") && isShade(target) -> if (world.chance(1, 20)) 2.0 else 1.25
-                pawn.hasEquipped(EquipmentType.WEAPON, "items.contact_keris", "items.contact_keris_p") && (isKalphite(target) || isScarab(target)) -> if (world.chance(1, 51)) 3.0 else (4.0 / 3.0)
+                pawn.hasEquipped(Wearpos.RightHand, "items.gadderanks_warhammer") && isShade(target) -> if (world.chance(1, 20)) 2.0 else 1.25
+                pawn.hasEquipped(Wearpos.RightHand, "items.contact_keris", "items.contact_keris_p") && (isKalphite(target) || isScarab(target)) -> if (world.chance(1, 51)) 3.0 else (4.0 / 3.0)
                 else -> 1.0
             }
 
@@ -414,10 +385,10 @@ object MeleeCombatFormula : CombatFormula {
     private fun isWearingDharok(pawn: Pawn): Boolean {
         if (pawn.entityType.isPlayer) {
             val player = pawn as Player
-            return player.hasEquipped(EquipmentType.HEAD, "items.barrows_dharok_head", "items.barrows_dharok_head_25", "items.barrows_dharok_head_50", "items.barrows_dharok_head_75", "items.barrows_dharok_head_100")
-                    && player.hasEquipped(EquipmentType.WEAPON, "items.barrows_dharok_weapon", "items.barrows_dharok_weapon_25", "items.barrows_dharok_weapon_50", "items.barrows_dharok_weapon_75", "items.barrows_dharok_weapon_100")
-                    && player.hasEquipped(EquipmentType.CHEST, "items.barrows_dharok_body", "items.barrows_dharok_body_25", "items.barrows_dharok_body_50", "items.barrows_dharok_body_75", "items.barrows_dharok_body_100")
-                    && player.hasEquipped(EquipmentType.LEGS, "items.barrows_dharok_legs", "items.barrows_dharok_legs_25", "items.barrows_dharok_legs_50", "items.barrows_dharok_legs_75", "items.barrows_dharok_legs_100")
+            return player.hasEquipped(Wearpos.Hat, "items.barrows_dharok_head", "items.barrows_dharok_head_25", "items.barrows_dharok_head_50", "items.barrows_dharok_head_75", "items.barrows_dharok_head_100")
+                    && player.hasEquipped(Wearpos.RightHand, "items.barrows_dharok_weapon", "items.barrows_dharok_weapon_25", "items.barrows_dharok_weapon_50", "items.barrows_dharok_weapon_75", "items.barrows_dharok_weapon_100")
+                    && player.hasEquipped(Wearpos.Torso, "items.barrows_dharok_body", "items.barrows_dharok_body_25", "items.barrows_dharok_body_50", "items.barrows_dharok_body_75", "items.barrows_dharok_body_100")
+                    && player.hasEquipped(Wearpos.Legs, "items.barrows_dharok_legs", "items.barrows_dharok_legs_25", "items.barrows_dharok_legs_50", "items.barrows_dharok_legs_75", "items.barrows_dharok_legs_100")
         }
         return false
     }
@@ -425,18 +396,18 @@ object MeleeCombatFormula : CombatFormula {
     private fun isWearingVerac(pawn: Pawn): Boolean {
         if (pawn.entityType.isPlayer) {
             val player = pawn as Player
-            return player.hasEquipped(EquipmentType.HEAD, "items.barrows_verac_head", "items.barrows_verac_head_25", "items.barrows_verac_head_50", "items.barrows_verac_head_75", "items.barrows_verac_head_100")
-                    && player.hasEquipped(EquipmentType.WEAPON, "items.barrows_verac_weapon", "items.barrows_verac_weapon_25", "items.barrows_verac_weapon_50", "items.barrows_verac_weapon_75", "items.barrows_verac_weapon_100")
-                    && player.hasEquipped(EquipmentType.CHEST, "items.barrows_verac_body", "items.barrows_verac_body_25", "items.barrows_verac_body_50", "items.barrows_verac_body_75", "items.barrows_verac_body_100")
-                    && player.hasEquipped(EquipmentType.LEGS, "items.barrows_verac_legs", "items.barrows_verac_legs_25", "items.barrows_verac_legs_50", "items.barrows_verac_legs_75", "items.barrows_verac_legs_100")
+            return player.hasEquipped(Wearpos.Hat, "items.barrows_verac_head", "items.barrows_verac_head_25", "items.barrows_verac_head_50", "items.barrows_verac_head_75", "items.barrows_verac_head_100")
+                    && player.hasEquipped(Wearpos.RightHand, "items.barrows_verac_weapon", "items.barrows_verac_weapon_25", "items.barrows_verac_weapon_50", "items.barrows_verac_weapon_75", "items.barrows_verac_weapon_100")
+                    && player.hasEquipped(Wearpos.Torso, "items.barrows_verac_body", "items.barrows_verac_body_25", "items.barrows_verac_body_50", "items.barrows_verac_body_75", "items.barrows_verac_body_100")
+                    && player.hasEquipped(Wearpos.Legs, "items.barrows_verac_legs", "items.barrows_verac_legs_25", "items.barrows_verac_legs_50", "items.barrows_verac_legs_75", "items.barrows_verac_legs_100")
         }
         return false
     }
 
     private fun isWearingTorag(player: Player): Boolean {
-        return player.hasEquipped(EquipmentType.HEAD, "items.barrows_torag_head", "items.barrows_torag_head_25", "items.barrows_torag_head_50", "items.barrows_torag_head_75", "items.barrows_torag_head_100")
-                && player.hasEquipped(EquipmentType.WEAPON, "items.barrows_torag_weapon", "items.barrows_torag_weapon_25", "items.barrows_torag_weapon_50", "items.barrows_torag_weapon_75", "items.barrows_torag_weapon_100")
-                && player.hasEquipped(EquipmentType.CHEST, "items.barrows_torag_body", "items.barrows_torag_body_25", "items.barrows_torag_body_50", "items.barrows_torag_body_75", "items.barrows_torag_body_100")
-                && player.hasEquipped(EquipmentType.LEGS, "items.barrows_torag_legs", "items.barrows_torag_legs_25", "items.barrows_torag_legs_50", "items.barrows_torag_legs_75", "items.barrows_torag_legs_100")
+        return player.hasEquipped(Wearpos.Hat, "items.barrows_torag_head", "items.barrows_torag_head_25", "items.barrows_torag_head_50", "items.barrows_torag_head_75", "items.barrows_torag_head_100")
+                && player.hasEquipped(Wearpos.RightHand, "items.barrows_torag_weapon", "items.barrows_torag_weapon_25", "items.barrows_torag_weapon_50", "items.barrows_torag_weapon_75", "items.barrows_torag_weapon_100")
+                && player.hasEquipped(Wearpos.Torso, "items.barrows_torag_body", "items.barrows_torag_body_25", "items.barrows_torag_body_50", "items.barrows_torag_body_75", "items.barrows_torag_body_100")
+                && player.hasEquipped(Wearpos.Legs, "items.barrows_torag_legs", "items.barrows_torag_legs_25", "items.barrows_torag_legs_50", "items.barrows_torag_legs_75", "items.barrows_torag_legs_100")
     }
 }

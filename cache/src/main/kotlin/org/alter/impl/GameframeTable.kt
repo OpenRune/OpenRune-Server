@@ -54,7 +54,7 @@ object GameframeTable {
 
         row("dbrows.gameframe_fullscreen") {
             columnRSCM(COL_TOP_LEVEL,"interfaces.toplevel_display")
-            columnRSCM(COL_MAPPINGS,"enums.fullscreen_pane")
+            columnRSCM(COL_MAPPINGS,"enums.fullscreen_pane_redirect")
             column(COL_CLIENT_MODE,2)
 
             column(COL_RESIZABLE,true)

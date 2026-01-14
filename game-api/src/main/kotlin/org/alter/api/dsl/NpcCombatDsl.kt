@@ -326,59 +326,35 @@ object NpcCombatDsl {
     @CombatDslMarker
     class BonusBuilder(private val bonuses: MutableList<Pair<Int, Int>>) {
         var attackStab: Int = 0
-            set(value) {
-                set(Pair(BonusSlot.ATTACK_STAB.id, value))
-            }
+
 
         var attackSlash: Int = 0
-            set(value) {
-                set(Pair(BonusSlot.ATTACK_SLASH.id, value))
-            }
+
 
         var attackCrush: Int = 0
-            set(value) {
-                set(Pair(BonusSlot.ATTACK_CRUSH.id, value))
-            }
 
         var attackMagic: Int = 0
-            set(value) {
-                set(Pair(BonusSlot.ATTACK_MAGIC.id, value))
-            }
 
         var attackRanged: Int = 0
-            set(value) {
-                set(Pair(BonusSlot.ATTACK_RANGED.id, value))
-            }
+
 
         var defenceStab: Int = 0
-            set(value) {
-                set(Pair(BonusSlot.DEFENCE_STAB.id, value))
-            }
+
 
         var defenceSlash: Int = 0
-            set(value) {
-                set(Pair(BonusSlot.DEFENCE_SLASH.id, value))
-            }
+
 
         var defenceCrush: Int = 0
-            set(value) {
-                set(Pair(BonusSlot.DEFENCE_CRUSH.id, value))
-            }
+
 
         var defenceMagic: Int = 0
-            set(value) {
-                set(Pair(BonusSlot.DEFENCE_MAGIC.id, value))
-            }
+
 
         var defenceRanged: Int = 0
-            set(value) {
-                set(Pair(BonusSlot.DEFENCE_RANGED.id, value))
-            }
+
 
         var attackBonus: Int = 0
-            set(value) {
-                set(Pair(NPC_ATTACK_BONUS_INDEX, value))
-            }
+
 
         var strengthBonus: Int = 0
             set(value) {

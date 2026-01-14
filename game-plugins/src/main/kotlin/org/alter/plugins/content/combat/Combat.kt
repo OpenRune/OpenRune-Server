@@ -175,14 +175,7 @@ object Combat {
         val hitpoints = npc.getMaxHp()
 
         val averageLvl = Math.floor((attackLvl + strengthLvl + defenceLvl + hitpoints) / 4.0)
-        val averageDefBonus =
-            Math.floor(
-                (
-                    npc.getBonus(
-                        BonusSlot.DEFENCE_STAB,
-                    ) + npc.getBonus(BonusSlot.DEFENCE_SLASH) + npc.getBonus(BonusSlot.DEFENCE_CRUSH)
-                ) / 3.0,
-            )
+        val averageDefBonus = 0
         return 1.0 + Math.floor(averageLvl * (averageDefBonus + npc.getStrengthBonus() + npc.getAttackBonus()) / 5120.0) / 40.0
     }
 

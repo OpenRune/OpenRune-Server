@@ -603,20 +603,20 @@ fun Player.hasWeaponType(
         }
 
 fun Player.hasEquipped(
-    slot: EquipmentType,
+    slot: Wearpos,
     vararg items: Int,
 ): Boolean {
     check(items.isNotEmpty()) { "Items shouldn't be empty." }
-    return items.any { equipment.hasAt(slot.id, it) }
+    return items.any { equipment.hasAt(slot.slot, it) }
 }
 
 fun Player.hasEquipped(
-    slot: EquipmentType,
+    slot: Wearpos,
     vararg items: String,
 ): Boolean {
     check(items.isNotEmpty()) { "Items shouldn't be empty." }
     val scanned = items.map { getRSCM(it) }.toTypedArray()
-    return scanned.any { equipment.hasAt(slot.id, it) }
+    return scanned.any { equipment.hasAt(slot.slot, it) }
 }
 
 fun Player.hasEquipped(items: IntArray) = items.all { equipment.contains(it) }
@@ -624,7 +624,7 @@ fun Player.hasEquipped(items: Array<String>) = items.map {getRSCM(it)}.all { equ
 
 
 
-fun Player.getEquipment(slot: EquipmentType): Item? = equipment[slot.id]
+fun Player.getEquipment(slot: Wearpos): Item? = equipment[slot.slot]
 
 fun Player.setSkullIcon(icon: SkullIcon) {
     avatar.extendedInfo.setSkullIcon(icon.id)
@@ -652,7 +652,7 @@ fun Player.sendCombatLevelText() {
 }
 
 fun Player.sendWeaponComponentInformation() {
-    val weapon = getEquipment(EquipmentType.WEAPON)
+    val weapon = getEquipment(Wearpos.RightHand)
 
     val name: String
     val panel: Int
@@ -711,13 +711,13 @@ fun Player.calculateAndSetCombatLevel(): Boolean {
 
 fun Player.isPrivilegeEligible(to: String): Boolean = world.privileges.isEligible(privilege, to)
 
-fun Player.getStrengthBonus(): Int = equipmentBonuses[10]
+fun Player.getStrengthBonus(): Int = 0
 
-fun Player.getRangedStrengthBonus(): Int = equipmentBonuses[11]
+fun Player.getRangedStrengthBonus(): Int = 0
 
-fun Player.getMagicDamageBonus(): Int = equipmentBonuses[12]
+fun Player.getMagicDamageBonus(): Int = 0
 
-fun Player.getPrayerBonus(): Int = equipmentBonuses[13]
+fun Player.getPrayerBonus(): Int = 0
 
 fun Player.format_bonus_with_sign(value: Int): String = if (value < 0) value.toString() else "+$value"
 

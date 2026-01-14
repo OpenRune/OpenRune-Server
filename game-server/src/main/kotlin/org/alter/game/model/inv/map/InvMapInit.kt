@@ -17,6 +17,7 @@ object InvMapInit {
         hashSetOf(
             "inv.inv",
             "inv.worn",
+            "inv.bank"
         )
 
     public fun init(player: Player) {
@@ -37,6 +38,7 @@ object InvMapInit {
     public fun cacheCommons(player: Player) {
         player.inventory = player.invMap.getValue("inv.inv")
         player.equipment = player.invMap.getValue("inv.worn")
+        player.bank = player.invMap.getValue("inv.bank")
     }
 
     public operator fun plusAssign(inv: String) {

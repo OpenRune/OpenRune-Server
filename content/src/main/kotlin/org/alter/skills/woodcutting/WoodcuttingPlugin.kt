@@ -168,7 +168,7 @@ class WoodcuttingPlugin : PluginEvent() {
      * Checks if the player has any axe available (equipped or in inventory).
      */
     private fun hasAnyAxe(player: Player): Boolean {
-        player.equipment[EquipmentType.WEAPON.id]?.let { weapon ->
+        player.equipment[Wearpos.RightHand.slot]?.let { weapon ->
             if (axeData.any { it.item == weapon.id }) return true
         }
 
@@ -186,7 +186,7 @@ class WoodcuttingPlugin : PluginEvent() {
         val wcLevel = player.getSkills().getBaseLevel(Skills.WOODCUTTING)
 
         // Check equipped weapon first
-        player.equipment[EquipmentType.WEAPON.id]?.let { weapon ->
+        player.equipment[Wearpos.RightHand.slot]?.let { weapon ->
             axeData.find { it.item == weapon.id }?.takeIf { wcLevel >= it.level }?.let { return it }
         }
 

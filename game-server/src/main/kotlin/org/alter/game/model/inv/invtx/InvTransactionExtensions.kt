@@ -374,6 +374,48 @@ public fun Player.invTransfer(
     }
 }
 
+public fun Player.invMoveInv(
+    from: Inventory,
+    into: Inventory,
+    untransform: Boolean = false,
+    intoStartSlot: Int = 0,
+    intoCapacity: Int? = null,
+    keepSlots: Set<Int>? = null,
+): TransactionResultList<Item> {
+    return invMoveAll(
+        from = from,
+        into = into,
+        untransform = untransform,
+        intoStartSlot = intoStartSlot,
+        intoCapacity = intoCapacity,
+        keepSlots = keepSlots,
+    )
+}
+
+public fun Player.invMoveFromSlot(
+    from: Inventory,
+    into: Inventory,
+    fromSlot: Int,
+    count: Int = 1,
+    intoSlot: Int? = null,
+    strict: Boolean = true,
+    cert: Boolean = false,
+    uncert: Boolean = false,
+    placehold: Boolean = false,
+): TransactionResultList<Item> {
+    return invTransfer(
+        from = from,
+        into = into,
+        count = count,
+        fromSlot = fromSlot,
+        intoSlot = intoSlot,
+        strict = strict,
+        cert = cert,
+        uncert = uncert,
+        placehold = placehold,
+    )
+}
+
 public fun Transaction<Item>.transfer(
     from: TransactionInventory<Item>,
     fromSlot: Int,

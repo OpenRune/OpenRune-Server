@@ -1,6 +1,6 @@
 package org.alter.plugins.content.interfaces.emotes
 
-import org.alter.api.EquipmentType
+import org.alter.api.Wearpos
 import org.alter.api.ext.*
 import org.alter.game.model.entity.Player
 import org.alter.game.model.queue.TaskPriority
@@ -80,7 +80,7 @@ object EmotesTab {
          * Thanks to @ClaroJack for the skill animation/gfx id's
          */
         if (emote == Emote.SKILLCAPE) {
-            when (p.equipment[EquipmentType.CAPE.id]?.id) {
+            when (p.equipment[Wearpos.Back.slot]?.id) {
                 getRSCM("items.skillcape_max_worn") -> {
                     p.animate("sequences.max_cape_player_anim", 4)
                     p.graphic("spotanims.max_cape", delay = 4)

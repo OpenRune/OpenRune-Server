@@ -1,6 +1,6 @@
 package org.alter.plugins.content.combat
 
-import org.alter.api.EquipmentType
+import org.alter.api.Wearpos
 import org.alter.api.ext.*
 import org.alter.game.Server
 import org.alter.game.model.Direction
@@ -175,7 +175,7 @@ class CombatPlugin(
         }
         if (Combat.isAttackDelayReady(pawn)) {
             if (Combat.canAttack(pawn, target, strategy)) {
-                if (pawn is Player && AttackTab.isSpecialEnabled(pawn) && pawn.getEquipment(EquipmentType.WEAPON) != null) {
+                if (pawn is Player && AttackTab.isSpecialEnabled(pawn) && pawn.getEquipment(Wearpos.RightHand) != null) {
                     AttackTab.disableSpecial(pawn)
                     if (SpecialAttacks.execute(pawn, target, world)) {
                         Combat.postAttack(pawn, target)

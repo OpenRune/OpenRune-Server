@@ -2,11 +2,8 @@ package org.alter.plugins.content.combat.combat_options
 
 import org.alter.api.*
 import org.alter.api.ext.*
-import org.alter.game.*
-import org.alter.game.model.*
 import org.alter.game.model.attr.NEW_ACCOUNT_ATTR
 import org.alter.game.model.entity.Player
-import org.alter.game.plugin.*
 import org.alter.game.pluginnew.PluginEvent
 import org.alter.game.pluginnew.event.impl.onButton
 import org.alter.game.pluginnew.event.impl.onLogin
@@ -71,7 +68,7 @@ class AttackTabPlugin() : PluginEvent() {
          * Toggle special attack.
          */
         onButton("components.combat_interface:special_attack") {
-            val weaponId = player.equipment[EquipmentType.WEAPON.id]!!.id
+            val weaponId = player.equipment[Wearpos.RightHand.slot]!!.id
             if (SpecialAttacks.executeOnEnable(weaponId)) {
                 if (!SpecialAttacks.execute(player, null, world)) {
                     player.message("You don't have enough power left.")
@@ -84,7 +81,7 @@ class AttackTabPlugin() : PluginEvent() {
         /**
          * Disable special attack when switching weapons.
          */
-        onItemEquipSlot(EquipmentType.WEAPON.id) {
+        onItemEquipSlot(Wearpos.RightHand.slot) {
             player.setVarp(SPECIAL_ATTACK_VARP, 0)
         }
 

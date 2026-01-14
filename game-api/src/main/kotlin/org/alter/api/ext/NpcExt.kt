@@ -79,10 +79,10 @@ fun Npc.isSpecies(
     vararg others: NpcSpecies,
 ): Boolean = this.species.contains(species) || this.species.any { others.contains(it) }
 
-fun Npc.getAttackBonus(): Int = equipmentBonuses[NPC_ATTACK_BONUS_INDEX]
+fun Npc.getAttackBonus(): Int = 0
 
-fun Npc.getStrengthBonus(): Int = equipmentBonuses[NPC_STRENGTH_BONUS_INDEX]
+fun Npc.getStrengthBonus(): Int = 0
 
-fun Npc.getRangedStrengthBonus(): Int = equipmentBonuses[NPC_RANGED_STRENGTH_BONUS_INDEX]
+fun Npc.getRangedStrengthBonus(): Int = 0
 
-fun Npc.getMagicDamageBonus(): Int = equipmentBonuses[NPC_MAGIC_DAMAGE_BONUS_INDEX]
+fun Npc.getMagicDamageBonus(): Int = 0

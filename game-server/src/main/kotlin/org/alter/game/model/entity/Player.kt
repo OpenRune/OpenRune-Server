@@ -132,6 +132,7 @@ open class Player(world: World) : Pawn(world) {
 
     public lateinit var inventory: Inventory
     public lateinit var equipment: Inventory
+    public lateinit var bank: Inventory
 
     public var pendingRunWeight: Boolean = false
     public val invMap: InventoryMap = InventoryMap()
@@ -178,7 +179,7 @@ open class Player(world: World) : Pawn(world) {
     }
 
 
-    val varps = VarpSet(maxVarps = varpSize())
+    val varps = VarpSet(maxVarps = 49996)
 
     private val skillSet = SkillSet(maxSkills = world.gameContext.skillCount)
 
@@ -383,32 +384,6 @@ open class Player(world: World) : Pawn(world) {
             PlayerTickEvent(this).post()
         }
     }
-
-    fun calculateBonuses() {
-        Arrays.fill(equipmentBonuses, 0)
-        for (i in 0 until equipment.size) {
-            val item = equipment[i] ?: continue
-            val params = item.getDef().params?: continue
-            val bonuses = intArrayOf(
-                params.getInt(ParamMapper.item.STAB_ATTACK_BONUS),
-                params.getInt(ParamMapper.item.SLASH_ATTACK_BONUS),
-                params.getInt(ParamMapper.item.CRUSH_ATTACK_BONUS),
-                params.getInt(ParamMapper.item.MAGIC_ATTACK_BONUS),
-                params.getInt(ParamMapper.item.RANGED_ATTACK_BONUS),
-                params.getInt(ParamMapper.item.STAB_DEFENCE_BONUS),
-                params.getInt(ParamMapper.item.SLASH_DEFENCE_BONUS),
-                params.getInt(ParamMapper.item.CRUSH_DEFENCE_BONUS),
-                params.getInt(ParamMapper.item.MAGIC_DEFENCE_BONUS),
-                params.getInt(ParamMapper.item.RANGED_DEFENCE_BONUS),
-                params.getInt(ParamMapper.item.MELEE_STRENGTH),
-                params.getInt(ParamMapper.item.RANGED_STRENGTH_BONUS),
-                params.getInt(ParamMapper.item.MAGIC_DAMAGE_STRENGTH) / 10,
-                params.getInt(ParamMapper.item.PRAYER_BONUS),
-            )
-            bonuses.forEachIndexed { index, bonus -> equipmentBonuses[index] += bonus }
-        }
-    }
-
 
     /**
      * Logic that should be executed every game cycle, after updating occurs.
@@ -627,6 +602,10 @@ open class Player(world: World) : Pawn(world) {
      */
     internal fun writeMessage(message: String) {
         write(MessageGame(type = 0, message = message))
+    }
+
+    public fun soundSynth(synth: Int, loops: Int = 1, delay: Int = 0) {
+        write(SynthSound(synth, loops, delay))
     }
 
     fun playSound(

@@ -1,13 +1,18 @@
 package org.alter
 
+import dev.openrune.definition.type.widget.ComponentType
+import dev.openrune.types.ItemServerType
 import org.alter.api.CommonClientScripts
 import org.alter.api.ext.runClientScript
 import org.alter.game.model.container.ItemContainer
 import org.alter.game.model.entity.Player
+import org.alter.game.model.entity.UpdateInventory.resendSlot
 import org.alter.game.model.inv.Inventory
 import org.alter.rscm.RSCM
 import org.alter.rscm.RSCM.asRSCM
 import org.alter.rscm.RSCMType
+import kotlin.collections.get
+import kotlin.text.get
 
 public fun ifSetTextAlign(
     player: Player,
@@ -99,4 +104,65 @@ public fun statGroupTooltip(
     text: String,
 ) {
     player.runClientScript(CommonClientScripts.STAT_GROUP, tooltip.asRSCM(), container.asRSCM(), text)
+}
+
+public fun tooltip(
+    player: Player,
+    text: String,
+    container: String,
+    tooltip: String,
+) {
+    player.runClientScript(CommonClientScripts.TOOLTIP, text, container.asRSCM(), tooltip.asRSCM())
+}
+
+public fun mesLayerClose(player: Player, layerMode: Int) {
+    player.runClientScript(CommonClientScripts.MES_SLAYER_CLOSE, layerMode)
+}
+
+public fun examineItem(
+    player: Player,
+    obj: Int,
+    count: Int,
+    desc: String,
+    market: Boolean,
+    marketPrice: Int,
+    alchable: Boolean,
+    highAlch: Int,
+    lowAlch: Int,
+) {
+    player.runClientScript(
+        CommonClientScripts.EXAMINE_ITEM,
+        obj,
+        count,
+        desc,
+        if (market) 1 else 0,
+        marketPrice,
+        if (alchable) 1 else 0,
+        highAlch,
+        lowAlch,
+    )
+}
+
+public fun objExamine(
+    player: Player,
+    inventory: Inventory,
+    slot: Int
+) {
+    val obj = inventory[slot] ?: return resendSlot(inventory, 0)
+    player.objExamine(obj.getDef(), obj.amount, 0)
+}
+
+public fun Player.objExamine(type: ItemServerType, count: Int, marketPrice: Int) {
+    //TODO THIS
+    examineItem(
+        player = this,
+        obj = type.id,
+        count = count,
+        desc = type.examine,
+        market = false,
+        marketPrice = marketPrice,
+        alchable = type.alchable,
+        lowAlch = 0,
+        highAlch = 0,
+    )
 }

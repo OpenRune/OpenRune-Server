@@ -2,11 +2,14 @@ package org.alter.game.model.item
 
 import dev.openrune.ServerCacheManager.getItem
 import dev.openrune.ServerCacheManager.getItemOrDefault
+import dev.openrune.types.ItemServerType
 import gg.rsmod.util.toStringHelper
 import org.alter.rscm.RSCM
 import org.alter.rscm.RSCM.asRSCM
 import org.alter.rscm.RSCMType
 import org.bson.Document
+import kotlin.contracts.ExperimentalContracts
+import kotlin.contracts.contract
 
 /**
  * @author Tom <rspsmods@gmail.com>
@@ -113,4 +116,30 @@ class Item(val id: Int, var amount: Int = 1, var vars : Int = 0) {
         }
     }
 
+}
+
+@OptIn(ExperimentalContracts::class)
+public fun Item?.isType(type: String): Boolean {
+    contract { returns(true) implies (this@isType != null) }
+    return this != null && type.asRSCM() == id
+}
+@OptIn(ExperimentalContracts::class)
+public fun Item?.isAnyType(type1: String, type2: String): Boolean {
+    contract { returns(true) implies (this@isAnyType != null) }
+    return this != null && (type1.asRSCM() == id || type2.asRSCM() == id)
+}
+
+@OptIn(ExperimentalContracts::class)
+public fun Item?.isAnyType(type1: String, type2: String, type3: String): Boolean {
+    contract { returns(true) implies (this@isAnyType != null) }
+    return this != null &&
+            (type1.asRSCM() == id || type2.asRSCM() == id || type3.asRSCM() == id)
+}
+
+@OptIn(ExperimentalContracts::class)
+public fun Item?.isAnyType(vararg types: String): Boolean {
+    contract { returns(true) implies (this@isAnyType != null) }
+    if (this == null) return false
+    if (types.isEmpty()) return false
+    return types.any { it.asRSCM() == id }
 }

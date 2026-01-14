@@ -49,3 +49,16 @@ fun PluginEvent.onIfModalDrag(
         then { action(this) }
     }
 }
+
+fun PluginEvent.onIfModalDrag(
+    selected: String,
+    target: String,
+    action: suspend IfModalDrag.() -> Unit
+): EventListener<IfModalDrag> {
+    requireRSCM(RSCMType.COMPONENTS,selected)
+    requireRSCM(RSCMType.COMPONENTS,target)
+    return on<IfModalDrag> {
+        where { selectedComponent == selected.asRSCM() && targetComponent == target.asRSCM() }
+        then { action(this) }
+    }
+}

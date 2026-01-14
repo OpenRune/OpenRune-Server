@@ -5,12 +5,37 @@ package org.alter.game.model.combat
  *
  * @author Tom <rspsmods@gmail.com>
  */
-enum class AttackStyle(val id: Int) {
-    NONE(id = -1),
-    ACCURATE(id = 0),
-    AGGRESSIVE(id = 1),
-    DEFENSIVE(id = 2),
-    CONTROLLED(id = 3),
-    RAPID(id = 4),
-    LONG_RANGE(id = 5),
+public enum class AttackStyle(public val id: Int) {
+    /* `id` 0 is reserved for "null" value. */
+    ControlledMelee(1),
+    AccurateMelee(2),
+    AggressiveMelee(3),
+    DefensiveMelee(4),
+    AccurateRanged(5),
+    RapidRanged(6),
+    LongrangeRanged(7),
+    AccurateMagic(8),
+    LongrangeMagic(9);
+
+    public val isRanged: Boolean
+        get() = this == AccurateRanged || this == RapidRanged || this == LongrangeRanged
+
+    public val isMagic: Boolean
+        get() = this == AccurateMagic || this == LongrangeMagic
+
+    public companion object {
+        public operator fun get(id: Int): AttackStyle? =
+            when (id) {
+                AccurateMelee.id -> AccurateMelee
+                AggressiveMelee.id -> AggressiveMelee
+                DefensiveMelee.id -> DefensiveMelee
+                ControlledMelee.id -> ControlledMelee
+                AccurateRanged.id -> AccurateRanged
+                RapidRanged.id -> RapidRanged
+                LongrangeRanged.id -> LongrangeRanged
+                AccurateMagic.id -> AccurateMagic
+                LongrangeMagic.id -> LongrangeMagic
+                else -> null
+            }
+    }
 }

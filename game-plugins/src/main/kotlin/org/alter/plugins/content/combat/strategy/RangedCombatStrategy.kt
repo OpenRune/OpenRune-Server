@@ -1,6 +1,6 @@
 package org.alter.plugins.content.combat.strategy
 
-import org.alter.api.EquipmentType
+import org.alter.api.Wearpos
 import org.alter.api.Skills
 import org.alter.api.WeaponType
 import org.alter.api.ext.*
@@ -32,8 +32,8 @@ object RangedCombatStrategy : CombatStrategy {
 
     override fun getAttackRange(pawn: Pawn): Int {
         if (pawn is Player) {
-            val weapon = pawn.getEquipment(EquipmentType.WEAPON)
-            val attackStyle = CombatConfigs.getAttackStyle(pawn)
+            val weapon = pawn.getEquipment(Wearpos.RightHand)
+            val attackStyle = 0
 
             var range =
                 when (weapon?.id) {
@@ -47,9 +47,7 @@ object RangedCombatStrategy : CombatStrategy {
                     else -> DEFAULT_ATTACK_RANGE
                 }
 
-            if (attackStyle == AttackStyle.LONG_RANGE) {
-                range += 2
-            }
+
 
             return Math.min(MAX_ATTACK_RANGE, range)
         }
@@ -61,8 +59,8 @@ object RangedCombatStrategy : CombatStrategy {
         target: Pawn,
     ): Boolean {
         if (pawn is Player) {
-            val weapon = pawn.getEquipment(EquipmentType.WEAPON)
-            val ammo = pawn.getEquipment(EquipmentType.AMMO)
+            val weapon = pawn.getEquipment(Wearpos.RightHand)
+            val ammo = pawn.getEquipment(Wearpos.Quiver)
 
             val crossbow = CrossbowType.values.firstOrNull { it.item == weapon?.id }
             if (crossbow != null && ammo?.id !in crossbow.ammo) {
@@ -119,8 +117,8 @@ object RangedCombatStrategy : CombatStrategy {
              */
             val ammoSlot =
                 when {
-                    pawn.hasWeaponType(WeaponType.THROWN) || pawn.hasWeaponType(WeaponType.CHINCHOMPA) -> EquipmentType.WEAPON
-                    else -> EquipmentType.AMMO
+                    pawn.hasWeaponType(WeaponType.THROWN) || pawn.hasWeaponType(WeaponType.CHINCHOMPA) -> Wearpos.RightHand
+                    else -> Wearpos.Quiver
                 }
 
             val ammo = pawn.getEquipment(ammoSlot)
@@ -144,8 +142,8 @@ object RangedCombatStrategy : CombatStrategy {
                 val breakAmmo = chance in 0..19
                 val dropAmmo =
                     when {
-                        pawn.hasEquipped(EquipmentType.CAPE, "items.anma_50_reward") -> chance in 20..27
-                        pawn.hasEquipped(EquipmentType.CAPE, "items.avas_assembler") -> false
+                        pawn.hasEquipped(Wearpos.Back, "items.anma_50_reward") -> chance in 20..27
+                        pawn.hasEquipped(Wearpos.Back, "items.avas_assembler") -> false
                         else -> !breakAmmo
                     }
 

@@ -1,7 +1,6 @@
 package org.alter.api.ext
 
 import dev.openrune.ServerCacheManager.getAnim
-import org.alter.api.BonusSlot
 import org.alter.api.HitType
 import org.alter.api.HitbarType
 import org.alter.api.PrayerIcon
@@ -44,8 +43,6 @@ fun Pawn.getInteractingNpc(): Npc = attr[INTERACTING_NPC_ATTR]!!.get()!!
 fun Pawn.getInteractingPlayer(): Player = attr[INTERACTING_PLAYER_ATTR]!!.get()!!
 
 fun Pawn.hasPrayerIcon(icon: PrayerIcon): Boolean = prayerIcon == icon.id
-
-fun Pawn.getBonus(slot: BonusSlot): Int = equipmentBonuses[slot.id]
 
 fun Pawn.hit(
     damage: Int,

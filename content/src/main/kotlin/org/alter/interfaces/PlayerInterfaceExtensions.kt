@@ -308,6 +308,8 @@ private fun Player.closeModal(interf: UserInterface, target: Component) {
     val translated = ui.translate(target)
     write(IfCloseSub(translated.parent, translated.child))
 
+    CloseSubEvent(interf, target,this).post()
+
     closeOverlayChildren(interf)
 }
 
@@ -328,7 +330,7 @@ private fun Player.closeOverlay(interf: UserInterface, target: Component) {
     // is aware, the interface was open on the "base" target component. (when applicable)
     val translated = ui.translate(target)
     write(IfCloseSub(translated.parent, translated.child))
-
+    CloseSubEvent(interf, target,this).post()
     closeOverlayChildren(interf)
 }
 
@@ -354,7 +356,7 @@ public fun Player.closeSubs(from: Component) {
         // is aware, the interface was open on the "base" target component. (when applicable)
         val translated = ui.translate(from)
         write(IfCloseSub(translated.parent, translated.child))
-
+        CloseSubEvent(remove, from,this).post()
         closeOverlayChildren(remove)
     }
 }
@@ -367,6 +369,7 @@ private fun Player.triggerCloseSubs(from: Component) {
     val remove = ui.modals.remove(from) ?: ui.overlays.remove(from)
     if (remove != null) {
         ui.events.clear(remove)
+        CloseSubEvent(remove, from,this).post()
         triggerCloseOverlayChildren(remove)
     }
 }

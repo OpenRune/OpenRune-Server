@@ -146,8 +146,8 @@ object RangedCombatFormula : CombatFormula {
         if (specialAttackMultiplier == 1.0) {
             val multiplier =
                 when {
-                    player.hasEquipped(EquipmentType.WEAPON, "items.dragonhunter_xbow") && isDragon(target) -> 1.3
-                    player.hasEquipped(EquipmentType.WEAPON, "items.twisted_bow") && target.entityType.isNpc -> {
+                    player.hasEquipped(Wearpos.RightHand, "items.dragonhunter_xbow") && isDragon(target) -> 1.3
+                    player.hasEquipped(Wearpos.RightHand, "items.twisted_bow") && target.entityType.isNpc -> {
                         // TODO: cap inside Chambers of Xeric is 350
                         val cap = 250.0
                         val magic =
@@ -215,8 +215,8 @@ object RangedCombatFormula : CombatFormula {
         if (specialAttackMultiplier == 1.0) {
             val multiplier =
                 when {
-                    player.hasEquipped(EquipmentType.WEAPON, "items.dragonhunter_xbow") && isDragon(target) -> 1.3
-                    player.hasEquipped(EquipmentType.WEAPON, "items.twisted_bow") && target.entityType.isNpc -> {
+                    player.hasEquipped(Wearpos.RightHand, "items.dragonhunter_xbow") && isDragon(target) -> 1.3
+                    player.hasEquipped(Wearpos.RightHand, "items.twisted_bow") && target.entityType.isNpc -> {
                         // TODO: cap inside Chambers of Xeric is 250
                         val cap = 140.0
                         val magic =
@@ -250,7 +250,7 @@ object RangedCombatFormula : CombatFormula {
     ): Double {
         var hit = base
 
-        if (target is Player && isWearingTorag(target) && target.hasEquipped(EquipmentType.AMULET, "items.damned_amulet")) {
+        if (target is Player && isWearingTorag(target) && target.hasEquipped(Wearpos.Front, "items.damned_amulet")) {
             val lost = (target.getMaxHp() - target.getCurrentHp()) / 100.0
             val max = target.getMaxHp() / 100.0
             hit *= (1.0 + (lost * max))
@@ -268,11 +268,11 @@ object RangedCombatFormula : CombatFormula {
         }
 
     private fun getEquipmentAttackBonus(pawn: Pawn): Double {
-        return pawn.getBonus(BonusSlot.ATTACK_RANGED).toDouble()
+        return 0.0
     }
 
     private fun getEquipmentDefenceBonus(target: Pawn): Double {
-        return target.getBonus(BonusSlot.DEFENCE_RANGED).toDouble()
+        return 0.0
     }
 
     private fun getEffectiveRangedLevel(player: Player): Double {
@@ -288,12 +288,6 @@ object RangedCombatFormula : CombatFormula {
         // Apply prayer multiplier
         effectiveLevel = Math.floor(effectiveLevel * getPrayerRangedMultiplier(player))
 
-        // Add style bonus
-        effectiveLevel +=
-            when (CombatConfigs.getAttackStyle(player)) {
-                AttackStyle.ACCURATE -> 3.0
-                else -> 0.0
-            }
 
         // Add 8
         effectiveLevel += 8.0
@@ -321,14 +315,7 @@ object RangedCombatFormula : CombatFormula {
         // Apply prayer multiplier
         effectiveLevel = Math.floor(effectiveLevel * getPrayerAttackMultiplier(player))
 
-        // Add style bonus
-        effectiveLevel +=
-            when (CombatConfigs.getAttackStyle(player)) {
-                AttackStyle.ACCURATE -> 3.0
-                else -> 0.0
-            }
 
-        // Add 8
         effectiveLevel += 8.0
 
         // Apply void bonus
@@ -352,14 +339,6 @@ object RangedCombatFormula : CombatFormula {
         // Apply prayer multiplier
         effectiveLevel = Math.floor(effectiveLevel * getPrayerDefenceMultiplier(player))
 
-        // Add style bonus
-        effectiveLevel +=
-            when (CombatConfigs.getAttackStyle(player)) {
-                AttackStyle.DEFENSIVE -> 3.0
-                AttackStyle.CONTROLLED -> 1.0
-                AttackStyle.LONG_RANGE -> 3.0
-                else -> 0.0
-            }
 
         // Add 8
         effectiveLevel += 8.0
@@ -420,13 +399,13 @@ object RangedCombatFormula : CombatFormula {
 
     private fun getEquipmentMultiplier(player: Player): Double =
         when {
-            player.hasEquipped(EquipmentType.AMULET, "items.crystalshard_necklace") -> 7.0 / 6.0
-            player.hasEquipped(EquipmentType.AMULET, "items.lotr_crystalshard_necklace_upgrade") -> 1.2
-            player.hasEquipped(EquipmentType.AMULET, "items.nzone_salve_amulet") -> 1.15
-            player.hasEquipped(EquipmentType.AMULET, "items.nzone_salve_amulet_e") -> 1.2
+            player.hasEquipped(Wearpos.Front, "items.crystalshard_necklace") -> 7.0 / 6.0
+            player.hasEquipped(Wearpos.Front, "items.lotr_crystalshard_necklace_upgrade") -> 1.2
+            player.hasEquipped(Wearpos.Front, "items.nzone_salve_amulet") -> 1.15
+            player.hasEquipped(Wearpos.Front, "items.nzone_salve_amulet_e") -> 1.2
             // TODO: this should only apply when target is slayer task?
-            player.hasEquipped(EquipmentType.HEAD, *BLACK_MASKS) -> 7.0 / 6.0
-            player.hasEquipped(EquipmentType.HEAD, *BLACK_MASKS_I) -> 1.15
+            player.hasEquipped(Wearpos.Hat, *BLACK_MASKS) -> 7.0 / 6.0
+            player.hasEquipped(Wearpos.Hat, *BLACK_MASKS_I) -> 1.15
             else -> 1.0
         }
 
@@ -439,7 +418,7 @@ object RangedCombatFormula : CombatFormula {
             player.hasWeaponType(WeaponType.CROSSBOW) && player.attr.has(Combat.BOLT_ENCHANTMENT_EFFECT) -> {
                 val dragonstone =
                     player.hasEquipped(
-                        EquipmentType.AMMO,
+                        Wearpos.Quiver,
                         "items.xbows_crossbow_bolts_runite_tipped_dragonstone",
                         "items.xbows_crossbow_bolts_runite_tipped_dragonstone_enchanted",
                         "items.dragon_bolts_unenchanted_dragonstone",
@@ -447,7 +426,7 @@ object RangedCombatFormula : CombatFormula {
                     )
                 val opal =
                     player.hasEquipped(
-                        EquipmentType.AMMO,
+                        Wearpos.Quiver,
                         "items.opal_bolt",
                         "items.xbows_crossbow_bolts_bronze_tipped_opal_enchanted",
                         "items.dragon_bolts_unenchanted_opal",
@@ -455,7 +434,7 @@ object RangedCombatFormula : CombatFormula {
                     )
                 val pearl =
                     player.hasEquipped(
-                        EquipmentType.AMMO,
+                        Wearpos.Quiver,
                         "items.pearl_bolt",
                         "items.xbows_crossbow_bolts_iron_tipped_pearl_enchanted",
                         "items.dragon_bolts_unenchanted_pearl",
@@ -496,7 +475,7 @@ object RangedCombatFormula : CombatFormula {
 
     private fun isWearingTorag(player: Player): Boolean {
         return player.hasEquipped(
-            EquipmentType.HEAD,
+            Wearpos.Hat,
             "items.barrows_torag_head",
             "items.barrows_torag_head_25",
             "items.barrows_torag_head_50",
@@ -504,7 +483,7 @@ object RangedCombatFormula : CombatFormula {
             "items.barrows_torag_head_100",
         ) &&
             player.hasEquipped(
-                EquipmentType.WEAPON,
+                Wearpos.RightHand,
                 "items.barrows_torag_weapon",
                 "items.barrows_torag_weapon_25",
                 "items.barrows_torag_weapon_50",
@@ -512,7 +491,7 @@ object RangedCombatFormula : CombatFormula {
                 "items.barrows_torag_weapon_100",
             ) &&
             player.hasEquipped(
-                EquipmentType.CHEST,
+                Wearpos.Torso,
                 "items.barrows_torag_body",
                 "items.barrows_torag_body_25",
                 "items.barrows_torag_body_50",
@@ -520,7 +499,7 @@ object RangedCombatFormula : CombatFormula {
                 "items.barrows_torag_body_100",
             ) &&
             player.hasEquipped(
-                EquipmentType.LEGS,
+                Wearpos.Legs,
                 "items.barrows_torag_legs",
                 "items.barrows_torag_legs_25",
                 "items.barrows_torag_legs_50",

@@ -101,11 +101,6 @@ abstract class Pawn(val world: World) : Entity() {
     internal val queues: QueueTaskSet = PawnQueueTaskSet()
 
     /**
-     * The equipment bonus for the pawn.
-     */
-    val equipmentBonuses = IntArray(14)
-
-    /**
      * The current prayer icon that the pawn has active.
      */
     var prayerIcon = -1

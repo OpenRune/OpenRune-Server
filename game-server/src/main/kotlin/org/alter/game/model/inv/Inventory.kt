@@ -7,8 +7,10 @@ import dev.openrune.types.InventoryServerType
 import dev.openrune.types.ItemServerType
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet
 import org.alter.game.model.container.ItemTransaction
+import org.alter.game.model.entity.Player
 import org.alter.game.model.inv.invtx.add
 import org.alter.game.model.inv.invtx.delete
+import org.alter.game.model.inv.invtx.invTransfer
 import org.alter.game.model.inv.invtx.toTransactionStackType
 import org.alter.game.model.inv.invtx.transactions
 import org.alter.game.model.inv.objtx.Transaction
@@ -317,6 +319,8 @@ public class Inventory(public val type: InventoryServerType, public val objs: Ar
         return result
     }
 
+
+
     public fun invTransaction(
         autoCommit: Boolean = true,
         transaction: Transaction<Item>.() -> Unit,
@@ -378,4 +382,36 @@ public fun ItemServerType?.isAnyType(type1: ItemServerType, type2: ItemServerTyp
 public fun ItemServerType?.isAnyType(type1: ItemServerType, type2: ItemServerType, type3: ItemServerType): Boolean {
     contract { returns(true) implies (this@isAnyType != null) }
     return this != null && (type1.id == id || type2.id == id || type3.id == id)
+}
+
+
+@OptIn(ExperimentalContracts::class)
+public fun ItemServerType.isAssociatedWith(obj: String): Boolean {
+    contract { returns(true) implies (obj != null) }
+    RSCM.requireRSCM(RSCMType.OBJTYPES,obj)
+    return obj != null && obj.asRSCM() == id
+}
+
+@OptIn(ExperimentalContracts::class)
+public fun ItemServerType?.isType(other: String): Boolean {
+    contract { returns(true) implies (this@isType != null) }
+    RSCM.requireRSCM(RSCMType.OBJTYPES,other)
+    return this != null && this.id == other.asRSCM()
+}
+
+@OptIn(ExperimentalContracts::class)
+public fun ItemServerType?.isAnyType(type1: String, type2: String): Boolean {
+    contract { returns(true) implies (this@isAnyType != null) }
+    RSCM.requireRSCM(RSCMType.OBJTYPES,type1)
+    RSCM.requireRSCM(RSCMType.OBJTYPES,type2)
+    return this != null && (type1.asRSCM() == id || type2.asRSCM() == id)
+}
+
+@OptIn(ExperimentalContracts::class)
+public fun ItemServerType?.isAnyType(type1: String, type2: String, type3: String): Boolean {
+    contract { returns(true) implies (this@isAnyType != null) }
+    RSCM.requireRSCM(RSCMType.OBJTYPES,type1)
+    RSCM.requireRSCM(RSCMType.OBJTYPES,type2)
+    RSCM.requireRSCM(RSCMType.OBJTYPES,type3)
+    return this != null && (type1.asRSCM() == id || type2.asRSCM() == id || type3.asRSCM() == id)
 }

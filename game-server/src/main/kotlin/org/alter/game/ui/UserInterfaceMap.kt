@@ -9,7 +9,9 @@ import it.unimi.dsi.fastutil.ints.IntArraySet
 import org.alter.game.ui.collection.ComponentEventMap
 import org.alter.game.ui.collection.ComponentTargetMap
 import org.alter.game.ui.collection.ComponentTranslationMap
+import org.alter.rscm.RSCM
 import org.alter.rscm.RSCM.asRSCM
+import org.alter.rscm.RSCMType
 import kotlin.and
 import kotlin.collections.containsValue
 import kotlin.contracts.ExperimentalContracts
@@ -52,6 +54,11 @@ public class UserInterfaceMap(
 
     public fun containsOverlay(overlay: InterfaceType): Boolean =
         overlays.backing.containsValue(overlay.id)
+
+    public fun containsOverlay(overlay: String): Boolean {
+        RSCM.requireRSCM(RSCMType.INTERFACES, overlay)
+        return overlays.backing.containsValue(overlay.asRSCM())
+    }
 
     public fun containsModal(modal: InterfaceType): Boolean = modals.backing.containsValue(modal.id)
 

@@ -23,6 +23,19 @@ public class InventoryMap(
 
     public fun isNotEmpty(): Boolean = backing.isNotEmpty()
 
+
+    public fun getOrPut(inv: String): Inventory {
+        RSCM.requireRSCM(RSCMType.INVTYPES, inv)
+        val type = ServerCacheManager.getInventory(inv.asRSCM())?: error("Unable to find Inventory: $inv")
+        val inv = this[type]
+        if (inv != null) {
+            return inv
+        }
+        val create = Inventory.create(type)
+        this[type] = create
+        return create
+    }
+
     public fun getOrPut(type: InventoryServerType): Inventory {
         val inv = this[type]
         if (inv != null) {

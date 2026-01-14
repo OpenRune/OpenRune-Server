@@ -1,0 +1,10 @@
+[gamevals.varbits]
+bank_capacity=29996
+bank_tab_main=29997
+bank_disable_ifevents=29998
+[gamevals.varp]
+if1=29993
+if2=29994
+if3=29995
+bank_serverside_vars=29996
+inv_capacity=29997

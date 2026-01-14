@@ -1,12 +1,8 @@
 package org.alter.interfaces.equipment
 
 import dev.openrune.definition.type.widget.IfEvent
-import org.alter.api.BonusSlot
-import org.alter.api.ext.getBonus
-import org.alter.api.ext.getMagicDamageBonus
-import org.alter.api.ext.getPrayerBonus
-import org.alter.api.ext.getRangedStrengthBonus
-import org.alter.api.ext.getStrengthBonus
+import org.alter.combat.WeaponSpeeds
+import org.alter.combat.WornBonuses
 import org.alter.api.ext.message
 import org.alter.game.action.EquipAction
 import org.alter.game.model.ExamineEntityType
@@ -15,7 +11,6 @@ import org.alter.game.model.entity.UpdateInventory.resendSlot
 import org.alter.game.model.move.stopMovement
 import org.alter.game.pluginnew.MenuOption
 import org.alter.game.pluginnew.PluginEvent
-import org.alter.game.pluginnew.event.impl.ButtonClickEvent
 import org.alter.game.pluginnew.event.impl.ContainerType
 import org.alter.game.pluginnew.event.impl.onButton
 import org.alter.game.pluginnew.event.impl.onIfModalButton
@@ -31,7 +26,6 @@ import org.alter.interfaces.ifSetText
 import org.alter.invMoveToSlot
 import org.alter.rscm.RSCM
 import org.alter.statGroupTooltip
-import kotlin.inv
 
 class EquipmentStats : PluginEvent() {
 
@@ -80,36 +74,49 @@ class EquipmentStats : PluginEvent() {
             IfEvent.Depth1,
             IfEvent.DragTarget,
         )
-        updateBonuses(player)
+        player.updateBonuses()
     }
 
-    private fun updateBonuses(player: Player) {
-        player.ifSetText("components.equipment:stabatt", player.bonusTextMap()[0])
-        player.ifSetText("components.equipment:slashatt", player.bonusTextMap()[1])
-        player.ifSetText("components.equipment:crushatt", player.bonusTextMap()[2])
-        player.ifSetText("components.equipment:magicatt", player.bonusTextMap()[3])
-        player.ifSetText("components.equipment:rangeatt", player.bonusTextMap()[4])
-        player.ifSetText("components.equipment:attackspeedbase", player.bonusTextMap()[5])
-        player.ifSetText("components.equipment:attackspeedactual", player.bonusTextMap()[6])
-        player.ifSetText("components.equipment:stabdef", player.bonusTextMap()[7])
-        player.ifSetText("components.equipment:slashdef", player.bonusTextMap()[8])
-        player.ifSetText("components.equipment:crushdef", player.bonusTextMap()[9])
-        player.ifSetText("components.equipment:magicdef", player.bonusTextMap()[10])
-        player.ifSetText("components.equipment:rangedef", player.bonusTextMap()[11])
-        player.ifSetText("components.equipment:meleestrength", player.bonusTextMap()[12])
-        player.ifSetText("components.equipment:rangestrength", player.bonusTextMap()[13])
-        player.ifSetText("components.equipment:magicdamage", player.bonusTextMap()[14])
-        player.ifSetText("components.equipment:prayer", player.bonusTextMap()[15])
-        player.ifSetText("components.equipment:typemultiplier", player.bonusTextMap()[16],)
+    private fun Player.updateBonuses() {
+        val stats = WornBonuses.calculate(this)
+        val speedBase = WeaponSpeeds.base(this)
+        val speedActual = WeaponSpeeds.actual(this)
+        val magicDmg = stats.finalMagicDmg
+        val magicDmgSuffix = stats.magicDmgSuffix
+        val undeadSuffix = stats.undeadSuffix
+        val slayerSuffix = stats.slayerSuffix
+        ifSetText("components.equipment:stabatt", "Stab: ${stats.offStab.signed}")
+        ifSetText("components.equipment:slashatt", "Slash: ${stats.offSlash.signed}")
+        ifSetText("components.equipment:crushatt", "Crush: ${stats.offCrush.signed}")
+        ifSetText("components.equipment:magicatt", "Magic: ${stats.offMagic.signed}")
+        ifSetText("components.equipment:rangeatt", "Range: ${stats.offRange.signed}")
+        ifSetText("components.equipment:attackspeedbase", "Base: ${speedBase.tickToSecs}")
+        ifSetText("components.equipment:attackspeedactual", "Actual: ${speedActual.tickToSecs}")
+        ifSetText("components.equipment:stabdef", "Stab: ${stats.defStab.signed}")
+        ifSetText("components.equipment:slashdef", "Slash: ${stats.defSlash.signed}")
+        ifSetText("components.equipment:crushdef", "Crush: ${stats.defCrush.signed}")
+        ifSetText("components.equipment:magicdef", "Range: ${stats.defRange.signed}")
+        ifSetText("components.equipment:rangedef", "Magic: ${stats.defMagic.signed}")
+        ifSetText("components.equipment:meleestrength", "Melee STR: ${stats.meleeStr.signed}")
+        ifSetText("components.equipment:rangestrength", "Ranged STR: ${stats.rangedStr.signed}")
+        ifSetText("components.equipment:magicdamage", "Magic DMG: $magicDmg$magicDmgSuffix")
+        ifSetText("components.equipment:prayer", "Prayer: ${stats.prayer.signed}")
+        ifSetText(
+            "components.equipment:typemultiplier",
+            "Undead: ${stats.undead.formatWholePercent}$undeadSuffix",
+        )
         statGroupTooltip(
-            player,
+            this,
             "components.equipment:tooltip",
             "components.equipment:typemultiplier",
             "Increases your effective accuracy and damage against undead creatures. " +
                     "For multi-target Ranged and Magic attacks, this applies only to the " +
                     "primary target. It does not stack with the Slayer multiplier.",
         )
-        player.ifSetText("components.equipment:slayermultiplier", player.bonusTextMap()[17],)
+        ifSetText(
+            "components.equipment:slayermultiplier",
+            "Slayer: ${stats.slayer.formatWholePercent}$slayerSuffix",
+        )
     }
 
     private fun dragHeldButton(player: Player,selectedSlot: Int?,targetSlot : Int?) {
@@ -124,8 +131,7 @@ class EquipmentStats : PluginEvent() {
         when (op.id) {
             1 -> {
                 EquipAction.unequip(player, wornSlot, ContainerType.WORN_EQUIPMENT)
-                player.calculateBonuses()
-                updateBonuses(player)
+                player.updateBonuses()
             }
             10 -> {
                 val item = player.equipment[wornSlot] ?: return
@@ -149,8 +155,7 @@ class EquipmentStats : PluginEvent() {
         if (op == MenuOption.OP1) {
             val result = EquipAction.equip(player, item, inventorySlot = invSlot, ContainerType.WORN_EQUIPMENT)
             if (result == EquipAction.Result.SUCCESS) {
-                player.calculateBonuses()
-                updateBonuses(player)
+                player.updateBonuses()
             } else if (result == EquipAction.Result.UNHANDLED) {
                 player.message("You can't equip that.")
             }
@@ -162,33 +167,32 @@ class EquipmentStats : PluginEvent() {
         openStats(player)
     }
 
-    fun Player.bonusTextMap(): List<String> {
-        var magicDamageBonus = getMagicDamageBonus().toDouble()
-        return listOf(
-            "Stab: ${formatBonus(this, BonusSlot.ATTACK_STAB)}",
-            "Slash: ${formatBonus(this, BonusSlot.ATTACK_SLASH)}",
-            "Crush: ${formatBonus(this, BonusSlot.ATTACK_CRUSH)}",
-            "Magic: ${formatBonus(this, BonusSlot.ATTACK_MAGIC)}",
-            "Range: ${formatBonus(this, BonusSlot.ATTACK_RANGED)}",
-            "Base: TODO",
-            "Actual: TODO",
-            "Stab: ${formatBonus(this, BonusSlot.DEFENCE_STAB)}",
-            "Slash: ${formatBonus(this, BonusSlot.DEFENCE_SLASH)}",
-            "Crush: ${formatBonus(this, BonusSlot.DEFENCE_CRUSH)}",
-            "Range: ${formatBonus(this, BonusSlot.DEFENCE_RANGED)}",
-            "Magic: ${formatBonus(this, BonusSlot.DEFENCE_MAGIC)}",
-            "Melee STR: ${formatBonus(this.getStrengthBonus())}",
-            "Ranged STR: ${formatBonus(this.getRangedStrengthBonus())}",
-            "Magic DMG: ${formatBonus(this.getMagicDamageBonus())}",
-            "Prayer: ${formatBonus(this.getPrayerBonus())}",
-            "Undead: TODO",
-            "Slayer: TODO"
-        )
-    }
 
 
-    fun formatBonus(p: Player, slot: BonusSlot): String = formatBonus(p.getBonus(slot))
-
-    fun formatBonus(bonus: Int): String = if (bonus < 0) bonus.toString() else "+$bonus"
 
 }
+
+private val Int.signed: String
+    get() = if (this < 0) "$this" else "+$this"
+
+private val Int.formatPercent: String
+    get() = "+${this / 10.0}%"
+
+private val Int.formatWholePercent: String
+    get() = "+${this / 10}%"
+
+private val Int.tickToSecs: String
+    get() = "${(this * 600) / 1000.0}s"
+
+private val WornBonuses.Bonuses.finalMagicDmg: String
+    get() = multipliedMagicDmg.formatPercent
+
+private val WornBonuses.Bonuses.magicDmgSuffix: String
+    get() = if (magicDmgAdditive == 0) "" else "<col=be66f4> ($magicDmgAdditive%)</col>"
+
+// Undead bonus has a trailing whitespace when bonus is at 0.
+private val WornBonuses.Bonuses.undeadSuffix: String
+    get() = if (undead == 0) " " else if (undeadMeleeOnly) " (melee)" else " (all styles)"
+
+private val WornBonuses.Bonuses.slayerSuffix: String
+    get() = if (slayer == 0) "" else if (slayerMeleeOnly) " (melee)" else " (all styles)"

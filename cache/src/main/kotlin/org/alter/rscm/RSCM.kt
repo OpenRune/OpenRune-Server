@@ -15,11 +15,13 @@ enum class RSCMType(val prefix: String) {
     SEQTYPES("sequences"),
     SPOTTYPES("spotanims"),
     ROWTYPES("dbrows"),
+    PARAM("param"),
     JINGLES("jingles"),
     TABLETYPES("tables"),
     COMPONENTS("components"),
     ENUMS("enums"),
     COLUMNS("columns"),
+    CATEGORY("category"),
     FONTS("fonts"),
     INTERFACES("interfaces");
 

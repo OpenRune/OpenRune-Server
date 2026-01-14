@@ -100,29 +100,29 @@ object MagicCombatFormula : CombatFormula {
         if (pawn is Player) {
             val magic = pawn.getSkills().getCurrentLevel(Skills.MAGIC)
             if (pawn.hasEquipped(
-                    EquipmentType.WEAPON,
+                    Wearpos.RightHand,
                     "items.tots_charged",
                     "items.tots_i_charged",
                     "items.tots",
                 )
             ) {
                 hit = (Math.floor(magic / 3.0) - 5.0)
-            } else if (pawn.hasEquipped(EquipmentType.WEAPON, "items.toxic_tots_charged", "items.toxic_tots_i_charged")) {
+            } else if (pawn.hasEquipped(Wearpos.RightHand, "items.toxic_tots_charged", "items.toxic_tots_i_charged")) {
                 hit = (Math.floor(magic / 3.0) - 2.0)
             }
 
-            if (pawn.hasEquipped(EquipmentType.GLOVES, "items.gauntlets_of_chaos") && spell != null && spell in BOLT_SPELLS) {
+            if (pawn.hasEquipped(Wearpos.Hands, "items.gauntlets_of_chaos") && spell != null && spell in BOLT_SPELLS) {
                 hit += 3
             }
 
             var multiplier = 1.0 + (pawn.getMagicDamageBonus() / 100.0)
 
             if (pawn.hasEquipped(
-                    EquipmentType.AMULET,
+                    Wearpos.Front,
                     "items.damned_amulet",
                 ) &&
                 pawn.hasEquipped(
-                    EquipmentType.WEAPON,
+                    Wearpos.RightHand,
                     "items.barrows_ahrim_weapon",
                     "items.barrows_ahrim_weapon_25",
                     "items.barrows_ahrim_weapon_50",
@@ -134,7 +134,7 @@ object MagicCombatFormula : CombatFormula {
                 multiplier += 0.3
             }
 
-            if (pawn.hasEquipped(EquipmentType.WEAPON, "items.mystic_smoke_battlestaff") && pawn.hasSpellbook(Spellbook.NORMAL)) {
+            if (pawn.hasEquipped(Wearpos.RightHand, "items.mystic_smoke_battlestaff") && pawn.hasSpellbook(Spellbook.NORMAL)) {
                 multiplier += 0.1
             }
 
@@ -145,18 +145,18 @@ object MagicCombatFormula : CombatFormula {
             hit *= multiplier
             hit = Math.floor(hit)
 
-            if (pawn.hasEquipped(EquipmentType.SHIELD, "items.tome_of_fire") && spell in FIRE_SPELLS) {
+            if (pawn.hasEquipped(Wearpos.LeftHand, "items.tome_of_fire") && spell in FIRE_SPELLS) {
                 // TODO: check tome of fire has charges
                 hit *= 1.5
                 hit = Math.floor(hit)
             }
 
             if (target is Npc) {
-                if (pawn.hasEquipped(EquipmentType.HEAD, *BLACK_MASKS_I) || pawn.hasEquipped(EquipmentType.HEAD, *SLAYER_HELM_I)) {
+                if (pawn.hasEquipped(Wearpos.Hat, *BLACK_MASKS_I) || pawn.hasEquipped(Wearpos.Hat, *SLAYER_HELM_I)) {
                     // TODO: check if on slayer task and target is slayer task
                     hit *= 1.15
                     hit = Math.floor(hit)
-                } else if (pawn.hasEquipped(EquipmentType.AMULET, "items.nzone_salve_amulet_e") && target.isSpecies(NpcSpecies.UNDEAD)) {
+                } else if (pawn.hasEquipped(Wearpos.Front, "items.nzone_salve_amulet_e") && target.isSpecies(NpcSpecies.UNDEAD)) {
                     hit *= 1.20
                     hit = Math.floor(hit)
                 }
@@ -238,7 +238,7 @@ object MagicCombatFormula : CombatFormula {
         hit *= getEquipmentMultiplier(player)
         hit = Math.floor(hit)
 
-        if (player.hasEquipped(EquipmentType.WEAPON, "items.mystic_smoke_battlestaff")) {
+        if (player.hasEquipped(Wearpos.RightHand, "items.mystic_smoke_battlestaff")) {
             hit *= 1.1
             hit = Math.floor(hit)
         }
@@ -260,14 +260,14 @@ object MagicCombatFormula : CombatFormula {
         effectiveLevel = Math.floor(effectiveLevel * getPrayerAttackMultiplier(player))
 
         // Add style bonus (only for trident)
-        if (player.hasWeaponType(WeaponType.TRIDENT)) {
-            effectiveLevel +=
-                when (CombatConfigs.getAttackStyle(player)) {
-                    AttackStyle.ACCURATE -> 3.0
-                    AttackStyle.CONTROLLED -> 1.0
-                    else -> 0.0
-                }
-        }
+//        if (player.hasWeaponType(WeaponType.TRIDENT)) {
+//            effectiveLevel +=
+//                when (CombatConfigs.getAttackStyle(player)) {
+//                    AttackStyle.AccurateMelee -> 3.0
+//                    AttackStyle.AccurateRanged -> 1.0
+//                    else -> 0.0
+//                }
+//        }
 
         // Add 8
         effectiveLevel += 8.0
@@ -294,13 +294,13 @@ object MagicCombatFormula : CombatFormula {
         effectiveLevel = Math.floor(effectiveLevel * getPrayerDefenceMultiplier(player))
 
         // Add style bonus
-        effectiveLevel +=
-            when (CombatConfigs.getAttackStyle(player)) {
-                AttackStyle.DEFENSIVE -> 3.0
-                AttackStyle.CONTROLLED -> 1.0
-                AttackStyle.LONG_RANGE -> 3.0
-                else -> 0.0
-            }
+//        effectiveLevel +=
+//            when (CombatConfigs.getAttackStyle(player)) {
+//                AttackStyle.DefensiveMelee -> 3.0
+//                AttackStyle.AccurateRanged -> 1.0
+//                AttackStyle.LongrangeRanged -> 3.0
+//                else -> 0.0
+//            }
 
         effectiveLevel += 8.0
 
@@ -322,22 +322,22 @@ object MagicCombatFormula : CombatFormula {
     }
 
     private fun getEquipmentAttackBonus(pawn: Pawn): Double {
-        return pawn.getBonus(BonusSlot.ATTACK_MAGIC).toDouble()
+        return 0.0
     }
 
     private fun getEquipmentDefenceBonus(target: Pawn): Double {
-        return target.getBonus(BonusSlot.DEFENCE_MAGIC).toDouble()
+        return 0.0
     }
 
     private fun getEquipmentMultiplier(player: Player): Double =
         when {
-            player.hasEquipped(EquipmentType.AMULET, "items.crystalshard_necklace") -> 7.0 / 6.0
-            player.hasEquipped(EquipmentType.AMULET, "items.lotr_crystalshard_necklace_upgrade") -> 1.2
-            player.hasEquipped(EquipmentType.AMULET, "items.nzone_salve_amulet") -> 1.15
-            player.hasEquipped(EquipmentType.AMULET, "items.nzone_salve_amulet_e") -> 1.2
+            player.hasEquipped(Wearpos.Front, "items.crystalshard_necklace") -> 7.0 / 6.0
+            player.hasEquipped(Wearpos.Front, "items.lotr_crystalshard_necklace_upgrade") -> 1.2
+            player.hasEquipped(Wearpos.Front, "items.nzone_salve_amulet") -> 1.15
+            player.hasEquipped(Wearpos.Front, "items.nzone_salve_amulet_e") -> 1.2
             // TODO: this should only apply when target is slayer task?
-            player.hasEquipped(EquipmentType.HEAD, *BLACK_MASKS) -> 7.0 / 6.0
-            player.hasEquipped(EquipmentType.HEAD, *BLACK_MASKS_I) -> 1.15
+            player.hasEquipped(Wearpos.Hat, *BLACK_MASKS) -> 7.0 / 6.0
+            player.hasEquipped(Wearpos.Hat, *BLACK_MASKS_I) -> 1.15
             else -> 1.0
         }
 

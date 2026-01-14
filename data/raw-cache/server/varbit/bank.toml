@@ -1,0 +1,25 @@
+[[varbit]]
+id = "varbits.bank_tab_main"
+varp="varp.bank_serverside_vars"
+startBit=0
+endBit=12
+
+[[varbit]]
+id = "varbits.bank_disable_ifevents"
+varp="varp.bank_serverside_vars"
+startBit=12
+endBit=13
+
+[[varbit]]
+id = "varbits.bank_capacity"
+varp="varp.inv_capacity"
+startBit=12
+endBit=13
+
+[[varp]]
+id = "varp.bank_serverside_vars"
+configType = 0
+
+[[varp]]
+id = "varp.inv_capacity"
+configType = 0

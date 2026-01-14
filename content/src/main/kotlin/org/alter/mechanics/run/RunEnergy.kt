@@ -1,6 +1,6 @@
 package org.alter.mechanics.run
 
-import org.alter.api.EquipmentType
+import org.alter.api.Wearpos
 import org.alter.api.Skills
 import org.alter.api.ext.*
 import org.alter.game.model.bits.INFINITE_VARS_STORAGE
@@ -58,12 +58,12 @@ object RunEnergy {
     }
 
     private fun isWearingFullGrace(p: Player): Boolean =
-        (p.equipment[EquipmentType.HEAD.id]?.id ?: -1) in GRACEFUL_HOODS &&
-            (p.equipment[EquipmentType.CAPE.id]?.id ?: -1) in GRACEFUL_CAPE &&
-            (p.equipment[EquipmentType.CHEST.id]?.id ?: -1) in GRACEFUL_TOP &&
-            (p.equipment[EquipmentType.LEGS.id]?.id ?: -1) in GRACEFUL_LEGS &&
-            (p.equipment[EquipmentType.GLOVES.id]?.id ?: -1) in GRACEFUL_GLOVES &&
-            (p.equipment[EquipmentType.BOOTS.id]?.id ?: -1) in GRACEFUL_BOOTS
+        (p.equipment[Wearpos.Hat.slot]?.id ?: -1) in GRACEFUL_HOODS &&
+            (p.equipment[Wearpos.Back.slot]?.id ?: -1) in GRACEFUL_CAPE &&
+            (p.equipment[Wearpos.Torso.slot]?.id ?: -1) in GRACEFUL_TOP &&
+            (p.equipment[Wearpos.Legs.slot]?.id ?: -1) in GRACEFUL_LEGS &&
+            (p.equipment[Wearpos.Hands.slot]?.id ?: -1) in GRACEFUL_GLOVES &&
+            (p.equipment[Wearpos.Feet.slot]?.id ?: -1) in GRACEFUL_BOOTS
 
 
     /**

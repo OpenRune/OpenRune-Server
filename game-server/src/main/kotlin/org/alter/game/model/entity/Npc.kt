@@ -90,7 +90,7 @@ class Npc private constructor(val id: Int, world: World, val spawnTile: Tile) : 
     /**
      * The [AttackStyle] the npc will use on its next attack.
      */
-    var attackStyle = AttackStyle.CONTROLLED
+    var attackStyle = AttackStyle.AccurateRanged
 
     /**
      * The [CombatStyle] the npc will use on its next attack.
