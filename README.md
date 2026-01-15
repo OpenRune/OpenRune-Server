@@ -69,7 +69,7 @@ config:
     name: OpenRune Server
     jav_config_url: https://client.blurite.io/jav_local_235.ws
     varp_count: 15000
-    revision: 235.2
+    revision: 235.10
     modulus: YOUR_MODULUS_KEY_HERE
 ```
 
