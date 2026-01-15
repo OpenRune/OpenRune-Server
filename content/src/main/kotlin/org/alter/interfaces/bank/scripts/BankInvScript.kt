@@ -53,7 +53,10 @@ import kotlin.text.get
 class BankInvScript : PluginEvent() {
 
     override fun init() {
-        onLogin { player.setDefaultCapacity() }
+        onLogin {
+            println("Varbit: ${player.getVarbit("varbits.bank_tab_7")}")
+            player.setDefaultCapacity()
+        }
 
         onIfModalButton(bank_components.side_inventory) { player.sideInvOp(slot, op) }
         onIfModalButton(bank_components.main_inventory) { player.mainInvOp(slot, op) }
@@ -633,6 +636,9 @@ class BankInvScript : PluginEvent() {
         intoSlot: Int,
     ) {
         val intoSlots = intoTab.slotRange(this)
+
+
+        println("From SLot: ${fromSlot} to Slot: ${intoSlot}")
 
         val transaction =
             invTransaction(bank) {
