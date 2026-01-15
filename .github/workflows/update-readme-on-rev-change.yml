@@ -50,11 +50,17 @@ jobs:
 
           cp README.md README.md.bak
 
-          # Update inline badge text
+          # Update inline markdown badge text
           sed -i -E "s/\[!\[revision: [0-9.]+\]\[rev-badge\]\]/[![revision: ${REV}][rev-badge]]/g" README.md
 
-          # Update badge URL with full revision
+          # Update markdown badge URL
           sed -i -E "s|(\[rev-badge\]: https://img\.shields\.io/badge/Revision-)[0-9.]+(-blueviolet)|\1${REV}\2|g" README.md
+
+          # --- NEW: Update HTML badge alt text ---
+          sed -i -E 's|(alt="Revision )[0-9.]+(")|\1'"${REV}"'\2|g' README.md
+
+          # --- NEW: Update HTML badge image URL ---
+          sed -i -E 's|(img\.shields\.io/badge/Revision-)[0-9.]+(-blueviolet)|\1'"${REV}"'\2|g' README.md
 
           # Update jav_config_url integer part only
           sed -i -E "s|(jav_config_url: https://client\.blurite\.io/jav_local_)[0-9]+(\.ws)|\1${REV_INT}\2|g" README.md
