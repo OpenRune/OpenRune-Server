@@ -66,7 +66,10 @@ class BankInvScript : PluginEvent() {
         onIfModalDrag(bank_components.side_inventory) { player.dragSideInv(this) }
         onIfModalDrag(bank_components.main_inventory) { player.dragMainInv(this) }
         onIfModalDrag(bank_components.worn_inventory) { player.dragSideInv(this) }
-        onIfModalDrag(bank_components.main_inventory, bank_components.tabs) { player.dragIntoTab(this) }
+        onIfModalDrag(bank_components.main_inventory, bank_components.tabs) {
+            println("HEREEEEEEEEEEEE")
+            player.dragIntoTab(this)
+        }
 
         //val wornComponents = enumResolver[bank_enums.worn_component_map].filterValuesNotNull()
         //for ((slot, component) in wornComponents) {
@@ -358,7 +361,7 @@ class BankInvScript : PluginEvent() {
 
         val uniqueInvObjs = mutableSetOf<Int>()
         for (invObj in from) {
-            val type = ServerCacheManager.getItem(invObj?.id ?: -1) ?: continue
+            val type = ServerCacheManager.getItem(invObj!!.id) ?: continue
             val uncert = uncert(type)
             if (uncert.param("param.no_bank") != 0) {
                 continue
@@ -728,33 +731,40 @@ class BankInvScript : PluginEvent() {
         val fromSlot = drag.selectedSlot ?: return resendSlot(bank, 0)
         val comsub = drag.targetSlot ?: return resendSlot(bank, 0)
 
+        println("From Slot: ${fromSlot} : ComSub: ${comsub}")
+
         if (comsub != bank_comsubs.main_tab && comsub !in bank_comsubs.other_tabs) {
             resendSlot(bank, fromSlot)
             return
         }
-
+        println("Hey9")
         val obj = bank[fromSlot]
         if (obj == null || obj.id != drag.selectedObj) {
             resendSlot(bank, fromSlot)
             return
         }
-
+        println("Hey10")
         val fromTab = BankTab.forSlot(this, fromSlot) ?: return resendSlot(bank, 0)
         if (comsub == bank_comsubs.main_tab) {
+            println("HER33322233333")
             dragIntoTab(fromTab, fromSlot, BankTab.Main)
             return
         }
 
         val tabIndex = comsub - bank_comsubs.other_tabs.first
+        println("Hey34")
         val intoTab = BankTab.forIndex(tabIndex) ?: return resendSlot(bank, fromSlot)
+        println("HER333222333333333333333333")
         dragIntoTab(fromTab, fromSlot, intoTab)
     }
 
     private fun Player.dragIntoTab(fromTab: BankTab, fromSlot: Int, intoTab: BankTab) {
+        println("HER333222")
         if (intoTab == fromTab) {
             resendSlot(bank, fromSlot)
             return
         }
+        println("HER333")
         dragMainInvExtendedSlot(fromTab, fromSlot, intoTab)
     }
 
@@ -1086,6 +1096,7 @@ class BankInvScript : PluginEvent() {
             if (!type.isCert) {
                 return type
             }
+            println("ITEM2: ${type.id}")
             val link = type.noteLinkId
             return ServerCacheManager.getItem(link) ?: throw NoSuchElementException("Type is missing in the map: $link.")
         }

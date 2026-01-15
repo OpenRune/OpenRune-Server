@@ -13,3 +13,13 @@ inherit = "inv.worn"
 scope = "Perm"
 protect = false
 runWeight = true
+
+
+[[inventory]]
+id = "inv.bank"
+inherit = "inv.bank"
+
+scope = "Perm"
+stack = "Always"
+protect = false
+placeholders = false
