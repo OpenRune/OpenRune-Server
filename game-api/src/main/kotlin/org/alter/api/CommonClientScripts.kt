@@ -39,6 +39,7 @@ enum class CommonClientScripts(identifier : String = "", scriptID : Int = -1) {
     CONFIRM_DESTROY("confirmdestroy_init"),
     WORLD_MAP_GOTO(scriptID = 3331),
     SCRIPT_1508(scriptID = 1508),
+    SKILL_GUIDE("skill_guide_v2_init"),
     CAMERA(scriptID = 626),
     CONFIRM(scriptID = 4212)
     ;
