@@ -22,6 +22,8 @@ open class PluginSettings {
 
 object PluginManager {
 
+    private val WINDOWS_UNSAFE_PATH_CHARS = Regex("""[!#%@]""")
+
     private val logger = KotlinLogging.logger {}
     const val PLUGIN_PACKAGE = "org.alter"
 
@@ -38,6 +40,8 @@ object PluginManager {
         val start = System.currentTimeMillis()
         val classOutputDir = File("../content/build/classes/kotlin/main")
         val resourcesDir = File("../content/build/resources/main/")
+
+        validateWindowsClasspathPath(classOutputDir)
 
         ClassGraph()
             .overrideClasspath(classOutputDir)
@@ -90,6 +94,38 @@ object PluginManager {
         clear()
         val totalTime = System.currentTimeMillis() - start
         logger.info { "Finished loading ${scripts.size} plugins in ${totalTime}ms." }
+    }
+
+    private fun validateWindowsClasspathPath(dir: File) {
+        if (!System.getProperty("os.name").lowercase().contains("win")) return
+
+        val path = dir.absolutePath
+        if (!WINDOWS_UNSAFE_PATH_CHARS.containsMatchIn(path)) return
+
+        val badChars = WINDOWS_UNSAFE_PATH_CHARS.findAll(path)
+            .map { it.value }
+            .distinct()
+            .joinToString(", ")
+
+        error(
+            """
+        Plugin loading failed.
+
+        The plugin classpath directory contains characters that break
+        classpath scanning on Windows.
+
+        Path:
+          $path
+
+        Problem characters:
+          $badChars
+
+        This will cause plugins to silently not load.
+
+        Please move or rename the directory to remove these characters,
+        or remove overrideClasspath and use the runtime classpath instead.
+        """.trimIndent()
+        )
     }
 
     private fun clear() {
