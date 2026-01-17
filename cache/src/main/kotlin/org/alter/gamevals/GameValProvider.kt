@@ -97,13 +97,15 @@ class GameValProvider : MappingProvider {
         val tableMappings = mappings[table]
             ?: throw IllegalArgumentException("Table '$table' does not exist in mappings.")
 
+        val qualifiedKey = "$table.$key"
+
         val maxID = maxBaseID[table] ?: -1
         require(value > maxID) {
             "Custom value '$value' for key '$key' in table '$table must exceed the current max base ID $maxID. " +
                     "Cannot override existing osrs IDs."
         }
 
-        if (tableMappings.containsKey(key)) {
+        if (tableMappings.containsKey(qualifiedKey)) {
             throw IllegalArgumentException(
                 "Mapping conflict in table '$table: key '$key' already exists. Keys must be unique."
             )
@@ -115,7 +117,7 @@ class GameValProvider : MappingProvider {
             )
         }
 
-        tableMappings["$table.$key"] = value
+        tableMappings[qualifiedKey] = value
     }
 
     private fun parseRSCMV2Line(line: String, lineNumber: Int): Pair<String, Int> = when {
