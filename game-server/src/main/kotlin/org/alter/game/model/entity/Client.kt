@@ -6,6 +6,7 @@ import net.rsprot.protocol.game.outgoing.map.RebuildLogin
 import net.rsprot.protocol.game.outgoing.map.RebuildNormal
 import net.rsprot.protocol.loginprot.incoming.util.LoginBlock
 import net.rsprot.protocol.message.OutgoingGameMessage
+import org.alter.game.Server
 import org.alter.game.model.EntityType
 import org.alter.game.model.World
 import org.alter.game.saving.PlayerSaving
@@ -27,11 +28,6 @@ class Client(world: World) : Player(world) {
      * never be changed through the player's end.
      */
     lateinit var loginUsername: String
-
-    /**
-     * The encrypted password.
-     */
-    lateinit var passwordHash: String
 
     /**
      * The client's UUID.
@@ -69,6 +65,7 @@ class Client(world: World) : Player(world) {
 
     override fun handleLogout() {
         super.handleLogout()
+        Server.centralApiClient.logout(uid, username, currentXteaKeys)
         PlayerSaving.savePlayer(this)
     }
 

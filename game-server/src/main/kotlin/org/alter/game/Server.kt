@@ -1,29 +1,25 @@
 package org.alter.game
 
 import dev.openrune.ServerCacheManager
-import dev.openrune.definition.constants.ConstantProvider
-import dev.openrune.definition.constants.use
+import dev.openrune.central.client.CentralApiClient
 import dev.openrune.filesystem.Cache
 import gg.rsmod.util.ServerProperties
 import gg.rsmod.util.Stopwatch
 import io.github.oshai.kotlinlogging.KotlinLogging
 import net.rsprot.protocol.common.client.OldSchoolClientType
 import org.alter.game.fs.ObjectExamineHolder
+import org.alter.game.logs.PlayerLogin
 import org.alter.game.model.Tile
 import org.alter.game.model.World
 import org.alter.game.model.entity.GroundItem
 import org.alter.game.model.entity.Npc
 import org.alter.game.model.skill.SkillSet
 import org.alter.game.pluginnew.PluginManager
-import org.alter.game.saving.PlayerDetails
-import org.alter.game.saving.PlayerSaving
-import org.alter.game.saving.formats.SaveFormatType
-import org.alter.rscm.RSCM
 import org.alter.game.rsprot.CacheJs5GroupProvider
 import org.alter.game.rsprot.NetworkServiceFactory
+import org.alter.game.saving.PlayerSaving
 import org.alter.game.service.xtea.XteaKeyService
 import org.alter.gamevals.GameValProvider
-import java.io.File
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
@@ -37,7 +33,6 @@ import java.util.concurrent.TimeUnit
  */
 @OptIn(ExperimentalStdlibApi::class)
 class Server {
-
 
     /**
      * The properties specific to our API.
@@ -99,7 +94,6 @@ class Server {
                 initialLaunch = initialLaunch,
                 name = gameProperties.get<String>("name")!!,
                 revision = gameProperties.get<Int>("revision")!!,
-                saveFormat = SaveFormatType.valueOf(gameProperties.get<String>("saveFormat")?: "JSON"),
                 cycleTime = gameProperties.getOrDefault("cycle-time", 600),
                 playerLimit = gameProperties.getOrDefault("max-players", 2048),
                 /**
@@ -134,9 +128,6 @@ class Server {
             )
 
         System.setProperty("net.rsprot.protocol.internal.networkLogging", devContext.debugPackets.toString())
-
-        PlayerDetails.init(gameContext)
-        PlayerSaving.init(gameContext)
 
         /*
          * Load the file store.
@@ -237,5 +228,10 @@ class Server {
     companion object {
         val logger = KotlinLogging.logger {}
         lateinit var cache : Cache
+        val centralApiClient = CentralApiClient(
+            "http://127.0.0.1:8080",
+            1,
+            "MC4CAQAwBQYDK2VwBCIEIJ1kzyZJb9R_ncUD1y0yo2kKqCg88wJig6kt4f4VAuK2"
+        )
     }
 }

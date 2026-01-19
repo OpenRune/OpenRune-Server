@@ -38,6 +38,8 @@ dependencies {
         implementation(or2.definition)
         implementation(or2.filesystem)
         implementation(or2.filestore)
+        implementation(or2.central.api.client)
+        implementation(or2.filestore)
     }
 }
 sourceSets {

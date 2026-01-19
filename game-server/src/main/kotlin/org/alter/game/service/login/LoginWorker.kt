@@ -29,7 +29,13 @@ class LoginWorker(private val boss: LoginService, private val verificationServic
 
                 val client = Client.fromRequest(world, request.responseHandler, request.block)
 
+
                 val loadResult: PlayerLoadResult = PlayerSaving.loadPlayer(client, request.block)
+
+                if (loadResult == PlayerLoadResult.OFFLINE) {
+                    request.responseHandler.writeFailedResponse(LoginResponse.LoginServerOffline)
+                    return
+                }
 
                 if (loadResult == PlayerLoadResult.LOAD_ACCOUNT || loadResult == PlayerLoadResult.NEW_ACCOUNT) {
                     world.getService(GameService::class.java)?.submitGameThreadJob {

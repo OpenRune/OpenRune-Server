@@ -2,6 +2,7 @@ package org.alter.game.model
 
 import dev.openrune.ServerCacheManager.getItem
 import dev.openrune.ServerCacheManager.getNpc
+import dev.openrune.central.api.PlayerUID
 import dev.openrune.filesystem.Cache
 import gg.rsmod.util.ServerProperties
 import gg.rsmod.util.Stopwatch

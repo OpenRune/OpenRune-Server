@@ -1,6 +1,6 @@
 package org.alter.game.model.instance
 
-import org.alter.game.model.PlayerUID
+import dev.openrune.central.api.PlayerUID
 import org.alter.game.model.Tile
 import java.util.*
 

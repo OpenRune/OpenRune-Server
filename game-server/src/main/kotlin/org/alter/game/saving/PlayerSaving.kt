@@ -1,25 +1,21 @@
 package org.alter.game.saving
 
+import dev.openrune.central.api.PlayerLoadResponse
 import io.github.oshai.kotlinlogging.KotlinLogging
 import net.rsprot.crypto.xtea.XteaKey
 import net.rsprot.protocol.loginprot.incoming.util.AuthenticationType
 import net.rsprot.protocol.loginprot.incoming.util.LoginBlock
-import org.alter.game.GameContext
-import org.alter.game.model.PlayerUID
+import org.alter.game.Server
 import org.alter.game.model.attr.APPEARANCE_SET_ATTR
 import org.alter.game.model.attr.NEW_ACCOUNT_ATTR
 import org.alter.game.model.attr.PLAYTIME_ATTR
 import org.alter.game.model.entity.Client
 import org.alter.game.saving.impl.*
-import org.alter.game.saving.formats.FormatHandler
 import org.bson.Document
-import org.mindrot.jbcrypt.BCrypt
 
 object PlayerSaving {
 
     private val logger = KotlinLogging.logger {}
-
-    lateinit var serialization : FormatHandler
 
     private val documents = linkedSetOf(
         DetailSerialisation(),
@@ -31,115 +27,90 @@ object PlayerSaving {
         VarpSerialisation(),
     )
 
-    fun init(gameContext: GameContext) {
-        serialization = gameContext.saveFormat.createInstance("details")
-
-        logger.info { "Player Save Format : ${gameContext.saveFormat.name}" }
-
-        serialization.init()
-
-    }
-
-    fun savePlayer(player: Client) {
-        val doc = Document().apply {
-            append("loginUsername", player.loginUsername)
-            append("passwordHash", player.passwordHash)
-            append("previousXteas", player.currentXteaKeys.asList())
-
-            append("attributes", Document().also { attrs ->
-                documents.forEach { encoder ->
-                    attrs.append(encoder.name, encoder.asDocument(player))
-                }
-            })
-        }
-        serialization.saveDocument(player, doc)
-    }
-
     fun loadPlayer(client: Client, block: LoginBlock<*>): PlayerLoadResult {
-        if (!PlayerDetails.playerExists(client)) {
-            val registered = PlayerDetails.registerAccount(client)
-            if (!registered) {
-                return PlayerLoadResult.INVALID_CREDENTIALS
-            }
-            configureNewPlayer(client, block)
-            client.uid = PlayerUID(client.loginUsername)
-            savePlayer(client)
-            return PlayerLoadResult.NEW_ACCOUNT
-        }
+        val passwordAuth = block.authentication as AuthenticationType.PasswordAuthentication
+        val xteaKeys = (block.authentication as? XteaKey)?.key ?: intArrayOf()
 
-        return try {
+        val loginRequest = Server.centralApiClient.requestLogin(
+            username = block.username,
+            password = passwordAuth.password.asString(),
+            xteas = xteaKeys
+        )
 
-            if (PlayerDetails.getDisplayName(client.loginUsername) == null) {
-                return PlayerLoadResult.INVALID_CREDENTIALS
-            }
+        return when (loginRequest.result) {
+            PlayerLoadResponse.OFFLINE_SERVER -> PlayerLoadResult.OFFLINE
 
-            val document = serialization.parseDocument(client)
-            client.loginUsername = document.getString("loginUsername")
-            client.passwordHash = document.getString("passwordHash")
-            val previousXteas = document.getList("previousXteas", Any::class.java).map { it as Int }.toIntArray()
-
-            val authentication = validateAuthentication(previousXteas, client, block)
-            if (authentication != PlayerLoadResult.LOAD_ACCOUNT) {
-                return authentication
+            PlayerLoadResponse.NEW_ACCOUNT -> {
+                val login = requireNotNull(loginRequest.login)
+                client.uid = login.linkedAccounts.first().uid
+                client.tile = client.world.gameContext.home
+                client.attr.put(NEW_ACCOUNT_ATTR, true)
+                client.attr.put(APPEARANCE_SET_ATTR, false)
+                client.attr.put(PLAYTIME_ATTR, 0)
+                savePlayer(client)
+                PlayerLoadResult.NEW_ACCOUNT
             }
 
-            client.username = PlayerDetails.getDisplayName(client.loginUsername)?.currentDisplayName?: client.loginUsername
-            client.registryDate = PlayerDetails.getDisplayName(client.loginUsername)?.registryDate?: client.registryDate
+            PlayerLoadResponse.LOAD -> {
+                val login = requireNotNull(loginRequest.login)
+                client.uid = login.linkedAccounts.first().uid
 
-            client.uid = PlayerUID(client.username)
+                loadAttributes(client, null)
 
-            if (!loadAttributes(client, document.get("attributes", Document::class.java))) {
-                return PlayerLoadResult.MALFORMED
+                PlayerLoadResult.LOAD_ACCOUNT
             }
 
-            PlayerLoadResult.LOAD_ACCOUNT
-        } catch (e: Exception) {
-            logger.error(e) { "Error when loading player: ${client.loginUsername}" }
-            PlayerLoadResult.MALFORMED
+            PlayerLoadResponse.INVALID_CREDENTIALS -> PlayerLoadResult.INVALID_CREDENTIALS
+            PlayerLoadResponse.INVALID_RECONNECTION -> PlayerLoadResult.INVALID_RECONNECTION
+            PlayerLoadResponse.MALFORMED -> PlayerLoadResult.MALFORMED
         }
     }
 
-    private fun validateAuthentication(previousXteas : IntArray, client: Client, block: LoginBlock<*>): PlayerLoadResult {
-        when (val auth = block.authentication) {
-            is AuthenticationType.PasswordAuthentication -> {
-                if (!BCrypt.checkpw(auth.password.asString(), client.passwordHash)) {
-                    return PlayerLoadResult.INVALID_CREDENTIALS
+    fun savePlayer(client: Client): Boolean {
+        return try {
+            val account = client.username
+
+            val root = Document().apply {
+                documents.forEach { encoder ->
+                    put(encoder.name, encoder.asDocument(client))
                 }
             }
-            is XteaKey -> {
-                if (!previousXteas.contentEquals(auth.key)) {
-                    return PlayerLoadResult.INVALID_RECONNECTION
-                }
-            }
+
+            val resp = Server.centralApiClient.savePlayer(
+                uid = client.uid,
+                account = account,
+                data = root.toJson()
+            )
+
+            resp.ok
+        } catch (e: Exception) {
+            logger.error(e) { "Failed to save attributes for client: ${client.loginUsername}" }
+            false
         }
-        return PlayerLoadResult.LOAD_ACCOUNT
     }
 
     private fun loadAttributes(client: Client, attributes: Document?): Boolean {
         return try {
-            attributes?.let {
-                documents.forEach { decoder ->
-                    attributes.get(decoder.name, Document::class.java)?.let { attrDoc ->
-                        decoder.fromDocument(client, attrDoc)
-                    } ?: return false
+            val root: Document =
+                attributes ?: run {
+                    val account = client.username
+
+                    val resp = Server.centralApiClient.loadPlayer(client.uid, account)
+                    if (!resp.ok) return false
+
+                    val json = resp.data ?: return false
+                    Document.parse(json)
                 }
-            } ?: return false
+
+            documents.forEach { decoder ->
+                val section = root.get(decoder.name, Document::class.java) ?: return false
+                decoder.fromDocument(client, section)
+            }
+
             true
         } catch (e: Exception) {
             logger.error(e) { "Failed to decode attributes for client: ${client.loginUsername}" }
             false
         }
-    }
-    private fun configureNewPlayer(client: Client, block: LoginBlock<*>) {
-        client.attr.put(NEW_ACCOUNT_ATTR, true)
-        client.attr.put(APPEARANCE_SET_ATTR, false)
-
-        if (block.authentication is AuthenticationType.PasswordAuthentication) {
-            val passwordAuth = block.authentication as AuthenticationType.PasswordAuthentication
-            client.passwordHash = BCrypt.hashpw(passwordAuth.password.asString(), BCrypt.gensalt(16))
-        }
-        client.tile = client.world.gameContext.home
-
-        client.attr.put(PLAYTIME_ATTR, 0)
     }
 }

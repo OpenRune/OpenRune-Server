@@ -12,6 +12,7 @@ allprojects {
     version = "0.0.5"
 
     repositories {
+        mavenLocal()
         mavenCentral()
         maven("https://repo.maven.apache.org/maven2")
         maven("https://jitpack.io")
@@ -33,6 +34,7 @@ allprojects {
         implementation(lib.jbcrypt)
         implementation(lib.gson)
         implementation(lib.netty.all)
+        implementation(lib.or2.central.shared)
         implementation(lib.kotlinx.serialization.core)
         testImplementation(lib.junit)
         testImplementation(lib.kotlin.test.junit)
