@@ -12,6 +12,7 @@ allprojects {
     version = "0.0.5"
 
     repositories {
+        mavenLocal()
         mavenCentral()
         maven("https://repo.maven.apache.org/maven2")
         maven("https://jitpack.io")
