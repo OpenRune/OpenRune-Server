@@ -6,7 +6,7 @@ permissions:
 on:
   push:
     paths:
-      - "game.example.yml"
+      - "examples/game.example.yml"
   workflow_dispatch:
     inputs:
       new_revision:
@@ -30,9 +30,9 @@ jobs:
           if [ -n "${{ github.event.inputs.new_revision }}" ]; then
             REVISION="${{ github.event.inputs.new_revision }}"
             echo "Manual mode — setting revision to $REVISION"
-            sed -i -E "s/^revision: .*/revision: ${REVISION}/" game.example.yml
+            sed -i -E "s/^revision: .*/revision: ${REVISION}/" examples/game.example.yml
           else
-            REVISION_LINE=$(grep '^revision:' game.example.yml)
+            REVISION_LINE=$(grep '^revision:' examples/game.example.yml)
             REVISION=$(echo "$REVISION_LINE" | awk '{print $2}')
           fi
 
@@ -81,7 +81,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add README.md game.example.yml
+          git add README.md examples/game.example.yml
           git commit -m "Sync revision to ${{ steps.determine_rev.outputs.revision }}"
           git push
 

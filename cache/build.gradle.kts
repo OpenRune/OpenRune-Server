@@ -16,13 +16,13 @@ tasks {
         description = "Check if required files exist for cache tasks"
         doFirst {
             val gameYml = file("${rootProject.projectDir}/game.yml")
-            val gameExampleYml = file("${rootProject.projectDir}/game.example.yml")
+            val gameExampleYml = file("${rootProject.projectDir}/examples/game.example.yml")
             val cacheDir = file("${rootProject.projectDir}/data/cache")
             
             val missingFiles = mutableListOf<String>()
             
             if (!gameYml.exists() && !gameExampleYml.exists()) {
-                missingFiles.add("game.yml or game.example.yml")
+                missingFiles.add("game.yml or examples/game.example.yml")
             }
             if (!cacheDir.exists() || !cacheDir.isDirectory || cacheDir.listFiles()?.isEmpty() != false) {
                 missingFiles.add("data/cache (directory missing or empty)")
@@ -55,13 +55,13 @@ tasks {
             
             if (!isRunningAsPartOfInstall) {
                 val gameYml = file("${rootProject.projectDir}/game.yml")
-                val gameExampleYml = file("${rootProject.projectDir}/game.example.yml")
+                val gameExampleYml = file("${rootProject.projectDir}/examples/game.example.yml")
                 val cacheDir = file("${rootProject.projectDir}/data/cache")
                 
                 val missingFiles = mutableListOf<String>()
                 
                 if (!gameYml.exists() && !gameExampleYml.exists()) {
-                    missingFiles.add("game.yml or game.example.yml")
+                    missingFiles.add("game.yml or examples/game.example.yml")
                 }
                 if (!cacheDir.exists() || !cacheDir.isDirectory || cacheDir.listFiles()?.isEmpty() != false) {
                     missingFiles.add("data/cache (directory missing or empty)")

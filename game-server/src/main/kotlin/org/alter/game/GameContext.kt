@@ -43,6 +43,7 @@ import org.alter.game.model.Tile
 data class GameContext(
     var initialLaunch: Boolean,
     val name: String,
+    val world : Int,
     val revision: Int,
     val cycleTime: Int,
     val playerLimit: Int,
@@ -52,5 +53,6 @@ data class GameContext(
     val runEnergy: Boolean,
     val gItemPublicDelay: Int,
     val gItemDespawnDelay: Int,
+    val worldKey: String,
     val preloadMaps: Boolean,
 )

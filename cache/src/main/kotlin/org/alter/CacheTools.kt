@@ -148,10 +148,10 @@ fun buildCache(rev: Triple<Int, Int, String>) {
 
 
 fun readRevision(): Triple<Int, Int, String> {
-    val file = listOf("../game.yml", "../game.example.yml")
+    val file = listOf("../game.yml", "../examples/game.example.yml")
         .map(::File)
         .firstOrNull { it.exists() }
-        ?: error("No game.yml or game.example.yml found")
+        ?: error("No game.yml or examples/game.example.yml found")
 
     return file.useLines { lines ->
         val revisionLine = lines.firstOrNull { it.trimStart().startsWith("revision:") }

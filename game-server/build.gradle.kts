@@ -8,6 +8,7 @@ application {
     apply(plugin = "maven-publish")
     mainClass.set("org.alter.game.Launcher")
 }
+val ktorVersion = "2.3.7"
 val lib = rootProject.project.libs
 dependencies {
     implementation(project(":cache"))
@@ -29,7 +30,6 @@ dependencies {
         implementation(jackson.dataformat.yaml)
         implementation(kotlin.csv)
         implementation(mongo.bson)
-        implementation(mongo.driver)
         testRuntimeOnly(junit)
         implementation(rootProject.project.libs.rsprot)
         implementation(lib.routefinder)
@@ -39,8 +39,11 @@ dependencies {
         implementation(or2.filesystem)
         implementation(or2.filestore)
         implementation(or2.central.api.client)
+        implementation(lib.or2.central.server)
         implementation(or2.filestore)
     }
+    implementation("io.ktor:ktor-server-core:${ktorVersion}")
+    implementation("io.ktor:ktor-server-netty:${ktorVersion}")
 }
 sourceSets {
     named("main") {
@@ -50,25 +53,58 @@ sourceSets {
 }
 
 @Suppress("ktlint:standard:max-line-length")
+tasks.register("installConfigs") {
+    description = "Copy example configs into place"
+
+    // IMPORTANT: don't use a Copy task writing to the repo root, because Gradle will treat the
+    // whole directory (including build/ outputs) as this task's outputs and fail validation.
+    val gameYml = file("${rootProject.projectDir}/game.yml")
+    val devSettingsYml = file("${rootProject.projectDir}/dev-settings.yml")
+    val centralServerYml = file("${rootProject.projectDir}/central-server.yml")
+    val firstLaunch = file("${rootProject.projectDir}/first-launch")
+
+    outputs.files(gameYml, devSettingsYml, centralServerYml, firstLaunch)
+
+    doLast {
+        project.copy {
+            from("${rootProject.projectDir}/examples/game.example.yml")
+            from("${rootProject.projectDir}/examples/dev-settings.example.yml")
+            from("${rootProject.projectDir}/examples/central-server.example.yml")
+            into("${rootProject.projectDir}/")
+
+            rename("game.example.yml", "game.yml")
+            rename("dev-settings.example.yml", "dev-settings.yml")
+            rename("central-server.example.yml", "central-server.yml")
+        }
+
+        firstLaunch.createNewFile()
+    }
+}
+
+tasks.register<JavaExec>("generateWorldKeys") {
+    group = "application"
+    description = "Generate Ed25519 keys and write them into central-server.yml and game.yml"
+
+    dependsOn("installConfigs")
+
+    workingDir = rootProject.projectDir
+    classpath = sourceSets["main"].runtimeClasspath
+    mainClass.set("dev.openrune.central.tools.KeyGenKt")
+    args = listOf(
+        "${rootProject.projectDir}/central-server.yml",
+        "${rootProject.projectDir}/game.yml",
+    )
+}
+
 tasks.register("install") {
     description = "Install Alter"
 
     dependsOn("runRsaService")
+    dependsOn("installConfigs")
+    dependsOn("generateWorldKeys")
     dependsOn(":cache:freshCache")
-
-    doLast {
-        copy {
-            into("${rootProject.projectDir}/")
-            from("${rootProject.projectDir}/game.example.yml") {
-                rename("game.example.yml", "game.yml")
-            }
-            from("${rootProject.projectDir}/dev-settings.example.yml") {
-                rename("dev-settings.example.yml", "dev-settings.yml")
-            }
-            file("${rootProject.projectDir}/first-launch").createNewFile()
-        }
-    }
 }
+
 tasks.register<JavaExec>("runRsaService") {
     group = "application"
     workingDir = rootProject.projectDir
@@ -99,7 +135,7 @@ tasks.named<Copy>("applicationDistribution") {
     from("$rootDir") {
         into("bin")
         include("/game-plugins/*")
-        include("game.example.yml")
+        include("examples/game.example.yml")
         rename("game.example.yml", "game.yml")
     }
 }
@@ -123,7 +159,7 @@ tasks.register("checkPrerequisites") {
     description = "Check if required files exist"
     doFirst {
         val gameYml = file("${rootProject.projectDir}/game.yml")
-        val gameExampleYml = file("${rootProject.projectDir}/game.example.yml")
+        val gameExampleYml = file("${rootProject.projectDir}/examples/game.example.yml")
         val devSettingsYml = file("${rootProject.projectDir}/dev-settings.yml")
         val cacheDir = file("${rootProject.projectDir}/data/cache")
         val rsaKey = file("${rootProject.projectDir}/data/rsa/key.pem")
@@ -132,7 +168,7 @@ tasks.register("checkPrerequisites") {
         val missingFiles = mutableListOf<String>()
         
         if (!gameYml.exists() && !gameExampleYml.exists()) {
-            missingFiles.add("game.yml or game.example.yml")
+            missingFiles.add("game.yml or examples/game.example.yml")
         }
         if (!devSettingsYml.exists()) {
             missingFiles.add("dev-settings.yml")

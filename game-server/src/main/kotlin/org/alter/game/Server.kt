@@ -1,6 +1,7 @@
 package org.alter.game
 
 import dev.openrune.ServerCacheManager
+import dev.openrune.central.CentralServer
 import dev.openrune.central.client.CentralApiClient
 import dev.openrune.filesystem.Cache
 import gg.rsmod.util.ServerProperties
@@ -93,6 +94,8 @@ class Server {
             GameContext(
                 initialLaunch = initialLaunch,
                 name = gameProperties.get<String>("name")!!,
+                worldKey = gameProperties.getOrDefault("worldKey", ""),
+                world = gameProperties.getOrDefault("world", 1),
                 revision = gameProperties.get<Int>("revision")!!,
                 cycleTime = gameProperties.getOrDefault("cycle-time", 600),
                 playerLimit = gameProperties.getOrDefault("max-players", 2048),
@@ -114,7 +117,7 @@ class Server {
                         GroundItem.DEFAULT_PUBLIC_SPAWN_CYCLES,
                     ),
                 gItemDespawnDelay = gameProperties.getOrDefault("gitem-despawn-delay", GroundItem.DEFAULT_DESPAWN_CYCLES),
-                preloadMaps = gameProperties.getOrDefault("preload-maps", false),
+                preloadMaps = gameProperties.getOrDefault("preload-maps", false)
             )
 
         val devContext =
@@ -128,6 +131,18 @@ class Server {
             )
 
         System.setProperty("net.rsprot.protocol.internal.networkLogging", devContext.debugPackets.toString())
+        centralApiClient = CentralApiClient(
+            "http://127.0.0.1:8080",
+            gameContext.world,
+            gameContext.worldKey
+        )
+        if (gameContext.worldKey.isEmpty()) {
+            error(
+                "World key is empty. This project requires generated world keys. " +
+                        "Run the Gradle task `generateWorldKeys` and try again."
+            )
+        }
+        CentralServer.start(configPath = Paths.get("../central-server.yml"), rev = gameContext.revision)
 
         /*
          * Load the file store.
@@ -228,10 +243,6 @@ class Server {
     companion object {
         val logger = KotlinLogging.logger {}
         lateinit var cache : Cache
-        val centralApiClient = CentralApiClient(
-            "http://127.0.0.1:8080",
-            1,
-            "MC4CAQAwBQYDK2VwBCIEIJ1kzyZJb9R_ncUD1y0yo2kKqCg88wJig6kt4f4VAuK2"
-        )
+        lateinit var centralApiClient : CentralApiClient
     }
 }

@@ -4,6 +4,8 @@ name: "Alter"
 game-port: 43594
 revision: 235.10
 environment: "LIVE"
+world: 1
+worldKey: ""
 
 # The coordinates for the home location.
 home-x: 3218
@@ -47,3 +49,4 @@ services:
 
 #  - class: org.alter.plugins.service.worldlist.WorldListService
 #    port: 4842
+
