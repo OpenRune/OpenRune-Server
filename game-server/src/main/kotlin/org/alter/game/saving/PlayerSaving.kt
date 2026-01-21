@@ -39,7 +39,7 @@ object PlayerSaving {
 
         return when (loginRequest.result) {
             PlayerLoadResponse.OFFLINE_SERVER -> PlayerLoadResult.OFFLINE
-
+            PlayerLoadResponse.ALREADY_ONLINE -> PlayerLoadResult.ALREADY_ONLINE
             PlayerLoadResponse.NEW_ACCOUNT -> {
                 val login = requireNotNull(loginRequest.login)
                 client.uid = login.linkedAccounts.first().uid

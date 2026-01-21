@@ -31,5 +31,7 @@ enum class PlayerLoadResult {
      */
     MALFORMED,
 
-    OFFLINE
+    OFFLINE,
+
+    ALREADY_ONLINE
 }

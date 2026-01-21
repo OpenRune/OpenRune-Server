@@ -37,6 +37,11 @@ class LoginWorker(private val boss: LoginService, private val verificationServic
                     return
                 }
 
+                if (loadResult == PlayerLoadResult.ALREADY_ONLINE) {
+                    request.responseHandler.writeFailedResponse(LoginResponse.Duplicate)
+                    return
+                }
+
                 if (loadResult == PlayerLoadResult.LOAD_ACCOUNT || loadResult == PlayerLoadResult.NEW_ACCOUNT) {
                     world.getService(GameService::class.java)?.submitGameThreadJob {
                         val interceptedLoginResult =
