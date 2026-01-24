@@ -7,6 +7,7 @@ import gg.rsmod.util.toStringHelper
 import it.unimi.dsi.fastutil.ints.IntArraySet
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet
 import net.rsprot.protocol.api.Session
+import net.rsprot.protocol.game.outgoing.info.Infos
 import net.rsprot.protocol.game.outgoing.info.npcinfo.NpcInfo
 import net.rsprot.protocol.game.outgoing.info.playerinfo.PlayerAvatar
 import net.rsprot.protocol.game.outgoing.info.playerinfo.PlayerInfo
@@ -462,26 +463,24 @@ open class Player(world: World) : Pawn(world) {
      * @TODO
      * If im not mistaking the [npcInfo] shit should be pulled out and placed into it's own class and update should happend when Player enters region
      */
-    lateinit var playerInfo: PlayerInfo
-    lateinit var npcInfo: NpcInfo
-    lateinit var worldEntityInfo: WorldEntityInfo
+    lateinit var infos: Infos
+    val playerInfo: PlayerInfo get() = infos.playerInfo
+    val npcInfo: NpcInfo get() = infos.npcInfo
+    val worldEntityInfo: WorldEntityInfo get() = infos.worldEntityInfo
+
     var session: Session<Client>? = null
     var buildArea: BuildArea = BuildArea.INVALID
     /**
      * Handles any logic that should be executed upon log in.
      */
     fun login() {
-        playerInfo.updateCoord(tile.height, tile.x, tile.z)
-        npcInfo.updateCoord(-1, tile.height, tile.x, tile.z)
-        worldEntityInfo.updateCoord(-1, tile.height, tile.x, tile.z)
+        infos.updateRootCoord(tile.height, tile.x, tile.z)
 
         if (entityType.isHumanControlled) {
             write(RebuildLogin(tile.x ushr 3, tile.z shr 3, -1, world.xteaKeyService!!, playerInfo))
             buildArea =
                 BuildArea((tile.x ushr 3) - 6, (tile.z ushr 3) - 6).apply {
-                    playerInfo.updateBuildArea(-1, this)
-                    npcInfo.updateBuildArea(-1, this)
-                    worldEntityInfo.updateBuildArea(this)
+                    infos.updateRootBuildArea(this)
                 }
             world.getService(LoggerService::class.java, searchSubclasses = true)?.logLogin(this)
         }
