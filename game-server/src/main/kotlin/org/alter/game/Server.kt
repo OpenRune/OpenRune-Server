@@ -1,8 +1,9 @@
 package org.alter.game
 
 import dev.openrune.ServerCacheManager
-import dev.openrune.central.CentralServer
-import dev.openrune.central.client.CentralApiClient
+import dev.openrune.central.client.CentralConnection
+import dev.openrune.central.client.CentralServer
+import dev.openrune.central.client.ConnectionResult
 import dev.openrune.filesystem.Cache
 import gg.rsmod.util.ServerProperties
 import gg.rsmod.util.Stopwatch
@@ -94,6 +95,7 @@ class Server {
             GameContext(
                 initialLaunch = initialLaunch,
                 name = gameProperties.get<String>("name")!!,
+                centralUrl = gameProperties.get<String>("centralUrl")!!,
                 worldKey = gameProperties.getOrDefault("worldKey", ""),
                 world = gameProperties.getOrDefault("world", 1),
                 revision = gameProperties.get<Int>("revision")!!,
@@ -131,18 +133,21 @@ class Server {
             )
 
         System.setProperty("net.rsprot.protocol.internal.networkLogging", devContext.debugPackets.toString())
-        centralApiClient = CentralApiClient(
-            "http://127.0.0.1:8080",
-            gameContext.world,
-            gameContext.worldKey
-        )
         if (gameContext.worldKey.isEmpty()) {
             error(
                 "World key is empty. This project requires generated world keys. " +
                         "Run the Gradle task `generateWorldKeys` and try again."
             )
         }
-        CentralServer.start(configPath = Paths.get("../central-server.yml"), rev = gameContext.revision)
+
+        when (val res = CentralServer.openConnection(gameContext.world,gameContext.worldKey)) {
+            is ConnectionResult.NotConnected -> error("Central Server connection failed: server unreachable or offline.")
+            is ConnectionResult.FailedAuth -> error("Central Server authentication failed: invalid world credentials. " + "Verify the public and private world keys.")
+
+            is ConnectionResult.Connected -> {
+                central = res.connection
+            }
+        }
 
         /*
          * Load the file store.
@@ -243,6 +248,6 @@ class Server {
     companion object {
         val logger = KotlinLogging.logger {}
         lateinit var cache : Cache
-        lateinit var centralApiClient : CentralApiClient
+        lateinit var central : CentralConnection
     }
 }

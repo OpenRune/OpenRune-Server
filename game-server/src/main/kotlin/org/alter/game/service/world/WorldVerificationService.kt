@@ -1,6 +1,6 @@
 package org.alter.game.service.world
 
-import dev.openrune.central.api.PlayerUID
+import dev.openrune.central.PlayerUID
 import net.rsprot.protocol.loginprot.outgoing.LoginResponse
 import org.alter.game.model.World
 import org.alter.game.service.Service

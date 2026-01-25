@@ -1,5 +1,6 @@
 package org.alter.game
 
+
 import org.alter.game.model.Tile
 
 
@@ -43,6 +44,7 @@ import org.alter.game.model.Tile
 data class GameContext(
     var initialLaunch: Boolean,
     val name: String,
+    val centralUrl : String,
     val world : Int,
     val revision: Int,
     val cycleTime: Int,

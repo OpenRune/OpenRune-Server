@@ -1,6 +1,6 @@
 package org.alter.game.model.entity
 
-import dev.openrune.central.api.PlayerUID
+import dev.openrune.central.PlayerUID
 import gg.rsmod.util.toStringHelper
 import org.alter.game.model.EntityType
 import org.alter.game.model.Tile

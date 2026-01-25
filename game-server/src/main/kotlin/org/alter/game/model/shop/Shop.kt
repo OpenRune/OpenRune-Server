@@ -1,6 +1,6 @@
 package org.alter.game.model.shop
 
-import dev.openrune.central.api.PlayerUID
+import dev.openrune.central.PlayerUID
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet
 import org.alter.game.model.World
 import org.alter.game.model.attr.CURRENT_SHOP_ATTR

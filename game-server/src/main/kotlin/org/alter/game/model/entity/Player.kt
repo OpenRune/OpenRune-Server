@@ -1,7 +1,7 @@
 package org.alter.game.model.entity
 
 import dev.openrune.ServerCacheManager.varpSize
-import dev.openrune.central.api.PlayerUID
+import dev.openrune.central.PlayerUID
 import dev.openrune.types.InvScope
 import dev.openrune.types.getInt
 import gg.rsmod.util.toStringHelper

@@ -19,9 +19,9 @@ csv = "0.7.3"
 logback = "1.4.11"
 rsprot = "1.0.0-ALPHA-20251027"
 routefinder = "6.0.0"
-or2 = "2.3.5"
+or2 = "2.3.6"
 or2ServerUtils = "0.7"
-central-api = "0.1.0"
+central-api = "1.0.0"
 jodatime = "2.14.0"
 classgraph = "4.8.184"
 
@@ -68,9 +68,8 @@ joda-time = { group = "joda-time", name = "joda-time", version.ref = "jodatime" 
 or2-definition = { group = "dev.or2", name = "definition", version.ref = "or2" }
 or2-filesystem = { group = "dev.or2", name = "filesystem", version.ref = "or2" }
 or2-filestore = { group = "dev.or2", name = "filestore", version.ref = "or2" }
-or2-central-api-client = { group = "dev.or2", name = "central-api-client", version.ref = "central-api" }
-or2-central-shared = { group = "dev.or2", name = "central-shared", version.ref = "central-api" }
-or2-central-server = { group = "dev.or2", name = "central", version.ref = "central-api" }
+or2-central-all = { group = "dev.or2.central", name = "all", version.ref = "central-api" }
+
 [plugins]
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }

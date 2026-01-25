@@ -38,8 +38,6 @@ dependencies {
         implementation(or2.definition)
         implementation(or2.filesystem)
         implementation(or2.filestore)
-        implementation(or2.central.api.client)
-        implementation(lib.or2.central.server)
         implementation(or2.filestore)
     }
     implementation("io.ktor:ktor-server-core:${ktorVersion}")

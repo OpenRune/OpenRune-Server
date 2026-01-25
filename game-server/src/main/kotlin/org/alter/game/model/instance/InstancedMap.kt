@@ -1,6 +1,6 @@
 package org.alter.game.model.instance
 
-import dev.openrune.central.api.PlayerUID
+import dev.openrune.central.PlayerUID
 import org.alter.game.model.Area
 import org.alter.game.model.Tile
 import org.alter.game.model.region.Chunk

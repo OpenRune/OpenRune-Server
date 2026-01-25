@@ -34,10 +34,10 @@ allprojects {
         implementation(lib.jbcrypt)
         implementation(lib.gson)
         implementation(lib.netty.all)
-        implementation(lib.or2.central.shared)
         implementation(lib.kotlinx.serialization.core)
         testImplementation(lib.junit)
         testImplementation(lib.kotlin.test.junit)
+        implementation(lib.or2.central.all)
     }
 
     java {

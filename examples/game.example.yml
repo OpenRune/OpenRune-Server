@@ -5,6 +5,7 @@ game-port: 43594
 revision: 235.10
 environment: "LIVE"
 world: 1
+centralUrl: "http://127.0.0.1:8080"
 worldKey: ""
 
 # The coordinates for the home location.

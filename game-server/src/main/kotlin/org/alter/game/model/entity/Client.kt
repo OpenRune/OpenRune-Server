@@ -1,5 +1,6 @@
 package org.alter.game.model.entity
 
+import dev.openrune.central.packet.model.LogoutIncoming
 import gg.rsmod.util.toStringHelper
 import net.rsprot.protocol.api.login.GameLoginResponseHandler
 import net.rsprot.protocol.game.outgoing.map.RebuildLogin
@@ -65,8 +66,13 @@ class Client(world: World) : Player(world) {
 
     override fun handleLogout() {
         super.handleLogout()
-        Server.centralApiClient.logout(uid, username, currentXteaKeys)
-        PlayerSaving.savePlayer(this)
+
+        Server.central.packetSender.sendLogoutRequest(LogoutIncoming(uid,username,currentXteaKeys.toList()))
+        PlayerSaving.savePlayer(this) { success ->
+            if (!success) {
+                println("Failed to save player on logout: $username")
+            }
+        }
     }
 
     override fun handleMessages() {
