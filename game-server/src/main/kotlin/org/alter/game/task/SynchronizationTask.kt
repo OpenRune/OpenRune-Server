@@ -37,9 +37,6 @@ class SequentialSynchronizationTask : GameTask {
 
         world.players.forEach {
             if (it.entityType.isHumanControlled && it.initiated) {
-
-                it.playerPreSynchronizationTask()
-
                 val infos = it.infos
                 val infoPackets = infos.getPackets()
                 val rootPackets = infoPackets.rootWorldInfoPackets
