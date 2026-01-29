@@ -206,6 +206,16 @@ public class Inventory(public val type: InventoryServerType, public val objs: Ar
             objs.any { it?.id == rscm }
         }
 
+    public fun containsAny(itemIds: List<Int>): Boolean =
+        itemIds.any { id ->
+            objs.any { it?.id == id }
+        }
+
+    public fun containsAny(vararg itemIds: Int): Boolean =
+        itemIds.any { id ->
+            objs.any { it?.id == id }
+        }
+
     public operator fun contains(type: ItemServerType): Boolean = objs.any { type.isAssociatedWith(it) }
 
     public fun count(objType: ItemServerType): Int {
