@@ -7,6 +7,21 @@ import org.alter.api.ext.messageBox
 
 object SmithingUtils {
 
+    const val ANVIL_CATEGORY = 772
+
+    fun hasHammer(player: Player): Boolean {
+        val hasHammer = player.inventory.contains("items.hammer") || player.equipment.containsAny(
+            "items.imcando_hammer",
+            "items.imcando_hammer_offhand"
+        )
+        if (!hasHammer) {
+            player.queue {
+                messageBox(player, "You need a hammer to work the metal with.")
+            }
+        }
+        return hasHammer
+    }
+
     /**
      * Shows a message and returns false if the player's Smithing level is below [level].
      * Returns true if level is sufficient.

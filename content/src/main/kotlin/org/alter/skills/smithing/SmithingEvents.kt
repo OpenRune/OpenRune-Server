@@ -82,7 +82,7 @@ class SmithingEvents : PluginEvent() {
 
         // Clicking a hammer on an anvil
         on<ItemOnObject> {
-            where { hammers.contains(item.id) && gameObject.getDef().category == 772 }
+            where { hammers.contains(item.id) && gameObject.getDef().category == SmithingUtils.ANVIL_CATEGORY }
             then {
                 player.message(
                     "To smith a metal bar, click on the anvil while you have the bar in your inventory."
@@ -92,7 +92,7 @@ class SmithingEvents : PluginEvent() {
 
         // Clicking a bar on an anvil
         on<ItemOnObject> {
-            where { item.id in barIds && gameObject.getDef().category == 772 }
+            where { item.id in barIds && gameObject.getDef().category == SmithingUtils.ANVIL_CATEGORY }
             then {
                 barsByOutput[item.id]?.let { queueSmithing(player, it) }
             }
@@ -118,7 +118,7 @@ class SmithingEvents : PluginEvent() {
 
         // Clicking an anvil object
         on<ObjectClickEvent> {
-            where { gameObject.getDef().category == 772 }
+            where { gameObject.getDef().category == SmithingUtils.ANVIL_CATEGORY }
             then {
                 val bar = getBar(player)
                 if (bar == null) {
@@ -180,7 +180,7 @@ class SmithingEvents : PluginEvent() {
     private suspend fun canSmithBar(player: Player, task: QueueTask, bar: SmithingBarsRow): Boolean {
         val barDef = ServerCacheManager.getItem(bar.output) ?: return false
         if (!SmithingUtils.requireSmithingLevel(task, player, bar.level, "work ${barDef.name.lowercase()}")) return false
-        return hasHammer(player, task)
+        return SmithingUtils.hasHammer(player)
     }
 
 
@@ -214,17 +214,6 @@ class SmithingEvents : PluginEvent() {
         }
     }
 
-    private suspend fun hasHammer(player: Player, task: QueueTask): Boolean {
-        val hasHammer = player.inventory.contains("items.hammer") || player.equipment.containsAny(
-            "items.imcando_hammer",
-            "items.imcando_hammer_offhand"
-        )
-        if (!hasHammer) {
-            task.messageBox(player, "You need a hammer to work the metal with.")
-        }
-        return hasHammer
-    }
-
     /**
      * Returns the smithing bar the player is currently able to use.
      *
@@ -235,16 +224,29 @@ class SmithingEvents : PluginEvent() {
         val inventory = player.inventory
         val smithingLevel = player.getSkills().getCurrentLevel(Skills.SMITHING)
 
-        // Check last selected bar
-        val lastBarId = barEnum[player.getVarbit("varbits.smithing_bar_type")].value
-        barsByOutput[lastBarId]?.takeIf { inventory.contains(lastBarId) }?.let { return it }
+        val varbitValue = player.getVarbit("varbits.smithing_bar_type")
 
-        // Find highest-level usable bar in inventory
-        return inventory.asSequence()
+        val lastBar = barEnum.getOrNull(varbitValue)?.value?.let { barsByOutput[it] }
+            ?.takeIf { inventory.contains(it.output) && smithingLevel >= it.level }
+
+        if (lastBar != null) {
+            return lastBar
+        }
+
+        val bestBar = inventory.asSequence()
             .mapNotNull { it?.id }
             .distinct()
             .mapNotNull { barsByOutput[it] }
             .filter { smithingLevel >= it.level }
             .maxByOrNull { it.level }
+
+        if (bestBar != null) {
+            val enumIndex = barEnum.firstOrNull { it.value == bestBar.output }?.key
+            if (enumIndex != null) {
+                player.setVarbit("varbits.smithing_bar_type", enumIndex)
+            }
+        }
+
+        return bestBar
     }
 }
