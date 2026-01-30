@@ -4,31 +4,28 @@ import dev.openrune.ServerCacheManager
 import org.alter.api.Skills
 import org.alter.api.ext.message
 import org.alter.api.ext.messageBox
-import org.alter.api.ext.prefixAn
 import org.alter.api.ext.produceItemBox
-import org.alter.api.ext.toLiteral
 import org.alter.game.model.entity.Player
 import org.alter.game.model.queue.QueueTask
 import org.alter.game.pluginnew.PluginEvent
 import org.alter.game.pluginnew.event.impl.ObjectClickEvent
 import org.alter.rscm.RSCM
 import org.alter.rscm.RSCM.asRSCM
+import org.alter.api.ext.prefixAn
+import org.alter.api.ext.toLiteral
+import org.alter.skills.smithing.SmithingData.allBars
 import org.generated.tables.smithing.SmithingBarsRow
 
 class SmeltingEvents : PluginEvent() {
 
-    private val allBars = SmithingBarsRow.all()
-
-    private val normalBars = allBars
-        .filter { it.output != "items.lovakite_bar".asRSCM() }
-
-    private val barsByOutput = allBars
-        .associateBy { it.output }
+    val normalBars: List<SmithingBarsRow> = allBars.filter { it.output != "items.lovakite_bar".asRSCM() }
 
     override fun init() {
-
         on<ObjectClickEvent> {
-            where { gameObject.getDef().category == 215 && player.inventory.containsAny(allBars.map { it.inputPrimary }.toList()) }
+            where {
+                gameObject.getDef().category == SmithingData.FURNACE_CATEGORY &&
+                    player.inventory.containsAny(SmithingData.allBars.map { it.inputPrimary }.toList())
+            }
             then { smeltStandard(player) }
         }
 
@@ -36,19 +33,24 @@ class SmeltingEvents : PluginEvent() {
             where { gameObject.id == "objects.lovakengj_furnace_large_01" }
             then {
                 player.queue {
-                    produceItemBox(player, "items.lovakite_bar".asRSCM(),
+                    produceItemBox(
+                        player,
+                        "items.lovakite_bar".asRSCM(),
                         title = "What would you like to smelt?",
                         logic = ::smeltItem
                     )
                 }
             }
         }
-
     }
 
     fun smeltStandard(player: Player) {
         player.queue {
-            produceItemBox(player, *normalBars.map { it.output }.toIntArray(),
+            val smeltableBars = normalBars.filter { hasItemsForBar(player, it) }
+            if (smeltableBars.isEmpty()) return@queue
+            produceItemBox(
+                player,
+                *smeltableBars.map { it.output }.toIntArray(),
                 title = "What would you like to smelt?",
                 logic = ::smeltItem
             )
@@ -56,8 +58,8 @@ class SmeltingEvents : PluginEvent() {
     }
 
     fun smeltItem(player: Player, output: Int, amount: Int = 28) {
-        val bar = barsByOutput[output] ?: return
-        player.queue { smelt(this, player,bar, amount) }
+        val bar = SmithingData.barsByOutput[output] ?: return
+        player.queue { smelt(this, player, bar, amount) }
     }
 
     suspend fun smelt(
@@ -97,8 +99,8 @@ class SmeltingEvents : PluginEvent() {
                 return@repeatWhile
             }
 
-            player.animate("sequences.human_furnace")
-            player.playSound(2725)
+            player.animate(SmithingData.FURNACE_ANIMATION)
+            player.playSound(SmithingData.FURNACE_SOUND)
             task.wait(2)
 
             val primaryRemoved = player.inventory.remove(bar.inputPrimary, primaryAmt, assureFullRemoval = true).hasSucceeded()
@@ -132,23 +134,15 @@ class SmeltingEvents : PluginEvent() {
         }
     }
 
-    private suspend fun canSmelt(
-        task: QueueTask,
-        player: Player,
-        bar: SmithingBarsRow
-    ): Boolean {
-        val inventory = player.inventory
-
+    private suspend fun canSmelt(task: QueueTask, player: Player, bar: SmithingBarsRow): Boolean {
         val primaryItem = ServerCacheManager.getItem(bar.inputPrimary) ?: return false
         val primaryName = primaryItem.name
         val primaryAmt = bar.inputPrimaryAmt
-
         val secondaryId = bar.inputSecondary
         val secondaryAmt = bar.inputSecondaryAmt ?: 0
 
-        val hasPrimary = inventory.getItemCount(bar.inputPrimary) >= primaryAmt
-
-        val hasSecondary = secondaryId == null || inventory.getItemCount(secondaryId) >= secondaryAmt
+        val hasPrimary = player.inventory.getItemCount(bar.inputPrimary) >= primaryAmt
+        val hasSecondary = secondaryId == null || player.inventory.getItemCount(secondaryId) >= secondaryAmt
 
         if (!hasPrimary || !hasSecondary) {
             val message = if (secondaryId == null || secondaryAmt == 0) {
@@ -156,22 +150,25 @@ class SmeltingEvents : PluginEvent() {
             } else {
                 val secondaryName = ServerCacheManager.getItem(secondaryId)?.name ?: "materials"
                 val barName = ServerCacheManager.getItem(bar.output)?.name ?: "bar"
-
-                "You need ${primaryAmt.toLiteral()} $primaryName and " + "${secondaryAmt.toLiteral()} $secondaryName " + "to make ${barName.prefixAn()}."
+                "You need ${primaryAmt.toLiteral()} $primaryName and ${secondaryAmt.toLiteral()} $secondaryName to make ${barName.prefixAn()}."
             }
-
             task.messageBox(player, message)
             return false
         }
 
-        val smithingLevel = player.getSkills().getCurrentLevel(Skills.SMITHING)
-        if (smithingLevel < bar.level) {
-            task.messageBox(player, "You need a ${Skills.getSkillName(Skills.SMITHING)} level of at least " + "${bar.level} to smelt $primaryName.")
-            return false
-        }
-
-        return true
+        return SmithingUtils.requireSmithingLevel(task, player, bar.level, "smelt $primaryName")
     }
+
+
+    private fun hasItemsForBar(player: Player, bar: SmithingBarsRow): Boolean {
+        val primaryAmt = bar.inputPrimaryAmt
+        val secondaryAmt = bar.inputSecondaryAmt ?: 0
+        val hasPrimary = player.inventory.getItemCount(bar.inputPrimary) >= primaryAmt
+        val hasSecondary = bar.inputSecondary == null || secondaryAmt == 0 ||
+                player.inventory.getItemCount(bar.inputSecondary) >= secondaryAmt
+        return hasPrimary && hasSecondary
+    }
+
 
 
 }

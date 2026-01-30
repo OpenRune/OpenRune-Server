@@ -14,6 +14,7 @@ object Smithing {
     const val COL_INPUT_SECONDARY = 6
     const val COL_INPUT_PRIMARY_AMT = 7
     const val COL_INPUT_SECONDARY_AMT = 8
+    const val COL_INPUT_PREFIX = 9
 
     const val COL_CANNONBALL_BAR = 0
     const val COL_CANNONBALL_OUTPUT = 1
@@ -82,6 +83,7 @@ object Smithing {
         column("input_secondary", COL_INPUT_SECONDARY, VarType.OBJ)
         column("input_primary_amt", COL_INPUT_PRIMARY_AMT, VarType.INT)
         column("input_secondary_amt", COL_INPUT_SECONDARY_AMT, VarType.INT)
+        column("prefix", COL_INPUT_PREFIX, VarType.STRING)
 
         row("dbrows.bronze") {
             columnRSCM(COL_OUTPUT,"items.bronze_bar")
@@ -92,6 +94,7 @@ object Smithing {
             columnRSCM(COL_INPUT_SECONDARY,"items.copper_ore")
             column(COL_INPUT_PRIMARY_AMT,1)
             column(COL_INPUT_SECONDARY_AMT,1)
+            column(COL_INPUT_PREFIX,"bronze")
 
         }
 
@@ -103,6 +106,7 @@ object Smithing {
             column(COL_SMITH_XP,17)
             columnRSCM(COL_INPUT_PRIMARY,"items.blurite_ore")
             column(COL_INPUT_PRIMARY_AMT,1)
+            column(COL_INPUT_PREFIX,"blurite")
         }
 
         row("dbrows.iron") {
@@ -112,6 +116,7 @@ object Smithing {
             column(COL_SMITH_XP,25)
             columnRSCM(COL_INPUT_PRIMARY,"items.iron_ore")
             column(COL_INPUT_PRIMARY_AMT,1)
+            column(COL_INPUT_PREFIX,"iron")
         }
 
         row("dbrows.silver") {
@@ -121,6 +126,7 @@ object Smithing {
             column(COL_SMITH_XP,50)
             columnRSCM(COL_INPUT_PRIMARY,"items.silver_ore")
             column(COL_INPUT_PRIMARY_AMT,1)
+            column(COL_INPUT_PREFIX,"silver")
         }
 
         row("dbrows.lead") {
@@ -130,6 +136,7 @@ object Smithing {
             column(COL_SMITH_XP,0)
             columnRSCM(COL_INPUT_PRIMARY,"items.lead_ore")
             column(COL_INPUT_PRIMARY_AMT,2)
+            column(COL_INPUT_PREFIX,"lead")
         }
 
         row("dbrows.steel") {
@@ -141,6 +148,7 @@ object Smithing {
             columnRSCM(COL_INPUT_SECONDARY,"items.coal")
             column(COL_INPUT_PRIMARY_AMT,1)
             column(COL_INPUT_SECONDARY_AMT,2)
+            column(COL_INPUT_PREFIX,"steel")
         }
 
         row("dbrows.gold") {
@@ -151,6 +159,7 @@ object Smithing {
             column(COL_SMITH_XP,90)
             columnRSCM(COL_INPUT_PRIMARY,"items.gold_ore")
             column(COL_INPUT_PRIMARY_AMT,1)
+            column(COL_INPUT_PREFIX,"gold")
         }
 
         row("dbrows.lovakite") {
@@ -162,6 +171,7 @@ object Smithing {
             columnRSCM(COL_INPUT_SECONDARY,"items.coal")
             column(COL_INPUT_PRIMARY_AMT,1)
             column(COL_INPUT_SECONDARY_AMT,2)
+            column(COL_INPUT_PREFIX,"shayzien")
         }
 
         row("dbrows.mithril") {
@@ -173,6 +183,7 @@ object Smithing {
             columnRSCM(COL_INPUT_SECONDARY,"items.coal")
             column(COL_INPUT_PRIMARY_AMT,1)
             column(COL_INPUT_SECONDARY_AMT,4)
+            column(COL_INPUT_PREFIX,"mithril")
         }
 
         row("dbrows.adamantite") {
@@ -184,6 +195,7 @@ object Smithing {
             columnRSCM(COL_INPUT_SECONDARY,"items.coal")
             column(COL_INPUT_PRIMARY_AMT,1)
             column(COL_INPUT_SECONDARY_AMT,6)
+            column(COL_INPUT_PREFIX,"adamant")
         }
 
         row("dbrows.cupronickel") {
@@ -195,6 +207,7 @@ object Smithing {
             columnRSCM(COL_INPUT_SECONDARY,"items.copper_ore")
             column(COL_INPUT_PRIMARY_AMT,1)
             column(COL_INPUT_SECONDARY_AMT,2)
+            column(COL_INPUT_PREFIX,"cupronickel")
         }
 
         row("dbrows.runite") {
@@ -206,6 +219,7 @@ object Smithing {
             columnRSCM(COL_INPUT_SECONDARY,"items.coal")
             column(COL_INPUT_PRIMARY_AMT,1)
             column(COL_INPUT_SECONDARY_AMT,8)
+            column(COL_INPUT_PREFIX,"rune")
         }
 
     }

@@ -2,7 +2,6 @@ package org.alter.skills.smithing
 
 import dev.openrune.ServerCacheManager
 import org.alter.api.Skills
-import org.alter.api.ext.itemMessageBox
 import org.alter.api.ext.message
 import org.alter.api.ext.messageBox
 import org.alter.api.ext.prefixAn
@@ -26,19 +25,19 @@ class CannonBalls : PluginEvent() {
     override fun init() {
         on<ItemOnObject> {
             where {
-                gameObject.getDef().category == 215 &&
-                        player.inventory.containsAny(*moulds) &&
-                        allCannonBalls.any { it.bar == item.id }
+                gameObject.getDef().category == SmithingData.FURNACE_CATEGORY &&
+                    player.inventory.containsAny(*moulds) &&
+                    allCannonBalls.any { it.bar == item.id }
             }
-            then { smeltCannonBalls(player,gameObject.id) }
+            then { smeltCannonBalls(player, gameObject.id) }
         }
 
         on<ObjectClickEvent> {
             where {
-                gameObject.getDef().category == 215 &&
-                        player.inventory.containsAny(*moulds)
+                gameObject.getDef().category == SmithingData.FURNACE_CATEGORY &&
+                    player.inventory.containsAny(*moulds)
             }
-            then { smeltCannonBalls(player,gameObject.id) }
+            then { smeltCannonBalls(player, gameObject.id) }
         }
 
         onItemOnItem("items.mcannonball", "items.granite_dust") {
@@ -46,11 +45,7 @@ class CannonBalls : PluginEvent() {
             val graniteDust = player.inventory.getItemCount("items.granite_dust")
 
             player.queue {
-                val smithingLevel = player.getSkills().getCurrentLevel(Skills.SMITHING)
-                if (smithingLevel < 50) {
-                    messageBox(player, "You need a ${Skills.getSkillName(Skills.SMITHING)} level of at least 50 to coat the cannonballs.")
-                    return@queue
-                }
+                if (!SmithingUtils.requireSmithingLevel(this, player, 50, "coat the cannonballs")) return@queue
 
                 val toCreate = minOf(totalBalls, graniteDust)
                 if (toCreate <= 0) return@queue
@@ -115,8 +110,8 @@ class CannonBalls : PluginEvent() {
         val barName = ServerCacheManager.getItem(ball.bar)?.name ?: "bar"
         val ballName = ServerCacheManager.getItem(ball.output)?.name ?: "cannonball"
 
-        player.animate("sequences.human_furnace")
-        player.playSound(2725)
+        player.animate(SmithingData.FURNACE_ANIMATION)
+        player.playSound(SmithingData.FURNACE_SOUND)
         player.message("You heat the $barName into a liquid state.")
         task.wait(2)
 
@@ -152,12 +147,6 @@ class CannonBalls : PluginEvent() {
             return false
         }
 
-        val smithingLevel = player.getSkills().getCurrentLevel(Skills.SMITHING)
-        if (smithingLevel < ball.level) {
-            task.messageBox(player, "You need a ${Skills.getSkillName(Skills.SMITHING)} level of at least ${ball.level} to smelt ${ballName.prefixAn()}.")
-            return false
-        }
-
-        return true
+        return SmithingUtils.requireSmithingLevel(task, player, ball.level, "smelt ${ballName.prefixAn()}")
     }
 }
