@@ -21,6 +21,7 @@ import org.alter.rscm.RSCMType
 import org.alter.skills.smithing.SmithingData.barsByOutput
 import org.alter.skills.smithing.SmithingData.typeForChild
 import org.generated.tables.smithing.SmithingBarsRow
+import kotlin.random.Random
 
 data class SmithingMetaData(
     val id: Int,
@@ -32,6 +33,19 @@ data class SmithingMetaData(
 )
 
 class SmithingEvents : PluginEvent() {
+
+    val hammers = listOf(
+        "items.hammer".asRSCM(),
+        "items.imcando_hammer".asRSCM(),
+        "items.imcando_hammer_offhand".asRSCM()
+    )
+
+    private val smithsUniformPieces = listOf(
+        "items.smithing_uniform_torso".asRSCM(),
+        "items.smithing_uniform_legs".asRSCM(),
+        "items.smithing_uniform_gloves".asRSCM(),
+        "items.smithing_uniform_boots".asRSCM()
+    )
 
     private val levelReq = enum("enums.smithing_level_req", ObjType, IntType)
     private val barCount = enum("enums.smithing_bar_count", ObjType, IntType)
@@ -68,7 +82,7 @@ class SmithingEvents : PluginEvent() {
 
         // Clicking a hammer on an anvil
         on<ItemOnObject> {
-            where { item.id == "items.hammer".asRSCM() && gameObject.getDef().category == 772 }
+            where { hammers.contains(item.id) && gameObject.getDef().category == 772 }
             then {
                 player.message(
                     "To smith a metal bar, click on the anvil while you have the bar in your inventory."
@@ -109,10 +123,7 @@ class SmithingEvents : PluginEvent() {
                 val bar = getBar(player)
                 if (bar == null) {
                     player.queue {
-                        messageBox(
-                            player,
-                            "You should select an item from your inventory and use it on the anvil."
-                        )
+                        messageBox(player, "You should select an item from your inventory and use it on the anvil.")
                     }
                     return@then
                 }
@@ -142,7 +153,8 @@ class SmithingEvents : PluginEvent() {
 
             player.animate("sequences.human_smithing")
             player.playSound(3771)
-            task.wait(3)
+            val anvilDelay = anvilActionDelay(player)
+            task.wait(anvilDelay)
 
             if (!canSmith(player,task, meta)) {
                 player.animate(RSCM.NONE)
@@ -190,8 +202,23 @@ class SmithingEvents : PluginEvent() {
         return true
     }
 
+    /**
+     * Anvil action delay in ticks. Base 3; Smith's uniform gives 20% per piece to reduce by 1 tick (full set = 100%).
+     */
+    private fun anvilActionDelay(player: Player): Int {
+        val piecesWorn = smithsUniformPieces.count { player.equipment.contains(it) }
+        return when {
+            piecesWorn >= 4 -> 2
+            piecesWorn > 0 && Random.nextDouble() < piecesWorn * 0.2 -> 2
+            else -> 3
+        }
+    }
+
     private suspend fun hasHammer(player: Player, task: QueueTask): Boolean {
-        val hasHammer = player.inventory.contains("items.hammer")
+        val hasHammer = player.inventory.contains("items.hammer") || player.equipment.containsAny(
+            "items.imcando_hammer",
+            "items.imcando_hammer_offhand"
+        )
         if (!hasHammer) {
             task.messageBox(player, "You need a hammer to work the metal with.")
         }

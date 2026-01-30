@@ -24,7 +24,7 @@ class SmeltingEvents : PluginEvent() {
         on<ObjectClickEvent> {
             where {
                 gameObject.getDef().category == SmithingData.FURNACE_CATEGORY &&
-                    player.inventory.containsAny(SmithingData.allBars.map { it.inputPrimary }.toList())
+                    player.inventory.containsAny(allBars.map { it.inputPrimary }.toList())
             }
             then { smeltStandard(player) }
         }
@@ -74,6 +74,9 @@ class SmeltingEvents : PluginEvent() {
         val primaryAmt = bar.inputPrimaryAmt
         val secondaryAmt = bar.inputSecondaryAmt ?: 0
         val requiresSecondary = bar.inputSecondary != null && secondaryAmt > 0
+        val hasCatalyst = player.inventory.contains("items.smithing_catalyst".asRSCM())
+        val isCoalBar = bar.inputSecondary == "items.coal".asRSCM()
+        val effectiveSecondaryAmt = if (hasCatalyst && isCoalBar) (secondaryAmt / 2).coerceAtLeast(1) else secondaryAmt
 
         val primaryCount = player.inventory.getItemCount(bar.inputPrimary)
         val secondaryCount = if (requiresSecondary) {
@@ -84,7 +87,7 @@ class SmeltingEvents : PluginEvent() {
 
         val maxByMaterials = minOf(
             primaryCount / primaryAmt,
-            if (requiresSecondary) secondaryCount / secondaryAmt else Int.MAX_VALUE
+            if (requiresSecondary) secondaryCount / effectiveSecondaryAmt else Int.MAX_VALUE
         )
         var maxSmelts = minOf(amount, maxByMaterials)
 
@@ -105,7 +108,7 @@ class SmeltingEvents : PluginEvent() {
 
             val primaryRemoved = player.inventory.remove(bar.inputPrimary, primaryAmt, assureFullRemoval = true).hasSucceeded()
             val secondaryRemoved = if (requiresSecondary) {
-                player.inventory.remove(bar.inputSecondary, secondaryAmt, assureFullRemoval = true).hasSucceeded()
+                player.inventory.remove(bar.inputSecondary, effectiveSecondaryAmt, assureFullRemoval = true).hasSucceeded()
             } else true
 
             if (primaryRemoved && secondaryRemoved) {
@@ -116,12 +119,18 @@ class SmeltingEvents : PluginEvent() {
                 } else true
 
                 if (success) {
-                    val xp: Int = when {
+                    var xp: Int = when {
                         bar.smithxpalternate == null -> bar.smeltxp
                         bar.output == "items.blurite_bar".asRSCM() && isSuperHeat -> bar.smithxpalternate
-                        bar.output == "items.gold_bar".asRSCM() && player.equipment.contains("items.gauntlets_of_goldsmithing") -> bar.smithxpalternate
+                        bar.output == "items.gold_bar".asRSCM() && player.equipment.containsAny(
+                            "items.gauntlets_of_goldsmithing",
+                            "items.skillcape_smithing",
+                            "items.skillcape_smithing_trimmed",
+                            "items.skillcape_max"
+                        ) -> bar.smithxpalternate
                         else -> bar.smeltxp
                     }
+                    if (hasCatalyst && isCoalBar) xp *= 2
                     player.inventory.add(bar.output)
                     player.addXp(Skills.SMITHING, xp)
                     player.message("You smelt the ${ServerCacheManager.getItem(bar.inputPrimary)!!.name} in the furnace.")
