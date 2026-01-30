@@ -72,6 +72,77 @@ object Smithing {
 
     }
 
+    const val COL_DRAGON_OUTPUT = 0
+    const val COL_DRAGON_OUTPUT_AMT = 1
+    const val COL_DRAGON_LEVEL = 2
+    const val COL_DRAGON_XP = 3
+    const val COL_DRAGON_INPUT_PRIMARY = 4
+    const val COL_DRAGON_INPUT_PRIMARY_AMT = 5
+
+
+    fun dragonForge() = dbTable("tables.smithing_dragon_forge") {
+        column("output", COL_DRAGON_OUTPUT, VarType.OBJ)
+        column("output_amt", COL_DRAGON_OUTPUT_AMT, VarType.INT)
+        column("level", COL_DRAGON_LEVEL, VarType.INT)
+        column("xp", COL_DRAGON_XP, VarType.INT)
+        column("input_primary", COL_DRAGON_INPUT_PRIMARY, VarType.OBJ)
+        column("input_primary_amt", COL_DRAGON_INPUT_PRIMARY_AMT, VarType.INT)
+
+        row("dbrows.dragon_keel_parts") {
+            columnRSCM(COL_DRAGON_OUTPUT, "items.sailing_boat_keel_part_dragon")
+            column(COL_DRAGON_OUTPUT_AMT, 1)
+            column(COL_DRAGON_LEVEL, 94)
+            column(COL_DRAGON_XP, 700)
+            columnRSCM(COL_DRAGON_INPUT_PRIMARY, "items.dragon_sheet")
+            column(COL_DRAGON_INPUT_PRIMARY_AMT, 2)
+        }
+
+        row("dbrows.dragon_key") {
+            columnRSCM(COL_DRAGON_OUTPUT, "items.dragonkin_key")
+            column(COL_DRAGON_OUTPUT_AMT, 1)
+            column(COL_DRAGON_LEVEL, 70)
+            column(COL_DRAGON_XP, 0)
+            column(COL_DRAGON_INPUT_PRIMARY_AMT, 1)
+            columnRSCM(COL_DRAGON_INPUT_PRIMARY, "items.dragonkin_key_frem","items.dragonkin_key_mory", "items.dragonkin_key_zeah","items.dragonkin_key_karam")
+        }
+
+        row("dbrows.dragon_kiteshield") {
+            columnRSCM(COL_DRAGON_OUTPUT, "items.dragon_kiteshield")
+            column(COL_DRAGON_OUTPUT_AMT, 1)
+            column(COL_DRAGON_LEVEL, 75)
+            column(COL_DRAGON_XP, 1000)
+            columnRSCM(COL_DRAGON_INPUT_PRIMARY, "items.dragon_sq_shield","items.dragon_slice", "items.dragon_shard")
+            column(COL_DRAGON_INPUT_PRIMARY_AMT, 1)
+        }
+
+        row("dbrows.dragon_nails") {
+            columnRSCM(COL_DRAGON_OUTPUT, "items.nails_dragon")
+            column(COL_DRAGON_OUTPUT_AMT, 15)
+            column(COL_DRAGON_LEVEL, 92)
+            column(COL_DRAGON_XP, 350)
+            columnRSCM(COL_DRAGON_INPUT_PRIMARY, "items.dragon_sheet")
+            column(COL_DRAGON_INPUT_PRIMARY_AMT, 1)
+        }
+
+        row("dbrows.dragon_platebody") {
+            columnRSCM(COL_DRAGON_OUTPUT, "items.dragon_platebody")
+            column(COL_DRAGON_OUTPUT_AMT, 1)
+            column(COL_DRAGON_LEVEL, 90)
+            column(COL_DRAGON_XP, 2000)
+            column(COL_DRAGON_INPUT_PRIMARY_AMT, 1)
+            columnRSCM(COL_DRAGON_INPUT_PRIMARY, "items.dragon_chainbody","items.dragon_lump", "items.dragon_shard")
+        }
+
+        row("dbrows.large_dragon_keel_parts") {
+            columnRSCM(COL_DRAGON_OUTPUT, "items.sailing_boat_large_keel_part_dragon")
+            column(COL_DRAGON_OUTPUT_AMT, 1)
+            column(COL_DRAGON_LEVEL, 94)
+            column(COL_DRAGON_XP, 500)
+            columnRSCM(COL_DRAGON_INPUT_PRIMARY, "items.sailing_boat_keel_part_dragon")
+            column(COL_DRAGON_INPUT_PRIMARY_AMT, 2)
+        }
+    }
+
     fun bars() = dbTable("tables.smithing_bars") {
 
         column("output", COL_OUTPUT, VarType.OBJ)

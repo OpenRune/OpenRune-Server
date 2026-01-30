@@ -145,12 +145,11 @@ class SmithingEvents : PluginEvent() {
 
         val barAmount = player.inventory.getItemCount(meta.bar!!.output)
         val maxAmount = (barAmount / meta.barCount)
-        val craftAmount = amount.coerceAtMost(maxAmount)
+        var craftAmount = amount.coerceAtMost(maxAmount)
 
-        repeat(craftAmount) {
-
+        task.repeatWhile(delay = 5, immediate = true, canRepeat = { craftAmount != 0 }) {
             task.wait(2)
-
+            player.lock()
             player.animate("sequences.human_smithing")
             player.playSound(3771)
             val anvilDelay = anvilActionDelay(player)
@@ -158,7 +157,8 @@ class SmithingEvents : PluginEvent() {
 
             if (!canSmith(player,task, meta)) {
                 player.animate(RSCM.NONE)
-                return@repeat
+                player.unlock()
+                return@repeatWhile
             }
 
             val transaction = player.inventory.remove(item = meta.bar.output, amount = meta.barCount, assureFullRemoval = true)
@@ -166,7 +166,8 @@ class SmithingEvents : PluginEvent() {
                 player.inventory.add(meta.id, meta.numProduced)
                 player.addXp(Skills.SMITHING, (meta.barCount * meta.bar.smithxp))
             }
-
+            player.unlock()
+            craftAmount--
         }
 
     }

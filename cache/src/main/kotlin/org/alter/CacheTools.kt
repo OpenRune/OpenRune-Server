@@ -62,7 +62,8 @@ fun tablesToPack() = listOf(
     CombinationRune.runecraftComboRune(),
     GameframeTable.gameframe(),
     Smithing.bars(),
-    Smithing.cannonBalls()
+    Smithing.cannonBalls(),
+    Smithing.dragonForge()
 )
 
 private val logger = KotlinLogging.logger {}

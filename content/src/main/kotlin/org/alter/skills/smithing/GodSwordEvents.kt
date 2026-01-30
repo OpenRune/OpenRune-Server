@@ -66,9 +66,9 @@ class GodSwordEvents : PluginEvent() {
                 val hilt = if (fromItem.id in hiltIds) fromItem.id else toItem.id
                 val product = hiltToGodsword[hilt] ?: return@then
 
-                player.inventory.remove(completeBlade, 1)
-                player.inventory.remove(hilt, 1)
-                player.inventory.add(product)
+                if (player.inventory.remove(hilt, 1).hasSucceeded() &&  player.inventory.remove(completeBlade, 1).hasSucceeded()) {
+                    player.inventory.add(product)
+                }
             }
         }
 

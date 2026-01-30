@@ -1,8 +1,16 @@
 [gamevals.tables]
+smithing_dragon_forge=1211
 smithing_cannon_balls=1212
 smithing_bars=1213
 
 [gamevals.dbrows]
+dragon_keel_parts=96759
+dragon_key=96760
+dragon_kiteshield=96761
+dragon_nails=96762
+dragon_platebody=96763
+large_dragon_keel_parts=96764
+
 bronze_cannon_ball=96765
 iron_cannon_ball=96766
 steel_cannon_ball=96767
