@@ -34,7 +34,7 @@ const val CHATBOX_CHILD = 566
 /**
  * The default action that will occur when interrupting or finishing a dialog.
  */
-private fun closeDialog(player: Player): QueueTask.() -> Unit =
+fun closeDialog(player: Player): QueueTask.() -> Unit =
     {
         DialogCloseAll(player).post()
         player.write(TriggerOnDialogAbort)
@@ -162,9 +162,11 @@ suspend fun QueueTask.messageBox(
     
     DialogMessageOpen(message, continues,player).post()
 
-    terminateAction = closeDialog(player)
-    waitReturnValue()
-    terminateAction!!(this)
+    if (continues) {
+        terminateAction = closeDialog(player)
+        waitReturnValue()
+        terminateAction!!(this)
+    }
 }
 
 /**
@@ -245,14 +247,26 @@ suspend fun QueueTask.itemMessageBox(
     message: String,
     item: String,
     amountOrZoom: Int = 1,
-    vararg options: String = arrayOf("Click here to continue"),
+    continues: Boolean = true,
 ) {
-    DialogItem(message,item.asRSCM(),amountOrZoom,player)
+    itemMessageBox(player, message, item.asRSCM(), amountOrZoom, continues)
+}
+
+suspend fun QueueTask.itemMessageBox(
+    player: Player,
+    message: String,
+    item: Int,
+    amountOrZoom: Int = 1,
+    continues: Boolean = true,
+) {
+    DialogItem(message, item, amountOrZoom, continues,player).post()
 
     terminateAction = closeDialog(player)
     waitReturnValue()
     terminateAction!!(this)
 }
+
+
 
 suspend fun QueueTask.doubleItemMessageBox(
     player: Player,

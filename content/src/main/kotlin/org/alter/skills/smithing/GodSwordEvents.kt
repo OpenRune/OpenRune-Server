@@ -1,7 +1,10 @@
 package org.alter.skills.smithing
 
 import org.alter.api.Skills
+import org.alter.api.ext.closeDialog
+import org.alter.api.ext.itemMessageBox
 import org.alter.api.ext.message
+import org.alter.api.ext.messageBox
 import org.alter.game.model.entity.Player
 import org.alter.game.model.queue.TaskPriority
 import org.alter.game.pluginnew.PluginEvent
@@ -94,6 +97,8 @@ class GodSwordEvents : PluginEvent() {
         }
 
         player.queue(TaskPriority.STRONG) {
+            messageBox(player,"You set to work, trying to fix the ancient sword...", continues = false)
+
             wait(3)
             player.animate("sequences.human_smithing")
             player.playSound(3771)
@@ -102,6 +107,7 @@ class GodSwordEvents : PluginEvent() {
             if (toConsume.all { player.inventory.remove(it, 1).hasSucceeded() }) {
                 player.inventory.add(result)
                 player.addXp(Skills.SMITHING, 100)
+                itemMessageBox(player = player, item = result, message = "Even for an experienced smith it is not an easy task, but eventually it is done")
             }
         }
     }
