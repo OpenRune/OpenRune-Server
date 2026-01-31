@@ -63,7 +63,8 @@ fun tablesToPack() = listOf(
     GameframeTable.gameframe(),
     Smithing.bars(),
     Smithing.cannonBalls(),
-    Smithing.dragonForge()
+    Smithing.dragonForge(),
+    Smithing.crystalSinging()
 )
 
 private val logger = KotlinLogging.logger {}

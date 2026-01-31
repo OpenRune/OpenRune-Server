@@ -261,9 +261,11 @@ suspend fun QueueTask.itemMessageBox(
 ) {
     DialogItem(message, item, amountOrZoom, continues,player).post()
 
-    terminateAction = closeDialog(player)
-    waitReturnValue()
-    terminateAction!!(this)
+    if (continues) {
+        terminateAction = closeDialog(player)
+        waitReturnValue()
+        terminateAction!!(this)
+    }
 }
 
 

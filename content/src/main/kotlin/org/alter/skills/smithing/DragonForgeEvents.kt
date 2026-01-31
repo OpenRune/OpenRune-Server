@@ -8,6 +8,7 @@ import org.alter.game.model.queue.QueueTask
 import org.alter.game.pluginnew.PluginEvent
 import org.alter.game.pluginnew.event.impl.ObjectClickEvent
 import org.alter.rscm.RSCM
+import org.alter.skills.smithing.SmithingUtils.itemName
 import org.generated.tables.smithing.SmithingDragonForgeRow
 
 class DragonForgeEvents : PluginEvent() {
@@ -95,7 +96,7 @@ class DragonForgeEvents : PluginEvent() {
             val have = player.inventory.getItemCount(itemId)
             val need = bar.inputPrimaryAmt - have
 
-            if (need > 0) itemName(itemId)?.let { it to need } else null
+            if (need > 0) itemName(itemId) to need else null
         }
 
         if (missing.isNotEmpty()) {
@@ -118,6 +119,4 @@ class DragonForgeEvents : PluginEvent() {
         )
     }
 
-    private fun itemName(id: Int, fallback: String? = null): String =
-        ServerCacheManager.getItem(id)?.name ?: fallback ?: id.toString()
 }

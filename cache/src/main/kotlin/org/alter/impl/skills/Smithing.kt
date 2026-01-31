@@ -292,6 +292,174 @@ object Smithing {
             column(COL_INPUT_SECONDARY_AMT,8)
             column(COL_INPUT_PREFIX,"rune")
         }
-
     }
+
+    const val COL_CRYSTAL_OUTPUT = 0
+    const val COL_CRYSTAL_XP = 1
+    const val COL_CRYSTAL_LEVEL = 2
+    const val COL_CRYSTAL_MATERIALS = 3
+    const val COL_CRYSTAL_MATERIALS_AMT = 4
+    const val COL_CRYSTAL_MATERIALS_SHORT_NAME = 5
+
+    fun crystalSinging() = dbTable("tables.smithing_crystal_singing") {
+        column("output", COL_CRYSTAL_OUTPUT, VarType.OBJ)
+        column("xp", COL_CRYSTAL_XP, VarType.INT)
+        column("level", COL_CRYSTAL_LEVEL, VarType.INT)
+        column("materials", COL_CRYSTAL_MATERIALS, VarType.OBJ)
+        column("materialsCount", COL_CRYSTAL_MATERIALS_AMT, VarType.INT)
+        column("shortName", COL_CRYSTAL_MATERIALS_SHORT_NAME, VarType.STRING)
+
+        row("dbrows.crystal_celestial_signet") {
+            columnRSCM(COL_CRYSTAL_OUTPUT, "items.celestial_signet")
+            column(COL_CRYSTAL_XP, 5000)
+            column(COL_CRYSTAL_LEVEL, 70)
+            columnRSCM(COL_CRYSTAL_MATERIALS, "items.prif_crystal_shard", "items.star_dust", "items.celestial_ring", "items.elven_signet")
+            column(COL_CRYSTAL_MATERIALS_AMT, 100, 1000, 1, 1)
+            column(COL_CRYSTAL_MATERIALS_SHORT_NAME, "ring")
+        }
+
+        row("dbrows.crystal_helm") {
+            columnRSCM(COL_CRYSTAL_OUTPUT, "items.crystal_helmet")
+            column(COL_CRYSTAL_XP, 2500)
+            column(COL_CRYSTAL_LEVEL, 70)
+            columnRSCM(COL_CRYSTAL_MATERIALS, "items.prif_crystal_shard", "items.prif_armour_seed")
+            column(COL_CRYSTAL_MATERIALS_AMT, 50, 1)
+            column(COL_CRYSTAL_MATERIALS_SHORT_NAME, "helmet")
+        }
+
+        row("dbrows.crystal_legs") {
+            columnRSCM(COL_CRYSTAL_OUTPUT, "items.crystal_platelegs")
+            column(COL_CRYSTAL_XP, 5000)
+            column(COL_CRYSTAL_LEVEL, 72)
+            columnRSCM(COL_CRYSTAL_MATERIALS, "items.prif_crystal_shard", "items.prif_armour_seed")
+            column(COL_CRYSTAL_MATERIALS_AMT, 100, 2)
+            column(COL_CRYSTAL_MATERIALS_SHORT_NAME, "platelegs")
+        }
+
+        row("dbrows.crystal_body") {
+            columnRSCM(COL_CRYSTAL_OUTPUT, "items.crystal_chestplate")
+            column(COL_CRYSTAL_XP, 7500)
+            column(COL_CRYSTAL_LEVEL, 74)
+            columnRSCM(COL_CRYSTAL_MATERIALS, "items.prif_crystal_shard", "items.prif_armour_seed")
+            column(COL_CRYSTAL_MATERIALS_AMT, 150, 3)
+            column(COL_CRYSTAL_MATERIALS_SHORT_NAME, "platelegs")
+        }
+
+        row("dbrows.crystal_axe") {
+            columnRSCM(COL_CRYSTAL_OUTPUT, "items.crystal_axe")
+            column(COL_CRYSTAL_XP, 6000)
+            column(COL_CRYSTAL_LEVEL, 76)
+            columnRSCM(COL_CRYSTAL_MATERIALS, "items.prif_crystal_shard", "items.prif_tool_seed", "items.dragon_axe")
+            column(COL_CRYSTAL_MATERIALS_AMT, 120, 1, 1)
+            column(COL_CRYSTAL_MATERIALS_SHORT_NAME, "axe")
+        }
+
+        row("dbrows.crystal_felling_axe") {
+            columnRSCM(COL_CRYSTAL_OUTPUT, "items.crystal_axe_2h")
+            column(COL_CRYSTAL_XP, 6000)
+            column(COL_CRYSTAL_LEVEL, 76)
+            columnRSCM(COL_CRYSTAL_MATERIALS, "items.prif_crystal_shard", "items.prif_tool_seed", "items.dragon_axe_2h")
+            column(COL_CRYSTAL_MATERIALS_AMT, 120, 1, 1)
+            column(COL_CRYSTAL_MATERIALS_SHORT_NAME, "axe")
+        }
+
+        row("dbrows.crystal_harpoon") {
+            columnRSCM(COL_CRYSTAL_OUTPUT, "items.crystal_harpoon")
+            column(COL_CRYSTAL_XP, 6000)
+            column(COL_CRYSTAL_LEVEL, 76)
+            columnRSCM(COL_CRYSTAL_MATERIALS, "items.prif_crystal_shard", "items.prif_tool_seed", "items.dragon_harpoon")
+            column(COL_CRYSTAL_MATERIALS_AMT, 120, 1, 1)
+            column(COL_CRYSTAL_MATERIALS_SHORT_NAME, "harpoon")
+        }
+
+        row("dbrows.crystal_pickaxe") {
+            columnRSCM(COL_CRYSTAL_OUTPUT, "items.crystal_pickaxe")
+            column(COL_CRYSTAL_XP, 6000)
+            column(COL_CRYSTAL_LEVEL, 76)
+            columnRSCM(COL_CRYSTAL_MATERIALS, "items.prif_crystal_shard", "items.prif_tool_seed", "items.dragon_pickaxe")
+            column(COL_CRYSTAL_MATERIALS_AMT, 120, 1, 1)
+            column(COL_CRYSTAL_MATERIALS_SHORT_NAME, "pickaxe")
+        }
+
+        row("dbrows.crystal_bow") {
+            columnRSCM(COL_CRYSTAL_OUTPUT, "items.crystal_bow")
+            column(COL_CRYSTAL_XP, 2000)
+            column(COL_CRYSTAL_LEVEL, 78)
+            columnRSCM(COL_CRYSTAL_MATERIALS, "items.prif_crystal_shard", "items.crystal_seed_old")
+            column(COL_CRYSTAL_MATERIALS_AMT, 40, 1)
+            column(COL_CRYSTAL_MATERIALS_SHORT_NAME, "bow")
+        }
+
+        row("dbrows.crystal_halberd") {
+            columnRSCM(COL_CRYSTAL_OUTPUT, "items.crystal_halberd")
+            column(COL_CRYSTAL_XP, 2000)
+            column(COL_CRYSTAL_LEVEL, 78)
+            columnRSCM(COL_CRYSTAL_MATERIALS, "items.prif_crystal_shard", "items.crystal_seed_old")
+            column(COL_CRYSTAL_MATERIALS_AMT, 40, 1)
+            column(COL_CRYSTAL_MATERIALS_SHORT_NAME, "halberd")
+        }
+
+        row("dbrows.crystal_shield") {
+            columnRSCM(COL_CRYSTAL_OUTPUT, "items.crystal_shield")
+            column(COL_CRYSTAL_XP, 2000)
+            column(COL_CRYSTAL_LEVEL, 78)
+            columnRSCM(COL_CRYSTAL_MATERIALS, "items.prif_crystal_shard", "items.crystal_seed_old")
+            column(COL_CRYSTAL_MATERIALS_AMT, 40, 1)
+            column(COL_CRYSTAL_MATERIALS_SHORT_NAME, "halberd")
+        }
+
+        row("dbrows.enhanced_crystal_key") {
+            columnRSCM(COL_CRYSTAL_OUTPUT, "items.prif_crystal_key")
+            column(COL_CRYSTAL_XP, 500)
+            column(COL_CRYSTAL_LEVEL, 80)
+            columnRSCM(COL_CRYSTAL_MATERIALS, "items.prif_crystal_shard", "items.crystal_key")
+            column(COL_CRYSTAL_MATERIALS_AMT, 10, 1)
+            column(COL_CRYSTAL_MATERIALS_SHORT_NAME, "key")
+        }
+
+        row("dbrows.eternal_teleport_crystal") {
+            columnRSCM(COL_CRYSTAL_OUTPUT, "items.prif_teleport_crystal")
+            column(COL_CRYSTAL_XP, 5000)
+            column(COL_CRYSTAL_LEVEL, 80)
+            columnRSCM(COL_CRYSTAL_MATERIALS, "items.prif_crystal_shard", "items.prif_teleport_seed")
+            column(COL_CRYSTAL_MATERIALS_AMT, 100, 1)
+        }
+
+        row("dbrows.blade_of_saeldor") {
+            columnRSCM(COL_CRYSTAL_OUTPUT, "items.blade_of_saeldor")
+            column(COL_CRYSTAL_XP, 5000)
+            column(COL_CRYSTAL_LEVEL, 82)
+            columnRSCM(COL_CRYSTAL_MATERIALS, "items.prif_crystal_shard", "items.prif_weapon_seed_enhanced")
+            column(COL_CRYSTAL_MATERIALS_AMT, 100, 1)
+            column(COL_CRYSTAL_MATERIALS_SHORT_NAME, "saeldor")
+        }
+
+        row("dbrows.bow_of_faerdhinen") {
+            columnRSCM(COL_CRYSTAL_OUTPUT, "items.bow_of_faerdhinen")
+            column(COL_CRYSTAL_XP, 5000)
+            column(COL_CRYSTAL_LEVEL, 82)
+            columnRSCM(COL_CRYSTAL_MATERIALS, "items.prif_crystal_shard", "items.prif_weapon_seed_enhanced")
+            column(COL_CRYSTAL_MATERIALS_AMT, 100, 1)
+            column(COL_CRYSTAL_MATERIALS_SHORT_NAME, "bow")
+        }
+
+        row("dbrows.blade_of_saeldor_charged") {
+            columnRSCM(COL_CRYSTAL_OUTPUT, "items.blade_of_saeldor_infinite")
+            column(COL_CRYSTAL_XP, 0)
+            column(COL_CRYSTAL_LEVEL, 82)
+            columnRSCM(COL_CRYSTAL_MATERIALS, "items.prif_crystal_shard", "items.blade_of_saeldor_inactive")
+            column(COL_CRYSTAL_MATERIALS_AMT, 1000, 1)
+            column(COL_CRYSTAL_MATERIALS_SHORT_NAME, "blade")
+        }
+
+        row("dbrows.bow_of_faerdhinen_charged") {
+            columnRSCM(COL_CRYSTAL_OUTPUT, "items.bow_of_faerdhinen_infinite")
+            column(COL_CRYSTAL_XP, 0)
+            column(COL_CRYSTAL_LEVEL, 82)
+            columnRSCM(COL_CRYSTAL_MATERIALS, "items.prif_crystal_shard", "items.bow_of_faerdhinen_inactive")
+            column(COL_CRYSTAL_MATERIALS_AMT, 2000, 1)
+            column(COL_CRYSTAL_MATERIALS_SHORT_NAME, "saeldor")
+        }
+    }
+
 }

@@ -1,5 +1,6 @@
 package org.alter.skills.smithing
 
+import dev.openrune.ServerCacheManager
 import org.alter.api.Skills
 import org.alter.game.model.entity.Player
 import org.alter.game.model.queue.QueueTask
@@ -42,4 +43,8 @@ object SmithingUtils {
         }
         return true
     }
+
+    fun itemName(id: Int, fallback: String? = null): String =
+        ServerCacheManager.getItem(id)?.name ?: fallback ?: id.toString()
+
 }

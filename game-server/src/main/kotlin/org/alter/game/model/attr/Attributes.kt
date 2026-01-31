@@ -122,6 +122,11 @@ val LAST_HIT_BY_ATTR = AttributeKey<WeakReference<Pawn>>()
 val POISON_TICKS_LEFT_ATTR = AttributeKey<Int>(persistenceKey = "poison_ticks_left", resetOnDeath = true)
 
 /**
+ * The amount of "poison ticks" left before the poison wears off.
+ */
+val CRYSTAL_DONT_ASK_AGAIN = AttributeKey<Boolean>(persistenceKey = "CRYSTAL_DONT_ASK_AGAIN")
+
+/**
  * The amount of antifire potion charges left.
  */
 val ANTIFIRE_POTION_CHARGES_ATTR = AttributeKey<Int>(persistenceKey = "antifire_potion_charges", resetOnDeath = true)
