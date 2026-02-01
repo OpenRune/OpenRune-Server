@@ -18,9 +18,13 @@ class GameValProvider : MappingProvider {
     override val mappings: MutableMap<String, MutableMap<String, Int>> = mutableMapOf()
     val maxBaseID: MutableMap<String, Int> = mutableMapOf()
 
+    /** When true, scans for -1 gamevals and auto-assigns non-conflicting IDs before loading. */
+    var autoAssignIds: Boolean = false
+
     companion object {
-        fun load(rootDir: String = "../") {
+        fun load(rootDir: String = "../", autoAssignIds: Boolean = false) {
             val provider = GameValProvider()
+            provider.autoAssignIds = autoAssignIds
             provider.use(
                 Paths.get("${rootDir}data", "cfg", "gamevals-binary", "gamevals.dat").toFile(),
                 Paths.get("${rootDir}data", "cfg", "gamevals-binary", "gamevals_columns.dat").toFile(),
@@ -35,6 +39,14 @@ class GameValProvider : MappingProvider {
 
         decodeGameValDat(files[0])
         decodeGameValDat(files[1])
+
+        if (autoAssignIds) {
+            val contentDir = files.getOrNull(2)?.takeIf { it.exists() }
+            val gamevalsDir = files.getOrNull(3)?.takeIf { it.exists() }
+            if (contentDir != null || gamevalsDir != null) {
+                GameValAutoAssigner(mappings, maxBaseID).run(contentDir, gamevalsDir)
+            }
+        }
 
         // Load TOML
         files.getOrNull(2)?.takeIf { it.exists() }?.walk()

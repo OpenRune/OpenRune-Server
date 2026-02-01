@@ -104,9 +104,7 @@ fun downloadRev(type: TaskType) {
 
         }
 
-        TaskType.BUILD -> {
-            buildCache(rev)
-        }
+        TaskType.BUILD -> buildCache(rev)
     }
 }
 
@@ -118,7 +116,7 @@ data class ColInfo(
 )
 
 fun buildCache(rev: Triple<Int, Int, String>) {
-    GameValProvider.load()
+    GameValProvider.load(autoAssignIds = true)
 
     val tasks: List<CacheTask> = listOf(
         PackConfig(File("../data/raw-cache/server")),
