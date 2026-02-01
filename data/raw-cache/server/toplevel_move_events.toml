@@ -1,4 +1,5 @@
 [[enum]]
+isServerOnly = true
 id="enums.toplevel_move_events"
 keyType="COMPONENT"
 valueType="COMPONENT"

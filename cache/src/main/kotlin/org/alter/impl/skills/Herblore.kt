@@ -46,7 +46,7 @@ object Herblore {
     /**
      * Table for creating unfinished potions (herb + vial of water)
      */
-    fun unfinishedPotions() = dbTable("tables.herblore_unfinished") {
+    fun unfinishedPotions() = dbTable("tables.herblore_unfinished", serverOnly = true) {
         column("herb_item", COL_HERB_ITEM, VarType.OBJ)
         column("level", COL_LEVEL, VarType.INT)
         column("xp", COL_XP, VarType.INT)
@@ -169,7 +169,7 @@ object Herblore {
      * Table for creating finished potions (unfinished potion + secondary ingredient)
      * Supports multi-step potions with additional ingredients
      */
-    fun finishedPotions() = dbTable("tables.herblore_finished") {
+    fun finishedPotions() = dbTable("tables.herblore_finished", serverOnly = true) {
         column("unf_pot", COL_UNF_POT, VarType.OBJ)
         column("secondaries", COL_SECONDARIES, VarType.OBJ)
         column("level_required", COL_LEVEL_REQUIRED, VarType.INT)
@@ -433,7 +433,7 @@ object Herblore {
      * Table for cleaning grimy herbs (unidentified -> clean)
      * One-time action, no repeatable delay
      */
-    fun cleaningHerbs() = dbTable("tables.herblore_cleaning") {
+    fun cleaningHerbs() = dbTable("tables.herblore_cleaning", serverOnly = true) {
         column("grimy_herb", COL_GRIMY_HERB, VarType.OBJ)
         column("level", COL_CLEAN_LEVEL, VarType.INT)
         column("xp", COL_CLEAN_XP, VarType.INT)
@@ -555,7 +555,7 @@ object Herblore {
     /**
      * Table for creating barbarian mixes (two-dose potion + roe/caviar)
      */
-    fun barbarianMixes() = dbTable("tables.herblore_barbarian_mixes") {
+    fun barbarianMixes() = dbTable("tables.herblore_barbarian_mixes", serverOnly = true) {
         column("two_dose_potion", COL_TWO_DOSE_POTION, VarType.OBJ)
         column("mix_ingredient", COL_MIX_INGREDIENT, VarType.OBJ)
         column("level", COL_MIX_LEVEL, VarType.INT)
@@ -746,7 +746,7 @@ object Herblore {
     /**
      * Table for creating swamp tar
      */
-    fun swampTar() = dbTable("tables.herblore_swamp_tar") {
+    fun swampTar() = dbTable("tables.herblore_swamp_tar", serverOnly = true) {
         column("herb", COL_TAR_HERB, VarType.OBJ)
         column("level", COL_TAR_LEVEL, VarType.INT)
         column("xp", COL_TAR_XP, VarType.INT)
@@ -797,7 +797,7 @@ object Herblore {
      * Table for crushing items with pestle and mortar
      * Auto-crushes every 3 ticks when multiple items are available
      */
-    fun crushing() = dbTable("tables.herblore_crushing") {
+    fun crushing() = dbTable("tables.herblore_crushing", serverOnly = true) {
         column("item", COL_CRUSH_ITEM, VarType.OBJ)
         column("level", COL_CRUSH_LEVEL, VarType.INT)
         column("xp", COL_CRUSH_XP, VarType.INT)

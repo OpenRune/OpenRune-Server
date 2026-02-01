@@ -12,7 +12,7 @@ object GameframeTable {
     const val COL_IS_DEFAULT = 4
     const val COL_STONE_ARRANGEMENT = 5
 
-    fun gameframe() = dbTable("tables.gameframe") {
+    fun gameframe() = dbTable("tables.gameframe", serverOnly = true) {
 
 
         column("toplevel", COL_TOP_LEVEL, VarType.INT)

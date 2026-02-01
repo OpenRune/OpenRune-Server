@@ -487,7 +487,7 @@ object FoodTable {
     const val EAT_DELAY = 5
     const val COMBAT_DELAY = 6
 
-    fun consumableFood() = dbTable("tables.consumable_food") {
+    fun consumableFood() = dbTable("tables.consumable_food", serverOnly = true) {
 
         column("items", ITEMS, VarType.OBJ.count(Food.entries.maxOf { it.items.size }))
         column("heal", HEAL, VarType.INT)

@@ -41,7 +41,7 @@ object Mining {
     const val WALL_ANIMATION = 4
 
 
-    fun pickaxes() = dbTable("tables.mining_pickaxes") {
+    fun pickaxes() = dbTable("tables.mining_pickaxes", serverOnly = true) {
         column("item", ITEM, VarType.OBJ)
         column("level", LEVEL, VarType.INT)
         column("delay", DELAY, VarType.INT)
@@ -64,7 +64,7 @@ object Mining {
     }
 
 
-    fun rocks() = dbTable("tables.mining_rocks") {
+    fun rocks() = dbTable("tables.mining_rocks", serverOnly = true) {
 
         column("rock_object", COL_ROCK_OBJECT, VarType.LOC)
         column("level", COL_LEVEL, VarType.INT)
@@ -344,7 +344,7 @@ object Mining {
     const val RINGORSIGNET = 2
     const val MINING_CAPE = 3
 
-    fun miningEnhancers() = dbTable("tables.mining_enhancers") {
+    fun miningEnhancers() = dbTable("tables.mining_enhancers", serverOnly = true) {
         column("mining_gloves", MINING_GLOVES, VarType.STRING)
         column("varrock_armour_level", VARROCK_ARMOUR, VarType.INT)
         column("ring_or_signet", RINGORSIGNET, VarType.BOOLEAN)

@@ -16,7 +16,7 @@ object StatComponents {
     const val COL_STAT = 1
     const val COL_BIT = 2
 
-    fun statsComponents() = dbTable("tables.stat_components") {
+    fun statsComponents() = dbTable("tables.stat_components", serverOnly = true) {
 
         column("component", COL_COMPONENT, VarType.COMPONENT)
         column("stat", COL_STAT, VarType.STAT)
