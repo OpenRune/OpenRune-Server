@@ -80,7 +80,8 @@ class SmeltingEvents : PluginEvent() {
 
         val primaryCount = player.inventory.getItemCount(bar.inputPrimary)
         val secondaryCount = if (requiresSecondary) {
-            player.inventory.getItemCount(bar.inputSecondary)
+            if (isCoalBar) CoalBagEvents.getEffectiveCoalCount(player)
+            else player.inventory.getItemCount(bar.inputSecondary)
         } else {
             player.inventory.type.size
         }
@@ -108,7 +109,8 @@ class SmeltingEvents : PluginEvent() {
 
             val primaryRemoved = player.inventory.remove(bar.inputPrimary, primaryAmt, assureFullRemoval = true).hasSucceeded()
             val secondaryRemoved = if (requiresSecondary) {
-                player.inventory.remove(bar.inputSecondary, effectiveSecondaryAmt, assureFullRemoval = true).hasSucceeded()
+                if (isCoalBar) CoalBagEvents.consumeCoal(player, effectiveSecondaryAmt)
+                else player.inventory.remove(bar.inputSecondary, effectiveSecondaryAmt, assureFullRemoval = true).hasSucceeded()
             } else true
 
             if (primaryRemoved && secondaryRemoved) {
@@ -151,7 +153,12 @@ class SmeltingEvents : PluginEvent() {
         val secondaryAmt = bar.inputSecondaryAmt ?: 0
 
         val hasPrimary = player.inventory.getItemCount(bar.inputPrimary) >= primaryAmt
-        val hasSecondary = secondaryId == null || player.inventory.getItemCount(secondaryId) >= secondaryAmt
+        val effectiveSecondary = if (secondaryId == "items.coal".asRSCM()) {
+            CoalBagEvents.getEffectiveCoalCount(player)
+        } else {
+            if (secondaryId != null) player.inventory.getItemCount(secondaryId) else Int.MAX_VALUE
+        }
+        val hasSecondary = secondaryId == null || effectiveSecondary >= secondaryAmt
 
         if (!hasPrimary || !hasSecondary) {
             val message = if (secondaryId == null || secondaryAmt == 0) {
@@ -173,8 +180,12 @@ class SmeltingEvents : PluginEvent() {
         val primaryAmt = bar.inputPrimaryAmt
         val secondaryAmt = bar.inputSecondaryAmt ?: 0
         val hasPrimary = player.inventory.getItemCount(bar.inputPrimary) >= primaryAmt
-        val hasSecondary = bar.inputSecondary == null || secondaryAmt == 0 ||
-                player.inventory.getItemCount(bar.inputSecondary) >= secondaryAmt
+        val effectiveSecondary = if (bar.inputSecondary == "items.coal".asRSCM()) {
+            CoalBagEvents.getEffectiveCoalCount(player)
+        } else {
+            if (bar.inputSecondary != null) player.inventory.getItemCount(bar.inputSecondary) else Int.MAX_VALUE
+        }
+        val hasSecondary = bar.inputSecondary == null || secondaryAmt == 0 || effectiveSecondary >= secondaryAmt
         return hasPrimary && hasSecondary
     }
 
