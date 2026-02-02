@@ -21,7 +21,7 @@ object Smithing {
     const val COL_CANNONBALL_LEVEL = 2
     const val COL_CANNONBALL_XP = 3
 
-    fun cannonBalls() = dbTable("tables.smithing_cannon_balls") {
+    fun cannonBalls() = dbTable("tables.smithing_cannon_balls",serverOnly = true) {
         column("bar", COL_CANNONBALL_BAR, VarType.OBJ)
         column("output", COL_CANNONBALL_OUTPUT, VarType.OBJ)
         column("level", COL_CANNONBALL_LEVEL, VarType.INT)
@@ -80,7 +80,7 @@ object Smithing {
     const val COL_DRAGON_INPUT_PRIMARY_AMT = 5
 
 
-    fun dragonForge() = dbTable("tables.smithing_dragon_forge") {
+    fun dragonForge() = dbTable("tables.smithing_dragon_forge",serverOnly = true) {
         column("output", COL_DRAGON_OUTPUT, VarType.OBJ)
         column("output_amt", COL_DRAGON_OUTPUT_AMT, VarType.INT)
         column("level", COL_DRAGON_LEVEL, VarType.INT)
@@ -143,7 +143,7 @@ object Smithing {
         }
     }
 
-    fun bars() = dbTable("tables.smithing_bars") {
+    fun bars() = dbTable("tables.smithing_bars",serverOnly = true) {
 
         column("output", COL_OUTPUT, VarType.OBJ)
         column("level", COL_LEVEL, VarType.INT)
@@ -301,7 +301,7 @@ object Smithing {
     const val COL_CRYSTAL_MATERIALS_AMT = 4
     const val COL_CRYSTAL_MATERIALS_SHORT_NAME = 5
 
-    fun crystalSinging() = dbTable("tables.smithing_crystal_singing") {
+    fun crystalSinging() = dbTable("tables.smithing_crystal_singing",serverOnly = true) {
         column("output", COL_CRYSTAL_OUTPUT, VarType.OBJ)
         column("xp", COL_CRYSTAL_XP, VarType.INT)
         column("level", COL_CRYSTAL_LEVEL, VarType.INT)

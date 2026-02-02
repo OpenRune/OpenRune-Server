@@ -9,7 +9,9 @@ import org.alter.game.model.Direction
 import org.alter.game.model.entity.DynamicObject
 import org.alter.game.model.entity.GroundItem
 import org.alter.game.model.entity.Player
+import org.alter.game.model.move.stopMovement
 import org.alter.game.model.move.walkTo
+import org.alter.game.model.queue.QueueTask
 import org.alter.game.pluginnew.MenuOption
 import org.alter.game.pluginnew.PluginEvent
 import org.alter.game.pluginnew.event.impl.GroundItemClickEvent
@@ -57,12 +59,15 @@ class BurnLogEvents : PluginEvent() {
             player.world.spawn(logDrop)
         }
 
+        player.stopMovement()
         player.filterableMessage("You attempt to light the logs.")
 
         player.queue {
             repeatWhile(delay = 3, immediate = true, canRepeat = { true }) {
+                player.lock()
                 if (!player.world.isSpawned(logDrop)) {
                     player.animate(RSCM.NONE)
+                    player.unlock()
                     return@repeatWhile
                 }
 
@@ -70,6 +75,7 @@ class BurnLogEvents : PluginEvent() {
 
                 if (!canBurn(player, isGroundBurning, log, logDrop, level)) {
                     player.animate(RSCM.NONE)
+                    player.unlock()
                     return@repeatWhile
                 }
 
@@ -79,6 +85,7 @@ class BurnLogEvents : PluginEvent() {
                     handleFireSuccess(player, logDrop, xp)
                     return@repeatWhile
                 }
+                player.unlock()
             }
         }
     }
@@ -86,6 +93,7 @@ class BurnLogEvents : PluginEvent() {
     private fun handleFireSuccess(player: Player, logDrop: GroundItem, xp: Int) {
         val world = player.world
         world.queue {
+            player.lock()
             val fireId = ColoredLogs.COLOURED_LOGS[logDrop.item]?.second ?: "objects.fire"
             val fire = DynamicObject(fireId, 10, 0, logDrop.tile)
             val burnTicks = (150..300).random()
@@ -94,7 +102,7 @@ class BurnLogEvents : PluginEvent() {
             player.filterableMessage("The fire catches and the logs begin to burn.")
             player.addXp(Skills.FIREMAKING, xp)
             world.spawn(fire)
-
+            player.unlock()
             wait(burnTicks)
             world.remove(fire)
             world.spawn(GroundItem("items.ashes".asRSCM(), 1, fire.tile))
@@ -102,6 +110,7 @@ class BurnLogEvents : PluginEvent() {
 
         player.animate(RSCM.NONE)
         movePlayerAwayFromFire(player)
+        player.lock()
         player.queue {
             wait(2)
             player.faceTile(logDrop.tile)
@@ -113,8 +122,7 @@ class BurnLogEvents : PluginEvent() {
         for (dir in WALK_DIRECTIONS) {
             val world = player.world
             if (world.canTraverse(player.tile, dir, player)) {
-                player.walkTo(player.tile.step(dir, 1))
-                player.lock()
+                player.walkTo(player.tile.step(dir, 1), overrideLock = true)
                 break
             }
         }
