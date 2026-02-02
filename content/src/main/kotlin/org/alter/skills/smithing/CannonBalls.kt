@@ -50,11 +50,13 @@ class CannonBalls : PluginEvent() {
                 val toCreate = minOf(totalBalls, graniteDust)
                 if (toCreate <= 0) return@queue
 
-                if (player.inventory.add("items.granite_cannonball", toCreate).hasSucceeded()) {
-                    val removedBalls = player.inventory.remove("items.mcannonball", toCreate).hasSucceeded()
-                    val removedDust = player.inventory.remove("items.granite_dust", toCreate).hasSucceeded()
+                val removedBalls = player.inventory.remove("items.mcannonball", toCreate).hasSucceeded()
+                val removedDust = player.inventory.remove("items.granite_dust", toCreate).hasSucceeded()
 
-                    if (removedBalls && removedDust) {
+                if (removedBalls && removedDust) {
+                    val hasAddedItem = player.inventory.add("items.granite_cannonball", toCreate).hasSucceeded()
+
+                    if (hasAddedItem) {
                         player.message("You apply a thick coating of granite dust to your cannonballs.")
                     }
                 }
@@ -101,6 +103,7 @@ class CannonBalls : PluginEvent() {
                 }
 
                 performSmelting(task,player, ball, barsNeeded, ballsPerSmelt)
+                player.unlock()
                 maxSmelts--
             }
         }
@@ -116,17 +119,18 @@ class CannonBalls : PluginEvent() {
         task.wait(2)
 
         player.animate("sequences.human_furnace")
-        player.inventory.remove(ball.bar, barsNeeded)
-        player.message("You pour the molten metal into your cannonball mould")
-        task.wait(1)
+        if (player.inventory.remove(ball.bar, barsNeeded).hasSucceeded()) {
+            player.message("You pour the molten metal into your cannonball mould")
+            task.wait(1)
 
-        player.message("The molten metal cools slowly to form $ballsPerSmelt ${ballName.prefixAn()}")
-        task.wait(1)
+            player.message("The molten metal cools slowly to form $ballsPerSmelt ${ballName.prefixAn()}")
+            task.wait(1)
 
-        player.message("You remove the cannonballs from the mould")
-        player.inventory.add(ball.output, ballsPerSmelt)
-        player.addXp(Skills.SMITHING, ball.xp * barsNeeded)
-        player.unlock()
+            player.message("You remove the cannonballs from the mould")
+            if (player.inventory.add(ball.output, ballsPerSmelt).hasSucceeded()) {
+                player.addXp(Skills.SMITHING, ball.xp * barsNeeded)
+            }
+        }
     }
 
     private suspend fun canSmelt(task: QueueTask, player: Player, ball: SmithingCannonBallsRow): Boolean {
