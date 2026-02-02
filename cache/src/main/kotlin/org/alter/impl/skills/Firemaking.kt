@@ -12,7 +12,7 @@ object Firemaking {
     const val COL_PER_LOG_TICKS = 4
     const val COL_PER_ANIMATION = 5
 
-    fun logs() = dbTable("tables.firemaking_logs") {
+    fun logs() = dbTable("tables.firemaking_logs", serverOnly = true) {
 
         column("item", COL_ITEM, VarType.OBJ)
         column("level", COL_LEVEL, VarType.INT)

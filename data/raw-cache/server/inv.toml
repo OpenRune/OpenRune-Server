@@ -1,4 +1,5 @@
 [[inventory]]
+isServerOnly = true
 id = "inv.inv"
 inherit = "inv.inv"
 
@@ -7,6 +8,7 @@ protect = false
 runWeight = true
 
 [[inventory]]
+isServerOnly = true
 id = "inv.worn"
 inherit = "inv.worn"
 

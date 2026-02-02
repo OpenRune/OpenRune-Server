@@ -162,7 +162,7 @@ private fun getVarTypeImplClass(varType: VarType): ClassName {
         VarType.STRUCT -> "StructType"
         VarType.DBTABLE -> "TableVarType"
         VarType.SYNTH -> "SynthType"
-        VarType.LOC_SHAPE -> "LocShapeType"
+        VarType.LOCSHAPE -> "LocShapeType"
         else -> error("Unmapped Type: $varType")
     })
 }

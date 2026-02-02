@@ -1,4 +1,5 @@
 [[enum]]
+isServerOnly = true
 id="enums.gameframe_dbrows"
 keyType="INT"
 valueType="DBROW"

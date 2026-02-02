@@ -5,7 +5,8 @@ import dev.openrune.definition.util.VarType
 
 object PrayerTable {
 
-    fun skillTable() = dbTable("tables.skill_prayer") {
+    fun skillTable() = dbTable("tables.skill_prayer", serverOnly = true) {
+
         column("item", 0, VarType.OBJ)
         column("exp", 1, VarType.INT)
         column("ashes", 2, VarType.BOOLEAN)
