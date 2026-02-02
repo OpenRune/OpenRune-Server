@@ -103,6 +103,14 @@ public class Inventory(public val type: InventoryServerType, public val objs: Ar
         return getItemCount(itemId.asRSCM())
     }
 
+    fun hasAll(items: List<Int>, amt: Int): Boolean = items.all {
+        getItemCount(it) >= amt
+    }
+
+    fun removeAll(items: List<Int>, amt: Int): Boolean = items.all {
+        remove(it, amt, assureFullRemoval = true).hasSucceeded()
+    }
+
     fun getItemCount(itemId: Int) = count(itemId)
 
     fun add(item : Item) = add(item.id,item.amount)
@@ -204,6 +212,16 @@ public class Inventory(public val type: InventoryServerType, public val objs: Ar
         itemIds.any { id ->
             val rscm = getRSCM(id)
             objs.any { it?.id == rscm }
+        }
+
+    public fun containsAny(itemIds: List<Int>): Boolean =
+        itemIds.any { id ->
+            objs.any { it?.id == id }
+        }
+
+    public fun containsAny(vararg itemIds: Int): Boolean =
+        itemIds.any { id ->
+            objs.any { it?.id == id }
         }
 
     public operator fun contains(type: ItemServerType): Boolean = objs.any { type.isAssociatedWith(it) }

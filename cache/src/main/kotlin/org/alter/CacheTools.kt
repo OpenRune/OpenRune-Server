@@ -28,6 +28,7 @@ import org.alter.impl.misc.TeleTabs
 import org.alter.impl.skills.Woodcutting
 import org.alter.impl.skills.Herblore
 import org.alter.impl.skills.Mining
+import org.alter.impl.skills.Smithing
 import org.alter.impl.skills.runecrafting.Alters
 import org.alter.impl.skills.runecrafting.CombinationRune
 import org.alter.impl.skills.runecrafting.RunecraftRune
@@ -62,7 +63,11 @@ fun tablesToPack() = listOf(
     Tiara.tiara(),
     RunecraftRune.runecraftRune(),
     CombinationRune.runecraftComboRune(),
-    GameframeTable.gameframe()
+    GameframeTable.gameframe(),
+    Smithing.bars(),
+    Smithing.cannonBalls(),
+    Smithing.dragonForge(),
+    Smithing.crystalSinging()
 )
 
 private val logger = KotlinLogging.logger {}
