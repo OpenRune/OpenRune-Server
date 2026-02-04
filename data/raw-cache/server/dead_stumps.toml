@@ -1,4 +1,5 @@
 [[enum]]
+isServerOnly = true
 id="enums.dead_tree_stumps"
 keyType="LOC"
 valueType="LOC"
@@ -23,6 +24,7 @@ default = "objects.deadtree1"
 "objects.deadtree3_snowy" = "objects.deadtree3_stump"
 
 [[enum]]
+isServerOnly = true
 id="enums.regular_tree_stumps"
 keyType="LOC"
 valueType="LOC"

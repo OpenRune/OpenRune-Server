@@ -1,0 +1,20 @@
+<configuration>
+    <statusListener class="ch.qos.logback.core.status.NopStatusListener" />
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>[%d{HH:mm:ss.SSS}] %highlight(%-5level) %cyan(%logger{0}) - %msg %n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- Silence noisy loggers when running buildCache / freshCache -->
+    <logger name="dev.openrune.cache.filestore.definition.DefinitionDecoder" level="WARN"/>
+    <logger name="io.netty" level="WARN"/>
+    <logger name="org.alter" level="DEBUG"/>
+    <logger name="org.gradle" level="INFO"/>
+    <logger name="net.rsprot" level="DEBUG"/>
+    <logger name="dev.openrune.OsrsCacheProvider" level="WARN"/>
+
+    <root level="INFO">
+        <appender-ref ref="STDOUT" />
+    </root>
+</configuration>

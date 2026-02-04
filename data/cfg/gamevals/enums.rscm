@@ -2,3 +2,7 @@ regular_tree_stumps=29999
 dead_tree_stumps=30000
 equipment_tab_to_slots_map=2775
 equipment_stats_to_slots_map=2776
+smithing_bars=1253
+smithing_level_req=846
+smithing_bar_count=845
+smithing_bar_produced_count=844

@@ -39,6 +39,7 @@ class DialogItem(
     val message : String,
     val item : Int,
     val zoom : Int,
+    val continues : Boolean,
     player: Player
 ) : PlayerEvent(player)
 

@@ -9,7 +9,7 @@ object Tiara {
     const val ALTER = 1
     const val XP = 2
 
-    fun tiara() = dbTable("tables.runecrafting_tiara") {
+    fun tiara() = dbTable("tables.runecrafting_tiara", serverOnly = true) {
         column("item", ITEM, VarType.OBJ)
         column("alter", ALTER, VarType.LOC)
         column("xp", XP, VarType.INT)

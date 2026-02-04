@@ -1,17 +1,19 @@
 package org.alter
 
+import com.displee.cache.CacheLibrary
 import dev.openrune.OsrsCacheProvider
 import dev.openrune.cache.gameval.GameValHandler
 import dev.openrune.cache.tools.Builder
 import dev.openrune.cache.tools.CacheEnvironment
-import dev.openrune.cache.tools.dbtables.PackDBTables
 import dev.openrune.cache.tools.tasks.CacheTask
 import dev.openrune.cache.tools.tasks.TaskType
+import dev.openrune.cache.tools.tasks.impl.PackDBTables
 import dev.openrune.cache.tools.tasks.impl.defs.PackConfig
 import dev.openrune.definition.GameValGroupTypes
 import dev.openrune.definition.type.DBRowType
 import dev.openrune.definition.util.VarType
 import dev.openrune.filesystem.Cache
+import dev.openrune.tools.MinifyServerCache
 import dev.openrune.tools.PackServerConfig
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.alter.codegen.startGeneration
@@ -26,6 +28,7 @@ import org.alter.impl.misc.TeleTabs
 import org.alter.impl.skills.Woodcutting
 import org.alter.impl.skills.Herblore
 import org.alter.impl.skills.Mining
+import org.alter.impl.skills.Smithing
 import org.alter.impl.skills.runecrafting.Alters
 import org.alter.impl.skills.runecrafting.CombinationRune
 import org.alter.impl.skills.runecrafting.RunecraftRune
@@ -35,7 +38,8 @@ import java.nio.file.Files
 import java.nio.file.StandardCopyOption
 import kotlin.system.exitProcess
 
-fun getCacheLocation() = File("../data/", "cache").path
+fun getCacheLocation() = File("../data/", "cache/LIVE").path
+fun getServerCacheLocation() = File("../data/", "cache/SERVER").path
 fun getRawCacheLocation(dir: String) = File("../data/", "raw-cache/$dir/")
 
 fun tablesToPack() = listOf(
@@ -59,7 +63,11 @@ fun tablesToPack() = listOf(
     Tiara.tiara(),
     RunecraftRune.runecraftRune(),
     CombinationRune.runecraftComboRune(),
-    GameframeTable.gameframe()
+    GameframeTable.gameframe(),
+    Smithing.bars(),
+    Smithing.cannonBalls(),
+    Smithing.dragonForge(),
+    Smithing.crystalSinging()
 )
 
 private val logger = KotlinLogging.logger {}
@@ -76,12 +84,15 @@ fun downloadRev(type: TaskType) {
 
     val rev = readRevision()
 
-    logger.error { "Using Revision: $rev" }
+    logger.info { "Using Revision: $rev" }
 
     when (type) {
         TaskType.FRESH_INSTALL -> {
 
-            val builder = Builder(type = TaskType.FRESH_INSTALL, File(getCacheLocation()))
+            val builder = Builder(type = TaskType.FRESH_INSTALL,
+                cacheLocation = File(getCacheLocation()),
+                serverCacheLocation = File(getServerCacheLocation())
+            )
             builder.revision(rev.first)
             builder.subRevision(rev.second)
             builder.removeXteas(false)
@@ -91,22 +102,21 @@ fun downloadRev(type: TaskType) {
 
             Files.move(
                 File(getCacheLocation(), "xteas.json").toPath(),
-                File("../data/", "xteas.json").toPath(),
+                File("../data/cache/", "xteas.json").toPath(),
                 StandardCopyOption.REPLACE_EXISTING
             )
+
+            File(getServerCacheLocation(), "xteas.json").delete()
 
             val cache = Cache.load(File(getCacheLocation()).toPath())
 
             GamevalDumper.dumpGamevals(cache,rev.first)
 
-
-            buildCache(rev)
-
+            buildCache(TaskType.BUILD,rev)
         }
+        TaskType.SERVER_CACHE_BUILD -> buildCache(TaskType.SERVER_CACHE_BUILD,rev)
+        TaskType.BUILD -> buildCache(TaskType.BUILD,rev)
 
-        TaskType.BUILD -> {
-            buildCache(rev)
-        }
     }
 }
 
@@ -117,35 +127,48 @@ data class ColInfo(
     var noData: Boolean = false
 )
 
-fun buildCache(rev: Triple<Int, Int, String>) {
-    GameValProvider.load()
+fun buildCache(taskType: TaskType,rev: Triple<Int, Int, String>) {
+    GameValProvider.load(autoAssignIds = true)
 
     val tasks: List<CacheTask> = listOf(
-        PackConfig(File("../data/raw-cache/server")),
-        PackServerConfig(File("../data/raw-cache/server")),
+        PackConfig(File("../data/raw-cache/server"))
     ).toMutableList()
 
-    val builder = Builder(type = TaskType.BUILD, cacheLocation = File(getCacheLocation()))
+    val builder = Builder(type = taskType,
+        cacheLocation = File(getCacheLocation()),
+        serverCacheLocation = File(getServerCacheLocation())
+    )
     builder.revision(rev.first)
 
     val tasksNew = tasks.toMutableList()
     tasksNew.add(PackDBTables(tablesToPack()))
 
     builder.extraTasks(*tasksNew.toTypedArray()).build().initialize()
+    if (taskType == TaskType.BUILD) {
+        builder.type = TaskType.SERVER_CACHE_BUILD
+        builder.extraTasks(
+            PackServerConfig(File("../data/raw-cache/server")),
+            *tasksNew.toTypedArray()
+        ).build().initialize()
+    }
 
-    val cache = Cache.load(File(getCacheLocation()).toPath())
+    if (builder.type == TaskType.SERVER_CACHE_BUILD) {
 
-    GamevalDumper.dumpCols(cache,rev.first)
+        MinifyServerCache().init(getServerCacheLocation())
 
-    val type = GameValHandler.readGameVal(GameValGroupTypes.TABLETYPES, cache = cache, rev.first)
+        val cache = Cache.load(File(getServerCacheLocation()).toPath())
 
-    val rows : MutableMap<Int, DBRowType> = emptyMap<Int, DBRowType>().toMutableMap()
+        GamevalDumper.dumpCols(cache,rev.first)
 
-    OsrsCacheProvider.DBRowDecoder().load(cache,rows)
+        val type = GameValHandler.readGameVal(GameValGroupTypes.TABLETYPES, cache = cache, rev.first)
 
-    startGeneration(type,rows)
+        val rows : MutableMap<Int, DBRowType> = emptyMap<Int, DBRowType>().toMutableMap()
+
+        OsrsCacheProvider.DBRowDecoder().load(cache,rows)
+
+        startGeneration(type,rows)
+    }
 }
-
 
 fun readRevision(): Triple<Int, Int, String> {
     val file = listOf("../game.yml", "../game.example.yml")

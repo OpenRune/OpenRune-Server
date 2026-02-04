@@ -153,9 +153,11 @@ class CampfireEvents : PluginEvent() {
         player.queue {
             var logsAdded = 0
 
-            repeatWhile(delay = ticks, immediate = true, canRepeat = {
-                canAddLog(player, gameObject, logData) && logsAdded < logsToAdd
-            }) {
+            repeatWhile(delay = ticks, immediate = true, canRepeat = { logsAdded < logsToAdd }) {
+                player.lock()
+                if (!canAddLog(player, gameObject, logData)) {
+                    player.unlock()
+                }
                 player.animate(RSCM.getReverseMapping(RSCMType.SEQTYPES, logData.foresterAnimation?: -1)?: RSCM.NONE)
                 val playersUsingFire = gameObject.attr[PLAYERS_COUNT_ATTR] ?: 1
 
@@ -166,9 +168,10 @@ class CampfireEvents : PluginEvent() {
                 player.addXp(Skills.FIREMAKING, calculateXp(logData.xp, playersUsingFire))
                 player.inventory.remove(logData.item)
 
-                logsAdded++
                 wait(3)
                 player.world.spawn(TileGraphic(tile = gameObject.tile, id = "spotanims.forestry_campfire_burning_spotanim"))
+                player.unlock()
+                logsAdded++
             }
 
             removePlayerFromFire(gameObject)

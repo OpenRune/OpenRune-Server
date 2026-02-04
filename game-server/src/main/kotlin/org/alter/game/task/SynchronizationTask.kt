@@ -1,12 +1,12 @@
 package org.alter.game.task
 
 import net.rsprot.crypto.xtea.XteaKey
-import net.rsprot.protocol.game.outgoing.info.npcinfo.SetNpcUpdateOrigin
 import net.rsprot.protocol.game.outgoing.info.util.BuildArea
+import net.rsprot.protocol.game.outgoing.info.util.isEmpty
+import net.rsprot.protocol.game.outgoing.info.util.safeReleaseOrThrow
 import net.rsprot.protocol.game.outgoing.map.RebuildNormal
 import net.rsprot.protocol.game.outgoing.map.RebuildRegion
 import net.rsprot.protocol.game.outgoing.map.util.RebuildRegionZone
-import net.rsprot.protocol.game.outgoing.worldentity.SetActiveWorldV2
 import org.alter.game.model.Coordinate
 import org.alter.game.model.Tile
 import org.alter.game.model.World
@@ -32,51 +32,53 @@ class SequentialSynchronizationTask : GameTask {
 
         worldPlayers.forEach(Player::playerCoordCycleTask)
 
-        world.network.worldEntityInfoProtocol.update()
+        world.network.infoProtocols.update()
 
-        // First off, write the world entity info to the client - it must
-        // be aware of the updates before receiving the rebuild world entity packets
-        world.players.forEach {
-            if (it.entityType.isHumanControlled && it.initiated) {
-                it.write(it.worldEntityInfo.toPacket()) // try-catch it, this _can_ throw exceptions during .toPacket()
-            }
-        }
 
         world.players.forEach {
             if (it.entityType.isHumanControlled && it.initiated) {
-                // If the player is not on a dynamic world entity, we can set the
-                // origin point as the local player coordinate
-                val (x, z, level) = it.tile
-                it.npcInfo.updateCoord(-1, level, x, z)
-                it.playerInfo.updateRenderCoord(-1, level, x, z)
-            }
-        }
-        world.network.playerInfoProtocol.update()
-        world.network.npcInfoProtocol.update()
+                val infos = it.infos
+                val infoPackets = infos.getPackets()
+                val rootPackets = infoPackets.rootWorldInfoPackets
+                // First start off by updating the root world.
+                it.write(rootPackets.activeWorld)
+                it.write(rootPackets.npcUpdateOrigin)
 
-        world.players.forEach {
-            /**
-             * Non-human [org.alter.game.model.entity.Player]s do not need this
-             * to send any synchronization data to their game-client as they do
-             * not have one.
-             */
-            if (it.entityType.isHumanControlled && it.initiated) {
-                it.write(SetActiveWorldV2(SetActiveWorldV2.RootWorldType(it.tile.height)))
-                it.write(it.playerInfo.toPacket()) // try-catch it, this _can_ throw exceptions during .toPacket()
-                it.write(
-                    SetNpcUpdateOrigin(
-                        it.tile.x - (it.buildArea.zoneX shl 3),
-                        it.tile.z - (it.buildArea.zoneZ shl 3),
-                    ),
-                )
-                it.write(it.npcInfo.toPacket(-1))
+                rootPackets.worldEntityInfo.getOrNull()?.apply {
+                    it.write(this)
+                }
+
+                rootPackets.playerInfo.getOrNull()?.apply {
+                    it.write(this)
+                }
+
+                // OSRS seems to omit sending npc info packets if there are 0 readable
+                // bytes in it. It is important to however invoke safeRelease() on the packet
+                // if you do not submit it into Session, as it will otherwise leak.
+                val rootNpcInfoEmpty = rootPackets.npcInfo.isEmpty()
+                if (!rootNpcInfoEmpty) {
+                    rootPackets.npcInfo.getOrNull()?.apply {
+                        it.write(this)
+                    }
+                } else {
+                    rootPackets.npcInfo.safeReleaseOrThrow()
+                }
+
+                // At this stage, you should submit all the zone packets from your server.
+                // The active world is already set to the root world, so it is just a matter
+                // of sending packets like UpdateZoneFullFollows, UpdateZonePartialEnclosed
+                // and so on.
+                it.postCycle()
+
+                // Lastly, set the active world back to the root world. This is important
+                // for some client functionality, such as client-sided pathfinding.
+                it.write(rootPackets.activeWorld)
             }
         }
 
         for (n in worldNpcs.entries) {
             n?.npcPostSynchronizationTask()
         }
-        worldPlayers.forEach(Player::postCycle)
     }
 }
 
@@ -122,9 +124,7 @@ fun Player.playerPreSynchronizationTask() {
             }
         pawn.buildArea =
             BuildArea((current.x ushr 3) - 6, (current.z ushr 3) - 6).apply {
-                pawn.playerInfo.updateBuildArea(-1, this)
-                pawn.npcInfo.updateBuildArea(-1, this)
-                pawn.worldEntityInfo.updateBuildArea(this)
+                pawn.infos.updateRootBuildArea(this)
             }
         pawn.write(rebuildMessage)
     }
@@ -163,7 +163,5 @@ fun Npc.npcPostSynchronizationTask() {
  * displacement effects [dspear, etc]
  */
 fun Player.playerCoordCycleTask() {
-    this.playerInfo.updateCoord(this.tile.height, this.tile.x, this.tile.z)
-    this.npcInfo.updateCoord(-1, this.tile.height, this.tile.x, this.tile.z)
-    this.worldEntityInfo.updateCoord(-1, this.tile.height, this.tile.x, this.tile.z)
+    this.infos.updateRootCoord(this.tile.height, this.tile.x, this.tile.z)
 }

@@ -204,7 +204,7 @@ object Alters {
     const val RUINS = 8
     const val COMBO = 9
 
-    fun altars() = dbTable("tables.runecrafting_altars") {
+    fun altars() = dbTable("tables.runecrafting_altars", serverOnly = true) {
 
         column("altar_object", ALTAR_OBJECT, VarType.LOC)
         column("exit_portal", EXIT_PORTAL, VarType.LOC)

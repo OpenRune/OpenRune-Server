@@ -105,7 +105,7 @@ class Client(world: World) : Player(world) {
     }
 
     override fun channelClose() {
-        world.network.playerInfoProtocol.dealloc(info = playerInfo)
+        world.network.infoProtocols.dealloc(infos)
     }
 
     override fun toString(): String =

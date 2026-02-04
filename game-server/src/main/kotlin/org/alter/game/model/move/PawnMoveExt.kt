@@ -108,8 +108,8 @@ fun Route.toTileQueue(): Queue<Tile> {
 }
 
 fun Pawn.stopMovement() = movementQueue.clear()
-fun Pawn.walkTo(tile: Tile, stepType: StepType = StepType.NORMAL) =
-    walkTo(targetX = tile.x, targetY = tile.z, stepType = stepType)
+fun Pawn.walkTo(tile: Tile, stepType: StepType = StepType.NORMAL,overrideLock : Boolean = false) =
+    walkTo(targetX = tile.x, targetY = tile.z, stepType = stepType,overrideLock)
 
 fun Pawn.walkRoute(route: RouteCoordinates, stepType: StepType = StepType.NORMAL) {
     this.walkTo(Tile(route.x, route.z), stepType)
@@ -119,9 +119,10 @@ fun Pawn.walkTo(
     targetX: Int,
     targetY: Int,
     stepType: StepType = StepType.NORMAL,
+    overrideLock : Boolean = false
 ) {
     if (this is Player) {
-        if (!lock.canMove()) {
+        if (!lock.canMove() && !overrideLock) {
             /**
              * @TODO Add silent lock.
              */

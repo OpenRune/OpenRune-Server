@@ -10,6 +10,7 @@ import org.alter.game.model.attr.INTERACTING_NPC_ATTR
 import org.alter.game.model.entity.Player
 import org.alter.game.model.item.Item
 import org.alter.game.model.queue.QueueTask
+import org.alter.game.pluginnew.event.EventManager
 
 
 import org.alter.game.pluginnew.event.impl.DialogCloseAll
@@ -33,7 +34,7 @@ const val CHATBOX_CHILD = 566
 /**
  * The default action that will occur when interrupting or finishing a dialog.
  */
-private fun closeDialog(player: Player): QueueTask.() -> Unit =
+fun closeDialog(player: Player): QueueTask.() -> Unit =
     {
         DialogCloseAll(player).post()
         player.write(TriggerOnDialogAbort)
@@ -161,9 +162,11 @@ suspend fun QueueTask.messageBox(
     
     DialogMessageOpen(message, continues,player).post()
 
-    terminateAction = closeDialog(player)
-    waitReturnValue()
-    terminateAction!!(this)
+    if (continues) {
+        terminateAction = closeDialog(player)
+        waitReturnValue()
+        terminateAction!!(this)
+    }
 }
 
 /**
@@ -244,14 +247,28 @@ suspend fun QueueTask.itemMessageBox(
     message: String,
     item: String,
     amountOrZoom: Int = 1,
-    vararg options: String = arrayOf("Click here to continue"),
+    continues: Boolean = true,
 ) {
-    DialogItem(message,item.asRSCM(),amountOrZoom,player)
-
-    terminateAction = closeDialog(player)
-    waitReturnValue()
-    terminateAction!!(this)
+    itemMessageBox(player, message, item.asRSCM(), amountOrZoom, continues)
 }
+
+suspend fun QueueTask.itemMessageBox(
+    player: Player,
+    message: String,
+    item: Int,
+    amountOrZoom: Int = 1,
+    continues: Boolean = true,
+) {
+    DialogItem(message, item, amountOrZoom, continues,player).post()
+
+    if (continues) {
+        terminateAction = closeDialog(player)
+        waitReturnValue()
+        terminateAction!!(this)
+    }
+}
+
+
 
 suspend fun QueueTask.doubleItemMessageBox(
     player: Player,
@@ -298,24 +315,45 @@ suspend fun QueueTask.produceItemBox(
     logic: Player.(Int, Int) -> Unit,
 ) {
 
-    val itemDefs = items.map { getItem(it) }
+    val maxSelectable = 18
+    val scriptSlots = 18
+
+    val displayedItems = items.take(maxSelectable)
+    val displayedDefs = displayedItems.mapNotNull { itemId -> getItem(itemId)?.let { def -> itemId to def } }
+    if (displayedDefs.isEmpty()) {
+        player.message("You can't think of any options.")
+        return
+    }
 
     val baseChild = 15
-    val itemArray = Array(15) { -1 }
-    val nameArray = Array(15) { "|" }
-
-    itemDefs.withIndex().forEach {
-        val def = it.value
-        itemArray[it.index] = def!!.id
-        nameArray[it.index] = "|${def.name}"
+    val itemArray = Array(scriptSlots) { -1 }
+    displayedDefs.withIndex().forEach { (index, pair) ->
+        itemArray[index] = pair.second.id
     }
+
+    val nameString = buildString {
+        append(title)
+        displayedDefs.forEach { (_, def) ->
+            append("|")
+            append(def.name)
+        }
+    }
+
+    val suggestedQuantity = 1
 
     player.runClientScript(CommonClientScripts.CHATBOX_RESET_BACKGROUND)
     player.sendTempVarbit("varbits.chatmodal_unclamp", 1)
 
-    DialogSkillMulti(player).post()
+    EventManager.postAndWait(DialogSkillMulti(player))
 
-    player.runClientScript(CommonClientScripts.SKILL_MULTI_SETUP, 0, "$title${nameArray.joinToString("")}", maxProducable, *itemArray)
+    player.runClientScript(
+        CommonClientScripts.SKILL_MULTI_SETUP,
+        0,
+        nameString,
+        maxProducable,
+        *itemArray,
+        suggestedQuantity
+    )
 
     terminateAction = closeDialog(player)
     waitReturnValue()
@@ -325,11 +363,11 @@ suspend fun QueueTask.produceItemBox(
 
     val child = msg.componentId
 
-    if (child < baseChild || child >= baseChild + items.size) {
+    if (child < baseChild || child >= baseChild + displayedDefs.size) {
         return
     }
 
-    val item = items[child - baseChild]
+    val item = displayedDefs[child - baseChild].first
     val qty = msg.sub
 
     logic(player, item, qty)

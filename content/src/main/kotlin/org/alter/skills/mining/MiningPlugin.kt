@@ -213,8 +213,10 @@ class MiningPlugin : PluginEvent() {
         }
 
 
-        if (player.inventory.add(oreItem, total).hasSucceeded()) {
-            player.addXp(Skills.MINING, calculateMiningXP(rockData.xp.toDouble(),false,player))
+        if (EventManager.postWithResult(OreObtainingEvent(player, oreItem, total)) ||
+            player.inventory.add(oreItem, total).hasSucceeded()
+        ) {
+            player.addXp(Skills.MINING, calculateMiningXP(rockData.xp.toDouble(), false, player))
             try {
                 val oreName = Item(oreItem).getName().lowercase()
                 player.message("You manage to mine some $oreName.")
