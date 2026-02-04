@@ -6,9 +6,9 @@ import org.bson.Document
 
 class VarpSerialisation(override val name: String = "varps") : DocumentHandler {
 
-    override fun fromDocument(client: Client, doc: Document) = doc.forEach { stateKey, idValue ->
-        stateKey.toIntOrNull()?.let { state ->
-            idValue?.toString()?.toIntOrNull()?.let { id ->
+    override fun fromDocument(client: Client, doc: Document) = doc.forEach { (idValue, stateKey) ->
+        stateKey.toString().toIntOrNull()?.let { state ->
+            idValue?.toIntOrNull()?.let { id ->
                 client.varps.setState(id, state)
             }
         }
@@ -18,7 +18,7 @@ class VarpSerialisation(override val name: String = "varps") : DocumentHandler {
         return Document().apply {
             putAll(client.varps.getAll()
                 .filter { it.state != 0 }
-                .associate { it.state.toString() to it.id.toString() })
+                .associate { it.id.toString() to it.state.toString() })
         }
     }
 

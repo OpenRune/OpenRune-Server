@@ -50,8 +50,8 @@ object GenericDialogue {
         }
         options += "Er... Nothing..."
 
-        val capeOptionIndex = options.indexOfFirst { it.contains("skillcape", ignoreCase = true) }
-        val nothingOptionIndex = options.lastIndex
+        val capeOptionIndex = if (player.supportsCape(npcId)) 4 else 90
+        val nothingOptionIndex = if (player.supportsCape(npcId)) 5 else 4
 
         when (task.options(player, *options.toTypedArray())) {
             1 -> slayerNeedAnotherAssignmentStart(player, task, npcId)

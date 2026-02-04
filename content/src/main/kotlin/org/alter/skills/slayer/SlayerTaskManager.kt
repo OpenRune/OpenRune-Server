@@ -5,6 +5,7 @@ import org.alter.api.ext.getVarbit
 import org.alter.api.ext.getVarp
 import org.alter.api.ext.setVarbit
 import org.alter.api.ext.setVarp
+import org.alter.game.model.attr.SLAYER_COMBAT_CHECK
 import org.alter.game.model.attr.SLAYER_STREAK_ATTR
 import org.alter.game.model.combat.NpcCombatDef
 import org.alter.game.model.entity.Npc
@@ -50,8 +51,9 @@ object SlayerTaskManager {
             taskRow.blockUnlock?.let { blockUnlockRowId ->
                 if (hasUnlockedReward(player, SlayerUnlockRow.getRow(blockUnlockRowId).bit)) return@filter false
             }
-            taskRow.minComlevel?.let { if (combatLevel < it) return@filter false }
-
+            if (player.attr.getOrDefault(SLAYER_COMBAT_CHECK,true)) {
+                taskRow.minComlevel?.let { if (combatLevel < it) return@filter false }
+            }
             taskRow.minStatRequirementAny?.let { (reqLevel, statId) ->
                 if (reqLevel != null && statId != null && player.getSkills().getBaseLevel(statId) < reqLevel) return@filter false
             }
@@ -79,9 +81,6 @@ object SlayerTaskManager {
         player.setVarbit("varbits.slayer_master", master.masterId)
 
 
-        println("Task: ${chosen.task}")
-
-        println("Task Amt: ${amount}")
         player.setVarp("varp.slayer_count_original", amount)
         player.setVarp("varp.slayer_count", amount)
         player.setVarp("varp.slayer_target", slayerTaskRow.id)

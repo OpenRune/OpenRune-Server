@@ -1,11 +1,13 @@
 package org.alter.skills.slayer
 
+import org.alter.api.ext.sendTempVarbit
 import org.alter.game.pluginnew.MenuOption
 import org.alter.game.pluginnew.PluginEvent
 import org.alter.game.pluginnew.event.impl.LoginEvent
 import org.alter.game.pluginnew.event.impl.NpcClickEvent
 import org.alter.interfaces.ifOpenMainModal
 import org.alter.rscm.RSCM.asRSCM
+import org.alter.skills.slayer.SlayerTaskManager.tasks
 import org.alter.skills.slayer.dialogue.GenericDialogue
 import org.alter.skills.slayer.dialogue.TuradelDialogue
 import org.generated.tables.slayer.SlayerUnlockRow
@@ -21,6 +23,8 @@ class SlayerEvents : PluginEvent() {
         on<NpcClickEvent> {
             where { SlayerTaskManager.slayerMasterNpcs.contains(npc.id) }
             then {
+                val master = tasks.keys.find { it.npcIds.contains(npc.id) } ?: return@then
+                player.sendTempVarbit("varbits.slayer_master_in_focus", master.masterId)
                 when(op) {
                     MenuOption.OP1 -> player.queue {
                         when(npc.id) {
