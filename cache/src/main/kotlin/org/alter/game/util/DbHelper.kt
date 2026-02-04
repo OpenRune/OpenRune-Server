@@ -51,7 +51,10 @@ fun <K, V> DbHelper.multiColumn(
     }
 }
 
-fun DbHelper.multiColumnMixed(columnName: String, vararg types: VarTypeImpl<*, *>): List<Any?> {
+fun DbHelper.multiColumnMixed(
+    columnName: String,
+    vararg types: VarTypeImpl<*, *>
+): List<Any?> {
     val column = try {
         getColumn(columnName)
     } catch (e: DbException.MissingColumn) {
@@ -65,8 +68,8 @@ fun DbHelper.multiColumnMixed(columnName: String, vararg types: VarTypeImpl<*, *
     val values = column.column.values ?: return emptyList()
     require(types.isNotEmpty()) { "At least one VarTypeImpl must be provided" }
 
-    return values.mapIndexed { i, raw ->
-        val type = types[i]
+    return values.mapIndexed { i, _ ->
+        val type = types[i % types.size]
         val value = column.get(i, type as VarTypeImpl<Any?, Any?>)
         type.convertTo(value)
     }

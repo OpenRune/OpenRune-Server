@@ -262,6 +262,17 @@ val LEVEL_UP_OLD_XP = AttributeKey<Double>()
 
 val CHANGE_LOGGING = AttributeKey<Boolean>()
 
+val FIRST_TIME_TURAEL = AttributeKey<Boolean>()
+
+/**
+ * Consecutive Slayer tasks completed (for point bonuses: 5x every 10th, 15x every 50th, etc.). Reset when skipping via Turael.
+ */
+val SLAYER_STREAK_ATTR = AttributeKey<Int>(persistenceKey = "slayer_streak")
+
+val SLAYER_WILDY_STREAK_ATTR = AttributeKey<Int>(persistenceKey = "wildy_slayer_streak")
+
+val SLAYER_COMBAT_CHECK = AttributeKey<Boolean>(persistenceKey = "slayer_combat_check")
+
 /**
  * Instead of running tp
  */
