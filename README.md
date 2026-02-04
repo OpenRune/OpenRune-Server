@@ -7,7 +7,7 @@
 
 <p align="center">
   <a href="https://github.com/OpenRune/OpenRune-Server/blob/main/LICENSE"><img alt="License" src="https://img.shields.io/github/license/OpenRune/OpenRune-Server?style=for-the-badge&color=6f42c1"/></a>
-  <a href="https://oldschool.runescape.wiki/w/Update:Leagues_V:_Raging_Echos_Rewards_Are_Here"><img alt="Revision 235.10" src="https://img.shields.io/badge/Revision-235.10-blueviolet?style=for-the-badge"/></a>
+  <a href="https://oldschool.runescape.wiki/w/Update:Leagues_V:_Raging_Echos_Rewards_Are_Here"><img alt="Revision 236" src="https://img.shields.io/badge/Revision-236-blueviolet?style=for-the-badge"/></a>
   <a href="https://trello.com/b/A0LefFDs/later"><img alt="Roadmap" src="https://img.shields.io/badge/Trello-Roadmap-026AA7?style=for-the-badge&logo=trello&logoColor=white"/></a>
   <a href="https://github.com/Mark7625/OpenRune-Server/"><img alt="Lines of Code" src="https://img.shields.io/endpoint?url=https%3A%2F%2Fghloc.vercel.app%2Fapi%2FOpenRune%2FOpenRune-Server%2Fbadge%3Fformat%3Dhuman&style=for-the-badge&color=teal"/></a>
   <a href="https://discord.gg/mPaZwcSNe">
@@ -67,9 +67,9 @@ For Windows:
 config:
   - id: 1
     name: OpenRune Server
-    jav_config_url: https://client.blurite.io/jav_local_235.ws
+    jav_config_url: https://client.blurite.io/jav_local_236.ws
     varp_count: 15000
-    revision: 235.10
+    revision: 236
     modulus: YOUR_MODULUS_KEY_HERE
 ```
 
