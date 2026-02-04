@@ -146,7 +146,7 @@ class Server {
          */
         GameValProvider.load()
 
-        ServerCacheManager.init(cache)
+        ServerCacheManager.init(cache,gameContext.revision)
         logger.info{"Loaded filestore from path ${filestoreServer} in ${individualStopwatch.elapsed(TimeUnit.MILLISECONDS)}ms."}
 
 
