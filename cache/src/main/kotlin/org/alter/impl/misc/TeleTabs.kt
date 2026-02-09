@@ -9,7 +9,7 @@ object TeleTabs {
     const val COL_MAGIC_LEVEL = 1
     const val COL_LOCATION = 2
 
-    fun teleTabs() = dbTable("tables.teleport_tablets") {
+    fun teleTabs() = dbTable("tables.teleport_tablets", serverOnly = true) {
 
         column("item", COL_ITEM, VarType.OBJ)
         column("magic_level", COL_MAGIC_LEVEL, VarType.INT)

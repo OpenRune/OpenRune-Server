@@ -592,7 +592,7 @@ private fun Player.ifSetPauseText(component: String, text: String) {
 private fun Player.ifSetObj(target: String, obj: Int, zoomOrCount: Int) {
     requireRSCM(RSCMType.COMPONENTS, target)
     val combined = CombinedId(target.asRSCM())
-    write(IfSetObject(Component(combined.interfaceId, combined.combinedId).packed, obj, zoomOrCount))
+    write(IfSetObject(combined.combinedId, obj, zoomOrCount))
 }
 
 public fun Player.ifOpenMainSidePair(

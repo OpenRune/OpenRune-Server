@@ -35,7 +35,7 @@ class XteaKeyService : Service, XteaProvider {
         world: World,
         serviceProperties: ServerProperties,
     ) {
-        val path = Paths.get(serviceProperties.getOrDefault("path", "../data/"))
+        val path = Paths.get(serviceProperties.getOrDefault("path", "../data/cache/"))
         val singleFile = path.resolve("xteas.json")
         if (Files.exists(singleFile)) {
             loadSingleFile(singleFile)

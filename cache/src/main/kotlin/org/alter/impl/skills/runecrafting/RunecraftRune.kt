@@ -145,7 +145,7 @@ object RunecraftRune {
     val XP = 3
     val EXTRACT = 4
 
-    fun runecraftRune() = dbTable("tables.runecrafting_runes") {
+    fun runecraftRune() = dbTable("tables.runecrafting_runes", serverOnly = true) {
         column("rune_output", ITEM, VarType.OBJ)
         column("valid_essences", ESSENCE, VarType.OBJ)
         column("xp", XP, VarType.INT)

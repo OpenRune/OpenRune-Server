@@ -45,7 +45,7 @@ object Woodcutting {
     const val ANIMATION = 3
 
 
-    fun axes() = dbTable("tables.woodcutting_axes") {
+    fun axes() = dbTable("tables.woodcutting_axes", serverOnly = true) {
         column("item", ITEM, VarType.OBJ)
         column("level", LEVEL, VarType.INT)
         column("delay", DELAY, VarType.INT)
@@ -62,7 +62,7 @@ object Woodcutting {
 
     }
 
-    fun trees() = dbTable("tables.woodcutting_trees") {
+    fun trees() = dbTable("tables.woodcutting_trees", serverOnly = true) {
 
         column("tree_object", COL_TREE_OBJECT, VarType.LOC)
         column("level", COL_LEVEL, VarType.INT)

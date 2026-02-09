@@ -17,9 +17,9 @@ ksp = "2.0.20-1.0.24"
 nettyAll = "4.1.109.Final"
 csv = "0.7.3"
 logback = "1.4.11"
-rsprot = "1.0.0-ALPHA-20251027"
+rsprot = "1.0.0-ALPHA-20250203"
 routefinder = "6.0.0"
-or2 = "2.3.5"
+or2 = "2.3.7"
 or2ServerUtils = "0.7"
 jodatime = "2.14.0"
 classgraph = "4.8.184"
@@ -54,7 +54,7 @@ kotlin-csv = { group = "com.github.doyaaaaaken", name = "kotlin-csv", version.re
 netty-all = { group = "io.netty", name = "netty-all", version.ref = "nettyAll" }
 
 logback-classic = { group ="ch.qos.logback", name = "logback-classic", version.ref = "logback"}
-rsprot = { group = "net.rsprot", name = "osrs-235-api", version.ref = "rsprot"}
+rsprot = { group = "net.rsprot", name = "osrs-236-api", version.ref = "rsprot"}
 routefinder = { group = "org.rsmod", name = "rsmod-routefinder", version.ref = "routefinder"}
 
 mongo-bson = { group = "org.mongodb", name = "bson", version.ref = "mongo"}

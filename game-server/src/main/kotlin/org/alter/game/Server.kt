@@ -1,8 +1,6 @@
 package org.alter.game
 
 import dev.openrune.ServerCacheManager
-import dev.openrune.definition.constants.ConstantProvider
-import dev.openrune.definition.constants.use
 import dev.openrune.filesystem.Cache
 import gg.rsmod.util.ServerProperties
 import gg.rsmod.util.Stopwatch
@@ -18,12 +16,10 @@ import org.alter.game.pluginnew.PluginManager
 import org.alter.game.saving.PlayerDetails
 import org.alter.game.saving.PlayerSaving
 import org.alter.game.saving.formats.SaveFormatType
-import org.alter.rscm.RSCM
 import org.alter.game.rsprot.CacheJs5GroupProvider
 import org.alter.game.rsprot.NetworkServiceFactory
 import org.alter.game.service.xtea.XteaKeyService
 import org.alter.gamevals.GameValProvider
-import java.io.File
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
@@ -72,7 +68,8 @@ class Server {
      * can start multiple servers with different game property files.
      */
     fun startGame(
-        filestore: Path,
+        filestoreServer: Path,
+        filestoreLive: Path,
         gameProps: Path,
         devProps: Path?,
     ): World {
@@ -142,15 +139,15 @@ class Server {
          * Load the file store.
          */
         individualStopwatch.reset().start()
-        cache = Cache.load(filestore)
+        cache = Cache.load(filestoreServer)
 
         /**
          * Initialize RSCM
          */
         GameValProvider.load()
 
-        ServerCacheManager.init(cache)
-        logger.info{"Loaded filestore from path ${filestore} in ${individualStopwatch.elapsed(TimeUnit.MILLISECONDS)}ms."}
+        ServerCacheManager.init(cache,gameContext.revision)
+        logger.info{"Loaded filestore from path ${filestoreServer} in ${individualStopwatch.elapsed(TimeUnit.MILLISECONDS)}ms."}
 
 
         val world = World(gameContext, devContext)
@@ -166,7 +163,7 @@ class Server {
         world.loadServices(this, cache,gameProperties)
 
         val groupProvider = CacheJs5GroupProvider()
-        groupProvider.load(cache)
+        groupProvider.load(Cache.load(filestoreLive))
         val port = gameProperties.getOrDefault("game-port", 43594)
         val network = NetworkServiceFactory(groupProvider, world, cache,listOf(port), listOf(OldSchoolClientType.DESKTOP))
         world.network = network.build()

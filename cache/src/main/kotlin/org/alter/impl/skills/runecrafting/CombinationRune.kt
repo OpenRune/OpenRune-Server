@@ -33,7 +33,7 @@ object CombinationRune {
     const val RUNE_INPUT = 3
     const val TALISMAN = 4
 
-    fun runecraftComboRune() = dbTable("tables.comborune_recipe") {
+    fun runecraftComboRune() = dbTable("tables.comborune_recipe", serverOnly = true) {
 
         column("rune_output", RUNE_OUTPUT, VarType.OBJ)
         column("level", LEVEL, VarType.INT)

@@ -8,6 +8,12 @@ import org.alter.game.pluginnew.event.PlayerEvent
 import org.alter.game.pluginnew.event.impl.SkillingActionCompletedGatheringEvent
 import org.generated.tables.mining.MiningRocksRow
 
+class OreObtainingEvent(
+    override val player: Player,
+    val oreItemId: Int,
+    val amount: Int,
+) : PlayerEvent(player)
+
 /**
  * Event triggered when a rock is depleted during mining.
  *

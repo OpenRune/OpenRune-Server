@@ -73,7 +73,7 @@ class DialogueTempEvent : PluginEvent() {
             then {
                 val pages = TextAlignment.generateChatPageList(message)
                 for (page in pages) {
-                    player.ifObjbox(page.text, item, zoom, constants.cm_pausebutton)
+                    player.ifObjbox(page.text, item, zoom, if (continues) constants.cm_pausebutton else "")
                 }
             }
         }

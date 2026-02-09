@@ -8,7 +8,8 @@ object Launcher {
         val server = Server()
         server.startServer(apiProps = Paths.get("../data/api.yml"))
         server.startGame(
-            filestore = Paths.get("../data", "cache"),
+            filestoreServer = Paths.get("../data", "cache","SERVER"),
+            filestoreLive = Paths.get("../data", "cache","LIVE"),
             gameProps = Paths.get("../game.yml"),
             devProps = Paths.get("../dev-settings.yml"),
         )

@@ -42,14 +42,14 @@ object ServerCacheManager {
 
     val logger = KotlinLogging.logger {}
 
-    fun init(cachePath : Path) {
+    fun init(cachePath : Path, rev : Int) {
         val cache = Cache.load(cachePath)
-        init(cache)
+        init(cache,rev)
     }
 
-    fun init(cache : Cache) {
+    fun init(cache : Cache, rev : Int) {
         ItemRenderDataManager.init()
-        CacheManager.init(OsrsCacheProvider(cache,235))
+        CacheManager.init(OsrsCacheProvider(cache,rev))
 
         fonts = FontDecoder(cache).loadAllFonts()
 

@@ -123,7 +123,7 @@ tasks.register("checkPrerequisites") {
         val gameYml = file("${rootProject.projectDir}/game.yml")
         val gameExampleYml = file("${rootProject.projectDir}/game.example.yml")
         val devSettingsYml = file("${rootProject.projectDir}/dev-settings.yml")
-        val cacheDir = file("${rootProject.projectDir}/data/cache")
+        val cacheDir = file("${rootProject.projectDir}/data/cache/LIVE")
         val rsaKey = file("${rootProject.projectDir}/data/rsa/key.pem")
         val rsaDir = file("${rootProject.projectDir}/data/rsa")
         
@@ -136,7 +136,7 @@ tasks.register("checkPrerequisites") {
             missingFiles.add("dev-settings.yml")
         }
         if (!cacheDir.exists() || !cacheDir.isDirectory || cacheDir.listFiles()?.isEmpty() != false) {
-            missingFiles.add("data/cache (directory missing or empty)")
+            missingFiles.add("data/cache/LIVE (directory missing or empty)")
         }
         if (!rsaDir.exists() || !rsaDir.isDirectory) {
             missingFiles.add("data/rsa (directory missing)")

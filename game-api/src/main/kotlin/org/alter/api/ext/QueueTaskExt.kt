@@ -10,6 +10,7 @@ import org.alter.game.model.attr.INTERACTING_NPC_ATTR
 import org.alter.game.model.entity.Player
 import org.alter.game.model.item.Item
 import org.alter.game.model.queue.QueueTask
+import org.alter.game.pluginnew.event.EventManager
 
 
 import org.alter.game.pluginnew.event.impl.DialogCloseAll
@@ -20,7 +21,6 @@ import org.alter.game.pluginnew.event.impl.DialogMessageOption
 import org.alter.game.pluginnew.event.impl.DialogNpcOpen
 import org.alter.game.pluginnew.event.impl.DialogPlayerOpen
 import org.alter.game.pluginnew.event.impl.DialogSkillMulti
-import org.alter.game.pluginnew.event.EventManager
 import org.alter.rscm.RSCM.asRSCM
 
 
@@ -34,7 +34,7 @@ const val CHATBOX_CHILD = 566
 /**
  * The default action that will occur when interrupting or finishing a dialog.
  */
-private fun closeDialog(player: Player): QueueTask.() -> Unit =
+fun closeDialog(player: Player): QueueTask.() -> Unit =
     {
         DialogCloseAll(player).post()
         player.write(TriggerOnDialogAbort)
@@ -162,9 +162,11 @@ suspend fun QueueTask.messageBox(
     
     DialogMessageOpen(message, continues,player).post()
 
-    terminateAction = closeDialog(player)
-    waitReturnValue()
-    terminateAction!!(this)
+    if (continues) {
+        terminateAction = closeDialog(player)
+        waitReturnValue()
+        terminateAction!!(this)
+    }
 }
 
 /**
@@ -245,14 +247,28 @@ suspend fun QueueTask.itemMessageBox(
     message: String,
     item: String,
     amountOrZoom: Int = 1,
-    vararg options: String = arrayOf("Click here to continue"),
+    continues: Boolean = true,
 ) {
-    DialogItem(message,item.asRSCM(),amountOrZoom,player)
-
-    terminateAction = closeDialog(player)
-    waitReturnValue()
-    terminateAction!!(this)
+    itemMessageBox(player, message, item.asRSCM(), amountOrZoom, continues)
 }
+
+suspend fun QueueTask.itemMessageBox(
+    player: Player,
+    message: String,
+    item: Int,
+    amountOrZoom: Int = 1,
+    continues: Boolean = true,
+) {
+    DialogItem(message, item, amountOrZoom, continues,player).post()
+
+    if (continues) {
+        terminateAction = closeDialog(player)
+        waitReturnValue()
+        terminateAction!!(this)
+    }
+}
+
+
 
 suspend fun QueueTask.doubleItemMessageBox(
     player: Player,
@@ -321,8 +337,6 @@ suspend fun QueueTask.produceItemBox(
     logic: Player.(Int, Int) -> Unit,
 ) {
 
-    // `skillmulti_setup` (CS2) takes 18 obj slots (obj2..obj19) and a trailing suggested quantity (int20).
-    // If we call it with the wrong argument count/order, the clientscript can fail and the interface appears blank.
     val maxSelectable = 18
     val scriptSlots = 18
 
@@ -352,8 +366,7 @@ suspend fun QueueTask.produceItemBox(
     player.runClientScript(CommonClientScripts.CHATBOX_RESET_BACKGROUND)
     player.sendTempVarbit("varbits.chatmodal_unclamp", 1)
 
-    // Open the interface synchronously; the async event bus can otherwise race and
-    // run the clientscript before the interface exists client-side.
+
     EventManager.postAndWait(DialogSkillMulti(player))
 
     player.runClientScript(

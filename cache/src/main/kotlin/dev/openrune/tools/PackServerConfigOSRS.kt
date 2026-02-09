@@ -7,7 +7,8 @@ import cc.ekblad.toml.tomlMapper
 import cc.ekblad.toml.util.InternalAPI
 import dev.openrune.OsrsCacheProvider
 import dev.openrune.cache.*
-import dev.openrune.cache.tools.item.ItemSlotType
+import dev.openrune.cache.tools.TaskPriority
+import org.alter.getCacheLocation
 import dev.openrune.cache.tools.tasks.CacheTask
 import dev.openrune.cache.util.getFiles
 import dev.openrune.cache.util.progress
@@ -25,6 +26,7 @@ import dev.openrune.types.*
 import dev.openrune.types.InventoryServerType.Companion.pack
 import io.github.oshai.kotlinlogging.KotlinLogging
 import java.io.File
+import java.nio.file.Path
 import kotlin.reflect.KType
 import kotlin.reflect.typeOf
 
@@ -39,7 +41,10 @@ class PackType(
 class PackServerConfig(
     private val directory : File,
     private val tokenizedReplacement: Map<String,String> = emptyMap()
-) : CacheTask() {
+) : CacheTask(serverTaskOnly = true) {
+
+    override val priority: TaskPriority
+        get() = TaskPriority.END
 
     fun Map<String, Any?>.bool(key: String, defualt : Boolean) =
         this.containsKey(key) ?: defualt
@@ -72,7 +77,7 @@ class PackServerConfig(
     @OptIn(InternalAPI::class)
     override fun init(cache: Cache) {
         val parsedDefinitions = mutableMapOf<String, MutableList<Definition>>()
-        CacheManager.init(OsrsCacheProvider(cache, revision))
+        CacheManager.init(OsrsCacheProvider(Cache.load(Path.of(getCacheLocation())), revision))
 
         ItemRenderDataManager.init()
 
@@ -154,6 +159,7 @@ class PackServerConfig(
             }
             progress.step()
         }
+        progress.close()
 
     }
 
