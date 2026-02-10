@@ -267,9 +267,7 @@ class CookingEvents : PluginEvent() {
             player.filterableMessage("You begin cooking...")
 
             repeatWhile(delay = 4, immediate = true, canRepeat = {
-                cooked < quantity &&
-                    hasInputs(player, action) &&
-                    isStillAtStation(player, objectTile, objectId)
+                cooked < quantity && hasInputs(player, action) && isStillAtStation(player, objectTile, objectId)
             }) {
                 runCatching { player.animate("sequences.human_cooking", interruptable = true) }
                     .onFailure { player.animate(RSCM.NONE) }

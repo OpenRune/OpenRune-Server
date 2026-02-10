@@ -87,15 +87,17 @@ object CookingUtils {
 
     /** Checks whether the player is wearing cooking gauntlets. */
     fun hasCookingGauntlets(player: Player): Boolean =
-        player.hasEquipped(EquipmentType.GLOVES, "items.cooking_gauntlets")
+        runCatching { player.hasEquipped(EquipmentType.GLOVES, "items.gauntlets_of_cooking") }.getOrDefault(false)
 
     /** Checks whether the player is wearing the cooking cape (or max cape). */
     fun hasCookingCape(player: Player): Boolean =
-        player.equipment.containsAny(
-            "items.skillcape_cooking",
-            "items.skillcape_cooking_trimmed",
-            "items.skillcape_max"
-        )
+        runCatching {
+            player.equipment.containsAny(
+                "items.skillcape_cooking",
+                "items.skillcape_cooking_trimmed",
+                "items.skillcape_max"
+            )
+        }.getOrDefault(false)
 
     /**
      * Determines the cooking station type for a given game object, or null if it is not a heat source.
