@@ -1,9 +1,12 @@
 package org.alter.skills.cooking.runtime
 
+import org.alter.impl.skills.cooking.ChanceDef
+import org.alter.impl.skills.cooking.CookingRecipeRegistry
 import org.alter.skills.cooking.runtime.OutcomeKind
 import org.generated.tables.cooking.CookingActionInputsRow
 import org.generated.tables.cooking.CookingActionOutcomesRow
 import org.generated.tables.cooking.CookingActionsRow
+import org.alter.rscm.RSCM.asRSCM
 
 /**
  * Runtime models for loaded cooking recipe data.
@@ -115,5 +118,21 @@ object CookingActionRegistry {
             .flatMap { action -> action.inputs.map { it.item to action } }
             .groupBy({ it.first }, { it.second })
             .mapValues { (_, actions) -> actions.distinct() }
+    }
+
+    /**
+     * Chance profiles indexed by (key, variant).
+     *
+     * Built directly from [CookingRecipeRegistry.allRecipes] at startup.
+     * This avoids needing a separate DB table for chance data.
+     */
+    val chancesByAction: Map<Pair<Int, Int>, List<ChanceDef>> by lazy {
+        CookingRecipeRegistry.allRecipes
+            .filter { it.chances.isNotEmpty() }
+            .mapNotNull { action ->
+                val id = runCatching { action.key.asRSCM() }.getOrNull() ?: return@mapNotNull null
+                (id to action.variant) to action.chances
+            }
+            .toMap()
     }
 }

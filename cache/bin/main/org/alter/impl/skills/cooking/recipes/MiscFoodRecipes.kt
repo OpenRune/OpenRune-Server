@@ -1,6 +1,11 @@
 package org.alter.impl.skills.cooking.recipes
 
 import org.alter.impl.skills.cooking.ActionDef
+import org.alter.impl.skills.cooking.CookingConstants.ChanceModifier.HOSIDIUS_10
+import org.alter.impl.skills.cooking.CookingConstants.ChanceModifier.HOSIDIUS_5
+import org.alter.impl.skills.cooking.CookingConstants.STATION_ANY
+import org.alter.impl.skills.cooking.CookingConstants.STATION_RANGE
+import org.alter.impl.skills.cooking.CookingHelpers.chance
 import org.alter.impl.skills.cooking.CookingHelpers.heatCook
 import org.alter.impl.skills.cooking.CookingHelpers.multiStepCook
 import org.alter.impl.skills.cooking.PrepStepDef
@@ -17,10 +22,12 @@ object MiscFoodRecipes {
             raw = "items.sweetcorn",
             cooked = "items.sweetcorn_cooked",
             burnt = "items.sweetcorn_burnt",
-            level = 28,
-            xp = 104,
-            stopBurnFire = 61,
-            stopBurnRange = 61
+            level = 28, xp = 104, stopBurnFire = 61, stopBurnRange = 61,
+            chances = listOf(
+                chance("base_any", STATION_ANY, low = 78, high = 412),
+                chance("hosidius_5", STATION_RANGE, modifierMask = HOSIDIUS_5, low = 90, high = 424),
+                chance("hosidius_10", STATION_RANGE, modifierMask = HOSIDIUS_10, low = 103, high = 437)
+            )
         )
     )
 
@@ -44,10 +51,13 @@ object MiscFoodRecipes {
             raw = "items.bowl_egg_raw",
             cooked = "items.bowl_egg_scrambled",
             burnt = "items.bowl_egg_burnt",
-            level = 13,
-            xp = 50,
-            stopBurnFire = 46,
-            stopBurnRange = 46
+            level = 13, xp = 50, stopBurnFire = 46, stopBurnRange = 46,
+            stationMask = STATION_RANGE,
+            chances = listOf(
+                chance("range", STATION_RANGE, low = 90, high = 438),
+                chance("hosidius_5", STATION_RANGE, modifierMask = HOSIDIUS_5, low = 102, high = 450),
+                chance("hosidius_10", STATION_RANGE, modifierMask = HOSIDIUS_10, low = 115, high = 463)
+            )
         )
     )
 
@@ -58,10 +68,12 @@ object MiscFoodRecipes {
             raw = "items.bowl_onion",
             cooked = "items.bowl_onion_fried",
             burnt = "items.bowl_onion_burnt",
-            level = 42,
-            xp = 60,
-            stopBurnFire = 74,
-            stopBurnRange = 74
+            level = 42, xp = 60, stopBurnFire = 74, stopBurnRange = 74,
+            chances = listOf(
+                chance("base_any", STATION_ANY, low = 36, high = 322),
+                chance("hosidius_5", STATION_RANGE, modifierMask = HOSIDIUS_5, low = 48, high = 334),
+                chance("hosidius_10", STATION_RANGE, modifierMask = HOSIDIUS_10, low = 61, high = 347)
+            )
         )
     )
 
@@ -72,10 +84,12 @@ object MiscFoodRecipes {
             raw = "items.bowl_mushroom_raw",
             cooked = "items.bowl_mushroom_fried",
             burnt = "items.bowl_mushroom_burnt",
-            level = 46,
-            xp = 60,
-            stopBurnFire = 80,
-            stopBurnRange = 80
+            level = 46, xp = 60, stopBurnFire = 80, stopBurnRange = 80,
+            chances = listOf(
+                chance("base_any", STATION_ANY, low = 16, high = 282),
+                chance("hosidius_5", STATION_RANGE, modifierMask = HOSIDIUS_5, low = 28, high = 294),
+                chance("hosidius_10", STATION_RANGE, modifierMask = HOSIDIUS_10, low = 41, high = 307)
+            )
         )
     )
 

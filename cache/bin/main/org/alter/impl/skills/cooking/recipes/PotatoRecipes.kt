@@ -1,7 +1,10 @@
 package org.alter.impl.skills.cooking.recipes
 
 import org.alter.impl.skills.cooking.ActionDef
+import org.alter.impl.skills.cooking.CookingConstants.ChanceModifier.HOSIDIUS_10
+import org.alter.impl.skills.cooking.CookingConstants.ChanceModifier.HOSIDIUS_5
 import org.alter.impl.skills.cooking.CookingConstants.STATION_RANGE
+import org.alter.impl.skills.cooking.CookingHelpers.chance
 import org.alter.impl.skills.cooking.CookingHelpers.heatCook
 import org.alter.impl.skills.cooking.CookingHelpers.multiStepCook
 import org.alter.impl.skills.cooking.HeatStepDef
@@ -19,11 +22,13 @@ object PotatoRecipes {
             raw = "items.potato",
             cooked = "items.potato_baked",
             burnt = "items.potato_burnt",
-            level = 7,
-            xp = 15,
-            stopBurnFire = 40,
-            stopBurnRange = 40,
-            stationMask = STATION_RANGE
+            level = 7, xp = 15, stopBurnFire = 40, stopBurnRange = 40,
+            stationMask = STATION_RANGE,
+            chances = listOf(
+                chance("range", STATION_RANGE, low = 108, high = 472),
+                chance("hosidius_5", STATION_RANGE, modifierMask = HOSIDIUS_5, low = 120, high = 484),
+                chance("hosidius_10", STATION_RANGE, modifierMask = HOSIDIUS_10, low = 133, high = 497)
+            )
         )
     )
 

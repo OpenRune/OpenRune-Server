@@ -12,17 +12,24 @@ import org.alter.impl.skills.cooking.CookingConstants.Trigger
 object CookingHelpers {
 
     /**
-     * Creates a simple heat-cooking action (raw -> cooked/burnt).
+     * Creates a [ChanceDef] for burn chance profile definitions.
      *
-     * @param rowKey DB row key suffix (e.g., "cooking_shrimps").
-     * @param raw RSCM key for the raw item.
-     * @param cooked RSCM key for the cooked item.
-     * @param burnt RSCM key for the burnt item.
-     * @param level Required Cooking level.
-     * @param xp Experience awarded on success.
-     * @param stopBurnFire Level at which burning stops on fires.
-     * @param stopBurnRange Level at which burning stops on ranges.
-     * @param stationMask Bitmask for allowed cooking stations.
+     * @param label Human-readable label (e.g., "base_any", "gauntlets", "hosidius_5").
+     * @param stationMask Bitmask of stations this profile applies to.
+     * @param modifierMask Bitmask of required modifiers (default: none).
+     * @param low The low value for the statrandom calculation.
+     * @param high The high value for the statrandom calculation.
+     */
+    fun chance(
+        label: String,
+        stationMask: Int,
+        modifierMask: Int = 0,
+        low: Int,
+        high: Int
+    ): ChanceDef = ChanceDef(label, stationMask, modifierMask, low, high)
+
+    /**
+     * Creates a simple heat-cooking action (raw -> cooked/burnt).
      */
     fun heatCook(
         rowKey: String,
@@ -31,9 +38,10 @@ object CookingHelpers {
         burnt: String,
         level: Int,
         xp: Int,
-        stopBurnFire: Int,
-        stopBurnRange: Int,
-        stationMask: Int = STATION_ANY
+        stopBurnFire: Int = 0,
+        stopBurnRange: Int = 0,
+        stationMask: Int = STATION_ANY,
+        chances: List<ChanceDef> = emptyList()
     ): ActionDef = ActionDef(
         rowId = "dbrows.$rowKey",
         key = raw,
@@ -46,7 +54,8 @@ object CookingHelpers {
         outcomes = listOf(
             OutcomeDef(rowSuffix = "success", kind = OutcomeKind.SUCCESS, item = cooked, xp = xp, weight = 1),
             OutcomeDef(rowSuffix = "fail", kind = OutcomeKind.FAIL, item = burnt, xp = 0, weight = 1)
-        )
+        ),
+        chances = chances
     )
 
     /**
@@ -73,9 +82,10 @@ object CookingHelpers {
         burnt: String,
         cookingLevel: Int,
         xp: Int,
-        stopBurnFire: Int,
-        stopBurnRange: Int,
-        spitItem: String = "items.spit_iron"
+        stopBurnFire: Int = 0,
+        stopBurnRange: Int = 0,
+        spitItem: String = "items.spit_iron",
+        chances: List<ChanceDef> = emptyList()
     ): List<ActionDef> = listOf(
         // Raw meat + iron spit -> skewered meat (inventory prep step)
         ActionDef(
@@ -110,7 +120,8 @@ object CookingHelpers {
             outcomes = listOf(
                 OutcomeDef(rowSuffix = "success", kind = OutcomeKind.SUCCESS, item = cooked, xp = xp, weight = 1),
                 OutcomeDef(rowSuffix = "fail", kind = OutcomeKind.FAIL, item = burnt, xp = 0, weight = 1)
-            )
+            ),
+            chances = chances
         )
     )
 
@@ -208,7 +219,8 @@ object CookingHelpers {
                             xp = 0,
                             weight = 1
                         )
-                    ) + alwaysOutcomes
+                    ) + alwaysOutcomes,
+                    chances = step.chances
                 )
             )
         }

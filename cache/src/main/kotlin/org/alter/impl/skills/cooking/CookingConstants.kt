@@ -38,4 +38,21 @@ object CookingConstants {
 
     /** Station mask for cooking on both fire and range. */
     const val STATION_ANY = STATION_FIRE or STATION_RANGE
+
+    /**
+     * Modifier flags for burn chance profiles.
+     * Combined as bitmasks to represent equipment/location bonuses.
+     */
+    object ChanceModifier {
+        /** No modifier (base chance). */
+        const val NONE = 0
+        /** Cooking gauntlets equipped. */
+        const val GAUNTLETS = 1
+        /** Hosidius Kitchen range (+5% burn reduction). */
+        const val HOSIDIUS_5 = 2
+        /** Hosidius Kitchen range with Kourend Hard Diary (+10% burn reduction). */
+        const val HOSIDIUS_10 = 4
+        /** Lumbridge Castle range (reduced burn for low-level foods). */
+        const val LUMBRIDGE = 8
+    }
 }

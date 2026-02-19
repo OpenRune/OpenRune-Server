@@ -1,6 +1,12 @@
 package org.alter.impl.skills.cooking.recipes
 
 import org.alter.impl.skills.cooking.ActionDef
+import org.alter.impl.skills.cooking.CookingConstants.ChanceModifier.HOSIDIUS_10
+import org.alter.impl.skills.cooking.CookingConstants.ChanceModifier.HOSIDIUS_5
+import org.alter.impl.skills.cooking.CookingConstants.ChanceModifier.LUMBRIDGE
+import org.alter.impl.skills.cooking.CookingConstants.STATION_ANY
+import org.alter.impl.skills.cooking.CookingConstants.STATION_RANGE
+import org.alter.impl.skills.cooking.CookingHelpers.chance
 import org.alter.impl.skills.cooking.CookingHelpers.multiStepCook
 import org.alter.impl.skills.cooking.HeatStepDef
 import org.alter.impl.skills.cooking.PrepStepDef
@@ -39,7 +45,13 @@ object StewRecipes {
             burnt = "items.burnt_stew",
             xp = 117,
             stopBurnFire = 58,
-            stopBurnRange = 58
+            stopBurnRange = 58,
+            chances = listOf(
+                chance("base_any", STATION_ANY, low = 68, high = 392),
+                chance("lumbridge", STATION_RANGE, modifierMask = LUMBRIDGE, low = 78, high = 412),
+                chance("hosidius_5", STATION_RANGE, modifierMask = HOSIDIUS_5, low = 80, high = 404),
+                chance("hosidius_10", STATION_RANGE, modifierMask = HOSIDIUS_10, low = 93, high = 417)
+            )
         )
     )
 
@@ -80,7 +92,12 @@ object StewRecipes {
             burnt = "items.burnt_curry",
             xp = 280,
             stopBurnFire = 74,
-            stopBurnRange = 74
+            stopBurnRange = 74,
+            chances = listOf(
+                chance("base_any", STATION_ANY, low = 38, high = 332),
+                chance("hosidius_5", STATION_RANGE, modifierMask = HOSIDIUS_5, low = 50, high = 344),
+                chance("hosidius_10", STATION_RANGE, modifierMask = HOSIDIUS_10, low = 63, high = 357)
+            )
         )
     )
 

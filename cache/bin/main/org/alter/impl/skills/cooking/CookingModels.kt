@@ -5,6 +5,27 @@ package org.alter.impl.skills.cooking
  */
 
 /**
+ * Defines a burn chance profile for a specific station and modifier combination.
+ *
+ * At runtime, the system selects the most specific matching profile based on the
+ * player's station and active modifiers, then uses [low]/[high] with the
+ * `computeSkillingSuccess` function to determine burn probability.
+ *
+ * @property label Human-readable label for this profile (e.g., "base_any", "gauntlets").
+ * @property stationMask Bitmask of stations this profile applies to.
+ * @property modifierMask Bitmask of required modifiers (see [CookingConstants.ChanceModifier]).
+ * @property low The low value for the statrandom calculation.
+ * @property high The high value for the statrandom calculation.
+ */
+data class ChanceDef(
+    val label: String,
+    val stationMask: Int,
+    val modifierMask: Int = 0,
+    val low: Int,
+    val high: Int
+)
+
+/**
  * Defines an input ingredient for a cooking action.
  *
  * @property item RSCM key for the item (e.g., "items.raw_shrimp").
@@ -55,12 +76,13 @@ data class ActionDef(
     val key: String,
     val variant: Int = CookingConstants.DEFAULT_VARIANT,
     val level: Int,
-    val stopBurnFire: Int,
-    val stopBurnRange: Int,
+    val stopBurnFire: Int = 0,
+    val stopBurnRange: Int = 0,
     val stationMask: Int = CookingConstants.STATION_ANY,
     val trigger: Int = CookingConstants.Trigger.HEAT_SOURCE,
     val inputs: List<InputDef>,
-    val outcomes: List<OutcomeDef>
+    val outcomes: List<OutcomeDef>,
+    val chances: List<ChanceDef> = emptyList()
 )
 
 /**
@@ -99,8 +121,9 @@ data class HeatStepDef(
     val cooked: String,
     val burnt: String,
     val xp: Int,
-    val stopBurnFire: Int,
-    val stopBurnRange: Int,
+    val stopBurnFire: Int = 0,
+    val stopBurnRange: Int = 0,
     val stationMask: Int = CookingConstants.STATION_ANY,
-    val always: List<Pair<String, Int>> = emptyList()
+    val always: List<Pair<String, Int>> = emptyList(),
+    val chances: List<ChanceDef> = emptyList()
 )

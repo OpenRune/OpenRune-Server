@@ -1,7 +1,11 @@
 package org.alter.impl.skills.cooking.recipes
 
 import org.alter.impl.skills.cooking.ActionDef
+import org.alter.impl.skills.cooking.CookingConstants.ChanceModifier.HOSIDIUS_10
+import org.alter.impl.skills.cooking.CookingConstants.ChanceModifier.HOSIDIUS_5
+import org.alter.impl.skills.cooking.CookingConstants.ChanceModifier.LUMBRIDGE
 import org.alter.impl.skills.cooking.CookingConstants.STATION_RANGE
+import org.alter.impl.skills.cooking.CookingHelpers.chance
 import org.alter.impl.skills.cooking.CookingHelpers.multiStepCook
 import org.alter.impl.skills.cooking.HeatStepDef
 import org.alter.impl.skills.cooking.PrepStepDef
@@ -37,7 +41,13 @@ object PieRecipes {
             xp = 78,
             stopBurnFire = 44,
             stopBurnRange = 44,
-            stationMask = STATION_RANGE
+            stationMask = STATION_RANGE,
+            chances = listOf(
+                chance("range", STATION_RANGE, low = 98, high = 452),
+                chance("lumbridge", STATION_RANGE, modifierMask = LUMBRIDGE, low = 108, high = 462),
+                chance("hosidius_5", STATION_RANGE, modifierMask = HOSIDIUS_5, low = 110, high = 464),
+                chance("hosidius_10", STATION_RANGE, modifierMask = HOSIDIUS_10, low = 123, high = 477)
+            )
         )
     )
 
@@ -63,7 +73,13 @@ object PieRecipes {
             xp = 110,
             stopBurnFire = 54,
             stopBurnRange = 54,
-            stationMask = STATION_RANGE
+            stationMask = STATION_RANGE,
+            chances = listOf(
+                chance("range", STATION_RANGE, low = 78, high = 412),
+                chance("lumbridge", STATION_RANGE, modifierMask = LUMBRIDGE, low = 88, high = 432),
+                chance("hosidius_5", STATION_RANGE, modifierMask = HOSIDIUS_5, low = 90, high = 424),
+                chance("hosidius_10", STATION_RANGE, modifierMask = HOSIDIUS_10, low = 103, high = 437)
+            )
         )
     )
 
@@ -106,7 +122,12 @@ object PieRecipes {
             xp = 128,
             stopBurnFire = 63,
             stopBurnRange = 63,
-            stationMask = STATION_RANGE
+            stationMask = STATION_RANGE,
+            chances = listOf(
+                chance("range", STATION_RANGE, low = 58, high = 372),
+                chance("hosidius_5", STATION_RANGE, modifierMask = HOSIDIUS_5, low = 70, high = 384),
+                chance("hosidius_10", STATION_RANGE, modifierMask = HOSIDIUS_10, low = 83, high = 397)
+            )
         )
     )
 
@@ -132,7 +153,12 @@ object PieRecipes {
             xp = 130,
             stopBurnFire = 64,
             stopBurnRange = 64,
-            stationMask = STATION_RANGE
+            stationMask = STATION_RANGE,
+            chances = listOf(
+                chance("range", STATION_RANGE, low = 58, high = 372),
+                chance("hosidius_5", STATION_RANGE, modifierMask = HOSIDIUS_5, low = 70, high = 384),
+                chance("hosidius_10", STATION_RANGE, modifierMask = HOSIDIUS_10, low = 83, high = 397)
+            )
         )
     )
 
@@ -174,7 +200,12 @@ object PieRecipes {
             xp = 164,
             stopBurnFire = 81,
             stopBurnRange = 81,
-            stationMask = STATION_RANGE
+            stationMask = STATION_RANGE,
+            chances = listOf(
+                chance("range", STATION_RANGE, low = 38, high = 332),
+                chance("hosidius_5", STATION_RANGE, modifierMask = HOSIDIUS_5, low = 50, high = 344),
+                chance("hosidius_10", STATION_RANGE, modifierMask = HOSIDIUS_10, low = 63, high = 357)
+            )
         )
     )
 
@@ -200,7 +231,13 @@ object PieRecipes {
             xp = 180,
             stopBurnFire = 86,
             stopBurnRange = 86,
-            stationMask = STATION_RANGE
+            stationMask = STATION_RANGE,
+            chances = listOf(
+                chance("range", STATION_RANGE, low = 20, high = 300),
+                chance("lumbridge", STATION_RANGE, modifierMask = LUMBRIDGE, low = 108, high = 462),
+                chance("hosidius_5", STATION_RANGE, modifierMask = HOSIDIUS_5, low = 32, high = 312),
+                chance("hosidius_10", STATION_RANGE, modifierMask = HOSIDIUS_10, low = 45, high = 325)
+            )
         )
     )
 
@@ -226,7 +263,13 @@ object PieRecipes {
             xp = 200,
             stopBurnFire = 94,
             stopBurnRange = 94,
-            stationMask = STATION_RANGE
+            stationMask = STATION_RANGE,
+            chances = listOf(
+                chance("range", STATION_RANGE, low = 17, high = 285),
+                chance("lumbridge", STATION_RANGE, modifierMask = LUMBRIDGE, low = 140, high = 450),
+                chance("hosidius_5", STATION_RANGE, modifierMask = HOSIDIUS_5, low = 29, high = 297),
+                chance("hosidius_10", STATION_RANGE, modifierMask = HOSIDIUS_10, low = 42, high = 310)
+            )
         )
     )
 
@@ -268,7 +311,12 @@ object PieRecipes {
             xp = 210,
             stopBurnFire = 100,
             stopBurnRange = 94,
-            stationMask = STATION_RANGE
+            stationMask = STATION_RANGE,
+            chances = listOf(
+                chance("range", STATION_RANGE, low = 15, high = 270),
+                chance("hosidius_5", STATION_RANGE, modifierMask = HOSIDIUS_5, low = 27, high = 282),
+                chance("hosidius_10", STATION_RANGE, modifierMask = HOSIDIUS_10, low = 40, high = 295)
+            )
         )
     )
 
@@ -294,7 +342,12 @@ object PieRecipes {
             xp = 220,
             stopBurnFire = 100,
             stopBurnRange = 97,
-            stationMask = STATION_RANGE
+            stationMask = STATION_RANGE,
+            chances = listOf(
+                chance("range", STATION_RANGE, low = 8, high = 250),
+                chance("hosidius_5", STATION_RANGE, modifierMask = HOSIDIUS_5, low = 20, high = 262),
+                chance("hosidius_10", STATION_RANGE, modifierMask = HOSIDIUS_10, low = 33, high = 275)
+            )
         )
     )
 
@@ -336,7 +389,12 @@ object PieRecipes {
             xp = 240,
             stopBurnFire = 100,
             stopBurnRange = 100,
-            stationMask = STATION_RANGE
+            stationMask = STATION_RANGE,
+            chances = listOf(
+                chance("range", STATION_RANGE, low = 1, high = 222),
+                chance("hosidius_5", STATION_RANGE, modifierMask = HOSIDIUS_5, low = 13, high = 234),
+                chance("hosidius_10", STATION_RANGE, modifierMask = HOSIDIUS_10, low = 26, high = 247)
+            )
         )
     )
 
@@ -378,7 +436,12 @@ object PieRecipes {
             xp = 260,
             stopBurnFire = 100,
             stopBurnRange = 100,
-            stationMask = STATION_RANGE
+            stationMask = STATION_RANGE,
+            chances = listOf(
+                chance("range", STATION_RANGE, low = 1, high = 212),
+                chance("hosidius_5", STATION_RANGE, modifierMask = HOSIDIUS_5, low = 13, high = 224),
+                chance("hosidius_10", STATION_RANGE, modifierMask = HOSIDIUS_10, low = 26, high = 237)
+            )
         )
     )
 

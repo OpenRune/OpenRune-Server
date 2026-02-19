@@ -7,7 +7,15 @@ import org.alter.api.computeSkillingSuccess
 import org.alter.api.ext.hasEquipped
 import org.alter.game.model.entity.GameObject
 import org.alter.game.model.entity.Player
+import org.alter.impl.skills.cooking.ChanceDef
+import org.alter.impl.skills.cooking.CookingConstants.ChanceModifier.GAUNTLETS
+import org.alter.impl.skills.cooking.CookingConstants.ChanceModifier.HOSIDIUS_10
+import org.alter.impl.skills.cooking.CookingConstants.ChanceModifier.HOSIDIUS_5
+import org.alter.impl.skills.cooking.CookingConstants.ChanceModifier.LUMBRIDGE
+import org.alter.impl.skills.cooking.CookingConstants.STATION_FIRE
+import org.alter.impl.skills.cooking.CookingConstants.STATION_RANGE
 import org.alter.skills.cooking.runtime.CookingAction
+import org.alter.skills.cooking.runtime.CookingActionRegistry
 import org.alter.skills.cooking.runtime.OutcomeKind
 import org.alter.skills.cooking.runtime.Trigger
 import org.alter.skills.firemaking.ColoredLogs
@@ -179,9 +187,14 @@ object CookingUtils {
     /**
      * Rolls to determine if cooking succeeds.
      *
-     * Uses the OSRS `statrandom` (computeSkillingSuccess) approach with per-food
-     * low/high values. The cooking cape guarantees success. Cooking gauntlets lower
-     * the stop-burn threshold for affected items.
+     * Uses wiki-sourced [ChanceDef] profiles when available (preferred), falling
+     * back to the legacy stopBurn approach for recipes without chance data.
+     *
+     * The chance-based system:
+     * 1. Cooking cape / max cape → never burn.
+     * 2. Build the player's station mask and modifier mask from equipment/location.
+     * 3. Find the most specific matching [ChanceDef] profile.
+     * 4. Call [computeSkillingSuccess] with that profile's low/high values.
      */
     fun rollCookSuccess(
         player: Player,
@@ -193,15 +206,99 @@ object CookingUtils {
 
         val cookingLevel = player.getSkills().getCurrentLevel(Skills.COOKING)
 
+        // Try chance-based success (wiki-accurate profiles)
+        val chances = CookingActionRegistry.chancesByAction[action.key to action.variant]
+        if (!chances.isNullOrEmpty()) {
+            val stationMask = when (station) {
+                CookStation.FIRE -> STATION_FIRE
+                else -> STATION_RANGE
+            }
+            val modifierMask = buildModifierMask(player, station)
+            val best = findBestChance(chances, stationMask, modifierMask)
+            if (best != null) {
+                val chance = computeSkillingSuccess(
+                    low = best.low,
+                    high = best.high,
+                    level = cookingLevel.coerceIn(1, 99)
+                )
+                return Random.nextDouble() < chance
+            }
+        }
+
+        // Legacy fallback: stopBurn system
+        return rollWithStopBurn(player, station, action, cookingLevel)
+    }
+
+    /**
+     * Builds the player's modifier bitmask from equipment and station type.
+     */
+    private fun buildModifierMask(player: Player, station: CookStation): Int {
+        var mask = 0
+        if (hasCookingGauntlets(player)) mask = mask or GAUNTLETS
+        when (station) {
+            CookStation.HOSIDIUS_RANGE -> {
+                // TODO: Check Kourend Hard Diary for +10% — default to +5%
+                mask = mask or if (hasKourendHardDiary(player)) HOSIDIUS_10 else HOSIDIUS_5
+            }
+            CookStation.LUMBRIDGE_RANGE -> mask = mask or LUMBRIDGE
+            else -> {}
+        }
+        return mask
+    }
+
+    /**
+     * Returns true if the player has completed the Kourend Hard Diary.
+     * TODO: Implement actual diary achievement check.
+     */
+    private fun hasKourendHardDiary(@Suppress("UNUSED_PARAMETER") player: Player): Boolean = false
+
+    /**
+     * Selects the most specific [ChanceDef] that matches the given station and
+     * modifier mask. A profile matches if:
+     * 1. Its station mask overlaps with the player's station.
+     * 2. Its modifier mask is a subset of the player's active modifiers.
+     *
+     * Among matching profiles, the one with the most modifier bits set wins
+     * (most specific). Ties are broken by highest chance (low + high sum).
+     */
+    private fun findBestChance(
+        chances: List<ChanceDef>,
+        stationMask: Int,
+        modifierMask: Int
+    ): ChanceDef? {
+        val candidates = chances
+            .filter { (it.stationMask and stationMask) != 0 }
+            .filter { (it.modifierMask and modifierMask) == it.modifierMask }
+
+        if (candidates.isEmpty()) {
+            // No modifier-compatible match — try base profile (modifierMask == 0)
+            return chances.firstOrNull {
+                (it.stationMask and stationMask) != 0 && it.modifierMask == 0
+            }
+        }
+
+        return candidates.maxWithOrNull(
+            compareBy({ Integer.bitCount(it.modifierMask) }, { it.low + it.high })
+        )
+    }
+
+    /**
+     * Legacy stop-burn based success roll.
+     * Used as fallback when no [ChanceDef] profiles are defined for a recipe.
+     */
+    private fun rollWithStopBurn(
+        player: Player,
+        station: CookStation,
+        action: CookingAction,
+        cookingLevel: Int
+    ): Boolean {
         val wearingGauntlets = hasCookingGauntlets(player)
 
-        // For stop-burn lookup, Hosidius/Lumbridge count as RANGE
         val baseStation = when (station) {
             CookStation.FIRE -> CookStation.FIRE
             else -> CookStation.RANGE
         }
 
-        // Determine effective stop-burn level
         val stopBurn: Int = if (wearingGauntlets) {
             val override = gauntletStopBurnOverrides[action.key]
             if (override != null) {
@@ -224,16 +321,12 @@ object CookingUtils {
 
         if (cookingLevel >= stopBurn) return true
 
-        // Use computeSkillingSuccess with the level requirement as the base
-        // low=level requirement scaled, high=stop-burn scaled
-        val effectiveLevel = cookingLevel.coerceIn(1, 99)
         val chance = computeSkillingSuccess(
             low = action.row.level,
             high = stopBurn,
-            level = effectiveLevel
+            level = cookingLevel.coerceIn(1, 99)
         )
 
-        // Hosidius Kitchen range: 5% reduced burn chance (multiply success by 1.05)
         val adjustedChance = when (station) {
             CookStation.HOSIDIUS_RANGE -> (chance * 1.05).coerceAtMost(1.0)
             else -> chance

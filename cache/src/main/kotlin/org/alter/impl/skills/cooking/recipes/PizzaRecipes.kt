@@ -1,7 +1,10 @@
 package org.alter.impl.skills.cooking.recipes
 
 import org.alter.impl.skills.cooking.ActionDef
+import org.alter.impl.skills.cooking.CookingConstants.ChanceModifier.HOSIDIUS_10
+import org.alter.impl.skills.cooking.CookingConstants.ChanceModifier.HOSIDIUS_5
 import org.alter.impl.skills.cooking.CookingConstants.STATION_RANGE
+import org.alter.impl.skills.cooking.CookingHelpers.chance
 import org.alter.impl.skills.cooking.CookingHelpers.multiStepCook
 import org.alter.impl.skills.cooking.HeatStepDef
 import org.alter.impl.skills.cooking.PrepStepDef
@@ -43,7 +46,12 @@ object PizzaRecipes {
             xp = 143,
             stopBurnFire = 68,
             stopBurnRange = 68,
-            stationMask = STATION_RANGE
+            stationMask = STATION_RANGE,
+            chances = listOf(
+                chance("range", STATION_RANGE, low = 48, high = 352),
+                chance("hosidius_5", STATION_RANGE, modifierMask = HOSIDIUS_5, low = 60, high = 364),
+                chance("hosidius_10", STATION_RANGE, modifierMask = HOSIDIUS_10, low = 73, high = 377)
+            )
         )
     )
 
