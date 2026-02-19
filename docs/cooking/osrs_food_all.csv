@@ -1,0 +1,351 @@
+Name,Heals,Skills_Needed,Notes,GP_Per_Heal,Price,Members
+Cup of tea,3,5,Boosts Attack by 2% + 2,28.33,85,1
+Bruised banana,0,,Taken from the  spooky cauldron behind Zaff's Superior Staves. It was used in the 2022 and 2023 Halloween events.,N/A,N/A,0
+Tea flask,3 × 5,,Reusable item obtained via Creature CreationMust be filled with Cups of teaBoosts Attack by 3[confirmation needed],N/A,N/A,1
+Poison chalice,Random,,Has a chance to apply a variety of random effects which can be beneficial or harmfulHas a chance to either heal or severely harm the player,"75.93 – 1,063","1,063",1
+Caerula berries,2,,"Found in Caerula bushes, found north of the Twilight Temple",N/A,N/A,1
+Jangerberries,2,,,186.50,373,1
+Shrimps,3,1   1,Caught via small net fishing.,9.00,27,0
+Anchovies,1,,,58.00,58,0
+Sardine,4,1   5,Caught via bait fishing.,5.50,22,0
+Salmon,9,25   30,Caught via fly fishing.,6.89,62,0
+Trout,7,15   20,Caught via fly fishing.,5.00,35,0
+Giant carp,6,,,N/A,N/A,1
+Cod,7,18   23,Caught via big net fishing.,4.57,32,1
+Herring,5,5   10,Caught via bait fishing.,14.00,70,0
+Pike,8,20   25,Caught via bait fishing.,23.25,186,0
+Mackerel,6,10   16,Caught via big net fishing.,5.33,32,1
+Tuna,10,30   35,Caught with a harpoon.,8.90,89,0
+Bass,13,43   46,Caught via big net fishing.,7.08,92,1
+Swordfish,14,45   50,Caught with a harpoon.,14.50,203,0
+Lobster,12,40   40,Caught with a lobster pot.,12.50,150,0
+Shark,20,80   76,Caught with a harpoon or traded for with minnows.,41.30,826,1
+Manta ray,22,91  81,"Can be caught with fishing from Fishing Trawler minigame, drift net fishing, Tempoross Drops from Zulrah, Vorkath, and the Tombs of Amascut.",78.05,"1,717",1
+Sea turtle,21,82   79,"Can only be obtained from the Fishing Trawler minigame, Tempoross, and drift net fishing.",53.95,"1,133",1
+Edible seaweed,4,,,13.00,52,1
+Karamjan rum,5,,,6.00,30,0
+Cup of tea (nettle),3,20,restores 5% Run Energy,N/A,N/A,1
+Tenti pineapple,2 × 4,,Quest item that can act as a normal Pineapple,N/A,N/A,1
+Ugthanki meat,3,,Better used as an ingredient to make Ugthanki kebabs,334.00,"1,002",1
+Chopped tomato,2,,,31.50,63,1
+Chopped onion,1,,,110.00,110,1
+Onion &amp; tomato,3,,,5.33,16,1
+Ugthanki kebab,19,58,"The player's character will say ""Yum!"" when eaten.",31.68,602,1
+Ugthanki kebab (bad),0,58,Can sometimes heal 9Can still be used to make a Super kebab,N/A,N/A,1
+Cake,4 × 3,40,"Baked by players, see Cooking skill.Heals 4 Hitpoints per bite (3 bites total).Can be stolen from East Ardougne, Keldagrim, Kourend Castle and Hosidius Farmers' Market.",22.25,267,0
+Chocolate cake,5 × 3,50,"Made by adding chocolate dust to cake.Heals 5 Hitpoints per bite (3 bites total).1/3 Slice can be thieved from bakery stalls, except the Sophanem one.",24.67,370,0
+Asgarnian ale,1,,,110.00,110,0
+Wizard's mind bomb,1,,,119.00,119,0
+Greenman's ale,1,,,235.00,235,1
+Dragon bitter,1,,,428.00,428,1
+Dwarven stout,1,,,114.00,114,0
+Grog,3,,,112.67,338,1
+Beer,1,,,85.00,85,0
+Potato,1,,,20.00,20,0
+Onion,1,,,15.00,15,0
+Pumpkin,14,,,866.07,"12,125",0
+Easter egg,14,,,551.00,"7,714",0
+Banana,2,,,23.50,47,0
+Cabbage,1,,,21.00,21,0
+Spinach roll,2,,,45.50,91,0
+Kebab,3 + 7%,,"Amount healed uses most likely resultCan heal 0 or up to 7 + 24%Rare chances to apply buffs, drains, or no effects at all",2.45 – 49,49,0
+Chocolate bar,3,,,13.00,39,0
+Chocolatey milk,4,,,N/A,N/A,1
+Tomato,2,,,9.50,19,0
+Cheese,2,,,26.00,52,0
+Half full wine jug,7,,,"2,196.14","15,373",0
+Jug of wine,11[3],35,"Upon consumption, Attack is temporarily decreased by 2 points and leaves a jug behind.",0.36,4,0
+Stew,11,25,"Once eaten, an empty bowl remains in the inventory.",5.45,60,0
+Damiana tea,4,36,Also heals for 6 run energy.,N/A,N/A,1
+Damiana tea (milky),4,N/A,Also heals for 6 run energy.,N/A,N/A,1
+Cup of tea (damiana),4,36,Also heals for 6 run energy.,N/A,N/A,1
+Cup of tea (milky damiana),4,N/A,Also heals for 6 run energy.,N/A,N/A,1
+Curry,19,60,"Commonly used for fighting the Chaos Elemental. Once eaten, an empty bowl remains in the inventory.",18.89,359,1
+Vodka,5,,,21.20,106,1
+Whisky,5,,,26.80,134,1
+Gin,5,,,34.40,172,1
+Brandy,5,,,25.60,128,1
+Premade blurb' sp.,7,,,92.86,650,1
+Premade choc s'dy,5,,,11.60,58,1
+Premade dr' dragon,5,,,6.40,32,1
+Premade fr' blast,9,,,3.89,35,1
+Premade p' punch,9,8,Purchased at Tree gnome stronghold,3.11,28,1
+Premade sgg,5,,,5.40,27,1
+Premade wiz blz'd,5,,,5.20,26,1
+Pineapple punch,9,8,See Gnome cooking for more information.,11.33,102,1
+Wizard blizzard,5,,,21.20,106,1
+Blurberry special,7,,,589.86,"4,129",1
+Choc saturday,5,,,13.80,69,1
+Short green guy,5,,,19.60,98,1
+Fruit blast,9,,,270.00,"2,430",1
+Drunk dragon,5,,,14.80,74,1
+Lemon,2,,,37.00,74,1
+Lemon chunks,2,,,58.00,116,1
+Lemon slices,2,,,67.00,134,1
+Orange,2,,,85.50,171,1
+Orange chunks,2,,,46.50,93,1
+Orange slices,2,,,160.50,321,1
+Pineapple,2 × 4,,,22.75,182,1
+Pineapple chunks,2,,,82.00,164,1
+Pineapple ring,2,,,41.00,82,1
+Lime,2,,,36.50,73,1
+Lime chunks,2,,,93.00,186,1
+Lime slices,2,,,89.50,179,1
+Dwellberries,2,,,22.00,44,1
+Equa leaves,1,,,370.00,370,1
+Pot of cream,1,,,10.00,10,1
+Cooked chicken,3,1,Raw chicken is obtained by killing chickens.,25.00,75,0
+Cooked meat,3,1,Raw meat can be obtained by killing cows or giant rats.,26.33,79,0
+Lava eel,11,,,N/A,N/A,1
+Toad's legs,3,,,147.00,441,1
+King worm,2,,,261.50,523,1
+Chocolate bomb,15,42,Made using Gnome cooking,48.60,729,1
+Tangled toad's legs,15,40,Made using Gnome cooking,55.47,832,1
+Worm hole,12,30,Made using Gnome cooking,312.17,"3,746",1
+Veg ball,12,36,Made using Gnome cooking,174.25,"2,091",1
+Worm crunchies,8,14,Made using Gnome cooking,468.88,"3,751",1
+Chocchip crunchies,7,16,Made using Gnome cooking,277.00,"1,939",1
+Spicy crunchies,7,12,Made using Gnome cooking,305.43,"2,138",1
+Toad crunchies,8,10,Made using Gnome cooking,598.13,"4,785",1
+Premade w'm batta,11,N/A,Purchased from Gnome waiter in the Grand tree for 120,4.00,44,1
+Premade t'd batta,11,N/A,Purchased from Gnome waiter in the Grand tree for 120,3.91,43,1
+Premade c+t batta,11,N/A,Purchased from Gnome waiter in the Grand tree for 120,4.36,48,1
+Premade fr't batta,11,N/A,Purchased from Gnome waiter in the Grand tree for 120,3.91,43,1
+Premade veg batta,11,N/A,Purchased from Gnome waiter in the Grand tree for 120,3.91,43,1
+Premade choc bomb,15,N/A,Purchased from Gnome waiter in the Grand tree for 160,8.20,123,1
+Premade ttl,15,N/A,Purchased from Gnome waiter in the Grand tree for 160,6.13,92,1
+Premade worm hole,12,N/A,Purchased from Gnome waiter in the Grand tree for 150,4.33,52,1
+Premade veg ball,12,N/A,Purchased from Gnome waiter in the Grand tree for 120,4.17,50,1
+Premade w'm crun',8,N/A,Purchased from Gnome waiter in the Grand tree for 85,5.88,47,1
+Premade ch' crunch,8,N/A,Purchased from Gnome waiter in the Grand tree for 85,6.88,55,1
+Premade s'y crunch,7,N/A,Purchased from Gnome waiter in the Grand tree for 85,6.71,47,1
+Premade t'd crunch,8,N/A,Purchased from Gnome waiter in the Grand tree for 85,125.88,"1,007",1
+Worm batta,11,27,"Made using Gnome cooking, Dropped by Tortoise",212.09,"2,333",1
+Toad batta,11,26,Made using Gnome cooking,130.55,"1,436",1
+Cheese+tom batta,11,29,Made using Gnome cooking,183.00,"2,013",1
+Fruit batta,11,25,Made using Gnome cooking,340.18,"3,742",1
+Vegetable batta,11,28,Made using Gnome cooking,294.18,"3,236",1
+Plain pizza,7 × 2,35,"Baked by players, see cooking skill.Heals 7 Hitpoints per bite (2 bites total).",26.93,377,0
+Meat pizza,8 × 2,45,Made by using cooked meat or chicken on a plain pizza.Heals 8 Hitpoints per bite (2 bites total).,17.50,280,0
+Anchovy pizza,9 × 2,55,Made by using anchovies on a plain pizza.Heals 9 Hitpoints per bite (2 bites total).,25.56,460,0
+Pineapple pizza,11 × 2,65,Made by using pineapple chunks or rings on a plain pizza.Heals 11 Hitpoints per bite (2 bites total).,28.32,623,1
+Bread,5,1,"Baked by players, see Cooking skill.",36.20,181,0
+Apple pie,7 × 2,30,Made by using a cooking apple on a pie shell to make an uncooked apple pie and cooking it.Heals 7 Hitpoints per bite (2 bites total).,7.86,110,0
+Chichilihui rosé,16,,"Purchased from Moonrise Wines for 100 gp. Upon consumption, Attack is temporarily decreased by 5, Farming by 1, and Herblore is temporarily boosted by 1.",18.13,290,1
+Ixcoztic white,16,,"Purchased from Moonrise Wines for 100 gp. Upon consumption, Attack is temporarily decreased by 5, Herblore by 1, and Farming is temporarily boosted by 1.",10.69,171,1
+Redberry pie,5 × 2,10,"Baked by players, see Cooking skill.Heals 5 Hitpoints per bite (2 bites total).",20.20,202,0
+Meat pie,6 × 2,20,"Baked by players, see Cooking skill.Heals 6 Hitpoints per bite (2 bites total).",3.75,45,0
+Cooked oomlie wrap,14,,,416.86,"5,836",1
+Cooked chompy,11,,,6.55,72,1
+Moonlight mead,4,,,28.25,113,1
+Cooked karambwan,18,30   65,"A karambwan vessel and completion of Tai Bwo Wannai Trio required to fish and cook it properly.Can be eaten in the same tick as another piece of food, allowing for combo eating.Shorter attack delay than most other food (2 ticks instead of 4).",28.33,510,1
+Sliced banana,2,,,20.50,41,0
+Cooked rabbit,5,,,46.20,231,1
+Thin snail meat,5 – 7,,,64.57 – 90.40,452,1
+Lean snail meat,5 – 8,,,441.13 – 705.80,"3,529",1
+Fat snail meat,7 – 9,,,281.89 – 362.43,"2,537",1
+Cooked slimy eel,6 – 10,,,2.70 – 4.50,27,1
+Keg of beer,15,,,47.07,706,1
+Beer tankard,4,,,98.75,395,1
+Monkey nuts,4,,,40.50,162,1
+Monkey bar,5,,,136.80,684,1
+Banana stew,11,N/A,"Once eaten, an empty bowl remains in the inventory.",3.36,37,1
+Nettle-water,1,,,N/A,N/A,1
+Nettle tea,3,,,N/A,N/A,1
+Guthix rest,5 × 4,18,Requires partial completion of One Small Favour to make and consume.Can boost 5 Hitpoints above max. Restores 5% run energy and reduces poison/venom damage by 1.It is not considered food as it is a potion made with the Herblore skill. Will not increase the delay until your next attack.,145.75,"2,915",1
+White pearl,2,,,N/A,N/A,1
+Giant frog legs,6,,,771.33,"4,628",1
+Purple sweets,1 – 3,N/A,The only stackable food item in the game.,"2,143.00 – 6,429.00","6,429",1
+Super kebab,3 + 7%,N/A,Amount healed is most likely resultUncommon chance to heal 0Rare chance to drain a random skill by -3,168.90 – 563.00,"1,689",1
+Bandit's brew,1,,,"2,088.00","2,088",1
+Cave eel,8 – 12,,,7.75 – 11.63,93,1
+Frog spawn,3 – 6,,,N/A,N/A,1
+Strawberry,1 – 6,,1 + 6% of maximum Hitpoints,18.50 – 111.00,111,1
+Basket of strawberries,(1 - 6) × 5,31,"Contains 5 strawberries, each of which heals 1-6 Hitpoints (1 + 6% of hp).Strawberry spawn at Shayziens' Wall in Great Kourend for no requirements.",13.83 – 83.00,415,1
+Asgarnian ale(m),2,,,"11,790.00","23,580",1
+Mature wmb,2,,,"13,832.00","27,664",1
+Greenman's ale(m),2,,,"29,816.50","59,633",1
+Dragon bitter(m),2,,,357.50,715,1
+Dwarven stout(m),2,,,"8,056.50","16,113",1
+Moonlight mead(m),6,,,915.67,"5,494",1
+Axeman's folly,1,,,248.00,248,1
+Axeman's folly(m),2,,,"25,145.50","50,291",1
+Chef's delight,1,,,284.00,284,1
+Chef's delight(m),2,,,"21,012.50","42,025",1
+Slayer's respite,1,,,40.00,40,1
+Slayer's respite(m),2,,,"19,594.00","39,188",1
+Cider,1,,,121.00,121,1
+Mature cider,2,,,"87,350.00","174,700",1
+Greenmans ale(4),1 × 4,,,"5,932.75","23,731",1
+Mind bomb(4),1 × 4,,,"8,725.00","34,900",1
+Dwarven stout(m4),2 × 4,,,"28,215.00","225,720",1
+Asgarnian ale(m4),2 × 4,,,691.50,"5,532",1
+Greenmans ale(m4),2 × 4,,,"2,247.34","193,271",1
+Mind bomb(m4),2 × 4,,,"3,825.38","30,603",1
+Dragon bitter(m4),2 × 4,,,"2,325.13","18,601",1
+Moonlight mead(m4),6 × 4,,,"5,730.00","137,520",1
+Axeman's folly(m4),2 × 4,,,"27,431.50","219,452",1
+Chef's delight(m4),2 × 4,,,"25,345.13","202,761",1
+Slayer's respite(m4),2 × 4,,,"24,659.63","197,277",1
+Cider(m4),2 × 4,,,"10,966.75","87,734",1
+Papaya fruit,8,,,206.25,"1,650",1
+Watermelon,(1 - 5) × 3,47,Must be sliced with a knife before eating.Heals for Hitpoints*120+1 per slice.,1.27 – 6.33,19,1
+Watermelon slice,1 – 5,47,Heals for Hitpoints*120+1 per slice.,15.80 – 79.00,79,1
+Cooked sweetcorn,1 – 10,,"1+10% of total hitpoints, rounded down",12.90 – 129.00,129,1
+Spider on stick,7 – 10,,,33.50 – 47.86,335,1
+Spider on shaft,7 – 10,,,27.90 – 39.86,279,1
+Gout tuber,12,,,"72,961.08","875,533",1
+White tree fruit,3,,,N/A,N/A,1
+Saradomin brew,(3 - 16) × 4,81,"Drunk in 4 sips, each healing for Hitpoints*15100+2 and can boost health above the maximum value.Due to it lowering offensive stats, it is typically used with super restore potions.It is not considered food as it is a potion made with the Herblore skill.Will not increase the delay before your next attack.",128.45 – 685.08,"8,221",1
+Armadyl brew,(3 - 11) × 4,89,"Drunk in 4 sips, each healing for Hitpoints*10100+2 and can boost health above the maximum value.Due to it lowering offensive stats, it is typically used with super restore potions.It is not considered food as it is a potion made with the Herblore skill.Will not increase the delay before your next attack.",62.70 – 229.92,"2,759",1
+Baked potato,4,,,42.50,170,1
+Potato with butter,14,39,Made by using pat of butter on a baked potato.,22.29,312,1
+Potato with cheese,16,47,Made by using cheese on a potato with butter.,15.50,248,1
+Choc-ice,7,N/A,Can be bought from Rokuh in Nardah. Negates damage from desert heat.,21.29,149,1
+Peach,8,,,N/A,N/A,1
+Baguette,6,,,N/A,N/A,0
+Triangle sandwich,6,,,92.50,555,0
+Roll,6,,,N/A,N/A,0
+Square sandwich,6,,,N/A,N/A,0
+Chilli potato,14,,,14.57,204,1
+Egg potato,16,,,15.94,255,1
+Mushroom potato,20,64,Made by using mushroom &amp; onion on a potato with butter.,42.10,842,1
+Tuna potato,22,68,Made by using tuna and corn on a potato with butter.,80.05,"1,761",1
+Chilli con carne,5,,,8.20,41,1
+Egg and tomato,8,,,22.25,178,1
+Mushroom &amp; onion,11,,,29.27,322,1
+Tuna and corn,13,,,76.85,999,1
+Minced meat,13,,,23.08,300,1
+Spicy sauce,2,,,380.50,761,1
+Scrambled egg,5,,,7.20,36,1
+Fried mushrooms,5,,,13.80,69,1
+Fried onions,5,,,5.80,29,1
+Chopped tuna,10,,,27.40,274,1
+Braindeath 'rum',14,,,2.14,30,1
+Garden pie,6 × 2,34,Made using CookingTemporary Farming boost of +3 Both slices are a 1-tick eat delay.,7.33,88,1
+Fish pie,6 × 2,47,Made using CookingTemporary Fishing boost of +3 Both slices are a 1-tick eat delay.,18.33,220,1
+Admiral pie,8 × 2,70,Heals 8 Hitpoints per bite (2 bites total).Boosts Fishing by 5.,5.94,95,1
+Wild pie,11 × 2,85,"Heals 11 Hitpoints per bite (2 bites total).Boosts Slayer by 5, and Ranged by 4.",28.91,636,1
+Summer pie,11 × 2,95,"Heals 11 Hitpoints per bite (2 bites total).Boosts Agility by 5, and restores 10% run energy.",36.91,812,1
+Roast rabbit,7,,,13.14,92,1
+Spicy stew,0,,,N/A,N/A,1
+Cooked giant crab meat,2 × 5,21,Made using CookingAll five bites have 2-tick eat/attack delay.,134.70,"1,347",1
+Cooked fishcake,11,,,N/A,N/A,1
+Cooked jubbly,15,,,67.53,"1,013",1
+Red banana,5,,,N/A,N/A,1
+Tchiki monkey nuts,5,,,N/A,N/A,1
+Sliced red banana,5,,,N/A,N/A,1
+Stuffed snake,20,,,N/A,N/A,1
+Bottle of wine,14,,,46.93,657,1
+Field ration,10,,,N/A,N/A,1
+Fresh monkfish,1,,,N/A,N/A,1
+Monkfish,16,62   62,Caught via small net fishing in Piscatoris Fishing Colony after the completion of the Swan Song.,17.94,287,1
+Locust meat,3,,,18.33,55,1
+Roast bird meat,6,,,2.67,16,1
+Roast beast meat,8,21,An iron spit must be used along with a fire to cook it.,2.88,23,1
+Spicy tomato,2,,,305.00,610,1
+Spicy minced meat,3,,,208.67,626,1
+Rainbow fish,11,35   38,Caught via fly fishing by using stripy feathers.,9.09,100,1
+Spring sq'irkjuice,0[confirmation needed],25,Created via Sorceress's Garden+1 Thieving and restores 10% Run Energy,N/A,N/A,1
+Summer sq'irkjuice,0[confirmation needed],65,Created via Sorceress's Garden+3 Thieving and restores 20% Run Energy,N/A,N/A,1
+Autumn sq'irkjuice,0[confirmation needed],45,Created via Sorceress's Garden+2 Thieving and restores 15% Run Energy,N/A,N/A,1
+Winter sq'irkjuice,0[confirmation needed],1,Created via Sorceress's GardenRestores 5% Run Energy,N/A,N/A,1
+Green gloop soup,2,,,N/A,N/A,1
+Frogspawn gumbo,2,,,N/A,N/A,1
+Frogburger,2,,,N/A,N/A,1
+Coated frogs' legs,2,,,N/A,N/A,1
+Bat shish,2,,,N/A,N/A,1
+Fingers,2,,,N/A,N/A,1
+Grubs à la mode,2,,,N/A,N/A,1
+Roast frog,2,,,N/A,N/A,1
+Mushrooms,2,,,N/A,N/A,1
+Fillets,2,,,N/A,N/A,1
+Loach,3,,,N/A,N/A,1
+Eel sushi,10,,,N/A,N/A,1
+Roe,3,,,32.67,98,1
+Caviar,5,,,12.40,62,1
+Attack mix(2),3 × 2,,,19.00,114,1
+Antipoison mix(2),3 × 2,,,36.00,216,1
+Relicym's mix(2),3 × 2,,,78.50,471,1
+Strength mix(2),3 × 2,,,10.00,60,1
+Combat mix(2),3 × 2,,,38.50,231,1
+Restore mix(2),3 × 2,,,15.67,94,1
+Energy mix(2),3 × 2,,,44.67,268,1
+Defence mix(2),6 × 2,,,7.17,86,1
+Agility mix(2),6 × 2,,,26.17,314,1
+Prayer mix(2),6 × 2,,,318.58,"3,823",1
+Superattack mix(2),6 × 2,,,20.92,251,1
+Anti-poison supermix(2),6 × 2,,,112.08,"1,345",1
+Fishing mix(2),6 × 2,,,9.08,109,1
+Super energy mix(2),6 × 2,,,166.50,"1,998",1
+Super str. mix(2),6 × 2,,,100.50,"1,206",1
+Magic essence mix(2),6 × 2,,,210.58,"2,527",1
+Super restore mix(2),6 × 2,,,198.92,"2,387",1
+Super def. mix(2),6 × 2,,,127.75,"1,533",1
+Antidote+ mix(2),6 × 2,,,120.92,"1,451",1
+Antifire mix(2),6 × 2,,,11.67,140,1
+Ranging mix(2),6 × 2,,,105.75,"1,269",1
+Magic mix(2),6 × 2,,,8.58,103,1
+Hunting mix(2),6 × 2,,,79.08,949,1
+Zamorak mix(2),6 × 2,,,39.25,471,1
+Dark crab,22,90   85,Caught by using a lobster pot with dark fishing bait.Can only be fished in the Wilderness and the Resource Area.,69.64,"1,532",1
+Extended antifire mix(2),6 × 2,,,17.50,210,1
+Stamina mix(2),6 × 2,,,310.83,"3,730",1
+Anglerfish,3 - 22,84   82,"Caught by using a fishing rod with sandworms.Healing dependent on the player's Hitpoints level (complex, see page)Can boost Hitpoints above maximum equal to the amount it heals.",90.27 – 662.00,"1,986",1
+Botanical pie,7 × 2,52,Made using CookingTemporary Herblore boost of +4 Both slices are a 1-tick eat delay.,52.93,741,1
+Pysk fish (0),5,,,N/A,N/A,1
+Suphi fish (1),8,,,N/A,N/A,1
+Leckish fish (2),11,,,N/A,N/A,1
+Brawk fish (3),14,,,N/A,N/A,1
+Mycil fish (4),17,,,N/A,N/A,1
+Roqed fish (5),20,,,N/A,N/A,1
+Kyren fish (6),23,,,N/A,N/A,1
+Guanic bat (0),5,,,N/A,N/A,1
+Prael bat (1),8,,,N/A,N/A,1
+Giral bat (2),11,,,N/A,N/A,1
+Phluxia bat (3),14,,,N/A,N/A,1
+Kryket bat (4),17,,,N/A,N/A,1
+Murng bat (5),20,,,N/A,N/A,1
+Psykk bat (6),23,,,N/A,N/A,1
+Xeric's aid (-),(1 - 7) × 4,,"Drunk in 4 sips, each healing for ⌊Hitpoints×7100⌋+1 and can boost health above the maximum value.Due to it lowering offensive stats, it is typically used with revitalisation potions or overloads.It can only be obtained and used within the Chambers of Xeric.Will not increase the delay before your next attack.",N/A,N/A,1
+Xeric's aid,(3 - 13) × 4,,"Drunk in 4 sips, each healing for ⌊Hitpoints×12100⌋+2 and can boost health above the maximum value.Due to it lowering offensive stats, it is typically used with revitalisation potions or overloads.It can only be obtained and used within the Chambers of Xeric.Will not increase the delay before your next attack.",N/A,N/A,1
+Xeric's aid (+),(6 - 19) × 4,,"Drunk in 4 sips, each healing for ⌊Hitpoints×15100⌋+5 and can boost health above the maximum value.Due to it lowering offensive stats, it is typically used with revitalisation potions or overloads.It can only be obtained and used within the Chambers of Xeric.Will not increase the delay before your next attack.",N/A,N/A,1
+Honey locust,20,,,N/A,N/A,1
+Ambrosia,100%,,"Completely restores Hitpoints, Prayer, and Run EnergyAlso applies the Antidote++ effect, overheals by 25% + 2 and boosts Prayer by 20% + 5",N/A,N/A,1
+Nectar,(4 - 17) × 4,,"Drunk in 4 sips, each healing for ⌊Hitpoints×15100⌋+3 and can boost health above the maximum value.Due to it lowering offensive stats, it is typically used with tears of elidinis or smelling salts.It can only be obtained and used within the Tombs of Amascut.Will not increase the delay before your next attack.",N/A,N/A,1
+Silk dressing (2),5 x 20,,"5 every 5 ticks, 20 timesAlso overheals by 5",N/A,N/A,1
+Mushroom pie,8 × 2,60,Made using CookingTemporary Crafting boost of +3 Both slices are a 1-tick eat delay.,508.13,"8,130",1
+Bloody bracer,2,,,606.50,"1,213",1
+Dragonfruit pie,10 × 2,73,Heals 10 hitpoints per bite (2 bites total).Boosts Fletching by 4.,21.25,425,1
+Dragonfruit,10,,,104.80,"1,048",1
+Paddlefish,20,,,N/A,N/A,1
+Elven dawn,1,,,319.00,319,1
+Cooked mystery meat,5,,,28.80,144,1
+Steak sandwich,6,,,N/A,N/A,0
+Corrupted paddlefish,16,,,N/A,N/A,1
+Crystal paddlefish,16,,,N/A,N/A,1
+Ancient mix(2),6 × 2,,,114.25,"1,371",1
+Kovac's grog,1,,,"51,108.00","51,108",1
+Cooked sunlight antelope,12 + 9,,"Heals 12 hitpoints immediately, then an additional 9 hitpoints after three seconds, for a total of 21 hitpoints. Raw sunlight antelopes cannot be cooked until 50 Hunters' Rumours have been completed.",33.67,707,1
+Cooked graahk,8 + 6,,"Heals 8 hitpoints immediately, then an additional 6 hitpoints after three seconds, for a total of 14 hitpoints. Raw graahks cannot be cooked until 25 Hunters' Rumours have been completed.",41.71,584,1
+Cooked dashing kebbit,13 + 10,,"Heals 13 hitpoints immediately, then an additional 10 hitpoints after three seconds, for a total of 23 hitpoints. Raw dashing kebbits cannot be cooked until 50 Hunters' Rumours have been completed.",47.00,"1,081",1
+Cooked moonlight antelope,14 + 12,,"Heals 14 hitpoints immediately, then an additional 12 hitpoints after three seconds, for a total of 26 hitpoints. Raw moonlight antelopes cannot be cooked until 50 Hunters' Rumours have been completed.",76.96,"2,001",1
+Cooked pyre fox,11 + 8,,"Heals 11 hitpoints immediately, then an additional 8 hitpoints after three seconds, for a total of 19 hitpoints. Raw pyre foxex cannot be cooked until 25 Hunters' Rumours have been completed.",19.89,378,1
+Cooked kyatt,9 + 8,,"Heals 9 hitpoints immediately, then an additional 8 hitpoints after three seconds, for a total of 17 hitpoints. Raw kyatts cannot be cooked until 25 Hunters' Rumours have been completed.",13.29,226,1
+Cooked barb-tailed kebbit,7 + 5,,"Heals 7 hitpoints immediately, then an additional 5 hitpoints after three seconds, for a total of 12 hitpoints.",47.08,565,1
+Cooked larupia,6 + 5,,"Heals 6 hitpoints immediately, then an additional 5 hitpoints after three seconds, for a total of 11 hitpoints.",32.82,361,1
+Cooked bream,Up to 33,,Cooked bream can only be used as food whilst fighting the Moons of Peril. The amount of Hitpoints restored appear to be 1/3rd of the player's Cooking or Fishing level whichever skill is the lowest.,N/A,N/A,1
+Cooked moss lizard,Up to 33,,"Cooked moss lizard can only be used as food whilst fighting the Moons of Peril. The amount of Hitpoints restored appear to be 1/3rd of the player's Cooking level or 1/2 of their Hunter level, whichever one heals less.",N/A,N/A,1
+Cooked wild kebbit,4 + 4,,"Heals 4 hitpoints immediately, then an additional 4 hitpoints after three seconds, for a total of 8 hitpoints.",79.75,638,1
+Varlamorian kebab,4 + 10%,,"Variable amount between 3-30 hitpoints. Number shown is average result. Has a chance to boost Attack, Defence, and Strength levels by 2.  No chance of skill drain.",3.47 - 34.67,104,1
+Giant krill,17,69   69  ( 69 ),Caught with a fishing rod or via deep sea trawling.,33.06,562,1
+Haddock,18,73   73  ( 73 ),Caught with a fishing rod or via deep sea trawling. Can boost Hitpoints above maximum up to 109.,34.39,619,1
+Yellowfin,19,79   79  ( 79 ),Caught with a fishing rod or via deep sea trawling. Restores 20% Energy when eaten.,45.95,873,1
+Halibut,20,83   83  ( 83 ),"Caught with a fishing rod or via deep sea trawling. Can be eaten in the same tick as another piece of food, allowing for combo eating. Shorter attack delay than most other food (2 ticks instead of 4).",158.05,"3,161",1
+Bluefin,22,87   87  ( 86 ),Caught with a fishing rod or via deep sea trawling.,92.77,"2,041",1
+Marlin,24,93   93  ( 91 ),Caught with a fishing rod or via deep sea trawling.,276.17,"6,628",1
+Swordtip squid,15,56   56   47,Caught via lantern harpooning.,26.87,403,1
+Jumbo squid,17,56   56   47,Caught via lantern harpooning.,55.41,942,1
+Red crab meat,8,21   21,Caught via Crab trapping. Requires partial completion of Pandemonium to access.,20.00,160,1
+Blue crab meat,14,48   48,Caught via Crab trapping. Requires partial completion of Troubled Tortugans to access.,21.57,302,1
+Rainbow crab meat,19,77   77   64,Caught via Crab trapping.,33.95,645,1
