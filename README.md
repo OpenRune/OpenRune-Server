@@ -41,14 +41,20 @@ OpenRune Server adheres to OSRS protocols, giving you the freedom to connect any
 2. **Install dependencies**  
    - Ensure you have [IntelliJ IDEA](https://www.jetbrains.com/idea/download/#section=windows).  
    - Set the project SDK to Java 17: `File → Project Structure → SDK`.
-   - Recommended: install the [rscm-plugin](https://github.com/blurite/rscm-plugin) for better entity reference tooling.
+   - Recommended: install the Rsc plugin in root of the project [OpenRune IntelliJ Tools-1.0.zip](https://github.com/OpenRune/OpenRune-Server/blob/main/OpenRune%20IntelliJ%20Tools-1.0.zip) for better entity reference tooling.
 
-3. **Gradle bootstrap**  
+   - #### You may need to point the settings file [openRune-intelliJ-tools.toml](https://github.com/OpenRune/OpenRune-Server/blob/main/openRune-intelliJ-tools.toml) like so
+
+
+   <img width="300" height="300" alt="image" src="https://github.com/user-attachments/assets/7aa46983-1f84-4c08-abf8-2f17bc72f073" />
+
+
+4. **Gradle bootstrap**  
    - Open the Gradle tool window.  
    - Run `OpenRune Server → other → install`.  
    - When the task completes, run `OpenRune Server → game → Tasks → application → run`.
 
-4. **Verify startup**  
+5. **Verify startup**  
    - A successful boot prints `OpenRune Server Successfully initialized` in the terminal.  
    - If you only see `OpenRune Server Loaded up in x ms.` you likely skipped a step.
 
