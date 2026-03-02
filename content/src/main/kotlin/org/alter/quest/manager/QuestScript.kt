@@ -1,12 +1,11 @@
 package org.alter.quest.manager
 
-import org.alter.api.*
+import dev.openrune.definition.type.widget.IfEvent
+import org.alter.api.CommonClientScripts
 import org.alter.api.ext.getVarp
 import org.alter.api.ext.runClientScript
 import org.alter.api.ext.setComponentText
-import org.alter.api.ext.setInterfaceEvents
 import org.alter.api.ext.setVarp
-import org.alter.game.model.entity.GroundItem
 import org.alter.game.model.entity.Player
 import org.alter.game.pluginnew.PluginEvent
 import org.alter.game.pluginnew.event.impl.ButtonClickEvent
@@ -15,6 +14,7 @@ import org.alter.game.pluginnew.event.impl.onButton
 import org.alter.interfaces.ifCloseModals
 import org.alter.interfaces.ifOpenMain
 import org.alter.interfaces.ifOpenOverlay
+import org.alter.interfaces.ifSetEvents
 import org.alter.rscm.RSCM
 import org.alter.rscm.RSCM.asRSCM
 import org.alter.rscm.RSCMType
@@ -121,12 +121,15 @@ abstract class QuestScript(questKey: String, val questVarp : String, val rewards
 
         onButton("components.questjournal_overview:content_inner") {
             player.ifOpenOverlay("interfaces.worldmap")
-//            player.setInterfaceEvents(
-//                interfaceId = WORLD_MAP_INTERFACE_ID,
-//                component = 21,
-//                range = 0..4,
-//                setting = InterfaceEvent.ClickOp1
-//            )
+            player.ifSetEvents(
+                "components.worldmap:close",
+                0..1,
+                IfEvent.Op1,
+                IfEvent.Op2,
+                IfEvent.Op3,
+                IfEvent.Op4
+            )
+
             if (quest.startCoord != null && quest.mapElement != null) {
                 player.runClientScript(
                     CommonClientScripts.WORLD_MAP_GOTO,

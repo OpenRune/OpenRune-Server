@@ -223,7 +223,6 @@ object Prayers {
         } else if (opt == 2) {
             // Open quick prayer setup interface
             p.runClientScript(ClientScript(id = 915), 5)
-            p.setInterfaceEvents(interfaceId = 77, component = 4, from = 0, to = 29, setting = 2)
             //p.openInterface(interfaceId = 77, dest = InterfaceDestination.PRAYER)
             p.focusTab(GameframeTab.PRAYER)
             // Sync the quick prayer selections to the interface

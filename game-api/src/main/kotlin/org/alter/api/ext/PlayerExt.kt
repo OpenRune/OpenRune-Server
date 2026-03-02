@@ -137,38 +137,6 @@ private fun splitEventMask(events: Int): Pair<Int, Int> {
     return events1 to events2
 }
 
-fun Player.setInterfaceEvents(
-    componentName: String,
-    from: Int,
-    to: Int,
-    setting: Int,
-) {
-    requireRSCM(RSCMType.COMPONENTS,componentName)
-    val combined = CombinedId(componentName.asRSCM())
-    setInterfaceEvents(combined.interfaceId,combined.combinedId,from,to,setting)
-}
-
-
-fun Player.setInterfaceEvents(
-    interfaceId: Int,
-    component: Int,
-    from: Int,
-    to: Int,
-    setting: Int,
-) {
-    val (events1, events2) = splitEventMask(setting)
-    write(
-        IfSetEventsV2(
-            interfaceId = interfaceId,
-            componentId = component,
-            start = from,
-            end = to,
-            events1 = events1,
-            events2 = events2,
-        )
-    )
-}
-
 fun Player.setComponentText(
     interfaceId: String,
     text: String,

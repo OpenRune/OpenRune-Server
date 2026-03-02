@@ -52,6 +52,19 @@ fun <K, V> DbHelper.multiColumn(
 }
 
 fun DbHelper.multiColumnMixed(columnName: String, vararg types: VarTypeImpl<*, *>): List<Any?> {
+    val column = getColumn(columnName)
+    val values = column.column.values ?: return emptyList()
+
+    require(types.isNotEmpty()) { "At least one VarTypeImpl must be provided" }
+
+    return values.mapIndexed { i, _ ->
+        val type = if (types.size == 1) types[0] else types[i % types.size]
+        val value = column.get(i, type as VarTypeImpl<Any?, Any?>)
+        type.convertTo(value)
+    }
+}
+
+fun DbHelper.multiColumnMixedOptional(columnName: String, vararg types: VarTypeImpl<*, *>): List<Any?> {
     val column = try {
         getColumn(columnName)
     } catch (e: DbException.MissingColumn) {
@@ -65,10 +78,18 @@ fun DbHelper.multiColumnMixed(columnName: String, vararg types: VarTypeImpl<*, *
     val values = column.column.values ?: return emptyList()
     require(types.isNotEmpty()) { "At least one VarTypeImpl must be provided" }
 
-    return values.mapIndexed { i, raw ->
-        val type = types[i]
-        val value = column.get(i, type as VarTypeImpl<Any?, Any?>)
-        type.convertTo(value)
+    return values.mapIndexed { i, _ ->
+        val type = if (types.size == 1) types[0] else types.getOrNull(i % types.size)
+            ?: return@mapIndexed null
+
+        try {
+            val value = column.get(i, type as VarTypeImpl<Any?, Any?>)
+            type.convertTo(value)
+        } catch (e: DbException) {
+            throw e
+        } catch (_: Exception) {
+            null
+        }
     }
 }
 

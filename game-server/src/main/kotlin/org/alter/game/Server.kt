@@ -229,7 +229,7 @@ class Server {
     /**
      * Gets the API-specific org name.
      */
-    fun getApiName(): String = apiProperties.getOrDefault("org", "Alter")
+    fun getApiName(): String = apiProperties.getOrDefault("org", "OpenRune")
 
     companion object {
         val logger = KotlinLogging.logger {}

@@ -183,6 +183,7 @@ fun generateTable(table: TableDef, outputDir: File) {
     val usedColumnFunctions = mutableSetOf<String>()
     var needsTileImport = false
     val tuplesUsedInThisTable = mutableSetOf<Int>()
+    val tuplesUsedAsListInThisTable = mutableSetOf<Int>()
 
     val rowClassBuilder = TypeSpec.classBuilder(table.className)
         .primaryConstructor(FunSpec.constructorBuilder().addParameter("row", dbHelper).build())
@@ -214,39 +215,61 @@ fun generateTable(table: TableDef, outputDir: File) {
             else -> if (col.optional) "columnOptional" else "column"
         }
         usedColumnFunctions.add(columnFunc)
-        if (isMixed) usedColumnFunctions.add("multiColumnMixed")
+        if (isMixed) usedColumnFunctions.add(if (col.optional) "multiColumnMixedOptional" else "multiColumnMixed")
 
         if (isMixed) {
             val arity = sortedVarTypes.size
             tuplesToGen.add(arity)
             tuplesUsedInThisTable.add(arity)
             val tupleClass = ClassName("org.generated", "Tuple$arity")
-            val typesArray = sortedVarTypes.map {
-                getKotlinType(it.baseType!!, col.optional, false, it == VarType.BOOLEAN)
-            }.toTypedArray()
-            val tupleType = tupleClass.parameterizedBy(*typesArray)
-            val nullableTupleType = if (col.optional) tupleType.copy(nullable = true) else tupleType
-
-            val initializer = if (col.optional) {
-                CodeBlock.of(
-                    "row.multiColumnMixed(%S" + sortedVarTypes.joinToString("") { ", %T" } + ").toTuple$arity()",
+            if (isList) {
+                // List of tuples: elements are never null (incomplete pairs are filtered out)
+                val typesArray = sortedVarTypes.map {
+                    getKotlinType(it.baseType!!, optional = false, false, it == VarType.BOOLEAN)
+                }.toTypedArray()
+                val tupleType = tupleClass.parameterizedBy(*typesArray)
+                // Multiple pairs of values: e.g. requirement_stats with [prayer,25,attack,15] -> [(prayer,25), (attack,15)]
+                tuplesUsedAsListInThisTable.add(arity)
+                val listOfTuplesType = listType.parameterizedBy(tupleType)
+                val mixedFunc = if (col.optional) "multiColumnMixedOptional" else "multiColumnMixed"
+                val initializer = CodeBlock.of(
+                    "row.$mixedFunc(%S" + sortedVarTypes.joinToString("") { ", %T" } + ").toListOfTuple$arity()",
                     col.name,
                     *sortedVarTypes.map { getVarTypeImplClass(it) }.toTypedArray()
                 )
+                rowClassBuilder.addProperty(
+                    PropertySpec.builder(propertyName, listOfTuplesType)
+                        .initializer(initializer)
+                        .build()
+                )
             } else {
-                CodeBlock.of(
-                    "row.multiColumnMixed(%S" + sortedVarTypes.joinToString("") { ", %T" } + ").toTuple$arity() ?: error(\"Column ${'$'}{%S} returned empty list but is not optional\")",
-                    col.name,
-                    *sortedVarTypes.map { getVarTypeImplClass(it) }.toTypedArray(),
-                    col.name
+                // Single pair of values
+                val typesArray = sortedVarTypes.map {
+                    getKotlinType(it.baseType!!, col.optional, false, it == VarType.BOOLEAN)
+                }.toTypedArray()
+                val tupleType = tupleClass.parameterizedBy(*typesArray)
+                val nullableTupleType = if (col.optional) tupleType.copy(nullable = true) else tupleType
+                val mixedFunc = if (col.optional) "multiColumnMixedOptional" else "multiColumnMixed"
+                val initializer = if (col.optional) {
+                    CodeBlock.of(
+                        "row.$mixedFunc(%S" + sortedVarTypes.joinToString("") { ", %T" } + ").toTuple$arity()",
+                        col.name,
+                        *sortedVarTypes.map { getVarTypeImplClass(it) }.toTypedArray()
+                    )
+                } else {
+                    CodeBlock.of(
+                        "row.$mixedFunc(%S" + sortedVarTypes.joinToString("") { ", %T" } + ").toTuple$arity() ?: error(\"Column ${'$'}{%S} returned empty list but is not optional\")",
+                        col.name,
+                        *sortedVarTypes.map { getVarTypeImplClass(it) }.toTypedArray(),
+                        col.name
+                    )
+                }
+                rowClassBuilder.addProperty(
+                    PropertySpec.builder(propertyName, nullableTupleType)
+                        .initializer(initializer)
+                        .build()
                 )
             }
-
-            rowClassBuilder.addProperty(
-                PropertySpec.builder(propertyName, nullableTupleType)
-                    .initializer(initializer)
-                    .build()
-            )
             return@forEach
         }
 
@@ -254,7 +277,8 @@ fun generateTable(table: TableDef, outputDir: File) {
             needsTileImport = true
             if (col.optional) tileType.copy(nullable = true) else tileType
         } else {
-            getKotlinType(firstVarType.baseType!!, col.optional, isList, firstVarType == VarType.BOOLEAN)
+            // For lists: optional means empty list when missing, not nullable elements
+            getKotlinType(firstVarType.baseType!!, col.optional && !isList, isList, firstVarType == VarType.BOOLEAN)
         }
 
         val initializer = if (isCoordType && !isList) {
@@ -272,7 +296,7 @@ fun generateTable(table: TableDef, outputDir: File) {
             }
         } else {
             val fmt = when {
-                isList && col.optional -> "row.multiColumnOptional(%S" + sortedVarTypes.joinToString("") { ", %T" } + ")"
+                isList && col.optional -> "row.multiColumnOptional(%S" + sortedVarTypes.joinToString("") { ", %T" } + ").filterNotNull()"
                 isList -> "row.multiColumn(%S" + sortedVarTypes.joinToString("") { ", %T" } + ")"
                 col.optional -> "row.columnOptional(%S, %T)"
                 else -> "row.column(%S, %T)"
@@ -315,6 +339,9 @@ fun generateTable(table: TableDef, outputDir: File) {
     tuplesUsedInThisTable.forEach { arity ->
         fileBuilder.addImport("org.generated", "Tuple$arity")
         fileBuilder.addImport("org.generated", "toTuple$arity")
+    }
+    tuplesUsedAsListInThisTable.forEach { arity ->
+        fileBuilder.addImport("org.generated", "toListOfTuple$arity")
     }
 
     fileBuilder.addType(rowClassBuilder.build())
@@ -371,6 +398,18 @@ fun generateAllTuples(outputDir: File, tuplesToGen: MutableSet<Int>) {
             })
 
         fileBuilder.addFunction(extFun.build())
+
+        // Chunk list into groups of n and convert each to TupleN (for mixed columns with multiple value pairs)
+        val listType = ClassName("kotlin.collections", "List")
+        val toListOfTupleFun = FunSpec.builder("toListOfTuple$n")
+            .receiver(ClassName("kotlin.collections", "List").parameterizedBy(STAR))
+            .addTypeVariables(typeParams.map { TypeVariableName(it) })
+            .returns(listType.parameterizedBy(tupleClassName.parameterizedBy(typeParams.map { TypeVariableName(it) })))
+            .addCode(buildCodeBlock {
+                add("return chunked(%L).mapNotNull { it.toTuple%L<%L>() }\n", n, n, typeParams.joinToString(", ") { it })
+            })
+
+        fileBuilder.addFunction(toListOfTupleFun.build())
     }
 
     fileBuilder.build().writeTo(outputDir)
