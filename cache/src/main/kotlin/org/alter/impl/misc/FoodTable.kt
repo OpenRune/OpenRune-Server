@@ -489,7 +489,7 @@ object FoodTable {
 
     fun consumableFood() = dbTable("tables.consumable_food", serverOnly = true) {
 
-        column("items", ITEMS, VarType.OBJ.count(Food.entries.maxOf { it.items.size }))
+        column("items", ITEMS, VarType.OBJ)
         column("heal", HEAL, VarType.INT)
 
         column("combo", COMBO_FOOD, VarType.BOOLEAN)
