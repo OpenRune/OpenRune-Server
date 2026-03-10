@@ -110,11 +110,9 @@ class BurnLogEvents : PluginEvent() {
 
         player.animate(RSCM.NONE)
         movePlayerAwayFromFire(player)
-        player.lock()
         player.queue {
             wait(2)
             player.faceTile(logDrop.tile)
-            player.unlock()
         }
     }
 

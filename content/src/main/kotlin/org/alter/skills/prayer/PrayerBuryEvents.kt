@@ -1,8 +1,7 @@
 package org.alter.skills.prayer
 
-import org.alter.api.ChatMessageType
 import org.alter.api.Skills
-import org.alter.api.ext.message
+import org.alter.api.ext.filterableMessage
 import org.alter.api.ext.options
 import org.alter.game.model.LockState
 import org.alter.game.model.entity.Player
@@ -42,7 +41,7 @@ class PrayerBuryEvents : PluginEvent() {
         player.lock = LockState.DELAY_ACTIONS
 
         if (!isAshes) {
-            player.message("You dig a hole in the ground...", ChatMessageType.FILTERED)
+            player.filterableMessage("You dig a hole in the ground...")
         }
 
         val animation = if (isAshes) "sequences.farming_ingredient_sprinkle" else "sequences.human_openchest"
@@ -54,7 +53,7 @@ class PrayerBuryEvents : PluginEvent() {
             wait(2)
             if (player.inventory.remove(item = item, beginSlot = slot).hasSucceeded()) {
                 val message = if (isAshes) "You scatter the ashes." else "You bury the bones."
-                player.message(message, ChatMessageType.FILTERED)
+                player.filterableMessage(message)
                 player.addXp(Skills.PRAYER, xp)
             }
             player.unlock()

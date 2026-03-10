@@ -43,7 +43,7 @@ class PluginSettingsSymbolProcessor(
                         "yml", "yaml" -> ObjectMapper(YAMLFactory())
                         "toml" -> ObjectMapper(TomlFactory())
                         else -> return@forEach
-                    }.registerModule(KotlinModule())
+                    }.registerModule(KotlinModule.Builder().build())
 
                     val data: Map<String, Any> =
                         mapper.readValue(file, object : TypeReference<Map<String, Any>>() {})

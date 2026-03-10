@@ -70,6 +70,7 @@ class CleaningHerbsPlugin : PluginEvent() {
         if (cleaningData.xp > 0) {
             player.addXp(Skills.HERBLORE, cleaningData.xp.toDouble())
         }
+        player.filterableMessage("You clean the ${getItem(cleaningData.cleanHerb)?.name?.lowercase() ?: "herb"}.")
     }
 }
 

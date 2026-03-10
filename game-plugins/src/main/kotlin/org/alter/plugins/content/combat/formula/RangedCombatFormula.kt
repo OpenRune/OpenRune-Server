@@ -15,35 +15,6 @@ import org.alter.plugins.content.mechanics.prayer.Prayers
  * @author Tom <rspsmods@gmail.com>
  */
 object RangedCombatFormula : CombatFormula {
-    private val BLACK_MASKS =
-        arrayOf(
-            "items.harmless_black_mask",
-            "items.harmless_black_mask_1",
-            "items.harmless_black_mask_2",
-            "items.harmless_black_mask_3",
-            "items.harmless_black_mask_4",
-            "items.harmless_black_mask_5",
-            "items.harmless_black_mask_6",
-            "items.harmless_black_mask_7",
-            "items.harmless_black_mask_8",
-            "items.harmless_black_mask_9",
-            "items.harmless_black_mask_10",
-        )
-
-    private val BLACK_MASKS_I =
-        arrayOf(
-            "items.nzone_black_mask",
-            "items.nzone_black_mask_1",
-            "items.nzone_black_mask_2",
-            "items.nzone_black_mask_3",
-            "items.nzone_black_mask_4",
-            "items.nzone_black_mask_5",
-            "items.nzone_black_mask_6",
-            "items.nzone_black_mask_7",
-            "items.nzone_black_mask_8",
-            "items.nzone_black_mask_9",
-            "items.nzone_black_mask_10",
-        )
 
     private val RANGED_VOID = arrayOf("items.game_pest_archer_helm", "items.pest_void_knight_top", "items.pest_void_knight_robes", "items.pest_void_knight_gloves")
 
@@ -418,15 +389,16 @@ object RangedCombatFormula : CombatFormula {
             else -> 1.0
         }
 
-    private fun getEquipmentMultiplier(player: Player): Double =
+    private fun getEquipmentMultiplier(player: Player, target: Pawn? = null): Double =
         when {
             player.hasEquipped(EquipmentType.AMULET, "items.crystalshard_necklace") -> 7.0 / 6.0
             player.hasEquipped(EquipmentType.AMULET, "items.lotr_crystalshard_necklace_upgrade") -> 1.2
             player.hasEquipped(EquipmentType.AMULET, "items.nzone_salve_amulet") -> 1.15
             player.hasEquipped(EquipmentType.AMULET, "items.nzone_salve_amulet_e") -> 1.2
-            // TODO: this should only apply when target is slayer task?
-            player.hasEquipped(EquipmentType.HEAD, *BLACK_MASKS) -> 7.0 / 6.0
-            player.hasEquipped(EquipmentType.HEAD, *BLACK_MASKS_I) -> 1.15
+            target != null && CombatConstants.hasSlayerTaskBonus(player, target) &&
+                player.hasEquipped(EquipmentType.HEAD, *CombatConstants.BLACK_MASKS) -> 7.0 / 6.0
+            target != null && CombatConstants.hasSlayerTaskBonus(player, target) &&
+                player.hasEquipped(EquipmentType.HEAD, *CombatConstants.BLACK_MASKS_I) -> 1.15
             else -> 1.0
         }
 

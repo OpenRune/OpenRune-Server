@@ -1,13 +1,15 @@
 package org.alter.game.action
 
-
 import dev.openrune.ServerCacheManager.getItem
+import io.github.oshai.kotlinlogging.KotlinLogging
 import org.alter.game.info.PlayerInfo
 import org.alter.game.model.entity.Player
 import org.alter.game.model.item.Item
 import org.alter.game.pluginnew.event.impl.ContainerType
 import org.alter.game.pluginnew.event.impl.EquipEvent
 import org.alter.game.pluginnew.event.impl.UnequipEvent
+
+private val logger = KotlinLogging.logger {}
 
 /**
  * This class is responsible for handling armor equip and unequip related
@@ -91,7 +93,7 @@ object EquipAction {
     ): Result {
         val def = getItem(item.id)
         if (def == null) {
-            println("Invalid Item for: ${item.id}")
+            logger.warn { "Invalid Item for: ${item.id}" }
             return Result.INVALID_ITEM
         }
         if (def.equipment == null) {
@@ -252,7 +254,7 @@ object EquipAction {
                     val equipmentId = equipment.id
 
 
-                    println("initialSlot: ${initialSlot}")
+                    logger.debug { "initialSlot: $initialSlot" }
 
                     val transaction = p.inventory.add(
                         equipment.id,

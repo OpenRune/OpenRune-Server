@@ -2,10 +2,13 @@ package org.alter.game.saving.formats.impl
 
 import com.mongodb.client.model.Filters.regex
 import com.mongodb.client.model.Updates.set
+import io.github.oshai.kotlinlogging.KotlinLogging
 import org.alter.game.model.entity.Client
 import org.alter.game.saving.formats.FormatHandler
 import org.bson.Document
 import org.bson.conversions.Bson
+
+private val logger = KotlinLogging.logger {}
 
 class Mongo(override val collectionName: String) : FormatHandler(collectionName) {
 
@@ -25,11 +28,13 @@ class Mongo(override val collectionName: String) : FormatHandler(collectionName)
 
     override fun parseDocument(client : Client): Document {
         val caseInsensitiveFilter = createCaseInsensitiveFilter(client)
-        return DatabaseManager.getCollection(collectionName).find(caseInsensitiveFilter).first()!!
+        return DatabaseManager.getCollection(collectionName).find(caseInsensitiveFilter).first()
+            ?: error("Player document not found for ${client.loginUsername}")
     }
 
     override fun loadAll(): Map<String, Document> {
-        TODO("Not yet implemented")
+        logger.warn { "Mongo.loadAll() is not yet fully implemented" }
+        return emptyMap()
     }
 
     override fun playerExists(client: Client): Boolean {

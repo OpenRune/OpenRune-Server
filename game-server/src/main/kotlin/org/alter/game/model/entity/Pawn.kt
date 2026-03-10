@@ -1,5 +1,6 @@
 package org.alter.game.model.entity
 
+import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.coroutines.CoroutineScope
 import org.alter.game.action.NpcDeathAction
 import org.alter.game.action.PlayerDeathAction
@@ -277,7 +278,9 @@ abstract class Pawn(val world: World) : Entity() {
             timers.getTimers().entries.forEach { timer ->
                 timer.setValue(timer.value - 1)
             }
-        }catch (e : Exception){}
+        } catch (e: Exception) {
+            logger.error(e) { "Error in timer cycle" }
+        }
     }
 
     /**
@@ -533,8 +536,8 @@ abstract class Pawn(val world: World) : Entity() {
         stopLoopAnimIfActive()
         try {
             queues.terminateTasks()
-        }catch (e: Exception) {
-            //TODO FIX THIS NOT THREAD SAFE OR SOOMTHING CAN ERROR BUT DOES NOT BREAK
+        } catch (e: Exception) {
+            logger.warn(e) { "Error terminating queue tasks" }
         }
     }
 
@@ -602,6 +605,7 @@ abstract class Pawn(val world: World) : Entity() {
     }
 
     companion object {
+        private val logger = KotlinLogging.logger {}
         val EMPTY_TILE_DEQUE = ArrayList<RouteCoordinates>()
     }
 

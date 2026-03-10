@@ -17,16 +17,6 @@ import org.alter.plugins.content.mechanics.prayer.Prayers
  */
 object MeleeCombatFormula : CombatFormula {
 
-    private val BLACK_MASKS = arrayOf("items.harmless_black_mask",
-            "items.harmless_black_mask_1", "items.harmless_black_mask_2", "items.harmless_black_mask_3", "items.harmless_black_mask_4",
-            "items.harmless_black_mask_5", "items.harmless_black_mask_6", "items.harmless_black_mask_7", "items.harmless_black_mask_8",
-            "items.harmless_black_mask_9", "items.harmless_black_mask_10")
-
-    private val BLACK_MASKS_I = arrayOf("items.nzone_black_mask",
-            "items.nzone_black_mask_1", "items.nzone_black_mask_2", "items.nzone_black_mask_3", "items.nzone_black_mask_4",
-            "items.nzone_black_mask_5", "items.nzone_black_mask_6", "items.nzone_black_mask_7", "items.nzone_black_mask_8",
-            "items.nzone_black_mask_9", "items.nzone_black_mask_10")
-
     private val MELEE_VOID = arrayOf("items.game_pest_melee_helm", "items.pest_void_knight_top", "items.pest_void_knight_robes", "items.pest_void_knight_gloves")
 
     private val MELEE_ELITE_VOID = arrayOf("items.game_pest_melee_helm", "items.elite_void_knight_top", "items.elite_void_knight_robes", "items.pest_void_knight_gloves")
@@ -323,32 +313,17 @@ object MeleeCombatFormula : CombatFormula {
     }
 
     /**
-     * Check if black mask/slayer helmet bonus should apply.
-     * Bonus only applies when player is on a slayer task for the target NPC.
-     */
-    private fun hasSlayerTaskBonus(player: Player, target: Pawn): Boolean {
-        // TODO: Implement slayer task system check
-        // Should check if:
-        // 1. Player has an active slayer task
-        // 2. Target NPC matches the slayer task (exact match or category match)
-        // 3. Task is not completed
-        // For now, return false until slayer task system is implemented
-        return false
-    }
-
-    /**
      * Get black mask/slayer helmet multiplier if applicable.
      * Black mask: 16.67% (7/6) boost
      * Slayer helmet (imbued): 16.67% (7/6) boost
      * Slayer helmet (regular): 15% boost
      */
     private fun getSlayerHelmetMultiplier(player: Player, target: Pawn): Double {
-        if (!hasSlayerTaskBonus(player, target)) {
+        if (!CombatConstants.hasSlayerTaskBonus(player, target)) {
             return 1.0
         }
         return when {
-            player.hasEquipped(EquipmentType.HEAD, *BLACK_MASKS) || player.hasEquipped(EquipmentType.HEAD, *BLACK_MASKS_I) -> 7.0 / 6.0
-            // TODO: Add slayer helmet checks when items are identified
+            player.hasEquipped(EquipmentType.HEAD, *CombatConstants.BLACK_MASKS) || player.hasEquipped(EquipmentType.HEAD, *CombatConstants.BLACK_MASKS_I) -> 7.0 / 6.0
             else -> 1.0
         }
     }

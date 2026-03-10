@@ -397,12 +397,13 @@ fun Player.syncVarp(id: String) {
 
 fun Player.getVarbit(id: String): Int {
     requireRSCM(RSCMType.VARBITTYPES, id)
-    val def = ServerCacheManager.getVarbit(id.asRSCM())!!
+    val def = ServerCacheManager.getVarbit(id.asRSCM())
+        ?: error("Varbit definition not found for id: $id")
     return varps.getBit(def.varp, def.startBit, def.endBit)
 }
 
 fun Player.getVarbit(id: Int): Int {
-    val def = ServerCacheManager.getVarbit(id)?: return -1
+    val def = ServerCacheManager.getVarbit(id) ?: return -1
     return varps.getBit(def.varp, def.startBit, def.endBit)
 }
 
@@ -432,7 +433,8 @@ fun Player.setVarbit(
     if (attr.has(CHANGE_LOGGING) && getVarbit(id) != value) {
         message("Varbit: $id was changed from: ${getVarbit(id)} to $value")
     }
-    val def = ServerCacheManager.getVarbit(id.asRSCM())!!
+    val def = ServerCacheManager.getVarbit(id.asRSCM())
+        ?: error("Varbit definition not found for id: $id")
     varps.setBit(def.varp, def.startBit, def.endBit, value)
 }
 
@@ -444,7 +446,8 @@ fun Player.setVarbit(
     if (attr.has(CHANGE_LOGGING) && getVarbit(id) != value) {
         message("Varbit: $id was changed from: ${getVarbit(id)} to $value")
     }
-    val def = ServerCacheManager.getVarbit(id)!!
+    val def = ServerCacheManager.getVarbit(id)
+        ?: error("Varbit definition not found for id: $id")
     varps.setBit(def.varp, def.startBit, def.endBit, value)
 }
 
@@ -457,7 +460,8 @@ fun Player.sendTempVarbit(
     value: Int,
 ) {
     requireRSCM(RSCMType.VARBITTYPES, id)
-    val def = ServerCacheManager.getVarbit(id.asRSCM())!!
+    val def = ServerCacheManager.getVarbit(id.asRSCM())
+        ?: error("Varbit definition not found for id: $id")
     val state = BitManipulation.setBit(varps.getState(def.varp), def.startBit, def.endBit, value)
     val message = if (state in -Byte.MAX_VALUE..Byte.MAX_VALUE) VarpSmall(def.varp, state) else VarpLarge(def.varp, state)
     write(message)
@@ -468,7 +472,8 @@ fun Player.toggleVarbit(id: String) {
     if (attr.has(CHANGE_LOGGING)) {
         message("Varbit toggle: $id was changed from: ${getVarbit(id)} to ${getVarbit(id) xor 1}")
     }
-    val def = ServerCacheManager.getVarbit(id.asRSCM())!!
+    val def = ServerCacheManager.getVarbit(id.asRSCM())
+        ?: error("Varbit definition not found for id: $id")
     varps.setBit(def.varp, def.startBit, def.endBit, getVarbit(id) xor 1)
 }
 

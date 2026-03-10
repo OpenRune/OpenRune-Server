@@ -24,7 +24,7 @@ allprojects {
         implementation(lib.kotlin.logging)
         implementation(lib.logback.classic)
         implementation(lib.fastutil)
-        implementation(lib.spark.core)
+        implementation(lib.guava)
         implementation(lib.kotlin.stdlib.jdk8)
         implementation(lib.jackson.dataformat.yaml)
         implementation(lib.jackson.dataformat.toml)

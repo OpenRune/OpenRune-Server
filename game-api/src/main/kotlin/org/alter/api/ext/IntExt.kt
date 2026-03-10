@@ -84,22 +84,16 @@ fun Int.formatRS2(): String {
 fun Int.toItem(): Item = Item(this)
 
 fun Int.getItemName(lowercase: Boolean = false): String {
-    return if (lowercase) {
-        getItem(this)!!.name.lowercase()
-    } else {
-        getItem(this)!!.name
-    }
+    val name = (getItem(this) ?: error("Item definition not found for id: $this")).name
+    return if (lowercase) name.lowercase() else name
 }
 
 fun Int.getObjName(
     definitions: DefinitionSet,
     lowercase: Boolean = false,
 ): String {
-    return if (lowercase) {
-        getObject(this)!!.name!!.lowercase()
-    } else {
-        getObject(this)!!.name!!
-    }
+    val name = (getObject(this) ?: error("Object definition not found for id: $this")).name ?: "null"
+    return if (lowercase) name.lowercase() else name
 }
 
 /**

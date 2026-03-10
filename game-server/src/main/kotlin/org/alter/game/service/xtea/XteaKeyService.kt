@@ -95,11 +95,11 @@ class XteaKeyService : Service, XteaProvider {
     }
 
     private fun loadSingleFile(path: Path) {
-        val reader = Files.newBufferedReader(path)
-        val xteas = Gson().fromJson(reader, Array<XteaFile>::class.java)
-        reader.close()
-        xteas?.forEach { xtea ->
-            keys[xtea.mapsquare] = xtea.key
+        Files.newBufferedReader(path).use { reader ->
+            val xteas = Gson().fromJson(reader, Array<XteaFile>::class.java)
+            xteas?.forEach { xtea ->
+                keys[xtea.mapsquare] = xtea.key
+            }
         }
     }
 

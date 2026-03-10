@@ -14,10 +14,13 @@ class QueueHandlerTask : GameTask {
         world: World,
         service: GameService,
     ) {
-        var playerQueues = 0
-        var npcQueues = 0
         val worldQueues: Int = world.queues.size
         world.queues.cycle()
+
+        var playerQueues = 0
+        var npcQueues = 0
+        world.players.forEach { playerQueues += it.queues.size }
+        world.npcs.forEach { npcQueues += it.queues.size }
 
         service.totalPlayerQueues = playerQueues
         service.totalNpcQueues = npcQueues

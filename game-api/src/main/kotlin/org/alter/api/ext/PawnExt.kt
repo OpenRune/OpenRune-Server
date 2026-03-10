@@ -25,23 +25,32 @@ fun Pawn.prepareForTeleport() {
     clearHits()
 }
 
-fun Pawn.getCommandArgs(): Array<String> = attr[COMMAND_ARGS_ATTR]!!
+fun Pawn.getCommandArgs(): Array<String> = attr[COMMAND_ARGS_ATTR]
+    ?: error("No command args set")
 
-fun Pawn.getInteractingSlot(): Int = attr[INTERACTING_SLOT_ATTR]!!
+fun Pawn.getInteractingSlot(): Int = attr[INTERACTING_SLOT_ATTR]
+    ?: error("No interacting slot set")
 
-fun Pawn.getInteractingItem(): Item = attr[INTERACTING_ITEM]!!.get()!!
+fun Pawn.getInteractingItem(): Item = attr[INTERACTING_ITEM]?.get()
+    ?: error("No interacting item set")
 
-fun Pawn.getInteractingItemId(): Int = attr[INTERACTING_ITEM_ID]!!
+fun Pawn.getInteractingItemId(): Int = attr[INTERACTING_ITEM_ID]
+    ?: error("No interacting item id set")
 
-fun Pawn.getInteractingItemSlot(): Int = attr[INTERACTING_ITEM_SLOT]!!
+fun Pawn.getInteractingItemSlot(): Int = attr[INTERACTING_ITEM_SLOT]
+    ?: error("No interacting item slot set")
 
-fun Pawn.getInteractingOption(): Int = attr[INTERACTING_OPT_ATTR]!!
+fun Pawn.getInteractingOption(): Int = attr[INTERACTING_OPT_ATTR]
+    ?: error("No interacting option set")
 
-fun Pawn.getInteractingGameObj(): GameObject = attr[INTERACTING_OBJ_ATTR]!!.get()!!
+fun Pawn.getInteractingGameObj(): GameObject = attr[INTERACTING_OBJ_ATTR]?.get()
+    ?: error("No interacting game object set")
 
-fun Pawn.getInteractingNpc(): Npc = attr[INTERACTING_NPC_ATTR]!!.get()!!
+fun Pawn.getInteractingNpc(): Npc = attr[INTERACTING_NPC_ATTR]?.get()
+    ?: error("No interacting NPC set")
 
-fun Pawn.getInteractingPlayer(): Player = attr[INTERACTING_PLAYER_ATTR]!!.get()!!
+fun Pawn.getInteractingPlayer(): Player = attr[INTERACTING_PLAYER_ATTR]?.get()
+    ?: error("No interacting player set")
 
 fun Pawn.hasPrayerIcon(icon: PrayerIcon): Boolean = prayerIcon == icon.id
 

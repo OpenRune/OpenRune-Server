@@ -45,7 +45,7 @@ class Server {
      * before the game can be launched properly.
      */
     fun startServer(apiProps: Path) {
-        Thread.setDefaultUncaughtExceptionHandler { t, e -> e.printStackTrace() }
+        Thread.setDefaultUncaughtExceptionHandler { t, e -> logger.error(e) { "Uncaught exception in thread ${t.name}" } }
         val stopwatch = Stopwatch.createStarted()
 
         /*
@@ -86,7 +86,7 @@ class Server {
         if (devProps != null && Files.exists(devProps)) {
             devProperties.loadYaml(devProps.toFile())
         }
-        logger.info{"Loaded properties for ${gameProperties.get<String>("name")!!}."}
+        logger.info{"Loaded properties for ${gameProperties.get<String>("name") ?: "Unknown"}."}
 
         /*
          * Create a game context for our configurations and services to run.
@@ -94,18 +94,19 @@ class Server {
         val gameContext =
             GameContext(
                 initialLaunch = initialLaunch,
-                name = gameProperties.get<String>("name")!!,
-                revision = gameProperties.get<Int>("revision")!!,
-                saveFormat = SaveFormatType.valueOf(gameProperties.get<String>("saveFormat")?: "JSON"),
+                name = gameProperties.get<String>("name")
+                    ?: error("Missing required 'name' in game.yml"),
+                revision = gameProperties.get<Int>("revision")
+                    ?: error("Missing required 'revision' in game.yml"),
+                saveFormat = SaveFormatType.valueOf(gameProperties.get<String>("saveFormat") ?: "JSON"),
                 cycleTime = gameProperties.getOrDefault("cycle-time", 600),
                 playerLimit = gameProperties.getOrDefault("max-players", 2048),
-                /**
-                 * @TODO Values do not output any context if any of them r null or throw exception on start
-                 */
                 home =
                     Tile(
-                        gameProperties.get<Int>("home-x")!!,
-                        gameProperties.get<Int>("home-z")!!,
+                        gameProperties.get<Int>("home-x")
+                            ?: error("Missing required 'home-x' in game.yml"),
+                        gameProperties.get<Int>("home-z")
+                            ?: error("Missing required 'home-z' in game.yml"),
                         gameProperties.getOrDefault("home-height", 0),
                     ),
                 skillCount = gameProperties.getOrDefault("skill-count", SkillSet.DEFAULT_SKILL_COUNT),

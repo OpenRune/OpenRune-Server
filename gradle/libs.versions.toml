@@ -1,17 +1,14 @@
 [versions]
 fastutil = "8.2.1"
-sparkCore = "2.3"
-kotlinStdlibJdk8 = "1.8.20-RC2"
+kotlinStdlibJdk8 = "2.0.20"
 kotlinLogging = "5.1.0"
-jacksonDataformatToml = "2.13.0"
-jacksonDatabind = "2.13.0"
+jackson = "2.17.2"
 json = "20220320"
 jbcrypt = "0.4"
-gson = "_"
-kotlinxSerializationCore = "_"
+gson = "2.10.1"
+kotlinxSerializationCore = "1.6.3"
 mongo = "5.1.2"
-junit = "4.+"
-kotlinTestJunit = "_"
+junit = "4.13.2"
 kotlin = "2.0.20"
 ksp = "2.0.20-1.0.24"
 nettyAll = "4.1.109.Final"
@@ -23,32 +20,37 @@ or2 = "2.3.7"
 or2ServerUtils = "0.7"
 jodatime = "2.14.0"
 classgraph = "4.8.184"
+guava = "33.2.1-jre"
+reflection = "0.10.2"
+kotlinxCoroutines = "1.8.1"
+commonsIo = "2.15.1"
+bouncycastle = "1.78.1"
 
 [libraries]
 fastutil = { group = "it.unimi.dsi", name = "fastutil", version.ref = "fastutil" }
-spark-core = { group = "com.sparkjava", name = "spark-core", version.ref = "sparkCore" }
 kotlin-stdlib-jdk8 = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib-jdk8", version.ref = "kotlinStdlibJdk8" }
 
 
-kotlin-scripting = {group = "org.jetbrains.kotlin", name = "kotlin-scripting-common", version = "_"}
+kotlin-scripting = {group = "org.jetbrains.kotlin", name = "kotlin-scripting-common", version.ref = "kotlin"}
 kotlin-script-runtime = { group = "org.jetbrains.kotlin", name = "kotlin-script-runtime", version.ref = "kotlin"}
 
 kotlin-logging = { group = "io.github.oshai", name = "kotlin-logging", version.ref = "kotlinLogging" }
-jackson-dataformat-yaml = { group = "com.fasterxml.jackson.dataformat", name = "jackson-dataformat-yaml", version = "2.14.2" }
-jackson-dataformat-toml = { group = "com.fasterxml.jackson.dataformat", name = "jackson-dataformat-toml", version.ref = "jacksonDataformatToml" }
-jackson-databind = { group = "com.fasterxml.jackson.core", name = "jackson-databind", version.ref = "jacksonDatabind" }
-jackson-module-kotlin = {group ="com.fasterxml.jackson.module" , name = "jackson-module-kotlin", version = "2.13.0" }
+jackson-dataformat-yaml = { group = "com.fasterxml.jackson.dataformat", name = "jackson-dataformat-yaml", version.ref = "jackson" }
+jackson-dataformat-toml = { group = "com.fasterxml.jackson.dataformat", name = "jackson-dataformat-toml", version.ref = "jackson" }
+jackson-databind = { group = "com.fasterxml.jackson.core", name = "jackson-databind", version.ref = "jackson" }
+jackson-module-kotlin = {group ="com.fasterxml.jackson.module" , name = "jackson-module-kotlin", version.ref = "jackson" }
 json = { group = "org.json", name = "json", version.ref = "json" }
-reflection = {group = "org.reflections", name = "reflections", version = "_"}
+reflection = {group = "org.reflections", name = "reflections", version.ref = "reflection"}
 jbcrypt = { group = "org.mindrot", name = "jbcrypt", version.ref = "jbcrypt" }
 gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }
-kotlinx-coroutines = {group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version = "_"}
+kotlinx-coroutines = {group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlinxCoroutines"}
 kotlinx-serialization-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-core", version.ref = "kotlinxSerializationCore" }
-commons = { group = "commons-io", name = "commons-io", version = "_"}
-bouncycastle = { group = "org.bouncycastle", name =  "bcprov-jdk15on",version = "_"}
+commons = { group = "commons-io", name = "commons-io", version.ref = "commonsIo"}
+bouncycastle = { group = "org.bouncycastle", name =  "bcprov-jdk18on", version.ref = "bouncycastle"}
 classgraph = { group = "io.github.classgraph", name = "classgraph", version.ref = "classgraph"}
+guava = { group = "com.google.guava", name = "guava", version.ref = "guava" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
-kotlin-test-junit = { group = "org.jetbrains.kotlin", name = "kotlin-test-junit", version.ref = "kotlinTestJunit"}
+kotlin-test-junit = { group = "org.jetbrains.kotlin", name = "kotlin-test-junit", version.ref = "kotlin"}
 kotlin-csv = { group = "com.github.doyaaaaaken", name = "kotlin-csv", version.ref = "csv"}
 
 netty-all = { group = "io.netty", name = "netty-all", version.ref = "nettyAll" }
