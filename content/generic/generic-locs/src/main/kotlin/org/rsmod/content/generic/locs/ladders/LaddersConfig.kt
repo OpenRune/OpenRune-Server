@@ -9,11 +9,11 @@ import org.rsmod.api.type.refs.loc.LocReferences
 internal typealias ladder_locs = LadderLocs
 
 internal object LadderLocs : LocReferences() {
-    val ladder_down = find("laddertop")
-    val ladder_up = find("ladder")
-    val ladder_option = find("laddermiddle")
-    val lumbridge_kitchen_dungeonladder = find("qip_cook_trapdoor_open")
-    val lumbridge_cellar_dungeonladder = find("ladder_from_cellar")
+    val ladder_down = loc("laddertop")
+    val ladder_up = loc("ladder")
+    val ladder_option = loc("laddermiddle")
+    val lumbridge_kitchen_dungeonladder = loc("qip_cook_trapdoor_open")
+    val lumbridge_cellar_dungeonladder = loc("ladder_from_cellar")
 }
 
 internal object LadderLocsEdits : LocEditor() {

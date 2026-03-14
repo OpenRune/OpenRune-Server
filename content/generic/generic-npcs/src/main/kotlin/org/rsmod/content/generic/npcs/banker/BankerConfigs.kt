@@ -11,11 +11,11 @@ internal typealias banker_varbits = BankerVarBits
 internal typealias banker_enums = BankerEnums
 
 object BankerVarBits : VarBitReferences() {
-    val blocks_purchased = find("bank_extra_blocks_purchased", 54200306000469)
+    val blocks_purchased = varBit("bank_extra_blocks_purchased")
 }
 
 object BankerEnums : EnumReferences() {
-    val block_costs = find<Int, Int>("bank_space_purchase_block_cost")
+    val block_costs = enum<Int, Int>("bank_space_purchase_block_cost")
 }
 
 internal object BankerEnumBuilder : EnumBuilder() {

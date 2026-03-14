@@ -2,8 +2,8 @@ package org.rsmod.api.type.refs.area
 
 import com.github.michaelbull.logging.InlineLogger
 import jakarta.inject.Inject
-import org.rsmod.api.type.refs.HashTypeReferences
-import org.rsmod.api.type.refs.resolver.HashTypeReferenceResolver
+import org.rsmod.api.type.refs.TypeReferences
+import org.rsmod.api.type.refs.resolver.TypeReferenceResolver
 import org.rsmod.api.type.refs.resolver.TypeReferenceResult
 import org.rsmod.api.type.refs.resolver.TypeReferenceResult.CacheTypeHashMismatch
 import org.rsmod.api.type.refs.resolver.TypeReferenceResult.CacheTypeNotFound
@@ -22,13 +22,13 @@ import org.rsmod.game.type.area.HashedAreaType
 public class AreaReferenceResolver
 @Inject
 constructor(private val nameMapping: NameMapping, private val types: AreaTypeList) :
-    HashTypeReferenceResolver<HashedAreaType> {
+    TypeReferenceResolver<HashedAreaType> {
     private val logger = InlineLogger()
 
     private val names: Map<String, Int>
         get() = nameMapping.areas
 
-    override fun resolve(refs: HashTypeReferences<HashedAreaType>): List<TypeReferenceResult> =
+    override fun resolve(refs: TypeReferences<HashedAreaType>): List<TypeReferenceResult> =
         refs.cache.map { it.resolve() }
 
     private fun HashedAreaType.resolve(): TypeReferenceResult {

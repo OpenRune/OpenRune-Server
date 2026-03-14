@@ -7,11 +7,11 @@ import org.rsmod.api.type.refs.loc.LocReferences
 internal typealias staircase_locs = StaircaseLocs
 
 internal object StaircaseLocs : LocReferences() {
-    val spiral_top = find("spiralstairstop")
-    val spiral_bottom = find("spiralstairs")
-    val spiral_middle = find("spiralstairsmiddle")
-    val lumbridge_spiral_bottom = find("spiralstairsbottom_3")
-    val lumbridge_spiral_top = find("spiralstairstop_3")
+    val spiral_top = loc("spiralstairstop")
+    val spiral_bottom = loc("spiralstairs")
+    val spiral_middle = loc("spiralstairsmiddle")
+    val lumbridge_spiral_bottom = loc("spiralstairsbottom_3")
+    val lumbridge_spiral_top = loc("spiralstairstop_3")
 }
 
 internal object StaircaseLocEdits : LocEditor() {

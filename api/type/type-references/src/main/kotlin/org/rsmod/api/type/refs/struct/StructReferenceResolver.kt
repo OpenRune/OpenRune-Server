@@ -2,8 +2,8 @@ package org.rsmod.api.type.refs.struct
 
 import com.github.michaelbull.logging.InlineLogger
 import jakarta.inject.Inject
-import org.rsmod.api.type.refs.HashTypeReferences
-import org.rsmod.api.type.refs.resolver.HashTypeReferenceResolver
+import org.rsmod.api.type.refs.TypeReferences
+import org.rsmod.api.type.refs.resolver.TypeReferenceResolver
 import org.rsmod.api.type.refs.resolver.TypeReferenceResult
 import org.rsmod.api.type.refs.resolver.TypeReferenceResult.CacheTypeHashMismatch
 import org.rsmod.api.type.refs.resolver.TypeReferenceResult.CacheTypeNotFound
@@ -22,13 +22,13 @@ import org.rsmod.game.type.struct.StructTypeList
 public class StructReferenceResolver
 @Inject
 constructor(private val nameMapping: NameMapping, private val types: StructTypeList) :
-    HashTypeReferenceResolver<HashedStructType> {
+    TypeReferenceResolver<HashedStructType> {
     private val logger = InlineLogger()
 
     private val names: Map<String, Int>
         get() = nameMapping.structs
 
-    override fun resolve(refs: HashTypeReferences<HashedStructType>): List<TypeReferenceResult> =
+    override fun resolve(refs: TypeReferences<HashedStructType>): List<TypeReferenceResult> =
         refs.cache.map { it.resolve() }
 
     private fun HashedStructType.resolve(): TypeReferenceResult {

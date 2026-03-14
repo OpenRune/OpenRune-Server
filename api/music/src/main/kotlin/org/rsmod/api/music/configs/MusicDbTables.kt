@@ -22,7 +22,7 @@ internal object MusicDbColumns : DbColumnReferences() {
 }
 
 internal object MusicDbTables : DbTableReferences() {
-    val music = find("music")
+    val music = dbTable("music")
 }
 
 private object VariableCodec : DbColumnCodec<Int, MusicVariable> {

@@ -1,8 +1,8 @@
 package org.rsmod.api.type.refs.proj
 
 import jakarta.inject.Inject
-import org.rsmod.api.type.refs.NameTypeReferences
-import org.rsmod.api.type.refs.resolver.NameTypeReferenceResolver
+import org.rsmod.api.type.refs.TypeReferences
+import org.rsmod.api.type.refs.resolver.TypeReferenceResolver
 import org.rsmod.api.type.refs.resolver.TypeReferenceResult
 import org.rsmod.api.type.refs.resolver.TypeReferenceResult.CacheTypeNotFound
 import org.rsmod.api.type.refs.resolver.TypeReferenceResult.FullSuccess
@@ -19,11 +19,11 @@ import org.rsmod.game.type.proj.ProjAnimTypeList
 public class ProjAnimReferenceResolver
 @Inject
 constructor(private val nameMapping: NameMapping, private val types: ProjAnimTypeList) :
-    NameTypeReferenceResolver<HashedProjAnimType> {
+    TypeReferenceResolver<HashedProjAnimType> {
     private val names: Map<String, Int>
         get() = nameMapping.projanims
 
-    override fun resolve(refs: NameTypeReferences<HashedProjAnimType>): List<TypeReferenceResult> =
+    override fun resolve(refs: TypeReferences<HashedProjAnimType>): List<TypeReferenceResult> =
         refs.cache.map { it.resolve() }
 
     private fun HashedProjAnimType.resolve(): TypeReferenceResult {

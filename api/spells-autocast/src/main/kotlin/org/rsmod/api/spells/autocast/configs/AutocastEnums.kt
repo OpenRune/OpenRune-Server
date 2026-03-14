@@ -8,8 +8,8 @@ import org.rsmod.game.type.obj.ObjType
 internal typealias autocast_enums = AutocastEnums
 
 internal object AutocastEnums : EnumReferences() {
-    val spells = find<Int, ObjType>("autocast_spells")
-    val restricted_spells = find<ObjType, Boolean>("autocast_restricted_spells")
+    val spells = enum<Int, ObjType>("autocast_spells")
+    val restricted_spells = enum<ObjType, Boolean>("autocast_restricted_spells")
 }
 
 internal object AutocastEnumBuilder : EnumBuilder() {

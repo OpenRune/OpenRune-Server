@@ -2,8 +2,8 @@ package org.rsmod.api.type.refs.stat
 
 import com.github.michaelbull.logging.InlineLogger
 import jakarta.inject.Inject
-import org.rsmod.api.type.refs.HashTypeReferences
-import org.rsmod.api.type.refs.resolver.HashTypeReferenceResolver
+import org.rsmod.api.type.refs.TypeReferences
+import org.rsmod.api.type.refs.resolver.TypeReferenceResolver
 import org.rsmod.api.type.refs.resolver.TypeReferenceResult
 import org.rsmod.api.type.refs.resolver.TypeReferenceResult.CacheTypeHashMismatch
 import org.rsmod.api.type.refs.resolver.TypeReferenceResult.CacheTypeNotFound
@@ -22,13 +22,13 @@ import org.rsmod.game.type.stat.StatTypeList
 public class StatReferenceResolver
 @Inject
 constructor(private val nameMapping: NameMapping, private val types: StatTypeList) :
-    HashTypeReferenceResolver<HashedStatType> {
+    TypeReferenceResolver<HashedStatType> {
     private val logger = InlineLogger()
 
     private val names: Map<String, Int>
         get() = nameMapping.stats
 
-    override fun resolve(refs: HashTypeReferences<HashedStatType>): List<TypeReferenceResult> =
+    override fun resolve(refs: TypeReferences<HashedStatType>): List<TypeReferenceResult> =
         refs.cache.map { it.resolve() }
 
     private fun HashedStatType.resolve(): TypeReferenceResult {

@@ -8,9 +8,9 @@ import org.rsmod.game.type.loc.LocType
 typealias coop_locs = ChickenCoopLocs
 
 object ChickenCoopLocs : LocReferences() {
-    val empty = find("chicken_coop_empty")
-    val bare = find("chicken_coop_bare")
-    val bare2 = find("chicken_coop_bare2")
+    val empty = loc("chicken_coop_empty")
+    val bare = loc("chicken_coop_bare")
+    val bare2 = loc("chicken_coop_bare2")
 }
 
 object ChickenCoopLocEditor : LocEditor() {

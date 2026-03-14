@@ -9,7 +9,7 @@ import org.rsmod.game.type.enums.EnumType
 import org.rsmod.game.type.obj.ObjType
 
 object WoodcuttingParams : ParamReferences() {
-    val success_rates = find<EnumType<ObjType, Int>>("woodcutting_axe_success_rates")
+    val success_rates = param<EnumType<ObjType, Int>>("woodcutting_axe_success_rates")
 }
 
 internal object WoodcuttingParamBuilder : ParamBuilder() {
@@ -19,17 +19,17 @@ internal object WoodcuttingParamBuilder : ParamBuilder() {
 }
 
 internal object WoodcuttingEnums : EnumReferences() {
-    val regular_tree_axes = find<ObjType, Int>("regular_tree_axes")
-    val oak_tree_axes = find<ObjType, Int>("oak_tree_axes")
-    val willow_tree_axes = find<ObjType, Int>("willow_tree_axes")
-    val teak_tree_axes = find<ObjType, Int>("teak_tree_axes")
-    val maple_tree_axes = find<ObjType, Int>("maple_tree_axes")
-    val arctic_tree_axes = find<ObjType, Int>("arctic_tree_axes")
-    val mahogany_tree_axes = find<ObjType, Int>("mahogany_tree_axes")
-    val yew_tree_axes = find<ObjType, Int>("yew_tree_axes")
-    val magic_tree_axes = find<ObjType, Int>("magic_tree_axes")
-    val redwood_tree_axes = find<ObjType, Int>("redwood_tree_axes")
-    val hollow_tree_axes = find<ObjType, Int>("hollow_tree_axes")
+    val regular_tree_axes = enum<ObjType, Int>("regular_tree_axes")
+    val oak_tree_axes = enum<ObjType, Int>("oak_tree_axes")
+    val willow_tree_axes = enum<ObjType, Int>("willow_tree_axes")
+    val teak_tree_axes = enum<ObjType, Int>("teak_tree_axes")
+    val maple_tree_axes = enum<ObjType, Int>("maple_tree_axes")
+    val arctic_tree_axes = enum<ObjType, Int>("arctic_tree_axes")
+    val mahogany_tree_axes = enum<ObjType, Int>("mahogany_tree_axes")
+    val yew_tree_axes = enum<ObjType, Int>("yew_tree_axes")
+    val magic_tree_axes = enum<ObjType, Int>("magic_tree_axes")
+    val redwood_tree_axes = enum<ObjType, Int>("redwood_tree_axes")
+    val hollow_tree_axes = enum<ObjType, Int>("hollow_tree_axes")
 }
 
 internal object WoodcuttingEnumBuilder : EnumBuilder() {

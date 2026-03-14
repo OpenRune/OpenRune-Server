@@ -1,12 +1,12 @@
 package org.rsmod.api.type.refs.seq
 
-import org.rsmod.api.type.refs.HashTypeReferences
+import org.rsmod.api.type.refs.TypeReferences
 import org.rsmod.game.type.seq.HashedSeqType
 import org.rsmod.game.type.seq.SeqType
 
-public abstract class SeqReferences : HashTypeReferences<SeqType>(SeqType::class.java) {
-    override fun find(internal: String, hash: Long?): SeqType {
-        val type = HashedSeqType(hash, internal)
+public abstract class SeqReferences : TypeReferences<SeqType>(SeqType::class.java) {
+    public fun seq(internal: String): SeqType {
+        val type = HashedSeqType(null, internal)
         cache += type
         return type
     }

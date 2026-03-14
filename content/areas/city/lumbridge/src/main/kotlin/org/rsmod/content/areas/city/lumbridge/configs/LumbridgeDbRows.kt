@@ -9,12 +9,12 @@ import org.rsmod.api.type.refs.dbrow.DbRowReferences
 typealias lumbridge_rows = LumbridgeDbRows
 
 object LumbridgeDbRows : DbRowReferences() {
-    val music_autumn_voyage = find("music_autumn_voyage")
-    val music_book_of_spells = find("music_book_of_spells")
-    val music_dream = find("music_dream")
-    val music_flute_salad = find("music_flute_salad")
-    val music_harmony = find("music_harmony")
-    val music_yesteryear = find("music_yesteryear")
+    val music_autumn_voyage = dbRow("music_autumn_voyage")
+    val music_book_of_spells = dbRow("music_book_of_spells")
+    val music_dream = dbRow("music_dream")
+    val music_flute_salad = dbRow("music_flute_salad")
+    val music_harmony = dbRow("music_harmony")
+    val music_yesteryear = dbRow("music_yesteryear")
 }
 
 object LumbridgeDbRowBuilder : DbRowBuilder() {

@@ -15,9 +15,9 @@ typealias duck_npcs = DuckNpcs
 typealias duck_hunt = DuckHunt
 
 object DuckNpcs : NpcReferences() {
-    val duck = find("duck")
-    val duck_female = find("duck_female")
-    val duckling = find("duck_update_ducklings")
+    val duck = npc("duck")
+    val duck_female = npc("duck_female")
+    val duckling = npc("duck_update_ducklings")
 }
 
 object DuckNpcEdits : NpcEditor() {
@@ -54,7 +54,7 @@ object DuckNpcEdits : NpcEditor() {
 }
 
 object DuckHunt : HuntModeReferences() {
-    val duckling = find("duck_hunt")
+    val duckling = hunt("duck_hunt")
 }
 
 object DuckHuntBuilder : HuntModeBuilder() {

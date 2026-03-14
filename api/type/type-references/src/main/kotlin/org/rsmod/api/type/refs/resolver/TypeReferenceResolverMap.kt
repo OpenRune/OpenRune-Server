@@ -115,7 +115,7 @@ constructor(
     private val varpResolver: VarpReferenceResolver,
     private val walkTriggerResolver: WalkTriggerReferenceResolver,
 ) {
-    private val references = mutableListOf<TypeReferences<*, *>>()
+    private val references = mutableListOf<TypeReferences<*>>()
     private val _errors = mutableListOf<TypeReferenceResult.Error<*>>()
     private val _issues = mutableListOf<TypeReferenceResult.Issue<*>>()
     private val _updates = mutableListOf<TypeReferenceResult.Update<*>>()
@@ -132,7 +132,7 @@ constructor(
     public val updates: List<TypeReferenceResult.Update<*>>
         get() = _updates
 
-    public operator fun plusAssign(refs: Collection<TypeReferences<*, *>>) {
+    public operator fun plusAssign(refs: Collection<TypeReferences<*>>) {
         this.references += refs
     }
 
@@ -142,10 +142,7 @@ constructor(
         }
     }
 
-    public fun <T, I> resolve(
-        ref: TypeReferences<T, I>,
-        res: TypeReferenceResolver<T, I> = ref.resolver(),
-    ) {
+    public fun <T> resolve(ref: TypeReferences<T>, res: TypeReferenceResolver<T> = ref.resolver()) {
         val resolved = res.resolve(ref)
 
         val updates = resolved.filterIsInstance<TypeReferenceResult.Update<*>>()
@@ -170,7 +167,7 @@ constructor(
     }
 
     @Suppress("UNCHECKED_CAST")
-    private fun <T, I> TypeReferences<T, I>.resolver(): TypeReferenceResolver<T, I> {
+    private fun <T> TypeReferences<T>.resolver(): TypeReferenceResolver<T> {
         val resolver =
             when (this) {
                 is AreaReferences -> areaResolver
@@ -211,6 +208,6 @@ constructor(
                 is WalkTriggerReferences -> walkTriggerResolver
                 else -> throw NotImplementedError("Resolver not defined for type-reference: $this")
             }
-        return resolver as TypeReferenceResolver<T, I>
+        return resolver as TypeReferenceResolver<T>
     }
 }

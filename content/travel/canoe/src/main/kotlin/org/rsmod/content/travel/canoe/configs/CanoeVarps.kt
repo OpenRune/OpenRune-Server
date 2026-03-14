@@ -7,9 +7,9 @@ import org.rsmod.api.type.refs.varp.VarpReferences
 typealias canoe_varps = CanoeVarps
 
 object CanoeVarps : VarpReferences() {
-    val station_coords = find("canoe_station_coords")
-    val river_lum = find("canoeing_river_lum")
-    val river_lum_2 = find("canoeing_river_lum_2")
+    val station_coords = varp("canoe_station_coords")
+    val river_lum = varp("canoeing_river_lum")
+    val river_lum_2 = varp("canoeing_river_lum_2")
 }
 
 internal object CanoeVarpBuilder : VarpBuilder() {

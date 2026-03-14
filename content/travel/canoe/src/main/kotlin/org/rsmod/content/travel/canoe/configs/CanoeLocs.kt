@@ -7,25 +7,24 @@ import org.rsmod.api.type.refs.loc.LocReferences
 typealias canoe_locs = CanoeLocs
 
 object CanoeLocs : LocReferences() {
-    val station_lumbridge = find("canoeing_canoestation_lumbridge", 7518292661265605047)
-    val station_champs_guild = find("canoeing_canoestation_championsguild", 7518292661279450889)
-    val station_barb_village = find("canoeing_canoestation_barbarianvillage", 7518292661293296731)
-    val station_edgeville = find("canoeing_canoestation_edgeville", 7518292661307142573)
-    val station_ferox_enclave = find("canoeing_canoestation_sanctuary", 7518292781558299130)
-    val ready_to_shape = find("canoestation_fallen_tree", 3482919538715667463)
-    val ready_log = find("canoestation_log", 2191318268562489158)
-    val ready_dugout = find("canoestation_dugout", 2921309672170420703)
-    val ready_stable_dugout = find("canoestation_stabledugout", 2921309672170420704)
-    val ready_waka = find("canoestation_waka", 2921309672170420705)
-    val floating_log = find("canoeing_log_canoeing_station_in_water", 2907545460324258188)
-    val floating_dugout = find("canoeing_dugout_canoeing_station_in_water", 2907545460324258189)
-    val floating_stable_dugout =
-        find("canoeing_catamaran_canoeing_station_in_water", 2907545460324258190)
-    val floating_waka = find("canoeing_waka_canoeing_station_in_water", 2907545460324258191)
-    val sinking_log = find("canoeing_log_sinking", 6110366560596651993)
-    val sinking_dugout = find("canoeing_dugout_sinking", 6110366560596651994)
-    val sinking_stable_dugout = find("canoeing_catamaran_sinking", 6110366560596651995)
-    val sinking_waka = find("canoeing_waka_sinking", 6110366560596651996)
+    val station_lumbridge = loc("canoeing_canoestation_lumbridge")
+    val station_champs_guild = loc("canoeing_canoestation_championsguild")
+    val station_barb_village = loc("canoeing_canoestation_barbarianvillage")
+    val station_edgeville = loc("canoeing_canoestation_edgeville")
+    val station_ferox_enclave = loc("canoeing_canoestation_sanctuary")
+    val ready_to_shape = loc("canoestation_fallen_tree")
+    val ready_log = loc("canoestation_log")
+    val ready_dugout = loc("canoestation_dugout")
+    val ready_stable_dugout = loc("canoestation_stabledugout")
+    val ready_waka = loc("canoestation_waka")
+    val floating_log = loc("canoeing_log_canoeing_station_in_water")
+    val floating_dugout = loc("canoeing_dugout_canoeing_station_in_water")
+    val floating_stable_dugout = loc("canoeing_catamaran_canoeing_station_in_water")
+    val floating_waka = loc("canoeing_waka_canoeing_station_in_water")
+    val sinking_log = loc("canoeing_log_sinking")
+    val sinking_dugout = loc("canoeing_dugout_sinking")
+    val sinking_stable_dugout = loc("canoeing_catamaran_sinking")
+    val sinking_waka = loc("canoeing_waka_sinking")
 }
 
 object CanoeLocEditor : LocEditor() {

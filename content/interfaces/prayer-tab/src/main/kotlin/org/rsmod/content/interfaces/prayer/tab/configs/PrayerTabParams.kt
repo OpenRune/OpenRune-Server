@@ -9,17 +9,17 @@ import org.rsmod.game.type.varbit.VarBitType
 internal typealias prayer_params = PrayerTabParams
 
 object PrayerTabParams : ParamReferences() {
-    val id = find<Int>("prayer_id", 88673346945)
-    val component = find<ComponentType>("prayer_component", 61646266434)
-    val name = find<String>("prayer_name", 9222941699801316537)
-    val level = find<Int>("prayer_levelreq", 29733805813656036)
-    val sound = find<SynthType>("prayer_sound", 67558440545)
-    val varbit = find<VarBitType>("prayer_varbit")
-    val overhead = find<Int>("prayer_overhead")
-    val unlock_varbit = find<VarBitType>("prayer_unlock_varbit")
-    val unlock_state = find<Int>("prayer_unlock_state")
-    val locked_message = find<String>("prayer_locked_message")
-    val drain_effect = find<Int>("prayer_drain_effect")
+    val id = param<Int>("prayer_id", 88673346945)
+    val component = param<ComponentType>("prayer_component", 61646266434)
+    val name = param<String>("prayer_name", 9222941699801316537)
+    val level = param<Int>("prayer_levelreq", 29733805813656036)
+    val sound = param<SynthType>("prayer_sound", 67558440545)
+    val varbit = param<VarBitType>("prayer_varbit")
+    val overhead = param<Int>("prayer_overhead")
+    val unlock_varbit = param<VarBitType>("prayer_unlock_varbit")
+    val unlock_state = param<Int>("prayer_unlock_state")
+    val locked_message = param<String>("prayer_locked_message")
+    val drain_effect = param<Int>("prayer_drain_effect")
 }
 
 internal object PrayerTabParamBuilder : ParamBuilder() {

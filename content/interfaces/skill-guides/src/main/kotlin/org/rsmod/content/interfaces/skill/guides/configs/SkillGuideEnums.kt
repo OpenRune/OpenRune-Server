@@ -7,8 +7,8 @@ import org.rsmod.game.type.comp.ComponentType
 typealias guide_enums = SkillGuideEnums
 
 object SkillGuideEnums : EnumReferences() {
-    val open_buttons = find<ComponentType, Int>("skill_guide_button_vars")
-    val subsection_buttons = find<ComponentType, Int>("skill_guide_section_vars")
+    val open_buttons = enum<ComponentType, Int>("skill_guide_button_vars")
+    val subsection_buttons = enum<ComponentType, Int>("skill_guide_section_vars")
 }
 
 internal object SkillGuideEnumBuilder : EnumBuilder() {

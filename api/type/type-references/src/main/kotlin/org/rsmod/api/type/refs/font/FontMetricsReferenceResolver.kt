@@ -2,8 +2,8 @@ package org.rsmod.api.type.refs.font
 
 import com.github.michaelbull.logging.InlineLogger
 import jakarta.inject.Inject
-import org.rsmod.api.type.refs.HashTypeReferences
-import org.rsmod.api.type.refs.resolver.HashTypeReferenceResolver
+import org.rsmod.api.type.refs.TypeReferences
+import org.rsmod.api.type.refs.resolver.TypeReferenceResolver
 import org.rsmod.api.type.refs.resolver.TypeReferenceResult
 import org.rsmod.api.type.refs.resolver.TypeReferenceResult.CacheTypeHashMismatch
 import org.rsmod.api.type.refs.resolver.TypeReferenceResult.CacheTypeNotFound
@@ -22,15 +22,14 @@ import org.rsmod.game.type.font.HashedFontMetricsType
 public class FontMetricsReferenceResolver
 @Inject
 constructor(private val nameMapping: NameMapping, private val types: FontMetricsTypeList) :
-    HashTypeReferenceResolver<HashedFontMetricsType> {
+    TypeReferenceResolver<HashedFontMetricsType> {
     private val logger = InlineLogger()
 
     private val names: Map<String, Int>
         get() = nameMapping.fonts
 
-    override fun resolve(
-        refs: HashTypeReferences<HashedFontMetricsType>
-    ): List<TypeReferenceResult> = refs.cache.map { it.resolve() }
+    override fun resolve(refs: TypeReferences<HashedFontMetricsType>): List<TypeReferenceResult> =
+        refs.cache.map { it.resolve() }
 
     private fun HashedFontMetricsType.resolve(): TypeReferenceResult {
         val name = internalName ?: return err(InvalidImplicitName)

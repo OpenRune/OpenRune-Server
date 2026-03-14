@@ -1,12 +1,12 @@
 package org.rsmod.api.type.refs.dbtable
 
-import org.rsmod.api.type.refs.HashTypeReferences
+import org.rsmod.api.type.refs.TypeReferences
 import org.rsmod.game.type.dbtable.DbTableType
 import org.rsmod.game.type.dbtable.HashedDbTableType
 
-public abstract class DbTableReferences : HashTypeReferences<DbTableType>(DbTableType::class.java) {
-    override fun find(internal: String, hash: Long?): DbTableType {
-        val type = HashedDbTableType(hash, internal)
+public abstract class DbTableReferences : TypeReferences<DbTableType>(DbTableType::class.java) {
+    public fun dbTable(internal: String): DbTableType {
+        val type = HashedDbTableType(null, internal)
         cache += type
         return type
     }

@@ -14,19 +14,18 @@ internal object GateConstants {
 }
 
 internal object GateLocs : LocReferences() {
-    val picketgate_left_closed = find("fencegate_l", 6120710262097893169)
-    val picketgate_right_closed = find("fencegate_r", 6120710262097893171)
-    val picketgate_left_opened = find("openfencegate_l", 135511893709034488)
-    val picketgate_right_opened = find("openfencegate_r", 135511893709034496)
-    val nicepicketgate_left_closed = find("rustic_fencegate_l", 8381220604490231462)
-    val nicepicketgate_right_closed = find("rustic_fencegate_r", 8381220604490254496)
-    val nicepicketgate_left_opened = find("rustic_openfencegate_l", 2396022236101395815)
-    val nicepicketgate_right_opened = find("rustic_openfencegate_r", 2396022236101395816)
-    val farmerfred_gate_left_closed = find("qip_sheep_shearer_fencegate_l", 8381220604490243565)
-    val farmerfred_gate_right_closed = find("qip_sheep_shearer_fencegate_r", 8381220604490243566)
-    val farmerfred_gate_left_opened = find("qip_sheep_shearer_openfencegate_l", 2396022236101384885)
-    val farmerfred_gate_right_opened =
-        find("qip_sheep_shearer_openfencegate_r", 2395638821475390324)
+    val picketgate_left_closed = loc("fencegate_l")
+    val picketgate_right_closed = loc("fencegate_r")
+    val picketgate_left_opened = loc("openfencegate_l")
+    val picketgate_right_opened = loc("openfencegate_r")
+    val nicepicketgate_left_closed = loc("rustic_fencegate_l")
+    val nicepicketgate_right_closed = loc("rustic_fencegate_r")
+    val nicepicketgate_left_opened = loc("rustic_openfencegate_l")
+    val nicepicketgate_right_opened = loc("rustic_openfencegate_r")
+    val farmerfred_gate_left_closed = loc("qip_sheep_shearer_fencegate_l")
+    val farmerfred_gate_right_closed = loc("qip_sheep_shearer_fencegate_r")
+    val farmerfred_gate_left_opened = loc("qip_sheep_shearer_openfencegate_l")
+    val farmerfred_gate_right_opened = loc("qip_sheep_shearer_openfencegate_r")
 }
 
 internal object GateLocEditor : LocEditor() {

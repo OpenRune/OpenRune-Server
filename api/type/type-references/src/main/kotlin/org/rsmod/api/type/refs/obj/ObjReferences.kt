@@ -1,12 +1,12 @@
 package org.rsmod.api.type.refs.obj
 
-import org.rsmod.api.type.refs.HashTypeReferences
+import org.rsmod.api.type.refs.TypeReferences
 import org.rsmod.game.type.obj.HashedObjType
 import org.rsmod.game.type.obj.ObjType
 
-public abstract class ObjReferences : HashTypeReferences<ObjType>(ObjType::class.java) {
-    override fun find(internal: String, hash: Long?): ObjType {
-        val type = HashedObjType(hash, internal)
+public abstract class ObjReferences : TypeReferences<ObjType>(ObjType::class.java) {
+    public fun obj(internal: String): ObjType {
+        val type = HashedObjType(null, internal)
         cache += type
         return type
     }

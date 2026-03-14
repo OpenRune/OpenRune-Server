@@ -9,7 +9,7 @@ import org.rsmod.game.type.inv.InvStackType
 typealias lumbridge_invs = LumbridgeInvs
 
 object LumbridgeInvs : InvReferences() {
-    val axeshop = find("axeshop")
+    val axeshop = inv("axeshop")
 }
 
 object LumbridgeInvBuilder : InvEditor() {

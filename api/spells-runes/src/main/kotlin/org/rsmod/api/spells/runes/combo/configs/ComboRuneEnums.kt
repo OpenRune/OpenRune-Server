@@ -9,13 +9,13 @@ import org.rsmod.game.type.obj.ObjType
 internal typealias combo_enums = ComboRuneEnums
 
 internal object ComboRuneEnums : EnumReferences() {
-    val combos: EnumType<ObjType, EnumType<Int, ObjType>> = find("combo_runes")
-    val mist_rune: EnumType<Int, ObjType> = find("combo_rune_mist")
-    val dust_rune: EnumType<Int, ObjType> = find("combo_rune_dust")
-    val mud_rune: EnumType<Int, ObjType> = find("combo_rune_mud")
-    val smoke_rune: EnumType<Int, ObjType> = find("combo_rune_smoke")
-    val steam_rune: EnumType<Int, ObjType> = find("combo_rune_steam")
-    val lava_rune: EnumType<Int, ObjType> = find("combo_rune_lava")
+    val combos: EnumType<ObjType, EnumType<Int, ObjType>> = enum("combo_runes")
+    val mist_rune: EnumType<Int, ObjType> = enum("combo_rune_mist")
+    val dust_rune: EnumType<Int, ObjType> = enum("combo_rune_dust")
+    val mud_rune: EnumType<Int, ObjType> = enum("combo_rune_mud")
+    val smoke_rune: EnumType<Int, ObjType> = enum("combo_rune_smoke")
+    val steam_rune: EnumType<Int, ObjType> = enum("combo_rune_steam")
+    val lava_rune: EnumType<Int, ObjType> = enum("combo_rune_lava")
 }
 
 internal object ComboRuneEnumBuilder : EnumBuilder() {

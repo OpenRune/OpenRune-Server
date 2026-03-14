@@ -10,12 +10,12 @@ import org.rsmod.game.type.loc.LocType
 internal typealias pickable_locs = PickableLocs
 
 object PickableLocs : LocReferences() {
-    val cabbage = find("cabbage", 1496620632455889241)
-    val onion = find("onion", 3040472638361972606)
-    val potato = find("potato", 6619139296550516438)
-    val fai_varrock_wheat = find("fai_varrock_wheat", 7022213377670558384)
-    val fai_varrock_wheat_corner = find("fai_varrock_wheat_corner", 7022213377670558385)
-    val fai_varrock_wheat_small = find("fai_varrock_wheat_small", 7022213377670558386)
+    val cabbage = loc("cabbage")
+    val onion = loc("onion")
+    val potato = loc("potato")
+    val fai_varrock_wheat = loc("fai_varrock_wheat")
+    val fai_varrock_wheat_corner = loc("fai_varrock_wheat_corner")
+    val fai_varrock_wheat_small = loc("fai_varrock_wheat_small")
 }
 
 internal object PickableLocEditor : LocEditor() {

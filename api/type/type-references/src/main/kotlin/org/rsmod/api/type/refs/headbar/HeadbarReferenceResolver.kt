@@ -2,8 +2,8 @@ package org.rsmod.api.type.refs.headbar
 
 import com.github.michaelbull.logging.InlineLogger
 import jakarta.inject.Inject
-import org.rsmod.api.type.refs.HashTypeReferences
-import org.rsmod.api.type.refs.resolver.HashTypeReferenceResolver
+import org.rsmod.api.type.refs.TypeReferences
+import org.rsmod.api.type.refs.resolver.TypeReferenceResolver
 import org.rsmod.api.type.refs.resolver.TypeReferenceResult
 import org.rsmod.api.type.refs.resolver.TypeReferenceResult.CacheTypeHashMismatch
 import org.rsmod.api.type.refs.resolver.TypeReferenceResult.CacheTypeNotFound
@@ -22,13 +22,13 @@ import org.rsmod.game.type.headbar.HeadbarTypeList
 public class HeadbarReferenceResolver
 @Inject
 constructor(private val nameMapping: NameMapping, private val types: HeadbarTypeList) :
-    HashTypeReferenceResolver<HashedHeadbarType> {
+    TypeReferenceResolver<HashedHeadbarType> {
     private val logger = InlineLogger()
 
     private val names: Map<String, Int>
         get() = nameMapping.headbars
 
-    override fun resolve(refs: HashTypeReferences<HashedHeadbarType>): List<TypeReferenceResult> =
+    override fun resolve(refs: TypeReferences<HashedHeadbarType>): List<TypeReferenceResult> =
         refs.cache.map { it.resolve() }
 
     private fun HashedHeadbarType.resolve(): TypeReferenceResult {

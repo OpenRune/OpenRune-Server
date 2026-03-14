@@ -5,5 +5,5 @@ import org.rsmod.api.type.refs.midi.MidiReferences
 typealias midis = BaseMidis
 
 object BaseMidis : MidiReferences() {
-    val stop_music = find("stop_music")
+    val stop_music = midi("stop_music")
 }

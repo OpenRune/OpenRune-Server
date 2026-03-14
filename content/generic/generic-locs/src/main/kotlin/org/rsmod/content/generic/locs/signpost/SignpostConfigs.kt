@@ -14,22 +14,22 @@ internal typealias signpost_interfaces = SignpostInterfaces
 internal typealias signpost_components = SignpostComponents
 
 internal object SignpostLocs : LocReferences() {
-    val signpost = find("aide_signpost_1", 5944252288185964868)
+    val signpost = loc("aide_signpost_1")
 }
 
 internal object SignpostInterfaces : InterfaceReferences() {
-    val signpost = find("aide_compass", 9223372036367484796)
+    val signpost = inter("aide_compass")
 }
 
 internal object SignpostComponents : ComponentReferences() {
-    val signpost_north = find("aide_compass:aide_north_text_2", 3633456669255458235)
-    val signpost_east = find("aide_compass:aide_east_text_2", 6865859231034431206)
-    val signpost_south = find("aide_compass:aide_south_text_2", 3946237333876253083)
-    val signpost_west = find("aide_compass:aide_west_text_2", 2578427790880957538)
+    val signpost_north = component("aide_compass:aide_north_text_2")
+    val signpost_east = component("aide_compass:aide_east_text_2")
+    val signpost_south = component("aide_compass:aide_south_text_2")
+    val signpost_west = component("aide_compass:aide_west_text_2")
 }
 
 internal object SignpostEnums : EnumReferences() {
-    val signpost_directions = find<CoordGrid, String>("signpost_directions")
+    val signpost_directions = enum<CoordGrid, String>("signpost_directions")
 }
 
 internal object SignpostEnumBuild : EnumBuilder() {

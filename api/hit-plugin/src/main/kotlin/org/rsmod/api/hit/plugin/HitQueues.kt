@@ -6,6 +6,6 @@ import org.rsmod.game.type.queue.QueueType
 public typealias hit_queues = HitQueues
 
 public object HitQueues : QueueReferences() {
-    public val standard: QueueType = find("hit")
-    public val impact: QueueType = find("impact_hit")
+    public val standard: QueueType = queue("hit")
+    public val impact: QueueType = queue("impact_hit")
 }

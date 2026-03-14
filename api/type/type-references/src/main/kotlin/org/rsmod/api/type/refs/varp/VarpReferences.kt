@@ -1,12 +1,12 @@
 package org.rsmod.api.type.refs.varp
 
-import org.rsmod.api.type.refs.HashTypeReferences
+import org.rsmod.api.type.refs.TypeReferences
 import org.rsmod.game.type.varp.HashedVarpType
 import org.rsmod.game.type.varp.VarpType
 
-public abstract class VarpReferences : HashTypeReferences<VarpType>(VarpType::class.java) {
-    override fun find(internal: String, hash: Long?): VarpType {
-        val type = HashedVarpType(hash, internal)
+public abstract class VarpReferences : TypeReferences<VarpType>(VarpType::class.java) {
+    public fun varp(internal: String): VarpType {
+        val type = HashedVarpType(null, internal)
         cache += type
         return type
     }

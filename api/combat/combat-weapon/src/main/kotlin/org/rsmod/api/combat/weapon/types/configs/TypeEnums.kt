@@ -10,7 +10,7 @@ import org.rsmod.game.type.obj.WeaponCategory
 internal typealias type_enums = TypeEnums
 
 internal object TypeEnums : EnumReferences() {
-    val weapon_attack_types = find<Int, Int>("weapon_attack_types")
+    val weapon_attack_types = enum<Int, Int>("weapon_attack_types")
 }
 
 internal object TypeEnumBuilder : EnumBuilder() {

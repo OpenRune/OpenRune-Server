@@ -9,13 +9,13 @@ import org.rsmod.game.type.loc.LocType
 internal typealias search_locs = SearchLocs
 
 internal object SearchLocs : LocReferences() {
-    val crate3 = find("crate3")
-    val crate2_old = find("crate2_old")
-    val crate3_old = find("crate3_old")
-    val crate = find("crate")
-    val qip_cook_crate_stacked = find("qip_cook_crate_stacked")
-    val sacks = find("sacks")
-    val boxes = find("boxes")
+    val crate3 = loc("crate3")
+    val crate2_old = loc("crate2_old")
+    val crate3_old = loc("crate3_old")
+    val crate = loc("crate")
+    val qip_cook_crate_stacked = loc("qip_cook_crate_stacked")
+    val sacks = loc("sacks")
+    val boxes = loc("boxes")
 }
 
 internal object SearchLocEdits : LocEditor() {

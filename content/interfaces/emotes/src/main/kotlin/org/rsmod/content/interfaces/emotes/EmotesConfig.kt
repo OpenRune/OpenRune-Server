@@ -27,27 +27,27 @@ internal typealias emote_varbits = EmoteVarBits
 internal typealias emote_walktriggers = EmoteWalkTriggers
 
 object EmoteComponents : ComponentReferences() {
-    val emote_list = find("emote:contents", 904485991309646478)
+    val emote_list = component("emote:contents")
 }
 
 object EmoteEnums : EnumReferences() {
-    val emote_names = find<Int, String>("emote_names")
-    val skill_cape_anims = find<StatType, SeqType>("skill_cape_anims")
-    val skill_cape_spots = find<StatType, SpotanimType>("skill_cape_spots")
+    val emote_names = enum<Int, String>("emote_names")
+    val skill_cape_anims = enum<StatType, SeqType>("skill_cape_anims")
+    val skill_cape_spots = enum<StatType, SpotanimType>("skill_cape_spots")
 }
 
 internal object EmoteVarps : VarpReferences() {
-    val emote_counters = find("emote_counters")
-    val emote_clock_premier_shield = find("emote_clock_premier_shield")
+    val emote_counters = varp("emote_counters")
+    val emote_clock_premier_shield = varp("emote_clock_premier_shield")
 }
 
 internal object EmoteVarBits : VarBitReferences() {
-    val emote_counters_crazy_dance = find("emote_counters_crazy_dance")
-    val emote_counters_premier_shield = find("emote_counters_premier_shield")
+    val emote_counters_crazy_dance = varBit("emote_counters_crazy_dance")
+    val emote_counters_premier_shield = varBit("emote_counters_premier_shield")
 }
 
 internal object EmoteWalkTriggers : WalkTriggerReferences() {
-    val cancelanim = find("emote_cancelanim")
+    val cancelanim = walkTrigger("emote_cancelanim")
 }
 
 internal object EmoteEnumBuilds : EnumBuilder() {

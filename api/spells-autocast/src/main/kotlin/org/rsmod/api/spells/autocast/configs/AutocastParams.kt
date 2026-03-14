@@ -8,9 +8,9 @@ import org.rsmod.game.type.obj.ObjType
 internal typealias autocast_params = AutocastParams
 
 internal object AutocastParams : ParamReferences() {
-    val additional_spell_autocast1: ParamObj = find("additional_spell_autocast1")
-    val additional_spell_autocast2: ParamObj = find("additional_spell_autocast2")
-    val additional_spell_autocast3: ParamObj = find("additional_spell_autocast3")
+    val additional_spell_autocast1: ParamObj = param("additional_spell_autocast1")
+    val additional_spell_autocast2: ParamObj = param("additional_spell_autocast2")
+    val additional_spell_autocast3: ParamObj = param("additional_spell_autocast3")
 }
 
 internal object AutocastParamBuilder : ParamBuilder() {

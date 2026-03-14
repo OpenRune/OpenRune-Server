@@ -9,9 +9,9 @@ import org.rsmod.game.type.seq.SeqType
 typealias canoe_enums = CanoeEnums
 
 object CanoeEnums : EnumReferences() {
-    val station_axe_rates = find<ObjType, Int>("canoe_station_axe_rates")
-    val shaping_axe_rates = find<ObjType, Int>("canoe_shaping_axe_rates")
-    val shaping_axe_anims = find<ObjType, SeqType>("canoe_shaping_axe_anims")
+    val station_axe_rates = enum<ObjType, Int>("canoe_station_axe_rates")
+    val shaping_axe_rates = enum<ObjType, Int>("canoe_shaping_axe_rates")
+    val shaping_axe_anims = enum<ObjType, SeqType>("canoe_shaping_axe_anims")
 }
 
 object CanoeEnumBuilder : EnumBuilder() {

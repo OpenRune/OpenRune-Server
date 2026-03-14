@@ -9,14 +9,14 @@ import org.rsmod.game.type.obj.ObjType
 internal typealias runesub_enums = RuneSubstituteEnums
 
 internal object RuneSubstituteEnums : EnumReferences() {
-    val runes: EnumType<ObjType, EnumType<Int, ObjType>> = find("rune_substitutes")
-    val air_runes: EnumType<Int, ObjType> = find("air_rune_substitutes")
-    val water_runes: EnumType<Int, ObjType> = find("water_rune_substitutes")
-    val earth_runes: EnumType<Int, ObjType> = find("earth_rune_substitutes")
-    val fire_runes: EnumType<Int, ObjType> = find("fire_rune_substitutes")
-    val chaos_runes: EnumType<Int, ObjType> = find("chaos_rune_substitutes")
-    val death_runes: EnumType<Int, ObjType> = find("death_rune_substitutes")
-    val blood_runes: EnumType<Int, ObjType> = find("blood_rune_substitutes")
+    val runes: EnumType<ObjType, EnumType<Int, ObjType>> = enum("rune_substitutes")
+    val air_runes: EnumType<Int, ObjType> = enum("air_rune_substitutes")
+    val water_runes: EnumType<Int, ObjType> = enum("water_rune_substitutes")
+    val earth_runes: EnumType<Int, ObjType> = enum("earth_rune_substitutes")
+    val fire_runes: EnumType<Int, ObjType> = enum("fire_rune_substitutes")
+    val chaos_runes: EnumType<Int, ObjType> = enum("chaos_rune_substitutes")
+    val death_runes: EnumType<Int, ObjType> = enum("death_rune_substitutes")
+    val blood_runes: EnumType<Int, ObjType> = enum("blood_rune_substitutes")
 }
 
 internal object RuneSubstituteEnumBuilder : EnumBuilder() {

@@ -8,13 +8,13 @@ import org.rsmod.game.type.npc.NpcType
 internal typealias person_npcs = PersonNpcs
 
 internal object PersonNpcs : NpcReferences() {
-    val man = find("man")
-    val man2 = find("man2")
-    val man3 = find("man3")
-    val man_indoor = find("man_indoor")
-    val woman = find("woman")
-    val woman2 = find("woman2")
-    val woman3 = find("woman3")
+    val man = npc("man")
+    val man2 = npc("man2")
+    val man3 = npc("man3")
+    val man_indoor = npc("man_indoor")
+    val woman = npc("woman")
+    val woman2 = npc("woman2")
+    val woman3 = npc("woman3")
 }
 
 internal object PersonNpcEdits : NpcEditor() {

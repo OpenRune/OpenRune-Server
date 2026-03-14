@@ -7,5 +7,5 @@ import org.rsmod.game.type.obj.ObjType
 internal typealias fake_enums = FakeRuneEnums
 
 internal object FakeRuneEnums : EnumReferences() {
-    val runes: EnumType<ObjType, ObjType> = find("fake_runes")
+    val runes: EnumType<ObjType, ObjType> = enum("fake_runes")
 }

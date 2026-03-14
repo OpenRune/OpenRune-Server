@@ -5,6 +5,6 @@ import org.rsmod.api.type.refs.queue.QueueReferences
 typealias combat_queues = CombatTabQueues
 
 object CombatTabQueues : QueueReferences() {
-    val sa_instant_spec = find("sa_instant_spec")
-    val attackstyle_change = find("attackstyle_change")
+    val sa_instant_spec = queue("sa_instant_spec")
+    val attackstyle_change = queue("attackstyle_change")
 }

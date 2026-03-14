@@ -27,15 +27,14 @@ import org.rsmod.game.type.literal.CacheVarTypeMap.codecOut
 public class EnumReferenceResolver
 @Inject
 constructor(private val nameMapping: NameMapping, private val types: EnumTypeList) :
-    TypeReferenceResolver<HashedEnumType<*, *>, Nothing> {
+    TypeReferenceResolver<HashedEnumType<*, *>> {
     private val logger = InlineLogger()
 
     private val names: Map<String, Int>
         get() = nameMapping.enums
 
-    override fun resolve(
-        refs: TypeReferences<HashedEnumType<*, *>, Nothing>
-    ): List<TypeReferenceResult> = refs.cache.map { it.resolve() }
+    override fun resolve(refs: TypeReferences<HashedEnumType<*, *>>): List<TypeReferenceResult> =
+        refs.cache.map { it.resolve() }
 
     private fun HashedEnumType<*, *>.resolve(): TypeReferenceResult {
         val name = internalName ?: return err(InvalidImplicitName)

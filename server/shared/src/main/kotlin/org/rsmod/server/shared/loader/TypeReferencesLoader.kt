@@ -9,8 +9,8 @@ import org.rsmod.api.type.refs.TypeReferences
 import org.rsmod.server.shared.util.use
 
 class TypeReferencesLoader @Inject constructor(@PluginGraph private val scanner: ClassGraph) {
-    fun load(): Collection<TypeReferences<*, *>> {
-        val references = mutableListOf<TypeReferences<*, *>>()
+    fun load(): Collection<TypeReferences<*>> {
+        val references = mutableListOf<TypeReferences<*>>()
         val parallelism = Runtime.getRuntime().availableProcessors()
         val threadPool = Executors.newFixedThreadPool(parallelism)
         val scan = threadPool.use { scanner.scan(it, parallelism) }

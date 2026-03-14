@@ -2,8 +2,8 @@ package org.rsmod.api.type.refs.dbtable
 
 import com.github.michaelbull.logging.InlineLogger
 import jakarta.inject.Inject
-import org.rsmod.api.type.refs.HashTypeReferences
-import org.rsmod.api.type.refs.resolver.HashTypeReferenceResolver
+import org.rsmod.api.type.refs.TypeReferences
+import org.rsmod.api.type.refs.resolver.TypeReferenceResolver
 import org.rsmod.api.type.refs.resolver.TypeReferenceResult
 import org.rsmod.api.type.refs.resolver.TypeReferenceResult.CacheTypeHashMismatch
 import org.rsmod.api.type.refs.resolver.TypeReferenceResult.CacheTypeNotFound
@@ -22,13 +22,13 @@ import org.rsmod.game.type.dbtable.HashedDbTableType
 public class DbTableReferenceResolver
 @Inject
 constructor(private val nameMapping: NameMapping, private val types: DbTableTypeList) :
-    HashTypeReferenceResolver<HashedDbTableType> {
+    TypeReferenceResolver<HashedDbTableType> {
     private val logger = InlineLogger()
 
     private val names: Map<String, Int>
         get() = nameMapping.dbTables
 
-    override fun resolve(refs: HashTypeReferences<HashedDbTableType>): List<TypeReferenceResult> =
+    override fun resolve(refs: TypeReferences<HashedDbTableType>): List<TypeReferenceResult> =
         refs.cache.map { it.resolve() }
 
     private fun HashedDbTableType.resolve(): TypeReferenceResult {

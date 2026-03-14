@@ -18,11 +18,11 @@ import org.rsmod.game.type.literal.CacheVarLiteral
 public class DbColumnReferenceResolver
 @Inject
 constructor(private val nameMapping: NameMapping, private val tables: DbTableTypeList) :
-    TypeReferenceResolver<NamedDbColumn, Nothing> {
+    TypeReferenceResolver<NamedDbColumn> {
     private val names: Map<String, Int>
         get() = nameMapping.dbColumns
 
-    override fun resolve(refs: TypeReferences<NamedDbColumn, Nothing>): List<TypeReferenceResult> =
+    override fun resolve(refs: TypeReferences<NamedDbColumn>): List<TypeReferenceResult> =
         refs.cache.map { it.resolve() }
 
     private fun NamedDbColumn.resolve(): TypeReferenceResult {

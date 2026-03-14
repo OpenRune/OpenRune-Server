@@ -5,21 +5,20 @@ import org.rsmod.api.type.refs.seq.SeqReferences
 typealias special_seqs = SpecialAttackSeqs
 
 object SpecialAttackSeqs : SeqReferences() {
-    val lumber_up = find("dragon_smallaxe_anim", 912284910659953726)
+    val lumber_up = seq("dragon_smallaxe_anim")
 
-    val fishstabber_dragon_harpoon = find("fishstabber", 1350668019423100939)
-    val fishstabber_infernal_harpoon = find("fishstabber_infernal", 1350668173984224023)
-    val fishstabber_crystal_harpoon = find("fishstabber_crystal", 1350808876126604853)
-    val fishstabber_infernal_harpoon_or = find("fishstabber_trailblazer", 1350875698052154560)
+    val fishstabber_dragon_harpoon = seq("fishstabber")
+    val fishstabber_infernal_harpoon = seq("fishstabber_infernal")
+    val fishstabber_crystal_harpoon = seq("fishstabber_crystal")
+    val fishstabber_infernal_harpoon_or = seq("fishstabber_trailblazer")
 
-    val rock_knocker_dragon_pickaxe = find("rockknocker", 1137620852524073858)
-    val rock_knocker_dragon_pickaxe_or_zalcano = find("rockknocker_zalcano", 1138221956779074556)
-    val rock_knocker_dragon_pickaxe_or_trailblazer =
-        find("rockknocker_trailblazer", 1138296294767106863)
-    val rock_knocker_dragon_pickaxe_upgraded = find("rockknocker_pretty", 1137666037581574253)
-    val rock_knocker_infernal_pickaxe = find("rockknocker_infernal", 1137687323942151432)
-    val rock_knocker_3rd_age_pickaxe = find("rockknocker_3a", 1137546472306230121)
-    val rock_knocker_crystal_pickaxe = find("rockknocker_crystal", 1138222214380946360)
+    val rock_knocker_dragon_pickaxe = seq("rockknocker")
+    val rock_knocker_dragon_pickaxe_or_zalcano = seq("rockknocker_zalcano")
+    val rock_knocker_dragon_pickaxe_or_trailblazer = seq("rockknocker_trailblazer")
+    val rock_knocker_dragon_pickaxe_upgraded = seq("rockknocker_pretty")
+    val rock_knocker_infernal_pickaxe = seq("rockknocker_infernal")
+    val rock_knocker_3rd_age_pickaxe = seq("rockknocker_3a")
+    val rock_knocker_crystal_pickaxe = seq("rockknocker_crystal")
 
-    val dragon_longsword = find("cleave", 5532192131862460952)
+    val dragon_longsword = seq("cleave")
 }

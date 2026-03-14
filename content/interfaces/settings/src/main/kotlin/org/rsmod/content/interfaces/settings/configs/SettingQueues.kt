@@ -5,5 +5,5 @@ import org.rsmod.api.type.refs.queue.QueueReferences
 typealias setting_queues = SettingQueues
 
 object SettingQueues : QueueReferences() {
-    val runmode_toggle = find("runmode_toggle")
+    val runmode_toggle = queue("runmode_toggle")
 }

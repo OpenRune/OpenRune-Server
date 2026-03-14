@@ -9,5 +9,5 @@ import org.rsmod.game.type.enums.EnumType
 typealias enums = BaseEnums
 
 object BaseEnums : EnumReferences() {
-    val equipment_tab_to_slots_map: EnumType<Int, EnumComp> = find("equipment_tab_to_slots_map")
+    val equipment_tab_to_slots_map: EnumType<Int, EnumComp> = enum("equipment_tab_to_slots_map")
 }

@@ -29,15 +29,14 @@ constructor(
     private val nameMapping: NameMapping,
     private val cacheTypes: TypeListMap,
     private val types: ParamTypeList,
-) : TypeReferenceResolver<HashedParamType<*>, Nothing> {
+) : TypeReferenceResolver<HashedParamType<*>> {
     private val logger = InlineLogger()
 
     private val names: Map<String, Int>
         get() = nameMapping.params
 
-    override fun resolve(
-        refs: TypeReferences<HashedParamType<*>, Nothing>
-    ): List<TypeReferenceResult> = refs.cache.map { it.resolve() }
+    override fun resolve(refs: TypeReferences<HashedParamType<*>>): List<TypeReferenceResult> =
+        refs.cache.map { it.resolve() }
 
     @Suppress("UNCHECKED_CAST")
     private fun HashedParamType<*>.resolve(): TypeReferenceResult {

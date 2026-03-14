@@ -1,12 +1,12 @@
 package org.rsmod.api.type.refs.varbit
 
-import org.rsmod.api.type.refs.HashTypeReferences
+import org.rsmod.api.type.refs.TypeReferences
 import org.rsmod.game.type.varbit.HashedVarBitType
 import org.rsmod.game.type.varbit.VarBitType
 
-public abstract class VarBitReferences : HashTypeReferences<VarBitType>(VarBitType::class.java) {
-    override fun find(internal: String, hash: Long?): VarBitType {
-        val type = HashedVarBitType(hash, internal)
+public abstract class VarBitReferences : TypeReferences<VarBitType>(VarBitType::class.java) {
+    public fun varBit(internal: String): VarBitType {
+        val type = HashedVarBitType(null, internal)
         cache += type
         return type
     }

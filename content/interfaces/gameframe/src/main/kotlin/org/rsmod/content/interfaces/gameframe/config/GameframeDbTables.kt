@@ -30,13 +30,13 @@ object GameframeDbColumns : DbColumnReferences() {
 }
 
 object GameframeDbRows : DbRowReferences() {
-    val toplevel = find("gameframe_toplevel")
-    val osrs_stretch = find("gameframe_osrs_stretch")
-    val pre_eoc = find("gameframe_pre_eoc")
+    val toplevel = dbRow("gameframe_toplevel")
+    val osrs_stretch = dbRow("gameframe_osrs_stretch")
+    val pre_eoc = dbRow("gameframe_pre_eoc")
 }
 
 object GameframeDbTables : DbTableReferences() {
-    val gameframe = find("gameframe")
+    val gameframe = dbTable("gameframe")
 }
 
 object GameframeDbRowBuilder : DbRowBuilder() {

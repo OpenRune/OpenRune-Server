@@ -1,8 +1,8 @@
 package org.rsmod.api.type.refs.jingle
 
 import jakarta.inject.Inject
-import org.rsmod.api.type.refs.NameTypeReferences
-import org.rsmod.api.type.refs.resolver.NameTypeReferenceResolver
+import org.rsmod.api.type.refs.TypeReferences
+import org.rsmod.api.type.refs.resolver.TypeReferenceResolver
 import org.rsmod.api.type.refs.resolver.TypeReferenceResult
 import org.rsmod.api.type.refs.resolver.TypeReferenceResult.FullSuccess
 import org.rsmod.api.type.refs.resolver.TypeReferenceResult.ImplicitNameNotFound
@@ -13,11 +13,11 @@ import org.rsmod.game.type.TypeResolver
 import org.rsmod.game.type.jingle.JingleType
 
 public class JingleReferenceResolver @Inject constructor(private val nameMapping: NameMapping) :
-    NameTypeReferenceResolver<JingleType> {
+    TypeReferenceResolver<JingleType> {
     private val names: Map<String, Int>
         get() = nameMapping.jingles
 
-    override fun resolve(refs: NameTypeReferences<JingleType>): List<TypeReferenceResult> =
+    override fun resolve(refs: TypeReferences<JingleType>): List<TypeReferenceResult> =
         refs.cache.map { it.resolve() }
 
     private fun JingleType.resolve(): TypeReferenceResult {

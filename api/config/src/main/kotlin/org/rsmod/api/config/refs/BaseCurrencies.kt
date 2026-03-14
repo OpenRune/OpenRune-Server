@@ -7,5 +7,5 @@ import org.rsmod.api.type.refs.currency.CurrencyReferences
 typealias currencies = BaseCurrencies
 
 object BaseCurrencies : CurrencyReferences() {
-    val standard_gp = find("standard_gp")
+    val standard_gp = currency("standard_gp")
 }

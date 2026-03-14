@@ -5,8 +5,7 @@ import org.rsmod.api.type.refs.TypeReferences
 import org.rsmod.game.type.enums.EnumType
 import org.rsmod.game.type.enums.HashedEnumType
 
-public abstract class EnumReferences :
-    TypeReferences<EnumType<*, *>, Nothing>(EnumType::class.java) {
+public abstract class EnumReferences : TypeReferences<EnumType<*, *>>(EnumType::class.java) {
     /**
      * Find the respective type based on their [internal] name.
      *
@@ -16,10 +15,10 @@ public abstract class EnumReferences :
      * @see [org.rsmod.api.type.symbols.name.NameMapping]
      * @see [org.rsmod.api.type.symbols.name.NameLoader]
      */
-    public inline fun <reified K : Any, reified V : Any> find(
+    public inline fun <reified K : Any, reified V : Any> enum(
         internal: String,
         hash: Long? = null,
-    ): EnumType<K, V> = find(K::class, V::class, internal, hash)
+    ): EnumType<K, V> = enum(K::class, V::class, internal, hash)
 
     /**
      * Find the respective type based on their [internal] name.
@@ -30,7 +29,7 @@ public abstract class EnumReferences :
      * @see [org.rsmod.api.type.symbols.name.NameMapping]
      * @see [org.rsmod.api.type.symbols.name.NameLoader]
      */
-    public fun <K : Any, V : Any> find(
+    public fun <K : Any, V : Any> enum(
         key: KClass<K>,
         value: KClass<V>,
         internal: String,

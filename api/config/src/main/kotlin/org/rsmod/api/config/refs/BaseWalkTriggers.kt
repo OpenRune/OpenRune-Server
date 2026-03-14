@@ -7,7 +7,7 @@ import org.rsmod.api.type.refs.walktrig.WalkTriggerReferences
 typealias walktriggers = BaseWalkTriggers
 
 object BaseWalkTriggers : WalkTriggerReferences() {
-    val frozen = find("frozen")
-    val pvp_frozen = find("pvp_frozen")
-    val stunned = find("stunned")
+    val frozen = walkTrigger("frozen")
+    val pvp_frozen = walkTrigger("pvp_frozen")
+    val stunned = walkTrigger("stunned")
 }

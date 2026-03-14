@@ -1,12 +1,12 @@
 package org.rsmod.api.type.refs.struct
 
-import org.rsmod.api.type.refs.HashTypeReferences
+import org.rsmod.api.type.refs.TypeReferences
 import org.rsmod.game.type.struct.HashedStructType
 import org.rsmod.game.type.struct.StructType
 
-public abstract class StructReferences : HashTypeReferences<StructType>(StructType::class.java) {
-    override fun find(internal: String, hash: Long?): StructType {
-        val type = HashedStructType(hash, internal)
+public abstract class StructReferences : TypeReferences<StructType>(StructType::class.java) {
+    public fun struct(internal: String): StructType {
+        val type = HashedStructType(null, internal)
         cache += type
         return type
     }

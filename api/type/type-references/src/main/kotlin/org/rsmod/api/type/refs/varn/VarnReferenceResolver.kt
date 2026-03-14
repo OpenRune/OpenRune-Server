@@ -1,8 +1,8 @@
 package org.rsmod.api.type.refs.varn
 
 import jakarta.inject.Inject
-import org.rsmod.api.type.refs.NameTypeReferences
-import org.rsmod.api.type.refs.resolver.NameTypeReferenceResolver
+import org.rsmod.api.type.refs.TypeReferences
+import org.rsmod.api.type.refs.resolver.TypeReferenceResolver
 import org.rsmod.api.type.refs.resolver.TypeReferenceResult
 import org.rsmod.api.type.refs.resolver.TypeReferenceResult.CacheTypeNotFound
 import org.rsmod.api.type.refs.resolver.TypeReferenceResult.FullSuccess
@@ -19,11 +19,11 @@ import org.rsmod.game.type.varn.VarnTypeList
 public class VarnReferenceResolver
 @Inject
 constructor(private val nameMapping: NameMapping, private val types: VarnTypeList) :
-    NameTypeReferenceResolver<HashedVarnType> {
+    TypeReferenceResolver<HashedVarnType> {
     private val names: Map<String, Int>
         get() = nameMapping.varns
 
-    override fun resolve(refs: NameTypeReferences<HashedVarnType>): List<TypeReferenceResult> =
+    override fun resolve(refs: TypeReferences<HashedVarnType>): List<TypeReferenceResult> =
         refs.cache.map { it.resolve() }
 
     private fun HashedVarnType.resolve(): TypeReferenceResult {

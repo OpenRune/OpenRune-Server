@@ -15,21 +15,21 @@ internal typealias cow_queues = CowQueues
 internal typealias cow_locs = CowLocs
 
 object CowNpcs : NpcReferences() {
-    val gillie_the_milkmaid = find("gillie_the_milkmaid", 8262063475332109549)
-    val cow = find("cow")
-    val cow2 = find("cow2")
-    val cow3 = find("cow3")
-    val cow_beef = find("cow_beef")
-    val cow2_calf = find("cow2_calf")
-    val cow3_calf = find("cow3_calf")
+    val gillie_the_milkmaid = npc("gillie_the_milkmaid")
+    val cow = npc("cow")
+    val cow2 = npc("cow2")
+    val cow3 = npc("cow3")
+    val cow_beef = npc("cow_beef")
+    val cow2_calf = npc("cow2_calf")
+    val cow3_calf = npc("cow3_calf")
 }
 
 object CowQueues : QueueReferences() {
-    val milk = find("milk_cow")
+    val milk = queue("milk_cow")
 }
 
 internal object CowLocs : LocReferences() {
-    val fat_cow = find("fat_cow")
+    val fat_cow = loc("fat_cow")
 }
 
 internal object CowLocEdits : LocEditor() {

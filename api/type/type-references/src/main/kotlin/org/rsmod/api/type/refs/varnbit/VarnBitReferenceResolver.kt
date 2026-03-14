@@ -1,8 +1,8 @@
 package org.rsmod.api.type.refs.varnbit
 
 import jakarta.inject.Inject
-import org.rsmod.api.type.refs.NameTypeReferences
-import org.rsmod.api.type.refs.resolver.NameTypeReferenceResolver
+import org.rsmod.api.type.refs.TypeReferences
+import org.rsmod.api.type.refs.resolver.TypeReferenceResolver
 import org.rsmod.api.type.refs.resolver.TypeReferenceResult
 import org.rsmod.api.type.refs.resolver.TypeReferenceResult.CacheTypeNotFound
 import org.rsmod.api.type.refs.resolver.TypeReferenceResult.FullSuccess
@@ -19,11 +19,11 @@ import org.rsmod.game.type.varnbit.VarnBitTypeList
 public class VarnBitReferenceResolver
 @Inject
 constructor(private val nameMapping: NameMapping, private val types: VarnBitTypeList) :
-    NameTypeReferenceResolver<HashedVarnBitType> {
+    TypeReferenceResolver<HashedVarnBitType> {
     private val names: Map<String, Int>
         get() = nameMapping.varnbits
 
-    override fun resolve(refs: NameTypeReferences<HashedVarnBitType>): List<TypeReferenceResult> =
+    override fun resolve(refs: TypeReferences<HashedVarnBitType>): List<TypeReferenceResult> =
         refs.cache.map { it.resolve() }
 
     private fun HashedVarnBitType.resolve(): TypeReferenceResult {

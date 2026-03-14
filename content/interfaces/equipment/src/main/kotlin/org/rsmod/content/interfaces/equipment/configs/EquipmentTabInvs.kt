@@ -8,9 +8,9 @@ internal typealias equip_invs = EquipmentTabInvs
 
 object EquipmentTabInvs : InvReferences() {
     // TODO: Fix incorrect inv types.
-    val death_data = find("diango_hols_sack", 11353239)
-    val death = find("deathkeep_items", 11353355)
-    val kept = find("skill_guide_hunting_tracking", 28603796)
+    val death_data = inv("diango_hols_sack")
+    val death = inv("deathkeep_items")
+    val kept = inv("skill_guide_hunting_tracking")
 }
 
 internal object EquipmentTabInvEdit : InvEditor() {

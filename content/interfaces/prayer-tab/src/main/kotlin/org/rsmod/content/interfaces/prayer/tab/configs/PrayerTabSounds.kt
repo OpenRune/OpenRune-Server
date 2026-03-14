@@ -5,6 +5,6 @@ import org.rsmod.api.type.refs.synth.SynthReferences
 internal typealias prayer_sounds = PrayerTabSounds
 
 object PrayerTabSounds : SynthReferences() {
-    val disable = find("prayer_disable")
-    val drain = find("prayer_drain")
+    val disable = synth("prayer_disable")
+    val drain = synth("prayer_drain")
 }

@@ -8,8 +8,8 @@ import org.rsmod.game.type.loc.LocType
 internal typealias bank_locs = BankLocs
 
 internal object BankLocs : LocReferences() {
-    val bankbooth = find("aide_bankbooth")
-    val bankbooth_multi = find("aide_bankbooth_multi")
+    val bankbooth = loc("aide_bankbooth")
+    val bankbooth_multi = loc("aide_bankbooth_multi")
 }
 
 internal object BankLocEditor : LocEditor() {

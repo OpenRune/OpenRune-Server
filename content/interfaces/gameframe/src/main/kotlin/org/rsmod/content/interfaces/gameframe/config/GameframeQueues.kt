@@ -5,5 +5,5 @@ import org.rsmod.api.type.refs.queue.QueueReferences
 typealias gameframe_queues = GameframeQueues
 
 object GameframeQueues : QueueReferences() {
-    val client_mode = find("client_mode")
+    val client_mode = queue("client_mode")
 }

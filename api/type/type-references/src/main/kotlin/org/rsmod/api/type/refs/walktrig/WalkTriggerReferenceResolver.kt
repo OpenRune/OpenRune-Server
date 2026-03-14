@@ -19,13 +19,12 @@ import org.rsmod.game.type.walktrig.WalkTriggerTypeList
 public class WalkTriggerReferenceResolver
 @Inject
 constructor(private val nameMapping: NameMapping, private val types: WalkTriggerTypeList) :
-    TypeReferenceResolver<WalkTriggerType, Nothing> {
+    TypeReferenceResolver<WalkTriggerType> {
     private val names: Map<String, Int>
         get() = nameMapping.walkTriggers
 
-    override fun resolve(
-        refs: TypeReferences<WalkTriggerType, Nothing>
-    ): List<TypeReferenceResult> = refs.cache.map { it.resolve() }
+    override fun resolve(refs: TypeReferences<WalkTriggerType>): List<TypeReferenceResult> =
+        refs.cache.map { it.resolve() }
 
     private fun WalkTriggerType.resolve(): TypeReferenceResult {
         val name = internalName ?: return err(InvalidImplicitName)

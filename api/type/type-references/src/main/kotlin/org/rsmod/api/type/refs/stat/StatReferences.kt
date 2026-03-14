@@ -1,12 +1,12 @@
 package org.rsmod.api.type.refs.stat
 
-import org.rsmod.api.type.refs.HashTypeReferences
+import org.rsmod.api.type.refs.TypeReferences
 import org.rsmod.game.type.stat.HashedStatType
 import org.rsmod.game.type.stat.StatType
 
-public abstract class StatReferences : HashTypeReferences<StatType>(StatType::class.java) {
-    override fun find(internal: String, hash: Long?): StatType {
-        val type = HashedStatType(hash, internal)
+public abstract class StatReferences : TypeReferences<StatType>(StatType::class.java) {
+    public fun stat(internal: String): StatType {
+        val type = HashedStatType(null, internal)
         cache += type
         return type
     }

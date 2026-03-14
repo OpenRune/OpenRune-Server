@@ -5,5 +5,5 @@ import org.rsmod.api.type.refs.comp.ComponentReferences
 typealias logout_components = LogoutTabComponent
 
 object LogoutTabComponent : ComponentReferences() {
-    val logout = find("logout:logout")
+    val logout = component("logout:logout")
 }

@@ -9,12 +9,12 @@ import org.rsmod.game.type.obj.ObjType
 internal typealias staff_enums = StaffSubstituteEnums
 
 internal object StaffSubstituteEnums : EnumReferences() {
-    val staves: EnumType<ObjType, EnumType<Int, ObjType>> = find("staff_substitutes")
-    val guthix_staff: EnumType<Int, ObjType> = find("guthix_staff_substitutes")
-    val zamorak_staff: EnumType<Int, ObjType> = find("zamorak_staff_substitutes")
-    val saradomin_staff: EnumType<Int, ObjType> = find("saradomin_staff_substitutes")
-    val slayer_staff: EnumType<Int, ObjType> = find("slayer_staff_substitutes")
-    val iban_staff: EnumType<Int, ObjType> = find("iban_staff_substitutes")
+    val staves: EnumType<ObjType, EnumType<Int, ObjType>> = enum("staff_substitutes")
+    val guthix_staff: EnumType<Int, ObjType> = enum("guthix_staff_substitutes")
+    val zamorak_staff: EnumType<Int, ObjType> = enum("zamorak_staff_substitutes")
+    val saradomin_staff: EnumType<Int, ObjType> = enum("saradomin_staff_substitutes")
+    val slayer_staff: EnumType<Int, ObjType> = enum("slayer_staff_substitutes")
+    val iban_staff: EnumType<Int, ObjType> = enum("iban_staff_substitutes")
 }
 
 internal object StaffSubstituteEnumBuilder : EnumBuilder() {

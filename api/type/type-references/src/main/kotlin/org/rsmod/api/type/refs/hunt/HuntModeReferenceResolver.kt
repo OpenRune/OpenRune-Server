@@ -2,8 +2,8 @@ package org.rsmod.api.type.refs.hunt
 
 import com.github.michaelbull.logging.InlineLogger
 import jakarta.inject.Inject
-import org.rsmod.api.type.refs.HashTypeReferences
-import org.rsmod.api.type.refs.resolver.HashTypeReferenceResolver
+import org.rsmod.api.type.refs.TypeReferences
+import org.rsmod.api.type.refs.resolver.TypeReferenceResolver
 import org.rsmod.api.type.refs.resolver.TypeReferenceResult
 import org.rsmod.api.type.refs.resolver.TypeReferenceResult.CacheTypeHashMismatch
 import org.rsmod.api.type.refs.resolver.TypeReferenceResult.CacheTypeNotFound
@@ -22,13 +22,13 @@ import org.rsmod.game.type.hunt.HuntModeTypeList
 public class HuntModeReferenceResolver
 @Inject
 constructor(private val nameMapping: NameMapping, private val types: HuntModeTypeList) :
-    HashTypeReferenceResolver<HashedHuntModeType> {
+    TypeReferenceResolver<HashedHuntModeType> {
     private val logger = InlineLogger()
 
     private val names: Map<String, Int>
         get() = nameMapping.hunt
 
-    override fun resolve(refs: HashTypeReferences<HashedHuntModeType>): List<TypeReferenceResult> =
+    override fun resolve(refs: TypeReferences<HashedHuntModeType>): List<TypeReferenceResult> =
         refs.cache.map { it.resolve() }
 
     private fun HashedHuntModeType.resolve(): TypeReferenceResult {

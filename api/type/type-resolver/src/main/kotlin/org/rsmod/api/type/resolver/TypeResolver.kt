@@ -24,7 +24,7 @@ constructor(
     public val editorCount: Int
         get() = editors.size
 
-    public fun appendReferences(refs: Collection<TypeReferences<*, *>>) {
+    public fun appendReferences(refs: Collection<TypeReferences<*>>) {
         this.references += refs
     }
 
