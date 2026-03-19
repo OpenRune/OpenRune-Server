@@ -1,5 +1,11 @@
 package org.rsmod.api.script
 
+import dev.openrune.definition.type.widget.ComponentType
+import dev.openrune.types.ItemServerType
+import dev.openrune.types.WalkTriggerType
+import dev.openrune.types.aconverted.ContentGroupType
+import dev.openrune.types.aconverted.QueueType
+import dev.openrune.types.aconverted.TimerType
 import org.rsmod.api.player.events.PlayerMovementEvent
 import org.rsmod.api.player.events.PlayerQueueEvents
 import org.rsmod.api.player.events.PlayerTimerEvent
@@ -8,12 +14,6 @@ import org.rsmod.api.player.events.interact.PlayerUContentEvents
 import org.rsmod.api.player.events.interact.PlayerUEvents
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.game.entity.player.SessionStateEvent
-import org.rsmod.game.type.comp.ComponentType
-import org.rsmod.game.type.content.ContentGroupType
-import org.rsmod.game.type.obj.ObjType
-import org.rsmod.game.type.queue.QueueType
-import org.rsmod.game.type.timer.TimerType
-import org.rsmod.game.type.walktrig.WalkTriggerType
 import org.rsmod.plugin.scripts.ScriptContext
 
 public fun ScriptContext.onPlayerInit(action: SessionStateEvent.Initialize.() -> Unit): Unit =
@@ -37,7 +37,7 @@ public fun ScriptContext.onOpPlayerU(
 ): Unit = onProtectedEvent(content.id, action)
 
 public fun ScriptContext.onOpPlayerU(
-    type: ObjType,
+    type: ItemServerType,
     action: suspend ProtectedAccess.(PlayerUEvents.Op) -> Unit,
 ): Unit = onProtectedEvent(type.id, action)
 
@@ -53,7 +53,7 @@ public fun ScriptContext.onApPlayerU(
 ): Unit = onProtectedEvent(content.id, action)
 
 public fun ScriptContext.onApPlayerU(
-    type: ObjType,
+    type: ItemServerType,
     action: suspend ProtectedAccess.(PlayerUEvents.Ap) -> Unit,
 ): Unit = onProtectedEvent(type.id, action)
 

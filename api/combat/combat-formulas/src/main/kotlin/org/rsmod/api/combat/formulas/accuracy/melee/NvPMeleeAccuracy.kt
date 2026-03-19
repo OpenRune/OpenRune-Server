@@ -1,5 +1,6 @@
 package org.rsmod.api.combat.formulas.accuracy.melee
 
+import dev.openrune.types.NpcServerType
 import jakarta.inject.Inject
 import org.rsmod.api.combat.accuracy.npc.NpcMeleeAccuracy
 import org.rsmod.api.combat.accuracy.player.PlayerMeleeAccuracy
@@ -10,7 +11,6 @@ import org.rsmod.api.config.refs.params
 import org.rsmod.api.player.bonus.WornBonuses
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
-import org.rsmod.game.type.npc.UnpackedNpcType
 
 public class NvPMeleeAccuracy
 @Inject
@@ -25,7 +25,7 @@ constructor(private val bonuses: WornBonuses, private val attackStyles: AttackSt
 
     public fun computeHitChance(
         source: Npc,
-        sourceType: UnpackedNpcType,
+        sourceType: NpcServerType,
         target: Player,
         attackType: MeleeAttackType?,
     ): Int {
@@ -34,7 +34,7 @@ constructor(private val bonuses: WornBonuses, private val attackStyles: AttackSt
         return AccuracyOperations.calculateHitChance(attackRoll, defenceRoll)
     }
 
-    public fun computeAttackRoll(source: Npc, sourceType: UnpackedNpcType): Int {
+    public fun computeAttackRoll(source: Npc, sourceType: NpcServerType): Int {
         val effectiveAttack = NpcMeleeAccuracy.calculateEffectiveAttack(source.attackLvl)
         val attackBonus = sourceType.param(params.attack_melee)
         return NpcMeleeAccuracy.calculateBaseAttackRoll(effectiveAttack, attackBonus)

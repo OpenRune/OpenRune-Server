@@ -1,7 +1,7 @@
 import java.nio.file.Files
 import java.nio.file.Path
 
-rootProject.name = "rsmod"
+rootProject.name = "OpenRune-Server"
 
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
@@ -15,6 +15,7 @@ dependencyResolutionManagement {
     repositories {
         gradlePluginPortal()
         mavenCentral()
+        mavenLocal()
         maven("https://jitpack.io")
         maven("https://repo.openrs2.org/repository/openrs2-snapshots")
         maven("https://raw.githubusercontent.com/OpenRune/hosting/master")

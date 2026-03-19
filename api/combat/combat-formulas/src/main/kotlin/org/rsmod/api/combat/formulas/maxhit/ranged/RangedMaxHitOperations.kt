@@ -1,5 +1,6 @@
 package org.rsmod.api.combat.formulas.maxhit.ranged
 
+import dev.openrune.util.Wearpos
 import java.util.EnumSet
 import kotlin.math.max
 import kotlin.math.min
@@ -14,7 +15,6 @@ import org.rsmod.api.player.stat.stat
 import org.rsmod.api.player.worn.EquipmentChecks
 import org.rsmod.game.entity.Player
 import org.rsmod.game.inv.Inventory
-import org.rsmod.game.type.obj.Wearpos
 import org.rsmod.game.vars.VarPlayerIntMap
 
 private typealias RangeAttr = CombatRangedAttributes

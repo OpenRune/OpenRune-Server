@@ -1,10 +1,10 @@
 package org.rsmod.content.interfaces.equipment.configs
 
-import org.rsmod.api.type.refs.enums.EnumReferences
-import org.rsmod.game.type.comp.ComponentType
+import dev.openrune.definition.type.widget.ComponentType
+import dev.openrune.types.enums.enum
 
 typealias equip_enums = EquipmentTabEnums
 
-object EquipmentTabEnums : EnumReferences() {
-    val mapped_wearpos = enum<Int, ComponentType>("equipment_stats_to_slots_map", 10335974)
+object EquipmentTabEnums {
+    val mapped_wearpos = enum<Int, ComponentType>("equipment_stats_to_slots_map")
 }

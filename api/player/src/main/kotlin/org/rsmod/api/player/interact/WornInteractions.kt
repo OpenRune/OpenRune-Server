@@ -1,6 +1,9 @@
 package org.rsmod.api.player.interact
 
 import com.github.michaelbull.logging.InlineLogger
+import dev.openrune.TypedParamType
+import dev.openrune.types.ItemServerType
+import dev.openrune.types.aconverted.interf.IfButtonOp
 import jakarta.inject.Inject
 import org.rsmod.api.config.constants
 import org.rsmod.api.config.refs.params
@@ -18,16 +21,12 @@ import org.rsmod.game.entity.Player
 import org.rsmod.game.inv.InvObj
 import org.rsmod.game.inv.Inventory
 import org.rsmod.game.inv.isType
-import org.rsmod.game.type.interf.IfButtonOp
-import org.rsmod.game.type.obj.ObjTypeList
-import org.rsmod.game.type.obj.UnpackedObjType
-import org.rsmod.game.type.param.ParamType
+import org.rsmod.game.type.getInvObj
 
 public class WornInteractions
 @Inject
 constructor(
     private val eventBus: EventBus,
-    private val objTypes: ObjTypeList,
     private val unequipOp: WornUnequipOp,
     private val marketPrices: MarketPrices,
 ) {
@@ -40,7 +39,7 @@ constructor(
         op: IfButtonOp,
     ) {
         val obj = worn[wornSlot] ?: return resendSlot(worn, 0)
-        interact(access, worn, wornSlot, obj, objTypes[obj], op)
+        interact(access, worn, wornSlot, obj, getInvObj(obj), op)
     }
 
     /**
@@ -67,7 +66,7 @@ constructor(
             return WornUnequipResult.Fail.InvalidObj
         }
 
-        val type = objTypes[obj]
+        val type = getInvObj(obj)
         if (!objectVerify(access.player, worn, obj, type, IfButtonOp.Op1)) {
             return WornUnequipResult.Fail.InvalidObj
         }
@@ -78,7 +77,7 @@ constructor(
 
     public fun examine(player: Player, worn: Inventory, wornSlot: Int) {
         val obj = worn[wornSlot] ?: return resendSlot(worn, 0)
-        objExamine(player, obj, objTypes[obj])
+        objExamine(player, obj, getInvObj(obj))
     }
 
     private suspend fun interact(
@@ -86,7 +85,7 @@ constructor(
         worn: Inventory,
         wornSlot: Int,
         obj: InvObj,
-        type: UnpackedObjType,
+        type: ItemServerType,
         op: IfButtonOp,
     ) {
         if (!objectVerify(access.player, worn, obj, type, op)) {
@@ -109,7 +108,7 @@ constructor(
 
     private suspend fun ProtectedAccess.wornOp1(
         obj: InvObj,
-        type: UnpackedObjType,
+        type: ItemServerType,
         worn: Inventory,
         wornSlot: Int,
     ) {
@@ -129,7 +128,7 @@ constructor(
         }
     }
 
-    private suspend fun ProtectedAccess.opWorn2(obj: InvObj, type: UnpackedObjType, wornSlot: Int) {
+    private suspend fun ProtectedAccess.opWorn2(obj: InvObj, type: ItemServerType, wornSlot: Int) {
         val typeScript = eventBus.suspend[WornObjEvents.Op2::class.java, type.id]
         if (typeScript != null) {
             typeScript(WornObjEvents.Op2(wornSlot, obj))
@@ -144,7 +143,7 @@ constructor(
         logger.debug { "OpWorn2 for `${type.name}` is not implemented: type=$type" }
     }
 
-    private suspend fun ProtectedAccess.opWorn3(obj: InvObj, type: UnpackedObjType, wornSlot: Int) {
+    private suspend fun ProtectedAccess.opWorn3(obj: InvObj, type: ItemServerType, wornSlot: Int) {
         val typeScript = eventBus.suspend[WornObjEvents.Op3::class.java, type.id]
         if (typeScript != null) {
             typeScript(WornObjEvents.Op3(wornSlot, obj))
@@ -159,7 +158,7 @@ constructor(
         logger.debug { "OpWorn3 for `${type.name}` is not implemented: type=$type" }
     }
 
-    private suspend fun ProtectedAccess.opWorn4(obj: InvObj, type: UnpackedObjType, wornSlot: Int) {
+    private suspend fun ProtectedAccess.opWorn4(obj: InvObj, type: ItemServerType, wornSlot: Int) {
         val typeScript = eventBus.suspend[WornObjEvents.Op4::class.java, type.id]
         if (typeScript != null) {
             typeScript(WornObjEvents.Op4(wornSlot, obj))
@@ -174,7 +173,7 @@ constructor(
         logger.debug { "OpWorn4 for `${type.name}` is not implemented: type=$type" }
     }
 
-    private suspend fun ProtectedAccess.opWorn5(obj: InvObj, type: UnpackedObjType, wornSlot: Int) {
+    private suspend fun ProtectedAccess.opWorn5(obj: InvObj, type: ItemServerType, wornSlot: Int) {
         val typeScript = eventBus.suspend[WornObjEvents.Op5::class.java, type.id]
         if (typeScript != null) {
             typeScript(WornObjEvents.Op5(wornSlot, obj))
@@ -189,7 +188,7 @@ constructor(
         logger.debug { "OpWorn5 for `${type.name}` is not implemented: type=$type" }
     }
 
-    private suspend fun ProtectedAccess.opWorn6(obj: InvObj, type: UnpackedObjType, wornSlot: Int) {
+    private suspend fun ProtectedAccess.opWorn6(obj: InvObj, type: ItemServerType, wornSlot: Int) {
         val typeScript = eventBus.suspend[WornObjEvents.Op6::class.java, type.id]
         if (typeScript != null) {
             typeScript(WornObjEvents.Op6(wornSlot, obj))
@@ -204,7 +203,7 @@ constructor(
         logger.debug { "OpWorn6 for `${type.name}` is not implemented: type=$type" }
     }
 
-    private suspend fun ProtectedAccess.opWorn7(obj: InvObj, type: UnpackedObjType, wornSlot: Int) {
+    private suspend fun ProtectedAccess.opWorn7(obj: InvObj, type: ItemServerType, wornSlot: Int) {
         val typeScript = eventBus.suspend[WornObjEvents.Op7::class.java, type.id]
         if (typeScript != null) {
             typeScript(WornObjEvents.Op7(wornSlot, obj))
@@ -219,7 +218,7 @@ constructor(
         logger.debug { "OpWorn7 for `${type.name}` is not implemented: type=$type" }
     }
 
-    private suspend fun ProtectedAccess.opWorn8(obj: InvObj, type: UnpackedObjType, wornSlot: Int) {
+    private suspend fun ProtectedAccess.opWorn8(obj: InvObj, type: ItemServerType, wornSlot: Int) {
         val typeScript = eventBus.suspend[WornObjEvents.Op8::class.java, type.id]
         if (typeScript != null) {
             typeScript(WornObjEvents.Op8(wornSlot, obj))
@@ -234,7 +233,7 @@ constructor(
         logger.debug { "OpWorn8 for `${type.name}` is not implemented: type=$type" }
     }
 
-    private suspend fun ProtectedAccess.opWorn9(obj: InvObj, type: UnpackedObjType, wornSlot: Int) {
+    private suspend fun ProtectedAccess.opWorn9(obj: InvObj, type: ItemServerType, wornSlot: Int) {
         val typeScript = eventBus.suspend[WornObjEvents.Op9::class.java, type.id]
         if (typeScript != null) {
             typeScript(WornObjEvents.Op9(wornSlot, obj))
@@ -253,7 +252,7 @@ constructor(
         player: Player,
         inventory: Inventory,
         obj: InvObj?,
-        type: UnpackedObjType,
+        type: ItemServerType,
         op: IfButtonOp,
     ): Boolean {
         if (player.isDelayed || !obj.isType(type)) {
@@ -272,7 +271,7 @@ constructor(
         return true
     }
 
-    private fun IfButtonOp.toParamType(): ParamType<String>? =
+    private fun IfButtonOp.toParamType(): TypedParamType<String>? =
         when (this) {
             IfButtonOp.Op1 -> null
             IfButtonOp.Op2 -> params.wear_op1
@@ -308,7 +307,7 @@ constructor(
             IfButtonOp.Op32 -> null
         }
 
-    private fun objExamine(player: Player, obj: InvObj, type: UnpackedObjType) {
+    private fun objExamine(player: Player, obj: InvObj, type: ItemServerType) {
         player.objExamine(type, obj.count, marketPrices[type] ?: 0)
     }
 }

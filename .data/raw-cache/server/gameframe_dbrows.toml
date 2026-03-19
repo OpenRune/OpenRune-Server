@@ -1,0 +1,13 @@
+[[enum]]
+isServerOnly = true
+id="enum.gameframe_dbrows"
+keyType="INT"
+valueType="DBROW"
+
+default = 0
+
+[enum.values]
+0 = "dbrow.gameframe_toplevel"
+1 = "dbrow.gameframe_osrs_stretch"
+2 = "dbrow.gameframe_pre_eoc"
+3 = "dbrow.gameframe_fullscreen"

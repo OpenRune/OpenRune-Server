@@ -1,9 +1,8 @@
 package org.rsmod.api.spells.runes.unlimited
 
+import dev.openrune.types.ItemServerType
 import org.rsmod.api.spells.runes.unlimited.configs.unlimited_enums
-import org.rsmod.game.enums.EnumTypeMapResolver
 import org.rsmod.game.inv.InvObj
-import org.rsmod.game.type.obj.ObjType
 
 public class UnlimitedRuneRepository {
     // Magic rune validation has a subtle distinction involving certain "unlimited source" objs
@@ -14,17 +13,25 @@ public class UnlimitedRuneRepository {
     private lateinit var highPriority: Map<Int, Set<Int>>
     private lateinit var lowPriority: Map<Int, Set<Int>>
 
-    public fun isHighPrioritySource(rune: ObjType, righthand: InvObj?, lefthand: InvObj?): Boolean {
+    public fun isHighPrioritySource(
+        rune: ItemServerType,
+        righthand: InvObj?,
+        lefthand: InvObj?,
+    ): Boolean {
         val sources = highPriority[rune.id] ?: return false
         return righthand?.id in sources || lefthand?.id in sources
     }
 
-    public fun isLowPrioritySource(rune: ObjType, righthand: InvObj?, lefthand: InvObj?): Boolean {
+    public fun isLowPrioritySource(
+        rune: ItemServerType,
+        righthand: InvObj?,
+        lefthand: InvObj?,
+    ): Boolean {
         val sources = lowPriority[rune.id] ?: return false
         return righthand?.id in sources || lefthand?.id in sources
     }
 
-    public fun isSource(rune: ObjType, righthand: InvObj?, lefthand: InvObj?): Boolean =
+    public fun isSource(rune: ItemServerType, righthand: InvObj?, lefthand: InvObj?): Boolean =
         isHighPrioritySource(rune, righthand, lefthand) ||
             isLowPrioritySource(rune, righthand, lefthand)
 
@@ -33,25 +40,25 @@ public class UnlimitedRuneRepository {
         this.lowPriority = lowPriority
     }
 
-    internal fun init(resolver: EnumTypeMapResolver) {
-        val highPriority = loadHighPriority(resolver)
-        val lowPriority = loadLowPriority(resolver)
+    internal fun init() {
+        val highPriority = loadHighPriority()
+        val lowPriority = loadLowPriority()
         init(highPriority, lowPriority)
     }
 
-    private fun loadHighPriority(resolver: EnumTypeMapResolver): Map<Int, Set<Int>> {
+    private fun loadHighPriority(): Map<Int, Set<Int>> {
         val mapped = hashMapOf<Int, MutableSet<Int>>()
 
-        val affinityStaffEnum = resolver[unlimited_enums.rune_staves].filterValuesNotNull()
+        val affinityStaffEnum = unlimited_enums.rune_staves.filterValuesNotNull()
         for ((rune, staffEnum) in affinityStaffEnum) {
-            val staffList = resolver[staffEnum].filterValuesNotNull().filter { it.value }
+            val staffList = staffEnum.filterValuesNotNull().filter { it.value }
             val targetSet = mapped.getOrPut(rune.id) { mutableSetOf() }
             targetSet += staffList.map { it.key.id }
         }
 
-        val unlimitedSourceEnum = resolver[unlimited_enums.high_priority].filterValuesNotNull()
+        val unlimitedSourceEnum = unlimited_enums.high_priority.filterValuesNotNull()
         for ((rune, sourceListEnum) in unlimitedSourceEnum) {
-            val sources = resolver[sourceListEnum].filterValuesNotNull().values
+            val sources = sourceListEnum.filterValuesNotNull().values
             val targetSet = mapped.getOrPut(rune.id) { mutableSetOf() }
             targetSet += sources.map { it.id }
         }
@@ -59,12 +66,12 @@ public class UnlimitedRuneRepository {
         return mapped
     }
 
-    private fun loadLowPriority(resolver: EnumTypeMapResolver): Map<Int, Set<Int>> {
+    private fun loadLowPriority(): Map<Int, Set<Int>> {
         val mappedUnlimited = hashMapOf<Int, Set<Int>>()
 
-        val unlimitedSourceEnum = resolver[unlimited_enums.low_priority].filterValuesNotNull()
+        val unlimitedSourceEnum = unlimited_enums.low_priority.filterValuesNotNull()
         for ((rune, sourceListEnum) in unlimitedSourceEnum) {
-            val sources = resolver[sourceListEnum].filterValuesNotNull().values
+            val sources = sourceListEnum.filterValuesNotNull().values
             mappedUnlimited[rune.id] = sources.map { it.id }.toHashSet()
         }
 

@@ -1,8 +1,8 @@
 package org.rsmod.api.player.output
 
+import dev.openrune.types.StatType
 import net.rsprot.protocol.game.outgoing.misc.player.UpdateStatV2
 import org.rsmod.game.entity.Player
-import org.rsmod.game.type.stat.StatType
 
 public object UpdateStat {
     /** @see [UpdateStatV2] */

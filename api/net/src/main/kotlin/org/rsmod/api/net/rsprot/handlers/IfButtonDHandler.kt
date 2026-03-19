@@ -1,6 +1,10 @@
 package org.rsmod.api.net.rsprot.handlers
 
 import com.github.michaelbull.logging.InlineLogger
+import dev.openrune.ServerCacheManager
+import dev.openrune.cache.filestore.definition.InterfaceType.Companion.isType
+import dev.openrune.definition.type.widget.ComponentType
+import dev.openrune.definition.type.widget.IfEvent
 import jakarta.inject.Inject
 import net.rsprot.protocol.game.incoming.buttons.IfButtonD
 import org.rsmod.annotations.InternalApi
@@ -12,32 +16,24 @@ import org.rsmod.api.player.ui.IfOverlayDrag
 import org.rsmod.api.player.ui.ifCloseInputDialog
 import org.rsmod.events.EventBus
 import org.rsmod.game.entity.Player
-import org.rsmod.game.type.comp.ComponentTypeList
-import org.rsmod.game.type.comp.UnpackedComponentType
-import org.rsmod.game.type.interf.IfEvent
-import org.rsmod.game.type.interf.InterfaceTypeList
-import org.rsmod.game.type.interf.isType
 import org.rsmod.game.ui.Component
 import org.rsmod.game.ui.UserInterfaceMap
 
 class IfButtonDHandler
 @Inject
-constructor(
-    private val eventBus: EventBus,
-    private val interfaceTypes: InterfaceTypeList,
-    private val componentTypes: ComponentTypeList,
-    private val protectedAccess: ProtectedAccessLauncher,
-) : MessageHandler<IfButtonD> {
+constructor(private val eventBus: EventBus, private val protectedAccess: ProtectedAccessLauncher) :
+    MessageHandler<IfButtonD> {
     private val logger = InlineLogger()
 
     @OptIn(InternalApi::class)
     override fun handle(player: Player, message: IfButtonD) {
         val selectedComponent = Component(message.selectedInterfaceId, message.selectedComponentId)
-        val selectedComponentType = componentTypes[selectedComponent]
-        val selectedInterface = interfaceTypes[selectedComponent]
+        val selectedComponentType = ServerCacheManager.fromComponent(selectedComponent.packed)
+        val selectedInterface = ServerCacheManager.fromInterface(selectedComponent.packed)
+
         val targetComponent = Component(message.targetInterfaceId, message.targetComponentId)
-        val targetComponentType = componentTypes[targetComponent]
-        val targetInterface = interfaceTypes[targetComponent]
+        val targetComponentType = ServerCacheManager.fromComponent(targetComponent.packed)
+        val targetInterface = ServerCacheManager.fromInterface(targetComponent.packed)
         val ui = player.ui
 
         val isSelectedOpenedModal = ui.containsModal(selectedInterface)
@@ -69,8 +65,8 @@ constructor(
 
         // Client replaces empty obj ids with `6512`. To make life easier, we simply replace those
         // with null obj types as that's what associated scripts should treat them as.
-        val selectedObjType = convertNullReplacement(message.selectedObj)
-        val targetObjType = convertNullReplacement(message.targetObj)
+        val selectedItemServerType = convertNullReplacement(message.selectedObj)
+        val targetItemServerType = convertNullReplacement(message.targetObj)
 
         val isSelectedOverlay = !isSelectedOpenedModal
         if (isSelectedOverlay) {
@@ -78,9 +74,9 @@ constructor(
                 IfOverlayDrag(
                     player = player,
                     selectedSlot = selectedSub,
-                    selectedObj = selectedObjType,
+                    selectedObj = selectedItemServerType,
                     targetSlot = targetSub,
-                    targetObj = targetObjType,
+                    targetObj = targetItemServerType,
                     selectedComponent = selectedComponent,
                     targetComponent = targetComponent,
                 )
@@ -92,9 +88,9 @@ constructor(
         val modalDrag =
             IfModalDrag(
                 selectedSlot = selectedSub,
-                selectedObj = selectedObjType,
+                selectedObj = selectedItemServerType,
                 targetSlot = targetSub,
-                targetObj = targetObjType,
+                targetObj = targetItemServerType,
                 selectedComponent = selectedComponent,
                 targetComponent = targetComponent,
             )
@@ -109,9 +105,9 @@ constructor(
 
     private fun isDragEnabled(
         ui: UserInterfaceMap,
-        from: UnpackedComponentType,
+        from: ComponentType,
         fromSlot: Int,
-        target: UnpackedComponentType,
+        target: ComponentType,
         targetSlot: Int,
     ): Boolean {
         val dragFromEnabled = InterfaceEvents.isEnabled(ui, from, fromSlot, IfEvent.DragTarget)

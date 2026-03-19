@@ -1,6 +1,6 @@
 package org.rsmod.game.queue
 
-import org.rsmod.game.type.queue.QueueType
+import dev.openrune.types.aconverted.QueueType
 
 public class NpcQueueList {
     public var size: Int = 0

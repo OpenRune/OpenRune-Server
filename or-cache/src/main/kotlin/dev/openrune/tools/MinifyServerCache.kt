@@ -10,17 +10,16 @@ import dev.openrune.cache.MUSIC_JINGLES
 import dev.openrune.cache.MUSIC_PATCHES
 import dev.openrune.cache.MUSIC_SAMPLES
 import dev.openrune.cache.MUSIC_TRACKS
+import dev.openrune.cache.SKELETONS
 import dev.openrune.cache.SOUNDEFFECTS
 import dev.openrune.cache.TEXTURES
 import dev.openrune.cache.WORLDMAPAREAS
 import dev.openrune.cache.WORLDMAP_GEOGRAPHY
 import dev.openrune.cache.WORLDMAP_GROUND
-import dev.openrune.ParamMapper.npc.SLAYER_CATEGORIES.SKELETONS
 
 class MinifyServerCache() {
 
-
-    fun init(loc : String) {
+    fun init(loc: String) {
         val cache = CacheLibrary(loc)
 
         emptyArchive(ANIMATIONS, cache)
@@ -37,21 +36,19 @@ class MinifyServerCache() {
         emptyArchive(WORLDMAPAREAS, cache)
         emptyArchive(WORLDMAP_GROUND, cache)
         emptyArchive(DBTABLEINDEX, cache)
-        //emptyArchive(ANIMAYAS, cache)
+        emptyArchive(ANIMAYAS, cache)
 
         val loc = java.io.File(loc)
-        val temp = java.io.File(loc,"temp")
+        val temp = java.io.File(loc, "temp")
         temp.mkdirs()
         cache.rebuild(temp)
         cache.close()
-        temp.copyRecursively(loc,true)
+        temp.copyRecursively(loc, true)
         temp.deleteRecursively()
-
     }
 
-    fun emptyArchive(id : Int, cache: CacheLibrary) {
+    fun emptyArchive(id: Int, cache: CacheLibrary) {
         cache.index(id).clear()
         cache.index(id).update()
     }
-
 }

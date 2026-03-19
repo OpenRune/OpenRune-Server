@@ -7,14 +7,12 @@ import org.rsmod.api.combat.weapon.styles.AttackStyles
 import org.rsmod.api.config.constants
 import org.rsmod.api.config.refs.params
 import org.rsmod.game.entity.Player
-import org.rsmod.game.type.obj.ObjTypeList
+import org.rsmod.game.type.getInvObj
 
-public class WeaponSpeeds
-@Inject
-constructor(private val objTypes: ObjTypeList, private val styles: AttackStyles) {
+public class WeaponSpeeds @Inject constructor(private val styles: AttackStyles) {
     public fun base(player: Player): Int {
         val weapon = player.righthand ?: return constants.combat_default_attackrate
-        return objTypes[weapon].param(params.attackrate)
+        return getInvObj(weapon).param(params.attackrate)
     }
 
     public fun actual(player: Player, style: AttackStyle?): Int {

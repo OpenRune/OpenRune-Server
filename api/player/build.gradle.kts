@@ -1,6 +1,6 @@
 plugins {
     id("base-conventions")
-    id("integration-test-suite")
+
 }
 
 kotlin {
@@ -22,10 +22,10 @@ dependencies {
     implementation(projects.api.random)
     implementation(projects.api.repo)
     implementation(projects.api.route)
+    implementation(projects.api.tables)
     implementation(projects.api.stats.levelmod)
-    implementation(projects.api.type.typeBuilders)
-    implementation(projects.api.type.typeReferences)
-    implementation(projects.api.type.typeScriptDsl)
+
+
     implementation(projects.api.utils.utilsFormat)
     implementation(projects.api.utils.utilsMap)
     implementation(projects.api.utils.utilsSkills)
@@ -39,9 +39,4 @@ dependencies {
     implementation(projects.engine.plugin)
     implementation(projects.engine.routefinder)
     implementation(projects.engine.utilsBits)
-    integrationImplementation(projects.api.hitPlugin)
-    integrationImplementation(projects.api.net)
-    integrationImplementation(projects.engine.coroutine)
-    testImplementation(projects.api.testing.testFactory)
-    testImplementation(projects.api.testing.testParams)
 }

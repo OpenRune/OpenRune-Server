@@ -1,5 +1,7 @@
 package org.rsmod.api.combat.formulas.accuracy.magic
 
+import dev.openrune.types.ItemServerType
+import dev.openrune.types.NpcServerType
 import jakarta.inject.Inject
 import java.util.EnumSet
 import org.rsmod.api.combat.accuracy.npc.NpcMagicAccuracy
@@ -20,8 +22,6 @@ import org.rsmod.api.player.bonus.WornBonuses
 import org.rsmod.api.random.GameRandom
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
-import org.rsmod.game.type.npc.UnpackedNpcType
-import org.rsmod.game.type.obj.ObjType
 
 public class PvNMagicAccuracy
 @Inject
@@ -34,7 +34,7 @@ constructor(
     public fun getSpellHitChance(
         player: Player,
         target: Npc,
-        spell: ObjType,
+        spell: ItemServerType,
         spellbook: Spellbook?,
         usedSunfireRune: Boolean,
     ): Int {
@@ -56,8 +56,8 @@ constructor(
 
     public fun computeSpellHitChance(
         source: Player,
-        target: UnpackedNpcType,
-        spell: ObjType,
+        target: NpcServerType,
+        spell: ItemServerType,
         targetDefence: Int,
         targetCurrHp: Int,
         targetMaxHp: Int,
@@ -130,7 +130,7 @@ constructor(
 
     public fun computeStaffHitChance(
         source: Player,
-        target: UnpackedNpcType,
+        target: NpcServerType,
         targetDefence: Int,
         targetCurrHp: Int,
         targetMaxHp: Int,
@@ -178,7 +178,7 @@ constructor(
     }
 
     public fun computeDefenceRoll(
-        target: UnpackedNpcType,
+        target: NpcServerType,
         targetDefence: Int,
         targetMagic: Int,
         amascutInvocationLvl: Int,

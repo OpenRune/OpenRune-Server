@@ -1,5 +1,7 @@
 package org.rsmod.api.player.hit
 
+import dev.openrune.types.HitmarkTypeGroup
+import dev.openrune.types.ItemServerType
 import kotlin.math.max
 import org.rsmod.api.config.constants
 import org.rsmod.api.config.refs.hitmark_groups
@@ -10,16 +12,14 @@ import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.game.hit.HitBuilder
 import org.rsmod.game.hit.HitType
-import org.rsmod.game.type.hitmark.HitmarkTypeGroup
-import org.rsmod.game.type.obj.ObjType
 
 internal object InternalPlayerHits {
     fun createBuilder(
         source: Npc,
         type: HitType,
         damage: Int,
-        righthand: ObjType?,
-        secondaryObj: ObjType?,
+        righthand: ItemServerType?,
+        secondaryObj: ItemServerType?,
         hitmark: HitmarkTypeGroup,
         clientDelay: Int,
         specific: Boolean,
@@ -47,7 +47,7 @@ internal object InternalPlayerHits {
         source: Player,
         type: HitType,
         damage: Int,
-        secondaryObj: ObjType?,
+        secondaryObj: ItemServerType?,
         hitmark: HitmarkTypeGroup,
         clientDelay: Int,
         specific: Boolean,
@@ -76,8 +76,8 @@ internal object InternalPlayerHits {
     fun createBuilder(
         type: HitType,
         damage: Int,
-        righthand: ObjType?,
-        secondaryObj: ObjType?,
+        righthand: ItemServerType?,
+        secondaryObj: ItemServerType?,
         hitmark: HitmarkTypeGroup,
         clientDelay: Int,
         specific: Boolean,

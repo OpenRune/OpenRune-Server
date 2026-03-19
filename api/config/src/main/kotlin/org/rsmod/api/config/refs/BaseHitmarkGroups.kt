@@ -1,6 +1,6 @@
 package org.rsmod.api.config.refs
 
-import org.rsmod.game.type.hitmark.HitmarkTypeGroup
+import dev.openrune.types.HitmarkTypeGroup
 
 typealias hitmark_groups = BaseHitmarkGroups
 

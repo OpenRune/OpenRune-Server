@@ -2,11 +2,11 @@
 
 package org.rsmod.api.config.refs
 
-import org.rsmod.api.type.refs.font.FontMetricsReferences
+import dev.openrune.fontMetrics
 
 typealias fontmetrics = BaseFontMetrics
 
-object BaseFontMetrics : FontMetricsReferences() {
+object BaseFontMetrics {
     val p11_full = fontMetrics("p11_full")
     val p12_full = fontMetrics("p12_full")
     val b12_full = fontMetrics("b12_full")

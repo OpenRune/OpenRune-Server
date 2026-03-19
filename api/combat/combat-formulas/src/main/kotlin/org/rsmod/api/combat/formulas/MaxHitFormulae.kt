@@ -1,5 +1,6 @@
 package org.rsmod.api.combat.formulas
 
+import dev.openrune.types.ItemServerType
 import jakarta.inject.Inject
 import org.rsmod.api.combat.commons.magic.Spellbook
 import org.rsmod.api.combat.commons.styles.MeleeAttackStyle
@@ -20,7 +21,6 @@ import org.rsmod.api.combat.formulas.maxhit.ranged.PvNRangedMaxHit
 import org.rsmod.api.combat.formulas.maxhit.ranged.PvPRangedMaxHit
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
-import org.rsmod.game.type.obj.ObjType
 
 public class MaxHitFormulae
 @Inject
@@ -124,7 +124,7 @@ constructor(
     public fun getSpellMaxHitRange(
         player: Player,
         target: Npc,
-        spell: ObjType,
+        spell: ItemServerType,
         spellbook: Spellbook?,
         baseMaxHit: Int,
         attackRate: Int,
@@ -144,7 +144,7 @@ constructor(
     public fun getSpellMaxHitRange(
         player: Player,
         target: Player,
-        spell: ObjType,
+        spell: ItemServerType,
         spellbook: Spellbook?,
         baseMaxHit: Int,
         usedSunfireRune: Boolean,

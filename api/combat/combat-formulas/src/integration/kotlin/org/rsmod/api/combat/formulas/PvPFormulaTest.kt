@@ -2,6 +2,9 @@ package org.rsmod.api.combat.formulas
 
 import com.google.inject.AbstractModule
 import com.google.inject.Scopes
+import dev.openrune.definition.type.VarBitType
+import dev.openrune.types.ItemServerType
+import dev.openrune.types.obj.Wearpos
 import jakarta.inject.Inject
 import org.rsmod.api.combat.commons.CombatStance
 import org.rsmod.api.combat.commons.magic.Spellbook
@@ -33,9 +36,6 @@ import org.rsmod.api.testing.params.testArgsOfSingleParam
 import org.rsmod.api.testing.scope.GameTestScope
 import org.rsmod.game.entity.Player
 import org.rsmod.game.inv.InvObj
-import org.rsmod.game.type.obj.ObjType
-import org.rsmod.game.type.obj.Wearpos
-import org.rsmod.game.type.varbit.VarBitType
 
 class PvPFormulaTest {
     @TestWithArgs(MatchupProvider::class)
@@ -202,17 +202,17 @@ class PvPFormulaTest {
         @MatchupDsl
         data class MatchupPlayer(
             var stance: CombatStance = CombatStance.Stance1,
-            var helm: ObjType? = null,
-            var cape: ObjType? = null,
-            var amulet: ObjType? = null,
-            var ammo: ObjType? = null,
-            var weapon: ObjType? = null,
-            var body: ObjType? = null,
-            var shield: ObjType? = null,
-            var legs: ObjType? = null,
-            var gloves: ObjType? = null,
-            var feet: ObjType? = null,
-            var ring: ObjType? = null,
+            var helm: ItemServerType? = null,
+            var cape: ItemServerType? = null,
+            var amulet: ItemServerType? = null,
+            var ammo: ItemServerType? = null,
+            var weapon: ItemServerType? = null,
+            var body: ItemServerType? = null,
+            var shield: ItemServerType? = null,
+            var legs: ItemServerType? = null,
+            var gloves: ItemServerType? = null,
+            var feet: ItemServerType? = null,
+            var ring: ItemServerType? = null,
             var attackLvl: Int = 99,
             var defenceLvl: Int = 99,
             var rangedLvl: Int = 99,
@@ -221,7 +221,7 @@ class PvPFormulaTest {
             var hitpoints: Int = 99,
             val vars: MutableMap<VarBitType, Int> = mutableMapOf(),
             var spellbook: Spellbook = Spellbook.Standard,
-            var castSpell: ObjType? = null,
+            var castSpell: ItemServerType? = null,
             var spellMaxHit: Int? = null,
             var staffMaxHit: Int? = null,
             var specialAccuracy: Double = 1.0,

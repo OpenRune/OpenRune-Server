@@ -1,5 +1,7 @@
 package org.rsmod.api.invtx
 
+import dev.openrune.types.InvStackType
+import dev.openrune.types.ItemServerType
 import org.rsmod.api.config.constants
 import org.rsmod.api.config.refs.objs
 import org.rsmod.api.repo.obj.ObjRepository
@@ -7,8 +9,6 @@ import org.rsmod.game.entity.Player
 import org.rsmod.game.inv.InvObj
 import org.rsmod.game.inv.Inventory
 import org.rsmod.game.obj.Obj
-import org.rsmod.game.type.inv.InvStackType
-import org.rsmod.game.type.obj.ObjType
 import org.rsmod.map.CoordGrid
 import org.rsmod.objtx.Transaction
 import org.rsmod.objtx.TransactionInventory
@@ -17,7 +17,7 @@ import org.rsmod.objtx.TransactionResultList
 
 public fun Player.invAddOrDrop(
     repo: ObjRepository,
-    type: ObjType,
+    type: ItemServerType,
     count: Int = 1,
     duration: Int = this.lootDropDuration ?: constants.lootdrop_duration,
     coords: CoordGrid = this.coords,
@@ -71,7 +71,7 @@ public fun Player.invAdd(
 
 public fun Player.invAdd(
     inv: Inventory,
-    type: ObjType,
+    type: ItemServerType,
     count: Int = 1,
     vars: Int = 0,
     slot: Int? = null,
@@ -167,7 +167,7 @@ public fun Player.invDel(
 
 public fun Player.invDel(
     inv: Inventory,
-    type: ObjType,
+    type: ItemServerType,
     count: Int = 1,
     slot: Int? = null,
     strict: Boolean = true,
@@ -186,9 +186,9 @@ public fun Player.invDel(
 
 public fun Player.invDel(
     inv: Inventory,
-    type1: ObjType,
+    type1: ItemServerType,
     count1: Int,
-    type2: ObjType,
+    type2: ItemServerType,
     count2: Int,
     strict: Boolean = true,
     autoCommit: Boolean = true,
@@ -215,11 +215,11 @@ public fun Player.invDel(
 
 public fun Player.invDel(
     inv: Inventory,
-    type1: ObjType,
+    type1: ItemServerType,
     count1: Int,
-    type2: ObjType,
+    type2: ItemServerType,
     count2: Int,
-    type3: ObjType,
+    type3: ItemServerType,
     count3: Int,
     strict: Boolean = true,
     autoCommit: Boolean = true,

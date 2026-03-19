@@ -1,5 +1,12 @@
 package org.rsmod.api.player.ui
 
+import dev.openrune.cache.filestore.definition.InterfaceType
+import dev.openrune.definition.type.widget.ComponentType
+import dev.openrune.definition.type.widget.IfEvent
+import dev.openrune.types.ItemServerType
+import dev.openrune.types.NpcServerType
+import dev.openrune.types.SequenceServerType
+import dev.openrune.types.aconverted.interf.IfSubType
 import net.rsprot.protocol.game.outgoing.interfaces.IfCloseSub
 import net.rsprot.protocol.game.outgoing.interfaces.IfMoveSub
 import net.rsprot.protocol.game.outgoing.interfaces.IfOpenSub
@@ -41,13 +48,6 @@ import org.rsmod.coroutine.resume.DeferredResumeCondition
 import org.rsmod.events.EventBus
 import org.rsmod.game.entity.Player
 import org.rsmod.game.inv.InvObj
-import org.rsmod.game.type.comp.ComponentType
-import org.rsmod.game.type.interf.IfEvent
-import org.rsmod.game.type.interf.IfSubType
-import org.rsmod.game.type.interf.InterfaceType
-import org.rsmod.game.type.npc.NpcType
-import org.rsmod.game.type.obj.ObjType
-import org.rsmod.game.type.seq.SeqType
 import org.rsmod.game.ui.Component
 import org.rsmod.game.ui.UserInterface
 import org.rsmod.game.ui.UserInterfaceMap
@@ -60,7 +60,7 @@ private typealias MoveSub = org.rsmod.api.player.ui.IfMoveSub
 
 private var Player.chatModalUnclamp: Int by intVarBit(varbits.chatmodal_unclamp)
 
-public fun Player.ifSetObj(target: ComponentType, obj: ObjType, zoomOrCount: Int) {
+public fun Player.ifSetObj(target: ComponentType, obj: ItemServerType, zoomOrCount: Int) {
     client.write(IfSetObject(target.packed, obj.id, zoomOrCount))
 }
 
@@ -68,7 +68,7 @@ public fun Player.ifSetObj(target: ComponentType, obj: InvObj, zoomOrCount: Int)
     client.write(IfSetObject(target.packed, obj.id, zoomOrCount))
 }
 
-public fun Player.ifSetAnim(target: ComponentType, seq: SeqType?) {
+public fun Player.ifSetAnim(target: ComponentType, seq: SequenceServerType?) {
     client.write(IfSetAnim(target.interfaceId, target.component, seq?.id ?: -1))
 }
 
@@ -77,7 +77,7 @@ public fun Player.ifSetPlayerHead(target: ComponentType) {
 }
 
 /** @see [IfSetNpcHead] */
-public fun Player.ifSetNpcHead(target: ComponentType, npc: NpcType) {
+public fun Player.ifSetNpcHead(target: ComponentType, npc: NpcServerType) {
     client.write(IfSetNpcHead(target.interfaceId, target.component, npc.id))
 }
 
@@ -550,7 +550,7 @@ internal fun Player.ifChoice(
 internal fun Player.ifChatPlayer(
     title: String,
     text: String,
-    expression: SeqType?,
+    expression: SequenceServerType?,
     pauseText: String,
     lineHeight: Int,
     eventBus: EventBus,
@@ -569,7 +569,7 @@ internal fun Player.ifChatNpcActive(
     title: String,
     npcSlotId: Int,
     text: String,
-    chatanim: SeqType?,
+    chatanim: SequenceServerType?,
     pauseText: String,
     lineHeight: Int,
     eventBus: EventBus,
@@ -586,9 +586,9 @@ internal fun Player.ifChatNpcActive(
 
 internal fun Player.ifChatNpcSpecific(
     title: String,
-    type: NpcType,
+    type: NpcServerType,
     text: String,
-    chatanim: SeqType?,
+    chatanim: SequenceServerType?,
     pauseText: String,
     lineHeight: Int,
     eventBus: EventBus,

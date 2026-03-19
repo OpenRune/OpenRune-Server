@@ -1,5 +1,6 @@
 package org.rsmod.api.registry.loc
 
+import dev.openrune.ServerCacheManager
 import it.unimi.dsi.fastutil.bytes.Byte2IntOpenHashMap
 import it.unimi.dsi.fastutil.bytes.ByteOpenHashSet
 import jakarta.inject.Inject
@@ -12,7 +13,6 @@ import org.rsmod.game.map.LocZoneStorage
 import org.rsmod.game.map.ZoneLocMap
 import org.rsmod.game.map.collision.addLoc
 import org.rsmod.game.map.collision.removeLoc
-import org.rsmod.game.type.loc.LocTypeList
 import org.rsmod.map.CoordGrid
 import org.rsmod.map.zone.ZoneKey
 import org.rsmod.routefinder.collision.CollisionFlagMap
@@ -22,7 +22,6 @@ public class LocRegistryNormal
 constructor(
     private val updates: ZoneUpdateMap,
     private val collision: CollisionFlagMap,
-    private val locTypes: LocTypeList,
     private val locZones: LocZoneStorage,
 ) {
     private val mapLocs: ZoneLocMap by locZones::mapLocs
@@ -248,12 +247,12 @@ constructor(
     }
 
     private fun addLocCollision(loc: LocInfo) {
-        val type = locTypes[loc.id] ?: return
+        val type = ServerCacheManager.getObject(loc.id) ?: return
         collision.addLoc(loc, type)
     }
 
     private fun removeLocCollision(loc: LocInfo) {
-        val type = locTypes[loc.id] ?: return
+        val type = ServerCacheManager.getObject(loc.id) ?: return
         collision.removeLoc(loc, type)
     }
 

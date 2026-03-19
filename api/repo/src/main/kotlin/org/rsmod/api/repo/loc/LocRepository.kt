@@ -1,5 +1,8 @@
 package org.rsmod.api.repo.loc
 
+import dev.openrune.ServerCacheManager
+import dev.openrune.types.ObjectServerType
+import dev.openrune.types.aconverted.ContentGroupType
 import jakarta.inject.Inject
 import org.rsmod.api.registry.loc.LocRegistry
 import org.rsmod.api.registry.loc.LocRegistryResult
@@ -11,9 +14,6 @@ import org.rsmod.game.loc.LocAngle
 import org.rsmod.game.loc.LocEntity
 import org.rsmod.game.loc.LocInfo
 import org.rsmod.game.loc.LocShape
-import org.rsmod.game.type.content.ContentGroupType
-import org.rsmod.game.type.loc.LocType
-import org.rsmod.game.type.loc.LocTypeList
 import org.rsmod.map.CoordGrid
 import org.rsmod.map.zone.ZoneKey
 import org.rsmod.routefinder.loc.LocLayerConstants
@@ -22,7 +22,6 @@ public class LocRepository
 @Inject
 constructor(
     private val mapClock: MapClock,
-    private val locTypes: LocTypeList,
     private val locReg: LocRegistry,
     private val regionReg: RegionRegistry,
 ) {
@@ -50,7 +49,7 @@ constructor(
 
     public fun add(
         coords: CoordGrid,
-        type: LocType,
+        type: ObjectServerType,
         duration: Int,
         angle: LocAngle,
         shape: LocShape,
@@ -86,11 +85,11 @@ constructor(
         return del(loc, duration)
     }
 
-    public fun change(from: LocInfo, into: LocType, duration: Int) {
+    public fun change(from: LocInfo, into: ObjectServerType, duration: Int) {
         add(from.coords, into, duration, from.angle, from.shape)
     }
 
-    public fun change(from: BoundLocInfo, into: LocType, duration: Int) {
+    public fun change(from: BoundLocInfo, into: ObjectServerType, duration: Int) {
         add(from.coords, into, duration, from.angle, from.shape)
     }
 
@@ -110,7 +109,7 @@ constructor(
     public fun findAll(coords: CoordGrid): Sequence<LocInfo> =
         findAll(ZoneKey.from(coords)).filter { it.coords == coords }
 
-    public fun findExact(coords: CoordGrid, type: LocType): LocInfo? =
+    public fun findExact(coords: CoordGrid, type: ObjectServerType): LocInfo? =
         locReg.findType(coords, type.id)
 
     public fun findExact(coords: CoordGrid, shape: LocShape): LocInfo? =
@@ -118,12 +117,16 @@ constructor(
 
     public fun findExact(coords: CoordGrid, content: ContentGroupType, shape: LocShape): LocInfo? {
         val loc = locReg.findShape(coords, shape.id) ?: return null
-        return loc.takeIf { locTypes[it].contentGroup == content.id }
+        return loc.takeIf { ServerCacheManager.getObject(it.id)?.contentGroup == content.id }
     }
 
-    public fun findExact(coords: CoordGrid, content: ContentGroupType, type: LocType): LocInfo? {
+    public fun findExact(
+        coords: CoordGrid,
+        content: ContentGroupType,
+        type: ObjectServerType,
+    ): LocInfo? {
         val loc = locReg.findType(coords, type.id) ?: return null
-        return loc.takeIf { locTypes[it].contentGroup == content.id }
+        return loc.takeIf { ServerCacheManager.getObject(it.id)?.contentGroup == content.id }
     }
 
     internal fun processDurations() {

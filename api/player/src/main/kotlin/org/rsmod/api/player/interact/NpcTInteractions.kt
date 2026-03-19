@@ -1,5 +1,11 @@
 package org.rsmod.api.player.interact
 
+import dev.openrune.ServerCacheManager
+import dev.openrune.definition.type.widget.ComponentType
+import dev.openrune.types.ItemServerType
+import dev.openrune.types.NpcServerType
+import dev.openrune.types.varp.baseVar
+import dev.openrune.types.varp.bits
 import jakarta.inject.Inject
 import org.rsmod.api.player.events.interact.ApEvent
 import org.rsmod.api.player.events.interact.NpcTContentEvents
@@ -11,29 +17,16 @@ import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.game.interact.InteractionNpcT
 import org.rsmod.game.movement.RouteRequestPathingEntity
-import org.rsmod.game.type.comp.ComponentType
-import org.rsmod.game.type.npc.NpcTypeList
-import org.rsmod.game.type.npc.UnpackedNpcType
-import org.rsmod.game.type.obj.ObjType
-import org.rsmod.game.type.varbit.VarBitTypeList
-import org.rsmod.game.type.varp.VarpTypeList
 import org.rsmod.game.vars.VarPlayerIntMap
 import org.rsmod.utils.bits.getBits
 
-public class NpcTInteractions
-@Inject
-constructor(
-    private val npcTypes: NpcTypeList,
-    private val varpTypes: VarpTypeList,
-    private val varBitTypes: VarBitTypeList,
-    private val eventBus: EventBus,
-) {
+public class NpcTInteractions @Inject constructor(private val eventBus: EventBus) {
     public fun interact(
         player: Player,
         npc: Npc,
         component: ComponentType,
         comsub: Int,
-        objType: ObjType?,
+        objType: ItemServerType?,
     ) {
         val opTrigger = hasOpTrigger(player, npc, component, comsub, objType)
         val apTrigger = hasApTrigger(player, npc, component, comsub, objType)
@@ -57,8 +50,8 @@ constructor(
         npc: Npc,
         component: ComponentType,
         comsub: Int,
-        objType: ObjType?,
-        type: UnpackedNpcType = npc.visType,
+        objType: ItemServerType?,
+        type: NpcServerType = npc.visType,
     ): OpEvent? {
         val multiNpcType = multiNpc(type, player.vars)
         if (multiNpcType != null) {
@@ -91,7 +84,7 @@ constructor(
         npc: Npc,
         component: ComponentType,
         comsub: Int,
-        objType: ObjType?,
+        objType: ItemServerType?,
     ): Boolean = opTrigger(player, npc, component, comsub, objType) != null
 
     public fun apTrigger(
@@ -99,8 +92,8 @@ constructor(
         npc: Npc,
         component: ComponentType,
         comsub: Int,
-        objType: ObjType?,
-        type: UnpackedNpcType = npc.visType,
+        objType: ItemServerType?,
+        type: NpcServerType = npc.visType,
     ): ApEvent? {
         val multiNpcType = multiNpc(type, player.vars)
         if (multiNpcType != null) {
@@ -133,11 +126,11 @@ constructor(
         npc: Npc,
         component: ComponentType,
         comsub: Int,
-        objType: ObjType?,
+        objType: ItemServerType?,
     ): Boolean = apTrigger(player, npc, component, comsub, objType) != null
 
-    public fun multiNpc(type: UnpackedNpcType, vars: VarPlayerIntMap): UnpackedNpcType? {
-        if (type.multiNpc.isEmpty() && type.multiNpcDefault <= 0) {
+    public fun multiNpc(type: NpcServerType, vars: VarPlayerIntMap): NpcServerType? {
+        if (type.multiNpc.isEmpty() && type.multiDefault <= 0) {
             return null
         }
         val varValue = type.multiVarValue(vars) ?: 0
@@ -145,21 +138,21 @@ constructor(
             if (varValue in type.multiNpc.indices) {
                 type.multiNpc[varValue].toInt() and 0xFFFF
             } else {
-                type.multiNpcDefault
+                type.multiDefault
             }
-        return if (!npcTypes.containsKey(multiNpc)) {
+        return if (!ServerCacheManager.getNpcs().containsKey(multiNpc)) {
             null
         } else {
-            npcTypes.getOrDefault(multiNpc, null)
+            ServerCacheManager.getNpc(multiNpc)
         }
     }
 
-    private fun UnpackedNpcType.multiVarValue(vars: VarPlayerIntMap): Int? {
+    private fun NpcServerType.multiVarValue(vars: VarPlayerIntMap): Int? {
         if (multiVarp > 0) {
-            val varp = varpTypes[multiVarp] ?: return null
+            val varp = ServerCacheManager.getVarp(multiVarp) ?: return null
             return vars[varp]
         } else if (multiVarBit > 0) {
-            val varBit = varBitTypes[multiVarBit] ?: return null
+            val varBit = ServerCacheManager.getVarbit(multiVarBit) ?: return null
             val packed = vars[varBit.baseVar]
             return packed.getBits(varBit.bits)
         }

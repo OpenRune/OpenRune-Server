@@ -27,6 +27,7 @@ object ParamMapper {
         val QUATERNARY_SKILL = 579
         val QUATERNARY_LEVEL = 614
     }
+
     object npc {
         const val STAB_ATTACK_BONUS = 0
         const val SLASH_ATTACK_BONUS = 1
@@ -165,6 +166,4 @@ object ParamMapper {
             const val LESSER_NAGUA = 123
         }
     }
-
-
 }

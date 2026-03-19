@@ -1,18 +1,13 @@
 package org.rsmod.content.interfaces.prayer.tab
 
+import dev.openrune.definition.type.widget.ComponentType
+import dev.openrune.types.enums.EnumTypeMap
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 import org.rsmod.api.config.refs.params
 import org.rsmod.content.interfaces.prayer.tab.configs.prayer_enums
 import org.rsmod.content.interfaces.prayer.tab.configs.prayer_params
-import org.rsmod.game.enums.EnumTypeMapResolver
-import org.rsmod.game.type.comp.ComponentType
-import org.rsmod.game.type.enums.EnumType
-import org.rsmod.game.type.obj.ObjTypeList
 
-class PrayerRepository(
-    private val enumResolver: EnumTypeMapResolver,
-    private val objTypes: ObjTypeList,
-) {
+class PrayerRepository() {
     lateinit var prayerComponents: Map<ComponentType, Prayer>
         private set
 
@@ -37,21 +32,20 @@ class PrayerRepository(
         val prayers = mutableMapOf<ComponentType, Prayer>()
         val idCollision = hashSetOf<Int>()
 
-        val enum = enumResolver[prayer_enums.obj_configs].filterValuesNotNull()
+        val enum = prayer_enums.obj_configs.filterValuesNotNull()
         for (obj in enum.values) {
-            val config = objTypes[obj]
-            val id = config.param(prayer_params.id)
-            val component = config.param(prayer_params.component)
-            val name = config.param(prayer_params.name)
-            val level = config.param(prayer_params.level)
-            val sound = config.param(prayer_params.sound)
-            val enabled = config.param(prayer_params.varbit)
-            val drain = config.param(prayer_params.drain_effect)
-            val overhead = config.paramOrNull(prayer_params.overhead)
-            val unlockVar = config.paramOrNull(prayer_params.unlock_varbit)
-            val unlockState = config.param(prayer_params.unlock_state)
-            val defenceReq = config.paramOrNull(params.statreq1_level)
-            val lockedMessage = config.paramOrNull(prayer_params.locked_message)
+            val id = obj.param(prayer_params.id)
+            val component = obj.param(prayer_params.component)
+            val name = obj.param(prayer_params.name)
+            val level = obj.param(prayer_params.level)
+            val sound = obj.param(prayer_params.sound)
+            val enabled = obj.param(prayer_params.varbit)
+            val drain = obj.param(prayer_params.drain_effect)
+            val overhead = obj.paramOrNull(prayer_params.overhead)
+            val unlockVar = obj.paramOrNull(prayer_params.unlock_varbit)
+            val unlockState = obj.param(prayer_params.unlock_state)
+            val defenceReq = obj.paramOrNull(params.statreq1_level)
+            val lockedMessage = obj.paramOrNull(prayer_params.locked_message)
 
             check(idCollision.add(id)) { "Prayer with id `$id` is already in use." }
             check(component !in prayers) { "Prayer with component `$component` is already in use." }
@@ -104,8 +98,8 @@ class PrayerRepository(
         return collisions
     }
 
-    private fun load(prayers: Iterable<Prayer>, enumType: EnumType<Int, Boolean>): List<Prayer> {
-        val enum = enumResolver[enumType].filterValuesNotNull()
+    private fun load(prayers: Iterable<Prayer>, enumType: EnumTypeMap<Int, Boolean>): List<Prayer> {
+        val enum = enumType.filterValuesNotNull()
         val ids = hashSetOf<Int>()
         for ((id, flag) in enum) {
             if (flag) {

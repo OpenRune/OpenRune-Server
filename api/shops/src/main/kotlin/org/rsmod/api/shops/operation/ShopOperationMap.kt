@@ -1,7 +1,7 @@
 package org.rsmod.api.shops.operation
 
+import dev.openrune.types.aconverted.CurrencyType
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
-import org.rsmod.game.type.currency.CurrencyType
 
 public class ShopOperationMap(
     private val map: MutableMap<Int, ShopOperations> = Int2ObjectOpenHashMap()

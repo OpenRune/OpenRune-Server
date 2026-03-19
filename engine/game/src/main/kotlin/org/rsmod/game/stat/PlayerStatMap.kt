@@ -1,9 +1,9 @@
 package org.rsmod.game.stat
 
+import dev.openrune.types.StatType
 import it.unimi.dsi.fastutil.bytes.Byte2ByteOpenHashMap
 import it.unimi.dsi.fastutil.bytes.Byte2IntOpenHashMap
 import org.rsmod.annotations.InternalApi
-import org.rsmod.game.type.stat.StatType
 
 public class PlayerStatMap(
     private val xp: Byte2IntOpenHashMap = Byte2IntOpenHashMap(),

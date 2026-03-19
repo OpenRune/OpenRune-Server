@@ -1,10 +1,10 @@
 package org.rsmod.api.cheat
 
 import com.github.michaelbull.logging.InlineLogger
+import dev.openrune.types.ModLevelType
 import org.rsmod.api.player.output.mes
 import org.rsmod.game.cheat.Cheat
 import org.rsmod.game.cheat.CheatHandler
-import org.rsmod.game.type.mod.ModLevelType
 
 private val logger = InlineLogger()
 

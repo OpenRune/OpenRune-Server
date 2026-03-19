@@ -1,5 +1,7 @@
 package org.rsmod.content.interfaces.equipment.stats
 
+import dev.openrune.definition.type.widget.IfEvent
+import dev.openrune.types.aconverted.interf.IfButtonOp
 import jakarta.inject.Inject
 import org.rsmod.api.combat.weapon.WeaponSpeeds
 import org.rsmod.api.market.MarketPrices
@@ -20,19 +22,14 @@ import org.rsmod.content.interfaces.equipment.configs.equip_enums
 import org.rsmod.content.interfaces.equipment.configs.equip_interfaces
 import org.rsmod.events.EventBus
 import org.rsmod.game.entity.Player
-import org.rsmod.game.enums.EnumTypeMapResolver
-import org.rsmod.game.type.interf.IfButtonOp
-import org.rsmod.game.type.interf.IfEvent
-import org.rsmod.game.type.obj.ObjTypeList
+import org.rsmod.game.type.getInvObj
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
 class EquipmentStats
 @Inject
 constructor(
-    private val objTypes: ObjTypeList,
     private val eventBus: EventBus,
-    private val enumResolver: EnumTypeMapResolver,
     private val protectedAccess: ProtectedAccessLauncher,
     private val wornInteractions: WornInteractions,
     private val wornBonuses: WornBonuses,
@@ -42,7 +39,7 @@ constructor(
     override fun ScriptContext.startup() {
         onIfOverlayButton(equip_components.equipment) { player.selectStats() }
 
-        val componentWornSlots = enumResolver[equip_enums.mapped_wearpos].filterValuesNotNull()
+        val componentWornSlots = equip_enums.mapped_wearpos.filterValuesNotNull()
         for ((slot, component) in componentWornSlots) {
             onIfModalButton(component) { opWornMain(slot, it.op) }
         }
@@ -143,14 +140,14 @@ constructor(
     private suspend fun ProtectedAccess.opHeldSide(invSlot: Int, op: IfButtonOp) {
         val obj = inv[invSlot] ?: return resendSlot(inv, invSlot)
         if (op == IfButtonOp.Op10) {
-            val type = objTypes[obj]
+            val type = getInvObj(obj)
             val price = marketPrices[type] ?: 0
             player.objExamine(type, obj.count, price)
             return
         }
 
         if (op == IfButtonOp.Op1) {
-            if (!objTypes[obj].isEquipable) {
+            if (!getInvObj(obj).isEquipable) {
                 mes("You can't equip that.")
                 return
             }

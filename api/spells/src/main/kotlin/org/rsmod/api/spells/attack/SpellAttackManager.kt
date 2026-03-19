@@ -1,5 +1,9 @@
 package org.rsmod.api.spells.attack
 
+import dev.openrune.types.ItemServerType
+import dev.openrune.types.ProjAnimType
+import dev.openrune.types.aconverted.SpotanimType
+import dev.openrune.types.aconverted.SynthType
 import jakarta.inject.Inject
 import org.rsmod.api.combat.commons.CombatAttack
 import org.rsmod.api.combat.commons.magic.MagicSpell
@@ -15,10 +19,6 @@ import org.rsmod.api.player.vars.boolVarBit
 import org.rsmod.game.entity.PathingEntity
 import org.rsmod.game.hit.Hit
 import org.rsmod.game.proj.ProjAnim
-import org.rsmod.game.type.obj.ObjType
-import org.rsmod.game.type.proj.ProjAnimType
-import org.rsmod.game.type.spot.SpotanimType
-import org.rsmod.game.type.synth.SynthType
 
 public class SpellAttackManager
 @Inject
@@ -189,7 +189,7 @@ constructor(private val manager: PlayerAttackManager, private val runes: MagicRu
     public fun queueMagicHit(
         source: ProtectedAccess,
         target: PathingEntity,
-        spell: ObjType,
+        spell: ItemServerType,
         damage: Int,
         clientDelay: Int,
         hitDelay: Int = 1 + (clientDelay / 30),
@@ -208,7 +208,7 @@ constructor(private val manager: PlayerAttackManager, private val runes: MagicRu
     public fun queueSplashHit(
         source: ProtectedAccess,
         target: PathingEntity,
-        spell: ObjType,
+        spell: ItemServerType,
         clientDelay: Int,
         hitDelay: Int = 1 + (clientDelay / 30),
     ): Hit =

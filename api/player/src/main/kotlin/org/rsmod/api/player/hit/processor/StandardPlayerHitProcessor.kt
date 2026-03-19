@@ -1,9 +1,11 @@
 package org.rsmod.api.player.hit.processor
 
+import dev.openrune.types.ItemServerType
+import dev.openrune.types.aconverted.SynthType
 import kotlin.math.min
 import org.rsmod.api.config.constants
+import org.rsmod.api.config.refs.BaseParams
 import org.rsmod.api.config.refs.headbars
-import org.rsmod.api.config.refs.params
 import org.rsmod.api.config.refs.queues
 import org.rsmod.api.config.refs.stats
 import org.rsmod.api.config.refs.synths
@@ -18,8 +20,6 @@ import org.rsmod.api.random.GameRandom
 import org.rsmod.game.headbar.Headbar
 import org.rsmod.game.hit.Hit
 import org.rsmod.game.hit.HitType
-import org.rsmod.game.type.obj.UnpackedObjType
-import org.rsmod.game.type.synth.SynthType
 
 public object StandardPlayerHitProcessor : QueuedPlayerHitProcessor {
     private val hitSoundsBodyA =
@@ -81,8 +81,8 @@ public object StandardPlayerHitProcessor : QueuedPlayerHitProcessor {
     }
 
     private fun resolveDefendSound(
-        lefthand: UnpackedObjType?,
-        torso: UnpackedObjType?,
+        lefthand: ItemServerType?,
+        torso: ItemServerType?,
         damage: Int,
         bodyType: Int,
         random: GameRandom,
@@ -95,8 +95,8 @@ public object StandardPlayerHitProcessor : QueuedPlayerHitProcessor {
         }
 
     private fun resolveBlockSound(
-        lefthand: UnpackedObjType?,
-        torso: UnpackedObjType?,
+        lefthand: ItemServerType?,
+        torso: ItemServerType?,
         random: GameRandom,
     ): SynthType {
         val lefthandSound = lefthand?.randomBlockSound(random)
@@ -112,14 +112,14 @@ public object StandardPlayerHitProcessor : QueuedPlayerHitProcessor {
         return synths.human_block_1
     }
 
-    private fun UnpackedObjType.randomBlockSound(random: GameRandom): SynthType? {
+    private fun ItemServerType.randomBlockSound(random: GameRandom): SynthType? {
         val sounds =
             listOfNotNull(
-                paramOrNull(params.item_block_sound1),
-                paramOrNull(params.item_block_sound2),
-                paramOrNull(params.item_block_sound3),
-                paramOrNull(params.item_block_sound4),
-                paramOrNull(params.item_block_sound5),
+                paramOrNull(BaseParams.item_block_sound1),
+                paramOrNull(BaseParams.item_block_sound2),
+                paramOrNull(BaseParams.item_block_sound3),
+                paramOrNull(BaseParams.item_block_sound4),
+                paramOrNull(BaseParams.item_block_sound5),
             )
         return random.pickOrNull(sounds)
     }

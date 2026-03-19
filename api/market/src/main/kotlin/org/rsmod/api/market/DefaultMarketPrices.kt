@@ -1,10 +1,8 @@
 package org.rsmod.api.market
 
-import jakarta.inject.Inject
-import org.rsmod.game.type.obj.ObjTypeList
-import org.rsmod.game.type.obj.UnpackedObjType
+import dev.openrune.types.ItemServerType
+import org.rsmod.game.type.uncert
 
-public class DefaultMarketPrices @Inject constructor(private val objTypes: ObjTypeList) :
-    MarketPrices {
-    override fun get(type: UnpackedObjType): Int = objTypes.uncert(type).cost
+public class DefaultMarketPrices : MarketPrices {
+    override fun get(type: ItemServerType): Int = uncert(type).cost
 }

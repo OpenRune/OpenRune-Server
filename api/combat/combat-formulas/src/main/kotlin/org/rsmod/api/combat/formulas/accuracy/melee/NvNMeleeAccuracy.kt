@@ -1,11 +1,12 @@
 package org.rsmod.api.combat.formulas.accuracy.melee
 
+import dev.openrune.types.NpcServerType
 import org.rsmod.api.combat.accuracy.npc.NpcMeleeAccuracy
 import org.rsmod.api.combat.commons.types.MeleeAttackType
 import org.rsmod.api.combat.formulas.accuracy.AccuracyOperations
+import org.rsmod.api.config.refs.BaseParams
 import org.rsmod.api.config.refs.params
 import org.rsmod.game.entity.Npc
-import org.rsmod.game.type.npc.UnpackedNpcType
 
 public class NvNMeleeAccuracy {
     public fun getHitChance(npc: Npc, target: Npc, attackType: MeleeAttackType?): Int =
@@ -19,9 +20,9 @@ public class NvNMeleeAccuracy {
 
     public fun computeHitChance(
         source: Npc,
-        sourceType: UnpackedNpcType,
+        sourceType: NpcServerType,
         target: Npc,
-        targetType: UnpackedNpcType,
+        targetType: NpcServerType,
         attackType: MeleeAttackType?,
     ): Int {
         val attackRoll = computeAttackRoll(source, sourceType)
@@ -29,14 +30,14 @@ public class NvNMeleeAccuracy {
         return AccuracyOperations.calculateHitChance(attackRoll, defenceRoll)
     }
 
-    public fun computeAttackRoll(source: Npc, sourceType: UnpackedNpcType): Int {
+    public fun computeAttackRoll(source: Npc, sourceType: NpcServerType): Int {
         val effectiveAttack = NpcMeleeAccuracy.calculateEffectiveAttack(source.attackLvl)
         val attackBonus = sourceType.param(params.attack_melee)
         return NpcMeleeAccuracy.calculateBaseAttackRoll(effectiveAttack, attackBonus)
     }
 
     public fun computeDefenceRoll(
-        target: UnpackedNpcType,
+        target: NpcServerType,
         targetDefence: Int,
         blockType: MeleeAttackType?,
     ): Int {
@@ -45,11 +46,11 @@ public class NvNMeleeAccuracy {
         return NpcMeleeAccuracy.calculateBaseDefenceRoll(effectiveDefence, defenceBonus)
     }
 
-    private fun UnpackedNpcType.getDefenceBonus(attackType: MeleeAttackType?): Int =
+    private fun NpcServerType.getDefenceBonus(attackType: MeleeAttackType?): Int =
         when (attackType) {
-            MeleeAttackType.Stab -> param(params.defence_stab)
-            MeleeAttackType.Slash -> param(params.defence_slash)
-            MeleeAttackType.Crush -> param(params.defence_crush)
+            MeleeAttackType.Stab -> param(BaseParams.defence_stab)
+            MeleeAttackType.Slash -> param(BaseParams.defence_slash)
+            MeleeAttackType.Crush -> param(BaseParams.defence_crush)
             null -> 0
         }
 }

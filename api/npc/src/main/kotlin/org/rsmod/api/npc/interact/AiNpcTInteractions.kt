@@ -1,5 +1,8 @@
 package org.rsmod.api.npc.interact
 
+import dev.openrune.definition.type.widget.ComponentType
+import dev.openrune.types.ItemServerType
+import dev.openrune.types.NpcServerType
 import jakarta.inject.Inject
 import org.rsmod.api.npc.events.interact.AiNpcTContentEvents
 import org.rsmod.api.npc.events.interact.AiNpcTDefaultEvents
@@ -10,20 +13,14 @@ import org.rsmod.events.EventBus
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.interact.InteractionNpcT
 import org.rsmod.game.movement.RouteRequestPathingEntity
-import org.rsmod.game.type.comp.ComponentType
-import org.rsmod.game.type.npc.NpcTypeList
-import org.rsmod.game.type.npc.UnpackedNpcType
-import org.rsmod.game.type.obj.ObjType
 
-public class AiNpcTInteractions
-@Inject
-constructor(private val npcTypes: NpcTypeList, private val eventBus: EventBus) {
+public class AiNpcTInteractions @Inject constructor(private val eventBus: EventBus) {
     public fun interact(
         npc: Npc,
         target: Npc,
         component: ComponentType,
         comsub: Int,
-        objType: ObjType?,
+        objType: ItemServerType?,
     ) {
         val opTrigger = hasOpTrigger(target, component, comsub, objType)
         val apTrigger = hasApTrigger(target, component, comsub, objType)
@@ -45,8 +42,8 @@ constructor(private val npcTypes: NpcTypeList, private val eventBus: EventBus) {
         target: Npc,
         component: ComponentType,
         comsub: Int,
-        objType: ObjType?,
-        type: UnpackedNpcType = target.visType,
+        objType: ItemServerType?,
+        type: NpcServerType = target.visType,
     ): OpEvent? {
         val typeEvent = AiNpcTEvents.Op(target, comsub, objType, type, component)
         if (eventBus.contains(typeEvent::class.java, typeEvent.id)) {
@@ -71,15 +68,15 @@ constructor(private val npcTypes: NpcTypeList, private val eventBus: EventBus) {
         target: Npc,
         component: ComponentType,
         comsub: Int,
-        objType: ObjType?,
+        objType: ItemServerType?,
     ): Boolean = opTrigger(target, component, comsub, objType) != null
 
     public fun apTrigger(
         target: Npc,
         component: ComponentType,
         comsub: Int,
-        objType: ObjType?,
-        type: UnpackedNpcType = target.visType,
+        objType: ItemServerType?,
+        type: NpcServerType = target.visType,
     ): ApEvent? {
         val typeEvent = AiNpcTEvents.Ap(target, comsub, objType, type, component)
         if (eventBus.contains(typeEvent::class.java, typeEvent.id)) {
@@ -104,6 +101,6 @@ constructor(private val npcTypes: NpcTypeList, private val eventBus: EventBus) {
         target: Npc,
         component: ComponentType,
         comsub: Int,
-        objType: ObjType?,
+        objType: ItemServerType?,
     ): Boolean = apTrigger(target, component, comsub, objType) != null
 }

@@ -1,0 +1,11 @@
+[[bas]]
+isServerOnly = true
+id = "bas.human_default"
+
+readyAnim = "seq.human_ready"
+turnOnSpot = "seq.human_turnonspot"
+walkForward = "seq.human_walk_f"
+walkBack = "seq.human_walk_b"
+walkLeft = "seq.human_walk_l"
+walkRight = "seq.human_walk_r"
+running = "seq.human_running"

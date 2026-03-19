@@ -27,12 +27,12 @@ import org.rsmod.api.weapons.WeaponRegistry
 import org.rsmod.api.weapons.attack
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.interact.InteractionOp
-import org.rsmod.game.type.obj.ObjTypeList
+import org.rsmod.game.type.getInvObj
+import org.rsmod.game.type.getOrNull
 
 internal class PvNCombat
 @Inject
 constructor(
-    private val objTypes: ObjTypeList,
     private val speeds: WeaponSpeeds,
     private val specialsReg: SpecialAttackRegistry,
     private val specialEnergy: SpecialAttackEnergy,
@@ -133,7 +133,7 @@ constructor(
             }
         }
 
-        val righthandType = objTypes[attack.weapon]
+        val righthandType = getInvObj(attack.weapon)
 
         // Important: Weapon attack handlers are responsible for explicitly calling `opnpc2` (or a
         // helper function that does so) to re-engage in combat after performing their attack.
@@ -156,7 +156,7 @@ constructor(
         }
 
         val quiver = player.quiver
-        val quiverType = objTypes.getOrNull(quiver)
+        val quiverType = getOrNull(quiver)
 
         val canUseAmmo = ammunition.attemptAmmoUsage(player, righthandType, quiverType)
         if (!canUseAmmo) {
@@ -303,7 +303,7 @@ constructor(
             return false
         }
 
-        val hasAttackOp = npc.visType.hasOp(InteractionOp.Op2)
+        val hasAttackOp = npc.visType.hasOp(InteractionOp.Op2.slot)
         if (!hasAttackOp) {
             mes("You can't attack this npc.")
             return false

@@ -1,8 +1,7 @@
 package org.rsmod.api.spells.runes.fake
 
+import dev.openrune.types.ItemServerType
 import org.rsmod.api.spells.runes.fake.configs.fake_enums
-import org.rsmod.game.enums.EnumTypeMapResolver
-import org.rsmod.game.type.obj.ObjType
 
 /**
  * Some features in the game use "fake" runes to ensure that, if players manage to smuggle them
@@ -11,17 +10,17 @@ import org.rsmod.game.type.obj.ObjType
  * originals as a safeguard.
  */
 public class FakeRuneRepository {
-    private lateinit var fakes: Map<Int, ObjType>
+    private lateinit var fakes: Map<Int, ItemServerType>
 
-    public operator fun get(rune: ObjType): ObjType? = fakes[rune.id]
+    public operator fun get(rune: ItemServerType): ItemServerType? = fakes[rune.id]
 
-    internal fun init(resolver: EnumTypeMapResolver) {
-        val fakes = loadFakeRunes(resolver)
+    internal fun init() {
+        val fakes = loadFakeRunes()
         this.fakes = fakes
     }
 
-    private fun loadFakeRunes(resolver: EnumTypeMapResolver): Map<Int, ObjType> {
-        val enum = resolver[fake_enums.runes].filterValuesNotNull()
+    private fun loadFakeRunes(): Map<Int, ItemServerType> {
+        val enum = fake_enums.runes.filterValuesNotNull()
         return enum.backing.entries.associate { it.key.id to it.value }
     }
 }

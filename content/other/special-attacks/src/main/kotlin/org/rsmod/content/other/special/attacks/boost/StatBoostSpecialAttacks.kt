@@ -1,5 +1,7 @@
 package org.rsmod.content.other.special.attacks.boost
 
+import dev.openrune.types.SequenceServerType
+import dev.openrune.types.aconverted.SpotanimType
 import jakarta.inject.Inject
 import org.rsmod.api.config.constants
 import org.rsmod.api.config.refs.objs
@@ -13,8 +15,6 @@ import org.rsmod.api.specials.SpecialAttackMap
 import org.rsmod.api.specials.SpecialAttackRepository
 import org.rsmod.content.other.special.attacks.configs.special_seqs
 import org.rsmod.content.other.special.attacks.configs.special_spots
-import org.rsmod.game.type.seq.SeqType
-import org.rsmod.game.type.spot.SpotanimType
 
 class StatBoostSpecialAttacks @Inject constructor(private val worldRepo: WorldRepository) :
     SpecialAttackMap {
@@ -98,7 +98,7 @@ class StatBoostSpecialAttacks @Inject constructor(private val worldRepo: WorldRe
         )
     }
 
-    private fun ProtectedAccess.fishstabber(seq: SeqType, spot: SpotanimType): Boolean {
+    private fun ProtectedAccess.fishstabber(seq: SequenceServerType, spot: SpotanimType): Boolean {
         statBoost(stats.fishing, constant = 3, percent = 0)
         say("Here fishy fishies!")
         anim(seq)
@@ -140,7 +140,7 @@ class StatBoostSpecialAttacks @Inject constructor(private val worldRepo: WorldRe
         return access.rockKnocker(special_seqs.rock_knocker_crystal_pickaxe)
     }
 
-    private fun ProtectedAccess.rockKnocker(seq: SeqType): Boolean {
+    private fun ProtectedAccess.rockKnocker(seq: SequenceServerType): Boolean {
         statBoost(stats.mining, constant = 3, percent = 0)
         say("Smashing!")
         anim(seq)

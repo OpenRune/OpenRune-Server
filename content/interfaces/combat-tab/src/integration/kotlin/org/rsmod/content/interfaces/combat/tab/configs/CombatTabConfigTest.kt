@@ -1,9 +1,9 @@
 package org.rsmod.content.interfaces.combat.tab.configs
 
+import dev.openrune.types.obj.WeaponCategory
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.rsmod.api.testing.GameTestState
-import org.rsmod.game.type.obj.WeaponCategory
 
 class CombatTabConfigTest {
     @Test

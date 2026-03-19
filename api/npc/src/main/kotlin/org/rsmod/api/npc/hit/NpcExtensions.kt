@@ -1,5 +1,7 @@
 package org.rsmod.api.npc.hit
 
+import dev.openrune.types.HitmarkTypeGroup
+import dev.openrune.types.ItemServerType
 import org.rsmod.api.config.refs.BaseHitmarkGroups
 import org.rsmod.api.config.refs.hitmark_groups
 import org.rsmod.api.config.refs.params
@@ -14,8 +16,6 @@ import org.rsmod.game.entity.Player
 import org.rsmod.game.hit.Hit
 import org.rsmod.game.hit.HitBuilder
 import org.rsmod.game.hit.HitType
-import org.rsmod.game.type.hitmark.HitmarkTypeGroup
-import org.rsmod.game.type.obj.ObjType
 
 /* Standard hit functions. */
 /**
@@ -42,9 +42,9 @@ import org.rsmod.game.type.obj.ObjType
  *   factors from [modifier] and [StandardNpcHitProcessor].
  * @param hitmark The hitmark group used for the visual hitsplat. See [BaseHitmarkGroups] or
  *   reference [hitmark_groups] for a list of available hitmark groups.
- * @param sourceWeapon An optional [ObjType] reference of a "weapon" used by the [source] that hit
- *   modifiers and/or processors can use for specialized logic. Typically unnecessary when [source]
- *   is an [Npc], though there may be niche use cases.
+ * @param sourceWeapon An optional [ItemServerType] reference of a "weapon" used by the [source]
+ *   that hit modifiers and/or processors can use for specialized logic. Typically unnecessary when
+ *   [source] is an [Npc], though there may be niche use cases.
  * @param sourceSecondary Similar to [sourceWeapon], except this refers to objs that are **not** the
  *   primary weapon, such as ammunition for ranged attacks or objs tied to magic spells.
  * @param modifier An [NpcHitModifier] used to adjust damage and other hit properties. Usually,
@@ -64,8 +64,8 @@ public fun Npc.queueHit(
     damage: Int,
     modifier: NpcHitModifier,
     hitmark: HitmarkTypeGroup = visHitmark(),
-    sourceWeapon: ObjType? = null,
-    sourceSecondary: ObjType? = null,
+    sourceWeapon: ItemServerType? = null,
+    sourceSecondary: ItemServerType? = null,
 ): Hit {
     val builder =
         InternalNpcHits.createBuilder(
@@ -130,7 +130,7 @@ public fun Npc.queueHit(
     modifier: NpcHitModifier,
     hitmark: HitmarkTypeGroup = visHitmark(),
     specific: Boolean = false,
-    sourceSecondary: ObjType? = null,
+    sourceSecondary: ItemServerType? = null,
 ): Hit {
     val builder =
         InternalNpcHits.createBuilder(

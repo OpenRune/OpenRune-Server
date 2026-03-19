@@ -1,11 +1,11 @@
 package org.rsmod.api.specials.configs
 
-import org.rsmod.api.type.refs.enums.EnumReferences
-import org.rsmod.game.type.obj.ObjType
+import dev.openrune.types.ItemServerType
+import dev.openrune.types.enums.enum
 
 internal typealias energy_enums = SpecialAttackEnergyEnums
 
-internal object SpecialAttackEnergyEnums : EnumReferences() {
-    val energy_requirements = enum<ObjType, Int>("sa_energy_requirements")
-    val descriptions = enum<ObjType, String>("sa_descriptions")
+internal object SpecialAttackEnergyEnums {
+    val energy_requirements = enum<ItemServerType, Int>("sa_energy_requirements")
+    val descriptions = enum<ItemServerType, String>("sa_descriptions")
 }

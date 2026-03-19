@@ -1,5 +1,10 @@
 package org.rsmod.api.script
 
+import dev.openrune.rscm.RSCM
+import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.rscm.RSCMType
+import dev.openrune.types.ItemServerType
+import dev.openrune.types.aconverted.ContentGroupType
 import org.rsmod.api.player.events.interact.HeldContentEvents
 import org.rsmod.api.player.events.interact.HeldDropEvents
 import org.rsmod.api.player.events.interact.HeldEquipEvents
@@ -9,16 +14,13 @@ import org.rsmod.api.player.events.interact.HeldUDefaultEvents
 import org.rsmod.api.player.events.interact.HeldUEvents
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.events.EventBus
-import org.rsmod.game.type.content.ContentGroupType
-import org.rsmod.game.type.droptrig.DropTriggerType
-import org.rsmod.game.type.obj.ObjType
 import org.rsmod.plugin.scripts.ScriptContext
 
 /* Drop functions */
-public fun ScriptContext.onDropTrigger(
-    type: DropTriggerType,
-    action: HeldDropEvents.Trigger.() -> Unit,
-): Unit = onEvent(type.id, action)
+public fun ScriptContext.onDropTrigger(type: String, action: HeldDropEvents.Trigger.() -> Unit) {
+    RSCM.requireRSCM(RSCMType.DROP_TRIGGER, type)
+    onEvent(type.asRSCM(), action)
+}
 
 /* Equip functions */
 public fun ScriptContext.onEquipObj(
@@ -33,29 +35,29 @@ public fun ScriptContext.onUnequipObj(
 
 /* Standard obj op functions */
 public fun ScriptContext.onOpHeld1(
-    type: ObjType,
+    type: ItemServerType,
     action: suspend ProtectedAccess.(HeldObjEvents.Op1) -> Unit,
 ): Unit = onProtectedEvent(type.id, action)
 
 /** **Important Note:** This replaces the default wield/wear op handling for obj [type]. */
 public fun ScriptContext.onOpHeld2(
-    type: ObjType,
+    type: ItemServerType,
     action: suspend ProtectedAccess.(HeldObjEvents.Op2) -> Unit,
 ): Unit = onProtectedEvent(type.id, action)
 
 public fun ScriptContext.onOpHeld3(
-    type: ObjType,
+    type: ItemServerType,
     action: suspend ProtectedAccess.(HeldObjEvents.Op3) -> Unit,
 ): Unit = onProtectedEvent(type.id, action)
 
 public fun ScriptContext.onOpHeld4(
-    type: ObjType,
+    type: ItemServerType,
     action: suspend ProtectedAccess.(HeldObjEvents.Op4) -> Unit,
 ): Unit = onProtectedEvent(type.id, action)
 
 /** **Important Note:** This replaces the default drop op handling for obj [type]. */
 public fun ScriptContext.onOpHeld5(
-    type: ObjType,
+    type: ItemServerType,
     action: suspend ProtectedAccess.(HeldObjEvents.Op5) -> Unit,
 ): Unit = onProtectedEvent(type.id, action)
 
@@ -100,8 +102,8 @@ public fun ScriptContext.onOpHeld5(
  * the player uses on the other in-game.
  */
 public fun ScriptContext.onOpHeldU(
-    first: ObjType,
-    second: ObjType,
+    first: ItemServerType,
+    second: ItemServerType,
     action: suspend ProtectedAccess.(HeldUEvents.Type) -> Unit,
 ) {
     // Note: We preserve the order of `first` and `second` when registering to expose a predictable
@@ -128,7 +130,7 @@ public fun ScriptContext.onOpHeldU(
  */
 public fun ScriptContext.onOpHeldU(
     first: ContentGroupType,
-    second: ObjType,
+    second: ItemServerType,
     action: suspend ProtectedAccess.(HeldUContentEvents.Type) -> Unit,
 ): Unit = onProtectedEvent(EventBus.composeLongKey(first.id, second.id), action)
 
@@ -168,7 +170,7 @@ public fun ScriptContext.onOpHeldU(
  * the target obj will be [HeldUDefaultEvents.Type.second].
  */
 public fun ScriptContext.onOpHeldU(
-    first: ObjType,
+    first: ItemServerType,
     action: suspend ProtectedAccess.(HeldUDefaultEvents.Type) -> Unit,
 ): Unit = onProtectedEvent(first.id.toLong(), action)
 

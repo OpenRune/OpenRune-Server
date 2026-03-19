@@ -2,11 +2,11 @@
 
 package org.rsmod.api.config.refs
 
-import org.rsmod.api.type.refs.interf.InterfaceReferences
+import dev.openrune.inter
 
 typealias interfaces = BaseInterfaces
 
-object BaseInterfaces : InterfaceReferences() {
+object BaseInterfaces {
     val fade_overlay = inter("fade_overlay")
 
     val bank_main = inter("bankmain")

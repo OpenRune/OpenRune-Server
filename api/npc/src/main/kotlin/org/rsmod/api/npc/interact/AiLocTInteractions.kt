@@ -1,5 +1,9 @@
 package org.rsmod.api.npc.interact
 
+import dev.openrune.ServerCacheManager
+import dev.openrune.definition.type.widget.ComponentType
+import dev.openrune.types.ItemServerType
+import dev.openrune.types.ObjectServerType
 import jakarta.inject.Inject
 import org.rsmod.api.npc.events.interact.AiLocTContentEvents
 import org.rsmod.api.npc.events.interact.AiLocTDefaultEvents
@@ -11,19 +15,13 @@ import org.rsmod.game.entity.Npc
 import org.rsmod.game.interact.InteractionLocT
 import org.rsmod.game.loc.BoundLocInfo
 import org.rsmod.game.movement.RouteRequestLoc
-import org.rsmod.game.type.comp.ComponentType
-import org.rsmod.game.type.loc.LocTypeList
-import org.rsmod.game.type.loc.UnpackedLocType
-import org.rsmod.game.type.obj.ObjType
 
-public class AiLocTInteractions
-@Inject
-constructor(private val locTypes: LocTypeList, private val eventBus: EventBus) {
+public class AiLocTInteractions @Inject constructor(private val eventBus: EventBus) {
     public fun interact(
         npc: Npc,
         loc: BoundLocInfo,
-        type: UnpackedLocType,
-        objType: ObjType?,
+        type: ObjectServerType,
+        objType: ItemServerType?,
         component: ComponentType,
         comsub: Int,
     ) {
@@ -53,10 +51,10 @@ constructor(private val locTypes: LocTypeList, private val eventBus: EventBus) {
 
     public fun opTrigger(
         loc: BoundLocInfo,
-        objType: ObjType?,
+        objType: ItemServerType?,
         component: ComponentType,
         comsub: Int,
-        type: UnpackedLocType = locTypes[loc],
+        type: ObjectServerType = ServerCacheManager.getObject(loc.id)!!,
     ): OpEvent? {
         val typeEvent = AiLocTEvents.Op(loc, type, objType, comsub, component)
         if (eventBus.contains(typeEvent::class.java, typeEvent.id)) {
@@ -78,18 +76,18 @@ constructor(private val locTypes: LocTypeList, private val eventBus: EventBus) {
 
     public fun hasOpTrigger(
         loc: BoundLocInfo,
-        type: UnpackedLocType,
-        objType: ObjType?,
+        type: ObjectServerType,
+        objType: ItemServerType?,
         component: ComponentType,
         comsub: Int,
     ): Boolean = opTrigger(loc, objType, component, comsub, type) != null
 
     public fun apTrigger(
         loc: BoundLocInfo,
-        objType: ObjType?,
+        objType: ItemServerType?,
         component: ComponentType,
         comsub: Int,
-        type: UnpackedLocType = locTypes[loc],
+        type: ObjectServerType = ServerCacheManager.getObject(loc.id)!!,
     ): ApEvent? {
         val typeEvent = AiLocTEvents.Ap(loc, type, objType, comsub, component)
         if (eventBus.contains(typeEvent::class.java, typeEvent.id)) {
@@ -111,8 +109,8 @@ constructor(private val locTypes: LocTypeList, private val eventBus: EventBus) {
 
     public fun hasApTrigger(
         loc: BoundLocInfo,
-        type: UnpackedLocType,
-        objType: ObjType?,
+        type: ObjectServerType,
+        objType: ItemServerType?,
         component: ComponentType,
         comsub: Int,
     ): Boolean = apTrigger(loc, objType, component, comsub, type) != null

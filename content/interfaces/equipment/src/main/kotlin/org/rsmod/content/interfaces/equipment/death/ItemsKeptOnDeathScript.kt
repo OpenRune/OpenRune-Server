@@ -1,5 +1,6 @@
 package org.rsmod.content.interfaces.equipment.death
 
+import dev.openrune.definition.type.widget.IfEvent
 import jakarta.inject.Inject
 import java.util.Objects
 import kotlin.math.abs
@@ -22,9 +23,7 @@ import org.rsmod.content.interfaces.equipment.configs.equip_objs
 import org.rsmod.game.entity.Player
 import org.rsmod.game.inv.InvObj
 import org.rsmod.game.inv.Inventory
-import org.rsmod.game.type.interf.IfEvent
-import org.rsmod.game.type.inv.InvTypeList
-import org.rsmod.game.type.obj.ObjTypeList
+import org.rsmod.game.type.getInvObj
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
@@ -32,8 +31,6 @@ class ItemsKeptOnDeathScript
 @Inject
 constructor(
     private val protectedAccess: ProtectedAccessLauncher,
-    private val invTypes: InvTypeList,
-    private val objTypes: ObjTypeList,
     private val marketPrices: MarketPrices,
 ) : PluginScript() {
     override fun ScriptContext.startup() {
@@ -120,9 +117,9 @@ constructor(
     }
 
     private fun ProtectedAccess.createDeathInventory(settings: DeathSettings): DeathInventory {
-        val keptInventory = Inventory.create(invTypes[equip_invs.kept])
-        val lostInventory = Inventory.create(invTypes[equip_invs.death])
-        val dataInventory = Inventory.create(invTypes[equip_invs.death_data])
+        val keptInventory = Inventory.create(equip_invs.kept)
+        val lostInventory = Inventory.create(equip_invs.death)
+        val dataInventory = Inventory.create(equip_invs.death_data)
 
         check(keptInventory.size == 4) {
             "Size for `keptInventory` expected to be `4`. (size=${keptInventory.size})"
@@ -164,7 +161,7 @@ constructor(
         val overall = inv.filterNotNull() + worn.filterNotNull()
         return overall
             .asSequence()
-            .filterNot { objTypes[it].param(params.bond_item) }
+            .filterNot { getInvObj(it).param(params.bond_item) }
             .sortedByDescending(::marketPriceSingle)
     }
 
@@ -198,7 +195,7 @@ constructor(
         if (obj == null) {
             return InvObj(equip_objs.deleted)
         }
-        val type = objTypes[obj]
+        val type = getInvObj(obj)
         val price = marketPrices[type] ?: type.cost
         val fee = calculateFee(price)
         return InvObj(equip_objs.gravestone, fee + 1)
@@ -216,7 +213,7 @@ constructor(
         if (obj == null) {
             return 0
         }
-        val type = objTypes[obj]
+        val type = getInvObj(obj)
         val price = marketPrices[type] ?: 1
         return price.toLong()
     }

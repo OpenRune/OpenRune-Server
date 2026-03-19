@@ -15,11 +15,6 @@ import org.rsmod.api.random.GameRandom
 import org.rsmod.events.EventBus
 import org.rsmod.game.entity.NpcList
 import org.rsmod.game.entity.PlayerList
-import org.rsmod.game.type.inv.InvTypeList
-import org.rsmod.game.type.loc.LocTypeList
-import org.rsmod.game.type.npc.NpcTypeList
-import org.rsmod.game.type.obj.ObjTypeList
-import org.rsmod.game.type.seq.SeqTypeList
 import org.rsmod.routefinder.collision.CollisionFlagMap
 
 public class ProtectedAccessContextFactory
@@ -32,11 +27,6 @@ constructor(
     private val collision: CollisionFlagMap,
     private val areaChecker: AreaChecker,
     private val alignment: TextAlignment,
-    private val invTypes: InvTypeList,
-    private val locTypes: LocTypeList,
-    private val npcTypes: NpcTypeList,
-    private val objTypes: ObjTypeList,
-    private val seqTypes: SeqTypeList,
     private val locInteractions: LocInteractions,
     private val npcInteractions: NpcInteractions,
     private val playerInteractions: PlayerInteractions,
@@ -55,11 +45,6 @@ constructor(
             getCollision = { collision },
             getAreaChecker = { areaChecker },
             getAlignment = { alignment },
-            getInvTypes = { invTypes },
-            getLocTypes = { locTypes },
-            getNpcTypes = { npcTypes },
-            getObjTypes = { objTypes },
-            getSeqTypes = { seqTypes },
             getLocInteractions = { locInteractions },
             getNpcInteractions = { npcInteractions },
             getPlayerInteractions = { playerInteractions },
@@ -80,11 +65,6 @@ constructor(
                 getCollision = { error("No collision map provided.") },
                 getAreaChecker = { error("No area checker provided.") },
                 getAlignment = { error("No text alignment provided.") },
-                getInvTypes = { error("No inv type list provided.") },
-                getLocTypes = { error("No loc type list provided.") },
-                getNpcTypes = { error("No npc type list provided.") },
-                getObjTypes = { error("No obj type list provided.") },
-                getSeqTypes = { error("No seq type list provided.") },
                 getLocInteractions = { error("No loc interactions provided.") },
                 getNpcInteractions = { error("No npc interactions provided.") },
                 getPlayerInteractions = { error("No player interactions provided.") },

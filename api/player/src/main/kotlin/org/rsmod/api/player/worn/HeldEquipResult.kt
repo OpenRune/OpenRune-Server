@@ -1,6 +1,6 @@
 package org.rsmod.api.player.worn
 
-import org.rsmod.game.type.obj.Wearpos
+import dev.openrune.util.Wearpos
 
 public sealed class HeldEquipResult {
     public data class Success(

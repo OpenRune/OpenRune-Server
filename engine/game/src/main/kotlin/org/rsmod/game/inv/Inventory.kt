@@ -1,15 +1,14 @@
 package org.rsmod.game.inv
 
+import dev.openrune.types.InvStackType
+import dev.openrune.types.InventoryServerType
+import dev.openrune.types.ItemServerType
+import dev.openrune.types.util.UncheckedType
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet
 import java.util.BitSet
-import org.rsmod.game.type.inv.InvStackType
-import org.rsmod.game.type.inv.UnpackedInvType
-import org.rsmod.game.type.obj.ObjType
-import org.rsmod.game.type.obj.UnpackedObjType
-import org.rsmod.game.type.obj.isAssociatedWith
-import org.rsmod.game.type.util.UncheckedType
+import org.rsmod.game.type.isAssociatedWith
 
-public class Inventory(public val type: UnpackedInvType, public val objs: Array<InvObj?>) :
+public class Inventory(public val type: InventoryServerType, public val objs: Array<InvObj?>) :
     Iterable<InvObj?> {
     public val modifiedSlots: BitSet = BitSet()
 
@@ -82,9 +81,10 @@ public class Inventory(public val type: UnpackedInvType, public val objs: Array<
         modifiedSlots.set(slot)
     }
 
-    public operator fun contains(type: ObjType): Boolean = objs.any { type.isAssociatedWith(it) }
+    public operator fun contains(type: ItemServerType): Boolean =
+        objs.any { type.isAssociatedWith(it) }
 
-    public fun count(objType: UnpackedObjType): Int {
+    public fun count(objType: ItemServerType): Int {
         val obj = objs.firstOrNull { it?.id == objType.id } ?: return 0
         val singleStack = type.stack == InvStackType.Always || objType.isStackable
         if (singleStack) {
@@ -93,7 +93,7 @@ public class Inventory(public val type: UnpackedInvType, public val objs: Array<
         return individualCount(obj)
     }
 
-    public fun count(obj: InvObj, objType: UnpackedObjType): Int {
+    public fun count(obj: InvObj, objType: ItemServerType): Int {
         val singleStack = type.stack == InvStackType.Always || objType.isStackable
         if (singleStack) {
             return obj.count
@@ -118,11 +118,11 @@ public class Inventory(public val type: UnpackedInvType, public val objs: Array<
 
     public companion object {
         @OptIn(UncheckedType::class)
-        public fun create(type: UnpackedInvType): Inventory {
+        public fun create(type: InventoryServerType): Inventory {
             val objs = arrayOfNulls<InvObj>(type.size)
-            if (type.stock != null) {
+            if (type.stock.isNotEmpty()) {
                 for (i in type.stock.indices) {
-                    val copy = type.stock[i] ?: continue
+                    val copy = type.stock[i]
                     objs[i] = InvObj(copy.obj, copy.count)
                 }
             }

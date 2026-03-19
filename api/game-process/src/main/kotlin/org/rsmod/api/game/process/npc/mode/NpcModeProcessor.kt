@@ -1,8 +1,8 @@
 package org.rsmod.api.game.process.npc.mode
 
+import dev.openrune.types.NpcMode
 import jakarta.inject.Inject
 import org.rsmod.game.entity.Npc
-import org.rsmod.game.entity.npc.NpcMode
 import org.rsmod.game.interact.InteractionOp
 
 public class NpcModeProcessor

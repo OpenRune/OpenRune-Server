@@ -19,15 +19,10 @@ import org.rsmod.api.player.isValidTarget
 import org.rsmod.api.player.output.soundSynth
 import org.rsmod.game.entity.Player
 import org.rsmod.game.hit.HitType
-import org.rsmod.game.type.obj.ObjTypeList
 
 internal class NvPCombat
 @Inject
-constructor(
-    private val accuracy: AccuracyFormulae,
-    private val maxHits: MaxHitFormulae,
-    private val objTypes: ObjTypeList,
-) {
+constructor(private val accuracy: AccuracyFormulae, private val maxHits: MaxHitFormulae) {
     fun attack(access: StandardNpcAccess, target: Player, attack: CombatAttack.NpcMelee) {
         access.attackMelee(target, attack)
     }
@@ -76,7 +71,7 @@ constructor(
         target.queueCombatRetaliate(npc)
 
         target.queueHit(npc, 1, HitType.Melee, damage)
-        target.combatPlayDefendAnim(objTypes)
+        target.combatPlayDefendAnim()
     }
 
     private fun canAttack(target: Player): Boolean {

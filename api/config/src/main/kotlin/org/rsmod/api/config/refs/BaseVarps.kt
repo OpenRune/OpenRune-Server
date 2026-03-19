@@ -2,11 +2,11 @@
 
 package org.rsmod.api.config.refs
 
-import org.rsmod.api.type.refs.varp.VarpReferences
+import dev.openrune.varp
 
 typealias varps = BaseVarps
 
-object BaseVarps : VarpReferences() {
+object BaseVarps {
     /*
      * These "generic" temporary-state varps are used across multiple interfaces to track temporary
      * state. Unlike varps tied to a specific piece of content with child varbits, these are more

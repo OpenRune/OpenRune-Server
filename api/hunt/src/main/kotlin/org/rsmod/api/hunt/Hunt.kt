@@ -1,5 +1,6 @@
 package org.rsmod.api.hunt
 
+import dev.openrune.types.hunt.HuntVis
 import jakarta.inject.Inject
 import org.rsmod.api.registry.loc.LocRegistry
 import org.rsmod.api.registry.npc.NpcRegistry
@@ -10,7 +11,6 @@ import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.game.loc.LocInfo
 import org.rsmod.game.obj.Obj
-import org.rsmod.game.type.hunt.HuntVis
 import org.rsmod.map.CoordGrid
 import org.rsmod.map.zone.ZoneGrid
 import org.rsmod.map.zone.ZoneKey

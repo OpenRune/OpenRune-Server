@@ -1,5 +1,10 @@
 package org.rsmod.content.travel.canoe.scripts
 
+import dev.openrune.definition.type.VarBitType
+import dev.openrune.types.ItemServerType
+import dev.openrune.types.ObjectServerType
+import dev.openrune.types.SequenceServerType
+import dev.openrune.types.enums.EnumTypeMap
 import org.rsmod.api.config.objParam
 import org.rsmod.api.config.refs.content
 import org.rsmod.api.config.refs.params
@@ -15,15 +20,7 @@ import org.rsmod.content.travel.canoe.configs.canoe_varbits
 import org.rsmod.content.travel.canoe.configs.canoe_varps
 import org.rsmod.game.entity.Player
 import org.rsmod.game.inv.InvObj
-import org.rsmod.game.type.enums.EnumType
-import org.rsmod.game.type.enums.EnumTypeList
-import org.rsmod.game.type.enums.find
-import org.rsmod.game.type.loc.LocType
-import org.rsmod.game.type.obj.ObjType
-import org.rsmod.game.type.obj.ObjTypeList
-import org.rsmod.game.type.obj.UnpackedObjType
-import org.rsmod.game.type.seq.SeqType
-import org.rsmod.game.type.varbit.VarBitType
+import org.rsmod.game.type.getInvObj
 
 /* Canoe station helpers */
 var ProtectedAccess.stationCoords by typeCoordVarp(canoe_varps.station_coords)
@@ -96,7 +93,7 @@ private fun Canoe.toStationState(state: CanoeState): StationState =
 
 enum class Canoe(
     override val varValue: Int,
-    val loc: LocType,
+    val loc: ObjectServerType,
     val readyState: StationState,
     val pushingState: StationState,
     val floatingState: StationState,
@@ -142,23 +139,22 @@ internal data class AxeSuccessRate(val low: Int, val high: Int)
 
 internal fun axeSuccessRates(
     axe: InvObj,
-    ratesEnum: EnumType<ObjType, Int>,
-    enumTypes: EnumTypeList,
+    ratesEnum: EnumTypeMap<ItemServerType, Int>,
 ): AxeSuccessRate {
-    val axes = enumTypes[ratesEnum]
-    val rates = enumTypes[axes].find(axe)
+    val axes = ratesEnum
+    val rates = axes.find { it.key.id == axe.id }?.value ?: error("Unable to find axe success")
     val low = rates shr 16
     val high = rates and 0xFFFF
     return AxeSuccessRate(low, high)
 }
 
-internal val UnpackedObjType.axeWoodcuttingReq: Int by objParam(params.levelrequire)
+internal val ItemServerType.axeWoodcuttingReq: Int by objParam(params.levelrequire)
 
-internal fun findAxe(player: Player, objTypes: ObjTypeList): InvObj? {
-    val worn = player.wornAxe(objTypes)
-    val carried = player.carriedAxe(objTypes)
+internal fun findAxe(player: Player): InvObj? {
+    val worn = player.wornAxe()
+    val carried = player.carriedAxe()
     if (worn != null && carried != null) {
-        if (objTypes[worn].axeWoodcuttingReq >= objTypes[carried].axeWoodcuttingReq) {
+        if (getInvObj(worn).axeWoodcuttingReq >= getInvObj(carried).axeWoodcuttingReq) {
             return worn
         }
         return carried
@@ -166,17 +162,17 @@ internal fun findAxe(player: Player, objTypes: ObjTypeList): InvObj? {
     return worn ?: carried
 }
 
-private fun Player.wornAxe(objTypes: ObjTypeList): InvObj? {
+private fun Player.wornAxe(): InvObj? {
     val righthand = righthand ?: return null
-    return righthand.takeIf { objTypes[it].isUsableAxe(woodcuttingLvl) }
+    return righthand.takeIf { getInvObj(it).isUsableAxe(woodcuttingLvl) }
 }
 
-private fun Player.carriedAxe(objTypes: ObjTypeList): InvObj? {
-    return inv.filterNotNull { objTypes[it].isUsableAxe(woodcuttingLvl) }
-        .maxByOrNull { objTypes[it].axeWoodcuttingReq }
+private fun Player.carriedAxe(): InvObj? {
+    return inv.filterNotNull { getInvObj(it).isUsableAxe(woodcuttingLvl) }
+        .maxByOrNull { getInvObj(it).axeWoodcuttingReq }
 }
 
-private fun UnpackedObjType.isUsableAxe(woodcuttingLevel: Int): Boolean =
+private fun ItemServerType.isUsableAxe(woodcuttingLevel: Int): Boolean =
     isContentType(content.woodcutting_axe) && woodcuttingLevel >= axeWoodcuttingReq
 
-internal val UnpackedObjType.axeWoodcuttingAnim: SeqType by objParam(params.skill_anim)
+internal val ItemServerType.axeWoodcuttingAnim: SequenceServerType by objParam(params.skill_anim)

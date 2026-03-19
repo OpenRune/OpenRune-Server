@@ -1,6 +1,7 @@
 package org.rsmod.api.npc.interact
 
 import com.github.michaelbull.logging.InlineLogger
+import dev.openrune.types.ItemServerType
 import jakarta.inject.Inject
 import org.rsmod.api.npc.access.StandardNpcAccess
 import org.rsmod.api.npc.events.interact.AiPlayerUContentEvents
@@ -12,7 +13,6 @@ import org.rsmod.game.entity.Player
 import org.rsmod.game.inv.InvObj
 import org.rsmod.game.inv.Inventory
 import org.rsmod.game.inv.isType
-import org.rsmod.game.type.obj.UnpackedObjType
 
 public class AiPlayerUInteractions @Inject constructor(private val eventBus: EventBus) {
     private val logger = InlineLogger()
@@ -22,7 +22,7 @@ public class AiPlayerUInteractions @Inject constructor(private val eventBus: Eve
         target: Player,
         inv: Inventory,
         invSlot: Int,
-        objType: UnpackedObjType,
+        objType: ItemServerType,
     ) {
         val obj = inv[invSlot]
         if (objectVerify(obj, objType)) {
@@ -33,7 +33,7 @@ public class AiPlayerUInteractions @Inject constructor(private val eventBus: Eve
     private suspend fun StandardNpcAccess.opPlayerU(
         target: Player,
         invSlot: Int,
-        objType: UnpackedObjType,
+        objType: ItemServerType,
     ) {
         val script = opTrigger(target, invSlot, objType)
         if (script != null) {
@@ -49,7 +49,7 @@ public class AiPlayerUInteractions @Inject constructor(private val eventBus: Eve
     private fun StandardNpcAccess.opTrigger(
         target: Player,
         invSlot: Int,
-        objType: UnpackedObjType,
+        objType: ItemServerType,
     ): OpEvent? {
         val typeScript = AiPlayerUEvents.Op(target, invSlot, objType)
         if (eventBus.contains(typeScript::class.java, typeScript.id)) {
@@ -70,7 +70,7 @@ public class AiPlayerUInteractions @Inject constructor(private val eventBus: Eve
         target: Player,
         inv: Inventory,
         invSlot: Int,
-        objType: UnpackedObjType,
+        objType: ItemServerType,
     ) {
         val obj = inv[invSlot]
         if (objectVerify(obj, objType)) {
@@ -81,7 +81,7 @@ public class AiPlayerUInteractions @Inject constructor(private val eventBus: Eve
     private suspend fun StandardNpcAccess.apPlayerU(
         target: Player,
         invSlot: Int,
-        objType: UnpackedObjType,
+        objType: ItemServerType,
     ) {
         val script = apTrigger(target, invSlot, objType) ?: return
         eventBus.publish(this, script)
@@ -90,7 +90,7 @@ public class AiPlayerUInteractions @Inject constructor(private val eventBus: Eve
     private fun StandardNpcAccess.apTrigger(
         target: Player,
         invSlot: Int,
-        objType: UnpackedObjType,
+        objType: ItemServerType,
     ): ApEvent? {
         val typeScript = AiPlayerUEvents.Ap(target, invSlot, objType)
         if (eventBus.contains(typeScript::class.java, typeScript.id)) {
@@ -106,5 +106,5 @@ public class AiPlayerUInteractions @Inject constructor(private val eventBus: Eve
         return null
     }
 
-    private fun objectVerify(obj: InvObj?, type: UnpackedObjType): Boolean = obj.isType(type)
+    private fun objectVerify(obj: InvObj?, type: ItemServerType): Boolean = obj.isType(type)
 }

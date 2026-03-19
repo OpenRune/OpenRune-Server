@@ -1,14 +1,13 @@
 package org.rsmod.game.hit
 
+import dev.openrune.ServerCacheManager
+import dev.openrune.types.ItemServerType
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.NpcList
 import org.rsmod.game.entity.Player
 import org.rsmod.game.entity.PlayerList
 import org.rsmod.game.entity.npc.NpcUid
 import org.rsmod.game.entity.player.PlayerUid
-import org.rsmod.game.type.obj.ObjType
-import org.rsmod.game.type.obj.ObjTypeList
-import org.rsmod.game.type.obj.UnpackedObjType
 
 public data class Hit(
     public val type: HitType,
@@ -26,13 +25,15 @@ public data class Hit(
     public val isFromPlayer: Boolean
         get() = hitmark.isPlayerSource
 
-    public fun isRighthandObj(type: ObjType): Boolean = type.id == righthandObj
+    public fun isRighthandObj(type: ItemServerType): Boolean = type.id == righthandObj
 
-    public fun righthandType(objTypes: ObjTypeList): UnpackedObjType? = objTypes[righthandObj]
+    public fun righthandType(): ItemServerType? =
+        righthandObj?.let { ServerCacheManager.getItem(it) }
 
-    public fun isSecondaryObj(type: ObjType): Boolean = type.id == secondaryObj
+    public fun isSecondaryObj(type: ItemServerType): Boolean = type.id == secondaryObj
 
-    public fun secondaryType(objTypes: ObjTypeList): UnpackedObjType? = objTypes[secondaryObj]
+    public fun secondaryType(): ItemServerType? =
+        secondaryObj?.let { ServerCacheManager.getItem(it) }
 
     public fun resolveNpcSource(npcList: NpcList): Npc? {
         val uid = checkNotNull(sourceUid) { "Hit did not originate from a source: $this" }

@@ -1,8 +1,8 @@
 package org.rsmod.content.interfaces.gameframe
 
+import dev.openrune.definition.type.widget.ComponentType
 import org.rsmod.api.config.refs.components
 import org.rsmod.api.config.refs.interfaces
-import org.rsmod.game.type.comp.ComponentType
 
 internal object StandardOverlays {
     val open: List<GameframeOverlay> =

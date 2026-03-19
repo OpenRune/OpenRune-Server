@@ -6,6 +6,7 @@ import com.github.ajalt.clikt.parameters.options.default
 import com.github.ajalt.clikt.parameters.options.flag
 import com.github.ajalt.clikt.parameters.options.option
 import com.github.michaelbull.logging.InlineLogger
+import dev.openrune.DirectoryConstants
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
@@ -19,7 +20,6 @@ import kotlin.io.path.exists
 import org.bouncycastle.jce.provider.BouncyCastleProvider
 import org.bouncycastle.util.io.pem.PemObject
 import org.bouncycastle.util.io.pem.PemWriter
-import org.rsmod.server.shared.DirectoryConstants
 
 fun main(args: Array<String>): Unit = GameNetworkRsaGenerator().main(args)
 

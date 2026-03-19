@@ -6,3 +6,7 @@ plugins {
 kotlin {
     explicitApi()
 }
+
+dependencies {
+    implementation(libs.fastutil)
+}

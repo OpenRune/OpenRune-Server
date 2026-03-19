@@ -1,30 +1,26 @@
 package org.rsmod.api.combat.weapon.styles
 
+import dev.openrune.types.ItemServerType
+import dev.openrune.util.WeaponCategory
 import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap
-import jakarta.inject.Inject
 import org.rsmod.api.combat.commons.styles.AttackStyle
 import org.rsmod.api.combat.weapon.righthand
 import org.rsmod.api.combat.weapon.styles.configs.style_enums
 import org.rsmod.api.config.refs.varps
 import org.rsmod.game.entity.Player
-import org.rsmod.game.enums.EnumTypeMapResolver
-import org.rsmod.game.type.obj.ObjTypeList
-import org.rsmod.game.type.obj.UnpackedObjType
-import org.rsmod.game.type.obj.WeaponCategory
+import org.rsmod.game.type.getOrNull
 
-public class AttackStyles
-@Inject
-constructor(private val objTypes: ObjTypeList, private val enumResolver: EnumTypeMapResolver) {
+public class AttackStyles {
     private lateinit var weaponStyles: WeaponStyleMap
 
     public fun get(player: Player): AttackStyle? {
-        val type = objTypes.getOrNull(player.righthand)
+        val type = getOrNull(player.righthand)
         val stance = player.vars[varps.com_mode]
         return resolve(type = type, combatStance = stance)
     }
 
-    public fun resolve(type: UnpackedObjType?, combatStance: Int): AttackStyle? {
-        val weapon = WeaponCategory.getOrUnarmed(type?.weaponCategory)
+    public fun resolve(type: ItemServerType?, combatStance: Int): AttackStyle? {
+        val weapon = WeaponCategory.getOrUnarmed(type?.weaponCategory?.id)
         return resolve(weapon = weapon, combatStance = combatStance)
     }
 
@@ -40,7 +36,7 @@ constructor(private val objTypes: ObjTypeList, private val enumResolver: EnumTyp
     }
 
     private fun loadWeaponStylesMap(): WeaponStyleMap {
-        val stylesEnum = enumResolver[style_enums.weapon_attack_styles].filterValuesNotNull()
+        val stylesEnum = style_enums.weapon_attack_styles.filterValuesNotNull()
         return WeaponStyleMap(Int2IntOpenHashMap(stylesEnum.backing))
     }
 

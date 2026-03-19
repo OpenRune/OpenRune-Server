@@ -1,5 +1,6 @@
 package org.rsmod.api.registry.region
 
+import dev.openrune.ServerCacheManager
 import jakarta.inject.Inject
 import org.rsmod.api.registry.controller.ControllerRegistry
 import org.rsmod.api.registry.controller.isSuccess
@@ -21,7 +22,6 @@ import org.rsmod.game.region.RegionListSmall
 import org.rsmod.game.region.util.RegionRotations
 import org.rsmod.game.region.zone.RegionZoneCopy
 import org.rsmod.game.region.zone.RegionZoneCopyMap
-import org.rsmod.game.type.loc.LocTypeList
 import org.rsmod.map.CoordGrid
 import org.rsmod.map.zone.ZoneGrid
 import org.rsmod.map.zone.ZoneKey
@@ -36,7 +36,6 @@ constructor(
     private val largeRegions: RegionListLarge,
     private val normalLocReg: LocRegistryNormal,
     private val collision: CollisionFlagMap,
-    private val locTypes: LocTypeList,
     private val locZones: LocZoneStorage,
     private val npcRegistry: NpcRegistry,
     private val conRegistry: ControllerRegistry,
@@ -236,7 +235,7 @@ constructor(
         // the normal zone.
         val normalLocs = normalLocReg.findAll(normalZone)
         for (normalLoc in normalLocs) {
-            val locType = locTypes[normalLoc]
+            val locType = ServerCacheManager.getObject(normalLoc.id)!!
 
             val width = Rotations.rotate(normalLoc.angleId, locType.width, locType.length)
             val length = Rotations.rotate(normalLoc.angleId, locType.length, locType.width)
@@ -421,7 +420,7 @@ constructor(
         // we allow them to stay in a zone that will soon be "invalidated." While this should not
         // cause issues currently, it's worth noting in case future systems enforce stricter
         // validation for npcs in invalid zones.
-        if (npc.type.follower) {
+        if (npc.type.isFollower) {
             return
         }
         val delete = npcRegistry.del(npc)

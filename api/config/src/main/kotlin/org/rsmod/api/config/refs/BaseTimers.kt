@@ -2,11 +2,11 @@
 
 package org.rsmod.api.config.refs
 
-import org.rsmod.api.type.refs.timer.TimerReferences
+import dev.openrune.timer
 
 typealias timers = BaseTimers
 
-object BaseTimers : TimerReferences() {
+object BaseTimers {
     val toxins = timer("toxins")
     val stat_regen = timer("stat_regen")
     val stat_boost_restore = timer("stat_boost_restore")

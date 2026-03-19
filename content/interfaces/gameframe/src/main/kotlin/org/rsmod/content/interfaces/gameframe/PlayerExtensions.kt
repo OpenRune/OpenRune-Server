@@ -1,11 +1,11 @@
 package org.rsmod.content.interfaces.gameframe
 
+import dev.openrune.types.aconverted.interf.IfSubType
 import org.rsmod.api.player.ui.ifMoveSub
 import org.rsmod.api.player.ui.ifOpenSub
 import org.rsmod.api.player.ui.ifOpenTop
 import org.rsmod.events.EventBus
 import org.rsmod.game.entity.Player
-import org.rsmod.game.type.interf.IfSubType
 import org.rsmod.game.ui.Component
 import org.rsmod.game.ui.UserInterfaceMap
 

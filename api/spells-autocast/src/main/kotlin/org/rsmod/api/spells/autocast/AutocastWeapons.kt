@@ -1,5 +1,8 @@
 package org.rsmod.api.spells.autocast
 
+import dev.openrune.definition.type.VarBitType
+import dev.openrune.types.ItemServerType
+import dev.openrune.util.WeaponCategory
 import jakarta.inject.Inject
 import jakarta.inject.Singleton
 import org.rsmod.api.config.refs.varbits
@@ -7,11 +10,6 @@ import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.vars.VarPlayerIntMapSetter
 import org.rsmod.api.spells.autocast.configs.autocast_params
 import org.rsmod.game.entity.Player
-import org.rsmod.game.type.obj.ObjType
-import org.rsmod.game.type.obj.UnpackedObjType
-import org.rsmod.game.type.obj.WeaponCategory
-import org.rsmod.game.type.obj.isType
-import org.rsmod.game.type.varbit.VarBitType
 
 @Singleton
 public class AutocastWeapons @Inject constructor(private val spells: AutocastSpells) {
@@ -20,7 +18,7 @@ public class AutocastWeapons @Inject constructor(private val spells: AutocastSpe
      * with [autocastId]. Otherwise, sends the appropriate missing-requirement message to the player
      * and returns `false`.
      */
-    public fun canStaffAutocast(player: Player, weapon: UnpackedObjType, autocastId: Int): Boolean {
+    public fun canStaffAutocast(player: Player, weapon: ItemServerType, autocastId: Int): Boolean {
         val isValidStaff = canStaffAutocast(weapon, autocastId)
         if (!isValidStaff) {
             player.mes("You can't autocast that spell with this staff.")
@@ -29,7 +27,7 @@ public class AutocastWeapons @Inject constructor(private val spells: AutocastSpe
         return true
     }
 
-    public fun canStaffAutocast(weapon: UnpackedObjType, autocastId: Int): Boolean {
+    public fun canStaffAutocast(weapon: ItemServerType, autocastId: Int): Boolean {
         val spell = spells[autocastId]
 
         // This can occur if a player was auto-casting a spell that is now removed (or at least
@@ -50,7 +48,7 @@ public class AutocastWeapons @Inject constructor(private val spells: AutocastSpe
         return isValidAdditionalSpell
     }
 
-    private fun UnpackedObjType.additionalAutocastSpells(): Set<ObjType> {
+    private fun ItemServerType.additionalAutocastSpells(): Set<ItemServerType> {
         val additional1 = paramOrNull(autocast_params.additional_spell_autocast1)
         val additional2 = paramOrNull(autocast_params.additional_spell_autocast2)
         val additional3 = paramOrNull(autocast_params.additional_spell_autocast3)
@@ -67,8 +65,8 @@ public class AutocastWeapons @Inject constructor(private val spells: AutocastSpe
         set(player, varbits, autocastId = 0, defensiveCast = false)
     }
 
-    public fun reset(player: Player, weapon: UnpackedObjType) {
-        val category = WeaponCategory.getOrUnarmed(weapon.weaponCategory)
+    public fun reset(player: Player, weapon: ItemServerType) {
+        val category = WeaponCategory.getOrUnarmed(weapon.weaponCategory.id)
         val varbits = getVarBits(category) ?: return
         reset(player, varbits)
     }

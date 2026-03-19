@@ -1,6 +1,9 @@
 package org.rsmod.content.skills.magic.spell.attacks.standard
 
-import jakarta.inject.Inject
+import dev.openrune.types.ItemServerType
+import dev.openrune.types.SequenceServerType
+import dev.openrune.types.aconverted.SpotanimType
+import dev.openrune.types.aconverted.SynthType
 import org.rsmod.api.combat.commons.CombatAttack
 import org.rsmod.api.combat.manager.MagicRuneManager.Companion.isFailure
 import org.rsmod.api.config.refs.categories
@@ -18,13 +21,9 @@ import org.rsmod.api.spells.attack.SpellAttackRepository
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.PathingEntity
 import org.rsmod.game.entity.Player
-import org.rsmod.game.type.obj.ObjTypeList
-import org.rsmod.game.type.obj.UnpackedObjType
-import org.rsmod.game.type.seq.SeqType
-import org.rsmod.game.type.spot.SpotanimType
-import org.rsmod.game.type.synth.SynthType
+import org.rsmod.game.type.getOrNull
 
-class ElementalSpells @Inject constructor(private val objTypes: ObjTypeList) : SpellAttackMap {
+class ElementalSpells : SpellAttackMap {
     override fun SpellAttackRepository.register(manager: SpellAttackManager) {
         registerStrikes(manager)
         registerBolts(manager)
@@ -46,7 +45,6 @@ class ElementalSpells @Inject constructor(private val objTypes: ObjTypeList) : S
             spell = objs.spell_wind_strike,
             attack =
                 ElementalSpellAttack(
-                    objTypes = objTypes,
                     manager = manager,
                     staffAnim = seqs.human_caststrike_staff,
                     unarmedAnim = seqs.human_caststrike,
@@ -63,7 +61,6 @@ class ElementalSpells @Inject constructor(private val objTypes: ObjTypeList) : S
             spell = objs.spell_water_strike,
             attack =
                 ElementalSpellAttack(
-                    objTypes = objTypes,
                     manager = manager,
                     staffAnim = seqs.human_caststrike_staff,
                     unarmedAnim = seqs.human_caststrike,
@@ -80,7 +77,6 @@ class ElementalSpells @Inject constructor(private val objTypes: ObjTypeList) : S
             spell = objs.spell_earth_strike,
             attack =
                 ElementalSpellAttack(
-                    objTypes = objTypes,
                     manager = manager,
                     staffAnim = seqs.human_caststrike_staff,
                     unarmedAnim = seqs.human_caststrike,
@@ -97,7 +93,6 @@ class ElementalSpells @Inject constructor(private val objTypes: ObjTypeList) : S
             spell = objs.spell_fire_strike,
             attack =
                 ElementalSpellAttack(
-                    objTypes = objTypes,
                     manager = manager,
                     staffAnim = seqs.human_caststrike_staff,
                     unarmedAnim = seqs.human_caststrike,
@@ -124,7 +119,6 @@ class ElementalSpells @Inject constructor(private val objTypes: ObjTypeList) : S
             spell = objs.spell_wind_bolt,
             attack =
                 ElementalSpellAttack(
-                    objTypes = objTypes,
                     manager = manager,
                     staffAnim = seqs.human_caststrike_staff,
                     unarmedAnim = seqs.human_caststrike,
@@ -141,7 +135,6 @@ class ElementalSpells @Inject constructor(private val objTypes: ObjTypeList) : S
             spell = objs.spell_water_bolt,
             attack =
                 ElementalSpellAttack(
-                    objTypes = objTypes,
                     manager = manager,
                     staffAnim = seqs.human_caststrike_staff,
                     unarmedAnim = seqs.human_caststrike,
@@ -158,7 +151,6 @@ class ElementalSpells @Inject constructor(private val objTypes: ObjTypeList) : S
             spell = objs.spell_earth_bolt,
             attack =
                 ElementalSpellAttack(
-                    objTypes = objTypes,
                     manager = manager,
                     staffAnim = seqs.human_caststrike_staff,
                     unarmedAnim = seqs.human_caststrike,
@@ -175,7 +167,6 @@ class ElementalSpells @Inject constructor(private val objTypes: ObjTypeList) : S
             spell = objs.spell_fire_bolt,
             attack =
                 ElementalSpellAttack(
-                    objTypes = objTypes,
                     manager = manager,
                     staffAnim = seqs.human_caststrike_staff,
                     unarmedAnim = seqs.human_caststrike,
@@ -202,7 +193,6 @@ class ElementalSpells @Inject constructor(private val objTypes: ObjTypeList) : S
             spell = objs.spell_wind_blast,
             attack =
                 ElementalSpellAttack(
-                    objTypes = objTypes,
                     manager = manager,
                     staffAnim = seqs.human_caststrike_staff,
                     unarmedAnim = seqs.human_caststrike,
@@ -219,7 +209,6 @@ class ElementalSpells @Inject constructor(private val objTypes: ObjTypeList) : S
             spell = objs.spell_water_blast,
             attack =
                 ElementalSpellAttack(
-                    objTypes = objTypes,
                     manager = manager,
                     staffAnim = seqs.human_caststrike_staff,
                     unarmedAnim = seqs.human_caststrike,
@@ -236,7 +225,6 @@ class ElementalSpells @Inject constructor(private val objTypes: ObjTypeList) : S
             spell = objs.spell_earth_blast,
             attack =
                 ElementalSpellAttack(
-                    objTypes = objTypes,
                     manager = manager,
                     staffAnim = seqs.human_caststrike_staff,
                     unarmedAnim = seqs.human_caststrike,
@@ -253,7 +241,6 @@ class ElementalSpells @Inject constructor(private val objTypes: ObjTypeList) : S
             spell = objs.spell_fire_blast,
             attack =
                 ElementalSpellAttack(
-                    objTypes = objTypes,
                     manager = manager,
                     staffAnim = seqs.human_caststrike_staff,
                     unarmedAnim = seqs.human_caststrike,
@@ -280,7 +267,6 @@ class ElementalSpells @Inject constructor(private val objTypes: ObjTypeList) : S
             spell = objs.spell_wind_wave,
             attack =
                 ElementalSpellAttack(
-                    objTypes = objTypes,
                     manager = manager,
                     staffAnim = seqs.human_castwave_staff,
                     unarmedAnim = seqs.human_castwave,
@@ -297,7 +283,6 @@ class ElementalSpells @Inject constructor(private val objTypes: ObjTypeList) : S
             spell = objs.spell_water_wave,
             attack =
                 ElementalSpellAttack(
-                    objTypes = objTypes,
                     manager = manager,
                     staffAnim = seqs.human_castwave_staff,
                     unarmedAnim = seqs.human_castwave,
@@ -314,7 +299,6 @@ class ElementalSpells @Inject constructor(private val objTypes: ObjTypeList) : S
             spell = objs.spell_earth_wave,
             attack =
                 ElementalSpellAttack(
-                    objTypes = objTypes,
                     manager = manager,
                     staffAnim = seqs.human_castwave_staff,
                     unarmedAnim = seqs.human_castwave,
@@ -331,7 +315,6 @@ class ElementalSpells @Inject constructor(private val objTypes: ObjTypeList) : S
             spell = objs.spell_fire_wave,
             attack =
                 ElementalSpellAttack(
-                    objTypes = objTypes,
                     manager = manager,
                     staffAnim = seqs.human_castwave_staff,
                     unarmedAnim = seqs.human_castwave,
@@ -358,7 +341,6 @@ class ElementalSpells @Inject constructor(private val objTypes: ObjTypeList) : S
             spell = objs.spell_wind_surge,
             attack =
                 ElementalSpellAttack(
-                    objTypes = objTypes,
                     manager = manager,
                     staffAnim = seqs.human_cast_surge,
                     unarmedAnim = seqs.human_cast_surge,
@@ -375,7 +357,6 @@ class ElementalSpells @Inject constructor(private val objTypes: ObjTypeList) : S
             spell = objs.spell_water_surge,
             attack =
                 ElementalSpellAttack(
-                    objTypes = objTypes,
                     manager = manager,
                     staffAnim = seqs.human_cast_surge,
                     unarmedAnim = seqs.human_cast_surge,
@@ -392,7 +373,6 @@ class ElementalSpells @Inject constructor(private val objTypes: ObjTypeList) : S
             spell = objs.spell_earth_surge,
             attack =
                 ElementalSpellAttack(
-                    objTypes = objTypes,
                     manager = manager,
                     staffAnim = seqs.human_cast_surge,
                     unarmedAnim = seqs.human_cast_surge,
@@ -409,7 +389,6 @@ class ElementalSpells @Inject constructor(private val objTypes: ObjTypeList) : S
             spell = objs.spell_fire_surge,
             attack =
                 ElementalSpellAttack(
-                    objTypes = objTypes,
                     manager = manager,
                     staffAnim = seqs.human_cast_surge,
                     unarmedAnim = seqs.human_cast_surge,
@@ -425,9 +404,8 @@ class ElementalSpells @Inject constructor(private val objTypes: ObjTypeList) : S
 
     private class ElementalSpellAttack(
         private val manager: SpellAttackManager,
-        private val objTypes: ObjTypeList,
-        private val staffAnim: SeqType,
-        private val unarmedAnim: SeqType,
+        private val staffAnim: SequenceServerType,
+        private val unarmedAnim: SequenceServerType,
         private val launch: SpotanimType,
         private val travel: SpotanimType,
         private val impact: SpotanimType,
@@ -448,7 +426,7 @@ class ElementalSpells @Inject constructor(private val objTypes: ObjTypeList) : S
             if (castResult.isFailure()) {
                 return
             }
-            val weaponType = objTypes.getOrNull(attack.weapon)
+            val weaponType = getOrNull(attack.weapon)
             val castAnim = weaponType.castStrikeAnim()
 
             anim(castAnim)
@@ -483,7 +461,7 @@ class ElementalSpells @Inject constructor(private val objTypes: ObjTypeList) : S
             manager.continueCombatIfAutocast(this, target)
         }
 
-        private fun UnpackedObjType?.castStrikeAnim(): SeqType =
+        private fun ItemServerType?.castStrikeAnim(): SequenceServerType =
             if (this != null && isCategoryType(categories.staff)) {
                 staffAnim
             } else {

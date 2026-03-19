@@ -1,5 +1,12 @@
 package org.rsmod.api.server.config
 
-public data class ServerConfig(val realm: String, val world: Int, val firstLaunch: Boolean) {
-    override fun toString(): String = "ServerConfig(realm='$realm', world=$world)"
-}
+import com.fasterxml.jackson.annotation.JsonProperty
+
+public data class ServerConfig(
+    val name: String,
+    @JsonProperty("game-port") val gamePort: Int,
+    val revision: Int,
+    val environment: String,
+    val realm: String,
+    val world: Int
+)

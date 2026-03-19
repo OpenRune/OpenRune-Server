@@ -2,11 +2,11 @@
 
 package org.rsmod.api.config.refs
 
-import org.rsmod.api.type.refs.walktrig.WalkTriggerReferences
+import dev.openrune.walkTrigger
 
 typealias walktriggers = BaseWalkTriggers
 
-object BaseWalkTriggers : WalkTriggerReferences() {
+object BaseWalkTriggers {
     val frozen = walkTrigger("frozen")
     val pvp_frozen = walkTrigger("pvp_frozen")
     val stunned = walkTrigger("stunned")

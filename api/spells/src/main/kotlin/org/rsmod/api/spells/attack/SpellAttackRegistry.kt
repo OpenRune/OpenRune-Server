@@ -1,13 +1,13 @@
 package org.rsmod.api.spells.attack
 
-import org.rsmod.game.type.obj.ObjType
+import dev.openrune.types.ItemServerType
 
 public class SpellAttackRegistry {
     private val attacks = hashMapOf<Int, SpellAttack>()
 
-    public operator fun get(spell: ObjType): SpellAttack? = attacks[spell.id]
+    public operator fun get(spell: ItemServerType): SpellAttack? = attacks[spell.id]
 
-    public fun add(spell: ObjType, attack: SpellAttack): Result.Add {
+    public fun add(spell: ItemServerType, attack: SpellAttack): Result.Add {
         if (spell.id in attacks) {
             return Result.Add.AlreadyAdded
         }

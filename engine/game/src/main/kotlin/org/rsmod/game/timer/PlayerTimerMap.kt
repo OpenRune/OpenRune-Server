@@ -1,11 +1,11 @@
 package org.rsmod.game.timer
 
+import dev.openrune.types.aconverted.TimerType
 import it.unimi.dsi.fastutil.objects.ObjectIterator
 import it.unimi.dsi.fastutil.shorts.Short2LongLinkedOpenHashMap
 import it.unimi.dsi.fastutil.shorts.Short2LongMap
 import it.unimi.dsi.fastutil.shorts.ShortArraySet
 import org.rsmod.annotations.InternalApi
-import org.rsmod.game.type.timer.TimerType
 
 public class PlayerTimerMap(
     private val timers: Short2LongLinkedOpenHashMap = Short2LongLinkedOpenHashMap()

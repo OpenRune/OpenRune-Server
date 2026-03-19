@@ -1,5 +1,6 @@
 package org.rsmod.api.registry.loc
 
+import dev.openrune.ServerCacheManager
 import it.unimi.dsi.fastutil.bytes.Byte2IntOpenHashMap
 import it.unimi.dsi.fastutil.bytes.ByteOpenHashSet
 import jakarta.inject.Inject
@@ -20,7 +21,6 @@ import org.rsmod.game.map.collision.removeLoc
 import org.rsmod.game.region.Region
 import org.rsmod.game.region.util.RegionRotations
 import org.rsmod.game.region.zone.RegionZoneCopy
-import org.rsmod.game.type.loc.LocTypeList
 import org.rsmod.map.CoordGrid
 import org.rsmod.map.zone.ZoneGrid
 import org.rsmod.map.zone.ZoneKey
@@ -32,7 +32,6 @@ public class LocRegistryRegion
 constructor(
     private val updates: ZoneUpdateMap,
     private val collision: CollisionFlagMap,
-    private val locTypes: LocTypeList,
     private val locZones: LocZoneStorage,
     private val regions: RegionRegistry,
 ) {
@@ -206,8 +205,7 @@ constructor(
         val regionGrid = ZoneGrid.from(coords)
 
         val rotation = copiedZone.inverseRotation
-
-        val type = locTypes.getValue(loc)
+        val type = ServerCacheManager.getObject(loc)!!
         val width = type.width
         val length = type.length
 
@@ -321,7 +319,7 @@ constructor(
                 for (entry in staticLocs) {
                     val entity = LocEntity(entry.intValue)
 
-                    val locType = locTypes.getValue(entity.id)
+                    val locType = ServerCacheManager.getObject(entity.id)!!
                     val locWidth = Rotations.rotate(entity.angle, locType.width, locType.length)
                     val locLength = Rotations.rotate(entity.angle, locType.length, locType.width)
 
@@ -509,7 +507,7 @@ constructor(
         val normalBase = knownNormalZone.toCoords()
         val inverseRotation = copiedZone.inverseRotation
 
-        val locType = locTypes[loc]
+        val locType = ServerCacheManager.getObject(loc.id)!!
         val normalLocAngle = (loc.angleId - copiedZone.rotation) and ANGLE_BIT_MASK
         val normalLocWidth = Rotations.rotate(normalLocAngle, locType.width, locType.length)
         val normalLocLength = Rotations.rotate(normalLocAngle, locType.length, locType.width)
@@ -532,12 +530,12 @@ constructor(
     private data class NormalMapping(val normalZone: ZoneKey, val normalLocKey: LocZoneKey)
 
     private fun addLocCollision(loc: LocInfo) {
-        val type = locTypes[loc.id] ?: return
+        val type = ServerCacheManager.getObject(loc.id) ?: return
         collision.addLoc(loc, type)
     }
 
     private fun removeLocCollision(loc: LocInfo) {
-        val type = locTypes[loc.id] ?: return
+        val type = ServerCacheManager.getObject(loc.id) ?: return
         collision.removeLoc(loc, type)
     }
 

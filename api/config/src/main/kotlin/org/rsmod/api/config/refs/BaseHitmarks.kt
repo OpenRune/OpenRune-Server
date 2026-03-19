@@ -1,10 +1,10 @@
 package org.rsmod.api.config.refs
 
-import org.rsmod.api.type.refs.hitmark.HitmarkReferences
+import dev.openrune.hitmark
 
 typealias hitmarks = BaseHitmarks
 
-object BaseHitmarks : HitmarkReferences() {
+object BaseHitmarks {
     val corruption = hitmark("corruption")
     val ironman_blocked = hitmark("ironman_blocked")
     val disease = hitmark("disease")

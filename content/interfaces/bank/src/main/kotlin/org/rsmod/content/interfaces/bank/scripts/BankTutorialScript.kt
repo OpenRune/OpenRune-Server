@@ -1,5 +1,6 @@
 package org.rsmod.content.interfaces.bank.scripts
 
+import dev.openrune.definition.type.widget.IfEvent
 import jakarta.inject.Inject
 import org.rsmod.api.config.constants
 import org.rsmod.api.player.output.runClientScript
@@ -16,7 +17,6 @@ import org.rsmod.content.interfaces.bank.openBank
 import org.rsmod.content.interfaces.bank.openBankWithoutEvents
 import org.rsmod.events.EventBus
 import org.rsmod.game.entity.Player
-import org.rsmod.game.type.interf.IfEvent
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 

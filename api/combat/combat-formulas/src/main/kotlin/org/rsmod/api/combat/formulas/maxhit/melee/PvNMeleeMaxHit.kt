@@ -1,5 +1,6 @@
 package org.rsmod.api.combat.formulas.maxhit.melee
 
+import dev.openrune.types.NpcServerType
 import jakarta.inject.Inject
 import java.util.EnumSet
 import org.rsmod.api.combat.commons.styles.MeleeAttackStyle
@@ -19,7 +20,6 @@ import org.rsmod.api.player.vars.intVarp
 import org.rsmod.api.random.GameRandom
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
-import org.rsmod.game.type.npc.UnpackedNpcType
 
 public class PvNMeleeMaxHit
 @Inject
@@ -64,7 +64,7 @@ constructor(
 
     public fun computeMaxHit(
         source: Player,
-        target: UnpackedNpcType,
+        target: NpcServerType,
         targetCurrHp: Int,
         targetMaxHp: Int,
         attackType: MeleeAttackType?,

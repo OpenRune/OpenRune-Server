@@ -1,5 +1,6 @@
 package org.rsmod.content.interfaces.bank.scripts
 
+import dev.openrune.types.aconverted.interf.IfButtonOp
 import org.rsmod.api.config.refs.invs
 import org.rsmod.api.player.vars.boolVarBit
 import org.rsmod.api.player.vars.enumVarBit
@@ -12,7 +13,6 @@ import org.rsmod.content.interfaces.bank.configs.BankVarBits
 import org.rsmod.content.interfaces.bank.openBank
 import org.rsmod.game.entity.Player
 import org.rsmod.game.inv.Inventory
-import org.rsmod.game.type.interf.IfButtonOp
 
 typealias bank_components = BankComponents
 

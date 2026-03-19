@@ -1,12 +1,13 @@
 package org.rsmod.api.player.vars
 
+import dev.openrune.definition.type.VarBitType
+import dev.openrune.types.varp.VarpServerType
+import dev.openrune.types.varp.baseVar
 import org.rsmod.api.config.refs.varbits
 import org.rsmod.api.config.refs.varps
 import org.rsmod.api.player.output.VarpSync
 import org.rsmod.game.entity.Player
 import org.rsmod.game.movement.MoveSpeed
-import org.rsmod.game.type.varbit.VarBitType
-import org.rsmod.game.type.varp.VarpType
 
 internal var Player.enabledPrayers by intVarBit(varbits.enabled_prayers)
 internal var Player.usingQuickPrayers by boolVarBit(varbits.quickprayer_active)
@@ -23,7 +24,7 @@ public var Player.varMoveSpeed: MoveSpeed
         cachedMoveSpeed = varSpeed
     }
 
-public fun Player.resyncVar(varp: VarpType) {
+public fun Player.resyncVar(varp: VarpServerType) {
     if (varp.transmit.never) {
         return
     }

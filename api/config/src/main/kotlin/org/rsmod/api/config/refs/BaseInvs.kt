@@ -2,15 +2,15 @@
 
 package org.rsmod.api.config.refs
 
-import org.rsmod.api.type.refs.inv.InvReferences
+import dev.openrune.inv
 
 typealias invs = BaseInvs
 
-object BaseInvs : InvReferences() {
-    val tradeoffer = inv("tradeoffer")
-    val inv = inv("inv")
-    val worn = inv("worn")
-    val bank = inv("bank")
+object BaseInvs {
+    val tradeoffer = inv("inv.tradeoffer")
+    val inv = inv("inv.inv")
+    val worn = inv("inv.worn")
+    val bank = inv("inv.bank")
 
-    val generalshop1 = inv("generalshop1")
+    val generalshop1 = inv("inv.generalshop1")
 }

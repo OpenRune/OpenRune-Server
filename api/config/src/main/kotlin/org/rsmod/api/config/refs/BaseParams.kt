@@ -2,6 +2,8 @@
 
 package org.rsmod.api.config.refs
 
+import dev.openrune.ParamReferences.param
+import kotlin.collections.contains
 import org.rsmod.api.config.aliases.ParamBool
 import org.rsmod.api.config.aliases.ParamCategory
 import org.rsmod.api.config.aliases.ParamComponent
@@ -19,42 +21,41 @@ import org.rsmod.api.config.aliases.ParamStat
 import org.rsmod.api.config.aliases.ParamStr
 import org.rsmod.api.config.aliases.ParamSynth
 import org.rsmod.api.config.aliases.ParamVarBit
-import org.rsmod.api.type.refs.param.ParamReferences
 
 typealias params = BaseParams
 
-object BaseParams : ParamReferences() {
-    val spell_spellbook: ParamInt = param("spell_spellbook", 88673368977)
-    val spell_runetype_1: ParamObj = param("spell_runetype_1", 93740946812)
-    val spell_runecount_1: ParamInt = param("spell_runecount_1", 88687214848)
-    val spell_runetype_2: ParamObj = param("spell_runetype_2", 93740946814)
-    val spell_runecount_2: ParamInt = param("spell_runecount_2", 88687214850)
-    val spell_runetype_3: ParamObj = param("spell_runetype_3", 93740946816)
-    val spell_runecount_3: ParamInt = param("spell_runecount_3", 88687214852)
-    val spell_button: ParamComponent = param("spell_button", 61646287605)
-    val spell_name: ParamStr = param("spell_name", 18275894384405)
-    val spell_levelreq: ParamInt = param("spell_levelreq", 88687215086)
-    val spell_type: ParamInt = param("spell_type", 88673369246)
-    val spell_runetype_4: ParamObj = param("spell_runetype_4", 93740947053)
-    val spell_runecount_4: ParamInt = param("spell_runecount_4", 88687215089)
-    val spell_drain_stat: ParamStat = param("spell_drain_stat", 70092251206)
-    val spell_drain_stat_amount: ParamInt = param("spell_drain_stat_amount", 88687215670)
-    val spell_maxhit: ParamInt = param("spell_maxhit", 88701062258)
-    val attackrate: ParamInt = param("attackrate", 88742575534)
-    val wear_op_index: ParamInt = param("wear_op_index", 88714906312)
-    val wear_op1: ParamStr = param("wear_op1", 97133155617)
-    val wear_op2: ParamStr = param("wear_op2", 97133155618)
-    val wear_op3: ParamStr = param("wear_op3", 97133155619)
-    val wear_op4: ParamStr = param("wear_op4", 97133155620)
-    val wear_op5: ParamStr = param("wear_op5", 97133155621)
-    val wear_op6: ParamStr = param("wear_op6", 97133155622)
-    val wear_op7: ParamStr = param("wear_op7", 97133155623)
-    val wear_op8: ParamStr = param("wear_op8", 97133155624)
-    val bankside_extraop: ParamStr = param("bankside_extraop", 97133155761)
-    val statreq1_skill: ParamStat = param("statreq1_skill", 70092228127)
-    val statreq1_level: ParamInt = param("statreq1_level", 88687192592)
-    val statreq2_skill: ParamStat = param("statreq2_skill", 70092228128)
-    val statreq2_level: ParamInt = param("statreq2_level", 88687192593)
+object BaseParams {
+    val spell_spellbook: ParamInt = param("spell_spellbook")
+    val spell_runetype_1: ParamObj = param("spell_runetype_1")
+    val spell_runecount_1: ParamInt = param("spell_runecount_1")
+    val spell_runetype_2: ParamObj = param("spell_runetype_2")
+    val spell_runecount_2: ParamInt = param("spell_runecount_2")
+    val spell_runetype_3: ParamObj = param("spell_runetype_3")
+    val spell_runecount_3: ParamInt = param("spell_runecount_3")
+    val spell_button: ParamComponent = param("spell_button")
+    val spell_name: ParamStr = param("spell_name")
+    val spell_levelreq: ParamInt = param("spell_levelreq")
+    val spell_type: ParamInt = param("spell_type")
+    val spell_runetype_4: ParamObj = param("spell_runetype_4")
+    val spell_runecount_4: ParamInt = param("spell_runecount_4")
+    val spell_drain_stat: ParamStat = param("spell_drain_stat")
+    val spell_drain_stat_amount: ParamInt = param("spell_drain_stat_amount")
+    val spell_maxhit: ParamInt = param("spell_maxhit")
+    val attackrate: ParamInt = param("attackrate")
+    val wear_op_index: ParamInt = param("wear_op_index")
+    val wear_op1: ParamStr = param("wear_op1")
+    val wear_op2: ParamStr = param("wear_op2")
+    val wear_op3: ParamStr = param("wear_op3")
+    val wear_op4: ParamStr = param("wear_op4")
+    val wear_op5: ParamStr = param("wear_op5")
+    val wear_op6: ParamStr = param("wear_op6")
+    val wear_op7: ParamStr = param("wear_op7")
+    val wear_op8: ParamStr = param("wear_op8")
+    val bankside_extraop: ParamStr = param("bankside_extraop")
+    val statreq1_skill: ParamStat = param("statreq1_skill")
+    val statreq1_level: ParamInt = param("statreq1_level")
+    val statreq2_skill: ParamStat = param("statreq2_skill")
+    val statreq2_level: ParamInt = param("statreq2_level")
     /**
      * Unlike [statreq1_level] and [statreq2_level], this level requirement is not used when
      * equipping objs but applies to specific skill-related actions.
@@ -62,28 +63,28 @@ object BaseParams : ParamReferences() {
      * For example, arrows can be wielded without meeting a ranged level requirement, but they
      * cannot be used in combat unless the equipped bow meets this `levelrequire` threshold.
      */
-    val levelrequire: ParamInt = param("levelrequire", 88687192179)
-    val no_bank: ParamInt = param("no_bank", 88687214541)
-    val no_alchemy: ParamInt = param("no_alchemy", 88687192451)
-    val attack_stab: ParamInt = param("attack_stab", 88687192156)
-    val attack_slash: ParamInt = param("attack_slash", 88687192157)
-    val attack_crush: ParamInt = param("attack_crush", 88687192158)
-    val attack_magic: ParamInt = param("attack_magic", 88687192159)
-    val attack_ranged: ParamInt = param("attack_ranged", 88687192160)
-    val defence_stab: ParamInt = param("defence_stab", 88687192161)
-    val defence_slash: ParamInt = param("defence_slash", 88687192162)
-    val defence_crush: ParamInt = param("defence_crush", 88687192163)
-    val defence_magic: ParamInt = param("defence_magic", 88687192164)
-    val defence_ranged: ParamInt = param("defence_ranged", 88687192165)
-    val melee_strength: ParamInt = param("melee_strength", 88687192166)
-    val ranged_strength: ParamInt = param("ranged_strength", 88687192168)
-    val additive_ranged_strength: ParamInt = param("additive_ranged_strength", 88687192345)
-    val magic_damage: ParamInt = param("magic_damage", 88687192455)
-    val npc_magic_damage_bonus: ParamInt = param("npc_magic_damage_bonus", 88687192221)
-    val item_prayer_bonus: ParamInt = param("item_prayer_bonus", 88687192167)
-    val draconic: ParamInt = param("draconic", 88687192346)
-    val golem: ParamInt = param("golem", 88687193334)
-    val kalphite: ParamInt = param("kalphite", 88687193509)
+    val levelrequire: ParamInt = param("levelrequire")
+    val no_bank: ParamInt = param("no_bank")
+    val no_alchemy: ParamInt = param("no_alchemy")
+    val attack_stab: ParamInt = param("attack_stab")
+    val attack_slash: ParamInt = param("attack_slash")
+    val attack_crush: ParamInt = param("attack_crush")
+    val attack_magic: ParamInt = param("attack_magic")
+    val attack_ranged: ParamInt = param("attack_ranged")
+    val defence_stab: ParamInt = param("defence_stab")
+    val defence_slash: ParamInt = param("defence_slash")
+    val defence_crush: ParamInt = param("defence_crush")
+    val defence_magic: ParamInt = param("defence_magic")
+    val defence_ranged: ParamInt = param("defence_ranged")
+    val melee_strength: ParamInt = param("melee_strength")
+    val ranged_strength: ParamInt = param("ranged_strength")
+    val additive_ranged_strength: ParamInt = param("additive_ranged_strength")
+    val magic_damage: ParamInt = param("magic_damage")
+    val npc_magic_damage_bonus: ParamInt = param("npc_magic_damage_bonus")
+    val item_prayer_bonus: ParamInt = param("item_prayer_bonus")
+    val draconic: ParamInt = param("draconic")
+    val golem: ParamInt = param("golem")
+    val kalphite: ParamInt = param("kalphite")
 
     /* Server-side only types */
     /** Run restoration rate from values 0 to 10,000 (where 10,000 = +100%) */

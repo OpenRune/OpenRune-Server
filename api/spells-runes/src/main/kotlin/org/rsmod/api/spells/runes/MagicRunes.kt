@@ -1,5 +1,8 @@
 package org.rsmod.api.spells.runes
 
+import dev.openrune.definition.type.VarBitType
+import dev.openrune.types.ItemServerType
+import dev.openrune.util.Wearpos
 import kotlin.math.max
 import kotlin.math.min
 import org.rsmod.api.combat.commons.magic.MagicSpell
@@ -14,11 +17,6 @@ import org.rsmod.game.entity.Player
 import org.rsmod.game.inv.InvObj
 import org.rsmod.game.inv.Inventory
 import org.rsmod.game.inv.isType
-import org.rsmod.game.type.obj.ObjType
-import org.rsmod.game.type.obj.Wearpos
-import org.rsmod.game.type.obj.isAnyType
-import org.rsmod.game.type.obj.isType
-import org.rsmod.game.type.varbit.VarBitType
 
 public object MagicRunes {
     /*
@@ -193,7 +191,7 @@ public object MagicRunes {
 
     public fun validateWorn(
         worn: Inventory,
-        type: ObjType,
+        type: ItemServerType,
         wornSlot: Int,
         staffSubs: StaffSubstituteRepository,
     ): Validation {
@@ -210,7 +208,7 @@ public object MagicRunes {
         righthand: InvObj?,
         lefthand: InvObj?,
         pouch: RunePouch?,
-        rune: ObjType,
+        rune: ItemServerType,
         required: Int,
         useFakeRunes: Boolean,
         runeFountain: Boolean,
@@ -355,7 +353,7 @@ public object MagicRunes {
     // arises later, we can refactor without much effort.
     public fun validateRunePack(
         player: Player,
-        spell: ObjType,
+        spell: ItemServerType,
         useFakeRunes: Boolean,
         allowBlighted: Boolean,
     ): Validation.Valid? {
@@ -485,14 +483,15 @@ public object MagicRunes {
         }
 
         public sealed class Invalid : Validation() {
-            public data class NotEnoughRunes(val obj: ObjType) : Invalid()
+            public data class NotEnoughRunes(val obj: ItemServerType) : Invalid()
 
-            public data class NotWearing(val obj: ObjType) : Invalid()
+            public data class NotWearing(val obj: ItemServerType) : Invalid()
         }
     }
 
     public sealed class Source {
-        public data class InvSource(val obj: ObjType, val slot: Int, val count: Int) : Source()
+        public data class InvSource(val obj: ItemServerType, val slot: Int, val count: Int) :
+            Source()
 
         public data class VarBitSource(val varbit: VarBitType, val count: Int) : Source()
     }
@@ -501,11 +500,15 @@ public object MagicRunes {
         internal val size: Int
             get() = reqs.size
 
-        internal fun findWithRemaining(obj: ObjType): Requirement? {
+        internal fun findWithRemaining(obj: ItemServerType): Requirement? {
             return reqs.firstOrNull { it.type.isType(obj) && it.remaining > 0 }
         }
 
-        internal data class Requirement(val type: ObjType, var remaining: Int, val wornSlot: Int?) {
+        internal data class Requirement(
+            val type: ItemServerType,
+            var remaining: Int,
+            val wornSlot: Int?,
+        ) {
             val isWorn: Boolean
                 get() = wornSlot != null
         }

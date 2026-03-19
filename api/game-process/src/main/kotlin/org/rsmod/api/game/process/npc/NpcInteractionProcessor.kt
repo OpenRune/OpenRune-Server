@@ -32,7 +32,7 @@ import org.rsmod.game.interact.InteractionObj
 import org.rsmod.game.interact.InteractionPlayer
 import org.rsmod.game.interact.InteractionPlayerOp
 import org.rsmod.game.interact.InteractionPlayerT
-import org.rsmod.game.map.Direction
+import org.rsmod.game.map.Direction.Companion.CARDINAL
 import org.rsmod.game.map.translate
 import org.rsmod.interact.InteractionStep
 import org.rsmod.interact.InteractionTarget
@@ -198,7 +198,7 @@ constructor(
         }
 
     private fun Npc.stepAwayFromTarget() {
-        val direction = random.pick(Direction.CARDINAL)
+        val direction = random.pick(CARDINAL)
         val dest = coords.translate(direction)
         walk(dest)
     }

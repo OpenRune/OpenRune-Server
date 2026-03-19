@@ -1,11 +1,11 @@
 package org.rsmod.api.inv
 
+import dev.openrune.types.aconverted.interf.IfButtonOp
 import jakarta.inject.Inject
 import org.rsmod.api.config.refs.components
 import org.rsmod.api.player.interact.HeldInteractions
 import org.rsmod.api.player.output.UpdateInventory.resendSlot
 import org.rsmod.api.player.protect.ProtectedAccessLauncher
-import org.rsmod.api.player.protect.clearPendingAction
 import org.rsmod.api.player.ui.IfOverlayButton
 import org.rsmod.api.player.ui.IfOverlayDrag
 import org.rsmod.api.player.ui.ifClose
@@ -14,7 +14,6 @@ import org.rsmod.api.script.onIfOverlayDrag
 import org.rsmod.events.EventBus
 import org.rsmod.game.entity.Player
 import org.rsmod.game.interact.HeldOp
-import org.rsmod.game.type.interf.IfButtonOp
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 

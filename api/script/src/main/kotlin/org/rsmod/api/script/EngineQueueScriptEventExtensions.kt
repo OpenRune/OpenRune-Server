@@ -1,10 +1,10 @@
 package org.rsmod.api.script
 
+import dev.openrune.types.aconverted.AreaType
 import org.rsmod.api.player.events.EngineQueueEvents
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.events.EventBus
 import org.rsmod.game.queue.EngineQueueType
-import org.rsmod.game.type.area.AreaType
 import org.rsmod.plugin.scripts.ScriptContext
 
 private fun ScriptContext.onEngineQueue(

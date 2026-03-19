@@ -15,8 +15,7 @@ dependencies {
     implementation(projects.api.npc)
     implementation(projects.api.player)
     implementation(projects.api.script)
-    implementation(projects.api.type.typeBuilders)
-    implementation(projects.api.type.typeReferences)
+
     implementation(projects.api.utils.utilsVars)
     implementation(projects.engine.events)
     implementation(projects.engine.game)

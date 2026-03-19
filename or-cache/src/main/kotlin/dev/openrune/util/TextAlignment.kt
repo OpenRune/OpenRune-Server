@@ -7,7 +7,6 @@ import kotlin.math.ceil
 
 object TextAlignment {
 
-
     public fun generateChatPageList(text: String): List<Page> {
         return generatePageList(text, CHAT_MAX_LINE_PIXEL_WIDTH, "fonts.q8_full")
     }
@@ -16,11 +15,7 @@ object TextAlignment {
         return generatePageList(text, MESBOX_MAX_LINE_PIXEL_WIDTH, "fonts.q8_full")
     }
 
-    public fun generatePageList(
-        text: String,
-        lineWidth: Int,
-        fontName: String,
-    ): List<Page> {
+    public fun generatePageList(text: String, lineWidth: Int, fontName: String): List<Page> {
 
         val font = ServerCacheManager.getFont(fontName.asRSCM())!!
 

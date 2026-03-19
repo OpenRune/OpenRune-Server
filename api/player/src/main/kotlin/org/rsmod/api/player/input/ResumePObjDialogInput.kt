@@ -1,5 +1,5 @@
 package org.rsmod.api.player.input
 
-import org.rsmod.game.type.obj.UnpackedObjType
+import dev.openrune.types.ItemServerType
 
-public data class ResumePObjDialogInput(public val obj: UnpackedObjType)
+public data class ResumePObjDialogInput(public val obj: ItemServerType)

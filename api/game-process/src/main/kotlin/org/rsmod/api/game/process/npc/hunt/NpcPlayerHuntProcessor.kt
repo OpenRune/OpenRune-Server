@@ -1,5 +1,9 @@
 package org.rsmod.api.game.process.npc.hunt
 
+import dev.openrune.ServerCacheManager
+import dev.openrune.types.HuntModeType
+import dev.openrune.types.hunt.HuntCheckNotTooStrong
+import dev.openrune.types.hunt.HuntType
 import jakarta.inject.Inject
 import org.rsmod.api.config.constants
 import org.rsmod.api.config.refs.varbits
@@ -11,13 +15,7 @@ import org.rsmod.game.MapClock
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.game.entity.player.PlayerUid
-import org.rsmod.game.type.hunt.HuntCheckNotTooStrong
-import org.rsmod.game.type.hunt.HuntModeTypeList
-import org.rsmod.game.type.hunt.HuntType
-import org.rsmod.game.type.hunt.UnpackedHuntModeType
-import org.rsmod.game.type.obj.ObjTypeList
-import org.rsmod.game.type.varn.VarnTypeList
-import org.rsmod.game.type.varp.VarpTypeList
+import org.rsmod.game.type.getOrNull
 
 public class NpcPlayerHuntProcessor
 @Inject
@@ -25,10 +23,6 @@ constructor(
     @CoreRandom private val random: GameRandom,
     private val mapClock: MapClock,
     private val hunt: Hunt,
-    private val huntModes: HuntModeTypeList,
-    private val varpTypes: VarpTypeList,
-    private val varnTypes: VarnTypeList,
-    private val objTypes: ObjTypeList,
 ) {
     public fun process(npc: Npc) {
         if (!npc.isValidTarget() || npc.isDelayed) {
@@ -46,7 +40,7 @@ constructor(
             return
         }
 
-        val huntType = huntModes.getValue(huntMode)
+        val huntType = ServerCacheManager.getHunt(huntMode) ?: return
         val huntDelayed = npc.huntClock < huntType.rate - 1
         if (huntDelayed) {
             return
@@ -57,7 +51,7 @@ constructor(
         }
     }
 
-    private fun Npc.huntPlayer(mode: UnpackedHuntModeType) {
+    private fun Npc.huntPlayer(mode: HuntModeType) {
         var target = PlayerUid.NULL
         var count = 0
 
@@ -76,14 +70,16 @@ constructor(
             }
 
             if (mode.checkNotTooStrong == HuntCheckNotTooStrong.OutsideWilderness) {
-                if (player.combatLevel > type.vislevel * 2 && !player.isInWilderness()) {
+                if (player.combatLevel > type.combatLevel * 2 && !player.isInWilderness()) {
                     continue
                 }
             }
 
             if (!player.isInMulti()) {
                 if (mode.checkNotCombat != -1) {
-                    val varp = varpTypes.getValue(mode.checkNotCombat)
+                    val varp =
+                        ServerCacheManager.getVarp(mode.checkNotCombat)
+                            ?: error("Error finding varp")
                     val delay = player.vars[varp] + constants.combat_activecombat_delay
                     if (delay > mapClock.cycle) {
                         continue
@@ -91,7 +87,9 @@ constructor(
                 }
 
                 if (mode.checkNotCombatSelf != -1) {
-                    val varn = varnTypes.getValue(mode.checkNotCombatSelf)
+                    val varn =
+                        ServerCacheManager.getVarn(mode.checkNotCombatSelf)
+                            ?: error("Unable to find varn: ${mode.checkNotCombatSelf}")
                     val delay = vars[varn] + constants.combat_activecombat_delay
                     if (delay > mapClock.cycle) {
                         continue
@@ -101,7 +99,8 @@ constructor(
 
             val checkVar1 = mode.checkVar1
             if (checkVar1 != null) {
-                val varp = varpTypes.getValue(checkVar1.varp)
+                val varp =
+                    ServerCacheManager.getVarp(checkVar1.varp) ?: error("Error finding varp 1")
                 val actual = player.vars[varp]
                 if (!checkVar1.evaluate(actual)) {
                     continue
@@ -110,7 +109,8 @@ constructor(
 
             val checkVar2 = mode.checkVar2
             if (checkVar2 != null) {
-                val varp = varpTypes.getValue(checkVar2.varp)
+                val varp =
+                    ServerCacheManager.getVarp(checkVar2.varp) ?: error("Error finding varp 2")
                 val actual = player.vars[varp]
                 if (!checkVar2.evaluate(actual)) {
                     continue
@@ -119,7 +119,8 @@ constructor(
 
             val checkVar3 = mode.checkVar3
             if (checkVar3 != null) {
-                val varp = varpTypes.getValue(checkVar3.varp)
+                val varp =
+                    ServerCacheManager.getVarp(checkVar3.varp) ?: error("Error finding varp 3")
                 val actual = player.vars[varp]
                 if (!checkVar3.evaluate(actual)) {
                     continue
@@ -146,7 +147,7 @@ constructor(
                 var count = 0
                 if (inventory != null) {
                     for (invObj in inventory) {
-                        val objType = objTypes.getOrNull(invObj) ?: continue
+                        val objType = getOrNull(invObj) ?: continue
                         val value = objType.paramMap?.primitiveMap?.get(param) ?: continue
                         if (value !is Int) {
                             val message = "Expected param value to be Int: $value (param=$param)"

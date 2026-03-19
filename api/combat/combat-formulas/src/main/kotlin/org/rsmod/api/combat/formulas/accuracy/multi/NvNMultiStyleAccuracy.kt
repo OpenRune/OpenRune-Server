@@ -1,12 +1,12 @@
 package org.rsmod.api.combat.formulas.accuracy.multi
 
+import dev.openrune.types.NpcServerType
 import jakarta.inject.Inject
 import org.rsmod.api.combat.formulas.accuracy.AccuracyOperations
 import org.rsmod.api.combat.formulas.accuracy.magic.NvNMagicAccuracy
 import org.rsmod.api.combat.formulas.accuracy.melee.NvNMeleeAccuracy
 import org.rsmod.api.combat.formulas.accuracy.ranged.NvNRangedAccuracy
 import org.rsmod.game.entity.Npc
-import org.rsmod.game.type.npc.UnpackedNpcType
 
 public class NvNMultiStyleAccuracy
 @Inject
@@ -26,9 +26,9 @@ constructor(
 
     private fun computeMagicalMeleeHitChance(
         source: Npc,
-        sourceType: UnpackedNpcType,
+        sourceType: NpcServerType,
         target: Npc,
-        targetType: UnpackedNpcType,
+        targetType: NpcServerType,
     ): Int {
         val attackRoll = melee.computeAttackRoll(source, sourceType)
         val defenceRoll = magic.computeDefenceRoll(targetType, target.defenceLvl, target.magicLvl)
@@ -46,8 +46,8 @@ constructor(
 
     private fun computeRangedMeleeHitChance(
         source: Npc,
-        sourceType: UnpackedNpcType,
-        target: UnpackedNpcType,
+        sourceType: NpcServerType,
+        target: NpcServerType,
         targetDefence: Int,
     ): Int {
         val attackRoll = melee.computeAttackRoll(source, sourceType)
@@ -66,8 +66,8 @@ constructor(
 
     private fun computeRangedMagicHitChance(
         source: Npc,
-        sourceType: UnpackedNpcType,
-        target: UnpackedNpcType,
+        sourceType: NpcServerType,
+        target: NpcServerType,
         targetDefence: Int,
     ): Int {
         val attackRoll = magic.computeAttackRoll(source, sourceType)
@@ -86,9 +86,9 @@ constructor(
 
     private fun computeMagicalRangedHitChance(
         source: Npc,
-        sourceType: UnpackedNpcType,
+        sourceType: NpcServerType,
         target: Npc,
-        targetType: UnpackedNpcType,
+        targetType: NpcServerType,
     ): Int {
         val attackRoll = ranged.computeAttackRoll(source, sourceType)
         val defenceRoll = magic.computeDefenceRoll(targetType, target.defenceLvl, target.magicLvl)

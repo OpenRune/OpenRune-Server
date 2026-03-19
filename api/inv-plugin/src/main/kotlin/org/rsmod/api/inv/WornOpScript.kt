@@ -1,5 +1,8 @@
 package org.rsmod.api.inv
 
+import dev.openrune.definition.type.widget.ComponentType
+import dev.openrune.types.aconverted.interf.IfButtonOp
+import dev.openrune.util.Wearpos
 import jakarta.inject.Inject
 import org.rsmod.api.config.refs.enums
 import org.rsmod.api.player.interact.WornInteractions
@@ -10,10 +13,6 @@ import org.rsmod.api.player.ui.ifClose
 import org.rsmod.api.script.onIfOverlayButton
 import org.rsmod.events.EventBus
 import org.rsmod.game.entity.Player
-import org.rsmod.game.enums.EnumTypeMapResolver
-import org.rsmod.game.type.comp.ComponentType
-import org.rsmod.game.type.interf.IfButtonOp
-import org.rsmod.game.type.obj.Wearpos
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
@@ -21,7 +20,6 @@ public class WornOpScript
 @Inject
 constructor(
     private val eventBus: EventBus,
-    private val enumResolver: EnumTypeMapResolver,
     private val interactions: WornInteractions,
     private val protectedAccess: ProtectedAccessLauncher,
 ) : PluginScript() {
@@ -50,7 +48,7 @@ constructor(
     }
 
     private fun mappedComponents(): Map<Wearpos, ComponentType> {
-        val resolver = enumResolver[enums.equipment_tab_to_slots_map]
+        val resolver = enums.equipment_tab_to_slots_map
         check(resolver.isNotEmpty) { "Equipment component enum must not be empty: $resolver" }
 
         val invalidWearpos = resolver.keys.filter { Wearpos[it] == null }

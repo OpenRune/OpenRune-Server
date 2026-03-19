@@ -4,19 +4,17 @@ import jakarta.inject.Inject
 import org.rsmod.api.registry.zone.ZoneUpdateMap
 import org.rsmod.game.entity.Player
 import org.rsmod.game.obj.Obj
-import org.rsmod.game.type.obj.ObjTypeList
+import org.rsmod.game.type.getObj
 import org.rsmod.map.CoordGrid
 import org.rsmod.map.zone.ZoneKey
 
-public class ObjRegistry
-@Inject
-constructor(private val updates: ZoneUpdateMap, private val objTypes: ObjTypeList) {
+public class ObjRegistry @Inject constructor(private val updates: ZoneUpdateMap) {
     public val objs: ZoneObjMap = ZoneObjMap()
 
     public fun count(): Int = objs.objCount()
 
     public fun add(obj: Obj): ObjRegistryResult.Add {
-        val type = objTypes[obj]
+        val type = getObj(obj)
 
         if (type.isDummyItem) {
             return ObjRegistryResult.Add.InvalidDummyitem
@@ -121,7 +119,7 @@ constructor(private val updates: ZoneUpdateMap, private val objTypes: ObjTypeLis
          *
          * _This limit only applies to non-stackable objs determined by the respective obj type._
          *
-         * @see [org.rsmod.game.type.obj.UnpackedObjType.isStackable]
+         * @see [dev.openrune.types.obj.ItemServerType.isStackable]
          */
         public const val MAX_NON_STACK_COUNT_DROP: Int = 128
     }

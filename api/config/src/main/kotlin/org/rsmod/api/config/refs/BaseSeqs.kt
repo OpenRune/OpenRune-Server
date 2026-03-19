@@ -2,11 +2,11 @@
 
 package org.rsmod.api.config.refs
 
-import org.rsmod.api.type.refs.seq.SeqReferences
+import dev.openrune.seq
 
 typealias seqs = BaseSeqs
 
-object BaseSeqs : SeqReferences() {
+object BaseSeqs {
     val human_unarmedpunch = seq("human_unarmedpunch")
     val human_unarmedkick = seq("human_unarmedkick")
     val human_unarmedblock = seq("human_unarmedblock")

@@ -1,0 +1,17 @@
+[[varn]]
+id = "varn.lastcombat"
+
+[[varn]]
+id = "varn.aggressive_player"
+
+[[varn]]
+id = "varn.generic_state_2"
+
+[[varn]]
+id = "varn.attacking_player"
+
+[[varn]]
+id = "varn.lastattack"
+
+[[varn]]
+id = "varn.flat_armour"

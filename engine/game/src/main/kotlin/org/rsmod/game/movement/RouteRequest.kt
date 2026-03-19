@@ -1,8 +1,8 @@
 package org.rsmod.game.movement
 
+import dev.openrune.types.ObjectServerType
 import org.rsmod.game.entity.PathingEntityAvatar
 import org.rsmod.game.loc.LocInfo
-import org.rsmod.game.type.loc.UnpackedLocType
 import org.rsmod.map.CoordGrid
 
 public sealed class RouteRequest(public val clientRequest: Boolean)
@@ -40,7 +40,7 @@ public class RouteRequestLoc(
 
     public constructor(
         loc: LocInfo,
-        type: UnpackedLocType,
+        type: ObjectServerType,
     ) : this(
         loc = loc,
         width = type.width,

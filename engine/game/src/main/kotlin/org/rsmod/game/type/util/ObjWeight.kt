@@ -1,4 +1,4 @@
-package org.rsmod.game.type.util
+package dev.openrune.types.util
 
 @JvmInline
 public value class ObjWeight(public val grams: Int) {

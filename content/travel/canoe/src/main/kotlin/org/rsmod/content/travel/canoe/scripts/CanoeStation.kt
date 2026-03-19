@@ -15,20 +15,15 @@ import org.rsmod.content.travel.canoe.configs.canoe_seqs
 import org.rsmod.game.loc.BoundLocInfo
 import org.rsmod.game.map.Direction
 import org.rsmod.game.map.translate
-import org.rsmod.game.type.enums.EnumTypeList
-import org.rsmod.game.type.obj.ObjTypeList
+import org.rsmod.game.type.getInvObj
 import org.rsmod.map.CoordGrid
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
 class CanoeStation
 @Inject
-constructor(
-    private val objTypes: ObjTypeList,
-    private val enumTypes: EnumTypeList,
-    private val invisibleLvls: InvisibleLevels,
-    private val worldRepo: WorldRepository,
-) : PluginScript() {
+constructor(private val invisibleLvls: InvisibleLevels, private val worldRepo: WorldRepository) :
+    PluginScript() {
     override fun ScriptContext.startup() {
         onOpLoc1(canoe_locs.station_lumbridge) { pathTo(it.loc, Path.Lumbridge) }
         onOpLoc3(canoe_locs.station_lumbridge) { cut(it.loc, Path.Lumbridge) }
@@ -80,7 +75,7 @@ constructor(
             return
         }
 
-        val axe = findAxe(player, objTypes)
+        val axe = findAxe(player)
         if (axe == null) {
             mes(
                 "You need an axe to chop down this tree.<br>" +
@@ -101,7 +96,7 @@ constructor(
     }
 
     private suspend fun ProtectedAccess.cut(loc: BoundLocInfo, path: Path) {
-        val axe = findAxe(player, objTypes)
+        val axe = findAxe(player)
         if (axe == null) {
             mes(
                 "You need an axe to chop down this tree.<br>" +
@@ -118,7 +113,7 @@ constructor(
         if (skillAnimDelay < mapClock) {
             skillAnimDelay = mapClock + 3
         } else if (skillAnimDelay == mapClock) {
-            anim(objTypes[axe].axeWoodcuttingAnim)
+            anim(getInvObj(axe).axeWoodcuttingAnim)
         }
 
         if (refaceDelay < mapClock) {
@@ -133,7 +128,7 @@ constructor(
             actionDelay = mapClock + 3
             faceSquare(path.face)
         } else if (actionDelay == mapClock) {
-            val (low, high) = axeSuccessRates(axe, canoe_enums.station_axe_rates, enumTypes)
+            val (low, high) = axeSuccessRates(axe, canoe_enums.station_axe_rates)
             cutCanoe = statRandom(stats.woodcutting, low, high, invisibleLvls)
         }
 

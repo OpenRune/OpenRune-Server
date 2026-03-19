@@ -2,11 +2,11 @@
 
 package org.rsmod.api.config.refs
 
-import org.rsmod.api.type.refs.npc.NpcReferences
+import dev.openrune.npc
 
 typealias npcs = BaseNpcs
 
-object BaseNpcs : NpcReferences() {
+object BaseNpcs {
     val man = npc("man")
     val man2 = npc("man2")
     val man3 = npc("man3")

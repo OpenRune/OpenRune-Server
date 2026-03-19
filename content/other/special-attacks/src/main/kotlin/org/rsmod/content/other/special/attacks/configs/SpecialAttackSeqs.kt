@@ -1,10 +1,10 @@
 package org.rsmod.content.other.special.attacks.configs
 
-import org.rsmod.api.type.refs.seq.SeqReferences
+import dev.openrune.seq
 
 typealias special_seqs = SpecialAttackSeqs
 
-object SpecialAttackSeqs : SeqReferences() {
+object SpecialAttackSeqs {
     val lumber_up = seq("dragon_smallaxe_anim")
 
     val fishstabber_dragon_harpoon = seq("fishstabber")

@@ -1,5 +1,7 @@
 package org.rsmod.content.travel.canoe.scripts
 
+import dev.openrune.ServerCacheManager
+import dev.openrune.definition.type.widget.IfEvent
 import jakarta.inject.Inject
 import org.rsmod.api.config.refs.params
 import org.rsmod.api.config.refs.stats
@@ -17,11 +19,6 @@ import org.rsmod.content.travel.canoe.configs.canoe_interfaces
 import org.rsmod.content.travel.canoe.configs.canoe_locs
 import org.rsmod.game.loc.BoundLocInfo
 import org.rsmod.game.loc.LocShape
-import org.rsmod.game.type.enums.EnumTypeList
-import org.rsmod.game.type.enums.find
-import org.rsmod.game.type.interf.IfEvent
-import org.rsmod.game.type.loc.LocTypeList
-import org.rsmod.game.type.obj.ObjTypeList
 import org.rsmod.map.CoordGrid
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
@@ -29,9 +26,6 @@ import org.rsmod.plugin.scripts.ScriptContext
 class CanoeShaping
 @Inject
 constructor(
-    private val objTypes: ObjTypeList,
-    private val enumTypes: EnumTypeList,
-    private val locTypes: LocTypeList,
     private val locRepo: LocRepository,
     private val invisibleLvls: InvisibleLevels,
     private val xpMods: XpModifiers,
@@ -98,7 +92,7 @@ constructor(
         val station = locRepo.findExact(stationCoords, LocShape.CentrepieceStraight)
         checkNotNull(station) { "Expected canoe station loc: coords=$stationCoords" }
 
-        val loc = BoundLocInfo(station, locTypes[station])
+        val loc = BoundLocInfo(station, ServerCacheManager.getObject(station.id)!!)
         canoeType = canoe
         confirmedCanoeType = true
         opLoc1(loc)
@@ -116,7 +110,7 @@ constructor(
     }
 
     private fun ProtectedAccess.cutShape(loc: BoundLocInfo, canoe: Canoe) {
-        val axe = findAxe(player, objTypes)
+        val axe = findAxe(player)
         if (axe == null) {
             mes(
                 "You need an axe to shape a canoe.<br>" +
@@ -128,8 +122,9 @@ constructor(
         }
 
         if (skillAnimDelay == mapClock && actionDelay >= mapClock) {
-            val axeEnum = enumTypes[canoe_enums.shaping_axe_anims]
-            val axeSeq = axeEnum.find(axe)
+            val axeEnum = canoe_enums.shaping_axe_anims
+            val axeSeq =
+                axeEnum.find { it.key.id == axe.id }?.value ?: error("Unable to find axe seq")
             anim(axeSeq)
         }
 
@@ -147,7 +142,7 @@ constructor(
             actionDelay = mapClock + 5
             faceSquare(loc.adjustedCentre)
         } else if (actionDelay == mapClock) {
-            val (low, high) = axeSuccessRates(axe, canoe_enums.shaping_axe_rates, enumTypes)
+            val (low, high) = axeSuccessRates(axe, canoe_enums.shaping_axe_rates)
             finishShape = statRandom(stats.woodcutting, low, high, invisibleLvls)
         }
 

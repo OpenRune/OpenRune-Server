@@ -1,5 +1,6 @@
 package org.rsmod.content.interfaces.bank.scripts
 
+import dev.openrune.types.aconverted.interf.IfButtonOp
 import jakarta.inject.Inject
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.script.onIfModalButton
@@ -20,14 +21,11 @@ import org.rsmod.content.interfaces.bank.setBanksideExtraOps
 import org.rsmod.content.interfaces.bank.tabDisplayMode
 import org.rsmod.content.interfaces.bank.tutorialButton
 import org.rsmod.content.interfaces.bank.withdrawCert
-import org.rsmod.game.type.interf.IfButtonOp
-import org.rsmod.game.type.obj.ObjTypeList
+import org.rsmod.game.type.getInvObj
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
-class BankSettingsScript
-@Inject
-constructor(private val bankScript: BankInvScript, private val objTypes: ObjTypeList) :
+class BankSettingsScript @Inject constructor(private val bankScript: BankInvScript) :
     PluginScript() {
     override fun ScriptContext.startup() {
         val comps = bank_components
@@ -78,11 +76,11 @@ constructor(private val bankScript: BankInvScript, private val objTypes: ObjType
 
     private fun ProtectedAccess.toggleInvItemOptions() {
         invItemOptions = !invItemOptions
-        player.setBanksideExtraOps(objTypes)
+        player.setBanksideExtraOps()
     }
 
     private suspend fun ProtectedAccess.selectReleasePlaceholders() {
-        val containsPlaceholder = bank.any { it != null && objTypes[it].isPlaceholder }
+        val containsPlaceholder = bank.any { it != null && getInvObj(it).isPlaceholder }
         if (containsPlaceholder) {
             bankScript.releasePlaceholders(this)
         }

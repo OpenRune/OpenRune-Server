@@ -2,11 +2,11 @@
 
 package org.rsmod.api.config.refs
 
-import org.rsmod.api.type.refs.obj.ObjReferences
+import dev.openrune.obj
 
 typealias objs = BaseObjs
 
-object BaseObjs : ObjReferences() {
+object BaseObjs {
     val template_for_cert = obj("template_for_cert")
     val template_for_transform = obj("template_for_transform")
     val template_for_placeholder = obj("template_for_placeholder")

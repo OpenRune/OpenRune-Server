@@ -1,5 +1,6 @@
 package org.rsmod.content.interfaces.bank.scripts
 
+import dev.openrune.definition.type.widget.IfEvent
 import jakarta.inject.Inject
 import org.rsmod.api.combat.weapon.WeaponSpeeds
 import org.rsmod.api.config.constants
@@ -28,22 +29,15 @@ import org.rsmod.content.interfaces.bank.setBankWornBonuses
 import org.rsmod.content.interfaces.bank.setBanksideExtraOps
 import org.rsmod.content.interfaces.bank.util.offset
 import org.rsmod.game.entity.Player
-import org.rsmod.game.type.interf.IfEvent
-import org.rsmod.game.type.inv.InvTypeList
-import org.rsmod.game.type.obj.ObjTypeList
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
 class BankOpenScript
 @Inject
-constructor(
-    private val invTypes: InvTypeList,
-    private val objTypes: ObjTypeList,
-    private val wornBonuses: WornBonuses,
-    private val weaponSpeeds: WeaponSpeeds,
-) : PluginScript() {
+constructor(private val wornBonuses: WornBonuses, private val weaponSpeeds: WeaponSpeeds) :
+    PluginScript() {
     private val Player.bank
-        get() = invMap.getOrPut(invTypes[invs.bank])
+        get() = invMap.getOrPut(invs.bank)
 
     private var Player.withdrawCert by boolVarBit(bank_varbits.withdraw_mode)
 
@@ -57,7 +51,7 @@ constructor(
         if (!disableIfEvents) {
             val capacityIncrease = bank_constants.purchasable_capacity
             withdrawCert = false
-            setBanksideExtraOps(objTypes)
+            setBanksideExtraOps()
             setBankIfEvents()
             setBankWornBonuses(wornBonuses, weaponSpeeds)
             ifSetText(bank_components.capacity_text, bankCapacity.toString())

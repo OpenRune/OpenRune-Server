@@ -1,6 +1,7 @@
 package org.rsmod.api.inv
 
-import jakarta.inject.Inject
+import dev.openrune.types.ItemServerType
+import dev.openrune.util.Wearpos
 import org.rsmod.api.config.refs.params
 import org.rsmod.api.config.refs.varps
 import org.rsmod.api.player.output.MiscOutput.setPlayerOp
@@ -12,9 +13,7 @@ import org.rsmod.api.player.vars.resyncVar
 import org.rsmod.api.script.advanced.onWearposChange
 import org.rsmod.api.specials.SpecialAttackType
 import org.rsmod.game.entity.Player
-import org.rsmod.game.type.obj.ObjTypeList
-import org.rsmod.game.type.obj.UnpackedObjType
-import org.rsmod.game.type.obj.Wearpos
+import org.rsmod.game.type.getOrNull
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
@@ -23,7 +22,7 @@ import org.rsmod.plugin.scripts.ScriptContext
  * this approach is not optimized for efficiency and includes redundant operations, it does not have
  * a measurable impact on real-world performance.
  */
-public class WearposScript @Inject constructor(private val objTypes: ObjTypeList) : PluginScript() {
+public class WearposScript : PluginScript() {
     private var Player.specialType by enumVarp<SpecialAttackType>(varps.sa_attack)
 
     private val Player.weaponSpecialActive: Boolean
@@ -61,11 +60,11 @@ public class WearposScript @Inject constructor(private val objTypes: ObjTypeList
         }
     }
 
-    private fun Player.sendSoundAndPlayerOp(type: UnpackedObjType) {
+    private fun Player.sendSoundAndPlayerOp(type: ItemServerType) {
         val sound = type.paramOrNull(params.equipment_sound)
         sound?.let(::soundSynth)
 
-        val righthand = objTypes.getOrNull(this.righthand)
+        val righthand = getOrNull(this.righthand)
         val playerOp5 = righthand?.paramOrNull(params.player_op5_text)
         setPlayerOp(this, slot = 5, op = playerOp5, priority = playerOp5 != null)
     }
@@ -75,7 +74,7 @@ public class WearposScript @Inject constructor(private val objTypes: ObjTypeList
             return
         }
 
-        val righthand = objTypes.getOrNull(this.righthand)
+        val righthand = getOrNull(this.righthand)
         val isTwoHanded = righthand?.isTwoHanded() ?: false
         val isRighthand = wearpos == Wearpos.RightHand
 
@@ -95,10 +94,10 @@ public class WearposScript @Inject constructor(private val objTypes: ObjTypeList
 
         if (updateCombatVars) {
             PlayerInterfaceUpdates.updateCombatLevel(this)
-            PlayerInterfaceUpdates.updateCombatTab(this, objTypes)
+            PlayerInterfaceUpdates.updateCombatTab(this)
         }
     }
 
-    private fun UnpackedObjType.isTwoHanded(): Boolean =
+    private fun ItemServerType.isTwoHanded(): Boolean =
         wearpos2 == Wearpos.LeftHand.slot || wearpos3 == Wearpos.LeftHand.slot
 }

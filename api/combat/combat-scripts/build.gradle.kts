@@ -1,6 +1,6 @@
 plugins {
     id("base-conventions")
-    id("integration-test-suite")
+
 }
 
 kotlin {
@@ -24,8 +24,7 @@ dependencies {
     implementation(projects.api.specials)
     implementation(projects.api.spells)
     implementation(projects.api.spellsAutocast)
-    implementation(projects.api.type.typeBuilders)
-    implementation(projects.api.type.typeReferences)
+
     implementation(projects.api.utils.utilsVars)
     implementation(projects.api.weapons)
     implementation(projects.engine.events)

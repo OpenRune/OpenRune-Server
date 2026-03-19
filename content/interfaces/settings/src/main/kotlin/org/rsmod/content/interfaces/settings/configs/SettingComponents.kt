@@ -1,10 +1,10 @@
 package org.rsmod.content.interfaces.settings.configs
 
-import org.rsmod.api.type.refs.comp.ComponentReferences
+import dev.openrune.component
 
 typealias setting_components = SettingComponents
 
-object SettingComponents : ComponentReferences() {
+object SettingComponents {
     val runbutton_orb = component("orbs:runbutton")
     val runmode = component("settings_side:runmode")
 

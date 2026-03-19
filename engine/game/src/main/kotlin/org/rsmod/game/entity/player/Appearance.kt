@@ -1,7 +1,7 @@
 package org.rsmod.game.entity.player
 
-import org.rsmod.game.type.bas.UnpackedBasType
-import org.rsmod.game.type.npc.UnpackedNpcType
+import dev.openrune.types.BasType
+import dev.openrune.types.NpcServerType
 
 public class Appearance {
     /**
@@ -11,13 +11,13 @@ public class Appearance {
     public var rebuild: Boolean = true
         internal set
 
-    public var bas: UnpackedBasType? = null
+    public var bas: BasType? = null
         set(value) {
             field = value
             rebuild = true
         }
 
-    public var transmog: UnpackedNpcType? = null
+    public var transmog: NpcServerType? = null
         set(value) {
             field = value
             rebuild = true

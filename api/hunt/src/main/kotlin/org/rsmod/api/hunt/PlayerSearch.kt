@@ -1,8 +1,8 @@
 package org.rsmod.api.hunt
 
+import dev.openrune.types.hunt.HuntVis
 import jakarta.inject.Inject
 import org.rsmod.game.entity.Player
-import org.rsmod.game.type.hunt.HuntVis
 import org.rsmod.map.CoordGrid
 
 public class PlayerSearch @Inject constructor(private val hunt: Hunt) {

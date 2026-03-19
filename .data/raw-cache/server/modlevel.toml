@@ -1,0 +1,21 @@
+[[modlevel]]
+id="modlevel.player"
+displayName = "player"
+clientCode=0
+
+[[modlevel]]
+id="modlevel.moderator"
+displayName = "moderator"
+clientCode=1
+
+[[modlevel]]
+id="modlevel.admin"
+displayName = "admin"
+clientCode=2
+permissions = ["modlevel.moderator"]
+
+[[modlevel]]
+id="modlevel.owner"
+displayName = "owner"
+clientCode=2
+permissions = ["modlevel.moderator","modlevel.admin"]

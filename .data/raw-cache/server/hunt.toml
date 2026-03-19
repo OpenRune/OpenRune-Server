@@ -1,0 +1,80 @@
+[[hunt]]
+id = "stalk.ranged"
+type = "Player"
+checkVis = "LineOfSight"
+checkNotTooStrong = "OutsideWilderness"
+checkNotCombat = 65522
+checkNotCombatSelf = 1
+findNewMode = "ApPlayer2"
+
+[[hunt]]
+id = "stalk.constant_melee"
+type = "Player"
+checkVis = "LineOfSight"
+checkNotTooStrong = "OutsideWilderness"
+checkNotCombat = 65522
+checkNotCombatSelf = 1
+findKeepHunting = true
+findNewMode = "OpPlayer2"
+
+[[hunt]]
+id = "stalk.constant_ranged"
+type = "Player"
+checkVis = "LineOfSight"
+checkNotTooStrong = "OutsideWilderness"
+checkNotCombat = 65522
+checkNotCombatSelf = 1
+findKeepHunting = true
+findNewMode = "ApPlayer2"
+
+[[hunt]]
+id = "stalk.cowardly"
+type = "Player"
+checkVis = "LineOfSight"
+checkNotTooStrong = "OutsideWilderness"
+checkNotCombat = 65522
+checkNotCombatSelf = 1
+findNewMode = "OpPlayer2"
+
+[[hunt]]
+id = "stalk.notbusy_melee"
+type = "Player"
+checkVis = "LineOfSight"
+checkNotTooStrong = "OutsideWilderness"
+checkNotCombat = 65522
+checkNotCombatSelf = 1
+checkNotBusy = true
+findNewMode = "OpPlayer2"
+
+[[hunt]]
+id = "stalk.notbusy_range"
+type = "Player"
+checkVis = "LineOfSight"
+checkNotTooStrong = "OutsideWilderness"
+checkNotCombat = 65522
+checkNotCombatSelf = 1
+checkNotBusy = true
+findNewMode = "ApPlayer2"
+
+[[hunt]]
+id = "stalk.aggressive_melee"
+type = "Player"
+checkVis = "LineOfSight"
+checkNotCombat = 65522
+checkNotCombatSelf = 1
+findNewMode = "OpPlayer2"
+
+[[hunt]]
+id = "stalk.aggressive_melee_extra"
+type = "Player"
+checkNotCombat = 65522
+checkNotCombatSelf = 1
+findNewMode = "OpPlayer2"
+
+[[hunt]]
+id = "stalk.aggressive_ranged"
+type = "Player"
+checkVis = "LineOfSight"
+checkNotCombat = 65522
+checkNotCombatSelf = 1
+findNewMode = "ApPlayer2"

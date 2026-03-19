@@ -1,5 +1,8 @@
 package org.rsmod.api.npc.hit
 
+import dev.openrune.types.HitmarkTypeGroup
+import dev.openrune.types.ItemServerType
+import dev.openrune.util.Wearpos
 import kotlin.math.max
 import org.rsmod.api.config.constants
 import org.rsmod.api.config.refs.hitmark_groups
@@ -10,9 +13,6 @@ import org.rsmod.game.entity.Player
 import org.rsmod.game.hit.HitBuilder
 import org.rsmod.game.hit.HitType
 import org.rsmod.game.inv.InvObj
-import org.rsmod.game.type.hitmark.HitmarkTypeGroup
-import org.rsmod.game.type.obj.ObjType
-import org.rsmod.game.type.obj.Wearpos
 
 internal object InternalNpcHits {
     private val Player.righthand: InvObj?
@@ -22,8 +22,8 @@ internal object InternalNpcHits {
         source: Npc,
         type: HitType,
         damage: Int,
-        righthand: ObjType?,
-        secondaryObj: ObjType?,
+        righthand: ItemServerType?,
+        secondaryObj: ItemServerType?,
         hitmark: HitmarkTypeGroup,
         clientDelay: Int,
     ): HitBuilder {
@@ -48,7 +48,7 @@ internal object InternalNpcHits {
         source: Player,
         type: HitType,
         damage: Int,
-        secondaryObj: ObjType?,
+        secondaryObj: ItemServerType?,
         hitmark: HitmarkTypeGroup,
         clientDelay: Int,
         specific: Boolean,
@@ -75,8 +75,8 @@ internal object InternalNpcHits {
     fun createBuilder(
         type: HitType,
         damage: Int,
-        righthand: ObjType?,
-        secondaryObj: ObjType?,
+        righthand: ItemServerType?,
+        secondaryObj: ItemServerType?,
         hitmark: HitmarkTypeGroup,
         clientDelay: Int,
     ): HitBuilder {

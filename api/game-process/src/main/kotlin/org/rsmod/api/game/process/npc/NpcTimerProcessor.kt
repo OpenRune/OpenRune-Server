@@ -1,12 +1,12 @@
 package org.rsmod.api.game.process.npc
 
+import dev.openrune.types.NpcServerType
 import jakarta.inject.Inject
 import org.rsmod.api.npc.access.StandardNpcAccessLauncher
 import org.rsmod.api.npc.events.NpcTimerEvents
 import org.rsmod.events.EventBus
 import org.rsmod.game.MapClock
 import org.rsmod.game.entity.Npc
-import org.rsmod.game.type.npc.UnpackedNpcType
 
 public class NpcTimerProcessor
 @Inject
@@ -42,7 +42,7 @@ constructor(
         }
     }
 
-    private fun Npc.publishEvent(timer: Int, type: UnpackedNpcType = visType) {
+    private fun Npc.publishEvent(timer: Int, type: NpcServerType = visType) {
         val packedType = EventBus.composeLongKey(type.id, timer)
         val typeTrigger = eventBus.suspend[NpcTimerEvents.Type::class.java, packedType]
         if (typeTrigger != null) {

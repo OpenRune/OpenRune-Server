@@ -1,5 +1,9 @@
 package org.rsmod.api.repo.world
 
+import dev.openrune.types.ProjAnimType
+import dev.openrune.types.SequenceServerType
+import dev.openrune.types.aconverted.SpotanimType
+import dev.openrune.types.aconverted.SynthType
 import jakarta.inject.Inject
 import org.rsmod.api.registry.zone.ZoneUpdateMap
 import org.rsmod.game.entity.Npc
@@ -8,21 +12,14 @@ import org.rsmod.game.entity.Player
 import org.rsmod.game.loc.BoundLocInfo
 import org.rsmod.game.loc.LocInfo
 import org.rsmod.game.proj.ProjAnim
-import org.rsmod.game.type.proj.ProjAnimType
-import org.rsmod.game.type.proj.ProjAnimTypeList
-import org.rsmod.game.type.seq.SeqType
-import org.rsmod.game.type.spot.SpotanimType
-import org.rsmod.game.type.synth.SynthType
 import org.rsmod.map.CoordGrid
 
-public class WorldRepository
-@Inject
-constructor(private val zoneUpdates: ZoneUpdateMap, private val projAnims: ProjAnimTypeList) {
-    public fun locAnim(loc: LocInfo, seq: SeqType) {
+public class WorldRepository @Inject constructor(private val zoneUpdates: ZoneUpdateMap) {
+    public fun locAnim(loc: LocInfo, seq: SequenceServerType) {
         zoneUpdates.locAnim(loc, seq.id)
     }
 
-    public fun locAnim(loc: BoundLocInfo, seq: SeqType) {
+    public fun locAnim(loc: BoundLocInfo, seq: SequenceServerType) {
         locAnim(LocInfo(loc.layer, loc.coords, loc.entity), seq)
     }
 
@@ -66,8 +63,7 @@ constructor(private val zoneUpdates: ZoneUpdateMap, private val projAnims: ProjA
         spotanim: SpotanimType,
         type: ProjAnimType,
     ): ProjAnim {
-        val projAnim =
-            ProjAnim.fromBoundsToNpc(source.bounds(), target, spotanim.id, projAnims[type])
+        val projAnim = ProjAnim.fromBoundsToNpc(source.bounds(), target, spotanim.id, type)
         projAnim(projAnim)
         return projAnim
     }
@@ -78,7 +74,7 @@ constructor(private val zoneUpdates: ZoneUpdateMap, private val projAnims: ProjA
         spotanim: SpotanimType,
         type: ProjAnimType,
     ): ProjAnim {
-        val projAnim = ProjAnim.fromPlayerToNpc(source, target, spotanim.id, projAnims[type])
+        val projAnim = ProjAnim.fromPlayerToNpc(source, target, spotanim.id, type)
         projAnim(projAnim)
         return projAnim
     }
@@ -89,8 +85,7 @@ constructor(private val zoneUpdates: ZoneUpdateMap, private val projAnims: ProjA
         spotanim: SpotanimType,
         type: ProjAnimType,
     ): ProjAnim {
-        val projAnim =
-            ProjAnim.fromBoundsToPlayer(source.bounds(), target, spotanim.id, projAnims[type])
+        val projAnim = ProjAnim.fromBoundsToPlayer(source.bounds(), target, spotanim.id, type)
         projAnim(projAnim)
         return projAnim
     }
@@ -101,7 +96,7 @@ constructor(private val zoneUpdates: ZoneUpdateMap, private val projAnims: ProjA
         spotanim: SpotanimType,
         type: ProjAnimType,
     ): ProjAnim {
-        val projAnim = ProjAnim.fromPlayerToPlayer(source, target, spotanim.id, projAnims[type])
+        val projAnim = ProjAnim.fromPlayerToPlayer(source, target, spotanim.id, type)
         projAnim(projAnim)
         return projAnim
     }
@@ -112,8 +107,7 @@ constructor(private val zoneUpdates: ZoneUpdateMap, private val projAnims: ProjA
         spotanim: SpotanimType,
         type: ProjAnimType,
     ): ProjAnim {
-        val projAnim =
-            ProjAnim.fromBoundsToCoord(source.bounds(), target, spotanim.id, projAnims[type])
+        val projAnim = ProjAnim.fromBoundsToCoord(source.bounds(), target, spotanim.id, type)
         projAnim(projAnim)
         return projAnim
     }
@@ -124,7 +118,7 @@ constructor(private val zoneUpdates: ZoneUpdateMap, private val projAnims: ProjA
         spotanim: SpotanimType,
         type: ProjAnimType,
     ): ProjAnim {
-        val projAnim = ProjAnim.fromPlayerToCoord(source, target, spotanim.id, projAnims[type])
+        val projAnim = ProjAnim.fromPlayerToCoord(source, target, spotanim.id, type)
         projAnim(projAnim)
         return projAnim
     }
@@ -135,8 +129,7 @@ constructor(private val zoneUpdates: ZoneUpdateMap, private val projAnims: ProjA
         spotanim: SpotanimType,
         type: ProjAnimType,
     ): ProjAnim {
-        val projAnim =
-            ProjAnim.fromBoundsToNpc(source.bounds(), target, spotanim.id, projAnims[type])
+        val projAnim = ProjAnim.fromBoundsToNpc(source.bounds(), target, spotanim.id, type)
         projAnim(projAnim)
         return projAnim
     }
@@ -147,7 +140,7 @@ constructor(private val zoneUpdates: ZoneUpdateMap, private val projAnims: ProjA
         spotanim: SpotanimType,
         type: ProjAnimType,
     ): ProjAnim {
-        val projAnim = ProjAnim.fromNpcToNpc(source, target, spotanim.id, projAnims[type])
+        val projAnim = ProjAnim.fromNpcToNpc(source, target, spotanim.id, type)
         projAnim(projAnim)
         return projAnim
     }
@@ -158,8 +151,7 @@ constructor(private val zoneUpdates: ZoneUpdateMap, private val projAnims: ProjA
         spotanim: SpotanimType,
         type: ProjAnimType,
     ): ProjAnim {
-        val projAnim =
-            ProjAnim.fromBoundsToPlayer(source.bounds(), target, spotanim.id, projAnims[type])
+        val projAnim = ProjAnim.fromBoundsToPlayer(source.bounds(), target, spotanim.id, type)
         projAnim(projAnim)
         return projAnim
     }
@@ -170,7 +162,7 @@ constructor(private val zoneUpdates: ZoneUpdateMap, private val projAnims: ProjA
         spotanim: SpotanimType,
         type: ProjAnimType,
     ): ProjAnim {
-        val projAnim = ProjAnim.fromNpcToPlayer(source, target, spotanim.id, projAnims[type])
+        val projAnim = ProjAnim.fromNpcToPlayer(source, target, spotanim.id, type)
         projAnim(projAnim)
         return projAnim
     }
@@ -181,8 +173,7 @@ constructor(private val zoneUpdates: ZoneUpdateMap, private val projAnims: ProjA
         spotanim: SpotanimType,
         type: ProjAnimType,
     ): ProjAnim {
-        val projAnim =
-            ProjAnim.fromBoundsToCoord(source.bounds(), target, spotanim.id, projAnims[type])
+        val projAnim = ProjAnim.fromBoundsToCoord(source.bounds(), target, spotanim.id, type)
         projAnim(projAnim)
         return projAnim
     }
@@ -193,7 +184,7 @@ constructor(private val zoneUpdates: ZoneUpdateMap, private val projAnims: ProjA
         spotanim: SpotanimType,
         type: ProjAnimType,
     ): ProjAnim {
-        val projAnim = ProjAnim.fromNpcToCoord(source, target, spotanim.id, projAnims[type])
+        val projAnim = ProjAnim.fromNpcToCoord(source, target, spotanim.id, type)
         projAnim(projAnim)
         return projAnim
     }

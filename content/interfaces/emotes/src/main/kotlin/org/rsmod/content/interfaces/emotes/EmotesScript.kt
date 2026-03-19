@@ -1,5 +1,13 @@
 package org.rsmod.content.interfaces.emotes
 
+import dev.openrune.definition.type.VarBitType
+import dev.openrune.definition.type.widget.IfEvent
+import dev.openrune.types.NpcMode
+import dev.openrune.types.SequenceServerType
+import dev.openrune.types.StatType
+import dev.openrune.types.aconverted.SpotanimType
+import dev.openrune.types.aconverted.interf.IfButtonOp
+import dev.openrune.types.enums.EnumTypeMap
 import jakarta.inject.Inject
 import org.rsmod.api.config.refs.content
 import org.rsmod.api.config.refs.interfaces
@@ -25,19 +33,8 @@ import org.rsmod.api.script.onPlayerWalkTrigger
 import org.rsmod.events.EventBus
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
-import org.rsmod.game.entity.npc.NpcMode
-import org.rsmod.game.enums.EnumTypeMap
-import org.rsmod.game.enums.EnumTypeMapResolver
 import org.rsmod.game.map.Direction
 import org.rsmod.game.map.translate
-import org.rsmod.game.type.interf.IfButtonOp
-import org.rsmod.game.type.interf.IfEvent
-import org.rsmod.game.type.npc.NpcTypeList
-import org.rsmod.game.type.seq.SeqType
-import org.rsmod.game.type.seq.SeqTypeList
-import org.rsmod.game.type.spot.SpotanimType
-import org.rsmod.game.type.stat.StatType
-import org.rsmod.game.type.varbit.VarBitType
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
@@ -45,11 +42,8 @@ class EmotesScript
 @Inject
 private constructor(
     private val eventBus: EventBus,
-    private val enumResolver: EnumTypeMapResolver,
     private val protectedAccess: ProtectedAccessLauncher,
-    private val npcTypes: NpcTypeList,
     private val npcRepo: NpcRepository,
-    private val seqTypes: SeqTypeList,
     private val skillCapeEmotes: SkillCapeEmoteResolver,
 ) : PluginScript() {
     private lateinit var emoteSlots: EnumTypeMap<Int, String>
@@ -64,7 +58,7 @@ private constructor(
     }
 
     private fun loadEmotesEnum() {
-        emoteSlots = enumResolver[emote_enums.emote_names]
+        emoteSlots = emote_enums.emote_names
 
         val comsubSlots = emoteSlots.keys
         emoteSlotRange = comsubSlots.min()..comsubSlots.max()
@@ -322,13 +316,13 @@ private constructor(
         }
     }
 
-    private fun ProtectedAccess.playAnim(seq: SeqType, spot: SpotanimType?) {
+    private fun ProtectedAccess.playAnim(seq: SequenceServerType, spot: SpotanimType?) {
         anim(seq)
         spot?.let(::spotanim)
         publishEmoteEvent(seq)
     }
 
-    private fun ProtectedAccess.simpleAnim(seq: SeqType, spot: SpotanimType? = null) {
+    private fun ProtectedAccess.simpleAnim(seq: SequenceServerType, spot: SpotanimType? = null) {
         if (seq.requiresWalkTrigger() && !trySetWalkTrigger(emote_walktriggers.cancelanim)) {
             return
         }
@@ -337,8 +331,8 @@ private constructor(
     }
 
     private fun ProtectedAccess.loopAnim(
-        seqOp1: SeqType,
-        seqOp2: SeqType,
+        seqOp1: SequenceServerType,
+        seqOp2: SequenceServerType,
         op: IfButtonOp,
         spot: SpotanimType? = null,
     ) {
@@ -347,7 +341,7 @@ private constructor(
     }
 
     private suspend fun ProtectedAccess.lockedAnimDialog(
-        seq: SeqType,
+        seq: SequenceServerType,
         varbit: VarBitType,
         text: String,
         varbitStateReq: Int = 1,
@@ -362,8 +356,8 @@ private constructor(
     }
 
     private suspend fun ProtectedAccess.lockedLoopAnimDialog(
-        seqOp1: SeqType,
-        seqOp2: SeqType,
+        seqOp1: SequenceServerType,
+        seqOp2: SequenceServerType,
         varbit: VarBitType,
         text: String,
         spot: SpotanimType? = null,
@@ -419,7 +413,10 @@ private constructor(
         masteryCapeEmote(anim, spotanim)
     }
 
-    private suspend fun ProtectedAccess.masteryCapeEmote(seq: SeqType, spotanim: SpotanimType) {
+    private suspend fun ProtectedAccess.masteryCapeEmote(
+        seq: SequenceServerType,
+        spotanim: SpotanimType,
+    ) {
         if (isInCombat()) {
             mes("You can't perform that emote now.")
             return
@@ -436,7 +433,7 @@ private constructor(
         }
         val southWest = coords.translate(Direction.SouthWest)
         val npc =
-            Npc(npcTypes[npcs.diary_emote_npc], southWest).apply {
+            Npc(npcs.diary_emote_npc, southWest).apply {
                 respawnDir = Direction.South
                 mode = NpcMode.None
             }
@@ -565,7 +562,7 @@ private constructor(
         simpleAnim(seq)
     }
 
-    private fun ProtectedAccess.publishEmoteEvent(seq: SeqType) {
+    private fun ProtectedAccess.publishEmoteEvent(seq: SequenceServerType) {
         val event = PlayEmote(player, seq)
         eventBus.publish(event)
     }
@@ -580,7 +577,7 @@ private constructor(
         )
     }
 
-    private fun ProtectedAccess.flapEmoteSelector(op: IfButtonOp): SeqType {
+    private fun ProtectedAccess.flapEmoteSelector(op: IfButtonOp): SequenceServerType {
         val chickenPieces = invTotal(worn, content.chicken_outfit)
         return if (chickenPieces >= 4) {
             seqs.vm_natural_historian_monkey_hop
@@ -589,7 +586,7 @@ private constructor(
         }
     }
 
-    private fun ProtectedAccess.crazyDanceEmoteSelector(op: IfButtonOp): SeqType {
+    private fun ProtectedAccess.crazyDanceEmoteSelector(op: IfButtonOp): SequenceServerType {
         player.crazyDanceCount = (player.crazyDanceCount + 1) % 2
         return if (player.crazyDanceCount == 0) {
             if (op == IfButtonOp.Op2) seqs.bday17_style_loop else seqs.bday17_style
@@ -598,24 +595,22 @@ private constructor(
         }
     }
 
-    private fun SeqType.requiresWalkTrigger(): Boolean = seqTypes[this].maxLoops == 255
+    private fun SequenceServerType.requiresWalkTrigger(): Boolean = this.maxLoops == 255
 }
 
-private class SkillCapeEmoteResolver
-@Inject
-constructor(private val enumResolver: EnumTypeMapResolver) {
-    private lateinit var skillCapeAnims: EnumTypeMap<StatType, SeqType>
+private class SkillCapeEmoteResolver {
+    private lateinit var skillCapeAnims: EnumTypeMap<StatType, SequenceServerType>
     private lateinit var skillCapeSpots: EnumTypeMap<StatType, SpotanimType>
 
     fun startup() {
-        skillCapeAnims = enumResolver[emote_enums.skill_cape_anims]
-        skillCapeSpots = enumResolver[emote_enums.skill_cape_spots]
+        skillCapeAnims = emote_enums.skill_cape_anims
+        skillCapeSpots = emote_enums.skill_cape_spots
     }
 
     operator fun contains(stat: StatType): Boolean =
         stat in skillCapeAnims && stat in skillCapeAnims
 
-    operator fun get(stat: StatType): Pair<SeqType, SpotanimType> {
+    operator fun get(stat: StatType): Pair<SequenceServerType, SpotanimType> {
         val anim = checkNotNull(skillCapeAnims[stat]) { "Skill cape anim not defined for: $stat" }
         val spot = checkNotNull(skillCapeSpots[stat]) { "Skill cape spot not defined for: $stat" }
         return anim to spot

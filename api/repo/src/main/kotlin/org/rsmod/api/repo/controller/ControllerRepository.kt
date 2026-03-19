@@ -1,12 +1,12 @@
 package org.rsmod.api.repo.controller
 
+import dev.openrune.types.ControllerType
 import it.unimi.dsi.fastutil.objects.ObjectArrayList
 import jakarta.inject.Inject
 import org.rsmod.api.registry.controller.ControllerRegistry
 import org.rsmod.api.registry.controller.isSuccess
 import org.rsmod.game.entity.Controller
 import org.rsmod.game.entity.ControllerList
-import org.rsmod.game.type.controller.ControllerType
 import org.rsmod.map.CoordGrid
 import org.rsmod.map.zone.ZoneKey
 

@@ -1,25 +1,23 @@
 package org.rsmod.content.generic.locs.signpost
 
-import jakarta.inject.Inject
+import dev.openrune.types.enums.EnumTypeMap
 import org.rsmod.api.player.output.Camera.camReset
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.script.onApLoc1
 import org.rsmod.api.script.onIfClose
 import org.rsmod.api.script.onOpLoc1
 import org.rsmod.game.entity.Player
-import org.rsmod.game.enums.EnumTypeMap
-import org.rsmod.game.enums.EnumTypeMapResolver
 import org.rsmod.game.loc.BoundLocInfo
 import org.rsmod.game.map.Direction
 import org.rsmod.map.CoordGrid
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
-class SignpostScript @Inject constructor(private val enums: EnumTypeMapResolver) : PluginScript() {
+class SignpostScript : PluginScript() {
     private lateinit var signposts: EnumTypeMap<CoordGrid, String>
 
     override fun ScriptContext.startup() {
-        signposts = enums[SignpostEnums.signpost_directions]
+        signposts = SignpostEnums.signpost_directions
         onApLoc1(signpost_locs.signpost) { apReadSignpost(it.loc) }
         onOpLoc1(signpost_locs.signpost) { readSignpost(it.loc) }
         onIfClose(signpost_interfaces.signpost) { player.exitSignpost() }

@@ -1,9 +1,9 @@
 package org.rsmod.content.interfaces.emotes
 
+import dev.openrune.types.stat.UnpackedStatType
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.rsmod.api.testing.GameTestState
-import org.rsmod.game.type.stat.UnpackedStatType
 
 class EmotesConfigTest {
     @Test

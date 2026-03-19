@@ -1,0 +1,127 @@
+[[stat]]
+isServerOnly = true
+id = "stat.attack"
+displayName = "attack"
+
+[[stat]]
+isServerOnly = true
+id = "stat.defence"
+displayName = "defence"
+
+[[stat]]
+isServerOnly = true
+id = "stat.strength"
+displayName = "strength"
+
+[[stat]]
+isServerOnly = true
+id = "stat.hitpoints"
+displayName = "hitpoints"
+minLevel = 10
+
+[[stat]]
+isServerOnly = true
+id = "stat.ranged"
+displayName = "ranged"
+
+[[stat]]
+isServerOnly = true
+id = "stat.prayer"
+displayName = "prayer"
+
+[[stat]]
+isServerOnly = true
+id = "stat.magic"
+displayName = "magic"
+
+[[stat]]
+isServerOnly = true
+id = "stat.cooking"
+displayName = "cooking"
+
+[[stat]]
+isServerOnly = true
+id = "stat.woodcutting"
+displayName = "woodcutting"
+
+[[stat]]
+isServerOnly = true
+id = "stat.fletching"
+displayName = "fletching"
+
+[[stat]]
+isServerOnly = true
+id = "stat.fishing"
+displayName = "fishing"
+
+[[stat]]
+isServerOnly = true
+id = "stat.firemaking"
+displayName = "firemaking"
+
+[[stat]]
+isServerOnly = true
+id = "stat.crafting"
+displayName = "crafting"
+
+[[stat]]
+isServerOnly = true
+id = "stat.smithing"
+displayName = "smithing"
+
+[[stat]]
+isServerOnly = true
+id = "stat.mining"
+displayName = "mining"
+
+[[stat]]
+isServerOnly = true
+id = "stat.herblore"
+displayName = "herblore"
+
+[[stat]]
+isServerOnly = true
+id = "stat.agility"
+displayName = "agility"
+
+[[stat]]
+isServerOnly = true
+id = "stat.thieving"
+displayName = "thieving"
+
+[[stat]]
+isServerOnly = true
+id = "stat.slayer"
+displayName = "slayer"
+
+[[stat]]
+isServerOnly = true
+id = "stat.farming"
+displayName = "farming"
+
+[[stat]]
+isServerOnly = true
+id = "stat.runecrafting"
+displayName = "runecrafting"
+
+[[stat]]
+isServerOnly = true
+id = "stat.hunter"
+displayName = "hunter"
+
+[[stat]]
+isServerOnly = true
+id = "stat.construction"
+displayName = "construction"
+
+[[stat]]
+isServerOnly = true
+id = "stat.sailing"
+displayName = "sailing"
+unreleased = true
+
+[[stat]]
+isServerOnly = true
+id = "stat.unreleased"
+displayName = "unreleased"
+unreleased = true

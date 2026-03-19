@@ -1,6 +1,13 @@
 package org.rsmod.content.other.commands
 
 import com.github.michaelbull.logging.InlineLogger
+import dev.openrune.ServerCacheManager
+import dev.openrune.obj
+import dev.openrune.rscm.RSCM
+import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.spotAnim
+import dev.openrune.types.NpcMode
+import dev.openrune.types.StatType
 import jakarta.inject.Inject
 import kotlin.math.max
 import kotlin.math.min
@@ -19,7 +26,6 @@ import org.rsmod.api.player.vars.VarPlayerIntMapSetter
 import org.rsmod.api.player.vars.resyncVar
 import org.rsmod.api.repo.loc.LocRepository
 import org.rsmod.api.repo.npc.NpcRepository
-import org.rsmod.api.type.symbols.name.NameMapping
 import org.rsmod.api.utils.format.formatAmount
 import org.rsmod.api.utils.system.SafeServiceExit
 import org.rsmod.game.GameUpdate
@@ -27,21 +33,11 @@ import org.rsmod.game.cheat.Cheat
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.game.entity.PlayerList
-import org.rsmod.game.entity.npc.NpcMode
 import org.rsmod.game.loc.LocAngle
 import org.rsmod.game.loc.LocEntity
 import org.rsmod.game.loc.LocInfo
 import org.rsmod.game.loc.LocShape
 import org.rsmod.game.stat.PlayerSkillXPTable
-import org.rsmod.game.type.loc.LocTypeList
-import org.rsmod.game.type.npc.NpcTypeList
-import org.rsmod.game.type.obj.ObjTypeList
-import org.rsmod.game.type.seq.SeqTypeList
-import org.rsmod.game.type.spot.SpotanimTypeList
-import org.rsmod.game.type.stat.StatType
-import org.rsmod.game.type.stat.StatTypeList
-import org.rsmod.game.type.varbit.VarBitTypeList
-import org.rsmod.game.type.varp.VarpTypeList
 import org.rsmod.map.CoordGrid
 import org.rsmod.map.square.MapSquareGrid
 import org.rsmod.map.square.MapSquareKey
@@ -58,17 +54,8 @@ class AdminCommands
 constructor(
     private val protectedAccess: ProtectedAccessLauncher,
     private val playerList: PlayerList,
-    private val statTypes: StatTypeList,
-    private val seqTypes: SeqTypeList,
-    private val spotTypes: SpotanimTypeList,
-    private val locTypes: LocTypeList,
-    private val npcTypes: NpcTypeList,
-    private val objTypes: ObjTypeList,
-    private val varpTypes: VarpTypeList,
-    private val varBitTypes: VarBitTypeList,
     private val locRepo: LocRepository,
     private val npcRepo: NpcRepository,
-    private val names: NameMapping,
     private val update: GameUpdate,
 ) : PluginScript() {
     private val logger = InlineLogger()
@@ -80,7 +67,7 @@ constructor(
         onCommand("reset", "Reset all stats", ::reset)
         onCommand("mypos", "Get current coordinates", ::mypos)
         onCommand("tele", "Teleport to coordgrid", ::tele) {
-            invalidArgs = "Use as ::tele level mx mz lx lz (ex: 0 50 50 0 0)"
+            invalidArgs = "Usage: ::tele mx mz [level](e.g. ::tele 3200 3200 0)"
         }
         onCommand("telezone", "Teleport to zone key", ::teleZone) {
             invalidArgs = "Use as ::telezone zoneX zoneY level (ex: 400 400 0)"
@@ -89,14 +76,27 @@ constructor(
         onCommand("spot", "Play spotanim", ::spotanim) {
             invalidArgs = "Use as ::spot spotanimDebugNameOrId (ex: fx_emote_party01_active)"
         }
+        onCommand("object", "Spawn loc", ::locAdd) {
+            invalidArgs = "Use as ::object duration locDebugNameOrId (ex: 100 bookcase)"
+        }
+
         onCommand("locadd", "Spawn loc", ::locAdd) {
             invalidArgs = "Use as ::locadd duration locDebugNameOrId (ex: 100 bookcase)"
         }
         onCommand("locdel", "Remove loc", ::locDel) { invalidArgs = "Use as ::locdel duration" }
+        onCommand("objectdel", "Remove loc", ::locDel) { invalidArgs = "Use as ::objectdel duration" }
+
+        onCommand("npc", "Spawn npc", ::npcAdd) {
+            invalidArgs = "Use as ::npc duration npcDebugNameOrId (ex: 100 prison_pete)"
+        }
+
         onCommand("npcadd", "Spawn npc", ::npcAdd) {
             invalidArgs = "Use as ::npcadd duration npcDebugNameOrId (ex: 100 prison_pete)"
         }
+
         onCommand("invadd", "Spawn obj into inv", ::invAdd)
+        onCommand("item", "Spawn obj into inv", ::invAdd)
+
         onCommand("invclear", "Remove all objs from inv", ::invClear)
         onCommand("varp", "Set varp value", ::setVarp) {
             invalidArgs = "Use as ::varp debugNameOrId value (ex: option_run 1)"
@@ -125,12 +125,10 @@ constructor(
     private fun tele(cheat: Cheat) =
         with(cheat) {
             val args = if (args.size == 1) args[0].split(",") else args
-            val level = args[0].toInt()
-            val mx = args[1].toInt()
-            val mz = args[2].toInt()
-            val lx = args.getOrNull(3)?.toInt() ?: 0
-            val lz = args.getOrNull(4)?.toInt() ?: 0
-            val coords = CoordGrid(level, mx, mz, lx, lz)
+            val x = args[0].toInt()
+            val y = args[1].toInt()
+            val level = args.getOrNull(2)?.toInt() ?: 0
+            val coords = CoordGrid(x,y,level)
             protectedAccess.launch(player) {
                 player.mes("Teleported to $coords.")
                 telejump(coords)
@@ -152,51 +150,45 @@ constructor(
 
     private fun anim(cheat: Cheat) =
         with(cheat) {
-            val resolvedName = resolveTypeName(args.asTypeName(), names.seqs)
-            val typeId = resolveArgTypeId(resolvedName, names.seqs)
-            if (typeId == null) {
-                player.mes("There is no seq mapped to: '$resolvedName'")
+            val typeId = RSCM.getRSCM("seq.${args.asTypeName()}")
+            if (typeId == -1) {
+                player.mes("There is no seq mapped to: '${args.asTypeName()}'")
                 return
             }
-            val type = seqTypes[typeId]
+            val type = ServerCacheManager.getAnim(typeId)
             if (type == null) {
                 player.mes("That seq does not exist: $typeId")
                 return
             }
             player.anim(type)
-            player.mes("Anim: '${type.internalName}' (priority=${type.priority})")
+            player.mes("Anim: '${args.asTypeName()}' (priority=${type.priority})")
             logger.debug { "Anim: $type" }
         }
 
     private fun spotanim(cheat: Cheat) =
         with(cheat) {
             val (typeName, heightArg) = args.asTypeNameAndNumber(defaultNumber = 0)
-            val resolvedName = resolveTypeName(typeName, names.spotanims)
-            val typeId = resolveArgTypeId(resolvedName, names.spotanims)
-            if (typeId == null) {
-                player.mes("There is no spotanim mapped to: '$resolvedName'")
+            val typeId = "spotanim.${typeName}".asRSCM()
+            if (typeId == -1) {
+                player.mes("There is no spotanim mapped to: '${typeName}'")
                 return
             }
-            val type = spotTypes[typeId]
+            val type = spotAnim(typeName)
             if (type == null) {
                 player.mes("That spotanim does not exist: $typeId")
                 return
             }
             val height = min(heightArg.toInt(), Short.MAX_VALUE.toInt())
             player.spotanim(type, delay = 0, height = height, slot = 0)
-            player.mes("Spotanim: '${type.internalName}' (height=$height)")
+            player.mes("Spotanim: '${typeName}' (height=$height)")
             logger.debug { "Spotanim: $type" }
         }
 
     private fun locAdd(cheat: Cheat) =
         with(cheat) {
-            val resolvedName = resolveTypeName(args[1], names.locs)
-            val typeId = resolveArgTypeId(resolvedName, names.locs)
-            if (typeId == null) {
-                player.mes("There is no loc mapped to name: '$resolvedName'")
-                return
-            }
-            val type = locTypes[typeId]
+            val typeId = "objects.${args[1]}".asRSCM()
+
+            val type = ServerCacheManager.getObject(typeId)!!
             if (type == null) {
                 player.mes("That loc does not exist: $typeId")
                 return
@@ -226,7 +218,7 @@ constructor(
                 player.mes("No loc with shape `${LocShape[shape]}` found on ${player.coords}")
                 return
             }
-            val type = locTypes[loc]
+            val type = ServerCacheManager.getObject(loc.id)!!
             locRepo.del(loc, duration)
             player.mes("Deleted loc `${type.internalName}` (duration: $duration cycles)")
             logger.debug { "Deleted loc: loc=$loc, type=$type" }
@@ -234,13 +226,9 @@ constructor(
 
     private fun npcAdd(cheat: Cheat) =
         with(cheat) {
-            val resolvedName = resolveTypeName(args[1], names.npcs)
-            val typeId = resolveArgTypeId(resolvedName, names.npcs)
-            if (typeId == null) {
-                player.mes("There is no npc mapped to name: '$resolvedName'")
-                return
-            }
-            val type = npcTypes[typeId]
+            val typeId = "npc.${args[1]}".asRSCM()
+
+            val type = ServerCacheManager.getNpc(typeId)
             if (type == null) {
                 player.mes("That npc does not exist: $typeId")
                 return
@@ -249,29 +237,23 @@ constructor(
             val npc = Npc(type, player.coords)
             npc.mode = NpcMode.None
             npcRepo.add(npc, duration)
-            player.mes("Spawned npc `${type.internalName}` (duration: $duration cycles)")
+            player.mes("Spawned npc `${args[1]}` (duration: $duration cycles)")
         }
 
     private fun invAdd(cheat: Cheat) =
         with(cheat) {
             val (typeName, countArg) = args.asTypeNameAndNumber(defaultNumber = 1)
             val normalizedName = typeName.replace("cert_", "")
-            val resolvedName = resolveTypeName(normalizedName, names.objs)
-            val typeId = resolveArgTypeId(resolvedName, names.objs)
-            if (typeId == null) {
-                player.mes("There is no obj mapped to name: '$resolvedName'")
-                return
-            }
-            val type = objTypes[typeId]
-            if (type == null) {
-                player.mes("That obj does not exist: $typeId")
-                return
-            }
+            val type = obj(normalizedName)
             val spawnCert = typeName.startsWith("cert_")
             val resolvedType =
-                if (spawnCert && type.canCert) objTypes.getValue(type.certlink) else type
+                if (spawnCert && type.canCert) ServerCacheManager.getItem(type.certlink) else type
             val count = countArg.toLong().coerceAtMost(Int.MAX_VALUE.toLong()).toInt()
-            val objName = type.internalName ?: type.name
+            val objName = type.name.ifEmpty { normalizedName }
+            if (resolvedType == null) {
+                player.mes("Unable to find item: $objName")
+                return@with
+            }
             val spawned = player.invAdd(player.inv, resolvedType, count, strict = false)
             if (spawned.err is TransactionResult.RestrictedDummyitem) {
                 player.mes("You can't spawn this item!")
@@ -284,13 +266,9 @@ constructor(
 
     private fun setVarp(cheat: Cheat) =
         with(cheat) {
-            val resolvedName = resolveTypeName(args[0], names.varps)
-            val typeId = resolveArgTypeId(resolvedName, names.varps)
-            if (typeId == null) {
-                player.mes("There is no varp mapped to name: '$resolvedName'")
-                return
-            }
-            val type = varpTypes[typeId]
+            val typeId = "varp.${args[0]}".asRSCM()
+
+            val type = ServerCacheManager.getVarp(typeId)
             if (type == null) {
                 player.mes("That varp does not exist: $typeId")
                 return
@@ -298,31 +276,27 @@ constructor(
             val value = args[1].toInt()
             player.vars.backing[type.id] = value
             player.resyncVar(type)
-            player.mes("Set varp '${type.internalName}' to value: ${player.vars[type]}")
+            player.mes("Set varp '${args[0]}' to value: ${player.vars[type]}")
         }
 
     private fun setVarBit(cheat: Cheat) =
         with(cheat) {
-            val resolvedName = resolveTypeName(args[0], names.varbits)
-            val typeId = resolveArgTypeId(resolvedName, names.varbits)
-            if (typeId == null) {
-                player.mes("There is no varbit mapped to name: '$resolvedName'")
-                return
-            }
-            val type = varBitTypes[typeId]
+            val typeId = "varbits.${args[0]}".asRSCM()
+
+            val type = ServerCacheManager.getVarbit(typeId)
             if (type == null) {
                 player.mes("That varbit does not exist: $typeId")
                 return
             }
             val value = args[1].toInt()
             VarPlayerIntMapSetter.set(player, type, value)
-            player.mes("Set varbit '${type.internalName}' to value: ${player.vars[type]}")
+            player.mes("Set varbit '${args[0]}' to value: ${player.vars[type]}")
         }
 
     @OptIn(InternalApi::class)
     private fun Player.setStatLevels(level: Int) {
         val xp = PlayerSkillXPTable.getXPFromLevel(level)
-        for (stat in statTypes.values) {
+        for (stat in ServerCacheManager.getStats().values) {
             val baseLevel = statMap.getBaseLevel(stat)
             val targetLevel = max(stat.minLevel, level)
             if (baseLevel > targetLevel) {

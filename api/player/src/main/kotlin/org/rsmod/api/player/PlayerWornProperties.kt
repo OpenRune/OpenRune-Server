@@ -1,9 +1,9 @@
 package org.rsmod.api.player
 
+import dev.openrune.util.Wearpos
 import kotlin.reflect.KProperty
 import org.rsmod.game.entity.Player
 import org.rsmod.game.inv.InvObj
-import org.rsmod.game.type.obj.Wearpos
 
 /*
  * Using these properties to set a player's equipment will **not** trigger any `onEquipObj`

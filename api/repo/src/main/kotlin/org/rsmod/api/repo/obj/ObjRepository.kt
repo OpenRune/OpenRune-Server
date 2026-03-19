@@ -1,5 +1,6 @@
 package org.rsmod.api.repo.obj
 
+import dev.openrune.types.ItemServerType
 import jakarta.inject.Inject
 import org.rsmod.api.registry.obj.ObjRegistry
 import org.rsmod.api.registry.obj.ObjRegistryResult
@@ -9,18 +10,13 @@ import org.rsmod.game.entity.Player
 import org.rsmod.game.inv.InvObj
 import org.rsmod.game.obj.Obj
 import org.rsmod.game.obj.ObjScope
-import org.rsmod.game.type.obj.ObjType
-import org.rsmod.game.type.obj.ObjTypeList
+import org.rsmod.game.type.getObj
 import org.rsmod.map.CoordGrid
 import org.rsmod.map.zone.ZoneKey
 
 public class ObjRepository
 @Inject
-constructor(
-    private val mapClock: MapClock,
-    private val registry: ObjRegistry,
-    private val objTypes: ObjTypeList,
-) {
+constructor(private val mapClock: MapClock, private val registry: ObjRegistry) {
     private val addDurations = ArrayDeque<ObjAddDuration>()
     private val delDurations = ArrayDeque<ObjDelDuration>()
     private val addDelayed = ArrayDeque<ObjAddDelayed>()
@@ -48,7 +44,7 @@ constructor(
     }
 
     public fun add(
-        type: ObjType,
+        type: ItemServerType,
         coords: CoordGrid,
         duration: Int,
         receiver: Player? = null,
@@ -95,7 +91,7 @@ constructor(
         return true
     }
 
-    private fun Obj.respawnRate(): Int = objTypes[this].respawnRate
+    private fun Obj.respawnRate(): Int = getObj(this).respawnRate
 
     private fun Obj.canRespawn(): Boolean = scope == ObjScope.Perm
 

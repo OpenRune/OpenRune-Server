@@ -1,6 +1,6 @@
 package org.rsmod.api.combat.formulas.attributes.collector
 
-import jakarta.inject.Inject
+import dev.openrune.types.ItemServerType
 import java.util.EnumSet
 import kotlin.collections.plusAssign
 import org.rsmod.api.combat.commons.magic.MagicSpellChecks
@@ -8,8 +8,8 @@ import org.rsmod.api.combat.commons.magic.Spellbook
 import org.rsmod.api.combat.formulas.attributes.CombatSpellAttributes
 import org.rsmod.api.combat.formulas.attributes.CombatStaffAttributes
 import org.rsmod.api.config.constants
+import org.rsmod.api.config.refs.BaseParams
 import org.rsmod.api.config.refs.objs
-import org.rsmod.api.config.refs.params
 import org.rsmod.api.config.refs.varbits
 import org.rsmod.api.player.front
 import org.rsmod.api.player.hands
@@ -24,17 +24,14 @@ import org.rsmod.api.random.GameRandom
 import org.rsmod.game.entity.Player
 import org.rsmod.game.inv.isAnyType
 import org.rsmod.game.inv.isType
-import org.rsmod.game.type.obj.ObjType
-import org.rsmod.game.type.obj.ObjTypeList
-import org.rsmod.game.type.obj.UnpackedObjType
-import org.rsmod.game.type.obj.isType
+import org.rsmod.game.type.getOrNull
 
-public class CombatMagicAttributeCollector @Inject constructor(private val objTypes: ObjTypeList) {
+public class CombatMagicAttributeCollector {
     // `random` is an explicit parameter to indicate that this function relies on randomness
     // for certain effects, such as the Brimstone ring proc.
     public fun spellCollect(
         player: Player,
-        spell: ObjType,
+        spell: ItemServerType,
         spellbook: Spellbook?,
         usedSunfireRune: Boolean,
         random: GameRandom,
@@ -121,7 +118,7 @@ public class CombatMagicAttributeCollector @Inject constructor(private val objTy
             attributes += CombatSpellAttributes.SalveAmuletI
         }
 
-        val helmType = objTypes.getOrNull(player.hat)
+        val helmType = getOrNull(player.hat)
         if (helmType != null && helmType.hasImbuedBlackMaskAttribute()) {
             attributes += CombatSpellAttributes.BlackMaskI
         }
@@ -208,7 +205,7 @@ public class CombatMagicAttributeCollector @Inject constructor(private val objTy
             attributes += CombatStaffAttributes.SalveAmuletI
         }
 
-        val helmType = objTypes.getOrNull(player.hat)
+        val helmType = getOrNull(player.hat)
         if (helmType != null && helmType.hasImbuedBlackMaskAttribute()) {
             attributes += CombatStaffAttributes.BlackMaskI
         }
@@ -240,7 +237,7 @@ public class CombatMagicAttributeCollector @Inject constructor(private val objTy
         return attributes
     }
 
-    private fun UnpackedObjType.hasImbuedBlackMaskAttribute(): Boolean {
-        return param(params.blackmask_imbued) != 0 || param(params.slayer_helm_imbued) != 0
+    private fun ItemServerType.hasImbuedBlackMaskAttribute(): Boolean {
+        return param(BaseParams.blackmask_imbued) != 0 || param(BaseParams.slayer_helm_imbued) != 0
     }
 }

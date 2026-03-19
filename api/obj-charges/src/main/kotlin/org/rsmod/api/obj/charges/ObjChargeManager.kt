@@ -1,22 +1,21 @@
 package org.rsmod.api.obj.charges
 
-import jakarta.inject.Inject
+import dev.openrune.types.ItemServerType
+import dev.openrune.types.VarObjBitType
+import dev.openrune.util.Wearpos
 import kotlin.contracts.contract
 import kotlin.math.min
 import org.rsmod.api.config.refs.params
 import org.rsmod.game.entity.Player
 import org.rsmod.game.inv.InvObj
 import org.rsmod.game.inv.Inventory
-import org.rsmod.game.type.obj.ObjType
-import org.rsmod.game.type.obj.ObjTypeList
-import org.rsmod.game.type.obj.Wearpos
-import org.rsmod.game.type.varobjbit.UnpackedVarObjBitType
+import org.rsmod.game.type.getInvObj
 import org.rsmod.utils.bits.bitMask
 import org.rsmod.utils.bits.getBits
 import org.rsmod.utils.bits.withBits
 
-public class ObjChargeManager @Inject constructor(private val objTypes: ObjTypeList) {
-    public fun getCharges(obj: InvObj?, varobj: UnpackedVarObjBitType): Int {
+public class ObjChargeManager {
+    public fun getCharges(obj: InvObj?, varobj: VarObjBitType): Int {
         return obj?.vars?.getBits(varobj.bits) ?: 0
     }
 
@@ -42,7 +41,7 @@ public class ObjChargeManager @Inject constructor(private val objTypes: ObjTypeL
         inventory: Inventory,
         slot: Int,
         add: Int,
-        varobj: UnpackedVarObjBitType,
+        varobj: VarObjBitType,
         max: Int,
     ): Charge {
         val chargeRange = 0..varobj.bits.bitMask
@@ -64,9 +63,9 @@ public class ObjChargeManager @Inject constructor(private val objTypes: ObjTypeL
             // While someone with spawn permissions could technically have a "charged" obj with
             // 0 charges, we enforce strict correctness here: they should spawn the uncharged
             // variant and charge it properly. This helps avoid unintended oversights.
-            val charged = objTypes[obj].paramOrNull(params.charged_variant)
+            val charged = getInvObj(obj).paramOrNull(params.charged_variant)
             if (charged == null) {
-                val message = "Obj missing `charged_variant` param: $obj (type=${objTypes[obj]})"
+                val message = "Obj missing `charged_variant` param: $obj (type=${getInvObj(obj)})"
                 throw IllegalStateException(message)
             }
             inventory[slot] = InvObj(charged, vars = updatedVar)
@@ -93,11 +92,11 @@ public class ObjChargeManager @Inject constructor(private val objTypes: ObjTypeL
     public fun reduceWornCharges(
         player: Player,
         wearpos: Wearpos,
-        varobj: UnpackedVarObjBitType,
+        varobj: VarObjBitType,
         decrement: Int,
     ): Uncharge {
         val obj = player.worn[wearpos.slot] ?: return Uncharge.Failure.ObjNotFound
-        val type = objTypes[obj]
+        val type = getInvObj(obj)
 
         // Always ensure that any obj used as a "charge" weapon has an uncharged variant defined.
         val uncharged = type.paramOrNull(params.uncharged_variant)
@@ -143,13 +142,9 @@ public class ObjChargeManager @Inject constructor(private val objTypes: ObjTypeL
      * @throws IllegalStateException if the obj does not define an `uncharged_variant` param.
      * @throws NoSuchElementException if no obj exists in the given [inventory] slot.
      */
-    public fun removeAllCharges(
-        inventory: Inventory,
-        slot: Int,
-        varobj: UnpackedVarObjBitType,
-    ): Int {
+    public fun removeAllCharges(inventory: Inventory, slot: Int, varobj: VarObjBitType): Int {
         val obj = inventory.getValue(slot) // Should not call this without a valid obj in `slot`.
-        val type = objTypes[obj]
+        val type = getInvObj(obj)
 
         val uncharged = type.paramOrNull(params.uncharged_variant)
         if (uncharged == null) {
@@ -181,7 +176,7 @@ public class ObjChargeManager @Inject constructor(private val objTypes: ObjTypeL
             public data class AddChangeObj(
                 override val added: Int,
                 override val total: Int,
-                public val charged: ObjType,
+                public val charged: ItemServerType,
             ) : Success()
         }
 

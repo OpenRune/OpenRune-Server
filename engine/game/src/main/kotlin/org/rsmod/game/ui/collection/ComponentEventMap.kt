@@ -1,8 +1,8 @@
 package org.rsmod.game.ui.collection
 
+import dev.openrune.definition.type.widget.ComponentType
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
-import org.rsmod.game.type.comp.ComponentType
 import org.rsmod.game.ui.UserInterface
 
 public class ComponentEventMap(

@@ -1,128 +1,159 @@
 package dev.openrune.types
 
+import dev.openrune.ParamMap
+import dev.openrune.ServerCacheManager
+import dev.openrune.TypedParamType
 import dev.openrune.definition.Definition
-import dev.openrune.server.impl.item.WeaponTypes
+import dev.openrune.definition.EntityOpsDefinition
+import dev.openrune.definition.type.ParamType
+import dev.openrune.resolve
+import dev.openrune.seralizer.ParamSerializer
+import dev.openrune.toml.rsconfig.RsTableHeaders
+import dev.openrune.toml.serialization.TomlField
+import dev.openrune.types.aconverted.CategoryType
+import dev.openrune.types.aconverted.ContentGroupType
+import dev.openrune.util.Dummyitem
+import dev.openrune.util.WeaponCategory
 
+@RsTableHeaders("item")
 data class ItemServerType(
     override var id: Int = -1,
     var cost: Int = -1,
     var name: String = "",
     var weight: Double = 0.0,
-    var isTradeable: Boolean = false,
+    var stockmarket: Boolean = false,
     var category: Int = -1,
-    var options: MutableList<String?> = mutableListOf(null, null, "Take", null, null),
+    var options: EntityOpsDefinition = EntityOpsDefinition().op(2, "Take"),
     var interfaceOptions: MutableList<String?> = mutableListOf(null, null, null, null, "Drop"),
-    var noteLinkId: Int = -1,
-    var noteTemplateId: Int = -1,
-    var placeholderLink: Int = -1,
-    var dummyitem : Int = 0,
-    var placeholderTemplate: Int = -1,
+    var certlink: Int = 0,
+    var certtemplate: Int = 0,
+    var placeholderLink: Int = 0,
+    var placeholderTemplate: Int = 0,
     var stacks: Int = 0,
-    var appearanceOverride1: Int = -1,
-    var appearanceOverride2: Int = -1,
-    var examine : String = "",
-    var destroy: String = "",
-    var alchable: Boolean = true,
-    var exchangeCost: Int = -1,
-
-    var transformlink : Int = -1,
-    var transformtemplate: Int = -1,
-    var equipment: Equipment? = null,
-    var weapon: Weapon? = null,
-    var params: MutableMap<String, Any>? = null,
+    var wearpos1: Int = -1,
+    var wearpos2: Int = -1,
+    var wearpos3: Int = -1,
+    var examine: String = "",
+    @param:TomlField(["params"],serializer = ParamSerializer::class)
+    var paramsRaw: MutableMap<Int, Any>? = null,
+    var objvar: IntArray = intArrayOf(),
+    var playerCost: Int = 0,
+    var playerCostDerived: Int = 0,
+    var playerCostDerivedConst: Int = 0,
+    var stockMarketBuyLimit: Int = 0,
+    var stockMarketRecalcUsers: Int = 0,
+    var tradeable: Boolean = true,
+    var respawnRate: Int = 100,
+    var dummyitem: Int = -1,
+    var contentGroup: Int = -1,
+    var weaponCategory: WeaponCategory = WeaponCategory.Unarmed,
+    var transformlink: Int = 0,
+    var transformtemplate: Int = 0,
 ) : Definition {
+
+    var paramMap: ParamMap? = null
+
+    public fun <T : Any> param(type: TypedParamType<T>): T = paramMap.resolve(type)
+
+    public fun <T : Any> paramOrNull(type: ParamType): T? = paramMap?.get(type)
+
+    public fun <T : Any> paramOrNull(type: TypedParamType<T>): T? = paramMap?.get(type)
+
+    public fun hasParam(type: TypedParamType<*>): Boolean = paramMap?.contains(type) == true
+
+    public val lowercaseName: String
+        get() = name.lowercase()
+
+    public val stackable: Boolean
+        get() = stacks == 1
+
+    public val isStackable: Boolean
+        get() = (stackable || certtemplate > 0) && objvar.isEmpty()
+
+    public val hasPlaceholder: Boolean
+        get() = placeholderLink > 0 && placeholderTemplate == 0
+
+    public val isPlaceholder: Boolean
+        get() = placeholderTemplate != 0
+
+    public val canCert: Boolean
+        get() = !stackable && certlink > 0 && certtemplate == 0 && objvar.isEmpty()
+
+    public val isCert: Boolean
+        get() = certtemplate != 0
+
+    public val hasTransformation: Boolean
+        get() = transformlink > 0 && transformtemplate == 0
+
+    public val isTransformation: Boolean
+        get() = transformtemplate != 0
+
+    public val isDummyItem: Boolean
+        get() = dummyitem != -1
 
     public val resolvedDummyitem: Dummyitem?
         get() = Dummyitem[dummyitem]
 
+    public val highAlch: Int
+        get() = cost * 60 / 100
 
-    val stackable: Boolean
-        get() = stacks == 1 || noteTemplateId > 0
+    public val lowAlch: Int
+        get() = cost * 40 / 100
 
-    val noted: Boolean
-        get() = noteTemplateId > 0
+    public val isEquipable: Boolean
+        get() = wearpos1 != -1 && (interfaceOptions[1] == "Wield" || interfaceOptions[1] == "Wear")
 
-    /**
-     * Whether or not the object is a placeholder.
-     */
-    val isPlaceholder
-        get() = placeholderTemplate > 0 && placeholderLink > 0
-
-}
-
-data class EquipmentStats(
-    var attackStab: Int = 0,
-    var attackSlash: Int = 0,
-    var attackCrush: Int = 0,
-    var attackMagic: Int = 0,
-    var attackRanged: Int = 0,
-    var defenceStab: Int = 0,
-    var defenceSlash: Int = 0,
-    var defenceCrush: Int = 0,
-    var defenceMagic: Int = 0,
-    var defenceRanged: Int = 0,
-    var meleeStrength: Int = 0,
-    var prayer: Int = 0,
-    var rangedStrength: Int = 0,
-    var magicStrength: Int = 0,
-    var rangedDamage: Int = 0,
-    var magicDamage: Int = 0,
-    var demonDamage: Int = 0,
-    var degradeable: Int = 0,
-    var silverStrength: Int = 0,
-    var corpBoost: Int = 0,
-    var golemDamage: Int = 0,
-    var kalphiteDamage: Int = 0
-)
-
-
-data class Equipment(
-    var equipSlot: Int = -1,
-    var equipType : Int = -1,
-    var requirements: Map<String, Int> = emptyMap(),
-    var stats: EquipmentStats? = null
-) {
-
-    //val equipmentOptions: List<String?> by lazy {
-      //  (0 until 7).map { cachedParams.getString(451 + it).takeIf { it.isNotEmpty() } }
-    //}
-}
-
-
-data class Weapon(
-    var weaponTypeRenderData: String? = "default_player",
-    var weaponType: WeaponTypes = WeaponTypes.UNARMED,
-    var attackSpeed: Int = 0,
-    var attackRange: Int = 0,
-    var specAmount: Int = -1
-) {
-    fun hasSpec() = specAmount != -1
-}
-
-
-private fun Map<String, Any?>.getString(key: Int): String =
-    this[key.toString()]?.toString() ?: ""
-
-fun Map<String, Any?>.getInt(key: Int): Int = when (val v = this[key.toString()]) {
-    is Int -> v
-    is Number -> v.toInt()
-    is String -> v.toIntOrNull() ?: 0
-    else -> 0
-}
-
-public enum class Dummyitem(public val id: Int) {
-    /** Cannot be added into inventories or dropped on floor. */
-    GraphicOnly(id = 1),
-    /** Can be added into inventories, but cannot be dropped on floor. */
-    InvOnly(id = 2);
-
-    public companion object {
-        public operator fun get(id: Int): Dummyitem? =
-            when (id) {
-                GraphicOnly.id -> GraphicOnly
-                InvOnly.id -> InvOnly
-                else -> null
-            }
+    public fun hasOp(interactionOp: Int): Boolean {
+        val text = options.getOpOrNull(interactionOp - 1) ?: return false
+        val invalid = text.isBlank() || text.equals("hidden", ignoreCase = true)
+        return !invalid
     }
-}
 
+    public fun hasInvOp(slot: Int): Boolean {
+        val text = interfaceOptions.getOrNull(slot - 1) ?: return false
+        return text.isNotBlank()
+    }
+
+    public fun isAnyType(type1: ItemServerType, type2: ItemServerType): Boolean {
+        return (type1.id == id || type2.id == id)
+    }
+
+    public fun isAnyType(
+        type1: ItemServerType,
+        type2: ItemServerType,
+        type3: ItemServerType,
+    ): Boolean {
+        return (type1.id == id || type2.id == id || type3.id == id)
+    }
+
+    public fun isAnyType(
+        type1: ItemServerType,
+        type2: ItemServerType,
+        type3: ItemServerType,
+        type4: ItemServerType,
+    ): Boolean {
+        return (type1.id == id || type2.id == id || type3.id == id || type4.id == id)
+    }
+
+    public fun isAnyType(
+        type1: ItemServerType,
+        type2: ItemServerType,
+        vararg types: ItemServerType,
+    ): Boolean {
+        return type1.id == id || type2.id == id || types.any { it.id == id }
+    }
+
+    public fun isContentType(content: ContentGroupType): Boolean {
+        return contentGroup == content.id
+    }
+
+    public fun isCategoryType(cat: CategoryType): Boolean {
+        return category == cat.id
+    }
+
+
+    public fun isType(other: ItemServerType): Boolean {
+        return this.id == other.id
+    }
+
+}

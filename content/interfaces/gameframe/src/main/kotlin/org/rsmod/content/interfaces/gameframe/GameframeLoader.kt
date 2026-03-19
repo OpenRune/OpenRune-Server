@@ -1,27 +1,26 @@
 package org.rsmod.content.interfaces.gameframe
 
-import jakarta.inject.Inject
-import org.rsmod.content.interfaces.gameframe.config.gameframe_columns
-import org.rsmod.content.interfaces.gameframe.config.gameframe_enums
-import org.rsmod.game.dbtable.DbRow
-import org.rsmod.game.dbtable.DbRowResolver
-import org.rsmod.game.enums.EnumTypeMapResolver
-import org.rsmod.game.type.comp.ComponentType
+import dev.openrune.component
+import dev.openrune.definition.type.widget.ComponentType
+import dev.openrune.inter
+import dev.openrune.rscm.RSCM
+import dev.openrune.rscm.RSCMType
+import dev.openrune.types.aconverted.enum
+import dev.openrune.types.dbcol.DbColumnCodec.ComponentTypeCodec
+import org.rsmod.api.table.GameframeRow
 import org.rsmod.game.ui.Component
 
-internal class GameframeLoader
-@Inject
-constructor(private val rows: DbRowResolver, private val enums: EnumTypeMapResolver) {
+internal class GameframeLoader {
     fun loadGameframes(): Map<Int, Gameframe> {
         return loadGameframeRows()
     }
 
     private fun loadGameframeRows(): Map<Int, Gameframe> {
+
         val mapped = mutableMapOf<Int, Gameframe>()
 
-        val list = enums[gameframe_enums.list].filterValuesNotNull()
-        for (entry in list.values) {
-            val gameframe = loadGameframe(rows[entry])
+        GameframeRow.all().forEach { entry ->
+            val gameframe = loadGameframe(entry)
             val previous = mapped[gameframe.topLevel.id]
             if (previous != null) {
                 val message =
@@ -35,20 +34,14 @@ constructor(private val rows: DbRowResolver, private val enums: EnumTypeMapResol
         return mapped
     }
 
-    private fun loadGameframe(row: DbRow): Gameframe {
-        val topLevel = row[gameframe_columns.toplevel]
-        val overlays = row[gameframe_columns.overlays]
-        val clientMode = row[gameframe_columns.clientmode]
-        val resizable = row[gameframe_columns.resizable]
-        val isDefault = row[gameframe_columns.is_default]
-        val stoneArrangement = row[gameframe_columns.stone_arrangement]
-        val mappings = linkedMapOf<Component, Component>()
-
-        val mappingsEnum = row[gameframe_columns.mappings]
-        val mappingRedirects = enums[mappingsEnum].filterValuesNotNull()
-        for ((base, translated) in mappingRedirects) {
-            mappings[Component(base.packed)] = Component(translated.packed)
-        }
+    private fun loadGameframe(row: GameframeRow): Gameframe {
+        val topLevel = inter(RSCM.getReverseMapping(RSCMType.INTERFACE, row.toplevel))
+        val clientMode = row.clientMode
+        val resizable = row.resizable
+        val isDefault = row.default
+        val stoneArrangement = row.stoneArrangement
+        val mappings =
+            row.mappings.associate { Component(it.key.packed) to Component(it.value.packed) }
 
         return Gameframe(
             topLevel = topLevel,
@@ -61,8 +54,47 @@ constructor(private val rows: DbRowResolver, private val enums: EnumTypeMapResol
         )
     }
 
-    fun loadMoveEvents(): Map<ComponentType, ComponentType> {
-        val list = enums[gameframe_enums.move_events].filterValuesNotNull()
-        return list.backing
-    }
+    fun loadMoveEvents(): Map<ComponentType, ComponentType> =
+        enum("enum.toplevel_move_events", ComponentTypeCodec, ComponentTypeCodec).associate {
+            val from =
+                RSCM.getReverseMapping(RSCMType.COMPONENT, it.key.packed).replace("component.", "")
+            val to =
+                RSCM.getReverseMapping(RSCMType.COMPONENT, it.value.packed)
+                    .replace("component.", "")
+            component(from) to component(to)
+        }
+
+    val overlays: List<GameframeOverlay> =
+        listOf(
+            GameframeOverlay(inter("chatbox"), component("toplevel_osrs_stretch:chat_container")),
+            GameframeOverlay(inter("buff_bar"), component("toplevel_osrs_stretch:buff_bar")),
+            GameframeOverlay(
+                inter("stat_boosts_hud"),
+                component("toplevel_osrs_stretch:stat_boosts_hud"),
+            ),
+            GameframeOverlay(inter("pm_chat"), component("toplevel_osrs_stretch:pm_container")),
+            GameframeOverlay(inter("hpbar_hud"), component("toplevel_osrs_stretch:hpbar_hud")),
+            GameframeOverlay(inter("pvp_icons"), component("toplevel_osrs_stretch:pvp_icons")),
+            GameframeOverlay(inter("orbs"), component("toplevel_osrs_stretch:orbs")),
+            GameframeOverlay(inter("xp_drops"), component("toplevel_osrs_stretch:xp_drops")),
+            GameframeOverlay(inter("popout"), component("toplevel_osrs_stretch:popout")),
+            GameframeOverlay(
+                inter("ehc_worldhop"),
+                component("toplevel_osrs_stretch:ehc_listener"),
+            ),
+            GameframeOverlay(inter("stats"), component("toplevel_osrs_stretch:side1")),
+            GameframeOverlay(inter("side_journal"), component("toplevel_osrs_stretch:side2")),
+            GameframeOverlay(inter("inventory"), component("toplevel_osrs_stretch:side3")),
+            GameframeOverlay(inter("wornitems"), component("toplevel_osrs_stretch:side4")),
+            GameframeOverlay(inter("prayerbook"), component("toplevel_osrs_stretch:side5")),
+            GameframeOverlay(inter("magic_spellbook"), component("toplevel_osrs_stretch:side6")),
+            GameframeOverlay(inter("friends"), component("toplevel_osrs_stretch:side9")),
+            GameframeOverlay(inter("account"), component("toplevel_osrs_stretch:side8")),
+            GameframeOverlay(inter("logout"), component("toplevel_osrs_stretch:side10")),
+            GameframeOverlay(inter("settings_side"), component("toplevel_osrs_stretch:side11")),
+            GameframeOverlay(inter("emote"), component("toplevel_osrs_stretch:side12")),
+            GameframeOverlay(inter("music"), component("toplevel_osrs_stretch:side13")),
+            GameframeOverlay(inter("side_channels"), component("toplevel_osrs_stretch:side7")),
+            GameframeOverlay(inter("combat_interface"), component("toplevel_osrs_stretch:side0")),
+        )
 }

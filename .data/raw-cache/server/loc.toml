@@ -1,0 +1,1572 @@
+[[object]]
+id = "loc.potato"
+inherit = "loc.potato"
+contentGroup = "content.pickable_crop"
+
+[object.params]
+"param.rewarditem" = "obj.potato"
+"param.respawn_time" = 50
+"param.game_message" = "You pick a potato."
+"param.game_message2" = "You don't have room for this potato."
+
+[[object]]
+id = "loc.crate3"
+inherit = "loc.crate3"
+contentGroup = "content.empty_crate"
+
+[object.params]
+"param.game_message" = "You search the crate but find nothing."
+
+[[object]]
+id = "loc.crate2_old"
+inherit = "loc.crate2_old"
+contentGroup = "content.empty_crate"
+
+[object.params]
+"param.game_message" = "You search the crate but find nothing."
+
+[[object]]
+id = "loc.crate3_old"
+inherit = "loc.crate3_old"
+contentGroup = "content.empty_crate"
+
+[object.params]
+"param.game_message" = "You search the crate but find nothing."
+
+[[object]]
+id = "loc.boxes"
+inherit = "loc.boxes"
+contentGroup = "content.empty_boxes"
+
+[object.params]
+"param.game_message" = "There is nothing interesting in these boxes."
+
+[[object]]
+id = "loc.sacks"
+inherit = "loc.sacks"
+contentGroup = "content.empty_sacks"
+
+[object.params]
+"param.game_message" = "There is nothing interesting in these sacks."
+
+[[object]]
+id = "loc.crate"
+inherit = "loc.crate"
+contentGroup = "content.empty_crate"
+
+[object.params]
+"param.game_message" = "You search the crate but find nothing."
+
+[[object]]
+id = "loc.bookcase"
+inherit = "loc.bookcase"
+contentGroup = "content.bookcase"
+
+[[object]]
+id = "loc.rustic_fencegate_l"
+inherit = "loc.rustic_fencegate_l"
+contentGroup = "content.closed_left_picketgate"
+
+[object.params]
+"param.next_loc_stage" = "loc.rustic_openfencegate_l"
+"param.opensound" = "synth.picketgate_open"
+
+[[object]]
+id = "loc.cabbage"
+inherit = "loc.cabbage"
+
+[object.params]
+"param.rewarditem" = "obj.cabbage"
+"param.respawn_time" = 75
+"param.game_message" = "You pick a cabbage."
+"param.game_message2" = "You don't have room for this cabbage."
+
+[[object]]
+id = "loc.tree"
+inherit = "loc.tree"
+contentGroup = "content.tree"
+
+[object.params]
+"param.levelrequire" = 1
+"param.woodcutting_axe_success_rates" = "enum.regular_tree_axes"
+"param.respawn_time_low" = 60
+"param.respawn_time_high" = 100
+"param.respawn_time" = 0
+"param.deplete_chance" = 0
+"param.skill_productitem" = "obj.logs"
+"param.skill_xp" = 250
+"param.next_loc_stage" = "loc.treestump2"
+
+[[object]]
+id = "loc.lighttree"
+inherit = "loc.lighttree"
+contentGroup = "content.tree"
+
+[object.params]
+"param.levelrequire" = 1
+"param.woodcutting_axe_success_rates" = "enum.regular_tree_axes"
+"param.respawn_time_low" = 60
+"param.respawn_time_high" = 100
+"param.respawn_time" = 0
+"param.deplete_chance" = 0
+"param.skill_productitem" = "obj.logs"
+"param.skill_xp" = 250
+"param.next_loc_stage" = "loc.treestump2_light"
+
+[[object]]
+id = "loc.tree2"
+inherit = "loc.tree2"
+contentGroup = "content.tree"
+
+[object.params]
+"param.levelrequire" = 1
+"param.woodcutting_axe_success_rates" = "enum.regular_tree_axes"
+"param.respawn_time_low" = 60
+"param.respawn_time_high" = 100
+"param.respawn_time" = 0
+"param.deplete_chance" = 0
+"param.skill_productitem" = "obj.logs"
+"param.skill_xp" = 250
+"param.next_loc_stage" = "loc.treestump2"
+
+[[object]]
+id = "loc.tree3"
+inherit = "loc.tree3"
+contentGroup = "content.tree"
+
+[object.params]
+"param.levelrequire" = 1
+"param.woodcutting_axe_success_rates" = "enum.regular_tree_axes"
+"param.respawn_time_low" = 60
+"param.respawn_time_high" = 100
+"param.respawn_time" = 0
+"param.deplete_chance" = 0
+"param.skill_productitem" = "obj.logs"
+"param.skill_xp" = 250
+"param.next_loc_stage" = "loc.treestump2"
+
+[[object]]
+id = "loc.lighttree2"
+inherit = "loc.lighttree2"
+contentGroup = "content.tree"
+
+[object.params]
+"param.levelrequire" = 1
+"param.woodcutting_axe_success_rates" = "enum.regular_tree_axes"
+"param.respawn_time_low" = 60
+"param.respawn_time_high" = 100
+"param.respawn_time" = 0
+"param.deplete_chance" = 0
+"param.skill_productitem" = "obj.logs"
+"param.skill_xp" = 250
+"param.next_loc_stage" = "loc.treestump2_light"
+
+[[object]]
+id = "loc.deadtree1"
+inherit = "loc.deadtree1"
+contentGroup = "content.tree"
+
+[object.params]
+"param.levelrequire" = 1
+"param.woodcutting_axe_success_rates" = "enum.regular_tree_axes"
+"param.respawn_time_low" = 60
+"param.respawn_time_high" = 100
+"param.respawn_time" = 0
+"param.deplete_chance" = 0
+"param.skill_productitem" = "obj.logs"
+"param.skill_xp" = 250
+"param.next_loc_stage" = "loc.deadtree1_large_stump"
+
+[[object]]
+id = "loc.deadtree1_large"
+inherit = "loc.deadtree1_large"
+contentGroup = "content.tree"
+
+[object.params]
+"param.levelrequire" = 1
+"param.woodcutting_axe_success_rates" = "enum.regular_tree_axes"
+"param.respawn_time_low" = 60
+"param.respawn_time_high" = 100
+"param.respawn_time" = 0
+"param.deplete_chance" = 0
+"param.skill_productitem" = "obj.logs"
+"param.skill_xp" = 250
+"param.next_loc_stage" = "loc.deadtree1_large_stump"
+
+[[object]]
+id = "loc.deadtree4"
+inherit = "loc.deadtree4"
+contentGroup = "content.tree"
+
+[object.params]
+"param.levelrequire" = 1
+"param.woodcutting_axe_success_rates" = "enum.regular_tree_axes"
+"param.respawn_time_low" = 60
+"param.respawn_time_high" = 100
+"param.respawn_time" = 0
+"param.deplete_chance" = 0
+"param.skill_productitem" = "obj.logs"
+"param.skill_xp" = 250
+"param.next_loc_stage" = "loc.deadtree4_stump"
+
+[[object]]
+id = "loc.lightdeadtree1"
+inherit = "loc.lightdeadtree1"
+contentGroup = "content.tree"
+
+[object.params]
+"param.levelrequire" = 1
+"param.woodcutting_axe_success_rates" = "enum.regular_tree_axes"
+"param.respawn_time_low" = 60
+"param.respawn_time_high" = 100
+"param.respawn_time" = 0
+"param.deplete_chance" = 0
+"param.skill_productitem" = "obj.logs"
+"param.skill_xp" = 250
+"param.next_loc_stage" = "loc.deadtree1_light_stump"
+
+[[object]]
+id = "loc.deadtree2"
+inherit = "loc.deadtree2"
+contentGroup = "content.tree"
+
+[object.params]
+"param.levelrequire" = 1
+"param.woodcutting_axe_success_rates" = "enum.regular_tree_axes"
+"param.respawn_time_low" = 60
+"param.respawn_time_high" = 100
+"param.respawn_time" = 0
+"param.deplete_chance" = 0
+"param.skill_productitem" = "obj.logs"
+"param.skill_xp" = 250
+"param.next_loc_stage" = "loc.deadtree2_stump"
+
+[[object]]
+id = "loc.deadtree2_dark"
+inherit = "loc.deadtree2_dark"
+contentGroup = "content.tree"
+
+[object.params]
+"param.levelrequire" = 1
+"param.woodcutting_axe_success_rates" = "enum.regular_tree_axes"
+"param.respawn_time_low" = 60
+"param.respawn_time_high" = 100
+"param.respawn_time" = 0
+"param.deplete_chance" = 0
+"param.skill_productitem" = "obj.logs"
+"param.skill_xp" = 250
+"param.next_loc_stage" = "loc.deadtree2_stump_dark"
+
+[[object]]
+id = "loc.deadtree3"
+inherit = "loc.deadtree3"
+contentGroup = "content.tree"
+
+[object.params]
+"param.levelrequire" = 1
+"param.woodcutting_axe_success_rates" = "enum.regular_tree_axes"
+"param.respawn_time_low" = 60
+"param.respawn_time_high" = 100
+"param.respawn_time" = 0
+"param.deplete_chance" = 0
+"param.skill_productitem" = "obj.logs"
+"param.skill_xp" = 250
+"param.next_loc_stage" = "loc.deadtree3_stump"
+
+[[object]]
+id = "loc.deadtree2_snowy"
+inherit = "loc.deadtree2_snowy"
+contentGroup = "content.tree"
+
+[object.params]
+"param.levelrequire" = 1
+"param.woodcutting_axe_success_rates" = "enum.regular_tree_axes"
+"param.respawn_time_low" = 60
+"param.respawn_time_high" = 100
+"param.respawn_time" = 0
+"param.deplete_chance" = 0
+"param.skill_productitem" = "obj.logs"
+"param.skill_xp" = 250
+"param.next_loc_stage" = "loc.deadtree2_stump_snow"
+
+[[object]]
+id = "loc.evergreen_vsnowy_large"
+inherit = "loc.evergreen_vsnowy_large"
+contentGroup = "content.tree"
+
+[object.params]
+"param.levelrequire" = 1
+"param.woodcutting_axe_success_rates" = "enum.regular_tree_axes"
+"param.respawn_time_low" = 60
+"param.respawn_time_high" = 100
+"param.respawn_time" = 0
+"param.deplete_chance" = 0
+"param.skill_productitem" = "obj.logs"
+"param.skill_xp" = 250
+"param.next_loc_stage" = "loc.evergreen_large_stump"
+
+[[object]]
+id = "loc.evergreen_snowy_large"
+inherit = "loc.evergreen_snowy_large"
+contentGroup = "content.tree"
+
+[object.params]
+"param.levelrequire" = 1
+"param.woodcutting_axe_success_rates" = "enum.regular_tree_axes"
+"param.respawn_time_low" = 60
+"param.respawn_time_high" = 100
+"param.respawn_time" = 0
+"param.deplete_chance" = 0
+"param.skill_productitem" = "obj.logs"
+"param.skill_xp" = 250
+"param.next_loc_stage" = "loc.evergreen_large_stump"
+
+[[object]]
+id = "loc.snowtree1"
+inherit = "loc.snowtree1"
+contentGroup = "content.tree"
+
+[object.params]
+"param.levelrequire" = 1
+"param.woodcutting_axe_success_rates" = "enum.regular_tree_axes"
+"param.respawn_time_low" = 60
+"param.respawn_time_high" = 100
+"param.respawn_time" = 0
+"param.deplete_chance" = 0
+"param.skill_productitem" = "obj.logs"
+"param.skill_xp" = 250
+"param.next_loc_stage" = "loc.evergreen_large_stump"
+
+[[object]]
+id = "loc.snowtree2"
+inherit = "loc.snowtree2"
+contentGroup = "content.tree"
+
+[object.params]
+"param.levelrequire" = 1
+"param.woodcutting_axe_success_rates" = "enum.regular_tree_axes"
+"param.respawn_time_low" = 60
+"param.respawn_time_high" = 100
+"param.respawn_time" = 0
+"param.deplete_chance" = 0
+"param.skill_productitem" = "obj.logs"
+"param.skill_xp" = 250
+"param.next_loc_stage" = "loc.evergreen_large_stump"
+
+[[object]]
+id = "loc.snowtree3"
+inherit = "loc.snowtree3"
+contentGroup = "content.tree"
+
+[object.params]
+"param.levelrequire" = 1
+"param.woodcutting_axe_success_rates" = "enum.regular_tree_axes"
+"param.respawn_time_low" = 60
+"param.respawn_time_high" = 100
+"param.respawn_time" = 0
+"param.deplete_chance" = 0
+"param.skill_productitem" = "obj.logs"
+"param.skill_xp" = 250
+"param.next_loc_stage" = "loc.evergreen_large_stump"
+
+[[object]]
+id = "loc.deadtree2_swamp"
+inherit = "loc.deadtree2_swamp"
+contentGroup = "content.tree"
+
+[object.params]
+"param.levelrequire" = 1
+"param.woodcutting_axe_success_rates" = "enum.regular_tree_axes"
+"param.respawn_time_low" = 60
+"param.respawn_time_high" = 100
+"param.respawn_time" = 0
+"param.deplete_chance" = 0
+"param.skill_productitem" = "obj.logs"
+"param.skill_xp" = 250
+"param.next_loc_stage" = "loc.deadtree2_stump_swamp"
+
+[[object]]
+id = "loc.deadtree6"
+inherit = "loc.deadtree6"
+contentGroup = "content.tree"
+
+[object.params]
+"param.levelrequire" = 1
+"param.woodcutting_axe_success_rates" = "enum.regular_tree_axes"
+"param.respawn_time_low" = 60
+"param.respawn_time_high" = 100
+"param.respawn_time" = 0
+"param.deplete_chance" = 0
+"param.skill_productitem" = "obj.logs"
+"param.skill_xp" = 250
+"param.next_loc_stage" = "loc.deadtree6_stump"
+
+[[object]]
+id = "loc.deadtree_burnt"
+inherit = "loc.deadtree_burnt"
+contentGroup = "content.tree"
+
+[object.params]
+"param.levelrequire" = 1
+"param.woodcutting_axe_success_rates" = "enum.regular_tree_axes"
+"param.respawn_time_low" = 60
+"param.respawn_time_high" = 100
+"param.respawn_time" = 0
+"param.deplete_chance" = 0
+"param.skill_productitem" = "obj.logs"
+"param.skill_xp" = 250
+"param.next_loc_stage" = "loc.deadtree2_stump_dark"
+
+[[object]]
+id = "loc.castledoubledoorl"
+inherit = "loc.castledoubledoorl"
+contentGroup = "content.closed_left_door"
+
+[object.params]
+"param.next_loc_stage" = "loc.opencastledoubledoorl"
+
+[[object]]
+id = "loc.opencastledoubledoorl"
+inherit = "loc.opencastledoubledoorl"
+contentGroup = "content.opened_left_door"
+
+[object.params]
+"param.next_loc_stage" = "loc.castledoubledoorl"
+
+[[object]]
+id = "loc.castledoubledoorr"
+inherit = "loc.castledoubledoorr"
+contentGroup = "content.closed_right_door"
+
+[object.params]
+"param.next_loc_stage" = "loc.opencastledoubledoorr"
+
+[[object]]
+id = "loc.opencastledoubledoorr"
+inherit = "loc.opencastledoubledoorr"
+contentGroup = "content.opened_right_door"
+
+[object.params]
+"param.next_loc_stage" = "loc.castledoubledoorr"
+
+[[object]]
+id = "loc.poordoor"
+inherit = "loc.poordoor"
+contentGroup = "content.closed_single_door"
+
+[object.params]
+"param.next_loc_stage" = "loc.poordooropen"
+
+[[object]]
+id = "loc.poordooropen"
+inherit = "loc.poordooropen"
+contentGroup = "content.opened_single_door"
+
+[object.params]
+"param.next_loc_stage" = "loc.poordoor"
+
+[[object]]
+id = "loc.poshdoor"
+inherit = "loc.poshdoor"
+contentGroup = "content.closed_single_door"
+
+[object.params]
+"param.next_loc_stage" = "loc.poshdooropen"
+"param.opensound" = "synth.nicedoor_open"
+
+[[object]]
+id = "loc.poshdooropen"
+inherit = "loc.poshdooropen"
+contentGroup = "content.opened_single_door"
+
+[object.params]
+"param.closesound" = "synth.nicedoor_close"
+"param.next_loc_stage" = "loc.poshdoor"
+
+[[object]]
+id = "loc.fencegate_l"
+inherit = "loc.fencegate_l"
+contentGroup = "content.closed_left_picketgate"
+
+[object.params]
+"param.next_loc_stage" = "loc.openfencegate_l"
+"param.opensound" = "synth.picketgate_open"
+
+[[object]]
+id = "loc.openfencegate_l"
+inherit = "loc.openfencegate_l"
+contentGroup = "content.opened_left_picketgate"
+
+[object.params]
+"param.closesound" = "synth.picketgate_close"
+"param.next_loc_stage" = "loc.fencegate_l"
+
+[[object]]
+id = "loc.fencegate_r"
+inherit = "loc.fencegate_r"
+contentGroup = "content.closed_right_picketgate"
+
+[object.params]
+"param.next_loc_stage" = "loc.openfencegate_r"
+"param.opensound" = "synth.picketgate_open"
+
+[[object]]
+id = "loc.openfencegate_r"
+inherit = "loc.openfencegate_r"
+contentGroup = "content.opened_right_picketgate"
+
+[object.params]
+"param.closesound" = "synth.picketgate_close"
+"param.next_loc_stage" = "loc.fencegate_r"
+
+[[object]]
+id = "loc.achey_tree"
+inherit = "loc.achey_tree"
+contentGroup = "content.tree"
+
+[object.params]
+"param.levelrequire" = 1
+"param.woodcutting_axe_success_rates" = "enum.regular_tree_axes"
+"param.respawn_time_low" = 60
+"param.respawn_time_high" = 100
+"param.respawn_time" = 0
+"param.deplete_chance" = 0
+"param.skill_productitem" = "obj.achey_tree_logs"
+"param.skill_xp" = 250
+"param.next_loc_stage" = "loc.achey_tree_stump"
+
+[[object]]
+id = "loc.evergreen"
+inherit = "loc.evergreen"
+contentGroup = "content.tree"
+
+[object.params]
+"param.levelrequire" = 1
+"param.woodcutting_axe_success_rates" = "enum.regular_tree_axes"
+"param.respawn_time_low" = 60
+"param.respawn_time_high" = 100
+"param.respawn_time" = 0
+"param.deplete_chance" = 0
+"param.skill_productitem" = "obj.logs"
+"param.skill_xp" = 250
+"param.next_loc_stage" = "loc.treestump2"
+
+[[object]]
+id = "loc.evergreen_large"
+inherit = "loc.evergreen_large"
+contentGroup = "content.tree"
+
+[object.params]
+"param.levelrequire" = 1
+"param.woodcutting_axe_success_rates" = "enum.regular_tree_axes"
+"param.respawn_time_low" = 60
+"param.respawn_time_high" = 100
+"param.respawn_time" = 0
+"param.deplete_chance" = 0
+"param.skill_productitem" = "obj.logs"
+"param.skill_xp" = 250
+"param.next_loc_stage" = "loc.evergreen_large_stump"
+
+[[object]]
+id = "loc.arctic_pine"
+inherit = "loc.arctic_pine"
+contentGroup = "content.tree"
+
+[object.params]
+"param.levelrequire" = 54
+"param.woodcutting_axe_success_rates" = "enum.arctic_tree_axes"
+"param.respawn_time" = 15
+"param.despawn_time" = 140
+"param.skill_productitem" = "obj.arctic_pine_log"
+"param.skill_xp" = 400
+"param.next_loc_stage" = "loc.arctic_pine_tree_stump"
+
+[[object]]
+id = "loc.onion"
+inherit = "loc.onion"
+contentGroup = "content.pickable_crop"
+
+[object.params]
+"param.rewarditem" = "obj.onion"
+"param.respawn_time" = 50
+"param.game_message" = "You pick an onion."
+"param.game_message2" = "You don't have room for this onion."
+
+[[object]]
+id = "loc.fai_varrock_dead_tree"
+inherit = "loc.fai_varrock_dead_tree"
+contentGroup = "content.tree"
+
+[object.params]
+"param.levelrequire" = 1
+"param.woodcutting_axe_success_rates" = "enum.regular_tree_axes"
+"param.respawn_time_low" = 60
+"param.respawn_time_high" = 100
+"param.respawn_time" = 0
+"param.deplete_chance" = 0
+"param.skill_productitem" = "obj.logs"
+"param.skill_xp" = 250
+"param.next_loc_stage" = "loc.fai_varrock_dead_tree_stump"
+
+[[object]]
+id = "loc.regicide_tree_large"
+inherit = "loc.regicide_tree_large"
+contentGroup = "content.tree"
+
+[object.params]
+"param.levelrequire" = 1
+"param.woodcutting_axe_success_rates" = "enum.regular_tree_axes"
+"param.respawn_time_low" = 60
+"param.respawn_time_high" = 100
+"param.respawn_time" = 0
+"param.deplete_chance" = 0
+"param.skill_productitem" = "obj.logs"
+"param.skill_xp" = 250
+"param.next_loc_stage" = "loc.regicide_tree_stump"
+
+[[object]]
+id = "loc.regicide_tree_large2"
+inherit = "loc.regicide_tree_large2"
+contentGroup = "content.tree"
+
+[object.params]
+"param.levelrequire" = 1
+"param.woodcutting_axe_success_rates" = "enum.regular_tree_axes"
+"param.respawn_time_low" = 60
+"param.respawn_time_high" = 100
+"param.respawn_time" = 0
+"param.deplete_chance" = 0
+"param.skill_productitem" = "obj.logs"
+"param.skill_xp" = 250
+"param.next_loc_stage" = "loc.regicide_tree_stump"
+
+[[object]]
+id = "loc.regicide_tree_large3"
+inherit = "loc.regicide_tree_large3"
+contentGroup = "content.tree"
+
+[object.params]
+"param.levelrequire" = 1
+"param.woodcutting_axe_success_rates" = "enum.regular_tree_axes"
+"param.respawn_time_low" = 60
+"param.respawn_time_high" = 100
+"param.respawn_time" = 0
+"param.deplete_chance" = 0
+"param.skill_productitem" = "obj.logs"
+"param.skill_xp" = 250
+"param.next_loc_stage" = "loc.regicide_tree_stump"
+
+[[object]]
+id = "loc.regicide_tree_small"
+inherit = "loc.regicide_tree_small"
+contentGroup = "content.tree"
+
+[object.params]
+"param.levelrequire" = 1
+"param.woodcutting_axe_success_rates" = "enum.regular_tree_axes"
+"param.respawn_time_low" = 60
+"param.respawn_time_high" = 100
+"param.respawn_time" = 0
+"param.deplete_chance" = 0
+"param.skill_productitem" = "obj.logs"
+"param.skill_xp" = 250
+"param.next_loc_stage" = "loc.regicide_tree_stump_small"
+
+[[object]]
+id = "loc.mm_bush_kharazi_jungle_tree1"
+inherit = "loc.mm_bush_kharazi_jungle_tree1"
+contentGroup = "content.tree"
+
+[object.params]
+"param.levelrequire" = 1
+"param.woodcutting_axe_success_rates" = "enum.regular_tree_axes"
+"param.respawn_time_low" = 60
+"param.respawn_time_high" = 100
+"param.respawn_time" = 0
+"param.deplete_chance" = 0
+"param.skill_productitem" = "obj.logs"
+"param.skill_xp" = 250
+"param.next_loc_stage" = "loc.mm_bush_kharazi_jungle_tree1_stump"
+
+[[object]]
+id = "loc.mm_bush_kharazi_jungle_tree2"
+inherit = "loc.mm_bush_kharazi_jungle_tree2"
+contentGroup = "content.tree"
+
+[object.params]
+"param.levelrequire" = 1
+"param.woodcutting_axe_success_rates" = "enum.regular_tree_axes"
+"param.respawn_time_low" = 60
+"param.respawn_time_high" = 100
+"param.respawn_time" = 0
+"param.deplete_chance" = 0
+"param.skill_productitem" = "obj.logs"
+"param.skill_xp" = 250
+"param.next_loc_stage" = "loc.mm_bush_kharazi_jungle_tree2_stump"
+
+[[object]]
+id = "loc.chicken_coop_empty"
+inherit = "loc.chicken_coop_empty"
+contentGroup = "content.chicken_coop"
+
+[[object]]
+id = "loc.chicken_coop_bare"
+inherit = "loc.chicken_coop_bare"
+contentGroup = "content.chicken_coop"
+
+[[object]]
+id = "loc.chicken_coop_bare2"
+inherit = "loc.chicken_coop_bare2"
+contentGroup = "content.chicken_coop"
+
+[[object]]
+id = "loc.mdaughter_passable_tree"
+inherit = "loc.mdaughter_passable_tree"
+contentGroup = "content.tree"
+
+[object.params]
+"param.levelrequire" = 1
+"param.woodcutting_axe_success_rates" = "enum.regular_tree_axes"
+"param.respawn_time_low" = 60
+"param.respawn_time_high" = 100
+"param.respawn_time" = 0
+"param.deplete_chance" = 0
+"param.skill_productitem" = "obj.logs"
+"param.skill_xp" = 250
+"param.next_loc_stage" = "loc.mdaughter_passable_tree_stump"
+
+[[object]]
+id = "loc.fai_varrock_posh_bookcase_short_east_offset"
+inherit = "loc.fai_varrock_posh_bookcase_short_east_offset"
+contentGroup = "content.bookcase"
+
+[[object]]
+id = "loc.fat_cow"
+inherit = "loc.fat_cow"
+contentGroup = "content.dairy_cow"
+
+[[object]]
+id = "loc.mahoganytree"
+inherit = "loc.mahoganytree"
+contentGroup = "content.tree"
+
+[object.params]
+"param.levelrequire" = 50
+"param.woodcutting_axe_success_rates" = "enum.mahogany_tree_axes"
+"param.respawn_time" = 15
+"param.despawn_time" = 100
+"param.skill_productitem" = "obj.mahogany_logs"
+"param.skill_xp" = 1250
+"param.next_loc_stage" = "loc.mahogany_stump"
+
+[[object]]
+id = "loc.teaktree"
+inherit = "loc.teaktree"
+contentGroup = "content.tree"
+
+[object.params]
+"param.levelrequire" = 35
+"param.woodcutting_axe_success_rates" = "enum.teak_tree_axes"
+"param.respawn_time" = 16
+"param.despawn_time" = 50
+"param.skill_productitem" = "obj.teak_logs"
+"param.skill_xp" = 850
+"param.next_loc_stage" = "loc.teak_stump"
+
+[[object]]
+id = "loc.willowtree"
+inherit = "loc.willowtree"
+contentGroup = "content.tree"
+
+[object.params]
+"param.levelrequire" = 30
+"param.woodcutting_axe_success_rates" = "enum.willow_tree_axes"
+"param.respawn_time" = 15
+"param.despawn_time" = 50
+"param.skill_productitem" = "obj.willow_logs"
+"param.skill_xp" = 675
+"param.next_loc_stage" = "loc.willow_tree_stump_new"
+
+[[object]]
+id = "loc.oaktree"
+inherit = "loc.oaktree"
+contentGroup = "content.tree"
+
+[object.params]
+"param.levelrequire" = 15
+"param.woodcutting_axe_success_rates" = "enum.oak_tree_axes"
+"param.respawn_time" = 15
+"param.despawn_time" = 45
+"param.skill_productitem" = "obj.oak_logs"
+"param.skill_xp" = 375
+"param.next_loc_stage" = "loc.oaktree_stump"
+
+[[object]]
+id = "loc.hollow_tree"
+inherit = "loc.hollow_tree"
+contentGroup = "content.tree"
+
+[object.params]
+"param.levelrequire" = 45
+"param.woodcutting_axe_success_rates" = "enum.hollow_tree_axes"
+"param.respawn_time" = 43
+"param.despawn_time" = 60
+"param.skill_productitem" = "obj.hollow_bark"
+"param.skill_xp" = 825
+"param.next_loc_stage" = "loc.hollow_tree_stump"
+
+[[object]]
+id = "loc.yewtree"
+inherit = "loc.yewtree"
+contentGroup = "content.tree"
+
+[object.params]
+"param.levelrequire" = 60
+"param.woodcutting_axe_success_rates" = "enum.yew_tree_axes"
+"param.respawn_time" = 100
+"param.despawn_time" = 190
+"param.skill_productitem" = "obj.yew_logs"
+"param.skill_xp" = 1750
+"param.next_loc_stage" = "loc.yew_tree_stump_new"
+
+[[object]]
+id = "loc.deadman_yewtree_insurancestall"
+inherit = "loc.deadman_yewtree_insurancestall"
+contentGroup = "content.tree"
+
+[object.params]
+"param.levelrequire" = 60
+"param.woodcutting_axe_success_rates" = "enum.yew_tree_axes"
+"param.respawn_time" = 100
+"param.despawn_time" = 190
+"param.skill_productitem" = "obj.yew_logs"
+"param.skill_xp" = 1750
+"param.next_loc_stage" = "loc.yew_tree_stump_new"
+
+[[object]]
+id = "loc.willow_tree2"
+inherit = "loc.willow_tree2"
+contentGroup = "content.tree"
+
+[object.params]
+"param.levelrequire" = 30
+"param.woodcutting_axe_success_rates" = "enum.willow_tree_axes"
+"param.respawn_time" = 15
+"param.despawn_time" = 50
+"param.skill_productitem" = "obj.willow_logs"
+"param.skill_xp" = 675
+"param.next_loc_stage" = "loc.willow_tree2or3or4_stump"
+
+[[object]]
+id = "loc.hollow_tree_big"
+inherit = "loc.hollow_tree_big"
+contentGroup = "content.tree"
+
+[object.params]
+"param.levelrequire" = 45
+"param.woodcutting_axe_success_rates" = "enum.hollow_tree_axes"
+"param.respawn_time" = 43
+"param.despawn_time" = 60
+"param.skill_productitem" = "obj.hollow_bark"
+"param.skill_xp" = 825
+"param.next_loc_stage" = "loc.hollow_tree_stump_big"
+
+[[object]]
+id = "loc.willow_tree3"
+inherit = "loc.willow_tree3"
+contentGroup = "content.tree"
+
+[object.params]
+"param.levelrequire" = 30
+"param.woodcutting_axe_success_rates" = "enum.willow_tree_axes"
+"param.respawn_time" = 15
+"param.despawn_time" = 50
+"param.skill_productitem" = "obj.willow_logs"
+"param.skill_xp" = 675
+"param.next_loc_stage" = "loc.willow_tree2or3or4_stump"
+
+[[object]]
+id = "loc.mapletree"
+inherit = "loc.mapletree"
+contentGroup = "content.tree"
+
+[object.params]
+"param.levelrequire" = 45
+"param.woodcutting_axe_success_rates" = "enum.maple_tree_axes"
+"param.respawn_time" = 60
+"param.despawn_time" = 100
+"param.skill_productitem" = "obj.maple_logs"
+"param.skill_xp" = 1000
+"param.next_loc_stage" = "loc.maple_tree_stump_new"
+
+[[object]]
+id = "loc.willow_tree4"
+inherit = "loc.willow_tree4"
+contentGroup = "content.tree"
+
+[object.params]
+"param.levelrequire" = 30
+"param.woodcutting_axe_success_rates" = "enum.willow_tree_axes"
+"param.respawn_time" = 15
+"param.despawn_time" = 50
+"param.skill_productitem" = "obj.willow_logs"
+"param.skill_xp" = 675
+"param.next_loc_stage" = "loc.willow_tree2or3or4_stump"
+
+[[object]]
+id = "loc.magictree"
+inherit = "loc.magictree"
+contentGroup = "content.tree"
+
+[object.params]
+"param.levelrequire" = 75
+"param.woodcutting_axe_success_rates" = "enum.magic_tree_axes"
+"param.respawn_time" = 200
+"param.despawn_time" = 390
+"param.skill_productitem" = "obj.magic_logs"
+"param.skill_xp" = 2500
+"param.next_loc_stage" = "loc.magic_tree_stump_new"
+
+[[object]]
+id = "loc.canoestation_log"
+inherit = "loc.canoestation_log"
+
+[object.params]
+"param.levelrequire" = 12
+"param.skill_xp" = 30
+"param.next_loc_stage" = "loc.canoeing_log_sinking"
+
+[[object]]
+id = "loc.canoestation_dugout"
+inherit = "loc.canoestation_dugout"
+
+[object.params]
+"param.levelrequire" = 27
+"param.skill_xp" = 60
+"param.next_loc_stage" = "loc.canoeing_dugout_sinking"
+
+[[object]]
+id = "loc.canoestation_stabledugout"
+inherit = "loc.canoestation_stabledugout"
+
+[object.params]
+"param.levelrequire" = 42
+"param.skill_xp" = 90
+"param.next_loc_stage" = "loc.canoeing_catamaran_sinking"
+
+[[object]]
+id = "loc.canoestation_waka"
+inherit = "loc.canoestation_waka"
+
+[object.params]
+"param.levelrequire" = 57
+"param.skill_xp" = 150
+"param.next_loc_stage" = "loc.canoeing_waka_sinking"
+
+[[object]]
+id = "loc.qip_cook_crate_stacked"
+inherit = "loc.qip_cook_crate_stacked"
+contentGroup = "content.empty_crate"
+
+[object.params]
+"param.game_message" = "You search the crate but find nothing."
+
+[[object]]
+id = "loc.qip_sheep_shearer_fencegate_l"
+inherit = "loc.qip_sheep_shearer_fencegate_l"
+contentGroup = "content.closed_left_picketgate"
+
+[object.params]
+"param.next_loc_stage" = "loc.qip_sheep_shearer_openfencegate_l"
+"param.opensound" = "synth.picketgate_open"
+
+[[object]]
+id = "loc.qip_sheep_shearer_fencegate_r"
+inherit = "loc.qip_sheep_shearer_fencegate_r"
+contentGroup = "content.closed_right_picketgate"
+
+[object.params]
+"param.next_loc_stage" = "loc.qip_sheep_shearer_openfencegate_r"
+"param.opensound" = "synth.picketgate_open"
+
+[[object]]
+id = "loc.qip_sheep_shearer_openfencegate_l"
+inherit = "loc.qip_sheep_shearer_openfencegate_l"
+contentGroup = "content.opened_left_picketgate"
+
+[object.params]
+"param.closesound" = "synth.door_close"
+"param.next_loc_stage" = "loc.qip_sheep_shearer_fencegate_l"
+
+[[object]]
+id = "loc.qip_sheep_shearer_openfencegate_r"
+inherit = "loc.qip_sheep_shearer_openfencegate_r"
+contentGroup = "content.opened_right_picketgate"
+
+[object.params]
+"param.closesound" = "synth.door_close"
+"param.next_loc_stage" = "loc.qip_sheep_shearer_fencegate_r"
+
+[[object]]
+id = "loc.pest_tree"
+inherit = "loc.pest_tree"
+contentGroup = "content.tree"
+
+[object.params]
+"param.levelrequire" = 1
+"param.woodcutting_axe_success_rates" = "enum.regular_tree_axes"
+"param.respawn_time_low" = 60
+"param.respawn_time_high" = 100
+"param.respawn_time" = 0
+"param.deplete_chance" = 0
+"param.skill_productitem" = "obj.logs"
+"param.skill_xp" = 250
+"param.next_loc_stage" = "loc.treestump2"
+
+[[object]]
+id = "loc.pest_tree2"
+inherit = "loc.pest_tree2"
+contentGroup = "content.tree"
+
+[object.params]
+"param.levelrequire" = 1
+"param.woodcutting_axe_success_rates" = "enum.regular_tree_axes"
+"param.respawn_time_low" = 60
+"param.respawn_time_high" = 100
+"param.respawn_time" = 0
+"param.deplete_chance" = 0
+"param.skill_productitem" = "obj.logs"
+"param.skill_xp" = 250
+"param.next_loc_stage" = "loc.treestump2"
+
+[[object]]
+id = "loc.qip_cook_trapdoor_open"
+inherit = "loc.qip_cook_trapdoor_open"
+contentGroup = "content.dungeonladder_down"
+
+[object.params]
+"param.climb_anim" = "seq.human_pickupfloor"
+
+[[object]]
+id = "loc.fai_varrock_wheat"
+inherit = "loc.fai_varrock_wheat"
+contentGroup = "content.pickable_crop"
+
+[object.params]
+"param.rewarditem" = "obj.grain"
+"param.respawn_time" = 20
+"param.game_message" = "You pick some grain."
+"param.game_message2" = "You can't carry any more grain."
+
+[[object]]
+id = "loc.fai_varrock_wheat_corner"
+inherit = "loc.fai_varrock_wheat_corner"
+contentGroup = "content.pickable_crop"
+
+[object.params]
+"param.rewarditem" = "obj.grain"
+"param.respawn_time" = 20
+"param.game_message" = "You pick some grain."
+"param.game_message2" = "You can't carry any more grain."
+
+[[object]]
+id = "loc.fai_varrock_wheat_small"
+inherit = "loc.fai_varrock_wheat_small"
+contentGroup = "content.pickable_crop"
+
+[object.params]
+"param.rewarditem" = "obj.grain"
+"param.respawn_time" = 20
+"param.game_message" = "You pick some grain."
+"param.game_message2" = "You can't carry any more grain."
+
+[[object]]
+id = "loc.spiralstairs"
+inherit = "loc.spiralstairs"
+contentGroup = "content.spiralstaircase_up"
+
+[[object]]
+id = "loc.spiralstairsmiddle"
+inherit = "loc.spiralstairsmiddle"
+contentGroup = "content.spiralstaircase_option"
+
+[[object]]
+id = "loc.spiralstairstop"
+inherit = "loc.spiralstairstop"
+contentGroup = "content.spiralstaircase_down"
+
+[[object]]
+id = "loc.laddertop"
+inherit = "loc.laddertop"
+contentGroup = "content.ladder_down"
+
+[object.params]
+"param.climb_anim" = "seq.human_pickupfloor"
+
+[[object]]
+id = "loc.ladder"
+inherit = "loc.ladder"
+contentGroup = "content.ladder_up"
+
+[[object]]
+id = "loc.laddermiddle"
+inherit = "loc.laddermiddle"
+contentGroup = "content.ladder_option"
+
+[[object]]
+id = "loc.ladder_from_cellar"
+inherit = "loc.ladder_from_cellar"
+contentGroup = "content.dungeonladder_up"
+
+[[object]]
+id = "loc.aide_bankbooth"
+inherit = "loc.aide_bankbooth"
+contentGroup = "content.bank_booth"
+
+[[object]]
+id = "loc.rustic_fencegate_r"
+inherit = "loc.rustic_fencegate_r"
+contentGroup = "content.closed_right_picketgate"
+
+[object.params]
+"param.next_loc_stage" = "loc.rustic_openfencegate_r"
+"param.opensound" = "synth.picketgate_open"
+
+[[object]]
+id = "loc.rustic_openfencegate_l"
+inherit = "loc.rustic_openfencegate_l"
+contentGroup = "content.opened_left_picketgate"
+
+[object.params]
+"param.closesound" = "synth.door_close"
+"param.next_loc_stage" = "loc.rustic_fencegate_l"
+
+[[object]]
+id = "loc.rustic_openfencegate_r"
+inherit = "loc.rustic_openfencegate_r"
+contentGroup = "content.opened_right_picketgate"
+
+[object.params]
+"param.closesound" = "synth.door_close"
+"param.next_loc_stage" = "loc.rustic_fencegate_r"
+
+[[object]]
+id = "loc.aide_bankbooth_multi"
+inherit = "loc.aide_bankbooth_multi"
+contentGroup = "content.bank_booth"
+
+[[object]]
+id = "loc.mature_juniper_tree"
+inherit = "loc.mature_juniper_tree"
+contentGroup = "content.tree"
+
+[object.params]
+"param.levelrequire" = 42
+"param.woodcutting_axe_success_rates" = "enum.regular_tree_axes"
+"param.respawn_time" = 15
+"param.deplete_chance" = 16
+"param.skill_productitem" = "obj.juniper_logs"
+"param.skill_xp" = 350
+"param.next_loc_stage" = "loc.mature_juniper_tree_stump"
+
+[[object]]
+id = "loc.redwoodtree_l"
+inherit = "loc.redwoodtree_l"
+contentGroup = "content.tree"
+
+[object.params]
+"param.levelrequire" = 90
+"param.woodcutting_axe_success_rates" = "enum.redwood_tree_axes"
+"param.respawn_time" = 200
+"param.despawn_time" = 440
+"param.skill_productitem" = "obj.redwood_logs"
+"param.skill_xp" = 3800
+"param.next_loc_stage" = "loc.redwoodtree_l_cut"
+
+[[object]]
+id = "loc.redwoodtree_r"
+inherit = "loc.redwoodtree_r"
+contentGroup = "content.tree"
+
+[object.params]
+"param.levelrequire" = 90
+"param.woodcutting_axe_success_rates" = "enum.redwood_tree_axes"
+"param.respawn_time" = 200
+"param.despawn_time" = 440
+"param.skill_productitem" = "obj.redwood_logs"
+"param.skill_xp" = 3800
+"param.next_loc_stage" = "loc.redwoodtree_r_cut"
+
+[[object]]
+id = "loc.fossil_deadtree_large1"
+inherit = "loc.fossil_deadtree_large1"
+contentGroup = "content.tree"
+
+[object.params]
+"param.levelrequire" = 1
+"param.woodcutting_axe_success_rates" = "enum.regular_tree_axes"
+"param.respawn_time_low" = 60
+"param.respawn_time_high" = 100
+"param.respawn_time" = 0
+"param.deplete_chance" = 0
+"param.skill_productitem" = "obj.charcoal"
+"param.skill_xp" = 250
+"param.next_loc_stage" = "loc.fossil_deadtree_large1_stump"
+
+[[object]]
+id = "loc.fossil_deadtree_small1"
+inherit = "loc.fossil_deadtree_small1"
+contentGroup = "content.tree"
+
+[object.params]
+"param.levelrequire" = 1
+"param.woodcutting_axe_success_rates" = "enum.regular_tree_axes"
+"param.respawn_time_low" = 60
+"param.respawn_time_high" = 100
+"param.respawn_time" = 0
+"param.deplete_chance" = 0
+"param.skill_productitem" = "obj.charcoal"
+"param.skill_xp" = 250
+"param.next_loc_stage" = "loc.fossil_deadtree_small1_stump"
+
+[[object]]
+id = "loc.prif_tree_normal_1"
+inherit = "loc.prif_tree_normal_1"
+contentGroup = "content.tree"
+
+[object.params]
+"param.levelrequire" = 1
+"param.woodcutting_axe_success_rates" = "enum.regular_tree_axes"
+"param.respawn_time_low" = 60
+"param.respawn_time_high" = 100
+"param.respawn_time" = 0
+"param.deplete_chance" = 0
+"param.skill_productitem" = "obj.logs"
+"param.skill_xp" = 250
+"param.next_loc_stage" = "loc.prif_tree_normal_1_stump"
+
+[[object]]
+id = "loc.prif_tree_normal_2"
+inherit = "loc.prif_tree_normal_2"
+contentGroup = "content.tree"
+
+[object.params]
+"param.levelrequire" = 1
+"param.woodcutting_axe_success_rates" = "enum.regular_tree_axes"
+"param.respawn_time_low" = 60
+"param.respawn_time_high" = 100
+"param.respawn_time" = 0
+"param.deplete_chance" = 0
+"param.skill_productitem" = "obj.logs"
+"param.skill_xp" = 250
+"param.next_loc_stage" = "loc.prif_tree_normal_2_stump"
+
+[[object]]
+id = "loc.prif_outside_tree_normal_1"
+inherit = "loc.prif_outside_tree_normal_1"
+contentGroup = "content.tree"
+
+[object.params]
+"param.levelrequire" = 1
+"param.woodcutting_axe_success_rates" = "enum.regular_tree_axes"
+"param.respawn_time_low" = 60
+"param.respawn_time_high" = 100
+"param.respawn_time" = 0
+"param.deplete_chance" = 0
+"param.skill_productitem" = "obj.logs"
+"param.skill_xp" = 250
+"param.next_loc_stage" = "loc.prif_outside_tree_normal_1_stump"
+
+[[object]]
+id = "loc.prif_outside_tree_normal_2"
+inherit = "loc.prif_outside_tree_normal_2"
+contentGroup = "content.tree"
+
+[object.params]
+"param.levelrequire" = 1
+"param.woodcutting_axe_success_rates" = "enum.regular_tree_axes"
+"param.respawn_time_low" = 60
+"param.respawn_time_high" = 100
+"param.respawn_time" = 0
+"param.deplete_chance" = 0
+"param.skill_productitem" = "obj.logs"
+"param.skill_xp" = 250
+"param.next_loc_stage" = "loc.prif_outside_tree_normal_1_stump"
+
+[[object]]
+id = "loc.prif_mapletree"
+inherit = "loc.prif_mapletree"
+contentGroup = "content.tree"
+
+[object.params]
+"param.levelrequire" = 45
+"param.woodcutting_axe_success_rates" = "enum.maple_tree_axes"
+"param.respawn_time" = 60
+"param.despawn_time" = 100
+"param.skill_productitem" = "obj.maple_logs"
+"param.skill_xp" = 1000
+"param.next_loc_stage" = "loc.prif_mapletree_stump"
+
+[[object]]
+id = "loc.prif_yewtree"
+inherit = "loc.prif_yewtree"
+contentGroup = "content.tree"
+
+[object.params]
+"param.levelrequire" = 60
+"param.woodcutting_axe_success_rates" = "enum.yew_tree_axes"
+"param.respawn_time" = 100
+"param.despawn_time" = 190
+"param.skill_productitem" = "obj.yew_logs"
+"param.skill_xp" = 1750
+"param.next_loc_stage" = "loc.prif_yewtree_stump"
+
+[[object]]
+id = "loc.prif_teaktree"
+inherit = "loc.prif_teaktree"
+contentGroup = "content.tree"
+
+[object.params]
+"param.levelrequire" = 35
+"param.woodcutting_axe_success_rates" = "enum.teak_tree_axes"
+"param.respawn_time" = 16
+"param.despawn_time" = 50
+"param.skill_productitem" = "obj.teak_logs"
+"param.skill_xp" = 850
+"param.next_loc_stage" = "loc.prif_teak_stump"
+
+[[object]]
+id = "loc.prif_mahoganytree"
+inherit = "loc.prif_mahoganytree"
+contentGroup = "content.tree"
+
+[object.params]
+"param.levelrequire" = 50
+"param.woodcutting_axe_success_rates" = "enum.mahogany_tree_axes"
+"param.respawn_time" = 15
+"param.despawn_time" = 100
+"param.skill_productitem" = "obj.mahogany_logs"
+"param.skill_xp" = 1250
+"param.next_loc_stage" = "loc.prif_mahogany_stump"
+
+[[object]]
+id = "loc.tree_update_1"
+inherit = "loc.tree_update_1"
+contentGroup = "content.tree"
+
+[object.params]
+"param.levelrequire" = 1
+"param.woodcutting_axe_success_rates" = "enum.regular_tree_axes"
+"param.respawn_time_low" = 60
+"param.respawn_time_high" = 100
+"param.respawn_time" = 0
+"param.deplete_chance" = 0
+"param.skill_productitem" = "obj.logs"
+"param.skill_xp" = 250
+"param.next_loc_stage" = "loc.tree_update_1_stump"
+
+[[object]]
+id = "loc.tree_update_2"
+inherit = "loc.tree_update_2"
+contentGroup = "content.tree"
+
+[object.params]
+"param.levelrequire" = 1
+"param.woodcutting_axe_success_rates" = "enum.regular_tree_axes"
+"param.respawn_time_low" = 60
+"param.respawn_time_high" = 100
+"param.respawn_time" = 0
+"param.deplete_chance" = 0
+"param.skill_productitem" = "obj.logs"
+"param.skill_xp" = 250
+"param.next_loc_stage" = "loc.tree_update_2_stump"
+
+[[object]]
+id = "loc.mapletree_update"
+inherit = "loc.mapletree_update"
+contentGroup = "content.tree"
+
+[object.params]
+"param.levelrequire" = 45
+"param.woodcutting_axe_success_rates" = "enum.maple_tree_axes"
+"param.respawn_time" = 60
+"param.despawn_time" = 100
+"param.skill_productitem" = "obj.maple_logs"
+"param.skill_xp" = 1000
+"param.next_loc_stage" = "loc.mapletree_update_stump"
+
+[[object]]
+id = "loc.yewtree_update"
+inherit = "loc.yewtree_update"
+contentGroup = "content.tree"
+
+[object.params]
+"param.levelrequire" = 60
+"param.woodcutting_axe_success_rates" = "enum.yew_tree_axes"
+"param.respawn_time" = 100
+"param.despawn_time" = 190
+"param.skill_productitem" = "obj.yew_logs"
+"param.skill_xp" = 1750
+"param.next_loc_stage" = "loc.yewtree_update_stump"
+
+[[object]]
+id = "loc.teaktree_update"
+inherit = "loc.teaktree_update"
+contentGroup = "content.tree"
+
+[object.params]
+"param.levelrequire" = 35
+"param.woodcutting_axe_success_rates" = "enum.teak_tree_axes"
+"param.respawn_time" = 16
+"param.despawn_time" = 50
+"param.skill_productitem" = "obj.teak_logs"
+"param.skill_xp" = 850
+"param.next_loc_stage" = "loc.teaktree_update_stump"
+
+[[object]]
+id = "loc.mahoganytree_update"
+inherit = "loc.mahoganytree_update"
+contentGroup = "content.tree"
+
+[object.params]
+"param.levelrequire" = 50
+"param.woodcutting_axe_success_rates" = "enum.mahogany_tree_axes"
+"param.respawn_time" = 15
+"param.despawn_time" = 100
+"param.skill_productitem" = "obj.mahogany_logs"
+"param.skill_xp" = 1250
+"param.next_loc_stage" = "loc.mahoganytree_update_stump"
+
+[[object]]
+id = "loc.tree_yew_default01"
+inherit = "loc.tree_yew_default01"
+contentGroup = "content.tree"
+
+[object.params]
+"param.levelrequire" = 60
+"param.woodcutting_axe_success_rates" = "enum.yew_tree_axes"
+"param.respawn_time" = 100
+"param.despawn_time" = 190
+"param.skill_productitem" = "obj.yew_logs"
+"param.skill_xp" = 1750
+"param.next_loc_stage" = "loc.tree_yew_stump01"
+
+[[object]]
+id = "loc.tree_normal_default01"
+inherit = "loc.tree_normal_default01"
+contentGroup = "content.tree"
+
+[object.params]
+"param.levelrequire" = 1
+"param.woodcutting_axe_success_rates" = "enum.regular_tree_axes"
+"param.respawn_time_low" = 60
+"param.respawn_time_high" = 100
+"param.respawn_time" = 0
+"param.deplete_chance" = 0
+"param.skill_productitem" = "obj.logs"
+"param.skill_xp" = 250
+"param.next_loc_stage" = "loc.tree_normal_stump01"
+
+[[object]]
+id = "loc.tree_oak_default01"
+inherit = "loc.tree_oak_default01"
+contentGroup = "content.tree"
+
+[object.params]
+"param.levelrequire" = 15
+"param.woodcutting_axe_success_rates" = "enum.oak_tree_axes"
+"param.respawn_time" = 15
+"param.despawn_time" = 45
+"param.skill_productitem" = "obj.oak_logs"
+"param.skill_xp" = 375
+"param.next_loc_stage" = "loc.tree_oak_stump01"
+
+[[object]]
+id = "loc.avium_tree_1"
+inherit = "loc.avium_tree_1"
+contentGroup = "content.tree"
+
+[object.params]
+"param.levelrequire" = 1
+"param.woodcutting_axe_success_rates" = "enum.regular_tree_axes"
+"param.respawn_time_low" = 60
+"param.respawn_time_high" = 100
+"param.respawn_time" = 0
+"param.deplete_chance" = 0
+"param.skill_productitem" = "obj.logs"
+"param.skill_xp" = 250
+"param.next_loc_stage" = "loc.avium_tree_1_stump"
+
+[[object]]
+id = "loc.avium_tree_2"
+inherit = "loc.avium_tree_2"
+contentGroup = "content.tree"
+
+[object.params]
+"param.levelrequire" = 1
+"param.woodcutting_axe_success_rates" = "enum.regular_tree_axes"
+"param.respawn_time_low" = 60
+"param.respawn_time_high" = 100
+"param.respawn_time" = 0
+"param.deplete_chance" = 0
+"param.skill_productitem" = "obj.logs"
+"param.skill_xp" = 250
+"param.next_loc_stage" = "loc.avium_tree_2_stump"
+
+[[object]]
+id = "loc.tree4"
+inherit = "loc.tree4"
+contentGroup = "content.tree"
+
+[object.params]
+"param.levelrequire" = 1
+"param.woodcutting_axe_success_rates" = "enum.regular_tree_axes"
+"param.respawn_time_low" = 60
+"param.respawn_time_high" = 100
+"param.respawn_time" = 0
+"param.deplete_chance" = 0
+"param.skill_productitem" = "obj.logs"
+"param.skill_xp" = 250
+"param.next_loc_stage" = "loc.treestump2"
+
+[[object]]
+id = "loc.avium_tree_dark"
+inherit = "loc.avium_tree_dark"
+contentGroup = "content.tree"
+
+[object.params]
+"param.levelrequire" = 1
+"param.woodcutting_axe_success_rates" = "enum.regular_tree_axes"
+"param.respawn_time_low" = 60
+"param.respawn_time_high" = 100
+"param.respawn_time" = 0
+"param.deplete_chance" = 0
+"param.skill_productitem" = "obj.logs"
+"param.skill_xp" = 250
+"param.next_loc_stage" = "loc.avium_tree_dark_stump"
+
+[[object]]
+id = "loc.spiralstairsbottom_3"
+inherit = "loc.spiralstairsbottom_3"
+contentGroup = "content.spiralstaircase_up"
+
+[[object]]
+id = "loc.spiralstairstop_3"
+inherit = "loc.spiralstairstop_3"
+contentGroup = "content.spiralstaircase_down"
+
+[[object]]
+id = "loc.poordoor_m"
+inherit = "loc.poordoor_m"
+contentGroup = "content.closed_single_door"
+
+[object.params]
+"param.next_loc_stage" = "loc.poordooropen_m"
+
+[[object]]
+id = "loc.poordooropen_m"
+inherit = "loc.poordooropen_m"
+contentGroup = "content.opened_single_door"
+
+[object.params]
+"param.next_loc_stage" = "loc.poordoor_m"

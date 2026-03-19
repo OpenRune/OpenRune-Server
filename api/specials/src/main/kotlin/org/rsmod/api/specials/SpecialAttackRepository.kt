@@ -1,5 +1,6 @@
 package org.rsmod.api.specials
 
+import dev.openrune.types.ItemServerType
 import jakarta.inject.Inject
 import org.rsmod.api.combat.commons.CombatAttack
 import org.rsmod.api.specials.combat.MagicSpecialAttack
@@ -8,7 +9,6 @@ import org.rsmod.api.specials.combat.RangedSpecialAttack
 import org.rsmod.api.specials.configs.SpecialAttackEnergyEnums
 import org.rsmod.api.specials.instant.InstantSpecialAttack
 import org.rsmod.api.specials.weapon.SpecialAttackWeapons
-import org.rsmod.game.type.obj.ObjType
 
 public class SpecialAttackRepository
 @Inject
@@ -26,7 +26,7 @@ constructor(private val registry: SpecialAttackRegistry) {
      *
      * @throws IllegalStateException if [specWeapon] is already registered with any special attack.
      */
-    public fun registerInstant(specWeapon: ObjType, special: InstantSpecialAttack) {
+    public fun registerInstant(specWeapon: ItemServerType, special: InstantSpecialAttack) {
         val result = registry.add(specWeapon, special)
         assertValidResult(specWeapon, result)
     }
@@ -66,7 +66,7 @@ constructor(private val registry: SpecialAttackRegistry) {
      * @see [SpecialAttackManager.hasSpecialEnergy]
      * @see [SpecialAttackManager.takeSpecialEnergy]
      */
-    public fun registerMelee(specWeapon: ObjType, special: MeleeSpecialAttack) {
+    public fun registerMelee(specWeapon: ItemServerType, special: MeleeSpecialAttack) {
         val result = registry.add(specWeapon, special)
         assertValidResult(specWeapon, result)
     }
@@ -105,7 +105,7 @@ constructor(private val registry: SpecialAttackRegistry) {
      * @see [SpecialAttackManager.hasSpecialEnergy]
      * @see [SpecialAttackManager.takeSpecialEnergy]
      */
-    public fun registerRanged(specWeapon: ObjType, special: RangedSpecialAttack) {
+    public fun registerRanged(specWeapon: ItemServerType, special: RangedSpecialAttack) {
         val result = registry.add(specWeapon, special)
         assertValidResult(specWeapon, result)
     }
@@ -148,12 +148,15 @@ constructor(private val registry: SpecialAttackRegistry) {
      * @see [SpecialAttackManager.hasSpecialEnergy]
      * @see [SpecialAttackManager.takeSpecialEnergy]
      */
-    public fun registerMagic(specWeapon: ObjType, special: MagicSpecialAttack) {
+    public fun registerMagic(specWeapon: ItemServerType, special: MagicSpecialAttack) {
         val result = registry.add(specWeapon, special)
         assertValidResult(specWeapon, result)
     }
 
-    private fun assertValidResult(specWeapon: ObjType, result: SpecialAttackRegistry.Result.Add) {
+    private fun assertValidResult(
+        specWeapon: ItemServerType,
+        result: SpecialAttackRegistry.Result.Add,
+    ) {
         when (result) {
             SpecialAttackRegistry.Result.Add.AlreadyAdded -> {
                 error("Weapon already has a special attack mapped: $specWeapon")

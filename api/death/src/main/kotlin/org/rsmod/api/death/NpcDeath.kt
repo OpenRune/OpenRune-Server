@@ -18,7 +18,6 @@ import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.game.entity.PlayerList
 import org.rsmod.game.entity.npc.NpcUid
-import org.rsmod.game.type.seq.SeqTypeList
 import org.rsmod.map.CoordGrid
 
 @Singleton
@@ -26,19 +25,18 @@ public class NpcDeath
 @Inject
 constructor(
     private val npcRepo: NpcRepository,
-    private val seqTypes: SeqTypeList,
     private val players: PlayerList,
     private val objRepo: ObjRepository,
 ) {
     public suspend fun deathNoDrops(access: StandardNpcAccess) {
-        access.death(npcRepo, seqTypes, players)
+        access.death(npcRepo, players)
     }
 
     public suspend fun deathWithDrops(
         access: StandardNpcAccess,
         dropCoords: CoordGrid = access.coords,
     ) {
-        access.death(npcRepo, seqTypes, players)
+        access.death(npcRepo, players)
         access.npc.spawnDeathDrops(dropCoords)
     }
 
@@ -78,11 +76,7 @@ private var Npc.aggressivePlayer by typePlayerUidVarn(varns.aggressive_player)
  *   (`onNpcQueue(npc_type, queues.death)`), you must explicitly handle drop spawns in the script by
  *   injecting `NpcDeath` and calling either [NpcDeath.deathWithDrops] or [NpcDeath.spawnDrops].
  */
-public suspend fun StandardNpcAccess.death(
-    npcRepo: NpcRepository,
-    seqTypes: SeqTypeList,
-    players: PlayerList,
-) {
+public suspend fun StandardNpcAccess.death(npcRepo: NpcRepository, players: PlayerList) {
     walk(coords)
     noneMode()
     hideAllOps()
@@ -107,7 +101,7 @@ public suspend fun StandardNpcAccess.death(
 
     val deathAnim = param(params.death_anim)
     anim(deathAnim)
-    delay(seqTypes[deathAnim])
+    delay(deathAnim)
 
     if (npc.respawns) {
         npcRepo.despawn(npc, npc.type.respawnRate)

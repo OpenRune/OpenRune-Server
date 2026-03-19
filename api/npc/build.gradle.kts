@@ -15,8 +15,6 @@ dependencies {
     implementation(projects.api.playerOutput)
     implementation(projects.api.random)
     implementation(projects.api.route)
-    implementation(projects.api.type.typeBuilders)
-    implementation(projects.api.type.typeReferences)
     implementation(projects.engine.annotations)
     implementation(projects.engine.coroutine)
     implementation(projects.engine.events)

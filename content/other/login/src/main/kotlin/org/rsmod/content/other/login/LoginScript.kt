@@ -1,5 +1,7 @@
 package org.rsmod.content.other.login
 
+import dev.openrune.ServerCacheManager
+import dev.openrune.types.varp.VarpServerType
 import jakarta.inject.Inject
 import net.rsprot.protocol.game.outgoing.misc.client.HideLocOps
 import net.rsprot.protocol.game.outgoing.misc.client.HideNpcOps
@@ -23,14 +25,11 @@ import org.rsmod.api.player.vars.boolVarBit
 import org.rsmod.api.player.vars.resyncVar
 import org.rsmod.api.realm.Realm
 import org.rsmod.api.script.onEvent
+import org.rsmod.api.server.config.ServerConfig
 import org.rsmod.api.stats.levelmod.InvisibleLevels
 import org.rsmod.game.MapClock
 import org.rsmod.game.entity.Player
 import org.rsmod.game.entity.player.SessionStateEvent
-import org.rsmod.game.type.obj.ObjTypeList
-import org.rsmod.game.type.stat.StatTypeList
-import org.rsmod.game.type.varp.UnpackedVarpType
-import org.rsmod.game.type.varp.VarpTypeList
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
@@ -39,10 +38,8 @@ class LoginScript
 constructor(
     private val realm: Realm,
     private val mapClock: MapClock,
-    private val objTypes: ObjTypeList,
-    private val varpTypes: VarpTypeList,
-    private val statTypes: StatTypeList,
     private val invisibleLevels: InvisibleLevels,
+    private val config: ServerConfig,
 ) : PluginScript() {
     private val transmitVars by lazy { transmitVars() }
 
@@ -77,7 +74,9 @@ constructor(
 
     private fun Player.sendWelcomeMessage() {
         val message = realm.config.loginMessage
-        message?.let { mes(it, ChatType.Welcome) }
+        message?.let {
+            mes(it.replace("RS Mod", config.name), ChatType.Welcome)
+        }
 
         val broadcast = realm.config.loginBroadcast
         broadcast?.let { mes(it, ChatType.Broadcast) }
@@ -118,7 +117,7 @@ constructor(
     }
 
     private fun Player.sendStats() {
-        for (stat in statTypes.values) {
+        for (stat in ServerCacheManager.getStats().values) {
             val currXp = statMap.getXP(stat)
             val currLvl = stat(stat)
             val hiddenLvl = currLvl + invisibleLevels.get(this, stat)
@@ -127,7 +126,7 @@ constructor(
     }
 
     private fun Player.sendRun() {
-        val weightInGrams = InvWeight.calculateWeightInGrams(this, objTypes)
+        val weightInGrams = InvWeight.calculateWeightInGrams(this)
         runWeight = weightInGrams
         UpdateRun.weight(this, kg = weightInGrams / 1000)
         UpdateRun.energy(this, runEnergy)
@@ -141,7 +140,7 @@ constructor(
         MiscOutput.setPlayerOp(this, slot = 8, op = "Report")
     }
 
-    private fun transmitVars(): List<UnpackedVarpType> {
-        return varpTypes.filterTransmitKeys().sorted().map(varpTypes::getValue)
+    private fun transmitVars(): List<VarpServerType> {
+        return ServerCacheManager.getVarps().values.filter { !it.transmit.never }.sortedBy { it.id }
     }
 }

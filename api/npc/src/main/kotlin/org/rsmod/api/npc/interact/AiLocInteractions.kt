@@ -1,5 +1,7 @@
 package org.rsmod.api.npc.interact
 
+import dev.openrune.ServerCacheManager
+import dev.openrune.types.ObjectServerType
 import jakarta.inject.Inject
 import org.rsmod.api.npc.events.interact.AiLocContentEvents
 import org.rsmod.api.npc.events.interact.AiLocDefaultEvents
@@ -13,21 +15,16 @@ import org.rsmod.game.entity.Npc
 import org.rsmod.game.interact.InteractionLocOp
 import org.rsmod.game.interact.InteractionOp
 import org.rsmod.game.loc.BoundLocInfo
-import org.rsmod.game.type.loc.LocTypeList
-import org.rsmod.game.type.loc.UnpackedLocType
+import org.rsmod.game.type.hasOp
 
 public class AiLocInteractions
 @Inject
-constructor(
-    private val locTypes: LocTypeList,
-    private val boundValidator: BoundValidator,
-    private val eventBus: EventBus,
-) {
+constructor(private val boundValidator: BoundValidator, private val eventBus: EventBus) {
     public fun interactOp(
         npc: Npc,
         loc: BoundLocInfo,
         op: InteractionOp,
-        type: UnpackedLocType = locTypes[loc],
+        type: ObjectServerType = ServerCacheManager.getObject(loc.id)!!,
     ) {
         val opTrigger = hasOpTrigger(loc, op, type)
         val interaction =
@@ -60,7 +57,7 @@ constructor(
     public fun opTrigger(
         loc: BoundLocInfo,
         op: InteractionOp,
-        type: UnpackedLocType = locTypes[loc],
+        type: ObjectServerType = ServerCacheManager.getObject(loc.id)!!,
     ): OpEvent? {
         val typeEvent = loc.toOp(type, op)
         if (eventBus.contains(typeEvent::class.java, typeEvent.id)) {
@@ -87,13 +84,13 @@ constructor(
     public fun hasOpTrigger(
         loc: BoundLocInfo,
         op: InteractionOp,
-        type: UnpackedLocType = locTypes[loc],
+        type: ObjectServerType = ServerCacheManager.getObject(loc.id)!!,
     ): Boolean = opTrigger(loc, op, type) != null
 
     public fun apTrigger(
         loc: BoundLocInfo,
         op: InteractionOp,
-        type: UnpackedLocType = locTypes[loc],
+        type: ObjectServerType = ServerCacheManager.getObject(loc.id)!!,
     ): ApEvent? {
         val typeEvent = loc.toAp(type, op)
         if (eventBus.contains(typeEvent::class.java, typeEvent.id)) {
@@ -113,7 +110,7 @@ constructor(
         return null
     }
 
-    private fun BoundLocInfo.toOp(type: UnpackedLocType, op: InteractionOp): AiLocEvents.Op =
+    private fun BoundLocInfo.toOp(type: ObjectServerType, op: InteractionOp): AiLocEvents.Op =
         when (op) {
             InteractionOp.Op1 -> AiLocEvents.Op1(this, type)
             InteractionOp.Op2 -> AiLocEvents.Op2(this, type)
@@ -123,7 +120,7 @@ constructor(
         }
 
     private fun BoundLocInfo.toContentOp(
-        type: UnpackedLocType,
+        type: ObjectServerType,
         contentGroup: Int,
         op: InteractionOp,
     ): AiLocContentEvents.Op =
@@ -136,7 +133,7 @@ constructor(
         }
 
     private fun BoundLocInfo.toUnimplementedOp(
-        type: UnpackedLocType,
+        type: ObjectServerType,
         op: InteractionOp,
     ): AiLocUnimplementedEvents.Op =
         when (op) {
@@ -148,7 +145,7 @@ constructor(
         }
 
     private fun BoundLocInfo.toDefaultOp(
-        type: UnpackedLocType,
+        type: ObjectServerType,
         op: InteractionOp,
     ): AiLocDefaultEvents.Op =
         when (op) {
@@ -159,7 +156,7 @@ constructor(
             InteractionOp.Op5 -> AiLocDefaultEvents.Op5(this, type)
         }
 
-    private fun BoundLocInfo.toAp(type: UnpackedLocType, op: InteractionOp): AiLocEvents.Ap =
+    private fun BoundLocInfo.toAp(type: ObjectServerType, op: InteractionOp): AiLocEvents.Ap =
         when (op) {
             InteractionOp.Op1 -> AiLocEvents.Ap1(this, type)
             InteractionOp.Op2 -> AiLocEvents.Ap2(this, type)
@@ -169,7 +166,7 @@ constructor(
         }
 
     private fun BoundLocInfo.toContentAp(
-        type: UnpackedLocType,
+        type: ObjectServerType,
         contentGroup: Int,
         op: InteractionOp,
     ): AiLocContentEvents.Ap =
@@ -182,7 +179,7 @@ constructor(
         }
 
     private fun BoundLocInfo.toDefaultAp(
-        type: UnpackedLocType,
+        type: ObjectServerType,
         op: InteractionOp,
     ): AiLocDefaultEvents.Ap =
         when (op) {
@@ -193,5 +190,5 @@ constructor(
             InteractionOp.Op5 -> AiLocDefaultEvents.Ap5(this, type)
         }
 
-    public fun hasOp(type: UnpackedLocType, op: InteractionOp): Boolean = type.hasOp(op)
+    public fun hasOp(type: ObjectServerType, op: InteractionOp): Boolean = type.hasOp(op)
 }

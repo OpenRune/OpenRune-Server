@@ -1,6 +1,6 @@
 package org.rsmod.api.player.input
 
-import org.rsmod.game.type.comp.ComponentType
+import dev.openrune.definition.type.widget.ComponentType
 
 public data class ResumePauseButtonInput(
     public val component: ComponentType,

@@ -1,11 +1,11 @@
 package org.rsmod.api.hit.plugin
 
-import org.rsmod.api.type.refs.queue.QueueReferences
-import org.rsmod.game.type.queue.QueueType
+import dev.openrune.queue
+import dev.openrune.types.aconverted.QueueType
 
 public typealias hit_queues = HitQueues
 
-public object HitQueues : QueueReferences() {
+public object HitQueues {
     public val standard: QueueType = queue("hit")
     public val impact: QueueType = queue("impact_hit")
 }

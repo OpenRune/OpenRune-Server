@@ -1,6 +1,7 @@
 package org.rsmod.api.player.interact
 
 import com.github.michaelbull.logging.InlineLogger
+import dev.openrune.types.ItemServerType
 import jakarta.inject.Inject
 import org.rsmod.api.config.constants
 import org.rsmod.api.player.events.interact.HeldUContentEvents
@@ -14,21 +15,16 @@ import org.rsmod.events.SuspendEvent
 import org.rsmod.game.inv.InvObj
 import org.rsmod.game.inv.Inventory
 import org.rsmod.game.inv.isType
-import org.rsmod.game.type.obj.ObjType
-import org.rsmod.game.type.obj.ObjTypeList
-import org.rsmod.game.type.obj.UnpackedObjType
 
-public class HeldUInteractions
-@Inject
-constructor(private val eventBus: EventBus, private val objTypes: ObjTypeList) {
+public class HeldUInteractions @Inject constructor(private val eventBus: EventBus) {
     private val logger = InlineLogger()
 
     public suspend fun interact(
         access: ProtectedAccess,
         inventory: Inventory,
-        selectedObjType: UnpackedObjType,
+        selectedItemServerType: ItemServerType,
         selectedSlot: Int,
-        targetObjType: UnpackedObjType,
+        targetItemServerType: ItemServerType,
         targetSlot: Int,
     ) {
         if (selectedSlot == targetSlot) {
@@ -37,31 +33,33 @@ constructor(private val eventBus: EventBus, private val objTypes: ObjTypeList) {
         }
 
         val selectedObj = inventory[selectedSlot]
-        if (!objectVerify(inventory, selectedObj, selectedObjType)) {
+        if (!objectVerify(inventory, selectedObj, selectedItemServerType)) {
             return
         }
 
         val targetObj = inventory[targetSlot]
-        if (!objectVerify(inventory, targetObj, targetObjType)) {
+        if (!objectVerify(inventory, targetObj, targetItemServerType)) {
             return
         }
 
-        access.opHeldU(selectedObjType, selectedSlot, targetObjType, targetSlot)
+        access.opHeldU(selectedItemServerType, selectedSlot, targetItemServerType, targetSlot)
     }
 
     private suspend fun ProtectedAccess.opHeldU(
-        selectedObjType: UnpackedObjType,
+        selectedItemServerType: ItemServerType,
         selectedSlot: Int,
-        targetObjType: UnpackedObjType,
+        targetItemServerType: ItemServerType,
         targetSlot: Int,
     ) {
-        val firstCombination = opTrigger(selectedObjType, selectedSlot, targetObjType, targetSlot)
+        val firstCombination =
+            opTrigger(selectedItemServerType, selectedSlot, targetItemServerType, targetSlot)
         if (firstCombination != null) {
             eventBus.publish(this, firstCombination)
             return
         }
 
-        val secondCombination = opTrigger(targetObjType, targetSlot, selectedObjType, selectedSlot)
+        val secondCombination =
+            opTrigger(targetItemServerType, targetSlot, selectedItemServerType, selectedSlot)
         if (secondCombination != null) {
             eventBus.publish(this, secondCombination)
             return
@@ -69,15 +67,15 @@ constructor(private val eventBus: EventBus, private val objTypes: ObjTypeList) {
 
         mes(constants.dm_default, ChatType.Engine)
         logger.debug {
-            "opHeldU for `${selectedObjType.name}` on `${targetObjType.name}` is not " +
-                "implemented: selected=$selectedObjType, target=$targetObjType"
+            "opHeldU for `${selectedItemServerType.name}` on `${targetItemServerType.name}` is not " +
+                "implemented: selected=$selectedItemServerType, target=$targetItemServerType"
         }
     }
 
     private fun opTrigger(
-        first: UnpackedObjType,
+        first: ItemServerType,
         firstSlot: Int,
-        second: UnpackedObjType,
+        second: ItemServerType,
         secondSlot: Int,
     ): SuspendEvent<ProtectedAccess>? {
         val typeScript = HeldUEvents.Type(first, firstSlot, second, secondSlot)
@@ -108,7 +106,7 @@ constructor(private val eventBus: EventBus, private val objTypes: ObjTypeList) {
         return null
     }
 
-    private fun objectVerify(inv: Inventory, obj: InvObj?, type: ObjType): Boolean {
+    private fun objectVerify(inv: Inventory, obj: InvObj?, type: ItemServerType): Boolean {
         if (obj == null || !obj.isType(type)) {
             resendSlot(inv, 0)
             return false

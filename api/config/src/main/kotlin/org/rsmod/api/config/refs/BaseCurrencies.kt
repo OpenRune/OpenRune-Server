@@ -2,10 +2,10 @@
 
 package org.rsmod.api.config.refs
 
-import org.rsmod.api.type.refs.currency.CurrencyReferences
+import dev.openrune.currency
 
 typealias currencies = BaseCurrencies
 
-object BaseCurrencies : CurrencyReferences() {
+object BaseCurrencies {
     val standard_gp = currency("standard_gp")
 }

@@ -24,7 +24,7 @@ import org.rsmod.api.spells.autocast.AutocastWeapons
 import org.rsmod.game.entity.PathingEntity
 import org.rsmod.game.entity.Player
 import org.rsmod.game.inv.InvObj
-import org.rsmod.game.type.obj.ObjTypeList
+import org.rsmod.game.type.getInvObj
 
 internal fun ProtectedAccess.attackRange(style: AttackStyle?): Int =
     if (autocastSpell > 0) {
@@ -92,7 +92,6 @@ internal fun ProtectedAccess.resolveCombatAttack(
     }
 
 internal fun ProtectedAccess.resolveAutocastSpell(
-    objTypes: ObjTypeList,
     spells: MagicSpellRegistry,
     runes: MagicRuneManager,
     autocast: AutocastWeapons,
@@ -103,7 +102,7 @@ internal fun ProtectedAccess.resolveAutocastSpell(
     val weapon = player.righthand ?: return null
     val spell = spells.getAutocastSpell(autocastSpell) ?: return null
 
-    val weaponType = objTypes[weapon]
+    val weaponType = getInvObj(weapon)
 
     if (spell.spellbook != spellbook) {
         mes("You can't autocast that spell with your current active spellbook.")

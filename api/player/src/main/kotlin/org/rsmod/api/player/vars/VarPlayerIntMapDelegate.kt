@@ -1,10 +1,12 @@
 package org.rsmod.api.player.vars
 
+import dev.openrune.definition.type.VarBitType
+import dev.openrune.types.varp.VarpServerType
+import dev.openrune.types.varp.baseVar
+import dev.openrune.types.varp.bits
 import org.rsmod.api.player.output.VarpSync
 import org.rsmod.game.client.Client
 import org.rsmod.game.entity.Player
-import org.rsmod.game.type.varbit.VarBitType
-import org.rsmod.game.type.varp.VarpType
 import org.rsmod.game.vars.VarPlayerIntMap
 import org.rsmod.utils.bits.withBits
 
@@ -13,9 +15,9 @@ public class VarPlayerIntMapDelegate(
     private val vars: VarPlayerIntMap,
     private val engineLoggedIn: Boolean,
 ) {
-    public operator fun get(varp: VarpType): Int = vars[varp]
+    public operator fun get(varp: VarpServerType): Int = vars[varp]
 
-    public operator fun set(varp: VarpType, value: Int) {
+    public operator fun set(varp: VarpServerType, value: Int) {
         val previous = vars.backing[varp.id]
 
         vars.backing[varp.id] = value

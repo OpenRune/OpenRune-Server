@@ -1,10 +1,10 @@
 package org.rsmod.api.music.configs
 
-import org.rsmod.api.type.refs.varp.VarpReferences
+import dev.openrune.varp
 
 internal typealias music_varps = MusicVarps
 
-internal object MusicVarps : VarpReferences() {
+internal object MusicVarps {
     val multi_1 = varp("musicmulti_1")
     val multi_2 = varp("musicmulti_2")
     val multi_3 = varp("musicmulti_3")

@@ -1,5 +1,9 @@
 package org.rsmod.api.specials
 
+import dev.openrune.types.ItemServerType
+import dev.openrune.types.ProjAnimType
+import dev.openrune.types.aconverted.SpotanimType
+import dev.openrune.types.aconverted.SynthType
 import jakarta.inject.Inject
 import org.rsmod.api.combat.commons.CombatAttack
 import org.rsmod.api.combat.commons.styles.MagicAttackStyle
@@ -16,10 +20,6 @@ import org.rsmod.game.entity.PathingEntity
 import org.rsmod.game.entity.Player
 import org.rsmod.game.hit.Hit
 import org.rsmod.game.proj.ProjAnim
-import org.rsmod.game.type.obj.ObjType
-import org.rsmod.game.type.proj.ProjAnimType
-import org.rsmod.game.type.spot.SpotanimType
-import org.rsmod.game.type.synth.SynthType
 
 public class SpecialAttackManager
 @Inject
@@ -36,7 +36,8 @@ constructor(
         energy.takeSpecialEnergy(source.player, energyInHundreds)
     }
 
-    public fun getSpecialEnergyRequirement(obj: ObjType): Int? = weapons.getSpecialEnergy(obj)
+    public fun getSpecialEnergyRequirement(obj: ItemServerType): Int? =
+        weapons.getSpecialEnergy(obj)
 
     /**
      * Sets [Player.actionDelay] to the current map clock + [cycles].
@@ -255,7 +256,7 @@ constructor(
     public fun queueRangedHit(
         source: ProtectedAccess,
         target: PathingEntity,
-        ammo: ObjType?,
+        ammo: ItemServerType?,
         damage: Int,
         clientDelay: Int,
         hitDelay: Int = 1 + (clientDelay / 30),
@@ -273,7 +274,7 @@ constructor(
     public fun queueRangedDamage(
         source: ProtectedAccess,
         target: PathingEntity,
-        ammo: ObjType?,
+        ammo: ItemServerType?,
         damage: Int,
         hitDelay: Int,
     ): Hit =
@@ -334,7 +335,7 @@ constructor(
         damage: Int,
         clientDelay: Int,
         hitDelay: Int = 1 + (clientDelay / 30),
-        spell: ObjType? = null,
+        spell: ItemServerType? = null,
     ): Hit =
         manager.queueMagicHit(
             source = source.player,

@@ -1,29 +1,25 @@
 package org.rsmod.api.music
 
+import dev.openrune.area
+import dev.openrune.types.aconverted.AreaType
+import dev.openrune.types.varp.VarpServerType
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 import jakarta.inject.Inject
-import org.rsmod.api.config.refs.dbcolumns
-import org.rsmod.api.config.refs.dbtables
-import org.rsmod.api.music.configs.music_columns
-import org.rsmod.api.music.configs.music_tables
 import org.rsmod.api.music.configs.music_varps
 import org.rsmod.api.random.GameRandom
-import org.rsmod.game.dbtable.DbTableResolver
-import org.rsmod.game.type.area.AreaType
-import org.rsmod.game.type.dbrow.DbRowType
-import org.rsmod.game.type.varp.VarpType
+import org.rsmod.api.table.MusicClassicRow
+import org.rsmod.api.table.MusicModernRow
+import org.rsmod.api.table.MusicRow
 
-public class MusicRepository
-@Inject
-constructor(private val random: GameRandom, private val dbTables: DbTableResolver) {
+public class MusicRepository @Inject constructor(private val random: GameRandom) {
     private lateinit var musicRows: Int2ObjectMap<Music>
     private lateinit var musicIds: Int2ObjectMap<Music>
 
     private lateinit var modernAreas: Int2ObjectMap<List<Music>>
     private lateinit var classicAreas: Int2ObjectMap<Music>
 
-    public fun forRow(row: DbRowType): Music? = musicRows[row.id]
+    public fun forRow(row: MusicRow): Music? = musicRows[row.rowId]
 
     public fun forId(id: Int): Music? = musicIds[id]
 
@@ -55,19 +51,24 @@ constructor(private val random: GameRandom, private val dbTables: DbTableResolve
         this.classicAreas = Int2ObjectOpenHashMap(classicAreas)
     }
 
-    private fun loadMusicRows(unlockVarps: List<VarpType>): Map<Int, Music> {
-        val rows = dbTables[music_tables.music]
+    private fun loadMusicRows(unlockVarps: List<VarpServerType>): Map<Int, Music> {
+        val rows = MusicRow.all()
         val mapped = mutableMapOf<Int, Music>()
         var currId = 1
         for (row in rows) {
-            val displayName = row[music_columns.displayName]
-            val unlockHint = row[music_columns.unlockHint]
-            val midi = row[music_columns.midi]
-            val variable = row[music_columns.variable]
-            val duration = row[music_columns.duration]
-            val hidden = row[music_columns.hidden]
-            val secondary = row.getOrNull(music_columns.secondary_track)
-            val unlockVarp = unlockVarps.getOrNull(variable.varpIndex - 1)
+            val displayName = row.displayname
+            val unlockHint = row.unlockhint
+            val midi = row.midi
+            val variable = row.variable
+            val duration = row.duration
+            val hidden = row.hidden
+            val secondary = row.secondaryTrack
+            var unlockVarp: VarpServerType? = null
+            var unlockBitpos = -1
+            if (variable.isNotEmpty()) {
+                unlockVarp = unlockVarps.getOrNull(variable[0] - 1)
+                unlockBitpos = variable[1]
+            }
             val music =
                 Music(
                     id = currId++,
@@ -76,11 +77,11 @@ constructor(private val random: GameRandom, private val dbTables: DbTableResolve
                     duration = duration,
                     midi = midi,
                     unlockVarp = unlockVarp,
-                    unlockBitpos = variable.bitpos,
-                    hidden = hidden,
+                    unlockBitpos = unlockBitpos,
+                    hidden = hidden ?: false,
                     secondary = secondary,
                 )
-            mapped[row.type.id] = music
+            mapped[row.rowId] = music
         }
         return mapped
     }
@@ -90,47 +91,52 @@ constructor(private val random: GameRandom, private val dbTables: DbTableResolve
     }
 
     private fun loadModernAreas(musicRows: Map<Int, Music>): Map<Int, List<Music>> {
-        val rows = dbTables[dbtables.music_modern]
         val grouped = mutableMapOf<Int, MutableList<Music>>()
-        for (row in rows) {
-            val area = row[dbcolumns.music_modern_area]
-            val trackRows = row[dbcolumns.music_modern_tracks]
+
+        MusicModernRow.all().forEach {
+            val area = area(it.area)
+            val trackRows = it.tracks
             val musicList = ArrayList<Music>(trackRows.size)
             for (trackRow in trackRows) {
-                val music = musicRows[trackRow.id]
+                val musicRow = MusicRow.getRow(trackRow.rowId)
+                val music = musicRows[musicRow.rowId]
                 if (music == null) {
-                    throw IllegalStateException("Music row not found: '${trackRow.internalName}'")
+                    throw IllegalStateException("Music row not found: '${musicRow.displayname}'")
                 }
                 musicList += music
             }
             val mappedList = grouped.computeIfAbsent(area.id) { mutableListOf() }
             mappedList += musicList
         }
+
         return grouped
     }
 
     private fun loadClassicAreas(musicRows: Map<Int, Music>): Map<Int, Music> {
-        val rows = dbTables[dbtables.music_classic]
         val areas = mutableMapOf<Int, Music>()
-        for (row in rows) {
-            val area = row[dbcolumns.music_classic_area]
-            if (area.id in areas) {
-                val message =
-                    "Classic music area can only be mapped to a " +
-                        "single track: '${area.internalName}' (row=$row)"
-                throw IllegalStateException(message)
-            }
-            val trackRow = row[dbcolumns.music_classic_track]
-            val music = musicRows[trackRow.id]
-            if (music == null) {
-                throw IllegalStateException("Music row not found: '${trackRow.internalName}'")
-            }
-            areas[area.id] = music
+
+        MusicClassicRow.all().forEach {
+            error("Add Classic Music")
+
+            //            val area = it.area
+            //            if (area.id in areas) {
+            //                val message =
+            //                    "Classic music area can only be mapped to a " +
+            //                        "single track: '${area}' (row=${it.id})"
+            //                throw IllegalStateException(message)
+            //            }
+            //
+            //            val music = musicRows[it.track]
+            //            if (music == null) {
+            //                throw IllegalStateException("Music row not found: '${it.id}'")
+            //            }
+            // areas[area.id] = music
         }
+
         return areas
     }
 
-    private fun unlockVarps(): List<VarpType> =
+    private fun unlockVarps(): List<VarpServerType> =
         listOf(
             music_varps.multi_1,
             music_varps.multi_2,

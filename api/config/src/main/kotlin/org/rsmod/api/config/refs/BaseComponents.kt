@@ -2,11 +2,11 @@
 
 package org.rsmod.api.config.refs
 
-import org.rsmod.api.type.refs.comp.ComponentReferences
+import dev.openrune.component
 
 typealias components = BaseComponents
 
-object BaseComponents : ComponentReferences() {
+object BaseComponents {
     val mainmodal = component("toplevel_osrs_stretch:mainmodal")
     val sidemodal = component("toplevel_osrs_stretch:sidemodal")
 

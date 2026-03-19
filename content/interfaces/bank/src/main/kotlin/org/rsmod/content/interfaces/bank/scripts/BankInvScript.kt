@@ -1,5 +1,9 @@
 package org.rsmod.content.interfaces.bank.scripts
 
+import dev.openrune.ServerCacheManager
+import dev.openrune.types.ItemServerType
+import dev.openrune.types.aconverted.interf.IfButtonOp
+import dev.openrune.util.Wearpos
 import jakarta.inject.Inject
 import kotlin.math.abs
 import kotlin.math.max
@@ -51,15 +55,14 @@ import org.rsmod.content.interfaces.bank.util.shiftInsert
 import org.rsmod.content.interfaces.bank.withdrawCert
 import org.rsmod.events.EventBus
 import org.rsmod.game.entity.Player
-import org.rsmod.game.enums.EnumTypeMapResolver
 import org.rsmod.game.inv.InvObj
 import org.rsmod.game.inv.Inventory
 import org.rsmod.game.inv.isType
-import org.rsmod.game.type.interf.IfButtonOp
-import org.rsmod.game.type.obj.ObjTypeList
-import org.rsmod.game.type.obj.UnpackedObjType
-import org.rsmod.game.type.obj.Wearpos
-import org.rsmod.game.type.obj.isType
+import org.rsmod.game.type.getInvObj
+import org.rsmod.game.type.getOrNull
+import org.rsmod.game.type.placeholder
+import org.rsmod.game.type.uncert
+import org.rsmod.game.type.untransform
 import org.rsmod.objtx.TransactionResult
 import org.rsmod.objtx.isOk
 import org.rsmod.plugin.scripts.PluginScript
@@ -81,10 +84,8 @@ class BankInvScript
 @Inject
 constructor(
     private val eventBus: EventBus,
-    private val objTypes: ObjTypeList,
     private val wornBonuses: WornBonuses,
     private val weaponSpeeds: WeaponSpeeds,
-    private val enumResolver: EnumTypeMapResolver,
 ) : PluginScript() {
     override fun ScriptContext.startup() {
         onPlayerLogin { player.setDefaultCapacity() }
@@ -102,7 +103,7 @@ constructor(
         onIfModalDrag(bank_components.worn_inventory) { dragSideInv(it) }
         onIfModalDrag(bank_components.main_inventory, bank_components.tabs) { dragIntoTab(it) }
 
-        val wornComponents = enumResolver[bank_enums.worn_component_map].filterValuesNotNull()
+        val wornComponents = bank_enums.worn_component_map.filterValuesNotNull()
         for ((slot, component) in wornComponents) {
             onIfModalButton(component) { wornOp(slot, it.op) }
         }
@@ -120,7 +121,7 @@ constructor(
 
     private suspend fun ProtectedAccess.mainInvWithdraw(slot: Int, op: IfButtonOp) {
         val obj = bank[slot] ?: return resendSlot(bank, 0)
-        val objType = objTypes[obj]
+        val objType = getInvObj(obj)
         if (objType.isPlaceholder) {
             bank[slot] = null
             notifySlotUpdate(slot)
@@ -222,7 +223,7 @@ constructor(
             return false
         }
 
-        val objType = objTypes[obj]
+        val objType = getInvObj(obj)
 
         if (objType.param(params.no_bank) != 0) {
             mes("A magical force prevents you from banking this item!")
@@ -231,7 +232,7 @@ constructor(
 
         val tab = selectedTab
 
-        val placeholder = objTypes.placeholder(objType)
+        val placeholder = placeholder(objType)
         val containedObjSlot = bank.indexOfFirst { it?.id == obj.id || it?.id == placeholder.id }
         val prioritySlot =
             if (containedObjSlot != -1) {
@@ -293,7 +294,7 @@ constructor(
 
         // Cheap way of checking if obj has taken a new slot in bank.
         val expectedSlot = tabSlots.last + 1
-        val expectedObj = objTypes.uncert(obj)
+        val expectedObj = uncert(obj)
         if (bank[expectedSlot]?.id == expectedObj.id) {
             tab.increaseSize(this)
         }
@@ -319,7 +320,7 @@ constructor(
         }
 
         if (op == IfButtonOp.Op1) {
-            val type = objTypes[obj]
+            val type = getInvObj(obj)
             if (type.wearpos1 != -1) {
                 val previous = worn[type.wearpos1]
                 opHeld2(slot)
@@ -353,7 +354,7 @@ constructor(
             if (oldObj == null || oldObj == worn[wearpos.slot]) {
                 continue
             }
-            WornUnequipOp.notifyWornUnequip(player, wearpos, objTypes[oldObj], eventBus)
+            WornUnequipOp.notifyWornUnequip(player, wearpos, getInvObj(oldObj), eventBus)
         }
     }
 
@@ -362,7 +363,7 @@ constructor(
             from.indices
                 .filter {
                     val obj = from[it]
-                    obj != null && objTypes[obj].param(params.no_bank) != 0
+                    obj != null && getInvObj(obj).param(params.no_bank) != 0
                 }
                 .toHashSet()
 
@@ -411,8 +412,8 @@ constructor(
 
         val uniqueInvObjs = mutableSetOf<Int>()
         for (invObj in from) {
-            val type = objTypes.getOrNull(invObj) ?: continue
-            val uncert = objTypes.uncert(type)
+            val type = getOrNull(invObj) ?: continue
+            val uncert = uncert(type)
             if (uncert.param(params.no_bank) != 0) {
                 continue
             }
@@ -421,10 +422,10 @@ constructor(
 
         val containedObjMatches =
             uniqueInvObjs.count { obj ->
-                val type = objTypes.untransform(objTypes.getValue(obj))
+                val type = untransform(ServerCacheManager.getItem(obj)!!)
                 val containsType = type.id in containedBankObjs
                 val containsPlaceholder =
-                    type.hasPlaceholder && objTypes.placeholder(type).id in containedBankObjs
+                    type.hasPlaceholder && placeholder(type).id in containedBankObjs
                 containsType || containsPlaceholder
             }
         val requiredSlots = uniqueInvObjs.count()
@@ -846,7 +847,7 @@ constructor(
         var removed = 0
         for (slot in slots) {
             val obj = bank[slot] ?: continue
-            if (objTypes[obj].isPlaceholder) {
+            if (getInvObj(obj).isPlaceholder) {
                 bank[slot] = null
                 removed++
             }
@@ -862,7 +863,7 @@ constructor(
         val tabUpdates = mutableSetOf<BankTab>()
         for (slot in bank.indices) {
             val obj = bank[slot] ?: continue
-            if (objTypes[obj].isPlaceholder) {
+            if (getInvObj(obj).isPlaceholder) {
                 bank[slot] = null
 
                 val tab = BankTab.forSlot(this, slot)
@@ -895,7 +896,7 @@ constructor(
         val tabUpdates = mutableSetOf<BankTab>()
         for (slot in bank.indices) {
             val obj = bank[slot] ?: continue
-            if (objTypes[obj].isType(bank_objs.filler)) {
+            if (getInvObj(obj).isType(bank_objs.filler)) {
                 bank[slot] = null
 
                 val tab = BankTab.forSlot(this, slot)
@@ -1074,7 +1075,7 @@ constructor(
 
     private fun ProtectedAccess.resolveLastDepositQty(): Int = max(1, lastQtyInput)
 
-    private fun ProtectedAccess.incinerate(comsub: Int, objType: UnpackedObjType?) {
+    private fun ProtectedAccess.incinerate(comsub: Int, objType: ItemServerType?) {
         if (objType == null || objType.isPlaceholder) {
             return
         }
@@ -1095,7 +1096,7 @@ constructor(
     }
 
     private fun ProtectedAccess.setBanksideExtraOps() {
-        player.setBanksideExtraOps(objTypes)
+        player.setBanksideExtraOps()
     }
 
     private fun ProtectedAccess.setBankWornBonuses() {
@@ -1104,7 +1105,7 @@ constructor(
 
     private suspend fun ProtectedAccess.clickBanksideExtraOp(slot: Int) {
         val obj = inv[slot] ?: return resendSlot(inv, 0)
-        val type = objTypes[obj]
+        val type = getInvObj(obj)
 
         val isWearable = type.wearpos1 != -1
         if (isWearable) {
@@ -1143,7 +1144,7 @@ constructor(
         val obj = worn[wornSlot] ?: return resendSlot(worn, wornSlot)
 
         if (op == IfButtonOp.Op2) {
-            val type = objTypes[obj]
+            val type = getInvObj(obj)
             val deposited = invDeposit(wornSlot, obj.count, worn)
             if (deposited) {
                 val wearpos = Wearpos[type.wearpos1]

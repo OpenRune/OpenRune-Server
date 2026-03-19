@@ -14,24 +14,20 @@ import org.rsmod.content.interfaces.skill.guides.configs.guide_interfaces
 import org.rsmod.content.interfaces.skill.guides.configs.guide_varbits
 import org.rsmod.events.EventBus
 import org.rsmod.game.entity.Player
-import org.rsmod.game.enums.EnumTypeMapResolver
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
 class SkillGuideScript
 @Inject
-constructor(
-    private val eventBus: EventBus,
-    private val enumResolver: EnumTypeMapResolver,
-    private val protectedAccess: ProtectedAccessLauncher,
-) : PluginScript() {
+constructor(private val eventBus: EventBus, private val protectedAccess: ProtectedAccessLauncher) :
+    PluginScript() {
     override fun ScriptContext.startup() {
-        val mappedTabButtons = enumResolver[guide_enums.open_buttons].filterValuesNotNull()
+        val mappedTabButtons = guide_enums.open_buttons.filterValuesNotNull()
         for ((button, varbit) in mappedTabButtons) {
             onIfOverlayButton(button) { player.selectGuide(varbit) }
         }
 
-        val mappedSubsections = enumResolver[guide_enums.subsection_buttons].filterValuesNotNull()
+        val mappedSubsections = guide_enums.subsection_buttons.filterValuesNotNull()
         for ((button, varbit) in mappedSubsections) {
             onIfOverlayButton(button) { player.changeSubsection(varbit) }
         }

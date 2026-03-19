@@ -2,50 +2,56 @@
 
 package org.rsmod.game.inv
 
+import dev.openrune.types.ItemServerType
+import dev.openrune.types.util.UncheckedType
 import kotlin.contracts.contract
-import org.rsmod.game.type.obj.ObjType
-import org.rsmod.game.type.util.UncheckedType
 
 public data class InvObj
-@UncheckedType("Use the `ObjType` constructor instead for type-safety consistency.")
+@UncheckedType("Use the `ItemServerType` constructor instead for type-safety consistency.")
 constructor(public val id: Int, public val count: Int, public val vars: Int = 0) {
     public constructor(copy: InvObj) : this(copy.id, copy.count, copy.vars)
 
-    public constructor(type: ObjType, count: Int = 1, vars: Int = 0) : this(type.id, count, vars)
+    public constructor(
+        type: ItemServerType,
+        count: Int = 1,
+        vars: Int = 0,
+    ) : this(type.id, count, vars)
 }
 
-public fun InvObj?.isType(type: ObjType): Boolean {
+public fun InvObj?.isType(type: ItemServerType): Boolean {
     contract { returns(true) implies (this@isType != null) }
-    return this != null && type.internalId == id
+    return this != null && type.id == id
 }
 
-public fun InvObj?.isAnyType(type1: ObjType, type2: ObjType): Boolean {
+public fun InvObj?.isAnyType(type1: ItemServerType, type2: ItemServerType): Boolean {
     contract { returns(true) implies (this@isAnyType != null) }
-    return this != null && (type1.internalId == id || type2.internalId == id)
-}
-
-public fun InvObj?.isAnyType(type1: ObjType, type2: ObjType, type3: ObjType): Boolean {
-    contract { returns(true) implies (this@isAnyType != null) }
-    return this != null &&
-        (type1.internalId == id || type2.internalId == id || type3.internalId == id)
+    return this != null && (type1.id == id || type2.id == id)
 }
 
 public fun InvObj?.isAnyType(
-    type1: ObjType,
-    type2: ObjType,
-    type3: ObjType,
-    type4: ObjType,
+    type1: ItemServerType,
+    type2: ItemServerType,
+    type3: ItemServerType,
 ): Boolean {
     contract { returns(true) implies (this@isAnyType != null) }
-    return this != null &&
-        (type1.internalId == id ||
-            type2.internalId == id ||
-            type3.internalId == id ||
-            type4.internalId == id)
+    return this != null && (type1.id == id || type2.id == id || type3.id == id)
 }
 
-public fun InvObj?.isAnyType(type1: ObjType, type2: ObjType, vararg types: ObjType): Boolean {
+public fun InvObj?.isAnyType(
+    type1: ItemServerType,
+    type2: ItemServerType,
+    type3: ItemServerType,
+    type4: ItemServerType,
+): Boolean {
     contract { returns(true) implies (this@isAnyType != null) }
-    return this != null &&
-        (type1.internalId == id || type2.internalId == id || types.any { it.internalId == id })
+    return this != null && (type1.id == id || type2.id == id || type3.id == id || type4.id == id)
+}
+
+public fun InvObj?.isAnyType(
+    type1: ItemServerType,
+    type2: ItemServerType,
+    vararg types: ItemServerType,
+): Boolean {
+    contract { returns(true) implies (this@isAnyType != null) }
+    return this != null && (type1.id == id || type2.id == id || types.any { it.id == id })
 }

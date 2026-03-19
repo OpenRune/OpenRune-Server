@@ -8,59 +8,59 @@ import com.github.michaelbull.logging.InlineLogger
 import com.google.inject.AbstractModule
 import com.google.inject.Guice
 import com.google.inject.Injector
-import com.google.inject.Key
 import com.google.inject.util.Modules
 import dev.openrune.ServerCacheManager
+import dev.openrune.filesystem.Cache
+import dev.openrune.map.GameMapDecoder
+import dev.openrune.map.GameMapSpawnSink
+import dev.openrune.map.npc.MapNpcDefinition
+import dev.openrune.map.obj.MapObjDefinition
 import java.nio.file.Path
 import java.text.DecimalFormat
+import kotlin.io.path.Path
+import kotlin.io.path.exists
 import kotlin.io.path.isDirectory
 import kotlin.io.path.isRegularFile
 import kotlin.time.measureTime
 import kotlinx.coroutines.runBlocking
-import org.openrs2.cache.Cache
-import org.openrs2.cache.Store
-import org.rsmod.annotations.GameCache
-import org.rsmod.api.cache.map.GameMapDecoder
+import org.rsmod.api.repo.npc.NpcRepository
+import org.rsmod.api.repo.obj.ObjRepository
 import org.rsmod.api.server.config.ServerConfig
-import org.rsmod.api.type.resolver.TypeCleanup
-import org.rsmod.api.type.resolver.TypeResolver
-import org.rsmod.api.type.updater.TypeUpdaterCacheSync
-import org.rsmod.api.type.updater.TypeUpdaterConfigs
-import org.rsmod.api.type.verifier.TypeVerifier
-import org.rsmod.api.type.verifier.isCacheUpdateRequired
-import org.rsmod.api.type.verifier.isFailure
+import org.rsmod.game.entity.Npc
 import org.rsmod.game.map.LocZoneStorage
-import org.rsmod.game.type.TypeListMap
+import org.rsmod.game.map.xtea.XteaMap
+import org.rsmod.game.obj.Obj
+import org.rsmod.game.obj.ObjEntity
+import org.rsmod.game.obj.ObjScope
+import org.rsmod.map.CoordGrid
 import org.rsmod.plugin.module.PluginModule
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 import org.rsmod.server.install.GameNetworkRsaGenerator
-import org.rsmod.server.install.GameServerCachePacker
 import org.rsmod.server.install.GameServerInstall
 import org.rsmod.server.install.GameServerLogbackCopy
-import org.rsmod.server.shared.DirectoryConstants
+import dev.openrune.DirectoryConstants
 import org.rsmod.server.shared.PluginConstants
 import org.rsmod.server.shared.loader.PluginModuleLoader
 import org.rsmod.server.shared.loader.PluginScriptLoader
-import org.rsmod.server.shared.loader.TypeBuilderLoader
-import org.rsmod.server.shared.loader.TypeEditorLoader
-import org.rsmod.server.shared.loader.TypeReferencesLoader
 
 fun main(args: Array<String>): Unit = GameServer().main(args)
 
 class GameServer(private val skipTypeVerificationOverride: Boolean? = null) :
     CliktCommand(name = "server") {
     private val logger = InlineLogger()
-    private var packedCache = false
 
     private val pluginPackages: Array<String>
         get() = PluginConstants.searchPackages
 
     private val vanillaCacheDir: Path
-        get() = DirectoryConstants.CACHE_PATH.resolve("vanilla")
+        get() = DirectoryConstants.CACHE_PATH.resolve("LIVE")
+
+    private val gameConfig: Path
+        get() = Path("game.yml")
 
     private val gameCacheDir: Path
-        get() = DirectoryConstants.CACHE_PATH.resolve("game")
+        get() = DirectoryConstants.CACHE_PATH.resolve("SERVER")
 
     private val rsaKey: Path
         get() = DirectoryConstants.DATA_PATH.resolve("game.key")
@@ -71,6 +71,8 @@ class GameServer(private val skipTypeVerificationOverride: Boolean? = null) :
                 help = "Skip identity hash verification for cache type resolver.",
             )
             .flag(default = false)
+
+    private lateinit var serverConfig : ServerConfig
 
     // When the app is run in integration tests, the GameServer is constructed directly and Clikt
     // args are not parsed. In that case, we fall back to the explicit override to avoid accessing
@@ -98,12 +100,9 @@ class GameServer(private val skipTypeVerificationOverride: Boolean? = null) :
     }
 
     fun prepareGame(injector: Injector) {
-        loadCache(injector)
-
-        ServerCacheManager.init()
-        loadMap(injector)
-        loadTypeResolver(injector)
-        loadConfig(injector)
+        serverConfig = loadConfig(injector)
+        val or2cache = ServerCacheManager.init(serverConfig.revision)
+        loadMap(or2cache, injector)
         loadScripts(injector)
     }
 
@@ -120,33 +119,40 @@ class GameServer(private val skipTypeVerificationOverride: Boolean? = null) :
         return modules
     }
 
-    private fun loadCache(injector: Injector) {
-        loadCacheStore(injector)
-        loadCacheTypes(injector)
-    }
-
-    private fun loadCacheStore(injector: Injector) {
-        val cachePath = injector.getInstance(Key.get(Path::class.java, GameCache::class.java))
-        logger.info { "Loading cache from path: $cachePath..." }
-        val store: Store
-        val duration = measureTime {
-            store = injector.getInstance(Key.get(Store::class.java, GameCache::class.java))
-            injector.getInstance(Key.get(Cache::class.java, GameCache::class.java))
-        }
-        reportDuration { "Loaded cache with ${store.list().size} archives in $duration" }
-    }
-
-    private fun loadCacheTypes(injector: Injector) {
-        logger.info { "Loading cache types..." }
-        val duration = measureTime { injector.getInstance(TypeListMap::class.java) }
-        reportDuration { "Loaded cache types in $duration" }
-    }
-
-    private fun loadMap(injector: Injector) {
+    private fun loadMap(or2cache: Cache, injector: Injector) {
         logger.info { "Loading game map and collision flags..." }
         val duration = measureTime {
-            val decoder = injector.getInstance(GameMapDecoder::class.java)
-            decoder.decodeAll()
+            val xteaMap = injector.getInstance(XteaMap::class.java)
+            val npcRepo = injector.getInstance(NpcRepository::class.java)
+            val objRepo = injector.getInstance(ObjRepository::class.java)
+
+            val sink =
+                object : GameMapSpawnSink {
+                    override fun onNpcSpawn(def: MapNpcDefinition, coords: CoordGrid) {
+                        val type =
+                            ServerCacheManager.getNpc(def.id)
+                                ?: error("Invalid npc type: $def ($coords)")
+                        val npc = Npc(type, coords)
+                        npcRepo.addDelayed(npc, spawnDelay = 0, duration = Int.MAX_VALUE)
+                    }
+
+                    override fun onObjSpawn(def: MapObjDefinition, coords: CoordGrid) {
+                        val type =
+                            ServerCacheManager.getItem(def.id)
+                                ?: error("Invalid obj type: $def ($coords)")
+                        val entity = ObjEntity(type.id, count = def.count, scope = ObjScope.Perm.id)
+                        val obj =
+                            Obj(
+                                coords,
+                                entity,
+                                creationCycle = 0,
+                                receiverId = Obj.NULL_OBSERVER_ID,
+                            )
+                        objRepo.addDelayed(obj, spawnDelay = 0, duration = Int.MAX_VALUE)
+                    }
+                }
+
+            GameMapDecoder.decodeAll(sink, or2cache, xteaMap)
         }
         reportDuration {
             val locZoneStorage = injector.getInstance(LocZoneStorage::class.java)
@@ -157,100 +163,12 @@ class GameServer(private val skipTypeVerificationOverride: Boolean? = null) :
         }
     }
 
-    private fun loadTypeResolver(injector: Injector) {
-        logger.info { "Processing type resolver..." }
-        val duration = measureTime {
-            resolveAllTypes(injector)
-            verifyTypeResolver(injector)
-            cleanUpTypeResolver(injector)
-        }
-        logger.info { "Resolved all types in $duration." }
-    }
-
-    private fun resolveAllTypes(injector: Injector) {
-        val resolver = injector.getInstance(TypeResolver::class.java)
-
-        val references = injector.getInstance(TypeReferencesLoader::class.java)
-        resolver.loadReferences(references)
-
-        val builders = injector.getInstance(TypeBuilderLoader::class.java)
-        resolver.loadBuilders(builders)
-
-        val editors = injector.getInstance(TypeEditorLoader::class.java)
-        resolver.loadEditors(editors)
-    }
-
-    private fun TypeResolver.loadReferences(loader: TypeReferencesLoader) {
-        logger.debug { "Loading type references..." }
-        val duration = measureTime {
-            appendReferences(loader.load())
-            resolveReferences()
-        }
-        debugDuration {
-            "Loaded $referenceCount type reference${if (referenceCount == 1) "" else ""} " +
-                "in $duration."
-        }
-    }
-
-    private fun TypeResolver.loadBuilders(loader: TypeBuilderLoader) {
-        logger.debug { "Loading type builders..." }
-        val duration = measureTime {
-            appendBuilders(loader.load())
-            resolveBuilders()
-        }
-        debugDuration {
-            "Loaded $builderCount type builder${if (builderCount == 1) "" else ""} in $duration."
-        }
-    }
-
-    private fun TypeResolver.loadEditors(loader: TypeEditorLoader) {
-        logger.debug { "Loading type editors..." }
-        val duration = measureTime {
-            appendEditors(loader.load())
-            resolveEditors()
-        }
-        debugDuration {
-            "Loaded $editorCount type editor${if (editorCount == 1) "" else ""} in $duration."
-        }
-    }
-
-    private fun verifyTypeResolver(injector: Injector) {
-        val verifier = injector.getInstance(TypeVerifier::class.java)
-        val verification = verifier.verifyAll(verifyIdentityHashes = !skipTypeVerification)
-        if (verification.isCacheUpdateRequired()) {
-            if (packedCache) {
-                throw RuntimeException(verification.formatError())
-            }
-            logger.debug { verification.formatError() }
-            logger.info { "Packing latest cache additions and restarting server..." }
-            updateCacheConfigs(injector)
-            logger.info { "Now restarting game server..." }
-            packedCache = true
-            startApplication()
-            throw ServerRestartException()
-        } else if (verification.isFailure()) {
-            throw RuntimeException(verification.formatError())
-        }
-    }
-
-    private fun updateCacheConfigs(injector: Injector) {
-        val sync = injector.getInstance(TypeUpdaterCacheSync::class.java)
-        sync.syncFromBaseCaches()
-
-        val updater = injector.getInstance(TypeUpdaterConfigs::class.java)
-        updater.updateAll()
-    }
-
-    private fun cleanUpTypeResolver(injector: Injector) {
-        val cleanup = injector.getInstance(TypeCleanup::class.java)
-        cleanup.clearAll()
-    }
-
-    private fun loadConfig(injector: Injector) {
+    private fun loadConfig(injector: Injector): ServerConfig {
         logger.info { "Loading server config..." }
         val config: ServerConfig
         val duration = measureTime { config = injector.getInstance(ServerConfig::class.java) }
         reportDuration { "Loaded server config in $duration: $config" }
+        return config
     }
 
     private fun loadScripts(injector: Injector) {
@@ -300,16 +218,8 @@ class GameServer(private val skipTypeVerificationOverride: Boolean? = null) :
         val vanillaCacheDirExists = vanillaCacheDir.isDirectory()
         val validRsaKey = rsaKey.isRegularFile()
 
-        if (!vanillaCacheDirExists) {
-            GameServerInstall().main(emptyArray())
-            return
-        }
-
-        if (!gameCacheDirExists) {
-            GameServerLogbackCopy().main(emptyArray())
-            GameServerCachePacker().main(emptyArray())
-            GameNetworkRsaGenerator().main(emptyArray())
-            return
+        if (!vanillaCacheDirExists || !gameCacheDirExists || !gameConfig.exists()) {
+            error("Please run the install task first: gradlew install")
         }
 
         if (!validRsaKey) {

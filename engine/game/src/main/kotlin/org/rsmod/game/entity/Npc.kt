@@ -1,8 +1,20 @@
 package org.rsmod.game.entity
 
+import dev.openrune.TypedParamType
+import dev.openrune.types.HealthBarServerType
+import dev.openrune.types.HitmarkTypeGroup
+import dev.openrune.types.HuntModeType
+import dev.openrune.types.MoveRestrict
+import dev.openrune.types.NpcMode
+import dev.openrune.types.NpcServerType
+import dev.openrune.types.SequenceServerType
+import dev.openrune.types.aconverted.ContentGroupType
+import dev.openrune.types.aconverted.QueueType
+import dev.openrune.types.aconverted.SpotanimType
+import dev.openrune.types.aconverted.TimerType
+import dev.openrune.util.BlockWalk
 import org.rsmod.annotations.InternalApi
 import org.rsmod.game.entity.npc.NpcInfoProtocol
-import org.rsmod.game.entity.npc.NpcMode
 import org.rsmod.game.entity.npc.NpcUid
 import org.rsmod.game.entity.npc.OpVisibility
 import org.rsmod.game.entity.player.PlayerUid
@@ -13,24 +25,14 @@ import org.rsmod.game.hero.HeroPoints
 import org.rsmod.game.hit.Hitmark
 import org.rsmod.game.loc.LocInfo
 import org.rsmod.game.map.Direction
-import org.rsmod.game.movement.BlockWalk
-import org.rsmod.game.movement.MoveRestrict
 import org.rsmod.game.movement.MoveSpeed
+import org.rsmod.game.movement.collisionFlag
+import org.rsmod.game.movement.collisionStrategy
 import org.rsmod.game.obj.Obj
 import org.rsmod.game.queue.AiQueueType
 import org.rsmod.game.queue.NpcQueueList
 import org.rsmod.game.seq.EntitySeq
 import org.rsmod.game.timer.NpcTimerMap
-import org.rsmod.game.type.content.ContentGroupType
-import org.rsmod.game.type.headbar.HeadbarType
-import org.rsmod.game.type.hitmark.HitmarkTypeGroup
-import org.rsmod.game.type.hunt.HuntModeType
-import org.rsmod.game.type.npc.UnpackedNpcType
-import org.rsmod.game.type.param.ParamType
-import org.rsmod.game.type.queue.QueueType
-import org.rsmod.game.type.seq.SeqType
-import org.rsmod.game.type.spot.SpotanimType
-import org.rsmod.game.type.timer.TimerType
 import org.rsmod.game.vars.VarNpcIntMap
 import org.rsmod.game.vars.VarNpcStrMap
 import org.rsmod.map.CoordGrid
@@ -38,10 +40,10 @@ import org.rsmod.routefinder.collision.CollisionFlagMap
 import org.rsmod.routefinder.collision.CollisionStrategy
 
 public class Npc(
-    public val type: UnpackedNpcType,
+    public val type: NpcServerType,
     override val avatar: NpcAvatar = NpcAvatar(type.size),
 ) : PathingEntity() {
-    public constructor(type: UnpackedNpcType, coords: CoordGrid) : this(type) {
+    public constructor(type: NpcServerType, coords: CoordGrid) : this(type) {
         this.coords = coords
         this.spawnCoords = coords
     }
@@ -129,7 +131,7 @@ public class Npc(
 
     public var actionDelay: Int = -1
 
-    public var transmog: UnpackedNpcType? = null
+    public var transmog: NpcServerType? = null
         private set
 
     public var cachedHitmark: HitmarkTypeGroup? = null
@@ -164,7 +166,7 @@ public class Npc(
     public val defaultMode: NpcMode
         get() = type.defaultMode
 
-    public val visType: UnpackedNpcType
+    public val visType: NpcServerType
         get() = transmog ?: type
 
     public var infoProtocol: NpcInfoProtocol
@@ -284,7 +286,7 @@ public class Npc(
         clearInteraction()
     }
 
-    override fun anim(seq: SeqType, delay: Int, priority: Int) {
+    override fun anim(seq: SequenceServerType, delay: Int, priority: Int) {
         val setSequence = PathingEntityCommon.anim(this, seq, delay, priority)
         if (!setSequence) {
             return
@@ -353,7 +355,7 @@ public class Npc(
         PathingEntityCommon.resetFaceEntity(this)
     }
 
-    public fun transmog(type: UnpackedNpcType, duration: Int) {
+    public fun transmog(type: NpcServerType, duration: Int) {
         cachedHitmark = null
         transmog = type
         lifecycleChangeCycle = if (duration == Int.MAX_VALUE) -1 else currentMapClock + duration
@@ -367,12 +369,12 @@ public class Npc(
         infoProtocol.resetTransmog(originalType = id)
     }
 
-    public fun copyStats(from: UnpackedNpcType) {
+    public fun copyStats(from: NpcServerType) {
         copyBaseStats(from)
         copyCurrentStats(from)
     }
 
-    public fun copyBaseStats(from: UnpackedNpcType) {
+    public fun copyBaseStats(from: NpcServerType) {
         baseAttackLvl = from.attack
         baseStrengthLvl = from.strength
         baseDefenceLvl = from.defence
@@ -381,7 +383,7 @@ public class Npc(
         baseMagicLvl = from.magic
     }
 
-    public fun copyCurrentStats(from: UnpackedNpcType) {
+    public fun copyCurrentStats(from: NpcServerType) {
         attackLvl = from.attack
         strengthLvl = from.strength
         defenceLvl = from.defence
@@ -463,9 +465,9 @@ public class Npc(
         return infoProtocol.isActive()
     }
 
-    public fun isType(type: UnpackedNpcType): Boolean = this.type.isType(type)
+    public fun isType(type: NpcServerType): Boolean = this.type.isType(type)
 
-    public fun isVisType(type: UnpackedNpcType): Boolean = this.visType.isType(type)
+    public fun isVisType(type: NpcServerType): Boolean = this.visType.isType(type)
 
     /**
      * Returns the headbar associated with [headbar] param for the **current** npc [visType].
@@ -473,7 +475,8 @@ public class Npc(
      * @throws IllegalStateException if [visType] does not have a value associated with the headbar
      *   [param] and [param] does not have a non-null `default` [HeadbarType] value.
      */
-    public fun visHeadbar(headbar: ParamType<HeadbarType>): HeadbarType = visType.param(headbar)
+    public fun visHeadbar(headbar: TypedParamType<HealthBarServerType>): HealthBarServerType =
+        visType.param(headbar)
 
     /**
      * Returns the param value associated with [param] from the **base** npc [type], or `null` if
@@ -483,7 +486,7 @@ public class Npc(
      * If you wish to retrieve the param value for the current (transmog) type, use [visType] to
      * retrieve it.
      */
-    public fun <T : Any> paramOrNull(param: ParamType<T>): T? = type.paramOrNull(param)
+    public fun <T : Any> paramOrNull(param: TypedParamType<T>): T? = type.paramOrNull(param)
 
     /**
      * Returns the param value associated with [param] from the **base** npc [type].
@@ -494,7 +497,7 @@ public class Npc(
      * @throws IllegalStateException if the type does not have a value associated with [param] and
      *   [param] does not have a non-null `default` value.
      */
-    public fun <T : Any> param(param: ParamType<T>): T = type.param(param)
+    public fun <T : Any> param(param: TypedParamType<T>): T = type.param(param)
 
     public fun isContentType(content: ContentGroupType): Boolean = type.contentGroup == content.id
 

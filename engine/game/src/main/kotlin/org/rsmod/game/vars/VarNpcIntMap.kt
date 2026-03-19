@@ -1,9 +1,9 @@
 package org.rsmod.game.vars
 
+import dev.openrune.types.VarnBitType
+import dev.openrune.types.VarnType
 import it.unimi.dsi.fastutil.ints.Int2IntMap
 import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap
-import org.rsmod.game.type.varn.VarnType
-import org.rsmod.game.type.varnbit.VarnBitType
 import org.rsmod.utils.bits.bitMask
 import org.rsmod.utils.bits.getBits
 import org.rsmod.utils.bits.withBits
@@ -45,7 +45,7 @@ public value class VarNpcIntMap(public val backing: Int2IntMap = Int2IntOpenHash
         private fun assertVarnBitBounds(varn: VarnBitType, value: Int) {
             val maxValue = varn.maxValue()
             require(value in 0..maxValue) {
-                "Varnbit overflow on varnbit ${varn.internalId} " +
+                "Varnbit overflow on varnbit ${varn.id} " +
                     "Value $value is outside the range 0-$maxValue (type=$varn)"
             }
         }

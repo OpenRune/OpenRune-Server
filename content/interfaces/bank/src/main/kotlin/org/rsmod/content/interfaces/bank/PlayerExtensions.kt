@@ -14,7 +14,7 @@ import org.rsmod.api.player.vars.intVarp
 import org.rsmod.content.interfaces.bank.configs.bank_components
 import org.rsmod.events.EventBus
 import org.rsmod.game.entity.Player
-import org.rsmod.game.type.obj.ObjTypeList
+import org.rsmod.game.type.getInvObj
 
 private var Player.extraOpsSpecialBits by intVarp(varps.if1)
 private var Player.extraOpsWearBits by intVarp(varps.if2)
@@ -35,14 +35,14 @@ internal fun Player.highlightNoClickClear() {
     runClientScript(3407, bank_components.bankside_highlight.packed)
 }
 
-internal fun Player.setBanksideExtraOps(objTypes: ObjTypeList) {
+internal fun Player.setBanksideExtraOps() {
     var specialBits = 0
     var wearBits = 0
     var consumableBits = 0
 
     for (slot in inv.indices) {
         val obj = inv[slot] ?: continue
-        val type = objTypes[obj]
+        val type = getInvObj(obj)
 
         val specialBit = type.paramOrNull(params.bankside_extraop_bit)
         if (specialBit != null) {

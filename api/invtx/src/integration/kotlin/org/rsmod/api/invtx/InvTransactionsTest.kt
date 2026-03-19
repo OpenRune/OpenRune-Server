@@ -1,5 +1,8 @@
 package org.rsmod.api.invtx
 
+import dev.openrune.types.ItemServerType
+import dev.openrune.types.obj.Dummyitem
+import dev.openrune.types.obj.Wearpos
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Assertions.assertNull
@@ -17,9 +20,6 @@ import org.rsmod.api.testing.params.TestArgs
 import org.rsmod.api.testing.params.TestArgsProvider
 import org.rsmod.api.testing.params.TestWithArgs
 import org.rsmod.game.inv.InvObj
-import org.rsmod.game.type.obj.Dummyitem
-import org.rsmod.game.type.obj.ObjType
-import org.rsmod.game.type.obj.Wearpos
 import org.rsmod.objtx.TransactionResult
 import org.rsmod.objtx.isOk
 
@@ -171,7 +171,12 @@ class InvTransactionsTest {
     }
 
     @TestWithArgs(WearposProvider::class)
-    fun `equip obj in wearpos`(wearpos: Wearpos, type: ObjType, count: Int, test: GameTestState) =
+    fun `equip obj in wearpos`(
+        wearpos: Wearpos,
+        type: ItemServerType,
+        count: Int,
+        test: GameTestState,
+    ) =
         test.runBasicGameTest {
             val invSlot = 5
             withPlayerInit {

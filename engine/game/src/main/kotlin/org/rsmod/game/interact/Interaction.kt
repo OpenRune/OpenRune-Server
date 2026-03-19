@@ -1,5 +1,7 @@
 package org.rsmod.game.interact
 
+import dev.openrune.definition.type.widget.ComponentType
+import dev.openrune.types.ItemServerType
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.PathingEntity
 import org.rsmod.game.entity.Player
@@ -7,8 +9,6 @@ import org.rsmod.game.entity.npc.NpcUid
 import org.rsmod.game.entity.player.PlayerUid
 import org.rsmod.game.loc.BoundLocInfo
 import org.rsmod.game.obj.Obj
-import org.rsmod.game.type.comp.ComponentType
-import org.rsmod.game.type.obj.ObjType
 
 public sealed class Interaction(
     public val hasOpTrigger: Boolean,
@@ -53,7 +53,7 @@ public class InteractionLocOp(
 ) : InteractionLoc(target, hasOpTrigger, hasApTrigger, startApRange)
 
 public class InteractionLocT(
-    public val objType: ObjType?,
+    public val objType: ItemServerType?,
     public val component: ComponentType,
     public val comsub: Int,
     target: BoundLocInfo,
@@ -94,7 +94,7 @@ public class InteractionNpcOp(
 ) : InteractionNpc(target, hasOpTrigger, hasApTrigger, startApRange)
 
 public class InteractionNpcT(
-    public val objType: ObjType?,
+    public val objType: ItemServerType?,
     public val component: ComponentType,
     public val comsub: Int,
     target: Npc,
@@ -157,7 +157,7 @@ public class InteractionPlayerOp(
 }
 
 public class InteractionPlayerT(
-    public val objType: ObjType?,
+    public val objType: ItemServerType?,
     public val component: ComponentType,
     public val comsub: Int,
     target: Player,

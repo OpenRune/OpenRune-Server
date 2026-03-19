@@ -1,5 +1,7 @@
 package org.rsmod.api.game.process.player
 
+import dev.openrune.types.ItemServerTypeList
+import dev.openrune.types.loc.LocTypeList
 import net.rsprot.protocol.api.util.ZonePartialEnclosedCacheBuffer
 import net.rsprot.protocol.game.outgoing.zone.header.UpdateZoneFullFollows
 import net.rsprot.protocol.game.outgoing.zone.payload.LocAddChangeV2
@@ -34,8 +36,6 @@ import org.rsmod.game.map.LocZoneStorage
 import org.rsmod.game.obj.Obj
 import org.rsmod.game.obj.ObjEntity
 import org.rsmod.game.obj.ObjScope
-import org.rsmod.game.type.loc.LocTypeList
-import org.rsmod.game.type.obj.ObjTypeList
 import org.rsmod.map.CoordGrid
 import org.rsmod.map.zone.ZoneGrid
 import org.rsmod.map.zone.ZoneKey
@@ -298,6 +298,6 @@ class PlayerZoneUpdateProcessorTest {
         val zoneUpdateMap: ZoneUpdateMap,
         val zoneProcessor: PlayerZoneUpdateProcessor,
         val locTypes: LocTypeList,
-        val objTypes: ObjTypeList,
+        val objTypes: ItemServerTypeList,
     )
 }

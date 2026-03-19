@@ -13,7 +13,7 @@ import org.rsmod.game.entity.Player
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
-public class SpecialEnergyScript : PluginScript() {
+public class SpecialEnergyScript() : PluginScript() {
     private val Player.newAccount by boolVarBit(varbits.new_player_account)
     private var Player.specialAttackEnergy by intVarp(varps.sa_energy)
 

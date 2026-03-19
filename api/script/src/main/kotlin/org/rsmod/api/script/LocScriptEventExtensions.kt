@@ -1,5 +1,9 @@
 package org.rsmod.api.script
 
+import dev.openrune.definition.type.widget.ComponentType
+import dev.openrune.types.ItemServerType
+import dev.openrune.types.ObjectServerType
+import dev.openrune.types.aconverted.ContentGroupType
 import org.rsmod.api.player.events.interact.LocContentEvents
 import org.rsmod.api.player.events.interact.LocEvents
 import org.rsmod.api.player.events.interact.LocTContentEvents
@@ -10,35 +14,31 @@ import org.rsmod.api.player.events.interact.LocUDefaultEvents
 import org.rsmod.api.player.events.interact.LocUEvents
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.events.EventBus
-import org.rsmod.game.type.comp.ComponentType
-import org.rsmod.game.type.content.ContentGroupType
-import org.rsmod.game.type.loc.LocType
-import org.rsmod.game.type.obj.ObjType
 import org.rsmod.plugin.scripts.ScriptContext
 
 /* Op functions */
 public fun ScriptContext.onOpLoc1(
-    type: LocType,
+    type: ObjectServerType,
     action: suspend ProtectedAccess.(LocEvents.Op1) -> Unit,
 ): Unit = onProtectedEvent(type.id, action)
 
 public fun ScriptContext.onOpLoc2(
-    type: LocType,
+    type: ObjectServerType,
     action: suspend ProtectedAccess.(LocEvents.Op2) -> Unit,
 ): Unit = onProtectedEvent(type.id, action)
 
 public fun ScriptContext.onOpLoc3(
-    type: LocType,
+    type: ObjectServerType,
     action: suspend ProtectedAccess.(LocEvents.Op3) -> Unit,
 ): Unit = onProtectedEvent(type.id, action)
 
 public fun ScriptContext.onOpLoc4(
-    type: LocType,
+    type: ObjectServerType,
     action: suspend ProtectedAccess.(LocEvents.Op4) -> Unit,
 ): Unit = onProtectedEvent(type.id, action)
 
 public fun ScriptContext.onOpLoc5(
-    type: LocType,
+    type: ObjectServerType,
     action: suspend ProtectedAccess.(LocEvents.Op5) -> Unit,
 ): Unit = onProtectedEvent(type.id, action)
 
@@ -73,7 +73,7 @@ public fun ScriptContext.onOpLocT(
 ): Unit = onProtectedEvent(component.packed, action)
 
 public fun ScriptContext.onOpLocT(
-    type: LocType,
+    type: ObjectServerType,
     component: ComponentType,
     action: suspend ProtectedAccess.(LocTEvents.Op) -> Unit,
 ): Unit = onProtectedEvent(EventBus.composeLongKey(type.id, component.packed), action)
@@ -85,7 +85,7 @@ public fun ScriptContext.onOpLocT(
 ): Unit = onProtectedEvent(EventBus.composeLongKey(content.id, component.packed), action)
 
 public fun ScriptContext.onOpLocU(
-    type: LocType,
+    type: ObjectServerType,
     action: suspend ProtectedAccess.(LocUDefaultEvents.OpType) -> Unit,
 ): Unit = onProtectedEvent(type.id, action)
 
@@ -95,14 +95,14 @@ public fun ScriptContext.onOpLocU(
 ): Unit = onProtectedEvent(content.id, action)
 
 public fun ScriptContext.onOpLocU(
-    type: LocType,
-    objType: ObjType,
+    type: ObjectServerType,
+    objType: ItemServerType,
     action: suspend ProtectedAccess.(LocUEvents.Op) -> Unit,
 ): Unit = onProtectedEvent(EventBus.composeLongKey(type.id, objType.id), action)
 
 public fun ScriptContext.onOpLocU(
     content: ContentGroupType,
-    objType: ObjType,
+    objType: ItemServerType,
     action: suspend ProtectedAccess.(LocUContentEvents.OpType) -> Unit,
 ): Unit = onProtectedEvent(EventBus.composeLongKey(content.id, objType.id), action)
 
@@ -114,27 +114,27 @@ public fun ScriptContext.onOpLocU(
 
 /* Ap functions */
 public fun ScriptContext.onApLoc1(
-    type: LocType,
+    type: ObjectServerType,
     action: suspend ProtectedAccess.(LocEvents.Ap1) -> Unit,
 ): Unit = onProtectedEvent(type.id, action)
 
 public fun ScriptContext.onApLoc2(
-    type: LocType,
+    type: ObjectServerType,
     action: suspend ProtectedAccess.(LocEvents.Ap2) -> Unit,
 ): Unit = onProtectedEvent(type.id, action)
 
 public fun ScriptContext.onApLoc3(
-    type: LocType,
+    type: ObjectServerType,
     action: suspend ProtectedAccess.(LocEvents.Ap3) -> Unit,
 ): Unit = onProtectedEvent(type.id, action)
 
 public fun ScriptContext.onApLoc4(
-    type: LocType,
+    type: ObjectServerType,
     action: suspend ProtectedAccess.(LocEvents.Ap4) -> Unit,
 ): Unit = onProtectedEvent(type.id, action)
 
 public fun ScriptContext.onApLoc5(
-    type: LocType,
+    type: ObjectServerType,
     action: suspend ProtectedAccess.(LocEvents.Ap5) -> Unit,
 ): Unit = onProtectedEvent(type.id, action)
 
@@ -169,7 +169,7 @@ public fun ScriptContext.onApLocT(
 ): Unit = onProtectedEvent(component.packed, action)
 
 public fun ScriptContext.onApLocT(
-    type: LocType,
+    type: ObjectServerType,
     component: ComponentType,
     action: suspend ProtectedAccess.(LocTEvents.Ap) -> Unit,
 ): Unit = onProtectedEvent(EventBus.composeLongKey(type.id, component.packed), action)
@@ -181,7 +181,7 @@ public fun ScriptContext.onApLocT(
 ): Unit = onProtectedEvent(EventBus.composeLongKey(content.id, component.packed), action)
 
 public fun ScriptContext.onApLocU(
-    type: LocType,
+    type: ObjectServerType,
     action: suspend ProtectedAccess.(LocUDefaultEvents.ApType) -> Unit,
 ): Unit = onProtectedEvent(type.id, action)
 
@@ -191,14 +191,14 @@ public fun ScriptContext.onApLocU(
 ): Unit = onProtectedEvent(content.id, action)
 
 public fun ScriptContext.onApLocU(
-    type: LocType,
-    objType: ObjType,
+    type: ObjectServerType,
+    objType: ItemServerType,
     action: suspend ProtectedAccess.(LocUEvents.Ap) -> Unit,
 ): Unit = onProtectedEvent(EventBus.composeLongKey(type.id, objType.id), action)
 
 public fun ScriptContext.onApLocU(
     content: ContentGroupType,
-    objType: ObjType,
+    objType: ItemServerType,
     action: suspend ProtectedAccess.(LocUContentEvents.ApType) -> Unit,
 ): Unit = onProtectedEvent(EventBus.composeLongKey(content.id, objType.id), action)
 

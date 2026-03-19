@@ -1,5 +1,8 @@
 package org.rsmod.content.travel.canoe.scripts
 
+import dev.openrune.definition.type.widget.ComponentType
+import dev.openrune.definition.type.widget.IfEvent
+import dev.openrune.types.NpcServerType
 import jakarta.inject.Inject
 import org.rsmod.api.config.refs.params
 import org.rsmod.api.player.output.ClientScripts.highlightingOff
@@ -25,10 +28,6 @@ import org.rsmod.game.loc.LocAngle
 import org.rsmod.game.loc.LocShape
 import org.rsmod.game.map.Direction
 import org.rsmod.game.region.Region
-import org.rsmod.game.type.comp.ComponentType
-import org.rsmod.game.type.interf.IfEvent
-import org.rsmod.game.type.npc.NpcType
-import org.rsmod.game.type.npc.NpcTypeList
 import org.rsmod.map.CoordGrid
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
@@ -196,7 +195,6 @@ constructor(
     private val regionRepo: RegionRepository,
     private val locRepo: LocRepository,
     private val npcRepo: NpcRepository,
-    private val npcTypes: NpcTypeList,
 ) {
     fun startup(ctx: ScriptContext) {
         ctx.onAiTimer(canoe_npcs.cave_scenery_1) { npc.onSceneryTimer() }
@@ -349,7 +347,7 @@ constructor(
     private fun spawnScenery(npcs: List<SceneryNpc>) {
         for (scenery in npcs) {
             val (type, coords, duration, delay) = scenery
-            val npc = Npc(npcTypes[type], coords)
+            val npc = Npc(type, coords)
             npcRepo.add(npc, duration)
             if (delay != null) {
                 npcRepo.hide(npc, delay)
@@ -482,7 +480,7 @@ constructor(
     }
 
     private data class SceneryNpc(
-        val type: NpcType,
+        val type: NpcServerType,
         val coords: CoordGrid,
         val duration: Int,
         val delay: Int? = null,

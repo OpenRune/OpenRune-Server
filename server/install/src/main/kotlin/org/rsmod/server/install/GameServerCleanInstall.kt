@@ -3,12 +3,14 @@ package org.rsmod.server.install
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.core.main
 import com.github.michaelbull.logging.InlineLogger
+import dev.openrune.DirectoryConstants
 import java.nio.file.Path
 import kotlin.io.path.ExperimentalPathApi
+import kotlin.io.path.Path
+import kotlin.io.path.deleteIfExists
 import kotlin.io.path.deleteRecursively
 import kotlin.io.path.isDirectory
 import kotlin.io.path.isRegularFile
-import org.rsmod.server.shared.DirectoryConstants
 
 fun main(args: Array<String>): Unit = GameServerCleanInstall().main(args)
 
@@ -25,6 +27,8 @@ class GameServerCleanInstall : CliktCommand(name = "clean-install") {
     override fun run() {
         deleteCacheDir()
         deleteRsaKeys()
+        Path("game.yml").deleteIfExists()
+
     }
 
     @OptIn(ExperimentalPathApi::class)

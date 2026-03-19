@@ -1,5 +1,7 @@
 package org.rsmod.content.other.special.weapons.ranged
 
+import dev.openrune.types.ItemServerType
+import dev.openrune.types.aconverted.SpotanimType
 import jakarta.inject.Inject
 import org.rsmod.api.combat.commons.CombatAttack
 import org.rsmod.api.combat.manager.RangedAmmoManager
@@ -18,27 +20,22 @@ import org.rsmod.api.weapons.WeaponRepository
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.PathingEntity
 import org.rsmod.game.entity.Player
-import org.rsmod.game.type.obj.ObjTypeList
-import org.rsmod.game.type.obj.UnpackedObjType
-import org.rsmod.game.type.spot.SpotanimType
+import org.rsmod.game.type.getInvObj
+import org.rsmod.game.type.getOrNull
 
-class DarkBowWeapons
-@Inject
-constructor(private val objTypes: ObjTypeList, private val ammunition: RangedAmmoManager) :
-    WeaponMap {
+class DarkBowWeapons @Inject constructor(private val ammunition: RangedAmmoManager) : WeaponMap {
     override fun WeaponRepository.register(manager: WeaponAttackManager) {
-        register(objs.dark_bow, DarkBow(manager, ammunition, objTypes))
-        register(objs.dark_bow_green, DarkBow(manager, ammunition, objTypes))
-        register(objs.dark_bow_blue, DarkBow(manager, ammunition, objTypes))
-        register(objs.dark_bow_yellow, DarkBow(manager, ammunition, objTypes))
-        register(objs.dark_bow_white, DarkBow(manager, ammunition, objTypes))
-        register(objs.dark_bow_bh, DarkBow(manager, ammunition, objTypes))
+        register(objs.dark_bow, DarkBow(manager, ammunition))
+        register(objs.dark_bow_green, DarkBow(manager, ammunition))
+        register(objs.dark_bow_blue, DarkBow(manager, ammunition))
+        register(objs.dark_bow_yellow, DarkBow(manager, ammunition))
+        register(objs.dark_bow_white, DarkBow(manager, ammunition))
+        register(objs.dark_bow_bh, DarkBow(manager, ammunition))
     }
 
     private class DarkBow(
         private val manager: WeaponAttackManager,
         private val ammunition: RangedAmmoManager,
-        private val objTypes: ObjTypeList,
     ) : RangedWeapon {
         override suspend fun ProtectedAccess.attack(
             target: Npc,
@@ -57,8 +54,8 @@ constructor(private val objTypes: ObjTypeList, private val ammunition: RangedAmm
         }
 
         private fun ProtectedAccess.shoot(target: PathingEntity, attack: CombatAttack.Ranged) {
-            val righthandType = objTypes[attack.weapon]
-            val quiverType = objTypes.getOrNull(player.quiver)
+            val righthandType = getInvObj(attack.weapon)
+            val quiverType = getOrNull(player.quiver)
 
             val canUseAmmo = ammunition.attemptAmmoUsage(player, righthandType, quiverType)
             if (!canUseAmmo) {
@@ -95,7 +92,7 @@ constructor(private val objTypes: ObjTypeList, private val ammunition: RangedAmm
         private fun ProtectedAccess.shootSingleArrow(
             target: PathingEntity,
             attack: CombatAttack.Ranged,
-            quiverType: UnpackedObjType,
+            quiverType: ItemServerType,
             launchSpot: SpotanimType?,
             travelSpot: SpotanimType,
         ) {
@@ -121,7 +118,7 @@ constructor(private val objTypes: ObjTypeList, private val ammunition: RangedAmm
         private fun ProtectedAccess.shootDoubleArrow(
             target: PathingEntity,
             attack: CombatAttack.Ranged,
-            quiverType: UnpackedObjType,
+            quiverType: ItemServerType,
             launchSpot: SpotanimType?,
             travelSpot: SpotanimType,
         ) {

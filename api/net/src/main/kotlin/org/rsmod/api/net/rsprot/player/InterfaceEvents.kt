@@ -1,13 +1,13 @@
 package org.rsmod.api.net.rsprot.player
 
-import org.rsmod.game.type.comp.UnpackedComponentType
-import org.rsmod.game.type.interf.IfEvent
+import dev.openrune.definition.type.widget.ComponentType
+import dev.openrune.definition.type.widget.IfEvent
 import org.rsmod.game.ui.UserInterfaceMap
 
 internal object InterfaceEvents {
     fun isEnabled(
         ui: UserInterfaceMap,
-        component: UnpackedComponentType,
+        component: ComponentType,
         comsub: Int,
         event: IfEvent,
     ): Boolean {

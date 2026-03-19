@@ -24,14 +24,13 @@ import org.rsmod.api.script.onApNpcT
 import org.rsmod.api.spells.MagicSpellRegistry
 import org.rsmod.api.spells.autocast.AutocastWeapons
 import org.rsmod.game.entity.Npc
-import org.rsmod.game.type.obj.ObjTypeList
+import org.rsmod.game.type.getOrNull
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
 internal class PvNCombatScript
 @Inject
 constructor(
-    private val objTypes: ObjTypeList,
     private val styles: AttackStyles,
     private val types: AttackTypes,
     private val combat: PvNCombat,
@@ -70,7 +69,7 @@ constructor(
             return
         }
 
-        val spell = resolveAutocastSpell(objTypes, spells, runes, autocast)
+        val spell = resolveAutocastSpell(spells, runes, autocast)
         val attack = resolveCombatAttack(player.righthand, type, style, spell)
         combat.attack(this, target, attack)
     }
@@ -82,7 +81,7 @@ constructor(
         val type = types.get(player)
         val style = styles.get(player)
 
-        val spell = resolveAutocastSpell(objTypes, spells, runes, autocast)
+        val spell = resolveAutocastSpell(spells, runes, autocast)
         val attack = resolveCombatAttack(player.righthand, type, style, spell)
         combat.attack(this, target, attack)
     }
@@ -112,7 +111,7 @@ constructor(
 
         // Note: Dinh's bulwark conditions occur _before_ multi-combat area checks and _after_
         // "can attack" hooks.
-        val weapon = objTypes.getOrNull(player.righthand)
+        val weapon = getOrNull(player.righthand)
         if (weapon != null && weapon.isCategoryType(categories.dinhs_bulwark)) {
             val attackStyle = styles.get(player)
             // Dinh's "Block" attack style uses `AggressiveMelee` as its "dummy" attack style.

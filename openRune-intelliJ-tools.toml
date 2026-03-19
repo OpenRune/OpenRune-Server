@@ -1,9 +1,9 @@
 [rscm]
 
 mappings_directories = [
-    "data/cfg/gamevals",
-    "data/cfg/gamevals-binary",
-    "content/src/main/resources"
+    ".data/gamevals",
+    ".data/gamevals-binary",
+    "content/"
 ]
 
 # Enable or disable providers

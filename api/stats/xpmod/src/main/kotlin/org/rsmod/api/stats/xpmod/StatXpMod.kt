@@ -1,7 +1,7 @@
 package org.rsmod.api.stats.xpmod
 
+import dev.openrune.types.StatType
 import org.rsmod.game.entity.Player
-import org.rsmod.game.type.stat.StatType
 
 abstract class StatXpMod(private val stat: StatType) : XpMod {
     abstract fun Player.modifier(): Double

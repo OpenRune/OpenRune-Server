@@ -1,5 +1,8 @@
 package org.rsmod.api.combat.commons.player
 
+import dev.openrune.ServerCacheManager
+import dev.openrune.types.ItemServerType
+import dev.openrune.types.SequenceServerType
 import kotlin.math.min
 import org.rsmod.api.config.refs.categories
 import org.rsmod.api.config.refs.params
@@ -15,10 +18,7 @@ import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.game.entity.npc.NpcUid
 import org.rsmod.game.entity.player.PlayerUid
-import org.rsmod.game.type.obj.ObjType
-import org.rsmod.game.type.obj.ObjTypeList
-import org.rsmod.game.type.obj.UnpackedObjType
-import org.rsmod.game.type.seq.SeqType
+import org.rsmod.game.type.getOrNull
 
 private val ProtectedAccess.autoRetaliateDisabled by boolVarp(varps.option_nodef)
 
@@ -57,14 +57,17 @@ public fun ProtectedAccess.combatRetaliate(uid: PlayerUid, flinchDelay: Int) {
     opPlayer2(source)
 }
 
-public fun Player.combatPlayDefendAnim(objTypes: ObjTypeList, clientDelay: Int = 0) {
-    val righthandType = objTypes.getOrNull(righthand)
-    val lefthandType = objTypes.getOrNull(lefthand)
+public fun Player.combatPlayDefendAnim(clientDelay: Int = 0) {
+    val righthandType = getOrNull(righthand)
+    val lefthandType = getOrNull(lefthand)
     val defendAnim = resolveDefendAnim(righthandType, lefthandType)
     anim(defendAnim, delay = clientDelay)
 }
 
-private fun resolveDefendAnim(righthand: UnpackedObjType?, lefthand: UnpackedObjType?): SeqType {
+private fun resolveDefendAnim(
+    righthand: ItemServerType?,
+    lefthand: ItemServerType?,
+): SequenceServerType {
     val righthandAnim = righthand?.param(params.defend_anim)
     val lefthandAnim = lefthand?.param(params.defend_anim)
     return when {
@@ -74,8 +77,10 @@ private fun resolveDefendAnim(righthand: UnpackedObjType?, lefthand: UnpackedObj
     }
 }
 
-public fun Player.combatPlayDefendSpot(objTypes: ObjTypeList, ammo: ObjType?, clientDelay: Int) {
-    val type = ammo?.let(objTypes::get) ?: return
+public fun Player.combatPlayDefendSpot(ammo: ItemServerType?, clientDelay: Int) {
+    val type =
+        ammo?.let { id -> ServerCacheManager.getItems().values.firstOrNull { it.id == id.id } }
+            ?: return
     if (!type.isCategoryType(categories.javelin)) {
         return
     }

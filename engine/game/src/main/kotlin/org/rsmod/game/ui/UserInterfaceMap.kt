@@ -1,11 +1,11 @@
 package org.rsmod.game.ui
 
+import dev.openrune.cache.filestore.definition.InterfaceType
+import dev.openrune.definition.type.widget.ComponentType
+import dev.openrune.definition.type.widget.IfEvent
 import it.unimi.dsi.fastutil.ints.Int2IntMap
 import it.unimi.dsi.fastutil.ints.IntArraySet
 import org.rsmod.annotations.InternalApi
-import org.rsmod.game.type.comp.ComponentType
-import org.rsmod.game.type.interf.IfEvent
-import org.rsmod.game.type.interf.InterfaceType
 import org.rsmod.game.ui.collection.ComponentEventMap
 import org.rsmod.game.ui.collection.ComponentTargetMap
 import org.rsmod.game.ui.collection.ComponentTranslationMap

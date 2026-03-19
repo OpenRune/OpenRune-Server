@@ -1,12 +1,12 @@
 package org.rsmod.api.account.character.inv
 
+import dev.openrune.types.InvScope
 import jakarta.inject.Inject
 import org.rsmod.api.account.character.CharacterDataStage
 import org.rsmod.api.account.character.CharacterMetadataList
 import org.rsmod.api.db.DatabaseConnection
 import org.rsmod.game.entity.Player
 import org.rsmod.game.inv.Inventory
-import org.rsmod.game.type.inv.InvScope
 
 private typealias CharacterInventory = CharacterInventoryData.Inventory
 

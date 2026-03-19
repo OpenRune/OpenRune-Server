@@ -1,5 +1,6 @@
 package org.rsmod.api.game.process.npc.mode
 
+import dev.openrune.util.Direction
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -14,7 +15,6 @@ import org.rsmod.api.testing.params.TestArgsProvider
 import org.rsmod.api.testing.params.TestWithArgs
 import org.rsmod.api.testing.params.testArgsOfSingleParam
 import org.rsmod.api.testing.random.SequenceRandom
-import org.rsmod.game.map.Direction
 import org.rsmod.map.CoordGrid
 import org.rsmod.map.square.MapSquareKey
 

@@ -1,13 +1,13 @@
 package org.rsmod.api.combat.formulas.attributes.collector
 
-import jakarta.inject.Inject
+import dev.openrune.types.ItemServerType
 import java.util.EnumSet
 import org.rsmod.api.combat.commons.types.MeleeAttackType
 import org.rsmod.api.combat.formulas.attributes.CombatMeleeAttributes
 import org.rsmod.api.config.constants
+import org.rsmod.api.config.refs.BaseParams
 import org.rsmod.api.config.refs.categories
 import org.rsmod.api.config.refs.objs
-import org.rsmod.api.config.refs.params
 import org.rsmod.api.player.front
 import org.rsmod.api.player.hat
 import org.rsmod.api.player.legs
@@ -17,10 +17,9 @@ import org.rsmod.api.player.worn.EquipmentChecks
 import org.rsmod.game.entity.Player
 import org.rsmod.game.inv.isAnyType
 import org.rsmod.game.inv.isType
-import org.rsmod.game.type.obj.ObjTypeList
-import org.rsmod.game.type.obj.UnpackedObjType
+import org.rsmod.game.type.getOrNull
 
-public class CombatMeleeAttributeCollector @Inject constructor(private val objTypes: ObjTypeList) {
+public class CombatMeleeAttributeCollector {
     public fun collect(
         player: Player,
         attackType: MeleeAttackType?,
@@ -47,7 +46,7 @@ public class CombatMeleeAttributeCollector @Inject constructor(private val objTy
         }
 
         val helm = player.hat
-        val helmType = objTypes.getOrNull(helm)
+        val helmType = getOrNull(helm)
         if (helmType != null && helmType.hasBlackMaskAttribute()) {
             attributes += CombatMeleeAttributes.BlackMask
         }
@@ -171,7 +170,7 @@ public class CombatMeleeAttributeCollector @Inject constructor(private val objTy
             attributes += CombatMeleeAttributes.BerserkerNeck
         }
 
-        val weaponType = objTypes.getOrNull(weapon)
+        val weaponType = getOrNull(weapon)
         if (weaponType != null && attackType == MeleeAttackType.Stab) {
             val isCorpbaneWeapon =
                 weaponType.isCategoryType(categories.halberd) ||
@@ -186,9 +185,9 @@ public class CombatMeleeAttributeCollector @Inject constructor(private val objTy
         return attributes
     }
 
-    private fun UnpackedObjType.hasBlackMaskAttribute(): Boolean =
-        param(params.blackmask) != 0 ||
-            param(params.slayer_helm) != 0 ||
-            param(params.blackmask_imbued) != 0 ||
-            param(params.slayer_helm_imbued) != 0
+    private fun ItemServerType.hasBlackMaskAttribute(): Boolean =
+        param(BaseParams.blackmask) != 0 ||
+            param(BaseParams.slayer_helm) != 0 ||
+            param(BaseParams.blackmask_imbued) != 0 ||
+            param(BaseParams.slayer_helm_imbued) != 0
 }

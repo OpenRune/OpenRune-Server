@@ -1,15 +1,13 @@
 package org.rsmod.api.game.process.player
 
+import dev.openrune.map.MapSingletons
 import jakarta.inject.Inject
 import kotlin.collections.iterator
 import org.rsmod.api.registry.region.RegionRegistry
-import org.rsmod.game.area.AreaIndex
 import org.rsmod.game.entity.Player
 import org.rsmod.map.CoordGrid
 
-public class PlayerAreaProcessor
-@Inject
-constructor(private val index: AreaIndex, private val regions: RegionRegistry) {
+public class PlayerAreaProcessor @Inject constructor(private val regions: RegionRegistry) {
     public fun process(player: Player) {
         player.processAreaChange()
     }
@@ -28,7 +26,7 @@ constructor(private val index: AreaIndex, private val regions: RegionRegistry) {
         val normalizedCoords = normalizedCoords()
         pendingAreas.clear()
         if (!forceExitAreas) {
-            index.putAreas(normalizedCoords, pendingAreas)
+            MapSingletons.areaIndex.putAreas(normalizedCoords, pendingAreas)
         }
 
         for (area in activeAreas.iterator()) {

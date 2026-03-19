@@ -2,6 +2,9 @@ package org.rsmod.api.combat.formulas.accuracy.magic
 
 import com.google.inject.AbstractModule
 import com.google.inject.Scopes
+import dev.openrune.definition.type.VarBitType
+import dev.openrune.types.ItemServerType
+import dev.openrune.types.npc.UnpackedNpcType
 import jakarta.inject.Inject
 import org.rsmod.api.combat.commons.CombatStance
 import org.rsmod.api.combat.formulas.test_npcs
@@ -28,9 +31,6 @@ import org.rsmod.api.testing.params.TestWithArgs
 import org.rsmod.api.testing.params.testArgsOfSingleParam
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.inv.InvObj
-import org.rsmod.game.type.npc.UnpackedNpcType
-import org.rsmod.game.type.obj.ObjType
-import org.rsmod.game.type.varbit.VarBitType
 
 class NvPMagicAccuracyTest {
     @TestWithArgs(MatchupProvider::class)
@@ -96,25 +96,25 @@ class NvPMagicAccuracyTest {
 
         fun withBlockStance(stance: CombatStance) = copy(blockStance = stance)
 
-        fun withHelm(obj: ObjType?) = copy(hat = obj?.let(::InvObj))
+        fun withHelm(obj: ItemServerType?) = copy(hat = obj?.let(::InvObj))
 
-        fun withCape(obj: ObjType?) = copy(back = obj?.let(::InvObj))
+        fun withCape(obj: ItemServerType?) = copy(back = obj?.let(::InvObj))
 
-        fun withAmulet(obj: ObjType?) = copy(front = obj?.let(::InvObj))
+        fun withAmulet(obj: ItemServerType?) = copy(front = obj?.let(::InvObj))
 
-        fun withWeapon(obj: ObjType?) = copy(righthand = obj?.let(::InvObj))
+        fun withWeapon(obj: ItemServerType?) = copy(righthand = obj?.let(::InvObj))
 
-        fun withBody(obj: ObjType?) = copy(torso = obj?.let(::InvObj))
+        fun withBody(obj: ItemServerType?) = copy(torso = obj?.let(::InvObj))
 
-        fun withShield(obj: ObjType?) = copy(lefthand = obj?.let(::InvObj))
+        fun withShield(obj: ItemServerType?) = copy(lefthand = obj?.let(::InvObj))
 
-        fun withLegs(obj: ObjType?) = copy(legs = obj?.let(::InvObj))
+        fun withLegs(obj: ItemServerType?) = copy(legs = obj?.let(::InvObj))
 
-        fun withGloves(obj: ObjType?) = copy(hands = obj?.let(::InvObj))
+        fun withGloves(obj: ItemServerType?) = copy(hands = obj?.let(::InvObj))
 
-        fun withFeet(obj: ObjType?) = copy(feet = obj?.let(::InvObj))
+        fun withFeet(obj: ItemServerType?) = copy(feet = obj?.let(::InvObj))
 
-        fun withRing(obj: ObjType?) = copy(ring = obj?.let(::InvObj))
+        fun withRing(obj: ItemServerType?) = copy(ring = obj?.let(::InvObj))
 
         fun withDefenceLevel(defenceLvl: Int) = copy(defenceLvl = defenceLvl)
 

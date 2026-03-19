@@ -2,11 +2,11 @@
 
 package org.rsmod.api.config.refs
 
-import org.rsmod.api.type.refs.synth.SynthReferences
+import dev.openrune.synth
 
 typealias synths = BaseSynths
 
-object BaseSynths : SynthReferences() {
+object BaseSynths {
     val door_close = synth("door_close")
     val door_open = synth("door_open")
     val picketgate_close = synth("picketgate_close")

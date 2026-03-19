@@ -1,9 +1,9 @@
 package org.rsmod.content.interfaces.bank.configs
 
-import org.rsmod.api.type.refs.queue.QueueReferences
+import dev.openrune.queue
 
 internal typealias bank_queues = BankQueues
 
-object BankQueues : QueueReferences() {
+object BankQueues {
     val bank_compress = queue("bank_compress")
 }

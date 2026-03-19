@@ -1,17 +1,17 @@
 package org.rsmod.content.interfaces.skill.guides.configs
 
-import org.rsmod.api.type.refs.comp.ComponentReferences
-import org.rsmod.api.type.refs.interf.InterfaceReferences
+import dev.openrune.component
+import dev.openrune.inter
 
 typealias guide_interfaces = SkillGuideInterfaces
 
 typealias guide_components = SkillGuideComponents
 
-object SkillGuideInterfaces : InterfaceReferences() {
+object SkillGuideInterfaces {
     val skill_guide = inter("skill_guide")
 }
 
-object SkillGuideComponents : ComponentReferences() {
+object SkillGuideComponents {
     val attack = component("stats:attack")
     val strength = component("stats:strength")
     val defence = component("stats:defence")

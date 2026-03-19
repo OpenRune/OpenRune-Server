@@ -1,5 +1,10 @@
 package org.rsmod.api.shops
 
+import dev.openrune.ServerCacheManager
+import dev.openrune.definition.type.widget.IfEvent
+import dev.openrune.types.InvScope
+import dev.openrune.types.InventoryServerType
+import dev.openrune.types.aconverted.CurrencyType
 import jakarta.inject.Inject
 import org.rsmod.api.config.refs.currencies
 import org.rsmod.api.player.output.ClientScripts.interfaceInvInit
@@ -7,7 +12,6 @@ import org.rsmod.api.player.output.ClientScripts.shopMainInit
 import org.rsmod.api.player.startInvTransmit
 import org.rsmod.api.player.ui.ifOpenMainSidePair
 import org.rsmod.api.player.ui.ifSetEvents
-import org.rsmod.api.player.ui.ifSetText
 import org.rsmod.api.shops.config.ShopComponents
 import org.rsmod.api.shops.config.ShopInterfaces
 import org.rsmod.api.shops.config.ShopParams
@@ -16,22 +20,15 @@ import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.game.inv.Inventory
 import org.rsmod.game.shop.Shop
-import org.rsmod.game.type.currency.CurrencyType
-import org.rsmod.game.type.interf.IfEvent
-import org.rsmod.game.type.inv.InvScope
-import org.rsmod.game.type.inv.InvType
-import org.rsmod.game.type.inv.InvTypeList
 
-public class Shops
-@Inject
-constructor(private val invTypes: InvTypeList, private val eventBus: EventBus) {
-    public val globalInvs: MutableMap<InvType, Inventory> = mutableMapOf()
+public class Shops @Inject constructor(private val eventBus: EventBus) {
+    public val globalInvs: MutableMap<InventoryServerType, Inventory> = mutableMapOf()
 
     public fun open(
         player: Player,
         activeNpc: Npc,
         title: String,
-        shopInv: InvType,
+        shopInv: InventoryServerType,
         currency: CurrencyType = currencies.standard_gp,
         subtext: String = DEFAULT_SUBTEXT,
     ) {
@@ -53,7 +50,7 @@ constructor(private val invTypes: InvTypeList, private val eventBus: EventBus) {
     public fun open(
         player: Player,
         title: String,
-        shopInv: InvType,
+        shopInv: InventoryServerType,
         buyPercentage: Double,
         sellPercentage: Double,
         changePercentage: Double,
@@ -96,7 +93,6 @@ constructor(private val invTypes: InvTypeList, private val eventBus: EventBus) {
             transparency = -1,
             eventBus = eventBus,
         )
-        player.ifSetText(ShopComponents.shop_subtext, subtext)
         shopMainInit(player, shopInv.type, title)
 
         player.ifSetEvents(
@@ -135,8 +131,8 @@ constructor(private val invTypes: InvTypeList, private val eventBus: EventBus) {
         )
     }
 
-    private fun InvType.toInventory(observer: Player): Inventory {
-        val unpacked = invTypes[this]
+    private fun InventoryServerType.toInventory(observer: Player): Inventory {
+        val unpacked = ServerCacheManager.getInventory(this.id) ?: error("Error getting inv")
         return if (unpacked.scope == InvScope.Shared) {
             sharedInv()
         } else {
@@ -144,18 +140,19 @@ constructor(private val invTypes: InvTypeList, private val eventBus: EventBus) {
         }
     }
 
-    private fun InvType.sharedInv(): Inventory = globalInvs.getOrPut(this) { createSharedInv() }
+    private fun InventoryServerType.sharedInv(): Inventory =
+        globalInvs.getOrPut(this) { createSharedInv() }
 
-    private fun InvType.createSharedInv(): Inventory {
-        val unpacked = invTypes[this]
+    private fun InventoryServerType.createSharedInv(): Inventory {
+        val unpacked = ServerCacheManager.getInventory(this.id) ?: error("Error getting inv")
         check(unpacked.scope == InvScope.Shared) {
             "`shopInv` must have shared scope. (shopInv=$unpacked)"
         }
         return Inventory.create(unpacked)
     }
 
-    private fun InvType.privateInv(player: Player): Inventory {
-        val unpacked = invTypes[this]
+    private fun InventoryServerType.privateInv(player: Player): Inventory {
+        val unpacked = ServerCacheManager.getInventory(this.id) ?: error("Error getting inv")
         check(unpacked.scope != InvScope.Shared) {
             "`shopInv` must not have shared scope. (shopInv=$unpacked)"
         }

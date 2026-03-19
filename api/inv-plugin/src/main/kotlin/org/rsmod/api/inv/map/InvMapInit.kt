@@ -1,15 +1,12 @@
 package org.rsmod.api.inv.map
 
-import jakarta.inject.Inject
+import dev.openrune.types.InventoryServerType
 import org.rsmod.api.config.refs.BaseInvs
 import org.rsmod.game.entity.Player
 import org.rsmod.game.inv.Inventory
-import org.rsmod.game.type.inv.InvTypeList
-import org.rsmod.game.type.inv.UnpackedInvType
 
-public class InvMapInit @Inject constructor(invs: InvTypeList) {
-    public val defaultInvs: MutableSet<UnpackedInvType> =
-        hashSetOf(invs[BaseInvs.inv], invs[BaseInvs.worn])
+public class InvMapInit {
+    public val defaultInvs: MutableSet<InventoryServerType> = hashSetOf(BaseInvs.inv, BaseInvs.worn)
 
     public fun init(player: Player) {
         putIfAbsent(player)
@@ -30,7 +27,7 @@ public class InvMapInit @Inject constructor(invs: InvTypeList) {
         player.worn = player.invMap.getValue(BaseInvs.worn)
     }
 
-    public operator fun plusAssign(inv: UnpackedInvType) {
+    public operator fun plusAssign(inv: InventoryServerType) {
         defaultInvs += inv
     }
 }

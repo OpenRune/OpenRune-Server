@@ -1,5 +1,6 @@
 package org.rsmod.api.npc.hit.processor
 
+import dev.openrune.types.HealthBarServerType
 import jakarta.inject.Inject
 import org.rsmod.api.config.refs.hitmark_groups
 import org.rsmod.api.config.refs.params
@@ -13,7 +14,6 @@ import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.PlayerList
 import org.rsmod.game.headbar.Headbar
 import org.rsmod.game.hit.Hit
-import org.rsmod.game.type.headbar.HeadbarType
 
 public class StandardNpcHitProcessor
 @Inject
@@ -84,7 +84,7 @@ constructor(private val playerList: PlayerList, private val eventBus: EventBus) 
         source.soundSynth(defendSound)
     }
 
-    private fun Hit.createHeadbar(currHp: Int, maxHp: Int, headbar: HeadbarType): Headbar =
+    private fun Hit.createHeadbar(currHp: Int, maxHp: Int, headbar: HealthBarServerType): Headbar =
         InternalNpcHeadbars.createFromHitmark(hitmark, currHp, maxHp, headbar)
 
     private fun Npc.publishHitEvent(hit: Hit) {

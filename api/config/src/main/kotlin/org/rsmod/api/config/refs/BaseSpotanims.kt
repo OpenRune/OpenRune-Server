@@ -2,11 +2,11 @@
 
 package org.rsmod.api.config.refs
 
-import org.rsmod.api.type.refs.spot.SpotanimReferences
+import dev.openrune.spotAnim
 
 typealias spotanims = BaseSpotanims
 
-object BaseSpotanims : SpotanimReferences() {
+object BaseSpotanims {
     val osb8_skillcape_banana_spotanim = spotAnim("osb8_skillcape_banana_spotanim")
     val smokepuff = spotAnim("smokepuff")
     val sp_attackglow_red = spotAnim("sp_attackglow_red")

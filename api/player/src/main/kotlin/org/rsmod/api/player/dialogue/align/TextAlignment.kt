@@ -1,13 +1,12 @@
 package org.rsmod.api.player.dialogue.align
 
+import dev.openrune.definition.type.FontType
 import jakarta.inject.Inject
 import kotlin.math.ceil
 import org.rsmod.api.config.refs.fontmetrics
-import org.rsmod.game.type.font.FontMetricsTypeList
-import org.rsmod.game.type.font.UnpackedFontMetricsType
 
-public class TextAlignment @Inject constructor(fonts: FontMetricsTypeList) {
-    private val dialogueFont by lazy { fonts[fontmetrics.q8_full] }
+public class TextAlignment @Inject constructor() {
+    private val dialogueFont by lazy { fontmetrics.q8_full }
 
     public fun generateChatPageList(text: String): List<Page> {
         return generatePageList(text, CHAT_MAX_LINE_PIXEL_WIDTH, dialogueFont)
@@ -17,11 +16,7 @@ public class TextAlignment @Inject constructor(fonts: FontMetricsTypeList) {
         return generatePageList(text, MESBOX_MAX_LINE_PIXEL_WIDTH, dialogueFont)
     }
 
-    public fun generatePageList(
-        text: String,
-        lineWidth: Int,
-        font: UnpackedFontMetricsType,
-    ): List<Page> {
+    public fun generatePageList(text: String, lineWidth: Int, font: FontType): List<Page> {
         val lineBuffers = Array(MAX_TOTAL_LINE_COUNT) { "" }
         val lineCount = font.splitText(text, lineWidth, lineBuffers)
         val pageCount = ceil(lineCount.toDouble() / LINES_PER_PAGE).toInt()
@@ -48,7 +43,7 @@ public class TextAlignment @Inject constructor(fonts: FontMetricsTypeList) {
         }
     }
 
-    private fun UnpackedFontMetricsType.splitText(
+    private fun FontType.splitText(
         text: String,
         widthPerLine: Int,
         lineBuffer: Array<String>,
@@ -149,7 +144,7 @@ public class TextAlignment @Inject constructor(fonts: FontMetricsTypeList) {
         return lineCount
     }
 
-    private fun UnpackedFontMetricsType.getAdjustedGlyphAdvance(char: Char): Int {
+    private fun FontType.getAdjustedGlyphAdvance(char: Char): Int {
         val adjustedChar = if (char == 160.toChar()) ' ' else char
         return glyphAdvances[adjustedChar.code and 0xFF]
     }

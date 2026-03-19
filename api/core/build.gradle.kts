@@ -28,12 +28,7 @@ dependencies {
     implementation(projects.api.stats.levelmod)
     implementation(projects.api.stats.xpmod)
     implementation(projects.api.totp)
-    implementation(projects.api.type.typeBuilders)
-    implementation(projects.api.type.typeEditors)
-    implementation(projects.api.type.typeReferences)
-    implementation(projects.api.type.typeResolver)
-    implementation(projects.api.type.typeUpdater)
-    implementation(projects.api.type.typeVerifier)
+
     implementation(projects.api.utils.utilsLogging)
     implementation(projects.engine.game)
     implementation(projects.engine.module)

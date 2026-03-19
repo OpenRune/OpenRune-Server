@@ -1,10 +1,10 @@
 package org.rsmod.api.controller.access
 
+import dev.openrune.types.aconverted.QueueType
+import dev.openrune.types.aconverted.TimerType
 import kotlin.getValue
 import org.rsmod.coroutine.GameCoroutine
 import org.rsmod.game.entity.Controller
-import org.rsmod.game.type.queue.QueueType
-import org.rsmod.game.type.timer.TimerType
 import org.rsmod.map.CoordGrid
 
 /**

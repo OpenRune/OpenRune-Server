@@ -1,0 +1,42 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.inv"
+inherit = "inv.inv"
+
+scope = "Perm"
+protect = false
+runWeight = true
+
+[[inventory]]
+isServerOnly = true
+id = "inv.worn"
+inherit = "inv.worn"
+
+scope = "Perm"
+protect = false
+runWeight = true
+
+[[inventory]]
+isServerOnly = true
+id = "inv.bank"
+inherit = "inv.bank"
+
+scope = "Perm"
+stack = "Always"
+protect = false
+placeholders = false
+
+[[inventory]]
+isServerOnly = true
+id = "inv.tradeoffer"
+inherit = "inv.tradeoffer"
+size = 28
+scope = "Perm"
+protect = true
+
+[[inventory]]
+isServerOnly = true
+id = "inv.skill_guide_hunting_tracking"
+inherit = "inv.skill_guide_hunting_tracking"
+stack = "Never"
+

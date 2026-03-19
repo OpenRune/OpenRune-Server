@@ -1,7 +1,7 @@
 package org.rsmod.api.weapons
 
+import dev.openrune.types.ItemServerType
 import org.rsmod.game.inv.InvObj
-import org.rsmod.game.type.obj.ObjType
 
 public class WeaponRegistry {
     private val weapons = hashMapOf<Int, Weapon<*>>()
@@ -23,7 +23,7 @@ public class WeaponRegistry {
         return weapon as? MagicWeapon
     }
 
-    public fun add(obj: ObjType, weapon: Weapon<*>): Result.Add {
+    public fun add(obj: ItemServerType, weapon: Weapon<*>): Result.Add {
         if (obj.id in weapons) {
             return Result.Add.AlreadyAdded
         }
@@ -31,7 +31,7 @@ public class WeaponRegistry {
         return Result.Add.Success
     }
 
-    public fun remove(obj: ObjType) {
+    public fun remove(obj: ItemServerType) {
         weapons.remove(obj.id)
     }
 

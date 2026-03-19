@@ -1,7 +1,8 @@
-package org.rsmod.game.type.util
+package dev.openrune.types.util
 
-import org.rsmod.game.type.literal.CacheVarTypeMap
-import org.rsmod.game.type.param.ParamType
+import dev.openrune.ParamMap
+import dev.openrune.definition.type.ParamType
+import dev.openrune.literal.CacheVarTypeMap
 
 @JvmInline
 public value class ParamMapBuilder(private val typed: MutableMap<Int, Any> = hashMapOf()) {
@@ -17,7 +18,7 @@ public value class ParamMapBuilder(private val typed: MutableMap<Int, Any> = has
 
     public fun isNotEmpty(): Boolean = typed.isNotEmpty()
 
-    public operator fun <T : Any> set(param: ParamType<T>, value: T) {
+    public operator fun <T : Any> set(param: ParamType, value: T) {
         typed[param.id] = value
     }
 }

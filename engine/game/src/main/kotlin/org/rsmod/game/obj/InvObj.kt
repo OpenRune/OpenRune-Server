@@ -1,7 +1,7 @@
 package org.rsmod.game.obj
 
+import dev.openrune.types.ItemServerType
 import kotlin.contracts.contract
-import org.rsmod.game.type.obj.ObjType
 
 /** @deprecated Moved to [org.rsmod.game.inv.InvObj]. Will be removed before version 1.0.0. */
 @Deprecated(
@@ -17,20 +17,9 @@ public typealias InvObj = org.rsmod.game.inv.InvObj
         "Import from org.rsmod.game.inv package instead. Will be removed before version 1.0.0",
     level = DeprecationLevel.ERROR,
 )
-public fun org.rsmod.game.inv.InvObj?.isType(type: ObjType): Boolean {
+public fun org.rsmod.game.inv.InvObj?.isType(type: ItemServerType): Boolean {
     contract { returns(true) implies (this@isType != null) }
-    return this != null && type.internalId == id
-}
-
-/** @deprecated Moved to org.rsmod.game.inv package. Will be removed before version 1.0.0. */
-@Deprecated(
-    message =
-        "Import from org.rsmod.game.inv package instead. Will be removed before version 1.0.0",
-    level = DeprecationLevel.ERROR,
-)
-public fun org.rsmod.game.inv.InvObj?.isAnyType(type1: ObjType, type2: ObjType): Boolean {
-    contract { returns(true) implies (this@isAnyType != null) }
-    return this != null && (type1.internalId == id || type2.internalId == id)
+    return this != null && type.id == id
 }
 
 /** @deprecated Moved to org.rsmod.game.inv package. Will be removed before version 1.0.0. */
@@ -40,13 +29,11 @@ public fun org.rsmod.game.inv.InvObj?.isAnyType(type1: ObjType, type2: ObjType):
     level = DeprecationLevel.ERROR,
 )
 public fun org.rsmod.game.inv.InvObj?.isAnyType(
-    type1: ObjType,
-    type2: ObjType,
-    type3: ObjType,
+    type1: ItemServerType,
+    type2: ItemServerType,
 ): Boolean {
     contract { returns(true) implies (this@isAnyType != null) }
-    return this != null &&
-        (type1.internalId == id || type2.internalId == id || type3.internalId == id)
+    return this != null && (type1.id == id || type2.id == id)
 }
 
 /** @deprecated Moved to org.rsmod.game.inv package. Will be removed before version 1.0.0. */
@@ -56,17 +43,12 @@ public fun org.rsmod.game.inv.InvObj?.isAnyType(
     level = DeprecationLevel.ERROR,
 )
 public fun org.rsmod.game.inv.InvObj?.isAnyType(
-    type1: ObjType,
-    type2: ObjType,
-    type3: ObjType,
-    type4: ObjType,
+    type1: ItemServerType,
+    type2: ItemServerType,
+    type3: ItemServerType,
 ): Boolean {
     contract { returns(true) implies (this@isAnyType != null) }
-    return this != null &&
-        (type1.internalId == id ||
-            type2.internalId == id ||
-            type3.internalId == id ||
-            type4.internalId == id)
+    return this != null && (type1.id == id || type2.id == id || type3.id == id)
 }
 
 /** @deprecated Moved to org.rsmod.game.inv package. Will be removed before version 1.0.0. */
@@ -76,11 +58,26 @@ public fun org.rsmod.game.inv.InvObj?.isAnyType(
     level = DeprecationLevel.ERROR,
 )
 public fun org.rsmod.game.inv.InvObj?.isAnyType(
-    type1: ObjType,
-    type2: ObjType,
-    vararg types: ObjType,
+    type1: ItemServerType,
+    type2: ItemServerType,
+    type3: ItemServerType,
+    type4: ItemServerType,
 ): Boolean {
     contract { returns(true) implies (this@isAnyType != null) }
-    return this != null &&
-        (type1.internalId == id || type2.internalId == id || types.any { it.internalId == id })
+    return this != null && (type1.id == id || type2.id == id || type3.id == id || type4.id == id)
+}
+
+/** @deprecated Moved to org.rsmod.game.inv package. Will be removed before version 1.0.0. */
+@Deprecated(
+    message =
+        "Import from org.rsmod.game.inv package instead. Will be removed before version 1.0.0",
+    level = DeprecationLevel.ERROR,
+)
+public fun org.rsmod.game.inv.InvObj?.isAnyType(
+    type1: ItemServerType,
+    type2: ItemServerType,
+    vararg types: ItemServerType,
+): Boolean {
+    contract { returns(true) implies (this@isAnyType != null) }
+    return this != null && (type1.id == id || type2.id == id || types.any { it.id == id })
 }

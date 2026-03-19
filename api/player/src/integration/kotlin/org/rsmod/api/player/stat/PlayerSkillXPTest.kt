@@ -1,5 +1,6 @@
 package org.rsmod.api.player.stat
 
+import dev.openrune.types.stat.StatType
 import org.junit.jupiter.api.Test
 import org.rsmod.api.config.refs.stats
 import org.rsmod.api.testing.GameTestState
@@ -7,7 +8,6 @@ import org.rsmod.api.testing.params.TestArgs
 import org.rsmod.api.testing.params.TestArgsProvider
 import org.rsmod.api.testing.params.TestWithArgs
 import org.rsmod.game.stat.PlayerStatMap
-import org.rsmod.game.type.stat.StatType
 
 class PlayerSkillXPTest {
     @Test

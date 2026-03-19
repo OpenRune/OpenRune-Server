@@ -1,22 +1,12 @@
 package org.rsmod.api.spells.autocast.configs
 
+import dev.openrune.ParamReferences.param
 import org.rsmod.api.config.aliases.ParamObj
-import org.rsmod.api.type.builders.param.ParamBuilder
-import org.rsmod.api.type.refs.param.ParamReferences
-import org.rsmod.game.type.obj.ObjType
 
 internal typealias autocast_params = AutocastParams
 
-internal object AutocastParams : ParamReferences() {
+internal object AutocastParams {
     val additional_spell_autocast1: ParamObj = param("additional_spell_autocast1")
     val additional_spell_autocast2: ParamObj = param("additional_spell_autocast2")
     val additional_spell_autocast3: ParamObj = param("additional_spell_autocast3")
-}
-
-internal object AutocastParamBuilder : ParamBuilder() {
-    init {
-        build<ObjType>("additional_spell_autocast1")
-        build<ObjType>("additional_spell_autocast2")
-        build<ObjType>("additional_spell_autocast3")
-    }
 }

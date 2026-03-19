@@ -1,11 +1,10 @@
 package org.rsmod.api.player.events.interact
 
+import dev.openrune.definition.type.widget.ComponentType
+import dev.openrune.types.ItemServerType
+import dev.openrune.types.NpcServerType
 import org.rsmod.events.EventBus
 import org.rsmod.game.entity.Npc
-import org.rsmod.game.type.comp.ComponentType
-import org.rsmod.game.type.npc.UnpackedNpcType
-import org.rsmod.game.type.obj.ObjType
-import org.rsmod.game.type.obj.UnpackedObjType
 
 public sealed class NpcEvents {
     public sealed class Op(public val npc: Npc) : OpEvent(npc.id.toLong())
@@ -103,16 +102,16 @@ public class NpcTEvents {
     public class Op(
         public val npc: Npc,
         public val comsub: Int,
-        public val objType: ObjType?,
-        npcType: UnpackedNpcType,
+        public val objType: ItemServerType?,
+        npcType: NpcServerType,
         component: ComponentType,
     ) : OpEvent(EventBus.composeLongKey(npcType.id, component.packed))
 
     public class Ap(
         public val npc: Npc,
         public val comsub: Int,
-        public val objType: ObjType?,
-        npcType: UnpackedNpcType,
+        public val objType: ItemServerType?,
+        npcType: NpcServerType,
         component: ComponentType,
     ) : ApEvent(EventBus.composeLongKey(npcType.id, component.packed))
 }
@@ -121,7 +120,7 @@ public class NpcTContentEvents {
     public class Op(
         public val npc: Npc,
         public val comsub: Int,
-        public val objType: ObjType?,
+        public val objType: ItemServerType?,
         component: ComponentType,
         content: Int,
     ) : OpEvent(EventBus.composeLongKey(content, component.packed))
@@ -129,7 +128,7 @@ public class NpcTContentEvents {
     public class Ap(
         public val npc: Npc,
         public val comsub: Int,
-        public val objType: ObjType?,
+        public val objType: ItemServerType?,
         component: ComponentType,
         content: Int,
     ) : ApEvent(EventBus.composeLongKey(content, component.packed))
@@ -139,16 +138,16 @@ public class NpcTDefaultEvents {
     public class Op(
         public val npc: Npc,
         public val comsub: Int,
-        public val objType: ObjType?,
-        public val npcType: UnpackedNpcType,
+        public val objType: ItemServerType?,
+        public val npcType: NpcServerType,
         component: ComponentType,
     ) : OpEvent(component.packed.toLong())
 
     public class Ap(
         public val npc: Npc,
         public val comsub: Int,
-        public val objType: ObjType?,
-        public val npcType: UnpackedNpcType,
+        public val objType: ItemServerType?,
+        public val npcType: NpcServerType,
         component: ComponentType,
     ) : ApEvent(component.packed.toLong())
 }
@@ -157,15 +156,15 @@ public class NpcUEvents {
     public class Op(
         public val npc: Npc,
         public val invSlot: Int,
-        public val objType: UnpackedObjType,
-        npcType: UnpackedNpcType,
+        public val objType: ItemServerType,
+        npcType: NpcServerType,
     ) : OpEvent(EventBus.composeLongKey(npcType.id, objType.id))
 
     public class Ap(
         public val npc: Npc,
         public val invSlot: Int,
-        public val objType: UnpackedObjType,
-        npcType: UnpackedNpcType,
+        public val objType: ItemServerType,
+        npcType: NpcServerType,
     ) : ApEvent(EventBus.composeLongKey(npcType.id, objType.id))
 }
 
@@ -173,14 +172,14 @@ public class NpcUContentEvents {
     public class Op(
         public val npc: Npc,
         public val invSlot: Int,
-        public val objType: UnpackedObjType,
+        public val objType: ItemServerType,
         content: Int,
     ) : OpEvent(EventBus.composeLongKey(content, objType.id))
 
     public class Ap(
         public val npc: Npc,
         public val invSlot: Int,
-        public val objType: UnpackedObjType,
+        public val objType: ItemServerType,
         content: Int,
     ) : ApEvent(EventBus.composeLongKey(content, objType.id))
 }
@@ -189,28 +188,28 @@ public class NpcUDefaultEvents {
     public class OpType(
         public val npc: Npc,
         public val invSlot: Int,
-        public val objType: UnpackedObjType,
-        npcType: UnpackedNpcType,
+        public val objType: ItemServerType,
+        npcType: NpcServerType,
     ) : OpEvent(npcType.id.toLong())
 
     public class ApType(
         public val npc: Npc,
         public val invSlot: Int,
-        public val objType: UnpackedObjType,
-        npcType: UnpackedNpcType,
+        public val objType: ItemServerType,
+        npcType: NpcServerType,
     ) : ApEvent(npcType.id.toLong())
 
     public class OpContent(
         public val npc: Npc,
         public val invSlot: Int,
-        public val objType: UnpackedObjType,
+        public val objType: ItemServerType,
         content: Int,
     ) : OpEvent(content.toLong())
 
     public class ApContent(
         public val npc: Npc,
         public val invSlot: Int,
-        public val objType: UnpackedObjType,
+        public val objType: ItemServerType,
         content: Int,
     ) : ApEvent(content.toLong())
 }

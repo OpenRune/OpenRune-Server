@@ -1,6 +1,6 @@
 package org.rsmod.api.death
 
-import jakarta.inject.Inject
+import dev.openrune.ServerCacheManager
 import jakarta.inject.Singleton
 import org.rsmod.api.config.refs.components
 import org.rsmod.api.config.refs.jingles
@@ -13,11 +13,10 @@ import org.rsmod.api.player.disablePrayers
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.vars.intVarp
 import org.rsmod.game.entity.Player
-import org.rsmod.game.type.stat.StatTypeList
 import org.rsmod.map.CoordGrid
 
 @Singleton
-public class PlayerDeath @Inject constructor(private val statTypes: StatTypeList) {
+public class PlayerDeath() {
     private var Player.specialAttackType by intVarp(varps.sa_attack)
 
     public suspend fun death(access: ProtectedAccess) {
@@ -39,7 +38,7 @@ public class PlayerDeath @Inject constructor(private val statTypes: StatTypeList
         telejump(randomRespawn ?: respawn)
         resetAnim()
         // TODO: Drop death invs, etc.
-        resetPlayerState(statTypes)
+        resetPlayerState()
         restoreToplevelTabs(
             components.toplevel_target_pvp_icons,
             components.toplevel_target_side1,
@@ -57,7 +56,7 @@ public class PlayerDeath @Inject constructor(private val statTypes: StatTypeList
         )
     }
 
-    private fun ProtectedAccess.resetPlayerState(stats: StatTypeList) {
+    private fun ProtectedAccess.resetPlayerState() {
         player.disablePrayers()
         player.deathResetTimers()
 
@@ -67,7 +66,7 @@ public class PlayerDeath @Inject constructor(private val statTypes: StatTypeList
         rebuildAppearance()
 
         camReset()
-        statRestoreAll(stats.values)
+        statRestoreAll(ServerCacheManager.getStats().values)
         minimapReset()
     }
 }

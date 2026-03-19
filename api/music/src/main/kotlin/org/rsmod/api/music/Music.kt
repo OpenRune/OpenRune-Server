@@ -1,8 +1,8 @@
 package org.rsmod.api.music
 
-import org.rsmod.game.type.dbrow.DbRowType
-import org.rsmod.game.type.midi.MidiType
-import org.rsmod.game.type.varp.VarpType
+import dev.openrune.types.aconverted.MidiType
+import dev.openrune.types.varp.VarpServerType
+import org.rsmod.api.table.MusicRow
 
 public data class Music(
     val id: Int,
@@ -10,10 +10,10 @@ public data class Music(
     val unlockHint: String,
     val duration: Int,
     val midi: MidiType,
-    val unlockVarp: VarpType?,
+    val unlockVarp: VarpServerType?,
     val unlockBitpos: Int,
     val hidden: Boolean,
-    val secondary: DbRowType?,
+    val secondary: MusicRow?,
 ) {
     val unlockBitflag: Int
         get() = 1 shl unlockBitpos

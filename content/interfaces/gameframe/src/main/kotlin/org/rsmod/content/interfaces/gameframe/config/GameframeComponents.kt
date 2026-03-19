@@ -1,10 +1,10 @@
 package org.rsmod.content.interfaces.gameframe.config
 
-import org.rsmod.api.type.refs.comp.ComponentReferences
+import dev.openrune.component
 
 typealias gameframe_components = GameframeComponents
 
-object GameframeComponents : ComponentReferences() {
+object GameframeComponents {
     val toplevel_stone0 = component("toplevel_osrs_stretch:stone0")
     val toplevel_stone1 = component("toplevel_osrs_stretch:stone1")
     val toplevel_stone2 = component("toplevel_osrs_stretch:stone2")

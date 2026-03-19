@@ -1,13 +1,13 @@
 package org.rsmod.content.generic.locs.ladders
 
+import dev.openrune.types.ObjectServerType
+import dev.openrune.types.SequenceServerType
 import org.rsmod.api.config.refs.content
 import org.rsmod.api.config.refs.params
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.script.onOpLoc1
 import org.rsmod.api.script.onOpLoc2
 import org.rsmod.api.script.onOpLoc3
-import org.rsmod.game.type.loc.UnpackedLocType
-import org.rsmod.game.type.seq.SeqType
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
@@ -35,18 +35,18 @@ class LadderScript : PluginScript() {
         }
     }
 
-    private suspend fun ProtectedAccess.climbUp(type: UnpackedLocType): Unit = climb(type, 1)
+    private suspend fun ProtectedAccess.climbUp(type: ObjectServerType): Unit = climb(type, 1)
 
-    private suspend fun ProtectedAccess.climbDown(type: UnpackedLocType): Unit = climb(type, -1)
+    private suspend fun ProtectedAccess.climbDown(type: ObjectServerType): Unit = climb(type, -1)
 
-    private suspend fun ProtectedAccess.climb(type: UnpackedLocType, translateLevel: Int) {
+    private suspend fun ProtectedAccess.climb(type: ObjectServerType, translateLevel: Int) {
         val dest = player.coords.translateLevel(translateLevel)
         anim(type.climbAnim())
         delay(1)
         telejump(dest)
     }
 
-    private suspend fun ProtectedAccess.climbOption(type: UnpackedLocType) = startDialogue {
+    private suspend fun ProtectedAccess.climbOption(type: ObjectServerType) = startDialogue {
         val translate =
             choice2("Climb-up", 1, "Climb-down", -1, title = "Climb up or down the ladder?")
         val dest = player.coords.translateLevel(translate)
@@ -55,5 +55,5 @@ class LadderScript : PluginScript() {
         telejump(dest)
     }
 
-    private fun UnpackedLocType.climbAnim(): SeqType = param(params.climb_anim)
+    private fun ObjectServerType.climbAnim(): SequenceServerType = param(params.climb_anim)
 }

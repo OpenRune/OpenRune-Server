@@ -1,6 +1,7 @@
 package org.rsmod.api.player.interact
 
 import com.github.michaelbull.logging.InlineLogger
+import dev.openrune.types.ItemServerType
 import jakarta.inject.Inject
 import kotlin.math.min
 import org.rsmod.api.config.constants
@@ -31,14 +32,13 @@ import org.rsmod.game.inv.isType
 import org.rsmod.game.obj.Obj
 import org.rsmod.game.obj.ObjEntity
 import org.rsmod.game.obj.ObjScope
-import org.rsmod.game.type.obj.ObjTypeList
-import org.rsmod.game.type.obj.UnpackedObjType
+import org.rsmod.game.type.getInvObj
+import org.rsmod.game.type.hasInvOp
 import org.rsmod.map.CoordGrid
 
 public class HeldInteractions
 @Inject
 private constructor(
-    private val objTypes: ObjTypeList,
     private val eventBus: EventBus,
     private val marketPrices: MarketPrices,
     private val dropOp: HeldDropOp,
@@ -53,7 +53,7 @@ private constructor(
         op: HeldOp,
     ) {
         val obj = inventory[invSlot] ?: return resendSlot(inventory, 0)
-        interact(access, inventory, invSlot, obj, objTypes[obj], op)
+        interact(access, inventory, invSlot, obj, getInvObj(obj), op)
     }
 
     /**
@@ -70,7 +70,7 @@ private constructor(
             return
         }
 
-        val type = objTypes[obj]
+        val type = getInvObj(obj)
         if (!objectVerify(access.player, inventory, obj, type)) {
             return
         }
@@ -97,7 +97,7 @@ private constructor(
             return HeldEquipResult.Fail.InvalidObj
         }
 
-        val type = objTypes[obj]
+        val type = getInvObj(obj)
         if (!objectVerify(access.player, inventory, obj, type)) {
             return HeldEquipResult.Fail.InvalidObj
         }
@@ -108,7 +108,7 @@ private constructor(
 
     public fun examine(player: Player, inventory: Inventory, invSlot: Int) {
         val obj = inventory[invSlot] ?: return resendSlot(inventory, 0)
-        val objType = objTypes[obj]
+        val objType = getInvObj(obj)
         val price = marketPrices[objType] ?: 0
         player.objExamine(objType, obj.count, price)
     }
@@ -118,7 +118,7 @@ private constructor(
         inventory: Inventory,
         invSlot: Int,
         obj: InvObj,
-        type: UnpackedObjType,
+        type: ItemServerType,
         op: HeldOp,
     ) {
         if (!objectVerify(access.player, inventory, obj, type)) {
@@ -137,7 +137,7 @@ private constructor(
 
     private suspend fun ProtectedAccess.opHeld1(
         obj: InvObj,
-        type: UnpackedObjType,
+        type: ItemServerType,
         inventory: Inventory,
         invSlot: Int,
     ) {
@@ -157,7 +157,7 @@ private constructor(
 
     private suspend fun ProtectedAccess.opHeld2(
         obj: InvObj,
-        type: UnpackedObjType,
+        type: ItemServerType,
         inventory: Inventory,
         invSlot: Int,
     ) {
@@ -184,7 +184,7 @@ private constructor(
 
     private suspend fun ProtectedAccess.opHeld3(
         obj: InvObj,
-        type: UnpackedObjType,
+        type: ItemServerType,
         inventory: Inventory,
         invSlot: Int,
     ) {
@@ -204,7 +204,7 @@ private constructor(
 
     private suspend fun ProtectedAccess.opHeld4(
         obj: InvObj,
-        type: UnpackedObjType,
+        type: ItemServerType,
         inventory: Inventory,
         invSlot: Int,
     ) {
@@ -224,7 +224,7 @@ private constructor(
 
     private suspend fun ProtectedAccess.opHeld5(
         obj: InvObj,
-        type: UnpackedObjType,
+        type: ItemServerType,
         inventory: Inventory,
         invSlot: Int,
     ) {
@@ -245,7 +245,7 @@ private constructor(
         player: Player,
         inventory: Inventory,
         obj: InvObj?,
-        type: UnpackedObjType,
+        type: ItemServerType,
     ): Boolean {
         if (player.isDelayed || !obj.isType(type)) {
             resendSlot(inventory, 0)
@@ -257,7 +257,7 @@ private constructor(
     private fun hasOp(
         inventory: Inventory,
         obj: InvObj,
-        type: UnpackedObjType,
+        type: ItemServerType,
         op: HeldOp,
     ): Boolean {
         // Op5 (`Drop`) always exists as a fallback.
@@ -282,9 +282,9 @@ constructor(
         inventory: Inventory,
         dropSlot: Int,
         obj: InvObj,
-        type: UnpackedObjType,
+        type: ItemServerType,
     ) {
-        when (type.iop[4]) {
+        when (type.interfaceOptions[4]) {
             "Destroy" -> access.attemptDestroy(inventory, dropSlot, obj, type)
             "Release" -> access.attemptRelease(inventory, dropSlot, obj, type)
             else -> attemptDrop(access, inventory, dropSlot, obj, type)
@@ -295,7 +295,7 @@ constructor(
         inventory: Inventory,
         dropSlot: Int,
         obj: InvObj,
-        type: UnpackedObjType,
+        type: ItemServerType,
     ) {
         startDialogue { destroyWarning(inventory, dropSlot, obj, type) }
     }
@@ -304,7 +304,7 @@ constructor(
         inventory: Inventory,
         dropSlot: Int,
         obj: InvObj,
-        type: UnpackedObjType,
+        type: ItemServerType,
     ) {
         val header = type.param(params.destroy_note_title)
         val text = type.param(params.destroy_note_desc)
@@ -320,7 +320,7 @@ constructor(
         inventory: Inventory,
         dropSlot: Int,
         obj: InvObj,
-        type: UnpackedObjType,
+        type: ItemServerType,
     ) {
         val result = player.invDel(inventory, type, count = obj.count, slot = dropSlot)
         if (result.success) {
@@ -333,7 +333,7 @@ constructor(
         inventory: Inventory,
         dropSlot: Int,
         obj: InvObj,
-        type: UnpackedObjType,
+        type: ItemServerType,
     ) {
         if (obj.count == 1) {
             release(player, inventory, dropSlot, obj, type)
@@ -346,7 +346,7 @@ constructor(
         inventory: Inventory,
         dropSlot: Int,
         obj: InvObj,
-        type: UnpackedObjType,
+        type: ItemServerType,
     ) {
         val header =
             type.paramOrNull(params.release_note_title) ?: "Drop all of your ${type.lowercaseName}?"
@@ -362,7 +362,7 @@ constructor(
         inventory: Inventory,
         dropSlot: Int,
         obj: InvObj,
-        type: UnpackedObjType,
+        type: ItemServerType,
     ) {
         val result = player.invDel(inventory, type, count = obj.count, slot = dropSlot)
         if (result.success) {
@@ -379,7 +379,7 @@ constructor(
         inventory: Inventory,
         dropSlot: Int,
         obj: InvObj,
-        type: UnpackedObjType,
+        type: ItemServerType,
     ) {
         val player = access.player
         val trigger = player.dropTrigger
@@ -411,7 +411,7 @@ constructor(
         inventory: Inventory,
         dropSlot: Int,
         obj: InvObj,
-        type: UnpackedObjType,
+        type: ItemServerType,
     ) {
         val dropped = invDropSlot(objRepo, inventory, dropSlot)
         if (!dropped) {
@@ -427,7 +427,7 @@ constructor(
         inventory: Inventory,
         dropSlot: Int,
         obj: InvObj,
-        type: UnpackedObjType,
+        type: ItemServerType,
     ) {
         startDialogue { dropWarning(inventory, dropSlot, obj, type) }
     }
@@ -436,7 +436,7 @@ constructor(
         inventory: Inventory,
         dropSlot: Int,
         obj: InvObj,
-        type: UnpackedObjType,
+        type: ItemServerType,
     ) {
         objbox(
             obj = type,

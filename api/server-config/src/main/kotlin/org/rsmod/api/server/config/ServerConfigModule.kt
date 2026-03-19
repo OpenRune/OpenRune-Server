@@ -8,7 +8,7 @@ import org.rsmod.module.ExtendedModule
 
 public object ServerConfigModule : ExtendedModule() {
     private val configFile: Path
-        get() = Paths.get(".data", "server.toml")
+        get() = Paths.get("./", "game.yml")
 
     override fun bind() {
         bindInstance<ServerConfigLoader>()

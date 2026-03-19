@@ -1,5 +1,6 @@
 package org.rsmod.content.areas.city.lumbridge.npcs
 
+import dev.openrune.inv
 import jakarta.inject.Inject
 import org.rsmod.api.config.refs.mesanims
 import org.rsmod.api.player.dialogue.Dialogue
@@ -8,7 +9,6 @@ import org.rsmod.api.script.advanced.onUnimplementedOpNpc4
 import org.rsmod.api.script.onOpNpc1
 import org.rsmod.api.script.onOpNpc3
 import org.rsmod.api.shops.Shops
-import org.rsmod.content.areas.city.lumbridge.configs.lumbridge_invs
 import org.rsmod.content.areas.city.lumbridge.configs.lumbridge_npcs
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
@@ -23,7 +23,7 @@ class Bob @Inject constructor(private val shops: Shops) : PluginScript() {
     }
 
     private fun Player.openShop(npc: Npc) {
-        shops.open(this, npc, "Bob's Brilliant Axes", lumbridge_invs.axeshop)
+        shops.open(this, npc, "Bob's Brilliant Axes", inv("inv.axeshop"))
     }
 
     private suspend fun ProtectedAccess.startDialogue(npc: Npc) {

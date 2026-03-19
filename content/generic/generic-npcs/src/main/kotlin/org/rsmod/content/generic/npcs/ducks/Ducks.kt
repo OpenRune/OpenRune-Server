@@ -1,5 +1,7 @@
 package org.rsmod.content.generic.npcs.ducks
 
+import dev.openrune.types.NpcMode
+import dev.openrune.types.hunt.HuntVis
 import jakarta.inject.Inject
 import org.rsmod.api.config.refs.content
 import org.rsmod.api.config.refs.queues
@@ -12,8 +14,6 @@ import org.rsmod.api.repo.world.WorldRepository
 import org.rsmod.api.script.onAiTimer
 import org.rsmod.api.script.onNpcQueue
 import org.rsmod.game.entity.Npc
-import org.rsmod.game.entity.npc.NpcMode
-import org.rsmod.game.type.hunt.HuntVis
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 import org.rsmod.routefinder.collision.CollisionFlagMap

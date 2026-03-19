@@ -1,11 +1,11 @@
 package org.rsmod.api.combat.manager
 
+import dev.openrune.types.VarObjBitType
+import dev.openrune.util.Wearpos
 import jakarta.inject.Inject
 import org.rsmod.api.obj.charges.ObjChargeManager
 import org.rsmod.api.player.righthand
 import org.rsmod.game.entity.Player
-import org.rsmod.game.type.obj.Wearpos
-import org.rsmod.game.type.varobjbit.UnpackedVarObjBitType
 
 public class CombatChargeManager @Inject constructor(private val manager: ObjChargeManager) {
     /**
@@ -13,7 +13,7 @@ public class CombatChargeManager @Inject constructor(private val manager: ObjCha
      *
      * Internally calls [ObjChargeManager.getCharges] with `obj = player.righthand`.
      */
-    public fun getWeaponCharges(player: Player, varobj: UnpackedVarObjBitType): Int =
+    public fun getWeaponCharges(player: Player, varobj: VarObjBitType): Int =
         manager.getCharges(player.righthand, varobj)
 
     /**
@@ -23,7 +23,7 @@ public class CombatChargeManager @Inject constructor(private val manager: ObjCha
      */
     public fun attemptDetractWeapon(
         player: Player,
-        varobj: UnpackedVarObjBitType,
+        varobj: VarObjBitType,
         decrement: Int = 1,
     ): ObjChargeManager.Uncharge =
         manager.reduceWornCharges(player, Wearpos.RightHand, varobj, decrement)

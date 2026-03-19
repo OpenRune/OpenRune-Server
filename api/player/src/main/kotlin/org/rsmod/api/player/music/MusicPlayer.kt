@@ -1,5 +1,6 @@
 package org.rsmod.api.player.music
 
+import dev.openrune.types.aconverted.AreaType
 import jakarta.inject.Inject
 import org.rsmod.api.config.refs.components
 import org.rsmod.api.config.refs.midis
@@ -18,18 +19,12 @@ import org.rsmod.api.player.vars.enumVarp
 import org.rsmod.api.player.vars.intVarBit
 import org.rsmod.api.player.vars.intVarp
 import org.rsmod.api.random.GameRandom
+import org.rsmod.api.table.MusicRow
 import org.rsmod.game.entity.Player
-import org.rsmod.game.type.area.AreaType
-import org.rsmod.game.type.area.AreaTypeList
-import org.rsmod.game.type.dbrow.DbRowType
 
 public class MusicPlayer
 @Inject
-internal constructor(
-    private val random: GameRandom,
-    private val repo: MusicRepository,
-    private val areaTypes: AreaTypeList,
-) {
+internal constructor(private val random: GameRandom, private val repo: MusicRepository) {
     private val Player.playMode by enumVarp<MusicPlayMode>(varps.musicplay)
     private val Player.areaMode by enumVarBit<MusicAreaMode>(varbits.music_area_mode)
 
@@ -43,7 +38,7 @@ internal constructor(
     private var Player.musicPlaylist by intVarp(varps.music_playlist)
     private var Player.unlockMessageDisabled by boolVarBit(varbits.music_unlock_text_toggle)
 
-    public fun unlockAndPlay(player: Player, musicRow: DbRowType) {
+    public fun unlockAndPlay(player: Player, musicRow: MusicRow) {
         val music = getUnlockableOrThrow(musicRow)
         unlockAndPlay(player, music)
     }
@@ -53,7 +48,7 @@ internal constructor(
         play(player, music)
     }
 
-    public fun play(player: Player, musicRow: DbRowType) {
+    public fun play(player: Player, musicRow: MusicRow) {
         val music = getOrThrow(musicRow)
         play(player, music)
     }
@@ -96,7 +91,7 @@ internal constructor(
         }
     }
 
-    public fun unlock(player: Player, musicRow: DbRowType) {
+    public fun unlock(player: Player, musicRow: MusicRow) {
         val music = getUnlockableOrThrow(musicRow)
         unlock(player, music)
     }
@@ -111,7 +106,7 @@ internal constructor(
         VarPlayerIntMapSetter.set(player, varp, unlockValue)
     }
 
-    public fun hasUnlocked(player: Player, musicRow: DbRowType): Boolean {
+    public fun hasUnlocked(player: Player, musicRow: MusicRow): Boolean {
         val music = getOrThrow(musicRow)
         return hasUnlocked(player, music)
     }
@@ -134,7 +129,7 @@ internal constructor(
         mes("You have unlocked a new music track: $color${music.displayName}")
     }
 
-    private fun getUnlockableOrThrow(row: DbRowType): Music {
+    private fun getUnlockableOrThrow(row: MusicRow): Music {
         val music = getOrThrow(row)
         if (music.unlockVarp == null) {
             error("This music can be played but not unlocked: '${music.displayName}'")
@@ -142,8 +137,8 @@ internal constructor(
         return music
     }
 
-    private fun getOrThrow(row: DbRowType): Music {
-        return repo.forRow(row) ?: error("DbRow is not a valid music row: '${row.internalName}'")
+    private fun getOrThrow(row: MusicRow): Music {
+        return repo.forRow(row) ?: error("DbRow is not a valid music row: '${row.rowId}'")
     }
 
     public fun playNext(player: Player) {
@@ -158,7 +153,7 @@ internal constructor(
         if (player.currMusicArea == 0) {
             return
         }
-        val area = areaTypes.getValue(player.currMusicArea - 1)
+        val area = AreaType(player.currMusicArea - 1)
         when (player.areaMode) {
             MusicAreaMode.Modern -> {
                 val modernMusic = repo.getModernArea(area)

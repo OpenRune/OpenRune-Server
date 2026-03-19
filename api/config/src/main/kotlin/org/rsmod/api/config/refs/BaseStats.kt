@@ -2,11 +2,11 @@
 
 package org.rsmod.api.config.refs
 
-import org.rsmod.api.type.refs.stat.StatReferences
+import dev.openrune.stat
 
 typealias stats = BaseStats
 
-object BaseStats : StatReferences() {
+object BaseStats {
     val attack = stat("attack")
     val defence = stat("defence")
     val strength = stat("strength")

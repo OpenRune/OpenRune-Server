@@ -1,6 +1,8 @@
 package org.rsmod.api.net.rsprot.handlers
 
 import com.github.michaelbull.logging.InlineLogger
+import dev.openrune.ServerCacheManager
+import dev.openrune.definition.type.widget.IfEvent
 import jakarta.inject.Inject
 import net.rsprot.protocol.game.incoming.locs.OpLocT
 import org.rsmod.api.net.rsprot.player.InterfaceEvents
@@ -14,11 +16,6 @@ import org.rsmod.game.entity.Player
 import org.rsmod.game.interact.InteractionLocT
 import org.rsmod.game.loc.BoundLocInfo
 import org.rsmod.game.movement.RouteRequestLoc
-import org.rsmod.game.type.comp.ComponentTypeList
-import org.rsmod.game.type.interf.IfEvent
-import org.rsmod.game.type.interf.InterfaceTypeList
-import org.rsmod.game.type.loc.LocTypeList
-import org.rsmod.game.type.obj.ObjTypeList
 import org.rsmod.game.ui.Component
 import org.rsmod.map.CoordGrid
 
@@ -26,11 +23,7 @@ class OpLocTHandler
 @Inject
 constructor(
     private val eventBus: EventBus,
-    private val objTypes: ObjTypeList,
-    private val locTypes: LocTypeList,
     private val locRegistry: LocRegistry,
-    private val componentTypes: ComponentTypeList,
-    private val interfaceTypes: InterfaceTypeList,
     private val locInteractions: LocTInteractions,
 ) : MessageHandler<OpLocT> {
     private val logger = InlineLogger()
@@ -50,10 +43,13 @@ constructor(
             player.clearPendingAction(eventBus)
             return
         }
-        val type = locTypes[message.id] ?: return
-        val interfaceType = interfaceTypes[message.asComponent]
-        val componentType = componentTypes[message.asComponent]
-        val objType = message.selectedObj.takeIf { it != -1 }?.let(objTypes::get)
+        val type = ServerCacheManager.getObject(message.id) ?: return
+        val interfaceType = ServerCacheManager.fromInterface(message.asComponent.packed)
+        val componentType = ServerCacheManager.fromComponent(message.asComponent.packed)
+        val objType =
+            message.selectedObj
+                .takeIf { it != -1 }
+                ?.let { id -> ServerCacheManager.getItems().values.firstOrNull { it.id == id } }
 
         val isValidInterface =
             player.ui.containsOverlay(interfaceType) || player.ui.containsModal(interfaceType)

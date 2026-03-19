@@ -1,9 +1,9 @@
 package org.rsmod.content.interfaces.gameframe.config
 
-import org.rsmod.api.type.refs.queue.QueueReferences
+import dev.openrune.queue
 
 typealias gameframe_queues = GameframeQueues
 
-object GameframeQueues : QueueReferences() {
+object GameframeQueues {
     val client_mode = queue("client_mode")
 }

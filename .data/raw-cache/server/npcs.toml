@@ -1,0 +1,1324 @@
+[[npc]]
+id = "npc.0_50_50_freshfish"
+inherit = "npc.0_50_50_freshfish"
+moveRestrict = "NoMove"
+wanderRange = 0
+
+[[npc]]
+id = "npc.0_50_49_saltfish"
+inherit = "npc.0_50_49_saltfish"
+moveRestrict = "NoMove"
+wanderRange = 0
+respawnRate = 50
+
+[[npc]]
+id = "npc.imp"
+inherit = "npc.imp"
+giveChase = false
+[npc.params]
+"param.shop_sell_percentage" = 1000
+"param.shop_buy_percentage" = 600
+"param.shop_change_percentage" = 20
+26=0
+10=-37
+5=-42
+6=-42
+7=-42
+8=-42
+46="obj.fiendish_ashes"
+"param.attack_sound"=534
+"param.defend_sound"=536
+"param.death_sound"=535
+"param.defence_light"=-42
+"param.defence_standard"=-42
+"param.defence_heavy"=-42
+"param.attack_melee"=-42
+"param.attack_anim"="seq.imp_attack"
+"param.defend_anim"="seq.imp_block"
+"param.death_anim"="seq.imp_death"
+"param.npc_attack_type"="category.attacktype_stab"
+
+[[npc]]
+id = "npc.farming_tools_leprechaun"
+inherit = "npc.farming_tools_leprechaun"
+wanderRange = 0
+
+[[npc]]
+id = "npc.generalshopkeeper1"
+inherit = "npc.generalshopkeeper1"
+moveRestrict = "Indoors"
+
+[[npc]]
+id = "npc.generalassistant1"
+inherit = "npc.generalassistant1"
+moveRestrict = "Indoors"
+
+[[npc]]
+id = "npc.deadman_banker_blue_south"
+inherit = "npc.deadman_banker_blue_south"
+contentGroup = "content.banker"
+
+[[npc]]
+id = "npc.aide_tutor_banker"
+inherit = "npc.aide_tutor_banker"
+contentGroup = "content.banker_tutor"
+
+[[npc]]
+id = "npc.aide_tutor_prayer"
+inherit = "npc.aide_tutor_prayer"
+moveRestrict = "Indoors"
+
+[[npc]]
+id = "npc.father_aereck"
+inherit = "npc.father_aereck"
+moveRestrict = "Indoors"
+
+[[npc]]
+id = "npc.hans"
+inherit = "npc.hans"
+defaultMode = "Patrol"
+maxRange = 40
+
+
+[[npc.waypoints]]
+destination = { x = 3207, z = 3233, level = 0 }
+
+[[npc.waypoints]]
+destination = { x = 3211, z = 3230, level = 0 }
+
+[[npc.waypoints]]
+destination = { x = 3219, z = 3230, level = 0 }
+
+[[npc.waypoints]]
+destination = { x = 3219, z = 3222, level = 0 }
+pause_delay = 10
+
+[[npc.waypoints]]
+destination = { x = 3221, z = 3222, level = 0 }
+
+[[npc.waypoints]]
+destination = { x = 3221, z = 3212, level = 0 }
+
+[[npc.waypoints]]
+destination = { x = 3218, z = 3209, level = 0 }
+
+[[npc.waypoints]]
+destination = { x = 3214, z = 3205, level = 0 }
+
+[[npc.waypoints]]
+destination = { x = 3202, z = 3205, level = 0 }
+
+[[npc.waypoints]]
+destination = { x = 3202, z = 3232, level = 0 }
+
+
+[[npc]]
+id = "npc.cook"
+inherit = "npc.cook"
+moveRestrict = "Indoors"
+
+[[npc]]
+id = "npc.lost_property_merchant_standard"
+inherit = "npc.lost_property_merchant_standard"
+wanderRange = 0
+respawnDir = "West"
+
+[[npc]]
+id = "npc.lumbridge_guide"
+inherit = "npc.lumbridge_guide"
+wanderRange = 0
+respawnDir = "West"
+
+[[npc]]
+id = "npc.cws_doomsayer"
+inherit = "npc.cws_doomsayer"
+wanderRange = 0
+respawnDir = "East"
+
+[[npc]]
+id = "npc.tob_spectator_misthalin"
+inherit = "npc.tob_spectator_misthalin"
+wanderRange = 0
+
+[[npc]]
+id = "npc.count_check"
+inherit = "npc.count_check"
+wanderRange = 0
+respawnDir = "East"
+
+[[npc]]
+id = "npc.aide_tutor_clues"
+inherit = "npc.aide_tutor_clues"
+wanderRange = 0
+timer = 20
+respawnDir = "North"
+
+[[npc]]
+id = "npc.ram_bartender"
+inherit = "npc.ram_bartender"
+wanderRange = 0
+respawnDir = "West"
+
+[[npc]]
+id = "npc.aide_tutor_smithing_apprentice"
+inherit = "npc.aide_tutor_smithing_apprentice"
+moveRestrict = "Indoors"
+
+[[npc]]
+id = "npc.veos_lumbridge"
+inherit = "npc.veos_lumbridge"
+wanderRange = 0
+
+[[npc]]
+id = "npc.ap_guide_parent"
+inherit = "npc.ap_guide_parent"
+wanderRange = 0
+
+[[npc]]
+id = "npc.mistmyst_hewey"
+inherit = "npc.mistmyst_hewey"
+wanderRange = 0
+respawnDir = "East"
+
+[[npc]]
+id = "npc.aide_tutor_fishing"
+inherit = "npc.aide_tutor_fishing"
+wanderRange = 0
+respawnDir = "East"
+
+[[npc]]
+id = "npc.bob"
+inherit = "npc.bob"
+moveRestrict = "Indoors"
+
+[[npc]]
+id = "npc.millie_the_miller"
+inherit = "npc.millie_the_miller"
+wanderRange = 1
+
+[[npc]]
+id = "npc.cow"
+inherit = "npc.cow"
+timer = 1
+contentGroup = "content.cow"
+respawnRate = 45
+[npc.params]
+"param.attack_sound"=369
+"param.defend_sound"=371
+"param.death_sound"=370
+"param.defence_light"=-21
+"param.defence_standard"=-21
+"param.defence_heavy"=-21
+"param.attack_melee"=-15
+"param.poison_immunity"=1
+"param.venom_immunity"=2
+"param.slayer_experience"=80
+"param.attack_anim"="seq.cow_update_attack"
+"param.defend_anim"="seq.cow_update_defend"
+"param.death_anim"="seq.cow_update_death"
+"param.npc_attack_type"="category.attacktype_crush"
+
+[[npc]]
+id = "npc.cow2"
+inherit = "npc.cow2"
+timer = 1
+contentGroup = "content.cow"
+respawnRate = 45
+[npc.params]
+"param.attack_sound"=369
+"param.defend_sound"=371
+"param.death_sound"=370
+"param.defence_light"=-21
+"param.defence_standard"=-21
+"param.defence_heavy"=-21
+"param.attack_melee"=-15
+"param.poison_immunity"=1
+"param.venom_immunity"=2
+"param.slayer_experience"=80
+"param.attack_anim"="seq.cow_update_attack"
+"param.defend_anim"="seq.cow_update_defend"
+"param.death_anim"="seq.cow_update_death"
+"param.npc_attack_type"="category.attacktype_crush"
+
+[[npc]]
+id = "npc.cow3"
+inherit = "npc.cow3"
+timer = 1
+contentGroup = "content.cow"
+respawnRate = 45
+[npc.params]
+"param.attack_sound"=369
+"param.defend_sound"=371
+"param.death_sound"=370
+"param.defence_light"=-21
+"param.defence_standard"=-21
+"param.defence_heavy"=-21
+"param.attack_melee"=-15
+"param.poison_immunity"=1
+"param.venom_immunity"=2
+"param.slayer_experience"=80
+"param.attack_anim"="seq.cow_update_attack"
+"param.defend_anim"="seq.cow_update_defend"
+"param.death_anim"="seq.cow_update_death"
+"param.npc_attack_type"="category.attacktype_crush"
+
+[[npc]]
+id = "npc.cow_beef"
+inherit = "npc.cow_beef"
+timer = 1
+contentGroup = "content.cow"
+
+[[npc]]
+id = "npc.cow2_calf"
+inherit = "npc.cow2_calf"
+timer = 1
+contentGroup = "content.cow_calf"
+respawnRate = 45
+[npc.params]
+"param.attack_sound"=366
+"param.defend_sound"=368
+"param.death_sound"=367
+"param.defence_light"=-26
+"param.defence_standard"=-26
+"param.defence_heavy"=-26
+"param.attack_melee"=-20
+"param.poison_immunity"=1
+"param.venom_immunity"=2
+"param.slayer_experience"=60
+"param.attack_anim"="seq.cow_update_attack"
+"param.defend_anim"="seq.cow_update_defend"
+"param.death_anim"="seq.cow_update_death"
+"param.npc_attack_type"="category.attacktype_crush"
+
+[[npc]]
+id = "npc.cow3_calf"
+inherit = "npc.cow3_calf"
+timer = 1
+contentGroup = "content.cow_calf"
+respawnRate = 45
+[npc.params]
+"param.attack_sound"=366
+"param.defend_sound"=368
+"param.death_sound"=367
+"param.defence_light"=-26
+"param.defence_standard"=-26
+"param.defence_heavy"=-26
+"param.attack_melee"=-20
+"param.poison_immunity"=1
+"param.venom_immunity"=2
+"param.slayer_experience"=60
+"param.attack_anim"="seq.cow_update_attack"
+"param.defend_anim"="seq.cow_update_defend"
+"param.death_anim"="seq.cow_update_death"
+"param.npc_attack_type"="category.attacktype_crush"
+
+[[npc]]
+id = "npc.duck"
+inherit = "npc.duck"
+moveRestrict = "Blocked"
+maxRange = 40
+wanderRange = 35
+timer = 25
+contentGroup = "content.duck"
+respawnRate = 25
+[npc.params]
+"param.defend_sound"=412
+"param.death_sound"=411
+"param.poison_immunity"=1
+"param.defence_light"=-42
+"param.defence_standard"=-42
+"param.venom_immunity"=2
+"param.defence_heavy"=-42
+"param.attack_melee"=-47
+"param.slayer_experience"=30
+"param.attack_anim"="seq.seagull_attack"
+"param.death_anim"="seq.duck_rework_death"
+"param.npc_attack_type"="category.attacktype_stab"
+
+[[npc]]
+id = "npc.duck_female"
+inherit = "npc.duck_female"
+moveRestrict = "Blocked"
+maxRange = 40
+wanderRange = 35
+timer = 25
+contentGroup = "content.duck"
+respawnRate = 25
+[npc.params]
+"param.defend_sound"=412
+"param.death_sound"=411
+"param.poison_immunity"=1
+"param.defence_light"=-42
+"param.defence_standard"=-42
+"param.venom_immunity"=2
+"param.defence_heavy"=-42
+"param.attack_melee"=-47
+"param.slayer_experience"=30
+"param.attack_anim"="seq.seagull_attack"
+"param.death_anim"="seq.duck_rework_death"
+"param.npc_attack_type"="category.attacktype_stab"
+
+[[npc]]
+id = "npc.duck_update_ducklings"
+inherit = "npc.duck_update_ducklings"
+moveRestrict = "Blocked"
+defaultMode = "None"
+maxRange = 40
+wanderRange = 35
+huntRange = 2
+huntMode = 22
+timer = 50
+contentGroup = "content.duckling"
+
+[[npc]]
+id = "npc.man"
+inherit = "npc.man"
+contentGroup = "content.person"
+respawnRate = 25
+[npc.params]
+"param.attack_sound"=2566
+"param.defend_sound"=513
+"param.death_sound"=512
+"param.defence_light"=-21
+"param.defence_standard"=-21
+"param.defence_heavy"=-21
+"param.attack_anim"="seq.human_unarmedpunch"
+"param.defend_anim"="seq.human_unarmed_def"
+"param.death_anim"="seq.human_death"
+"param.npc_attack_type"="category.attacktype_crush"
+
+[[npc]]
+id = "npc.man2"
+inherit = "npc.man2"
+contentGroup = "content.person"
+respawnRate = 25
+[npc.params]
+"param.attack_sound"=2566
+"param.defend_sound"=513
+"param.death_sound"=512
+"param.defence_light"=-21
+"param.defence_standard"=-21
+"param.defence_heavy"=-21
+"param.attack_anim"="seq.human_unarmedpunch"
+"param.defend_anim"="seq.human_unarmed_def"
+"param.death_anim"="seq.human_death"
+"param.npc_attack_type"="category.attacktype_crush"
+
+[[npc]]
+id = "npc.man3"
+inherit = "npc.man3"
+contentGroup = "content.person"
+respawnRate = 25
+[npc.params]
+"param.attack_sound"=2566
+"param.defend_sound"=513
+"param.death_sound"=512
+"param.defence_light"=-21
+"param.defence_standard"=-21
+"param.defence_heavy"=-21
+"param.attack_anim"="seq.human_unarmedpunch"
+"param.defend_anim"="seq.human_unarmed_def"
+"param.death_anim"="seq.human_death"
+"param.npc_attack_type"="category.attacktype_crush"
+
+[[npc]]
+id = "npc.man_indoor"
+inherit = "npc.man_indoor"
+contentGroup = "content.person"
+respawnRate = 25
+[npc.params]
+"param.attack_sound"=2566
+"param.defend_sound"=513
+"param.death_sound"=512
+"param.defence_light"=-21
+"param.defence_standard"=-21
+"param.defence_heavy"=-21
+"param.attack_anim"="seq.human_unarmedpunch"
+"param.defend_anim"="seq.human_unarmed_def"
+"param.death_anim"="seq.human_death"
+"param.npc_attack_type"="category.attacktype_crush"
+
+[[npc]]
+id = "npc.woman"
+inherit = "npc.woman"
+contentGroup = "content.person"
+respawnRate = 25
+[npc.params]
+"param.attack_sound"=2566
+"param.defend_sound"=506
+"param.death_sound"=505
+"param.defence_light"=-21
+"param.defence_standard"=-21
+"param.defence_heavy"=-21
+"param.attack_anim"="seq.human_unarmedpunch"
+"param.defend_anim"="seq.human_unarmed_def"
+"param.death_anim"="seq.human_death"
+"param.npc_attack_type"="category.attacktype_crush"
+
+[[npc]]
+id = "npc.woman2"
+inherit = "npc.woman2"
+contentGroup = "content.person"
+respawnRate = 25
+[npc.params]
+"param.attack_sound"=2566
+"param.defend_sound"=506
+"param.death_sound"=505
+"param.defence_light"=-21
+"param.defence_standard"=-21
+"param.defence_heavy"=-21
+"param.attack_anim"="seq.human_unarmedpunch"
+"param.defend_anim"="seq.human_unarmed_def"
+"param.death_anim"="seq.human_death"
+"param.npc_attack_type"="category.attacktype_crush"
+
+[[npc]]
+id = "npc.woman3"
+inherit = "npc.woman3"
+contentGroup = "content.person"
+respawnRate = 25
+[npc.params]
+"param.attack_sound"=2566
+"param.defend_sound"=506
+"param.death_sound"=505
+"param.defence_light"=-21
+"param.defence_standard"=-21
+"param.defence_heavy"=-21
+"param.attack_anim"="seq.human_unarmedpunch"
+"param.defend_anim"="seq.human_unarmed_def"
+"param.death_anim"="seq.human_death"
+"param.npc_attack_type"="category.attacktype_crush"
+
+[[npc]]
+id = "npc.sheepunsheered"
+inherit = "npc.sheepunsheered"
+timer = 1
+contentGroup = "content.sheep"
+[npc.params]
+"param.next_npc_stage" = "npc.sheepsheered"
+
+[[npc]]
+id = "npc.sheepsheered"
+inherit = "npc.sheepsheered"
+timer = 1
+contentGroup = "content.sheared_sheep"
+
+[[npc]]
+id = "npc.sheepunsheered2"
+inherit = "npc.sheepunsheered2"
+timer = 1
+contentGroup = "content.sheep"
+[npc.params]
+"param.next_npc_stage" = "npc.sheepsheered2"
+
+[[npc]]
+id = "npc.sheepsheered2"
+inherit = "npc.sheepsheered2"
+timer = 1
+contentGroup = "content.sheared_sheep"
+
+[[npc]]
+id = "npc.sheepunsheered3"
+inherit = "npc.sheepunsheered3"
+timer = 1
+contentGroup = "content.sheep"
+[npc.params]
+"param.next_npc_stage" = "npc.sheepsheered3"
+
+[[npc]]
+id = "npc.sheepsheered3"
+inherit = "npc.sheepsheered3"
+timer = 1
+contentGroup = "content.sheared_sheep"
+
+[[npc]]
+id = "npc.sheepunsheeredg"
+inherit = "npc.sheepunsheeredg"
+timer = 1
+contentGroup = "content.sheep"
+[npc.params]
+"param.next_npc_stage" = "npc.sheepsheeredg"
+
+[[npc]]
+id = "npc.sheepsheeredg"
+inherit = "npc.sheepsheeredg"
+timer = 1
+contentGroup = "content.sheared_sheep"
+
+[[npc]]
+id = "npc.sheepunsheered2g"
+inherit = "npc.sheepunsheered2g"
+timer = 1
+contentGroup = "content.sheep"
+[npc.params]
+"param.next_npc_stage" = "npc.sheepsheered2g"
+
+[[npc]]
+id = "npc.sheepsheered2g"
+inherit = "npc.sheepsheered2g"
+timer = 1
+contentGroup = "content.sheared_sheep"
+
+[[npc]]
+id = "npc.sheepunsheered3g"
+inherit = "npc.sheepunsheered3g"
+timer = 1
+contentGroup = "content.sheep"
+[npc.params]
+"param.next_npc_stage" = "npc.sheepsheered3g"
+
+[[npc]]
+id = "npc.sheepsheered3g"
+inherit = "npc.sheepsheered3g"
+timer = 1
+contentGroup = "content.sheared_sheep"
+
+[[npc]]
+id = "npc.sheepunsheeredw"
+inherit = "npc.sheepunsheeredw"
+timer = 1
+contentGroup = "content.sheep"
+[npc.params]
+"param.next_npc_stage" = "npc.sheepsheeredw"
+
+[[npc]]
+id = "npc.sheepsheeredw"
+inherit = "npc.sheepsheeredw"
+timer = 1
+contentGroup = "content.sheared_sheep"
+
+[[npc]]
+id = "npc.sheepunsheered2w"
+inherit = "npc.sheepunsheered2w"
+timer = 1
+contentGroup = "content.sheep"
+[npc.params]
+"param.next_npc_stage" = "npc.sheepsheered2w"
+
+[[npc]]
+id = "npc.sheepsheered2w"
+inherit = "npc.sheepsheered2w"
+timer = 1
+contentGroup = "content.sheared_sheep"
+
+[[npc]]
+id = "npc.sheepunsheered3w"
+inherit = "npc.sheepunsheered3w"
+timer = 1
+contentGroup = "content.sheep"
+[npc.params]
+"param.next_npc_stage" = "npc.sheepsheered3w"
+
+[[npc]]
+id = "npc.sheepsheered3w"
+inherit = "npc.sheepsheered3w"
+timer = 1
+contentGroup = "content.sheared_sheep"
+
+[[npc]]
+id = "npc.sheepunsheeredshaggy"
+inherit = "npc.sheepunsheeredshaggy"
+timer = 1
+contentGroup = "content.sheep"
+[npc.params]
+"param.next_npc_stage" = "npc.sheepsheeredshaggy"
+
+[[npc]]
+id = "npc.sheepsheeredshaggy"
+inherit = "npc.sheepsheeredshaggy"
+timer = 1
+contentGroup = "content.sheared_sheep"
+
+[[npc]]
+id = "npc.sheepunsheeredshaggy2"
+inherit = "npc.sheepunsheeredshaggy2"
+timer = 1
+contentGroup = "content.sheep"
+[npc.params]
+"param.next_npc_stage" = "npc.sheepsheeredshaggy2"
+
+[[npc]]
+id = "npc.sheepsheeredshaggy2"
+inherit = "npc.sheepsheeredshaggy2"
+timer = 1
+contentGroup = "content.sheared_sheep"
+
+[[npc]]
+id = "npc.fairy_sheep"
+inherit = "npc.fairy_sheep"
+timer = 1
+contentGroup = "content.sheep"
+[npc.params]
+"param.next_npc_stage" = "npc.fairy_sheepsheered"
+
+[[npc]]
+id = "npc.fairy_sheepsheered"
+inherit = "npc.fairy_sheepsheered"
+timer = 1
+contentGroup = "content.sheared_sheep"
+
+[[npc]]
+id = "npc.fairy_sheep2"
+inherit = "npc.fairy_sheep2"
+timer = 1
+contentGroup = "content.sheep"
+[npc.params]
+"param.next_npc_stage" = "npc.fairy_sheepsheered2"
+
+[[npc]]
+id = "npc.fairy_sheepsheered2"
+inherit = "npc.fairy_sheepsheered2"
+timer = 1
+contentGroup = "content.sheared_sheep"
+
+[[npc]]
+id = "npc.canoeing_cave_scenery_1"
+inherit = "npc.canoeing_cave_scenery_1"
+moveRestrict = "PassThru"
+defaultMode = "None"
+timer = 1
+respawnDir = "North"
+
+[[npc]]
+id = "npc.canoeing_cave_scenery_2"
+inherit = "npc.canoeing_cave_scenery_2"
+moveRestrict = "PassThru"
+defaultMode = "None"
+timer = 1
+respawnDir = "North"
+
+[[npc]]
+id = "npc.canoeing_cave_scenery_3"
+inherit = "npc.canoeing_cave_scenery_3"
+moveRestrict = "PassThru"
+defaultMode = "None"
+timer = 1
+respawnDir = "North"
+
+[[npc]]
+id = "npc.canoeing_scenery_1"
+inherit = "npc.canoeing_scenery_1"
+moveRestrict = "PassThru"
+defaultMode = "None"
+timer = 1
+respawnDir = "North"
+
+[[npc]]
+id = "npc.canoeing_scenery_2"
+inherit = "npc.canoeing_scenery_2"
+moveRestrict = "PassThru"
+defaultMode = "None"
+timer = 1
+respawnDir = "North"
+
+[[npc]]
+id = "npc.canoeing_bullrush"
+inherit = "npc.canoeing_bullrush"
+moveRestrict = "PassThru"
+defaultMode = "None"
+timer = 1
+respawnDir = "North"
+
+[[npc]]
+id = "npc.canoeing_bullrush_leaf"
+inherit = "npc.canoeing_bullrush_leaf"
+moveRestrict = "PassThru"
+defaultMode = "None"
+timer = 1
+respawnDir = "North"
+
+[[npc]]
+id = "npc.mugger"
+inherit = "npc.mugger"
+[npc.params]
+"param.attack_sound"=2566
+"param.defend_sound"=513
+"param.death_sound"=512
+"param.attack_anim"="seq.human_unarmedpunch"
+"param.defend_anim"="seq.human_unarmedblock"
+"param.death_anim"="seq.human_death"
+"param.npc_attack_type"="category.attacktype_crush"
+
+[[npc]]
+id = "npc.chicken"
+inherit = "npc.chicken"
+respawnRate = 25
+[npc.params]
+"param.attack_sound"=355
+"param.defend_sound"=357
+"param.death_sound"=356
+"param.defence_light"=-42
+"param.defence_standard"=-42
+"param.defence_heavy"=-42
+"param.attack_melee"=-47
+"param.poison_immunity"=1
+"param.venom_immunity"=2
+"param.slayer_experience"=30
+"param.attack_anim"="seq.lore_chicken_attack"
+"param.defend_anim"="seq.lore_chicken_defend"
+"param.death_anim"="seq.lore_chicken_death"
+"param.npc_attack_type"="category.attacktype_stab"
+
+[[npc]]
+id = "npc.chicken_brown"
+inherit = "npc.chicken_brown"
+respawnRate = 25
+[npc.params]
+"param.attack_sound"=355
+"param.defend_sound"=357
+"param.death_sound"=356
+"param.defence_light"=-42
+"param.defence_standard"=-42
+"param.defence_heavy"=-42
+"param.attack_melee"=-47
+"param.poison_immunity"=1
+"param.venom_immunity"=2
+"param.slayer_experience"=30
+"param.attack_anim"="seq.lore_chicken_attack"
+"param.defend_anim"="seq.lore_chicken_defend"
+"param.death_anim"="seq.lore_chicken_death"
+"param.npc_attack_type"="category.attacktype_stab"
+
+[[npc]]
+id = "npc.ramunsheered"
+inherit = "npc.ramunsheered"
+respawnRate = 45
+[npc.params]
+"param.attack_sound"=757
+"param.defend_sound"=759
+"param.death_sound"=758
+"param.defence_light"=-21
+"param.defence_standard"=-21
+"param.defence_heavy"=-21
+"param.attack_melee"=-15
+"param.attack_anim"="seq.sheep_update_attack"
+"param.defend_anim"="seq.sheep_update_defend"
+"param.death_anim"="seq.sheep_update_death"
+"param.npc_attack_type"="category.attacktype_crush"
+
+[[npc]]
+id = "npc.ramunsheered2"
+inherit = "npc.ramunsheered2"
+respawnRate = 45
+[npc.params]
+"param.attack_sound"=757
+"param.defend_sound"=759
+"param.death_sound"=758
+"param.defence_light"=-21
+"param.defence_standard"=-21
+"param.defence_heavy"=-21
+"param.attack_melee"=-15
+"param.attack_anim"="seq.sheep_update_attack"
+"param.defend_anim"="seq.sheep_update_defend"
+"param.death_anim"="seq.sheep_update_death"
+"param.npc_attack_type"="category.attacktype_crush"
+
+[[npc]]
+id = "npc.ramunsheered3"
+inherit = "npc.ramunsheered3"
+respawnRate = 45
+[npc.params]
+"param.attack_sound"=757
+"param.defend_sound"=759
+"param.death_sound"=758
+"param.defence_light"=-21
+"param.defence_standard"=-21
+"param.defence_heavy"=-21
+"param.attack_melee"=-15
+"param.attack_anim"="seq.sheep_update_attack"
+"param.defend_anim"="seq.sheep_update_defend"
+"param.death_anim"="seq.sheep_update_death"
+"param.npc_attack_type"="category.attacktype_crush"
+
+[[npc]]
+id = "npc.duckling"
+inherit = "npc.duckling"
+respawnRate = 25
+[npc.params]
+"param.defend_sound"=412
+"param.death_sound"=411
+"param.defence_light"=-42
+"param.defence_standard"=-42
+"param.defence_heavy"=-42
+"param.attack_melee"=-47
+"param.slayer_experience"=30
+"param.attack_anim"="seq.seagull_attack"
+"param.death_anim"="seq.duck_rework_death"
+"param.npc_attack_type"="category.attacktype_stab"
+
+[[npc]]
+id = "npc.unicorn"
+inherit = "npc.unicorn"
+respawnRate = 90
+[npc.params]
+"param.attack_sound"=369
+"param.defend_sound"=371
+"param.death_sound"=370
+"param.attack_anim"="seq.unicorn_rework_attack"
+"param.defend_anim"="seq.unicorn_rework_defend"
+"param.death_anim"="seq.unicorn_rework_death"
+"param.npc_attack_type"="category.attacktype_stab"
+
+[[npc]]
+id = "npc.rat"
+inherit = "npc.rat"
+respawnRate = 2
+[npc.params]
+"param.attack_sound"=710
+"param.defend_sound"=713
+"param.death_sound"=711
+"param.defence_light"=-42
+"param.defence_standard"=-42
+"param.defence_heavy"=-42
+"param.attack_melee"=-47
+"param.slayer_experience"=20
+"param.attack_anim"="seq.mouse_attack"
+"param.defend_anim"="seq.mouse_defend"
+"param.death_anim"="seq.mouse_death"
+"param.npc_attack_type"="category.attacktype_crush"
+
+[[npc]]
+id = "npc.giantrat"
+inherit = "npc.giantrat"
+respawnRate = 30
+[npc.params]
+"param.attack_sound"=710
+"param.defend_sound"=713
+"param.death_sound"=711
+"param.slayer_experience"=50
+"param.attack_anim"="seq.giant_rat_update_attack"
+"param.defend_anim"="seq.giant_rat_update_defend"
+"param.death_anim"="seq.giant_rat_update_death"
+"param.npc_attack_type"="category.attacktype_stab"
+
+[[npc]]
+id = "npc.giantrat_grey"
+inherit = "npc.giantrat_grey"
+respawnRate = 30
+[npc.params]
+"param.attack_sound"=710
+"param.defend_sound"=713
+"param.death_sound"=711
+"param.slayer_experience"=50
+"param.attack_anim"="seq.giant_rat_update_attack"
+"param.defend_anim"="seq.giant_rat_update_defend"
+"param.death_anim"="seq.giant_rat_update_death"
+"param.npc_attack_type"="category.attacktype_stab"
+
+[[npc]]
+id = "npc.giantrat_grey2"
+inherit = "npc.giantrat_grey2"
+respawnRate = 30
+[npc.params]
+"param.attack_sound"=710
+"param.defend_sound"=713
+"param.death_sound"=711
+"param.slayer_experience"=50
+"param.attack_anim"="seq.giant_rat_update_attack"
+"param.defend_anim"="seq.giant_rat_update_defend"
+"param.death_anim"="seq.giant_rat_update_death"
+"param.npc_attack_type"="category.attacktype_stab"
+
+[[npc]]
+id = "npc.giantrat_grey3"
+inherit = "npc.giantrat_grey3"
+respawnRate = 30
+[npc.params]
+"param.attack_sound"=710
+"param.defend_sound"=713
+"param.death_sound"=711
+"param.slayer_experience"=50
+"param.attack_anim"="seq.giant_rat_update_attack"
+"param.defend_anim"="seq.giant_rat_update_defend"
+"param.death_anim"="seq.giant_rat_update_death"
+"param.npc_attack_type"="category.attacktype_stab"
+
+[[npc]]
+id = "npc.giantrat1_2"
+inherit = "npc.giantrat1_2"
+respawnRate = 30
+[npc.params]
+"param.attack_sound"=710
+"param.defend_sound"=713
+"param.death_sound"=711
+"param.slayer_experience"=100
+"param.attack_anim"="seq.giant_rat_update_attack"
+"param.defend_anim"="seq.giant_rat_update_defend"
+"param.death_anim"="seq.giant_rat_update_death"
+"param.npc_attack_type"="category.attacktype_stab"
+
+[[npc]]
+id = "npc.giantrat1_3"
+inherit = "npc.giantrat1_3"
+respawnRate = 30
+[npc.params]
+"param.attack_sound"=710
+"param.defend_sound"=713
+"param.death_sound"=711
+"param.slayer_experience"=100
+"param.attack_anim"="seq.giant_rat_update_attack"
+"param.defend_anim"="seq.giant_rat_update_defend"
+"param.death_anim"="seq.giant_rat_update_death"
+"param.npc_attack_type"="category.attacktype_stab"
+
+[[npc]]
+id = "npc.giantspider1"
+inherit = "npc.giantspider1"
+respawnRate = 30
+[npc.params]
+"param.attack_sound"=537
+"param.defend_sound"=539
+"param.death_sound"=538
+"param.defence_light"=-10
+"param.defence_standard"=-10
+"param.defence_heavy"=-10
+"param.attack_melee"=-10
+"param.slayer_experience"=50
+"param.attack_anim"="seq.spider_update_attack"
+"param.elemental_weakness_type"=3
+"param.defend_anim"="seq.spider_update_defend"
+"param.elemental_weakness_percent"=50
+"param.death_anim"="seq.spider_update_death"
+"param.npc_attack_type"="category.attacktype_stab"
+
+[[npc]]
+id = "npc.spider"
+inherit = "npc.spider"
+respawnRate = 35
+[npc.params]
+"param.attack_sound"=3604
+"param.defend_sound"=3609
+"param.death_sound"=3608
+"param.defence_light"=-53
+"param.defence_standard"=-53
+"param.defence_heavy"=-53
+"param.attack_melee"=-35
+"param.slayer_experience"=20
+"param.attack_anim"="seq.small_spider_update_attack"
+"param.elemental_weakness_type"=3
+"param.defend_anim"="seq.small_spider_update_defend"
+"param.elemental_weakness_percent"=50
+"param.death_anim"="seq.small_spider_update_death"
+"param.npc_attack_type"="category.attacktype_stab"
+
+[[npc]]
+id = "npc.goblin_unarmed_melee_1"
+inherit = "npc.goblin_unarmed_melee_1"
+respawnRate = 35
+[npc.params]
+"param.attack_sound"=469
+"param.defend_sound"=472
+"param.death_sound"=471
+"param.defence_light"=-15
+"param.defence_standard"=-15
+"param.defence_heavy"=-15
+"param.attack_melee"=-21
+"param.slayer_experience"=50
+"param.attack_anim"="seq.slice_surface_goblin_squat_unarmed_attack"
+"param.defend_anim"="seq.slice_surface_goblin_defend"
+"param.death_anim"="seq.slice_surface_goblin_death"
+"param.npc_attack_type"="category.attacktype_crush"
+
+[[npc]]
+id = "npc.goblin_unarmed_melee_2"
+inherit = "npc.goblin_unarmed_melee_2"
+respawnRate = 35
+[npc.params]
+"param.attack_sound"=469
+"param.defend_sound"=472
+"param.death_sound"=471
+"param.defence_light"=-15
+"param.defence_standard"=-15
+"param.defence_heavy"=-15
+"param.attack_melee"=-21
+"param.slayer_experience"=50
+"param.attack_anim"="seq.slice_surface_goblin_squat_unarmed_attack"
+"param.defend_anim"="seq.slice_surface_goblin_defend"
+"param.death_anim"="seq.slice_surface_goblin_death"
+"param.npc_attack_type"="category.attacktype_crush"
+
+[[npc]]
+id = "npc.goblin_unarmed_melee_3"
+inherit = "npc.goblin_unarmed_melee_3"
+respawnRate = 35
+[npc.params]
+"param.attack_sound"=469
+"param.defend_sound"=472
+"param.death_sound"=471
+"param.defence_light"=-15
+"param.defence_standard"=-15
+"param.defence_heavy"=-15
+"param.attack_melee"=-21
+"param.slayer_experience"=50
+"param.attack_anim"="seq.slice_surface_goblin_squat_unarmed_attack"
+"param.defend_anim"="seq.slice_surface_goblin_defend"
+"param.death_anim"="seq.slice_surface_goblin_death"
+"param.npc_attack_type"="category.attacktype_crush"
+
+[[npc]]
+id = "npc.goblin_unarmed_melee_4"
+inherit = "npc.goblin_unarmed_melee_4"
+respawnRate = 35
+[npc.params]
+"param.attack_sound"=469
+"param.defend_sound"=472
+"param.death_sound"=471
+"param.defence_light"=-15
+"param.defence_standard"=-15
+"param.defence_heavy"=-15
+"param.attack_melee"=-21
+"param.slayer_experience"=50
+"param.attack_anim"="seq.slice_surface_goblin_squat_unarmed_attack"
+"param.defend_anim"="seq.slice_surface_goblin_defend"
+"param.death_anim"="seq.slice_surface_goblin_death"
+"param.npc_attack_type"="category.attacktype_crush"
+
+[[npc]]
+id = "npc.goblin_unarmed_melee_5"
+inherit = "npc.goblin_unarmed_melee_5"
+respawnRate = 35
+[npc.params]
+"param.attack_sound"=469
+"param.defend_sound"=472
+"param.death_sound"=471
+"param.defence_light"=-15
+"param.defence_standard"=-15
+"param.defence_heavy"=-15
+"param.attack_melee"=-21
+"param.slayer_experience"=50
+"param.attack_anim"="seq.slice_surface_goblin_squat_unarmed_attack"
+"param.defend_anim"="seq.slice_surface_goblin_defend"
+"param.death_anim"="seq.slice_surface_goblin_death"
+"param.npc_attack_type"="category.attacktype_crush"
+
+[[npc]]
+id = "npc.goblin_unarmed_melee_6"
+inherit = "npc.goblin_unarmed_melee_6"
+respawnRate = 35
+[npc.params]
+"param.attack_sound"=469
+"param.defend_sound"=472
+"param.death_sound"=471
+"param.defence_light"=-15
+"param.defence_standard"=-15
+"param.defence_heavy"=-15
+"param.attack_melee"=-21
+"param.slayer_experience"=50
+"param.attack_anim"="seq.slice_surface_goblin_squat_unarmed_attack"
+"param.defend_anim"="seq.slice_surface_goblin_defend"
+"param.death_anim"="seq.slice_surface_goblin_death"
+"param.npc_attack_type"="category.attacktype_crush"
+
+[[npc]]
+id = "npc.goblin_unarmed_melee_7"
+inherit = "npc.goblin_unarmed_melee_7"
+respawnRate = 35
+[npc.params]
+"param.attack_sound"=469
+"param.defend_sound"=472
+"param.death_sound"=471
+"param.defence_light"=-15
+"param.defence_standard"=-15
+"param.defence_heavy"=-15
+"param.attack_melee"=-21
+"param.slayer_experience"=50
+"param.attack_anim"="seq.slice_surface_goblin_squat_unarmed_attack"
+"param.defend_anim"="seq.slice_surface_goblin_defend"
+"param.death_anim"="seq.slice_surface_goblin_death"
+"param.npc_attack_type"="category.attacktype_crush"
+
+[[npc]]
+id = "npc.goblin_unarmed_melee_8"
+inherit = "npc.goblin_unarmed_melee_8"
+respawnRate = 35
+[npc.params]
+"param.attack_sound"=469
+"param.defend_sound"=472
+"param.death_sound"=471
+"param.defence_light"=-15
+"param.defence_standard"=-15
+"param.defence_heavy"=-15
+"param.attack_melee"=-21
+"param.slayer_experience"=50
+"param.attack_anim"="seq.slice_surface_goblin_squat_unarmed_attack"
+"param.defend_anim"="seq.slice_surface_goblin_defend"
+"param.death_anim"="seq.slice_surface_goblin_death"
+"param.npc_attack_type"="category.attacktype_crush"
+
+[[npc]]
+id = "npc.goblin_armed"
+inherit = "npc.goblin_armed"
+respawnRate = 35
+[npc.params]
+"param.attack_sound"=3520
+"param.defend_sound"=472
+"param.death_sound"=471
+"param.attack_melee"=12
+"param.slayer_experience"=120
+"param.attack_anim"="seq.slice_surface_goblin_squat_attack_spear"
+"param.defend_anim"="seq.slice_surface_goblin_defend_spear"
+"param.death_anim"="seq.slice_surface_goblin_death_spear"
+"param.npc_attack_type"="category.attacktype_crush"
+
+[[npc]]
+id = "npc.fai_barbarian_goblin_armed_1"
+inherit = "npc.fai_barbarian_goblin_armed_1"
+respawnRate = 35
+[npc.params]
+"param.attack_sound"=3520
+"param.defend_sound"=472
+"param.death_sound"=471
+"param.attack_melee"=12
+"param.slayer_experience"=120
+"param.attack_anim"="seq.slice_surface_goblin_squat_attack_spear"
+"param.defend_anim"="seq.slice_surface_goblin_defend_spear"
+"param.death_anim"="seq.slice_surface_goblin_death_spear"
+"param.npc_attack_type"="category.attacktype_crush"
+
+[[npc]]
+id = "npc.farmer1"
+inherit = "npc.farmer1"
+respawnRate = 25
+[npc.params]
+"param.attack_sound"=2517
+"param.defend_sound"=513
+"param.death_sound"=512
+"param.attack_melee"=5
+"param.attack_anim"="seq.human_farmersfork_stab"
+"param.defend_anim"="seq.human_farmersfork_def"
+"param.death_anim"="seq.human_death"
+"param.npc_attack_type"="category.attacktype_stab"
+
+[[npc]]
+id = "npc.farmer2"
+inherit = "npc.farmer2"
+respawnRate = 25
+[npc.params]
+"param.attack_sound"=2517
+"param.defend_sound"=513
+"param.death_sound"=512
+"param.attack_melee"=5
+"param.attack_anim"="seq.human_farmersfork_stab"
+"param.defend_anim"="seq.human_farmersfork_def"
+"param.death_anim"="seq.human_death"
+"param.npc_attack_type"="category.attacktype_stab"
+
+[[npc]]
+id = "npc.farmer3"
+inherit = "npc.farmer3"
+respawnRate = 25
+[npc.params]
+"param.attack_sound"=2517
+"param.defend_sound"=513
+"param.death_sound"=512
+"param.attack_melee"=5
+"param.attack_anim"="seq.human_farmersfork_stab"
+"param.defend_anim"="seq.human_farmersfork_def"
+"param.death_anim"="seq.human_death"
+"param.npc_attack_type"="category.attacktype_stab"
+
+[[npc]]
+id = "npc.weaponsmaster"
+inherit = "npc.weaponsmaster"
+[npc.params]
+"param.attack_sound"=2500
+"param.defend_sound"=15
+"param.death_sound"=512
+"param.attack_anim"="seq.human_sword_slash"
+"param.defend_anim"="seq.human_dspear_block"
+"param.death_anim"="seq.human_death"
+
+[[npc]]
+id = "npc.giant_frog_nodrops"
+inherit = "npc.giant_frog_nodrops"
+respawnRate = 50
+[npc.params]
+"param.attack_sound"=838
+"param.defend_sound"=840
+"param.death_sound"=839
+"param.attack_anim"="seq.giant_frog_attack"
+"param.defend_anim"="seq.giant_frog_block"
+"param.death_anim"="seq.giant_frog_death"
+"param.npc_attack_type"="category.attacktype_crush"
+
+[[npc]]
+id = "npc.medium_frog_nodrops"
+inherit = "npc.medium_frog_nodrops"
+respawnRate = 50
+[npc.params]
+"param.attack_sound"=842
+"param.defend_sound"=844
+"param.death_sound"=843
+"param.attack_anim"="seq.giant_frog_attack"
+"param.defend_anim"="seq.giant_frog_block"
+"param.death_anim"="seq.giant_frog_death"
+"param.npc_attack_type"="category.attacktype_crush"
+
+[[npc]]
+id = "npc.little_frog_nodrops"
+inherit = "npc.little_frog_nodrops"
+respawnRate = 50
+[npc.params]
+"param.attack_sound"=842
+"param.defend_sound"=844
+"param.death_sound"=843
+"param.attack_anim"="seq.giant_frog_attack"
+"param.defend_anim"="seq.giant_frog_block"
+"param.death_anim"="seq.giant_frog_death"
+"param.npc_attack_type"="category.attacktype_crush"
+
+[[npc]]
+id = "npc.farmer1_f"
+inherit = "npc.farmer1_f"
+respawnRate = 25
+[npc.params]
+"param.attack_sound"=2517
+"param.defend_sound"=506
+"param.death_sound"=512
+"param.attack_melee"=5
+"param.attack_anim"="seq.human_sword_stab"
+"param.defend_anim"="seq.human_sword_block"
+"param.death_anim"="seq.human_death"
+"param.npc_attack_type"="category.attacktype_stab"
+
+[[npc]]
+id = "npc.farmer2_f"
+inherit = "npc.farmer2_f"
+respawnRate = 25
+[npc.params]
+"param.attack_sound"=2517
+"param.defend_sound"=506
+"param.death_sound"=512
+"param.attack_melee"=5
+"param.attack_anim"="seq.human_sword_stab"
+"param.defend_anim"="seq.human_sword_block"
+"param.death_anim"="seq.human_death"
+"param.npc_attack_type"="category.attacktype_stab"
+
+[[npc]]
+id = "npc.farmer3_f"
+inherit = "npc.farmer3_f"
+respawnRate = 25
+[npc.params]
+"param.attack_sound"=2517
+"param.defend_sound"=506
+"param.death_sound"=512
+"param.attack_melee"=5
+"param.attack_anim"="seq.human_sword_stab"
+"param.defend_anim"="seq.human_sword_block"
+"param.death_anim"="seq.human_death"
+"param.npc_attack_type"="category.attacktype_stab"
+
+[[npc]]
+id = "npc.farmer4"
+inherit = "npc.farmer4"
+respawnRate = 25
+[npc.params]
+"param.attack_sound"=2517
+"param.defend_sound"=513
+"param.death_sound"=512
+"param.attack_melee"=5
+"param.attack_anim"="seq.human_farmersfork_stab"
+"param.defend_anim"="seq.human_farmersfork_def"
+"param.death_anim"="seq.human_death"
+"param.npc_attack_type"="category.attacktype_stab"

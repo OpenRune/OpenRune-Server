@@ -1,12 +1,12 @@
 package org.rsmod.api.npc
 
+import dev.openrune.types.NpcMode
 import org.rsmod.api.npc.interact.AiLocInteractions
 import org.rsmod.api.npc.interact.AiNpcInteractions
 import org.rsmod.api.npc.interact.AiObjInteractions
 import org.rsmod.api.npc.interact.AiPlayerInteractions
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
-import org.rsmod.game.entity.npc.NpcMode
 import org.rsmod.game.interact.InteractionOp
 import org.rsmod.game.loc.BoundLocInfo
 import org.rsmod.game.obj.Obj

@@ -1,6 +1,7 @@
 package org.rsmod.api.player.interact
 
 import com.github.michaelbull.logging.InlineLogger
+import dev.openrune.types.ItemServerType
 import jakarta.inject.Inject
 import org.rsmod.api.config.constants
 import org.rsmod.api.player.events.interact.ApEvent
@@ -15,7 +16,6 @@ import org.rsmod.game.entity.Player
 import org.rsmod.game.inv.InvObj
 import org.rsmod.game.inv.Inventory
 import org.rsmod.game.inv.isType
-import org.rsmod.game.type.obj.UnpackedObjType
 
 public class PlayerUInteractions @Inject constructor(private val eventBus: EventBus) {
     private val logger = InlineLogger()
@@ -25,7 +25,7 @@ public class PlayerUInteractions @Inject constructor(private val eventBus: Event
         target: Player,
         inv: Inventory,
         invSlot: Int,
-        objType: UnpackedObjType,
+        objType: ItemServerType,
     ) {
         val obj = inv[invSlot]
         if (objectVerify(inv, obj, objType)) {
@@ -36,7 +36,7 @@ public class PlayerUInteractions @Inject constructor(private val eventBus: Event
     private suspend fun ProtectedAccess.opPlayerU(
         target: Player,
         invSlot: Int,
-        objType: UnpackedObjType,
+        objType: ItemServerType,
     ) {
         val script = opTrigger(target, invSlot, objType)
         if (script != null) {
@@ -50,7 +50,7 @@ public class PlayerUInteractions @Inject constructor(private val eventBus: Event
         }
     }
 
-    private fun opTrigger(target: Player, invSlot: Int, objType: UnpackedObjType): OpEvent? {
+    private fun opTrigger(target: Player, invSlot: Int, objType: ItemServerType): OpEvent? {
         val typeScript = PlayerUEvents.Op(target, invSlot, objType)
         if (eventBus.contains(typeScript::class.java, typeScript.id)) {
             return typeScript
@@ -69,7 +69,7 @@ public class PlayerUInteractions @Inject constructor(private val eventBus: Event
         target: Player,
         inv: Inventory,
         invSlot: Int,
-        objType: UnpackedObjType,
+        objType: ItemServerType,
     ) {
         val obj = inv[invSlot]
         if (objectVerify(inv, obj, objType)) {
@@ -80,7 +80,7 @@ public class PlayerUInteractions @Inject constructor(private val eventBus: Event
     private suspend fun ProtectedAccess.apPlayerU(
         target: Player,
         invSlot: Int,
-        objType: UnpackedObjType,
+        objType: ItemServerType,
     ) {
         val script = apTrigger(target, invSlot, objType)
         if (script != null) {
@@ -90,7 +90,7 @@ public class PlayerUInteractions @Inject constructor(private val eventBus: Event
         apRange(-1)
     }
 
-    private fun apTrigger(target: Player, invSlot: Int, objType: UnpackedObjType): ApEvent? {
+    private fun apTrigger(target: Player, invSlot: Int, objType: ItemServerType): ApEvent? {
         val typeScript = PlayerUEvents.Ap(target, invSlot, objType)
         if (eventBus.contains(typeScript::class.java, typeScript.id)) {
             return typeScript
@@ -104,7 +104,7 @@ public class PlayerUInteractions @Inject constructor(private val eventBus: Event
         return null
     }
 
-    private fun objectVerify(inv: Inventory, obj: InvObj?, type: UnpackedObjType): Boolean {
+    private fun objectVerify(inv: Inventory, obj: InvObj?, type: ItemServerType): Boolean {
         if (obj == null || !obj.isType(type)) {
             resendSlot(inv, 0)
             return false

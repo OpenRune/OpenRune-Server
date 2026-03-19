@@ -1,10 +1,10 @@
 package org.rsmod.api.config.refs
 
-import org.rsmod.api.type.refs.headbar.HeadbarReferences
+import dev.openrune.headbar
 
 typealias headbars = BaseHeadbars
 
-object BaseHeadbars : HeadbarReferences() {
+object BaseHeadbars {
     val health_30 = headbar("health_30")
     val health_40 = headbar("health_40")
     val health_50 = headbar("health_50")

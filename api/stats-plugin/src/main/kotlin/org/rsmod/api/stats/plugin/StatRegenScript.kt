@@ -1,6 +1,7 @@
 package org.rsmod.api.stats.plugin
 
-import jakarta.inject.Inject
+import dev.openrune.ServerCacheManager
+import dev.openrune.types.StatType
 import org.rsmod.api.config.constants
 import org.rsmod.api.config.refs.objs
 import org.rsmod.api.config.refs.stats
@@ -17,14 +18,11 @@ import org.rsmod.api.script.onPlayerLogin
 import org.rsmod.api.script.onPlayerSoftTimer
 import org.rsmod.game.entity.Player
 import org.rsmod.game.inv.isType
-import org.rsmod.game.type.stat.StatType
-import org.rsmod.game.type.stat.StatTypeList
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
-public class StatRegenScript @Inject constructor(private val statTypes: StatTypeList) :
-    PluginScript() {
-    private val regenStats by lazy { statTypes.values.toRegenStats() }
+public class StatRegenScript : PluginScript() {
+    private val regenStats by lazy { ServerCacheManager.getStats().values.toRegenStats() }
 
     override fun ScriptContext.startup() {
         onPlayerLogin { player.initRegenTimers() }

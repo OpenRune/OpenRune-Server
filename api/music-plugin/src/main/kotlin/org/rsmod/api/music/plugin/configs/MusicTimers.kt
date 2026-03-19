@@ -1,10 +1,10 @@
 package org.rsmod.api.music.plugin.configs
 
-import org.rsmod.api.type.refs.timer.TimerReferences
-import org.rsmod.game.type.timer.TimerType
+import dev.openrune.timer
+import dev.openrune.types.aconverted.TimerType
 
 public typealias music_timers = MusicTimers
 
-public object MusicTimers : TimerReferences() {
+public object MusicTimers {
     public val sync: TimerType = timer("music_sync")
 }

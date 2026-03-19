@@ -1,6 +1,9 @@
 package org.rsmod.api.combat.formulas.accuracy.multi
 
 import com.google.inject.Inject
+import dev.openrune.definition.type.VarBitType
+import dev.openrune.types.ItemServerType
+import dev.openrune.types.NpcServerType
 import org.rsmod.api.combat.commons.styles.MeleeAttackStyle
 import org.rsmod.api.combat.commons.types.MeleeAttackType
 import org.rsmod.api.combat.formulas.test_npcs
@@ -24,9 +27,6 @@ import org.rsmod.api.testing.params.TestWithArgs
 import org.rsmod.api.testing.params.testArgsOfSingleParam
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.inv.InvObj
-import org.rsmod.game.type.npc.UnpackedNpcType
-import org.rsmod.game.type.obj.ObjType
-import org.rsmod.game.type.varbit.VarBitType
 
 class PvNMultiStyleAccuracyMagicalMeleeTest {
     @TestWithArgs(MatchupProvider::class)
@@ -71,7 +71,7 @@ class PvNMultiStyleAccuracyMagicalMeleeTest {
 
     data class Matchup(
         val expectedAccuracy: Double,
-        val npc: UnpackedNpcType = test_npcs.man,
+        val npc: NpcServerType = test_npcs.man,
         val npcCurrHp: Int = 1,
         val npcMaxHp: Int = 1,
         val hat: InvObj? = null,
@@ -93,25 +93,25 @@ class PvNMultiStyleAccuracyMagicalMeleeTest {
         val attackStyle: MeleeAttackStyle? = null,
         val specMultiplier: Double = 1.0,
     ) {
-        fun withNpcTarget(npc: UnpackedNpcType) = copy(npc = npc)
+        fun withNpcTarget(npc: NpcServerType) = copy(npc = npc)
 
-        fun withHelm(obj: ObjType?) = copy(hat = obj?.let(::InvObj))
+        fun withHelm(obj: ItemServerType?) = copy(hat = obj?.let(::InvObj))
 
-        fun withCape(obj: ObjType?) = copy(back = obj?.let(::InvObj))
+        fun withCape(obj: ItemServerType?) = copy(back = obj?.let(::InvObj))
 
-        fun withAmulet(obj: ObjType?) = copy(front = obj?.let(::InvObj))
+        fun withAmulet(obj: ItemServerType?) = copy(front = obj?.let(::InvObj))
 
-        fun withWeapon(obj: ObjType?) = copy(righthand = obj?.let(::InvObj))
+        fun withWeapon(obj: ItemServerType?) = copy(righthand = obj?.let(::InvObj))
 
-        fun withBody(obj: ObjType?) = copy(torso = obj?.let(::InvObj))
+        fun withBody(obj: ItemServerType?) = copy(torso = obj?.let(::InvObj))
 
-        fun withLegs(obj: ObjType?) = copy(legs = obj?.let(::InvObj))
+        fun withLegs(obj: ItemServerType?) = copy(legs = obj?.let(::InvObj))
 
-        fun withGloves(obj: ObjType?) = copy(hands = obj?.let(::InvObj))
+        fun withGloves(obj: ItemServerType?) = copy(hands = obj?.let(::InvObj))
 
-        fun withFeet(obj: ObjType?) = copy(feet = obj?.let(::InvObj))
+        fun withFeet(obj: ItemServerType?) = copy(feet = obj?.let(::InvObj))
 
-        fun withRing(obj: ObjType?) = copy(ring = obj?.let(::InvObj))
+        fun withRing(obj: ItemServerType?) = copy(ring = obj?.let(::InvObj))
 
         fun withPrayers(vararg prayers: VarBitType) = copy(prayers = prayers.toSet())
 

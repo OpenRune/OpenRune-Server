@@ -1,14 +1,13 @@
-package org.rsmod.game.type.util
+package dev.openrune.types.util
 
+import dev.openrune.rscm.RSCM
+import dev.openrune.rscm.RSCMType
+import dev.openrune.types.VarnBitType
+import dev.openrune.types.VarnType
 import java.util.BitSet
-import org.rsmod.game.type.varn.UnpackedVarnType
-import org.rsmod.game.type.varnbit.UnpackedVarnBitType
 
 public object VarnpcCollisions {
-    public fun detect(
-        varns: Iterable<UnpackedVarnType>,
-        varnbits: Iterable<UnpackedVarnBitType>,
-    ): List<Error> {
+    public fun detect(varns: Iterable<VarnType>, varnbits: Iterable<VarnBitType>): List<Error> {
         val results = mutableListOf<Error>()
 
         val varnsBitSets = varns.associate { it.id to BitSet() }
@@ -31,19 +30,19 @@ public object VarnpcCollisions {
         return results
     }
 
-    private fun UnpackedVarnBitType.asBitSet(): BitSet = BitSet().apply { set(lsb, msb) }
+    private fun VarnBitType.asBitSet(): BitSet = BitSet().apply { set(lsb, msb) }
 
-    public sealed class Error(public val varnbit: UnpackedVarnBitType) {
-        public class InvalidBaseVar(varnbit: UnpackedVarnBitType) : Error(varnbit) {
+    public sealed class Error(public val varnbit: VarnBitType) {
+        public class InvalidBaseVar(varnbit: VarnBitType) : Error(varnbit) {
             override fun toString(): String =
-                "InvalidVarn(varn=${varnbit.baseVar.internalId}, varnbit=${varnbit.internalId})"
+                "InvalidVarn(varn=${varnbit.baseVar.id}, varnbit=${varnbit.id})"
         }
 
-        public class VarnBitCollision(varnbit: UnpackedVarnBitType) : Error(varnbit) {
+        public class VarnBitCollision(varnbit: VarnBitType) : Error(varnbit) {
             override fun toString(): String =
                 "Collision(" +
-                    "varn=${varnbit.baseVar.internalId}:${varnbit.baseVar.internalName}, " +
-                    "varnbit=${varnbit.internalId}:${varnbit.internalName}, " +
+                    "varn=${varnbit.baseVar.id}:${RSCM.getReverseMapping(RSCMType.VARN,varnbit.baseVar.id)}, " +
+                    "varnbit=${varnbit.id}, " +
                     "bits=${varnbit.lsb}..${varnbit.msb}" +
                     ")"
         }

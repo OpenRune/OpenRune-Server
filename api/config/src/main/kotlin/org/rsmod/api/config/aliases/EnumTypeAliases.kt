@@ -1,17 +1,16 @@
 package org.rsmod.api.config.aliases
 
-import org.rsmod.game.type.comp.ComponentType
-import org.rsmod.game.type.loc.LocType
-import org.rsmod.game.type.npc.NpcType
-import org.rsmod.game.type.obj.ObjType
-import org.rsmod.game.type.obj.UnpackedObjType
+import dev.openrune.definition.type.widget.ComponentType
+import dev.openrune.types.ItemServerType
+import dev.openrune.types.NpcServerType
+import dev.openrune.types.ObjectServerType
 
-typealias EnumNamedObj = UnpackedObjType
+typealias EnumNamedObj = ItemServerType
 
-typealias EnumObj = ObjType
+typealias EnumObj = ItemServerType
 
-typealias EnumNpc = NpcType
+typealias EnumNpc = NpcServerType
 
-typealias EnumLoc = LocType
+typealias EnumLoc = ObjectServerType
 
 typealias EnumComp = ComponentType

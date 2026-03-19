@@ -1,21 +1,24 @@
 package dev.openrune.types
 
 import dev.openrune.definition.Definition
+import dev.openrune.toml.rsconfig.RsTableHeaders
 
+@RsTableHeaders("inventory")
 data class InventoryServerType(
     override var id: Int = -1,
     var stack: InvStackType = InvStackType.Normal,
     var size: Int = 1,
-    var scope : InvScope = InvScope.Temp,
-    var flags: Int = pack(
-        protect = true,
-        allStock = false,
-        restock = false,
-        runWeight = false,
-        dummyInv = false,
-        placeholders = false,
-    ),
-    val stock: Array<InvStock> = emptyArray(),
+    var scope: InvScope = InvScope.Temp,
+    var flags: Int =
+        pack(
+            protect = true,
+            allStock = false,
+            restock = false,
+            runWeight = false,
+            dummyInv = false,
+            placeholders = false,
+        ),
+    var stock: List<InvStock> = emptyList(),
 ) : Definition {
 
     public val restock: Boolean
@@ -35,7 +38,6 @@ data class InventoryServerType(
 
     public val placeholders: Boolean
         get() = flags and PLACEHOLDERS_FLAG != 0
-
 
     public companion object {
         public const val PROTECT_FLAG: Int = 0x1
@@ -75,10 +77,10 @@ data class InventoryServerType(
             return flags
         }
     }
-
 }
 
-data class InvStock constructor(public val obj: Int, public val count: Int, public val restockCycles: Int)
+data class InvStock
+constructor(public val obj: Int, public val count: Int, public val restockCycles: Int)
 
 public enum class InvStackType(public val id: Int) {
     Normal(0),

@@ -1,19 +1,17 @@
 package org.rsmod.api.player.worn
 
+import dev.openrune.types.ItemServerType
+import dev.openrune.util.Wearpos
 import jakarta.inject.Inject
 import org.rsmod.api.invtx.invTransfer
 import org.rsmod.api.player.events.interact.HeldEquipEvents
 import org.rsmod.events.EventBus
 import org.rsmod.game.entity.Player
 import org.rsmod.game.inv.Inventory
-import org.rsmod.game.type.obj.ObjTypeList
-import org.rsmod.game.type.obj.UnpackedObjType
-import org.rsmod.game.type.obj.Wearpos
+import org.rsmod.game.type.getInvObj
 import org.rsmod.objtx.TransactionResult
 
-public class WornUnequipOp
-@Inject
-constructor(private val objTypes: ObjTypeList, private val eventBus: EventBus) {
+public class WornUnequipOp @Inject constructor(private val eventBus: EventBus) {
     public fun unequip(
         player: Player,
         wornSlot: Int,
@@ -22,7 +20,7 @@ constructor(private val objTypes: ObjTypeList, private val eventBus: EventBus) {
     ): WornUnequipResult {
         val obj = worn[wornSlot] ?: return WornUnequipResult.Fail.InvalidObj
         val wearpos = Wearpos[wornSlot] ?: error("Wearpos `$wornSlot` not found.")
-        val objType = objTypes[obj]
+        val objType = getInvObj(obj)
 
         val transaction =
             player.invTransfer(
@@ -50,7 +48,7 @@ constructor(private val objTypes: ObjTypeList, private val eventBus: EventBus) {
         public fun notifyWornUnequip(
             player: Player,
             wearpos: Wearpos,
-            objType: UnpackedObjType,
+            objType: ItemServerType,
             eventBus: EventBus,
             rebuildAppearance: Boolean = true,
         ) {

@@ -1,5 +1,10 @@
 package org.rsmod.api.combat.manager
 
+import dev.openrune.types.ItemServerType
+import dev.openrune.types.ProjAnimType
+import dev.openrune.types.StatType
+import dev.openrune.types.aconverted.SpotanimType
+import dev.openrune.types.aconverted.SynthType
 import jakarta.inject.Inject
 import kotlin.math.min
 import org.rsmod.api.combat.commons.CombatAttack
@@ -46,12 +51,8 @@ import org.rsmod.game.hit.Hit
 import org.rsmod.game.hit.HitType
 import org.rsmod.game.interact.InteractionOp
 import org.rsmod.game.proj.ProjAnim
-import org.rsmod.game.type.obj.ObjType
-import org.rsmod.game.type.obj.ObjTypeList
-import org.rsmod.game.type.proj.ProjAnimType
-import org.rsmod.game.type.spot.SpotanimType
-import org.rsmod.game.type.stat.StatType
-import org.rsmod.game.type.synth.SynthType
+import org.rsmod.game.type.getInvObj
+import org.rsmod.game.type.getOrNull
 import org.rsmod.map.CoordGrid
 
 public class PlayerAttackManager
@@ -59,7 +60,6 @@ public class PlayerAttackManager
 constructor(
     private val random: GameRandom,
     private val eventBus: EventBus,
-    private val objTypes: ObjTypeList,
     private val worldRepo: WorldRepository,
     private val accuracy: AccuracyFormulae,
     private val maxHits: MaxHitFormulae,
@@ -189,7 +189,7 @@ constructor(
      * are used.
      */
     public fun playWeaponFx(player: Player, attack: CombatAttack.Melee) {
-        val weapon = objTypes.getOrNull(attack.weapon)
+        val weapon = getOrNull(attack.weapon)
 
         val fx = MeleeAnimationAndSound.from(attack.stance)
         val (animParam, soundParam, defaultAnim, defaultSound) = fx
@@ -212,7 +212,7 @@ constructor(
      * @return `true` if the ranged weapon has an anim associated with param `attack_anim_stance1`.
      */
     public fun playWeaponFx(player: Player, attack: CombatAttack.Ranged): Boolean {
-        val weapon = objTypes[attack.weapon]
+        val weapon = getInvObj(attack.weapon)
         val attackAnim = weapon.paramOrNull(params.attack_anim_stance1) ?: return false
         val attackSound = weapon.paramOrNull(params.attack_sound_stance1)
         player.anim(attackAnim)
@@ -684,7 +684,7 @@ constructor(
 
         val hit = target.queueHit(source, delay, HitType.Melee, damage)
         target.heroPoints(source, min(hit.damage, target.hitpoints))
-        target.combatPlayDefendAnim(objTypes)
+        target.combatPlayDefendAnim()
         return hit
     }
 
@@ -960,7 +960,7 @@ constructor(
     public fun queueRangedHit(
         source: Player,
         target: PathingEntity,
-        ammo: ObjType?,
+        ammo: ItemServerType?,
         damage: Int,
         clientDelay: Int,
         hitDelay: Int,
@@ -973,7 +973,7 @@ constructor(
     private fun queueRangedHit(
         source: Player,
         target: Npc,
-        ammo: ObjType?,
+        ammo: ItemServerType?,
         damage: Int,
         clientDelay: Int,
         hitDelay: Int,
@@ -994,14 +994,14 @@ constructor(
             )
         target.heroPoints(source, min(hit.damage, target.hitpoints))
         target.combatPlayDefendAnim(clientDelay)
-        target.combatPlayDefendSpot(objTypes, ammo, clientDelay)
+        target.combatPlayDefendSpot(ammo, clientDelay)
         return hit
     }
 
     private fun queueRangedHit(
         source: Player,
         target: Player,
-        ammo: ObjType?,
+        ammo: ItemServerType?,
         damage: Int,
         clientDelay: Int,
         hitDelay: Int,
@@ -1020,8 +1020,8 @@ constructor(
                 sourceSecondary = ammo,
             )
         target.heroPoints(source, min(hit.damage, target.hitpoints))
-        target.combatPlayDefendAnim(objTypes, clientDelay)
-        target.combatPlayDefendSpot(objTypes, ammo, clientDelay)
+        target.combatPlayDefendAnim(clientDelay)
+        target.combatPlayDefendSpot(ammo, clientDelay)
         return hit
     }
 
@@ -1041,7 +1041,7 @@ constructor(
     public fun queueRangedDamage(
         source: Player,
         target: PathingEntity,
-        ammo: ObjType?,
+        ammo: ItemServerType?,
         damage: Int,
         hitDelay: Int,
     ): Hit =
@@ -1053,7 +1053,7 @@ constructor(
     private fun queueRangedDamage(
         source: Player,
         target: Player,
-        ammo: ObjType?,
+        ammo: ItemServerType?,
         damage: Int,
         hitDelay: Int,
     ): Hit {
@@ -1072,7 +1072,7 @@ constructor(
     private fun queueRangedDamage(
         source: Player,
         target: Npc,
-        ammo: ObjType?,
+        ammo: ItemServerType?,
         damage: Int,
         hitDelay: Int,
     ): Hit {
@@ -1095,8 +1095,8 @@ constructor(
      * This function performs an accuracy roll by comparing [source]'s magic attack roll with
      * [target]'s magic defence roll.
      *
-     * @param spell The [ObjType] representing the spell being cast (e.g., `objs.spell_wind_strike`
-     *   for the Wind Strike spell).
+     * @param spell The [ItemServerType] representing the spell being cast (e.g.,
+     *   `objs.spell_wind_strike` for the Wind Strike spell).
      * @param spellbook The [Spellbook] the spell belongs to (e.g., Standard or Ancients), usually
      *   derived from the player's current spellbook.
      * @param sunfireRune Set to `true` if the spell was cast using a Sunfire rune.
@@ -1105,7 +1105,7 @@ constructor(
     public fun rollSpellAccuracy(
         source: Player,
         target: PathingEntity,
-        spell: ObjType,
+        spell: ItemServerType,
         spellbook: Spellbook?,
         sunfireRune: Boolean,
     ): Boolean =
@@ -1117,7 +1117,7 @@ constructor(
     private fun rollSpellAccuracy(
         source: Player,
         target: Npc,
-        spell: ObjType,
+        spell: ItemServerType,
         spellbook: Spellbook?,
         sunfireRune: Boolean,
     ): Boolean =
@@ -1133,7 +1133,7 @@ constructor(
     private fun rollSpellAccuracy(
         source: Player,
         target: Player,
-        spell: ObjType,
+        spell: ItemServerType,
         spellbook: Spellbook?,
         sunfireRune: Boolean,
     ): Boolean =
@@ -1153,8 +1153,8 @@ constructor(
      * then rolls a random value within that range. The minimum hit is usually `0`; however, certain
      * modifiers - such as one enabled through [sunfireRune] - can affect this value.
      *
-     * @param spell The [ObjType] representing the spell being cast (e.g., `objs.spell_wind_strike`
-     *   for the Wind strike spell).
+     * @param spell The [ItemServerType] representing the spell being cast (e.g.,
+     *   `objs.spell_wind_strike` for the Wind strike spell).
      * @param spellbook The [Spellbook] the spell belongs to (e.g., Standard or Ancients), usually
      *   derived from the player's current spellbook.
      * @param baseMaxHit The spell's base max hit, used as a baseline for calculating the maximum
@@ -1168,7 +1168,7 @@ constructor(
     public fun rollSpellMaxHit(
         source: Player,
         target: PathingEntity,
-        spell: ObjType,
+        spell: ItemServerType,
         spellbook: Spellbook?,
         baseMaxHit: Int,
         attackRate: Int,
@@ -1195,8 +1195,8 @@ constructor(
      * usually `0`; however, modifiers like Sunfire runes can increase the lower bound for certain
      * spells.
      *
-     * @param spell The [ObjType] representing the spell being cast (e.g., `objs.spell_wind_strike`
-     *   for the Wind Strike spell).
+     * @param spell The [ItemServerType] representing the spell being cast (e.g.,
+     *   `objs.spell_wind_strike` for the Wind Strike spell).
      * @param spellbook The [Spellbook] the spell belongs to (e.g., Standard or Ancients), usually
      *   derived from the player's current spellbook.
      * @param baseMaxHit The spell's base max hit, used as a baseline for calculating the maximum
@@ -1210,7 +1210,7 @@ constructor(
     public fun calculateSpellMaxHit(
         source: Player,
         target: PathingEntity,
-        spell: ObjType,
+        spell: ItemServerType,
         spellbook: Spellbook?,
         baseMaxHit: Int,
         attackRate: Int,
@@ -1241,7 +1241,7 @@ constructor(
     private fun calculateSpellMaxHit(
         source: Player,
         target: Npc,
-        spell: ObjType,
+        spell: ItemServerType,
         spellbook: Spellbook?,
         baseMaxHit: Int,
         attackRate: Int,
@@ -1260,7 +1260,7 @@ constructor(
     private fun calculateSpellMaxHit(
         source: Player,
         target: Player,
-        spell: ObjType,
+        spell: ItemServerType,
         spellbook: Spellbook?,
         baseMaxHit: Int,
         sunfireRune: Boolean,
@@ -1438,7 +1438,7 @@ constructor(
     public fun queueMagicHit(
         source: Player,
         target: PathingEntity,
-        spell: ObjType?,
+        spell: ItemServerType?,
         damage: Int,
         clientDelay: Int,
         hitDelay: Int,
@@ -1470,7 +1470,7 @@ constructor(
     private fun queueMagicHit(
         source: Player,
         target: Npc,
-        spell: ObjType?,
+        spell: ItemServerType?,
         damage: Int,
         clientDelay: Int,
         hitDelay: Int,
@@ -1498,7 +1498,7 @@ constructor(
     private fun queueMagicHit(
         source: Player,
         target: Player,
-        spell: ObjType?,
+        spell: ItemServerType?,
         damage: Int,
         clientDelay: Int,
         hitDelay: Int,
@@ -1518,7 +1518,7 @@ constructor(
                 sourceSecondary = spell,
             )
         target.heroPoints(source, min(hit.damage, target.hitpoints))
-        target.combatPlayDefendAnim(objTypes, clientDelay)
+        target.combatPlayDefendAnim(clientDelay)
         return hit
     }
 
@@ -1536,7 +1536,7 @@ constructor(
     public fun queueSplashHit(
         source: Player,
         target: PathingEntity,
-        spell: ObjType?,
+        spell: ItemServerType?,
         clientDelay: Int,
         hitDelay: Int,
     ): Hit =

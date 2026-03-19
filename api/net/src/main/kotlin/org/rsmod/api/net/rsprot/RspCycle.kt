@@ -1,5 +1,8 @@
 package org.rsmod.api.net.rsprot
 
+import dev.openrune.ServerCacheManager
+import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.util.Wearpos
 import net.rsprot.protocol.api.Session
 import net.rsprot.protocol.game.outgoing.info.npcinfo.NpcInfo
 import net.rsprot.protocol.game.outgoing.info.npcinfo.SetNpcUpdateOrigin
@@ -12,7 +15,6 @@ import net.rsprot.protocol.game.outgoing.map.RebuildRegion
 import net.rsprot.protocol.game.outgoing.map.util.RebuildRegionZone
 import net.rsprot.protocol.game.outgoing.map.util.XteaProvider
 import net.rsprot.protocol.game.outgoing.worldentity.SetActiveWorldV2
-import org.rsmod.api.config.refs.baseanimsets
 import org.rsmod.api.config.refs.params
 import org.rsmod.api.player.righthand
 import org.rsmod.api.registry.region.RegionRegistry
@@ -26,8 +28,7 @@ import org.rsmod.game.region.Region
 import org.rsmod.game.region.zone.RegionZoneCopy
 import org.rsmod.game.seq.EntitySeq
 import org.rsmod.game.spot.EntitySpotanim
-import org.rsmod.game.type.obj.ObjTypeList
-import org.rsmod.game.type.obj.Wearpos
+import org.rsmod.game.type.getInvObj
 import org.rsmod.map.CoordGrid
 import org.rsmod.map.square.MapSquareKey
 import org.rsmod.map.zone.ZoneKey
@@ -37,7 +38,6 @@ class RspCycle(
     private val playerInfo: PlayerInfo,
     private val npcInfo: NpcInfo,
     private val xteaProvider: XteaProvider,
-    private val objTypes: ObjTypeList,
     private val regions: RegionRegistry,
 ) : ClientCycle {
     private var knownCoords: CoordGrid = CoordGrid.ZERO
@@ -81,7 +81,7 @@ class RspCycle(
         player.applySay()
         player.applyHeadbars()
         player.applyHitmarks()
-        player.syncAppearance(objTypes)
+        player.syncAppearance()
     }
 
     override fun flush(player: Player) {
@@ -300,7 +300,7 @@ class RspCycle(
         }
     }
 
-    private fun Player.syncAppearance(objTypes: ObjTypeList) {
+    private fun Player.syncAppearance() {
         if (!appearance.rebuild) {
             return
         }
@@ -343,23 +343,23 @@ class RspCycle(
         val runningAnim: Int
 
         if (bas != null) {
-            readyAnim = bas.readyAnim.id
-            turnOnSpotAnim = bas.turnOnSpot.id
-            walkForwardAnim = bas.walkForward.id
-            walkBackAnim = bas.walkBack.id
-            walkLeftAnim = bas.walkLeft.id
-            walkRightAnim = bas.walkRight.id
-            runningAnim = bas.running.id
+            readyAnim = bas.readyAnim
+            turnOnSpotAnim = bas.turnOnSpot
+            walkForwardAnim = bas.walkForward
+            walkBackAnim = bas.walkBack
+            walkLeftAnim = bas.walkLeft
+            walkRightAnim = bas.walkRight
+            runningAnim = bas.running
         } else if (transmog != null) {
-            readyAnim = transmog.readyAnim
-            turnOnSpotAnim = transmog.turnBackAnim
+            readyAnim = transmog.standAnim
+            turnOnSpotAnim = transmog.rotateBackAnim
             walkForwardAnim = transmog.walkAnim
             walkBackAnim = transmog.walkAnim
-            walkLeftAnim = transmog.turnLeftAnim
-            walkRightAnim = transmog.turnRightAnim
-            runningAnim = transmog.runAnim
+            walkLeftAnim = transmog.walkLeftAnim
+            walkRightAnim = transmog.walkRightAnim
+            runningAnim = transmog.runSequence
         } else if (weapon != null) {
-            val type = objTypes[weapon]
+            val type = getInvObj(weapon)
             readyAnim = type.param(params.bas_readyanim).id
             turnOnSpotAnim = type.param(params.bas_turnonspot).id
             walkForwardAnim = type.param(params.bas_walk_f).id
@@ -368,14 +368,16 @@ class RspCycle(
             walkRightAnim = type.param(params.bas_walk_r).id
             runningAnim = type.param(params.bas_running).id
         } else {
-            val default = baseanimsets.human_default
-            readyAnim = default.readyAnim.id
-            turnOnSpotAnim = default.turnOnSpot.id
-            walkForwardAnim = default.walkForward.id
-            walkBackAnim = default.walkBack.id
-            walkLeftAnim = default.walkLeft.id
-            walkRightAnim = default.walkRight.id
-            runningAnim = default.running.id
+            val default =
+                ServerCacheManager.getBas("bas.human_default".asRSCM())
+                    ?: error("Unable to find Bas Human")
+            readyAnim = default.readyAnim
+            turnOnSpotAnim = default.turnOnSpot
+            walkForwardAnim = default.walkForward
+            walkBackAnim = default.walkBack
+            walkLeftAnim = default.walkLeft
+            walkRightAnim = default.walkRight
+            runningAnim = default.running
         }
 
         info.setTransmogrification(transmog?.id ?: -1)
@@ -395,7 +397,7 @@ class RspCycle(
                 info.setWornObj(wearpos.slot, -1, -1, -1)
                 continue
             }
-            val objType = objTypes[obj]
+            val objType = getInvObj(obj)
             info.setWornObj(wearpos.slot, obj.id, objType.wearpos2, objType.wearpos3)
         }
     }

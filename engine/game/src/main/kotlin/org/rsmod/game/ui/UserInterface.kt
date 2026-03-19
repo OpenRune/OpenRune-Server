@@ -1,6 +1,6 @@
 package org.rsmod.game.ui
 
-import org.rsmod.game.type.interf.InterfaceType
+import dev.openrune.cache.filestore.definition.InterfaceType
 
 @JvmInline
 public value class UserInterface(public val id: Int) {

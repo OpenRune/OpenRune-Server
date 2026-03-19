@@ -1,5 +1,6 @@
 package org.rsmod.content.generic.locs.gate
 
+import dev.openrune.types.ObjectServerType
 import jakarta.inject.Inject
 import org.rsmod.api.config.refs.content
 import org.rsmod.api.config.refs.params
@@ -12,7 +13,6 @@ import org.rsmod.content.generic.locs.gate.GateTranslations.leftGateRightPair
 import org.rsmod.content.generic.locs.gate.GateTranslations.rightGateClose
 import org.rsmod.content.generic.locs.gate.GateTranslations.rightGateOpen
 import org.rsmod.game.loc.BoundLocInfo
-import org.rsmod.game.type.loc.UnpackedLocType
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
@@ -24,7 +24,7 @@ class PicketGate @Inject constructor(private val locRepo: LocRepository) : Plugi
         onOpLoc1(content.opened_right_picketgate) { closeRightGate(it.loc, it.type) }
     }
 
-    private fun ProtectedAccess.openLeftGate(left: BoundLocInfo, type: UnpackedLocType) {
+    private fun ProtectedAccess.openLeftGate(left: BoundLocInfo, type: ObjectServerType) {
         val sound = type.param(params.opensound)
         soundSynth(sound)
 
@@ -54,7 +54,7 @@ class PicketGate @Inject constructor(private val locRepo: LocRepository) : Plugi
         }
     }
 
-    private fun ProtectedAccess.openRightGate(right: BoundLocInfo, type: UnpackedLocType) {
+    private fun ProtectedAccess.openRightGate(right: BoundLocInfo, type: ObjectServerType) {
         val sound = type.param(params.opensound)
         soundSynth(sound)
 
@@ -84,7 +84,7 @@ class PicketGate @Inject constructor(private val locRepo: LocRepository) : Plugi
         }
     }
 
-    private fun ProtectedAccess.closeLeftGate(left: BoundLocInfo, type: UnpackedLocType) {
+    private fun ProtectedAccess.closeLeftGate(left: BoundLocInfo, type: ObjectServerType) {
         val sound = type.param(params.closesound)
         soundSynth(sound)
 
@@ -114,7 +114,7 @@ class PicketGate @Inject constructor(private val locRepo: LocRepository) : Plugi
         }
     }
 
-    private fun ProtectedAccess.closeRightGate(right: BoundLocInfo, type: UnpackedLocType) {
+    private fun ProtectedAccess.closeRightGate(right: BoundLocInfo, type: ObjectServerType) {
         val sound = type.param(params.closesound)
         soundSynth(sound)
 

@@ -1,10 +1,10 @@
 package org.rsmod.content.interfaces.journal.tab.configs
 
-import org.rsmod.api.type.refs.comp.ComponentReferences
+import dev.openrune.component
 
 typealias journal_components = JournalComponents
 
-object JournalComponents : ComponentReferences() {
+object JournalComponents {
     val tab_container = component("side_journal:tab_container")
     val summary_list = component("side_journal:summary_list")
     val quest_list = component("side_journal:quest_list")

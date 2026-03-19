@@ -1,6 +1,7 @@
 package org.rsmod.api.net.rsprot.player
 
 import com.github.michaelbull.logging.InlineLogger
+import dev.openrune.types.ModLevelType
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 import net.rsprot.protocol.api.login.GameLoginResponseHandler
@@ -26,7 +27,6 @@ import org.rsmod.game.GameUpdate.Companion.isCountdown
 import org.rsmod.game.GameUpdate.Companion.isUpdating
 import org.rsmod.game.entity.Player
 import org.rsmod.game.entity.player.SessionStateEvent
-import org.rsmod.game.type.mod.UnpackedModLevelType
 
 class AccountLoadResponseHook(
     private val world: Int,
@@ -35,7 +35,7 @@ class AccountLoadResponseHook(
     private val eventBus: EventBus,
     private val accountRegistry: AccountRegistry,
     private val playerRegistry: PlayerRegistry,
-    private val devModeModLevel: UnpackedModLevelType,
+    private val devModeModLevel: ModLevelType,
     private val loginBlock: LoginBlock<AuthenticationType>,
     private val channelResponses: GameLoginResponseHandler<Player>,
     private val inputPassword: CharArray,
@@ -107,13 +107,15 @@ class AccountLoadResponseHook(
             return
         }
 
-        // This can occur under extreme circumstances (e.g., power outage) where a new player's
-        // character row was created, but their game state was never saved due to a crash before
-        // the save could occur (either via logout or another persistence mechanism).
-        val isPartialSave = response.account.lastLogout == null
-        if (isPartialSave) {
+        // `CharacterAccountRepository.save` always sets `last_logout` in same UPDATE as
+        // `last_login`. Row with `last_login` set but `last_logout` null = DB corruption,
+        // legacy schema drift, or partial write — not same as first login (both null).
+        val inconsistentSessionTimestamps =
+            response.account.lastLogin != null && response.account.lastLogout == null
+        if (inconsistentSessionTimestamps) {
             logger.error {
-                "Player has never logged out properly - login aborted: ${response.account}"
+                "Character last_login set but last_logout null (invalid row) — login aborted: " +
+                    response.account
             }
             writeErrorResponse(LoginResponse.InvalidSave)
             return

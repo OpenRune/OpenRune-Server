@@ -1,6 +1,8 @@
 package org.rsmod.api.account.character.main
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import dev.openrune.ServerCacheManager
+import dev.openrune.types.varp.VarpLifetime
 import jakarta.inject.Inject
 import java.sql.Statement
 import kotlin.math.roundToInt
@@ -15,8 +17,6 @@ import org.rsmod.api.parsers.jackson.readReifiedValue
 import org.rsmod.api.parsers.json.Json
 import org.rsmod.api.realm.Realm
 import org.rsmod.game.entity.Player
-import org.rsmod.game.type.varp.VarpLifetime
-import org.rsmod.game.type.varp.VarpTypeList
 
 public class CharacterAccountRepository
 @Inject
@@ -24,7 +24,6 @@ constructor(
     @Json private val objectMapper: ObjectMapper,
     private val realm: Realm,
     private val applier: CharacterAccountApplier,
-    private val varpTypes: VarpTypeList,
 ) {
     private val realmId: Int
         get() = realm.config.id
@@ -229,7 +228,9 @@ constructor(
 
         updateCharacter.use {
             val persistentVarps =
-                player.vars.backing.filterKeys { id -> varpTypes[id]?.scope == VarpLifetime.Perm }
+                player.vars.backing.filterKeys { id ->
+                    ServerCacheManager.getVarp(id)?.scope == VarpLifetime.Perm
+                }
             val varpsJson = objectMapper.writeValueAsString(persistentVarps)
             it.setInt(1, player.x)
             it.setInt(2, player.z)
@@ -255,7 +256,7 @@ constructor(
         updateAccount.use {
             it.setNullableString(1, player.displayName.takeIf(String::isNotBlank))
             it.setNullableInt(2, player.lastKnownDevice)
-            it.setNullableString(3, player.modLevel.internalName)
+            it.setNullableString(3, player.modLevel.displayName)
             it.setInt(4, accountId)
             it.executeUpdate()
         }

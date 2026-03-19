@@ -1,13 +1,11 @@
 package org.rsmod.content.interfaces.bank.configs
 
-import org.rsmod.api.type.builders.varbit.VarBitBuilder
-import org.rsmod.api.type.builders.varp.VarpBuilder
-import org.rsmod.api.type.refs.varbit.VarBitReferences
-import org.rsmod.api.type.refs.varp.VarpReferences
+import dev.openrune.varBit
+import dev.openrune.varp
 
 internal typealias bank_varbits = BankVarBits
 
-object BankVarBits : VarBitReferences() {
+object BankVarBits {
     val rearrange_mode = varBit("bank_insertmode")
     val withdraw_mode = varBit("bank_withdrawnotes")
     val placeholders = varBit("bank_leaveplaceholders")
@@ -40,27 +38,6 @@ object BankVarBits : VarBitReferences() {
     val disable_ifevents = varBit("bank_disable_ifevents")
 }
 
-internal object BankVarBitBuilder : VarBitBuilder() {
-    init {
-        build("bank_tab_main") {
-            baseVar = BankVarps.bank_serverside_vars
-            startBit = 0
-            endBit = 12
-        }
-        build("bank_disable_ifevents") {
-            baseVar = BankVarps.bank_serverside_vars
-            startBit = 13
-            endBit = 13
-        }
-    }
-}
-
-object BankVarps : VarpReferences() {
+object BankVarps {
     val bank_serverside_vars = varp("bank_serverside_vars")
-}
-
-internal object BankVarpBuilder : VarpBuilder() {
-    init {
-        build("bank_serverside_vars")
-    }
 }

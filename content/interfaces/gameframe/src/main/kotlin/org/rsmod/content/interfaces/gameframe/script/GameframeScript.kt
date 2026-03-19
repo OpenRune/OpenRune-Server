@@ -1,5 +1,9 @@
 package org.rsmod.content.interfaces.gameframe.script
 
+import dev.openrune.ServerCacheManager
+import dev.openrune.cache.filestore.definition.InterfaceType.Companion.isType
+import dev.openrune.definition.type.widget.ComponentType
+import dev.openrune.definition.type.widget.IfEvent
 import jakarta.inject.Inject
 import org.rsmod.api.config.refs.components
 import org.rsmod.api.config.refs.interfaces
@@ -26,20 +30,13 @@ import org.rsmod.content.interfaces.gameframe.moveGameframe
 import org.rsmod.content.interfaces.gameframe.openGameframe
 import org.rsmod.events.EventBus
 import org.rsmod.game.entity.Player
-import org.rsmod.game.type.comp.ComponentType
-import org.rsmod.game.type.interf.IfEvent
-import org.rsmod.game.type.interf.InterfaceTypeList
-import org.rsmod.game.type.interf.isType
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
 class GameframeScript
 @Inject
-internal constructor(
-    private val eventBus: EventBus,
-    private val loader: GameframeLoader,
-    private val interfaceTypes: InterfaceTypeList,
-) : PluginScript() {
+internal constructor(private val eventBus: EventBus, private val loader: GameframeLoader) :
+    PluginScript() {
     private lateinit var gameframes: Map<Int, Gameframe>
     private lateinit var moveEvents: List<MoveEvent>
     private lateinit var default: Gameframe
@@ -53,7 +50,7 @@ internal constructor(
         onPlayerInit { player.openLoginGameframe() }
 
         for ((topLevel, gameframe) in gameframes) {
-            val type = interfaceTypes.getValue(topLevel)
+            val type = ServerCacheManager.getInterface(topLevel) ?: error("Unable to get Interface")
             onIfMoveTop(type) { player.queueGameframeMove(gameframe) }
         }
 

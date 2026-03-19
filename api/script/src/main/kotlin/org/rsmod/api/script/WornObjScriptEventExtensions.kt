@@ -1,56 +1,56 @@
 package org.rsmod.api.script
 
+import dev.openrune.types.ItemServerType
+import dev.openrune.types.aconverted.ContentGroupType
 import org.rsmod.api.player.events.interact.WornObjContentEvents
 import org.rsmod.api.player.events.interact.WornObjEvents
 import org.rsmod.api.player.protect.ProtectedAccess
-import org.rsmod.game.type.content.ContentGroupType
-import org.rsmod.game.type.obj.ObjType
 import org.rsmod.plugin.scripts.ScriptContext
 
 /* Standard obj op functions */
 /** **Important Note:** This replaces the default unequip op handling for obj [type]. */
 public fun ScriptContext.onOpWorn1(
-    type: ObjType,
+    type: ItemServerType,
     action: suspend ProtectedAccess.(WornObjEvents.Op1) -> Unit,
 ): Unit = onProtectedEvent(type.id, action)
 
 public fun ScriptContext.onOpWorn2(
-    type: ObjType,
+    type: ItemServerType,
     action: suspend ProtectedAccess.(WornObjEvents.Op2) -> Unit,
 ): Unit = onProtectedEvent(type.id, action)
 
 public fun ScriptContext.onOpWorn3(
-    type: ObjType,
+    type: ItemServerType,
     action: suspend ProtectedAccess.(WornObjEvents.Op3) -> Unit,
 ): Unit = onProtectedEvent(type.id, action)
 
 public fun ScriptContext.onOpWorn4(
-    type: ObjType,
+    type: ItemServerType,
     action: suspend ProtectedAccess.(WornObjEvents.Op4) -> Unit,
 ): Unit = onProtectedEvent(type.id, action)
 
 public fun ScriptContext.onOpWorn5(
-    type: ObjType,
+    type: ItemServerType,
     action: suspend ProtectedAccess.(WornObjEvents.Op5) -> Unit,
 ): Unit = onProtectedEvent(type.id, action)
 
 public fun ScriptContext.onOpWorn6(
-    type: ObjType,
+    type: ItemServerType,
     action: suspend ProtectedAccess.(WornObjEvents.Op6) -> Unit,
 ): Unit = onProtectedEvent(type.id, action)
 
 public fun ScriptContext.onOpWorn7(
-    type: ObjType,
+    type: ItemServerType,
     action: suspend ProtectedAccess.(WornObjEvents.Op7) -> Unit,
 ): Unit = onProtectedEvent(type.id, action)
 
 public fun ScriptContext.onOpWorn8(
-    type: ObjType,
+    type: ItemServerType,
     action: suspend ProtectedAccess.(WornObjEvents.Op8) -> Unit,
 ): Unit = onProtectedEvent(type.id, action)
 
 public fun ScriptContext.onOpWorn9(
-    type: ObjType,
+    type: ItemServerType,
     action: suspend ProtectedAccess.(WornObjEvents.Op9) -> Unit,
 ): Unit = onProtectedEvent(type.id, action)
 

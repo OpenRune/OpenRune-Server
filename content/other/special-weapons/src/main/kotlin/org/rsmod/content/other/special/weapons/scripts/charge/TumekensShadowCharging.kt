@@ -1,5 +1,6 @@
 package org.rsmod.content.other.special.weapons.scripts.charge
 
+import dev.openrune.types.ItemServerType
 import jakarta.inject.Inject
 import kotlin.math.min
 import org.rsmod.api.config.refs.objs
@@ -18,7 +19,6 @@ import org.rsmod.api.utils.format.formatAmount
 import org.rsmod.game.inv.InvObj
 import org.rsmod.game.inv.Inventory
 import org.rsmod.game.inv.isType
-import org.rsmod.game.type.obj.ObjType
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
@@ -51,7 +51,11 @@ constructor(private val charges: ObjChargeManager, private val objRepo: ObjRepos
         )
     }
 
-    private suspend fun ProtectedAccess.charge(inventory: Inventory, invSlot: Int, obj: ObjType) {
+    private suspend fun ProtectedAccess.charge(
+        inventory: Inventory,
+        invSlot: Int,
+        obj: ItemServerType,
+    ) {
         if (objs.soul_rune !in inv) {
             mes("You don't appear to have any soul runes to charge Tumeken's shadow with.")
             return

@@ -1,10 +1,10 @@
 package org.rsmod.api.config.refs
 
-import org.rsmod.api.type.refs.hunt.HuntModeReferences
+import dev.openrune.hunt
 
 typealias huntmodes = BaseHuntModes
 
-object BaseHuntModes : HuntModeReferences() {
+object BaseHuntModes {
     val ranged = hunt("ranged")
     val constant_melee = hunt("constant_melee")
     val constant_ranged = hunt("constant_ranged")

@@ -2,11 +2,11 @@
 
 package org.rsmod.api.config.refs
 
-import org.rsmod.api.type.refs.category.CategoryReferences
+import dev.openrune.category
 
 typealias categories = BaseCategories
 
-object BaseCategories : CategoryReferences() {
+object BaseCategories {
     val staff = category("staff")
     val throwing_weapon = category("throwing_weapon")
     val spear = category("spear")

@@ -1,10 +1,10 @@
 package org.rsmod.content.travel.canoe.configs
 
-import org.rsmod.api.type.refs.interf.InterfaceReferences
+import dev.openrune.inter
 
 typealias canoe_interfaces = CanoeInterfaces
 
-object CanoeInterfaces : InterfaceReferences() {
+object CanoeInterfaces {
     val shaping = inter("canoeing")
     val destination = inter("canoe_map")
 }

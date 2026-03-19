@@ -1,6 +1,8 @@
 package org.rsmod.api.net.rsprot.handlers
 
 import com.github.michaelbull.logging.InlineLogger
+import dev.openrune.ServerCacheManager
+import dev.openrune.definition.type.widget.IfEvent
 import jakarta.inject.Inject
 import net.rsprot.protocol.game.incoming.players.OpPlayerT
 import org.rsmod.api.net.rsprot.player.InterfaceEvents
@@ -13,10 +15,6 @@ import org.rsmod.game.entity.Player
 import org.rsmod.game.entity.PlayerList
 import org.rsmod.game.interact.InteractionPlayerT
 import org.rsmod.game.movement.RouteRequestPathingEntity
-import org.rsmod.game.type.comp.ComponentTypeList
-import org.rsmod.game.type.interf.IfEvent
-import org.rsmod.game.type.interf.InterfaceTypeList
-import org.rsmod.game.type.obj.ObjTypeList
 import org.rsmod.game.ui.Component
 
 class OpPlayerTHandler
@@ -24,9 +22,6 @@ class OpPlayerTHandler
 constructor(
     private val eventBus: EventBus,
     private val playerList: PlayerList,
-    private val objTypes: ObjTypeList,
-    private val componentTypes: ComponentTypeList,
-    private val interfaceTypes: InterfaceTypeList,
     private val playerInteractions: PlayerTInteractions,
 ) : MessageHandler<OpPlayerT> {
     private val logger = InlineLogger()
@@ -47,9 +42,12 @@ constructor(
             return
         }
 
-        val interfaceType = interfaceTypes[message.asComponent]
-        val componentType = componentTypes[message.asComponent]
-        val objType = message.selectedObj.takeIf { it != -1 }?.let(objTypes::get)
+        val interfaceType = ServerCacheManager.fromInterface(message.asComponent.packed)
+        val componentType = ServerCacheManager.fromComponent(message.asComponent.packed)
+        val objType =
+            message.selectedObj
+                .takeIf { it != -1 }
+                ?.let { id -> ServerCacheManager.getItems().values.firstOrNull { it.id == id } }
 
         val isValidInterface =
             player.ui.containsOverlay(interfaceType) || player.ui.containsModal(interfaceType)

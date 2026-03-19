@@ -1,5 +1,7 @@
 package org.rsmod.content.other.special.attacks.ranged
 
+import dev.openrune.types.ItemServerType
+import dev.openrune.types.aconverted.SpotanimType
 import jakarta.inject.Inject
 import org.rsmod.api.combat.commons.CombatAttack
 import org.rsmod.api.combat.manager.RangedAmmoManager
@@ -20,27 +22,23 @@ import org.rsmod.api.specials.combat.RangedSpecialAttack
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.PathingEntity
 import org.rsmod.game.entity.Player
-import org.rsmod.game.type.obj.ObjTypeList
-import org.rsmod.game.type.obj.UnpackedObjType
-import org.rsmod.game.type.spot.SpotanimType
+import org.rsmod.game.type.getInvObj
+import org.rsmod.game.type.getOrNull
 
-class DarkBowSpecialAttack
-@Inject
-constructor(private val objTypes: ObjTypeList, private val ammunition: RangedAmmoManager) :
+class DarkBowSpecialAttack @Inject constructor(private val ammunition: RangedAmmoManager) :
     SpecialAttackMap {
     override fun SpecialAttackRepository.register(manager: SpecialAttackManager) {
-        registerRanged(objs.dark_bow, DarkBow(manager, ammunition, objTypes))
-        registerRanged(objs.dark_bow_green, DarkBow(manager, ammunition, objTypes))
-        registerRanged(objs.dark_bow_blue, DarkBow(manager, ammunition, objTypes))
-        registerRanged(objs.dark_bow_yellow, DarkBow(manager, ammunition, objTypes))
-        registerRanged(objs.dark_bow_white, DarkBow(manager, ammunition, objTypes))
-        registerRanged(objs.dark_bow_bh, DarkBow(manager, ammunition, objTypes))
+        registerRanged(objs.dark_bow, DarkBow(manager, ammunition))
+        registerRanged(objs.dark_bow_green, DarkBow(manager, ammunition))
+        registerRanged(objs.dark_bow_blue, DarkBow(manager, ammunition))
+        registerRanged(objs.dark_bow_yellow, DarkBow(manager, ammunition))
+        registerRanged(objs.dark_bow_white, DarkBow(manager, ammunition))
+        registerRanged(objs.dark_bow_bh, DarkBow(manager, ammunition))
     }
 
     private class DarkBow(
         private val manager: SpecialAttackManager,
         private val ammunition: RangedAmmoManager,
-        private val objTypes: ObjTypeList,
     ) : RangedSpecialAttack {
         override suspend fun ProtectedAccess.attack(
             target: Npc,
@@ -56,8 +54,8 @@ constructor(private val objTypes: ObjTypeList, private val ammunition: RangedAmm
             target: PathingEntity,
             attack: CombatAttack.Ranged,
         ): Boolean {
-            val righthandType = objTypes[attack.weapon]
-            val quiverType = objTypes.getOrNull(player.quiver)
+            val righthandType = getInvObj(attack.weapon)
+            val quiverType = getOrNull(player.quiver)
 
             val canUseAmmo = ammunition.attemptAmmoUsage(player, righthandType, quiverType)
             if (!canUseAmmo) {
@@ -95,7 +93,7 @@ constructor(private val objTypes: ObjTypeList, private val ammunition: RangedAmm
         private fun ProtectedAccess.descentOfDarkness(
             target: PathingEntity,
             attack: CombatAttack.Ranged,
-            quiverType: UnpackedObjType,
+            quiverType: ItemServerType,
             travelSpot: SpotanimType,
         ) {
             val launchSpot = quiverType.paramOrNull(params.proj_launch_double)
@@ -153,7 +151,7 @@ constructor(private val objTypes: ObjTypeList, private val ammunition: RangedAmm
         private fun ProtectedAccess.descentOfDragons(
             target: PathingEntity,
             attack: CombatAttack.Ranged,
-            quiverType: UnpackedObjType,
+            quiverType: ItemServerType,
             travelSpot: SpotanimType,
         ) {
             val launchSpot = quiverType.paramOrNull(params.proj_launch_double)

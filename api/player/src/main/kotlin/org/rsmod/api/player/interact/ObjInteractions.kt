@@ -1,5 +1,6 @@
 package org.rsmod.api.player.interact
 
+import dev.openrune.types.ItemServerType
 import jakarta.inject.Inject
 import org.rsmod.api.player.events.interact.ApEvent
 import org.rsmod.api.player.events.interact.ObjContentEvents
@@ -11,17 +12,14 @@ import org.rsmod.game.entity.Player
 import org.rsmod.game.interact.InteractionObj
 import org.rsmod.game.interact.InteractionOp
 import org.rsmod.game.obj.Obj
-import org.rsmod.game.type.obj.ObjTypeList
-import org.rsmod.game.type.obj.UnpackedObjType
+import org.rsmod.game.type.getObj
 
-public class ObjInteractions
-@Inject
-constructor(private val objTypes: ObjTypeList, private val eventBus: EventBus) {
+public class ObjInteractions @Inject constructor(private val eventBus: EventBus) {
     public fun interact(
         player: Player,
         obj: Obj,
         op: InteractionOp,
-        type: UnpackedObjType = objTypes[obj],
+        type: ItemServerType = getObj(obj),
     ) {
         val opTrigger = hasOpTrigger(obj, op, type)
         val apTrigger = hasApTrigger(obj, op, type)
@@ -39,7 +37,7 @@ constructor(private val objTypes: ObjTypeList, private val eventBus: EventBus) {
     public fun opTrigger(
         obj: Obj,
         op: InteractionOp,
-        type: UnpackedObjType = objTypes[obj],
+        type: ItemServerType = getObj(obj),
     ): OpEvent? {
         val typeEvent = obj.toOp(op)
         if (eventBus.contains(typeEvent::class.java, type.id)) {
@@ -62,13 +60,13 @@ constructor(private val objTypes: ObjTypeList, private val eventBus: EventBus) {
     public fun hasOpTrigger(
         obj: Obj,
         op: InteractionOp,
-        type: UnpackedObjType = objTypes[obj],
+        type: ItemServerType = getObj(obj),
     ): Boolean = opTrigger(obj, op, type) != null
 
     public fun apTrigger(
         obj: Obj,
         op: InteractionOp,
-        type: UnpackedObjType = objTypes[obj],
+        type: ItemServerType = getObj(obj),
     ): ApEvent? {
         val typeEvent = obj.toAp(op)
         if (eventBus.contains(typeEvent::class.java, type.id)) {
@@ -91,7 +89,7 @@ constructor(private val objTypes: ObjTypeList, private val eventBus: EventBus) {
     public fun hasApTrigger(
         obj: Obj,
         op: InteractionOp,
-        type: UnpackedObjType = objTypes[obj],
+        type: ItemServerType = getObj(obj),
     ): Boolean = apTrigger(obj, op, type) != null
 
     private fun Obj.toOp(op: InteractionOp): ObjEvents.Op =

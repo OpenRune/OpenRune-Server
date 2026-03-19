@@ -1,0 +1,229 @@
+[[spawn]]
+obj = "obj.leather_gloves"
+coords = "0_49_49_12_41"
+
+[[spawn]]
+obj = "obj.swamp_tar"
+coords = "0_49_49_28_33"
+
+[[spawn]]
+obj = "obj.swamp_tar"
+coords = "0_49_49_28_44"
+
+[[spawn]]
+obj = "obj.swamp_tar"
+coords = "0_49_49_28_51"
+
+[[spawn]]
+obj = "obj.swamp_tar"
+coords = "0_49_49_34_31"
+
+[[spawn]]
+obj = "obj.swamp_tar"
+coords = "0_49_49_35_41"
+
+[[spawn]]
+obj = "obj.swamp_tar"
+coords = "0_49_49_35_55"
+
+[[spawn]]
+obj = "obj.swamp_tar"
+coords = "0_49_49_37_30"
+
+[[spawn]]
+obj = "obj.swamp_tar"
+coords = "0_49_49_37_42"
+
+[[spawn]]
+obj = "obj.swamp_tar"
+coords = "0_49_49_43_54"
+
+[[spawn]]
+obj = "obj.swamp_tar"
+coords = "0_49_49_45_57"
+
+[[spawn]]
+obj = "obj.swamp_tar"
+coords = "0_49_49_46_29"
+
+[[spawn]]
+obj = "obj.swamp_tar"
+coords = "0_49_49_47_44"
+
+[[spawn]]
+obj = "obj.swamp_tar"
+coords = "0_49_49_49_25"
+
+[[spawn]]
+obj = "obj.swamp_tar"
+coords = "0_49_49_53_27"
+
+[[spawn]]
+obj = "obj.swamp_tar"
+coords = "0_49_49_55_26"
+
+[[spawn]]
+obj = "obj.swamp_tar"
+coords = "0_49_49_57_45"
+
+[[spawn]]
+obj = "obj.swamp_tar"
+coords = "0_49_49_58_32"
+
+[[spawn]]
+obj = "obj.airrune"
+coords = "0_49_50_14_47"
+
+[[spawn]]
+obj = "obj.pot_empty"
+coords = "0_49_50_12_11"
+
+[[spawn]]
+obj = "obj.bronze_axe"
+coords = "0_49_51_49_13"
+
+[[spawn]]
+obj = "obj.shears"
+coords = "0_49_51_16_42"
+
+[[spawn]]
+obj = "obj.shears"
+coords = "0_49_51_56_8"
+
+[[spawn]]
+obj = "obj.egg"
+coords = "0_49_51_33_27"
+
+[[spawn]]
+obj = "obj.egg"
+coords = "0_49_51_36_37"
+
+[[spawn]]
+obj = "obj.egg"
+coords = "0_49_51_39_41"
+
+[[spawn]]
+obj = "obj.egg"
+coords = "0_49_51_49_33"
+
+[[spawn]]
+obj = "obj.mindrune"
+coords = "0_50_50_6_8"
+
+[[spawn]]
+obj = "obj.bronze_arrow"
+coords = "0_50_50_5_27"
+
+[[spawn]]
+obj = "obj.knife"
+coords = "0_50_50_5_12"
+
+[[spawn]]
+obj = "obj.knife"
+coords = "0_50_50_24_2"
+
+[[spawn]]
+obj = "obj.iron_dagger"
+coords = "0_50_50_48_45"
+
+[[spawn]]
+obj = "obj.bronze_dagger"
+coords = "1_50_50_13_16"
+
+[[spawn]]
+obj = "obj.bronze_pickaxe"
+coords = "2_50_50_29_15"
+
+[[spawn]]
+obj = "obj.bronze_pickaxe"
+coords = "2_50_50_29_23"
+
+[[spawn]]
+obj = "obj.logs"
+coords = "2_50_50_5_24"
+
+[[spawn]]
+obj = "obj.logs"
+coords = "2_50_50_5_26"
+
+[[spawn]]
+obj = "obj.logs"
+coords = "2_50_50_8_25"
+
+[[spawn]]
+obj = "obj.logs"
+coords = "2_50_50_9_24"
+
+[[spawn]]
+obj = "obj.bowl_empty"
+coords = "0_50_50_8_14"
+
+[[spawn]]
+obj = "obj.pot_empty"
+coords = "0_50_50_9_14"
+
+[[spawn]]
+obj = "obj.jug_empty"
+coords = "0_50_50_11_12"
+
+[[spawn]]
+obj = "obj.onion"
+coords = "1_50_50_11_47"
+
+[[spawn]]
+obj = "obj.bucket_empty"
+coords = "0_50_51_25_30"
+
+[[spawn]]
+obj = "obj.egg"
+coords = "0_50_51_26_37"
+
+[[spawn]]
+obj = "obj.egg"
+coords = "0_50_51_29_35"
+
+[[spawn]]
+obj = "obj.phoenix_crossbow"
+coords = "1_50_52_43_55"
+
+[[spawn]]
+obj = "obj.phoenix_crossbow"
+coords = "1_50_52_45_57"
+
+[[spawn]]
+obj = "obj.leather_gloves"
+coords = "1_50_52_42_57"
+
+[[spawn]]
+obj = "obj.leather_boots"
+coords = "1_50_52_44_58"
+
+[[spawn]]
+obj = "obj.iron_dagger"
+coords = "1_50_52_42_55"
+
+# Lumbridge Castle Cellar
+
+[[spawn]]
+obj = "obj.knife"
+coords = "0_50_150_15_25"
+
+[[spawn]]
+obj = "obj.leather_boots"
+coords = "0_50_150_8_20"
+
+[[spawn]]
+obj = "obj.leather_boots"
+coords = "0_50_150_10_15"
+
+[[spawn]]
+obj = "obj.bucket_empty"
+coords = "0_50_150_16_25"
+
+[[spawn]]
+obj = "obj.jug_empty"
+coords = "0_50_150_11_25"
+
+[[spawn]]
+obj = "obj.cabbage"
+coords = "0_50_150_17_22"

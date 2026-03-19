@@ -1,5 +1,6 @@
 package org.rsmod.api.player.cinematic
 
+import dev.openrune.types.aconverted.interf.IfSubType
 import net.rsprot.protocol.game.outgoing.misc.client.HideLocOps
 import net.rsprot.protocol.game.outgoing.misc.client.HideNpcOps
 import net.rsprot.protocol.game.outgoing.misc.client.HideObjOps
@@ -18,7 +19,6 @@ import org.rsmod.api.player.vars.boolVarBit
 import org.rsmod.api.player.vars.enumVarBit
 import org.rsmod.events.EventBus
 import org.rsmod.game.entity.Player
-import org.rsmod.game.type.interf.IfSubType
 
 public object Cinematic {
     private var Player.camMode by enumVarBit<CameraMode>(varbits.fov_clamp)

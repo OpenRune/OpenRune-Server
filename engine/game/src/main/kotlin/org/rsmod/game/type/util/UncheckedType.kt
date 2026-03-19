@@ -1,4 +1,4 @@
-package org.rsmod.game.type.util
+package dev.openrune.types.util
 
 @Retention(AnnotationRetention.BINARY)
 @Target(

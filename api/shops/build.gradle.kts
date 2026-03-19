@@ -1,6 +1,6 @@
 plugins {
     id("base-conventions")
-    id("integration-test-suite")
+
 }
 
 kotlin {
@@ -19,14 +19,11 @@ dependencies {
     implementation(projects.api.player)
     implementation(projects.api.playerOutput)
     implementation(projects.api.script)
-    implementation(projects.api.type.typeBuilders)
-    implementation(projects.api.type.typeReferences)
-    implementation(projects.api.type.typeScriptDsl)
+
+
     implementation(projects.api.utils.utilsFormat)
     implementation(projects.engine.events)
     implementation(projects.engine.game)
     implementation(projects.engine.objtx)
     implementation(projects.engine.plugin)
-    testImplementation(projects.api.testing.testFactory)
-    testImplementation(projects.api.testing.testParams)
 }

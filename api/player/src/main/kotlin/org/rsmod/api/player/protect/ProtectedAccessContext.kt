@@ -14,11 +14,6 @@ import org.rsmod.api.random.GameRandom
 import org.rsmod.events.EventBus
 import org.rsmod.game.entity.NpcList
 import org.rsmod.game.entity.PlayerList
-import org.rsmod.game.type.inv.InvTypeList
-import org.rsmod.game.type.loc.LocTypeList
-import org.rsmod.game.type.npc.NpcTypeList
-import org.rsmod.game.type.obj.ObjTypeList
-import org.rsmod.game.type.seq.SeqTypeList
 import org.rsmod.routefinder.collision.CollisionFlagMap
 
 /**
@@ -79,11 +74,6 @@ public data class ProtectedAccessContext(
     private val getCollision: () -> CollisionFlagMap,
     private val getAreaChecker: () -> AreaChecker,
     private val getAlignment: () -> TextAlignment,
-    private val getInvTypes: () -> InvTypeList,
-    private val getLocTypes: () -> LocTypeList,
-    private val getNpcTypes: () -> NpcTypeList,
-    private val getObjTypes: () -> ObjTypeList,
-    private val getSeqTypes: () -> SeqTypeList,
     private val getLocInteractions: () -> LocInteractions,
     private val getNpcInteractions: () -> NpcInteractions,
     private val getPlayerInteractions: () -> PlayerInteractions,
@@ -100,11 +90,6 @@ public data class ProtectedAccessContext(
     public val collision: CollisionFlagMap by lazyLoad { getCollision() }
     public val areaChecker: AreaChecker by lazyLoad { getAreaChecker() }
     public val alignment: TextAlignment by lazyLoad { getAlignment() }
-    public val invTypes: InvTypeList by lazyLoad { getInvTypes() }
-    public val locTypes: LocTypeList by lazyLoad { getLocTypes() }
-    public val npcTypes: NpcTypeList by lazyLoad { getNpcTypes() }
-    public val objTypes: ObjTypeList by lazyLoad { getObjTypes() }
-    public val seqTypes: SeqTypeList by lazyLoad { getSeqTypes() }
     public val locInteractions: LocInteractions by lazyLoad { getLocInteractions() }
     public val npcInteractions: NpcInteractions by lazyLoad { getNpcInteractions() }
     public val playerInteractions: PlayerInteractions by lazyLoad { getPlayerInteractions() }

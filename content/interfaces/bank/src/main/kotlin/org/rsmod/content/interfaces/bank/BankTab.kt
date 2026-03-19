@@ -1,10 +1,10 @@
 package org.rsmod.content.interfaces.bank
 
+import dev.openrune.definition.type.VarBitType
 import kotlin.math.max
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.utils.vars.VarEnumDelegate
 import org.rsmod.content.interfaces.bank.configs.bank_varbits
-import org.rsmod.game.type.varbit.VarBitType
 
 enum class BankTab(val index: Int, val sizeVarBit: VarBitType, override val varValue: Int) :
     VarEnumDelegate {

@@ -1,5 +1,6 @@
 package org.rsmod.api.combat.formulas.accuracy.multi
 
+import dev.openrune.types.NpcServerType
 import jakarta.inject.Inject
 import java.util.EnumSet
 import kotlin.math.max
@@ -21,7 +22,6 @@ import org.rsmod.api.config.refs.params
 import org.rsmod.api.config.refs.varbits
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
-import org.rsmod.game.type.npc.UnpackedNpcType
 
 public class PvNMultiStyleAccuracy
 @Inject
@@ -55,7 +55,7 @@ constructor(
 
     private fun computeMagicalMeleeHitChance(
         source: Player,
-        target: UnpackedNpcType,
+        target: NpcServerType,
         targetDefence: Int,
         targetCurrHp: Int,
         targetMaxHp: Int,
@@ -109,7 +109,7 @@ constructor(
 
     private fun computeRangedMeleeHitChance(
         source: Player,
-        target: UnpackedNpcType,
+        target: NpcServerType,
         targetDefence: Int,
         targetCurrHp: Int,
         targetMaxHp: Int,
@@ -161,7 +161,7 @@ constructor(
 
     private fun computeRangedMagicHitChance(
         source: Player,
-        target: UnpackedNpcType,
+        target: NpcServerType,
         targetDefence: Int,
         targetCurrHp: Int,
         targetMaxHp: Int,
@@ -217,7 +217,7 @@ constructor(
 
     private fun computeMagicalRangedHitChance(
         source: Player,
-        target: UnpackedNpcType,
+        target: NpcServerType,
         targetDefence: Int,
         targetCurrHp: Int,
         targetMaxHp: Int,

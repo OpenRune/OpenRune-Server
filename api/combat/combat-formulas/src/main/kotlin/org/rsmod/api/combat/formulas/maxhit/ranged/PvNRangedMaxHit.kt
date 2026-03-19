@@ -1,5 +1,6 @@
 package org.rsmod.api.combat.formulas.maxhit.ranged
 
+import dev.openrune.types.NpcServerType
 import jakarta.inject.Inject
 import java.util.EnumSet
 import kotlin.math.max
@@ -18,7 +19,6 @@ import org.rsmod.api.player.bonus.WornBonuses
 import org.rsmod.api.player.vars.intVarp
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
-import org.rsmod.game.type.npc.UnpackedNpcType
 
 public class PvNRangedMaxHit
 @Inject
@@ -70,7 +70,7 @@ constructor(
 
     public fun computeMaxHit(
         source: Player,
-        target: UnpackedNpcType,
+        target: NpcServerType,
         targetCurrHp: Int,
         targetMaxHp: Int,
         targetMagic: Int,

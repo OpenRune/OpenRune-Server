@@ -11,4 +11,6 @@ dependencies {
     implementation(libs.guice)
     implementation(projects.api.parsers.toml)
     implementation(projects.engine.module)
+    implementation(libs.jackson.dataformat.yaml)
+    implementation(libs.jackson.module.kotlin)
 }

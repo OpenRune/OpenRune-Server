@@ -1,13 +1,13 @@
 package org.rsmod.game.entity
 
+import dev.openrune.types.ControllerType
+import dev.openrune.types.aconverted.QueueType
+import dev.openrune.types.aconverted.TimerType
 import kotlin.coroutines.startCoroutine
 import org.rsmod.coroutine.GameCoroutine
 import org.rsmod.coroutine.suspension.GameCoroutineSimpleCompletion
 import org.rsmod.game.queue.NpcQueueList
 import org.rsmod.game.timer.NpcTimerMap
-import org.rsmod.game.type.controller.ControllerType
-import org.rsmod.game.type.queue.QueueType
-import org.rsmod.game.type.timer.TimerType
 import org.rsmod.game.vars.VarConIntMap
 import org.rsmod.map.CoordGrid
 import org.rsmod.map.util.Bounds

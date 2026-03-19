@@ -1,7 +1,7 @@
 package org.rsmod.game.shop
 
+import dev.openrune.types.aconverted.CurrencyType
 import org.rsmod.game.inv.Inventory
-import org.rsmod.game.type.currency.CurrencyType
 
 public data class Shop(
     public val inv: Inventory,

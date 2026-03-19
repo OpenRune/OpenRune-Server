@@ -2,11 +2,11 @@
 
 package org.rsmod.api.config.refs
 
-import org.rsmod.api.type.refs.proj.ProjAnimReferences
+import dev.openrune.projAnim
 
 typealias projanims = BaseProjAnims
 
-object BaseProjAnims : ProjAnimReferences() {
+object BaseProjAnims {
     val arrow = projAnim("arrow")
     val bolt = projAnim("bolt")
     val chinchompa = projAnim("chinchompa")

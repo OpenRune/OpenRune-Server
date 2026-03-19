@@ -1,14 +1,14 @@
 package org.rsmod.content.interfaces.prayer.tab.configs
 
-import org.rsmod.api.type.refs.enums.EnumReferences
-import org.rsmod.game.type.obj.ObjType
+import dev.openrune.types.ItemServerType
+import dev.openrune.types.enums.enum
 
 internal typealias prayer_enums = PrayerTabEnums
 
-object PrayerTabEnums : EnumReferences() {
-    val obj_configs = enum<Int, ObjType>("prayer_oc", 18447792)
-    val attack_collisions = enum<Int, Boolean>("prayer_attack_collisions", 3228840)
-    val strength_collisions = enum<Int, Boolean>("prayer_strength_collisions", 3232561)
-    val defence_collisions = enum<Int, Boolean>("prayer_defence_collisions", 3236282)
-    val overhead_collisions = enum<Int, Boolean>("prayer_overhead_collisions", 3240003)
+object PrayerTabEnums {
+    val obj_configs = enum<Int, ItemServerType>("prayer_oc")
+    val attack_collisions = enum<Int, Boolean>("prayer_attack_collisions")
+    val strength_collisions = enum<Int, Boolean>("prayer_strength_collisions")
+    val defence_collisions = enum<Int, Boolean>("prayer_defence_collisions")
+    val overhead_collisions = enum<Int, Boolean>("prayer_overhead_collisions")
 }

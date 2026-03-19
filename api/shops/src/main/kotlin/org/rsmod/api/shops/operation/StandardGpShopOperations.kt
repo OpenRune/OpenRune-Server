@@ -1,5 +1,6 @@
 package org.rsmod.api.shops.operation
 
+import dev.openrune.types.ItemServerType
 import jakarta.inject.Inject
 import kotlin.math.max
 import kotlin.math.min
@@ -17,9 +18,8 @@ import org.rsmod.game.entity.Player
 import org.rsmod.game.inv.InvObj
 import org.rsmod.game.inv.Inventory
 import org.rsmod.game.shop.Shop
-import org.rsmod.game.type.obj.ObjType
-import org.rsmod.game.type.obj.ObjTypeList
-import org.rsmod.game.type.obj.UnpackedObjType
+import org.rsmod.game.type.getInvObj
+import org.rsmod.game.type.uncert
 import org.rsmod.objtx.TransactionResult
 
 private typealias CostCalculation = StandardGpCostCalculations
@@ -27,15 +27,14 @@ private typealias CostCalculation = StandardGpCostCalculations
 public class StandardGpShopOperations
 @Inject
 constructor(
-    private val objTypes: ObjTypeList,
     private val restockProcess: ShopRestockProcess,
     private val marketPrices: MarketPrices,
 ) : StandardShopOperations {
-    private val currencyObj: UnpackedObjType by lazy { objTypes[objs.coins] }
+    private val currencyObj: ItemServerType by lazy { objs.coins }
 
     override fun examineShopValue(player: Player, shop: Shop, slot: Int) {
         val obj = shop.inv[slot] ?: return
-        val objType = objTypes[obj]
+        val objType = getInvObj(obj)
 
         val shopInitialObjCount = shop.inv.initialStockCount(obj)
         val value =
@@ -57,7 +56,7 @@ constructor(
     override fun shopBuy(player: Player, sideInv: Inventory, shop: Shop, slot: Int, request: Int) {
         val shopInv = shop.inv
         val obj = shopInv[slot] ?: return
-        val objType = objTypes[obj]
+        val objType = getInvObj(obj)
 
         val initialPurchaseRequest = min(shopInv.count(obj, objType), request)
         if (initialPurchaseRequest == 0) {
@@ -139,9 +138,9 @@ constructor(
     /**
      * Resets the count of a default stock obj to zero when it's sold out, instead of removing it
      * from the inventory. Applies only if [slot] is within the original stock indices
-     * ([org.rsmod.game.type.inv.UnpackedInvType.stock]).
+     * ([dev.openrune.types.inv.UnpackedInvType.stock]).
      */
-    private fun Inventory.resetDefaultStockItem(slot: Int, objType: ObjType) {
+    private fun Inventory.resetDefaultStockItem(slot: Int, objType: ItemServerType) {
         val defaultStockIndices = type.stock?.indices ?: return
         if (slot in defaultStockIndices) {
             this[slot] = InvObj(objType, count = 0)
@@ -150,8 +149,8 @@ constructor(
 
     override fun examineInvValue(player: Player, sideInv: Inventory, shop: Shop, slot: Int) {
         val obj = sideInv[slot] ?: return
-        val uncert = objTypes.uncert(obj)
-        val objType = objTypes[uncert]
+        val uncert = uncert(obj)
+        val objType = getInvObj(uncert)
 
         val tradeable = objType.tradeable || objType.stockmarket
         if (!tradeable) {
@@ -191,8 +190,8 @@ constructor(
 
     override fun invSell(player: Player, sideInv: Inventory, shop: Shop, slot: Int, request: Int) {
         val obj = sideInv[slot] ?: return
-        val objType = objTypes[obj]
-        val uncertType = objTypes.uncert(objType)
+        val objType = getInvObj(obj)
+        val uncertType = uncert(objType)
 
         val tradeable = uncertType.tradeable || uncertType.stockmarket
         if (!tradeable) {
@@ -263,14 +262,14 @@ constructor(
 
     override fun examineDesc(player: Player, inv: Inventory, shop: Shop, slot: Int) {
         val obj = inv[slot] ?: return
-        val type = objTypes[obj]
+        val type = getInvObj(obj)
         val marketPrice = marketPrices[type] ?: 0
         player.objExamine(type, obj.count, marketPrice)
     }
 
     private fun Inventory.initialStockCount(obj: InvObj): Int = initialStockCount(obj.id)
 
-    private fun Inventory.initialStockCount(type: ObjType): Int = initialStockCount(type.id)
+    private fun Inventory.initialStockCount(type: ItemServerType): Int = initialStockCount(type.id)
 
     private fun Inventory.initialStockCount(obj: Int): Int {
         val startStock = type.stock ?: return 0

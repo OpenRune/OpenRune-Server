@@ -1,9 +1,9 @@
 package org.rsmod.api.shops.operation
 
+import dev.openrune.types.aconverted.interf.IfButtonOp
 import org.rsmod.game.entity.Player
 import org.rsmod.game.inv.Inventory
 import org.rsmod.game.shop.Shop
-import org.rsmod.game.type.interf.IfButtonOp
 
 public interface StandardShopOperations : ShopOperations {
     public fun examineShopValue(player: Player, shop: Shop, slot: Int)

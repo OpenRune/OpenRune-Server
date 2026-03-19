@@ -1,8 +1,8 @@
 package org.rsmod.game.vars
 
+import dev.openrune.types.VarnType
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
-import org.rsmod.game.type.varn.VarnType
 
 @JvmInline
 public value class VarNpcStrMap(

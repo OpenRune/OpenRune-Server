@@ -1,10 +1,10 @@
 package org.rsmod.api.game.process.npc
 
+import dev.openrune.types.NpcServerType
 import jakarta.inject.Inject
 import org.rsmod.api.npc.events.AiTimerEvents
 import org.rsmod.events.EventBus
 import org.rsmod.game.entity.Npc
-import org.rsmod.game.type.npc.UnpackedNpcType
 
 public class AiTimerProcessor @Inject constructor(private val eventBus: EventBus) {
     public fun process(npc: Npc) {
@@ -25,7 +25,7 @@ public class AiTimerProcessor @Inject constructor(private val eventBus: EventBus
         publishEvent()
     }
 
-    private fun Npc.publishEvent(type: UnpackedNpcType = visType) {
+    private fun Npc.publishEvent(type: NpcServerType = visType) {
         val typeTrigger = eventBus.keyed[AiTimerEvents.Type::class.java, type.id]
         if (typeTrigger != null) {
             typeTrigger.invoke(AiTimerEvents.Type(this))

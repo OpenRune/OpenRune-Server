@@ -2,11 +2,11 @@
 
 package org.rsmod.api.config.refs
 
-import org.rsmod.api.type.refs.varbit.VarBitReferences
+import dev.openrune.varBit
 
 typealias varbits = BaseVarBits
 
-object BaseVarBits : VarBitReferences() {
+object BaseVarBits {
     val multiway_indicator = varBit("multiway_indicator")
     val singleway_plus_indicator = varBit("singleway_plus_indicator")
 

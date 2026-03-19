@@ -1,5 +1,7 @@
 package org.rsmod.api.script
 
+import dev.openrune.cache.filestore.definition.InterfaceType
+import dev.openrune.definition.type.widget.ComponentType
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.ui.IfCloseSub
 import org.rsmod.api.player.ui.IfModalButton
@@ -10,8 +12,6 @@ import org.rsmod.api.player.ui.IfOverlayButton
 import org.rsmod.api.player.ui.IfOverlayButtonT
 import org.rsmod.api.player.ui.IfOverlayDrag
 import org.rsmod.events.EventBus
-import org.rsmod.game.type.comp.ComponentType
-import org.rsmod.game.type.interf.InterfaceType
 import org.rsmod.plugin.scripts.ScriptContext
 
 public fun ScriptContext.onIfOpen(type: InterfaceType, action: IfOpenSub.() -> Unit): Unit =

@@ -2,15 +2,14 @@ package dev.openrune
 
 import java.nio.ByteBuffer
 
-class BufferReader(
-    val buffer: ByteBuffer
-) {
+class BufferReader(val buffer: ByteBuffer) {
 
     constructor(array: ByteArray) : this(buffer = ByteBuffer.wrap(array))
 
     val length: Int = buffer.remaining()
     val remaining: Int
         get() = buffer.remaining()
+
     private var bitIndex = 0
 
     fun readByte(): Int {
@@ -53,7 +52,7 @@ class BufferReader(
         return readUnsignedByteAdd() or (readByte() shl 8)
     }
 
-    fun readShortSmart() : Int {
+    fun readShortSmart(): Int {
         val peek = readUnsignedByte()
         return if (peek < 128) peek - 64 else (peek shl 8 or readUnsignedByte()) - 49152
     }
@@ -79,19 +78,31 @@ class BufferReader(
     }
 
     fun readInt(): Int {
-        return (readUnsignedByte() shl 24) or (readUnsignedByte() shl 16) or (readUnsignedByte() shl 8) or readUnsignedByte()
+        return (readUnsignedByte() shl 24) or
+            (readUnsignedByte() shl 16) or
+            (readUnsignedByte() shl 8) or
+            readUnsignedByte()
     }
 
     fun readIntInverseMiddle(): Int {
-        return (readByte() shl 16) or (readByte() shl 24) or readUnsignedByte() or (readByte() shl 8)
+        return (readByte() shl 16) or
+            (readByte() shl 24) or
+            readUnsignedByte() or
+            (readByte() shl 8)
     }
 
     fun readIntLittle(): Int {
-        return readUnsignedByte() or (readByte() shl 8) or (readByte() shl 16) or (readByte() shl 24)
+        return readUnsignedByte() or
+            (readByte() shl 8) or
+            (readByte() shl 16) or
+            (readByte() shl 24)
     }
 
     fun readUnsignedIntMiddle(): Int {
-        return (readUnsignedByte() shl 8) or readUnsignedByte() or (readUnsignedByte() shl 24) or (readUnsignedByte() shl 16)
+        return (readUnsignedByte() shl 8) or
+            readUnsignedByte() or
+            (readUnsignedByte() shl 24) or
+            (readUnsignedByte() shl 16)
     }
 
     fun readSmart(): Int {
@@ -106,7 +117,10 @@ class BufferReader(
     fun readBigSmart(): Int {
         val peek = readByte()
         return if (peek < 0) {
-            ((peek shl 24) or (readUnsignedByte() shl 16) or (readUnsignedByte() shl 8) or readUnsignedByte()) and 0x7fffffff
+            ((peek shl 24) or
+                (readUnsignedByte() shl 16) or
+                (readUnsignedByte() shl 8) or
+                readUnsignedByte()) and 0x7fffffff
         } else {
             val value = (peek shl 8) or readUnsignedByte()
             if (value == 32767) -1 else value
@@ -169,6 +183,4 @@ class BufferReader(
     fun readableBytes(): Int {
         return buffer.remaining()
     }
-
-
 }

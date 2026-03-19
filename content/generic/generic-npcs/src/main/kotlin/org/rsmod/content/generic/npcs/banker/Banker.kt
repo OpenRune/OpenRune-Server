@@ -1,5 +1,6 @@
 package org.rsmod.content.generic.npcs.banker
 
+import dev.openrune.types.ItemServerType
 import jakarta.inject.Inject
 import kotlin.math.min
 import org.rsmod.api.config.refs.content
@@ -20,9 +21,7 @@ import org.rsmod.api.script.onOpNpcU
 import org.rsmod.api.utils.format.formatAmount
 import org.rsmod.content.interfaces.bank.scripts.BankTutorialScript
 import org.rsmod.game.entity.Npc
-import org.rsmod.game.enums.EnumTypeMapResolver
 import org.rsmod.game.inv.isType
-import org.rsmod.game.type.obj.UnpackedObjType
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
@@ -80,7 +79,7 @@ private constructor(
 
     private suspend fun ProtectedAccess.talkToBanker(npc: Npc) {
         startDialogue(npc, faceFar = true) {
-            if (npc.type.isContentType(content.banker_tutor)) {
+            if (npc.type.isContentType(content.banker_tutor.id)) {
                 talkToBankerTutor()
             } else {
                 talkToBanker()
@@ -585,14 +584,14 @@ private constructor(
     private suspend fun ProtectedAccess.apBanknote(
         npc: Npc,
         invSlot: Int,
-        objType: UnpackedObjType,
+        objType: ItemServerType,
     ) {
         if (isWithinApRange(npc, 3)) {
             banknote(npc, invSlot, objType)
         }
     }
 
-    private suspend fun ProtectedAccess.banknote(npc: Npc, invSlot: Int, objType: UnpackedObjType) {
+    private suspend fun ProtectedAccess.banknote(npc: Npc, invSlot: Int, objType: ItemServerType) {
         if (!objType.isCert) {
             startDialogue(npc) {
                 chatNpcNoTurn(sad, "Hand me a banknote, and I'll try to convert it to an item.")
@@ -635,11 +634,11 @@ private constructor(
     }
 }
 
-private class BankSpaceShop @Inject constructor(private val enumResolver: EnumTypeMapResolver) {
+private class BankSpaceShop {
     private lateinit var blockCosts: List<Int>
 
     fun startup() {
-        val costs = enumResolver[banker_enums.block_costs].filterValuesNotNull()
+        val costs = banker_enums.block_costs.filterValuesNotNull()
         val maxBlock = costs.keys.maxOrNull() ?: error("`block_costs` enum should not be empty.")
         val blockCosts = MutableList(maxBlock) { 0 }
         for ((block, cost) in costs) {

@@ -15,7 +15,6 @@ dependencies {
     implementation(projects.api.repo)
     implementation(projects.api.script)
     implementation(projects.api.scriptAdvanced)
-    implementation(projects.api.type.typeReferences)
     implementation(projects.engine.coroutine)
     implementation(projects.engine.events)
     implementation(projects.engine.game)

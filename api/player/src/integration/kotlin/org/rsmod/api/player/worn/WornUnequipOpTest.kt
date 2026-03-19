@@ -1,5 +1,6 @@
 package org.rsmod.api.player.worn
 
+import dev.openrune.types.obj.Wearpos
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Test
@@ -12,7 +13,6 @@ import org.rsmod.api.player.righthand
 import org.rsmod.api.testing.GameTestState
 import org.rsmod.events.EventBus
 import org.rsmod.game.inv.InvObj
-import org.rsmod.game.type.obj.Wearpos
 
 /* Obj transaction system is not thread-safe. */
 @Execution(ExecutionMode.SAME_THREAD)

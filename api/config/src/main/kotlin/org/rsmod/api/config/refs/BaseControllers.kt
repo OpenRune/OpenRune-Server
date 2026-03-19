@@ -2,10 +2,11 @@
 
 package org.rsmod.api.config.refs
 
-import org.rsmod.api.type.builders.controller.ControllerBuilder
+import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.types.ControllerType
 
 typealias controllers = BaseControllers
 
-object BaseControllers : ControllerBuilder() {
-    val woodcutting_tree_duration = build("woodcutting_tree_duration")
+object BaseControllers {
+    val woodcutting_tree_duration = ControllerType("controller.woodcutting_tree_duration".asRSCM())
 }

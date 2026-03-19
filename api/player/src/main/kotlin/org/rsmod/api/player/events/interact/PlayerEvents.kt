@@ -1,9 +1,8 @@
 package org.rsmod.api.player.events.interact
 
+import dev.openrune.definition.type.widget.ComponentType
+import dev.openrune.types.ItemServerType
 import org.rsmod.game.entity.Player
-import org.rsmod.game.type.comp.ComponentType
-import org.rsmod.game.type.obj.ObjType
-import org.rsmod.game.type.obj.UnpackedObjType
 
 public class PlayerEvents {
     public sealed class Op(public val target: Player) : OpDefaultEvent()
@@ -35,14 +34,14 @@ public class PlayerTEvents {
     public class Op(
         public val target: Player,
         public val comsub: Int,
-        public val objType: ObjType?,
+        public val objType: ItemServerType?,
         component: ComponentType,
     ) : OpEvent(component.packed.toLong())
 
     public class Ap(
         public val target: Player,
         public val comsub: Int,
-        public val objType: ObjType?,
+        public val objType: ItemServerType?,
         component: ComponentType,
     ) : ApEvent(component.packed.toLong())
 }
@@ -51,13 +50,13 @@ public class PlayerUEvents {
     public class Op(
         public val target: Player,
         public val invSlot: Int,
-        public val objType: UnpackedObjType,
+        public val objType: ItemServerType,
     ) : OpEvent(objType.id.toLong())
 
     public class Ap(
         public val target: Player,
         public val invSlot: Int,
-        public val objType: UnpackedObjType,
+        public val objType: ItemServerType,
     ) : ApEvent(objType.id.toLong())
 }
 
@@ -65,12 +64,12 @@ public class PlayerUContentEvents {
     public class Op(
         public val target: Player,
         public val invSlot: Int,
-        public val objType: UnpackedObjType,
+        public val objType: ItemServerType,
     ) : OpEvent(objType.contentGroup.toLong())
 
     public class Ap(
         public val target: Player,
         public val invSlot: Int,
-        public val objType: UnpackedObjType,
+        public val objType: ItemServerType,
     ) : ApEvent(objType.contentGroup.toLong())
 }

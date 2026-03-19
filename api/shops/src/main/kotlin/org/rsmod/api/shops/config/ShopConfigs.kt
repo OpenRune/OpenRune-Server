@@ -2,36 +2,25 @@
 
 package org.rsmod.api.shops.config
 
+import dev.openrune.ParamReferences.param
+import dev.openrune.cache.filestore.definition.InterfaceType
+import dev.openrune.component
+import dev.openrune.definition.type.widget.ComponentType
+import dev.openrune.inter
 import org.rsmod.api.config.aliases.ParamInt
-import org.rsmod.api.type.builders.param.ParamBuilder
-import org.rsmod.api.type.refs.comp.ComponentReferences
-import org.rsmod.api.type.refs.interf.InterfaceReferences
-import org.rsmod.api.type.refs.param.ParamReferences
-import org.rsmod.game.type.comp.ComponentType
-import org.rsmod.game.type.interf.InterfaceType
 
-public object ShopInterfaces : InterfaceReferences() {
+public object ShopInterfaces {
     public val shop_main: InterfaceType = inter("shopmain")
     public val shop_side: InterfaceType = inter("shopside")
 }
 
-public object ShopComponents : ComponentReferences() {
-    public val shop_subtext: ComponentType = component("shopmain:desktop_instructions")
+public object ShopComponents {
     public val shop_side_inv: ComponentType = component("shopside:items")
     public val shop_inv: ComponentType = component("shopmain:items")
 }
 
-public object ShopParams : ParamReferences() {
+public object ShopParams {
     public val shop_sell_percentage: ParamInt = param("shop_sell_percentage")
     public val shop_buy_percentage: ParamInt = param("shop_buy_percentage")
     public val shop_change_percentage: ParamInt = param("shop_change_percentage")
-}
-
-public object ShopParamBuilder : ParamBuilder() {
-    init {
-        // Values are multiplied by 10 for "decimal precision".
-        build<Int>("shop_sell_percentage") { default = 1300 }
-        build<Int>("shop_buy_percentage") { default = 400 }
-        build<Int>("shop_change_percentage") { default = 30 }
-    }
 }

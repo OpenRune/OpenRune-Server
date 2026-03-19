@@ -1,5 +1,6 @@
 package org.rsmod.api.npc.interact
 
+import dev.openrune.types.NpcServerType
 import jakarta.inject.Inject
 import org.rsmod.api.npc.events.interact.AiNpcContentEvents
 import org.rsmod.api.npc.events.interact.AiNpcDefaultEvents
@@ -12,12 +13,8 @@ import org.rsmod.game.entity.Npc
 import org.rsmod.game.interact.InteractionNpcOp
 import org.rsmod.game.interact.InteractionOp
 import org.rsmod.game.movement.RouteRequestPathingEntity
-import org.rsmod.game.type.npc.NpcTypeList
-import org.rsmod.game.type.npc.UnpackedNpcType
 
-public class AiNpcInteractions
-@Inject
-constructor(private val npcTypes: NpcTypeList, private val eventBus: EventBus) {
+public class AiNpcInteractions @Inject constructor(private val eventBus: EventBus) {
     public fun interactOp(npc: Npc, target: Npc, op: InteractionOp) {
         val opTrigger = hasOpTrigger(target, op)
         val interaction =
@@ -50,7 +47,7 @@ constructor(private val npcTypes: NpcTypeList, private val eventBus: EventBus) {
     public fun opTrigger(
         target: Npc,
         op: InteractionOp,
-        type: UnpackedNpcType = target.visType,
+        type: NpcServerType = target.visType,
     ): OpEvent? {
         val typeEvent = target.toOp(op)
         if (eventBus.contains(typeEvent::class.java, type.id)) {
@@ -80,7 +77,7 @@ constructor(private val npcTypes: NpcTypeList, private val eventBus: EventBus) {
     public fun apTrigger(
         target: Npc,
         op: InteractionOp,
-        type: UnpackedNpcType = target.visType,
+        type: NpcServerType = target.visType,
     ): ApEvent? {
         val typeEvent = target.toAp(op)
         if (eventBus.contains(typeEvent::class.java, type.id)) {
@@ -163,5 +160,5 @@ constructor(private val npcTypes: NpcTypeList, private val eventBus: EventBus) {
             InteractionOp.Op5 -> AiNpcDefaultEvents.Ap5(this)
         }
 
-    public fun hasOp(target: Npc, op: InteractionOp): Boolean = target.visType.hasOp(op)
+    public fun hasOp(target: Npc, op: InteractionOp): Boolean = target.visType.hasOp(op.slot)
 }

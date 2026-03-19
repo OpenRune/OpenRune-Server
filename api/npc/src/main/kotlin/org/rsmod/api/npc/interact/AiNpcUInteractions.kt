@@ -1,6 +1,8 @@
 package org.rsmod.api.npc.interact
 
 import com.github.michaelbull.logging.InlineLogger
+import dev.openrune.types.ItemServerType
+import dev.openrune.types.NpcServerType
 import jakarta.inject.Inject
 import org.rsmod.api.npc.access.StandardNpcAccess
 import org.rsmod.api.npc.events.interact.AiNpcUContentEvents
@@ -13,13 +15,10 @@ import org.rsmod.game.entity.Npc
 import org.rsmod.game.inv.InvObj
 import org.rsmod.game.inv.Inventory
 import org.rsmod.game.inv.isType
-import org.rsmod.game.type.npc.NpcTypeList
-import org.rsmod.game.type.npc.UnpackedNpcType
-import org.rsmod.game.type.obj.UnpackedObjType
 
 public class AiNpcUInteractions
 @Inject
-private constructor(private val eventBus: EventBus, private val npcTypes: NpcTypeList) {
+private constructor(private val eventBus: EventBus, private val npcTypes: NpcServerType) {
     private val logger = InlineLogger()
 
     public suspend fun interactOp(
@@ -27,8 +26,8 @@ private constructor(private val eventBus: EventBus, private val npcTypes: NpcTyp
         target: Npc,
         inv: Inventory,
         invSlot: Int,
-        npcType: UnpackedNpcType,
-        objType: UnpackedObjType,
+        npcType: NpcServerType,
+        objType: ItemServerType,
     ) {
         val obj = inv[invSlot]
         if (objectVerify(obj, objType)) {
@@ -39,8 +38,8 @@ private constructor(private val eventBus: EventBus, private val npcTypes: NpcTyp
     private suspend fun StandardNpcAccess.opNpcU(
         target: Npc,
         invSlot: Int,
-        npcType: UnpackedNpcType,
-        objType: UnpackedObjType,
+        npcType: NpcServerType,
+        objType: ItemServerType,
     ) {
         val script = opTrigger(target, invSlot, target.visType, objType)
         if (script != null) {
@@ -56,8 +55,8 @@ private constructor(private val eventBus: EventBus, private val npcTypes: NpcTyp
     private fun opTrigger(
         target: Npc,
         invSlot: Int,
-        npcType: UnpackedNpcType,
-        objType: UnpackedObjType,
+        npcType: NpcServerType,
+        objType: ItemServerType,
     ): OpEvent? {
         val contentGroup = npcType.contentGroup
 
@@ -89,7 +88,7 @@ private constructor(private val eventBus: EventBus, private val npcTypes: NpcTyp
         target: Npc,
         inv: Inventory,
         invSlot: Int,
-        objType: UnpackedObjType,
+        objType: ItemServerType,
     ) {
         val obj = inv[invSlot]
         if (objectVerify(obj, objType)) {
@@ -100,7 +99,7 @@ private constructor(private val eventBus: EventBus, private val npcTypes: NpcTyp
     private suspend fun StandardNpcAccess.apNpcU(
         target: Npc,
         invSlot: Int,
-        objType: UnpackedObjType,
+        objType: ItemServerType,
     ) {
         val script = apTrigger(target, invSlot, target.visType, objType) ?: return
         eventBus.publish(this, script)
@@ -109,8 +108,8 @@ private constructor(private val eventBus: EventBus, private val npcTypes: NpcTyp
     private fun apTrigger(
         target: Npc,
         invSlot: Int,
-        npcType: UnpackedNpcType,
-        objType: UnpackedObjType,
+        npcType: NpcServerType,
+        objType: ItemServerType,
     ): ApEvent? {
         val contentGroup = npcType.contentGroup
 
@@ -137,5 +136,5 @@ private constructor(private val eventBus: EventBus, private val npcTypes: NpcTyp
         return null
     }
 
-    private fun objectVerify(obj: InvObj?, type: UnpackedObjType): Boolean = obj.isType(type)
+    private fun objectVerify(obj: InvObj?, type: ItemServerType): Boolean = obj.isType(type)
 }

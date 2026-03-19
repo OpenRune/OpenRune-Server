@@ -1,13 +1,13 @@
 package org.rsmod.content.interfaces.equipment.configs
 
-import org.rsmod.api.type.refs.comp.ComponentReferences
-import org.rsmod.api.type.refs.interf.InterfaceReferences
+import dev.openrune.component
+import dev.openrune.inter
 
 typealias equip_components = EquipmentTabComponents
 
 typealias equip_interfaces = EquipmentTabInterfaces
 
-object EquipmentTabComponents : ComponentReferences() {
+object EquipmentTabComponents {
     val equipment = component("wornitems:equipment")
     val guide_prices = component("wornitems:pricechecker")
     val items_kept_on_death = component("wornitems:deathkeep")
@@ -45,7 +45,7 @@ object EquipmentTabComponents : ComponentReferences() {
     val items_kept_on_death_risk = component("deathkeep:value")
 }
 
-object EquipmentTabInterfaces : InterfaceReferences() {
+object EquipmentTabInterfaces {
     val equipment_stats_main = inter("equipment")
     val equipment_stats_side = inter("equipment_side")
     val guide_prices_main = inter("ge_pricechecker")

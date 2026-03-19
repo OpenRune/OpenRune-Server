@@ -1,8 +1,10 @@
 package org.rsmod.api.game.process.npc.mode
 
+import dev.openrune.util.Coord
+import dev.openrune.util.NpcPatrol
 import jakarta.inject.Inject
 import org.rsmod.game.entity.Npc
-import org.rsmod.game.entity.npc.NpcPatrol
+import org.rsmod.map.CoordGrid
 import org.rsmod.routefinder.collision.CollisionFlagMap
 
 public class NpcPatrolModeProcessor @Inject constructor(private val collision: CollisionFlagMap) {
@@ -23,9 +25,9 @@ public class NpcPatrolModeProcessor @Inject constructor(private val collision: C
     private fun Npc.patrol(patrol: NpcPatrol) {
         val waypoint = patrol[patrolWaypointIndex % patrol.size]
         if (patrolIdleCycles > IDLE_TELE_DELAY) {
-            teleport(collision, waypoint.destination)
+            teleport(collision, waypoint.destination.toCoordGrid())
         }
-        if (coords == waypoint.destination) {
+        if (coords == waypoint.destination.toCoordGrid()) {
             if (waypoint.pauseDelay > patrolPauseCycles) {
                 patrolPauseCycles++
                 patrolIdleCycles = 0
@@ -33,13 +35,13 @@ public class NpcPatrolModeProcessor @Inject constructor(private val collision: C
                 patrolPauseCycles = 0
                 val nextWaypoint = patrol[++patrolWaypointIndex % patrol.size]
                 if (nextWaypoint.destination.level != level) {
-                    teleport(collision, nextWaypoint.destination)
+                    teleport(collision, nextWaypoint.destination.toCoordGrid())
                 } else {
-                    walk(nextWaypoint.destination)
+                    walk(nextWaypoint.destination.toCoordGrid())
                 }
             }
         } else {
-            walk(waypoint.destination)
+            walk(waypoint.destination.toCoordGrid())
         }
     }
 
@@ -49,5 +51,7 @@ public class NpcPatrolModeProcessor @Inject constructor(private val collision: C
          * its next patrol waypoint.
          */
         public const val IDLE_TELE_DELAY: Int = 30
+
+        public fun Coord.toCoordGrid(): CoordGrid = CoordGrid(x, z, level)
     }
 }

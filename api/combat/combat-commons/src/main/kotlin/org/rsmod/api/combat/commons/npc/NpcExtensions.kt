@@ -1,5 +1,8 @@
 package org.rsmod.api.combat.commons.npc
 
+import dev.openrune.ServerCacheManager
+import dev.openrune.types.ItemServerType
+import dev.openrune.types.NpcMode
 import kotlin.math.max
 import org.rsmod.api.config.constants
 import org.rsmod.api.config.refs.categories
@@ -14,9 +17,6 @@ import org.rsmod.api.npc.vars.intVarn
 import org.rsmod.api.npc.vars.typePlayerUidVarn
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
-import org.rsmod.game.entity.npc.NpcMode
-import org.rsmod.game.type.obj.ObjType
-import org.rsmod.game.type.obj.ObjTypeList
 
 private var Npc.lastCombat: Int by intVarn(varns.lastcombat)
 private var Npc.aggressivePlayer by typePlayerUidVarn(varns.aggressive_player)
@@ -79,8 +79,10 @@ public fun Npc.combatPlayDefendAnim(clientDelay: Int = 0) {
     }
 }
 
-public fun Npc.combatPlayDefendSpot(objTypes: ObjTypeList, ammo: ObjType?, clientDelay: Int) {
-    val type = ammo?.let(objTypes::get) ?: return
+public fun Npc.combatPlayDefendSpot(ammo: ItemServerType?, clientDelay: Int) {
+    val type =
+        ammo?.let { id -> ServerCacheManager.getItems().values.firstOrNull { it.id == id.id } }
+            ?: return
     if (!type.isCategoryType(categories.javelin)) {
         return
     }

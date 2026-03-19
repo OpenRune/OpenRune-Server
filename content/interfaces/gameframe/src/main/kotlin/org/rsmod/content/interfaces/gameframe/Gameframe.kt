@@ -1,7 +1,7 @@
 package org.rsmod.content.interfaces.gameframe
 
-import org.rsmod.game.type.comp.ComponentType
-import org.rsmod.game.type.interf.InterfaceType
+import dev.openrune.cache.filestore.definition.InterfaceType
+import dev.openrune.definition.type.widget.ComponentType
 import org.rsmod.game.ui.Component
 
 data class Gameframe(

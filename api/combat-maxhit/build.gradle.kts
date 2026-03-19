@@ -5,7 +5,3 @@ plugins {
 kotlin {
     explicitApi()
 }
-
-dependencies {
-    testImplementation(projects.api.testing.testParams)
-}

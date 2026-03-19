@@ -1,7 +1,10 @@
 package org.rsmod.api.player.worn
 
+import dev.openrune.ServerCacheManager
+import dev.openrune.types.ItemServerType
+import dev.openrune.util.Wearpos
 import jakarta.inject.Inject
-import org.rsmod.api.config.refs.params
+import org.rsmod.api.config.refs.BaseParams
 import org.rsmod.api.invtx.invTransaction
 import org.rsmod.api.invtx.select
 import org.rsmod.api.invtx.swap
@@ -13,19 +16,15 @@ import org.rsmod.api.utils.format.addArticle
 import org.rsmod.events.EventBus
 import org.rsmod.game.entity.Player
 import org.rsmod.game.inv.Inventory
-import org.rsmod.game.type.obj.ObjTypeList
-import org.rsmod.game.type.obj.UnpackedObjType
-import org.rsmod.game.type.obj.Wearpos
-import org.rsmod.game.type.stat.StatType
+import org.rsmod.game.stat.StatRequirement
+import org.rsmod.game.type.getInvObj
 import org.rsmod.objtx.TransactionResult
 import org.rsmod.objtx.isErr
 
-public class HeldEquipOp
-@Inject
-constructor(private val objTypes: ObjTypeList, private val eventBus: EventBus) {
+public class HeldEquipOp @Inject constructor(private val eventBus: EventBus) {
     public fun equip(player: Player, invSlot: Int, inventory: Inventory): HeldEquipResult {
         val obj = inventory[invSlot] ?: return HeldEquipResult.Fail.InvalidObj
-        val objType = objTypes[obj]
+        val objType = getInvObj(obj)
 
         val result = equip(player, objType)
 
@@ -35,7 +34,12 @@ constructor(private val objTypes: ObjTypeList, private val eventBus: EventBus) {
             val into = player.worn
 
             // Cache objs to publish as events after successful transaction.
-            val unequipObjs = allWearpos.associateWith { into[it.slot]?.let(objTypes::get) }
+            val unequipObjs =
+                allWearpos.associateWith { pos ->
+                    into[pos.slot]?.let { id ->
+                        ServerCacheManager.getItems().values.firstOrNull { it.id == id.id }
+                    }
+                }
             val unequipPrimary = into[primaryWearpos.slot] != null
 
             val transaction =
@@ -106,7 +110,7 @@ constructor(private val objTypes: ObjTypeList, private val eventBus: EventBus) {
         return result
     }
 
-    private fun equip(player: Player, type: UnpackedObjType): HeldEquipResult {
+    private fun equip(player: Player, type: ItemServerType): HeldEquipResult {
         val statRequirements =
             type.statRequirements().filter { player.statBase(it.stat) < it.level }
         if (statRequirements.isNotEmpty()) {
@@ -122,7 +126,7 @@ constructor(private val objTypes: ObjTypeList, private val eventBus: EventBus) {
         wearpos2?.let(unequipWearpos::add)
         wearpos3?.let(unequipWearpos::add)
         if (wearpos1 == Wearpos.LeftHand) {
-            val twoHanded = player.righthand?.takeIf { objTypes[it].isTwoHanded() }
+            val twoHanded = player.righthand?.takeIf { getInvObj(it).isTwoHanded() }
             if (twoHanded != null && Wearpos.RightHand !in unequipWearpos) {
                 unequipWearpos += Wearpos.RightHand
             }
@@ -131,22 +135,22 @@ constructor(private val objTypes: ObjTypeList, private val eventBus: EventBus) {
         return HeldEquipResult.Success(unequipWearpos, wearpos1)
     }
 
-    private fun UnpackedObjType.statRequirements(): List<StatRequirement> {
-        val skillReq1 = paramOrNull(params.statreq1_skill)
-        val skillReq2 = paramOrNull(params.statreq2_skill)
+    private fun ItemServerType.statRequirements(): List<StatRequirement> {
+        val skillReq1 = paramOrNull(BaseParams.statreq1_skill)
+        val skillReq2 = paramOrNull(BaseParams.statreq2_skill)
         if (skillReq1 == null && skillReq2 == null) {
             return emptyList()
         }
-        val levelReq1 = paramOrNull(params.statreq1_level) ?: 0
-        val levelReq2 = paramOrNull(params.statreq2_level) ?: 0
+        val levelReq1 = paramOrNull(BaseParams.statreq1_level) ?: 0
+        val levelReq2 = paramOrNull(BaseParams.statreq2_level) ?: 0
         val statReq1 = skillReq1?.let { StatRequirement(it, levelReq1) }
         val statReq2 = skillReq2?.let { StatRequirement(it, levelReq2) }
         return listOfNotNull(statReq1, statReq2)
     }
 
-    private fun UnpackedObjType.toMessages(reqs: List<StatRequirement>): Pair<String, String> {
-        val message1 = param(params.statreq_failmessage1)
-        val message2 = paramOrNull(params.statreq_failmessage2)
+    private fun ItemServerType.toMessages(reqs: List<StatRequirement>): Pair<String, String> {
+        val message1 = param(BaseParams.statreq_failmessage1)
+        val message2 = paramOrNull(BaseParams.statreq_failmessage2)
         val replace =
             when (reqs.size) {
                 1 -> {
@@ -168,9 +172,7 @@ constructor(private val objTypes: ObjTypeList, private val eventBus: EventBus) {
         return message1 to replace
     }
 
-    private data class StatRequirement(val stat: StatType, val level: Int)
-
-    private fun UnpackedObjType.isTwoHanded(): Boolean =
+    private fun ItemServerType.isTwoHanded(): Boolean =
         wearpos2 == Wearpos.LeftHand.slot || wearpos3 == Wearpos.LeftHand.slot
 
     private companion object {

@@ -1,10 +1,10 @@
 package org.rsmod.api.combat.formulas
 
+import dev.openrune.types.util.ParamMap
+import dev.openrune.types.util.ParamMapBuilder
 import org.rsmod.api.config.refs.npcs
 import org.rsmod.api.config.refs.params
 import org.rsmod.api.testing.factory.npcTypeFactory
-import org.rsmod.game.type.util.ParamMap
-import org.rsmod.game.type.util.ParamMapBuilder
 
 typealias test_npcs = FormulaTestNpcs
 

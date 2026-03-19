@@ -1,5 +1,9 @@
 package org.rsmod.api.player.interact
 
+import dev.openrune.ServerCacheManager
+import dev.openrune.types.ObjectServerType
+import dev.openrune.types.varp.baseVar
+import dev.openrune.types.varp.bits
 import jakarta.inject.Inject
 import org.rsmod.api.player.events.interact.ApEvent
 import org.rsmod.api.player.events.interact.LocContentEvents
@@ -14,27 +18,18 @@ import org.rsmod.game.interact.InteractionLocOp
 import org.rsmod.game.interact.InteractionOp
 import org.rsmod.game.loc.BoundLocInfo
 import org.rsmod.game.loc.LocEntity
-import org.rsmod.game.type.loc.LocTypeList
-import org.rsmod.game.type.loc.UnpackedLocType
-import org.rsmod.game.type.varbit.VarBitTypeList
-import org.rsmod.game.type.varp.VarpTypeList
+import org.rsmod.game.type.hasOp
 import org.rsmod.game.vars.VarPlayerIntMap
 import org.rsmod.utils.bits.getBits
 
 public class LocInteractions
 @Inject
-constructor(
-    private val locTypes: LocTypeList,
-    private val varpTypes: VarpTypeList,
-    private val varBitTypes: VarBitTypeList,
-    private val boundValidator: BoundValidator,
-    private val eventBus: EventBus,
-) {
+constructor(private val boundValidator: BoundValidator, private val eventBus: EventBus) {
     public fun interact(
         player: Player,
         loc: BoundLocInfo,
         op: InteractionOp,
-        type: UnpackedLocType = locTypes[loc],
+        type: ObjectServerType = ServerCacheManager.getObject(loc.id)!!,
     ) {
         val opTrigger = hasOpTrigger(player, loc, op, type)
         val apTrigger = hasApTrigger(player, loc, op, type)
@@ -63,12 +58,12 @@ constructor(
         player: Player,
         loc: BoundLocInfo,
         op: InteractionOp,
-        type: UnpackedLocType = locTypes[loc],
+        type: ObjectServerType = ServerCacheManager.getObject(loc.id)!!,
         base: BoundLocInfo = loc,
     ): OpEvent? {
         val multiLoc = multiLoc(loc, type, player.vars)
         if (multiLoc != null) {
-            val multiLocType = locTypes[multiLoc]
+            val multiLocType = ServerCacheManager.getObject(multiLoc.id)!!
             val multiLocTrigger = opTrigger(player, multiLoc, op, multiLocType, base)
             if (multiLocTrigger != null) {
                 return multiLocTrigger
@@ -101,19 +96,19 @@ constructor(
         player: Player,
         loc: BoundLocInfo,
         op: InteractionOp,
-        type: UnpackedLocType = locTypes[loc],
+        type: ObjectServerType = ServerCacheManager.getObject(loc.id)!!,
     ): Boolean = opTrigger(player, loc, op, type) != null
 
     public fun apTrigger(
         player: Player,
         loc: BoundLocInfo,
         op: InteractionOp,
-        type: UnpackedLocType = locTypes[loc],
+        type: ObjectServerType = ServerCacheManager.getObject(loc.id)!!,
         base: BoundLocInfo = loc,
     ): ApEvent? {
         val multiLoc = multiLoc(loc, type, player.vars)
         if (multiLoc != null) {
-            val multiLocType = locTypes[multiLoc]
+            val multiLocType = ServerCacheManager.getObject(multiLoc.id)!!
             val multiLocTrigger = apTrigger(player, multiLoc, op, multiLocType, base)
             if (multiLocTrigger != null) {
                 return multiLocTrigger
@@ -142,25 +137,25 @@ constructor(
         player: Player,
         loc: BoundLocInfo,
         op: InteractionOp,
-        type: UnpackedLocType = locTypes[loc],
+        type: ObjectServerType = ServerCacheManager.getObject(loc.id)!!,
     ): Boolean = apTrigger(player, loc, op, type) != null
 
     public fun multiLoc(
         loc: BoundLocInfo,
-        type: UnpackedLocType,
+        type: ObjectServerType,
         vars: VarPlayerIntMap,
     ): BoundLocInfo? {
-        if (type.multiLoc.isEmpty() && type.multiLocDefault <= 0) {
+        if (type.multiLoc.isEmpty() && type.multiDefault <= 0) {
             return null
         }
         val varValue = type.multiVarValue(vars) ?: 0
         val multiLoc =
             if (varValue in type.multiLoc.indices) {
-                type.multiLoc[varValue].toInt() and 0xFFFF
+                type.multiLoc[varValue] and 0xFFFF
             } else {
-                type.multiLocDefault
+                type.multiDefault
             }
-        return if (!locTypes.containsKey(multiLoc)) {
+        return if (!ServerCacheManager.getObjects().containsKey(multiLoc)) {
             null
         } else {
             loc.copy(entity = LocEntity(multiLoc, loc.shapeId, loc.angleId))
@@ -170,7 +165,7 @@ constructor(
     private fun toOp(
         base: BoundLocInfo,
         vis: BoundLocInfo,
-        type: UnpackedLocType,
+        type: ObjectServerType,
         op: InteractionOp,
     ): LocEvents.Op =
         when (op) {
@@ -184,7 +179,7 @@ constructor(
     private fun toContentOp(
         base: BoundLocInfo,
         vis: BoundLocInfo,
-        type: UnpackedLocType,
+        type: ObjectServerType,
         contentGroup: Int,
         op: InteractionOp,
     ): LocContentEvents.Op =
@@ -199,7 +194,7 @@ constructor(
     private fun toUnimplementedOp(
         base: BoundLocInfo,
         vis: BoundLocInfo,
-        type: UnpackedLocType,
+        type: ObjectServerType,
         op: InteractionOp,
     ): LocUnimplementedEvents.Op =
         when (op) {
@@ -213,7 +208,7 @@ constructor(
     private fun toDefaultOp(
         base: BoundLocInfo,
         vis: BoundLocInfo,
-        type: UnpackedLocType,
+        type: ObjectServerType,
         op: InteractionOp,
     ): LocDefaultEvents.Op =
         when (op) {
@@ -227,7 +222,7 @@ constructor(
     private fun toAp(
         base: BoundLocInfo,
         vis: BoundLocInfo,
-        type: UnpackedLocType,
+        type: ObjectServerType,
         op: InteractionOp,
     ): LocEvents.Ap =
         when (op) {
@@ -241,7 +236,7 @@ constructor(
     private fun toContentAp(
         base: BoundLocInfo,
         vis: BoundLocInfo,
-        type: UnpackedLocType,
+        type: ObjectServerType,
         contentGroup: Int,
         op: InteractionOp,
     ): LocContentEvents.Ap =
@@ -256,7 +251,7 @@ constructor(
     private fun toDefaultAp(
         base: BoundLocInfo,
         vis: BoundLocInfo,
-        type: UnpackedLocType,
+        type: ObjectServerType,
         op: InteractionOp,
     ): LocDefaultEvents.Ap =
         when (op) {
@@ -267,12 +262,12 @@ constructor(
             InteractionOp.Op5 -> LocDefaultEvents.Ap5(base, vis, type)
         }
 
-    private fun UnpackedLocType.multiVarValue(vars: VarPlayerIntMap): Int? {
+    private fun ObjectServerType.multiVarValue(vars: VarPlayerIntMap): Int? {
         if (multiVarp > 0) {
-            val varp = varpTypes[multiVarp] ?: return null
+            val varp = ServerCacheManager.getVarp(multiVarp) ?: return null
             return vars[varp]
         } else if (multiVarBit > 0) {
-            val varBit = varBitTypes[multiVarBit] ?: return null
+            val varBit = ServerCacheManager.getVarbit(multiVarBit) ?: return null
             val packed = vars[varBit.baseVar]
             return packed.getBits(varBit.bits)
         }
@@ -281,13 +276,13 @@ constructor(
 
     public fun hasOp(
         loc: BoundLocInfo,
-        type: UnpackedLocType,
+        type: ObjectServerType,
         vars: VarPlayerIntMap,
         op: InteractionOp,
     ): Boolean {
         val multiLoc = multiLoc(loc, type, vars)
         if (multiLoc != null) {
-            val multiLocType = locTypes[multiLoc]
+            val multiLocType = ServerCacheManager.getObject(multiLoc.id)!!
             return multiLocType.hasOp(op)
         }
         return type.hasOp(op)

@@ -1,10 +1,10 @@
 package org.rsmod.content.travel.canoe.configs
 
-import org.rsmod.api.type.refs.seq.SeqReferences
+import dev.openrune.seq
 
 typealias canoe_seqs = CanoeSeqs
 
-object CanoeSeqs : SeqReferences() {
+object CanoeSeqs {
     val canoeing_station_animations = seq("canoeing_station_animations")
     val canoeing_pushing_into_water = seq("canoeing_pushing_into_water")
     val canoeing_rowing = seq("canoeing_rowing")

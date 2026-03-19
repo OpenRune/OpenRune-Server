@@ -1,9 +1,9 @@
 package org.rsmod.content.interfaces.logout.tab
 
-import org.rsmod.api.type.refs.comp.ComponentReferences
+import dev.openrune.component
 
 typealias logout_components = LogoutTabComponent
 
-object LogoutTabComponent : ComponentReferences() {
+object LogoutTabComponent {
     val logout = component("logout:logout")
 }

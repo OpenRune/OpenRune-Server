@@ -1,13 +1,12 @@
 package org.rsmod.api.hunt
 
+import dev.openrune.types.NpcServerType
+import dev.openrune.types.aconverted.CategoryType
+import dev.openrune.types.hunt.HuntVis
 import jakarta.inject.Inject
 import kotlin.math.abs
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.interact.InteractionOp
-import org.rsmod.game.type.category.CategoryType
-import org.rsmod.game.type.hunt.HuntVis
-import org.rsmod.game.type.npc.NpcType
-import org.rsmod.game.type.npc.UnpackedNpcType
 import org.rsmod.map.CoordGrid
 import org.rsmod.map.zone.ZoneKey
 
@@ -23,7 +22,7 @@ public class NpcSearch @Inject constructor(private val hunt: Hunt) {
 
         val npcs = hunt.findNpcs(center, distance, vis)
         for (npc in npcs) {
-            if (!npc.type.hasOp(InteractionOp.Op2)) {
+            if (!npc.type.hasOp(InteractionOp.Op2.slot)) {
                 continue
             }
             val distance = center.euclideanSquaredDistance(npc.coords)
@@ -42,7 +41,7 @@ public class NpcSearch @Inject constructor(private val hunt: Hunt) {
      */
     public fun huntAll(
         center: CoordGrid,
-        type: NpcType,
+        type: NpcServerType,
         distance: Int,
         vis: HuntVis,
     ): Sequence<Npc> {
@@ -52,7 +51,7 @@ public class NpcSearch @Inject constructor(private val hunt: Hunt) {
                 if (npc.id != type.id) {
                     continue
                 }
-                if (!npc.type.hasOp(InteractionOp.Op2)) {
+                if (!npc.type.hasOp(InteractionOp.Op2.slot)) {
                     continue
                 }
                 yield(npc)
@@ -67,7 +66,7 @@ public class NpcSearch @Inject constructor(private val hunt: Hunt) {
      *
      * _Unlike [hunt], this function can return npcs that do not have an `Op2`._
      */
-    public fun find(center: CoordGrid, type: NpcType, distance: Int, vis: HuntVis): Npc? {
+    public fun find(center: CoordGrid, type: NpcServerType, distance: Int, vis: HuntVis): Npc? {
         var minDistanceNpc: Npc? = null
         var minDistance = Int.MAX_VALUE
 
@@ -88,8 +87,8 @@ public class NpcSearch @Inject constructor(private val hunt: Hunt) {
 
     /**
      * Searches for npcs around the [center] coordinate and returns the closest one that is within
-     * [distance] tiles and their [UnpackedNpcType.category] matches [category]. If multiple npcs
-     * are equidistant, the last one found is returned.
+     * [distance] tiles and their [NpcServerType.category] matches [category]. If multiple npcs are
+     * equidistant, the last one found is returned.
      */
     public fun findCat(center: CoordGrid, type: CategoryType, distance: Int, vis: HuntVis): Npc? {
         var minDistanceNpc: Npc? = null
@@ -118,7 +117,7 @@ public class NpcSearch @Inject constructor(private val hunt: Hunt) {
      */
     public fun findAll(
         center: CoordGrid,
-        type: NpcType,
+        type: NpcServerType,
         distance: Int,
         vis: HuntVis,
     ): Sequence<Npc> {

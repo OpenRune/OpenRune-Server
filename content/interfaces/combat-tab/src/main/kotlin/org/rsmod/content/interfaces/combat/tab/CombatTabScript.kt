@@ -1,5 +1,10 @@
 package org.rsmod.content.interfaces.combat.tab
 
+import dev.openrune.ServerCacheManager
+import dev.openrune.types.ItemServerType
+import dev.openrune.types.enums.EnumTypeNonNullMap
+import dev.openrune.util.WeaponCategory
+import dev.openrune.util.Wearpos
 import jakarta.inject.Inject
 import org.rsmod.api.combat.commons.CombatStance
 import org.rsmod.api.combat.commons.styles.MeleeAttackStyle
@@ -37,13 +42,7 @@ import org.rsmod.content.interfaces.combat.tab.configs.combat_enums
 import org.rsmod.content.interfaces.combat.tab.configs.combat_queues
 import org.rsmod.events.EventBus
 import org.rsmod.game.entity.Player
-import org.rsmod.game.enums.EnumTypeMapResolver
-import org.rsmod.game.enums.EnumTypeNonNullMap
-import org.rsmod.game.type.obj.ObjTypeList
-import org.rsmod.game.type.obj.UnpackedObjType
-import org.rsmod.game.type.obj.WeaponCategory
-import org.rsmod.game.type.obj.Wearpos
-import org.rsmod.game.type.varbit.VarBitType
+import org.rsmod.game.type.getOrNull
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
@@ -56,8 +55,6 @@ class CombatTabScript
 @Inject
 constructor(
     private val eventBus: EventBus,
-    private val objTypes: ObjTypeList,
-    private val enumResolver: EnumTypeMapResolver,
     private val weaponStyles: AttackStyles,
     private val spells: MagicSpellRegistry,
     private val runes: MagicRuneManager,
@@ -75,10 +72,10 @@ constructor(
     private var Player.autocastSpell by intVarBit(varbits.autocast_spell)
     private var Player.defensiveCasting by boolVarBit(varbits.autocast_defmode)
 
-    private lateinit var stanceSaveVarBits: EnumTypeNonNullMap<Int, VarBitType>
+    private lateinit var stanceSaveVarBits: EnumTypeNonNullMap<Int, Int>
 
     override fun ScriptContext.startup() {
-        stanceSaveVarBits = enumResolver[combat_enums.weapons_last_stance].filterValuesNotNull()
+        stanceSaveVarBits = combat_enums.weapons_last_stance.filterValuesNotNull()
 
         onIfOpen(interfaces.combat_interface) { player.updateCombatTab() }
         onWearposChange { player.onWearposChange(wearpos) }
@@ -97,7 +94,7 @@ constructor(
     }
 
     private fun Player.updateCombatTab() {
-        PlayerInterfaceUpdates.updateCombatTab(this, objTypes)
+        PlayerInterfaceUpdates.updateCombatTab(this)
     }
 
     private fun Player.onWearposChange(wearpos: Wearpos) {
@@ -110,10 +107,11 @@ constructor(
     }
 
     private fun Player.loadSavedWeaponStance() {
-        val weaponType = objTypes.getOrNull(righthand)
-        val weaponCategory = WeaponCategory.getOrUnarmed(weaponType?.weaponCategory)
+        val weaponType = getOrNull(righthand)
+        val weaponCategory = WeaponCategory.getOrUnarmed(weaponType?.weaponCategory?.id)
 
-        val varbit = stanceSaveVarBits.getOrNull(weaponCategory.id)
+        val varbitID = stanceSaveVarBits.getOrNull(weaponCategory.id) ?: return
+        val varbit = ServerCacheManager.getVarbit(varbitID)
         if (varbit != null) {
             val savedStanceVar = vars[varbit]
 
@@ -126,8 +124,8 @@ constructor(
     }
 
     private fun Player.loadSavedMagicAutocast() {
-        val weaponType = objTypes.getOrNull(righthand)
-        val weaponCategory = WeaponCategory.getOrUnarmed(weaponType?.weaponCategory)
+        val weaponType = getOrNull(righthand)
+        val weaponCategory = WeaponCategory.getOrUnarmed(weaponType?.weaponCategory?.id)
         val autocastVarBits = autocast.getVarBits(weaponCategory)
 
         if (weaponType == null || autocastVarBits == null) {
@@ -175,7 +173,7 @@ constructor(
     }
 
     private fun Player.validateStanceStyle() {
-        val weaponType = objTypes.getOrNull(righthand)
+        val weaponType = getOrNull(righthand)
         val startStance = combatStance
 
         val weaponStyle = weaponStyles.resolve(weaponType, startStance.varValue)
@@ -213,14 +211,14 @@ constructor(
     }
 
     private fun Player.setStance(stance: CombatStance) {
-        val weapon = objTypes.getOrNull(righthand)
+        val weapon = getOrNull(righthand)
         applyDinhsBulwarkDelay(weapon, stance)
         setWeaponStance(stance)
         validateChangedStanceStyle(weapon)
         saveCurrentStanceStyle()
     }
 
-    private fun Player.applyDinhsBulwarkDelay(weapon: UnpackedObjType?, stance: CombatStance) {
+    private fun Player.applyDinhsBulwarkDelay(weapon: ItemServerType?, stance: CombatStance) {
         if (weapon == null || !weapon.isCategoryType(categories.dinhs_bulwark)) {
             return
         }
@@ -236,10 +234,10 @@ constructor(
 
     private fun Player.setWeaponStance(stance: CombatStance) {
         combatStance = stance
-        PlayerInterfaceUpdates.updateWeaponCategoryText(this, objTypes)
+        PlayerInterfaceUpdates.updateWeaponCategoryText(this)
     }
 
-    private fun Player.validateChangedStanceStyle(weapon: UnpackedObjType?) {
+    private fun Player.validateChangedStanceStyle(weapon: ItemServerType?) {
         val startStance = combatStance
 
         val attackStyle = weaponStyles.resolve(weapon, startStance.varValue)
@@ -255,9 +253,10 @@ constructor(
     }
 
     private fun Player.saveCurrentStanceStyle() {
-        val weaponType = objTypes.getOrNull(righthand)
-        val weaponCategory = WeaponCategory.getOrUnarmed(weaponType?.weaponCategory)
-        val varbit = stanceSaveVarBits.getOrNull(weaponCategory.id) ?: return
+        val weaponType = getOrNull(righthand)
+        val weaponCategory = WeaponCategory.getOrUnarmed(weaponType?.weaponCategory?.id)
+        val varbitID = stanceSaveVarBits.getOrNull(weaponCategory.id) ?: return
+        val varbit = ServerCacheManager.getVarbit(varbitID) ?: return
         VarPlayerIntMapSetter.set(this, varbit, combatStance.varValue)
     }
 

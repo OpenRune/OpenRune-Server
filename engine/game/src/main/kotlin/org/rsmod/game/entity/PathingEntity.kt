@@ -1,5 +1,8 @@
 package org.rsmod.game.entity
 
+import dev.openrune.types.SequenceServerType
+import dev.openrune.types.WalkTriggerType
+import dev.openrune.types.aconverted.SpotanimType
 import it.unimi.dsi.fastutil.longs.LongArrayList
 import kotlin.coroutines.startCoroutine
 import org.rsmod.annotations.InternalApi
@@ -15,15 +18,15 @@ import org.rsmod.game.loc.BoundLocInfo
 import org.rsmod.game.loc.LocInfo
 import org.rsmod.game.map.CardinalDirection
 import org.rsmod.game.map.Direction
+import org.rsmod.game.map.Direction.Companion.angleBetween
+import org.rsmod.game.map.Direction.Companion.between
+import org.rsmod.game.map.Direction.Companion.cardinalBetween
+import org.rsmod.game.map.Direction.Companion.ordinalBetween
 import org.rsmod.game.map.OrdinalDirection
 import org.rsmod.game.movement.MoveSpeed
 import org.rsmod.game.movement.RouteDestination
 import org.rsmod.game.movement.RouteRequest
 import org.rsmod.game.seq.EntitySeq
-import org.rsmod.game.type.seq.SeqType
-import org.rsmod.game.type.spot.SpotanimType
-import org.rsmod.game.type.walktrig.WalkTriggerPriority
-import org.rsmod.game.type.walktrig.WalkTriggerType
 import org.rsmod.map.CoordGrid
 import org.rsmod.map.util.Bounds
 import org.rsmod.map.zone.ZoneKey
@@ -247,7 +250,7 @@ public sealed class PathingEntity {
         interaction = null
     }
 
-    public abstract fun anim(seq: SeqType, delay: Int = 0, priority: Int = seq.priority)
+    public abstract fun anim(seq: SequenceServerType, delay: Int = 0, priority: Int = seq.priority)
 
     public abstract fun resetAnim()
 
@@ -284,7 +287,7 @@ public sealed class PathingEntity {
     /**
      * This function will call [faceSquare] with arguments based on the provided [loc] and its
      * dimensions ([width] and [length]). The dimensions should be the unmodified values from the
-     * [org.rsmod.game.type.loc.UnpackedLocType] of the loc. This method automatically adjusts the
+     * [dev.openrune.types.ObjectServerType] of the loc. This method automatically adjusts the
      * dimensions according to the loc's angle to ensure that the PathingEntity faces the correct
      * angle.
      *
@@ -383,15 +386,15 @@ public sealed class PathingEntity {
     }
 
     public fun calculateDirection(target: PathingEntity): Direction {
-        return Direction.between(bounds(), target.bounds())
+        return between(bounds(), target.bounds())
     }
 
     public fun calculateCardinalDirection(target: PathingEntity): CardinalDirection {
-        return Direction.cardinalBetween(bounds(), target.bounds())
+        return cardinalBetween(bounds(), target.bounds())
     }
 
     public fun calculateOrdinalDirection(target: PathingEntity): OrdinalDirection {
-        return Direction.ordinalBetween(bounds(), target.bounds())
+        return ordinalBetween(bounds(), target.bounds())
     }
 
     public fun calculateAngle(target: CoordGrid, width: Int, length: Int): Int? =
@@ -400,7 +403,7 @@ public sealed class PathingEntity {
             coords -> null
             else -> {
                 val targetBounds = Bounds(target, width, length)
-                Direction.angleBetween(bounds(), targetBounds)
+                angleBetween(bounds(), targetBounds)
             }
         }
 

@@ -1,0 +1,705 @@
+[[params]]
+id = "param.graceful_restore_rate"
+type = "INT"
+isMembers = true
+
+[[params]]
+id = "param.charged_variant"
+type = "NAMEDOBJ"
+isMembers = true
+
+[[params]]
+id = "param.uncharged_variant"
+type = "NAMEDOBJ"
+isMembers = true
+
+[[params]]
+id = "param.spell_telecoord"
+type = "COORDGRID"
+isMembers = true
+
+[[params]]
+id = "param.spell_castxp"
+type = "INT"
+isMembers = true
+
+[[params]]
+id = "param.amascutnpc"
+type = "INT"
+defaultInt = 0
+isMembers = true
+
+[[params]]
+id = "param.xerician"
+type = "INT"
+defaultInt = 0
+isMembers = true
+
+[[params]]
+id = "param.poison_immunity"
+type = "INT"
+defaultInt = 0
+isMembers = true
+
+[[params]]
+id = "param.cannon_immunity"
+type = "INT"
+defaultInt = 0
+isMembers = true
+
+[[params]]
+id = "param.thrall_immunity"
+type = "INT"
+defaultInt = 0
+isMembers = true
+
+[[params]]
+id = "param.venom_immunity"
+type = "INT"
+defaultInt = 0
+isMembers = true
+
+[[params]]
+id = "param.burn_immunity"
+type = "INT"
+defaultInt = 0
+isMembers = true
+
+[[params]]
+id = "param.freeze_resistance"
+type = "INT"
+defaultInt = 0
+isMembers = true
+
+[[params]]
+id = "param.slayer_experience"
+type = "INT"
+defaultInt = 0
+isMembers = true
+
+[[params]]
+id = "param.slayer_levelrequire"
+type = "INT"
+defaultInt = 0
+isMembers = true
+
+[[params]]
+id = "param.magic_defence_uses_defence_level"
+type = "BOOLEAN"
+defaultInt = 0
+isMembers = true
+
+[[params]]
+id = "param.spell_worn_req_message"
+type = "STRING"
+isMembers = true
+
+[[params]]
+id = "param.elemental_weakness_type"
+type = "INT"
+isMembers = true
+
+[[params]]
+id = "param.elemental_weakness_percent"
+type = "INT"
+defaultInt = 0
+isMembers = true
+
+[[params]]
+id = "param.npc_com_xp_multiplier"
+type = "INT"
+isMembers = true
+
+[[params]]
+id = "param.npc_attack_type"
+type = "CATEGORY"
+isMembers = true
+
+[[params]]
+id = "param.proj_type"
+type = "PROJANIM"
+isMembers = true
+
+[[params]]
+id = "param.proj_travel"
+type = "SPOTANIM"
+isMembers = true
+
+[[params]]
+id = "param.proj_launch"
+type = "SPOTANIM"
+isMembers = true
+
+[[params]]
+id = "param.proj_launch_double"
+type = "SPOTANIM"
+isMembers = true
+
+[[params]]
+id = "param.defence_light"
+type = "INT"
+defaultInt = 0
+isMembers = true
+
+[[params]]
+id = "param.defence_standard"
+type = "INT"
+defaultInt = 0
+isMembers = true
+
+[[params]]
+id = "param.defence_heavy"
+type = "INT"
+defaultInt = 0
+isMembers = true
+
+[[params]]
+id = "param.metallic_interference"
+type = "BOOLEAN"
+defaultInt = 0
+isMembers = true
+
+[[params]]
+id = "param.ammo_recovery_rate"
+type = "INT"
+isMembers = true
+
+[[params]]
+id = "param.required_ammo"
+type = "CATEGORY"
+isMembers = true
+
+[[params]]
+id = "param.bone_weapon"
+type = "INT"
+defaultInt = 0
+isMembers = true
+
+[[params]]
+id = "param.item_block_sound1"
+type = "SYNTH"
+isMembers = true
+
+[[params]]
+id = "param.item_block_sound2"
+type = "SYNTH"
+isMembers = true
+
+[[params]]
+id = "param.item_block_sound3"
+type = "SYNTH"
+isMembers = true
+
+[[params]]
+id = "param.item_block_sound4"
+type = "SYNTH"
+isMembers = true
+
+[[params]]
+id = "param.item_block_sound5"
+type = "SYNTH"
+isMembers = true
+
+[[params]]
+id = "param.retreat"
+type = "INT"
+defaultInt = -1
+isMembers = true
+
+[[params]]
+id = "param.td_shield_active"
+type = "BOOLEAN"
+defaultInt = 1
+isMembers = true
+
+[[params]]
+id = "param.tormented_demon"
+type = "INT"
+defaultInt = 0
+isMembers = true
+
+[[params]]
+id = "param.demonbane_resistant"
+type = "INT"
+defaultInt = 0
+isMembers = true
+
+[[params]]
+id = "param.slayer_helm"
+type = "INT"
+defaultInt = 0
+isMembers = true
+
+[[params]]
+id = "param.slayer_helm_imbued"
+type = "INT"
+defaultInt = 0
+isMembers = true
+
+[[params]]
+id = "param.blackmask"
+type = "INT"
+defaultInt = 0
+isMembers = true
+
+[[params]]
+id = "param.blackmask_imbued"
+type = "INT"
+defaultInt = 0
+isMembers = true
+
+[[params]]
+id = "param.shade"
+type = "INT"
+defaultInt = 0
+isMembers = true
+
+[[params]]
+id = "param.leafy"
+type = "INT"
+defaultInt = 0
+isMembers = true
+
+[[params]]
+id = "param.rat"
+type = "INT"
+defaultInt = 0
+isMembers = true
+
+[[params]]
+id = "param.demon"
+type = "INT"
+defaultInt = 0
+isMembers = true
+
+[[params]]
+id = "param.revenant"
+type = "INT"
+defaultInt = 0
+isMembers = true
+
+[[params]]
+id = "param.undead"
+type = "INT"
+defaultInt = 0
+isMembers = true
+
+[[params]]
+id = "param.hitmark_lit"
+type = "HITMARK"
+defaultInt = "hitmark.regular_damage_lit"
+isMembers = true
+
+[[params]]
+id = "param.hitmark_tint"
+type = "HITMARK"
+defaultInt = "hitmark.regular_damage_tint"
+isMembers = true
+
+[[params]]
+id = "param.hitmark_max"
+type = "HITMARK"
+defaultInt = "hitmark.regular_damage_max"
+isMembers = true
+
+[[params]]
+id = "param.headbar"
+type = "HEADBAR"
+defaultInt = "headbar.health_30"
+isMembers = true
+
+[[params]]
+id = "param.rewarditem"
+type = "NAMEDOBJ"
+isMembers = true
+
+[[params]]
+id = "param.next_npc_stage"
+type = "NPC"
+isMembers = true
+
+[[params]]
+id = "param.bankside_extraop_conditional_flip"
+type = "BOOLEAN"
+defaultInt = 0
+isMembers = true
+
+[[params]]
+id = "param.bankside_extraop_conditional_varbit"
+type = "VARBIT"
+isMembers = true
+
+[[params]]
+id = "param.bankside_extraop_conditional_bit"
+type = "INT"
+isMembers = true
+
+[[params]]
+id = "param.bond_item"
+type = "BOOLEAN"
+defaultInt = 0
+isMembers = true
+
+[[params]]
+id = "param.bonus_undead_buff"
+type = "INT"
+defaultInt = 0
+isMembers = true
+
+[[params]]
+id = "param.bonus_undead_meleeonly"
+type = "BOOLEAN"
+defaultInt = 1
+isMembers = true
+
+[[params]]
+id = "param.bonus_slayer_buff"
+type = "INT"
+defaultInt = 0
+isMembers = true
+
+[[params]]
+id = "param.bonus_slayer_meleeonly"
+type = "BOOLEAN"
+defaultInt = 1
+isMembers = true
+
+[[params]]
+id = "param.game_message"
+type = "STRING"
+isMembers = true
+
+[[params]]
+id = "param.game_message2"
+type = "STRING"
+isMembers = true
+
+[[params]]
+id = "param.next_loc_stage"
+type = "LOC"
+isMembers = true
+
+[[params]]
+id = "param.opensound"
+type = "SYNTH"
+defaultInt = "synth.door_open"
+isMembers = true
+
+[[params]]
+id = "param.closesound"
+type = "SYNTH"
+defaultInt = "synth.door_close"
+isMembers = true
+
+[[params]]
+id = "param.climb_anim"
+type = "SEQ"
+defaultInt = "seq.human_reachforladder"
+isMembers = true
+
+[[params]]
+id = "param.shop_sale_restricted"
+type = "BOOLEAN"
+defaultInt = 0
+isMembers = true
+
+[[params]]
+id = "param.skill_anim"
+type = "SEQ"
+isMembers = true
+
+[[params]]
+id = "param.skill_xp"
+type = "INT"
+isMembers = true
+
+[[params]]
+id = "param.skill_productitem"
+type = "NAMEDOBJ"
+isMembers = true
+
+[[params]]
+id = "param.skill_sound"
+type = "SYNTH"
+isMembers = true
+
+[[params]]
+id = "param.deplete_chance"
+type = "INT"
+isMembers = true
+
+[[params]]
+id = "param.despawn_time"
+type = "INT"
+isMembers = true
+
+[[params]]
+id = "param.respawn_time"
+type = "INT"
+isMembers = true
+
+[[params]]
+id = "param.respawn_time_low"
+type = "INT"
+isMembers = true
+
+[[params]]
+id = "param.respawn_time_high"
+type = "INT"
+isMembers = true
+
+[[params]]
+id = "param.xpmod_stat"
+type = "STAT"
+isMembers = true
+
+[[params]]
+id = "param.xpmod_percent"
+type = "INT"
+isMembers = true
+
+[[params]]
+id = "param.destroy_note_title"
+type = "STRING"
+defaultString =  "Are you sure you want to destroy this item?"
+isMembers = true
+
+[[params]]
+id = "param.destroy_note_desc"
+type = "STRING"
+defaultString =  "This action cannot be undone."
+isMembers = true
+
+[[params]]
+id = "param.release_note_title"
+type = "STRING"
+isMembers = true
+
+[[params]]
+id = "param.release_note_message"
+type = "STRING"
+isMembers = true
+
+[[params]]
+id = "param.statreq_failmessage1"
+type = "STRING"
+defaultString =  "You are not a high enough level to use this item."
+isMembers = true
+
+[[params]]
+id = "param.statreq_failmessage2"
+type = "STRING"
+isMembers = true
+
+[[params]]
+id = "param.player_op5_text"
+type = "STRING"
+isMembers = true
+
+[[params]]
+id = "param.equipment_sound"
+type = "SYNTH"
+defaultInt = "synth.default_equipment"
+isMembers = true
+
+[[params]]
+id = "param.attack_range"
+type = "INT"
+defaultInt = 1
+isMembers = true
+
+[[params]]
+id = "param.attack_anim_stance1"
+type = "SEQ"
+isMembers = true
+
+[[params]]
+id = "param.attack_anim_stance2"
+type = "SEQ"
+isMembers = true
+
+[[params]]
+id = "param.attack_anim_stance3"
+type = "SEQ"
+isMembers = true
+
+[[params]]
+id = "param.attack_anim_stance4"
+type = "SEQ"
+isMembers = true
+
+[[params]]
+id = "param.attack_sound_stance1"
+type = "SYNTH"
+isMembers = true
+
+[[params]]
+id = "param.attack_sound_stance2"
+type = "SYNTH"
+isMembers = true
+
+[[params]]
+id = "param.attack_sound_stance3"
+type = "SYNTH"
+isMembers = true
+
+[[params]]
+id = "param.attack_sound_stance4"
+type = "SYNTH"
+isMembers = true
+
+[[params]]
+id = "param.bas_readyanim"
+type = "SEQ"
+defaultInt = "seq.human_ready"
+isMembers = true
+
+[[params]]
+id = "param.bas_turnonspot"
+type = "SEQ"
+defaultInt = "seq.human_turnonspot"
+isMembers = true
+
+[[params]]
+id = "param.bas_walk_f"
+type = "SEQ"
+defaultInt = "seq.human_walk_f"
+isMembers = true
+
+[[params]]
+id = "param.bas_walk_b"
+type = "SEQ"
+defaultInt = "seq.human_walk_b"
+isMembers = true
+
+[[params]]
+id = "param.bas_walk_l"
+type = "SEQ"
+defaultInt = "seq.human_walk_l"
+isMembers = true
+
+[[params]]
+id = "param.bas_walk_r"
+type = "SEQ"
+defaultInt = "seq.human_walk_r"
+isMembers = true
+
+[[params]]
+id = "param.bas_running"
+type = "SEQ"
+defaultInt = "seq.human_running"
+isMembers = true
+
+[[params]]
+id = "param.attack_anim"
+type = "SEQ"
+defaultInt = "seq.human_unarmedpunch"
+isMembers = true
+
+[[params]]
+id = "param.defend_anim"
+type = "SEQ"
+defaultInt = "seq.human_unarmedblock"
+isMembers = true
+
+[[params]]
+id = "param.death_anim"
+type = "SEQ"
+defaultInt = "seq.human_death"
+isMembers = true
+
+[[params]]
+id = "param.attack_sound"
+type = "SYNTH"
+isMembers = true
+
+[[params]]
+id = "param.defend_sound"
+type = "SYNTH"
+isMembers = true
+
+[[params]]
+id = "param.death_sound"
+type = "SYNTH"
+isMembers = true
+
+[[params]]
+id = "param.attack_melee"
+type = "INT"
+defaultInt = 0
+isMembers = true
+
+[[params]]
+id = "param.attackrate"
+type = "INT"
+defaultInt = 4
+isMembers = true
+
+[[params]]
+id = "param.shop_sell_percentage"
+type = "INT"
+defaultInt = 1300
+isMembers = true
+
+[[params]]
+id = "param.shop_buy_percentage"
+type = "INT"
+defaultInt = 400
+isMembers = true
+
+[[params]]
+id = "param.shop_change_percentage"
+type = "INT"
+defaultInt = 30
+isMembers = true
+
+[[params]]
+id = "param.additional_spell_autocast1"
+type = "NAMEDOBJ"
+isMembers = true
+
+[[params]]
+id = "param.additional_spell_autocast2"
+type = "NAMEDOBJ"
+isMembers = true
+
+[[params]]
+id = "param.additional_spell_autocast3"
+type = "NAMEDOBJ"
+isMembers = true
+
+[[params]]
+id = "param.prayer_overhead"
+type = "INT"
+isMembers = true
+
+[[params]]
+id = "param.prayer_varbit"
+type = "VARBIT"
+isMembers = true
+
+[[params]]
+id = "param.prayer_unlock_varbit"
+type = "VARBIT"
+isMembers = true
+
+[[params]]
+id = "param.prayer_unlock_state"
+type = "INT"
+defaultInt = 1
+isMembers = true
+
+[[params]]
+id = "param.prayer_locked_message"
+type = "STRING"
+isMembers = true
+
+[[params]]
+id = "param.prayer_drain_effect"
+type = "INT"
+isMembers = true
+
+[[params]]
+id = "param.woodcutting_axe_success_rates"
+type = "ENUM"
+isMembers = true

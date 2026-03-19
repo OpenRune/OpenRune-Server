@@ -9,7 +9,6 @@ import dev.openrune.rscm.RSCMType
 import java.io.DataInputStream
 import java.io.File
 import java.io.FileInputStream
-import java.nio.file.Path
 import java.nio.file.Paths
 import kotlin.io.use
 
@@ -26,22 +25,11 @@ class GameValProvider : MappingProvider {
         fun load(rootDir: String = "", autoAssignIds: Boolean = false) {
             val provider = GameValProvider()
             provider.autoAssignIds = autoAssignIds
-            val cwd = Paths.get(System.getProperty("user.dir")).normalize()
-            val base = if (rootDir.isBlank()) cwd else cwd.resolve(rootDir).normalize()
-
-            fun fileOf(vararg parts: String): File = base.resolve(Paths.get(parts[0], *parts.drop(1).toTypedArray())).toFile()
-            fun legacyFileOf(vararg parts: String): File = cwd.resolve(Paths.get("..", *parts)).normalize().toFile()
-
-            val gamevalsDat = fileOf("data", "cfg", "gamevals-binary", "gamevals.dat")
-            val gamevalsCols = fileOf("data", "cfg", "gamevals-binary", "gamevals_columns.dat")
-            val contentDir = fileOf("content", "src", "main", "resources", "org", "alter")
-            val gamevalsDir = fileOf("data", "cfg", "gamevals")
-
             provider.use(
-                gamevalsDat.takeIf { it.exists() } ?: legacyFileOf("data", "cfg", "gamevals-binary", "gamevals.dat"),
-                gamevalsCols.takeIf { it.exists() } ?: legacyFileOf("data", "cfg", "gamevals-binary", "gamevals_columns.dat"),
-                contentDir.takeIf { it.exists() } ?: legacyFileOf("content", "src", "main", "resources", "org", "alter"),
-                gamevalsDir.takeIf { it.exists() } ?: legacyFileOf("data", "cfg", "gamevals"),
+                Paths.get("${rootDir}.data", "gamevals-binary", "gamevals.dat").toFile(),
+                Paths.get("${rootDir}.data", "gamevals-binary", "gamevals_columns.dat").toFile(),
+                Paths.get("${rootDir}content").toFile(),
+                Paths.get("${rootDir}.data", "gamevals").toFile()
             )
         }
     }
@@ -67,6 +55,7 @@ class GameValProvider : MappingProvider {
 
         // Load RSCM directories
         files.drop(3).forEach { dir ->
+            require(dir.isDirectory) { "Expected a directory for RSCM mappings, got file: ${dir.absolutePath}" }
             dir.walk().filter { it.isFile }.forEach { processRSCMFile(it) }
         }
     }
@@ -123,7 +112,7 @@ class GameValProvider : MappingProvider {
         val maxID = maxBaseID[table] ?: -1
         require(value > maxID) {
             "Custom value '$value' for key '$key' in table '$table must exceed the current max base ID $maxID. " +
-                    "Cannot override existing osrs IDs."
+                "Cannot override existing osrs IDs."
         }
 
         if (tableMappings.containsKey(key)) {

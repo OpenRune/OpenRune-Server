@@ -1,10 +1,10 @@
 package org.rsmod.content.travel.canoe.configs
 
-import org.rsmod.api.type.refs.varbit.VarBitReferences
+import dev.openrune.varBit
 
 typealias canoe_varbits = CanoeVarBits
 
-object CanoeVarBits : VarBitReferences() {
+object CanoeVarBits {
     val current_station = varBit("canoe_startfrom")
     val lumbridge_state = varBit("canoestation_state_lumbridge")
     val champs_guild_state = varBit("canoestation_state_championsguild")

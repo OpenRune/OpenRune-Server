@@ -1,5 +1,6 @@
 package org.rsmod.api.inv
 
+import dev.openrune.types.ItemServerType
 import jakarta.inject.Inject
 import org.rsmod.api.config.refs.components
 import org.rsmod.api.player.interact.HeldUInteractions
@@ -10,7 +11,6 @@ import org.rsmod.api.player.ui.IfOverlayButtonT
 import org.rsmod.api.script.onIfOverlayButtonT
 import org.rsmod.events.EventBus
 import org.rsmod.game.entity.Player
-import org.rsmod.game.type.obj.UnpackedObjType
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
@@ -32,9 +32,9 @@ constructor(
     }
 
     private fun Player.opHeldU(
-        selectedObj: UnpackedObjType,
+        selectedObj: ItemServerType,
         selectedSlot: Int,
-        targetObj: UnpackedObjType,
+        targetObj: ItemServerType,
         targetSlot: Int,
     ) {
         clearPendingAction(eventBus)
@@ -47,9 +47,9 @@ constructor(
             interactions.interact(
                 access = this,
                 inventory = inv,
-                selectedObjType = selectedObj,
+                selectedItemServerType = selectedObj,
                 selectedSlot = selectedSlot,
-                targetObjType = targetObj,
+                targetItemServerType = targetObj,
                 targetSlot = targetSlot,
             )
         }

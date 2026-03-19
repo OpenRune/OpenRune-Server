@@ -1,6 +1,9 @@
 package org.rsmod.api.net.rsprot.handlers
 
 import com.github.michaelbull.logging.InlineLogger
+import dev.openrune.ServerCacheManager
+import dev.openrune.definition.type.widget.IfEvent
+import dev.openrune.types.aconverted.interf.IfButtonOp
 import jakarta.inject.Inject
 import net.rsprot.protocol.game.incoming.buttons.If3Button
 import org.rsmod.annotations.InternalApi
@@ -11,22 +14,12 @@ import org.rsmod.api.player.ui.IfOverlayButton
 import org.rsmod.api.player.ui.ifCloseInputDialog
 import org.rsmod.events.EventBus
 import org.rsmod.game.entity.Player
-import org.rsmod.game.type.comp.ComponentTypeList
-import org.rsmod.game.type.interf.IfButtonOp
-import org.rsmod.game.type.interf.IfEvent
-import org.rsmod.game.type.interf.InterfaceTypeList
-import org.rsmod.game.type.obj.ObjTypeList
 import org.rsmod.game.ui.Component
 
 class If3ButtonHandler
 @Inject
-constructor(
-    private val eventBus: EventBus,
-    private val interfaceTypes: InterfaceTypeList,
-    private val componentTypes: ComponentTypeList,
-    private val objTypes: ObjTypeList,
-    private val protectedAccess: ProtectedAccessLauncher,
-) : MessageHandler<If3Button> {
+constructor(private val eventBus: EventBus, private val protectedAccess: ProtectedAccessLauncher) :
+    MessageHandler<If3Button> {
     private val logger = InlineLogger()
 
     private val If3Button.asComponent: Component
@@ -50,8 +43,8 @@ constructor(
 
     @OptIn(InternalApi::class)
     override fun handle(player: Player, message: If3Button) {
-        val componentType = componentTypes[message.asComponent]
-        val interfaceType = interfaceTypes[message.asComponent]
+        val componentType = ServerCacheManager.fromComponent(message.asComponent.packed)
+        val interfaceType = ServerCacheManager.fromInterface(message.asComponent.packed)
         val comsub = message.sub
         val buttonOp = message.buttonOp
 
@@ -63,14 +56,26 @@ constructor(
 
         if (player.ui.containsOverlay(interfaceType) || player.ui.containsTopLevel(interfaceType)) {
             val event =
-                IfOverlayButton(player, componentType, comsub, objTypes[message.obj], buttonOp)
+                IfOverlayButton(
+                    player,
+                    componentType,
+                    comsub,
+                    ServerCacheManager.getItem(message.obj),
+                    buttonOp,
+                )
             logger.debug { "[Overlay] If3Button: $message (event=$event)" }
             eventBus.publish(event)
             return
         }
 
         if (player.ui.containsModal(interfaceType)) {
-            val event = IfModalButton(componentType, comsub, objTypes[message.obj], buttonOp)
+            val event =
+                IfModalButton(
+                    componentType,
+                    comsub,
+                    ServerCacheManager.getItem(message.obj),
+                    buttonOp,
+                )
             player.ifCloseInputDialog()
             if (player.isModalButtonProtected) {
                 logger.debug { "[Modal][BLOCKED] If3Button: $message (event=$event)" }

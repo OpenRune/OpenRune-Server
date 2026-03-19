@@ -1,5 +1,6 @@
 package org.rsmod.api.combat.formulas.accuracy.multi
 
+import dev.openrune.types.NpcServerType
 import jakarta.inject.Inject
 import org.rsmod.api.combat.formulas.accuracy.AccuracyOperations
 import org.rsmod.api.combat.formulas.accuracy.magic.NvPMagicAccuracy
@@ -7,7 +8,6 @@ import org.rsmod.api.combat.formulas.accuracy.melee.NvPMeleeAccuracy
 import org.rsmod.api.combat.formulas.accuracy.ranged.NvPRangedAccuracy
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
-import org.rsmod.game.type.npc.UnpackedNpcType
 
 public class NvPMultiStyleAccuracy
 @Inject
@@ -22,7 +22,7 @@ constructor(
 
     private fun computeMagicalMeleeHitChance(
         source: Npc,
-        sourceType: UnpackedNpcType,
+        sourceType: NpcServerType,
         target: Player,
     ): Int {
         val attackRoll = melee.computeAttackRoll(source, sourceType)
@@ -36,7 +36,7 @@ constructor(
 
     private fun computeRangedMeleeHitChance(
         source: Npc,
-        sourceType: UnpackedNpcType,
+        sourceType: NpcServerType,
         target: Player,
     ): Int {
         val attackRoll = melee.computeAttackRoll(source, sourceType)
@@ -50,7 +50,7 @@ constructor(
 
     private fun computeRangedMagicHitChance(
         source: Npc,
-        sourceType: UnpackedNpcType,
+        sourceType: NpcServerType,
         target: Player,
     ): Int {
         val attackRoll = magic.computeAttackRoll(source, sourceType)
@@ -68,7 +68,7 @@ constructor(
 
     private fun computeMagicalRangedHitChance(
         source: Npc,
-        sourceType: UnpackedNpcType,
+        sourceType: NpcServerType,
         target: Player,
     ): Int {
         val attackRoll = ranged.computeAttackRoll(source, sourceType)

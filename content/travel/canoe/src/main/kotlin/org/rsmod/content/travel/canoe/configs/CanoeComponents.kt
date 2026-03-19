@@ -1,10 +1,10 @@
 package org.rsmod.content.travel.canoe.configs
 
-import org.rsmod.api.type.refs.comp.ComponentReferences
+import dev.openrune.component
 
 typealias canoe_components = CanoeComponents
 
-object CanoeComponents : ComponentReferences() {
+object CanoeComponents {
     val shape_log = component("canoeing:log")
     val shape_dugout = component("canoeing:dugout")
     val shape_stable_dugout = component("canoeing:stable_dugout")

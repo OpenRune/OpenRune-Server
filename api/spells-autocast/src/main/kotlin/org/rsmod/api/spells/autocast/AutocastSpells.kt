@@ -1,22 +1,17 @@
 package org.rsmod.api.spells.autocast
 
-import jakarta.inject.Inject
+import dev.openrune.types.ItemServerType
 import jakarta.inject.Singleton
 import org.rsmod.api.spells.autocast.configs.autocast_enums
-import org.rsmod.game.enums.EnumTypeMapResolver
-import org.rsmod.game.type.obj.ObjType
-import org.rsmod.game.type.obj.ObjTypeList
 
 @Singleton
-public class AutocastSpells
-@Inject
-constructor(private val enumResolver: EnumTypeMapResolver, private val objTypes: ObjTypeList) {
-    private lateinit var spells: Map<Int, ObjType>
+public class AutocastSpells {
+    private lateinit var spells: Map<Int, ItemServerType>
     private lateinit var restricted: Set<Int>
 
-    public operator fun get(autocastId: Int): ObjType? = spells[autocastId]
+    public operator fun get(autocastId: Int): ItemServerType? = spells[autocastId]
 
-    public fun isRestrictedSpell(spell: ObjType): Boolean = spell.id in restricted
+    public fun isRestrictedSpell(spell: ItemServerType): Boolean = spell.id in restricted
 
     internal fun startup() {
         val spells = loadAutocastSpells()
@@ -26,13 +21,13 @@ constructor(private val enumResolver: EnumTypeMapResolver, private val objTypes:
         this.restricted = restricted
     }
 
-    private fun loadAutocastSpells(): Map<Int, ObjType> {
-        val enum = enumResolver[autocast_enums.spells].filterValuesNotNull()
+    private fun loadAutocastSpells(): Map<Int, ItemServerType> {
+        val enum = autocast_enums.spells.filterValuesNotNull()
         return HashMap(enum.backing)
     }
 
     private fun loadRestrictedSpells(): Set<Int> {
-        val enum = enumResolver[autocast_enums.restricted_spells].filterValuesNotNull()
-        return enum.keys.map(ObjType::id).toHashSet()
+        val enum = autocast_enums.restricted_spells.filterValuesNotNull()
+        return enum.keys.map(ItemServerType::id).toHashSet()
     }
 }

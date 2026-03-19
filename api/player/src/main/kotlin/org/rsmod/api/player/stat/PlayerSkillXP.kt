@@ -1,5 +1,6 @@
 package org.rsmod.api.player.stat
 
+import dev.openrune.types.StatType
 import kotlin.math.min
 import org.rsmod.annotations.InternalApi
 import org.rsmod.api.player.ui.PlayerInterfaceUpdates
@@ -7,7 +8,6 @@ import org.rsmod.api.utils.skills.CombatLevel
 import org.rsmod.game.entity.Player
 import org.rsmod.game.stat.PlayerSkillXPTable
 import org.rsmod.game.stat.PlayerStatMap
-import org.rsmod.game.type.stat.StatType
 
 public object PlayerSkillXP {
     public fun internalAddXP(player: Player, stat: StatType, xp: Double, rate: Double): Int =

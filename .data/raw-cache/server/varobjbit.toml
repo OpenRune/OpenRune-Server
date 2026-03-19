@@ -1,0 +1,29 @@
+[[varobj]]
+id = "varobj.charges_16383"
+startBit = 0
+endBit = 13
+
+[[varobj]]
+id = "varobj.tumeken_charges"
+startBit = 0
+endBit = 14
+
+[[varobj]]
+id = "varobj.stamina_charges"
+startBit = 0
+endBit = 10
+
+[[varobj]]
+id = "varobj.snakeboss_blowpipe_darttype"
+startBit = 0
+endBit = 3
+
+[[varobj]]
+id = "varobj.snakeboss_blowpipe_dartcount"
+startBit = 4
+endBit = 17
+
+[[varobj]]
+id = "varobj.snakeboss_blowpipe_flakes"
+startBit = 18
+endBit = 31

@@ -1,17 +1,15 @@
 package org.rsmod.api.account.character.stats
 
+import dev.openrune.ServerCacheManager
 import jakarta.inject.Inject
 import org.rsmod.api.account.character.CharacterDataStage
 import org.rsmod.api.account.character.CharacterMetadataList
 import org.rsmod.api.db.DatabaseConnection
 import org.rsmod.game.entity.Player
-import org.rsmod.game.type.stat.StatTypeList
 
 private typealias Stat = CharacterStatData.Stat
 
-public class CharacterStatPipeline
-@Inject
-constructor(private val applier: CharacterStatApplier, private val statTypes: StatTypeList) :
+public class CharacterStatPipeline @Inject constructor(private val applier: CharacterStatApplier) :
     CharacterDataStage.Pipeline {
     override fun append(connection: DatabaseConnection, metadata: CharacterMetadataList) {
         val select =
@@ -62,7 +60,7 @@ constructor(private val applier: CharacterStatApplier, private val statTypes: St
             )
 
         upsert.use {
-            for (stat in statTypes.values) {
+            for (stat in ServerCacheManager.getStats().values) {
                 val visLevel = player.statMap.getCurrentLevel(stat).toInt()
                 val baseLevel = player.statMap.getBaseLevel(stat).toInt()
                 val fineXp = player.statMap.getFineXP(stat)

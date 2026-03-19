@@ -1,5 +1,6 @@
 package org.rsmod.game.entity.util
 
+import dev.openrune.types.SequenceServerType
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.PathingEntity
 import org.rsmod.game.entity.Player
@@ -7,7 +8,6 @@ import org.rsmod.game.map.collision.isZoneValid
 import org.rsmod.game.movement.MoveSpeed
 import org.rsmod.game.seq.EntitySeq
 import org.rsmod.game.spot.EntitySpotanim
-import org.rsmod.game.type.seq.SeqType
 import org.rsmod.map.CoordGrid
 import org.rsmod.map.util.Translation
 import org.rsmod.routefinder.collision.CollisionFlagMap
@@ -113,7 +113,12 @@ public object PathingEntityCommon {
         entity.faceEntity = EntityFaceTarget.NULL
     }
 
-    public fun anim(entity: PathingEntity, seq: SeqType, delay: Int, priority: Int): Boolean {
+    public fun anim(
+        entity: PathingEntity,
+        seq: SequenceServerType,
+        delay: Int,
+        priority: Int,
+    ): Boolean {
         require(delay in 0..254) { "`delay` must be within range [0..254]." }
         require(priority in 0..254) { "`priority` must be within range [0..254]." }
 

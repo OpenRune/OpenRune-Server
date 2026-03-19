@@ -1,5 +1,6 @@
 package org.rsmod.api.player
 
+import dev.openrune.types.InvScope
 import org.rsmod.api.area.checker.AreaChecker
 import org.rsmod.api.config.constants
 import org.rsmod.api.config.refs.areas
@@ -16,7 +17,6 @@ import org.rsmod.api.player.vars.prayerDrainCounter
 import org.rsmod.api.player.vars.usingQuickPrayers
 import org.rsmod.game.entity.Player
 import org.rsmod.game.inv.Inventory
-import org.rsmod.game.type.inv.InvScope
 
 public fun Player.forceDisconnect() {
     forceDisconnect = true

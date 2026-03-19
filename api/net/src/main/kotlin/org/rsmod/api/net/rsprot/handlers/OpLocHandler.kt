@@ -1,6 +1,7 @@
 package org.rsmod.api.net.rsprot.handlers
 
 import com.github.michaelbull.logging.InlineLogger
+import dev.openrune.ServerCacheManager
 import jakarta.inject.Inject
 import net.rsprot.protocol.game.incoming.locs.OpLoc
 import org.rsmod.api.player.interact.LocInteractions
@@ -14,14 +15,12 @@ import org.rsmod.game.interact.InteractionLocOp
 import org.rsmod.game.interact.InteractionOp
 import org.rsmod.game.loc.BoundLocInfo
 import org.rsmod.game.movement.RouteRequestLoc
-import org.rsmod.game.type.loc.LocTypeList
 import org.rsmod.map.CoordGrid
 
 class OpLocHandler
 @Inject
 constructor(
     private val eventBus: EventBus,
-    private val locTypes: LocTypeList,
     private val locRegistry: LocRegistry,
     private val locInteractions: LocInteractions,
 ) : MessageHandler<OpLoc> {
@@ -48,7 +47,7 @@ constructor(
             player.clearMapFlag()
             return
         }
-        val type = locTypes[message.id] ?: return
+        val type = ServerCacheManager.getObject(message.id) ?: return
         val speed = if (message.controlKey) player.ctrlMoveSpeed() else null
         val boundLoc = BoundLocInfo(loc, type)
         val opTrigger = locInteractions.hasOpTrigger(player, boundLoc, message.interactionOp, type)

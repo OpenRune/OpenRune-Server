@@ -1,5 +1,15 @@
 package org.rsmod.game.entity
 
+import dev.openrune.rscm.RSCM
+import dev.openrune.rscm.RSCMType
+import dev.openrune.types.BasType
+import dev.openrune.types.ModLevelType
+import dev.openrune.types.NpcServerType
+import dev.openrune.types.SequenceServerType
+import dev.openrune.types.StatType
+import dev.openrune.types.aconverted.QueueType
+import dev.openrune.types.aconverted.SpotanimType
+import dev.openrune.types.aconverted.TimerType
 import it.unimi.dsi.fastutil.ints.IntArrayList
 import it.unimi.dsi.fastutil.ints.IntArraySet
 import it.unimi.dsi.fastutil.ints.IntList
@@ -35,15 +45,6 @@ import org.rsmod.game.shop.Shop
 import org.rsmod.game.spot.EntitySpotanim
 import org.rsmod.game.stat.PlayerStatMap
 import org.rsmod.game.timer.PlayerTimerMap
-import org.rsmod.game.type.bas.UnpackedBasType
-import org.rsmod.game.type.droptrig.DropTriggerType
-import org.rsmod.game.type.mod.UnpackedModLevelType
-import org.rsmod.game.type.npc.UnpackedNpcType
-import org.rsmod.game.type.queue.QueueType
-import org.rsmod.game.type.seq.SeqType
-import org.rsmod.game.type.spot.SpotanimType
-import org.rsmod.game.type.stat.StatType
-import org.rsmod.game.type.timer.TimerType
 import org.rsmod.game.ui.UserInterfaceMap
 import org.rsmod.game.vars.VarPlayerIntMap
 import org.rsmod.game.vars.VarPlayerStrMap
@@ -186,7 +187,7 @@ public class Player(
     // is `null` equivalent to a "player" mod level, or does it signify uninitialized state?
     // `lateinit` ensures `modLevel` is always initialized before use, making its state explicit.
     // Given the circumstances, we use `lateinit` even though it can be considered a code smell.
-    public lateinit var modLevel: UnpackedModLevelType
+    public lateinit var modLevel: ModLevelType
 
     public var xpRate: Double = 1.0
     public var globalXpRate: Double = 1.0
@@ -255,8 +256,8 @@ public class Player(
     public var lootDropDuration: Int? = null
 
     public val appearance: Appearance = Appearance()
-    public var bas: UnpackedBasType? by appearance::bas
-    public var transmog: UnpackedNpcType? by appearance::transmog
+    public var bas: BasType? by appearance::bas
+    public var transmog: NpcServerType? by appearance::transmog
     public var skullIcon: Int? by appearance::skullIcon
     public var overheadIcon: Int? by appearance::overheadIcon
     public val combatLevel: Int by appearance::combatLevel
@@ -276,7 +277,7 @@ public class Player(
      *
      * _Note: Use the [Player.dropTrigger] function to set this value._
      */
-    public var dropTrigger: DropTriggerType? = null
+    public var dropTrigger: String? = null
         private set
 
     /**
@@ -450,7 +451,7 @@ public class Player(
         pendingStatUpdates.set(stat.id)
     }
 
-    override fun anim(seq: SeqType, delay: Int, priority: Int) {
+    override fun anim(seq: SequenceServerType, delay: Int, priority: Int) {
         PathingEntityCommon.anim(this, seq, delay, priority)
     }
 
@@ -500,7 +501,9 @@ public class Player(
      * [clearAnyDropTrigger]. If a [dropTrigger] is still set, it may indicate the player exited
      * through unintended means, and an error will be thrown to prevent silent failures.
      */
-    public fun dropTrigger(trigger: DropTriggerType) {
+    public fun dropTrigger(trigger: String) {
+        RSCM.requireRSCM(RSCMType.DROP_TRIGGER, trigger)
+
         check(dropTrigger == null) {
             "Previous `dropTrigger` must be removed before " +
                 "setting a new trigger: oldTrigger=$dropTrigger, newTrigger=$trigger"
@@ -512,7 +515,9 @@ public class Player(
      * Clears [dropTrigger] as long as it matches [trigger], otherwise throws
      * [IllegalStateException].
      */
-    public fun clearDropTrigger(trigger: DropTriggerType) {
+    public fun clearDropTrigger(trigger: String) {
+        RSCM.requireRSCM(RSCMType.DROP_TRIGGER, trigger)
+
         check(dropTrigger == trigger) {
             "Current `dropTrigger` does not match input: " +
                 "currentTrigger=$dropTrigger, clearTrigger=$trigger"

@@ -1,0 +1,211 @@
+[[varp]]
+isServerOnly = true
+id = "varp.music_playlist"
+scope = "Temp"
+transmit = "Never"
+
+[[varp]]
+isServerOnly = true
+id = "varp.music_temp_state_3"
+scope = "Temp"
+transmit = "Never"
+
+[[varp]]
+isServerOnly = true
+id = "varp.music_temp_state_2"
+scope = "Temp"
+transmit = "Never"
+
+[[varp]]
+isServerOnly = true
+id = "varp.music_temp_state_1"
+scope = "Temp"
+transmit = "Never"
+
+[[varp]]
+isServerOnly = true
+id = "varp.gameframe"
+transmit = "Never"
+
+[[varp]]
+isServerOnly = true
+id = "varp.pk_prey1"
+scope = "Temp"
+transmit = "Never"
+
+[[varp]]
+isServerOnly = true
+id = "varp.pk_prey2"
+scope = "Temp"
+transmit = "Never"
+
+[[varp]]
+isServerOnly = true
+id = "varp.pk_predator1"
+scope = "Temp"
+transmit = "Never"
+
+[[varp]]
+isServerOnly = true
+id = "varp.pk_predator2"
+scope = "Temp"
+transmit = "Never"
+
+[[varp]]
+isServerOnly = true
+id = "varp.pk_predator3"
+scope = "Temp"
+transmit = "Never"
+
+[[varp]]
+isServerOnly = true
+id = "varp.prayer_drain"
+scope = "Temp"
+transmit = "Never"
+
+[[varp]]
+isServerOnly = true
+id = "varp.playtime"
+transmit = "Never"
+
+[[varp]]
+isServerOnly = true
+id = "varp.generic_temp_state_65516"
+scope = "Temp"
+transmit = "Never"
+
+[[varp]]
+isServerOnly = true
+id = "varp.dinhs_passive_delay"
+scope = "Temp"
+transmit = "Never"
+
+[[varp]]
+isServerOnly = true
+id = "varp.com_maxhit"
+transmit = "Never"
+
+[[varp]]
+isServerOnly = true
+id = "varp.forinthry_surge_expiration"
+transmit = "Never"
+
+[[varp]]
+isServerOnly = true
+id = "varp.saved_autocast_state_staff"
+transmit = "Never"
+
+[[varp]]
+isServerOnly = true
+id = "varp.saved_autocast_state_bladed_staff"
+transmit = "Never"
+
+[[varp]]
+isServerOnly = true
+id = "varp.lastcombat"
+scope = "Temp"
+transmit = "Never"
+
+[[varp]]
+isServerOnly = true
+id = "varp.lastcombat_pvp"
+scope = "Temp"
+transmit = "Never"
+
+[[varp]]
+isServerOnly = true
+id = "varp.aggressive_npc"
+scope = "Temp"
+transmit = "Never"
+
+[[varp]]
+isServerOnly = true
+id = "varp.temp_restore_65527"
+transmit = "Never"
+
+[[varp]]
+isServerOnly = true
+id = "varp.generic_temp_coords_65529"
+scope = "Temp"
+transmit = "Never"
+
+[[varp]]
+isServerOnly = true
+id = "varp.inv_capacity_65530"
+transmit = "Never"
+
+[[varp]]
+isServerOnly = true
+id = "varp.generic_storage_65531"
+transmit = "Never"
+
+[[varp]]
+isServerOnly = true
+id = "varp.bank_serverside_vars"
+transmit = "Never"
+
+[[varp]]
+isServerOnly = true
+id = "varp.weapons_saved_attackstyle1"
+transmit = "Never"
+
+[[varp]]
+isServerOnly = true
+id = "varp.weapons_saved_attackstyle2"
+transmit = "Never"
+
+[[varp]]
+isServerOnly = true
+id = "varp.emote_counters"
+transmit = "Never"
+
+[[varp]]
+isServerOnly = true
+id = "varp.emote_clock_premier_shield"
+transmit = "Never"
+
+[[varp]]
+isServerOnly = true
+id = "varp.canoe_station_coords"
+scope = "Temp"
+transmit = "Never"
+
+[[varp]]
+isServerOnly = true
+id = "varp.prayer0"
+scope = "Temp"
+
+[[varp]]
+isServerOnly = true
+id = "varp.if1"
+scope = "Temp"
+
+[[varp]]
+isServerOnly = true
+id = "varp.if2"
+scope = "Temp"
+
+[[varp]]
+isServerOnly = true
+id = "varp.if3"
+scope = "Temp"
+
+[[varp]]
+isServerOnly = true
+id = "varp.date_vars"
+transmit = "OnSetDifferent"
+
+[[varp]]
+isServerOnly = true
+id = "varp.canoeing_menu"
+scope = "Temp"
+
+[[varp]]
+isServerOnly = true
+id = "varp.canoeing_river_lum"
+scope = "Temp"
+
+[[varp]]
+isServerOnly = true
+id = "varp.canoeing_river_lum_2"
+scope = "Temp"

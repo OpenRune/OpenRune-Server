@@ -1,5 +1,7 @@
 package org.rsmod.api.player.hit
 
+import dev.openrune.types.HitmarkTypeGroup
+import dev.openrune.types.ItemServerType
 import kotlin.math.min
 import org.rsmod.api.config.refs.BaseHitmarkGroups
 import org.rsmod.api.config.refs.hitmark_groups
@@ -18,8 +20,6 @@ import org.rsmod.game.entity.Player
 import org.rsmod.game.hit.Hit
 import org.rsmod.game.hit.HitBuilder
 import org.rsmod.game.hit.HitType
-import org.rsmod.game.type.hitmark.HitmarkTypeGroup
-import org.rsmod.game.type.obj.ObjType
 
 /* Standard hit functions. */
 /**
@@ -49,9 +49,9 @@ import org.rsmod.game.type.obj.ObjType
  *   reference [hitmark_groups] for a list of available hitmark groups.
  * @param specific If `true`, only this [Player] will see the hitsplat; this does not affect actual
  *   damage calculations.
- * @param sourceWeapon An optional [ObjType] reference of a "weapon" used by the [source] that hit
- *   modifiers and/or processors can use for specialized logic. Typically unnecessary when [source]
- *   is an [Npc], though there may be niche use cases.
+ * @param sourceWeapon An optional [ItemServerType] reference of a "weapon" used by the [source]
+ *   that hit modifiers and/or processors can use for specialized logic. Typically unnecessary when
+ *   [source] is an [Npc], though there may be niche use cases.
  * @param sourceSecondary Similar to [sourceWeapon], except this refers to objs that are **not** the
  *   primary weapon, such as ammunition for ranged attacks or objs tied to magic spells.
  * @param modifier A [PlayerHitModifier] used to adjust damage and other hit properties. By default,
@@ -66,8 +66,8 @@ public fun Player.queueHit(
     damage: Int,
     hitmark: HitmarkTypeGroup = hitmark_groups.regular_damage,
     specific: Boolean = false,
-    sourceWeapon: ObjType? = null,
-    sourceSecondary: ObjType? = null,
+    sourceWeapon: ItemServerType? = null,
+    sourceSecondary: ItemServerType? = null,
     modifier: PlayerHitModifier = StandardPlayerHitModifier,
 ): Hit {
     val cappedDamage = min(hitpoints, damage)
@@ -125,7 +125,7 @@ public fun Player.queueHit(
     type: HitType,
     damage: Int,
     hitmark: HitmarkTypeGroup = hitmark_groups.regular_damage,
-    sourceSecondary: ObjType? = null,
+    sourceSecondary: ItemServerType? = null,
     modifier: PlayerHitModifier = StandardPlayerHitModifier,
 ): Hit {
     val builder =
@@ -297,9 +297,9 @@ public fun Player.takeInstantHit(
  *   reference [hitmark_groups] for a list of available hitmark groups.
  * @param specific If `true`, only this [Player] will see the hitsplat; this does not affect actual
  *   damage calculations.
- * @param sourceWeapon An optional [ObjType] reference of a "weapon" used by the [source] that hit
- *   modifiers and/or processors can use for specialized logic. Typically unnecessary when [source]
- *   is an [Npc], though there may be niche use cases.
+ * @param sourceWeapon An optional [ItemServerType] reference of a "weapon" used by the [source]
+ *   that hit modifiers and/or processors can use for specialized logic. Typically unnecessary when
+ *   [source] is an [Npc], though there may be niche use cases.
  * @param sourceSecondary Similar to [sourceWeapon], except this refers to objs that are **not** the
  *   primary weapon, such as ammunition for ranged attacks or objs tied to magic spells.
  * @param modifier A [PlayerHitModifier] used to adjust damage and other hit properties. By default,
@@ -314,8 +314,8 @@ public fun Player.queueImpactHit(
     damage: Int,
     hitmark: HitmarkTypeGroup = hitmark_groups.regular_damage,
     specific: Boolean = false,
-    sourceWeapon: ObjType? = null,
-    sourceSecondary: ObjType? = null,
+    sourceWeapon: ItemServerType? = null,
+    sourceSecondary: ItemServerType? = null,
     modifier: PlayerHitModifier = StandardPlayerHitModifier,
 ) {
     val builder =
@@ -373,7 +373,7 @@ public fun Player.queueImpactHit(
     type: HitType,
     damage: Int,
     hitmark: HitmarkTypeGroup = hitmark_groups.regular_damage,
-    sourceSecondary: ObjType? = null,
+    sourceSecondary: ItemServerType? = null,
     modifier: PlayerHitModifier = StandardPlayerHitModifier,
 ) {
     val builder =

@@ -1,11 +1,11 @@
 package org.rsmod.api.route
 
+import dev.openrune.types.ObjectServerType
 import jakarta.inject.Inject
 import org.rsmod.game.entity.PathingEntityAvatar
 import org.rsmod.game.loc.BoundLocInfo
 import org.rsmod.game.loc.LocInfo
 import org.rsmod.game.obj.Obj
-import org.rsmod.game.type.loc.UnpackedLocType
 import org.rsmod.map.CoordGrid
 import org.rsmod.routefinder.collision.CollisionFlagMap
 import org.rsmod.routefinder.loc.LocShapeConstants
@@ -77,13 +77,13 @@ public class BoundValidator @Inject constructor(private val flags: CollisionFlag
     public fun collides(
         source: PathingEntityAvatar,
         target: LocInfo,
-        type: UnpackedLocType,
+        type: ObjectServerType,
     ): Boolean = collides(source, BoundLocInfo(target, type))
 
     public fun touches(
         source: PathingEntityAvatar,
         target: LocInfo,
-        type: UnpackedLocType,
+        type: ObjectServerType,
     ): Boolean = touches(source, BoundLocInfo(target, type))
 
     public fun touches(source: PathingEntityAvatar, target: Obj): Boolean {

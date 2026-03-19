@@ -1,5 +1,9 @@
 package org.rsmod.api.player.vars
 
+import dev.openrune.definition.type.VarBitType
+import dev.openrune.types.varp.VarpServerType
+import dev.openrune.types.varp.baseVar
+import dev.openrune.types.varp.bits
 import kotlin.enums.EnumEntries
 import kotlin.enums.enumEntries
 import kotlin.reflect.KProperty
@@ -8,49 +12,47 @@ import org.rsmod.api.utils.vars.VarEnumDelegate
 import org.rsmod.game.entity.Player
 import org.rsmod.game.entity.npc.NpcUid
 import org.rsmod.game.entity.player.PlayerUid
-import org.rsmod.game.type.varbit.VarBitType
-import org.rsmod.game.type.varp.VarpType
 import org.rsmod.game.vars.VarPlayerIntMap
 import org.rsmod.map.CoordGrid
 import org.rsmod.utils.bits.withBits
 
 /* Varplayer delegates */
-public fun intVarp(varp: VarpType): VariableIntDelegate = VariableIntDelegate(varp)
+public fun intVarp(varp: VarpServerType): VariableIntDelegate = VariableIntDelegate(varp)
 
-public fun strVarp(varp: VarpType): VariableStringDelegate = VariableStringDelegate(varp)
+public fun strVarp(varp: VarpServerType): VariableStringDelegate = VariableStringDelegate(varp)
 
-public fun boolVarp(varp: VarpType): VariableTypeIntDelegate<Boolean> =
+public fun boolVarp(varp: VarpServerType): VariableTypeIntDelegate<Boolean> =
     typeIntVarp(varp, ::boolFromInt, ::boolToInt)
 
-public fun typeCoordVarp(varp: VarpType): VariableTypeIntDelegate<CoordGrid?> {
+public fun typeCoordVarp(varp: VarpServerType): VariableTypeIntDelegate<CoordGrid?> {
     val fromType: (CoordGrid?) -> Int = { typed -> typed?.packed ?: CoordGrid.NULL.packed }
     return typeIntVarp(varp, ::CoordGrid, fromType)
 }
 
-public fun typeNpcUidVarp(varp: VarpType): VariableTypeIntDelegate<NpcUid?> {
+public fun typeNpcUidVarp(varp: VarpServerType): VariableTypeIntDelegate<NpcUid?> {
     val fromType: (NpcUid?) -> Int = { typed -> typed?.packed ?: NpcUid.NULL.packed }
     return typeIntVarp(varp, ::NpcUid, fromType)
 }
 
-public fun typePlayerUidVarp(varp: VarpType): VariableTypeIntDelegate<PlayerUid?> {
+public fun typePlayerUidVarp(varp: VarpServerType): VariableTypeIntDelegate<PlayerUid?> {
     val fromType: (PlayerUid?) -> Int = { typed -> typed?.packed ?: PlayerUid.NULL.packed }
     return typeIntVarp(varp, ::PlayerUid, fromType)
 }
 
 public fun <T> typeIntVarp(
-    varp: VarpType,
+    varp: VarpServerType,
     toType: (Int) -> T,
     fromType: (T) -> Int,
 ): VariableTypeIntDelegate<T> = VariableTypeIntDelegate(varp, toType, fromType)
 
 public fun <T> typeStrVarp(
-    varp: VarpType,
+    varp: VarpServerType,
     toType: (String?) -> T,
     fromType: (T) -> String,
 ): VariableTypeStringDelegate<T> = VariableTypeStringDelegate(varp, toType, fromType)
 
 public inline fun <reified V> enumVarp(
-    varp: VarpType,
+    varp: VarpServerType,
     entries: EnumEntries<V> = enumEntries(),
     default: V = entries.firstOrNull { it.varValue == 0 } ?: entries.first(),
 ): VariableTypeIntDelegate<V> where V : Enum<V>, V : VarEnumDelegate {
@@ -62,7 +64,7 @@ public inline fun <reified V> enumVarp(
 }
 
 public inline fun <reified V> enumVarpOrNull(
-    varp: VarpType,
+    varp: VarpServerType,
     entries: EnumEntries<V> = enumEntries(),
     nullVarValue: Int = 0,
 ): VariableTypeIntDelegate<V?> where V : Enum<V>, V : VarEnumDelegate {
@@ -128,7 +130,7 @@ public inline fun <reified V> enumVarBitOrNull(
 }
 
 /* Delegate implementations */
-public class VariableIntDelegate(private val varp: VarpType) {
+public class VariableIntDelegate(private val varp: VarpServerType) {
     public operator fun getValue(thisRef: Player, property: KProperty<*>): Int {
         return thisRef.vars[varp]
     }
@@ -147,7 +149,7 @@ public class VariableIntDelegate(private val varp: VarpType) {
 }
 
 public class VariableTypeIntDelegate<T>(
-    private val varp: VarpType,
+    private val varp: VarpServerType,
     public val toType: (Int) -> T,
     public val fromType: (T) -> Int,
 ) {
@@ -181,7 +183,7 @@ public class VariableTypeIntDelegate<T>(
 }
 
 public class VariableIntBitsDelegate(private val varbit: VarBitType) {
-    private val baseVar: VarpType
+    private val baseVar: VarpServerType
         get() = varbit.baseVar
 
     private val bitRange: IntRange
@@ -215,7 +217,7 @@ public class VariableTypeIntBitsDelegate<T>(
     public val toType: (Int) -> T,
     public val fromType: (T) -> Int,
 ) {
-    private val baseVar: VarpType
+    private val baseVar: VarpServerType
         get() = varbit.baseVar
 
     private val bitRange: IntRange
@@ -248,7 +250,7 @@ public class VariableTypeIntBitsDelegate<T>(
     }
 }
 
-public class VariableStringDelegate(private val varp: VarpType) {
+public class VariableStringDelegate(private val varp: VarpServerType) {
     public operator fun getValue(thisRef: Player, property: KProperty<*>): String? {
         return thisRef.strVars[varp]
     }
@@ -267,7 +269,7 @@ public class VariableStringDelegate(private val varp: VarpType) {
 }
 
 public class VariableTypeStringDelegate<T>(
-    private val varp: VarpType,
+    private val varp: VarpServerType,
     public val toType: (String?) -> T,
     public val fromType: (T) -> String,
 ) {
@@ -305,18 +307,18 @@ private fun boolToInt(bool: Boolean): Int = if (bool) 1 else 0
 
 private fun boolFromInt(int: Int): Boolean = int == 1
 
-private fun Player.syncVarp(varp: VarpType, value: Int) {
+private fun Player.syncVarp(varp: VarpServerType, value: Int) {
     VarPlayerIntMapSetter.set(this, varp, value)
 }
 
-private fun Player.syncVarpStr(varp: VarpType, value: String?) {
+private fun Player.syncVarpStr(varp: VarpServerType, value: String?) {
     strVars[varp] = value
 }
 
-private fun ProtectedAccess.syncVarp(varp: VarpType, value: Int) {
+private fun ProtectedAccess.syncVarp(varp: VarpServerType, value: Int) {
     VarPlayerIntMapSetter.set(player, varp, value)
 }
 
-private fun ProtectedAccess.syncVarpStr(varp: VarpType, value: String?) {
+private fun ProtectedAccess.syncVarpStr(varp: VarpServerType, value: String?) {
     player.strVars[varp] = value
 }

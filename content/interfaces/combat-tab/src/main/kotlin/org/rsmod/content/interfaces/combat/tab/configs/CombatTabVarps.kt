@@ -1,18 +1,10 @@
 package org.rsmod.content.interfaces.combat.tab.configs
 
-import org.rsmod.api.type.builders.varp.VarpBuilder
-import org.rsmod.api.type.refs.varp.VarpReferences
+import dev.openrune.varp
 
 typealias combat_varps = CombatTabVarps
 
-object CombatTabVarps : VarpReferences() {
+object CombatTabVarps {
     val saved_attackstyle1 = varp("weapons_saved_attackstyle1")
     val saved_attackstyle2 = varp("weapons_saved_attackstyle2")
-}
-
-object CombatTabVarpBuilder : VarpBuilder() {
-    init {
-        build("weapons_saved_attackstyle1")
-        build("weapons_saved_attackstyle2")
-    }
 }

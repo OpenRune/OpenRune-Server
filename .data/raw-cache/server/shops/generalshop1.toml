@@ -1,0 +1,88 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.generalshop1"
+
+scope = "Shared"
+stack = "Always"
+size = 40
+
+protect = false
+runWeight = false
+restock = true
+allStock = true
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.pot_empty"
+count = 5
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.jug_empty"
+count = 2
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.pack_jug_empty"
+count = 5
+restockCycles = 20
+
+[[inventory.stock]]
+obj = "obj.shears"
+count = 2
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.knife"
+count = 5
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.bucket_empty"
+count = 3
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.pack_bucket"
+count = 15
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.bowl_empty"
+count = 2
+restockCycles = 50
+
+[[inventory.stock]]
+obj = "obj.cake_tin"
+count = 2
+restockCycles = 50
+
+[[inventory.stock]]
+obj = "obj.tinderbox"
+count = 2
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.chisel"
+count = 2
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.spade"
+count = 5
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.hammer"
+count = 5
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.newcomer_map"
+count = 5
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.sos_security_book"
+count = 5
+restockCycles = 100

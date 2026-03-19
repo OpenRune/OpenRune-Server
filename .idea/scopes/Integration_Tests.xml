@@ -1,3 +1,0 @@
-<component name="DependencyValidationManager">
-  <scope name="Integration Tests" pattern="test[*.integration]:org.rsmod..*" />
-</component>

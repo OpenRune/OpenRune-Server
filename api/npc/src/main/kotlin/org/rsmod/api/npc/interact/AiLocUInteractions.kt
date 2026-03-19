@@ -1,6 +1,8 @@
 package org.rsmod.api.npc.interact
 
 import com.github.michaelbull.logging.InlineLogger
+import dev.openrune.types.ItemServerType
+import dev.openrune.types.ObjectServerType
 import jakarta.inject.Inject
 import org.rsmod.api.npc.access.StandardNpcAccess
 import org.rsmod.api.npc.events.interact.AiLocUContentEvents
@@ -13,25 +15,15 @@ import org.rsmod.game.inv.InvObj
 import org.rsmod.game.inv.Inventory
 import org.rsmod.game.inv.isType
 import org.rsmod.game.loc.BoundLocInfo
-import org.rsmod.game.type.loc.LocTypeList
-import org.rsmod.game.type.loc.UnpackedLocType
-import org.rsmod.game.type.obj.ObjTypeList
-import org.rsmod.game.type.obj.UnpackedObjType
 
-public class AiLocUInteractions
-@Inject
-private constructor(
-    private val eventBus: EventBus,
-    private val objTypes: ObjTypeList,
-    private val locTypes: LocTypeList,
-) {
+public class AiLocUInteractions @Inject private constructor(private val eventBus: EventBus) {
     private val logger = InlineLogger()
 
     public suspend fun interactOp(
         access: StandardNpcAccess,
         target: BoundLocInfo,
-        locType: UnpackedLocType,
-        objType: UnpackedObjType,
+        locType: ObjectServerType,
+        objType: ItemServerType,
         inv: Inventory,
         invSlot: Int,
     ) {
@@ -44,8 +36,8 @@ private constructor(
     private suspend fun StandardNpcAccess.opLocU(
         target: BoundLocInfo,
         invSlot: Int,
-        locType: UnpackedLocType,
-        objType: UnpackedObjType,
+        locType: ObjectServerType,
+        objType: ItemServerType,
     ) {
         val script = opTrigger(target, locType, objType, invSlot)
         if (script != null) {
@@ -60,8 +52,8 @@ private constructor(
 
     public fun opTrigger(
         target: BoundLocInfo,
-        locType: UnpackedLocType,
-        objType: UnpackedObjType,
+        locType: ObjectServerType,
+        objType: ItemServerType,
         invSlot: Int,
     ): OpEvent? {
         val typeEvent = AiLocUEvents.Op(target, locType, objType, invSlot)
@@ -95,8 +87,8 @@ private constructor(
     public suspend fun interactAp(
         access: StandardNpcAccess,
         target: BoundLocInfo,
-        locType: UnpackedLocType,
-        objType: UnpackedObjType,
+        locType: ObjectServerType,
+        objType: ItemServerType,
         inv: Inventory,
         invSlot: Int,
     ) {
@@ -108,8 +100,8 @@ private constructor(
 
     private suspend fun StandardNpcAccess.apLocU(
         target: BoundLocInfo,
-        locType: UnpackedLocType,
-        objType: UnpackedObjType,
+        locType: ObjectServerType,
+        objType: ItemServerType,
         invSlot: Int,
     ) {
         val script = apTrigger(target, locType, objType, invSlot) ?: return
@@ -118,8 +110,8 @@ private constructor(
 
     private fun apTrigger(
         target: BoundLocInfo,
-        locType: UnpackedLocType,
-        objType: UnpackedObjType,
+        locType: ObjectServerType,
+        objType: ItemServerType,
         invSlot: Int,
     ): ApEvent? {
         val typeEvent = AiLocUEvents.Ap(target, locType, objType, invSlot)
@@ -150,5 +142,5 @@ private constructor(
         return null
     }
 
-    private fun objectVerify(obj: InvObj?, type: UnpackedObjType): Boolean = obj.isType(type)
+    private fun objectVerify(obj: InvObj?, type: ItemServerType): Boolean = obj.isType(type)
 }

@@ -15,7 +15,4 @@ dependencies {
     implementation(projects.engine.game)
     implementation(projects.engine.map)
     implementation(projects.engine.routefinder)
-    testImplementation(projects.api.testing.testFactory)
-    testImplementation(projects.api.testing.testParams)
-    testImplementation(projects.engine.routefinder)
 }

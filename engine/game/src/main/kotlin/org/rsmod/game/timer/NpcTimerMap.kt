@@ -1,11 +1,11 @@
 package org.rsmod.game.timer
 
+import dev.openrune.types.aconverted.TimerType
 import it.unimi.dsi.fastutil.objects.ObjectIterator
 import it.unimi.dsi.fastutil.objects.ObjectIterators
 import it.unimi.dsi.fastutil.shorts.Short2LongLinkedOpenHashMap
 import it.unimi.dsi.fastutil.shorts.Short2LongMap
 import org.rsmod.annotations.InternalApi
-import org.rsmod.game.type.timer.TimerType
 
 public class NpcTimerMap(private var timers: Short2LongLinkedOpenHashMap? = null) :
     Iterable<Short2LongMap.Entry> {

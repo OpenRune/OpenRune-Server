@@ -1,10 +1,10 @@
 package org.rsmod.api.route
 
+import dev.openrune.types.MoveRestrict
 import jakarta.inject.Inject
 import kotlin.math.sign
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.PathingEntityAvatar
-import org.rsmod.game.movement.MoveRestrict
 import org.rsmod.game.movement.RouteRequest
 import org.rsmod.game.movement.RouteRequestCoord
 import org.rsmod.game.movement.RouteRequestLoc

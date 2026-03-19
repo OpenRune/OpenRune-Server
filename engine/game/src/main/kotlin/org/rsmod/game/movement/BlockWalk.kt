@@ -1,17 +1,12 @@
 package org.rsmod.game.movement
 
+import dev.openrune.util.BlockWalk
 import org.rsmod.routefinder.flag.CollisionFlag
 
-public enum class BlockWalk(public val id: Int) {
-    None(0),
-    Npc(1),
-    All(2);
-
-    public val collisionFlag: Int?
-        get() =
-            when (this) {
-                Npc -> CollisionFlag.BLOCK_NPCS
-                All -> CollisionFlag.BLOCK_PLAYERS or CollisionFlag.BLOCK_NPCS
-                None -> null
-            }
-}
+public val BlockWalk.collisionFlag: Int?
+    get() =
+        when (this) {
+            BlockWalk.Npc -> CollisionFlag.BLOCK_NPCS
+            BlockWalk.All -> CollisionFlag.BLOCK_PLAYERS or CollisionFlag.BLOCK_NPCS
+            BlockWalk.None -> null
+        }

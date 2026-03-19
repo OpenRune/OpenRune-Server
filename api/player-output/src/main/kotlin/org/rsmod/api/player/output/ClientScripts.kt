@@ -1,14 +1,14 @@
 package org.rsmod.api.player.output
 
+import dev.openrune.definition.type.widget.ComponentType
+import dev.openrune.types.InventoryServerType
+import dev.openrune.types.ItemServerType
+import dev.openrune.types.ObjectServerType
+import dev.openrune.types.enums.EnumTypeMap
 import net.rsprot.protocol.game.outgoing.misc.player.RunClientScript
 import org.rsmod.game.entity.Player
 import org.rsmod.game.inv.Inventory
 import org.rsmod.game.loc.LocShape
-import org.rsmod.game.type.comp.ComponentType
-import org.rsmod.game.type.enums.EnumType
-import org.rsmod.game.type.inv.InvType
-import org.rsmod.game.type.loc.LocType
-import org.rsmod.game.type.obj.ObjType
 import org.rsmod.map.CoordGrid
 
 public fun Player.runClientScript(id: Int, vararg args: Any) {
@@ -73,7 +73,7 @@ public object ClientScripts {
         player: Player,
         title: String,
         stockMarketRestriction: Boolean = true,
-        enumRestriction: EnumType<ObjType, Boolean>? = null,
+        enumRestriction: EnumTypeMap<ItemServerType, Boolean>? = null,
         showLastSearched: Boolean = false,
     ): Unit =
         player.runClientScript(
@@ -142,10 +142,10 @@ public object ClientScripts {
 
     public fun shopMainInit(
         player: Player,
-        shopInv: InvType,
+        shopInv: InventoryServerType,
         title: String,
         enableBuy50: Boolean = true,
-        customBuyAmountObj: ObjType? = null,
+        customBuyAmountObj: ItemServerType? = null,
         customBuyAmount: Int? = null,
     ) {
         check(customBuyAmount == null || customBuyAmountObj != null) {
@@ -197,7 +197,7 @@ public object ClientScripts {
     public fun addOverlayTimerLoc(
         player: Player,
         coords: CoordGrid,
-        loc: LocType,
+        loc: ObjectServerType,
         shape: LocShape,
         timer: Int,
         ticks: Int,

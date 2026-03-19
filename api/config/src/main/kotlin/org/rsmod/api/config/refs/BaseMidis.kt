@@ -1,9 +1,9 @@
 package org.rsmod.api.config.refs
 
-import org.rsmod.api.type.refs.midi.MidiReferences
+import dev.openrune.midi
 
 typealias midis = BaseMidis
 
-object BaseMidis : MidiReferences() {
+object BaseMidis {
     val stop_music = midi("stop_music")
 }

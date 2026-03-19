@@ -1,5 +1,7 @@
 package org.rsmod.api.combat.manager
 
+import dev.openrune.types.ItemServerType
+import dev.openrune.util.Wearpos
 import jakarta.inject.Inject
 import org.rsmod.api.combat.commons.ranged.RangedAmmunition
 import org.rsmod.api.random.GameRandom
@@ -7,9 +9,6 @@ import org.rsmod.api.repo.obj.ObjRepository
 import org.rsmod.events.EventBus
 import org.rsmod.game.entity.Player
 import org.rsmod.game.queue.WorldQueueList
-import org.rsmod.game.type.obj.ObjTypeList
-import org.rsmod.game.type.obj.UnpackedObjType
-import org.rsmod.game.type.obj.Wearpos
 import org.rsmod.map.CoordGrid
 import org.rsmod.routefinder.collision.CollisionFlagMap
 
@@ -18,7 +17,6 @@ public class RangedAmmoManager
 constructor(
     private val random: GameRandom,
     private val eventBus: EventBus,
-    private val objTypes: ObjTypeList,
     private val collision: CollisionFlagMap,
     private val worldQueues: WorldQueueList,
     private val objRepo: ObjRepository,
@@ -40,8 +38,8 @@ constructor(
      */
     public fun attemptAmmoUsage(
         player: Player,
-        weapon: UnpackedObjType,
-        ammo: UnpackedObjType?,
+        weapon: ItemServerType,
+        ammo: ItemServerType?,
     ): Boolean = RangedAmmunition.attemptAmmoUsage(player, weapon, ammo)
 
     /**
@@ -65,7 +63,7 @@ constructor(
      */
     public fun useQuiverAmmo(
         player: Player,
-        quiverType: UnpackedObjType,
+        quiverType: ItemServerType,
         dropCoord: CoordGrid,
         dropDelay: Int,
         dropChance: Int = RangedAmmunition.DEFAULT_AMMO_DROP_RATE,
@@ -105,7 +103,7 @@ constructor(
      */
     public fun useThrownWeapon(
         player: Player,
-        weaponType: UnpackedObjType,
+        weaponType: ItemServerType,
         dropCoord: CoordGrid,
         dropDelay: Int,
         dropChance: Int = RangedAmmunition.DEFAULT_AMMO_DROP_RATE,
@@ -126,14 +124,14 @@ constructor(
     private fun useAmmo(
         player: Player,
         ammoWearpos: Wearpos,
-        ammoType: UnpackedObjType,
+        ammoType: ItemServerType,
         ammoCount: Int,
         dropCoord: CoordGrid,
         dropDelay: Int,
         dropChance: Int,
         dropDuration: Int,
     ) {
-        val conserve = RangedAmmunition.conserveAmmo(player, objTypes, random)
+        val conserve = RangedAmmunition.conserveAmmo(player, random)
         if (!conserve) {
             RangedAmmunition.detractAmmo(player, ammoWearpos, ammoType, ammoCount, eventBus)
         }

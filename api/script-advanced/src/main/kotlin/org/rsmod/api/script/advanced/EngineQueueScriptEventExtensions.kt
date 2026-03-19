@@ -1,11 +1,11 @@
 package org.rsmod.api.script.advanced
 
+import dev.openrune.types.StatType
 import org.rsmod.api.player.events.EngineQueueEvents
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.script.onProtectedEvent
 import org.rsmod.events.EventBus
 import org.rsmod.game.queue.EngineQueueType
-import org.rsmod.game.type.stat.StatType
 import org.rsmod.map.square.MapSquareKey
 import org.rsmod.map.zone.ZoneKey
 import org.rsmod.plugin.scripts.ScriptContext

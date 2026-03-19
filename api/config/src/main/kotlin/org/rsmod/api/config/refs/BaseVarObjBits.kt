@@ -2,44 +2,15 @@
 
 package org.rsmod.api.config.refs
 
-import org.rsmod.api.type.builders.varobjbit.VarObjBitBuilder
+import dev.openrune.varobjs
 
 typealias varobjs = BaseVarObjBits
 
-object BaseVarObjBits : VarObjBitBuilder() {
-    val charges_16383 =
-        build("charges_16383") {
-            startBit = 0
-            endBit = 13
-        }
-
-    val tumeken_charges =
-        build("tumeken_charges") {
-            startBit = 0
-            endBit = 14
-        }
-
-    val stamina_charges =
-        build("stamina_charges") {
-            startBit = 0
-            endBit = 10
-        }
-
-    val snakeboss_blowpipe_darrtype =
-        build("snakeboss_blowpipe_darttype") {
-            startBit = 0
-            endBit = 3
-        }
-
-    val snakeboss_blowpipe_dartcount =
-        build("snakeboss_blowpipe_dartcount") {
-            startBit = 4
-            endBit = 17
-        }
-
-    val snakeboss_blowpipe_flakes =
-        build("snakeboss_blowpipe_flakes") {
-            startBit = 18
-            endBit = 31
-        }
+object BaseVarObjBits {
+    val charges_16383 = varobjs("charges_16383")
+    val tumeken_charges = varobjs("tumeken_charges")
+    val stamina_charges = varobjs("stamina_charges")
+    val snakeboss_blowpipe_darrtype = varobjs("snakeboss_blowpipe_darttype")
+    val snakeboss_blowpipe_dartcount = varobjs("snakeboss_blowpipe_dartcount")
+    val snakeboss_blowpipe_flakes = varobjs("snakeboss_blowpipe_flakes")
 }

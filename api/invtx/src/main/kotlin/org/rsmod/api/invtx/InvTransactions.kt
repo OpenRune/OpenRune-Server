@@ -1,14 +1,14 @@
 package org.rsmod.api.invtx
 
+import dev.openrune.ServerCacheManager
+import dev.openrune.types.ItemServerType
+import dev.openrune.types.util.UncheckedType
+import dev.openrune.util.Dummyitem
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
 import org.rsmod.game.inv.InvObj
-import org.rsmod.game.type.obj.Dummyitem
-import org.rsmod.game.type.obj.ObjTypeList
-import org.rsmod.game.type.obj.UnpackedObjType
-import org.rsmod.game.type.util.UncheckedType
 import org.rsmod.objtx.Transaction
 import org.rsmod.objtx.TransactionCancellation
 import org.rsmod.objtx.TransactionObj
@@ -48,12 +48,12 @@ public class InvTransactions(
     }
 
     public companion object {
-        public fun from(types: ObjTypeList): InvTransactions {
-            val certLookup = types.values.toCertLookup()
-            val transformLookup = types.values.toTransformLookup()
-            val placeholderLookup = types.values.toPlaceholderLookup()
-            val stackableLookup = types.values.toStackableLookup()
-            val dummyitemLookup = types.values.toDummyitemLookup()
+        public fun from(): InvTransactions {
+            val certLookup = ServerCacheManager.getItems().values.toCertLookup()
+            val transformLookup = ServerCacheManager.getItems().values.toTransformLookup()
+            val placeholderLookup = ServerCacheManager.getItems().values.toPlaceholderLookup()
+            val stackableLookup = ServerCacheManager.getItems().values.toStackableLookup()
+            val dummyitemLookup = ServerCacheManager.getItems().values.toDummyitemLookup()
             return InvTransactions(
                 certLookup = Int2ObjectOpenHashMap(certLookup),
                 transformLookup = Int2ObjectOpenHashMap(transformLookup),
@@ -63,29 +63,28 @@ public class InvTransactions(
             )
         }
 
-        private fun Iterable<UnpackedObjType>.toCertLookup(): Map<Int, TransactionObjTemplate> =
+        private fun Iterable<ItemServerType>.toCertLookup(): Map<Int, TransactionObjTemplate> =
             filter { it.certlink != 0 }
                 .associate { it.id to TransactionObjTemplate(it.certlink, it.certtemplate) }
 
-        private fun Iterable<UnpackedObjType>.toTransformLookup():
-            Map<Int, TransactionObjTemplate> =
+        private fun Iterable<ItemServerType>.toTransformLookup(): Map<Int, TransactionObjTemplate> =
             filter { it.transformlink != 0 }
                 .associate {
                     it.id to TransactionObjTemplate(it.transformlink, it.transformtemplate)
                 }
 
-        private fun Iterable<UnpackedObjType>.toPlaceholderLookup():
+        private fun Iterable<ItemServerType>.toPlaceholderLookup():
             Map<Int, TransactionObjTemplate> =
-            filter { it.placeholderlink != 0 }
+            filter { it.placeholderLink != 0 }
                 .associate {
-                    it.id to TransactionObjTemplate(it.placeholderlink, it.placeholdertemplate)
+                    it.id to TransactionObjTemplate(it.placeholderLink, it.placeholderTemplate)
                 }
 
-        private fun Iterable<UnpackedObjType>.toStackableLookup(): List<Int> =
-            filter(UnpackedObjType::stackable).map(UnpackedObjType::id)
+        private fun Iterable<ItemServerType>.toStackableLookup(): List<Int> =
+            filter(ItemServerType::stackable).map(ItemServerType::id)
 
-        private fun Iterable<UnpackedObjType>.toDummyitemLookup(): List<Int> =
-            filter { it.resolvedDummyitem == Dummyitem.GraphicOnly }.map(UnpackedObjType::id)
+        private fun Iterable<ItemServerType>.toDummyitemLookup(): List<Int> =
+            filter { it.resolvedDummyitem == Dummyitem.GraphicOnly }.map(ItemServerType::id)
     }
 }
 

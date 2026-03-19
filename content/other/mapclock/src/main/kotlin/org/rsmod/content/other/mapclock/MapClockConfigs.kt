@@ -1,9 +1,9 @@
 package org.rsmod.content.other.mapclock
 
-import org.rsmod.api.type.refs.timer.TimerReferences
+import dev.openrune.timer
 
 typealias clock_timers = MapClockTimers
 
-object MapClockTimers : TimerReferences() {
+object MapClockTimers {
     val map_clock = timer("map_clock")
 }

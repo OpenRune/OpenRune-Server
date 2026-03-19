@@ -1,13 +1,15 @@
 package org.rsmod.api.combat.manager
 
+import dev.openrune.definition.type.VarBitType
+import dev.openrune.types.ItemServerType
 import jakarta.inject.Inject
 import kotlin.collections.any
 import kotlin.contracts.contract
 import org.rsmod.api.combat.commons.magic.MagicSpell
 import org.rsmod.api.combat.commons.magic.Spellbook
+import org.rsmod.api.config.refs.BaseParams
 import org.rsmod.api.config.refs.categories
 import org.rsmod.api.config.refs.objs
-import org.rsmod.api.config.refs.params
 import org.rsmod.api.config.refs.varbits
 import org.rsmod.api.invtx.invDelAll
 import org.rsmod.api.player.output.mes
@@ -25,16 +27,10 @@ import org.rsmod.game.entity.Player
 import org.rsmod.game.inv.InvObj
 import org.rsmod.game.inv.isAnyType
 import org.rsmod.game.inv.isType
-import org.rsmod.game.type.obj.ObjType
-import org.rsmod.game.type.obj.ObjTypeList
-import org.rsmod.game.type.obj.UnpackedObjType
-import org.rsmod.game.type.obj.isType
-import org.rsmod.game.type.varbit.VarBitType
 
 public class MagicRuneManager
 @Inject
 constructor(
-    private val objTypes: ObjTypeList,
     private val fakes: FakeRuneRepository,
     private val combos: ComboRuneRepository,
     private val compact: CompactRuneRepository,
@@ -195,7 +191,10 @@ constructor(
         }
     }
 
-    private fun validateRunePack(player: Player, spell: ObjType): MagicRunes.Validation.Valid? =
+    private fun validateRunePack(
+        player: Player,
+        spell: ItemServerType,
+    ): MagicRunes.Validation.Valid? =
         MagicRunes.validateRunePack(
             player = player,
             spell = spell,
@@ -303,15 +302,15 @@ constructor(
     private fun MagicRunes.Validation.requirementMessage(): String =
         when (this) {
             is MagicRunes.Validation.Invalid.NotEnoughRunes -> {
-                objTypes[obj].runeRequirementMessage()
+                obj.runeRequirementMessage()
             }
             is MagicRunes.Validation.Invalid.NotWearing -> {
-                objTypes[obj].wornRequirementMessage()
+                obj.wornRequirementMessage()
             }
             else -> "You do not have enough runes to cast this spell."
         }
 
-    private fun UnpackedObjType.runeRequirementMessage(): String {
+    private fun ItemServerType.runeRequirementMessage(): String {
         if (isCategoryType(categories.rune)) {
             val name = name.dropLast(5) + " Runes"
             return "You do not have enough $name to cast this spell."
@@ -320,8 +319,8 @@ constructor(
         return "You do not have enough ${name.lowercase()} to cast this spell."
     }
 
-    private fun UnpackedObjType.wornRequirementMessage(): String {
-        val custom = paramOrNull(params.spell_worn_req_message)
+    private fun ItemServerType.wornRequirementMessage(): String {
+        val custom = paramOrNull(BaseParams.spell_worn_req_message)
         return when {
             custom != null -> custom
             isType(objs.ibans_staff) -> {

@@ -1,5 +1,8 @@
 package org.rsmod.content.interfaces.equipment.prices
 
+import dev.openrune.definition.type.widget.IfEvent
+import dev.openrune.types.ItemServerType
+import dev.openrune.types.aconverted.interf.IfButtonOp
 import jakarta.inject.Inject
 import org.rsmod.api.config.refs.invs
 import org.rsmod.api.config.refs.objs
@@ -23,22 +26,18 @@ import org.rsmod.content.interfaces.equipment.configs.equip_interfaces
 import org.rsmod.events.EventBus
 import org.rsmod.game.entity.Player
 import org.rsmod.game.inv.InvObj
-import org.rsmod.game.type.interf.IfButtonOp
-import org.rsmod.game.type.interf.IfEvent
-import org.rsmod.game.type.obj.ObjTypeList
-import org.rsmod.game.type.obj.UnpackedObjType
+import org.rsmod.game.type.getInvObj
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
 class GuidePriceScript
 @Inject
 constructor(
-    private val objTypes: ObjTypeList,
     private val eventBus: EventBus,
     private val protectedAccess: ProtectedAccessLauncher,
     private val marketPrices: MarketPrices,
 ) : PluginScript() {
-    private val UnpackedObjType.price: Int
+    private val ItemServerType.price: Int
         get() = marketPrices[this] ?: 1
 
     override fun ScriptContext.startup() {
@@ -123,7 +122,7 @@ constructor(
         )
     }
 
-    private fun Player.updateSearchPrice(type: UnpackedObjType) {
+    private fun Player.updateSearchPrice(type: ItemServerType) {
         ifSetTextAlign(
             player = this,
             target = equip_components.guide_prices_total_price_text,
@@ -150,7 +149,7 @@ constructor(
                 prices += 0
                 continue
             }
-            val type = objTypes[obj]
+            val type = getInvObj(obj)
             val price = type.price
             total += price * obj.count.toLong()
             prices += price
@@ -228,7 +227,7 @@ constructor(
     }
 
     private fun Player.examine(obj: InvObj) {
-        val type = objTypes[obj]
+        val type = getInvObj(obj)
         objExamine(type, obj.count, type.price)
     }
 

@@ -1,0 +1,903 @@
+[[enum]]
+isServerOnly = true
+id = "enum.weapon_attack_styles"
+keyType = "INT"
+valueType = "INT"
+
+[enum.values]
+0 = 16434
+1 = 17202
+2 = 16434
+3 = 28773
+4 = 16690
+5 = 28773
+6 = 1123
+7 = 28773
+8 = 48
+9 = 16690
+10 = 17202
+11 = 17202
+12 = 16433
+13 = 16434
+14 = 17202
+15 = 16657
+16 = 16690
+17 = 17202
+18 = 16434
+19 = 28773
+20 = 16402
+21 = 16434
+22 = 17202
+24 = 37000
+27 = 12339
+28 = 12290
+
+[[enum]]
+isServerOnly = true
+id = "enum.weapon_attack_types"
+keyType = "INT"
+valueType = "INT"
+
+[enum.values]
+0 = 1563
+1 = 1234
+2 = 1563
+3 = 3126
+4 = 1106
+5 = 3647
+6 = 306
+7 = 3647
+8 = 24
+9 = 1106
+10 = 1234
+11 = 713
+12 = 529
+13 = 1563
+14 = 1234
+15 = 721
+16 = 1627
+17 = 649
+18 = 1563
+19 = 2605
+20 = 1042
+21 = 1553
+22 = 1234
+24 = 2084
+27 = 1563
+28 = 3
+
+[[enum]]
+isServerOnly = true
+id = "enum.autocast_restricted_spells"
+keyType = "OBJ"
+valueType = "BOOLEAN"
+
+[enum.values]
+"obj.39_crumble_undead" = true
+"obj.50_iban_blast" = true
+"obj.50_magic_dart" = true
+"obj.60_flames_of_zamorak" = true
+"obj.60_saradomin_strike" = true
+"obj.60_claws_of_guthix" = true
+
+[[enum]]
+isServerOnly = true
+id = "enum.combo_runes"
+keyType = "OBJ"
+valueType = "ENUM"
+
+[enum.values]
+"obj.mistrune" = "enum.combo_rune_mist"
+"obj.dustrune" = "enum.combo_rune_dust"
+"obj.mudrune" = "enum.combo_rune_mud"
+"obj.smokerune" = "enum.combo_rune_smoke"
+"obj.steamrune" = "enum.combo_rune_steam"
+"obj.lavarune" = "enum.combo_rune_lava"
+
+[[enum]]
+isServerOnly = true
+id = "enum.combo_rune_mist"
+keyType = "INT"
+valueType = "OBJ"
+
+[enum.values]
+0 = "obj.airrune"
+1 = "obj.waterrune"
+
+[[enum]]
+isServerOnly = true
+id = "enum.combo_rune_dust"
+keyType = "INT"
+valueType = "OBJ"
+
+[enum.values]
+0 = "obj.airrune"
+1 = "obj.earthrune"
+
+[[enum]]
+isServerOnly = true
+id = "enum.combo_rune_mud"
+keyType = "INT"
+valueType = "OBJ"
+
+[enum.values]
+0 = "obj.waterrune"
+1 = "obj.earthrune"
+
+[[enum]]
+isServerOnly = true
+id = "enum.combo_rune_smoke"
+keyType = "INT"
+valueType = "OBJ"
+
+[enum.values]
+0 = "obj.airrune"
+1 = "obj.firerune"
+
+[[enum]]
+isServerOnly = true
+id = "enum.combo_rune_steam"
+keyType = "INT"
+valueType = "OBJ"
+
+[enum.values]
+0 = "obj.waterrune"
+1 = "obj.firerune"
+
+[[enum]]
+isServerOnly = true
+id = "enum.combo_rune_lava"
+keyType = "INT"
+valueType = "OBJ"
+
+[enum.values]
+0 = "obj.earthrune"
+1 = "obj.firerune"
+
+[[enum]]
+isServerOnly = true
+id = "enum.staff_substitutes"
+keyType = "OBJ"
+valueType = "ENUM"
+
+[enum.values]
+"obj.guthix_staff" = "enum.guthix_staff_substitutes"
+"obj.zamorak_staff" = "enum.zamorak_staff_substitutes"
+"obj.saradomin_staff" = "enum.saradomin_staff_substitutes"
+"obj.slayer_staff" = "enum.slayer_staff_substitutes"
+"obj.ibanstaff" = "enum.iban_staff_substitutes"
+
+[[enum]]
+isServerOnly = true
+id = "enum.guthix_staff_substitutes"
+keyType = "INT"
+valueType = "OBJ"
+
+[enum.values]
+0 = "obj.pest_void_knight_mace"
+1 = "obj.pest_void_knight_mace_trouver"
+2 = "obj.staff_of_balance"
+
+[[enum]]
+isServerOnly = true
+id = "enum.zamorak_staff_substitutes"
+keyType = "INT"
+valueType = "OBJ"
+
+[enum.values]
+0 = "obj.sotd"
+1 = "obj.toxic_sotd_charged"
+2 = "obj.toxic_sotd"
+3 = "obj.wild_cave_sceptre_charged"
+4 = "obj.wild_cave_sceptre_charged_recol"
+5 = "obj.wild_cave_sceptre_uncharged_recol"
+6 = "obj.wild_cave_accursed_charged"
+7 = "obj.wild_cave_accursed_charged_recol"
+8 = "obj.wild_cave_accursed_uncharged_recol"
+
+[[enum]]
+isServerOnly = true
+id = "enum.saradomin_staff_substitutes"
+keyType = "INT"
+valueType = "OBJ"
+
+[enum.values]
+0 = "obj.staff_of_light"
+
+[[enum]]
+isServerOnly = true
+id = "enum.slayer_staff_substitutes"
+keyType = "INT"
+valueType = "OBJ"
+
+[enum.values]
+0 = "obj.slayer_staff_enchanted"
+1 = "obj.sotd"
+2 = "obj.toxic_sotd"
+3 = "obj.toxic_sotd_charged"
+4 = "obj.staff_of_light"
+5 = "obj.staff_of_balance"
+
+[[enum]]
+isServerOnly = true
+id = "enum.iban_staff_substitutes"
+keyType = "INT"
+valueType = "OBJ"
+
+[enum.values]
+0 = "obj.ibanstaff_upgraded"
+
+[[enum]]
+isServerOnly = true
+id = "enum.rune_substitutes"
+keyType = "OBJ"
+valueType = "ENUM"
+
+[enum.values]
+"obj.airrune" = "enum.air_rune_substitutes"
+"obj.waterrune" = "enum.water_rune_substitutes"
+"obj.earthrune" = "enum.earth_rune_substitutes"
+"obj.firerune" = "enum.fire_rune_substitutes"
+"obj.chaosrune" = "enum.death_rune_substitutes"
+"obj.bloodrune" = "enum.blood_rune_substitutes"
+
+[[enum]]
+isServerOnly = true
+id = "enum.air_rune_substitutes"
+keyType = "INT"
+valueType = "OBJ"
+
+[enum.values]
+0 = "obj.nzone_airrune"
+
+[[enum]]
+isServerOnly = true
+id = "enum.water_rune_substitutes"
+keyType = "INT"
+valueType = "OBJ"
+
+[enum.values]
+0 = "obj.nzone_waterrune"
+
+[[enum]]
+isServerOnly = true
+id = "enum.earth_rune_substitutes"
+keyType = "INT"
+valueType = "OBJ"
+
+[enum.values]
+0 = "obj.nzone_earthrune"
+
+[[enum]]
+isServerOnly = true
+id = "enum.fire_rune_substitutes"
+keyType = "INT"
+valueType = "OBJ"
+
+[enum.values]
+0 = "obj.nzone_firerune"
+1 = "obj.sunfirerune"
+
+[[enum]]
+isServerOnly = true
+id = "enum.chaos_rune_substitutes"
+keyType = "INT"
+valueType = "OBJ"
+
+[enum.values]
+0 = "obj.nzone_chaosrune"
+
+[[enum]]
+isServerOnly = true
+id = "enum.death_rune_substitutes"
+keyType = "INT"
+valueType = "OBJ"
+
+[enum.values]
+0 = "obj.nzone_deathrune"
+
+[[enum]]
+isServerOnly = true
+id = "enum.blood_rune_substitutes"
+keyType = "INT"
+valueType = "OBJ"
+
+[enum.values]
+0 = "obj.nzone_bloodrune"
+
+[[enum]]
+isServerOnly = true
+id = "enum.rune_staves"
+keyType = "OBJ"
+valueType = "ENUM"
+
+[enum.values]
+"obj.airrune" = "enum.air_rune_staves"
+"obj.waterrune" = "enum.water_rune_staves"
+"obj.earthrune" = "enum.earth_rune_staves"
+"obj.firerune" = "enum.fire_rune_staves"
+
+[[enum]]
+isServerOnly = true
+id = "enum.unlimited_runes_hiprio"
+keyType = "OBJ"
+valueType = "ENUM"
+
+[enum.values]
+"obj.airrune" = "enum.air_unlimited_runes_hiprio"
+"obj.waterrune" = "enum.water_unlimited_runes_hiprio"
+"obj.earthrune" = "enum.earth_unlimited_runes_hiprio"
+"obj.firerune" = "enum.fire_unlimited_runes_hiprio"
+
+[[enum]]
+isServerOnly = true
+id = "enum.air_unlimited_runes_hiprio"
+keyType = "INT"
+valueType = "OBJ"
+
+[enum.values]
+0 = "obj.devils_element"
+
+[[enum]]
+isServerOnly = true
+id = "enum.water_unlimited_runes_hiprio"
+keyType = "INT"
+valueType = "OBJ"
+
+[enum.values]
+0 = "obj.devils_element"
+
+[[enum]]
+isServerOnly = true
+id = "enum.earth_unlimited_runes_hiprio"
+keyType = "INT"
+valueType = "OBJ"
+
+[enum.values]
+0 = "obj.devils_element"
+
+[[enum]]
+isServerOnly = true
+id = "enum.fire_unlimited_runes_hiprio"
+keyType = "INT"
+valueType = "OBJ"
+
+[enum.values]
+0 = "obj.devils_element"
+
+[[enum]]
+isServerOnly = true
+id = "enum.unlimited_runes_loprio"
+keyType = "OBJ"
+valueType = "ENUM"
+
+[enum.values]
+"obj.waterrune" = "enum.water_unlimited_runes_loprio"
+"obj.earthrune" = "enum.earth_unlimited_runes_loprio"
+"obj.firerune" = "enum.fire_unlimited_runes_loprio"
+"obj.naturerune" = "enum.nature_unlimited_runes_loprio"
+
+[[enum]]
+isServerOnly = true
+id = "enum.water_unlimited_runes_loprio"
+keyType = "INT"
+valueType = "OBJ"
+
+[enum.values]
+0 = "obj.tome_of_water"
+
+[[enum]]
+isServerOnly = true
+id = "enum.earth_unlimited_runes_loprio"
+keyType = "INT"
+valueType = "OBJ"
+
+[enum.values]
+0 = "obj.tome_of_earth"
+
+[[enum]]
+isServerOnly = true
+id = "enum.fire_unlimited_runes_loprio"
+keyType = "INT"
+valueType = "OBJ"
+
+[enum.values]
+0 = "obj.tome_of_fire"
+
+[[enum]]
+isServerOnly = true
+id = "enum.nature_unlimited_runes_loprio"
+keyType = "INT"
+valueType = "OBJ"
+
+[enum.values]
+0 = "obj.nature_staff_charged"
+
+[[enum]]
+isServerOnly = true
+id = "enum.signpost_directions"
+keyType = "COORDGRID"
+valueType = "STRING"
+default = "West to the Kingdom of Zeah.|South to the City of Lumbridge.|North to the Wilderness.|East to Fossil Island."
+
+[enum.values]
+53005468 = "West to the Lumbridge Castle and Draynor Village. Beware the goblins!|South to the swamps of Lumbridge.|Head north towards Fred's farm and the windmill.|Cross the bridge and head east to Al Kharid or north to Varrock."
+53431454 = "West to Lumbridge.|The River Lum lies to the south.|North to farms and Varrock.|East to Al Kharid - toll gate; bring some money."
+50908384 = "West to Port Sarim, Falador and Rimmington.|South to Draynor Village and the Wizards' Tower.|North to Draynor Manor.|East to Lumbridge."
+48876750 = "Follow the path west to the Crafting Guild.|Follow the path south to Rimmington.|North to the glorious White Knights' city of Falador.|Follow the path east to Port Sarim and Draynor Village."
+
+[[enum]]
+isServerOnly = true
+id = "enum.bank_space_purchase_block_cost"
+keyType = "INT"
+valueType = "INT"
+default = 999999999
+
+[enum.values]
+1 = 1000000
+2 = 2000000
+3 = 5000000
+4 = 10000000
+5 = 20000000
+6 = 50000000
+7 = 100000000
+8 = 200000000
+9 = 500000000
+
+[[enum]]
+isServerOnly = true
+id = "enum.weapon_last_stance_varbits"
+keyType = "INT"
+valueType = "INT"
+
+[enum.values]
+0 = "varbit.saved_attackstyle_unarmed"
+1 = "varbit.saved_attackstyle_axe"
+2 = "varbit.saved_attackstyle_blunt"
+3 = "varbit.saved_attackstyle_bow"
+4 = "varbit.saved_attackstyle_claw"
+5 = "varbit.saved_attackstyle_crossbow"
+6 = "varbit.saved_attackstyle_salamander"
+7 = "varbit.saved_attackstyle_chinchompas"
+8 = "varbit.saved_attackstyle_gun"
+9 = "varbit.saved_attackstyle_slash_sword"
+10 = "varbit.saved_attackstyle_2h_sword"
+11 = "varbit.saved_attackstyle_pickaxe"
+12 = "varbit.saved_attackstyle_polearm"
+13 = "varbit.saved_attackstyle_polestaff"
+14 = "varbit.saved_attackstyle_scythe"
+15 = "varbit.saved_attackstyle_spear"
+16 = "varbit.saved_attackstyle_spiked"
+17 = "varbit.saved_attackstyle_stab_sword"
+18 = "varbit.saved_attackstyle_staff"
+19 = "varbit.saved_attackstyle_thrown"
+20 = "varbit.saved_attackstyle_whip"
+21 = "varbit.saved_attackstyle_bladed_staff"
+22 = "varbit.saved_attackstyle_banner"
+23 = "varbit.saved_attackstyle_godsword"
+24 = "varbit.saved_attackstyle_powered_staff"
+27 = "varbit.saved_attackstyle_bludgeon"
+28 = "varbit.saved_attackstyle_bulwark"
+
+[[enum]]
+isServerOnly = true
+id = "enum.skill_cape_anims"
+keyType = "STAT"
+valueType = "SEQ"
+
+[enum.values]
+"stat.attack" = "seq.skill_cape_attack"
+"stat.defence" = "seq.skill_cape_defend"
+"stat.strength" = "seq.skillcapes_human_strength"
+"stat.hitpoints" = "seq.skillcapes_human_hitpoints"
+"stat.ranged" = "seq.skillcapes_human_range"
+"stat.prayer" = "seq.skillcapes_human_prayer"
+"stat.magic" = "seq.skillcapes_player_magic"
+"stat.cooking" = "seq.skillcapes_cooking_player_anim"
+"stat.woodcutting" = "seq.skillcapes_woodcutting_player_anim"
+"stat.fletching" = "seq.skillcapes_player_fletching_bow"
+"stat.fishing" = "seq.skillcapes_fishing_player_anim"
+"stat.firemaking" = "seq.skillcapes_human_firemaking"
+"stat.crafting" = "seq.skillcapes_crafting_player_anim"
+"stat.smithing" = "seq.skillcapes_player_smithing"
+"stat.mining" = "seq.skillcapes_player_mining"
+"stat.herblore" = "seq.skillcapes_human_herblore"
+"stat.agility" = "seq.skillcapes_human_agility"
+"stat.thieving" = "seq.skill_cape_thieving"
+"stat.slayer" = "seq.skill_cape_slayer"
+"stat.farming" = "seq.skillcape_farming"
+"stat.runecrafting" = "seq.skillcapes_player_runecrafting"
+"stat.hunter" = "seq.skillcapes_human_hunting"
+"stat.construction" = "seq.skillcapes_construction_player_anim"
+
+[[enum]]
+isServerOnly = true
+id = "enum.skill_cape_spots"
+keyType = "STAT"
+valueType = "SPOTANIM"
+
+[enum.values]
+"stat.attack" = "spotanim.skillcape_attack_spotanim"
+"stat.defence" = "spotanim.skillcape_defend_spotanim"
+"stat.strength" = "spotanim.skillcapes_strength"
+"stat.hitpoints" = "spotanim.skillcapes_hitpoints"
+"stat.ranged" = "spotanim.skillcapes_range"
+"stat.prayer" = "spotanim.skillcapes_prayer"
+"stat.magic" = "spotanim.skillcapes_magic_spotanim"
+"stat.cooking" = "spotanim.skillcapes_cooking_spotanim"
+"stat.woodcutting" = "spotanim.skillcapes_woodcutting_spotanim"
+"stat.fletching" = "spotanim.skillcapes_fletching_bow_spotanim"
+"stat.fishing" = "spotanim.skillcapes_fishing_spotanim"
+"stat.firemaking" = "spotanim.skillcapes_firemaking"
+"stat.crafting" = "spotanim.skillcapes_crafting_spotanim"
+"stat.smithing" = "spotanim.skillcapes_smithing_spotanim"
+"stat.mining" = "spotanim.skillcapes_mining_spotanim"
+"stat.herblore" = "spotanim.skillcapes_herblore"
+"stat.agility" = "spotanim.skillcapes_agility"
+"stat.thieving" = "spotanim.skillcape_thieving_spotanim"
+"stat.slayer" = "spotanim.skillcape_slayer_spotanim"
+"stat.farming" = "spotanim.skillcape_farming_spotanim"
+"stat.runecrafting" = "spotanim.skillcapes_runecrafting_spotanim"
+"stat.hunter" = "spotanim.skillcapes_hunting"
+"stat.construction" = "spotanim.skillcapes_construction_spotanim"
+
+[[enum]]
+isServerOnly = true
+id = "enum.skill_guide_button_vars"
+keyType = "COMPONENT"
+valueType = "INT"
+
+[enum.values]
+"component.stats:attack" = 1
+"component.stats:strength" = 2
+"component.stats:ranged" = 3
+"component.stats:magic" = 4
+"component.stats:defence" = 5
+"component.stats:hitpoints" = 6
+"component.stats:prayer" = 7
+"component.stats:agility" = 8
+"component.stats:herblore" = 9
+"component.stats:thieving" = 10
+"component.stats:crafting" = 11
+"component.stats:runecraft" = 12
+"component.stats:mining" = 13
+"component.stats:smithing" = 14
+"component.stats:fishing" = 15
+"component.stats:cooking" = 16
+"component.stats:firemaking" = 17
+"component.stats:woodcutting" = 18
+"component.stats:fletching" = 19
+"component.stats:slayer" = 20
+"component.stats:farming" = 21
+"component.stats:construction" = 22
+"component.stats:hunter" = 23
+
+[[enum]]
+isServerOnly = true
+id = "enum.skill_guide_section_vars"
+keyType = "COMPONENT"
+valueType = "INT"
+
+[enum.values]
+"component.skill_guide:00" = 0
+"component.skill_guide:01" = 1
+"component.skill_guide:02" = 2
+"component.skill_guide:03" = 3
+"component.skill_guide:04" = 4
+"component.skill_guide:05" = 5
+"component.skill_guide:06" = 6
+"component.skill_guide:07" = 7
+"component.skill_guide:08" = 8
+"component.skill_guide:09" = 9
+"component.skill_guide:10" = 10
+"component.skill_guide:11" = 11
+"component.skill_guide:12" = 12
+"component.skill_guide:13" = 13
+
+[[enum]]
+isServerOnly = true
+id = "enum.regular_tree_axes"
+keyType = "OBJ"
+valueType = "INT"
+
+[enum.values]
+"obj.bronze_axe" = 4194504
+"obj.iron_axe" = 6291756
+"obj.steel_axe" = 8389008
+"obj.black_axe" = 9437634
+"obj.mithril_axe" = 10486260
+"obj.adamant_axe" = 12583512
+"obj.rune_axe" = 14680764
+"obj.trail_gilded_axe" = 14680764
+"obj.dragon_axe" = 15729390
+"obj.trailblazer_axe_no_infernal" = 15729390
+"obj.3a_axe" = 15729390
+"obj.infernal_axe" = 15729390
+"obj.trailblazer_axe" = 15729390
+"obj.crystal_axe" = 16384800
+
+[[enum]]
+isServerOnly = true
+id = "enum.oak_tree_axes"
+keyType = "OBJ"
+valueType = "INT"
+
+[enum.values]
+"obj.bronze_axe" = 2097252
+"obj.iron_axe" = 3145878
+"obj.steel_axe" = 4194504
+"obj.black_axe" = 4718817
+"obj.mithril_axe" = 5243130
+"obj.adamant_axe" = 6291756
+"obj.rune_axe" = 7340382
+"obj.trail_gilded_axe" = 7340382
+"obj.dragon_axe" = 7864695
+"obj.trailblazer_axe_no_infernal" = 7864695
+"obj.3a_axe" = 7864695
+"obj.infernal_axe" = 7864695
+"obj.trailblazer_axe" = 7864695
+"obj.crystal_axe" = 7864695
+
+[[enum]]
+isServerOnly = true
+id = "enum.willow_tree_axes"
+keyType = "OBJ"
+valueType = "INT"
+
+[enum.values]
+"obj.bronze_axe" = 1048626
+"obj.iron_axe" = 1572939
+"obj.steel_axe" = 2097252
+"obj.black_axe" = 2359408
+"obj.mithril_axe" = 2621565
+"obj.adamant_axe" = 3145878
+"obj.rune_axe" = 3670191
+"obj.trail_gilded_axe" = 3670191
+"obj.dragon_axe" = 3932347
+"obj.trailblazer_axe_no_infernal" = 3932347
+"obj.3a_axe" = 3932347
+"obj.infernal_axe" = 3932347
+"obj.trailblazer_axe" = 3932347
+"obj.crystal_axe" = 3932347
+
+[[enum]]
+isServerOnly = true
+id = "enum.teak_tree_axes"
+keyType = "OBJ"
+valueType = "INT"
+
+[enum.values]
+"obj.bronze_axe" = 983086
+"obj.iron_axe" = 1507398
+"obj.steel_axe" = 2031709
+"obj.black_axe" = 2293862
+"obj.mithril_axe" = 2556021
+"obj.adamant_axe" = 3080332
+"obj.rune_axe" = 3604644
+"obj.trail_gilded_axe" = 3604644
+"obj.dragon_axe" = 3932350
+"obj.trailblazer_axe_no_infernal" = 3932350
+"obj.3a_axe" = 3932350
+"obj.infernal_axe" = 3932350
+"obj.trailblazer_axe" = 3932350
+"obj.crystal_axe" = 3932360
+
+[[enum]]
+isServerOnly = true
+id = "enum.maple_tree_axes"
+keyType = "OBJ"
+valueType = "INT"
+
+[enum.values]
+"obj.bronze_axe" = 524313
+"obj.iron_axe" = 786469
+"obj.steel_axe" = 1048626
+"obj.black_axe" = 1179704
+"obj.mithril_axe" = 1310782
+"obj.adamant_axe" = 1572939
+"obj.rune_axe" = 1835095
+"obj.trail_gilded_axe" = 1835095
+"obj.dragon_axe" = 1966173
+"obj.trailblazer_axe_no_infernal" = 1966173
+"obj.3a_axe" = 1966173
+"obj.infernal_axe" = 1966173
+"obj.trailblazer_axe" = 1966173
+"obj.crystal_axe" = 1966173
+
+[[enum]]
+isServerOnly = true
+id = "enum.arctic_tree_axes"
+keyType = "OBJ"
+valueType = "INT"
+
+[enum.values]
+"obj.bronze_axe" = 393246
+"obj.iron_axe" = 524332
+"obj.steel_axe" = 720956
+"obj.black_axe" = 852035
+"obj.mithril_axe" = 917578
+"obj.adamant_axe" = 1114202
+"obj.rune_axe" = 1310824
+"obj.trail_gilded_axe" = 1310824
+"obj.dragon_axe" = 1376368
+"obj.trailblazer_axe_no_infernal" = 1376368
+"obj.3a_axe" = 1376368
+"obj.infernal_axe" = 1376368
+"obj.trailblazer_axe" = 1376368
+"obj.crystal_axe" = 1376368
+
+[[enum]]
+isServerOnly = true
+id = "enum.mahogany_tree_axes"
+keyType = "OBJ"
+valueType = "INT"
+
+[enum.values]
+"obj.bronze_axe" = 524313
+"obj.iron_axe" = 786470
+"obj.steel_axe" = 1048626
+"obj.black_axe" = 1179702
+"obj.mithril_axe" = 1310783
+"obj.adamant_axe" = 1638475
+"obj.rune_axe" = 1900632
+"obj.trail_gilded_axe" = 1900632
+"obj.dragon_axe" = 2228318
+"obj.trailblazer_axe_no_infernal" = 2228318
+"obj.3a_axe" = 2228318
+"obj.infernal_axe" = 2228318
+"obj.trailblazer_axe" = 2228318
+"obj.crystal_axe" = 2359393
+
+[[enum]]
+isServerOnly = true
+id = "enum.yew_tree_axes"
+keyType = "OBJ"
+valueType = "INT"
+
+[enum.values]
+"obj.bronze_axe" = 262156
+"obj.iron_axe" = 393235
+"obj.steel_axe" = 524313
+"obj.black_axe" = 589852
+"obj.mithril_axe" = 655391
+"obj.adamant_axe" = 786469
+"obj.rune_axe" = 917548
+"obj.trail_gilded_axe" = 917548
+"obj.dragon_axe" = 983087
+"obj.trailblazer_axe_no_infernal" = 983087
+"obj.3a_axe" = 983087
+"obj.infernal_axe" = 983087
+"obj.trailblazer_axe" = 983087
+"obj.crystal_axe" = 983087
+
+[[enum]]
+isServerOnly = true
+id = "enum.magic_tree_axes"
+keyType = "OBJ"
+valueType = "INT"
+
+[enum.values]
+"obj.bronze_axe" = 131078
+"obj.iron_axe" = 196617
+"obj.steel_axe" = 262156
+"obj.black_axe" = 327693
+"obj.mithril_axe" = 327695
+"obj.adamant_axe" = 393234
+"obj.rune_axe" = 458773
+"obj.trail_gilded_axe" = 458773
+"obj.dragon_axe" = 458774
+"obj.trailblazer_axe_no_infernal" = 458774
+"obj.3a_axe" = 458774
+"obj.infernal_axe" = 458774
+"obj.trailblazer_axe" = 458774
+"obj.crystal_axe" = 458774
+
+[[enum]]
+isServerOnly = true
+id = "enum.redwood_tree_axes"
+keyType = "OBJ"
+valueType = "INT"
+
+[enum.values]
+"obj.bronze_axe" = 131078
+"obj.iron_axe" = 196617
+"obj.steel_axe" = 262156
+"obj.black_axe" = 262158
+"obj.mithril_axe" = 327695
+"obj.adamant_axe" = 393234
+"obj.rune_axe" = 458773
+"obj.trail_gilded_axe" = 458773
+"obj.dragon_axe" = 458782
+"obj.trailblazer_axe_no_infernal" = 458782
+"obj.3a_axe" = 458782
+"obj.infernal_axe" = 458782
+"obj.trailblazer_axe" = 458782
+"obj.crystal_axe" = 524323
+
+[[enum]]
+isServerOnly = true
+id = "enum.hollow_tree_axes"
+keyType = "OBJ"
+valueType = "INT"
+
+[enum.values]
+"obj.bronze_axe" = 1179674
+"obj.iron_axe" = 1835048
+"obj.steel_axe" = 2359350
+"obj.black_axe" = 2752569
+"obj.mithril_axe" = 3014724
+"obj.adamant_axe" = 3866705
+"obj.rune_axe" = 4194398
+"obj.trail_gilded_axe" = 4194398
+"obj.dragon_axe" = 4391013
+"obj.trailblazer_axe_no_infernal" = 4391013
+"obj.3a_axe" = 4391013
+"obj.infernal_axe" = 4391013
+"obj.trailblazer_axe" = 4391013
+"obj.crystal_axe" = 4391013
+
+[[enum]]
+isServerOnly = true
+id = "enum.canoe_station_axe_rates"
+keyType = "OBJ"
+valueType = "INT"
+
+[enum.values]
+"obj.bronze_axe" = 2097252
+"obj.iron_axe" = 3145878
+"obj.steel_axe" = 4194504
+"obj.black_axe" = 4718817
+"obj.mithril_axe" = 5243130
+"obj.adamant_axe" = 6291756
+"obj.rune_axe" = 7340382
+"obj.trail_gilded_axe" = 7340382
+"obj.dragon_axe" = 7340382
+"obj.trailblazer_axe_no_infernal" = 7340382
+"obj.3a_axe" = 7340382
+"obj.infernal_axe" = 7340382
+"obj.trailblazer_axe" = 7340382
+"obj.crystal_axe" = 7340382
+
+[[enum]]
+isServerOnly = true
+id = "enum.canoe_shaping_axe_rates"
+keyType = "OBJ"
+valueType = "INT"
+
+[enum.values]
+"obj.bronze_axe" = 2097252
+"obj.iron_axe" = 3145878
+"obj.steel_axe" = 4194504
+"obj.black_axe" = 4718817
+"obj.mithril_axe" = 5243130
+"obj.adamant_axe" = 6291756
+"obj.rune_axe" = 7340382
+"obj.trail_gilded_axe" = 7340382
+"obj.dragon_axe" = 7340382
+"obj.trailblazer_axe_no_infernal" = 7340382
+"obj.3a_axe" = 7340382
+"obj.infernal_axe" = 7340382
+"obj.trailblazer_axe" = 7340382
+"obj.crystal_axe" = 7340382
+
+[[enum]]
+isServerOnly = true
+id = "enum.canoe_shaping_axe_anims"
+keyType = "OBJ"
+valueType = "SEQ"
+
+[enum.values]
+"obj.bronze_axe" = "seq.human_canoeing_carve_bronze_axe"
+"obj.iron_axe" = "seq.human_canoeing_carve_iron_axe"
+"obj.steel_axe" = "seq.human_canoeing_carve_steel_axe"
+"obj.black_axe" = "seq.human_canoeing_carve_black_axe"
+"obj.mithril_axe" = "seq.human_canoeing_carve_mithril_axe"
+"obj.adamant_axe" = "seq.human_canoeing_carve_adamant_axe"
+"obj.rune_axe" = "seq.human_canoeing_carve_rune_axe"
+"obj.trail_gilded_axe" = "seq.human_canoeing_carve_gilded_axe"
+"obj.dragon_axe" = "seq.human_canoeing_carve_dragon_axe"
+"obj.trailblazer_axe_no_infernal" = "seq.human_canoeing_carve_trailblazer_axe_no_infernal"
+"obj.3a_axe" = "seq.human_canoeing_carve_3a_axe"
+"obj.infernal_axe" = "seq.human_canoeing_carve_infernal_axe"
+"obj.trailblazer_axe" = "seq.human_canoeing_carve_league_trailblazer_axe"
+"obj.crystal_axe" = "seq.human_canoeing_carve_crystal_axe"

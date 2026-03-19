@@ -1,0 +1,175 @@
+[[projectile]]
+isServerOnly = true
+id = "projanim.arrow"
+startHeight = 163
+endHeight = 146
+delay = 41
+angle = 15
+lengthAdjustment = 5
+progress = 11
+stepMultiplier = 5
+
+[[projectile]]
+isServerOnly = true
+id = "projanim.bolt"
+startHeight = 155
+endHeight = 146
+delay = 41
+angle = 5
+lengthAdjustment = 5
+progress = 11
+stepMultiplier = 5
+
+[[projectile]]
+isServerOnly = true
+id = "projanim.chinchompa"
+startHeight = 163
+endHeight = 146
+delay = 21
+angle = 15
+lengthAdjustment = 11
+progress = 11
+stepMultiplier = 5
+
+[[projectile]]
+isServerOnly = true
+id = "projanim.thrown"
+startHeight = 163
+endHeight = 146
+delay = 32
+angle = 15
+lengthAdjustment = 0
+progress = 11
+stepMultiplier = 5
+
+[[projectile]]
+isServerOnly = true
+id = "projanim.doublearrow_one"
+startHeight = 163
+endHeight = 146
+delay = 41
+angle = 5
+lengthAdjustment = 5
+progress = 11
+stepMultiplier = 5
+
+[[projectile]]
+isServerOnly = true
+id = "projanim.doublearrow_two"
+startHeight = 163
+endHeight = 146
+delay = 41
+angle = 25
+lengthAdjustment = 14
+progress = 11
+stepMultiplier = 10
+
+[[projectile]]
+isServerOnly = true
+id = "projanim.magic_spell"
+startHeight = 172
+endHeight = 124
+delay = 51
+angle = 16
+lengthAdjustment = -5
+progress = 64
+stepMultiplier = 10
+
+[[projectile]]
+isServerOnly = true
+id = "projanim.magic_spell_low"
+startHeight = 172
+endHeight = 0
+delay = 51
+angle = 16
+lengthAdjustment = -5
+progress = 64
+stepMultiplier = 10
+
+[[projectile]]
+isServerOnly = true
+id = "projanim.iban_blast"
+startHeight = 144
+endHeight = 124
+delay = 60
+angle = 16
+lengthAdjustment = -14
+progress = 64
+stepMultiplier = 10
+
+[[projectile]]
+isServerOnly = true
+id = "projanim.vulnerability"
+startHeight = 144
+endHeight = 124
+delay = 34
+angle = 16
+lengthAdjustment = 12
+progress = 64
+stepMultiplier = 10
+
+[[projectile]]
+isServerOnly = true
+id = "projanim.stun"
+startHeight = 144
+endHeight = 124
+delay = 52
+angle = 16
+lengthAdjustment = -6
+progress = 64
+stepMultiplier = 10
+
+[[projectile]]
+isServerOnly = true
+id = "projanim.crumble_undead"
+startHeight = 124
+endHeight = 124
+delay = 46
+angle = 16
+lengthAdjustment = 0
+progress = 64
+stepMultiplier = 5
+
+[[projectile]]
+isServerOnly = true
+id = "projanim.enfeeble"
+startHeight = 144
+endHeight = 124
+delay = 48
+angle = 16
+lengthAdjustment = -2
+progress = 64
+stepMultiplier = 10
+
+[[projectile]]
+isServerOnly = true
+id = "projanim.confuse"
+startHeight = 144
+endHeight = 124
+delay = 61
+angle = 16
+lengthAdjustment = -15
+progress = 64
+stepMultiplier = 10
+
+[[projectile]]
+isServerOnly = true
+id = "projanim.bind"
+startHeight = 180
+endHeight = 0
+delay = 75
+angle = 16
+lengthAdjustment = -29
+progress = 64
+stepMultiplier = 10
+
+[[projectile]]
+isServerOnly = true
+id = "projanim.tumekens_shadow"
+startHeight = 250
+endHeight = 124
+delay = 56
+angle = 32
+lengthAdjustment = 16
+progress = 40
+stepMultiplier = 10

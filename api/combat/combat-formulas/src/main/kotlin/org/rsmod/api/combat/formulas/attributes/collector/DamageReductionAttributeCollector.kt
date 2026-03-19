@@ -17,11 +17,11 @@ import org.rsmod.api.player.worn.EquipmentChecks
 import org.rsmod.api.random.GameRandom
 import org.rsmod.game.entity.Player
 import org.rsmod.game.inv.isType
-import org.rsmod.game.type.obj.ObjTypeList
+import org.rsmod.game.type.getOrNull
 
 public class DamageReductionAttributeCollector
 @Inject
-constructor(private val attackStyles: AttackStyles, private val objTypes: ObjTypeList) {
+constructor(private val attackStyles: AttackStyles) {
     // `random` is an explicit parameter to indicate that this function relies on randomness
     // for certain effects, such as the Elysian spirit shield proc.
     public fun collectNvP(player: Player, random: GameRandom): EnumSet<DamageReductionAttributes> {
@@ -32,7 +32,7 @@ constructor(private val attackStyles: AttackStyles, private val objTypes: ObjTyp
             attributes += DamageReductionAttributes.ElysianProc
         }
 
-        val weaponType = objTypes.getOrNull(player.righthand)
+        val weaponType = getOrNull(player.righthand)
         if (weaponType != null && weaponType.isCategoryType(categories.dinhs_bulwark)) {
             val attackStyle = attackStyles.get(player)
             val passiveDelay = player.vars[varps.dinhs_passive_delay]

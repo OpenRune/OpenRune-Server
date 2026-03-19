@@ -1,11 +1,11 @@
 package org.rsmod.api.npc.vars
 
+import dev.openrune.types.VarnBitType
+import dev.openrune.types.VarnType
 import kotlin.reflect.KProperty
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.npc.NpcUid
 import org.rsmod.game.entity.player.PlayerUid
-import org.rsmod.game.type.varn.VarnType
-import org.rsmod.game.type.varnbit.VarnBitType
 import org.rsmod.map.CoordGrid
 
 /* Varnpc delegates */

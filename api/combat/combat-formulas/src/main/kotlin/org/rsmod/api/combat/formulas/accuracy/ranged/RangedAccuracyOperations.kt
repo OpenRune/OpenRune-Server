@@ -1,5 +1,6 @@
 package org.rsmod.api.combat.formulas.accuracy.ranged
 
+import dev.openrune.util.Wearpos
 import java.util.EnumSet
 import kotlin.math.min
 import org.rsmod.api.combat.accuracy.player.PlayerRangedAccuracy
@@ -15,7 +16,6 @@ import org.rsmod.api.player.stat.rangedLvl
 import org.rsmod.api.player.worn.EquipmentChecks
 import org.rsmod.game.entity.Player
 import org.rsmod.game.inv.Inventory
-import org.rsmod.game.type.obj.Wearpos
 import org.rsmod.game.vars.VarPlayerIntMap
 
 private typealias RangeAttr = CombatRangedAttributes

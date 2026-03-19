@@ -23,14 +23,13 @@ import org.rsmod.api.script.onApPlayerT
 import org.rsmod.api.spells.MagicSpellRegistry
 import org.rsmod.api.spells.autocast.AutocastWeapons
 import org.rsmod.game.entity.Player
-import org.rsmod.game.type.obj.ObjTypeList
+import org.rsmod.game.type.getOrNull
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
 internal class PvPCombatScript
 @Inject
 constructor(
-    private val objTypes: ObjTypeList,
     private val styles: AttackStyles,
     private val types: AttackTypes,
     private val combat: PvPCombat,
@@ -69,7 +68,7 @@ constructor(
             return
         }
 
-        val spell = resolveAutocastSpell(objTypes, spells, runes, autocast)
+        val spell = resolveAutocastSpell(spells, runes, autocast)
         val attack = resolveCombatAttack(player.righthand, type, style, spell)
         combat.attack(this, target, attack)
     }
@@ -81,7 +80,7 @@ constructor(
         val type = types.get(player)
         val style = styles.get(player)
 
-        val spell = resolveAutocastSpell(objTypes, spells, runes, autocast)
+        val spell = resolveAutocastSpell(spells, runes, autocast)
         val attack = resolveCombatAttack(player.righthand, type, style, spell)
         combat.attack(this, target, attack)
     }
@@ -103,7 +102,7 @@ constructor(
     }
 
     private fun ProtectedAccess.canAttack(target: Player): Boolean {
-        val weapon = objTypes.getOrNull(player.righthand)
+        val weapon = getOrNull(player.righthand)
         if (weapon != null && weapon.isCategoryType(categories.dinhs_bulwark)) {
             val attackStyle = styles.get(player)
             // Dinh's "Block" attack style uses `AggressiveMelee` as its "dummy" attack style.

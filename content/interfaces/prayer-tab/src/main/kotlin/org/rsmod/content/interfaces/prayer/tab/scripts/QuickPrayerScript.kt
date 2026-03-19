@@ -1,5 +1,8 @@
 package org.rsmod.content.interfaces.prayer.tab.scripts
 
+import dev.openrune.definition.type.widget.IfEvent
+import dev.openrune.types.aconverted.interf.IfButtonOp
+import dev.openrune.types.aconverted.interf.IfSubType
 import jakarta.inject.Inject
 import org.rsmod.api.config.constants
 import org.rsmod.api.config.refs.components
@@ -34,9 +37,6 @@ import org.rsmod.content.interfaces.prayer.tab.util.enablePrayerDrain
 import org.rsmod.content.interfaces.prayer.tab.util.enablePrayerStatRegen
 import org.rsmod.events.EventBus
 import org.rsmod.game.entity.Player
-import org.rsmod.game.type.interf.IfButtonOp
-import org.rsmod.game.type.interf.IfEvent
-import org.rsmod.game.type.interf.IfSubType
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 

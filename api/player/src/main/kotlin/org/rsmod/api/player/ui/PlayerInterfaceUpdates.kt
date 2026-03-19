@@ -1,13 +1,13 @@
 package org.rsmod.api.player.ui
 
+import dev.openrune.util.WeaponCategory
 import org.rsmod.api.config.refs.components
 import org.rsmod.api.config.refs.varbits
 import org.rsmod.api.player.output.ClientScripts
 import org.rsmod.api.player.righthand
 import org.rsmod.api.player.vars.intVarBit
 import org.rsmod.game.entity.Player
-import org.rsmod.game.type.obj.ObjTypeList
-import org.rsmod.game.type.obj.WeaponCategory
+import org.rsmod.game.type.getOrNull
 
 private var Player.combatTabWeaponStyle: Int by intVarBit(varbits.combat_weapon_category)
 private var Player.combatLvlWhole: Int by intVarBit(varbits.combatlevel_transmit)
@@ -27,15 +27,15 @@ public object PlayerInterfaceUpdates {
         ClientScripts.pvpIconsComLevelRange(player, player.combatLevel)
     }
 
-    public fun updateCombatTab(player: Player, objTypes: ObjTypeList) {
-        val righthandType = objTypes.getOrNull(player.righthand)
-        val weaponCategory = WeaponCategory.getOrUnarmed(righthandType?.weaponCategory)
+    public fun updateCombatTab(player: Player) {
+        val righthandType = getOrNull(player.righthand)
+        val weaponCategory = WeaponCategory.getOrUnarmed(righthandType?.weaponCategory?.id)
         updateCombatTab(player, righthandType?.name, weaponCategory.id, weaponCategory.text)
     }
 
-    public fun updateWeaponCategoryText(player: Player, objTypes: ObjTypeList) {
-        val righthandType = objTypes.getOrNull(player.righthand)
-        val weaponCategory = WeaponCategory.getOrUnarmed(righthandType?.weaponCategory)
+    public fun updateWeaponCategoryText(player: Player) {
+        val righthandType = getOrNull(player.righthand)
+        val weaponCategory = WeaponCategory.getOrUnarmed(righthandType?.weaponCategory?.id)
         player.ifSetText(components.combat_tab_category, "Category: ${weaponCategory.text}")
     }
 

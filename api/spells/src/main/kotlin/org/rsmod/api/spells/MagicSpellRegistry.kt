@@ -1,26 +1,22 @@
 package org.rsmod.api.spells
 
-import jakarta.inject.Inject
+import dev.openrune.rscm.RSCM
+import dev.openrune.rscm.RSCMType
+import dev.openrune.types.ItemServerType
 import org.rsmod.api.combat.commons.magic.MagicSpell
 import org.rsmod.api.combat.commons.magic.MagicSpellType
 import org.rsmod.api.combat.commons.magic.Spellbook
 import org.rsmod.api.config.aliases.ParamInt
 import org.rsmod.api.config.aliases.ParamObj
+import org.rsmod.api.config.refs.BaseParams
 import org.rsmod.api.config.refs.objs
-import org.rsmod.api.config.refs.params
 import org.rsmod.api.spells.configs.spell_enums
-import org.rsmod.game.enums.EnumTypeMapResolver
-import org.rsmod.game.type.obj.ObjType
-import org.rsmod.game.type.obj.ObjTypeList
-import org.rsmod.game.type.obj.isType
 
-public class MagicSpellRegistry
-@Inject
-constructor(private val objTypes: ObjTypeList, private val enumResolver: EnumTypeMapResolver) {
+public class MagicSpellRegistry {
     private lateinit var objSpells: Map<Int, MagicSpell>
     private lateinit var autocastSpells: Map<Int, MagicSpell>
 
-    public fun getObjSpell(obj: ObjType): MagicSpell? = objSpells[obj.id]
+    public fun getObjSpell(obj: ItemServerType): MagicSpell? = objSpells[obj.id]
 
     public fun getAutocastSpell(autocastId: Int): MagicSpell? = autocastSpells[autocastId]
 
@@ -40,9 +36,9 @@ constructor(private val objTypes: ObjTypeList, private val enumResolver: EnumTyp
     private fun loadObjSpells(): Map<Int, MagicSpell> {
         val spells = hashMapOf<Int, MagicSpell>()
 
-        val spellbookList = enumResolver[spell_enums.spellbooks].filterValuesNotNull()
+        val spellbookList = spell_enums.spellbooks.filterValuesNotNull()
         for (spellbookEnum in spellbookList.values) {
-            val spellList = enumResolver[spellbookEnum].filterValuesNotNull()
+            val spellList = spellbookEnum.filterValuesNotNull()
             for (spellObj in spellList.values) {
                 spells[spellObj.id] = spellObj.toMagicSpell()
             }
@@ -54,7 +50,7 @@ constructor(private val objTypes: ObjTypeList, private val enumResolver: EnumTyp
     private fun loadAutocastSpells(objSpells: Map<Int, MagicSpell>): Map<Int, MagicSpell> {
         val spells = hashMapOf<Int, MagicSpell>()
 
-        val autocastSpells = enumResolver[spell_enums.autocast_spells].filterValuesNotNull()
+        val autocastSpells = spell_enums.autocast_spells.filterValuesNotNull()
         for ((autocastId, spellObj) in autocastSpells) {
             val spell = objSpells[spellObj.id]
             checkNotNull(spell) { "Unexpected null spell for obj: $spellObj" }
@@ -64,41 +60,43 @@ constructor(private val objTypes: ObjTypeList, private val enumResolver: EnumTyp
         return spells
     }
 
-    private fun ObjType.toMagicSpell(): MagicSpell {
-        val unpacked = objTypes[this]
+    private fun ItemServerType.toMagicSpell(): MagicSpell {
+        val unpacked = this
 
         // Some spells can have a default (-1) spellbook, such as `teleport_to_target_spell`.
-        val spellbookId = unpacked.param(params.spell_spellbook)
+        val spellbookId = unpacked.param(BaseParams.spell_spellbook)
         val spellbook = Spellbook[spellbookId]
 
-        val spellTypeId = unpacked.param(params.spell_type)
+        val spellTypeId = unpacked.param(BaseParams.spell_type)
         val spellType =
             MagicSpellType[spellTypeId]
                 ?: error("Invalid MagicSpellType: $spellTypeId (spell=$unpacked)")
 
-        val name = unpacked.param(params.spell_name)
-        val button = unpacked.param(params.spell_button)
-        val maxHit = unpacked.param(params.spell_maxhit)
-        val levelReq = unpacked.param(params.spell_levelreq)
-        val experience = unpacked.paramOrNull(params.spell_castxp)
+        val name = unpacked.param(BaseParams.spell_name)
+        val button = unpacked.param(BaseParams.spell_button)
+        val maxHit = unpacked.param(BaseParams.spell_maxhit)
+        val levelReq = unpacked.param(BaseParams.spell_levelreq)
+        val experience = unpacked.paramOrNull(BaseParams.spell_castxp)
 
-        checkNotNull(experience) { "Cast xp not defined for spell obj: '$internalName' ($id)" }
+        checkNotNull(experience) {
+            "Cast xp not defined for spell obj: '${RSCM.getReverseMapping(RSCMType.OBJ, id)}' ($id)"
+        }
 
         val objReqs = buildList {
             fun addRequirement(objParam: ParamObj, countParam: ParamInt) {
                 val paramObj = unpacked.paramOrNull(objParam) ?: return
                 val obj = paramObj.toRequirementObj()
-                val worn = objTypes[obj].wearpos1.takeIf { it != -1 }
+                val worn = obj.wearpos1.takeIf { it != -1 }
                 val count = unpacked.param(countParam)
                 check(worn == null || count == 1) {
                     "Count for worn objs expected to be 1: spell=$this, obj=$obj, count=$count"
                 }
                 this += MagicSpell.ObjRequirement(obj, count, worn)
             }
-            addRequirement(params.spell_runetype_1, params.spell_runecount_1)
-            addRequirement(params.spell_runetype_2, params.spell_runecount_2)
-            addRequirement(params.spell_runetype_3, params.spell_runecount_3)
-            addRequirement(params.spell_runetype_4, params.spell_runecount_4)
+            addRequirement(BaseParams.spell_runetype_1, BaseParams.spell_runecount_1)
+            addRequirement(BaseParams.spell_runetype_2, BaseParams.spell_runecount_2)
+            addRequirement(BaseParams.spell_runetype_3, BaseParams.spell_runecount_3)
+            addRequirement(BaseParams.spell_runetype_4, BaseParams.spell_runecount_4)
         }
 
         // For emulation purposes: Magic Dart has a quirk where obj validation order differs.
@@ -129,7 +127,7 @@ constructor(private val objTypes: ObjTypeList, private val enumResolver: EnumTyp
 
     // Claws of Guthix spell lists a special, non-usable staff obj (likely for visual purposes).
     // Since we use these objs for server-side validation, we replace it with the usable staff obj.
-    private fun ObjType.toRequirementObj(): ObjType =
+    private fun ItemServerType.toRequirementObj(): ItemServerType =
         if (isType(objs.guthix_staff_rune)) {
             objs.guthix_staff
         } else {

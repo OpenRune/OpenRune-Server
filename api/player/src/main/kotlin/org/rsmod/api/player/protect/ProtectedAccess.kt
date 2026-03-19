@@ -1,6 +1,32 @@
 package org.rsmod.api.player.protect
 
 import com.github.michaelbull.logging.InlineLogger
+import dev.openrune.ServerCacheManager
+import dev.openrune.TypedParamType
+import dev.openrune.cache.filestore.definition.InterfaceType
+import dev.openrune.definition.type.widget.ComponentType
+import dev.openrune.definition.type.widget.IfEvent
+import dev.openrune.types.HitmarkTypeGroup
+import dev.openrune.types.InventoryServerType
+import dev.openrune.types.ItemServerType
+import dev.openrune.types.MesAnimType
+import dev.openrune.types.NpcMode
+import dev.openrune.types.NpcServerType
+import dev.openrune.types.ObjectServerType
+import dev.openrune.types.SequenceServerType
+import dev.openrune.types.StatType
+import dev.openrune.types.WalkTriggerType
+import dev.openrune.types.aconverted.AreaType
+import dev.openrune.types.aconverted.CategoryType
+import dev.openrune.types.aconverted.ContentGroupType
+import dev.openrune.types.aconverted.MidiType
+import dev.openrune.types.aconverted.QueueType
+import dev.openrune.types.aconverted.SpotanimType
+import dev.openrune.types.aconverted.SynthType
+import dev.openrune.types.aconverted.TimerType
+import dev.openrune.types.aconverted.interf.IfSubType
+import dev.openrune.types.enums.EnumTypeMap
+import dev.openrune.types.hunt.HuntVis
 import kotlin.math.absoluteValue
 import kotlin.math.max
 import kotlin.reflect.KClass
@@ -121,6 +147,7 @@ import org.rsmod.api.repo.obj.ObjRepository
 import org.rsmod.api.repo.world.WorldRepository
 import org.rsmod.api.route.RayCastValidator
 import org.rsmod.api.stats.levelmod.InvisibleLevels
+import org.rsmod.api.table.MusicRow
 import org.rsmod.api.utils.map.BuildAreaUtils
 import org.rsmod.coroutine.GameCoroutine
 import org.rsmod.events.EventBus
@@ -130,7 +157,6 @@ import org.rsmod.events.UnboundEvent
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.PathingEntity
 import org.rsmod.game.entity.Player
-import org.rsmod.game.entity.npc.NpcMode
 import org.rsmod.game.entity.npc.NpcUid
 import org.rsmod.game.entity.player.PlayerUid
 import org.rsmod.game.entity.player.ProtectedAccessLostException
@@ -150,37 +176,10 @@ import org.rsmod.game.map.collision.get
 import org.rsmod.game.map.collision.isWalkBlocked
 import org.rsmod.game.map.collision.isZoneValid
 import org.rsmod.game.movement.MoveSpeed
-import org.rsmod.game.type.area.AreaType
-import org.rsmod.game.type.category.CategoryType
-import org.rsmod.game.type.category.CategoryTypeList
-import org.rsmod.game.type.comp.ComponentType
-import org.rsmod.game.type.content.ContentGroupType
-import org.rsmod.game.type.dbrow.DbRowType
-import org.rsmod.game.type.enums.EnumType
-import org.rsmod.game.type.hitmark.HitmarkTypeGroup
-import org.rsmod.game.type.hunt.HuntVis
-import org.rsmod.game.type.interf.IfEvent
-import org.rsmod.game.type.interf.IfSubType
-import org.rsmod.game.type.interf.InterfaceType
-import org.rsmod.game.type.inv.InvType
-import org.rsmod.game.type.jingle.JingleType
-import org.rsmod.game.type.loc.LocType
-import org.rsmod.game.type.mesanim.UnpackedMesAnimType
-import org.rsmod.game.type.midi.MidiType
-import org.rsmod.game.type.npc.NpcType
-import org.rsmod.game.type.npc.UnpackedNpcType
-import org.rsmod.game.type.obj.ObjType
-import org.rsmod.game.type.obj.UnpackedObjType
-import org.rsmod.game.type.param.ParamType
-import org.rsmod.game.type.queue.QueueType
-import org.rsmod.game.type.seq.SeqType
-import org.rsmod.game.type.seq.UnpackedSeqType
-import org.rsmod.game.type.spot.SpotanimType
-import org.rsmod.game.type.stat.StatType
-import org.rsmod.game.type.synth.SynthType
-import org.rsmod.game.type.timer.TimerType
-import org.rsmod.game.type.walktrig.WalkTriggerPriority
-import org.rsmod.game.type.walktrig.WalkTriggerType
+import org.rsmod.game.type.cert
+import org.rsmod.game.type.getInvObj
+import org.rsmod.game.type.normalize
+import org.rsmod.game.type.uncert
 import org.rsmod.game.ui.Component
 import org.rsmod.game.vars.VarPlayerStrMap
 import org.rsmod.map.CoordGrid
@@ -362,7 +361,7 @@ public class ProtectedAccess(
         PathingEntityCommon.exactMove(player, start, end, delay1, delay2, dir, collision)
     }
 
-    public fun anim(seq: SeqType, delay: Int = 0) {
+    public fun anim(seq: SequenceServerType, delay: Int = 0) {
         player.anim(seq, delay)
     }
 
@@ -390,8 +389,8 @@ public class ProtectedAccess(
         player.say(text)
     }
 
-    public fun transmog(npcType: NpcType) {
-        player.transmog = context.npcTypes[npcType]
+    public fun transmog(npcType: NpcServerType) {
+        player.transmog = npcType
     }
 
     public fun resetTransmog() {
@@ -677,7 +676,7 @@ public class ProtectedAccess(
     /** @see [NpcSearch.find] */
     public fun npcFind(
         coord: CoordGrid,
-        npc: NpcType,
+        npc: NpcServerType,
         distance: Int,
         checkVis: HuntVis,
         search: NpcSearch,
@@ -709,7 +708,7 @@ public class ProtectedAccess(
     /** @see [NpcSearch.findAll] */
     public fun npcFindAll(
         coord: CoordGrid,
-        npc: NpcType,
+        npc: NpcServerType,
         distance: Int,
         checkVis: HuntVis,
         search: NpcSearch,
@@ -750,7 +749,7 @@ public class ProtectedAccess(
     /** @see [NpcSearch.huntAll] */
     public fun npcHuntAll(
         coord: CoordGrid,
-        npc: NpcType,
+        npc: NpcServerType,
         distance: Int,
         checkVis: HuntVis,
         search: NpcSearch,
@@ -942,7 +941,7 @@ public class ProtectedAccess(
 
     public fun invAdd(
         inv: Inventory,
-        type: ObjType,
+        type: ItemServerType,
         count: Int = 1,
         vars: Int = 0,
         slot: Int? = null,
@@ -971,7 +970,7 @@ public class ProtectedAccess(
      */
     public fun invAddOrDrop(
         repo: ObjRepository,
-        obj: ObjType,
+        obj: ItemServerType,
         count: Int = 1,
         coords: CoordGrid = this.coords,
         inv: Inventory = this.inv,
@@ -981,7 +980,7 @@ public class ProtectedAccess(
 
     public fun invDel(
         inv: Inventory,
-        type: ObjType,
+        type: ItemServerType,
         count: Int = 1,
         slot: Int? = null,
         strict: Boolean = true,
@@ -999,9 +998,9 @@ public class ProtectedAccess(
 
     public fun invDel(
         inv: Inventory,
-        type1: ObjType,
+        type1: ItemServerType,
         count1: Int,
-        type2: ObjType,
+        type2: ItemServerType,
         count2: Int,
         strict: Boolean = true,
         autoCommit: Boolean = true,
@@ -1019,11 +1018,11 @@ public class ProtectedAccess(
 
     public fun invDel(
         inv: Inventory,
-        type1: ObjType,
+        type1: ItemServerType,
         count1: Int,
-        type2: ObjType,
+        type2: ItemServerType,
         count2: Int,
-        type3: ObjType,
+        type3: ItemServerType,
         count3: Int,
         strict: Boolean = true,
         autoCommit: Boolean = true,
@@ -1051,9 +1050,9 @@ public class ProtectedAccess(
      */
     public fun invReplace(
         inv: Inventory,
-        replace: ObjType,
+        replace: ItemServerType,
         count: Int,
-        replacement: ObjType,
+        replacement: ItemServerType,
         vars: Int = 0,
         autoCommit: Boolean = true,
     ): TransactionResultList<InvObj> {
@@ -1086,7 +1085,7 @@ public class ProtectedAccess(
         inv: Inventory,
         slot: Int,
         count: Int,
-        replacement: ObjType,
+        replacement: ItemServerType,
         vars: Int = 0,
         autoCommit: Boolean = true,
     ): TransactionResultList<InvObj> {
@@ -1123,7 +1122,7 @@ public class ProtectedAccess(
         inv: Inventory,
         slot: Int,
         count: Int,
-        replacement: ObjType,
+        replacement: ItemServerType,
         vars: Int = 0,
         autoCommit: Boolean = true,
     ): TransactionResultList<InvObj> {
@@ -1241,7 +1240,7 @@ public class ProtectedAccess(
         marketPrices: MarketPrices = context.marketPrices,
     ) {
         val obj = inventory[slot] ?: return resendSlot(inventory, 0)
-        val normalized = context.objTypes.normalize(context.objTypes[obj])
+        val normalized = normalize(getInvObj(obj))
         player.objExamine(normalized, obj.count, marketPrices[normalized] ?: 0)
     }
 
@@ -1364,9 +1363,9 @@ public class ProtectedAccess(
      *   reference [hitmark_groups] for a list of available hitmark groups.
      * @param specific If `true`, only the [player] will see the hitsplat; this does not affect
      *   actual damage calculations.
-     * @param sourceWeapon An optional [ObjType] reference of a "weapon" used by the [source] that
-     *   hit modifiers and/or processors can use for specialized logic. Typically unnecessary when
-     *   [source] is an [Npc], though there may be niche use cases.
+     * @param sourceWeapon An optional [ItemServerType] reference of a "weapon" used by the [source]
+     *   that hit modifiers and/or processors can use for specialized logic. Typically unnecessary
+     *   when [source] is an [Npc], though there may be niche use cases.
      * @param sourceSecondary Similar to [sourceWeapon], except this refers to objs that are **not**
      *   the primary weapon, such as ammunition for ranged attacks or objs tied to magic spells.
      * @param modifier A [PlayerHitModifier] used to adjust damage and other hit properties. By
@@ -1381,8 +1380,8 @@ public class ProtectedAccess(
         damage: Int,
         hitmark: HitmarkTypeGroup = hitmark_groups.regular_damage,
         specific: Boolean = false,
-        sourceWeapon: ObjType? = null,
-        sourceSecondary: ObjType? = null,
+        sourceWeapon: ItemServerType? = null,
+        sourceSecondary: ItemServerType? = null,
         modifier: PlayerHitModifier = StandardPlayerHitModifier,
     ): Hit {
         return player.queueHit(
@@ -1440,7 +1439,7 @@ public class ProtectedAccess(
         type: HitType,
         damage: Int,
         hitmark: HitmarkTypeGroup = hitmark_groups.regular_damage,
-        sourceSecondary: ObjType? = null,
+        sourceSecondary: ItemServerType? = null,
         modifier: PlayerHitModifier = StandardPlayerHitModifier,
     ): Hit {
         return player.queueHit(
@@ -1571,9 +1570,9 @@ public class ProtectedAccess(
      *   reference [hitmark_groups] for a list of available hitmark groups.
      * @param specific If `true`, only the [player] will see the hitsplat; this does not affect
      *   actual damage calculations.
-     * @param sourceWeapon An optional [ObjType] reference of a "weapon" used by the [source] that
-     *   hit modifiers and/or processors can use for specialized logic. Typically unnecessary when
-     *   [source] is an [Npc], though there may be niche use cases.
+     * @param sourceWeapon An optional [ItemServerType] reference of a "weapon" used by the [source]
+     *   that hit modifiers and/or processors can use for specialized logic. Typically unnecessary
+     *   when [source] is an [Npc], though there may be niche use cases.
      * @param sourceSecondary Similar to [sourceWeapon], except this refers to objs that are **not**
      *   the primary weapon, such as ammunition for ranged attacks or objs tied to magic spells.
      * @param modifier A [PlayerHitModifier] used to adjust damage and other hit properties. By
@@ -1588,8 +1587,8 @@ public class ProtectedAccess(
         damage: Int,
         hitmark: HitmarkTypeGroup = hitmark_groups.regular_damage,
         specific: Boolean = false,
-        sourceWeapon: ObjType? = null,
-        sourceSecondary: ObjType? = null,
+        sourceWeapon: ItemServerType? = null,
+        sourceSecondary: ItemServerType? = null,
         modifier: PlayerHitModifier = StandardPlayerHitModifier,
     ) {
         player.queueImpactHit(
@@ -1648,7 +1647,7 @@ public class ProtectedAccess(
         type: HitType,
         damage: Int,
         hitmark: HitmarkTypeGroup = hitmark_groups.regular_damage,
-        sourceSecondary: ObjType? = null,
+        sourceSecondary: ItemServerType? = null,
         modifier: PlayerHitModifier = StandardPlayerHitModifier,
     ) {
         player.queueImpactHit(
@@ -1820,7 +1819,7 @@ public class ProtectedAccess(
     }
 
     /** @see [org.rsmod.api.player.music.MusicPlayer.unlockAndPlay] */
-    public fun musicPlay(musicRow: DbRowType) {
+    public fun musicPlay(musicRow: MusicRow) {
         context.musicPlayer.unlockAndPlay(player, musicRow)
     }
 
@@ -1954,14 +1953,14 @@ public class ProtectedAccess(
      * Delays the player for a number of ticks equal to the time duration of [seq].
      *
      * @param seq The seq type whose tick duration determines the delay.
-     * @throws IllegalStateException if [UnpackedSeqType.tickDuration] is `0`.
+     * @throws IllegalStateException if [SequenceServerType.tickDuration] is `0`.
      * @throws ProtectedAccessLostException if [regainProtectedAccess] returns false after
      *   suspension resumes.
      * @see [regainProtectedAccess]
      */
-    public suspend fun delay(seq: SeqType) {
-        val ticks = context.seqTypes[seq].tickDuration
-        check(ticks > 0) { "Seq tick duration must be positive: ${context.seqTypes[seq]}" }
+    public suspend fun delay(seq: SequenceServerType) {
+        val ticks = seq.tickDuration
+        check(ticks > 0) { "Seq tick duration must be positive: ${seq}" }
         delay(cycles = ticks)
     }
 
@@ -2079,7 +2078,7 @@ public class ProtectedAccess(
      *   the coroutine suspension.
      * @see [resumePauseButtonWithProtectedAccess]
      */
-    public suspend fun objbox(obj: ObjType, text: String) {
+    public suspend fun objbox(obj: ItemServerType, text: String) {
         objbox(obj, zoom = 400, text)
     }
 
@@ -2088,7 +2087,7 @@ public class ProtectedAccess(
      *   the coroutine suspension.
      * @see [resumePauseButtonWithProtectedAccess]
      */
-    public suspend fun objbox(obj: ObjType, zoom: Int, text: String) {
+    public suspend fun objbox(obj: ItemServerType, zoom: Int, text: String) {
         val alignment = context.alignment
         val pages = alignment.generateChatPageList(text)
         for (page in pages) {
@@ -2097,7 +2096,7 @@ public class ProtectedAccess(
     }
 
     private suspend fun objboxPage(
-        obj: ObjType,
+        obj: ItemServerType,
         zoom: Int,
         text: String,
         pauseText: String,
@@ -2116,7 +2115,7 @@ public class ProtectedAccess(
      * This dialogue is meant to be used in a script sequence where the script itself will replace
      * or close the dialogue after a certain number of cycles.
      */
-    public fun objboxNp(obj: ObjType, text: String) {
+    public fun objboxNp(obj: ItemServerType, text: String) {
         objboxNp(obj, zoom = 400, text)
     }
 
@@ -2127,7 +2126,7 @@ public class ProtectedAccess(
      * This dialogue is meant to be used in a script sequence where the script itself will replace
      * or close the dialogue after a certain number of cycles.
      */
-    public fun objboxNp(obj: ObjType, zoom: Int, text: String) {
+    public fun objboxNp(obj: ItemServerType, zoom: Int, text: String) {
         val alignment = context.alignment
         val pages = alignment.generateChatPageList(text)
         if (pages.size > 1) {
@@ -2205,7 +2204,7 @@ public class ProtectedAccess(
      *   the coroutine suspension.
      * @see [resumePauseButtonWithProtectedAccess]
      */
-    public suspend fun doubleobjbox(obj1: ObjType, obj2: ObjType, text: String) {
+    public suspend fun doubleobjbox(obj1: ItemServerType, obj2: ItemServerType, text: String) {
         doubleobjbox(obj1, zoom1 = 400, obj2, zoom2 = 400, text)
     }
 
@@ -2215,9 +2214,9 @@ public class ProtectedAccess(
      * @see [resumePauseButtonWithProtectedAccess]
      */
     public suspend fun doubleobjbox(
-        obj1: ObjType,
+        obj1: ItemServerType,
         zoom1: Int,
-        obj2: ObjType,
+        obj2: ItemServerType,
         zoom2: Int,
         text: String,
     ) {
@@ -2237,9 +2236,9 @@ public class ProtectedAccess(
     }
 
     private suspend fun doubleobjboxPage(
-        obj1: ObjType,
+        obj1: ItemServerType,
         zoom1: Int,
-        obj2: ObjType,
+        obj2: ItemServerType,
         zoom2: Int,
         text: String,
         pauseText: String,
@@ -2258,7 +2257,7 @@ public class ProtectedAccess(
      * This dialogue is meant to be used in a script sequence where the script itself will replace
      * or close the dialogue after a certain number of cycles.
      */
-    public fun doubleobjboxNp(obj1: ObjType, obj2: ObjType, text: String) {
+    public fun doubleobjboxNp(obj1: ItemServerType, obj2: ItemServerType, text: String) {
         doubleobjboxNp(obj1, zoom1 = 400, obj2, zoom2 = 400, text)
     }
 
@@ -2269,7 +2268,13 @@ public class ProtectedAccess(
      * This dialogue is meant to be used in a script sequence where the script itself will replace
      * or close the dialogue after a certain number of cycles.
      */
-    public fun doubleobjboxNp(obj1: ObjType, zoom1: Int, obj2: ObjType, zoom2: Int, text: String) {
+    public fun doubleobjboxNp(
+        obj1: ItemServerType,
+        zoom1: Int,
+        obj2: ItemServerType,
+        zoom2: Int,
+        text: String,
+    ) {
         val alignment = context.alignment
         val pages = alignment.generateChatPageList(text)
         if (pages.size > 1) {
@@ -2498,7 +2503,7 @@ public class ProtectedAccess(
      * @see [resumePauseButtonWithProtectedAccess]
      */
     public suspend fun chatPlayer(
-        mesanim: UnpackedMesAnimType?,
+        mesanim: MesAnimType?,
         text: String,
         title: String = player.displayName,
     ) {
@@ -2507,10 +2512,10 @@ public class ProtectedAccess(
         for (page in pages) {
             val (pgText, lineCount) = page
             val lineHeight = alignment.chatLineHeight(lineCount)
-            val chatanim = mesanim?.splitGetAnim(lineCount)
+            val chatanim = mesanim?.splitGetAnim(lineCount) ?: return
             chatPlayerPage(
                 text = pgText,
-                chatanim = chatanim,
+                chatanim = ServerCacheManager.getAnim(chatanim),
                 lineHeight = lineHeight,
                 title = title,
                 pauseText = constants.cm_pausebutton,
@@ -2521,7 +2526,7 @@ public class ProtectedAccess(
 
     private suspend fun chatPlayerPage(
         text: String,
-        chatanim: SeqType?,
+        chatanim: SequenceServerType?,
         lineHeight: Int,
         title: String,
         pauseText: String,
@@ -2554,7 +2559,7 @@ public class ProtectedAccess(
      */
     public suspend fun chatNpc(
         npc: Npc,
-        mesanim: UnpackedMesAnimType?,
+        mesanim: MesAnimType?,
         text: String,
         title: String = npc.resolveVisName(),
         faceFar: Boolean = false,
@@ -2564,12 +2569,12 @@ public class ProtectedAccess(
         for (page in pages) {
             val (pgText, lineCount) = page
             val lineHeight = alignment.chatLineHeight(lineCount)
-            val chatanim = mesanim?.splitGetAnim(lineCount)
+            val chatanim = mesanim?.splitGetAnim(lineCount) ?: return
             chatNpcPage(
                 title = title,
                 npc = npc,
                 text = pgText,
-                chatanim = chatanim,
+                chatanim = ServerCacheManager.getAnim(chatanim),
                 lineHeight = lineHeight,
                 faceFar = faceFar,
                 pauseText = constants.cm_pausebutton,
@@ -2582,7 +2587,7 @@ public class ProtectedAccess(
         title: String,
         npc: Npc,
         text: String,
-        chatanim: SeqType?,
+        chatanim: SequenceServerType?,
         lineHeight: Int,
         faceFar: Boolean,
         pauseText: String,
@@ -2606,7 +2611,7 @@ public class ProtectedAccess(
      */
     public suspend fun chatNpcNoTurn(
         npc: Npc,
-        mesanim: UnpackedMesAnimType?,
+        mesanim: MesAnimType?,
         text: String,
         title: String = npc.resolveVisName(),
     ) {
@@ -2615,12 +2620,12 @@ public class ProtectedAccess(
         for (page in pages) {
             val (pgText, lineCount) = page
             val lineHeight = alignment.chatLineHeight(lineCount)
-            val chatanim = mesanim?.splitGetAnim(lineCount)
+            val chatanim = mesanim?.splitGetAnim(lineCount) ?: return
             chatNpcNoTurnPage(
                 title = title,
                 npc = npc,
                 text = pgText,
-                chatanim = chatanim,
+                chatanim = ServerCacheManager.getAnim(chatanim),
                 lineHeight = lineHeight,
                 pauseText = constants.cm_pausebutton,
                 eventBus = context.eventBus,
@@ -2632,7 +2637,7 @@ public class ProtectedAccess(
         title: String,
         npc: Npc,
         text: String,
-        chatanim: SeqType?,
+        chatanim: SequenceServerType?,
         lineHeight: Int,
         pauseText: String,
         eventBus: EventBus,
@@ -2651,8 +2656,8 @@ public class ProtectedAccess(
      */
     public suspend fun chatNpcSpecific(
         title: String,
-        type: NpcType,
-        mesanim: UnpackedMesAnimType,
+        type: NpcServerType,
+        mesanim: MesAnimType,
         text: String,
     ) {
         val alignment = context.alignment
@@ -2661,11 +2666,12 @@ public class ProtectedAccess(
             val (pgText, lineCount) = page
             val lineHeight = alignment.chatLineHeight(lineCount)
             val chatanim = mesanim.splitGetAnim(lineCount)
+            val anim = ServerCacheManager.getAnim(chatanim) ?: return
             chatNpcSpecificPage(
                 title = title,
                 type = type,
                 text = pgText,
-                chatanim = chatanim,
+                chatanim = anim,
                 lineHeight = lineHeight,
                 pauseText = constants.cm_pausebutton,
                 eventBus = context.eventBus,
@@ -2675,9 +2681,9 @@ public class ProtectedAccess(
 
     private suspend fun chatNpcSpecificPage(
         title: String,
-        type: NpcType,
+        type: NpcServerType,
         text: String,
-        chatanim: SeqType,
+        chatanim: SequenceServerType,
         lineHeight: Int,
         pauseText: String,
         eventBus: EventBus,
@@ -2697,8 +2703,8 @@ public class ProtectedAccess(
      */
     public fun chatNpcSpecificNp(
         title: String,
-        type: NpcType,
-        mesanim: UnpackedMesAnimType,
+        type: NpcServerType,
+        mesanim: MesAnimType,
         text: String,
     ) {
         val alignment = context.alignment
@@ -2709,7 +2715,8 @@ public class ProtectedAccess(
         val (pgText, lineCount) = pages.first()
         val lineHeight = alignment.chatLineHeight(lineCount)
         val chatanim = mesanim.splitGetAnim(lineCount)
-        player.ifChatNpcSpecific(title, type, pgText, chatanim, "", lineHeight, context.eventBus)
+        val anim = ServerCacheManager.getAnim(chatanim) ?: return
+        player.ifChatNpcSpecific(title, type, pgText, anim, "", lineHeight, context.eventBus)
     }
 
     /**
@@ -2756,8 +2763,8 @@ public class ProtectedAccess(
     /**
      * @param stockMarketRestriction If `true` the search will be restricted to only objs that can
      *   be found in the grand exchange.
-     * @param enumRestriction If an enum (with key of `ObjType` and value of `Boolean`) is provided,
-     *   the search is restricted to only the entries in said enum.
+     * @param enumRestriction If an enum (with key of `ItemServerType` and value of `Boolean`) is
+     *   provided, the search is restricted to only the entries in said enum.
      * @param showLastSearched If `true` the search will present the last selected obj.
      * @throws ProtectedAccessLostException if the player could not retain protected access after
      *   the coroutine suspension.
@@ -2766,9 +2773,9 @@ public class ProtectedAccess(
     public suspend fun objDialog(
         title: String = constants.cm_obj,
         stockMarketRestriction: Boolean = true,
-        enumRestriction: EnumType<ObjType, Boolean>? = null,
+        enumRestriction: EnumTypeMap<ItemServerType, Boolean>? = null,
         showLastSearched: Boolean = false,
-    ): UnpackedObjType {
+    ): ItemServerType {
         mesLayerMode14(player, title, stockMarketRestriction, enumRestriction, showLastSearched)
         val modal = player.ui.getModalOrNull(components.mainmodal)
         val input = coroutine.pause(ResumePObjDialogInput::class)
@@ -2783,7 +2790,7 @@ public class ProtectedAccess(
      * @see [resumePauseButtonWithProtectedAccess]
      */
     public suspend fun confirmDestroy(
-        obj: ObjType,
+        obj: ItemServerType,
         count: Int,
         header: String,
         text: String,
@@ -3201,7 +3208,7 @@ public class ProtectedAccess(
         player.ifOpenSub(interf, target, type, context.eventBus)
     }
 
-    public fun ifSetAnim(target: ComponentType, seq: SeqType?) {
+    public fun ifSetAnim(target: ComponentType, seq: SequenceServerType?) {
         player.ifSetAnim(target, seq)
     }
 
@@ -3209,7 +3216,7 @@ public class ProtectedAccess(
         player.ifSetEvents(target, range, *event)
     }
 
-    public fun ifSetNpcHead(target: ComponentType, npc: NpcType) {
+    public fun ifSetNpcHead(target: ComponentType, npc: NpcServerType) {
         player.ifSetNpcHead(target, npc)
     }
 
@@ -3221,7 +3228,7 @@ public class ProtectedAccess(
         player.ifSetText(target, text)
     }
 
-    public fun ifSetObj(target: ComponentType, obj: ObjType, zoom: Int) {
+    public fun ifSetObj(target: ComponentType, obj: ItemServerType, zoom: Int) {
         player.ifSetObj(target, obj, zoom)
     }
 
@@ -3239,30 +3246,26 @@ public class ProtectedAccess(
     }
 
     public fun invTotal(inv: Inventory, content: ContentGroupType): Int {
-        val types = context.objTypes
         var count = 0
         for (obj in inv) {
             val filtered = obj ?: continue
-            val type = types[filtered]
-            if (type.isContentType(content)) {
+            if (getInvObj(filtered).isContentType(content)) {
                 count += filtered.count
             }
         }
         return count
     }
 
-    public fun invTotal(inv: Inventory, obj: ObjType): Int {
-        return inv.count(context.objTypes[obj])
+    public fun invTotal(inv: Inventory, obj: ItemServerType): Int {
+        return inv.count(obj)
     }
 
     public fun invContains(inv: Inventory, content: ContentGroupType): Boolean {
-        val types = context.objTypes
-        return inv.any { it != null && types[it].contentGroup == content.id }
+        return inv.any { it != null && getInvObj(it).contentGroup == content.id }
     }
 
-    public fun inv(inv: InvType): Inventory {
-        val type = context.invTypes[inv]
-        return player.invMap.getOrPut(type)
+    public fun inv(inv: InventoryServerType): Inventory {
+        return player.invMap.getOrPut(inv)
     }
 
     public operator fun Inventory.contains(content: ContentGroupType): Boolean {
@@ -3270,55 +3273,55 @@ public class ProtectedAccess(
     }
 
     /* Loc helper functions (lc=loc config) */
-    public fun <T : Any> lcParam(type: LocType, param: ParamType<T>): T {
-        return context.locTypes[type].param(param)
+    public fun <T : Any> lcParam(type: ObjectServerType, param: TypedParamType<T>): T {
+        return type.param(param)
     }
 
-    public fun <T : Any> lcParamOrNull(type: LocType, param: ParamType<T>): T? {
-        return context.locTypes[type].paramOrNull(param)
+    public fun <T : Any> lcParamOrNull(type: ObjectServerType, param: TypedParamType<T>): T? {
+        return type.paramOrNull(param)
     }
 
-    public fun lcIsContentType(loc: LocType, content: ContentGroupType): Boolean {
-        return context.locTypes[loc].isContentType(content)
+    public fun lcIsContentType(loc: ObjectServerType, content: ContentGroupType): Boolean {
+        return loc.isContentType(content)
     }
 
-    public fun <T : Any> locParam(loc: LocInfo, param: ParamType<T>): T {
-        return context.locTypes[loc].param(param)
+    public fun <T : Any> locParam(loc: LocInfo, param: TypedParamType<T>): T {
+        return ServerCacheManager.getObject(loc.id)!!.param(param)
     }
 
-    public fun <T : Any> locParamOrNull(loc: LocInfo, param: ParamType<T>): T? {
-        return context.locTypes[loc].paramOrNull(param)
+    public fun <T : Any> locParamOrNull(loc: LocInfo, param: TypedParamType<T>): T? {
+        return ServerCacheManager.getObject(loc.id)!!.paramOrNull(param)
     }
 
-    public fun <T : Any> locParam(loc: BoundLocInfo, param: ParamType<T>): T {
-        return context.locTypes[loc].param(param)
+    public fun <T : Any> locParam(loc: BoundLocInfo, param: TypedParamType<T>): T {
+        return ServerCacheManager.getObject(loc.id)!!.param(param)
     }
 
-    public fun <T : Any> locParamOrNull(loc: BoundLocInfo, param: ParamType<T>): T? {
-        return context.locTypes[loc].paramOrNull(param)
+    public fun <T : Any> locParamOrNull(loc: BoundLocInfo, param: TypedParamType<T>): T? {
+        return ServerCacheManager.getObject(loc.id)!!.paramOrNull(param)
     }
 
     public fun locIsContentType(loc: LocInfo, content: ContentGroupType): Boolean {
-        return context.locTypes[loc].isContentType(content)
+        return ServerCacheManager.getObject(loc.id)!!.isContentType(content)
     }
 
     public fun locIsContentType(loc: BoundLocInfo, content: ContentGroupType): Boolean {
-        return context.locTypes[loc].isContentType(content)
+        return ServerCacheManager.getObject(loc.id)!!.isContentType(content)
     }
 
-    public fun locIsType(loc: LocInfo, type: LocType): Boolean {
+    public fun locIsType(loc: LocInfo, type: ObjectServerType): Boolean {
         return loc.isType(type)
     }
 
-    public fun locIsType(loc: BoundLocInfo, type: LocType): Boolean {
+    public fun locIsType(loc: BoundLocInfo, type: ObjectServerType): Boolean {
         return loc.isType(type)
     }
 
-    public fun locAnim(repo: WorldRepository, loc: LocInfo, seq: SeqType) {
+    public fun locAnim(repo: WorldRepository, loc: LocInfo, seq: SequenceServerType) {
         repo.locAnim(loc, seq)
     }
 
-    public fun locAnim(repo: WorldRepository, loc: BoundLocInfo, seq: SeqType) {
+    public fun locAnim(repo: WorldRepository, loc: BoundLocInfo, seq: SequenceServerType) {
         repo.locAnim(loc, seq)
     }
 
@@ -3347,7 +3350,7 @@ public class ProtectedAccess(
     }
 
     /* Midi helper functions */
-    public fun midiJingle(jingle: JingleType) {
+    public fun midiJingle(jingle: Int) {
         player.midiJingle(jingle)
     }
 
@@ -3356,16 +3359,16 @@ public class ProtectedAccess(
     }
 
     /* Npc helper functions (nc=npc config) */
-    public fun <T : Any> ncParam(type: NpcType, param: ParamType<T>): T {
-        return context.npcTypes[type].param(param)
+    public fun <T : Any> ncParam(type: NpcServerType, param: TypedParamType<T>): T {
+        return type.param(param)
     }
 
-    public fun <T : Any> ncParamOrNull(type: NpcType, param: ParamType<T>): T? {
-        return context.npcTypes[type].paramOrNull(param)
+    public fun <T : Any> ncParamOrNull(type: NpcServerType, param: TypedParamType<T>): T? {
+        return type.paramOrNull(param)
     }
 
-    public fun ncIsContentType(type: NpcType, content: ContentGroupType): Boolean {
-        return context.npcTypes[type].isContentType(content)
+    public fun ncIsContentType(type: NpcServerType, content: ContentGroupType): Boolean {
+        return type.isContentType(content.id)
     }
 
     public fun npcPlayerFaceClose(npc: Npc, target: Player = this.player) {
@@ -3393,9 +3396,8 @@ public class ProtectedAccess(
      *   changing back to its original type. Set to `Int.MAX_VALUE` to bypass this behavior.
      */
     @OptIn(InternalApi::class)
-    public fun npcChangeType(npc: Npc, into: NpcType, duration: Int) {
-        val type = context.npcTypes[into]
-        npc.transmog(type, duration)
+    public fun npcChangeType(npc: Npc, into: NpcServerType, duration: Int) {
+        npc.transmog(into, duration)
         npc.assignUid()
     }
 
@@ -3403,7 +3405,7 @@ public class ProtectedAccess(
      * Returns the current npc type for [npc], considering `multinpc` from the [player]'s vars and
      * any transmogrification the npc may have undergone.
      */
-    public fun npcVisType(npc: Npc): UnpackedNpcType {
+    public fun npcVisType(npc: Npc): NpcServerType {
         val multiNpc = context.npcInteractions.multiNpc(npc.visType, player.vars)
         return multiNpc ?: npc.visType
     }
@@ -3417,7 +3419,7 @@ public class ProtectedAccess(
      * @throws IllegalStateException if npc type does not have an associated value for [param] and
      *   [param] does not have a [ParamType.default] value.
      */
-    public fun <T : Any> npcParam(npc: Npc, param: ParamType<T>): T {
+    public fun <T : Any> npcParam(npc: Npc, param: TypedParamType<T>): T {
         return npc.type.param(param)
     }
 
@@ -3428,68 +3430,70 @@ public class ProtectedAccess(
      * _Note: This retrieves the parameter from the npc's **base** type, ignoring any `multinpc` or
      * transmogrification effects._
      */
-    public fun <T : Any> npcParamOrNull(npc: Npc, param: ParamType<T>): T? {
+    public fun <T : Any> npcParamOrNull(npc: Npc, param: TypedParamType<T>): T? {
         return npc.type.paramOrNull(param)
     }
 
     /* Obj helper functions (oc=obj config) */
-    public fun ocCert(type: ObjType): UnpackedObjType {
-        val types = context.objTypes
-        return types.cert(types[type])
+    public fun ocCert(type: ItemServerType): ItemServerType {
+        return cert(type)
     }
 
-    public fun ocUncert(type: ObjType): UnpackedObjType {
-        val types = context.objTypes
-        return types.uncert(types[type])
+    public fun ocUncert(type: ItemServerType): ItemServerType {
+        return uncert(type)
     }
 
-    public fun ocName(type: ObjType): String {
-        return context.objTypes[type].name
+    public fun ocName(type: ItemServerType): String {
+        return type.name
     }
 
-    public fun <T : Any> ocParam(obj: InvObj, type: ParamType<T>): T {
-        return context.objTypes[obj].param(type)
+    public fun <T : Any> ocParam(obj: InvObj, type: TypedParamType<T>): T {
+        return getInvObj(obj).param(type)
     }
 
-    public fun <T : Any> ocParamOrNull(obj: InvObj?, type: ParamType<T>): T? {
-        return if (obj == null) null else context.objTypes[obj].paramOrNull(type)
+    public fun <T : Any> ocParamOrNull(obj: InvObj?, type: TypedParamType<T>): T? {
+        return if (obj == null) null else getInvObj(obj).paramOrNull(type)
     }
 
     public fun ocIsContentType(obj: InvObj?, content: ContentGroupType): Boolean {
-        return obj != null && context.objTypes[obj].contentGroup == content.id
+        return obj != null && getInvObj(obj).contentGroup == content.id
     }
 
-    public fun ocIsType(obj: InvObj?, type: ObjType): Boolean {
+    public fun ocIsType(obj: InvObj?, type: ItemServerType): Boolean {
         return obj.isType(type)
     }
 
-    public fun ocIsType(obj: InvObj?, type: ObjType, vararg others: ObjType): Boolean {
+    public fun ocIsType(
+        obj: InvObj?,
+        type: ItemServerType,
+        vararg others: ItemServerType,
+    ): Boolean {
         return obj.isType(type) || others.any(obj::isType)
     }
 
     public fun ocTradable(obj: InvObj): Boolean {
-        return context.objTypes[obj].tradeable
+        return getInvObj(obj).tradeable
     }
 
-    public fun ocCategory(type: UnpackedObjType?, catTypes: CategoryTypeList): CategoryType? {
-        return if (type == null) null else catTypes[type.category]
+    public fun ocCategory(type: ItemServerType?): CategoryType? {
+        return if (type == null) null else CategoryType(type.category)
     }
 
     // TODO: Decide if we either want to keep this and make it public; or remove it and refactor
     //  its usage (only called in one place as of now due to laziness).
-    internal fun ocType(obj: InvObj?): UnpackedObjType? {
-        return if (obj == null) null else context.objTypes[obj]
+    internal fun ocType(obj: InvObj?): ItemServerType? {
+        return if (obj == null) null else getInvObj(obj)
     }
 
     /* Seq helper functions */
     /** Returns the total time duration of [seq] in _**client frames**_. */
-    public fun seqLength(seq: SeqType): Int {
-        return context.seqTypes[seq].totalDelay
+    public fun seqLength(seq: SequenceServerType): Int {
+        return seq.totalDelay
     }
 
     /** Returns the total time duration of [seq] in _**server ticks**_. */
-    public fun seqTicks(seq: SeqType): Int {
-        return context.seqTypes[seq].tickDuration
+    public fun seqTicks(seq: SequenceServerType): Int {
+        return seq.tickDuration
     }
 
     /* Sound helper functions */
@@ -3569,7 +3573,7 @@ public class ProtectedAccess(
 
 private fun <T> lazy(init: () -> T): Lazy<T> = lazy(LazyThreadSafetyMode.NONE, init)
 
-private fun UnpackedMesAnimType.splitGetAnim(lines: Int) =
+private fun MesAnimType.splitGetAnim(lines: Int) =
     when (lines) {
         1 -> len1
         2 -> len2

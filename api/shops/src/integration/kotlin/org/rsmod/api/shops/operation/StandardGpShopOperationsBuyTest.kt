@@ -1,5 +1,10 @@
 package org.rsmod.api.shops.operation
 
+import dev.openrune.types.ItemServerType
+import dev.openrune.types.aconverted.interf.IfButtonOp
+import dev.openrune.types.inv.InvScope
+import dev.openrune.types.inv.InvStackType
+import dev.openrune.types.inv.InvTypeList
 import org.junit.jupiter.api.Test
 import org.rsmod.api.config.Constants
 import org.rsmod.api.config.refs.currencies
@@ -14,11 +19,6 @@ import org.rsmod.api.type.script.dsl.InvPluginBuilder
 import org.rsmod.game.inv.InvObj
 import org.rsmod.game.inv.Inventory
 import org.rsmod.game.shop.Shop
-import org.rsmod.game.type.interf.IfButtonOp
-import org.rsmod.game.type.inv.InvScope
-import org.rsmod.game.type.inv.InvStackType
-import org.rsmod.game.type.inv.InvTypeList
-import org.rsmod.game.type.obj.ObjType
 
 class StandardGpShopOperationsBuyTest {
     @Test
@@ -124,7 +124,7 @@ class StandardGpShopOperationsBuyTest {
             assertNoMessageSent()
         }
 
-    private fun GameTestScope.buyStock(shop: Shop, obj: ObjType, op: IfButtonOp) {
+    private fun GameTestScope.buyStock(shop: Shop, obj: ItemServerType, op: IfButtonOp) {
         val slot = shop.inv.indexOfFirst { it?.id == obj.id }
         check(slot != -1) { "Obj not found in stock: obj=$obj, stock=${shop.inv}" }
 

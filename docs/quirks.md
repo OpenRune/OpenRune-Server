@@ -74,7 +74,7 @@ engine
 ```
 #### <u>_Internal `id` field_</u>
 ```kotlin
-class ObjType(internal var id: Int?)
+class ItemServerType(internal var id: Int?)
 ```
 There was a conscious decision to allow for configuration types' "id" to be
 mutable, and nullable.

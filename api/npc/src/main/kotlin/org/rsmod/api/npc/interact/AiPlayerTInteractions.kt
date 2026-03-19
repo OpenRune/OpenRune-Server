@@ -1,5 +1,7 @@
 package org.rsmod.api.npc.interact
 
+import dev.openrune.definition.type.widget.ComponentType
+import dev.openrune.types.ItemServerType
 import jakarta.inject.Inject
 import org.rsmod.api.npc.events.interact.AiPlayerTContentEvents
 import org.rsmod.api.npc.events.interact.AiPlayerTEvents
@@ -10,8 +12,6 @@ import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.game.interact.InteractionPlayerT
 import org.rsmod.game.movement.RouteRequestPathingEntity
-import org.rsmod.game.type.comp.ComponentType
-import org.rsmod.game.type.obj.ObjType
 
 public class AiPlayerTInteractions @Inject constructor(private val eventBus: EventBus) {
     public fun interact(
@@ -19,7 +19,7 @@ public class AiPlayerTInteractions @Inject constructor(private val eventBus: Eve
         target: Player,
         component: ComponentType,
         comsub: Int,
-        objType: ObjType?,
+        objType: ItemServerType?,
     ) {
         val opTrigger = hasOpTrigger(npc, target, component, comsub, objType)
         val apTrigger = hasApTrigger(npc, target, component, comsub, objType)
@@ -42,7 +42,7 @@ public class AiPlayerTInteractions @Inject constructor(private val eventBus: Eve
         target: Player,
         component: ComponentType,
         comsub: Int,
-        objType: ObjType?,
+        objType: ItemServerType?,
     ): OpEvent? {
         val typeEvent = AiPlayerTEvents.Op(target, comsub, objType, component)
         if (eventBus.contains(typeEvent::class.java, typeEvent.id)) {
@@ -63,7 +63,7 @@ public class AiPlayerTInteractions @Inject constructor(private val eventBus: Eve
         target: Player,
         component: ComponentType,
         comsub: Int,
-        objType: ObjType?,
+        objType: ItemServerType?,
     ): Boolean = opTrigger(npc, target, component, comsub, objType) != null
 
     public fun apTrigger(
@@ -71,7 +71,7 @@ public class AiPlayerTInteractions @Inject constructor(private val eventBus: Eve
         target: Player,
         component: ComponentType,
         comsub: Int,
-        objType: ObjType?,
+        objType: ItemServerType?,
     ): ApEvent? {
         val typeEvent = AiPlayerTEvents.Ap(target, comsub, objType, component)
         if (eventBus.contains(typeEvent::class.java, typeEvent.id)) {
@@ -92,6 +92,6 @@ public class AiPlayerTInteractions @Inject constructor(private val eventBus: Eve
         target: Player,
         component: ComponentType,
         comsub: Int,
-        objType: ObjType?,
+        objType: ItemServerType?,
     ): Boolean = apTrigger(npc, target, component, comsub, objType) != null
 }

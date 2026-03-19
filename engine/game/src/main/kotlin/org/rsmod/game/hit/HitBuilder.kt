@@ -1,6 +1,6 @@
 package org.rsmod.game.hit
 
-import org.rsmod.game.type.obj.ObjType
+import dev.openrune.types.ItemServerType
 
 public class HitBuilder(
     public val type: HitType,
@@ -21,9 +21,9 @@ public class HitBuilder(
     private val targetMaxDamageThreshold: Int,
     private val sourceMaxDamageThreshold: Int,
 ) {
-    public fun isRighthandObj(type: ObjType): Boolean = type.id == righthandType
+    public fun isRighthandObj(type: ItemServerType): Boolean = type.id == righthandType
 
-    public fun isSecondaryObj(type: ObjType): Boolean = type.id == secondaryType
+    public fun isSecondaryObj(type: ItemServerType): Boolean = type.id == secondaryType
 
     public fun build(): Hit {
         val hitmark = buildHitmark()

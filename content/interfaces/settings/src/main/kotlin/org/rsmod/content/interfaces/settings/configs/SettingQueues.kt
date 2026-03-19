@@ -1,9 +1,9 @@
 package org.rsmod.content.interfaces.settings.configs
 
-import org.rsmod.api.type.refs.queue.QueueReferences
+import dev.openrune.queue
 
 typealias setting_queues = SettingQueues
 
-object SettingQueues : QueueReferences() {
+object SettingQueues {
     val runmode_toggle = queue("runmode_toggle")
 }

@@ -1,12 +1,12 @@
 package org.rsmod.api.game.process.npc
 
+import dev.openrune.types.NpcServerType
 import jakarta.inject.Inject
 import org.rsmod.api.npc.access.StandardNpcAccessLauncher
 import org.rsmod.api.npc.events.NpcQueueEvents
 import org.rsmod.events.EventBus
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.queue.NpcQueueList
-import org.rsmod.game.type.npc.UnpackedNpcType
 
 public class NpcQueueProcessor
 @Inject
@@ -46,7 +46,7 @@ constructor(private val eventBus: EventBus, private val accessLauncher: Standard
         }
     }
 
-    private fun Npc.publishEvent(queue: NpcQueueList.Queue, type: UnpackedNpcType = visType) {
+    private fun Npc.publishEvent(queue: NpcQueueList.Queue, type: NpcServerType = visType) {
         val packedType = EventBus.composeLongKey(type.id, queue.id)
         val typeTrigger = eventBus.suspend[NpcQueueEvents.Type::class.java, packedType]
         if (typeTrigger != null) {

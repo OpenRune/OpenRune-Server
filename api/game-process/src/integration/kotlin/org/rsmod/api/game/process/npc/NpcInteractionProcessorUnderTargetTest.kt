@@ -1,5 +1,6 @@
 package org.rsmod.api.game.process.npc
 
+import dev.openrune.util.Direction
 import jakarta.inject.Inject
 import org.junit.jupiter.api.Test
 import org.rsmod.api.player.output.mes
@@ -11,7 +12,6 @@ import org.rsmod.api.testing.factory.locTypeFactory
 import org.rsmod.api.testing.factory.npcTypeFactory
 import org.rsmod.api.testing.random.FixedRandom
 import org.rsmod.game.entity.Player
-import org.rsmod.game.map.Direction
 import org.rsmod.game.map.translate
 import org.rsmod.map.CoordGrid
 import org.rsmod.plugin.scripts.PluginScript

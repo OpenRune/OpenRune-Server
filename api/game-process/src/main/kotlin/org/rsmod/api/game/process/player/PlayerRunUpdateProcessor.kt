@@ -1,6 +1,6 @@
 package org.rsmod.api.game.process.player
 
-import jakarta.inject.Inject
+import dev.openrune.util.Wearpos
 import kotlin.math.max
 import kotlin.math.min
 import org.rsmod.api.config.constants
@@ -13,10 +13,9 @@ import org.rsmod.api.player.vars.setActiveMoveSpeed
 import org.rsmod.api.player.vars.varMoveSpeed
 import org.rsmod.game.entity.Player
 import org.rsmod.game.movement.MoveSpeed
-import org.rsmod.game.type.obj.ObjTypeList
-import org.rsmod.game.type.obj.Wearpos
+import org.rsmod.game.type.getOrNull
 
-public class PlayerRunUpdateProcessor @Inject constructor(private val objTypes: ObjTypeList) {
+public class PlayerRunUpdateProcessor {
     public fun process(player: Player) {
         player.updateRunWeight()
         player.updateRunEnergy()
@@ -85,7 +84,7 @@ public class PlayerRunUpdateProcessor @Inject constructor(private val objTypes: 
         var pieces = 0
 
         for (wearpos in gracefulWearpos) {
-            val type = objTypes.getOrNull(worn[wearpos.slot]) ?: continue
+            val type = getOrNull(worn[wearpos.slot]) ?: continue
             val rate = type.paramOrNull(params.graceful_restore_rate) ?: continue
             wornRate += rate
             pieces++
@@ -114,7 +113,7 @@ public class PlayerRunUpdateProcessor @Inject constructor(private val objTypes: 
     }
 
     private fun Player.calculateWeightInGrams(): Int {
-        return InvWeight.calculateWeightInGrams(this, objTypes)
+        return InvWeight.calculateWeightInGrams(this)
     }
 
     private companion object {

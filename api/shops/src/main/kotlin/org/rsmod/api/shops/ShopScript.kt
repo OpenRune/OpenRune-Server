@@ -1,6 +1,8 @@
 package org.rsmod.api.shops
 
 import com.github.michaelbull.logging.InlineLogger
+import dev.openrune.types.ItemServerType
+import dev.openrune.types.aconverted.interf.IfButtonOp
 import jakarta.inject.Inject
 import org.rsmod.api.config.refs.currencies
 import org.rsmod.api.player.protect.ProtectedAccess
@@ -15,9 +17,7 @@ import org.rsmod.api.shops.operation.StandardGpShopOperations
 import org.rsmod.game.entity.Player
 import org.rsmod.game.inv.InvObj
 import org.rsmod.game.shop.Shop
-import org.rsmod.game.type.interf.IfButtonOp
-import org.rsmod.game.type.obj.ObjType
-import org.rsmod.game.type.obj.isAssociatedWith
+import org.rsmod.game.type.isAssociatedWith
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
@@ -42,7 +42,11 @@ constructor(
         operationMap.register(currencies.standard_gp, standardGpOperations)
     }
 
-    private fun ProtectedAccess.shopInvButton(sub: Int, op: IfButtonOp, clientObj: ObjType?) {
+    private fun ProtectedAccess.shopInvButton(
+        sub: Int,
+        op: IfButtonOp,
+        clientObj: ItemServerType?,
+    ) {
         val objSlot = sub - 1
         val shop = player.openedShop ?: return
         val shopObj = shop.inv[objSlot] ?: return
@@ -53,7 +57,11 @@ constructor(
         operations.shopInvOp(player, player.inv, shop, objSlot, op)
     }
 
-    private fun ProtectedAccess.shopSideInvButton(sub: Int, op: IfButtonOp, clientObj: ObjType?) {
+    private fun ProtectedAccess.shopSideInvButton(
+        sub: Int,
+        op: IfButtonOp,
+        clientObj: ItemServerType?,
+    ) {
         val invObj = player.inv[sub] ?: return
         if (isClientObjInvalid(invObj, clientObj)) {
             return
@@ -78,6 +86,6 @@ constructor(
         return null
     }
 
-    private fun isClientObjInvalid(invObj: InvObj, clientObj: ObjType?): Boolean =
+    private fun isClientObjInvalid(invObj: InvObj, clientObj: ItemServerType?): Boolean =
         clientObj == null || !clientObj.isAssociatedWith(invObj)
 }

@@ -1,9 +1,9 @@
 package org.rsmod.api.cache.types.varn
 
+import dev.openrune.types.util.VarnpcCollisions
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.rsmod.api.testing.GameTestState
-import org.rsmod.game.type.util.VarnpcCollisions
 
 class VarnBitCollisionTest {
     @Test

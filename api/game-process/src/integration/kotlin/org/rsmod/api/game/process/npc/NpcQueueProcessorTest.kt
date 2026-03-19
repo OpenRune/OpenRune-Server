@@ -1,12 +1,12 @@
 package org.rsmod.api.game.process.npc
 
+import dev.openrune.types.NpcMode
 import org.junit.jupiter.api.Test
 import org.rsmod.api.combat.commons.npc.queueCombatRetaliate
 import org.rsmod.api.death.plugin.NpcDeathScript
 import org.rsmod.api.hit.plugin.NpcHitScript
 import org.rsmod.api.testing.GameTestState
 import org.rsmod.api.testing.factory.npcTypeFactory
-import org.rsmod.game.entity.npc.NpcMode
 import org.rsmod.game.hit.HitType
 import org.rsmod.map.CoordGrid
 

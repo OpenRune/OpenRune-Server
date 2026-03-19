@@ -1,5 +1,6 @@
 package org.rsmod.api.combat.formulas.accuracy.melee
 
+import dev.openrune.types.NpcServerType
 import jakarta.inject.Inject
 import java.util.EnumSet
 import org.rsmod.api.combat.accuracy.npc.NpcMeleeAccuracy
@@ -12,12 +13,11 @@ import org.rsmod.api.combat.formulas.attributes.CombatNpcAttributes
 import org.rsmod.api.combat.formulas.attributes.collector.CombatMeleeAttributeCollector
 import org.rsmod.api.combat.formulas.attributes.collector.CombatNpcAttributeCollector
 import org.rsmod.api.combat.formulas.isSlayerTask
-import org.rsmod.api.config.refs.params
+import org.rsmod.api.config.refs.BaseParams
 import org.rsmod.api.config.refs.varbits
 import org.rsmod.api.player.bonus.WornBonuses
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
-import org.rsmod.game.type.npc.UnpackedNpcType
 
 public class PvNMeleeAccuracy
 @Inject
@@ -48,7 +48,7 @@ constructor(
 
     public fun computeHitChance(
         source: Player,
-        target: UnpackedNpcType,
+        target: NpcServerType,
         targetDefence: Int,
         targetCurrHp: Int,
         targetMaxHp: Int,
@@ -108,7 +108,7 @@ constructor(
         }
 
     public fun computeDefenceRoll(
-        target: UnpackedNpcType,
+        target: NpcServerType,
         targetDefence: Int,
         amascutInvocationLvl: Int,
         blockType: MeleeAttackType?,
@@ -124,11 +124,11 @@ constructor(
         )
     }
 
-    private fun UnpackedNpcType.getDefenceBonus(attackType: MeleeAttackType?): Int =
+    private fun NpcServerType.getDefenceBonus(attackType: MeleeAttackType?): Int =
         when (attackType) {
-            MeleeAttackType.Stab -> param(params.defence_stab)
-            MeleeAttackType.Slash -> param(params.defence_slash)
-            MeleeAttackType.Crush -> param(params.defence_crush)
+            MeleeAttackType.Stab -> param(BaseParams.defence_stab)
+            MeleeAttackType.Slash -> param(BaseParams.defence_slash)
+            MeleeAttackType.Crush -> param(BaseParams.defence_crush)
             null -> 0
         }
 }

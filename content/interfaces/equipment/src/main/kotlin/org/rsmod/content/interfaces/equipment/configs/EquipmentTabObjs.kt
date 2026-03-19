@@ -1,10 +1,10 @@
 package org.rsmod.content.interfaces.equipment.configs
 
-import org.rsmod.api.type.refs.obj.ObjReferences
+import dev.openrune.obj
 
 internal typealias equip_objs = EquipmentTabObjs
 
-object EquipmentTabObjs : ObjReferences() {
+object EquipmentTabObjs {
     val keep_downgraded_without_orn_kit = obj("hundred_pirate_mudskipper_hide")
     val keep_downgraded = obj("burntfish2")
     val deleted = obj("burntfish1")

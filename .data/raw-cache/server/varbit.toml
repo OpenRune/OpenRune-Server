@@ -1,0 +1,405 @@
+[[varbit]]
+isServerOnly = true
+id = "varbit.music_last_id"
+varp = "varp.music_temp_state_3"
+startBit = 0
+endBit = 15
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.music_curr_duration"
+varp = "varp.music_temp_state_2"
+startBit = 0
+endBit = 10
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.music_curr_clocks"
+varp = "varp.music_temp_state_2"
+startBit = 11
+endBit = 21
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.music_curr_id"
+varp = "varp.music_temp_state_1"
+startBit = 0
+endBit = 15
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.music_curr_area"
+varp = "varp.music_temp_state_1"
+startBit = 16
+endBit = 31
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.gameframe_toplevel"
+varp = "varp.gameframe"
+startBit = 0
+endBit = 15
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.prayer_drain_counter"
+varp = "varp.prayer_drain"
+startBit = 0
+endBit = 15
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.prayer_drain_resistance"
+varp = "varp.prayer_drain"
+startBit = 16
+endBit = 31
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.new_player_account"
+varp = "varp.generic_temp_state_65516"
+startBit = 0
+endBit = 0
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.improved_stamina_passive"
+varp = "varp.generic_temp_state_65516"
+startBit = 1
+endBit = 1
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.saved_defensive_casting_staff"
+varp = "varp.saved_autocast_state_staff"
+startBit = 0
+endBit = 0
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.saved_autocast_spell_staff"
+varp = "varp.saved_autocast_state_staff"
+startBit = 1
+endBit = 31
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.saved_defensive_casting_bladed_staff"
+varp = "varp.saved_autocast_state_bladed_staff"
+startBit = 0
+endBit = 0
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.saved_autocast_spell_bladed_staff"
+varp = "varp.saved_autocast_state_bladed_staff"
+startBit = 1
+endBit = 31
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.accept_aid_restore"
+varp = "varp.temp_restore_65527"
+startBit = 0
+endBit = 0
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.bank_capacity"
+varp = "varp.inv_capacity_65530"
+startBit = 0
+endBit = 12
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.small_pouch_storage_type"
+varp = "varp.generic_storage_65531"
+startBit = 0
+endBit = 0
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.small_pouch_storage_count"
+varp = "varp.generic_storage_65531"
+startBit = 1
+endBit = 2
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.medium_pouch_storage_type"
+varp = "varp.generic_storage_65531"
+startBit = 3
+endBit = 3
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.medium_pouch_storage_count"
+varp = "varp.generic_storage_65531"
+startBit = 4
+endBit = 6
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.large_pouch_storage_type"
+varp = "varp.generic_storage_65531"
+startBit = 7
+endBit = 7
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.large_pouch_storage_count"
+varp = "varp.generic_storage_65531"
+startBit = 9
+endBit = 12
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.giant_pouch_storage_type"
+varp = "varp.generic_storage_65531"
+startBit = 13
+endBit = 13
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.giant_pouch_storage_count"
+varp = "varp.generic_storage_65531"
+startBit = 14
+endBit = 17
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.colossal_pouch_storage_type"
+varp = "varp.generic_storage_65531"
+startBit = 18
+endBit = 18
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.colossal_pouch_storage_count"
+varp = "varp.generic_storage_65531"
+startBit = 19
+endBit = 24
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.coal_bag_storage_count"
+varp = "varp.generic_storage_65531"
+startBit = 25
+endBit = 30
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.bank_tab_main"
+varp = "varp.bank_serverside_vars"
+startBit = 0
+endBit = 12
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.bank_disable_ifevents"
+varp = "varp.bank_serverside_vars"
+startBit = 13
+endBit = 13
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.saved_attackstyle_unarmed"
+varp = "varp.weapons_saved_attackstyle1"
+startBit = 0
+endBit = 1
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.saved_attackstyle_axe"
+varp = "varp.weapons_saved_attackstyle1"
+startBit = 2
+endBit = 3
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.saved_attackstyle_blunt"
+varp = "varp.weapons_saved_attackstyle1"
+startBit = 4
+endBit = 5
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.saved_attackstyle_bow"
+varp = "varp.weapons_saved_attackstyle1"
+startBit = 6
+endBit = 7
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.saved_attackstyle_claw"
+varp = "varp.weapons_saved_attackstyle1"
+startBit = 8
+endBit = 9
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.saved_attackstyle_crossbow"
+varp = "varp.weapons_saved_attackstyle1"
+startBit = 10
+endBit = 11
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.saved_attackstyle_salamander"
+varp = "varp.weapons_saved_attackstyle1"
+startBit = 12
+endBit = 13
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.saved_attackstyle_chinchompas"
+varp = "varp.weapons_saved_attackstyle1"
+startBit = 14
+endBit = 15
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.saved_attackstyle_gun"
+varp = "varp.weapons_saved_attackstyle1"
+startBit = 16
+endBit = 17
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.saved_attackstyle_slash_sword"
+varp = "varp.weapons_saved_attackstyle1"
+startBit = 18
+endBit = 19
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.saved_attackstyle_2h_sword"
+varp = "varp.weapons_saved_attackstyle1"
+startBit = 20
+endBit = 21
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.saved_attackstyle_pickaxe"
+varp = "varp.weapons_saved_attackstyle1"
+startBit = 22
+endBit = 23
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.saved_attackstyle_polearm"
+varp = "varp.weapons_saved_attackstyle1"
+startBit = 24
+endBit = 25
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.saved_attackstyle_polestaff"
+varp = "varp.weapons_saved_attackstyle1"
+startBit = 26
+endBit = 27
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.saved_attackstyle_scythe"
+varp = "varp.weapons_saved_attackstyle1"
+startBit = 28
+endBit = 29
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.saved_attackstyle_spear"
+varp = "varp.weapons_saved_attackstyle1"
+startBit = 30
+endBit = 31
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.saved_attackstyle_spiked"
+varp = "varp.weapons_saved_attackstyle2"
+startBit = 0
+endBit = 1
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.saved_attackstyle_stab_sword"
+varp = "varp.weapons_saved_attackstyle2"
+startBit = 2
+endBit = 3
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.saved_attackstyle_staff"
+varp = "varp.weapons_saved_attackstyle2"
+startBit = 4
+endBit = 5
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.saved_attackstyle_thrown"
+varp = "varp.weapons_saved_attackstyle2"
+startBit = 6
+endBit = 7
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.saved_attackstyle_whip"
+varp = "varp.weapons_saved_attackstyle2"
+startBit = 8
+endBit = 9
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.saved_attackstyle_bladed_staff"
+varp = "varp.weapons_saved_attackstyle2"
+startBit = 10
+endBit = 11
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.saved_attackstyle_banner"
+varp = "varp.weapons_saved_attackstyle2"
+startBit = 12
+endBit = 13
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.saved_attackstyle_powered_staff"
+varp = "varp.weapons_saved_attackstyle2"
+startBit = 14
+endBit = 15
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.saved_attackstyle_bludgeon"
+varp = "varp.weapons_saved_attackstyle2"
+startBit = 16
+endBit = 17
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.saved_attackstyle_bulwark"
+varp = "varp.weapons_saved_attackstyle2"
+startBit = 18
+endBit = 19
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.saved_attackstyle_godsword"
+varp = "varp.weapons_saved_attackstyle2"
+startBit = 20
+endBit = 21
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.emote_counters_crazy_dance"
+varp = "varp.emote_counters"
+startBit = 0
+endBit = 0
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.emote_counters_premier_shield"
+varp = "varp.emote_counters"
+startBit = 1
+endBit = 2

@@ -2,11 +2,11 @@
 
 package org.rsmod.api.config.refs
 
-import org.rsmod.api.type.refs.content.ContentReferences
+import dev.openrune.content
 
 typealias content = BaseContent
 
-object BaseContent : ContentReferences() {
+object BaseContent {
     val closed_single_door = content("closed_single_door")
     val opened_single_door = content("opened_single_door")
     val closed_left_door = content("closed_left_door")

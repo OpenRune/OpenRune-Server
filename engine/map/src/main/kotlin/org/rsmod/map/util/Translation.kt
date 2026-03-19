@@ -4,18 +4,18 @@ import kotlin.math.abs
 import org.rsmod.map.CoordGrid
 
 /**
- * Represents a translation vector that can be applied to a [org.rsmod.map.CoordGrid] for operations
- * such as shifting its position. This value class packs the `x`, `z`, and `level` translation
- * values into a single `Int` to optimize memory usage and performance. The coordinate values are
- * capped to 14 bits, while the level is capped to 3 bits.
+ * Represents a translation vector that can be applied to a [CoordGrid] for operations such as
+ * shifting its position. This value class packs the `x`, `z`, and `level` translation values into a
+ * single `Int` to optimize memory usage and performance. The coordinate values are capped to 14
+ * bits, while the level is capped to 3 bits.
  *
  * Since this class supports negative values, the maximum range for `x` and `z` is from `-8192` to
  * `8191`, and for `level`, it is from `-4` to `3`. These values allow for both positive and
  * negative translations.
  *
- * **Main purpose**: This class is designed to be used for applying translations to
- * [org.rsmod.map.CoordGrid] instances, allowing operations such as addition and subtraction of grid
- * coordinates. However, it can be used in other contexts where a translation vector is needed.
+ * **Main purpose**: This class is designed to be used for applying translations to [CoordGrid]
+ * instances, allowing operations such as addition and subtraction of grid coordinates. However, it
+ * can be used in other contexts where a translation vector is needed.
  *
  * @property packed The packed integer containing the `x`, `z`, and `level` translation values.
  */

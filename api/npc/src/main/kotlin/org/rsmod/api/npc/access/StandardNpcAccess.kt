@@ -1,5 +1,16 @@
 package org.rsmod.api.npc.access
 
+import dev.openrune.TypedParamType
+import dev.openrune.types.HitmarkTypeGroup
+import dev.openrune.types.ItemServerType
+import dev.openrune.types.NpcServerType
+import dev.openrune.types.SequenceServerType
+import dev.openrune.types.aconverted.AreaType
+import dev.openrune.types.aconverted.CategoryType
+import dev.openrune.types.aconverted.QueueType
+import dev.openrune.types.aconverted.SpotanimType
+import dev.openrune.types.aconverted.TimerType
+import dev.openrune.types.hunt.HuntVis
 import kotlin.getValue
 import kotlin.setValue
 import org.rsmod.annotations.InternalApi
@@ -31,21 +42,6 @@ import org.rsmod.game.hit.HitType
 import org.rsmod.game.loc.BoundLocInfo
 import org.rsmod.game.map.collision.get
 import org.rsmod.game.map.collision.isZoneValid
-import org.rsmod.game.type.area.AreaType
-import org.rsmod.game.type.category.CategoryType
-import org.rsmod.game.type.hitmark.HitmarkTypeGroup
-import org.rsmod.game.type.hunt.HuntVis
-import org.rsmod.game.type.npc.NpcType
-import org.rsmod.game.type.npc.NpcTypeList
-import org.rsmod.game.type.npc.UnpackedNpcType
-import org.rsmod.game.type.obj.ObjType
-import org.rsmod.game.type.param.ParamType
-import org.rsmod.game.type.queue.QueueType
-import org.rsmod.game.type.seq.SeqType
-import org.rsmod.game.type.seq.SeqTypeList
-import org.rsmod.game.type.seq.UnpackedSeqType
-import org.rsmod.game.type.spot.SpotanimType
-import org.rsmod.game.type.timer.TimerType
 import org.rsmod.map.CoordGrid
 import org.rsmod.map.util.Bounds
 import org.rsmod.routefinder.collision.CollisionFlagMap
@@ -92,19 +88,9 @@ public class StandardNpcAccess(
      * Delays the npc for a number of ticks equal to the time duration of [seq].
      *
      * @param seq The seq type whose tick duration determines the delay.
-     * @throws IllegalStateException if [UnpackedSeqType.tickDuration] is `0`.
+     * @throws IllegalStateException if [SequenceServerType.tickDuration] is `0`.
      */
-    public suspend fun delay(seq: SeqType, seqTypes: SeqTypeList) {
-        delay(seqTypes[seq])
-    }
-
-    /**
-     * Delays the npc for a number of ticks equal to the time duration of [seq].
-     *
-     * @param seq The seq type whose tick duration determines the delay.
-     * @throws IllegalStateException if [UnpackedSeqType.tickDuration] is `0`.
-     */
-    public suspend fun delay(seq: UnpackedSeqType) {
+    public suspend fun delay(seq: SequenceServerType) {
         val ticks = seq.tickDuration
         check(ticks > 0) { "Seq tick duration must be positive: $seq" }
         delay(cycles = ticks)
@@ -156,9 +142,9 @@ public class StandardNpcAccess(
      *   various factors from [modifier] and [StandardNpcHitProcessor].
      * @param hitmark The hitmark group used for the visual hitsplat. See [BaseHitmarkGroups] or
      *   reference [hitmark_groups] for a list of available hitmark groups.
-     * @param sourceWeapon An optional [ObjType] reference of a "weapon" used by the [source] that
-     *   hit modifiers and/or processors can use for specialized logic. Typically unnecessary when
-     *   [source] is an [Npc], though there may be niche use cases.
+     * @param sourceWeapon An optional [ItemServerType] reference of a "weapon" used by the [source]
+     *   that hit modifiers and/or processors can use for specialized logic. Typically unnecessary
+     *   when [source] is an [Npc], though there may be niche use cases.
      * @param sourceSecondary Similar to [sourceWeapon], except this refers to objs that are **not**
      *   the primary weapon, such as ammunition for ranged attacks or objs tied to magic spells.
      * @param modifier An [NpcHitModifier] used to adjust damage and other hit properties. By
@@ -172,8 +158,8 @@ public class StandardNpcAccess(
         type: HitType,
         damage: Int,
         hitmark: HitmarkTypeGroup = hitmark_groups.regular_damage,
-        sourceWeapon: ObjType? = null,
-        sourceSecondary: ObjType? = null,
+        sourceWeapon: ItemServerType? = null,
+        sourceSecondary: ItemServerType? = null,
         modifier: NpcHitModifier = context.hitModifier,
     ): Hit =
         npc.queueHit(
@@ -231,7 +217,7 @@ public class StandardNpcAccess(
         damage: Int,
         hitmark: HitmarkTypeGroup = hitmark_groups.regular_damage,
         specific: Boolean = false,
-        sourceSecondary: ObjType? = null,
+        sourceSecondary: ItemServerType? = null,
         modifier: NpcHitModifier = context.hitModifier,
     ): Hit =
         npc.queueHit(
@@ -372,7 +358,7 @@ public class StandardNpcAccess(
         npc.opPlayer2(target, interactions)
     }
 
-    public fun anim(seq: SeqType, delay: Int = 0) {
+    public fun anim(seq: SequenceServerType, delay: Int = 0) {
         npc.anim(seq, delay)
     }
 
@@ -405,21 +391,7 @@ public class StandardNpcAccess(
      *   changing back to its original type. Set to `Int.MAX_VALUE` to bypass this behavior.
      */
     @OptIn(InternalApi::class)
-    public fun changeType(type: NpcType, duration: Int, typeList: NpcTypeList) {
-        npc.transmog(typeList[type], duration)
-        npc.assignUid()
-    }
-
-    /**
-     * Transmogrifies the [npc] into [type], reassigning its internal `uid`. Since npc interactions
-     * validate `uid`s before processing, this will automatically cancel any ongoing interactions
-     * with this [npc].
-     *
-     * @param duration The cycle duration that the [npc] will remain as [type] before automatically
-     *   changing back to its original type. Set to `Int.MAX_VALUE` to bypass this behavior.
-     */
-    @OptIn(InternalApi::class)
-    public fun changeType(type: UnpackedNpcType, duration: Int) {
+    public fun changeType(type: NpcServerType, duration: Int) {
         npc.transmog(type, duration)
         npc.assignUid()
     }
@@ -643,7 +615,7 @@ public class StandardNpcAccess(
     /** @see [NpcSearch.find] */
     public fun npcFind(
         coord: CoordGrid,
-        npc: NpcType,
+        npc: NpcServerType,
         distance: Int,
         checkVis: HuntVis,
         search: NpcSearch,
@@ -675,7 +647,7 @@ public class StandardNpcAccess(
     /** @see [NpcSearch.findAll] */
     public fun npcFindAll(
         coord: CoordGrid,
-        npc: NpcType,
+        npc: NpcServerType,
         distance: Int,
         checkVis: HuntVis,
         search: NpcSearch,
@@ -716,7 +688,7 @@ public class StandardNpcAccess(
     /** @see [NpcSearch.huntAll] */
     public fun npcHuntAll(
         coord: CoordGrid,
-        npc: NpcType,
+        npc: NpcServerType,
         distance: Int,
         checkVis: HuntVis,
         search: NpcSearch,
@@ -732,7 +704,7 @@ public class StandardNpcAccess(
      * If you wish to retrieve the param value for the current (transmog) type, use [Npc.visType] to
      * retrieve it.
      */
-    public fun <T : Any> paramOrNull(param: ParamType<T>): T? = npc.paramOrNull(param)
+    public fun <T : Any> paramOrNull(param: TypedParamType<T>): T? = npc.paramOrNull(param)
 
     /**
      * Returns the param value associated with [param] from the **base** npc` [Npc.type].
@@ -743,7 +715,7 @@ public class StandardNpcAccess(
      * @throws IllegalStateException if the type does not have a value associated with [param] and
      *   [param] does not have a non-null `default` value.
      */
-    public fun <T : Any> param(param: ParamType<T>): T = npc.param(param)
+    public fun <T : Any> param(param: TypedParamType<T>): T = npc.param(param)
 
     override fun toString(): String = "StandardNpcAccess(npc=$npc, coroutine=$coroutine)"
 }

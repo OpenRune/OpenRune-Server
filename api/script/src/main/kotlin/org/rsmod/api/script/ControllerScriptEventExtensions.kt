@@ -1,13 +1,13 @@
 package org.rsmod.api.script
 
+import dev.openrune.types.ControllerType
+import dev.openrune.types.aconverted.QueueType
+import dev.openrune.types.aconverted.TimerType
 import org.rsmod.api.controller.access.StandardConAccess
 import org.rsmod.api.controller.events.ControllerAIEvents
 import org.rsmod.api.controller.events.ControllerQueueEvents
 import org.rsmod.api.controller.events.ControllerTimerEvents
 import org.rsmod.events.EventBus
-import org.rsmod.game.type.controller.ControllerType
-import org.rsmod.game.type.queue.QueueType
-import org.rsmod.game.type.timer.TimerType
 import org.rsmod.plugin.scripts.ScriptContext
 
 /* Timer functions */

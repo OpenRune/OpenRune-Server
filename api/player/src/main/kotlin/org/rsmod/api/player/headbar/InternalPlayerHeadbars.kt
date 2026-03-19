@@ -1,15 +1,15 @@
 package org.rsmod.api.player.headbar
 
+import dev.openrune.types.HealthBarServerType
 import org.rsmod.game.headbar.Headbar
 import org.rsmod.game.hit.Hitmark
-import org.rsmod.game.type.headbar.HeadbarType
 
 internal object InternalPlayerHeadbars {
     fun createFromHitmark(
         hitmark: Hitmark,
         currHp: Int,
         maxHp: Int,
-        headbar: HeadbarType,
+        headbar: HealthBarServerType,
     ): Headbar {
         return when {
             hitmark.isNpcSource ->
@@ -45,7 +45,7 @@ internal object InternalPlayerHeadbars {
         sourceSlot: Int,
         currHp: Int,
         maxHp: Int,
-        headbar: HeadbarType,
+        headbar: HealthBarServerType,
         clientDelay: Int,
     ): Headbar {
         val fill = calculateFill(headbar.segments, currHp, maxHp)
@@ -64,7 +64,7 @@ internal object InternalPlayerHeadbars {
         sourceSlot: Int,
         currHp: Int,
         maxHp: Int,
-        headbar: HeadbarType,
+        headbar: HealthBarServerType,
         clientDelay: Int,
         specific: Boolean,
     ): Headbar {
@@ -83,7 +83,7 @@ internal object InternalPlayerHeadbars {
     private fun createNoSource(
         currHp: Int,
         maxHp: Int,
-        headbar: HeadbarType,
+        headbar: HealthBarServerType,
         clientDelay: Int,
     ): Headbar {
         val fill = calculateFill(headbar.segments, currHp, maxHp)

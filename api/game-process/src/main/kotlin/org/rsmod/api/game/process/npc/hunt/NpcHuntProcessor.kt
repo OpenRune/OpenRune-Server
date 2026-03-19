@@ -1,5 +1,10 @@
 package org.rsmod.api.game.process.npc.hunt
 
+import dev.openrune.ServerCacheManager
+import dev.openrune.types.HuntModeType
+import dev.openrune.types.NpcMode
+import dev.openrune.types.hunt.HuntNobodyNear
+import dev.openrune.types.hunt.HuntType
 import jakarta.inject.Inject
 import org.rsmod.api.hunt.Hunt
 import org.rsmod.api.npc.apLoc1
@@ -54,20 +59,11 @@ import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.NpcList
 import org.rsmod.game.entity.Player
 import org.rsmod.game.entity.PlayerList
-import org.rsmod.game.entity.npc.NpcMode
 import org.rsmod.game.entity.npc.NpcUid
 import org.rsmod.game.loc.BoundLocInfo
 import org.rsmod.game.loc.LocInfo
 import org.rsmod.game.obj.Obj
 import org.rsmod.game.queue.AiQueueType
-import org.rsmod.game.type.hunt.HuntModeTypeList
-import org.rsmod.game.type.hunt.HuntNobodyNear
-import org.rsmod.game.type.hunt.HuntType
-import org.rsmod.game.type.hunt.UnpackedHuntModeType
-import org.rsmod.game.type.loc.LocTypeList
-import org.rsmod.game.type.obj.ObjTypeList
-import org.rsmod.game.type.varn.VarnTypeList
-import org.rsmod.game.type.varp.VarpTypeList
 
 public class NpcHuntProcessor
 @Inject
@@ -75,11 +71,6 @@ constructor(
     @CoreRandom private val random: GameRandom,
     private val mapClock: MapClock,
     private val hunt: Hunt,
-    private val huntModes: HuntModeTypeList,
-    private val varpTypes: VarpTypeList,
-    private val varnTypes: VarnTypeList,
-    private val objTypes: ObjTypeList,
-    private val locTypes: LocTypeList,
     private val playerList: PlayerList,
     private val npcList: NpcList,
     private val playerInteractions: AiPlayerInteractions,
@@ -91,13 +82,18 @@ constructor(
         if (!npc.isValidTarget() || npc.isDelayed) {
             return
         }
-        val huntType = huntModes[npc.huntMode] ?: return
+
+        if (npc.huntMode == null) {
+            return
+        }
+
+        val huntType = ServerCacheManager.getHunt(npc.huntMode!!) ?: return
         npc.nonPlayerHunt(huntType)
         npc.incrementHuntClock(huntType)
         npc.consumeHuntTarget(huntType)
     }
 
-    private fun Npc.nonPlayerHunt(mode: UnpackedHuntModeType) {
+    private fun Npc.nonPlayerHunt(mode: HuntModeType) {
         val huntDisabled = huntRange == 0
         if (huntDisabled) {
             return
@@ -126,7 +122,7 @@ constructor(
         hunt(mode)
     }
 
-    private fun Npc.incrementHuntClock(mode: UnpackedHuntModeType) {
+    private fun Npc.incrementHuntClock(mode: HuntModeType) {
         val playerHunt = mode.type == HuntType.Player
         if (playerHunt) {
             huntClock++
@@ -139,7 +135,7 @@ constructor(
         }
     }
 
-    private fun Npc.hunt(mode: UnpackedHuntModeType) {
+    private fun Npc.hunt(mode: HuntModeType) {
         when (mode.type) {
             HuntType.Off -> {}
             HuntType.Player -> error("Npc player hunt should occur earlier in the cycle.")
@@ -149,7 +145,7 @@ constructor(
         }
     }
 
-    private fun Npc.huntNpc(mode: UnpackedHuntModeType) {
+    private fun Npc.huntNpc(mode: HuntModeType) {
         var target = NpcUid.NULL
         var count = 0
 
@@ -175,7 +171,7 @@ constructor(
         }
     }
 
-    private fun Npc.huntObj(mode: UnpackedHuntModeType) {
+    private fun Npc.huntObj(mode: HuntModeType) {
         var target: Obj? = null
         var count = 0
 
@@ -186,7 +182,7 @@ constructor(
                 if (check.obj != null && check.obj != obj.type) {
                     continue
                 }
-                val objType = objTypes.getValue(obj.type)
+                val objType = ServerCacheManager.getItem(obj.type) ?: continue
                 if (check.category != null && check.obj != objType.category) {
                     continue
                 }
@@ -202,7 +198,7 @@ constructor(
         }
     }
 
-    private fun Npc.huntLoc(mode: UnpackedHuntModeType) {
+    private fun Npc.huntLoc(mode: HuntModeType) {
         var target: LocInfo? = null
         var count = 0
 
@@ -213,7 +209,7 @@ constructor(
                 if (check.loc != null && check.loc != loc.id) {
                     continue
                 }
-                val locType = locTypes.getValue(loc.id)
+                val locType = ServerCacheManager.getObject(loc.id)!!
                 if (check.category != null && check.loc != locType.category) {
                     continue
                 }
@@ -229,7 +225,7 @@ constructor(
         }
     }
 
-    private fun Npc.consumeHuntTarget(mode: UnpackedHuntModeType) {
+    private fun Npc.consumeHuntTarget(mode: HuntModeType) {
         var consumedTarget = false
         when (mode.type) {
             HuntType.Off -> {
@@ -264,7 +260,7 @@ constructor(
                 val target = huntLoc
                 if (target != null) {
                     consumedTarget = true
-                    val boundLoc = BoundLocInfo(target, locTypes[target])
+                    val boundLoc = BoundLocInfo(target, ServerCacheManager.getObject(target.id)!!)
                     consumeLocTarget(boundLoc, mode.findNewMode)
                 }
             }

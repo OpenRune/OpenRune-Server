@@ -1,5 +1,6 @@
 package org.rsmod.content.generic.locs.doors
 
+import dev.openrune.types.ObjectServerType
 import jakarta.inject.Inject
 import org.rsmod.api.config.refs.content
 import org.rsmod.api.config.refs.params
@@ -9,7 +10,6 @@ import org.rsmod.api.script.onOpLoc1
 import org.rsmod.game.loc.BoundLocInfo
 import org.rsmod.game.loc.LocAngle
 import org.rsmod.game.loc.LocShape
-import org.rsmod.game.type.loc.UnpackedLocType
 import org.rsmod.map.CoordGrid
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
@@ -20,7 +20,7 @@ class DoorScript @Inject constructor(private val locRepo: LocRepository) : Plugi
         onOpLoc1(content.opened_single_door) { closeDoor(it.loc, it.type) }
     }
 
-    private suspend fun ProtectedAccess.openDoor(closed: BoundLocInfo, type: UnpackedLocType) {
+    private suspend fun ProtectedAccess.openDoor(closed: BoundLocInfo, type: ObjectServerType) {
         val sound = type.param(params.opensound)
         soundSynth(sound)
 
@@ -55,7 +55,7 @@ class DoorScript @Inject constructor(private val locRepo: LocRepository) : Plugi
         }
     }
 
-    private suspend fun ProtectedAccess.closeDoor(closed: BoundLocInfo, type: UnpackedLocType) {
+    private suspend fun ProtectedAccess.closeDoor(closed: BoundLocInfo, type: ObjectServerType) {
         val sound = type.param(params.closesound)
         soundSynth(sound)
 

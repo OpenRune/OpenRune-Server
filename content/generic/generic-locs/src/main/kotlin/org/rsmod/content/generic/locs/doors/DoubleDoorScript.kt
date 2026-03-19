@@ -1,5 +1,6 @@
 package org.rsmod.content.generic.locs.doors
 
+import dev.openrune.types.ObjectServerType
 import jakarta.inject.Inject
 import org.rsmod.api.config.refs.content
 import org.rsmod.api.config.refs.params
@@ -8,7 +9,6 @@ import org.rsmod.api.repo.loc.LocRepository
 import org.rsmod.api.script.onOpLoc1
 import org.rsmod.game.loc.BoundLocInfo
 import org.rsmod.game.loc.LocInfo
-import org.rsmod.game.type.loc.UnpackedLocType
 import org.rsmod.map.CoordGrid
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
@@ -21,7 +21,7 @@ class DoubleDoorScript @Inject constructor(private val locRepo: LocRepository) :
         onOpLoc1(content.opened_right_door) { closeRightDoor(it.loc, it.type) }
     }
 
-    private fun ProtectedAccess.openLeftDoor(left: BoundLocInfo, type: UnpackedLocType) {
+    private fun ProtectedAccess.openLeftDoor(left: BoundLocInfo, type: ObjectServerType) {
         val sound = type.param(params.opensound)
         soundSynth(sound)
 
@@ -48,7 +48,7 @@ class DoubleDoorScript @Inject constructor(private val locRepo: LocRepository) :
         }
     }
 
-    private fun ProtectedAccess.openRightDoor(right: BoundLocInfo, type: UnpackedLocType) {
+    private fun ProtectedAccess.openRightDoor(right: BoundLocInfo, type: ObjectServerType) {
         val sound = type.param(params.opensound)
         soundSynth(sound)
 
@@ -75,7 +75,7 @@ class DoubleDoorScript @Inject constructor(private val locRepo: LocRepository) :
         }
     }
 
-    private fun ProtectedAccess.closeLeftDoor(left: BoundLocInfo, type: UnpackedLocType) {
+    private fun ProtectedAccess.closeLeftDoor(left: BoundLocInfo, type: ObjectServerType) {
         val sound = type.param(params.opensound)
         soundSynth(sound)
 
@@ -102,7 +102,7 @@ class DoubleDoorScript @Inject constructor(private val locRepo: LocRepository) :
         }
     }
 
-    private fun ProtectedAccess.closeRightDoor(right: BoundLocInfo, type: UnpackedLocType) {
+    private fun ProtectedAccess.closeRightDoor(right: BoundLocInfo, type: ObjectServerType) {
         val sound = type.param(params.opensound)
         soundSynth(sound)
 

@@ -1,5 +1,6 @@
 package org.rsmod.api.player.stat
 
+import dev.openrune.types.StatType
 import kotlin.math.absoluteValue
 import kotlin.math.max
 import kotlin.math.min
@@ -9,7 +10,6 @@ import org.rsmod.api.random.GameRandom
 import org.rsmod.api.stats.levelmod.InvisibleLevels
 import org.rsmod.api.utils.skills.SkillingSuccessRate
 import org.rsmod.game.entity.Player
-import org.rsmod.game.type.stat.StatType
 
 /** Returns the **current**, **visible** level for [stat]. */
 @OptIn(InternalApi::class)

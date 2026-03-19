@@ -1,5 +1,6 @@
 package org.rsmod.content.interfaces.settings.scripts
 
+import dev.openrune.definition.type.widget.IfEvent
 import jakarta.inject.Inject
 import org.rsmod.api.config.refs.interfaces
 import org.rsmod.api.player.output.mes
@@ -13,7 +14,6 @@ import org.rsmod.api.utils.vars.VarEnumDelegate
 import org.rsmod.content.interfaces.settings.configs.setting_components
 import org.rsmod.content.interfaces.settings.configs.setting_varbits
 import org.rsmod.game.entity.Player
-import org.rsmod.game.type.interf.IfEvent
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 

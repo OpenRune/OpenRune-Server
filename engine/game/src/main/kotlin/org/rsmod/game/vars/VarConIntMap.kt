@@ -1,9 +1,9 @@
 package org.rsmod.game.vars
 
+import dev.openrune.types.VarConBitType
+import dev.openrune.types.VarConType
 import it.unimi.dsi.fastutil.ints.Int2IntMap
 import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap
-import org.rsmod.game.type.varcon.VarConType
-import org.rsmod.game.type.varconbit.VarConBitType
 import org.rsmod.utils.bits.bitMask
 import org.rsmod.utils.bits.getBits
 import org.rsmod.utils.bits.withBits
@@ -45,7 +45,7 @@ public value class VarConIntMap(public val backing: Int2IntMap = Int2IntOpenHash
         private fun assertVarConBitBounds(varcon: VarConBitType, value: Int) {
             val maxValue = varcon.maxValue()
             require(value in 0..maxValue) {
-                "Varconbit overflow on varconbit ${varcon.internalId} " +
+                "Varconbit overflow on varconbit ${varcon.id} " +
                     "Value $value is outside the range 0-$maxValue (type=$varcon)"
             }
         }

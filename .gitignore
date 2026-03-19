@@ -47,4 +47,6 @@ bin/
 
 ### Mac OS ###
 .DS_Store
-/data/cache
+/api/tables/src/main/kotlin/org/rsmod/api/table
+game.yml
+/.idea

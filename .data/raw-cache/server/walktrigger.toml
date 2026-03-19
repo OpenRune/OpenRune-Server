@@ -1,0 +1,15 @@
+[[walktrigger]]
+id = "walktrigger.frozen"
+priority = "High"
+
+[[walktrigger]]
+id = "walktrigger.pvp_frozen"
+priority = "High"
+
+[[walktrigger]]
+id = "walktrigger.stunned"
+priority = "High"
+
+[[walktrigger]]
+id = "walktrigger.emote_cancelanim"
+priority = "None"

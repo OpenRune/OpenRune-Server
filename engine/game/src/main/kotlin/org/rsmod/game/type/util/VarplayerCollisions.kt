@@ -1,14 +1,16 @@
-package org.rsmod.game.type.util
+package dev.openrune.types.util
 
+import dev.openrune.definition.type.VarBitType
+import dev.openrune.rscm.RSCM
+import dev.openrune.rscm.RSCMType
+import dev.openrune.types.varp.VarpServerType
+import dev.openrune.types.varp.baseVar
+import dev.openrune.types.varp.lsb
+import dev.openrune.types.varp.msb
 import java.util.BitSet
-import org.rsmod.game.type.varbit.UnpackedVarBitType
-import org.rsmod.game.type.varp.UnpackedVarpType
 
 public object VarplayerCollisions {
-    public fun detect(
-        varps: Iterable<UnpackedVarpType>,
-        varbits: Iterable<UnpackedVarBitType>,
-    ): List<Error> {
+    public fun detect(varps: Iterable<VarpServerType>, varbits: Iterable<VarBitType>): List<Error> {
         val results = mutableListOf<Error>()
 
         val varpsBitSets = varps.associate { it.id to BitSet() }
@@ -31,19 +33,19 @@ public object VarplayerCollisions {
         return results
     }
 
-    private fun UnpackedVarBitType.asBitSet(): BitSet = BitSet().apply { set(lsb, msb) }
+    private fun VarBitType.asBitSet(): BitSet = BitSet().apply { set(lsb, msb) }
 
-    public sealed class Error(public val varbit: UnpackedVarBitType) {
-        public class InvalidBaseVar(varbit: UnpackedVarBitType) : Error(varbit) {
+    public sealed class Error(public val varbit: VarBitType) {
+        public class InvalidBaseVar(varbit: VarBitType) : Error(varbit) {
             override fun toString(): String =
-                "InvalidVarp(varp=${varbit.baseVar.internalId}, varbit=${varbit.internalId})"
+                "InvalidVarp(varp=${varbit.baseVar?.id}, varbit=${varbit.id})"
         }
 
-        public class VarpBitCollision(varbit: UnpackedVarBitType) : Error(varbit) {
+        public class VarpBitCollision(varbit: VarBitType) : Error(varbit) {
             override fun toString(): String =
                 "Collision(" +
-                    "varp=${varbit.baseVar.internalId}:${varbit.baseVar.internalName}, " +
-                    "varbit=${varbit.internalId}:${varbit.internalName}, " +
+                    "varp=${varbit.baseVar.id}:${RSCM.getReverseMapping(RSCMType.VARP,varbit.baseVar.id)}, " +
+                    "varbit=${varbit.id}:${RSCM.getReverseMapping(RSCMType.VARBIT,varbit.id)}, " +
                     "bits=${varbit.lsb}..${varbit.msb}" +
                     ")"
         }

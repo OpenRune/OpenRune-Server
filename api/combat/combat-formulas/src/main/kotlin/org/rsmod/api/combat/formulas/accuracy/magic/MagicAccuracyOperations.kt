@@ -1,5 +1,6 @@
 package org.rsmod.api.combat.formulas.accuracy.magic
 
+import dev.openrune.util.Wearpos
 import java.util.EnumSet
 import org.rsmod.api.combat.accuracy.player.PlayerMagicAccuracy
 import org.rsmod.api.combat.commons.styles.AttackStyle
@@ -15,7 +16,6 @@ import org.rsmod.api.player.stat.magicLvl
 import org.rsmod.api.player.worn.EquipmentChecks
 import org.rsmod.game.entity.Player
 import org.rsmod.game.inv.Inventory
-import org.rsmod.game.type.obj.Wearpos
 import org.rsmod.game.vars.VarPlayerIntMap
 
 private typealias SpellAttr = CombatSpellAttributes

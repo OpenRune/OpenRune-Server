@@ -1,5 +1,6 @@
 package org.rsmod.api.combat.formulas
 
+import dev.openrune.types.ItemServerType
 import jakarta.inject.Inject
 import org.rsmod.api.combat.commons.magic.Spellbook
 import org.rsmod.api.combat.commons.styles.MagicAttackStyle
@@ -26,7 +27,6 @@ import org.rsmod.api.combat.formulas.accuracy.ranged.PvPRangedAccuracy
 import org.rsmod.api.random.GameRandom
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
-import org.rsmod.game.type.obj.ObjType
 
 public class AccuracyFormulae
 @Inject
@@ -442,8 +442,8 @@ constructor(
      * npc's magic defence, then uses a value from the random number generator ([random]) to
      * determine if the spell hits.
      *
-     * @param spell The [ObjType] representing the spell being cast (e.g., `objs.spell_wind_strike`
-     *   for the Wind strike spell).
+     * @param spell The [ItemServerType] representing the spell being cast (e.g.,
+     *   `objs.spell_wind_strike` for the Wind strike spell).
      * @param spellbook The [Spellbook] the spell belongs to (e.g., Standard or Ancients), usually
      *   derived from the player's current spellbook.
      * @param usedSunfireRune Whether the player used a Sunfire rune for the spell.
@@ -454,7 +454,7 @@ constructor(
     public fun rollSpellAccuracy(
         player: Player,
         target: Npc,
-        spell: ObjType,
+        spell: ItemServerType,
         spellbook: Spellbook?,
         usedSunfireRune: Boolean,
         random: GameRandom,
@@ -467,8 +467,8 @@ constructor(
      * Calculates the magic spell hit chance based on the [player]'s magic attack roll and the
      * [target]'s magic defence roll.
      *
-     * @param spell The [ObjType] representing the spell being cast (e.g., `objs.spell_wind_strike`
-     *   for the Wind strike spell).
+     * @param spell The [ItemServerType] representing the spell being cast (e.g.,
+     *   `objs.spell_wind_strike` for the Wind strike spell).
      * @param spellbook The [Spellbook] the spell belongs to (e.g., Standard or Ancients), usually
      *   derived from the player's current spellbook.
      * @param usedSunfireRune Whether the player used a Sunfire rune for the spell.
@@ -478,7 +478,7 @@ constructor(
     public fun getSpellHitChance(
         player: Player,
         target: Npc,
-        spell: ObjType,
+        spell: ItemServerType,
         spellbook: Spellbook?,
         usedSunfireRune: Boolean,
     ): Int =
@@ -498,8 +498,8 @@ constructor(
      * player's magic defence, then uses a value from the random number generator ([random]) to
      * determine if the spell hits.
      *
-     * @param spell The [ObjType] representing the spell being cast (e.g., `objs.spell_wind_strike`
-     *   for the Wind strike spell).
+     * @param spell The [ItemServerType] representing the spell being cast (e.g.,
+     *   `objs.spell_wind_strike` for the Wind strike spell).
      * @param spellbook The [Spellbook] the spell belongs to (e.g., Standard or Ancients), usually
      *   derived from the player's current spellbook.
      * @param usedSunfireRune Whether the player used a Sunfire rune for the spell.
@@ -510,7 +510,7 @@ constructor(
     public fun rollSpellAccuracy(
         player: Player,
         target: Player,
-        spell: ObjType,
+        spell: ItemServerType,
         spellbook: Spellbook?,
         usedSunfireRune: Boolean,
         random: GameRandom,
@@ -523,8 +523,8 @@ constructor(
      * Calculates the magic spell hit chance based on the [player]'s magic attack roll and the
      * [target]'s magic defence roll.
      *
-     * @param spell The [ObjType] representing the spell being cast (e.g., `objs.spell_wind_strike`
-     *   for the Wind strike spell).
+     * @param spell The [ItemServerType] representing the spell being cast (e.g.,
+     *   `objs.spell_wind_strike` for the Wind strike spell).
      * @param spellbook The [Spellbook] the spell belongs to (e.g., Standard or Ancients), usually
      *   derived from the player's current spellbook.
      * @param usedSunfireRune Whether the player used a Sunfire rune for the spell.
@@ -534,7 +534,7 @@ constructor(
     public fun getSpellHitChance(
         player: Player,
         target: Player,
-        spell: ObjType,
+        spell: ItemServerType,
         spellbook: Spellbook?,
         usedSunfireRune: Boolean,
     ): Int =

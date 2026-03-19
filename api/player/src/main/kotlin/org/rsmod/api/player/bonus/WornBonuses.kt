@@ -1,6 +1,6 @@
 package org.rsmod.api.player.bonus
 
-import jakarta.inject.Inject
+import dev.openrune.util.Wearpos
 import kotlin.math.max
 import org.rsmod.api.config.constants
 import org.rsmod.api.config.refs.categories
@@ -13,10 +13,10 @@ import org.rsmod.api.player.righthand
 import org.rsmod.api.player.torso
 import org.rsmod.api.player.worn.EquipmentChecks
 import org.rsmod.game.entity.Player
-import org.rsmod.game.type.obj.ObjTypeList
-import org.rsmod.game.type.obj.Wearpos
+import org.rsmod.game.type.getInvObj
+import org.rsmod.game.type.getOrNull
 
-public class WornBonuses @Inject constructor(private val objTypes: ObjTypeList) {
+public class WornBonuses {
     public fun strengthBonus(player: Player): Int {
         val bonuses = calculate(player)
         return bonuses.meleeStr
@@ -120,7 +120,7 @@ public class WornBonuses @Inject constructor(private val objTypes: ObjTypeList) 
         var undeadMeleeOnly = false
         var slayerMeleeOnly = false
 
-        val weapon = objTypes.getOrNull(player.righthand)
+        val weapon = getOrNull(player.righthand)
 
         val usingChargebow = weapon != null && weapon.isCategoryType(categories.chargebow)
         val usingThrown = weapon != null && weapon.isCategoryType(categories.throwing_weapon)
@@ -133,7 +133,7 @@ public class WornBonuses @Inject constructor(private val objTypes: ObjTypeList) 
                 continue
             }
 
-            val type = objTypes[obj]
+            val type = getInvObj(obj)
             offStab += type.param(params.attack_stab)
             offSlash += type.param(params.attack_slash)
             offCrush += type.param(params.attack_crush)

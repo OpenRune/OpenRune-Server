@@ -1,5 +1,6 @@
 package org.rsmod.api.combat.formulas.accuracy.ranged
 
+import dev.openrune.types.NpcServerType
 import jakarta.inject.Inject
 import java.util.EnumSet
 import kotlin.math.max
@@ -13,12 +14,12 @@ import org.rsmod.api.combat.formulas.attributes.CombatRangedAttributes
 import org.rsmod.api.combat.formulas.attributes.collector.CombatNpcAttributeCollector
 import org.rsmod.api.combat.formulas.attributes.collector.CombatRangedAttributeCollector
 import org.rsmod.api.combat.formulas.isSlayerTask
+import org.rsmod.api.config.refs.BaseParams
 import org.rsmod.api.config.refs.params
 import org.rsmod.api.config.refs.varbits
 import org.rsmod.api.player.bonus.WornBonuses
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
-import org.rsmod.game.type.npc.UnpackedNpcType
 
 public class PvNRangedAccuracy
 @Inject
@@ -55,7 +56,7 @@ constructor(
 
     public fun computeHitChance(
         source: Player,
-        target: UnpackedNpcType,
+        target: NpcServerType,
         targetDefence: Int,
         targetCurrHp: Int,
         targetMaxHp: Int,
@@ -116,7 +117,7 @@ constructor(
     }
 
     public fun computeDefenceRoll(
-        target: UnpackedNpcType,
+        target: NpcServerType,
         targetDefence: Int,
         amascutInvocationLvl: Int,
         blockType: RangedAttackType?,
@@ -132,11 +133,11 @@ constructor(
         )
     }
 
-    private fun UnpackedNpcType.getDefenceBonus(attackType: RangedAttackType?): Int =
+    private fun NpcServerType.getDefenceBonus(attackType: RangedAttackType?): Int =
         when (attackType) {
-            RangedAttackType.Light -> param(params.defence_light)
-            RangedAttackType.Standard -> param(params.defence_standard)
-            RangedAttackType.Heavy -> param(params.defence_heavy)
+            RangedAttackType.Light -> param(BaseParams.defence_light)
+            RangedAttackType.Standard -> param(BaseParams.defence_standard)
+            RangedAttackType.Heavy -> param(BaseParams.defence_heavy)
             null -> 0
         }
 }

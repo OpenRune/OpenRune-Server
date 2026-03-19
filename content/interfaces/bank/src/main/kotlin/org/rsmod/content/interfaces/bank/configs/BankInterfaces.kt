@@ -1,7 +1,7 @@
 package org.rsmod.content.interfaces.bank.configs
 
-import org.rsmod.api.type.refs.comp.ComponentReferences
-import org.rsmod.api.type.refs.interf.InterfaceReferences
+import dev.openrune.component
+import dev.openrune.inter
 
 internal typealias bank_interfaces = BankInterfaces
 
@@ -9,11 +9,11 @@ internal typealias bank_components = BankComponents
 
 internal typealias bank_comsubs = BankSubComponents
 
-object BankInterfaces : InterfaceReferences() {
+object BankInterfaces {
     val tutorial_overlay = inter("screenhighlight")
 }
 
-object BankComponents : ComponentReferences() {
+object BankComponents {
     val tutorial_button = component("bankmain:bank_tut")
     val capacity_container = component("bankmain:capacity_layer")
     val capacity_text = component("bankmain:capacity")

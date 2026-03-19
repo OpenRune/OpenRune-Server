@@ -14,7 +14,6 @@ import org.rsmod.api.player.isInPvpCombat
 import org.rsmod.api.script.advanced.onDefaultAiOpPlayer2
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
-import org.rsmod.game.type.category.isType
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
@@ -53,6 +52,10 @@ constructor(private val combat: NvPCombat, private val areaChecker: AreaChecker)
 
     private fun Npc.resolveMeleeAttackType(): MeleeAttackType {
         val category = visType.paramOrNull(params.npc_attack_type)
+        if (category == null) {
+            return MeleeAttackType.Crush
+        }
+
         return when {
             category.isType(categories.attacktype_stab) -> MeleeAttackType.Stab
             category.isType(categories.attacktype_slash) -> MeleeAttackType.Slash

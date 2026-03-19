@@ -1,10 +1,10 @@
 package org.rsmod.content.interfaces.combat.tab.configs
 
-import org.rsmod.api.type.refs.comp.ComponentReferences
+import dev.openrune.component
 
 typealias combat_components = CombatTabComponents
 
-object CombatTabComponents : ComponentReferences() {
+object CombatTabComponents {
     val stance1 = component("combat_interface:0")
     val stance2 = component("combat_interface:1")
     val stance3 = component("combat_interface:2")
