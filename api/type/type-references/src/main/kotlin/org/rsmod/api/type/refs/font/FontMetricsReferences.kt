@@ -5,7 +5,7 @@ import org.rsmod.game.type.font.FontMetricsType
 import org.rsmod.game.type.font.HashedFontMetricsType
 
 public abstract class FontMetricsReferences :
-    TypeReferences<FontMetricsType>(FontMetricsType::class.java) {
+    TypeReferences<FontMetricsType>() {
     public fun fontMetrics(internal: String): FontMetricsType {
         val type = HashedFontMetricsType(null, internal)
         cache += type
