@@ -5,7 +5,7 @@ import org.rsmod.api.type.refs.TypeReferences
 import org.rsmod.game.type.enums.EnumType
 import org.rsmod.game.type.enums.HashedEnumType
 
-public abstract class EnumReferences : TypeReferences<EnumType<*, *>>(EnumType::class.java) {
+public abstract class EnumReferences : TypeReferences<EnumType<*, *>>() {
     /**
      * Find the respective type based on their [internal] name.
      *

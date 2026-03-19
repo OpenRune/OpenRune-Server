@@ -5,7 +5,7 @@ import org.rsmod.api.type.refs.TypeReferences
 import org.rsmod.game.type.param.HashedParamType
 import org.rsmod.game.type.param.ParamType
 
-public abstract class ParamReferences : TypeReferences<ParamType<*>>(ParamType::class.java) {
+public abstract class ParamReferences : TypeReferences<ParamType<*>>() {
     /**
      * Find the respective type based on their [internal] name.
      *

@@ -19,7 +19,7 @@ import org.rsmod.game.type.stat.StatType
 import org.rsmod.map.CoordGrid
 
 public abstract class DbColumnReferences :
-    TypeReferences<NamedDbColumn>(NamedDbColumn::class.java) {
+    TypeReferences<NamedDbColumn>() {
     public fun <T, R> value(internal: String, decoder: DbColumnCodec<T, R>): DbValueColumn<T, R> {
         val column = DbValueColumn(decoder)
         cache += NamedDbColumn(internal, column, decoder.types)

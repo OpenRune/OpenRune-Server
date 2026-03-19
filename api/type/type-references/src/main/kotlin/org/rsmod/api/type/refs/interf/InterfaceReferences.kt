@@ -5,7 +5,7 @@ import org.rsmod.game.type.interf.HashedInterfaceType
 import org.rsmod.game.type.interf.InterfaceType
 
 public abstract class InterfaceReferences :
-    TypeReferences<InterfaceType>(InterfaceType::class.java) {
+    TypeReferences<InterfaceType>() {
     public fun inter(internal: String): InterfaceType {
         val type = HashedInterfaceType(null, internal)
         cache += type
