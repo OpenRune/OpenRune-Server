@@ -1,0 +1,4 @@
+frozen=0
+pvp_frozen=1
+stunned=2
+emote_cancelanim=3

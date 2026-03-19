@@ -1,0 +1,9 @@
+toxins=0
+map_clock=1
+stat_regen=2
+stat_boost_restore=3
+health_regen=4
+rapidrestore_regen=5
+spec_regen=6
+prayer_drain=7
+music_sync=8
