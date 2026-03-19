@@ -10,6 +10,7 @@ import com.google.inject.Guice
 import com.google.inject.Injector
 import com.google.inject.Key
 import com.google.inject.util.Modules
+import dev.openrune.ServerCacheManager
 import java.nio.file.Path
 import java.text.DecimalFormat
 import kotlin.io.path.isDirectory
@@ -98,6 +99,8 @@ class GameServer(private val skipTypeVerificationOverride: Boolean? = null) :
 
     fun prepareGame(injector: Injector) {
         loadCache(injector)
+
+        ServerCacheManager.init()
         loadMap(injector)
         loadTypeResolver(injector)
         loadConfig(injector)

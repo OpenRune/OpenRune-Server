@@ -10,6 +10,7 @@ public data class HashedInvType(
     override var internalName: String?,
     override var internalId: Int? = null,
 ) : HashedCacheType, InvType() {
+
     public val autoResolve: Boolean = startHash == null
 
     override fun toString(): String =

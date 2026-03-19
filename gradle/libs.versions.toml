@@ -26,6 +26,9 @@ rsprot = "1.0.0-ALPHA-20250909"
 simmetrics = "4.1.1"
 spotless = "7.0.4"
 sqlite = "3.50.1.0"
+or2 = "2.3.7"
+or2ServerUtils = "0.7"
+jodatime = "2.14.0"
 
 [libraries]
 apache-commons = { module = "commons-codec:commons-codec", version.ref = "apache-commons" }
@@ -36,6 +39,7 @@ clikt = { module = "com.github.ajalt.clikt:clikt", version.ref = "clikt" }
 fastutil = { module = "it.unimi.dsi:fastutil", version.ref = "fastutil" }
 flyway-core = { module = "org.flywaydb:flyway-core", version.ref = "flyway" }
 guice = { module = "com.google.inject:guice", version.ref = "guice" }
+jackson-dataformat-yaml = { group = "com.fasterxml.jackson.dataformat", name = "jackson-dataformat-yaml", version = "jackson" }
 jackson-databind = { module = "com.fasterxml.jackson.core:jackson-databind", version.ref = "jackson" }
 jackson-dataformat-toml = { module = "com.fasterxml.jackson.dataformat:jackson-dataformat-toml", version.ref = "jackson" }
 jackson-module-kotlin = { module = "com.fasterxml.jackson.module:jackson-module-kotlin", version.ref = "jackson" }
@@ -59,6 +63,14 @@ rsprot-shared = { module = "net.rsprot:osrs-233-shared", version.ref = "rsprot" 
 simmetrics-core = { module = "com.github.mpkorstanje:simmetrics-core", version.ref = "simmetrics" }
 spotless-gradle-plugin = { module = "com.diffplug.spotless:spotless-plugin-gradle", version.ref = "spotless" }
 sqlite-jdbc = { module = "org.xerial:sqlite-jdbc", version.ref = "sqlite" }
+
+or2-all-cache = { group = "dev.or2", name = "all", version.ref = "or2" }
+or2-tools = { group = "dev.or2", name = "tools", version.ref = "or2" }
+or2-server-utils = { group = "dev.or2", name = "server-utils", version.ref = "or2ServerUtils" }
+joda-time = { group = "joda-time", name = "joda-time", version.ref = "jodatime" }
+or2-definition = { group = "dev.or2", name = "definition", version.ref = "or2" }
+or2-filesystem = { group = "dev.or2", name = "filesystem", version.ref = "or2" }
+or2-filestore = { group = "dev.or2", name = "filestore", version.ref = "or2" }
 
 [bundles]
 logging = ["logback-classic", "kotlin-inline-logger"]

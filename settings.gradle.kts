@@ -15,7 +15,9 @@ dependencyResolutionManagement {
     repositories {
         gradlePluginPortal()
         mavenCentral()
+        maven("https://jitpack.io")
         maven("https://repo.openrs2.org/repository/openrs2-snapshots")
+        maven("https://raw.githubusercontent.com/OpenRune/hosting/master")
     }
 }
 
@@ -23,7 +25,8 @@ include(
     "api",
     "content",
     "engine",
-    "server"
+    "server",
+    "or-cache"
 )
 
 includeProjects(project(":api"))
@@ -47,6 +50,9 @@ fun searchProject(parentName: String, root: Path, currentPath: Path) {
         return
     }
     val relativePath = root.relativize(currentPath)
+    if (relativePath.toString().isEmpty()) {
+        return
+    }
     val projectName = relativePath.toString().replace(File.separator, ":")
     include("$parentName:$projectName")
 }

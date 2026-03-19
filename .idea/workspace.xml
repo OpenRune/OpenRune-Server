@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="66bedd14-b26c-4d29-9654-58302215d459" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/OpenRune IntelliJ Tools-1.0.zip" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/raw-cache/extra-dump/item-data.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/raw-cache/extra-dump/object-examines.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/game.yml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/openRune-intelliJ-tools.toml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/or-cache/src/main/kotlin/dev/openrune/BufferReader.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/or-cache/src/main/kotlin/dev/openrune/CacheTools.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/or-cache/src/main/kotlin/dev/openrune/ParamMapper.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/or-cache/src/main/kotlin/dev/openrune/ServerCacheManager.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/or-cache/src/main/kotlin/dev/openrune/codec/osrs/CodecsOsrs.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/or-cache/src/main/kotlin/dev/openrune/codec/osrs/impl/HealthBarServerCodec.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/or-cache/src/main/kotlin/dev/openrune/codec/osrs/impl/InventoryServerCodec.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/or-cache/src/main/kotlin/dev/openrune/codec/osrs/impl/ItemServerCodec.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/or-cache/src/main/kotlin/dev/openrune/codec/osrs/impl/NpcServerCodec.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/or-cache/src/main/kotlin/dev/openrune/codec/osrs/impl/ObjectServerCodec.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/or-cache/src/main/kotlin/dev/openrune/codec/osrs/impl/SequenceServerCodec.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/or-cache/src/main/kotlin/dev/openrune/gamevals/GameValAutoAssigner.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/or-cache/src/main/kotlin/dev/openrune/gamevals/GameValProvider.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/or-cache/src/main/kotlin/dev/openrune/gamevals/GamevalDumper.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/or-cache/src/main/kotlin/dev/openrune/rscm/RSCM.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/or-cache/src/main/kotlin/dev/openrune/tools/MinifyServerCache.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/or-cache/src/main/kotlin/dev/openrune/tools/PackServerConfigOSRS.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/or-cache/src/main/kotlin/dev/openrune/types/HealthBarServerType.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/or-cache/src/main/kotlin/dev/openrune/types/InventoryServerType.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/or-cache/src/main/kotlin/dev/openrune/types/ItemServerType.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/or-cache/src/main/kotlin/dev/openrune/types/NpcServerType.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/or-cache/src/main/kotlin/dev/openrune/types/ObjectServerType.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/or-cache/src/main/kotlin/dev/openrune/types/SequenceServerType.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/or-cache/src/main/kotlin/dev/openrune/util/Coords.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/or-cache/src/main/kotlin/dev/openrune/util/TextAlignment.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build-logic/src/main/kotlin/base-conventions.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/build-logic/src/main/kotlin/base-conventions.gradle.kts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/game/src/main/kotlin/org/rsmod/game/type/inv/InvType.kt" beforeDir="false" afterPath="$PROJECT_DIR$/engine/game/src/main/kotlin/org/rsmod/game/type/inv/InvType.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gradle/libs.versions.toml" beforeDir="false" afterPath="$PROJECT_DIR$/gradle/libs.versions.toml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/app/src/main/kotlin/org/rsmod/server/app/GameServer.kt" beforeDir="false" afterPath="$PROJECT_DIR$/server/app/src/main/kotlin/org/rsmod/server/app/GameServer.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/settings.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/settings.gradle.kts" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ExternalProjectsData">
+    <projectState path="$PROJECT_DIR$">
+      <ProjectState />
+    </projectState>
+  </component>
+  <component name="ExternalProjectsManager">
+    <system id="GRADLE">
+      <state>
+        <task path="$PROJECT_DIR$">
+          <activation />
+        </task>
+        <projects_view>
+          <tree_state>
+            <expand>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="rsmod" type="f1a62948:ProjectNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="rsmod" type="f1a62948:ProjectNode" />
+                <item name="rsmod" type="2d1252cf:ModuleNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="rsmod" type="f1a62948:ProjectNode" />
+                <item name="rsmod" type="2d1252cf:ModuleNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="rsmod" type="f1a62948:ProjectNode" />
+                <item name="rsmod" type="2d1252cf:ModuleNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+                <item name="application" type="c8890929:TasksNode$1" />
+              </path>
+            </expand>
+            <select />
+          </tree_state>
+        </projects_view>
+      </state>
+    </system>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GradleScriptDefinitionsStorage" workingDir="$PROJECT_DIR$" gradleHome="C:\Users\chris\.gradle\wrapper\dists\gradle-9.0.0-bin\d6wjpkvcgsg3oed0qlfss3wgl\gradle-9.0.0" javaHome="C:\Users\chris\AppData\Local\Programs\IntelliJ IDEA Community Edition\jbr" gradleVersion="9.0.0" />
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Gradle.Download Sources.executor": "Run",
+    "Gradle.rsmod2-or [freshCache].executor": "Run",
+    "Gradle.rsmod2-or [run].executor": "Run",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "git-widget-placeholder": "rsmod-rscm",
+    "last_opened_file_path": "D:/rsmod2-or/data/raw-cache/extra-dump"
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\rsmod2-or\data\raw-cache\extra-dump" />
+      <recent name="D:\rsmod2-or" />
+      <recent name="D:\rsmod2-or\data" />
+      <recent name="D:\rsmod2-or\cache\src\main\kotlin" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Gradle.rsmod2-or [run]">
+    <configuration name="rsmod2-or [freshCache]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="freshCache" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>false</RunAsTest>
+      <method v="2" />
+    </configuration>
+    <configuration name="rsmod2-or [run]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="run" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>false</RunAsTest>
+      <method v="2" />
+    </configuration>
+    <configuration default="true" type="JetRunConfigurationType">
+      <module name="kotlin.scripts.KotlinBuildScript...\::rsmod2-or:build.gradle.kts" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="KotlinStandaloneScriptRunConfigurationType">
+      <module name="kotlin.scripts.KotlinBuildScript...\::rsmod2-or:build.gradle.kts" />
+      <option name="filePath" />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Gradle.rsmod2-or [run]" />
+        <item itemvalue="Gradle.rsmod2-or [freshCache]" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="TaskManager">
+    <servers />
+  </component>
+</project>
