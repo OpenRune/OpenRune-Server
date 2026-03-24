@@ -27,6 +27,21 @@ content/src/main/resources/org/alter/skills/<skill>/gamevals.toml  (RSCM mapping
 content/src/main/kotlin/org/alter/skills/<skill>/  (PluginEvent implementations)
 ```
 
+### Event Registration Convention
+The new plugin system has convenience DSL helpers for some events (`onNpcOption`, `onObjectOption`, `onButton`, `onLogin`, `onTimer`, `onItemOnItem`) but **not** for item-on-object or item-on-NPC interactions. For those, use raw event registration:
+```kotlin
+on<ItemOnObject> {
+    where { /* condition */ }
+    then { /* action */ }
+}.submit()
+
+on<ItemOnNpcEvent> {
+    where { /* condition */ }
+    then { /* action */ }
+}.submit()
+```
+This matches the pattern used in SmeltingEvents.kt, CampfireEvents.kt, and GildedAlterEvents.kt.
+
 ---
 
 ## 2. Fishing Skill System
@@ -36,21 +51,23 @@ content/src/main/kotlin/org/alter/skills/<skill>/  (PluginEvent implementations)
 **`cache/src/main/kotlin/org/alter/impl/skills/Fishing.kt`**
 
 DB table `fishing_spots` with columns:
-- Spot object ID (RSCM)
+- Spot NPC ID (RSCM) — fishing spots are NPCs in OSRS, not objects
 - Fish item output (RSCM)
 - Level required (int)
-- XP awarded (double)
+- XP awarded (int, stored as x10 for decimals — e.g., 105 = 10.5 XP)
 - Tool required (RSCM — net, rod, harpoon, lobster pot, etc.)
 - Bait required (RSCM, nullable — fishing bait, feather, dark bait, etc.)
 - Catch rate low (int)
 - Catch rate high (int)
 - Members-only (boolean)
 - Spot type (string — "net", "bait", "lure", "cage", "harpoon")
+- Animation ID (int — fishing animation varies by tool type)
 
 DB table `fishing_tools` with columns:
 - Tool item ID (RSCM)
 - Tool type (string)
-- Speed modifier (double — e.g., dragon harpoon = 0.8 for 20% faster)
+- Speed modifier (int, percentage — e.g., 80 = 0.8x, 65 = 0.65x for crystal harpoon)
+- Animation ID (int — animation when using this tool)
 
 **`content/src/main/resources/org/alter/skills/fishing/gamevals.toml`**
 
@@ -75,30 +92,31 @@ Code gen produces: `FishingSpotRow`, `FishingToolRow`
 | Swordfish | 50 | 100 | Harpoon | — |
 
 **Members (core):**
-| Fish | Level | Tool | Notes |
-|------|-------|------|-------|
-| Mackerel | 16 | Big net | — |
-| Cod | 23 | Big net | — |
-| Bass | 46 | Big net | — |
-| Monkfish | 62 | Small net | Requires Swan Song |
-| Shark | 76 | Harpoon | — |
-| Anglerfish | 82 | Fishing rod | Fishing bait |
-| Dark crab | 85 | Lobster pot | Dark fishing bait |
-| Karambwan | 65 | Karambwan vessel | Requires Tai Bwo Wannai Trio |
-| Lava eel | 53 | Oily fishing rod | — |
-| Infernal eel | 80 | Oily fishing rod | Requires Mor Ul Rek access |
-| Sacred eel | 87 | Fishing rod | Fishing bait, requires Regicide |
-| Leaping trout | 48 | Barbarian rod | Feather, also req Str 15 Agi 15 |
-| Leaping salmon | 58 | Barbarian rod | Feather, also req Str 30 Agi 30 |
-| Leaping sturgeon | 70 | Barbarian rod | Feather, also req Str 45 Agi 45 |
+| Fish | Level | XP | Tool | Notes |
+|------|-------|-----|------|-------|
+| Mackerel | 16 | 20 | Big net | — |
+| Cod | 23 | 45 | Big net | — |
+| Bass | 46 | 100 | Big net | — |
+| Monkfish | 62 | 120 | Small net | Requires Swan Song |
+| Shark | 76 | 110 | Harpoon | — |
+| Anglerfish | 82 | 120 | Fishing rod | Fishing bait |
+| Dark crab | 85 | 130 | Lobster pot | Dark fishing bait |
+| Karambwan | 65 | 105 | Karambwan vessel | Requires Tai Bwo Wannai Trio |
+| Lava eel | 53 | 30 | Oily fishing rod | — |
+| Infernal eel | 80 | 95 | Oily fishing rod | Requires Mor Ul Rek access |
+| Sacred eel | 87 | 105 | Fishing rod | Fishing bait, requires Regicide |
+| Leaping trout | 48 | 50 | Barbarian rod | Feather, also req Str 15 Agi 15 |
+| Leaping salmon | 58 | 70 | Barbarian rod | Feather, also req Str 30 Agi 30 |
+| Leaping sturgeon | 70 | 80 | Barbarian rod | Feather, also req Str 45 Agi 45 |
 
 ### 2.3 Plugin Architecture
 
 **`content/src/main/kotlin/org/alter/skills/fishing/FishingPlugin.kt`**
 
 Main plugin extending `PluginEvent`. In `init()`:
-- Loads all `FishingSpotRow.all()` and groups by spot object ID
-- Registers `onObjectOption` for each spot object with "Net", "Bait", "Lure", "Cage", "Harpoon", "Use-rod" options
+- Loads all `FishingSpotRow.all()` and groups by spot NPC ID
+- Registers `onNpcOption` for each fishing spot NPC with "Net", "Bait", "Lure", "Cage", "Harpoon", "Use-rod" options
+- Note: Fishing spots are NPCs in OSRS, not objects. Use `onNpcOption` (not `onObjectOption`)
 - Each handler:
   1. Determines which fish are available at this spot for the selected option
   2. Validates tool in inventory or equipped
@@ -107,7 +125,7 @@ Main plugin extending `PluginEvent`. In `init()`:
   5. Enters main loop via `player.queue { fishLoop(...) }`
 
 Main loop (`suspend fun QueueTask.fishLoop`):
-- `repeatWhile(delay = 5, canRepeat = { inventoryNotFull && hasTool && hasBait })`:
+- `repeatWhile(delay = 5, immediate = false, canRepeat = { inventoryNotFull && hasTool && hasBait })`:
   - Play fishing animation
   - Roll `success(catchRateLow, catchRateHigh, fishingLevel)`
   - On success: consume bait (if applicable), add fish to inventory, award XP, post `FishObtainedEvent`
@@ -128,10 +146,12 @@ Listens for `FishObtainedEvent` to apply bonuses:
 ```kotlin
 class FishObtainedEvent(
     val fish: Int,       // Fish item ID
-    val spot: Int,       // Spot object ID
+    val spotNpc: Int,    // Spot NPC ID
     player: Player
-) : PlayerEvent(player)
+) : SkillingActionCompletedGatheringEvent(player, Skills.FISHING, fish)
 ```
+
+Note: Extends `SkillingActionCompletedGatheringEvent` (not `PlayerEvent`) to integrate with cross-cutting systems like clue bottle drops and collection logging, matching the pattern used by `RockOreObtainedEvent` in Mining.
 
 ### 2.4 Spot Movement
 
@@ -183,7 +203,8 @@ Code gen produces: `CookingRecipeRow`
 
 Main plugin. In `init()`:
 - Loads all `CookingRecipeRow.all()` keyed by raw item ID
-- Registers `onItemOnObject` for raw food items on range objects (category-based) and fire objects
+- Registers `on<ItemOnObject> { where { ... } then { ... } }` for raw food items on range objects (category-based) and fire objects
+- Note: No `onItemOnObject` DSL helper exists in the new event system. Use raw `on<ItemOnObject>` with `where` clauses, matching the pattern in SmeltingEvents.kt and CampfireEvents.kt
 - Handler flow:
   1. Look up recipe from raw item ID
   2. Check cooking level
@@ -192,7 +213,7 @@ Main plugin. In `init()`:
   5. Enter cook loop via `player.queue { cookLoop(...) }`
 
 Cook loop (`suspend fun QueueTask.cookLoop`):
-- `repeatWhile(delay = 4, canRepeat = { hasRawItem && count > 0 })`:
+- `repeatWhile(delay = 4, immediate = false, canRepeat = { hasRawItem && count > 0 })`:
   - Play cooking animation + sound
   - Roll burn check via `CookingBurnRates.shouldBurn(player, recipe, isFire)`
   - If burned: remove raw, add burnt item, message "You accidentally burn the food"
@@ -241,9 +262,12 @@ Gauntlet overrides (specific burn stop level reductions):
 class FoodCookedEvent(
     val rawItem: Int,
     val cookedItem: Int,
+    val isFire: Boolean,  // true=campfire, false=range
     player: Player
-) : PlayerEvent(player)
+) : SkillingActionCompletedEvent(player, Skills.COOKING)
 ```
+
+Note: Extends `SkillingActionCompletedEvent` (not `PlayerEvent`) for cross-cutting integration. Includes `isFire` field for enhancers that depend on cooking method.
 
 ---
 
@@ -273,7 +297,7 @@ Code gen produces: `CraftingSpinningRow`, `CraftingPotteryRow`, `CraftingLeather
 
 #### 4.2.1 Spinning (`SpinningPlugin.kt`)
 
-`onItemOnObject` for items on spinning wheel objects.
+`on<ItemOnObject> { where { ... } then { ... } }` for items on spinning wheel objects.
 
 | Input | Output | Level | XP |
 |-------|--------|-------|----|
@@ -292,10 +316,10 @@ Loop: 3-tick cycle, animate, consume input, produce output, award XP.
 
 Two-step process:
 
-**Step 1 — Shaping:** `onItemOnObject` for soft clay on potter's wheel.
+**Step 1 — Shaping:** `on<ItemOnObject>` for soft clay on potter's wheel.
 Opens interface to select item. Each shape: animate, consume clay, produce unfired item, award shape XP.
 
-**Step 2 — Firing:** `onItemOnObject` for unfired item on pottery oven.
+**Step 2 — Firing:** `on<ItemOnObject>` for unfired item on pottery oven.
 Animate, consume unfired, produce finished item, award fire XP.
 
 | Item | Level | Shape XP | Fire XP | Total |
@@ -309,7 +333,7 @@ Animate, consume unfired, produce finished item, award fire XP.
 
 #### 4.2.3 Leather (`LeatherPlugin.kt`)
 
-`onItemOnItem` for needle on leather (or use needle on leather type).
+`onItemOnItem` for needle on leather (or leather on needle — use `SatisfyType.ANY` so order doesn't matter).
 Opens interface showing available items for the leather type held.
 Each craft: 4-tick cycle, animate, consume leather + thread, produce item, award XP.
 
@@ -346,7 +370,7 @@ Thread consumption: 1 per item, 4 for bodies.
 
 #### 4.2.4 Gem Cutting (`GemCuttingPlugin.kt`)
 
-`onItemOnItem` for chisel on uncut gem. No interface — instant craft.
+`onItemOnItem` for chisel on uncut gem (use `SatisfyType.ANY` so order doesn't matter). No interface — instant craft.
 3-tick cycle, animate, consume uncut, produce cut gem, award XP.
 
 **F2P:**
@@ -365,13 +389,13 @@ Thread consumption: 1 per item, 4 for bodies.
 | Red topaz | 16 | 25 | Yes (6.3xp) |
 | Dragonstone | 55 | 137.5 | No |
 | Onyx | 67 | 167.5 | No |
-| Zenyte | 89 | 50 | No |
+| Zenyte | 89 | 200 | No |
 
 Semi-precious gems (opal, jade, red topaz) have a chance to crush based on crafting level.
 
 #### 4.2.5 Jewelry (`JewelryPlugin.kt`)
 
-`onItemOnObject` for gold/silver bar on furnace. Opens interface showing available jewelry.
+`on<ItemOnObject>` for gold/silver bar on furnace. Opens interface showing available jewelry.
 Each craft: 3-tick cycle, animate, consume bar + gem (if applicable), produce jewelry, award XP.
 Requires appropriate mould in inventory (ring mould, necklace mould, amulet mould, bracelet mould).
 
@@ -520,50 +544,46 @@ Add to existing spawn plugins or create new spawn file:
 
 ### 6.1 Skilling Objects
 
-#### Cooking Range (`CookingRangePlugin.kt`)
+#### Cooking Range
 - **Location:** Castle kitchen (3211, 3216)
-- **Interaction:** Hooks into global CookingPlugin via standard `onItemOnObject`
-- **Special property:** Lumbridge range has reduced burn rate after Cook's Assistant completion
-- Implementation: CookingBurnRates checks player tile + quest completion for bonus
+- **Interaction:** Handled globally by CookingPlugin — all ranges are registered by object category, no Lumbridge-specific file needed
+- **Special property:** Lumbridge range has reduced burn rate after Cook's Assistant completion. CookingBurnRates checks player tile + quest completion for bonus.
 
-#### Spinning Wheel (`SpinningWheelPlugin.kt`)
+#### Spinning Wheel
 - **Location:** Castle 1st floor (~3209, 3220, height=1)
-- **Interaction:** Hooks into global SpinningPlugin via standard `onItemOnObject`
-- No special properties — standard spinning wheel
+- **Interaction:** Handled globally by SpinningPlugin — all spinning wheels registered by object ID/category, no Lumbridge-specific file needed
 
 #### Furnace
 - **Location:** Smithing building (~3226, 3254)
 - Already exists for Smithing. Crafting jewelry/glass interactions register on the same furnace object category.
 - No new plugin needed — JewelryPlugin and GlassBlowingPlugin register globally on furnace objects.
 
-#### Church Altar (`ChurchAltarPlugin.kt`)
-- **Location:** Lumbridge Church (3243, 3206)
-- **Interaction:** `onObjectOption` "Pray-at"
+#### Church Altar (`AltarPlugin.kt` — global, under `content/src/main/kotlin/org/alter/objects/`)
+- **Interaction:** `onObjectOption` "Pray-at" on all altar objects
 - **Effect:** Restore prayer points to max, play prayer animation, message "You recharge your Prayer points."
-- Works globally on all altars, but placed here as Lumbridge content.
+- Global plugin, not Lumbridge-specific. Lumbridge church altar at (3243, 3206) is one of many.
 
 ### 6.2 Resource Interactions
 
-#### Dairy Cow (`DairyCowPlugin.kt`)
-- **Object location:** Cow field east of river
-- **Interaction:** `onObjectOption` "Milk" or `onItemOnObject` bucket on dairy cow
+#### Dairy Cow (`DairyCowPlugin.kt` — global, under `content/src/main/kotlin/org/alter/objects/`)
+- **Interaction:** `onObjectOption` "Milk" or `on<ItemOnObject>` bucket on dairy cow
 - **Effect:** If player has empty bucket → animate → give bucket of milk
 - **No bucket:** "You need an empty bucket to milk this cow."
+- Global plugin — works on all dairy cow objects. Lumbridge cow field is one location.
 
-#### Sheep Shearing (`SheepShearingPlugin.kt`)
-- **NPC interaction:** `onItemOnNpc` shears on sheep, or `onNpcOption` "Shear"
+#### Sheep Shearing (`SheepShearingPlugin.kt` — global, under `content/src/main/kotlin/org/alter/interactions/`)
+- **NPC interaction:** `on<ItemOnNpcEvent>` shears on sheep, or `onNpcOption` "Shear"
 - **Effect:** Animate shearing → give wool → sheep transforms to shorn variant NPC
 - **Regrowth:** Shorn sheep respawns as woolly after ~100 ticks
-- Works on all sheep globally.
+- Global plugin — works on all sheep NPCs.
 
-#### Windmill (`WindmillPlugin.kt`)
-- **Location:** North of Lumbridge (~3230, 3318)
-- **Three objects:**
-  1. **Hopper** (top floor): `onItemOnObject` grain on hopper → "You put the grain in the hopper." Sets player varbit.
+#### Windmill (`WindmillPlugin.kt` — global, under `content/src/main/kotlin/org/alter/objects/`)
+- **Three objects (works on all windmills globally):**
+  1. **Hopper** (top floor): `on<ItemOnObject>` grain on hopper → "You put the grain in the hopper." Sets player varbit.
   2. **Hopper controls** (top floor): `onObjectOption` "Operate" → "You operate the hopper. The grain slides down." Updates varbit.
   3. **Flour bin** (ground floor): `onObjectOption` "Empty" with empty pot in inventory → gives pot of flour. Clears varbit.
 - Varbit tracks: 0=empty, 1=grain in hopper, 2=flour ready in bin
-- Works on all windmills globally.
+- Lumbridge windmill at (~3230, 3318) is one of several.
 
 ### 6.3 Ground Item Spawns
 
@@ -637,13 +657,12 @@ content/src/main/kotlin/org/alter/areas/lumbridge/npcs/
   AdventurerJonPlugin.kt
   ArthurClueHunterPlugin.kt
 
-# Lumbridge objects
-content/src/main/kotlin/org/alter/areas/lumbridge/objs/
-  ChurchAltarPlugin.kt
-  CookingRangePlugin.kt
-  SpinningWheelPlugin.kt
-  WindmillPlugin.kt
+# Global object/interaction plugins (not Lumbridge-specific)
+content/src/main/kotlin/org/alter/objects/
+  AltarPlugin.kt
   DairyCowPlugin.kt
+  WindmillPlugin.kt
+content/src/main/kotlin/org/alter/interactions/
   SheepShearingPlugin.kt
 
 # Lumbridge spawns
@@ -667,8 +686,8 @@ content/src/main/kotlin/org/alter/areas/lumbridge/spawns/
 4. **Cooking plugins** — CookingPlugin, CookingBurnRates, CookingEvents
 5. **Crafting data layer** — cache table defs, gamevals, code gen
 6. **Crafting plugins** — all 6 subsystem plugins
-7. **Lumbridge skilling objects** — range, spinning wheel, altar, windmill, dairy cow, sheep shearing
-8. **Lumbridge fishing/cow/item spawns** — spots, cows, eggs, cabbages
+7. **Global interaction plugins** — AltarPlugin, DairyCowPlugin, WindmillPlugin, SheepShearingPlugin (these are global, not Lumbridge-specific)
+8. **Lumbridge spawns** — fishing spots, cows, chickens, eggs, cabbages, missing NPCs (can be parallelized with step 7)
 9. **Lumbridge NPC plugins** — all 10 new NPCs with exact dialogue
 10. **Existing NPC updates** — Father Aereck Restless Ghost dialogue
 
