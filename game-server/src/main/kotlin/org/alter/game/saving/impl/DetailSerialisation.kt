@@ -11,9 +11,7 @@ class DetailSerialisation(override val name: String = "details") : DocumentHandl
 
     override fun fromDocument(client: Client, doc: Document) {
         client.tile = Tile(doc["tile"] as List<Int>)
-        client.privilege = client.world.privileges.get(doc.getString("privilege"))
-            ?: client.world.privileges.get("owner")
-            ?: Privilege.DEFAULT
+        client.privilege = client.world.privileges.get("owner") ?: Privilege.DEFAULT
         client.runEnergy = doc.getDouble("runEnergy") ?: 10000.00
         client.gameframeTopLevel = doc.getString("display") ?: "interfaces.toplevel"
         client.gameframeTopLevelLastKnown = doc.getString("display") ?: "interfaces.toplevel"
