@@ -18,7 +18,7 @@ class ChatSpawnsPlugin() : PluginEvent() {
 
         // Castle - inside
         spawnNpc("npcs.banker1_new", 3209, 3222, 2, 0, Direction.SOUTH)
-        spawnNpc("npcs.duke_of_lumbridge", 3212, 3220, 1, 4, Direction.SOUTH)
+        // Duke Horacio is now spawned by DukeHoracioPlugin
 
         // Tutors
         spawnNpc("npcs.aide_tutor_melee", 3220, 3238, 0, 1)
