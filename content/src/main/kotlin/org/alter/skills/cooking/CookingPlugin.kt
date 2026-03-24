@@ -40,8 +40,10 @@ class CookingPlugin : PluginEvent() {
             "objects.forestry_fire",
         )
 
-        /** Cooking animation played on both fires and ranges. */
-        private const val COOKING_ANIMATION = "sequences.human_cooking_range"
+        /** Cooking animation for ranges. */
+        private const val RANGE_ANIMATION = "sequences.human_cooking"
+        /** Cooking animation for fires. */
+        private const val FIRE_ANIMATION = "sequences.human_firecooking"
 
         /**
          * Returns true if the given game object is a fire (DynamicObject with type 10).
@@ -109,8 +111,9 @@ class CookingPlugin : PluginEvent() {
             return
         }
 
+        val anim = if (isFire) FIRE_ANIMATION else RANGE_ANIMATION
         player.message("You cook the ${itemName(recipe.rawItem)}.")
-        player.animate(COOKING_ANIMATION)
+        player.animate(anim)
 
         repeatWhile(
             delay = 4,
@@ -153,7 +156,7 @@ class CookingPlugin : PluginEvent() {
                 ).post()
             }
 
-            player.animate(COOKING_ANIMATION)
+            player.animate(anim)
             player.unlock()
         }
     }
