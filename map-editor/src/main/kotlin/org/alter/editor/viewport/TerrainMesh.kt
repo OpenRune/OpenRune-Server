@@ -34,7 +34,7 @@ class TerrainMesh(
     private fun buildMesh(): MeshView {
         val view = MeshView(buildTriangleMesh())
         view.material = buildMaterial()
-        view.cullFace = CullFace.BACK
+        view.cullFace = CullFace.NONE  // Disable culling to ensure visibility regardless of winding
         view.drawMode = DrawMode.FILL
         return view
     }
@@ -68,10 +68,12 @@ class TerrainMesh(
         }
         mesh.points.setAll(*points)
 
-        // --- Texture coordinates (one entry per atlas slot, centered on pixel) ---
+        // --- Texture coordinates (one UV per atlas slot, centered in each slot's pixel range) ---
         val texCoords = FloatArray(ATLAS_SIZE * 2)
         for (i in 0 until ATLAS_SIZE) {
-            texCoords[i * 2] = (i + 0.5f) / ATLAS_SIZE
+            // Center of this slot's pixel range in the 256-wide atlas
+            val centerPixel = ((i * 256) / ATLAS_SIZE + ((i + 1) * 256) / ATLAS_SIZE) / 2.0f
+            texCoords[i * 2] = centerPixel / 256.0f
             texCoords[i * 2 + 1] = 0.5f
         }
         mesh.texCoords.setAll(*texCoords)
@@ -106,15 +108,24 @@ class TerrainMesh(
         return mesh
     }
 
-    /** Build a [PhongMaterial] backed by the color atlas texture. */
+    /** Build a [PhongMaterial] with a power-of-2 texture atlas for per-tile coloring. */
     private fun buildMaterial(): PhongMaterial {
-        val image = WritableImage(ATLAS_SIZE, 1)
+        // Use a 256x1 texture (power-of-2 for GPU compatibility)
+        val atlasWidth = 256
+        val image = WritableImage(atlasWidth, 1)
         val pw = image.pixelWriter
         for (i in 0 until ATLAS_SIZE) {
-            pw.setColor(i, 0, ATLAS_COLORS[i])
+            // Spread each color across multiple pixels for sampling stability
+            val startPixel = (i * atlasWidth) / ATLAS_SIZE
+            val endPixel = ((i + 1) * atlasWidth) / ATLAS_SIZE
+            for (p in startPixel until endPixel) {
+                pw.setColor(p, 0, ATLAS_COLORS[i])
+            }
         }
         val mat = PhongMaterial()
         mat.diffuseMap = image
+        // Also set self-illumination so colors show even without strong lighting
+        mat.selfIlluminationMap = image
         return mat
     }
 
