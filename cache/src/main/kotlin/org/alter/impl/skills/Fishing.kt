@@ -35,8 +35,8 @@ object Fishing {
         row("dbrows.fishing_shrimps") {
             column(COL_LEVEL, 1)
             column(COL_XP, 10)
-            columnRSCM(COL_FISH_ITEM, "items.raw_shrimps")
-            columnRSCM(COL_TOOL, "items.small_fishing_net")
+            columnRSCM(COL_FISH_ITEM, "items.raw_shrimp")
+            columnRSCM(COL_TOOL, "items.net")
             column(COL_CATCH_RATE_LOW, 128)
             column(COL_CATCH_RATE_HIGH, 400)
             column(COL_SPOT_TYPE, "net")
@@ -74,7 +74,7 @@ object Fishing {
             column(COL_LEVEL, 15)
             column(COL_XP, 40)
             columnRSCM(COL_FISH_ITEM, "items.raw_anchovies")
-            columnRSCM(COL_TOOL, "items.small_fishing_net")
+            columnRSCM(COL_TOOL, "items.net")
             column(COL_CATCH_RATE_LOW, 90)
             column(COL_CATCH_RATE_HIGH, 320)
             column(COL_SPOT_TYPE, "net")
@@ -86,7 +86,7 @@ object Fishing {
             column(COL_LEVEL, 16)
             column(COL_XP, 20)
             columnRSCM(COL_FISH_ITEM, "items.raw_mackerel")
-            columnRSCM(COL_TOOL, "items.big_fishing_net")
+            columnRSCM(COL_TOOL, "items.big_net")
             column(COL_CATCH_RATE_LOW, 100)
             column(COL_CATCH_RATE_HIGH, 350)
             column(COL_SPOT_TYPE, "big_net")
@@ -111,7 +111,7 @@ object Fishing {
             column(COL_LEVEL, 23)
             column(COL_XP, 45)
             columnRSCM(COL_FISH_ITEM, "items.raw_cod")
-            columnRSCM(COL_TOOL, "items.big_fishing_net")
+            columnRSCM(COL_TOOL, "items.big_net")
             column(COL_CATCH_RATE_LOW, 70)
             column(COL_CATCH_RATE_HIGH, 280)
             column(COL_SPOT_TYPE, "big_net")
@@ -173,7 +173,7 @@ object Fishing {
             column(COL_LEVEL, 46)
             column(COL_XP, 100)
             columnRSCM(COL_FISH_ITEM, "items.raw_bass")
-            columnRSCM(COL_TOOL, "items.big_fishing_net")
+            columnRSCM(COL_TOOL, "items.big_net")
             column(COL_CATCH_RATE_LOW, 20)
             column(COL_CATCH_RATE_HIGH, 150)
             column(COL_SPOT_TYPE, "big_net")
@@ -210,7 +210,7 @@ object Fishing {
             column(COL_LEVEL, 62)
             column(COL_XP, 120)
             columnRSCM(COL_FISH_ITEM, "items.raw_monkfish")
-            columnRSCM(COL_TOOL, "items.small_fishing_net")
+            columnRSCM(COL_TOOL, "items.net")
             column(COL_CATCH_RATE_LOW, 10)
             column(COL_CATCH_RATE_HIGH, 100)
             column(COL_SPOT_TYPE, "net")
@@ -221,9 +221,9 @@ object Fishing {
         row("dbrows.fishing_karambwan") {
             column(COL_LEVEL, 65)
             column(COL_XP, 105)
-            columnRSCM(COL_FISH_ITEM, "items.raw_karambwan")
-            columnRSCM(COL_TOOL, "items.karambwan_vessel")
-            columnRSCM(COL_BAIT, "items.raw_karambwanji")
+            columnRSCM(COL_FISH_ITEM, "items.tbwt_raw_karambwan")
+            columnRSCM(COL_TOOL, "items.tbwt_karambwan_vessel")
+            columnRSCM(COL_BAIT, "items.tbwt_raw_karambwanji")
             column(COL_CATCH_RATE_LOW, 15)
             column(COL_CATCH_RATE_HIGH, 120)
             column(COL_SPOT_TYPE, "vessel")
@@ -246,7 +246,7 @@ object Fishing {
         row("dbrows.fishing_infernal_eel") {
             column(COL_LEVEL, 80)
             column(COL_XP, 95)
-            columnRSCM(COL_FISH_ITEM, "items.raw_infernal_eel")
+            columnRSCM(COL_FISH_ITEM, "items.infernal_eel")
             columnRSCM(COL_TOOL, "items.oily_fishing_rod")
             columnRSCM(COL_BAIT, "items.fishing_bait")
             column(COL_CATCH_RATE_LOW, 8)
@@ -274,25 +274,14 @@ object Fishing {
             column(COL_XP, 130)
             columnRSCM(COL_FISH_ITEM, "items.raw_dark_crab")
             columnRSCM(COL_TOOL, "items.lobster_pot")
-            columnRSCM(COL_BAIT, "items.dark_fishing_bait")
+            columnRSCM(COL_BAIT, "items.wilderness_fishing_bait")
             column(COL_CATCH_RATE_LOW, 2)
             column(COL_CATCH_RATE_HIGH, 50)
             column(COL_SPOT_TYPE, "cage")
             column(COL_MEMBERS, true)
         }
 
-        // Sacred eel (level 87)
-        row("dbrows.fishing_sacred_eel") {
-            column(COL_LEVEL, 87)
-            column(COL_XP, 105)
-            columnRSCM(COL_FISH_ITEM, "items.raw_sacred_eel")
-            columnRSCM(COL_TOOL, "items.fishing_rod")
-            columnRSCM(COL_BAIT, "items.fishing_bait")
-            column(COL_CATCH_RATE_LOW, 5)
-            column(COL_CATCH_RATE_HIGH, 55)
-            column(COL_SPOT_TYPE, "bait")
-            column(COL_MEMBERS, true)
-        }
+        // Sacred eel omitted — item not in binary cache
     }
 
     const val TOOL_ITEM = 0
@@ -308,87 +297,87 @@ object Fishing {
         column("tool_animation", TOOL_ANIMATION, VarType.SEQ)
 
         row("dbrows.fishing_tool_small_fishing_net") {
-            columnRSCM(TOOL_ITEM, "items.small_fishing_net")
+            columnRSCM(TOOL_ITEM, "items.net")
             column(TOOL_TYPE, "net")
             column(TOOL_SPEED_MOD, 100)
-            columnRSCM(TOOL_ANIMATION, "sequences.human_net_fishing")
+            columnRSCM(TOOL_ANIMATION, "sequences.human_fishing_casting")
         }
 
         row("dbrows.fishing_tool_fishing_rod") {
             columnRSCM(TOOL_ITEM, "items.fishing_rod")
             column(TOOL_TYPE, "bait")
             column(TOOL_SPEED_MOD, 100)
-            columnRSCM(TOOL_ANIMATION, "sequences.human_rod_fishing")
+            columnRSCM(TOOL_ANIMATION, "sequences.human_fishing_casting")
         }
 
         row("dbrows.fishing_tool_fly_fishing_rod") {
             columnRSCM(TOOL_ITEM, "items.fly_fishing_rod")
             column(TOOL_TYPE, "lure")
             column(TOOL_SPEED_MOD, 100)
-            columnRSCM(TOOL_ANIMATION, "sequences.human_lure_fishing")
+            columnRSCM(TOOL_ANIMATION, "sequences.human_fishing_casting")
         }
 
         row("dbrows.fishing_tool_harpoon") {
             columnRSCM(TOOL_ITEM, "items.harpoon")
             column(TOOL_TYPE, "harpoon")
             column(TOOL_SPEED_MOD, 100)
-            columnRSCM(TOOL_ANIMATION, "sequences.human_harpoon_fishing")
+            columnRSCM(TOOL_ANIMATION, "sequences.fishstabber")
         }
 
         row("dbrows.fishing_tool_lobster_pot") {
             columnRSCM(TOOL_ITEM, "items.lobster_pot")
             column(TOOL_TYPE, "cage")
             column(TOOL_SPEED_MOD, 100)
-            columnRSCM(TOOL_ANIMATION, "sequences.human_cage_fishing")
+            columnRSCM(TOOL_ANIMATION, "sequences.human_fishing_casting")
         }
 
         row("dbrows.fishing_tool_big_fishing_net") {
-            columnRSCM(TOOL_ITEM, "items.big_fishing_net")
+            columnRSCM(TOOL_ITEM, "items.big_net")
             column(TOOL_TYPE, "big_net")
             column(TOOL_SPEED_MOD, 100)
-            columnRSCM(TOOL_ANIMATION, "sequences.human_bignet_fishing")
+            columnRSCM(TOOL_ANIMATION, "sequences.human_fishing_casting")
         }
 
         row("dbrows.fishing_tool_dragon_harpoon") {
             columnRSCM(TOOL_ITEM, "items.dragon_harpoon")
             column(TOOL_TYPE, "harpoon")
             column(TOOL_SPEED_MOD, 80)
-            columnRSCM(TOOL_ANIMATION, "sequences.human_harpoon_fishing")
+            columnRSCM(TOOL_ANIMATION, "sequences.fishstabber")
         }
 
         row("dbrows.fishing_tool_infernal_harpoon") {
             columnRSCM(TOOL_ITEM, "items.infernal_harpoon")
             column(TOOL_TYPE, "harpoon")
             column(TOOL_SPEED_MOD, 80)
-            columnRSCM(TOOL_ANIMATION, "sequences.human_harpoon_fishing")
+            columnRSCM(TOOL_ANIMATION, "sequences.fishstabber_infernal")
         }
 
         row("dbrows.fishing_tool_crystal_harpoon") {
             columnRSCM(TOOL_ITEM, "items.crystal_harpoon")
             column(TOOL_TYPE, "harpoon")
             column(TOOL_SPEED_MOD, 65)
-            columnRSCM(TOOL_ANIMATION, "sequences.human_harpoon_fishing")
+            columnRSCM(TOOL_ANIMATION, "sequences.fishstabber_crystal")
         }
 
         row("dbrows.fishing_tool_barbarian_rod") {
-            columnRSCM(TOOL_ITEM, "items.barbarian_rod")
+            columnRSCM(TOOL_ITEM, "items.brut_fishing_rod")
             column(TOOL_TYPE, "barb")
             column(TOOL_SPEED_MOD, 100)
-            columnRSCM(TOOL_ANIMATION, "sequences.human_rod_fishing")
+            columnRSCM(TOOL_ANIMATION, "sequences.human_fishing_casting_brut")
         }
 
         row("dbrows.fishing_tool_karambwan_vessel") {
-            columnRSCM(TOOL_ITEM, "items.karambwan_vessel")
+            columnRSCM(TOOL_ITEM, "items.tbwt_karambwan_vessel")
             column(TOOL_TYPE, "vessel")
             column(TOOL_SPEED_MOD, 100)
-            columnRSCM(TOOL_ANIMATION, "sequences.human_rod_fishing")
+            columnRSCM(TOOL_ANIMATION, "sequences.human_fishing_casting")
         }
 
         row("dbrows.fishing_tool_oily_fishing_rod") {
             columnRSCM(TOOL_ITEM, "items.oily_fishing_rod")
             column(TOOL_TYPE, "bait")
             column(TOOL_SPEED_MOD, 100)
-            columnRSCM(TOOL_ANIMATION, "sequences.human_rod_fishing")
+            columnRSCM(TOOL_ANIMATION, "sequences.human_fishing_casting_pearl_oily")
         }
     }
 }
