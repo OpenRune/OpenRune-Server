@@ -1,0 +1,57 @@
+[gamevals.tables]
+crafting_spinning=1243
+crafting_gems=1244
+crafting_leather=1245
+crafting_jewelry_gold=1246
+crafting_glass=1247
+
+[gamevals.dbrows]
+# spinning
+crafting_spin_wool=98501
+crafting_spin_flax=98502
+crafting_spin_sinew=98503
+crafting_spin_magic=98504
+# gems
+crafting_gem_opal=98510
+crafting_gem_jade=98511
+crafting_gem_topaz=98512
+crafting_gem_sapphire=98513
+crafting_gem_emerald=98514
+crafting_gem_ruby=98515
+crafting_gem_diamond=98516
+crafting_gem_dragonstone=98517
+crafting_gem_onyx=98518
+crafting_gem_zenyte=98519
+# leather
+crafting_leather_gloves=98530
+crafting_leather_boots=98531
+crafting_leather_cowl=98532
+crafting_leather_vambraces=98533
+crafting_leather_body=98534
+crafting_leather_chaps=98535
+crafting_hardleather_body=98536
+# jewelry gold
+crafting_gold_ring=98550
+crafting_gold_necklace=98551
+crafting_gold_amulet=98552
+crafting_sapphire_ring=98553
+crafting_sapphire_necklace=98554
+crafting_sapphire_amulet=98555
+crafting_emerald_ring=98556
+crafting_emerald_necklace=98557
+crafting_ruby_ring=98558
+crafting_ruby_necklace=98559
+crafting_diamond_ring=98560
+crafting_diamond_necklace=98561
+crafting_dragonstone_ring=98562
+crafting_dragonstone_necklace=98563
+crafting_onyx_ring=98564
+crafting_zenyte_ring=98565
+# glass
+crafting_beer_glass=98580
+crafting_candle_lantern=98581
+crafting_oil_lamp=98582
+crafting_vial=98583
+crafting_fishbowl=98584
+crafting_unpowered_orb=98585
+crafting_lantern_lens=98586

@@ -28,6 +28,7 @@ import org.alter.impl.misc.TeleTabs
 import org.alter.impl.skills.Woodcutting
 import org.alter.impl.skills.Herblore
 import org.alter.impl.skills.Cooking
+import org.alter.impl.skills.Crafting
 import org.alter.impl.skills.Fishing
 import org.alter.impl.skills.Mining
 import org.alter.impl.skills.Smithing
@@ -61,6 +62,11 @@ fun tablesToPack() = listOf(
     Fishing.fishingSpots(),
     Fishing.fishingTools(),
     Cooking.cookingRecipes(),
+    Crafting.craftingSpinning(),
+    Crafting.craftingGems(),
+    Crafting.craftingLeather(),
+    Crafting.craftingJewelryGold(),
+    Crafting.craftingGlass(),
     Mining.pickaxes(),
     Mining.rocks(),
     Mining.miningEnhancers(),
