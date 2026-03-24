@@ -4,6 +4,7 @@ import dev.openrune.ServerCacheManager.getItem
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.alter.api.Skills
 import org.alter.api.ext.message
+import org.alter.api.ext.produceItemBox
 import org.alter.game.model.entity.DynamicObject
 import org.alter.game.model.entity.GameObject
 import org.alter.game.model.entity.Player
@@ -90,7 +91,16 @@ class CookingPlugin : PluginEvent() {
                     return@then
                 }
 
-                player.queue { cookLoop(player, recipe, onFire) }
+                player.queue {
+                    produceItemBox(
+                        player,
+                        recipe.cookedItem,
+                        title = "How many would you like to cook?",
+                        maxProducable = player.inventory.getItemCount(recipe.rawItem),
+                    ) { _, amount ->
+                        player.queue { cookLoop(player, recipe, onFire, amount) }
+                    }
+                }
             }
         }
     }
@@ -103,7 +113,9 @@ class CookingPlugin : PluginEvent() {
         player: Player,
         recipe: CookingRecipesRow,
         isFire: Boolean,
+        amount: Int = 28,
     ) {
+        var remaining = amount
         val cookingLevel = player.getSkills().getCurrentLevel(Skills.COOKING)
         if (cookingLevel < recipe.level) {
             val rawName = itemName(recipe.rawItem)
@@ -118,7 +130,7 @@ class CookingPlugin : PluginEvent() {
         repeatWhile(
             delay = 4,
             immediate = false,
-            canRepeat = { player.inventory.contains(recipe.rawItem) }
+            canRepeat = { remaining > 0 && player.inventory.contains(recipe.rawItem) }
         ) {
             player.lock()
 
@@ -157,6 +169,7 @@ class CookingPlugin : PluginEvent() {
             }
 
             player.animate(anim)
+            remaining--
             player.unlock()
         }
     }
