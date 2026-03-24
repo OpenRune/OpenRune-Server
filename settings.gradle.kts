@@ -27,6 +27,7 @@ include(":game-server")
 include(":cache")
 include(":content")
 include(":ksp-processor")
+include(":map-editor")
 
 fun includePlugins(pluginProject: ProjectDescriptor) {
     val pluginPath = pluginProject.projectDir.toPath()
