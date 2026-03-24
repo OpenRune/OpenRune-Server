@@ -6,6 +6,9 @@ import org.alter.api.ext.*
 import org.alter.game.model.entity.Npc
 import org.alter.game.model.entity.Player
 import org.alter.game.model.item.Item
+import org.alter.game.model.move.MovementQueue
+import org.alter.game.model.move.hasMoveDestination
+import org.alter.game.model.move.walkRoute
 import org.alter.game.model.queue.QueueTask
 import org.alter.game.pluginnew.PluginEvent
 import org.alter.game.pluginnew.event.EventListener
@@ -14,6 +17,8 @@ import org.alter.rscm.RSCM
 import org.alter.rscm.RSCMType
 import org.generated.tables.fishing.FishingSpotsRow
 import org.generated.tables.fishing.FishingToolsRow
+import org.rsmod.routefinder.collision.CollisionStrategy
+import org.alter.game.model.move.stopMovement
 
 /**
  * Core Fishing skill plugin.
@@ -161,6 +166,24 @@ class FishingPlugin : PluginEvent() {
         spotNpc: Npc,
         spotType: String,
     ) {
+        // Walk to the fishing spot NPC
+        val route = player.world.smartRouteFinder.findRoute(
+            level = player.tile.height,
+            srcX = player.tile.x,
+            srcZ = player.tile.z,
+            destX = spotNpc.tile.x,
+            destZ = spotNpc.tile.z,
+            locShape = -2,
+            collision = CollisionStrategy.Normal,
+        )
+        player.walkRoute(route, stepType = MovementQueue.StepType.NORMAL)
+        while (player.hasMoveDestination()) {
+            wait(1)
+        }
+
+        // Face the fishing spot
+        player.faceTile(spotNpc.tile)
+
         val spots = spotsByType[spotType]
         if (spots.isNullOrEmpty()) {
             player.message("Nothing interesting happens.")
