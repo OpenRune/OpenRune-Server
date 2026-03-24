@@ -221,7 +221,7 @@ class FishingPlugin : PluginEvent() {
             immediate = false,
             canRepeat = {
                 !player.inventory.isFull()
-                    && spotNpc.isActive()
+                    && spotNpc.isSpawned()
                     && hasTool(player, spotType)
                     && (baitSpot == null || hasBait(player, baitSpot))
             }
