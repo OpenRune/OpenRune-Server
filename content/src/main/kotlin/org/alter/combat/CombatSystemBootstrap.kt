@@ -25,6 +25,8 @@ import org.alter.game.pluginnew.event.impl.WorldTickEvent
 class CombatSystemBootstrap : PluginEvent() {
 
     override fun init() {
+        NpcCombatDefLoader.load()
+
         val combatSystem = CombatSystem(EventManager)
 
         val meleeStrategy = NewMeleeCombatStrategy()
