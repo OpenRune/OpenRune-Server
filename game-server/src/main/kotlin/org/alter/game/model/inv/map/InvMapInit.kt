@@ -17,6 +17,7 @@ object InvMapInit {
         hashSetOf(
             "inv.inv",
             "inv.worn",
+            "inv.bank",
         )
 
     public fun init(player: Player) {
