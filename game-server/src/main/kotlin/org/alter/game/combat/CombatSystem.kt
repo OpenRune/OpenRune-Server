@@ -14,6 +14,51 @@ class CombatSystem(private val eventManager: IEventManager) {
 
     private val activeCombats = mutableMapOf<Pawn, CombatState>()
 
+    // ---------------------------------------------------------------
+    // Strategy resolution — pluggable via CombatSystemBootstrap
+    // ---------------------------------------------------------------
+
+    /**
+     * Pluggable strategy resolver. Defaults to returning [defaultMeleeStrategy].
+     *
+     * Override this in [org.alter.combat.CombatSystemBootstrap] to supply
+     * weapon/spell-aware resolution using content-module strategy classes
+     * without creating a compile-time dependency on them here.
+     */
+    var strategyResolver: (Pawn) -> CombatStrategy = { defaultMeleeStrategy }
+
+    /**
+     * Pluggable combat-style resolver. Defaults to [CombatStyle.CRUSH] (unarmed).
+     *
+     * Override this in [org.alter.combat.CombatSystemBootstrap] to supply
+     * weapon- and spell-aware CombatStyle resolution.
+     */
+    var combatStyleResolver: (Pawn) -> CombatStyle = { CombatStyle.CRUSH }
+
+    /**
+     * Resolve the [CombatStrategy] for [attacker] using the registered [strategyResolver].
+     */
+    fun resolveStrategy(attacker: Pawn): CombatStrategy = strategyResolver(attacker)
+
+    /**
+     * Resolve the [CombatStyle] for [attacker] using the registered [combatStyleResolver].
+     */
+    fun resolveCombatStyle(attacker: Pawn): CombatStyle = combatStyleResolver(attacker)
+
+    companion object {
+        /**
+         * Stateless melee strategy used as a safe default before a real strategy
+         * resolver is registered. Delegates all resolution back to the [CombatStrategy]
+         * interface contract (range=1, speed=4, animation=unarmed punch, delay=1).
+         */
+        val defaultMeleeStrategy: CombatStrategy = object : CombatStrategy {
+            override fun getAttackRange(attacker: Pawn): Int = 1
+            override fun getAttackSpeed(attacker: Pawn): Int = 4
+            override fun getAttackAnimation(attacker: Pawn): String = "sequences.human_unarmedpunch"
+            override fun getHitDelay(attacker: Pawn, target: Pawn): Int = 1
+        }
+    }
+
     /**
      * Called every world tick. Removes dead/expired entries, then processes
      * attacks for any attacker whose delay has elapsed.
