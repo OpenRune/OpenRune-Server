@@ -288,7 +288,7 @@ object BankService {
      * Tabs above the collapsed one shift down to fill the gap.
      */
     fun collapseTab(player: Player, tab: Int) {
-        if (tab < 1 || tab > 9) return
+        if (tab !in 1..9) return
         val bankInv = player.getBankInv()
         val sizes = player.getTabSizes()
         val tabSize = sizes[tab]

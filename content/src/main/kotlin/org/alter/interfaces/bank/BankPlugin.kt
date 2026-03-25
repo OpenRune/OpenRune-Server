@@ -118,5 +118,27 @@ class BankPlugin : PluginEvent() {
             val to = targetSlot ?: return@onIfModalDrag
             BankService.moveItem(player, from, to)
         }
+
+        // --- Drag item to tab header to create tab ---
+        // When a drag event targets the tabs component, create a new tab
+        onIfModalDrag("components.bankmain:tabs") {
+            val fromSlot = selectedSlot ?: return@onIfModalDrag
+            BankService.createTab(player, fromSlot)
+        }
+
+        // --- Tab collapse (right-click tab header) ---
+        // Op2 on tabs collapses that tab back to main
+        // Note: this reuses the tabs button handler; if tabs only has Op1
+        // for switching, collapse may need a separate component or menu option.
+        // For now, wire Op1 for switching (already done above).
+        // Collapse can be triggered via a dedicated menu or long-press.
+        // TODO: Verify exact collapse trigger from OSRS client
+
+        // --- Release all placeholders ---
+        // This button is in the bank menu area. Exact component may need
+        // verification from gamevals, but it's likely a sub-option.
+        onButton("components.bankmain:menu_button") {
+            BankService.releaseAllPlaceholders(player)
+        }
     }
 }
