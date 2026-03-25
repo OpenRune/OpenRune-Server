@@ -12,7 +12,9 @@ import org.alter.game.model.combat.CombatStyle
 import org.alter.game.model.entity.*
 import org.alter.game.model.queue.*
 import org.alter.game.model.timer.ATTACK_DELAY
+import org.alter.game.model.attr.KILLER_ATTR
 import org.alter.game.plugin.*
+import java.lang.ref.WeakReference
 import org.alter.plugins.content.combat.*
 import org.alter.plugins.content.combat.formula.DragonfireFormula
 import org.alter.plugins.content.combat.formula.MeleeCombatFormula
@@ -47,6 +49,33 @@ class CorruptedKbdPlugin(
         private const val CORRUPTION_TILE_LIFETIME = 8
         private const val SHADOW_BURST_INTERVAL = 15
         private const val BOSS_REGION = 9033
+
+        /**
+         * Drop table entry: RSCM name, min amount, max amount, weight.
+         * For entries where min == max, only that amount is dropped.
+         * A null rscmName means "Nothing" (no drop).
+         */
+        private data class Drop(val rscmName: String?, val min: Int, val max: Int, val weight: Int)
+
+        /** Main drop table — total weight = 128, rolled once on death. */
+        private val DROP_TABLE = listOf(
+            Drop("items.rune_longsword",    1, 1, 8),
+            Drop("items.rune_platelegs",    1, 1, 6),
+            Drop("items.dragon_med_helm",   1, 1, 2),
+            Drop("items.dragon_dagger",     1, 1, 5),
+            Drop("items.firerune",        500, 500, 10),
+            Drop("items.bloodrune",        50, 50, 8),
+            Drop("items.deathrune",        75, 75, 8),
+            Drop("items.lawrune",          50, 50, 8),
+            Drop("items.cert_adamantite_bar", 10, 10, 8),
+            Drop("items.cert_runite_bar",     3,  3, 5),
+            Drop("items.cert_yew_logs",     200, 200, 10),
+            Drop("items.cert_magic_logs",    30, 30, 5),
+            Drop("items.shark",              5,  5, 10),
+            Drop("items.coins",          15000, 30000, 15),
+            Drop("items.cert_dragon_bones", 10, 10, 8),
+            Drop(null,                       0,  0, 12),  // Nothing
+        )
     }
 
     init {
@@ -95,6 +124,32 @@ class CorruptedKbdPlugin(
         onNpcCombat("npcs.king_dragon") {
             npc.queue {
                 npc.combat(this)
+            }
+        }
+
+        // ---------------------------------------------------------------
+        // Drop table
+        // ---------------------------------------------------------------
+        onNpcDeath("npcs.king_dragon") {
+            val npc = ctx as Npc
+            val killer = npc.attr[KILLER_ATTR]?.get() as? Player ?: return@onNpcDeath
+            val tile = npc.tile
+
+            // Always drops
+            world.spawn(GroundItem("items.dragon_bones".asRSCM(), 1, tile, killer))
+            world.spawn(GroundItem("items.black_dhide".asRSCM(), 2, tile, killer))
+
+            // Main table roll (total weight = 128)
+            val roll = world.random(127)
+            var cumulative = 0
+            val drop = DROP_TABLE.firstOrNull { entry ->
+                cumulative += entry.weight
+                roll < cumulative
+            }
+
+            if (drop?.rscmName != null) {
+                val amount = if (drop.min == drop.max) drop.min else world.random(drop.min..drop.max)
+                world.spawn(GroundItem(drop.rscmName.asRSCM(), amount, tile, killer))
             }
         }
     }
