@@ -8,13 +8,18 @@ import org.alter.game.pluginnew.event.impl.WorldTickEvent
 /**
  * Wires [CombatSystem.processTick] into the world tick loop.
  *
- * The CombatSystem is a no-op until combats are registered (Layer 2+),
- * so this registration is safe to enable unconditionally during Layer 1.
+ * Only runs when `combat.useNewSystem: true` is set in game.yml.
+ * When false, the legacy CombatPlugin handles all combat and this
+ * bootstrap is a no-op, preventing double-processing.
  */
 class CombatSystemBootstrap : PluginEvent() {
 
     override fun init() {
         val combatSystem = CombatSystem(EventManager)
-        onEvent<WorldTickEvent> { combatSystem.processTick() }
+        onEvent<WorldTickEvent> {
+            if (world.gameContext.useNewCombatSystem) {
+                combatSystem.processTick()
+            }
+        }
     }
 }
