@@ -4,6 +4,7 @@ import org.alter.api.ext.message
 import org.alter.game.info.PlayerInfo
 import org.alter.game.model.ExamineEntityType
 import org.alter.game.model.entity.Player
+import org.alter.game.model.entity.UpdateInventory
 import org.alter.game.model.inv.Inventory
 import org.alter.game.model.inv.invtx.invAdd
 import org.alter.game.model.inv.invtx.invDel
@@ -25,6 +26,12 @@ object BankService {
 
     /** Get the bank inventory. */
     fun Player.getBankInv(): Inventory = invMap.getValue("inv.bank")
+
+    /** Force send a full bank inventory update to the client. */
+    private fun refreshBank(player: Player) {
+        val bankInv = player.getBankInv()
+        UpdateInventory.updateInvFull(player, bankInv)
+    }
 
     /** Find slot of an item in bank by ID (amount > 0). Returns -1 if not found. */
     fun findItemSlot(bankInv: Inventory, itemId: Int): Int {
@@ -123,6 +130,8 @@ object BankService {
         if (bankInv[slot] == null) {
             shiftSlotInTab(player, bankInv, slot)
         }
+
+        refreshBank(player)
     }
 
     // --- Deposit ---
@@ -205,6 +214,8 @@ object BankService {
             sizes[targetTab]++
             player.setTabSizes(sizes)
         }
+
+        refreshBank(player)
     }
 
     /**
@@ -228,6 +239,7 @@ object BankService {
         if (def.placeholderTemplate <= 0 || def.placeholderLink <= 0) return
         bankInv[slot] = null
         shiftSlotInTab(player, bankInv, slot)
+        refreshBank(player)
     }
 
     /**
@@ -266,6 +278,7 @@ object BankService {
             bankInv[fromSlot] = bankInv[toSlot]
             bankInv[toSlot] = temp
         }
+        refreshBank(player)
     }
 
     // --- Tab Operations ---
@@ -327,6 +340,7 @@ object BankService {
         sizes[newTab] = 1
 
         player.setTabSizes(sizes)
+        refreshBank(player)
     }
 
     /**
@@ -374,6 +388,7 @@ object BankService {
         sizes[9] = 0
 
         player.setTabSizes(sizes)
+        refreshBank(player)
     }
 
     // --- Placeholder Operations ---
@@ -417,6 +432,7 @@ object BankService {
         }
 
         player.setTabSizes(sizes)
+        refreshBank(player)
     }
 
     /**
@@ -471,5 +487,6 @@ object BankService {
 
         // Refresh player appearance — equipment changed
         PlayerInfo(player).syncAppearance()
+        refreshBank(player)
     }
 }
