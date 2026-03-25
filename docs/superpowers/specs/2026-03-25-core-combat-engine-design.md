@@ -280,7 +280,7 @@ Lean — determines *how* to attack, not damage calculations:
 interface CombatStrategy {
     fun getAttackRange(attacker: Pawn): Int
     fun getAttackSpeed(attacker: Pawn): Int
-    fun getAttackAnimation(attacker: Pawn): Int
+    fun getAttackAnimation(attacker: Pawn): String
     fun getProjectile(attacker: Pawn, target: Pawn): Projectile?
     fun getHitDelay(attacker: Pawn, target: Pawn): Int
 }
