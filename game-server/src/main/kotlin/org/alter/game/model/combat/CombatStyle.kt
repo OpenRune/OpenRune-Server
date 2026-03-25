@@ -13,3 +13,7 @@ enum class CombatStyle(val id: Int) {
     MAGIC(id = 3),
     RANGED(id = 4)
 }
+
+fun CombatStyle.isMelee(): Boolean = this == CombatStyle.STAB || this == CombatStyle.SLASH || this == CombatStyle.CRUSH
+fun CombatStyle.isRanged(): Boolean = this == CombatStyle.RANGED
+fun CombatStyle.isMagic(): Boolean = this == CombatStyle.MAGIC
