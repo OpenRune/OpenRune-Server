@@ -1,5 +1,6 @@
 package org.alter.game.pluginnew.event.impl
 
+import org.alter.game.combat.CombatStrategy
 import org.alter.game.combat.DisengageReason
 import org.alter.game.model.combat.CombatStyle
 import org.alter.game.model.entity.Pawn
@@ -28,6 +29,7 @@ class PreAttackEvent(
     override val attacker: Pawn,
     override val target: Pawn,
     override val combatStyle: CombatStyle,
+    val strategy: CombatStrategy,
     var cancelled: Boolean = false,
     var cancelReason: String? = null
 ) : CombatEvent(attacker, target, combatStyle)
@@ -69,6 +71,7 @@ class PostAttackEvent(
     override val attacker: Pawn,
     override val target: Pawn,
     override val combatStyle: CombatStyle,
+    val strategy: CombatStrategy,
     val damage: Int,
     val landed: Boolean
 ) : CombatEvent(attacker, target, combatStyle)
