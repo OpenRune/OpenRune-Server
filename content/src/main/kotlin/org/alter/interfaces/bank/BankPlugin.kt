@@ -71,6 +71,7 @@ class BankPlugin : PluginEvent() {
 
         // --- Deposit from inventory side panel ---
         onButton("components.bankside:items") {
+            try {
             val invItem = player.inventory[slot] ?: return@onButton
 
             when (op) {
@@ -89,6 +90,9 @@ class BankPlugin : PluginEvent() {
                 MenuOption.OP5 -> BankService.deposit(player, slot, invItem.amount)
                 MenuOption.OP10 -> BankService.examine(player, item)
                 else -> {}
+            }
+            } catch (e: Exception) {
+                e.printStackTrace()
             }
         }
 
