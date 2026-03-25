@@ -123,16 +123,11 @@ class BankPlugin : PluginEvent() {
         }
 
         // --- Search mode ---
+        // Search is client-driven (client opens its own search input and filters).
+        // Server just tracks state for deposit targeting.
         onButton("components.bankmain:search") {
-            if (!player.bankSearchMode) {
-                // Entering search: save current tab
-                player.bankPreSearchTab = player.bankActiveTab
-                player.bankSearchMode = true
-            } else {
-                // Exiting search: restore previous tab
-                player.bankSearchMode = false
-                player.bankActiveTab = player.bankPreSearchTab
-            }
+            player.bankPreSearchTab = player.bankActiveTab
+            player.bankSearchMode = true
         }
 
         // --- Drag to rearrange within bank ---
