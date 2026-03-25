@@ -34,6 +34,8 @@ import org.alter.game.model.shop.Shop
 import org.alter.game.model.timer.TimerMap
 import org.alter.game.plugin.Plugin
 import org.alter.game.plugin.PluginRepository
+import org.alter.game.pluginnew.event.EventManager
+import org.alter.game.pluginnew.event.impl.WorldTickEvent
 import org.alter.game.service.GameService
 import org.alter.game.service.Service
 import org.alter.game.service.xtea.XteaKeyService
@@ -246,6 +248,8 @@ class World(val gameContext: GameContext, val devContext: DevContext) {
             currentCycle = 0
             logger.info {"World cycle has been reset." }
         }
+
+        EventManager.postAndWait(WorldTickEvent(currentCycle.toLong()))
 
         val timersCopy = timers.getTimers().toMutableMap()
         timersCopy.forEach { (key, time) ->
