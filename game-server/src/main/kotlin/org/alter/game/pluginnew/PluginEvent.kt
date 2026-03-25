@@ -1,8 +1,10 @@
 package org.alter.game.pluginnew
 
+import org.alter.game.combat.NpcCombatDefRegistry
 import org.alter.game.model.Direction
 import org.alter.game.model.Tile
 import org.alter.game.model.World
+import org.alter.game.model.combat.NpcCombatDef
 import org.alter.game.model.entity.GroundItem
 import org.alter.game.model.entity.Npc
 import org.alter.game.model.entity.Player
@@ -150,6 +152,21 @@ abstract class PluginEvent  {
         val shop = Shop(name, stockType, purchasePolicy, currency, arrayOfNulls(stockSize))
         world.shops[name] = shop
         init(shop)
+    }
+
+    /**
+     * Register an [NpcCombatDef] for the NPC identified by [rscmName].
+     *
+     * Use [NpcCombatDef.DEFAULT] as the baseline and supply only the fields
+     * that differ via named arguments or a `.copy(...)` call:
+     *
+     * ```kotlin
+     * npcCombatDef("npcs.man", NpcCombatDef.DEFAULT.copy(hitpoints = 15, attack = 7))
+     * ```
+     */
+    fun npcCombatDef(rscmName: String, def: NpcCombatDef) {
+        val npcId = getRSCM(rscmName)
+        NpcCombatDefRegistry.register(npcId, def)
     }
 
 }
