@@ -107,7 +107,13 @@ object BankService {
         )
 
         if (!added.success) {
-            // Rollback: put items back in bank
+            // Rollback: clear any placeholder left by invDel, then restore item
+            if (bankInv[slot] != null) {
+                val slotDef = bankInv[slot]!!.getDef()
+                if (slotDef.placeholderTemplate > 0) {
+                    bankInv[slot] = null
+                }
+            }
             player.invAdd(bankInv, bankItem.id, actual, slot = slot)
             player.message("You don't have enough inventory space.")
             return
@@ -156,18 +162,44 @@ object BankService {
         val removed = player.invDel(player.inventory, invItem.id, actual)
         if (!removed.success) return
 
+        // For new items, we need to place them at the correct tab position
+        val isNewItem = existingSlot == -1 && placeholderSlot == -1
+        val targetSlot: Int? = if (isNewItem) {
+            // Insert at end of the target tab's range
+            val sizes = player.getTabSizes()
+            val targetTab = if (player.bankSearchMode) 0 else player.bankActiveTab
+            val insertPos = tabEndSlot(sizes, targetTab)
+            // Shift items from insertPos onward right by 1 to make room
+            val totalItems = sizes.sum()
+            for (i in totalItems downTo insertPos + 1) {
+                bankInv[i] = bankInv[i - 1]
+            }
+            bankInv[insertPos] = null // clear the slot for invAdd
+            insertPos
+        } else {
+            null // let invAdd find the existing stack or placeholder
+        }
+
         // Add to bank (uncert converts noted -> unnoted automatically)
-        val added = player.invAdd(bankInv, invItem.id, actual, uncert = true)
+        val added = player.invAdd(bankInv, invItem.id, actual, uncert = true, slot = targetSlot)
 
         if (!added.success) {
-            // Rollback: give items back
+            // Rollback: give items back and undo slot shift if needed
+            if (isNewItem && targetSlot != null) {
+                val sizes = player.getTabSizes()
+                val totalItems = sizes.sum()
+                for (i in targetSlot until totalItems) {
+                    bankInv[i] = bankInv[i + 1]
+                }
+                bankInv[totalItems] = null
+            }
             player.invAdd(player.inventory, invItem.id, actual)
             player.message("Your bank is too full.")
             return
         }
 
-        // If this was a new item (no existing stack, no placeholder), update tab size
-        if (existingSlot == -1 && placeholderSlot == -1) {
+        // Update tab size for new items
+        if (isNewItem) {
             val sizes = player.getTabSizes()
             val targetTab = if (player.bankSearchMode) 0 else player.bankActiveTab
             sizes[targetTab]++
@@ -266,6 +298,20 @@ object BankService {
         }
         bankInv[sourceEnd - 1] = null
         sizes[sourceTab]--
+
+        // If source tab (1-9) is now empty, shift higher tabs down to keep contiguous
+        if (sourceTab in 1..9 && sizes[sourceTab] == 0) {
+            for (i in sourceTab until 9) {
+                sizes[i] = sizes[i + 1]
+            }
+            sizes[9] = 0
+            // Recalculate newTab since tab indices may have shifted
+            newTab = -1
+            for (t in 1..9) {
+                if (sizes[t] == 0) { newTab = t; break }
+            }
+            if (newTab == -1) return // shouldn't happen
+        }
 
         // Calculate insert position for new tab (it has size 0 currently, so start == end)
         val insertPos = tabStartSlot(sizes, newTab)
@@ -402,10 +448,23 @@ object BankService {
             val removed = player.invDel(equipInv, item.id, item.amount, slot = slot)
             if (!removed.success) continue
 
-            val added = player.invAdd(bankInv, item.id, item.amount, uncert = true)
-            if (added.success && existingSlot == -1 && placeholderSlot == -1) {
+            // For new items, insert at end of tab 0 (main)
+            val isNewItem = existingSlot == -1 && placeholderSlot == -1
+            val targetSlot: Int? = if (isNewItem) {
                 val sizes = player.getTabSizes()
-                sizes[0]++ // Equipment always deposits to main tab
+                val insertPos = tabEndSlot(sizes, 0)
+                val totalItems = sizes.sum()
+                for (i in totalItems downTo insertPos + 1) {
+                    bankInv[i] = bankInv[i - 1]
+                }
+                bankInv[insertPos] = null
+                insertPos
+            } else null
+
+            val added = player.invAdd(bankInv, item.id, item.amount, uncert = true, slot = targetSlot)
+            if (added.success && isNewItem) {
+                val sizes = player.getTabSizes()
+                sizes[0]++
                 player.setTabSizes(sizes)
             }
         }

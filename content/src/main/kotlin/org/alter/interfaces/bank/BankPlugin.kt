@@ -11,6 +11,7 @@ import org.alter.interfaces.bank.BankState.bankActiveTab
 import org.alter.interfaces.bank.BankState.bankInsertMode
 import org.alter.interfaces.bank.BankState.bankLastXAmount
 import org.alter.interfaces.bank.BankState.bankPlaceholderMode
+import org.alter.interfaces.bank.BankState.bankPreSearchTab
 import org.alter.interfaces.bank.BankState.bankSearchMode
 import org.alter.interfaces.bank.BankState.bankWithdrawAsNote
 
@@ -42,11 +43,24 @@ class BankPlugin : PluginEvent() {
                     }
                 }
                 MenuOption.OP5 -> BankService.withdraw(player, slot, bankItem.amount)
-                MenuOption.OP6 -> BankService.withdraw(player, slot, bankItem.amount - 1)
+                MenuOption.OP6 -> {
+                    if (bankItem.amount > 1) {
+                        BankService.withdraw(player, slot, bankItem.amount - 1)
+                    }
+                }
                 MenuOption.OP7 -> {
+                    // Withdraw last-X; if never set, prompt
                     val lastX = player.bankLastXAmount
                     if (lastX > 0) {
                         BankService.withdraw(player, slot, lastX)
+                    } else {
+                        player.queue {
+                            val amount = inputInt(player, "Enter amount")
+                            if (amount > 0) {
+                                player.bankLastXAmount = amount
+                                BankService.withdraw(player, slot, amount)
+                            }
+                        }
                     }
                 }
                 MenuOption.OP8 -> BankService.releasePlaceholder(player, slot)
@@ -67,6 +81,7 @@ class BankPlugin : PluginEvent() {
                     player.queue {
                         val amount = inputInt(player, "Enter amount")
                         if (amount > 0) {
+                            player.bankLastXAmount = amount
                             BankService.deposit(player, slot, amount)
                         }
                     }
@@ -109,7 +124,15 @@ class BankPlugin : PluginEvent() {
 
         // --- Search mode ---
         onButton("components.bankmain:search") {
-            player.bankSearchMode = !player.bankSearchMode
+            if (!player.bankSearchMode) {
+                // Entering search: save current tab
+                player.bankPreSearchTab = player.bankActiveTab
+                player.bankSearchMode = true
+            } else {
+                // Exiting search: restore previous tab
+                player.bankSearchMode = false
+                player.bankActiveTab = player.bankPreSearchTab
+            }
         }
 
         // --- Drag to rearrange within bank ---
@@ -120,23 +143,12 @@ class BankPlugin : PluginEvent() {
         }
 
         // --- Drag item to tab header to create tab ---
-        // When a drag event targets the tabs component, create a new tab
         onIfModalDrag("components.bankmain:tabs") {
             val fromSlot = selectedSlot ?: return@onIfModalDrag
             BankService.createTab(player, fromSlot)
         }
 
-        // --- Tab collapse (right-click tab header) ---
-        // Op2 on tabs collapses that tab back to main
-        // Note: this reuses the tabs button handler; if tabs only has Op1
-        // for switching, collapse may need a separate component or menu option.
-        // For now, wire Op1 for switching (already done above).
-        // Collapse can be triggered via a dedicated menu or long-press.
-        // TODO: Verify exact collapse trigger from OSRS client
-
         // --- Release all placeholders ---
-        // This button is in the bank menu area. Exact component may need
-        // verification from gamevals, but it's likely a sub-option.
         onButton("components.bankmain:menu_button") {
             BankService.releaseAllPlaceholders(player)
         }

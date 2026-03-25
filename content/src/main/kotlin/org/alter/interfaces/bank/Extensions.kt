@@ -10,8 +10,9 @@ import org.alter.interfaces.ifSetEvents
 fun Player.openBank() {
     val bankInv = invMap.getValue("inv.bank")
 
-    // Transmit bank inventory to client
+    // Transmit bank and player inventory to client
     startInvTransmit(bankInv)
+    startInvTransmit(inventory)
 
     // Open the bank main + side panel
     ifOpenMainSidePair("interfaces.bankmain", "interfaces.bankside")

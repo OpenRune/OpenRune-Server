@@ -12,6 +12,7 @@ object BankState {
     var Player.bankWithdrawAsNote by boolVarBit("varbits.bank_withdrawnotes")
     var Player.bankInsertMode by boolVarBit("varbits.bank_insertmode")
     var Player.bankQuantityType by intVarBit("varbits.bank_quantity_type")
+    var Player.bankPlaceholderMode by boolVarBit("varbits.bank_leaveplaceholders")
 
     var Player.bankTab0Size by intVarp("varp.bank_tab_display")
     var Player.bankTab1Size by intVarp("varp.bank_tab_1")
@@ -29,8 +30,6 @@ object BankState {
     val BANK_SEARCH_MODE = AttributeKey<Boolean>()
     val BANK_PRE_SEARCH_TAB = AttributeKey<Int>()
     val BANK_LAST_X = AttributeKey<Int>()
-    val BANK_PLACEHOLDER_MODE = AttributeKey<Boolean>()
-
     var Player.bankActiveTab: Int
         get() = attr[BANK_ACTIVE_TAB] ?: 0
         set(value) { attr[BANK_ACTIVE_TAB] = value }
@@ -46,10 +45,6 @@ object BankState {
     var Player.bankLastXAmount: Int
         get() = attr[BANK_LAST_X] ?: 0
         set(value) { attr[BANK_LAST_X] = value }
-
-    var Player.bankPlaceholderMode: Boolean
-        get() = attr[BANK_PLACEHOLDER_MODE] ?: false
-        set(value) { attr[BANK_PLACEHOLDER_MODE] = value }
 
     // --- Tab size helpers ---
 
