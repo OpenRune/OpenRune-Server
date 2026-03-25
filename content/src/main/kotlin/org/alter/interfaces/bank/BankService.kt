@@ -9,6 +9,7 @@ import org.alter.game.model.inv.invtx.invAdd
 import org.alter.game.model.inv.invtx.invDel
 import org.alter.game.model.item.Item
 import org.alter.interfaces.bank.BankState.bankActiveTab
+import org.alter.interfaces.bank.BankState.bankInsertMode
 import org.alter.interfaces.bank.BankState.bankPlaceholderMode
 import org.alter.interfaces.bank.BankState.bankSearchMode
 import org.alter.interfaces.bank.BankState.bankWithdrawAsNote
@@ -181,6 +182,48 @@ object BankService {
             if (player.inventory[slot] != null) {
                 deposit(player, slot, Int.MAX_VALUE)
             }
+        }
+    }
+
+    /**
+     * Release (remove) a placeholder at [slot].
+     */
+    fun releasePlaceholder(player: Player, slot: Int) {
+        val bankInv = player.getBankInv()
+        val bankItem = bankInv[slot] ?: return
+        val def = bankItem.getDef()
+        if (def.placeholderTemplate <= 0 || def.placeholderLink <= 0) return
+        bankInv[slot] = null
+        shiftSlotInTab(player, bankInv, slot)
+    }
+
+    /**
+     * Move (swap or insert) a bank item from [fromSlot] to [toSlot].
+     */
+    fun moveItem(player: Player, fromSlot: Int, toSlot: Int) {
+        val bankInv = player.getBankInv()
+        if (fromSlot == toSlot) return
+        if (fromSlot < 0 || fromSlot >= bankInv.size) return
+        if (toSlot < 0 || toSlot >= bankInv.size) return
+
+        if (player.bankInsertMode) {
+            // Insert mode: shift items between from and to
+            val item = bankInv[fromSlot] ?: return
+            if (fromSlot < toSlot) {
+                for (i in fromSlot until toSlot) {
+                    bankInv[i] = bankInv[i + 1]
+                }
+            } else {
+                for (i in fromSlot downTo toSlot + 1) {
+                    bankInv[i] = bankInv[i - 1]
+                }
+            }
+            bankInv[toSlot] = item
+        } else {
+            // Swap mode
+            val temp = bankInv[fromSlot]
+            bankInv[fromSlot] = bankInv[toSlot]
+            bankInv[toSlot] = temp
         }
     }
 
