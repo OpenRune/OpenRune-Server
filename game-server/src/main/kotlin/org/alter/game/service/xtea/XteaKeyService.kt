@@ -137,24 +137,12 @@ class XteaKeyService : Service, XteaProvider {
         }
     }
 
-    /**
-     * Region whitelist for the world map. If non-null, only these regions
-     * will have their xtea keys provided to the client — everything else
-     * shows as blank/ocean on the world map.
-     */
-    var allowedRegions: IntRange? = null // Set to e.g. 4137..6177 to filter regions
-
     companion object {
         private val logger = KotlinLogging.logger {}
         val EMPTY_KEYS = intArrayOf(0, 0, 0, 0)
     }
 
     override fun provide(region: Int): XteaKey {
-        // Filter: return empty keys for regions outside the whitelist
-        allowedRegions?.let { range ->
-            if (region !in range) return XteaKey(EMPTY_KEYS)
-        }
-
         if (keys[region] == null) {
             logger.trace { "No XTEA keys found for region $region." }
             keys[region] = EMPTY_KEYS
