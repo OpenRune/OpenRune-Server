@@ -21,6 +21,33 @@
 - Death handling, PvP, multi-combat zones (Sub-project 6)
 - Individual boss migrations (e.g., Corrupted KBD port — after sub-project 2)
 
+## Infrastructure Prerequisites
+
+Changes required to the existing PluginEvent system before combat work begins:
+
+### 1. Priority-ordered listener dispatch
+
+The current `EventManager.processListeners()` launches all matching listeners as concurrent coroutines (`CoroutineScope(context).launch { ... }`). This means listener execution order is non-deterministic. The combat pipeline requires sequential, priority-ordered execution (base formula → equipment → prayer → boss override → damage cap).
+
+**Required changes:**
+- Add `var priority: Int = 500` field to `EventListener`
+- Add `fun priority(p: Int)` builder method to the listener DSL
+- Modify `processListeners` to sort listeners by priority (ascending) and execute them **sequentially** for deterministic ordering
+- Existing non-combat listeners default to priority 500 and remain unaffected in behavior (they were already independent of execution order)
+
+### 2. EventManager testability
+
+`EventManager` is currently a Kotlin `object` (singleton). For unit testing the combat pipeline without a full server, we need to be able to instantiate isolated event managers.
+
+**Required changes:**
+- Extract an `EventManager` interface from the current implementation
+- Rename the singleton to `GlobalEventManager` implementing the interface
+- `CombatSystem` takes the interface, enabling test instances
+
+### 3. CombatEvent base class rationale
+
+Combat events extend `Event` directly, not `PlayerEvent`. This is intentional: combat is `Pawn`-vs-`Pawn` (covers both Player and NPC attackers/targets). NPC-vs-Player and NPC-vs-NPC combat cannot fit the `PlayerEvent(player: Player)` hierarchy. The `CombatEvent` base carries `attacker: Pawn` and `target: Pawn` instead.
+
 ## Architecture
 
 ### Module Placement
@@ -33,7 +60,7 @@
 | `NpcCombatDefRegistry` | `game-server` | Loaded at startup, queried by orchestrator |
 | Formula plugins | `content` | Content-layer listeners on combat events |
 | Equipment modifier plugins | `content` | Content-layer listeners on combat events |
-| NPC combat def TOML files | `content/resources` | Data files processed by KSP |
+| NPC combat def TOML files | `content/resources` | Data files loaded at runtime (like gamevals), not KSP |
 | Legacy adapters | `content` | Temporary bridge, deleted after migration |
 
 ### Combat Event Hierarchy
@@ -56,7 +83,7 @@ Additional lifecycle events:
 - `CombatEngageEvent` — fired when `CombatSystem.engage()` is called
 - `CombatDisengageEvent` — fired when combat ends (target dead, out of range, manual stop)
 
-All combat events extend a common `CombatEvent` base that carries `attacker: Pawn`, `target: Pawn`, and `combatStyle: CombatStyle`.
+All combat events extend a common `CombatEvent` base that carries `attacker: Pawn`, `target: Pawn`, and `combatStyle: CombatStyle`. See [Infrastructure Prerequisites](#infrastructure-prerequisites) for why `CombatEvent` extends `Event` rather than `PlayerEvent`.
 
 ### Event Definitions
 
@@ -66,6 +93,19 @@ abstract class CombatEvent(
     open val target: Pawn,
     open val combatStyle: CombatStyle
 ) : Event
+
+class CombatEngageEvent(
+    override val attacker: Pawn,
+    override val target: Pawn,
+    override val combatStyle: CombatStyle
+) : CombatEvent(attacker, target, combatStyle)
+
+class CombatDisengageEvent(
+    override val attacker: Pawn,
+    override val target: Pawn,
+    override val combatStyle: CombatStyle,
+    val reason: DisengageReason  // TARGET_DEAD, OUT_OF_RANGE, MANUAL, TIMEOUT
+) : CombatEvent(attacker, target, combatStyle)
 
 class PreAttackEvent(
     override val attacker: Pawn,
@@ -124,6 +164,8 @@ class PostAttackEvent(
 ### CombatSystem Orchestrator
 
 Lives in `game-server`. Manages all active combat state and drives the tick loop.
+
+**Threading model:** `CombatSystem.processTick()` runs on the main game thread, called synchronously from the `WorldTickEvent` handler (not from the coroutine pool). All `postAndWait()` calls within `processAttack()` are safe because the main game thread is not part of the `EventManager` coroutine pool. Combat event listeners that modify game state (HP, animations, etc.) must execute on the game thread — `postAndWait` ensures this by blocking until completion.
 
 ```kotlin
 class CombatSystem(val world: World, val eventManager: EventManager) {
@@ -186,19 +228,24 @@ class CombatSystem(val world: World, val eventManager: EventManager) {
         eventManager.postAndWait(damageEvent)
 
         // 6. Apply hit (deferred by strategy hit delay)
+        // HitAppliedEvent fires inside the deferred hit action, which executes on the
+        // main game thread during hit processing. Uses postAndWait (not async post) so
+        // listeners like Guthan's healing can safely modify game state. Listeners should
+        // guard against stale state (target may have died between attack and hit landing).
         val hitDelay = strategy.getHitDelay(attacker, target)
         val hit = target.hit(damageEvent.damage, damageEvent.damageType, hitDelay)
         hit.addAction {
             target.damageMap.add(attacker, damageEvent.damage)
-            eventManager.post(HitAppliedEvent(attacker, target, style, damageEvent.damage, damageEvent.damageType, landed))
+            eventManager.postAndWait(HitAppliedEvent(attacker, target, style, damageEvent.damage, damageEvent.damageType, landed))
         }
 
         // 7. Post-attack
         val postAttack = PostAttackEvent(attacker, target, style, damageEvent.damage, landed, strategy)
         eventManager.postAndWait(postAttack)
 
-        // 8. Reset attack delay
+        // 8. Reset attack delay and combat timeout
         state.attackDelay = strategy.getAttackSpeed(attacker)
+        state.resetTimeout()
     }
 
     private fun resolveStrategy(attacker: Pawn): CombatStrategy { /* equipment/spell based */ }
@@ -221,6 +268,7 @@ data class CombatState(
     fun attackDelayReady(): Boolean = attackDelay <= 0
     fun tickDown() { attackDelay--; ticksSinceLastAttack++ }
     fun isExpired(): Boolean = ticksSinceLastAttack >= combatTimeout
+    fun resetTimeout() { ticksSinceLastAttack = 0 }
 }
 ```
 
@@ -239,6 +287,8 @@ interface CombatStrategy {
 ```
 
 Implementations: `MeleeCombatStrategy`, `RangedCombatStrategy`, `MagicCombatStrategy`.
+
+**Note on multi-hit attacks:** This sub-project handles single-hit-per-attack. Multi-hit attacks (Dragon Claws spec = 4 hits, Karil's set effect, Ice Barrage in multi-combat) are handled in Sub-project 5 (Special Attacks + Spells). The pipeline supports this by allowing `processAttack()` to be called multiple times per tick for the same attacker, or by introducing a `MultiHitEvent` wrapper that triggers multiple pipeline passes. The single-hit pipeline is designed to not preclude this.
 
 ### Damage Pipeline — Listener Priority System
 
@@ -355,19 +405,25 @@ Incremental with adapter — combat stays functional at every step.
 
 ### Layer 1: Foundation (no behavior change)
 
+- **Infrastructure prerequisites first:** Add priority field to `EventListener`, modify `processListeners` for sequential dispatch, extract `EventManager` interface (see [Infrastructure Prerequisites](#infrastructure-prerequisites))
 - Define all combat events in `game-server/pluginnew/event/impl/`
 - Build `CombatSystem` orchestrator with `engage()`/`disengage()`/`processTick()`
 - Build `NpcCombatDefRegistry`
 - Define `CombatStrategy` interface
+- Add `npcCombatDef()` DSL helper to `PluginEvent` base class (registers with `NpcCombatDefRegistry`)
 - Wire `CombatSystem.processTick()` into `WorldTickEvent`
 - Nothing fires yet — old system still handles all combat
 
 ### Layer 2: Adapter bridge
 
 - `LegacyFormulaAdapter` wraps existing formula singletons as priority-0 event listeners
-- `LegacyStrategyAdapter` wraps existing `MeleeCombatStrategy`/`RangedCombatStrategy`/`MagicCombatStrategy` into the new `CombatStrategy` interface
+- `LegacyStrategyAdapter` wraps existing strategies into the new `CombatStrategy` interface:
+  - Maps old `getAttackRange()` → new `getAttackRange()`
+  - Maps old `canAttack()` → `PreAttackEvent` listener that sets `cancelled = true`
+  - Decomposes old `attack()` method: animation/projectile extraction → strategy getters, damage logic → formula adapter events. The old `attack()` is a monolith that does everything — the adapter must split it into the discrete pipeline stages. This is the hardest part of the migration.
 - Config flag: `combat.useNewSystem = true` makes `CombatSystem` take over the tick loop
 - Events fire through the pipeline, but old formula/strategy code runs via adapters
+- **Double-registration guard:** When the config flag is true, the legacy `PluginRepository` combat handlers are skipped. When false, the new `CombatSystem` tick processing is skipped. Only one system processes combat at a time.
 - Combat works identically but now flows through the event pipeline
 
 ### Layer 3: Migrate formulas
