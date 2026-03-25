@@ -2,6 +2,7 @@ package org.alter.interfaces.bank
 
 import org.alter.api.ext.message
 import org.alter.game.info.PlayerInfo
+import org.alter.api.ext.sendItemContainer
 import org.alter.game.model.ExamineEntityType
 import org.alter.game.model.entity.Player
 import org.alter.game.model.entity.UpdateInventory
@@ -9,6 +10,7 @@ import org.alter.game.model.inv.Inventory
 import org.alter.game.model.inv.invtx.invAdd
 import org.alter.game.model.inv.invtx.invDel
 import org.alter.game.model.item.Item
+import org.alter.rscm.RSCM.asRSCM
 import org.alter.interfaces.bank.BankState.bankActiveTab
 import org.alter.interfaces.bank.BankState.bankInsertMode
 import org.alter.interfaces.bank.BankState.bankPlaceholderMode
@@ -30,7 +32,11 @@ object BankService {
     /** Force send a full bank inventory update to the client. */
     private fun refreshBank(player: Player) {
         val bankInv = player.getBankInv()
-        UpdateInventory.updateInvFull(player, bankInv)
+        // Send targeted update to the bankmain:items component
+        val packed = "components.bankmain:items".asRSCM()
+        val interfaceId = packed shr 16
+        val componentId = packed and 0xFFFF
+        player.sendItemContainer(interfaceId, componentId, bankInv.type.id, bankInv.objs)
     }
 
     /** Find slot of an item in bank by ID (amount > 0). Returns -1 if not found. */
