@@ -28,3 +28,4 @@ dump.hprof
 /content/src/main/kotlin/generated/org/alter/tables
 /content/src/main/kotlin/org/generated
 *.dat
+.worktrees/
