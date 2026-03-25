@@ -23,11 +23,11 @@ class KbdConfigsPlugin(
 ) : KotlinPlugin(r, world, server) {
         
     init {
-        setMultiCombatRegion(region = 9033)
+        // Disabled: Corrupted KBD (CorruptedKbdPlugin) now owns the combat def and spawn for king_dragon.
+        // setMultiCombatRegion(region = 9033)
+        // spawnNpc("npcs.king_dragon", x = 2274, z = 4698, walkRadius = 5)
 
-        spawnNpc("npcs.king_dragon", x = 2274, z = 4698, walkRadius = 5)
-
-        setCombatDef("npcs.king_dragon") {
+        /*setCombatDef("npcs.king_dragon") {
             species {
                 +NpcSpecies.DRACONIC
                 +NpcSpecies.BASIC_DRAGON
@@ -105,6 +105,6 @@ block = "sequences.dragon_block"
 //            add(itemid = Items.SHARK, min = 4, weight = 4)
 //        }
 //    }
-        }
+        }*/ // end setCombatDef block comment
     }
 }

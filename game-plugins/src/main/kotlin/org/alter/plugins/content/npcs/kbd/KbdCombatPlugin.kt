@@ -23,11 +23,12 @@ class KbdCombatPlugin(
 ) : KotlinPlugin(r, world, server) {
 
     init {
-        onNpcCombat("npcs.king_dragon") {
-            npc.queue {
-                npc.combat(this)
-            }
-        }
+        // Disabled: Corrupted KBD (CorruptedKbdPlugin) now owns the combat handler for king_dragon.
+        // onNpcCombat("npcs.king_dragon") {
+        //     npc.queue {
+        //         npc.combat(this)
+        //     }
+        // }
     }
 
     private suspend fun Npc.combat(it: QueueTask) {
