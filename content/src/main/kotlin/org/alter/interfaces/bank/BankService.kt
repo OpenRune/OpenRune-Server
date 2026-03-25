@@ -2,6 +2,8 @@ package org.alter.interfaces.bank
 
 import org.alter.api.ext.message
 import org.alter.game.info.PlayerInfo
+import io.github.oshai.kotlinlogging.KotlinLogging
+import org.alter.api.ext.sendItemContainer
 import org.alter.game.model.ExamineEntityType
 import org.alter.game.model.entity.Player
 import org.alter.game.model.inv.Inventory
@@ -18,6 +20,8 @@ import org.alter.interfaces.bank.BankState.tabStartSlot
 
 object BankService {
 
+    private val logger = KotlinLogging.logger {}
+
     // --- Helpers ---
 
     /** Get the bank inventory. */
@@ -25,9 +29,10 @@ object BankService {
 
     /** Force send a full bank inventory update to the client. */
     private fun refreshBank(player: Player) {
-        // Rely on the auto-transmit system — startInvTransmit was called in openBank().
-        // The PlayerInvUpdateProcessor will detect modifiedSlots and send partial updates
-        // on the next game tick.
+        val bankInv = player.getBankInv()
+        // Send using the key format that matches what the client expects
+        // Key = inventory type ID (same as what interfaceInvInit registered)
+        player.sendItemContainer(bankInv.type.id, bankInv.objs)
     }
 
     /** Find slot of an item in bank by ID (amount > 0). Returns -1 if not found. */
@@ -145,10 +150,12 @@ object BankService {
 
         // Remove from inventory
         val removed = player.invDel(player.inventory, invItem.id, actual)
+        logger.info { "Bank deposit: invDel result=${removed.success}, item=${invItem.id}, amount=$actual" }
         if (!removed.success) return
 
         // Add to bank (uncert converts noted -> unnoted, bank is STACK mode so it auto-stacks)
         val added = player.invAdd(bankInv, invItem.id, actual, uncert = true)
+        logger.info { "Bank deposit: invAdd result=${added.success}, bankOccupied=${bankInv.occupiedSpace()}, modifiedSlots=${bankInv.modifiedSlots}" }
 
         if (!added.success) {
             // Rollback: give items back
@@ -165,6 +172,9 @@ object BankService {
             sizes[0] += (totalNow - totalBefore)
             player.setTabSizes(sizes)
         }
+
+        // Check if bank inv is in transmittedInvs
+        logger.info { "Bank deposit: transmittedInvs=${player.transmittedInvs}, addQueue=${player.transmittedInvAddQueue}, bankTypeId=${bankInv.type.id}" }
 
         refreshBank(player)
     }
