@@ -11,6 +11,8 @@ class ReturnableEventListener<E : Event,  K>(val type: KClass<E>)  {
 
     var otherwiseAction: E.() -> K? = { null }
 
+    var priority: Int = 500
+
     var stack : Array<StackTraceElement> = emptyArray()
 
     fun where(condition: E.() -> Boolean): ReturnableEventListener<E, K> {
@@ -25,6 +27,11 @@ class ReturnableEventListener<E : Event,  K>(val type: KClass<E>)  {
 
     fun otherwise(plugin: E.() -> K?): ReturnableEventListener<E, K> {
         this.otherwiseAction = plugin
+        return this
+    }
+
+    fun priority(p: Int): ReturnableEventListener<E, K> {
+        this.priority = p
         return this
     }
 

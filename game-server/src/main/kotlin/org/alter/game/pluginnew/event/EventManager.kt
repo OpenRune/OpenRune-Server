@@ -11,7 +11,18 @@ import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 import java.util.function.Predicate
 
-object EventManager {
+interface IEventManager {
+    fun <E : Event> post(event: E)
+    fun <E : Event> postWithResult(event: E): Boolean
+    fun <E : Event> postAndWait(event: E)
+    fun <E : Event> postAndCall(event: E, completion: Runnable)
+    fun <E : Event, K> postAndReturn(event: E): List<K>
+    fun <E : Event> listen(event: Class<out Event>, listener: EventListener<E>)
+    fun <E : Event, K> listenReturnable(event: Class<out Event>, listener: ReturnableEventListener<E, K>)
+    fun <E : Event> addFilter(clazz: Class<E>, filter: Predicate<E>)
+}
+
+object EventManager : IEventManager {
 
     val DEBUG_EVENTS = false
     val DT_FORMAT = DateTimeFormat.forPattern("MM/dd/yyyy HH:mm:ss")
@@ -27,7 +38,7 @@ object EventManager {
         "EventContext"
     )
 
-    fun <E : Event> post(event: E) {
+    override fun <E : Event> post(event: E) {
         debugLog(event)
         CoroutineScope(context).launch {
             if (getFilters<E>(event.javaClass).all { it.test(event) }) {
@@ -36,7 +47,7 @@ object EventManager {
         }
     }
 
-    fun <E : Event> postWithResult(event: E): Boolean {
+    override fun <E : Event> postWithResult(event: E): Boolean {
         debugLog(event)
         var handled = false
 
@@ -48,15 +59,15 @@ object EventManager {
         return handled
     }
 
-    fun <E : Event> postAndWait(event: E) = runBlocking {
+    override fun <E : Event> postAndWait(event: E) = runBlocking {
         processListeners(event, listeners[event.javaClass])
     }
 
-    fun <E : Event> postAndCall(event: E, completion: Runnable) {
+    override fun <E : Event> postAndCall(event: E, completion: Runnable) {
         CoroutineScope(context).launch { postAndWait(event) }.invokeOnCompletion { completion.run() }
     }
 
-    fun <E : Event, K> postAndReturn(event: E): List<K> {
+    override fun <E : Event, K> postAndReturn(event: E): List<K> {
         post(event)
         val returns = mutableListOf<K>()
 
@@ -77,11 +88,11 @@ object EventManager {
         return returns
     }
 
-    fun <E : Event> addFilter(clazz: Class<E>, filter: Predicate<E>) {
+    override fun <E : Event> addFilter(clazz: Class<E>, filter: Predicate<E>) {
         getFilters<E>(clazz).addLast(filter)
     }
 
-    fun <E : Event> listen(event: Class<out Event>, listener: EventListener<E>) {
+    override fun <E : Event> listen(event: Class<out Event>, listener: EventListener<E>) {
         listeners.compute(event) { _, old -> (old ?: emptyList()) + listener }
 
         CoroutineScope(context).launch {
@@ -102,44 +113,57 @@ object EventManager {
         }
     }
 
+    @Suppress("UNCHECKED_CAST")
+    override fun <E : Event, K> listenReturnable(event: Class<out Event>, listener: ReturnableEventListener<E, K>) {
+        returnableListeners.compute(event) { _, old ->
+            (old ?: emptyList()) + (listener as ReturnableEventListener<out Event, Any>)
+        }
+    }
+
     private fun debugLog(event: Event) {
         if (DEBUG_EVENTS && event::class != WorldTickEvent::class && event is PlayerEvent) {
             println("[${DT_FORMAT.print(DateTime.now())}] [${event.player.username}] ${event::class.simpleName}")
         }
     }
 
+    @Suppress("UNCHECKED_CAST")
     private suspend fun <E : Event> processListeners(
         event: E,
         list: List<out Any>?,
         markHandled: (Boolean) -> Unit = {}
     ) {
-        list?.map { listener ->
-            CoroutineScope(context).launch {
-                try {
-                    when (listener) {
-                        is EventListener<*> -> {
-                            @Suppress("UNCHECKED_CAST")
-                            val l = listener as EventListener<E>
-                            if (getFilters<E>(event.javaClass).all { it.test(event) }) {
-                                if (l.condition(event)) { l.action(event); markHandled(true) }
-                                else l.otherwiseAction(event)
-                            }
-                        }
+        if (list.isNullOrEmpty()) return
 
-                        is ReturnableEventListener<*, *> -> {
-                            @Suppress("UNCHECKED_CAST")
-                            val l = listener as ReturnableEventListener<E, Any>
-                            if (getFilters<E>(event.javaClass).all { it.test(event) }) {
-                                if (l.condition(event)) { l.action(event); markHandled(true) }
-                                else l.otherwiseAction(event)
-                            }
+        val sorted = list.sortedBy {
+            when (it) {
+                is EventListener<*> -> it.priority
+                is ReturnableEventListener<*, *> -> it.priority
+                else -> 500
+            }
+        }
+
+        for (listener in sorted) {
+            try {
+                when (listener) {
+                    is EventListener<*> -> {
+                        val l = listener as EventListener<E>
+                        if (getFilters<E>(event.javaClass).all { it.test(event) }) {
+                            if (l.condition(event)) { l.action(event); markHandled(true) }
+                            else l.otherwiseAction(event)
                         }
                     }
-                } catch (ex: Exception) {
-                    ex.printStackTrace()
+                    is ReturnableEventListener<*, *> -> {
+                        val l = listener as ReturnableEventListener<E, Any>
+                        if (getFilters<E>(event.javaClass).all { it.test(event) }) {
+                            if (l.condition(event)) { l.action(event); markHandled(true) }
+                            else l.otherwiseAction(event)
+                        }
+                    }
                 }
+            } catch (ex: Exception) {
+                ex.printStackTrace()
             }
-        }?.joinAll()
+        }
     }
 
     private fun <E : Event> getChannel(clazz: Class<out Event>): MutableSharedFlow<E> {

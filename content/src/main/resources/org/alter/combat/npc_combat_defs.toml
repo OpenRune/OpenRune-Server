@@ -1,0 +1,56 @@
+# NPC Combat Definitions
+# Bulk definitions for common NPCs loaded at startup.
+# Boss/custom NPCs override via DSL in their own plugins.
+#
+# Fields not listed here fall back to NpcCombatDef.DEFAULT.
+# RSCM names verified against gamevals-binary/gamevals.dat.
+
+[npcs.man]
+hitpoints = 7
+attack = 1
+strength = 1
+defence = 1
+attack_speed = 4
+combat_style = "CRUSH"
+
+[npcs.woman]
+hitpoints = 7
+attack = 1
+strength = 1
+defence = 1
+attack_speed = 4
+combat_style = "CRUSH"
+
+[npcs.goblin]
+hitpoints = 5
+attack = 1
+strength = 1
+defence = 1
+attack_speed = 4
+combat_style = "CRUSH"
+aggressive_radius = 3
+
+[npcs.cow]
+hitpoints = 8
+attack = 1
+strength = 1
+defence = 1
+attack_speed = 4
+combat_style = "CRUSH"
+
+[npcs.chicken]
+hitpoints = 3
+attack = 1
+strength = 1
+defence = 1
+attack_speed = 4
+combat_style = "CRUSH"
+
+[npcs.giantrat]
+hitpoints = 5
+attack = 2
+strength = 3
+defence = 2
+attack_speed = 4
+combat_style = "CRUSH"
+aggressive_radius = 1
