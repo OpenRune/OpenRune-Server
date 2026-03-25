@@ -13,6 +13,8 @@ class EventListener<E : Event>(val type: KClass<E>) {
 
     var singleUse : Boolean = false
 
+    var priority: Int = 500
+
     var stack : Array<StackTraceElement> = emptyArray()
 
     fun where(condition: E.() -> Boolean): EventListener<E> {
@@ -30,6 +32,10 @@ class EventListener<E : Event>(val type: KClass<E>) {
         return this
     }
 
+    fun priority(p: Int): EventListener<E> {
+        this.priority = p
+        return this
+    }
 
     fun submit() : EventListener<E> {
         val oldAction = action
