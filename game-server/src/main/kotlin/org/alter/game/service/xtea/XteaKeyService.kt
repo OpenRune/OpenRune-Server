@@ -142,7 +142,7 @@ class XteaKeyService : Service, XteaProvider {
      * will have their xtea keys provided to the client — everything else
      * shows as blank/ocean on the world map.
      */
-    var allowedRegions: IntRange? = 4137..6177
+    var allowedRegions: IntRange? = null // Set to e.g. 4137..6177 to filter regions
 
     companion object {
         private val logger = KotlinLogging.logger {}

@@ -50,7 +50,7 @@ class DefinitionSet {
      * Region whitelist. If non-empty, only regions in this range will load.
      * Set to null to load all regions (default OSRS behavior).
      */
-    var allowedRegions: IntRange? = 4137..6177
+    var allowedRegions: IntRange? = null // Set to e.g. 4137..6177 to filter regions
 
     fun createRegion(
         world: World,
