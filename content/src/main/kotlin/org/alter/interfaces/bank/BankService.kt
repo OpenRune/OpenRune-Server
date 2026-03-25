@@ -3,7 +3,7 @@ package org.alter.interfaces.bank
 import org.alter.api.ext.message
 import org.alter.game.info.PlayerInfo
 import io.github.oshai.kotlinlogging.KotlinLogging
-import org.alter.api.ext.sendItemContainer
+import org.alter.game.model.entity.UpdateInventory
 import org.alter.game.model.ExamineEntityType
 import org.alter.game.model.entity.Player
 import org.alter.game.model.inv.Inventory
@@ -30,9 +30,9 @@ object BankService {
     /** Force send a full bank inventory update to the client. */
     private fun refreshBank(player: Player) {
         val bankInv = player.getBankInv()
-        // Send using the key format that matches what the client expects
-        // Key = inventory type ID (same as what interfaceInvInit registered)
-        player.sendItemContainer(bankInv.type.id, bankInv.objs)
+        // Use the same method that processQueuedTransmissions uses — this
+        // sends UpdateInvFull with key=-(1234+typeId) which the client recognises.
+        UpdateInventory.updateInvFull(player, bankInv)
     }
 
     /** Find slot of an item in bank by ID (amount > 0). Returns -1 if not found. */
