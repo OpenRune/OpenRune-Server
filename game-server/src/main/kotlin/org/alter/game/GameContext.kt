@@ -54,5 +54,4 @@ data class GameContext(
     val gItemPublicDelay: Int,
     val gItemDespawnDelay: Int,
     val preloadMaps: Boolean,
-    val useNewCombatSystem: Boolean,
 )

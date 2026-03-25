@@ -119,7 +119,6 @@ class Server {
                     ),
                 gItemDespawnDelay = gameProperties.getOrDefault("gitem-despawn-delay", GroundItem.DEFAULT_DESPAWN_CYCLES),
                 preloadMaps = gameProperties.getOrDefault("preload-maps", false),
-                useNewCombatSystem = gameProperties.getOrDefault("combat.useNewSystem", false),
             )
 
         val devContext =

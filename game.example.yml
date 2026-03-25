@@ -47,9 +47,3 @@ services:
 
 #  - class: org.alter.plugins.service.worldlist.WorldListService
 #    port: 4842
-
-# Combat system selection.
-# Set to true to activate the new CombatSystem (Layer 3+).
-# Leave false (default) to keep the legacy CombatPlugin active.
-# Only one system processes combat at any time — the other is a no-op.
-combat.useNewSystem: false

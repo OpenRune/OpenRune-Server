@@ -253,8 +253,7 @@ class MagicCombatFormulaPlugin {
             }
         }
         // Stub: CASTING_SPELL not accessible from this module.
-        // Returns 1 as a safe minimum; the legacy adapter (LegacyFormulaAdapter) still
-        // handles magic max hit via MagicCombatFormula until this plugin takes over fully.
+        // Returns 1 as a safe minimum until this plugin takes over fully.
         return 1
     }
 

@@ -17,10 +17,6 @@ import org.alter.game.pluginnew.event.impl.WorldTickEvent
 /**
  * Wires [CombatSystem.processTick] into the world tick loop and registers
  * the new melee/ranged/magic strategy implementations.
- *
- * Only runs when `combat.useNewSystem: true` is set in game.yml.
- * When false, the legacy CombatPlugin handles all combat and this
- * bootstrap is a no-op, preventing double-processing.
  */
 class CombatSystemBootstrap : PluginEvent() {
 
@@ -80,9 +76,7 @@ class CombatSystemBootstrap : PluginEvent() {
         }
 
         onEvent<WorldTickEvent> {
-            if (world.gameContext.useNewCombatSystem) {
-                combatSystem.processTick()
-            }
+            combatSystem.processTick()
         }
     }
 }
