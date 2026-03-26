@@ -47,6 +47,13 @@ class CombatSystem(private val eventManager: IEventManager) {
 
     companion object {
         /**
+         * Global accessor for the singleton [CombatSystem] instance.
+         * Initialised during server bootstrap before any AI states run.
+         */
+        lateinit var instance: CombatSystem
+            internal set
+
+        /**
          * Stateless melee strategy used as a safe default before a real strategy
          * resolver is registered. Delegates all resolution back to the [CombatStrategy]
          * interface contract (range=1, speed=4, animation=unarmed punch, delay=1).
