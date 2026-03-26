@@ -213,10 +213,8 @@ class MagicCombatFormulaPlugin {
      * Retrieves the base max hit for the spell being cast.
      *
      * Returns the trident-formula hit if the attacker has a trident equipped.
-     * For book spells, [CombatAttributes.CASTING_SPELL] is now shared via game-api,
-     * but reading the spell's declared maxHit still requires a CombatSpell reference
-     * which lives in game-plugins. Non-trident spells fall back to 1 until Task 6
-     * wires up the spell max hit lookup.
+     * For standard book spells, reads maxHit from [CombatAttributes.CASTING_SPELL] via
+     * reflection (the CombatSpell enum lives in game-plugins and cannot be imported here).
      */
     private fun getSpellBaseHit(attacker: Pawn): Int {
         if (attacker is Player) {
@@ -238,8 +236,25 @@ class MagicCombatFormulaPlugin {
                 return (Math.floor(magic / 3.0) - 2.0).toInt().coerceAtLeast(1)
             }
         }
-        // Non-trident spells: reading spell.maxHit requires CombatSpell (in game-plugins).
-        // Returns 1 as a safe minimum until Task 6 wires up the full spell max hit lookup.
+        // Standard spells — read maxHit from CASTING_SPELL via reflection
+        if (attacker is Player) {
+            val spell = attacker.attr[CombatAttributes.CASTING_SPELL]
+            if (spell != null) {
+                return try {
+                    val method = spell.javaClass.getMethod("getMaxHit")
+                    (method.invoke(spell) as? Number)?.toInt() ?: 1
+                } catch (_: Exception) {
+                    try {
+                        val field = spell.javaClass.getDeclaredField("maxHit")
+                        field.isAccessible = true
+                        (field.get(spell) as? Number)?.toInt() ?: 1
+                    } catch (_: Exception) {
+                        1
+                    }
+                }
+            }
+        }
+        // Fallback for NPC attacks or missing spell data
         return 1
     }
 
