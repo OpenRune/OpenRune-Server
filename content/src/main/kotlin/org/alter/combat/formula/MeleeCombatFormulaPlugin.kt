@@ -1,6 +1,7 @@
 package org.alter.combat.formula
 
 import org.alter.api.BonusSlot
+import org.alter.api.CombatAttributes
 import org.alter.api.EquipmentType
 import org.alter.api.NpcSpecies
 import org.alter.api.PrayerIcon
@@ -14,7 +15,6 @@ import org.alter.api.ext.hasEquipped
 import org.alter.api.ext.hasPrayerIcon
 import org.alter.api.ext.hasWeaponType
 import org.alter.api.ext.isSpecies
-import org.alter.game.model.attr.AttributeKey
 import org.alter.game.model.combat.AttackStyle
 import org.alter.game.model.combat.CombatStyle
 import org.alter.game.model.combat.isMelee
@@ -34,15 +34,9 @@ import org.alter.game.pluginnew.event.impl.MaxHitRollEvent
 class MeleeCombatFormulaPlugin {
 
     companion object {
-        // TODO: These AttributeKey instances are NOT the same objects as Combat.DRAGON_BATTLEAXE_BONUS,
-        //  Combat.DAMAGE_DEAL_MULTIPLIER, Combat.DAMAGE_TAKE_MULTIPLIER in game-plugins.
-        //  Until those keys are moved to a shared module (game-server or game-api), attribute lookups
-        //  using these keys will return null and fall back to defaults (0.0 / 1.0).
-        //  This is functionally correct for most scenarios but means dragon battleaxe spec and
-        //  custom damage multipliers won't apply until the keys are unified.
-        private val DRAGON_BATTLEAXE_BONUS = AttributeKey<Double>()
-        private val DAMAGE_DEAL_MULTIPLIER = AttributeKey<Double>()
-        private val DAMAGE_TAKE_MULTIPLIER = AttributeKey<Double>()
+        // Dragon battleaxe special attack bonus key — lives only in game-plugins/Combat, so we keep
+        // a local stub here. Dragon battleaxe spec won't apply until Task 6 or a dedicated extension.
+        private val DRAGON_BATTLEAXE_BONUS = org.alter.game.model.attr.AttributeKey<Double>()
 
         private val MELEE_VOID = arrayOf(
             "items.game_pest_melee_helm",
@@ -547,9 +541,9 @@ class MeleeCombatFormulaPlugin {
         return base * multiplier
     }
 
-    private fun getDamageDealMultiplier(pawn: Pawn): Double = pawn.attr[DAMAGE_DEAL_MULTIPLIER] ?: 1.0
+    private fun getDamageDealMultiplier(pawn: Pawn): Double = pawn.attr[CombatAttributes.DAMAGE_DEAL_MULTIPLIER] ?: 1.0
 
-    private fun getDamageTakeMultiplier(pawn: Pawn): Double = pawn.attr[DAMAGE_TAKE_MULTIPLIER] ?: 1.0
+    private fun getDamageTakeMultiplier(pawn: Pawn): Double = pawn.attr[CombatAttributes.DAMAGE_TAKE_MULTIPLIER] ?: 1.0
 
     // ========================================================================
     // NPC species checks

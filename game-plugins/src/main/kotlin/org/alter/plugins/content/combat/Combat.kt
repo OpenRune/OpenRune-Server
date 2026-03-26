@@ -1,6 +1,7 @@
 package org.alter.plugins.content.combat
 
 import org.alter.api.*
+import org.alter.api.CombatAttributes
 import org.alter.api.ext.*
 import org.alter.game.model.Tile
 import org.alter.game.model.attr.AttributeKey
@@ -33,9 +34,10 @@ import java.lang.ref.WeakReference
  * @author Tom <rspsmods@gmail.com>
  */
 object Combat {
-    val CASTING_SPELL = AttributeKey<CombatSpell>()
-    val DAMAGE_DEAL_MULTIPLIER = AttributeKey<Double>()
-    val DAMAGE_TAKE_MULTIPLIER = AttributeKey<Double>()
+    @Suppress("UNCHECKED_CAST")
+    val CASTING_SPELL = CombatAttributes.CASTING_SPELL as AttributeKey<CombatSpell>
+    val DAMAGE_DEAL_MULTIPLIER = CombatAttributes.DAMAGE_DEAL_MULTIPLIER
+    val DAMAGE_TAKE_MULTIPLIER = CombatAttributes.DAMAGE_TAKE_MULTIPLIER
     val BOLT_ENCHANTMENT_EFFECT = AttributeKey<Boolean>()
     val ALWAYS_MAX_HIT = AttributeKey<Boolean>()
     val DRAGON_BATTLEAXE_BONUS = AttributeKey<Double>()

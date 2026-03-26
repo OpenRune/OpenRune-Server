@@ -1,6 +1,7 @@
 package org.alter.combat.formula
 
 import org.alter.api.BonusSlot
+import org.alter.api.CombatAttributes
 import org.alter.api.EquipmentType
 import org.alter.api.NpcSpecies
 import org.alter.api.PrayerIcon
@@ -16,7 +17,6 @@ import org.alter.api.ext.hasPrayerIcon
 import org.alter.api.ext.hasSpellbook
 import org.alter.api.ext.hasWeaponType
 import org.alter.api.ext.isSpecies
-import org.alter.game.model.attr.AttributeKey
 import org.alter.game.model.combat.AttackStyle
 import org.alter.game.model.combat.CombatStyle
 import org.alter.game.model.combat.isMagic
@@ -42,16 +42,6 @@ import org.alter.game.pluginnew.event.impl.MaxHitRollEvent
 class MagicCombatFormulaPlugin {
 
     companion object {
-        // TODO: These AttributeKey instances are NOT the same objects as Combat.CASTING_SPELL,
-        //  Combat.DAMAGE_DEAL_MULTIPLIER, and Combat.DAMAGE_TAKE_MULTIPLIER in game-plugins.
-        //  Until those keys are moved to a shared module (game-server or game-api), attribute lookups
-        //  using these keys will return null and fall back to defaults (null spell / 1.0 multiplier).
-        //  CASTING_SPELL null means max hit falls back to 1; spell-specific bonuses (bolt spells,
-        //  fire spells, Tome of Fire) are stubbed until the key is unified.
-        private val CASTING_SPELL = AttributeKey<Any>()
-        private val DAMAGE_DEAL_MULTIPLIER = AttributeKey<Double>()
-        private val DAMAGE_TAKE_MULTIPLIER = AttributeKey<Double>()
-
         private val MAGE_VOID = arrayOf(
             "items.game_pest_mage_helm",
             "items.pest_void_knight_top",
@@ -202,9 +192,6 @@ class MagicCombatFormulaPlugin {
     // ========================================================================
 
     private fun calculateMaxHit(attacker: Pawn, target: Pawn): Int {
-        // TODO: CASTING_SPELL key is not shared across modules yet — spell base max hit
-        //  will always fall back to 1 until Combat.CASTING_SPELL is moved to game-api or
-        //  game-server and unified with this plugin's local key. See companion TODO above.
         val spellBaseHit = getSpellBaseHit(attacker)
 
         var hit = spellBaseHit.toDouble()
@@ -225,12 +212,11 @@ class MagicCombatFormulaPlugin {
     /**
      * Retrieves the base max hit for the spell being cast.
      *
-     * Returns the trident-formula hit if the attacker has a trident equipped,
-     * otherwise falls back to 1 (minimum) because [CASTING_SPELL] is a local stub
-     * key that will never match Combat.CASTING_SPELL in game-plugins.
-     *
-     * TODO: Unify Combat.CASTING_SPELL into game-api so the spell's declared maxHit
-     *  can be read here. Until then, non-trident spells use base hit 1.
+     * Returns the trident-formula hit if the attacker has a trident equipped.
+     * For book spells, [CombatAttributes.CASTING_SPELL] is now shared via game-api,
+     * but reading the spell's declared maxHit still requires a CombatSpell reference
+     * which lives in game-plugins. Non-trident spells fall back to 1 until Task 6
+     * wires up the spell max hit lookup.
      */
     private fun getSpellBaseHit(attacker: Pawn): Int {
         if (attacker is Player) {
@@ -252,8 +238,8 @@ class MagicCombatFormulaPlugin {
                 return (Math.floor(magic / 3.0) - 2.0).toInt().coerceAtLeast(1)
             }
         }
-        // Stub: CASTING_SPELL not accessible from this module.
-        // Returns 1 as a safe minimum until this plugin takes over fully.
+        // Non-trident spells: reading spell.maxHit requires CombatSpell (in game-plugins).
+        // Returns 1 as a safe minimum until Task 6 wires up the full spell max hit lookup.
         return 1
     }
 
@@ -299,7 +285,7 @@ class MagicCombatFormulaPlugin {
         hit = Math.floor(hit)
 
         // TODO: Tome of Fire bonus — disabled until charge system is implemented.
-        //  Fire spells check requires CASTING_SPELL key unification.
+        //  Fire spells check requires CombatSpell reference (Task 6).
         //  When implemented: if (player.hasEquipped(EquipmentType.SHIELD, "items.tome_of_fire") && spell in FIRE_SPELLS && charges > 0) { hit *= 1.5 }
 
         // Protection prayer: 100% reduction in PvM, 40% reduction in PvP
@@ -502,9 +488,9 @@ class MagicCombatFormulaPlugin {
     // Damage multipliers
     // ========================================================================
 
-    private fun getDamageDealMultiplier(pawn: Pawn): Double = pawn.attr[DAMAGE_DEAL_MULTIPLIER] ?: 1.0
+    private fun getDamageDealMultiplier(pawn: Pawn): Double = pawn.attr[CombatAttributes.DAMAGE_DEAL_MULTIPLIER] ?: 1.0
 
-    private fun getDamageTakeMultiplier(pawn: Pawn): Double = pawn.attr[DAMAGE_TAKE_MULTIPLIER] ?: 1.0
+    private fun getDamageTakeMultiplier(pawn: Pawn): Double = pawn.attr[CombatAttributes.DAMAGE_TAKE_MULTIPLIER] ?: 1.0
 
     // ========================================================================
     // Slayer task bonus
