@@ -29,6 +29,7 @@ defence = 1
 attack_speed = 4
 combat_style = "CRUSH"
 aggressive_radius = 3
+aggressive_timer = 1000
 
 [npcs.cow]
 hitpoints = 8
@@ -53,4 +54,3 @@ strength = 3
 defence = 2
 attack_speed = 4
 combat_style = "CRUSH"
-aggressive_radius = 1
