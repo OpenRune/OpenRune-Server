@@ -1,22 +1,16 @@
 package org.alter.combat.strategy
 
+import org.alter.api.CombatAttributes
+import org.alter.combat.spell.CombatSpell
 import org.alter.game.combat.CombatStrategy
 import org.alter.game.model.entity.Npc
 import org.alter.game.model.entity.Pawn
+import org.alter.game.model.entity.Player
 
 /**
  * New-engine magic combat strategy implementing [CombatStrategy].
  *
  * Ported from [org.alter.plugins.content.combat.strategy.MagicCombatStrategy].
- *
- * Animation resolution for players is stubbed because the casting spell is stored
- * in an AttributeKey defined in game-plugins (Combat.CASTING_SPELL), which is not
- * accessible from the content module. The cast animation is spell-specific and will
- * require moving that attribute key to a shared module (game-server or game-api)
- * before full resolution is possible.
- *
- * TODO: Replace getAttackAnimation stub once Combat.CASTING_SPELL attribute key is
- *       moved to a shared module (game-server or game-api).
  */
 class NewMagicCombatStrategy : CombatStrategy {
 
@@ -38,12 +32,11 @@ class NewMagicCombatStrategy : CombatStrategy {
     }
 
     override fun getAttackAnimation(attacker: Pawn): String {
-        if (attacker is Npc) {
-            return attacker.combatDef.attackAnimation
+        if (attacker is Player) {
+            val spell = attacker.attr[CombatAttributes.CASTING_SPELL] as? CombatSpell
+            if (spell != null) return spell.castAnimation
         }
-        // TODO: Read the active spell's castAnimation from attacker.attr[Combat.CASTING_SPELL]
-        //       once Combat.CASTING_SPELL is moved to a shared module. For now, return the
-        //       generic magic cast animation as a safe fallback.
+        if (attacker is Npc) return attacker.combatDef.attackAnimation
         return "sequences.human_cast_magic"
     }
 
