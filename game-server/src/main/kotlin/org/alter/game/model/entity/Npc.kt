@@ -10,6 +10,7 @@ import org.alter.game.info.NpcInfo
 import org.alter.game.model.EntityType
 import org.alter.game.model.Tile
 import org.alter.game.model.World
+import org.alter.game.combat.ai.AiStateMachine
 import org.alter.game.model.combat.AttackStyle
 import org.alter.game.model.combat.CombatClass
 import org.alter.game.model.combat.CombatStyle
@@ -106,6 +107,12 @@ class Npc private constructor(val id: Int, world: World, val spawnTile: Tile) : 
      * Check if the npc will be aggressive towards the parameter player.
      */
     var aggroCheck: ((Npc, Player) -> Boolean)? = null
+
+    /**
+     * The AI state machine driving this npc's combat behaviour.
+     * Null for npcs that use legacy or custom combat logic.
+     */
+    var aiStateMachine: AiStateMachine? = null
 
     /**
      * Gets the [NpcType] corresponding to our [id].
