@@ -1,5 +1,6 @@
 package org.alter.combat
 
+import org.alter.api.CombatAttributes
 import org.alter.api.WeaponType
 import org.alter.api.ext.hasWeaponType
 import org.alter.combat.strategy.NewMagicCombatStrategy
@@ -37,10 +38,6 @@ class CombatSystemBootstrap : PluginEvent() {
         val magicStrategy = NewMagicCombatStrategy()
 
         // Wire strategy resolver: NPC uses its combatClass field; Player uses weapon type.
-        // NOTE: Player magic detection (CASTING_SPELL attr) requires a key defined in
-        // game-plugins which is inaccessible here. Until that key is moved to a shared
-        // module, players with an active spell will fall through to the melee default.
-        // TODO: Add magic detection once Combat.CASTING_SPELL is moved to game-server/game-api.
         combatSystem.strategyResolver = { attacker ->
             when (attacker) {
                 is Npc -> when (attacker.combatClass) {
@@ -49,35 +46,20 @@ class CombatSystemBootstrap : PluginEvent() {
                     else -> meleeStrategy
                 }
                 is Player -> when {
-                    attacker.hasWeaponType(
-                        WeaponType.BOW,
-                        WeaponType.CROSSBOW,
-                        WeaponType.THROWN,
-                        WeaponType.CHINCHOMPA,
-                    ) -> rangedStrategy
+                    attacker.attr[CombatAttributes.CASTING_SPELL] != null -> magicStrategy
+                    attacker.hasWeaponType(WeaponType.BOW, WeaponType.CROSSBOW, WeaponType.THROWN, WeaponType.CHINCHOMPA) -> rangedStrategy
+                    attacker.hasWeaponType(WeaponType.TRIDENT) -> magicStrategy
                     else -> meleeStrategy
                 }
                 else -> meleeStrategy
             }
         }
 
-        // Wire combat-style resolver: NPC uses its combatStyle field; Player uses weapon type.
-        // Full weapon-style-to-CombatStyle mapping lives in CombatConfigs (game-plugins).
-        // Here we cover the most common cases; edge cases fall back to CRUSH (unarmed).
-        // TODO: Port full CombatConfigs.getCombatStyle mapping once game-plugins dependency
-        //       is either removed or the content module is allowed to depend on it.
+        // Wire combat-style resolver: NPC uses its combatStyle field; Player uses AttackStyleResolver.
         combatSystem.combatStyleResolver = { attacker ->
             when (attacker) {
                 is Npc -> attacker.combatStyle
-                is Player -> when {
-                    attacker.hasWeaponType(
-                        WeaponType.BOW,
-                        WeaponType.CROSSBOW,
-                        WeaponType.THROWN,
-                        WeaponType.CHINCHOMPA,
-                    ) -> CombatStyle.RANGED
-                    else -> CombatStyle.CRUSH
-                }
+                is Player -> AttackStyleResolver.getCombatStyle(attacker)
                 else -> CombatStyle.CRUSH
             }
         }
