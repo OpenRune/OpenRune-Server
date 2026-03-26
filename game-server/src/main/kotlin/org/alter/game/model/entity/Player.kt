@@ -661,6 +661,13 @@ open class Player(world: World) : Pawn(world) {
         const val TILE_VIEW_DISTANCE = 32
     }
 
+    /**
+     * Tracks the world cycle on which the player most recently entered each
+     * region (keyed by region ID). Used by NPC aggression logic to determine
+     * whether a player has been in a region long enough to suppress re-aggro.
+     */
+    val regionEntryTicks: MutableMap<Int, Long> = mutableMapOf()
+
     var social = Social()
 }
 

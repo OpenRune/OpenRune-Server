@@ -2,6 +2,7 @@ package org.alter.game.combat
 
 import org.alter.game.model.EntityType
 import org.alter.game.model.World
+import org.alter.game.model.attr.AttributeMap
 import org.alter.game.model.entity.Pawn
 import sun.misc.Unsafe
 import java.lang.reflect.Field
@@ -23,9 +24,15 @@ abstract class TestPawn private constructor(world: World) : Pawn(world) {
         /**
          * Creates a TestPawn instance without invoking any constructor,
          * avoiding the non-null World parameter check.
+         * Initialises the `attr` field via reflection so combat attribute
+         * operations work correctly.
          */
         fun create(): Pawn {
             val instance = unsafe.allocateInstance(StubPawn::class.java) as Pawn
+            // Unsafe skips field initialisers — manually init attr so CombatSystem can use it
+            val attrField = Pawn::class.java.getDeclaredField("attr")
+            attrField.isAccessible = true
+            attrField.set(instance, AttributeMap())
             return instance
         }
     }

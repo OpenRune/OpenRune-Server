@@ -81,6 +81,8 @@ object NpcCombatDefLoader {
             defence          = int("defence")           ?: NpcCombatDef.DEFAULT.defence,
             attackSpeed      = int("attack_speed")      ?: NpcCombatDef.DEFAULT.attackSpeed,
             aggressiveRadius = int("aggressive_radius") ?: NpcCombatDef.DEFAULT.aggressiveRadius,
+            leashDistance    = (fields["leash_distance"] as? Long)?.toInt() ?: NpcCombatDef.DEFAULT_LEASH_DISTANCE,
+            ignoreSingleCombat = (fields["ignore_single_combat"] as? Boolean) ?: false,
         )
     }
 }
