@@ -6,8 +6,12 @@ import org.alter.combat.strategy.NewMagicCombatStrategy
 import org.alter.combat.strategy.NewMeleeCombatStrategy
 import org.alter.combat.strategy.NewRangedCombatStrategy
 import org.alter.game.combat.CombatSystem
+import org.alter.game.combat.NpcAiSystem
+import org.alter.game.combat.ai.AiStateMachine
+import org.alter.game.combat.ai.IdleState
 import org.alter.game.model.combat.CombatClass
 import org.alter.game.model.combat.CombatStyle
+import org.alter.game.model.combat.NpcCombatDef
 import org.alter.game.model.entity.Npc
 import org.alter.game.model.entity.Player
 import org.alter.game.pluginnew.PluginEvent
@@ -24,6 +28,9 @@ class CombatSystemBootstrap : PluginEvent() {
         NpcCombatDefLoader.load()
 
         val combatSystem = CombatSystem(EventManager)
+        CombatSystem.instance = combatSystem
+
+        val aiSystem = NpcAiSystem(world)
 
         val meleeStrategy = NewMeleeCombatStrategy()
         val rangedStrategy = NewRangedCombatStrategy()
@@ -77,6 +84,20 @@ class CombatSystemBootstrap : PluginEvent() {
 
         onEvent<WorldTickEvent> {
             combatSystem.processTick()
+            aiSystem.processTick()
+        }
+
+        // Assign an AiStateMachine to every NPC that has combat stats on spawn.
+        // The legacy globalNpcSpawn hook fires after setNpcDefaults (which sets combatDef),
+        // so combatDef is guaranteed to be initialised when this lambda runs.
+        world.plugins.bindGlobalNpcSpawn {
+            val npc = ctx as Npc
+            val combatDef = npc.combatDef
+            if (combatDef.hitpoints > 0 && combatDef != NpcCombatDef.DEFAULT) {
+                val machine = AiStateMachine(IdleState())
+                npc.aiStateMachine = machine
+                machine.start(npc)
+            }
         }
     }
 }
