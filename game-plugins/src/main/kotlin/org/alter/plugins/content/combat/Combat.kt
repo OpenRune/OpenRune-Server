@@ -22,7 +22,6 @@ import org.alter.plugins.content.combat.strategy.CombatStrategy
 import org.alter.plugins.content.combat.strategy.MagicCombatStrategy
 import org.alter.plugins.content.combat.strategy.MeleeCombatStrategy
 import org.alter.plugins.content.combat.strategy.RangedCombatStrategy
-import org.alter.combat.spell.CombatSpell
 import org.alter.plugins.content.interfaces.attack.AttackTab
 import org.alter.game.model.move.MovementQueue.StepType
 import org.alter.game.model.move.walkRoute
@@ -34,8 +33,7 @@ import java.lang.ref.WeakReference
  * @author Tom <rspsmods@gmail.com>
  */
 object Combat {
-    @Suppress("UNCHECKED_CAST")
-    val CASTING_SPELL = CombatAttributes.CASTING_SPELL as AttributeKey<CombatSpell>
+    val CASTING_SPELL = CombatAttributes.CASTING_SPELL
     val DAMAGE_DEAL_MULTIPLIER = CombatAttributes.DAMAGE_DEAL_MULTIPLIER
     val DAMAGE_TAKE_MULTIPLIER = CombatAttributes.DAMAGE_TAKE_MULTIPLIER
     val BOLT_ENCHANTMENT_EFFECT = AttributeKey<Boolean>()

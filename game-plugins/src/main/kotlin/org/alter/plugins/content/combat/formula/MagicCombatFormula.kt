@@ -8,7 +8,6 @@ import org.alter.game.model.entity.Pawn
 import org.alter.game.model.entity.Player
 import org.alter.plugins.content.combat.Combat
 import org.alter.plugins.content.combat.CombatConfigs
-import org.alter.combat.spell.CombatSpell
 import org.alter.plugins.content.mechanics.prayer.Prayer
 import org.alter.plugins.content.mechanics.prayer.Prayers
 
@@ -21,10 +20,18 @@ object MagicCombatFormula : CombatFormula {
 
     private val MAGE_ELITE_VOID = arrayOf("items.game_pest_mage_helm", "items.elite_void_knight_top", "items.elite_void_knight_robes", "items.pest_void_knight_gloves")
 
-    private val BOLT_SPELLS = enumSetOf(CombatSpell.WIND_BOLT, CombatSpell.WATER_BOLT, CombatSpell.EARTH_BOLT, CombatSpell.FIRE_BOLT)
+    // Spell IDs for bolt spells (WIND_BOLT=3281, WATER_BOLT=3285, EARTH_BOLT=3288, FIRE_BOLT=3291)
+    private val BOLT_SPELL_IDS = setOf(3281, 3285, 3288, 3291)
 
-    private val FIRE_SPELLS =
-        enumSetOf(CombatSpell.FIRE_STRIKE, CombatSpell.FIRE_BOLT, CombatSpell.FIRE_BLAST, CombatSpell.FIRE_WAVE, CombatSpell.FIRE_SURGE)
+    // Spell IDs for fire spells (FIRE_STRIKE=3279, FIRE_BOLT=3291, FIRE_BLAST=3307, FIRE_WAVE=3321, FIRE_SURGE=21879)
+    private val FIRE_SPELL_IDS = setOf(3279, 3291, 3307, 3321, 21879)
+
+    /** Reads an Int property from a CombatSpell instance via reflection (legacy bridge). */
+    private fun spellIntField(spell: Any, field: String): Int =
+        spell.javaClass.getMethod(field.replaceFirstChar { it.uppercaseChar() }.let { "get$it" }).invoke(spell) as Int
+
+    private fun getSpellId(spell: Any): Int = spellIntField(spell, "id")
+    private fun getSpellMaxHit(spell: Any): Int = spellIntField(spell, "maxHit")
 
     override fun getAccuracy(
         pawn: Pawn,
@@ -57,7 +64,7 @@ object MagicCombatFormula : CombatFormula {
         specialPassiveMultiplier: Double,
     ): Int {
         val spell = pawn.attr[Combat.CASTING_SPELL]
-        var hit = spell?.maxHit?.toDouble() ?: 1.0
+        var hit = if (spell != null) getSpellMaxHit(spell).toDouble() else 1.0
         if (pawn is Player) {
             val magic = pawn.getSkills().getCurrentLevel(Skills.MAGIC)
             if (pawn.hasEquipped(
@@ -72,7 +79,7 @@ object MagicCombatFormula : CombatFormula {
                 hit = (Math.floor(magic / 3.0) - 2.0)
             }
 
-            if (pawn.hasEquipped(EquipmentType.GLOVES, "items.gauntlets_of_chaos") && spell != null && spell in BOLT_SPELLS) {
+            if (pawn.hasEquipped(EquipmentType.GLOVES, "items.gauntlets_of_chaos") && spell != null && getSpellId(spell) in BOLT_SPELL_IDS) {
                 hit += 3
             }
 
@@ -106,7 +113,7 @@ object MagicCombatFormula : CombatFormula {
             hit *= multiplier
             hit = Math.floor(hit)
 
-            if (pawn.hasEquipped(EquipmentType.SHIELD, "items.tome_of_fire") && spell in FIRE_SPELLS) {
+            if (pawn.hasEquipped(EquipmentType.SHIELD, "items.tome_of_fire") && spell != null && getSpellId(spell) in FIRE_SPELL_IDS) {
                 // TODO: Tome of Fire bonus disabled until charge system is implemented.
                 // When charges are tracked (e.g. via varbit), gate this behind charges > 0
                 // and decrement a charge on use.

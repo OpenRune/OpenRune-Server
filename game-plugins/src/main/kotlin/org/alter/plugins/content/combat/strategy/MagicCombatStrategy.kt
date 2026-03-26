@@ -15,8 +15,30 @@ import org.alter.plugins.content.combat.CombatConfigs
 import org.alter.plugins.content.combat.createProjectile
 import org.alter.plugins.content.combat.dealHit
 import org.alter.plugins.content.combat.formula.MagicCombatFormula
-import org.alter.combat.spell.CombatSpell
 import org.alter.plugins.content.magic.MagicSpells
+
+// Legacy reflection helpers for accessing CombatSpell properties without importing it.
+// CombatSpell lives in content; game-plugins cannot import it directly.
+private fun spellInt(spell: Any, getter: String): Int =
+    spell.javaClass.getMethod(getter).invoke(spell) as Int
+
+private fun spellString(spell: Any, getter: String): String =
+    spell.javaClass.getMethod(getter).invoke(spell) as String
+
+private fun spellDouble(spell: Any, getter: String): Double =
+    spell.javaClass.getMethod(getter).invoke(spell) as Double
+
+private fun spellGraphic(spell: Any, getter: String): Graphic? =
+    spell.javaClass.getMethod(getter).invoke(spell) as? Graphic
+
+private fun spellId(spell: Any): Int = spellInt(spell, "getId")
+private fun spellProjectile(spell: Any): Int = spellInt(spell, "getProjectile")
+private fun spellProjectileEndHeight(spell: Any): Int = spellInt(spell, "getProjectilEndHeight")
+private fun spellCastAnimation(spell: Any): String = spellString(spell, "getCastAnimation")
+private fun spellCastSound(spell: Any): Int = spellInt(spell, "getCastSound")
+private fun spellCastGfx(spell: Any): Graphic? = spellGraphic(spell, "getCastGfx")
+private fun spellImpactGfx(spell: Any): Graphic? = spellGraphic(spell, "getImpactGfx")
+private fun spellBaseXp(spell: Any): Double = spellDouble(spell, "getBaseXp")
 
 /**
  * @author Tom <rspsmods@gmail.com>
@@ -30,7 +52,7 @@ object MagicCombatStrategy : CombatStrategy {
     ): Boolean {
         if (pawn is Player) {
             val spell = pawn.attr[Combat.CASTING_SPELL]!!
-            val requirements = MagicSpells.getMetadata(spell.id)
+            val requirements = MagicSpells.getMetadata(spellId(spell))
             if (requirements != null && !MagicSpells.canCast(pawn, requirements.lvl, requirements.items, requirements.spellbook)) {
                 return false
             }
@@ -48,23 +70,23 @@ object MagicCombatStrategy : CombatStrategy {
         val projectile =
             pawn.createProjectile(
                 target,
-                gfx = spell.projectile,
+                gfx = spellProjectile(spell),
                 type = ProjectileType.MAGIC,
-                endHeight = spell.projectilEndHeight,
+                endHeight = spellProjectileEndHeight(spell),
             )
 
-        pawn.animate(spell.castAnimation)
-        spell.castGfx?.let { gfx -> pawn.graphic(gfx) }
-        spell.impactGfx?.let { gfx -> target.graphic(Graphic(gfx.id, gfx.height, projectile.lifespan)) }
-        if (spell.projectile > 0) {
+        pawn.animate(spellCastAnimation(spell))
+        spellCastGfx(spell)?.let { gfx -> pawn.graphic(gfx) }
+        spellImpactGfx(spell)?.let { gfx -> target.graphic(Graphic(gfx.id, gfx.height, projectile.lifespan)) }
+        if (spellProjectile(spell) > 0) {
             world.spawn(projectile)
         }
 
         if (pawn is Player) {
-            if (spell.castSound != -1) {
-                pawn.playSound(id = spell.castSound, volume = 1, delay = 0)
+            if (spellCastSound(spell) != -1) {
+                pawn.playSound(id = spellCastSound(spell), volume = 1, delay = 0)
             }
-            MagicSpells.getMetadata(spell.id)?.let { requirement -> MagicSpells.removeRunes(pawn, requirement.items) }
+            MagicSpells.getMetadata(spellId(spell))?.let { requirement -> MagicSpells.removeRunes(pawn, requirement.items) }
         }
 
         val formula = MagicCombatFormula
@@ -92,12 +114,12 @@ object MagicCombatStrategy : CombatStrategy {
         player: Player,
         target: Pawn,
         damage: Int,
-        spell: CombatSpell,
+        spell: Any,
     ) {
         val modDamage = if (target.entityType.isNpc) Math.min(target.getCurrentHp(), damage) else damage
         val mode = CombatConfigs.getXpMode(player)
         val multiplier = if (target is Npc) Combat.getNpcXpMultiplier(target) else 1.0
-        val baseXp = spell.baseXp
+        val baseXp = spellBaseXp(spell)
 
         if (mode == XpMode.MAGIC) {
             val defensive =
