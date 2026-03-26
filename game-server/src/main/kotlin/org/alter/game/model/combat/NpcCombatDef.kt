@@ -44,7 +44,9 @@ data class NpcCombatDef(
     val immunePoison: Boolean,
     val immuneVenom: Boolean,
     val immuneCannons: Boolean,
-    val immuneThralls: Boolean
+    val immuneThralls: Boolean,
+    val leashDistance: Int = DEFAULT_LEASH_DISTANCE,
+    val ignoreSingleCombat: Boolean = false
 ) {
     companion object {
         private const val DEFAULT_HITPOINTS = 10
@@ -53,6 +55,7 @@ data class NpcCombatDef(
         private const val DEFAULT_ATTACK_ANIMATION = "sequences.human_unarmedpunch"
         private const val DEFAULT_BLOCK_ANIMATION = "sequences.human_unarmedblock"
         private const val DEFAULT_DEATH_ANIMATION = "sequences.human_death"
+        const val DEFAULT_LEASH_DISTANCE = 16
 
         val DEFAULT =
             NpcCombatDef(
@@ -92,7 +95,9 @@ data class NpcCombatDef(
                 immunePoison = false,
                 immuneVenom = false,
                 immuneCannons = false,
-                immuneThralls = false
+                immuneThralls = false,
+                leashDistance = DEFAULT_LEASH_DISTANCE,
+                ignoreSingleCombat = false
             )
     }
 }
