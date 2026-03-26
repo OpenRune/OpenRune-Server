@@ -2,8 +2,11 @@ package org.alter.game.combat.ai
 
 import org.alter.game.combat.CombatSystem
 import org.alter.game.combat.DisengageReason
+import org.alter.game.model.LockState
+import org.alter.game.model.attr.POISON_TICKS_LEFT_ATTR
 import org.alter.game.model.entity.Npc
 import org.alter.game.model.move.walkTo
+import org.alter.game.model.timer.POISON_TIMER
 
 /**
  * The NPC is returning to its spawn tile after losing its target or
@@ -17,6 +20,7 @@ class RetreatingState : AiState {
         if (CombatSystem.instance.isInCombat(npc)) {
             CombatSystem.instance.disengage(npc, DisengageReason.OUT_OF_RANGE)
         }
+        npc.lock = LockState.FULL_WITH_DAMAGE_IMMUNITY
         npc.resetFacePawn()
         npc.walkTo(npc.spawnTile)
     }
@@ -36,7 +40,9 @@ class RetreatingState : AiState {
         return null
     }
 
-    override fun onExit(npc: Npc) {}
+    override fun onExit(npc: Npc) {
+        npc.lock = LockState.NONE
+    }
 
     private fun resetNpc(npc: Npc) {
         npc.setCurrentHp(npc.combatDef.hitpoints)
@@ -44,5 +50,8 @@ class RetreatingState : AiState {
         for (i in 0 until npc.stats.nStats) {
             npc.stats.setCurrentLevel(i, npc.stats.getMaxLevel(i))
         }
+        // Clear poison/venom
+        npc.timers.remove(POISON_TIMER)
+        npc.attr.remove(POISON_TICKS_LEFT_ATTR)
     }
 }

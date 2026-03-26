@@ -71,10 +71,13 @@ class CombatAiState(private val target: Pawn) : AiState {
         var closestTarget: Player? = null
         var closestDistance = Int.MAX_VALUE
 
+        val npcCombatLevel = npc.def.combatLevel
+
         world.players.forEach { player ->
             if (!player.isOnline || player.isDead()) return@forEach
             if (!player.tile.isWithinRadius(npc.tile, combatDef.aggressiveRadius)) return@forEach
             if (player.tile.height != npc.tile.height) return@forEach
+            if (player.combatLevel > npcCombatLevel * 2) return@forEach
 
             val restriction = CombatZoneUtil.checkCombatRestriction(world, npc, player)
             if (restriction != null) return@forEach

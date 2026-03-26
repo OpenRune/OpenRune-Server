@@ -20,7 +20,7 @@ class IdleState : AiState {
         if (combatDef.aggressiveRadius <= 0) return null
 
         scanCounter++
-        val scanInterval = maxOf(combatDef.aggroTargetDelay, 1)
+        val scanInterval = maxOf(combatDef.aggroTargetDelay, 2)
         if (scanCounter % scanInterval != 0) return null
         scanCounter = 0  // Reset to prevent eventual overflow
 

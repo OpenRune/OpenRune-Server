@@ -1,7 +1,7 @@
 package org.alter.game.combat.ai
 
+import org.alter.game.combat.CombatSystem
 import org.alter.game.combat.CombatZoneUtil
-import org.alter.game.model.combat.CombatClass
 import org.alter.game.model.entity.Npc
 import org.alter.game.model.entity.Player
 import org.alter.game.model.move.walkTo
@@ -35,7 +35,8 @@ class AggressiveState(private val target: Player) : AiState {
         }
 
         // Check if within attack range
-        val attackRange = getAttackRange(npc)
+        val strategy = CombatSystem.instance.resolveStrategy(npc)
+        val attackRange = strategy.getAttackRange(npc)
         val distToTarget = npc.tile.getDistance(target.tile)
 
         if (distToTarget <= attackRange) {
@@ -53,12 +54,4 @@ class AggressiveState(private val target: Player) : AiState {
     }
 
     override fun onExit(npc: Npc) {}
-
-    companion object {
-        fun getAttackRange(npc: Npc): Int = when (npc.combatClass) {
-            CombatClass.MELEE -> 1
-            CombatClass.RANGED -> 7
-            CombatClass.MAGIC -> 10
-        }
-    }
 }
