@@ -8,7 +8,7 @@ import org.alter.game.model.entity.Pawn
 import org.alter.game.model.entity.Player
 import org.alter.plugins.content.combat.Combat
 import org.alter.plugins.content.combat.CombatConfigs
-import org.alter.plugins.content.combat.strategy.magic.CombatSpell
+import org.alter.combat.spell.CombatSpell
 import org.alter.plugins.content.mechanics.prayer.Prayer
 import org.alter.plugins.content.mechanics.prayer.Prayers
 

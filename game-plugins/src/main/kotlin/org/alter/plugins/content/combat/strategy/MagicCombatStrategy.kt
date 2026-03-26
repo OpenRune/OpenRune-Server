@@ -15,7 +15,7 @@ import org.alter.plugins.content.combat.CombatConfigs
 import org.alter.plugins.content.combat.createProjectile
 import org.alter.plugins.content.combat.dealHit
 import org.alter.plugins.content.combat.formula.MagicCombatFormula
-import org.alter.plugins.content.combat.strategy.magic.CombatSpell
+import org.alter.combat.spell.CombatSpell
 import org.alter.plugins.content.magic.MagicSpells
 
 /**

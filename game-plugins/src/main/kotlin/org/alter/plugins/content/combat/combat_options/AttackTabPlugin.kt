@@ -17,7 +17,6 @@ import org.alter.plugins.content.interfaces.attack.AttackTab.ATTACK_STYLE_VARP
 import org.alter.plugins.content.interfaces.attack.AttackTab.DISABLE_AUTO_RETALIATE_VARP
 import org.alter.plugins.content.interfaces.attack.AttackTab.SPECIAL_ATTACK_VARP
 import org.alter.plugins.content.interfaces.attack.AttackTab.setEnergy
-import org.alter.plugins.content.combat.specialattack.SpecialAttacks
 import org.alter.game.pluginnew.event.impl.onItemEquipSlot
 
 class AttackTabPlugin() : PluginEvent() {
@@ -71,14 +70,7 @@ class AttackTabPlugin() : PluginEvent() {
          * Toggle special attack.
          */
         onButton("components.combat_interface:special_attack") {
-            val weaponId = player.equipment[EquipmentType.WEAPON.id]!!.id
-            if (SpecialAttacks.executeOnEnable(weaponId)) {
-                if (!SpecialAttacks.execute(player, null, world)) {
-                    player.message("You don't have enough power left.")
-                }
-            } else {
-                player.toggleVarp(SPECIAL_ATTACK_VARP)
-            }
+            player.toggleVarp(SPECIAL_ATTACK_VARP)
         }
 
         /**
