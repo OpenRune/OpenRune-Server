@@ -1,0 +1,470 @@
+package org.alter.combat.spell
+
+import org.alter.game.model.Graphic
+
+/**
+ * @author Tom <rspsmods@gmail.com>
+ */
+enum class CombatSpell(
+    val id: Int,
+    val maxHit: Int,
+    val castAnimation: String,
+    val castSound: Int,
+    val castGfx: Graphic?,
+    val projectile: Int,
+    val projectilEndHeight: Int = -1,
+    val impactGfx: Graphic?,
+    val autoCastId: Int,
+    val baseXp: Double = 0.0,
+) {
+    /**
+     * Standard.
+     */
+    WIND_STRIKE(
+        id = 3273,
+        maxHit = 2,
+        castAnimation = "sequences.human_caststrike",
+        castSound = 220,
+        castGfx = Graphic(id = "spotanims.windstrike_casting", height = 92),
+        projectile = 91,
+        impactGfx = Graphic(id = "spotanims.windstrike_impact", height = 124),
+        autoCastId = 1,
+        baseXp = 5.5,
+    ),
+
+    WATER_STRIKE(
+        id = 3275,
+        maxHit = 4,
+        castAnimation = "sequences.human_caststrike",
+        castSound = 211,
+        castGfx = Graphic(id = "spotanims.waterstrike_casting", height = 92),
+        projectile = 94,
+        impactGfx = Graphic(id = "spotanims.waterstrike_impact", height = 124),
+        autoCastId = 2,
+        baseXp = 7.5,
+    ),
+
+    EARTH_STRIKE(
+        id = 3277,
+        maxHit = 6,
+        castAnimation = "sequences.human_caststrike",
+        castSound = 132,
+        castGfx = Graphic(id = "spotanims.earthstrike_casting", height = 92),
+        projectile = 97,
+        impactGfx = Graphic(id = "spotanims.earthstrike_impact", height = 124),
+        autoCastId = 3,
+        baseXp = 9.5,
+    ),
+
+    FIRE_STRIKE(
+        id = 3279,
+        maxHit = 8,
+        castAnimation = "sequences.human_caststrike",
+        castSound = 160,
+        castGfx = Graphic(id = "spotanims.firestrike_casting", height = 92),
+        projectile = 100,
+        impactGfx = Graphic(id = "spotanims.firestrike_impact", height = 124),
+        autoCastId = 4,
+        baseXp = 11.5,
+    ),
+
+    WIND_BOLT(
+        id = 3281,
+        maxHit = 9,
+        castAnimation = "sequences.human_caststrike",
+        castSound = 218,
+        castGfx = Graphic(id = "spotanims.windbolt_casting", height = 92),
+        projectile = 118,
+        impactGfx = Graphic(id = "spotanims.windbolt_impact", height = 124),
+        autoCastId = 5,
+        baseXp = 13.5,
+    ),
+
+    WATER_BOLT(
+        id = 3285,
+        maxHit = 10,
+        castAnimation = "sequences.human_caststrike",
+        castSound = 209,
+        castGfx = Graphic(id = "spotanims.waterbolt_casting", height = 92),
+        projectile = 121,
+        impactGfx = Graphic(id = "spotanims.waterbolt_impact", height = 124),
+        autoCastId = 6,
+        baseXp = 16.5,
+    ),
+
+    EARTH_BOLT(
+        id = 3288,
+        maxHit = 11,
+        castAnimation = "sequences.human_caststrike",
+        castSound = 130,
+        castGfx = Graphic(id = "spotanims.earthbolt_casting", height = 92),
+        projectile = 124,
+        impactGfx = Graphic(id = "spotanims.earthbolt_impact", height = 124),
+        autoCastId = 7,
+        baseXp = 19.5,
+    ),
+
+    FIRE_BOLT(
+        id = 3291,
+        maxHit = 12,
+        castAnimation = "sequences.human_caststrike",
+        castSound = 157,
+        castGfx = Graphic(id = "spotanims.firebolt_casting", height = 92),
+        projectile = 127,
+        impactGfx = Graphic(id = "spotanims.firebolt_impact", height = 124),
+        autoCastId = 8,
+        baseXp = 22.5,
+    ),
+
+    WIND_BLAST(
+        id = 3294,
+        maxHit = 13,
+        castAnimation = "sequences.human_caststrike",
+        castSound = 216,
+        castGfx = Graphic(id = "spotanims.windblast_casting", height = 92),
+        projectile = 133,
+        impactGfx = Graphic(id = "spotanims.windblast_impact", height = 124),
+        autoCastId = 9,
+        baseXp = 25.5,
+    ),
+
+    WATER_BLAST(
+        id = 3297,
+        maxHit = 14,
+        castAnimation = "sequences.human_caststrike",
+        castSound = 207,
+        castGfx = Graphic(id = "spotanims.waterblast_casting", height = 92),
+        projectile = 136,
+        impactGfx = Graphic(id = "spotanims.waterblast_impact", height = 124),
+        autoCastId = 10,
+        baseXp = 28.5,
+    ),
+
+    EARTH_BLAST(
+        id = 3302,
+        maxHit = 15,
+        castAnimation = "sequences.human_caststrike",
+        castSound = 128,
+        castGfx = Graphic(id = "spotanims.earthblast_casting", height = 92),
+        projectile = 139,
+        impactGfx = Graphic(id = "spotanims.earthblast_impact", height = 124),
+        autoCastId = 11,
+        baseXp = 31.5,
+    ),
+
+    FIRE_BLAST(
+        id = 3307,
+        maxHit = 16,
+        castAnimation = "sequences.human_caststrike",
+        castSound = 155,
+        castGfx = Graphic(id = "spotanims.fireblast_casting", height = 92),
+        projectile = 130,
+        impactGfx = Graphic(id = "spotanims.fireblast_impact", height = 124),
+        autoCastId = 12,
+        baseXp = 34.5,
+    ),
+
+    WIND_WAVE(
+        id = 3313,
+        maxHit = 17,
+        castAnimation = "sequences.human_castwave",
+        castSound = 222,
+        castGfx = Graphic(id = "spotanims.windwave_casting", height = 92),
+        projectile = 159,
+        impactGfx = Graphic(id = "spotanims.windwave_impact", height = 124),
+        autoCastId = 13,
+        baseXp = 36.0,
+    ),
+
+    WATER_WAVE(
+        id = 3315,
+        maxHit = 18,
+        castAnimation = "sequences.human_castwave",
+        castSound = 213,
+        castGfx = Graphic(id = "spotanims.waterwave_casting", height = 92),
+        projectile = 162,
+        impactGfx = Graphic(id = "spotanims.waterwave_impact", height = 124),
+        autoCastId = 14,
+        baseXp = 37.5,
+    ),
+
+    EARTH_WAVE(
+        id = 3319,
+        maxHit = 19,
+        castAnimation = "sequences.human_castwave",
+        castSound = 134,
+        castGfx = Graphic(id = "spotanims.earthwave_casting", height = 92),
+        projectile = 165,
+        impactGfx = Graphic(id = "spotanims.earthwave_impact", height = 124),
+        autoCastId = 15,
+        baseXp = 40.0,
+    ),
+
+    FIRE_WAVE(
+        id = 3321,
+        maxHit = 20,
+        castAnimation = "sequences.human_castwave",
+        castSound = 162,
+        castGfx = Graphic(id = "spotanims.firewave_casting", height = 92),
+        projectile = 156,
+        impactGfx = Graphic(id = "spotanims.firewave_impact", height = 124),
+        autoCastId = 16,
+        baseXp = 42.5,
+    ),
+
+    WIND_SURGE(
+        id = 21876,
+        maxHit = 21,
+        castAnimation = "sequences.human_cast_surge",
+        castSound = 4028,
+        castGfx = Graphic(id = "spotanims.windsurge_casting", height = 92),
+        projectile = 1456,
+        impactGfx = Graphic(id = "spotanims.windsurge_impact", height = 124),
+        autoCastId = 48,
+        baseXp = 44.5,
+    ),
+
+    WATER_SURGE(
+        id = 21877,
+        maxHit = 22,
+        castAnimation = "sequences.human_cast_surge",
+        castSound = 4030,
+        castGfx = Graphic(id = "spotanims.watersurge_casting", height = 92),
+        projectile = 1459,
+        impactGfx = Graphic(id = "spotanims.watersurge_impact", height = 124),
+        autoCastId = 49,
+        baseXp = 46.5,
+    ),
+
+    EARTH_SURGE(
+        id = 21878,
+        maxHit = 23,
+        castAnimation = "sequences.human_cast_surge",
+        castSound = 4025,
+        castGfx = Graphic(id = "spotanims.earthsurge_casting", height = 92),
+        projectile = 1462,
+        impactGfx = Graphic(id = "spotanims.earthsurge_impact", height = 124),
+        autoCastId = 50,
+        baseXp = 48.5,
+    ),
+
+    FIRE_SURGE(
+        id = 21879,
+        maxHit = 24,
+        castAnimation = "sequences.human_cast_surge",
+        castSound = 4032,
+        castGfx = Graphic(id = "spotanims.firesurge_casting", height = 92),
+        projectile = 1465,
+        impactGfx = Graphic(id = "spotanims.firesurge_impact", height = 124),
+        autoCastId = 51,
+        baseXp = 50.5,
+    ),
+
+    /**
+     * Ancient.
+     */
+    SMOKE_RUSH(
+        id = 4629,
+        maxHit = 14,
+        castAnimation = "sequences.zaros_casting",
+        castSound = 183,
+        castGfx = null,
+        projectile = 384,
+        impactGfx = Graphic(id = "spotanims.smoke_rush_impact", height = 0),
+        autoCastId = 31,
+        baseXp = 30.0,
+    ),
+
+    SHADOW_RUSH(
+        id = 4630,
+        maxHit = 15,
+        castAnimation = "sequences.zaros_casting",
+        castSound = 178,
+        castGfx = null,
+        projectile = 378,
+        impactGfx = Graphic(id = "spotanims.shadow_rush_impact", height = 0),
+        autoCastId = 32,
+        baseXp = 31.0,
+    ),
+
+    BLOOD_RUSH(
+        id = 4632,
+        maxHit = 16,
+        castAnimation = "sequences.zaros_casting",
+        castSound = 106,
+        castGfx = null,
+        projectile = 0,
+        impactGfx = Graphic(id = "spotanims.blood_rush_impact", height = 0),
+        autoCastId = 33,
+        baseXp = 33.0,
+    ),
+
+    ICE_RUSH(
+        id = 4633,
+        maxHit = 17,
+        castAnimation = "sequences.zaros_casting",
+        castSound = 171,
+        castGfx = null,
+        projectile = 360,
+        impactGfx = Graphic(id = "spotanims.ice_rush_impact", height = 0),
+        autoCastId = 34,
+        projectilEndHeight = 0,
+        baseXp = 34.0,
+    ),
+
+    SMOKE_BURST(
+        id = 4635,
+        maxHit = 18,
+        castAnimation = "sequences.zaros_vertical_casting",
+        castSound = 183,
+        castGfx = null,
+        projectile = 388,
+        impactGfx = Graphic(id = "spotanims.smoke_burst_impact", height = 0),
+        autoCastId = 35,
+        baseXp = 36.0,
+    ),
+
+    SHADOW_BURST(
+        id = 4636,
+        maxHit = 19,
+        castAnimation = "sequences.zaros_vertical_casting",
+        castSound = 178,
+        castGfx = null,
+        projectile = 0,
+        impactGfx = Graphic(id = "spotanims.shadow_burst_impact", height = 0),
+        autoCastId = 36,
+        baseXp = 37.0,
+    ),
+
+    BLOOD_BURST(
+        id = 4638,
+        maxHit = 21,
+        castAnimation = "sequences.zaros_vertical_casting",
+        castSound = 469,
+        castGfx = null,
+        projectile = 0,
+        impactGfx = Graphic(id = "spotanims.spell_blood_burst_impact", height = 0),
+        autoCastId = 37,
+        baseXp = 39.0,
+    ),
+
+    ICE_BURST(
+        id = 4639,
+        maxHit = 22,
+        castAnimation = "sequences.zaros_vertical_casting",
+        castSound = 171,
+        castGfx = null,
+        projectile = 366,
+        impactGfx = Graphic(id = "spotanims.smoke_burst_impact", height = 0),
+        autoCastId = 38,
+        projectilEndHeight = 0,
+        baseXp = 40.0,
+    ),
+
+    SMOKE_BLITZ(
+        id = 4641,
+        maxHit = 23,
+        castAnimation = "sequences.zaros_casting",
+        castSound = 183,
+        castGfx = null,
+        projectile = 386,
+        impactGfx = Graphic(id = "spotanims.smoke_blitz_impact", height = 124),
+        autoCastId = 39,
+        baseXp = 42.0,
+    ),
+
+    SHADOW_BLITZ(
+        id = 4642,
+        maxHit = 24,
+        castAnimation = "sequences.zaros_casting",
+        castSound = 178,
+        castGfx = null,
+        projectile = 380,
+        impactGfx = Graphic(id = "spotanims.shadow_blitz_impact", height = 0),
+        autoCastId = 40,
+        projectilEndHeight = 0,
+        baseXp = 43.0,
+    ),
+
+    BLOOD_BLITZ(
+        id = 4644,
+        maxHit = 25,
+        castAnimation = "sequences.zaros_casting",
+        castSound = 106,
+        castGfx = null,
+        projectile = 374,
+        impactGfx = Graphic(id = "spotanims.blood_blitz_impact", height = 0),
+        autoCastId = 41,
+        projectilEndHeight = 0,
+        baseXp = 45.0,
+    ),
+
+    ICE_BLITZ(
+        id = 4645,
+        maxHit = 26,
+        castAnimation = "sequences.zaros_casting",
+        castSound = 171,
+        castGfx = null,
+        projectile = 0,
+        impactGfx = Graphic(id = "spotanims.ice_burst_impact", height = 0),
+        autoCastId = 42,
+        baseXp = 46.0,
+    ),
+
+    SMOKE_BARRAGE(
+        id = 4647,
+        maxHit = 27,
+        castAnimation = "sequences.zaros_vertical_casting",
+        castSound = 183,
+        castGfx = null,
+        projectile = 390,
+        impactGfx = Graphic(id = "spotanims.smoke_barrage_impact", height = 124),
+        autoCastId = 43,
+        baseXp = 48.0,
+    ),
+
+    SHADOW_BARRAGE(
+        id = 4648,
+        maxHit = 28,
+        castAnimation = "sequences.zaros_vertical_casting",
+        castSound = 178,
+        castGfx = null,
+        projectile = 0,
+        impactGfx = Graphic(id = "spotanims.shadow_barrage_impact", height = 0),
+        autoCastId = 44,
+        baseXp = 49.0,
+    ),
+
+    BLOOD_BARRAGE(
+        id = 4650,
+        maxHit = 29,
+        castAnimation = "sequences.zaros_vertical_casting",
+        castSound = 106,
+        castGfx = null,
+        projectile = 0,
+        impactGfx = Graphic(id = "spotanims.spell_blood_barrage_impact", height = 0),
+        autoCastId = 45,
+        baseXp = 51.0,
+    ),
+
+    ICE_BARRAGE(
+        id = 4651,
+        maxHit = 30,
+        castAnimation = "sequences.zaros_vertical_casting",
+        castSound = 171,
+        castGfx = null,
+        projectile = 368,
+        impactGfx = Graphic(id = "spotanims.ice_barrage_impact", height = 0),
+        autoCastId = 46,
+        projectilEndHeight = 0,
+        baseXp = 52.0,
+    ),
+    ;
+
+    companion object {
+        private val byItemId = values().associateBy { it.id }
+        private val byAutoCastId = values().associateBy { it.autoCastId }
+        fun findByItemId(id: Int): CombatSpell? = byItemId[id]
+        fun findByAutoCastId(id: Int): CombatSpell? = byAutoCastId[id]
+    }
+}

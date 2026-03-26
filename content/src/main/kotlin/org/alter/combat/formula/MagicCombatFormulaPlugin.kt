@@ -2,6 +2,7 @@ package org.alter.combat.formula
 
 import org.alter.api.BonusSlot
 import org.alter.api.CombatAttributes
+import org.alter.combat.spell.CombatSpell
 import org.alter.api.EquipmentType
 import org.alter.api.NpcSpecies
 import org.alter.api.PrayerIcon
@@ -214,7 +215,7 @@ class MagicCombatFormulaPlugin {
      *
      * Returns the trident-formula hit if the attacker has a trident equipped.
      * For standard book spells, reads maxHit from [CombatAttributes.CASTING_SPELL] via
-     * reflection (the CombatSpell enum lives in game-plugins and cannot be imported here).
+     * a direct cast to [CombatSpell].
      */
     private fun getSpellBaseHit(attacker: Pawn): Int {
         if (attacker is Player) {
@@ -236,23 +237,9 @@ class MagicCombatFormulaPlugin {
                 return (Math.floor(magic / 3.0) - 2.0).toInt().coerceAtLeast(1)
             }
         }
-        // Standard spells — read maxHit from CASTING_SPELL via reflection
         if (attacker is Player) {
-            val spell = attacker.attr[CombatAttributes.CASTING_SPELL]
-            if (spell != null) {
-                return try {
-                    val method = spell.javaClass.getMethod("getMaxHit")
-                    (method.invoke(spell) as? Number)?.toInt() ?: 1
-                } catch (_: Exception) {
-                    try {
-                        val field = spell.javaClass.getDeclaredField("maxHit")
-                        field.isAccessible = true
-                        (field.get(spell) as? Number)?.toInt() ?: 1
-                    } catch (_: Exception) {
-                        1
-                    }
-                }
-            }
+            val spell = attacker.attr[CombatAttributes.CASTING_SPELL] as? CombatSpell
+            if (spell != null) return spell.maxHit
         }
         // Fallback for NPC attacks or missing spell data
         return 1

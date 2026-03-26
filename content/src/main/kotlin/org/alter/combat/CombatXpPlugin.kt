@@ -2,6 +2,7 @@ package org.alter.combat
 
 import org.alter.api.CombatAttributes
 import org.alter.api.Skills
+import org.alter.combat.spell.CombatSpell
 import org.alter.game.model.combat.AttackStyle
 import org.alter.game.model.combat.isMagic
 import org.alter.game.model.combat.isRanged
@@ -28,8 +29,7 @@ import org.alter.game.pluginnew.event.impl.PostAttackEvent
  * All styles additionally grant 1.33 Hitpoints XP per damage point.
  *
  * For magic attacks the spell's baseXp is read from the [CombatAttributes.CASTING_SPELL]
- * attribute via reflection, since [CombatSpell] lives in game-plugins and cannot be
- * imported directly from the content module.
+ * attribute via a direct cast to [CombatSpell].
  */
 class CombatXpPlugin : PluginEvent() {
 
@@ -88,29 +88,11 @@ class CombatXpPlugin : PluginEvent() {
     /**
      * Reads the spell's baseXp from the [CombatAttributes.CASTING_SPELL] attribute.
      *
-     * [CombatSpell] is an enum in game-plugins and cannot be imported directly from
-     * the content module. Reflection is used to read the `baseXp` property so that
-     * no cross-module import is required.
-     *
-     * Returns 0.0 if the attribute is absent or if reflection fails (e.g., a trident
-     * attack that has no discrete spell object).
+     * Returns 0.0 if the attribute is absent (e.g., a trident attack that has no
+     * discrete spell object).
      */
     private fun getSpellBaseXp(player: Player): Double {
-        val spell = player.attr[CombatAttributes.CASTING_SPELL] ?: return 0.0
-        return try {
-            val method = spell.javaClass.getMethod("getBaseXp")
-            method.invoke(spell) as? Double ?: 0.0
-        } catch (_: NoSuchMethodException) {
-            // Kotlin enum properties are exposed as getters; try the property accessor directly
-            try {
-                val field = spell.javaClass.getDeclaredField("baseXp")
-                field.isAccessible = true
-                field.get(spell) as? Double ?: 0.0
-            } catch (_: Exception) {
-                0.0
-            }
-        } catch (_: Exception) {
-            0.0
-        }
+        val spell = player.attr[CombatAttributes.CASTING_SPELL] as? CombatSpell ?: return 0.0
+        return spell.baseXp
     }
 }
