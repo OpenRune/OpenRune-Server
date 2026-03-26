@@ -1,5 +1,6 @@
 package org.alter.game.combat.ai
 
+import org.alter.game.combat.CombatZoneUtil
 import org.alter.game.model.combat.CombatClass
 import org.alter.game.model.entity.Npc
 import org.alter.game.model.entity.Player
@@ -38,6 +39,11 @@ class AggressiveState(private val target: Player) : AiState {
         val distToTarget = npc.tile.getDistance(target.tile)
 
         if (distToTarget <= attackRange) {
+            // Re-check single-combat restriction before engaging
+            val restriction = CombatZoneUtil.checkCombatRestriction(npc.world, npc, target)
+            if (restriction != null) {
+                return RetreatingState()  // Target now in combat with someone else
+            }
             return CombatAiState(target)
         }
 

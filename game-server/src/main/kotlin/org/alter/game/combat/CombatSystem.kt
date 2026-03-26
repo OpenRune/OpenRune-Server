@@ -1,9 +1,11 @@
 package org.alter.game.combat
 
+import org.alter.game.model.attr.COMBAT_TARGET_FOCUS_ATTR
 import org.alter.game.model.combat.CombatStyle
 import org.alter.game.model.entity.Pawn
 import org.alter.game.pluginnew.event.IEventManager
 import org.alter.game.pluginnew.event.impl.*
+import java.lang.ref.WeakReference
 import kotlin.random.Random
 
 /**
@@ -51,7 +53,6 @@ class CombatSystem(private val eventManager: IEventManager) {
          * Initialised during server bootstrap before any AI states run.
          */
         lateinit var instance: CombatSystem
-            internal set
 
         /**
          * Stateless melee strategy used as a safe default before a real strategy
@@ -91,6 +92,7 @@ class CombatSystem(private val eventManager: IEventManager) {
     fun engage(attacker: Pawn, target: Pawn, strategy: CombatStrategy, combatStyle: CombatStyle) {
         val state = CombatState(target, strategy.getAttackSpeed(attacker), strategy, combatStyle)
         activeCombats[attacker] = state
+        attacker.attr[COMBAT_TARGET_FOCUS_ATTR] = WeakReference(target)
         eventManager.postAndWait(CombatEngageEvent(attacker, target, combatStyle))
     }
 
@@ -99,6 +101,7 @@ class CombatSystem(private val eventManager: IEventManager) {
      */
     fun disengage(attacker: Pawn, reason: DisengageReason = DisengageReason.MANUAL) {
         val state = activeCombats.remove(attacker) ?: return
+        attacker.attr.remove(COMBAT_TARGET_FOCUS_ATTR)
         eventManager.postAndWait(CombatDisengageEvent(attacker, state.target, state.combatStyle, reason))
     }
 

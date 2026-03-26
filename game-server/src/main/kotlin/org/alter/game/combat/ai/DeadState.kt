@@ -20,7 +20,7 @@ class DeadState : AiState {
     override fun onEnter(npc: Npc) {
         // Disengage from the combat system if still tracked
         if (CombatSystem.instance.isInCombat(npc)) {
-            CombatSystem.instance.disengage(npc, DisengageReason.TARGET_DEAD)
+            CombatSystem.instance.disengage(npc, DisengageReason.MANUAL)
         }
         npc.resetFacePawn()
     }

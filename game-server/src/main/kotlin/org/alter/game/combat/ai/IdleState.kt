@@ -22,6 +22,7 @@ class IdleState : AiState {
         scanCounter++
         val scanInterval = maxOf(combatDef.aggroTargetDelay, 1)
         if (scanCounter % scanInterval != 0) return null
+        scanCounter = 0  // Reset to prevent eventual overflow
 
         val target = findAggroTarget(npc) ?: return null
         return AggressiveState(target)

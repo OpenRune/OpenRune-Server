@@ -83,8 +83,8 @@ class CombatSystemBootstrap : PluginEvent() {
         }
 
         onEvent<WorldTickEvent> {
-            combatSystem.processTick()
-            aiSystem.processTick()
+            aiSystem.processTick()    // AI state transitions first
+            combatSystem.processTick() // Then combat pipeline
         }
 
         // Assign an AiStateMachine to every NPC that has combat stats on spawn.
