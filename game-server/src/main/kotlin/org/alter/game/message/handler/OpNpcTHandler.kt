@@ -7,6 +7,7 @@ import org.alter.game.model.entity.Client
 import org.alter.game.model.entity.Entity
 import org.alter.game.model.item.Item
 import org.alter.game.pluginnew.event.impl.ItemOnNpcEvent
+import org.alter.game.pluginnew.event.impl.SpellOnNpcEvent
 import java.lang.ref.WeakReference
 
 @Suppress("UNREACHABLE_CODE")
@@ -51,6 +52,9 @@ class OpNpcTHandler : MessageHandler<OpNpcT> {
                 client.writeMessage("Unhandled item on npc [ $verify on ${npc.id}] ] ")
             }
         } else {
+            // Post new event for PluginEvent listeners
+            SpellOnNpcEvent(npc, parent, child, client).post()
+            // Legacy fallback
             if (!client.world.plugins.executeSpellOnNpc(client, parent, child)) {
                 client.writeMessage(Entity.NOTHING_INTERESTING_HAPPENS)
                 if (client.world.devContext.debugMagicSpells) {
