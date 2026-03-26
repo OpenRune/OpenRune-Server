@@ -8,4 +8,10 @@ object CombatAttributes {
     val DAMAGE_TAKE_MULTIPLIER = AttributeKey<Double>()
     /** Set to true during the current attack if it's a special attack. */
     val SPECIAL_ATTACK_ACTIVE = AttributeKey<Boolean>()
+
+    /**
+     * Stores the Dragon Battleaxe strength bonus applied when the special attack is activated.
+     * Formula: 10 + floor(0.25 * (floor(10% attack) + floor(10% defence) + floor(10% magic) + floor(10% ranged)))
+     */
+    val DRAGON_BATTLEAXE_BONUS = AttributeKey<Double>()
 }
