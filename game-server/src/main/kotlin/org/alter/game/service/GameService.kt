@@ -9,6 +9,7 @@ import io.github.oshai.kotlinlogging.KotlinLogging
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.asCoroutineDispatcher
+import org.alter.game.message.ServerTickEndHandler
 import org.alter.game.model.World
 import org.alter.game.task.*
 import java.util.concurrent.ConcurrentLinkedQueue
@@ -190,6 +191,8 @@ class GameService : Service {
             taskTimes[task.javaClass] = System.currentTimeMillis() - taskStart
         }
         world.cycle()
+
+        ServerTickEndHandler.sendToAll(world)
 
         /*
          * Calculate the time, in milliseconds, it took for this cycle to complete
