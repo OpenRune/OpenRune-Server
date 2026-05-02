@@ -1,7 +1,9 @@
 package org.rsmod.api.spells.runes.unlimited
 
 import dev.openrune.types.ItemServerType
-import org.rsmod.api.spells.runes.unlimited.configs.unlimited_enums
+import org.rsmod.api.enums.RuneEnums.rune_staves
+import org.rsmod.api.enums.UnlimitedRunesEnums.unlimited_runes_hiprio
+import org.rsmod.api.enums.UnlimitedRunesEnums.unlimited_runes_loprio
 import org.rsmod.game.inv.InvObj
 
 public class UnlimitedRuneRepository {
@@ -49,14 +51,14 @@ public class UnlimitedRuneRepository {
     private fun loadHighPriority(): Map<Int, Set<Int>> {
         val mapped = hashMapOf<Int, MutableSet<Int>>()
 
-        val affinityStaffEnum = unlimited_enums.rune_staves.filterValuesNotNull()
+        val affinityStaffEnum = rune_staves.filterValuesNotNull()
         for ((rune, staffEnum) in affinityStaffEnum) {
             val staffList = staffEnum.filterValuesNotNull().filter { it.value }
             val targetSet = mapped.getOrPut(rune.id) { mutableSetOf() }
             targetSet += staffList.map { it.key.id }
         }
 
-        val unlimitedSourceEnum = unlimited_enums.high_priority.filterValuesNotNull()
+        val unlimitedSourceEnum = unlimited_runes_hiprio.filterValuesNotNull()
         for ((rune, sourceListEnum) in unlimitedSourceEnum) {
             val sources = sourceListEnum.filterValuesNotNull().values
             val targetSet = mapped.getOrPut(rune.id) { mutableSetOf() }
@@ -69,7 +71,7 @@ public class UnlimitedRuneRepository {
     private fun loadLowPriority(): Map<Int, Set<Int>> {
         val mappedUnlimited = hashMapOf<Int, Set<Int>>()
 
-        val unlimitedSourceEnum = unlimited_enums.low_priority.filterValuesNotNull()
+        val unlimitedSourceEnum = unlimited_runes_loprio.filterValuesNotNull()
         for ((rune, sourceListEnum) in unlimitedSourceEnum) {
             val sources = sourceListEnum.filterValuesNotNull().values
             mappedUnlimited[rune.id] = sources.map { it.id }.toHashSet()

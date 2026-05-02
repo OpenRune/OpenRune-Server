@@ -8,6 +8,7 @@ import org.rsmod.api.config.refs.interfaces
 import org.rsmod.api.config.refs.objs
 import org.rsmod.api.config.refs.synths
 import org.rsmod.api.config.refs.varbits
+import org.rsmod.api.enums.BankEnums.bank_space_purchase_block_cost
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.script.onApNpc1
@@ -638,7 +639,7 @@ private class BankSpaceShop {
     private lateinit var blockCosts: List<Int>
 
     fun startup() {
-        val costs = banker_enums.block_costs.filterValuesNotNull()
+        val costs = bank_space_purchase_block_cost.filterValuesNotNull()
         val maxBlock = costs.keys.maxOrNull() ?: error("`block_costs` enum should not be empty.")
         val blockCosts = MutableList(maxBlock) { 0 }
         for ((block, cost) in costs) {

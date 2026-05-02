@@ -4,6 +4,7 @@ import dev.openrune.definition.type.widget.IfEvent
 import dev.openrune.types.aconverted.interf.IfButtonOp
 import jakarta.inject.Inject
 import org.rsmod.api.combat.weapon.WeaponSpeeds
+import org.rsmod.api.enums.EquipmentEnums.equipment_stats_to_slots_map
 import org.rsmod.api.market.MarketPrices
 import org.rsmod.api.player.bonus.WornBonuses
 import org.rsmod.api.player.interact.WornInteractions
@@ -18,7 +19,6 @@ import org.rsmod.api.script.onIfModalButton
 import org.rsmod.api.script.onIfModalDrag
 import org.rsmod.api.script.onIfOverlayButton
 import org.rsmod.content.interfaces.equipment.configs.equip_components
-import org.rsmod.content.interfaces.equipment.configs.equip_enums
 import org.rsmod.content.interfaces.equipment.configs.equip_interfaces
 import org.rsmod.events.EventBus
 import org.rsmod.game.entity.Player
@@ -39,7 +39,7 @@ constructor(
     override fun ScriptContext.startup() {
         onIfOverlayButton(equip_components.equipment) { player.selectStats() }
 
-        val componentWornSlots = equip_enums.mapped_wearpos.filterValuesNotNull()
+        val componentWornSlots = equipment_stats_to_slots_map.filterValuesNotNull()
         for ((slot, component) in componentWornSlots) {
             onIfModalButton(component) { opWornMain(slot, it.op) }
         }

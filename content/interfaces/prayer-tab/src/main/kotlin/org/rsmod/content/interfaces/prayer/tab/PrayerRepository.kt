@@ -4,7 +4,11 @@ import dev.openrune.definition.type.widget.ComponentType
 import dev.openrune.types.enums.EnumTypeMap
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 import org.rsmod.api.config.refs.params
-import org.rsmod.content.interfaces.prayer.tab.configs.prayer_enums
+import org.rsmod.api.enums.PrayerEnums.prayer_attack_collisions
+import org.rsmod.api.enums.PrayerEnums.prayer_defence_collisions
+import org.rsmod.api.enums.PrayerEnums.prayer_oc
+import org.rsmod.api.enums.PrayerEnums.prayer_overhead_collisions
+import org.rsmod.api.enums.PrayerEnums.prayer_strength_collisions
 import org.rsmod.content.interfaces.prayer.tab.configs.prayer_params
 
 class PrayerRepository() {
@@ -32,7 +36,7 @@ class PrayerRepository() {
         val prayers = mutableMapOf<ComponentType, Prayer>()
         val idCollision = hashSetOf<Int>()
 
-        val enum = prayer_enums.obj_configs.filterValuesNotNull()
+        val enum = prayer_oc.filterValuesNotNull()
         for (obj in enum.values) {
             val id = obj.param(prayer_params.id)
             val component = obj.param(prayer_params.component)
@@ -71,10 +75,10 @@ class PrayerRepository() {
     }
 
     private fun loadMappedCollisions(prayers: Iterable<Prayer>): Map<Int, List<Prayer>> {
-        val attack = load(prayers, prayer_enums.attack_collisions)
-        val strength = load(prayers, prayer_enums.strength_collisions)
-        val defence = load(prayers, prayer_enums.defence_collisions)
-        val overhead = load(prayers, prayer_enums.overhead_collisions)
+        val attack = load(prayers, prayer_attack_collisions)
+        val strength = load(prayers, prayer_strength_collisions)
+        val defence = load(prayers, prayer_defence_collisions)
+        val overhead = load(prayers, prayer_overhead_collisions)
 
         val collisions = Int2ObjectOpenHashMap<List<Prayer>>()
         for (prayer in prayers) {

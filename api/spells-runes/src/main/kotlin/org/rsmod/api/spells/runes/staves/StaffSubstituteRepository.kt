@@ -1,7 +1,7 @@
 package org.rsmod.api.spells.runes.staves
 
 import dev.openrune.types.ItemServerType
-import org.rsmod.api.spells.runes.staves.configs.staff_enums
+import org.rsmod.api.enums.SubstitutesEnums.staff_substitutes
 import org.rsmod.game.inv.InvObj
 
 public class StaffSubstituteRepository {
@@ -20,7 +20,7 @@ public class StaffSubstituteRepository {
     private fun loadStaffSubstitutes(): Map<Int, Set<Int>> {
         val mapped = hashMapOf<Int, Set<Int>>()
 
-        val staffList = staff_enums.staves.filterValuesNotNull()
+        val staffList = staff_substitutes.filterValuesNotNull()
         for ((staff, subEnum) in staffList) {
             val subList = subEnum.filterValuesNotNull()
             mapped[staff.id] = subList.map { it.value.id }.toHashSet()

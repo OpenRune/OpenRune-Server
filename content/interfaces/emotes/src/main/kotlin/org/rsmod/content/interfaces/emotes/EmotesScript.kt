@@ -19,6 +19,9 @@ import org.rsmod.api.config.refs.seqs
 import org.rsmod.api.config.refs.spotanims
 import org.rsmod.api.config.refs.varbits
 import org.rsmod.api.config.refs.varps
+import org.rsmod.api.enums.NamedEnums.emote_names
+import org.rsmod.api.enums.SkillCapeEnums.skill_cape_anims
+import org.rsmod.api.enums.SkillCapeEnums.skill_cape_spots
 import org.rsmod.api.player.back
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.protect.ProtectedAccessLauncher
@@ -58,9 +61,8 @@ private constructor(
     }
 
     private fun loadEmotesEnum() {
-        emoteSlots = emote_enums.emote_names
 
-        val comsubSlots = emoteSlots.keys
+        val comsubSlots = emote_names.keys
         emoteSlotRange = comsubSlots.min()..comsubSlots.max()
     }
 
@@ -603,8 +605,8 @@ private class SkillCapeEmoteResolver {
     private lateinit var skillCapeSpots: EnumTypeMap<StatType, SpotanimType>
 
     fun startup() {
-        skillCapeAnims = emote_enums.skill_cape_anims
-        skillCapeSpots = emote_enums.skill_cape_spots
+        skillCapeAnims = skill_cape_anims
+        skillCapeSpots = skill_cape_spots
     }
 
     operator fun contains(stat: StatType): Boolean =

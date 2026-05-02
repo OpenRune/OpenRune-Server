@@ -1,7 +1,7 @@
 package org.rsmod.api.spells.runes.subs
 
 import dev.openrune.types.ItemServerType
-import org.rsmod.api.spells.runes.subs.configs.runesub_enums
+import org.rsmod.api.enums.RuneEnums.rune_substitutes
 
 public class RuneSubstituteRepository {
     private lateinit var subs: Map<Int, List<ItemServerType>>
@@ -20,7 +20,7 @@ public class RuneSubstituteRepository {
     private fun loadRuneSubstitutes(): Map<Int, List<ItemServerType>> {
         val mapped = hashMapOf<Int, List<ItemServerType>>()
 
-        val runeList = runesub_enums.runes.filterValuesNotNull()
+        val runeList = rune_substitutes.filterValuesNotNull()
         for ((rune, subEnum) in runeList) {
             val subList = subEnum.filterValuesNotNull()
             mapped[rune.id] = subList.values.toList()

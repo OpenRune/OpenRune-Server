@@ -1,7 +1,7 @@
 package org.rsmod.api.spells.runes.compact
 
 import dev.openrune.types.ItemServerType
-import org.rsmod.api.spells.runes.compact.configs.compact_enums
+import org.rsmod.api.enums.RuneEnums.rune_compact_ids
 
 /**
  * Rune objs have a "compact id" used in places where storage needs to be efficient, such as rune
@@ -24,7 +24,7 @@ public class CompactRuneRepository {
     }
 
     private fun loadCompactIds(): Map<ItemServerType, Int> {
-        val enum = compact_enums.compact_ids.filterValuesNotNull()
+        val enum = rune_compact_ids.filterValuesNotNull()
         return HashMap(enum.backing)
     }
 }

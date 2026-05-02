@@ -5,8 +5,8 @@ import dev.openrune.util.WeaponCategory
 import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap
 import org.rsmod.api.combat.commons.styles.AttackStyle
 import org.rsmod.api.combat.weapon.righthand
-import org.rsmod.api.combat.weapon.styles.configs.style_enums
 import org.rsmod.api.config.refs.varps
+import org.rsmod.api.enums.WeaponAttackEnums.weapon_attack_styles
 import org.rsmod.game.entity.Player
 import org.rsmod.game.type.getOrNull
 
@@ -36,7 +36,7 @@ public class AttackStyles {
     }
 
     private fun loadWeaponStylesMap(): WeaponStyleMap {
-        val stylesEnum = style_enums.weapon_attack_styles.filterValuesNotNull()
+        val stylesEnum = weapon_attack_styles.filterValuesNotNull()
         return WeaponStyleMap(Int2IntOpenHashMap(stylesEnum.backing))
     }
 

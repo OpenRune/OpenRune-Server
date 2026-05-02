@@ -14,6 +14,7 @@ import org.rsmod.api.config.refs.content
 import org.rsmod.api.config.refs.invs
 import org.rsmod.api.config.refs.params
 import org.rsmod.api.config.refs.synths
+import org.rsmod.api.enums.BankEnums.bank_equipment_tab_to_slots_map
 import org.rsmod.api.invtx.invCompress
 import org.rsmod.api.invtx.invTransaction
 import org.rsmod.api.invtx.select
@@ -37,7 +38,6 @@ import org.rsmod.content.interfaces.bank.bankCapacity
 import org.rsmod.content.interfaces.bank.configs.bank_components
 import org.rsmod.content.interfaces.bank.configs.bank_comsubs
 import org.rsmod.content.interfaces.bank.configs.bank_constants
-import org.rsmod.content.interfaces.bank.configs.bank_enums
 import org.rsmod.content.interfaces.bank.configs.bank_objs
 import org.rsmod.content.interfaces.bank.configs.bank_queues
 import org.rsmod.content.interfaces.bank.insertMode
@@ -103,7 +103,7 @@ constructor(
         onIfModalDrag(bank_components.worn_inventory) { dragSideInv(it) }
         onIfModalDrag(bank_components.main_inventory, bank_components.tabs) { dragIntoTab(it) }
 
-        val wornComponents = bank_enums.worn_component_map.filterValuesNotNull()
+        val wornComponents = bank_equipment_tab_to_slots_map.filterValuesNotNull()
         for ((slot, component) in wornComponents) {
             onIfModalButton(component) { wornOp(slot, it.op) }
         }

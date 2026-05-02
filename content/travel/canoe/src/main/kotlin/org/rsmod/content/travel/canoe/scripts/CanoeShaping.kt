@@ -5,6 +5,8 @@ import dev.openrune.definition.type.widget.IfEvent
 import jakarta.inject.Inject
 import org.rsmod.api.config.refs.params
 import org.rsmod.api.config.refs.stats
+import org.rsmod.api.enums.CanoeShapingAxeEnums.canoe_shaping_axe_anims
+import org.rsmod.api.enums.CanoeShapingAxeEnums.canoe_shaping_axe_rates
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.stat.woodcuttingLvl
 import org.rsmod.api.repo.loc.LocRepository
@@ -14,7 +16,6 @@ import org.rsmod.api.script.onOpLoc3
 import org.rsmod.api.stats.levelmod.InvisibleLevels
 import org.rsmod.api.stats.xpmod.XpModifiers
 import org.rsmod.content.travel.canoe.configs.canoe_components
-import org.rsmod.content.travel.canoe.configs.canoe_enums
 import org.rsmod.content.travel.canoe.configs.canoe_interfaces
 import org.rsmod.content.travel.canoe.configs.canoe_locs
 import org.rsmod.game.loc.BoundLocInfo
@@ -122,7 +123,7 @@ constructor(
         }
 
         if (skillAnimDelay == mapClock && actionDelay >= mapClock) {
-            val axeEnum = canoe_enums.shaping_axe_anims
+            val axeEnum = canoe_shaping_axe_anims
             val axeSeq =
                 axeEnum.find { it.key.id == axe.id }?.value ?: error("Unable to find axe seq")
             anim(axeSeq)
@@ -142,7 +143,7 @@ constructor(
             actionDelay = mapClock + 5
             faceSquare(loc.adjustedCentre)
         } else if (actionDelay == mapClock) {
-            val (low, high) = axeSuccessRates(axe, canoe_enums.shaping_axe_rates)
+            val (low, high) = axeSuccessRates(axe, canoe_shaping_axe_rates)
             finishShape = statRandom(stats.woodcutting, low, high, invisibleLvls)
         }
 

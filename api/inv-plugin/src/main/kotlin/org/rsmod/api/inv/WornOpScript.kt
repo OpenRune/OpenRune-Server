@@ -4,7 +4,7 @@ import dev.openrune.definition.type.widget.ComponentType
 import dev.openrune.types.aconverted.interf.IfButtonOp
 import dev.openrune.util.Wearpos
 import jakarta.inject.Inject
-import org.rsmod.api.config.refs.enums
+import org.rsmod.api.enums.EquipmentEnums.equipment_tab_to_slots_map
 import org.rsmod.api.player.interact.WornInteractions
 import org.rsmod.api.player.output.UpdateInventory.resendSlot
 import org.rsmod.api.player.protect.ProtectedAccessLauncher
@@ -48,7 +48,7 @@ constructor(
     }
 
     private fun mappedComponents(): Map<Wearpos, ComponentType> {
-        val resolver = enums.equipment_tab_to_slots_map
+        val resolver = equipment_tab_to_slots_map
         check(resolver.isNotEmpty) { "Equipment component enum must not be empty: $resolver" }
 
         val invalidWearpos = resolver.keys.filter { Wearpos[it] == null }

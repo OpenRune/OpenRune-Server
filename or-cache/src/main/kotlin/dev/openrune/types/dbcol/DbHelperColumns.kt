@@ -3,10 +3,12 @@ package dev.openrune.types.dbcol
 import dev.openrune.cache.filestore.definition.InterfaceType
 import dev.openrune.definition.type.DBRowType
 import dev.openrune.definition.type.EnumType
+import dev.openrune.definition.type.SpotAnimType
 import dev.openrune.definition.type.widget.ComponentType
 import dev.openrune.types.ItemServerType
 import dev.openrune.types.NpcServerType
 import dev.openrune.types.ObjectServerType
+import dev.openrune.types.SequenceServerType
 import dev.openrune.types.StatRequirement
 import dev.openrune.types.StatType
 import dev.openrune.types.aconverted.AreaType
@@ -14,7 +16,6 @@ import dev.openrune.types.aconverted.EnumHelper
 import dev.openrune.types.aconverted.EnumPair
 import dev.openrune.types.aconverted.MidiType
 import dev.openrune.types.dbcol.DbColumnCodec.AreaTypeCodec
-import dev.openrune.types.dbcol.DbColumnCodec.BooleanCodec
 import dev.openrune.types.dbcol.DbColumnCodec.ComponentTypeCodec
 import dev.openrune.types.dbcol.DbColumnCodec.CoordGridCodec
 import dev.openrune.types.dbcol.DbColumnCodec.DbRowIdCodec
@@ -40,12 +41,17 @@ import org.rsmod.map.CoordGrid
  */
 public fun DbHelper.area(internal: String): AreaType = column(internal, AreaTypeCodec)
 
-public fun DbHelper.boolean(internal: String): Boolean = column(internal, BooleanCodec)
+public fun DbHelper.boolean(internal: String): Boolean = column(internal,
+    DbColumnCodec.BooleanCodec
+)
 
 public fun DbHelper.component(internal: String): ComponentType =
     column(internal, ComponentTypeCodec)
 
 public fun DbHelper.coord(internal: String): CoordGrid = column(internal, CoordGridCodec)
+
+public fun DbHelper.spot(internal: String): SpotAnimType = column(internal, DbColumnCodec.SpotCodec)
+public fun DbHelper.seq(internal: String): SequenceServerType = column(internal, DbColumnCodec.SeqCodec)
 
 public fun DbHelper.dbRow(internal: String): DBRowType = column(internal, DbRowTypeCodec)
 
@@ -144,7 +150,7 @@ public fun <T, R> DbHelper.list(internal: String, decoder: DbColumnCodec<T, R>):
 }
 
 public fun DbHelper.booleanOptional(internal: String): Boolean? =
-    columnOptional(internal, BooleanCodec)
+    columnOptional(internal, DbColumnCodec.BooleanCodec)
 
 public fun DbHelper.intOptional(internal: String): Int? = columnOptional(internal, IntCodec)
 

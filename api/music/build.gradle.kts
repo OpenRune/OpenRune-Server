@@ -11,7 +11,7 @@ dependencies {
     implementation(libs.guice)
     implementation(projects.api.config)
     implementation(projects.api.random)
-    implementation(projects.api.tables)
+    implementation(projects.api.generated)
     implementation(projects.engine.game)
     implementation(projects.engine.module)
     implementation(projects.engine.plugin)

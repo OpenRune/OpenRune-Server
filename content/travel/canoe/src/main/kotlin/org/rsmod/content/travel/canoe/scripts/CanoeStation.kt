@@ -3,13 +3,13 @@ package org.rsmod.content.travel.canoe.scripts
 import jakarta.inject.Inject
 import org.rsmod.api.config.refs.stats
 import org.rsmod.api.config.refs.synths
+import org.rsmod.api.enums.NamedEnums.canoe_station_axe_rates
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.stat.woodcuttingLvl
 import org.rsmod.api.repo.world.WorldRepository
 import org.rsmod.api.script.onOpLoc1
 import org.rsmod.api.script.onOpLoc3
 import org.rsmod.api.stats.levelmod.InvisibleLevels
-import org.rsmod.content.travel.canoe.configs.canoe_enums
 import org.rsmod.content.travel.canoe.configs.canoe_locs
 import org.rsmod.content.travel.canoe.configs.canoe_seqs
 import org.rsmod.game.loc.BoundLocInfo
@@ -128,7 +128,7 @@ constructor(private val invisibleLvls: InvisibleLevels, private val worldRepo: W
             actionDelay = mapClock + 3
             faceSquare(path.face)
         } else if (actionDelay == mapClock) {
-            val (low, high) = axeSuccessRates(axe, canoe_enums.station_axe_rates)
+            val (low, high) = axeSuccessRates(axe, canoe_station_axe_rates)
             cutCanoe = statRandom(stats.woodcutting, low, high, invisibleLvls)
         }
 

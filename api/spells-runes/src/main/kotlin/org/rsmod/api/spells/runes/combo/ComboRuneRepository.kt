@@ -1,7 +1,7 @@
 package org.rsmod.api.spells.runes.combo
 
 import dev.openrune.types.ItemServerType
-import org.rsmod.api.spells.runes.combo.configs.combo_enums
+import org.rsmod.api.enums.ComboRuneEnums.combo_runes
 
 public class ComboRuneRepository {
     private lateinit var combos: Map<Int, ComboRune>
@@ -22,7 +22,7 @@ public class ComboRuneRepository {
 
     private fun loadComboRunes(): Map<ItemServerType, ComboRune> {
         val mapped = hashMapOf<ItemServerType, ComboRune>()
-        val comboRuneList = combo_enums.combos.filterValuesNotNull()
+        val comboRuneList = combo_runes.filterValuesNotNull()
         for ((rune, comboRunesEnum) in comboRuneList) {
             val runeList = comboRunesEnum.filterValuesNotNull().values.toList()
             check(runeList.size == 2) { "Expected 2 rune values: $runeList (enum=$comboRunesEnum)" }

@@ -6,7 +6,6 @@ import org.rsmod.api.combat.commons.CombatAttack
 import org.rsmod.api.specials.combat.MagicSpecialAttack
 import org.rsmod.api.specials.combat.MeleeSpecialAttack
 import org.rsmod.api.specials.combat.RangedSpecialAttack
-import org.rsmod.api.specials.configs.SpecialAttackEnergyEnums
 import org.rsmod.api.specials.instant.InstantSpecialAttack
 import org.rsmod.api.specials.weapon.SpecialAttackWeapons
 
@@ -165,7 +164,7 @@ constructor(private val registry: SpecialAttackRegistry) {
                 error(
                     "Weapon `$specWeapon` was not found in the required enums. " +
                         "Use [${SpecialAttackWeapons::class}] " +
-                        "and [${SpecialAttackEnergyEnums::class}] " +
+                        "and AttackEnergyEnums " +
                         "as reference for which enums are required."
                 )
             }

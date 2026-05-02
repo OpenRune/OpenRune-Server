@@ -22,7 +22,7 @@ dependencies {
     implementation(projects.api.random)
     implementation(projects.api.repo)
     implementation(projects.api.route)
-    implementation(projects.api.tables)
+    implementation(projects.api.generated)
     implementation(projects.api.stats.levelmod)
 
 

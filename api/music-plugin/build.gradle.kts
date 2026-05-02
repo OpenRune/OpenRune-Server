@@ -11,7 +11,7 @@ dependencies {
     implementation(projects.api.config)
     implementation(projects.api.player)
     implementation(projects.api.script)
-    implementation(projects.api.tables)
+    implementation(projects.api.generated)
     implementation(projects.api.utils.utilsVars)
     implementation(projects.engine.events)
     implementation(projects.engine.game)

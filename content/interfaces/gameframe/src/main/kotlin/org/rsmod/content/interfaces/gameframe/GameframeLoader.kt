@@ -40,8 +40,9 @@ internal class GameframeLoader {
         val resizable = row.resizable
         val isDefault = row.default
         val stoneArrangement = row.stoneArrangement
+
         val mappings =
-            row.mappings.associate { Component(it.key.packed) to Component(it.value.packed) }
+            row.mappings.filterValuesNotNull().associate { Component(it.key.packed) to Component(it.value.packed) }
 
         return Gameframe(
             topLevel = topLevel,

@@ -1,6 +1,7 @@
 package org.rsmod.content.generic.locs.signpost
 
 import dev.openrune.types.enums.EnumTypeMap
+import org.rsmod.api.enums.NamedEnums.signpost_directions
 import org.rsmod.api.player.output.Camera.camReset
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.script.onApLoc1
@@ -14,10 +15,8 @@ import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
 class SignpostScript : PluginScript() {
-    private lateinit var signposts: EnumTypeMap<CoordGrid, String>
 
     override fun ScriptContext.startup() {
-        signposts = SignpostEnums.signpost_directions
         onApLoc1(signpost_locs.signpost) { apReadSignpost(it.loc) }
         onOpLoc1(signpost_locs.signpost) { readSignpost(it.loc) }
         onIfClose(signpost_interfaces.signpost) { player.exitSignpost() }
@@ -38,7 +37,7 @@ class SignpostScript : PluginScript() {
         val camLookAt = coords.translateZ(3)
         camLookAt(camLookAt, height = 450, rate = 2, rate2 = 10)
 
-        val directions = signposts.getValue(loc.coords).split("|")
+        val directions = signpost_directions.getValue(loc.coords).split("|")
         val (west, south, north, east) = directions
         ifSetText(signpost_components.signpost_west, west)
         ifSetText(signpost_components.signpost_south, south)

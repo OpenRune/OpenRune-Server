@@ -7,15 +7,13 @@ import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.INT
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.LIST
-import com.squareup.kotlinpoet.LONG
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.STAR
-import com.squareup.kotlinpoet.STRING
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.TypeVariableName
-import com.squareup.kotlinpoet.asTypeName
+import com.squareup.kotlinpoet.asClassName
 import com.squareup.kotlinpoet.buildCodeBlock
 import dev.openrune.cache.gameval.GameValElement
 import dev.openrune.cache.gameval.GameValHandler.elementAs
@@ -23,18 +21,25 @@ import dev.openrune.cache.gameval.impl.Table
 import dev.openrune.definition.type.DBRowType
 import dev.openrune.definition.type.DBTableType
 import dev.openrune.definition.type.EnumType
-import dev.openrune.definition.util.BaseVarType
 import dev.openrune.definition.util.VarType
+import dev.openrune.rscm.RSCM
+import dev.openrune.rscm.RSCMType
+import dev.openrune.types.dbcol.DbHelper as DbColHelper
 import java.io.File
 
 private const val PKG_DB_COL = "dev.openrune.types.dbcol"
 private const val PKG_ACONVERTED = "dev.openrune.types.aconverted"
 private const val PKG_TABLES = "org.rsmod.api.table"
-private const val OUT_TABLES_KT = "../api/tables/src/main/kotlin"
+private const val PKG_OPENRUNE_ENUMS = "dev.openrune.types.enums"
+private const val OUT_TABLES_KT = "../api/generated/src/main/kotlin"
 
-private val typeBoolean = Boolean::class.asTypeName()
-private val typeCoordGrid = ClassName("org.rsmod.map", "CoordGrid")
+private val cnameEnumTypeMap = ClassName("dev.openrune.types.enums", "EnumTypeMap")
+
+// region Models & naming (gameval / row wrapper)
+
 private val typeList = ClassName("kotlin.collections", "List")
+
+private val classNameDbColHelper = DbColHelper::class.asClassName()
 
 private val tableSubpackages =
     listOf(
@@ -80,6 +85,9 @@ data class TableDef(
     val columns: List<TableColumn>,
     val sourceTableId: Int,
 )
+
+// endregion
+// region Column sampling (infer optional columns, slot types, DBROW targets)
 
 private data class ColumnMetadata(
     val slotTypes: MutableMap<Int, VarType> = mutableMapOf(),
@@ -186,109 +194,22 @@ private fun dominantDbRowTable(
     return counts.filterValues { it == top }.keys.singleOrNull()?.let { tableIdToName[it] }
 }
 
-private fun codecNested(simple: String): ClassName =
-    ClassName(PKG_DB_COL, "DbColumnCodec").nestedClass(simple)
+// endregion
+// region Cleanup, enum metadata, `row.*(%S, %T)` format helpers
 
-private fun codecTopLevel(simple: String): ClassName = ClassName(PKG_DB_COL, simple)
-
-private val nestedCodecByVarType: Map<VarType, String> =
-    mapOf(
-        VarType.BOOLEAN to "BooleanCodec",
-        VarType.INT to "IntCodec",
-        VarType.LONG to "IntCodec",
-        VarType.STRING to "StringCodec",
-        VarType.NPC to "NpcTypeCodec",
-        VarType.LOC to "LocTypeCodec",
-        VarType.OBJ to "ItemServerTypeCodec",
-        VarType.COORDGRID to "CoordGridCodec",
-        VarType.DBROW to "DbRowTypeCodec",
-        VarType.STAT to "StatTypeCodec",
-        VarType.COMPONENT to "ComponentTypeCodec",
-        VarType.ENUM to "EnumTypeIdCodec",
-        VarType.MIDI to "MidiTypeCodec",
-        VarType.AREA to "AreaTypeCodec",
-        VarType.INTERFACE to "InterfaceTypeCodec",
-    )
-
-private val topLevelCodecByVarType: Map<VarType, String> =
-    mapOf(
-        VarType.MAPELEMENT to "MapElementIdCodec",
-        VarType.NAMEDOBJ to "NamedObjIdCodec",
-        VarType.GRAPHIC to "GraphicIdCodec",
-        VarType.SEQ to "SeqIdCodec",
-        VarType.MODEL to "ModelIdCodec",
-        VarType.CATEGORY to "CategoryIdCodec",
-        VarType.INV to "InvIdCodec",
-        VarType.IDKIT to "IdkIdCodec",
-        VarType.VARP to "VarpIdCodec",
-        VarType.STRUCT to "StructIdCodec",
-        VarType.DBTABLE to "DbtableIdCodec",
-        VarType.SYNTH to "SynthIdCodec",
-        VarType.LOCSHAPE to "LocShapeIdCodec",
-    )
-
-private fun codecClass(vt: VarType): ClassName =
-    nestedCodecByVarType[vt]?.let(::codecNested)
-        ?: topLevelCodecByVarType[vt]?.let(::codecTopLevel)
-        ?: codecNested("IntCodec")
-
-private val scalarReaderByVarType: Map<VarType, String> =
-    mapOf(
-        VarType.BOOLEAN to "boolean",
-        VarType.INT to "int",
-        VarType.STRING to "string",
-        VarType.LONG to "long",
-        VarType.COORDGRID to "coord",
-        VarType.AREA to "area",
-        VarType.COMPONENT to "component",
-        VarType.DBROW to "dbRow",
-        VarType.INTERFACE to "interf",
-        VarType.LOC to "loc",
-        VarType.MIDI to "midi",
-        VarType.NPC to "npc",
-        VarType.OBJ to "obj",
-        VarType.STAT to "stat",
-        VarType.ENUM to "enumTypeId",
-    )
-
-private val scalarOptionalReaderByVarType: Map<VarType, String> =
-    mapOf(
-        VarType.BOOLEAN to "booleanOptional",
-        VarType.INT to "intOptional",
-        VarType.STRING to "stringOptional",
-        VarType.LONG to "longOptional",
-        VarType.ENUM to "enumTypeIdOptional",
-        VarType.NPC to "npcOptional",
-        VarType.OBJ to "objOptional",
-    )
-
-private fun kotlinType(vt: VarType, nullable: Boolean): TypeName {
-    val base =
-        when (vt) {
-            VarType.BOOLEAN -> typeBoolean
-            VarType.INT,
-            VarType.ENUM -> INT
-            VarType.STRING -> STRING
-            VarType.LONG -> LONG
-            VarType.COORDGRID -> typeCoordGrid
-            VarType.AREA -> ClassName("dev.openrune.types.aconverted", "AreaType")
-            VarType.COMPONENT -> ClassName("dev.openrune.definition.type.widget", "ComponentType")
-            VarType.DBROW -> ClassName("dev.openrune.definition.type", "DBRowType")
-            VarType.INTERFACE -> ClassName("dev.openrune.types.interf", "InterfaceType")
-            VarType.LOC -> ClassName("dev.openrune.types", "ObjectServerType")
-            VarType.MIDI -> ClassName("dev.openrune.types.aconverted", "MidiType")
-            VarType.NPC -> ClassName("dev.openrune.types", "NpcServerType")
-            VarType.OBJ -> ClassName("dev.openrune.types", "ItemServerType")
-            VarType.STAT -> ClassName("dev.openrune.types", "StatType")
-            else ->
-                when (vt.baseType!!) {
-                    BaseVarType.INTEGER -> INT
-                    BaseVarType.STRING -> STRING
-                    BaseVarType.LONG -> LONG
-                    else -> INT
-                }
-        }
-    return if (nullable) base.copy(nullable = true) else base
+/** Clears all `*.kt` under [root], then empty dirs, so each generator run starts clean. */
+private fun clearGeneratedTableSources(root: File) {
+    if (!root.exists()) {
+        root.mkdirs()
+        return
+    }
+    check(root.isDirectory) { "Table output path is not a directory: ${root.absolutePath}" }
+    root.walkBottomUp()
+        .filter { it.isFile && it.extension.equals("kt", ignoreCase = true) }
+        .forEach { it.delete() }
+    root.walkBottomUp()
+        .filter { it.isDirectory && it != root && it.listFiles().isNullOrEmpty() }
+        .forEach { it.delete() }
 }
 
 /**
@@ -319,26 +240,25 @@ private fun distinctEnumIdsInColumn(
 private fun templateEnumId(table: DBTableType?, columnId: Int): Int? =
     table?.columns?.get(columnId)?.values?.firstOrNull()?.asPositiveInt()
 
-private fun unifiedEnumKeyValueTypes(
-    enumIds: List<Int>,
-    enums: Map<Int, EnumType>,
-    templateId: Int?,
-): Pair<VarType, VarType>? {
-    val fromRows =
-        enumIds
-            .mapNotNull { id -> enums[id]?.let { it.keyType to it.valueType } }
-            .distinct()
-            .singleOrNull()
-    return fromRows ?: templateId?.let { id -> enums[id]?.let { it.keyType to it.valueType } }
-}
+// endregion
+// region Orchestration
 
+/** Tuple arities seen across all tables in one [startGeneration] run (written once at the end). */
+private val tupleAritiesGlobal = mutableSetOf<Int>()
+
+/**
+ * Emits typed row wrappers under [OUT_TABLES_KT]. Wipes prior `*.kt` there first, then writes
+ * `Tuples.kt` once with all tuple helpers used by any table.
+ */
 fun startGeneration(
     elements: List<GameValElement>,
     rows: MutableMap<Int, DBRowType>,
     enums: MutableMap<Int, EnumType>,
     dbtables: Map<Int, DBTableType>,
 ) {
-    val outDir = File(OUT_TABLES_KT)
+    val outDir = File(OUT_TABLES_KT).canonicalFile
+    clearGeneratedTableSources(outDir)
+    tupleAritiesGlobal.clear()
     val tableIdToName = dbtableIdToName(elements)
     for (el in elements) {
         val table = el.elementAs<Table>() ?: continue
@@ -371,10 +291,10 @@ fun startGeneration(
             dbtables,
         )
     }
+    generateTupleHelpers(outDir, tupleAritiesGlobal)
 }
 
-private val tupleAritiesGlobal = mutableSetOf<Int>()
-
+/** Writes one `*Row` file + companion for a single dbtable. */
 fun generateTable(
     def: TableDef,
     outputDir: File,
@@ -382,9 +302,9 @@ fun generateTable(
     enums: Map<Int, EnumType>,
     dbtables: Map<Int, DBTableType>,
 ) {
-    val dbHelper = ClassName(PKG_DB_COL, "DbHelper")
-    val rscm = ClassName("dev.openrune.rscm", "RSCM")
-    val rscmType = ClassName("dev.openrune.rscm", "RSCMType")
+    val dbHelper = classNameDbColHelper
+    val rscm = RSCM::class.asClassName()
+    val rscmType = RSCMType::class.asClassName()
     val pkg = tablesPackageFor(def.tableName)
     val rowType = ClassName(pkg, def.className)
 
@@ -393,6 +313,8 @@ fun generateTable(
     val tupleAsLists = mutableSetOf<Int>()
     val crossRowTypes = mutableSetOf<ClassName>()
     val aconvertedImports = mutableSetOf<String>()
+    val extraClassImports = mutableSetOf<ClassName>()
+    val extraTopLevelImports = linkedSetOf<Pair<String, String>>()
 
     val rowSpec =
         TypeSpec.classBuilder(def.className)
@@ -407,6 +329,8 @@ fun generateTable(
                         tupleAsLists,
                         crossRowTypes,
                         aconvertedImports,
+                        extraClassImports,
+                        extraTopLevelImports,
                     )
                     .emitAll(rows, enums, dbtables)
                 addProperty(
@@ -427,31 +351,37 @@ fun generateTable(
 
     FileSpec.builder(pkg, def.className)
         .addFileComment("AUTO-GENERATED for dbtable.${def.tableName} — do not edit.")
-        .addImport(PKG_DB_COL, "DbHelper")
-        .addImport("dev.openrune.rscm", "RSCM", "RSCMType")
-        .addImport("dev.openrune.rscm.RSCM", "asRSCM")
+        .addImportClass(dbHelper)
+        .addImportClass(rscm)
+        .addImportClass(rscmType)
+        .addImport(rscm, "asRSCM")
         .apply {
             if (extImports.isNotEmpty()) addImport(PKG_DB_COL, *extImports.sorted().toTypedArray())
             if (aconvertedImports.isNotEmpty())
                 addImport(PKG_ACONVERTED, *aconvertedImports.sorted().toTypedArray())
-            crossRowTypes.forEach { addImport(it.packageName, it.simpleName) }
+            crossRowTypes.forEach { addImportClass(it) }
+            extraClassImports.forEach { addImportClass(it) }
+            extraTopLevelImports
+                .sortedBy { (p, n) -> "$p.$n" }
+                .forEach { (p, n) -> addImport(p, n) }
             tupleUsed.forEach { addImport(PKG_TABLES, "Tuple$it", "toTuple$it") }
             tupleAsLists.forEach { addImport(PKG_TABLES, "toListOfTuple$it") }
         }
         .addType(rowSpec)
         .build()
         .writeTo(outputDir)
-
-    generateTupleHelpers(outputDir, tupleAritiesGlobal)
 }
+
+// endregion
+// region Companion + tuple file
 
 private fun rowCompanion(
     rowType: ClassName,
-    dbHelper: ClassName,
+    dbHelper: TypeName,
     tableName: String,
     listType: ClassName,
-    rscm: ClassName,
-    rscmType: ClassName,
+    rscm: TypeName,
+    rscmType: TypeName,
 ): TypeSpec =
     TypeSpec.companionObjectBuilder()
         .addFunction(
@@ -482,6 +412,7 @@ private fun rowCompanion(
         )
         .build()
 
+/** Builds `public val` properties on each row wrapper from column metadata. */
 private class RowPropertyCodegen(
     private val def: TableDef,
     private val row: TypeSpec.Builder,
@@ -491,6 +422,8 @@ private class RowPropertyCodegen(
     private val tupleAsLists: MutableSet<Int>,
     private val crossRowTypes: MutableSet<ClassName>,
     private val aconvertedImports: MutableSet<String>,
+    private val extraClassImports: MutableSet<ClassName>,
+    private val extraTopLevelImports: MutableSet<Pair<String, String>>,
 ) {
     private fun typeFor(col: TableColumn, vt: VarType, nullable: Boolean): TypeName =
         if (vt == VarType.DBROW && col.dbRowTargetTable != null) {
@@ -498,7 +431,7 @@ private class RowPropertyCodegen(
                 if (nullable) it.copy(nullable = true) else it
             }
         } else {
-            kotlinType(vt, nullable)
+            kotlinTypeForVarType(vt, nullable)
         }
 
     private fun selfReferentialDbRow(col: TableColumn): Boolean =
@@ -534,19 +467,29 @@ private class RowPropertyCodegen(
                 .sorted()
         val kv = unifiedEnumKeyValueTypes(ids, enums, templateId)
         if (kv != null) {
-            val (k, v) = kv
-            val pair =
-                ClassName(PKG_ACONVERTED, "EnumPair")
-                    .parameterizedBy(kotlinType(k, false), kotlinType(v, false))
-            val listOfPairs = listType.parameterizedBy(pair)
-            val fn = if (col.optional) "enumOptional" else "enum"
-            extImports += fn
-            aconvertedImports += "EnumPair"
-            addProp(
-                prop,
-                if (col.optional) listOfPairs.copy(nullable = true) else listOfPairs,
-                CodeBlock.of("row.$fn(%S, %T, %T)", col.name, codecClass(k), codecClass(v)),
-            )
+            extraClassImports += cnameEnumTypeMap
+            extraTopLevelImports += PKG_OPENRUNE_ENUMS to "enum"
+            val slugId =
+                when {
+                    templateId != null && enums.containsKey(templateId) -> templateId
+                    else -> ids.first { enums.containsKey(it) }
+                }
+            val outerDef = enums.getValue(slugId)
+            val (kType, vType) = kotlinTypePairForEnumDefinition(outerDef, enums, cnameEnumTypeMap)
+            referencedOpenRuneClassNames(kType).forEach { extraClassImports += it }
+            referencedOpenRuneClassNames(vType).forEach { extraClassImports += it }
+            val mapType = cnameEnumTypeMap.parameterizedBy(kType, vType)
+            if (col.optional) {
+                extImports += "enumTypeIdOptional"
+                addProp(
+                    prop,
+                    mapType.copy(nullable = true),
+                    CodeBlock.of("row.enumTypeIdOptional(%S)?.let { enum(it) }", col.name),
+                )
+            } else {
+                extImports += "enumTypeId"
+                addProp(prop, mapType, CodeBlock.of("enum(row.enumTypeId(%S))", col.name))
+            }
             return
         }
         extImports += if (col.optional) "enumTypeIdOptional" else "enumTypeId"
@@ -591,13 +534,13 @@ private class RowPropertyCodegen(
         val tupleClass = ClassName(PKG_TABLES, "Tuple$n")
         val fn = if (col.optional) "multiColumnMixedOptional" else "multiColumnMixed"
         extImports += fn
-        val codecs = slots.map(::codecClass)
+        val codecs = slots.map(::codecClassForVarType)
         val head = rowWithCodecsFormat(fn, codecs)
         val args = rowWithCodecsArgs(col.name, codecs)
         if (multi) {
             tupleAsLists += n
             val tupleT =
-                tupleClass.parameterizedBy(*slots.map { kotlinType(it, false) }.toTypedArray())
+                tupleClass.parameterizedBy(*slots.map { kotlinTypeForVarType(it, false) }.toTypedArray())
             addProp(
                 prop,
                 listType.parameterizedBy(tupleT),
@@ -606,7 +549,7 @@ private class RowPropertyCodegen(
         } else {
             val tupleT =
                 tupleClass.parameterizedBy(
-                    *slots.map { kotlinType(it, col.optional) }.toTypedArray()
+                    *slots.map { kotlinTypeForVarType(it, col.optional) }.toTypedArray()
                 )
             val init =
                 if (col.optional) {
@@ -633,7 +576,11 @@ private class RowPropertyCodegen(
         val ty =
             when {
                 coordScalar ->
-                    if (col.optional) typeCoordGrid.copy(nullable = true) else typeCoordGrid
+                    if (col.optional) {
+                        tableCodegenCoordGridType.copy(nullable = true)
+                    } else {
+                        tableCodegenCoordGridType
+                    }
                 multi -> LIST.parameterizedBy(typeFor(col, first, false))
                 else -> typeFor(col, first, col.optional)
             }
@@ -695,8 +642,8 @@ private class RowPropertyCodegen(
                 CodeBlock.of("row.slotsOptional(%S, %T)", col.name, codecNested("DbRowTypeCodec"))
             else ->
                 CodeBlock.of(
-                    rowWithCodecsFormat("slotsOptional", slots.map(::codecClass)),
-                    *rowWithCodecsArgs(col.name, slots.map(::codecClass)),
+                    rowWithCodecsFormat("slotsOptional", slots.map(::codecClassForVarType)),
+                    *rowWithCodecsArgs(col.name, slots.map(::codecClassForVarType)),
                 )
         }
     }
@@ -718,7 +665,7 @@ private class RowPropertyCodegen(
                 )
             } else {
                 extImports += "multiColumn"
-                val codecs = slots.map(::codecClass)
+                val codecs = slots.map(::codecClassForVarType)
                 CodeBlock.of(
                     rowWithCodecsFormat("multiColumn", codecs, ").map { %T.getRow(it.id) }"),
                     *rowWithCodecsArgs(col.name, codecs),
@@ -732,12 +679,12 @@ private class RowPropertyCodegen(
                 when (first) {
                     VarType.INT -> codecNested("IntCodec")
                     VarType.DBROW -> codecNested("DbRowTypeCodec")
-                    else -> codecClass(first)
+                    else -> codecClassForVarType(first)
                 }
             CodeBlock.of("row.list(%S, %T)", col.name, c)
         } else {
             extImports += "multiColumn"
-            val codecs = slots.map(::codecClass)
+            val codecs = slots.map(::codecClassForVarType)
             CodeBlock.of(
                 rowWithCodecsFormat("multiColumn", codecs),
                 *rowWithCodecsArgs(col.name, codecs),
@@ -762,9 +709,8 @@ private class RowPropertyCodegen(
                 )
             }
         }
-        val req = scalarReaderByVarType[vt]
-        val opt = scalarOptionalReaderByVarType[vt]
-        val codec = codecClass(vt)
+        val (req, opt) = scalarDbHelperReaders(vt)
+        val codec = codecClassForVarType(vt)
         return when {
             req != null && !col.optional -> {
                 extImports += req

@@ -26,7 +26,3 @@ internal object SignpostComponents {
     val signpost_south = component("aide_compass:aide_south_text_2")
     val signpost_west = component("aide_compass:aide_west_text_2")
 }
-
-internal object SignpostEnums {
-    val signpost_directions = enum<CoordGrid, String>("signpost_directions")
-}

@@ -10,7 +10,8 @@ import org.rsmod.api.config.aliases.ParamInt
 import org.rsmod.api.config.aliases.ParamObj
 import org.rsmod.api.config.refs.BaseParams
 import org.rsmod.api.config.refs.objs
-import org.rsmod.api.spells.configs.spell_enums
+import org.rsmod.api.enums.AutocastEnums.autocast_spells
+import org.rsmod.api.enums.SpellbookEnums.spellbooks
 
 public class MagicSpellRegistry {
     private lateinit var objSpells: Map<Int, MagicSpell>
@@ -36,7 +37,7 @@ public class MagicSpellRegistry {
     private fun loadObjSpells(): Map<Int, MagicSpell> {
         val spells = hashMapOf<Int, MagicSpell>()
 
-        val spellbookList = spell_enums.spellbooks.filterValuesNotNull()
+        val spellbookList = spellbooks.filterValuesNotNull()
         for (spellbookEnum in spellbookList.values) {
             val spellList = spellbookEnum.filterValuesNotNull()
             for (spellObj in spellList.values) {
@@ -50,7 +51,7 @@ public class MagicSpellRegistry {
     private fun loadAutocastSpells(objSpells: Map<Int, MagicSpell>): Map<Int, MagicSpell> {
         val spells = hashMapOf<Int, MagicSpell>()
 
-        val autocastSpells = spell_enums.autocast_spells.filterValuesNotNull()
+        val autocastSpells = autocast_spells.filterValuesNotNull()
         for ((autocastId, spellObj) in autocastSpells) {
             val spell = objSpells[spellObj.id]
             checkNotNull(spell) { "Unexpected null spell for obj: $spellObj" }

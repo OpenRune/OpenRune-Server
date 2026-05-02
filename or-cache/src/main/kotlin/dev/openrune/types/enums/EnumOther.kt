@@ -7,3 +7,9 @@ public inline fun <reified K : Any, reified V : Any> enum(internal: String): Enu
     val raw = ServerCacheManager.getEnum("enum.${internal}".asRSCM()) ?: error("Error finding enum")
     return EnumTypeMap(raw)
 }
+
+public inline fun <reified K : Any, reified V : Any> enum(id: Int): EnumTypeMap<K, V> {
+    val raw = ServerCacheManager.getEnum(id) ?: error("Error finding enum")
+    return EnumTypeMap(raw)
+}
+

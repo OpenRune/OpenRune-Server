@@ -1,7 +1,8 @@
 package org.rsmod.api.specials.weapon
 
 import dev.openrune.types.ItemServerType
-import org.rsmod.api.specials.configs.energy_enums
+import org.rsmod.api.enums.SaEnums.sa_descriptions
+import org.rsmod.api.enums.SaEnums.sa_energy_requirements
 import org.rsmod.api.specials.energy.SpecialAttackEnergy
 
 public class SpecialAttackWeapons() {
@@ -31,7 +32,7 @@ public class SpecialAttackWeapons() {
     private fun loadEnergyRequirements(): Map<Int, Int> {
         val requirements = mutableMapOf<Int, Int>()
 
-        val enum = energy_enums.energy_requirements.filterValuesNotNull()
+        val enum = sa_energy_requirements.filterValuesNotNull()
         for ((obj, energy) in enum) {
             check(energy in 0..MAX_ENERGY) {
                 "Expected `energy` values to be within range of [0..$MAX_ENERGY]: actual=$energy"
@@ -45,7 +46,7 @@ public class SpecialAttackWeapons() {
     private fun loadDescriptions(): Map<Int, String> {
         val descriptions = mutableMapOf<Int, String>()
 
-        val enum = energy_enums.descriptions.filterValuesNotNull()
+        val enum = sa_descriptions.filterValuesNotNull()
         for ((obj, description) in enum) {
             descriptions[obj.id] = description
         }

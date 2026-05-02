@@ -5,8 +5,8 @@ import dev.openrune.util.WeaponCategory
 import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap
 import org.rsmod.api.combat.commons.types.AttackType
 import org.rsmod.api.combat.weapon.righthand
-import org.rsmod.api.combat.weapon.types.configs.type_enums
 import org.rsmod.api.config.refs.varps
+import org.rsmod.api.enums.WeaponAttackEnums.weapon_attack_types
 import org.rsmod.game.entity.Player
 import org.rsmod.game.type.getOrNull
 
@@ -36,7 +36,7 @@ public class AttackTypes {
     }
 
     private fun loadWeaponTypeMap(): WeaponTypeMap {
-        val typesEnum = type_enums.weapon_attack_types.filterValuesNotNull()
+        val typesEnum = weapon_attack_types.filterValuesNotNull()
         return WeaponTypeMap(Int2IntOpenHashMap(typesEnum.backing))
     }
 

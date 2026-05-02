@@ -50,3 +50,4 @@ bin/
 /api/tables/src/main/kotlin/org/rsmod/api/table
 game.yml
 /.idea
+/api/generated

@@ -4,6 +4,7 @@ import dev.openrune.ServerCacheManager
 import dev.openrune.cache.filestore.definition.InterfaceType
 import dev.openrune.definition.type.DBRowType
 import dev.openrune.definition.type.EnumType
+import dev.openrune.definition.type.SpotAnimType
 import dev.openrune.definition.type.widget.ComponentType
 import dev.openrune.definition.util.BaseVarType
 import dev.openrune.definition.util.CacheVarLiteral
@@ -12,6 +13,7 @@ import dev.openrune.literal.CacheVarTypeMap.codecOut
 import dev.openrune.types.ItemServerType
 import dev.openrune.types.NpcServerType
 import dev.openrune.types.ObjectServerType
+import dev.openrune.types.SequenceServerType
 import dev.openrune.types.StatRequirement
 import dev.openrune.types.StatType
 import dev.openrune.types.aconverted.AreaType
@@ -104,6 +106,32 @@ public interface DbColumnCodec<T, R> {
 
         override fun encode(value: CoordGrid): List<Int> {
             return listOf(value.packed)
+        }
+    }
+
+    public object SeqCodec : BaseIntCodec<SequenceServerType> {
+        override val types: List<CacheVarLiteral> = listOf(CacheVarLiteral.SEQ)
+
+        override fun decode(iterator: Iterator<Int, SequenceServerType>): SequenceServerType {
+            val packed = iterator.next()
+            return SequenceServerType(packed)
+        }
+
+        override fun encode(value: SequenceServerType): List<Int> {
+            return listOf(value.id)
+        }
+    }
+
+    public object SpotCodec : BaseIntCodec<SpotAnimType> {
+        override val types: List<CacheVarLiteral> = listOf(CacheVarLiteral.SPOTANIM)
+
+        override fun decode(iterator: Iterator<Int, SpotAnimType>): SpotAnimType {
+            val packed = iterator.next()
+            return SpotAnimType(packed)
+        }
+
+        override fun encode(value: SpotAnimType): List<Int> {
+            return listOf(value.id)
         }
     }
 

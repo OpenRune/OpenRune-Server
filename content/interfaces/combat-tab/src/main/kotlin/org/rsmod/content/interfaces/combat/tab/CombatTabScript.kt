@@ -15,6 +15,7 @@ import org.rsmod.api.config.refs.interfaces
 import org.rsmod.api.config.refs.queues
 import org.rsmod.api.config.refs.varbits
 import org.rsmod.api.config.refs.varps
+import org.rsmod.api.enums.NamedEnums.weapon_last_stance_varbits
 import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.protect.ProtectedAccessLauncher
@@ -38,7 +39,6 @@ import org.rsmod.api.specials.energy.SpecialAttackEnergy
 import org.rsmod.api.spells.MagicSpellRegistry
 import org.rsmod.api.spells.autocast.AutocastWeapons
 import org.rsmod.content.interfaces.combat.tab.configs.combat_components
-import org.rsmod.content.interfaces.combat.tab.configs.combat_enums
 import org.rsmod.content.interfaces.combat.tab.configs.combat_queues
 import org.rsmod.events.EventBus
 import org.rsmod.game.entity.Player
@@ -75,7 +75,7 @@ constructor(
     private lateinit var stanceSaveVarBits: EnumTypeNonNullMap<Int, Int>
 
     override fun ScriptContext.startup() {
-        stanceSaveVarBits = combat_enums.weapons_last_stance.filterValuesNotNull()
+        stanceSaveVarBits = weapon_last_stance_varbits.filterValuesNotNull()
 
         onIfOpen(interfaces.combat_interface) { player.updateCombatTab() }
         onWearposChange { player.onWearposChange(wearpos) }

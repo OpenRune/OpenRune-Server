@@ -8,6 +8,7 @@ import dev.openrune.cache.tools.tasks.CacheTask
 import dev.openrune.cache.tools.tasks.TaskType
 import dev.openrune.cache.tools.tasks.impl.PackDBTables
 import dev.openrune.cache.tools.tasks.impl.defs.PackConfig
+import dev.openrune.codegen.startEnumGeneration
 import dev.openrune.codegen.startGeneration
 import dev.openrune.definition.GameValGroupTypes
 import dev.openrune.definition.type.DBRowType
@@ -136,6 +137,7 @@ fun buildCache(taskType: TaskType) {
         OsrsCacheProvider.DBTableDecoder().load(cache, dbtables)
 
         startGeneration(type, rows, enums, dbtables)
+        startEnumGeneration(enums)
     }
 }
 

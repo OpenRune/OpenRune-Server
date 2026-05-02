@@ -1,7 +1,7 @@
 package org.rsmod.api.spells.runes.fake
 
 import dev.openrune.types.ItemServerType
-import org.rsmod.api.spells.runes.fake.configs.fake_enums
+import org.rsmod.api.enums.FakeEnums.fake_runes
 
 /**
  * Some features in the game use "fake" runes to ensure that, if players manage to smuggle them
@@ -20,7 +20,7 @@ public class FakeRuneRepository {
     }
 
     private fun loadFakeRunes(): Map<Int, ItemServerType> {
-        val enum = fake_enums.runes.filterValuesNotNull()
+        val enum = fake_runes.filterValuesNotNull()
         return enum.backing.entries.associate { it.key.id to it.value }
     }
 }

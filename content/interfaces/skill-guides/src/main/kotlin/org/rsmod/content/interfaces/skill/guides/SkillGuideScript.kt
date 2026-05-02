@@ -1,6 +1,8 @@
 package org.rsmod.content.interfaces.skill.guides
 
 import jakarta.inject.Inject
+import org.rsmod.api.enums.SkillGuideEnums.skill_guide_button_vars
+import org.rsmod.api.enums.SkillGuideEnums.skill_guide_section_vars
 import org.rsmod.api.player.protect.ProtectedAccessLauncher
 import org.rsmod.api.player.ui.ifClose
 import org.rsmod.api.player.ui.ifCloseSub
@@ -9,7 +11,6 @@ import org.rsmod.api.player.ui.ifSetEvents
 import org.rsmod.api.player.vars.intVarBit
 import org.rsmod.api.script.onIfOverlayButton
 import org.rsmod.content.interfaces.skill.guides.configs.guide_components
-import org.rsmod.content.interfaces.skill.guides.configs.guide_enums
 import org.rsmod.content.interfaces.skill.guides.configs.guide_interfaces
 import org.rsmod.content.interfaces.skill.guides.configs.guide_varbits
 import org.rsmod.events.EventBus
@@ -22,12 +23,12 @@ class SkillGuideScript
 constructor(private val eventBus: EventBus, private val protectedAccess: ProtectedAccessLauncher) :
     PluginScript() {
     override fun ScriptContext.startup() {
-        val mappedTabButtons = guide_enums.open_buttons.filterValuesNotNull()
+        val mappedTabButtons = skill_guide_button_vars.filterValuesNotNull()
         for ((button, varbit) in mappedTabButtons) {
             onIfOverlayButton(button) { player.selectGuide(varbit) }
         }
 
-        val mappedSubsections = guide_enums.subsection_buttons.filterValuesNotNull()
+        val mappedSubsections = skill_guide_section_vars.filterValuesNotNull()
         for ((button, varbit) in mappedSubsections) {
             onIfOverlayButton(button) { player.changeSubsection(varbit) }
         }
