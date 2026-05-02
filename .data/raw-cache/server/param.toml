@@ -703,3 +703,21 @@ isMembers = true
 id = "param.woodcutting_axe_success_rates"
 type = "ENUM"
 isMembers = true
+
+[[params]]
+id = "param.worn_poison_envenom_immunity"
+type = "INT"
+defaultInt = 0
+isMembers = true
+
+[[params]]
+id = "param.worn_disease_mitigation"
+type = "INT"
+defaultInt = 0
+isMembers = true
+
+[[params]]
+id = "param.npc_poison_severity"
+type = "INT"
+defaultInt = 0
+isMembers = true

@@ -7,6 +7,7 @@ dependencies {
     implementation(libs.simmetrics.core)
     implementation(projects.api.db)
     implementation(projects.api.dbGateway)
+    implementation(projects.api.mechanics.toxins)
     implementation(projects.api.pluginCommons)
     implementation(projects.api.realm)
     implementation(projects.api.realmConfig)

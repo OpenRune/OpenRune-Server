@@ -1,5 +1,6 @@
 package org.rsmod.api.death
 
+import dev.openrune.types.ItemServerType
 import jakarta.inject.Inject
 import jakarta.inject.Singleton
 import org.rsmod.api.config.constants
@@ -45,7 +46,9 @@ constructor(
         val hero = findHero(players)
         if (hero != null) {
             val duration = hero.lootDropDuration ?: constants.lootdrop_duration
-            objRepo.add(objs.bones, dropCoords, duration, hero)
+            
+            val droppedRemains = paramOrNull(params.dropped_remains)?: objs.bones
+            objRepo.add(droppedRemains, dropCoords, duration, hero)
         }
     }
 

@@ -103,4 +103,10 @@ object BaseVarps {
      * to be restored later.
      */
     val temp_restore_65527 = varp("temp_restore_65527")
+
+    val venom_strikes = varp("venom_strikes")
+    val disease = varp("disease")
+    val disease_drain = varp("disease_drain")
+    val poison_severity = varp("poison_severity")
+    val poison = varp("poison")
 }

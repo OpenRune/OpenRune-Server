@@ -14,4 +14,7 @@ object BaseTimers {
     val rapidrestore_regen = timer("rapidrestore_regen")
     val spec_regen = timer("spec_regen")
     val prayer_drain = timer("prayer_drain")
+    val player_poison = timer("player_poison")
+    val player_venom = timer("player_venom")
+    val player_disease = timer("player_disease")
 }

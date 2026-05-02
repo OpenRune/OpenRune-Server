@@ -8,6 +8,7 @@ import org.rsmod.api.config.refs.midis
 import org.rsmod.api.config.refs.queues
 import org.rsmod.api.config.refs.seqs
 import org.rsmod.api.config.refs.varps
+import org.rsmod.api.mechanics.toxins.Toxin.cureAllToxins
 import org.rsmod.api.player.deathResetTimers
 import org.rsmod.api.player.disablePrayers
 import org.rsmod.api.player.protect.ProtectedAccess
@@ -58,6 +59,7 @@ public class PlayerDeath() {
 
     private fun ProtectedAccess.resetPlayerState() {
         player.disablePrayers()
+        player.cureAllToxins()
         player.deathResetTimers()
 
         player.specialAttackType = 0

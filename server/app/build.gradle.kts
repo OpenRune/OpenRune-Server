@@ -17,6 +17,7 @@ dependencies {
     implementation(projects.api.cache)
     implementation(projects.api.core)
     implementation(projects.api.gameProcess)
+    implementation(projects.api.mechanics.toxins)
     implementation(projects.api.invPlugin)
     implementation(projects.api.net)
     implementation(projects.api.objPlugin)

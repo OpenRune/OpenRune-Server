@@ -30087,6 +30087,7 @@ inherit = "obj.serpentine_helm_charged"
 tradeable = false
 [item.params]
 "param.equipment_sound"=2240
+"param.worn_poison_envenom_immunity"=1
 
 
 [[item]]
@@ -30329,6 +30330,7 @@ inherit = "obj.serpentine_helm_charged_cyan"
 tradeable = false
 [item.params]
 "param.equipment_sound"=2240
+"param.worn_poison_envenom_immunity"=1
 
 
 [[item]]
@@ -30337,6 +30339,7 @@ inherit = "obj.serpentine_helm_charged_red"
 tradeable = false
 [item.params]
 "param.equipment_sound"=2240
+"param.worn_poison_envenom_immunity"=1
 
 
 [[item]]

@@ -398,6 +398,6 @@ fun inter(internal: String): InterfaceType {
     }
 }
 
-fun jingle(internal: String): Int = rscmKey("jingle", internal)
+fun jingle(internal: String): Int = rscmKey("synth", internal)
 
 fun midi(internal: String): MidiType = MidiType(rscmKey("midi", internal))

@@ -7,3 +7,6 @@ rapidrestore_regen=5
 spec_regen=6
 prayer_drain=7
 music_sync=8
+player_poison=9
+player_venom=10
+player_disease=11

@@ -13,6 +13,9 @@ import kotlin.math.max
 import kotlin.math.min
 import org.rsmod.annotations.InternalApi
 import org.rsmod.api.invtx.invAdd
+import org.rsmod.api.mechanics.toxins.impl.PlayerDisease
+import org.rsmod.api.mechanics.toxins.impl.PlayerPoison
+import org.rsmod.api.mechanics.toxins.impl.PlayerVenom
 import org.rsmod.api.invtx.invClear
 import org.rsmod.api.player.output.MiscOutput
 import org.rsmod.api.player.output.mes
@@ -106,7 +109,59 @@ constructor(
         }
         onCommand("reboot", "Reboots the game world, applying packed changes", ::reboot)
         onCommand("slowreboot", "Reboots the game world, with a timer", ::slowReboot)
+        onCommand("poison", "Test player poison (wiki initial damage, optional raw severity)", ::poisonTest) {
+            invalidArgs = "Use as ::poison initialDamage [severity] (e.g. ::poison 8 or ::poison 0 36)"
+        }
+        onCommand("venom", "Test player venom (escalating damage timer)", ::venomTest)
+        onCommand("venomclear", "Clears Venom", ::venomClear)
+        onCommand("disease", "Test disease (drain per tick, default 3)", ::diseaseTest) {
+            invalidArgs = "Use as ::disease [drainPerTick] (e.g. ::disease 5)"
+        }
+        onCommand("diseaseclear", "Clears disease timer (stats recover via normal regen)", ::diseaseClear)
     }
+
+    private fun poisonTest(cheat: Cheat) =
+        with(cheat) {
+            val initialDamage = args.getOrNull(0)?.toIntOrNull() ?: 0
+            val severity = args.getOrNull(1)?.toIntOrNull() ?: 0
+            val ok = PlayerPoison.tryPoison(player, initialDamage = initialDamage, severity = severity)
+            player.mes(
+                if (ok) {
+                    "Poison applied (initialDamage=$initialDamage severityParam=$severity)."
+                } else {
+                    "Poison not applied (weaker/equal than current, or both inputs zero)."
+                },
+            )
+        }
+
+    private fun venomTest(cheat: Cheat) =
+        with(cheat) {
+            PlayerVenom.tryVenom(player)
+        }
+
+    private fun venomClear(cheat: Cheat) =
+        with(cheat) {
+            PlayerVenom.clear(player)
+        }
+
+    private fun diseaseTest(cheat: Cheat) =
+        with(cheat) {
+            val drain = args.getOrNull(0)?.toIntOrNull() ?: 3
+            val ok = PlayerDisease.tryDisease(player, drain)
+            player.mes(
+                if (ok) {
+                    "Disease applied (drain per tick=$drain)."
+                } else {
+                    "Disease not applied (no eligible skill)."
+                },
+            )
+        }
+
+    private fun diseaseClear(cheat: Cheat) =
+        with(cheat) {
+            PlayerDisease.clear(player)
+            player.mes("Disease cleared.")
+        }
 
     private fun master(cheat: Cheat) = with(cheat) { player.setStatLevels(level = 99) }
 

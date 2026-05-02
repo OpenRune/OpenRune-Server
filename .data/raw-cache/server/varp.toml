@@ -207,5 +207,23 @@ scope = "Temp"
 
 [[varp]]
 isServerOnly = true
+id = "varp.venom_strikes"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+isServerOnly = true
+id = "varp.disease_drain"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+isServerOnly = true
+id = "varp.poison_severity"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+isServerOnly = true
 id = "varp.canoeing_river_lum_2"
 scope = "Temp"
