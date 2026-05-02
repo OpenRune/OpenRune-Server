@@ -48,13 +48,13 @@ data class ObjectServerType(
 
     public fun <T : Any> param(type: TypedParamType<T>): T = paramMap.resolve(type)
 
-    public fun <T : Any> paramOrNull(type: ParamType): T? = paramMap?.get(type)
+    public fun <T : Any> paramOrNull(type: ParamType): T? = paramMap?.getOrNull(type)
 
-    public fun <T : Any> paramOrNull(type: TypedParamType<T>): T? = paramMap?.get(type)
+    public fun <T : Any> paramOrNull(type: TypedParamType<T>): T? = paramMap?.getOrNull(type)
 
     public fun hasParam(type: ParamType): Boolean = paramMap?.contains(type) == true
 
-    public fun hasParam(type: TypedParamType<*>): Boolean = paramMap?.contains(type) == true
+    public fun hasParam(type: TypedParamType<*>): Boolean = paramOrNull(type) != null
 
     public fun isContentType(content: ContentGroupType): Boolean {
         return contentGroup == content.id

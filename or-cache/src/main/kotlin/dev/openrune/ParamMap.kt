@@ -38,7 +38,10 @@ public class ParamMap(
     public operator fun <T : Any> get(param: ParamType): T? =
         getOrNull(param) ?: (param.typedDefault as? T)
 
-    public operator fun <T : Any> get(param: TypedParamType<T>): T? = get(param.raw)
+    public operator fun <T : Any> get(param: TypedParamType<T>): T? {
+        if (!primitiveMap.containsKey(param.id)) return null
+        return get(param.raw)
+    }
 
     public operator fun plus(other: ParamMap): ParamMap {
         val otherTypedMap = other.typedMap
