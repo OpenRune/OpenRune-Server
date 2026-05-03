@@ -5,13 +5,16 @@ import dev.openrune.definition.type.widget.ComponentType
 import dev.openrune.types.ItemServerType
 import dev.openrune.types.aconverted.interf.IfButtonOp
 import dev.openrune.types.aconverted.interf.IfSubType
+import dev.openrune.util.Coord
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.events.EventBus
 import org.rsmod.events.KeyedEvent
 import org.rsmod.events.SuspendEvent
+import org.rsmod.events.UnboundEvent
 import org.rsmod.game.entity.Player
 import org.rsmod.game.ui.Component
 import org.rsmod.game.ui.UserInterface
+import org.rsmod.map.CoordGrid
 
 public class IfMoveTop(public val player: Player, interf: InterfaceType) : KeyedEvent {
     override val id: Long = interf.id.toLong()
@@ -94,6 +97,22 @@ public class IfOverlayButtonT(
             "targetObj=$targetObj, " +
             "player=$player" +
             ")"
+}
+
+public class WorldMapClick(
+    public val player: Player,
+    public val coord: CoordGrid
+) : SuspendEvent<ProtectedAccess> {
+    /**
+     * Stable event-bus key for [org.rsmod.api.script.onWorldMapClick]. Scripts gate by mod level
+     * with [dev.openrune.types.ModLevelType.hasAccessTo]; this must not vary per player or the
+     * subscription key would not match the published event.
+     */
+    override val id: Long = BUS_ID
+
+    public companion object {
+        public const val BUS_ID: Long = 0L
+    }
 }
 
 public class IfModalDrag(

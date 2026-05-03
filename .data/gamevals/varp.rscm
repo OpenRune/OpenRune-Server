@@ -32,3 +32,4 @@ emote_clock_premier_shield=65534
 venom_strikes=65502
 disease_drain=65503
 poison_severity=65535
+fullscreen_worldmap=65536

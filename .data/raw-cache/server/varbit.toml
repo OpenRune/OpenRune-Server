@@ -403,3 +403,10 @@ id = "varbit.emote_counters_premier_shield"
 varp = "varp.emote_counters"
 startBit = 1
 endBit = 2
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.fullscreen_worldmap"
+varp = "varp.fullscreen_worldmap"
+startBit = 0
+endBit = 1

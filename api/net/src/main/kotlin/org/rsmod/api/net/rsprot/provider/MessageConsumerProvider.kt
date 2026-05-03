@@ -12,6 +12,7 @@ import net.rsprot.protocol.game.incoming.locs.OpLocT
 import net.rsprot.protocol.game.incoming.messaging.MessagePublic
 import net.rsprot.protocol.game.incoming.misc.client.MapBuildComplete
 import net.rsprot.protocol.game.incoming.misc.client.WindowStatus
+import net.rsprot.protocol.game.incoming.misc.user.ClickWorldMap
 import net.rsprot.protocol.game.incoming.misc.user.ClientCheat
 import net.rsprot.protocol.game.incoming.misc.user.CloseModal
 import net.rsprot.protocol.game.incoming.misc.user.MoveGameClick
@@ -30,6 +31,7 @@ import net.rsprot.protocol.game.incoming.resumed.ResumePStringDialog
 import net.rsprot.protocol.game.incoming.resumed.ResumePauseButton
 import net.rsprot.protocol.message.codec.incoming.GameMessageConsumerRepositoryBuilder
 import net.rsprot.protocol.message.codec.incoming.provider.DefaultGameMessageConsumerRepositoryProvider
+import org.rsmod.api.net.rsprot.handlers.ClickWorldMapHandler
 import org.rsmod.api.net.rsprot.handlers.ClientCheatHandler
 import org.rsmod.api.net.rsprot.handlers.CloseModalHandler
 import org.rsmod.api.net.rsprot.handlers.If3ButtonHandler
@@ -64,6 +66,7 @@ constructor(
     private val windowStatus: WindowStatusHandler,
     private val moveGameClick: MoveGameClickHandler,
     private val moveMinimapClick: MoveMinimapClickHandler,
+    private val clickWorldMap: ClickWorldMapHandler,
     private val opLoc: OpLocHandler,
     private val opLocT: OpLocTHandler,
     private val opLoc6: OpLoc6Handler,
@@ -96,6 +99,7 @@ constructor(
         builder.addListener(OpLocT::class.java, opLocT)
         builder.addListener(OpLoc6::class.java, opLoc6)
         builder.addListener(ClientCheat::class.java, clientCheat)
+        builder.addListener(ClickWorldMap::class.java, clickWorldMap)
         builder.addListener(OpNpc::class.java, opNpc)
         builder.addListener(OpNpcT::class.java, opNpcT)
         builder.addListener(OpNpc6::class.java, opNpc6)

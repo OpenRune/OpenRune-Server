@@ -2,6 +2,7 @@ package org.rsmod.api.script
 
 import dev.openrune.definition.type.widget.ComponentType
 import dev.openrune.types.ItemServerType
+import dev.openrune.types.ModLevelType
 import dev.openrune.types.WalkTriggerType
 import dev.openrune.types.aconverted.ContentGroupType
 import dev.openrune.types.aconverted.QueueType
@@ -13,6 +14,7 @@ import org.rsmod.api.player.events.interact.PlayerTEvents
 import org.rsmod.api.player.events.interact.PlayerUContentEvents
 import org.rsmod.api.player.events.interact.PlayerUEvents
 import org.rsmod.api.player.protect.ProtectedAccess
+import org.rsmod.api.player.ui.WorldMapClick
 import org.rsmod.game.entity.player.SessionStateEvent
 import org.rsmod.plugin.scripts.ScriptContext
 
@@ -94,3 +96,16 @@ public fun ScriptContext.onPlayerWalkTrigger(
     trigger: WalkTriggerType,
     action: PlayerMovementEvent.WalkTrigger.() -> Unit,
 ): Unit = onEvent(trigger.id, action)
+
+public fun ScriptContext.onPlayerCoordsChanged(action: PlayerMovementEvent.CoordsMovedEvent.() -> Unit): Unit =
+    onEvent(action)
+
+public fun ScriptContext.onWorldMapClick(
+    modLevel: ModLevelType,
+    action: suspend ProtectedAccess.(WorldMapClick) -> Unit,
+): Unit = onProtectedEvent(WorldMapClick.BUS_ID) { event: WorldMapClick ->
+    if (!player.modLevel.hasAccessTo(modLevel)) {
+        return@onProtectedEvent
+    }
+    action(event)
+}

@@ -6,4 +6,5 @@ typealias gameframe_queues = GameframeQueues
 
 object GameframeQueues {
     val client_mode = queue("client_mode")
+    val fullscreen_map = queue("fullscreen_map")
 }

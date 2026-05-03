@@ -177,4 +177,5 @@ object BaseVarBits {
     val giant_pouch_storage_count = varBit("giant_pouch_storage_count")
     val colossal_pouch_storage_type = varBit("colossal_pouch_storage_type")
     val colossal_pouch_storage_count = varBit("colossal_pouch_storage_count")
+    val fullscreen_worldmap = varBit("fullscreen_worldmap")
 }

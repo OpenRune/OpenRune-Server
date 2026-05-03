@@ -4,6 +4,7 @@ import dev.openrune.ServerCacheManager
 import dev.openrune.cache.filestore.definition.InterfaceType.Companion.isType
 import dev.openrune.definition.type.widget.ComponentType
 import dev.openrune.definition.type.widget.IfEvent
+import dev.openrune.inter
 import jakarta.inject.Inject
 import org.rsmod.api.config.refs.components
 import org.rsmod.api.config.refs.interfaces
@@ -33,16 +34,16 @@ import org.rsmod.game.entity.Player
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
-class GameframeScript
-@Inject
-internal constructor(private val eventBus: EventBus, private val loader: GameframeLoader) :
+
+var Player.gameframeTopLevel by intVarBit(varbits.gameframe_toplevel)
+private var Player.stoneArrangements by boolVarBit(varbits.resizable_stone_arrangement)
+lateinit var gameframes: Map<Int, Gameframe>
+
+class GameframeScript @Inject internal constructor(private val eventBus: EventBus, private val loader: GameframeLoader) :
     PluginScript() {
-    private lateinit var gameframes: Map<Int, Gameframe>
+
     private lateinit var moveEvents: List<MoveEvent>
     private lateinit var default: Gameframe
-
-    private var Player.gameframeTopLevel by intVarBit(varbits.gameframe_toplevel)
-    private var Player.stoneArrangements by boolVarBit(varbits.resizable_stone_arrangement)
 
     override fun ScriptContext.startup() {
         loadAll()
@@ -61,6 +62,7 @@ internal constructor(private val eventBus: EventBus, private val loader: Gamefra
         onIfMoveSub(components.toplevel_target_ehc_listener) { player.moveEhcListener() }
 
         onPlayerSoftQueueWithArgs(gameframe_queues.client_mode) { player.changeGameframe(args) }
+        onPlayerSoftQueueWithArgs(gameframe_queues.fullscreen_map) { player.changeGameframe(args) }
     }
 
     private fun Player.openLoginGameframe() {
@@ -78,7 +80,7 @@ internal constructor(private val eventBus: EventBus, private val loader: Gamefra
         openGameframe(fallback, eventBus)
     }
 
-    private fun Player.queueGameframeMove(gameframe: Gameframe) {
+    public fun Player.queueGameframeMove(gameframe: Gameframe) {
         val settingsClientMode = ui.frameResizable != gameframe.resizable
         if (settingsClientMode) {
             runClientScript(3998, gameframe.clientMode)
@@ -105,30 +107,37 @@ internal constructor(private val eventBus: EventBus, private val loader: Gamefra
         ClientScripts.buffBarLayoutRedraw(this)
     }
 
-    private fun Player.resolveGameframeMove(from: Gameframe, dest: Gameframe): GameframeMove {
-        val intermediate = resolveIntermediate(from, dest)
-        return GameframeMove(from = from, dest = dest, intermediate = intermediate)
-    }
-
-    /*
-     * This is required for emulation purposes and might also be required for an edge case within
-     * the client/cs2. This can be seen when going from a fixed gameframe to a resizable one.
-     * If the `resizable_stone_arrangement` has to be changed to match the target gameframe, the
-     * client will receive two `if_opentop` + `if_movesub` sequences. One going from the current
-     * gameframe toplevel to a gameframe toplevel that matches the current stone arrangement var
-     * and is resizable, followed by a second `if_opentop` + `if_movesub` group going from this
-     * intermediate gameframe to the original target gameframe.
-     */
-    private fun Player.resolveIntermediate(from: Gameframe, dest: Gameframe): Gameframe? {
-        val requiresIntermediate =
-            dest.resizable && !from.resizable && stoneArrangements != dest.stoneArrangement
-        if (!requiresIntermediate) {
-            return null
+    companion object {
+        fun Player.resolveGameframeMove(from: Gameframe, dest: Gameframe): GameframeMove {
+            val intermediate = resolveIntermediate(from, dest)
+            return GameframeMove(from = from, dest = dest, intermediate = intermediate)
         }
-        return gameframes.values.first { it.hasFlags(resizable = true, stoneArrangements) }
+
+        /*
+        * This is required for emulation purposes and might also be required for an edge case within
+        * the client/cs2. This can be seen when going from a fixed gameframe to a resizable one.
+        * If the `resizable_stone_arrangement` has to be changed to match the target gameframe, the
+        * client will receive two `if_opentop` + `if_movesub` sequences. One going from the current
+        * gameframe toplevel to a gameframe toplevel that matches the current stone arrangement var
+        * and is resizable, followed by a second `if_opentop` + `if_movesub` group going from this
+        * intermediate gameframe to the original target gameframe.
+        */
+        private fun Player.resolveIntermediate(from: Gameframe, dest: Gameframe): Gameframe? {
+            val requiresIntermediate =
+                dest.resizable && !from.resizable && stoneArrangements != dest.stoneArrangement
+            if (!requiresIntermediate) {
+                return null
+            }
+            return gameframes.values.first { it.hasFlags(resizable = true, stoneArrangements) }
+        }
+
+        private fun Gameframe.hasFlags(resizable: Boolean, stoneArrangements: Boolean): Boolean {
+            return this.resizable == resizable && this.stoneArrangement == stoneArrangements
+        }
+
     }
 
-    private fun Player.changeGameframe(move: GameframeMove) {
+    public fun Player.changeGameframe(move: GameframeMove) {
         val (from, dest, intermediate) = move
         if (dest.resizable) {
             stoneArrangements = dest.stoneArrangement
@@ -162,10 +171,6 @@ internal constructor(private val eventBus: EventBus, private val loader: Gamefra
             return priority
         }
         return gameframes.values.firstOrNull { it.resizable == resizable }
-    }
-
-    private fun Gameframe.hasFlags(resizable: Boolean, stoneArrangements: Boolean): Boolean {
-        return this.resizable == resizable && this.stoneArrangement == stoneArrangements
     }
 
     private fun loadAll() {

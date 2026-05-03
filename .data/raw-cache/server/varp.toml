@@ -227,3 +227,10 @@ transmit = "Never"
 isServerOnly = true
 id = "varp.canoeing_river_lum_2"
 scope = "Temp"
+
+[[varp]]
+isServerOnly = true
+id = "varp.fullscreen_worldmap"
+scope = "Temp"
+transmit = "Never"
+
