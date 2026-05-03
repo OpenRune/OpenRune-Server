@@ -1,5 +1,7 @@
 package org.rsmod.api.specials
 
+import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.rscm.RSCMType
 import dev.openrune.types.ItemServerType
 import dev.openrune.types.ProjAnimType
 import dev.openrune.types.aconverted.SpotanimType
@@ -36,8 +38,8 @@ constructor(
         energy.takeSpecialEnergy(source.player, energyInHundreds)
     }
 
-    public fun getSpecialEnergyRequirement(obj: ItemServerType): Int? =
-        weapons.getSpecialEnergy(obj)
+    public fun getSpecialEnergyRequirement(obj: String): Int? =
+        weapons.getSpecialEnergy(obj.asRSCM(RSCMType.OBJ))
 
     /**
      * Sets [Player.actionDelay] to the current map clock + [cycles].
@@ -350,14 +352,14 @@ constructor(
     public fun spawnProjectile(
         source: ProtectedAccess,
         target: PathingEntity,
-        spotanim: SpotanimType,
-        projanim: ProjAnimType,
+        spotanim: String,
+        projanim: String,
     ): ProjAnim = manager.spawnProjectile(source.player, target, spotanim, projanim)
 
     /** @see [PlayerAttackManager.soundArea] */
     public fun soundArea(
         source: PathingEntity,
-        synth: SynthType,
+        synth: String,
         delay: Int = 0,
         loops: Int = 1,
         radius: Int = 5,

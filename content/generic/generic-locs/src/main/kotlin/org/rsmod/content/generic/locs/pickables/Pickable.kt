@@ -1,17 +1,17 @@
 package org.rsmod.content.generic.locs.pickables
 
+import dev.openrune.ServerCacheManager
+import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.rscm.RSCMType
 import dev.openrune.types.ItemServerType
 import dev.openrune.types.ObjectServerType
 import jakarta.inject.Inject
 import org.rsmod.api.config.locParam
-import org.rsmod.api.config.refs.content
-import org.rsmod.api.config.refs.objs
 import org.rsmod.api.config.refs.params
-import org.rsmod.api.config.refs.seqs
-import org.rsmod.api.config.refs.synths
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.repo.loc.LocRepository
 import org.rsmod.api.repo.obj.ObjRepository
+import org.rsmod.api.script.onOpContentLoc2
 import org.rsmod.api.script.onOpLoc2
 import org.rsmod.game.loc.BoundLocInfo
 import org.rsmod.plugin.scripts.PluginScript
@@ -22,8 +22,8 @@ class Pickable
 constructor(private val objRepo: ObjRepository, private val locRepo: LocRepository) :
     PluginScript() {
     override fun ScriptContext.startup() {
-        onOpLoc2(content.pickable_crop) { pickCrop(it.loc, it.type) }
-        onOpLoc2(pickable_locs.cabbage) { pickCabbage(it.loc, it.type) }
+        onOpContentLoc2("content.pickable_crop") { pickCrop(it.loc, it.type) }
+        onOpLoc2("loc.cabbage") { pickCabbage(it.loc, it.type) }
     }
 
     private suspend fun ProtectedAccess.pickCrop(
@@ -40,20 +40,21 @@ constructor(private val objRepo: ObjRepository, private val locRepo: LocReposito
             return
         }
 
-        anim(seqs.human_pickupfloor)
+        anim("seq.human_pickupfloor")
         playerWalkWithMinDelay(loc.coords)
 
         locRepo.del(loc, type.respawnTime)
 
         mes(takeMessage)
-        soundSynth(synths.pick)
-        invAddOrDrop(objRepo, takeObj)
+        soundSynth("synth.pick")
+        invAddOrDropType(objRepo, takeObj)
     }
 
     private suspend fun ProtectedAccess.pickCabbage(loc: BoundLocInfo, type: ObjectServerType) {
         // The rate for cabbage seed is currently unknown.
         if (random.randomBoolean(25)) {
-            pickCrop(loc, type, objs.cabbage_seed, "You pick a cabbage seed.")
+            val typeItem = ServerCacheManager.getItem("obj.cabbage_seed".asRSCM(RSCMType.OBJ))?: return
+            pickCrop(loc, type, typeItem, "You pick a cabbage seed.")
         } else {
             pickCrop(loc, type)
         }

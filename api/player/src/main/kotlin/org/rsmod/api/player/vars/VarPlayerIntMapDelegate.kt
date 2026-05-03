@@ -1,6 +1,9 @@
 package org.rsmod.api.player.vars
 
+import dev.openrune.ServerCacheManager
 import dev.openrune.definition.type.VarBitType
+import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.rscm.RSCMType
 import dev.openrune.types.varp.VarpServerType
 import dev.openrune.types.varp.baseVar
 import dev.openrune.types.varp.bits
@@ -15,7 +18,20 @@ public class VarPlayerIntMapDelegate(
     private val vars: VarPlayerIntMap,
     private val engineLoggedIn: Boolean,
 ) {
-    public operator fun get(varp: VarpServerType): Int = vars[varp]
+
+    public operator fun get(internal: String): Int {
+        return vars[internal]
+    }
+
+    public operator fun set(internal: String, value: Int) {
+        if(internal.startsWith("varp.")) {
+            val varp = ServerCacheManager.getVarp(internal.asRSCM(RSCMType.VARP))?: return
+            set(varp, value)
+        } else {
+            val varbit = ServerCacheManager.getVarbit(internal.asRSCM(RSCMType.VARBIT))?: return
+            set(varbit, value)
+        }
+    }
 
     public operator fun set(varp: VarpServerType, value: Int) {
         val previous = vars.backing[varp.id]
@@ -33,8 +49,6 @@ public class VarPlayerIntMapDelegate(
             VarpSync.writeVarp(client, varp, value)
         }
     }
-
-    public operator fun get(varp: VarBitType): Int = vars[varp]
 
     public operator fun set(varp: VarBitType, value: Int) {
         VarPlayerIntMap.assertVarBitBounds(varp, value)

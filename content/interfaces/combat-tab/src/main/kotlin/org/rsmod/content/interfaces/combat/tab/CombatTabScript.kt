@@ -10,11 +10,6 @@ import org.rsmod.api.combat.commons.CombatStance
 import org.rsmod.api.combat.commons.styles.MeleeAttackStyle
 import org.rsmod.api.combat.manager.MagicRuneManager
 import org.rsmod.api.combat.weapon.styles.AttackStyles
-import org.rsmod.api.config.refs.categories
-import org.rsmod.api.config.refs.interfaces
-import org.rsmod.api.config.refs.queues
-import org.rsmod.api.config.refs.varbits
-import org.rsmod.api.config.refs.varps
 import org.rsmod.api.enums.NamedEnums.weapon_last_stance_varbits
 import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.protect.ProtectedAccess
@@ -38,8 +33,6 @@ import org.rsmod.api.specials.SpecialAttackType
 import org.rsmod.api.specials.energy.SpecialAttackEnergy
 import org.rsmod.api.spells.MagicSpellRegistry
 import org.rsmod.api.spells.autocast.AutocastWeapons
-import org.rsmod.content.interfaces.combat.tab.configs.combat_components
-import org.rsmod.content.interfaces.combat.tab.configs.combat_queues
 import org.rsmod.events.EventBus
 import org.rsmod.game.entity.Player
 import org.rsmod.game.type.getOrNull
@@ -63,34 +56,34 @@ constructor(
     private val specialReg: SpecialAttackRegistry,
     private val protectedAccess: ProtectedAccessLauncher,
 ) : PluginScript() {
-    private var Player.combatStance by enumVarp<CombatStance>(varps.com_mode)
-    private var Player.meleeStyle by enumVarp<MeleeAttackStyle>(varps.com_stance)
-    private var Player.specialType by enumVarp<SpecialAttackType>(varps.sa_attack)
-    private var Player.autoRetaliateDisabled by boolVarp(varps.option_nodef)
+    private var Player.combatStance by enumVarp<CombatStance>("varp.com_mode")
+    private var Player.meleeStyle by enumVarp<MeleeAttackStyle>("varp.com_stance")
+    private var Player.specialType by enumVarp<SpecialAttackType>("varp.sa_attack")
+    private var Player.autoRetaliateDisabled by boolVarp("varp.option_nodef")
 
-    private var Player.autocastEnabled by boolVarBit(varbits.autocast_set)
-    private var Player.autocastSpell by intVarBit(varbits.autocast_spell)
-    private var Player.defensiveCasting by boolVarBit(varbits.autocast_defmode)
+    private var Player.autocastEnabled by boolVarBit("varbit.autocast_set")
+    private var Player.autocastSpell by intVarBit("varbit.autocast_spell")
+    private var Player.defensiveCasting by boolVarBit("varbit.autocast_defmode")
 
     private lateinit var stanceSaveVarBits: EnumTypeNonNullMap<Int, Int>
 
     override fun ScriptContext.startup() {
         stanceSaveVarBits = weapon_last_stance_varbits.filterValuesNotNull()
 
-        onIfOpen(interfaces.combat_interface) { player.updateCombatTab() }
+        onIfOpen("interface.combat_interface") { player.updateCombatTab() }
         onWearposChange { player.onWearposChange(wearpos) }
 
-        onIfOverlayButton(combat_components.auto_retaliate) { player.selectAutoRetaliate() }
+        onIfOverlayButton("component.combat_interface:retaliate") { player.selectAutoRetaliate() }
 
-        onIfOverlayButton(combat_components.stance1) { player.selectStance(CombatStance.Stance1) }
-        onIfOverlayButton(combat_components.stance2) { player.selectStance(CombatStance.Stance2) }
-        onIfOverlayButton(combat_components.stance3) { player.selectStance(CombatStance.Stance3) }
-        onIfOverlayButton(combat_components.stance4) { player.selectStance(CombatStance.Stance4) }
-        onPlayerQueueWithArgs(combat_queues.attackstyle_change) { player.setStance(it.args) }
+        onIfOverlayButton("component.combat_interface:0") { player.selectStance(CombatStance.Stance1) }
+        onIfOverlayButton("component.combat_interface:1") { player.selectStance(CombatStance.Stance2) }
+        onIfOverlayButton("component.combat_interface:2") { player.selectStance(CombatStance.Stance3) }
+        onIfOverlayButton("component.combat_interface:3") { player.selectStance(CombatStance.Stance4) }
+        onPlayerQueueWithArgs("queue.attackstyle_change") { player.setStance(it.args) }
 
-        onIfOverlayButton(combat_components.special_attack) { player.toggleSpecialAttack() }
-        onIfOverlayButton(combat_components.special_attack_orb) { player.toggleSpecialAttack() }
-        onPlayerQueue(combat_queues.sa_instant_spec) { activateInstantSpecial() }
+        onIfOverlayButton("component.combat_interface:special_attack") { player.toggleSpecialAttack() }
+        onIfOverlayButton("component.orbs:specbutton") { player.toggleSpecialAttack() }
+        onPlayerQueue("queue.sa_instant_spec") { activateInstantSpecial() }
     }
 
     private fun Player.updateCombatTab() {
@@ -202,8 +195,8 @@ constructor(
         ifClose(eventBus)
 
         if (isAccessProtected) {
-            clearQueue(combat_queues.attackstyle_change)
-            queue(combat_queues.attackstyle_change, 1, stance)
+            clearQueue("queue.attackstyle_change")
+            queue("queue.attackstyle_change", 1, stance)
             return
         }
 
@@ -219,7 +212,7 @@ constructor(
     }
 
     private fun Player.applyDinhsBulwarkDelay(weapon: ItemServerType?, stance: CombatStance) {
-        if (weapon == null || !weapon.isCategoryType(categories.dinhs_bulwark)) {
+        if (weapon == null || !weapon.isCategoryType("category.dinhs_bulwark")) {
             return
         }
 
@@ -227,8 +220,8 @@ constructor(
         // delay added to combat (handled through a special queue).
         val wasBlocking = combatStance == CombatStance.Stance4
         if (wasBlocking && combatStance != stance) {
-            clearQueue(queues.dinhs_combat_delay)
-            longQueueDiscard(queues.dinhs_combat_delay, 8)
+            clearQueue("queue.dinhs_combat_delay")
+            longQueueDiscard("queue.dinhs_combat_delay", 8)
         }
     }
 
@@ -292,14 +285,14 @@ constructor(
     private fun Player.attemptInstantSpecial() {
         resetSpecialType()
 
-        if (combat_queues.sa_instant_spec in queueList) {
+        if ("queue.sa_instant_spec" in queueList) {
             return
         }
 
         ifClose(eventBus)
         val activated = protectedAccess.launch(this) { activateInstantSpecial() }
         if (!activated) {
-            strongQueue(combat_queues.sa_instant_spec, 1)
+            strongQueue("queue.sa_instant_spec", 1)
         }
     }
 

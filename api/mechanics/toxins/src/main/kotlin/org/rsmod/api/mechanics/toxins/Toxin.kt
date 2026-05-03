@@ -1,6 +1,5 @@
 package org.rsmod.api.mechanics.toxins
 
-import org.rsmod.api.config.refs.varps
 import org.rsmod.api.mechanics.toxins.impl.PlayerDisease
 import org.rsmod.api.mechanics.toxins.impl.PlayerPoison
 import org.rsmod.api.mechanics.toxins.impl.PlayerVenom
@@ -16,9 +15,9 @@ public object Toxin {
             else -> 0
         }
 
-        VarPlayerIntMapSetter.set(player, varps.poison, poisonVenomOrb)
+        VarPlayerIntMapSetter.set(player, "varp.poison", poisonVenomOrb)
         val diseaseOrb = if (PlayerDisease.isDiseased(player)) 1 else 0
-        VarPlayerIntMapSetter.set(player, varps.disease, diseaseOrb)
+        VarPlayerIntMapSetter.set(player, "varp.disease", diseaseOrb)
     }
 
     public fun Player.cureAllToxins() {

@@ -1,6 +1,5 @@
 package org.rsmod.content.other.windmill
 
-import org.rsmod.api.config.refs.seqs
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.script.onOpLoc1
 import org.rsmod.api.script.onOpLoc2
@@ -10,11 +9,11 @@ import org.rsmod.plugin.scripts.ScriptContext
 
 class WindmillLadderScript : PluginScript() {
     override fun ScriptContext.startup() {
-        onOpLoc1(windmill_locs.ladder_down) { climbDown() }
-        onOpLoc1(windmill_locs.ladder_up) { climbUp() }
-        onOpLoc1(windmill_locs.ladder_option) { climbOption() }
-        onOpLoc2(windmill_locs.ladder_option) { climbUp() }
-        onOpLoc3(windmill_locs.ladder_option) { climbDown() }
+        onOpLoc1("loc.qip_cook_ladder_top") { climbDown() }
+        onOpLoc1("loc.qip_cook_ladder") { climbUp() }
+        onOpLoc1("loc.qip_cook_ladder_middle") { climbOption() }
+        onOpLoc2("loc.qip_cook_ladder_middle") { climbUp() }
+        onOpLoc3("loc.qip_cook_ladder_middle") { climbDown() }
     }
 
     private suspend fun ProtectedAccess.climbUp(): Unit = climb(1)
@@ -24,7 +23,7 @@ class WindmillLadderScript : PluginScript() {
     private suspend fun ProtectedAccess.climb(translateLevel: Int) {
         arriveDelay()
         val dest = player.coords.translateLevel(translateLevel)
-        anim(seqs.human_reachforladder)
+        anim("seq.human_reachforladder")
         delay(1)
         telejump(dest)
     }
@@ -35,7 +34,7 @@ class WindmillLadderScript : PluginScript() {
             val translate =
                 choice2("Climb Up.", 1, "Climb Down.", -1, title = "Climb up or down the ladder?")
             val dest = player.coords.translateLevel(translate)
-            anim(seqs.human_reachforladder)
+            anim("seq.human_reachforladder")
             delay(2)
             telejump(dest)
         }

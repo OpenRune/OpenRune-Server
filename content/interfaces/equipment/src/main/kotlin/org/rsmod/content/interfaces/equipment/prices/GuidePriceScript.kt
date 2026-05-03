@@ -1,12 +1,12 @@
 package org.rsmod.content.interfaces.equipment.prices
 
+import dev.openrune.ServerCacheManager
 import dev.openrune.definition.type.widget.IfEvent
+import dev.openrune.rscm.RSCM
+import dev.openrune.rscm.RSCMType
 import dev.openrune.types.ItemServerType
 import dev.openrune.types.aconverted.interf.IfButtonOp
 import jakarta.inject.Inject
-import org.rsmod.api.config.refs.invs
-import org.rsmod.api.config.refs.objs
-import org.rsmod.api.config.refs.synths
 import org.rsmod.api.invtx.invCompress
 import org.rsmod.api.invtx.invMoveAll
 import org.rsmod.api.market.MarketPrices
@@ -21,8 +21,6 @@ import org.rsmod.api.script.onIfClose
 import org.rsmod.api.script.onIfModalButton
 import org.rsmod.api.script.onIfOverlayButton
 import org.rsmod.api.utils.format.formatAmount
-import org.rsmod.content.interfaces.equipment.configs.equip_components
-import org.rsmod.content.interfaces.equipment.configs.equip_interfaces
 import org.rsmod.events.EventBus
 import org.rsmod.game.entity.Player
 import org.rsmod.game.inv.InvObj
@@ -41,12 +39,12 @@ constructor(
         get() = marketPrices[this] ?: 1
 
     override fun ScriptContext.startup() {
-        onIfOverlayButton(equip_components.guide_prices) { player.selectGuidePrices() }
-        onIfModalButton(equip_components.guide_prices_add_all) { addAllFromInv() }
-        onIfModalButton(equip_components.guide_prices_side_inv) { addFromSlot(it.comsub, it.op) }
-        onIfModalButton(equip_components.guide_prices_main_inv) { takeFromSlot(it.comsub, it.op) }
-        onIfModalButton(equip_components.guide_prices_search) { searchObj() }
-        onIfClose(equip_interfaces.guide_prices_main) { player.closeGuide() }
+        onIfOverlayButton("component.wornitems:pricechecker") { player.selectGuidePrices() }
+        onIfModalButton("component.ge_pricechecker:all") { addAllFromInv() }
+        onIfModalButton("component.ge_pricechecker_side:items") { addFromSlot(it.comsub, it.op) }
+        onIfModalButton("component.ge_pricechecker:items") { takeFromSlot(it.comsub, it.op) }
+        onIfModalButton("component.ge_pricechecker:other") { searchObj() }
+        onIfClose("interface.ge_pricechecker") { player.closeGuide() }
     }
 
     private fun Player.selectGuidePrices() {
@@ -59,13 +57,13 @@ constructor(
         invTransmit(tempInv)
         invTransmit(inv)
         ifOpenMainSidePair(
-            main = equip_interfaces.guide_prices_main,
-            side = equip_interfaces.guide_prices_side,
+            main = "interface.ge_pricechecker",
+            side = "interface.ge_pricechecker_side",
         )
         player.updateGuidePrices()
-        ifSetObj(equip_components.guide_prices_search_obj, objs.null_item_placeholder, zoom = 1)
+        ifSetObj("component.ge_pricechecker:otheritem", "obj.blankobject", zoom = 1)
         ifSetEvents(
-            target = equip_components.guide_prices_main_inv,
+            target = "component.ge_pricechecker:items",
             range = tempInv.indices,
             IfEvent.Op1,
             IfEvent.Op2,
@@ -76,7 +74,7 @@ constructor(
         )
         interfaceInvInit(
             inv = inv,
-            target = equip_components.guide_prices_side_inv,
+            target = "component.ge_pricechecker_side:items",
             objRowCount = 4,
             objColCount = 7,
             op1 = "Add<col=ff9040>",
@@ -86,7 +84,7 @@ constructor(
             op5 = "Add-X<col=ff9040>",
         )
         ifSetEvents(
-            target = equip_components.guide_prices_side_inv,
+            target = "component.ge_pricechecker_side:items",
             range = inv.indices,
             IfEvent.Op1,
             IfEvent.Op2,
@@ -99,7 +97,7 @@ constructor(
 
     private fun Player.updateGuidePrices() {
         val tempInv =
-            checkNotNull(invMap[invs.tradeoffer]) {
+            checkNotNull(invMap["inv.tradeoffer"]) {
                 "`tempInv` must be transmitted. (`startInvTransmit`)"
             }
         val priceList = tempInv.toPriceList()
@@ -111,13 +109,13 @@ constructor(
         val total = totalPrice.formatAmount
         ifSetTextAlign(
             player = this,
-            target = equip_components.guide_prices_total_price_text,
+            target = "component.ge_pricechecker:output",
             alignH = 1,
             alignV = 1,
             lineHeight = 15,
         )
         ifSetText(
-            target = equip_components.guide_prices_total_price_text,
+            internal = "component.ge_pricechecker:output",
             text = "Total guide price:<br><col=ffffff>$total</col>",
         )
     }
@@ -125,13 +123,13 @@ constructor(
     private fun Player.updateSearchPrice(type: ItemServerType) {
         ifSetTextAlign(
             player = this,
-            target = equip_components.guide_prices_total_price_text,
+            target = "component.ge_pricechecker:output",
             alignH = 1,
             alignV = 1,
             lineHeight = 15,
         )
         ifSetText(
-            target = equip_components.guide_prices_total_price_text,
+            internal = "component.ge_pricechecker:output",
             text = "${type.name}:<br><col=ffffff>${type.price.formatAmount} coins</col>",
         )
     }
@@ -159,14 +157,17 @@ constructor(
 
     private suspend fun ProtectedAccess.searchObj() {
         val search = objDialog("Select an item to ask about its price:")
-        ifSetObj(equip_components.guide_prices_search_obj, search, zoom = 1)
+
+        val searchInternalName = RSCM.getReverseMapping(RSCMType.OBJ,search.id)
+
+        ifSetObj("component.ge_pricechecker:otheritem", searchInternalName, zoom = 1)
         player.updateSearchPrice(search)
     }
 
     private fun ProtectedAccess.addAllFromInv() {
         if (inv.isEmpty()) {
             mes("You have no items that can be checked.")
-            soundSynth(synths.pillory_wrong)
+            soundSynth("synth.pillory_wrong")
             return
         }
         val untradableSlots = inv.mapSlots { slot, obj -> obj != null && !ocTradable(obj) }
@@ -174,7 +175,7 @@ constructor(
 
         if (transaction.noneCompleted()) {
             mes("You have items that cannot be traded.")
-            soundSynth(synths.pillory_wrong)
+            soundSynth("synth.pillory_wrong")
             return
         }
 
@@ -221,7 +222,7 @@ constructor(
         }
 
     private fun Player.closeGuide() {
-        val tempInv = invMap[invs.tradeoffer] ?: return
+        val tempInv = invMap["inv.tradeoffer"] ?: return
         val result = invMoveAll(from = tempInv, into = inv)
         check(result.success) { "Could not move `tempInv` into `inv`: $tempInv" }
     }

@@ -5,7 +5,7 @@ import dev.openrune.definition.type.widget.ComponentType
 import org.rsmod.game.ui.Component
 
 data class Gameframe(
-    val topLevel: InterfaceType,
+    val topLevel: String,
     val overlays: List<GameframeOverlay>,
     val mappings: Map<Component, Component>,
     val clientMode: Int,
@@ -14,6 +14,6 @@ data class Gameframe(
     val stoneArrangement: Boolean,
 )
 
-data class GameframeOverlay(val interf: InterfaceType, val target: ComponentType)
+data class GameframeOverlay(val interf: String, val target: String)
 
 data class GameframeMove(val from: Gameframe, val dest: Gameframe, val intermediate: Gameframe?)

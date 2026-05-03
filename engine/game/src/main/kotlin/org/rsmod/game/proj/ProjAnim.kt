@@ -1,5 +1,8 @@
 package org.rsmod.game.proj
 
+import dev.openrune.ServerCacheManager
+import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.rscm.RSCMType
 import dev.openrune.types.ProjAnimType
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.PathingEntity
@@ -77,9 +80,13 @@ public data class ProjAnim(
             source: Bounds,
             target: CoordGrid,
             spotanim: Int,
-            type: ProjAnimType,
-        ): ProjAnim =
-            ProjAnim(
+            internal: String,
+        ): ProjAnim {
+
+            val type = ServerCacheManager.getProjectile(internal.asRSCM(RSCMType.PROJANIM))
+                ?: error("Projectile not found: $internal")
+
+            return ProjAnim(
                 spotanim = spotanim,
                 startHeight = type.startHeight,
                 endHeight = type.endHeight,
@@ -92,14 +99,19 @@ public data class ProjAnim(
                 startCoord = source.coords,
                 endCoord = target,
             )
+        }
 
         public fun fromBoundsToNpc(
             source: Bounds,
             target: Npc,
             spotanim: Int,
-            type: ProjAnimType,
-        ): ProjAnim =
-            ProjAnim(
+            internal: String,
+        ): ProjAnim  {
+
+            val type = ServerCacheManager.getProjectile(internal.asRSCM(RSCMType.PROJANIM))
+                ?: error("Projectile not found: $internal")
+
+            return ProjAnim(
                 spotanim = spotanim,
                 startHeight = type.startHeight,
                 endHeight = type.endHeight,
@@ -112,14 +124,19 @@ public data class ProjAnim(
                 startCoord = source.coords,
                 endCoord = target.coords,
             )
+        }
 
         public fun fromBoundsToPlayer(
             source: Bounds,
             target: Player,
             spotanim: Int,
-            type: ProjAnimType,
-        ): ProjAnim =
-            ProjAnim(
+            internal: String,
+        ): ProjAnim  {
+
+            val type = ServerCacheManager.getProjectile(internal.asRSCM(RSCMType.PROJANIM))
+                ?: error("Projectile not found: $internal")
+
+            return ProjAnim(
                 spotanim = spotanim,
                 startHeight = type.startHeight,
                 endHeight = type.endHeight,
@@ -132,6 +149,7 @@ public data class ProjAnim(
                 startCoord = source.coords,
                 endCoord = target.coords,
             )
+        }
 
         public fun fromNpcToCoord(
             source: Npc,
@@ -197,9 +215,13 @@ public data class ProjAnim(
             source: Player,
             target: CoordGrid,
             spotanim: Int,
-            type: ProjAnimType,
-        ): ProjAnim =
-            ProjAnim(
+            internal: String,
+        ): ProjAnim  {
+
+            val type = ServerCacheManager.getProjectile(internal.asRSCM(RSCMType.PROJANIM))
+                ?: error("Projectile not found: $internal")
+
+            return ProjAnim(
                 spotanim = spotanim,
                 startHeight = type.startHeight,
                 endHeight = type.endHeight,
@@ -212,14 +234,19 @@ public data class ProjAnim(
                 startCoord = source.coords,
                 endCoord = target,
             )
+        }
 
         public fun fromPlayerToNpc(
             source: Player,
             target: Npc,
             spotanim: Int,
-            type: ProjAnimType,
-        ): ProjAnim =
-            ProjAnim(
+            internal: String,
+        ): ProjAnim {
+
+            val type = ServerCacheManager.getProjectile(internal.asRSCM(RSCMType.PROJANIM))
+                ?: error("Projectile not found: $internal")
+
+            return ProjAnim(
                 spotanim = spotanim,
                 startHeight = type.startHeight,
                 endHeight = type.endHeight,
@@ -232,14 +259,19 @@ public data class ProjAnim(
                 startCoord = source.coords,
                 endCoord = target.coords,
             )
+        }
 
         public fun fromPlayerToPlayer(
             source: Player,
             target: Player,
             spotanim: Int,
-            type: ProjAnimType,
-        ): ProjAnim =
-            ProjAnim(
+            internal: String,
+        ): ProjAnim  {
+
+            val type = ServerCacheManager.getProjectile(internal.asRSCM(RSCMType.PROJANIM))
+                ?: error("Projectile not found: $internal")
+
+            return ProjAnim(
                 spotanim = spotanim,
                 startHeight = type.startHeight,
                 endHeight = type.endHeight,
@@ -252,26 +284,27 @@ public data class ProjAnim(
                 startCoord = source.coords,
                 endCoord = target.coords,
             )
+        }
 
         public fun fromCoordToCoord(
             source: CoordGrid,
             target: CoordGrid,
             spotanim: Int,
-            type: ProjAnimType,
+            type: String,
         ): ProjAnim = fromBoundsToCoord(Bounds(source), target, spotanim, type)
 
         public fun fromCoordToNpc(
             source: CoordGrid,
             target: Npc,
             spotanim: Int,
-            type: ProjAnimType,
+            type: String,
         ): ProjAnim = fromBoundsToNpc(Bounds(source), target, spotanim, type)
 
         public fun fromCoordToPlayer(
             source: CoordGrid,
             target: Player,
             spotanim: Int,
-            type: ProjAnimType,
+            type: String,
         ): ProjAnim = fromBoundsToPlayer(Bounds(source), target, spotanim, type)
     }
 }

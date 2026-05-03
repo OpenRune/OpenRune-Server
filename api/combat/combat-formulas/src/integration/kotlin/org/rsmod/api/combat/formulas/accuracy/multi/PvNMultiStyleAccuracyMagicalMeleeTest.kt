@@ -7,9 +7,7 @@ import dev.openrune.types.NpcServerType
 import org.rsmod.api.combat.commons.styles.MeleeAttackStyle
 import org.rsmod.api.combat.commons.types.MeleeAttackType
 import org.rsmod.api.combat.formulas.test_npcs
-import org.rsmod.api.config.refs.objs
 import org.rsmod.api.config.refs.stats
-import org.rsmod.api.config.refs.varbits
 import org.rsmod.api.player.back
 import org.rsmod.api.player.feet
 import org.rsmod.api.player.front
@@ -178,21 +176,21 @@ class PvNMultiStyleAccuracyMagicalMeleeTest {
                 Matchup(expectedAccuracy = 98.80)
                     .withAttackType(MeleeAttackType.Slash)
                     .withAttackStyle(MeleeAttackStyle.Accurate)
-                    .withWeapon(objs.saradomin_blessed_sword)
+                    .withWeapon("obj.blessed_saradomin_sword")
                     .withNpcTarget(test_npcs.man),
                 Matchup(expectedAccuracy = 41.26)
                     .withAttackType(MeleeAttackType.Slash)
                     .withAttackStyle(MeleeAttackStyle.Aggressive)
-                    .withHelm(objs.torva_full_helm)
-                    .withBody(objs.torva_platebody)
-                    .withLegs(objs.torva_platelegs)
-                    .withCape(objs.infernal_cape)
-                    .withAmulet(objs.amulet_of_rancour)
-                    .withWeapon(objs.saradomin_blessed_sword)
-                    .withGloves(objs.ferocious_gloves)
-                    .withFeet(objs.primordial_boots)
-                    .withRing(objs.ultor_ring)
-                    .withPrayers(varbits.piety)
+                    .withHelm("obj.torva_helm")
+                    .withBody("obj.torva_chest")
+                    .withLegs("obj.torva_legs")
+                    .withCape("obj.infernal_cape")
+                    .withAmulet("obj.amulet_of_rancour")
+                    .withWeapon("obj.blessed_saradomin_sword")
+                    .withGloves("obj.ferocious_gloves")
+                    .withFeet("obj.primordial_boots")
+                    .withRing("obj.ultor_ring")
+                    .withPrayers("varbit.prayer_piety")
                     .withNpcTarget(test_npcs.general_graardor),
             )
         }

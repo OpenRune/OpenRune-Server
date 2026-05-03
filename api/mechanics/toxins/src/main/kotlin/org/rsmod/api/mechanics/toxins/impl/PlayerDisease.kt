@@ -1,13 +1,12 @@
 package org.rsmod.api.mechanics.toxins.impl
 
 import dev.openrune.ServerCacheManager
+import dev.openrune.rscm.RSCM
+import dev.openrune.rscm.RSCMType
 import dev.openrune.types.StatType
 import kotlin.random.Random
-import org.rsmod.api.config.refs.hitmark_groups
+import org.rsmod.api.config.refs.done.hitmark_groups
 import org.rsmod.api.config.refs.params
-import org.rsmod.api.config.refs.stats
-import org.rsmod.api.config.refs.timers
-import org.rsmod.api.config.refs.varps
 import org.rsmod.api.mechanics.toxins.Toxin
 import org.rsmod.api.player.hit.modifier.NoopPlayerHitModifier
 import org.rsmod.api.player.hit.processor.DamageOnlyPlayerHitProcessor
@@ -34,7 +33,7 @@ public object PlayerDisease {
         }
     }
 
-    public fun isDiseased(player: Player): Boolean = player.vars[varps.disease_drain] > 0
+    public fun isDiseased(player: Player): Boolean = player.vars["varp.disease_drain"] > 0
 
     public fun hasWornDiseaseMitigation(player: Player): Boolean {
         for (obj in player.worn) {
@@ -58,16 +57,16 @@ public object PlayerDisease {
         if (eligibleDiseaseStats().isEmpty()) {
             return false
         }
-        VarPlayerIntMapSetter.set(player, varps.disease_drain, drainPerTick)
-        player.timer(timers.player_disease, TICK_INTERVAL)
+        VarPlayerIntMapSetter.set(player, "varp.disease_drain", drainPerTick)
+        player.timer("timer.player_disease", TICK_INTERVAL)
         player.mes("You feel slightly ill.", ChatType.Spam)
         Toxin.syncStatusOrbs(player)
         return true
     }
 
     public fun clear(player: Player) {
-        VarPlayerIntMapSetter.set(player, varps.disease_drain, 0)
-        player.clearTimer(timers.player_disease)
+        VarPlayerIntMapSetter.set(player, "varp.disease_drain", 0)
+        player.clearTimer("timer.player_disease")
         Toxin.syncStatusOrbs(player)
     }
 
@@ -76,7 +75,7 @@ public object PlayerDisease {
             clear(player)
             return
         }
-        val drain = player.vars[varps.disease_drain]
+        val drain = player.vars["varp.disease_drain"]
         val targetStat = pickDiseaseStat() ?: run {
             clear(player)
             return
@@ -91,19 +90,19 @@ public object PlayerDisease {
                 modifier = NoopPlayerHitModifier,
             )
         } else {
-            applyDiseaseDrain(player, targetStat, drain)
+            applyDiseaseDrain(player, RSCM.getReverseMapping(RSCMType.STAT,targetStat.id), drain)
         }
 
-        player.timer(timers.player_disease, TICK_INTERVAL)
+        player.timer("timer.player_disease", TICK_INTERVAL)
     }
 
     public fun rearmTimerAfterLogin(player: Player) {
         if (isDiseased(player)) {
-            player.timer(timers.player_disease, TICK_INTERVAL)
+            player.timer("timer.player_disease", TICK_INTERVAL)
         }
     }
 
-    private fun applyDiseaseDrain(player: Player, targetStat: StatType, drain: Int) {
+    private fun applyDiseaseDrain(player: Player, targetStat: String, drain: Int) {
         val current = player.stat(targetStat)
         if (current >= 2) {
             val loss = minOf(drain, current - 1)
@@ -138,7 +137,7 @@ public object PlayerDisease {
     }
 
     private fun eligibleDiseaseStats(): List<StatType> = ServerCacheManager.getStats().values.filter { st ->
-        !st.isType(stats.hitpoints) && !st.isType(stats.prayer)
+        !st.isType("stat.hitpoints") && !st.isType("stat.prayer")
     }
 
     private fun pickDiseaseStat(): StatType? {

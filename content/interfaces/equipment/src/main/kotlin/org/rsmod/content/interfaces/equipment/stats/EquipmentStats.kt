@@ -1,6 +1,8 @@
 package org.rsmod.content.interfaces.equipment.stats
 
 import dev.openrune.definition.type.widget.IfEvent
+import dev.openrune.rscm.RSCM
+import dev.openrune.rscm.RSCMType
 import dev.openrune.types.aconverted.interf.IfButtonOp
 import jakarta.inject.Inject
 import org.rsmod.api.combat.weapon.WeaponSpeeds
@@ -18,8 +20,6 @@ import org.rsmod.api.player.ui.ifClose
 import org.rsmod.api.script.onIfModalButton
 import org.rsmod.api.script.onIfModalDrag
 import org.rsmod.api.script.onIfOverlayButton
-import org.rsmod.content.interfaces.equipment.configs.equip_components
-import org.rsmod.content.interfaces.equipment.configs.equip_interfaces
 import org.rsmod.events.EventBus
 import org.rsmod.game.entity.Player
 import org.rsmod.game.type.getInvObj
@@ -37,15 +37,15 @@ constructor(
     private val marketPrices: MarketPrices,
 ) : PluginScript() {
     override fun ScriptContext.startup() {
-        onIfOverlayButton(equip_components.equipment) { player.selectStats() }
+        onIfOverlayButton("component.wornitems:equipment") { player.selectStats() }
 
-        val componentWornSlots = equipment_stats_to_slots_map.filterValuesNotNull()
+        val componentWornSlots = equipment_stats_to_slots_map.filterValuesNotNull().map { it.key to RSCM.getReverseMapping(RSCMType.COMPONENT,it.value.packed) }
         for ((slot, component) in componentWornSlots) {
             onIfModalButton(component) { opWornMain(slot, it.op) }
         }
 
-        onIfModalButton(equip_components.equipment_stats_side_inv) { opHeldSide(it.comsub, it.op) }
-        onIfModalDrag(equip_components.equipment_stats_side_inv) { dragHeldButton(it) }
+        onIfModalButton("component.equipment_side:items") { opHeldSide(it.comsub, it.op) }
+        onIfModalDrag("component.equipment_side:items") { dragHeldButton(it) }
     }
 
     private fun Player.selectStats() {
@@ -59,19 +59,19 @@ constructor(
         resetSpotanim()
         invTransmit(inv)
         ifOpenMainSidePair(
-            main = equip_interfaces.equipment_stats_main,
-            side = equip_interfaces.equipment_stats_side,
+            main = "interface.equipment",
+            side = "interface.equipment_side",
         )
         interfaceInvInit(
             inv = inv,
-            target = equip_components.equipment_stats_side_inv,
+            target = "component.equipment_side:items",
             objRowCount = 4,
             objColCount = 7,
             dragType = 1,
             op1 = "Equip",
         )
         ifSetEvents(
-            target = equip_components.equipment_stats_side_inv,
+            target = "component.equipment_side:items",
             range = inv.indices,
             IfEvent.Op1,
             IfEvent.Op10,
@@ -82,7 +82,6 @@ constructor(
     }
 
     private fun ProtectedAccess.updateBonuses() {
-        val comps = equip_components
         val stats = wornBonuses.calculate(player)
         val speedBase = weaponSpeeds.base(player)
         val speedActual = weaponSpeeds.actual(player)
@@ -90,36 +89,36 @@ constructor(
         val magicDmgSuffix = stats.magicDmgSuffix
         val undeadSuffix = stats.undeadSuffix
         val slayerSuffix = stats.slayerSuffix
-        ifSetText(comps.equipment_stats_off_stab, "Stab: ${stats.offStab.signed}")
-        ifSetText(comps.equipment_stats_off_slash, "Slash: ${stats.offSlash.signed}")
-        ifSetText(comps.equipment_stats_off_crush, "Crush: ${stats.offCrush.signed}")
-        ifSetText(comps.equipment_stats_off_magic, "Magic: ${stats.offMagic.signed}")
-        ifSetText(comps.equipment_stats_off_range, "Range: ${stats.offRange.signed}")
-        ifSetText(comps.equipment_stats_speed_base, "Base: ${speedBase.tickToSecs}")
-        ifSetText(comps.equipment_stats_speed, "Actual: ${speedActual.tickToSecs}")
-        ifSetText(comps.equipment_stats_def_stab, "Stab: ${stats.defStab.signed}")
-        ifSetText(comps.equipment_stats_def_slash, "Slash: ${stats.defSlash.signed}")
-        ifSetText(comps.equipment_stats_def_crush, "Crush: ${stats.defCrush.signed}")
-        ifSetText(comps.equipment_stats_def_range, "Range: ${stats.defRange.signed}")
-        ifSetText(comps.equipment_stats_def_magic, "Magic: ${stats.defMagic.signed}")
-        ifSetText(comps.equipment_stats_melee_str, "Melee STR: ${stats.meleeStr.signed}")
-        ifSetText(comps.equipment_stats_ranged_str, "Ranged STR: ${stats.rangedStr.signed}")
-        ifSetText(comps.equipment_stats_magic_dmg, "Magic DMG: $magicDmg$magicDmgSuffix")
-        ifSetText(comps.equipment_stats_prayer, "Prayer: ${stats.prayer.signed}")
+        ifSetText("component.equipment:stabatt", "Stab: ${stats.offStab.signed}")
+        ifSetText("component.equipment:slashatt", "Slash: ${stats.offSlash.signed}")
+        ifSetText("component.equipment:crushatt", "Crush: ${stats.offCrush.signed}")
+        ifSetText("component.equipment:magicatt", "Magic: ${stats.offMagic.signed}")
+        ifSetText("component.equipment:rangeatt", "Range: ${stats.offRange.signed}")
+        ifSetText("component.equipment:attackspeedbase", "Base: ${speedBase.tickToSecs}")
+        ifSetText("component.equipment:attackspeedactual", "Actual: ${speedActual.tickToSecs}")
+        ifSetText("component.equipment:stabdef", "Stab: ${stats.defStab.signed}")
+        ifSetText("component.equipment:slashdef", "Slash: ${stats.defSlash.signed}")
+        ifSetText("component.equipment:crushdef", "Crush: ${stats.defCrush.signed}")
+        ifSetText("component.equipment:magicdef", "Range: ${stats.defRange.signed}")
+        ifSetText("component.equipment:rangedef", "Magic: ${stats.defMagic.signed}")
+        ifSetText("component.equipment:meleestrength", "Melee STR: ${stats.meleeStr.signed}")
+        ifSetText("component.equipment:rangestrength", "Ranged STR: ${stats.rangedStr.signed}")
+        ifSetText("component.equipment:magicdamage", "Magic DMG: $magicDmg$magicDmgSuffix")
+        ifSetText("component.equipment:prayer", "Prayer: ${stats.prayer.signed}")
         ifSetText(
-            comps.equipment_stats_undead,
+            "component.equipment:typemultiplier",
             "Undead: ${stats.undead.formatWholePercent}$undeadSuffix",
         )
         statGroupTooltip(
             player,
-            comps.equipment_stats_undead_tooltip,
-            comps.equipment_stats_undead,
+            "component.equipment:tooltip",
+            "component.equipment:typemultiplier",
             "Increases your effective accuracy and damage against undead creatures. " +
                 "For multi-target Ranged and Magic attacks, this applies only to the " +
                 "primary target. It does not stack with the Slayer multiplier.",
         )
         ifSetText(
-            comps.equipment_stats_slayer,
+            "component.equipment:slayermultiplier",
             "Slayer: ${stats.slayer.formatWholePercent}$slayerSuffix",
         )
     }

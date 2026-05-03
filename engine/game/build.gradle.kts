@@ -9,6 +9,7 @@ kotlin {
 dependencies {
     implementation(libs.fastutil)
     implementation(projects.engine.annotations)
+    implementation(projects.api.attr)
     implementation(projects.engine.coroutine)
     implementation(projects.engine.events)
     api(projects.engine.map)

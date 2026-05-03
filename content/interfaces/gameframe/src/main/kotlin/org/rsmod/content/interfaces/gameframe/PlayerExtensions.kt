@@ -1,5 +1,7 @@
 package org.rsmod.content.interfaces.gameframe
 
+import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.rscm.RSCMType
 import dev.openrune.types.aconverted.interf.IfSubType
 import org.rsmod.api.player.ui.ifMoveSub
 import org.rsmod.api.player.ui.ifOpenSub
@@ -21,13 +23,11 @@ internal fun Player.moveGameframe(from: Gameframe, dest: Gameframe, eventBus: Ev
     ui.setGameframe(dest.mappings)
     val moveComponents = StandardOverlays.move
     for (moveComponent in moveComponents) {
-        val target = Component(moveComponent.packed)
+        val target = Component(moveComponent.asRSCM(RSCMType.COMPONENT))
         val sourceComponent =
-            from.mappings[target]
-                ?: error("Expected move target in source mapping: '${moveComponent.internalName}'")
+            from.mappings[target] ?: error("Expected move target in source mapping: '${moveComponent}'")
         val destComponent =
-            dest.mappings[target]
-                ?: error("Expected move target in dest mapping: '${moveComponent.internalName}'")
+            dest.mappings[target] ?: error("Expected move target in dest mapping: '${moveComponent}'")
         ifMoveSub(sourceComponent, destComponent, target, eventBus)
     }
 }

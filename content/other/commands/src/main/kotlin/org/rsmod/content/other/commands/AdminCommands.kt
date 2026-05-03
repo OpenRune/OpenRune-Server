@@ -2,12 +2,10 @@ package org.rsmod.content.other.commands
 
 import com.github.michaelbull.logging.InlineLogger
 import dev.openrune.ServerCacheManager
-import dev.openrune.obj
 import dev.openrune.rscm.RSCM
 import dev.openrune.rscm.RSCM.asRSCM
-import dev.openrune.spotAnim
+import dev.openrune.rscm.RSCMType
 import dev.openrune.types.NpcMode
-import dev.openrune.types.StatType
 import jakarta.inject.Inject
 import kotlin.math.max
 import kotlin.math.min
@@ -215,7 +213,7 @@ constructor(
                 player.mes("That seq does not exist: $typeId")
                 return
             }
-            player.anim(type)
+            player.anim("seq.${args.asTypeName()}")
             player.mes("Anim: '${args.asTypeName()}' (priority=${type.priority})")
             logger.debug { "Anim: $type" }
         }
@@ -228,15 +226,11 @@ constructor(
                 player.mes("There is no spotanim mapped to: '${typeName}'")
                 return
             }
-            val type = spotAnim(typeName)
-            if (type == null) {
-                player.mes("That spotanim does not exist: $typeId")
-                return
-            }
+
             val height = min(heightArg.toInt(), Short.MAX_VALUE.toInt())
-            player.spotanim(type, delay = 0, height = height, slot = 0)
+            player.spotanim("spotanim.${typeName}", delay = 0, height = height, slot = 0)
             player.mes("Spotanim: '${typeName}' (height=$height)")
-            logger.debug { "Spotanim: $type" }
+            logger.debug { "Spotanim: $typeName" }
         }
 
     private fun locAdd(cheat: Cheat) =
@@ -298,8 +292,8 @@ constructor(
     private fun invAdd(cheat: Cheat) =
         with(cheat) {
             val (typeName, countArg) = args.asTypeNameAndNumber(defaultNumber = 1)
-            val normalizedName = typeName.replace("cert_", "")
-            val type = obj(normalizedName)
+            val normalizedName = "obj." + typeName.replace("cert_", "")
+            val type = ServerCacheManager.getItem(normalizedName.asRSCM(RSCMType.OBJ))?: return@with
             val spawnCert = typeName.startsWith("cert_")
             val resolvedType =
                 if (spawnCert && type.canCert) ServerCacheManager.getItem(type.certlink) else type
@@ -309,7 +303,7 @@ constructor(
                 player.mes("Unable to find item: $objName")
                 return@with
             }
-            val spawned = player.invAdd(player.inv, resolvedType, count, strict = false)
+            val spawned = player.invAdd(player.inv, normalizedName, count, strict = false)
             if (spawned.err is TransactionResult.RestrictedDummyitem) {
                 player.mes("You can't spawn this item!")
                 return
@@ -352,22 +346,24 @@ constructor(
     private fun Player.setStatLevels(level: Int) {
         val xp = PlayerSkillXPTable.getXPFromLevel(level)
         for (stat in ServerCacheManager.getStats().values) {
-            val baseLevel = statMap.getBaseLevel(stat)
+            val statInternal = RSCM.getReverseMapping(RSCMType.STAT, stat.id)
+
+            val baseLevel = statMap.getBaseLevel(statInternal)
             val targetLevel = max(stat.minLevel, level)
             if (baseLevel > targetLevel) {
-                statRevert(stat, targetLevel, xp)
+                statRevert(statInternal, targetLevel, xp)
                 continue
             }
-            val xpDelta = xp - statMap.getXP(stat)
-            statMap.setCurrentLevel(stat, targetLevel.toByte())
-            statAdvance(stat, xpDelta.toDouble(), rate = 1.0)
+            val xpDelta = xp - statMap.getXP(statInternal)
+            statMap.setCurrentLevel(statInternal, targetLevel.toByte())
+            statAdvance(statInternal, xpDelta.toDouble(), rate = 1.0)
         }
     }
 
     // There is, by design, no helper function to decrease stat xp, as xp reduction is not a
     // standard operation in normal gameplay.
     @OptIn(InternalApi::class)
-    private fun Player.statRevert(stat: StatType, targetLevel: Int, targetXp: Int) {
+    private fun Player.statRevert(stat: String, targetLevel: Int, targetXp: Int) {
         statMap.setCurrentLevel(stat, statMap.getBaseLevel(stat))
         val levelDelta = stat(stat) - targetLevel
         require(levelDelta > 0) { "This function can only be used to reduce stat levels." }

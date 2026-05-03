@@ -1,19 +1,16 @@
 package org.rsmod.content.areas.city.lumbridge.npcs
 
-import org.rsmod.api.config.refs.BaseVarBits
-import org.rsmod.api.config.refs.BaseVarps
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.script.onOpNpc1
-import org.rsmod.content.areas.city.lumbridge.configs.lumbridge_npcs
 import org.rsmod.game.entity.Npc
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
 class DonieAndGee : PluginScript() {
     override fun ScriptContext.startup() {
-        onOpNpc1(lumbridge_npcs.gee) { startDialogue(it.npc) }
-        onOpNpc1(lumbridge_npcs.donie) { startDialogue(it.npc) }
+        onOpNpc1("npc.lumbridge_guide2_man") { startDialogue(it.npc) }
+        onOpNpc1("npc.lumbridge_guide2_woman") { startDialogue(it.npc) }
     }
 
     private suspend fun ProtectedAccess.startDialogue(npc: Npc) =
@@ -211,7 +208,7 @@ private suspend fun Dialogue.bigScaryDemonQuests() {
     )
     chatNpc(quiz, "Perhaps you could check it out if you are as brave as you say?")
     // Note: dialogue should be different when the quest has been started but not completed.
-    val progress = vars[BaseVarBits.demonslayer_main]
+    val progress = vars["varbit.demonslayer_main"]
     if (progress == 0) {
         chatPlayer(happy, "Thanks for the tip, perhaps I will.")
     } else {
@@ -244,7 +241,7 @@ private suspend fun Dialogue.vampyreQuests() {
             "is?",
     )
     // Note: dialogue should be different when the quest has been started but not completed.
-    val progress = vars[BaseVarps.vampire]
+    val progress = vars["varp.vampire"]
     if (progress == 0) {
         chatPlayer(happy, "Thanks for the tip.")
     } else {
@@ -276,7 +273,7 @@ private suspend fun Dialogue.smallMonsterQuests() {
     )
     chatNpc(happy, " Sounds like it could be a quest for you?")
     // Note: dialogue should be different when the quest has been started but not completed.
-    val progress = vars[BaseVarps.imp]
+    val progress = vars["varp.imp"]
     if (progress == 0) {
         chatPlayer(happy, "Thanks for the help.")
     } else {
@@ -327,7 +324,7 @@ private suspend fun Dialogue.lumbridgeCookQuest() {
             "in the Lumbridge Castle kitchen.",
     )
     // Note: dialogue should be different when the quest has been started but not completed.
-    val progress = vars[BaseVarps.cookquest]
+    val progress = vars["varp.cookquest"]
     if (progress == 0) {
         chatPlayer(happy, "Thank you. I shall go speak with him.")
     } else {
@@ -346,7 +343,7 @@ private suspend fun Dialogue.dukeStrangeTalismanQuest() {
             "Lumbridge Castle.",
     )
     // Note: dialogue should be different when the quest has been started but not completed.
-    val progress = vars[BaseVarps.runemysteries]
+    val progress = vars["varp.runemysteries"]
     if (progress == 0) {
         chatPlayer(quiz, "Sounds mysterious. I may just do that. Thanks.")
     } else {
@@ -368,7 +365,7 @@ private suspend fun Dialogue.romeoQuest() {
             "which case she has probably lost Romeo.",
     )
     // Note: dialogue should be different when the quest has been started but not completed.
-    val progress = vars[BaseVarps.rjquest]
+    val progress = vars["varp.rjquest"]
     if (progress == 0) {
         chatPlayer(quiz, "Right, ok. Romeo is in Varrock?")
         chatNpc(happy, "Yes you can't miss him, he's wandering aimlessly in the square.")
@@ -417,7 +414,7 @@ private suspend fun Dialogue.fredFarmerQuest() {
             "Lumbridge. Perhaps you should go and speak with him.",
     )
     // Note: dialogue should be different when the quest has been started but not completed.
-    val progress = vars[BaseVarps.sheep]
+    val progress = vars["varp.sheep"]
     if (progress == 0) {
         chatPlayer(happy, "Thanks, maybe I will.")
     } else {
@@ -441,7 +438,7 @@ private suspend fun Dialogue.doricDwarfQuest() {
             "him. He may let you use his anvils.",
     )
     // Note: dialogue should be different when the quest has been started but not completed.
-    val progress = vars[BaseVarps.doricquest]
+    val progress = vars["varp.doricquest"]
     if (progress == 0) {
         chatPlayer(happy, "Thanks for the tip.")
     } else {
@@ -496,7 +493,7 @@ private suspend fun Dialogue.hettyWitchQuest() {
             "to offer help with your magical abilities.",
     )
     // Note: dialogue should be different when the quest has been started but not completed.
-    val progress = vars[BaseVarps.hetty]
+    val progress = vars["varp.hetty"]
     if (progress == 0) {
         chatPlayer(happy, "Ok thanks, let's hope she doesn't turn me into a potato or something..")
     } else {
@@ -521,7 +518,7 @@ private suspend fun Dialogue.pirateTreasureQuest() {
             "treasure that is buried somewhere in Gielinor.",
     )
     // Note: dialogue should be different when the quest has been started but not completed.
-    val progress = vars[BaseVarps.hunt]
+    val progress = vars["varp.hunt"]
     if (progress == 0) {
         chatPlayer(happy, "Sounds adventurous, I may have to check that out. Thank you.")
     } else {
@@ -545,7 +542,7 @@ private suspend fun Dialogue.ernestChickenQuest() {
     )
     chatNpc(happy, "I suggest you tread carefully in that place; it's haunted.")
     // Note: dialogue should be different when the quest has been started but not completed.
-    val progress = vars[BaseVarps.haunted]
+    val progress = vars["varp.haunted"]
     if (progress == 0) {
         chatPlayer(quiz, "Sounds like fun. I've never been to a Haunted Manor before.")
     } else {

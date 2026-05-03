@@ -13,7 +13,7 @@ public class CombatChargeManager @Inject constructor(private val manager: ObjCha
      *
      * Internally calls [ObjChargeManager.getCharges] with `obj = player.righthand`.
      */
-    public fun getWeaponCharges(player: Player, varobj: VarObjBitType): Int =
+    public fun getWeaponCharges(player: Player, varobj: String): Int =
         manager.getCharges(player.righthand, varobj)
 
     /**
@@ -23,7 +23,7 @@ public class CombatChargeManager @Inject constructor(private val manager: ObjCha
      */
     public fun attemptDetractWeapon(
         player: Player,
-        varobj: VarObjBitType,
+        varobj: String,
         decrement: Int = 1,
     ): ObjChargeManager.Uncharge =
         manager.reduceWornCharges(player, Wearpos.RightHand, varobj, decrement)

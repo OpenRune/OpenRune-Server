@@ -1,7 +1,6 @@
 package org.rsmod.content.interfaces.fade.overlay
 
 import jakarta.inject.Inject
-import org.rsmod.api.config.refs.queues
 import org.rsmod.api.player.cinematic.Cinematic
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.script.onPlayerQueue
@@ -11,7 +10,7 @@ import org.rsmod.plugin.scripts.ScriptContext
 
 class FadeOverlayScript @Inject constructor(private val eventBus: EventBus) : PluginScript() {
     override fun ScriptContext.startup() {
-        onPlayerQueue(queues.fade_overlay_close) { onCloseQueue() }
+        onPlayerQueue("queue.fade_overlay_close") { onCloseQueue() }
     }
 
     private fun ProtectedAccess.onCloseQueue() {

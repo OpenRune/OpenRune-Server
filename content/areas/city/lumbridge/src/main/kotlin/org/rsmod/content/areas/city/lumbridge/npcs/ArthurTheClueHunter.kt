@@ -1,24 +1,25 @@
 package org.rsmod.content.areas.city.lumbridge.npcs
 
 import jakarta.inject.Inject
-import org.rsmod.api.config.refs.seqs
-import org.rsmod.api.config.refs.spotanims
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.player.protect.ProtectedAccess
+import org.rsmod.api.player.vars.boolVarBit
 import org.rsmod.api.random.GameRandom
 import org.rsmod.api.script.onAiTimer
 import org.rsmod.api.script.onOpNpc1
-import org.rsmod.content.areas.city.lumbridge.configs.clueScrollDisableVessels
-import org.rsmod.content.areas.city.lumbridge.configs.lumbridge_npcs
 import org.rsmod.game.entity.Npc
+import org.rsmod.game.entity.Player
 import org.rsmod.game.map.Direction
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
 class ArthurTheClueHunter @Inject constructor(private val random: GameRandom) : PluginScript() {
+
+    internal var Player.clueScrollDisableVessels by boolVarBit("varbit.vesseled_clues_disabled")
+
     override fun ScriptContext.startup() {
-        onAiTimer(lumbridge_npcs.arthur_the_clue_hunter) { npc.shout() }
-        onOpNpc1(lumbridge_npcs.arthur_the_clue_hunter) { startDialogue(it.npc) }
+        onAiTimer("npc.aide_tutor_clues") { npc.shout() }
+        onOpNpc1("npc.aide_tutor_clues") { startDialogue(it.npc) }
     }
 
     private fun Npc.shout() {
@@ -26,24 +27,24 @@ class ArthurTheClueHunter @Inject constructor(private val random: GameRandom) : 
         when (random.of(maxExclusive = 5)) {
             0 -> {
                 say("Why did I not think of that before.")
-                anim(seqs.emote_slap_head)
+                anim("seq.emote_slap_head")
             }
             1 -> {
                 say("Hmm.... What could this mean?")
-                anim(seqs.emote_shrug)
+                anim("seq.emote_shrug")
             }
             2 -> {
                 say("I'm going to be rich!")
-                anim(seqs.emote_jump_with_joy)
+                anim("seq.emote_jump_with_joy")
             }
             3 -> {
                 say("I've got it!")
-                anim(seqs.emote_lightbulb)
-                spotanim(spotanims.emote_lightbulb_spot)
+                anim("seq.emote_lightbulb")
+                spotanim("spotanim.emote_lightbulb_spot")
             }
             4 -> {
                 say("Why is this so hard...")
-                anim(seqs.emote_stampfeet)
+                anim("seq.emote_stampfeet")
             }
         }
     }

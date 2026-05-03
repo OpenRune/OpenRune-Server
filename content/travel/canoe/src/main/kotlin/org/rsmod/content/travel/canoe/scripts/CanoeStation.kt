@@ -1,8 +1,8 @@
 package org.rsmod.content.travel.canoe.scripts
 
+import dev.openrune.rscm.RSCM
+import dev.openrune.rscm.RSCMType
 import jakarta.inject.Inject
-import org.rsmod.api.config.refs.stats
-import org.rsmod.api.config.refs.synths
 import org.rsmod.api.enums.NamedEnums.canoe_station_axe_rates
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.stat.woodcuttingLvl
@@ -10,8 +10,6 @@ import org.rsmod.api.repo.world.WorldRepository
 import org.rsmod.api.script.onOpLoc1
 import org.rsmod.api.script.onOpLoc3
 import org.rsmod.api.stats.levelmod.InvisibleLevels
-import org.rsmod.content.travel.canoe.configs.canoe_locs
-import org.rsmod.content.travel.canoe.configs.canoe_seqs
 import org.rsmod.game.loc.BoundLocInfo
 import org.rsmod.game.map.Direction
 import org.rsmod.game.map.translate
@@ -25,20 +23,20 @@ class CanoeStation
 constructor(private val invisibleLvls: InvisibleLevels, private val worldRepo: WorldRepository) :
     PluginScript() {
     override fun ScriptContext.startup() {
-        onOpLoc1(canoe_locs.station_lumbridge) { pathTo(it.loc, Path.Lumbridge) }
-        onOpLoc3(canoe_locs.station_lumbridge) { cut(it.loc, Path.Lumbridge) }
+        onOpLoc1("loc.canoeing_canoestation_lumbridge") { pathTo(it.loc, Path.Lumbridge) }
+        onOpLoc3("loc.canoeing_canoestation_lumbridge") { cut(it.loc, Path.Lumbridge) }
 
-        onOpLoc1(canoe_locs.station_champs_guild) { pathTo(it.loc, Path.ChampionsGuild) }
-        onOpLoc3(canoe_locs.station_champs_guild) { cut(it.loc, Path.ChampionsGuild) }
+        onOpLoc1("loc.canoeing_canoestation_championsguild") { pathTo(it.loc, Path.ChampionsGuild) }
+        onOpLoc3("loc.canoeing_canoestation_championsguild") { cut(it.loc, Path.ChampionsGuild) }
 
-        onOpLoc1(canoe_locs.station_barb_village) { pathTo(it.loc, Path.BarbarianVillage) }
-        onOpLoc3(canoe_locs.station_barb_village) { cut(it.loc, Path.BarbarianVillage) }
+        onOpLoc1("loc.canoeing_canoestation_barbarianvillage") { pathTo(it.loc, Path.BarbarianVillage) }
+        onOpLoc3("loc.canoeing_canoestation_barbarianvillage") { cut(it.loc, Path.BarbarianVillage) }
 
-        onOpLoc1(canoe_locs.station_edgeville) { pathTo(it.loc, Path.Edgeville) }
-        onOpLoc3(canoe_locs.station_edgeville) { cut(it.loc, Path.Edgeville) }
+        onOpLoc1("loc.canoeing_canoestation_edgeville") { pathTo(it.loc, Path.Edgeville) }
+        onOpLoc3("loc.canoeing_canoestation_edgeville") { cut(it.loc, Path.Edgeville) }
 
-        onOpLoc1(canoe_locs.station_ferox_enclave) { pathTo(it.loc, Path.FeroxEnclave) }
-        onOpLoc3(canoe_locs.station_ferox_enclave) { cut(it.loc, Path.FeroxEnclave) }
+        onOpLoc1("loc.canoeing_canoestation_sanctuary") { pathTo(it.loc, Path.FeroxEnclave) }
+        onOpLoc3("loc.canoeing_canoestation_sanctuary") { cut(it.loc, Path.FeroxEnclave) }
     }
 
     private suspend fun ProtectedAccess.pathTo(loc: BoundLocInfo, path: Path) {
@@ -113,7 +111,7 @@ constructor(private val invisibleLvls: InvisibleLevels, private val worldRepo: W
         if (skillAnimDelay < mapClock) {
             skillAnimDelay = mapClock + 3
         } else if (skillAnimDelay == mapClock) {
-            anim(getInvObj(axe).axeWoodcuttingAnim)
+            anim(RSCM.getReverseMapping(RSCMType.SEQ, getInvObj(axe).axeWoodcuttingAnim.id))
         }
 
         if (refaceDelay < mapClock) {
@@ -129,7 +127,7 @@ constructor(private val invisibleLvls: InvisibleLevels, private val worldRepo: W
             faceSquare(path.face)
         } else if (actionDelay == mapClock) {
             val (low, high) = axeSuccessRates(axe, canoe_station_axe_rates)
-            cutCanoe = statRandom(stats.woodcutting, low, high, invisibleLvls)
+            cutCanoe = statRandom("stat.woodcutting", low, high, invisibleLvls)
         }
 
         if (!cutCanoe) {
@@ -142,8 +140,8 @@ constructor(private val invisibleLvls: InvisibleLevels, private val worldRepo: W
         val station = path.station
         this[station] = StationState.StationFalling
         resetAnim()
-        soundSynth(synths.tree_fall_sound)
-        worldRepo.locAnim(loc, canoe_seqs.canoeing_station_animations)
+        soundSynth("synth.tree_fall_sound")
+        worldRepo.locAnim(loc, "seq.canoeing_station_animations")
         delay(1)
         this[station] = StationState.StationReadyToShape
     }

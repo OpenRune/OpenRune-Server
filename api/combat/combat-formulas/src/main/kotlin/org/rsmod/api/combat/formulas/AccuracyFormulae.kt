@@ -443,7 +443,7 @@ constructor(
      * determine if the spell hits.
      *
      * @param spell The [ItemServerType] representing the spell being cast (e.g.,
-     *   `objs.spell_wind_strike` for the Wind strike spell).
+     *   `"obj.01_wind_strike"` for the Wind strike spell).
      * @param spellbook The [Spellbook] the spell belongs to (e.g., Standard or Ancients), usually
      *   derived from the player's current spellbook.
      * @param usedSunfireRune Whether the player used a Sunfire rune for the spell.
@@ -468,7 +468,7 @@ constructor(
      * [target]'s magic defence roll.
      *
      * @param spell The [ItemServerType] representing the spell being cast (e.g.,
-     *   `objs.spell_wind_strike` for the Wind strike spell).
+     *   `"obj.01_wind_strike"` for the Wind strike spell).
      * @param spellbook The [Spellbook] the spell belongs to (e.g., Standard or Ancients), usually
      *   derived from the player's current spellbook.
      * @param usedSunfireRune Whether the player used a Sunfire rune for the spell.
@@ -499,7 +499,7 @@ constructor(
      * determine if the spell hits.
      *
      * @param spell The [ItemServerType] representing the spell being cast (e.g.,
-     *   `objs.spell_wind_strike` for the Wind strike spell).
+     *   `"obj.01_wind_strike"` for the Wind strike spell).
      * @param spellbook The [Spellbook] the spell belongs to (e.g., Standard or Ancients), usually
      *   derived from the player's current spellbook.
      * @param usedSunfireRune Whether the player used a Sunfire rune for the spell.
@@ -524,7 +524,7 @@ constructor(
      * [target]'s magic defence roll.
      *
      * @param spell The [ItemServerType] representing the spell being cast (e.g.,
-     *   `objs.spell_wind_strike` for the Wind strike spell).
+     *   `"obj.01_wind_strike"` for the Wind strike spell).
      * @param spellbook The [Spellbook] the spell belongs to (e.g., Standard or Ancients), usually
      *   derived from the player's current spellbook.
      * @param usedSunfireRune Whether the player used a Sunfire rune for the spell.

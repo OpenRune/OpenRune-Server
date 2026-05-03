@@ -1,5 +1,8 @@
 package org.rsmod.game.vars
 
+import dev.openrune.ServerCacheManager
+import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.rscm.RSCMType
 import dev.openrune.types.VarnBitType
 import dev.openrune.types.VarnType
 import it.unimi.dsi.fastutil.ints.Int2IntMap
@@ -14,7 +17,19 @@ public value class VarNpcIntMap(public val backing: Int2IntMap = Int2IntOpenHash
         backing.remove(key.id)
     }
 
+    public fun remove(key: String) {
+        backing.remove(key.asRSCM(RSCMType.VARN))
+    }
+
+    public operator fun get(key: String): Int = backing.getOrDefault(key.asRSCM(RSCMType.VARN), 0)
+
     public operator fun get(key: VarnType): Int = backing.getOrDefault(key.id, 0)
+
+    public operator fun set(key: String, value: Int?) {
+        val varnType = ServerCacheManager.getVarn(key.asRSCM(RSCMType.VARN)) ?: error("Unable to find varn: $key")
+        set(varnType, value)
+    }
+
 
     public operator fun set(key: VarnType, value: Int?) {
         if (value == null) {

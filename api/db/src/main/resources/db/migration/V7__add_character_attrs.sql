@@ -1,0 +1,1 @@
+ALTER TABLE characters ADD COLUMN attrs TEXT NOT NULL DEFAULT '{}';

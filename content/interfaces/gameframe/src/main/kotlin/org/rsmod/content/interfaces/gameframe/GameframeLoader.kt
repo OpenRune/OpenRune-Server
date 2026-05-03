@@ -1,9 +1,8 @@
 package org.rsmod.content.interfaces.gameframe
 
-import dev.openrune.component
 import dev.openrune.definition.type.widget.ComponentType
-import dev.openrune.inter
 import dev.openrune.rscm.RSCM
+import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import dev.openrune.types.aconverted.enum
 import dev.openrune.types.dbcol.DbColumnCodec.ComponentTypeCodec
@@ -21,21 +20,21 @@ internal class GameframeLoader {
 
         GameframeRow.all().forEach { entry ->
             val gameframe = loadGameframe(entry)
-            val previous = mapped[gameframe.topLevel.id]
+            val previous = mapped[gameframe.topLevel.asRSCM(RSCMType.INTERFACE)]
             if (previous != null) {
                 val message =
-                    "Gameframe for toplevel already exists: '${previous.topLevel.internalName}' " +
+                    "Gameframe for toplevel already exists: '${previous.topLevel}' " +
                         "(previous=$previous, curr=$gameframe)"
                 throw IllegalStateException(message)
             }
-            mapped[gameframe.topLevel.id] = gameframe
+            mapped[gameframe.topLevel.asRSCM(RSCMType.INTERFACE)] = gameframe
         }
 
         return mapped
     }
 
     private fun loadGameframe(row: GameframeRow): Gameframe {
-        val topLevel = inter(RSCM.getReverseMapping(RSCMType.INTERFACE, row.toplevel))
+        val topLevel = RSCM.getReverseMapping(RSCMType.INTERFACE, row.toplevel)
         val clientMode = row.clientMode
         val resizable = row.resizable
         val isDefault = row.default
@@ -55,47 +54,41 @@ internal class GameframeLoader {
         )
     }
 
-    fun loadMoveEvents(): Map<ComponentType, ComponentType> =
+    fun loadMoveEvents(): Map<String, String> =
         enum("enum.toplevel_move_events", ComponentTypeCodec, ComponentTypeCodec).associate {
-            val from =
-                RSCM.getReverseMapping(RSCMType.COMPONENT, it.key.packed).replace("component.", "")
-            val to =
-                RSCM.getReverseMapping(RSCMType.COMPONENT, it.value.packed)
-                    .replace("component.", "")
-            component(from) to component(to)
+            val from = RSCM.getReverseMapping(RSCMType.COMPONENT, it.key.packed)
+            val to = RSCM.getReverseMapping(RSCMType.COMPONENT, it.value.packed)
+            from to to
         }
 
     val overlays: List<GameframeOverlay> =
         listOf(
-            GameframeOverlay(inter("chatbox"), component("toplevel_osrs_stretch:chat_container")),
-            GameframeOverlay(inter("buff_bar"), component("toplevel_osrs_stretch:buff_bar")),
+            GameframeOverlay("interface.chatbox", "component.toplevel_osrs_stretch:chat_container"),
+            GameframeOverlay("interface.buff_bar", "component.toplevel_osrs_stretch:buff_bar"),
+            GameframeOverlay("interface.stat_boosts_hud", "component.toplevel_osrs_stretch:stat_boosts_hud"),
+            GameframeOverlay("interface.pm_chat", "component.toplevel_osrs_stretch:pm_container"),
+            GameframeOverlay("interface.hpbar_hud", "component.toplevel_osrs_stretch:hpbar_hud"),
+            GameframeOverlay("interface.pvp_icons", "component.toplevel_osrs_stretch:pvp_icons"),
+            GameframeOverlay("interface.orbs", "component.toplevel_osrs_stretch:orbs"),
+            GameframeOverlay("interface.xp_drops", "component.toplevel_osrs_stretch:xp_drops"),
+            GameframeOverlay("interface.popout", "component.toplevel_osrs_stretch:popout"),
             GameframeOverlay(
-                inter("stat_boosts_hud"),
-                component("toplevel_osrs_stretch:stat_boosts_hud"),
+                "interface.ehc_worldhop",
+                "component.toplevel_osrs_stretch:ehc_listener",
             ),
-            GameframeOverlay(inter("pm_chat"), component("toplevel_osrs_stretch:pm_container")),
-            GameframeOverlay(inter("hpbar_hud"), component("toplevel_osrs_stretch:hpbar_hud")),
-            GameframeOverlay(inter("pvp_icons"), component("toplevel_osrs_stretch:pvp_icons")),
-            GameframeOverlay(inter("orbs"), component("toplevel_osrs_stretch:orbs")),
-            GameframeOverlay(inter("xp_drops"), component("toplevel_osrs_stretch:xp_drops")),
-            GameframeOverlay(inter("popout"), component("toplevel_osrs_stretch:popout")),
-            GameframeOverlay(
-                inter("ehc_worldhop"),
-                component("toplevel_osrs_stretch:ehc_listener"),
-            ),
-            GameframeOverlay(inter("stats"), component("toplevel_osrs_stretch:side1")),
-            GameframeOverlay(inter("side_journal"), component("toplevel_osrs_stretch:side2")),
-            GameframeOverlay(inter("inventory"), component("toplevel_osrs_stretch:side3")),
-            GameframeOverlay(inter("wornitems"), component("toplevel_osrs_stretch:side4")),
-            GameframeOverlay(inter("prayerbook"), component("toplevel_osrs_stretch:side5")),
-            GameframeOverlay(inter("magic_spellbook"), component("toplevel_osrs_stretch:side6")),
-            GameframeOverlay(inter("friends"), component("toplevel_osrs_stretch:side9")),
-            GameframeOverlay(inter("account"), component("toplevel_osrs_stretch:side8")),
-            GameframeOverlay(inter("logout"), component("toplevel_osrs_stretch:side10")),
-            GameframeOverlay(inter("settings_side"), component("toplevel_osrs_stretch:side11")),
-            GameframeOverlay(inter("emote"), component("toplevel_osrs_stretch:side12")),
-            GameframeOverlay(inter("music"), component("toplevel_osrs_stretch:side13")),
-            GameframeOverlay(inter("side_channels"), component("toplevel_osrs_stretch:side7")),
-            GameframeOverlay(inter("combat_interface"), component("toplevel_osrs_stretch:side0")),
+            GameframeOverlay("interface.stats", "component.toplevel_osrs_stretch:side1"),
+            GameframeOverlay("interface.side_journal", "component.toplevel_osrs_stretch:side2"),
+            GameframeOverlay("interface.inventory", "component.toplevel_osrs_stretch:side3"),
+            GameframeOverlay("interface.wornitems", "component.toplevel_osrs_stretch:side4"),
+            GameframeOverlay("interface.prayerbook", "component.toplevel_osrs_stretch:side5"),
+            GameframeOverlay("interface.magic_spellbook", "component.toplevel_osrs_stretch:side6"),
+            GameframeOverlay("interface.friends", "component.toplevel_osrs_stretch:side9"),
+            GameframeOverlay("interface.account", "component.toplevel_osrs_stretch:side8"),
+            GameframeOverlay("interface.logout", "component.toplevel_osrs_stretch:side10"),
+            GameframeOverlay("interface.settings_side", "component.toplevel_osrs_stretch:side11"),
+            GameframeOverlay("interface.emote", "component.toplevel_osrs_stretch:side12"),
+            GameframeOverlay("interface.music", "component.toplevel_osrs_stretch:side13"),
+            GameframeOverlay("interface.side_channels", "component.toplevel_osrs_stretch:side7"),
+            GameframeOverlay("interface.combat_interface", "component.toplevel_osrs_stretch:side0"),
         )
 }

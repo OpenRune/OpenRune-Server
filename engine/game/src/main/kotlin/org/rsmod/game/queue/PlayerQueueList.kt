@@ -1,6 +1,7 @@
 package org.rsmod.game.queue
 
-import dev.openrune.types.aconverted.QueueType
+import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.rscm.RSCMType
 
 public class PlayerQueueList {
     public var size: Int = 0
@@ -20,12 +21,12 @@ public class PlayerQueueList {
         get() = size > 0
 
     public fun add(
-        type: QueueType,
+        type: String,
         category: QueueCategory,
         remainingCycles: Int,
         args: Any? = null,
     ) {
-        val queue = Queue(type.id, category.id, remainingCycles, args)
+        val queue = Queue(type.asRSCM(RSCMType.QUEUE), category.id, remainingCycles, args)
         val node = Node(queue, prev = last)
         add(node)
 
@@ -72,7 +73,7 @@ public class PlayerQueueList {
         }
     }
 
-    public fun removeAll(type: QueueType): Int {
+    public fun removeAll(type: String): Int {
         if (isEmpty) {
             return 0
         }
@@ -81,7 +82,7 @@ public class PlayerQueueList {
         var count = 0
         var current = first
         while (current != null) {
-            if (current.queue.id == type.id) {
+            if (current.queue.id == type.asRSCM(RSCMType.QUEUE)) {
                 remove(current)
                 count++
             }
@@ -92,7 +93,7 @@ public class PlayerQueueList {
         return count
     }
 
-    public fun count(type: QueueType): Int {
+    public fun count(type: String): Int {
         if (isEmpty) {
             return 0
         }
@@ -100,7 +101,7 @@ public class PlayerQueueList {
         var count = 0
         var current = first
         while (current != null) {
-            if (current.queue.id == type.id) {
+            if (current.queue.id == type.asRSCM(RSCMType.QUEUE)) {
                 count++
             }
             current = current.next ?: break
@@ -108,14 +109,14 @@ public class PlayerQueueList {
         return count
     }
 
-    public operator fun contains(type: QueueType): Boolean {
+    public operator fun contains(type: String): Boolean {
         if (isEmpty) {
             return false
         }
 
         var current = first
         while (current != null) {
-            if (current.queue.id == type.id) {
+            if (current.queue.id == type.asRSCM(RSCMType.QUEUE)) {
                 return true
             }
             current = current.next ?: break

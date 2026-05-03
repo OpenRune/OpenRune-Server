@@ -1,11 +1,11 @@
 package org.rsmod.api.player.dialogue
 
+import dev.openrune.ServerCacheManager
+import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.types.ItemServerType
 import dev.openrune.types.MesAnimType
 import dev.openrune.types.NpcServerType
-import dev.openrune.types.aconverted.ContentGroupType
 import org.rsmod.api.config.Constants
-import org.rsmod.api.config.refs.mesanims
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.vars.VarPlayerIntMapDelegate
 import org.rsmod.game.entity.Npc
@@ -21,53 +21,58 @@ public class Dialogue(
     public val player: Player by access::player
     public val vars: VarPlayerIntMapDelegate by access::vars
 
+    public fun mesanim(internal: String): MesAnimType {
+        val type = ServerCacheManager.getMesAnim(internal.asRSCM()) ?: error("Error Loading MesAnim")
+        return type
+    }
+
     public val quiz: MesAnimType
-        get() = mesanims.quiz
+        get() = mesanim("mesanim.quiz")
 
     public val bored: MesAnimType
-        get() = mesanims.bored
+        get() = mesanim("mesanim.bored")
 
     public val short: MesAnimType
-        get() = mesanims.short
+        get() = mesanim("mesanim.short")
 
     public val happy: MesAnimType
-        get() = mesanims.happy
+        get() = mesanim("mesanim.happy")
 
     public val shocked: MesAnimType
-        get() = mesanims.shocked
+        get() = mesanim("mesanim.shocked")
 
     public val confused: MesAnimType
-        get() = mesanims.confused
+        get() = mesanim("mesanim.confused")
 
     public val silent: MesAnimType
-        get() = mesanims.silent
+        get() = mesanim("mesanim.silent")
 
     public val neutral: MesAnimType
-        get() = mesanims.neutral
+        get() = mesanim("mesanim.neutral")
 
     public val shifty: MesAnimType
-        get() = mesanims.shifty
+        get() = mesanim("mesanim.shifty")
 
     public val worried: MesAnimType
-        get() = mesanims.worried
+        get() = mesanim("mesanim.worried")
 
     public val drunk: MesAnimType
-        get() = mesanims.drunk
+        get() = mesanim("mesanim.drunk")
 
     public val verymad: MesAnimType
-        get() = mesanims.very_mad
+        get() = mesanim("mesanim.very_mad")
 
     public val laugh: MesAnimType
-        get() = mesanims.laugh
+        get() = mesanim("mesanim.laugh")
 
     public val madlaugh: MesAnimType
-        get() = mesanims.mad_laugh
+        get() = mesanim("mesanim.mad_laugh")
 
     public val sad: MesAnimType
-        get() = mesanims.sad
+        get() = mesanim("mesanim.sad")
 
     public val angry: MesAnimType
-        get() = mesanims.angry
+        get() = mesanim("mesanim.angry")
 
     public val npcVisType: NpcServerType
         get() = access.npcVisType(npcOrThrow())
@@ -83,22 +88,22 @@ public class Dialogue(
     }
 
     /** @see [ProtectedAccess.objbox] */
-    public suspend fun objbox(obj: ItemServerType, text: String) {
+    public suspend fun objbox(obj: String, text: String) {
         access.objbox(obj, text)
     }
 
     /** @see [ProtectedAccess.objboxNp] */
-    public fun objboxNp(obj: ItemServerType, text: String) {
+    public fun objboxNp(obj: String, text: String) {
         access.objboxNp(obj, text)
     }
 
     /** @see [ProtectedAccess.objbox] */
-    public suspend fun objbox(obj: ItemServerType, zoom: Int, text: String) {
+    public suspend fun objbox(obj: String, zoom: Int, text: String) {
         access.objbox(obj, zoom, text)
     }
 
     /** @see [ProtectedAccess.objboxNp] */
-    public fun objboxNp(obj: ItemServerType, zoom: Int, text: String) {
+    public fun objboxNp(obj: String, zoom: Int, text: String) {
         access.objboxNp(obj, zoom, text)
     }
 
@@ -123,20 +128,20 @@ public class Dialogue(
     }
 
     /** @see [ProtectedAccess.doubleobjbox] */
-    public suspend fun doubleobjbox(obj1: ItemServerType, obj2: ItemServerType, text: String) {
+    public suspend fun doubleobjbox(obj1: String, obj2: String, text: String) {
         access.doubleobjbox(obj1, obj2, text)
     }
 
     /** @see [ProtectedAccess.doubleobjboxNp] */
-    public fun doubleobjboxNp(obj1: ItemServerType, obj2: ItemServerType, text: String) {
+    public fun doubleobjboxNp(obj1: String, obj2: String, text: String) {
         access.doubleobjboxNp(obj1, obj2, text)
     }
 
     /** @see [ProtectedAccess.doubleobjbox] */
     public suspend fun doubleobjbox(
-        obj1: ItemServerType,
+        obj1: String,
         zoom1: Int,
-        obj2: ItemServerType,
+        obj2: String,
         zoom2: Int,
         text: String,
     ) {
@@ -145,9 +150,9 @@ public class Dialogue(
 
     /** @see [ProtectedAccess.doubleobjboxNp] */
     public fun doubleobjboxNp(
-        obj1: ItemServerType,
+        obj1: String,
         zoom1: Int,
-        obj2: ItemServerType,
+        obj2: String,
         zoom2: Int,
         text: String,
     ) {
@@ -208,7 +213,7 @@ public class Dialogue(
     /** @see [ProtectedAccess.chatNpcSpecific] */
     public suspend fun chatNpcSpecific(
         title: String,
-        type: NpcServerType,
+        type: String,
         mesanim: MesAnimType,
         text: String,
     ) {
@@ -218,7 +223,7 @@ public class Dialogue(
     /** @see [ProtectedAccess.chatNpcSpecificNp] */
     public fun chatNpcSpecificNp(
         title: String,
-        type: NpcServerType,
+        type: String,
         mesanim: MesAnimType,
         text: String,
     ) {
@@ -315,7 +320,7 @@ public class Dialogue(
 
     /** @see [ProtectedAccess.confirmDestroy] */
     public suspend fun confirmDestroy(
-        obj: ItemServerType,
+        obj: String,
         count: Int,
         header: String,
         text: String,
@@ -324,16 +329,16 @@ public class Dialogue(
     /** @see [ProtectedAccess.delay] */
     public suspend fun delay(cycles: Int = 1): Unit = access.delay(cycles)
 
-    /** @see [ProtectedAccess.invTotal] */
-    public fun invTotal(inv: Inventory, content: ContentGroupType): Int =
-        access.invTotal(inv, content)
+    /** @see [ProtectedAccess.invContentTotal] */
+    public fun invTotal(inv: Inventory, content: String): Int =
+        access.invContentTotal(inv, content)
 
     /** @see [ProtectedAccess.invContains] */
-    public operator fun Inventory.contains(content: ContentGroupType): Boolean =
+    public operator fun Inventory.contains(content: String): Boolean =
         access.invContains(this, content)
 
     /** @see [ProtectedAccess.ocCert] */
-    public fun ocCert(type: ItemServerType): ItemServerType = access.ocCert(type)
+    public fun ocCert(type: String): ItemServerType = access.ocCert(type)
 
     /** @see [ProtectedAccess.ocUncert] */
     public fun ocUncert(type: ItemServerType): ItemServerType = access.ocUncert(type)

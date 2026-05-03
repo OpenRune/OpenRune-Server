@@ -5,7 +5,6 @@ import dev.openrune.util.WeaponCategory
 import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap
 import org.rsmod.api.combat.commons.styles.AttackStyle
 import org.rsmod.api.combat.weapon.righthand
-import org.rsmod.api.config.refs.varps
 import org.rsmod.api.enums.WeaponAttackEnums.weapon_attack_styles
 import org.rsmod.game.entity.Player
 import org.rsmod.game.type.getOrNull
@@ -15,7 +14,7 @@ public class AttackStyles {
 
     public fun get(player: Player): AttackStyle? {
         val type = getOrNull(player.righthand)
-        val stance = player.vars[varps.com_mode]
+        val stance = player.vars["varp.com_mode"]
         return resolve(type = type, combatStance = stance)
     }
 

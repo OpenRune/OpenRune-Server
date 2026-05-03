@@ -1,12 +1,15 @@
 package org.rsmod.api.spells.runes
 
+import dev.openrune.ServerCacheManager
 import dev.openrune.definition.type.VarBitType
+import dev.openrune.rscm.RSCM
+import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.rscm.RSCMType
 import dev.openrune.types.ItemServerType
 import dev.openrune.util.Wearpos
 import kotlin.math.max
 import kotlin.math.min
 import org.rsmod.api.combat.commons.magic.MagicSpell
-import org.rsmod.api.config.refs.objs
 import org.rsmod.api.spells.runes.combo.ComboRuneRepository
 import org.rsmod.api.spells.runes.compact.CompactRuneRepository
 import org.rsmod.api.spells.runes.fake.FakeRuneRepository
@@ -53,8 +56,12 @@ public object MagicRunes {
 
         // Attempt to validate combo runes that can substitute exactly two required runes.
         for ((combo, rune1, rune2) in combos.comboRunes) {
-            val runeReq1 = requirements.findWithRemaining(rune1) ?: continue
-            val runeReq2 = requirements.findWithRemaining(rune2) ?: continue
+
+            val internalNameRune1 = RSCM.getReverseMapping(RSCMType.OBJ, rune1.id)
+            val internalNameRune2 = RSCM.getReverseMapping(RSCMType.OBJ, rune2.id)
+
+            val runeReq1 = requirements.findWithRemaining(internalNameRune1) ?: continue
+            val runeReq2 = requirements.findWithRemaining(internalNameRune2) ?: continue
 
             // Combo runes are prioritized early only if both of their associated runes
             // are required. If the player has an unlimited source for either rune, that
@@ -139,8 +146,11 @@ public object MagicRunes {
         }
 
         for ((combo, rune1, rune2) in combos.comboRunes) {
-            val runeReq1 = requirements.findWithRemaining(rune1)
-            val runeReq2 = requirements.findWithRemaining(rune2)
+            val internalNameRune1 = RSCM.getReverseMapping(RSCMType.OBJ, rune1.id)
+            val internalNameRune2 = RSCM.getReverseMapping(RSCMType.OBJ, rune2.id)
+
+            val runeReq1 = requirements.findWithRemaining(internalNameRune1)
+            val runeReq2 = requirements.findWithRemaining(internalNameRune2)
             if (runeReq1 == null && runeReq2 == null) {
                 continue
             }
@@ -239,7 +249,10 @@ public object MagicRunes {
                 val invFakeRune = inv[invFakeSlot]
                 val count = invFakeRune?.count ?: 0
                 return if (count >= required) {
-                    val sources = listOf(Source.InvSource(fake, invFakeSlot, required))
+
+                    val internalName = RSCM.getReverseMapping(RSCMType.OBJ, fake.id)
+
+                    val sources = listOf(Source.InvSource(internalName, invFakeSlot, required))
                     Validation.Valid.HasEnough(sources)
                 } else {
                     Validation.Invalid.NotEnoughRunes(rune)
@@ -256,7 +269,8 @@ public object MagicRunes {
 
         // Fast-path: return single-list `HasEnough` validation when inv has enough runes.
         if (invRuneObj != null && invRuneObj.count >= required) {
-            val sources = listOf(Source.InvSource(rune, invRuneSlot, required))
+            val internalName = RSCM.getReverseMapping(RSCMType.OBJ, rune.id)
+            val sources = listOf(Source.InvSource(internalName, invRuneSlot, required))
             return Validation.Valid.HasEnough(sources)
         }
 
@@ -266,7 +280,8 @@ public object MagicRunes {
         // Reduce remaining count from existing inv rune (if available).
         if (invRuneObj != null) {
             remaining -= invRuneObj.count
-            sources += Source.InvSource(rune, invRuneSlot, invRuneObj.count)
+            val internalName = RSCM.getReverseMapping(RSCMType.OBJ, rune.id)
+            sources += Source.InvSource(internalName, invRuneSlot, invRuneObj.count)
         }
 
         if (pouch != null) {
@@ -276,7 +291,7 @@ public object MagicRunes {
             val pouchCompactRune4 = pouch.compactId4
 
             val pouchRuneCount: Int
-            val pouchCountVarBit: VarBitType?
+            val pouchCountVarBit: String?
             when {
                 pouchCompactRune1 == compactId -> {
                     pouchRuneCount = pouch.count1
@@ -357,113 +372,7 @@ public object MagicRunes {
         useFakeRunes: Boolean,
         allowBlighted: Boolean,
     ): Validation.Valid? {
-        val inv = player.inv
-        when {
-            spell.isAnyType(objs.spell_blood_blitz, objs.spell_blood_barrage) -> {
-                if (useFakeRunes && objs.lms_rune_pouch in inv) {
-                    return Validation.Valid.Unlimited
-                }
-            }
-            spell.isAnyType(objs.spell_ice_blitz, objs.spell_ice_barrage) -> {
-                if (useFakeRunes && objs.lms_rune_pouch in inv) {
-                    return Validation.Valid.Unlimited
-                }
-                val sack = objs.blighted_ancient_ice_sack
-                if (allowBlighted && sack in inv) {
-                    val invSlot = inv.indexOfFirst { it.isType(sack) }
-                    val source = Source.InvSource(sack, invSlot, count = 1)
-                    return Validation.Valid.HasEnough(source)
-                }
-            }
-            spell.isAnyType(objs.spell_ice_rush, objs.spell_ice_burst) -> {
-                val sack = objs.blighted_ancient_ice_sack
-                if (allowBlighted && sack in inv) {
-                    val invSlot = inv.indexOfFirst { it.isType(sack) }
-                    val source = Source.InvSource(sack, invSlot, count = 1)
-                    return Validation.Valid.HasEnough(source)
-                }
-            }
-            spell.isAnyType(objs.spell_bind, objs.spell_snare) -> {
-                val sack = objs.blighted_entangle_sack
-                if (allowBlighted && sack in inv) {
-                    val invSlot = inv.indexOfFirst { it.isType(sack) }
-                    val source = Source.InvSource(sack, invSlot, count = 1)
-                    return Validation.Valid.HasEnough(source)
-                }
-            }
-            spell.isType(objs.spell_entangle) -> {
-                if (useFakeRunes && objs.lms_rune_pouch in inv) {
-                    return Validation.Valid.Unlimited
-                }
-                val sack = objs.blighted_entangle_sack
-                if (allowBlighted && sack in inv) {
-                    val invSlot = inv.indexOfFirst { it.isType(sack) }
-                    val source = Source.InvSource(sack, invSlot, count = 1)
-                    return Validation.Valid.HasEnough(source)
-                }
-            }
-            spell.isAnyType(objs.spell_tele_block, objs.spell_teleport_to_target) -> {
-                val sack = objs.blighted_teleport_spell_sack
-                if (allowBlighted && sack in inv) {
-                    val invSlot = inv.indexOfFirst { it.isType(sack) }
-                    val source = Source.InvSource(sack, invSlot, count = 1)
-                    return Validation.Valid.HasEnough(source)
-                }
-            }
-            spell.isType(objs.spell_cure_me) -> {
-                if (useFakeRunes && objs.lms_rune_pouch in inv) {
-                    return Validation.Valid.Unlimited
-                }
-            }
-            spell.isType(objs.spell_vengeance_other) -> {
-                val sack = objs.blighted_vengeance_sack
-                if (allowBlighted && sack in inv) {
-                    val invSlot = inv.indexOfFirst { it.isType(sack) }
-                    val source = Source.InvSource(sack, invSlot, count = 1)
-                    return Validation.Valid.HasEnough(source)
-                }
-            }
-            spell.isType(objs.spell_vengeance) -> {
-                if (useFakeRunes && objs.lms_rune_pouch in inv) {
-                    return Validation.Valid.Unlimited
-                }
-                val sack = objs.blighted_vengeance_sack
-                if (allowBlighted && sack in inv) {
-                    val invSlot = inv.indexOfFirst { it.isType(sack) }
-                    val source = Source.InvSource(sack, invSlot, count = 1)
-                    return Validation.Valid.HasEnough(source)
-                }
-            }
-            spell.isAnyType(
-                objs.spell_wind_wave,
-                objs.spell_water_wave,
-                objs.spell_earth_wave,
-                objs.spell_fire_wave,
-            ) -> {
-                val sack = objs.blighted_surge_sack
-                if (allowBlighted && sack in inv) {
-                    val invSlot = inv.indexOfFirst { it.isType(sack) }
-                    val source = Source.InvSource(sack, invSlot, count = 1)
-                    return Validation.Valid.HasEnough(source)
-                }
-            }
-            spell.isAnyType(
-                objs.spell_wind_surge,
-                objs.spell_water_surge,
-                objs.spell_earth_surge,
-                objs.spell_fire_surge,
-            ) -> {
-                if (useFakeRunes && objs.lms_rune_pouch in inv) {
-                    return Validation.Valid.Unlimited
-                }
-                val sack = objs.blighted_surge_sack
-                if (allowBlighted && sack in inv) {
-                    val invSlot = inv.indexOfFirst { it.isType(sack) }
-                    val source = Source.InvSource(sack, invSlot, count = 1)
-                    return Validation.Valid.HasEnough(source)
-                }
-            }
-        }
+
         return null
     }
 
@@ -490,18 +399,21 @@ public object MagicRunes {
     }
 
     public sealed class Source {
-        public data class InvSource(val obj: ItemServerType, val slot: Int, val count: Int) :
+        public data class InvSource(val obj: String, val slot: Int, val count: Int) :
             Source()
 
-        public data class VarBitSource(val varbit: VarBitType, val count: Int) : Source()
+        public data class VarBitSource(val varbit: String, val count: Int) : Source()
     }
 
     public class RequirementList internal constructor(internal val reqs: List<Requirement>) {
         internal val size: Int
             get() = reqs.size
 
-        internal fun findWithRemaining(obj: ItemServerType): Requirement? {
-            return reqs.firstOrNull { it.type.isType(obj) && it.remaining > 0 }
+        internal fun findWithRemaining(obj: String): Requirement? {
+
+            val internalName = RSCM.getReverseMapping(RSCMType.OBJ, obj.asRSCM(RSCMType.OBJ))
+
+            return reqs.firstOrNull { it.type.isType(internalName) && it.remaining > 0 }
         }
 
         internal data class Requirement(
@@ -528,10 +440,10 @@ public object MagicRunes {
         val compactId2: Int,
         val compactId3: Int,
         val compactId4: Int,
-        val countVarBit1: VarBitType,
-        val countVarBit2: VarBitType,
-        val countVarBit3: VarBitType,
-        val countVarBit4: VarBitType?,
+        val countVarBit1: String,
+        val countVarBit2: String,
+        val countVarBit3: String,
+        val countVarBit4: String?,
         val count1: Int,
         val count2: Int,
         val count3: Int,

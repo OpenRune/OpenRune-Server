@@ -1,8 +1,6 @@
 package org.rsmod.api.mechanics.toxins.impl
 
-import org.rsmod.api.config.refs.hitmark_groups
-import org.rsmod.api.config.refs.timers
-import org.rsmod.api.config.refs.varps
+import org.rsmod.api.config.refs.done.hitmark_groups
 import org.rsmod.api.mechanics.toxins.Toxin
 import org.rsmod.api.player.hit.modifier.NoopPlayerHitModifier
 import org.rsmod.api.player.hit.queueHit
@@ -16,9 +14,9 @@ public object PlayerVenom {
 
     public const val TICK_INTERVAL: Int = PlayerPoison.TICK_INTERVAL
 
-    public const val NOT_ENVENOMED: Int = -1
+    public const val NOT_ENVENOMED: Int = 0
 
-    public fun isEnvenomed(player: Player): Boolean = player.vars[varps.venom_strikes] >= 0
+    public fun isEnvenomed(player: Player): Boolean = player.vars["varp.venom_strikes"] > NOT_ENVENOMED
 
     public fun damageForStrikeIndex(strikesCompletedSoFar: Int): Int =
         minOf(20, 6 + 2 * strikesCompletedSoFar.coerceAtLeast(0))
@@ -34,30 +32,31 @@ public object PlayerVenom {
             PlayerPoison.clear(player)
         }
 
-        VarPlayerIntMapSetter.set(player, varps.venom_strikes, 0)
-        player.timer(timers.player_venom, TICK_INTERVAL)
+        VarPlayerIntMapSetter.set(player, "varp.venom_strikes", 1)
+        player.timer("timer.player_venom", TICK_INTERVAL)
         player.mes("You have been envenomed!", ChatType.Spam)
         Toxin.syncStatusOrbs(player)
         return true
     }
 
     public fun clear(player: Player) {
-        VarPlayerIntMapSetter.set(player, varps.venom_strikes, NOT_ENVENOMED)
-        player.clearTimer(timers.player_venom)
+        VarPlayerIntMapSetter.set(player, "varp.venom_strikes", NOT_ENVENOMED)
+        player.clearTimer("timer.player_venom")
         Toxin.syncStatusOrbs(player)
     }
 
     public fun onVenomTimerTick(player: Player) {
-        var strikes = player.vars[varps.venom_strikes]
-        if (strikes < 0) {
+        var strikes = player.vars["varp.venom_strikes"]
+        if (strikes <= NOT_ENVENOMED) {
             clear(player)
             return
         }
-        val damage = damageForStrikeIndex(strikes)
+        val strikeIndex = strikes - 1
+        val damage = damageForStrikeIndex(strikeIndex)
         queueVenomHit(player, damage)
         strikes++
-        VarPlayerIntMapSetter.set(player, varps.venom_strikes, strikes)
-        player.timer(timers.player_venom, TICK_INTERVAL)
+        VarPlayerIntMapSetter.set(player, "varp.venom_strikes", strikes)
+        player.timer("timer.player_venom", TICK_INTERVAL)
         Toxin.syncStatusOrbs(player)
     }
 

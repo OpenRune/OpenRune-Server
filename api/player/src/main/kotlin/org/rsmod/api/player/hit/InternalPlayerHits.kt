@@ -1,12 +1,12 @@
 package org.rsmod.api.player.hit
 
+import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.rscm.RSCMType
 import dev.openrune.types.HitmarkTypeGroup
 import dev.openrune.types.ItemServerType
 import kotlin.math.max
 import org.rsmod.api.config.constants
-import org.rsmod.api.config.refs.hitmark_groups
-import org.rsmod.api.config.refs.varbits
-import org.rsmod.api.config.refs.varps
+import org.rsmod.api.config.refs.done.hitmark_groups
 import org.rsmod.api.player.righthand
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
@@ -117,8 +117,8 @@ internal object InternalPlayerHits {
         val publicHitmark =
             when {
                 isPrivateHit -> null
-                hitmark.tint != null -> hitmark.tint?.id
-                else -> hitmark.lit.id
+                hitmark.tint != null -> hitmark.tint?.asRSCM(RSCMType.HITMARK)
+                else -> hitmark.lit.asRSCM(RSCMType.HITMARK)
             }
         val zeroDamageHitmarks = if (hitmark.isRegularDamage()) hitmark_groups.zero_damage else null
         return HitBuilder(
@@ -131,12 +131,12 @@ internal object InternalPlayerHits {
             clientDelay = clientDelay,
             righthandType = righthandObj,
             secondaryType = secondaryObj,
-            targetHitmark = hitmark.lit.id,
-            sourceHitmark = hitmark.lit.id,
+            targetHitmark = hitmark.lit.asRSCM(RSCMType.HITMARK),
+            sourceHitmark = hitmark.lit.asRSCM(RSCMType.HITMARK),
             publicHitmark = publicHitmark,
-            zeroDamageHitmarkLit = zeroDamageHitmarks?.lit?.id,
-            zeroDamageHitmarkTint = zeroDamageHitmarks?.tint?.id,
-            maxDamageHitmarkLit = hitmark.max?.id,
+            zeroDamageHitmarkLit = zeroDamageHitmarks?.lit?.asRSCM(RSCMType.HITMARK),
+            zeroDamageHitmarkTint = zeroDamageHitmarks?.tint?.asRSCM(RSCMType.HITMARK),
+            maxDamageHitmarkLit = hitmark.max?.asRSCM(RSCMType.HITMARK),
             targetMaxDamageThreshold = targetMaxDamageThreshold ?: Int.MAX_VALUE,
             sourceMaxDamageThreshold = sourceMaxDamageThreshold ?: Int.MAX_VALUE,
         )
@@ -145,10 +145,10 @@ internal object InternalPlayerHits {
     private fun HitmarkTypeGroup.isRegularDamage(): Boolean =
         isAssociatedWith(hitmark_groups.regular_damage)
 
-    private fun Player.currentMaxHit(): Int = vars[varps.com_maxhit]
+    private fun Player.currentMaxHit(): Int = vars["varp.com_maxhit"]
 
     private fun Player.maxDamageLitThreshold(sourceMaxHit: Int): Int? {
-        val varThreshold = vars[varbits.settings_hitsplat_threshold]
+        val varThreshold = vars["varbit.settings_hitsplat_threshold"]
         val minThreshold = max(constants.setting_lit_maxhit_min_threshold, varThreshold)
         val threshold = max(minThreshold, sourceMaxHit)
         return if (threshold == 0) {

@@ -1,15 +1,12 @@
 package org.rsmod.api.combat.commons.player
 
 import dev.openrune.ServerCacheManager
+import dev.openrune.rscm.RSCM
+import dev.openrune.rscm.RSCMType
 import dev.openrune.types.ItemServerType
 import dev.openrune.types.SequenceServerType
 import kotlin.math.min
-import org.rsmod.api.config.refs.categories
 import org.rsmod.api.config.refs.params
-import org.rsmod.api.config.refs.queues
-import org.rsmod.api.config.refs.seqs
-import org.rsmod.api.config.refs.spotanims
-import org.rsmod.api.config.refs.varps
 import org.rsmod.api.player.lefthand
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.righthand
@@ -20,10 +17,10 @@ import org.rsmod.game.entity.npc.NpcUid
 import org.rsmod.game.entity.player.PlayerUid
 import org.rsmod.game.type.getOrNull
 
-private val ProtectedAccess.autoRetaliateDisabled by boolVarp(varps.option_nodef)
+private val ProtectedAccess.autoRetaliateDisabled by boolVarp("varp.option_nodef")
 
 public fun Player.queueCombatRetaliate(source: Npc, delay: Int = 1) {
-    strongQueue(queues.com_retaliate_npc, delay, source.uid)
+    strongQueue("queue.com_retaliate_npc", delay, source.uid)
 }
 
 public fun ProtectedAccess.combatRetaliate(uid: NpcUid, flinchDelay: Int) {
@@ -40,7 +37,7 @@ public fun ProtectedAccess.combatRetaliate(uid: NpcUid, flinchDelay: Int) {
 }
 
 public fun Player.queueCombatRetaliate(source: Player, delay: Int = 1) {
-    strongQueue(queues.com_retaliate_player, delay, source.uid)
+    strongQueue("queue.com_retaliate_player", delay, source.uid)
 }
 
 public fun ProtectedAccess.combatRetaliate(uid: PlayerUid, flinchDelay: Int) {
@@ -67,13 +64,13 @@ public fun Player.combatPlayDefendAnim(clientDelay: Int = 0) {
 private fun resolveDefendAnim(
     righthand: ItemServerType?,
     lefthand: ItemServerType?,
-): SequenceServerType {
+): String {
     val righthandAnim = righthand?.param(params.defend_anim)
     val lefthandAnim = lefthand?.param(params.defend_anim)
     return when {
-        lefthandAnim != null && !lefthandAnim.isType(seqs.human_unarmedblock) -> lefthandAnim
-        righthandAnim != null -> righthandAnim
-        else -> seqs.human_unarmedblock
+        lefthandAnim != null && !lefthandAnim.isType("seq.human_unarmedblock") -> RSCM.getReverseMapping(RSCMType.SEQ,lefthandAnim.id)
+        righthandAnim != null -> RSCM.getReverseMapping(RSCMType.SEQ,righthandAnim.id)
+        else -> "seq.human_unarmedblock"
     }
 }
 
@@ -81,10 +78,10 @@ public fun Player.combatPlayDefendSpot(ammo: ItemServerType?, clientDelay: Int) 
     val type =
         ammo?.let { id -> ServerCacheManager.getItems().values.firstOrNull { it.id == id.id } }
             ?: return
-    if (!type.isCategoryType(categories.javelin)) {
+    if (!type.isCategoryType("category.javelin")) {
         return
     }
-    spotanim(spotanims.ballista_special, delay = clientDelay, height = 146)
+    spotanim("spotanim.ballista_special", delay = clientDelay, height = 146)
 }
 
 public fun Player.resolveCombatXpMultiplier(): Double = min(1.125, 1 + (0.025 * (combatLevel / 20)))

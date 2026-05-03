@@ -1,5 +1,7 @@
 package org.rsmod.game.obj
 
+import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.rscm.RSCMType
 import dev.openrune.types.ItemServerType
 import org.rsmod.game.MapClock
 import org.rsmod.game.entity.Npc
@@ -181,6 +183,16 @@ public class Obj(
             return fromOwner(player, coords, obj.id, count)
         }
 
+
+        public fun fromOwner(
+            player: Player,
+            coords: CoordGrid,
+            obj: String,
+            count: Int,
+        ): Obj {
+            return fromOwner(player, coords, obj.asRSCM(RSCMType.OBJ), count)
+        }
+
         public fun fromOwner(player: Player, coords: CoordGrid, obj: InvObj): Obj {
             return fromOwner(player, coords, obj.id, obj.count)
         }
@@ -199,10 +211,10 @@ public class Obj(
         public fun fromServer(
             clock: MapClock,
             coords: CoordGrid,
-            obj: ItemServerType,
+            obj: String,
             count: Int,
         ): Obj {
-            return fromServer(clock, coords, obj.id, count)
+            return fromServer(clock, coords, obj.asRSCM(RSCMType.OBJ), count)
         }
 
         public fun fromServer(clock: MapClock, coords: CoordGrid, obj: InvObj): Obj {

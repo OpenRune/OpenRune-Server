@@ -1,6 +1,9 @@
 package org.rsmod.game.ui.collection
 
+import dev.openrune.ServerCacheManager
 import dev.openrune.definition.type.widget.ComponentType
+import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.rscm.RSCMType
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 import org.rsmod.game.ui.UserInterface
@@ -23,7 +26,10 @@ public class ComponentEventMap(
         return events
     }
 
-    public fun add(type: ComponentType, range: IntRange, events: Long) {
+    public fun add(internal: String, range: IntRange, events: Long) {
+
+        val type = ServerCacheManager.fromComponent(internal.asRSCM(RSCMType.COMPONENT))
+
         val eventList = interfaces.computeIfAbsent(type.interfaceId) { mutableListOf() }
         val event = Event.from(type.component, range.first, range.last, events)
         eventList.add(event)

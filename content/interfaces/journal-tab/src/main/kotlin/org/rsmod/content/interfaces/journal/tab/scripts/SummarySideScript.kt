@@ -2,7 +2,6 @@ package org.rsmod.content.interfaces.journal.tab.scripts
 
 import dev.openrune.definition.type.widget.IfEvent
 import jakarta.inject.Inject
-import org.rsmod.api.config.refs.interfaces
 import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.protect.ProtectedAccessLauncher
@@ -13,8 +12,6 @@ import org.rsmod.api.player.vars.boolVarBit
 import org.rsmod.api.script.onIfOpen
 import org.rsmod.api.script.onIfOverlayButton
 import org.rsmod.content.interfaces.journal.tab.SideJournalTab
-import org.rsmod.content.interfaces.journal.tab.configs.journal_components
-import org.rsmod.content.interfaces.journal.tab.configs.journal_varbits
 import org.rsmod.content.interfaces.journal.tab.switchJournalTab
 import org.rsmod.content.interfaces.journal.tab.updateSummaryTimePlayed
 import org.rsmod.events.EventBus
@@ -26,20 +23,20 @@ class SummarySideScript
 @Inject
 constructor(private val eventBus: EventBus, private val protectedAccess: ProtectedAccessLauncher) :
     PluginScript() {
-    private var ProtectedAccess.displayPlaytime by boolVarBit(journal_varbits.display_playtime)
+    private var ProtectedAccess.displayPlaytime by boolVarBit("varbit.account_summary_display_playtime")
     private var ProtectedAccess.displayPlaytimeReminderDisabled by
-        boolVarBit(journal_varbits.display_playtime_remind_disable)
+        boolVarBit("varbit.account_summary_display_playtime_remind_disable")
 
     override fun ScriptContext.startup() {
-        onIfOpen(interfaces.account_summary_sidepanel) { player.onSummarySideOpen() }
-        onIfOverlayButton(journal_components.summary_click_layer) {
-            player.clickSummaryLayer(comsub)
+        onIfOpen("interface.account_summary_sidepanel") { player.onSummarySideOpen() }
+        onIfOverlayButton("component.account_summary_sidepanel:summary_click_layer") {
+            player.clickSummaryLayer(it.comsub)
         }
     }
 
     private fun Player.onSummarySideOpen() {
         ifSetEvents(
-            journal_components.summary_click_layer,
+            "component.account_summary_sidepanel:summary_click_layer",
             3..7,
             IfEvent.Op1,
             IfEvent.Op2,
@@ -69,14 +66,14 @@ constructor(private val eventBus: EventBus, private val protectedAccess: Protect
 
     private fun Player.clickCombatAchievements() {
         ifClose(eventBus)
-        val opened = protectedAccess.launch(this) { ifOpenMainModal(interfaces.ca_overview) }
+        val opened = protectedAccess.launch(this) { ifOpenMainModal("interface.ca_overview") }
         if (!opened) {
             mes("Please finish what you're doing first.")
         }
     }
 
     private fun Player.clickCollectionLog() {
-        ifOpenOverlay(interfaces.collection, eventBus)
+        ifOpenOverlay("interface.collection", eventBus)
     }
 
     private fun Player.selectTimePlayedToggle() {

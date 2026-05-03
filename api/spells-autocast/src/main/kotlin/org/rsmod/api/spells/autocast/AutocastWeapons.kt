@@ -5,7 +5,6 @@ import dev.openrune.types.ItemServerType
 import dev.openrune.util.WeaponCategory
 import jakarta.inject.Inject
 import jakarta.inject.Singleton
-import org.rsmod.api.config.refs.varbits
 import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.vars.VarPlayerIntMapSetter
 import org.rsmod.api.spells.autocast.configs.autocast_params
@@ -77,21 +76,21 @@ public class AutocastWeapons @Inject constructor(private val spells: AutocastSpe
         when (category) {
             WeaponCategory.Staff ->
                 StaffVarBits(
-                    varbits.saved_autocast_spell_staff,
-                    varbits.saved_defensive_casting_staff,
+                    "varbit.saved_autocast_spell_staff",
+                    "varbit.saved_defensive_casting_staff",
                 )
 
             WeaponCategory.BladedStaff ->
                 StaffVarBits(
-                    varbits.saved_autocast_spell_bladed_staff,
-                    varbits.saved_defensive_casting_bladed_staff,
+                    "varbit.saved_autocast_spell_bladed_staff",
+                    "varbit.saved_defensive_casting_bladed_staff",
                 )
 
             else -> null
         }
 
     public data class StaffVarBits(
-        public val autocastId: VarBitType,
-        public val defensiveCast: VarBitType,
+        public val autocastId: String,
+        public val defensiveCast: String,
     )
 }

@@ -5,7 +5,6 @@ import jakarta.inject.Inject
 import java.util.Objects
 import kotlin.math.abs
 import org.rsmod.api.config.refs.params
-import org.rsmod.api.config.refs.synths
 import org.rsmod.api.market.MarketPrices
 import org.rsmod.api.player.isInCombat
 import org.rsmod.api.player.output.mes
@@ -16,10 +15,6 @@ import org.rsmod.api.player.stopInvTransmit
 import org.rsmod.api.script.onIfClose
 import org.rsmod.api.script.onIfOverlayButton
 import org.rsmod.api.utils.format.formatAmount
-import org.rsmod.content.interfaces.equipment.configs.equip_components
-import org.rsmod.content.interfaces.equipment.configs.equip_interfaces
-import org.rsmod.content.interfaces.equipment.configs.equip_invs
-import org.rsmod.content.interfaces.equipment.configs.equip_objs
 import org.rsmod.game.entity.Player
 import org.rsmod.game.inv.InvObj
 import org.rsmod.game.inv.Inventory
@@ -34,8 +29,8 @@ constructor(
     private val marketPrices: MarketPrices,
 ) : PluginScript() {
     override fun ScriptContext.startup() {
-        onIfOverlayButton(equip_components.items_kept_on_death) { player.selectKeptOnDeath() }
-        onIfClose(equip_interfaces.deathkeep) { player.closeKeptOnDeath() }
+        onIfOverlayButton("component.wornitems:deathkeep") { player.selectKeptOnDeath() }
+        onIfClose("interface.deathkeep") { player.closeKeptOnDeath() }
     }
 
     private fun Player.selectKeptOnDeath() {
@@ -45,7 +40,7 @@ constructor(
         }
         if (isAccessProtected) {
             mes("Please finish what you're doing before opening this menu.")
-            soundSynth(synths.pillory_wrong)
+            soundSynth("synth.pillory_wrong")
             return
         }
         protectedAccess.launch(this) {
@@ -71,15 +66,15 @@ constructor(
         deathInventory: DeathInventory,
         deathSettings: DeathSettings,
     ) {
-        ifOpenMainModal(equip_interfaces.deathkeep)
+        ifOpenMainModal("interface.deathkeep")
         deathKeepInit(deathInventory, deathSettings)
-        ifSetEvents(equip_components.items_kept_on_death_pbutton, 0..3, IfEvent.PauseButton)
+        ifSetEvents("component.deathkeep:right", 0..3, IfEvent.PauseButton)
         updateDeathRisk(deathInventory)
     }
 
     private fun ProtectedAccess.updateDeathRisk(deathInventory: DeathInventory) {
         ifSetText(
-            equip_components.items_kept_on_death_risk,
+            "component.deathkeep:value",
             "Guide risk value:<br><col=ffffff>" +
                 "${deathInventory.calculateRisk().formatAmount}</col>",
         )
@@ -91,7 +86,7 @@ constructor(
         ifClose()
 
         // Verify the pause button input came from items kept on death interface.
-        if (!update.component.isType(equip_components.items_kept_on_death_pbutton)) {
+        if (update.component != "component.deathkeep:right") {
             return
         }
 
@@ -117,9 +112,9 @@ constructor(
     }
 
     private fun ProtectedAccess.createDeathInventory(settings: DeathSettings): DeathInventory {
-        val keptInventory = Inventory.create(equip_invs.kept)
-        val lostInventory = Inventory.create(equip_invs.death)
-        val dataInventory = Inventory.create(equip_invs.death_data)
+        val keptInventory = Inventory.create("inv.skill_guide_hunting_tracking")
+        val lostInventory = Inventory.create("inv.deathkeep_items")
+        val dataInventory = Inventory.create("inv.diango_hols_sack")
 
         check(keptInventory.size == 4) {
             "Size for `keptInventory` expected to be `4`. (size=${keptInventory.size})"
@@ -193,12 +188,12 @@ constructor(
 
     private fun convertToDataObj(obj: InvObj?): InvObj {
         if (obj == null) {
-            return InvObj(equip_objs.deleted)
+            return InvObj("obj.burntfish1")
         }
         val type = getInvObj(obj)
         val price = marketPrices[type] ?: type.cost
         val fee = calculateFee(price)
-        return InvObj(equip_objs.gravestone, fee + 1)
+        return InvObj("obj.burntfish4", fee + 1)
     }
 
     private fun calculateFee(marketPrice: Int): Int =
@@ -261,7 +256,7 @@ constructor(
 }
 
 private val Player.itemsKeptOnDeath: Inventory
-    get() = invMap.getValue(equip_invs.death)
+    get() = invMap.getValue("inv.deathkeep_items")
 
 private val Player.itemsKeptOnDeathData: Inventory
-    get() = invMap.getValue(equip_invs.death_data)
+    get() = invMap.getValue("inv.diango_hols_sack")

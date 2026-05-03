@@ -1,12 +1,15 @@
 package dev.openrune.types
 
-import dev.openrune.definition.type.HitSplatType
+import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.rscm.RSCMType
 
 public data class HitmarkTypeGroup(
-    val lit: HitSplatType,
-    val tint: HitSplatType? = null,
-    val max: HitSplatType? = null,
+    val lit: String,
+    val tint: String? = null,
+    val max: String? = null,
 ) {
     public fun isAssociatedWith(other: HitmarkTypeGroup): Boolean =
-        lit.id == other.lit.id && tint?.id == other.tint?.id && max?.id == other.max?.id
+        lit.asRSCM(RSCMType.HITMARK) == other.lit.asRSCM(RSCMType.HITMARK)
+            && tint?.asRSCM(RSCMType.HITMARK) == other.tint?.asRSCM(RSCMType.HITMARK)
+            && max?.asRSCM(RSCMType.HITMARK) == other.max?.asRSCM(RSCMType.HITMARK)
 }

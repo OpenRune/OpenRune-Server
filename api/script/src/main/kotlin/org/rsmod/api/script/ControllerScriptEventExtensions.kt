@@ -1,8 +1,8 @@
 package org.rsmod.api.script
 
+import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.rscm.RSCMType
 import dev.openrune.types.ControllerType
-import dev.openrune.types.aconverted.QueueType
-import dev.openrune.types.aconverted.TimerType
 import org.rsmod.api.controller.access.StandardConAccess
 import org.rsmod.api.controller.events.ControllerAIEvents
 import org.rsmod.api.controller.events.ControllerQueueEvents
@@ -12,50 +12,50 @@ import org.rsmod.plugin.scripts.ScriptContext
 
 /* Timer functions */
 public fun ScriptContext.onAiConTimer(
-    type: ControllerType,
+    type: String,
     action: ControllerAIEvents.Timer.() -> Unit,
-): Unit = onEvent(type.id, action)
+): Unit = onEvent(type.asRSCM(RSCMType.CONTROLLER), action)
 
 public fun ScriptContext.onConTimer(
-    type: ControllerType,
+    type: String,
     action: suspend StandardConAccess.(ControllerTimerEvents.Type) -> Unit,
-): Unit = onConAccessEvent(type.id, action)
+): Unit = onConAccessEvent(type.asRSCM(RSCMType.CONTROLLER), action)
 
 public fun ScriptContext.onConTimer(
-    type: ControllerType,
-    timer: TimerType,
+    type: String,
+    timer: String,
     action: suspend StandardConAccess.(ControllerTimerEvents.Type) -> Unit,
-): Unit = onConAccessEvent(EventBus.composeLongKey(type.id, timer.id), action)
+): Unit = onConAccessEvent(EventBus.composeLongKey(type.asRSCM(RSCMType.CONTROLLER), timer.asRSCM(RSCMType.TIMER)), action)
 
 /* Queue functions */
 public fun ScriptContext.onAiConQueue(
-    type: ControllerType,
+    type: String,
     action: ControllerAIEvents.Queue<Nothing>.() -> Unit,
-): Unit = onEvent(type.id, action)
+): Unit = onEvent(type.asRSCM(RSCMType.CONTROLLER), action)
 
 public fun <T> ScriptContext.onAiConQueueWithArgs(
-    type: ControllerType,
+    type: String,
     action: ControllerAIEvents.Queue<T>.() -> Unit,
-): Unit = onEvent(type.id, action)
+): Unit = onEvent(type.asRSCM(RSCMType.CONTROLLER), action)
 
 public fun ScriptContext.onConQueue(
-    type: QueueType,
+    type: String,
     action: suspend StandardConAccess.(ControllerQueueEvents.Default<Nothing>) -> Unit,
-): Unit = onConAccessEvent(type.id, action)
+): Unit = onConAccessEvent(type.asRSCM(RSCMType.QUEUE), action)
 
 public fun <T> ScriptContext.onConQueueWithArgs(
-    type: QueueType,
+    type: String,
     action: suspend StandardConAccess.(ControllerQueueEvents.Default<T>) -> Unit,
-): Unit = onConAccessEvent(type.id, action)
+): Unit = onConAccessEvent(type.asRSCM(RSCMType.QUEUE), action)
 
 public fun ScriptContext.onConQueue(
     type: ControllerType,
-    queue: QueueType,
+    queue: String,
     action: suspend StandardConAccess.(ControllerQueueEvents.Type<Nothing>) -> Unit,
-): Unit = onConAccessEvent(EventBus.composeLongKey(type.id, queue.id), action)
+): Unit = onConAccessEvent(EventBus.composeLongKey(type.id, queue.asRSCM(RSCMType.QUEUE)), action)
 
 public fun <T> ScriptContext.onConQueueWithArgs(
     type: ControllerType,
-    queue: QueueType,
+    queue: String,
     action: suspend StandardConAccess.(ControllerQueueEvents.Type<T>) -> Unit,
-): Unit = onConAccessEvent(EventBus.composeLongKey(type.id, queue.id), action)
+): Unit = onConAccessEvent(EventBus.composeLongKey(type.id, queue.asRSCM(RSCMType.QUEUE)), action)

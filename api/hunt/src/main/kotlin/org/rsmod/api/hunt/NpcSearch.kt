@@ -1,5 +1,7 @@
 package org.rsmod.api.hunt
 
+import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.rscm.RSCMType
 import dev.openrune.types.NpcServerType
 import dev.openrune.types.aconverted.CategoryType
 import dev.openrune.types.hunt.HuntVis
@@ -66,13 +68,13 @@ public class NpcSearch @Inject constructor(private val hunt: Hunt) {
      *
      * _Unlike [hunt], this function can return npcs that do not have an `Op2`._
      */
-    public fun find(center: CoordGrid, type: NpcServerType, distance: Int, vis: HuntVis): Npc? {
+    public fun find(center: CoordGrid, type: String, distance: Int, vis: HuntVis): Npc? {
         var minDistanceNpc: Npc? = null
         var minDistance = Int.MAX_VALUE
 
         val npcs = hunt.findNpcs(center, distance, vis)
         for (npc in npcs) {
-            if (npc.id != type.id) {
+            if (npc.id != type.asRSCM(RSCMType.NPC)) {
                 continue
             }
             val distance = center.euclideanSquaredDistance(npc.coords)
@@ -117,11 +119,11 @@ public class NpcSearch @Inject constructor(private val hunt: Hunt) {
      */
     public fun findAll(
         center: CoordGrid,
-        type: NpcServerType,
+        type: String,
         distance: Int,
         vis: HuntVis,
     ): Sequence<Npc> {
-        return hunt.findNpcs(center, distance, vis).filter { it.id == type.id }
+        return hunt.findNpcs(center, distance, vis).filter { it.id == type.asRSCM(RSCMType.NPC) }
     }
 
     /**

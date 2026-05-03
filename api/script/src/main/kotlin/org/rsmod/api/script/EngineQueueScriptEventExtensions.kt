@@ -1,5 +1,7 @@
 package org.rsmod.api.script
 
+import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.rscm.RSCMType
 import dev.openrune.types.aconverted.AreaType
 import org.rsmod.api.player.events.EngineQueueEvents
 import org.rsmod.api.player.protect.ProtectedAccess
@@ -17,11 +19,11 @@ private fun ScriptContext.onEngineQueue(
 }
 
 public fun ScriptContext.onArea(
-    area: AreaType,
+    area: String,
     action: suspend ProtectedAccess.(EngineQueueEvents.Labelled) -> Unit,
-): Unit = onEngineQueue(EngineQueueType.Area, area.id, action)
+): Unit = onEngineQueue(EngineQueueType.Area, area.asRSCM(RSCMType.AREA), action)
 
 public fun ScriptContext.onAreaExit(
-    area: AreaType,
+    area: String,
     action: suspend ProtectedAccess.(EngineQueueEvents.Labelled) -> Unit,
-): Unit = onEngineQueue(EngineQueueType.AreaExit, area.id, action)
+): Unit = onEngineQueue(EngineQueueType.AreaExit, area.asRSCM(RSCMType.AREA), action)

@@ -1,12 +1,11 @@
 package org.rsmod.api.music
 
-import dev.openrune.area
-import dev.openrune.types.aconverted.AreaType
+import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.rscm.RSCMType
 import dev.openrune.types.varp.VarpServerType
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 import jakarta.inject.Inject
-import org.rsmod.api.music.configs.music_varps
 import org.rsmod.api.random.GameRandom
 import org.rsmod.api.table.MusicClassicRow
 import org.rsmod.api.table.MusicModernRow
@@ -23,12 +22,12 @@ public class MusicRepository @Inject constructor(private val random: GameRandom)
 
     public fun forId(id: Int): Music? = musicIds[id]
 
-    public fun getModernArea(area: AreaType): List<Music>? {
-        return modernAreas[area.id]
+    public fun getModernArea(area: String): List<Music>? {
+        return modernAreas[area.asRSCM(RSCMType.AREA)]
     }
 
-    public fun getClassicArea(area: AreaType): Music? {
-        return classicAreas[area.id]
+    public fun getClassicArea(area: String): Music? {
+        return classicAreas[area.asRSCM(RSCMType.AREA)]
     }
 
     public fun getAll(): Collection<Music> {
@@ -51,7 +50,7 @@ public class MusicRepository @Inject constructor(private val random: GameRandom)
         this.classicAreas = Int2ObjectOpenHashMap(classicAreas)
     }
 
-    private fun loadMusicRows(unlockVarps: List<VarpServerType>): Map<Int, Music> {
+    private fun loadMusicRows(unlockVarps: List<String>): Map<Int, Music> {
         val rows = MusicRow.all()
         val mapped = mutableMapOf<Int, Music>()
         var currId = 1
@@ -63,7 +62,7 @@ public class MusicRepository @Inject constructor(private val random: GameRandom)
             val duration = row.duration
             val hidden = row.hidden
             val secondary = row.secondaryTrack
-            var unlockVarp: VarpServerType? = null
+            var unlockVarp: String? = null
             var unlockBitpos = -1
             if (variable.isNotEmpty()) {
                 unlockVarp = unlockVarps.getOrNull(variable[0] - 1)
@@ -94,7 +93,7 @@ public class MusicRepository @Inject constructor(private val random: GameRandom)
         val grouped = mutableMapOf<Int, MutableList<Music>>()
 
         MusicModernRow.all().forEach {
-            val area = area(it.area)
+            val area = "area.${it.area}".asRSCM(RSCMType.AREA)
             val trackRows = it.tracks
             val musicList = ArrayList<Music>(trackRows.size)
             for (trackRow in trackRows) {
@@ -105,7 +104,7 @@ public class MusicRepository @Inject constructor(private val random: GameRandom)
                 }
                 musicList += music
             }
-            val mappedList = grouped.computeIfAbsent(area.id) { mutableListOf() }
+            val mappedList = grouped.computeIfAbsent(area) { mutableListOf() }
             mappedList += musicList
         }
 
@@ -136,32 +135,32 @@ public class MusicRepository @Inject constructor(private val random: GameRandom)
         return areas
     }
 
-    private fun unlockVarps(): List<VarpServerType> =
+    private fun unlockVarps(): List<String> =
         listOf(
-            music_varps.multi_1,
-            music_varps.multi_2,
-            music_varps.multi_3,
-            music_varps.multi_4,
-            music_varps.multi_5,
-            music_varps.multi_6,
-            music_varps.multi_7,
-            music_varps.multi_8,
-            music_varps.multi_9,
-            music_varps.multi_10,
-            music_varps.multi_11,
-            music_varps.multi_12,
-            music_varps.multi_13,
-            music_varps.multi_14,
-            music_varps.multi_15,
-            music_varps.multi_16,
-            music_varps.multi_17,
-            music_varps.multi_18,
-            music_varps.multi_19,
-            music_varps.multi_20,
-            music_varps.multi_21,
-            music_varps.multi_22,
-            music_varps.multi_23,
-            music_varps.multi_24,
-            music_varps.multi_25,
+            "varp.musicmulti_1",
+            "varp.musicmulti_2",
+            "varp.musicmulti_3",
+            "varp.musicmulti_4",
+            "varp.musicmulti_5",
+            "varp.musicmulti_6",
+            "varp.musicmulti_7",
+            "varp.musicmulti_8",
+            "varp.musicmulti_9",
+            "varp.musicmulti_10",
+            "varp.musicmulti_11",
+            "varp.musicmulti_12",
+            "varp.musicmulti_13",
+            "varp.musicmulti_14",
+            "varp.musicmulti_15",
+            "varp.musicmulti_16",
+            "varp.musicmulti_17",
+            "varp.musicmulti_18",
+            "varp.musicmulti_19",
+            "varp.musicmulti_20",
+            "varp.musicmulti_21",
+            "varp.musicmulti_22",
+            "varp.musicmulti_23",
+            "varp.musicmulti_24",
+            "varp.musicmulti_25",
         )
 }

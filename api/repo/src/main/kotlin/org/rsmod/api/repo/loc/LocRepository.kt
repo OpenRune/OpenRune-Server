@@ -1,8 +1,9 @@
 package org.rsmod.api.repo.loc
 
 import dev.openrune.ServerCacheManager
+import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.rscm.RSCMType
 import dev.openrune.types.ObjectServerType
-import dev.openrune.types.aconverted.ContentGroupType
 import jakarta.inject.Inject
 import org.rsmod.api.registry.loc.LocRegistry
 import org.rsmod.api.registry.loc.LocRegistryResult
@@ -47,6 +48,7 @@ constructor(
         return true
     }
 
+    @Deprecated("rather than passing the type we should be migrating to using the rscm name.")
     public fun add(
         coords: CoordGrid,
         type: ObjectServerType,
@@ -56,6 +58,20 @@ constructor(
     ): LocInfo {
         val layer = LocLayerConstants.of(shape.id)
         val entity = LocEntity(type.id, shape.id, angle.id)
+        val loc = LocInfo(layer, coords, entity)
+        add(loc, duration)
+        return loc
+    }
+
+    public fun add(
+        coords: CoordGrid,
+        internal: String,
+        duration: Int,
+        angle: LocAngle,
+        shape: LocShape,
+    ): LocInfo {
+        val layer = LocLayerConstants.of(shape.id)
+        val entity = LocEntity(internal.asRSCM(RSCMType.LOC), shape.id, angle.id)
         val loc = LocInfo(layer, coords, entity)
         add(loc, duration)
         return loc
@@ -93,6 +109,10 @@ constructor(
         add(from.coords, into, duration, from.angle, from.shape)
     }
 
+    public fun change(from: BoundLocInfo, internal: String, duration: Int) {
+        add(from.coords, internal, duration, from.angle, from.shape)
+    }
+
     private fun ArrayDeque<LocCycleDuration>.removeExisting(loc: LocInfo) {
         val iterator = iterator()
         while (iterator.hasNext()) {
@@ -115,18 +135,18 @@ constructor(
     public fun findExact(coords: CoordGrid, shape: LocShape): LocInfo? =
         locReg.findShape(coords, shape.id)
 
-    public fun findExact(coords: CoordGrid, content: ContentGroupType, shape: LocShape): LocInfo? {
+    public fun findExact(coords: CoordGrid, content: String, shape: LocShape): LocInfo? {
         val loc = locReg.findShape(coords, shape.id) ?: return null
-        return loc.takeIf { ServerCacheManager.getObject(it.id)?.contentGroup == content.id }
+        return loc.takeIf { ServerCacheManager.getObject(it.id)?.contentGroup == content.asRSCM(RSCMType.CONTENT) }
     }
 
     public fun findExact(
         coords: CoordGrid,
-        content: ContentGroupType,
+        content: String,
         type: ObjectServerType,
     ): LocInfo? {
         val loc = locReg.findType(coords, type.id) ?: return null
-        return loc.takeIf { ServerCacheManager.getObject(it.id)?.contentGroup == content.id }
+        return loc.takeIf { ServerCacheManager.getObject(it.id)?.contentGroup == content.asRSCM(RSCMType.CONTENT) }
     }
 
     internal fun processDurations() {

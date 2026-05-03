@@ -2,8 +2,6 @@ package org.rsmod.api.obj.plugin
 
 import jakarta.inject.Inject
 import org.rsmod.api.config.Constants
-import org.rsmod.api.config.refs.seqs
-import org.rsmod.api.config.refs.synths
 import org.rsmod.api.invtx.invAdd
 import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.protect.ProtectedAccess
@@ -30,15 +28,15 @@ public class ObjTakePlugin @Inject constructor(private val repo: ObjRepository) 
         if (player.coords != obj.coords) {
             takeFar(obj)
         } else {
-            soundSynth(synths.pick2)
+            soundSynth("synth.pick2")
             player.takeClose(obj)
         }
     }
 
     private suspend fun ProtectedAccess.takeFar(obj: Obj) {
         delay(1)
-        anim(seqs.human_pickuptable)
-        soundSynth(synths.pick2)
+        anim("seq.human_pickuptable")
+        soundSynth("synth.pick2")
         player.takeClose(obj)
     }
 

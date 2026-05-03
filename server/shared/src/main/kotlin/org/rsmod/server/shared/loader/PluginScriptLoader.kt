@@ -3,6 +3,7 @@ package org.rsmod.server.shared.loader
 import com.google.inject.Injector
 import io.github.classgraph.ClassGraph
 import jakarta.inject.Inject
+import java.lang.reflect.Modifier
 import java.util.concurrent.Executors
 import org.rsmod.annotations.PluginGraph
 import org.rsmod.plugin.scripts.PluginScript
@@ -22,6 +23,9 @@ class PluginScriptLoader @Inject constructor(@PluginGraph private val scanner: C
             val infoList = result.getSubclasses(type)
             infoList.forEach { info ->
                 val clazz = info.loadClass(type)
+                if (Modifier.isAbstract(clazz.modifiers) || Modifier.isInterface(clazz.modifiers)) {
+                    return@forEach
+                }
                 try {
                     val instance = injector.getInstance(clazz)
                     plugins += instance

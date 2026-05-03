@@ -10,7 +10,6 @@ import org.rsmod.api.combat.formulas.attributes.CombatNpcAttributes
 import org.rsmod.api.combat.formulas.attributes.CombatSpellAttributes
 import org.rsmod.api.combat.formulas.attributes.CombatStaffAttributes
 import org.rsmod.api.combat.formulas.scale
-import org.rsmod.api.config.refs.varbits
 import org.rsmod.api.player.stat.defenceLvl
 import org.rsmod.api.player.stat.magicLvl
 import org.rsmod.api.player.worn.EquipmentChecks
@@ -215,12 +214,12 @@ public object MagicAccuracyOperations {
 
     private fun VarPlayerIntMap.offensivePrayerBonus(): Double =
         when {
-            this[varbits.mystic_will] == 1 -> 1.05
-            this[varbits.mystic_lore] == 1 -> 1.1
-            this[varbits.mystic_might] == 1 -> {
-                if (this[varbits.prayer_mystic_vigour_unlocked] == 1) 1.18 else 1.15
+            this["varbit.prayer_mysticwill"] == 1 -> 1.05
+            this["varbit.prayer_mysticlore"] == 1 -> 1.1
+            this["varbit.prayer_mysticmight"] == 1 -> {
+                if (this["varbit.prayer_mystic_vigour_unlocked"] == 1) 1.18 else 1.15
             }
-            this[varbits.augury] == 1 -> 1.25
+            this["varbit.prayer_augury"] == 1 -> 1.25
             else -> 1.0
         }
 

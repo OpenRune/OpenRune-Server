@@ -1,142 +1,141 @@
 package org.rsmod.api.player.stat
 
-import org.rsmod.api.config.refs.stats
 import org.rsmod.game.entity.Player
 
 public val Player.attackLvl: Int
-    get() = stat(stats.attack)
+    get() = stat("stat.attack")
 
 public val Player.baseAttackLvl: Int
-    get() = statBase(stats.attack)
+    get() = statBase("stat.attack")
 
 public val Player.defenceLvl: Int
-    get() = stat(stats.defence)
+    get() = stat("stat.defence")
 
 public val Player.baseDefenceLvl: Int
-    get() = statBase(stats.defence)
+    get() = statBase("stat.defence")
 
 public val Player.strengthLvl: Int
-    get() = stat(stats.strength)
+    get() = stat("stat.strength")
 
 public val Player.baseStrengthLvl: Int
-    get() = statBase(stats.strength)
+    get() = statBase("stat.strength")
 
 public val Player.hitpoints: Int
-    get() = stat(stats.hitpoints)
+    get() = stat("stat.hitpoints")
 
 public val Player.baseHitpointsLvl: Int
-    get() = statBase(stats.hitpoints)
+    get() = statBase("stat.hitpoints")
 
 public val Player.rangedLvl: Int
-    get() = stat(stats.ranged)
+    get() = stat("stat.ranged")
 
 public val Player.baseRangedLvl: Int
-    get() = statBase(stats.ranged)
+    get() = statBase("stat.ranged")
 
 public val Player.prayerLvl: Int
-    get() = stat(stats.prayer)
+    get() = stat("stat.prayer")
 
 public val Player.basePrayerLvl: Int
-    get() = statBase(stats.prayer)
+    get() = statBase("stat.prayer")
 
 public val Player.magicLvl: Int
-    get() = stat(stats.magic)
+    get() = stat("stat.magic")
 
 public val Player.baseMagicLvl: Int
-    get() = statBase(stats.magic)
+    get() = statBase("stat.magic")
 
 public val Player.cookingLvl: Int
-    get() = stat(stats.cooking)
+    get() = stat("stat.cooking")
 
 public val Player.baseCookingLvl: Int
-    get() = statBase(stats.cooking)
+    get() = statBase("stat.cooking")
 
 public val Player.woodcuttingLvl: Int
-    get() = stat(stats.woodcutting)
+    get() = stat("stat.woodcutting")
 
 public val Player.baseWoodcuttingLvl: Int
-    get() = statBase(stats.woodcutting)
+    get() = statBase("stat.woodcutting")
 
 public val Player.fletchingLvl: Int
-    get() = stat(stats.fletching)
+    get() = stat("stat.fletching")
 
 public val Player.baseFletchingLvl: Int
-    get() = statBase(stats.fletching)
+    get() = statBase("stat.fletching")
 
 public val Player.fishingLvl: Int
-    get() = stat(stats.fishing)
+    get() = stat("stat.fishing")
 
 public val Player.baseFishingLvl: Int
-    get() = statBase(stats.fishing)
+    get() = statBase("stat.fishing")
 
 public val Player.firemakingLvl: Int
-    get() = stat(stats.firemaking)
+    get() = stat("stat.firemaking")
 
 public val Player.baseFiremakingLvl: Int
-    get() = statBase(stats.firemaking)
+    get() = statBase("stat.firemaking")
 
 public val Player.craftingLvl: Int
-    get() = stat(stats.crafting)
+    get() = stat("stat.crafting")
 
 public val Player.baseCraftingLvl: Int
-    get() = statBase(stats.crafting)
+    get() = statBase("stat.crafting")
 
 public val Player.smithingLvl: Int
-    get() = stat(stats.smithing)
+    get() = stat("stat.smithing")
 
 public val Player.baseSmithingLvl: Int
-    get() = statBase(stats.smithing)
+    get() = statBase("stat.smithing")
 
 public val Player.miningLvl: Int
-    get() = stat(stats.mining)
+    get() = stat("stat.mining")
 
 public val Player.baseMiningLvl: Int
-    get() = statBase(stats.mining)
+    get() = statBase("stat.mining")
 
 public val Player.herbloreLvl: Int
-    get() = stat(stats.herblore)
+    get() = stat("stat.herblore")
 
 public val Player.baseHerbloreLvl: Int
-    get() = statBase(stats.herblore)
+    get() = statBase("stat.herblore")
 
 public val Player.agilityLvl: Int
-    get() = stat(stats.agility)
+    get() = stat("stat.agility")
 
 public val Player.baseAgilityLvl: Int
-    get() = statBase(stats.agility)
+    get() = statBase("stat.agility")
 
 public val Player.thievingLvl: Int
-    get() = stat(stats.thieving)
+    get() = stat("stat.thieving")
 
 public val Player.baseThievingLvl: Int
-    get() = statBase(stats.thieving)
+    get() = statBase("stat.thieving")
 
 public val Player.slayerLvl: Int
-    get() = stat(stats.slayer)
+    get() = stat("stat.slayer")
 
 public val Player.baseSlayerLvl: Int
-    get() = statBase(stats.slayer)
+    get() = statBase("stat.slayer")
 
 public val Player.farmingLvl: Int
-    get() = stat(stats.farming)
+    get() = stat("stat.farming")
 
 public val Player.baseFarmingLvl: Int
-    get() = statBase(stats.farming)
+    get() = statBase("stat.farming")
 
 public val Player.runecraftingLvl: Int
-    get() = stat(stats.runecrafting)
+    get() = stat("stat.runecrafting")
 
 public val Player.baseRunecraftingLvl: Int
-    get() = statBase(stats.runecrafting)
+    get() = statBase("stat.runecrafting")
 
 public val Player.hunterLvl: Int
-    get() = stat(stats.hunter)
+    get() = stat("stat.hunter")
 
 public val Player.baseHunterLvl: Int
-    get() = statBase(stats.hunter)
+    get() = statBase("stat.hunter")
 
 public val Player.constructionLvl: Int
-    get() = stat(stats.construction)
+    get() = stat("stat.construction")
 
 public val Player.baseConstructionLvl: Int
-    get() = statBase(stats.construction)
+    get() = statBase("stat.construction")

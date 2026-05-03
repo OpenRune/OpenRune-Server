@@ -1,15 +1,14 @@
 package org.rsmod.game.entity
 
 import dev.openrune.rscm.RSCM
+import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import dev.openrune.types.BasType
 import dev.openrune.types.ModLevelType
 import dev.openrune.types.NpcServerType
 import dev.openrune.types.SequenceServerType
 import dev.openrune.types.StatType
-import dev.openrune.types.aconverted.QueueType
 import dev.openrune.types.aconverted.SpotanimType
-import dev.openrune.types.aconverted.TimerType
 import it.unimi.dsi.fastutil.ints.IntArrayList
 import it.unimi.dsi.fastutil.ints.IntArraySet
 import it.unimi.dsi.fastutil.ints.IntList
@@ -21,6 +20,7 @@ import java.util.BitSet
 import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.properties.Delegates
 import org.rsmod.annotations.InternalApi
+import org.rsmod.api.attr.AttributeMap
 import org.rsmod.game.client.Client
 import org.rsmod.game.client.ClientCycle
 import org.rsmod.game.client.NoopClient
@@ -189,6 +189,7 @@ public class Player(
     // Given the circumstances, we use `lateinit` even though it can be considered a code smell.
     public lateinit var modLevel: ModLevelType
 
+    public val attr: AttributeMap = AttributeMap()
     public var xpRate: Double = 1.0
     public var globalXpRate: Double = 1.0
 
@@ -346,61 +347,61 @@ public class Player(
         }
     }
 
-    public fun timer(timer: TimerType, cycles: Int) {
+    public fun timer(timer: String, cycles: Int) {
         require(cycles > 0) { "`cycles` must be greater than 0. (cycles=$cycles)" }
         timerMap.schedule(timer, mapClock = currentMapClock, interval = cycles)
     }
 
     @OptIn(InternalApi::class)
-    public fun clearTimer(timerType: TimerType) {
+    public fun clearTimer(timerType: String) {
         timerMap.remove(timerType)
     }
 
-    public fun softTimer(timer: TimerType, cycles: Int) {
+    public fun softTimer(timer: String, cycles: Int) {
         require(cycles > 0) { "`cycles` must be greater than 0. (cycles=$cycles)" }
         softTimerMap.schedule(timer, mapClock = currentMapClock, interval = cycles)
     }
 
     @OptIn(InternalApi::class)
-    public fun clearSoftTimer(timerType: TimerType) {
+    public fun clearSoftTimer(timerType: String) {
         softTimerMap.remove(timerType)
     }
 
-    public fun weakQueue(queue: QueueType, cycles: Int, args: Any? = null) {
+        public fun weakQueue(queue: String, cycles: Int, args: Any? = null) {
         require(cycles > 0) { "`cycles` must be greater than 0. (cycles=$cycles)" }
         weakQueueList.add(queue, QueueCategory.Weak, cycles, args)
     }
 
-    public fun clearWeakQueue(queue: QueueType) {
+    public fun clearWeakQueue(queue: String) {
         weakQueueList.removeAll(queue)
     }
 
-    public fun softQueue(queue: QueueType, cycles: Int, args: Any? = null) {
+    public fun softQueue(queue: String, cycles: Int, args: Any? = null) {
         require(cycles > 0) { "`cycles` must be greater than 0. (cycles=$cycles)" }
         queueList.add(queue, QueueCategory.Soft, cycles, args)
     }
 
-    public fun queue(queue: QueueType, cycles: Int, args: Any? = null) {
+    public fun queue(queue: String, cycles: Int, args: Any? = null) {
         require(cycles > 0) { "`cycles` must be greater than 0. (cycles=$cycles)" }
         queueList.add(queue, QueueCategory.Normal, cycles, args)
     }
 
-    public fun strongQueue(queue: QueueType, cycles: Int, args: Any? = null) {
+    public fun strongQueue(queue: String, cycles: Int, args: Any? = null) {
         require(cycles > 0) { "`cycles` must be greater than 0. (cycles=$cycles)" }
         queueList.add(queue, QueueCategory.Strong, cycles, args)
     }
 
-    public fun longQueueAccelerate(queue: QueueType, cycles: Int, args: Any? = null) {
+    public fun longQueueAccelerate(queue: String, cycles: Int, args: Any? = null) {
         require(cycles > 0) { "`cycles` must be greater than 0. (cycles=$cycles)" }
         queueList.add(queue, QueueCategory.LongAccelerate, cycles, args)
     }
 
-    public fun longQueueDiscard(queue: QueueType, cycles: Int, args: Any? = null) {
+    public fun longQueueDiscard(queue: String, cycles: Int, args: Any? = null) {
         require(cycles > 0) { "`cycles` must be greater than 0. (cycles=$cycles)" }
         queueList.add(queue, QueueCategory.LongDiscard, cycles, args)
     }
 
-    public fun clearQueue(queue: QueueType) {
+    public fun clearQueue(queue: String) {
         queueList.removeAll(queue)
     }
 
@@ -447,11 +448,11 @@ public class Player(
     }
 
     @InternalApi
-    public fun markStatUpdate(stat: StatType) {
-        pendingStatUpdates.set(stat.id)
+    public fun markStatUpdate(stat: String) {
+        pendingStatUpdates.set(stat.asRSCM(RSCMType.STAT))
     }
 
-    override fun anim(seq: SequenceServerType, delay: Int, priority: Int) {
+    override fun anim(seq: String, delay: Int, priority: Int) {
         PathingEntityCommon.anim(this, seq, delay, priority)
     }
 
@@ -459,8 +460,8 @@ public class Player(
         pendingSequence = EntitySeq.ZERO
     }
 
-    override fun spotanim(spot: SpotanimType, delay: Int, height: Int, slot: Int) {
-        PathingEntityCommon.spotanim(this, spot.id, delay, height, slot)
+    override fun spotanim(spot: String, delay: Int, height: Int, slot: Int) {
+        PathingEntityCommon.spotanim(this, spot.asRSCM(RSCMType.SPOTANIM), delay, height, slot)
     }
 
     public fun resetSpotanim(height: Int = 0, slot: Int = 0) {

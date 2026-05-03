@@ -1,13 +1,9 @@
 package org.rsmod.api.death
 
 import dev.openrune.ServerCacheManager
+import dev.openrune.rscm.RSCM
+import dev.openrune.rscm.RSCMType
 import jakarta.inject.Singleton
-import org.rsmod.api.config.refs.components
-import org.rsmod.api.config.refs.jingles
-import org.rsmod.api.config.refs.midis
-import org.rsmod.api.config.refs.queues
-import org.rsmod.api.config.refs.seqs
-import org.rsmod.api.config.refs.varps
 import org.rsmod.api.mechanics.toxins.Toxin.cureAllToxins
 import org.rsmod.api.player.deathResetTimers
 import org.rsmod.api.player.disablePrayers
@@ -18,7 +14,7 @@ import org.rsmod.map.CoordGrid
 
 @Singleton
 public class PlayerDeath() {
-    private var Player.specialAttackType by intVarp(varps.sa_attack)
+    private var Player.specialAttackType by intVarp("varp.sa_attack")
 
     public suspend fun death(access: ProtectedAccess) {
         access.deathSequence()
@@ -29,31 +25,31 @@ public class PlayerDeath() {
         val randomRespawn = mapFindSquareLineOfWalk(respawn, minRadius = 0, maxRadius = 2)
         stopAction()
         delay(2)
-        anim(seqs.human_death)
+        anim("seq.human_death")
         delay(4)
         combatClearQueue()
-        clearQueue(queues.death)
-        midiSong(midis.stop_music)
-        midiJingle(jingles.death_jingle_2)
+        clearQueue("queue.death")
+        midiSong("midi.stop_music")
+        midiJingle("jingle.air_guitar_jingle")
         mes("Oh dear, you are dead!")
         telejump(randomRespawn ?: respawn)
         resetAnim()
         // TODO: Drop death invs, etc.
         resetPlayerState()
         restoreToplevelTabs(
-            components.toplevel_target_pvp_icons,
-            components.toplevel_target_side1,
-            components.toplevel_target_side2,
-            components.toplevel_target_side4,
-            components.toplevel_target_side5,
-            components.toplevel_target_side6,
-            components.toplevel_target_side9,
-            components.toplevel_target_side8,
-            components.toplevel_target_side7,
-            components.toplevel_target_side10,
-            components.toplevel_target_side11,
-            components.toplevel_target_side12,
-            components.toplevel_target_side13,
+            "component.toplevel_osrs_stretch:pvp_icons",
+            "component.toplevel_osrs_stretch:side1",
+            "component.toplevel_osrs_stretch:side2",
+            "component.toplevel_osrs_stretch:side4",
+            "component.toplevel_osrs_stretch:side5",
+            "component.toplevel_osrs_stretch:side6",
+            "component.toplevel_osrs_stretch:side9",
+            "component.toplevel_osrs_stretch:side8",
+            "component.toplevel_osrs_stretch:side7",
+            "component.toplevel_osrs_stretch:side10",
+            "component.toplevel_osrs_stretch:side11",
+            "component.toplevel_osrs_stretch:side12",
+            "component.toplevel_osrs_stretch:side13",
         )
     }
 
@@ -68,7 +64,7 @@ public class PlayerDeath() {
         rebuildAppearance()
 
         camReset()
-        statRestoreAll(ServerCacheManager.getStats().values)
+        statRestoreAll(ServerCacheManager.getStats().values.map { RSCM.getReverseMapping(RSCMType.STAT, it.id) })
         minimapReset()
     }
 }

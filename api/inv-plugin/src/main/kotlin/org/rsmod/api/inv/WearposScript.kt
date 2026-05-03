@@ -1,9 +1,10 @@
 package org.rsmod.api.inv
 
+import dev.openrune.rscm.RSCM
+import dev.openrune.rscm.RSCMType
 import dev.openrune.types.ItemServerType
 import dev.openrune.util.Wearpos
 import org.rsmod.api.config.refs.params
-import org.rsmod.api.config.refs.varps
 import org.rsmod.api.player.output.MiscOutput.setPlayerOp
 import org.rsmod.api.player.output.soundSynth
 import org.rsmod.api.player.righthand
@@ -23,7 +24,7 @@ import org.rsmod.plugin.scripts.ScriptContext
  * a measurable impact on real-world performance.
  */
 public class WearposScript : PluginScript() {
-    private var Player.specialType by enumVarp<SpecialAttackType>(varps.sa_attack)
+    private var Player.specialType by enumVarp<SpecialAttackType>("varp.sa_attack")
 
     private val Player.weaponSpecialActive: Boolean
         get() = specialType == SpecialAttackType.Weapon
@@ -61,7 +62,7 @@ public class WearposScript : PluginScript() {
     }
 
     private fun Player.sendSoundAndPlayerOp(type: ItemServerType) {
-        val sound = type.paramOrNull(params.equipment_sound)
+        val sound = RSCM.getReverseMapping(RSCMType.SYNTH,type.paramOrNull(params.equipment_sound)!!.id)
         sound?.let(::soundSynth)
 
         val righthand = getOrNull(this.righthand)
@@ -85,7 +86,7 @@ public class WearposScript : PluginScript() {
         val clearPendingSpec = isRighthand && !isTwoHanded
 
         if (updateCombatVars) {
-            resyncVar(varps.com_mode)
+            resyncVar("varp.com_mode")
         }
 
         if (clearPendingSpec) {

@@ -1,5 +1,8 @@
 package org.rsmod.api.player.stat
 
+import dev.openrune.ServerCacheManager
+import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.rscm.RSCMType
 import dev.openrune.types.StatType
 import kotlin.math.min
 import org.rsmod.annotations.InternalApi
@@ -10,10 +13,10 @@ import org.rsmod.game.stat.PlayerSkillXPTable
 import org.rsmod.game.stat.PlayerStatMap
 
 public object PlayerSkillXP {
-    public fun internalAddXP(player: Player, stat: StatType, xp: Double, rate: Double): Int =
+    public fun internalAddXP(player: Player, stat: String, xp: Double, rate: Double): Int =
         player.addXP(stat, xp, rate)
 
-    private fun Player.addXP(stat: StatType, xp: Double, rate: Double): Int {
+    private fun Player.addXP(stat: String, xp: Double, rate: Double): Int {
         val fineXp = PlayerStatMap.toFineXP(xp * rate)
         if (fineXp.isInfinite()) {
             throw IllegalArgumentException("Total XP being added is too high! (xp=$xp, rate=$rate)")
@@ -29,7 +32,7 @@ public object PlayerSkillXP {
         return PlayerStatMap.normalizeFineXP(addedFineXp)
     }
 
-    private fun PlayerStatMap.addXP(stat: StatType, fineXp: Double): Int {
+    private fun PlayerStatMap.addXP(stat: String, fineXp: Double): Int {
         val currXp = getFineXP(stat)
         val sumXp = min(PlayerStatMap.MAX_FINE_XP.toDouble(), currXp + fineXp).toInt()
         val addedXp = sumXp - currXp
@@ -40,20 +43,24 @@ public object PlayerSkillXP {
     }
 
     @OptIn(InternalApi::class)
-    private fun Player.checkLevelUp(stat: StatType) {
-        val baseLevel = statBase(stat)
+    private fun Player.checkLevelUp(internal: String) {
+        val baseLevel = statBase(internal)
+
+        val stat = ServerCacheManager.getStats(internal.asRSCM(RSCMType.STAT))
+            ?: error("No stat found for $internal")
+
         if (baseLevel >= stat.maxLevel) {
             return
         }
         val nextLevelXp = PlayerSkillXPTable.getXPFromLevel(baseLevel + 1)
-        val currentXp = statMap.getXP(stat)
+        val currentXp = statMap.getXP(internal)
         if (currentXp >= nextLevelXp) {
             val newLevel = min(stat.maxLevel, PlayerSkillXPTable.getLevelFromXP(currentXp))
-            statMap.setBaseLevel(stat, newLevel.toByte())
+            statMap.setBaseLevel(internal, newLevel.toByte())
 
-            val setCurrLevel = stat(stat) == baseLevel
+            val setCurrLevel = stat(internal) == baseLevel
             if (setCurrLevel) {
-                statMap.setCurrentLevel(stat, newLevel.toByte())
+                statMap.setCurrentLevel(internal, newLevel.toByte())
             }
 
             engineQueueChangeStat(stat)

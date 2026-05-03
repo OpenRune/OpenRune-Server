@@ -1,12 +1,13 @@
 package org.rsmod.api.player.dialogue.align
 
+import dev.openrune.ServerCacheManager
 import dev.openrune.definition.type.FontType
+import dev.openrune.rscm.RSCM.asRSCM
 import jakarta.inject.Inject
 import kotlin.math.ceil
-import org.rsmod.api.config.refs.fontmetrics
 
 public class TextAlignment @Inject constructor() {
-    private val dialogueFont by lazy { fontmetrics.q8_full }
+    private val dialogueFont by lazy { ServerCacheManager.getFont("font.q8_full".asRSCM())!! }
 
     public fun generateChatPageList(text: String): List<Page> {
         return generatePageList(text, CHAT_MAX_LINE_PIXEL_WIDTH, dialogueFont)

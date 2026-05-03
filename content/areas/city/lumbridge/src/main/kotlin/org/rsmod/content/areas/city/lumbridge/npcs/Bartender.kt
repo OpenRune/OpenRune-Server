@@ -1,7 +1,6 @@
 package org.rsmod.content.areas.city.lumbridge.npcs
 
 import jakarta.inject.Inject
-import org.rsmod.api.config.refs.objs
 import org.rsmod.api.invtx.invAddOrDrop
 import org.rsmod.api.invtx.invTakeFee
 import org.rsmod.api.player.dialogue.Dialogue
@@ -10,7 +9,6 @@ import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.repo.obj.ObjRepository
 import org.rsmod.api.script.onApNpc1
 import org.rsmod.api.script.onOpNpc1
-import org.rsmod.content.areas.city.lumbridge.configs.lumbridge_npcs
 import org.rsmod.game.entity.Npc
 import org.rsmod.map.CoordGrid
 import org.rsmod.plugin.scripts.PluginScript
@@ -18,8 +16,8 @@ import org.rsmod.plugin.scripts.ScriptContext
 
 class Bartender @Inject constructor(private val objRepo: ObjRepository) : PluginScript() {
     override fun ScriptContext.startup() {
-        onApNpc1(lumbridge_npcs.bartender) { apDialogue(it.npc) }
-        onOpNpc1(lumbridge_npcs.bartender) { startDialogue(it.npc) }
+        onApNpc1("npc.ram_bartender") { apDialogue(it.npc) }
+        onOpNpc1("npc.ram_bartender") { startDialogue(it.npc) }
     }
 
     private suspend fun ProtectedAccess.apDialogue(npc: Npc) {
@@ -63,7 +61,7 @@ class Bartender @Inject constructor(private val objRepo: ObjRepository) : Plugin
             chatPlayer(sad, "Oh dear, I don't seem to have enough money.")
         } else {
             player.spam("You buy a pint of beer.")
-            player.invAddOrDrop(objRepo, objs.beer)
+            player.invAddOrDrop(objRepo, "obj.beer")
         }
     }
 

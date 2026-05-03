@@ -1,5 +1,7 @@
 package org.rsmod.api.script.advanced
 
+import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.rscm.RSCMType
 import dev.openrune.types.NpcServerType
 import org.rsmod.api.player.events.interact.NpcDefaultEvents
 import org.rsmod.api.player.events.interact.NpcUnimplementedEvents
@@ -10,29 +12,29 @@ import org.rsmod.plugin.scripts.ScriptContext
 
 /* Unimplemented op functions */
 public fun ScriptContext.onUnimplementedOpNpc1(
-    type: NpcServerType,
+    type: String,
     action: suspend ProtectedAccess.(NpcUnimplementedEvents.Op1) -> Unit,
-): Unit = onProtectedEvent<NpcUnimplementedEvents.Op1>(type.id, action)
+): Unit = onProtectedEvent<NpcUnimplementedEvents.Op1>(type.asRSCM(RSCMType.NPC), action)
 
 public fun ScriptContext.onUnimplementedOpNpc2(
-    type: NpcServerType,
+    type: String,
     action: suspend ProtectedAccess.(NpcUnimplementedEvents.Op2) -> Unit,
-): Unit = onProtectedEvent<NpcUnimplementedEvents.Op2>(type.id, action)
+): Unit = onProtectedEvent<NpcUnimplementedEvents.Op2>(type.asRSCM(RSCMType.NPC), action)
 
 public fun ScriptContext.onUnimplementedOpNpc3(
-    type: NpcServerType,
+    type: String,
     action: suspend ProtectedAccess.(NpcUnimplementedEvents.Op3) -> Unit,
-): Unit = onProtectedEvent<NpcUnimplementedEvents.Op3>(type.id, action)
+): Unit = onProtectedEvent<NpcUnimplementedEvents.Op3>(type.asRSCM(RSCMType.NPC), action)
 
 public fun ScriptContext.onUnimplementedOpNpc4(
-    type: NpcServerType,
+    type: String,
     action: suspend ProtectedAccess.(NpcUnimplementedEvents.Op4) -> Unit,
-): Unit = onProtectedEvent<NpcUnimplementedEvents.Op4>(type.id, action)
+): Unit = onProtectedEvent<NpcUnimplementedEvents.Op4>(type.asRSCM(RSCMType.NPC), action)
 
 public fun ScriptContext.onUnimplementedOpNpc5(
-    type: NpcServerType,
+    type: String,
     action: suspend ProtectedAccess.(NpcUnimplementedEvents.Op5) -> Unit,
-): Unit = onProtectedEvent<NpcUnimplementedEvents.Op5>(type.id, action)
+): Unit = onProtectedEvent<NpcUnimplementedEvents.Op5>(type.asRSCM(RSCMType.NPC), action)
 
 /* Default op functions */
 public fun ScriptContext.onDefaultOpNpc1(

@@ -1,5 +1,8 @@
 package org.rsmod.api.player.headbar
 
+import dev.openrune.ServerCacheManager
+import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.rscm.RSCMType
 import dev.openrune.types.HealthBarServerType
 import org.rsmod.game.headbar.Headbar
 import org.rsmod.game.hit.Hitmark
@@ -9,7 +12,7 @@ internal object InternalPlayerHeadbars {
         hitmark: Hitmark,
         currHp: Int,
         maxHp: Int,
-        headbar: HealthBarServerType,
+        headbar: String,
     ): Headbar {
         return when {
             hitmark.isNpcSource ->
@@ -17,7 +20,7 @@ internal object InternalPlayerHeadbars {
                     sourceSlot = hitmark.npcSlot,
                     currHp = currHp,
                     maxHp = maxHp,
-                    headbar = headbar,
+                    internal = headbar,
                     clientDelay = hitmark.delay,
                 )
 
@@ -26,7 +29,7 @@ internal object InternalPlayerHeadbars {
                     sourceSlot = hitmark.playerSlot,
                     currHp = currHp,
                     maxHp = maxHp,
-                    headbar = headbar,
+                    internal = headbar,
                     clientDelay = hitmark.delay,
                     specific = hitmark.isPrivate,
                 )
@@ -35,7 +38,7 @@ internal object InternalPlayerHeadbars {
                 createNoSource(
                     currHp = currHp,
                     maxHp = maxHp,
-                    headbar = headbar,
+                    internal = headbar,
                     clientDelay = hitmark.delay,
                 )
         }
@@ -45,9 +48,13 @@ internal object InternalPlayerHeadbars {
         sourceSlot: Int,
         currHp: Int,
         maxHp: Int,
-        headbar: HealthBarServerType,
+        internal: String,
         clientDelay: Int,
     ): Headbar {
+
+        val headbar = ServerCacheManager.getHealthBar(internal.asRSCM(RSCMType.HEADBAR))
+            ?: error("No headbar found for $internal")
+
         val fill = calculateFill(headbar.segments, currHp, maxHp)
         return Headbar.fromNpcSource(
             self = headbar.id,
@@ -64,10 +71,13 @@ internal object InternalPlayerHeadbars {
         sourceSlot: Int,
         currHp: Int,
         maxHp: Int,
-        headbar: HealthBarServerType,
+        internal: String,
         clientDelay: Int,
         specific: Boolean,
     ): Headbar {
+        val headbar = ServerCacheManager.getHealthBar(internal.asRSCM(RSCMType.HEADBAR))
+            ?: error("No headbar found for $internal")
+
         val fill = calculateFill(headbar.segments, currHp, maxHp)
         return Headbar.fromPlayerSource(
             self = headbar.id,
@@ -83,9 +93,13 @@ internal object InternalPlayerHeadbars {
     private fun createNoSource(
         currHp: Int,
         maxHp: Int,
-        headbar: HealthBarServerType,
+        internal: String,
         clientDelay: Int,
     ): Headbar {
+
+        val headbar = ServerCacheManager.getHealthBar(internal.asRSCM(RSCMType.HEADBAR))
+            ?: error("No headbar found for $internal")
+
         val fill = calculateFill(headbar.segments, currHp, maxHp)
         return Headbar.fromNoSource(
             self = headbar.id,

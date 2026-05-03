@@ -6,7 +6,6 @@ import org.rsmod.api.combat.NvPCombat
 import org.rsmod.api.combat.commons.CombatAttack
 import org.rsmod.api.combat.commons.types.MeleeAttackType
 import org.rsmod.api.combat.player.aggressiveNpc
-import org.rsmod.api.config.refs.categories
 import org.rsmod.api.config.refs.params
 import org.rsmod.api.npc.access.StandardNpcAccess
 import org.rsmod.api.player.isInPvnCombat
@@ -57,8 +56,8 @@ constructor(private val combat: NvPCombat, private val areaChecker: AreaChecker)
         }
 
         return when {
-            category.isType(categories.attacktype_stab) -> MeleeAttackType.Stab
-            category.isType(categories.attacktype_slash) -> MeleeAttackType.Slash
+            category.isType("category.attacktype_stab") -> MeleeAttackType.Stab
+            category.isType("category.attacktype_slash") -> MeleeAttackType.Slash
             else -> MeleeAttackType.Crush
         }
     }

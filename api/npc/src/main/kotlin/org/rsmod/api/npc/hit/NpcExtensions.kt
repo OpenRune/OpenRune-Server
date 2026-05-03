@@ -1,12 +1,13 @@
 package org.rsmod.api.npc.hit
 
+import dev.openrune.rscm.RSCM
+import dev.openrune.rscm.RSCMType
 import dev.openrune.types.HitmarkTypeGroup
 import dev.openrune.types.ItemServerType
-import org.rsmod.api.config.refs.BaseHitmarkGroups
-import org.rsmod.api.config.refs.hitmark_groups
+import org.rsmod.api.config.refs.done.BaseHitmarkGroups
+import org.rsmod.api.config.refs.done.hitmark_groups
 import org.rsmod.api.config.refs.params
 import org.rsmod.api.npc.access.StandardNpcAccess
-import org.rsmod.api.npc.hit.configs.hit_queues
 import org.rsmod.api.npc.hit.modifier.NpcHitModifier
 import org.rsmod.api.npc.hit.modifier.StandardNpcHitModifier
 import org.rsmod.api.npc.hit.processor.NpcHitProcessor
@@ -214,9 +215,9 @@ public fun Npc.visHitmark(): HitmarkTypeGroup {
     if (current != null) {
         return current
     }
-    val lit = visType.param(params.hitmark_lit)
-    val tint = visType.param(params.hitmark_tint)
-    val max = visType.param(params.hitmark_max)
+    val lit = RSCM.getReverseMapping(RSCMType.HITMARK,visType.param(params.hitmark_lit).id)
+    val tint = RSCM.getReverseMapping(RSCMType.HITMARK,visType.param(params.hitmark_tint).id)
+    val max = RSCM.getReverseMapping(RSCMType.HITMARK,visType.param(params.hitmark_max).id)
     val hitmark = HitmarkTypeGroup(lit, tint, max)
     this.cachedHitmark = hitmark
     return hitmark
@@ -225,7 +226,7 @@ public fun Npc.visHitmark(): HitmarkTypeGroup {
 private fun Npc.modifyAndQueueHit(delay: Int, builder: HitBuilder, modifier: NpcHitModifier): Hit {
     modifier.modify(builder, this)
     val hit = builder.build()
-    queue(hit_queues.standard, delay, hit)
+    queue("queue.hit", delay, hit)
     return hit
 }
 

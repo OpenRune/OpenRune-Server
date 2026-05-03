@@ -1,6 +1,8 @@
 package org.rsmod.content.interfaces.bank.scripts
 
 import dev.openrune.definition.type.widget.IfEvent
+import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.rscm.RSCMType
 import jakarta.inject.Inject
 import org.rsmod.api.config.constants
 import org.rsmod.api.player.output.runClientScript
@@ -9,9 +11,6 @@ import org.rsmod.api.player.vars.intVarBit
 import org.rsmod.api.script.onIfClose
 import org.rsmod.api.script.onIfModalButton
 import org.rsmod.api.script.onIfOverlayButton
-import org.rsmod.content.interfaces.bank.configs.bank_components
-import org.rsmod.content.interfaces.bank.configs.bank_interfaces
-import org.rsmod.content.interfaces.bank.configs.bank_varbits
 import org.rsmod.content.interfaces.bank.highlightNoClickClear
 import org.rsmod.content.interfaces.bank.openBank
 import org.rsmod.content.interfaces.bank.openBankWithoutEvents
@@ -21,14 +20,14 @@ import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
 class BankTutorialScript @Inject constructor(private val eventBus: EventBus) : PluginScript() {
-    private var Player.tutorialPage by intVarBit(bank_varbits.tutorial_current_page)
-    private var Player.tutorialTotalPages by intVarBit(bank_varbits.tutorial_total_pages)
+    private var Player.tutorialPage by intVarBit("varbit.hnt_hint_step")
+    private var Player.tutorialTotalPages by intVarBit("varbit.hnt_hint_max_step")
 
     override fun ScriptContext.startup() {
-        onIfModalButton(bank_components.tutorial_button) { selectTutorial() }
-        onIfOverlayButton(bank_components.tutorial_prev_page) { player.previousPage() }
-        onIfOverlayButton(bank_components.tutorial_next_page) { player.nextPage() }
-        onIfClose(bank_interfaces.tutorial_overlay) { player.onTutorialClose() }
+        onIfModalButton("component.bankmain:bank_tut") { selectTutorial() }
+        onIfOverlayButton("component.screenhighlight:previous") { player.previousPage() }
+        onIfOverlayButton("component.screenhighlight:continue") { player.nextPage() }
+        onIfClose("interface.screenhighlight") { player.onTutorialClose() }
     }
 
     suspend fun begin(access: ProtectedAccess) {
@@ -40,14 +39,14 @@ class BankTutorialScript @Inject constructor(private val eventBus: EventBus) : P
 
         player.highlightNoClick()
         access.ifOpenOverlay(
-            bank_interfaces.tutorial_overlay,
-            bank_components.tutorial_overlay_target,
+            "interface.screenhighlight",
+            "component.bankmain:bank_highlight",
         )
-        access.ifSetEvents(bank_components.tutorial_next_page, 9..9, IfEvent.Op1)
-        access.ifSetEvents(bank_components.tutorial_prev_page, 9..9, IfEvent.Op1)
+        access.ifSetEvents("component.screenhighlight:continue", 9..9, IfEvent.Op1)
+        access.ifSetEvents("component.screenhighlight:previous", 9..9, IfEvent.Op1)
         player.highlightStart()
         player.showPage(0)
-        access.ifSetEvents(bank_components.tutorial_close_button, -1..-1, IfEvent.PauseButton)
+        access.ifSetEvents("component.screenhighlight:pausebutton", -1..-1, IfEvent.PauseButton)
 
         access.pauseButton()
     }
@@ -101,11 +100,11 @@ class BankTutorialScript @Inject constructor(private val eventBus: EventBus) : P
     }
 
     private fun Player.highlightNoClick() {
-        runClientScript(3406, bank_components.bankside_highlight.packed)
+        runClientScript(3406, "component.bankside:bankside_highlight".asRSCM(RSCMType.COMPONENT))
     }
 
     private fun Player.highlightStart() {
-        runClientScript(3408, bank_components.tutorial_overlay_target.packed)
+        runClientScript(3408, "component.bankmain:bank_highlight".asRSCM(RSCMType.COMPONENT))
     }
 
     private fun Player.highlightScreen(
@@ -120,7 +119,7 @@ class BankTutorialScript @Inject constructor(private val eventBus: EventBus) : P
     ) {
         runClientScript(
             3409,
-            bank_components.tutorial_overlay_target.packed,
+            "component.bankmain:bank_highlight".asRSCM(RSCMType.COMPONENT),
             offX,
             offY,
             offH,
@@ -141,12 +140,12 @@ class BankTutorialScript @Inject constructor(private val eventBus: EventBus) : P
             colour,
             if (isLastPage) 1 else 0,
             if (showCom29) 1 else 0,
-            bank_components.tutorial_overlay_target.packed,
+            "component.bankmain:bank_highlight".asRSCM(RSCMType.COMPONENT),
         )
     }
 
     private fun Player.highlightScreenHideLayer() {
-        runClientScript(3412, bank_components.tutorial_overlay_target.packed)
+        runClientScript(3412, "component.bankmain:bank_highlight".asRSCM(RSCMType.COMPONENT))
     }
 }
 

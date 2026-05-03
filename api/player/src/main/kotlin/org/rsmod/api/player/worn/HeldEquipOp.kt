@@ -1,6 +1,8 @@
 package org.rsmod.api.player.worn
 
 import dev.openrune.ServerCacheManager
+import dev.openrune.rscm.RSCM
+import dev.openrune.rscm.RSCMType
 import dev.openrune.types.ItemServerType
 import dev.openrune.util.Wearpos
 import jakarta.inject.Inject
@@ -112,7 +114,7 @@ public class HeldEquipOp @Inject constructor(private val eventBus: EventBus) {
 
     private fun equip(player: Player, type: ItemServerType): HeldEquipResult {
         val statRequirements =
-            type.statRequirements().filter { player.statBase(it.stat) < it.level }
+            type.statRequirements().filter { player.statBase(RSCM.getReverseMapping(RSCMType.STAT,it.stat.id)) < it.level }
         if (statRequirements.isNotEmpty()) {
             val messages = type.toMessages(statRequirements)
             return HeldEquipResult.Fail.StatRequirements(messages)

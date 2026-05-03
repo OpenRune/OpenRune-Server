@@ -375,11 +375,11 @@ public class WeaponAttackManager @Inject constructor(private val manager: Player
         source: ProtectedAccess,
         target: PathingEntity,
         clientDelay: Int,
-        castSound: SynthType?,
+        castSound: String?,
         soundRadius: Int,
-        hitSpot: SpotanimType?,
+        hitSpot: String?,
         hitSpotHeight: Int,
-        hitSound: SynthType?,
+        hitSound: String?,
     ): Unit =
         manager.playMagicHitFx(
             source = source.player,
@@ -413,7 +413,7 @@ public class WeaponAttackManager @Inject constructor(private val manager: Player
         source: ProtectedAccess,
         target: PathingEntity,
         clientDelay: Int,
-        castSound: SynthType?,
+        castSound: String?,
         soundRadius: Int,
     ): Unit =
         manager.playMagicSplashFx(
@@ -428,14 +428,14 @@ public class WeaponAttackManager @Inject constructor(private val manager: Player
     public fun spawnProjectile(
         source: ProtectedAccess,
         target: PathingEntity,
-        spotanim: SpotanimType,
-        projanim: ProjAnimType,
+        spotanim: String,
+        projanim: String,
     ): ProjAnim = manager.spawnProjectile(source.player, target, spotanim, projanim)
 
     /** @see [PlayerAttackManager.soundArea] */
     public fun soundArea(
         source: PathingEntity,
-        synth: SynthType,
+        synth: String,
         delay: Int = 0,
         loops: Int = 1,
         radius: Int = 5,

@@ -1,15 +1,13 @@
 package org.rsmod.content.areas.city.lumbridge.npcs
 
-import dev.openrune.inv
 import jakarta.inject.Inject
-import org.rsmod.api.config.refs.mesanims
+import org.rsmod.api.player.dialogue.mesanims
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.script.advanced.onUnimplementedOpNpc4
 import org.rsmod.api.script.onOpNpc1
 import org.rsmod.api.script.onOpNpc3
 import org.rsmod.api.shops.Shops
-import org.rsmod.content.areas.city.lumbridge.configs.lumbridge_npcs
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.plugin.scripts.PluginScript
@@ -17,13 +15,13 @@ import org.rsmod.plugin.scripts.ScriptContext
 
 class Bob @Inject constructor(private val shops: Shops) : PluginScript() {
     override fun ScriptContext.startup() {
-        onOpNpc1(lumbridge_npcs.bob) { startDialogue(it.npc) }
-        onOpNpc3(lumbridge_npcs.bob) { player.openShop(it.npc) }
-        onUnimplementedOpNpc4(lumbridge_npcs.bob) { repairOp(it.npc) }
+        onOpNpc1("npc.bob") { startDialogue(it.npc) }
+        onOpNpc3("npc.bob") { player.openShop(it.npc) }
+        onUnimplementedOpNpc4("npc.bob") { repairOp(it.npc) }
     }
 
     private fun Player.openShop(npc: Npc) {
-        shops.open(this, npc, "Bob's Brilliant Axes", inv("inv.axeshop"))
+        shops.open(this, npc, "Bob's Brilliant Axes", "inv.axeshop")
     }
 
     private suspend fun ProtectedAccess.startDialogue(npc: Npc) {

@@ -1,11 +1,13 @@
 package org.rsmod.api.player.stat
 
+import dev.openrune.ServerCacheManager
+import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.rscm.RSCMType
 import dev.openrune.types.StatType
 import kotlin.math.absoluteValue
 import kotlin.math.max
 import kotlin.math.min
 import org.rsmod.annotations.InternalApi
-import org.rsmod.api.config.refs.stats
 import org.rsmod.api.random.GameRandom
 import org.rsmod.api.stats.levelmod.InvisibleLevels
 import org.rsmod.api.utils.skills.SkillingSuccessRate
@@ -13,13 +15,13 @@ import org.rsmod.game.entity.Player
 
 /** Returns the **current**, **visible** level for [stat]. */
 @OptIn(InternalApi::class)
-public fun Player.stat(stat: StatType): Int {
+public fun Player.stat(stat: String): Int {
     return statMap.getCurrentLevel(stat).toInt() and 0xFF
 }
 
 /** Returns the **base** level for [stat], based on its xp without any boosts. */
 @OptIn(InternalApi::class)
-public fun Player.statBase(stat: StatType): Int {
+public fun Player.statBase(stat: String): Int {
     return statMap.getBaseLevel(stat).toInt() and 0xFF
 }
 
@@ -30,7 +32,7 @@ public fun Player.statBase(stat: StatType): Int {
  * - This function resets the current level to the base level, whether it is above or below it.
  * - If the current level is already equal to the base level, this function does nothing.
  */
-public fun Player.statRestore(stat: StatType) {
+public fun Player.statRestore(stat: String) {
     val currLevel = stat(stat)
     val baseLevel = statBase(stat)
     val delta = baseLevel - currLevel
@@ -46,7 +48,7 @@ public fun Player.statRestore(stat: StatType) {
  *
  * @see [statRestore]
  */
-public fun Player.statRestoreAll(stats: Iterable<StatType>) {
+public fun Player.statRestoreAll(stats: Iterable<String>) {
     for (stat in stats) {
         statRestore(stat)
     }
@@ -63,7 +65,7 @@ public fun Player.statRestoreAll(stats: Iterable<StatType>) {
  * @return The total amount of experience successfully added to the player's stat.
  */
 public fun Player.statAdvance(
-    stat: StatType,
+    stat: String,
     xp: Double,
     rate: Double = xpRate,
     globalRate: Double = globalXpRate,
@@ -88,7 +90,7 @@ public fun Player.statAdvance(
  *   [percent] is not within the range `0..100`.
  */
 @OptIn(InternalApi::class)
-public fun Player.statAdd(stat: StatType, constant: Int, percent: Int) {
+public fun Player.statAdd(stat: String, constant: Int, percent: Int) {
     require(constant >= 0) { "Constant `$constant` must be positive. Use `statSub` instead." }
     require(percent in 0..100) { "Percent must be an integer from 0-100. (0%-100%)" }
 
@@ -98,15 +100,18 @@ public fun Player.statAdd(stat: StatType, constant: Int, percent: Int) {
     val cappedLevel = min(255, calculated)
 
     statMap.setCurrentLevel(stat, cappedLevel.toByte())
+
+    val statType = ServerCacheManager.getStats(stat.asRSCM(RSCMType.STAT))?: error("No stat found for $stat")
+
     updateStat(stat)
 
-    val clearHeroPoints = stat.isType(stats.hitpoints) && hitpoints >= baseHitpointsLvl
+    val clearHeroPoints = statType.isType("stat.hitpoints") && hitpoints >= baseHitpointsLvl
     if (clearHeroPoints) {
         clearHeroPoints()
     }
 
     if (cappedLevel != current) {
-        engineQueueChangeStat(stat)
+        engineQueueChangeStat(statType)
     }
 }
 
@@ -127,7 +132,7 @@ public fun Player.statAdd(stat: StatType, constant: Int, percent: Int) {
  * @throws IllegalArgumentException if [constant] is negative (use `statSub` instead), or if
  *   [percent] is not within the range `0..100`.
  */
-public fun Player.statBoost(stat: StatType, constant: Int, percent: Int) {
+public fun Player.statBoost(stat: String, constant: Int, percent: Int) {
     require(constant >= 0) { "Constant `$constant` must be positive. Use `statDrain` instead." }
     require(percent in 0..100) { "Percent must be an integer from 0-100. (0%-100%)" }
 
@@ -158,7 +163,7 @@ public fun Player.statBoost(stat: StatType, constant: Int, percent: Int) {
  *   range `0..100`.
  */
 @OptIn(InternalApi::class)
-public fun Player.statSub(stat: StatType, constant: Int, percent: Int) {
+public fun Player.statSub(stat: String, constant: Int, percent: Int) {
     require(constant >= 0) { "Constant `$constant` must be positive." }
     require(percent in 0..100) { "Percent must be an integer from 0-100. (0%-100%)" }
 
@@ -168,10 +173,13 @@ public fun Player.statSub(stat: StatType, constant: Int, percent: Int) {
     val cappedLevel = max(0, calculated)
 
     statMap.setCurrentLevel(stat, cappedLevel.toByte())
+
+    val statType = ServerCacheManager.getStats(stat.asRSCM(RSCMType.STAT)) ?: error("No stat found for $stat")
+
     updateStat(stat)
 
     if (cappedLevel != current) {
-        engineQueueChangeStat(stat)
+        engineQueueChangeStat(statType)
     }
 }
 
@@ -192,7 +200,7 @@ public fun Player.statSub(stat: StatType, constant: Int, percent: Int) {
  * @throws IllegalArgumentException if [constant] is negative (use `statAdd` if required), or if
  *   [percent] is not within range of `0` to `100`.
  */
-public fun Player.statDrain(stat: StatType, constant: Int, percent: Int) {
+public fun Player.statDrain(stat: String, constant: Int, percent: Int) {
     require(constant >= 0) { "Constant `$constant` must be positive." }
     require(percent in 0..100) { "Percent must be an integer from 0-100. (0%-100%)" }
 
@@ -232,19 +240,23 @@ public fun Player.statDrain(stat: StatType, constant: Int, percent: Int) {
  *   range `0..100`.
  */
 @OptIn(InternalApi::class)
-public fun Player.statHeal(stat: StatType, constant: Int, percent: Int) {
+public fun Player.statHeal(internal: String, constant: Int, percent: Int) {
     require(constant >= 0) { "Constant `$constant` must be positive." }
     require(percent in 0..100) { "Percent must be an integer from 0-100. (0%-100%)" }
 
-    val base = statBase(stat)
-    val current = stat(stat)
+    val base = statBase(internal)
+    val current = stat(internal)
     val calculated = current + (constant + (base * percent) / 100)
     val cappedLevel = calculated.coerceIn(current, base)
 
-    statMap.setCurrentLevel(stat, cappedLevel.toByte())
-    updateStat(stat)
+    statMap.setCurrentLevel(internal, cappedLevel.toByte())
 
-    val clearHeroPoints = stat.isType(stats.hitpoints) && hitpoints >= baseHitpointsLvl
+    val stat = ServerCacheManager.getStats(internal.asRSCM(RSCMType.STAT))
+        ?: error("No stat found for $internal")
+
+    updateStat(internal)
+
+    val clearHeroPoints = stat.isType("stat.hitpoints") && hitpoints >= baseHitpointsLvl
     if (clearHeroPoints) {
         clearHeroPoints()
     }
@@ -254,11 +266,11 @@ public fun Player.statHeal(stat: StatType, constant: Int, percent: Int) {
     }
 }
 
-@OptIn(InternalApi::class) internal fun Player.updateStat(stat: StatType) = markStatUpdate(stat)
+@OptIn(InternalApi::class) internal fun Player.updateStat(stat: String) = markStatUpdate(stat)
 
 public fun Player.statRandom(
     random: GameRandom,
-    stat: StatType,
+    stat: String,
     low: Int,
     high: Int,
     invisibleLevels: InvisibleLevels,
@@ -269,12 +281,16 @@ public fun Player.statRandom(
 
 public fun Player.statRandom(
     random: GameRandom,
-    stat: StatType,
+    internal: String,
     low: Int,
     high: Int,
     invisibleBoost: Int,
 ): Boolean {
-    val visibleLevel = stat(stat)
+
+    val stat = ServerCacheManager.getStats(internal.asRSCM(RSCMType.STAT))
+        ?: error("No stat found for $internal")
+
+    val visibleLevel = stat(internal)
     val effectiveLevel = visibleLevel.coerceIn(1, stat.maxLevel) + invisibleBoost
     return statRandomRoll(random, low, high, effectiveLevel, stat.maxLevel)
 }

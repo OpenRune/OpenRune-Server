@@ -1,6 +1,9 @@
 package org.rsmod.game.vars
 
+import dev.openrune.ServerCacheManager
 import dev.openrune.definition.type.VarBitType
+import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.rscm.RSCMType
 import dev.openrune.types.varp.VarpServerType
 import dev.openrune.types.varp.baseVar
 import dev.openrune.types.varp.bits
@@ -21,6 +24,17 @@ import org.rsmod.utils.bits.getBits
  */
 @JvmInline
 public value class VarPlayerIntMap(public val backing: Int2IntMap = Int2IntOpenHashMap()) {
+
+    public operator fun get(key: String): Int {
+        if (key.startsWith("varp")) {
+            val varp = ServerCacheManager.getVarp(key.asRSCM(RSCMType.VARP))?: error("Unable to find varp: $key")
+            return get(varp)
+        } else {
+            val varbit = ServerCacheManager.getVarbit(key.asRSCM(RSCMType.VARBIT)) ?: error("Unable to find varbit: $key")
+            return get(varbit)
+        }
+    }
+
     public operator fun get(key: VarpServerType): Int = backing.getOrDefault(key.id, 0)
 
     public operator fun get(varp: VarBitType): Int {

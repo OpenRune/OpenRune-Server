@@ -4,9 +4,6 @@ import jakarta.inject.Inject
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.repo.world.WorldRepository
 import org.rsmod.api.script.onOpLoc1
-import org.rsmod.content.travel.canoe.configs.canoe_locs
-import org.rsmod.content.travel.canoe.configs.canoe_seqs
-import org.rsmod.content.travel.canoe.configs.canoe_synths
 import org.rsmod.game.loc.BoundLocInfo
 import org.rsmod.map.CoordGrid
 import org.rsmod.plugin.scripts.PluginScript
@@ -14,10 +11,10 @@ import org.rsmod.plugin.scripts.ScriptContext
 
 class CanoePushing @Inject constructor(private val worldRepo: WorldRepository) : PluginScript() {
     override fun ScriptContext.startup() {
-        onOpLoc1(canoe_locs.ready_log) { pushCanoe(it.loc, Canoe.Log) }
-        onOpLoc1(canoe_locs.ready_dugout) { pushCanoe(it.loc, Canoe.Dugout) }
-        onOpLoc1(canoe_locs.ready_stable_dugout) { pushCanoe(it.loc, Canoe.StableDugout) }
-        onOpLoc1(canoe_locs.ready_waka) { pushCanoe(it.loc, Canoe.Waka) }
+        onOpLoc1("loc.canoestation_log") { pushCanoe(it.loc, Canoe.Log) }
+        onOpLoc1("loc.canoestation_dugout") { pushCanoe(it.loc, Canoe.Dugout) }
+        onOpLoc1("loc.canoestation_stabledugout") { pushCanoe(it.loc, Canoe.StableDugout) }
+        onOpLoc1("loc.canoestation_waka") { pushCanoe(it.loc, Canoe.Waka) }
     }
 
     private suspend fun ProtectedAccess.pushCanoe(loc: BoundLocInfo, canoe: Canoe) {
@@ -34,9 +31,9 @@ class CanoePushing @Inject constructor(private val worldRepo: WorldRepository) :
         }
 
         this[station, canoe] = CanoeState.Pushing
-        anim(canoe_seqs.canoeing_pushing_into_water)
-        soundSynth(canoe_synths.canoe_pushed)
-        worldRepo.locAnim(loc, canoe_seqs.canoeing_station_animations)
+        anim("seq.canoeing_pushing_into_water")
+        soundSynth("synth.canoe_pushed")
+        worldRepo.locAnim(loc, "seq.canoeing_station_animations")
         delay(1)
         faceSquare(loc.adjustedCentre)
         delay(1)

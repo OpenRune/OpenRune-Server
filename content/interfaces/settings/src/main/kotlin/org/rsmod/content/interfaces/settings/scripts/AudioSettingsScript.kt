@@ -2,56 +2,53 @@ package org.rsmod.content.interfaces.settings.scripts
 
 import jakarta.inject.Inject
 import kotlin.math.min
-import org.rsmod.api.config.refs.varbits
-import org.rsmod.api.config.refs.varps
 import org.rsmod.api.player.music.MusicPlayer
 import org.rsmod.api.player.vars.boolVarBit
 import org.rsmod.api.player.vars.intVarBit
 import org.rsmod.api.player.vars.intVarp
 import org.rsmod.api.script.onIfOverlayButton
-import org.rsmod.content.interfaces.settings.configs.setting_components
 import org.rsmod.game.entity.Player
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
 class AudioSettingsScript @Inject constructor(private val musicPlayer: MusicPlayer) :
     PluginScript() {
-    private var Player.optionMaster by intVarp(varps.option_master_volume)
-    private var Player.optionMasterSaved by intVarBit(varbits.option_master_volume_saved)
+    private var Player.optionMaster by intVarp("varp.option_master_volume")
+    private var Player.optionMasterSaved by intVarBit("varbit.option_master_volume_saved")
 
-    private var Player.optionMusic by intVarp(varps.option_music)
-    private var Player.optionMusicSaved by intVarBit(varbits.option_music_saved)
+    private var Player.optionMusic by intVarp("varp.option_music")
+    private var Player.optionMusicSaved by intVarBit("varbit.option_music_saved")
 
-    private var Player.optionSounds by intVarp(varps.option_sounds)
-    private var Player.optionSoundsSaved by intVarBit(varbits.option_sounds_saved)
+    private var Player.optionSounds by intVarp("varp.option_sounds")
+    private var Player.optionSoundsSaved by intVarBit("varbit.option_sounds_saved")
 
-    private var Player.optionAreaSounds by intVarp(varps.option_areasounds)
-    private var Player.optionAreaSoundsSaved by intVarBit(varbits.option_areasounds_saved)
+    private var Player.optionAreaSounds by intVarp("varp.option_areasounds")
+    private var Player.optionAreaSoundsSaved by intVarBit("varbit.option_areasounds_saved")
 
-    private var Player.unlockMessage by boolVarBit(varbits.music_unlock_text_toggle)
+    private var Player.unlockMessage by boolVarBit("varbit.music_unlock_text_toggle")
 
     override fun ScriptContext.startup() {
-        onIfOverlayButton(setting_components.master_icon) { player.toggleMaster() }
-        onIfOverlayButton(setting_components.master_bobble_container) {
-            player.selectMasterSlider(comsub)
+        onIfOverlayButton("component.settings_side:master_icon") { player.toggleMaster() }
+        onIfOverlayButton("component.settings_side:master_bobble_container") {
+            player.selectMasterSlider(it.comsub)
         }
 
-        onIfOverlayButton(setting_components.music_icon) { player.toggleMusic() }
-        onIfOverlayButton(setting_components.music_bobble_container) {
-            player.selectMusicSlider(comsub)
+        onIfOverlayButton("component.settings_side:music_icon") { player.toggleMusic() }
+        onIfOverlayButton("component.settings_side:music_bobble_container") {
+            player.selectMusicSlider(it.comsub)
         }
 
-        onIfOverlayButton(setting_components.sound_icon) { player.toggleSounds() }
-        onIfOverlayButton(setting_components.sound_bobble_container) {
-            player.selectSoundSlider(comsub)
+        onIfOverlayButton("component.settings_side:sound_icon") { player.toggleSounds() }
+        onIfOverlayButton("component.settings_side:sound_bobble_container") {
+            player.selectSoundSlider(it.comsub)
         }
 
-        onIfOverlayButton(setting_components.areasound_icon) { player.toggleAreaSounds() }
-        onIfOverlayButton(setting_components.areasounds_bobble_container) {
-            player.selectAreaSoundSlider(comsub)
+        onIfOverlayButton("component.settings_side:areasound_icon") { player.toggleAreaSounds() }
+        onIfOverlayButton("component.settings_side:areasounds_bobble_container") {
+            player.selectAreaSoundSlider(it.comsub)
         }
 
-        onIfOverlayButton(setting_components.music_toggle) { player.toggleUnlockMessage() }
+        onIfOverlayButton("component.settings_side:music_toggle") { player.toggleUnlockMessage() }
     }
 
     private fun Player.toggleMaster() {

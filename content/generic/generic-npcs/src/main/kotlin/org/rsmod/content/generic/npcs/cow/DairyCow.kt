@@ -1,12 +1,10 @@
 package org.rsmod.content.generic.npcs.cow
 
-import org.rsmod.api.config.refs.content
-import org.rsmod.api.config.refs.objs
-import org.rsmod.api.config.refs.seqs
-import org.rsmod.api.config.refs.synths
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.player.protect.ProtectedAccess
-import org.rsmod.api.script.onOpLoc1
+import org.rsmod.api.script.onOpContentLoc1
+import org.rsmod.api.script.onOpContentLoc2
+import org.rsmod.api.script.onOpContentLocU
 import org.rsmod.api.script.onOpLoc2
 import org.rsmod.api.script.onOpLocU
 import org.rsmod.api.script.onPlayerQueue
@@ -17,18 +15,18 @@ import org.rsmod.plugin.scripts.ScriptContext
 
 class DairyCow : PluginScript() {
     override fun ScriptContext.startup() {
-        onOpLoc1(content.dairy_cow) { attemptMilkingCow(it.loc) }
-        onOpLoc2(content.dairy_cow) { stealCowbell(it.loc) }
-        onOpLocU(content.dairy_cow) { mes("The cow doesn't want that.") }
-        onOpLocU(content.dairy_cow, objs.bucket_empty) { attemptMilkingCow(it.loc) }
+        onOpContentLoc1("content.dairy_cow") { attemptMilkingCow(it.loc) }
+        onOpContentLoc2("content.dairy_cow") { stealCowbell(it.loc) }
+        onOpContentLocU("content.dairy_cow") { mes("The cow doesn't want that.") }
+        onOpContentLocU("content.dairy_cow", "obj.bucket_empty") { attemptMilkingCow(it.loc) }
 
-        onPlayerQueue(cow_queues.milk) { milkCow() }
+        onPlayerQueue("queue.milk_cow") { milkCow() }
     }
 
     private suspend fun ProtectedAccess.attemptMilkingCow(loc: BoundLocInfo) {
         arriveDelay()
         faceSquare(loc.coords)
-        if (objs.bucket_empty !in inv) {
+        if ("obj.bucket_empty" !in inv) {
             if (loc.coords.isNearGillie()) {
                 startDialogue { noBucket() }
             } else {
@@ -36,31 +34,31 @@ class DairyCow : PluginScript() {
             }
             return
         }
-        weakQueue(cow_queues.milk, 2)
+        weakQueue("queue.milk_cow", 2)
     }
 
     private fun ProtectedAccess.milkCow() {
-        val replace = invReplace(inv, objs.bucket_empty, 1, objs.bucket_of_milk)
+        val replace = invReplace(inv, "obj.bucket_empty", 1, "obj.bucket_milk")
         if (replace.failure) {
             return
         }
         spam("You milk the cow.")
-        anim(seqs.milkit)
-        soundSynth(synths.milk_cow)
-        weakQueue(cow_queues.milk, 8)
+        anim("seq.milkit")
+        soundSynth("synth.milk_cow")
+        weakQueue("queue.milk_cow", 8)
     }
 
     private suspend fun Dialogue.noBucket() {
         chatNpcSpecific(
             "Gillie Groats the Milkmaid",
-            cow_npcs.gillie_the_milkmaid,
+            "npc.gillie_the_milkmaid",
             laugh,
             "Tee hee! You've never milked a cow before, have you?",
         )
         chatPlayer(quiz, "Erm... No. How could you tell?")
         chatNpcSpecific(
             "Gillie Groats the Milkmaid",
-            cow_npcs.gillie_the_milkmaid,
+            "npc.gillie_the_milkmaid",
             laugh,
             "Because you're spilling milk all over the floor. What a " +
                 "waste! You need something to hold the milk.",
@@ -68,7 +66,7 @@ class DairyCow : PluginScript() {
         chatPlayer(neutral, "Ah yes, I really should have guessed that one, shouldn't I?")
         chatNpcSpecific(
             "Gillie Groats the Milkmaid",
-            cow_npcs.gillie_the_milkmaid,
+            "npc.gillie_the_milkmaid",
             laugh,
             "You're from the city, aren't you... Try it again with an empty bucket.",
         )

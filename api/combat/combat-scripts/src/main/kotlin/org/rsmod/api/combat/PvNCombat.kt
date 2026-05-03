@@ -1,5 +1,7 @@
 package org.rsmod.api.combat
 
+import dev.openrune.rscm.RSCM
+import dev.openrune.rscm.RSCMType
 import jakarta.inject.Inject
 import org.rsmod.api.combat.commons.CombatAttack
 import org.rsmod.api.combat.manager.PlayerAttackManager
@@ -11,7 +13,6 @@ import org.rsmod.api.combat.player.activateShieldSpecial
 import org.rsmod.api.combat.player.specialAttackType
 import org.rsmod.api.combat.weapon.WeaponSpeeds
 import org.rsmod.api.config.constants
-import org.rsmod.api.config.refs.categories
 import org.rsmod.api.config.refs.params
 import org.rsmod.api.npc.isValidTarget
 import org.rsmod.api.player.lefthand
@@ -148,7 +149,7 @@ constructor(
         // `chargebows` are specialized and not worth trying to have as a generic system. As such,
         // they are required to be registered in `WeaponRegistry` and will return early if they
         // have reached this point (not handled by the previous `specializedWeapon` block).
-        val usingChargeBow = righthandType.isCategoryType(categories.chargebow)
+        val usingChargeBow = righthandType.isCategoryType("category.chargebow")
         if (usingChargeBow) {
             manager.stopCombat(player)
             mes("The bow refuses to fire.")
@@ -168,23 +169,22 @@ constructor(
         // throwing weapons. For example, the Toxic blowpipe falls under this category but requires
         // special handling. Such weapons should be managed via the `Weapon` system to ensure
         // correct behavior and avoid unintended side effects.
-        val usingThrown = righthandType.isCategoryType(categories.throwing_weapon)
+        val usingThrown = righthandType.isCategoryType("category.throwing_weapon")
 
         val weaponType = if (usingThrown) righthandType else quiverType
         checkNotNull(weaponType) {
             "Unexpected null weapon type: righthand=$righthandType, quiver=$quiverType"
         }
 
-        val projanimType = righthandType.paramOrNull(params.proj_type)
+        val projectileID = righthandType.paramOrNull(params.proj_type)?.id
         val travelSpotanim = weaponType.paramOrNull(params.proj_travel)
-
-        // All valid ammunition requires a `proj_travel` spotanim type and `proj_type` projanim type
-        // param so that the projectile can be created and referenced for its proper delays.
-        if (projanimType == null || travelSpotanim == null) {
+        if (projectileID == null || travelSpotanim == null) {
             manager.stopCombat(player)
             mes("You are unable to fire your ammunition.")
             return
         }
+
+        val projanimType = RSCM.getReverseMapping(RSCMType.PROJANIM,projectileID)
 
         // All valid ranged weapons require an `attack_anim_stance1` seq type param to be used in
         // combat.
@@ -199,7 +199,7 @@ constructor(
         // has no `proj_launch` param, a "null" (-1) spotanim will still be sent in the same slot
         // and height as usual.
         val launchSpotanim = weaponType.paramOrNull(params.proj_launch)
-        spotanim(launchSpotanim, height = 96, slot = constants.spotanim_slot_combat)
+        spotanim(RSCM.getReverseMapping(RSCMType.SPOTANIM,launchSpotanim!!.id), height = 96, slot = constants.spotanim_slot_combat)
 
         val projanim = manager.spawnProjectile(player, npc, travelSpotanim, projanimType)
         val (serverDelay, clientDelay) = projanim.durations
@@ -237,7 +237,7 @@ constructor(
         val attackRate = MAGIC_SPELL_ATTACK_RATE
         manager.setNextAttackDelay(player, attackRate)
 
-        val spell = spellsReg[attack.spell.obj]
+        val spell = spellsReg[RSCM.getReverseMapping(RSCMType.OBJ,attack.spell.obj.id)]
         if (spell != null) {
             spell.attack(this, npc, attack)
             return

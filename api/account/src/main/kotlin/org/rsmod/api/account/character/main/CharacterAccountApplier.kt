@@ -33,6 +33,9 @@ public class CharacterAccountApplier @Inject constructor() :
         player.xpRate = data.xpRate
         player.lastLogin = LocalDateTime.now()
         player.vars.backing.putAll(data.varps)
+        if (data.attrs.isNotEmpty()) {
+            player.attr.putAllFromPersistence(data.attrs)
+        }
         player.assignModLevel(data.modLevel)
     }
 

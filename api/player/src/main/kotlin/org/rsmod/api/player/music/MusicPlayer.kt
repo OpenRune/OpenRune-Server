@@ -1,11 +1,9 @@
 package org.rsmod.api.player.music
 
-import dev.openrune.types.aconverted.AreaType
+import dev.openrune.rscm.RSCM
+import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.rscm.RSCMType
 import jakarta.inject.Inject
-import org.rsmod.api.config.refs.components
-import org.rsmod.api.config.refs.midis
-import org.rsmod.api.config.refs.varbits
-import org.rsmod.api.config.refs.varps
 import org.rsmod.api.music.Music
 import org.rsmod.api.music.MusicRepository
 import org.rsmod.api.player.chatMesColorTag
@@ -25,18 +23,18 @@ import org.rsmod.game.entity.Player
 public class MusicPlayer
 @Inject
 internal constructor(private val random: GameRandom, private val repo: MusicRepository) {
-    private val Player.playMode by enumVarp<MusicPlayMode>(varps.musicplay)
-    private val Player.areaMode by enumVarBit<MusicAreaMode>(varbits.music_area_mode)
+    private val Player.playMode by enumVarp<MusicPlayMode>("varp.musicplay")
+    private val Player.areaMode by enumVarBit<MusicAreaMode>("varbit.music_area_mode")
 
-    private var Player.lastMusicId by intVarBit(varbits.music_last_id)
-    private var Player.currMusicId by intVarBit(varbits.music_curr_id)
-    private var Player.currMusicArea by intVarBit(varbits.music_curr_area)
+    private var Player.lastMusicId by intVarBit("varbit.music_last_id")
+    private var Player.currMusicId by intVarBit("varbit.music_curr_id")
+    private var Player.currMusicArea by intVarBit("varbit.music_curr_area")
 
-    private var Player.musicClocks by intVarBit(varbits.music_curr_clocks)
-    private var Player.musicDuration by intVarBit(varbits.music_curr_duration)
+    private var Player.musicClocks by intVarBit("varbit.music_curr_clocks")
+    private var Player.musicDuration by intVarBit("varbit.music_curr_duration")
 
-    private var Player.musicPlaylist by intVarp(varps.music_playlist)
-    private var Player.unlockMessageDisabled by boolVarBit(varbits.music_unlock_text_toggle)
+    private var Player.musicPlaylist by intVarp("varp.music_playlist")
+    private var Player.unlockMessageDisabled by boolVarBit("varbit.music_unlock_text_toggle")
 
     public fun unlockAndPlay(player: Player, musicRow: MusicRow) {
         val music = getUnlockableOrThrow(musicRow)
@@ -65,8 +63,8 @@ internal constructor(private val random: GameRandom, private val repo: MusicRepo
         player.currMusicId = music.id
 
         val fadeSpeed = if (currMusicId == 0) 0 else MUSIC_PLAY_FADE
-        player.midiSong(music.midi, fadeOutSpeed = fadeSpeed, fadeInDelay = fadeSpeed)
-        player.ifSetText(components.music_now_playing_text, music.displayName)
+        player.midiSong(music.midi.id, fadeOutSpeed = fadeSpeed, fadeInDelay = fadeSpeed)
+        player.ifSetText("component.music:now_playing_text", music.displayName)
     }
 
     public fun resume(player: Player) {
@@ -85,7 +83,7 @@ internal constructor(private val random: GameRandom, private val repo: MusicRepo
         player.currMusicId = 0
         player.musicClocks = 0
         player.musicDuration = 0
-        player.midiSong(midis.stop_music, fadeOutSpeed = MUSIC_END_FADE)
+        player.midiSong("midi.stop_music", fadeOutSpeed = MUSIC_END_FADE)
         if (player.playMode == MusicPlayMode.Manual) {
             setEmptyMusicText(player)
         }
@@ -118,7 +116,7 @@ internal constructor(private val random: GameRandom, private val repo: MusicRepo
     }
 
     private fun setEmptyMusicText(player: Player) {
-        player.ifSetText(components.music_now_playing_text, " ")
+        player.ifSetText("component.music:now_playing_text", " ")
     }
 
     private fun Player.sendUnlockMessage(music: Music) {
@@ -153,7 +151,7 @@ internal constructor(private val random: GameRandom, private val repo: MusicRepo
         if (player.currMusicArea == 0) {
             return
         }
-        val area = AreaType(player.currMusicArea - 1)
+        val area = RSCM.getReverseMapping(RSCMType.AREA,player.currMusicArea - 1)
         when (player.areaMode) {
             MusicAreaMode.Modern -> {
                 val modernMusic = repo.getModernArea(area)
@@ -184,13 +182,13 @@ internal constructor(private val random: GameRandom, private val repo: MusicRepo
         play(player, random)
     }
 
-    public fun enterArea(player: Player, area: AreaType) {
+    public fun enterArea(player: Player, area: String) {
         player.musicPlaylist = 0
         when (player.areaMode) {
             MusicAreaMode.Modern -> {
                 val modernMusic = repo.getModernArea(area)
                 if (modernMusic != null) {
-                    player.currMusicArea = area.id + 1
+                    player.currMusicArea = area.asRSCM(RSCMType.AREA) + 1
                     unlockAndPlayShuffled(player, modernMusic)
                 }
             }
@@ -199,7 +197,7 @@ internal constructor(private val random: GameRandom, private val repo: MusicRepo
             MusicAreaMode.Classic -> {
                 val classicMusic = repo.getClassicArea(area)
                 if (classicMusic != null) {
-                    player.currMusicArea = area.id + 1
+                    player.currMusicArea = area.asRSCM(RSCMType.AREA) + 1
                     unlockAndPlay(player, classicMusic)
                 }
             }

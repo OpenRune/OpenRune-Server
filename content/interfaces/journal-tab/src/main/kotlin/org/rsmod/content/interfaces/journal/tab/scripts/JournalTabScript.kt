@@ -1,11 +1,9 @@
 package org.rsmod.content.interfaces.journal.tab.scripts
 
 import jakarta.inject.Inject
-import org.rsmod.api.config.refs.interfaces
 import org.rsmod.api.script.onIfOpen
 import org.rsmod.api.script.onIfOverlayButton
 import org.rsmod.content.interfaces.journal.tab.SideJournalTab
-import org.rsmod.content.interfaces.journal.tab.configs.journal_components
 import org.rsmod.content.interfaces.journal.tab.openJournalTab
 import org.rsmod.content.interfaces.journal.tab.sideJournalTab
 import org.rsmod.content.interfaces.journal.tab.switchJournalTab
@@ -16,17 +14,17 @@ import org.rsmod.plugin.scripts.ScriptContext
 
 class JournalTabScript @Inject constructor(private val eventBus: EventBus) : PluginScript() {
     override fun ScriptContext.startup() {
-        onIfOpen(interfaces.side_journal) { player.openActiveJournal() }
+        onIfOpen("interface.side_journal") { player.openActiveJournal() }
 
-        onIfOverlayButton(journal_components.summary_list) {
+        onIfOverlayButton("component.side_journal:summary_list") {
             player.switchJournalTab(SideJournalTab.Summary)
         }
 
-        onIfOverlayButton(journal_components.quest_list) {
+        onIfOverlayButton("component.side_journal:quest_list") {
             player.switchJournalTab(SideJournalTab.Quests)
         }
 
-        onIfOverlayButton(journal_components.task_list) {
+        onIfOverlayButton("component.side_journal:task_list") {
             player.switchJournalTab(SideJournalTab.Tasks)
         }
     }

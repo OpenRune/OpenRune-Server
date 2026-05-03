@@ -7,6 +7,7 @@ kotlin {
 }
 
 dependencies {
+    implementation(projects.api.attr)
     implementation(libs.bundles.logging)
     implementation(libs.fastutil)
     implementation(libs.guice)

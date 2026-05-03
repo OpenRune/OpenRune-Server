@@ -4,20 +4,19 @@ import dev.openrune.definition.type.VarBitType
 import kotlin.math.max
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.utils.vars.VarEnumDelegate
-import org.rsmod.content.interfaces.bank.configs.bank_varbits
 
-enum class BankTab(val index: Int, val sizeVarBit: VarBitType, override val varValue: Int) :
+enum class BankTab(val index: Int, val sizeVarBit: String, override val varValue: Int) :
     VarEnumDelegate {
-    Tab1(0, bank_varbits.tab_size1, varValue = 1),
-    Tab2(1, bank_varbits.tab_size2, varValue = 2),
-    Tab3(2, bank_varbits.tab_size3, varValue = 3),
-    Tab4(3, bank_varbits.tab_size4, varValue = 4),
-    Tab5(4, bank_varbits.tab_size5, varValue = 5),
-    Tab6(5, bank_varbits.tab_size6, varValue = 6),
-    Tab7(6, bank_varbits.tab_size7, varValue = 7),
-    Tab8(7, bank_varbits.tab_size8, varValue = 8),
-    Tab9(8, bank_varbits.tab_size9, varValue = 9),
-    Main(9, bank_varbits.tab_size_main, varValue = 0);
+    Tab1(0, "varbit.bank_tab_1", varValue = 1),
+    Tab2(1, "varbit.bank_tab_2", varValue = 2),
+    Tab3(2, "varbit.bank_tab_3", varValue = 3),
+    Tab4(3, "varbit.bank_tab_4", varValue = 4),
+    Tab5(4, "varbit.bank_tab_5", varValue = 5),
+    Tab6(5, "varbit.bank_tab_6", varValue = 6),
+    Tab7(6, "varbit.bank_tab_7", varValue = 7),
+    Tab8(7, "varbit.bank_tab_8", varValue = 8),
+    Tab9(8, "varbit.bank_tab_9", varValue = 9),
+    Main(9, "varbit.bank_tab_main", varValue = 0);
 
     val isMainTab: Boolean
         get() = this == Main

@@ -126,6 +126,7 @@ constructor(
                         c.z,
                         c.level,
                         c.varps,
+                        c.attrs,
                         c.created_at AS character_created_at,
                         c.last_login,
                         c.last_logout,
@@ -163,6 +164,7 @@ constructor(
                     val coordZ = resultSet.getInt("z")
                     val coordLevel = resultSet.getInt("level")
                     val varpsText = resultSet.getString("varps")
+                    val attrsText = resultSet.getString("attrs")
                     val createdAt = resultSet.getLocalDateTime("character_created_at")
                     val lastLogin = resultSet.getLocalDateTime("last_login")
                     val lastLogout = resultSet.getLocalDateTime("last_logout")
@@ -171,6 +173,12 @@ constructor(
                     val runEnergy = resultSet.getInt("run_energy")
                     val xpRateInHundreds = resultSet.getInt("xp_rate_in_hundreds")
                     val varps = objectMapper.readReifiedValue<Map<Int, Int>>(varpsText)
+                    val attrs =
+                        if (attrsText.isNullOrBlank()) {
+                            emptyMap()
+                        } else {
+                            objectMapper.readReifiedValue<Map<String, Any>>(attrsText)
+                        }
                     val characterData =
                         CharacterAccountData(
                             realm = realmId,
@@ -198,6 +206,7 @@ constructor(
                             bannedUntil = bannedUntil,
                             runEnergy = runEnergy,
                             xpRate = xpRateInHundreds / 100.0,
+                            attrs = attrs,
                         )
                     val metadataList = CharacterMetadataList(characterData, mutableListOf())
                     metadataList.add(applier, characterData)
@@ -219,7 +228,7 @@ constructor(
             connection.prepareStatement(
                 """
                     UPDATE characters
-                    SET x = ?, z = ?, level = ?, varps = ?, last_login = ?, run_energy = ?,
+                    SET x = ?, z = ?, level = ?, varps = ?, attrs = ?, last_login = ?, run_energy = ?,
                         xp_rate_in_hundreds = ?, last_logout = CURRENT_TIMESTAMP
                     WHERE id = ?
                 """
@@ -232,14 +241,16 @@ constructor(
                     ServerCacheManager.getVarp(id)?.scope == VarpLifetime.Perm
                 }
             val varpsJson = objectMapper.writeValueAsString(persistentVarps)
+            val attrsJson = objectMapper.writeValueAsString(player.attr.toPersistentMap())
             it.setInt(1, player.x)
             it.setInt(2, player.z)
             it.setInt(3, player.level)
             it.setString(4, varpsJson)
-            it.setSqliteTimestamp(5, player.lastLogin)
-            it.setInt(6, player.runEnergy)
-            it.setInt(7, (player.xpRate * 100).roundToInt())
-            it.setInt(8, characterId)
+            it.setString(5, attrsJson)
+            it.setSqliteTimestamp(6, player.lastLogin)
+            it.setInt(7, player.runEnergy)
+            it.setInt(8, (player.xpRate * 100).roundToInt())
+            it.setInt(9, characterId)
             it.executeUpdate()
         }
 

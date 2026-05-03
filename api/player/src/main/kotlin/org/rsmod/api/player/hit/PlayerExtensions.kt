@@ -3,9 +3,8 @@ package org.rsmod.api.player.hit
 import dev.openrune.types.HitmarkTypeGroup
 import dev.openrune.types.ItemServerType
 import kotlin.math.min
-import org.rsmod.api.config.refs.BaseHitmarkGroups
-import org.rsmod.api.config.refs.hitmark_groups
-import org.rsmod.api.player.hit.configs.hit_queues
+import org.rsmod.api.config.refs.done.BaseHitmarkGroups
+import org.rsmod.api.config.refs.done.hitmark_groups
 import org.rsmod.api.player.hit.modifier.NoopPlayerHitModifier
 import org.rsmod.api.player.hit.modifier.PlayerHitModifier
 import org.rsmod.api.player.hit.modifier.StandardPlayerHitModifier
@@ -208,7 +207,7 @@ private fun Player.modifyAndStrongQueueHit(
 ): Hit {
     modifier.modify(builder, this)
     val hit = builder.build()
-    strongQueue(hit_queues.standard, delay, hit)
+    strongQueue("queue.hit", delay, hit)
     return hit
 }
 
@@ -219,7 +218,7 @@ private fun Player.modifyAndQueueHit(
 ): Hit {
     modifier.modify(builder, this)
     val hit = builder.build()
-    queue(hit_queues.standard, delay, hit)
+    queue("queue.hit", delay, hit)
     return hit
 }
 
@@ -453,12 +452,12 @@ private fun Player.strongQueueImpactHit(
     modifier: PlayerHitModifier,
 ) {
     val deferred = DeferredPlayerHit(builder, modifier)
-    strongQueue(hit_queues.impact, delay, deferred)
+    strongQueue("queue.impact_hit", delay, deferred)
 }
 
 private fun Player.queueImpactHit(delay: Int, builder: HitBuilder, modifier: PlayerHitModifier) {
     val deferred = DeferredPlayerHit(builder, modifier)
-    queue(hit_queues.impact, delay, deferred)
+    queue("queue.impact_hit", delay, deferred)
 }
 
 /* Internal functions. */

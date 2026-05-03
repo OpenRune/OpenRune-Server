@@ -6,9 +6,7 @@ import dev.openrune.types.ItemServerType
 import dev.openrune.types.npc.UnpackedNpcType
 import org.rsmod.api.combat.commons.magic.Spellbook
 import org.rsmod.api.combat.formulas.test_npcs
-import org.rsmod.api.config.refs.objs
 import org.rsmod.api.config.refs.stats
-import org.rsmod.api.config.refs.varbits
 import org.rsmod.api.player.back
 import org.rsmod.api.player.feet
 import org.rsmod.api.player.front
@@ -72,7 +70,7 @@ class PvNMagicSpellAccuracyTest {
 
     data class Matchup(
         val expectedAccuracy: Double,
-        val spell: ItemServerType = objs.spell_wind_strike,
+        val spell: ItemServerType = "obj.01_wind_strike",
         val spellbook: Spellbook = Spellbook.Standard,
         val npc: UnpackedNpcType = test_npcs.man,
         val npcCurrHp: Int = 1,
@@ -183,58 +181,58 @@ class PvNMagicSpellAccuracyTest {
         override fun args(): List<TestArgs> {
             return testArgsOfSingleParam(
                 Matchup(expectedAccuracy = 97.30)
-                    .withSpell(objs.spell_wind_strike)
-                    .withWeapon(objs.air_staff)
+                    .withSpell("obj.01_wind_strike")
+                    .withWeapon("obj.staff_of_air")
                     .withNpcTarget(test_npcs.man),
                 Matchup(expectedAccuracy = 98.57)
-                    .withSpell(objs.spell_wind_strike)
-                    .withWeapon(objs.air_staff)
-                    .withHelm(objs.void_mage_helm)
-                    .withBody(objs.elite_void_top)
-                    .withLegs(objs.elite_void_robe)
-                    .withGloves(objs.void_gloves)
-                    .withFeet(objs.eternal_boots)
-                    .withRing(objs.magus_ring)
+                    .withSpell("obj.01_wind_strike")
+                    .withWeapon("obj.staff_of_air")
+                    .withHelm("obj.game_pest_mage_helm")
+                    .withBody("obj.elite_void_knight_top")
+                    .withLegs("obj.elite_void_knight_robes")
+                    .withGloves("obj.pest_void_knight_gloves")
+                    .withFeet("obj.eternal_boots")
+                    .withRing("obj.magus_ring")
                     .withNpcTarget(test_npcs.man),
                 Matchup(expectedAccuracy = 98.87)
-                    .withSpell(objs.spell_water_strike)
+                    .withSpell("obj.05_water_strike")
                     .withSmellingSalts()
-                    .withWeapon(objs.staff_of_light)
-                    .withHelm(objs.ahrims_hood_100)
-                    .withCape(objs.imbued_saradomin_cape)
-                    .withAmulet(objs.occult_necklace)
-                    .withBody(objs.ahrims_robetop_100)
-                    .withLegs(objs.ahrims_robeskirt_100)
-                    .withGloves(objs.barrows_gloves)
-                    .withFeet(objs.infinity_boots)
-                    .withRing(objs.seers_ring_i)
-                    .withPrayers(varbits.prayer_mystic_vigour_unlocked, varbits.mystic_might)
+                    .withWeapon("obj.staff_of_light")
+                    .withHelm("obj.barrows_ahrim_head_100")
+                    .withCape("obj.ma2_saradomin_cape")
+                    .withAmulet("obj.occult_necklace")
+                    .withBody("obj.barrows_ahrim_body_100")
+                    .withLegs("obj.barrows_ahrim_legs_100")
+                    .withGloves("obj.hundred_gauntlets_level_10")
+                    .withFeet("obj.magictraining_infinityboots")
+                    .withRing("obj.nzone_seer_ring")
+                    .withPrayers("varbit.prayer_mystic_vigour_unlocked", "varbit.prayer_mysticmight")
                     .withNpcTarget(test_npcs.dagannoth_rex),
                 Matchup(expectedAccuracy = 14.76)
-                    .withSpell(objs.spell_wind_strike)
-                    .withWeapon(objs.staff_of_light)
-                    .withHelm(objs.ancestral_hat)
-                    .withCape(objs.imbued_saradomin_cape)
-                    .withAmulet(objs.occult_necklace)
-                    .withBody(objs.ancestral_robe_top)
-                    .withLegs(objs.ancestral_robe_bottom)
-                    .withGloves(objs.tormented_bracelet)
-                    .withFeet(objs.eternal_boots)
-                    .withRing(objs.magus_ring)
+                    .withSpell("obj.01_wind_strike")
+                    .withWeapon("obj.staff_of_light")
+                    .withHelm("obj.ancestral_hat")
+                    .withCape("obj.ma2_saradomin_cape")
+                    .withAmulet("obj.occult_necklace")
+                    .withBody("obj.ancestral_robe_top")
+                    .withLegs("obj.ancestral_robe_bottom")
+                    .withGloves("obj.zenyte_bracelet_enchanted")
+                    .withFeet("obj.eternal_boots")
+                    .withRing("obj.magus_ring")
                     .withNpcTarget(test_npcs.corporeal_beast),
                 Matchup(expectedAccuracy = 20.36)
-                    .withSpell(objs.spell_fire_surge)
+                    .withSpell("obj.95_fire_surge")
                     .withSaturatedHeart()
-                    .withWeapon(objs.staff_of_light)
-                    .withHelm(objs.ancestral_hat)
-                    .withCape(objs.imbued_saradomin_cape)
-                    .withAmulet(objs.occult_necklace)
-                    .withBody(objs.ancestral_robe_top)
-                    .withLegs(objs.ancestral_robe_bottom)
-                    .withGloves(objs.tormented_bracelet)
-                    .withFeet(objs.eternal_boots)
-                    .withRing(objs.magus_ring)
-                    .withPrayers(varbits.augury)
+                    .withWeapon("obj.staff_of_light")
+                    .withHelm("obj.ancestral_hat")
+                    .withCape("obj.ma2_saradomin_cape")
+                    .withAmulet("obj.occult_necklace")
+                    .withBody("obj.ancestral_robe_top")
+                    .withLegs("obj.ancestral_robe_bottom")
+                    .withGloves("obj.zenyte_bracelet_enchanted")
+                    .withFeet("obj.eternal_boots")
+                    .withRing("obj.magus_ring")
+                    .withPrayers("varbit.prayer_augury")
                     .withNpcTarget(test_npcs.corporeal_beast),
             )
         }

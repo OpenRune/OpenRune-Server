@@ -6,7 +6,6 @@ import org.rsmod.api.combat.formulas.attributes.CombatNpcAttributes
 import org.rsmod.api.combat.formulas.attributes.CombatSpellAttributes
 import org.rsmod.api.combat.formulas.attributes.CombatStaffAttributes
 import org.rsmod.api.combat.formulas.scale
-import org.rsmod.api.config.refs.varbits
 import org.rsmod.api.player.bonus.WornBonuses
 import org.rsmod.game.entity.Player
 
@@ -304,11 +303,11 @@ public object MagicMaxHitOperations {
 
     public fun getMagicDamagePrayerBonus(player: Player): Int =
         when {
-            player.vars[varbits.mystic_lore] == 1 -> 10
-            player.vars[varbits.mystic_might] == 1 -> {
-                if (player.vars[varbits.prayer_mystic_vigour_unlocked] == 1) 30 else 20
+            player.vars["varbit.prayer_mysticlore"] == 1 -> 10
+            player.vars["varbit.prayer_mysticmight"] == 1 -> {
+                if (player.vars["varbit.prayer_mystic_vigour_unlocked"] == 1) 30 else 20
             }
-            player.vars[varbits.augury] == 1 -> 40
+            player.vars["varbit.prayer_augury"] == 1 -> 40
             else -> 0
         }
 }

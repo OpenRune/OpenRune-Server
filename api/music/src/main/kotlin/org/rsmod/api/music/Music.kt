@@ -10,7 +10,7 @@ public data class Music(
     val unlockHint: String,
     val duration: Int,
     val midi: MidiType,
-    val unlockVarp: VarpServerType?,
+    val unlockVarp: String?,
     val unlockBitpos: Int,
     val hidden: Boolean,
     val secondary: MusicRow?,

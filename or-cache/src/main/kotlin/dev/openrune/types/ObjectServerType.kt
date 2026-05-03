@@ -7,11 +7,11 @@ import dev.openrune.definition.EntityOpsDefinition
 import dev.openrune.definition.type.ParamType
 import dev.openrune.resolve
 import dev.openrune.rscm.RSCM
+import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import dev.openrune.seralizer.ParamSerializer
 import dev.openrune.toml.rsconfig.RsTableHeaders
 import dev.openrune.toml.serialization.TomlField
-import dev.openrune.types.aconverted.ContentGroupType
 
 @RsTableHeaders("object")
 data class ObjectServerType(
@@ -56,8 +56,8 @@ data class ObjectServerType(
 
     public fun hasParam(type: TypedParamType<*>): Boolean = paramOrNull(type) != null
 
-    public fun isContentType(content: ContentGroupType): Boolean {
-        return contentGroup == content.id
+    public fun isContentType(content: String): Boolean {
+        return contentGroup == content.asRSCM(RSCMType.CONTENT)
     }
 
 }

@@ -1,8 +1,11 @@
 package org.rsmod.game.ui
 
+import dev.openrune.ServerCacheManager
 import dev.openrune.cache.filestore.definition.InterfaceType
 import dev.openrune.definition.type.widget.ComponentType
 import dev.openrune.definition.type.widget.IfEvent
+import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.rscm.RSCMType
 import it.unimi.dsi.fastutil.ints.Int2IntMap
 import it.unimi.dsi.fastutil.ints.IntArraySet
 import org.rsmod.annotations.InternalApi
@@ -36,7 +39,7 @@ public class UserInterfaceMap(
         closeQueue.remove(target.packed)
     }
 
-    public operator fun contains(type: InterfaceType): Boolean {
+    public operator fun contains(type: String): Boolean {
         return containsModal(type) ||
             containsOverlay(type) ||
             containsTopLevel(type) ||
@@ -45,13 +48,20 @@ public class UserInterfaceMap(
 
     public fun containsTopLevel(topLevel: InterfaceType): Boolean = this.topLevel.id == topLevel.id
 
+    public fun containsTopLevel(topLevel: String): Boolean = this.topLevel.id == topLevel.asRSCM(RSCMType.INTERFACE)
+
     public fun containsOverlay(overlay: InterfaceType): Boolean =
         overlays.backing.containsValue(overlay.id)
 
+    public fun containsOverlay(overlay: String): Boolean =
+        overlays.backing.containsValue(overlay.asRSCM(RSCMType.INTERFACE))
+
     public fun containsModal(modal: InterfaceType): Boolean = modals.backing.containsValue(modal.id)
 
-    public fun containsGameframe(type: InterfaceType): Boolean =
-        gameframe.backing.containsValue(type.id)
+    public fun containsModal(modal: String): Boolean = modals.backing.containsValue(modal.asRSCM(RSCMType.INTERFACE))
+
+    public fun containsGameframe(type: String): Boolean =
+        gameframe.backing.containsValue(type.asRSCM(RSCMType.INTERFACE))
 
     public fun getOverlay(key: ComponentType): Component = overlays.backing.get(key)
 
@@ -59,7 +69,7 @@ public class UserInterfaceMap(
 
     public fun getModal(key: ComponentType): Component = modals.backing.get(key)
 
-    public fun getModalOrNull(key: ComponentType): Component? = getModal(key).orNull()
+    public fun getModalOrNull(key: String): Component? = getModal(ServerCacheManager.fromComponent(key)).orNull()
 
     public fun getGameframe(key: ComponentType): Component = gameframe.backing.get(key)
 

@@ -1,7 +1,8 @@
 package org.rsmod.content.interfaces.prayer.tab.scripts
 
+import dev.openrune.rscm.RSCM
+import dev.openrune.rscm.RSCMType
 import jakarta.inject.Inject
-import org.rsmod.api.config.refs.varbits
 import org.rsmod.api.player.output.ClientScripts
 import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.output.soundSynth
@@ -14,8 +15,6 @@ import org.rsmod.api.script.onIfOverlayButton
 import org.rsmod.api.script.onPlayerQueueWithArgs
 import org.rsmod.content.interfaces.prayer.tab.Prayer
 import org.rsmod.content.interfaces.prayer.tab.PrayerRepository
-import org.rsmod.content.interfaces.prayer.tab.configs.prayer_queues
-import org.rsmod.content.interfaces.prayer.tab.configs.prayer_sounds
 import org.rsmod.content.interfaces.prayer.tab.util.disablePrayerDrain
 import org.rsmod.content.interfaces.prayer.tab.util.disablePrayerStatRegen
 import org.rsmod.content.interfaces.prayer.tab.util.enablePrayerDrain
@@ -33,10 +32,10 @@ private constructor(
     private val protectedAccess: ProtectedAccessLauncher,
 ) : PluginScript() {
     override fun ScriptContext.startup() {
-        for ((component, prayer) in repo.prayerComponents) {
+        for ((component, prayer) in repo.prayerComponents.map { RSCM.getReverseMapping(RSCMType.COMPONENT,it.key.packed) to it.value }) {
             onIfOverlayButton(component) { player.selectPrayer(prayer) }
         }
-        onPlayerQueueWithArgs(prayer_queues.toggle) { togglePrayer(it.args) }
+        onPlayerQueueWithArgs("queue.prayer_toggle") { togglePrayer(it.args) }
     }
 
     private fun Player.selectPrayer(prayer: Prayer) {
@@ -45,12 +44,12 @@ private constructor(
             val message = failedRequirementMessage(prayer).replace("<br>", " ")
             mes(message)
             resyncVar(prayer.enabled)
-            soundSynth(prayer_sounds.disable)
+            soundSynth("synth.prayer_disable")
             return
         }
         val toggled = protectedAccess.launch(this) { togglePrayer(prayer) }
         if (!toggled && canQueuePrayer()) {
-            strongQueue(prayer_queues.toggle, 1, args = prayer)
+            strongQueue("queue.prayer_toggle", 1, args = prayer)
         }
     }
 
@@ -87,15 +86,15 @@ private constructor(
 
     private fun ProtectedAccess.disablePrayer(prayer: Prayer) {
         vars[prayer.enabled] = 0
-        soundSynth(prayer_sounds.disable)
+        soundSynth("synth.prayer_disable")
         disablePrayerStatRegen(prayer)
         if (prayer.overhead != null && player.overheadIcon == prayer.overhead) {
             player.overheadIcon = null
         }
 
         // When all prayers are manually disabled, the quick prayer flag should also be disabled.
-        if (vars[varbits.enabled_prayers] == 0) {
-            vars[varbits.quickprayer_active] = 0
+        if (vars["varbit.prayer_allactive"] == 0) {
+            vars["varbit.quickprayer_active"] = 0
             disablePrayerDrain()
         }
     }
@@ -119,7 +118,7 @@ private constructor(
             prayer.levelReqMessage()
         }
 
-    private fun Player.canQueuePrayer(): Boolean = queueList.count(prayer_queues.toggle) < 10
+    private fun Player.canQueuePrayer(): Boolean = queueList.count("queue.prayer_toggle") < 10
 
     private fun Prayer.levelReqMessage(): String =
         "You need a <col=000080>Prayer</col> level of $level to use <col=000080>$name</col>."

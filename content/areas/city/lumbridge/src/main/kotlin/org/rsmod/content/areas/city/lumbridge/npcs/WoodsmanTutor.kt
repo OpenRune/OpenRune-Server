@@ -1,20 +1,17 @@
 package org.rsmod.content.areas.city.lumbridge.npcs
 
-import org.rsmod.api.config.refs.content
-import org.rsmod.api.config.refs.objs
 import org.rsmod.api.invtx.invAdd
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.stat.baseWoodcuttingLvl
 import org.rsmod.api.script.advanced.onUnimplementedOpNpc1
-import org.rsmod.content.areas.city.lumbridge.configs.lumbridge_npcs
 import org.rsmod.game.entity.Npc
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
 class WoodsmanTutor : PluginScript() {
     override fun ScriptContext.startup() {
-        onUnimplementedOpNpc1(lumbridge_npcs.woodsman_tutor) { startDialogue(it.npc) }
+        onUnimplementedOpNpc1("npc.aide_tutor_woodsman") { startDialogue(it.npc) }
     }
 
     private suspend fun ProtectedAccess.startDialogue(npc: Npc) {
@@ -48,7 +45,7 @@ class WoodsmanTutor : PluginScript() {
     private suspend fun Dialogue.noviceBasics() {
         chatPlayer(quiz, "Can you teach me the basics of Woodcutting and Firemaking, please?")
         objbox(
-            objs.woodcutting_icon,
+            "obj.tree_icon_dummy",
             "Of course... look for this icon on your minimap to find areas of trees.",
         )
         giveAxeIfRequired()
@@ -64,13 +61,13 @@ class WoodsmanTutor : PluginScript() {
                 "roof of the castle in Lumbridge, or you can burn them.",
         )
         objbox(
-            objs.bank_icon,
+            "obj.bank_icon_dummy",
             "To find a bank, look for this symbol on your minimap " +
                 "after climbing the stairs of the Lumbridge Castle to the " +
                 "top. There are banks all over the world with this symbol.",
         )
         giveTinderboxIfRequired()
-        if (objs.tinderbox in player.inv) {
+        if ("obj.tinderbox" in player.inv) {
             chatNpc(
                 happy,
                 "Click on your tinderbox, then click on one of the logs in " +
@@ -194,8 +191,8 @@ class WoodsmanTutor : PluginScript() {
 
     private suspend fun Dialogue.oakAndWillowExplanation() {
         doubleobjbox(
-            objs.logs,
-            objs.oak_logs,
+            "obj.logs",
+            "obj.oak_logs",
             "Almost every tree can be chopped down. Normal logs " +
                 "will be produced by chopping 'Trees' and Oak logs will " +
                 "come from chopping 'Oak Trees'. You can find Oak " +
@@ -203,7 +200,7 @@ class WoodsmanTutor : PluginScript() {
                 "lands.",
         )
         objbox(
-            objs.willow_logs,
+            "obj.willow_logs",
             "Willow trees will yield willow logs. You'll find willows like " +
                 "to grow near water, you can find some south of " +
                 "Draynor.",
@@ -213,14 +210,14 @@ class WoodsmanTutor : PluginScript() {
 
     private suspend fun Dialogue.mapleAndYewExplanation() {
         objbox(
-            objs.maple_logs,
+            "obj.maple_logs",
             "Maple logs can be gleaned from Maple trees. You'll " +
                 "usually find Maple trees standing alone amongst other " +
                 "trees.",
         )
         doubleobjbox(
-            objs.yew_logs,
-            objs.woodcutting_icon,
+            "obj.yew_logs",
+            "obj.tree_icon_dummy",
             "Yew trees are few and far between. We do our best to " +
                 "cultivate them. Look for the tree icon on your minimap " +
                 "to find rare trees. Try North of Port Sarim.",
@@ -230,7 +227,7 @@ class WoodsmanTutor : PluginScript() {
 
     private suspend fun Dialogue.axesExplanation() {
         objbox(
-            objs.bronze_axe,
+            "obj.bronze_axe",
             "Bronze axes are easy to get, simply go visit Bob in his " +
                 "shop in Lumbridge, or talk to me if you have mislaid " +
                 "yours.",
@@ -242,14 +239,14 @@ class WoodsmanTutor : PluginScript() {
                 "very effective, but it frees up a slot for another log.",
         )
         doubleobjbox(
-            objs.iron_axe,
-            objs.steel_axe,
+            "obj.iron_axe",
+            "obj.steel_axe",
             "As your woodcutting skill increases you will find " +
                 "yourself able to use better axes to chop trees faster.... " +
                 "anything up to steel you can buy from Bob's axe shop.",
         )
         objbox(
-            objs.rune_axe,
+            "obj.rune_axe",
             "Rune axes can be player made with very high level " +
                 "smithing and mining. They can also be obtained through " +
                 "killing one of the fearsome tree spirits, though this is " +
@@ -265,10 +262,10 @@ class WoodsmanTutor : PluginScript() {
     private suspend fun Dialogue.giveAxeIfRequired() {
         // NOTE: Once woodcutting axes are defined to the appropriate objs, we can remove the
         // specific bronze axe condition. Or we can keep it; doesn't make a difference.
-        if (objs.bronze_axe in player.inv || content.woodcutting_axe in player.inv) {
+        if ("obj.bronze_axe" in player.inv || "content.woodcutting_axe" in player.inv) {
             return
         }
-        val add = player.invAdd(player.inv, objs.bronze_axe)
+        val add = player.invAdd(player.inv, "obj.bronze_axe")
         if (add.success) {
             chatNpc(
                 happy,
@@ -283,10 +280,10 @@ class WoodsmanTutor : PluginScript() {
     }
 
     private suspend fun Dialogue.giveTinderboxIfRequired() {
-        if (objs.tinderbox in player.inv) {
+        if ("obj.tinderbox" in player.inv) {
             return
         }
-        val add = player.invAdd(player.inv, objs.tinderbox)
+        val add = player.invAdd(player.inv, "obj.tinderbox")
         if (add.success) {
             chatNpc(neutral, "Ah, you've lost your tinderbox have you? Have another!")
         } else {

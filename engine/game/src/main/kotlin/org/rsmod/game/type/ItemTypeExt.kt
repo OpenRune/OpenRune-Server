@@ -1,6 +1,9 @@
 package org.rsmod.game.type
 
 import dev.openrune.ServerCacheManager
+import dev.openrune.rscm.RSCM
+import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.rscm.RSCMType
 import dev.openrune.types.ItemServerType
 import kotlin.contracts.contract
 import org.rsmod.game.interact.HeldOp
@@ -15,6 +18,11 @@ public fun ItemServerType.hasOp(interactionOp: InteractionOp): Boolean {
 
 public fun ItemServerType.hasInvOp(invOp: HeldOp): Boolean {
     return hasInvOp(invOp.slot)
+}
+
+public fun String.isAssociatedWith(obj: InvObj?): Boolean {
+    contract { returns(true) implies (obj != null) }
+    return obj != null && obj.id == this.asRSCM(RSCMType.OBJ)
 }
 
 public fun ItemServerType.isAssociatedWith(obj: InvObj?): Boolean {
@@ -41,9 +49,7 @@ public fun cert(obj: InvObj): InvObj {
         return obj
     }
     val link = type.certlink
-    val certType =
-        ServerCacheManager.getItem(link)
-            ?: throw NoSuchElementException("Type is missing in the map: $link.")
+    val certType = RSCM.getReverseMapping(RSCMType.OBJ,link)
     return InvObj(certType, obj.count)
 }
 
@@ -60,13 +66,12 @@ public fun uncert(obj: InvObj): InvObj {
     }
 
     val link = type.certlink
-    val uncertType =
-        ServerCacheManager.getItem(link)
-            ?: throw NoSuchElementException("Type is missing in the map: $link.")
+    val uncertType = RSCM.getReverseMapping(RSCMType.OBJ,link)
     return InvObj(uncertType, obj.count)
 }
 
-public fun cert(type: ItemServerType): ItemServerType {
+public fun cert(internal: String): ItemServerType {
+    val type = ServerCacheManager.getItem(internal.asRSCM(RSCMType.OBJ))?: error("Could not find type: $internal")
     if (!type.canCert) {
         return type
     }

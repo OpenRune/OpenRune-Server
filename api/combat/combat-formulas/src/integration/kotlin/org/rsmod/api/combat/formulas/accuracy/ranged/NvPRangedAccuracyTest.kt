@@ -10,10 +10,7 @@ import org.rsmod.api.combat.commons.CombatStance
 import org.rsmod.api.combat.formulas.test_npcs
 import org.rsmod.api.combat.weapon.scripts.WeaponAttackStylesScript
 import org.rsmod.api.combat.weapon.styles.AttackStyles
-import org.rsmod.api.config.refs.objs
 import org.rsmod.api.config.refs.stats
-import org.rsmod.api.config.refs.varbits
-import org.rsmod.api.config.refs.varps
 import org.rsmod.api.player.back
 import org.rsmod.api.player.feet
 import org.rsmod.api.player.front
@@ -46,7 +43,7 @@ class NvPRangedAccuracyTest {
             player.setBaseLevel(stats.defence, matchup.baseDefenceLvl)
             player.setCurrentLevel(stats.hitpoints, matchup.hitpoints)
             player.setBaseLevel(stats.hitpoints, matchup.baseHitpointsLvl)
-            player.setVarp(varps.com_mode, matchup.blockStance.varValue)
+            player.setVarp("varp.com_mode", matchup.blockStance.varValue)
 
             player.hat = matchup.hat
             player.back = matchup.back
@@ -183,37 +180,37 @@ class NvPRangedAccuracyTest {
                     .withDefenceLevel(defenceLvl = 99),
                 Matchup(expectedAccuracy = 17.78)
                     .withNpcSource(test_npcs.dagannoth_supreme)
-                    .withHelm(objs.torva_full_helm)
-                    .withBody(objs.torva_platebody)
-                    .withLegs(objs.torva_platelegs)
-                    .withCape(objs.infernal_cape)
-                    .withAmulet(objs.amulet_of_rancour)
-                    .withGloves(objs.ferocious_gloves)
-                    .withFeet(objs.primordial_boots)
-                    .withRing(objs.ultor_ring)
-                    .withPrayers(varbits.chivalry),
+                    .withHelm("obj.torva_helm")
+                    .withBody("obj.torva_chest")
+                    .withLegs("obj.torva_legs")
+                    .withCape("obj.infernal_cape")
+                    .withAmulet("obj.amulet_of_rancour")
+                    .withGloves("obj.ferocious_gloves")
+                    .withFeet("obj.primordial_boots")
+                    .withRing("obj.ultor_ring")
+                    .withPrayers("varbit.prayer_chivalry"),
                 Matchup(expectedAccuracy = 13.39)
                     .withNpcSource(test_npcs.flockleader_geerin)
-                    .withHelm(objs.justiciar_faceguard)
-                    .withBody(objs.justiciar_chestguard)
-                    .withLegs(objs.justiciar_legguards)
-                    .withCape(objs.infernal_cape)
-                    .withAmulet(objs.amulet_of_fury)
-                    .withGloves(objs.barrows_gloves)
-                    .withWeapon(objs.dinhs_bulwark)
-                    .withPrayers(varbits.piety),
+                    .withHelm("obj.justiciar_faceguard")
+                    .withBody("obj.justiciar_chestguard")
+                    .withLegs("obj.justiciar_leg_guards")
+                    .withCape("obj.infernal_cape")
+                    .withAmulet("obj.enchanted_onyx_amulet")
+                    .withGloves("obj.hundred_gauntlets_level_10")
+                    .withWeapon("obj.dinhs_bulwark")
+                    .withPrayers("varbit.prayer_piety"),
                 Matchup(expectedAccuracy = 11.05)
                     .withNpcSource(test_npcs.iorwerth_archer)
-                    .withHelm(objs.helm_of_neitiznot)
-                    .withBody(objs.fighter_torso)
-                    .withLegs(objs.obsidian_platelegs)
-                    .withCape(objs.fire_cape)
-                    .withAmulet(objs.amulet_of_fury)
-                    .withShield(objs.dragon_defender)
-                    .withGloves(objs.barrows_gloves)
-                    .withFeet(objs.dragon_boots)
-                    .withRing(objs.berserker_ring)
-                    .withPrayers(varbits.steel_skin),
+                    .withHelm("obj.fris_kingly_helm")
+                    .withBody("obj.barbassault_penance_fighter_torso")
+                    .withLegs("obj.obsidian_platelegs")
+                    .withCape("obj.tzhaar_cape_fire")
+                    .withAmulet("obj.enchanted_onyx_amulet")
+                    .withShield("obj.dragon_parryingdagger")
+                    .withGloves("obj.hundred_gauntlets_level_10")
+                    .withFeet("obj.dragon_boots")
+                    .withRing("obj.berzerker_ring")
+                    .withPrayers("varbit.prayer_steelskin"),
             )
         }
     }

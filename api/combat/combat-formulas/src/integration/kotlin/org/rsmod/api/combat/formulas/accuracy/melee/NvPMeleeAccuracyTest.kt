@@ -11,10 +11,7 @@ import org.rsmod.api.combat.commons.types.MeleeAttackType
 import org.rsmod.api.combat.formulas.test_npcs
 import org.rsmod.api.combat.weapon.scripts.WeaponAttackStylesScript
 import org.rsmod.api.combat.weapon.styles.AttackStyles
-import org.rsmod.api.config.refs.objs
 import org.rsmod.api.config.refs.stats
-import org.rsmod.api.config.refs.varbits
-import org.rsmod.api.config.refs.varps
 import org.rsmod.api.player.back
 import org.rsmod.api.player.feet
 import org.rsmod.api.player.front
@@ -47,7 +44,7 @@ class NvPMeleeAccuracyTest {
             player.setBaseLevel(stats.defence, matchup.baseDefenceLvl)
             player.setCurrentLevel(stats.hitpoints, matchup.hitpoints)
             player.setBaseLevel(stats.hitpoints, matchup.baseHitpointsLvl)
-            player.setVarp(varps.com_mode, matchup.blockStance.varValue)
+            player.setVarp("varp.com_mode", matchup.blockStance.varValue)
 
             player.hat = matchup.hat
             player.back = matchup.back
@@ -180,74 +177,74 @@ class NvPMeleeAccuracyTest {
                 Matchup(expectedAccuracy = 19.32)
                     .withNpcSource(test_npcs.dagannoth_rex)
                     .withAttackType(MeleeAttackType.Slash)
-                    .withHelm(objs.torva_full_helm)
-                    .withBody(objs.torva_platebody)
-                    .withLegs(objs.torva_platelegs)
-                    .withCape(objs.infernal_cape)
-                    .withAmulet(objs.amulet_of_rancour)
-                    .withGloves(objs.ferocious_gloves)
-                    .withFeet(objs.primordial_boots)
-                    .withRing(objs.ultor_ring)
-                    .withPrayers(varbits.chivalry),
+                    .withHelm("obj.torva_helm")
+                    .withBody("obj.torva_chest")
+                    .withLegs("obj.torva_legs")
+                    .withCape("obj.infernal_cape")
+                    .withAmulet("obj.amulet_of_rancour")
+                    .withGloves("obj.ferocious_gloves")
+                    .withFeet("obj.primordial_boots")
+                    .withRing("obj.ultor_ring")
+                    .withPrayers("varbit.prayer_chivalry"),
                 Matchup(expectedAccuracy = 27.41)
                     .withNpcSource(test_npcs.glod)
                     .withAttackType(MeleeAttackType.Crush)
-                    .withHelm(objs.justiciar_faceguard)
-                    .withBody(objs.justiciar_chestguard)
-                    .withLegs(objs.justiciar_legguards)
-                    .withCape(objs.infernal_cape)
-                    .withAmulet(objs.amulet_of_fury)
-                    .withGloves(objs.barrows_gloves)
-                    .withWeapon(objs.dinhs_bulwark)
+                    .withHelm("obj.justiciar_faceguard")
+                    .withBody("obj.justiciar_chestguard")
+                    .withLegs("obj.justiciar_leg_guards")
+                    .withCape("obj.infernal_cape")
+                    .withAmulet("obj.enchanted_onyx_amulet")
+                    .withGloves("obj.hundred_gauntlets_level_10")
+                    .withWeapon("obj.dinhs_bulwark")
                     .withDefenceLevel(defenceLvl = 50),
                 Matchup(expectedAccuracy = 1.21)
                     .withNpcSource(test_npcs.abyssal_walker)
                     .withAttackType(MeleeAttackType.Crush)
-                    .withHelm(objs.justiciar_faceguard)
-                    .withBody(objs.justiciar_chestguard)
-                    .withLegs(objs.justiciar_legguards)
-                    .withCape(objs.infernal_cape)
-                    .withAmulet(objs.amulet_of_fury)
-                    .withGloves(objs.barrows_gloves)
-                    .withWeapon(objs.dinhs_bulwark)
+                    .withHelm("obj.justiciar_faceguard")
+                    .withBody("obj.justiciar_chestguard")
+                    .withLegs("obj.justiciar_leg_guards")
+                    .withCape("obj.infernal_cape")
+                    .withAmulet("obj.enchanted_onyx_amulet")
+                    .withGloves("obj.hundred_gauntlets_level_10")
+                    .withWeapon("obj.dinhs_bulwark")
                     .withDefenceLevel(defenceLvl = 75),
                 Matchup(expectedAccuracy = 27.25)
                     .withNpcSource(test_npcs.giant_rat)
                     .withAttackType(MeleeAttackType.Slash)
-                    .withHelm(objs.helm_of_neitiznot)
-                    .withBody(objs.fighter_torso)
-                    .withLegs(objs.obsidian_platelegs)
-                    .withCape(objs.fire_cape)
-                    .withAmulet(objs.amulet_of_fury)
-                    .withShield(objs.dragon_defender)
-                    .withGloves(objs.barrows_gloves)
-                    .withFeet(objs.dragon_boots)
-                    .withRing(objs.berserker_ring)
+                    .withHelm("obj.fris_kingly_helm")
+                    .withBody("obj.barbassault_penance_fighter_torso")
+                    .withLegs("obj.obsidian_platelegs")
+                    .withCape("obj.tzhaar_cape_fire")
+                    .withAmulet("obj.enchanted_onyx_amulet")
+                    .withShield("obj.dragon_parryingdagger")
+                    .withGloves("obj.hundred_gauntlets_level_10")
+                    .withFeet("obj.dragon_boots")
+                    .withRing("obj.berzerker_ring")
                     .withDefenceLevel(defenceLvl = 80),
                 Matchup(expectedAccuracy = 0.28)
                     .withNpcSource(test_npcs.chicken)
                     .withAttackType(MeleeAttackType.Stab)
-                    .withHelm(objs.helm_of_neitiznot)
-                    .withBody(objs.fighter_torso)
-                    .withLegs(objs.obsidian_platelegs)
-                    .withCape(objs.fire_cape)
-                    .withAmulet(objs.amulet_of_fury)
-                    .withShield(objs.dragon_defender)
-                    .withGloves(objs.barrows_gloves)
-                    .withFeet(objs.dragon_boots)
-                    .withRing(objs.berserker_ring)
+                    .withHelm("obj.fris_kingly_helm")
+                    .withBody("obj.barbassault_penance_fighter_torso")
+                    .withLegs("obj.obsidian_platelegs")
+                    .withCape("obj.tzhaar_cape_fire")
+                    .withAmulet("obj.enchanted_onyx_amulet")
+                    .withShield("obj.dragon_parryingdagger")
+                    .withGloves("obj.hundred_gauntlets_level_10")
+                    .withFeet("obj.dragon_boots")
+                    .withRing("obj.berzerker_ring")
                     .withDefenceLevel(defenceLvl = 99),
                 Matchup(expectedAccuracy = 67.2)
                     .withNpcSource(test_npcs.glod)
                     .withAttackType(MeleeAttackType.Crush)
                     .withBlockStance(CombatStance.Stance1) // Dinh's "Pummel" stance.
-                    .withWeapon(objs.dinhs_bulwark)
+                    .withWeapon("obj.dinhs_bulwark")
                     .withDefenceLevel(defenceLvl = 50),
                 Matchup(expectedAccuracy = 67.2)
                     .withNpcSource(test_npcs.glod)
                     .withAttackType(MeleeAttackType.Crush)
                     .withBlockStance(CombatStance.Stance4) // Dinh's "Block" stance.
-                    .withWeapon(objs.dinhs_bulwark)
+                    .withWeapon("obj.dinhs_bulwark")
                     .withDefenceLevel(defenceLvl = 50),
             )
         }

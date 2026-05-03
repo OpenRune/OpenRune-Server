@@ -1,7 +1,9 @@
 package org.rsmod.api.npc.interact
 
 import com.github.michaelbull.logging.InlineLogger
-import dev.openrune.types.ItemServerType
+import dev.openrune.ServerCacheManager
+import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.rscm.RSCMType
 import dev.openrune.types.ObjectServerType
 import jakarta.inject.Inject
 import org.rsmod.api.npc.access.StandardNpcAccess
@@ -23,7 +25,7 @@ public class AiLocUInteractions @Inject private constructor(private val eventBus
         access: StandardNpcAccess,
         target: BoundLocInfo,
         locType: ObjectServerType,
-        objType: ItemServerType,
+        objType: String,
         inv: Inventory,
         invSlot: Int,
     ) {
@@ -37,7 +39,7 @@ public class AiLocUInteractions @Inject private constructor(private val eventBus
         target: BoundLocInfo,
         invSlot: Int,
         locType: ObjectServerType,
-        objType: ItemServerType,
+        objType: String,
     ) {
         val script = opTrigger(target, locType, objType, invSlot)
         if (script != null) {
@@ -45,7 +47,7 @@ public class AiLocUInteractions @Inject private constructor(private val eventBus
             return
         }
         logger.debug {
-            "aiOpLocU for `${objType.name}` on `${locType.name}` is not implemented: " +
+            "aiOpLocU for `${objType}` on `${locType.name}` is not implemented: " +
                 "locType=$locType, objType=$objType"
         }
     }
@@ -53,30 +55,32 @@ public class AiLocUInteractions @Inject private constructor(private val eventBus
     public fun opTrigger(
         target: BoundLocInfo,
         locType: ObjectServerType,
-        objType: ItemServerType,
+        internal: String,
         invSlot: Int,
     ): OpEvent? {
-        val typeEvent = AiLocUEvents.Op(target, locType, objType, invSlot)
+        val typeEvent = AiLocUEvents.Op(target, locType, internal, invSlot)
         if (eventBus.contains(typeEvent::class.java, typeEvent.id)) {
             return typeEvent
         }
 
-        val typeContentEvent = AiLocUContentEvents.OpType(target, locType, objType, invSlot)
+        val typeContentEvent = AiLocUContentEvents.OpType(target, locType, internal, invSlot)
         if (eventBus.contains(typeContentEvent::class.java, typeContentEvent.id)) {
             return typeContentEvent
         }
 
-        val defaultTypeScript = AiLocUDefaultEvents.OpType(target, locType, objType, invSlot)
+        val defaultTypeScript = AiLocUDefaultEvents.OpType(target, locType, internal, invSlot)
         if (eventBus.contains(defaultTypeScript::class.java, defaultTypeScript.id)) {
             return defaultTypeScript
         }
 
-        val objContentEvent = AiLocUContentEvents.OpContent(target, locType, objType, invSlot)
+        val type = ServerCacheManager.getItem(internal.asRSCM(RSCMType.OBJ))?: return null
+
+        val objContentEvent = AiLocUContentEvents.OpContent(target, locType, type, invSlot)
         if (eventBus.contains(objContentEvent::class.java, objContentEvent.id)) {
             return objContentEvent
         }
 
-        val defGroupScript = AiLocUDefaultEvents.OpContent(target, locType, objType, invSlot)
+        val defGroupScript = AiLocUDefaultEvents.OpContent(target, locType, internal, invSlot)
         if (eventBus.contains(defGroupScript::class.java, defGroupScript.id)) {
             return defGroupScript
         }
@@ -88,7 +92,7 @@ public class AiLocUInteractions @Inject private constructor(private val eventBus
         access: StandardNpcAccess,
         target: BoundLocInfo,
         locType: ObjectServerType,
-        objType: ItemServerType,
+        objType: String,
         inv: Inventory,
         invSlot: Int,
     ) {
@@ -101,7 +105,7 @@ public class AiLocUInteractions @Inject private constructor(private val eventBus
     private suspend fun StandardNpcAccess.apLocU(
         target: BoundLocInfo,
         locType: ObjectServerType,
-        objType: ItemServerType,
+        objType: String,
         invSlot: Int,
     ) {
         val script = apTrigger(target, locType, objType, invSlot) ?: return
@@ -111,30 +115,32 @@ public class AiLocUInteractions @Inject private constructor(private val eventBus
     private fun apTrigger(
         target: BoundLocInfo,
         locType: ObjectServerType,
-        objType: ItemServerType,
+        internal: String,
         invSlot: Int,
     ): ApEvent? {
-        val typeEvent = AiLocUEvents.Ap(target, locType, objType, invSlot)
+        val typeEvent = AiLocUEvents.Ap(target, locType, internal, invSlot)
         if (eventBus.contains(typeEvent::class.java, typeEvent.id)) {
             return typeEvent
         }
 
-        val locContentEvent = AiLocUContentEvents.ApType(target, locType, objType, invSlot)
+        val locContentEvent = AiLocUContentEvents.ApType(target, locType, internal, invSlot)
         if (eventBus.contains(locContentEvent::class.java, locContentEvent.id)) {
             return locContentEvent
         }
 
-        val defaultTypeScript = AiLocUDefaultEvents.ApType(target, locType, objType, invSlot)
+        val defaultTypeScript = AiLocUDefaultEvents.ApType(target, locType, internal, invSlot)
         if (eventBus.contains(defaultTypeScript::class.java, defaultTypeScript.id)) {
             return defaultTypeScript
         }
 
-        val objContentEvent = AiLocUContentEvents.ApContent(target, locType, objType, invSlot)
+        val type = ServerCacheManager.getItem(internal.asRSCM(RSCMType.OBJ))?: return null
+
+        val objContentEvent = AiLocUContentEvents.ApContent(target, locType, type, invSlot)
         if (eventBus.contains(objContentEvent::class.java, objContentEvent.id)) {
             return objContentEvent
         }
 
-        val defGroupScript = AiLocUDefaultEvents.ApContent(target, locType, objType, invSlot)
+        val defGroupScript = AiLocUDefaultEvents.ApContent(target, locType, internal, invSlot)
         if (eventBus.contains(defGroupScript::class.java, defGroupScript.id)) {
             return defGroupScript
         }
@@ -142,5 +148,5 @@ public class AiLocUInteractions @Inject private constructor(private val eventBus
         return null
     }
 
-    private fun objectVerify(obj: InvObj?, type: ItemServerType): Boolean = obj.isType(type)
+    private fun objectVerify(obj: InvObj?, type: String): Boolean = obj.isType(type)
 }

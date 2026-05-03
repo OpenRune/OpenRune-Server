@@ -15,5 +15,5 @@ fun interface XpMod {
      * **Important:** This modifier only affects calculations in places that explicitly call this
      * function and apply it to the experience granted to players.
      */
-    fun Player.modifier(stat: StatType): Double
+    fun Player.modifier(stat: String): Double
 }

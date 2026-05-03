@@ -11,6 +11,7 @@ import net.rsprot.compression.provider.HuffmanCodecProvider
 import net.rsprot.crypto.rsa.RsaKeyPair
 import net.rsprot.protocol.api.AbstractNetworkServiceFactory
 import net.rsprot.protocol.api.GameConnectionHandler
+import net.rsprot.protocol.api.bootstrap.BootstrapBuilder
 import net.rsprot.protocol.api.handlers.ExceptionHandlers
 import net.rsprot.protocol.api.js5.Js5GroupProvider
 import net.rsprot.protocol.api.suppliers.NpcInfoSupplier
@@ -77,4 +78,8 @@ constructor(
     override fun getWorldEntityInfoSupplier(): WorldEntityInfoSupplier {
         return WorldEntityProvider.provide()
     }
+
+    // start adv: disable netty backends to use rsprot off central
+    override fun getBootstrapBuilder() = BootstrapBuilder().eventLoopGroupTypes(BootstrapBuilder.EventLoopGroupType.NIO)
+    // end adv
 }

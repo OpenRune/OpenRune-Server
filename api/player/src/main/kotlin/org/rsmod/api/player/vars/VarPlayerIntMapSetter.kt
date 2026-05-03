@@ -1,6 +1,9 @@
 package org.rsmod.api.player.vars
 
+import dev.openrune.ServerCacheManager
 import dev.openrune.definition.type.VarBitType
+import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.rscm.RSCMType
 import dev.openrune.types.varp.VarpServerType
 import dev.openrune.types.varp.baseVar
 import dev.openrune.types.varp.bits
@@ -32,6 +35,11 @@ import org.rsmod.utils.bits.withBits
  * @see [VarPlayerIntMap]
  */
 public object VarPlayerIntMapSetter {
+
+    public fun set(player: Player, varp: String, value: Int) {
+        set(player, ServerCacheManager.getVarp(varp.asRSCM(RSCMType.VARP))!!, value)
+    }
+
     public fun set(player: Player, varp: VarpServerType, value: Int) {
         val previous = player.vars.backing[varp.id]
 

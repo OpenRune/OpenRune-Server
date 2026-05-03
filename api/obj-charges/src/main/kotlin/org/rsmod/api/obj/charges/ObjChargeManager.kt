@@ -1,5 +1,8 @@
 package org.rsmod.api.obj.charges
 
+import dev.openrune.ServerCacheManager
+import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.rscm.RSCMType
 import dev.openrune.types.ItemServerType
 import dev.openrune.types.VarObjBitType
 import dev.openrune.util.Wearpos
@@ -15,7 +18,8 @@ import org.rsmod.utils.bits.getBits
 import org.rsmod.utils.bits.withBits
 
 public class ObjChargeManager {
-    public fun getCharges(obj: InvObj?, varobj: VarObjBitType): Int {
+    public fun getCharges(obj: InvObj?, internal: String): Int {
+        val varobj = ServerCacheManager.getVarObj(internal.asRSCM(RSCMType.VARCON)) ?: error("Unable to find varobj: $internal")
         return obj?.vars?.getBits(varobj.bits) ?: 0
     }
 
@@ -41,15 +45,16 @@ public class ObjChargeManager {
         inventory: Inventory,
         slot: Int,
         add: Int,
-        varobj: VarObjBitType,
+        internal: String,
         max: Int,
     ): Charge {
+        val varobj = ServerCacheManager.getVarObj(internal.asRSCM(RSCMType.VARCON)) ?: error("Unable to find varobj: $internal")
         val chargeRange = 0..varobj.bits.bitMask
         require(max in chargeRange) {
             "`max` charges ($max) must be within range [0..${varobj.bits.bitMask}]. (var=$varobj)"
         }
         val obj = inventory[slot] ?: return Charge.Failure.ObjNotFound
-        val curr = getCharges(obj, varobj)
+        val curr = getCharges(obj, internal)
         val total = min(max, curr + add)
         if (curr == total) {
             return Charge.Failure.AlreadyFullCharges
@@ -92,7 +97,7 @@ public class ObjChargeManager {
     public fun reduceWornCharges(
         player: Player,
         wearpos: Wearpos,
-        varobj: VarObjBitType,
+        internal: String,
         decrement: Int,
     ): Uncharge {
         val obj = player.worn[wearpos.slot] ?: return Uncharge.Failure.ObjNotFound
@@ -104,6 +109,8 @@ public class ObjChargeManager {
             val message = "Obj missing `uncharged_variant` param: $obj (type=$type)"
             throw IllegalStateException(message)
         }
+
+        val varobj = ServerCacheManager.getVarObj(internal.asRSCM(RSCMType.VARCON))?: error("Unable to find varobj: $internal")
 
         val currentCharges = obj.vars.getBits(varobj.bits)
         if (currentCharges < decrement) {
@@ -142,9 +149,11 @@ public class ObjChargeManager {
      * @throws IllegalStateException if the obj does not define an `uncharged_variant` param.
      * @throws NoSuchElementException if no obj exists in the given [inventory] slot.
      */
-    public fun removeAllCharges(inventory: Inventory, slot: Int, varobj: VarObjBitType): Int {
+    public fun removeAllCharges(inventory: Inventory, slot: Int, internal: String): Int {
         val obj = inventory.getValue(slot) // Should not call this without a valid obj in `slot`.
         val type = getInvObj(obj)
+
+        val varobj = ServerCacheManager.getVarObj(internal.asRSCM(RSCMType.VAROBJ)) ?: error("Unable to find varobj: $internal")
 
         val uncharged = type.paramOrNull(params.uncharged_variant)
         if (uncharged == null) {

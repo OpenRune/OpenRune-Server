@@ -2,6 +2,8 @@ package org.rsmod.api.script
 
 import dev.openrune.cache.filestore.definition.InterfaceType
 import dev.openrune.definition.type.widget.ComponentType
+import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.rscm.RSCMType
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.ui.IfCloseSub
 import org.rsmod.api.player.ui.IfModalButton
@@ -14,31 +16,31 @@ import org.rsmod.api.player.ui.IfOverlayDrag
 import org.rsmod.events.EventBus
 import org.rsmod.plugin.scripts.ScriptContext
 
-public fun ScriptContext.onIfOpen(type: InterfaceType, action: IfOpenSub.() -> Unit): Unit =
-    onEvent(type.id, action)
+public fun ScriptContext.onIfOpen(type: String, action: IfOpenSub.() -> Unit): Unit =
+    onEvent(type.asRSCM(RSCMType.INTERFACE), action)
 
-public fun ScriptContext.onIfClose(type: InterfaceType, action: IfCloseSub.() -> Unit): Unit =
-    onEvent(type.id, action)
+public fun ScriptContext.onIfClose(type: String, action: IfCloseSub.() -> Unit): Unit =
+    onEvent(type.asRSCM(RSCMType.INTERFACE), action)
 
 public fun ScriptContext.onIfOverlayButton(
-    button: ComponentType,
-    action: IfOverlayButton.() -> Unit,
-): Unit = onEvent(button.packed, action)
+    button: String,
+    action: suspend ProtectedAccess.(IfOverlayButton) -> Unit,
+): Unit = onProtectedEvent(button.asRSCM(RSCMType.COMPONENT), action)
 
 public fun ScriptContext.onIfModalButton(
-    button: ComponentType,
+    button: String,
     action: suspend ProtectedAccess.(IfModalButton) -> Unit,
-): Unit = onProtectedEvent(button.packed, action)
+): Unit = onProtectedEvent(button.asRSCM(RSCMType.COMPONENT), action)
 
 /**
  * Registers a script that triggers when an _overlay_ interface component targets another component.
  */
 public fun ScriptContext.onIfOverlayButtonT(
-    selectedComponent: ComponentType,
-    targetComponent: ComponentType = selectedComponent,
+    selectedComponent: String,
+    targetComponent: String = selectedComponent,
     action: IfOverlayButtonT.() -> Unit,
 ) {
-    val packed = EventBus.composeLongKey(selectedComponent.packed, targetComponent.packed)
+    val packed = EventBus.composeLongKey(selectedComponent.asRSCM(RSCMType.COMPONENT), targetComponent.asRSCM(RSCMType.COMPONENT))
     onEvent(packed, action)
 }
 
@@ -46,28 +48,28 @@ public fun ScriptContext.onIfOverlayButtonT(
  * Registers a script that triggers when a _modal_ interface component targets another component.
  */
 public fun ScriptContext.onIfModalButtonT(
-    selectedComponent: ComponentType,
-    targetComponent: ComponentType = selectedComponent,
+    selectedComponent: String,
+    targetComponent: String = selectedComponent,
     action: suspend ProtectedAccess.(IfModalButtonT) -> Unit,
 ) {
-    val packed = EventBus.composeLongKey(selectedComponent.packed, targetComponent.packed)
+    val packed = EventBus.composeLongKey(selectedComponent.asRSCM(RSCMType.COMPONENT), targetComponent.asRSCM(RSCMType.COMPONENT))
     onProtectedEvent(packed, action)
 }
 
 public fun ScriptContext.onIfOverlayDrag(
-    selectedComponent: ComponentType,
-    targetComponent: ComponentType = selectedComponent,
+    selectedComponent: String,
+    targetComponent: String = selectedComponent,
     action: IfOverlayDrag.() -> Unit,
 ) {
-    val packed = EventBus.composeLongKey(selectedComponent.packed, targetComponent.packed)
+    val packed = EventBus.composeLongKey(selectedComponent.asRSCM(RSCMType.COMPONENT), targetComponent.asRSCM(RSCMType.COMPONENT))
     onEvent(packed, action)
 }
 
 public fun ScriptContext.onIfModalDrag(
-    selectedComponent: ComponentType,
-    targetComponent: ComponentType = selectedComponent,
+    selectedComponent: String,
+    targetComponent: String = selectedComponent,
     action: suspend ProtectedAccess.(IfModalDrag) -> Unit,
 ) {
-    val packed = EventBus.composeLongKey(selectedComponent.packed, targetComponent.packed)
+    val packed = EventBus.composeLongKey(selectedComponent.asRSCM(RSCMType.COMPONENT), targetComponent.asRSCM(RSCMType.COMPONENT))
     onProtectedEvent(packed, action)
 }

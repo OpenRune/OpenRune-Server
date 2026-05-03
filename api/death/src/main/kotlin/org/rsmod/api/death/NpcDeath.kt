@@ -1,13 +1,14 @@
 package org.rsmod.api.death
 
+import dev.openrune.ServerCacheManager
+import dev.openrune.rscm.RSCM
+import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.rscm.RSCMType
 import dev.openrune.types.ItemServerType
 import jakarta.inject.Inject
 import jakarta.inject.Singleton
 import org.rsmod.api.config.constants
-import org.rsmod.api.config.refs.objs
 import org.rsmod.api.config.refs.params
-import org.rsmod.api.config.refs.varns
-import org.rsmod.api.config.refs.varps
 import org.rsmod.api.npc.access.StandardNpcAccess
 import org.rsmod.api.npc.vars.typePlayerUidVarn
 import org.rsmod.api.player.output.soundSynth
@@ -46,8 +47,8 @@ constructor(
         val hero = findHero(players)
         if (hero != null) {
             val duration = hero.lootDropDuration ?: constants.lootdrop_duration
-            
-            val droppedRemains = paramOrNull(params.dropped_remains)?: objs.bones
+
+            val droppedRemains = paramOrNull(params.dropped_remains)?: ServerCacheManager.getItem("obj.bones".asRSCM())?: error("No bones")
             objRepo.add(droppedRemains, dropCoords, duration, hero)
         }
     }
@@ -60,9 +61,9 @@ constructor(
     }
 }
 
-private var Player.lastCombat: Int by intVarp(varps.lastcombat)
-private var Player.aggressiveNpc: NpcUid? by typeNpcUidVarp(varps.aggressive_npc)
-private var Npc.aggressivePlayer by typePlayerUidVarn(varns.aggressive_player)
+private var Player.lastCombat: Int by intVarp("varp.lastcombat")
+private var Player.aggressiveNpc: NpcUid? by typeNpcUidVarp("varp.aggressive_npc")
+private var Npc.aggressivePlayer by typePlayerUidVarn("varn.aggressive_player")
 
 /**
  * Handles the death sequence of this [StandardNpcAccess.npc], including clearing interactions and
@@ -91,7 +92,7 @@ public suspend fun StandardNpcAccess.death(npcRepo: NpcRepository, players: Play
 
         val deathSound = paramOrNull(params.death_sound)
         if (deathSound != null && player != null) {
-            player.soundSynth(deathSound)
+            player.soundSynth(RSCM.getReverseMapping(RSCMType.SYNTH,deathSound.id))
         }
 
         // TODO(combat): Should we assert that npc.uid will always match player.aggressiveNpc at
@@ -103,7 +104,7 @@ public suspend fun StandardNpcAccess.death(npcRepo: NpcRepository, players: Play
     }
 
     val deathAnim = param(params.death_anim)
-    anim(deathAnim)
+    anim(RSCM.getReverseMapping(RSCMType.SEQ,deathAnim.id))
     delay(deathAnim)
 
     if (npc.respawns) {

@@ -25,7 +25,7 @@ constructor(private val registry: SpecialAttackRegistry) {
      *
      * @throws IllegalStateException if [specWeapon] is already registered with any special attack.
      */
-    public fun registerInstant(specWeapon: ItemServerType, special: InstantSpecialAttack) {
+    public fun registerInstant(specWeapon: String, special: InstantSpecialAttack) {
         val result = registry.add(specWeapon, special)
         assertValidResult(specWeapon, result)
     }
@@ -65,7 +65,7 @@ constructor(private val registry: SpecialAttackRegistry) {
      * @see [SpecialAttackManager.hasSpecialEnergy]
      * @see [SpecialAttackManager.takeSpecialEnergy]
      */
-    public fun registerMelee(specWeapon: ItemServerType, special: MeleeSpecialAttack) {
+    public fun registerMelee(specWeapon: String, special: MeleeSpecialAttack) {
         val result = registry.add(specWeapon, special)
         assertValidResult(specWeapon, result)
     }
@@ -104,7 +104,7 @@ constructor(private val registry: SpecialAttackRegistry) {
      * @see [SpecialAttackManager.hasSpecialEnergy]
      * @see [SpecialAttackManager.takeSpecialEnergy]
      */
-    public fun registerRanged(specWeapon: ItemServerType, special: RangedSpecialAttack) {
+    public fun registerRanged(specWeapon: String, special: RangedSpecialAttack) {
         val result = registry.add(specWeapon, special)
         assertValidResult(specWeapon, result)
     }
@@ -147,13 +147,13 @@ constructor(private val registry: SpecialAttackRegistry) {
      * @see [SpecialAttackManager.hasSpecialEnergy]
      * @see [SpecialAttackManager.takeSpecialEnergy]
      */
-    public fun registerMagic(specWeapon: ItemServerType, special: MagicSpecialAttack) {
+    public fun registerMagic(specWeapon: String, special: MagicSpecialAttack) {
         val result = registry.add(specWeapon, special)
         assertValidResult(specWeapon, result)
     }
 
     private fun assertValidResult(
-        specWeapon: ItemServerType,
+        specWeapon: String,
         result: SpecialAttackRegistry.Result.Add,
     ) {
         when (result) {

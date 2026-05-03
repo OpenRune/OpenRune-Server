@@ -1,5 +1,9 @@
 package org.rsmod.game.inv
 
+import dev.openrune.ServerCacheManager
+import dev.openrune.rscm.RSCM
+import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.rscm.RSCMType
 import dev.openrune.types.InvStackType
 import dev.openrune.types.InventoryServerType
 import dev.openrune.types.ItemServerType
@@ -11,6 +15,9 @@ import org.rsmod.game.type.isAssociatedWith
 public class Inventory(public val type: InventoryServerType, public val objs: Array<InvObj?>) :
     Iterable<InvObj?> {
     public val modifiedSlots: BitSet = BitSet()
+
+    public val internalName: String
+        get() = RSCM.getReverseMapping(RSCMType.INV, type.id)
 
     public val size: Int
         get() = objs.size
@@ -81,10 +88,16 @@ public class Inventory(public val type: InventoryServerType, public val objs: Ar
         modifiedSlots.set(slot)
     }
 
+    public operator fun contains(type: String): Boolean =
+        objs.any { type.isAssociatedWith(it) }
+
     public operator fun contains(type: ItemServerType): Boolean =
         objs.any { type.isAssociatedWith(it) }
 
-    public fun count(objType: ItemServerType): Int {
+    public fun count(internal: String): Int {
+        val objType = ServerCacheManager.getItem(internal.asRSCM(RSCMType.OBJ))
+            ?: error("Unable to find item: $internal")
+
         val obj = objs.firstOrNull { it?.id == objType.id } ?: return 0
         val singleStack = type.stack == InvStackType.Always || objType.isStackable
         if (singleStack) {
@@ -118,7 +131,11 @@ public class Inventory(public val type: InventoryServerType, public val objs: Ar
 
     public companion object {
         @OptIn(UncheckedType::class)
-        public fun create(type: InventoryServerType): Inventory {
+        public fun create(internal: String): Inventory {
+
+            val type = ServerCacheManager.getInventory(internal.asRSCM(RSCMType.INV))
+                ?: error("Unable to find inventory: $internal")
+
             val objs = arrayOfNulls<InvObj>(type.size)
             if (type.stock.isNotEmpty()) {
                 for (i in type.stock.indices) {

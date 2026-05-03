@@ -7,16 +7,14 @@ import dev.openrune.types.NpcServerType
 import dev.openrune.types.SequenceServerType
 import dev.openrune.types.aconverted.AreaType
 import dev.openrune.types.aconverted.CategoryType
-import dev.openrune.types.aconverted.QueueType
 import dev.openrune.types.aconverted.SpotanimType
-import dev.openrune.types.aconverted.TimerType
 import dev.openrune.types.hunt.HuntVis
 import kotlin.getValue
 import kotlin.setValue
 import org.rsmod.annotations.InternalApi
 import org.rsmod.api.area.checker.AreaChecker
-import org.rsmod.api.config.refs.BaseHitmarkGroups
-import org.rsmod.api.config.refs.hitmark_groups
+import org.rsmod.api.config.refs.done.BaseHitmarkGroups
+import org.rsmod.api.config.refs.done.hitmark_groups
 import org.rsmod.api.hunt.NpcSearch
 import org.rsmod.api.hunt.PlayerSearch
 import org.rsmod.api.npc.hit.modifier.NpcHitModifier
@@ -283,15 +281,15 @@ public class StandardNpcAccess(
         npc.aiTimer(cycles)
     }
 
-    public fun timer(timerType: TimerType, cycles: Int) {
+    public fun timer(timerType: String, cycles: Int) {
         npc.timer(timerType, cycles)
     }
 
-    public fun queue(queue: QueueType, cycles: Int, args: Any? = null) {
+    public fun queue(queue: String, cycles: Int, args: Any? = null) {
         npc.queue(queue, cycles, args)
     }
 
-    public fun clearQueue(queue: QueueType) {
+    public fun clearQueue(queue: String) {
         npc.clearQueue(queue)
     }
 
@@ -318,7 +316,7 @@ public class StandardNpcAccess(
         return npc.findHero(playerList)
     }
 
-    public fun inArea(area: AreaType, coords: CoordGrid, checker: AreaChecker): Boolean {
+    public fun inArea(area: String, coords: CoordGrid, checker: AreaChecker): Boolean {
         return checker.inArea(area, coords)
     }
 
@@ -358,7 +356,7 @@ public class StandardNpcAccess(
         npc.opPlayer2(target, interactions)
     }
 
-    public fun anim(seq: SequenceServerType, delay: Int = 0) {
+    public fun anim(seq: String, delay: Int = 0) {
         npc.anim(seq, delay)
     }
 
@@ -370,7 +368,7 @@ public class StandardNpcAccess(
         PathingEntityCommon.setAnimProtect(npc, animProtect)
     }
 
-    public fun spotanim(spot: SpotanimType, delay: Int = 0, height: Int = 0, slot: Int = 0) {
+    public fun spotanim(spot: String, delay: Int = 0, height: Int = 0, slot: Int = 0) {
         npc.spotanim(spot, delay, height, slot)
     }
 
@@ -615,7 +613,7 @@ public class StandardNpcAccess(
     /** @see [NpcSearch.find] */
     public fun npcFind(
         coord: CoordGrid,
-        npc: NpcServerType,
+        npc: String,
         distance: Int,
         checkVis: HuntVis,
         search: NpcSearch,
@@ -647,7 +645,7 @@ public class StandardNpcAccess(
     /** @see [NpcSearch.findAll] */
     public fun npcFindAll(
         coord: CoordGrid,
-        npc: NpcServerType,
+        npc: String,
         distance: Int,
         checkVis: HuntVis,
         search: NpcSearch,

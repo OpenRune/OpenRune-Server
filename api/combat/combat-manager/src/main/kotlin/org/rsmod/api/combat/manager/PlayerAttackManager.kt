@@ -1,7 +1,10 @@
 package org.rsmod.api.combat.manager
 
+import dev.openrune.rscm.RSCM
+import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.rscm.RSCMType
 import dev.openrune.types.ItemServerType
-import dev.openrune.types.ProjAnimType
+import dev.openrune.types.SequenceServerType
 import dev.openrune.types.StatType
 import dev.openrune.types.aconverted.SpotanimType
 import dev.openrune.types.aconverted.SynthType
@@ -27,9 +30,6 @@ import org.rsmod.api.combat.commons.types.RangedAttackType
 import org.rsmod.api.combat.formulas.AccuracyFormulae
 import org.rsmod.api.combat.formulas.MaxHitFormulae
 import org.rsmod.api.config.refs.params
-import org.rsmod.api.config.refs.spotanims
-import org.rsmod.api.config.refs.stats
-import org.rsmod.api.config.refs.synths
 import org.rsmod.api.npc.hit.modifier.NpcHitModifier
 import org.rsmod.api.npc.hit.queueHit
 import org.rsmod.api.player.hit.queueHit
@@ -194,11 +194,11 @@ constructor(
         val fx = MeleeAnimationAndSound.from(attack.stance)
         val (animParam, soundParam, defaultAnim, defaultSound) = fx
 
-        val attackAnim = weapon?.paramOrNull(animParam) ?: defaultAnim
-        val attackSound = weapon?.paramOrNull(soundParam) ?: defaultSound
+        val attackAnim = weapon?.paramOrNull(animParam) ?: SequenceServerType(defaultAnim.asRSCM(RSCMType.SEQ))
+        val attackSound = weapon?.paramOrNull(soundParam) ?: SynthType(defaultSound.asRSCM(RSCMType.SYNTH))
 
-        player.anim(attackAnim)
-        player.soundSynth(attackSound)
+        player.anim(RSCM.getReverseMapping(RSCMType.SEQ,attackAnim.id))
+        player.soundSynth(RSCM.getReverseMapping(RSCMType.SYNTH,attackSound.id))
     }
 
     /**
@@ -214,9 +214,9 @@ constructor(
     public fun playWeaponFx(player: Player, attack: CombatAttack.Ranged): Boolean {
         val weapon = getInvObj(attack.weapon)
         val attackAnim = weapon.paramOrNull(params.attack_anim_stance1) ?: return false
+        player.anim(RSCM.getReverseMapping(RSCMType.SEQ,attackAnim.id))
         val attackSound = weapon.paramOrNull(params.attack_sound_stance1)
-        player.anim(attackAnim)
-        attackSound?.let(player::soundSynth)
+        RSCM.getReverseMapping(RSCMType.SYNTH,attackSound!!.id).let(player::soundSynth)
         return true
     }
 
@@ -263,24 +263,24 @@ constructor(
     ) {
         when (attack.style) {
             MeleeAttackStyle.Controlled -> {
-                statAdvance(player, stats.attack, damage * 1.33, multiplier)
-                statAdvance(player, stats.strength, damage * 1.33, multiplier)
-                statAdvance(player, stats.defence, damage * 1.33, multiplier)
+                statAdvance(player, "stat.attack", damage * 1.33, multiplier)
+                statAdvance(player, "stat.strength", damage * 1.33, multiplier)
+                statAdvance(player, "stat.defence", damage * 1.33, multiplier)
             }
             MeleeAttackStyle.Accurate -> {
-                statAdvance(player, stats.attack, damage * 4.0, multiplier)
+                statAdvance(player, "stat.attack", damage * 4.0, multiplier)
             }
             MeleeAttackStyle.Aggressive -> {
-                statAdvance(player, stats.strength, damage * 4.0, multiplier)
+                statAdvance(player, "stat.strength", damage * 4.0, multiplier)
             }
             MeleeAttackStyle.Defensive -> {
-                statAdvance(player, stats.defence, damage * 4.0, multiplier)
+                statAdvance(player, "stat.defence", damage * 4.0, multiplier)
             }
             null -> {
                 /* no-op */
             }
         }
-        statAdvance(player, stats.hitpoints, damage * 1.33, multiplier)
+        statAdvance(player, "stat.hitpoints", damage * 1.33, multiplier)
     }
 
     /**
@@ -331,20 +331,20 @@ constructor(
     ) {
         when (attack.style) {
             RangedAttackStyle.Accurate -> {
-                statAdvance(player, stats.ranged, damage * 4.0, multiplier)
+                statAdvance(player, "stat.ranged", damage * 4.0, multiplier)
             }
             RangedAttackStyle.Rapid -> {
-                statAdvance(player, stats.ranged, damage * 4.0, multiplier)
+                statAdvance(player, "stat.ranged", damage * 4.0, multiplier)
             }
             RangedAttackStyle.Longrange -> {
-                statAdvance(player, stats.ranged, damage * 2.0, multiplier)
-                statAdvance(player, stats.defence, damage * 2.0, multiplier)
+                statAdvance(player, "stat.ranged", damage * 2.0, multiplier)
+                statAdvance(player, "stat.defence", damage * 2.0, multiplier)
             }
             null -> {
                 /* no-op */
             }
         }
-        statAdvance(player, stats.hitpoints, damage * 1.33, multiplier)
+        statAdvance(player, "stat.hitpoints", damage * 1.33, multiplier)
     }
 
     /**
@@ -389,12 +389,12 @@ constructor(
         multiplier: Double,
     ) {
         if (attack.defensive) {
-            statAdvance(player, stats.magic, damage * 1.33, multiplier)
-            statAdvance(player, stats.defence, damage.toDouble(), multiplier)
+            statAdvance(player, "stat.magic", damage * 1.33, multiplier)
+            statAdvance(player, "stat.defence", damage.toDouble(), multiplier)
         } else {
-            statAdvance(player, stats.magic, damage * 2.0, multiplier)
+            statAdvance(player, "stat.magic", damage * 2.0, multiplier)
         }
-        statAdvance(player, stats.hitpoints, damage * 1.33, multiplier)
+        statAdvance(player, "stat.hitpoints", damage * 1.33, multiplier)
     }
 
     /**
@@ -435,11 +435,11 @@ constructor(
     }
 
     private fun giveStaffCombatXp(player: Player, damage: Int, multiplier: Double) {
-        statAdvance(player, stats.magic, damage * 2.0, multiplier)
-        statAdvance(player, stats.hitpoints, damage * 1.33, multiplier)
+        statAdvance(player, "stat.magic", damage * 2.0, multiplier)
+        statAdvance(player, "stat.hitpoints", damage * 1.33, multiplier)
     }
 
-    private fun statAdvance(player: Player, stat: StatType, baseXp: Double, multiplier: Double) {
+    private fun statAdvance(player: Player, stat: String, baseXp: Double, multiplier: Double) {
         player.statAdvance(stat, baseXp * multiplier)
     }
 
@@ -1096,7 +1096,7 @@ constructor(
      * [target]'s magic defence roll.
      *
      * @param spell The [ItemServerType] representing the spell being cast (e.g.,
-     *   `objs.spell_wind_strike` for the Wind Strike spell).
+     *   `"obj.01_wind_strike"` for the Wind Strike spell).
      * @param spellbook The [Spellbook] the spell belongs to (e.g., Standard or Ancients), usually
      *   derived from the player's current spellbook.
      * @param sunfireRune Set to `true` if the spell was cast using a Sunfire rune.
@@ -1154,7 +1154,7 @@ constructor(
      * modifiers - such as one enabled through [sunfireRune] - can affect this value.
      *
      * @param spell The [ItemServerType] representing the spell being cast (e.g.,
-     *   `objs.spell_wind_strike` for the Wind strike spell).
+     *   `"obj.01_wind_strike"` for the Wind strike spell).
      * @param spellbook The [Spellbook] the spell belongs to (e.g., Standard or Ancients), usually
      *   derived from the player's current spellbook.
      * @param baseMaxHit The spell's base max hit, used as a baseline for calculating the maximum
@@ -1196,7 +1196,7 @@ constructor(
      * spells.
      *
      * @param spell The [ItemServerType] representing the spell being cast (e.g.,
-     *   `objs.spell_wind_strike` for the Wind Strike spell).
+     *   `"obj.01_wind_strike"` for the Wind Strike spell).
      * @param spellbook The [Spellbook] the spell belongs to (e.g., Standard or Ancients), usually
      *   derived from the player's current spellbook.
      * @param baseMaxHit The spell's base max hit, used as a baseline for calculating the maximum
@@ -1423,7 +1423,7 @@ constructor(
      * @param spell Sets the [Hit.secondaryObj] to the provided value. Some hit scripts may rely on
      *   this for special logic. For magic attacks, this should be the spell-associated obj used by
      *   [source] for the attack. For example, if the player attacks with the Wind strike spell,
-     *   this should be set to `objs.spell_wind_strike`.
+     *   this should be set to `"obj.01_wind_strike"`.
      * @param damage The damage to apply to [target]. This value may still be modified during hit
      *   processing.
      * @param clientDelay The delay in client cycles (`20ms` per cycle) before the projectile
@@ -1568,11 +1568,11 @@ constructor(
         source: Player,
         target: PathingEntity,
         clientDelay: Int,
-        castSound: SynthType?,
+        castSound: String?,
         soundRadius: Int,
-        hitSpot: SpotanimType?,
+        hitSpot: String?,
         hitSpotHeight: Int,
-        hitSound: SynthType?,
+        hitSound: String?,
     ): Unit =
         when (target) {
             is Npc ->
@@ -1602,10 +1602,10 @@ constructor(
         source: Player,
         target: Npc,
         clientDelay: Int,
-        castSound: SynthType?,
-        hitSpot: SpotanimType?,
+        castSound: String?,
+        hitSpot: String?,
         hitSpotHeight: Int,
-        hitSound: SynthType?,
+        hitSound: String?,
     ) {
         if (castSound != null) {
             source.soundSynth(castSound)
@@ -1631,11 +1631,11 @@ constructor(
         source: Player,
         target: Player,
         clientDelay: Int,
-        castSound: SynthType?,
+        castSound: String?,
         soundRadius: Int,
-        hitSpot: SpotanimType?,
+        hitSpot: String?,
         hitSpotHeight: Int,
-        hitSound: SynthType?,
+        hitSound: String?,
     ) {
         if (castSound != null) {
             soundArea(
@@ -1677,7 +1677,7 @@ constructor(
         source: Player,
         target: PathingEntity,
         clientDelay: Int,
-        castSound: SynthType?,
+        castSound: String?,
         soundRadius: Int,
     ): Unit =
         when (target) {
@@ -1702,15 +1702,15 @@ constructor(
         source: Player,
         target: Npc,
         clientDelay: Int,
-        castSound: SynthType?,
+        castSound: String?,
     ) {
         if (castSound != null) {
             source.soundSynth(castSound)
         }
-        target.spotanim(spotanims.failedspell_impact, delay = clientDelay, height = 124)
+        target.spotanim("spotanim.failedspell_impact", delay = clientDelay, height = 124)
         soundArea(
             source = target.coords,
-            synth = synths.spellfail,
+            synth = "synth.spellfail",
             delay = clientDelay,
             loops = 1,
             radius = 10,
@@ -1722,7 +1722,7 @@ constructor(
         source: Player,
         target: Player,
         clientDelay: Int,
-        castSound: SynthType?,
+        castSound: String?,
         soundRadius: Int,
     ) {
         if (castSound != null) {
@@ -1735,10 +1735,10 @@ constructor(
                 size = 0,
             )
         }
-        target.spotanim(spotanims.failedspell_impact, delay = clientDelay, height = 124)
+        target.spotanim("spotanim.failedspell_impact", delay = clientDelay, height = 124)
         soundArea(
             source = target.coords,
-            synth = synths.spellfail,
+            synth = "synth.spellfail",
             delay = clientDelay,
             loops = 1,
             radius = 10,
@@ -2004,8 +2004,8 @@ constructor(
     public fun spawnProjectile(
         source: Player,
         target: PathingEntity,
-        spotanim: SpotanimType,
-        projanim: ProjAnimType,
+        spotanim: String,
+        projanim: String,
     ): ProjAnim =
         when (target) {
             is Npc -> spawnProjectile(source, target, spotanim, projanim)
@@ -2016,19 +2016,19 @@ constructor(
         source: Player,
         target: Npc,
         spotanim: SpotanimType,
-        projanim: ProjAnimType,
+        projanim: String,
     ): ProjAnim = worldRepo.projAnim(source, target, spotanim, projanim)
 
     public fun spawnProjectile(
         source: Player,
         target: Player,
         spotanim: SpotanimType,
-        projanim: ProjAnimType,
+        projanim: String,
     ): ProjAnim = worldRepo.projAnim(source, target, spotanim, projanim)
 
     public fun soundArea(
         source: CoordGrid,
-        synth: SynthType,
+        synth: String,
         delay: Int,
         loops: Int,
         radius: Int,

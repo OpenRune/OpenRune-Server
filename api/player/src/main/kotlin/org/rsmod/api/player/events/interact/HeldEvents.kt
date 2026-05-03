@@ -49,19 +49,19 @@ public class HeldDropEvents {
         public val player: Player,
         public val invSlot: Int,
         public val obj: InvObj,
-        public val type: ItemServerType,
+        public val type: String,
     ) : UnboundEvent
 
     public data class Release(
         public val player: Player,
         public val invSlot: Int,
         public val obj: InvObj,
-        public val type: ItemServerType,
+        public val type: String,
     ) : UnboundEvent
 
     public data class Dispose(
         public val player: Player,
-        public val invType: InventoryServerType,
+        public val invType: String,
         public val invSlot: Int,
         public val obj: InvObj,
     ) : UnboundEvent

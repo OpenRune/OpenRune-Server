@@ -1,10 +1,12 @@
 package org.rsmod.api.npc.hit.processor
 
+import dev.openrune.rscm.RSCM
+import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.rscm.RSCMType
 import dev.openrune.types.HealthBarServerType
 import jakarta.inject.Inject
-import org.rsmod.api.config.refs.hitmark_groups
+import org.rsmod.api.config.refs.done.hitmark_groups
 import org.rsmod.api.config.refs.params
-import org.rsmod.api.config.refs.queues
 import org.rsmod.api.npc.access.StandardNpcAccess
 import org.rsmod.api.npc.events.NpcHitEvents
 import org.rsmod.api.npc.headbar.InternalNpcHeadbars
@@ -31,9 +33,9 @@ constructor(private val playerList: PlayerList, private val eventBus: EventBus) 
             val zeroDamageHitmark = hitmark_groups.zero_damage
             val modifiedHitmark =
                 hit.hitmark.copy(
-                    self = zeroDamageHitmark.lit.id,
-                    source = zeroDamageHitmark.lit.id,
-                    public = if (hit.hitmark.isPrivate) null else zeroDamageHitmark.tint?.id,
+                    self = zeroDamageHitmark.lit.asRSCM(RSCMType.HITMARK),
+                    source = zeroDamageHitmark.lit.asRSCM(RSCMType.HITMARK),
+                    public = if (hit.hitmark.isPrivate) null else zeroDamageHitmark.tint?.asRSCM(RSCMType.HITMARK),
                     damage = changedDamage,
                 )
             val modifiedHit = hit.copy(hitmark = modifiedHitmark)
@@ -61,7 +63,7 @@ constructor(private val playerList: PlayerList, private val eventBus: EventBus) 
 
         playDefendSound(hit)
 
-        val queueDeath = npc.hitpoints == 0 && queues.death !in npc.queueList
+        val queueDeath = npc.hitpoints == 0 && "queue.death" !in npc.queueList
         if (queueDeath) {
             queueDeath()
         }
@@ -81,7 +83,7 @@ constructor(private val playerList: PlayerList, private val eventBus: EventBus) 
             return
         }
         val defendSound = npc.visType.paramOrNull(params.defend_sound) ?: return
-        source.soundSynth(defendSound)
+        source.soundSynth(RSCM.getReverseMapping(RSCMType.SYNTH,defendSound.id))
     }
 
     private fun Hit.createHeadbar(currHp: Int, maxHp: Int, headbar: HealthBarServerType): Headbar =

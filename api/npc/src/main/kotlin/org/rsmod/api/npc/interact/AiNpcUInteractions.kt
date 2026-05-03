@@ -27,7 +27,7 @@ private constructor(private val eventBus: EventBus, private val npcTypes: NpcSer
         inv: Inventory,
         invSlot: Int,
         npcType: NpcServerType,
-        objType: ItemServerType,
+        objType: String,
     ) {
         val obj = inv[invSlot]
         if (objectVerify(obj, objType)) {
@@ -39,7 +39,7 @@ private constructor(private val eventBus: EventBus, private val npcTypes: NpcSer
         target: Npc,
         invSlot: Int,
         npcType: NpcServerType,
-        objType: ItemServerType,
+        objType: String,
     ) {
         val script = opTrigger(target, invSlot, target.visType, objType)
         if (script != null) {
@@ -47,7 +47,7 @@ private constructor(private val eventBus: EventBus, private val npcTypes: NpcSer
             return
         }
         logger.debug {
-            "aiOpNpcU for `${objType.name}` on `${npcType.name}` is not implemented: " +
+            "aiOpNpcU for `${objType}` on `${npcType.name}` is not implemented: " +
                 "npcType=$npcType, objType=$objType"
         }
     }
@@ -56,7 +56,7 @@ private constructor(private val eventBus: EventBus, private val npcTypes: NpcSer
         target: Npc,
         invSlot: Int,
         npcType: NpcServerType,
-        objType: ItemServerType,
+        objType: String,
     ): OpEvent? {
         val contentGroup = npcType.contentGroup
 
@@ -88,7 +88,7 @@ private constructor(private val eventBus: EventBus, private val npcTypes: NpcSer
         target: Npc,
         inv: Inventory,
         invSlot: Int,
-        objType: ItemServerType,
+        objType: String,
     ) {
         val obj = inv[invSlot]
         if (objectVerify(obj, objType)) {
@@ -99,7 +99,7 @@ private constructor(private val eventBus: EventBus, private val npcTypes: NpcSer
     private suspend fun StandardNpcAccess.apNpcU(
         target: Npc,
         invSlot: Int,
-        objType: ItemServerType,
+        objType: String,
     ) {
         val script = apTrigger(target, invSlot, target.visType, objType) ?: return
         eventBus.publish(this, script)
@@ -109,7 +109,7 @@ private constructor(private val eventBus: EventBus, private val npcTypes: NpcSer
         target: Npc,
         invSlot: Int,
         npcType: NpcServerType,
-        objType: ItemServerType,
+        objType: String,
     ): ApEvent? {
         val contentGroup = npcType.contentGroup
 
@@ -136,5 +136,5 @@ private constructor(private val eventBus: EventBus, private val npcTypes: NpcSer
         return null
     }
 
-    private fun objectVerify(obj: InvObj?, type: ItemServerType): Boolean = obj.isType(type)
+    private fun objectVerify(obj: InvObj?, type: String): Boolean = obj.isType(type)
 }

@@ -1,9 +1,11 @@
 package org.rsmod.api.invtx
 
+import dev.openrune.rscm.RSCM
+import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.rscm.RSCMType
 import dev.openrune.types.InvStackType
 import dev.openrune.types.ItemServerType
 import org.rsmod.api.config.constants
-import org.rsmod.api.config.refs.objs
 import org.rsmod.api.repo.obj.ObjRepository
 import org.rsmod.game.entity.Player
 import org.rsmod.game.inv.InvObj
@@ -17,13 +19,13 @@ import org.rsmod.objtx.TransactionResultList
 
 public fun Player.invAddOrDrop(
     repo: ObjRepository,
-    type: ItemServerType,
+    type: String,
     count: Int = 1,
     duration: Int = this.lootDropDuration ?: constants.lootdrop_duration,
     coords: CoordGrid = this.coords,
     inv: Inventory = this.inv,
 ): Boolean {
-    val transaction = invAdd(inv, type, count = count)
+    val transaction = invAdd(inv, RSCM.getReverseMapping(RSCMType.OBJ,type.asRSCM(RSCMType.OBJ)), count = count)
     if (transaction.success) {
         return true
     }
@@ -34,7 +36,7 @@ public fun Player.invAddOrDrop(
 }
 
 public fun Player.invTakeFee(fee: Int, inv: Inventory = this.inv): Boolean {
-    val transaction = invDel(inv, objs.coins, count = fee)
+    val transaction = invDel(inv, "obj.coins", count = fee)
     return transaction.success
 }
 
@@ -71,7 +73,7 @@ public fun Player.invAdd(
 
 public fun Player.invAdd(
     inv: Inventory,
-    type: ItemServerType,
+    type: String,
     count: Int = 1,
     vars: Int = 0,
     slot: Int? = null,
@@ -82,7 +84,7 @@ public fun Player.invAdd(
 ): TransactionResultList<InvObj> =
     invAdd(
         inv = inv,
-        obj = type.id,
+        obj = type.asRSCM(RSCMType.OBJ),
         count = count,
         vars = vars,
         slot = slot,
@@ -167,7 +169,7 @@ public fun Player.invDel(
 
 public fun Player.invDel(
     inv: Inventory,
-    type: ItemServerType,
+    type: String,
     count: Int = 1,
     slot: Int? = null,
     strict: Boolean = true,
@@ -176,7 +178,7 @@ public fun Player.invDel(
 ): TransactionResultList<InvObj> =
     invDel(
         inv = inv,
-        obj = type.id,
+        obj = type.asRSCM(RSCMType.OBJ),
         count = count,
         slot = slot,
         strict = strict,
@@ -186,9 +188,9 @@ public fun Player.invDel(
 
 public fun Player.invDel(
     inv: Inventory,
-    type1: ItemServerType,
+    type1: String,
     count1: Int,
-    type2: ItemServerType,
+    type2: String,
     count2: Int,
     strict: Boolean = true,
     autoCommit: Boolean = true,
@@ -197,7 +199,7 @@ public fun Player.invDel(
         val targetInv = select(inv)
         delete(
             inv = targetInv,
-            obj = type1.id,
+            obj = type1.asRSCM(RSCMType.OBJ),
             count = count1,
             slot = null,
             strict = strict,
@@ -205,7 +207,7 @@ public fun Player.invDel(
         )
         delete(
             inv = targetInv,
-            obj = type2.id,
+            obj = type2.asRSCM(RSCMType.OBJ),
             count = count2,
             slot = null,
             strict = strict,

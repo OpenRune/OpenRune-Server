@@ -11,7 +11,6 @@ import org.rsmod.api.combat.formulas.attributes.collector.DamageReductionAttribu
 import org.rsmod.api.combat.formulas.maxhit.MaxHitOperations
 import org.rsmod.api.combat.maxhit.player.PlayerRangedMaxHit
 import org.rsmod.api.combat.weapon.WeaponSpeeds
-import org.rsmod.api.config.refs.varps
 import org.rsmod.api.player.bonus.WornBonuses
 import org.rsmod.api.player.vars.intVarp
 import org.rsmod.api.random.GameRandom
@@ -26,7 +25,7 @@ constructor(
     private val rangedAttributes: CombatRangedAttributeCollector,
     private val reductions: DamageReductionAttributeCollector,
 ) {
-    private var Player.maxHit by intVarp(varps.com_maxhit)
+    private var Player.maxHit by intVarp("varp.com_maxhit")
 
     /**
      * Computes the maximum ranged hit for [player] against [target].

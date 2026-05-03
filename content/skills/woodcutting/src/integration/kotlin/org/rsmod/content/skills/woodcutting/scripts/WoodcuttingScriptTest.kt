@@ -2,7 +2,6 @@ package org.rsmod.content.skills.woodcutting.scripts
 
 import org.junit.jupiter.api.Test
 import org.rsmod.api.config.refs.content
-import org.rsmod.api.config.refs.objs
 import org.rsmod.api.config.refs.params
 import org.rsmod.api.config.refs.stats
 import org.rsmod.api.player.righthand
@@ -24,7 +23,7 @@ class WoodcuttingScriptTest {
             player.teleport(tree.coords.translateX(-1))
             player.clearInv()
 
-            player.righthand = InvObj(objs.rune_axe)
+            player.righthand = InvObj("obj.rune_axe")
             player.stats[stats.woodcutting] = 1
             player.opLoc1(tree)
             advance(ticks = 2)
@@ -48,7 +47,7 @@ class WoodcuttingScriptTest {
             player.teleport(tree.coords.translateX(-1))
             player.clearInv()
 
-            player.righthand = InvObj(objs.bronze_axe)
+            player.righthand = InvObj("obj.bronze_axe")
             player.stats[stats.woodcutting] = type.treeLevelReq - 1
             player.opLoc1(tree)
             advance(ticks = 1)
@@ -70,7 +69,7 @@ class WoodcuttingScriptTest {
             val logs = type.treeLogs
             player.teleport(tree.coords.translateX(-1))
 
-            player.righthand = InvObj(objs.bronze_axe)
+            player.righthand = InvObj("obj.bronze_axe")
             player.stats[stats.woodcutting] = type.treeLevelReq
             player.opLoc1(tree)
             advance(ticks = 2)
@@ -129,7 +128,7 @@ class WoodcuttingScriptTest {
             val logs = type.treeLogs
             player.teleport(tree.coords.translateX(-1))
 
-            player.righthand = InvObj(objs.bronze_axe)
+            player.righthand = InvObj("obj.bronze_axe")
             player.stats[stats.woodcutting] = type.treeLevelReq
             player.opLoc1(tree)
             advance(ticks = 3)
@@ -171,7 +170,7 @@ class WoodcuttingScriptTest {
             player.teleport(tree.coords.translateX(-1))
             player.clearInv()
 
-            player.righthand = InvObj(objs.bronze_axe)
+            player.righthand = InvObj("obj.bronze_axe")
             player.stats[stats.woodcutting] = type.treeLevelReq
             player.opLoc1(tree)
             advance(ticks = 1) // Initial attempt where player action delay is set.

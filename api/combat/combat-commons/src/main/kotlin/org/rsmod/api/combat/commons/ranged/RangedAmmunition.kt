@@ -1,8 +1,10 @@
 package org.rsmod.api.combat.commons.ranged
 
+import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.rscm.RSCMType
 import dev.openrune.types.ItemServerType
+import dev.openrune.types.aconverted.CategoryType
 import dev.openrune.util.Wearpos
-import org.rsmod.api.config.refs.categories
 import org.rsmod.api.config.refs.params
 import org.rsmod.api.player.back
 import org.rsmod.api.player.output.mes
@@ -42,7 +44,7 @@ public object RangedAmmunition {
         weapon: ItemServerType,
         ammo: ItemServerType?,
     ): Boolean {
-        val crossbow = weapon.isCategoryType(categories.crossbow)
+        val crossbow = weapon.isCategoryType("category.crossbow")
         if (crossbow) {
             if (ammo == null) {
                 player.mes("There is no ammo left in your quiver.")
@@ -71,7 +73,7 @@ public object RangedAmmunition {
             }
         }
 
-        val bow = weapon.isCategoryType(categories.bow)
+        val bow = weapon.isCategoryType("category.bow")
         if (bow) {
             if (ammo == null) {
                 player.mes("There is no ammo left in your quiver.")
@@ -92,7 +94,7 @@ public object RangedAmmunition {
             }
         }
 
-        val ballista = weapon.isCategoryType(categories.ballista)
+        val ballista = weapon.isCategoryType("category.ballista")
         if (ballista) {
             if (ammo == null) {
                 player.mes("There are no javelins in your quiver.")
@@ -185,15 +187,18 @@ public object RangedAmmunition {
         worldQueues.add(delay) { objRepo.add(obj, dropDuration) }
     }
 
+    public val defualtArrows: CategoryType = CategoryType("category.arrows".asRSCM(RSCMType.CATEGORY))
+
     public fun validateArrows(weapon: ItemServerType, ammo: ItemServerType): Validation {
-        val requiredAmmo = weapon.paramOrNull(params.required_ammo) ?: categories.arrows
+
+        val requiredAmmo = weapon.paramOrNull(params.required_ammo) ?: defualtArrows
 
         // Dragon arrows have a separate category from standard arrows, but any bow that accepts
         // regular arrows can also use dragon arrows, provided the `levelrequire` threshold is met.
         val isAlternativeAmmo =
-            requiredAmmo.isType(categories.arrows) && ammo.isCategoryType(categories.dragon_arrow)
+            requiredAmmo.isType("category.arrows") && ammo.isCategoryType("category.dragon_arrow")
 
-        if (!ammo.isCategoryType(requiredAmmo) && !isAlternativeAmmo) {
+        if (!ammo.isCategory(requiredAmmo) && !isAlternativeAmmo) {
             return Validation.Invalid.IncorrectAmmo
         }
 
@@ -205,8 +210,9 @@ public object RangedAmmunition {
     }
 
     public fun validateBolts(weapon: ItemServerType, ammo: ItemServerType): Validation {
-        val requiredAmmo = weapon.paramOrNull(params.required_ammo) ?: categories.crossbow_bolt
-        if (!ammo.isCategoryType(requiredAmmo)) {
+        val requiredAmmo = weapon.paramOrNull(params.required_ammo) ?: CategoryType("category.crossbow_bolt".asRSCM(RSCMType.CATEGORY))
+
+        if (!ammo.isCategory(requiredAmmo)) {
             return if (weapon.param(params.bone_weapon) != 0) {
                 Validation.Invalid.BoneWeaponIncorrectAmmo
             } else {
@@ -226,8 +232,8 @@ public object RangedAmmunition {
     }
 
     public fun validateJavelins(weapon: ItemServerType, ammo: ItemServerType): Validation {
-        val requiredAmmo = weapon.paramOrNull(params.required_ammo) ?: categories.javelin
-        return if (!ammo.isCategoryType(requiredAmmo)) {
+        val requiredAmmo = weapon.paramOrNull(params.required_ammo) ?: CategoryType("category.javelin".asRSCM(RSCMType.CATEGORY))
+        return if (!ammo.isCategory(requiredAmmo)) {
             Validation.Invalid.IncorrectAmmo
         } else {
             return Validation.Valid

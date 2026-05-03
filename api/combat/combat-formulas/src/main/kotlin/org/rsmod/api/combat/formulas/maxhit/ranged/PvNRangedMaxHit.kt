@@ -14,7 +14,6 @@ import org.rsmod.api.combat.formulas.isSlayerTask
 import org.rsmod.api.combat.maxhit.player.PlayerRangedMaxHit
 import org.rsmod.api.combat.weapon.WeaponSpeeds
 import org.rsmod.api.config.refs.params
-import org.rsmod.api.config.refs.varps
 import org.rsmod.api.player.bonus.WornBonuses
 import org.rsmod.api.player.vars.intVarp
 import org.rsmod.game.entity.Npc
@@ -28,7 +27,7 @@ constructor(
     private val npcAttributes: CombatNpcAttributeCollector,
     private val rangedAttributes: CombatRangedAttributeCollector,
 ) {
-    private var Player.maxHit by intVarp(varps.com_maxhit)
+    private var Player.maxHit by intVarp("varp.com_maxhit")
 
     /**
      * Computes the maximum ranged hit for [player] against [target].

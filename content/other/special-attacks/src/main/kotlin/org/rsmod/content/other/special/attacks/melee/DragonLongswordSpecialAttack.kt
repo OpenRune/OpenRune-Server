@@ -3,21 +3,18 @@ package org.rsmod.content.other.special.attacks.melee
 import org.rsmod.api.combat.commons.CombatAttack
 import org.rsmod.api.combat.commons.types.MeleeAttackType
 import org.rsmod.api.config.constants
-import org.rsmod.api.config.refs.objs
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.specials.SpecialAttackManager
 import org.rsmod.api.specials.SpecialAttackMap
 import org.rsmod.api.specials.SpecialAttackRepository
 import org.rsmod.api.specials.combat.MeleeSpecialAttack
-import org.rsmod.content.other.special.attacks.configs.special_seqs
-import org.rsmod.content.other.special.attacks.configs.special_spots
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.PathingEntity
 import org.rsmod.game.entity.Player
 
 class DragonLongswordSpecialAttack : SpecialAttackMap {
     override fun SpecialAttackRepository.register(manager: SpecialAttackManager) {
-        registerMelee(objs.dragon_longsword, DragonLongsword(manager))
+        registerMelee("obj.dragon_longsword", DragonLongsword(manager))
     }
 
     private class DragonLongsword(private val manager: SpecialAttackManager) : MeleeSpecialAttack {
@@ -38,9 +35,9 @@ class DragonLongswordSpecialAttack : SpecialAttackMap {
         }
 
         private fun ProtectedAccess.cleave(target: PathingEntity, attack: CombatAttack.Melee) {
-            anim(special_seqs.dragon_longsword)
+            anim("seq.cleave")
             spotanim(
-                spot = special_spots.dragon_longsword,
+                spot = "spotanim.sp_attack_cleave_spotanim",
                 slot = constants.spotanim_slot_combat,
                 height = 96,
             )

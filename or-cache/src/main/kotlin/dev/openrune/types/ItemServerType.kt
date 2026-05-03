@@ -7,11 +7,12 @@ import dev.openrune.definition.Definition
 import dev.openrune.definition.EntityOpsDefinition
 import dev.openrune.definition.type.ParamType
 import dev.openrune.resolve
+import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.rscm.RSCMType
 import dev.openrune.seralizer.ParamSerializer
 import dev.openrune.toml.rsconfig.RsTableHeaders
 import dev.openrune.toml.serialization.TomlField
 import dev.openrune.types.aconverted.CategoryType
-import dev.openrune.types.aconverted.ContentGroupType
 import dev.openrune.util.Dummyitem
 import dev.openrune.util.WeaponCategory
 
@@ -119,41 +120,48 @@ data class ItemServerType(
     }
 
     public fun isAnyType(
-        type1: ItemServerType,
-        type2: ItemServerType,
-        type3: ItemServerType,
+        type1: String,
+        type2: String,
+        type3: String,
     ): Boolean {
-        return (type1.id == id || type2.id == id || type3.id == id)
+        return (type1.asRSCM(RSCMType.OBJ) == id || type2.asRSCM(RSCMType.OBJ) == id || type3.asRSCM(RSCMType.OBJ) == id)
     }
 
     public fun isAnyType(
-        type1: ItemServerType,
-        type2: ItemServerType,
-        type3: ItemServerType,
-        type4: ItemServerType,
+        type1: String,
+        type2: String,
+        type3: String,
+        type4: String,
     ): Boolean {
-        return (type1.id == id || type2.id == id || type3.id == id || type4.id == id)
+        return (type1.asRSCM(RSCMType.OBJ) == id || type2.asRSCM(RSCMType.OBJ) == id || type3.asRSCM(RSCMType.OBJ) == id || type4.asRSCM(RSCMType.OBJ) == id)
     }
 
     public fun isAnyType(
-        type1: ItemServerType,
-        type2: ItemServerType,
-        vararg types: ItemServerType,
+        type1: String,
+        type2: String,
+        vararg types: String,
     ): Boolean {
-        return type1.id == id || type2.id == id || types.any { it.id == id }
+        return type1.asRSCM(RSCMType.OBJ) == id || type2.asRSCM(RSCMType.OBJ) == id || types.any { it.asRSCM(RSCMType.OBJ) == id }
     }
 
-    public fun isContentType(content: ContentGroupType): Boolean {
-        return contentGroup == content.id
+    public fun isContentType(content: String): Boolean {
+        return contentGroup == content.asRSCM(RSCMType.CONTENT)
     }
 
-    public fun isCategoryType(cat: CategoryType): Boolean {
+    public fun isCategory(cat: CategoryType): Boolean {
         return category == cat.id
     }
 
+    public fun isCategoryType(cat: String): Boolean {
+        return category == cat.asRSCM(RSCMType.CATEGORY)
+    }
 
     public fun isType(other: ItemServerType): Boolean {
         return this.id == other.id
+    }
+
+    public fun isType(other: String): Boolean {
+        return this.id == other.asRSCM(RSCMType.OBJ)
     }
 
 }

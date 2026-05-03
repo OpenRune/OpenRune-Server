@@ -8,8 +8,8 @@ import org.rsmod.plugin.scripts.ScriptContext
 
 public class PlayerHitScript : PluginScript() {
     override fun ScriptContext.startup() {
-        onPlayerQueueWithArgs(hit_queues.standard) { processQueuedHit(it.args) }
-        onPlayerQueueWithArgs(hit_queues.impact) { processQueuedDeferredHit(it.args) }
+        onPlayerQueueWithArgs("queue.hit") { processQueuedHit(it.args) }
+        onPlayerQueueWithArgs("queue.impact_hit") { processQueuedDeferredHit(it.args) }
     }
 
     private fun ProtectedAccess.processQueuedDeferredHit(deferred: DeferredPlayerHit) {

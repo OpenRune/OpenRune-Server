@@ -22,7 +22,7 @@ public class AiPlayerUInteractions @Inject constructor(private val eventBus: Eve
         target: Player,
         inv: Inventory,
         invSlot: Int,
-        objType: ItemServerType,
+        objType: String,
     ) {
         val obj = inv[invSlot]
         if (objectVerify(obj, objType)) {
@@ -33,7 +33,7 @@ public class AiPlayerUInteractions @Inject constructor(private val eventBus: Eve
     private suspend fun StandardNpcAccess.opPlayerU(
         target: Player,
         invSlot: Int,
-        objType: ItemServerType,
+        objType: String,
     ) {
         val script = opTrigger(target, invSlot, objType)
         if (script != null) {
@@ -41,7 +41,7 @@ public class AiPlayerUInteractions @Inject constructor(private val eventBus: Eve
             return
         }
         logger.debug {
-            "aiOpPlayerU for `${objType.name}` is not implemented: " +
+            "aiOpPlayerU for `${objType}` is not implemented: " +
                 "target=${target.displayName}, npcType=${npc.visType}, objType=$objType"
         }
     }
@@ -49,7 +49,7 @@ public class AiPlayerUInteractions @Inject constructor(private val eventBus: Eve
     private fun StandardNpcAccess.opTrigger(
         target: Player,
         invSlot: Int,
-        objType: ItemServerType,
+        objType: String,
     ): OpEvent? {
         val typeScript = AiPlayerUEvents.Op(target, invSlot, objType)
         if (eventBus.contains(typeScript::class.java, typeScript.id)) {
@@ -70,7 +70,7 @@ public class AiPlayerUInteractions @Inject constructor(private val eventBus: Eve
         target: Player,
         inv: Inventory,
         invSlot: Int,
-        objType: ItemServerType,
+        objType: String,
     ) {
         val obj = inv[invSlot]
         if (objectVerify(obj, objType)) {
@@ -81,7 +81,7 @@ public class AiPlayerUInteractions @Inject constructor(private val eventBus: Eve
     private suspend fun StandardNpcAccess.apPlayerU(
         target: Player,
         invSlot: Int,
-        objType: ItemServerType,
+        objType: String,
     ) {
         val script = apTrigger(target, invSlot, objType) ?: return
         eventBus.publish(this, script)
@@ -90,7 +90,7 @@ public class AiPlayerUInteractions @Inject constructor(private val eventBus: Eve
     private fun StandardNpcAccess.apTrigger(
         target: Player,
         invSlot: Int,
-        objType: ItemServerType,
+        objType: String,
     ): ApEvent? {
         val typeScript = AiPlayerUEvents.Ap(target, invSlot, objType)
         if (eventBus.contains(typeScript::class.java, typeScript.id)) {
@@ -106,5 +106,5 @@ public class AiPlayerUInteractions @Inject constructor(private val eventBus: Eve
         return null
     }
 
-    private fun objectVerify(obj: InvObj?, type: ItemServerType): Boolean = obj.isType(type)
+    private fun objectVerify(obj: InvObj?, type: String): Boolean = obj.isType(type)
 }

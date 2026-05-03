@@ -8,9 +8,6 @@ import kotlin.contracts.contract
 import org.rsmod.api.combat.commons.magic.MagicSpell
 import org.rsmod.api.combat.commons.magic.Spellbook
 import org.rsmod.api.config.refs.BaseParams
-import org.rsmod.api.config.refs.categories
-import org.rsmod.api.config.refs.objs
-import org.rsmod.api.config.refs.varbits
 import org.rsmod.api.invtx.invDelAll
 import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.stat.magicLvl
@@ -38,7 +35,7 @@ constructor(
     private val staffSubs: StaffSubstituteRepository,
     private val runeSubs: RuneSubstituteRepository,
 ) {
-    private val Player.spellbook by enumVarBit<Spellbook>(varbits.spellbook)
+    private val Player.spellbook by enumVarBit<Spellbook>("varbit.spellbook")
 
     /**
      * Attempts to cast [spell] by first verifying the player meets all requirements, and then
@@ -178,7 +175,7 @@ constructor(
             VarPlayerIntMapSetter.set(player, source.varbit, result)
         }
 
-        val usedSunfire = consume.any { it.isType(objs.sunfire_rune) }
+        val usedSunfire = consume.any { it.isType("obj.sunfirerune") }
         return CastResult.Success.Consumed(usedSunfire)
     }
 
@@ -242,15 +239,15 @@ constructor(
     }
 
     private fun Player.useFakeRunes(): Boolean {
-        return vars[varbits.in_ba_game] == 1 || vars[varbits.in_lms_game] == 1
+        return vars["varbit.barbassault_areaexit_pending"] == 1 || vars["varbit.br_ingame"] == 1
     }
 
     private fun Player.allowBlighted(): Boolean {
-        return vars[varbits.blighted_items_allowed] == 1
+        return vars["varbit.blighted_items_allowed"] == 1
     }
 
     private fun Player.nearFountainOfRune(): Boolean {
-        return vars[varbits.fountain_of_rune_active] == 1
+        return vars["varbit.fountain_of_rune_active"] == 1
     }
 
     private fun Player.currentRunePouch(): MagicRunes.RunePouch? {
@@ -260,18 +257,18 @@ constructor(
         }
         val hasDivineRunePouch = inv.any { it.isDivineRunePouch() }
 
-        val pouchCompactRune1 = vars[varbits.rune_pouch_type_1]
-        val pouchCompactRune2 = vars[varbits.rune_pouch_type_2]
-        val pouchCompactRune3 = vars[varbits.rune_pouch_type_3]
-        val pouchCountVarBit1 = varbits.rune_pouch_quantity_1
-        val pouchCountVarBit2 = varbits.rune_pouch_quantity_2
-        val pouchCountVarBit3 = varbits.rune_pouch_quantity_3
+        val pouchCompactRune1 = vars["varbit.rune_pouch_type_1"]
+        val pouchCompactRune2 = vars["varbit.rune_pouch_type_2"]
+        val pouchCompactRune3 = vars["varbit.rune_pouch_type_3"]
+        val pouchCountVarBit1 = "varbit.rune_pouch_quantity_1"
+        val pouchCountVarBit2 = "varbit.rune_pouch_quantity_2"
+        val pouchCountVarBit3 = "varbit.rune_pouch_quantity_3"
 
         val pouchCompactRune4: Int
-        val pouchCountVarBit4: VarBitType?
+        val pouchCountVarBit4: String?
         if (hasDivineRunePouch) {
-            pouchCompactRune4 = vars[varbits.rune_pouch_type_4]
-            pouchCountVarBit4 = varbits.rune_pouch_quantity_4
+            pouchCompactRune4 = vars["varbit.rune_pouch_type_4"]
+            pouchCountVarBit4 = "varbit.rune_pouch_quantity_4"
         } else {
             pouchCompactRune4 = 0
             pouchCountVarBit4 = null
@@ -294,10 +291,10 @@ constructor(
     }
 
     private fun InvObj?.isRegularRunePouch(): Boolean =
-        isAnyType(objs.rune_pouch, objs.rune_pouch_l)
+        isAnyType("obj.bh_rune_pouch", "obj.bh_rune_pouch_trouver")
 
     private fun InvObj?.isDivineRunePouch(): Boolean =
-        isAnyType(objs.divine_rune_pouch, objs.divine_rune_pouch_l)
+        isAnyType("obj.divine_rune_pouch", "obj.divine_rune_pouch_trouver")
 
     private fun MagicRunes.Validation.requirementMessage(): String =
         when (this) {
@@ -311,7 +308,7 @@ constructor(
         }
 
     private fun ItemServerType.runeRequirementMessage(): String {
-        if (isCategoryType(categories.rune)) {
+        if (isCategoryType("category.rune")) {
             val name = name.dropLast(5) + " Runes"
             return "You do not have enough $name to cast this spell."
         }
@@ -323,23 +320,23 @@ constructor(
         val custom = paramOrNull(BaseParams.spell_worn_req_message)
         return when {
             custom != null -> custom
-            isType(objs.ibans_staff) -> {
+            isType("obj.ibanstaff") -> {
                 "You must wield Iban's Staff to cast this spell."
             }
-            isType(objs.saradomin_staff) -> {
+            isType("obj.saradomin_staff") -> {
                 "You must be wielding the Staff of Saradomin or the " +
                     "Staff of Light to cast this spell."
             }
-            isType(objs.zamorak_staff) -> {
+            isType("obj.zamorak_staff") -> {
                 "You must be wielding the Staff of Zamorak, Staff of the " +
                     "Dead, Thammaron's Sceptre, or the Accursed Sceptre to " +
                     "cast this spell."
             }
-            isType(objs.guthix_staff) -> {
+            isType("obj.guthix_staff") -> {
                 "You must wield the Staff of Guthix, Staff of Balance " +
                     "or the Void Knight Mace to cast this spell."
             }
-            isType(objs.slayers_staff) -> {
+            isType("obj.slayer_staff") -> {
                 "You need to be wielding a suitable staff to cast this spell."
             }
             else -> "You need a $name to cast this spell."

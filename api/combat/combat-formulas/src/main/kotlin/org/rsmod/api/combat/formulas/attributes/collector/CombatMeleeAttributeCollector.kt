@@ -6,8 +6,6 @@ import org.rsmod.api.combat.commons.types.MeleeAttackType
 import org.rsmod.api.combat.formulas.attributes.CombatMeleeAttributes
 import org.rsmod.api.config.constants
 import org.rsmod.api.config.refs.BaseParams
-import org.rsmod.api.config.refs.categories
-import org.rsmod.api.config.refs.objs
 import org.rsmod.api.player.front
 import org.rsmod.api.player.hat
 import org.rsmod.api.player.legs
@@ -37,11 +35,11 @@ public class CombatMeleeAttributeCollector {
         }
 
         val amulet = player.front
-        if (amulet.isType(objs.amulet_of_avarice)) {
+        if (amulet.isType("obj.wild_cave_amulet")) {
             attributes += CombatMeleeAttributes.AmuletOfAvarice
-        } else if (amulet.isAnyType(objs.salve_amulet_e, objs.salve_amulet_ei)) {
+        } else if (amulet.isAnyType("obj.lotr_crystalshard_necklace_upgrade", "obj.nzone_salve_amulet_e")) {
             attributes += CombatMeleeAttributes.SalveAmuletE
-        } else if (amulet.isAnyType(objs.salve_amulet, objs.salve_amulet_i)) {
+        } else if (amulet.isAnyType("obj.crystalshard_necklace", "obj.nzone_salve_amulet")) {
             attributes += CombatMeleeAttributes.SalveAmulet
         }
 
@@ -52,9 +50,9 @@ public class CombatMeleeAttributeCollector {
         }
 
         val weapon = player.righthand
-        if (weapon.isType(objs.arclight)) {
+        if (weapon.isType("obj.arclight")) {
             attributes += CombatMeleeAttributes.Arclight
-        } else if (weapon.isType(objs.burning_claws)) {
+        } else if (weapon.isType("obj.bone_claws")) {
             attributes += CombatMeleeAttributes.BurningClaws
         }
 
@@ -67,79 +65,79 @@ public class CombatMeleeAttributeCollector {
         val weaponAttribute =
             when {
                 weapon.isAnyType(
-                    objs.toktz_xil_ek,
-                    objs.toktz_xil_ak,
-                    objs.tzhaar_ket_em,
-                    objs.tzhaar_ket_om,
-                    objs.tzhaar_ket_om_t,
+                    "obj.tzhaar_knife",
+                    "obj.tzhaar_splitsword",
+                    "obj.tzhaar_mace",
+                    "obj.tzhaar_maul",
+                    "obj.tzhaar_maul_t",
                 ) -> {
                     CombatMeleeAttributes.TzHaarWeapon
                 }
 
-                weapon.isType(objs.dragon_hunter_lance) -> {
+                weapon.isType("obj.dragonhunter_lance") -> {
                     CombatMeleeAttributes.DragonHunterLance
                 }
 
-                weapon.isType(objs.dragon_hunter_wand) -> {
+                weapon.isType("obj.dragonhunter_wand") -> {
                     CombatMeleeAttributes.DragonHunterWand
                 }
 
-                weapon.isType(objs.keris_partisan_of_breaching) -> {
+                weapon.isType("obj.keris_partisan_breach") -> {
                     CombatMeleeAttributes.KerisBreachPartisan
                 }
 
-                weapon.isType(objs.keris_partisan_of_the_sun) -> {
+                weapon.isType("obj.keris_partisan_sun") -> {
                     CombatMeleeAttributes.KerisSunPartisan
                 }
 
                 weapon.isAnyType(
-                    objs.keris,
-                    objs.keris_p,
-                    objs.keris_p_plus,
-                    objs.keris_p_plus_plus,
-                    objs.keris_partisan,
-                    objs.keris_partisan_of_corruption,
+                    "obj.contact_keris",
+                    "obj.contact_keris_p",
+                    "obj.contact_keris_p+",
+                    "obj.contact_keris_p++",
+                    "obj.keris_partisan",
+                    "obj.keris_partisan_corruption",
                 ) -> {
                     CombatMeleeAttributes.KerisWeapon
                 }
 
-                weapon.isAnyType(objs.barronite_mace, objs.barronite_mace_l) -> {
+                weapon.isAnyType("obj.barronite_mace", "obj.barronite_mace_trouver") -> {
                     CombatMeleeAttributes.BarroniteMaceWeapon
                 }
 
-                weapon.isAnyType(objs.viggoras_chainmace, objs.ursine_chainmace) -> {
+                weapon.isAnyType("obj.wild_cave_chainmace_charged", "obj.wild_cave_ursine_charged") -> {
                     CombatMeleeAttributes.RevenantWeapon
                 }
 
-                weapon.isType(objs.silverlight) -> {
+                weapon.isType("obj.agrith_silverlight_dyed") -> {
                     CombatMeleeAttributes.Silverlight
                 }
 
                 weapon.isAnyType(
-                    objs.leafbladed_sword,
-                    objs.leafbladed_spear,
-                    objs.leafbladed_battleaxe,
+                    "obj.leafbladed_sword",
+                    "obj.slayer_leafbladed_spear",
+                    "obj.leafbladed_battleaxe",
                 ) -> {
                     CombatMeleeAttributes.LeafBladed
                 }
 
-                weapon.isType(objs.colossal_blade) -> {
+                weapon.isType("obj.giants_foundry_colossal_blade") -> {
                     CombatMeleeAttributes.ColossalBlade
                 }
 
-                weapon.isType(objs.bone_mace) -> {
+                weapon.isType("obj.rat_bone_mace") -> {
                     CombatMeleeAttributes.RatBoneWeapon
                 }
 
-                weapon.isType(objs.inquisitors_mace) -> {
+                weapon.isType("obj.inquisitors_mace") -> {
                     CombatMeleeAttributes.InquisitorWeapon
                 }
 
-                weapon.isAnyType(objs.osmumtens_fang, objs.osmumtens_fang_or) -> {
+                weapon.isAnyType("obj.osmumtens_fang", "obj.osmumtens_fang_ornament") -> {
                     CombatMeleeAttributes.OsmumtensFang
                 }
 
-                weapon.isType(objs.gadderhammer) -> {
+                weapon.isType("obj.gadderanks_warhammer") -> {
                     CombatMeleeAttributes.Gadderhammer
                 }
 
@@ -150,15 +148,15 @@ public class CombatMeleeAttributeCollector {
             attributes += weaponAttribute
         }
 
-        if (helm.isType(objs.inquisitors_great_helm)) {
+        if (helm.isType("obj.inquisitors_helm")) {
             attributes += CombatMeleeAttributes.InquisitorHelm
         }
 
-        if (top.isType(objs.inquisitors_hauberk)) {
+        if (top.isType("obj.inquisitors_body")) {
             attributes += CombatMeleeAttributes.InquisitorTop
         }
 
-        if (legs.isType(objs.inquisitors_plateskirt)) {
+        if (legs.isType("obj.inquisitors_skirt")) {
             attributes += CombatMeleeAttributes.InquisitorBottom
         }
 
@@ -166,15 +164,15 @@ public class CombatMeleeAttributeCollector {
             attributes += CombatMeleeAttributes.Dharoks
         }
 
-        if (amulet.isAnyType(objs.berserker_necklace, objs.berserker_necklace_or)) {
+        if (amulet.isAnyType("obj.jewl_beserker_necklace", "obj.jewl_beserker_necklace_ornament")) {
             attributes += CombatMeleeAttributes.BerserkerNeck
         }
 
         val weaponType = getOrNull(weapon)
         if (weaponType != null && attackType == MeleeAttackType.Stab) {
             val isCorpbaneWeapon =
-                weaponType.isCategoryType(categories.halberd) ||
-                    weaponType.isCategoryType(categories.spear) ||
+                weaponType.isCategoryType("category.halberd") ||
+                    weaponType.isCategoryType("category.spear") ||
                     CombatMeleeAttributes.OsmumtensFang in attributes
 
             if (isCorpbaneWeapon) {

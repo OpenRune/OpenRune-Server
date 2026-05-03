@@ -39,13 +39,9 @@ import dev.openrune.types.*
 import dev.openrune.types.VarConType
 import dev.openrune.types.aconverted.AreaType
 import dev.openrune.types.aconverted.CategoryType
-import dev.openrune.types.aconverted.ContentGroupType
-import dev.openrune.types.aconverted.CurrencyType
 import dev.openrune.types.aconverted.MidiType
-import dev.openrune.types.aconverted.QueueType
 import dev.openrune.types.aconverted.SpotanimType
 import dev.openrune.types.aconverted.SynthType
-import dev.openrune.types.aconverted.TimerType
 import dev.openrune.types.varp.VarpServerType
 import java.nio.BufferUnderflowException
 import java.nio.file.Path
@@ -289,115 +285,3 @@ object ServerCacheManager {
 
     fun fromComponent(id: String) = fromComponent(id.asRSCM())
 }
-
-fun rscmKey(prefix: String, internal: String): Int {
-    val key = "$prefix.$internal"
-    val type = RSCMType.entries.find { it.prefix == prefix }
-
-    if (type != null) {
-        RSCM.requireRSCM(type, key)
-    }
-
-    return key.asRSCM()
-}
-
-inline fun <T> resolve(
-    prefix: String,
-    internal: String,
-    crossinline resolver: (Int) -> T?,
-    crossinline errorMessage: (String) -> String = { "Missing $prefix: $it" },
-): T {
-    val key = rscmKey(prefix, internal)
-    return resolver(key) ?: error(errorMessage(internal))
-}
-
-inline fun <T> wrap(prefix: String, internal: String, crossinline constructor: (Int) -> T): T {
-    return constructor(rscmKey(prefix, internal))
-}
-
-fun npc(internal: String): NpcServerType = resolve("npc", internal, ServerCacheManager::getNpc)
-
-fun obj(internal: String): ItemServerType = resolve("obj", internal, ServerCacheManager::getItem)
-
-fun loc(internal: String): ObjectServerType =
-    resolve("loc", internal, ServerCacheManager::getObject)
-
-fun seq(internal: String): SequenceServerType =
-    resolve("seq", internal, ServerCacheManager::getAnim)
-
-fun projAnim(internal: String): ProjAnimType =
-    resolve("projanim", internal, ServerCacheManager::getProjectile) {
-        "Unable to find proj Anim: $it"
-    }
-
-fun varp(internal: String): VarpServerType =
-    resolve("varp", internal, ServerCacheManager::getVarp) { "Varp Missing: $it" }
-
-fun varBit(internal: String): VarBitType =
-    resolve("varbit", internal, ServerCacheManager::getVarbit)
-
-fun varcon(internal: String): VarConType =
-    resolve("varcon", internal, ServerCacheManager::getVarCon)
-
-fun varn(internal: String): VarnType = resolve("varn", internal, ServerCacheManager::getVarn)
-
-fun varobjs(internal: String): VarObjBitType =
-    resolve("varobj", internal, ServerCacheManager::getVarObj)
-
-fun stat(internal: String): StatType =
-    resolve("stat", internal, ServerCacheManager::getStats) { "Unable to get StatReference: $it" }
-
-fun inv(internal: String): InventoryServerType =
-    ServerCacheManager.getInventory(internal.asRSCM()) ?: error("Error Loading Inv")
-
-fun headbar(internal: String): HealthBarServerType =
-    resolve("headbar", internal, ServerCacheManager::getHealthBar) {
-        "Unable to get HealthBar: $it"
-    }
-
-fun hitmark(internal: String): HitSplatType =
-    resolve("hitmark", internal, ServerCacheManager::getHitSplats) { "Could not find hitmark: $it" }
-
-fun hunt(internal: String): HuntModeType =
-    resolve("stalk", internal, ServerCacheManager::getHunt) { "Missing hunt: $it" }
-
-fun walkTrigger(internal: String): WalkTriggerType =
-    resolve("walktrigger", internal, ServerCacheManager::getWalkTrigger) {
-        "Missing walking Trigger: $it"
-    }
-
-fun mod(internal: String): ModLevelType =
-    resolve("modlevel", internal, ServerCacheManager::getModLevel) { "Unable to find Mod Level" }
-
-fun category(internal: String): CategoryType = wrap("category", internal, ::CategoryType)
-
-fun area(internal: String): AreaType = wrap("area", internal, ::AreaType)
-
-fun content(internal: String): ContentGroupType = wrap("content", internal, ::ContentGroupType)
-
-fun currency(internal: String): CurrencyType = wrap("currency", internal, ::CurrencyType)
-
-fun queue(internal: String): QueueType = wrap("queue", internal, ::QueueType)
-
-fun spotAnim(internal: String): SpotanimType = wrap("spotanim", internal, ::SpotanimType)
-
-fun synth(internal: String): SynthType = wrap("synth", internal, ::SynthType)
-
-fun timer(internal: String): TimerType = wrap("timer", internal, ::TimerType)
-
-fun fontMetrics(internal: String): FontType =
-    resolve("font", internal, ServerCacheManager::getFont) { "Missing Font: $it" }
-
-fun component(internal: String): ComponentType =
-    resolve("component", internal, ServerCacheManager::fromComponent)
-
-fun inter(internal: String): InterfaceType {
-    val formatted = internal.removePrefix("interface.")
-    return resolve("interface", formatted, ServerCacheManager::getInterface) {
-        "Unable to find Interface: $it"
-    }
-}
-
-fun jingle(internal: String): Int = rscmKey("synth", internal)
-
-fun midi(internal: String): MidiType = MidiType(rscmKey("midi", internal))

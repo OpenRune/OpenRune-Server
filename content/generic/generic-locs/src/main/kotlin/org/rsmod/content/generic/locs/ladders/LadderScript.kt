@@ -1,11 +1,14 @@
 package org.rsmod.content.generic.locs.ladders
 
+import dev.openrune.rscm.RSCM
+import dev.openrune.rscm.RSCMType
 import dev.openrune.types.ObjectServerType
 import dev.openrune.types.SequenceServerType
-import org.rsmod.api.config.refs.content
 import org.rsmod.api.config.refs.params
 import org.rsmod.api.player.protect.ProtectedAccess
-import org.rsmod.api.script.onOpLoc1
+import org.rsmod.api.script.onOpContentLoc1
+import org.rsmod.api.script.onOpContentLoc2
+import org.rsmod.api.script.onOpContentLoc3
 import org.rsmod.api.script.onOpLoc2
 import org.rsmod.api.script.onOpLoc3
 import org.rsmod.plugin.scripts.PluginScript
@@ -13,23 +16,23 @@ import org.rsmod.plugin.scripts.ScriptContext
 
 class LadderScript : PluginScript() {
     override fun ScriptContext.startup() {
-        onOpLoc1(content.ladder_down) {
+        onOpContentLoc1("content.ladder_down") {
             arriveDelay()
             climbDown(it.type)
         }
-        onOpLoc1(content.ladder_up) {
+        onOpContentLoc1("content.ladder_up") {
             arriveDelay()
             climbUp(it.type)
         }
-        onOpLoc1(content.ladder_option) {
+        onOpContentLoc1("content.ladder_option") {
             arriveDelay()
             climbOption(it.type)
         }
-        onOpLoc2(content.ladder_option) {
+        onOpContentLoc2("content.ladder_option") {
             arriveDelay()
             climbUp(it.type)
         }
-        onOpLoc3(content.ladder_option) {
+        onOpContentLoc3("content.ladder_option") {
             arriveDelay()
             climbDown(it.type)
         }
@@ -55,5 +58,5 @@ class LadderScript : PluginScript() {
         telejump(dest)
     }
 
-    private fun ObjectServerType.climbAnim(): SequenceServerType = param(params.climb_anim)
+    private fun ObjectServerType.climbAnim(): String = RSCM.getReverseMapping(RSCMType.SEQ, param(params.climb_anim).id)
 }

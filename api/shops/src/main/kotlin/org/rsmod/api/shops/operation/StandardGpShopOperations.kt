@@ -1,10 +1,12 @@
 package org.rsmod.api.shops.operation
 
+import dev.openrune.rscm.RSCM
+import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.rscm.RSCMType
 import dev.openrune.types.ItemServerType
 import jakarta.inject.Inject
 import kotlin.math.max
 import kotlin.math.min
-import org.rsmod.api.config.refs.objs
 import org.rsmod.api.config.refs.params
 import org.rsmod.api.invtx.invTransaction
 import org.rsmod.api.invtx.select
@@ -30,7 +32,7 @@ constructor(
     private val restockProcess: ShopRestockProcess,
     private val marketPrices: MarketPrices,
 ) : StandardShopOperations {
-    private val currencyObj: ItemServerType by lazy { objs.coins }
+    private val currencyObj: ItemServerType by lazy { ItemServerType("obj.coins".asRSCM(RSCMType.OBJ)) }
 
     override fun examineShopValue(player: Player, shop: Shop, slot: Int) {
         val obj = shop.inv[slot] ?: return
@@ -64,11 +66,14 @@ constructor(
             return
         }
 
+
+        val internalName = RSCM.getReverseMapping(RSCMType.OBJ, objType.id)
+
         val shopInitialObjCount = shopInv.initialStockCount(obj)
-        val availableCurrencyCount = sideInv.count(currencyObj)
+        val availableCurrencyCount = sideInv.count(internalName)
         val cappedRequest =
             if (objType.isStackable) {
-                min(Int.MAX_VALUE - sideInv.count(objType), initialPurchaseRequest)
+                min(Int.MAX_VALUE - sideInv.count(internalName), initialPurchaseRequest)
             } else {
                 min(sideInv.freeSpace(), initialPurchaseRequest)
             }
@@ -170,7 +175,9 @@ constructor(
             return
         }
 
-        val shopCurrentObjCount = shopInv.count(objType)
+        val internalName = RSCM.getReverseMapping(RSCMType.OBJ, objType.id)
+
+        val shopCurrentObjCount = shopInv.count(internalName)
         val shopInitialObjCount = shopInv.initialStockCount(objType)
         val value =
             CostCalculation.calculateShopBuySingleValue(
@@ -215,10 +222,15 @@ constructor(
         if (invCappedRequest == 0) {
             return
         }
-        val shopCurrentObjCount = shopInv.count(uncertType)
+
+        val uncertTypeInternalName = RSCM.getReverseMapping(RSCMType.OBJ, uncertType.id)
+        val currencyObjInternalName = RSCM.getReverseMapping(RSCMType.OBJ, currencyObj.id)
+
+
+        val shopCurrentObjCount = shopInv.count(uncertTypeInternalName)
         val shopInitialObjCount = shopInv.initialStockCount(uncertType)
 
-        val currencyCount = sideInv.count(currencyObj)
+        val currencyCount = sideInv.count(currencyObjInternalName)
         val cappedRequest = min(Int.MAX_VALUE - shopCurrentObjCount, invCappedRequest)
 
         val (count, payment) =

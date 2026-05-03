@@ -1,6 +1,8 @@
 package org.rsmod.content.interfaces.bank.scripts
 
 import dev.openrune.ServerCacheManager
+import dev.openrune.rscm.RSCM
+import dev.openrune.rscm.RSCMType
 import dev.openrune.types.ItemServerType
 import dev.openrune.types.aconverted.interf.IfButtonOp
 import dev.openrune.util.Wearpos
@@ -10,10 +12,7 @@ import kotlin.math.max
 import kotlin.math.min
 import org.rsmod.api.combat.weapon.WeaponSpeeds
 import org.rsmod.api.config.constants
-import org.rsmod.api.config.refs.content
-import org.rsmod.api.config.refs.invs
 import org.rsmod.api.config.refs.params
-import org.rsmod.api.config.refs.synths
 import org.rsmod.api.enums.BankEnums.bank_equipment_tab_to_slots_map
 import org.rsmod.api.invtx.invCompress
 import org.rsmod.api.invtx.invTransaction
@@ -35,11 +34,8 @@ import org.rsmod.content.interfaces.bank.BankTab
 import org.rsmod.content.interfaces.bank.QuantityMode
 import org.rsmod.content.interfaces.bank.alwaysPlacehold
 import org.rsmod.content.interfaces.bank.bankCapacity
-import org.rsmod.content.interfaces.bank.configs.bank_components
 import org.rsmod.content.interfaces.bank.configs.bank_comsubs
 import org.rsmod.content.interfaces.bank.configs.bank_constants
-import org.rsmod.content.interfaces.bank.configs.bank_objs
-import org.rsmod.content.interfaces.bank.configs.bank_queues
 import org.rsmod.content.interfaces.bank.insertMode
 import org.rsmod.content.interfaces.bank.lastQtyInput
 import org.rsmod.content.interfaces.bank.leftClickQtyMode
@@ -90,25 +86,25 @@ constructor(
     override fun ScriptContext.startup() {
         onPlayerLogin { player.setDefaultCapacity() }
 
-        onIfModalButton(bank_components.side_inventory) { sideInvOp(it.comsub, it.op) }
-        onIfModalButton(bank_components.main_inventory) { mainInvOp(it.comsub, it.op) }
-        onIfModalButton(bank_components.worn_inventory) { wornInvOp(it.comsub, it.op) }
-        onIfModalButton(bank_components.deposit_inventory) { depositInv() }
-        onIfModalButton(bank_components.deposit_worn) { depositWorn() }
-        onIfModalButton(bank_components.tabs) { selectTab(it.comsub, it.op) }
-        onIfModalButton(bank_components.incinerator_confirm) { incinerate(it.comsub, it.obj) }
-        onIfModalDrag(bank_components.tabs) { dragTab(it) }
-        onIfModalDrag(bank_components.side_inventory) { dragSideInv(it) }
-        onIfModalDrag(bank_components.main_inventory) { dragMainInv(it) }
-        onIfModalDrag(bank_components.worn_inventory) { dragSideInv(it) }
-        onIfModalDrag(bank_components.main_inventory, bank_components.tabs) { dragIntoTab(it) }
+        onIfModalButton("component.bankside:items") { sideInvOp(it.comsub, it.op) }
+        onIfModalButton("component.bankmain:items") { mainInvOp(it.comsub, it.op) }
+        onIfModalButton("component.bankside:wornops") { wornInvOp(it.comsub, it.op) }
+        onIfModalButton("component.bankmain:depositinv") { depositInv() }
+        onIfModalButton("component.bankmain:depositworn") { depositWorn() }
+        onIfModalButton("component.bankmain:tabs") { selectTab(it.comsub, it.op) }
+        onIfModalButton("component.bankmain:incinerator_confirm") { incinerate(it.comsub, it.obj) }
+        onIfModalDrag("component.bankmain:tabs") { dragTab(it) }
+        onIfModalDrag("component.bankside:items") { dragSideInv(it) }
+        onIfModalDrag("component.bankmain:items") { dragMainInv(it) }
+        onIfModalDrag("component.bankside:wornops") { dragSideInv(it) }
+        onIfModalDrag("component.bankmain:items", "component.bankmain:tabs") { dragIntoTab(it) }
 
-        val wornComponents = bank_equipment_tab_to_slots_map.filterValuesNotNull()
+        val wornComponents = bank_equipment_tab_to_slots_map.filterValuesNotNull().map { it.key to RSCM.getReverseMapping(RSCMType.COMPONENT,it.value.packed) }
         for ((slot, component) in wornComponents) {
             onIfModalButton(component) { wornOp(slot, it.op) }
         }
 
-        onPlayerQueue(bank_queues.bank_compress) { compressBank() }
+        onPlayerQueue("queue.bank_compress") { compressBank() }
     }
 
     private suspend fun ProtectedAccess.mainInvOp(slot: Int, op: IfButtonOp) {
@@ -126,10 +122,10 @@ constructor(
             bank[slot] = null
             notifySlotUpdate(slot)
             return
-        } else if (objType.isType(bank_objs.filler)) {
+        } else if (objType.isType("obj.bank_filler")) {
             if (op == IfButtonOp.Op7) {
                 bank[slot] = null
-                soundSynth(synths.paper_turn)
+                soundSynth("synth.paper_turn")
                 notifySlotUpdate(slot)
             } else if (op == IfButtonOp.Op8) {
                 removeFillers()
@@ -873,7 +869,7 @@ constructor(
         if (tabUpdates.isEmpty()) {
             return
         }
-        soundSynth(synths.paper_turn)
+        soundSynth("synth.paper_turn")
         for (tab in tabUpdates) {
             notifySlotUpdate(tab)
         }
@@ -882,7 +878,7 @@ constructor(
     private suspend fun ProtectedAccess.removeFillers() {
         val confirmation =
             confirmOverlay(
-                target = bank_components.confirmation_overlay_target,
+                target = "component.bankmain:popup",
                 title = "Clear all fillers?",
                 text =
                     "This option will clear <col=ffb83f>all</col> the bank fillers throughout " +
@@ -896,14 +892,14 @@ constructor(
         val tabUpdates = mutableSetOf<BankTab>()
         for (slot in bank.indices) {
             val obj = bank[slot] ?: continue
-            if (getInvObj(obj).isType(bank_objs.filler)) {
+            if (getInvObj(obj).isType("obj.bank_filler")) {
                 bank[slot] = null
 
                 val tab = BankTab.forSlot(this, slot)
                 tab?.let(tabUpdates::add)
             }
         }
-        soundSynth(synths.paper_turn)
+        soundSynth("synth.paper_turn")
         for (tab in tabUpdates) {
             notifySlotUpdate(tab)
         }
@@ -1088,10 +1084,10 @@ constructor(
         }
 
         bank[slot] = null
-        soundSynth(synths.firebreath)
+        soundSynth("synth.firebreath")
         notifySlotUpdate(slot)
 
-        val dispose = HeldDropEvents.Dispose(player, invs.bank, slot, obj)
+        val dispose = HeldDropEvents.Dispose(player, "inv.bank", slot, obj)
         publish(dispose)
     }
 
@@ -1123,8 +1119,8 @@ constructor(
             return
         }
 
-        val isFood = type.isContentType(content.food)
-        val isPotion = type.isContentType(content.potion)
+        val isFood = type.isContentType("content.food")
+        val isPotion = type.isContentType("content.potion")
 
         val isConsumable = isFood || isPotion
         if (isConsumable) {
@@ -1172,7 +1168,7 @@ constructor(
     suspend fun releasePlaceholders(access: ProtectedAccess) {
         val confirmation =
             access.confirmOverlay(
-                target = bank_components.confirmation_overlay_target,
+                target = "component.bankmain:popup",
                 title = "Release all placeholders?",
                 text =
                     "This option will release <col=ffb83f>all</col> the placeholders " +
@@ -1213,7 +1209,7 @@ constructor(
             }
             if (bank[slot] == null) {
                 // Give the filler vars to avoid any sort of merging through later transactions.
-                val filler = InvObj(bank_objs.filler, vars = 1)
+                val filler = InvObj("obj.bank_filler", vars = 1)
                 bank[slot] = filler
                 completed++
             }

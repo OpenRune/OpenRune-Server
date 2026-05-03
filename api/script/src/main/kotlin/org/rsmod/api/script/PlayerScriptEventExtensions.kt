@@ -1,12 +1,10 @@
 package org.rsmod.api.script
 
 import dev.openrune.definition.type.widget.ComponentType
+import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.rscm.RSCMType
 import dev.openrune.types.ItemServerType
-import dev.openrune.types.ModLevelType
 import dev.openrune.types.WalkTriggerType
-import dev.openrune.types.aconverted.ContentGroupType
-import dev.openrune.types.aconverted.QueueType
-import dev.openrune.types.aconverted.TimerType
 import org.rsmod.api.player.events.PlayerMovementEvent
 import org.rsmod.api.player.events.PlayerQueueEvents
 import org.rsmod.api.player.events.PlayerTimerEvent
@@ -29,14 +27,14 @@ public fun ScriptContext.onPlayerLogout(action: SessionStateEvent.Logout.() -> U
 
 /* Op functions */
 public fun ScriptContext.onOpPlayerT(
-    component: ComponentType,
+    component: String,
     action: suspend ProtectedAccess.(PlayerTEvents.Op) -> Unit,
-): Unit = onProtectedEvent(component.packed, action)
+): Unit = onProtectedEvent(component.asRSCM(RSCMType.COMPONENT), action)
 
 public fun ScriptContext.onOpPlayerU(
-    content: ContentGroupType,
+    content: String,
     action: suspend ProtectedAccess.(PlayerUContentEvents.Op) -> Unit,
-): Unit = onProtectedEvent(content.id, action)
+): Unit = onProtectedEvent(content.asRSCM(RSCMType.CONTENT), action)
 
 public fun ScriptContext.onOpPlayerU(
     type: ItemServerType,
@@ -50,9 +48,9 @@ public fun ScriptContext.onApPlayerT(
 ): Unit = onProtectedEvent(component.packed, action)
 
 public fun ScriptContext.onApPlayerU(
-    content: ContentGroupType,
+    content: String,
     action: suspend ProtectedAccess.(PlayerUContentEvents.Ap) -> Unit,
-): Unit = onProtectedEvent(content.id, action)
+): Unit = onProtectedEvent(content.asRSCM(RSCMType.CONTENT), action)
 
 public fun ScriptContext.onApPlayerU(
     type: ItemServerType,
@@ -61,50 +59,50 @@ public fun ScriptContext.onApPlayerU(
 
 /* Timer functions */
 public fun ScriptContext.onPlayerTimer(
-    timer: TimerType,
+    timer: String,
     action: suspend ProtectedAccess.(PlayerTimerEvent.Normal) -> Unit,
-): Unit = onProtectedEvent(timer.id, action)
+): Unit = onProtectedEvent(timer.asRSCM(RSCMType.TIMER), action)
 
 public fun ScriptContext.onPlayerSoftTimer(
-    timer: TimerType,
+    timer: String,
     action: PlayerTimerEvent.Soft.() -> Unit,
-): Unit = onEvent(timer.id, action)
+): Unit = onEvent(timer.asRSCM(RSCMType.TIMER), action)
 
 /* Queue functions */
 public fun ScriptContext.onPlayerQueue(
-    queue: QueueType,
+    queue: String,
     action: suspend ProtectedAccess.(PlayerQueueEvents.Protected<Nothing>) -> Unit,
-): Unit = onProtectedEvent(queue.id, action)
+): Unit = onProtectedEvent(queue.asRSCM(RSCMType.QUEUE), action)
 
 public fun <T> ScriptContext.onPlayerQueueWithArgs(
-    queue: QueueType,
+    queue: String,
     action: suspend ProtectedAccess.(PlayerQueueEvents.Protected<T>) -> Unit,
-): Unit = onProtectedEvent(queue.id, action)
+): Unit = onProtectedEvent(queue.asRSCM(RSCMType.QUEUE), action)
 
 public fun ScriptContext.onPlayerSoftQueue(
-    queue: QueueType,
+    queue: String,
     action: PlayerQueueEvents.Soft<Nothing>.() -> Unit,
-): Unit = onEvent(queue.id, action)
+): Unit = onEvent(queue.asRSCM(RSCMType.QUEUE), action)
 
 public fun <T> ScriptContext.onPlayerSoftQueueWithArgs(
-    queue: QueueType,
+    queue: String,
     action: PlayerQueueEvents.Soft<T>.() -> Unit,
-): Unit = onEvent(queue.id, action)
+): Unit = onEvent(queue.asRSCM(RSCMType.QUEUE), action)
 
 /* Walk trigger functions */
 public fun ScriptContext.onPlayerWalkTrigger(
-    trigger: WalkTriggerType,
+    trigger: String,
     action: PlayerMovementEvent.WalkTrigger.() -> Unit,
-): Unit = onEvent(trigger.id, action)
+): Unit = onEvent(trigger.asRSCM(RSCMType.WALKTRIGGER), action)
 
 public fun ScriptContext.onPlayerCoordsChanged(action: PlayerMovementEvent.CoordsMovedEvent.() -> Unit): Unit =
     onEvent(action)
 
 public fun ScriptContext.onWorldMapClick(
-    modLevel: ModLevelType,
+    internal: String,
     action: suspend ProtectedAccess.(WorldMapClick) -> Unit,
 ): Unit = onProtectedEvent(WorldMapClick.BUS_ID) { event: WorldMapClick ->
-    if (!player.modLevel.hasAccessTo(modLevel)) {
+    if (!player.modLevel.hasAccessTo(internal)) {
         return@onProtectedEvent
     }
     action(event)

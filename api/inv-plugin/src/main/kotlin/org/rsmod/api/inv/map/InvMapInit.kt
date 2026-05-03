@@ -1,12 +1,11 @@
 package org.rsmod.api.inv.map
 
 import dev.openrune.types.InventoryServerType
-import org.rsmod.api.config.refs.BaseInvs
 import org.rsmod.game.entity.Player
 import org.rsmod.game.inv.Inventory
 
 public class InvMapInit {
-    public val defaultInvs: MutableSet<InventoryServerType> = hashSetOf(BaseInvs.inv, BaseInvs.worn)
+    public val defaultInvs: MutableSet<String> = hashSetOf("inv.inv", "inv.worn")
 
     public fun init(player: Player) {
         putIfAbsent(player)
@@ -23,11 +22,11 @@ public class InvMapInit {
     }
 
     public fun cacheCommons(player: Player) {
-        player.inv = player.invMap.getValue(BaseInvs.inv)
-        player.worn = player.invMap.getValue(BaseInvs.worn)
+        player.inv = player.invMap.getValue("inv.inv")
+        player.worn = player.invMap.getValue("inv.worn")
     }
 
-    public operator fun plusAssign(inv: InventoryServerType) {
+    public operator fun plusAssign(inv: String) {
         defaultInvs += inv
     }
 }

@@ -1,5 +1,7 @@
 package org.rsmod.api.combat
 
+import dev.openrune.rscm.RSCM
+import dev.openrune.rscm.RSCMType
 import jakarta.inject.Inject
 import org.rsmod.api.combat.commons.CombatAttack
 import org.rsmod.api.combat.commons.npc.attackRate
@@ -47,8 +49,8 @@ constructor(private val accuracy: AccuracyFormulae, private val maxHits: MaxHitF
         val attackRate = npc.attackRate()
         actionDelay = mapClock + attackRate
 
-        val attackAnim = npc.visType.param(params.attack_anim)
-        val attackSound = npc.visType.paramOrNull(params.attack_sound)
+        val attackAnim = RSCM.getReverseMapping(RSCMType.SEQ,npc.visType.param(params.attack_anim).id)
+        val attackSound = RSCM.getReverseMapping(RSCMType.SYNTH,npc.visType.paramOrNull(params.attack_sound)!!.id)
 
         anim(attackAnim)
         attackSound?.let(target::soundSynth)

@@ -1,8 +1,8 @@
 package org.rsmod.game.entity
 
+import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.rscm.RSCMType
 import dev.openrune.types.ControllerType
-import dev.openrune.types.aconverted.QueueType
-import dev.openrune.types.aconverted.TimerType
 import kotlin.coroutines.startCoroutine
 import org.rsmod.coroutine.GameCoroutine
 import org.rsmod.coroutine.suspension.GameCoroutineSimpleCompletion
@@ -12,8 +12,8 @@ import org.rsmod.game.vars.VarConIntMap
 import org.rsmod.map.CoordGrid
 import org.rsmod.map.util.Bounds
 
-public class Controller(public val type: ControllerType, public val coords: CoordGrid) {
-    public val id: Int = type.id
+public class Controller(public val type: String, public val coords: CoordGrid) {
+    public val id: Int = type.asRSCM(RSCMType.CONTROLLER)
     public val timerMap: NpcTimerMap = NpcTimerMap()
     public val queueList: NpcQueueList = NpcQueueList()
     public val vars: VarConIntMap by lazy { VarConIntMap() }
@@ -54,22 +54,22 @@ public class Controller(public val type: ControllerType, public val coords: Coor
         this.aiTimer = cycles
     }
 
-    public fun timer(timer: TimerType, cycles: Int) {
+    public fun timer(timer: String, cycles: Int) {
         require(cycles > 0) { "`cycles` must be greater than 0. (cycles=$cycles)" }
         timerMap.schedule(timer, interval = cycles)
     }
 
-    public fun clearTimer(timer: TimerType) {
+    public fun clearTimer(timer: String) {
         timerMap.remove(timer)
     }
 
-    public fun aiQueue(type: QueueType, cycles: Int, args: Any? = null) {
+    public fun aiQueue(internal: String, cycles: Int, args: Any? = null) {
         require(cycles > 0) { "`cycles` must be greater than 0. (cycles=$cycles)" }
-        val queue = NpcQueueList.Queue(type.id, cycles, args)
+        val queue = NpcQueueList.Queue(internal.asRSCM(RSCMType.QUEUE), cycles, args)
         this.aiQueue = queue
     }
 
-    public fun queue(queue: QueueType, cycles: Int, args: Any? = null) {
+    public fun queue(queue: String, cycles: Int, args: Any? = null) {
         require(cycles > 0) { "`cycles` must be greater than 0. (cycles=$cycles)" }
         queueList.add(queue, cycles, args)
     }

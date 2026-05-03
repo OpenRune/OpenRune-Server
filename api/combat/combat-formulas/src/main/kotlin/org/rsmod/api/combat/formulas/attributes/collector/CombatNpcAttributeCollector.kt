@@ -4,8 +4,6 @@ import dev.openrune.types.NpcServerType
 import java.util.EnumSet
 import org.rsmod.api.combat.formulas.attributes.CombatNpcAttributes
 import org.rsmod.api.config.constants
-import org.rsmod.api.config.refs.categories
-import org.rsmod.api.config.refs.npcs
 import org.rsmod.api.config.refs.params
 
 public class CombatNpcAttributeCollector {
@@ -98,7 +96,7 @@ public class CombatNpcAttributeCollector {
             attributes += CombatNpcAttributes.Shade
         }
 
-        if (type.isCategoryType(categories.vampyres.id)) {
+        if (type.isCategoryType("category.vampyres")) {
             attributes += CombatNpcAttributes.Vampyre
         }
 
@@ -106,7 +104,7 @@ public class CombatNpcAttributeCollector {
             attributes += CombatNpcAttributes.TormentedDemonUnshielded
         }
 
-        if (type.isType(npcs.corp_beast)) {
+        if (type.isType("npc.corp_beast")) {
             attributes += CombatNpcAttributes.CorporealBeast
         }
 

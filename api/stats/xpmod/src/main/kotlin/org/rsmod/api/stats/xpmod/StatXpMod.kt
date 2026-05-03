@@ -3,10 +3,10 @@ package org.rsmod.api.stats.xpmod
 import dev.openrune.types.StatType
 import org.rsmod.game.entity.Player
 
-abstract class StatXpMod(private val stat: StatType) : XpMod {
+abstract class StatXpMod(private val stat: String) : XpMod {
     abstract fun Player.modifier(): Double
 
-    override fun Player.modifier(stat: StatType): Double {
+    override fun Player.modifier(stat: String): Double {
         if (stat == this@StatXpMod.stat) {
             return modifier()
         }

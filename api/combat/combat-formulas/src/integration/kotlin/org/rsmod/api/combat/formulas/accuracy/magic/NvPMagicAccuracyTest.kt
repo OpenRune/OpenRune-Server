@@ -10,10 +10,7 @@ import org.rsmod.api.combat.commons.CombatStance
 import org.rsmod.api.combat.formulas.test_npcs
 import org.rsmod.api.combat.weapon.scripts.WeaponAttackStylesScript
 import org.rsmod.api.combat.weapon.styles.AttackStyles
-import org.rsmod.api.config.refs.objs
 import org.rsmod.api.config.refs.stats
-import org.rsmod.api.config.refs.varbits
-import org.rsmod.api.config.refs.varps
 import org.rsmod.api.player.back
 import org.rsmod.api.player.feet
 import org.rsmod.api.player.front
@@ -48,7 +45,7 @@ class NvPMagicAccuracyTest {
             player.setBaseLevel(stats.hitpoints, matchup.baseHitpointsLvl)
             player.setCurrentLevel(stats.magic, matchup.magicLvl)
             player.setBaseLevel(stats.magic, matchup.baseMagicLvl)
-            player.setVarp(varps.com_mode, matchup.blockStance.varValue)
+            player.setVarp("varp.com_mode", matchup.blockStance.varValue)
 
             player.hat = matchup.hat
             player.back = matchup.back
@@ -184,30 +181,30 @@ class NvPMagicAccuracyTest {
                     .withNpcSource(test_npcs.dagannoth_prime)
                     .withBlockStance(CombatStance.Stance4) // Unarmed "Block" stance.
                     .withMagicLevel(magicLvl = 50)
-                    .withPrayers(varbits.augury),
+                    .withPrayers("varbit.prayer_augury"),
                 Matchup(expectedAccuracy = 51.11)
                     .withNpcSource(test_npcs.dagannoth_prime)
                     .withSaturatedHeart()
-                    .withHelm(objs.ancestral_hat)
-                    .withCape(objs.imbued_saradomin_cape)
-                    .withAmulet(objs.occult_necklace)
-                    .withBody(objs.ancestral_robe_top)
-                    .withLegs(objs.ancestral_robe_bottom)
-                    .withGloves(objs.tormented_bracelet)
-                    .withFeet(objs.eternal_boots)
-                    .withRing(objs.magus_ring)
-                    .withPrayers(varbits.mystic_will),
+                    .withHelm("obj.ancestral_hat")
+                    .withCape("obj.ma2_saradomin_cape")
+                    .withAmulet("obj.occult_necklace")
+                    .withBody("obj.ancestral_robe_top")
+                    .withLegs("obj.ancestral_robe_bottom")
+                    .withGloves("obj.zenyte_bracelet_enchanted")
+                    .withFeet("obj.eternal_boots")
+                    .withRing("obj.magus_ring")
+                    .withPrayers("varbit.prayer_mysticwill"),
                 Matchup(expectedAccuracy = 83.38)
                     .withNpcSource(test_npcs.dagannoth_prime)
-                    .withHelm(objs.torva_full_helm)
-                    .withBody(objs.torva_platebody)
-                    .withLegs(objs.torva_platelegs)
-                    .withCape(objs.infernal_cape)
-                    .withAmulet(objs.amulet_of_rancour)
-                    .withGloves(objs.ferocious_gloves)
-                    .withFeet(objs.primordial_boots)
-                    .withRing(objs.ultor_ring)
-                    .withPrayers(varbits.piety)
+                    .withHelm("obj.torva_helm")
+                    .withBody("obj.torva_chest")
+                    .withLegs("obj.torva_legs")
+                    .withCape("obj.infernal_cape")
+                    .withAmulet("obj.amulet_of_rancour")
+                    .withGloves("obj.ferocious_gloves")
+                    .withFeet("obj.primordial_boots")
+                    .withRing("obj.ultor_ring")
+                    .withPrayers("varbit.prayer_piety")
                     .withDefenceLevel(defenceLvl = 75),
             )
         }

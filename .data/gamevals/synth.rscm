@@ -5,7 +5,6 @@ picketgate_open=67
 nicedoor_close=80
 nicedoor_open=81
 death_jingle=89
-death_jingle_2=90
 high_alchemy=97
 low_alchemy=98
 bind_impact=99

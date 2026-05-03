@@ -1,11 +1,10 @@
 package org.rsmod.api.specials.energy
 
-import org.rsmod.api.config.refs.varps
 import org.rsmod.api.player.vars.intVarp
 import org.rsmod.game.entity.Player
 
 public class SpecialAttackEnergy {
-    private var Player.specialEnergy by intVarp(varps.sa_energy)
+    private var Player.specialEnergy by intVarp("varp.sa_energy")
 
     public fun hasSpecialEnergy(player: Player, energyInHundreds: Int): Boolean {
         return player.specialEnergy >= energyInHundreds

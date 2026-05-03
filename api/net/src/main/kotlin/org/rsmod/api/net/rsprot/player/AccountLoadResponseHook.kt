@@ -14,8 +14,6 @@ import org.rsmod.api.account.loader.request.AccountLoadAuth
 import org.rsmod.api.account.loader.request.AccountLoadCallback
 import org.rsmod.api.account.loader.request.AccountLoadResponse
 import org.rsmod.api.account.loader.request.isNewAccount
-import org.rsmod.api.config.refs.modlevels
-import org.rsmod.api.config.refs.varbits
 import org.rsmod.api.player.vars.boolVarBit
 import org.rsmod.api.realm.RealmConfig
 import org.rsmod.api.registry.account.AccountRegistry
@@ -278,7 +276,7 @@ class AccountLoadResponseHook(
         LoginResponse.Ok(
             authenticatorResponse = authenticatorResponse(auth),
             staffModLevel = modLevel.clientCode,
-            playerMod = modLevel.hasAccessTo(modlevels.moderator),
+            playerMod = modLevel.hasAccessTo("modlevel.moderator"),
             index = slotId,
             member = members,
             accountHash = accountHash,
@@ -310,7 +308,7 @@ class AccountLoadResponseHook(
 
         private val logger = InlineLogger()
 
-        private var Player.newAccount by boolVarBit(varbits.new_player_account)
+        private var Player.newAccount by boolVarBit("varbit.new_player_account")
 
         // TODO: Decide how to deal with email login usernames.
         private fun String.toDisplayName(): String {

@@ -8,7 +8,6 @@ import org.rsmod.api.combat.formulas.attributes.CombatSpellAttributes
 import org.rsmod.api.combat.formulas.attributes.collector.CombatMagicAttributeCollector
 import org.rsmod.api.combat.formulas.attributes.collector.DamageReductionAttributeCollector
 import org.rsmod.api.combat.formulas.maxhit.MaxHitOperations
-import org.rsmod.api.config.refs.varps
 import org.rsmod.api.player.bonus.WornBonuses
 import org.rsmod.api.player.stat.magicLvl
 import org.rsmod.api.player.vars.intVarp
@@ -23,7 +22,7 @@ constructor(
     private val magicAttributes: CombatMagicAttributeCollector,
     private val reductions: DamageReductionAttributeCollector,
 ) {
-    private var Player.maxHit by intVarp(varps.com_maxhit)
+    private var Player.maxHit by intVarp("varp.com_maxhit")
 
     /**
      * Computes the maximum magic hit for a normal spell cast by [player] against [target].
@@ -35,7 +34,7 @@ constructor(
      * - The `com_maxhit` varp for [player] is updated with the computed max hit.
      *
      * @param spell The [ItemServerType] representing the spell being cast (e.g.,
-     *   `objs.spell_wind_strike` for the Wind Strike spell).
+     *   `"obj.01_wind_strike"` for the Wind Strike spell).
      * @param spellbook The [Spellbook] the spell belongs to (e.g., Standard or Ancients), usually
      *   derived from the player's current spellbook.
      * @param baseMaxHit The spell's base max hit, used as a baseline for calculating the maximum

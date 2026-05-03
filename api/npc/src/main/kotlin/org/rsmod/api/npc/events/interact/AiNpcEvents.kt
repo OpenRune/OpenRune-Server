@@ -1,6 +1,8 @@
 package org.rsmod.api.npc.events.interact
 
 import dev.openrune.definition.type.widget.ComponentType
+import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.rscm.RSCMType
 import dev.openrune.types.ItemServerType
 import dev.openrune.types.NpcServerType
 import org.rsmod.events.EventBus
@@ -159,60 +161,60 @@ public class AiNpcUEvents {
     public class Op(
         public val target: Npc,
         public val invSlot: Int,
-        public val objType: ItemServerType,
+        public val objType: String,
         npcType: NpcServerType,
-    ) : OpEvent(EventBus.composeLongKey(npcType.id, objType.id))
+    ) : OpEvent(EventBus.composeLongKey(npcType.id, objType.asRSCM(RSCMType.OBJ)))
 
     public class Ap(
         public val target: Npc,
         public val invSlot: Int,
-        public val objType: ItemServerType,
+        public val objType: String,
         npcType: NpcServerType,
-    ) : ApEvent(EventBus.composeLongKey(npcType.id, objType.id))
+    ) : ApEvent(EventBus.composeLongKey(npcType.id, objType.asRSCM(RSCMType.OBJ)))
 }
 
 public class AiNpcUContentEvents {
     public class Op(
         public val target: Npc,
         public val invSlot: Int,
-        public val objType: ItemServerType,
+        public val objType: String,
         content: Int,
-    ) : OpEvent(EventBus.composeLongKey(content, objType.id))
+    ) : OpEvent(EventBus.composeLongKey(content, objType.asRSCM(RSCMType.OBJ)))
 
     public class Ap(
         public val target: Npc,
         public val invSlot: Int,
-        public val objType: ItemServerType,
+        public val objType: String,
         content: Int,
-    ) : ApEvent(EventBus.composeLongKey(content, objType.id))
+    ) : ApEvent(EventBus.composeLongKey(content, objType.asRSCM(RSCMType.OBJ)))
 }
 
 public class AiNpcUDefaultEvents {
     public class OpType(
         public val target: Npc,
         public val invSlot: Int,
-        public val objType: ItemServerType,
+        public val objType: String,
         npcType: NpcServerType,
     ) : OpEvent(npcType.id.toLong())
 
     public class ApType(
         public val target: Npc,
         public val invSlot: Int,
-        public val objType: ItemServerType,
+        public val objType: String,
         npcType: NpcServerType,
     ) : ApEvent(npcType.id.toLong())
 
     public class OpContent(
         public val target: Npc,
         public val invSlot: Int,
-        public val objType: ItemServerType,
+        public val objType: String,
         content: Int,
     ) : OpEvent(content.toLong())
 
     public class ApContent(
         public val target: Npc,
         public val invSlot: Int,
-        public val objType: ItemServerType,
+        public val objType: String,
         content: Int,
     ) : ApEvent(content.toLong())
 }
@@ -255,28 +257,28 @@ public class AiPlayerUEvents {
     public class Op(
         public val target: Player,
         public val invSlot: Int,
-        public val objType: ItemServerType,
-    ) : OpEvent(objType.id.toLong())
+        public val objType: String,
+    ) : OpEvent(objType.asRSCM(RSCMType.OBJ).toLong())
 
     public class Ap(
         public val target: Player,
         public val invSlot: Int,
-        public val objType: ItemServerType,
-    ) : ApEvent(objType.id.toLong())
+        public val objType: String,
+    ) : ApEvent(objType.asRSCM(RSCMType.OBJ).toLong())
 }
 
 public class AiPlayerUContentEvents {
     public class Op(
         public val target: Player,
         public val invSlot: Int,
-        public val objType: ItemServerType,
+        public val objType: String,
         npcContent: Int,
-    ) : OpEvent(EventBus.composeLongKey(npcContent, objType.id))
+    ) : OpEvent(EventBus.composeLongKey(npcContent, objType.asRSCM(RSCMType.OBJ)))
 
     public class Ap(
         public val target: Player,
         public val invSlot: Int,
-        public val objType: ItemServerType,
+        public val objType: String,
         npcContent: Int,
-    ) : ApEvent(EventBus.composeLongKey(npcContent, objType.id))
+    ) : ApEvent(EventBus.composeLongKey(npcContent, objType.asRSCM(RSCMType.OBJ)))
 }

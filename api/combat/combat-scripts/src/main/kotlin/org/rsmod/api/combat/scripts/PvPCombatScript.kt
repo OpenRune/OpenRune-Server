@@ -12,8 +12,6 @@ import org.rsmod.api.combat.player.resolveAutocastSpell
 import org.rsmod.api.combat.player.resolveCombatAttack
 import org.rsmod.api.combat.weapon.styles.AttackStyles
 import org.rsmod.api.combat.weapon.types.AttackTypes
-import org.rsmod.api.config.refs.categories
-import org.rsmod.api.config.refs.queues
 import org.rsmod.api.player.isInPvpCombat
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.righthand
@@ -103,7 +101,7 @@ constructor(
 
     private fun ProtectedAccess.canAttack(target: Player): Boolean {
         val weapon = getOrNull(player.righthand)
-        if (weapon != null && weapon.isCategoryType(categories.dinhs_bulwark)) {
+        if (weapon != null && weapon.isCategoryType("category.dinhs_bulwark")) {
             val attackStyle = styles.get(player)
             // Dinh's "Block" attack style uses `AggressiveMelee` as its "dummy" attack style.
             if (attackStyle == AttackStyle.AggressiveMelee) {
@@ -116,7 +114,7 @@ constructor(
         // Dinh's bulwark style-switching delay is added to a queue and is applied globally during
         // this condition check. This means even if you quickly change to another melee weapon and
         // re-interact with a target, you will _not_ move into op range.
-        if (queues.dinhs_combat_delay in player.queueList) {
+        if ("queue.dinhs_combat_delay" in player.queueList) {
             clearPendingAction()
             return false
         }

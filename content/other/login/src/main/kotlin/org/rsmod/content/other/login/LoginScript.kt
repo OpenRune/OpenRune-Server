@@ -1,6 +1,8 @@
 package org.rsmod.content.other.login
 
 import dev.openrune.ServerCacheManager
+import dev.openrune.rscm.RSCM
+import dev.openrune.rscm.RSCMType
 import dev.openrune.types.varp.VarpServerType
 import jakarta.inject.Inject
 import net.rsprot.protocol.game.outgoing.misc.client.HideLocOps
@@ -10,7 +12,6 @@ import net.rsprot.protocol.game.outgoing.misc.client.MinimapToggle
 import net.rsprot.protocol.game.outgoing.misc.client.ResetAnims
 import net.rsprot.protocol.game.outgoing.misc.player.ChatFilterSettings
 import net.rsprot.protocol.game.outgoing.varp.VarpReset
-import org.rsmod.api.config.refs.varbits
 import org.rsmod.api.inv.weight.InvWeight
 import org.rsmod.api.player.output.Camera
 import org.rsmod.api.player.output.ChatType
@@ -43,8 +44,8 @@ constructor(
 ) : PluginScript() {
     private val transmitVars by lazy { transmitVars() }
 
-    private var Player.chatboxUnlocked: Boolean by boolVarBit(varbits.has_displayname_transmitter)
-    private var Player.hideRoofs by boolVarBit(varbits.option_hide_rooftops)
+    private var Player.chatboxUnlocked: Boolean by boolVarBit("varbit.has_displayname_transmitter")
+    private var Player.hideRoofs by boolVarBit("varbit.option_hide_rooftops")
 
     override fun ScriptContext.startup() {
         onEvent<SessionStateEvent.EngineLogin>(0L) { player.engineLogin() }
@@ -118,9 +119,11 @@ constructor(
 
     private fun Player.sendStats() {
         for (stat in ServerCacheManager.getStats().values) {
-            val currXp = statMap.getXP(stat)
-            val currLvl = stat(stat)
-            val hiddenLvl = currLvl + invisibleLevels.get(this, stat)
+            val statInternal = RSCM.getReverseMapping(RSCMType.STAT,stat.id)
+
+            val currXp = statMap.getXP(statInternal)
+            val currLvl = stat(statInternal)
+            val hiddenLvl = currLvl + invisibleLevels.get(this, statInternal)
             UpdateStat.update(this, stat, currXp, currLvl, hiddenLvl)
         }
     }

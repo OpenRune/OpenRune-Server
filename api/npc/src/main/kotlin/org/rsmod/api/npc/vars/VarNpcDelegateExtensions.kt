@@ -9,47 +9,47 @@ import org.rsmod.game.entity.player.PlayerUid
 import org.rsmod.map.CoordGrid
 
 /* Varnpc delegates */
-public fun intVarn(varn: VarnType): NpcVariableIntDelegate = NpcVariableIntDelegate(varn)
+public fun intVarn(varn: String): NpcVariableIntDelegate = NpcVariableIntDelegate(varn)
 
-public fun boolVarn(varn: VarnType): NpcVariableTypeIntDelegate<Boolean> =
+public fun boolVarn(varn: String): NpcVariableTypeIntDelegate<Boolean> =
     typeIntVarn(varn, ::boolFromInt, ::boolToInt)
 
-public fun typeCoordVarn(varn: VarnType): NpcVariableTypeIntDelegate<CoordGrid?> {
+public fun typeCoordVarn(varn: String): NpcVariableTypeIntDelegate<CoordGrid?> {
     val fromType: (CoordGrid?) -> Int = { typed -> typed?.packed ?: CoordGrid.NULL.packed }
     return typeIntVarn(varn, ::CoordGrid, fromType)
 }
 
-public fun typeNpcUidVarn(varn: VarnType): NpcVariableTypeIntDelegate<NpcUid?> {
+public fun typeNpcUidVarn(varn: String): NpcVariableTypeIntDelegate<NpcUid?> {
     val fromType: (NpcUid?) -> Int = { typed -> typed?.packed ?: NpcUid.NULL.packed }
     return typeIntVarn(varn, ::NpcUid, fromType)
 }
 
-public fun typePlayerUidVarn(varn: VarnType): NpcVariableTypeIntDelegate<PlayerUid?> {
+public fun typePlayerUidVarn(varn: String): NpcVariableTypeIntDelegate<PlayerUid?> {
     val fromType: (PlayerUid?) -> Int = { typed -> typed?.packed ?: PlayerUid.NULL.packed }
     return typeIntVarn(varn, ::PlayerUid, fromType)
 }
 
 public fun <T> typeIntVarn(
-    varn: VarnType,
+    varn: String,
     toType: (Int) -> T,
     fromType: (T) -> Int,
 ): NpcVariableTypeIntDelegate<T> = NpcVariableTypeIntDelegate(varn, toType, fromType)
 
 /* Varnbit delegates */
-public fun intVarnBit(varnbit: VarnBitType): NpcVariableIntBitsDelegate =
+public fun intVarnBit(varnbit: String): NpcVariableIntBitsDelegate =
     NpcVariableIntBitsDelegate(varnbit)
 
-public fun boolVarnBit(varnbit: VarnBitType): NpcVariableTypeIntBitsDelegate<Boolean> =
+public fun boolVarnBit(varnbit: String): NpcVariableTypeIntBitsDelegate<Boolean> =
     typeIntVarnBit(varnbit, ::boolFromInt, ::boolToInt)
 
 public fun <T> typeIntVarnBit(
-    varnbit: VarnBitType,
+    varnbit: String,
     toType: (Int) -> T,
     fromType: (T) -> Int,
 ): NpcVariableTypeIntBitsDelegate<T> = NpcVariableTypeIntBitsDelegate(varnbit, toType, fromType)
 
 /* Delegate implementations */
-public class NpcVariableIntDelegate(private val varn: VarnType) {
+public class NpcVariableIntDelegate(private val varn: String) {
     public operator fun getValue(thisRef: Npc, property: KProperty<*>): Int {
         return thisRef.vars[varn]
     }
@@ -60,7 +60,7 @@ public class NpcVariableIntDelegate(private val varn: VarnType) {
 }
 
 public class NpcVariableTypeIntDelegate<T>(
-    private val varn: VarnType,
+    private val varn: String,
     public val toType: (Int) -> T,
     public val fromType: (T) -> Int,
 ) {
@@ -79,7 +79,7 @@ public class NpcVariableTypeIntDelegate<T>(
     }
 }
 
-public class NpcVariableIntBitsDelegate(private val varnbit: VarnBitType) {
+public class NpcVariableIntBitsDelegate(private val varnbit: String) {
     public operator fun getValue(thisRef: Npc, property: KProperty<*>): Int {
         return thisRef.vars[varnbit]
     }
@@ -90,7 +90,7 @@ public class NpcVariableIntBitsDelegate(private val varnbit: VarnBitType) {
 }
 
 public class NpcVariableTypeIntBitsDelegate<T>(
-    private val varnbit: VarnBitType,
+    private val varnbit: String,
     public val toType: (Int) -> T,
     public val fromType: (T) -> Int,
 ) {

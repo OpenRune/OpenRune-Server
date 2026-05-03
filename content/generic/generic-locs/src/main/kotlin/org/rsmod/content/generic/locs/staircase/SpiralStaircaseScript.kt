@@ -1,8 +1,9 @@
 package org.rsmod.content.generic.locs.staircase
 
-import org.rsmod.api.config.refs.content
 import org.rsmod.api.player.protect.ProtectedAccess
-import org.rsmod.api.script.onOpLoc1
+import org.rsmod.api.script.onOpContentLoc1
+import org.rsmod.api.script.onOpContentLoc2
+import org.rsmod.api.script.onOpContentLoc3
 import org.rsmod.api.script.onOpLoc2
 import org.rsmod.api.script.onOpLoc3
 import org.rsmod.game.loc.BoundLocInfo
@@ -13,20 +14,20 @@ import org.rsmod.plugin.scripts.ScriptContext
 
 class SpiralStaircaseScript : PluginScript() {
     override fun ScriptContext.startup() {
-        onOpLoc1(content.spiralstaircase_down) { climbDown(it.loc) }
-        onOpLoc1(content.spiralstaircase_up) { climbUp(it.loc) }
-        onOpLoc1(content.spiralstaircase_option) { climOption(it.loc) }
-        onOpLoc2(content.spiralstaircase_option) {
+        onOpContentLoc1("content.spiralstaircase_down") { climbDown(it.loc) }
+        onOpContentLoc1("content.spiralstaircase_up") { climbUp(it.loc) }
+        onOpContentLoc1("content.spiralstaircase_option") { climOption(it.loc) }
+        onOpContentLoc2("content.spiralstaircase_option") {
             arriveDelay()
             climbUp(it.loc)
         }
-        onOpLoc3(content.spiralstaircase_option) {
+        onOpContentLoc3("content.spiralstaircase_option") {
             arriveDelay()
             climbDown(it.loc)
         }
 
-        onOpLoc2(staircase_locs.lumbridge_spiral_bottom) { climbLumbridgeTop(it.loc) }
-        onOpLoc2(staircase_locs.lumbridge_spiral_top) { climbLumbridgeBottom(it.loc) }
+        onOpLoc2("loc.spiralstairsbottom_3") { climbLumbridgeTop(it.loc) }
+        onOpLoc2("loc.spiralstairstop_3") { climbLumbridgeBottom(it.loc) }
     }
 
     private fun ProtectedAccess.climbDown(loc: BoundLocInfo) =

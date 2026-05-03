@@ -1,5 +1,7 @@
 package org.rsmod.api.repo.world
 
+import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.rscm.RSCMType
 import dev.openrune.types.ProjAnimType
 import dev.openrune.types.SequenceServerType
 import dev.openrune.types.aconverted.SpotanimType
@@ -15,28 +17,28 @@ import org.rsmod.game.proj.ProjAnim
 import org.rsmod.map.CoordGrid
 
 public class WorldRepository @Inject constructor(private val zoneUpdates: ZoneUpdateMap) {
-    public fun locAnim(loc: LocInfo, seq: SequenceServerType) {
-        zoneUpdates.locAnim(loc, seq.id)
+    public fun locAnim(loc: LocInfo, seq: String) {
+        zoneUpdates.locAnim(loc, seq.asRSCM(RSCMType.SEQ))
     }
 
-    public fun locAnim(loc: BoundLocInfo, seq: SequenceServerType) {
+    public fun locAnim(loc: BoundLocInfo, seq: String) {
         locAnim(LocInfo(loc.layer, loc.coords, loc.entity), seq)
     }
 
     public fun soundArea(
         source: CoordGrid,
-        synth: SynthType,
+        synth: String,
         delay: Int = 0,
         loops: Int = 1,
         radius: Int = 5,
         size: Int = 0,
     ) {
-        zoneUpdates.soundArea(source, synth.id, delay, loops, radius, size)
+        zoneUpdates.soundArea(source, synth.asRSCM(RSCMType.SYNTH), delay, loops, radius, size)
     }
 
     public fun soundArea(
         source: PathingEntity,
-        synth: SynthType,
+        synth: String,
         delay: Int = 0,
         loops: Int = 1,
         radius: Int = 5,
@@ -61,7 +63,7 @@ public class WorldRepository @Inject constructor(private val zoneUpdates: ZoneUp
         source: Player,
         target: Npc,
         spotanim: SpotanimType,
-        type: ProjAnimType,
+        type: String,
     ): ProjAnim {
         val projAnim = ProjAnim.fromBoundsToNpc(source.bounds(), target, spotanim.id, type)
         projAnim(projAnim)
@@ -72,7 +74,7 @@ public class WorldRepository @Inject constructor(private val zoneUpdates: ZoneUp
         source: Player,
         target: Npc,
         spotanim: SpotanimType,
-        type: ProjAnimType,
+        type: String,
     ): ProjAnim {
         val projAnim = ProjAnim.fromPlayerToNpc(source, target, spotanim.id, type)
         projAnim(projAnim)
@@ -83,7 +85,7 @@ public class WorldRepository @Inject constructor(private val zoneUpdates: ZoneUp
         source: Player,
         target: Player,
         spotanim: SpotanimType,
-        type: ProjAnimType,
+        type: String,
     ): ProjAnim {
         val projAnim = ProjAnim.fromBoundsToPlayer(source.bounds(), target, spotanim.id, type)
         projAnim(projAnim)
@@ -94,7 +96,7 @@ public class WorldRepository @Inject constructor(private val zoneUpdates: ZoneUp
         source: Player,
         target: Player,
         spotanim: SpotanimType,
-        type: ProjAnimType,
+        type: String,
     ): ProjAnim {
         val projAnim = ProjAnim.fromPlayerToPlayer(source, target, spotanim.id, type)
         projAnim(projAnim)
@@ -105,7 +107,7 @@ public class WorldRepository @Inject constructor(private val zoneUpdates: ZoneUp
         source: Player,
         target: CoordGrid,
         spotanim: SpotanimType,
-        type: ProjAnimType,
+        type: String,
     ): ProjAnim {
         val projAnim = ProjAnim.fromBoundsToCoord(source.bounds(), target, spotanim.id, type)
         projAnim(projAnim)
@@ -116,7 +118,7 @@ public class WorldRepository @Inject constructor(private val zoneUpdates: ZoneUp
         source: Player,
         target: CoordGrid,
         spotanim: SpotanimType,
-        type: ProjAnimType,
+        type: String,
     ): ProjAnim {
         val projAnim = ProjAnim.fromPlayerToCoord(source, target, spotanim.id, type)
         projAnim(projAnim)
@@ -127,7 +129,7 @@ public class WorldRepository @Inject constructor(private val zoneUpdates: ZoneUp
         source: Npc,
         target: Npc,
         spotanim: SpotanimType,
-        type: ProjAnimType,
+        type: String,
     ): ProjAnim {
         val projAnim = ProjAnim.fromBoundsToNpc(source.bounds(), target, spotanim.id, type)
         projAnim(projAnim)
@@ -149,7 +151,7 @@ public class WorldRepository @Inject constructor(private val zoneUpdates: ZoneUp
         source: Npc,
         target: Player,
         spotanim: SpotanimType,
-        type: ProjAnimType,
+        type: String,
     ): ProjAnim {
         val projAnim = ProjAnim.fromBoundsToPlayer(source.bounds(), target, spotanim.id, type)
         projAnim(projAnim)
@@ -171,7 +173,7 @@ public class WorldRepository @Inject constructor(private val zoneUpdates: ZoneUp
         source: Npc,
         target: CoordGrid,
         spotanim: SpotanimType,
-        type: ProjAnimType,
+        type: String,
     ): ProjAnim {
         val projAnim = ProjAnim.fromBoundsToCoord(source.bounds(), target, spotanim.id, type)
         projAnim(projAnim)

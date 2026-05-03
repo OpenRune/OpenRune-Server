@@ -1,6 +1,8 @@
 package org.rsmod.content.skills.woodcutting.scripts
 
 import dev.openrune.ServerCacheManager
+import dev.openrune.rscm.RSCM
+import dev.openrune.rscm.RSCMType
 import dev.openrune.types.ItemServerType
 import dev.openrune.types.ObjectServerType
 import dev.openrune.types.SequenceServerType
@@ -9,12 +11,7 @@ import org.rsmod.api.config.Constants
 import org.rsmod.api.config.locParam
 import org.rsmod.api.config.locXpParam
 import org.rsmod.api.config.objParam
-import org.rsmod.api.config.refs.content
-import org.rsmod.api.config.refs.controllers
 import org.rsmod.api.config.refs.params
-import org.rsmod.api.config.refs.stats
-import org.rsmod.api.config.refs.synths
-import org.rsmod.api.config.refs.varcons
 import org.rsmod.api.controller.vars.intVarCon
 import org.rsmod.api.player.output.ClientScripts
 import org.rsmod.api.player.protect.ProtectedAccess
@@ -25,9 +22,9 @@ import org.rsmod.api.repo.controller.ControllerRepository
 import org.rsmod.api.repo.loc.LocRepository
 import org.rsmod.api.repo.player.PlayerRepository
 import org.rsmod.api.script.onAiConTimer
-import org.rsmod.api.script.onOpLoc1
-import org.rsmod.api.script.onOpLoc3
-import org.rsmod.api.script.onOpLocU
+import org.rsmod.api.script.onOpContentLoc1
+import org.rsmod.api.script.onOpContentLoc3
+import org.rsmod.api.script.onOpContentU
 import org.rsmod.api.stats.levelmod.InvisibleLevels
 import org.rsmod.api.stats.xpmod.XpModifiers
 import org.rsmod.content.skills.woodcutting.configs.WoodcuttingParams
@@ -56,10 +53,10 @@ constructor(
     private val mapClock: MapClock,
 ) : PluginScript() {
     override fun ScriptContext.startup() {
-        onOpLoc1(content.tree) { attempt(it.loc, it.type) }
-        onOpLoc3(content.tree) { cut(it.loc, it.type) }
-        onOpLocU(content.tree, content.woodcutting_axe) { cut(it.loc, it.type) }
-        onAiConTimer(controllers.woodcutting_tree_duration) { controller.treeDespawnTick() }
+        onOpContentLoc1("content.tree") { attempt(it.loc, it.type) }
+        onOpContentLoc3("content.tree") { cut(it.loc, it.type) }
+        onOpContentU("content.tree", "content.woodcutting_axe") { cut(it.loc, it.type) }
+        onAiConTimer("controller.woodcutting_tree_duration") { controller.treeDespawnTick() }
     }
 
     private fun ProtectedAccess.attempt(tree: BoundLocInfo, type: ObjectServerType) {
@@ -71,7 +68,7 @@ constructor(
         if (inv.isFull()) {
             val product = type.treeLogs
             mes("Your inventory is too full to hold any more ${product.name.lowercase()}.")
-            soundSynth(synths.pillory_wrong)
+            soundSynth("synth.pillory_wrong")
             return
         }
 
@@ -86,7 +83,7 @@ constructor(
                 mes("You do not have an axe which you have the woodcutting level to use.")
                 return
             }
-            anim(getInvObj(axe).axeWoodcuttingAnim)
+            anim(RSCM.getReverseMapping(RSCMType.SEQ, getInvObj(axe).axeWoodcuttingAnim.id))
             spam("You swing your axe at the tree.")
             cut(tree, type)
         }
@@ -108,13 +105,13 @@ constructor(
         if (inv.isFull()) {
             val product = type.treeLogs
             mes("Your inventory is too full to hold any more ${product.name.lowercase()}.")
-            soundSynth(synths.pillory_wrong)
+            soundSynth("synth.pillory_wrong")
             return
         }
 
         if (skillAnimDelay <= mapClock) {
             skillAnimDelay = mapClock + 4
-            anim(getInvObj(axe).axeWoodcuttingAnim)
+            anim(RSCM.getReverseMapping(RSCMType.SEQ,getInvObj(axe).axeWoodcuttingAnim.id))
         }
 
         var cutLogs = false
@@ -124,7 +121,7 @@ constructor(
             actionDelay = mapClock + 3
         } else if (actionDelay == mapClock) {
             val (low, high) = cutSuccessRates(type, axe)
-            cutLogs = statRandom(stats.woodcutting, low, high, invisibleLvls)
+            cutLogs = statRandom("stat.woodcutting", low, high, invisibleLvls)
         }
 
         if (type.hasDespawnTimer) {
@@ -136,10 +133,10 @@ constructor(
 
         if (cutLogs) {
             val product = type.treeLogs
-            val xp = type.treeXp * xpMods.get(player, stats.woodcutting)
+            val xp = type.treeXp * xpMods.get(player, "stat.woodcutting")
             spam("You get some ${product.name.lowercase()}.")
-            statAdvance(stats.woodcutting, xp)
-            invAdd(inv, product)
+            statAdvance("stat.woodcutting", xp)
+            invAdd(inv, RSCM.getReverseMapping(RSCMType.OBJ, product.id))
             publish(CutLogs(player, tree, product))
         }
 
@@ -147,7 +144,7 @@ constructor(
             val respawnTime = type.resolveRespawnTime(random)
             locRepo.change(tree, type.treeStump, respawnTime)
             resetAnim()
-            soundSynth(synths.tree_fall_sound)
+            soundSynth("synth.tree_fall_sound")
             sendLocalOverlayLoc(tree, type, respawnTime)
         }
 
@@ -188,7 +185,7 @@ constructor(
     }
 
     private fun treeSwingDespawnTick(tree: BoundLocInfo, type: ObjectServerType) {
-        val controller = conRepo.findExact(tree.coords, controllers.woodcutting_tree_duration)
+        val controller = conRepo.findExact(tree.coords, "controller.woodcutting_tree_duration")
         if (controller != null) {
             check(controller.treeLocId == tree.id) {
                 "Controller in coords is not associated with tree: " +
@@ -198,7 +195,7 @@ constructor(
             return
         }
 
-        val spawn = Controller(controllers.woodcutting_tree_duration, tree.coords)
+        val spawn = Controller("controller.woodcutting_tree_duration", tree.coords)
         conRepo.add(spawn, type.treeDespawnTime)
 
         spawn.treeLocId = tree.id
@@ -208,7 +205,7 @@ constructor(
     }
 
     private fun isTreeDespawnRequired(tree: BoundLocInfo): Boolean {
-        val controller = conRepo.findExact(tree.coords, controllers.woodcutting_tree_duration)
+        val controller = conRepo.findExact(tree.coords, "controller.woodcutting_tree_duration")
         return controller != null && controller.treeActivelyCutTicks >= controller.durationStart
     }
 
@@ -231,9 +228,9 @@ constructor(
         UnboundEvent
 
     companion object {
-        var Controller.treeActivelyCutTicks: Int by intVarCon(varcons.woodcutting_tree_cut_ticks)
-        var Controller.treeLastCut: Int by intVarCon(varcons.woodcutting_tree_last_cut)
-        var Controller.treeLocId: Int by intVarCon(varcons.woodcutting_tree_loc)
+        var Controller.treeActivelyCutTicks: Int by intVarCon("varcon.woodcutting_tree_cut_ticks")
+        var Controller.treeLastCut: Int by intVarCon("varcon.woodcutting_tree_last_cut")
+        var Controller.treeLocId: Int by intVarCon("varcon.woodcutting_tree_loc")
 
         val ItemServerType.axeWoodcuttingReq: Int by objParam(params.levelrequire)
         val ItemServerType.axeWoodcuttingAnim: SequenceServerType by objParam(params.skill_anim)
@@ -274,7 +271,7 @@ constructor(
         }
 
         private fun ItemServerType.isUsableAxe(woodcuttingLevel: Int): Boolean =
-            isContentType(content.woodcutting_axe) && woodcuttingLevel >= axeWoodcuttingReq
+            isContentType("content.woodcutting_axe") && woodcuttingLevel >= axeWoodcuttingReq
 
         private fun ObjectServerType.resolveRespawnTime(random: GameRandom): Int {
             val fixed = treeRespawnTime

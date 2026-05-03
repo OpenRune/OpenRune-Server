@@ -1,5 +1,8 @@
 package org.rsmod.game.inv
 
+import dev.openrune.ServerCacheManager
+import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.rscm.RSCMType
 import dev.openrune.types.InventoryServerType
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 
@@ -16,27 +19,28 @@ public class InventoryMap(
 
     public fun isNotEmpty(): Boolean = backing.isNotEmpty()
 
-    public fun getOrPut(type: InventoryServerType): Inventory {
-        val inv = this[type]
+    public fun getOrPut(internal: String): Inventory {
+
+        val inv = this[internal]
         if (inv != null) {
             return inv
         }
-        val create = Inventory.create(type)
-        this[type] = create
+        val create = Inventory.create(internal)
+        this[internal] = create
         return create
     }
 
-    public fun getValue(type: InventoryServerType): Inventory =
+    public fun getValue(type: String): Inventory =
         this[type] ?: throw NoSuchElementException("InvType is missing in the map: $type.")
 
-    public fun remove(type: InventoryServerType): Inventory? = backing.remove(type.id)
+    public fun remove(type: String): Inventory? = backing.remove(type.asRSCM(RSCMType.INV))
 
-    public operator fun set(type: InventoryServerType, inventory: Inventory) {
-        backing[type.id] = inventory
+    public operator fun set(type: String, inventory: Inventory) {
+        backing[type.asRSCM(RSCMType.INV)] = inventory
     }
 
-    public operator fun get(type: InventoryServerType): Inventory? =
-        backing.getOrDefault(type.id, null)
+    public operator fun get(type: String): Inventory? =
+        backing.getOrDefault(type.asRSCM(RSCMType.INV), null)
 
-    public operator fun contains(type: InventoryServerType): Boolean = backing.containsKey(type.id)
+    public operator fun contains(type: String): Boolean = backing.containsKey(type.asRSCM(RSCMType.INV))
 }

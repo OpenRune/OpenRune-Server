@@ -1,17 +1,13 @@
 package org.rsmod.content.skills.magic.spell.attacks.standard
 
+import dev.openrune.rscm.RSCM
+import dev.openrune.rscm.RSCMType
 import dev.openrune.types.ItemServerType
 import dev.openrune.types.SequenceServerType
 import dev.openrune.types.aconverted.SpotanimType
 import dev.openrune.types.aconverted.SynthType
 import org.rsmod.api.combat.commons.CombatAttack
 import org.rsmod.api.combat.manager.MagicRuneManager.Companion.isFailure
-import org.rsmod.api.config.refs.categories
-import org.rsmod.api.config.refs.objs
-import org.rsmod.api.config.refs.projanims
-import org.rsmod.api.config.refs.seqs
-import org.rsmod.api.config.refs.spotanims
-import org.rsmod.api.config.refs.synths
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.stat.magicLvl
 import org.rsmod.api.spells.attack.SpellAttack
@@ -42,65 +38,65 @@ class ElementalSpells : SpellAttackMap {
             }
 
         register(
-            spell = objs.spell_wind_strike,
+            spell = "obj.01_wind_strike",
             attack =
                 ElementalSpellAttack(
                     manager = manager,
-                    staffAnim = seqs.human_caststrike_staff,
-                    unarmedAnim = seqs.human_caststrike,
-                    launch = spotanims.windstrike_casting,
-                    travel = spotanims.windstrike_travel,
-                    impact = spotanims.windstrike_impact,
-                    castSound = synths.windstrike_cast_and_fire,
-                    hitSound = synths.windstrike_hit,
+                    staffAnim = "seq.human_caststrike_staff",
+                    unarmedAnim = "seq.human_caststrike",
+                    launch = "spotanim.windstrike_casting",
+                    travel = "spotanim.windstrike_travel",
+                    impact = "spotanim.windstrike_impact",
+                    castSound = "synth.windstrike_cast_and_fire",
+                    hitSound = "synth.windstrike_hit",
                     getMaxHit = ::getMaxHit,
                 ),
         )
 
         register(
-            spell = objs.spell_water_strike,
+            spell = "obj.05_water_strike",
             attack =
                 ElementalSpellAttack(
                     manager = manager,
-                    staffAnim = seqs.human_caststrike_staff,
-                    unarmedAnim = seqs.human_caststrike,
-                    launch = spotanims.waterstrike_casting,
-                    travel = spotanims.waterstrike_travel,
-                    impact = spotanims.waterstrike_impact,
-                    castSound = synths.waterstrike_cast_and_fire,
-                    hitSound = synths.waterstrike_hit,
+                    staffAnim = "seq.human_caststrike_staff",
+                    unarmedAnim = "seq.human_caststrike",
+                    launch = "spotanim.waterstrike_casting",
+                    travel = "spotanim.waterstrike_travel",
+                    impact = "spotanim.waterstrike_impact",
+                    castSound = "synth.waterstrike_cast_and_fire",
+                    hitSound = "synth.waterstrike_hit",
                     getMaxHit = ::getMaxHit,
                 ),
         )
 
         register(
-            spell = objs.spell_earth_strike,
+            spell = "obj.09_earth_strike",
             attack =
                 ElementalSpellAttack(
                     manager = manager,
-                    staffAnim = seqs.human_caststrike_staff,
-                    unarmedAnim = seqs.human_caststrike,
-                    launch = spotanims.earthstrike_casting,
-                    travel = spotanims.earthstrike_travel,
-                    impact = spotanims.earthstrike_impact,
-                    castSound = synths.earthstrike_cast_and_fire,
-                    hitSound = synths.earthstrike_hit,
+                    staffAnim = "seq.human_caststrike_staff",
+                    unarmedAnim = "seq.human_caststrike",
+                    launch = "spotanim.earthstrike_casting",
+                    travel = "spotanim.earthstrike_travel",
+                    impact = "spotanim.earthstrike_impact",
+                    castSound = "synth.earthstrike_cast_and_fire",
+                    hitSound = "synth.earthstrike_hit",
                     getMaxHit = ::getMaxHit,
                 ),
         )
 
         register(
-            spell = objs.spell_fire_strike,
+            spell = "obj.13_fire_strike",
             attack =
                 ElementalSpellAttack(
                     manager = manager,
-                    staffAnim = seqs.human_caststrike_staff,
-                    unarmedAnim = seqs.human_caststrike,
-                    launch = spotanims.firestrike_casting,
-                    travel = spotanims.firestrike_travel,
-                    impact = spotanims.firestrike_impact,
-                    castSound = synths.firestrike_cast_and_fire,
-                    hitSound = synths.firestrike_hit,
+                    staffAnim = "seq.human_caststrike_staff",
+                    unarmedAnim = "seq.human_caststrike",
+                    launch = "spotanim.firestrike_casting",
+                    travel = "spotanim.firestrike_travel",
+                    impact = "spotanim.firestrike_impact",
+                    castSound = "synth.firestrike_cast_and_fire",
+                    hitSound = "synth.firestrike_hit",
                     getMaxHit = ::getMaxHit,
                 ),
         )
@@ -116,65 +112,65 @@ class ElementalSpells : SpellAttackMap {
             }
 
         register(
-            spell = objs.spell_wind_bolt,
+            spell = "obj.17_wind_bolt",
             attack =
                 ElementalSpellAttack(
                     manager = manager,
-                    staffAnim = seqs.human_caststrike_staff,
-                    unarmedAnim = seqs.human_caststrike,
-                    launch = spotanims.windbolt_casting,
-                    travel = spotanims.windbolt_travel,
-                    impact = spotanims.windbolt_impact,
-                    castSound = synths.windbolt_cast_and_fire,
-                    hitSound = synths.windbolt_hit,
+                    staffAnim = "seq.human_caststrike_staff",
+                    unarmedAnim = "seq.human_caststrike",
+                    launch = "spotanim.windbolt_casting",
+                    travel = "spotanim.windbolt_travel",
+                    impact = "spotanim.windbolt_impact",
+                    castSound = "synth.windbolt_cast_and_fire",
+                    hitSound = "synth.windbolt_hit",
                     getMaxHit = ::getMaxHit,
                 ),
         )
 
         register(
-            spell = objs.spell_water_bolt,
+            spell = "obj.23_water_bolt",
             attack =
                 ElementalSpellAttack(
                     manager = manager,
-                    staffAnim = seqs.human_caststrike_staff,
-                    unarmedAnim = seqs.human_caststrike,
-                    launch = spotanims.waterbolt_casting,
-                    travel = spotanims.waterbolt_travel,
-                    impact = spotanims.waterbolt_impact,
-                    castSound = synths.waterbolt_cast_and_fire,
-                    hitSound = synths.waterbolt_hit,
+                    staffAnim = "seq.human_caststrike_staff",
+                    unarmedAnim = "seq.human_caststrike",
+                    launch = "spotanim.waterbolt_casting",
+                    travel = "spotanim.waterbolt_travel",
+                    impact = "spotanim.waterbolt_impact",
+                    castSound = "synth.waterbolt_cast_and_fire",
+                    hitSound = "synth.waterbolt_hit",
                     getMaxHit = ::getMaxHit,
                 ),
         )
 
         register(
-            spell = objs.spell_earth_bolt,
+            spell = "obj.29_earth_bolt",
             attack =
                 ElementalSpellAttack(
                     manager = manager,
-                    staffAnim = seqs.human_caststrike_staff,
-                    unarmedAnim = seqs.human_caststrike,
-                    launch = spotanims.earthbolt_casting,
-                    travel = spotanims.earthbolt_travel,
-                    impact = spotanims.earthbolt_impact,
-                    castSound = synths.earthbolt_cast_and_fire,
-                    hitSound = synths.earthbolt_hit,
+                    staffAnim = "seq.human_caststrike_staff",
+                    unarmedAnim = "seq.human_caststrike",
+                    launch = "spotanim.earthbolt_casting",
+                    travel = "spotanim.earthbolt_travel",
+                    impact = "spotanim.earthbolt_impact",
+                    castSound = "synth.earthbolt_cast_and_fire",
+                    hitSound = "synth.earthbolt_hit",
                     getMaxHit = ::getMaxHit,
                 ),
         )
 
         register(
-            spell = objs.spell_fire_bolt,
+            spell = "obj.35_fire_bolt",
             attack =
                 ElementalSpellAttack(
                     manager = manager,
-                    staffAnim = seqs.human_caststrike_staff,
-                    unarmedAnim = seqs.human_caststrike,
-                    launch = spotanims.firebolt_casting,
-                    travel = spotanims.firebolt_travel,
-                    impact = spotanims.firebolt_impact,
-                    castSound = synths.firebolt_cast_and_fire,
-                    hitSound = synths.firebolt_hit,
+                    staffAnim = "seq.human_caststrike_staff",
+                    unarmedAnim = "seq.human_caststrike",
+                    launch = "spotanim.firebolt_casting",
+                    travel = "spotanim.firebolt_travel",
+                    impact = "spotanim.firebolt_impact",
+                    castSound = "synth.firebolt_cast_and_fire",
+                    hitSound = "synth.firebolt_hit",
                     getMaxHit = ::getMaxHit,
                 ),
         )
@@ -190,65 +186,65 @@ class ElementalSpells : SpellAttackMap {
             }
 
         register(
-            spell = objs.spell_wind_blast,
+            spell = "obj.41_wind_blast",
             attack =
                 ElementalSpellAttack(
                     manager = manager,
-                    staffAnim = seqs.human_caststrike_staff,
-                    unarmedAnim = seqs.human_caststrike,
-                    launch = spotanims.windblast_casting,
-                    travel = spotanims.windblast_travel,
-                    impact = spotanims.windblast_impact,
-                    castSound = synths.windblast_cast_and_fire,
-                    hitSound = synths.windblast_hit,
+                    staffAnim = "seq.human_caststrike_staff",
+                    unarmedAnim = "seq.human_caststrike",
+                    launch = "spotanim.windblast_casting",
+                    travel = "spotanim.windblast_travel",
+                    impact = "spotanim.windblast_impact",
+                    castSound = "synth.windblast_cast_and_fire",
+                    hitSound = "synth.windblast_hit",
                     getMaxHit = ::getMaxHit,
                 ),
         )
 
         register(
-            spell = objs.spell_water_blast,
+            spell = "obj.47_water_blast",
             attack =
                 ElementalSpellAttack(
                     manager = manager,
-                    staffAnim = seqs.human_caststrike_staff,
-                    unarmedAnim = seqs.human_caststrike,
-                    launch = spotanims.waterblast_casting,
-                    travel = spotanims.waterblast_travel,
-                    impact = spotanims.waterblast_impact,
-                    castSound = synths.waterblast_cast_and_fire,
-                    hitSound = synths.waterblast_hit,
+                    staffAnim = "seq.human_caststrike_staff",
+                    unarmedAnim = "seq.human_caststrike",
+                    launch = "spotanim.waterblast_casting",
+                    travel = "spotanim.waterblast_travel",
+                    impact = "spotanim.waterblast_impact",
+                    castSound = "synth.waterblast_cast_and_fire",
+                    hitSound = "synth.waterblast_hit",
                     getMaxHit = ::getMaxHit,
                 ),
         )
 
         register(
-            spell = objs.spell_earth_blast,
+            spell = "obj.53_earth_blast",
             attack =
                 ElementalSpellAttack(
                     manager = manager,
-                    staffAnim = seqs.human_caststrike_staff,
-                    unarmedAnim = seqs.human_caststrike,
-                    launch = spotanims.earthblast_casting,
-                    travel = spotanims.earthblast_travel,
-                    impact = spotanims.earthblast_impact,
-                    castSound = synths.earthblast_cast_and_fire,
-                    hitSound = synths.earthblast_hit,
+                    staffAnim = "seq.human_caststrike_staff",
+                    unarmedAnim = "seq.human_caststrike",
+                    launch = "spotanim.earthblast_casting",
+                    travel = "spotanim.earthblast_travel",
+                    impact = "spotanim.earthblast_impact",
+                    castSound = "synth.earthblast_cast_and_fire",
+                    hitSound = "synth.earthblast_hit",
                     getMaxHit = ::getMaxHit,
                 ),
         )
 
         register(
-            spell = objs.spell_fire_blast,
+            spell = "obj.59_fire_blast",
             attack =
                 ElementalSpellAttack(
                     manager = manager,
-                    staffAnim = seqs.human_caststrike_staff,
-                    unarmedAnim = seqs.human_caststrike,
-                    launch = spotanims.fireblast_casting,
-                    travel = spotanims.fireblast_travel,
-                    impact = spotanims.fireblast_impact,
-                    castSound = synths.fireblast_cast_and_fire,
-                    hitSound = synths.fireblast_hit,
+                    staffAnim = "seq.human_caststrike_staff",
+                    unarmedAnim = "seq.human_caststrike",
+                    launch = "spotanim.fireblast_casting",
+                    travel = "spotanim.fireblast_travel",
+                    impact = "spotanim.fireblast_impact",
+                    castSound = "synth.fireblast_cast_and_fire",
+                    hitSound = "synth.fireblast_hit",
                     getMaxHit = ::getMaxHit,
                 ),
         )
@@ -264,65 +260,65 @@ class ElementalSpells : SpellAttackMap {
             }
 
         register(
-            spell = objs.spell_wind_wave,
+            spell = "obj.62_wind_wave",
             attack =
                 ElementalSpellAttack(
                     manager = manager,
-                    staffAnim = seqs.human_castwave_staff,
-                    unarmedAnim = seqs.human_castwave,
-                    launch = spotanims.windwave_casting,
-                    travel = spotanims.windwave_travel,
-                    impact = spotanims.windwave_impact,
-                    castSound = synths.windwave_cast_and_fire,
-                    hitSound = synths.windwave_hit,
+                    staffAnim = "seq.human_castwave_staff",
+                    unarmedAnim = "seq.human_castwave",
+                    launch = "spotanim.windwave_casting",
+                    travel = "spotanim.windwave_travel",
+                    impact = "spotanim.windwave_impact",
+                    castSound = "synth.windwave_cast_and_fire",
+                    hitSound = "synth.windwave_hit",
                     getMaxHit = ::getMaxHit,
                 ),
         )
 
         register(
-            spell = objs.spell_water_wave,
+            spell = "obj.65_water_wave",
             attack =
                 ElementalSpellAttack(
                     manager = manager,
-                    staffAnim = seqs.human_castwave_staff,
-                    unarmedAnim = seqs.human_castwave,
-                    launch = spotanims.waterwave_casting,
-                    travel = spotanims.waterwave_travel,
-                    impact = spotanims.waterwave_impact,
-                    castSound = synths.waterwave_cast_and_fire,
-                    hitSound = synths.waterwave_hit,
+                    staffAnim = "seq.human_castwave_staff",
+                    unarmedAnim = "seq.human_castwave",
+                    launch = "spotanim.waterwave_casting",
+                    travel = "spotanim.waterwave_travel",
+                    impact = "spotanim.waterwave_impact",
+                    castSound = "synth.waterwave_cast_and_fire",
+                    hitSound = "synth.waterwave_hit",
                     getMaxHit = ::getMaxHit,
                 ),
         )
 
         register(
-            spell = objs.spell_earth_wave,
+            spell = "obj.70_earth_wave",
             attack =
                 ElementalSpellAttack(
                     manager = manager,
-                    staffAnim = seqs.human_castwave_staff,
-                    unarmedAnim = seqs.human_castwave,
-                    launch = spotanims.earthwave_casting,
-                    travel = spotanims.earthwave_travel,
-                    impact = spotanims.earthwave_impact,
-                    castSound = synths.earthwave_cast_and_fire,
-                    hitSound = synths.earthwave_hit,
+                    staffAnim = "seq.human_castwave_staff",
+                    unarmedAnim = "seq.human_castwave",
+                    launch = "spotanim.earthwave_casting",
+                    travel = "spotanim.earthwave_travel",
+                    impact = "spotanim.earthwave_impact",
+                    castSound = "synth.earthwave_cast_and_fire",
+                    hitSound = "synth.earthwave_hit",
                     getMaxHit = ::getMaxHit,
                 ),
         )
 
         register(
-            spell = objs.spell_fire_wave,
+            spell = "obj.75_fire_wave",
             attack =
                 ElementalSpellAttack(
                     manager = manager,
-                    staffAnim = seqs.human_castwave_staff,
-                    unarmedAnim = seqs.human_castwave,
-                    launch = spotanims.firewave_casting,
-                    travel = spotanims.firewave_travel,
-                    impact = spotanims.firewave_impact,
-                    castSound = synths.firewave_cast_and_fire,
-                    hitSound = synths.firewave_hit,
+                    staffAnim = "seq.human_castwave_staff",
+                    unarmedAnim = "seq.human_castwave",
+                    launch = "spotanim.firewave_casting",
+                    travel = "spotanim.firewave_travel",
+                    impact = "spotanim.firewave_impact",
+                    castSound = "synth.firewave_cast_and_fire",
+                    hitSound = "synth.firewave_hit",
                     getMaxHit = ::getMaxHit,
                 ),
         )
@@ -338,65 +334,65 @@ class ElementalSpells : SpellAttackMap {
             }
 
         register(
-            spell = objs.spell_wind_surge,
+            spell = "obj.81_wind_surge",
             attack =
                 ElementalSpellAttack(
                     manager = manager,
-                    staffAnim = seqs.human_cast_surge,
-                    unarmedAnim = seqs.human_cast_surge,
-                    launch = spotanims.windsurge_casting,
-                    travel = spotanims.windsurge_travel,
-                    impact = spotanims.windsurge_impact,
-                    castSound = synths.windsurge_cast_and_fire,
-                    hitSound = synths.windsurge_hit,
+                    staffAnim = "seq.human_cast_surge",
+                    unarmedAnim = "seq.human_cast_surge",
+                    launch = "spotanim.windsurge_casting",
+                    travel = "spotanim.windsurge_travel",
+                    impact = "spotanim.windsurge_impact",
+                    castSound = "synth.windsurge_cast_and_fire",
+                    hitSound = "synth.windsurge_hit",
                     getMaxHit = ::getMaxHit,
                 ),
         )
 
         register(
-            spell = objs.spell_water_surge,
+            spell = "obj.85_water_surge",
             attack =
                 ElementalSpellAttack(
                     manager = manager,
-                    staffAnim = seqs.human_cast_surge,
-                    unarmedAnim = seqs.human_cast_surge,
-                    launch = spotanims.watersurge_casting,
-                    travel = spotanims.watersurge_travel,
-                    impact = spotanims.watersurge_impact,
-                    castSound = synths.watersurge_cast_and_fire,
-                    hitSound = synths.watersurge_hit,
+                    staffAnim = "seq.human_cast_surge",
+                    unarmedAnim = "seq.human_cast_surge",
+                    launch = "spotanim.watersurge_casting",
+                    travel = "spotanim.watersurge_travel",
+                    impact = "spotanim.watersurge_impact",
+                    castSound = "synth.watersurge_cast_and_fire",
+                    hitSound = "synth.watersurge_hit",
                     getMaxHit = ::getMaxHit,
                 ),
         )
 
         register(
-            spell = objs.spell_earth_surge,
+            spell = "obj.90_earth_surge",
             attack =
                 ElementalSpellAttack(
                     manager = manager,
-                    staffAnim = seqs.human_cast_surge,
-                    unarmedAnim = seqs.human_cast_surge,
-                    launch = spotanims.earthsurge_casting,
-                    travel = spotanims.earthsurge_travel,
-                    impact = spotanims.earthsurge_impact,
-                    castSound = synths.earthsurge_cast_and_fire,
-                    hitSound = synths.earthsurge_hit,
+                    staffAnim = "seq.human_cast_surge",
+                    unarmedAnim = "seq.human_cast_surge",
+                    launch = "spotanim.earthsurge_casting",
+                    travel = "spotanim.earthsurge_travel",
+                    impact = "spotanim.earthsurge_impact",
+                    castSound = "synth.earthsurge_cast_and_fire",
+                    hitSound = "synth.earthsurge_hit",
                     getMaxHit = ::getMaxHit,
                 ),
         )
 
         register(
-            spell = objs.spell_fire_surge,
+            spell = "obj.95_fire_surge",
             attack =
                 ElementalSpellAttack(
                     manager = manager,
-                    staffAnim = seqs.human_cast_surge,
-                    unarmedAnim = seqs.human_cast_surge,
-                    launch = spotanims.firesurge_casting,
-                    travel = spotanims.firesurge_travel,
-                    impact = spotanims.firesurge_impact,
-                    castSound = synths.firesurge_cast_and_fire,
-                    hitSound = synths.firesurge_hit,
+                    staffAnim = "seq.human_cast_surge",
+                    unarmedAnim = "seq.human_cast_surge",
+                    launch = "spotanim.firesurge_casting",
+                    travel = "spotanim.firesurge_travel",
+                    impact = "spotanim.firesurge_impact",
+                    castSound = "synth.firesurge_cast_and_fire",
+                    hitSound = "synth.firesurge_hit",
                     getMaxHit = ::getMaxHit,
                 ),
         )
@@ -404,13 +400,13 @@ class ElementalSpells : SpellAttackMap {
 
     private class ElementalSpellAttack(
         private val manager: SpellAttackManager,
-        private val staffAnim: SequenceServerType,
-        private val unarmedAnim: SequenceServerType,
-        private val launch: SpotanimType,
-        private val travel: SpotanimType,
-        private val impact: SpotanimType,
-        private val castSound: SynthType,
-        private val hitSound: SynthType,
+        private val staffAnim: String,
+        private val unarmedAnim: String,
+        private val launch: String,
+        private val travel: String,
+        private val impact: String,
+        private val castSound: String,
+        private val hitSound: String,
         private val getMaxHit: (Int) -> Int,
     ) : SpellAttack {
         override suspend fun ProtectedAccess.attack(target: Npc, attack: CombatAttack.Spell) {
@@ -432,7 +428,7 @@ class ElementalSpells : SpellAttackMap {
             anim(castAnim)
             spotanim(launch, height = 92)
 
-            val proj = manager.spawnProjectile(this, target, travel, projanims.magic_spell)
+            val proj = manager.spawnProjectile(this, target, travel, "projanim.magic_spell")
             val (serverDelay, clientDelay) = proj.durations
             val spell = attack.spell.obj
 
@@ -461,8 +457,8 @@ class ElementalSpells : SpellAttackMap {
             manager.continueCombatIfAutocast(this, target)
         }
 
-        private fun ItemServerType?.castStrikeAnim(): SequenceServerType =
-            if (this != null && isCategoryType(categories.staff)) {
+        private fun ItemServerType?.castStrikeAnim(): String =
+            if (this != null && isCategoryType("category.staff")) {
                 staffAnim
             } else {
                 unarmedAnim

@@ -1,6 +1,9 @@
 package org.rsmod.game.entity
 
+import dev.openrune.ServerCacheManager
 import dev.openrune.TypedParamType
+import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.rscm.RSCMType
 import dev.openrune.types.HealthBarServerType
 import dev.openrune.types.HitmarkTypeGroup
 import dev.openrune.types.HuntModeType
@@ -8,10 +11,7 @@ import dev.openrune.types.MoveRestrict
 import dev.openrune.types.NpcMode
 import dev.openrune.types.NpcServerType
 import dev.openrune.types.SequenceServerType
-import dev.openrune.types.aconverted.ContentGroupType
-import dev.openrune.types.aconverted.QueueType
 import dev.openrune.types.aconverted.SpotanimType
-import dev.openrune.types.aconverted.TimerType
 import dev.openrune.util.BlockWalk
 import org.rsmod.annotations.InternalApi
 import org.rsmod.game.entity.npc.NpcInfoProtocol
@@ -48,6 +48,14 @@ public class Npc(
         this.spawnCoords = coords
     }
 
+    public constructor(type: String, coords: CoordGrid) : this(
+        requireNotNull(ServerCacheManager.getNpc(type.asRSCM(RSCMType.NPC))) {
+            "NPC type '$type' not found in cache"
+        },
+    ) {
+        this.coords = coords
+        this.spawnCoords = coords
+    }
     override val blockWalkCollisionFlag: Int?
         get() = blockWalk.collisionFlag
 
@@ -203,12 +211,12 @@ public class Npc(
         this.aiTimer = cycles
     }
 
-    public fun timer(timer: TimerType, cycles: Int) {
+    public fun timer(timer: String, cycles: Int) {
         require(cycles > 0) { "`cycles` must be greater than 0. (cycles=$cycles)" }
         timerMap.schedule(timer, interval = cycles)
     }
 
-    public fun clearTimer(timer: TimerType) {
+    public fun clearTimer(timer: String) {
         timerMap.remove(timer)
     }
 
@@ -223,12 +231,12 @@ public class Npc(
         pendingAiQueue = null
     }
 
-    public fun queue(queue: QueueType, cycles: Int, args: Any? = null) {
+    public fun queue(queue: String, cycles: Int, args: Any? = null) {
         require(cycles > 0) { "`cycles` must be greater than 0. (cycles=$cycles)" }
         queueList.add(queue, cycles, args)
     }
 
-    public fun clearQueue(queue: QueueType) {
+    public fun clearQueue(queue: String) {
         queueList.removeAll(queue)
     }
 
@@ -286,7 +294,7 @@ public class Npc(
         clearInteraction()
     }
 
-    override fun anim(seq: SequenceServerType, delay: Int, priority: Int) {
+    override fun anim(seq: String, delay: Int, priority: Int) {
         val setSequence = PathingEntityCommon.anim(this, seq, delay, priority)
         if (!setSequence) {
             return
@@ -303,9 +311,9 @@ public class Npc(
         infoProtocol.setSequence(-1, 0)
     }
 
-    override fun spotanim(spot: SpotanimType, delay: Int, height: Int, slot: Int) {
-        PathingEntityCommon.spotanim(this, spot.id, delay, height, slot)
-        infoProtocol.setSpotanim(spot.id, delay, height, slot)
+    override fun spotanim(spot: String, delay: Int, height: Int, slot: Int) {
+        PathingEntityCommon.spotanim(this, spot.asRSCM(RSCMType.SPOTANIM), delay, height, slot)
+        infoProtocol.setSpotanim(spot.asRSCM(RSCMType.SPOTANIM), delay, height, slot)
     }
 
     public fun say(text: String) {
@@ -465,9 +473,9 @@ public class Npc(
         return infoProtocol.isActive()
     }
 
-    public fun isType(type: NpcServerType): Boolean = this.type.isType(type)
+    public fun isType(type: String): Boolean = this.type.isType(type)
 
-    public fun isVisType(type: NpcServerType): Boolean = this.visType.isType(type)
+    public fun isVisType(type: String): Boolean = this.visType.isType(type)
 
     /**
      * Returns the headbar associated with [headbar] param for the **current** npc [visType].
@@ -499,7 +507,7 @@ public class Npc(
      */
     public fun <T : Any> param(param: TypedParamType<T>): T = type.param(param)
 
-    public fun isContentType(content: ContentGroupType): Boolean = type.contentGroup == content.id
+    public fun isContentType(content: String): Boolean = type.contentGroup == content.asRSCM(RSCMType.CONTENT)
 
     override fun toString(): String = "Npc(uid=$uid, slot=$slotId, coords=$coords, type=$type)"
 }

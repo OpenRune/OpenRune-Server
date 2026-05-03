@@ -2,18 +2,16 @@ package org.rsmod.api.shops
 
 import dev.openrune.ServerCacheManager
 import dev.openrune.definition.type.widget.IfEvent
+import dev.openrune.rscm.RSCM
+import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.rscm.RSCMType
 import dev.openrune.types.InvScope
-import dev.openrune.types.InventoryServerType
-import dev.openrune.types.aconverted.CurrencyType
 import jakarta.inject.Inject
-import org.rsmod.api.config.refs.currencies
 import org.rsmod.api.player.output.ClientScripts.interfaceInvInit
 import org.rsmod.api.player.output.ClientScripts.shopMainInit
 import org.rsmod.api.player.startInvTransmit
 import org.rsmod.api.player.ui.ifOpenMainSidePair
 import org.rsmod.api.player.ui.ifSetEvents
-import org.rsmod.api.shops.config.ShopComponents
-import org.rsmod.api.shops.config.ShopInterfaces
 import org.rsmod.api.shops.config.ShopParams
 import org.rsmod.events.EventBus
 import org.rsmod.game.entity.Npc
@@ -22,14 +20,14 @@ import org.rsmod.game.inv.Inventory
 import org.rsmod.game.shop.Shop
 
 public class Shops @Inject constructor(private val eventBus: EventBus) {
-    public val globalInvs: MutableMap<InventoryServerType, Inventory> = mutableMapOf()
+    public val globalInvs: MutableMap<String, Inventory> = mutableMapOf()
 
     public fun open(
         player: Player,
         activeNpc: Npc,
         title: String,
-        shopInv: InventoryServerType,
-        currency: CurrencyType = currencies.standard_gp,
+        shopInv: String,
+        currency: String = "currency.standard_gp",
         subtext: String = DEFAULT_SUBTEXT,
     ) {
         val buyPercentage = activeNpc.type.param(ShopParams.shop_buy_percentage) / 10.0
@@ -50,11 +48,11 @@ public class Shops @Inject constructor(private val eventBus: EventBus) {
     public fun open(
         player: Player,
         title: String,
-        shopInv: InventoryServerType,
+        shopInv: String,
         buyPercentage: Double,
         sellPercentage: Double,
         changePercentage: Double,
-        currency: CurrencyType = currencies.standard_gp,
+        currency: String = "currency.standard_gp",
         subtext: String = DEFAULT_SUBTEXT,
     ) {
         val inv = shopInv.toInventory(player)
@@ -76,7 +74,7 @@ public class Shops @Inject constructor(private val eventBus: EventBus) {
         title: String,
         shopInv: Inventory,
         sideInv: Inventory,
-        currency: CurrencyType,
+        currency: String = "currency.standard_gp",
         buyPercentage: Double,
         sellPercentage: Double,
         changePercentage: Double,
@@ -87,8 +85,8 @@ public class Shops @Inject constructor(private val eventBus: EventBus) {
         player.startInvTransmit(shopInv)
         player.startInvTransmit(sideInv)
         player.ifOpenMainSidePair(
-            main = ShopInterfaces.shop_main,
-            side = ShopInterfaces.shop_side,
+            main = "interface.shopmain",
+            side = "interface.shopside",
             colour = -1,
             transparency = -1,
             eventBus = eventBus,
@@ -96,7 +94,7 @@ public class Shops @Inject constructor(private val eventBus: EventBus) {
         shopMainInit(player, shopInv.type, title)
 
         player.ifSetEvents(
-            ShopComponents.shop_inv,
+            "component.shopmain:items",
             1..shopInv.size,
             IfEvent.Op1,
             IfEvent.Op2,
@@ -110,7 +108,7 @@ public class Shops @Inject constructor(private val eventBus: EventBus) {
         interfaceInvInit(
             player = player,
             inv = sideInv,
-            target = ShopComponents.shop_side_inv,
+            target = "component.shopside:items",
             objRowCount = 4,
             objColCount = 7,
             op1 = "Value<col=ff9040>",
@@ -120,7 +118,7 @@ public class Shops @Inject constructor(private val eventBus: EventBus) {
             op5 = "Sell 50<col=ff9040>",
         )
         player.ifSetEvents(
-            ShopComponents.shop_side_inv,
+            "component.shopside:items",
             0 until sideInv.size,
             IfEvent.Op1,
             IfEvent.Op2,
@@ -131,8 +129,8 @@ public class Shops @Inject constructor(private val eventBus: EventBus) {
         )
     }
 
-    private fun InventoryServerType.toInventory(observer: Player): Inventory {
-        val unpacked = ServerCacheManager.getInventory(this.id) ?: error("Error getting inv")
+    private fun String.toInventory(observer: Player): Inventory {
+        val unpacked = ServerCacheManager.getInventory(this.asRSCM(RSCMType.INV)) ?: error("Error getting inv")
         return if (unpacked.scope == InvScope.Shared) {
             sharedInv()
         } else {
@@ -140,23 +138,23 @@ public class Shops @Inject constructor(private val eventBus: EventBus) {
         }
     }
 
-    private fun InventoryServerType.sharedInv(): Inventory =
+    private fun String.sharedInv(): Inventory =
         globalInvs.getOrPut(this) { createSharedInv() }
 
-    private fun InventoryServerType.createSharedInv(): Inventory {
-        val unpacked = ServerCacheManager.getInventory(this.id) ?: error("Error getting inv")
+    private fun String.createSharedInv(): Inventory {
+        val unpacked = ServerCacheManager.getInventory(this.asRSCM(RSCMType.INV)) ?: error("Error getting inv")
         check(unpacked.scope == InvScope.Shared) {
             "`shopInv` must have shared scope. (shopInv=$unpacked)"
         }
-        return Inventory.create(unpacked)
+        return Inventory.create(RSCM.getReverseMapping(RSCMType.INV, unpacked.id))
     }
 
-    private fun InventoryServerType.privateInv(player: Player): Inventory {
-        val unpacked = ServerCacheManager.getInventory(this.id) ?: error("Error getting inv")
+    private fun String.privateInv(player: Player): Inventory {
+        val unpacked = ServerCacheManager.getInventory(this.asRSCM(RSCMType.INV)) ?: error("Error getting inv")
         check(unpacked.scope != InvScope.Shared) {
             "`shopInv` must not have shared scope. (shopInv=$unpacked)"
         }
-        return player.invMap.getOrPut(unpacked)
+        return player.invMap.getOrPut(RSCM.getReverseMapping(RSCMType.INV, unpacked.id))
     }
 
     public companion object {

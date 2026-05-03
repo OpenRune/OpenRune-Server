@@ -1,6 +1,7 @@
 package org.rsmod.game.timer
 
-import dev.openrune.types.aconverted.TimerType
+import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.rscm.RSCMType
 import it.unimi.dsi.fastutil.objects.ObjectIterator
 import it.unimi.dsi.fastutil.objects.ObjectIterators
 import it.unimi.dsi.fastutil.shorts.Short2LongLinkedOpenHashMap
@@ -12,13 +13,13 @@ public class NpcTimerMap(private var timers: Short2LongLinkedOpenHashMap? = null
     public val isNotEmpty: Boolean
         get() = timers?.isNotEmpty() == true
 
-    public fun remove(timer: TimerType) {
-        timers?.remove(timer.id.toShort())
+    public fun remove(timer: String) {
+        timers?.remove(timer.asRSCM(RSCMType.TIMER).toShort())
     }
 
     @OptIn(InternalApi::class)
-    public fun schedule(timer: TimerType, interval: Int) {
-        put(timer.id.toShort(), clockCounter = 0, interval = interval)
+    public fun schedule(timer: String, interval: Int) {
+        put(timer.asRSCM(RSCMType.TIMER).toShort(), clockCounter = 0, interval = interval)
     }
 
     @InternalApi

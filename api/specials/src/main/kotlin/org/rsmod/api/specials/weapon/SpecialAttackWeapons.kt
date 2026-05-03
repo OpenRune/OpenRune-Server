@@ -17,9 +17,9 @@ public class SpecialAttackWeapons() {
      *   [MAX_ENERGY] (`1000`), or `null` if [objType] does not have an associated special attack.
      * @see [loadEnergyRequirements]
      */
-    public fun getSpecialEnergy(objType: ItemServerType): Int? = energyRequirements[objType.id]
+    public fun getSpecialEnergy(objType: Int): Int? = energyRequirements[objType]
 
-    public fun getSpecialDescription(objType: ItemServerType): String? = descriptions[objType.id]
+    public fun getSpecialDescription(objType: Int): String? = descriptions[objType]
 
     internal fun startup() {
         val energyRequirements = loadEnergyRequirements()

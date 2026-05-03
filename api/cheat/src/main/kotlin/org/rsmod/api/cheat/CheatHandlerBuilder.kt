@@ -1,7 +1,6 @@
 package org.rsmod.api.cheat
 
 import com.github.michaelbull.logging.InlineLogger
-import dev.openrune.types.ModLevelType
 import org.rsmod.api.player.output.mes
 import org.rsmod.game.cheat.Cheat
 import org.rsmod.game.cheat.CheatHandler
@@ -13,7 +12,7 @@ private val logger = InlineLogger()
 @CheatBuilderDsl
 public class CheatHandlerBuilder(public val command: String) {
     public var desc: String? = null
-    public var modLevel: ModLevelType? = null
+    public var internal: String? = null
     public var invalidArgs: String? = null
     public var invalidModLevel: String? = null
     public var exception: String? = DEFAULT_EXCEPTION
@@ -24,7 +23,7 @@ public class CheatHandlerBuilder(public val command: String) {
         val cheat = cheat ?: error("`cheat` must be set.")
         val desc = desc ?: error("`desc` must be set.")
         val argsErr = invalidArgs ?: DEFAULT_ARG_ERR
-        val action = wrapCheat(argsErr, invalidModLevel, exception, modLevel, cheat)
+        val action = wrapCheat(argsErr, invalidModLevel, exception, internal, cheat)
         return CheatHandler(desc, action)
     }
 
@@ -36,10 +35,10 @@ public class CheatHandlerBuilder(public val command: String) {
         invalidArgsMsg: String,
         modLevelMsg: String?,
         exceptionMsg: String?,
-        modLevel: ModLevelType?,
+        internal: String?,
         cheat: Cheat.() -> Unit,
     ): Cheat.() -> Unit = action@{
-        if (modLevel != null && !player.modLevel.hasAccessTo(modLevel)) {
+        if (internal != null && !player.modLevel.hasAccessTo(internal)) {
             modLevelMsg?.let(player::mes)
             return@action
         }

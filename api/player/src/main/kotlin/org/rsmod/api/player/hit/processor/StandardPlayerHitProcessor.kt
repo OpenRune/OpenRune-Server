@@ -1,14 +1,12 @@
 package org.rsmod.api.player.hit.processor
 
+import dev.openrune.rscm.RSCM
+import dev.openrune.rscm.RSCMType
 import dev.openrune.types.ItemServerType
 import dev.openrune.types.aconverted.SynthType
 import kotlin.math.min
 import org.rsmod.api.config.constants
 import org.rsmod.api.config.refs.BaseParams
-import org.rsmod.api.config.refs.headbars
-import org.rsmod.api.config.refs.queues
-import org.rsmod.api.config.refs.stats
-import org.rsmod.api.config.refs.synths
 import org.rsmod.api.player.headbar.InternalPlayerHeadbars
 import org.rsmod.api.player.lefthand
 import org.rsmod.api.player.output.soundSynth
@@ -23,9 +21,9 @@ import org.rsmod.game.hit.HitType
 
 public object StandardPlayerHitProcessor : QueuedPlayerHitProcessor {
     private val hitSoundsBodyA =
-        listOf(synths.human_hit_1, synths.human_hit_2, synths.human_hit_3, synths.human_hit_4)
+        listOf("synth.human_hit_1", "synth.human_hit_2", "synth.human_hit_3", "synth.human_hit_4")
 
-    private val hitSoundsBodyB = listOf(synths.female_hit_1, synths.female_hit_2)
+    private val hitSoundsBodyB = listOf("synth.female_hit_1", "synth.female_hit_2")
 
     override fun ProtectedAccess.process(hit: Hit) {
         if (!hit.isValid(this)) {
@@ -37,12 +35,12 @@ public object StandardPlayerHitProcessor : QueuedPlayerHitProcessor {
 
         val damage = min(player.hitpoints, hit.damage)
         if (damage > 0) {
-            statSub(stats.hitpoints, constant = damage, percent = 0)
+            statSub("stat.hitpoints", constant = damage, percent = 0)
         }
 
         playDefendSound(hit, random)
 
-        val queueDeath = player.hitpoints == 0 && queues.death !in player.queueList
+        val queueDeath = player.hitpoints == 0 && "queue.death" !in player.queueList
         if (queueDeath) {
             queueDeath()
         }
@@ -86,7 +84,7 @@ public object StandardPlayerHitProcessor : QueuedPlayerHitProcessor {
         damage: Int,
         bodyType: Int,
         random: GameRandom,
-    ): SynthType =
+    ): String =
         when {
             damage == 0 -> resolveBlockSound(lefthand, torso, random)
             bodyType == constants.bodytype_a -> random.pick(hitSoundsBodyA)
@@ -98,18 +96,18 @@ public object StandardPlayerHitProcessor : QueuedPlayerHitProcessor {
         lefthand: ItemServerType?,
         torso: ItemServerType?,
         random: GameRandom,
-    ): SynthType {
-        val lefthandSound = lefthand?.randomBlockSound(random)
+    ): String {
+        val lefthandSound = RSCM.getReverseMapping(RSCMType.SYNTH,lefthand?.randomBlockSound(random)!!.id)
         if (lefthandSound != null) {
             return lefthandSound
         }
 
-        val torsoSound = torso?.randomBlockSound(random)
+        val torsoSound = RSCM.getReverseMapping(RSCMType.SYNTH,torso?.randomBlockSound(random)!!.id)
         if (torsoSound != null) {
             return torsoSound
         }
 
-        return synths.human_block_1
+        return "synth.human_block_1"
     }
 
     private fun ItemServerType.randomBlockSound(random: GameRandom): SynthType? {
@@ -125,5 +123,5 @@ public object StandardPlayerHitProcessor : QueuedPlayerHitProcessor {
     }
 
     private fun Hit.createHeadbar(currHp: Int, maxHp: Int): Headbar =
-        InternalPlayerHeadbars.createFromHitmark(hitmark, currHp, maxHp, headbars.health_30)
+        InternalPlayerHeadbars.createFromHitmark(hitmark, currHp, maxHp, "headbar.health_30")
 }

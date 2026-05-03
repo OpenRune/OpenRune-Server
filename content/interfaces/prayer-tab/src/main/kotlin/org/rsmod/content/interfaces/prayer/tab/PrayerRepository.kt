@@ -1,6 +1,8 @@
 package org.rsmod.content.interfaces.prayer.tab
 
 import dev.openrune.definition.type.widget.ComponentType
+import dev.openrune.rscm.RSCM
+import dev.openrune.rscm.RSCMType
 import dev.openrune.types.enums.EnumTypeMap
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 import org.rsmod.api.config.refs.params
@@ -42,8 +44,8 @@ class PrayerRepository() {
             val component = obj.param(prayer_params.component)
             val name = obj.param(prayer_params.name)
             val level = obj.param(prayer_params.level)
-            val sound = obj.param(prayer_params.sound)
-            val enabled = obj.param(prayer_params.varbit)
+            val sound = obj.param(prayer_params.sound).id
+            val enabled = RSCM.getReverseMapping(RSCMType.VARBIT,obj.param(prayer_params.varbit).id)
             val drain = obj.param(prayer_params.drain_effect)
             val overhead = obj.paramOrNull(prayer_params.overhead)
             val unlockVar = obj.paramOrNull(prayer_params.unlock_varbit)

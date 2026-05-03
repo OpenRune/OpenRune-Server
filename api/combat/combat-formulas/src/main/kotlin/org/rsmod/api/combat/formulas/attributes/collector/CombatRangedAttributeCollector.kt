@@ -7,8 +7,6 @@ import org.rsmod.api.combat.commons.types.RangedAttackType
 import org.rsmod.api.combat.formulas.attributes.CombatRangedAttributes
 import org.rsmod.api.config.constants
 import org.rsmod.api.config.refs.BaseParams
-import org.rsmod.api.config.refs.categories
-import org.rsmod.api.config.refs.objs
 import org.rsmod.api.player.front
 import org.rsmod.api.player.hat
 import org.rsmod.api.player.legs
@@ -34,7 +32,7 @@ public class CombatRangedAttributeCollector {
 
         val weapon = player.righthand
         val weaponType = getOrNull(weapon)
-        if (weaponType != null && weaponType.isCategoryType(categories.chinchompa)) {
+        if (weaponType != null && weaponType.isCategoryType("category.chinchompa")) {
             val chinchompaFuse =
                 when (attackStyle) {
                     RangedAttackStyle.Accurate -> CombatRangedAttributes.ShortFuse
@@ -72,11 +70,11 @@ public class CombatRangedAttributeCollector {
         }
 
         val amulet = player.front
-        if (amulet.isType(objs.amulet_of_avarice)) {
+        if (amulet.isType("obj.wild_cave_amulet")) {
             attributes += CombatRangedAttributes.AmuletOfAvarice
-        } else if (amulet.isType(objs.salve_amulet_ei)) {
+        } else if (amulet.isType("obj.nzone_salve_amulet_e")) {
             attributes += CombatRangedAttributes.SalveAmuletEi
-        } else if (amulet.isType(objs.salve_amulet_i)) {
+        } else if (amulet.isType("obj.nzone_salve_amulet")) {
             attributes += CombatRangedAttributes.SalveAmuletI
         }
 
@@ -91,7 +89,7 @@ public class CombatRangedAttributeCollector {
                     CombatRangedAttributes.TwistedBow
                 }
 
-                weapon.isAnyType(objs.craws_bow, objs.webweaver_bow) -> {
+                weapon.isAnyType("obj.wild_cave_bow_charged", "obj.wild_cave_webweaver_charged") -> {
                     CombatRangedAttributes.RevenantWeapon
                 }
 
@@ -99,11 +97,11 @@ public class CombatRangedAttributeCollector {
                     CombatRangedAttributes.DragonHunterCrossbow
                 }
 
-                weapon.isType(objs.scorching_bow) -> {
+                weapon.isType("obj.scorching_bow") -> {
                     CombatRangedAttributes.ScorchingBow
                 }
 
-                weapon.isType(objs.bone_shortbow) -> {
+                weapon.isType("obj.rat_bone_bow") -> {
                     CombatRangedAttributes.RatBoneWeapon
                 }
 

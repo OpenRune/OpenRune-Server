@@ -600,7 +600,9 @@ private class RowPropertyCodegen(
                     selfReferentialDbRow(col) &&
                         first == VarType.DBROW &&
                         slots.all { it == VarType.DBROW }
-                else -> first == VarType.DBROW && selfReferentialDbRow(col)
+                else ->
+                    first == VarType.DBROW &&
+                        col.dbRowTargetTable != null
             }
         addProp(prop, ty, init, lazyInit)
     }

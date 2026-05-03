@@ -1,6 +1,8 @@
 package org.rsmod.api.account.character.inv
 
 import dev.openrune.ServerCacheManager
+import dev.openrune.rscm.RSCM
+import dev.openrune.rscm.RSCMType
 import dev.openrune.types.util.UncheckedType
 import kotlin.collections.iterator
 import org.rsmod.api.account.character.CharacterDataStage
@@ -12,7 +14,7 @@ public class CharacterInventoryApplier : CharacterDataStage.Applier<CharacterInv
     override fun apply(player: Player, data: CharacterInventoryData) {
         for (loaded in data.inventories) {
             val type = ServerCacheManager.getInventory(loaded.type) ?: return
-            val inventory = player.invMap.getOrPut(type)
+            val inventory = player.invMap.getOrPut(RSCM.getReverseMapping(RSCMType.INV, type.id))
 
             for ((slot, obj) in loaded.objs) {
                 val (type, count, vars) = obj

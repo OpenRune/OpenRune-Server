@@ -3,9 +3,7 @@ package org.rsmod.api.player.bonus
 import dev.openrune.util.Wearpos
 import kotlin.math.max
 import org.rsmod.api.config.constants
-import org.rsmod.api.config.refs.categories
 import org.rsmod.api.config.refs.params
-import org.rsmod.api.config.refs.varps
 import org.rsmod.api.player.hands
 import org.rsmod.api.player.hat
 import org.rsmod.api.player.legs
@@ -122,8 +120,8 @@ public class WornBonuses {
 
         val weapon = getOrNull(player.righthand)
 
-        val usingChargebow = weapon != null && weapon.isCategoryType(categories.chargebow)
-        val usingThrown = weapon != null && weapon.isCategoryType(categories.throwing_weapon)
+        val usingChargebow = weapon != null && weapon.isCategoryType("category.chargebow")
+        val usingThrown = weapon != null && weapon.isCategoryType("category.throwing_weapon")
         val ignoreQuiverBonuses = usingChargebow || usingThrown
 
         for (wearpos in Wearpos.entries) {
@@ -168,8 +166,8 @@ public class WornBonuses {
             offMagic = (offMagic * multiplier).toInt()
         }
 
-        val attackStyle = player.vars[varps.com_mode]
-        val usingDinhsBulwark = weapon != null && weapon.isCategoryType(categories.dinhs_bulwark)
+        val attackStyle = player.vars["varp.com_mode"]
+        val usingDinhsBulwark = weapon != null && weapon.isCategoryType("category.dinhs_bulwark")
         if (usingDinhsBulwark && attackStyle == constants.dinhs_attackstyle_pummel) {
             val relativeDefenceBonuses = defStab + defSlash + defCrush + defRange
             val meleeStrIncrease = ((relativeDefenceBonuses - 800) / 12) - 38

@@ -6,35 +6,35 @@ import kotlin.reflect.KProperty
 import org.rsmod.game.entity.Controller
 
 /* Varcon delegates */
-public fun intVarCon(varcon: VarConType): ControllerVariableIntDelegate =
+public fun intVarCon(varcon: String): ControllerVariableIntDelegate =
     ControllerVariableIntDelegate(varcon)
 
-public fun boolVarCon(varcon: VarConType): ControllerVariableTypeIntDelegate<Boolean> =
+public fun boolVarCon(varcon: String): ControllerVariableTypeIntDelegate<Boolean> =
     typeIntVarCon(varcon, ::boolFromInt, ::boolToInt)
 
 public fun <T> typeIntVarCon(
-    varcon: VarConType,
+    varcon: String,
     toType: (Int) -> T,
     fromType: (T) -> Int,
 ): ControllerVariableTypeIntDelegate<T> =
     ControllerVariableTypeIntDelegate(varcon, toType, fromType)
 
 /* Varconbit delegates */
-public fun intVarConBit(varconbit: VarConBitType): ControllerVariableIntBitsDelegate =
+public fun intVarConBit(varconbit: String): ControllerVariableIntBitsDelegate =
     ControllerVariableIntBitsDelegate(varconbit)
 
-public fun boolVarConBit(varconbit: VarConBitType): ControllerVariableTypeIntBitsDelegate<Boolean> =
+public fun boolVarConBit(varconbit: String): ControllerVariableTypeIntBitsDelegate<Boolean> =
     typeIntVarConBit(varconbit, ::boolFromInt, ::boolToInt)
 
 public fun <T> typeIntVarConBit(
-    varconbit: VarConBitType,
+    varconbit: String,
     toType: (Int) -> T,
     fromType: (T) -> Int,
 ): ControllerVariableTypeIntBitsDelegate<T> =
     ControllerVariableTypeIntBitsDelegate(varconbit, toType, fromType)
 
 /* Delegate implementations */
-public class ControllerVariableIntDelegate(private val varcon: VarConType) {
+public class ControllerVariableIntDelegate(private val varcon: String) {
     public operator fun getValue(thisRef: Controller, property: KProperty<*>): Int {
         return thisRef.vars[varcon]
     }
@@ -45,7 +45,7 @@ public class ControllerVariableIntDelegate(private val varcon: VarConType) {
 }
 
 public class ControllerVariableTypeIntDelegate<T>(
-    private val varcon: VarConType,
+    private val varcon: String,
     public val toType: (Int) -> T,
     public val fromType: (T) -> Int,
 ) {
@@ -64,7 +64,7 @@ public class ControllerVariableTypeIntDelegate<T>(
     }
 }
 
-public class ControllerVariableIntBitsDelegate(private val varconbit: VarConBitType) {
+public class ControllerVariableIntBitsDelegate(private val varconbit: String) {
     public operator fun getValue(thisRef: Controller, property: KProperty<*>): Int {
         return thisRef.vars[varconbit]
     }
@@ -75,7 +75,7 @@ public class ControllerVariableIntBitsDelegate(private val varconbit: VarConBitT
 }
 
 public class ControllerVariableTypeIntBitsDelegate<T>(
-    private val varconbit: VarConBitType,
+    private val varconbit: String,
     public val toType: (Int) -> T,
     public val fromType: (T) -> Int,
 ) {

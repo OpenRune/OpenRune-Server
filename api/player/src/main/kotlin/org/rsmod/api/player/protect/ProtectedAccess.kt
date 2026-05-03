@@ -3,27 +3,23 @@ package org.rsmod.api.player.protect
 import com.github.michaelbull.logging.InlineLogger
 import dev.openrune.ServerCacheManager
 import dev.openrune.TypedParamType
-import dev.openrune.cache.filestore.definition.InterfaceType
 import dev.openrune.definition.type.widget.ComponentType
 import dev.openrune.definition.type.widget.IfEvent
+import dev.openrune.rscm.RSCM
+import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.rscm.RSCMType
 import dev.openrune.types.HitmarkTypeGroup
-import dev.openrune.types.InventoryServerType
 import dev.openrune.types.ItemServerType
 import dev.openrune.types.MesAnimType
 import dev.openrune.types.NpcMode
 import dev.openrune.types.NpcServerType
 import dev.openrune.types.ObjectServerType
 import dev.openrune.types.SequenceServerType
-import dev.openrune.types.StatType
 import dev.openrune.types.WalkTriggerType
-import dev.openrune.types.aconverted.AreaType
 import dev.openrune.types.aconverted.CategoryType
-import dev.openrune.types.aconverted.ContentGroupType
 import dev.openrune.types.aconverted.MidiType
-import dev.openrune.types.aconverted.QueueType
 import dev.openrune.types.aconverted.SpotanimType
 import dev.openrune.types.aconverted.SynthType
-import dev.openrune.types.aconverted.TimerType
 import dev.openrune.types.aconverted.interf.IfSubType
 import dev.openrune.types.enums.EnumTypeMap
 import dev.openrune.types.hunt.HuntVis
@@ -32,13 +28,8 @@ import kotlin.math.max
 import kotlin.reflect.KClass
 import org.rsmod.annotations.InternalApi
 import org.rsmod.api.config.constants
-import org.rsmod.api.config.refs.BaseHitmarkGroups
-import org.rsmod.api.config.refs.components
-import org.rsmod.api.config.refs.hitmark_groups
-import org.rsmod.api.config.refs.invs
-import org.rsmod.api.config.refs.objs
-import org.rsmod.api.config.refs.queues
-import org.rsmod.api.config.refs.varps
+import org.rsmod.api.config.refs.done.BaseHitmarkGroups
+import org.rsmod.api.config.refs.done.hitmark_groups
 import org.rsmod.api.hunt.NpcSearch
 import org.rsmod.api.hunt.PlayerSearch
 import org.rsmod.api.invtx.invAdd
@@ -203,8 +194,8 @@ public class ProtectedAccess(
 
     public val inv: Inventory by player::inv
     public val worn: Inventory by player::worn
-    public val bank: Inventory by lazy { inv(invs.bank) }
-    public val tempInv: Inventory by lazy { inv(invs.tradeoffer) }
+    public val bank: Inventory by lazy { inv("inv.bank") }
+    public val tempInv: Inventory by lazy { inv("inv.tradeoffer") }
 
     public val vars: VarPlayerIntMapDelegate by lazy { VarPlayerIntMapDelegate.from(player) }
     public val strVars: VarPlayerStrMap by player::strVars
@@ -306,7 +297,7 @@ public class ProtectedAccess(
     public fun toggleRun() {
         if (player.runEnergy < 100) {
             spam("You don't have enough energy left to run!")
-            player.resyncVar(varps.option_run)
+            player.resyncVar("varp.option_run")
             return
         }
         val speed = if (player.varMoveSpeed == MoveSpeed.Run) MoveSpeed.Walk else MoveSpeed.Run
@@ -361,7 +352,7 @@ public class ProtectedAccess(
         PathingEntityCommon.exactMove(player, start, end, delay1, delay2, dir, collision)
     }
 
-    public fun anim(seq: SequenceServerType, delay: Int = 0) {
+    public fun anim(seq: String, delay: Int = 0) {
         player.anim(seq, delay)
     }
 
@@ -377,7 +368,7 @@ public class ProtectedAccess(
         player.resetSpotanim()
     }
 
-    public fun spotanim(spot: SpotanimType?, delay: Int = 0, height: Int = 0, slot: Int = 0) {
+    public fun spotanim(spot: String?, delay: Int = 0, height: Int = 0, slot: Int = 0) {
         if (spot == null) {
             player.resetSpotanim(height = height, slot = slot)
             return
@@ -389,8 +380,8 @@ public class ProtectedAccess(
         player.say(text)
     }
 
-    public fun transmog(npcType: NpcServerType) {
-        player.transmog = npcType
+    public fun transmog(npcType: String) {
+        player.transmog = ServerCacheManager.getNpc(npcType.asRSCM(RSCMType.NPC))
     }
 
     public fun resetTransmog() {
@@ -676,7 +667,7 @@ public class ProtectedAccess(
     /** @see [NpcSearch.find] */
     public fun npcFind(
         coord: CoordGrid,
-        npc: NpcServerType,
+        npc: String,
         distance: Int,
         checkVis: HuntVis,
         search: NpcSearch,
@@ -708,7 +699,7 @@ public class ProtectedAccess(
     /** @see [NpcSearch.findAll] */
     public fun npcFindAll(
         coord: CoordGrid,
-        npc: NpcServerType,
+        npc: String,
         distance: Int,
         checkVis: HuntVis,
         search: NpcSearch,
@@ -941,7 +932,7 @@ public class ProtectedAccess(
 
     public fun invAdd(
         inv: Inventory,
-        type: ItemServerType,
+        type: String,
         count: Int = 1,
         vars: Int = 0,
         slot: Int? = null,
@@ -968,9 +959,24 @@ public class ProtectedAccess(
      * they will instead be dropped on the floor, with [player] as the "owner," and this function
      * will return `false`. If the items are successfully placed in [inv], it returns `true`.
      */
-    public fun invAddOrDrop(
+    public fun invAddOrDropType(
         repo: ObjRepository,
         obj: ItemServerType,
+        count: Int = 1,
+        coords: CoordGrid = this.coords,
+        inv: Inventory = this.inv,
+    ): Boolean {
+        return invAddOrDrop(repo, RSCM.getReverseMapping(RSCMType.OBJ,obj.id), count, coords, inv)
+    }
+
+    /**
+     * Attempts to add exactly [count] of [obj] into [inv]. If the inventory cannot fit the items,
+     * they will instead be dropped on the floor, with [player] as the "owner," and this function
+     * will return `false`. If the items are successfully placed in [inv], it returns `true`.
+     */
+    public fun invAddOrDrop(
+        repo: ObjRepository,
+        obj: String,
         count: Int = 1,
         coords: CoordGrid = this.coords,
         inv: Inventory = this.inv,
@@ -980,7 +986,7 @@ public class ProtectedAccess(
 
     public fun invDel(
         inv: Inventory,
-        type: ItemServerType,
+        type: String,
         count: Int = 1,
         slot: Int? = null,
         strict: Boolean = true,
@@ -998,9 +1004,9 @@ public class ProtectedAccess(
 
     public fun invDel(
         inv: Inventory,
-        type1: ItemServerType,
+        type1: String,
         count1: Int,
-        type2: ItemServerType,
+        type2: String,
         count2: Int,
         strict: Boolean = true,
         autoCommit: Boolean = true,
@@ -1050,9 +1056,9 @@ public class ProtectedAccess(
      */
     public fun invReplace(
         inv: Inventory,
-        replace: ItemServerType,
+        replace: String,
         count: Int,
-        replacement: ItemServerType,
+        replacement: String,
         vars: Int = 0,
         autoCommit: Boolean = true,
     ): TransactionResultList<InvObj> {
@@ -1060,12 +1066,12 @@ public class ProtectedAccess(
             val fromInv = select(inv)
             delete {
                 this.from = fromInv
-                this.obj = replace.id
+                this.obj = replace.asRSCM(RSCMType.OBJ)
                 this.strictCount = count
             }
             insert {
                 this.into = fromInv
-                this.obj = replacement.id
+                this.obj = replacement.asRSCM(RSCMType.OBJ)
                 this.strictCount = count
                 this.vars = vars
             }
@@ -1245,28 +1251,28 @@ public class ProtectedAccess(
     }
 
     /** @see [org.rsmod.api.player.stat.stat] */
-    public fun stat(stat: StatType): Int {
+    public fun stat(stat: String): Int {
         return player.stat(stat)
     }
 
     /** @see [org.rsmod.api.player.stat.statBase] */
-    public fun statBase(stat: StatType): Int {
+    public fun statBase(stat: String): Int {
         return player.statBase(stat)
     }
 
     /** @see [org.rsmod.api.player.stat.statRestore] */
-    public fun statRestore(stat: StatType) {
+    public fun statRestore(stat: String) {
         player.statRestore(stat)
     }
 
     /** @see [org.rsmod.api.player.stat.statRestoreAll] */
-    public fun statRestoreAll(stats: Iterable<StatType>) {
+    public fun statRestoreAll(stats: Iterable<String>) {
         player.statRestoreAll(stats)
     }
 
     /** @see [org.rsmod.api.player.stat.statAdvance] */
     public fun statAdvance(
-        stat: StatType,
+        stat: String,
         xp: Double,
         rate: Double = player.xpRate,
         globalRate: Double = player.globalXpRate,
@@ -1275,38 +1281,38 @@ public class ProtectedAccess(
     }
 
     /** @see [org.rsmod.api.player.stat.statAdd] */
-    public fun statAdd(stat: StatType, constant: Int, percent: Int) {
+    public fun statAdd(stat: String, constant: Int, percent: Int) {
         player.statAdd(stat, constant, percent)
     }
 
     /** @see [org.rsmod.api.player.stat.statBoost] */
-    public fun statBoost(stat: StatType, constant: Int, percent: Int) {
+    public fun statBoost(stat: String, constant: Int, percent: Int) {
         player.statBoost(stat, constant, percent)
     }
 
     /** @see [org.rsmod.api.player.stat.statSub] */
-    public fun statSub(stat: StatType, constant: Int, percent: Int) {
+    public fun statSub(stat: String, constant: Int, percent: Int) {
         player.statSub(stat, constant, percent)
     }
 
     /** @see [org.rsmod.api.player.stat.statDrain] */
-    public fun statDrain(stat: StatType, constant: Int, percent: Int) {
+    public fun statDrain(stat: String, constant: Int, percent: Int) {
         player.statDrain(stat, constant, percent)
     }
 
     /** @see [org.rsmod.api.player.stat.statHeal] */
-    public fun statHeal(stat: StatType, constant: Int, percent: Int) {
+    public fun statHeal(stat: String, constant: Int, percent: Int) {
         player.statHeal(stat, constant, percent)
     }
 
     /** @see [org.rsmod.api.player.stat.statRandom] */
-    public fun statRandom(stat: StatType, low: Int, high: Int, invisibleBoost: Int): Boolean {
+    public fun statRandom(stat: String, low: Int, high: Int, invisibleBoost: Int): Boolean {
         return player.statRandom(random, stat, low, high, invisibleBoost)
     }
 
     /** @see [org.rsmod.api.player.stat.statRandom] */
     public fun statRandom(
-        stat: StatType,
+        stat: String,
         low: Int,
         high: Int,
         invisibleLevels: InvisibleLevels,
@@ -1731,59 +1737,59 @@ public class ProtectedAccess(
         processQueuedHit(builder, modifier, StandardPlayerHitProcessor)
     }
 
-    public fun restoreToplevelTabs(tabTargets: Iterable<ComponentType>) {
+    public fun restoreToplevelTabs(tabTargets: Iterable<String>) {
         // TODO(combat): Publish gameframe-related event for `restoretabs`.
     }
 
-    public fun restoreToplevelTabs(vararg tabTarget: ComponentType) {
+    public fun restoreToplevelTabs(vararg tabTarget: String) {
         restoreToplevelTabs(tabTarget.toList())
     }
 
-    public fun timer(timerType: TimerType, cycles: Int) {
+    public fun timer(timerType: String, cycles: Int) {
         player.timer(timerType, cycles)
     }
 
-    public fun clearTimer(timerType: TimerType) {
+    public fun clearTimer(timerType: String) {
         player.clearTimer(timerType)
     }
 
-    public fun softTimer(timerType: TimerType, cycles: Int) {
+    public fun softTimer(timerType: String, cycles: Int) {
         player.softTimer(timerType, cycles)
     }
 
-    public fun clearSoftTimer(timerType: TimerType) {
+    public fun clearSoftTimer(timerType: String) {
         player.clearSoftTimer(timerType)
     }
 
-    public fun weakQueue(queue: QueueType, cycles: Int, args: Any? = null) {
+    public fun weakQueue(queue: String, cycles: Int, args: Any? = null) {
         player.weakQueue(queue, cycles, args)
     }
 
-    public fun clearWeakQueue(queue: QueueType) {
+    public fun clearWeakQueue(queue: String) {
         player.clearWeakQueue(queue)
     }
 
-    public fun softQueue(queue: QueueType, cycles: Int, args: Any? = null) {
+    public fun softQueue(queue: String, cycles: Int, args: Any? = null) {
         player.softQueue(queue, cycles, args)
     }
 
-    public fun queue(queue: QueueType, cycles: Int, args: Any? = null) {
+    public fun queue(queue: String, cycles: Int, args: Any? = null) {
         player.queue(queue, cycles, args)
     }
 
-    public fun strongQueue(queue: QueueType, cycles: Int, args: Any? = null) {
+    public fun strongQueue(queue: String, cycles: Int, args: Any? = null) {
         player.strongQueue(queue, cycles, args)
     }
 
-    public fun longQueueAccelerate(queue: QueueType, cycles: Int, args: Any? = null) {
+    public fun longQueueAccelerate(queue: String, cycles: Int, args: Any? = null) {
         player.longQueueAccelerate(queue, cycles, args)
     }
 
-    public fun longQueueDiscard(queue: QueueType, cycles: Int, args: Any? = null) {
+    public fun longQueueDiscard(queue: String, cycles: Int, args: Any? = null) {
         player.longQueueDiscard(queue, cycles, args)
     }
 
-    public fun clearQueue(queue: QueueType) {
+    public fun clearQueue(queue: String) {
         player.clearQueue(queue)
     }
 
@@ -1809,7 +1815,7 @@ public class ProtectedAccess(
     }
 
     /** Returns `true` if [coords] is within [area]. */
-    public fun inArea(area: AreaType, coords: CoordGrid): Boolean {
+    public fun inArea(area: String, coords: CoordGrid): Boolean {
         return context.areaChecker.inArea(area, coords)
     }
 
@@ -1845,7 +1851,7 @@ public class ProtectedAccess(
      * @see [WalkTriggerPriority.Low]
      * @see [WalkTriggerPriority.High]
      */
-    public fun walkTrigger(trigger: WalkTriggerType) {
+    public fun walkTrigger(trigger: String) {
         player.walkTrigger(trigger)
     }
 
@@ -1880,7 +1886,7 @@ public class ProtectedAccess(
      * @see [WalkTriggerPriority.Low]
      * @see [WalkTriggerPriority.High]
      */
-    public fun trySetWalkTrigger(trigger: WalkTriggerType): Boolean {
+    public fun trySetWalkTrigger(trigger: String): Boolean {
         return player.walkTrigger(trigger)
     }
 
@@ -1929,7 +1935,7 @@ public class ProtectedAccess(
      */
     public suspend fun delay(cycles: Int = 1) {
         require(cycles > 0) { "`cycles` must be greater than 0. (cycles=$cycles)" }
-        val modal = player.ui.getModalOrNull(components.mainmodal)
+        val modal = player.ui.getModalOrNull("component.toplevel_osrs_stretch:mainmodal")
         player.delay(cycles)
         coroutine.pause { player.isNotDelayed }
         resumeWithMainModalProtectedAccess(Unit, modal)
@@ -2008,7 +2014,7 @@ public class ProtectedAccess(
      * @see [resumeWithMainModalProtectedAccess]
      */
     private suspend fun <T : Any> await(input: KClass<T>): T {
-        val modal = player.ui.getModalOrNull(components.mainmodal)
+        val modal = player.ui.getModalOrNull("component.toplevel_osrs_stretch:mainmodal")
         val value = coroutine.pause(input)
         return resumeWithMainModalProtectedAccess(value, modal)
     }
@@ -2050,9 +2056,9 @@ public class ProtectedAccess(
         eventBus: EventBus,
     ) {
         player.ifMesbox(text, pauseText, lineHeight, eventBus)
-        val modal = player.ui.getModalOrNull(components.chatbox_chatmodal)
+        val modal = player.ui.getModalOrNull("component.chatbox:chatmodal")
         val input = coroutine.pause(ResumePauseButtonInput::class)
-        resumePauseButtonWithProtectedAccess(input, modal, components.messagebox_pbutton)
+        resumePauseButtonWithProtectedAccess(input, modal, "component.messagebox:continue")
     }
 
     /**
@@ -2078,7 +2084,7 @@ public class ProtectedAccess(
      *   the coroutine suspension.
      * @see [resumePauseButtonWithProtectedAccess]
      */
-    public suspend fun objbox(obj: ItemServerType, text: String) {
+    public suspend fun objbox(obj: String, text: String) {
         objbox(obj, zoom = 400, text)
     }
 
@@ -2087,7 +2093,7 @@ public class ProtectedAccess(
      *   the coroutine suspension.
      * @see [resumePauseButtonWithProtectedAccess]
      */
-    public suspend fun objbox(obj: ItemServerType, zoom: Int, text: String) {
+    public suspend fun objbox(obj: String, zoom: Int, text: String) {
         val alignment = context.alignment
         val pages = alignment.generateChatPageList(text)
         for (page in pages) {
@@ -2096,16 +2102,16 @@ public class ProtectedAccess(
     }
 
     private suspend fun objboxPage(
-        obj: ItemServerType,
+        obj: String,
         zoom: Int,
         text: String,
         pauseText: String,
         eventBus: EventBus,
     ) {
-        player.ifObjbox(text, obj.id, zoom, pauseText, eventBus)
-        val modal = player.ui.getModalOrNull(components.chatbox_chatmodal)
+        player.ifObjbox(text, obj.asRSCM(RSCMType.OBJ), zoom, pauseText, eventBus)
+        val modal = player.ui.getModalOrNull("component.chatbox:chatmodal")
         val input = coroutine.pause(ResumePauseButtonInput::class)
-        resumePauseButtonWithProtectedAccess(input, modal, components.objectbox_pbutton)
+        resumePauseButtonWithProtectedAccess(input, modal, "component.objectbox:universe")
     }
 
     /**
@@ -2115,7 +2121,7 @@ public class ProtectedAccess(
      * This dialogue is meant to be used in a script sequence where the script itself will replace
      * or close the dialogue after a certain number of cycles.
      */
-    public fun objboxNp(obj: ItemServerType, text: String) {
+    public fun objboxNp(obj: String, text: String) {
         objboxNp(obj, zoom = 400, text)
     }
 
@@ -2126,14 +2132,14 @@ public class ProtectedAccess(
      * This dialogue is meant to be used in a script sequence where the script itself will replace
      * or close the dialogue after a certain number of cycles.
      */
-    public fun objboxNp(obj: ItemServerType, zoom: Int, text: String) {
+    public fun objboxNp(obj: String, zoom: Int, text: String) {
         val alignment = context.alignment
         val pages = alignment.generateChatPageList(text)
         if (pages.size > 1) {
             throw IllegalStateException("Text too long: $text")
         }
         val page = pages.first()
-        player.ifObjbox(page.text, obj.id, zoom, pauseText = "", context.eventBus)
+        player.ifObjbox(page.text, obj.asRSCM(RSCMType.OBJ), zoom, pauseText = "", context.eventBus)
     }
 
     /**
@@ -2166,9 +2172,9 @@ public class ProtectedAccess(
         eventBus: EventBus = context.eventBus,
     ) {
         player.ifObjbox(text, obj.id, zoom, pauseText, eventBus)
-        val modal = player.ui.getModalOrNull(components.chatbox_chatmodal)
+        val modal = player.ui.getModalOrNull("component.chatbox:chatmodal")
         val input = coroutine.pause(ResumePauseButtonInput::class)
-        resumePauseButtonWithProtectedAccess(input, modal, components.objectbox_pbutton)
+        resumePauseButtonWithProtectedAccess(input, modal, "component.objectbox:universe")
     }
 
     /**
@@ -2204,7 +2210,7 @@ public class ProtectedAccess(
      *   the coroutine suspension.
      * @see [resumePauseButtonWithProtectedAccess]
      */
-    public suspend fun doubleobjbox(obj1: ItemServerType, obj2: ItemServerType, text: String) {
+    public suspend fun doubleobjbox(obj1: String, obj2: String, text: String) {
         doubleobjbox(obj1, zoom1 = 400, obj2, zoom2 = 400, text)
     }
 
@@ -2214,9 +2220,9 @@ public class ProtectedAccess(
      * @see [resumePauseButtonWithProtectedAccess]
      */
     public suspend fun doubleobjbox(
-        obj1: ItemServerType,
+        obj1: String,
         zoom1: Int,
-        obj2: ItemServerType,
+        obj2: String,
         zoom2: Int,
         text: String,
     ) {
@@ -2236,18 +2242,18 @@ public class ProtectedAccess(
     }
 
     private suspend fun doubleobjboxPage(
-        obj1: ItemServerType,
+        obj1: String,
         zoom1: Int,
-        obj2: ItemServerType,
+        obj2: String,
         zoom2: Int,
         text: String,
         pauseText: String,
         eventBus: EventBus,
     ) {
-        player.ifDoubleobjbox(text, obj1.id, zoom1, obj2.id, zoom2, pauseText, eventBus)
-        val modal = player.ui.getModalOrNull(components.chatbox_chatmodal)
+        player.ifDoubleobjbox(text, obj1.asRSCM(RSCMType.OBJ), zoom1, obj2.asRSCM(RSCMType.OBJ), zoom2, pauseText, eventBus)
+        val modal = player.ui.getModalOrNull("component.chatbox:chatmodal")
         val input = coroutine.pause(ResumePauseButtonInput::class)
-        resumePauseButtonWithProtectedAccess(input, modal, components.objectbox_double_pbutton)
+        resumePauseButtonWithProtectedAccess(input, modal, "component.objectbox_double:pausebutton")
     }
 
     /**
@@ -2257,7 +2263,7 @@ public class ProtectedAccess(
      * This dialogue is meant to be used in a script sequence where the script itself will replace
      * or close the dialogue after a certain number of cycles.
      */
-    public fun doubleobjboxNp(obj1: ItemServerType, obj2: ItemServerType, text: String) {
+    public fun doubleobjboxNp(obj1: String, obj2: String, text: String) {
         doubleobjboxNp(obj1, zoom1 = 400, obj2, zoom2 = 400, text)
     }
 
@@ -2269,9 +2275,9 @@ public class ProtectedAccess(
      * or close the dialogue after a certain number of cycles.
      */
     public fun doubleobjboxNp(
-        obj1: ItemServerType,
+        obj1: String,
         zoom1: Int,
-        obj2: ItemServerType,
+        obj2: String,
         zoom2: Int,
         text: String,
     ) {
@@ -2281,7 +2287,7 @@ public class ProtectedAccess(
             throw IllegalStateException("Text too long: $text")
         }
         val page = pages.first()
-        player.ifDoubleobjbox(page.text, obj1.id, zoom1, obj2.id, zoom2, "", context.eventBus)
+        player.ifDoubleobjbox(page.text, obj1.asRSCM(RSCMType.OBJ), zoom1, obj2.asRSCM(RSCMType.OBJ), zoom2, "", context.eventBus)
     }
 
     /**
@@ -2330,9 +2336,9 @@ public class ProtectedAccess(
         eventBus: EventBus,
     ) {
         player.ifDoubleobjbox(text, obj1.id, zoom1, obj2.id, zoom2, pauseText, eventBus)
-        val modal = player.ui.getModalOrNull(components.chatbox_chatmodal)
+        val modal = player.ui.getModalOrNull("component.chatbox:chatmodal")
         val input = coroutine.pause(ResumePauseButtonInput::class)
-        resumePauseButtonWithProtectedAccess(input, modal, components.objectbox_double_pbutton)
+        resumePauseButtonWithProtectedAccess(input, modal, "component.objectbox_double:pausebutton")
     }
 
     /**
@@ -2376,9 +2382,9 @@ public class ProtectedAccess(
         title: String = constants.cm_options,
     ): T {
         player.ifChoice(title, "$choice1|$choice2", choiceCountInclusive = 2, context.eventBus)
-        val modal = player.ui.getModalOrNull(components.chatbox_chatmodal)
+        val modal = player.ui.getModalOrNull("component.chatbox:chatmodal")
         val input = coroutine.pause(ResumePauseButtonInput::class)
-        resumePauseButtonWithProtectedAccess(input, modal, components.chatmenu_pbutton)
+        resumePauseButtonWithProtectedAccess(input, modal, "component.chatmenu:options")
         return when (input.subcomponent) {
             1 -> result1
             2 -> result2
@@ -2406,9 +2412,9 @@ public class ProtectedAccess(
             choiceCountInclusive = 3,
             context.eventBus,
         )
-        val modal = player.ui.getModalOrNull(components.chatbox_chatmodal)
+        val modal = player.ui.getModalOrNull("component.chatbox:chatmodal")
         val input = coroutine.pause(ResumePauseButtonInput::class)
-        resumePauseButtonWithProtectedAccess(input, modal, components.chatmenu_pbutton)
+        resumePauseButtonWithProtectedAccess(input, modal, "component.chatmenu:options")
         return when (input.subcomponent) {
             1 -> result1
             2 -> result2
@@ -2439,9 +2445,9 @@ public class ProtectedAccess(
             choiceCountInclusive = 4,
             context.eventBus,
         )
-        val modal = player.ui.getModalOrNull(components.chatbox_chatmodal)
+        val modal = player.ui.getModalOrNull("component.chatbox:chatmodal")
         val input = coroutine.pause(ResumePauseButtonInput::class)
-        resumePauseButtonWithProtectedAccess(input, modal, components.chatmenu_pbutton)
+        resumePauseButtonWithProtectedAccess(input, modal, "component.chatmenu:options")
         return when (input.subcomponent) {
             1 -> result1
             2 -> result2
@@ -2475,9 +2481,9 @@ public class ProtectedAccess(
             choiceCountInclusive = 5,
             context.eventBus,
         )
-        val modal = player.ui.getModalOrNull(components.chatbox_chatmodal)
+        val modal = player.ui.getModalOrNull("component.chatbox:chatmodal")
         val input = coroutine.pause(ResumePauseButtonInput::class)
-        resumePauseButtonWithProtectedAccess(input, modal, components.chatmenu_pbutton)
+        resumePauseButtonWithProtectedAccess(input, modal, "component.chatmenu:options")
         return when (input.subcomponent) {
             1 -> result1
             2 -> result2
@@ -2533,9 +2539,9 @@ public class ProtectedAccess(
         eventBus: EventBus,
     ) {
         player.ifChatPlayer(title, text, chatanim, pauseText, lineHeight, eventBus)
-        val modal = player.ui.getModalOrNull(components.chatbox_chatmodal)
+        val modal = player.ui.getModalOrNull("component.chatbox:chatmodal")
         val input = coroutine.pause(ResumePauseButtonInput::class)
-        resumePauseButtonWithProtectedAccess(input, modal, components.chat_right_pbutton)
+        resumePauseButtonWithProtectedAccess(input, modal, "component.chat_right:continue")
     }
 
     /**
@@ -2598,10 +2604,10 @@ public class ProtectedAccess(
             npc.playerFace(player, faceFar = faceFar)
         }
         player.facePathingEntitySquare(npc)
-        player.ifChatNpcSpecific(title, npc.type, text, chatanim, pauseText, lineHeight, eventBus)
-        val modal = player.ui.getModalOrNull(components.chatbox_chatmodal)
+        player.ifChatNpcSpecific(title, RSCM.getReverseMapping(RSCMType.NPC,npc.type.id), text, chatanim, pauseText, lineHeight, eventBus)
+        val modal = player.ui.getModalOrNull("component.chatbox:chatmodal")
         val input = coroutine.pause(ResumePauseButtonInput::class)
-        resumePauseButtonWithProtectedAccess(input, modal, components.chat_left_pbutton)
+        resumePauseButtonWithProtectedAccess(input, modal, "component.chat_left:continue")
     }
 
     /**
@@ -2643,10 +2649,10 @@ public class ProtectedAccess(
         eventBus: EventBus,
     ) {
         player.facePathingEntitySquare(npc)
-        player.ifChatNpcSpecific(title, npc.type, text, chatanim, pauseText, lineHeight, eventBus)
-        val modal = player.ui.getModalOrNull(components.chatbox_chatmodal)
+        player.ifChatNpcSpecific(title, RSCM.getReverseMapping(RSCMType.NPC,npc.type.id), text, chatanim, pauseText, lineHeight, eventBus)
+        val modal = player.ui.getModalOrNull("component.chatbox:chatmodal")
         val input = coroutine.pause(ResumePauseButtonInput::class)
-        resumePauseButtonWithProtectedAccess(input, modal, components.chat_left_pbutton)
+        resumePauseButtonWithProtectedAccess(input, modal, "component.chat_left:continue")
     }
 
     /**
@@ -2656,7 +2662,7 @@ public class ProtectedAccess(
      */
     public suspend fun chatNpcSpecific(
         title: String,
-        type: NpcServerType,
+        type: String,
         mesanim: MesAnimType,
         text: String,
     ) {
@@ -2681,7 +2687,7 @@ public class ProtectedAccess(
 
     private suspend fun chatNpcSpecificPage(
         title: String,
-        type: NpcServerType,
+        type: String,
         text: String,
         chatanim: SequenceServerType,
         lineHeight: Int,
@@ -2689,9 +2695,9 @@ public class ProtectedAccess(
         eventBus: EventBus,
     ) {
         player.ifChatNpcSpecific(title, type, text, chatanim, pauseText, lineHeight, eventBus)
-        val modal = player.ui.getModalOrNull(components.chatbox_chatmodal)
+        val modal = player.ui.getModalOrNull("component.chatbox:chatmodal")
         val input = coroutine.pause(ResumePauseButtonInput::class)
-        resumePauseButtonWithProtectedAccess(input, modal, components.chat_left_pbutton)
+        resumePauseButtonWithProtectedAccess(input, modal, "component.chat_left:continue")
     }
 
     /**
@@ -2703,7 +2709,7 @@ public class ProtectedAccess(
      */
     public fun chatNpcSpecificNp(
         title: String,
-        type: NpcServerType,
+        type: String,
         mesanim: MesAnimType,
         text: String,
     ) {
@@ -2726,7 +2732,7 @@ public class ProtectedAccess(
      */
     public suspend fun stringDialog(title: String): String {
         mesLayerMode9(player, title)
-        val modal = player.ui.getModalOrNull(components.mainmodal)
+        val modal = player.ui.getModalOrNull("component.toplevel_osrs_stretch:mainmodal")
         val input = coroutine.pause(ResumePStringDialogInput::class)
         return resumeWithMainModalProtectedAccess(input.text, modal)
     }
@@ -2741,7 +2747,7 @@ public class ProtectedAccess(
      */
     public suspend fun countDialog(title: String = constants.cm_count): Int {
         mesLayerMode7(player, title)
-        val modal = player.ui.getModalOrNull(components.mainmodal)
+        val modal = player.ui.getModalOrNull("component.toplevel_osrs_stretch:mainmodal")
         val input = coroutine.pause(ResumePCountDialogInput::class)
         return resumeWithMainModalProtectedAccess(input.count.absoluteValue, modal)
     }
@@ -2755,7 +2761,7 @@ public class ProtectedAccess(
      */
     public suspend fun numberDialog(title: String): Int {
         mesLayerMode7(player, title)
-        val modal = player.ui.getModalOrNull(components.mainmodal)
+        val modal = player.ui.getModalOrNull("component.toplevel_osrs_stretch:mainmodal")
         val input = coroutine.pause(ResumePCountDialogInput::class)
         return resumeWithMainModalProtectedAccess(input.count, modal)
     }
@@ -2777,7 +2783,7 @@ public class ProtectedAccess(
         showLastSearched: Boolean = false,
     ): ItemServerType {
         mesLayerMode14(player, title, stockMarketRestriction, enumRestriction, showLastSearched)
-        val modal = player.ui.getModalOrNull(components.mainmodal)
+        val modal = player.ui.getModalOrNull("component.toplevel_osrs_stretch:mainmodal")
         val input = coroutine.pause(ResumePObjDialogInput::class)
         return resumeWithMainModalProtectedAccess(input.obj, modal)
     }
@@ -2790,15 +2796,15 @@ public class ProtectedAccess(
      * @see [resumePauseButtonWithProtectedAccess]
      */
     public suspend fun confirmDestroy(
-        obj: ItemServerType,
+        obj: String,
         count: Int,
         header: String,
         text: String,
     ): Boolean {
-        player.ifConfirmDestroy(header, text, obj.id, count, context.eventBus)
-        val modal = player.ui.getModalOrNull(components.chatbox_chatmodal)
+        player.ifConfirmDestroy(header, text, obj.asRSCM(RSCMType.OBJ), count, context.eventBus)
+        val modal = player.ui.getModalOrNull("component.chatbox:chatmodal")
         val input = coroutine.pause(ResumePauseButtonInput::class)
-        resumePauseButtonWithProtectedAccess(input, modal, components.confirmdestroy_pbutton)
+        resumePauseButtonWithProtectedAccess(input, modal, "component.confirmdestroy:universe")
         return when (input.subcomponent) {
             0 -> false
             1 -> true
@@ -2814,14 +2820,14 @@ public class ProtectedAccess(
      * @see [resumeWithMainModalProtectedAccess]
      */
     public suspend fun confirmOverlay(
-        target: ComponentType,
+        target: String,
         title: String,
         text: String,
         cancel: String,
         confirm: String,
     ): Boolean {
         player.ifConfirmOverlay(target, title, text, cancel, confirm, context.eventBus)
-        val modal = player.ui.getModalOrNull(components.mainmodal)
+        val modal = player.ui.getModalOrNull("component.toplevel_osrs_stretch:mainmodal")
         val input = coroutine.pause(ResumePCountDialogInput::class)
         val confirmed = resumeWithMainModalProtectedAccess(input.count != 0, modal)
         player.ifConfirmOverlayClose(context.eventBus)
@@ -2842,7 +2848,7 @@ public class ProtectedAccess(
     public suspend fun menu(title: String, hotkeys: Boolean, choices: List<String>): Int {
         require(choices.size < 128) { "Can only have up to 127 `choices`. (size=${choices.size})" }
         player.ifMenu(title, choices.joinToString("|"), hotkeys, context.eventBus)
-        val modal = player.ui.getModalOrNull(components.mainmodal)
+        val modal = player.ui.getModalOrNull("component.toplevel_osrs_stretch:mainmodal")
         val input = coroutine.pause(ResumePauseButtonInput::class)
         chatDefaultRestoreInput(player)
         return resumeWithMainModalProtectedAccess(input.subcomponent.absoluteValue, modal)
@@ -2888,7 +2894,7 @@ public class ProtectedAccess(
      *  // This message will never be sent to the player
      *  player.mes("Your input is: $input.")
      *  // Nor will anything below this...
-     *  player.invAdd(objs.jug_empty, input)
+     *  player.invAdd("obj.jug_empty", input)
      * }
      * ```
      *
@@ -2919,18 +2925,18 @@ public class ProtectedAccess(
     private fun resumePauseButtonWithProtectedAccess(
         input: ResumePauseButtonInput,
         expectedModal: Component?,
-        expectedComponent: ComponentType,
+        expectedComponent: String,
     ) {
-        if (!expectedComponent.isType(input.component)) {
+        if (expectedComponent != input.component) {
             logger.debug {
                 "Protected-access was lost due to unexpected component: " +
                     "player=$player, " +
-                    "received=${input.component.internalName ?: input}, " +
-                    "expected=${expectedComponent.internalName ?: expectedComponent}"
+                    "received=${input.component}, " +
+                    "expected=${expectedComponent}"
             }
             throw ProtectedAccessLostException()
         }
-        resumeWithModalProtectedAccess(null, expectedModal, components.chatbox_chatmodal)
+        resumeWithModalProtectedAccess(null, expectedModal, "component.chatbox:chatmodal")
     }
 
     /**
@@ -2946,7 +2952,7 @@ public class ProtectedAccess(
     private fun <T> resumeWithModalProtectedAccess(
         returnWithProtectedAccess: T,
         expectedModal: Component?,
-        modalTarget: ComponentType,
+        modalTarget: String,
     ): T {
         if (player.isDelayed) {
             logger.debug { "Protected-access was lost due to delay: player=$player" }
@@ -2988,7 +2994,7 @@ public class ProtectedAccess(
         return resumeWithModalProtectedAccess(
             returnWithProtectedAccess,
             expectedModal,
-            components.mainmodal,
+            "component.toplevel_osrs_stretch:mainmodal",
         )
     }
 
@@ -3000,11 +3006,11 @@ public class ProtectedAccess(
 
     public fun interfaceInvInit(
         inv: Inventory,
-        target: ComponentType,
+        target: String,
         objRowCount: Int,
         objColCount: Int,
         dragType: Int = 0,
-        dragComponent: ComponentType? = null,
+        dragComponent: String? = null,
         op1: String? = null,
         op2: String? = null,
         op3: String? = null,
@@ -3151,7 +3157,7 @@ public class ProtectedAccess(
     }
 
     public fun closeFadeOverlay(cycles: Int = 3) {
-        longQueueDiscard(queues.fade_overlay_close, cycles)
+        longQueueDiscard("queue.fade_overlay_close", cycles)
     }
 
     /* Interface helper functions */
@@ -3159,11 +3165,11 @@ public class ProtectedAccess(
         player.ifClose(context.eventBus)
     }
 
-    public fun ifCloseSub(interf: InterfaceType) {
+    public fun ifCloseSub(interf: String) {
         player.ifCloseSub(interf, context.eventBus)
     }
 
-    public fun ifOpenSide(interf: InterfaceType) {
+    public fun ifOpenSide(interf: String) {
         player.ifOpenSide(interf, context.eventBus)
     }
 
@@ -3171,13 +3177,13 @@ public class ProtectedAccess(
      * Difference with [ifOpenMainModal] is that this function will **not** send
      * `toplevel_mainmodal_open` (script 2524) before opening the interface.
      */
-    public fun ifOpenMain(interf: InterfaceType) {
+    public fun ifOpenMain(interf: String) {
         player.ifOpenMain(interf, context.eventBus)
     }
 
     public fun ifOpenMainSidePair(
-        main: InterfaceType,
-        side: InterfaceType,
+        main: String,
+        side: String,
         colour: Int = -1,
         transparency: Int = -1,
     ) {
@@ -3188,51 +3194,51 @@ public class ProtectedAccess(
      * Difference with [ifOpenMain] is that this function will send `toplevel_mainmodal_open`
      * (script 2524) before opening the interface in the main modal position.
      */
-    public fun ifOpenMainModal(interf: InterfaceType, colour: Int = -1, transparency: Int = -1) {
+    public fun ifOpenMainModal(interf: String, colour: Int = -1, transparency: Int = -1) {
         player.ifOpenMainModal(interf, context.eventBus, colour, transparency)
     }
 
-    public fun ifOpenOverlay(interf: InterfaceType, target: ComponentType) {
+    public fun ifOpenOverlay(interf: String, target: String) {
         player.ifOpenOverlay(interf, target, context.eventBus)
     }
 
-    public fun ifOpenOverlay(interf: InterfaceType) {
+    public fun ifOpenOverlay(interf: String) {
         player.ifOpenOverlay(interf, context.eventBus)
     }
 
-    public fun ifOpenFullOverlay(interf: InterfaceType) {
+    public fun ifOpenFullOverlay(interf: String) {
         player.ifOpenFullOverlay(interf, context.eventBus)
     }
 
-    public fun ifOpenSub(interf: InterfaceType, target: ComponentType, type: IfSubType) {
+    public fun ifOpenSub(interf: String, target: String, type: IfSubType) {
         player.ifOpenSub(interf, target, type, context.eventBus)
     }
 
-    public fun ifSetAnim(target: ComponentType, seq: SequenceServerType?) {
+    public fun ifSetAnim(target: String, seq: SequenceServerType?) {
         player.ifSetAnim(target, seq)
     }
 
-    public fun ifSetEvents(target: ComponentType, range: IntRange, vararg event: IfEvent) {
+    public fun ifSetEvents(target: String, range: IntRange, vararg event: IfEvent) {
         player.ifSetEvents(target, range, *event)
     }
 
-    public fun ifSetNpcHead(target: ComponentType, npc: NpcServerType) {
+    public fun ifSetNpcHead(target: String, npc: String) {
         player.ifSetNpcHead(target, npc)
     }
 
-    public fun ifSetPlayerHead(target: ComponentType) {
+    public fun ifSetPlayerHead(target: String) {
         player.ifSetPlayerHead(target)
     }
 
-    public fun ifSetText(target: ComponentType, text: String) {
+    public fun ifSetText(target: String, text: String) {
         player.ifSetText(target, text)
     }
 
-    public fun ifSetObj(target: ComponentType, obj: ItemServerType, zoom: Int) {
+    public fun ifSetObj(target: String, obj: String, zoom: Int) {
         player.ifSetObj(target, obj, zoom)
     }
 
-    public fun ifSetHide(target: ComponentType, hide: Boolean) {
+    public fun ifSetHide(target: String, hide: Boolean) {
         player.ifSetHide(target, hide)
     }
 
@@ -3242,10 +3248,10 @@ public class ProtectedAccess(
     }
 
     public fun invCoinTotal(inv: Inventory = this.inv): Int {
-        return invTotal(inv, objs.coins)
+        return invTotal(inv, "obj.coins")
     }
 
-    public fun invTotal(inv: Inventory, content: ContentGroupType): Int {
+    public fun invContentTotal(inv: Inventory, content: String): Int {
         var count = 0
         for (obj in inv) {
             val filtered = obj ?: continue
@@ -3256,19 +3262,19 @@ public class ProtectedAccess(
         return count
     }
 
-    public fun invTotal(inv: Inventory, obj: ItemServerType): Int {
+    public fun invTotal(inv: Inventory, obj: String): Int {
         return inv.count(obj)
     }
 
-    public fun invContains(inv: Inventory, content: ContentGroupType): Boolean {
-        return inv.any { it != null && getInvObj(it).contentGroup == content.id }
+    public fun invContains(inv: Inventory, content: String): Boolean {
+        return inv.any { it != null && getInvObj(it).contentGroup == content.asRSCM(RSCMType.CONTENT) }
     }
 
-    public fun inv(inv: InventoryServerType): Inventory {
+    public fun inv(inv: String): Inventory {
         return player.invMap.getOrPut(inv)
     }
 
-    public operator fun Inventory.contains(content: ContentGroupType): Boolean {
+    public operator fun Inventory.contains(content: String): Boolean {
         return invContains(this, content)
     }
 
@@ -3281,7 +3287,7 @@ public class ProtectedAccess(
         return type.paramOrNull(param)
     }
 
-    public fun lcIsContentType(loc: ObjectServerType, content: ContentGroupType): Boolean {
+    public fun lcIsContentType(loc: ObjectServerType, content: String): Boolean {
         return loc.isContentType(content)
     }
 
@@ -3301,11 +3307,11 @@ public class ProtectedAccess(
         return ServerCacheManager.getObject(loc.id)!!.paramOrNull(param)
     }
 
-    public fun locIsContentType(loc: LocInfo, content: ContentGroupType): Boolean {
+    public fun locIsContentType(loc: LocInfo, content: String): Boolean {
         return ServerCacheManager.getObject(loc.id)!!.isContentType(content)
     }
 
-    public fun locIsContentType(loc: BoundLocInfo, content: ContentGroupType): Boolean {
+    public fun locIsContentType(loc: BoundLocInfo, content: String): Boolean {
         return ServerCacheManager.getObject(loc.id)!!.isContentType(content)
     }
 
@@ -3317,11 +3323,11 @@ public class ProtectedAccess(
         return loc.isType(type)
     }
 
-    public fun locAnim(repo: WorldRepository, loc: LocInfo, seq: SequenceServerType) {
+    public fun locAnim(repo: WorldRepository, loc: LocInfo, seq: String) {
         repo.locAnim(loc, seq)
     }
 
-    public fun locAnim(repo: WorldRepository, loc: BoundLocInfo, seq: SequenceServerType) {
+    public fun locAnim(repo: WorldRepository, loc: BoundLocInfo, seq: String) {
         repo.locAnim(loc, seq)
     }
 
@@ -3350,11 +3356,11 @@ public class ProtectedAccess(
     }
 
     /* Midi helper functions */
-    public fun midiJingle(jingle: Int) {
+    public fun midiJingle(jingle: String) {
         player.midiJingle(jingle)
     }
 
-    public fun midiSong(midi: MidiType) {
+    public fun midiSong(midi: String) {
         player.midiSong(midi)
     }
 
@@ -3367,8 +3373,8 @@ public class ProtectedAccess(
         return type.paramOrNull(param)
     }
 
-    public fun ncIsContentType(type: NpcServerType, content: ContentGroupType): Boolean {
-        return type.isContentType(content.id)
+    public fun ncIsContentType(type: NpcServerType, content: String): Boolean {
+        return type.isContentType(content)
     }
 
     public fun npcPlayerFaceClose(npc: Npc, target: Player = this.player) {
@@ -3435,7 +3441,7 @@ public class ProtectedAccess(
     }
 
     /* Obj helper functions (oc=obj config) */
-    public fun ocCert(type: ItemServerType): ItemServerType {
+    public fun ocCert(type: String): ItemServerType {
         return cert(type)
     }
 
@@ -3455,18 +3461,18 @@ public class ProtectedAccess(
         return if (obj == null) null else getInvObj(obj).paramOrNull(type)
     }
 
-    public fun ocIsContentType(obj: InvObj?, content: ContentGroupType): Boolean {
-        return obj != null && getInvObj(obj).contentGroup == content.id
+    public fun ocIsContentType(obj: InvObj?, content: String): Boolean {
+        return obj != null && getInvObj(obj).contentGroup == content.asRSCM(RSCMType.CONTENT)
     }
 
-    public fun ocIsType(obj: InvObj?, type: ItemServerType): Boolean {
+    public fun ocIsType(obj: InvObj?, type: String): Boolean {
         return obj.isType(type)
     }
 
     public fun ocIsType(
         obj: InvObj?,
-        type: ItemServerType,
-        vararg others: ItemServerType,
+        type: String,
+        vararg others: String,
     ): Boolean {
         return obj.isType(type) || others.any(obj::isType)
     }
@@ -3497,14 +3503,18 @@ public class ProtectedAccess(
     }
 
     /* Sound helper functions */
-    public fun soundSynth(synth: SynthType, loops: Int = 1, delay: Int = 0) {
+    public fun soundSynth(synth: String, loops: Int = 1, delay: Int = 0) {
+        player.soundSynth(synth, loops, delay)
+    }
+
+    public fun soundSynth(synth: Int, loops: Int = 1, delay: Int = 0) {
         player.soundSynth(synth, loops, delay)
     }
 
     public fun soundArea(
         repo: WorldRepository,
         source: CoordGrid,
-        synth: SynthType,
+        synth: String,
         delay: Int = 0,
         loops: Int = 1,
         radius: Int = 5,
@@ -3516,7 +3526,7 @@ public class ProtectedAccess(
     public fun soundArea(
         repo: WorldRepository,
         source: PathingEntity,
-        synth: SynthType,
+        synth: String,
         delay: Int = 0,
         loops: Int = 1,
         radius: Int = 5,

@@ -1,5 +1,8 @@
 package org.rsmod.game.entity
 
+import dev.openrune.ServerCacheManager
+import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.rscm.RSCMType
 import dev.openrune.types.SequenceServerType
 import dev.openrune.types.WalkTriggerType
 import dev.openrune.types.aconverted.SpotanimType
@@ -250,11 +253,13 @@ public sealed class PathingEntity {
         interaction = null
     }
 
-    public abstract fun anim(seq: SequenceServerType, delay: Int = 0, priority: Int = seq.priority)
+    public abstract fun anim(
+        seq: String, delay: Int = 0, priority: Int = ServerCacheManager.getAnim(seq.asRSCM(RSCMType.SEQ))!!.priority
+    )
 
     public abstract fun resetAnim()
 
-    public abstract fun spotanim(spot: SpotanimType, delay: Int = 0, height: Int = 0, slot: Int = 0)
+    public abstract fun spotanim(spot: String, delay: Int = 0, height: Int = 0, slot: Int = 0)
 
     /**
      * Sets the [pendingFaceSquare] for [target] to face as soon as this [PathingEntity] is not
@@ -441,12 +446,16 @@ public sealed class PathingEntity {
      * @see [WalkTriggerPriority.Low]
      * @see [WalkTriggerPriority.High]
      */
-    public fun walkTrigger(trigger: WalkTriggerType): Boolean {
+    public fun walkTrigger(trigger: String): Boolean {
+
+        val triggerType = ServerCacheManager.getWalkTrigger(trigger.asRSCM(RSCMType.WALKTRIGGER))
+            ?: error("Invalid walk trigger: $trigger")
+
         val previous = walkTrigger?.priority
-        if (!trigger.priority.canOverwrite(previous)) {
+        if (!triggerType.priority.canOverwrite(previous)) {
             return false
         }
-        walkTrigger = trigger
+        walkTrigger = triggerType
         return true
     }
 

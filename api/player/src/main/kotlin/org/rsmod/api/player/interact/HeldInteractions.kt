@@ -1,13 +1,15 @@
 package org.rsmod.api.player.interact
 
 import com.github.michaelbull.logging.InlineLogger
+import dev.openrune.ServerCacheManager
+import dev.openrune.rscm.RSCM
+import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.rscm.RSCMType
 import dev.openrune.types.ItemServerType
 import jakarta.inject.Inject
 import kotlin.math.min
 import org.rsmod.api.config.constants
 import org.rsmod.api.config.refs.params
-import org.rsmod.api.config.refs.synths
-import org.rsmod.api.config.refs.varbits
 import org.rsmod.api.invtx.invDel
 import org.rsmod.api.market.MarketPrices
 import org.rsmod.api.player.dialogue.Dialogue
@@ -306,13 +308,16 @@ constructor(
         obj: InvObj,
         type: ItemServerType,
     ) {
+
+        val internalName = RSCM.getReverseMapping(RSCMType.OBJ, type.id)
+
         val header = type.param(params.destroy_note_title)
         val text = type.param(params.destroy_note_desc)
-        val confirm = confirmDestroy(type, obj.count, header, text)
+        val confirm = confirmDestroy(internalName, obj.count, header, text)
         if (!confirm) {
             return
         }
-        destroy(player, inventory, dropSlot, obj, type)
+        destroy(player, inventory, dropSlot, obj, internalName)
     }
 
     private fun destroy(
@@ -320,7 +325,7 @@ constructor(
         inventory: Inventory,
         dropSlot: Int,
         obj: InvObj,
-        type: ItemServerType,
+        type: String,
     ) {
         val result = player.invDel(inventory, type, count = obj.count, slot = dropSlot)
         if (result.success) {
@@ -335,8 +340,11 @@ constructor(
         obj: InvObj,
         type: ItemServerType,
     ) {
+
+        val internalName = RSCM.getReverseMapping(RSCMType.OBJ, type.id)
+
         if (obj.count == 1) {
-            release(player, inventory, dropSlot, obj, type)
+            release(player, inventory, dropSlot, obj, internalName)
             return
         }
         startDialogue { releaseWarning(inventory, dropSlot, obj, type) }
@@ -354,7 +362,8 @@ constructor(
         if (!confirm) {
             return
         }
-        release(player, inventory, dropSlot, obj, type)
+        val internalName = RSCM.getReverseMapping(RSCMType.OBJ, type.id)
+        release(player, inventory, dropSlot, obj, internalName)
     }
 
     private fun release(
@@ -362,12 +371,14 @@ constructor(
         inventory: Inventory,
         dropSlot: Int,
         obj: InvObj,
-        type: ItemServerType,
+        internal: String,
     ) {
-        val result = player.invDel(inventory, type, count = obj.count, slot = dropSlot)
+        val result = player.invDel(inventory, internal, count = obj.count, slot = dropSlot)
         if (result.success) {
-            val event = HeldDropEvents.Release(player, dropSlot, obj, type)
+            val event = HeldDropEvents.Release(player, dropSlot, obj, internal)
             eventBus.publish(event)
+
+            val type = ServerCacheManager.getItem(internal.asRSCM(RSCMType.OBJ))?: return
 
             val message = type.paramOrNull(params.release_note_message)
             message?.let(player::mes)
@@ -394,9 +405,9 @@ constructor(
             return
         }
 
-        val thresholdWarning = player.vars[varbits.option_dropwarning_on] == 1
+        val thresholdWarning = player.vars["varbit.option_dropwarning_on"] == 1
         if (thresholdWarning) {
-            val threshold = player.vars[varbits.option_dropwarning_value]
+            val threshold = player.vars["varbit.option_dropwarning_value"]
             val cost = (marketPrices[type] ?: 0) * obj.count
             if (cost >= threshold) {
                 access.dropWithWarning(inventory, dropSlot, obj, type)
@@ -417,7 +428,7 @@ constructor(
         if (!dropped) {
             return
         }
-        soundSynth(synths.put_down)
+        soundSynth("synth.put_down")
 
         val event = HeldDropEvents.Drop(this, dropSlot, obj, type)
         eventBus.publish(event)
@@ -439,7 +450,7 @@ constructor(
         type: ItemServerType,
     ) {
         objbox(
-            obj = type,
+            obj = RSCM.getReverseMapping(RSCMType.OBJ, type.id),
             zoom = 400,
             "The item you are trying to put down " +
                 "is considered <col=7f0000>valuable</col>. " +

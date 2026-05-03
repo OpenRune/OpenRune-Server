@@ -4,7 +4,6 @@ import dev.openrune.rscm.RSCM
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import dev.openrune.types.ItemServerType
-import dev.openrune.types.aconverted.ContentGroupType
 import org.rsmod.api.player.events.interact.HeldContentEvents
 import org.rsmod.api.player.events.interact.HeldDropEvents
 import org.rsmod.api.player.events.interact.HeldEquipEvents
@@ -24,14 +23,14 @@ public fun ScriptContext.onDropTrigger(type: String, action: HeldDropEvents.Trig
 
 /* Equip functions */
 public fun ScriptContext.onEquipObj(
-    content: ContentGroupType,
+    content: String,
     action: HeldEquipEvents.Equip.() -> Unit,
-): Unit = onEvent(content.id, action)
+): Unit = onEvent(content.asRSCM(RSCMType.CONTENT), action)
 
 public fun ScriptContext.onUnequipObj(
-    content: ContentGroupType,
+    content: String,
     action: HeldEquipEvents.Unequip.() -> Unit,
-): Unit = onEvent(content.id, action)
+): Unit = onEvent(content.asRSCM(RSCMType.CONTENT), action)
 
 /* Standard obj op functions */
 public fun ScriptContext.onOpHeld1(
@@ -41,55 +40,55 @@ public fun ScriptContext.onOpHeld1(
 
 /** **Important Note:** This replaces the default wield/wear op handling for obj [type]. */
 public fun ScriptContext.onOpHeld2(
-    type: ItemServerType,
+    type: String,
     action: suspend ProtectedAccess.(HeldObjEvents.Op2) -> Unit,
-): Unit = onProtectedEvent(type.id, action)
+): Unit = onProtectedEvent(type.asRSCM(RSCMType.OBJ), action)
 
 public fun ScriptContext.onOpHeld3(
-    type: ItemServerType,
+    type: String,
     action: suspend ProtectedAccess.(HeldObjEvents.Op3) -> Unit,
-): Unit = onProtectedEvent(type.id, action)
+): Unit = onProtectedEvent(type.asRSCM(RSCMType.OBJ), action)
 
 public fun ScriptContext.onOpHeld4(
-    type: ItemServerType,
+    type: String,
     action: suspend ProtectedAccess.(HeldObjEvents.Op4) -> Unit,
-): Unit = onProtectedEvent(type.id, action)
+): Unit = onProtectedEvent(type.asRSCM(RSCMType.OBJ), action)
 
 /** **Important Note:** This replaces the default drop op handling for obj [type]. */
 public fun ScriptContext.onOpHeld5(
-    type: ItemServerType,
+    type: String,
     action: suspend ProtectedAccess.(HeldObjEvents.Op5) -> Unit,
-): Unit = onProtectedEvent(type.id, action)
+): Unit = onProtectedEvent(type.asRSCM(RSCMType.OBJ), action)
 
 /* Standard content op functions */
 public fun ScriptContext.onOpHeld1(
-    content: ContentGroupType,
+    content: String,
     action: suspend ProtectedAccess.(HeldContentEvents.Op1) -> Unit,
-): Unit = onProtectedEvent(content.id, action)
+): Unit = onProtectedEvent(content.asRSCM(RSCMType.CONTENT), action)
 
 /**
  * **Important Note:** This replaces the default wield/wear op handling for content group [content].
  */
-public fun ScriptContext.onOpHeld2(
-    content: ContentGroupType,
+public fun ScriptContext.onOpContentHeld2(
+    content: String,
     action: suspend ProtectedAccess.(HeldContentEvents.Op2) -> Unit,
-): Unit = onProtectedEvent(content.id, action)
+): Unit = onProtectedEvent(content.asRSCM(RSCMType.CONTENT), action)
 
-public fun ScriptContext.onOpHeld3(
-    content: ContentGroupType,
+public fun ScriptContext.onOpContentHeld3(
+    content: String,
     action: suspend ProtectedAccess.(HeldContentEvents.Op3) -> Unit,
-): Unit = onProtectedEvent(content.id, action)
+): Unit = onProtectedEvent(content.asRSCM(RSCMType.CONTENT), action)
 
-public fun ScriptContext.onOpHeld4(
-    content: ContentGroupType,
+public fun ScriptContext.onOpContentHeld4(
+    content: String,
     action: suspend ProtectedAccess.(HeldContentEvents.Op4) -> Unit,
-): Unit = onProtectedEvent(content.id, action)
+): Unit = onProtectedEvent(content.asRSCM(RSCMType.CONTENT), action)
 
 /** **Important Note:** This replaces the default drop op handling for content group [content]. */
-public fun ScriptContext.onOpHeld5(
-    content: ContentGroupType,
+public fun ScriptContext.onOpContentHeld5(
+    content: String,
     action: suspend ProtectedAccess.(HeldContentEvents.Op5) -> Unit,
-): Unit = onProtectedEvent(content.id, action)
+): Unit = onProtectedEvent(content.asRSCM(RSCMType.CONTENT), action)
 
 /* HeldU (inv obj on inv obj) functions */
 /**
@@ -129,10 +128,10 @@ public fun ScriptContext.onOpHeldU(
  * `HeldUContentEvents.Type.second`, regardless of which obj the player uses on the other in-game.
  */
 public fun ScriptContext.onOpHeldU(
-    first: ContentGroupType,
+    first: String,
     second: ItemServerType,
     action: suspend ProtectedAccess.(HeldUContentEvents.Type) -> Unit,
-): Unit = onProtectedEvent(EventBus.composeLongKey(first.id, second.id), action)
+): Unit = onProtectedEvent(EventBus.composeLongKey(first.asRSCM(RSCMType.CONTENT), second.id), action)
 
 /**
  * Registers a script that triggers when an inventory obj ([first]) is used on another inventory obj
@@ -145,21 +144,21 @@ public fun ScriptContext.onOpHeldU(
  * in-game.
  */
 public fun ScriptContext.onOpHeldU(
-    first: ContentGroupType,
-    second: ContentGroupType,
+    first: String,
+    second: String,
     action: suspend ProtectedAccess.(HeldUContentEvents.Content) -> Unit,
 ) {
     // Note: We preserve the order of `first` and `second` when registering to expose a predictable
     // and fixed order in the respective script. Because of this, we can't rely on the event bus to
     // catch duplicate registrations - we must manually check that the reversed combination has
     // not already been registered.
-    val opposite = EventBus.composeLongKey(second.id, first.id)
+    val opposite = EventBus.composeLongKey(second.asRSCM(RSCMType.OBJ), first.asRSCM(RSCMType.OBJ))
     val registeredOpposite = eventBus.contains(HeldUContentEvents.Content::class.java, opposite)
     if (registeredOpposite) {
         val message = "OpHeldU for combination already registered: first=$second, second=$first"
         throw IllegalStateException(message)
     }
-    onProtectedEvent(EventBus.composeLongKey(first.id, second.id), action)
+    onProtectedEvent(EventBus.composeLongKey(first.asRSCM(RSCMType.OBJ), second.asRSCM(RSCMType.OBJ)), action)
 }
 
 /**
@@ -182,6 +181,6 @@ public fun ScriptContext.onOpHeldU(
  * while the target obj will be [HeldUDefaultEvents.Content.second].
  */
 public fun ScriptContext.onOpHeldU(
-    first: ContentGroupType,
+    first: String,
     action: suspend ProtectedAccess.(HeldUDefaultEvents.Content) -> Unit,
-): Unit = onProtectedEvent(first.id.toLong(), action)
+): Unit = onProtectedEvent(first.asRSCM(RSCMType.CONTENT).toLong(), action)

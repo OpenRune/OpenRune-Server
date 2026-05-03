@@ -1,5 +1,8 @@
 package org.rsmod.game.vars
 
+import dev.openrune.ServerCacheManager
+import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.rscm.RSCMType
 import dev.openrune.types.VarConBitType
 import dev.openrune.types.VarConType
 import it.unimi.dsi.fastutil.ints.Int2IntMap
@@ -14,7 +17,18 @@ public value class VarConIntMap(public val backing: Int2IntMap = Int2IntOpenHash
         backing.remove(key.id)
     }
 
+    public fun remove(key: String) {
+        backing.remove(key.asRSCM(RSCMType.VARCON))
+    }
+
+    public operator fun get(key: String): Int = backing.getOrDefault(key.asRSCM(RSCMType.VARCON), 0)
+
     public operator fun get(key: VarConType): Int = backing.getOrDefault(key.id, 0)
+
+    public operator fun set(key: String, value: Int?) {
+        val varconType = ServerCacheManager.getVarCon(key.asRSCM(RSCMType.VARCON)) ?: error("Unable to find varcon: $key")
+        set(varconType, value)
+    }
 
     public operator fun set(key: VarConType, value: Int?) {
         if (value == null) {

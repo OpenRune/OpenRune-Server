@@ -1,6 +1,8 @@
 package org.rsmod.api.npc.events.interact
 
 import dev.openrune.definition.type.widget.ComponentType
+import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.rscm.RSCMType
 import dev.openrune.types.ItemServerType
 import dev.openrune.types.ObjectServerType
 import org.rsmod.events.EventBus
@@ -181,34 +183,34 @@ public class AiLocUEvents {
     public class Op(
         public val loc: BoundLocInfo,
         public val type: ObjectServerType,
-        public val objType: ItemServerType,
+        public val objType: String,
         public val invSlot: Int,
-    ) : OpEvent(EventBus.composeLongKey(type.id, objType.id))
+    ) : OpEvent(EventBus.composeLongKey(type.id, objType.asRSCM(RSCMType.OBJ)))
 
     public class Ap(
         public val loc: BoundLocInfo,
         public val type: ObjectServerType,
-        public val objType: ItemServerType,
+        public val objType: String,
         public val invSlot: Int,
-    ) : ApEvent(EventBus.composeLongKey(type.id, objType.id))
+    ) : ApEvent(EventBus.composeLongKey(type.id, objType.asRSCM(RSCMType.OBJ)))
 }
 
 public class AiLocUContentEvents {
     public class OpType(
         public val loc: BoundLocInfo,
         public val type: ObjectServerType,
-        public val objType: ItemServerType,
+        public val objType: String,
         public val invSlot: Int,
         locContent: Int = type.contentGroup,
-    ) : OpEvent(EventBus.composeLongKey(locContent, objType.id))
+    ) : OpEvent(EventBus.composeLongKey(locContent, objType.asRSCM(RSCMType.OBJ)))
 
     public class ApType(
         public val loc: BoundLocInfo,
         public val type: ObjectServerType,
-        public val objType: ItemServerType,
+        public val objType: String,
         public val invSlot: Int,
         locContent: Int = type.contentGroup,
-    ) : ApEvent(EventBus.composeLongKey(locContent, objType.id))
+    ) : ApEvent(EventBus.composeLongKey(locContent, objType.asRSCM(RSCMType.OBJ)))
 
     public class OpContent(
         public val loc: BoundLocInfo,
@@ -233,21 +235,21 @@ public class AiLocUDefaultEvents {
     public class OpType(
         public val loc: BoundLocInfo,
         public val type: ObjectServerType,
-        public val objType: ItemServerType,
+        public val objType: String,
         public val invSlot: Int,
     ) : OpEvent(type.id.toLong())
 
     public class ApType(
         public val loc: BoundLocInfo,
         public val type: ObjectServerType,
-        public val objType: ItemServerType,
+        public val objType: String,
         public val invSlot: Int,
     ) : ApEvent(type.id.toLong())
 
     public class OpContent(
         public val loc: BoundLocInfo,
         public val type: ObjectServerType,
-        public val objType: ItemServerType,
+        public val objType: String,
         public val invSlot: Int,
         locContent: Int = type.contentGroup,
     ) : OpEvent(locContent.toLong())
@@ -255,7 +257,7 @@ public class AiLocUDefaultEvents {
     public class ApContent(
         public val loc: BoundLocInfo,
         public val type: ObjectServerType,
-        public val objType: ItemServerType,
+        public val objType: String,
         public val invSlot: Int,
         locContent: Int = type.contentGroup,
     ) : ApEvent(locContent.toLong())

@@ -2,9 +2,9 @@ package org.rsmod.api.inv
 
 import dev.openrune.types.aconverted.interf.IfButtonOp
 import jakarta.inject.Inject
-import org.rsmod.api.config.refs.components
 import org.rsmod.api.player.interact.HeldInteractions
 import org.rsmod.api.player.output.UpdateInventory.resendSlot
+import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.protect.ProtectedAccessLauncher
 import org.rsmod.api.player.ui.IfOverlayButton
 import org.rsmod.api.player.ui.IfOverlayDrag
@@ -25,17 +25,17 @@ private constructor(
     private val protectedAccess: ProtectedAccessLauncher,
 ) : PluginScript() {
     override fun ScriptContext.startup() {
-        onIfOverlayButton(components.inv_items) { opHeldButton() }
-        onIfOverlayDrag(components.inv_items) { dragHeldButton() }
+        onIfOverlayButton("component.inventory:items") { opHeldButton(it) }
+        onIfOverlayDrag("component.inventory:items") { dragHeldButton() }
     }
 
-    private fun IfOverlayButton.opHeldButton() {
-        if (op == IfButtonOp.Op10) {
-            interactions.examine(player, player.inv, comsub)
+    private suspend fun ProtectedAccess.opHeldButton(event: IfOverlayButton) {
+        if (event.op == IfButtonOp.Op10) {
+            interactions.examine(player, player.inv, event.comsub)
             return
         }
-        val heldOp = op.toHeldOp() ?: throw IllegalStateException("Op not supported: $this")
-        player.opHeld(comsub, heldOp)
+        val heldOp = event.op.toHeldOp() ?: throw IllegalStateException("Op not supported: $event")
+        player.opHeld(event.comsub, heldOp)
     }
 
     private fun Player.opHeld(invSlot: Int, op: HeldOp) {

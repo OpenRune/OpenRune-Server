@@ -17,7 +17,6 @@ import org.rsmod.api.combat.formulas.attributes.collector.CombatNpcAttributeColl
 import org.rsmod.api.combat.formulas.isSlayerTask
 import org.rsmod.api.combat.formulas.scale
 import org.rsmod.api.config.refs.params
-import org.rsmod.api.config.refs.varbits
 import org.rsmod.api.player.bonus.WornBonuses
 import org.rsmod.api.random.GameRandom
 import org.rsmod.game.entity.Npc
@@ -80,7 +79,7 @@ constructor(
                 npcAttributes = npcAttributes,
             )
 
-        val amascutInvocationLvl = source.vars[varbits.toa_client_raid_level]
+        val amascutInvocationLvl = source.vars["varbit.toa_client_raid_level"]
         val baseDefenceRoll =
             computeDefenceRoll(
                 target = target,
@@ -147,7 +146,7 @@ constructor(
             computeStaffAttackRoll(source, attackStyle, staffAttributes, npcAttributes)
         val attackRoll = (baseAttackRoll * specialMultiplier).toInt()
 
-        val amascutInvocationLvl = source.vars[varbits.toa_client_raid_level]
+        val amascutInvocationLvl = source.vars["varbit.toa_client_raid_level"]
         val baseDefenceRoll =
             computeDefenceRoll(
                 target = target,

@@ -2,6 +2,8 @@ package dev.openrune.types
 
 import dev.openrune.definition.Definition
 import dev.openrune.definition.constants.ConstantProvider
+import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.rscm.RSCMType
 import dev.openrune.toml.rsconfig.RsTableHeaders
 
 @RsTableHeaders("anims")
@@ -15,7 +17,7 @@ data class SequenceServerType(
     val internalName: String
         get() = ConstantProvider.getReverseMapping("seq", id)
 
-    public fun isType(seq: SequenceServerType): Boolean {
-        return this.id == seq.id
+    public fun isType(seq: String): Boolean {
+        return this.id == seq.asRSCM(RSCMType.SEQ)
     }
 }

@@ -2,7 +2,6 @@ package org.rsmod.api.inv
 
 import dev.openrune.ServerCacheManager
 import jakarta.inject.Inject
-import org.rsmod.api.config.refs.components
 import org.rsmod.api.player.events.interact.NpcTDefaultEvents
 import org.rsmod.api.player.interact.NpcUInteractions
 import org.rsmod.api.player.output.UpdateInventory.resendSlot
@@ -14,7 +13,7 @@ import org.rsmod.plugin.scripts.ScriptContext
 public class NpcUOpScript @Inject private constructor(private val interactions: NpcUInteractions) :
     PluginScript() {
     override fun ScriptContext.startup() {
-        onOpNpcT(components.inv_items) { opNpcU(it) }
+        onOpNpcT("component.inventory:items") { opNpcU(it) }
     }
 
     private suspend fun ProtectedAccess.opNpcU(op: NpcTDefaultEvents.Op) {

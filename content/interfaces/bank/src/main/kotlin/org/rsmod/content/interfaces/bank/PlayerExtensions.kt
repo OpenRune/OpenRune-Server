@@ -1,38 +1,36 @@
 package org.rsmod.content.interfaces.bank
 
+import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.rscm.RSCMType
 import org.rsmod.api.combat.weapon.WeaponSpeeds
-import org.rsmod.api.config.refs.content
-import org.rsmod.api.config.refs.interfaces
 import org.rsmod.api.config.refs.params
-import org.rsmod.api.config.refs.varps
 import org.rsmod.api.player.bonus.WornBonuses
 import org.rsmod.api.player.output.ClientScripts.statGroupTooltip
 import org.rsmod.api.player.output.runClientScript
 import org.rsmod.api.player.ui.ifOpenMainSidePair
 import org.rsmod.api.player.ui.ifSetText
 import org.rsmod.api.player.vars.intVarp
-import org.rsmod.content.interfaces.bank.configs.bank_components
 import org.rsmod.events.EventBus
 import org.rsmod.game.entity.Player
 import org.rsmod.game.type.getInvObj
 
-private var Player.extraOpsSpecialBits by intVarp(varps.if1)
-private var Player.extraOpsWearBits by intVarp(varps.if2)
-private var Player.extraOpsConsumableBits by intVarp(varps.if3)
+private var Player.extraOpsSpecialBits by intVarp("varp.if1")
+private var Player.extraOpsWearBits by intVarp("varp.if2")
+private var Player.extraOpsConsumableBits by intVarp("varp.if3")
 
 fun Player.openBank(eventBus: EventBus) {
-    ifOpenMainSidePair(interfaces.bank_main, interfaces.bank_side, -1, -2, eventBus)
+    ifOpenMainSidePair("interface.bankmain", "interface.bankside", -1, -2, eventBus)
 }
 
 /** Opens bank but does not send any events such as `if_setevent`s */
 fun Player.openBankWithoutEvents(eventBus: EventBus) {
     disableIfEvents = true
-    ifOpenMainSidePair(interfaces.bank_main, interfaces.bank_side, -1, -2, eventBus)
+    ifOpenMainSidePair("interface.bankmain", "interface.bankside", -1, -2, eventBus)
     disableIfEvents = false
 }
 
 internal fun Player.highlightNoClickClear() {
-    runClientScript(3407, bank_components.bankside_highlight.packed)
+    runClientScript(3407, "component.bankside:bankside_highlight".asRSCM(RSCMType.COMPONENT))
 }
 
 internal fun Player.setBanksideExtraOps() {
@@ -70,8 +68,8 @@ internal fun Player.setBanksideExtraOps() {
             }
         }
 
-        val foodBit = type.isContentType(content.food)
-        val potionBit = type.isContentType(content.potion)
+        val foodBit = type.isContentType("content.food")
+        val potionBit = type.isContentType("content.potion")
 
         val consumableBit = foodBit || potionBit
         if (consumableBit) {
@@ -86,7 +84,6 @@ internal fun Player.setBanksideExtraOps() {
 }
 
 internal fun Player.setBankWornBonuses(wornBonuses: WornBonuses, weaponSpeeds: WeaponSpeeds) {
-    val comps = bank_components
     val stats = wornBonuses.calculate(this)
     val speedBase = weaponSpeeds.base(this)
     val speedActual = weaponSpeeds.actual(this)
@@ -94,32 +91,32 @@ internal fun Player.setBankWornBonuses(wornBonuses: WornBonuses, weaponSpeeds: W
     val magicDmgSuffix = stats.magicDmgSuffix
     val undeadSuffix = stats.undeadSuffix
     val slayerSuffix = stats.slayerSuffix
-    ifSetText(comps.worn_off_stab, "Stab: ${stats.offStab.signed}")
-    ifSetText(comps.worn_off_slash, "Slash: ${stats.offSlash.signed}")
-    ifSetText(comps.worn_off_crush, "Crush: ${stats.offCrush.signed}")
-    ifSetText(comps.worn_off_magic, "Magic: ${stats.offMagic.signed}")
-    ifSetText(comps.worn_off_range, "Range: ${stats.offRange.signed}")
-    ifSetText(comps.worn_speed_base, "Base: ${speedBase.tickToSecs}")
-    ifSetText(comps.worn_speed, "Actual: ${speedActual.tickToSecs}")
-    ifSetText(comps.worn_def_stab, "Stab: ${stats.defStab.signed}")
-    ifSetText(comps.worn_def_slash, "Slash: ${stats.defSlash.signed}")
-    ifSetText(comps.worn_def_crush, "Crush: ${stats.defCrush.signed}")
-    ifSetText(comps.worn_def_range, "Range: ${stats.defRange.signed}")
-    ifSetText(comps.worn_def_magic, "Magic: ${stats.defMagic.signed}")
-    ifSetText(comps.worn_melee_str, "Melee STR: ${stats.meleeStr.signed}")
-    ifSetText(comps.worn_ranged_str, "Ranged STR: ${stats.rangedStr.signed}")
-    ifSetText(comps.worn_magic_dmg, "Magic DMG: $magicDmg$magicDmgSuffix")
-    ifSetText(comps.worn_prayer, "Prayer: ${stats.prayer.signed}")
-    ifSetText(comps.worn_undead, "Undead: ${stats.undead.formatWholePercent}$undeadSuffix")
+    ifSetText("component.bankmain:stabatt", "Stab: ${stats.offStab.signed}")
+    ifSetText("component.bankmain:slashatt", "Slash: ${stats.offSlash.signed}")
+    ifSetText("component.bankmain:crushatt", "Crush: ${stats.offCrush.signed}")
+    ifSetText("component.bankmain:magicatt", "Magic: ${stats.offMagic.signed}")
+    ifSetText("component.bankmain:rangeatt", "Range: ${stats.offRange.signed}")
+    ifSetText("component.bankmain:attackspeedbase", "Base: ${speedBase.tickToSecs}")
+    ifSetText("component.bankmain:attackspeedactual", "Actual: ${speedActual.tickToSecs}")
+    ifSetText("component.bankmain:stabdef", "Stab: ${stats.defStab.signed}")
+    ifSetText("component.bankmain:slashdef", "Slash: ${stats.defSlash.signed}")
+    ifSetText("component.bankmain:crushdef", "Crush: ${stats.defCrush.signed}")
+    ifSetText("component.bankmain:rangedef", "Range: ${stats.defRange.signed}")
+    ifSetText("component.bankmain:magicdef", "Magic: ${stats.defMagic.signed}")
+    ifSetText("component.bankmain:meleestrength", "Melee STR: ${stats.meleeStr.signed}")
+    ifSetText("component.bankmain:rangestrength", "Ranged STR: ${stats.rangedStr.signed}")
+    ifSetText("component.bankmain:magicdamage", "Magic DMG: $magicDmg$magicDmgSuffix")
+    ifSetText("component.bankmain:prayer", "Prayer: ${stats.prayer.signed}")
+    ifSetText("component.bankmain:typemultiplier", "Undead: ${stats.undead.formatWholePercent}$undeadSuffix")
     statGroupTooltip(
         this,
-        comps.tooltip,
-        comps.worn_undead,
+        "component.bankmain:tooltip",
+        "component.bankmain:typemultiplier",
         "Increases your effective accuracy and damage against undead creatures. " +
             "For multi-target Ranged and Magic attacks, this applies only to the " +
             "primary target. It does not stack with the Slayer multiplier.",
     )
-    ifSetText(comps.worn_slayer, "Slayer: ${stats.slayer.formatWholePercent}$slayerSuffix")
+    ifSetText("component.bankmain:slayermultiplier", "Slayer: ${stats.slayer.formatWholePercent}$slayerSuffix")
 }
 
 private val Int.signed: String

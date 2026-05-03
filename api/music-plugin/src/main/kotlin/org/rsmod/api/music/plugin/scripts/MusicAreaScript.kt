@@ -1,9 +1,6 @@
 package org.rsmod.api.music.plugin.scripts
 
-import dev.openrune.area
-import dev.openrune.types.aconverted.AreaType
 import jakarta.inject.Inject
-import org.rsmod.api.config.refs.varps
 import org.rsmod.api.player.music.MusicPlayMode
 import org.rsmod.api.player.music.MusicPlayer
 import org.rsmod.api.player.protect.ProtectedAccess
@@ -18,7 +15,7 @@ import org.rsmod.plugin.scripts.ScriptContext
 
 public class MusicAreaScript @Inject constructor(private val musicPlayer: MusicPlayer) :
     PluginScript() {
-    private var Player.playMode by enumVarp<MusicPlayMode>(varps.musicplay)
+    private var Player.playMode by enumVarp<MusicPlayMode>("varp.musicplay")
 
     override fun ScriptContext.startup() {
         val scriptAreas = loadScriptAreas()
@@ -28,7 +25,7 @@ public class MusicAreaScript @Inject constructor(private val musicPlayer: MusicP
         onPlayerLogin { player.setDefaultModes() }
     }
 
-    private fun ProtectedAccess.playAreaMusic(area: AreaType) {
+    private fun ProtectedAccess.playAreaMusic(area: String) {
         musicPlayer.enterArea(player, area)
     }
 
@@ -36,8 +33,8 @@ public class MusicAreaScript @Inject constructor(private val musicPlayer: MusicP
         playMode = MusicPlayMode.Area
     }
 
-    private fun loadScriptAreas(): List<AreaType> {
-        val areas = mutableListOf<AreaType>()
+    private fun loadScriptAreas(): List<String> {
+        val areas = mutableListOf<String>()
 
         MusicClassicRow.all().forEach {
             error("ADD CLASSIC MUSIC WE HAVE DATA NOW")
@@ -49,7 +46,7 @@ public class MusicAreaScript @Inject constructor(private val musicPlayer: MusicP
         }
 
         MusicModernRow.all().forEach {
-            val area = area(it.area)
+            val area = "area.${it.area}"
             val autoScript = it.autoScript
             if (autoScript) {
                 areas += area

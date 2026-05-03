@@ -8,7 +8,6 @@ import dev.openrune.types.inv.InvTypeList
 import org.junit.jupiter.api.Test
 import org.rsmod.api.config.Constants
 import org.rsmod.api.config.refs.currencies
-import org.rsmod.api.config.refs.objs
 import org.rsmod.api.shops.ShopScript
 import org.rsmod.api.shops.Shops
 import org.rsmod.api.shops.config.ShopComponents
@@ -26,14 +25,14 @@ class StandardGpShopOperationsBuyTest {
         runGameTest(ShopScript::class) {
             val shop = openGeneralShop()
 
-            player.inv[0] = InvObj(objs.coins, 5)
-            shop.inv[0] = InvObj(objs.newcomer_map, 5)
+            player.inv[0] = InvObj("obj.coins", 5)
+            shop.inv[0] = InvObj("obj.newcomer_map", 5)
 
-            buyStock(shop, objs.newcomer_map, OP_BUY1)
+            buyStock(shop, "obj.newcomer_map", OP_BUY1)
 
-            assertEquals(4, shop.inv.count(objs.newcomer_map))
-            assertEquals(1, player.count(objs.newcomer_map))
-            assertEquals(4, player.count(objs.coins))
+            assertEquals(4, shop.inv.count("obj.newcomer_map"))
+            assertEquals(1, player.count("obj.newcomer_map"))
+            assertEquals(4, player.count("obj.coins"))
             assertNoMessageSent()
         }
 
@@ -41,8 +40,8 @@ class StandardGpShopOperationsBuyTest {
     fun GameTestState.`buy obj fails with no currency`() =
         runGameTest(ShopScript::class) {
             val shop = openGeneralShop()
-            shop.inv[0] = InvObj(objs.newcomer_map, 5)
-            buyStock(shop, objs.newcomer_map, OP_BUY1)
+            shop.inv[0] = InvObj("obj.newcomer_map", 5)
+            buyStock(shop, "obj.newcomer_map", OP_BUY1)
             assertMessageSent("You don't have enough coins.")
         }
 
@@ -50,8 +49,8 @@ class StandardGpShopOperationsBuyTest {
     fun GameTestState.`buy obj fails with no currency or stock available`() =
         runGameTest(ShopScript::class) {
             val shop = openGeneralShop()
-            shop.inv[0] = InvObj(objs.newcomer_map, 0)
-            buyStock(shop, objs.newcomer_map, OP_BUY1)
+            shop.inv[0] = InvObj("obj.newcomer_map", 0)
+            buyStock(shop, "obj.newcomer_map", OP_BUY1)
             assertMessageSent("That item is currently out of stock.")
         }
 
@@ -62,13 +61,13 @@ class StandardGpShopOperationsBuyTest {
 
             player.fillInv()
             player.inv[0] = null
-            player.inv[1] = InvObj(objs.coins, 6)
-            shop.inv[0] = InvObj(objs.newcomer_map, 5)
+            player.inv[1] = InvObj("obj.coins", 6)
+            shop.inv[0] = InvObj("obj.newcomer_map", 5)
 
-            buyStock(shop, objs.newcomer_map, OP_BUY5)
+            buyStock(shop, "obj.newcomer_map", OP_BUY5)
 
-            assertEquals(1, player.count(objs.newcomer_map))
-            assertEquals(4, shop.inv.count(objs.newcomer_map))
+            assertEquals(1, player.count("obj.newcomer_map"))
+            assertEquals(4, shop.inv.count("obj.newcomer_map"))
             assertMessageSent("You don't have enough inventory space.")
         }
 
@@ -83,13 +82,13 @@ class StandardGpShopOperationsBuyTest {
             player.inv[2] = null
             player.inv[3] = null
             player.inv[4] = null
-            player.inv[5] = InvObj(objs.coins, 5)
-            shop.inv[0] = InvObj(objs.newcomer_map, 5)
+            player.inv[5] = InvObj("obj.coins", 5)
+            shop.inv[0] = InvObj("obj.newcomer_map", 5)
 
-            buyStock(shop, objs.newcomer_map, OP_BUY50)
+            buyStock(shop, "obj.newcomer_map", OP_BUY50)
 
-            assertEquals(0, shop.inv.count(objs.newcomer_map))
-            assertEquals(5, player.count(objs.newcomer_map))
+            assertEquals(0, shop.inv.count("obj.newcomer_map"))
+            assertEquals(5, player.count("obj.newcomer_map"))
             assertNoMessageSent()
         }
 
@@ -99,13 +98,13 @@ class StandardGpShopOperationsBuyTest {
             val shop = openGeneralShop()
 
             player.fillInv()
-            player.inv[5] = InvObj(objs.coins, 2)
-            shop.inv[0] = InvObj(objs.sos_security_book, 5)
+            player.inv[5] = InvObj("obj.coins", 2)
+            shop.inv[0] = InvObj("obj.sos_security_book", 5)
 
-            buyStock(shop, objs.sos_security_book, OP_BUY50)
+            buyStock(shop, "obj.sos_security_book", OP_BUY50)
 
-            assertEquals(4, shop.inv.count(objs.sos_security_book))
-            assertEquals(1, player.count(objs.sos_security_book))
+            assertEquals(4, shop.inv.count("obj.sos_security_book"))
+            assertEquals(1, player.count("obj.sos_security_book"))
             assertMessageSent("You don't have enough coins.")
         }
 
@@ -114,13 +113,13 @@ class StandardGpShopOperationsBuyTest {
         runGameTest(ShopScript::class) {
             val shop = openGeneralShop()
 
-            player.inv[0] = InvObj(objs.coins, Int.MAX_VALUE)
-            shop.inv[0] = InvObj(objs.newcomer_map, 5)
+            player.inv[0] = InvObj("obj.coins", Int.MAX_VALUE)
+            shop.inv[0] = InvObj("obj.newcomer_map", 5)
 
-            buyStock(shop, objs.newcomer_map, OP_BUY50)
+            buyStock(shop, "obj.newcomer_map", OP_BUY50)
 
-            assertEquals(0, shop.inv.count(objs.newcomer_map))
-            assertEquals(5, player.count(objs.newcomer_map))
+            assertEquals(0, shop.inv.count("obj.newcomer_map"))
+            assertEquals(5, player.count("obj.newcomer_map"))
             assertNoMessageSent()
         }
 

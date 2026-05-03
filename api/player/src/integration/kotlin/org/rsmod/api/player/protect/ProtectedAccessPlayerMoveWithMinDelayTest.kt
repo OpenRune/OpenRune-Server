@@ -2,9 +2,6 @@ package org.rsmod.api.player.protect
 
 import jakarta.inject.Inject
 import org.junit.jupiter.api.Test
-import org.rsmod.api.config.refs.objs
-import org.rsmod.api.config.refs.seqs
-import org.rsmod.api.config.refs.synths
 import org.rsmod.api.repo.loc.LocRepository
 import org.rsmod.api.repo.obj.ObjRepository
 import org.rsmod.api.script.onOpLoc2
@@ -27,11 +24,11 @@ class ProtectedAccessPlayerMoveWithMinDelayTest {
             player.clearInv()
 
             advance(ticks = 1)
-            assertDoesNotContain(player.inv, objs.grain)
+            assertDoesNotContain(player.inv, "obj.grain")
             assertEquals(start, player.coords)
 
             advance(ticks = 1)
-            assertContains(player.inv, objs.grain)
+            assertContains(player.inv, "obj.grain")
             assertEquals(loc.coords, player.coords)
         }
 
@@ -46,19 +43,19 @@ class ProtectedAccessPlayerMoveWithMinDelayTest {
             player.clearInv()
 
             advance(ticks = 1)
-            assertDoesNotContain(player.inv, objs.grain)
+            assertDoesNotContain(player.inv, "obj.grain")
             assertEquals(start.translateX(1), player.coords)
 
             advance(ticks = 1)
-            assertDoesNotContain(player.inv, objs.grain)
+            assertDoesNotContain(player.inv, "obj.grain")
             assertEquals(start.translateX(1), player.coords)
 
             advance(ticks = 1)
-            assertDoesNotContain(player.inv, objs.grain)
+            assertDoesNotContain(player.inv, "obj.grain")
             assertEquals(loc.coords, player.coords)
 
             advance(ticks = 1)
-            assertContains(player.inv, objs.grain)
+            assertContains(player.inv, "obj.grain")
             assertEquals(loc.coords, player.coords)
         }
 
@@ -73,7 +70,7 @@ class ProtectedAccessPlayerMoveWithMinDelayTest {
 
             advance(ticks = 1)
             assertMessageSent("You can't carry any more grain.")
-            assertDoesNotContain(player.inv, objs.grain)
+            assertDoesNotContain(player.inv, "obj.grain")
             assertEquals(loc.coords, player.coords)
         }
 
@@ -88,7 +85,7 @@ class ProtectedAccessPlayerMoveWithMinDelayTest {
 
             advance(ticks = 1)
             assertMessageSent("You can't carry any more grain.")
-            assertDoesNotContain(player.inv, objs.grain)
+            assertDoesNotContain(player.inv, "obj.grain")
             assertNotEquals(loc.coords, player.coords)
 
             advance(ticks = 1)
@@ -112,14 +109,14 @@ class ProtectedAccessPlayerMoveWithMinDelayTest {
                 return
             }
 
-            anim(seqs.human_pickupfloor)
+            anim("seq.human_pickupfloor")
             playerWalkWithMinDelay(loc.coords)
 
             locRepo.del(loc, 20)
 
             mes("You pick some grain.")
-            soundSynth(synths.pick)
-            invAddOrDrop(objRepo, objs.grain)
+            soundSynth("synth.pick")
+            invAddOrDrop(objRepo, "obj.grain")
         }
     }
 

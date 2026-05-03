@@ -1,6 +1,8 @@
 package org.rsmod.api.player.output
 
 import dev.openrune.definition.type.widget.ComponentType
+import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.rscm.RSCMType
 import dev.openrune.types.InventoryServerType
 import dev.openrune.types.ItemServerType
 import dev.openrune.types.ObjectServerType
@@ -31,8 +33,8 @@ public object ClientScripts {
     public fun playerMember(player: Player, member: Boolean = player.members): Unit =
         player.runClientScript(828, if (member) 1 else 0)
 
-    public fun ccDeleteAll(player: Player, component: ComponentType): Unit =
-        player.runClientScript(2249, component.packed)
+    public fun ccDeleteAll(player: Player, component: String): Unit =
+        player.runClientScript(2249, component.asRSCM(RSCMType.COMPONENT))
 
     public fun highlightingOff(player: Player): Unit = player.runClientScript(5485)
 
@@ -102,11 +104,11 @@ public object ClientScripts {
 
     public fun ifSetTextAlign(
         player: Player,
-        target: ComponentType,
+        target: String,
         alignH: Int,
         alignV: Int,
         lineHeight: Int,
-    ): Unit = player.runClientScript(600, alignH, alignV, lineHeight, target.packed)
+    ): Unit = player.runClientScript(600, alignH, alignV, lineHeight, target.asRSCM(RSCMType.COMPONENT))
 
     public fun objboxSetButtons(player: Player, text: String): Unit =
         player.runClientScript(2868, text)
@@ -114,11 +116,11 @@ public object ClientScripts {
     public fun interfaceInvInit(
         player: Player,
         inv: Inventory,
-        target: ComponentType,
+        target: String,
         objRowCount: Int,
         objColCount: Int,
         dragType: Int = 0,
-        dragComponent: ComponentType? = null,
+        dragComponent: String? = null,
         op1: String? = null,
         op2: String? = null,
         op3: String? = null,
@@ -127,12 +129,12 @@ public object ClientScripts {
     ): Unit =
         player.runClientScript(
             149,
-            target.packed,
+            target.asRSCM(RSCMType.COMPONENT),
             inv.type.id,
             objRowCount,
             objColCount,
             dragType,
-            dragComponent?.packed ?: -1,
+            dragComponent?.asRSCM(RSCMType.COMPONENT) ?: -1,
             op1 ?: "",
             op2 ?: "",
             op3 ?: "",
@@ -229,24 +231,24 @@ public object ClientScripts {
 
     public fun statGroupTooltip(
         player: Player,
-        tooltip: ComponentType,
-        container: ComponentType,
+        tooltip: String,
+        container: String,
         text: String,
-    ): Unit = player.runClientScript(7065, tooltip.packed, container.packed, text)
+    ): Unit = player.runClientScript(7065, tooltip.asRSCM(RSCMType.COMPONENT), container.asRSCM(RSCMType.COMPONENT), text)
 
     public fun tooltip(
         player: Player,
         text: String,
-        container: ComponentType,
-        tooltip: ComponentType,
-    ): Unit = player.runClientScript(1495, text, container.packed, tooltip.packed)
+        container: String,
+        tooltip: String,
+    ): Unit = player.runClientScript(1495, text, container.asRSCM(RSCMType.COMPONENT), tooltip.asRSCM(RSCMType.COMPONENT))
 
     public fun confirmOverlayInit(
         player: Player,
-        target: ComponentType,
+        target: String,
         title: String,
         text: String,
         cancel: String,
         confirm: String,
-    ): Unit = player.runClientScript(4212, "$title|$text|$cancel|$confirm", target.packed)
+    ): Unit = player.runClientScript(4212, "$title|$text|$cancel|$confirm", target.asRSCM(RSCMType.COMPONENT))
 }

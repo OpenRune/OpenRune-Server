@@ -1,5 +1,7 @@
 package org.rsmod.api.repo.obj
 
+import dev.openrune.rscm.RSCM
+import dev.openrune.rscm.RSCMType
 import dev.openrune.types.ItemServerType
 import jakarta.inject.Inject
 import org.rsmod.api.registry.obj.ObjRegistry
@@ -45,6 +47,17 @@ constructor(private val mapClock: MapClock, private val registry: ObjRegistry) {
 
     public fun add(
         type: ItemServerType,
+        coords: CoordGrid,
+        duration: Int,
+        receiver: Player? = null,
+        count: Int = 1,
+        reveal: Int = DEFAULT_REVEAL_DELAY,
+    ): Obj {
+        return add(RSCM.getReverseMapping(RSCMType.OBJ, type.id), coords, duration, receiver, count, reveal)
+    }
+
+    public fun add(
+        type: String,
         coords: CoordGrid,
         duration: Int,
         receiver: Player? = null,

@@ -3,9 +3,6 @@ package org.rsmod.content.interfaces.prayer.tab.scripts
 import jakarta.inject.Inject
 import kotlin.math.max
 import kotlin.math.min
-import org.rsmod.api.config.refs.stats
-import org.rsmod.api.config.refs.timers
-import org.rsmod.api.config.refs.varbits
 import org.rsmod.api.player.bonus.WornBonuses
 import org.rsmod.api.player.disablePrayers
 import org.rsmod.api.player.output.mes
@@ -17,7 +14,6 @@ import org.rsmod.api.script.advanced.onWearposChange
 import org.rsmod.api.script.onPlayerLogin
 import org.rsmod.api.script.onPlayerSoftTimer
 import org.rsmod.content.interfaces.prayer.tab.PrayerRepository
-import org.rsmod.content.interfaces.prayer.tab.configs.prayer_sounds
 import org.rsmod.content.interfaces.prayer.tab.util.drainCounter
 import org.rsmod.game.entity.Player
 import org.rsmod.plugin.scripts.PluginScript
@@ -26,17 +22,17 @@ import org.rsmod.plugin.scripts.ScriptContext
 class PrayerDrainScript
 @Inject
 constructor(private val repo: PrayerRepository, private val bonuses: WornBonuses) : PluginScript() {
-    private var Player.drainResistance by intVarBit(varbits.prayer_drain_resistance)
+    private var Player.drainResistance by intVarBit("varbit.prayer_drain_resistance")
 
     override fun ScriptContext.startup() {
-        onPlayerSoftTimer(timers.prayer_drain) { player.drainPrayer() }
+        onPlayerSoftTimer("timer.prayer_drain") { player.drainPrayer() }
 
         onPlayerLogin { player.updateDrainResistance() }
         onWearposChange { player.updateDrainResistance() }
     }
 
     private fun Player.drainPrayer() {
-        val enabledPrayers = vars[varbits.enabled_prayers]
+        val enabledPrayers = vars["varbit.prayer_allactive"]
         if (enabledPrayers == 0) {
             // We favor explicitness and enforce prayer drain timer to be manually cleared instead
             // of implicitly doing so when all prayers are disabled.
@@ -57,7 +53,7 @@ constructor(private val repo: PrayerRepository, private val bonuses: WornBonuses
             drainCounter -= prayerPointCost * cappedResistance
 
             val sub = min(prayerLvl, prayerPointCost)
-            statSub(stats.prayer, constant = sub, percent = 0)
+            statSub("stat.prayer", constant = sub, percent = 0)
         }
     }
 
@@ -77,7 +73,7 @@ constructor(private val repo: PrayerRepository, private val bonuses: WornBonuses
     private fun Player.triggerPrayerDepletion() {
         rebuildAppearance()
         mes("You have run out of prayer points, you can recharge at an altar.")
-        soundSynth(prayer_sounds.drain)
+        soundSynth("synth.prayer_drain")
         disablePrayers()
     }
 

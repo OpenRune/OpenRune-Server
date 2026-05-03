@@ -1,6 +1,8 @@
 package org.rsmod.api.spells
 
+import dev.openrune.ServerCacheManager
 import dev.openrune.rscm.RSCM
+import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import dev.openrune.types.ItemServerType
 import org.rsmod.api.combat.commons.magic.MagicSpell
@@ -9,7 +11,6 @@ import org.rsmod.api.combat.commons.magic.Spellbook
 import org.rsmod.api.config.aliases.ParamInt
 import org.rsmod.api.config.aliases.ParamObj
 import org.rsmod.api.config.refs.BaseParams
-import org.rsmod.api.config.refs.objs
 import org.rsmod.api.enums.AutocastEnums.autocast_spells
 import org.rsmod.api.enums.SpellbookEnums.spellbooks
 
@@ -104,7 +105,7 @@ public class MagicSpellRegistry {
         // Although the staff appears first in the requirement list, its count is validated last.
         // Runes are always checked before the staff. This behavior appears to be unique to Magic
         // Dart, which is why we manually shift the staff to the end of the requirement list.
-        val shiftFirstRequirementToTail = isType(objs.spell_magic_dart) && objReqs.isNotEmpty()
+        val shiftFirstRequirementToTail = isType("obj.50_magic_dart") && objReqs.isNotEmpty()
 
         val sortedObjReqs =
             if (shiftFirstRequirementToTail) {
@@ -129,8 +130,8 @@ public class MagicSpellRegistry {
     // Claws of Guthix spell lists a special, non-usable staff obj (likely for visual purposes).
     // Since we use these objs for server-side validation, we replace it with the usable staff obj.
     private fun ItemServerType.toRequirementObj(): ItemServerType =
-        if (isType(objs.guthix_staff_rune)) {
-            objs.guthix_staff
+        if (isType("obj.pest_interface_staffs")) {
+            ServerCacheManager.getItem("obj.guthix_staff".asRSCM(RSCMType.OBJ))!!
         } else {
             this
         }

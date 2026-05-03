@@ -5,9 +5,6 @@ import net.rsprot.protocol.game.outgoing.misc.client.HideLocOps
 import net.rsprot.protocol.game.outgoing.misc.client.HideNpcOps
 import net.rsprot.protocol.game.outgoing.misc.client.HideObjOps
 import net.rsprot.protocol.game.outgoing.misc.client.MinimapToggle
-import org.rsmod.api.config.refs.components
-import org.rsmod.api.config.refs.interfaces
-import org.rsmod.api.config.refs.varbits
 import org.rsmod.api.player.output.ClientScripts.ccDeleteAll
 import org.rsmod.api.player.output.runClientScript
 import org.rsmod.api.player.ui.ifCloseOverlay
@@ -21,12 +18,12 @@ import org.rsmod.events.EventBus
 import org.rsmod.game.entity.Player
 
 public object Cinematic {
-    private var Player.camMode by enumVarBit<CameraMode>(varbits.fov_clamp)
-    private var Player.minimap by enumVarBit<MinimapState>(varbits.minimap_state)
-    private var Player.hideTop by boolVarBit(varbits.cutscene_status)
-    private var Player.hideHud by boolVarBit(varbits.gravestone_tli_hide)
-    private var Player.acceptAid by boolVarBit(varbits.option_acceptaid)
-    private var Player.acceptAidRestore by boolVarBit(varbits.accept_aid_restore)
+    private var Player.camMode by enumVarBit<CameraMode>("varbit.fov_clamp")
+    private var Player.minimap by enumVarBit<MinimapState>("varbit.minimap_state")
+    private var Player.hideTop by boolVarBit("varbit.cutscene_status")
+    private var Player.hideHud by boolVarBit("varbit.gravestone_tli_hide")
+    private var Player.acceptAid by boolVarBit("varbit.option_acceptaid")
+    private var Player.acceptAidRestore by boolVarBit("varbit.accept_aid_restore")
 
     public fun setCameraMode(player: Player, mode: CameraMode) {
         player.camMode = mode
@@ -37,8 +34,8 @@ public object Cinematic {
     }
 
     public fun clearHealthHud(player: Player) {
-        player.ifSetHide(components.hp_hud_hp, hide = true)
-        ccDeleteAll(player, components.hp_hud_container)
+        player.ifSetHide("component.hpbar_hud:hp", hide = true)
+        ccDeleteAll(player, "component.hpbar_hud:container")
     }
 
     public fun setHideHealthHud(player: Player, hide: Boolean) {
@@ -80,8 +77,8 @@ public object Cinematic {
         clientDuration: Int,
         eventBus: EventBus,
     ) {
-        player.ifSetText(components.fade_overlay_message, "")
-        player.ifOpenFullOverlay(interfaces.fade_overlay, eventBus)
+        player.ifSetText("component.fade_overlay:message", "")
+        player.ifOpenFullOverlay("interface.fade_overlay", eventBus)
         player.runClientScript(
             948,
             startColour,
@@ -93,61 +90,61 @@ public object Cinematic {
     }
 
     public fun closeFadeOverlay(player: Player, eventBus: EventBus) {
-        player.ifCloseOverlay(interfaces.fade_overlay, eventBus)
+        player.ifCloseOverlay("interface.fade_overlay", eventBus)
     }
 
     // TODO: Add and publish events for these toplevel tab functions instead to allow for any
     //  "gameframe" plugin script control over what is closed and re-opened.
 
     public fun closeToplevelTabs(player: Player, eventBus: EventBus) {
-        player.ifCloseOverlay(interfaces.orbs, eventBus)
-        player.ifCloseOverlay(interfaces.xp_drops, eventBus)
-        player.ifCloseOverlay(interfaces.combat_interface, eventBus)
-        player.ifCloseOverlay(interfaces.stats, eventBus)
-        player.ifCloseOverlay(interfaces.side_journal, eventBus)
-        player.ifCloseOverlay(interfaces.inventory, eventBus)
-        player.ifCloseOverlay(interfaces.wornitems, eventBus)
-        player.ifCloseOverlay(interfaces.prayerbook, eventBus)
-        player.ifCloseOverlay(interfaces.magic_spellbook, eventBus)
-        player.ifCloseOverlay(interfaces.friends, eventBus)
-        player.ifCloseOverlay(interfaces.account, eventBus)
-        player.ifCloseOverlay(interfaces.settings_side, eventBus)
-        player.ifCloseOverlay(interfaces.emote, eventBus)
-        player.ifCloseOverlay(interfaces.music, eventBus)
+        player.ifCloseOverlay("interface.orbs", eventBus)
+        player.ifCloseOverlay("interface.xp_drops", eventBus)
+        player.ifCloseOverlay("interface.combat_interface", eventBus)
+        player.ifCloseOverlay("interface.stats", eventBus)
+        player.ifCloseOverlay("interface.side_journal", eventBus)
+        player.ifCloseOverlay("interface.inventory", eventBus)
+        player.ifCloseOverlay("interface.wornitems", eventBus)
+        player.ifCloseOverlay("interface.prayerbook", eventBus)
+        player.ifCloseOverlay("interface.magic_spellbook", eventBus)
+        player.ifCloseOverlay("interface.friends", eventBus)
+        player.ifCloseOverlay("interface.account", eventBus)
+        player.ifCloseOverlay("interface.settings_side", eventBus)
+        player.ifCloseOverlay("interface.emote", eventBus)
+        player.ifCloseOverlay("interface.music", eventBus)
     }
 
     public fun closeToplevelTabsLenient(player: Player, eventBus: EventBus) {
         player.ifOpenSub(
-            interfaces.orbs,
-            components.toplevel_target_orbs,
+            "interface.orbs",
+            "component.toplevel_osrs_stretch:orbs",
             IfSubType.Overlay,
             eventBus,
         )
-        player.ifCloseOverlay(interfaces.xp_drops, eventBus)
-        player.ifCloseOverlay(interfaces.combat_interface, eventBus)
-        player.ifCloseOverlay(interfaces.stats, eventBus)
-        player.ifCloseOverlay(interfaces.side_journal, eventBus)
-        player.ifCloseOverlay(interfaces.inventory, eventBus)
-        player.ifCloseOverlay(interfaces.wornitems, eventBus)
-        player.ifCloseOverlay(interfaces.prayerbook, eventBus)
-        player.ifCloseOverlay(interfaces.magic_spellbook, eventBus)
+        player.ifCloseOverlay("interface.xp_drops", eventBus)
+        player.ifCloseOverlay("interface.combat_interface", eventBus)
+        player.ifCloseOverlay("interface.stats", eventBus)
+        player.ifCloseOverlay("interface.side_journal", eventBus)
+        player.ifCloseOverlay("interface.inventory", eventBus)
+        player.ifCloseOverlay("interface.wornitems", eventBus)
+        player.ifCloseOverlay("interface.prayerbook", eventBus)
+        player.ifCloseOverlay("interface.magic_spellbook", eventBus)
         player.ifOpenSub(
-            interfaces.friends,
-            components.toplevel_target_side9,
+            "interface.friends",
+            "component.toplevel_osrs_stretch:side9",
             IfSubType.Overlay,
             eventBus,
         )
         player.ifOpenSub(
-            interfaces.account,
-            components.toplevel_target_side8,
+            "interface.account",
+            "component.toplevel_osrs_stretch:side8",
             IfSubType.Overlay,
             eventBus,
         )
-        player.ifCloseOverlay(interfaces.settings_side, eventBus)
-        player.ifCloseOverlay(interfaces.emote, eventBus)
+        player.ifCloseOverlay("interface.settings_side", eventBus)
+        player.ifCloseOverlay("interface.emote", eventBus)
         player.ifOpenSub(
-            interfaces.music,
-            components.toplevel_target_side13,
+            "interface.music",
+            "component.toplevel_osrs_stretch:side13",
             IfSubType.Overlay,
             eventBus,
         )
@@ -155,92 +152,92 @@ public object Cinematic {
 
     public fun openTopLevelTabs(player: Player, eventBus: EventBus) {
         player.ifOpenSub(
-            interfaces.xp_drops,
-            components.toplevel_target_xp_drops,
+            "interface.xp_drops",
+            "component.toplevel_osrs_stretch:xp_drops",
             IfSubType.Overlay,
             eventBus,
         )
 
         player.ifOpenSub(
-            interfaces.combat_interface,
-            components.toplevel_target_side0,
+            "interface.combat_interface",
+            "component.toplevel_osrs_stretch:side0",
             IfSubType.Overlay,
             eventBus,
         )
 
         player.ifOpenSub(
-            interfaces.stats,
-            components.toplevel_target_side1,
+            "interface.stats",
+            "component.toplevel_osrs_stretch:side1",
             IfSubType.Overlay,
             eventBus,
         )
 
         player.ifOpenSub(
-            interfaces.side_journal,
-            components.toplevel_target_side2,
+            "interface.side_journal",
+            "component.toplevel_osrs_stretch:side2",
             IfSubType.Overlay,
             eventBus,
         )
 
         player.ifOpenSub(
-            interfaces.inventory,
-            components.toplevel_target_side3,
+            "interface.inventory",
+            "component.toplevel_osrs_stretch:side3",
             IfSubType.Overlay,
             eventBus,
         )
 
         player.ifOpenSub(
-            interfaces.wornitems,
-            components.toplevel_target_side4,
+            "interface.wornitems",
+            "component.toplevel_osrs_stretch:side4",
             IfSubType.Overlay,
             eventBus,
         )
 
         player.ifOpenSub(
-            interfaces.prayerbook,
-            components.toplevel_target_side5,
+            "interface.prayerbook",
+            "component.toplevel_osrs_stretch:side5",
             IfSubType.Overlay,
             eventBus,
         )
 
         player.ifOpenSub(
-            interfaces.magic_spellbook,
-            components.toplevel_target_side6,
+            "interface.magic_spellbook",
+            "component.toplevel_osrs_stretch:side6",
             IfSubType.Overlay,
             eventBus,
         )
 
         player.ifOpenSub(
-            interfaces.friends,
-            components.toplevel_target_side9,
+            "interface.friends",
+            "component.toplevel_osrs_stretch:side9",
             IfSubType.Overlay,
             eventBus,
         )
 
         player.ifOpenSub(
-            interfaces.account,
-            components.toplevel_target_side8,
+            "interface.account",
+            "component.toplevel_osrs_stretch:side8",
             IfSubType.Overlay,
             eventBus,
         )
 
         player.ifOpenSub(
-            interfaces.settings_side,
-            components.toplevel_target_side11,
+            "interface.settings_side",
+            "component.toplevel_osrs_stretch:side11",
             IfSubType.Overlay,
             eventBus,
         )
 
         player.ifOpenSub(
-            interfaces.emote,
-            components.toplevel_target_side12,
+            "interface.emote",
+            "component.toplevel_osrs_stretch:side12",
             IfSubType.Overlay,
             eventBus,
         )
 
         player.ifOpenSub(
-            interfaces.music,
-            components.toplevel_target_side13,
+            "interface.music",
+            "component.toplevel_osrs_stretch:side13",
             IfSubType.Overlay,
             eventBus,
         )

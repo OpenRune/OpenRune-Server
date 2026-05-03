@@ -5,10 +5,11 @@ import dev.openrune.ServerCacheManager
 import dev.openrune.cache.filestore.definition.InterfaceType.Companion.isType
 import dev.openrune.definition.type.widget.ComponentType
 import dev.openrune.definition.type.widget.IfEvent
+import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.rscm.RSCMType
 import jakarta.inject.Inject
 import net.rsprot.protocol.game.incoming.buttons.IfButtonD
 import org.rsmod.annotations.InternalApi
-import org.rsmod.api.config.refs.objs
 import org.rsmod.api.net.rsprot.player.InterfaceEvents
 import org.rsmod.api.player.protect.ProtectedAccessLauncher
 import org.rsmod.api.player.ui.IfModalDrag
@@ -119,7 +120,7 @@ constructor(private val eventBus: EventBus, private val protectedAccess: Protect
     }
 
     private fun convertNullReplacement(type: Int?): Int? {
-        return if (type == objs.null_item_placeholder.id) {
+        return if (type == "obj.blankobject".asRSCM(RSCMType.OBJ)) {
             null
         } else {
             type

@@ -1,9 +1,7 @@
 package org.rsmod.api.mechanics.toxins.impl
 
-import org.rsmod.api.config.refs.hitmark_groups
+import org.rsmod.api.config.refs.done.hitmark_groups
 import org.rsmod.api.config.refs.params
-import org.rsmod.api.config.refs.timers
-import org.rsmod.api.config.refs.varps
 import org.rsmod.api.mechanics.toxins.Toxin
 import org.rsmod.api.player.hit.modifier.NoopPlayerHitModifier
 import org.rsmod.api.player.hit.queueHit
@@ -19,7 +17,7 @@ public object PlayerPoison {
 
     public const val TICK_INTERVAL: Int = 30
 
-    public fun isPoisoned(player: Player): Boolean = player.vars[varps.poison_severity] > 0
+    public fun isPoisoned(player: Player): Boolean = player.vars["varp.poison_severity"] > 0
 
     public fun damageForSeverity(severity: Int): Int = (severity + 4) / 5
 
@@ -73,14 +71,14 @@ public object PlayerPoison {
         if (storedSeverity <= 0) return false
 
         val incomingDamage = damageForSeverity(storedSeverity)
-        val current = player.vars[varps.poison_severity]
+        val current = player.vars["varp.poison_severity"]
         if (current > 0) {
             val currentDamage = damageForSeverity(current)
             if (incomingDamage < currentDamage) return false
             if (incomingDamage == currentDamage && storedSeverity <= current) return false
         }
 
-        VarPlayerIntMapSetter.set(player, varps.poison_severity, storedSeverity)
+        VarPlayerIntMapSetter.set(player, "varp.poison_severity", storedSeverity)
         val firstHitDamage = if (initialDamage > 0) initialDamage else damageForSeverity(storedSeverity)
         queuePoisonHit(player, firstHitDamage)
 
@@ -88,8 +86,8 @@ public object PlayerPoison {
         if (severity <= 0) {
             clear(player)
         } else {
-            VarPlayerIntMapSetter.set(player, varps.poison_severity, severity)
-            player.timer(timers.player_poison, TICK_INTERVAL)
+            VarPlayerIntMapSetter.set(player, "varp.poison_severity", severity)
+            player.timer("timer.player_poison", TICK_INTERVAL)
         }
         player.mes("You have been poisoned!", ChatType.Spam)
         Toxin.syncStatusOrbs(player)
@@ -107,13 +105,13 @@ public object PlayerPoison {
     }
 
     public fun clear(player: Player) {
-        VarPlayerIntMapSetter.set(player, varps.poison_severity, 0)
-        player.clearTimer(timers.player_poison)
+        VarPlayerIntMapSetter.set(player, "varp.poison_severity", 0)
+        player.clearTimer("timer.player_poison")
         Toxin.syncStatusOrbs(player)
     }
 
     public fun onPoisonTimerTick(player: Player) {
-        var severity = player.vars[varps.poison_severity]
+        var severity = player.vars["varp.poison_severity"]
         if (severity <= 0) {
             clear(player)
             return
@@ -125,7 +123,7 @@ public object PlayerPoison {
         if (severity <= 0) {
             clear(player)
         } else {
-            VarPlayerIntMapSetter.set(player, varps.poison_severity, severity)
+            VarPlayerIntMapSetter.set(player, "varp.poison_severity", severity)
         }
     }
 }

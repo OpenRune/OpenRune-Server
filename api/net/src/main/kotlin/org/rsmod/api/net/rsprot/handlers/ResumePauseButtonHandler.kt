@@ -2,6 +2,8 @@ package org.rsmod.api.net.rsprot.handlers
 
 import dev.openrune.ServerCacheManager
 import dev.openrune.definition.type.widget.IfEvent
+import dev.openrune.rscm.RSCM
+import dev.openrune.rscm.RSCMType
 import jakarta.inject.Inject
 import net.rsprot.protocol.game.incoming.resumed.ResumePauseButton
 import org.rsmod.api.net.rsprot.player.InterfaceEvents
@@ -25,7 +27,7 @@ class ResumePauseButtonHandler @Inject constructor() : MessageHandler<ResumePaus
             return
         }
 
-        val input = ResumePauseButtonInput(componentType, message.sub)
+        val input = ResumePauseButtonInput(RSCM.getReverseMapping(RSCMType.COMPONENT,componentType.packed), message.sub)
         val modal = player.ui.modals.getComponent(userInterface)
         if (modal != null) {
             player.ui.queueClose(modal)

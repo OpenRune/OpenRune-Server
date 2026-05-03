@@ -2,7 +2,6 @@ package org.rsmod.api.combat.scripts
 
 import jakarta.inject.Inject
 import org.rsmod.api.combat.commons.npc.combatDefaultRetaliateOp
-import org.rsmod.api.config.refs.queues
 import org.rsmod.api.npc.access.StandardNpcAccess
 import org.rsmod.api.npc.interact.AiPlayerInteractions
 import org.rsmod.api.script.onNpcQueue
@@ -13,7 +12,7 @@ internal class NpcRetaliateScript
 @Inject
 constructor(private val interactions: AiPlayerInteractions) : PluginScript() {
     override fun ScriptContext.startup() {
-        onNpcQueue(queues.com_retaliate_player) { autoRetaliatePlayer() }
+        onNpcQueue("queue.com_retaliate_player") { autoRetaliatePlayer() }
     }
 
     private fun StandardNpcAccess.autoRetaliatePlayer() {

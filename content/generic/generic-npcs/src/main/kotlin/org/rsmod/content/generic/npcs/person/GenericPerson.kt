@@ -1,11 +1,10 @@
 package org.rsmod.content.generic.npcs.person
 
 import org.rsmod.api.combat.commons.npc.queueCombatRetaliate
-import org.rsmod.api.config.refs.content
-import org.rsmod.api.config.refs.objs
 import org.rsmod.api.invtx.invAdd
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.player.protect.ProtectedAccess
+import org.rsmod.api.script.onOpContentNpc1
 import org.rsmod.api.script.onOpNpc1
 import org.rsmod.game.entity.Npc
 import org.rsmod.plugin.scripts.PluginScript
@@ -13,7 +12,7 @@ import org.rsmod.plugin.scripts.ScriptContext
 
 class GenericPerson : PluginScript() {
     override fun ScriptContext.startup() {
-        onOpNpc1(content.person) { personDialogue(it.npc) }
+        onOpContentNpc1("content.person") { personDialogue(it.npc) }
     }
 
     private suspend fun ProtectedAccess.personDialogue(npc: Npc) =
@@ -50,11 +49,11 @@ class GenericPerson : PluginScript() {
         }
 
     private fun ProtectedAccess.rollBobsFlyer(rate: Int): Boolean =
-        random.randomBoolean(rate) && inv.hasFreeSpace() && objs.bobs_axe_flyer !in inv
+        random.randomBoolean(rate) && inv.hasFreeSpace() && "obj.flier" !in inv
 
     private suspend fun Dialogue.giveBobsAxeFlyer() {
         chatNpc(happy, "Have this flyer...")
-        player.invAdd(player.inv, objs.bobs_axe_flyer)
+        player.invAdd(player.inv, "obj.flier")
     }
 
     private suspend fun Dialogue.randomGenericDialogue1() {

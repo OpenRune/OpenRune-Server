@@ -1,7 +1,8 @@
 package org.rsmod.api.net.rsprot
 
 import com.github.michaelbull.logging.InlineLogger
-import dev.openrune.mod
+import dev.openrune.ServerCacheManager
+import dev.openrune.rscm.RSCM.asRSCM
 import jakarta.inject.Inject
 import net.rsprot.crypto.xtea.XteaKey
 import net.rsprot.protocol.api.GameConnectionHandler
@@ -39,7 +40,7 @@ private constructor(
 ) : GameConnectionHandler<Player> {
     private val logger = InlineLogger()
 
-    private val devModeModLevel by lazy { mod("owner") }
+    private val devModeModLevel = ServerCacheManager.getModLevel("modlevel.owner".asRSCM())
 
     private val world: Int
         get() = config.world
@@ -103,7 +104,7 @@ private constructor(
                 eventBus = eventBus,
                 accountRegistry = accountReg,
                 playerRegistry = playerReg,
-                devModeModLevel = devModeModLevel,
+                devModeModLevel = devModeModLevel?: error("Dev mode mod level not found."),
                 loginBlock = block,
                 channelResponses = responseHandler,
                 inputPassword = password.copyOf(),

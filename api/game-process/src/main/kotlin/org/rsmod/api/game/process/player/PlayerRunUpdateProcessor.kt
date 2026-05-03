@@ -5,7 +5,6 @@ import kotlin.math.max
 import kotlin.math.min
 import org.rsmod.api.config.constants
 import org.rsmod.api.config.refs.params
-import org.rsmod.api.config.refs.varbits
 import org.rsmod.api.inv.weight.InvWeight
 import org.rsmod.api.player.output.UpdateRun
 import org.rsmod.api.player.stat.agilityLvl
@@ -59,11 +58,11 @@ public class PlayerRunUpdateProcessor {
     }
 
     private fun Player.hasImprovedStaminaEffect(): Boolean {
-        return vars[varbits.improved_stamina_passive] == 1
+        return vars["varbit.improved_stamina_passive"] == 1
     }
 
     private fun Player.hasStaminaEffect(): Boolean {
-        return vars[varbits.stamina_active] == 1
+        return vars["varbit.stamina_active"] == 1
     }
 
     private fun Player.isRunning(): Boolean {

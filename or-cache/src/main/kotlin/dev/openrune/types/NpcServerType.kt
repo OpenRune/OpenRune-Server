@@ -6,6 +6,8 @@ import dev.openrune.definition.Definition
 import dev.openrune.definition.EntityOpsDefinition
 import dev.openrune.definition.type.ParamType
 import dev.openrune.resolve
+import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.rscm.RSCMType
 import dev.openrune.seralizer.ParamSerializer
 import dev.openrune.toml.rsconfig.RsTableHeaders
 import dev.openrune.toml.serialization.TomlField
@@ -88,11 +90,11 @@ data class NpcServerType(
         return text.isNotBlank()
     }
 
-    fun isType(other: NpcServerType): Boolean = id == other.id
+    fun isType(other: String): Boolean = id == other.asRSCM(RSCMType.NPC)
 
-    fun isContentType(content: Int): Boolean = contentGroup == content
+    fun isContentType(content: String): Boolean = contentGroup == content.asRSCM(RSCMType.CONTENT)
 
-    fun isCategoryType(cat: Int): Boolean = category == cat
+    fun isCategoryType(cat: String): Boolean = category == cat.asRSCM(RSCMType.CATEGORY)
 
     public fun <T : Any> param(type: ParamType): T = paramMap.resolve(type)
 

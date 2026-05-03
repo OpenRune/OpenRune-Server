@@ -1,6 +1,7 @@
 package org.rsmod.game.queue
 
-import dev.openrune.types.aconverted.QueueType
+import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.rscm.RSCMType
 
 public class NpcQueueList {
     public var size: Int = 0
@@ -16,8 +17,8 @@ public class NpcQueueList {
     public val isNotEmpty: Boolean
         get() = size > 0
 
-    public fun add(type: QueueType, remainingCycles: Int, args: Any? = null) {
-        val queue = Queue(type.id, remainingCycles, args)
+    public fun add(type: String, remainingCycles: Int, args: Any? = null) {
+        val queue = Queue(type.asRSCM(RSCMType.QUEUE), remainingCycles, args)
         val node = Node(queue, prev = last)
         add(node)
     }
@@ -55,7 +56,7 @@ public class NpcQueueList {
         size--
     }
 
-    public fun removeAll(type: QueueType): Int {
+    public fun removeAll(type: String): Int {
         if (isEmpty) {
             return 0
         }
@@ -64,7 +65,7 @@ public class NpcQueueList {
         var count = 0
         var current = first
         while (current != null) {
-            if (current.queue.id == type.id) {
+            if (current.queue.id == type.asRSCM(RSCMType.QUEUE)) {
                 remove(current)
                 count++
             }
@@ -75,14 +76,14 @@ public class NpcQueueList {
         return count
     }
 
-    public operator fun contains(type: QueueType): Boolean {
+    public operator fun contains(type: String): Boolean {
         if (isEmpty) {
             return false
         }
 
         var current = first
         while (current != null) {
-            if (current.queue.id == type.id) {
+            if (current.queue.id == type.asRSCM(RSCMType.QUEUE)) {
                 return true
             }
             current = current.next ?: break

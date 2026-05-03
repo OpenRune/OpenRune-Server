@@ -1,6 +1,5 @@
 package org.rsmod.content.interfaces.menu
 
-import org.rsmod.api.config.refs.interfaces
 import org.rsmod.api.player.output.ClientScripts
 import org.rsmod.api.script.onIfClose
 import org.rsmod.game.entity.Player
@@ -9,7 +8,7 @@ import org.rsmod.plugin.scripts.ScriptContext
 
 class MenuCloseScript : PluginScript() {
     override fun ScriptContext.startup() {
-        onIfClose(interfaces.menu) { player.onMenuClose() }
+        onIfClose("interface.menu") { player.onMenuClose() }
     }
 
     private fun Player.onMenuClose() {

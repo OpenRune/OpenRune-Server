@@ -4,13 +4,10 @@ import com.github.michaelbull.logging.InlineLogger
 import dev.openrune.types.ItemServerType
 import dev.openrune.types.aconverted.interf.IfButtonOp
 import jakarta.inject.Inject
-import org.rsmod.api.config.refs.currencies
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.stopInvTransmit
 import org.rsmod.api.script.onIfClose
 import org.rsmod.api.script.onIfModalButton
-import org.rsmod.api.shops.config.ShopComponents
-import org.rsmod.api.shops.config.ShopInterfaces
 import org.rsmod.api.shops.operation.ShopOperationMap
 import org.rsmod.api.shops.operation.ShopOperations
 import org.rsmod.api.shops.operation.StandardGpShopOperations
@@ -31,15 +28,15 @@ constructor(
 
     override fun ScriptContext.startup() {
         registerDefaultCurrency()
-        onIfModalButton(ShopComponents.shop_inv) { shopInvButton(it.comsub, it.op, it.obj) }
-        onIfModalButton(ShopComponents.shop_side_inv) {
+        onIfModalButton("component.shopmain:items") { shopInvButton(it.comsub, it.op, it.obj) }
+        onIfModalButton("component.shopside:items") {
             shopSideInvButton(it.comsub, it.op, it.obj)
         }
-        onIfClose(ShopInterfaces.shop_main) { player.closeShop() }
+        onIfClose("interface.shopmain") { player.closeShop() }
     }
 
     private fun registerDefaultCurrency() {
-        operationMap.register(currencies.standard_gp, standardGpOperations)
+        operationMap.register("currency.standard_gp", standardGpOperations)
     }
 
     private fun ProtectedAccess.shopInvButton(

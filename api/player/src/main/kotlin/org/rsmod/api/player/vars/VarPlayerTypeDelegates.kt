@@ -1,6 +1,10 @@
 package org.rsmod.api.player.vars
 
+import dev.openrune.ServerCacheManager
 import dev.openrune.definition.type.VarBitType
+import dev.openrune.rscm.RSCM
+import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.rscm.RSCMType
 import dev.openrune.types.varp.VarpServerType
 import dev.openrune.types.varp.baseVar
 import dev.openrune.types.varp.bits
@@ -17,42 +21,42 @@ import org.rsmod.map.CoordGrid
 import org.rsmod.utils.bits.withBits
 
 /* Varplayer delegates */
-public fun intVarp(varp: VarpServerType): VariableIntDelegate = VariableIntDelegate(varp)
+public fun intVarp(varp: String): VariableIntDelegate = VariableIntDelegate(varp)
 
-public fun strVarp(varp: VarpServerType): VariableStringDelegate = VariableStringDelegate(varp)
+public fun strVarp(varp: String): VariableStringDelegate = VariableStringDelegate(varp)
 
-public fun boolVarp(varp: VarpServerType): VariableTypeIntDelegate<Boolean> =
+public fun boolVarp(varp: String): VariableTypeIntDelegate<Boolean> =
     typeIntVarp(varp, ::boolFromInt, ::boolToInt)
 
-public fun typeCoordVarp(varp: VarpServerType): VariableTypeIntDelegate<CoordGrid?> {
+public fun typeCoordVarp(varp: String): VariableTypeIntDelegate<CoordGrid?> {
     val fromType: (CoordGrid?) -> Int = { typed -> typed?.packed ?: CoordGrid.NULL.packed }
     return typeIntVarp(varp, ::CoordGrid, fromType)
 }
 
-public fun typeNpcUidVarp(varp: VarpServerType): VariableTypeIntDelegate<NpcUid?> {
+public fun typeNpcUidVarp(varp: String): VariableTypeIntDelegate<NpcUid?> {
     val fromType: (NpcUid?) -> Int = { typed -> typed?.packed ?: NpcUid.NULL.packed }
     return typeIntVarp(varp, ::NpcUid, fromType)
 }
 
-public fun typePlayerUidVarp(varp: VarpServerType): VariableTypeIntDelegate<PlayerUid?> {
+public fun typePlayerUidVarp(varp: String): VariableTypeIntDelegate<PlayerUid?> {
     val fromType: (PlayerUid?) -> Int = { typed -> typed?.packed ?: PlayerUid.NULL.packed }
     return typeIntVarp(varp, ::PlayerUid, fromType)
 }
 
 public fun <T> typeIntVarp(
-    varp: VarpServerType,
+    varp: String,
     toType: (Int) -> T,
     fromType: (T) -> Int,
 ): VariableTypeIntDelegate<T> = VariableTypeIntDelegate(varp, toType, fromType)
 
 public fun <T> typeStrVarp(
-    varp: VarpServerType,
+    varp: String,
     toType: (String?) -> T,
     fromType: (T) -> String,
 ): VariableTypeStringDelegate<T> = VariableTypeStringDelegate(varp, toType, fromType)
 
 public inline fun <reified V> enumVarp(
-    varp: VarpServerType,
+    varp: String,
     entries: EnumEntries<V> = enumEntries(),
     default: V = entries.firstOrNull { it.varValue == 0 } ?: entries.first(),
 ): VariableTypeIntDelegate<V> where V : Enum<V>, V : VarEnumDelegate {
@@ -64,7 +68,7 @@ public inline fun <reified V> enumVarp(
 }
 
 public inline fun <reified V> enumVarpOrNull(
-    varp: VarpServerType,
+    varp: String,
     entries: EnumEntries<V> = enumEntries(),
     nullVarValue: Int = 0,
 ): VariableTypeIntDelegate<V?> where V : Enum<V>, V : VarEnumDelegate {
@@ -80,29 +84,32 @@ public inline fun <reified V> enumVarpOrNull(
 }
 
 /* Varbit delegates */
-public fun intVarBit(varBit: VarBitType): VariableIntBitsDelegate = VariableIntBitsDelegate(varBit)
+public fun intVarBit(varBit: String): VariableIntBitsDelegate = VariableIntBitsDelegate(varBit)
 
-public fun boolVarBit(varBit: VarBitType): VariableTypeIntBitsDelegate<Boolean> =
+public fun boolVarBit(varBit: String): VariableTypeIntBitsDelegate<Boolean> =
     typeIntVarBit(varBit, ::boolFromInt, ::boolToInt)
 
-public fun typeCoordVarBit(varBit: VarBitType): VariableTypeIntBitsDelegate<CoordGrid> {
+public fun typeCoordVarBit(internal: String): VariableTypeIntBitsDelegate<CoordGrid> {
+
+    val varBit : VarBitType = ServerCacheManager.getVarbit(internal.asRSCM(RSCMType.VARBIT))?: error("Varbit $internal not found")
+
     val requiredBits = CoordGrid.LEVEL_BIT_COUNT + CoordGrid.X_BIT_COUNT + CoordGrid.Z_BIT_COUNT
     val availableBits = varBit.bits.last - varBit.bits.first
     require(availableBits >= requiredBits - 1) {
         "VarBit cannot hold packed `CoordGrid` value: " +
             "required=$requiredBits, available=$availableBits, varBit=$varBit"
     }
-    return typeIntVarBit(varBit, ::CoordGrid, CoordGrid::packed)
+    return typeIntVarBit(internal, ::CoordGrid, CoordGrid::packed)
 }
 
 public fun <T> typeIntVarBit(
-    varBit: VarBitType,
+    varBit: String,
     toType: (Int) -> T,
     fromType: (T) -> Int,
 ): VariableTypeIntBitsDelegate<T> = VariableTypeIntBitsDelegate(varBit, toType, fromType)
 
 public inline fun <reified V> enumVarBit(
-    varBit: VarBitType,
+    varBit: String,
     entries: EnumEntries<V> = enumEntries(),
     default: V = entries.firstOrNull { it.varValue == 0 } ?: entries.first(),
 ): VariableTypeIntBitsDelegate<V> where V : Enum<V>, V : VarEnumDelegate {
@@ -114,7 +121,7 @@ public inline fun <reified V> enumVarBit(
 }
 
 public inline fun <reified V> enumVarBitOrNull(
-    varBit: VarBitType,
+    varBit: String,
     entries: EnumEntries<V> = enumEntries(),
     nullVarValue: Int = 0,
 ): VariableTypeIntBitsDelegate<V?> where V : Enum<V>, V : VarEnumDelegate {
@@ -130,9 +137,13 @@ public inline fun <reified V> enumVarBitOrNull(
 }
 
 /* Delegate implementations */
-public class VariableIntDelegate(private val varp: VarpServerType) {
+public class VariableIntDelegate(private val internal: String) {
+
+    private val varp : VarpServerType
+        get() = ServerCacheManager.getVarp(internal.asRSCM(RSCMType.VARP))?: error("Varbit $internal not found")
+
     public operator fun getValue(thisRef: Player, property: KProperty<*>): Int {
-        return thisRef.vars[varp]
+        return thisRef.vars[RSCM.getReverseMapping(RSCMType.VARP, varp.id)]
     }
 
     public operator fun setValue(thisRef: Player, property: KProperty<*>, value: Int) {
@@ -140,7 +151,7 @@ public class VariableIntDelegate(private val varp: VarpServerType) {
     }
 
     public operator fun getValue(thisRef: ProtectedAccess, property: KProperty<*>): Int {
-        return thisRef.player.vars[varp]
+        return thisRef.player.vars[RSCM.getReverseMapping(RSCMType.VARP, varp.id)]
     }
 
     public operator fun setValue(thisRef: ProtectedAccess, property: KProperty<*>, value: Int) {
@@ -149,12 +160,16 @@ public class VariableIntDelegate(private val varp: VarpServerType) {
 }
 
 public class VariableTypeIntDelegate<T>(
-    private val varp: VarpServerType,
+    private val internal: String,
     public val toType: (Int) -> T,
     public val fromType: (T) -> Int,
 ) {
+
+    private val varp : VarpServerType
+        get() = ServerCacheManager.getVarp(internal.asRSCM(RSCMType.VARP))?: error("Varbit $internal not found")
+
     public operator fun getValue(thisRef: Player, property: KProperty<*>): T {
-        val varValue = thisRef.vars[varp]
+        val varValue = thisRef.vars[RSCM.getReverseMapping(RSCMType.VARP, varp.id)]
         return toType(varValue)
     }
 
@@ -168,7 +183,7 @@ public class VariableTypeIntDelegate<T>(
     }
 
     public operator fun getValue(thisRef: ProtectedAccess, property: KProperty<*>): T {
-        val varValue = thisRef.player.vars[varp]
+        val varValue = thisRef.player.vars[RSCM.getReverseMapping(RSCMType.VARP, varp.id)]
         return toType(varValue)
     }
 
@@ -182,7 +197,11 @@ public class VariableTypeIntDelegate<T>(
     }
 }
 
-public class VariableIntBitsDelegate(private val varbit: VarBitType) {
+public class VariableIntBitsDelegate(private val internal: String) {
+
+    private val varbit : VarBitType
+        get() = ServerCacheManager.getVarbit(internal.asRSCM(RSCMType.VARBIT))?: error("Varbit $internal not found")
+
     private val baseVar: VarpServerType
         get() = varbit.baseVar
 
@@ -190,33 +209,38 @@ public class VariableIntBitsDelegate(private val varbit: VarBitType) {
         get() = varbit.bits
 
     public operator fun getValue(thisRef: Player, property: KProperty<*>): Int {
-        return thisRef.vars[varbit]
+        return thisRef.vars[RSCM.getReverseMapping(RSCMType.VARBIT, varbit.id)]
     }
 
     public operator fun setValue(thisRef: Player, property: KProperty<*>, value: Int) {
         VarPlayerIntMap.assertVarBitBounds(varbit, value)
-        val mappedValue = thisRef.vars[baseVar]
+        val mappedValue = thisRef.vars[RSCM.getReverseMapping(RSCMType.VARP, baseVar.id)]
         val packedValue = mappedValue.withBits(bitRange, value)
         thisRef.syncVarp(baseVar, packedValue)
     }
 
     public operator fun getValue(thisRef: ProtectedAccess, property: KProperty<*>): Int {
-        return thisRef.player.vars[varbit]
+        return thisRef.player.vars[RSCM.getReverseMapping(RSCMType.VARBIT, varbit.id)]
     }
 
     public operator fun setValue(thisRef: ProtectedAccess, property: KProperty<*>, value: Int) {
         VarPlayerIntMap.assertVarBitBounds(varbit, value)
-        val mappedValue = thisRef.player.vars[baseVar]
+        val mappedValue = thisRef.player.vars[RSCM.getReverseMapping(RSCMType.VARP, baseVar.id)]
         val packedValue = mappedValue.withBits(bitRange, value)
         thisRef.syncVarp(baseVar, packedValue)
     }
 }
 
 public class VariableTypeIntBitsDelegate<T>(
-    private val varbit: VarBitType,
+    private val internal: String,
     public val toType: (Int) -> T,
     public val fromType: (T) -> Int,
 ) {
+
+    private val varbit : VarBitType
+        get() = ServerCacheManager.getVarbit(internal.asRSCM(RSCMType.VARBIT))?: error("Varbit $internal not found")
+
+
     private val baseVar: VarpServerType
         get() = varbit.baseVar
 
@@ -224,33 +248,37 @@ public class VariableTypeIntBitsDelegate<T>(
         get() = varbit.bits
 
     public operator fun getValue(thisRef: Player, property: KProperty<*>): T {
-        val varValue = thisRef.vars[varbit]
+        val varValue = thisRef.vars[RSCM.getReverseMapping(RSCMType.VARBIT, varbit.id)]
         return toType(varValue)
     }
 
     public operator fun setValue(thisRef: Player, property: KProperty<*>, value: T?) {
         val varValue = value?.let(fromType) ?: 0
         VarPlayerIntMap.assertVarBitBounds(varbit, varValue)
-        val mappedValue = thisRef.vars[baseVar]
+        val mappedValue = thisRef.vars[RSCM.getReverseMapping(RSCMType.VARP, baseVar.id)]
         val packedValue = mappedValue.withBits(bitRange, varValue)
         thisRef.syncVarp(baseVar, packedValue)
     }
 
     public operator fun getValue(thisRef: ProtectedAccess, property: KProperty<*>): T {
-        val varValue = thisRef.player.vars[varbit]
+        val varValue = thisRef.player.vars[RSCM.getReverseMapping(RSCMType.VARBIT, varbit.id)]
         return toType(varValue)
     }
 
     public operator fun setValue(thisRef: ProtectedAccess, property: KProperty<*>, value: T?) {
         val varValue = value?.let(fromType) ?: 0
         VarPlayerIntMap.assertVarBitBounds(varbit, varValue)
-        val mappedValue = thisRef.player.vars[baseVar]
+        val mappedValue = thisRef.player.vars[RSCM.getReverseMapping(RSCMType.VARP, baseVar.id)]
         val packedValue = mappedValue.withBits(bitRange, varValue)
         thisRef.syncVarp(baseVar, packedValue)
     }
 }
 
-public class VariableStringDelegate(private val varp: VarpServerType) {
+public class VariableStringDelegate(private val internal: String) {
+
+    private val varp : VarpServerType
+        get() = ServerCacheManager.getVarp(internal.asRSCM(RSCMType.VARP))?: error("Varbit $internal not found")
+
     public operator fun getValue(thisRef: Player, property: KProperty<*>): String? {
         return thisRef.strVars[varp]
     }
@@ -269,10 +297,15 @@ public class VariableStringDelegate(private val varp: VarpServerType) {
 }
 
 public class VariableTypeStringDelegate<T>(
-    private val varp: VarpServerType,
+    private val internal: String,
     public val toType: (String?) -> T,
     public val fromType: (T) -> String,
 ) {
+
+    private val varp : VarpServerType
+        get() = ServerCacheManager.getVarp(internal.asRSCM(RSCMType.VARP))?: error("varp $internal not found")
+
+
     public operator fun getValue(thisRef: Player, property: KProperty<*>): T {
         val varValue = thisRef.strVars[varp]
         return toType(varValue)

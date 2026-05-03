@@ -5,9 +5,6 @@ import java.util.EnumSet
 import org.rsmod.api.combat.commons.styles.AttackStyle
 import org.rsmod.api.combat.formulas.attributes.DamageReductionAttributes
 import org.rsmod.api.combat.weapon.styles.AttackStyles
-import org.rsmod.api.config.refs.categories
-import org.rsmod.api.config.refs.objs
-import org.rsmod.api.config.refs.varps
 import org.rsmod.api.player.hat
 import org.rsmod.api.player.lefthand
 import org.rsmod.api.player.legs
@@ -28,14 +25,14 @@ constructor(private val attackStyles: AttackStyles) {
         val attributes = EnumSet.noneOf(DamageReductionAttributes::class.java)
 
         val shield = player.lefthand
-        if (shield.isType(objs.elysian_spirit_shield) && random.of(maxExclusive = 10) < 7) {
+        if (shield.isType("obj.elysian") && random.of(maxExclusive = 10) < 7) {
             attributes += DamageReductionAttributes.ElysianProc
         }
 
         val weaponType = getOrNull(player.righthand)
-        if (weaponType != null && weaponType.isCategoryType(categories.dinhs_bulwark)) {
+        if (weaponType != null && weaponType.isCategoryType("category.dinhs_bulwark")) {
             val attackStyle = attackStyles.get(player)
-            val passiveDelay = player.vars[varps.dinhs_passive_delay]
+            val passiveDelay = player.vars["varp.dinhs_passive_delay"]
             val isPassiveDelayed = player.currentMapClock < passiveDelay
             if (attackStyle == AttackStyle.AggressiveMelee && !isPassiveDelayed) {
                 attributes += DamageReductionAttributes.DinhsBlock
@@ -55,7 +52,7 @@ constructor(private val attackStyles: AttackStyles) {
         val attributes = EnumSet.noneOf(DamageReductionAttributes::class.java)
 
         val shield = player.lefthand
-        if (shield.isType(objs.elysian_spirit_shield) && random.of(maxExclusive = 10) < 7) {
+        if (shield.isType("obj.elysian") && random.of(maxExclusive = 10) < 7) {
             attributes += DamageReductionAttributes.ElysianProc
         }
 

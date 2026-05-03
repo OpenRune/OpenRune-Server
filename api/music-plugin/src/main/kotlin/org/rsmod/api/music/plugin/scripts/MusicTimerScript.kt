@@ -1,9 +1,6 @@
 package org.rsmod.api.music.plugin.scripts
 
 import jakarta.inject.Inject
-import org.rsmod.api.config.refs.varbits
-import org.rsmod.api.config.refs.varps
-import org.rsmod.api.music.plugin.configs.music_timers
 import org.rsmod.api.player.music.MusicPlayer
 import org.rsmod.api.player.vars.intVarBit
 import org.rsmod.api.player.vars.intVarp
@@ -15,14 +12,14 @@ import org.rsmod.plugin.scripts.ScriptContext
 
 public class MusicTimerScript @Inject constructor(private val musicPlayer: MusicPlayer) :
     PluginScript() {
-    private val Player.musicVolume by intVarp(varps.option_music)
-    private var Player.currMusicId by intVarBit(varbits.music_curr_id)
-    private var Player.musicClock by intVarBit(varbits.music_curr_clocks)
-    private var Player.musicDuration by intVarBit(varbits.music_curr_duration)
+    private val Player.musicVolume by intVarp("varp.option_music")
+    private var Player.currMusicId by intVarBit("varbit.music_curr_id")
+    private var Player.musicClock by intVarBit("varbit.music_curr_clocks")
+    private var Player.musicDuration by intVarBit("varbit.music_curr_duration")
 
     override fun ScriptContext.startup() {
         onPlayerLogin { player.musicLogin() }
-        onPlayerSoftTimer(music_timers.sync) { player.musicSync() }
+        onPlayerSoftTimer("timer.music_sync") { player.musicSync() }
     }
 
     private fun Player.musicLogin() {
@@ -33,7 +30,7 @@ public class MusicTimerScript @Inject constructor(private val musicPlayer: Music
         //  There are a few workarounds we can do, which includes directly accessing the `AreaIndex`
         //  and finding the music for each area; however, this seems excessive for this use case.
         //  We will leave this as-is and decide at a later date.
-        softTimer(music_timers.sync, cycles = 1)
+        softTimer("timer.music_sync", cycles = 1)
     }
 
     private fun Player.musicSync() {

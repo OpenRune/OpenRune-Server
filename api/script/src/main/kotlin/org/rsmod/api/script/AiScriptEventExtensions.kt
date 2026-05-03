@@ -1,7 +1,8 @@
 package org.rsmod.api.script
 
+import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.rscm.RSCMType
 import dev.openrune.types.NpcServerType
-import dev.openrune.types.aconverted.ContentGroupType
 import org.rsmod.api.npc.access.StandardNpcAccess
 import org.rsmod.api.npc.events.AiTimerEvents
 import org.rsmod.api.npc.events.interact.AiPlayerEvents
@@ -14,9 +15,14 @@ public fun ScriptContext.onAiTimer(
 ): Unit = onEvent(type.id, action)
 
 public fun ScriptContext.onAiTimer(
-    content: ContentGroupType,
+    internal: String,
+    action: AiTimerEvents.Type.() -> Unit,
+): Unit = onEvent(internal.asRSCM(RSCMType.NPC), action)
+
+public fun ScriptContext.onAiContentTimer(
+    content: String,
     action: AiTimerEvents.Content.() -> Unit,
-): Unit = onEvent(content.id, action)
+): Unit = onEvent(content.asRSCM(RSCMType.CONTENT), action)
 
 /* Player op functions */
 public fun ScriptContext.onAiOpPlayer1(

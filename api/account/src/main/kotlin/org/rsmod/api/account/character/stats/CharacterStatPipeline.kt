@@ -1,6 +1,8 @@
 package org.rsmod.api.account.character.stats
 
 import dev.openrune.ServerCacheManager
+import dev.openrune.rscm.RSCM
+import dev.openrune.rscm.RSCMType
 import jakarta.inject.Inject
 import org.rsmod.api.account.character.CharacterDataStage
 import org.rsmod.api.account.character.CharacterMetadataList
@@ -61,9 +63,10 @@ public class CharacterStatPipeline @Inject constructor(private val applier: Char
 
         upsert.use {
             for (stat in ServerCacheManager.getStats().values) {
-                val visLevel = player.statMap.getCurrentLevel(stat).toInt()
-                val baseLevel = player.statMap.getBaseLevel(stat).toInt()
-                val fineXp = player.statMap.getFineXP(stat)
+                val statType = RSCM.getReverseMapping(RSCMType.STAT, stat.id)
+                val visLevel = player.statMap.getCurrentLevel(statType).toInt()
+                val baseLevel = player.statMap.getBaseLevel(statType).toInt()
+                val fineXp = player.statMap.getFineXP(statType)
                 it.setInt(1, characterId)
                 it.setInt(2, stat.id)
                 it.setInt(3, visLevel)

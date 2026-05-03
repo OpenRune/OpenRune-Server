@@ -8,9 +8,6 @@ import org.rsmod.api.combat.formulas.attributes.CombatMeleeAttributes
 import org.rsmod.api.combat.formulas.attributes.CombatNpcAttributes
 import org.rsmod.api.combat.formulas.scale
 import org.rsmod.api.combat.maxhit.player.PlayerMeleeMaxHit
-import org.rsmod.api.config.refs.stats
-import org.rsmod.api.config.refs.varbits
-import org.rsmod.api.config.refs.varps
 import org.rsmod.api.player.righthand
 import org.rsmod.api.player.stat.stat
 import org.rsmod.api.player.worn.EquipmentChecks
@@ -205,7 +202,7 @@ public object MeleeMaxHitOperations {
     }
 
     public fun calculateEffectiveStrength(player: Player, attackStyle: MeleeAttackStyle?): Int {
-        val strengthLevel = player.stat(stats.strength)
+        val strengthLevel = player.stat("stat.strength")
         val soulreaperAxe = EquipmentChecks.isSoulreaperAxe(player.righthand)
         val soulStackBonus = if (soulreaperAxe) player.vars.soulStackBonus() else 1.0
         return calculateEffectiveStrength(
@@ -245,11 +242,11 @@ public object MeleeMaxHitOperations {
 
     private fun VarPlayerIntMap.prayerBonus(): Double =
         when {
-            this[varbits.burst_of_strength] == 1 -> 1.05
-            this[varbits.superhuman_strength] == 1 -> 1.1
-            this[varbits.ultimate_strength] == 1 -> 1.15
-            this[varbits.chivalry] == 1 -> 1.18
-            this[varbits.piety] == 1 -> 1.23
+            this["varbit.prayer_burstofstrength"] == 1 -> 1.05
+            this["varbit.prayer_superhumanstrength"] == 1 -> 1.1
+            this["varbit.prayer_ultimatestrength"] == 1 -> 1.15
+            this["varbit.prayer_chivalry"] == 1 -> 1.18
+            this["varbit.prayer_piety"] == 1 -> 1.23
             else -> 1.0
         }
 
@@ -278,7 +275,7 @@ public object MeleeMaxHitOperations {
     }
 
     private fun VarPlayerIntMap.soulStackBonus(): Double {
-        val souls = this[varps.soulreaper_souls]
+        val souls = this["varp.soulreaper_stacks"]
         return 1.0 + (souls * 0.06)
     }
 }

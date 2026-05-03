@@ -3,12 +3,6 @@ package org.rsmod.content.other.special.weapons.magic
 import jakarta.inject.Inject
 import org.rsmod.api.combat.commons.CombatAttack
 import org.rsmod.api.combat.manager.CombatChargeManager
-import org.rsmod.api.config.refs.objs
-import org.rsmod.api.config.refs.projanims
-import org.rsmod.api.config.refs.seqs
-import org.rsmod.api.config.refs.spotanims
-import org.rsmod.api.config.refs.synths
-import org.rsmod.api.config.refs.varobjs
 import org.rsmod.api.obj.charges.ObjChargeManager.Companion.isFailure
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.stat.magicLvl
@@ -23,8 +17,8 @@ import org.rsmod.game.entity.Player
 class TumekensShadowWeapons @Inject constructor(private val charges: CombatChargeManager) :
     WeaponMap {
     override fun WeaponRepository.register(manager: WeaponAttackManager) {
-        register(objs.tumekens_shadow_uncharged, UnchargedTumekensShadow(manager))
-        register(objs.tumekens_shadow, TumekensShadow(manager, charges))
+        register("obj.tumekens_shadow_uncharged", UnchargedTumekensShadow(manager))
+        register("obj.tumekens_shadow", TumekensShadow(manager, charges))
     }
 
     private class TumekensShadow(
@@ -48,7 +42,7 @@ class TumekensShadowWeapons @Inject constructor(private val charges: CombatCharg
         }
 
         private fun ProtectedAccess.cast(target: PathingEntity, attack: CombatAttack.Staff) {
-            val chargeResult = charges.attemptDetractWeapon(player, varobjs.tumeken_charges)
+            val chargeResult = charges.attemptDetractWeapon(player, "varobj.tumeken_charges")
             if (chargeResult.isFailure()) {
                 manager.stopCombat(this)
                 return
@@ -57,19 +51,19 @@ class TumekensShadowWeapons @Inject constructor(private val charges: CombatCharg
             // typically have a rate of 4.
             manager.setNextAttackDelay(this, 5)
 
-            anim(seqs.toa_sot_cast_b)
-            spotanim(spotanims.tumekens_shadow_casting)
+            anim("seq.toa_sot_cast_b")
+            spotanim("spotanim.tumekens_shadow_casting")
 
             val proj =
                 manager.spawnProjectile(
                     source = this,
                     target = target,
-                    spotanim = spotanims.tumekens_shadow_travel,
-                    projanim = projanims.tumekens_shadow,
+                    spotanim = "spotanim.tumekens_shadow_travel",
+                    projanim = "projanim.tumekens_shadow",
                 )
             val (serverDelay, clientDelay) = proj.durations
 
-            val castSound = synths.toa_shadow_weapon_cast_fire_01
+            val castSound = "synth.toa_shadow_weapon_cast_fire_01"
             val splash = manager.rollStaffSplash(this, target, attack)
             if (splash) {
                 manager.playSplashFx(this, target, clientDelay, castSound, soundRadius = 10)
@@ -83,9 +77,9 @@ class TumekensShadowWeapons @Inject constructor(private val charges: CombatCharg
                     clientDelay = clientDelay,
                     castSound = castSound,
                     soundRadius = 10,
-                    hitSpot = spotanims.tumekens_shadow_impact,
+                    hitSpot = "spotanim.tumekens_shadow_impact",
                     hitSpotHeight = 124,
-                    hitSound = synths.contact_darkness_impact,
+                    hitSound = "synth.contact_darkness_impact",
                 )
                 manager.giveCombatXp(this, target, attack, damage)
                 manager.queueMagicHit(this, target, damage, clientDelay, serverDelay)

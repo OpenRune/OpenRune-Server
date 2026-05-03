@@ -7,8 +7,6 @@ import org.rsmod.api.combat.commons.styles.AttackStyle
 import org.rsmod.api.combat.formulas.HIT_CHANCE_SCALE
 import org.rsmod.api.combat.formulas.attributes.CombatNpcAttributes
 import org.rsmod.api.combat.formulas.scale
-import org.rsmod.api.config.refs.objs
-import org.rsmod.api.config.refs.varbits
 import org.rsmod.api.player.front
 import org.rsmod.api.player.hat
 import org.rsmod.api.player.legs
@@ -126,7 +124,7 @@ public object AccuracyOperations {
     }
 
     internal fun defensiveArmourBonus(player: Player): Double {
-        if (!player.front.isType(objs.amulet_of_the_damned_full)) {
+        if (!player.front.isType("obj.damned_amulet")) {
             return 1.0
         }
 
@@ -153,17 +151,17 @@ public object AccuracyOperations {
 
     internal fun defensivePrayerBonus(vars: VarPlayerIntMap): Double =
         when {
-            vars[varbits.piety] == 1 -> 1.25
-            vars[varbits.rigour] == 1 -> 1.25
-            vars[varbits.augury] == 1 -> 1.25
-            vars[varbits.chivalry] == 1 -> 1.20
-            vars[varbits.steel_skin] == 1 -> 1.15
-            vars[varbits.rock_skin] == 1 -> 1.10
-            vars[varbits.thick_skin] == 1 -> 1.05
-            vars[varbits.hawk_eye] == 1 && vars[varbits.prayer_deadeye_unlocked] == 1 -> {
+            vars["varbit.prayer_piety"] == 1 -> 1.25
+            vars["varbit.prayer_rigour"] == 1 -> 1.25
+            vars["varbit.prayer_augury"] == 1 -> 1.25
+            vars["varbit.prayer_chivalry"] == 1 -> 1.20
+            vars["varbit.prayer_steelskin"] == 1 -> 1.15
+            vars["varbit.prayer_rockskin"] == 1 -> 1.10
+            vars["varbit.prayer_thickskin"] == 1 -> 1.05
+            vars["varbit.prayer_hawkeye"] == 1 && vars["varbit.prayer_deadeye_unlocked"] == 1 -> {
                 1.05
             }
-            vars[varbits.mystic_might] == 1 && vars[varbits.prayer_mystic_vigour_unlocked] == 1 -> {
+            vars["varbit.prayer_mysticmight"] == 1 && vars["varbit.prayer_mystic_vigour_unlocked"] == 1 -> {
                 1.05
             }
             else -> 1.0

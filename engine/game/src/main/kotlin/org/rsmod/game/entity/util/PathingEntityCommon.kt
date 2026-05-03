@@ -1,5 +1,7 @@
 package org.rsmod.game.entity.util
 
+import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.rscm.RSCMType
 import dev.openrune.types.SequenceServerType
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.PathingEntity
@@ -115,7 +117,7 @@ public object PathingEntityCommon {
 
     public fun anim(
         entity: PathingEntity,
-        seq: SequenceServerType,
+        seq: String,
         delay: Int,
         priority: Int,
     ): Boolean {
@@ -131,7 +133,7 @@ public object PathingEntityCommon {
             return false
         }
 
-        entity.pendingSequence = EntitySeq(seq.id, delay, priority)
+        entity.pendingSequence = EntitySeq(seq.asRSCM(RSCMType.SEQ), delay, priority)
         return true
     }
 

@@ -1,18 +1,14 @@
 package org.rsmod.content.other.special.attacks.ranged
 
+import dev.openrune.rscm.RSCM
+import dev.openrune.rscm.RSCMType
 import dev.openrune.types.ItemServerType
 import dev.openrune.types.aconverted.SpotanimType
 import jakarta.inject.Inject
 import org.rsmod.api.combat.commons.CombatAttack
 import org.rsmod.api.combat.manager.RangedAmmoManager
 import org.rsmod.api.config.constants
-import org.rsmod.api.config.refs.categories
-import org.rsmod.api.config.refs.objs
 import org.rsmod.api.config.refs.params
-import org.rsmod.api.config.refs.projanims
-import org.rsmod.api.config.refs.seqs
-import org.rsmod.api.config.refs.spotanims
-import org.rsmod.api.config.refs.synths
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.quiver
 import org.rsmod.api.specials.SpecialAttackManager
@@ -28,12 +24,12 @@ import org.rsmod.game.type.getOrNull
 class DarkBowSpecialAttack @Inject constructor(private val ammunition: RangedAmmoManager) :
     SpecialAttackMap {
     override fun SpecialAttackRepository.register(manager: SpecialAttackManager) {
-        registerRanged(objs.dark_bow, DarkBow(manager, ammunition))
-        registerRanged(objs.dark_bow_green, DarkBow(manager, ammunition))
-        registerRanged(objs.dark_bow_blue, DarkBow(manager, ammunition))
-        registerRanged(objs.dark_bow_yellow, DarkBow(manager, ammunition))
-        registerRanged(objs.dark_bow_white, DarkBow(manager, ammunition))
-        registerRanged(objs.dark_bow_bh, DarkBow(manager, ammunition))
+        registerRanged("obj.darkbow", DarkBow(manager, ammunition))
+        registerRanged("obj.darkbow_green", DarkBow(manager, ammunition))
+        registerRanged("obj.darkbow_blue", DarkBow(manager, ammunition))
+        registerRanged("obj.darkbow_yellow", DarkBow(manager, ammunition))
+        registerRanged("obj.darkbow_white", DarkBow(manager, ammunition))
+        registerRanged("obj.bh_darkbow_imbue", DarkBow(manager, ammunition))
     }
 
     private class DarkBow(
@@ -78,14 +74,14 @@ class DarkBowSpecialAttack @Inject constructor(private val ammunition: RangedAmm
                 return false
             }
 
-            val descentOfDragons = quiverType.isCategoryType(categories.dragon_arrow)
+            val descentOfDragons = quiverType.isCategoryType("category.dragon_arrow")
             if (descentOfDragons) {
-                descentOfDragons(target, attack, quiverType, travelSpotanim)
+                descentOfDragons(target, attack, quiverType, RSCM.getReverseMapping(RSCMType.SPOTANIM, travelSpotanim.id))
                 manager.continueCombat(this, target)
                 return true
             }
 
-            descentOfDarkness(target, attack, quiverType, travelSpotanim)
+            descentOfDarkness(target, attack, quiverType, RSCM.getReverseMapping(RSCMType.SPOTANIM, travelSpotanim.id))
             manager.continueCombat(this, target)
             return true
         }
@@ -94,25 +90,25 @@ class DarkBowSpecialAttack @Inject constructor(private val ammunition: RangedAmm
             target: PathingEntity,
             attack: CombatAttack.Ranged,
             quiverType: ItemServerType,
-            travelSpot: SpotanimType,
+            travelSpot: String,
         ) {
             val launchSpot = quiverType.paramOrNull(params.proj_launch_double)
-            anim(seqs.human_bow)
-            soundSynth(synths.darkbow_doublefire)
-            soundSynth(synths.darkbow_shadow_attack)
-            spotanim(launchSpot, height = 96, slot = constants.spotanim_slot_combat)
+            anim("seq.human_bow")
+            soundSynth("synth.darkbow_doublefire")
+            soundSynth("synth.darkbow_shadow_attack")
+            spotanim(RSCM.getReverseMapping(RSCMType.SPOTANIM,launchSpot!!.id), height = 96, slot = constants.spotanim_slot_combat)
 
-            val descentTravel = spotanims.darkbow_generic_smoke_arrow_flight
-            val descentImpact = spotanims.darkbow_smoke_arrow_impact
-            val impactSynth = synths.darkbow_shadow_impact
+            val descentTravel = "spotanim.darkbow_generic_smoke_arrow_flight"
+            val descentImpact = "spotanim.darkbow_smoke_arrow_impact"
+            val impactSynth = "synth.darkbow_shadow_impact"
 
-            manager.spawnProjectile(this, target, descentTravel, projanims.doublearrow_one)
-            val proj1 = manager.spawnProjectile(this, target, travelSpot, projanims.doublearrow_one)
+            manager.spawnProjectile(this, target, descentTravel, "projanim.doublearrow_one")
+            val proj1 = manager.spawnProjectile(this, target, travelSpot, "projanim.doublearrow_one")
             val clientDelay1 = proj1.clientCycles
             manager.soundArea(target, impactSynth, delay = clientDelay1, radius = 10)
 
-            manager.spawnProjectile(this, target, descentTravel, projanims.doublearrow_two)
-            val proj2 = manager.spawnProjectile(this, target, travelSpot, projanims.doublearrow_two)
+            manager.spawnProjectile(this, target, descentTravel, "projanim.doublearrow_two")
+            val proj2 = manager.spawnProjectile(this, target, travelSpot, "projanim.doublearrow_two")
             val clientDelay2 = proj2.clientCycles
             manager.soundArea(target, impactSynth, delay = clientDelay2, radius = 10)
 
@@ -152,25 +148,25 @@ class DarkBowSpecialAttack @Inject constructor(private val ammunition: RangedAmm
             target: PathingEntity,
             attack: CombatAttack.Ranged,
             quiverType: ItemServerType,
-            travelSpot: SpotanimType,
+            travelSpot: String,
         ) {
             val launchSpot = quiverType.paramOrNull(params.proj_launch_double)
-            anim(seqs.human_bow)
-            soundSynth(synths.darkbow_doublefire)
-            soundSynth(synths.darkbow_dragon_attack)
-            spotanim(launchSpot, height = 96, slot = constants.spotanim_slot_combat)
+            anim("seq.human_bow")
+            soundSynth("synth.darkbow_doublefire")
+            soundSynth("synth.darkbow_dragon_attack")
+            spotanim(RSCM.getReverseMapping(RSCMType.SPOTANIM,launchSpot!!.id), height = 96, slot = constants.spotanim_slot_combat)
 
-            val descentTravel = spotanims.darkbow_dragon_head_flying_projanim
-            val descentImpact = spotanims.darkbow_dragon_head_flying_impact_anim
-            val impactSynth = synths.darkbow_shadow_impact
+            val descentTravel = "spotanim.darkbow_dragon_head_flying_projanim"
+            val descentImpact = "spotanim.darkbow_dragon_head_flying_impact_anim"
+            val impactSynth = "synth.darkbow_shadow_impact"
 
-            manager.spawnProjectile(this, target, descentTravel, projanims.doublearrow_one)
-            val proj1 = manager.spawnProjectile(this, target, travelSpot, projanims.doublearrow_one)
+            manager.spawnProjectile(this, target, descentTravel, "projanim.doublearrow_one")
+            val proj1 = manager.spawnProjectile(this, target, travelSpot, "projanim.doublearrow_one")
             val clientDelay1 = proj1.clientCycles
             manager.soundArea(target, impactSynth, delay = clientDelay1, radius = 10)
 
-            manager.spawnProjectile(this, target, descentTravel, projanims.doublearrow_two)
-            val proj2 = manager.spawnProjectile(this, target, travelSpot, projanims.doublearrow_two)
+            manager.spawnProjectile(this, target, descentTravel, "projanim.doublearrow_two")
+            val proj2 = manager.spawnProjectile(this, target, travelSpot, "projanim.doublearrow_two")
             val clientDelay2 = proj2.clientCycles
             manager.soundArea(target, impactSynth, delay = clientDelay2, radius = 10)
 

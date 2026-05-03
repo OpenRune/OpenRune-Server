@@ -14,7 +14,7 @@ class LogoutTabScript
 constructor(private val eventBus: EventBus, private val protectedAccess: ProtectedAccessLauncher) :
     PluginScript() {
     override fun ScriptContext.startup() {
-        onIfOverlayButton(logout_components.logout) { player.requestLogout() }
+        onIfOverlayButton("component.logout:logout") { player.requestLogout() }
     }
 
     private fun Player.requestLogout() {

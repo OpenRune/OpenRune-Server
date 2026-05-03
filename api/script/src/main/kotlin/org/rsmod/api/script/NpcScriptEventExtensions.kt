@@ -1,12 +1,11 @@
 package org.rsmod.api.script
 
 import dev.openrune.definition.type.widget.ComponentType
+import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.rscm.RSCMType
 import dev.openrune.types.ItemServerType
 import dev.openrune.types.NpcServerType
 import dev.openrune.types.WalkTriggerType
-import dev.openrune.types.aconverted.ContentGroupType
-import dev.openrune.types.aconverted.QueueType
-import dev.openrune.types.aconverted.TimerType
 import org.rsmod.api.npc.access.StandardNpcAccess
 import org.rsmod.api.npc.events.NpcHitEvents
 import org.rsmod.api.npc.events.NpcMovementEvent
@@ -30,77 +29,82 @@ public fun ScriptContext.onOpNpc1(
     action: suspend ProtectedAccess.(NpcEvents.Op1) -> Unit,
 ): Unit = onProtectedEvent(type.id, action)
 
-public fun ScriptContext.onOpNpc2(
-    type: NpcServerType,
-    action: suspend ProtectedAccess.(NpcEvents.Op2) -> Unit,
-): Unit = onProtectedEvent(type.id, action)
-
-public fun ScriptContext.onOpNpc3(
-    type: NpcServerType,
-    action: suspend ProtectedAccess.(NpcEvents.Op3) -> Unit,
-): Unit = onProtectedEvent(type.id, action)
-
-public fun ScriptContext.onOpNpc4(
-    type: NpcServerType,
-    action: suspend ProtectedAccess.(NpcEvents.Op4) -> Unit,
-): Unit = onProtectedEvent(type.id, action)
-
-public fun ScriptContext.onOpNpc5(
-    type: NpcServerType,
-    action: suspend ProtectedAccess.(NpcEvents.Op5) -> Unit,
-): Unit = onProtectedEvent(type.id, action)
-
 public fun ScriptContext.onOpNpc1(
-    content: ContentGroupType,
-    action: suspend ProtectedAccess.(NpcContentEvents.Op1) -> Unit,
-): Unit = onProtectedEvent(content.id, action)
+    internal: String,
+    action: suspend ProtectedAccess.(NpcEvents.Op1) -> Unit,
+): Unit = onProtectedEvent(internal.asRSCM(RSCMType.NPC), action)
 
 public fun ScriptContext.onOpNpc2(
-    content: ContentGroupType,
-    action: suspend ProtectedAccess.(NpcContentEvents.Op2) -> Unit,
-): Unit = onProtectedEvent(content.id, action)
+    type: String,
+    action: suspend ProtectedAccess.(NpcEvents.Op2) -> Unit,
+): Unit = onProtectedEvent(type.asRSCM(RSCMType.NPC), action)
 
 public fun ScriptContext.onOpNpc3(
-    content: ContentGroupType,
-    action: suspend ProtectedAccess.(NpcContentEvents.Op3) -> Unit,
-): Unit = onProtectedEvent(content.id, action)
+    type: String,
+    action: suspend ProtectedAccess.(NpcEvents.Op3) -> Unit,
+): Unit = onProtectedEvent(type.asRSCM(RSCMType.NPC), action)
 
 public fun ScriptContext.onOpNpc4(
-    content: ContentGroupType,
-    action: suspend ProtectedAccess.(NpcContentEvents.Op4) -> Unit,
-): Unit = onProtectedEvent(content.id, action)
+    type: String,
+    action: suspend ProtectedAccess.(NpcEvents.Op4) -> Unit,
+): Unit = onProtectedEvent(type.asRSCM(RSCMType.NPC), action)
 
 public fun ScriptContext.onOpNpc5(
-    content: ContentGroupType,
+    type: String,
+    action: suspend ProtectedAccess.(NpcEvents.Op5) -> Unit,
+): Unit = onProtectedEvent(type.asRSCM(RSCMType.NPC), action)
+
+public fun ScriptContext.onOpContentNpc1(
+    content: String,
+    action: suspend ProtectedAccess.(NpcContentEvents.Op1) -> Unit,
+): Unit = onProtectedEvent(content.asRSCM(RSCMType.CONTENT), action)
+
+public fun ScriptContext.onOpContentNpc2(
+    content: String,
+    action: suspend ProtectedAccess.(NpcContentEvents.Op2) -> Unit,
+): Unit = onProtectedEvent(content.asRSCM(RSCMType.CONTENT), action)
+
+public fun ScriptContext.onOpContentNpc3(
+    content: String,
+    action: suspend ProtectedAccess.(NpcContentEvents.Op3) -> Unit,
+): Unit = onProtectedEvent(content.asRSCM(RSCMType.CONTENT), action)
+
+public fun ScriptContext.onOpContentNpc4(
+    content: String,
+    action: suspend ProtectedAccess.(NpcContentEvents.Op4) -> Unit,
+): Unit = onProtectedEvent(content.asRSCM(RSCMType.CONTENT), action)
+
+public fun ScriptContext.onOpContentNpc5(
+    content: String,
     action: suspend ProtectedAccess.(NpcContentEvents.Op5) -> Unit,
-): Unit = onProtectedEvent(content.id, action)
+): Unit = onProtectedEvent(content.asRSCM(RSCMType.CONTENT), action)
 
 public fun ScriptContext.onOpNpcT(
-    component: ComponentType,
+    component: String,
     action: suspend ProtectedAccess.(NpcTDefaultEvents.Op) -> Unit,
-): Unit = onProtectedEvent(component.packed, action)
+): Unit = onProtectedEvent(component.asRSCM(RSCMType.COMPONENT), action)
 
 public fun ScriptContext.onOpNpcT(
     type: NpcServerType,
-    component: ComponentType,
+    component: String,
     action: suspend ProtectedAccess.(NpcTEvents.Op) -> Unit,
-): Unit = onProtectedEvent(EventBus.composeLongKey(type.id, component.packed), action)
+): Unit = onProtectedEvent(EventBus.composeLongKey(type.id, component.asRSCM(RSCMType.COMPONENT)), action)
 
 public fun ScriptContext.onOpNpcT(
-    content: ContentGroupType,
-    component: ComponentType,
+    content: String,
+    component: String,
     action: suspend ProtectedAccess.(NpcTContentEvents.Op) -> Unit,
-): Unit = onProtectedEvent(EventBus.composeLongKey(content.id, component.packed), action)
+): Unit = onProtectedEvent(EventBus.composeLongKey(content.asRSCM(RSCMType.CONTENT), component.asRSCM(RSCMType.COMPONENT)), action)
 
 public fun ScriptContext.onOpNpcU(
     npcType: NpcServerType,
     action: suspend ProtectedAccess.(NpcUDefaultEvents.OpType) -> Unit,
 ): Unit = onProtectedEvent(npcType.id, action)
 
-public fun ScriptContext.onOpNpcU(
-    content: ContentGroupType,
+public fun ScriptContext.onOpContentNpcU(
+    content: String,
     action: suspend ProtectedAccess.(NpcUDefaultEvents.OpContent) -> Unit,
-): Unit = onProtectedEvent(content.id, action)
+): Unit = onProtectedEvent(content.asRSCM(RSCMType.CONTENT), action)
 
 public fun ScriptContext.onOpNpcU(
     npcType: NpcServerType,
@@ -108,62 +112,62 @@ public fun ScriptContext.onOpNpcU(
     action: suspend ProtectedAccess.(NpcUEvents.Op) -> Unit,
 ): Unit = onProtectedEvent(EventBus.composeLongKey(npcType.id, objType.id), action)
 
-public fun ScriptContext.onOpNpcU(
-    content: ContentGroupType,
-    objType: ItemServerType,
+public fun ScriptContext.onOpContentNpcU(
+    content: String,
+    objType: String,
     action: suspend ProtectedAccess.(NpcUContentEvents.Op) -> Unit,
-): Unit = onProtectedEvent(EventBus.composeLongKey(content.id, objType.id), action)
+): Unit = onProtectedEvent(EventBus.composeLongKey(content.asRSCM(RSCMType.CONTENT), objType.asRSCM(RSCMType.OBJ)), action)
 
 /* Ap functions */
 public fun ScriptContext.onApNpc1(
-    type: NpcServerType,
+    type: String,
     action: suspend ProtectedAccess.(NpcEvents.Ap1) -> Unit,
-): Unit = onProtectedEvent(type.id, action)
+): Unit = onProtectedEvent(type.asRSCM(RSCMType.NPC), action)
 
 public fun ScriptContext.onApNpc2(
-    type: NpcServerType,
+    type: String,
     action: suspend ProtectedAccess.(NpcEvents.Ap2) -> Unit,
-): Unit = onProtectedEvent(type.id, action)
+): Unit = onProtectedEvent(type.asRSCM(RSCMType.NPC), action)
 
 public fun ScriptContext.onApNpc3(
-    type: NpcServerType,
+    type: String,
     action: suspend ProtectedAccess.(NpcEvents.Ap3) -> Unit,
-): Unit = onProtectedEvent(type.id, action)
+): Unit = onProtectedEvent(type.asRSCM(RSCMType.NPC), action)
 
 public fun ScriptContext.onApNpc4(
-    type: NpcServerType,
+    type: String,
     action: suspend ProtectedAccess.(NpcEvents.Ap4) -> Unit,
-): Unit = onProtectedEvent(type.id, action)
+): Unit = onProtectedEvent(type.asRSCM(RSCMType.NPC), action)
 
 public fun ScriptContext.onApNpc5(
     type: NpcServerType,
     action: suspend ProtectedAccess.(NpcEvents.Ap5) -> Unit,
 ): Unit = onProtectedEvent(type.id, action)
 
-public fun ScriptContext.onApNpc1(
-    content: ContentGroupType,
+public fun ScriptContext.onApContentNpc1(
+    content: String,
     action: suspend ProtectedAccess.(NpcContentEvents.Ap1) -> Unit,
-): Unit = onProtectedEvent(content.id, action)
+): Unit = onProtectedEvent(content.asRSCM(RSCMType.CONTENT), action)
 
-public fun ScriptContext.onApNpc2(
-    content: ContentGroupType,
+public fun ScriptContext.onApContentNpc2(
+    content: String,
     action: suspend ProtectedAccess.(NpcContentEvents.Ap2) -> Unit,
-): Unit = onProtectedEvent(content.id, action)
+): Unit = onProtectedEvent(content.asRSCM(RSCMType.CONTENT), action)
 
-public fun ScriptContext.onApNpc3(
-    content: ContentGroupType,
+public fun ScriptContext.onApContentNpc3(
+    content: String,
     action: suspend ProtectedAccess.(NpcContentEvents.Ap3) -> Unit,
-): Unit = onProtectedEvent(content.id, action)
+): Unit = onProtectedEvent(content.asRSCM(RSCMType.CONTENT), action)
 
-public fun ScriptContext.onApNpc4(
-    content: ContentGroupType,
+public fun ScriptContext.onApContentNpc4(
+    content: String,
     action: suspend ProtectedAccess.(NpcContentEvents.Ap4) -> Unit,
-): Unit = onProtectedEvent(content.id, action)
+): Unit = onProtectedEvent(content.asRSCM(RSCMType.CONTENT), action)
 
-public fun ScriptContext.onApNpc5(
-    content: ContentGroupType,
+public fun ScriptContext.onApContentNpc5(
+    content: String,
     action: suspend ProtectedAccess.(NpcContentEvents.Ap5) -> Unit,
-): Unit = onProtectedEvent(content.id, action)
+): Unit = onProtectedEvent(content.asRSCM(RSCMType.CONTENT), action)
 
 public fun ScriptContext.onApNpcT(
     component: ComponentType,
@@ -177,10 +181,10 @@ public fun ScriptContext.onApNpcT(
 ): Unit = onProtectedEvent(EventBus.composeLongKey(type.id, component.packed), action)
 
 public fun ScriptContext.onApNpcT(
-    content: ContentGroupType,
+    content: String,
     component: ComponentType,
     action: suspend ProtectedAccess.(NpcTContentEvents.Ap) -> Unit,
-): Unit = onProtectedEvent(EventBus.composeLongKey(content.id, component.packed), action)
+): Unit = onProtectedEvent(EventBus.composeLongKey(content.asRSCM(RSCMType.CONTENT), component.packed), action)
 
 public fun ScriptContext.onApNpcU(
     npcType: NpcServerType,
@@ -188,9 +192,9 @@ public fun ScriptContext.onApNpcU(
 ): Unit = onProtectedEvent(npcType.id, action)
 
 public fun ScriptContext.onApNpcU(
-    content: ContentGroupType,
+    content: String,
     action: suspend ProtectedAccess.(NpcUDefaultEvents.ApContent) -> Unit,
-): Unit = onProtectedEvent(content.id, action)
+): Unit = onProtectedEvent(content.asRSCM(RSCMType.CONTENT), action)
 
 public fun ScriptContext.onApNpcU(
     npcType: NpcServerType,
@@ -199,63 +203,63 @@ public fun ScriptContext.onApNpcU(
 ): Unit = onProtectedEvent(EventBus.composeLongKey(npcType.id, objType.id), action)
 
 public fun ScriptContext.onApNpcU(
-    content: ContentGroupType,
+    content: String,
     objType: ItemServerType,
     action: suspend ProtectedAccess.(NpcUContentEvents.Ap) -> Unit,
-): Unit = onProtectedEvent(EventBus.composeLongKey(content.id, objType.id), action)
+): Unit = onProtectedEvent(EventBus.composeLongKey(content.asRSCM(RSCMType.CONTENT), objType.id), action)
 
 /* Timer functions */
 public fun ScriptContext.onNpcTimer(
-    timer: TimerType,
+    timer: String,
     action: suspend StandardNpcAccess.(NpcTimerEvents.Default) -> Unit,
-): Unit = onNpcAccessEvent(timer.id, action)
+): Unit = onNpcAccessEvent(timer.asRSCM(RSCMType.TIMER), action)
 
 public fun ScriptContext.onNpcTimer(
     npc: NpcServerType,
-    timer: TimerType,
+    timer: String,
     action: suspend StandardNpcAccess.(NpcTimerEvents.Type) -> Unit,
-): Unit = onNpcAccessEvent(EventBus.composeLongKey(npc.id, timer.id), action)
+): Unit = onNpcAccessEvent(EventBus.composeLongKey(npc.id, timer.asRSCM(RSCMType.TIMER)), action)
 
 public fun ScriptContext.onNpcTimer(
-    content: ContentGroupType,
-    timer: TimerType,
+    content: String,
+    timer: String,
     action: suspend StandardNpcAccess.(NpcTimerEvents.Content) -> Unit,
-): Unit = onNpcAccessEvent(EventBus.composeLongKey(content.id, timer.id), action)
+): Unit = onNpcAccessEvent(EventBus.composeLongKey(content.asRSCM(RSCMType.CONTENT), timer.asRSCM(RSCMType.TIMER)), action)
 
 /* Queue functions */
 public fun ScriptContext.onNpcQueue(
-    type: QueueType,
+    type: String,
     action: suspend StandardNpcAccess.(NpcQueueEvents.Default<Nothing>) -> Unit,
-): Unit = onNpcAccessEvent(type.id, action)
+): Unit = onNpcAccessEvent(type.asRSCM(RSCMType.QUEUE), action)
 
 public fun <T> ScriptContext.onNpcQueueWithArgs(
-    type: QueueType,
+    type: String,
     action: suspend StandardNpcAccess.(NpcQueueEvents.Default<T>) -> Unit,
-): Unit = onNpcAccessEvent(type.id, action)
+): Unit = onNpcAccessEvent(type.asRSCM(RSCMType.QUEUE), action)
 
 public fun ScriptContext.onNpcQueue(
     type: NpcServerType,
-    queue: QueueType,
+    queue: String,
     action: suspend StandardNpcAccess.(NpcQueueEvents.Type<Nothing>) -> Unit,
-): Unit = onNpcAccessEvent(EventBus.composeLongKey(type.id, queue.id), action)
+): Unit = onNpcAccessEvent(EventBus.composeLongKey(type.id, queue.asRSCM(RSCMType.QUEUE)), action)
 
 public fun <T> ScriptContext.onNpcQueueWithArgs(
     type: NpcServerType,
-    queue: QueueType,
+    queue: String,
     action: suspend StandardNpcAccess.(NpcQueueEvents.Type<T>) -> Unit,
-): Unit = onNpcAccessEvent(EventBus.composeLongKey(type.id, queue.id), action)
+): Unit = onNpcAccessEvent(EventBus.composeLongKey(type.id, queue.asRSCM(RSCMType.QUEUE)), action)
 
 public fun ScriptContext.onNpcQueue(
-    content: ContentGroupType,
-    queue: QueueType,
+    content: String,
+    queue: String,
     action: suspend StandardNpcAccess.(NpcQueueEvents.Content<Nothing>) -> Unit,
-): Unit = onNpcAccessEvent(EventBus.composeLongKey(content.id, queue.id), action)
+): Unit = onNpcAccessEvent(EventBus.composeLongKey(content.asRSCM(RSCMType.CONTENT), queue.asRSCM(RSCMType.QUEUE)), action)
 
 public fun <T> ScriptContext.onNpcQueueWithArgs(
-    content: ContentGroupType,
-    queue: QueueType,
+    content: String,
+    queue: String,
     action: suspend StandardNpcAccess.(NpcQueueEvents.Content<T>) -> Unit,
-): Unit = onNpcAccessEvent(EventBus.composeLongKey(content.id, queue.id), action)
+): Unit = onNpcAccessEvent(EventBus.composeLongKey(content.asRSCM(RSCMType.CONTENT), queue.asRSCM(RSCMType.QUEUE)), action)
 
 /* Walk trigger functions */
 public fun ScriptContext.onNpcWalkTrigger(

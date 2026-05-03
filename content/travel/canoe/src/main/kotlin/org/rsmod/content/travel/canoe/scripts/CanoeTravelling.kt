@@ -1,8 +1,9 @@
 package org.rsmod.content.travel.canoe.scripts
 
-import dev.openrune.definition.type.widget.ComponentType
+import dev.openrune.ServerCacheManager
 import dev.openrune.definition.type.widget.IfEvent
-import dev.openrune.types.NpcServerType
+import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.rscm.RSCMType
 import jakarta.inject.Inject
 import org.rsmod.api.config.refs.params
 import org.rsmod.api.player.output.ClientScripts.highlightingOff
@@ -16,13 +17,6 @@ import org.rsmod.api.repo.region.RegionTemplate
 import org.rsmod.api.script.onAiTimer
 import org.rsmod.api.script.onIfModalButton
 import org.rsmod.api.script.onOpLoc1
-import org.rsmod.content.travel.canoe.configs.canoe_components
-import org.rsmod.content.travel.canoe.configs.canoe_interfaces
-import org.rsmod.content.travel.canoe.configs.canoe_locs
-import org.rsmod.content.travel.canoe.configs.canoe_npcs
-import org.rsmod.content.travel.canoe.configs.canoe_seqs
-import org.rsmod.content.travel.canoe.configs.canoe_synths
-import org.rsmod.content.travel.canoe.configs.canoe_varbits
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.loc.LocAngle
 import org.rsmod.game.loc.LocShape
@@ -34,44 +28,44 @@ import org.rsmod.plugin.scripts.ScriptContext
 
 class CanoeTravelling @Inject private constructor(private val cutscene: CanoeCutscene) :
     PluginScript() {
-    var ProtectedAccess.disabledPondWarning by boolVarBit(canoe_varbits.disable_wild_pond_warning)
+    var ProtectedAccess.disabledPondWarning by boolVarBit("varbit.wildy_canoe_warning")
 
     override fun ScriptContext.startup() {
         cutscene.startup(this)
 
-        onOpLoc1(canoe_locs.floating_log) { openDestinationModal(Canoe.Log) }
-        onOpLoc1(canoe_locs.floating_dugout) { openDestinationModal(Canoe.Dugout) }
-        onOpLoc1(canoe_locs.floating_stable_dugout) { openDestinationModal(Canoe.StableDugout) }
-        onOpLoc1(canoe_locs.floating_waka) { openDestinationModal(Canoe.Waka) }
+        onOpLoc1("loc.canoeing_log_canoeing_station_in_water") { openDestinationModal(Canoe.Log) }
+        onOpLoc1("loc.canoeing_dugout_canoeing_station_in_water") { openDestinationModal(Canoe.Dugout) }
+        onOpLoc1("loc.canoeing_catamaran_canoeing_station_in_water") { openDestinationModal(Canoe.StableDugout) }
+        onOpLoc1("loc.canoeing_waka_canoeing_station_in_water") { openDestinationModal(Canoe.Waka) }
 
-        onIfModalButton(canoe_components.destination_lumbridge) {
+        onIfModalButton("component.canoe_map:lumbridge") {
             selectDestination(CanoeDestination.Lumbridge)
         }
 
-        onIfModalButton(canoe_components.destination_champs_guild) {
+        onIfModalButton("component.canoe_map:champions") {
             selectDestination(CanoeDestination.ChampionsGuild)
         }
 
-        onIfModalButton(canoe_components.destination_barb_village) {
+        onIfModalButton("component.canoe_map:barbarian") {
             selectDestination(CanoeDestination.BarbarianVillage)
         }
 
-        onIfModalButton(canoe_components.destination_edgeville) {
+        onIfModalButton("component.canoe_map:edgeville") {
             selectDestination(CanoeDestination.Edgeville)
         }
 
-        onIfModalButton(canoe_components.destination_ferox_enclave) {
+        onIfModalButton("component.canoe_map:sanctuary") {
             selectDestination(CanoeDestination.FeroxEnclave)
         }
 
-        onIfModalButton(canoe_components.destination_wild_pond) { selectWildernessPond() }
+        onIfModalButton("component.canoe_map:wilderness") { selectWildernessPond() }
     }
 
     private fun ProtectedAccess.openDestinationModal(canoe: Canoe) {
         val station = resolveStation()
         val destinations = resolveValidDestinations(station, canoe)
 
-        ifOpenMainModal(canoe_interfaces.destination, colour = 4535323, transparency = 0)
+        ifOpenMainModal("interface.canoe_map", colour = 4535323, transparency = 0)
         for (destination in destinations) {
             ifSetEvents(destination.component, 0..0, IfEvent.Op1)
         }
@@ -124,7 +118,7 @@ class CanoeTravelling @Inject private constructor(private val cutscene: CanoeCut
         val station = resolveStation()
         val canoe =
             checkNotNull(canoeType) {
-                "Expected valid canoe type: ${vars[canoe_varbits.canoe_type]}"
+                "Expected valid canoe type: ${vars["varbit.canoe_type"]}"
             }
 
         val destinations = resolveValidDestinations(station, canoe)
@@ -170,13 +164,13 @@ class CanoeTravelling @Inject private constructor(private val cutscene: CanoeCut
         }
 }
 
-private enum class CanoeDestination(val index: Int, val component: ComponentType) {
-    Lumbridge(0, canoe_components.destination_lumbridge),
-    ChampionsGuild(1, canoe_components.destination_champs_guild),
-    BarbarianVillage(2, canoe_components.destination_barb_village),
-    Edgeville(3, canoe_components.destination_edgeville),
-    FeroxEnclave(4, canoe_components.destination_ferox_enclave),
-    WildernessPond(5, canoe_components.destination_wild_pond);
+private enum class CanoeDestination(val index: Int, val component: String) {
+    Lumbridge(0, "component.canoe_map:lumbridge"),
+    ChampionsGuild(1, "component.canoe_map:champions"),
+    BarbarianVillage(2, "component.canoe_map:barbarian"),
+    Edgeville(3, "component.canoe_map:edgeville"),
+    FeroxEnclave(4, "component.canoe_map:sanctuary"),
+    WildernessPond(5, "component.canoe_map:wilderness");
 
     companion object {
         val wilderness = listOf(WildernessPond, FeroxEnclave)
@@ -197,13 +191,13 @@ constructor(
     private val npcRepo: NpcRepository,
 ) {
     fun startup(ctx: ScriptContext) {
-        ctx.onAiTimer(canoe_npcs.cave_scenery_1) { npc.onSceneryTimer() }
-        ctx.onAiTimer(canoe_npcs.cave_scenery_2) { npc.onSceneryTimer() }
-        ctx.onAiTimer(canoe_npcs.cave_scenery_3) { npc.onSceneryTimer() }
-        ctx.onAiTimer(canoe_npcs.tree_scenery_1) { npc.onSceneryTimer() }
-        ctx.onAiTimer(canoe_npcs.tree_scenery_2) { npc.onSceneryTimer() }
-        ctx.onAiTimer(canoe_npcs.bullrush_scenery_1) { npc.onSceneryTimer() }
-        ctx.onAiTimer(canoe_npcs.bullrush_scenery_2) { npc.onSceneryTimer() }
+        ctx.onAiTimer("npc.canoeing_cave_scenery_1") { npc.onSceneryTimer() }
+        ctx.onAiTimer("npc.canoeing_cave_scenery_2") { npc.onSceneryTimer() }
+        ctx.onAiTimer("npc.canoeing_cave_scenery_3") { npc.onSceneryTimer() }
+        ctx.onAiTimer("npc.canoeing_scenery_1") { npc.onSceneryTimer() }
+        ctx.onAiTimer("npc.canoeing_scenery_2") { npc.onSceneryTimer() }
+        ctx.onAiTimer("npc.canoeing_bullrush") { npc.onSceneryTimer() }
+        ctx.onAiTimer("npc.canoeing_bullrush_leaf") { npc.onSceneryTimer() }
     }
 
     suspend fun start(access: ProtectedAccess, dest: CanoeDestination, type: CutsceneType) {
@@ -282,9 +276,9 @@ constructor(
             telejump(region.normal[0, 28, 70, 25, 35])
             rebuildAppearance()
             delay(1)
-            anim(canoe_seqs.canoeing_rowing)
+            anim("seq.canoeing_rowing")
             faceDirection(Direction.West)
-            soundSynth(canoe_synths.canoe_paddle, loops = 16)
+            soundSynth("synth.canoe_paddle", loops = 16)
             camMoveTo(region.normal[0, 28, 70, 20, 35], height = 2500, rate = 100, rate2 = 100)
             camMoveTo(region.normal[0, 28, 70, 20, 35], height = 255, rate = 100, rate2 = 100)
             camLookAt(region.normal[0, 28, 70, 25, 35], height = 255, rate = 100, rate2 = 100)
@@ -294,9 +288,9 @@ constructor(
             telejump(region.normal[0, 28, 70, 53, 12])
             rebuildAppearance()
             delay(1)
-            anim(canoe_seqs.canoeing_rowing)
+            anim("seq.canoeing_rowing")
             faceDirection(Direction.West)
-            soundSynth(canoe_synths.canoe_paddle, loops = 10)
+            soundSynth("synth.canoe_paddle", loops = 10)
             camMoveTo(region.normal[0, 28, 70, 46, 12], height = 275, rate = 100, rate2 = 100)
             camLookAt(region.normal[0, 28, 70, 53, 12], height = 100, rate = 100, rate2 = 100)
             spawnWildScenery(region)
@@ -361,10 +355,10 @@ constructor(
             val coords = dest.sinkingCanoeCoords()
             val angle =
                 if (dest == CanoeDestination.WildernessPond) LocAngle.East else LocAngle.North
-            val sinking = lcParam(canoe.loc, params.next_loc_stage)
+            val sinking = lcParam(ServerCacheManager.getObject(canoe.loc.asRSCM(RSCMType.LOC))!!, params.next_loc_stage)
             locRepo.add(coords, sinking, 4, angle, LocShape.CentrepieceStraight)
         }
-        soundSynth(canoe_synths.canoe_sink)
+        soundSynth("synth.canoe_sink")
     }
 
     private fun CanoeDestination.arrivalMessage(): String =
@@ -417,26 +411,25 @@ constructor(
         }
 
     private fun constructGrassSceneryNpcs(region: Region): List<SceneryNpc> {
-        val npcs = canoe_npcs
         return listOf(
-            SceneryNpc(npcs.bullrush_scenery_1, region.normal[0, 28, 70, 28, 36], duration = 7),
-            SceneryNpc(npcs.bullrush_scenery_2, region.normal[0, 28, 70, 27, 36], duration = 7),
-            SceneryNpc(npcs.tree_scenery_1, region.normal[0, 28, 70, 30, 36], duration = 7),
-            SceneryNpc(npcs.tree_scenery_2, region.normal[0, 28, 70, 29, 23], duration = 21),
+            SceneryNpc("npc.canoeing_bullrush", region.normal[0, 28, 70, 28, 36], duration = 7),
+            SceneryNpc("npc.canoeing_bullrush_leaf", region.normal[0, 28, 70, 27, 36], duration = 7),
+            SceneryNpc("npc.canoeing_scenery_1", region.normal[0, 28, 70, 30, 36], duration = 7),
+            SceneryNpc("npc.canoeing_scenery_2", region.normal[0, 28, 70, 29, 23], duration = 21),
             SceneryNpc(
-                type = npcs.tree_scenery_1,
+                type = "npc.canoeing_scenery_1",
                 coords = region.normal[0, 28, 70, 29, 19],
                 duration = 25,
                 delay = 7,
             ),
             SceneryNpc(
-                type = npcs.bullrush_scenery_2,
+                type = "npc.canoeing_bullrush_leaf",
                 coords = region.normal[0, 28, 70, 27, 24],
                 duration = 25,
                 delay = 10,
             ),
             SceneryNpc(
-                type = npcs.bullrush_scenery_1,
+                type = "npc.canoeing_bullrush",
                 coords = region.normal[0, 28, 70, 28, 20],
                 duration = 25,
                 delay = 10,
@@ -445,33 +438,32 @@ constructor(
     }
 
     private fun constructWildernessSceneryNpcs(region: Region): List<SceneryNpc> {
-        val npcs = canoe_npcs
         return listOf(
             SceneryNpc(
-                type = npcs.cave_scenery_1,
+                type = "npc.canoeing_cave_scenery_1",
                 coords = region.normal[0, 28, 70, 50, 9],
                 duration = 14,
             ),
             SceneryNpc(
-                type = npcs.cave_scenery_2,
+                type = "npc.canoeing_cave_scenery_2",
                 coords = region.normal[0, 28, 70, 54, 8],
                 duration = 14,
                 delay = 1,
             ),
             SceneryNpc(
-                type = npcs.cave_scenery_1,
+                type = "npc.canoeing_cave_scenery_1",
                 coords = region.normal[0, 28, 70, 50, 2],
                 duration = 14,
                 delay = 2,
             ),
             SceneryNpc(
-                type = npcs.cave_scenery_2,
+                type = "npc.canoeing_cave_scenery_2",
                 coords = region.normal[0, 28, 70, 54, 4],
                 duration = 14,
                 delay = 3,
             ),
             SceneryNpc(
-                type = npcs.cave_scenery_3,
+                type = "npc.canoeing_cave_scenery_3",
                 coords = region.normal[0, 28, 70, 54, 0],
                 duration = 14,
                 delay = 5,
@@ -480,7 +472,7 @@ constructor(
     }
 
     private data class SceneryNpc(
-        val type: NpcServerType,
+        val type: String,
         val coords: CoordGrid,
         val duration: Int,
         val delay: Int? = null,

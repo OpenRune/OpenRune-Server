@@ -1,229 +1,228 @@
 package org.rsmod.api.player.worn
 
-import org.rsmod.api.config.refs.objs
 import org.rsmod.game.inv.InvObj
 import org.rsmod.game.inv.isAnyType
 import org.rsmod.game.inv.isType
 
 public object EquipmentChecks {
     public fun isSmokeStaff(obj: InvObj?): Boolean =
-        obj.isAnyType(objs.smoke_battlestaff, objs.mystic_smoke_staff, objs.twinflame_staff)
+        obj.isAnyType("obj.smoke_battlestaff", "obj.mystic_smoke_battlestaff", "obj.twinflame_staff")
 
-    public fun isSoulreaperAxe(obj: InvObj?): Boolean = obj.isType(objs.soulreaper_axe)
+    public fun isSoulreaperAxe(obj: InvObj?): Boolean = obj.isType("obj.soulreaper")
 
-    public fun isTumekensShadow(obj: InvObj?): Boolean = obj.isType(objs.tumekens_shadow)
+    public fun isTumekensShadow(obj: InvObj?): Boolean = obj.isType("obj.tumekens_shadow")
 
-    public fun isTwistedBow(obj: InvObj?): Boolean = obj.isType(objs.twisted_bow)
+    public fun isTwistedBow(obj: InvObj?): Boolean = obj.isType("obj.twisted_bow")
 
     public fun isDragonHunterCrossbow(obj: InvObj?): Boolean =
         obj.isAnyType(
-            objs.dragon_hunter_crossbow,
-            objs.dragon_hunter_crossbow_t,
-            objs.dragon_hunter_crossbow_b,
+            "obj.dragonhunter_xbow",
+            "obj.dragonhunter_xbow_vorkath",
+            "obj.dragonhunter_xbow_kbd",
         )
 
     public fun isCrystalBow(obj: InvObj?): Boolean =
         obj.isAnyType(
-            objs.crystal_bow,
-            objs.bow_of_faerdhinen,
-            objs.bow_of_faerdhinen_c_hefin,
-            objs.bow_of_faerdhinen_c_ithell,
-            objs.bow_of_faerdhinen_c_iorwerth,
-            objs.bow_of_faerdhinen_c_trahaearn,
-            objs.bow_of_faerdhinen_c_cadarn,
-            objs.bow_of_faerdhinen_c_crwys,
-            objs.bow_of_faerdhinen_c_meilyr,
-            objs.bow_of_faerdhinen_c_amlodd,
+            "obj.crystal_bow",
+            "obj.bow_of_faerdhinen",
+            "obj.bow_of_faerdhinen_infinite",
+            "obj.bow_of_faerdhinen_infinite_ithell",
+            "obj.bow_of_faerdhinen_infinite_iorwerth",
+            "obj.bow_of_faerdhinen_infinite_trahaearn",
+            "obj.bow_of_faerdhinen_infinite_cadarn",
+            "obj.bow_of_faerdhinen_infinite_crwys",
+            "obj.bow_of_faerdhinen_infinite_meilyr",
+            "obj.bow_of_faerdhinen_infinite_amlodd",
         )
 
     public fun isCrystalHelm(obj: InvObj?): Boolean =
         obj.isAnyType(
-            objs.crystal_helm_hefin,
-            objs.crystal_helm_ithell,
-            objs.crystal_helm_iorwerth,
-            objs.crystal_helm_trahaearn,
-            objs.crystal_helm_cadarn,
-            objs.crystal_helm_crwys,
-            objs.crystal_helm_meilyr,
-            objs.crystal_helm_amlodd,
+            "obj.crystal_helmet_hefin",
+            "obj.crystal_helmet_ithell",
+            "obj.crystal_helmet_iorwerth",
+            "obj.crystal_helmet_trahaearn",
+            "obj.crystal_helmet_cadarn",
+            "obj.crystal_helmet_crwys",
+            "obj.crystal_helmet",
+            "obj.crystal_helmet_amlodd",
         )
 
     public fun isCrystalBody(obj: InvObj?): Boolean =
         obj.isAnyType(
-            objs.crystal_body_hefin,
-            objs.crystal_body_ithell,
-            objs.crystal_body_iorwerth,
-            objs.crystal_body_trahaearn,
-            objs.crystal_body_cadarn,
-            objs.crystal_body_crwys,
-            objs.crystal_body_meilyr,
-            objs.crystal_body_amlodd,
+            "obj.crystal_chestplate_hefin",
+            "obj.crystal_chestplate_ithell",
+            "obj.crystal_chestplate_iorwerth",
+            "obj.crystal_chestplate_trahaearn",
+            "obj.crystal_chestplate_cadarn",
+            "obj.crystal_chestplate_crwys",
+            "obj.crystal_chestplate",
+            "obj.crystal_chestplate_amlodd",
         )
 
     public fun isCrystalLegs(obj: InvObj?): Boolean =
         obj.isAnyType(
-            objs.crystal_legs_hefin,
-            objs.crystal_legs_ithell,
-            objs.crystal_legs_iorwerth,
-            objs.crystal_legs_trahaearn,
-            objs.crystal_legs_cadarn,
-            objs.crystal_legs_crwys,
-            objs.crystal_legs_meilyr,
-            objs.crystal_legs_amlodd,
+            "obj.crystal_platelegs_hefin",
+            "obj.crystal_platelegs_ithell",
+            "obj.crystal_platelegs_iorwerth",
+            "obj.crystal_platelegs_trahaearn",
+            "obj.crystal_platelegs_cadarn",
+            "obj.crystal_platelegs_crwys",
+            "obj.crystal_platelegs",
+            "obj.crystal_platelegs_amlodd",
         )
 
     public fun isObsidianSet(helm: InvObj?, top: InvObj?, legs: InvObj?): Boolean =
-        helm.isType(objs.obsidian_helmet) &&
-            top.isType(objs.obsidian_platebody) &&
-            legs.isType(objs.obsidian_platelegs)
+        helm.isType("obj.obsidian_helmet") &&
+            top.isType("obj.obsidian_platebody") &&
+            legs.isType("obj.obsidian_platelegs")
 
     public fun isVirtusMask(obj: InvObj?): Boolean =
-        obj.isAnyType(objs.virtus_mask, objs.echo_virtus_mask)
+        obj.isAnyType("obj.virtus_mask", "obj.virtus_mask_ornament")
 
     public fun isVirtusRobeTop(obj: InvObj?): Boolean =
-        obj.isAnyType(objs.virtus_robe_top, objs.echo_virtus_robe_top)
+        obj.isAnyType("obj.virtus_top", "obj.virtus_top_ornament")
 
     public fun isVirtusRobeBottom(obj: InvObj?): Boolean =
-        obj.isAnyType(objs.virtus_robe_bottom, objs.echo_virtus_robe_bottom)
+        obj.isAnyType("obj.virtus_legs", "obj.virtus_legs_ornament")
 
     public fun isVoidMeleeHelm(obj: InvObj?): Boolean =
         obj.isAnyType(
-            objs.void_melee_helm,
-            objs.void_melee_helm_l,
-            objs.void_melee_helm_or,
-            objs.void_melee_helm_l_or,
+            "obj.game_pest_melee_helm",
+            "obj.game_pest_melee_helm_trouver",
+            "obj.league_3_void_melee_helm",
+            "obj.league_3_void_melee_helm_trouver",
         )
 
     public fun isVoidRangerHelm(obj: InvObj?): Boolean =
         obj.isAnyType(
-            objs.void_ranger_helm,
-            objs.void_ranger_helm_l,
-            objs.void_ranger_helm_or,
-            objs.void_ranger_helm_l_or,
+            "obj.game_pest_archer_helm",
+            "obj.game_pest_archer_helm_trouver",
+            "obj.league_3_void_range_helm",
+            "obj.league_3_void_range_helm_trouver",
         )
 
     public fun isVoidMageHelm(obj: InvObj?): Boolean =
         obj.isAnyType(
-            objs.void_mage_helm,
-            objs.void_mage_helm_l,
-            objs.void_mage_helm_or,
-            objs.void_mage_helm_l_or,
+            "obj.game_pest_mage_helm",
+            "obj.game_pest_mage_helm_trouver",
+            "obj.league_3_void_mage_helm",
+            "obj.league_3_void_mage_helm_trouver",
         )
 
     public fun isVoidTop(obj: InvObj?): Boolean = isRegularVoidTop(obj) || isEliteVoidTop(obj)
 
     public fun isRegularVoidTop(obj: InvObj?): Boolean =
-        obj.isAnyType(objs.void_top, objs.void_top_l, objs.void_top_or, objs.void_top_l_or)
+        obj.isAnyType("obj.pest_void_knight_top", "obj.pest_void_knight_top_trouver", "obj.league_3_void_knight_top", "obj.league_3_void_knight_top_trouver")
 
     public fun isEliteVoidTop(obj: InvObj?): Boolean =
         obj.isAnyType(
-            objs.elite_void_top,
-            objs.elite_void_top_l,
-            objs.elite_void_top_or,
-            objs.elite_void_top_l_or,
+            "obj.elite_void_knight_top",
+            "obj.elite_void_knight_top_trouver",
+            "obj.league_3_void_knight_top_elite",
+            "obj.league_3_void_knight_top_elite_trouver",
         )
 
     public fun isVoidRobe(obj: InvObj?): Boolean = isRegularVoidRobe(obj) || isEliteVoidRobe(obj)
 
     public fun isRegularVoidRobe(obj: InvObj?): Boolean =
-        obj.isAnyType(objs.void_robe, objs.void_robe_l, objs.void_robe_or, objs.void_robe_l_or)
+        obj.isAnyType("obj.pest_void_knight_robes", "obj.pest_void_knight_robes_trouver", "obj.league_3_void_knight_robes", "obj.league_3_void_knight_robes_trouver")
 
     public fun isEliteVoidRobe(obj: InvObj?): Boolean =
         obj.isAnyType(
-            objs.elite_void_robe,
-            objs.elite_void_robe_l,
-            objs.elite_void_robe_or,
-            objs.elite_void_robe_l_or,
+            "obj.elite_void_knight_robes",
+            "obj.elite_void_knight_robes_trouver",
+            "obj.league_3_void_knight_robes_elite",
+            "obj.league_3_void_knight_robes_elite_trouver",
         )
 
     public fun isVoidGloves(obj: InvObj?): Boolean =
         obj.isAnyType(
-            objs.void_gloves,
-            objs.void_gloves_l,
-            objs.void_gloves_or,
-            objs.void_gloves_l_or,
+            "obj.pest_void_knight_gloves",
+            "obj.pest_void_knight_gloves_trouver",
+            "obj.league_3_void_knight_gloves",
+            "obj.league_3_void_knight_gloves_trouver",
         )
 
     public fun isDharokSet(helm: InvObj?, top: InvObj?, legs: InvObj?, weapon: InvObj?): Boolean =
         helm.isAnyType(
-            objs.dharoks_helm_100,
-            objs.dharoks_helm_75,
-            objs.dharoks_helm_50,
-            objs.dharoks_helm_25,
+            "obj.barrows_dharok_head_100",
+            "obj.barrows_dharok_head_75",
+            "obj.barrows_dharok_head_50",
+            "obj.barrows_dharok_head_25",
         ) &&
             top.isAnyType(
-                objs.dharoks_platebody_100,
-                objs.dharoks_platebody_75,
-                objs.dharoks_platebody_50,
-                objs.dharoks_platebody_25,
+                "obj.barrows_dharok_body_100",
+                "obj.barrows_dharok_body_75",
+                "obj.barrows_dharok_body_50",
+                "obj.barrows_dharok_body_25",
             ) &&
             legs.isAnyType(
-                objs.dharoks_platelegs_100,
-                objs.dharoks_platelegs_75,
-                objs.dharoks_platelegs_50,
-                objs.dharoks_platelegs_25,
+                "obj.barrows_dharok_legs_100",
+                "obj.barrows_dharok_legs_75",
+                "obj.barrows_dharok_legs_50",
+                "obj.barrows_dharok_legs_25",
             ) &&
             weapon.isAnyType(
-                objs.dharoks_greataxe_100,
-                objs.dharoks_greataxe_75,
-                objs.dharoks_greataxe_50,
-                objs.dharoks_greataxe_25,
+                "obj.barrows_dharok_weapon_100",
+                "obj.barrows_dharok_weapon_75",
+                "obj.barrows_dharok_weapon_50",
+                "obj.barrows_dharok_weapon_25",
             )
 
     public fun isToragSet(helm: InvObj?, top: InvObj?, legs: InvObj?, weapon: InvObj?): Boolean =
         helm.isAnyType(
-            objs.torags_helm_100,
-            objs.torags_helm_75,
-            objs.torags_helm_50,
-            objs.torags_helm_25,
+            "obj.barrows_torag_head_100",
+            "obj.barrows_torag_head_75",
+            "obj.barrows_torag_head_50",
+            "obj.barrows_torag_head_25",
         ) &&
             top.isAnyType(
-                objs.torags_platebody_100,
-                objs.torags_platebody_75,
-                objs.torags_platebody_50,
-                objs.torags_platebody_25,
+                "obj.barrows_torag_body_100",
+                "obj.barrows_torag_body_75",
+                "obj.barrows_torag_body_50",
+                "obj.barrows_torag_body_25",
             ) &&
             legs.isAnyType(
-                objs.torags_platelegs_100,
-                objs.torags_platelegs_75,
-                objs.torags_platelegs_50,
-                objs.torags_platelegs_25,
+                "obj.barrows_torag_legs_100",
+                "obj.barrows_torag_legs_75",
+                "obj.barrows_torag_legs_50",
+                "obj.barrows_torag_legs_25",
             ) &&
             weapon.isAnyType(
-                objs.torags_hammers_100,
-                objs.torags_hammers_75,
-                objs.torags_hammers_50,
-                objs.torags_hammers_25,
+                "obj.barrows_torag_weapon_100",
+                "obj.barrows_torag_weapon_75",
+                "obj.barrows_torag_weapon_50",
+                "obj.barrows_torag_weapon_25",
             )
 
     public fun isAhrimSet(helm: InvObj?, top: InvObj?, legs: InvObj?, weapon: InvObj?): Boolean =
         helm.isAnyType(
-            objs.ahrims_hood_100,
-            objs.ahrims_hood_75,
-            objs.ahrims_hood_50,
-            objs.ahrims_hood_25,
+            "obj.barrows_ahrim_head_100",
+            "obj.barrows_ahrim_head_75",
+            "obj.barrows_ahrim_head_50",
+            "obj.barrows_ahrim_head_25",
         ) &&
             top.isAnyType(
-                objs.ahrims_robetop_100,
-                objs.ahrims_robetop_75,
-                objs.ahrims_robetop_50,
-                objs.ahrims_robetop_25,
+                "obj.barrows_ahrim_body_100",
+                "obj.barrows_ahrim_body_75",
+                "obj.barrows_ahrim_body_50",
+                "obj.barrows_ahrim_body_25",
             ) &&
             legs.isAnyType(
-                objs.ahrims_robeskirt_100,
-                objs.ahrims_robeskirt_75,
-                objs.ahrims_robeskirt_50,
-                objs.ahrims_robeskirt_25,
+                "obj.barrows_ahrim_legs_100",
+                "obj.barrows_ahrim_legs_75",
+                "obj.barrows_ahrim_legs_50",
+                "obj.barrows_ahrim_legs_25",
             ) &&
             weapon.isAnyType(
-                objs.ahrims_staff_100,
-                objs.ahrims_staff_75,
-                objs.ahrims_staff_50,
-                objs.ahrims_staff_25,
+                "obj.barrows_ahrim_weapon_100",
+                "obj.barrows_ahrim_weapon_75",
+                "obj.barrows_ahrim_weapon_50",
+                "obj.barrows_ahrim_weapon_25",
             )
 
     public fun isJusticiarSet(helm: InvObj?, top: InvObj?, legs: InvObj?): Boolean =
-        helm.isType(objs.justiciar_faceguard) &&
-            top.isType(objs.justiciar_chestguard) &&
-            legs.isType(objs.justiciar_legguards)
+        helm.isType("obj.justiciar_faceguard") &&
+            top.isType("obj.justiciar_chestguard") &&
+            legs.isType("obj.justiciar_leg_guards")
 }

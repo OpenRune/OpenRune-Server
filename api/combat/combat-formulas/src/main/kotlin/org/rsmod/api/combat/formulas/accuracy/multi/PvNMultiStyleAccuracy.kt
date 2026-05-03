@@ -19,7 +19,6 @@ import org.rsmod.api.combat.formulas.attributes.collector.CombatNpcAttributeColl
 import org.rsmod.api.combat.formulas.attributes.collector.CombatRangedAttributeCollector
 import org.rsmod.api.combat.formulas.isSlayerTask
 import org.rsmod.api.config.refs.params
-import org.rsmod.api.config.refs.varbits
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 
@@ -73,7 +72,7 @@ constructor(
             melee.computeAttackRoll(source, attackType, attackStyle, meleeAttributes, npcAttributes)
         val attackRoll = (baseAttackRoll * specialMultiplier).toInt()
 
-        val amascutInvocationLvl = source.vars[varbits.toa_client_raid_level]
+        val amascutInvocationLvl = source.vars["varbit.toa_client_raid_level"]
         val defenceRoll =
             magic.computeDefenceRoll(
                 target = target,
@@ -127,7 +126,7 @@ constructor(
             melee.computeAttackRoll(source, attackType, attackStyle, meleeAttributes, npcAttributes)
         val attackRoll = (baseAttackRoll * specialMultiplier).toInt()
 
-        val amascutInvocationLvl = source.vars[varbits.toa_client_raid_level]
+        val amascutInvocationLvl = source.vars["varbit.toa_client_raid_level"]
         val defenceRoll =
             ranged.computeDefenceRoll(
                 target = target,
@@ -178,7 +177,7 @@ constructor(
             magic.computeStaffAttackRoll(source, attackStyle, EMPTY_STAFF_ATTRIBUTES, npcAttributes)
         val attackRoll = (baseAttackRoll * specialMultiplier).toInt()
 
-        val amascutInvocationLvl = source.vars[varbits.toa_client_raid_level]
+        val amascutInvocationLvl = source.vars["varbit.toa_client_raid_level"]
         val defenceRoll =
             ranged.computeDefenceRoll(
                 target = target,
@@ -243,7 +242,7 @@ constructor(
             )
         val attackRoll = (baseAttackRoll * specialMultiplier).toInt()
 
-        val amascutInvocationLvl = source.vars[varbits.toa_client_raid_level]
+        val amascutInvocationLvl = source.vars["varbit.toa_client_raid_level"]
         val defenceRoll =
             magic.computeDefenceRoll(
                 target = target,
