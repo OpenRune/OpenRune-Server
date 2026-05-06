@@ -50,7 +50,7 @@ constructor(private val accuracy: AccuracyFormulae, private val maxHits: MaxHitF
         actionDelay = mapClock + attackRate
 
         val attackAnim = RSCM.getReverseMapping(RSCMType.SEQ,npc.visType.param(params.attack_anim).id)
-        val attackSound = RSCM.getReverseMapping(RSCMType.SYNTH,npc.visType.paramOrNull(params.attack_sound)!!.id)
+        val attackSound = npc.visType.paramOrNull(params.attack_sound)
 
         anim(attackAnim)
         attackSound?.let(target::soundSynth)
