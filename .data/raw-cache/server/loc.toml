@@ -741,8 +741,8 @@ inherit = "loc.fai_varrock_posh_bookcase_short_east_offset"
 contentGroup = "content.bookcase"
 
 [[object]]
-id = "loc.fat_cow"
-inherit = "loc.fat_cow"
+id = "loc.fat_cow_fawest"
+inherit = "loc.fat_cow_fawest"
 contentGroup = "content.dairy_cow"
 
 [[object]]
