@@ -1,11 +1,11 @@
 package org.rsmod.api.player.output
 
-import net.rsprot.protocol.game.outgoing.misc.player.SetMapFlag
+import net.rsprot.protocol.game.outgoing.misc.player.SetMapFlagV2
 import org.rsmod.game.entity.Player
 import org.rsmod.map.CoordGrid
 
 public fun Player.clearMapFlag() {
-    client.write(SetMapFlag(255, 255))
+    client.write(SetMapFlagV2.RESET)
 }
 
 public object MapFlag {
@@ -14,8 +14,6 @@ public object MapFlag {
     }
 
     public fun setMapFlag(player: Player, x: Int, z: Int) {
-        val dx = x - player.buildArea.x
-        val dz = z - player.buildArea.z
-        player.client.write(SetMapFlag(dx, dz))
+        player.client.write(SetMapFlagV2(x, z))
     }
 }

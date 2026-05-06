@@ -28,7 +28,6 @@ import org.rsmod.api.repo.obj.ObjRepository
 import org.rsmod.api.server.config.ServerConfig
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.map.LocZoneStorage
-import org.rsmod.game.map.xtea.XteaMap
 import org.rsmod.game.obj.Obj
 import org.rsmod.game.obj.ObjEntity
 import org.rsmod.game.obj.ObjScope
@@ -37,7 +36,6 @@ import org.rsmod.plugin.module.PluginModule
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 import org.rsmod.server.install.GameNetworkRsaGenerator
-import org.rsmod.server.install.GameServerInstall
 import org.rsmod.server.install.GameServerLogbackCopy
 import dev.openrune.DirectoryConstants
 import org.rsmod.server.shared.PluginConstants
@@ -122,7 +120,6 @@ class GameServer(private val skipTypeVerificationOverride: Boolean? = null) :
     private fun loadMap(or2cache: Cache, injector: Injector) {
         logger.info { "Loading game map and collision flags..." }
         val duration = measureTime {
-            val xteaMap = injector.getInstance(XteaMap::class.java)
             val npcRepo = injector.getInstance(NpcRepository::class.java)
             val objRepo = injector.getInstance(ObjRepository::class.java)
 
@@ -152,7 +149,7 @@ class GameServer(private val skipTypeVerificationOverride: Boolean? = null) :
                     }
                 }
 
-            GameMapDecoder.decodeAll(sink, or2cache, xteaMap)
+            GameMapDecoder.decodeAll(sink, or2cache)
         }
         reportDuration {
             val locZoneStorage = injector.getInstance(LocZoneStorage::class.java)

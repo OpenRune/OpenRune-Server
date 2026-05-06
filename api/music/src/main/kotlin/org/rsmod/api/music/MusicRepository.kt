@@ -162,5 +162,7 @@ public class MusicRepository @Inject constructor(private val random: GameRandom)
             "varp.musicmulti_23",
             "varp.musicmulti_24",
             "varp.musicmulti_25",
+            "varp.musicmulti_26",
+            "varp.musicmulti_27",
         )
 }

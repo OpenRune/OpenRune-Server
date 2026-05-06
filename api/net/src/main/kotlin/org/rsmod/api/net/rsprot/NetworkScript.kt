@@ -6,7 +6,6 @@ import net.rsprot.protocol.common.RSProtConstants
 import net.rsprot.protocol.common.client.OldSchoolClientType
 import org.rsmod.api.game.process.GameLifecycle
 import org.rsmod.api.net.rsprot.player.SessionStart
-import org.rsmod.api.net.rsprot.provider.SimpleXteaProvider
 import org.rsmod.api.registry.region.RegionRegistry
 import org.rsmod.api.script.onEvent
 import org.rsmod.api.server.config.ServerConfig
@@ -24,7 +23,6 @@ class NetworkScript
 @Inject
 constructor(
     private val mapClock: MapClock,
-    private val xtea: SimpleXteaProvider,
     private val service: NetworkService<Player>,
     private val regionReg: RegionRegistry,
     private val config : ServerConfig
@@ -47,19 +45,17 @@ constructor(
     }
 
     private fun updateService() {
-        service.playerInfoProtocol.update()
-        service.npcInfoProtocol.update()
+        service.infoProtocols.update()
     }
 
     @Suppress("UNCHECKED_CAST")
     private fun SessionStart.startSession() {
         val slot = player.slotId
 
-        val playerInfo = service.playerInfoProtocol.alloc(slot, OldSchoolClientType.DESKTOP)
-        val npcInfo = service.npcInfoProtocol.alloc(slot, OldSchoolClientType.DESKTOP)
+        val infos = service.infoProtocols.alloc(slot, OldSchoolClientType.DESKTOP)
 
-        val client = RspClient(session, playerInfo, npcInfo) as Client<Any, Any>
-        val cycle = RspCycle(session, playerInfo, npcInfo, xtea, regionReg)
+        val client = RspClient(session, infos) as Client<Any, Any>
+        val cycle = RspCycle(session, infos, regionReg)
 
         player.client = client
         player.clientCycle = cycle

@@ -37,7 +37,11 @@ import org.rsmod.utils.bits.withBits
 public object VarPlayerIntMapSetter {
 
     public fun set(player: Player, varp: String, value: Int) {
-        set(player, ServerCacheManager.getVarp(varp.asRSCM(RSCMType.VARP))!!, value)
+        if (varp.startsWith("varp.")) {
+            set(player, ServerCacheManager.getVarp(varp.asRSCM(RSCMType.VARP))!!, value)
+        } else {
+            set(player, ServerCacheManager.getVarbit(varp.asRSCM(RSCMType.VARBIT))!!, value)
+        }
     }
 
     public fun set(player: Player, varp: VarpServerType, value: Int) {

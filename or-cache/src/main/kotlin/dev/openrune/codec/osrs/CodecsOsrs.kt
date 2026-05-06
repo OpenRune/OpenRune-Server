@@ -32,14 +32,14 @@ class VarpDecoder : ConfigDefinitionDecoder<VarpServerType>(VarpServerTypeCodec(
 
 class WalkTriggerDecoder : ConfigDefinitionDecoder<WalkTriggerType>(WalkTriggerTypeCodec(), 68)
 
-class VarnDecoder : ConfigDefinitionDecoder<VarnType>(VarnTypeCodec(), 72)
+class VarnDecoder : ConfigDefinitionDecoder<VarnType>(VarnTypeCodec(), 82)
 
-class VarnBitDecoder : ConfigDefinitionDecoder<VarnBitType>(VarnBitTypeCodec(), 73)
+class VarnBitDecoder : ConfigDefinitionDecoder<VarnBitType>(VarnBitTypeCodec(), 83)
 
-class VarConBitDecoder : ConfigDefinitionDecoder<VarConBitType>(VarConBitTypeCodec(), 74)
+class VarConBitDecoder : ConfigDefinitionDecoder<VarConBitType>(VarConBitTypeCodec(), 84)
 
-class VarConDecoder : ConfigDefinitionDecoder<VarConType>(VarConCodec(), 75)
+class VarConDecoder : ConfigDefinitionDecoder<VarConType>(VarConCodec(), 85)
 
-class VarObjBitDecoder : ConfigDefinitionDecoder<VarObjBitType>(VarObjCodec(), 76)
+class VarObjBitDecoder : ConfigDefinitionDecoder<VarObjBitType>(VarObjCodec(), 86)
 
-class HuntModeDecoder : ConfigDefinitionDecoder<HuntModeType>(HuntCodec(), 77)
+class HuntModeDecoder : ConfigDefinitionDecoder<HuntModeType>(HuntCodec(), 87)

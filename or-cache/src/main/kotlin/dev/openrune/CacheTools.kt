@@ -70,12 +70,6 @@ fun downloadRev(type: TaskType) {
 
             builder.build().initialize()
 
-            Files.move(
-                File(getCacheLocation(), "xteas.json").toPath(),
-                File("../.data/cache/", "xteas.json").toPath(),
-                StandardCopyOption.REPLACE_EXISTING,
-            )
-
             File(getServerCacheLocation(), "xteas.json").delete()
 
             val cache = Cache.load(File(getCacheLocation()).toPath())

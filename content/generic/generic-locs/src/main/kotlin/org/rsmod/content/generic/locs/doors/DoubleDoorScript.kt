@@ -23,7 +23,7 @@ class DoubleDoorScript @Inject constructor(private val locRepo: LocRepository) :
     }
 
     private fun ProtectedAccess.openLeftDoor(left: BoundLocInfo, type: ObjectServerType) {
-        val sound = RSCM.getReverseMapping(RSCMType.SYNTH,type.param(params.opensound).id)
+        val sound = type.param(params.opensound)
         soundSynth(sound)
 
         left.let {
@@ -50,7 +50,7 @@ class DoubleDoorScript @Inject constructor(private val locRepo: LocRepository) :
     }
 
     private fun ProtectedAccess.openRightDoor(right: BoundLocInfo, type: ObjectServerType) {
-        val sound = RSCM.getReverseMapping(RSCMType.SYNTH,type.param(params.opensound).id)
+        val sound = type.param(params.opensound)
         soundSynth(sound)
 
         right.let {
@@ -77,7 +77,7 @@ class DoubleDoorScript @Inject constructor(private val locRepo: LocRepository) :
     }
 
     private fun ProtectedAccess.closeLeftDoor(left: BoundLocInfo, type: ObjectServerType) {
-        val sound = RSCM.getReverseMapping(RSCMType.SYNTH,type.param(params.opensound).id)
+        val sound = type.param(params.opensound)
         soundSynth(sound)
 
         left.let {
@@ -104,7 +104,7 @@ class DoubleDoorScript @Inject constructor(private val locRepo: LocRepository) :
     }
 
     private fun ProtectedAccess.closeRightDoor(right: BoundLocInfo, type: ObjectServerType) {
-        val sound = RSCM.getReverseMapping(RSCMType.SYNTH,type.param(params.opensound).id)
+        val sound = type.param(params.opensound)
         soundSynth(sound)
 
         right.let {

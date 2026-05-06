@@ -26,7 +26,7 @@ class PicketGate @Inject constructor(private val locRepo: LocRepository) : Plugi
     }
 
     private fun ProtectedAccess.openLeftGate(left: BoundLocInfo, type: ObjectServerType) {
-        val sound = RSCM.getReverseMapping(RSCMType.SYNTH,type.param(params.opensound).id)
+        val sound = type.param(params.opensound)
         soundSynth(sound)
 
         val right =
@@ -56,7 +56,7 @@ class PicketGate @Inject constructor(private val locRepo: LocRepository) : Plugi
     }
 
     private fun ProtectedAccess.openRightGate(right: BoundLocInfo, type: ObjectServerType) {
-        val sound = RSCM.getReverseMapping(RSCMType.SYNTH,type.param(params.opensound).id)
+        val sound = type.param(params.opensound)
         soundSynth(sound)
 
         val left =
@@ -86,7 +86,7 @@ class PicketGate @Inject constructor(private val locRepo: LocRepository) : Plugi
     }
 
     private fun ProtectedAccess.closeLeftGate(left: BoundLocInfo, type: ObjectServerType) {
-        val sound = RSCM.getReverseMapping(RSCMType.SYNTH,type.param(params.closesound).id)
+        val sound = type.param(params.closesound)
         soundSynth(sound)
 
         val right =
@@ -116,7 +116,7 @@ class PicketGate @Inject constructor(private val locRepo: LocRepository) : Plugi
     }
 
     private fun ProtectedAccess.closeRightGate(right: BoundLocInfo, type: ObjectServerType) {
-        val sound = RSCM.getReverseMapping(RSCMType.SYNTH,type.param(params.closesound).id)
+        val sound = type.param(params.closesound)
         soundSynth(sound)
 
         val left =

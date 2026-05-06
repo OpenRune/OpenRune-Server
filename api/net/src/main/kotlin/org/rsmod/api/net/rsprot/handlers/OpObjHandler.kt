@@ -4,6 +4,7 @@ import com.github.michaelbull.logging.InlineLogger
 import dev.openrune.ServerCacheManager
 import jakarta.inject.Inject
 import net.rsprot.protocol.game.incoming.objs.OpObj
+import net.rsprot.protocol.game.incoming.objs.OpObjV2
 import org.rsmod.api.player.interact.ObjInteractions
 import org.rsmod.api.player.protect.clearPendingAction
 import org.rsmod.api.player.vars.ctrlMoveSpeed
@@ -23,10 +24,10 @@ constructor(
     private val eventBus: EventBus,
     private val objRegistry: ObjRegistry,
     private val objInteractions: ObjInteractions,
-) : MessageHandler<OpObj> {
+) : MessageHandler<OpObjV2> {
     private val logger = InlineLogger()
 
-    private val OpObj.interactionOp: InteractionOp
+    private val OpObjV2.interactionOp: InteractionOp
         get() =
             when (op) {
                 1 -> InteractionOp.Op1
@@ -37,7 +38,7 @@ constructor(
                 else -> throw NotImplementedError("Unhandled `op` conversion: $this")
             }
 
-    override fun handle(player: Player, message: OpObj) {
+    override fun handle(player: Player, message: OpObjV2) {
         if (player.isDelayed) {
             return
         }

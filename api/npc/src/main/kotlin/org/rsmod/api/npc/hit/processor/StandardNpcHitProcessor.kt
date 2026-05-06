@@ -83,7 +83,7 @@ constructor(private val playerList: PlayerList, private val eventBus: EventBus) 
             return
         }
         val defendSound = npc.visType.paramOrNull(params.defend_sound) ?: return
-        source.soundSynth(RSCM.getReverseMapping(RSCMType.SYNTH,defendSound.id))
+        source.soundSynth(defendSound)
     }
 
     private fun Hit.createHeadbar(currHp: Int, maxHp: Int, headbar: HealthBarServerType): Headbar =

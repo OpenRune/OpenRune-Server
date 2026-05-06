@@ -2425,13 +2425,29 @@ tradeable = false
 "param.equipment_sound"=2246
 "param.attackrate"=5
 
-
 [[item]]
-id = "obj.placeholder_blighted_sack_wave"
-inherit = "obj.placeholder_blighted_sack_wave"
+id = "obj.minigame_teleport"
+inherit = "obj.minigame_teleport"
 [item.params]
 "param.spell_castxp"=0
 
+[[item]]
+id = "obj.ancient_minigame_teleport"
+inherit = "obj.ancient_minigame_teleport"
+[item.params]
+"param.spell_castxp"=0
+
+[[item]]
+id = "obj.lunar_minigame_teleport"
+inherit = "obj.lunar_minigame_teleport"
+[item.params]
+"param.spell_castxp"=0
+
+[[item]]
+id = "obj.arceuus_minigame_teleport"
+inherit = "obj.arceuus_minigame_teleport"
+[item.params]
+"param.spell_castxp"=0
 
 [[item]]
 id = "obj.48_home_teleport"
@@ -2439,6 +2455,23 @@ inherit = "obj.48_home_teleport"
 [item.params]
 "param.spell_castxp"=0
 
+[[item]]
+id = "obj.56_teleport_boat_to_me"
+inherit = "obj.56_teleport_boat_to_me"
+[item.params]
+"param.spell_castxp"=0
+
+[[item]]
+id = "obj.67_teleport_me_to_boat"
+inherit = "obj.67_teleport_me_to_boat"
+[item.params]
+"param.spell_castxp"=0
+
+[[item]]
+id = "obj.placeholder_blighted_sack_wave"
+inherit = "obj.placeholder_blighted_sack_wave"
+[item.params]
+"param.spell_castxp"=0
 
 [[item]]
 id = "obj.01_wind_strike"

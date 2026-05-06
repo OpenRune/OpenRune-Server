@@ -28,7 +28,6 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.runBlocking
 import org.rsmod.game.loc.LocEntity
 import org.rsmod.game.map.collision.toggleLoc
-import org.rsmod.game.map.xtea.XteaMap
 import org.rsmod.map.CoordGrid
 import org.rsmod.map.square.MapSquareGrid
 import org.rsmod.map.square.MapSquareKey
@@ -40,9 +39,9 @@ import org.rsmod.routefinder.loc.LocLayerConstants
 
 object GameMapDecoder {
 
-    public fun decodeAll(spawnSink: GameMapSpawnSink, cache: Cache, map: XteaMap): Unit =
+    public fun decodeAll(spawnSink: GameMapSpawnSink, cache: Cache): Unit =
         runBlocking(Dispatchers.IO) {
-            val mapBuffers = cache.readMapBuffers(map)
+            val mapBuffers = cache.readMapBuffers()
             val decodedMaps = decodeAll(mapBuffers)
 
             putMapCollision(decodedMaps)
@@ -53,16 +52,22 @@ object GameMapDecoder {
             cacheLocs(mapBuilder)
         }
 
-    private fun Cache.readMapBuffers(xteaMap: XteaMap): List<MapBuffer> =
-        xteaMap.map { (mapSquareKey, keyArray) ->
-            val name = "${mapSquareKey.x}_${mapSquareKey.z}"
-            val map = InlineByteBuf(data(MAPS, "m$name")!!)
-            val locs = InlineByteBuf(data(MAPS, "l$name", keyArray)!!)
-            val npcs = data(MAPS, "n$name")?.let(::InlineByteBuf)
-            val objs = data(MAPS, "o$name")?.let(::InlineByteBuf)
-            val areas = data(MAPS, "a$name")?.let(::InlineByteBuf)
-            MapBuffer(mapSquareKey, map, locs, npcs, objs, areas)
-        }
+    private fun Cache.readMapBuffers(): List<MapBuffer> = archives(MAPS).asSequence()
+        .filter { it <= 25286 }.mapNotNull { groupId ->
+            val mapData = data(MAPS, groupId, 0) ?: return@mapNotNull null
+            val locData = data(MAPS, groupId, 1) ?: return@mapNotNull null
+
+            val x = groupId shr 8
+            val z = groupId and 0xFF
+
+            MapBuffer(
+                key = MapSquareKey(x, z),
+                map = InlineByteBuf(mapData),
+                locs = InlineByteBuf(locData),
+                npcs = data(MAPS, groupId, 5)?.let(::InlineByteBuf),
+                objs = data(MAPS, groupId, 6)?.let(::InlineByteBuf),
+                areas = data(MAPS, groupId, 7)?.let(::InlineByteBuf)
+        )}.toList()
 
     private suspend fun decodeAll(buffers: List<MapBuffer>): List<DecodedMap> = coroutineScope {
         buffers.map { buffer -> async { buffer.decode() } }.awaitAll()

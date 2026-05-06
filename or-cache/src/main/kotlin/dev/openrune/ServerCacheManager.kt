@@ -121,7 +121,7 @@ object ServerCacheManager {
             StructDecoder().load(cache, structs)
             DBRowDecoder().load(cache, dbrows)
             DBTableDecoder().load(cache, dbtables)
-            ComponentDecoder(cache).load(interfaces)
+            ComponentDecoder(cache,rev).load(interfaces)
             MesAnimDecoder().load(cache, mesanim)
             ModLevelDecoder().load(cache, modLevels)
             StatTypeDecoder().load(cache, statTypes)

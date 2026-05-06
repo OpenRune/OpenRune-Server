@@ -28,10 +28,8 @@ class BankSettingsScript @Inject constructor(private val bankScript: BankInvScri
     PluginScript() {
     override fun ScriptContext.startup() {
 
-        onIfModalButton("component.bankmain:swap") { insertMode = false }
-        onIfModalButton("component.bankmain:insert") { insertMode = true }
-        onIfModalButton("component.bankmain:item") { withdrawCert = false }
-        onIfModalButton("component.bankmain:note") { withdrawCert = true }
+        onIfModalButton("component.bankmain:swap_insert") { insertMode = !insertMode }
+        onIfModalButton("component.bankmain:note") { withdrawCert = !withdrawCert }
         onIfModalButton("component.bankmain:placeholder") { alwaysPlacehold = !alwaysPlacehold }
         onIfModalButton("component.bankmain:quantity1") { leftClickQtyMode = QuantityMode.One }
         onIfModalButton("component.bankmain:quantity5") { leftClickQtyMode = QuantityMode.Five }

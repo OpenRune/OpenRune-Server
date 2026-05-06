@@ -12,7 +12,8 @@ import org.rsmod.plugin.scripts.ScriptContext
 
 public class MusicTimerScript @Inject constructor(private val musicPlayer: MusicPlayer) :
     PluginScript() {
-    private val Player.musicVolume by intVarp("varp.option_music")
+    private val Player.masterVolume by intVarBit("varbit.option_master_volume_desktop")
+    private val Player.musicVolume by intVarBit("varbit.option_music_desktop")
     private var Player.currMusicId by intVarBit("varbit.music_curr_id")
     private var Player.musicClock by intVarBit("varbit.music_curr_clocks")
     private var Player.musicDuration by intVarBit("varbit.music_curr_duration")
@@ -20,6 +21,7 @@ public class MusicTimerScript @Inject constructor(private val musicPlayer: Music
     override fun ScriptContext.startup() {
         onPlayerLogin { player.musicLogin() }
         onPlayerSoftTimer("timer.music_sync") { player.musicSync() }
+        onPlayerSoftTimer("timer.music_resume") { player.musicResume() }
     }
 
     private fun Player.musicLogin() {
@@ -31,6 +33,13 @@ public class MusicTimerScript @Inject constructor(private val musicPlayer: Music
         //  and finding the music for each area; however, this seems excessive for this use case.
         //  We will leave this as-is and decide at a later date.
         softTimer("timer.music_sync", cycles = 1)
+    }
+
+    private fun Player.musicResume() {
+        if (isMusicMuted()) {
+            return
+        }
+        musicPlayer.enable(this)
     }
 
     private fun Player.musicSync() {
@@ -56,6 +65,6 @@ public class MusicTimerScript @Inject constructor(private val musicPlayer: Music
     }
 
     private fun Player.isMusicMuted(): Boolean {
-        return musicVolume == 0
+        return masterVolume == 0 || musicVolume == 0
     }
 }

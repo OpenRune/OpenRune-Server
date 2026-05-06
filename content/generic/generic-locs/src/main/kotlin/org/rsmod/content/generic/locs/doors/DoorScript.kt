@@ -22,7 +22,7 @@ class DoorScript @Inject constructor(private val locRepo: LocRepository) : Plugi
     }
 
     private suspend fun ProtectedAccess.openDoor(closed: BoundLocInfo, type: ObjectServerType) {
-        val sound = RSCM.getReverseMapping(RSCMType.SYNTH,type.param(params.opensound).id)
+        val sound = type.param(params.opensound)
         soundSynth(sound)
 
         val openedLoc = type.param(params.next_loc_stage)
@@ -57,7 +57,7 @@ class DoorScript @Inject constructor(private val locRepo: LocRepository) : Plugi
     }
 
     private suspend fun ProtectedAccess.closeDoor(closed: BoundLocInfo, type: ObjectServerType) {
-        val sound = RSCM.getReverseMapping(RSCMType.SYNTH,type.param(params.closesound).id)
+        val sound = type.param(params.closesound)
         soundSynth(sound)
 
         val closedLoc = type.param(params.next_loc_stage)

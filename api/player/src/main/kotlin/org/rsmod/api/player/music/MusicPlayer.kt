@@ -3,6 +3,7 @@ package org.rsmod.api.player.music
 import dev.openrune.rscm.RSCM
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
+import dev.openrune.types.aconverted.AreaType
 import jakarta.inject.Inject
 import org.rsmod.api.music.Music
 import org.rsmod.api.music.MusicRepository
@@ -44,6 +45,22 @@ internal constructor(private val random: GameRandom, private val repo: MusicRepo
     private fun unlockAndPlay(player: Player, music: Music) {
         unlock(player, music)
         play(player, music)
+    }
+
+    public fun enable(player: Player) {
+        val current = repo.forId(player.currMusicId)
+        if (current != null) {
+            player.currMusicId = 0
+            play(player, current)
+            return
+        }
+
+        val previous = repo.forId(player.lastMusicId)
+        if (previous != null) {
+            play(player, previous)
+        } else {
+            playNext(player)
+        }
     }
 
     public fun play(player: Player, musicRow: MusicRow) {
@@ -226,6 +243,17 @@ internal constructor(private val random: GameRandom, private val repo: MusicRepo
 
         val next = playlist.nextPosition(musicList.size)
         player.musicPlaylist = next.packed
+    }
+
+    public fun exitArea(player: Player, area: String) {
+        if (player.currMusicArea != area.asRSCM(RSCMType.AREA) + 1) {
+            return
+        }
+        player.currMusicArea = 0
+        player.musicPlaylist = 0
+        if (player.playMode == MusicPlayMode.Area) {
+            stop(player)
+        }
     }
 
     public companion object {

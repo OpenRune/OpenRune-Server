@@ -10,3 +10,4 @@ music_sync=8
 player_poison=9
 player_venom=10
 player_disease=11
+music_resume=12

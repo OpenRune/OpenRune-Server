@@ -38,34 +38,34 @@ class CanoeTravelling @Inject private constructor(private val cutscene: CanoeCut
         onOpLoc1("loc.canoeing_catamaran_canoeing_station_in_water") { openDestinationModal(Canoe.StableDugout) }
         onOpLoc1("loc.canoeing_waka_canoeing_station_in_water") { openDestinationModal(Canoe.Waka) }
 
-        onIfModalButton("component.canoe_map:lumbridge") {
+        onIfModalButton("component.canoe_map_lum:destination_1") {
             selectDestination(CanoeDestination.Lumbridge)
         }
 
-        onIfModalButton("component.canoe_map:champions") {
+        onIfModalButton("component.canoe_map_lum:destination_2") {
             selectDestination(CanoeDestination.ChampionsGuild)
         }
 
-        onIfModalButton("component.canoe_map:barbarian") {
+        onIfModalButton("component.canoe_map_lum:destination_3") {
             selectDestination(CanoeDestination.BarbarianVillage)
         }
 
-        onIfModalButton("component.canoe_map:edgeville") {
+        onIfModalButton("component.canoe_map_lum:destination_4") {
             selectDestination(CanoeDestination.Edgeville)
         }
 
-        onIfModalButton("component.canoe_map:sanctuary") {
+        onIfModalButton("component.canoe_map_lum:destination_5") {
             selectDestination(CanoeDestination.FeroxEnclave)
         }
 
-        onIfModalButton("component.canoe_map:wilderness") { selectWildernessPond() }
+        onIfModalButton("component.canoe_map_lum:destination_6") { selectWildernessPond() }
     }
 
     private fun ProtectedAccess.openDestinationModal(canoe: Canoe) {
         val station = resolveStation()
         val destinations = resolveValidDestinations(station, canoe)
 
-        ifOpenMainModal("interface.canoe_map", colour = 4535323, transparency = 0)
+        ifOpenMainModal("interface.canoe_map_lum")
         for (destination in destinations) {
             ifSetEvents(destination.component, 0..0, IfEvent.Op1)
         }
@@ -165,12 +165,12 @@ class CanoeTravelling @Inject private constructor(private val cutscene: CanoeCut
 }
 
 private enum class CanoeDestination(val index: Int, val component: String) {
-    Lumbridge(0, "component.canoe_map:lumbridge"),
-    ChampionsGuild(1, "component.canoe_map:champions"),
-    BarbarianVillage(2, "component.canoe_map:barbarian"),
-    Edgeville(3, "component.canoe_map:edgeville"),
-    FeroxEnclave(4, "component.canoe_map:sanctuary"),
-    WildernessPond(5, "component.canoe_map:wilderness");
+    Lumbridge(0, "component.canoe_map_lum:destination_1"),
+    ChampionsGuild(1, "component.canoe_map_lum:destination_2"),
+    BarbarianVillage(2, "component.canoe_map_lum:destination_3"),
+    Edgeville(3, "component.canoe_map_lum:destination_4"),
+    FeroxEnclave(4, "component.canoe_map_lum:destination_5"),
+    WildernessPond(5, "component.canoe_map_lum:destination_6");
 
     companion object {
         val wilderness = listOf(WildernessPond, FeroxEnclave)

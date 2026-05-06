@@ -92,7 +92,7 @@ public suspend fun StandardNpcAccess.death(npcRepo: NpcRepository, players: Play
 
         val deathSound = paramOrNull(params.death_sound)
         if (deathSound != null && player != null) {
-            player.soundSynth(RSCM.getReverseMapping(RSCMType.SYNTH,deathSound.id))
+            player.soundSynth(deathSound)
         }
 
         // TODO(combat): Should we assert that npc.uid will always match player.aggressiveNpc at

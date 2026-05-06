@@ -1,6 +1,7 @@
 package org.rsmod.api.player.hit.processor
 
 import dev.openrune.rscm.RSCM
+import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import dev.openrune.types.ItemServerType
 import dev.openrune.types.aconverted.SynthType
@@ -21,9 +22,13 @@ import org.rsmod.game.hit.HitType
 
 public object StandardPlayerHitProcessor : QueuedPlayerHitProcessor {
     private val hitSoundsBodyA =
-        listOf("synth.human_hit_1", "synth.human_hit_2", "synth.human_hit_3", "synth.human_hit_4")
+        listOf("synth.human_hit_1", "synth.human_hit_2", "synth.human_hit_3", "synth.human_hit_4").map {
+            SynthType(it.asRSCM(RSCMType.SYNTH))
+        }
 
-    private val hitSoundsBodyB = listOf("synth.female_hit_1", "synth.female_hit_2")
+    private val hitSoundsBodyB = listOf("synth.female_hit_1", "synth.female_hit_2").map {
+        SynthType(it.asRSCM(RSCMType.SYNTH))
+    }
 
     override fun ProtectedAccess.process(hit: Hit) {
         if (!hit.isValid(this)) {
@@ -84,7 +89,7 @@ public object StandardPlayerHitProcessor : QueuedPlayerHitProcessor {
         damage: Int,
         bodyType: Int,
         random: GameRandom,
-    ): String =
+    ): SynthType =
         when {
             damage == 0 -> resolveBlockSound(lefthand, torso, random)
             bodyType == constants.bodytype_a -> random.pick(hitSoundsBodyA)
@@ -96,18 +101,18 @@ public object StandardPlayerHitProcessor : QueuedPlayerHitProcessor {
         lefthand: ItemServerType?,
         torso: ItemServerType?,
         random: GameRandom,
-    ): String {
-        val lefthandSound = RSCM.getReverseMapping(RSCMType.SYNTH,lefthand?.randomBlockSound(random)!!.id)
+    ): SynthType {
+        val lefthandSound = lefthand?.randomBlockSound(random)
         if (lefthandSound != null) {
             return lefthandSound
         }
 
-        val torsoSound = RSCM.getReverseMapping(RSCMType.SYNTH,torso?.randomBlockSound(random)!!.id)
+        val torsoSound = torso?.randomBlockSound(random)
         if (torsoSound != null) {
             return torsoSound
         }
 
-        return "synth.human_block_1"
+        return SynthType("synth.human_block_1".asRSCM(RSCMType.SYNTH))
     }
 
     private fun ItemServerType.randomBlockSound(random: GameRandom): SynthType? {

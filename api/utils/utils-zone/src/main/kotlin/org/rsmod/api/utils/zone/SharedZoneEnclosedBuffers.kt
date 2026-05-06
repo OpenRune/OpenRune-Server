@@ -7,6 +7,7 @@ import jakarta.inject.Inject
 import java.util.EnumMap
 import net.rsprot.protocol.api.util.ZonePartialEnclosedCacheBuffer
 import net.rsprot.protocol.common.client.OldSchoolClientType
+import net.rsprot.protocol.message.ZoneProt
 import org.rsmod.api.registry.zone.ZoneUpdateMap
 import org.rsmod.api.registry.zone.ZoneUpdateTransformer
 import org.rsmod.map.zone.ZoneKey
@@ -24,8 +25,7 @@ constructor(
         val activeZones = zoneUpdates.updatedZones
         for ((zone, updates) in activeZones.int2ObjectEntrySet()) {
             val protList = ZoneUpdateTransformer.collectEnclosedProtList(updates)
-            // Some zone prots are always sent alongside `UpdateZonePartialFollows`, such as any
-            // privately-owned obj `ObjAdd` updates.
+            // Player-specific updates (private/reveal objs) are encoded per-observer elsewhere.
             val filtered = protList.filterNot { it is ZoneUpdateTransformer.PartialFollowsZoneProt }
             if (filtered.isEmpty()) {
                 continue
@@ -38,6 +38,11 @@ constructor(
         buffers.clear()
         enclosedCache.releaseBuffers()
     }
+
+    public fun computeBufferForClient(
+        client: OldSchoolClientType,
+        protList: Collection<ZoneProt>,
+    ): ByteBuf = enclosedCache.computeZoneForClient(client, protList)
 
     public operator fun get(zone: ZoneKey): EnumMap<OldSchoolClientType, ByteBuf>? =
         buffers.getOrDefault(zone.packed, null)

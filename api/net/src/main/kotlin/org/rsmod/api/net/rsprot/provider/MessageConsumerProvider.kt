@@ -17,10 +17,10 @@ import net.rsprot.protocol.game.incoming.misc.user.ClientCheat
 import net.rsprot.protocol.game.incoming.misc.user.CloseModal
 import net.rsprot.protocol.game.incoming.misc.user.MoveGameClick
 import net.rsprot.protocol.game.incoming.misc.user.MoveMinimapClick
-import net.rsprot.protocol.game.incoming.npcs.OpNpc
+import net.rsprot.protocol.game.incoming.npcs.OpNpcV2
 import net.rsprot.protocol.game.incoming.npcs.OpNpc6
 import net.rsprot.protocol.game.incoming.npcs.OpNpcT
-import net.rsprot.protocol.game.incoming.objs.OpObj
+import net.rsprot.protocol.game.incoming.objs.OpObjV2
 import net.rsprot.protocol.game.incoming.objs.OpObj6
 import net.rsprot.protocol.game.incoming.players.OpPlayer
 import net.rsprot.protocol.game.incoming.players.OpPlayerT
@@ -100,7 +100,7 @@ constructor(
         builder.addListener(OpLoc6::class.java, opLoc6)
         builder.addListener(ClientCheat::class.java, clientCheat)
         builder.addListener(ClickWorldMap::class.java, clickWorldMap)
-        builder.addListener(OpNpc::class.java, opNpc)
+        builder.addListener(OpNpcV2::class.java, opNpc)
         builder.addListener(OpNpcT::class.java, opNpcT)
         builder.addListener(OpNpc6::class.java, opNpc6)
         builder.addListener(OpPlayer::class.java, opPlayer)
@@ -109,7 +109,7 @@ constructor(
         builder.addListener(If3Button::class.java, if3Button)
         builder.addListener(CloseModal::class.java, closeModal)
         builder.addListener(ResumePauseButton::class.java, resumePauseButton)
-        builder.addListener(OpObj::class.java, opObj)
+        builder.addListener(OpObjV2::class.java, opObj)
         builder.addListener(OpObj6::class.java, opObj6)
         builder.addListener(ResumePCountDialog::class.java, resumePCountDialog)
         builder.addListener(ResumePNameDialog::class.java, resumePNameDialog)

@@ -3,6 +3,7 @@ package org.rsmod.api.net.rsprot.handlers
 import com.github.michaelbull.logging.InlineLogger
 import jakarta.inject.Inject
 import net.rsprot.protocol.game.incoming.npcs.OpNpc
+import net.rsprot.protocol.game.incoming.npcs.OpNpcV2
 import org.rsmod.api.player.interact.NpcInteractions
 import org.rsmod.api.player.output.clearMapFlag
 import org.rsmod.api.player.protect.clearPendingAction
@@ -20,10 +21,10 @@ constructor(
     private val eventBus: EventBus,
     private val npcList: NpcList,
     private val npcInteractions: NpcInteractions,
-) : MessageHandler<OpNpc> {
+) : MessageHandler<OpNpcV2> {
     private val logger = InlineLogger()
 
-    private val OpNpc.interactionOp: InteractionOp
+    private val OpNpcV2.interactionOp: InteractionOp
         get() =
             when (op) {
                 1 -> InteractionOp.Op1
@@ -34,7 +35,7 @@ constructor(
                 else -> throw NotImplementedError("Unhandled `op` conversion: $this")
             }
 
-    override fun handle(player: Player, message: OpNpc) {
+    override fun handle(player: Player, message: OpNpcV2) {
         if (player.isDelayed) {
             player.clearMapFlag()
             return

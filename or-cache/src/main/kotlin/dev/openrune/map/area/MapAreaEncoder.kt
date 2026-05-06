@@ -21,9 +21,9 @@ public object MapAreaEncoder {
         for ((key, area) in areas) {
             validateAreaLimits(key, area)
 
-            val group = "a${key.x}_${key.z}"
+            val group = (key.x shl 8) or (key.z and 0xFF)
             val newBuf = buffer.clear().apply { encode(area, this) }
-            cache.write(archive, group, newBuf.toReadableByteArray())
+            cache.write(archive, group,7, newBuf.toReadableByteArray())
         }
         buffer.release()
     }

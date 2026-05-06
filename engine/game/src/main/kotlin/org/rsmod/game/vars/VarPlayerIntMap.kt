@@ -43,6 +43,8 @@ public value class VarPlayerIntMap(public val backing: Int2IntMap = Int2IntOpenH
         return extracted
     }
 
+    public operator fun contains(key: String): Boolean = backing.containsKey(key.asRSCM(RSCMType.VARP))
+
     public operator fun contains(key: VarpServerType): Boolean = backing.containsKey(key.id)
 
     override fun toString(): String = backing.toString()

@@ -16,9 +16,9 @@ public object MapObjListEncoder {
         val buffer = PooledByteBufAllocator.DEFAULT.buffer()
         val archive = MAPS
         for ((key, definition) in spawns) {
-            val group = "o${key.x}_${key.z}"
+            val group = (key.x shl 8) or (key.z and 0xFF)
             val newBuf = buffer.clear().apply { encode(definition, this) }
-            cache.write(archive, group, newBuf.toReadableByteArray())
+            cache.write(archive, group,6, newBuf.toReadableByteArray())
         }
         buffer.release()
     }
