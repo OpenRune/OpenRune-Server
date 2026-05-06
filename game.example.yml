@@ -2,7 +2,7 @@
 # You want to edit these to fit your game.
 name: "OpenRune"
 game-port: 43594
-revision: 237
+revision: 238
 environment: "LIVE"
 realm: dev
 world: 1

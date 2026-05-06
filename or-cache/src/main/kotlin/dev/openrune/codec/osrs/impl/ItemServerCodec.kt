@@ -92,7 +92,7 @@ class ItemServerCodec(
         cost = item.cost
         name = item.name
         weight = item.weight
-        stockmarket = item.isTradeable
+        stockmarket = item.stockMarket
         category = item.category
         options = item.options
         interfaceOptions = item.interfaceOptions
