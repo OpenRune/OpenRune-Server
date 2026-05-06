@@ -1,0 +1,30 @@
+[gamevals.dbtable]
+firemaking_logs = 55536
+firemaking_colored_logs = 55537
+
+[gamevals.queue]
+firemaking_light = 40
+
+[gamevals.dbrow]
+firemaking_normal_logs        = 55536
+firemaking_achey_tree_logs    = 55537
+firemaking_oak_logs           = 55538
+firemaking_willow_logs        = 55539
+firemaking_teak_logs          = 55540
+firemaking_arctic_pine_logs   = 55541
+firemaking_maple_logs         = 55542
+firemaking_mahogany_logs      = 55543
+firemaking_yew_logs           = 55544
+firemaking_blisterwood_logs   = 55545
+firemaking_magic_logs         = 55546
+firemaking_redwood_logs       = 55547
+firemaking_blue_logs          = 55548
+firemaking_green_logs         = 55549
+firemaking_purple_logs        = 55550
+firemaking_red_logs           = 55551
+firemaking_white_logs         = 55552
+firemaking_colored_logs_blue              = 55553
+firemaking_colored_logs_green             = 55554
+firemaking_colored_logs_purple            = 55555
+firemaking_colored_logs_red               = 55556
+firemaking_colored_logs_white             = 55557

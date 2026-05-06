@@ -121,12 +121,6 @@ class GameValProvider : MappingProvider {
             )
         }
 
-        tableMappings.entries.find { it.value == value }?.let { existing ->
-            throw IllegalArgumentException(
-                "Mapping conflict in table '$table: value '$value' is already mapped to key '${existing.key}'. Values must be unique."
-            )
-        }
-
         tableMappings["$table.$key"] = value
     }
 
