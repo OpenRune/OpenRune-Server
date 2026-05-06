@@ -17,26 +17,30 @@ import org.rsmod.plugin.scripts.ScriptContext
 
 /* Drop functions */
 public fun ScriptContext.onDropTrigger(type: String, action: HeldDropEvents.Trigger.() -> Unit) {
-    RSCM.requireRSCM(RSCMType.DROP_TRIGGER, type)
-    onEvent(type.asRSCM(), action)
+    onEvent(type.asRSCM(RSCMType.DROP_TRIGGER), action)
 }
 
 /* Equip functions */
-public fun ScriptContext.onEquipObj(
+public fun ScriptContext.onContentEquipObj(
     content: String,
     action: HeldEquipEvents.Equip.() -> Unit,
 ): Unit = onEvent(content.asRSCM(RSCMType.CONTENT), action)
 
-public fun ScriptContext.onUnequipObj(
+public fun ScriptContext.onContentUnequipObj(
     content: String,
     action: HeldEquipEvents.Unequip.() -> Unit,
 ): Unit = onEvent(content.asRSCM(RSCMType.CONTENT), action)
 
 /* Standard obj op functions */
 public fun ScriptContext.onOpHeld1(
+    type: String,
+    action: suspend ProtectedAccess.(HeldObjEvents.Op1) -> Unit,
+): Unit = onProtectedEvent(type.asRSCM(RSCMType.OBJ), action)
+
+public fun ScriptContext.onOpHeld1(
     type: ItemServerType,
     action: suspend ProtectedAccess.(HeldObjEvents.Op1) -> Unit,
-): Unit = onProtectedEvent(type.id, action)
+): Unit = onOpHeld1(RSCM.getReverseMapping(RSCMType.OBJ, type.id), action)
 
 /** **Important Note:** This replaces the default wield/wear op handling for obj [type]. */
 public fun ScriptContext.onOpHeld2(
@@ -44,15 +48,31 @@ public fun ScriptContext.onOpHeld2(
     action: suspend ProtectedAccess.(HeldObjEvents.Op2) -> Unit,
 ): Unit = onProtectedEvent(type.asRSCM(RSCMType.OBJ), action)
 
+/** **Important Note:** This replaces the default wield/wear op handling for obj [type]. */
+public fun ScriptContext.onOpHeld2(
+    type: ItemServerType,
+    action: suspend ProtectedAccess.(HeldObjEvents.Op2) -> Unit,
+): Unit = onOpHeld2(RSCM.getReverseMapping(RSCMType.OBJ, type.id), action)
+
 public fun ScriptContext.onOpHeld3(
     type: String,
     action: suspend ProtectedAccess.(HeldObjEvents.Op3) -> Unit,
 ): Unit = onProtectedEvent(type.asRSCM(RSCMType.OBJ), action)
 
+public fun ScriptContext.onOpHeld3(
+    type: ItemServerType,
+    action: suspend ProtectedAccess.(HeldObjEvents.Op3) -> Unit,
+): Unit = onOpHeld3(RSCM.getReverseMapping(RSCMType.OBJ, type.id), action)
+
 public fun ScriptContext.onOpHeld4(
     type: String,
     action: suspend ProtectedAccess.(HeldObjEvents.Op4) -> Unit,
 ): Unit = onProtectedEvent(type.asRSCM(RSCMType.OBJ), action)
+
+public fun ScriptContext.onOpHeld4(
+    type: ItemServerType,
+    action: suspend ProtectedAccess.(HeldObjEvents.Op4) -> Unit,
+): Unit = onOpHeld4(RSCM.getReverseMapping(RSCMType.OBJ, type.id), action)
 
 /** **Important Note:** This replaces the default drop op handling for obj [type]. */
 public fun ScriptContext.onOpHeld5(
@@ -60,8 +80,14 @@ public fun ScriptContext.onOpHeld5(
     action: suspend ProtectedAccess.(HeldObjEvents.Op5) -> Unit,
 ): Unit = onProtectedEvent(type.asRSCM(RSCMType.OBJ), action)
 
+/** **Important Note:** This replaces the default drop op handling for obj [type]. */
+public fun ScriptContext.onOpHeld5(
+    type: ItemServerType,
+    action: suspend ProtectedAccess.(HeldObjEvents.Op5) -> Unit,
+): Unit = onOpHeld5(RSCM.getReverseMapping(RSCMType.OBJ, type.id), action)
+
 /* Standard content op functions */
-public fun ScriptContext.onOpHeld1(
+public fun ScriptContext.onOpContentHeld1(
     content: String,
     action: suspend ProtectedAccess.(HeldContentEvents.Op1) -> Unit,
 ): Unit = onProtectedEvent(content.asRSCM(RSCMType.CONTENT), action)
@@ -101,22 +127,49 @@ public fun ScriptContext.onOpContentHeld5(
  * the player uses on the other in-game.
  */
 public fun ScriptContext.onOpHeldU(
-    first: ItemServerType,
-    second: ItemServerType,
+    first: String,
+    second: String,
     action: suspend ProtectedAccess.(HeldUEvents.Type) -> Unit,
 ) {
     // Note: We preserve the order of `first` and `second` when registering to expose a predictable
     // and fixed order in the respective script. Because of this, we can't rely on the event bus to
     // catch duplicate registrations - we must manually check that the reversed combination has
     // not already been registered.
-    val opposite = EventBus.composeLongKey(second.id, first.id)
+    val firstId = first.asRSCM(RSCMType.OBJ)
+    val secondId = second.asRSCM(RSCMType.OBJ)
+    val opposite = EventBus.composeLongKey(secondId, firstId)
     val registeredOpposite = eventBus.contains(HeldUEvents.Type::class.java, opposite)
     if (registeredOpposite) {
         val message = "OpHeldU for combination already registered: first=$second, second=$first"
         throw IllegalStateException(message)
     }
-    onProtectedEvent(EventBus.composeLongKey(first.id, second.id), action)
+    onProtectedEvent(EventBus.composeLongKey(firstId, secondId), action)
 }
+
+public fun ScriptContext.onOpHeldU(
+    first: ItemServerType,
+    second: ItemServerType,
+    action: suspend ProtectedAccess.(HeldUEvents.Type) -> Unit,
+): Unit =
+    onOpHeldU(
+        RSCM.getReverseMapping(RSCMType.OBJ, first.id),
+        RSCM.getReverseMapping(RSCMType.OBJ, second.id),
+        action,
+    )
+
+public fun ScriptContext.onOpHeldU(
+    first: String,
+    second: ItemServerType,
+    action: suspend ProtectedAccess.(HeldUEvents.Type) -> Unit,
+): Unit =
+    onOpHeldU(first, RSCM.getReverseMapping(RSCMType.OBJ, second.id), action)
+
+public fun ScriptContext.onOpHeldU(
+    first: ItemServerType,
+    second: String,
+    action: suspend ProtectedAccess.(HeldUEvents.Type) -> Unit,
+): Unit =
+    onOpHeldU(RSCM.getReverseMapping(RSCMType.OBJ, first.id), second, action)
 
 /**
  * Registers a script that triggers when an inventory obj ([first]) is used on another inventory obj
@@ -127,11 +180,12 @@ public fun ScriptContext.onOpHeldU(
  * always correspond to `HeldUContentEvents.Type.first`, and [second] to
  * `HeldUContentEvents.Type.second`, regardless of which obj the player uses on the other in-game.
  */
-public fun ScriptContext.onOpHeldU(
+public fun ScriptContext.onOpContentHeldU(
     first: String,
     second: ItemServerType,
     action: suspend ProtectedAccess.(HeldUContentEvents.Type) -> Unit,
-): Unit = onProtectedEvent(EventBus.composeLongKey(first.asRSCM(RSCMType.CONTENT), second.id), action)
+): Unit =
+    onProtectedEvent(EventBus.composeLongKey(first.asRSCM(RSCMType.CONTENT), second.id), action)
 
 /**
  * Registers a script that triggers when an inventory obj ([first]) is used on another inventory obj
@@ -143,7 +197,7 @@ public fun ScriptContext.onOpHeldU(
  * `HeldUContentEvents.Content.second`, regardless of which obj the player uses on the other
  * in-game.
  */
-public fun ScriptContext.onOpHeldU(
+public fun ScriptContext.onOpContentHeldU(
     first: String,
     second: String,
     action: suspend ProtectedAccess.(HeldUContentEvents.Content) -> Unit,
@@ -152,13 +206,20 @@ public fun ScriptContext.onOpHeldU(
     // and fixed order in the respective script. Because of this, we can't rely on the event bus to
     // catch duplicate registrations - we must manually check that the reversed combination has
     // not already been registered.
-    val opposite = EventBus.composeLongKey(second.asRSCM(RSCMType.OBJ), first.asRSCM(RSCMType.OBJ))
+    val opposite =
+        EventBus.composeLongKey(second.asRSCM(RSCMType.CONTENT), first.asRSCM(RSCMType.CONTENT))
     val registeredOpposite = eventBus.contains(HeldUContentEvents.Content::class.java, opposite)
     if (registeredOpposite) {
         val message = "OpHeldU for combination already registered: first=$second, second=$first"
         throw IllegalStateException(message)
     }
-    onProtectedEvent(EventBus.composeLongKey(first.asRSCM(RSCMType.OBJ), second.asRSCM(RSCMType.OBJ)), action)
+    onProtectedEvent(
+        EventBus.composeLongKey(
+            first.asRSCM(RSCMType.CONTENT),
+            second.asRSCM(RSCMType.CONTENT),
+        ),
+        action,
+    )
 }
 
 /**
@@ -169,9 +230,14 @@ public fun ScriptContext.onOpHeldU(
  * the target obj will be [HeldUDefaultEvents.Type.second].
  */
 public fun ScriptContext.onOpHeldU(
+    first: String,
+    action: suspend ProtectedAccess.(HeldUDefaultEvents.Type) -> Unit,
+): Unit = onProtectedEvent(first.asRSCM(RSCMType.OBJ).toLong(), action)
+
+public fun ScriptContext.onOpHeldU(
     first: ItemServerType,
     action: suspend ProtectedAccess.(HeldUDefaultEvents.Type) -> Unit,
-): Unit = onProtectedEvent(first.id.toLong(), action)
+): Unit = onOpHeldU(RSCM.getReverseMapping(RSCMType.OBJ, first.id), action)
 
 /**
  * Registers a script that triggers when an inventory obj ([first]) is used on _any other_ inventory
@@ -180,7 +246,7 @@ public fun ScriptContext.onOpHeldU(
  * The [HeldUDefaultEvents.Content.first] value passed to the script will **always** be [first],
  * while the target obj will be [HeldUDefaultEvents.Content.second].
  */
-public fun ScriptContext.onOpHeldU(
+public fun ScriptContext.onOpContentHeldU(
     first: String,
     action: suspend ProtectedAccess.(HeldUDefaultEvents.Content) -> Unit,
 ): Unit = onProtectedEvent(first.asRSCM(RSCMType.CONTENT).toLong(), action)
