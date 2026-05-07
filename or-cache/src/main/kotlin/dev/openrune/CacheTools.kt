@@ -21,6 +21,7 @@ import dev.openrune.gamevals.GamevalDumper
 import dev.openrune.impl.GameframeTable
 import dev.openrune.impl.Music
 import dev.openrune.map.packing.MapPackers
+import dev.openrune.tables.skills.Firemaking
 import dev.openrune.tools.MinifyServerCache
 import dev.openrune.tools.PackServerConfig
 import java.io.File
@@ -48,7 +49,14 @@ fun main(args: Array<String>) {
     downloadRev(TaskType.valueOf(args.first().uppercase()))
 }
 
-fun tablesToPack() = listOf(GameframeTable.gameframe(), Music.musicClassic(), Music.musicModern())
+fun tablesToPack() = listOf(
+    GameframeTable.gameframe(),
+    Music.musicClassic(),
+    Music.musicModern(),
+    Firemaking.logs(),
+    Firemaking.firelighters(),
+    Firemaking.sources()
+)
 
 fun downloadRev(type: TaskType) {
 

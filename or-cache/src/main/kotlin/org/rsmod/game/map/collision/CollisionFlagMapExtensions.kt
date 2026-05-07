@@ -2,9 +2,12 @@ package org.rsmod.game.map.collision
 
 import dev.openrune.types.ObjectServerType
 import org.rsmod.game.loc.LocInfo
+import org.rsmod.game.map.Direction
 import org.rsmod.map.CoordGrid
 import org.rsmod.map.zone.ZoneKey
+import org.rsmod.routefinder.StepValidator
 import org.rsmod.routefinder.collision.CollisionFlagMap
+import org.rsmod.routefinder.collision.CollisionStrategy
 import org.rsmod.routefinder.flag.CollisionFlag
 import org.rsmod.routefinder.loc.LocAngleConstants
 import org.rsmod.routefinder.loc.LocShapeConstants
@@ -18,6 +21,60 @@ public fun CollisionFlagMap.isZoneValid(coords: CoordGrid): Boolean =
 
 public fun CollisionFlagMap.isWalkBlocked(coords: CoordGrid): Boolean =
     this[coords] and CollisionFlag.BLOCK_WALK != 0
+
+/**
+ * Returns whether an entity of [size] at [origin] may take a single step in [direction], using
+ * the same rules as route-finding ([StepValidator.canTravel]) rather than only
+ * [isWalkBlocked] on the destination tile.
+ */
+public fun CollisionFlagMap.canStep(
+    origin: CoordGrid,
+    direction: Direction,
+    size: Int = 1,
+    extraFlag: Int = 0,
+    strategy: CollisionStrategy = CollisionStrategy.Normal,
+): Boolean =
+    StepValidator(this).canTravel(
+        origin.level,
+        origin.x,
+        origin.z,
+        direction.xOff,
+        direction.zOff,
+        size,
+        extraFlag,
+        strategy,
+    )
+
+/**
+ * Returns `origin.translate(direction)` for the first [direction] in [directions] where [canStep]
+ * is true, or `null` if none apply.
+ */
+public fun CollisionFlagMap.firstStepDestination(
+    origin: CoordGrid,
+    directions: Iterable<Direction>,
+    size: Int = 1,
+    extraFlag: Int = 0,
+    strategy: CollisionStrategy = CollisionStrategy.Normal,
+): CoordGrid? {
+    val validator = StepValidator(this)
+    for (direction in directions) {
+        if (
+            validator.canTravel(
+                origin.level,
+                origin.x,
+                origin.z,
+                direction.xOff,
+                direction.zOff,
+                size,
+                extraFlag,
+                strategy,
+            )
+        ) {
+            return origin.translate(direction.xOff, direction.zOff)
+        }
+    }
+    return null
+}
 
 public operator fun CollisionFlagMap.get(coords: CoordGrid): Int =
     get(coords.x, coords.z, coords.level)

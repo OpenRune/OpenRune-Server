@@ -7,6 +7,7 @@ import dev.openrune.definition.Definition
 import dev.openrune.definition.EntityOpsDefinition
 import dev.openrune.definition.type.ParamType
 import dev.openrune.resolve
+import dev.openrune.rscm.RSCM
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import dev.openrune.seralizer.ParamSerializer
@@ -51,6 +52,9 @@ data class ItemServerType(
     var transformlink: Int = 0,
     var transformtemplate: Int = 0,
 ) : Definition {
+
+    val internalName
+        get() = RSCM.getReverseMapping(RSCMType.OBJ, id)
 
     var paramMap: ParamMap? = null
 
