@@ -51,8 +51,8 @@ OpenRune Server adheres to OSRS protocols, giving you the freedom to connect any
 
 4. **Gradle bootstrap**
    - Open the Gradle tool window.
-   - Run `OpenRune Server → installation → install`.
-   - When the task completes, run `OpenRune Server → game → Tasks → application → run`.
+   - Run `OpenRune Server → Tasks → installation → install`.
+   - When the task completes, run `OpenRune Server → Tasks → application → run`.
 
 5. **Verify startup**
    - A successful boot prints `OpenRune Server Successfully initialized` in the terminal.
