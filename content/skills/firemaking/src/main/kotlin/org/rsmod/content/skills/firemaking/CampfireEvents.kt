@@ -21,6 +21,7 @@ import org.rsmod.api.script.onOpLoc2
 import org.rsmod.api.script.onOpLoc3
 import org.rsmod.api.script.onOpLocU
 import org.rsmod.api.script.onPlayerQueueWithArgs
+import org.rsmod.api.stats.xpmod.XpModifiers
 import org.rsmod.api.table.FiremakingColoredLogsRow
 import org.rsmod.api.table.FiremakingLogsRow
 import org.rsmod.content.skills.SkillMultiConfig
@@ -41,6 +42,7 @@ class CampfireEvents @Inject constructor(
     private val conRepo: ControllerRepository,
     private val mapClock: MapClock,
     private val objRegistry: ObjRegistry,
+    private val xpMods: XpModifiers,
 ) : PluginScript() {
 
     private val coloredLogRows = FiremakingColoredLogsRow.all()
@@ -128,7 +130,10 @@ class CampfireEvents @Inject constructor(
 
         extendCampfire(camp, task.log.foresterLogTicks)
 
-        statAdvance("stat.firemaking", task.log.xp.toDouble())
+        val xpModifier = xpMods.get(player, "stat.firemaking")
+        val xp = task.log.xp * xpModifier
+        statAdvance("stat.firemaking", xp)
+        mes("[DEBUG] Firemaking XP mod: x$xpModifier (awarded $xp xp)")
         invDel(player.inv, task.log.item.internalName, 1)
 
         spotanimMap(worldRepo, "spotanim.forestry_campfire_burning_spotanim", camp.coords)

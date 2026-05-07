@@ -199,6 +199,7 @@ object BaseParams {
     val skill_productitem: ParamObj = param("skill_productitem")
     val skill_xp: ParamInt = param("skill_xp")
     val skill_anim: ParamSeq = param("skill_anim")
+    val barbarian_firemaking_anim: ParamSeq = param("barbarian_firemaking_anim")
     val game_message: ParamStr = param("game_message")
     val game_message2: ParamStr = param("game_message2")
     val climb_anim: ParamSeq = param("climb_anim")
