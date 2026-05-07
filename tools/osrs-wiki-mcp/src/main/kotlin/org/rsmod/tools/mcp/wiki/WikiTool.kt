@@ -156,11 +156,10 @@ class WikiTool(
         return buildString {
             appendLine("Cache: ${result.cache.name}")
             appendLine("Found ${result.totalMatches} cache matches; showing ${result.matches.size}.")
-            val singleResult = result.matches.size == 1
             result.matches.forEachIndexed { index, hit ->
                 appendLine("${index + 1}. [${hit.type}] ${hit.id} - ${hit.name}")
                 appendLine("   ${hit.summary}")
-                val data = if (singleResult || hit.data.length <= DATA_TRUNCATE_CHARS) {
+                val data = if (hit.data.length <= DATA_TRUNCATE_CHARS) {
                     hit.data
                 } else {
                     hit.data.take(DATA_TRUNCATE_CHARS) + "... (truncated; search by id for full data)"

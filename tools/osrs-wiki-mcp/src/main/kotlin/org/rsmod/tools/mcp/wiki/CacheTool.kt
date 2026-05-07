@@ -66,17 +66,17 @@ class CacheTool {
         val truncated: Boolean,
     )
 
-    private data class IndexedHit(
+    internal data class IndexedHit(
         val hit: SearchHit,
         val searchBlob: String,
     )
 
-    private data class Snapshot(
+    internal data class Snapshot(
         val revision: Int,
         val byType: Map<CacheSearchType, List<IndexedHit>>,
     )
 
-    private val snapshots = ConcurrentHashMap<CacheKind, Snapshot>()
+    internal val snapshots = ConcurrentHashMap<CacheKind, Snapshot>()
 
     fun search(cacheKind: CacheKind, type: CacheSearchType, query: String?, id: Int?, limit: Int): SearchResult {
         val root = resolveRoot(cacheKind)
@@ -85,6 +85,17 @@ class CacheTool {
             if (existing?.revision == revision) existing else buildSnapshot(cacheKind, root, revision)
         } ?: error("Failed to load cache snapshot.")
 
+        return searchSnapshot(snapshot, cacheKind, type, query, id, limit)
+    }
+
+    internal fun searchSnapshot(
+        snapshot: Snapshot,
+        cacheKind: CacheKind,
+        type: CacheSearchType,
+        query: String?,
+        id: Int?,
+        limit: Int,
+    ): SearchResult {
         val normalizedQuery = query?.trim()?.lowercase().orEmpty()
         val normalizedLimit = limit.coerceIn(1, 100)
 
@@ -118,25 +129,28 @@ class CacheTool {
         require(Files.isDirectory(cachePath)) { "Unable to find cache directory at: $cachePath" }
 
         val cache = Cache.load(cachePath)
-        val provider = OsrsCacheProvider(cache, revision)
-        provider.init()
+        try {
+            val provider = OsrsCacheProvider(cache, revision)
+            provider.init()
 
-        val byType = mutableMapOf<CacheSearchType, List<IndexedHit>>()
-        byType[CacheSearchType.Npc] = indexNpcs(provider.npcs)
-        byType[CacheSearchType.Obj] = indexGeneric(CacheSearchType.Obj, provider.objects)
-        byType[CacheSearchType.Item] = indexItems(provider.items)
-        byType[CacheSearchType.Anim] = indexGeneric(CacheSearchType.Anim, provider.anims)
-        byType[CacheSearchType.Enum] = indexGeneric(CacheSearchType.Enum, provider.enums)
-        byType[CacheSearchType.Struct] = indexGeneric(CacheSearchType.Struct, provider.structs)
-        byType[CacheSearchType.HealthBar] = indexGeneric(CacheSearchType.HealthBar, provider.healthBars)
-        byType[CacheSearchType.HitSplat] = indexGeneric(CacheSearchType.HitSplat, provider.hitsplats)
-        byType[CacheSearchType.Varbit] = indexGeneric(CacheSearchType.Varbit, provider.varbits)
-        byType[CacheSearchType.Varp] = indexGeneric(CacheSearchType.Varp, provider.varps)
-        byType[CacheSearchType.DbRow] = indexGeneric(CacheSearchType.DbRow, provider.dbrows)
-        byType[CacheSearchType.DbTable] = indexGeneric(CacheSearchType.DbTable, provider.dbtables)
+            val byType = mutableMapOf<CacheSearchType, List<IndexedHit>>()
+            byType[CacheSearchType.Npc] = indexNpcs(provider.npcs)
+            byType[CacheSearchType.Obj] = indexGeneric(CacheSearchType.Obj, provider.objects)
+            byType[CacheSearchType.Item] = indexItems(provider.items)
+            byType[CacheSearchType.Anim] = indexGeneric(CacheSearchType.Anim, provider.anims)
+            byType[CacheSearchType.Enum] = indexGeneric(CacheSearchType.Enum, provider.enums)
+            byType[CacheSearchType.Struct] = indexGeneric(CacheSearchType.Struct, provider.structs)
+            byType[CacheSearchType.HealthBar] = indexGeneric(CacheSearchType.HealthBar, provider.healthBars)
+            byType[CacheSearchType.HitSplat] = indexGeneric(CacheSearchType.HitSplat, provider.hitsplats)
+            byType[CacheSearchType.Varbit] = indexGeneric(CacheSearchType.Varbit, provider.varbits)
+            byType[CacheSearchType.Varp] = indexGeneric(CacheSearchType.Varp, provider.varps)
+            byType[CacheSearchType.DbRow] = indexGeneric(CacheSearchType.DbRow, provider.dbrows)
+            byType[CacheSearchType.DbTable] = indexGeneric(CacheSearchType.DbTable, provider.dbtables)
 
-        cache.close()
-        return Snapshot(revision = revision, byType = byType)
+            return Snapshot(revision = revision, byType = byType)
+        } finally {
+            cache.close()
+        }
     }
 
     private fun indexNpcs(values: Map<Int, NpcType>): List<IndexedHit> =
@@ -160,9 +174,9 @@ class CacheTool {
             indexed(type, id, name, value.toString(), describeValue(value))
         }
 
-    private fun indexed(type: CacheSearchType, id: Int, name: String, summary: String, data: String): IndexedHit {
+    internal fun indexed(type: CacheSearchType, id: Int, name: String, summary: String, data: String): IndexedHit {
         val hit = SearchHit(type = type.key, id = id, name = name, summary = summary, data = data)
-        val searchBlob = "${hit.type} ${hit.id} ${hit.name} ${hit.summary} ${hit.data}".lowercase()
+        val searchBlob = "${hit.type} ${hit.id} ${hit.name} ${hit.summary}".lowercase()
         return IndexedHit(hit = hit, searchBlob = searchBlob)
     }
 

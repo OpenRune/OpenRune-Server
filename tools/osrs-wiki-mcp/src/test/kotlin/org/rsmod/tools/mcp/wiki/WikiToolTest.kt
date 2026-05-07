@@ -49,16 +49,15 @@ class WikiToolTest {
                 }
             }
 
-        val client = HttpClient(engine)
-        val service = WikiTool(wikiProvider = { WikiClient(client, mapper, "https://example.test/api.php") })
+        HttpClient(engine).use { client ->
+            val service = WikiTool(wikiProvider = { WikiClient(client, mapper, "https://example.test/api.php") })
+            val output = service.wikiSearch("lumbridge", 2)
 
-        val output = service.wikiSearch("lumbridge", 2)
-
-        assertContains(output, "Found 2 results for 'lumbridge'")
-        assertContains(output, "Lumbridge")
-        assertContains(output, "https://oldschool.runescape.wiki/w/Lumbridge")
-        assertContains(output, "Starter town near the River Lum.")
-        client.close()
+            assertContains(output, "Found 2 results for 'lumbridge'")
+            assertContains(output, "Lumbridge")
+            assertContains(output, "https://oldschool.runescape.wiki/w/Lumbridge")
+            assertContains(output, "Starter town near the River Lum.")
+        }
     }
 
     @Test
@@ -89,15 +88,14 @@ class WikiToolTest {
                 }
             }
 
-        val client = HttpClient(engine)
-        val service = WikiTool(wikiProvider = { WikiClient(client, mapper, "https://example.test/api.php") })
+        HttpClient(engine).use { client ->
+            val service = WikiTool(wikiProvider = { WikiClient(client, mapper, "https://example.test/api.php") })
+            val output = service.wikiPage("Lumbridge", 1000)
 
-        val output = service.wikiPage("Lumbridge", 1000)
-
-        assertContains(output, "Title: Lumbridge")
-        assertContains(output, "URL: https://oldschool.runescape.wiki/w/Lumbridge")
-        assertContains(output, "Lumbridge is a city. It has a castle.")
-        client.close()
+            assertContains(output, "Title: Lumbridge")
+            assertContains(output, "URL: https://oldschool.runescape.wiki/w/Lumbridge")
+            assertContains(output, "Lumbridge is a city. It has a castle.")
+        }
     }
 
     @Test
@@ -123,13 +121,13 @@ class WikiToolTest {
                 )
             }
 
-        val client = HttpClient(engine)
-        val wiki = WikiClient(client, mapper, "https://example.test/api.php")
-        val page = wiki.page("LongPage", 50)
+        HttpClient(engine).use { client ->
+            val wiki = WikiClient(client, mapper, "https://example.test/api.php")
+            val page = wiki.page("LongPage", 50)
 
-        assertEquals(50, page.text.length)
-        assertContains(page.text, "...")
-        client.close()
+            assertEquals(50, page.text.length)
+            assertContains(page.text, "...")
+        }
     }
 
     @Test
@@ -172,17 +170,16 @@ class WikiToolTest {
                 }
             }
 
-        val client = HttpClient(engine)
-        val service = WikiTool(wikiProvider = { WikiClient(client, mapper, "https://example.test/api.php") })
+        HttpClient(engine).use { client ->
+            val service = WikiTool(wikiProvider = { WikiClient(client, mapper, "https://example.test/api.php") })
+            val output = service.wikiNpcSpawns(title = "Cave kraken", npcName = "Kraken", location = "Kraken Cove")
 
-        val output = service.wikiNpcSpawns(title = "Cave kraken", npcName = "Kraken", location = "Kraken Cove")
-
-        assertContains(output, "Found 1 spawn entries")
-        assertContains(output, "Kraken")
-        assertContains(output, "Location: Kraken Cove")
-        assertContains(output, "Spawn count: 2")
-        assertContains(output, "x:2245,y:10026|x:2246,y:10013")
-        client.close()
+            assertContains(output, "Found 1 spawn entries")
+            assertContains(output, "Kraken")
+            assertContains(output, "Location: Kraken Cove")
+            assertContains(output, "Spawn count: 2")
+            assertContains(output, "x:2245,y:10026|x:2246,y:10013")
+        }
     }
 
     @Test
@@ -199,20 +196,20 @@ class WikiToolTest {
         )
         writeDat(binaryDir.resolve("gamevals_columns.dat"), mapOf("dbcolumn" to emptyList()))
 
-        val client = HttpClient(MockEngine { error("No wiki call expected") })
-        val service =
-            WikiTool(
-                wikiProvider = { WikiClient(client, mapper, "https://example.test/api.php") },
-                gameValToolProvider = { GameValTool.load(root.toString()) },
-            )
+        HttpClient(MockEngine { error("No wiki call expected") }).use { client ->
+            val service =
+                WikiTool(
+                    wikiProvider = { WikiClient(client, mapper, "https://example.test/api.php") },
+                    gameValToolProvider = { GameValTool.load(root.toString()) },
+                )
 
-        val output = service.gamevalSearch(query = "kraken", table = "npc", id = null, limit = 2)
+            val output = service.gamevalSearch(query = "kraken", table = "npc", id = null, limit = 2)
 
-        assertContains(output, "Found 3 gameval matches; showing 2")
-        assertContains(output, "npc.kraken = 1234")
-        assertContains(output, "Results truncated. Increase 'limit' to see more.")
-        assertContains(output, "rerun with an exact key")
-        client.close()
+            assertContains(output, "Found 3 gameval matches; showing 2")
+            assertContains(output, "npc.kraken = 1234")
+            assertContains(output, "Results truncated. Increase 'limit' to see more.")
+            assertContains(output, "rerun with an exact key")
+        }
     }
 
     private fun writeDat(path: java.nio.file.Path, tables: Map<String, List<String>>) {

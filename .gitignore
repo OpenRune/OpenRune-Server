@@ -54,3 +54,4 @@ game.yml
 CLAUDE.md
 
 logs/
+*.log
