@@ -127,7 +127,7 @@ class WikiToolTest {
         val wiki = WikiClient(client, mapper, "https://example.test/api.php")
         val page = wiki.page("LongPage", 50)
 
-        assertEquals(53, page.text.length)
+        assertEquals(50, page.text.length)
         assertContains(page.text, "...")
         client.close()
     }

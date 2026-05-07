@@ -8,6 +8,10 @@ class WikiTool(
     private val wiki: WikiClient by lazy(wikiProvider)
     private val gameVals: GameValTool by lazy(gameValToolProvider)
 
+    companion object {
+        private const val DATA_TRUNCATE_CHARS = 800
+    }
+
     private data class SpawnCoord(val x: Int, val y: Int)
 
     private data class LocEntry(
@@ -30,7 +34,7 @@ class WikiTool(
             appendLine("Found ${hits.size} results for '$query':")
             hits.forEachIndexed { index, hit ->
                 appendLine("${index + 1}. ${hit.title}")
-                appendLine("   URL: https://oldschool.runescape.wiki/w/${hit.title.replace(' ', '_')}")
+                appendLine("   URL: ${wiki.wikiUrlForTitle(hit.title)}")
                 if (hit.snippet.isNotBlank()) {
                     appendLine("   Snippet: ${hit.snippet}")
                 }
@@ -152,10 +156,16 @@ class WikiTool(
         return buildString {
             appendLine("Cache: ${result.cache.name}")
             appendLine("Found ${result.totalMatches} cache matches; showing ${result.matches.size}.")
+            val singleResult = result.matches.size == 1
             result.matches.forEachIndexed { index, hit ->
                 appendLine("${index + 1}. [${hit.type}] ${hit.id} - ${hit.name}")
                 appendLine("   ${hit.summary}")
-                appendLine("   data: ${hit.data}")
+                val data = if (singleResult || hit.data.length <= DATA_TRUNCATE_CHARS) {
+                    hit.data
+                } else {
+                    hit.data.take(DATA_TRUNCATE_CHARS) + "... (truncated; search by id for full data)"
+                }
+                appendLine("   data: $data")
             }
             if (result.truncated) {
                 appendLine("Results truncated. Increase 'limit' to see more.")

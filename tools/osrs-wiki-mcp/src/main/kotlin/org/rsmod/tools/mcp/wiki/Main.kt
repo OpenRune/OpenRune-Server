@@ -18,9 +18,9 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.io.asSink
 import kotlinx.io.asSource
 import kotlinx.io.buffered
+import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.intOrNull
-import kotlinx.serialization.json.jsonPrimitive
 import kotlinx.serialization.json.put
 
 fun main() {
@@ -79,7 +79,7 @@ fun main() {
                     required = listOf("query"),
                 ),
         ) { request ->
-            val query = request.arguments?.get("query")?.jsonPrimitive?.content?.trim().orEmpty()
+            val query = (request.arguments?.get("query") as? JsonPrimitive)?.content?.trim().orEmpty()
             if (query.isBlank()) {
                 return@addTool CallToolResult(
                     isError = true,
@@ -87,7 +87,7 @@ fun main() {
                 )
             }
 
-            val limit = request.arguments?.get("limit")?.jsonPrimitive?.intOrNull?.coerceIn(1, 10) ?: 5
+            val limit = (request.arguments?.get("limit") as? JsonPrimitive)?.intOrNull?.coerceIn(1, 10) ?: 5
             val result =
                 try {
                     toolService.wikiSearch(query, limit)
@@ -122,7 +122,7 @@ fun main() {
                     required = listOf("title"),
                 ),
         ) { request ->
-            val title = request.arguments?.get("title")?.jsonPrimitive?.content?.trim().orEmpty()
+            val title = (request.arguments?.get("title") as? JsonPrimitive)?.content?.trim().orEmpty()
             if (title.isBlank()) {
                 return@addTool CallToolResult(
                     isError = true,
@@ -130,7 +130,7 @@ fun main() {
                 )
             }
 
-            val maxChars = request.arguments?.get("maxChars")?.jsonPrimitive?.intOrNull?.coerceIn(500, 20000) ?: 6000
+            val maxChars = (request.arguments?.get("maxChars") as? JsonPrimitive)?.intOrNull?.coerceIn(500, 20000) ?: 6000
             val result =
                 try {
                     toolService.wikiPage(title, maxChars)
@@ -159,7 +159,7 @@ fun main() {
                     required = listOf("title"),
                 ),
         ) { request ->
-            val title = request.arguments?.get("title")?.jsonPrimitive?.content?.trim().orEmpty()
+            val title = (request.arguments?.get("title") as? JsonPrimitive)?.content?.trim().orEmpty()
             if (title.isBlank()) {
                 return@addTool CallToolResult(
                     isError = true,
@@ -167,8 +167,8 @@ fun main() {
                 )
             }
 
-            val npcName = request.arguments?.get("npcName")?.jsonPrimitive?.content?.trim().orEmpty()
-            val location = request.arguments?.get("location")?.jsonPrimitive?.content?.trim().orEmpty()
+            val npcName = (request.arguments?.get("npcName") as? JsonPrimitive)?.content?.trim().orEmpty()
+            val location = (request.arguments?.get("location") as? JsonPrimitive)?.content?.trim().orEmpty()
 
             val result =
                 try {
@@ -210,10 +210,10 @@ fun main() {
                     required = emptyList(),
                 ),
         ) { request ->
-            val query = request.arguments?.get("query")?.jsonPrimitive?.content?.trim().orEmpty()
-            val table = request.arguments?.get("table")?.jsonPrimitive?.content?.trim().orEmpty()
-            val id = request.arguments?.get("id")?.jsonPrimitive?.intOrNull
-            val limit = request.arguments?.get("limit")?.jsonPrimitive?.intOrNull?.coerceIn(1, 50) ?: 10
+            val query = (request.arguments?.get("query") as? JsonPrimitive)?.content?.trim().orEmpty()
+            val table = (request.arguments?.get("table") as? JsonPrimitive)?.content?.trim().orEmpty()
+            val id = (request.arguments?.get("id") as? JsonPrimitive)?.intOrNull
+            val limit = (request.arguments?.get("limit") as? JsonPrimitive)?.intOrNull?.coerceIn(1, 50) ?: 10
 
             if (query.isBlank() && id == null) {
                 return@addTool CallToolResult(
@@ -269,7 +269,7 @@ fun main() {
                     required = listOf("cache", "type"),
                 ),
         ) { request ->
-            val cacheRaw = request.arguments?.get("cache")?.jsonPrimitive?.content?.trim().orEmpty()
+            val cacheRaw = (request.arguments?.get("cache") as? JsonPrimitive)?.content?.trim().orEmpty()
             if (cacheRaw.isBlank()) {
                 return@addTool CallToolResult(
                     isError = true,
@@ -285,7 +285,7 @@ fun main() {
                 )
             }
 
-            val typeRaw = request.arguments?.get("type")?.jsonPrimitive?.content?.trim().orEmpty()
+            val typeRaw = (request.arguments?.get("type") as? JsonPrimitive)?.content?.trim().orEmpty()
             if (typeRaw.isBlank()) {
                 return@addTool CallToolResult(
                     isError = true,
@@ -301,9 +301,9 @@ fun main() {
                 )
             }
 
-            val query = request.arguments?.get("query")?.jsonPrimitive?.content?.trim().orEmpty()
-            val id = request.arguments?.get("id")?.jsonPrimitive?.intOrNull
-            val limit = request.arguments?.get("limit")?.jsonPrimitive?.intOrNull?.coerceIn(1, 100) ?: 25
+            val query = (request.arguments?.get("query") as? JsonPrimitive)?.content?.trim().orEmpty()
+            val id = (request.arguments?.get("id") as? JsonPrimitive)?.intOrNull
+            val limit = (request.arguments?.get("limit") as? JsonPrimitive)?.intOrNull?.coerceIn(1, 100) ?: 25
 
             if (query.isBlank() && id == null) {
                 return@addTool CallToolResult(

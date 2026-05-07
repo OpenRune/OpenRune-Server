@@ -81,7 +81,12 @@ class WikiClient(
         val resolvedTitle = parse.path("title").asText(title)
         val html = parseTextField(parse.path("text"))
         val cleaned = htmlToText(html)
-        val clipped = if (cleaned.length > maxChars) cleaned.take(maxChars) + "..." else cleaned
+        val clipped =
+            when {
+                cleaned.length <= maxChars -> cleaned
+                maxChars > 3 -> cleaned.take(maxChars - 3) + "..."
+                else -> cleaned.take(maxChars)
+            }
 
         return WikiPage(
             title = resolvedTitle,
@@ -137,7 +142,7 @@ class WikiClient(
         return ""
     }
 
-    private fun wikiUrlForTitle(title: String): String {
+    internal fun wikiUrlForTitle(title: String): String {
         val slug = title.replace(' ', '_')
         val encoded = URLEncoder.encode(slug, StandardCharsets.UTF_8).replace("+", "%20")
         return "https://oldschool.runescape.wiki/w/$encoded"

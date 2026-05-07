@@ -120,7 +120,6 @@ class CacheTool {
         val cache = Cache.load(cachePath)
         val provider = OsrsCacheProvider(cache, revision)
         provider.init()
-        cache.close()
 
         val byType = mutableMapOf<CacheSearchType, List<IndexedHit>>()
         byType[CacheSearchType.Npc] = indexNpcs(provider.npcs)
@@ -136,6 +135,7 @@ class CacheTool {
         byType[CacheSearchType.DbRow] = indexGeneric(CacheSearchType.DbRow, provider.dbrows)
         byType[CacheSearchType.DbTable] = indexGeneric(CacheSearchType.DbTable, provider.dbtables)
 
+        cache.close()
         return Snapshot(revision = revision, byType = byType)
     }
 

@@ -190,15 +190,15 @@ class GameValTool private constructor(private val entries: List<GameValEntry>) {
         private fun parseRscmLine(line: String): Pair<String, Int> =
             when {
                 line.contains("=") -> {
-                    val parts = line.split("=")
+                    val parts = line.split("=", limit = 2)
                     require(parts.size == 2) { "Invalid gameval line: '$line'" }
                     parts[0].trim() to parts[1].trim().toInt()
                 }
                 line.contains(":") -> {
-                    val parts = line.split(":")
+                    val parts = line.split(":", limit = 2)
                     require(parts.size == 2) { "Invalid gameval line: '$line'" }
                     val key = parts[0].trim()
-                    val valueParts = parts[1].trim().split("=")
+                    val valueParts = parts[1].trim().split("=", limit = 2)
                     require(valueParts.size == 2) { "Invalid gameval line: '$line'" }
                     key to valueParts[1].trim().toInt()
                 }
@@ -206,7 +206,7 @@ class GameValTool private constructor(private val entries: List<GameValEntry>) {
             }
 
         private fun readSizedUtf(input: DataInputStream): String {
-            val length = input.readShort().toInt()
+            val length = input.readUnsignedShort()
             val bytes = ByteArray(length)
             input.readFully(bytes)
             return String(bytes, Charsets.UTF_8)
