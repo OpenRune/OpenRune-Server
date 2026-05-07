@@ -70,6 +70,13 @@ endBit = 1
 
 [[varbit]]
 isServerOnly = true
+id = "varbit.bonecrusher_activity_enabled"
+varp = "varp.bonecrusher_activity"
+startBit = 2
+endBit = 2
+
+[[varbit]]
+isServerOnly = true
 id = "varbit.saved_defensive_casting_staff"
 varp = "varp.saved_autocast_state_staff"
 startBit = 0
@@ -294,6 +301,20 @@ endBit = 25
 
 [[varbit]]
 isServerOnly = true
+id = "varbit.ecto_grinder_recipe"
+varp = "varp.ecto_grinder_recipe"
+startBit = 0
+endBit = 5
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.ecto_tokens"
+varp = "varp.ecto_tokens"
+startBit = 0
+endBit = 9
+
+[[varbit]]
+isServerOnly = true
 id = "varbit.saved_attackstyle_polestaff"
 varp = "varp.weapons_saved_attackstyle1"
 startBit = 26
@@ -408,5 +429,12 @@ endBit = 2
 isServerOnly = true
 id = "varbit.fullscreen_worldmap"
 varp = "varp.fullscreen_worldmap"
+startBit = 0
+endBit = 1
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.ash_sanctifier_activity_enabled"
+varp = "varp.ash_sanctifier_activity"
 startBit = 0
 endBit = 1

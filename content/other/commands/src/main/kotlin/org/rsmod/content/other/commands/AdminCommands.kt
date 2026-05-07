@@ -292,17 +292,12 @@ constructor(
     private fun invAdd(cheat: Cheat) =
         with(cheat) {
             val (typeName, countArg) = args.asTypeNameAndNumber(defaultNumber = 1)
-            val normalizedName = "obj." + typeName.replace("cert_", "")
+            val normalizedName = "obj.$typeName"
             val type = ServerCacheManager.getItem(normalizedName.asRSCM(RSCMType.OBJ))?: return@with
-            val spawnCert = typeName.startsWith("cert_")
-            val resolvedType =
-                if (spawnCert && type.canCert) ServerCacheManager.getItem(type.certlink) else type
+
             val count = countArg.toLong().coerceAtMost(Int.MAX_VALUE.toLong()).toInt()
             val objName = type.name.ifEmpty { normalizedName }
-            if (resolvedType == null) {
-                player.mes("Unable to find item: $objName")
-                return@with
-            }
+
             val spawned = player.invAdd(player.inv, normalizedName, count, strict = false)
             if (spawned.err is TransactionResult.RestrictedDummyitem) {
                 player.mes("You can't spawn this item!")

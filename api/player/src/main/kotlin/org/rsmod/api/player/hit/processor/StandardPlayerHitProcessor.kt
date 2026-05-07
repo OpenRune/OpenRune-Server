@@ -8,6 +8,7 @@ import dev.openrune.types.aconverted.SynthType
 import kotlin.math.min
 import org.rsmod.api.config.constants
 import org.rsmod.api.config.refs.BaseParams
+import org.rsmod.api.player.events.PlayerHitpointsChangedEvent
 import org.rsmod.api.player.headbar.InternalPlayerHeadbars
 import org.rsmod.api.player.lefthand
 import org.rsmod.api.player.output.soundSynth
@@ -38,9 +39,11 @@ public object StandardPlayerHitProcessor : QueuedPlayerHitProcessor {
 
         // TODO(combat): Process degradation, ring of recoil, retribution, etc.
 
-        val damage = min(player.hitpoints, hit.damage)
+        val oldHitpoints = player.hitpoints
+        val damage = min(oldHitpoints, hit.damage)
         if (damage > 0) {
             statSub("stat.hitpoints", constant = damage, percent = 0)
+            publishPlayerHitpointsChangedEvent(oldHitpoints, hit)
         }
 
         playDefendSound(hit, random)
@@ -54,6 +57,18 @@ public object StandardPlayerHitProcessor : QueuedPlayerHitProcessor {
 
         val headbar = hit.createHeadbar(player.hitpoints, player.baseHitpointsLvl)
         player.showHeadbar(headbar)
+    }
+
+    private fun ProtectedAccess.publishPlayerHitpointsChangedEvent(oldHitpoints: Int, hit: Hit) {
+        val event =
+            PlayerHitpointsChangedEvent(
+                player = player,
+                oldHitpoints = oldHitpoints,
+                newHitpoints = player.hitpoints,
+                maxHitpoints = player.baseHitpointsLvl,
+                hit = hit,
+            )
+        publish(event)
     }
 
     private fun Hit.isValid(access: ProtectedAccess): Boolean {

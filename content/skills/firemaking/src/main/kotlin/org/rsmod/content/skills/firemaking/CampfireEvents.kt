@@ -133,7 +133,6 @@ class CampfireEvents @Inject constructor(
         val xpModifier = xpMods.get(player, "stat.firemaking")
         val xp = task.log.xp * xpModifier
         statAdvance("stat.firemaking", xp)
-        mes("[DEBUG] Firemaking XP mod: x$xpModifier (awarded $xp xp)")
         invDel(player.inv, task.log.item.internalName, 1)
 
         spotanimMap(worldRepo, "spotanim.forestry_campfire_burning_spotanim", camp.coords)

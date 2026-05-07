@@ -1,3 +1,5 @@
+ash_sanctifier_activity=65502
+bonecrusher_activity=65503
 music_playlist=65504
 music_temp_state_3=65505
 music_temp_state_2=65506
@@ -33,3 +35,5 @@ venom_strikes=65502
 disease_drain=65503
 poison_severity=65535
 fullscreen_worldmap=65536
+ecto_grinder_recipe=65537
+ecto_tokens=65538

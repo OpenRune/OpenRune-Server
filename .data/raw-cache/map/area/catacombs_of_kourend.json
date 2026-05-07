@@ -1,0 +1,16 @@
+[ {
+  "name" : "Catacombs of Kourend",
+  "areaId" : "area.catacombs_of_kourend",
+  "levels" : [ 0,1,2,3 ],
+  "polygons": [
+    {
+      "vertices": [
+        { "x": 1583, "z": 10113 },
+        { "x": 1745, "z": 10112 },
+        { "x": 1762, "z": 9970 },
+        { "x": 1574, "z": 9971 },
+        { "x": 1580, "z": 10074 }
+      ]
+    }
+  ]
+} ]

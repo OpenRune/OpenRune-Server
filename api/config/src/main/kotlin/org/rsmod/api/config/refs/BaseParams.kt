@@ -141,6 +141,7 @@ object BaseParams {
     val demon: ParamInt = param("demon")
     val revenant: ParamInt = param("revenant")
     val undead: ParamInt = param("undead")
+    val spectral: ParamBool = param("spectral")
     val hitmark_lit: ParamHitmark = param("hitmark_lit")
     val hitmark_tint: ParamHitmark = param("hitmark_tint")
     val hitmark_max: ParamHitmark = param("hitmark_max")

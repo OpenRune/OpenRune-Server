@@ -1,0 +1,16 @@
+[ {
+  "name" : "Demonic Ruins",
+  "areaId" : "area.demonic_ruins",
+  "levels" : [ 0 ],
+  "polygons": [
+    {
+      "vertices": [
+        { "x": 3278, "z": 3893 },
+        { "x": 3296, "z": 3894 },
+        { "x": 3296, "z": 3874 },
+        { "x": 3278, "z": 3872 },
+        { "x": 3278, "z": 3878 }
+      ]
+    }
+  ]
+} ]
