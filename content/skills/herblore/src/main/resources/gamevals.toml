@@ -3,7 +3,6 @@ herblore_herbs   = 55560
 herblore_potions = 55561
 
 [gamevals.dbrow]
-# Herbs (14 rows)
 herblore_herb_guam        = 55560
 herblore_herb_marrentill  = 55561
 herblore_herb_tarromin    = 55562
@@ -19,7 +18,6 @@ herblore_herb_lantadyme   = 55571
 herblore_herb_dwarf_weed  = 55572
 herblore_herb_torstol     = 55573
 
-# Potions (19 rows)
 herblore_potion_attack         = 55574
 herblore_potion_antipoison     = 55575
 herblore_potion_strength       = 55576
