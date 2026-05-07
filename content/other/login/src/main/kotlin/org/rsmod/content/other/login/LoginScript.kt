@@ -38,12 +38,9 @@ import org.rsmod.game.entity.player.SessionStateEvent
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 import net.rsprot.protocol.game.outgoing.social.FriendListLoaded
-import org.rsmod.api.social.social
-import org.rsmod.api.social.SocialData
 import org.rsmod.api.social.pushChatModes
 import org.rsmod.api.social.pushFriends
 import org.rsmod.api.social.pushIgnores
-import org.rsmod.api.social.pushPrivateChatMode
 
 class LoginScript
 @Inject
@@ -77,7 +74,6 @@ constructor(
 
     private fun Player.sendSocial() {
         client.write(FriendListLoaded)
-        pushPrivateChatMode()
         pushFriends()
         pushIgnores()
     }
