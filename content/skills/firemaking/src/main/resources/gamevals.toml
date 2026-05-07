@@ -2,8 +2,12 @@
 firemaking_logs = 55536
 firemaking_colored_logs = 55537
 
+[gamevals.varcon]
+firemaking_campfire_expiry_cycle = 3
+
 [gamevals.queue]
 firemaking_light = 40
+firemaking_campfire_tend = 41
 
 [gamevals.dbrow]
 firemaking_normal_logs        = 55536

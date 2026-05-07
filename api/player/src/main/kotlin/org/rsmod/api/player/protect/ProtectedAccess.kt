@@ -3334,6 +3334,18 @@ public class ProtectedAccess(
     /* Map helper functions */
     public fun spotanimMap(
         repo: WorldRepository,
+        internal: String,
+        coord: CoordGrid,
+        height: Int = 0,
+        delay: Int = 0,
+    ) {
+        val spotanim = SpotanimType(internal.asRSCM(RSCMType.SPOTANIM))
+        repo.spotanimMap(spotanim, coord, height, delay)
+    }
+
+
+    public fun spotanimMap(
+        repo: WorldRepository,
         spotanim: SpotanimType,
         coord: CoordGrid,
         height: Int = 0,

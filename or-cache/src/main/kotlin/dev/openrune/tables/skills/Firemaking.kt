@@ -129,35 +129,44 @@ object Firemaking {
             columnRSCM(COL_PER_ANIMATION, "seq.forestry_campfire_burning_redwood_logs")
         }
 
-        // Colored logs — same stats as normal logs
         row("dbrow.firemaking_blue_logs") {
             columnRSCM(COL_ITEM, "obj.blue_logs")
             column(COL_LEVEL, 1)
             column(COL_XP, 50)
+            column(COL_INITIAL_TICKS, 102)
+            column(COL_PER_LOG_TICKS, 3)
         }
 
         row("dbrow.firemaking_green_logs") {
             columnRSCM(COL_ITEM, "obj.green_logs")
             column(COL_LEVEL, 1)
             column(COL_XP, 50)
+            column(COL_INITIAL_TICKS, 102)
+            column(COL_PER_LOG_TICKS, 3)
         }
 
         row("dbrow.firemaking_purple_logs") {
             columnRSCM(COL_ITEM, "obj.trail_logs_purple")
             column(COL_LEVEL, 1)
             column(COL_XP, 50)
+            column(COL_INITIAL_TICKS, 102)
+            column(COL_PER_LOG_TICKS, 3)
         }
 
         row("dbrow.firemaking_red_logs") {
             columnRSCM(COL_ITEM, "obj.red_logs")
             column(COL_LEVEL, 1)
             column(COL_XP, 50)
+            column(COL_INITIAL_TICKS, 102)
+            column(COL_PER_LOG_TICKS, 3)
         }
 
         row("dbrow.firemaking_white_logs") {
             columnRSCM(COL_ITEM, "obj.trail_logs_white")
             column(COL_LEVEL, 1)
             column(COL_XP, 50)
+            column(COL_INITIAL_TICKS, 102)
+            column(COL_PER_LOG_TICKS, 3)
         }
     }
 
