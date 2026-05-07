@@ -22,14 +22,13 @@ import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.intOrNull
 import kotlinx.serialization.json.jsonPrimitive
 import kotlinx.serialization.json.put
-import org.rsmod.tools.mcp.wiki.wiki.OsrsWikiClient
 
 fun main() {
     runBlocking {
         val mapper = jacksonObjectMapper()
         var httpClient: HttpClient? = null
         val toolService =
-            WikiToolService(
+            WikiTool(
                 wikiProvider = {
                     val client =
                         httpClient
@@ -43,7 +42,7 @@ fun main() {
                                     headers.append("User-Agent", "rsmod-osrs-wiki-mcp/0.1.0")
                                 }
                             }.also { httpClient = it }
-                    OsrsWikiClient(client, mapper)
+                    WikiClient(client, mapper)
                 },
             )
 
@@ -233,6 +232,92 @@ fun main() {
                     toolService.gamevalSearch(
                         query = query.ifBlank { null },
                         table = table.ifBlank { null },
+                        id = id,
+                        limit = limit,
+                    )
+                } catch (e: Exception) {
+                    return@addTool CallToolResult(
+                        isError = true,
+                        content = listOf(TextContent(text = "Tool call failed: ${e.message ?: "unknown error"}")),
+                    )
+                }
+
+            CallToolResult(content = listOf(TextContent(text = result)))
+        }
+
+        server.addTool(
+            name = "cache_search",
+            description = "Searches decoded cache definitions in LIVE or SERVER cache.",
+            inputSchema =
+                ToolSchema(
+                    properties =
+                        buildJsonObject {
+                            put("cache", buildJsonObject { put("type", "string") })
+                            put("type", buildJsonObject { put("type", "string") })
+                            put("query", buildJsonObject { put("type", "string") })
+                            put("id", buildJsonObject { put("type", "integer") })
+                            put(
+                                "limit",
+                                buildJsonObject {
+                                    put("type", "integer")
+                                    put("minimum", 1)
+                                    put("maximum", 100)
+                                    put("default", 25)
+                                },
+                            )
+                        },
+                    required = listOf("cache", "type"),
+                ),
+        ) { request ->
+            val cacheRaw = request.arguments?.get("cache")?.jsonPrimitive?.content?.trim().orEmpty()
+            if (cacheRaw.isBlank()) {
+                return@addTool CallToolResult(
+                    isError = true,
+                    content = listOf(TextContent(text = "'cache' is required and must be 'LIVE' or 'SERVER'.")),
+                )
+            }
+
+            val cacheKind = CacheKind.parse(cacheRaw)
+            if (cacheKind == null) {
+                return@addTool CallToolResult(
+                    isError = true,
+                    content = listOf(TextContent(text = "Invalid 'cache' value '$cacheRaw'. Expected 'LIVE' or 'SERVER'.")),
+                )
+            }
+
+            val typeRaw = request.arguments?.get("type")?.jsonPrimitive?.content?.trim().orEmpty()
+            if (typeRaw.isBlank()) {
+                return@addTool CallToolResult(
+                    isError = true,
+                    content = listOf(TextContent(text = "'type' is required (for example npc, obj, item, anim, all).")),
+                )
+            }
+
+            val searchType = CacheSearchType.parse(typeRaw)
+            if (searchType == null) {
+                return@addTool CallToolResult(
+                    isError = true,
+                    content = listOf(TextContent(text = "Invalid 'type' value '$typeRaw'. Use npc, obj, item, anim, enum, struct, healthbar, hitsplat, varbit, varp, dbrow, dbtable, or all.")),
+                )
+            }
+
+            val query = request.arguments?.get("query")?.jsonPrimitive?.content?.trim().orEmpty()
+            val id = request.arguments?.get("id")?.jsonPrimitive?.intOrNull
+            val limit = request.arguments?.get("limit")?.jsonPrimitive?.intOrNull?.coerceIn(1, 100) ?: 25
+
+            if (query.isBlank() && id == null) {
+                return@addTool CallToolResult(
+                    isError = true,
+                    content = listOf(TextContent(text = "Provide at least one filter: 'query' or 'id'.")),
+                )
+            }
+
+            val result =
+                try {
+                    toolService.cacheSearch(
+                        cache = cacheKind,
+                        type = searchType,
+                        query = query.ifBlank { null },
                         id = id,
                         limit = limit,
                     )

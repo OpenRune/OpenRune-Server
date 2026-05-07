@@ -6,7 +6,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
-class GamevalIndexTest {
+class GameValToolTest {
     @Test
     fun `load parses gamevals and supports exact full key search`() {
         val root = Files.createTempDirectory("gameval-index-test")
@@ -22,7 +22,7 @@ class GamevalIndexTest {
         )
         writeMockDat(binaryDir.resolve("gamevals_columns.dat"), mapOf("dbcolumn" to emptyList()))
 
-        val index = GamevalIndex.load(root.toString())
+        val index = GameValTool.load(root.toString())
         val result = index.search(query = "npc.kraken", table = null, id = null, limit = 10)
 
         assertEquals(1, result.totalMatches)
@@ -44,7 +44,7 @@ class GamevalIndexTest {
         )
         writeMockDat(binaryDir.resolve("gamevals_columns.dat"), mapOf("dbcolumn" to emptyList()))
 
-        val index = GamevalIndex.load(root.toString())
+        val index = GameValTool.load(root.toString())
         val result = index.search(query = "kraken", table = "npc", id = null, limit = 2)
 
         assertEquals(3, result.totalMatches)
@@ -72,5 +72,6 @@ class GamevalIndexTest {
         output.write(bytes)
     }
 }
+
 
 

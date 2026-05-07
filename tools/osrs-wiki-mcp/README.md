@@ -14,65 +14,42 @@ Start MCP server via Gradle task:
 
 - `:tools:osrs-wiki-mcp:run`
 
-Build local launcher script (optional) via Gradle task:
+Build classpath libs for external MCP clients (required for `java -cp` launch):
 
 - `:tools:osrs-wiki-mcp:installDist`
 
-Launcher output:
+Classpath output:
 
-- `tools/osrs-wiki-mcp/build/install/osrs-wiki-mcp/bin/osrs-wiki-mcp.bat` (Windows)
-- `tools/osrs-wiki-mcp/build/install/osrs-wiki-mcp/bin/osrs-wiki-mcp` (Linux/macOS)
+- `tools/osrs-wiki-mcp/build/install/osrs-wiki-mcp/lib/*`
 
 ## MCP Client Command
 
-Use either command style in MCP client config.
+Use Java classpath launch in MCP client config.
 
-Gradle-backed launch:
-
-- run task `:tools:osrs-wiki-mcp:run`
-
-Installed launcher:
-
-- use generated launcher under `tools/osrs-wiki-mcp/build/install/osrs-wiki-mcp/bin`
-- Windows command path: `.../bin/osrs-wiki-mcp.bat`
-- Linux/macOS command path: `.../bin/osrs-wiki-mcp`
+- command: `java`
+- args: `-cp <repo-root>/tools/osrs-wiki-mcp/build/install/osrs-wiki-mcp/lib/* org.rsmod.tools.mcp.wiki.MainKt`
 
 Transport is stdio (`StdioServerTransport`). Server waits for MCP requests on stdin.
 
-## IntelliJ Copilot MCP Setup
+## IntelliJ MCP Setup
 
-1. Generate launcher (`:tools:osrs-wiki-mcp:installDist`).
-2. Open Copilot MCP config file:
-   - `%LOCALAPPDATA%\\github-copilot\\intellij\\mcp.json`
-3. Add server entry (adjust paths for your machine).
+1. Build classpath libs (`:tools:osrs-wiki-mcp:installDist`).
+2. In IntelliJ, open MCP server settings for your chat client/plugin.
+3. Add an `osrs-wiki-mcp` stdio server entry there (adjust paths for your machine).
 
-Windows example:
-
-```json
-{
-  "servers": {
-    "osrs-wiki-mcp": {
-      "type": "stdio",
-      "command": "<repo-root>\\tools\\osrs-wiki-mcp\\build\\install\\osrs-wiki-mcp\\bin\\osrs-wiki-mcp.bat",
-      "args": [],
-      "env": {
-        "RSPS_ROOT": "<repo-root>",
-        "LOG_DIR": "<repo-root>\\logs"
-      }
-    }
-  }
-}
-```
-
-Linux/macOS example:
+Example:
 
 ```json
 {
   "servers": {
     "osrs-wiki-mcp": {
       "type": "stdio",
-      "command": "<repo-root>/tools/osrs-wiki-mcp/build/install/osrs-wiki-mcp/bin/osrs-wiki-mcp",
-      "args": [],
+      "command": "java",
+      "args": [
+        "-cp",
+        "<repo-root>/tools/osrs-wiki-mcp/build/install/osrs-wiki-mcp/lib/*",
+        "org.rsmod.tools.mcp.wiki.MainKt"
+      ],
       "env": {
         "RSPS_ROOT": "<repo-root>",
         "LOG_DIR": "<repo-root>/logs"
@@ -82,7 +59,9 @@ Linux/macOS example:
 }
 ```
 
-4. Reload Copilot/IntelliJ so MCP servers restart.
+Use your OS path style if you prefer (`/` or `\\`).
+
+4. Apply changes and restart MCP servers from IntelliJ.
 5. If `gameval_search` fails to resolve data files, verify `<repo-root>\\.data\\gamevals-binary\\` exists and `RSPS_ROOT` points to repo root.
 
 ## Tools
@@ -124,6 +103,19 @@ Linux/macOS example:
 - Output:
   - Single exact match, or disambiguated list with narrowing hint.
 
+### `cache_search`
+
+- Input:
+  - `cache` (string, required, `LIVE` or `SERVER`)
+  - `type` (string, required: `npc`, `obj`, `item`, `anim`, `enum`, `struct`, `healthbar`, `hitsplat`, `varbit`, `varp`, `dbrow`, `dbtable`, `all`)
+  - `query` (string, optional)
+  - `id` (int, optional)
+  - `limit` (int, optional, default `25`, clamped `1..100`)
+- Rule:
+  - Provide at least one of `query` or `id`.
+- Output:
+  - Ranked matches from decoded cache definitions; includes type, id, name, summary, and full field data dump.
+
 ## Local Data Resolution (`gameval_search`)
 
 Required files:
@@ -146,9 +138,29 @@ If not found, server returns error asking for `RSPS_ROOT` or explicit root.
 - Default: `logs/osrs-wiki-mcp.log`
 - Override with env var `LOG_DIR`
 
+## Local Cache Resolution (`cache_search`)
+
+Required directories:
+
+- `.data/cache/LIVE`
+- `.data/cache/SERVER`
+
+Additional requirement:
+
+- `game.yml` must exist at repo root and contain `revision:`.
+
+Root discovery order:
+
+1. parent of `LOG_DIR` (if selected cache exists)
+2. `RSPS_ROOT` (if selected cache exists)
+3. current working directory and parents
+
+If selected cache is missing, tool returns error with expected path.
+
 ## Code Map
 
 - `src/main/kotlin/org/rsmod/tools/mcp/wiki/Main.kt` - MCP server bootstrap + tool registration
-- `src/main/kotlin/org/rsmod/tools/mcp/wiki/WikiToolService.kt` - tool behavior + formatting
-- `src/main/kotlin/org/rsmod/tools/mcp/wiki/wiki/OsrsWikiClient.kt` - MediaWiki client
-- `src/main/kotlin/org/rsmod/tools/mcp/wiki/GamevalIndex.kt` - gameval load/search
+- `src/main/kotlin/org/rsmod/tools/mcp/wiki/WikiTool.kt` - wiki/gameval/cache tool behavior + formatting
+- `src/main/kotlin/org/rsmod/tools/mcp/wiki/WikiClient.kt` - MediaWiki client
+- `src/main/kotlin/org/rsmod/tools/mcp/wiki/GameValTool.kt` - gameval load/search
+- `src/main/kotlin/org/rsmod/tools/mcp/wiki/CacheTool.kt` - cache snapshot indexing + searchable definition lookups

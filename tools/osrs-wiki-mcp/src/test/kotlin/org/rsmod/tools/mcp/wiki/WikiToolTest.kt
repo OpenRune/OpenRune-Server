@@ -14,9 +14,9 @@ import kotlin.test.Test
 import kotlin.test.assertContains
 import kotlin.test.assertEquals
 import kotlinx.coroutines.runBlocking
-import org.rsmod.tools.mcp.wiki.wiki.OsrsWikiClient
 
-class WikiToolServiceTest {
+
+class WikiToolTest {
     private val mapper = jacksonObjectMapper()
 
     @Test
@@ -50,7 +50,7 @@ class WikiToolServiceTest {
             }
 
         val client = HttpClient(engine)
-        val service = WikiToolService(wikiProvider = { OsrsWikiClient(client, mapper, "https://example.test/api.php") })
+        val service = WikiTool(wikiProvider = { WikiClient(client, mapper, "https://example.test/api.php") })
 
         val output = service.wikiSearch("lumbridge", 2)
 
@@ -90,7 +90,7 @@ class WikiToolServiceTest {
             }
 
         val client = HttpClient(engine)
-        val service = WikiToolService(wikiProvider = { OsrsWikiClient(client, mapper, "https://example.test/api.php") })
+        val service = WikiTool(wikiProvider = { WikiClient(client, mapper, "https://example.test/api.php") })
 
         val output = service.wikiPage("Lumbridge", 1000)
 
@@ -124,7 +124,7 @@ class WikiToolServiceTest {
             }
 
         val client = HttpClient(engine)
-        val wiki = OsrsWikiClient(client, mapper, "https://example.test/api.php")
+        val wiki = WikiClient(client, mapper, "https://example.test/api.php")
         val page = wiki.page("LongPage", 50)
 
         assertEquals(53, page.text.length)
@@ -173,7 +173,7 @@ class WikiToolServiceTest {
             }
 
         val client = HttpClient(engine)
-        val service = WikiToolService(wikiProvider = { OsrsWikiClient(client, mapper, "https://example.test/api.php") })
+        val service = WikiTool(wikiProvider = { WikiClient(client, mapper, "https://example.test/api.php") })
 
         val output = service.wikiNpcSpawns(title = "Cave kraken", npcName = "Kraken", location = "Kraken Cove")
 
@@ -201,9 +201,9 @@ class WikiToolServiceTest {
 
         val client = HttpClient(MockEngine { error("No wiki call expected") })
         val service =
-            WikiToolService(
-                wikiProvider = { OsrsWikiClient(client, mapper, "https://example.test/api.php") },
-                gamevalIndexProvider = { GamevalIndex.load(root.toString()) },
+            WikiTool(
+                wikiProvider = { WikiClient(client, mapper, "https://example.test/api.php") },
+                gameValToolProvider = { GameValTool.load(root.toString()) },
             )
 
         val output = service.gamevalSearch(query = "kraken", table = "npc", id = null, limit = 2)
@@ -234,4 +234,5 @@ class WikiToolServiceTest {
         output.write(bytes)
     }
 }
+
 

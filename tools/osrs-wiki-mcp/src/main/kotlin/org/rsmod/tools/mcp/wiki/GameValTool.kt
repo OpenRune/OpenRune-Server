@@ -5,8 +5,8 @@ import java.io.FileInputStream
 import java.nio.file.Files
 import java.nio.file.Path
 
-class GamevalIndex private constructor(private val entries: List<GamevalEntry>) {
-    data class GamevalEntry(
+class GameValTool private constructor(private val entries: List<GameValEntry>) {
+    data class GameValEntry(
         val table: String,
         val key: String,
         val fullKey: String,
@@ -16,7 +16,7 @@ class GamevalIndex private constructor(private val entries: List<GamevalEntry>) 
 
     data class SearchResult(
         val totalMatches: Int,
-        val matches: List<GamevalEntry>,
+        val matches: List<GameValEntry>,
         val truncated: Boolean,
     )
 
@@ -68,10 +68,10 @@ class GamevalIndex private constructor(private val entries: List<GamevalEntry>) 
         )
     }
 
-    private data class ScoredEntry(val score: Int, val entry: GamevalEntry)
+    private data class ScoredEntry(val score: Int, val entry: GameValEntry)
 
     companion object {
-        fun load(rootDir: String? = null): GamevalIndex {
+        fun load(rootDir: String? = null): GameValTool {
             val root = resolveRoot(rootDir)
             val dat = root.resolve(".data").resolve("gamevals-binary").resolve("gamevals.dat")
             val cols = root.resolve(".data").resolve("gamevals-binary").resolve("gamevals_columns.dat")
@@ -89,11 +89,11 @@ class GamevalIndex private constructor(private val entries: List<GamevalEntry>) 
                         tableEntries.map { (fullKey, id) ->
                             val key = fullKey.removePrefix("$table.")
                             val source = sourceByFullKey[fullKey] ?: "unknown"
-                            GamevalEntry(table = table, key = key, fullKey = fullKey, id = id, source = source)
+                            GameValEntry(table = table, key = key, fullKey = fullKey, id = id, source = source)
                         }
                     }.sortedBy { it.fullKey }
 
-            return GamevalIndex(entries)
+            return GameValTool(entries)
         }
 
         private fun resolveRoot(rootDir: String?): Path {
@@ -213,6 +213,7 @@ class GamevalIndex private constructor(private val entries: List<GamevalEntry>) 
         }
     }
 }
+
 
 
 

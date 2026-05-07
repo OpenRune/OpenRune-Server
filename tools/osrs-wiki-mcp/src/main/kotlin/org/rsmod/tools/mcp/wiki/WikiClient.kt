@@ -1,4 +1,4 @@
-package org.rsmod.tools.mcp.wiki.wiki
+package org.rsmod.tools.mcp.wiki
 
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -21,7 +21,7 @@ data class WikiPage(
     val url: String,
 )
 
-class OsrsWikiClient(
+class WikiClient(
     private val client: HttpClient,
     private val mapper: ObjectMapper,
     private val apiBaseUrl: String = "https://oldschool.runescape.wiki/api.php",
@@ -146,5 +146,6 @@ class OsrsWikiClient(
     private fun htmlToText(html: String): String =
         Jsoup.parse(html).text().replace(Regex("\\s+"), " ").trim()
 }
+
 
 

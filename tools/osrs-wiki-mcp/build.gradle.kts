@@ -6,9 +6,6 @@ plugins {
 group = "org.rsmod.tools"
 version = "0.1.0"
 
-repositories {
-    mavenCentral()
-}
 
 dependencies {
     implementation("com.fasterxml.jackson.core:jackson-databind:2.17.2")
@@ -17,6 +14,7 @@ dependencies {
     implementation("io.ktor:ktor-client-cio:3.3.3")
     implementation("ch.qos.logback:logback-classic:1.5.6")
     implementation("org.jsoup:jsoup:1.18.1")
+    implementation(rootProject.libs.or2.all.cache)
 
     testImplementation(kotlin("test"))
     testImplementation("io.ktor:ktor-client-mock:3.3.3")

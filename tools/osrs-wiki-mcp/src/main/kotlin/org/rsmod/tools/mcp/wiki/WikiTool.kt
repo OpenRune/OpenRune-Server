@@ -1,13 +1,12 @@
 package org.rsmod.tools.mcp.wiki
 
-import org.rsmod.tools.mcp.wiki.wiki.OsrsWikiClient
-
-class WikiToolService(
-    private val wikiProvider: () -> OsrsWikiClient,
-    private val gamevalIndexProvider: () -> GamevalIndex = { GamevalIndex.load() },
+class WikiTool(
+    private val wikiProvider: () -> WikiClient,
+    private val gameValToolProvider: () -> GameValTool = { GameValTool.load() },
+    private val cacheTool: CacheTool = CacheTool(),
 ) {
-    private val wiki: OsrsWikiClient by lazy(wikiProvider)
-    private val gamevals: GamevalIndex by lazy(gamevalIndexProvider)
+    private val wiki: WikiClient by lazy(wikiProvider)
+    private val gameVals: GameValTool by lazy(gameValToolProvider)
 
     private data class SpawnCoord(val x: Int, val y: Int)
 
@@ -99,7 +98,7 @@ class WikiToolService(
     fun gamevalSearch(query: String?, table: String?, id: Int?, limit: Int): String {
         val normalizedQuery = query?.trim().orEmpty().ifBlank { null }
         val normalizedTable = table?.trim().orEmpty().ifBlank { null }
-        val result = gamevals.search(query = normalizedQuery, table = normalizedTable, id = id, limit = limit)
+        val result = gameVals.search(query = normalizedQuery, table = normalizedTable, id = id, limit = limit)
         if (result.totalMatches == 0) {
             return buildString {
                 append("No gameval entries matched")
@@ -133,6 +132,37 @@ class WikiToolService(
             append(
                 "If you want one specific entry, rerun with an exact key (for example query=\"${result.matches.first().fullKey}\") or with id=<number>.",
             )
+        }.trimEnd()
+    }
+
+    fun cacheSearch(cache: CacheKind, type: CacheSearchType, query: String?, id: Int?, limit: Int): String {
+        val normalizedQuery = query?.trim().orEmpty().ifBlank { null }
+        val result = cacheTool.search(cacheKind = cache, type = type, query = normalizedQuery, id = id, limit = limit)
+        if (result.totalMatches == 0) {
+            return buildString {
+                append("No cache entries matched")
+                append(" cache='${cache.name}'")
+                append(" type='${type.key}'")
+                if (normalizedQuery != null) append(" query='$normalizedQuery'")
+                if (id != null) append(" id=$id")
+                append('.')
+            }
+        }
+
+        return buildString {
+            appendLine("Cache: ${result.cache.name}")
+            appendLine("Found ${result.totalMatches} cache matches; showing ${result.matches.size}.")
+            result.matches.forEachIndexed { index, hit ->
+                appendLine("${index + 1}. [${hit.type}] ${hit.id} - ${hit.name}")
+                appendLine("   ${hit.summary}")
+                appendLine("   data: ${hit.data}")
+            }
+            if (result.truncated) {
+                appendLine("Results truncated. Increase 'limit' to see more.")
+            }
+            if (normalizedQuery != null || id != null) {
+                append("Rerun with narrower filters for a smaller result set.")
+            }
         }.trimEnd()
     }
 
