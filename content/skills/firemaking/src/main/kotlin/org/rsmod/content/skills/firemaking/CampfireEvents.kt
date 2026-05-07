@@ -5,6 +5,7 @@ import dev.openrune.ServerCacheManager
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import dev.openrune.types.aconverted.SpotanimType
+import dev.openrune.types.aconverted.interf.IfSubType
 import jakarta.inject.Inject
 import kotlin.math.abs
 import org.rsmod.api.controller.vars.intVarCon
@@ -24,6 +25,9 @@ import org.rsmod.api.script.onOpLocU
 import org.rsmod.api.script.onPlayerQueueWithArgs
 import org.rsmod.api.table.FiremakingColoredLogsRow
 import org.rsmod.api.table.FiremakingLogsRow
+import org.rsmod.content.skills.SkillMultiConfig
+import org.rsmod.content.skills.SkillMultiEntry
+import org.rsmod.content.skills.openSkillMulti
 import org.rsmod.game.MapClock
 import org.rsmod.game.entity.Controller
 import org.rsmod.game.loc.BoundLocInfo
@@ -100,19 +104,27 @@ class CampfireEvents @Inject constructor(
         spotanimMap(worldRepo, smokeSpotForAngle(fire.angleId), tile)
     }
 
-    private fun ProtectedAccess.tendCampfireMenu(camp: BoundLocInfo) {
+    private suspend fun ProtectedAccess.tendCampfireMenu(camp: BoundLocInfo) {
         val log = bestAvailableLog() ?: return
         tendCampfireWithLog(camp, log)
     }
 
     private fun ProtectedAccess.tendCampfireWithLog(camp: BoundLocInfo, log: FiremakingLogsRow) {
-        if (!canTend(log, camp)) return
+        if (!canTend(log, camp)) {
+            resetAnim()
+            stopAction()
+            return
+        }
         weakQueue("queue.firemaking_campfire_tend", 1, CampfireTendTask(camp, log))
     }
 
     private fun ProtectedAccess.processCampfireTendTick(task: CampfireTendTask) {
         val camp = resolveCampfire(task.campfire) ?: return
-        if (!canTend(task.log, task.campfire)) return
+        if (!canTend(task.log, task.campfire)) {
+            resetAnim()
+            stopAction()
+            return
+        }
 
         task.log.foresterAnimation?.internalName?.let(::anim)
 
@@ -162,10 +174,30 @@ class CampfireEvents @Inject constructor(
         return false
     }
 
-    private fun ProtectedAccess.bestAvailableLog(): FiremakingLogsRow? =
-        FiremakingLogsRow.all()
-            .filter { player.firemakingLvl >= it.level }
-            .maxByOrNull { inv.count(it.item.internalName) }
+    private suspend fun ProtectedAccess.bestAvailableLog(): FiremakingLogsRow? {
+        val logs = logsCarriedForTending()
+
+        when (logs.size) {
+            0 -> return null
+            1 -> return logs.first()
+        }
+
+        var chosen: FiremakingLogsRow? = null
+
+        openSkillMulti(SkillMultiConfig(verb = "burn", entries = logs.map {
+          SkillMultiEntry(it.item.internalName)
+        }),) { selection ->
+            chosen = logs.firstOrNull { it.item.internalName == selection.entry.internal }
+        }
+
+        return chosen
+    }
+
+    private fun ProtectedAccess.logsCarriedForTending(): List<FiremakingLogsRow> =
+        FiremakingLogsRow.all().filter {
+            player.firemakingLvl >= it.level && inv.count(it.item.internalName) > 0
+        }
+
 
     private fun spawnCampfire(template: BoundLocInfo, id: String, duration: Int) {
         val coords = template.coords

@@ -226,4 +226,69 @@ object Firemaking {
 
     }
 
+    const val COL_UNLIT = 0
+    const val COL_LIT = 1
+    const val COL_LEVEL_LIGHT = 2
+
+    fun sources() =
+        dbTable("dbtable.light_sources", serverOnly = true) {
+            column("unlit", COL_UNLIT, VarType.OBJ)
+            column("lit", COL_LIT, VarType.OBJ)
+            column("level", COL_LEVEL_LIGHT, VarType.INT)
+
+            row("dbrow.light_source_candle") {
+                columnRSCM(COL_UNLIT, "obj.unlit_candle")
+                columnRSCM(COL_LIT, "obj.lit_candle")
+                column(COL_LEVEL_LIGHT, 1)
+            }
+
+            row("dbrow.light_source_black_candle") {
+                columnRSCM(COL_UNLIT, "obj.unlit_black_candle")
+                columnRSCM(COL_LIT, "obj.lit_black_candle")
+                column(COL_LEVEL_LIGHT, 1)
+            }
+
+            row("dbrow.light_source_torch") {
+                columnRSCM(COL_UNLIT, "obj.torch_unlit")
+                columnRSCM(COL_LIT, "obj.torch_lit")
+                column(COL_LEVEL_LIGHT, 1)
+            }
+
+            row("dbrow.light_source_candle_lantern") {
+                columnRSCM(COL_UNLIT, "obj.candle_lantern_unlit")
+                columnRSCM(COL_LIT, "obj.candle_lantern_lit")
+                column(COL_LEVEL_LIGHT, 4)
+            }
+
+            row("dbrow.light_source_candle_lantern_black") {
+                columnRSCM(COL_UNLIT, "obj.candle_lantern_black_unlit")
+                columnRSCM(COL_LIT, "obj.candle_lantern_black_lit")
+                column(COL_LEVEL_LIGHT, 4)
+            }
+
+            row("dbrow.light_source_oil_lamp") {
+                columnRSCM(COL_UNLIT, "obj.oil_lamp_unlit")
+                columnRSCM(COL_LIT, "obj.oil_lamp_lit")
+                column(COL_LEVEL_LIGHT, 12)
+            }
+
+            row("dbrow.light_source_oil_lantern") {
+                columnRSCM(COL_UNLIT, "obj.oil_lantern_unlit")
+                columnRSCM(COL_LIT, "obj.oil_lantern_lit")
+                column(COL_LEVEL_LIGHT, 26)
+            }
+
+            row("dbrow.light_source_bullseye_lantern") {
+                columnRSCM(COL_UNLIT, "obj.bullseye_lantern_unlit")
+                columnRSCM(COL_LIT, "obj.bullseye_lantern_lit")
+                column(COL_LEVEL_LIGHT, 49)
+            }
+
+            row("dbrow.light_source_mining_helmet") {
+                columnRSCM(COL_UNLIT, "obj.cave_goblin_mining_helmet_unlit")
+                columnRSCM(COL_LIT, "obj.cave_goblin_mining_helmet_lit")
+                column(COL_LEVEL_LIGHT, 65)
+            }
+        }
+
 }

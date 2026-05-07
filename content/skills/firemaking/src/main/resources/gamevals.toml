@@ -1,7 +1,7 @@
 [gamevals.dbtable]
+light_sources = 55535
 firemaking_logs = 55536
 firemaking_colored_logs = 55537
-
 [gamevals.varcon]
 firemaking_campfire_expiry_cycle = 3
 
@@ -10,6 +10,15 @@ firemaking_light = 40
 firemaking_campfire_tend = 41
 
 [gamevals.dbrow]
+light_source_candle= 55527
+light_source_black_candle= 55528
+light_source_torch= 55529
+light_source_candle_lantern= 55530
+light_source_candle_lantern_black= 55531
+light_source_oil_lamp= 55532
+light_source_oil_lantern= 55533
+light_source_bullseye_lantern= 55534
+light_source_mining_helmet= 55535
 firemaking_normal_logs        = 55536
 firemaking_achey_tree_logs    = 55537
 firemaking_oak_logs           = 55538
@@ -32,3 +41,4 @@ firemaking_colored_logs_green             = 55554
 firemaking_colored_logs_purple            = 55555
 firemaking_colored_logs_red               = 55556
 firemaking_colored_logs_white             = 55557
+

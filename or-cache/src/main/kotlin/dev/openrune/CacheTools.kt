@@ -55,6 +55,7 @@ fun tablesToPack() = listOf(
     Music.musicModern(),
     Firemaking.logs(),
     Firemaking.firelighters(),
+    Firemaking.sources()
 )
 
 fun downloadRev(type: TaskType) {

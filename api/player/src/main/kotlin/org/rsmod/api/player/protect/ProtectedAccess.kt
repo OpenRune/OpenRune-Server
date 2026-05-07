@@ -183,7 +183,7 @@ private val logger = InlineLogger()
 
 public class ProtectedAccess(
     public val player: Player,
-    private val coroutine: GameCoroutine,
+    public val coroutine: GameCoroutine,
     private val context: ProtectedAccessContext,
 ) {
     public val random: GameRandom by context::random
