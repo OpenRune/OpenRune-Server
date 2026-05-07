@@ -79,7 +79,8 @@ config:
     modulus: YOUR_MODULUS_KEY_HERE
 ```
 
-Find the modulus in the project root, copy it exactly, and replace `YOUR_MODULUS_KEY_HERE`. If `.rsprox` does not exist, launching RSProx once will create it.
+Find the modulus in the project root `.data/client.key`, copy it exactly, and replace `YOUR_MODULUS_KEY_HERE`. If `.rsprox` does not exist, launching RSProx once will create it.
+Note: RSprox for Private Servers only works currently on Windows and Linux, NOT MacOS!
 
 > [!WARNING]
 > And stay away from client's like Devious, as they have been caught adding Account Stealer into their client.
