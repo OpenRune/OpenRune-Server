@@ -1,0 +1,43 @@
+[gamevals.dbtable]
+herblore_herbs   = 55560
+herblore_potions = 55561
+
+[gamevals.dbrow]
+# Herbs (14 rows)
+herblore_herb_guam        = 55560
+herblore_herb_marrentill  = 55561
+herblore_herb_tarromin    = 55562
+herblore_herb_harralander = 55563
+herblore_herb_ranarr      = 55564
+herblore_herb_toadflax    = 55565
+herblore_herb_irit        = 55566
+herblore_herb_avantoe     = 55567
+herblore_herb_kwuarm      = 55568
+herblore_herb_snapdragon  = 55569
+herblore_herb_cadantine   = 55570
+herblore_herb_lantadyme   = 55571
+herblore_herb_dwarf_weed  = 55572
+herblore_herb_torstol     = 55573
+
+# Potions (19 rows)
+herblore_potion_attack         = 55574
+herblore_potion_antipoison     = 55575
+herblore_potion_strength       = 55576
+herblore_potion_restore        = 55577
+herblore_potion_energy         = 55578
+herblore_potion_defence        = 55579
+herblore_potion_prayer         = 55580
+herblore_potion_super_attack   = 55581
+herblore_potion_superantipoison = 55582
+herblore_potion_super_energy   = 55583
+herblore_potion_super_strength = 55584
+herblore_potion_weapon_poison  = 55585
+herblore_potion_super_restore  = 55586
+herblore_potion_super_defence  = 55587
+herblore_potion_antifire       = 55588
+herblore_potion_magic          = 55589
+herblore_potion_ranging        = 55590
+
+[gamevals.queue]
+herblore_clean = 42
+herblore_make  = 43

@@ -22,6 +22,7 @@ import dev.openrune.impl.GameframeTable
 import dev.openrune.impl.Music
 import dev.openrune.map.packing.MapPackers
 import dev.openrune.tables.skills.Firemaking
+import dev.openrune.tables.skills.Herblore
 import dev.openrune.tools.MinifyServerCache
 import dev.openrune.tools.PackServerConfig
 import java.io.File
@@ -55,7 +56,9 @@ fun tablesToPack() = listOf(
     Music.musicModern(),
     Firemaking.logs(),
     Firemaking.firelighters(),
-    Firemaking.sources()
+    Firemaking.sources(),
+    Herblore.herbs(),
+    Herblore.potions(),
 )
 
 fun downloadRev(type: TaskType) {
