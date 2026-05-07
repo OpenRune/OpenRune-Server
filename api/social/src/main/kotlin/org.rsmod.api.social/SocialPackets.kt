@@ -147,14 +147,12 @@ public fun Player.addSocialFriend(
             )
         )
     )
-
-    pushFriends(playerList)
-    pushIgnores(playerList)
 }
-
+/*
+    *No Dedicated remove entry for UpdateFriendList
+ */
 public fun Player.deleteSocialFriend(
     name: String,
-    playerList: PlayerList,
     resolvedName: SocialNameRecord? = null,
 ) {
     val cleaned = cleanSocialName(name)
@@ -169,7 +167,6 @@ public fun Player.deleteSocialFriend(
     }
 
     persistSocial()
-    pushFriends(playerList)
 }
 
 public fun Player.addSocialIgnore(
@@ -224,9 +221,6 @@ public fun Player.addSocialIgnore(
             )
         )
     )
-
-    pushFriends(playerList)
-    pushIgnores(playerList)
 }
 
 public fun Player.deleteSocialIgnore(
@@ -255,8 +249,6 @@ public fun Player.deleteSocialIgnore(
             )
         )
     )
-
-    pushIgnores()
 }
 
 public fun Player.writeSocialMessage(message: String) {

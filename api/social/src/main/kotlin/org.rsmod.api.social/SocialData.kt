@@ -80,12 +80,18 @@ public class SocialData {
     }
 
     public fun rememberName(record: SocialNameRecord) {
-        nameRecords[normalize(record.canonicalName)] =
+        val normalizedRecord =
             record.copy(
                 canonicalName = normalize(record.canonicalName),
                 currentName = record.currentName.trim(),
                 previousName = record.previousName?.trim()?.takeIf(String::isNotBlank),
             )
+
+        nameRecords[normalize(normalizedRecord.canonicalName)] = normalizedRecord
+        nameRecords[normalize(normalizedRecord.currentName)] = normalizedRecord
+        normalizedRecord.previousName?.let {
+            nameRecords[normalize(it)] = normalizedRecord
+        }
     }
 
     public fun nameRecord(name: String): SocialNameRecord? {
@@ -99,7 +105,7 @@ public class SocialData {
             "publicChatMode" to publicChatMode.id,
             "privateChatMode" to privateChatMode.id,
             "tradeChatMode" to tradeChatMode.id,
-            "nameRecords" to nameRecords.values.map { record ->
+            "nameRecords" to nameRecords.values.distinctBy { it.canonicalName }.map { record ->
                 mapOf(
                     "canonicalName" to record.canonicalName,
                     "currentName" to record.currentName,

@@ -14,28 +14,26 @@ public class SocialNameRepository @Inject constructor() {
             return null
         }
 
-        val normalized = cleaned.lowercase()
-
         val select =
             connection.prepareStatement(
                 """
                     SELECT
-                        login_username,
-                        display_name,
-                        previous_display_name
+                    login_username,
+                    display_name,
+                    previous_display_name
                     FROM accounts
-                    WHERE LOWER(login_username) = ?
-                        OR LOWER(display_name) = ?
-                        OR LOWER(previous_display_name) = ?
+                    WHERE login_username = ? COLLATE NOCASE
+                    OR display_name = ? COLLATE NOCASE
+                    OR previous_display_name = ? COLLATE NOCASE
                     LIMIT 1
-                """
+                    """
                     .trimIndent()
             )
 
         select.use {
-            it.setString(1, normalized)
-            it.setString(2, normalized)
-            it.setString(3, normalized)
+            it.setString(1, cleaned)
+            it.setString(2, cleaned)
+            it.setString(3, cleaned)
 
             it.executeQuery().use { resultSet ->
                 if (!resultSet.next()) {

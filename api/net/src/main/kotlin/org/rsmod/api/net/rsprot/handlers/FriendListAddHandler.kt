@@ -32,7 +32,7 @@ constructor(
                     result.fold(
                         onOk = { record ->
                             if (record == null) {
-                                current.writeSocialMessage("Unable to add player; user with this username doesn't exist.")
+                                current.writeSocialMessage("Unable to add friend - unknown player.")
                             } else {
                                 current.addSocialFriend(requestedName, playerList, record)
                             }

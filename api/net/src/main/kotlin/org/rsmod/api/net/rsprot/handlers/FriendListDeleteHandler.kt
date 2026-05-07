@@ -30,10 +30,10 @@ constructor(
                 if (current != null) {
                     result.fold(
                         onOk = { record ->
-                            current.deleteSocialFriend(requestedName, playerList, record)
+                            current.deleteSocialFriend(requestedName, record)
                         },
                         onErr = {
-                            current.deleteSocialFriend(requestedName, playerList)
+                            current.deleteSocialFriend(requestedName)
                         },
                     )
                 }
