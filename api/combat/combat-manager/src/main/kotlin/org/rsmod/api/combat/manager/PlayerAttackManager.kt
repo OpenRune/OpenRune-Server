@@ -198,7 +198,7 @@ constructor(
         val attackSound = weapon?.paramOrNull(soundParam) ?: SynthType(defaultSound.asRSCM(RSCMType.SYNTH))
 
         player.anim(RSCM.getReverseMapping(RSCMType.SEQ,attackAnim.id))
-        player.soundSynth(RSCM.getReverseMapping(RSCMType.SYNTH,attackSound.id))
+        player.soundSynth(attackSound)
     }
 
     /**
@@ -216,7 +216,7 @@ constructor(
         val attackAnim = weapon.paramOrNull(params.attack_anim_stance1) ?: return false
         player.anim(RSCM.getReverseMapping(RSCMType.SEQ,attackAnim.id))
         val attackSound = weapon.paramOrNull(params.attack_sound_stance1)
-        RSCM.getReverseMapping(RSCMType.SYNTH,attackSound!!.id).let(player::soundSynth)
+        attackSound?.let(player::soundSynth)
         return true
     }
 

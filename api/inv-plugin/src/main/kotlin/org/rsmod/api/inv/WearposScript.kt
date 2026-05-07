@@ -62,7 +62,7 @@ public class WearposScript : PluginScript() {
     }
 
     private fun Player.sendSoundAndPlayerOp(type: ItemServerType) {
-        val sound = RSCM.getReverseMapping(RSCMType.SYNTH,type.paramOrNull(params.equipment_sound)!!.id)
+        val sound = type.paramOrNull(params.equipment_sound)
         sound?.let(::soundSynth)
 
         val righthand = getOrNull(this.righthand)

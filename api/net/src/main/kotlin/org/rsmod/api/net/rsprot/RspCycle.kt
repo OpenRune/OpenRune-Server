@@ -15,6 +15,7 @@ import net.rsprot.protocol.game.outgoing.info.util.safeReleaseOrThrow
 import net.rsprot.protocol.game.outgoing.map.RebuildLoginV2
 import net.rsprot.protocol.game.outgoing.map.RebuildNormalV2
 import net.rsprot.protocol.game.outgoing.map.RebuildRegionV2
+import net.rsprot.protocol.game.outgoing.map.util.RebuildRegionZone
 import net.rsprot.protocol.game.outgoing.map.util.ReferenceZone
 import net.rsprot.protocol.message.OutgoingGameMessage
 import org.rsmod.api.config.refs.params
@@ -229,8 +230,9 @@ class RspCycle(
             ReferenceZone(copyZone.packed)
         }
         val zoneProvider = RebuildRegionV2.RebuildRegionZoneProvider { zoneX, zoneZ, level ->
-            val zoneKey = ZoneKey(zoneX, zoneZ, level)
-            rebuildZones[zoneKey]
+            rebuildZones[ZoneKey(zoneX, zoneZ, level)]?.let { ref ->
+                RebuildRegionZone(zoneX = ref.zoneX, zoneZ = ref.zoneZ, level = ref.level, rotation = ref.rotation)
+            }
         }
         return zoneProvider
     }
