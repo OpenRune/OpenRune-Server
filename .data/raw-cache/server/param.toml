@@ -409,6 +409,12 @@ type = "SEQ"
 isMembers = true
 
 [[params]]
+isServerOnly = true
+id = "param.barbarian_firemaking_anim"
+type = "SEQ"
+isMembers = true
+
+[[params]]
 id = "param.skill_xp"
 type = "INT"
 isMembers = true
