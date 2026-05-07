@@ -2,14 +2,12 @@ package org.rsmod.content.skills
 
 import dev.openrune.ServerCacheManager
 import dev.openrune.definition.type.widget.IfEvent
-import dev.openrune.internalName
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import dev.openrune.types.ItemServerType
 import dev.openrune.types.aconverted.interf.IfSubType
 import org.rsmod.api.player.input.ResumePauseButtonInput
 import org.rsmod.api.player.protect.ProtectedAccess
-import org.rsmod.api.player.ui.ifSetEvents
 import org.rsmod.game.inv.Inventory
 
 private const val SKILLMULTI_SETUP_SCRIPT = 2046

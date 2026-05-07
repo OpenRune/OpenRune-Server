@@ -1,6 +1,5 @@
 package org.rsmod.content.skills.firemaking
 
-import dev.openrune.internalName
 import dev.openrune.map.MapSingletons.collision
 import jakarta.inject.Inject
 import org.rsmod.api.player.output.mes

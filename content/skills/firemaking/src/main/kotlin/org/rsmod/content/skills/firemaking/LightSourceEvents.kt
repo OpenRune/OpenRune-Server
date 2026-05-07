@@ -1,6 +1,5 @@
 package org.rsmod.content.skills.firemaking
 
-import dev.openrune.internalName
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.stat.firemakingLvl
 import org.rsmod.api.script.onOpHeld2

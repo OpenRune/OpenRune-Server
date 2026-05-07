@@ -16,9 +16,13 @@ public fun LocRepository.locNearby(
     exclude: CoordGrid? = null,
     locTypeInternals: Iterable<String>,
 ): Boolean {
+
+    val types = locTypeInternals.mapNotNull {
+        ServerCacheManager.getObject(it.asRSCM(RSCMType.LOC))
+    }
+
     for (t in origin.tilesInChebyshevSquare(radius, exclude)) {
-        for (internal in locTypeInternals) {
-            val type = ServerCacheManager.getObject(internal.asRSCM(RSCMType.LOC)) ?: continue
+        for (type in types) {
             if (findExact(t, type) != null) {
                 return true
             }

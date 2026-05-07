@@ -1,6 +1,5 @@
 package org.rsmod.content.skills.firemaking
 
-import dev.openrune.internalName
 import org.rsmod.api.player.output.mes
 import org.rsmod.api.script.onOpHeldU
 import org.rsmod.api.table.FiremakingColoredLogsRow

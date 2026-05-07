@@ -1,11 +1,9 @@
 package org.rsmod.content.skills.firemaking
 
-import dev.openrune.internalName
 import dev.openrune.ServerCacheManager
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import dev.openrune.types.aconverted.SpotanimType
-import dev.openrune.types.aconverted.interf.IfSubType
 import jakarta.inject.Inject
 import kotlin.math.abs
 import org.rsmod.api.controller.vars.intVarCon
