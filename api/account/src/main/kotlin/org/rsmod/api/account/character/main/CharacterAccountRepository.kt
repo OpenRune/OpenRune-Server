@@ -17,7 +17,11 @@ import org.rsmod.api.parsers.jackson.readReifiedValue
 import org.rsmod.api.parsers.json.Json
 import org.rsmod.api.realm.Realm
 import org.rsmod.game.entity.Player
-
+/*TODO
+    *Add saving display_name_changed_at from Player
+    * That timestamp can be filled when the Account Management
+    * name-change button is fully wired.
+ */
 public class CharacterAccountRepository
 @Inject
 constructor(
@@ -112,6 +116,8 @@ constructor(
                         a.id AS account_id,
                         a.login_username,
                         a.display_name,
+                        a.previous_display_name,
+                        a.display_name_changed_at,
                         a.password_hash,
                         a.email,
                         a.members,
@@ -151,6 +157,8 @@ constructor(
                     val characterId = resultSet.getInt("character_id")
                     val username = resultSet.getString("login_username").lowercase()
                     val displayName = resultSet.getString("display_name")
+                    val previousDisplayName = resultSet.getString("previous_display_name")
+                    val displayNameChangedAt = resultSet.getLocalDateTime("display_name_changed_at")
                     val hashedPassword = resultSet.getString("password_hash")
                     val email = resultSet.getString("email")
                     val members = resultSet.getBoolean("members")
@@ -186,6 +194,8 @@ constructor(
                             characterId = characterId,
                             loginName = username,
                             displayName = displayName,
+                            previousDisplayName = previousDisplayName,
+                            displayNameChangedAt = displayNameChangedAt,
                             hashedPassword = hashedPassword,
                             email = email,
                             members = members,
@@ -258,7 +268,7 @@ constructor(
             connection.prepareStatement(
                 """
                     UPDATE accounts
-                    SET display_name = ?, known_device = ?, modlevel = ?
+                   SET display_name = ?, previous_display_name = ?, known_device = ?, modlevel = ?
                     WHERE id = ?
                 """
                     .trimIndent()
@@ -266,9 +276,10 @@ constructor(
 
         updateAccount.use {
             it.setNullableString(1, player.displayName.takeIf(String::isNotBlank))
-            it.setNullableInt(2, player.lastKnownDevice)
-            it.setNullableString(3, player.modLevel.displayName)
-            it.setInt(4, accountId)
+            it.setNullableString(2, player.previousDisplayName.takeIf(String::isNotBlank))
+            it.setNullableInt(3, player.lastKnownDevice)
+            it.setNullableString(4, player.modLevel.displayName)
+            it.setInt(5, accountId)
             it.executeUpdate()
         }
     }

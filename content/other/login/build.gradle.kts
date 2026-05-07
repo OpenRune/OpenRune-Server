@@ -7,4 +7,5 @@ dependencies {
     implementation(projects.api.invWeight)
     implementation(projects.api.pluginCommons)
     implementation(projects.api.realm)
+    implementation(projects.api.social)
 }

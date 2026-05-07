@@ -9,6 +9,8 @@ public data class CharacterAccountData(
     val characterId: Int,
     val loginName: String,
     val displayName: String?,
+    val previousDisplayName: String?,
+    val displayNameChangedAt: LocalDateTime?,
     val hashedPassword: String,
     val email: String?,
     val members: Boolean,
@@ -39,6 +41,8 @@ public data class CharacterAccountData(
             "characterId=$characterId, " +
             "loginName=$loginName, " +
             "displayName=$displayName, " +
+            "previousDisplayName=$previousDisplayName, " +
+            "displayNameChangedAt=$displayNameChangedAt, " +
             "email=$email, " +
             "members=$members, " +
             "modLevel='$modLevel', " +

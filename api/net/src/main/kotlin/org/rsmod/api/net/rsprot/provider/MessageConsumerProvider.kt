@@ -58,6 +58,18 @@ import org.rsmod.api.net.rsprot.handlers.ResumePStringDialogHandler
 import org.rsmod.api.net.rsprot.handlers.ResumePauseButtonHandler
 import org.rsmod.api.net.rsprot.handlers.WindowStatusHandler
 import org.rsmod.game.entity.Player
+import net.rsprot.protocol.game.incoming.messaging.MessagePrivate
+import net.rsprot.protocol.game.incoming.social.FriendListAdd
+import net.rsprot.protocol.game.incoming.social.FriendListDel
+import net.rsprot.protocol.game.incoming.social.IgnoreListAdd
+import net.rsprot.protocol.game.incoming.social.IgnoreListDel
+import org.rsmod.api.net.rsprot.handlers.FriendListAddHandler
+import org.rsmod.api.net.rsprot.handlers.FriendListDeleteHandler
+import org.rsmod.api.net.rsprot.handlers.IgnoreListAddHandler
+import org.rsmod.api.net.rsprot.handlers.IgnoreListDeleteHandler
+import org.rsmod.api.net.rsprot.handlers.MessagePrivateHandler
+import net.rsprot.protocol.game.incoming.misc.user.SetChatFilterSettings
+import org.rsmod.api.net.rsprot.handlers.SetChatFilterSettingsHandler
 
 @Singleton
 class MessageConsumerProvider
@@ -89,6 +101,12 @@ constructor(
     private val ifButtonD: IfButtonDHandler,
     private val ifButtonT: IfButtonTHandler,
     private val mapBuildComplete: MapBuildCompleteHandler,
+    private val friendListAdd: FriendListAddHandler,
+    private val friendListDelete: FriendListDeleteHandler,
+    private val ignoreListAdd: IgnoreListAddHandler,
+    private val ignoreListDelete: IgnoreListDeleteHandler,
+    private val messagePrivate: MessagePrivateHandler,
+    private val setChatFilterSettings: SetChatFilterSettingsHandler,
 ) {
     fun get(): DefaultGameMessageConsumerRepositoryProvider<Player> {
         val builder = GameMessageConsumerRepositoryBuilder<Player>()
@@ -106,6 +124,12 @@ constructor(
         builder.addListener(OpPlayer::class.java, opPlayer)
         builder.addListener(OpPlayerT::class.java, opPlayerT)
         builder.addListener(MessagePublic::class.java, messagePublic)
+        builder.addListener(FriendListAdd::class.java, friendListAdd)
+        builder.addListener(FriendListDel::class.java, friendListDelete)
+        builder.addListener(IgnoreListAdd::class.java, ignoreListAdd)
+        builder.addListener(IgnoreListDel::class.java, ignoreListDelete)
+        builder.addListener(MessagePrivate::class.java, messagePrivate)
+        builder.addListener(SetChatFilterSettings::class.java, setChatFilterSettings)
         builder.addListener(If3Button::class.java, if3Button)
         builder.addListener(CloseModal::class.java, closeModal)
         builder.addListener(ResumePauseButton::class.java, resumePauseButton)

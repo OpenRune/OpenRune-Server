@@ -159,6 +159,7 @@ public class Player(
 
     public var username: String = ""
     public var displayName: String by avatar::name
+    public var previousDisplayName: String = ""
     public var members: Boolean = false
     public var lastKnownDevice: Int? = null
 

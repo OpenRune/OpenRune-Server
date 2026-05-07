@@ -28,6 +28,7 @@ public class CharacterAccountApplier @Inject constructor() :
         player.members = data.members
         player.username = data.loginName
         player.displayName = data.displayName ?: ""
+        player.previousDisplayName = data.previousDisplayName ?: ""
         player.coords = CoordGrid(data.coordX, data.coordZ, data.coordLevel)
         player.runEnergy = data.runEnergy
         player.xpRate = data.xpRate

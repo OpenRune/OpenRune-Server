@@ -14,7 +14,6 @@ import net.rsprot.protocol.game.outgoing.misc.client.HideNpcOps
 import net.rsprot.protocol.game.outgoing.misc.client.HideObjOps
 import net.rsprot.protocol.game.outgoing.misc.client.MinimapToggle
 import net.rsprot.protocol.game.outgoing.misc.client.ResetAnims
-import net.rsprot.protocol.game.outgoing.misc.player.ChatFilterSettings
 import net.rsprot.protocol.game.outgoing.varp.VarpReset
 import org.rsmod.api.inv.weight.InvWeight
 import org.rsmod.api.player.output.Camera
@@ -38,6 +37,13 @@ import org.rsmod.game.entity.Player
 import org.rsmod.game.entity.player.SessionStateEvent
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
+import net.rsprot.protocol.game.outgoing.social.FriendListLoaded
+import org.rsmod.api.social.social
+import org.rsmod.api.social.SocialData
+import org.rsmod.api.social.pushChatModes
+import org.rsmod.api.social.pushFriends
+import org.rsmod.api.social.pushIgnores
+import org.rsmod.api.social.pushPrivateChatMode
 
 class LoginScript
 @Inject
@@ -63,13 +69,21 @@ constructor(
 
     private fun Player.sendHighPriority() {
         sendChatFilters()
+        sendSocial()
         sendOpVisibility()
         sendWelcomeMessage()
         sendVars()
     }
 
+    private fun Player.sendSocial() {
+        client.write(FriendListLoaded)
+        pushPrivateChatMode()
+        pushFriends()
+        pushIgnores()
+    }
+
     private fun Player.sendChatFilters() {
-        client.write(ChatFilterSettings(0, 0))
+        pushChatModes()
     }
 
     private fun Player.sendOpVisibility() {
