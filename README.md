@@ -51,8 +51,8 @@ OpenRune Server adheres to OSRS protocols, giving you the freedom to connect any
 
 4. **Gradle bootstrap**
    - Open the Gradle tool window.
-   - Run `OpenRune Server → installation → install`.
-   - When the task completes, run `OpenRune Server → game → Tasks → application → run`.
+   - Run `OpenRune Server → Tasks → installation → install`.
+   - When the task completes, run `OpenRune Server → Tasks → application → run`.
 
 5. **Verify startup**
    - A successful boot prints `OpenRune Server Successfully initialized` in the terminal.
@@ -79,7 +79,8 @@ config:
     modulus: YOUR_MODULUS_KEY_HERE
 ```
 
-Find the modulus in the project root, copy it exactly, and replace `YOUR_MODULUS_KEY_HERE`. If `.rsprox` does not exist, launching RSProx once will create it.
+Find the modulus in the project root `.data/client.key`, copy it exactly, and replace `YOUR_MODULUS_KEY_HERE`. If `.rsprox` does not exist, launching RSProx once will create it.
+Note: RSprox for Private Servers only works currently on Windows and Linux, NOT MacOS!
 
 > [!WARNING]
 > And stay away from client's like Devious, as they have been caught adding Account Stealer into their client.
