@@ -37,5 +37,6 @@ herblore_potion_magic          = 55589
 herblore_potion_ranging        = 55590
 
 [gamevals.queue]
-herblore_clean = 42
-herblore_make  = 43
+herblore_clean       = 42
+herblore_make        = 43
+herblore_unfinished  = 44
