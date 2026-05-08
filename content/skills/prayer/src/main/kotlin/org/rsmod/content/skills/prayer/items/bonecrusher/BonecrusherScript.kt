@@ -2,8 +2,8 @@ package org.rsmod.content.skills.prayer.items.bonecrusher
 
 import jakarta.inject.Inject
 import org.rsmod.api.config.constants
-import org.rsmod.api.obj.charges.ObjChargeManager
 import org.rsmod.api.player.protect.ProtectedAccess
+import org.rsmod.api.player.vars.intVarBit
 import org.rsmod.api.script.onOpHeld2
 import org.rsmod.api.script.onOpHeld3
 import org.rsmod.api.script.onOpHeld4
@@ -11,15 +11,14 @@ import org.rsmod.api.script.onOpHeldU
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
-public class BonecrusherScript @Inject constructor(private val charges: ObjChargeManager) :
-    PluginScript() {
+public class BonecrusherScript @Inject constructor() : PluginScript() {
     override fun ScriptContext.startup() {
         onOpHeld2("obj.bonecrusher") { checkCharges(it.slot) }
         onOpHeld3("obj.bonecrusher") { toggleActivity() }
         onOpHeld4("obj.bonecrusher") { uncharge(it.slot) }
 
         onOpHeldU("obj.bonecrusher", "obj.ectotoken") { ev ->
-            val newTotal = player.chargeCrusherItemWithEcto(charges, ev.firstSlot, ev.secondSlot) ?: return@onOpHeldU
+            val newTotal = player.chargeCrusherItemWithEcto(ev.firstSlot, ev.secondSlot) ?: return@onOpHeldU
             if (player.isBonecrusherActivityEnabled()) {
                 mes("The bonecrusher has $newTotal charges. It is active and ready to crush bones.")
             } else {
@@ -29,8 +28,8 @@ public class BonecrusherScript @Inject constructor(private val charges: ObjCharg
     }
 
     private fun ProtectedAccess.checkCharges(slot: Int) {
-        val obj = inv[slot] ?: return
-        val charges = this@BonecrusherScript.charges.getCharges(obj, "varbit.charges_bonecrusher_quantity")
+        inv[slot] ?: return
+        val charges = bonecrusherCharges
         when {
             charges == 0 -> mes("The bonecrusher has no charges. It can be charged with ectotokens.")
             player.isBonecrusherActivityEnabled() -> mes("The bonecrusher has $charges charges. It is active and ready to crush bones.")
@@ -49,7 +48,7 @@ public class BonecrusherScript @Inject constructor(private val charges: ObjCharg
     }
 
     private suspend fun ProtectedAccess.uncharge(slot: Int) {
-        when (val result = player.tryUnchargeBonecrusher(charges, inv, slot, "obj.bonecrusher")) {
+        when (val result = player.tryUnchargeBonecrusher(inv, slot, "obj.bonecrusher")) {
             BonecrusherUnchargeResult.WrongItem -> return
             BonecrusherUnchargeResult.NoCharges -> mes("The bonecrusher has no charges.")
             BonecrusherUnchargeResult.CannotRedeemEcto -> mes("The bonecrusher does not have enough charges for you to remove any ectotokens.",)
@@ -71,3 +70,5 @@ public class BonecrusherScript @Inject constructor(private val charges: ObjCharg
         }
     }
 }
+
+private var ProtectedAccess.bonecrusherCharges by intVarBit("varbit.charges_bonecrusher_quantity")

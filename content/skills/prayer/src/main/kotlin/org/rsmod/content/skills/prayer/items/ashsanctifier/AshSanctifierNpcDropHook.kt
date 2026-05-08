@@ -4,8 +4,7 @@ import jakarta.inject.Inject
 import jakarta.inject.Singleton
 import org.rsmod.api.death.NpcDeathDropContext
 import org.rsmod.api.death.NpcDeathDropHook
-import org.rsmod.api.obj.charges.ObjChargeManager
-import org.rsmod.api.obj.charges.ObjChargeManager.Companion.isFailure
+import org.rsmod.api.player.vars.intVarBit
 import org.rsmod.api.player.stat.statAdvance
 import org.rsmod.api.table.prayer.SkillPrayerRow
 import org.rsmod.content.skills.prayer.items.ashsanctifier.AshSanctifierScript.Companion.ashSanctifierActivityEnabled
@@ -15,7 +14,7 @@ import org.rsmod.game.entity.Player
 import org.rsmod.game.inv.isType
 
 @Singleton
-class AshSanctifierNpcDropHook @Inject constructor(private val charges: ObjChargeManager) : NpcDeathDropHook {
+class AshSanctifierNpcDropHook @Inject constructor() : NpcDeathDropHook {
 
     private val demonicAshXpByItem: Map<String, SkillPrayerRow> by lazy {
         SkillPrayerRow.all().filter { it.ashes }.associateBy { it.item.internalName }
@@ -38,19 +37,11 @@ class AshSanctifierNpcDropHook @Inject constructor(private val charges: ObjCharg
         val row = demonicAshXpByItem[internal] ?: return false
 
         val slot = player.findAshSanctifierSlot() ?: return false
-        if (charges.getCharges(player.inv[slot], "varbit.charges_ash_sanctifier_quantity") <= 0) {
+        if (player.ashSanctifierCharges <= 0) {
             return false
         }
 
-        val result = charges.reduceChargesSameItem(
-            inventory = player.inv,
-            slot = slot,
-            remove = 1,
-            internal = "varbit.charges_ash_sanctifier_quantity"
-        )
-        if (result.isFailure()) {
-            return false
-        }
+        player.ashSanctifierCharges -= 1
 
         val scatterXp = row.exp.toDouble()
         val prayerXp = if (player.hasKourendKebosEliteDiaryComplete()) {
@@ -67,7 +58,7 @@ class AshSanctifierNpcDropHook @Inject constructor(private val charges: ObjCharg
         for (slot in inv.indices) {
             val obj = inv[slot] ?: continue
             if (obj.isType("obj.ash_sanctifier") &&
-                charges.getCharges(obj, "varbit.charges_ash_sanctifier_quantity") > 0
+                ashSanctifierCharges > 0
             ) {
                 return slot
             }
@@ -75,3 +66,5 @@ class AshSanctifierNpcDropHook @Inject constructor(private val charges: ObjCharg
         return null
     }
 }
+
+private var Player.ashSanctifierCharges by intVarBit("varbit.charges_ash_sanctifier_quantity")

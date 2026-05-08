@@ -2,8 +2,7 @@ package org.rsmod.content.skills.prayer.items.ashsanctifier
 
 import org.rsmod.api.invtx.invAdd
 import org.rsmod.api.invtx.invDel
-import org.rsmod.api.obj.charges.ObjChargeManager
-import org.rsmod.api.obj.charges.ObjChargeManager.Companion.isFailure
+import org.rsmod.api.player.vars.intVarBit
 import org.rsmod.game.entity.Player
 import org.rsmod.game.inv.Inventory
 import org.rsmod.game.inv.isType
@@ -27,7 +26,6 @@ internal sealed class AshSanctifierUnchargeResult {
 }
 
 internal fun Player.chargeAshSanctifierWithDeathRunes(
-    chargeManager: ObjChargeManager,
     inv: Inventory,
     sanctifierSlot: Int,
     runeSlot: Int,
@@ -40,7 +38,7 @@ internal fun Player.chargeAshSanctifierWithDeathRunes(
         return null
     }
 
-    val curr = chargeManager.getCharges(sanctifier, "varbit.charges_ash_sanctifier_quantity")
+    val curr = ashSanctifierCharges
     val space = (Int.MAX_VALUE - curr).coerceAtLeast(0)
     val maxRunesBySpace = space / 10
     val toConsume = min(runeCount, maxRunesBySpace)
@@ -54,32 +52,23 @@ internal fun Player.chargeAshSanctifierWithDeathRunes(
     }
 
     val addCharges = toConsume * 10
-    val added = chargeManager.addChargesSameItem(
-        inventory = inv,
-        slot = sanctifierSlot,
-        add = addCharges,
-        internal = "varbit.charges_ash_sanctifier_quantity",
-        max = Int.MAX_VALUE
-    )
-
-    if (added.isFailure()) {
+    val next = (curr + addCharges).coerceAtMost(Int.MAX_VALUE)
+    if (next == curr) {
         invAdd(inv, "obj.deathrune", count = toConsume)
         return null
     }
+    ashSanctifierCharges = next
 
-    return chargeManager.getCharges(inv[sanctifierSlot], "varbit.charges_ash_sanctifier_quantity")
+    return ashSanctifierCharges
 }
 
 internal fun Player.tryUnchargeAshSanctifier(
-    chargeManager: ObjChargeManager,
     inv: Inventory,
     slot: Int,
 ): AshSanctifierUnchargeResult {
     val sanctifier = inv[slot]?.takeIf { it.isType("obj.ash_sanctifier") } ?: return AshSanctifierUnchargeResult.WrongItem
 
-    val storedCharges = chargeManager.getCharges(sanctifier,
-        "varbit.charges_ash_sanctifier_quantity"
-    )
+    val storedCharges = ashSanctifierCharges
     if (storedCharges == 0) {
         return AshSanctifierUnchargeResult.NoCharges
     }
@@ -95,18 +84,10 @@ internal fun Player.tryUnchargeAshSanctifier(
         return AshSanctifierUnchargeResult.NoInvSpace
     }
 
-    val reduced = chargeManager.reduceChargesSameItem(
-        inventory = inv,
-        slot = slot,
-        remove = chargesToRemove,
-        internal = "varbit.charges_ash_sanctifier_quantity"
-    )
-
-    if (reduced.isFailure()) {
-        invDel(inv, "obj.deathrune", count = redeemableRunes, strict = false)
-        return AshSanctifierUnchargeResult.WrongItem
-    }
+    ashSanctifierCharges = (storedCharges - chargesToRemove).coerceAtLeast(0)
 
     val remaining = storedCharges - chargesToRemove
     return AshSanctifierUnchargeResult.Success(redeemableRunes, chargesToRemove, remaining)
 }
+
+private var Player.ashSanctifierCharges by intVarBit("varbit.charges_ash_sanctifier_quantity")

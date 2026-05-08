@@ -2,9 +2,9 @@ package org.rsmod.content.skills.prayer.items.ashsanctifier
 
 import jakarta.inject.Inject
 import org.rsmod.api.config.constants
-import org.rsmod.api.obj.charges.ObjChargeManager
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.vars.boolVarBit
+import org.rsmod.api.player.vars.intVarBit
 import org.rsmod.api.script.onOpHeld2
 import org.rsmod.api.script.onOpHeld3
 import org.rsmod.api.script.onOpHeld4
@@ -14,8 +14,7 @@ import org.rsmod.game.inv.isType
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
-public class AshSanctifierScript @Inject constructor(private val charges: ObjChargeManager) :
-    PluginScript() {
+public class AshSanctifierScript @Inject constructor() : PluginScript() {
     override fun ScriptContext.startup() {
         onOpHeld2("obj.ash_sanctifier") { checkCharges(it.slot) }
         onOpHeld3("obj.ash_sanctifier") { toggleActivity() }
@@ -31,10 +30,10 @@ public class AshSanctifierScript @Inject constructor(private val charges: ObjCha
             mes("You need to complete the Hard Kourend & Kebos Diary before you can use the ash sanctifier.")
             return
         }
-        val newTotal = player.chargeAshSanctifierWithDeathRunes(charges, inv, sanctifierSlot, runeSlot) ?: run {
+        val newTotal = player.chargeAshSanctifierWithDeathRunes(inv, sanctifierSlot, runeSlot) ?: run {
             val sanctifier = inv[sanctifierSlot]?.takeIf { it.isType("obj.ash_sanctifier") }
             val curr = if (sanctifier != null) {
-                charges.getCharges(sanctifier, "varbit.charges_ash_sanctifier_quantity")
+                ashSanctifierCharges
             } else {
                 0
             }
@@ -52,8 +51,8 @@ public class AshSanctifierScript @Inject constructor(private val charges: ObjCha
     }
 
     private fun ProtectedAccess.checkCharges(slot: Int) {
-        val obj = inv[slot] ?: return
-        val count = charges.getCharges(obj, "varbit.charges_ash_sanctifier_quantity")
+        inv[slot] ?: return
+        val count = ashSanctifierCharges
         when {
             count == 0 -> mes("The ash sanctifier has no charges. It can be charged with death runes.")
             player.ashSanctifierActivityEnabled -> mes("The ash sanctifier has $count charges. It is active and ready to purify demonic ashes.")
@@ -75,7 +74,7 @@ public class AshSanctifierScript @Inject constructor(private val charges: ObjCha
     }
 
     private suspend fun ProtectedAccess.uncharge(slot: Int) {
-        when (val result = player.tryUnchargeAshSanctifier(charges, inv, slot)) {
+        when (val result = player.tryUnchargeAshSanctifier(inv, slot)) {
             AshSanctifierUnchargeResult.WrongItem -> return
             AshSanctifierUnchargeResult.NoCharges -> mes("The ash sanctifier has no charges.")
             AshSanctifierUnchargeResult.CannotRedeemDeathRunes -> mes("The ash sanctifier does not have enough charges for you to remove any death runes.",)
@@ -104,3 +103,5 @@ public class AshSanctifierScript @Inject constructor(private val charges: ObjCha
     }
 
 }
+
+private var ProtectedAccess.ashSanctifierCharges by intVarBit("varbit.charges_ash_sanctifier_quantity")

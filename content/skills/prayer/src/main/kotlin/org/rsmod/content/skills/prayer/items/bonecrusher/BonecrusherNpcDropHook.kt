@@ -10,10 +10,9 @@ import org.rsmod.api.player.events.prayer.PrayerSkillAction
 import org.rsmod.api.player.events.skilling.SkillingActionCompleteEvent
 import org.rsmod.api.player.events.skilling.SkillingActionContext
 import org.rsmod.api.player.vars.boolVarBit
+import org.rsmod.api.player.vars.intVarBit
 import org.rsmod.api.death.NpcDeathDropContext
 import org.rsmod.api.death.NpcDeathDropHook
-import org.rsmod.api.obj.charges.ObjChargeManager
-import org.rsmod.api.obj.charges.ObjChargeManager.Companion.isFailure
 import org.rsmod.api.player.stat.statAdvance
 import org.rsmod.api.player.stat.statBoost
 import org.rsmod.api.table.prayer.SkillPrayerRow
@@ -27,7 +26,6 @@ import org.rsmod.game.inv.isType
 public class BonecrusherNpcDropHook
 @Inject
 constructor(
-    private val charges: ObjChargeManager,
     private val areaChecker: AreaChecker,
     private val eventBus: EventBus,
 ) : NpcDeathDropHook {
@@ -50,7 +48,7 @@ constructor(
         val row = boneXpByItem[internal] ?: return false
 
         val source = player.findBonecrusherChargeSource() ?: return false
-        if (!decrementBonecrusherCharge(source)) {
+        if (!decrementBonecrusherCharge(player, source)) {
             return false
         }
 
@@ -107,10 +105,7 @@ constructor(
     private fun Player.findBonecrusherChargeSource(): CrusherSource? {
         val neckSlot = Wearpos.Front.slot
         val neck = worn[neckSlot]
-        if (neck != null && neck.isCrusherItem() && charges.getCharges(
-                neck,
-                "varbit.charges_bonecrusher_quantity",
-            ) > 0) {
+        if (neck != null && neck.isCrusherItem() && bonecrusherCharges > 0) {
             return CrusherSource(worn, neckSlot)
         }
 
@@ -119,20 +114,25 @@ constructor(
             if (!obj.isType("obj.bonecrusher")) {
                 continue
             }
-            if (charges.getCharges(obj, "varbit.charges_bonecrusher_quantity") > 0) {
+            if (bonecrusherCharges > 0) {
                 return CrusherSource(inv, slot)
             }
         }
         return null
     }
 
-    private fun decrementBonecrusherCharge(source: CrusherSource): Boolean {
-        val result = charges.reduceChargesSameItem(source.inventory, source.slot, remove = 1, "varbit.charges_bonecrusher_quantity",)
-        return !result.isFailure()
+    private fun decrementBonecrusherCharge(player: Player, source: CrusherSource): Boolean {
+        if (player.bonecrusherCharges <= 0) {
+            return false
+        }
+        player.bonecrusherCharges -= 1
+        return true
     }
 
     private data class CrusherSource(val inventory: Inventory, val slot: Int)
 }
+
+private var Player.bonecrusherCharges by intVarBit("varbit.charges_bonecrusher_quantity")
 
 private fun InvObj?.isCrusherItem(): Boolean {
     if (this == null) {

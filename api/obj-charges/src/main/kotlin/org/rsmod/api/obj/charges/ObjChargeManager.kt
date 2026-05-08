@@ -1,12 +1,9 @@
 package org.rsmod.api.obj.charges
 
 import dev.openrune.ServerCacheManager
-import dev.openrune.definition.type.VarBitType
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import dev.openrune.types.ItemServerType
-import dev.openrune.types.VarObjBitType
-import dev.openrune.types.varp.bits
 import dev.openrune.util.Wearpos
 import kotlin.contracts.contract
 import kotlin.math.min
@@ -20,77 +17,29 @@ import org.rsmod.utils.bits.getBits
 import org.rsmod.utils.bits.withBits
 
 public class ObjChargeManager {
-
-    private sealed interface ChargeBits {
-        val bits: IntRange
-    }
-
-    private data class VarObjBits(val type: VarObjBitType) : ChargeBits {
-        override val bits: IntRange get() = type.bits
-    }
-
-    private data class VarBitBits(val type: VarBitType) : ChargeBits {
-        override val bits: IntRange get() = type.bits
-    }
-
-    private fun resolveBits(internal: String): ChargeBits {
-        return when {
-            internal.startsWith("varobj.") -> {
-                val type = ServerCacheManager.getVarObj(
-                    internal.asRSCM(RSCMType.VAROBJ)
-                ) ?: error("Unable to find varobj: $internal")
-
-                VarObjBits(type)
-            }
-
-            internal.startsWith("varbit.") -> {
-                val type = ServerCacheManager.getVarbit(
-                    internal.asRSCM(RSCMType.VARBIT)
-                ) ?: error("Unable to find varbit: $internal")
-
-                VarBitBits(type)
-            }
-
-            else -> error("Invalid internal key (must start with varobj. or varbit.): $internal")
-        }
-    }
-
     public fun getCharges(obj: InvObj?, internal: String): Int {
-        val bits = resolveBits(internal).bits
-        return obj?.vars?.getBits(bits) ?: 0
+        val varobj = ServerCacheManager.getVarObj(internal.asRSCM(RSCMType.VARCON)) ?: error("Unable to find varobj: $internal")
+        return obj?.vars?.getBits(varobj.bits) ?: 0
     }
 
-    public fun addChargesSameItem(
-        inventory: Inventory,
-        slot: Int,
-        add: Int,
-        internal: String,
-        max: Int,
-    ): Charge {
-        val bits = resolveBits(internal).bits
-        val chargeRange = 0..bits.bitMask
-
-        require(max in chargeRange) {
-            "`max` charges ($max) must be within range [0..${bits.bitMask}]"
-        }
-
-        val obj = inventory[slot] ?: return Charge.Failure.ObjNotFound
-        val curr = obj.vars.getBits(bits)
-        val total = min(max, curr + add)
-
-        if (curr == total) {
-            return Charge.Failure.AlreadyFullCharges
-        }
-
-        val updatedVar = obj.vars.withBits(bits, total)
-        inventory[slot] = obj.copy(vars = updatedVar)
-
-        return Charge.Success.AddSameObj(
-            added = total - curr,
-            total = total
-        )
-    }
-
+    /**
+     * Adds charges to the obj in the given [slot] of the provided [inventory].
+     *
+     * If the obj has **no existing charges**, it is assumed to be the uncharged variant and will be
+     * replaced with its charged counterpart if at least one charge is added. This requires the obj
+     * type to define a `charged_variant` param; otherwise, an [IllegalStateException] is thrown.
+     *
+     * @param add The number of charges to attempt to add. This can exceed [max], but the final
+     *   charge count will never go above [max].
+     * @param max The maximum number of charges the obj can hold (e.g., `20_000` for Tumeken's
+     *   Shadow). This must not exceed the capacity allowed by [varobj], or an
+     *   [IllegalArgumentException] is thrown.
+     * @return [Charge.Success] if at least one charge was added; otherwise, a [Charge.Failure]
+     *   indicating the reason (e.g., obj already has [max] charges).
+     * @throws IllegalStateException if the obj has no charges and does not define a
+     *   `charged_variant` param (required to convert it into its charged form).
+     * @throws IllegalArgumentException if [max] exceeds the representable value for [varobj].
+     */
     public fun addCharges(
         inventory: Inventory,
         slot: Int,
@@ -98,74 +47,52 @@ public class ObjChargeManager {
         internal: String,
         max: Int,
     ): Charge {
-        val bits = resolveBits(internal).bits
-        val chargeRange = 0..bits.bitMask
-
+        val varobj = ServerCacheManager.getVarObj(internal.asRSCM(RSCMType.VARCON)) ?: error("Unable to find varobj: $internal")
+        val chargeRange = 0..varobj.bits.bitMask
         require(max in chargeRange) {
-            "`max` charges ($max) must be within range [0..${bits.bitMask}]"
+            "`max` charges ($max) must be within range [0..${varobj.bits.bitMask}]. (var=$varobj)"
         }
-
         val obj = inventory[slot] ?: return Charge.Failure.ObjNotFound
-        val curr = obj.vars.getBits(bits)
+        val curr = getCharges(obj, internal)
         val total = min(max, curr + add)
-
         if (curr == total) {
             return Charge.Failure.AlreadyFullCharges
         }
-
-        val updatedVar = obj.vars.withBits(bits, total)
+        val updatedVar = obj.vars.withBits(varobj.bits, total)
         val added = total - curr
 
         if (curr == 0) {
+            // If the obj currently has no charges, we assume it is a _valid_ uncharged version
+            // (i.e., it has the `charged_variant` param defined). If not, we throw an exception.
+            // While someone with spawn permissions could technically have a "charged" obj with
+            // 0 charges, we enforce strict correctness here: they should spawn the uncharged
+            // variant and charge it properly. This helps avoid unintended oversights.
             val charged = getInvObj(obj).paramOrNull(params.charged_variant)
-                ?: error("Obj missing charged_variant param: $obj")
-
+            if (charged == null) {
+                val message = "Obj missing `charged_variant` param: $obj (type=${getInvObj(obj)})"
+                throw IllegalStateException(message)
+            }
             inventory[slot] = InvObj(charged, vars = updatedVar)
-
-            return Charge.Success.AddChangeObj(
-                added = added,
-                total = total,
-                charged = charged
-            )
+            return Charge.Success.AddChangeObj(added = added, total = total, charged = charged)
         }
 
         inventory[slot] = obj.copy(vars = updatedVar)
-
-        return Charge.Success.AddSameObj(
-            added = added,
-            total = total
-        )
+        return Charge.Success.AddSameObj(added = added, total = total)
     }
 
-    public fun reduceChargesSameItem(
-        inventory: Inventory,
-        slot: Int,
-        remove: Int,
-        internal: String,
-    ): Charge {
-        val bits = resolveBits(internal).bits
-
-        val obj = inventory[slot] ?: return Charge.Failure.ObjNotFound
-        val curr = obj.vars.getBits(bits)
-
-        if (curr == 0) {
-            return Charge.Failure.AlreadyFullCharges
-        }
-
-        val total = (curr - remove).coerceAtLeast(0)
-
-        if (curr == total) {
-            return Charge.Failure.AlreadyFullCharges
-        }
-
-        inventory[slot] = obj.copy(vars = obj.vars.withBits(bits, total))
-
-        return Charge.Success.AddSameObj(
-            added = total - curr,
-            total = total
-        )
-    }
-
+    /**
+     * Reduces charges from the player's worn obj in the [wearpos] slot.
+     *
+     * If the obj's **current charges** are `0`, it will immediately be replaced with its uncharged
+     * variant, returning [Uncharge.Failure.NotEnoughCharges]. If the remaining charge count **after
+     * reduction** reaches `0`, the obj will also be replaced with its uncharged variant, but will
+     * return [Uncharge.Success] instead.
+     *
+     * @return [Uncharge.Success] if exactly [decrement] charges were reduced; otherwise, a
+     *   [Uncharge.Failure] indicating the reason for failure.
+     * @throws IllegalStateException if the worn obj does not have a defined `uncharged_variant`
+     *   param.
+     */
     public fun reduceWornCharges(
         player: Player,
         wearpos: Wearpos,
@@ -175,51 +102,70 @@ public class ObjChargeManager {
         val obj = player.worn[wearpos.slot] ?: return Uncharge.Failure.ObjNotFound
         val type = getInvObj(obj)
 
+        // Always ensure that any obj used as a "charge" weapon has an uncharged variant defined.
         val uncharged = type.paramOrNull(params.uncharged_variant)
-            ?: error("Obj missing uncharged_variant param: $obj")
+        if (uncharged == null) {
+            val message = "Obj missing `uncharged_variant` param: $obj (type=$type)"
+            throw IllegalStateException(message)
+        }
 
-        val bits = resolveBits(internal).bits
+        val varobj = ServerCacheManager.getVarObj(internal.asRSCM(RSCMType.VARCON))?: error("Unable to find varobj: $internal")
 
-        val current = obj.vars.getBits(bits)
-
-        if (current < decrement) {
-            if (current == 0) {
+        val currentCharges = obj.vars.getBits(varobj.bits)
+        if (currentCharges < decrement) {
+            if (currentCharges == 0) {
                 player.worn[wearpos.slot] = InvObj(uncharged, vars = obj.vars)
             }
             return Uncharge.Failure.NotEnoughCharges
         }
 
-        val newVal = current - decrement
-        val updated = obj.vars.withBits(bits, newVal)
+        val decrementedCharges = currentCharges - decrement
+        val decrementedPackedVars = obj.vars.withBits(varobj.bits, decrementedCharges)
 
-        player.worn[wearpos.slot] =
-            if (newVal == 0) InvObj(uncharged, vars = updated)
-            else obj.copy(vars = updated)
+        if (decrementedCharges == 0) {
+            player.worn[wearpos.slot] = InvObj(uncharged, vars = decrementedPackedVars)
+        } else {
+            player.worn[wearpos.slot] = obj.copy(vars = decrementedPackedVars)
+        }
 
-        return Uncharge.Success(newVal)
+        return Uncharge.Success(chargesLeft = decrementedCharges)
     }
 
-    public fun removeAllCharges(
-        inventory: Inventory,
-        slot: Int,
-        internal: String,
-    ): Int {
-        val obj = inventory.getValue(slot)
+    /**
+     * Removes all charges from the obj in the given [slot] of the provided [inventory].
+     *
+     * The obj will always be replaced with its uncharged variant, regardless of the current charge
+     * value. This requires the obj type to define an `uncharged_variant` param; otherwise, an
+     * [IllegalStateException] is thrown.
+     *
+     * This function assumes that a valid obj exists in the given [slot].
+     *
+     * _Note: Only the [varobj] var is reset to `0`. All other varobj values on the obj will
+     * persist._
+     *
+     * @return The number of charges the obj had before being reset. This may be `0` if the obj was
+     *   already uncharged.
+     * @throws IllegalStateException if the obj does not define an `uncharged_variant` param.
+     * @throws NoSuchElementException if no obj exists in the given [inventory] slot.
+     */
+    public fun removeAllCharges(inventory: Inventory, slot: Int, internal: String): Int {
+        val obj = inventory.getValue(slot) // Should not call this without a valid obj in `slot`.
         val type = getInvObj(obj)
 
+        val varobj = ServerCacheManager.getVarObj(internal.asRSCM(RSCMType.VAROBJ)) ?: error("Unable to find varobj: $internal")
+
         val uncharged = type.paramOrNull(params.uncharged_variant)
-            ?: error("Obj missing uncharged_variant param: $obj")
+        if (uncharged == null) {
+            val message = "Obj missing `uncharged_variant` param: $obj (type=$type)"
+            throw IllegalStateException(message)
+        }
 
-        val bits = resolveBits(internal).bits
+        val previousCharges = obj.vars.getBits(varobj.bits)
 
-        val previous = obj.vars.getBits(bits)
+        val resetVarValue = obj.vars.withBits(varobj.bits, 0)
+        inventory[slot] = InvObj(uncharged, vars = resetVarValue)
 
-        inventory[slot] = InvObj(
-            uncharged,
-            vars = obj.vars.withBits(bits, 0)
-        )
-
-        return previous
+        return previousCharges
     }
 
     public sealed class Charge {
@@ -227,37 +173,45 @@ public class ObjChargeManager {
             public abstract val added: Int
             public abstract val total: Int
 
-            public data class AddSameObj(
-                override val added: Int,
-                override val total: Int
-            ) : Success()
+            /** Indicates that charges were successfully added to an already charged obj. */
+            public data class AddSameObj(override val added: Int, override val total: Int) :
+                Success()
 
+            /**
+             * Indicates that charges were added to an "uncharged" variant of an obj, resulting in
+             * the inventory obj being changed to the [charged] variant.
+             */
             public data class AddChangeObj(
                 override val added: Int,
                 override val total: Int,
-                val charged: ItemServerType,
+                public val charged: ItemServerType,
             ) : Success()
         }
 
         public sealed class Failure : Charge() {
             public data object ObjNotFound : Failure()
+
             public data object AlreadyFullCharges : Failure()
         }
     }
 
     public sealed class Uncharge {
         public data class Success(val chargesLeft: Int) : Uncharge() {
-            val fullyUncharged: Boolean get() = chargesLeft == 0
+            public val fullyUncharged: Boolean
+                get() = chargesLeft == 0
         }
 
         public sealed class Failure : Uncharge() {
             public data object ObjNotFound : Failure()
+
             public data object NotEnoughCharges : Failure()
         }
     }
 
     public companion object {
-
+        // Important: These contracts assume the only valid `Charge` results are `Success` or
+        // `Failure`. Do not introduce new base result types. Subclasses of `Success` and `Failure`
+        // are fine.
         public fun Charge.isFailure(): Boolean {
             contract {
                 returns(true) implies (this@isFailure is Charge.Failure)
@@ -266,6 +220,9 @@ public class ObjChargeManager {
             return this is Charge.Failure
         }
 
+        // Important: These contracts assume the only valid `Uncharge` results are `Success` or
+        // `Failure`. Do not introduce new base result types. Subclasses of `Success` and `Failure`
+        // are fine.
         public fun Uncharge.isFailure(): Boolean {
             contract {
                 returns(true) implies (this@isFailure is Uncharge.Failure)

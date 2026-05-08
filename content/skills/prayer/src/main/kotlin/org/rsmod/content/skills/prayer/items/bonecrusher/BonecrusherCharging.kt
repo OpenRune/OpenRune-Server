@@ -2,8 +2,7 @@ package org.rsmod.content.skills.prayer.items.bonecrusher
 
 import org.rsmod.api.invtx.invAdd
 import org.rsmod.api.invtx.invDel
-import org.rsmod.api.obj.charges.ObjChargeManager
-import org.rsmod.api.obj.charges.ObjChargeManager.Companion.isFailure
+import org.rsmod.api.player.vars.intVarBit
 import org.rsmod.game.entity.Player
 import org.rsmod.game.inv.Inventory
 import org.rsmod.game.inv.isType
@@ -21,7 +20,6 @@ internal sealed class BonecrusherUnchargeResult {
 }
 
 internal fun Player.chargeCrusherItemWithEcto(
-    chargeManager: ObjChargeManager,
     crusherSlot: Int,
     tokenSlot: Int,
 ): Int? {
@@ -31,31 +29,25 @@ internal fun Player.chargeCrusherItemWithEcto(
         return null
     }
 
-    val added = chargeManager.addChargesSameItem(
-        inventory = inv,
-        slot = crusherSlot,
-        add = tokenCount * 25,
-        internal = "varbit.charges_bonecrusher_quantity",
-        max = 60000
-    )
-
-    if (added.isFailure()) {
+    val add = tokenCount * 25
+    val next = (bonecrusherCharges + add).coerceAtMost(60_000)
+    if (next == bonecrusherCharges) {
         invAdd(inv, "obj.ectotoken", count = tokenCount)
         return null
     }
+    bonecrusherCharges = next
 
-    return chargeManager.getCharges(inv[crusherSlot], "varbit.charges_bonecrusher_quantity")
+    return bonecrusherCharges
 }
 
 internal fun Player.tryUnchargeBonecrusher(
-    chargeManager: ObjChargeManager,
     inv: Inventory,
     slot: Int,
     crusherInternal: String,
 ): BonecrusherUnchargeResult {
-    val crusher = inv[slot]?.takeIf { it.isType(crusherInternal) } ?: return BonecrusherUnchargeResult.WrongItem
+    inv[slot]?.takeIf { it.isType(crusherInternal) } ?: return BonecrusherUnchargeResult.WrongItem
 
-    val storedCharges = chargeManager.getCharges(crusher, "varbit.charges_bonecrusher_quantity")
+    val storedCharges = bonecrusherCharges
     if (storedCharges == 0) {
         return BonecrusherUnchargeResult.NoCharges
     }
@@ -71,18 +63,10 @@ internal fun Player.tryUnchargeBonecrusher(
         return BonecrusherUnchargeResult.NoInvSpace
     }
 
-    val reduced = chargeManager.reduceChargesSameItem(
-        inventory = inv,
-        slot = slot,
-        remove = chargesToRemove,
-        internal = "varbit.charges_bonecrusher_quantity"
-    )
-
-    if (reduced.isFailure()) {
-        invDel(inv, "obj.ectotoken", count = redeemableTokens, strict = false)
-        return BonecrusherUnchargeResult.WrongItem
-    }
+    bonecrusherCharges = (storedCharges - chargesToRemove).coerceAtLeast(0)
 
     val remaining = storedCharges - chargesToRemove
     return BonecrusherUnchargeResult.Success(redeemableTokens, chargesToRemove, remaining)
 }
+
+private var Player.bonecrusherCharges by intVarBit("varbit.charges_bonecrusher_quantity")

@@ -1,5 +1,3 @@
-ash_sanctifier_activity_enabled=65473
-bonecrusher_activity_enabled=65474
 fullscreen_worldmap=65475
 music_last_id=65476
 music_curr_area=65477
@@ -59,5 +57,3 @@ bank_disable_ifevents=65530
 bank_tab_main=65531
 emote_counters_crazy_dance=65532
 emote_counters_premier_shield=65533
-ecto_grinder_recipe=65534
-ecto_tokens=65535
