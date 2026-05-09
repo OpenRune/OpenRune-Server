@@ -76,7 +76,7 @@ public class SocialData {
     }
 
     private fun normalize(name: String): String {
-        return name.trim().lowercase(Locale.getDefault())
+        return name.trim().lowercase(Locale.ROOT)
     }
 
     public fun rememberName(record: SocialNameRecord) {

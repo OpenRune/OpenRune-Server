@@ -1,6 +1,7 @@
 package org.rsmod.api.social
 
 import jakarta.inject.Inject
+import java.util.Locale
 import org.rsmod.api.db.DatabaseConnection
 
 public class SocialNameRepository @Inject constructor() {
@@ -47,7 +48,7 @@ public class SocialNameRepository @Inject constructor() {
                 val current = displayName?.takeIf(String::isNotBlank) ?: loginName
 
                 return SocialNameRecord(
-                    canonicalName = loginName.lowercase(),
+                    canonicalName = loginName.lowercase(Locale.ROOT),
                     currentName = current,
                     previousName = previousDisplayName?.takeIf(String::isNotBlank),
                 )
