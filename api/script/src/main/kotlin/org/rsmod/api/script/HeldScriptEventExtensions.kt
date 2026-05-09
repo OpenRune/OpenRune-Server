@@ -8,6 +8,7 @@ import org.rsmod.api.player.events.interact.HeldContentEvents
 import org.rsmod.api.player.events.interact.HeldDropEvents
 import org.rsmod.api.player.events.interact.HeldEquipEvents
 import org.rsmod.api.player.events.interact.HeldObjEvents
+import org.rsmod.api.player.events.interact.HeldSubOpEvent
 import org.rsmod.api.player.events.interact.HeldUContentEvents
 import org.rsmod.api.player.events.interact.HeldUDefaultEvents
 import org.rsmod.api.player.events.interact.HeldUEvents
@@ -85,6 +86,11 @@ public fun ScriptContext.onOpHeld5(
     type: ItemServerType,
     action: suspend ProtectedAccess.(HeldObjEvents.Op5) -> Unit,
 ): Unit = onOpHeld5(RSCM.getReverseMapping(RSCMType.OBJ, type.id), action)
+
+public fun ScriptContext.onOpHeldSubOp(
+    type: String,
+    action: suspend ProtectedAccess.(HeldSubOpEvent) -> Unit,
+): Unit = onProtectedEvent(type.asRSCM(RSCMType.OBJ), action)
 
 /* Standard content op functions */
 public fun ScriptContext.onOpContentHeld1(

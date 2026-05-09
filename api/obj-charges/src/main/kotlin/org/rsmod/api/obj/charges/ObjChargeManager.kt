@@ -4,7 +4,6 @@ import dev.openrune.ServerCacheManager
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import dev.openrune.types.ItemServerType
-import dev.openrune.types.VarObjBitType
 import dev.openrune.util.Wearpos
 import kotlin.contracts.contract
 import kotlin.math.min

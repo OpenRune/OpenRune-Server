@@ -50,7 +50,7 @@ class GameValProvider : MappingProvider {
 
         // Load TOML
         files.getOrNull(2)?.takeIf { it.exists() }?.walk()
-            ?.filter { it.isFile && it.name == "gamevals.toml" }
+            ?.filter { it.isFile && it.name == "gamevals.toml" && !it.isGeneratedOutputPath() }
             ?.forEach { processGameValToml(it) }
 
         // Load RSCM directories
@@ -58,6 +58,7 @@ class GameValProvider : MappingProvider {
             require(dir.isDirectory) { "Expected a directory for RSCM mappings, got file: ${dir.absolutePath}" }
             dir.walk().filter { it.isFile }.forEach { processRSCMFile(it) }
         }
+
     }
 
     private fun processGameValToml(file: File) {
@@ -108,26 +109,34 @@ class GameValProvider : MappingProvider {
     private fun putMapping(table: String, key: String, value: Int, file: String) {
         val tableMappings = mappings[table]
             ?: throw IllegalArgumentException("Table '$table' does not exist in mappings.")
+        val fullKey = "$table.$key"
 
         val maxID = maxBaseID[table] ?: -1
         require(value > maxID) {
-            "Custom value '$value' for key '$key' in table '$table must exceed the current max base ID $maxID. " +
+            "Custom value '$value' for key '$key' in table '$table' must exceed the current max base ID $maxID. " +
                 "Cannot override existing osrs IDs."
         }
 
-        if (tableMappings.containsKey(key)) {
+        val existingValueForKey = tableMappings[fullKey]
+        if (existingValueForKey != null) {
+            if (existingValueForKey == value) {
+                return
+            }
             throw IllegalArgumentException(
-                "Mapping conflict in table '$table: key '$key' already exists. Keys must be unique."
+                "Mapping conflict in table '$table': key '$fullKey' already exists with value " +
+                    "'$existingValueForKey' (attempted '$value'). Keys must be unique."
             )
         }
 
         tableMappings.entries.find { it.value == value }?.let { existing ->
             throw IllegalArgumentException(
-                "Mapping conflict in table '$table: value '$value' is already mapped to key '${existing.key}'. Values must be unique."
+                "Mapping conflict in table '$table': value '$value' is already mapped to key " +
+                    "'${existing.key}'. Values must be unique."
             )
         }
 
-        tableMappings["$table.$key"] = value
+
+        tableMappings[fullKey] = value
     }
 
     private fun parseRSCMV2Line(line: String, lineNumber: Int): Pair<String, Int> = when {
@@ -183,4 +192,9 @@ class GameValProvider : MappingProvider {
     }
 
     override fun getSupportedExtensions(): List<String> = listOf(".rscm", ".rscm2")
+}
+
+private fun File.isGeneratedOutputPath(): Boolean {
+    val normalized = invariantSeparatorsPath
+    return "/build/" in normalized || "/out/" in normalized || "/target/" in normalized
 }

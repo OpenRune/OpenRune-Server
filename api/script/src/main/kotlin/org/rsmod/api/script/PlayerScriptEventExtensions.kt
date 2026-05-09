@@ -5,6 +5,7 @@ import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import dev.openrune.types.ItemServerType
 import dev.openrune.types.WalkTriggerType
+import org.rsmod.api.player.events.PlayerHitpointsChangedEvent
 import org.rsmod.api.player.events.PlayerMovementEvent
 import org.rsmod.api.player.events.PlayerQueueEvents
 import org.rsmod.api.player.events.PlayerTimerEvent
@@ -96,6 +97,9 @@ public fun ScriptContext.onPlayerWalkTrigger(
 ): Unit = onEvent(trigger.asRSCM(RSCMType.WALKTRIGGER), action)
 
 public fun ScriptContext.onPlayerCoordsChanged(action: PlayerMovementEvent.CoordsMovedEvent.() -> Unit): Unit =
+    onEvent(action)
+
+public fun ScriptContext.onPlayerHitpointsChanged(action: PlayerHitpointsChangedEvent.() -> Unit): Unit =
     onEvent(action)
 
 public fun ScriptContext.onWorldMapClick(

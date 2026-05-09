@@ -1,5 +1,6 @@
 package org.rsmod.game.loc
 
+import dev.openrune.ServerCacheManager
 import dev.openrune.types.ObjectServerType
 import org.rsmod.map.CoordGrid
 import org.rsmod.map.util.Bounds
@@ -57,6 +58,9 @@ public data class BoundLocInfo(
 
     public val level: Int
         get() = coords.level
+
+    val internalName: String
+        get() = ServerCacheManager.getObject(id)?.internalName ?: error("Missing loc type id=$id")
 
     public val adjustedCentre: CoordGrid
         get() = coords.translate(adjustedWidth / 2, adjustedLength / 2)

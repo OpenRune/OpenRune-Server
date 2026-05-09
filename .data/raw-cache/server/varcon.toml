@@ -6,3 +6,6 @@ id = "varcon.woodcutting_tree_last_cut"
 
 [[varcon]]
 id = "varcon.woodcutting_tree_loc"
+
+[[varcon]]
+id = "varcon.firemaking_campfire_expiry_cycle"

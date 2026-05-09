@@ -29,19 +29,32 @@ constructor(
     private val addDurations = ArrayDeque<LocCycleDuration>()
     private val delDurations = ArrayDeque<LocCycleDuration>()
 
-    public fun add(loc: LocInfo, duration: Int): Boolean {
+    /**
+     * Spawns [loc] and schedules its removal after [duration] map cycles when the spawn is
+     * timer-driven.
+     *
+     * @param onDespawn Invoked on the first [MapClock] tick **after** this loc is removed when the
+     *   timer elapses, and only if the removal actually runs (region validator still valid). Never
+     *   runs when [duration] is [Int.MAX_VALUE], when the add result is not a timed spawn, or when
+     *   the registry add fails.
+     */
+    public fun add(loc: LocInfo, duration: Int, onDespawn: (() -> Unit)? = null): Boolean {
         val add = locReg.add(loc)
 
         if (!add.isSuccess()) {
             return false
         }
 
+        // Replacing a timed spawn with a different loc id (same tile/layer) used to leave the old
+        // despawn entry in [addDurations] when the new [locReg.add] returned [NormalMapLoc], so the
+        // stale timer could never remove the visible loc and no new timer was scheduled.
+        clearTimedDespawnAt(loc.coords, loc.layer)
+
         if (add.shouldDespawn() && duration != Int.MAX_VALUE) {
             val revertCycle = mapClock + duration
             val validator = add.regionValidator()
-            val locDuration = LocCycleDuration(loc, revertCycle, validator)
+            val locDuration = LocCycleDuration(loc, revertCycle, validator, onDespawn)
             delDurations.removeExisting(loc)
-            addDurations.removeExisting(loc)
             addDurations.add(locDuration)
         }
 
@@ -55,25 +68,30 @@ constructor(
         duration: Int,
         angle: LocAngle,
         shape: LocShape,
+        onDespawn: (() -> Unit)? = null,
     ): LocInfo {
         val layer = LocLayerConstants.of(shape.id)
         val entity = LocEntity(type.id, shape.id, angle.id)
         val loc = LocInfo(layer, coords, entity)
-        add(loc, duration)
+        add(loc, duration, onDespawn)
         return loc
     }
 
+    /**
+     * @param onDespawn See [add].
+     */
     public fun add(
         coords: CoordGrid,
         internal: String,
         duration: Int,
         angle: LocAngle,
         shape: LocShape,
+        onDespawn: (() -> Unit)? = null,
     ): LocInfo {
         val layer = LocLayerConstants.of(shape.id)
         val entity = LocEntity(internal.asRSCM(RSCMType.LOC), shape.id, angle.id)
         val loc = LocInfo(layer, coords, entity)
-        add(loc, duration)
+        add(loc, duration, onDespawn)
         return loc
     }
 
@@ -124,10 +142,24 @@ constructor(
         }
     }
 
+    private fun clearTimedDespawnAt(coords: CoordGrid, layer: Int) {
+        val iterator = addDurations.iterator()
+        while (iterator.hasNext()) {
+            val next = iterator.next()
+            if (next.loc.coords == coords && next.loc.layer == layer) {
+                iterator.remove()
+            }
+        }
+    }
+
     public fun findAll(zone: ZoneKey): Sequence<LocInfo> = locReg.findAll(zone)
 
     public fun findAll(coords: CoordGrid): Sequence<LocInfo> =
         findAll(ZoneKey.from(coords)).filter { it.coords == coords }
+
+
+    public fun findLoc(coords: CoordGrid, type: String): Boolean =
+        locReg.findType(coords, type.asRSCM(RSCMType.LOC)) != null
 
     public fun findExact(coords: CoordGrid, type: ObjectServerType): LocInfo? =
         locReg.findType(coords, type.id)
@@ -167,6 +199,7 @@ constructor(
             }
             if (duration.isValid()) {
                 locReg.add(duration.loc)
+                duration.onTrigger?.invoke()
             }
             iterator.remove()
         }
@@ -181,6 +214,7 @@ constructor(
             }
             if (duration.isValid()) {
                 locReg.del(duration.loc)
+                duration.onTrigger?.invoke()
             }
             iterator.remove()
         }
@@ -194,10 +228,16 @@ constructor(
         return regionReg.isValid(slot, uid)
     }
 
+    /**
+     * @param onTrigger For [addDurations], runs after the spawned loc is deleted when the timer
+     *   fires. For [delDurations], runs after the map loc is restored when the timer fires. Only
+     *   invoked when [isValid] is true.
+     */
     private data class LocCycleDuration(
         val loc: LocInfo,
         val triggerCycle: Int,
         val regionValidator: RegionValidator?,
+        val onTrigger: (() -> Unit)? = null,
     )
 
     private data class RegionValidator(val slot: Int, val uid: Int)

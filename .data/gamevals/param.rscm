@@ -311,3 +311,5 @@ closesound=65532
 next_loc_stage=65533
 opensound=65534
 npc_poison_severity=65535
+barbarian_firemaking_anim=65536
+spectral=65528
