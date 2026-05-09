@@ -3,8 +3,10 @@ package org.rsmod.api.player.events.interact
 import dev.openrune.rscm.RSCM
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
+import dev.openrune.definition.type.widget.ComponentType
 import dev.openrune.types.InventoryServerType
 import dev.openrune.types.ItemServerType
+import dev.openrune.types.aconverted.interf.IfButtonOp
 import dev.openrune.util.Wearpos
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.events.EventBus
@@ -12,6 +14,7 @@ import org.rsmod.events.KeyedEvent
 import org.rsmod.events.SuspendEvent
 import org.rsmod.events.UnboundEvent
 import org.rsmod.game.entity.Player
+import org.rsmod.game.interact.HeldOp
 import org.rsmod.game.inv.InvObj
 import org.rsmod.game.inv.Inventory
 
@@ -125,6 +128,17 @@ public sealed class HeldObjEvents(id: Number) : OpEvent(id.toLong()) {
         public val type: ItemServerType,
         public val inventory: Inventory,
     ) : HeldObjEvents(obj.id)
+}
+
+public data class HeldSubOpEvent(
+    val slot: Int,
+    val obj: InvObj,
+    val type: ItemServerType,
+    val inventory: Inventory,
+    val op: HeldOp,
+    val subop: Int,
+) : SuspendEvent<ProtectedAccess> {
+    override val id: Long = type.id.toLong()
 }
 
 public sealed class HeldContentEvents(id: Number) : OpEvent(id.toLong()) {

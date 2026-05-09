@@ -234,3 +234,26 @@ id = "varp.fullscreen_worldmap"
 scope = "Temp"
 transmit = "Never"
 
+[[varp]]
+isServerOnly = true
+id = "varp.bonecrusher_activity"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+isServerOnly = true
+id = "varp.ash_sanctifier_activity"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+isServerOnly = true
+id = "varp.ecto_grinder_recipe"
+scope = "Temp"
+transmit = "Never"
+
+[[varp]]
+isServerOnly = true
+id = "varp.ecto_tokens"
+scope = "Perm"
+transmit = "Never"

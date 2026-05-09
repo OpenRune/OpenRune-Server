@@ -38,7 +38,7 @@ data class ItemServerType(
     var examine: String = "",
     @param:TomlField(["params"],serializer = ParamSerializer::class)
     var paramsRaw: MutableMap<Int, Any>? = null,
-    var objvar: IntArray = intArrayOf(),
+    var objvar: List<Int> = emptyList(),
     var playerCost: Int = 0,
     var playerCostDerived: Int = 0,
     var playerCostDerivedConst: Int = 0,

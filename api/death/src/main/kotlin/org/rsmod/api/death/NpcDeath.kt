@@ -29,6 +29,8 @@ constructor(
     private val npcRepo: NpcRepository,
     private val players: PlayerList,
     private val objRepo: ObjRepository,
+    private val deathDropHooks: Set<NpcDeathDropHook>,
+    private val deathKillHooks: Set<NpcDeathKillHook>,
 ) {
     public suspend fun deathNoDrops(access: StandardNpcAccess) {
         access.death(npcRepo, players)
@@ -49,7 +51,29 @@ constructor(
             val duration = hero.lootDropDuration ?: constants.lootdrop_duration
 
             val droppedRemains = paramOrNull(params.dropped_remains)?: ServerCacheManager.getItem("obj.bones".asRSCM())?: error("No bones")
-            objRepo.add(droppedRemains, dropCoords, duration, hero)
+            val ctx = NpcDeathDropContext(
+                hero = hero,
+                dropType = droppedRemains,
+                dropCoords = dropCoords,
+                duration = duration,
+                objRepo = objRepo
+            )
+
+            var dropConsumed = false
+            for (hook in deathDropHooks) {
+                if (hook.tryConsume(ctx)) {
+                    dropConsumed = true
+                    break
+                }
+            }
+            if (!dropConsumed) {
+                objRepo.add(droppedRemains, dropCoords, duration, hero)
+            }
+
+            val killCtx = NpcDeathKillContext(hero = hero, npc = this)
+            for (hook in deathKillHooks) {
+                hook.onKill(killCtx)
+            }
         }
     }
 

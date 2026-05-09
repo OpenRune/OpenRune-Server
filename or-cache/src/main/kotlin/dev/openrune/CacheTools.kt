@@ -21,12 +21,14 @@ import dev.openrune.gamevals.GamevalDumper
 import dev.openrune.impl.GameframeTable
 import dev.openrune.impl.Music
 import dev.openrune.map.packing.MapPackers
+import dev.openrune.tables.StatComponents
 import dev.openrune.tables.skills.Firemaking
+import dev.openrune.tables.skills.prayer.EctofuntusBonemeal
+import dev.openrune.tables.skills.prayer.PrayerBlessedBone
+import dev.openrune.tables.skills.prayer.PrayerTable
 import dev.openrune.tools.MinifyServerCache
 import dev.openrune.tools.PackServerConfig
 import java.io.File
-import java.nio.file.Files
-import java.nio.file.StandardCopyOption
 import kotlin.system.exitProcess
 
 fun getCacheLocation() = File("../.data/", "cache/LIVE").path
@@ -55,7 +57,11 @@ fun tablesToPack() = listOf(
     Music.musicModern(),
     Firemaking.logs(),
     Firemaking.firelighters(),
-    Firemaking.sources()
+    Firemaking.sources(),
+    PrayerTable.skillTable(),
+    PrayerBlessedBone.table(),
+    EctofuntusBonemeal.table(),
+    StatComponents.statsComponents()
 )
 
 fun downloadRev(type: TaskType) {

@@ -702,28 +702,40 @@ isMembers = true
 
 [[params]]
 id = "param.prayer_drain_effect"
+isServerOnly = true
 type = "INT"
 isMembers = true
 
 [[params]]
 id = "param.woodcutting_axe_success_rates"
+isServerOnly = true
 type = "ENUM"
 isMembers = true
 
 [[params]]
 id = "param.worn_poison_envenom_immunity"
+isServerOnly = true
 type = "INT"
 defaultInt = 0
 isMembers = true
 
 [[params]]
 id = "param.worn_disease_mitigation"
+isServerOnly = true
 type = "INT"
 defaultInt = 0
 isMembers = true
 
 [[params]]
 id = "param.npc_poison_severity"
+isServerOnly = true
 type = "INT"
+defaultInt = 0
+isMembers = true
+
+[[params]]
+id = "param.spectral"
+isServerOnly = true
+type = "BOOLEAN"
 defaultInt = 0
 isMembers = true

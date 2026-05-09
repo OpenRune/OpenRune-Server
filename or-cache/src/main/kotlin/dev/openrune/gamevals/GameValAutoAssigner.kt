@@ -5,8 +5,8 @@ import java.io.File
 import kotlin.collections.iterator
 
 /**
- * Scans TOML and RSCM files for gamevals = -1, assigns next available IDs (preferring gaps near
- * existing IDs in the same file), and rewrites the files.
+ * Scans TOML and RSCM files for gamevals = -1, assigns next available IDs from 65535 downward,
+ * and rewrites the files.
  */
 class GameValAutoAssigner(
     private val mappings: Map<String, MutableMap<String, Int>>,
@@ -62,7 +62,7 @@ class GameValAutoAssigner(
 
         contentDir
             ?.walk()
-            ?.filter { it.isFile && it.name == "gamevals.toml" }
+            ?.filter { it.isFile && it.name == "gamevals.toml" && !it.isGeneratedOutputPath() }
             ?.forEach { file ->
                 var currentTable: String? = null
                 file.readLines().forEachIndexed { index, line ->
@@ -113,34 +113,23 @@ class GameValAutoAssigner(
     }
 
     private fun assignIds(scanResult: ScanResult): Map<File, List<Pair<Int, String>>> {
-        val (usedIds, idsInSameFile, unassigned) = scanResult
-        val unassignedCount = unassigned.groupingBy { it.file to it.table }.eachCount()
+        val (usedIds, _, unassigned) = scanResult
         val replacements = mutableMapOf<File, MutableList<Pair<Int, String>>>()
 
         for (entry in
             unassigned.sortedWith(compareBy({ it.file.absolutePath }, { it.lineIndex }))) {
             val tableUsed = usedIds[entry.table]!!
-            val floor = maxOf(MIN_ID, (maxBaseID[entry.table] ?: -1) + 1)
-            val sameFileIds =
-                idsInSameFile[entry.file to entry.table].orEmpty().filter { it >= floor }
-
+            val floor = (maxBaseID[entry.table] ?: -1) + 1
             val id =
-                when {
-                    sameFileIds.isNotEmpty() -> {
-                        val (minInFile, maxInFile) =
-                            sameFileIds.minOrNull()!! to sameFileIds.maxOrNull()!!
-                        val count = unassignedCount[entry.file to entry.table] ?: 1
-                        val gapLo = maxOf(floor, minInFile - count)
-                        (gapLo..minInFile - 1).firstOrNull { it !in tableUsed }
-                            ?: (maxInFile + 1..Int.MAX_VALUE).firstOrNull { it !in tableUsed }
-                            ?: (floor..Int.MAX_VALUE).first { it !in tableUsed }
-                    }
-                    else -> (floor..Int.MAX_VALUE).first { it !in tableUsed }
-                }
+                (MAX_ID downTo floor).firstOrNull { it !in tableUsed }
+                    ?: throw IllegalStateException(
+                        "Unable to auto-assign gameval for table '${entry.table}'. " +
+                            "No free IDs in range [$floor..$MAX_ID].",
+                    )
             tableUsed.add(id)
             replacements
                 .getOrPut(entry.file) { mutableListOf() }
-                .add(entry.lineIndex to entry.line.replaceFirst(NEGATIVE_ONE_REGEX, "= $id"))
+                .add(entry.lineIndex to entry.line.replaceFirst(NEGATIVE_ONE_REGEX, "=$id"))
         }
         return replacements
     }
@@ -156,10 +145,15 @@ class GameValAutoAssigner(
     }
 
     private companion object {
-        const val MIN_ID = 65536 // 64k floor
+        const val MAX_ID = 65535
         val KEY_VALUE_REGEX = Regex("^([^=]+)=\\s*(-?\\d+)\\s*$")
         val KEY_SUBPROP_REGEX = Regex("^([^:]+):([^=]+)=\\s*(-?\\d+)\\s*$")
         val GAMEVALS_SECTION_REGEX = Regex("^\\s*\\[gamevals\\.([^.\\]]+)\\]\\s*$")
         val NEGATIVE_ONE_REGEX = Regex("=\\s*-1\\s*$")
     }
+}
+
+private fun File.isGeneratedOutputPath(): Boolean {
+    val normalized = invariantSeparatorsPath
+    return "/build/" in normalized || "/out/" in normalized || "/target/" in normalized
 }

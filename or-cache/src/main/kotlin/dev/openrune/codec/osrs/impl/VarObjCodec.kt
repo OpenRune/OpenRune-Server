@@ -19,6 +19,9 @@ class VarObjCodec(val custom: Map<Int, VarObjBitType>? = emptyMap()) :
         if (custom == null) return
 
         val type = custom[id] ?: return
+
+        startBit = type.startBit
+        endBit = type.endBit
     }
 
     override fun createDefinition(): VarObjBitType = VarObjBitType()

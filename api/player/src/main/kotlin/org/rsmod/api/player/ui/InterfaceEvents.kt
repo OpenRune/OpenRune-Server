@@ -61,6 +61,26 @@ public data class IfOverlayButton(
     override val id: Long = component.packed.toLong()
 }
 
+public data class IfModalSubOpMenu(
+    val component: ComponentType,
+    val comsub: Int,
+    val obj: ItemServerType?,
+    val op: IfButtonOp,
+    val subop: Int,
+) : SuspendEvent<ProtectedAccess> {
+    override val id: Long = component.packed.toLong()
+}
+
+public data class IfOverlaySubOpMenu(
+    val component: ComponentType,
+    val comsub: Int,
+    val obj: ItemServerType?,
+    val op: IfButtonOp,
+    val subop: Int,
+) : SuspendEvent<ProtectedAccess> {
+    override val id: Long = component.packed.toLong()
+}
+
 public class IfModalButtonT(
     public val selectedSlot: Int,
     public val selectedObj: ItemServerType?,

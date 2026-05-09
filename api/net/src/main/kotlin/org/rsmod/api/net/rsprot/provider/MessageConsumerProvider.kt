@@ -6,6 +6,7 @@ import kotlin.jvm.java
 import net.rsprot.protocol.game.incoming.buttons.If3Button
 import net.rsprot.protocol.game.incoming.buttons.IfButtonD
 import net.rsprot.protocol.game.incoming.buttons.IfButtonT
+import net.rsprot.protocol.game.incoming.buttons.IfSubOp
 import net.rsprot.protocol.game.incoming.locs.OpLoc
 import net.rsprot.protocol.game.incoming.locs.OpLoc6
 import net.rsprot.protocol.game.incoming.locs.OpLocT
@@ -37,6 +38,7 @@ import org.rsmod.api.net.rsprot.handlers.CloseModalHandler
 import org.rsmod.api.net.rsprot.handlers.If3ButtonHandler
 import org.rsmod.api.net.rsprot.handlers.IfButtonDHandler
 import org.rsmod.api.net.rsprot.handlers.IfButtonTHandler
+import org.rsmod.api.net.rsprot.handlers.IfSubOpHandler
 import org.rsmod.api.net.rsprot.handlers.MapBuildCompleteHandler
 import org.rsmod.api.net.rsprot.handlers.MessagePublicHandler
 import org.rsmod.api.net.rsprot.handlers.MoveGameClickHandler
@@ -82,6 +84,7 @@ constructor(
     private val resumePauseButton: ResumePauseButtonHandler,
     private val opObj: OpObjHandler,
     private val opObj6: OpObj6Handler,
+    private val ifSubOp: IfSubOpHandler,
     private val resumePCountDialog: ResumePCountDialogHandler,
     private val resumePNameDialog: ResumePNameDialogHandler,
     private val resumePStringDialog: ResumePStringDialogHandler,
@@ -111,6 +114,7 @@ constructor(
         builder.addListener(ResumePauseButton::class.java, resumePauseButton)
         builder.addListener(OpObjV2::class.java, opObj)
         builder.addListener(OpObj6::class.java, opObj6)
+        builder.addListener(IfSubOp::class.java, ifSubOp)
         builder.addListener(ResumePCountDialog::class.java, resumePCountDialog)
         builder.addListener(ResumePNameDialog::class.java, resumePNameDialog)
         builder.addListener(ResumePStringDialog::class.java, resumePStringDialog)

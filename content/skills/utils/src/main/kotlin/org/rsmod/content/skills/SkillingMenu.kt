@@ -48,6 +48,7 @@ data class Material(
 }
 
 data class SkillMultiConfig(
+    val actionType: SkillingActionType = SkillingActionType.DEFAULT,
     val verb: String,
     val entries: List<SkillMultiEntry>,
     val maxCountProvider: ((Inventory, SkillMultiEntry) -> Int)? = null,
@@ -109,24 +110,14 @@ class SkillMultiEntryBuilder {
 fun skillMulti(
     builder: SkillMultiBuilder.() -> Unit
 ): SkillMultiConfig {
-    return SkillMultiBuilder()
-        .apply(builder)
-        .build()
+    return SkillMultiBuilder().apply(builder).build()
 }
 
 suspend fun ProtectedAccess.openSkillMulti(
     config: SkillMultiConfig,
     onComplete: suspend (SkillMultiSelection) -> Unit = {},
 ) {
-    vars[CHATBOX_UNCLAMP_VARBIT] = 1
 
-    runClientScript(2379)
-
-    ifOpenSub(
-        "interface.skillmulti",
-        "component.chatbox:chatmodal",
-        IfSubType.Modal,
-    )
 
     val available = config.entries.mapNotNull { entry ->
         val amount = config.maxCountProvider?.invoke(inv, entry)
@@ -139,15 +130,33 @@ suspend fun ProtectedAccess.openSkillMulti(
         }
     }
 
-    validButtons.forEach { button ->
+    if (available.isEmpty()) {
+        return
+    }
+
+    vars[CHATBOX_UNCLAMP_VARBIT] = 1
+
+    runClientScript(2379)
+
+    ifOpenSub(
+        "interface.skillmulti",
+        "component.chatbox:chatmodal",
+        IfSubType.Modal,
+    )
+
+    for (i in available.indices) {
         ifSetEvents(
-            button,
-            0..90,
+            validButtons[i],
+            0..28,
             IfEvent.PauseButton
         )
     }
 
-    runClientScript(SKILLMULTI_SETUP_SCRIPT, *skillmultiSetupArgs(config, available).toTypedArray())
+    runClientScript(SKILLMULTI_SETUP_SCRIPT, *skillmultiSetupArgs(
+        actionType = config.actionType,
+        config,
+        available
+    ).toTypedArray())
 
     val input = coroutine.pause(ResumePauseButtonInput::class)
 
@@ -158,11 +167,12 @@ suspend fun ProtectedAccess.openSkillMulti(
     }
 
     val (entry, maxAmount) = available[buttonIndex]
+    val selectedAmount = input.subcomponent.coerceIn(1, maxAmount)
 
     onComplete(
         SkillMultiSelection(
             entry = entry,
-            amount = maxAmount,
+            amount = selectedAmount,
         )
     )
 }
@@ -189,7 +199,8 @@ val validButtons = listOf(
     "component.skillmulti:x",
 )
 
-private fun ProtectedAccess.skillmultiSetupArgs(
+private fun skillmultiSetupArgs(
+    actionType: SkillingActionType,
     config: SkillMultiConfig,
     available: List<Pair<SkillMultiEntry, Int>>,
 ): List<Any> {
@@ -214,10 +225,56 @@ private fun ProtectedAccess.skillmultiSetupArgs(
     }
 
     return buildList {
-        add(0)
+        add(actionType.id)
+        add(labels)
         add(maxCount)
         addAll(itemIds)
         add(maxCount)
-        add(labels)
+    }
+}
+
+enum class SkillingActionType(val id: Int) {
+    MAKE_SETS(2),
+    MAKE_SETS_ALT(3),
+    BUY(4),
+    BUY_SETS(5),
+    COOK(6),
+    COOK_ALT_1(7),
+    COOK_ALT_2(8),
+    FIRE(9),
+    STRING(10),
+    CHARGE(11),
+    CUT(12),
+    SMELT(13),
+    USE(14),
+    UPGRADE(15),
+    SPIN(16),
+    TAKE(17),
+    REQUEST(18),
+    ENCHANT(19),
+    BUY_ALT(20),
+    LIGHT(21),
+    MAKE(22),
+    TAKE_ALT_1(23),
+    GIVE(24),
+    SMITH(25),
+    BURN(27),
+    SELL(28),
+    TAKE_ALT_2(29),
+    USE_ALT(30),
+    CARVE(31),
+    PLANT(32),
+    CHOOSE(33),
+    CARVE_ALT(34),
+    WEAVE(35),
+    SMITH_ALT(37),
+
+    DEFAULT(0);
+
+    companion object {
+        private val BY_ID = entries.associateBy(SkillingActionType::id)
+
+        fun fromId(id: Int): SkillingActionType =
+            BY_ID[id] ?: DEFAULT
     }
 }
