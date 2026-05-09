@@ -40,7 +40,7 @@ OpenRune Server adheres to OSRS protocols, giving you the freedom to connect any
 
 2. **Install dependencies**
    - Ensure you have [IntelliJ IDEA](https://www.jetbrains.com/idea/download/#section=windows).
-   - Set the project SDK to Java 17: `File → Project Structure → SDK`.
+   - Set the project SDK to Java 21: `File → Project Structure → SDK`. (The `:tools:osrs-mcp` module is built with Java 17 via Gradle’s JVM toolchain; other modules target Java 21.)
    - Recommended: install the Rsc plugin in root of the project [OpenRune IntelliJ Tools-1.0.zip](https://github.com/OpenRune/OpenRune-Server/blob/main/OpenRune%20IntelliJ%20Tools-1.0.zip) for better entity reference tooling.
 
    - #### You may need to point the settings file [openRune-intelliJ-tools.toml](https://github.com/OpenRune/OpenRune-Server/blob/main/openRune-intelliJ-tools.toml) like so
