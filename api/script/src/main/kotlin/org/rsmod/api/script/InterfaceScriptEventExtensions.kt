@@ -9,10 +9,12 @@ import org.rsmod.api.player.ui.IfCloseSub
 import org.rsmod.api.player.ui.IfModalButton
 import org.rsmod.api.player.ui.IfModalButtonT
 import org.rsmod.api.player.ui.IfModalDrag
+import org.rsmod.api.player.ui.IfModalSubOpMenu
 import org.rsmod.api.player.ui.IfOpenSub
 import org.rsmod.api.player.ui.IfOverlayButton
 import org.rsmod.api.player.ui.IfOverlayButtonT
 import org.rsmod.api.player.ui.IfOverlayDrag
+import org.rsmod.api.player.ui.IfOverlaySubOpMenu
 import org.rsmod.events.EventBus
 import org.rsmod.plugin.scripts.ScriptContext
 
@@ -30,6 +32,16 @@ public fun ScriptContext.onIfOverlayButton(
 public fun ScriptContext.onIfModalButton(
     button: String,
     action: suspend ProtectedAccess.(IfModalButton) -> Unit,
+): Unit = onProtectedEvent(button.asRSCM(RSCMType.COMPONENT), action)
+
+public fun ScriptContext.onIfOverlaySubOpMenu(
+    button: String,
+    action: suspend ProtectedAccess.(IfOverlaySubOpMenu) -> Unit,
+): Unit = onProtectedEvent(button.asRSCM(RSCMType.COMPONENT), action)
+
+public fun ScriptContext.onIfModalSubOpMenu(
+    button: String,
+    action: suspend ProtectedAccess.(IfModalSubOpMenu) -> Unit,
 ): Unit = onProtectedEvent(button.asRSCM(RSCMType.COMPONENT), action)
 
 /**
