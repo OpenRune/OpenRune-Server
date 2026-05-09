@@ -6,7 +6,34 @@ class WikiTool(
     private val cacheTool: CacheTool = CacheTool(),
 ) {
     private val wiki: WikiClient by lazy(wikiProvider)
-    private val gameVals: GameValTool by lazy(gameValToolProvider)
+
+    @Volatile private var gameValsTool: GameValTool? = null
+    private val gameValsLock = Any()
+
+    private fun gameVals(): GameValTool {
+        gameValsTool?.let { return it }
+        synchronized(gameValsLock) {
+            gameValsTool?.let { return it }
+            return gameValToolProvider().also { gameValsTool = it }
+        }
+    }
+
+    fun reloadGamevalsFromDisk(): String {
+        val fresh = gameValToolProvider()
+        synchronized(gameValsLock) {
+            gameValsTool = fresh
+        }
+        return "Reloaded gamevals from disk (${fresh.totalMappingEntries()} mapping rows). " +
+            "Use after editing .rscm, content gamevals.toml, or binary dats; no OpenRune cache build required for those files."
+    }
+
+    fun reloadCacheSnapshotsFromDisk(): String {
+        cacheTool.clearSnapshots()
+        return "Cleared in-memory cache snapshots. Next cache_search will re-index from disk."
+    }
+
+    fun reloadAllLocalData(): String =
+        reloadGamevalsFromDisk() + "\n" + reloadCacheSnapshotsFromDisk()
 
     companion object {
         private const val DATA_TRUNCATE_CHARS = 800
@@ -54,9 +81,16 @@ class WikiTool(
 
     suspend fun wikiNpcSpawns(title: String, npcName: String?, location: String?): String {
         val source = wiki.rawPageSource(title)
+        val infoboxSection = formatInfoboxNpcIdsResolved(source)
         val allEntries = parseLocEntries(source)
         if (allEntries.isEmpty()) {
-            return "No {{LocLine}} entries found on '$title'."
+            return buildString {
+                append("No {{LocLine}} entries found on '$title'.")
+                if (infoboxSection.isNotBlank()) {
+                    appendLine()
+                    append(infoboxSection)
+                }
+            }.trimEnd()
         }
 
         val byNpc =
@@ -79,7 +113,11 @@ class WikiTool(
                 if (!npcName.isNullOrBlank()) append(" npc='$npcName'")
                 if (!location.isNullOrBlank()) append(" location='$location'")
                 append(" on '$title'.")
-            }
+                if (infoboxSection.isNotBlank()) {
+                    appendLine()
+                    append(infoboxSection)
+                }
+            }.trimEnd()
         }
 
         return buildString {
@@ -96,13 +134,38 @@ class WikiTool(
                     "   Coordinates: ${entry.coords.joinToString("|") { "x:${it.x},y:${it.y}" }}",
                 )
             }
+            if (infoboxSection.isNotBlank()) {
+                appendLine()
+                append(infoboxSection)
+            }
+        }.trimEnd()
+    }
+
+    private fun formatInfoboxNpcIdsResolved(source: String): String {
+        val lines = WikiInfoboxNpcIds.parseMonsterIdLines(source)
+        if (lines.isEmpty()) {
+            return ""
+        }
+        return buildString {
+            appendLine("== Infobox NPC IDs (resolved via loaded gamevals) ==")
+            for (line in lines) {
+                appendLine("${line.label}:")
+                for (id in line.npcIds) {
+                    val keys = gameVals().reverseLookupNpc(id)
+                    if (keys.isEmpty()) {
+                        appendLine("  - id $id -> (no npc.* mapping in loaded gamevals)")
+                    } else {
+                        appendLine("  - id $id -> ${keys.joinToString(" | ")}")
+                    }
+                }
+            }
         }.trimEnd()
     }
 
     fun gamevalSearch(query: String?, table: String?, id: Int?, limit: Int): String {
         val normalizedQuery = query?.trim().orEmpty().ifBlank { null }
         val normalizedTable = table?.trim().orEmpty().ifBlank { null }
-        val result = gameVals.search(query = normalizedQuery, table = normalizedTable, id = id, limit = limit)
+        val result = gameVals().search(query = normalizedQuery, table = normalizedTable, id = id, limit = limit)
         if (result.totalMatches == 0) {
             return buildString {
                 append("No gameval entries matched")

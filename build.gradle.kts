@@ -20,6 +20,33 @@ tasks.register("run") {
     dependsOn(":server:app:run")
 }
 
+tasks.register("configureOsrsMcp") {
+    group = "MCP"
+    description =
+        "Alias for :tools:osrs-mcp:configureOsrsMcp (interactive menu if -Pclient omitted; same -PdebugMcp / -PdryRun)"
+    dependsOn(":tools:osrs-mcp:configureOsrsMcp")
+}
+
+tasks.register("updateOsrsMcp") {
+    group = "MCP"
+    description =
+        "Alias for :tools:osrs-mcp:updateOsrsMcp (rebuild install layout + refresh MCP client configs)."
+    dependsOn(":tools:osrs-mcp:updateOsrsMcp")
+}
+
+tasks.register("removeOsrsMcp") {
+    group = "MCP"
+    description =
+        "Alias for :tools:osrs-mcp:removeOsrsMcp (strip MCP entries, optional Claude global + install cleanup)."
+    dependsOn(":tools:osrs-mcp:removeOsrsMcp")
+}
+
+tasks.register("runMcp") {
+    group = "MCP"
+    description = "Runs the osrs-mcp stdio MCP server (alias for :tools:osrs-mcp:run / runMcp)."
+    dependsOn(":tools:osrs-mcp:runMcp")
+}
+
 tasks.register<JavaExec>("install") {
     group = "installation"
     description = "Runs the complete RS Mod server installation task."

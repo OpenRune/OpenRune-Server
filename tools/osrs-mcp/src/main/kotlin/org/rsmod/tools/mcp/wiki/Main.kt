@@ -65,6 +65,11 @@ fun main() {
 
         try {
             System.err.println("[$MCP_NAME] Server starting...")
+            if (osrsMcpToolDebugEnabled()) {
+                System.err.println(
+                    "[$MCP_NAME] OSRS_MCP_DEBUG_TOOLS is on — each tool call logs start/ok/error to stderr.",
+                )
+            }
             awaitCancellation()
         } finally {
             httpClient?.close()

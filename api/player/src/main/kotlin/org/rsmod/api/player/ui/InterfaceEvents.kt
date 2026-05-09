@@ -47,11 +47,6 @@ public data class IfModalButton(
     override val id: Long = component.packed.toLong()
 }
 
-/**
- * Overlay interface button press, delivered on [ProtectedAccess] like [IfModalButton].
- *
- * [player] is available as [ProtectedAccess.player] on the script receiver.
- */
 public data class IfOverlayButton(
     val component: ComponentType,
     val comsub: Int,

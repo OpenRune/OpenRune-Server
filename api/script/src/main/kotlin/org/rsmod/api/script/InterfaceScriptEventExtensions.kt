@@ -49,9 +49,6 @@ public fun ScriptContext.onIfModalSubOpMenu(
     action: suspend ProtectedAccess.(IfModalSubOpMenu) -> Unit,
 ): Unit = onProtectedEvent(button.asRSCM(RSCMType.COMPONENT), action)
 
-/**
- * Registers a script that triggers when an _overlay_ interface component targets another component.
- */
 public fun ScriptContext.onIfOverlayButtonT(
     selectedComponent: String,
     targetComponent: String = selectedComponent,
@@ -61,9 +58,6 @@ public fun ScriptContext.onIfOverlayButtonT(
     onEvent(packed, action)
 }
 
-/**
- * Registers a script that triggers when a _modal_ interface component targets another component.
- */
 public fun ScriptContext.onIfModalButtonT(
     selectedComponent: String,
     targetComponent: String = selectedComponent,

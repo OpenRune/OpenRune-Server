@@ -78,6 +78,10 @@ class CacheTool {
 
     internal val snapshots = ConcurrentHashMap<CacheKind, Snapshot>()
 
+    fun clearSnapshots() {
+        snapshots.clear()
+    }
+
     fun search(cacheKind: CacheKind, type: CacheSearchType, query: String?, id: Int?, limit: Int): SearchResult {
         val root = resolveRoot(cacheKind)
         val revision = resolveRevision(root)

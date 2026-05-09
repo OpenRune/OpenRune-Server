@@ -1,7 +1,8 @@
 package org.rsmod.tools.mcp.wiki
 
-import java.io.DataInputStream
-import java.io.FileInputStream
+import dev.openrune.gamevals.GameValProvider
+import dev.openrune.rscm.RSCMType
+import java.io.File
 import java.nio.file.Files
 import java.nio.file.Path
 
@@ -23,6 +24,13 @@ class GameValTool private constructor(private val entries: List<GameValEntry>) {
     fun search(query: String?, table: String?, id: Int?, limit: Int): SearchResult {
         val normalizedQuery = query?.trim()?.lowercase().orEmpty()
         val normalizedTable = table?.trim()?.lowercase().orEmpty()
+
+        if (normalizedTable.isNotBlank() && normalizedTable !in RSCMType.RSCM_PREFIXES) {
+            val allowed = RSCMType.entries.joinToString(", ") { it.prefix }
+            throw IllegalArgumentException(
+                "Unknown 'table' prefix '${table?.trim()}'. Valid prefixes: $allowed",
+            )
+        }
 
         val filteredByTable =
             if (normalizedTable.isBlank()) {
@@ -68,32 +76,50 @@ class GameValTool private constructor(private val entries: List<GameValEntry>) {
         )
     }
 
+    fun totalMappingEntries(): Int = entries.size
+
+    fun reverseLookupNpc(id: Int): List<String> =
+        entries
+            .filter { it.table.equals("npc", ignoreCase = true) && it.id == id }
+            .map { it.fullKey }
+            .distinct()
+
     private data class ScoredEntry(val score: Int, val entry: GameValEntry)
 
     companion object {
         fun load(rootDir: String? = null): GameValTool {
             val root = resolveRoot(rootDir)
-            val dat = root.resolve(".data").resolve("gamevals-binary").resolve("gamevals.dat")
-            val cols = root.resolve(".data").resolve("gamevals-binary").resolve("gamevals_columns.dat")
-            require(Files.isRegularFile(dat)) { "Unable to find gamevals.dat at: $dat" }
-            require(Files.isRegularFile(cols)) { "Unable to find gamevals_columns.dat at: $cols" }
+            val prefix = rootDirPrefix(root)
+            val provider = GameValProvider.loadIsolated(rootDir = prefix, autoAssignIds = false)
+            return fromProvider(provider)
+        }
 
-            val mappings = mutableMapOf<String, MutableMap<String, Int>>()
-            val sourceByFullKey = mutableMapOf<String, String>()
-            loadDatInto(dat, mappings, sourceByFullKey)
-            loadDatInto(cols, mappings, sourceByFullKey)
-
+        private fun fromProvider(provider: GameValProvider): GameValTool {
             val entries =
-                mappings
-                    .flatMap { (table, tableEntries) ->
-                        tableEntries.map { (fullKey, id) ->
-                            val key = fullKey.removePrefix("$table.")
-                            val source = sourceByFullKey[fullKey] ?: "unknown"
-                            GameValEntry(table = table, key = key, fullKey = fullKey, id = id, source = source)
-                        }
-                    }.sortedBy { it.fullKey }
-
+                provider.mappings.flatMap { (table, tableMap) ->
+                    tableMap.map { (fullKey, id) ->
+                        val key =
+                            if (fullKey.startsWith("$table.")) {
+                                fullKey.removePrefix("$table.")
+                            } else {
+                                fullKey
+                            }
+                        GameValEntry(
+                            table = table,
+                            key = key,
+                            fullKey = fullKey,
+                            id = id,
+                            source = "merged",
+                        )
+                    }
+                }.sortedBy { it.fullKey }
             return GameValTool(entries)
+        }
+
+        private fun rootDirPrefix(root: Path): String {
+            val s = root.toAbsolutePath().normalize().toString()
+            val sep = File.separator
+            return if (s.endsWith(sep)) s else s + sep
         }
 
         private fun resolveRoot(rootDir: String?): Path {
@@ -106,7 +132,7 @@ class GameValTool private constructor(private val entries: List<GameValEntry>) {
                 val parent = Path.of(logDir).toAbsolutePath().normalize().parent
                 if (
                     parent != null &&
-                        Files.isRegularFile(parent.resolve(".data").resolve("gamevals-binary").resolve("gamevals.dat"))
+                    Files.isRegularFile(parent.resolve(".data").resolve("gamevals-binary").resolve("gamevals.dat"))
                 ) {
                     return parent
                 }
@@ -164,55 +190,5 @@ class GameValTool private constructor(private val entries: List<GameValEntry>) {
             }
             return roots.toList()
         }
-
-        private fun loadDatInto(
-            datPath: Path,
-            mappings: MutableMap<String, MutableMap<String, Int>>,
-            sourceByFullKey: MutableMap<String, String>,
-        ) {
-            DataInputStream(FileInputStream(datPath.toFile())).use { input ->
-                val tableCount = input.readInt()
-                repeat(tableCount) {
-                    val tableName = readSizedUtf(input)
-                    val itemCount = input.readInt()
-                    val tableEntries = mappings.getOrPut(tableName) { mutableMapOf() }
-                    repeat(itemCount) {
-                        val itemString = readSizedUtf(input)
-                        val (key, value) = parseRscmLine(itemString)
-                        val fullKey = "$tableName.$key"
-                        tableEntries.putIfAbsent(fullKey, value)
-                        sourceByFullKey.putIfAbsent(fullKey, datPath.fileName.toString())
-                    }
-                }
-            }
-        }
-
-        private fun parseRscmLine(line: String): Pair<String, Int> =
-            when {
-                line.contains("=") -> {
-                    val parts = line.split("=", limit = 2)
-                    require(parts.size == 2) { "Invalid gameval line: '$line'" }
-                    parts[0].trim() to parts[1].trim().toInt()
-                }
-                line.contains(":") -> {
-                    val parts = line.split(":", limit = 2)
-                    require(parts.size == 2) { "Invalid gameval line: '$line'" }
-                    val key = parts[0].trim()
-                    val valueParts = parts[1].trim().split("=", limit = 2)
-                    require(valueParts.size == 2) { "Invalid gameval line: '$line'" }
-                    key to valueParts[1].trim().toInt()
-                }
-                else -> throw IllegalArgumentException("Invalid gameval line: '$line'")
-            }
-
-        private fun readSizedUtf(input: DataInputStream): String {
-            val length = input.readUnsignedShort()
-            val bytes = ByteArray(length)
-            input.readFully(bytes)
-            return String(bytes, Charsets.UTF_8)
-        }
     }
 }
-
-
-

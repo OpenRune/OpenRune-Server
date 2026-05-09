@@ -1,42 +1,40 @@
 # OSRS Wiki MCP Server
 
-Stdio-based [Model Context Protocol](https://modelcontextprotocol.io/) server for **Old School RuneScape Wiki** search and pages, **gameval** lookup, and **cache** definition search. Intended for local use (IDEs, MCP clients); the main game server does **not** depend on this module.
+Stdio [MCP](https://modelcontextprotocol.io/) server: OSRS Wiki search/pages, **`wiki_npc_spawns`**, **gameval** lookup, and **decoded cache** search. For local IDE use only; the game server does not depend on this module.
 
 | | |
 | --- | --- |
-| **Gradle project** | `:tools:osrs-mcp` |
-| **Main class** | `org.rsmod.tools.mcp.wiki.MainKt` |
-| **Transport** | stdio (`StdioServerTransport`) — reads MCP messages from stdin |
-
----
+| **Gradle** | `:tools:osrs-mcp` |
+| **Main** | `org.rsmod.tools.mcp.wiki.MainKt` |
+| **Transport** | stdio (`StdioServerTransport`) |
 
 ## Quick start
 
-From the **repository root**:
+From repo root:
 
-1. **Run the server** (stdio; blocks until the client disconnects):
+```bash
+./gradlew :tools:osrs-mcp:run
+```
 
-   ```bash
-   ./gradlew :tools:osrs-mcp:run
-   ```
+Blocks until the MCP client disconnects. Jars for `java -cp`:
 
-2. **Build an install layout** (fat classpath under `lib/` — needed for `java -cp ...` in client configs):
+```bash
+./gradlew :tools:osrs-mcp:installDist
+```
 
-   ```bash
-   ./gradlew :tools:osrs-mcp:installDist
-   ```
+Output: `tools/osrs-mcp/build/install/osrs-mcp/lib/`
 
-   Libraries are written to:
+**Wire into Cursor / VS Code / Claude / IntelliJ:** `./gradlew :tools:osrs-mcp:configureOsrsMcp` (interactive menu) or `./gradlew configureOsrsMcp`. Non-interactive: `-Pclient=cursor` (also `vscode`, `claude`, `intellij`, `all`). Depends on `installDist`.
 
-   `tools/osrs-mcp/build/install/osrs-mcp/lib/`
+**Refresh configs after dependency changes:** `./gradlew updateOsrsMcp` (optional `-Pclient=...`, `-PdryRun=true`).
 
----
+**Remove wiring:** `./gradlew removeOsrsMcp` — strips `osrs-mcp` from `.cursor/mcp.json`, `.vscode/mcp.json`, repo Claude fragment / IntelliJ notes; optionally Claude Desktop global config (backup `.osrs-mcp.bak`). Flags: `-Pclient=`, `-PskipClaudeGlobal=true`, `-PremoveInstall=true`, `-PdryRun=true`.
 
-## MCP client configuration
+Use the repo folder as the workspace root so `${workspaceFolder}` in generated JSON matches your clone.
 
-Point your MCP client at Java with the install `lib/*` classpath and the main class above. Replace `<repo-root>` with your clone path (use `/` or `\\` as your OS expects).
+## Client config (minimal)
 
-**Example (JSON):**
+Replace `<repo-root>` with your clone path. Run `installDist` first.
 
 ```json
 {
@@ -58,130 +56,96 @@ Point your MCP client at Java with the install `lib/*` classpath and the main cl
 }
 ```
 
-**IntelliJ / Cursor:** add a stdio MCP server entry with the same `command`, `args`, and `env`. Run `installDist` first so `lib/*` exists.
+If **`gameval_search`** finds nothing: set `RSPS_ROOT` to the repo root and ensure `.data/gamevals-binary/gamevals.dat` (and `gamevals_columns.dat`) exist.
 
-**If `gameval_search` cannot find data:** ensure `<repo-root>/.data/gamevals-binary/` contains the expected files and that `RSPS_ROOT` is the repo root (see [Local data](#local-data-gameval_search) below).
+## Tools (summary)
 
----
+| Tool | Role |
+| --- | --- |
+| `wiki_search` | Wiki search (`query`, `limit` 1–10) |
+| `wiki_page` | Page text by title (`title`, `maxChars`) |
+| `wiki_npc_spawns` | `{{LocLine}}` spawns + infobox NPC ids → `npc.*` via gamevals (`title`, optional `npcName`, `location`) |
+| `gameval_search` | Merged gamevals (`query` and/or `id`, optional `table`, `limit`) |
+| `gameval_reload` | Reload gamevals from disk |
+| `cache_reload` | Drop `cache_search` indexes |
+| `reload_all` | `gameval_reload` + `cache_reload` |
+| `cache_search` | Decoded cache (`cache`: `LIVE` \| `SERVER`, `type`: `npc`, `obj`, …, `query` and/or `id`, `limit`) |
 
-## Tools
+**`cache_search`:** require `cache` + `type`, and at least one of `query` or `id`. Long `data:` lines are truncated (~800 chars); **search by `id`** for a single compact hit.
 
-### `wiki_search`
+## Example output
 
-Search the wiki; returns numbered hits (title, URL, optional snippet).
+### `wiki_npc_spawns` — `title`: `King Black Dragon`
 
-| Parameter | Type | Required | Notes |
-| --- | --- | --- | --- |
-| `query` | string | yes | non-empty |
-| `limit` | int | no | default `5`, clamped `1`–`10` |
+Wiki: [King Black Dragon](https://oldschool.runescape.wiki/w/King_Black_Dragon)
 
-### `wiki_page`
+```
+Found 1 spawn entries on 'King Black Dragon':
+1. King Black Dragon
+   Location: King Black Dragon Lair (Wilderness)
+   Levels: 276
+   Members: Yes
+   Map ID: 26
+   Plane: 0
+   Spawn count: 1
+   Coordinates: x:3109,y:10265
 
-Load a page by title; returns title, canonical URL, and cleaned text excerpt.
+== Infobox NPC IDs (resolved via loaded gamevals) ==
+id:
+  - id 239 -> npc.king_dragon
+  - id 2642 -> npc.twocats_kbd_cutscene
+```
 
-| Parameter | Type | Required | Notes |
-| --- | --- | --- | --- |
-| `title` | string | yes | non-empty |
-| `maxChars` | int | no | default `6000`, clamped `500`–`20000` |
+Gameval resolution needs `.data/gamevals-binary/` (and merged content/RSCM as elsewhere in this repo).
 
-### `wiki_npc_spawns`
+### `cache_search` — SERVER npc id 239 (`npc.king_dragon`)
 
-Parse `{{LocLine}}` spawn data from a wiki page.
+```json
+{ "cache": "SERVER", "type": "npc", "id": 239 }
+```
 
-| Parameter | Type | Required | Notes |
-| --- | --- | --- | --- |
-| `title` | string | yes | non-empty |
-| `npcName` | string | no | exact match, case-insensitive |
-| `location` | string | no | substring match, case-insensitive |
+```
+Cache: SERVER
+Found 1 cache matches; showing 1.
+1. [npc] 239 - King Black Dragon
+   combat=276, size=5, hp=240
+   data: id=239; name=King Black Dragon; size=5; category=347; models=[17414, 17415, 17429, 17422, 17423]; chatheadModels=null; standAnim=90; rotateLeftAnim=-1; rotateRightAnim=-1; walkAnim=4635; rotateBackAnim=-1; walkLeftAnim=-1; walkRightAnim=-1; actions=EntityOpsDefinition(ops=[1=Attack], subOps=[], conditionalOps=[], conditionalSubOps=[]); originalColours=null; modifiedColours=null; originalTextureColours=null; modifiedTextureColours=null; multiVarBit=-1; multiVarp=-1; multiDefault=-1; transforms=null; isMinimapVisible=true; combatLevel=276; widthScale=128; heightScale=128; renderPriority=0; ambient=0; contrast=0; headIconGraphics=null; headIconIndexes=null; rotation=32; ... (truncated; search by id for full data)
+Rerun with narrower filters for a smaller result set.
+```
 
-Output includes metadata and `x:...,y:...` style coordinate lists.
-
-### `gameval_search`
-
-Look up rows in decoded gameval tables.
-
-| Parameter | Type | Required | Notes |
-| --- | --- | --- | --- |
-| `query` | string | no | — |
-| `table` | string | no | — |
-| `id` | int | no | — |
-| `limit` | int | no | default `10`, clamped `1`–`50` |
-
-**Constraint:** provide at least one of `query` or `id`.
-
-**Output:** one exact match, or a short disambiguation list with a narrowing hint.
-
-### `cache_search`
-
-Search decoded cache definitions (npc, obj, item, etc.).
-
-| Parameter | Type | Required | Notes |
-| --- | --- | --- | --- |
-| `cache` | string | yes | `LIVE` or `SERVER` |
-| `type` | string | yes | `npc`, `obj`, `item`, `anim`, `enum`, `struct`, `healthbar`, `hitsplat`, `varbit`, `varp`, `dbrow`, `dbtable`, `all` |
-| `query` | string | no | — |
-| `id` | int | no | — |
-| `limit` | int | no | default `25`, clamped `1`–`100` |
-
-**Constraint:** provide at least one of `query` or `id`.
-
-**Output:** ranked matches with type, id, name, summary, and full field dump.
-
----
+Requires `.data/cache/SERVER`, repo `game.yml` with `revision:`, and root resolution (same order as below).
 
 ## Local data (`gameval_search`)
 
-**Files (under repo root):**
+Paths under repo root:
 
 - `.data/gamevals-binary/gamevals.dat`
 - `.data/gamevals-binary/gamevals_columns.dat`
 
-**Root resolution order:**
-
-1. Internal explicit `rootDir` (if set)
-2. Parent of `LOG_DIR`, if the files exist there
-3. `RSPS_ROOT`
-4. Inferred classpath roots
-5. Current working directory and parents
-
-If nothing resolves, the server returns an error asking you to set `RSPS_ROOT` or an explicit root.
-
----
+Root: parent of `LOG_DIR` if dats exist there → `RSPS_ROOT` → classpath-derived roots → cwd walk. **`gameval_reload`** picks up edits without restarting MCP.
 
 ## Local cache (`cache_search`)
 
-**Directories:**
+- `.data/cache/LIVE` and/or `.data/cache/SERVER`
+- `game.yml` with `revision:`
 
-- `.data/cache/LIVE`
-- `.data/cache/SERVER`
-
-**Also required:** `game.yml` at the repo root with a `revision:` field.
-
-**Root resolution order:**
-
-1. Parent of `LOG_DIR`, if the selected cache directory exists
-2. `RSPS_ROOT`, if the selected cache exists
-3. Current working directory and parents
-
-If the chosen cache path is missing, the tool errors with the expected path.
-
----
+Root: parent of `LOG_DIR` if that cache dir exists → `RSPS_ROOT` → cwd walk. **`cache_reload`** (or **`reload_all`**) after replacing cache exports or bumping revision.
 
 ## Logging
 
 | | |
 | --- | --- |
-| **Default log file** | `logs/osrs-mcp.log` (under cwd or as resolved by logback) |
-| **Override** | set environment variable `LOG_DIR` |
-
----
+| Default | `logs/osrs-mcp.log` |
+| Override | `LOG_DIR` |
 
 ## Code map
 
 | File | Role |
 | --- | --- |
-| `src/main/kotlin/org/rsmod/tools/mcp/wiki/Main.kt` | MCP bootstrap and tool registration |
-| `src/main/kotlin/org/rsmod/tools/mcp/wiki/WikiTool.kt` | Wiki, gameval, and cache tool behavior and formatting |
-| `src/main/kotlin/org/rsmod/tools/mcp/wiki/WikiClient.kt` | MediaWiki HTTP client |
-| `src/main/kotlin/org/rsmod/tools/mcp/wiki/GameValTool.kt` | Gameval load and search |
-| `src/main/kotlin/org/rsmod/tools/mcp/wiki/CacheTool.kt` | Cache snapshot indexing and definition lookup |
+| `Main.kt` | MCP bootstrap |
+| `McpServerTools.kt` | Tool registration |
+| `WikiTool.kt` | Wiki / gameval / cache formatting |
+| `WikiClient.kt` | MediaWiki HTTP |
+| `WikiInfoboxNpcIds.kt` | Infobox id lines |
+| `GameValTool.kt` | Gameval load + search |
+| `CacheTool.kt` | Cache index + lookup |

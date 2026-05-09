@@ -8,6 +8,11 @@ import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
 
+internal fun osrsMcpToolDebugEnabled(): Boolean {
+    val v = System.getenv("OSRS_MCP_DEBUG_TOOLS") ?: return false
+    return v.equals("true", ignoreCase = true) || v == "1" || v.equals("yes", ignoreCase = true)
+}
+
 private fun jsonStringProp(): JsonObject = buildJsonObject { put("type", "string") }
 
 private fun jsonIntProp(min: Int, max: Int, default: Int): JsonObject =
@@ -24,10 +29,26 @@ private fun toolError(message: String): CallToolResult =
 private fun toolOk(text: String): CallToolResult =
     CallToolResult(content = listOf(TextContent(text = text)))
 
-private suspend inline fun runTool(crossinline block: suspend () -> String): CallToolResult =
+private suspend inline fun runTool(
+    toolName: String,
+    crossinline detail: () -> String,
+    crossinline block: suspend () -> String,
+): CallToolResult =
     try {
-        toolOk(block())
+        if (osrsMcpToolDebugEnabled()) {
+            System.err.println("[osrs-mcp][tool] $toolName start ${detail()}")
+        }
+        val text = block()
+        if (osrsMcpToolDebugEnabled()) {
+            System.err.println("[osrs-mcp][tool] $toolName ok outputChars=${text.length}")
+        }
+        toolOk(text)
     } catch (e: Exception) {
+        if (osrsMcpToolDebugEnabled()) {
+            System.err.println(
+                "[osrs-mcp][tool] $toolName ERROR ${e::class.simpleName}: ${e.message ?: "unknown"}",
+            )
+        }
         toolError("Tool call failed: ${e.message ?: "unknown error"}")
     }
 
@@ -51,7 +72,7 @@ internal suspend fun Server.registerOsrsMcpTools(toolService: WikiTool) {
             return@addTool toolError("'query' is required and must be non-empty.")
         }
         val limit = args.intParam("limit")?.coerceIn(1, 10) ?: 5
-        runTool { toolService.wikiSearch(query, limit) }
+        runTool("wiki_search", { "query=${query.take(120)} limit=$limit" }) { toolService.wikiSearch(query, limit) }
     }
 
     addTool(
@@ -73,12 +94,16 @@ internal suspend fun Server.registerOsrsMcpTools(toolService: WikiTool) {
             return@addTool toolError("'title' is required and must be non-empty.")
         }
         val maxChars = args.intParam("maxChars")?.coerceIn(500, 20000) ?: 6000
-        runTool { toolService.wikiPage(title, maxChars) }
+        runTool("wiki_page", { "title=${title.take(120)} maxChars=$maxChars" }) {
+            toolService.wikiPage(title, maxChars)
+        }
     }
 
     addTool(
         name = "wiki_npc_spawns",
-        description = "Retrieves NPC spawn locations from raw wiki source LocLine entries for a page.",
+        description =
+            "Parses {{LocLine}} spawn tables from raw wiki source, then parses Infobox Monster " +
+                "|idN= / |id= comma-separated NPC ids and resolves each id to npc.* keys via loaded gamevals.",
         inputSchema =
             ToolSchema(
                 properties =
@@ -97,7 +122,12 @@ internal suspend fun Server.registerOsrsMcpTools(toolService: WikiTool) {
         }
         val npcName = args.stringParam("npcName")
         val location = args.stringParam("location")
-        runTool {
+        runTool(
+            "wiki_npc_spawns",
+            {
+                "title=${title.take(80)} npcName=${npcName.take(40)} location=${location.take(40)}"
+            },
+        ) {
             toolService.wikiNpcSpawns(
                 title = title,
                 npcName = npcName.ifBlank { null },
@@ -108,7 +138,10 @@ internal suspend fun Server.registerOsrsMcpTools(toolService: WikiTool) {
 
     addTool(
         name = "gameval_search",
-        description = "Searches gamevals.dat mappings to resolve config keys to IDs.",
+        description =
+            "Searches merged gameval mappings (binary gamevals.dat + columns, content gamevals.toml, " +
+                "and .data/gamevals RSCM files). Optional 'table' filters by RSCM prefix " +
+                "(area, npc, obj, seq, … — same set as RSCMType).",
         inputSchema =
             ToolSchema(
                 properties =
@@ -129,7 +162,10 @@ internal suspend fun Server.registerOsrsMcpTools(toolService: WikiTool) {
         if (query.isBlank() && id == null) {
             return@addTool toolError("Provide at least one filter: 'query' or 'id'.")
         }
-        runTool {
+        runTool(
+            "gameval_search",
+            { "query=${query.take(80)} table=${table.take(40)} id=$id limit=$limit" },
+        ) {
             toolService.gamevalSearch(
                 query = query.ifBlank { null },
                 table = table.ifBlank { null },
@@ -137,6 +173,36 @@ internal suspend fun Server.registerOsrsMcpTools(toolService: WikiTool) {
                 limit = limit,
             )
         }
+    }
+
+    addTool(
+        name = "gameval_reload",
+        description =
+            "Reloads merged gameval mappings from disk (binary dats, content gamevals.toml, .data/gamevals RSCM). " +
+                "The MCP process caches gamevals in memory until you call this tool or restart Cursor.",
+        inputSchema = ToolSchema(properties = buildJsonObject {}, required = emptyList()),
+    ) {
+        runTool("gameval_reload", { "" }) { toolService.reloadGamevalsFromDisk() }
+    }
+
+    addTool(
+        name = "cache_reload",
+        description =
+            "Clears in-memory decoded cache indexes used by cache_search. Call after changing `.data/cache` exports " +
+                "or `game.yml` revision so the next cache_search rebuilds from disk.",
+        inputSchema = ToolSchema(properties = buildJsonObject {}, required = emptyList()),
+    ) {
+        runTool("cache_reload", { "" }) { toolService.reloadCacheSnapshotsFromDisk() }
+    }
+
+    addTool(
+        name = "reload_all",
+        description =
+            "Reloads gamevals from disk and clears cache_search indexes (gameval_reload + cache_reload). " +
+                "Use after local data changes without restarting Cursor.",
+        inputSchema = ToolSchema(properties = buildJsonObject {}, required = emptyList()),
+    ) {
+        runTool("reload_all", { "" }) { toolService.reloadAllLocalData() }
     }
 
     addTool(
@@ -182,7 +248,12 @@ internal suspend fun Server.registerOsrsMcpTools(toolService: WikiTool) {
         if (query.isBlank() && id == null) {
             return@addTool toolError("Provide at least one filter: 'query' or 'id'.")
         }
-        runTool {
+        runTool(
+            "cache_search",
+            {
+                "cache=${cacheKind.name} type=${searchType.key} query=${query.take(80)} id=$id limit=$limit"
+            },
+        ) {
             toolService.cacheSearch(
                 cache = cacheKind,
                 type = searchType,

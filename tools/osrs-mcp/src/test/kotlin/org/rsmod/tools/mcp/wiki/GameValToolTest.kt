@@ -4,6 +4,7 @@ import java.io.DataOutputStream
 import java.nio.file.Files
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 import kotlin.test.assertTrue
 
 class GameValToolTest {
@@ -50,6 +51,24 @@ class GameValToolTest {
         assertEquals(3, result.totalMatches)
         assertEquals(2, result.matches.size)
         assertTrue(result.truncated)
+    }
+
+    @Test
+    fun `search rejects unknown table prefix`() {
+        val root = Files.createTempDirectory("gameval-index-test")
+        val binaryDir = root.resolve(".data").resolve("gamevals-binary")
+        Files.createDirectories(binaryDir)
+
+        writeMockDat(
+            binaryDir.resolve("gamevals.dat"),
+            mapOf("npc" to listOf("kraken=1234")),
+        )
+        writeMockDat(binaryDir.resolve("gamevals_columns.dat"), mapOf("dbcolumn" to emptyList()))
+
+        val index = GameValTool.load(root.toString())
+        assertFailsWith<IllegalArgumentException> {
+            index.search(query = "kraken", table = "not_a_real_prefix", id = null, limit = 10)
+        }
     }
 
     // Test fixture helper only: writes mock binary files under a temp directory.
