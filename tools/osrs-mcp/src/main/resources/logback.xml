@@ -2,9 +2,9 @@
 
     <!-- File appender: rolling daily, kept for 7 days -->
     <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${LOG_DIR:-logs}/osrs-wiki-mcp.log</file>
+        <file>${LOG_DIR:-logs}/osrs-mcp.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>${LOG_DIR:-logs}/osrs-wiki-mcp.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <fileNamePattern>${LOG_DIR:-logs}/osrs-mcp.%d{yyyy-MM-dd}.log</fileNamePattern>
             <maxHistory>7</maxHistory>
         </rollingPolicy>
         <encoder>

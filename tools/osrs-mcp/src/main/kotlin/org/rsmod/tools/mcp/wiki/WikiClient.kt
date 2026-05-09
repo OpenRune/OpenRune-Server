@@ -152,5 +152,3 @@ class WikiClient(
         Jsoup.parse(html).text().replace(Regex("\\s+"), " ").trim()
 }
 
-
-

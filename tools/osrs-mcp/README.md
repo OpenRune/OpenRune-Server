@@ -171,7 +171,7 @@ If the chosen cache path is missing, the tool errors with the expected path.
 
 | | |
 | --- | --- |
-| **Default log file** | `logs/osrs-wiki-mcp.log` (under cwd or as resolved by logback) |
+| **Default log file** | `logs/osrs-mcp.log` (under cwd or as resolved by logback) |
 | **Override** | set environment variable `LOG_DIR` |
 
 ---

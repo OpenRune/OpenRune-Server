@@ -4,9 +4,9 @@ import dev.openrune.OsrsCacheProvider
 import dev.openrune.definition.type.ItemType
 import dev.openrune.definition.type.NpcType
 import dev.openrune.filesystem.Cache
+import java.lang.reflect.Modifier
 import java.nio.file.Files
 import java.nio.file.Path
-import java.lang.reflect.Modifier
 import java.util.concurrent.ConcurrentHashMap
 
 enum class CacheKind {
