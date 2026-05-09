@@ -1,8 +1,11 @@
 plugins {
-    id("org.jetbrains.kotlin.jvm")
-    id("application")
+    id("base-conventions")
+    application
 }
 
+application {
+    mainClass.set("org.rsmod.tools.mcp.wiki.MainKt")
+}
 
 dependencies {
     implementation("com.fasterxml.jackson.core:jackson-databind:2.17.2")
@@ -15,16 +18,4 @@ dependencies {
 
     testImplementation(kotlin("test"))
     testImplementation("io.ktor:ktor-client-mock:3.3.3")
-}
-
-kotlin {
-    jvmToolchain(17)
-}
-
-application {
-    mainClass.set("org.rsmod.tools.mcp.wiki.MainKt")
-}
-
-tasks.test {
-    useJUnitPlatform()
 }

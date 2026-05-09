@@ -28,7 +28,7 @@ include(
     "engine",
     "server",
     "or-cache",
-    "tools:osrs-wiki-mcp",
+    "tools:osrs-mcp",
 )
 
 includeProjects(project(":api"))
