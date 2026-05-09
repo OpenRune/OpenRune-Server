@@ -59,7 +59,7 @@ class ItemServerCodec(
                         val count = buf.readUnsignedByte().toInt()
                         val arr = IntArray(count)
                         repeat(count) { i -> arr[i] = buf.readInt() }
-                        def.objvar = arr
+                        def.objvar = arr.toList()
                     },
                     encode = { buf, def ->
                         buf.writeByte(def.objvar.size)

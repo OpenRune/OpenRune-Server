@@ -9,11 +9,11 @@ import org.rsmod.api.config.refs.done.hitmark_groups
 import org.rsmod.api.config.refs.params
 import org.rsmod.api.mechanics.toxins.Toxin
 import org.rsmod.api.player.hit.modifier.NoopPlayerHitModifier
-import org.rsmod.api.player.hit.processor.DamageOnlyPlayerHitProcessor
 import org.rsmod.api.player.hit.processor.InstantPlayerHitProcessor
 import org.rsmod.api.player.hit.takeInstantHit
 import org.rsmod.api.player.output.ChatType
 import org.rsmod.api.player.output.mes
+import org.rsmod.api.player.queueDeath
 import org.rsmod.api.player.stat.hitpoints
 import org.rsmod.api.player.stat.stat
 import org.rsmod.api.player.stat.statSub
@@ -29,6 +29,20 @@ public object PlayerDisease {
 
     private object DiseaseSplatOnlyProcessor : InstantPlayerHitProcessor {
         override fun Player.process(hit: Hit) {
+            showHitmark(hit.hitmark)
+        }
+    }
+
+    private object DiseaseDamageOnlyProcessor : InstantPlayerHitProcessor {
+        override fun Player.process(hit: Hit) {
+            val damage = minOf(hitpoints, hit.damage)
+            if (damage > 0) {
+                statSub("stat.hitpoints", constant = damage, percent = 0)
+            }
+            val queueDeath = hitpoints == 0 && "queue.death" !in queueList
+            if (queueDeath) {
+                queueDeath()
+            }
             showHitmark(hit.hitmark)
         }
     }
@@ -120,7 +134,7 @@ public object PlayerDisease {
                 player.takeInstantHit(
                     type = HitType.Typeless,
                     damage = hpLoss,
-                    processor = DamageOnlyPlayerHitProcessor(),
+                    processor = DiseaseDamageOnlyProcessor,
                     hitmark = hitmark_groups.disease,
                     modifier = NoopPlayerHitModifier,
                 )

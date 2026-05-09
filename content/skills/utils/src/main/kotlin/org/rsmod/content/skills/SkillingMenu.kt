@@ -118,15 +118,7 @@ suspend fun ProtectedAccess.openSkillMulti(
     config: SkillMultiConfig,
     onComplete: suspend (SkillMultiSelection) -> Unit = {},
 ) {
-    vars[CHATBOX_UNCLAMP_VARBIT] = 1
 
-    runClientScript(2379)
-
-    ifOpenSub(
-        "interface.skillmulti",
-        "component.chatbox:chatmodal",
-        IfSubType.Modal,
-    )
 
     val available = config.entries.mapNotNull { entry ->
         val amount = config.maxCountProvider?.invoke(inv, entry)
@@ -138,6 +130,20 @@ suspend fun ProtectedAccess.openSkillMulti(
             entry to amount
         }
     }
+
+    if (available.isEmpty()) {
+        return
+    }
+
+    vars[CHATBOX_UNCLAMP_VARBIT] = 1
+
+    runClientScript(2379)
+
+    ifOpenSub(
+        "interface.skillmulti",
+        "component.chatbox:chatmodal",
+        IfSubType.Modal,
+    )
 
     validButtons.forEach { button ->
         ifSetEvents(

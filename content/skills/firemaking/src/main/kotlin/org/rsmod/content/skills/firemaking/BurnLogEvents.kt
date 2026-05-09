@@ -172,7 +172,6 @@ public class BurnLogEvents @Inject constructor(
         val xpModifier = xpMods.get(player, "stat.firemaking")
         val xp = task.log.xp * task.method.xpMultiplier(task.log.item.internalName) * xpModifier
         statAdvance("stat.firemaking", xp)
-        println("[DEBUG] Firemaking XP mod: x$xpModifier (awarded $xp xp)")
         mes("The fire catches and the logs begin to burn.")
 
         moveAwayFromFire(fireCoords)
