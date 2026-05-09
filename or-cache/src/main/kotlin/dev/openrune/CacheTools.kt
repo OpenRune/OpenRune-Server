@@ -21,6 +21,7 @@ import dev.openrune.gamevals.GamevalDumper
 import dev.openrune.impl.GameframeTable
 import dev.openrune.impl.Music
 import dev.openrune.map.packing.MapPackers
+import dev.openrune.tables.StatComponents
 import dev.openrune.tables.skills.Firemaking
 import dev.openrune.tables.skills.prayer.EctofuntusBonemeal
 import dev.openrune.tables.skills.prayer.PrayerBlessedBone
@@ -60,6 +61,7 @@ fun tablesToPack() = listOf(
     PrayerTable.skillTable(),
     PrayerBlessedBone.table(),
     EctofuntusBonemeal.table(),
+    StatComponents.statsComponents()
 )
 
 fun downloadRev(type: TaskType) {

@@ -29,6 +29,11 @@ public fun ScriptContext.onIfOverlayButton(
     action: suspend ProtectedAccess.(IfOverlayButton) -> Unit,
 ): Unit = onProtectedEvent(button.asRSCM(RSCMType.COMPONENT), action)
 
+public fun ScriptContext.onIfOverlayButton(
+    button: ComponentType,
+    action: suspend ProtectedAccess.(IfOverlayButton) -> Unit,
+): Unit = onProtectedEvent(button.packed, action)
+
 public fun ScriptContext.onIfModalButton(
     button: String,
     action: suspend ProtectedAccess.(IfModalButton) -> Unit,
