@@ -46,3 +46,6 @@ dairy_cow=44
 cow_calf=45
 pickable_crop=46
 chicken_coop=47
+cooking_range_standard=48
+cooking_range_lumbridge=49
+cooking_range_hosidius=50
