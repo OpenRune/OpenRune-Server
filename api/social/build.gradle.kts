@@ -13,7 +13,7 @@ dependencies {
     implementation(libs.guice)
     implementation(projects.api.attr)
     implementation(projects.api.playerOutput)
-
+    implementation(projects.engine.events)
     implementation(projects.engine.game)
     implementation(projects.api.db)
 }

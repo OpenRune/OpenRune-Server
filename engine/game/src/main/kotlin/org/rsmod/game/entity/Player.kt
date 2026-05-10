@@ -160,6 +160,7 @@ public class Player(
     public var username: String = ""
     public var displayName: String by avatar::name
     public var previousDisplayName: String = ""
+    public var displayNameChangedAt: java.time.LocalDateTime? = null
     public var members: Boolean = false
     public var lastKnownDevice: Int? = null
 

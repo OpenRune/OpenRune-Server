@@ -122,6 +122,7 @@ public fun Player.addSocialFriend(
     }
 
     if (social.isFriend(record.canonicalName)) {
+        writeSocialMessage("${record.currentName} is already on your friend list.")
         return
     }
 
@@ -160,9 +161,20 @@ public fun Player.deleteSocialFriend(
         return
     }
 
-    val canonicalName = resolvedName?.canonicalName ?: cleaned.lowercase()
+    val cachedRecord = social.nameRecord(cleaned)
 
-    if (!social.removeFriend(canonicalName)) {
+    val canonicalName =
+        resolvedName?.canonicalName
+            ?: cachedRecord?.canonicalName
+            ?: cleaned.lowercase(java.util.Locale.ROOT)
+
+    val removed =
+        social.removeFriend(canonicalName) ||
+            social.removeFriend(cleaned) ||
+            cachedRecord?.currentName?.let { social.removeFriend(it) } == true ||
+            cachedRecord?.previousName?.let { social.removeFriend(it) } == true
+
+    if (!removed) {
         return
     }
 
@@ -198,6 +210,7 @@ public fun Player.addSocialIgnore(
     }
 
     if (social.isIgnoring(record.canonicalName)) {
+        writeSocialMessage("${record.currentName} is already on your ignore list.")
         return
     }
 
@@ -232,9 +245,20 @@ public fun Player.deleteSocialIgnore(
         return
     }
 
-    val canonicalName = resolvedName?.canonicalName ?: cleaned.lowercase()
+    val cachedRecord = social.nameRecord(cleaned)
 
-    if (!social.removeIgnore(canonicalName)) {
+    val canonicalName =
+        resolvedName?.canonicalName
+            ?: cachedRecord?.canonicalName
+            ?: cleaned.lowercase(java.util.Locale.ROOT)
+
+    val removed =
+        social.removeIgnore(canonicalName) ||
+            social.removeIgnore(cleaned) ||
+            cachedRecord?.currentName?.let { social.removeIgnore(it) } == true ||
+            cachedRecord?.previousName?.let { social.removeIgnore(it) } == true
+
+    if (!removed) {
         return
     }
 
@@ -244,7 +268,7 @@ public fun Player.deleteSocialIgnore(
         UpdateIgnoreList(
             listOf(
                 UpdateIgnoreList.RemovedIgnoredEntry(
-                    resolvedName?.currentName ?: cleaned
+                    resolvedName?.currentName ?: cachedRecord?.currentName ?: cleaned
                 )
             )
         )
