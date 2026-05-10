@@ -43,7 +43,7 @@ tasks.register("removeOsrsMcp") {
 
 tasks.register("runMcp") {
     group = "MCP"
-    description = "Runs the osrs-mcp stdio MCP server (alias for :tools:osrs-mcp:run / runMcp)."
+    description = "Runs the osrs-mcp stdio MCP server (alias for :tools:osrs-mcp:runMcp)."
     dependsOn(":tools:osrs-mcp:runMcp")
 }
 

@@ -13,7 +13,7 @@ Stdio [MCP](https://modelcontextprotocol.io/) server: OSRS Wiki search/pages, **
 From repo root:
 
 ```bash
-./gradlew :tools:osrs-mcp:run
+./gradlew :tools:osrs-mcp:runMcp
 ```
 
 Blocks until the MCP client disconnects. Jars for `java -cp`:
