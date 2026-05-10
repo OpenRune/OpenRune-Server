@@ -65,11 +65,16 @@ data class SkillMultiConfig(
 class SkillMultiBuilder {
 
     private var verb: String = "make"
+    private var actionType: SkillingActionType = SkillingActionType.DEFAULT
 
     private val entries = mutableListOf<SkillMultiEntry>()
 
     fun verb(value: String) {
         verb = value
+    }
+
+    fun action(value: SkillingActionType) {
+        actionType = value
     }
 
     fun entry(
@@ -86,6 +91,7 @@ class SkillMultiBuilder {
 
     fun build(): SkillMultiConfig {
         return SkillMultiConfig(
+            actionType = actionType,
             verb = verb,
             entries = entries,
         )

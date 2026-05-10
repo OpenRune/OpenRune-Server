@@ -4,20 +4,9 @@ import java.nio.charset.StandardCharsets
 import java.nio.file.AtomicMoveNotSupportedException
 import java.nio.file.Files
 import java.nio.file.StandardCopyOption
-import org.gradle.api.tasks.JavaExec
 
 plugins {
     id("base-conventions")
-    application
-}
-
-application {
-    mainClass.set("org.rsmod.tools.mcp.wiki.MainKt")
-}
-
-tasks.named<JavaExec>("run") {
-    group = "MCP"
-    description = "Runs the osrs-mcp stdio MCP server (blocks until stopped)."
 }
 
 tasks.register("runMcp") {

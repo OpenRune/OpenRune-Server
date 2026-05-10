@@ -1570,3 +1570,48 @@ contentGroup = "content.opened_single_door"
 
 [object.params]
 "param.next_loc_stage" = "loc.poordoor_m"
+
+[[object]]
+id = "loc.range"
+inherit = "loc.range"
+contentGroup = "content.cooking_range_standard"
+
+[[object]]
+id = "loc.lunar_pirate_cooking_range"
+inherit = "loc.lunar_pirate_cooking_range"
+contentGroup = "content.cooking_range_standard"
+
+[[object]]
+id = "loc.dorgesh_cooking_range1"
+inherit = "loc.dorgesh_cooking_range1"
+contentGroup = "content.cooking_range_standard"
+
+[[object]]
+id = "loc.dorgesh_cooking_range2"
+inherit = "loc.dorgesh_cooking_range2"
+contentGroup = "content.cooking_range_standard"
+
+[[object]]
+id = "loc.dorgesh_nursery_cooking_range"
+inherit = "loc.dorgesh_nursery_cooking_range"
+contentGroup = "content.cooking_range_standard"
+
+[[object]]
+id = "loc.ds2_guild_cooking_range"
+inherit = "loc.ds2_guild_cooking_range"
+contentGroup = "content.cooking_range_standard"
+
+[[object]]
+id = "loc.cooksquestrange"
+inherit = "loc.cooksquestrange"
+contentGroup = "content.cooking_range_lumbridge"
+
+[[object]]
+id = "loc.hos_cooking_range"
+inherit = "loc.hos_cooking_range"
+contentGroup = "content.cooking_range_hosidius"
+
+[[object]]
+id = "loc.hos_cooking_range_02"
+inherit = "loc.hos_cooking_range_02"
+contentGroup = "content.cooking_range_hosidius"
