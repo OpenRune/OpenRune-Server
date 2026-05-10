@@ -1,0 +1,67 @@
+[gamevals.dbtable]
+cooking_foods =65531
+cooking_ales =65530
+
+[gamevals.timer]
+cooking_wine_ferment =15
+cooking_zamorak_wine_ferment =14
+
+[gamevals.queue]
+cooking_cook =65535
+wine_mix =65534
+brewing_ferment =65533
+
+[gamevals.dbrow]
+cooking_shrimp =65414
+cooking_anchovies =65413
+cooking_sardine =65412
+cooking_herring =65411
+cooking_mackerel =65410
+cooking_trout =65409
+cooking_cod =65408
+cooking_pike =65407
+cooking_salmon =65406
+cooking_tuna =65405
+cooking_lobster =65404
+cooking_bass =65403
+cooking_swordfish =65402
+cooking_monkfish =65401
+cooking_shark =65400
+cooking_manta_ray =65399
+cooking_sea_turtle =65398
+cooking_dark_crab =65397
+cooking_anglerfish =65396
+cooking_chicken =65395
+cooking_meat =65394
+cooking_bear_meat =65393
+cooking_rat_meat =65392
+cooking_rabbit =65391
+cooking_cave_eel =65390
+cooking_lava_eel =65389
+cooking_karambwan =65388
+cooking_bread =65387
+cooking_redberry_pie =65386
+cooking_meat_pie =65385
+cooking_apple_pie =65384
+cooking_pizza =65383
+cooking_stew =65382
+cooking_cake =65381
+cooking_mud_pie =65380
+cooking_garden_pie =65379
+cooking_fish_pie =65378
+cooking_botanical_pie =65377
+cooking_mushroom_pie =65376
+cooking_admiral_pie =65375
+cooking_dragonfruit_pie =65374
+cooking_wild_pie =65373
+cooking_summer_pie =65372
+ale_dwarven_stout =65371
+ale_asgarnian_ale =65370
+ale_greenmans_ale =65369
+ale_wizards_mind_bomb =65368
+ale_dragon_bitter =65367
+ale_moonlight_mead =65366
+ale_axemans_folly =65365
+ale_chefs_delight =65364
+ale_slayers_respite =65363
+ale_cider =65362

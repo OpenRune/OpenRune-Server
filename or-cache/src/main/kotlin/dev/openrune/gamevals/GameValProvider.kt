@@ -18,19 +18,28 @@ class GameValProvider : MappingProvider {
     override val mappings: MutableMap<String, MutableMap<String, Int>> = mutableMapOf()
     val maxBaseID: MutableMap<String, Int> = mutableMapOf()
 
-    /** When true, scans for -1 gamevals and auto-assigns non-conflicting IDs before loading. */
     var autoAssignIds: Boolean = false
 
     companion object {
-        fun load(rootDir: String = "", autoAssignIds: Boolean = false) {
-            val provider = GameValProvider()
-            provider.autoAssignIds = autoAssignIds
-            provider.use(
+        fun sourceFiles(rootDir: String): Array<File> =
+            arrayOf(
                 Paths.get("${rootDir}.data", "gamevals-binary", "gamevals.dat").toFile(),
                 Paths.get("${rootDir}.data", "gamevals-binary", "gamevals_columns.dat").toFile(),
                 Paths.get("${rootDir}content").toFile(),
-                Paths.get("${rootDir}.data", "gamevals").toFile()
+                Paths.get("${rootDir}.data", "gamevals").toFile(),
             )
+
+        fun load(rootDir: String = "", autoAssignIds: Boolean = false) {
+            val provider = GameValProvider()
+            provider.autoAssignIds = autoAssignIds
+            provider.use(*sourceFiles(rootDir))
+        }
+
+        fun loadIsolated(rootDir: String = "", autoAssignIds: Boolean = false): GameValProvider {
+            val provider = GameValProvider()
+            provider.autoAssignIds = autoAssignIds
+            provider.load(*sourceFiles(rootDir))
+            return provider
         }
     }
 
@@ -41,24 +50,24 @@ class GameValProvider : MappingProvider {
         decodeGameValDat(files[1])
 
         if (autoAssignIds) {
-            val contentDir = files.getOrNull(2)?.takeIf { it.exists() }
-            val gamevalsDir = files.getOrNull(3)?.takeIf { it.exists() }
+            val contentDir = files.getOrNull(2)?.takeIf { it.exists() && it.isDirectory }
+            val gamevalsDir = files.getOrNull(3)?.takeIf { it.exists() && it.isDirectory }
             if (contentDir != null || gamevalsDir != null) {
                 GameValAutoAssigner(mappings, maxBaseID).run(contentDir, gamevalsDir)
             }
         }
 
-        // Load TOML
-        files.getOrNull(2)?.takeIf { it.exists() }?.walk()
+        files.getOrNull(2)?.takeIf { it.exists() && it.isDirectory }?.walk()
             ?.filter { it.isFile && it.name == "gamevals.toml" && !it.isGeneratedOutputPath() }
             ?.forEach { processGameValToml(it) }
 
-        // Load RSCM directories
         files.drop(3).forEach { dir ->
-            require(dir.isDirectory) { "Expected a directory for RSCM mappings, got file: ${dir.absolutePath}" }
+            if (!dir.exists()) {
+                return@forEach
+            }
+            check(dir.isDirectory) { "Expected a directory for RSCM mappings, got: ${dir.absolutePath}" }
             dir.walk().filter { it.isFile }.forEach { processRSCMFile(it) }
         }
-
     }
 
     private fun processGameValToml(file: File) {
