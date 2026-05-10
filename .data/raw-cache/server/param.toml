@@ -116,6 +116,7 @@ type = "CATEGORY"
 isMembers = true
 
 [[params]]
+isServerOnly = true
 id = "param.proj_type"
 type = "PROJANIM"
 isMembers = true
@@ -325,11 +326,13 @@ defaultInt = 0
 isMembers = true
 
 [[params]]
+isServerOnly = true
 id = "param.bankside_extraop_conditional_varbit"
 type = "VARBIT"
 isMembers = true
 
 [[params]]
+isServerOnly = true
 id = "param.bankside_extraop_conditional_bit"
 type = "INT"
 isMembers = true
@@ -680,11 +683,13 @@ type = "INT"
 isMembers = true
 
 [[params]]
+isServerOnly = true
 id = "param.prayer_varbit"
 type = "VARBIT"
 isMembers = true
 
 [[params]]
+isServerOnly = true
 id = "param.prayer_unlock_varbit"
 type = "VARBIT"
 isMembers = true

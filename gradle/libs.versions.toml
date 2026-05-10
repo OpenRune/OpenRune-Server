@@ -26,7 +26,7 @@ rsprot = "1.0.0-ALPHA-20260506"
 simmetrics = "4.1.1"
 spotless = "7.0.4"
 sqlite = "3.50.1.0"
-or2 = "2.4.5"
+or2 = "2.4.7"
 or2ServerUtils = "0.7"
 jodatime = "2.14.0"
 
