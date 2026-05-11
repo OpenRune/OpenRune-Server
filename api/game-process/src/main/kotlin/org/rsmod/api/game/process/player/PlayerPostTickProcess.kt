@@ -1,12 +1,14 @@
 package org.rsmod.api.game.process.player
 
 import jakarta.inject.Inject
+import org.rsmod.api.account.autosave.PlayerAutosaveOrchestrator
 import org.rsmod.api.game.process.GameLifecycle
 import org.rsmod.api.player.forceDisconnect
 import org.rsmod.api.player.output.MiscOutput
 import org.rsmod.api.utils.logging.GameExceptionHandler
 import org.rsmod.events.EventBus
 import org.rsmod.game.entity.Player
+import org.rsmod.game.entity.PlayerPersistenceHints
 import org.rsmod.game.entity.util.EntityFaceAngle
 import org.rsmod.game.entity.util.ShuffledPlayerList
 import org.rsmod.game.seq.EntitySeq
@@ -25,6 +27,7 @@ constructor(
     private val invUpdates: PlayerInvUpdateProcessor,
     private val statUpdates: PlayerStatUpdateProcessor,
     private val exceptionHandler: GameExceptionHandler,
+    private val playerAutosave: PlayerAutosaveOrchestrator,
 ) {
     public fun process() {
         computeSharedBuffers()
@@ -51,15 +54,20 @@ constructor(
 
     private fun processPostTick() {
         for (player in playerList) {
-            player.tryOrDisconnect {
-                processMapChanges()
-                processClientCycle()
-                processZoneUpdates()
-                processInvUpdates()
-                processStatUpdates()
-                processRunUpdates()
-                processClientState()
-                cleanUpPendingUpdates()
+            PlayerPersistenceHints.enter(player)
+            try {
+                player.tryOrDisconnect {
+                    processMapChanges()
+                    processClientCycle()
+                    processZoneUpdates()
+                    processInvUpdates()
+                    processStatUpdates()
+                    processRunUpdates()
+                    processClientState()
+                    cleanUpPendingUpdates()
+                }
+            } finally {
+                PlayerPersistenceHints.leave()
             }
         }
     }
@@ -128,6 +136,7 @@ constructor(
     }
 
     private fun finalizePostTick() {
+        playerAutosave.processEndOfTick(playerList)
         zoneUpdates.clearEnclosedBuffers()
         zoneUpdates.clearPendingZoneUpdates()
         invUpdates.cleanUp()

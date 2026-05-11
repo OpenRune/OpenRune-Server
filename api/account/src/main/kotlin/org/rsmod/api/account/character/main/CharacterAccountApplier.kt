@@ -1,6 +1,9 @@
 package org.rsmod.api.account.character.main
 
 import dev.openrune.ServerCacheManager
+import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.rscm.RSCMType
+import dev.openrune.types.ModLevelType
 import jakarta.inject.Inject
 import java.time.LocalDateTime
 import org.rsmod.api.account.character.CharacterDataStage
@@ -36,11 +39,34 @@ public class CharacterAccountApplier @Inject constructor() :
         if (data.attrs.isNotEmpty()) {
             player.attr.putAllFromPersistence(data.attrs)
         }
-        player.assignModLevel(data.modLevel)
+        player.assignModLevel(data)
     }
 
-    private fun Player.assignModLevel(modLevelName: String?) {
+    private fun Player.assignModLevel(data: CharacterAccountData) {
         val levels = ServerCacheManager.getModelLevels().values
-        modLevel = levels.firstOrNull { it.displayName == modLevelName } ?: levels.first()
+        val defaultLevel = levels.first()
+        modLevel =
+            resolveModLevelFromRights(data.rights)
+                ?: levels.firstOrNull { it.displayName == data.modLevel }
+                ?: defaultLevel
+    }
+
+    public companion object {
+        private val RIGHTS_MOD_LEVEL_PRIORITY =
+            arrayOf("modlevel.owner", "modlevel.admin", "modlevel.moderator", "modlevel.player")
+
+        public fun resolveModLevelFromRights(rights: String): ModLevelType? {
+            if (rights.isBlank()) {
+                return null
+            }
+            val tokens =
+                rights.split(',').map { it.trim() }.filter { it.isNotEmpty() }.map { it.lowercase() }
+            for (internal in RIGHTS_MOD_LEVEL_PRIORITY) {
+                if (tokens.contains(internal.lowercase())) {
+                    return ServerCacheManager.getModLevel(internal.asRSCM(RSCMType.MODLEVEL))
+                }
+            }
+            return null
+        }
     }
 }

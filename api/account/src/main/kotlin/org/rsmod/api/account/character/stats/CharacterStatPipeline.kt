@@ -1,6 +1,7 @@
 package org.rsmod.api.account.character.stats
 
 import dev.openrune.ServerCacheManager
+import dev.or2.sql.OpenRuneSql
 import dev.openrune.rscm.RSCM
 import dev.openrune.rscm.RSCMType
 import jakarta.inject.Inject
@@ -16,12 +17,7 @@ public class CharacterStatPipeline @Inject constructor(private val applier: Char
     override fun append(connection: DatabaseConnection, metadata: CharacterMetadataList) {
         val select =
             connection.prepareStatement(
-                """
-                    SELECT stat_id, vis_level, base_level, fine_xp
-                    FROM stats
-                    WHERE character_id = ?
-                """
-                    .trimIndent()
+                OpenRuneSql.text("game/stats/select_for_character.sql"),
             )
 
         val stats = ArrayList<Stat>(25)
@@ -46,19 +42,7 @@ public class CharacterStatPipeline @Inject constructor(private val applier: Char
     override fun save(connection: DatabaseConnection, player: Player, characterId: Int) {
         val upsert =
             connection.prepareStatement(
-                """
-                    INSERT INTO stats (character_id, stat_id, vis_level, base_level, fine_xp)
-                    VALUES (?, ?, ?, ?, ?)
-                    ON CONFLICT(character_id, stat_id) DO UPDATE SET
-                        vis_level = excluded.vis_level,
-                        base_level = excluded.base_level,
-                        fine_xp = excluded.fine_xp,
-                        updated_at = CASE
-                            WHEN stats.fine_xp != excluded.fine_xp THEN CURRENT_TIMESTAMP
-                            ELSE stats.updated_at
-                        END
-                """
-                    .trimIndent()
+                OpenRuneSql.text("game/stats/upsert_stat.sql"),
             )
 
         upsert.use {

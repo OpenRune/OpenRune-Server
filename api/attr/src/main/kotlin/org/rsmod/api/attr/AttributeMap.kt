@@ -10,6 +10,40 @@ package org.rsmod.api.attr
 public class AttributeMap {
     private var attributes: MutableMap<AttributeKey<*>, Any> = HashMap(0)
 
+    /**
+     * Optional hook for persistence systems (e.g. autosave). Invoked after mutating puts/sets/removes
+     * for keys with a [AttributeKey.persistenceKey] that are not [AttributeKey.temp]. Not called
+     * during [putAllFromPersistence].
+     */
+    public companion object {
+        @Volatile
+        public var persistenceMutationSink: ((AttributeKey<*>) -> Unit)? = null
+
+        private val suppressPersistenceHintsDepth: ThreadLocal<Int> = ThreadLocal.withInitial { 0 }
+
+        private fun isPersistenceHintsSuppressed(): Boolean = suppressPersistenceHintsDepth.get() > 0
+
+        private inline fun <T> suppressPersistenceHints(block: () -> T): T {
+            val d = suppressPersistenceHintsDepth.get() + 1
+            suppressPersistenceHintsDepth.set(d)
+            try {
+                return block()
+            } finally {
+                suppressPersistenceHintsDepth.set(d - 1)
+            }
+        }
+
+        private fun notifyPersistenceMutation(key: AttributeKey<*>) {
+            if (isPersistenceHintsSuppressed()) {
+                return
+            }
+            if (key.persistenceKey == null || key.temp) {
+                return
+            }
+            persistenceMutationSink?.invoke(key)
+        }
+    }
+
     @Suppress("UNCHECKED_CAST")
     public operator fun <T> get(key: AttributeKey<T>): T? = (attributes[key] as? T)
 
@@ -25,6 +59,7 @@ public class AttributeMap {
         value: T,
     ): AttributeMap {
         attributes[key] = value as Any
+        notifyPersistenceMutation(key)
         return this
     }
 
@@ -37,6 +72,7 @@ public class AttributeMap {
 
     public fun remove(key: AttributeKey<*>) {
         attributes.remove(key)
+        notifyPersistenceMutation(key)
     }
 
     public fun has(key: AttributeKey<*>): Boolean = attributes.containsKey(key)
@@ -50,7 +86,9 @@ public class AttributeMap {
         while (iterator.hasNext()) {
             val attr = iterator.next()
             if (predicate(attr.key)) {
+                val key = attr.key
                 iterator.remove()
+                notifyPersistenceMutation(key)
             }
         }
     }
@@ -66,10 +104,12 @@ public class AttributeMap {
      * real [AttributeKey] instances via [AttributeKey.equals] / [AttributeKey.hashCode].
      */
     public fun putAllFromPersistence(entries: Map<String, Any>) {
-        for ((persistenceKey, value) in entries) {
-            @Suppress("UNCHECKED_CAST")
-            val key = AttributeKey<Any>(persistenceKey = persistenceKey) as AttributeKey<*>
-            attributes[key] = normalizePersistenceValue(value)
+        suppressPersistenceHints {
+            for ((persistenceKey, value) in entries) {
+                @Suppress("UNCHECKED_CAST")
+                val key = AttributeKey<Any>(persistenceKey = persistenceKey) as AttributeKey<*>
+                attributes[key] = normalizePersistenceValue(value)
+            }
         }
     }
 
@@ -113,13 +153,17 @@ public class AttributeMap {
     /** Add an element to a set attribute, initializing the set if needed. */
     public fun <T> addToSet(key: AttributeKey<MutableSet<T>>, element: T) {
         val set = getOrPut(key) { mutableSetOf() }
-        set.add(element)
+        if (set.add(element)) {
+            notifyPersistenceMutation(key)
+        }
     }
 
     /** Remove an element from a set attribute. */
     public fun <T> removeFromSet(key: AttributeKey<MutableSet<T>>, element: T) {
         val set = get<MutableSet<T>>(key)
-        set?.remove(element)
+        if (set?.remove(element) == true) {
+            notifyPersistenceMutation(key)
+        }
     }
 
     /** Check if a set attribute contains an element. */

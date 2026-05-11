@@ -9,6 +9,7 @@ import dev.openrune.types.varp.baseVar
 import dev.openrune.types.varp.bits
 import org.rsmod.api.player.output.VarpSync
 import org.rsmod.game.entity.Player
+import org.rsmod.game.entity.PlayerPersistenceHints
 import org.rsmod.game.vars.VarPlayerIntMap
 import org.rsmod.utils.bits.withBits
 
@@ -50,6 +51,10 @@ public object VarPlayerIntMapSetter {
         player.vars.backing[varp.id] = value
 
         val engineLoggedIn = player.processedMapClock > 0
+        if (engineLoggedIn && previous != value) {
+            PlayerPersistenceHints.notify(player)
+        }
+
         if (!engineLoggedIn) {
             return
         }
