@@ -4,15 +4,32 @@ import java.nio.charset.StandardCharsets
 import java.nio.file.AtomicMoveNotSupportedException
 import java.nio.file.Files
 import java.nio.file.StandardCopyOption
+import org.gradle.api.tasks.JavaExec
 
 plugins {
     id("base-conventions")
+    application
 }
 
-tasks.register("runMcp") {
+private val osrsMcpMainClass = "org.rsmod.tools.mcp.wiki.MainKt"
+
+application {
+    mainClass.set(osrsMcpMainClass)
+}
+
+tasks.named<JavaExec>("run") {
+    group = "application"
+    description = "Runs the RS Mod game server (via :server:app:run). For MCP use runMcp / ./gradlew runMcp."
+    dependsOn(":server:app:run")
+    onlyIf { false }
+}
+
+tasks.register<JavaExec>("runMcp") {
     group = "MCP"
-    description = "Alias for run — same stdio osrs-mcp server."
-    dependsOn(tasks.named("run"))
+    description = "Runs the osrs-mcp stdio MCP server."
+    mainClass.set(application.mainClass)
+    classpath = sourceSets["main"].runtimeClasspath
+    standardInput = System.`in`
 }
 
 dependencies {
@@ -27,8 +44,6 @@ dependencies {
     testImplementation(kotlin("test"))
     testImplementation("io.ktor:ktor-client-mock:3.3.3")
 }
-
-private val osrsMcpMainClass = "org.rsmod.tools.mcp.wiki.MainKt"
 
 private fun osrsMcpClasspathArg(repoRoot: java.io.File): String =
     repoRoot.resolve("tools/osrs-mcp/build/install/osrs-mcp/lib").absolutePath.replace('\\', '/') + "/*"

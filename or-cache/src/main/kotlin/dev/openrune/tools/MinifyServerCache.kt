@@ -3,8 +3,8 @@ package dev.openrune.tools
 import com.displee.cache.CacheLibrary
 import dev.openrune.cache.ANIMATIONS
 import dev.openrune.cache.ANIMAYAS
-import dev.openrune.cache.ARCHIVE_17
 import dev.openrune.cache.DBTABLEINDEX
+import dev.openrune.cache.DEFAULTS
 import dev.openrune.cache.MODELS
 import dev.openrune.cache.MUSIC_JINGLES
 import dev.openrune.cache.MUSIC_PATCHES
@@ -31,7 +31,7 @@ class MinifyServerCache() {
         emptyArchive(MUSIC_JINGLES, cache)
         emptyArchive(MUSIC_SAMPLES, cache)
         emptyArchive(MUSIC_PATCHES, cache)
-        emptyArchive(ARCHIVE_17, cache)
+        emptyArchive(DEFAULTS, cache)
         emptyArchive(WORLDMAP_GEOGRAPHY, cache)
         emptyArchive(WORLDMAPAREAS, cache)
         emptyArchive(WORLDMAP_GROUND, cache)

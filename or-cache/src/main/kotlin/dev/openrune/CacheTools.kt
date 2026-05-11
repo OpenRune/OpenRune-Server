@@ -4,6 +4,8 @@ import com.github.michaelbull.logging.InlineLogger
 import dev.openrune.cache.gameval.GameValHandler
 import dev.openrune.cache.tools.Builder
 import dev.openrune.cache.tools.CacheEnvironment
+import dev.openrune.cache.tools.cs2.PackCs2
+import dev.openrune.cache.tools.cs2.UnpackDefaultCs2
 import dev.openrune.cache.tools.tasks.CacheTask
 import dev.openrune.cache.tools.tasks.TaskType
 import dev.openrune.cache.tools.tasks.impl.PackDBTables
@@ -104,7 +106,10 @@ fun buildCache(taskType: TaskType) {
     GameValProvider.load("../", autoAssignIds = true)
 
     val tasks: List<CacheTask> =
-        listOf(PackConfig(File("../.data/raw-cache/server"))).toMutableList()
+        listOf(
+            PackConfig(File("../.data/raw-cache/server")),
+            PackDBTables(tablesToPack())
+        ).toMutableList()
 
     val builder =
         Builder(
@@ -114,17 +119,21 @@ fun buildCache(taskType: TaskType) {
         )
     builder.revision(revision.first)
 
-    val tasksNew = tasks.toMutableList()
-    tasksNew.add(PackDBTables(tablesToPack()))
+    builder.extraTasks(*tasks.toTypedArray()).build().initialize()
 
-    builder.extraTasks(*tasksNew.toTypedArray()).build().initialize()
     if (taskType == TaskType.BUILD) {
+        val serverTasks = tasks.filterNot { it is PackCs2 }
+
         builder.type = TaskType.SERVER_CACHE_BUILD
+
         builder
             .extraTasks(
-                PackServerConfig(revision.first,File("../.data/raw-cache/server")),
+                PackServerConfig(
+                    revision.first,
+                    File("../.data/raw-cache/server")
+                ),
                 MapPackers(),
-                *tasksNew.toTypedArray(),
+                *serverTasks.toTypedArray(),
             )
             .build()
             .initialize()
@@ -135,8 +144,7 @@ fun buildCache(taskType: TaskType) {
         val cache = Cache.load(File(getServerCacheLocation()).toPath())
         GamevalDumper.dumpCols(cache, revision.first)
 
-        val type =
-            GameValHandler.readGameVal(GameValGroupTypes.TABLETYPES, cache = cache, revision.first)
+        val type = GameValHandler.readGameVal(GameValGroupTypes.TABLETYPES, cache = cache, revision.first)
 
         val rows: MutableMap<Int, DBRowType> = mutableMapOf()
         OsrsCacheProvider.DBRowDecoder().load(cache, rows)

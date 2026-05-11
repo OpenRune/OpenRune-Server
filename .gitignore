@@ -56,3 +56,4 @@ CLAUDE.md
 logs/
 *.log
 /.cursor
+/.data/raw-cache/cs2
