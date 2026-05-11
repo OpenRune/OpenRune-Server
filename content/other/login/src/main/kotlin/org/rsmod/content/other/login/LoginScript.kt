@@ -41,6 +41,22 @@ import net.rsprot.protocol.game.outgoing.social.FriendListLoaded
 import org.rsmod.api.social.pushChatModes
 import org.rsmod.api.social.pushFriends
 import org.rsmod.api.social.pushIgnores
+import org.rsmod.api.db.gateway.GameDbManager
+import org.rsmod.api.db.gateway.model.GameDbResult
+import org.rsmod.api.db.gateway.model.fold
+import org.rsmod.api.social.SocialNameRepository
+import org.rsmod.api.social.refreshCachedSocialNames
+import org.rsmod.game.entity.PlayerList
+
+/*
+ * TODO: Login identity is currently `accounts.login_username`, while display names
+ * are stored separately as `display_name` / `previous_display_name`.
+ * Login username does not change only display name
+ *
+ * This is intentional for the moment: display-name changes should not mutate the stable
+ * account login key. Maybe we can add support for email-based login, account IDs,
+ * or login aliases so players do not rely on their original username forever.
+ */
 
 class LoginScript
 @Inject
@@ -49,6 +65,9 @@ constructor(
     private val mapClock: MapClock,
     private val invisibleLevels: InvisibleLevels,
     private val config: ServerConfig,
+    private val db: GameDbManager,
+    private val socialNames: SocialNameRepository,
+    private val playerList: PlayerList,
 ) : PluginScript() {
     private val transmitVars by lazy { transmitVars() }
 
@@ -74,8 +93,29 @@ constructor(
 
     private fun Player.sendSocial() {
         client.write(FriendListLoaded)
-        pushFriends()
-        pushIgnores()
+
+        val loginUid = uid
+
+        db.request(
+            request = { connection ->
+                val refreshed = refreshCachedSocialNames(connection, socialNames)
+                GameDbResult.Ok(refreshed)
+            },
+            response = { result ->
+                val current = loginUid.resolve(playerList) ?: return@request
+
+                result.fold(
+                    onOk = {
+                        current.pushFriends(playerList)
+                        current.pushIgnores(playerList)
+                    },
+                    onErr = {
+                        current.pushFriends(playerList)
+                        current.pushIgnores(playerList)
+                    },
+                )
+            },
+        )
     }
 
     private fun Player.sendChatFilters() {

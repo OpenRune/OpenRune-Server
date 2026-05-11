@@ -8,4 +8,6 @@ dependencies {
     implementation(projects.api.pluginCommons)
     implementation(projects.api.realm)
     implementation(projects.api.social)
+    implementation(projects.api.db)
+    implementation(projects.api.dbGateway)
 }

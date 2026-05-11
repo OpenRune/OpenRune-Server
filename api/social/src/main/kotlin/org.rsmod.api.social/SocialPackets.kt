@@ -108,7 +108,7 @@ public fun Player.addSocialFriend(
         resolvedName
             ?: online?.socialNameRecord()
             ?: SocialNameRecord(
-                canonicalName = cleaned.lowercase(),
+                canonicalName = cleaned.lowercase(java.util.Locale.ROOT),
                 currentName = cleaned,
                 previousName = null,
             )
@@ -196,7 +196,7 @@ public fun Player.addSocialIgnore(
         resolvedName
             ?: online?.socialNameRecord()
             ?: SocialNameRecord(
-                canonicalName = cleaned.lowercase(),
+                canonicalName = cleaned.lowercase(java.util.Locale.ROOT),
                 currentName = cleaned,
                 previousName = null,
             )
@@ -333,7 +333,7 @@ public fun Player.sendPrivateMessageTo(target: Player, message: String) {
 private fun Player.socialNameRecord(): SocialNameRecord {
     val current = displayName.ifBlank { username }
     return SocialNameRecord(
-        canonicalName = username.lowercase(),
+        canonicalName = username.lowercase(java.util.Locale.ROOT),
         currentName = current,
         previousName = previousDisplayName.takeIf(String::isNotBlank),
     )
