@@ -4,5 +4,28 @@ name: "OpenRune"
 game-port: 43594
 revision: 238
 environment: "LIVE"
-realm: dev
 world: 1
+
+central:
+  same-instance: true
+  host: "127.0.0.1"
+  link-port: 9091
+  postgres:
+    pool-size: 10
+
+
+# Central server connection settings (used when connecting to a different instance)
+    #central:
+    #same-instance: false
+    #host: "127.0.0.1"
+    #link-port: 9091
+    #world-key: "Ae2fPNJIjrvNKepBebm_qakFc5nBW4o7"
+    #postgres:
+    # PostgreSQL JDBC connection URL
+    #jdbc-url: "jdbc:postgresql://127.0.0.1:5432/openrune_central"
+    # Database username
+    #user: "postgres"
+    # Database password
+    #password: "-"
+    # Maximum number of connections in the pool
+    #pool-size: 10

@@ -82,6 +82,12 @@ public class Player(
     public val engineQueueList: EngineQueueList = EngineQueueList()
 
     /**
+     * Opaque session token from OpenRune Central world-link when `OPENRUNE_CENTRAL_HOST` is set.
+     * The game server notifies central on logout so the session ends and the account can log in again.
+     */
+    public var openRuneCentralSessionToken: ByteArray? = null
+
+    /**
      * A unique identifier that should be generated when the player's account is created and then
      * remain persistent forever.
      */
@@ -230,6 +236,7 @@ public class Player(
      */
     public val clientDisconnected: AtomicBoolean = AtomicBoolean(false)
     public var clientDisconnectedCycles: Int = 0
+
     public var forceDisconnect: Boolean = false
     public var manualLogout: Boolean = false
     public var pendingLogout: Boolean = false

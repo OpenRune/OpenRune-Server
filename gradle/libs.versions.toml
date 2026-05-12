@@ -25,8 +25,10 @@ openrs2 = "0.1.0-SNAPSHOT"
 rsprot = "1.0.0-ALPHA-20260506"
 simmetrics = "4.1.1"
 spotless = "7.0.4"
-sqlite = "3.50.1.0"
+postgresql-jdbc = "42.7.5"
+embedded-postgres = "2.2.2"
 or2 = "2.4.7"
+openruneCentral = "1.0"
 or2ServerUtils = "0.7"
 jodatime = "2.14.0"
 
@@ -62,7 +64,8 @@ rsprot-api = { module = "net.rsprot:osrs-238-api", version.ref = "rsprot" }
 rsprot-shared = { module = "net.rsprot:osrs-238-shared", version.ref = "rsprot" }
 simmetrics-core = { module = "com.github.mpkorstanje:simmetrics-core", version.ref = "simmetrics" }
 spotless-gradle-plugin = { module = "com.diffplug.spotless:spotless-plugin-gradle", version.ref = "spotless" }
-sqlite-jdbc = { module = "org.xerial:sqlite-jdbc", version.ref = "sqlite" }
+postgresql = { module = "org.postgresql:postgresql", version.ref = "postgresql-jdbc" }
+embedded-postgres = { module = "io.zonky.test:embedded-postgres", version.ref = "embedded-postgres" }
 
 or2-all-cache = { group = "dev.or2", name = "all", version.ref = "or2" }
 or2-tools = { group = "dev.or2", name = "tools", version.ref = "or2" }
@@ -71,6 +74,10 @@ joda-time = { group = "joda-time", name = "joda-time", version.ref = "jodatime" 
 or2-definition = { group = "dev.or2", name = "definition", version.ref = "or2" }
 or2-filesystem = { group = "dev.or2", name = "filesystem", version.ref = "or2" }
 or2-filestore = { group = "dev.or2", name = "filestore", version.ref = "or2" }
+
+openrune-central-common = { module = "dev.or2:central-common", version.ref = "openruneCentral" }
+openrune-central = { module = "dev.or2:openrune-central", version.ref = "openruneCentral" }
+openrune-central-all = { module = "dev.or2:central-all", version.ref = "openruneCentral" }
 
 [bundles]
 logging = ["logback-classic", "kotlin-inline-logger"]

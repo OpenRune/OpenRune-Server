@@ -10,6 +10,7 @@ import dev.openrune.types.varp.bits
 import org.rsmod.api.player.output.VarpSync
 import org.rsmod.game.client.Client
 import org.rsmod.game.entity.Player
+import org.rsmod.game.entity.PlayerPersistenceHints
 import org.rsmod.game.vars.VarPlayerIntMap
 import org.rsmod.utils.bits.withBits
 
@@ -17,6 +18,7 @@ public class VarPlayerIntMapDelegate(
     private val client: Client<Any, Any>,
     private val vars: VarPlayerIntMap,
     private val engineLoggedIn: Boolean,
+    private val player: Player,
 ) {
 
     public operator fun get(internal: String): Int {
@@ -37,6 +39,10 @@ public class VarPlayerIntMapDelegate(
         val previous = vars.backing[varp.id]
 
         vars.backing[varp.id] = value
+
+        if (engineLoggedIn && previous != value) {
+            PlayerPersistenceHints.notify(player)
+        }
 
         if (!engineLoggedIn) {
             return
@@ -64,6 +70,7 @@ public class VarPlayerIntMapDelegate(
                 client = player.client,
                 vars = player.vars,
                 engineLoggedIn = engineLoggedIn,
+                player = player,
             )
         }
     }

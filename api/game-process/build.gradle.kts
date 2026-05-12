@@ -12,6 +12,7 @@ dependencies {
     implementation(libs.fastutil)
     implementation(libs.guice)
     implementation(libs.rsprot.api)
+    implementation(projects.api.account)
     implementation(projects.api.config)
     implementation(projects.api.controller)
     implementation(projects.api.dbGateway)

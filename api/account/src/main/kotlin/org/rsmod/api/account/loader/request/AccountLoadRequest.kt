@@ -11,7 +11,7 @@ public sealed class AccountLoadRequest {
      *
      * Properly labeling requests as read or write enables systems to optimize operations based on
      * access type. For example, read-only requests can be executed in parallel - even in systems
-     * like sqlite, which benefit from concurrent reads but not concurrent writes.
+     * which benefit from concurrent reads but not concurrent writes on a single writer DB.
      */
     public sealed class ReadOnly : AccountLoadRequest()
 
@@ -27,7 +27,7 @@ public sealed class AccountLoadRequest {
      *
      * Properly labeling requests as read or write enables systems to optimize operations based on
      * access type. For example, read-only requests can be executed in parallel - even in systems
-     * like sqlite, which benefit from concurrent reads but not concurrent writes.
+     * which benefit from concurrent reads but not concurrent writes on a single writer DB.
      */
     public sealed class WriteRequired : AccountLoadRequest()
 

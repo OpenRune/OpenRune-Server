@@ -8,8 +8,8 @@ public data class CharacterAccountData(
     val accountId: Int,
     val characterId: Int,
     val loginName: String,
+    val rights: String,
     val displayName: String?,
-    val hashedPassword: String,
     val email: String?,
     val members: Boolean,
     val modLevel: String?,
@@ -30,14 +30,16 @@ public data class CharacterAccountData(
     val runEnergy: Int,
     val xpRate: Double,
     val attrs: Map<String, Any>,
+    val onlineCentralWorldId: Int? = null,
+    val onlineSessionHeartbeat: LocalDateTime? = null,
 ) : CharacterDataStage.Segment {
-    // Do not include sensitive fields (e.g., password hash, 2fa secret, known device).
     override fun toString(): String =
         "AccountData(" +
             "realm=$realm, " +
             "accountId=$accountId, " +
             "characterId=$characterId, " +
             "loginName=$loginName, " +
+            "rights='$rights', " +
             "displayName=$displayName, " +
             "email=$email, " +
             "members=$members, " +
@@ -53,6 +55,8 @@ public data class CharacterAccountData(
             "lastLogout=$lastLogout, " +
             "mutedUntil=$mutedUntil, " +
             "bannedUntil=$bannedUntil, " +
-            "xpRate=$xpRate" +
+            "xpRate=$xpRate, " +
+            "onlineCentralWorldId=$onlineCentralWorldId, " +
+            "onlineSessionHeartbeat=$onlineSessionHeartbeat" +
             ")"
 }

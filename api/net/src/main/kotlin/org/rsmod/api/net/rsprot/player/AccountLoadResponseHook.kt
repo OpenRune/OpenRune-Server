@@ -9,11 +9,17 @@ import net.rsprot.protocol.loginprot.incoming.util.AuthenticationType
 import net.rsprot.protocol.loginprot.incoming.util.LoginBlock
 import net.rsprot.protocol.loginprot.outgoing.LoginResponse
 import net.rsprot.protocol.loginprot.outgoing.util.AuthenticatorResponse
+import kotlinx.coroutines.runBlocking
+import org.rsmod.api.account.character.main.CharacterAccountApplier
 import org.rsmod.api.account.character.main.CharacterAccountData
+import org.rsmod.api.account.character.main.CharacterAccountRepository
 import org.rsmod.api.account.loader.request.AccountLoadAuth
 import org.rsmod.api.account.loader.request.AccountLoadCallback
 import org.rsmod.api.account.loader.request.AccountLoadResponse
 import org.rsmod.api.account.loader.request.isNewAccount
+import org.rsmod.api.db.jdbc.GameDatabase
+import org.rsmod.api.net.central.CentralAuthResult
+import org.rsmod.api.net.central.OpenRuneCentralWorldLink
 import org.rsmod.api.player.vars.boolVarBit
 import org.rsmod.api.realm.RealmConfig
 import org.rsmod.api.registry.account.AccountRegistry
@@ -37,20 +43,32 @@ class AccountLoadResponseHook(
     private val loginBlock: LoginBlock<AuthenticationType>,
     private val channelResponses: GameLoginResponseHandler<Player>,
     private val inputPassword: CharArray,
-    private val verifyPassword: (String, CharArray) -> Boolean,
     private val verifyTotp: (CharArray, String) -> Boolean,
+    private val openRuneCentral: OpenRuneCentralWorldLink,
+    private val database: GameDatabase,
+    private val characterRepository: CharacterAccountRepository,
 ) : AccountLoadCallback {
+    private var pendingCentralSessionToken: ByteArray? = null
+
+    private var pendingCentralRights: String? = null
+
     override fun invoke(response: AccountLoadResponse) {
         try {
             handleLoadResponse(response)
         } finally {
             inputPassword.fill('\u0000')
+            pendingCentralSessionToken?.fill(0)
+            pendingCentralSessionToken = null
+            pendingCentralRights = null
         }
     }
 
-    private fun handleLoadResponse(response: AccountLoadResponse) =
+    private fun handleLoadResponse(response: AccountLoadResponse) {
         when (response) {
             is AccountLoadResponse.Ok.NewAccount -> {
+                if (!runCentralAuth(response.account.loginName, response.account.characterId)) {
+                    return
+                }
                 safeQueueLogin(response)
             }
             is AccountLoadResponse.Ok.LoadAccount -> {
@@ -72,13 +90,13 @@ class AccountLoadResponseHook(
                 writeErrorResponse(LoginResponse.UnknownReplyFromLoginServer)
             }
         }
+    }
 
     private fun validateAndQueueLogin(response: AccountLoadResponse.Ok.LoadAccount) {
         // Note: We could move this branch to `handleLoadResponse`, but we intentionally keep it
         // here to mirror the production login flow.
-        val ignoreAuthentication = config.ignorePasswords && config.devMode
-        if (ignoreAuthentication) {
-            logger.debug { "Bypass password and two-factor authentication: enabled" }
+        if (!runCentralAuth(response.account.loginName, response.account.characterId)) {
+            return
         }
 
         val verifyTwoFactor = response.account.twofaEnabled
@@ -92,17 +110,10 @@ class AccountLoadResponseHook(
 
             val authResponse =
                 validateTwoFactor(response.account, response.auth, secret.toCharArray())
-            if (!ignoreAuthentication && authResponse != null) {
+            if (authResponse != null) {
                 writeErrorResponse(authResponse)
                 return
             }
-        }
-
-        val storedHashedPassword = response.account.hashedPassword
-        val passwordVerified = verifyPassword(storedHashedPassword, inputPassword)
-        if (!ignoreAuthentication && !passwordVerified) {
-            writeErrorResponse(LoginResponse.InvalidUsernameOrPassword)
-            return
         }
 
         // `CharacterAccountRepository.save` always sets `last_logout` in same UPDATE as
@@ -168,6 +179,7 @@ class AccountLoadResponseHook(
     private fun safeQueueLogin(response: AccountLoadResponse.Ok) {
         try {
             val player = createPlayer(response).apply { applyConfigTransforms(config) }
+            applyCentralStaffFromPending(player)
             accountRegistry.queueLogin(player, response, ::safeHandleGameLogin)
         } catch (e: Exception) {
             writeErrorResponse(LoginResponse.ConnectFail)
@@ -180,6 +192,10 @@ class AccountLoadResponseHook(
         for (transform in fromResponse.transforms) {
             transform.apply(player)
         }
+        pendingCentralSessionToken?.let { token ->
+            player.openRuneCentralSessionToken = token.copyOf()
+        }
+        pendingCentralSessionToken = null
         player.ui.setWindowStatus(
             width = loginBlock.width,
             height = loginBlock.height,
@@ -187,6 +203,15 @@ class AccountLoadResponseHook(
         )
         player.newAccount = fromResponse.isNewAccount()
         return player
+    }
+
+    private fun applyCentralStaffFromPending(player: Player) {
+        pendingCentralRights?.takeIf { it.isNotBlank() }?.let { rights ->
+            CharacterAccountApplier.resolveModLevelFromRights(rights)?.let { resolved ->
+                player.modLevel = resolved
+            }
+        }
+        pendingCentralRights = null
     }
 
     private fun Player.applyConfigTransforms(config: RealmConfig) {
@@ -216,8 +241,24 @@ class AccountLoadResponseHook(
     }
 
     private fun handleGameLogin(player: Player, loadResponse: AccountLoadResponse.Ok) {
-        val isOnline = player.isOnline(loadResponse.account.worldId)
-        if (isOnline) {
+        if (playerRegistry.isOnline(player.userId)) {
+            writeErrorResponse(LoginResponse.Duplicate)
+            return
+        }
+
+        val characterId = loadResponse.account.characterId
+        val sessionHeldElsewhere =
+            runBlocking {
+                database.withTransaction { connection ->
+                    characterRepository.isActiveSessionOnOtherWorld(
+                        connection,
+                        characterId,
+                        world,
+                        ONLINE_SESSION_STALE_SECONDS,
+                    )
+                }
+            }
+        if (sessionHeldElsewhere) {
             writeErrorResponse(LoginResponse.Duplicate)
             return
         }
@@ -264,14 +305,6 @@ class AccountLoadResponseHook(
         session.requestClose()
     }
 
-    private fun Player.isOnline(lastKnownWorld: Int?): Boolean {
-        val loggedInAnotherWorld = lastKnownWorld != null && lastKnownWorld != world
-        if (loggedInAnotherWorld) {
-            return true
-        }
-        return playerRegistry.isOnline(userId)
-    }
-
     private fun Player.createLoginResponse(slotId: Int, auth: AccountLoadAuth) =
         LoginResponse.Ok(
             authenticatorResponse = authenticatorResponse(auth),
@@ -300,8 +333,31 @@ class AccountLoadResponseHook(
         channelResponses.writeFailedResponse(response)
     }
 
+    private fun runCentralAuth(
+        loginName: String,
+        loginCharacterId: Int,
+    ): Boolean {
+        return when (val result = openRuneCentral.authenticate(loginName, inputPassword, loginCharacterId)) {
+            CentralAuthResult.Skipped -> {
+                // Central world-link not configured; game DB is the authority — do not block login.
+                true
+            }
+            is CentralAuthResult.Denied -> {
+                writeErrorResponse(result.response)
+                false
+            }
+            is CentralAuthResult.Ok -> {
+                pendingCentralSessionToken = result.sessionToken.copyOf()
+                pendingCentralRights = result.centralRights
+                true
+            }
+        }
+    }
+
     private companion object {
         private const val DAYS_BETWEEN_2FA_VERIFICATION = 30
+
+        private const val ONLINE_SESSION_STALE_SECONDS = 120L
 
         /** Once the game update timer hits this value, we reject any further login requests. */
         private const val UPDATE_TIMER_REJECT_BUFFER = 25
