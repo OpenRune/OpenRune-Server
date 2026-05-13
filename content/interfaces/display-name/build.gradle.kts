@@ -4,6 +4,8 @@ plugins {
 
 dependencies {
     implementation(projects.api.pluginCommons)
-    implementation(projects.api.scriptAdvanced)
+    implementation(projects.api.db)
+    implementation(projects.api.dbGateway)
     implementation(projects.api.social)
+    implementation(libs.guice)
 }
