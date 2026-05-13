@@ -2,6 +2,7 @@ package org.rsmod.api.game.process.player
 
 import jakarta.inject.Inject
 import org.rsmod.api.player.forceDisconnect
+import org.rsmod.game.entity.PlayerPersistenceHints
 import org.rsmod.api.player.ui.closeSubs
 import org.rsmod.api.player.ui.ifClose
 import org.rsmod.api.utils.logging.GameExceptionHandler
@@ -36,17 +37,22 @@ constructor(
                 continue
             }
             player.processedMapClock = mapClock.cycle
-            player.tryOrDisconnect {
-                resumePausedProcess()
-                refreshFaceEntity()
-                processIfCloseQueue()
-                processIfCloseModal()
-                processQueues()
-                processTimers()
-                processAreas()
-                processEngineQueues()
-                processInteractions()
-                processIfCloseDisconnect()
+            PlayerPersistenceHints.enter(player)
+            try {
+                player.tryOrDisconnect {
+                    resumePausedProcess()
+                    refreshFaceEntity()
+                    processIfCloseQueue()
+                    processIfCloseModal()
+                    processQueues()
+                    processTimers()
+                    processAreas()
+                    processEngineQueues()
+                    processInteractions()
+                    processIfCloseDisconnect()
+                }
+            } finally {
+                PlayerPersistenceHints.leave()
             }
         }
     }

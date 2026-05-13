@@ -3,15 +3,20 @@ plugins {
 }
 
 dependencies {
+    implementation(libs.openrune.central)
+    implementation(libs.openrune.central.common)
+    implementation("com.zaxxer:HikariCP:6.2.1")
     implementation(libs.bouncycastle.provider)
     implementation(libs.bundles.logging)
     implementation(libs.fastutil)
     implementation(libs.guice)
+    implementation(libs.kotlin.coroutines.core)
     implementation(libs.netty.buffer)
     implementation(libs.openrs2.cache)
     implementation(libs.rsprot.api)
     implementation(libs.rsprot.shared)
     implementation(projects.api.account)
+    implementation(projects.api.db)
     implementation(projects.api.config)
     implementation(projects.api.cache)
     implementation(projects.api.core)

@@ -1,5 +1,6 @@
-package org.rsmod.api.db.sqlite
+package org.rsmod.api.db.jdbc
 
+import jakarta.inject.Inject
 import java.sql.Connection
 import java.sql.SQLException
 import kotlinx.coroutines.delay
@@ -7,12 +8,32 @@ import org.rsmod.api.db.Database
 import org.rsmod.api.db.DatabaseConnection
 import org.rsmod.api.db.util.DatabaseRollbackException
 
-public class SqliteDatabase : Database {
+public class GameDatabase
+@Inject
+constructor() : Database {
     private lateinit var connection: Connection
 
-    public fun connect(connector: SqliteConnection) {
+    public fun connect(connector: GameConnection) {
         check(!::connection.isInitialized) { "Connection already initialized." }
         val connection = connector.connect()
+        try {
+            GameSchemaBootstrap.applyIfNeeded(connection)
+            GameSchemaBootstrap.ensureOnlineSessionColumns(connection)
+            GameSchemaBootstrap.migrateVarpsJsonToCharacterVarpsTable(connection)
+            GameSchemaBootstrap.migrateAttrsJsonToCharacterAttrsTable(connection)
+            GameSchemaBootstrap.migrateCharacterVarpsVarpIdToVarpKey(connection)
+            GameSchemaBootstrap.migrateInventoryStringKeysFromInts(connection)
+            GameSchemaBootstrap.migrateInventoryRowIdsToTextComposite(connection)
+            GameSchemaBootstrap.ensureRealmDropIgnorePasswords(connection)
+            connection.commit()
+        } catch (t: Throwable) {
+            try {
+                connection.rollback()
+            } catch (_: Throwable) {
+                // ignore
+            }
+            throw t
+        }
         this.connection = connection
     }
 

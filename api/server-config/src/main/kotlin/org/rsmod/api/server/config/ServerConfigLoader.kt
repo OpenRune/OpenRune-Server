@@ -25,8 +25,11 @@ public class ServerConfigLoader {
     public fun loadOrCreate(file: Path): ServerConfig =
         if (file.exists()) load(file) else create(file)
 
-    public fun load(file: Path): ServerConfig =
-        yamlMapper.readValue(file.toFile(), ServerConfig::class.java)
+    public fun load(file: Path): ServerConfig {
+        val config = yamlMapper.readValue(file.toFile(), ServerConfig::class.java)
+        SameInstanceCentralConfigValidation.validateAfterLoad(file, config)
+        return config
+    }
 
     public fun create(file: Path): ServerConfig {
         require(file.notExists()) { "File already exists: ${file.toAbsolutePath()}" }
@@ -46,12 +49,20 @@ public class ServerConfigLoader {
             gamePort = 43594,
             revision = 233,
             environment = "LIVE",
-            realm = DEFAULT_REALM,
-            world = DEFAULT_WORLD
+            world = DEFAULT_WORLD,
+            database =
+                GameDatabaseYaml(
+                    postgres =
+                        PostgresDbYaml(
+                            jdbcUrl = "jdbc:postgresql://127.0.0.1:5432/openrune_game",
+                            user = "openrune",
+                            password = "openrune",
+                        ),
+                ),
+            central = null,
         )
 
     private companion object {
-        private const val DEFAULT_REALM = "dev"
         private const val DEFAULT_WORLD = 1
     }
 }

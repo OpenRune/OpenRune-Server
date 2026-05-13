@@ -10,6 +10,7 @@ import org.rsmod.api.player.output.UpdateStat
 import org.rsmod.api.player.stat.stat
 import org.rsmod.api.stats.levelmod.InvisibleLevels
 import org.rsmod.game.entity.Player
+import org.rsmod.game.entity.PlayerPersistenceHints
 
 public class PlayerStatUpdateProcessor
 @Inject
@@ -29,6 +30,7 @@ constructor(private val invisibleLevels: InvisibleLevels) {
             nextStat = pendingStatUpdates.nextSetBit(nextStat + 1)
         }
         pendingStatUpdates.clear()
+        PlayerPersistenceHints.notify(this)
     }
 
     private fun Player.updateStatXp(stat: String) {

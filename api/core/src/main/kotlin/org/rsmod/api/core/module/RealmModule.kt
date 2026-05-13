@@ -13,6 +13,6 @@ public object RealmModule : ExtendedModule() {
 
     private class RealmProvider @Inject constructor(private val config: ServerConfig) :
         Provider<Realm> {
-        override fun get(): Realm = Realm(config.realm)
+        override fun get(): Realm = Realm(config.world.toString())
     }
 }

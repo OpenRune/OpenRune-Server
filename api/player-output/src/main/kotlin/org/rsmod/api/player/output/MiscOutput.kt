@@ -4,6 +4,7 @@ import net.rsprot.protocol.game.outgoing.logout.Logout
 import net.rsprot.protocol.game.outgoing.logout.LogoutWithReason
 import net.rsprot.protocol.game.outgoing.misc.client.ServerTickEnd
 import net.rsprot.protocol.game.outgoing.misc.client.UpdateRebootTimer
+import net.rsprot.protocol.game.outgoing.misc.client.UpdateRebootTimerV2
 import net.rsprot.protocol.game.outgoing.misc.player.SetPlayerOp
 import org.rsmod.game.entity.Player
 
@@ -34,13 +35,19 @@ public object MiscOutput {
     }
 
     /** @see [UpdateRebootTimer] */
-    public fun updateRebootTimer(player: Player, cycles: Int) {
+    public fun updateRebootTimer(player: Player, cycles: Int, message : String = "") {
         require(cycles in 0..65535) { "`cycles` must be within range [0..65535]. (cycles=$cycles)" }
-        player.client.write(UpdateRebootTimer(cycles))
+        if (message.isEmpty()) {
+            player.client.write(UpdateRebootTimerV2(cycles, UpdateRebootTimerV2.SetUpdateMessage("")))
+        } else {
+            player.client.write(UpdateRebootTimerV2(cycles, UpdateRebootTimerV2.SetUpdateMessage(message)))
+        }
     }
 
     /** Calls [UpdateRebootTimer] with an arg of `0`. */
     public fun clearUpdateRebootTimer(player: Player) {
         updateRebootTimer(player, cycles = 0)
     }
+
+
 }

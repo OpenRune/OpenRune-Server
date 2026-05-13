@@ -43,9 +43,6 @@ public class Realm(public val name: String) {
  *   This is usually compounded with each player's personal xp rate.
  * @param requireRegistration If `true`, players must have a pre-registered account in the database
  *   to log in. If `false`, new accounts will be automatically created on first login.
- * @param ignorePasswords If `true`, any password will be accepted for any account without
- *   verification. Note: This flag may only take effect in certain environments (e.g., [devMode] is
- *   `true`), depending on the login server's safeguards.
  * @param autoAssignDisplayNames If `true`, player display names will be automatically assigned
  *   based on their login name.
  */
@@ -59,6 +56,5 @@ public data class RealmConfig(
     val respawnCoord: CoordGrid,
     val devMode: Boolean,
     val requireRegistration: Boolean,
-    val ignorePasswords: Boolean,
     val autoAssignDisplayNames: Boolean,
 )

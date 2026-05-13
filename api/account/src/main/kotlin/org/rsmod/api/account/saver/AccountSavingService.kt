@@ -15,17 +15,19 @@ import org.rsmod.api.account.character.CharacterDataStage
 import org.rsmod.api.account.character.main.CharacterAccountRepository
 import org.rsmod.api.account.saver.request.AccountSaveRequest
 import org.rsmod.api.account.saver.request.AccountSaveResponse
-import org.rsmod.api.db.sqlite.SqliteDatabase
+import org.rsmod.api.db.jdbc.GameDatabase
+import org.rsmod.api.server.config.ServerConfig
 import org.rsmod.server.services.concurrent.ScheduledService
 
-// This service is tailored for sqlite, where concurrent writes provide little to no benefit.
+// Serialized account saves: one writer at a time avoids overlapping transactions on the game DB.
 // Therefore, save operations are not parallelized and instead run on a single thread.
 public class AccountSavingService
 @Inject
 constructor(
-    private val database: SqliteDatabase,
+    private val database: GameDatabase,
     private val repository: CharacterAccountRepository,
     private val pipelines: Set<CharacterDataStage.Pipeline>,
+    private val serverConfig: ServerConfig,
 ) : ScheduledService {
     private val logger = InlineLogger()
 
@@ -46,7 +48,8 @@ constructor(
         handlePendingBatch()
 
         if (!failureBackoffEnabled) {
-            delay(DELAY_PER_BATCH)
+            val backlog = pendingRequests.isNotEmpty()
+            delay(if (backlog) DELAY_WHEN_BACKLOG_MS else DELAY_PER_BATCH)
             return
         }
 
@@ -92,7 +95,13 @@ constructor(
 
     private suspend fun saveSegments(request: AccountSaveRequest) {
         database.withTransaction { connection ->
-            repository.save(connection, request.player, request.accountId, request.characterId)
+            repository.save(
+                connection,
+                request.player,
+                request.accountId,
+                request.characterId,
+                serverConfig.world,
+            )
             for (pipeline in pipelines) {
                 pipeline.save(connection, request.player, request.characterId)
             }
@@ -215,10 +224,13 @@ constructor(
         private const val SERVICE_THREAD_NAME = "account-writer"
 
         /**
-         * The time (in ms) to wait between each batch cycle when not under failure backoff. This
-         * defines the baseline processing intervals.
+         * The time (in ms) to wait between each batch cycle when not under failure backoff and the
+         * queue is empty. Avoids a hot loop when nothing is queued.
          */
         private const val DELAY_PER_BATCH = 100L
+
+        /** When saves are already waiting, poll again quickly so work reaches the DB sooner. */
+        private const val DELAY_WHEN_BACKLOG_MS = 1L
 
         /** The maximum number of requests processed per service cycle ([run]). */
         private const val REQUESTS_PER_BATCH = 25

@@ -9,8 +9,6 @@ dependencies {
     implementation(projects.api.dbGateway)
     implementation(projects.api.mechanics.toxins)
     implementation(projects.api.pluginCommons)
-    implementation(projects.api.realm)
-    implementation(projects.api.realmConfig)
 
     implementation(projects.api.utils.utilsSystem)
     implementation(projects.engine.utilsBits)

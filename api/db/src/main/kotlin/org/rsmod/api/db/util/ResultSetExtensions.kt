@@ -1,11 +1,12 @@
 package org.rsmod.api.db.util
 
 import java.sql.ResultSet
+import java.sql.Timestamp
 import java.time.LocalDateTime
 
 public fun ResultSet.getLocalDateTime(columnLabel: String): LocalDateTime? {
-    val time = getString(columnLabel) ?: return null
-    return LocalDateTime.parse(time, DatabaseDate.DATE_FORMATTER)
+    val time = getString(columnLabel)?.trim()?.takeIf { it.isNotEmpty() } ?: return null
+    return Timestamp.valueOf(time).toLocalDateTime()
 }
 
 public fun ResultSet.getStringOrNull(columnLabel: String): String? {

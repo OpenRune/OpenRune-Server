@@ -1,9 +1,11 @@
 package org.rsmod.api.account.character.inv
 
 import dev.openrune.types.InvScope
+import dev.or2.sql.OpenRuneSql
 import jakarta.inject.Inject
 import org.rsmod.api.account.character.CharacterDataStage
 import org.rsmod.api.account.character.CharacterMetadataList
+import org.rsmod.api.account.persistence.GamePersistenceRscmKeys
 import org.rsmod.api.db.DatabaseConnection
 import org.rsmod.game.entity.Player
 import org.rsmod.game.inv.Inventory
@@ -11,6 +13,11 @@ import org.rsmod.game.inv.Inventory
 private typealias CharacterInventory = CharacterInventoryData.Inventory
 
 private typealias CharacterObj = CharacterInventoryData.Obj
+
+private data class InventoryParent(
+    val characterId: Int,
+    val invDbKey: String,
+)
 
 public class CharacterInventoryPipeline
 @Inject
@@ -24,31 +31,33 @@ constructor(private val applier: CharacterInventoryApplier) : CharacterDataStage
             return
         }
 
-        val rowInventories = inventories.associateBy { it.rowId }
+        val rowInventories = inventories.associateBy { "${it.characterId}|${it.invDbKey}" }
 
         val placeholders = (0 until inventories.size).joinToString(",") { "?" }
         val select =
             connection.prepareStatement(
-                """
-                    SELECT inventories_id, slot, obj, count, vars
-                    FROM inventory_objs
-                    WHERE inventories_id IN ($placeholders)
-                """
-                    .trimIndent()
+                OpenRuneSql.text(
+                    "game/inventory/select_objs_in_ids.sql",
+                    "__IN__" to placeholders,
+                ),
             )
 
         select.use {
-            inventories.forEachIndexed { index, inventory -> it.setInt(1 + index, inventory.rowId) }
+            it.setInt(1, metadata.characterId)
+            inventories.forEachIndexed { index, inventory ->
+                it.setString(2 + index, inventory.invDbKey)
+            }
             it.executeQuery().use { resultSet ->
                 while (resultSet.next()) {
-                    val inventoriesRow = resultSet.getInt("inventories_id")
+                    val cid = resultSet.getInt("character_id")
+                    val invDb = resultSet.getString("inv")
                     val slot = resultSet.getInt("slot")
-                    val obj = resultSet.getInt("obj")
+                    val objKey = GamePersistenceRscmKeys.decodeObjKey(resultSet.getString("obj"))
                     val count = resultSet.getInt("count")
                     val vars = resultSet.getInt("vars")
 
-                    val inventory = rowInventories.getValue(inventoriesRow)
-                    inventory.objs[slot] = CharacterObj(obj, count, vars)
+                    val inventory = rowInventories.getValue("$cid|$invDb")
+                    inventory.objs[slot] = CharacterObj(objKey, count, vars)
                 }
             }
         }
@@ -64,21 +73,17 @@ constructor(private val applier: CharacterInventoryApplier) : CharacterDataStage
 
         val select =
             connection.prepareStatement(
-                """
-                    SELECT id, inv_type
-                    FROM inventories
-                    WHERE character_id = ?
-                """
-                    .trimIndent()
+                OpenRuneSql.text("game/inventory/select_inventories_for_character.sql"),
             )
 
         select.use {
             it.setInt(1, metadata.characterId)
             it.executeQuery().use { resultSet ->
                 while (resultSet.next()) {
-                    val id = resultSet.getInt("id")
-                    val type = resultSet.getInt("inv_type")
-                    inventories += CharacterInventory(rowId = id, type = type)
+                    val characterId = resultSet.getInt("character_id")
+                    val invDbKey = resultSet.getString("inv_type")
+                    val invKey = GamePersistenceRscmKeys.decodeInvTypeKey(invDbKey)
+                    inventories += CharacterInventory(characterId, invDbKey, invKey)
                 }
             }
         }
@@ -92,45 +97,34 @@ constructor(private val applier: CharacterInventoryApplier) : CharacterDataStage
 
         val delete =
             connection.prepareStatement(
-                """
-                    DELETE FROM inventory_objs
-                    WHERE inventories_id = ? AND slot = ?
-                """
-                    .trimIndent()
+                OpenRuneSql.text("game/inventory/delete_obj_by_inventory_slot.sql"),
             )
 
         // Note: Not all database engines support `ON CONFLICT`. This syntax works with our current
-        // database setup (sqlite), but may need to be adapted for others (e.g., mysql uses
+        // database setup (PostgreSQL), but may need to be adapted for others (e.g., mysql uses
         // `ON DUPLICATE KEY UPDATE` for similar functionality).
         val upsert =
             connection.prepareStatement(
-                """
-                    INSERT INTO inventory_objs (inventories_id, slot, obj, count, vars)
-                    VALUES (?, ?, ?, ?, ?)
-                    ON CONFLICT(inventories_id, slot) DO UPDATE SET
-                        obj = excluded.obj,
-                        count = excluded.count,
-                        vars = excluded.vars
-                """
-                    .trimIndent()
+                OpenRuneSql.text("game/inventory/upsert_inventory_obj.sql"),
             )
 
         delete.use { delete ->
             upsert.use { upsert ->
                 for (inventory in persistentInvs) {
-                    val type = inventory.type
+                    val invTypeKey = GamePersistenceRscmKeys.encodeInvTypeKey(inventory.internalName)
 
-                    val inventoryRowId = getOrInsertInventoryRowId(connection, characterId, type.id)
-                    if (inventoryRowId == null) {
+                    val parent = ensureInventoryRow(connection, characterId, invTypeKey)
+                    if (parent == null) {
                         val message =
-                            "Fatal error fetching inventory row for: $type (player=$player)"
+                            "Fatal error fetching inventory row for: ${inventory.type} (player=$player)"
                         throw IllegalStateException(message)
                     }
 
                     for (i in inventory.indices) {
                         if (inventory[i] == null) {
-                            delete.setInt(1, inventoryRowId)
-                            delete.setInt(2, i)
+                            delete.setInt(1, parent.characterId)
+                            delete.setString(2, parent.invDbKey)
+                            delete.setInt(3, i)
                             delete.addBatch()
                         }
                     }
@@ -138,11 +132,12 @@ constructor(private val applier: CharacterInventoryApplier) : CharacterDataStage
                     for (i in inventory.indices) {
                         val obj = inventory[i]
                         if (obj != null) {
-                            upsert.setInt(1, inventoryRowId)
-                            upsert.setInt(2, i)
-                            upsert.setInt(3, obj.id)
-                            upsert.setInt(4, obj.count)
-                            upsert.setInt(5, obj.vars)
+                            upsert.setInt(1, parent.characterId)
+                            upsert.setString(2, parent.invDbKey)
+                            upsert.setInt(3, i)
+                            upsert.setString(4, GamePersistenceRscmKeys.encodeObjKey(obj.id))
+                            upsert.setInt(5, obj.count)
+                            upsert.setInt(6, obj.vars)
                             upsert.addBatch()
                         }
                     }
@@ -165,21 +160,24 @@ constructor(private val applier: CharacterInventoryApplier) : CharacterDataStage
             val activeInvPlaceholders = (0 until inventories.size).joinToString(",") { "?" }
             val deleteStaleInventories =
                 connection.prepareStatement(
-                    """
-                        DELETE FROM inventories
-                        WHERE character_id = ? AND inv_type NOT IN ($activeInvPlaceholders)
-                    """
-                        .trimIndent()
+                    OpenRuneSql.text(
+                        "game/inventory/delete_inventories_not_in_types.sql",
+                        "__IN__" to activeInvPlaceholders,
+                    ),
                 )
 
             deleteStaleInventories.use {
                 it.setInt(1, characterId)
-                inventories.forEachIndexed { index, inv -> it.setInt(2 + index, inv.type.id) }
+                inventories.forEachIndexed { index, inv ->
+                    it.setString(2 + index, GamePersistenceRscmKeys.encodeInvTypeKey(inv.internalName))
+                }
                 it.executeUpdate()
             }
         } else {
             val deleteAllInventories =
-                connection.prepareStatement("DELETE FROM inventories WHERE character_id = ?")
+                connection.prepareStatement(
+                    OpenRuneSql.text("game/inventory/delete_all_inventories_for_character.sql"),
+                )
 
             deleteAllInventories.use {
                 it.setInt(1, characterId)
@@ -188,51 +186,40 @@ constructor(private val applier: CharacterInventoryApplier) : CharacterDataStage
         }
     }
 
-    private fun getOrInsertInventoryRowId(
+    private fun ensureInventoryRow(
         connection: DatabaseConnection,
         characterId: Int,
-        invType: Int,
-    ): Int? {
-        // Note: Not all database engines support `ON CONFLICT`. This syntax works with our current
-        // database setup (sqlite), but may need to be adapted for others (e.g., mysql uses
-        // `INSERT IGNORE`).
+        invTypeKey: String,
+    ): InventoryParent? {
         val insert =
             connection.prepareStatement(
-                """
-                    INSERT INTO inventories (character_id, inv_type)
-                    VALUES (?, ?)
-                    ON CONFLICT(character_id, inv_type) DO NOTHING
-                """
-                    .trimIndent()
+                OpenRuneSql.text("game/inventory/insert_inventory_row_conflict_do_nothing.sql"),
             )
 
         insert.use {
             it.setInt(1, characterId)
-            it.setInt(2, invType)
+            it.setString(2, invTypeKey)
             it.executeUpdate()
         }
 
         val select =
             connection.prepareStatement(
-                """
-                    SELECT id FROM inventories
-                    WHERE character_id = ? AND inv_type = ?
-                """
-                    .trimIndent()
+                OpenRuneSql.text("game/inventory/select_inventory_id.sql"),
             )
 
         select.use {
             it.setInt(1, characterId)
-            it.setInt(2, invType)
-            val rowId =
-                select.executeQuery().use { rs ->
-                    if (rs.next()) {
-                        rs.getInt("id")
-                    } else {
-                        null
-                    }
+            it.setString(2, invTypeKey)
+            return select.executeQuery().use { rs ->
+                if (rs.next()) {
+                    InventoryParent(
+                        characterId = rs.getInt("character_id"),
+                        invDbKey = rs.getString("inv"),
+                    )
+                } else {
+                    null
                 }
-            return rowId
+            }
         }
     }
 }

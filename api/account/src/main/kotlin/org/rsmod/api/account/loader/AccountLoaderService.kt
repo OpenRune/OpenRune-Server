@@ -20,13 +20,13 @@ import org.rsmod.api.account.character.main.CharacterAccountRepository
 import org.rsmod.api.account.loader.request.AccountLoadRequest
 import org.rsmod.api.account.loader.request.AccountLoadResponse
 import org.rsmod.api.db.DatabaseConnection
-import org.rsmod.api.db.sqlite.SqliteDatabase
+import org.rsmod.api.db.jdbc.GameDatabase
 import org.rsmod.server.services.concurrent.ScheduledService
 
 public class AccountLoaderService
 @Inject
 constructor(
-    private val database: SqliteDatabase,
+    private val database: GameDatabase,
     private val repository: CharacterAccountRepository,
     private val pipelines: Set<CharacterDataStage.Pipeline>,
 ) : ScheduledService {

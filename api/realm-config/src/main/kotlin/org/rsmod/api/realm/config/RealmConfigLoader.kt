@@ -1,6 +1,7 @@
 package org.rsmod.api.realm.config
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import dev.or2.sql.OpenRuneSql
 import jakarta.inject.Inject
 import org.rsmod.api.db.Database
 import org.rsmod.api.db.DatabaseConnection
@@ -11,28 +12,25 @@ import org.rsmod.map.CoordGrid
 
 public class RealmConfigLoader
 @Inject
-constructor(private val database: Database, @Json private val objectMapper: ObjectMapper) {
-    public suspend fun load(realm: String): RealmConfig? {
-        return database.withTransaction { connection -> loadRealm(connection, realm) }
+constructor(
+    private val database: Database,
+    @Json private val objectMapper: ObjectMapper,
+) {
+    public suspend fun load(worldId: Int): RealmConfig? {
+        return database.withTransaction { connection -> loadWorld(connection, worldId) }
     }
 
-    private fun loadRealm(connection: DatabaseConnection, name: String): RealmConfig? {
+    private fun loadWorld(connection: DatabaseConnection, worldId: Int): RealmConfig? {
         val select =
             connection.prepareStatement(
-                """
-                    SELECT id, login_message, login_broadcast, spawn_coord, respawn_coord,
-                        dev_mode, require_registration, ignore_passwords, auto_assign_display_names,
-                        player_xp_rate_in_hundreds, global_xp_rate_in_hundreds
-                        FROM realms WHERE name = ?
-                """
-                    .trimIndent()
+                OpenRuneSql.text("game/realm/select_config_by_world_id.sql"),
             )
 
         select.use {
-            it.setString(1, name)
+            it.setInt(1, worldId)
             it.executeQuery().use { resultSet ->
                 if (resultSet.next()) {
-                    val id = resultSet.getInt("id")
+                    val id = resultSet.getInt("realm_id")
                     val loginMessage = resultSet.getStringOrNull("login_message")
                     val loginBroadcast = resultSet.getStringOrNull("login_broadcast")
                     val baseXpRateInHundreds = resultSet.getInt("player_xp_rate_in_hundreds")
@@ -41,7 +39,6 @@ constructor(private val database: Database, @Json private val objectMapper: Obje
                     val respawnCoord = resultSet.getString("respawn_coord")
                     val devMode = resultSet.getBoolean("dev_mode")
                     val requireRegistration = resultSet.getBoolean("require_registration")
-                    val ignorePasswords = resultSet.getBoolean("ignore_passwords")
                     val autoAssignDisplayNames = resultSet.getBoolean("auto_assign_display_names")
                     return RealmConfig(
                         id = id,
@@ -53,7 +50,6 @@ constructor(private val database: Database, @Json private val objectMapper: Obje
                         respawnCoord = respawnCoord.toCoordGrid(),
                         devMode = devMode,
                         requireRegistration = requireRegistration,
-                        ignorePasswords = ignorePasswords,
                         autoAssignDisplayNames = autoAssignDisplayNames,
                     )
                 }

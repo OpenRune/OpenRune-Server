@@ -7,6 +7,7 @@ kotlin {
 }
 
 dependencies {
+    implementation(libs.openrune.central.common)
     implementation(projects.api.attr)
     implementation(libs.bundles.logging)
     implementation(libs.fastutil)

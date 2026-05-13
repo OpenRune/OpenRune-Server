@@ -12,7 +12,10 @@ import net.rsprot.protocol.loginprot.incoming.util.LoginBlock
 import net.rsprot.protocol.loginprot.incoming.util.OtpAuthenticationType
 import net.rsprot.protocol.loginprot.outgoing.LoginResponse
 import org.rsmod.api.account.AccountManager
+import org.rsmod.api.account.character.main.CharacterAccountRepository
 import org.rsmod.api.account.loader.request.AccountLoadAuth
+import org.rsmod.api.db.jdbc.GameDatabase
+import org.rsmod.api.net.central.OpenRuneCentralWorldLink
 import org.rsmod.api.net.rsprot.player.AccountLoadResponseHook
 import org.rsmod.api.pw.hash.PasswordHashing
 import org.rsmod.api.realm.Realm
@@ -37,6 +40,9 @@ private constructor(
     private val accountManager: AccountManager,
     private val passwordHashing: PasswordHashing,
     private val totp: Totp,
+    private val openRuneCentral: OpenRuneCentralWorldLink,
+    private val gameDatabase: GameDatabase,
+    private val characterAccountRepository: CharacterAccountRepository,
 ) : GameConnectionHandler<Player> {
     private val logger = InlineLogger()
 
@@ -96,6 +102,15 @@ private constructor(
         }
         // Capture a local snapshot, as `realm.config` is mutable and may change.
         val realmConfig = realm.config
+        if (!openRuneCentral.isEnabled) {
+            logger.error {
+                "OpenRune Central is required for login but is not configured. " +
+                    "Set `central` in game.yml (`host` + `world-key`, or `same-instance: true` for embedded), " +
+                    "or env OPENRUNE_CENTRAL_HOST and OPENRUNE_WORLD_KEY."
+            }
+            responseHandler.writeFailedResponse(LoginResponse.LoginServerOffline)
+            return
+        }
         val responseHook =
             AccountLoadResponseHook(
                 world = world,
@@ -108,31 +123,24 @@ private constructor(
                 loginBlock = block,
                 channelResponses = responseHandler,
                 inputPassword = password.copyOf(),
-                verifyPassword = ::verifyPassword,
                 verifyTotp = ::verifyTotp,
+                openRuneCentral = openRuneCentral,
+                database = gameDatabase,
+                characterRepository = characterAccountRepository,
             )
         val loadAuth = auth.otpAuthentication.toAccountLoadAuth()
         val username = block.username
 
-        // Important: Password hashing can potentially saturate cpu and starve threads. There are
-        // two solutions to mitigate this risk:
-        // 1) Enable `requireRegistration` - this delegates account creation (and thus password
-        //  hashing) to an external system. The server will only handle authentication for
-        //  pre-registered accounts.
-        // 2) Configure the `LoginHandlers` used by rsprot, particularly the `loginFlowExecutor`.
-        //  Use a thread pool with `(cores - 1) * 2` threads to prevent hashing from monopolizing
-        //  cpu cores.
+        // OpenRune Central validates credentials; the game DB still needs rows for account_characters.
+        // Auto-register locally on first login (same as no separate register page).
+        // Password hashing can saturate CPU — tune rsprot `loginFlowExecutor` if needed.
+        val hashedPassword = computePasswordHash(password)
+        if (hashedPassword == null) {
+            responseHandler.writeFailedResponse(LoginResponse.InvalidUsernameOrPassword)
+            return
+        }
         val requestSubmitted =
-            if (realmConfig.requireRegistration) {
-                accountManager.load(loadAuth, username, responseHook)
-            } else {
-                val hashedPassword = computePasswordHash(password)
-                if (hashedPassword == null) {
-                    responseHandler.writeFailedResponse(LoginResponse.InvalidUsernameOrPassword)
-                    return
-                }
-                accountManager.loadOrCreate(loadAuth, username, { hashedPassword }, responseHook)
-            }
+            accountManager.loadOrCreate(loadAuth, username, { hashedPassword }, responseHook)
 
         if (!requestSubmitted) {
             responseHandler.writeFailedResponse(LoginResponse.LoginServerLoadError)
@@ -145,15 +153,6 @@ private constructor(
         } catch (e: Exception) {
             logger.error { "Password hashing error: ${e::class.simpleName}" }
             null
-        }
-    }
-
-    private fun verifyPassword(hash: String, password: CharArray): Boolean {
-        return try {
-            passwordHashing.verify(hash, password)
-        } catch (e: Exception) {
-            logger.error { "Password verification error: ${e::class.simpleName}" }
-            false
         }
     }
 
