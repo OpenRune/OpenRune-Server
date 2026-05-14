@@ -2,7 +2,10 @@ package org.rsmod.api.net.rsprot.player
 
 import com.github.michaelbull.logging.InlineLogger
 import dev.openrune.types.ModLevelType
+import java.time.Instant
+import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.ZoneId
 import java.time.temporal.ChronoUnit
 import net.rsprot.protocol.api.login.GameLoginResponseHandler
 import net.rsprot.protocol.loginprot.incoming.util.AuthenticationType
@@ -11,7 +14,7 @@ import net.rsprot.protocol.loginprot.outgoing.LoginResponse
 import net.rsprot.protocol.loginprot.outgoing.util.AuthenticatorResponse
 import kotlinx.coroutines.runBlocking
 import org.rsmod.api.account.character.main.CharacterAccountApplier
-import org.rsmod.api.account.character.main.CharacterAccountData
+import dev.or2.central.account.AccountData
 import org.rsmod.api.account.character.main.CharacterAccountRepository
 import org.rsmod.api.account.loader.request.AccountLoadAuth
 import org.rsmod.api.account.loader.request.AccountLoadCallback
@@ -66,7 +69,7 @@ class AccountLoadResponseHook(
     private fun handleLoadResponse(response: AccountLoadResponse) {
         when (response) {
             is AccountLoadResponse.Ok.NewAccount -> {
-                if (!runCentralAuth(response.account.loginName, response.account.characterId)) {
+                if (!runCentralAuth(response.account.accountName, response.account.characterData.characterId)) {
                     return
                 }
                 safeQueueLogin(response)
@@ -95,7 +98,7 @@ class AccountLoadResponseHook(
     private fun validateAndQueueLogin(response: AccountLoadResponse.Ok.LoadAccount) {
         // Note: We could move this branch to `handleLoadResponse`, but we intentionally keep it
         // here to mirror the production login flow.
-        if (!runCentralAuth(response.account.loginName, response.account.characterId)) {
+        if (!runCentralAuth(response.account.accountName, response.account.characterData.characterId)) {
             return
         }
 
@@ -120,7 +123,7 @@ class AccountLoadResponseHook(
         // `last_login`. Row with `last_login` set but `last_logout` null = DB corruption,
         // legacy schema drift, or partial write — not same as first login (both null).
         val inconsistentSessionTimestamps =
-            response.account.lastLogin != null && response.account.lastLogout == null
+            response.account.characterData.lastLogin != null && response.account.characterData.lastLogout == null
         if (inconsistentSessionTimestamps) {
             logger.error {
                 "Character last_login set but last_logout null (invalid row) — login aborted: " +
@@ -134,7 +137,7 @@ class AccountLoadResponseHook(
     }
 
     private fun validateTwoFactor(
-        account: CharacterAccountData,
+        account: AccountData,
         auth: AccountLoadAuth,
         secret: CharArray,
     ): LoginResponse? =
@@ -158,7 +161,7 @@ class AccountLoadResponseHook(
         }
 
     private fun requiresTwoFactorAuth(
-        account: CharacterAccountData,
+        account: AccountData,
         auth: AccountLoadAuth.InitialRequest,
     ): Boolean {
         val requiresImmediateCode =
@@ -171,8 +174,13 @@ class AccountLoadResponseHook(
             return true
         }
 
-        val lastVerified = account.twofaLastVerified ?: return true
-        val daysSince = ChronoUnit.DAYS.between(lastVerified, LocalDateTime.now())
+        val lastVerifiedMs = account.twofaLastVerifiedMillis ?: return true
+        val zone = ZoneId.systemDefault()
+        val daysSince =
+            ChronoUnit.DAYS.between(
+                Instant.ofEpochMilli(lastVerifiedMs).atZone(zone).toLocalDate(),
+                LocalDate.now(zone),
+            )
         return daysSince >= DAYS_BETWEEN_2FA_VERIFICATION
     }
 
@@ -246,7 +254,7 @@ class AccountLoadResponseHook(
             return
         }
 
-        val characterId = loadResponse.account.characterId
+        val characterId = loadResponse.account.characterData.characterId
         val sessionHeldElsewhere =
             runBlocking {
                 database.withTransaction { connection ->
@@ -334,10 +342,10 @@ class AccountLoadResponseHook(
     }
 
     private fun runCentralAuth(
-        loginName: String,
+        accountName: String,
         loginCharacterId: Int,
     ): Boolean {
-        return when (val result = openRuneCentral.authenticate(loginName, inputPassword, loginCharacterId)) {
+        return when (val result = openRuneCentral.authenticate(accountName, inputPassword, loginCharacterId)) {
             CentralAuthResult.Skipped -> {
                 // Central world-link not configured; game DB is the authority — do not block login.
                 true

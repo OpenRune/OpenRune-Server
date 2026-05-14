@@ -171,7 +171,7 @@ constructor(
             return
         }
 
-        val usernames = pendingRequests.take(100).joinToString(",") { it.player.username }
+        val usernames = pendingRequests.take(100).joinToString(",") { it.player.displayName }
         logger.error {
             "Emergency shutdown measure timed out! " +
                 "(${pendingRequests.size} pending requests, usernames=$usernames)"

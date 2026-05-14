@@ -7,6 +7,8 @@ public data class DatabaseConfig(
     public val jdbcUrl: String,
     public val user: String,
     public val password: String,
+    /** Same-instance embedded PostgreSQL JVM process, not an external game DB. */
+    public val usesEmbeddedPostgres: Boolean,
 ) {
     public companion object {
         public fun create(serverConfig: ServerConfig): DatabaseConfig {
@@ -17,42 +19,40 @@ public data class DatabaseConfig(
             val gameJdbcOverridesEmbedded =
                 gameJdbc.isNotEmpty() && !isStockTemplateLocalGameJdbc(gameJdbc)
 
-            if (embedded != null && !gameJdbcOverridesEmbedded) {
-                return fromBase(embedded)
-            }
-
-            if (gameJdbc.isNotEmpty()) {
-                val pg = checkNotNull(dbPg) { "database.postgres required when jdbc-url is set" }
-                return fromBase(
-                    Triple(
-                        gameJdbc,
-                        pg.user.trim().ifBlank { "openrune" },
-                        pg.password,
-                    ),
-                )
-            }
-
-            embedded?.let {
-                return fromBase(it)
-            }
-
-            val centralPg = serverConfig.central?.postgres
-            val (baseJdbc, baseUser, basePassword) =
+            val (triple, usesEmbeddedPostgres) =
                 when {
-                    !centralPg?.jdbcUrl.isNullOrBlank() ->
+                    embedded != null && !gameJdbcOverridesEmbedded ->
+                        embedded to true
+                    gameJdbc.isNotEmpty() -> {
+                        val pg = checkNotNull(dbPg) { "database.postgres required when jdbc-url is set" }
                         Triple(
-                            centralPg.jdbcUrl.trim(),
-                            centralPg.user.trim().ifBlank { "openrune" },
-                            centralPg.password,
-                        )
-                    else ->
-                        Triple(
-                            "jdbc:postgresql://127.0.0.1:5432/openrune_game",
-                            "openrune",
-                            "openrune",
-                        )
+                            gameJdbc,
+                            pg.user.trim().ifBlank { "openrune" },
+                            pg.password,
+                        ) to false
+                    }
+                    embedded != null -> embedded to true
+                    else -> {
+                        val centralPg = serverConfig.central?.postgres
+                        val base =
+                            when {
+                                !centralPg?.jdbcUrl.isNullOrBlank() ->
+                                    Triple(
+                                        centralPg.jdbcUrl.trim(),
+                                        centralPg.user.trim().ifBlank { "openrune" },
+                                        centralPg.password,
+                                    )
+                                else ->
+                                    Triple(
+                                        "jdbc:postgresql://127.0.0.1:5432/openrune_game",
+                                        "openrune",
+                                        "openrune",
+                                    )
+                            }
+                        base to false
+                    }
                 }
-            return fromBase(Triple(baseJdbc, baseUser, basePassword))
+            return fromBase(triple, usesEmbeddedPostgres)
         }
 
         private fun isStockTemplateLocalGameJdbc(jdbcUrl: String): Boolean =
@@ -62,7 +62,10 @@ public data class DatabaseConfig(
         private const val STOCK_GAME_JDBC_127 = "jdbc:postgresql://127.0.0.1:5432/openrune_game"
         private const val STOCK_GAME_JDBC_LOCALHOST = "jdbc:postgresql://localhost:5432/openrune_game"
 
-        private fun fromBase(base: Triple<String, String, String>): DatabaseConfig {
+        private fun fromBase(
+            base: Triple<String, String, String>,
+            usesEmbeddedPostgres: Boolean,
+        ): DatabaseConfig {
             val (baseJdbc, baseUser, basePassword) = base
             val jdbcUrl =
                 System.getenv("OPENRUNE_JDBC_URL")?.trim()?.takeIf { it.isNotBlank() } ?: baseJdbc
@@ -74,6 +77,9 @@ public data class DatabaseConfig(
                 jdbcUrl = jdbcUrl,
                 user = user,
                 password = password,
+                usesEmbeddedPostgres =
+                    usesEmbeddedPostgres &&
+                        System.getenv("OPENRUNE_JDBC_URL")?.trim().isNullOrBlank(),
             )
         }
     }

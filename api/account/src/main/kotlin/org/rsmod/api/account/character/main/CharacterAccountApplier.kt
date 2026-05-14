@@ -6,49 +6,51 @@ import dev.openrune.rscm.RSCMType
 import dev.openrune.types.ModLevelType
 import jakarta.inject.Inject
 import java.time.LocalDateTime
+import org.rsmod.api.account.character.CharacterAccountLoginSegment
 import org.rsmod.api.account.character.CharacterDataStage
 import org.rsmod.game.entity.Player
 import org.rsmod.map.CoordGrid
 
 public class CharacterAccountApplier @Inject constructor() :
-    CharacterDataStage.Applier<CharacterAccountData> {
-    override fun apply(player: Player, data: CharacterAccountData) {
-        player.accountId = data.accountId
-        player.characterId = data.characterId
+    CharacterDataStage.Applier<CharacterAccountLoginSegment> {
+    override fun apply(player: Player, data: CharacterAccountLoginSegment) {
+        val d = data.wrapped
+        val c = d.characterData
+        player.accountId = d.accountId
+        player.characterId = c.characterId
 
-        val accountHash = (data.accountId.toLong() shl 32) or data.realm.toLong()
-        val userHash = data.loginName.hashCode().toLong()
-        player.userId = data.characterId.toLong()
+        val accountHash = (d.accountId.toLong() shl 32) or c.characterId.toLong()
+        val userHash = d.accountName.hashCode().toLong()
+        player.userId = c.characterId.toLong()
         player.accountHash = accountHash
         player.userHash = userHash
 
-        val uuid = data.characterId.toLong()
+        val uuid = c.characterId.toLong()
         player.uuid = uuid
         player.observerUUID = uuid
 
-        val device = data.knownDevice
+        val device = d.knownDevice
         player.lastKnownDevice = device
-        player.members = data.members
-        player.username = data.loginName
-        player.displayName = data.displayName ?: ""
-        player.coords = CoordGrid(data.coordX, data.coordZ, data.coordLevel)
-        player.runEnergy = data.runEnergy
-        player.xpRate = data.xpRate
+        player.members = c.members
+        player.username = d.accountName
+        player.displayName = c.displayName ?: ""
+        player.previousDisplayName = c.previousDisplayName ?: ""
+        player.displayNameChangedAtMillis = c.displayNameChangedAtMillis
+        player.coords = CoordGrid(c.coordX, c.coordZ, c.coordLevel)
+        player.runEnergy = c.runEnergy
+        player.xpRate = c.xpRate
         player.lastLogin = LocalDateTime.now()
-        player.vars.backing.putAll(data.varps)
-        if (data.attrs.isNotEmpty()) {
-            player.attr.putAllFromPersistence(data.attrs)
+        player.vars.backing.putAll(c.varps)
+        if (c.attrs.isNotEmpty()) {
+            player.attr.putAllFromPersistence(c.attrs)
         }
-        player.assignModLevel(data)
+        player.assignModLevel(d)
     }
 
-    private fun Player.assignModLevel(data: CharacterAccountData) {
+    private fun Player.assignModLevel(d: dev.or2.central.account.AccountData) {
         val levels = ServerCacheManager.getModelLevels().values
         val defaultLevel = levels.first()
-        modLevel =
-            resolveModLevelFromRights(data.rights)
-                ?: levels.firstOrNull { it.displayName == data.modLevel }
-                ?: defaultLevel
+        modLevel = resolveModLevelFromRights(d.rights) ?: defaultLevel
     }
 
     public companion object {

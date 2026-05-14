@@ -167,7 +167,8 @@ public class Player(
     public var displayName: String by avatar::name
     public var members: Boolean = false
     public var lastKnownDevice: Int? = null
-
+    public var previousDisplayName: String = ""
+    public var displayNameChangedAtMillis: Long? = null
     public var followCoord: CoordGrid = CoordGrid.NULL
     public var buildArea: CoordGrid = CoordGrid.NULL
     public val visibleZoneKeys: IntList = IntArrayList()

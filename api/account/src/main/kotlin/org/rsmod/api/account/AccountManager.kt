@@ -20,21 +20,21 @@ constructor(private val loader: AccountLoaderService, private val saver: Account
 
     public fun load(
         auth: AccountLoadAuth,
-        loginName: String,
+        accountName: String,
         callback: AccountLoadCallback,
     ): Boolean {
-        val loadRequest = AccountLoadRequest.StrictSearch(auth, loginName, callback)
+        val loadRequest = AccountLoadRequest.StrictSearch(auth, accountName, callback)
         return loader.queue(loadRequest)
     }
 
     public fun loadOrCreate(
         auth: AccountLoadAuth,
-        loginName: String,
+        accountName: String,
         hashedPassword: () -> String,
         callback: AccountLoadCallback,
     ): Boolean {
         val loadRequest =
-            AccountLoadRequest.SearchOrCreateWithPassword(hashedPassword, auth, loginName, callback)
+            AccountLoadRequest.SearchOrCreateWithPassword(hashedPassword, auth, accountName, callback)
         return loader.queue(loadRequest)
     }
 

@@ -9,7 +9,13 @@ public object WorldLinkFrameSpecs {
 
     public const val MAGIC: Int = 0x4F523231
     public const val TOKEN_BYTES: Int = 32
-    public const val CLIENT_PROTOCOL_VERSION: Int = 5
+    public const val CLIENT_PROTOCOL_VERSION: Int = 7
+
+    public const val PRIVATE_MESSAGE_MAX_CHARS: Int = 255
+
+    public const val PM_RELAY_SENDER_DISPLAY_MAX_UTF8: Int = 96
+
+    public const val PM_RELAY_MESSAGE_MAX_UTF8: Int = PRIVATE_MESSAGE_MAX_CHARS * 4
 
     public const val WORLD_KEY_MAX_BYTES: Int = 4096
 
@@ -43,15 +49,21 @@ public object WorldLinkFrameSpecs {
 
     public const val OP_SERVER_BROADCAST: Int = 0x55
 
+    public const val OP_SERVER_DISPLAY_NAME_SYNC: Int = 0x57
+
     private const val LOGIN_OK_RIGHTS_MAX_BYTES: Int = 4096
     private const val LOGIN_OK_MAX_BODY: Int = 2 + TOKEN_BYTES + 8 + 2 + LOGIN_OK_RIGHTS_MAX_BYTES
     private const val LOGIN_OK_MIN_BODY: Int = 2 + TOKEN_BYTES + 8
 
     private const val WORLD_OPS_UTF8_MAX: Int = 2048
 
+    private const val SERVER_DISPLAY_NAME_SYNC_MIN_BODY: Int = 8 + 4 + 2 + 0 + 2 + 0
+
+    private const val SERVER_DISPLAY_NAME_SYNC_MAX_BODY: Int =
+        8 + 4 + 2 + PM_RELAY_SENDER_DISPLAY_MAX_UTF8 + 2 + PM_RELAY_SENDER_DISPLAY_MAX_UTF8
+
     private const val SERVER_REBOOT_MIN_BODY: Int = 1 + 4 + 8 + 2 + 0
 
-    /** Human-readable explanation for a non-null result from [validateGameToCentralBody] or [validateCentralToGameFrame]. */
     public fun describeValidationFailure(reason: String): String =
         when (reason) {
             "empty" -> "frame was empty (expected at least an opcode byte)"
@@ -68,6 +80,13 @@ public object WorldLinkFrameSpecs {
             "server_revoke_login_size" -> "SERVER_REVOKE_LOGIN body must be exactly 12 bytes (account id + character id)"
             "server_mute_update_size" -> "SERVER_MUTE_UPDATE body must be exactly 20 bytes"
             "server_kick_size" -> "SERVER_KICK body must be exactly 12 bytes (account id + character id)"
+            "server_private_message_size" -> "SERVER_PRIVATE_MESSAGE body length is outside the allowed range"
+            "server_private_message_truncated" -> "SERVER_PRIVATE_MESSAGE is truncated before a length-prefixed string"
+            "server_private_message_chunk_len" -> "SERVER_PRIVATE_MESSAGE string length exceeds maximum UTF-8 size"
+            "server_private_message_chunk_data" -> "SERVER_PRIVATE_MESSAGE string data is truncated"
+            "server_private_message_trailing" -> "SERVER_PRIVATE_MESSAGE has unexpected trailing bytes"
+            "pm_relay_ok_size" -> "WORLD_PM_RELAY_OK must have no body after the opcode"
+            "pm_relay_fail_size" -> "WORLD_PM_RELAY_FAIL must have exactly one reason byte after the opcode"
             "server_reboot_short" -> "SERVER_REBOOT body is shorter than the minimum fixed fields + message length"
             "server_reboot_long" -> "SERVER_REBOOT body exceeds the maximum allowed size"
             "server_reboot_msg_len" -> "SERVER_REBOOT message UTF-8 block length is invalid"
@@ -77,6 +96,18 @@ public object WorldLinkFrameSpecs {
             "server_broadcast_chunk_len" -> "SERVER_BROADCAST string length exceeds maximum UTF-8 size"
             "server_broadcast_chunk_data" -> "SERVER_BROADCAST string data is truncated"
             "server_broadcast_trailing" -> "SERVER_BROADCAST has unexpected trailing bytes"
+            "friend_fanout_ok_size" -> "WORLD_FRIEND_FANOUT_ACK must have no body after the opcode"
+            "friend_fanout_fail_size" -> "WORLD_FRIEND_FANOUT_FAIL must have exactly one reason byte after the opcode"
+            "server_friend_presence_size" -> "SERVER_FRIEND_PRESENCE body length is outside the allowed range"
+            "server_friend_presence_truncated" -> "SERVER_FRIEND_PRESENCE is truncated before a length-prefixed string"
+            "server_friend_presence_chunk_len" -> "SERVER_FRIEND_PRESENCE string length exceeds maximum UTF-8 size"
+            "server_friend_presence_chunk_data" -> "SERVER_FRIEND_PRESENCE string data is truncated"
+            "server_friend_presence_trailing" -> "SERVER_FRIEND_PRESENCE has unexpected trailing bytes"
+            "server_display_name_sync_size" -> "SERVER_DISPLAY_NAME_SYNC body length is outside the allowed range"
+            "server_display_name_sync_truncated" -> "SERVER_DISPLAY_NAME_SYNC is truncated before a length-prefixed string"
+            "server_display_name_sync_chunk_len" -> "SERVER_DISPLAY_NAME_SYNC string length exceeds maximum UTF-8 size"
+            "server_display_name_sync_chunk_data" -> "SERVER_DISPLAY_NAME_SYNC string data is truncated"
+            "server_display_name_sync_trailing" -> "SERVER_DISPLAY_NAME_SYNC has unexpected trailing bytes"
             "unexpected_opcode" -> "opcode is not defined for this direction in the protocol"
             "too_short" -> "frame body is shorter than the minimum for this opcode"
             "too_long" -> "frame body is longer than the maximum for this opcode"
@@ -110,6 +141,7 @@ public object WorldLinkFrameSpecs {
             OP_HEARTBEAT, OP_LOGOUT -> {
                 if (bodyLen != TOKEN_BODY_BYTES) "bad_token_frame" else null
             }
+
             else -> "unknown_opcode"
         }
 
@@ -170,6 +202,7 @@ public object WorldLinkFrameSpecs {
                 } else {
                     null
                 }
+            OP_SERVER_DISPLAY_NAME_SYNC -> validateServerDisplayNameSyncFrame(frame)
             OP_SERVER_REBOOT -> validateServerRebootFrame(frame)
             OP_SERVER_BROADCAST -> validateServerBroadcastFrame(frame)
             else -> "unexpected_opcode"
@@ -251,7 +284,29 @@ public object WorldLinkFrameSpecs {
         return if (buf.remaining() != 0) "server_broadcast_trailing" else null
     }
 
-    // --- Inbound push payloads (call only when [validateCentralToGameFrame] returned null) ---
+    private fun validateServerDisplayNameSyncFrame(frame: ByteArray): String? {
+        val bodyLen = frame.size - 1
+        if (bodyLen !in SERVER_DISPLAY_NAME_SYNC_MIN_BODY..SERVER_DISPLAY_NAME_SYNC_MAX_BODY) {
+            return "server_display_name_sync_size"
+        }
+        val buf = ByteBuffer.wrap(frame, 1, bodyLen)
+        buf.long
+        buf.int
+        repeat(2) {
+            if (buf.remaining() < 2) {
+                return "server_display_name_sync_truncated"
+            }
+            val chunk = buf.short.toInt() and 0xFFFF
+            if (chunk > PM_RELAY_SENDER_DISPLAY_MAX_UTF8) {
+                return "server_display_name_sync_chunk_len"
+            }
+            if (buf.remaining() < chunk) {
+                return "server_display_name_sync_chunk_data"
+            }
+            buf.position(buf.position() + chunk)
+        }
+        return if (buf.remaining() != 0) "server_display_name_sync_trailing" else null
+    }
 
     public data class ServerRevokeLoginPayload(
         val accountId: Long,
@@ -281,6 +336,13 @@ public object WorldLinkFrameSpecs {
         val message: String,
         val url: String,
         val icon: String,
+    )
+
+    public data class ServerDisplayNameSyncPayload(
+        val accountId: Long,
+        val characterId: Int,
+        val newDisplayName: String,
+        val priorDisplayName: String,
     )
 
     public fun decodeServerRevokeLogin(frame: ByteArray): ServerRevokeLoginPayload {
@@ -316,10 +378,27 @@ public object WorldLinkFrameSpecs {
         return ServerBroadcastPayload(worldScope, message, url, icon)
     }
 
+
+    public fun decodeServerDisplayNameSync(frame: ByteArray): ServerDisplayNameSyncPayload {
+        val buf = ByteBuffer.wrap(frame, 1, frame.size - 1)
+        val accountId = buf.long
+        val characterId = buf.int
+        val newName = readUtf16LengthPrefixed(buf)
+        val priorName = readUtf16LengthPrefixed(buf)
+        return ServerDisplayNameSyncPayload(
+            accountId = accountId,
+            characterId = characterId,
+            newDisplayName = newName,
+            priorDisplayName = priorName,
+        )
+    }
+
     private fun readUtf16LengthPrefixed(buf: ByteBuffer): String {
         val len = buf.short.toInt() and 0xFFFF
         val bytes = ByteArray(len)
         buf.get(bytes)
         return String(bytes, StandardCharsets.UTF_8)
     }
+
+
 }

@@ -1,14 +1,14 @@
 package org.rsmod.api.account.character
 
-import org.rsmod.api.account.character.main.CharacterAccountData
+import dev.or2.central.account.AccountData
 
 @Suppress("JavaDefaultMethodsNotOverriddenByDelegation")
 public data class CharacterMetadataList(
-    val accountData: CharacterAccountData,
+    val accountData: AccountData,
     val transformers: MutableList<CharacterDataTransformer<*>>,
 ) : List<CharacterDataTransformer<*>> by transformers {
     public val characterId: Int
-        get() = accountData.characterId
+        get() = accountData.characterData.characterId
 
     public fun <T : CharacterDataStage.Segment> add(
         applier: CharacterDataStage.Applier<T>,

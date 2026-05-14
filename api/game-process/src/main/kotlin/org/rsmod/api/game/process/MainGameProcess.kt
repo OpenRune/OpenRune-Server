@@ -55,7 +55,7 @@ constructor(
         val remaining = playerList.filterNot(Player::loggingOut)
         if (remaining.isNotEmpty()) {
             // Log up to 250 player names to avoid creating excessively large log entries.
-            val names = remaining.take(250).joinToString { "'${it.username}'" }
+            val names = remaining.take(250).joinToString { "'${it.displayName}'" }
             logger.error { "${remaining.size} players were unable to logout properly: $names" }
         }
     }

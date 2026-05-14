@@ -370,7 +370,7 @@ constructor(
     }
 
     private fun reboot(cheat: Cheat) {
-        logger.info { "Reboot initiated by '${cheat.player.username}'." }
+        logger.info { "Reboot initiated by '${cheat.player.displayName}'." }
         SafeServiceExit.terminate()
     }
 

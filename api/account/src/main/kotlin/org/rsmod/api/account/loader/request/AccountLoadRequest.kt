@@ -2,7 +2,7 @@ package org.rsmod.api.account.loader.request
 
 public sealed class AccountLoadRequest {
     public abstract val auth: AccountLoadAuth
-    public abstract val loginName: String
+    public abstract val accountName: String
     public abstract val callback: AccountLoadCallback
 
     /**
@@ -17,7 +17,7 @@ public sealed class AccountLoadRequest {
 
     public data class StrictSearch(
         override val auth: AccountLoadAuth,
-        override val loginName: String,
+        override val accountName: String,
         override val callback: AccountLoadCallback,
     ) : ReadOnly()
 
@@ -34,7 +34,7 @@ public sealed class AccountLoadRequest {
     public data class SearchOrCreateWithPassword(
         public val hashedPassword: () -> String,
         override val auth: AccountLoadAuth,
-        override val loginName: String,
+        override val accountName: String,
         override val callback: AccountLoadCallback,
     ) : WriteRequired()
 }

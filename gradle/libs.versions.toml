@@ -28,7 +28,7 @@ spotless = "7.0.4"
 postgresql-jdbc = "42.7.5"
 embedded-postgres = "2.2.2"
 or2 = "2.4.7"
-openruneCentral = "1.0"
+openruneCentral = "1.1"
 or2ServerUtils = "0.7"
 jodatime = "2.14.0"
 
@@ -56,6 +56,9 @@ kotlin-inline-logger = { module = "com.michael-bull.kotlin-inline-logger:kotlin-
 kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlin" }
 logback-classic = { module = "ch.qos.logback:logback-classic", version.ref = "logback" }
 netty-buffer = { module = "io.netty:netty-buffer", version.ref = "netty" }
+netty-codec = { module = "io.netty:netty-codec", version.ref = "netty" }
+netty-handler = { module = "io.netty:netty-handler", version.ref = "netty" }
+netty-transport = { module = "io.netty:netty-transport", version.ref = "netty" }
 okhttp = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp" }
 otp-kotlin = { module = "dev.turingcomplete:kotlin-onetimepassword", version.ref = "otp-kotlin" }
 openrs2-buffer = { module = "org.openrs2:openrs2-buffer", version.ref = "openrs2" }
