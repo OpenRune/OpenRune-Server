@@ -2,10 +2,7 @@ package org.rsmod.api.net.central
 
 import com.github.michaelbull.logging.InlineLogger
 import jakarta.inject.Inject
-import java.io.DataInputStream
-import java.io.DataOutputStream
 import java.net.InetSocketAddress
-import java.net.Socket
 import java.nio.ByteBuffer
 import java.nio.charset.StandardCharsets
 import java.util.concurrent.ConcurrentLinkedQueue
@@ -13,6 +10,8 @@ import net.rsprot.protocol.loginprot.outgoing.LoginResponse
 import org.rsmod.api.player.output.ChatType
 import org.rsmod.api.player.output.MiscOutput
 import org.rsmod.api.player.output.mes
+import org.rsmod.api.net.central.netty.WorldLinkNettyBlockingClient
+import org.rsmod.api.net.central.netty.WorldLinkNettyBlockingSession
 import org.rsmod.api.registry.player.PlayerRegistry
 import org.rsmod.api.server.config.OpenRuneCentralGameConfig
 import org.rsmod.api.server.config.ServerConfig
@@ -41,6 +40,9 @@ constructor(
 
     private val pendingCentralBroadcasts =
         ConcurrentLinkedQueue<WorldLinkFrameSpecs.ServerBroadcastPayload>()
+
+    private val pendingCentralDisplayNameSyncs =
+        ConcurrentLinkedQueue<WorldLinkFrameSpecs.ServerDisplayNameSyncPayload>()
 
     @Volatile
     private var inboundWatchStop: Boolean = true
@@ -165,20 +167,26 @@ constructor(
                 player.mes(b.message, ChatType.Broadcast)
             }
         }
+        while (true) {
+            val d = pendingCentralDisplayNameSyncs.poll() ?: break
+            playerRegistry.applyCentralDisplayNameSync(d.accountId, d.characterId, d.newDisplayName, d.priorDisplayName)
+        }
     }
 
     public fun notifyLogout(sessionToken: ByteArray) {
         val cfg = settings ?: return
         repeat(MAX_LOGOUT_ATTEMPTS) { attempt ->
             try {
-                Socket().use { socket ->
-                    socket.tcpNoDelay = true
-                    socket.soTimeout = SOCKET_TIMEOUT_MS
-                    socket.connect(InetSocketAddress(cfg.host, cfg.port), CONNECT_TIMEOUT_MS)
-                    val out = DataOutputStream(socket.getOutputStream())
-                    val input = DataInputStream(socket.getInputStream())
-                    sendHello(out, input, cfg.worldKey, serverConfig.world)
-                    sendLogout(out, input, sessionToken)
+                val session =
+                    WorldLinkNettyBlockingClient.connect(
+                        InetSocketAddress(cfg.host, cfg.port),
+                        readIdleSeconds = SOCKET_TIMEOUT_SECONDS,
+                    )
+                try {
+                    sendHello(session, cfg.worldKey, serverConfig.world)
+                    sendLogout(session, sessionToken)
+                } finally {
+                    session.close()
                 }
                 return
             } catch (e: Exception) {
@@ -200,101 +208,95 @@ constructor(
         loginUsername: String,
         password: CharArray,
         loginCharacterId: Int?,
-    ): CentralAuthResult =
-        Socket().use { socket ->
-            socket.tcpNoDelay = true
-            socket.soTimeout = SOCKET_TIMEOUT_MS
-            socket.connect(InetSocketAddress(cfg.host, cfg.port), CONNECT_TIMEOUT_MS)
-            val out = DataOutputStream(socket.getOutputStream())
-            val input = DataInputStream(socket.getInputStream())
-            sendHello(out, input, cfg.worldKey, serverConfig.world)
-            sendLogin(out, input, loginUsername, password, loginCharacterId)
-        }
-
-    private fun sendHello(
-        out: DataOutputStream,
-        input: DataInputStream,
-        worldKey: ByteArray,
-        worldId: Int,
-    ) {
-        worldLinkSession(out, input) {
-            outgoing.worldHello(worldId, worldKey)
-            val response = incoming.recvCentralValidated("hello response from Central")
-            when (val op = response[0].toInt() and 0xFF) {
-                WorldLinkFrameSpecs.OP_HELLO_ACK -> return@worldLinkSession
-                WorldLinkFrameSpecs.OP_HELLO_REJECT -> {
-                    val reason = if (response.size > 1) response[1].toInt() and 0xFF else -1
-                    error(helloRejectMessage(reason, worldId))
-                }
-                else ->
-                    unexpectedCentralOp(
-                        op,
-                        listOf(WorldLinkFrameSpecs.OP_HELLO_ACK, WorldLinkFrameSpecs.OP_HELLO_REJECT),
-                    )
-            }
+    ): CentralAuthResult {
+        val session =
+            WorldLinkNettyBlockingClient.connect(
+                InetSocketAddress(cfg.host, cfg.port),
+                readIdleSeconds = SOCKET_TIMEOUT_SECONDS,
+            )
+        return try {
+            sendHello(session, cfg.worldKey, serverConfig.world)
+            sendLogin(session, loginUsername, password, loginCharacterId)
+        } finally {
+            session.close()
         }
     }
 
-    private fun sendPushSubscribe(
-        out: DataOutputStream,
-        input: DataInputStream,
+    private fun sendHello(
+        session: WorldLinkNettyBlockingSession,
+        worldKey: ByteArray,
+        worldId: Int,
     ) {
-        worldLinkSession(out, input) {
-            outgoing.pushSubscribe()
-            val response = incoming.recvCentralValidated("push-subscribe response from Central")
-            val op = response[0].toInt() and 0xFF
-            if (op != WorldLinkFrameSpecs.OP_PUSH_SUBSCRIBE_ACK) {
-                unexpectedCentralOp(op, listOf(WorldLinkFrameSpecs.OP_PUSH_SUBSCRIBE_ACK))
+        session.send(WorldLinkPackets.worldHello(worldId, worldKey))
+        val response = session.recvInbound(SOCKET_TIMEOUT_MS.toLong())
+        when (val op = response[0].toInt() and 0xFF) {
+            WorldLinkFrameSpecs.OP_HELLO_ACK -> return
+            WorldLinkFrameSpecs.OP_HELLO_REJECT -> {
+                val reason = if (response.size > 1) response[1].toInt() and 0xFF else -1
+                error(helloRejectMessage(reason, worldId))
             }
+            else ->
+                unexpectedCentralOp(
+                    op,
+                    listOf(WorldLinkFrameSpecs.OP_HELLO_ACK, WorldLinkFrameSpecs.OP_HELLO_REJECT),
+                )
+        }
+    }
+
+    private fun sendPushSubscribe(session: WorldLinkNettyBlockingSession) {
+        session.send(byteArrayOf(WorldLinkFrameSpecs.OP_PUSH_SUBSCRIBE.toByte()))
+        val response = session.recvInbound(SOCKET_TIMEOUT_MS.toLong())
+        val op = response[0].toInt() and 0xFF
+        if (op != WorldLinkFrameSpecs.OP_PUSH_SUBSCRIBE_ACK) {
+            unexpectedCentralOp(op, listOf(WorldLinkFrameSpecs.OP_PUSH_SUBSCRIBE_ACK))
         }
     }
 
     private fun sendLogin(
-        out: DataOutputStream,
-        input: DataInputStream,
+        session: WorldLinkNettyBlockingSession,
         username: String,
         password: CharArray,
         loginCharacterId: Int?,
-    ): CentralAuthResult =
-        worldLinkSession(out, input) {
-            outgoing.login(username, password, loginCharacterId)
-            val (response, invalid) = incoming.recvCentralOrInvalid()
-            if (invalid != null) {
-                logger.warn {
-                    "Central LOGIN reply failed validation: " +
-                        WorldLinkFrameSpecs.describeValidationFailure(invalid)
-                }
-                return@worldLinkSession CentralAuthResult.Denied(LoginResponse.UnknownReplyFromLoginServer)
+    ): CentralAuthResult {
+        session.send(WorldLinkPackets.login(username, password, loginCharacterId))
+        val response = session.recvInbound(SOCKET_TIMEOUT_MS.toLong())
+        val invalid = WorldLinkFrameSpecs.validateCentralToGameFrame(response)
+        if (invalid != null) {
+            logger.warn {
+                "Central LOGIN reply failed validation: " +
+                    WorldLinkFrameSpecs.describeValidationFailure(invalid)
             }
-            when (val op = response[0].toInt() and 0xFF) {
-                WorldLinkFrameSpecs.OP_LOGIN_OK -> parseLoginOk(response)
-                WorldLinkFrameSpecs.OP_LOGIN_FAIL -> {
-                    val buf = ByteBuffer.wrap(response)
-                    buf.get() // opcode
-                    if (buf.remaining() < 4) {
-                        return@worldLinkSession CentralAuthResult.Denied(LoginResponse.UnknownReplyFromLoginServer)
-                    }
-                    val code = buf.int
-                    val script =
-                        if (!buf.hasRemaining()) {
-                            null
-                        } else {
-                            val dup = buf.duplicate()
-                            val parsed = readLoginFailScriptTrailer(dup)
-                            if (parsed == null || dup.hasRemaining()) {
-                                return@worldLinkSession CentralAuthResult.Denied(LoginResponse.UnknownReplyFromLoginServer)
-                            }
-                            buf.position(dup.position())
-                            parsed
-                        }
-                    if (buf.hasRemaining()) {
-                        return@worldLinkSession CentralAuthResult.Denied(LoginResponse.UnknownReplyFromLoginServer)
-                    }
-                    CentralAuthResult.Denied(mapLoginFail(code, script))
-                }
-                else -> CentralAuthResult.Denied(LoginResponse.UnknownReplyFromLoginServer)
-            }
+            return CentralAuthResult.Denied(LoginResponse.UnknownReplyFromLoginServer)
         }
+        when (val op = response[0].toInt() and 0xFF) {
+            WorldLinkFrameSpecs.OP_LOGIN_OK -> return parseLoginOk(response)
+            WorldLinkFrameSpecs.OP_LOGIN_FAIL -> {
+                val buf = ByteBuffer.wrap(response)
+                buf.get() // opcode
+                if (buf.remaining() < 4) {
+                    return CentralAuthResult.Denied(LoginResponse.UnknownReplyFromLoginServer)
+                }
+                val code = buf.int
+                val script =
+                    if (!buf.hasRemaining()) {
+                        null
+                    } else {
+                        val dup = buf.duplicate()
+                        val parsed = readLoginFailScriptTrailer(dup)
+                        if (parsed == null || dup.hasRemaining()) {
+                            return CentralAuthResult.Denied(LoginResponse.UnknownReplyFromLoginServer)
+                        }
+                        buf.position(dup.position())
+                        parsed
+                    }
+                if (buf.hasRemaining()) {
+                    return CentralAuthResult.Denied(LoginResponse.UnknownReplyFromLoginServer)
+                }
+                return CentralAuthResult.Denied(mapLoginFail(code, script))
+            }
+            else -> return CentralAuthResult.Denied(LoginResponse.UnknownReplyFromLoginServer)
+        }
+    }
 
     private fun parseLoginOk(response: ByteArray): CentralAuthResult {
         val buf = ByteBuffer.wrap(response)
@@ -345,17 +347,14 @@ constructor(
     }
 
     private fun sendLogout(
-        out: DataOutputStream,
-        input: DataInputStream,
+        session: WorldLinkNettyBlockingSession,
         sessionToken: ByteArray,
     ) {
-        worldLinkSession(out, input) {
-            outgoing.logout(sessionToken)
-            val response = incoming.recvCentralValidated("logout response from Central")
-            val op = response[0].toInt() and 0xFF
-            if (op != WorldLinkFrameSpecs.OP_LOGOUT_ACK) {
-                unexpectedCentralOp(op, listOf(WorldLinkFrameSpecs.OP_LOGOUT_ACK))
-            }
+        session.send(WorldLinkPackets.logout(sessionToken))
+        val response = session.recvInbound(SOCKET_TIMEOUT_MS.toLong())
+        val op = response[0].toInt() and 0xFF
+        if (op != WorldLinkFrameSpecs.OP_LOGOUT_ACK) {
+            unexpectedCentralOp(op, listOf(WorldLinkFrameSpecs.OP_LOGOUT_ACK))
         }
     }
 
@@ -410,18 +409,21 @@ constructor(
 
     private fun runInboundWatchLoop(cfg: CentralSettings) {
         while (!inboundWatchStop && !Thread.currentThread().isInterrupted) {
-            var socket: Socket? = null
+            var session: WorldLinkNettyBlockingSession? = null
             try {
-                socket = Socket()
-                socket.tcpNoDelay = true
-                socket.soTimeout = 0
-                socket.connect(InetSocketAddress(cfg.host, cfg.port), CONNECT_TIMEOUT_MS)
-                val out = DataOutputStream(socket.getOutputStream())
-                val input = DataInputStream(socket.getInputStream())
-                sendHello(out, input, cfg.worldKey, serverConfig.world)
-                sendPushSubscribe(out, input)
+                session =
+                    WorldLinkNettyBlockingClient.connect(
+                        InetSocketAddress(cfg.host, cfg.port),
+                        readIdleSeconds = null,
+                    )
+                sendHello(session, cfg.worldKey, serverConfig.world)
+                sendPushSubscribe(session)
                 while (!inboundWatchStop && !Thread.currentThread().isInterrupted) {
-                    val (frame, invalid) = input.worldLinkIncoming { recvCentralOrInvalid() }
+                    val frame = session.pollInbound(INBOUND_POLL_MS) ?: continue
+                    if (frame.isEmpty()) {
+                        break
+                    }
+                    val invalid = WorldLinkFrameSpecs.validateCentralToGameFrame(frame)
                     if (invalid != null) {
                         logger.warn {
                             "Dropping invalid Central push frame: " +
@@ -435,6 +437,7 @@ constructor(
                         onKick = { pendingCentralKicks.add(it) },
                         onReboot = { pendingCentralReboots.add(it) },
                         onBroadcast = { pendingCentralBroadcasts.add(it) },
+                        onDisplayNameSync = { pendingCentralDisplayNameSyncs.add(it) },
                         onOther = { op ->
                             logger.debug {
                                 "Ignoring Central world-link opcode 0x${op.toString(16)} on push channel " +
@@ -455,7 +458,7 @@ constructor(
                 }
             } finally {
                 try {
-                    socket?.close()
+                    session?.close()
                 } catch (_: Exception) {
                 }
             }
@@ -506,7 +509,8 @@ constructor(
 
     private companion object {
         private const val SOCKET_TIMEOUT_MS: Int = 15_000
-        private const val CONNECT_TIMEOUT_MS: Int = 10_000
+
+        private const val SOCKET_TIMEOUT_SECONDS: Int = SOCKET_TIMEOUT_MS / 1000
 
         private const val MAX_AUTH_ATTEMPTS: Int = 6
 
@@ -514,6 +518,8 @@ constructor(
         private const val RETRY_BASE_MS: Long = 200L
 
         private const val INBOUND_RECONNECT_MS: Long = 1_500L
+
+        private const val INBOUND_POLL_MS: Long = 1_000L
 
         private const val GAME_CYCLE_MS: Long = 600L
     }

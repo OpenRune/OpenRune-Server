@@ -84,9 +84,9 @@ constructor(
             when (response) {
                 is AccountSaveResponse.Success -> {}
                 is AccountSaveResponse.ExcessiveRetries ->
-                    logger.error { "Background autosave failed after retries for ${player.username}" }
+                    logger.error { "Background autosave failed after retries for ${player.displayName}" }
                 is AccountSaveResponse.InternalShutdownError ->
-                    logger.error { "Background autosave shutdown error for ${player.username}" }
+                    logger.error { "Background autosave shutdown error for ${player.displayName}" }
             }
         }
     }

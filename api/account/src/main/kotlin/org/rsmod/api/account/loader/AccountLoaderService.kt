@@ -182,7 +182,7 @@ constructor(
     private suspend fun handleRequestWithTimeout(request: AccountLoadRequest, timeoutMillis: Long) {
         val result = withTimeoutOrNull(timeoutMillis) { handleRequest(request) }
         if (result == null) {
-            logger.warn { "Account load timed out for: '${request.loginName}' ($request)" }
+            logger.warn { "Account load timed out for: '${request.accountName}' ($request)" }
             request.callback(AccountLoadResponse.Err.Timeout)
         }
     }
@@ -193,7 +193,7 @@ constructor(
     }
 
     private fun DatabaseConnection.handleRequest(request: AccountLoadRequest): AccountLoadResponse {
-        val metadataList = repository.selectAndCreateMetadataList(this, request.loginName)
+        val metadataList = repository.selectAndCreateMetadataList(this, request.accountName)
         if (metadataList == null) {
             val response = accountNotFoundResponse(request)
             return response
@@ -216,29 +216,29 @@ constructor(
         request: AccountLoadRequest.SearchOrCreateWithPassword
     ): AccountLoadResponse =
         try {
-            val metadataList = createMetadataList(request.loginName, request.hashedPassword())
+            val metadataList = createMetadataList(request.accountName, request.hashedPassword())
             AccountLoadResponse.Ok.NewAccount(request.auth, metadataList.accountData, metadataList)
         } catch (e: Exception) {
             AccountLoadResponse.Err.Exception(e)
         }
 
     private fun DatabaseConnection.createMetadataList(
-        loginName: String,
+        accountName: String,
         hashedPassword: String,
     ): CharacterMetadataList {
-        val accountId = repository.insertOrSelectAccountId(this, loginName, hashedPassword)
+        val accountId = repository.insertOrSelectAccountId(this, accountName, hashedPassword)
         if (accountId == null) {
-            throw IllegalStateException("Could not insert or select account id for: '$loginName'")
+            throw IllegalStateException("Could not insert or select account id for: '$accountName'")
         }
 
         val characterId = repository.insertAndSelectCharacterId(this, accountId)
         if (characterId == null) {
-            throw IllegalStateException("Could not insert character for: '$loginName' ($accountId)")
+            throw IllegalStateException("Could not insert character for: '$accountName' ($accountId)")
         }
 
-        val metadataList = repository.selectAndCreateMetadataList(this, loginName)
+        val metadataList = repository.selectAndCreateMetadataList(this, accountName)
         if (metadataList == null) {
-            throw IllegalStateException("Could not select character after creation: '$loginName'")
+            throw IllegalStateException("Could not select character after creation: '$accountName'")
         }
         return metadataList
     }

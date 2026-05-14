@@ -87,7 +87,7 @@ data class Quest(
         val attemptedStage = currentStage + amount
 
         if (attemptedStage > maxSteps) {
-            val playerName = access.player.username.ifEmpty { "unknown" }
+            val playerName = access.player.displayName.ifEmpty { "unknown" }
             logger.error {
                 "Attempted to advance quest '$key' for player '$playerName' " +
                     "from stage $currentStage by $amount (max=$maxSteps)."

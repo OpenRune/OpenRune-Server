@@ -2,6 +2,8 @@ package org.rsmod.api.account.character.main
 
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.ObjectMapper
+import dev.or2.central.account.AccountData
+import dev.or2.central.account.CharacterData
 import dev.or2.sql.OpenRuneSql
 import dev.openrune.ServerCacheManager
 import dev.openrune.types.varp.VarpLifetime
@@ -11,6 +13,7 @@ import java.sql.Timestamp
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 import kotlin.math.roundToInt
+import org.rsmod.api.account.character.CharacterAccountLoginSegment
 import org.rsmod.api.account.character.CharacterMetadataList
 import org.rsmod.api.account.persistence.GamePersistenceRscmKeys
 import org.rsmod.api.db.DatabaseConnection
@@ -19,27 +22,22 @@ import org.rsmod.api.db.util.getLocalDateTime
 import org.rsmod.api.db.util.setNullableInt
 import org.rsmod.api.db.util.setNullableString
 import org.rsmod.api.parsers.json.Json
-import org.rsmod.api.realm.Realm
 import org.rsmod.game.entity.Player
 
 public class CharacterAccountRepository
 @Inject
 constructor(
     @Json private val objectMapper: ObjectMapper,
-    private val realm: Realm,
     private val applier: CharacterAccountApplier,
 ) {
-    private val realmId: Int
-        get() = realm.config.id
-
-    private val maxCharactersPerRealm: Int = 3
+    private val maxCharactersPerAccount: Int = 3
 
     public fun insertOrSelectAccountId(
         connection: DatabaseConnection,
-        loginName: String,
+        accountName: String,
         hashedPassword: String,
     ): Int? {
-        val lowercaseName = loginName.lowercase()
+        val lowercaseName = accountName.lowercase()
 
         val insert =
             connection.prepareStatement(
@@ -53,7 +51,7 @@ constructor(
 
         val select =
             connection.prepareStatement(
-                OpenRuneSql.text("game/character/accounts_select_id_by_login_username.sql"),
+                OpenRuneSql.text("game/character/accounts_select_id_by_account_name.sql"),
             )
         val accountId =
             select.use {
@@ -70,17 +68,16 @@ constructor(
     }
 
     public fun insertAndSelectCharacterId(connection: DatabaseConnection, accountId: Int): Int? {
-        val countSql = OpenRuneSql.text("game/character/characters_count_for_account_realm.sql")
+        val countSql = OpenRuneSql.text("game/character/characters_count_for_account.sql")
         val existing =
             connection.prepareStatement(countSql).use { ps ->
                 ps.setInt(1, accountId)
-                ps.setInt(2, realmId)
                 ps.executeQuery().use { rs ->
                     if (!rs.next()) return@use 0
                     rs.getInt(1)
                 }
             }
-        if (existing >= maxCharactersPerRealm) {
+        if (existing >= maxCharactersPerAccount) {
             return null
         }
 
@@ -91,8 +88,7 @@ constructor(
             )
         insert.use {
             it.setInt(1, accountId)
-            it.setInt(2, realmId)
-            it.setInt(3, accountId)
+            it.setInt(2, accountId)
 
             val updateCount = it.executeUpdate()
             if (updateCount == 0) {
@@ -113,9 +109,9 @@ constructor(
 
     public fun selectAndCreateMetadataList(
         connection: DatabaseConnection,
-        loginName: String,
+        accountName: String,
     ): CharacterMetadataList? {
-        val lowercaseName = loginName.lowercase()
+        val lowercaseName = accountName.lowercase()
 
         val select =
             connection.prepareStatement(
@@ -123,13 +119,12 @@ constructor(
             )
 
         select.use {
-            it.setInt(1, realmId)
-            it.setString(2, lowercaseName)
+            it.setString(1, lowercaseName)
             it.executeQuery().use { resultSet ->
                 if (resultSet.next()) {
                     val accountId = resultSet.getInt("account_id")
                     val characterId = resultSet.getInt("character_id")
-                    val canonicalLogin = resultSet.getString("login_username").lowercase()
+                    val canonicalName = resultSet.getString("account_name").lowercase()
                     val rights = resultSet.getString("rights") ?: ""
                     val displayName = resultSet.getString("display_name")
                     val email = resultSet.getString("email")
@@ -155,20 +150,13 @@ constructor(
                     val varps = selectPersistentVarps(connection, characterId)
                     val attrs = selectPersistentAttrs(connection, characterId)
                     val characterData =
-                        CharacterAccountData(
-                            realm = realmId,
-                            accountId = accountId,
+                        CharacterData(
                             characterId = characterId,
-                            loginName = canonicalLogin,
-                            rights = rights,
                             displayName = displayName,
-                            email = email,
+                            previousDisplayName = null,
+                            displayNameChangedAtMillis = null,
                             members = members,
                             modLevel = null,
-                            twofaEnabled = twofaEnabled,
-                            twofaSecret = twofaSecret,
-                            twofaLastVerified = twofaLastVerified,
-                            knownDevice = device,
                             worldId = worldId,
                             coordX = coordX,
                             coordZ = coordZ,
@@ -185,8 +173,20 @@ constructor(
                             onlineCentralWorldId = onlineCentralWorldId,
                             onlineSessionHeartbeat = onlineSessionHeartbeat,
                         )
-                    val metadataList = CharacterMetadataList(characterData, mutableListOf())
-                    metadataList.add(applier, characterData)
+                    val accountData =
+                        AccountData(
+                            accountId = accountId,
+                            accountName = canonicalName,
+                            rights = rights,
+                            email = email,
+                            twofaEnabled = twofaEnabled,
+                            twofaSecret = twofaSecret,
+                            twofaLastVerified = twofaLastVerified,
+                            knownDevice = device,
+                            characterData = characterData,
+                        )
+                    val metadataList = CharacterMetadataList(accountData, mutableListOf())
+                    metadataList.add(applier, CharacterAccountLoginSegment(accountData))
                     return metadataList
                 }
             }
@@ -225,16 +225,22 @@ constructor(
             it.setInt(5, player.runEnergy)
             it.setInt(6, (player.xpRate * 100).roundToInt())
             it.setNullableString(7, player.displayName.takeIf(String::isNotBlank))
-            it.setNullableInt(8, player.lastKnownDevice)
-            it.setBoolean(9, player.members)
+            it.setBoolean(8, player.members)
             if (!clearPresence) {
-                it.setInt(10, gameWorldId)
-                it.setInt(11, characterId)
-            } else {
+                it.setInt(9, gameWorldId)
                 it.setInt(10, characterId)
+            } else {
+                it.setInt(9, characterId)
             }
             it.executeUpdate()
         }
+
+        connection.prepareStatement(OpenRuneSql.text("game/character/accounts_update_known_device.sql")).use { ps ->
+            ps.setNullableInt(1, player.lastKnownDevice)
+            ps.setInt(2, accountId)
+            ps.executeUpdate()
+        }
+
         replacePersistentVarps(connection, characterId, persistentVarps)
         replacePersistentAttrs(connection, characterId, persistentAttrs)
     }
@@ -337,7 +343,6 @@ constructor(
         connection.prepareStatement(sql).use { ps ->
             ps.setInt(1, gameWorldId)
             ps.setInt(2, characterId)
-            ps.setInt(3, realmId)
             ps.executeUpdate()
         }
     }
@@ -346,7 +351,6 @@ constructor(
         val sql = OpenRuneSql.text("game/character/characters_clear_online_session.sql")
         connection.prepareStatement(sql).use { ps ->
             ps.setInt(1, characterId)
-            ps.setInt(2, realmId)
             ps.executeUpdate()
         }
     }
@@ -358,8 +362,7 @@ constructor(
     public fun clearOnlinePresenceClaimedOnWorld(connection: DatabaseConnection, gameWorldId: Int) {
         val sql = OpenRuneSql.text("game/character/characters_clear_online_presence_on_world.sql")
         connection.prepareStatement(sql).use { ps ->
-            ps.setInt(1, realmId)
-            ps.setInt(2, gameWorldId)
+            ps.setInt(1, gameWorldId)
             ps.executeUpdate()
         }
     }
@@ -377,7 +380,6 @@ constructor(
         val sql = OpenRuneSql.text("game/character/characters_select_online_session.sql")
         return connection.prepareStatement(sql).use { ps ->
             ps.setInt(1, characterId)
-            ps.setInt(2, realmId)
             ps.executeQuery().use { rs ->
                 if (!rs.next()) {
                     return@use false

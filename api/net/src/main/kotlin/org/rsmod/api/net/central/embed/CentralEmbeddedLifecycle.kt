@@ -5,7 +5,9 @@ import dev.or2.central.util.config.centralRuntimeConfigFromJdbc
 import dev.or2.central.embed.OpenRuneCentralEmbeddedServer
 import jakarta.inject.Inject
 import jakarta.inject.Singleton
+import java.sql.DriverManager
 import org.rsmod.api.db.jdbc.EmbeddedSameInstancePostgres
+import org.rsmod.api.db.jdbc.PostgresPublicSchemaReset
 import org.rsmod.api.server.config.SameInstanceCentralConfigValidation
 import org.rsmod.api.server.config.ServerConfig
 
@@ -44,7 +46,9 @@ constructor(
                 embeddedCreds
             }
 
-        val runtime =
+        val usesEmbeddedJdbc = jdbcFromYaml.isEmpty()
+
+        fun buildRuntime() =
             centralRuntimeConfigFromJdbc(
                 jdbcUrl = jdbc,
                 dbUser = dbUser,
@@ -53,12 +57,37 @@ constructor(
                 worldLinkPort = c.linkPort,
                 worldLinkSoBacklog = 512,
             )
+
         logger.info {
             "Starting embedded OpenRune Central (HTTP port ${c.httpPort}, world-link ${c.linkPort}, JDBC $jdbc)"
         }
-        val centralServer = OpenRuneCentralEmbeddedServer(c.httpPort, runtime)
-        centralServer.start()
-        server = centralServer
+
+        val centralServer = OpenRuneCentralEmbeddedServer(c.httpPort, buildRuntime())
+        try {
+            centralServer.start()
+            server = centralServer
+        } catch (t: Throwable) {
+            runCatching { centralServer.stop() }
+            if (!usesEmbeddedJdbc) {
+                throw t
+            }
+            logger.warn(t) { "Embedded OpenRune Central failed to start." }
+            runCatching {
+                DriverManager.getConnection(jdbc, dbUser, dbPassword).use { conn ->
+                    conn.autoCommit = true
+                    PostgresPublicSchemaReset.dropAllInPublicSchema(conn)
+                }
+            }.onFailure { dropEx ->
+                logger.error(dropEx) { "Failed to reset schema `public` after Central startup failure." }
+            }
+            logger.error {
+                "Embedded database was reset (schema `public` dropped). Please restart the server."
+            }
+            throw IllegalStateException(
+                "OpenRune Central could not start; the embedded database was reset. Please restart the server.",
+                t,
+            )
+        }
     }
 
     public fun stopIfRunning() {

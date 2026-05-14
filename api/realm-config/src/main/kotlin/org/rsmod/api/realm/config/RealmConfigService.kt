@@ -26,27 +26,26 @@ constructor(
             throw IllegalStateException("World not found in database: world_id=$worldId")
         }
         realm.updateConfig(config)
-        clearGhostOnlineSessions(config.id, worldId)
+        clearGhostOnlineSessions(worldId)
         logger.info { "Loaded world $worldId configuration: $config" }
     }
 
     /**
      * Clears stale `account_characters.online_*` rows for this JVM's world id after an unclean shutdown.
      * Runs here (not in [org.rsmod.api.db.jdbc.GameDatabaseService]) so [Realm.config] is initialized
-     * and [realm_id] is known from the loaded row.
+     * and the configured [worldId][ServerConfig.world] is known.
      */
-    private suspend fun clearGhostOnlineSessions(realmId: Int, gameWorldId: Int) {
+    private suspend fun clearGhostOnlineSessions(gameWorldId: Int) {
         try {
             database.withTransaction { connection ->
                 val sql = OpenRuneSql.text("game/character/characters_clear_online_presence_on_world.sql")
                 connection.prepareStatement(sql).use { ps ->
-                    ps.setInt(1, realmId)
-                    ps.setInt(2, gameWorldId)
+                    ps.setInt(1, gameWorldId)
                     ps.executeUpdate()
                 }
             }
             logger.info {
-                "Cleared character online-session markers for worldId=$gameWorldId (realmId=$realmId)."
+                "Cleared character online-session markers for worldId=$gameWorldId."
             }
         } catch (e: Exception) {
             logger.warn(e) { "Could not clear online-session markers after realm load." }

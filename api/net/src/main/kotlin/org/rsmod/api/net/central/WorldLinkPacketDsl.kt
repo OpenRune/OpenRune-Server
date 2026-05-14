@@ -1,83 +1,8 @@
 package org.rsmod.api.net.central
 
 import java.io.ByteArrayOutputStream
-import java.io.DataInputStream
 import java.io.DataOutputStream
 import java.nio.charset.StandardCharsets
-
-public data class WorldLinkSession(
-    public val outgoing: WorldLinkOutgoing,
-    public val incoming: WorldLinkIncoming,
-)
-
-public inline fun <T> worldLinkSession(
-    out: DataOutputStream,
-    input: DataInputStream,
-    block: WorldLinkSession.() -> T,
-): T {
-    val session = WorldLinkSession(WorldLinkOutgoing(out), WorldLinkIncoming(input))
-    return session.block()
-}
-
-public inline fun <T> DataOutputStream.worldLinkOutgoing(block: WorldLinkOutgoing.() -> T): T =
-    WorldLinkOutgoing(this).block()
-
-public inline fun <T> DataInputStream.worldLinkIncoming(block: WorldLinkIncoming.() -> T): T =
-    WorldLinkIncoming(this).block()
-
-public class WorldLinkOutgoing(private val out: DataOutputStream) {
-    public fun send(frame: ByteArray) {
-        out.writeWorldLinkFrame(frame)
-    }
-
-    public fun worldHello(
-        worldId: Int,
-        worldKey: ByteArray,
-    ) {
-        send(WorldLinkPackets.worldHello(worldId, worldKey))
-    }
-
-    public fun pushSubscribe() {
-        send(byteArrayOf(WorldLinkFrameSpecs.OP_PUSH_SUBSCRIBE.toByte()))
-    }
-
-    public fun login(
-        username: String,
-        password: CharArray,
-        loginCharacterId: Int?,
-    ) {
-        send(WorldLinkPackets.login(username, password, loginCharacterId))
-    }
-
-    public fun logout(sessionToken: ByteArray) {
-        require(sessionToken.size == WorldLinkFrameSpecs.TOKEN_BYTES)
-        send(WorldLinkPackets.logout(sessionToken))
-    }
-}
-
-public class WorldLinkIncoming(private val input: DataInputStream) {
-    /** Next length-prefixed frame (no validation). */
-    public fun recv(): ByteArray = input.readWorldLinkFrame()
-
-    /**
-     * Next frame validated as Central→game layout; throws [IllegalStateException] with
-     * [WorldLinkFrameSpecs.describeValidationFailure] on failure.
-     */
-    public fun recvCentralValidated(subject: String): ByteArray {
-        val frame = recv()
-        WorldLinkFrameSpecs.validateCentralToGameFrame(frame)?.let { reason ->
-            error("Invalid $subject: ${WorldLinkFrameSpecs.describeValidationFailure(reason)}")
-        }
-        return frame
-    }
-
-    /** [Pair.first] is the frame; [Pair.second] is a validation slug if invalid, else `null`. */
-    public fun recvCentralOrInvalid(): Pair<ByteArray, String?> {
-        val frame = recv()
-        val bad = WorldLinkFrameSpecs.validateCentralToGameFrame(frame)
-        return frame to bad
-    }
-}
 
 /**
  * Dispatches a **validated** Central server-push frame (opcode in [ByteArray] index 0).
@@ -89,6 +14,7 @@ public inline fun ByteArray.dispatchCentralServerPush(
     crossinline onKick: (WorldLinkFrameSpecs.ServerKickPayload) -> Unit = {},
     crossinline onReboot: (WorldLinkFrameSpecs.ServerRebootPayload) -> Unit = {},
     crossinline onBroadcast: (WorldLinkFrameSpecs.ServerBroadcastPayload) -> Unit = {},
+    crossinline onDisplayNameSync: (WorldLinkFrameSpecs.ServerDisplayNameSyncPayload) -> Unit = {},
     crossinline onOther: (Int) -> Unit = {},
 ) {
     when (val op = this[0].toInt() and 0xFF) {
@@ -97,6 +23,7 @@ public inline fun ByteArray.dispatchCentralServerPush(
         WorldLinkFrameSpecs.OP_SERVER_KICK -> onKick(WorldLinkFrameSpecs.decodeServerKick(this))
         WorldLinkFrameSpecs.OP_SERVER_REBOOT -> onReboot(WorldLinkFrameSpecs.decodeServerReboot(this))
         WorldLinkFrameSpecs.OP_SERVER_BROADCAST -> onBroadcast(WorldLinkFrameSpecs.decodeServerBroadcast(this))
+        WorldLinkFrameSpecs.OP_SERVER_DISPLAY_NAME_SYNC -> onDisplayNameSync(WorldLinkFrameSpecs.decodeServerDisplayNameSync(this))
         else -> onOther(op)
     }
 }
@@ -149,6 +76,7 @@ internal object WorldLinkPackets {
         }
         return bos.toByteArray()
     }
+
 }
 
 internal fun unexpectedCentralOp(
@@ -162,25 +90,11 @@ internal fun unexpectedCentralOp(
     )
 }
 
-internal fun DataInputStream.readWorldLinkFrame(): ByteArray {
-    val len = readInt()
-    if (len <= 0 || len > WorldLinkFrameSpecs.MAX_FRAMED_BODY) {
-        error(
-            "Invalid world-link framed length $len from peer (allowed 1..${WorldLinkFrameSpecs.MAX_FRAMED_BODY}). " +
-                "Usually indicates a truncated stream or incompatible protocol.",
-        )
-    }
-    return ByteArray(len).also { readFully(it) }
-}
-
-internal fun DataOutputStream.writeWorldLinkFrame(body: ByteArray) {
+internal fun validateGameToCentralFrameOrThrow(body: ByteArray) {
     require(body.isNotEmpty()) { "World-link frame must include an opcode byte." }
     val op = body[0].toInt() and 0xFF
     val bad = WorldLinkFrameSpecs.validateGameToCentralBody(op, body.size - 1)
     require(bad == null) {
         "Invalid outbound world-link frame: ${WorldLinkFrameSpecs.describeValidationFailure(bad!!)}"
     }
-    writeInt(body.size)
-    write(body)
-    flush()
 }

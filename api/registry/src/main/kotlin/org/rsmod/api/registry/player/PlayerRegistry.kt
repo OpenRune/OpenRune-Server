@@ -6,6 +6,7 @@ import java.time.LocalDateTime
 import java.time.ZoneId
 import org.rsmod.api.player.output.ChatType
 import org.rsmod.api.player.output.mes
+import org.rsmod.api.player.output.runClientScript
 import org.rsmod.api.registry.zone.ZonePlayerActivityBitSet
 import org.rsmod.events.EventBus
 import org.rsmod.game.entity.PathingEntity.Companion.INVALID_SLOT
@@ -114,6 +115,18 @@ constructor(
 
     public fun isOnline(userId: Long): Boolean = playerList.any { it.userId == userId }
 
+    public fun findOnlineByCharacterId(characterId: Int): Player? {
+        if (characterId <= 0) {
+            return null
+        }
+        for (player in playerList) {
+            if (player.characterId == characterId) {
+                return player
+            }
+        }
+        return null
+    }
+
     public fun applyCentralMuteUpdate(
         centralAccountId: Long,
         characterId: Int,
@@ -179,6 +192,33 @@ constructor(
             }
             player.forceDisconnect = true
         }
+    }
+
+    /**
+     * Applies a display name written in Central's DB (staff rename, etc.) to the matching online player
+     * and rebuilds appearance so other clients see the new name.
+     */
+    public fun applyCentralDisplayNameSync(
+        centralAccountId: Long,
+        characterId: Int,
+        newDisplayName: String,
+        priorDisplayName: String? = null,
+    ) {
+        if (characterId <= 0 || newDisplayName.isBlank()) {
+            return
+        }
+        val aid = centralAccountId.toInt()
+        val player = findOnlineByCharacterId(characterId) ?: return
+        if (player.accountId != aid) {
+            return
+        }
+        if (priorDisplayName != null) {
+            player.previousDisplayName = priorDisplayName
+        }
+
+        player.displayName = newDisplayName
+        player.displayNameChangedAtMillis = System.currentTimeMillis()
+        player.rebuildAppearance()
     }
 
     public inline fun forEachOnline(action: (Player) -> Unit) {
