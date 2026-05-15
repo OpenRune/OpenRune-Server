@@ -169,6 +169,7 @@ public class Player(
     public var lastKnownDevice: Int? = null
     public var previousDisplayName: String = ""
     public var displayNameChangedAtMillis: Long? = null
+    public var createdAt: LocalDateTime? = null
     public var followCoord: CoordGrid = CoordGrid.NULL
     public var buildArea: CoordGrid = CoordGrid.NULL
     public val visibleZoneKeys: IntList = IntArrayList()

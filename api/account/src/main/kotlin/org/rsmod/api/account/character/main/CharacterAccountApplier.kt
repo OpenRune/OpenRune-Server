@@ -37,6 +37,7 @@ public class CharacterAccountApplier @Inject constructor() :
         player.previousDisplayName = c.previousDisplayName ?: ""
         player.displayNameChangedAtMillis = c.displayNameChangedAtMillis
         player.coords = CoordGrid(c.coordX, c.coordZ, c.coordLevel)
+        player.createdAt = c.createdAt
         player.runEnergy = c.runEnergy
         player.xpRate = c.xpRate
         player.lastLogin = LocalDateTime.now()
@@ -72,3 +73,4 @@ public class CharacterAccountApplier @Inject constructor() :
         }
     }
 }
+
