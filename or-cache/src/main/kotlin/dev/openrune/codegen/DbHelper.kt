@@ -19,10 +19,10 @@ class DbHelper(val row: DBRowType) {
         get() = row.tableId
 
     override fun toString(): String =
-        "DbHelper(id=$id, table=$tableId, columns=${row.columns.keys.joinToString()})"
+        "DbHelper(id=$id, table=$tableId, columns=${row.definedColumns().keys.joinToString()})"
 
     fun getColumn(id: Int): Column {
-        val col = row.columns[id] ?: throw DbException.MissingColumn(tableId, id, id)
+        val col = row.definedColumns()[id] ?: throw DbException.MissingColumn(tableId, id, id)
         return Column(col, rowId = id, columnId = id, tableId = tableId)
     }
 
