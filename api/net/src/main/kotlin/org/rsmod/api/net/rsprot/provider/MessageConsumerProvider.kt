@@ -8,7 +8,7 @@ import net.rsprot.protocol.game.incoming.buttons.IfButtonD
 import net.rsprot.protocol.game.incoming.buttons.IfButtonT
 import net.rsprot.protocol.game.incoming.buttons.IfScriptTrigger
 import net.rsprot.protocol.game.incoming.buttons.IfSubOp
-import net.rsprot.protocol.game.incoming.locs.OpLoc
+import net.rsprot.protocol.game.incoming.locs.OpLocV2
 import net.rsprot.protocol.game.incoming.locs.OpLoc6
 import net.rsprot.protocol.game.incoming.locs.OpLocT
 import net.rsprot.protocol.game.incoming.messaging.MessagePublic
@@ -101,7 +101,7 @@ constructor(
         builder.addListener(WindowStatus::class.java, windowStatus)
         builder.addListener(MoveGameClick::class.java, moveGameClick)
         builder.addListener(MoveMinimapClick::class.java, moveMinimapClick)
-        builder.addListener(OpLoc::class.java, opLoc)
+        builder.addListener(OpLocV2::class.java, opLoc)
         builder.addListener(OpLocT::class.java, opLocT)
         builder.addListener(OpLoc6::class.java, opLoc6)
         builder.addListener(ClientCheat::class.java, clientCheat)

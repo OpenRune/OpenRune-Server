@@ -19,6 +19,7 @@ import net.rsprot.protocol.game.outgoing.map.util.RebuildRegionZone
 import net.rsprot.protocol.game.outgoing.map.util.ReferenceZone
 import net.rsprot.protocol.message.OutgoingGameMessage
 import org.rsmod.api.config.refs.params
+import org.rsmod.api.net.rsprot.ext.setFaceTarget
 import org.rsmod.api.player.righthand
 import org.rsmod.api.registry.region.RegionRegistry
 import org.rsmod.game.client.ClientCycle
@@ -251,10 +252,9 @@ class RspCycle(
     }
 
     private fun Player.applyFacePathingEntity() {
-        val slot = faceEntity.entitySlot
-        if (knownFaceEntity != slot) {
-            playerExtendedInfo.setFacePathingEntity(slot)
-            knownFaceEntity = slot
+        if (knownFaceEntity != faceEntity.entitySlot) {
+            playerExtendedInfo.setFaceTarget(faceEntity)
+            knownFaceEntity = faceEntity.entitySlot
         }
     }
 

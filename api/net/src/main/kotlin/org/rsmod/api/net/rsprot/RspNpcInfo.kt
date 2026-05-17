@@ -1,8 +1,10 @@
 package org.rsmod.api.net.rsprot
 
 import net.rsprot.protocol.game.outgoing.info.npcinfo.NpcAvatar
+import org.rsmod.api.net.rsprot.ext.setFaceTarget
 import org.rsmod.game.entity.npc.NpcInfoProtocol
 import org.rsmod.game.entity.npc.OpVisibility
+import org.rsmod.game.entity.util.EntityFaceTarget
 import org.rsmod.game.headbar.Headbar
 import org.rsmod.game.hit.Hitmark
 
@@ -20,7 +22,7 @@ class RspNpcInfo(val rspAvatar: NpcAvatar) : NpcInfoProtocol {
     }
 
     override fun setFacePathingEntity(slot: Int) {
-        rspAvatar.extendedInfo.setFacePathingEntity(slot)
+        rspAvatar.extendedInfo.setFaceTarget(EntityFaceTarget(slot))
     }
 
     override fun setFaceAngle(angle: Int, instant: Boolean) {

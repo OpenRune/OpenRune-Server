@@ -3,7 +3,7 @@ package org.rsmod.api.net.rsprot.handlers
 import com.github.michaelbull.logging.InlineLogger
 import dev.openrune.ServerCacheManager
 import jakarta.inject.Inject
-import net.rsprot.protocol.game.incoming.locs.OpLoc
+import net.rsprot.protocol.game.incoming.locs.OpLocV2
 import org.rsmod.api.player.interact.LocInteractions
 import org.rsmod.api.player.output.clearMapFlag
 import org.rsmod.api.player.protect.clearPendingAction
@@ -23,10 +23,10 @@ constructor(
     private val eventBus: EventBus,
     private val locRegistry: LocRegistry,
     private val locInteractions: LocInteractions,
-) : MessageHandler<OpLoc> {
+) : MessageHandler<OpLocV2> {
     private val logger = InlineLogger()
 
-    private val OpLoc.interactionOp: InteractionOp
+    private val OpLocV2.interactionOp: InteractionOp
         get() =
             when (op) {
                 1 -> InteractionOp.Op1
@@ -37,7 +37,7 @@ constructor(
                 else -> throw NotImplementedError("Unhandled `op` conversion: $this")
             }
 
-    override fun handle(player: Player, message: OpLoc) {
+    override fun handle(player: Player, message: OpLocV2) {
         if (player.isDelayed) {
             return
         }
