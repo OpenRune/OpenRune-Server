@@ -11,6 +11,7 @@ dependencies {
     implementation(libs.bundles.logging)
     implementation(libs.fastutil)
     implementation(libs.guice)
+    implementation(libs.kotlin.reflect)
     implementation(libs.rsprot.api)
     implementation(projects.api.areaChecker)
     implementation(projects.api.config)
