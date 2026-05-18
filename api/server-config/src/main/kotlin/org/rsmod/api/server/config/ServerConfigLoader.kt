@@ -22,10 +22,16 @@ public class ServerConfigLoader {
 
     private val logger = InlineLogger()
 
-    public fun loadOrCreate(file: Path): ServerConfig =
-        if (file.exists()) load(file) else create(file)
+    public fun loadOrCreate(file: Path): ServerConfig {
+        if (file.exists()) {
+            migrateWorldBeforeLoad(file)
+            return load(file)
+        }
+        return create(file)
+    }
 
     public fun load(file: Path): ServerConfig {
+        migrateWorldBeforeLoad(file)
         val config = yamlMapper.readValue(file.toFile(), ServerConfig::class.java)
         SameInstanceCentralConfigValidation.validateAfterLoad(file, config)
         return config
@@ -41,6 +47,14 @@ public class ServerConfigLoader {
 
         logger.info { "Created default server config in file: $file" }
         return config
+    }
+
+    private fun migrateWorldBeforeLoad(gameYml: Path) {
+        SameInstanceCentralWorldMigrator.migrateIfNeeded(
+            gameYml = gameYml,
+            exampleYml = gameYml.parent.resolve("game.example.yml"),
+            yamlMapper = yamlMapper,
+        )
     }
 
     private fun createDefault(): ServerConfig =
@@ -63,6 +77,6 @@ public class ServerConfigLoader {
         )
 
     private companion object {
-        private const val DEFAULT_WORLD = 1
+        private const val DEFAULT_WORLD = 255
     }
 }

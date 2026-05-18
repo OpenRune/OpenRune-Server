@@ -4,7 +4,7 @@ name: "OpenRune"
 game-port: 43594
 revision: 238
 environment: "LIVE"
-world: 1
+world: 255
 
 central:
   same-instance: true
