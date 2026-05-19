@@ -5,7 +5,6 @@ import dev.openrune.cache.gameval.GameValHandler
 import dev.openrune.cache.tools.Builder
 import dev.openrune.cache.tools.CacheEnvironment
 import dev.openrune.cache.tools.cs2.PackCs2
-import dev.openrune.cache.tools.cs2.UnpackDefaultCs2
 import dev.openrune.cache.tools.tasks.CacheTask
 import dev.openrune.cache.tools.tasks.TaskType
 import dev.openrune.cache.tools.tasks.impl.PackDBTables
@@ -23,6 +22,7 @@ import dev.openrune.gamevals.GamevalDumper
 import dev.openrune.impl.GameframeTable
 import dev.openrune.impl.Music
 import dev.openrune.map.packing.MapPackers
+import dev.openrune.tables.PickableObjects
 import dev.openrune.tables.StatComponents
 import dev.openrune.tables.skills.Cooking
 import dev.openrune.tables.skills.Firemaking
@@ -65,6 +65,7 @@ fun tablesToPack() = listOf(
     PrayerBlessedBone.table(),
     EctofuntusBonemeal.table(),
     StatComponents.statsComponents(),
+    PickableObjects.pickableObjects(),
     Cooking.foods(),
     Cooking.ales(),
 )
