@@ -10,6 +10,8 @@ firemaking_light = 40
 firemaking_campfire_tend = 41
 
 [gamevals.dbrow]
+firemaking_ironwood_logs       =55525
+firemaking_rosewood_logs       =55526
 light_source_candle= 55527
 light_source_black_candle= 55528
 light_source_torch= 55529
@@ -41,4 +43,3 @@ firemaking_colored_logs_green             = 55554
 firemaking_colored_logs_purple            = 55555
 firemaking_colored_logs_red               = 55556
 firemaking_colored_logs_white             = 55557
-
