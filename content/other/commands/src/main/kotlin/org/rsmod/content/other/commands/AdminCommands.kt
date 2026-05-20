@@ -73,6 +73,12 @@ constructor(
         onCommand("telezone", "Teleport to zone key", ::teleZone) {
             invalidArgs = "Use as ::telezone zoneX zoneY level (ex: 400 400 0)"
         }
+        onCommand("up", "Teleport up levels", ::up) {
+            invalidArgs = "Use as ::up [amount] (ex: ::up 2)"
+        }
+        onCommand("down", "Teleport down levels", ::down) {
+            invalidArgs = "Use as ::down [amount] (ex: ::down 2)"
+        }
         onCommand("anim", "Play animation", ::anim)
         onCommand("spot", "Play spotanim", ::spotanim) {
             invalidArgs = "Use as ::spot spotanimDebugNameOrId (ex: fx_emote_party01_active)"
@@ -200,6 +206,48 @@ constructor(
                 telejump(coords)
             }
         }
+
+    private fun up(cheat: Cheat) {
+        teleLevel(cheat, levelDelta = 1)
+    }
+
+    private fun down(cheat: Cheat) {
+        teleLevel(cheat, levelDelta = -1)
+    }
+
+    private fun teleLevel(cheat: Cheat, levelDelta: Int) {
+        with(cheat) {
+            val amount =
+                when {
+                    args.isEmpty() -> 1
+                    else -> {
+                        val parsed = args[0].toIntOrNull()
+                        if (parsed == null) {
+                            player.mes("Invalid amount: '${args[0]}'")
+                            return@with
+                        }
+                        parsed
+                    }
+                }
+            if (amount <= 0) {
+                player.mes("Amount must be positive.")
+                return@with
+            }
+            val current = player.coords
+            val destLevel =
+                (current.level + levelDelta * amount).coerceIn(0, CoordGrid.LEVEL_BIT_MASK)
+            if (destLevel == current.level) {
+                val direction = if (levelDelta > 0) "up" else "down"
+                player.mes("Cannot go $direction from level ${current.level}.")
+                return@with
+            }
+            val dest = current.copy(level = destLevel)
+            protectedAccess.launch(player) {
+                player.mes("Teleported to $dest.")
+                telejump(dest)
+            }
+        }
+    }
 
     private fun anim(cheat: Cheat) =
         with(cheat) {
