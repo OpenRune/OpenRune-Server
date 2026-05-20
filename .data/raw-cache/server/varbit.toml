@@ -438,3 +438,10 @@ id = "varbit.ash_sanctifier_activity_enabled"
 varp = "varp.ash_sanctifier_activity"
 startBit = 0
 endBit = 1
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.alchemy_anim_toggles"
+varp = "varp.herblore_amulet_chemistry"
+startBit = 0
+endBit = 0

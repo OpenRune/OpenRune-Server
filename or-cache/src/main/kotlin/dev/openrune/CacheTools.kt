@@ -26,6 +26,7 @@ import dev.openrune.tables.PickableObjects
 import dev.openrune.tables.StatComponents
 import dev.openrune.tables.skills.Cooking
 import dev.openrune.tables.skills.Firemaking
+import dev.openrune.tables.skills.Herblore
 import dev.openrune.tables.skills.Smithing
 import dev.openrune.tables.skills.prayer.EctofuntusBonemeal
 import dev.openrune.tables.skills.prayer.PrayerBlessedBone
@@ -69,6 +70,12 @@ fun tablesToPack() = listOf(
     PickableObjects.pickableObjects(),
     Cooking.foods(),
     Cooking.ales(),
+    Herblore.unfinishedPotions(),
+    Herblore.finishedPotions(),
+    Herblore.cleaningHerbs(),
+    Herblore.barbarianMixes(),
+    Herblore.swampTar(),
+    Herblore.crushing(),
     Smithing.bars(),
     Smithing.cannonBalls(),
     Smithing.dragonForge(),

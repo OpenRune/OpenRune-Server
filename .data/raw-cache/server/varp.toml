@@ -242,6 +242,12 @@ transmit = "Never"
 
 [[varp]]
 isServerOnly = true
+id = "varp.herblore_amulet_chemistry"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+isServerOnly = true
 id = "varp.ash_sanctifier_activity"
 scope = "Perm"
 transmit = "Never"
