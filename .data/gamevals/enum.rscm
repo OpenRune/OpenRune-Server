@@ -65,6 +65,7 @@ bank_equipment_tab_to_slots_map=2777
 hud_empty_colour=2794
 hud_fill_colour=2795
 equipment_set_info=3047
+smithing_product_to_item=1253
 spellbook_achievement_diary_types=3497
 game_client_layouts=3509
 npc_attack_options_desktop=3991

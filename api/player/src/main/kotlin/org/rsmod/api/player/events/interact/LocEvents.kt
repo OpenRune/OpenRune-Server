@@ -124,6 +124,66 @@ public sealed class LocContentEvents {
         Ap(loc, vis, type, content)
 }
 
+public sealed class LocCategoryEvents {
+    /**
+     * @param loc The _base_ loc target of the event.
+     * @param vis The current _visual_ representation of [loc], based on the player's varps. If
+     *   [loc] has a [ObjectServerType.multiLoc], [vis] reflects the resolved variant. Otherwise,
+     *   [vis] is equal to [loc].
+     * @param type The [ObjectServerType] of the [vis] loc.
+     */
+    public sealed class Op(
+        public val loc: BoundLocInfo,
+        public val vis: BoundLocInfo,
+        public val type: ObjectServerType,
+        category: Int,
+    ) : OpEvent(category.toLong())
+
+    public class Op1(loc: BoundLocInfo, vis: BoundLocInfo, type: ObjectServerType, category: Int = type.category) :
+        Op(loc, vis, type, category)
+
+    public class Op2(loc: BoundLocInfo, vis: BoundLocInfo, type: ObjectServerType, category: Int = type.category) :
+        Op(loc, vis, type, category)
+
+    public class Op3(loc: BoundLocInfo, vis: BoundLocInfo, type: ObjectServerType, category: Int = type.category) :
+        Op(loc, vis, type, category)
+
+    public class Op4(loc: BoundLocInfo, vis: BoundLocInfo, type: ObjectServerType, category: Int = type.category) :
+        Op(loc, vis, type, category)
+
+    public class Op5(loc: BoundLocInfo, vis: BoundLocInfo, type: ObjectServerType, category: Int = type.category) :
+        Op(loc, vis, type, category)
+
+    /**
+     * @param loc The _base_ loc target of the event.
+     * @param vis The current _visual_ representation of [loc], based on the player's varps. If
+     *   [loc] has a [ObjectServerType.multiLoc], [vis] reflects the resolved variant. Otherwise,
+     *   [vis] is equal to [loc].
+     * @param type The [ObjectServerType] of the [vis] loc.
+     */
+    public sealed class Ap(
+        public val loc: BoundLocInfo,
+        public val vis: BoundLocInfo,
+        public val type: ObjectServerType,
+        category: Int,
+    ) : ApEvent(category.toLong())
+
+    public class Ap1(loc: BoundLocInfo, vis: BoundLocInfo, type: ObjectServerType, category: Int = type.category) :
+        Ap(loc, vis, type, category)
+
+    public class Ap2(loc: BoundLocInfo, vis: BoundLocInfo, type: ObjectServerType, category: Int = type.category) :
+        Ap(loc, vis, type, category)
+
+    public class Ap3(loc: BoundLocInfo, vis: BoundLocInfo, type: ObjectServerType, category: Int = type.category) :
+        Ap(loc, vis, type, category)
+
+    public class Ap4(loc: BoundLocInfo, vis: BoundLocInfo, type: ObjectServerType, category: Int = type.category) :
+        Ap(loc, vis, type, category)
+
+    public class Ap5(loc: BoundLocInfo, vis: BoundLocInfo, type: ObjectServerType, category: Int = type.category) :
+        Ap(loc, vis, type, category)
+}
+
 public sealed class LocDefaultEvents {
     /**
      * @param loc The _base_ loc target of the event.
@@ -478,4 +538,38 @@ public class LocUDefaultEvents {
         public val invSlot: Int,
         locContent: Int = type.contentGroup,
     ) : ApEvent(locContent.toLong())
+}
+
+public class LocUCategoryEvents {
+    /**
+     * @param loc The _base_ loc target of the event.
+     * @param vis The current _visual_ representation of [loc], based on the player's varps. If
+     *   [loc] has a [ObjectServerType.multiLoc], [vis] reflects the resolved variant. Otherwise,
+     *   [vis] is equal to [loc].
+     * @param type The [ObjectServerType] of the [vis] loc.
+     */
+    public class Op(
+        public val loc: BoundLocInfo,
+        public val vis: BoundLocInfo,
+        public val type: ObjectServerType,
+        public val objType: ItemServerType,
+        public val invSlot: Int,
+        category: Int = type.category,
+    ) : OpEvent(EventBus.composeLongKey(category, objType.id))
+
+    /**
+     * @param loc The _base_ loc target of the event.
+     * @param vis The current _visual_ representation of [loc], based on the player's varps. If
+     *   [loc] has a [ObjectServerType.multiLoc], [vis] reflects the resolved variant. Otherwise,
+     *   [vis] is equal to [loc].
+     * @param type The [ObjectServerType] of the [vis] loc.
+     */
+    public class Ap(
+        public val loc: BoundLocInfo,
+        public val vis: BoundLocInfo,
+        public val type: ObjectServerType,
+        public val objType: ItemServerType,
+        public val invSlot: Int,
+        category: Int = type.category,
+    ) : ApEvent(EventBus.composeLongKey(category, objType.id))
 }

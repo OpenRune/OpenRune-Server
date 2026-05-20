@@ -12,6 +12,7 @@ dependencies {
     implementation(libs.guice)
     implementation(projects.api.cache)
     implementation(projects.api.config)
+    implementation(projects.api.invStorage)
     implementation(projects.api.playerOutput)
     implementation(projects.api.repo)
     implementation(projects.engine.game)

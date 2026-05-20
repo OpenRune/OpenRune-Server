@@ -10,10 +10,13 @@ import dev.openrune.types.ItemServerType
 import dev.openrune.types.util.UncheckedType
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet
 import java.util.BitSet
+import org.rsmod.game.entity.Player
 import org.rsmod.game.type.isAssociatedWith
 
 public class Inventory(public val type: InventoryServerType, public val objs: Array<InvObj?>) :
     Iterable<InvObj?> {
+    public var owner: Player? = null
+
     public val modifiedSlots: BitSet = BitSet()
 
     public val internalName: String
@@ -89,12 +92,15 @@ public class Inventory(public val type: InventoryServerType, public val objs: Ar
     }
 
     public operator fun contains(type: String): Boolean =
-        objs.any { type.isAssociatedWith(it) }
+        physicalCount(type) > 0 || virtualCount(type) > 0
 
     public operator fun contains(type: ItemServerType): Boolean =
         objs.any { type.isAssociatedWith(it) }
 
-    public fun count(internal: String): Int {
+    public fun count(internal: String): Int = physicalCount(internal) + virtualCount(internal)
+
+    /** Slots-only count; ignores [InvVirtualStorage]. */
+    public fun physicalCount(internal: String): Int {
         val objType = ServerCacheManager.getItem(internal.asRSCM(RSCMType.OBJ))
             ?: error("Unable to find item: $internal")
 
@@ -104,6 +110,12 @@ public class Inventory(public val type: InventoryServerType, public val objs: Ar
             return obj.count
         }
         return individualCount(obj)
+    }
+
+    private fun virtualCount(internal: String): Int {
+        val player = owner ?: return 0
+        val storage = InvVirtualStorageHolder.instance ?: return 0
+        return storage.additionalCount(player, this, internal)
     }
 
     public fun count(obj: InvObj, objType: ItemServerType): Int {

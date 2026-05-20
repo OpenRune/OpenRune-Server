@@ -6,8 +6,10 @@ import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import dev.openrune.types.ItemServerType
 import dev.openrune.types.ObjectServerType
+import org.rsmod.api.player.events.interact.LocCategoryEvents
 import org.rsmod.api.player.events.interact.LocContentEvents
 import org.rsmod.api.player.events.interact.LocEvents
+import org.rsmod.api.player.events.interact.LocUCategoryEvents
 import org.rsmod.api.player.events.interact.LocTContentEvents
 import org.rsmod.api.player.events.interact.LocTDefaultEvents
 import org.rsmod.api.player.events.interact.LocTEvents
@@ -23,6 +25,31 @@ public fun ScriptContext.onOpLoc1(
     type: String,
     action: suspend ProtectedAccess.(LocEvents.Op1) -> Unit,
 ): Unit = onProtectedEvent(type.asRSCM(RSCMType.LOC), action)
+
+public fun ScriptContext.onOpLocCategory1(
+    category: String,
+    action: suspend ProtectedAccess.(LocCategoryEvents.Op1) -> Unit,
+): Unit = onProtectedEvent(category.asRSCM(RSCMType.CATEGORY), action)
+
+public fun ScriptContext.onOpLocCategory2(
+    category: String,
+    action: suspend ProtectedAccess.(LocCategoryEvents.Op2) -> Unit,
+): Unit = onProtectedEvent(category.asRSCM(RSCMType.CATEGORY), action)
+
+public fun ScriptContext.onOpLocCategory3(
+    category: String,
+    action: suspend ProtectedAccess.(LocCategoryEvents.Op3) -> Unit,
+): Unit = onProtectedEvent(category.asRSCM(RSCMType.CATEGORY), action)
+
+public fun ScriptContext.onOpLocCategory4(
+    category: String,
+    action: suspend ProtectedAccess.(LocCategoryEvents.Op4) -> Unit,
+): Unit = onProtectedEvent(category.asRSCM(RSCMType.CATEGORY), action)
+
+public fun ScriptContext.onOpLocCategory5(
+    category: String,
+    action: suspend ProtectedAccess.(LocCategoryEvents.Op5) -> Unit,
+): Unit = onProtectedEvent(category.asRSCM(RSCMType.CATEGORY), action)
 
 public fun ScriptContext.onOpLoc1(
     type: ObjectServerType,
@@ -171,6 +198,22 @@ public fun ScriptContext.onOpLocU(
     objType: String,
     action: suspend ProtectedAccess.(LocUEvents.Op) -> Unit,
 ): Unit = onOpLocU(RSCM.getReverseMapping(RSCMType.LOC, type.id), objType, action)
+
+public fun ScriptContext.onOpLocCategoryU(
+    category: String,
+    objType: String,
+    action: suspend ProtectedAccess.(LocUCategoryEvents.Op) -> Unit,
+): Unit =
+    onProtectedEvent(
+        EventBus.composeLongKey(category.asRSCM(RSCMType.CATEGORY), objType.asRSCM(RSCMType.OBJ)),
+        action,
+    )
+
+public fun ScriptContext.onOpLocCategoryU(
+    category: String,
+    objType: ItemServerType,
+    action: suspend ProtectedAccess.(LocUCategoryEvents.Op) -> Unit,
+): Unit = onOpLocCategoryU(category, RSCM.getReverseMapping(RSCMType.OBJ, objType.id), action)
 
 public fun ScriptContext.onOpContentMixedLocU(
     content: String,

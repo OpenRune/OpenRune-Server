@@ -940,6 +940,7 @@ public class ProtectedAccess(
         cert: Boolean = false,
         uncert: Boolean = false,
         autoCommit: Boolean = true,
+        ignoreVirtualStorage: Boolean = false,
     ): TransactionResultList<InvObj> {
         return player.invAdd(
             inv = inv,
@@ -951,6 +952,7 @@ public class ProtectedAccess(
             cert = cert,
             uncert = uncert,
             autoCommit = autoCommit,
+            ignoreVirtualStorage = ignoreVirtualStorage,
         )
     }
 

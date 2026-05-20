@@ -16,14 +16,20 @@ public class InvMapInit {
         for (default in defaultInvs) {
             if (default !in player.invMap) {
                 val create = Inventory.create(default)
+                create.owner = player
                 player.invMap[default] = create
             }
+        }
+        for (inventory in player.invMap.values) {
+            inventory.owner = player
         }
     }
 
     public fun cacheCommons(player: Player) {
         player.inv = player.invMap.getValue("inv.inv")
         player.worn = player.invMap.getValue("inv.worn")
+        player.inv.owner = player
+        player.worn.owner = player
     }
 
     public operator fun plusAssign(inv: String) {

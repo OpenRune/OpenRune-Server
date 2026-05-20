@@ -235,7 +235,7 @@ constructor(
 
     private fun locAdd(cheat: Cheat) =
         with(cheat) {
-            val typeId = "objects.${args[1]}".asRSCM()
+            val typeId = "loc.${args[1]}".asRSCM()
 
             val type = ServerCacheManager.getObject(typeId)!!
             if (type == null) {

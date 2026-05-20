@@ -6,6 +6,7 @@ import dev.openrune.types.varp.baseVar
 import dev.openrune.types.varp.bits
 import jakarta.inject.Inject
 import org.rsmod.api.player.events.interact.ApEvent
+import org.rsmod.api.player.events.interact.LocCategoryEvents
 import org.rsmod.api.player.events.interact.LocContentEvents
 import org.rsmod.api.player.events.interact.LocDefaultEvents
 import org.rsmod.api.player.events.interact.LocEvents
@@ -80,6 +81,13 @@ constructor(private val boundValidator: BoundValidator, private val eventBus: Ev
             return contentEvent
         }
 
+        if (type.category != -1) {
+            val categoryEvent = toCategoryOp(base, loc, type, type.category, op)
+            if (eventBus.contains(categoryEvent::class.java, categoryEvent.id)) {
+                return categoryEvent
+            }
+        }
+
         val unimplEvent = toUnimplementedOp(base, loc, type, op)
         if (eventBus.contains(unimplEvent::class.java, unimplEvent.id)) {
             return unimplEvent
@@ -123,6 +131,11 @@ constructor(private val boundValidator: BoundValidator, private val eventBus: Ev
         val contentEvent = toContentAp(base, loc, type, type.contentGroup, op)
         if (eventBus.contains(contentEvent::class.java, contentEvent.id)) {
             return contentEvent
+        }
+
+        val categoryEvent = toCategoryAp(base, loc, type, type.category, op)
+        if (eventBus.contains(categoryEvent::class.java, categoryEvent.id)) {
+            return categoryEvent
         }
 
         val defaultEvent = toDefaultAp(base, loc, type, op)
@@ -174,6 +187,36 @@ constructor(private val boundValidator: BoundValidator, private val eventBus: Ev
             InteractionOp.Op3 -> LocEvents.Op3(base, vis, type)
             InteractionOp.Op4 -> LocEvents.Op4(base, vis, type)
             InteractionOp.Op5 -> LocEvents.Op5(base, vis, type)
+        }
+
+    private fun toCategoryOp(
+        base: BoundLocInfo,
+        vis: BoundLocInfo,
+        type: ObjectServerType,
+        category: Int,
+        op: InteractionOp,
+    ): LocCategoryEvents.Op =
+        when (op) {
+            InteractionOp.Op1 -> LocCategoryEvents.Op1(base, vis, type, category)
+            InteractionOp.Op2 -> LocCategoryEvents.Op2(base, vis, type, category)
+            InteractionOp.Op3 -> LocCategoryEvents.Op3(base, vis, type, category)
+            InteractionOp.Op4 -> LocCategoryEvents.Op4(base, vis, type, category)
+            InteractionOp.Op5 -> LocCategoryEvents.Op5(base, vis, type, category)
+        }
+
+    private fun toCategoryAp(
+        base: BoundLocInfo,
+        vis: BoundLocInfo,
+        type: ObjectServerType,
+        category: Int,
+        op: InteractionOp,
+    ): LocCategoryEvents.Ap =
+        when (op) {
+            InteractionOp.Op1 -> LocCategoryEvents.Ap1(base, vis, type, category)
+            InteractionOp.Op2 -> LocCategoryEvents.Ap2(base, vis, type, category)
+            InteractionOp.Op3 -> LocCategoryEvents.Ap3(base, vis, type, category)
+            InteractionOp.Op4 -> LocCategoryEvents.Ap4(base, vis, type, category)
+            InteractionOp.Op5 -> LocCategoryEvents.Ap5(base, vis, type, category)
         }
 
     private fun toContentOp(

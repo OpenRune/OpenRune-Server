@@ -71,6 +71,10 @@ public fun Player.invAdd(
         )
     }
 
+/**
+ * @param ignoreVirtualStorage When `true`, items are placed only in [inv] slots and are not
+ *   redirected into virtual storage hooks (e.g. coal bag while open).
+ */
 public fun Player.invAdd(
     inv: Inventory,
     type: String,
@@ -81,10 +85,11 @@ public fun Player.invAdd(
     cert: Boolean = false,
     uncert: Boolean = false,
     autoCommit: Boolean = true,
+    ignoreVirtualStorage: Boolean = false,
 ): TransactionResultList<InvObj> =
-    invAdd(
+    invAddWithVirtualStorage(
         inv = inv,
-        obj = type.asRSCM(RSCMType.OBJ),
+        type = type,
         count = count,
         vars = vars,
         slot = slot,
@@ -92,7 +97,20 @@ public fun Player.invAdd(
         cert = cert,
         uncert = uncert,
         autoCommit = autoCommit,
-    )
+        ignoreVirtualStorage = ignoreVirtualStorage,
+    ) { targetInv, objType, objCount, objVars, objSlot, objStrict, objCert, objUncert, objAutoCommit ->
+        invAdd(
+            inv = targetInv,
+            obj = objType.asRSCM(RSCMType.OBJ),
+            count = objCount,
+            vars = objVars,
+            slot = objSlot,
+            strict = objStrict,
+            cert = objCert,
+            uncert = objUncert,
+            autoCommit = objAutoCommit,
+        )
+    }
 
 public fun Transaction<InvObj>.add(
     inv: TransactionInventory<InvObj>,
@@ -176,15 +194,25 @@ public fun Player.invDel(
     placehold: Boolean = false,
     autoCommit: Boolean = true,
 ): TransactionResultList<InvObj> =
-    invDel(
+    invDelWithVirtualStorage(
         inv = inv,
-        obj = type.asRSCM(RSCMType.OBJ),
+        type = type,
         count = count,
         slot = slot,
         strict = strict,
         placehold = placehold,
         autoCommit = autoCommit,
-    )
+    ) { targetInv, objType, objCount, objSlot, objStrict, objPlacehold, objAutoCommit ->
+        invDel(
+            inv = targetInv,
+            obj = objType.asRSCM(RSCMType.OBJ),
+            count = objCount,
+            slot = objSlot,
+            strict = objStrict,
+            placehold = objPlacehold,
+            autoCommit = objAutoCommit,
+        )
+    }
 
 public fun Player.invDel(
     inv: Inventory,

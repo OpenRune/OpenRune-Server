@@ -9,6 +9,7 @@ import dev.openrune.types.varp.bits
 import jakarta.inject.Inject
 import org.rsmod.api.config.constants
 import org.rsmod.api.player.events.interact.ApEvent
+import org.rsmod.api.player.events.interact.LocUCategoryEvents
 import org.rsmod.api.player.events.interact.LocUContentEvents
 import org.rsmod.api.player.events.interact.LocUDefaultEvents
 import org.rsmod.api.player.events.interact.LocUEvents
@@ -88,6 +89,13 @@ public class LocUInteractions @Inject private constructor(private val eventBus: 
             return typeContentEvent
         }
 
+        if (locType.category >= 0) {
+            val categoryEvent = LocUCategoryEvents.Op(base, target, locType, objType, invSlot)
+            if (eventBus.contains(categoryEvent::class.java, categoryEvent.id)) {
+                return categoryEvent
+            }
+        }
+
         val defaultTypeScript = LocUDefaultEvents.OpType(base, target, locType, objType, invSlot)
         if (eventBus.contains(defaultTypeScript::class.java, defaultTypeScript.id)) {
             return defaultTypeScript
@@ -160,6 +168,13 @@ public class LocUInteractions @Inject private constructor(private val eventBus: 
         val locContentEvent = LocUContentEvents.ApType(base, target, locType, objType, invSlot)
         if (eventBus.contains(locContentEvent::class.java, locContentEvent.id)) {
             return locContentEvent
+        }
+
+        if (locType.category >= 0) {
+            val categoryEvent = LocUCategoryEvents.Ap(base, target, locType, objType, invSlot)
+            if (eventBus.contains(categoryEvent::class.java, categoryEvent.id)) {
+                return categoryEvent
+            }
         }
 
         val defaultTypeScript = LocUDefaultEvents.ApType(base, target, locType, objType, invSlot)
