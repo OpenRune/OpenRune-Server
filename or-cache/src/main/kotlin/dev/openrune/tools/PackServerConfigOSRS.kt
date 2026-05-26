@@ -105,11 +105,26 @@ class PackServerConfig(
                     idStr.trim().toInt() to text.trim().removeSurrounding("\"")
                 }
 
+        val slayerDir = File(directory, "slayer")
+        val slayerTaskByNpcId = SlayerTargetMonsterLoader.loadNpcSlayerTaskIds(slayerDir, mapper)
+        val slayerTaskTipByNpcId = SlayerNpcTipLoader.loadNpcSlayerTaskTips(slayerDir, mapper)
+        val slayerSuperiorByNpcId = SlayerSuperiorMonsterLoader.loadNpcSuperiorParams(slayerDir, mapper)
+
         registerMergedBaseAndTomlPackType<NpcServerType, NpcType>(
             table = "npc",
             decoder = NpcDecoder(rev),
             loadBaseInto = { c, dest -> OsrsCacheProvider.NPCDecoder(dev.openrune.revision.first).load(c, dest) },
-            codec = { base, overlay -> NpcServerCodec(rev,base, overlay, examinesNpc) },
+            codec = { base, overlay ->
+                NpcServerCodec(
+                    rev,
+                    base,
+                    overlay,
+                    examinesNpc,
+                    slayerTaskByNpcId,
+                    slayerTaskTipByNpcId,
+                    slayerSuperiorByNpcId,
+                )
+            },
             create = { NpcServerType(it) },
         )
 

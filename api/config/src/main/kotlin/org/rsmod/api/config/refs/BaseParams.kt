@@ -3,7 +3,6 @@
 package org.rsmod.api.config.refs
 
 import dev.openrune.ParamReferences.param
-import kotlin.collections.contains
 import org.rsmod.api.config.aliases.ParamBool
 import org.rsmod.api.config.aliases.ParamCategory
 import org.rsmod.api.config.aliases.ParamComponent
@@ -104,7 +103,10 @@ object BaseParams {
     val burn_immunity: ParamInt = param("burn_immunity")
     val freeze_resistance: ParamInt = param("freeze_resistance")
     val slayer_experience: ParamInt = param("slayer_experience")
-    val slayer_levelrequire: ParamInt = param("slayer_levelrequire")
+    val slayer_task_id: ParamInt = param("slayer_task_id")
+    val slayer_task_tip: ParamStr = param("slayer_task_tip")
+    val slayer_superior: ParamNpc = param("slayer_superior")
+    val availableInWilderness: ParamBool = param("available_In_wilderness")
     val magic_defence_uses_defence_level: ParamBool = param("magic_defence_uses_defence_level")
     val spell_worn_req_message: ParamStr = param("spell_worn_req_message")
     val elemental_weakness_type: ParamInt = param("elemental_weakness_type")

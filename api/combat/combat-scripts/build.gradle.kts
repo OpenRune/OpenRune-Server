@@ -15,6 +15,7 @@ dependencies {
     implementation(projects.api.combat.combatManager)
     implementation(projects.api.combat.combatWeapon)
     implementation(projects.api.config)
+    implementation(projects.api.death)
     implementation(projects.api.mechanics.toxins)
     implementation(projects.api.npc)
     implementation(projects.api.player)

@@ -1,0 +1,198 @@
+# https://oldschool.runescape.wiki/w/Superior_slayer_monster
+# Normal NPC death on task can spawn superiorNpc (requires Bigger and Badder unlock).
+
+[[slayer_superior]]
+superiorNpc = "npc.superior_crawling_hand"
+normalNpcs = ["npc.slayer_crawling_hand_1", "npc.slayer_crawling_hand_2", "npc.slayer_crawling_hand_3", "npc.slayer_crawling_hand_4", "npc.slayer_crawling_hand_5", "npc.slayer_crawling_hand_big_1", "npc.slayer_crawling_hand_big_2", "npc.slayer_crawling_hand_big_3", "npc.slayer_crawling_hand_big_4", "npc.slayer_crawling_hand_big_5"]
+wildernessAvailable = false
+
+[[slayer_superior]]
+superiorNpc = "npc.superior_cave_crawler"
+normalNpcs = ["npc.slayer_cave_crawler_1", "npc.slayer_cave_crawler_2", "npc.slayer_cave_crawler_3", "npc.slayer_cave_crawler_4", "npc.cave_crawler_ice_1", "npc.cave_crawler_ice_2"]
+wildernessAvailable = false
+
+[[slayer_superior]]
+superiorNpc = "npc.superior_banshee"
+normalNpcs = ["npc.slayer_banshee_1"]
+wildernessAvailable = false
+
+[[slayer_superior]]
+superiorNpc = "npc.superior_kourend_banshee"
+normalNpcs = ["npc.kourend_banshee"]
+wildernessAvailable = false
+
+[[slayer_superior]]
+superiorNpc = "npc.superior_rockslug"
+normalNpcs = ["npc.slayer_rockslug", "npc.slayer_rockslug_baby", "npc.slayer_rockslug_crypt_of_tonali"]
+wildernessAvailable = false
+
+[[slayer_superior]]
+superiorNpc = "npc.superior_cockatrice"
+normalNpcs = ["npc.slayer_cockatrice"]
+wildernessAvailable = false
+
+[[slayer_superior]]
+superiorNpc = "npc.superior_cockatrice"
+normalNpcs = ["npc.varlamore_cockatrice_moon01"]
+wildernessAvailable = false
+
+[[slayer_superior]]
+superiorNpc = "npc.superior_pyrefiend"
+normalNpcs = ["npc.slayer_pyrefiend_1", "npc.slayer_pyrefiend_2", "npc.slayer_pyrefiend_3", "npc.slayer_pyrefiend_4", "npc.godwars_pyrefiend_1"]
+wildernessAvailable = false
+
+[[slayer_superior]]
+superiorNpc = "npc.superior_pyrelord"
+normalNpcs = ["npc.slayer_pyrebeast_1", "npc.slayer_pyrebeast_2"]
+wildernessAvailable = false
+
+[[slayer_superior]]
+superiorNpc = "npc.superior_basilisk"
+normalNpcs = ["npc.slayer_basilisk"]
+wildernessAvailable = false
+
+[[slayer_superior]]
+superiorNpc = "npc.superior_infernal_mage"
+normalNpcs = ["npc.slayer_infernal_mage_1", "npc.slayer_infernal_mage_2", "npc.slayer_infernal_mage_3", "npc.slayer_infernal_mage_4", "npc.slayer_infernal_mage_5"]
+wildernessAvailable = false
+
+[[slayer_superior]]
+superiorNpc = "npc.superior_bloodveld"
+normalNpcs = ["npc.slayer_bloodveld", "npc.slayer_bloodveld_baby", "npc.slayer_bloodveld_strongholdcave", "npc.slayer_bloodveld_baby_strongholdcave", "npc.godwars_bloodveld"]
+wildernessAvailable = false
+
+[[slayer_superior]]
+superiorNpc = "npc.superior_kourend_bloodveld"
+normalNpcs = ["npc.kourend_bloodveld"]
+wildernessAvailable = false
+
+[[slayer_superior]]
+superiorNpc = "npc.superior_gryphon"
+normalNpcs = ["npc.slayer_gryphon_1", "npc.slayer_gryphon_2"]
+wildernessAvailable = false
+
+[[slayer_superior]]
+superiorNpc = "npc.superior_jelly"
+normalNpcs = ["npc.slayer_jelly_1", "npc.slayer_jelly_2", "npc.slayer_jelly_3", "npc.slayer_jelly_4", "npc.slayer_jelly_5", "npc.slayer_jelly_6", "npc.wild_cave_jelly_1", "npc.wild_cave_jelly_2", "npc.wild_cave_jelly_3", "npc.wild_cave_jelly_4", "npc.wild_cave_jelly_5"]
+wildernessAvailable = true
+
+[[slayer_superior]]
+superiorNpc = "npc.superior_kourend_jelly"
+normalNpcs = ["npc.kourend_jelly"]
+wildernessAvailable = false
+
+[[slayer_superior]]
+superiorNpc = "npc.superior_chilled_jelly"
+normalNpcs = ["npc.jelly_tapoyauik"]
+wildernessAvailable = false
+
+[[slayer_superior]]
+superiorNpc = "npc.superior_turoth"
+normalNpcs = ["npc.slayer_turoth_dad", "npc.slayer_turoth_mum", "npc.slayer_turoth_child", "npc.slayer_turoth_baby"]
+wildernessAvailable = false
+
+[[slayer_superior]]
+superiorNpc = "npc.superior_warped_terrorbird"
+normalNpcs = ["npc.pog_mutated_terrorbird_1", "npc.pog_mutated_terrorbird_2", "npc.pog_mutated_terrorbird_3", "npc.pog_mutated_terrorbird_4", "npc.pog_mutated_terrorbird_5", "npc.pog_mutated_terrorbird_6", "npc.pog_mutated_terrorbird_7", "npc.pog_mutated_terrorbird_8", "npc.pog_mutated_terrorbird_boss_1", "npc.pog_mutated_terrorbird_boss_2", "npc.pog_mutated_terrorbird_boss_3", "npc.pog_mutated_terrorbird_boss_1_background_vis", "npc.pog_mutated_terrorbird_boss_2_background_vis", "npc.pog_mutated_terrorbird_boss_3_background_vis"]
+wildernessAvailable = false
+
+[[slayer_superior]]
+superiorNpc = "npc.superior_warped_tortoise"
+normalNpcs = ["npc.pog_mutated_tortoise"]
+wildernessAvailable = false
+
+[[slayer_superior]]
+superiorNpc = "npc.superior_cave_horror"
+normalNpcs = ["npc.harmless_island_cave_horror_worker", "npc.harmless_island_cave_horror_young_worker", "npc.harmless_island_cave_horror_guard", "npc.harmless_island_cave_horror_small_guard", "npc.harmless_island_cave_horror_alpha"]
+wildernessAvailable = false
+
+[[slayer_superior]]
+superiorNpc = "npc.superior_abberant_spectre"
+normalNpcs = ["npc.slayer_abberant_spectre_1", "npc.slayer_abberant_spectre_2", "npc.slayer_abberant_spectre_3", "npc.slayer_abberant_spectre_4", "npc.slayer_aberrantspectre_1_strongholdcave", "npc.slayer_aberrantspectre_2_strongholdcave"]
+wildernessAvailable = false
+
+[[slayer_superior]]
+superiorNpc = "npc.superior_kourend_spectre"
+normalNpcs = ["npc.kourend_spectre"]
+wildernessAvailable = false
+
+[[slayer_superior]]
+superiorNpc = "npc.superior_basilisk_knight"
+normalNpcs = ["npc.basilisk_knight"]
+wildernessAvailable = false
+
+[[slayer_superior]]
+superiorNpc = "npc.superior_wyrm_dark"
+normalNpcs = ["npc.wyrm_dark", "npc.wyrm_light"]
+wildernessAvailable = false
+
+[[slayer_superior]]
+superiorNpc = "npc.superior_lava_strykewyrm"
+normalNpcs = ["npc.slayer_lava_strykewyrm"]
+wildernessAvailable = false
+
+[[slayer_superior]]
+superiorNpc = "npc.superior_dustdevil"
+normalNpcs = ["npc.slayer_dustdevil", "npc.kourend_dustdevil", "npc.wild_cave_dustdevil"]
+wildernessAvailable = true
+
+[[slayer_superior]]
+superiorNpc = "npc.superior_kurask"
+normalNpcs = ["npc.slayer_kursk_1", "npc.slayer_kursk_2"]
+wildernessAvailable = false
+
+[[slayer_superior]]
+superiorNpc = "npc.superior_gargoyle"
+normalNpcs = ["npc.slayer_gargoyle_1", "npc.slayer_gargoyle_dead", "npc.slayer_cave_gargoyle"]
+wildernessAvailable = false
+
+[[slayer_superior]]
+superiorNpc = "npc.superior_custodian"
+normalNpcs = ["npc.elder_custodian_stalker"]
+wildernessAvailable = false
+
+[[slayer_superior]]
+superiorNpc = "npc.superior_aquanite"
+normalNpcs = ["npc.slayer_aquanite", "npc.slayer_aquanite_nolure"]
+wildernessAvailable = false
+
+[[slayer_superior]]
+superiorNpc = "npc.superior_nechryael"
+normalNpcs = ["npc.slayer_nechryael", "npc.slayer_nechryael_strongholdcave"]
+wildernessAvailable = false
+
+[[slayer_superior]]
+superiorNpc = "npc.superior_nechryael"
+normalNpcs = ["npc.kourend_nechryael", "npc.wild_cave_nechryael"]
+wildernessAvailable = false
+
+[[slayer_superior]]
+superiorNpc = "npc.superior_drake"
+normalNpcs = ["npc.drake", "npc.drake_death"]
+wildernessAvailable = false
+
+[[slayer_superior]]
+superiorNpc = "npc.superior_abyssal_demon"
+normalNpcs = ["npc.slayer_abyssal", "npc.slayer_abyssal_strongholdcave", "npc.kourend_abyssal", "npc.wild_cave_abyssal"]
+wildernessAvailable = true
+
+[[slayer_superior]]
+superiorNpc = "npc.superior_dark_beast"
+normalNpcs = ["npc.mourning_dark_beast", "npc.kourend_dark_beast"]
+wildernessAvailable = false
+
+[[slayer_superior]]
+superiorNpc = "npc.superior_araxyte"
+normalNpcs = ["npc.araxyte_normal", "npc.araxyte_large", "npc.araxyte_normal_bigwander", "npc.araxyte_large_bigwander"]
+wildernessAvailable = false
+
+[[slayer_superior]]
+superiorNpc = "npc.superior_smoke_devil"
+normalNpcs = ["npc.smoke_devil"]
+wildernessAvailable = false
+
+[[slayer_superior]]
+superiorNpc = "npc.superior_hydra"
+normalNpcs = ["npc.hydra"]
+wildernessAvailable = false
+

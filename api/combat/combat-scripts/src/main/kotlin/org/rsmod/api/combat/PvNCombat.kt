@@ -3,6 +3,8 @@ package org.rsmod.api.combat
 import dev.openrune.rscm.RSCM
 import dev.openrune.rscm.RSCMType
 import jakarta.inject.Inject
+import org.rsmod.api.death.NpcAttackValidateHook
+import org.rsmod.api.death.NpcAttackValidateResult
 import org.rsmod.api.combat.commons.CombatAttack
 import org.rsmod.api.combat.manager.PlayerAttackManager
 import org.rsmod.api.combat.manager.RangedAmmoManager
@@ -41,6 +43,7 @@ constructor(
     private val manager: PlayerAttackManager,
     private val ammunition: RangedAmmoManager,
     private val spellsReg: SpellAttackRegistry,
+    private val attackValidateHooks: Set<NpcAttackValidateHook>,
 ) {
     suspend fun attack(access: ProtectedAccess, target: Npc, attack: CombatAttack.PlayerAttack) {
         when (attack) {
@@ -299,6 +302,17 @@ constructor(
     }
 
     private fun ProtectedAccess.canAttack(npc: Npc): Boolean {
+        for (hook in attackValidateHooks) {
+            when (val result = hook.validate(player, npc)) {
+                is NpcAttackValidateResult.Deny -> {
+                    mes(result.message)
+                    return false
+                }
+                NpcAttackValidateResult.BypassSingleWayPvnRestriction,
+                NpcAttackValidateResult.Pass -> Unit
+            }
+        }
+
         if (!npc.isValidTarget()) {
             return false
         }
