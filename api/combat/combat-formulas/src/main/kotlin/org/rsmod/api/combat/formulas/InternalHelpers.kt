@@ -1,6 +1,5 @@
 package org.rsmod.api.combat.formulas
 
-import dev.openrune.ServerCacheManager
 import dev.openrune.types.NpcServerType
 import org.rsmod.api.config.refs.BaseParams
 import org.rsmod.game.entity.Player
@@ -23,17 +22,5 @@ internal fun NpcServerType.isSlayerTask(player: Player): Boolean {
         return true
     }
 
-    return superiorNpcIdsByTaskId[taskId]?.contains(id) == true
-}
-
-private val superiorNpcIdsByTaskId: Map<Int, Set<Int>> by lazy { buildSuperiorNpcIdsByTask() }
-
-private fun buildSuperiorNpcIdsByTask(): Map<Int, Set<Int>> {
-    val map = mutableMapOf<Int, MutableSet<Int>>()
-    for ((_, type) in ServerCacheManager.getNpcs()) {
-        val taskId = type.paramOrNull(BaseParams.slayer_task_id) ?: continue
-        val superiorId = type.paramOrNull<NpcServerType>(BaseParams.slayer_superior)?.id ?: continue
-        map.getOrPut(taskId) { mutableSetOf() }.add(superiorId)
-    }
-    return map
+    return false
 }

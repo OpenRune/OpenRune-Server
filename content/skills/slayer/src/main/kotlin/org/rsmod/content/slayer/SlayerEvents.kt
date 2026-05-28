@@ -1,13 +1,9 @@
 package org.rsmod.content.slayer
 
-import dev.openrune.ServerCacheManager
 import dev.openrune.rscm.RSCM
 import dev.openrune.rscm.RSCMType
-import dev.openrune.types.NpcMode
-import jakarta.inject.Inject
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.vars.VarPlayerIntMapSetter
-import org.rsmod.api.repo.npc.NpcRepository
 import org.rsmod.api.script.onOpNpc1
 import org.rsmod.api.script.onOpNpc3
 import org.rsmod.api.script.onOpNpc4
@@ -24,27 +20,13 @@ import org.rsmod.content.slayer.dialogue.masters.KrystiliaDialogue.needAnotherAs
 import org.rsmod.content.slayer.dialogue.masters.KrystiliaDialogue.start as krystiliaStart
 import org.rsmod.content.slayer.dialogue.masters.TuradelDialogue.start as turaelStart
 import org.rsmod.game.entity.Npc
-import org.rsmod.map.CoordGrid
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
-class SlayerEvents @Inject constructor(private val npcRepo: NpcRepository) : PluginScript() {
+class SlayerEvents : PluginScript() {
 
 
     override fun ScriptContext.startup() {
-        spawnTurael()
-        registerSlayerMasterHandlers()
-    }
-
-    private fun ScriptContext.spawnTurael() {
-        val type = ServerCacheManager.getNpc(SlayerMasters.Npc.turael) ?: return
-        val npc = Npc(type, CoordGrid(TURAEL_SPAWN_X, TURAEL_SPAWN_Z))
-        npc.mode = NpcMode.None
-        npcRepo.add(npc, Int.MAX_VALUE)
-    }
-
-
-    private fun ScriptContext.registerSlayerMasterHandlers() {
         val npcIds = SlayerTaskManager.slayerMasterNpcs.map { it.id }.toSet()
         for (npcId in npcIds) {
             val npcName = RSCM.getReverseMapping(RSCMType.NPC, npcId)
@@ -99,11 +81,6 @@ class SlayerEvents @Inject constructor(private val npcRepo: NpcRepository) : Plu
     private fun ProtectedAccess.focusMaster(internalName: String) {
         val master = SlayerTaskManager.findMasterByNpc(internalName) ?: return
         VarPlayerIntMapSetter.set(player, "varbit.slayer_master_in_focus", master.masterId)
-    }
-
-    private companion object {
-        private const val TURAEL_SPAWN_X = 2931
-        private const val TURAEL_SPAWN_Z = 3536
     }
 
 }
