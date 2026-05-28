@@ -7,6 +7,7 @@ import dev.openrune.definition.opcode.OpcodeType
 import dev.openrune.definition.opcode.OpcodeType.BOOLEAN.enumType
 import dev.openrune.definition.type.InventoryType
 import dev.openrune.types.InvScope
+import dev.openrune.types.InvStackType
 import dev.openrune.types.InvStock
 import dev.openrune.types.InventoryServerType
 
@@ -19,7 +20,7 @@ class InventoryServerCodec(
         OpcodeList<InventoryServerType>().apply {
             add(DefinitionOpcode(1, OpcodeType.USHORT, InventoryServerType::size))
             add(DefinitionOpcode(2, OpcodeType.USHORT, InventoryServerType::flags))
-
+            add(DefinitionOpcode(3, enumType<InvStackType>(), InventoryServerType::stack))
             add(DefinitionOpcode(4, enumType<InvScope>(), InventoryServerType::scope))
             add(
                 DefinitionOpcode(
