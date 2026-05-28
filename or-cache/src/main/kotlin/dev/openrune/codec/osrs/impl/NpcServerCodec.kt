@@ -35,7 +35,7 @@ class NpcServerCodec(
     private val slayerTaskParamId = "param.slayer_task_id".asRSCM()
     private val slayerTaskTipParamId = "param.slayer_task_tip".asRSCM()
     private val slayerSuperiorParamId = "param.slayer_superior".asRSCM()
-    private val slayerSuperiorWildernessOnlyParamId = "param.available_In_wilderness".asRSCM()
+    private val slayerSuperiorWildernessOnlyParamId = "param.available_in_wilderness".asRSCM()
 
     override val definitionCodec =
         OpcodeList<NpcServerType>().apply {

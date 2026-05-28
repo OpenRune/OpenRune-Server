@@ -94,7 +94,7 @@ type = "NPC"
 isMembers = true
 
 [[params]]
-id = "param.available_In_wilderness"
+id = "param.available_in_wilderness"
 type = "BOOLEAN"
 defaultInt = 0
 isMembers = true

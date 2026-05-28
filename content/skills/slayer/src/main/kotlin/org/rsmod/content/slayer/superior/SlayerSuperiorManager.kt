@@ -12,7 +12,6 @@ import org.rsmod.api.config.refs.BaseParams
 import org.rsmod.api.npc.owner.assignSpawnOwner
 import org.rsmod.api.npc.owner.clearSpawnOwner
 import org.rsmod.api.npc.owner.isSpawnOwnedBy
-import org.rsmod.api.npc.owner.ownedBy
 import org.rsmod.api.player.mapMultiway
 import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.vars.VarPlayerIntMapSetter
@@ -20,7 +19,6 @@ import org.rsmod.api.repo.npc.NpcRepository
 import org.rsmod.content.slayer.core.SlayerTaskManager
 import org.rsmod.game.MapClock
 import org.rsmod.game.entity.Npc
-import org.rsmod.game.entity.NpcList
 import org.rsmod.game.entity.Player
 import org.rsmod.game.entity.PlayerList
 import org.rsmod.game.entity.player.PlayerUid
@@ -33,15 +31,17 @@ class SlayerSuperiorManager
 constructor(
     private val collision: CollisionFlagMap,
     private val mapClock: MapClock,
-    private val npcList: NpcList,
     private val players: PlayerList,
     private val areaChecker: AreaChecker,
 ) {
+    private val ownedSuperiorsByPlayer = mutableMapOf<PlayerUid, MutableSet<Npc>>()
+
     fun isSuperior(npc: Npc): Boolean = npc.visType.id in superiorNpcIds
 
     fun trySpawnSuperior(player: Player, killed: Npc, npcRepo: NpcRepository) {
         if (!isSuperiorEnabled(player)) return
         if (player.vars["varp.slayer_target"] == 0) return
+
         if (!SlayerTaskManager.isTaskNpc(killed, player.vars["varp.slayer_target"])) return
 
         val killedType = killed.visType
@@ -71,17 +71,17 @@ constructor(
     fun tickOwnedSuperiors(player: Player, npcRepo: NpcRepository) {
         if (!hasSuperiorActive(player)) return
 
-        var anyRemaining = false
-        for (npc in ownedSuperiors(player)) {
-            anyRemaining = true
+        val owned = ownedSuperiors(player)
+        for (npc in owned.toList()) {
             tickPresence(player, npc, npcRepo)
         }
-        if (!anyRemaining) {
+        if (owned.isEmpty()) {
             setSuperiorActive(player, false)
         }
     }
 
-    private fun ownedSuperiors(player: Player): Sequence<Npc> = npcList.ownedBy(player).filter(::isSuperior)
+    private fun ownedSuperiors(player: Player): MutableSet<Npc> =
+        ownedSuperiorsByPlayer.getOrPut(player.uid) { mutableSetOf() }
 
     private fun canSpawnAnother(player: Player): Boolean =
         player.mapMultiway(areaChecker) || !hasSuperiorActive(player)
@@ -94,7 +94,7 @@ constructor(
 
     private fun syncSuperiorActive(owner: PlayerUid) {
         val player = players.firstOrNull { it.uid == owner } ?: return
-        setSuperiorActive(player, ownedSuperiors(player).any())
+        setSuperiorActive(player, ownedSuperiorsByPlayer[owner]?.isNotEmpty() == true)
     }
 
     private fun isSuperiorEnabled(player: Player): Boolean {
@@ -114,7 +114,7 @@ constructor(
     }
 
     private fun NpcServerType.isAvailableInWilderness(): Boolean =
-        paramOrNull(BaseParams.availableInWilderness) == true
+        paramOrNull(BaseParams.available_in_wilderness) == true
 
     private fun hasEliteCombatAchievements(player: Player): Boolean = false
 
@@ -127,10 +127,10 @@ constructor(
         val npc = Npc(superiorType, coords)
         npc.mode = NpcMode.None
         npc.respawns = false
-        npc.wanderRange = SUPERIOR_WANDER_RANGE
         npcRepo.add(npc, DESPAWN_IDLE_CYCLES)
 
         npc.assignSpawnOwner(player, mapClock.cycle)
+        ownedSuperiorsByPlayer.getOrPut(player.uid) { mutableSetOf() }.add(npc)
         setSuperiorActive(player, true)
         player.mes(SPAWN_MESSAGE)
     }
@@ -139,6 +139,12 @@ constructor(
         val owner = npc.spawnOwner
         npc.clearSpawnOwner()
         if (owner != PlayerUid.NULL) {
+            ownedSuperiorsByPlayer[owner]?.let { owned ->
+                owned.remove(npc)
+                if (owned.isEmpty()) {
+                    ownedSuperiorsByPlayer.remove(owner)
+                }
+            }
             syncSuperiorActive(owner)
         }
     }
@@ -174,7 +180,6 @@ constructor(
         private const val VARBIT_SUPERIOR_ACTIVE = "varbit.slayer_superior_active"
         const val SPAWN_MESSAGE = "A superior foe has appeared..."
         private const val BIGGER_AND_BADDER_BIT = 35
-        private const val SUPERIOR_WANDER_RANGE = 2
         private const val SPAWN_CHANCE_BASE = 200
         private const val SPAWN_CHANCE_WILDERNESS = 180
         private const val SPAWN_CHANCE_ELITE_CA = 150

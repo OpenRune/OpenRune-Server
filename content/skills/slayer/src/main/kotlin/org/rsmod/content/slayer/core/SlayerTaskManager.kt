@@ -27,9 +27,9 @@ import org.rsmod.game.entity.Player
 
 object SlayerTaskManager {
 
-    val tasks: MutableMap<SlayerMastersRow, List<SlayerMasterTaskRow>> = run {
+    val tasks: Map<SlayerMastersRow, List<SlayerMasterTaskRow>> = run {
         val tasksByMaster = SlayerMasterTaskRow.all().groupBy(SlayerMasterTaskRow::masterId)
-        SlayerMastersRow.all().associateWith { tasksByMaster[it.masterId].orEmpty() }.toMutableMap()
+        SlayerMastersRow.all().associateWith { tasksByMaster[it.masterId].orEmpty() }
     }
 
     val slayerTargets = SlayerTaskRow.all()
@@ -133,7 +133,11 @@ object SlayerTaskManager {
             player.statAdvance("stat.slayer", SlayerBossTasks.BOSS_COMPLETION_BONUS_XP)
         }
 
-        player.mes("You've completed " + totalTasksDone + " task" + (if (streak == 1) "" else "s") + " and received $pointsToAdd points, giving you a total of ${player.vars["varbit.slayer_points"]}; return to a Slayer master.")
+        player.mes(
+            "You've completed $totalTasksDone task${if (totalTasksDone == 1) "" else "s"} and " +
+                "received $pointsToAdd points, giving you a total of " +
+                "${player.vars["varbit.slayer_points"]}; return to a Slayer master.",
+        )
 
         clearAssignedTask(player)
     }

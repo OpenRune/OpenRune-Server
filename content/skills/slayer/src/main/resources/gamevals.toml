@@ -9,7 +9,7 @@ slayer_task_tips=65535
 slayer_task_id=65507
 slayer_task_tip=65527
 slayer_superior=65521
-available_In_wilderness=65522
+available_in_wilderness=65522
 
 [gamevals.varbit]
 slayer_combat_check=65471

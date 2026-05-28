@@ -177,7 +177,8 @@ public class Npc(
     public val blockWalk: BlockWalk
         get() = type.blockWalk
 
-    public var wanderRange: Int = type.wanderRange
+    public val wanderRange: Int
+        get() = type.wanderRange
 
     public val defaultMode: NpcMode
         get() = type.defaultMode
