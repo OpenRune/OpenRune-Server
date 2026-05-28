@@ -78,8 +78,24 @@ defaultInt = 0
 isMembers = true
 
 [[params]]
-id = "param.slayer_levelrequire"
+id = "param.slayer_task_id"
 type = "INT"
+defaultInt = -1
+isMembers = true
+
+[[params]]
+id = "param.slayer_task_tip"
+type = "STRING"
+isMembers = true
+
+[[params]]
+id = "param.slayer_superior"
+type = "NPC"
+isMembers = true
+
+[[params]]
+id = "param.available_in_wilderness"
+type = "BOOLEAN"
 defaultInt = 0
 isMembers = true
 

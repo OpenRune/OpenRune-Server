@@ -6,6 +6,7 @@ import dev.openrune.definition.Definition
 import dev.openrune.definition.EntityOpsDefinition
 import dev.openrune.definition.type.ParamType
 import dev.openrune.resolve
+import dev.openrune.rscm.RSCM
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import dev.openrune.seralizer.ParamSerializer
@@ -74,6 +75,9 @@ data class NpcServerType(
     @param:TomlField(["params"],serializer = ParamSerializer::class)
     var paramsRaw: MutableMap<Int, Any>? = null,
 ) : Definition {
+
+    val internalName: String
+        get() = RSCM.getReverseMapping(RSCMType.NPC, id)
 
     var paramMap: ParamMap? = null
 

@@ -4,6 +4,7 @@ import jakarta.inject.Inject
 import org.rsmod.api.account.autosave.PlayerAutosaveOrchestrator
 import org.rsmod.api.game.process.GameLifecycle
 import org.rsmod.api.player.forceDisconnect
+import org.rsmod.api.player.hook.PlayerPostTickHook
 import org.rsmod.api.player.output.MiscOutput
 import org.rsmod.api.utils.logging.GameExceptionHandler
 import org.rsmod.events.EventBus
@@ -28,6 +29,7 @@ constructor(
     private val statUpdates: PlayerStatUpdateProcessor,
     private val exceptionHandler: GameExceptionHandler,
     private val playerAutosave: PlayerAutosaveOrchestrator,
+    private val postTickHooks: Set<PlayerPostTickHook>,
 ) {
     public fun process() {
         computeSharedBuffers()
@@ -64,6 +66,7 @@ constructor(
                     processStatUpdates()
                     processRunUpdates()
                     processClientState()
+                    processPostTickHooks()
                     cleanUpPendingUpdates()
                 }
             } finally {
@@ -98,6 +101,12 @@ constructor(
 
     private fun Player.processRunUpdates() {
         runUpdates.process(this)
+    }
+
+    private fun Player.processPostTickHooks() {
+        for (hook in postTickHooks) {
+            hook.onPostTick(this)
+        }
     }
 
     private fun Player.processClientState() {

@@ -119,6 +119,15 @@ public class Npc(
     public var huntLoc: LocInfo? = null
     public var huntNpc: NpcUid = NpcUid.NULL
     public var huntPlayer: PlayerUid = PlayerUid.NULL
+
+    public var spawnOwner: PlayerUid = PlayerUid.NULL
+
+    /**
+     * Map cycle when [spawnOwner] was last within vicinity of this npc. Used for owner-presence
+     * despawn logic (e.g. superior slayer monsters leaving the area).
+     */
+    public var spawnOwnerLastNearCycle: Int = -1
+
     public var huntRange: Int = type.huntRange
         private set
 

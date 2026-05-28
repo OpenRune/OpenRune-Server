@@ -10,12 +10,14 @@ import dev.openrune.definition.opcode.impl.DefinitionOpcodeParams
 import dev.openrune.definition.opcode.impl.DefinitionOpcodeTransforms
 import dev.openrune.definition.type.NpcType
 import dev.openrune.revision
+import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.types.MoveRestrict
 import dev.openrune.types.NpcMode
 import dev.openrune.types.NpcServerType
 import dev.openrune.util.BlockWalk
 import dev.openrune.util.Coord
 import dev.openrune.util.DefinitionOpcodeParamMap
+import dev.openrune.tools.SlayerSuperiorMonsterLoader
 import dev.openrune.util.NpcPatrol
 import dev.openrune.util.NpcPatrolWaypoint
 import org.rsmod.game.map.Direction
@@ -25,7 +27,15 @@ class NpcServerCodec(
     val npcs: Map<Int, NpcType>? = null,
     val custom: Map<Int, NpcServerType>? = emptyMap(),
     val examines: Map<Int, String> = emptyMap(),
+    val slayerTaskByNpcId: Map<Int, Int> = emptyMap(),
+    val slayerTaskTipByNpcId: Map<Int, String> = emptyMap(),
+    val slayerSuperiorByNpcId: Map<Int, SlayerSuperiorMonsterLoader.SuperiorNpcParam> = emptyMap(),
 ) : OpcodeDefinitionCodec<NpcServerType>() {
+
+    private val slayerTaskParamId = "param.slayer_task_id".asRSCM()
+    private val slayerTaskTipParamId = "param.slayer_task_tip".asRSCM()
+    private val slayerSuperiorParamId = "param.slayer_superior".asRSCM()
+    private val slayerSuperiorWildernessOnlyParamId = "param.available_in_wilderness".asRSCM()
 
     override val definitionCodec =
         OpcodeList<NpcServerType>().apply {
@@ -151,11 +161,12 @@ class NpcServerCodec(
         hitpoints = obj.hitpoints
         ranged = obj.ranged
         magic = obj.magic
-        paramsRaw = obj.params
+        paramsRaw = obj.params?.toMutableMap() ?: mutableMapOf()
 
         val customData = custom?.get(id)
 
         if (customData != null) {
+            customData.paramsRaw?.forEach { (paramId, value) -> paramsRaw?.set(paramId, value) }
 
             timer = customData.timer
             respawnDir = customData.respawnDir
@@ -175,6 +186,15 @@ class NpcServerCodec(
             huntMode = customData.huntMode
             giveChase = customData.giveChase
             waypoints = customData.waypoints
+        }
+
+        slayerTaskByNpcId[id]?.let { taskId -> paramsRaw?.set(slayerTaskParamId, taskId) }
+        slayerTaskTipByNpcId[id]?.let { tip -> paramsRaw?.set(slayerTaskTipParamId, tip) }
+        slayerSuperiorByNpcId[id]?.let { superior ->
+            paramsRaw?.set(slayerSuperiorParamId, superior.superiorNpcId)
+            if (superior.wildernessAvailable) {
+                paramsRaw?.set(slayerSuperiorWildernessOnlyParamId, 1)
+            }
         }
     }
 

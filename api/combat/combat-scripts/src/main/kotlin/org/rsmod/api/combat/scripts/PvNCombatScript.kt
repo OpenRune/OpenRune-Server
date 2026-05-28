@@ -1,6 +1,8 @@
 package org.rsmod.api.combat.scripts
 
 import jakarta.inject.Inject
+import org.rsmod.api.death.NpcAttackValidateHook
+import org.rsmod.api.death.NpcAttackValidateResult
 import org.rsmod.api.combat.ACTIVE_COMBAT_DELAY
 import org.rsmod.api.combat.PvNCombat
 import org.rsmod.api.combat.commons.magic.MagicSpell
@@ -35,6 +37,7 @@ constructor(
     private val spells: MagicSpellRegistry,
     private val runes: MagicRuneManager,
     private val autocast: AutocastWeapons,
+    private val attackValidateHooks: Set<NpcAttackValidateHook>,
 ) : PluginScript() {
     override fun ScriptContext.startup() {
         onDefaultApNpc2 { attemptCombatAp(it.npc) }
@@ -101,11 +104,17 @@ constructor(
     }
 
     private fun ProtectedAccess.canAttack(npc: Npc): Boolean {
-        // TODO(combat): Handle "can attack hooks" here. Seems like the ones that give dialogues
-        //  have a cool-down period, but it's more than likely something hardcoded into
-        //  their specific conditions. Some npcs like the mage arena (wilderness) npcs
-        //  don't give any sort of message, but simply won't allow players to melee them.
-        //  (Will stop at ap range, doesn't drag you into melee range)
+        var bypassSingleWayPvn = false
+        for (hook in attackValidateHooks) {
+            when (val result = hook.validate(player, npc)) {
+                is NpcAttackValidateResult.Deny -> {
+                    mes(result.message)
+                    return false
+                }
+                NpcAttackValidateResult.BypassSingleWayPvnRestriction -> bypassSingleWayPvn = true
+                NpcAttackValidateResult.Pass -> Unit
+            }
+        }
 
         // Note: Dinh's bulwark conditions occur _before_ multi-combat area checks and _after_
         // "can attack" hooks.
@@ -130,7 +139,7 @@ constructor(
 
         // TODO(combat): Add singles plus support.
         val singleCombat = !mapMultiway()
-        if (singleCombat) {
+        if (singleCombat && !bypassSingleWayPvn) {
             if (isInPvpCombat()) {
                 spam("I'm already under attack.")
                 return false

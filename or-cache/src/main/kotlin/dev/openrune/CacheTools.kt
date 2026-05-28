@@ -27,6 +27,7 @@ import dev.openrune.tables.StatComponents
 import dev.openrune.tables.skills.Cooking
 import dev.openrune.tables.skills.Firemaking
 import dev.openrune.tables.skills.Herblore
+import dev.openrune.tables.skills.Slayer
 import dev.openrune.tables.skills.Smithing
 import dev.openrune.tables.skills.prayer.EctofuntusBonemeal
 import dev.openrune.tables.skills.prayer.PrayerBlessedBone
@@ -79,7 +80,8 @@ fun tablesToPack() = listOf(
     Smithing.bars(),
     Smithing.cannonBalls(),
     Smithing.dragonForge(),
-    Smithing.crystalSinging()
+    Smithing.crystalSinging(),
+    Slayer.masters(),
 )
 
 fun downloadRev(type: TaskType) {

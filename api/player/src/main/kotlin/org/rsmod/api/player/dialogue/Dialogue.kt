@@ -337,6 +337,10 @@ public class Dialogue(
     public operator fun Inventory.contains(content: String): Boolean =
         access.invContains(this, content)
 
+    public fun playerContainsContent(content: String): Boolean = access.playerContainsContent(content)
+
+    public fun playerContainsObj(obj: String): Boolean = access.playerContainsObj(obj)
+
     /** @see [ProtectedAccess.ocCert] */
     public fun ocCert(type: String): ItemServerType = access.ocCert(type)
 

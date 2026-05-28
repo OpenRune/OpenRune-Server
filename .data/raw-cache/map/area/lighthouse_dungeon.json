@@ -1,0 +1,34 @@
+[
+  {
+    "name": "Lighthouse Dungeon",
+    "areaId": "area.lighthouse_dungeon",
+    "levels": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "polygons": [
+      {
+        "vertices": [
+          {
+            "x": 2496,
+            "z": 9984
+          },
+          {
+            "x": 2559,
+            "z": 9984
+          },
+          {
+            "x": 2559,
+            "z": 10047
+          },
+          {
+            "x": 2496,
+            "z": 10047
+          }
+        ]
+      }
+    ]
+  }
+]

@@ -29,6 +29,7 @@ include(
     "server",
     "or-cache",
     "tools:osrs-mcp",
+    "tools:wiki-dumping",
 )
 
 includeProjects(project(":api"))

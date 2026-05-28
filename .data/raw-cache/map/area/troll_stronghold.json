@@ -1,0 +1,34 @@
+[
+  {
+    "name": "Troll Stronghold",
+    "areaId": "area.troll_stronghold",
+    "levels": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "polygons": [
+      {
+        "vertices": [
+          {
+            "x": 2816,
+            "z": 10048
+          },
+          {
+            "x": 2879,
+            "z": 10048
+          },
+          {
+            "x": 2879,
+            "z": 10111
+          },
+          {
+            "x": 2816,
+            "z": 10111
+          }
+        ]
+      }
+    ]
+  }
+]

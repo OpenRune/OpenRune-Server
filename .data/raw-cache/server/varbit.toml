@@ -445,3 +445,94 @@ id = "varbit.alchemy_anim_toggles"
 varp = "varp.herblore_amulet_chemistry"
 startBit = 0
 endBit = 0
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.slayer_combat_check"
+varp = "varp.slayer_player_state"
+startBit = 0
+endBit = 0
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.slayer_streak"
+varp = "varp.slayer_player_state"
+startBit = 1
+endBit = 15
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.slayer_wildy_streak"
+varp = "varp.slayer_player_state"
+startBit = 16
+endBit = 30
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.slayer_superior_active"
+varp = "varp.slayer_player_state"
+startBit = 31
+endBit = 31
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.slayer_turael_intro_complete"
+varp = "varp.slayer_dialogue_flags"
+startBit = 0
+endBit = 0
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.slayer_konar_intro_complete"
+varp = "varp.slayer_dialogue_flags"
+startBit = 1
+endBit = 1
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.slayer_wilderness_assignment_briefed"
+varp = "varp.slayer_dialogue_flags"
+startBit = 2
+endBit = 2
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.slayer_krystilia_edgeville_spawn_unlocked"
+varp = "varp.slayer_dialogue_flags"
+startBit = 3
+endBit = 3
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.slayer_krystilia_edgeville_spawn_active"
+varp = "varp.slayer_dialogue_flags"
+startBit = 4
+endBit = 4
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.slayer_duradel_notes_received"
+varp = "varp.slayer_dialogue_flags"
+startBit = 5
+endBit = 5
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.slayer_expeditious_charges"
+varp = "varp.slayer_dialogue_flags"
+startBit = 6
+endBit = 11
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.slayer_slaughter_charges"
+varp = "varp.slayer_dialogue_flags"
+startBit = 14
+endBit = 19
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.slayer_total_tasks_done"
+varp = "varp.slayer_last_count"
+startBit = 0
+endBit = 15

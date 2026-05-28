@@ -175,10 +175,14 @@ private fun varTypeCodegen(vt: VarType): VarTypeCodegen =
                 CodecPlacement.Nested to "InterfaceTypeCodec",
                 scalarReader = "interf",
             )
-        VarType.MAPELEMENT ->
-            VarTypeCodegen(codec = CodecPlacement.TopLevel to "MapElementIdCodec")
+        VarType.MAPELEMENT -> VarTypeCodegen(codec = CodecPlacement.TopLevel to "MapElementIdCodec")
         VarType.NAMEDOBJ ->
-            VarTypeCodegen(codec = CodecPlacement.TopLevel to "NamedObjIdCodec")
+            VarTypeCodegen(
+                typeObj,
+                CodecPlacement.Nested to "ItemServerTypeCodec",
+                "obj",
+                "objOptional",
+            )
         VarType.GRAPHIC ->
             VarTypeCodegen(codec = CodecPlacement.TopLevel to "GraphicIdCodec")
         VarType.SEQ -> VarTypeCodegen(codec = CodecPlacement.TopLevel to "SeqIdCodec")

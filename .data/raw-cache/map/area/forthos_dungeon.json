@@ -1,0 +1,34 @@
+[
+  {
+    "name": "Forthos Dungeon",
+    "areaId": "area.forthos_dungeon",
+    "levels": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "polygons": [
+      {
+        "vertices": [
+          {
+            "x": 1779,
+            "z": 9997
+          },
+          {
+            "x": 1869,
+            "z": 9998
+          },
+          {
+            "x": 1868,
+            "z": 9871
+          },
+          {
+            "x": 1777,
+            "z": 9874
+          }
+        ]
+      }
+    ]
+  }
+]
