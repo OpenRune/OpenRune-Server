@@ -1,0 +1,34 @@
+[
+  {
+    "name": "Jormungand's Prison",
+    "areaId": "area.jormungandprison",
+    "levels": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "polygons": [
+      {
+        "vertices": [
+          {
+            "x": 2385,
+            "z": 10472
+          },
+          {
+            "x": 2501,
+            "z": 10473
+          },
+          {
+            "x": 2497,
+            "z": 10344
+          },
+          {
+            "x": 2401,
+            "z": 10354
+          }
+        ]
+      }
+    ]
+  }
+]

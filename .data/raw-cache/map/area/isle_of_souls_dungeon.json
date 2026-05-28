@@ -1,0 +1,34 @@
+[
+  {
+    "name": "Isle of Souls Dungeon",
+    "areaId": "area.isle_of_souls_dungeon",
+    "levels": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "polygons": [
+      {
+        "vertices": [
+          {
+            "x": 2112,
+            "z": 9280
+          },
+          {
+            "x": 2175,
+            "z": 9280
+          },
+          {
+            "x": 2175,
+            "z": 9343
+          },
+          {
+            "x": 2112,
+            "z": 9343
+          }
+        ]
+      }
+    ]
+  }
+]

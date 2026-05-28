@@ -1,0 +1,32 @@
+[
+  {
+    "name": "Crypt of Tonali",
+    "areaId": "area.cryptoftonali",
+    "levels": [
+      1,
+      2
+    ],
+    "polygons": [
+      {
+        "vertices": [
+          {
+            "x": 1259,
+            "z": 9538
+          },
+          {
+            "x": 1350,
+            "z": 9542
+          },
+          {
+            "x": 1350,
+            "z": 9335
+          },
+          {
+            "x": 1282,
+            "z": 9339
+          }
+        ]
+      }
+    ]
+  }
+]

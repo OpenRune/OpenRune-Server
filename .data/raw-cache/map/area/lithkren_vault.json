@@ -1,0 +1,34 @@
+[
+  {
+    "name": "Lithkren Dungeon",
+    "areaId": "area.lithkren_vault",
+    "levels": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "polygons": [
+      {
+        "vertices": [
+          {
+            "x": 1536,
+            "z": 5056
+          },
+          {
+            "x": 1599,
+            "z": 5056
+          },
+          {
+            "x": 1599,
+            "z": 5119
+          },
+          {
+            "x": 1536,
+            "z": 5119
+          }
+        ]
+      }
+    ]
+  }
+]

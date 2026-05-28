@@ -1,0 +1,10 @@
+[[enum]]
+isServerOnly = true
+id = "enum.slayer_toggleable_rewards"
+keyType = "DBROW"
+valueType = "VARBIT"
+
+[enum.values]
+"dbrow.slayer_rewards_unlock_superiormobs" = "varbit.slayer_toggleoff_superiormobs"
+"dbrow.slayer_rewards_unlock_fossilwyvernblock" = "varbit.slayer_toggleoff_fossilwyvernblock"
+"dbrow.slayer_rewards_longer_revenants" = "varbit.slayer_toggleoff_longerrevenants"

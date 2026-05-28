@@ -1,0 +1,34 @@
+[
+  {
+    "name": "Evil Chicken Lair",
+    "areaId": "area.evil_chicken_lair",
+    "levels": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "polygons": [
+      {
+        "vertices": [
+          {
+            "x": 2432,
+            "z": 4352
+          },
+          {
+            "x": 2495,
+            "z": 4352
+          },
+          {
+            "x": 2495,
+            "z": 4415
+          },
+          {
+            "x": 2432,
+            "z": 4415
+          }
+        ]
+      }
+    ]
+  }
+]

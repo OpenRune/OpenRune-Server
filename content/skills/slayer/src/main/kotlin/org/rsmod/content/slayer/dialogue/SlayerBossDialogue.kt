@@ -8,7 +8,7 @@ import org.rsmod.content.slayer.core.SlayerTaskManager
 object SlayerBossDialogue {
 
     suspend fun Dialogue.offerBossTaskAssignment(
-        masterNpcId: Int,
+        masterNpcId: String,
         bossTask: SlayerMasterTaskRow,
         onAssigned: suspend Dialogue.(taskName: String, count: Int) -> Unit,
     ): Boolean {

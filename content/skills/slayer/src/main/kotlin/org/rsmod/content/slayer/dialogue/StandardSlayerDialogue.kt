@@ -2,13 +2,13 @@ package org.rsmod.content.slayer.dialogue
 
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.player.stat.baseSlayerLvl
-import org.rsmod.content.slayer.SlayerInterfaces
 import org.rsmod.content.slayer.core.SlayerTaskManager
 import org.rsmod.content.slayer.dialogue.GenericDialogue.capeDialogue
 import org.rsmod.content.slayer.dialogue.GenericDialogue.ineligibleForTask
 import org.rsmod.content.slayer.dialogue.GenericDialogue.masterDoesNotHaveCurrentTask
 import org.rsmod.content.slayer.dialogue.GenericDialogue.offerCancelTask
 import org.rsmod.content.slayer.dialogue.GenericDialogue.offerTuraelReroll
+import org.rsmod.content.slayer.dialogue.GenericDialogue.rewardsOrShopDialogue
 import org.rsmod.content.slayer.dialogue.SlayerAssignmentDialogue.assignNewTask
 
 typealias SlayerMenuOption = suspend Dialogue.() -> Unit
@@ -196,7 +196,7 @@ object StandardSlayerDialogue {
     private suspend fun Dialogue.handleAssignment(npcId: Int, profile: SlayerMasterProfile) {
         val currentTask = SlayerTaskManager.getCurrentSlayerTask(access)
         if (currentTask == null) {
-            assignNewTask(npcId)
+            assignNewTask(npc!!.visType.internalName)
             return
         }
 
@@ -224,18 +224,6 @@ object StandardSlayerDialogue {
             ActiveTaskMessageStyle.SemicolonOnly ->
                 "You're still hunting $monster; you have $count to go."
         }
-
-    private suspend fun Dialogue.rewardsOrShopDialogue() {
-        chatPlayer(neutral, "Have you any rewards for me, or anything to trade?")
-        chatNpc(
-            neutral,
-            "I have quite a few rewards you can earn, and a wide variety of Slayer equipment for sale.",
-        )
-        when (choice3("Look at rewards.", 1, "Look at shop.", 2, "Cancel.", 3)) {
-            1 -> SlayerInterfaces.openSlayerRewards(access)
-            2 -> SlayerInterfaces.openSlayerEquipment(access)
-        }
-    }
 
     private suspend fun Dialogue.combatDifficultyDialogue(profile: SlayerMasterProfile) {
         chatPlayer(neutral, "Let's talk about the difficulty of my assignments.")

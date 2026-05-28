@@ -15,6 +15,7 @@ import dev.openrune.types.NpcMode
 import dev.openrune.types.NpcServerType
 import dev.openrune.types.ObjectServerType
 import dev.openrune.types.SequenceServerType
+import dev.openrune.types.InvScope
 import dev.openrune.types.WalkTriggerType
 import dev.openrune.types.aconverted.CategoryType
 import dev.openrune.types.aconverted.MidiType
@@ -3270,6 +3271,38 @@ public class ProtectedAccess(
 
     public fun invContains(inv: Inventory, content: String): Boolean {
         return inv.any { it != null && getInvObj(it).contentGroup == content.asRSCM(RSCMType.CONTENT) }
+    }
+
+    /**
+     * Returns whether [content] (content group) exists in any of the player's inventories — e.g.
+     * inventory, worn equipment, bank, and any other loaded containers. Shared inventories such
+     * as shops are excluded.
+     */
+    public fun playerContainsContent(content: String): Boolean {
+        val contentId = content.asRSCM(RSCMType.CONTENT)
+        return playerContainsInInventories { getInvObj(it).contentGroup == contentId }
+    }
+
+    /**
+     * Returns whether any stack of [obj] exists in any of the player's inventories. Shared
+     * inventories such as shops are excluded.
+     */
+    public fun playerContainsObj(obj: String): Boolean {
+        val objId = obj.asRSCM(RSCMType.OBJ)
+        return playerContainsInInventories { getInvObj(it).id == objId }
+    }
+
+    /** @see [playerContainsObj] */
+    public fun playerContainsAnyObj(vararg objs: String): Boolean = objs.any(::playerContainsObj)
+
+    private inline fun playerContainsInInventories(crossinline predicate: (InvObj) -> Boolean): Boolean {
+        for (inventory in player.invMap.values) {
+            if (inventory.type.scope == InvScope.Shared) continue
+            if (inventory.any { slot -> slot != null && predicate(slot) }) {
+                return true
+            }
+        }
+        return false
     }
 
     public fun inv(inv: String): Inventory {

@@ -1,0 +1,34 @@
+[
+  {
+    "name": "Waterfall Dungeon",
+    "areaId": "area.waterfall_dungeon",
+    "levels": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "polygons": [
+      {
+        "vertices": [
+          {
+            "x": 2560,
+            "z": 9856
+          },
+          {
+            "x": 2623,
+            "z": 9856
+          },
+          {
+            "x": 2623,
+            "z": 9919
+          },
+          {
+            "x": 2560,
+            "z": 9919
+          }
+        ]
+      }
+    ]
+  }
+]

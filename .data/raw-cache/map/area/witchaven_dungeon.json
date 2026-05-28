@@ -1,0 +1,34 @@
+[
+  {
+    "name": "Witchaven Dungeon",
+    "areaId": "area.witchaven_dungeon",
+    "levels": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "polygons": [
+      {
+        "vertices": [
+          {
+            "x": 2688,
+            "z": 9664
+          },
+          {
+            "x": 2751,
+            "z": 9664
+          },
+          {
+            "x": 2751,
+            "z": 9727
+          },
+          {
+            "x": 2688,
+            "z": 9727
+          }
+        ]
+      }
+    ]
+  }
+]

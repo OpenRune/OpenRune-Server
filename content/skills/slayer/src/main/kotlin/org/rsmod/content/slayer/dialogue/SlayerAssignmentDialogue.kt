@@ -2,10 +2,9 @@ package org.rsmod.content.slayer.dialogue
 
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.player.protect.ProtectedAccess
-import org.rsmod.content.slayer.konar.KonarSlayerDialogueHelpers
+import org.rsmod.content.slayer.core.AssignmentRoll
 import org.rsmod.content.slayer.core.SlayerCapePerk
 import org.rsmod.content.slayer.core.SlayerTaskManager
-import org.rsmod.content.slayer.core.SlayerTaskManager.AssignmentRoll
 import org.rsmod.content.slayer.dialogue.GenericDialogue.slayerTip
 import org.rsmod.content.slayer.dialogue.SlayerBossDialogue.offerBossTaskAssignment
 
@@ -17,14 +16,14 @@ object SlayerAssignmentDialogue {
 
     private fun ProtectedAccess.slayerCount(): Int = vars["varp.slayer_count"]
 
-    suspend fun Dialogue.assignNewTask(masterNpcId: Int) {
+    suspend fun Dialogue.assignNewTask(masterNpcId: String) {
         assignNewTask(masterNpcId) { taskName, count ->
             defaultAssignedDialogue(taskName, count)
         }
     }
 
     suspend fun Dialogue.assignNewTask(
-        masterNpcId: Int,
+        masterNpcId: String,
         onAssigned: suspend Dialogue.(taskName: String, count: Int) -> Unit,
     ) {
         val capeOffer = SlayerTaskManager.rollCapePerkOffer(access, masterNpcId)
@@ -36,7 +35,7 @@ object SlayerAssignmentDialogue {
     }
 
     private suspend fun Dialogue.offerCapePerk(
-        masterNpcId: Int,
+        masterNpcId: String,
         previousTaskName: String,
         onAssigned: suspend Dialogue.(taskName: String, count: Int) -> Unit,
     ) {
@@ -47,7 +46,7 @@ object SlayerAssignmentDialogue {
                 ""
             }
         val capeMessage =
-            if (masterNpcId == SlayerTaskManager.konarNpcId) {
+            if (masterNpcId == "npc.slayer_master_8") {
                 val area =
                     if (access.vars[VARP_LAST_AREA] != 0) {
                         KonarSlayerDialogueHelpers.findArea(access.vars[VARP_LAST_AREA])
@@ -95,7 +94,7 @@ object SlayerAssignmentDialogue {
     }
 
     private suspend fun Dialogue.assignRandomTask(
-        masterNpcId: Int,
+        masterNpcId: String,
         onAssigned: suspend Dialogue.(taskName: String, count: Int) -> Unit,
     ) {
         val master =

@@ -1,0 +1,42 @@
+[
+  {
+    "name": "Fremennik Slayer Dungeon",
+    "areaId": "area.fremennik_slayer_dungeon",
+    "levels": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "polygons": [
+      {
+        "vertices": [
+          {
+            "x": 2686,
+            "z": 9945
+          },
+          {
+            "x": 2727,
+            "z": 9945
+          },
+          {
+            "x": 2727,
+            "z": 9984
+          },
+          {
+            "x": 2815,
+            "z": 9984
+          },
+          {
+            "x": 2815,
+            "z": 10047
+          },
+          {
+            "x": 2686,
+            "z": 10047
+          }
+        ]
+      }
+    ]
+  }
+]

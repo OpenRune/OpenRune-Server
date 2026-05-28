@@ -1,0 +1,34 @@
+[
+  {
+    "name": "Charred Island Dungeon",
+    "areaId": "area.charred_island_dungeon",
+    "levels": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "polygons": [
+      {
+        "vertices": [
+          {
+            "x": 2619,
+            "z": 8901
+          },
+          {
+            "x": 2753,
+            "z": 8901
+          },
+          {
+            "x": 2748,
+            "z": 8815
+          },
+          {
+            "x": 2620,
+            "z": 8824
+          }
+        ]
+      }
+    ]
+  }
+]

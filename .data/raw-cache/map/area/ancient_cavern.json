@@ -1,0 +1,34 @@
+[
+  {
+    "name": "Ancient cavern",
+    "areaId": "area.ancient_cavern",
+    "levels": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "polygons": [
+      {
+        "vertices": [
+          {
+            "x": 1590,
+            "z": 5294
+          },
+          {
+            "x": 1806,
+            "z": 5294
+          },
+          {
+            "x": 1806,
+            "z": 5389
+          },
+          {
+            "x": 1590,
+            "z": 5389
+          }
+        ]
+      }
+    ]
+  }
+]

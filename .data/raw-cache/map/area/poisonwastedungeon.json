@@ -1,0 +1,34 @@
+[
+  {
+    "name": "Poison Waste Dungeon",
+    "areaId": "area.poisonwastedungeon",
+    "levels": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "polygons": [
+      {
+        "vertices": [
+          {
+            "x": 1463,
+            "z": 4335
+          },
+          {
+            "x": 1555,
+            "z": 4336
+          },
+          {
+            "x": 1537,
+            "z": 4226
+          },
+          {
+            "x": 1471,
+            "z": 4226
+          }
+        ]
+      }
+    ]
+  }
+]

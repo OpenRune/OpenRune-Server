@@ -114,7 +114,7 @@ constructor(
     }
 
     private fun NpcServerType.isAvailableInWilderness(): Boolean =
-        paramOrNull<Boolean>(BaseParams.availableInWilderness) == true
+        paramOrNull(BaseParams.availableInWilderness) == true
 
     private fun hasEliteCombatAchievements(player: Player): Boolean = false
 
@@ -165,7 +165,7 @@ constructor(
     private val superiorNpcIds: Set<Int> by lazy {
         buildSet {
             for ((_, type) in ServerCacheManager.getNpcs()) {
-                type.paramOrNull<NpcServerType>(BaseParams.slayer_superior)?.id?.let { add(it) }
+                type.paramOrNull(BaseParams.slayer_superior)?.id?.let { add(it) }
             }
         }
     }

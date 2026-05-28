@@ -5,14 +5,33 @@ import org.rsmod.content.slayer.slayerKrystiliaEdgevilleSpawnActive
 import org.rsmod.content.slayer.slayerKrystiliaEdgevilleSpawnUnlocked
 import org.rsmod.content.slayer.slayerWildernessAssignmentBriefed
 import org.rsmod.api.player.protect.ProtectedAccess
-import org.rsmod.content.slayer.SlayerInterfaces
 import org.rsmod.content.slayer.core.SlayerTaskManager
 import org.rsmod.content.slayer.dialogue.SlayerAssignmentDialogue.assignNewTask
 import org.rsmod.content.slayer.dialogue.GenericDialogue.ineligibleForTask
+import org.rsmod.content.slayer.dialogue.GenericDialogue.offerCancelTask
+import org.rsmod.content.slayer.dialogue.GenericDialogue.rewardsOrShopDialogue
 
 object KrystiliaDialogue {
 
     private const val EDGE_SPAWN_COST = 5_000_000
+
+    suspend fun Dialogue.npcContactMenu() {
+        chatNpc(neutral, "Yeah? What do you want?")
+        when (
+            choice3(
+                "I need another assignment.",
+                1,
+                "Let's talk about the difficulty of my assignments.",
+                2,
+                "Err... Nothing...",
+                3,
+            )
+        ) {
+            1 -> needAnotherAssignment()
+            2 -> combatDifficulty()
+            3 -> chatPlayer(neutral, "Err... Nothing...")
+        }
+    }
 
     suspend fun Dialogue.start() {
         chatNpc(neutral, "Yeah? What do you want?")
@@ -32,7 +51,7 @@ object KrystiliaDialogue {
             )
         ) {
             0 -> needAnotherAssignment()
-            1 -> rewardsOrShop()
+            1 -> rewardsOrShopDialogue()
             2 -> combatDifficultyDialogue()
             3 -> otherSlayerServices()
             4 -> hatDialogue()
@@ -118,7 +137,7 @@ object KrystiliaDialogue {
     }
 
     private suspend fun Dialogue.assignWildernessTask() {
-        assignNewTask(SlayerTaskManager.krystiliaNpcId) { taskName, count ->
+        assignNewTask("npc.slayer_master_7") { taskName, count ->
             chatNpc(neutral, "Your new task is to kill $count $taskName.")
             when (choice2("Got any tips for me?", 1, "Okay, great!", 2)) {
                 1 -> krystiliaSlayerTip()
@@ -137,18 +156,6 @@ object KrystiliaDialogue {
         }
         chatNpc(neutral, "You've got to do the task in the Wilderness.")
         chatPlayer(happy, "Great, thanks!")
-    }
-
-    private suspend fun Dialogue.rewardsOrShop() {
-        chatPlayer(neutral, "Have you any rewards for me, or anything to trade?")
-        chatNpc(
-            neutral,
-            "I have quite a few rewards you can earn, and a wide variety of Slayer equipment for sale.",
-        )
-        when (choice3("Look at rewards.", 1, "Look at shop.", 2, "Cancel.", 3)) {
-            1 -> SlayerInterfaces.openSlayerRewards(access)
-            2 -> SlayerInterfaces.openSlayerEquipment(access)
-        }
     }
 
     private suspend fun Dialogue.combatDifficultyDialogue() {
@@ -336,27 +343,6 @@ object KrystiliaDialogue {
         chatPlayer(neutral, "Oh dear. Don't you have any less... dangerous crafts?")
         chatNpc(neutral, "Well, I do make hats too.")
         chatPlayer(neutral, "That's perfect! People love hats.")
-    }
-
-    private suspend fun Dialogue.offerCancelTask() {
-        chatNpc(
-            neutral,
-            "I don't think that's a suitable task for you. Shall I cancel it? This will not wipe your task streaks.",
-        )
-        when (choice2("Yes, please cancel it.", 1, "No, thanks, I want to try doing it.", 2)) {
-            1 -> {
-                chatPlayer(neutral, "Yes, please cancel it.")
-                chatNpc(
-                    neutral,
-                    "Alright, consider the task cancelled. You can now get a new assignment when you want one.",
-                )
-                SlayerTaskManager.resetTask(access)
-            }
-            2 -> {
-                chatPlayer(neutral, "No, thanks, I want to try doing it.")
-                chatNpc(neutral, "Good luck with that.")
-            }
-        }
     }
 
     private fun ProtectedAccess.slayerCount(): Int = vars["varp.slayer_count"]

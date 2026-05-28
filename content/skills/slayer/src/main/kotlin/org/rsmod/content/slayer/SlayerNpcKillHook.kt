@@ -1,4 +1,4 @@
-package org.rsmod.content.slayer.kill
+package org.rsmod.content.slayer
 
 import jakarta.inject.Inject
 import org.rsmod.api.area.checker.AreaChecker

@@ -3,12 +3,24 @@ package org.rsmod.content.slayer.dialogue
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.stat.baseSlayerLvl
+import org.rsmod.content.slayer.SlayerInterfaces
 import org.rsmod.content.slayer.core.SlayerTaskManager
 import org.rsmod.content.slayer.core.SlayerTaskManager.tasks
 import org.rsmod.content.slayer.dialogue.SlayerAssignmentDialogue.assignNewTask
-import org.rsmod.content.slayer.dialogue.SlayerTaskTips
 
 object GenericDialogue {
+
+    suspend fun Dialogue.rewardsOrShopDialogue() {
+        chatPlayer(neutral, "Have you any rewards for me, or anything to trade?")
+        chatNpc(
+            neutral,
+            "I have quite a few rewards you can earn, and a wide variety of Slayer equipment for sale.",
+        )
+        when (choice3("Look at rewards.", 1, "Look at shop.", 2, "Cancel.", 3)) {
+            1 -> SlayerInterfaces.openInterface(access,npc!!.visType.internalName)
+            2 -> SlayerInterfaces.openInterface(access,npc!!.visType.internalName)
+        }
+    }
 
     private const val SLAYER_CAPE_LEVEL = 99
     private const val SLAYER_CAPE_PRICE = 99_000
@@ -57,7 +69,7 @@ object GenericDialogue {
         when (choice2("Yes, please.", 1, "No, thanks.", 2)) {
             1 -> {
                 chatPlayer(neutral, "Yes, please.")
-                assignNewTask(npcId) { taskName, count ->
+                assignNewTask(npc!!.visType.internalName) { taskName, count ->
                     SlayerTaskManager.setSlayerStreak(access, 0)
                     chatNpc(neutral, "Your new task is to kill $count $taskName.")
                 }

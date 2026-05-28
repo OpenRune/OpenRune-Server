@@ -5,17 +5,15 @@ import org.rsmod.content.slayer.slayerKonarIntroComplete
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.table.slayer.SlayerAreaRow
 import org.rsmod.api.table.slayer.SlayerTaskRow
-import org.rsmod.content.slayer.konar.KonarSlayerDialogueHelpers
+import org.rsmod.content.slayer.dialogue.KonarSlayerDialogueHelpers
 import org.rsmod.content.slayer.SlayerInterfaces
 import org.rsmod.content.slayer.core.SlayerTaskManager
 import org.rsmod.content.slayer.dialogue.SlayerMasterDialogue.RemoteMaster
 import org.rsmod.content.slayer.dialogue.SlayerMasterDialogue.chatMaster
 import org.rsmod.content.slayer.dialogue.SlayerAssignmentDialogue.assignNewTask
-import org.rsmod.content.slayer.rewards.SlayerRewardsManager
+import org.rsmod.content.slayer.rewards.SlayerRewardsPoints
 
 object KonarDialogue {
-
-    val konarNpcId = SlayerTaskManager.konarNpcId
 
     private const val COMBAT_LEVEL_REQ = 75
     private const val CANCEL_TASK_COST = 30
@@ -29,6 +27,24 @@ object KonarDialogue {
         }
         greeting()
         mainMenu()
+    }
+
+    suspend fun Dialogue.npcContactMenu() {
+        chatNpc(neutral, "'Ello, can I help you?")
+        when (
+            choice3(
+                "I need another assignment.",
+                1,
+                "Let's talk about the difficulty of my assignments.",
+                2,
+                "Err... Nothing...",
+                3,
+            )
+        ) {
+            1 -> needAnotherAssignment()
+            2 -> combatDifficulty()
+            3 -> chatPlayer(neutral, "Err... Nothing...")
+        }
     }
 
     suspend fun Dialogue.needAnotherAssignment() {
@@ -157,7 +173,7 @@ object KonarDialogue {
     }
 
     private suspend fun Dialogue.assignKonarTask() {
-        assignNewTask(konarNpcId) { _, count ->
+        assignNewTask("npc.slayer_master_8") { _, count ->
             val task = SlayerTaskManager.getCurrentSlayerTask(access) ?: return@assignNewTask
             val area = KonarSlayerDialogueHelpers.currentArea(access.player)
             konarAssignedDialogue(task, count, area)
@@ -233,7 +249,7 @@ object KonarDialogue {
 
     private suspend fun Dialogue.konarCancelNewTask() {
         chatPlayer(neutral, "Can I cancel that task?")
-        if (SlayerRewardsManager.spendPoints(access.player, CANCEL_TASK_COST)) {
+        if (SlayerRewardsPoints.spendPoints(access.player, CANCEL_TASK_COST)) {
             SlayerTaskManager.resetTask(access)
             chatNpc(neutral, "Your task has been cancelled.")
             chatPlayer(happy, "Okay, great!")
@@ -253,8 +269,8 @@ object KonarDialogue {
             "Those who serve the balance are always rewarded. I can grant these rewards. I can also grant you the equipment needed to serve the balance, for a price of course.",
         )
         when (choice3("Look at rewards.", 1, "Look at shop.", 2, "Cancel.", 3)) {
-            1 -> SlayerInterfaces.openSlayerRewards(access)
-            2 -> SlayerInterfaces.openSlayerEquipment(access)
+            1 -> SlayerInterfaces.openInterface(access, "npc.slayer_master_8")
+            2 -> SlayerInterfaces.openInterface(access, "npc.slayer_master_8")
         }
     }
 
@@ -295,7 +311,7 @@ object KonarDialogue {
             KonarSlayerDialogueHelpers.currentArea(access.player)
                 ?.let { KonarSlayerDialogueHelpers.areaShortName(it) }
                 ?: "the assigned location"
-        val points = SlayerRewardsManager.getPoints(access.player)
+        val points = SlayerRewardsPoints.getPoints(access.player)
         chatMaster(
             remote,
             neutral,
@@ -327,7 +343,7 @@ object KonarDialogue {
         chatPlayer(happy, "Great, thanks!")
     }
 
-    private suspend fun Dialogue.combatDifficulty() {
+    suspend fun Dialogue.combatDifficulty() {
         chatPlayer(neutral, "Let's talk about the difficulty of my assignments.")
         if (SlayerTaskManager.isCombatCheckEnabled(access)) {
             chatNpc(

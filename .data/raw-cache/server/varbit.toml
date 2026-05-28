@@ -529,3 +529,10 @@ id = "varbit.slayer_slaughter_charges"
 varp = "varp.slayer_dialogue_flags"
 startBit = 14
 endBit = 19
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.slayer_total_tasks_done"
+varp = "varp.slayer_last_count"
+startBit = 0
+endBit = 15

@@ -1,0 +1,34 @@
+[
+  {
+    "name": "Mourner Tunnels",
+    "areaId": "area.mourner_tunnels",
+    "levels": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "polygons": [
+      {
+        "vertices": [
+          {
+            "x": 1856,
+            "z": 4608
+          },
+          {
+            "x": 2047,
+            "z": 4608
+          },
+          {
+            "x": 2047,
+            "z": 4671
+          },
+          {
+            "x": 1856,
+            "z": 4671
+          }
+        ]
+      }
+    ]
+  }
+]

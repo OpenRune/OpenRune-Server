@@ -8,7 +8,6 @@ import org.rsmod.api.table.slayer.SlayerMastersRow
 import org.rsmod.api.table.slayer.SlayerTaskRow
 import org.rsmod.api.table.slayer.SlayerTaskSublistRow
 import org.rsmod.api.table.slayer.SlayerUnlockRow
-import org.rsmod.content.slayer.konar.KonarSlayerAreas
 import org.rsmod.game.entity.Player
 
 object SlayerBossTasks {
@@ -20,95 +19,105 @@ object SlayerBossTasks {
 
     private const val BOSS_REPLACE_DENOMINATOR = 16
 
-    val likeABossUnlockBit: Int by lazy { resolveLikeABossUnlockBit() }
+    private val EXCLUDED_BOSS_NAME_FRAGMENTS =
+        setOf("corporeal", "yama", "nightmare", "nex")
 
-    fun hasLikeABoss(access: ProtectedAccess): Boolean =
-        SlayerTaskManager.hasUnlockedReward(access, likeABossUnlockBit)
+    private val entriesByTaskId = SlayerTaskSublistRow.all().associateBy { it.task.id }
+    private val entriesBySubtableId = SlayerTaskSublistRow.all().groupBy { it.subtableId }
 
-    fun isBossTask(taskId: Int): Boolean = taskId in entryByTaskId
+    fun hasLikeABoss(access: ProtectedAccess): Boolean {
+        val rewardBit =
+            SlayerUnlockRow.all().firstOrNull { it.name == "Like a Boss" }?.bit ?: return false
+
+        return SlayerTaskManager.hasUnlockedReward(access, rewardBit)
+    }
+
+    fun isBossTask(taskId: Int): Boolean =
+        taskId in entriesByTaskId
 
     fun isExcludedBoss(task: SlayerTaskRow): Boolean =
-        EXCLUDED_BOSS_NAME_FRAGMENTS.any { fragment ->
-            task.nameLowercase.contains(fragment) || task.nameUppercase.contains(fragment, ignoreCase = true)
-        }
+        EXCLUDED_BOSS_NAME_FRAGMENTS.any(task.nameLowercase::contains)
 
-    fun supportsBossAssignment(master: SlayerMastersRow): Boolean =
-        master.masterId in DIRECT_BOSS_MASTER_IDS || SlayerTaskManager.isWildernessMaster(master)
+    fun eligibleBossTasks(
+        access: ProtectedAccess,
+        master: SlayerMastersRow,
+    ): List<SlayerMasterTaskRow> {
+        val player = access.player
+        val tasks = SlayerTaskManager.tasks[master].orEmpty()
 
-    fun rollBossTask(access: ProtectedAccess, master: SlayerMastersRow): SlayerMasterTaskRow? =
-        eligibleBossTasks(access, master).randomOrNull()
+        return tasks.filter { masterTask ->
+            val task = masterTask.task
 
-    fun eligibleBossTasks(access: ProtectedAccess, master: SlayerMastersRow): List<SlayerMasterTaskRow> {
-        val masterTasks = SlayerTaskManager.tasks[master].orEmpty()
-        return masterTasks.filter { masterTask ->
-            isBossTask(masterTask.task.id) &&
-                !isExcludedBoss(masterTask.task) &&
-                meetsBossRequirements(access.player, masterTask.task) &&
+            isBossTask(task.id) &&
+                !isExcludedBoss(task) &&
+                meetsBossRequirements(player, task) &&
                 meetsMasterBossRules(master, masterTask)
         }
     }
 
-    fun rollVariant(taskId: Int): Int {
-        val entry = entryByTaskId[taskId] ?: return taskId
-        val siblings = entriesBySubtable[entry.subtableId].orEmpty()
-        if (siblings.size <= 1) return taskId
-        return siblings.random().task.id
-    }
+    fun rollBossTask(
+        access: ProtectedAccess,
+        master: SlayerMastersRow,
+    ): SlayerMasterTaskRow? =
+        eligibleBossTasks(access, master).randomOrNull()
 
-    fun maxKillCount(task: SlayerTaskRow): Int =
-        if (task.nameLowercase.contains("barrows") || task.nameUppercase.contains("Barrows", ignoreCase = true)) {
-            BARROWS_MAX_KILL_COUNT
-        } else {
-            DEFAULT_MAX_KILL_COUNT
+    fun rollBossReplacement(
+        access: ProtectedAccess,
+        master: SlayerMastersRow,
+    ): SlayerMasterTaskRow? {
+        if (
+            !master.assignBosses ||
+            !hasLikeABoss(access) ||
+            SlayerTaskManager.isWildernessMaster(master) ||
+            Random.nextInt(BOSS_REPLACE_DENOMINATOR) != 0
+        ) {
+            return null
         }
 
-    fun rollBossReplacement(access: ProtectedAccess, master: SlayerMastersRow): SlayerMasterTaskRow? {
-        if (master.masterId !in BOSS_REPLACE_MASTER_IDS) return null
-        if (!hasLikeABoss(access)) return null
-        if (!supportsBossAssignment(master)) return null
-        if (Random.nextInt(BOSS_REPLACE_DENOMINATOR) != 0) return null
         return rollBossTask(access, master)
     }
 
-    fun meetsBossRequirements(player: Player, task: SlayerTaskRow): Boolean {
-        task.minComlevel?.let { minCombat ->
-            if (player.combatLevel < minCombat) return false
+    fun supportsBossAssignment(master: SlayerMastersRow): Boolean =
+        master.assignBosses || SlayerTaskManager.isWildernessMaster(master)
+
+
+    fun rollVariant(taskId: Int): Int {
+        val entry = entriesByTaskId[taskId] ?: return taskId
+        val siblings = entriesBySubtableId[entry.subtableId].orEmpty()
+
+        return siblings.randomOrNull()?.task?.id ?: taskId
+    }
+
+    fun maxKillCount(task: SlayerTaskRow): Int =
+        if ("barrows" in task.nameLowercase) BARROWS_MAX_KILL_COUNT else DEFAULT_MAX_KILL_COUNT
+
+    fun meetsBossRequirements(
+        player: Player,
+        task: SlayerTaskRow,
+    ): Boolean {
+        val meetsCombatRequirement = task.minComlevel?.let { player.combatLevel >= it } ?: true
+
+        if (!meetsCombatRequirement) {
+            return false
         }
-        if (task.minStatRequirementAny.isEmpty()) return true
-        return task.minStatRequirementAny.any { (reqLevel, statType) ->
-            player.statBase(statType.internalName) >= reqLevel
+
+        if (task.minStatRequirementAny.isEmpty()) {
+            return true
+        }
+
+        return task.minStatRequirementAny.any { (requiredLevel, statType) ->
+            player.statBase(statType.internalName) >= requiredLevel
         }
     }
 
-    private fun meetsMasterBossRules(master: SlayerMastersRow, masterTask: SlayerMasterTaskRow): Boolean {
-        if (!SlayerTaskManager.isWildernessMaster(master)) return true
-        return masterTask.areas.any { KonarSlayerAreas.isWildernessSlayerArea(it) }
-    }
-
-    private fun resolveLikeABossUnlockBit(): Int {
-        val row = SlayerUnlockRow.all().find { unlock ->
-            unlock.cost == LIKE_A_BOSS_COST &&
-                unlock.name.contains("boss", ignoreCase = true)
+    private fun meetsMasterBossRules(
+        master: SlayerMastersRow,
+        masterTask: SlayerMasterTaskRow,
+    ): Boolean {
+        if (!SlayerTaskManager.isWildernessMaster(master)) {
+            return true
         }
-        return row?.bit ?: SlayerUnlockRow.all()
-            .find { it.name.contains("Like a boss", ignoreCase = true) }
-            ?.bit ?: FALLBACK_LIKE_A_BOSS_BIT
+
+        return masterTask.areas.any(KonarSlayerAreas::isWildernessSlayerArea)
     }
-
-    private val entryByTaskId: Map<Int, SlayerTaskSublistRow> by lazy {
-        SlayerTaskSublistRow.all().associateBy { it.task.id }
-    }
-
-    private val entriesBySubtable: Map<Int, List<SlayerTaskSublistRow>> by lazy {
-        SlayerTaskSublistRow.all().groupBy { it.subtableId }
-    }
-
-    private val DIRECT_BOSS_MASTER_IDS = setOf(5, 6, 8)
-    private val BOSS_REPLACE_MASTER_IDS = setOf(5, 6)
-
-    private val EXCLUDED_BOSS_NAME_FRAGMENTS =
-        listOf("corporeal", "yama", "nightmare", "nex")
-
-    private const val LIKE_A_BOSS_COST = 200
-    private const val FALLBACK_LIKE_A_BOSS_BIT = 27
 }

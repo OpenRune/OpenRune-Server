@@ -2,7 +2,7 @@ package org.rsmod.content.slayer.dialogue
 
 import dev.openrune.types.enums.enum
 import org.rsmod.api.table.slayer.SlayerTaskRow
-import org.rsmod.content.slayer.konar.KonarSlayerDialogueHelpers
+import org.rsmod.content.slayer.dialogue.KonarSlayerDialogueHelpers
 import org.rsmod.game.entity.Player
 
 object SlayerTaskTips {

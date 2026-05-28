@@ -2,6 +2,7 @@
 slayer_masters=65518
 
 [gamevals.enum]
+slayer_toggleable_rewards=65475
 slayer_task_tips=65535
 
 [gamevals.param]
@@ -23,6 +24,7 @@ slayer_krystilia_edgeville_spawn_active=65463
 slayer_duradel_notes_received=65462
 slayer_task_tips=65461
 slayer_expeditious_charges=65460
+slayer_total_tasks_done=65459
 slayer_slaughter_charges=65457
 
 [gamevals.varp]

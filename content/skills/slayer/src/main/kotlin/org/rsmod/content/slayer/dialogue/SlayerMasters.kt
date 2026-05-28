@@ -5,14 +5,14 @@ import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.content.slayer.slayerDuradelNotesReceived
 import org.rsmod.content.slayer.dialogue.StandardSlayerDialogue.openMain
 
-/** Task-master and NPC ids for slayer dialogue routing. */
 object SlayerMasters {
-    /** Quest gates assumed complete until real quest varbits exist. */
+
     private const val PORCINE_OF_INTEREST_COMPLETE = true
     private const val WHILE_GUTHIX_SLEEPS_ACTIVE = true
     private const val WHILE_GUTHIX_SLEEPS_COMPLETE = true
     private const val AYA_TURAEL_PASSED_AWAY = true
     private const val MONKEY_MADNESS_II_COMPLETE = true
+
     const val TASK_TURAEL = 1
     const val TASK_MAZCHNA = 2
     const val TASK_VANNAKA = 3

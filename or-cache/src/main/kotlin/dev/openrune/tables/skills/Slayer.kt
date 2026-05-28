@@ -11,6 +11,7 @@ object Slayer {
     const val COL_COMBAT_LEVEL = 3
     const val COL_POINTS_PER_TASK = 4
     const val COL_BLOCK_VARBITS = 5
+    const val COL_CAN_ASSIGN_BOSSES = 6
 
     fun masters() = dbTable("dbtable.slayer_masters",serverOnly = true) {
         column("master_id", COL_MASTER_ID, VarType.INT)
@@ -19,6 +20,7 @@ object Slayer {
         column("combat_level", COL_COMBAT_LEVEL, VarType.INT)
         column("points_per_task", COL_POINTS_PER_TASK, VarType.INT)
         column("block_varbits", COL_BLOCK_VARBITS, VarType.INT)
+        column("assign_bosses", COL_CAN_ASSIGN_BOSSES, VarType.BOOLEAN)
 
         row("dbrow.turael_aya") {
             column(COL_MASTER_ID, 1)
@@ -32,8 +34,10 @@ object Slayer {
                 "varbit.slayer_blocked_turael_3",
                 "varbit.slayer_blocked_turael_4",
                 "varbit.slayer_blocked_turael_5",
-                "varbit.slayer_blocked_turael_6"
+                "varbit.slayer_blocked_turael_6",
+                "varbit.slayer_blocked_turael_diary"
             )
+            column(COL_CAN_ASSIGN_BOSSES, false)
         }
 
         row("dbrow.spira") {
@@ -48,8 +52,10 @@ object Slayer {
                 "varbit.slayer_blocked_turael_3",
                 "varbit.slayer_blocked_turael_4",
                 "varbit.slayer_blocked_turael_5",
-                "varbit.slayer_blocked_turael_6"
+                "varbit.slayer_blocked_turael_6",
+                "varbit.slayer_blocked_turael_diary"
             )
+            column(COL_CAN_ASSIGN_BOSSES, false)
         }
 
         row("dbrow.krystilia") {
@@ -64,8 +70,10 @@ object Slayer {
                 "varbit.slayer_blocked_krystilia_3",
                 "varbit.slayer_blocked_krystilia_4",
                 "varbit.slayer_blocked_krystilia_5",
-                "varbit.slayer_blocked_krystilia_6"
+                "varbit.slayer_blocked_krystilia_6",
+                "varbit.slayer_blocked_krystilia_diary"
             )
+            column(COL_CAN_ASSIGN_BOSSES, false)
         }
 
         row("dbrow.mazchna_achtryn") {
@@ -80,8 +88,10 @@ object Slayer {
                 "varbit.slayer_blocked_mazchna_3",
                 "varbit.slayer_blocked_mazchna_4",
                 "varbit.slayer_blocked_mazchna_5",
-                "varbit.slayer_blocked_mazchna_6"
+                "varbit.slayer_blocked_mazchna_6",
+                "varbit.slayer_blocked_mazchna_diary"
             )
+            column(COL_CAN_ASSIGN_BOSSES, false)
         }
 
         row("dbrow.vannaka") {
@@ -96,8 +106,10 @@ object Slayer {
                 "varbit.slayer_blocked_vannaka_3",
                 "varbit.slayer_blocked_vannaka_4",
                 "varbit.slayer_blocked_vannaka_5",
-                "varbit.slayer_blocked_vannaka_6"
+                "varbit.slayer_blocked_vannaka_6",
+                "varbit.slayer_blocked_vannaka_diary"
             )
+            column(COL_CAN_ASSIGN_BOSSES, false)
         }
 
         row("dbrow.chaeldar") {
@@ -112,8 +124,10 @@ object Slayer {
                 "varbit.slayer_blocked_chaeldar_3",
                 "varbit.slayer_blocked_chaeldar_4",
                 "varbit.slayer_blocked_chaeldar_5",
-                "varbit.slayer_blocked_chaeldar_6"
+                "varbit.slayer_blocked_chaeldar_6",
+                "varbit.slayer_blocked_chaeldar_diary"
             )
+            column(COL_CAN_ASSIGN_BOSSES, false)
         }
 
         row("dbrow.konar") {
@@ -128,8 +142,10 @@ object Slayer {
                 "varbit.slayer_blocked_konar_3",
                 "varbit.slayer_blocked_konar_4",
                 "varbit.slayer_blocked_konar_5",
-                "varbit.slayer_blocked_konar_6"
+                "varbit.slayer_blocked_konar_6",
+                "varbit.slayer_blocked_konar_diary"
             )
+            column(COL_CAN_ASSIGN_BOSSES, true)
         }
 
         row("dbrow.nieve_steve") {
@@ -144,8 +160,10 @@ object Slayer {
                 "varbit.slayer_blocked_nieve_3",
                 "varbit.slayer_blocked_nieve_4",
                 "varbit.slayer_blocked_nieve_5",
-                "varbit.slayer_blocked_nieve_6"
+                "varbit.slayer_blocked_nieve_6",
+                "varbit.slayer_blocked_nieve_diary"
             )
+            column(COL_CAN_ASSIGN_BOSSES, true)
         }
 
         row("dbrow.duradel_kuradal") {
@@ -160,8 +178,10 @@ object Slayer {
                 "varbit.slayer_blocked_duradel_3",
                 "varbit.slayer_blocked_duradel_4",
                 "varbit.slayer_blocked_duradel_5",
-                "varbit.slayer_blocked_duradel_6"
+                "varbit.slayer_blocked_duradel_6",
+                "varbit.slayer_blocked_duradel_diary"
             )
+            column(COL_CAN_ASSIGN_BOSSES, true)
         }
 
     }
