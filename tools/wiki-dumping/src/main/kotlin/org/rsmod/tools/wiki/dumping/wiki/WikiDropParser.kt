@@ -883,6 +883,8 @@ object WikiDropParser {
                 match.groupValues[2]
             }
         text = text.replace(Regex("""\[\[([^\]]+)]]""")) { match -> match.groupValues[1] }
+        text = text.replace(Regex("""\[\[([^\]]+)$""")) { match -> match.groupValues[1] }
+        text = text.replace("[[", "").replace("]]", "")
         text = text.replace(Regex("""\s+"""), " ").trim()
         return text
     }

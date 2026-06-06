@@ -11,6 +11,7 @@ import org.rsmod.api.droptable.dropRollable
 import org.rsmod.content.drops.tables.shared.SharedDropTables
 import org.rsmod.api.droptable.DropRollItem
 import org.rsmod.content.drops.brimstoneKeyRoll
+import org.rsmod.content.drops.clueScrollTransformObj
 import org.rsmod.api.droptable.RegisterDropTable
 import org.rsmod.game.entity.Player
 
@@ -52,10 +53,8 @@ public val wyrmDropTable: RSDropTable<Player, DropRollItem> = RSDropTable(
     },
     tertiaries = rsPlayerTertiaryTable {
         onBuilder { brimstoneKeyRoll(konarTaskBonus = true) }
-        // Drops Need Manual (rate): The hard clue scroll drop rate increases to 1/243 after unlocking the hard Combat Achievements rewards tier.
-        1 outOf 256 weight "obj.trail_clue_hard_map001" count 1 transformObj { player ->
-            // Drops Need Manual (item): Clue scrolls will drop as scroll boxes after the completion of X Marks the Spot.
-             null
+        1 outOf 243 weight "obj.trail_clue_hard_map001" count 1 transformObj { player ->
+             player.clueScrollTransformObj("obj.trail_clue_hard_map001")
         }
     },
 )

@@ -1,0 +1,6 @@
+id = "Lesser demon (Melzar's Maze) Drops"
+npcs = ["npc.dragonslayer_demon"]
+
+[[guaranteed]]
+obj = "obj.greenkey"
+count = 1

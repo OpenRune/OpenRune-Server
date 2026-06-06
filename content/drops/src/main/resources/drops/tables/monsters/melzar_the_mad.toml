@@ -1,0 +1,6 @@
+id = "Melzar the Mad Drops"
+npcs = ["npc.melzar_the_mad"]
+
+[[guaranteed]]
+obj = "obj.magentakey"
+count = 1

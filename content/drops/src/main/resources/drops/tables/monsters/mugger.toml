@@ -1,0 +1,86 @@
+id = "Mugger Drops"
+npcs = ["npc.mugger", "npc.jail_mugger", "npc.zeah_mugger", "npc.varlamore_mugger"]
+
+[main]
+total = 128
+name = "Mugger Drops"
+
+[[main.entries]]
+weight = 27
+obj = "obj.bolt"
+count = "2..12"
+
+[[main.entries]]
+weight = 3
+obj = "obj.mindrune"
+count = 9
+
+[[main.entries]]
+weight = 2
+obj = "obj.waterrune"
+count = 6
+
+[[main.entries]]
+weight = 2
+obj = "obj.earthrune"
+count = 5
+
+[[main.entries]]
+weight = 12
+obj = "obj.coins"
+count = 5
+
+[[main.entries]]
+weight = 3
+obj = "obj.coins"
+count = 15
+
+[[main.entries]]
+weight = 1
+obj = "obj.coins"
+count = 25
+
+[[main.entries]]
+weight = 40
+obj = "obj.rope"
+count = 1
+
+[[main.entries]]
+weight = 13
+nothing = true
+
+[[main.entries]]
+weight = 1
+obj = "obj.knife"
+count = 1
+
+[[main.entries]]
+weight = 6
+obj = "obj.fishing_bait"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.copper_ore"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.bronze_med_helm"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.cabbage"
+count = 1
+
+[[main.entries]]
+weight = 13
+shared = "herb"
+
+[[tertiary]]
+numerator = 1
+denominator = 80
+obj = "obj.trail_clue_beginner"
+count = 1
+clue_scroll_box = true

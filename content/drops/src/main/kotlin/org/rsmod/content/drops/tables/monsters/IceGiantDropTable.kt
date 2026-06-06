@@ -11,6 +11,7 @@ import org.rsmod.api.droptable.DropRollItem
 import org.rsmod.content.drops.shouldDropLootingBag
 import org.rsmod.content.drops.hasCompletedQuest
 import org.rsmod.content.drops.isOnQuest
+import org.rsmod.content.drops.clueScrollTransformObj
 import org.rsmod.api.droptable.nothing
 import org.rsmod.api.droptable.RegisterDropTable
 import org.rsmod.game.entity.Player
@@ -64,8 +65,7 @@ public val iceGiantDropTable: RSDropTable<Player, DropRollItem> = RSDropTable(
         1 outOf 5013 weight "obj.dorgesh_construction_bone_curved" count 1
         1 outOf 1026 weight "obj.varlamore_key_half_1" count 1
         1 outOf 40 weight "obj.trail_clue_beginner" count 1 transformObj { player ->
-            // Drops Need Manual (item): Clue scrolls will drop as scroll boxes after the completion of X Marks the Spot.
-             null
+             player.clueScrollTransformObj("obj.trail_clue_beginner")
         }
     },
 )

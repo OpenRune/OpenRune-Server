@@ -1,0 +1,12 @@
+id = "Crystalline Spider Drops"
+npcs = ["npc.crystal_spider"]
+
+[[guaranteed]]
+obj = "obj.gauntlet_crystal_shard"
+count = "10..30"
+
+
+# Unknown wiki drop rate: Raw paddlefish [main/Materials/Common]
+# Unknown wiki drop rate: Grym leaf [main/Materials/Common]
+# Unknown wiki drop rate: Weapon frame [main/Materials/Common]
+# Unknown wiki drop rate: Teleport crystal (The Gauntlet) [main/Other/Uncommon]

@@ -1,0 +1,13 @@
+id = "Magic axe Drops"
+npcs = ["npc.magicaxe", "npc.kourend_magicaxe"]
+
+[[guaranteed]]
+obj = "obj.iron_battleaxe"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 3
+obj = "obj.looting_bag"
+count = 1
+should_drop_looting_bag = true

@@ -1,0 +1,10 @@
+id = "Bat Drops"
+npcs = ["npc.small_bat", "npc.small_bat_outdoors", "npc.small_bat_outdoors_lowwander"]
+
+[[tertiary]]
+numerator = 1
+denominator = 4
+obj = "obj.rag_bat_bone"
+count = 1
+quest = "quest_ragandboneman2"
+quest_mode = "during"

@@ -1,0 +1,18 @@
+id = "Tower Archer West (level 64)"
+npcs = ["npc.guild_towerarcher4"]
+
+[main]
+total = 100
+name = "Tower Archer West (level 64)"
+
+[[main.entries]]
+weight = 8
+obj = "obj.adamant_arrow"
+count = 1
+
+[[main.entries]]
+weight = 92
+nothing = true
+
+
+# Main table pool padding uses a nothing roll (F2P drops removed and/or subtable access missing from wiki parse) (92 weight)

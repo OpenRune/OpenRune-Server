@@ -1,0 +1,149 @@
+id = "Choke devil Drops"
+npcs = ["npc.superior_dustdevil"]
+
+[[guaranteed]]
+obj = "obj.konar_key"
+count = 1
+should_drop_brimstone_key = true
+
+[main]
+total = 128
+name = "Choke devil Drops"
+
+[[main.entries]]
+weight = 3
+obj = "obj.adamant_axe"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.rune_dagger"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.red_dragon_vambraces"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.black_dragon_vambraces"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.air_battlestaff"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.earth_battlestaff"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.mystic_air_staff"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.mystic_earth_staff"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.dragon_dagger"
+count = 1
+
+[[main.entries]]
+weight = 10
+obj = "obj.dustrune"
+count = 200
+
+[[main.entries]]
+weight = 10
+obj = "obj.earthrune"
+count = 300
+
+[[main.entries]]
+weight = 10
+obj = "obj.firerune"
+count = 300
+
+[[main.entries]]
+weight = 1
+obj = "obj.firerune"
+count = 50
+
+[[main.entries]]
+weight = 7
+obj = "obj.chaosrune"
+count = 80
+
+[[main.entries]]
+weight = 5
+obj = "obj.rune_arrow"
+count = 12
+
+[[main.entries]]
+weight = 4
+obj = "obj.soulrune"
+count = 20
+
+[[main.entries]]
+weight = 1
+obj = "obj.soulrune"
+count = 50
+
+[[main.entries]]
+weight = 32
+obj = "obj.coins"
+count = "2000..4000"
+
+[[main.entries]]
+weight = 2
+obj = "obj.ugthanki_kebab"
+count = 4
+
+[[main.entries]]
+weight = 3
+obj = "obj.cert_mithril_bar"
+count = 10
+
+[[main.entries]]
+weight = 1
+obj = "obj.cert_adamantite_bar"
+count = 4
+
+[[main.entries]]
+weight = 8
+shared = "herb"
+
+[[main.entries]]
+weight = 8
+shared = "gem"
+
+[[main.entries]]
+weight = 11
+nothing = true
+
+[[main.separate_rolls]]
+numerator = 1
+denominator = 4000
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.dust_battlestaff"
+count = 1
+
+[[main.separate_rolls]]
+numerator = 1
+denominator = 32768
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.dragon_chainbody"
+count = 1
+
+
+# Main table pool padding uses a nothing roll (F2P drops removed and/or subtable access missing from wiki parse) (11 weight)

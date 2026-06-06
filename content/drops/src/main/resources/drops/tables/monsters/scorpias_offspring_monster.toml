@@ -1,0 +1,22 @@
+id = "Scorpia's offspring (monster) Drops"
+npcs = ["npc.scorpia_minion"]
+
+[[tertiary]]
+numerator = 1
+denominator = 10
+obj = "obj.looting_bag"
+count = 1
+should_drop_looting_bag = true
+
+[[tertiary]]
+numerator = 1
+denominator = 25
+obj = "obj.arceuus_corpse_scorpion"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 100
+obj = "obj.trail_clue_beginner"
+count = 1
+clue_scroll_box = true

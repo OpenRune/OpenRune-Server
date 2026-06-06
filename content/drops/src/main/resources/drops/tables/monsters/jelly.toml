@@ -1,0 +1,221 @@
+id = "Jelly Drops"
+npcs = ["npc.slayer_jelly_1", "npc.slayer_jelly_2", "npc.slayer_jelly_3", "npc.slayer_jelly_4", "npc.slayer_jelly_5", "npc.slayer_jelly_6", "npc.wild_cave_jelly_1", "npc.wild_cave_jelly_2", "npc.wild_cave_jelly_3", "npc.wild_cave_jelly_4", "npc.wild_cave_jelly_5"]
+brimstone_key_roll = true
+brimstone_key_roll_konar_bonus = true
+
+[main]
+total = 133
+name = "Jelly Drops"
+
+[[main.entries]]
+weight = 11
+obj = "obj.steel_battleaxe"
+count = 1
+
+[[main.entries]]
+weight = 7
+obj = "obj.steel_2h_sword"
+count = 1
+
+[[main.entries]]
+weight = 3
+obj = "obj.steel_axe"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.mithril_kiteshield"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.mithril_armoured_boots"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.rune_full_helm"
+count = 1
+
+[[main.entries]]
+weight = 39
+obj = "obj.coins"
+count = 102
+
+[[main.entries]]
+weight = 30
+obj = "obj.coins"
+count = 44
+
+[[main.entries]]
+weight = 10
+obj = "obj.coins"
+count = 220
+
+[[main.entries]]
+weight = 7
+obj = "obj.coins"
+count = 11
+
+[[main.entries]]
+weight = 2
+obj = "obj.coins"
+count = 460
+
+[[main.entries]]
+weight = 5
+obj = "obj.chaosrune"
+count = 15
+
+[[main.entries]]
+weight = 3
+obj = "obj.deathrune"
+count = 5
+
+[[main.entries]]
+weight = 2
+obj = "obj.gold_bar"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.thread"
+count = 10
+
+[[main.entries]]
+weight = 4
+shared = "gem"
+
+[[main.entries]]
+weight = 5
+shared = "gem"
+
+[[main.separate_rolls]]
+numerator = 11
+denominator = 64
+
+[[main.separate_rolls.entries]]
+weight = 11
+obj = "obj.adamant_battleaxe"
+count = 1
+
+[[main.separate_rolls]]
+numerator = 5
+denominator = 64
+
+[[main.separate_rolls.entries]]
+weight = 5
+obj = "obj.black_2h_sword"
+count = 1
+
+[[main.separate_rolls]]
+numerator = 3
+denominator = 64
+
+[[main.separate_rolls.entries]]
+weight = 3
+obj = "obj.adamant_axe"
+count = 1
+
+[[main.separate_rolls]]
+numerator = 2
+denominator = 64
+
+[[main.separate_rolls.entries]]
+weight = 2
+obj = "obj.adamant_2h_sword"
+count = 1
+
+[[main.separate_rolls.entries]]
+weight = 2
+obj = "obj.mithril_armoured_boots"
+count = 1
+
+[[main.separate_rolls.entries]]
+weight = 2
+obj = "obj.rune_kiteshield"
+count = 1
+
+[[main.separate_rolls]]
+numerator = 1
+denominator = 64
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.rune_full_helm"
+count = 1
+
+[[main.separate_rolls]]
+numerator = 5
+denominator = 64
+
+[[main.separate_rolls.entries]]
+weight = 5
+obj = "obj.chaosrune"
+count = 45
+
+[[main.separate_rolls]]
+numerator = 3
+denominator = 64
+
+[[main.separate_rolls.entries]]
+weight = 3
+obj = "obj.deathrune"
+count = 15
+
+[[main.separate_rolls]]
+numerator = 21
+denominator = 64
+
+[[main.separate_rolls.entries]]
+weight = 21
+obj = "obj.coins"
+count = 1000
+
+[[main.separate_rolls]]
+numerator = 2
+denominator = 64
+
+[[main.separate_rolls.entries]]
+weight = 2
+obj = "obj.gold_bar"
+count = 1
+
+[[main.separate_rolls]]
+numerator = 1
+denominator = 64
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.thread"
+count = 10
+
+[[tertiary]]
+numerator = 1
+denominator = 121
+obj = "obj.trail_clue_hard_map001"
+count = 1
+clue_scroll_box = true
+
+[[tertiary]]
+numerator = 1
+denominator = 3
+obj = "obj.looting_bag"
+count = 1
+should_drop_looting_bag = true
+
+[[tertiary]]
+numerator = 1
+denominator = 60
+obj = "obj.trail_clue_hard_map001"
+count = 1
+clue_scroll_box = true
+exclude_ring_of_wealth = true
+
+[[tertiary]]
+numerator = 1
+denominator = 32
+obj = "obj.trail_clue_hard_map001"
+count = 1
+clue_scroll_box = true
+require_ring_of_wealth = true

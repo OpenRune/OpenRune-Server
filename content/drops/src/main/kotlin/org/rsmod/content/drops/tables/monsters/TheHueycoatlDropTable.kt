@@ -7,6 +7,7 @@ import org.rsmod.api.droptable.rsPlayerGuaranteedTable
 import org.rsmod.api.droptable.rsPlayerTertiaryTable
 import org.rsmod.api.droptable.rsPlayerWeightedTable
 import org.rsmod.api.droptable.DropRollItem
+import org.rsmod.content.drops.clueScrollTransformObj
 import org.rsmod.api.droptable.RegisterDropTable
 import org.rsmod.game.entity.Player
 
@@ -52,10 +53,8 @@ public val theHueycoatlDropTable: RSDropTable<Player, DropRollItem> = RSDropTabl
         1 outOf 75 weight "obj.varlamore_key_half_1" count 1
         // Drops Need Manual (rate): The base rate of 1/400 is scaled by personal contribution to the kill.
         1 outOf 400 weight "obj.hueypet" count 1
-        // Drops Need Manual (rate): The hard clue scroll drop rate increases to 1/47 after unlocking the hard Combat Achievements rewards tier.
-        1 outOf 50 weight "obj.trail_clue_hard_map001" count 1 transformObj { player ->
-            // Drops Need Manual (item): Clue scrolls will drop as scroll boxes after the completion of X Marks the Spot.
-             null
+        1 outOf 47 weight "obj.trail_clue_hard_map001" count 1 transformObj { player ->
+             player.clueScrollTransformObj("obj.trail_clue_hard_map001")
         }
     },
 )

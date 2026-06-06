@@ -1,0 +1,10 @@
+id = "Disciple of Iban Drops"
+npcs = ["npc.ibanmonk_vis"]
+
+[[guaranteed]]
+obj = "obj.zamrobetop"
+count = 1
+
+[[guaranteed]]
+obj = "obj.zamrobebottom"
+count = 1

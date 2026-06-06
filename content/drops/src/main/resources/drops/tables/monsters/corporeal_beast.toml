@@ -1,0 +1,189 @@
+id = "Corporeal Beast Drops"
+npcs = ["npc.corp_beast"]
+
+[main]
+total = 512
+name = "Corporeal Beast Drops"
+
+[[main.entries]]
+weight = 18
+obj = "obj.mystic_robe_top"
+count = 1
+
+[[main.entries]]
+weight = 18
+obj = "obj.mystic_robe_bottom"
+count = 1
+
+[[main.entries]]
+weight = 12
+obj = "obj.mystic_air_staff"
+count = 1
+
+[[main.entries]]
+weight = 12
+obj = "obj.mystic_water_staff"
+count = 1
+
+[[main.entries]]
+weight = 12
+obj = "obj.mystic_earth_staff"
+count = 1
+
+[[main.entries]]
+weight = 12
+obj = "obj.mystic_fire_staff"
+count = 1
+
+[[main.entries]]
+weight = 8
+obj = "obj.spirit_shield"
+count = 1
+
+[[main.entries]]
+weight = 32
+obj = "obj.soulrune"
+count = 250
+
+[[main.entries]]
+weight = 24
+obj = "obj.xbows_crossbow_bolts_runite"
+count = 250
+
+[[main.entries]]
+weight = 22
+obj = "obj.deathrune"
+count = 300
+
+[[main.entries]]
+weight = 20
+obj = "obj.xbows_crossbow_bolts_runite_tipped_onyx_enchanted"
+count = 175
+
+[[main.entries]]
+weight = 17
+obj = "obj.mcannonball"
+count = 2000
+
+[[main.entries]]
+weight = 17
+obj = "obj.adamant_arrow"
+count = 750
+
+[[main.entries]]
+weight = 17
+obj = "obj.lawrune"
+count = 250
+
+[[main.entries]]
+weight = 17
+obj = "obj.cosmicrune"
+count = 500
+
+[[main.entries]]
+weight = 21
+obj = "obj.cert_raw_shark"
+count = 70
+
+[[main.entries]]
+weight = 21
+obj = "obj.cert_blankrune_high"
+count = 2500
+
+[[main.entries]]
+weight = 18
+obj = "obj.cert_adamantite_bar"
+count = 35
+
+[[main.entries]]
+weight = 18
+obj = "obj.cert_dragonhide_green"
+count = 100
+
+[[main.entries]]
+weight = 17
+obj = "obj.cert_adamantite_ore"
+count = 125
+
+[[main.entries]]
+weight = 12
+obj = "obj.cert_runite_ore"
+count = 20
+
+[[main.entries]]
+weight = 12
+obj = "obj.cert_plank_teak"
+count = 100
+
+[[main.entries]]
+weight = 12
+obj = "obj.cert_mahogany_logs"
+count = 150
+
+[[main.entries]]
+weight = 12
+obj = "obj.cert_magic_logs"
+count = 75
+
+[[main.entries]]
+weight = 20
+obj = "obj.potato_tuna+sweetcorn"
+count = 30
+
+[[main.entries]]
+weight = 17
+obj = "obj.cert_white_berries"
+count = 120
+
+[[main.entries]]
+weight = 17
+obj = "obj.cert_desert_goat_horn"
+count = 120
+
+[[main.entries]]
+weight = 15
+obj = "obj.watermelon_seed"
+count = 24
+
+[[main.entries]]
+weight = 12
+obj = "obj.coins"
+count = "20000..50000"
+
+[[main.entries]]
+weight = 10
+obj = "obj.cert_antidote++4"
+count = 40
+
+[[main.entries]]
+weight = 5
+obj = "obj.ranarr_seed"
+count = 10
+
+[[main.entries]]
+weight = 3
+obj = "obj.holy_elixir"
+count = 1
+
+[[main.entries]]
+weight = 12
+shared = "gem"
+
+[[tertiary]]
+numerator = 1
+denominator = 1000
+obj = "obj.jar_of_spirits"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 5000
+obj = "obj.corepet"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 190
+obj = "obj.trail_elite_emote_exp1"
+count = 1
+clue_scroll_box = true

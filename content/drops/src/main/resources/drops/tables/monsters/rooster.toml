@@ -1,0 +1,31 @@
+id = "Rooster Drops"
+npcs = ["npc.rooster", "npc.misc_rooster"]
+
+[[guaranteed]]
+obj = "obj.raw_chicken"
+count = 1
+
+[main]
+total = 128
+name = "Rooster Drops"
+
+[[main.entries]]
+weight = 64
+obj = "obj.feather"
+count = 5
+
+[[main.entries]]
+weight = 32
+obj = "obj.feather"
+count = 15
+
+[[main.entries]]
+weight = 32
+nothing = true
+
+[[tertiary]]
+numerator = 1
+denominator = 300
+obj = "obj.trail_clue_beginner"
+count = 1
+clue_scroll_box = true

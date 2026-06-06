@@ -1,0 +1,110 @@
+id = "Soldier (Yanille) Drops"
+npcs = ["npc.yanille_soldier"]
+
+[main]
+total = 128
+name = "Soldier (Yanille) Drops"
+
+[[main.entries]]
+weight = 6
+obj = "obj.steel_longsword"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.steel_med_helm"
+count = 1
+
+[[main.entries]]
+weight = 5
+obj = "obj.bronze_arrow"
+count = 4
+
+[[main.entries]]
+weight = 4
+obj = "obj.steel_arrow"
+count = 2
+
+[[main.entries]]
+weight = 2
+obj = "obj.airrune"
+count = 8
+
+[[main.entries]]
+weight = 2
+obj = "obj.earthrune"
+count = 4
+
+[[main.entries]]
+weight = 2
+obj = "obj.firerune"
+count = 6
+
+[[main.entries]]
+weight = 1
+obj = "obj.chaosrune"
+count = 3
+
+[[main.entries]]
+weight = 1
+obj = "obj.bloodrune"
+count = 2
+
+[[main.entries]]
+weight = 1
+obj = "obj.naturerune"
+count = 2
+
+[[main.entries]]
+weight = 1
+obj = "obj.steel_arrow"
+count = 8
+
+[[main.entries]]
+weight = 37
+obj = "obj.coins"
+count = 9
+
+[[main.entries]]
+weight = 16
+obj = "obj.coins"
+count = 8
+
+[[main.entries]]
+weight = 9
+obj = "obj.coins"
+count = 24
+
+[[main.entries]]
+weight = 8
+obj = "obj.coins"
+count = 6
+
+[[main.entries]]
+weight = 4
+obj = "obj.coins"
+count = 30
+
+[[main.entries]]
+weight = 4
+obj = "obj.coins"
+count = 12
+
+[[main.entries]]
+weight = 2
+obj = "obj.coins"
+count = 35
+
+[[main.entries]]
+weight = 18
+nothing = true
+
+[[main.entries]]
+weight = 3
+obj = "obj.mind_talisman"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.iron_ore"
+count = 1

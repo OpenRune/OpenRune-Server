@@ -1,0 +1,97 @@
+id = "Elder custodian stalker Drops"
+npcs = ["npc.elder_custodian_stalker"]
+
+[main]
+total = 124
+name = "Elder custodian stalker Drops"
+
+[[main.entries]]
+weight = 15
+obj = "obj.mcannonball"
+count = "20..30"
+
+[[main.entries]]
+weight = 12
+obj = "obj.airrune"
+count = 200
+
+[[main.entries]]
+weight = 12
+obj = "obj.firerune"
+count = 150
+
+[[main.entries]]
+weight = 12
+obj = "obj.rune_arrow"
+count = "20..35"
+
+[[main.entries]]
+weight = 6
+obj = "obj.deathrune"
+count = "40..50"
+
+[[main.entries]]
+weight = 12
+obj = "obj.shark"
+count = "2..3"
+
+[[main.entries]]
+weight = 12
+obj = "obj.cert_blankrune_high"
+count = 30
+
+[[main.entries]]
+weight = 6
+obj = "obj.cert_mithril_bar"
+count = "10..15"
+
+[[main.entries]]
+weight = 4
+obj = "obj.custodian_broken_antler"
+count = 1
+
+[[main.entries]]
+weight = 4
+obj = "obj.raw_beef"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.huasca_seed"
+count = "2..3"
+
+[[main.entries]]
+weight = 19
+obj = "obj.coins"
+count = "1180..1300"
+
+[[main.entries]]
+weight = 2
+obj = "obj.alchemist_ring"
+count = 1
+
+[[main.entries]]
+weight = 1
+shared = "rareDrop"
+
+[[main.entries]]
+weight = 6
+shared = "gem"
+
+[[tertiary]]
+numerator = 1
+denominator = 650
+obj = "obj.custodian_antler_guard"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 400
+obj = "obj.dorgesh_construction_bone"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 5013
+obj = "obj.dorgesh_construction_bone_curved"
+count = 1

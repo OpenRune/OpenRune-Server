@@ -1,0 +1,120 @@
+id = "Ice troll grunt Drops"
+npcs = ["npc.fris_troll_bodyguard", "npc.fris_troll_bodyguard_pc"]
+
+[main]
+total = 128
+name = "Ice troll grunt Drops"
+
+[[main.entries]]
+weight = 10
+obj = "obj.adamant_full_helm"
+count = 1
+
+[[main.entries]]
+weight = 10
+obj = "obj.steel_platebody"
+count = 1
+
+[[main.entries]]
+weight = 5
+obj = "obj.mithril_warhammer"
+count = 1
+
+[[main.entries]]
+weight = 5
+obj = "obj.adamant_axe"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.rune_kiteshield"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.granite_shield"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.rune_warhammer"
+count = 1
+
+[[main.entries]]
+weight = 10
+obj = "obj.earthrune"
+count = "8..14"
+
+[[main.entries]]
+weight = 10
+obj = "obj.earthrune"
+count = "12..36"
+
+[[main.entries]]
+weight = 5
+obj = "obj.naturerune"
+count = "4..12"
+
+[[main.entries]]
+weight = 5
+obj = "obj.lawrune"
+count = "4..8"
+
+[[main.entries]]
+weight = 20
+obj = "obj.coins"
+count = 200
+
+[[main.entries]]
+weight = 10
+obj = "obj.cert_raw_shark"
+count = "2..8"
+
+[[main.entries]]
+weight = 10
+obj = "obj.cert_seaweed"
+count = "3..9"
+
+[[main.entries]]
+weight = 10
+obj = "obj.cert_ball_of_wool"
+count = "18..42"
+
+[[main.entries]]
+weight = 2
+shared = "herb"
+
+[[main.entries]]
+weight = 1
+shared = "gem"
+
+[[main.entries]]
+weight = 11
+nothing = true
+
+[[tertiary]]
+numerator = 1
+denominator = 14
+obj = "obj.cert_arctic_pine_log"
+count = "2..4"
+
+[[tertiary]]
+numerator = 1
+denominator = 20
+obj = "obj.arceuus_corpse_troll"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 400
+obj = "obj.dorgesh_construction_bone"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 5013
+obj = "obj.dorgesh_construction_bone_curved"
+count = 1
+
+
+# Main table pool padding uses a nothing roll (F2P drops removed and/or subtable access missing from wiki parse) (11 weight)

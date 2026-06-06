@@ -1,0 +1,75 @@
+id = "Water elemental Drops"
+npcs = ["npc.elemental_water"]
+
+[[guaranteed]]
+obj = "obj.vial_water"
+count = 1
+
+[main]
+total = 128
+name = "Water elemental Drops"
+
+[[main.entries]]
+weight = 13
+obj = "obj.waterrune"
+count = 15
+
+[[main.entries]]
+weight = 9
+obj = "obj.naturerune"
+count = 2
+
+[[main.entries]]
+weight = 7
+obj = "obj.chaosrune"
+count = 2
+
+[[main.entries]]
+weight = 6
+obj = "obj.lawrune"
+count = 1
+
+[[main.entries]]
+weight = 4
+obj = "obj.deathrune"
+count = 1
+
+[[main.entries]]
+weight = 3
+obj = "obj.waterrune"
+count = 20
+
+[[main.entries]]
+weight = 1
+obj = "obj.bloodrune"
+count = 1
+
+[[main.entries]]
+weight = 36
+obj = "obj.coins"
+count = 12
+
+[[main.entries]]
+weight = 3
+obj = "obj.coins"
+count = 42
+
+[[main.entries]]
+weight = 2
+obj = "obj.staff_of_water"
+count = 1
+
+[[main.entries]]
+weight = 14
+shared = "herb"
+
+[[main.entries]]
+weight = 2
+shared = "gem"
+
+[[main.entries]]
+weight = 28
+nothing = true
+
+
+# Main table pool padding uses a nothing roll (F2P drops removed and/or subtable access missing from wiki parse) (28 weight)

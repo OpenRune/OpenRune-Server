@@ -1,0 +1,14 @@
+id = "Animated Black Armour Drops"
+npcs = ["npc.warguild_black_armour"]
+
+[[guaranteed]]
+obj = "obj.black_full_helm"
+count = 1
+
+[[guaranteed]]
+obj = "obj.black_platebody"
+count = 1
+
+[[guaranteed]]
+obj = "obj.black_platelegs"
+count = 1

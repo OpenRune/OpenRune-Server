@@ -1,0 +1,99 @@
+id = "Sulphur Lizard Drops"
+npcs = ["npc.sulphur_lizard"]
+
+[main]
+total = 128
+name = "Sulphur Lizard Drops"
+
+[[main.entries]]
+weight = 26
+obj = "obj.firerune"
+count = "10..25"
+
+[[main.entries]]
+weight = 4
+obj = "obj.firerune"
+count = "40..60"
+
+[[main.entries]]
+weight = 4
+obj = "obj.naturerune"
+count = "5..10"
+
+[[main.entries]]
+weight = 22
+obj = "obj.cert_iron_ore"
+count = "5..10"
+
+[[main.entries]]
+weight = 13
+obj = "obj.cert_coal"
+count = "5..10"
+
+[[main.entries]]
+weight = 4
+obj = "obj.cert_iron_bar"
+count = "6..10"
+
+[[main.entries]]
+weight = 4
+obj = "obj.cert_steel_bar"
+count = "3..5"
+
+[[main.entries]]
+weight = 4
+obj = "obj.cert_tin_ore"
+count = "10..15"
+
+[[main.entries]]
+weight = 3
+obj = "obj.cert_copper_ore"
+count = "10..15"
+
+[[main.entries]]
+weight = 3
+obj = "obj.cert_silver_ore"
+count = "5..10"
+
+[[main.entries]]
+weight = 2
+obj = "obj.cert_silver_bar"
+count = "3..5"
+
+[[main.entries]]
+weight = 1
+obj = "obj.cert_mithril_ore"
+count = "3..5"
+
+[[main.entries]]
+weight = 13
+obj = "obj.hunting_fish_special"
+count = 1
+
+[[main.entries]]
+weight = 10
+shared = "herb"
+
+[[main.entries]]
+weight = 6
+shared = "gem"
+
+[[main.entries]]
+weight = 9
+shared = "seed"
+
+[[main.separate_rolls]]
+numerator = 1
+denominator = 512
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.mystic_gloves_light"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 121
+obj = "obj.trail_medium_emote_exp1"
+count = 1
+clue_scroll_box = true

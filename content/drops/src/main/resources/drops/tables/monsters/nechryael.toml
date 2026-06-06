@@ -1,0 +1,124 @@
+id = "Nechryael Drops"
+npcs = ["npc.slayer_nechryael", "npc.slayer_nechryael_strongholdcave"]
+brimstone_key_roll = true
+brimstone_key_roll_konar_bonus = true
+
+[main]
+total = 116
+name = "Nechryael Drops"
+
+[[main.entries]]
+weight = 4
+obj = "obj.adamant_platelegs"
+count = 1
+
+[[main.entries]]
+weight = 4
+obj = "obj.rune_2h_sword"
+count = 1
+
+[[main.entries]]
+weight = 3
+obj = "obj.rune_full_helm"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.adamant_kiteshield"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.rune_armoured_boots"
+count = 1
+
+[[main.entries]]
+weight = 8
+obj = "obj.chaosrune"
+count = 37
+
+[[main.entries]]
+weight = 6
+obj = "obj.deathrune"
+count = 5
+
+[[main.entries]]
+weight = 6
+obj = "obj.deathrune"
+count = 10
+
+[[main.entries]]
+weight = 5
+obj = "obj.lawrune"
+count = "25..35"
+
+[[main.entries]]
+weight = 4
+obj = "obj.bloodrune"
+count = "15..20"
+
+[[main.entries]]
+weight = 13
+obj = "obj.coins"
+count = "1000..1499"
+
+[[main.entries]]
+weight = 11
+obj = "obj.coins"
+count = "1500..2000"
+
+[[main.entries]]
+weight = 6
+obj = "obj.coins"
+count = "2500..2999"
+
+[[main.entries]]
+weight = 3
+obj = "obj.coins"
+count = "3000..3500"
+
+[[main.entries]]
+weight = 3
+obj = "obj.coins"
+count = "500..999"
+
+[[main.entries]]
+weight = 1
+obj = "obj.coins"
+count = 5000
+
+[[main.entries]]
+weight = 4
+obj = "obj.cert_softclay"
+count = 25
+
+[[main.entries]]
+weight = 3
+obj = "obj.tuna"
+count = 1
+
+[[main.entries]]
+weight = 1
+shared = "rareDrop"
+
+[[main.entries]]
+weight = 5
+shared = "gem"
+
+[[main.entries]]
+weight = 18
+shared = "rareSeed"
+
+[[main.entries]]
+weight = 5
+nothing = true
+
+[[tertiary]]
+numerator = 1
+denominator = 121
+obj = "obj.trail_clue_hard_map001"
+count = 1
+clue_scroll_box = true
+
+
+# Main table pool padding uses a nothing roll (F2P drops removed and/or subtable access missing from wiki parse) (5 weight)

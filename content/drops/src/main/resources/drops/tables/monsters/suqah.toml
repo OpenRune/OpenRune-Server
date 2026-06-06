@@ -1,0 +1,56 @@
+id = "Suqah Drops"
+npcs = ["npc.lunar_suqka", "npc.lunar_suqka2", "npc.lunar_suqka3", "npc.lunar_suqka4", "npc.lunar_suqka5", "npc.lunar_suqka6", "npc.lunar_suqka7"]
+
+[[guaranteed]]
+obj = "obj.suqka_hide_untanned"
+count = 1
+
+[[pre_roll]]
+numerator = 1
+denominator = 2
+obj = "obj.lunar_tiara"
+count = 1
+quest = "quest_lunardiplomacyafteraskingmeteoraaboutherheadgear"
+quest_mode = "during"
+
+[main]
+total = 129
+name = "Suqah Drops"
+
+[[main.entries]]
+weight = 69
+obj = "obj.suqka_tooth"
+count = 1
+
+[[main.entries]]
+weight = 30
+obj = "obj.unidentified_guam"
+count = 1
+
+[[main.entries]]
+weight = 25
+obj = "obj.unidentified_marentill"
+count = 1
+
+[[main.entries]]
+weight = 5
+shared = "gem"
+
+[[tertiary]]
+numerator = 1
+denominator = 400
+obj = "obj.dorgesh_construction_bone"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 5013
+obj = "obj.dorgesh_construction_bone_curved"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 122
+obj = "obj.trail_clue_hard_map001"
+count = 1
+clue_scroll_box = true

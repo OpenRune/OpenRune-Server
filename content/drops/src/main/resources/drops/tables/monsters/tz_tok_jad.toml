@@ -1,0 +1,8 @@
+id = "TzTok-Jad Drops"
+npcs = ["npc.tzhaar_fightcave_swarm_boss"]
+
+[[tertiary]]
+numerator = 1
+denominator = 200
+obj = "obj.jad_pet"
+count = 1

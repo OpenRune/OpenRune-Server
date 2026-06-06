@@ -1,0 +1,115 @@
+id = "Archer (Burthorpe) Drops"
+npcs = ["npc.death_archer1", "npc.death_archer2", "npc.death_archer_trapped"]
+
+[main]
+total = 128
+name = "Archer (Burthorpe) Drops"
+
+[[main.entries]]
+weight = 4
+obj = "obj.willow_longbow"
+count = 1
+
+[[main.entries]]
+weight = 8
+obj = "obj.studded_chaps"
+count = 1
+
+[[main.entries]]
+weight = 6
+obj = "obj.dragonhide_chaps"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.maple_shortbow"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.earthrune"
+count = 18
+
+[[main.entries]]
+weight = 3
+obj = "obj.bronze_arrow"
+count = 14
+
+[[main.entries]]
+weight = 2
+obj = "obj.steel_arrow"
+count = 14
+
+[[main.entries]]
+weight = 2
+obj = "obj.firerune"
+count = 17
+
+[[main.entries]]
+weight = 2
+obj = "obj.airrune"
+count = 29
+
+[[main.entries]]
+weight = 1
+obj = "obj.naturerune"
+count = 6
+
+[[main.entries]]
+weight = 1
+obj = "obj.bloodrune"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.chaosrune"
+count = 2
+
+[[main.entries]]
+weight = 1
+obj = "obj.coins"
+count = 3
+
+[[main.entries]]
+weight = 37
+obj = "obj.coins"
+count = 5
+
+[[main.entries]]
+weight = 16
+obj = "obj.coins"
+count = 15
+
+[[main.entries]]
+weight = 9
+obj = "obj.coins"
+count = 12
+
+[[main.entries]]
+weight = 4
+obj = "obj.coins"
+count = 28
+
+[[main.entries]]
+weight = 4
+obj = "obj.coins"
+count = 42
+
+[[main.entries]]
+weight = 2
+obj = "obj.coins"
+count = 46
+
+[[main.entries]]
+weight = 3
+obj = "obj.earth_talisman"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.mithril_ore"
+count = 1
+
+[[main.entries]]
+weight = 18
+nothing = true

@@ -1,0 +1,64 @@
+id = "Dolphin Drops"
+npcs = ["npc.sailing_dolphin"]
+
+[[pre_roll]]
+numerator = 1
+denominator = 1200
+obj = "obj.echo_pearl"
+count = 1
+
+[main]
+total = 50
+name = "Dolphin Drops"
+
+[[main.entries]]
+weight = 15
+obj = "obj.waterrune"
+count = "50..80"
+
+[[main.entries]]
+weight = 8
+obj = "obj.iron_cannonball"
+count = "30..42"
+
+[[main.entries]]
+weight = 6
+obj = "obj.bronze_cannonball"
+count = "36..54"
+
+[[main.entries]]
+weight = 10
+obj = "obj.cert_seaweed"
+count = "3..5"
+
+[[main.entries]]
+weight = 4
+obj = "obj.flax_seed"
+count = "3..5"
+
+[[main.entries]]
+weight = 4
+obj = "obj.swamppaste"
+count = "40..60"
+
+[[main.entries]]
+weight = 1
+obj = "obj.coral_elkhorn_frag"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.casket"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.ball_gnomeball_game"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 52
+obj = "obj.trail_clue_easy_simple001"
+count = 1
+clue_scroll_box = true

@@ -1,0 +1,110 @@
+id = "Chaos druid Drops"
+npcs = ["npc.chaos_druid"]
+
+[main]
+total = 128
+name = "Chaos druid Drops"
+
+[[main.entries]]
+weight = 7
+obj = "obj.lawrune"
+count = 2
+
+[[main.entries]]
+weight = 4
+obj = "obj.xbows_crossbow_bolts_mithril"
+count = "2..12"
+quest = "quest_observatoryquest"
+quest_mode = "not_completed"
+
+[[main.entries]]
+weight = 3
+obj = "obj.airrune"
+count = 36
+
+[[main.entries]]
+weight = 2
+obj = "obj.bodyrune"
+count = 9
+
+[[main.entries]]
+weight = 2
+obj = "obj.earthrune"
+count = 9
+
+[[main.entries]]
+weight = 2
+obj = "obj.mindrune"
+count = 12
+
+[[main.entries]]
+weight = 1
+obj = "obj.naturerune"
+count = 3
+
+[[main.entries]]
+weight = 5
+obj = "obj.coins"
+count = 3
+
+[[main.entries]]
+weight = 5
+obj = "obj.coins"
+count = 8
+
+[[main.entries]]
+weight = 3
+obj = "obj.coins"
+count = 29
+
+[[main.entries]]
+weight = 1
+obj = "obj.coins"
+count = 35
+
+[[main.entries]]
+weight = 33
+nothing = true
+
+[[main.entries]]
+weight = 10
+obj = "obj.vial_water"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.bronze_longsword"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.snape_grass"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.unholy_symbol_mould"
+count = 1
+quest = "quest_observatoryquest"
+quest_mode = "completed"
+
+[[main.entries]]
+weight = 46
+shared = "herb"
+
+[[main.entries]]
+weight = 1
+shared = "gem"
+
+[[tertiary]]
+numerator = 1
+denominator = 11
+obj = "obj.looting_bag"
+count = 1
+should_drop_looting_bag = true
+
+[[tertiary]]
+numerator = 1
+denominator = 35
+obj = "obj.arceuus_corpse_chaosdruid"
+count = 1

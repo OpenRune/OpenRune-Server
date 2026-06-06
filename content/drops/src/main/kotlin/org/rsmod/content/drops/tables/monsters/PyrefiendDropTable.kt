@@ -9,6 +9,7 @@ import org.rsmod.api.droptable.rsPlayerWeightedTable
 import org.rsmod.content.drops.tables.shared.SharedDropTables
 import org.rsmod.api.droptable.DropRollItem
 import org.rsmod.content.drops.shouldDropLootingBag
+import org.rsmod.content.drops.clueScrollTransformObj
 import org.rsmod.api.droptable.RegisterDropTable
 import org.rsmod.game.entity.Player
 
@@ -40,14 +41,11 @@ public val pyrefiendDropTable: RSDropTable<Player, DropRollItem> = RSDropTable(
         3 weight SharedDropTables.gem
     },
     tertiaries = rsPlayerTertiaryTable {
-        1 outOf 3 weight "obj.looting_bag" count 1 condition { player ->
-            // Drops Need Manual: Only dropped by those found in the Wilderness.
-             true
+        1 outOf 3 weight "obj.looting_bag" count 1 condition {
+            player -> player.shouldDropLootingBag()
         }
-        // Drops Need Manual (rate): The medium clue scroll drop rate increases to 1/121 after unlocking the medium Combat Achievements rewards tier.
-        1 outOf 128 weight "obj.trail_medium_emote_exp1" count 1 transformObj { player ->
-            // Drops Need Manual (item): Clue scrolls will drop as scroll boxes after the completion of X Marks the Spot.
-             null
+        1 outOf 121 weight "obj.trail_medium_emote_exp1" count 1 transformObj { player ->
+             player.clueScrollTransformObj("obj.trail_medium_emote_exp1")
         }
     },
 )

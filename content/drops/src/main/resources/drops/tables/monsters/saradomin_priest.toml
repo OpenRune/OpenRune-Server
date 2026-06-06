@@ -1,0 +1,9 @@
+id = "Saradomin priest Drops"
+npcs = ["npc.godwars_ancient_saradomin_wizard"]
+
+[[tertiary]]
+numerator = 1
+denominator = 121
+obj = "obj.trail_clue_hard_map001"
+count = 1
+clue_scroll_box = true

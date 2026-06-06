@@ -44,7 +44,7 @@ public val basiliskDropTable: RSDropTable<Player, DropRollItem> = RSDropTable(
     },
     tertiaries = rsPlayerTertiaryTable {
         1 outOf 1 weight "obj.trail_elite_emote_exp1" count 1 condition { player ->
-            // Drops Need Manual: The elite clue scroll and casket are only dropped when completing an [[Treasure Trails/Full guide/Elite#Cryptic clues
+            // Drops Need Manual: The elite clue scroll and casket are only dropped when completing an Treasure Trails/Full guide/Elite#Cryptic clues
              true
         }
         1 outOf 1 weight "obj.trail_reward_casket_elite" count 1

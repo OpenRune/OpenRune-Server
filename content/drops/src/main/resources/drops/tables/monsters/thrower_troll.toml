@@ -1,0 +1,138 @@
+id = "Thrower Troll Drops"
+npcs = ["npc.death_troll_thrower1", "npc.death_troll_thrower2", "npc.death_troll_thrower3", "npc.death_troll_thrower4", "npc.death_troll_thrower5"]
+brimstone_key_roll = true
+
+[main]
+total = 128
+name = "Thrower Troll Drops"
+
+[[main.entries]]
+weight = 4
+obj = "obj.steel_med_helm"
+count = 1
+
+[[main.entries]]
+weight = 3
+obj = "obj.black_warhammer"
+count = 1
+
+[[main.entries]]
+weight = 3
+obj = "obj.steel_warhammer"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.adamant_med_helm"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.adamnt_warhammer"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.mithril_sq_shield"
+count = 1
+
+[[main.entries]]
+weight = 8
+obj = "obj.earthrune"
+count = 60
+
+[[main.entries]]
+weight = 5
+obj = "obj.naturerune"
+count = 7
+
+[[main.entries]]
+weight = 3
+obj = "obj.lawrune"
+count = 2
+
+[[main.entries]]
+weight = 1
+obj = "obj.earthrune"
+count = 45
+
+[[main.entries]]
+weight = 1
+obj = "obj.earthrune"
+count = 25
+
+[[main.entries]]
+weight = 29
+obj = "obj.coins"
+count = 35
+
+[[main.entries]]
+weight = 10
+obj = "obj.coins"
+count = 100
+
+[[main.entries]]
+weight = 7
+obj = "obj.coins"
+count = 8
+
+[[main.entries]]
+weight = 6
+obj = "obj.coins"
+count = 50
+
+[[main.entries]]
+weight = 1
+obj = "obj.coins"
+count = 250
+
+[[main.entries]]
+weight = 3
+obj = "obj.cert_coal"
+count = 3
+
+[[main.entries]]
+weight = 2
+obj = "obj.cert_raw_mackerel"
+count = 3
+
+[[main.entries]]
+weight = 15
+shared = "herb"
+
+[[main.entries]]
+weight = 5
+shared = "gem"
+
+[[main.entries]]
+weight = 19
+nothing = true
+
+[[tertiary]]
+numerator = 1
+denominator = 4
+obj = "obj.rag_troll_bone"
+count = 1
+quest = "quest_ragandboneman2"
+quest_mode = "during"
+
+[[tertiary]]
+numerator = 1
+denominator = 45
+obj = "obj.arceuus_corpse_troll"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 400
+obj = "obj.dorgesh_construction_bone"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 5013
+obj = "obj.dorgesh_construction_bone_curved"
+count = 1
+
+
+# Main table pool padding uses a nothing roll (F2P drops removed and/or subtable access missing from wiki parse) (19 weight)

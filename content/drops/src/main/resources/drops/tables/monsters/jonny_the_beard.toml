@@ -1,0 +1,8 @@
+id = "Jonny the Beard Drops"
+npcs = ["npc.jonny_the_beard", "npc.jonny_the_beard_1op", "npc.jonny_the_beard_2op"]
+
+[[tertiary]]
+numerator = 1
+denominator = 1
+obj = "obj.intelligence_report"
+count = 1

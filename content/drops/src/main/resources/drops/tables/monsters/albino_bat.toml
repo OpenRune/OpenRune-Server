@@ -1,0 +1,10 @@
+id = "Albino bat Drops"
+npcs = ["npc.harmless_island_albino_bat"]
+
+[[tertiary]]
+numerator = 1
+denominator = 1
+obj = "obj.rag_giant_bat_bone"
+count = 1
+quest = "quest_ragandboneman1"
+quest_mode = "during"

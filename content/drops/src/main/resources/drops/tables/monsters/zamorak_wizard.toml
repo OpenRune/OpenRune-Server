@@ -1,0 +1,135 @@
+id = "Zamorak wizard Drops"
+npcs = ["npc.trail_hard"]
+
+[main]
+total = 128
+name = "Zamorak wizard Drops"
+
+[[main.entries]]
+weight = 3
+obj = "obj.zamrobetop"
+count = 1
+
+[[main.entries]]
+weight = 4
+obj = "obj.zamrobebottom"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.air_battlestaff"
+count = 1
+
+[[main.entries]]
+weight = 3
+obj = "obj.water_battlestaff"
+count = 1
+
+[[main.entries]]
+weight = 3
+obj = "obj.earth_battlestaff"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.fire_battlestaff"
+count = 1
+
+[[main.entries]]
+weight = 3
+obj = "obj.airrune"
+count = 60
+
+[[main.entries]]
+weight = 2
+obj = "obj.airrune"
+count = 189
+
+[[main.entries]]
+weight = 3
+obj = "obj.waterrune"
+count = 42
+
+[[main.entries]]
+weight = 2
+obj = "obj.waterrune"
+count = 126
+
+[[main.entries]]
+weight = 3
+obj = "obj.earthrune"
+count = 79
+
+[[main.entries]]
+weight = 4
+obj = "obj.earthrune"
+count = 86
+
+[[main.entries]]
+weight = 2
+obj = "obj.earthrune"
+count = 107
+
+[[main.entries]]
+weight = 3
+obj = "obj.firerune"
+count = 51
+
+[[main.entries]]
+weight = 2
+obj = "obj.firerune"
+count = 180
+
+[[main.entries]]
+weight = 1
+obj = "obj.cosmicrune"
+count = 25
+
+[[main.entries]]
+weight = 7
+obj = "obj.naturerune"
+count = 30
+
+[[main.entries]]
+weight = 1
+obj = "obj.lawrune"
+count = 9
+
+[[main.entries]]
+weight = 6
+obj = "obj.deathrune"
+count = 45
+
+[[main.entries]]
+weight = 12
+obj = "obj.bloodrune"
+count = 8
+
+[[main.entries]]
+weight = 17
+obj = "obj.coins"
+count = 77
+
+[[main.entries]]
+weight = 25
+obj = "obj.coins"
+count = 89
+
+[[main.entries]]
+weight = 3
+obj = "obj.coins"
+count = 240
+
+[[main.entries]]
+weight = 16
+nothing = true
+
+[[tertiary]]
+numerator = 1
+denominator = 3
+obj = "obj.looting_bag"
+count = 1
+should_drop_looting_bag = true
+
+
+# Main table pool padding uses a nothing roll (F2P drops removed and/or subtable access missing from wiki parse) (16 weight)

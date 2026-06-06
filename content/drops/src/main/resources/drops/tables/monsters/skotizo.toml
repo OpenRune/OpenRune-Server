@@ -1,0 +1,185 @@
+id = "Skotizo Drops"
+npcs = ["npc.cata_boss"]
+brimstone_key_roll = true
+
+[[guaranteed]]
+obj = "obj.trail_clue_hard_map001"
+count = 1
+clue_scroll_box = true
+
+[main]
+total = 199
+name = "Skotizo Drops"
+
+[[main.entries]]
+weight = 75
+obj = "obj.cata_shard"
+count = 1
+
+[[main.entries]]
+weight = 15
+obj = "obj.cata_shard"
+count = 2
+
+[[main.entries]]
+weight = 5
+obj = "obj.cata_shard"
+count = 3
+
+[[main.entries]]
+weight = 4
+obj = "obj.cata_shard"
+count = 4
+
+[[main.entries]]
+weight = 1
+obj = "obj.cata_shard"
+count = 5
+
+[[main.entries]]
+weight = 7
+obj = "obj.cert_rune_platebody"
+count = 3
+
+[[main.entries]]
+weight = 7
+obj = "obj.cert_rune_platelegs"
+count = 3
+
+[[main.entries]]
+weight = 7
+obj = "obj.cert_rune_plateskirt"
+count = 3
+
+[[main.entries]]
+weight = 7
+obj = "obj.deathrune"
+count = 500
+
+[[main.entries]]
+weight = 7
+obj = "obj.soulrune"
+count = 450
+
+[[main.entries]]
+weight = 7
+obj = "obj.bloodrune"
+count = 450
+
+[[main.entries]]
+weight = 7
+obj = "obj.cert_adamantite_ore"
+count = 75
+
+[[main.entries]]
+weight = 7
+obj = "obj.cert_unidentified_snapdragon"
+count = 20
+
+[[main.entries]]
+weight = 7
+obj = "obj.cert_unidentified_torstol"
+count = 20
+
+[[main.entries]]
+weight = 7
+obj = "obj.cert_raw_anglerfish"
+count = 60
+
+[[main.entries]]
+weight = 7
+obj = "obj.cert_runite_bar"
+count = 20
+
+[[main.entries]]
+weight = 7
+obj = "obj.cert_plank_mahogany"
+count = 150
+
+[[main.entries]]
+weight = 7
+obj = "obj.cert_battlestaff"
+count = 25
+
+[[main.entries]]
+weight = 7
+obj = "obj.xbows_bolt_tips_onyx"
+count = 40
+
+[[main.entries]]
+weight = 1
+obj = "obj.dragonshield_a"
+count = 1
+
+[[main.separate_rolls]]
+numerator = 9
+denominator = 1000
+
+[[main.separate_rolls.entries]]
+weight = 9
+obj = "obj.cert_uncut_dragonstone"
+count = 10
+
+[[main.separate_rolls]]
+numerator = 1
+denominator = 1000
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.uncut_onyx"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 10
+obj = "obj.arceuus_corpse_demon"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 25
+obj = "obj.cata_boss_claw"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 65
+obj = "obj.skotizopet"
+count = 1
+
+[[tertiary]]
+numerator = 3
+denominator = 128
+obj = "obj.cata_totem1"
+count = 1
+
+[[tertiary]]
+numerator = 3
+denominator = 128
+obj = "obj.cata_totem2"
+count = 1
+
+[[tertiary]]
+numerator = 3
+denominator = 128
+obj = "obj.cata_totem3"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 128
+obj = "obj.cata_totem"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 200
+obj = "obj.jar_of_darkness"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 4
+obj = "obj.trail_elite_emote_exp1"
+count = 1
+clue_scroll_box = true

@@ -1,0 +1,16 @@
+id = "Spider Drops"
+npcs = ["npc.sos_pest_spider", "npc.spider", "npc.upass_little_spider"]
+
+[[tertiary]]
+numerator = 1
+denominator = 15
+obj = "obj.looting_bag"
+count = 1
+should_drop_looting_bag = true
+
+[[tertiary]]
+numerator = 1
+denominator = 128
+obj = "obj.trail_clue_beginner"
+count = 1
+clue_scroll_box = true

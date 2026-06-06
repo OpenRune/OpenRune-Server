@@ -1,0 +1,108 @@
+id = "Thief (Varlamore) Drops"
+npcs = ["npc.varlamore_thief_m_1", "npc.varlamore_thief_m_2", "npc.varlamore_thief_m_3", "npc.varlamore_thief_f_1", "npc.varlamore_thief_f_2", "npc.varlamore_thief_f_3"]
+
+[main]
+total = 128
+name = "Thief (Varlamore) Drops"
+
+[[main.entries]]
+weight = 2
+obj = "obj.bronze_med_helm"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.iron_dagger"
+count = 1
+
+[[main.entries]]
+weight = 22
+obj = "obj.bolt"
+count = "2..12"
+
+[[main.entries]]
+weight = 3
+obj = "obj.bronze_arrow"
+count = "5..10"
+
+[[main.entries]]
+weight = 2
+obj = "obj.airrune"
+count = 8
+
+[[main.entries]]
+weight = 2
+obj = "obj.earthrune"
+count = 4
+
+[[main.entries]]
+weight = 2
+obj = "obj.firerune"
+count = 6
+
+[[main.entries]]
+weight = 2
+obj = "obj.mindrune"
+count = 9
+
+[[main.entries]]
+weight = 1
+obj = "obj.chaosrune"
+count = 2
+
+[[main.entries]]
+weight = 33
+obj = "obj.coins"
+count = 2
+
+[[main.entries]]
+weight = 8
+obj = "obj.coins"
+count = 5
+
+[[main.entries]]
+weight = 4
+obj = "obj.coins"
+count = 20
+
+[[main.entries]]
+weight = 1
+obj = "obj.coins"
+count = 25
+
+[[main.entries]]
+weight = 14
+nothing = true
+
+[[main.entries]]
+weight = 5
+obj = "obj.fishing_bait"
+count = "2..4"
+
+[[main.entries]]
+weight = 2
+obj = "obj.copper_ore"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.cabbage"
+count = 1
+
+[[main.entries]]
+weight = 23
+shared = "herb"
+
+[[tertiary]]
+numerator = 1
+denominator = 90
+obj = "obj.trail_clue_beginner"
+count = 1
+clue_scroll_box = true
+
+[[tertiary]]
+numerator = 1
+denominator = 121
+obj = "obj.trail_clue_easy_simple001"
+count = 1
+clue_scroll_box = true

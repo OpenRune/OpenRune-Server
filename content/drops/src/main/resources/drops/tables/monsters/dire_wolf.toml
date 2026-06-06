@@ -1,0 +1,20 @@
+id = "Dire Wolf Drops"
+npcs = ["npc.direwolf", "npc.gwenith_white_wolf", "npc.mag_direwolf_minion"]
+
+[main]
+total = 4
+name = "Dire Wolf Drops"
+
+[[main.entries]]
+weight = 1
+obj = "obj.rag_wolf_bone"
+count = 1
+quest = "quest_ragandboneman2"
+quest_mode = "during"
+
+[[main.entries]]
+weight = 3
+nothing = true
+
+
+# Main table pool padding uses a nothing roll (F2P drops removed and/or subtable access missing from wiki parse) (3 weight)

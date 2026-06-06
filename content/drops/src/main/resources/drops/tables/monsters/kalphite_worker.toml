@@ -1,0 +1,123 @@
+id = "Kalphite Worker Drops"
+npcs = ["npc.kalphite_worker", "npc.kalphite_worker_strongholdcave", "npc.kalphite_worker_chamber"]
+brimstone_key_roll = true
+
+[main]
+total = 128
+name = "Kalphite Worker Drops"
+
+[[main.entries]]
+weight = 3
+obj = "obj.iron_sword"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.iron_javelin"
+count = 5
+
+[[main.entries]]
+weight = 3
+obj = "obj.steel_dagger"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.steel_longsword"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.hardleather_body"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.bodyrune"
+count = 6
+
+[[main.entries]]
+weight = 1
+obj = "obj.cosmicrune"
+count = 2
+
+[[main.entries]]
+weight = 2
+obj = "obj.chaosrune"
+count = 3
+
+[[main.entries]]
+weight = 2
+obj = "obj.firerune"
+count = 7
+
+[[main.entries]]
+weight = 2
+obj = "obj.waterrune"
+count = 2
+
+[[main.entries]]
+weight = 3
+obj = "obj.lawrune"
+count = 2
+
+[[main.entries]]
+weight = 2
+obj = "obj.naturerune"
+count = 4
+
+[[main.entries]]
+weight = 8
+obj = "obj.coins"
+count = 1
+
+[[main.entries]]
+weight = 12
+obj = "obj.coins"
+count = 5
+
+[[main.entries]]
+weight = 34
+obj = "obj.coins"
+count = 15
+
+[[main.entries]]
+weight = 12
+obj = "obj.coins"
+count = 28
+
+[[main.entries]]
+weight = 3
+obj = "obj.coins"
+count = 42
+
+[[main.entries]]
+weight = 4
+obj = "obj.coins"
+count = 62
+
+[[main.entries]]
+weight = 21
+obj = "obj.water_skin4"
+count = 1
+
+[[main.entries]]
+weight = 7
+shared = "herb"
+
+[[main.entries]]
+weight = 2
+shared = "gem"
+
+[[main.entries]]
+weight = 1
+nothing = true
+
+[[tertiary]]
+numerator = 1
+denominator = 250
+obj = "obj.arceuus_corpse_kalphite"
+count = 1
+
+
+# Main table pool padding uses a nothing roll (F2P drops removed and/or subtable access missing from wiki parse) (1 weight)

@@ -1,0 +1,20 @@
+id = "Zogre Drops"
+npcs = ["npc.zogre_1", "npc.zogre_2", "npc.zogre_3", "npc.zogre_4", "npc.zogre_5", "npc.zogre_6", "npc.zogre_dance_1", "npc.zogre_dance_2", "npc.zogre_dance_3", "npc.zogre_dance_4", "npc.zogre_drummer1"]
+
+[[guaranteed]]
+obj = "obj.zogre_coffinkey"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 4
+obj = "obj.rag_zogre_bone"
+count = 1
+quest = "quest_ragandboneman2"
+quest_mode = "during"
+
+[[tertiary]]
+numerator = 1
+denominator = 5000
+obj = "obj.champions_challenge_zombie"
+count = 1

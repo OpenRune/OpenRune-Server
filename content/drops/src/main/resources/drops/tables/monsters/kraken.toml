@@ -1,0 +1,219 @@
+id = "Kraken Drops"
+npcs = ["npc.slayer_kraken_boss", "npc.slayer_kraken_boss_whirlpool"]
+brimstone_key_roll = true
+brimstone_key_roll_konar_bonus = true
+
+[main]
+total = 128
+name = "Kraken Drops"
+
+[[main.entries]]
+weight = 3
+obj = "obj.mystic_water_staff"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.rune_warhammer"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.rune_longsword"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.mystic_robe_top"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.mystic_robe_bottom"
+count = 1
+
+[[main.entries]]
+weight = 10
+obj = "obj.waterrune"
+count = 400
+
+[[main.entries]]
+weight = 4
+obj = "obj.mistrune"
+count = 100
+
+[[main.entries]]
+weight = 10
+obj = "obj.chaosrune"
+count = 200
+
+[[main.entries]]
+weight = 10
+obj = "obj.deathrune"
+count = 150
+
+[[main.entries]]
+weight = 10
+obj = "obj.bloodrune"
+count = 60
+
+[[main.entries]]
+weight = 7
+obj = "obj.soulrune"
+count = 50
+
+[[main.entries]]
+weight = 3
+obj = "obj.watermelon_seed"
+count = 24
+
+[[main.entries]]
+weight = 1
+obj = "obj.torstol_seed"
+count = 2
+
+[[main.entries]]
+weight = 1
+obj = "obj.magic_tree_seed"
+count = 1
+
+[[main.entries]]
+weight = 3
+obj = "obj.cert_seaweed"
+count = 125
+
+[[main.entries]]
+weight = 4
+obj = "obj.cert_battlestaff"
+count = 10
+
+[[main.entries]]
+weight = 2
+obj = "obj.cert_stafforb"
+count = 50
+
+[[main.entries]]
+weight = 1
+obj = "obj.cert_diamond"
+count = 8
+
+[[main.entries]]
+weight = 3
+obj = "obj.cert_plank_oak"
+count = 60
+
+[[main.entries]]
+weight = 1
+obj = "obj.runite_bar"
+count = 2
+
+[[main.entries]]
+weight = 2
+obj = "obj.cert_raw_shark"
+count = 50
+
+[[main.entries]]
+weight = 2
+obj = "obj.cert_raw_monkfish"
+count = 100
+
+[[main.entries]]
+weight = 2
+obj = "obj.cert_unidentified_snapdragon"
+count = 6
+
+[[main.entries]]
+weight = 15
+obj = "obj.coins"
+count = "10000..19999"
+
+[[main.entries]]
+weight = 7
+obj = "obj.shark"
+count = 5
+
+[[main.entries]]
+weight = 4
+obj = "obj.pirate_boots"
+count = 1
+
+[[main.entries]]
+weight = 4
+obj = "obj.sanfew_salve_4_dose"
+count = 2
+
+[[main.entries]]
+weight = 3
+obj = "obj.edible_seaweed"
+count = 5
+
+[[main.entries]]
+weight = 1
+obj = "obj.harpoon"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.bucket_empty"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.crystal_key"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.digsitesword"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.cert_antidote++4"
+count = 2
+
+[[main.entries]]
+weight = 1
+obj = "obj.dragonstone_ring"
+count = 1
+
+[[main.entries]]
+weight = 2
+shared = "gem"
+
+[[main.separate_rolls]]
+numerator = 1
+denominator = 512
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.tots"
+count = 1
+
+[[main.separate_rolls]]
+numerator = 1
+denominator = 400
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.kraken_tentacle"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 1000
+obj = "obj.jar_of_dirt"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 3000
+obj = "obj.krakenpet"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 475
+obj = "obj.trail_elite_emote_exp1"
+count = 1
+clue_scroll_box = true

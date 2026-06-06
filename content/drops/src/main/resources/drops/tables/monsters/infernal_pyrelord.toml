@@ -1,0 +1,102 @@
+id = "Infernal pyrelord Drops"
+npcs = ["npc.superior_pyrelord"]
+
+[main]
+total = 128
+name = "Infernal pyrelord Drops"
+
+[[main.entries]]
+weight = 4
+obj = "obj.mithril_axe"
+count = 1
+
+[[main.entries]]
+weight = 4
+obj = "obj.mithril_full_helm"
+count = 1
+
+[[main.entries]]
+weight = 3
+obj = "obj.staff_of_fire"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.mithril_chainbody"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.adamant_med_helm"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.steel_armoured_boots"
+count = 1
+
+[[main.entries]]
+weight = 21
+obj = "obj.firerune"
+count = 50
+
+[[main.entries]]
+weight = 8
+obj = "obj.firerune"
+count = 100
+
+[[main.entries]]
+weight = 5
+obj = "obj.chaosrune"
+count = 20
+
+[[main.entries]]
+weight = 3
+obj = "obj.deathrune"
+count = 5
+
+[[main.entries]]
+weight = 7
+obj = "obj.coins"
+count = 10
+
+[[main.entries]]
+weight = 24
+obj = "obj.coins"
+count = 60
+
+[[main.entries]]
+weight = 20
+obj = "obj.coins"
+count = 200
+
+[[main.entries]]
+weight = 10
+obj = "obj.coins"
+count = 400
+
+[[main.entries]]
+weight = 2
+obj = "obj.coins"
+count = 600
+
+[[main.entries]]
+weight = 8
+obj = "obj.gold_ore"
+count = 2
+
+[[main.entries]]
+weight = 2
+obj = "obj.jug_wine"
+count = 1
+
+[[main.entries]]
+weight = 3
+shared = "gem"
+
+[[tertiary]]
+numerator = 10
+denominator = 98
+obj = "obj.trail_medium_emote_exp1"
+count = 1
+clue_scroll_box = true

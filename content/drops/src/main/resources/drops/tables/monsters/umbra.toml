@@ -1,0 +1,38 @@
+id = "Umbra Drops"
+npcs = ["npc.nex_shadowmage"]
+
+[main]
+total = 1000
+name = "Umbra Drops"
+
+[[main.entries]]
+weight = 1
+obj = "obj.ancient_ceremonial_mask"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.ancient_ceremonial_top"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.ancient_ceremonial_legs"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.ancient_ceremonial_gloves"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.ancient_ceremonial_boots"
+count = 1
+
+[[main.entries]]
+weight = 995
+nothing = true
+
+
+# Main table pool padding uses a nothing roll (F2P drops removed and/or subtable access missing from wiki parse) (995 weight)

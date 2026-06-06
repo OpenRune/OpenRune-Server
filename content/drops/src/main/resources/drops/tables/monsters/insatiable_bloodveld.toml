@@ -1,0 +1,135 @@
+id = "Insatiable Bloodveld Drops"
+npcs = ["npc.superior_bloodveld"]
+
+[[guaranteed]]
+obj = "obj.arceuus_corpse_bloodveld"
+count = 1
+
+[[guaranteed]]
+obj = "obj.konar_key"
+count = 1
+should_drop_brimstone_key = true
+
+[main]
+total = 138
+name = "Insatiable Bloodveld Drops"
+
+[[main.entries]]
+weight = 4
+obj = "obj.steel_axe"
+count = 1
+
+[[main.entries]]
+weight = 4
+obj = "obj.steel_full_helm"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.steel_scimitar"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.black_armoured_boots"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.mithril_sq_shield"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.mithril_chainbody"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.rune_med_helm"
+count = 1
+
+[[main.entries]]
+weight = 8
+obj = "obj.firerune"
+count = 60
+
+[[main.entries]]
+weight = 3
+obj = "obj.bloodrune"
+count = 3
+
+[[main.entries]]
+weight = 5
+obj = "obj.bloodrune"
+count = 10
+
+[[main.entries]]
+weight = 1
+obj = "obj.bloodrune"
+count = 30
+
+[[main.entries]]
+weight = 7
+obj = "obj.coins"
+count = 10
+
+[[main.entries]]
+weight = 29
+obj = "obj.coins"
+count = 40
+
+[[main.entries]]
+weight = 30
+obj = "obj.coins"
+count = 120
+
+[[main.entries]]
+weight = 10
+obj = "obj.coins"
+count = 200
+
+[[main.entries]]
+weight = 1
+obj = "obj.coins"
+count = 450
+
+[[main.entries]]
+weight = 10
+obj = "obj.bones"
+count = 1
+
+[[main.entries]]
+weight = 7
+obj = "obj.big_bones"
+count = 1
+
+[[main.entries]]
+weight = 3
+obj = "obj.big_bones"
+count = 3
+
+[[main.entries]]
+weight = 2
+obj = "obj.gold_ore"
+count = 1
+
+[[main.entries]]
+weight = 3
+obj = "obj.meat_pizza"
+count = 1
+
+[[main.entries]]
+weight = 1
+shared = "herb"
+
+[[main.entries]]
+weight = 4
+shared = "gem"
+
+[[tertiary]]
+numerator = 10
+denominator = 243
+obj = "obj.trail_clue_hard_map001"
+count = 1
+clue_scroll_box = true

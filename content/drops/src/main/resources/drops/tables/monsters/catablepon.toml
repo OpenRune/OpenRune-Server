@@ -1,0 +1,101 @@
+id = "Catablepon Drops"
+npcs = ["npc.sos_pest_catablepon", "npc.sos_pest_catablepon2", "npc.sos_pest_catablepon3"]
+
+[main]
+total = 101
+name = "Catablepon Drops"
+
+[[main.entries]]
+weight = 1
+obj = "obj.adamant_med_helm"
+count = 1
+
+[[main.entries]]
+weight = 7
+obj = "obj.firerune"
+count = 15
+
+[[main.entries]]
+weight = 6
+obj = "obj.waterrune"
+count = 7
+
+[[main.entries]]
+weight = 1
+obj = "obj.chaosrune"
+count = 7
+
+[[main.entries]]
+weight = 4
+obj = "obj.lawrune"
+count = 2
+
+[[main.entries]]
+weight = 3
+obj = "obj.cosmicrune"
+count = 2
+
+[[main.entries]]
+weight = 4
+obj = "obj.mithril_arrow"
+count = "5..14"
+
+[[main.entries]]
+weight = 5
+obj = "obj.cert_blankrune_high"
+count = 15
+
+[[main.entries]]
+weight = 7
+obj = "obj.eye_of_newt"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.cert_coal"
+count = "3..7"
+
+[[main.entries]]
+weight = 6
+obj = "obj.coins"
+count = 15
+
+[[main.entries]]
+weight = 12
+obj = "obj.coins"
+count = 44
+
+[[main.entries]]
+weight = 10
+obj = "obj.coins"
+count = "5..104"
+
+[[main.entries]]
+weight = 2
+obj = "obj.trout"
+count = 1
+
+[[main.entries]]
+weight = 9
+obj = "obj.torch_unlit"
+count = 1
+
+[[main.entries]]
+weight = 3
+obj = "obj.sos_half_sceptre1"
+count = 1
+
+[[main.entries]]
+weight = 3
+shared = "herb"
+
+[[main.entries]]
+weight = 2
+shared = "gem"
+
+[[main.entries]]
+weight = 14
+nothing = true
+
+
+# Main table pool padding uses a nothing roll (F2P drops removed and/or subtable access missing from wiki parse) (14 weight)

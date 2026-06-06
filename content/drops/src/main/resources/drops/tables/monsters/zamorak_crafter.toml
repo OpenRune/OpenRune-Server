@@ -1,0 +1,76 @@
+id = "Zamorak crafter Drops"
+npcs = ["npc.rc_zmi_runerunner", "npc.rc_zmi_runerunner2"]
+
+[main]
+total = 70
+name = "Zamorak crafter Drops"
+
+[[main.entries]]
+weight = 10
+obj = "obj.airrune"
+count = 5
+
+[[main.entries]]
+weight = 5
+obj = "obj.bodyrune"
+count = 3
+
+[[main.entries]]
+weight = 2
+obj = "obj.bloodrune"
+count = 4
+
+[[main.entries]]
+weight = 5
+obj = "obj.chaosrune"
+count = 4
+
+[[main.entries]]
+weight = 2
+obj = "obj.deathrune"
+count = 3
+
+[[main.entries]]
+weight = 5
+obj = "obj.earthrune"
+count = 6
+
+[[main.entries]]
+weight = 10
+obj = "obj.waterrune"
+count = 5
+
+[[main.entries]]
+weight = 2
+obj = "obj.soulrune"
+count = 3
+
+[[main.entries]]
+weight = 10
+obj = "obj.firerune"
+count = 2
+
+[[main.entries]]
+weight = 1
+obj = "obj.lawrune"
+count = 3
+
+[[main.entries]]
+weight = 2
+obj = "obj.naturerune"
+count = 2
+
+[[main.entries]]
+weight = 5
+obj = "obj.blankrune_high"
+count = 3
+
+[[main.entries]]
+weight = 1
+obj = "obj.blankrune_high"
+count = 10
+
+[[main.entries]]
+weight = 10
+obj = "obj.coins"
+count = 50

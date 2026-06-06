@@ -1,0 +1,90 @@
+id = "Paladin Drops"
+npcs = ["npc.paladin", "npc.paladin_west_vis", "npc.paladin_west_f_vis", "npc.paladin_variant01", "npc.paladin_variant02", "npc.paladin_f", "npc.paladin_f_variant01"]
+
+[main]
+total = 128
+name = "Paladin Drops"
+
+[[main.entries]]
+weight = 2
+obj = "obj.steel_sword"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.steel_longsword"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.steel_full_helm"
+count = 1
+
+[[main.entries]]
+weight = 13
+obj = "obj.waterrune"
+count = 30
+
+[[main.entries]]
+weight = 1
+obj = "obj.bloodrune"
+count = 1
+
+[[main.entries]]
+weight = 9
+obj = "obj.iron_bar"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.mithril_bar"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.steel_bar"
+count = 1
+
+[[main.entries]]
+weight = 40
+obj = "obj.coins"
+count = 48
+
+[[main.entries]]
+weight = 19
+obj = "obj.coins"
+count = 15
+
+[[main.entries]]
+weight = 16
+obj = "obj.coins"
+count = 2
+
+[[main.entries]]
+weight = 10
+obj = "obj.coins"
+count = 8
+
+[[main.entries]]
+weight = 2
+obj = "obj.coins"
+count = 120
+
+[[main.entries]]
+weight = 2
+nothing = true
+
+[[main.entries]]
+weight = 8
+shared = "herb"
+
+[[main.entries]]
+weight = 2
+shared = "gem"
+
+[[tertiary]]
+numerator = 1
+denominator = 121
+obj = "obj.trail_medium_emote_exp1"
+count = 1
+clue_scroll_box = true

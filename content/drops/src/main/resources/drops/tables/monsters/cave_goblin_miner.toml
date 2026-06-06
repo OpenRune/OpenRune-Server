@@ -1,0 +1,48 @@
+id = "Cave goblin miner Drops"
+npcs = ["npc.cave_goblin_miner", "npc.cave_goblin_miner2", "npc.cave_goblin_miner3", "npc.cave_goblin_miner4", "npc.cave_goblin_miner_mining", "npc.cave_goblin_miner2_mining", "npc.cave_goblin_miner3_mining", "npc.cave_goblin_miner4_mining"]
+
+[main]
+total = 128
+name = "Cave goblin miner Drops"
+
+[[main.entries]]
+weight = 28
+nothing = true
+
+[[main.entries]]
+weight = 20
+obj = "obj.cave_goblin_mining_helmet_unlit"
+count = 1
+
+[[main.entries]]
+weight = 20
+obj = "obj.coins"
+count = 6
+
+[[main.entries]]
+weight = 20
+obj = "obj.iron_ore"
+count = 7
+
+[[main.entries]]
+weight = 20
+obj = "obj.tinderbox"
+count = 1
+
+[[main.entries]]
+weight = 15
+obj = "obj.iron_ore"
+count = 2
+
+[[main.entries]]
+weight = 5
+obj = "obj.silver_ore"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 4
+obj = "obj.rag_cave_goblin_bone"
+count = 1
+quest = "quest_ragandboneman2"
+quest_mode = "during"

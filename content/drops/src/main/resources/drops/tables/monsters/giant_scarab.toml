@@ -1,0 +1,6 @@
+id = "Giant Scarab Drops"
+npcs = ["npc.contact_scarab_boss", "npc.contact_dummy_boss"]
+
+[[guaranteed]]
+obj = "obj.contact_keris"
+count = 1

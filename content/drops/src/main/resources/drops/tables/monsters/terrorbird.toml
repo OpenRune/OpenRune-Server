@@ -1,0 +1,10 @@
+id = "Terrorbird Drops"
+npcs = ["npc.terrorbird", "npc.terrorbird2", "npc.terrorbird3"]
+
+[[tertiary]]
+numerator = 1
+denominator = 4
+obj = "obj.rag_terrorbird_bone"
+count = 1
+quest = "quest_ragandboneman2"
+quest_mode = "during"

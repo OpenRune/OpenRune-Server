@@ -1,0 +1,10 @@
+id = "Kamil Drops"
+npcs = ["npc.icediamond_icewarrior"]
+
+[[guaranteed]]
+obj = "obj.chocolate_cake"
+count = 2
+
+[[guaranteed]]
+obj = "obj.4dose2restore"
+count = 1

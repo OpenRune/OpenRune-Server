@@ -8,6 +8,7 @@ import org.rsmod.api.droptable.rsPlayerTertiaryTable
 import org.rsmod.api.droptable.rsPlayerWeightedTable
 import org.rsmod.content.drops.tables.shared.SharedDropTables
 import org.rsmod.api.droptable.DropRollItem
+import org.rsmod.content.drops.clueScrollTransformObj
 import org.rsmod.api.droptable.ringNothing
 import org.rsmod.api.droptable.RegisterDropTable
 import org.rsmod.game.entity.Player
@@ -47,14 +48,12 @@ public val rockCrabDropTable: RSDropTable<Player, DropRollItem> = RSDropTable(
     },
     tertiaries = rsPlayerTertiaryTable {
         1 outOf 1 weight "obj.trail_elite_emote_exp1" count 1 condition { player ->
-            // Drops Need Manual: Elite clue scrolls or elite caskets are only dropped when completing an [[Treasure Trails/Full guide/Elite#Cryptic clues
+            // Drops Need Manual: Elite clue scrolls or elite caskets are only dropped when completing an Treasure Trails/Full guide/Elite#Cryptic clues
              true
         }
         1 outOf 1 weight "obj.trail_reward_casket_elite" count 1
-        // Drops Need Manual (rate): The easy clue scroll drop rate increases to 1/121 after unlocking the easy Combat Achievements rewards tier.
-        1 outOf 128 weight "obj.trail_clue_easy_simple001" count 1 transformObj { player ->
-            // Drops Need Manual (item): Clue scrolls will drop as scroll boxes after the completion of X Marks the Spot.
-             null
+        1 outOf 121 weight "obj.trail_clue_easy_simple001" count 1 transformObj { player ->
+             player.clueScrollTransformObj("obj.trail_clue_easy_simple001")
         }
     },
 )

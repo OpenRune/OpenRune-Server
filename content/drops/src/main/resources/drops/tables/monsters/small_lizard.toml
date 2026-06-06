@@ -1,0 +1,87 @@
+id = "Small Lizard Drops"
+npcs = ["npc.slayer_lizard_small1_green", "npc.slayer_lizard_small2_sandy", "npc.slayer_lizard_small1_green_lowrange"]
+
+[main]
+total = 147
+name = "Small Lizard Drops"
+
+[[main.entries]]
+weight = 30
+obj = "obj.firerune"
+count = 5
+
+[[main.entries]]
+weight = 14
+obj = "obj.firerune"
+count = 42
+
+[[main.entries]]
+weight = 4
+obj = "obj.naturerune"
+count = 5
+
+[[main.entries]]
+weight = 13
+obj = "obj.coal"
+count = 1
+
+[[main.entries]]
+weight = 3
+obj = "obj.copper_ore"
+count = 1
+
+[[main.entries]]
+weight = 22
+obj = "obj.iron_ore"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.silver_bar"
+count = 1
+
+[[main.entries]]
+weight = 3
+obj = "obj.silver_ore"
+count = 1
+
+[[main.entries]]
+weight = 4
+obj = "obj.tin_ore"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.mithril_ore"
+count = 1
+
+[[main.entries]]
+weight = 13
+obj = "obj.kebab"
+count = 1
+
+[[main.entries]]
+weight = 13
+obj = "obj.water_skin0"
+count = 2
+
+[[main.entries]]
+weight = 10
+shared = "herb"
+
+[[main.entries]]
+weight = 6
+shared = "gem"
+
+[[main.entries]]
+weight = 9
+shared = "seed"
+
+[[main.separate_rolls]]
+numerator = 1
+denominator = 512
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.mystic_gloves_light"
+count = 1

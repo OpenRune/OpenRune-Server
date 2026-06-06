@@ -11,6 +11,7 @@ import org.rsmod.api.droptable.DropRollItem
 import org.rsmod.content.drops.brimstoneKeyRoll
 import org.rsmod.content.drops.hasCompletedQuest
 import org.rsmod.content.drops.isOnQuest
+import org.rsmod.content.drops.clueScrollTransformObj
 import org.rsmod.api.droptable.RegisterDropTable
 import org.rsmod.game.entity.Player
 
@@ -68,15 +69,11 @@ public val brutalRedDragonDropTable: RSDropTable<Player, DropRollItem> = RSDropT
         1 outOf 20 weight "obj.arceuus_corpse_dragon" count 1
         onBuilder { brimstoneKeyRoll() }
         1 outOf 10000 weight "obj.dragonfire_visage" count 1
-        // Drops Need Manual (rate): The hard clue scroll drop rate increases to 1/121 after unlocking the hard Combat Achievements rewards tier.
-        1 outOf 128 weight "obj.trail_clue_hard_map001" count 1 transformObj { player ->
-            // Drops Need Manual (item): Clue scrolls will drop as scroll boxes after the completion of X Marks the Spot.
-             null
+        1 outOf 121 weight "obj.trail_clue_hard_map001" count 1 transformObj { player ->
+             player.clueScrollTransformObj("obj.trail_clue_hard_map001")
         }
-        // Drops Need Manual (rate): The elite clue scroll drop rate increases to 1/475 after unlocking the elite Combat Achievements rewards tier.
-        1 outOf 500 weight "obj.trail_elite_emote_exp1" count 1 transformObj { player ->
-            // Drops Need Manual (item): Clue scrolls will drop as scroll boxes after the completion of X Marks the Spot.
-             null
+        1 outOf 475 weight "obj.trail_elite_emote_exp1" count 1 transformObj { player ->
+             player.clueScrollTransformObj("obj.trail_elite_emote_exp1")
         }
     },
 )

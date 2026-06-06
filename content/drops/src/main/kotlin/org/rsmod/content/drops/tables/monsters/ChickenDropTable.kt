@@ -7,6 +7,7 @@ import org.rsmod.api.droptable.rsPlayerGuaranteedTable
 import org.rsmod.api.droptable.rsPlayerTertiaryTable
 import org.rsmod.api.droptable.rsPlayerWeightedTable
 import org.rsmod.api.droptable.DropRollItem
+import org.rsmod.content.drops.clueScrollTransformObj
 import org.rsmod.api.droptable.ringNothing
 import org.rsmod.api.droptable.RegisterDropTable
 import org.rsmod.game.entity.Player
@@ -31,8 +32,7 @@ public val chickenDropTable: RSDropTable<Player, DropRollItem> = RSDropTable(
              true
         }
         1 outOf 300 weight "obj.trail_clue_beginner" count 1 transformObj { player ->
-            // Drops Need Manual (item): Clue scrolls will drop as scroll boxes after the completion of X Marks the Spot.
-             null
+             player.clueScrollTransformObj("obj.trail_clue_beginner")
         }
     },
 )

@@ -1,0 +1,20 @@
+id = "Wolf Drops"
+npcs = ["npc.wolf", "npc.pack_wolf_whiter", "npc.sos_war_wolf", "npc.sos_war_wolf2", "npc.viking_wolf"]
+
+[[tertiary]]
+numerator = 1
+denominator = 4
+obj = "obj.rag_wolf_bone"
+count = 1
+quest = "quest_ragandboneman2"
+quest_mode = "during"
+
+[[tertiary]]
+numerator = 1
+denominator = 6
+obj = "obj.looting_bag"
+count = 1
+should_drop_looting_bag = true
+
+
+# Unknown wiki drop rate: Clue scroll (beginner) [tertiary/Tertiary/Rare]

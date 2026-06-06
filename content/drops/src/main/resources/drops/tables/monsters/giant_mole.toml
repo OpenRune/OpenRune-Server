@@ -1,0 +1,144 @@
+id = "Giant Mole Drops"
+npcs = ["npc.mole_giant"]
+brimstone_key_roll = true
+
+[[guaranteed]]
+obj = "obj.mole_claw"
+count = 1
+
+[[guaranteed]]
+obj = "obj.mole_skin"
+count = "1..3"
+
+[main]
+total = 131
+name = "Giant Mole Drops"
+
+[[main.entries]]
+weight = 10
+obj = "obj.adamant_longsword"
+count = 1
+
+[[main.entries]]
+weight = 9
+obj = "obj.mithril_platebody"
+count = 1
+
+[[main.entries]]
+weight = 7
+obj = "obj.amulet_of_strength"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.mithril_axe"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.mithril_battleaxe"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.rune_med_helm"
+count = 1
+
+[[main.entries]]
+weight = 20
+obj = "obj.airrune"
+count = 105
+
+[[main.entries]]
+weight = 19
+obj = "obj.bloodrune"
+count = 15
+
+[[main.entries]]
+weight = 11
+obj = "obj.firerune"
+count = 105
+
+[[main.entries]]
+weight = 10
+obj = "obj.iron_arrow"
+count = 690
+
+[[main.entries]]
+weight = 5
+obj = "obj.lawrune"
+count = 15
+
+[[main.entries]]
+weight = 3
+obj = "obj.deathrune"
+count = 50
+
+[[main.entries]]
+weight = 10
+obj = "obj.cert_yew_logs"
+count = 100
+
+[[main.entries]]
+weight = 4
+obj = "obj.shark"
+count = 4
+
+[[main.entries]]
+weight = 3
+obj = "obj.mithril_bar"
+count = 1
+
+[[main.entries]]
+weight = 3
+obj = "obj.ranarr_seed"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.cert_iron_ore"
+count = 100
+
+[[main.entries]]
+weight = 1
+obj = "obj.bigoysterpearls"
+count = 1
+
+[[main.entries]]
+weight = 4
+shared = "rareDrop"
+
+[[main.entries]]
+weight = 6
+shared = "gem"
+
+[[tertiary]]
+numerator = 1
+denominator = 50
+obj = "obj.immaculate_mole_skin"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 400
+obj = "obj.dorgesh_construction_bone"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 3000
+obj = "obj.molepet"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 5013
+obj = "obj.dorgesh_construction_bone_curved"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 475
+obj = "obj.trail_elite_emote_exp1"
+count = 1
+clue_scroll_box = true

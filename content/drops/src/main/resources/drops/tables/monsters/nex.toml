@@ -1,0 +1,121 @@
+id = "Nex Drops"
+npcs = ["npc.nex", "npc.nex_spawning", "npc.nex_soulsplit", "npc.nex_deflect", "npc.nex_dying"]
+
+[main]
+total = 258
+name = "Nex Drops"
+
+[[main.entries]]
+weight = 1
+obj = "obj.nihil_horn"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.broken_torva_helm"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.broken_torva_chest"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.broken_torva_legs"
+count = 1
+
+[[main.entries]]
+weight = 254
+nothing = true
+
+[[main.separate_rolls]]
+numerator = 1
+denominator = 516
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.godwars_godsword_hilt_ancient"
+count = 1
+
+[[main.separate_rolls]]
+numerator = 1
+denominator = 172
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.zaryte_vambraces"
+count = 1
+
+[[main.separate_rolls]]
+numerator = 1
+denominator = 82
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.blood_essence_inactive"
+count = "1..2"
+
+[[main.separate_rolls]]
+numerator = 5
+denominator = 82
+
+[[main.separate_rolls.entries]]
+weight = 5
+obj = "obj.nihil_shard"
+count = "80..85"
+
+[[main.separate_rolls]]
+numerator = 1
+denominator = 209
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.rune_sword"
+count = 1
+
+[[main.separate_rolls]]
+numerator = 8
+denominator = 209
+
+[[main.separate_rolls.entries]]
+weight = 8
+obj = "obj.nihil_shard"
+count = "85..95"
+
+[[tertiary]]
+numerator = 1
+denominator = 500
+obj = "obj.nexpet"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 45
+obj = "obj.trail_elite_emote_exp1"
+count = 1
+clue_scroll_box = true
+
+
+# Unknown wiki drop rate: Air rune [main/Runes and ammunition/Uncommon]
+# Unknown wiki drop rate: Fire rune [main/Runes and ammunition/Uncommon]
+# Unknown wiki drop rate: Blood rune [main/Runes and ammunition/Common]
+# Unknown wiki drop rate: Death rune [main/Runes and ammunition/Common]
+# Unknown wiki drop rate: Water rune [main/Runes and ammunition/Uncommon]
+# Unknown wiki drop rate: Soul rune [main/Runes and ammunition/Common]
+# Unknown wiki drop rate: Dragon bolts (unf) [main/Runes and ammunition/Common]
+# Unknown wiki drop rate: Onyx bolts (e) [main/Runes and ammunition/Uncommon]
+# Unknown wiki drop rate: Steel cannonball [main/Runes and ammunition/Common]
+# Unknown wiki drop rate: Air orb [main/Resources/Common]
+# Unknown wiki drop rate: Coal [main/Resources/Uncommon]
+# Unknown wiki drop rate: Runite ore [main/Resources/Uncommon]
+# Unknown wiki drop rate: Uncut ruby [main/Resources/Common]
+# Unknown wiki drop rate: Uncut diamond [main/Resources/Common]
+# Unknown wiki drop rate: Wine of zamorak [main/Resources/Common]
+# Unknown wiki drop rate: Shark [main/Consumables/Common]
+# Unknown wiki drop rate: Prayer potion(4) [main/Consumables/Common]
+# Unknown wiki drop rate: Saradomin brew(4) [main/Consumables/Common]
+# Unknown wiki drop rate: Super restore(4) [main/Consumables/Common]
+# Unknown wiki drop rate: Coins [main/Other/Uncommon]
+# Unknown wiki drop rate: Ecumenical key shard [main/Other/Common]
+# Main table pool padding uses a nothing roll (F2P drops removed and/or subtable access missing from wiki parse) (254 weight)

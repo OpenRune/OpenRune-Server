@@ -1,0 +1,217 @@
+id = "Tormented Demon Drops"
+npcs = ["npc.tormented_demon_1", "npc.tormented_demon_2", "npc.tormented_demon_quest_1", "npc.tormented_demon_quest_2"]
+
+[main]
+total = 51
+name = "Tormented Demon Drops"
+
+[[main.entries]]
+weight = 3
+obj = "obj.dragon_dagger"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.rune_kiteshield"
+count = 1
+
+[[main.entries]]
+weight = 3
+obj = "obj.cert_battlestaff"
+count = 1
+
+[[main.entries]]
+weight = 4
+obj = "obj.rune_platebody"
+count = 1
+
+[[main.entries]]
+weight = 4
+obj = "obj.chaosrune"
+count = "25..100"
+
+[[main.entries]]
+weight = 2
+obj = "obj.soulrune"
+count = "50..75"
+
+[[main.entries]]
+weight = 4
+obj = "obj.rune_arrow"
+count = "65..125"
+
+[[main.entries]]
+weight = 4
+obj = "obj.mantaray"
+count = "1..2"
+
+[[main.entries]]
+weight = 1
+obj = "obj.4doseprayerrestore"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.2doseprayerrestore"
+count = 2
+
+[[main.entries]]
+weight = 2
+obj = "obj.malicious_ashes"
+count = "2..3"
+
+[[main.entries]]
+weight = 2
+obj = "obj.cert_fire_orb"
+count = "5..7"
+
+[[main.entries]]
+weight = 1
+obj = "obj.dragon_arrowheads"
+count = "30..40"
+
+[[main.entries]]
+weight = 18
+nothing = true
+
+[[main.separate_rolls]]
+numerator = 499
+denominator = 250000
+
+[[main.separate_rolls.entries]]
+weight = 499
+obj = "obj.bone_claw"
+count = 1
+
+[[main.separate_rolls]]
+numerator = 1
+denominator = 500
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.tormented_synapse"
+count = 1
+
+[[main.separate_rolls]]
+numerator = 10
+denominator = 408
+
+[[main.separate_rolls.entries]]
+weight = 10
+obj = "obj.unidentified_kwuarm"
+count = 1
+
+[[main.separate_rolls]]
+numerator = 8
+denominator = 408
+
+[[main.separate_rolls.entries]]
+weight = 8
+obj = "obj.unidentified_dwarf_weed"
+count = 1
+
+[[main.separate_rolls.entries]]
+weight = 8
+obj = "obj.unidentified_cadantine"
+count = 1
+
+[[main.separate_rolls]]
+numerator = 6
+denominator = 408
+
+[[main.separate_rolls.entries]]
+weight = 6
+obj = "obj.unidentified_lantadyme"
+count = 1
+
+[[main.separate_rolls]]
+numerator = 5
+denominator = 408
+
+[[main.separate_rolls.entries]]
+weight = 5
+obj = "obj.unidentified_avantoe"
+count = 1
+
+[[main.separate_rolls]]
+numerator = 4
+denominator = 408
+
+[[main.separate_rolls.entries]]
+weight = 4
+obj = "obj.unidentified_ranarr"
+count = 1
+
+[[main.separate_rolls.entries]]
+weight = 4
+obj = "obj.unidentified_snapdragon"
+count = 1
+
+[[main.separate_rolls]]
+numerator = 3
+denominator = 408
+
+[[main.separate_rolls.entries]]
+weight = 3
+obj = "obj.unidentified_torstol"
+count = 1
+
+[[main.separate_rolls]]
+numerator = 1
+denominator = 25
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.smouldering_gland"
+count = 1
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.smouldering_pile_of_flesh"
+count = 1
+
+[[main.separate_rolls]]
+numerator = 1
+denominator = 125
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.smouldering_heart"
+count = 1
+
+[[main.separate_rolls]]
+numerator = 1
+denominator = 12
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.teleportscroll_guthixian_temple"
+count = 2
+
+[[main.separate_rolls]]
+numerator = 29
+denominator = 255
+
+[[main.separate_rolls.entries]]
+weight = 29
+obj = "obj.cert_unstrung_magic_shortbow"
+count = 1
+
+[[main.separate_rolls]]
+numerator = 1
+denominator = 255
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.unstrung_magic_longbow"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 121
+obj = "obj.trail_elite_emote_exp1"
+count = 1
+clue_scroll_box = true
+
+
+# Main table pool padding uses a nothing roll (F2P drops removed and/or subtable access missing from wiki parse) (18 weight)

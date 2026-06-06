@@ -1,0 +1,26 @@
+id = "Skeletal Mystic Drops"
+npcs = ["npc.raids_skeletonmystic_a", "npc.raids_skeletonmystic_b", "npc.raids_skeletonmystic_c"]
+
+[[guaranteed]]
+obj = "obj.raids_seed_golpar"
+count = "5..10"
+
+[[guaranteed]]
+obj = "obj.raids_seed_buchuleaf"
+count = "5..10"
+
+[[guaranteed]]
+obj = "obj.raids_seed_noxifer"
+count = "5..10"
+
+[[tertiary]]
+numerator = 1
+denominator = 400
+obj = "obj.dorgesh_construction_bone"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 5013
+obj = "obj.dorgesh_construction_bone_curved"
+count = 1

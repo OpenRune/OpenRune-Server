@@ -1,0 +1,14 @@
+id = "Animated Adamant Armour Drops"
+npcs = ["npc.warguild_adamant_armour"]
+
+[[guaranteed]]
+obj = "obj.adamant_full_helm"
+count = 1
+
+[[guaranteed]]
+obj = "obj.adamant_platebody"
+count = 1
+
+[[guaranteed]]
+obj = "obj.adamant_platelegs"
+count = 1

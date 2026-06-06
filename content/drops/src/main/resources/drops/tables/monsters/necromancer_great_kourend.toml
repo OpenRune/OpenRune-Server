@@ -1,0 +1,119 @@
+id = "Necromancer (Great Kourend) Drops"
+npcs = ["npc.shayzien_necromancer"]
+
+[main]
+total = 65
+name = "Necromancer (Great Kourend) Drops"
+
+[[main.entries]]
+weight = 4
+obj = "obj.airrune"
+count = "20..30"
+
+[[main.entries]]
+weight = 4
+obj = "obj.waterrune"
+count = "20..30"
+
+[[main.entries]]
+weight = 4
+obj = "obj.earthrune"
+count = "20..30"
+
+[[main.entries]]
+weight = 4
+obj = "obj.firerune"
+count = "20..30"
+
+[[main.entries]]
+weight = 4
+obj = "obj.mindrune"
+count = "20..30"
+
+[[main.entries]]
+weight = 4
+obj = "obj.bodyrune"
+count = "20..30"
+
+[[main.entries]]
+weight = 3
+obj = "obj.cosmicrune"
+count = "10..15"
+
+[[main.entries]]
+weight = 3
+obj = "obj.chaosrune"
+count = "10..15"
+
+[[main.entries]]
+weight = 3
+obj = "obj.naturerune"
+count = "10..15"
+
+[[main.entries]]
+weight = 3
+obj = "obj.lawrune"
+count = "10..15"
+
+[[main.entries]]
+weight = 2
+obj = "obj.deathrune"
+count = "4..8"
+
+[[main.entries]]
+weight = 2
+obj = "obj.bloodrune"
+count = "4..8"
+
+[[main.entries]]
+weight = 6
+obj = "obj.coins"
+count = "10..50"
+
+[[main.entries]]
+weight = 2
+obj = "obj.plainstaff"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.air_talisman"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.water_talisman"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.earth_talisman"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.fire_talisman"
+count = 1
+
+[[main.entries]]
+weight = 13
+nothing = true
+
+[[main.separate_rolls]]
+numerator = 1
+denominator = 5
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.amulet_of_magic_cursed"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 121
+obj = "obj.trail_medium_emote_exp1"
+count = 1
+clue_scroll_box = true
+
+
+# Main table pool padding uses a nothing roll (F2P drops removed and/or subtable access missing from wiki parse) (13 weight)

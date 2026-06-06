@@ -29,7 +29,7 @@ public val corruptedRatDropTable: RSDropTable<Player, DropRollItem> = RSDropTabl
     },
     tertiaries = rsPlayerTertiaryTable {
         1 outOf 4 weight "obj.gauntlet_generic_component_hm" count 1 condition { player ->
-            // Drops Need Manual: Guaranteed after killing three of the low-level monsters (rat, [[Corrupted Bat
+            // Drops Need Manual: Guaranteed after killing three of the low-level monsters (rat, Corrupted Bat
              true
         }
     },

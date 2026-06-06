@@ -10,6 +10,7 @@ import org.rsmod.content.drops.tables.shared.SharedDropTables
 import org.rsmod.api.droptable.DropRollItem
 import org.rsmod.content.drops.hasCompletedQuest
 import org.rsmod.content.drops.isOnQuest
+import org.rsmod.content.drops.clueScrollTransformObj
 import org.rsmod.api.droptable.RegisterDropTable
 import org.rsmod.game.entity.Player
 
@@ -58,8 +59,7 @@ public val goblinGoblinVillageDropTable: RSDropTable<Player, DropRollItem> = RSD
         1 outOf 30 weight "obj.arceuus_corpse_goblin" count 1
         1 outOf 5000 weight "obj.champions_challenge_goblin" count 1
         1 outOf 80 weight "obj.trail_clue_beginner" count 1 transformObj { player ->
-            // Drops Need Manual (item): Clue scrolls will drop as scroll boxes after the completion of X Marks the Spot.
-             null
+             player.clueScrollTransformObj("obj.trail_clue_beginner")
         }
     },
 )

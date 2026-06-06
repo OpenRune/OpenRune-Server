@@ -50,9 +50,8 @@ public val pirateDropTable: RSDropTable<Player, DropRollItem> = RSDropTable(
             // Drops Need Manual: Only dropped when completing a medium clue scroll asking to kill a pirate.
              true
         }
-        1 outOf 6 weight "obj.looting_bag" count 1 condition { player ->
-            // Drops Need Manual: Only dropped by those found in the Wilderness.
-             true
+        1 outOf 6 weight "obj.looting_bag" count 1 condition {
+            player -> player.shouldDropLootingBag()
         }
     },
 )

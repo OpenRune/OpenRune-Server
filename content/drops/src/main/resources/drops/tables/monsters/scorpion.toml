@@ -1,0 +1,28 @@
+id = "Scorpion Drops"
+npcs = ["npc.sos_pest_scorpion", "npc.sos_pest_scorpion2", "npc.scorpion", "npc.mm_jungle_scorpion", "npc.varlamore_scorpion_savannah", "npc.tinyscorpion"]
+
+[[guaranteed]]
+obj = "obj.dwarf_rock_page1"
+count = 1
+quest = "quest_betweenarock"
+quest_mode = "during"
+
+[[tertiary]]
+numerator = 1
+denominator = 10
+obj = "obj.looting_bag"
+count = 1
+should_drop_looting_bag = true
+
+[[tertiary]]
+numerator = 1
+denominator = 25
+obj = "obj.arceuus_corpse_scorpion"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 100
+obj = "obj.trail_clue_beginner"
+count = 1
+clue_scroll_box = true

@@ -1,0 +1,210 @@
+id = "Abyssal Sire Drops"
+npcs = ["npc.abyssalsire_sire_stasis_sleeping", "npc.abyssalsire_sire_stasis_awake", "npc.abyssalsire_sire_stasis_stunned", "npc.abyssalsire_sire_puppet", "npc.abyssalsire_sire_wandering", "npc.abyssalsire_sire_panicking", "npc.abyssalsire_sire_apocalypse"]
+brimstone_key_roll = true
+brimstone_key_roll_konar_bonus = true
+
+[[pre_roll]]
+numerator = 1
+denominator = 100
+obj = "obj.abyssalsire_unsired"
+count = 1
+
+[main]
+total = 139
+name = "Abyssal Sire Drops"
+
+[[main.entries]]
+weight = 6
+obj = "obj.cert_battlestaff"
+count = 10
+
+[[main.entries]]
+weight = 4
+obj = "obj.cert_rune_full_helm"
+count = 3
+
+[[main.entries]]
+weight = 4
+obj = "obj.cert_mystic_lava_staff"
+count = 2
+
+[[main.entries]]
+weight = 4
+obj = "obj.cert_rune_sword"
+count = 3
+
+[[main.entries]]
+weight = 4
+obj = "obj.cert_rune_platebody"
+count = 2
+
+[[main.entries]]
+weight = 3
+obj = "obj.cert_rune_kiteshield"
+count = 2
+
+[[main.entries]]
+weight = 2
+obj = "obj.cert_mystic_air_staff"
+count = 2
+
+[[main.entries]]
+weight = 2
+obj = "obj.cert_air_battlestaff"
+count = 6
+
+[[main.entries]]
+weight = 5
+obj = "obj.bloodrune"
+count = "190..210"
+
+[[main.entries]]
+weight = 5
+obj = "obj.deathrune"
+count = "330..370"
+
+[[main.entries]]
+weight = 5
+obj = "obj.lawrune"
+count = 250
+
+[[main.entries]]
+weight = 5
+obj = "obj.soulrune"
+count = "225..275"
+
+[[main.entries]]
+weight = 4
+obj = "obj.cosmicrune"
+count = 350
+
+[[main.entries]]
+weight = 4
+obj = "obj.mcannonball"
+count = 300
+
+[[main.entries]]
+weight = 5
+obj = "obj.cert_earth_orb"
+count = "47..53"
+
+[[main.entries]]
+weight = 5
+obj = "obj.cert_blankrune_high"
+count = 600
+
+[[main.entries]]
+weight = 5
+obj = "obj.cert_magic_logs"
+count = "50..70"
+
+[[main.entries]]
+weight = 5
+obj = "obj.cert_uncut_diamond"
+count = 15
+
+[[main.entries]]
+weight = 4
+obj = "obj.cert_coal"
+count = "380..420"
+
+[[main.entries]]
+weight = 4
+obj = "obj.cert_runite_ore"
+count = 6
+
+[[main.entries]]
+weight = 3
+obj = "obj.xbows_bolt_tips_onyx"
+count = 10
+
+[[main.entries]]
+weight = 2
+obj = "obj.cert_runite_bar"
+count = 5
+
+[[main.entries]]
+weight = 2
+obj = "obj.cosmic_soul_catalyst"
+count = "220..270"
+
+[[main.entries]]
+weight = 11
+obj = "obj.coins"
+count = "48000..52000"
+
+[[main.entries]]
+weight = 7
+obj = "obj.potato_chilli+carne"
+count = 10
+
+[[main.entries]]
+weight = 5
+obj = "obj.4dose2restore"
+count = 4
+
+[[main.entries]]
+weight = 4
+obj = "obj.cert_magic_emerald_necklace"
+count = 25
+
+[[main.entries]]
+weight = 2
+obj = "obj.3dosepotionofsaradomin"
+count = 6
+
+[[main.entries]]
+weight = 2
+obj = "obj.cert_jug_water"
+count = "250..350"
+
+[[main.entries]]
+weight = 3
+shared = "rareDrop"
+
+[[main.entries]]
+weight = 13
+nothing = true
+
+[[main.separate_rolls]]
+numerator = 25
+denominator = 2224
+
+[[main.separate_rolls.entries]]
+weight = 25
+obj = "obj.cert_unidentified_kwuarm"
+count = 25
+
+[[main.separate_rolls]]
+numerator = 20
+denominator = 2224
+
+[[main.separate_rolls.entries]]
+weight = 20
+obj = "obj.cert_unidentified_dwarf_weed"
+count = 25
+
+[[main.separate_rolls.entries]]
+weight = 20
+obj = "obj.cert_unidentified_cadantine"
+count = 25
+
+[[main.separate_rolls]]
+numerator = 15
+denominator = 2224
+
+[[main.separate_rolls.entries]]
+weight = 15
+obj = "obj.cert_unidentified_lantadyme"
+count = 25
+
+[[tertiary]]
+numerator = 1
+denominator = 171
+obj = "obj.trail_elite_emote_exp1"
+count = 1
+clue_scroll_box = true
+
+
+# Main table pool padding uses a nothing roll (F2P drops removed and/or subtable access missing from wiki parse) (13 weight)
+# Drops need manual (konar_key): Brimstone keys are dropped if killed on a Slayer task given by Konar quo Maten.

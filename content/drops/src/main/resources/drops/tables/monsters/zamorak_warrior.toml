@@ -1,0 +1,41 @@
+id = "Zamorak warrior Drops"
+npcs = ["npc.rc_zmi_melee", "npc.rc_zmi_melee2"]
+
+[main]
+total = 50
+name = "Zamorak warrior Drops"
+
+[[main.entries]]
+weight = 2
+obj = "obj.rune_dagger"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.adamant_longsword"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.steel_scimitar"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.steel_dagger"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.rune_scimitar"
+count = 1
+
+[[main.entries]]
+weight = 40
+obj = "obj.coins"
+count = 100
+
+[[main.entries]]
+weight = 2
+obj = "obj.lobster"
+count = 3

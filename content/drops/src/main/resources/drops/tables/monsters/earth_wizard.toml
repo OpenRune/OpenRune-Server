@@ -1,0 +1,16 @@
+id = "Earth wizard Drops"
+npcs = ["npc.earth_wizard"]
+
+[main]
+total = 20
+name = "Earth wizard Drops"
+
+[[main.entries]]
+weight = 19
+obj = "obj.earthrune"
+count = "5..10"
+
+[[main.entries]]
+weight = 1
+obj = "obj.earth_talisman"
+count = 1

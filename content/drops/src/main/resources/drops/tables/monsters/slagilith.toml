@@ -1,0 +1,16 @@
+id = "Slagilith Drops"
+npcs = ["npc.slagilith", "npc.slagilith_birth"]
+
+[[guaranteed]]
+obj = "obj.adamantite_ore"
+count = 1
+quest = "quest_onesmallfavour"
+quest_mode = "during"
+
+[[guaranteed]]
+obj = "obj.uncut_diamond"
+count = 1
+
+[[guaranteed]]
+obj = "obj.uncut_ruby"
+count = 1

@@ -1,0 +1,10 @@
+id = "Snake (Ape Atoll) Drops"
+npcs = ["npc.mm_jungle_snake"]
+
+[[tertiary]]
+numerator = 1
+denominator = 4
+obj = "obj.rag_snake_bone"
+count = 1
+quest = "quest_ragandboneman2"
+quest_mode = "during"

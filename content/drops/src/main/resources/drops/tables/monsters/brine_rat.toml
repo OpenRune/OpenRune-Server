@@ -1,0 +1,140 @@
+id = "Brine rat Drops"
+npcs = ["npc.olaf2_brine_rats"]
+brimstone_key_roll = true
+brimstone_key_roll_konar_bonus = true
+
+[[guaranteed]]
+obj = "obj.raw_rat_meat"
+count = 1
+
+[main]
+total = 128
+name = "Brine rat Drops"
+
+[[main.entries]]
+weight = 18
+obj = "obj.deathrune"
+count = 7
+
+[[main.entries]]
+weight = 2
+obj = "obj.airrune"
+count = 18
+
+[[main.entries]]
+weight = 6
+obj = "obj.earthrune"
+count = 10
+
+[[main.entries]]
+weight = 2
+obj = "obj.earthrune"
+count = 18
+
+[[main.entries]]
+weight = 4
+obj = "obj.earthrune"
+count = 36
+
+[[main.entries]]
+weight = 3
+obj = "obj.waterrune"
+count = 10
+
+[[main.entries]]
+weight = 2
+obj = "obj.waterrune"
+count = 18
+
+[[main.entries]]
+weight = 2
+obj = "obj.bloodrune"
+count = 4
+
+[[main.entries]]
+weight = 6
+obj = "obj.cert_raw_lobster"
+count = 10
+
+[[main.entries]]
+weight = 6
+obj = "obj.cert_raw_shark"
+count = 3
+
+[[main.entries]]
+weight = 2
+obj = "obj.cert_raw_rat_meat"
+count = 18
+
+[[main.entries]]
+weight = 2
+obj = "obj.cert_raw_pike"
+count = 18
+
+[[main.entries]]
+weight = 2
+obj = "obj.cert_raw_shark"
+count = 8
+
+[[main.entries]]
+weight = 2
+obj = "obj.raw_swordfish"
+count = 9
+
+[[main.entries]]
+weight = 1
+obj = "obj.raw_shark"
+count = 1
+
+[[main.entries]]
+weight = 21
+obj = "obj.coins"
+count = 1
+
+[[main.entries]]
+weight = 16
+obj = "obj.coins"
+count = 2
+
+[[main.entries]]
+weight = 9
+obj = "obj.coins"
+count = 4
+
+[[main.entries]]
+weight = 3
+obj = "obj.coins"
+count = 29
+
+[[main.entries]]
+weight = 16
+nothing = true
+
+[[main.entries]]
+weight = 3
+obj = "obj.water_talisman"
+count = 1
+
+[[main.separate_rolls]]
+numerator = 1
+denominator = 512
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.olaf2_brine_sabre"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 4
+obj = "obj.rag_rat_bone"
+count = 1
+quest = "quest_ragandboneman2"
+quest_mode = "during"
+
+[[tertiary]]
+numerator = 1
+denominator = 121
+obj = "obj.trail_medium_emote_exp1"
+count = 1
+clue_scroll_box = true

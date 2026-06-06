@@ -1,0 +1,18 @@
+id = "Undead cow Drops"
+npcs = ["npc.ahoy_undead_cow"]
+
+[[guaranteed]]
+obj = "obj.cow_hide"
+count = 1
+
+[[guaranteed]]
+obj = "obj.raw_beef_undead"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 4
+obj = "obj.rag_undead_cow_bone"
+count = 1
+quest = "quest_ragandboneman2"
+quest_mode = "during"

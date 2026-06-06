@@ -1,0 +1,20 @@
+id = "Desert Wolf Drops"
+npcs = ["npc.desert_wolf", "npc.desert_wolf2", "npc.desert_wolf3"]
+
+[main]
+total = 4
+name = "Desert Wolf Drops"
+
+[[main.entries]]
+weight = 1
+obj = "obj.rag_wolf_bone"
+count = 1
+quest = "quest_ragandboneman2"
+quest_mode = "during"
+
+[[main.entries]]
+weight = 3
+nothing = true
+
+
+# Main table pool padding uses a nothing roll (F2P drops removed and/or subtable access missing from wiki parse) (3 weight)

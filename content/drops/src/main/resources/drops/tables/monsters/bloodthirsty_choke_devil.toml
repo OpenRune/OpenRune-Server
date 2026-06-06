@@ -1,0 +1,225 @@
+id = "Bloodthirsty choke devil Drops"
+npcs = ["npc.league_superior_dustdevil"]
+brimstone_key_roll = true
+brimstone_key_roll_konar_bonus = true
+
+[main]
+total = 128
+name = "Bloodthirsty choke devil Drops"
+
+[[main.entries]]
+weight = 3
+obj = "obj.adamant_axe"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.rune_dagger"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.red_dragon_vambraces"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.black_dragon_vambraces"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.air_battlestaff"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.earth_battlestaff"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.mystic_air_staff"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.mystic_earth_staff"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.dragon_dagger"
+count = 1
+
+[[main.entries]]
+weight = 10
+obj = "obj.dustrune"
+count = 200
+
+[[main.entries]]
+weight = 10
+obj = "obj.earthrune"
+count = 300
+
+[[main.entries]]
+weight = 10
+obj = "obj.firerune"
+count = 300
+
+[[main.entries]]
+weight = 1
+obj = "obj.firerune"
+count = 50
+
+[[main.entries]]
+weight = 7
+obj = "obj.chaosrune"
+count = 80
+
+[[main.entries]]
+weight = 5
+obj = "obj.rune_arrow"
+count = 12
+
+[[main.entries]]
+weight = 4
+obj = "obj.soulrune"
+count = 20
+
+[[main.entries]]
+weight = 1
+obj = "obj.soulrune"
+count = 50
+
+[[main.entries]]
+weight = 32
+obj = "obj.coins"
+count = "2000..4000"
+
+[[main.entries]]
+weight = 2
+obj = "obj.ugthanki_kebab"
+count = 4
+
+[[main.entries]]
+weight = 3
+obj = "obj.cert_mithril_bar"
+count = 10
+
+[[main.entries]]
+weight = 1
+obj = "obj.cert_adamantite_bar"
+count = 4
+
+[[main.entries]]
+weight = 8
+shared = "herb"
+
+[[main.entries]]
+weight = 8
+shared = "gem"
+
+[[main.entries]]
+weight = 11
+nothing = true
+
+[[main.separate_rolls]]
+numerator = 5
+denominator = 166
+
+[[main.separate_rolls.entries]]
+weight = 5
+obj = "obj.cert_raw_lobster"
+count = "60..80"
+
+[[main.separate_rolls.entries]]
+weight = 5
+obj = "obj.cert_unicorn_horn"
+count = "60..150"
+
+[[main.separate_rolls]]
+numerator = 10
+denominator = 166
+
+[[main.separate_rolls.entries]]
+weight = 10
+obj = "obj.cert_snape_grass"
+count = "60..150"
+
+[[main.separate_rolls.entries]]
+weight = 10
+obj = "obj.irit_seed"
+count = "10..15"
+
+[[main.separate_rolls.entries]]
+weight = 10
+obj = "obj.cert_limpwurt_root"
+count = "60..150"
+
+[[main.separate_rolls]]
+numerator = 15
+denominator = 166
+
+[[main.separate_rolls.entries]]
+weight = 15
+obj = "obj.cert_yew_logs"
+count = "70..90"
+
+[[main.separate_rolls.entries]]
+weight = 15
+obj = "obj.cert_raw_monkfish"
+count = "60..80"
+
+[[main.separate_rolls]]
+numerator = 20
+denominator = 166
+
+[[main.separate_rolls.entries]]
+weight = 20
+obj = "obj.cert_white_berries"
+count = "60..150"
+
+[[main.separate_rolls]]
+numerator = 30
+denominator = 166
+
+[[main.separate_rolls.entries]]
+weight = 30
+obj = "obj.kwuarm_seed"
+count = "8..15"
+
+[[main.separate_rolls.entries]]
+weight = 30
+obj = "obj.ranarr_seed"
+count = "8..15"
+
+[[main.separate_rolls]]
+numerator = 16
+denominator = 166
+
+[[main.separate_rolls.entries]]
+weight = 16
+obj = "obj.cert_blue_dragon_scale"
+count = "20..40"
+
+[[main.separate_rolls]]
+numerator = 1
+denominator = 4000
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.dust_battlestaff"
+count = 1
+
+[[main.separate_rolls]]
+numerator = 1
+denominator = 32768
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.dragon_chainbody"
+count = 1
+
+
+# Main table pool padding uses a nothing roll (F2P drops removed and/or subtable access missing from wiki parse) (11 weight)

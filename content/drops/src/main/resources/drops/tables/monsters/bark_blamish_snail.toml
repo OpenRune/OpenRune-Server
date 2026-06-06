@@ -1,0 +1,10 @@
+id = "Bark Blamish Snail Drops"
+npcs = ["npc.mmsnailround_orange"]
+
+[[guaranteed]]
+obj = "obj.shellround_orange"
+count = 1
+
+[[guaranteed]]
+obj = "obj.snail_corpse2"
+count = 1

@@ -1,0 +1,10 @@
+id = "Seagull Drops"
+npcs = ["npc.sarim_seagull_pier", "npc.sarim_seagull_pier_big", "npc.sarim_seagull_pier_big_outdoors"]
+
+[[tertiary]]
+numerator = 1
+denominator = 4
+obj = "obj.rag_seagull_bone"
+count = 1
+quest = "quest_ragandboneman2"
+quest_mode = "during"

@@ -1,0 +1,247 @@
+id = "Spindel Drops"
+npcs = ["npc.venenatis_singles"]
+brimstone_key_roll = true
+
+[main]
+total = 128
+name = "Spindel Drops"
+
+[[main.entries]]
+weight = 5
+obj = "obj.dark_crab"
+count = 8
+
+[[main.entries]]
+weight = 5
+obj = "obj.4dose2restore"
+count = 3
+
+[[main.entries]]
+weight = 5
+obj = "obj.rune_knife"
+count = 30
+
+[[main.entries]]
+weight = 12
+obj = "obj.rune_pickaxe"
+count = 1
+
+[[main.entries]]
+weight = 3
+obj = "obj.rune_2h_sword"
+count = 1
+
+[[main.entries]]
+weight = 7
+obj = "obj.chaosrune"
+count = 180
+
+[[main.entries]]
+weight = 7
+obj = "obj.bloodrune"
+count = 150
+
+[[main.entries]]
+weight = 7
+obj = "obj.deathrune"
+count = 220
+
+[[main.entries]]
+weight = 4
+obj = "obj.mcannonball"
+count = 200
+
+[[main.entries]]
+weight = 5
+obj = "obj.xbows_crossbow_bolts_adamantite_tipped_diamond_enchanted"
+count = 60
+
+[[main.entries]]
+weight = 8
+obj = "obj.cert_uncut_diamond"
+count = 7
+
+[[main.entries]]
+weight = 6
+obj = "obj.cert_gold_ore"
+count = 180
+
+[[main.entries]]
+weight = 5
+obj = "obj.cert_magic_logs"
+count = 60
+
+[[main.entries]]
+weight = 5
+obj = "obj.cert_limpwurt_root"
+count = 18
+
+[[main.entries]]
+weight = 5
+obj = "obj.xbows_bolt_tips_onyx"
+count = 35
+
+[[main.entries]]
+weight = 3
+obj = "obj.cert_red_spiders_eggs"
+count = 250
+
+[[main.entries]]
+weight = 2
+obj = "obj.uncut_dragonstone"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.cert_uncut_ruby"
+count = 14
+
+[[main.entries]]
+weight = 1
+obj = "obj.cert_unidentified_snapdragon"
+count = 40
+
+[[main.entries]]
+weight = 1
+obj = "obj.cert_unicorn_horn"
+count = 60
+
+[[main.entries]]
+weight = 21
+obj = "obj.coins"
+count = 14000
+
+[[main.entries]]
+weight = 4
+obj = "obj.cert_bucket_supercompost"
+count = 60
+
+[[main.entries]]
+weight = 3
+obj = "obj.cert_antidote++4"
+count = 6
+
+[[main.entries]]
+weight = 1
+obj = "obj.wilderness_fishing_bait"
+count = 200
+
+[[main.entries]]
+weight = 1
+obj = "obj.magic_tree_seed"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.palm_tree_seed"
+count = 1
+
+[[main.separate_rolls]]
+numerator = 1
+denominator = 358
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.dragon_2h_sword"
+count = 1
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.dragon_pickaxe"
+count = 1
+
+[[main.separate_rolls]]
+numerator = 1
+denominator = 618
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.wbr_venenatis_fang"
+count = 1
+
+[[main.separate_rolls]]
+numerator = 1
+denominator = 716
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.sharp_ring"
+count = 1
+
+[[main.separate_rolls]]
+numerator = 1
+denominator = 912
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.wbr_voidwaker_gem"
+count = 1
+
+[[main.separate_rolls]]
+numerator = 5
+denominator = 54
+
+[[main.separate_rolls.entries]]
+weight = 5
+obj = "obj.blighted_anglerfish"
+count = "5..6"
+
+[[main.separate_rolls.entries]]
+weight = 5
+obj = "obj.blighted_karambwan"
+count = "5..6"
+
+[[main.separate_rolls.entries]]
+weight = 5
+obj = "obj.blighted_3dose2restore"
+count = "3..4"
+
+[[main.separate_rolls.entries]]
+weight = 5
+obj = "obj.blighted_4dose2restore"
+count = "3..4"
+
+[[main.separate_rolls.entries]]
+weight = 5
+obj = "obj.2doserangerspotion"
+count = "2..3"
+
+[[main.separate_rolls.entries]]
+weight = 5
+obj = "obj.2dose2combat"
+count = "2..3"
+
+[[tertiary]]
+numerator = 1
+denominator = 3
+obj = "obj.looting_bag"
+count = 1
+should_drop_looting_bag = true
+
+[[tertiary]]
+numerator = 1
+denominator = 5
+obj = "obj.macro_triffidfruit"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 2800
+obj = "obj.venenatis_pet"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 95
+obj = "obj.trail_elite_emote_exp1"
+count = 1
+clue_scroll_box = true
+exclude_ring_of_wealth = true
+
+[[tertiary]]
+numerator = 1
+denominator = 50
+obj = "obj.trail_elite_emote_exp1"
+count = 1
+clue_scroll_box = true
+require_ring_of_wealth = true

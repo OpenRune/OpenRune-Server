@@ -1,0 +1,9 @@
+id = "Double agent Drops"
+npcs = ["npc.double_agent_1", "npc.double_agent_2", "npc.double_agent_master"]
+
+[[tertiary]]
+numerator = 1
+denominator = 3
+obj = "obj.looting_bag"
+count = 1
+should_drop_looting_bag = true

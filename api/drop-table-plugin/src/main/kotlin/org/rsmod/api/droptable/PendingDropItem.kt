@@ -11,6 +11,7 @@ public class PendingDropItemConfig internal constructor(
     public val obj: String,
     public var count: IntRange,
 ) {
+    public var countChoices: List<Int>? = null
     public var condition: (Player) -> Boolean = { true }
     public var transformObj: (Player) -> String? = { null }
     public var killCondition: ((Player, Npc, AreaChecker) -> Boolean)? = null
@@ -19,6 +20,7 @@ public class PendingDropItemConfig internal constructor(
         DropRollItem(
             obj = obj,
             count = count,
+            countChoices = countChoices,
             condition = condition,
             killCondition = killCondition,
             transformObj = transformObj,

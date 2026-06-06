@@ -1,0 +1,14 @@
+id = "Rabbit Drops"
+npcs = ["npc.fairy2_rabbit1", "npc.fairy2_rabbit2", "npc.regicide_rabbit", "npc.regicide_bunny1", "npc.regicide_bunny2", "npc.misc_rabbit", "npc.misc_rabbit2", "npc.rabbit_1", "npc.rabbit_2", "npc.rabbit_3"]
+
+[[guaranteed]]
+obj = "obj.raw_rabbit"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 4
+obj = "obj.rag_rabbit_bone"
+count = 1
+quest = "quest_ragandboneman2"
+quest_mode = "during"

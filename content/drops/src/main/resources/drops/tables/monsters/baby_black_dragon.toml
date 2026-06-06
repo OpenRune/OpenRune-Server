@@ -1,0 +1,6 @@
+id = "Baby black dragon Drops"
+npcs = ["npc.chickenquest_baby_black_dragon", "npc.baby_black_dragon_strongholdcave", "npc.baby_black_dragon_nohunt"]
+brimstone_key_roll = true
+
+
+# Drops need manual (konar_key): Only dropped if killed on a Slayer task given by Konar quo Maten.

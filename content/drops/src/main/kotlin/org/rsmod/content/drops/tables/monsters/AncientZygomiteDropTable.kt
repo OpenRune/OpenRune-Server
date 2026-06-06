@@ -10,6 +10,7 @@ import org.rsmod.api.droptable.dropRollable
 import org.rsmod.content.drops.tables.shared.SharedDropTables
 import org.rsmod.api.droptable.DropRollItem
 import org.rsmod.content.drops.brimstoneKeyRoll
+import org.rsmod.content.drops.clueScrollTransformObj
 import org.rsmod.api.droptable.nothing
 import org.rsmod.api.droptable.RegisterDropTable
 import org.rsmod.game.entity.Player
@@ -52,10 +53,8 @@ public val ancientZygomiteDropTable: RSDropTable<Player, DropRollItem> = RSDropT
     },
     tertiaries = rsPlayerTertiaryTable {
         onBuilder { brimstoneKeyRoll(konarTaskBonus = true) }
-        // Drops Need Manual (rate): The medium clue scroll drop rate increases to 1/121 after unlocking the medium Combat Achievements rewards tier.
-        1 outOf 128 weight "obj.trail_medium_emote_exp1" count 1 transformObj { player ->
-            // Drops Need Manual (item): Clue scrolls will drop as scroll boxes after the completion of X Marks the Spot.
-             null
+        1 outOf 121 weight "obj.trail_medium_emote_exp1" count 1 transformObj { player ->
+             player.clueScrollTransformObj("obj.trail_medium_emote_exp1")
         }
     },
 )

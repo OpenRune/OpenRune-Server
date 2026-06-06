@@ -1,0 +1,20 @@
+id = "A corpse Drops"
+npcs = ["npc.sailing_charting_drink_crate_corpse_reviver_effect"]
+
+[main]
+total = 4
+name = "A corpse Drops"
+
+[[main.entries]]
+weight = 1
+obj = "obj.rag_zombie_bone"
+count = 1
+quest = "quest_ragandboneman2"
+quest_mode = "during"
+
+[[main.entries]]
+weight = 3
+nothing = true
+
+
+# Main table pool padding uses a nothing roll (F2P drops removed and/or subtable access missing from wiki parse) (3 weight)

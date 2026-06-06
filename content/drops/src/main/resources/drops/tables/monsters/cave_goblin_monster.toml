@@ -1,0 +1,93 @@
+id = "Cave goblin (monster) Drops"
+npcs = ["npc.cave_goblin", "npc.cave_goblin2", "npc.cave_goblin3", "npc.cave_goblin4"]
+
+[main]
+total = 50
+name = "Cave goblin (monster) Drops"
+
+[[main.entries]]
+weight = 5
+obj = "obj.bodyrune"
+count = 7
+
+[[main.entries]]
+weight = 5
+obj = "obj.waterrune"
+count = 6
+
+[[main.entries]]
+weight = 5
+obj = "obj.earthrune"
+count = 4
+
+[[main.entries]]
+weight = 4
+obj = "obj.coins"
+count = 5
+
+[[main.entries]]
+weight = 4
+obj = "obj.coins"
+count = 9
+
+[[main.entries]]
+weight = 6
+obj = "obj.coins"
+count = 15
+
+[[main.entries]]
+weight = 5
+obj = "obj.coins"
+count = 20
+
+[[main.entries]]
+weight = 1
+obj = "obj.coins"
+count = 1
+
+[[main.entries]]
+weight = 6
+nothing = true
+
+[[main.entries]]
+weight = 4
+obj = "obj.hammer"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.brass_necklace"
+count = 1
+
+[[main.entries]]
+weight = 4
+obj = "obj.tinderbox"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 4
+obj = "obj.rag_cave_goblin_bone"
+count = 1
+quest = "quest_ragandboneman2"
+quest_mode = "during"
+
+[[tertiary]]
+numerator = 1
+denominator = 5000
+obj = "obj.champions_challenge_goblin"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 64
+obj = "obj.trail_clue_beginner"
+count = 1
+clue_scroll_box = true
+
+[[tertiary]]
+numerator = 1
+denominator = 121
+obj = "obj.trail_clue_easy_simple001"
+count = 1
+clue_scroll_box = true

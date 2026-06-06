@@ -1,0 +1,117 @@
+id = "Wallasalki Drops"
+npcs = ["npc.dungeon_dagganoth_magic_monster", "npc.dungeon_dagganoth_magic_monster_deeper"]
+
+[main]
+total = 128
+name = "Wallasalki Drops"
+
+[[main.entries]]
+weight = 2
+obj = "obj.dagganoth_mage_gloves"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.dagganoth_mage_feet"
+count = 1
+
+[[main.entries]]
+weight = 10
+obj = "obj.airrune"
+count = "1..10"
+
+[[main.entries]]
+weight = 10
+obj = "obj.mindrune"
+count = "1..10"
+
+[[main.entries]]
+weight = 10
+obj = "obj.waterrune"
+count = "1..10"
+
+[[main.entries]]
+weight = 10
+obj = "obj.earthrune"
+count = "1..10"
+
+[[main.entries]]
+weight = 10
+obj = "obj.chaosrune"
+count = "1..10"
+
+[[main.entries]]
+weight = 10
+obj = "obj.deathrune"
+count = "1..10"
+
+[[main.entries]]
+weight = 10
+obj = "obj.bloodrune"
+count = "1..5"
+
+[[main.entries]]
+weight = 10
+obj = "obj.steel_arrow"
+count = "1..10"
+
+[[main.entries]]
+weight = 10
+obj = "obj.cert_blankrune_high"
+count = 9
+
+[[main.entries]]
+weight = 2
+obj = "obj.dagganoth_mage_leg_part"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.dagganoth_mage_body_part"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.dagganoth_mage_head_part"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.raw_herring"
+count = "1..2"
+
+[[main.entries]]
+weight = 3
+obj = "obj.raw_mackerel"
+count = "1..2"
+
+[[main.entries]]
+weight = 2
+obj = "obj.raw_tuna"
+count = "1..2"
+
+[[main.entries]]
+weight = 10
+shared = "herb"
+
+[[main.entries]]
+weight = 1
+shared = "gem"
+
+[[main.entries]]
+weight = 1
+shared = "rareSeed"
+
+[[main.entries]]
+weight = 9
+nothing = true
+
+[[tertiary]]
+numerator = 1
+denominator = 121
+obj = "obj.trail_medium_emote_exp1"
+count = 1
+clue_scroll_box = true
+
+
+# Main table pool padding uses a nothing roll (F2P drops removed and/or subtable access missing from wiki parse) (9 weight)

@@ -1,0 +1,6 @@
+id = "Locust Drops"
+npcs = ["npc.ics_little_locust_vis", "npc.ullek_locust"]
+
+[[guaranteed]]
+obj = "obj.locust_meat"
+count = 1

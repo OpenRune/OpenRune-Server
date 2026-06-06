@@ -1,0 +1,6 @@
+id = "Forgotten Soul (Soul Wars) Drops"
+npcs = ["npc.soul_wars_tut_soul_weak_1", "npc.soul_wars_tut_soul_weak_2", "npc.soul_wars_tut_soul_strong_1", "npc.soul_wars_tut_soul_strong_2", "npc.soul_wars_soul_weak_1", "npc.soul_wars_soul_weak_2", "npc.soul_wars_soul_strong_1", "npc.soul_wars_soul_strong_2"]
+
+[[guaranteed]]
+obj = "obj.soul_wars_tut_soul_fragment"
+count = 2

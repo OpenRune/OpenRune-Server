@@ -1,0 +1,68 @@
+id = "Otherworldly being Drops"
+npcs = ["npc.otherworldly_being"]
+
+[main]
+total = 128
+name = "Otherworldly being Drops"
+
+[[main.entries]]
+weight = 9
+obj = "obj.naturerune"
+count = 5
+
+[[main.entries]]
+weight = 8
+obj = "obj.chaosrune"
+count = 4
+
+[[main.entries]]
+weight = 7
+obj = "obj.lawrune"
+count = 2
+
+[[main.entries]]
+weight = 5
+obj = "obj.cosmicrune"
+count = 2
+
+[[main.entries]]
+weight = 4
+obj = "obj.deathrune"
+count = 2
+
+[[main.entries]]
+weight = 1
+obj = "obj.bloodrune"
+count = 2
+
+[[main.entries]]
+weight = 59
+obj = "obj.coins"
+count = 15
+
+[[main.entries]]
+weight = 18
+nothing = true
+
+[[main.entries]]
+weight = 2
+obj = "obj.ruby_ring"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.mithril_mace"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.mackerel"
+count = 1
+
+[[main.entries]]
+weight = 10
+shared = "herb"
+
+[[main.entries]]
+weight = 3
+shared = "gem"

@@ -1,0 +1,9 @@
+id = "Guard Bandit Drops"
+npcs = ["npc.guard_bandit"]
+
+[[tertiary]]
+numerator = 1
+denominator = 6
+obj = "obj.looting_bag"
+count = 1
+should_drop_looting_bag = true

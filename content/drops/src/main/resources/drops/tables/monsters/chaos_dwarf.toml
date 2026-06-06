@@ -1,0 +1,131 @@
+id = "Chaos dwarf Drops"
+npcs = ["npc.dwarf_chaos"]
+
+[main]
+total = 133
+name = "Chaos dwarf Drops"
+
+[[main.entries]]
+weight = 2
+obj = "obj.steel_full_helm"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.mithril_longsword"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.mithril_sq_shield"
+count = 1
+
+[[main.entries]]
+weight = 4
+obj = "obj.lawrune"
+count = 3
+
+[[main.entries]]
+weight = 3
+obj = "obj.airrune"
+count = 24
+
+[[main.entries]]
+weight = 3
+obj = "obj.chaosrune"
+count = 10
+
+[[main.entries]]
+weight = 3
+obj = "obj.mindrune"
+count = 37
+
+[[main.entries]]
+weight = 3
+obj = "obj.naturerune"
+count = 9
+
+[[main.entries]]
+weight = 2
+obj = "obj.cosmicrune"
+count = 3
+
+[[main.entries]]
+weight = 1
+obj = "obj.deathrune"
+count = 3
+
+[[main.entries]]
+weight = 1
+obj = "obj.waterrune"
+count = 10
+
+[[main.entries]]
+weight = 40
+obj = "obj.coins"
+count = 92
+
+[[main.entries]]
+weight = 18
+obj = "obj.coins"
+count = 47
+
+[[main.entries]]
+weight = 11
+obj = "obj.coins"
+count = 25
+
+[[main.entries]]
+weight = 10
+obj = "obj.coins"
+count = 150
+
+[[main.entries]]
+weight = 2
+obj = "obj.coins"
+count = 350
+
+[[main.entries]]
+weight = 2
+obj = "obj.coins"
+count = 15
+
+[[main.entries]]
+weight = 1
+obj = "obj.coal"
+count = 1
+
+[[main.entries]]
+weight = 7
+obj = "obj.muddy_key"
+count = 1
+
+[[main.entries]]
+weight = 5
+nothing = true
+
+[[main.entries]]
+weight = 1
+obj = "obj.cheese"
+count = 1
+
+[[main.entries]]
+weight = 6
+obj = "obj.mithril_bar"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.tomato"
+count = 1
+
+[[main.entries]]
+weight = 5
+shared = "gem"
+
+[[tertiary]]
+numerator = 1
+denominator = 3
+obj = "obj.looting_bag"
+count = 1
+should_drop_looting_bag = true

@@ -1,0 +1,16 @@
+id = "Armoured zombie (Defender of Varrock) Drops"
+npcs = ["npc.dov_armoured_zombie_varrock_melee_1", "npc.dov_armoured_zombie_varrock_melee_2", "npc.dov_armoured_zombie_varrock_melee_3", "npc.dov_armoured_zombie_varrock_melee_4", "npc.dov_armoured_zombie_varrock_melee_5", "npc.dov_armoured_zombie_varrock_ranged_1", "npc.dov_armoured_zombie_varrock_ranged_2", "npc.dov_armoured_zombie_varrock_ranged_4", "npc.dov_armoured_zombie_varrock_ranged_5", "npc.dov_armoured_zombie_varrock_melee_1_huntplayer", "npc.dov_armoured_zombie_varrock_melee_3_huntplayer", "npc.dov_armoured_zombie_varrock_melee_4_huntplayer", "npc.dov_armoured_zombie_varrock_ranged_2_huntplayer", "npc.dov_armoured_zombie_varrock_ranged_4_huntplayer", "npc.dov_armoured_zombie_varrock_ranged_5_huntplayer"]
+
+[[tertiary]]
+numerator = 1
+denominator = 4
+obj = "obj.rag_zombie_bone"
+count = 1
+quest = "quest_ragandboneman2"
+quest_mode = "during"
+
+[[tertiary]]
+numerator = 1
+denominator = 5000
+obj = "obj.champions_challenge_zombie"
+count = 1

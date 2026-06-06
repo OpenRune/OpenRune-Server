@@ -1,0 +1,6 @@
+id = "Emissary Enforcer Drops"
+npcs = ["npc.vmq4_temple_guard_boss_fight"]
+
+[[guaranteed]]
+obj = "obj.vmq4_cult_manifest"
+count = 1

@@ -215,6 +215,8 @@ data class GeneratedDropTableSpec(
 object DropTableCodeGenerator {
     private const val LOOTING_BAG_OBJ = "obj.looting_bag"
     private const val BRIMSTONE_KEY_OBJ = "obj.konar_key"
+    private val CLUE_SCROLL_BOX_TRANSFORM_NOTE =
+        Regex("""scroll\s*box|x\s*marks\s*the\s*spot""", RegexOption.IGNORE_CASE)
 
     fun generate(spec: GeneratedDropTableSpec): String = generateFile(listOf(spec))
 
@@ -256,6 +258,18 @@ object DropTableCodeGenerator {
             specs.any { spec ->
                 spec.allResolvedEntries().any { entry -> entry.bonusDrops.isNotEmpty() }
             }
+        val needsClueScrollTransformImports =
+            specs.any { spec ->
+                spec.allResolvedEntries().any { it.isClueScrollBoxTransform() }
+            }
+        val needsRingOfWealthChecks =
+            specs.any { spec ->
+                spec.tertiary.any { it.ringOfWealthClueRate() != null }
+            }
+        val needsWildernessChecks =
+            specs.any { spec ->
+                spec.tertiary.any { it.ringOfWealthClueRate()?.requiresWilderness == true }
+            }
         builder.appendFileHeader(
             packageName = packageName,
             needsSharedDropTables =
@@ -276,6 +290,9 @@ object DropTableCodeGenerator {
             needsBrimstoneKeyRoll = needsBrimstoneKeyRoll,
             needsQuestChecks = needsQuestChecks,
             needsDropRollableImports = needsDropRollableImports,
+            needsClueScrollTransformImports = needsClueScrollTransformImports,
+            needsRingOfWealthChecks = needsRingOfWealthChecks,
+            needsWildernessChecks = needsWildernessChecks,
         )
         for ((index, spec) in specs.withIndex()) {
             if (index > 0) {
@@ -318,6 +335,9 @@ object DropTableCodeGenerator {
         needsBrimstoneKeyRoll: Boolean,
         needsQuestChecks: Boolean,
         needsDropRollableImports: Boolean,
+        needsClueScrollTransformImports: Boolean,
+        needsRingOfWealthChecks: Boolean,
+        needsWildernessChecks: Boolean,
     ) {
         appendLine("package $packageName")
         appendLine()
@@ -360,6 +380,15 @@ object DropTableCodeGenerator {
         if (needsQuestChecks) {
             appendLine("import org.rsmod.content.drops.hasCompletedQuest")
             appendLine("import org.rsmod.content.drops.isOnQuest")
+        }
+        if (needsClueScrollTransformImports) {
+            appendLine("import org.rsmod.content.drops.clueScrollTransformObj")
+        }
+        if (needsRingOfWealthChecks) {
+            appendLine("import org.rsmod.api.droptable.wearingRingOfWealth")
+        }
+        if (needsWildernessChecks) {
+            appendLine("import org.rsmod.api.area.checker.isInWilderness")
         }
         if (needsNothingImports) {
             if (needsNothingPadding) {
@@ -657,7 +686,7 @@ object DropTableCodeGenerator {
         }
 
         val hasExplicitNothing = main.any { it.isNothing }
-        val nothingWeight = computeNothingWeight(main, mainMaxRoll, subtableAccesses)
+        val nothingWeight = computePoolPaddingWeight(main, mainMaxRoll, subtableAccesses)
         if (nothingWeight > 0) {
             if (hasExplicitNothing) {
                 appendLine("        // Pool padding (F2P drops removed / subtable access missing from wiki parse)")
@@ -717,20 +746,8 @@ object DropTableCodeGenerator {
         return sharedDenom
     }
 
-    private fun computeNothingWeight(
-        main: List<ResolvedDropEntry>,
-        mainMaxRoll: Int?,
-        subtableAccesses: List<ResolvedSubtableAccess>,
-    ): Int {
-        val maxRoll = mainMaxRoll ?: return 0
-        val used =
-            main.sumOf { it.weight ?: 0 } +
-                subtableAccesses.sumOf { it.numerator }
-        return (maxRoll - used).coerceAtLeast(0)
-    }
-
     private fun mainMaxRollRequiresNothing(spec: GeneratedDropTableSpec): Boolean =
-        computeNothingWeight(spec.main, spec.mainMaxRoll, spec.subtableAccesses) > 0
+        spec.poolPaddingWeight() > 0
 
     fun parseMainWeight(rarity: String): Int? = parseMainRarity(rarity)?.first
 
@@ -890,9 +907,10 @@ object DropTableCodeGenerator {
         lineSuffix: String = "",
         fallbackSuffix: String = "",
         useRollable: Boolean = true,
+        clueRollModifier: ClueTertiaryRollModifier? = null,
     ) {
         if (entry.canUseItemChainSyntax()) {
-            appendObjectDropLine(entry, indent, header, lineSuffix)
+            appendObjectDropLine(entry, indent, header, lineSuffix, clueRollModifier)
             return
         }
         appendDropRollLine(
@@ -901,6 +919,7 @@ object DropTableCodeGenerator {
             indent,
             suffix = fallbackSuffix,
             useRollable = useRollable,
+            clueRollModifier = clueRollModifier,
         )
     }
 
@@ -909,10 +928,11 @@ object DropTableCodeGenerator {
         indent: String,
         header: String,
         suffix: String = "",
+        clueRollModifier: ClueTertiaryRollModifier? = null,
     ) {
         val count = entry.dropSpecCount()
         val countMax = entry.dropSpecCountMax()
-        val conditionBody = entry.conditionBody()
+        val conditionBody = entry.conditionBody(clueRollModifier)
         val killConditionBody = entry.killConditionBody()
         val hasTransform = entry.wikiNotes.hasTransformItem
         val hasManualCondition = entry.wikiNotes.hasCondition
@@ -920,10 +940,17 @@ object DropTableCodeGenerator {
         val countArg = formatDropCount(count, countMax, parenthesizeRange = hasModifier)
         val innerIndent = "$indent    "
 
+        if (hasTransform && entry.isClueScrollBoxTransform()) {
+            appendLine("$indent$header count $countArg transformObj { player ->")
+            appendLine("$innerIndent player.clueScrollTransformObj(${entry.obj.kotlinString()})")
+            appendLine("$indent}$suffix")
+            return
+        }
+
         if (hasTransform) {
             appendLine("$indent$header count $countArg transformObj { player ->")
             for (note in entry.wikiNotes.transformItem) {
-                appendLine("$innerIndent// Drops Need Manual (item): ${note.kotlinComment()}")
+                appendLine("$innerIndent// Drops Need Manual (item): ${formatKotlinComment(note)}")
             }
             appendLine("$innerIndent null")
             appendLine("$indent}$suffix")
@@ -933,7 +960,7 @@ object DropTableCodeGenerator {
         if (hasManualCondition) {
             appendLine("$indent$header count $countArg condition { player ->")
             for (note in entry.wikiNotes.condition) {
-                appendLine("$innerIndent// Drops Need Manual: ${note.kotlinComment()}")
+                appendLine("$innerIndent// Drops Need Manual: ${formatKotlinComment(note)}")
             }
             appendLine("$innerIndent true")
             appendLine("$indent}$suffix")
@@ -959,18 +986,31 @@ object DropTableCodeGenerator {
 
     private fun StringBuilder.appendTertiaryLine(entry: ResolvedDropEntry, indent: String) {
         if (entry.brimstoneCombatRoll) {
-            for (note in entry.wikiNotes.transformRate) {
-                appendLine("$indent// Drops Need Manual (rate): ${note.kotlinComment()}")
+            for (note in entry.unhandledTransformRateNotes()) {
+                appendLine("$indent// Drops Need Manual (rate): ${formatKotlinComment(note)}")
             }
             appendLine("$indent${entry.brimstoneKeyRollLine()}")
             return
         }
         val weight = entry.weight ?: return
-        val outOf = entry.outOf ?: return
-        for (note in entry.wikiNotes.transformRate) {
-            appendLine("$indent// Drops Need Manual (rate): ${note.kotlinComment()}")
+        val exports = entry.expandClueTertiaryExports()
+        if (exports.isEmpty()) {
+            return
         }
-        appendRateFirstChanceLine(entry, weight, outOf, indent)
+        if (entry.ringOfWealthClueRate() == null) {
+            for (note in entry.unhandledTransformRateNotes()) {
+                appendLine("$indent// Drops Need Manual (rate): ${formatKotlinComment(note)}")
+            }
+        }
+        for (export in exports) {
+            appendRateFirstChanceLine(
+                entry = entry,
+                numerator = weight,
+                outOf = export.denominator,
+                indent = indent,
+                clueRollModifier = export.modifier,
+            )
+        }
     }
 
     private fun StringBuilder.appendRateFirstChanceLine(
@@ -979,17 +1019,28 @@ object DropTableCodeGenerator {
         outOf: Int,
         indent: String,
         fallbackRollKeyword: String = "chance",
+        clueRollModifier: ClueTertiaryRollModifier? = null,
     ) {
         appendResolvedDropLine(
             entry = entry,
             indent = indent,
             header = "$numerator outOf $outOf weight ${entry.obj.kotlinString()}",
             fallbackPrefix = "$indent$numerator outOf $outOf $fallbackRollKeyword ",
+            clueRollModifier = clueRollModifier,
         )
     }
 
-    private fun ResolvedDropEntry.conditionBody(): String? =
-        when {
+    private fun ResolvedDropEntry.conditionBody(clueRollModifier: ClueTertiaryRollModifier? = null): String? {
+        if (clueRollModifier?.excludeRingOfWealth == true) {
+            return ringOfWealthConditionBody(requireWealth = false, requireWilderness = false)
+        }
+        if (clueRollModifier?.requireRingOfWealth == true) {
+            return ringOfWealthConditionBody(
+                requireWealth = true,
+                requireWilderness = clueRollModifier.requireWilderness,
+            )
+        }
+        return when {
             requiresLootingBagCondition() ->
                 "player -> player.shouldDropLootingBag()"
             requiresQuestCondition() -> {
@@ -998,6 +1049,24 @@ object DropTableCodeGenerator {
             }
             else -> null
         }
+    }
+
+    private fun ringOfWealthConditionExpression(requireWealth: Boolean, requireWilderness: Boolean): String {
+        val checks = mutableListOf<String>()
+        checks +=
+            if (requireWealth) {
+                "player.wearingRingOfWealth()"
+            } else {
+                "!player.wearingRingOfWealth()"
+            }
+        if (requireWilderness) {
+            checks += "player.coords.isInWilderness()"
+        }
+        return checks.joinToString(" && ")
+    }
+
+    private fun ringOfWealthConditionBody(requireWealth: Boolean, requireWilderness: Boolean): String =
+        "player -> ${ringOfWealthConditionExpression(requireWealth, requireWilderness)}"
 
     private fun ResolvedDropEntry.killConditionBody(): String? =
         if (requiresBrimstoneKeyCondition()) {
@@ -1012,13 +1081,22 @@ object DropTableCodeGenerator {
         indent: String,
         suffix: String = "",
         useRollable: Boolean = false,
+        clueRollModifier: ClueTertiaryRollModifier? = null,
     ) {
-        val expression = if (useRollable) entry.rollableExpression(indent) else entry.dropRollExpression(indent)
+        val expression =
+            if (useRollable) {
+                entry.rollableExpression(indent, clueRollModifier)
+            } else {
+                entry.dropRollExpression(indent, clueRollModifier)
+            }
         appendLine("$prefix$expression$suffix")
     }
 
-    private fun ResolvedDropEntry.rollableExpression(indent: String = ""): String {
-        val item = dropRollExpression(indent)
+    private fun ResolvedDropEntry.rollableExpression(
+        indent: String = "",
+        clueRollModifier: ClueTertiaryRollModifier? = null,
+    ): String {
+        val item = dropRollExpression(indent, clueRollModifier)
         return if (bonusDrops.isNotEmpty()) {
             "dropRollable($item)"
         } else {
@@ -1026,13 +1104,19 @@ object DropTableCodeGenerator {
         }
     }
 
-    private fun ResolvedDropEntry.dropRollExpression(indent: String = ""): String {
+    private fun ResolvedDropEntry.dropRollExpression(
+        indent: String = "",
+        clueRollModifier: ClueTertiaryRollModifier? = null,
+    ): String {
         val count = dropSpecCount()
         val countMax = dropSpecCountMax()
         val needsLootingBagCondition = requiresLootingBagCondition()
         val needsBrimstoneKeyCondition = requiresBrimstoneKeyCondition()
         val questRequirement = wikiNotes.questRequirements.firstOrNull()
         val needsQuestCondition = questRequirement != null
+        val wealthConditionBody = clueRollModifier?.let { modifier ->
+            ringOfWealthConditionExpression(modifier.requireRingOfWealth, modifier.requireWilderness)
+        }
 
         val innerIndent = indent + "    "
         return buildString {
@@ -1041,10 +1125,12 @@ object DropTableCodeGenerator {
                 append(", condition = { player -> player.shouldDropLootingBag() }")
             } else if (needsQuestCondition) {
                 append(", condition = { player -> ${questRequirement!!.conditionExpression()} }")
+            } else if (wealthConditionBody != null) {
+                append(", condition = { player -> $wealthConditionBody }")
             } else if (wikiNotes.hasCondition) {
                 append(", condition = { player ->\n")
                 for (note in wikiNotes.condition) {
-                    append("$innerIndent// Drops Need Manual: ${note.kotlinComment()}\n")
+                    append("$innerIndent// Drops Need Manual: ${formatKotlinComment(note)}\n")
                 }
                 append("$innerIndent true\n")
                 append("$indent}")
@@ -1057,10 +1143,14 @@ object DropTableCodeGenerator {
             }
             if (wikiNotes.hasTransformItem) {
                 append(", transformObj = { player ->\n")
-                for (note in wikiNotes.transformItem) {
-                    append("$innerIndent// Drops Need Manual (item): ${note.kotlinComment()}\n")
+                if (isClueScrollBoxTransform()) {
+                    append("$innerIndent player.clueScrollTransformObj(${obj.kotlinString()})\n")
+                } else {
+                    for (note in wikiNotes.transformItem) {
+                        append("$innerIndent// Drops Need Manual (item): ${formatKotlinComment(note)}\n")
+                    }
+                    append("$innerIndent null\n")
                 }
-                append("$innerIndent null\n")
                 append("$indent}")
             }
             if (bonusDrops.isNotEmpty()) {
@@ -1092,6 +1182,9 @@ object DropTableCodeGenerator {
     private fun ResolvedDropEntry.requiresQuestCondition(): Boolean =
         wikiNotes.hasQuestRequirement
 
+    private fun ResolvedDropEntry.isClueScrollBoxTransform(): Boolean =
+        wikiNotes.transformItem.any { CLUE_SCROLL_BOX_TRANSFORM_NOTE.containsMatchIn(it) }
+
     private fun WikiQuestDropRequirement.conditionExpression(): String {
         val key = questKey.kotlinString()
         return when (mode) {
@@ -1121,6 +1214,4 @@ object DropTableCodeGenerator {
     }
 
     private fun String.kotlinString(): String = "\"" + replace("\"", "\\\"") + "\""
-
-    private fun String.kotlinComment(): String = replace("*/", "* /")
 }

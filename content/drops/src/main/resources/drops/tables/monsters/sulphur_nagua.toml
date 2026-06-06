@@ -1,0 +1,96 @@
+id = "Sulphur Nagua Drops"
+npcs = ["npc.pmoon_sulphur_nagua"]
+brimstone_key_roll = true
+brimstone_key_roll_konar_bonus = true
+
+[[pre_roll]]
+numerator = 1
+denominator = 450
+obj = "obj.sulphur_blades"
+count = 1
+
+[main]
+total = 128
+name = "Sulphur Nagua Drops"
+
+[[main.entries]]
+weight = 4
+obj = "obj.chaosrune"
+count = "40..60"
+
+[[main.entries]]
+weight = 1
+obj = "obj.deathrune"
+count = "40..60"
+
+[[main.entries]]
+weight = 26
+obj = "obj.firerune"
+count = "10..40"
+
+[[main.entries]]
+weight = 1
+obj = "obj.firerune"
+count = "40..60"
+
+[[main.entries]]
+weight = 4
+obj = "obj.naturerune"
+count = "5..10"
+
+[[main.entries]]
+weight = 4
+obj = "obj.sulphurous_essence"
+count = "6..10"
+
+[[main.entries]]
+weight = 13
+obj = "obj.cert_coal"
+count = "5..10"
+
+[[main.entries]]
+weight = 21
+obj = "obj.coal"
+count = 1
+
+[[main.entries]]
+weight = 3
+obj = "obj.cert_copper_ore"
+count = "10..15"
+
+[[main.entries]]
+weight = 27
+obj = "obj.cert_iron_ore"
+count = "5..10"
+
+[[main.entries]]
+weight = 12
+obj = "obj.cert_silver_ore"
+count = "5..10"
+
+[[main.entries]]
+weight = 5
+obj = "obj.cert_tin_ore"
+count = "10..15"
+
+[[main.entries]]
+weight = 1
+obj = "obj.cert_mithril_ore"
+count = "5..10"
+
+[[main.entries]]
+weight = 3
+shared = "gem"
+
+[[main.entries]]
+weight = 3
+nothing = true
+
+[[tertiary]]
+numerator = 1
+denominator = 256
+obj = "obj.trail_clue_hard_map001"
+count = 1
+
+
+# Main table pool padding uses a nothing roll (F2P drops removed and/or subtable access missing from wiki parse) (3 weight)

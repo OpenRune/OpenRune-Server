@@ -1,0 +1,141 @@
+id = "Tribeswoman Drops"
+npcs = ["npc.tribeswoman", "npc.tribeswoman_variant01"]
+
+[main]
+total = 138
+name = "Tribeswoman Drops"
+
+[[main.entries]]
+weight = 7
+obj = "obj.bronze_spear"
+count = 1
+
+[[main.entries]]
+weight = 3
+obj = "obj.steel_javelin"
+count = 10
+
+[[main.entries]]
+weight = 2
+obj = "obj.poison_bolt"
+count = 4
+
+[[main.entries]]
+weight = 2
+obj = "obj.iron_spear"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.steel_arrow_p"
+count = 5
+
+[[main.entries]]
+weight = 2
+obj = "obj.mithril_javelin"
+count = 10
+
+[[main.entries]]
+weight = 1
+obj = "obj.mithril_spear"
+count = 1
+
+[[main.entries]]
+weight = 5
+obj = "obj.unidentified_rogues_purse"
+count = 1
+
+[[main.entries]]
+weight = 5
+obj = "obj.unidentified_snake_weed"
+count = 1
+
+[[main.entries]]
+weight = 25
+obj = "obj.village_trade_sticks"
+count = 15
+
+[[main.entries]]
+weight = 20
+obj = "obj.snape_grass"
+count = 1
+
+[[main.entries]]
+weight = 12
+obj = "obj.limpwurt_root"
+count = 1
+
+[[main.entries]]
+weight = 12
+obj = "obj.tbwt_cleaning_cloth"
+count = 1
+
+[[main.entries]]
+weight = 8
+obj = "obj.naturerune"
+count = 3
+
+[[main.entries]]
+weight = 5
+obj = "obj.village_trade_sticks"
+count = 62
+
+[[main.entries]]
+weight = 5
+obj = "obj.gold_ore"
+count = 1
+
+[[main.entries]]
+weight = 3
+obj = "obj.2dose2antipoison"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.3dose2antipoison"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.bread"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.tin_ore"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.pot_flour"
+count = 1
+
+[[main.entries]]
+weight = 11
+shared = "herb"
+
+[[main.entries]]
+weight = 2
+shared = "gem"
+
+[[main.entries]]
+weight = 2
+nothing = true
+
+[[main.separate_rolls]]
+numerator = 2
+denominator = 128
+
+[[main.separate_rolls.entries]]
+weight = 2
+nothing = true
+
+[[tertiary]]
+numerator = 1
+denominator = 131
+obj = "obj.trail_medium_emote_exp1"
+count = 1
+clue_scroll_box = true
+
+
+# Main table pool padding uses a nothing roll (F2P drops removed and/or subtable access missing from wiki parse) (2 weight)

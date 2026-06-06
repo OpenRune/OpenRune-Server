@@ -1,0 +1,6 @@
+id = "Pheasant Drops"
+npcs = ["npc.macro_pheasant_model_1", "npc.macro_pheasant_model_3", "npc.macro_pheasant_model_2", "npc.macro_pheasant_model_4"]
+
+[[guaranteed]]
+obj = "obj.raw_macro_pheasant"
+count = 1

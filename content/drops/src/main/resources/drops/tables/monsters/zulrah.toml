@@ -1,0 +1,262 @@
+id = "Zulrah Drops"
+npcs = ["npc.snakeboss_boss_ranged", "npc.snakeboss_boss_melee", "npc.snakeboss_boss_magic"]
+brimstone_key_roll = true
+
+[[guaranteed]]
+obj = "obj.snakeboss_scale"
+count = "100..299"
+
+[main]
+total = 250
+name = "Zulrah Drops"
+
+[[main.entries]]
+weight = 10
+obj = "obj.cert_flax"
+count = 1000
+
+[[main.entries]]
+weight = 10
+obj = "obj.cert_battlestaff"
+count = 10
+
+[[main.entries]]
+weight = 2
+obj = "obj.dragon_med_helm"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.dragon_halberd"
+count = 1
+
+[[main.entries]]
+weight = 12
+obj = "obj.deathrune"
+count = 250
+
+[[main.entries]]
+weight = 12
+obj = "obj.lawrune"
+count = 200
+
+[[main.entries]]
+weight = 12
+obj = "obj.chaosrune"
+count = 400
+
+[[main.entries]]
+weight = 2
+obj = "obj.cert_snapdragon"
+count = 10
+
+[[main.entries]]
+weight = 2
+obj = "obj.cert_dwarf_weed"
+count = 30
+
+[[main.entries]]
+weight = 2
+obj = "obj.cert_toadflax"
+count = 25
+
+[[main.entries]]
+weight = 2
+obj = "obj.cert_torstol"
+count = 10
+
+[[main.entries]]
+weight = 6
+obj = "obj.palm_tree_seed"
+count = 1
+
+[[main.entries]]
+weight = 6
+obj = "obj.papaya_tree_seed"
+count = 3
+
+[[main.entries]]
+weight = 6
+obj = "obj.calquat_tree_seed"
+count = 2
+
+[[main.entries]]
+weight = 4
+obj = "obj.magic_tree_seed"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.toadflax_seed"
+count = 2
+
+[[main.entries]]
+weight = 2
+obj = "obj.snapdragon_seed"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.dwarf_weed_seed"
+count = 2
+
+[[main.entries]]
+weight = 2
+obj = "obj.torstol_seed"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.spirit_tree_seed"
+count = 1
+
+[[main.entries]]
+weight = 11
+obj = "obj.cert_village_snake_skin"
+count = 35
+
+[[main.entries]]
+weight = 11
+obj = "obj.cert_runite_ore"
+count = 2
+
+[[main.entries]]
+weight = 10
+obj = "obj.cert_blankrune_high"
+count = 1500
+
+[[main.entries]]
+weight = 10
+obj = "obj.cert_yew_logs"
+count = 35
+
+[[main.entries]]
+weight = 8
+obj = "obj.cert_adamantite_bar"
+count = 20
+
+[[main.entries]]
+weight = 8
+obj = "obj.cert_coal"
+count = 200
+
+[[main.entries]]
+weight = 8
+obj = "obj.cert_dragon_bones"
+count = 12
+
+[[main.entries]]
+weight = 8
+obj = "obj.cert_mahogany_logs"
+count = 50
+
+[[main.entries]]
+weight = 5
+obj = "obj.cert_raw_shark"
+count = 35
+
+[[main.entries]]
+weight = 5
+obj = "obj.shark_lure"
+count = 70
+
+[[main.entries]]
+weight = 3
+obj = "obj.cert_mantaray"
+count = 35
+
+[[main.entries]]
+weight = 15
+obj = "obj.teleportscroll_zulandra"
+count = 4
+
+[[main.entries]]
+weight = 9
+obj = "obj.cert_antidote++4"
+count = 10
+
+[[main.entries]]
+weight = 8
+obj = "obj.xbows_bolt_tips_dragonstone"
+count = 12
+
+[[main.entries]]
+weight = 6
+obj = "obj.cert_grapes"
+count = 250
+
+[[main.entries]]
+weight = 6
+obj = "obj.cert_coconut"
+count = 20
+
+[[main.entries]]
+weight = 5
+obj = "obj.swamp_tar"
+count = 1000
+
+[[main.entries]]
+weight = 5
+obj = "obj.snakeboss_scale"
+count = 500
+
+[[main.entries]]
+weight = 10
+shared = "rareDrop"
+
+[[main.separate_rolls]]
+numerator = 1
+denominator = 1024
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.blowpipe_fang"
+count = 1
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.magic_fang"
+count = 1
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.serpentine_visage"
+count = 1
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.uncut_onyx"
+count = 1
+
+[[main.separate_rolls]]
+numerator = 1
+denominator = 13107
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.cyan_mutagen"
+count = 1
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.red_mutagen"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 3000
+obj = "obj.jar_of_swamp"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 4000
+obj = "obj.snakepet"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 71
+obj = "obj.trail_elite_emote_exp1"
+count = 1
+clue_scroll_box = true

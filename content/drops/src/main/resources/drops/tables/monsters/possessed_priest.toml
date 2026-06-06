@@ -1,0 +1,21 @@
+id = "Possessed Priest Drops"
+npcs = ["npc.ics_little_possessedpriest"]
+
+[[guaranteed]]
+obj = "obj.4dose1defense"
+count = 1
+
+[[guaranteed]]
+obj = "obj.4dose1attack"
+count = 1
+
+[[guaranteed]]
+obj = "obj.4dose1agility"
+count = 1
+
+[[guaranteed]]
+obj = "obj.4dose1magic"
+count = 1
+
+
+# Unknown wiki drop rate: Coins [main/Other/Uncommon]

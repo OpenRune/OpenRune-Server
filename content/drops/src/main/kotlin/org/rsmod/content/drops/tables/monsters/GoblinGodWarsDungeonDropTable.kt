@@ -11,6 +11,9 @@ import org.rsmod.api.droptable.DropRollItem
 import org.rsmod.content.drops.shouldDropLootingBag
 import org.rsmod.content.drops.hasCompletedQuest
 import org.rsmod.content.drops.isOnQuest
+import org.rsmod.content.drops.clueScrollTransformObj
+import org.rsmod.api.droptable.wearingRingOfWealth
+import org.rsmod.api.area.checker.isInWilderness
 import org.rsmod.api.droptable.nothing
 import org.rsmod.api.droptable.RegisterDropTable
 import org.rsmod.game.entity.Player
@@ -60,14 +63,13 @@ public val goblinGodWarsDungeonDropTable: RSDropTable<Player, DropRollItem> = RS
         1 outOf 30 weight "obj.arceuus_corpse_goblin" count 1
         1 outOf 5000 weight "obj.champions_challenge_goblin" count 1
         1 outOf 80 weight "obj.trail_clue_beginner" count 1 transformObj { player ->
-            // Drops Need Manual (item): Clue scrolls will drop as scroll boxes after the completion of X Marks the Spot.
-             null
+             player.clueScrollTransformObj("obj.trail_clue_beginner")
         }
-        // Drops Need Manual (rate): The easy clue scroll drop rate increases to 1/121 after unlocking the easy Combat Achievements rewards tier.
-        // Drops Need Manual (rate): The easy clue scroll drop rate is increased to 1/64 if a ring of wealth (i) is worn and fought in the Wilderness.
-        1 outOf 128 weight "obj.trail_clue_easy_simple001" count 1 transformObj { player ->
-            // Drops Need Manual (item): Clue scrolls will drop as scroll boxes after the completion of X Marks the Spot.
-             null
+        1 outOf 121 weight "obj.trail_clue_easy_simple001" count 1 transformObj { player ->
+             player.clueScrollTransformObj("obj.trail_clue_easy_simple001")
+        }
+        1 outOf 64 weight "obj.trail_clue_easy_simple001" count 1 transformObj { player ->
+             player.clueScrollTransformObj("obj.trail_clue_easy_simple001")
         }
     },
 )

@@ -1,0 +1,6 @@
+id = "Dagannoth mother Drops"
+npcs = ["npc.horror_dagganoth_aira", "npc.horror_dagganoth_airb", "npc.horror_dagganoth_airc", "npc.horror_dagganoth_air", "npc.horror_dagganoth_water", "npc.horror_dagganoth_fire", "npc.horror_dagganoth_earth", "npc.horror_dagganoth_ranged", "npc.horror_dagganoth_melee"]
+
+[[guaranteed]]
+obj = "obj.horror_casket"
+count = 1

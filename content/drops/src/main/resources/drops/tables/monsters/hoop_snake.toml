@@ -1,0 +1,18 @@
+id = "Hoop Snake Drops"
+npcs = ["npc.fossil_hoopsnake"]
+
+[main]
+total = 10
+name = "Hoop Snake Drops"
+
+[[main.entries]]
+weight = 3
+obj = "obj.village_snake_hide"
+count = 1
+
+[[main.entries]]
+weight = 7
+nothing = true
+
+
+# Main table pool padding uses a nothing roll (F2P drops removed and/or subtable access missing from wiki parse) (7 weight)

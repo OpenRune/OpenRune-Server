@@ -7,6 +7,7 @@ import org.rsmod.api.droptable.rsPlayerGuaranteedTable
 import org.rsmod.api.droptable.rsPlayerTertiaryTable
 import org.rsmod.api.droptable.rsPlayerWeightedTable
 import org.rsmod.api.droptable.DropRollItem
+import org.rsmod.content.drops.clueScrollTransformObj
 import org.rsmod.api.droptable.RegisterDropTable
 import org.rsmod.game.entity.Player
 
@@ -61,10 +62,8 @@ public val phosanisNightmareDropTable: RSDropTable<Player, DropRollItem> = RSDro
         1 outOf 200 weight "obj.nightmare_challenge_morph" count 1
         1 outOf 1400 weight "obj.nightmarepet" count 1
         1 outOf 4000 weight "obj.jar_of_dreams" count 1
-        // Drops Need Manual (rate): The elite clue scroll drop rate increases to 1/33 after unlocking the elite Combat Achievements rewards tier.
-        1 outOf 35 weight "obj.trail_elite_emote_exp1" count 1 transformObj { player ->
-            // Drops Need Manual (item): Clue scrolls will drop as scroll boxes after the completion of X Marks the Spot.
-             null
+        1 outOf 33 weight "obj.trail_elite_emote_exp1" count 1 transformObj { player ->
+             player.clueScrollTransformObj("obj.trail_elite_emote_exp1")
         }
     },
 )

@@ -1,0 +1,267 @@
+id = "Kalphite Queen Drops"
+npcs = ["npc.kalphite_queen", "npc.kalphite_flyingqueen", "npc.swan_kalphite_1", "npc.swan_kalphite_2"]
+brimstone_key_roll = true
+
+[main]
+total = 126
+name = "Kalphite Queen Drops"
+
+[[main.entries]]
+weight = 5
+obj = "obj.cert_battlestaff"
+count = 10
+
+[[main.entries]]
+weight = 4
+obj = "obj.rune_chainbody"
+count = 1
+
+[[main.entries]]
+weight = 4
+obj = "obj.red_dragonhide_body"
+count = 1
+
+[[main.entries]]
+weight = 4
+obj = "obj.rune_knife_p++"
+count = 25
+
+[[main.entries]]
+weight = 2
+obj = "obj.lava_battlestaff"
+count = 1
+
+[[main.entries]]
+weight = 6
+obj = "obj.deathrune"
+count = 150
+
+[[main.entries]]
+weight = 6
+obj = "obj.bloodrune"
+count = 100
+
+[[main.entries]]
+weight = 5
+obj = "obj.mithril_arrow"
+count = 500
+
+[[main.entries]]
+weight = 3
+obj = "obj.rune_arrow"
+count = 250
+
+[[main.entries]]
+weight = 2
+obj = "obj.cert_unidentified_toadflax"
+count = 25
+
+[[main.entries]]
+weight = 2
+obj = "obj.cert_unidentified_ranarr"
+count = 25
+
+[[main.entries]]
+weight = 2
+obj = "obj.cert_unidentified_snapdragon"
+count = 25
+
+[[main.entries]]
+weight = 2
+obj = "obj.cert_unidentified_torstol"
+count = 25
+
+[[main.entries]]
+weight = 4
+obj = "obj.torstol_seed"
+count = 2
+
+[[main.entries]]
+weight = 3
+obj = "obj.watermelon_seed"
+count = 25
+
+[[main.entries]]
+weight = 3
+obj = "obj.papaya_tree_seed"
+count = 2
+
+[[main.entries]]
+weight = 3
+obj = "obj.palm_tree_seed"
+count = 2
+
+[[main.entries]]
+weight = 3
+obj = "obj.magic_tree_seed"
+count = 2
+
+[[main.entries]]
+weight = 5
+obj = "obj.cert_runite_bar"
+count = 3
+
+[[main.entries]]
+weight = 4
+obj = "obj.cert_bucket_sand"
+count = 100
+
+[[main.entries]]
+weight = 4
+obj = "obj.cert_gold_ore"
+count = 250
+
+[[main.entries]]
+weight = 4
+obj = "obj.cert_magic_logs"
+count = 60
+
+[[main.entries]]
+weight = 3
+obj = "obj.cert_uncut_emerald"
+count = 25
+
+[[main.entries]]
+weight = 3
+obj = "obj.cert_uncut_ruby"
+count = 25
+
+[[main.entries]]
+weight = 3
+obj = "obj.cert_uncut_diamond"
+count = 25
+
+[[main.entries]]
+weight = 10
+obj = "obj.cert_wine_of_zamorak"
+count = 60
+
+[[main.entries]]
+weight = 8
+obj = "obj.cert_cactus_potato"
+count = 100
+
+[[main.entries]]
+weight = 5
+obj = "obj.coins"
+count = "15000..20000"
+
+[[main.entries]]
+weight = 5
+obj = "obj.cert_grapes"
+count = 100
+
+[[main.entries]]
+weight = 5
+obj = "obj.cert_weapon_poison++"
+count = 5
+
+[[main.entries]]
+weight = 3
+obj = "obj.cert_cactus_spine"
+count = 10
+
+[[main.entries]]
+weight = 1
+shared = "rareDrop"
+
+[[main.separate_rolls]]
+numerator = 1
+denominator = 9
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.monkfish"
+count = 3
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.shark"
+count = 2
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.dark_crab"
+count = 2
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.4dosepotionofsaradomin"
+count = 1
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.4doseprayerrestore"
+count = 2
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.4dose2restore"
+count = 1
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.2dose2combat"
+count = 1
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.3doserangerspotion"
+count = 1
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.2dose2antipoison"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 20
+obj = "obj.arceuus_corpse_kalphite"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 128
+obj = "obj.poh_trophydrop_kalphitequeen"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 128
+obj = "obj.dragon_chainbody"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 256
+obj = "obj.dragon_2h_sword"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 400
+obj = "obj.dragon_pickaxe"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 2000
+obj = "obj.jar_of_sand"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 3000
+obj = "obj.kqpet_walking"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 95
+obj = "obj.trail_elite_emote_exp1"
+count = 1
+clue_scroll_box = true
+
+
+# Unknown wiki drop rate: Kq head (tattered) [tertiary/Tertiary/Once]

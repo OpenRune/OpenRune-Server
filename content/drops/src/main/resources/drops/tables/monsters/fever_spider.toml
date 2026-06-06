@@ -1,0 +1,64 @@
+id = "Fever spider Drops"
+npcs = ["npc.deal_fever_spiders1"]
+
+[[guaranteed]]
+obj = "obj.deal_spider_body"
+count = 1
+quest = "quest_rumdeal"
+quest_mode = "during"
+
+[main]
+total = 36
+name = "Fever spider Drops"
+
+[[main.entries]]
+weight = 2
+obj = "obj.adamant_axe"
+count = 1
+
+[[main.entries]]
+weight = 3
+obj = "obj.red_dragonhide_chaps"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.adamant_battleaxe"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.adamant_med_helm"
+count = 1
+
+[[main.entries]]
+weight = 6
+obj = "obj.unidentified_kwuarm"
+count = 1
+
+[[main.entries]]
+weight = 7
+obj = "obj.bass"
+count = "1..2"
+
+[[main.entries]]
+weight = 8
+obj = "obj.coins"
+count = "200..600"
+
+[[main.entries]]
+weight = 2
+obj = "obj.cert_blankrune_high"
+count = "100..200"
+
+[[main.entries]]
+weight = 4
+obj = "obj.limpwurt_root"
+count = 1
+
+[[main.entries]]
+weight = 1
+nothing = true
+
+
+# Main table pool padding uses a nothing roll (F2P drops removed and/or subtable access missing from wiki parse) (1 weight)

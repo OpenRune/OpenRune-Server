@@ -1,0 +1,12 @@
+id = "Poison spider Drops"
+npcs = ["npc.poisonspider", "npc.dungeonspider", "npc.wbr_poisonspider"]
+
+[[tertiary]]
+numerator = 1
+denominator = 3
+obj = "obj.looting_bag"
+count = 1
+should_drop_looting_bag = true
+
+
+# Unknown wiki drop rate: Clue scroll (beginner) [tertiary/Tertiary/Rare]

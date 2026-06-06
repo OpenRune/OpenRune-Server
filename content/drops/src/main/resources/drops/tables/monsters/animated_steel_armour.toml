@@ -1,0 +1,26 @@
+id = "Animated Steel Armour Drops"
+npcs = ["npc.warguild_steel_armour"]
+
+[[guaranteed]]
+obj = "obj.steel_platebody"
+count = 1
+
+[[guaranteed]]
+obj = "obj.steel_platelegs"
+count = 1
+
+[main]
+total = 10
+name = "Animated Steel Armour Drops"
+
+[[main.entries]]
+weight = 9
+obj = "obj.steel_full_helm"
+count = 1
+
+[[main.entries]]
+weight = 1
+nothing = true
+
+
+# Main table pool padding uses a nothing roll (F2P drops removed and/or subtable access missing from wiki parse) (1 weight)

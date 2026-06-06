@@ -1,0 +1,41 @@
+id = "Zamorak ranger Drops"
+npcs = ["npc.rc_zmi_ranger", "npc.rc_zmi_ranger2"]
+
+[main]
+total = 50
+name = "Zamorak ranger Drops"
+
+[[main.entries]]
+weight = 2
+obj = "obj.willow_shortbow"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.willow_longbow"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.steel_arrow"
+count = 10
+
+[[main.entries]]
+weight = 2
+obj = "obj.mithril_arrow"
+count = 10
+
+[[main.entries]]
+weight = 1
+obj = "obj.mithril_arrow"
+count = 20
+
+[[main.entries]]
+weight = 40
+obj = "obj.coins"
+count = 100
+
+[[main.entries]]
+weight = 2
+obj = "obj.cert_bow_string"
+count = 10

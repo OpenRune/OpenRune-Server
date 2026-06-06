@@ -10,6 +10,7 @@ import org.rsmod.api.droptable.rsPlayerPrerollTable
 import org.rsmod.api.droptable.dropRollable
 import org.rsmod.content.drops.tables.shared.SharedDropTables
 import org.rsmod.api.droptable.DropRollItem
+import org.rsmod.content.drops.clueScrollTransformObj
 import org.rsmod.api.droptable.nothing
 import org.rsmod.api.droptable.RegisterDropTable
 import org.rsmod.game.entity.Player
@@ -53,10 +54,8 @@ public val narwhalDropTable: RSDropTable<Player, DropRollItem> = RSDropTable(
              true
         }
         1 outOf 10 weight "obj.sailing_narwhal_tusk" count 1
-        // Drops Need Manual (rate): The hard clue scroll drop rate increases to 1/142 after unlocking the hard Combat Achievements rewards tier.
-        1 outOf 150 weight "obj.trail_clue_hard_map001" count 1 transformObj { player ->
-            // Drops Need Manual (item): Clue scrolls will drop as scroll boxes after the completion of X Marks the Spot.
-             null
+        1 outOf 142 weight "obj.trail_clue_hard_map001" count 1 transformObj { player ->
+             player.clueScrollTransformObj("obj.trail_clue_hard_map001")
         }
     },
 )

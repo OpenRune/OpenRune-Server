@@ -1,0 +1,6 @@
+id = "Drink troll queen Drops"
+npcs = ["npc.sailing_charting_drink_crate_monkfish_stout_effect"]
+
+[[guaranteed]]
+obj = "obj.beer"
+count = 1

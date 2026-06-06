@@ -1,0 +1,20 @@
+id = "Shade Drops"
+npcs = ["npc.macro_shade", "npc.kourend_shade"]
+
+[main]
+total = 128
+name = "Shade Drops"
+
+[[main.entries]]
+weight = 32
+obj = "obj.blackrobetop"
+count = 1
+
+[[main.entries]]
+weight = 32
+obj = "obj.blackrobebottom"
+count = 1
+
+[[main.entries]]
+weight = 64
+nothing = true

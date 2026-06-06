@@ -1,0 +1,10 @@
+id = "Giant crypt rat Drops"
+npcs = ["npc.barrows_giantrat", "npc.barrows_giantrat2", "npc.barrows_giantrat3"]
+
+[[tertiary]]
+numerator = 1
+denominator = 1
+obj = "obj.rag_giant_rat_bone"
+count = 1
+quest = "quest_ragandboneman1"
+quest_mode = "during"

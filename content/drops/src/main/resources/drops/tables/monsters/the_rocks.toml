@@ -1,0 +1,10 @@
+id = "The rocks Drops"
+npcs = ["npc.sailing_charting_drink_troll_ice"]
+
+[[tertiary]]
+numerator = 1
+denominator = 4
+obj = "obj.rag_troll_bone"
+count = 1
+quest = "quest_ragandboneman2"
+quest_mode = "during"

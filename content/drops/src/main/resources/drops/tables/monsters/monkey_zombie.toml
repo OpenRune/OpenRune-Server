@@ -1,0 +1,16 @@
+id = "Monkey Zombie Drops"
+npcs = ["npc.mm_zombie_monkey_large", "npc.mm_zombie_monkey_large_guard", "npc.mm_zombie_monkey_small"]
+
+[[tertiary]]
+numerator = 1
+denominator = 1
+obj = "obj.rag_monkey_bone"
+count = 1
+quest = "quest_ragandboneman1"
+quest_mode = "during"
+
+[[tertiary]]
+numerator = 1
+denominator = 5000
+obj = "obj.champions_challenge_zombie"
+count = 1

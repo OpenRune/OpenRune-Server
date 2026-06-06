@@ -1,0 +1,16 @@
+id = "Air wizard Drops"
+npcs = ["npc.air_wizard"]
+
+[main]
+total = 20
+name = "Air wizard Drops"
+
+[[main.entries]]
+weight = 19
+obj = "obj.airrune"
+count = "5..10"
+
+[[main.entries]]
+weight = 1
+obj = "obj.air_talisman"
+count = 1

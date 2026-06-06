@@ -1,0 +1,8 @@
+id = "Doomion Drops"
+npcs = ["npc.doomion_vis"]
+
+[[guaranteed]]
+obj = "obj.doomion_amulet"
+count = 1
+quest = "quest_undergroundpass"
+quest_mode = "during"

@@ -1,0 +1,68 @@
+id = "Air elemental Drops"
+npcs = ["npc.elemental_air"]
+
+[main]
+total = 128
+name = "Air elemental Drops"
+
+[[main.entries]]
+weight = 13
+obj = "obj.airrune"
+count = 15
+
+[[main.entries]]
+weight = 9
+obj = "obj.naturerune"
+count = 2
+
+[[main.entries]]
+weight = 7
+obj = "obj.chaosrune"
+count = 2
+
+[[main.entries]]
+weight = 6
+obj = "obj.lawrune"
+count = 1
+
+[[main.entries]]
+weight = 4
+obj = "obj.deathrune"
+count = 1
+
+[[main.entries]]
+weight = 3
+obj = "obj.airrune"
+count = 20
+
+[[main.entries]]
+weight = 1
+obj = "obj.bloodrune"
+count = 1
+
+[[main.entries]]
+weight = 28
+nothing = true
+
+[[main.entries]]
+weight = 36
+obj = "obj.coins"
+count = 12
+
+[[main.entries]]
+weight = 3
+obj = "obj.coins"
+count = 42
+
+[[main.entries]]
+weight = 2
+obj = "obj.staff_of_air"
+count = 1
+
+[[main.entries]]
+weight = 14
+shared = "herb"
+
+[[main.entries]]
+weight = 2
+shared = "gem"

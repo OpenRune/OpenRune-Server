@@ -1,0 +1,107 @@
+id = "Bandosian guard Drops"
+npcs = ["npc.elite_npc_2"]
+
+[main]
+total = 128
+name = "Bandosian guard Drops"
+
+[[main.entries]]
+weight = 1
+obj = "obj.rune_spear"
+count = 1
+
+[[main.entries]]
+weight = 3
+obj = "obj.rune_thrownaxe"
+count = 6
+
+[[main.entries]]
+weight = 5
+obj = "obj.naturerune"
+count = 20
+
+[[main.entries]]
+weight = 5
+obj = "obj.bloodrune"
+count = 20
+
+[[main.entries]]
+weight = 5
+obj = "obj.cosmicrune"
+count = 20
+
+[[main.entries]]
+weight = 37
+obj = "obj.coins"
+count = 35
+
+[[main.entries]]
+weight = 12
+obj = "obj.coins"
+count = 350
+
+[[main.entries]]
+weight = 5
+obj = "obj.hammer"
+count = 1
+
+[[main.entries]]
+weight = 7
+obj = "obj.coal"
+count = 1
+
+[[main.entries]]
+weight = 5
+obj = "obj.feather"
+count = 30
+
+[[main.entries]]
+weight = 10
+obj = "obj.headless_arrow"
+count = 30
+
+[[main.entries]]
+weight = 1
+obj = "obj.cert_adamantite_bar"
+count = 5
+
+[[main.entries]]
+weight = 3
+obj = "obj.shark"
+count = 1
+
+[[main.entries]]
+weight = 10
+shared = "herb"
+
+[[main.entries]]
+weight = 9
+shared = "gem"
+
+[[main.entries]]
+weight = 10
+nothing = true
+
+[[main.separate_rolls]]
+numerator = 1
+denominator = 2000000
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.armadyl_helmet"
+count = 1
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.bandos_boots"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 3
+obj = "obj.looting_bag"
+count = 1
+should_drop_looting_bag = true
+
+
+# Main table pool padding uses a nothing roll (F2P drops removed and/or subtable access missing from wiki parse) (10 weight)

@@ -1,0 +1,14 @@
+id = "Thrower troll (Trollheim) Drops"
+npcs = ["npc.troll_thrower1", "npc.troll_thrower2", "npc.troll_thrower3", "npc.troll_thrower4", "npc.troll_thrower5"]
+
+[[tertiary]]
+numerator = 1
+denominator = 400
+obj = "obj.dorgesh_construction_bone"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 5013
+obj = "obj.dorgesh_construction_bone_curved"
+count = 1

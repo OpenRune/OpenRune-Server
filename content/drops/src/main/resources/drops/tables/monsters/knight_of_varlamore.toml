@@ -1,0 +1,47 @@
+id = "Knight of Varlamore Drops"
+npcs = ["npc.varlamore_knight_m_1", "npc.varlamore_knight_m_2", "npc.varlamore_knight_m_3", "npc.varlamore_knight_f_1", "npc.varlamore_knight_f_2", "npc.varlamore_knight_f_3"]
+
+[main]
+total = 1000
+name = "Knight of Varlamore Drops"
+
+[[main.entries]]
+weight = 190
+obj = "obj.coins"
+count = 1
+
+[[main.entries]]
+weight = 190
+obj = "obj.coins"
+count = 6
+
+[[main.entries]]
+weight = 205
+obj = "obj.coins"
+count = 12
+
+[[main.entries]]
+weight = 140
+obj = "obj.coins"
+count = 25
+
+[[main.entries]]
+weight = 145
+obj = "obj.coins"
+count = 30
+
+[[main.entries]]
+weight = 80
+obj = "obj.coins"
+count = 55
+
+[[main.entries]]
+weight = 50
+shared = "seed"
+
+[[tertiary]]
+numerator = 1
+denominator = 121
+obj = "obj.trail_medium_emote_exp1"
+count = 1
+clue_scroll_box = true

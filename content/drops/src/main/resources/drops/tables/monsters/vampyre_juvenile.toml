@@ -1,0 +1,3 @@
+id = "Vampyre Juvenile Drops"
+npcs = ["npc.sang_myq3_male_juvenile", "npc.sang_myq3_female_juvenile", "npc.sang_myq3_male_juvenile_held", "npc.sang_myq3_female_juvenile_held", "npc.burgh_vampire_juvenile_1", "npc.burgh_vampire_juvenile_2", "npc.burgh_vampire_juvenile_3", "npc.burgh_vampire_juvenile_held", "npc.darkm_juvenile_01", "npc.darkm_juvenile_02", "npc.darkm_juvenile_01_held", "npc.darkm_juvenile_02_held"]
+brimstone_key_roll = true

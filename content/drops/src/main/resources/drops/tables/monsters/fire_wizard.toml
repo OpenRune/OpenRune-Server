@@ -1,0 +1,16 @@
+id = "Fire wizard Drops"
+npcs = ["npc.fire_wizard"]
+
+[main]
+total = 20
+name = "Fire wizard Drops"
+
+[[main.entries]]
+weight = 19
+obj = "obj.firerune"
+count = "5..10"
+
+[[main.entries]]
+weight = 1
+obj = "obj.fire_talisman"
+count = 1

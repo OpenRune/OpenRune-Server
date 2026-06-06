@@ -11,6 +11,7 @@ import org.rsmod.api.droptable.DropRollItem
 import org.rsmod.content.drops.brimstoneKeyRoll
 import org.rsmod.content.drops.hasCompletedQuest
 import org.rsmod.content.drops.isOnQuest
+import org.rsmod.content.drops.clueScrollTransformObj
 import org.rsmod.api.droptable.RegisterDropTable
 import org.rsmod.game.entity.Player
 
@@ -42,7 +43,7 @@ public val basiliskKnightDropTable: RSDropTable<Player, DropRollItem> = RSDropTa
     },
     tertiaries = rsPlayerTertiaryTable {
         1 outOf 1 weight "obj.trail_elite_emote_exp1" count 1 condition { player ->
-            // Drops Need Manual: The elite clue scroll and casket are only dropped when completing an [[Treasure Trails/Full guide/Elite#Cryptic clues
+            // Drops Need Manual: The elite clue scroll and casket are only dropped when completing an Treasure Trails/Full guide/Elite#Cryptic clues
              true
         }
         1 outOf 1 weight "obj.trail_reward_casket_elite" count 1
@@ -56,10 +57,8 @@ public val basiliskKnightDropTable: RSDropTable<Player, DropRollItem> = RSDropTa
         // Drops Need Manual (rate): The drop rate of a basilisk jaw is increased to 1/1,000 while on a basilisk Slayer task.
         1 outOf 5000 weight "obj.basilisk_jaw" count 1
         1 outOf 5013 weight "obj.dorgesh_construction_bone_curved" count 1
-        // Drops Need Manual (rate): The hard clue scroll drop rate increases to 1/182 after unlocking the hard Combat Achievements rewards tier.
-        1 outOf 192 weight "obj.trail_clue_hard_map001" count 1 transformObj { player ->
-            // Drops Need Manual (item): Clue scrolls will drop as scroll boxes after the completion of X Marks the Spot.
-             null
+        1 outOf 182 weight "obj.trail_clue_hard_map001" count 1 transformObj { player ->
+             player.clueScrollTransformObj("obj.trail_clue_hard_map001")
         }
     },
 )

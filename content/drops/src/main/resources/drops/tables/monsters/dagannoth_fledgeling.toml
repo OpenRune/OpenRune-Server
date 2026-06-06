@@ -1,0 +1,11 @@
+id = "Dagannoth fledgeling Drops"
+npcs = ["npc.jb_baby_dagganoth"]
+brimstone_key_roll = true
+
+[[tertiary]]
+numerator = 1
+denominator = 4
+obj = "obj.rag_dagganoth_bone"
+count = 1
+quest = "quest_ragandboneman2"
+quest_mode = "during"

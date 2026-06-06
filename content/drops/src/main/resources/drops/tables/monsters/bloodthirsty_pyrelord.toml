@@ -1,0 +1,141 @@
+id = "Bloodthirsty pyrelord Drops"
+npcs = ["npc.league_superior_pyrefiend"]
+
+[main]
+total = 128
+name = "Bloodthirsty pyrelord Drops"
+
+[[main.entries]]
+weight = 4
+obj = "obj.steel_axe"
+count = 1
+
+[[main.entries]]
+weight = 4
+obj = "obj.steel_full_helm"
+count = 1
+
+[[main.entries]]
+weight = 3
+obj = "obj.staff_of_fire"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.mithril_chainbody"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.adamant_med_helm"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.steel_armoured_boots"
+count = 1
+
+[[main.entries]]
+weight = 21
+obj = "obj.firerune"
+count = 30
+
+[[main.entries]]
+weight = 8
+obj = "obj.firerune"
+count = 60
+
+[[main.entries]]
+weight = 5
+obj = "obj.chaosrune"
+count = 12
+
+[[main.entries]]
+weight = 3
+obj = "obj.deathrune"
+count = 3
+
+[[main.entries]]
+weight = 7
+obj = "obj.coins"
+count = 10
+
+[[main.entries]]
+weight = 24
+obj = "obj.coins"
+count = 40
+
+[[main.entries]]
+weight = 20
+obj = "obj.coins"
+count = 120
+
+[[main.entries]]
+weight = 10
+obj = "obj.coins"
+count = 200
+
+[[main.entries]]
+weight = 2
+obj = "obj.coins"
+count = 450
+
+[[main.entries]]
+weight = 8
+obj = "obj.gold_ore"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.jug_wine"
+count = 1
+
+[[main.entries]]
+weight = 3
+shared = "gem"
+
+[[main.separate_rolls]]
+numerator = 5
+denominator = 40
+
+[[main.separate_rolls.entries]]
+weight = 5
+obj = "obj.cert_raw_lobster"
+count = "60..80"
+
+[[main.separate_rolls.entries]]
+weight = 5
+obj = "obj.cert_unicorn_horn"
+count = "60..150"
+
+[[main.separate_rolls]]
+numerator = 10
+denominator = 40
+
+[[main.separate_rolls.entries]]
+weight = 10
+obj = "obj.cert_snape_grass"
+count = "60..150"
+
+[[main.separate_rolls.entries]]
+weight = 10
+obj = "obj.irit_seed"
+count = "10..15"
+
+[[main.separate_rolls.entries]]
+weight = 10
+obj = "obj.cert_limpwurt_root"
+count = "60..150"
+
+[[tertiary]]
+numerator = 1
+denominator = 3
+obj = "obj.looting_bag"
+count = 1
+should_drop_looting_bag = true
+
+[[tertiary]]
+numerator = 1
+denominator = 1
+obj = "obj.trail_medium_emote_exp1"
+count = 1

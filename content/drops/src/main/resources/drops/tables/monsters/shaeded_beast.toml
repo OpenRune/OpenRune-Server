@@ -1,0 +1,6 @@
+id = "Shaeded Beast Drops"
+npcs = ["npc.hosdun_shaeded_beast_hidden"]
+
+[[guaranteed]]
+obj = "obj.hosdun_temple_coin"
+count = 1

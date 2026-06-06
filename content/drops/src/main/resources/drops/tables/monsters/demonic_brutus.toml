@@ -1,0 +1,12 @@
+id = "Demonic Brutus Drops"
+npcs = ["npc.cowboss_hardmode", "npc.cowboss_hardmode_ghost"]
+
+[[guaranteed]]
+obj = "obj.cow_slippers_recol_4"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 400
+obj = "obj.cowbosspet"
+count = 1

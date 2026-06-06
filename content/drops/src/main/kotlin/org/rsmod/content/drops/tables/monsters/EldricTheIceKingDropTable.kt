@@ -9,6 +9,7 @@ import org.rsmod.api.droptable.rsPlayerWeightedTable
 import org.rsmod.api.droptable.rsPlayerPrerollTable
 import org.rsmod.api.droptable.dropRollable
 import org.rsmod.api.droptable.DropRollItem
+import org.rsmod.content.drops.clueScrollTransformObj
 import org.rsmod.api.droptable.RegisterDropTable
 import org.rsmod.game.entity.Player
 
@@ -64,15 +65,11 @@ public val eldricTheIceKingDropTable: RSDropTable<Player, DropRollItem> = RSDrop
     tertiaries = rsPlayerTertiaryTable {
         // Drops Need Manual (rate): Sacrificing loot doubles the pet drop rate.
         1 outOf 3000 weight "obj.rtbrandapet" count 1
-        // Drops Need Manual (rate): The hard clue scroll drop rate increases to 1/23 after unlocking the hard Combat Achievements rewards tier.
-        1 outOf 25 weight "obj.trail_clue_hard_map001" count 1 transformObj { player ->
-            // Drops Need Manual (item): Clue scrolls will drop as scroll boxes after the completion of X Marks the Spot.
-             null
+        1 outOf 23 weight "obj.trail_clue_hard_map001" count 1 transformObj { player ->
+             player.clueScrollTransformObj("obj.trail_clue_hard_map001")
         }
-        // Drops Need Manual (rate): The elite clue scroll drop rate increases to 1/95 after unlocking the elite Combat Achievements rewards tier.
-        1 outOf 100 weight "obj.trail_elite_emote_exp1" count 1 transformObj { player ->
-            // Drops Need Manual (item): Clue scrolls will drop as scroll boxes after the completion of X Marks the Spot.
-             null
+        1 outOf 95 weight "obj.trail_elite_emote_exp1" count 1 transformObj { player ->
+             player.clueScrollTransformObj("obj.trail_elite_emote_exp1")
         }
     },
 )

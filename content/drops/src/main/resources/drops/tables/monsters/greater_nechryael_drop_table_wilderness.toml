@@ -1,0 +1,126 @@
+id = "Greater Nechryael Wilderness Slayer Cave"
+npcs = ["npc.wild_cave_nechryael"]
+
+[main]
+total = 112
+name = "Greater Nechryael Wilderness Slayer Cave"
+
+[[main.entries]]
+weight = 7
+obj = "obj.adamant_kiteshield"
+count = 1
+
+[[main.entries]]
+weight = 7
+obj = "obj.rune_axe"
+count = 1
+
+[[main.entries]]
+weight = 7
+obj = "obj.rune_sq_shield"
+count = 1
+
+[[main.entries]]
+weight = 5
+obj = "obj.adamant_battleaxe"
+count = 1
+
+[[main.entries]]
+weight = 4
+obj = "obj.rune_med_helm"
+count = 1
+
+[[main.entries]]
+weight = 3
+obj = "obj.rune_full_helm"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.mystic_air_staff"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.rune_armoured_boots"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.rune_chainbody"
+count = 1
+
+[[main.entries]]
+weight = 12
+obj = "obj.deathrune"
+count = 23
+
+[[main.entries]]
+weight = 10
+obj = "obj.bloodrune"
+count = 20
+
+[[main.entries]]
+weight = 10
+obj = "obj.chaosrune"
+count = 50
+
+[[main.entries]]
+weight = 6
+obj = "obj.airrune"
+count = 150
+
+[[main.entries]]
+weight = 5
+obj = "obj.soulrune"
+count = 25
+
+[[main.entries]]
+weight = 8
+obj = "obj.coins"
+count = "2000..2500"
+
+[[main.entries]]
+weight = 7
+obj = "obj.cert_gold_bar"
+count = 5
+
+[[main.entries]]
+weight = 2
+obj = "obj.cert_wine_of_zamorak"
+count = 3
+
+[[main.entries]]
+weight = 7
+shared = "herb"
+
+[[main.entries]]
+weight = 3
+shared = "gem"
+
+[[main.entries]]
+weight = 5
+shared = "rareSeed"
+
+[[tertiary]]
+numerator = 1
+denominator = 3
+obj = "obj.looting_bag"
+count = 1
+should_drop_looting_bag = true
+
+[[tertiary]]
+numerator = 1
+denominator = 121
+obj = "obj.trail_clue_hard_map001"
+count = 1
+clue_scroll_box = true
+exclude_ring_of_wealth = true
+
+[[tertiary]]
+numerator = 1
+denominator = 64
+obj = "obj.trail_clue_hard_map001"
+count = 1
+clue_scroll_box = true
+require_ring_of_wealth = true

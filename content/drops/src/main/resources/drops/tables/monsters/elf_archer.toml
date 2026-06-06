@@ -1,0 +1,117 @@
+id = "Elf Archer Drops"
+npcs = ["npc.mourning_guard_range", "npc.mourning_guard_range2"]
+
+[main]
+total = 128
+name = "Elf Archer Drops"
+
+[[main.entries]]
+weight = 3
+obj = "obj.dragonhide_chaps"
+count = 1
+
+[[main.entries]]
+weight = 4
+obj = "obj.dragonhide_body"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.mithril_spear"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.mithril_kiteshield"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.adamant_full_helm"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.rune_dagger"
+count = 1
+
+[[main.entries]]
+weight = 8
+obj = "obj.waterrune"
+count = 70
+
+[[main.entries]]
+weight = 5
+obj = "obj.naturerune"
+count = 12
+
+[[main.entries]]
+weight = 3
+obj = "obj.lawrune"
+count = 2
+
+[[main.entries]]
+weight = 3
+obj = "obj.firerune"
+count = 37
+
+[[main.entries]]
+weight = 5
+obj = "obj.coins"
+count = 20
+
+[[main.entries]]
+weight = 29
+obj = "obj.coins"
+count = 44
+
+[[main.entries]]
+weight = 10
+obj = "obj.coins"
+count = 180
+
+[[main.entries]]
+weight = 25
+obj = "obj.elf_crystal_tiny"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.mourning_teleport_crystal_1"
+count = 1
+
+[[main.entries]]
+weight = 3
+obj = "obj.bass"
+count = 1
+
+[[main.entries]]
+weight = 3
+obj = "obj.shark"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.adamantite_ore"
+count = 1
+
+[[main.entries]]
+weight = 15
+shared = "herb"
+
+[[main.entries]]
+weight = 5
+shared = "gem"
+
+[[tertiary]]
+numerator = 1
+denominator = 50
+obj = "obj.arceuus_corpse_elf"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 121
+obj = "obj.trail_clue_hard_map001"
+count = 1
+clue_scroll_box = true

@@ -13,6 +13,7 @@ import org.rsmod.content.drops.tables.shared.herbDropTable
 import org.rsmod.content.drops.tables.shared.tripleRollHerbDropTable
 import org.rsmod.api.droptable.DropRollItem
 import org.rsmod.content.drops.brimstoneKeyRoll
+import org.rsmod.content.drops.clueScrollTransformObj
 import org.rsmod.api.droptable.RegisterDropTable
 import org.rsmod.game.entity.Player
 
@@ -97,10 +98,8 @@ public val bloodthirstyNightBeastDropTable: RSDropTable<Player, DropRollItem> = 
         onBuilder { brimstoneKeyRoll(konarTaskBonus = true) }
         1 outOf 400 weight "obj.dorgesh_construction_bone" count 1
         1 outOf 5013 weight "obj.dorgesh_construction_bone_curved" count 1
-        // Drops Need Manual (rate): The elite clue scroll drop rate increases to 1/114 after unlocking the elite Combat Achievements rewards tier.
-        1 outOf 120 weight "obj.trail_elite_emote_exp1" count 1 transformObj { player ->
-            // Drops Need Manual (item): Clue scrolls will drop as scroll boxes after the completion of X Marks the Spot.
-             null
+        1 outOf 114 weight "obj.trail_elite_emote_exp1" count 1 transformObj { player ->
+             player.clueScrollTransformObj("obj.trail_elite_emote_exp1")
         }
     },
 )

@@ -1,0 +1,14 @@
+id = "Penance Healer Drops"
+npcs = ["npc.barbassault_pen_healer_tutor", "npc.barbassault_pen_healer_lv1", "npc.barbassault_pen_healer_lv2", "npc.barbassault_pen_healer_lv3", "npc.barbassault_pen_healer_lv4", "npc.barbassault_pen_healer_lv5", "npc.barbassault_pen_healer_lv6", "npc.barbassault_pen_healer_lv7", "npc.barbassault_pen_healer_lv8", "npc.barbassault_pen_healer_lv9"]
+
+[[guaranteed]]
+obj = "obj.barbassault_egg_03"
+count = 2
+
+[[guaranteed]]
+obj = "obj.barbassault_egg_01"
+count = 2
+
+[[guaranteed]]
+obj = "obj.barbassault_egg_02"
+count = 2

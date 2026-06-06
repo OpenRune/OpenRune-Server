@@ -1,0 +1,8 @@
+id = "Reanimated imp Drops"
+npcs = ["npc.arceuus_reanimated_imp"]
+
+[[tertiary]]
+numerator = 1
+denominator = 5000
+obj = "obj.champions_challenge_imp"
+count = 1

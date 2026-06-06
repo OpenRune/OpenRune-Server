@@ -1,0 +1,16 @@
+id = "Ent Drops"
+npcs = ["npc.wcguild_ent"]
+
+[[tertiary]]
+numerator = 1
+denominator = 236
+obj = "obj.slayer_enchantment"
+count = 1
+
+
+# Unknown wiki drop rate: Logs [main/Other/Varies]
+# Unknown wiki drop rate: Oak logs [main/Other/Varies]
+# Unknown wiki drop rate: Willow logs [main/Other/Varies]
+# Unknown wiki drop rate: Maple logs [main/Other/Varies]
+# Unknown wiki drop rate: Yew logs [main/Other/Varies]
+# Unknown wiki drop rate: Magic logs [main/Other/Varies]

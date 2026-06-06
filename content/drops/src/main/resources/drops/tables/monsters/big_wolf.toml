@@ -1,0 +1,10 @@
+id = "Big Wolf Drops"
+npcs = ["npc.wolfpack_leader_whiter", "npc.wolfpack_leader"]
+
+[[tertiary]]
+numerator = 1
+denominator = 4
+obj = "obj.rag_wolf_bone"
+count = 1
+quest = "quest_ragandboneman2"
+quest_mode = "during"

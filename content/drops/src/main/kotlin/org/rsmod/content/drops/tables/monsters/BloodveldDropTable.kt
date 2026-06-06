@@ -10,6 +10,9 @@ import org.rsmod.content.drops.tables.shared.SharedDropTables
 import org.rsmod.api.droptable.DropRollItem
 import org.rsmod.content.drops.shouldDropLootingBag
 import org.rsmod.content.drops.brimstoneKeyRoll
+import org.rsmod.content.drops.clueScrollTransformObj
+import org.rsmod.api.droptable.wearingRingOfWealth
+import org.rsmod.api.area.checker.isInWilderness
 import org.rsmod.api.droptable.RegisterDropTable
 import org.rsmod.game.entity.Player
 
@@ -56,11 +59,11 @@ public val bloodveldDropTable: RSDropTable<Player, DropRollItem> = RSDropTable(
         }
         1 outOf 35 weight "obj.arceuus_corpse_bloodveld" count 1
         onBuilder { brimstoneKeyRoll(konarTaskBonus = true) }
-        // Drops Need Manual (rate): The hard clue scroll drop rate increases to 1/243 after unlocking the hard Combat Achievements rewards tier.
-        // Drops Need Manual (rate): The hard clue scroll drop rate increases to 1/128 when wearing a ring of wealth (i) and fought in the Wilderness.
-        1 outOf 256 weight "obj.trail_clue_hard_map001" count 1 transformObj { player ->
-            // Drops Need Manual (item): Clue scrolls will drop as scroll boxes after the completion of X Marks the Spot.
-             null
+        1 outOf 243 weight "obj.trail_clue_hard_map001" count 1 transformObj { player ->
+             player.clueScrollTransformObj("obj.trail_clue_hard_map001")
+        }
+        1 outOf 128 weight "obj.trail_clue_hard_map001" count 1 transformObj { player ->
+             player.clueScrollTransformObj("obj.trail_clue_hard_map001")
         }
     },
 )

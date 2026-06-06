@@ -1,0 +1,6 @@
+id = "Animated steel armour (Tarn's Lair) Drops"
+npcs = ["npc.lotr_steel_armour"]
+
+[[guaranteed]]
+obj = "obj.iron_platebody"
+count = 1

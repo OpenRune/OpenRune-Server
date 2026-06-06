@@ -1,0 +1,178 @@
+id = "Bloodthirsty basilisk Drops"
+npcs = ["npc.league_superior_basilisk"]
+brimstone_key_roll = true
+brimstone_key_roll_konar_bonus = true
+
+[main]
+total = 128
+name = "Bloodthirsty basilisk Drops"
+
+[[main.entries]]
+weight = 3
+obj = "obj.mithril_axe"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.mithril_spear"
+count = 1
+
+[[main.entries]]
+weight = 3
+obj = "obj.steel_battleaxe"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.adamant_full_helm"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.mithril_kiteshield"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.rune_dagger"
+count = 1
+
+[[main.entries]]
+weight = 8
+obj = "obj.waterrune"
+count = 75
+
+[[main.entries]]
+weight = 5
+obj = "obj.naturerune"
+count = 15
+
+[[main.entries]]
+weight = 3
+obj = "obj.lawrune"
+count = 3
+
+[[main.entries]]
+weight = 1
+obj = "obj.naturerune"
+count = 37
+
+[[main.entries]]
+weight = 3
+obj = "obj.adamantite_ore"
+count = 1
+
+[[main.entries]]
+weight = 29
+obj = "obj.coins"
+count = 44
+
+[[main.entries]]
+weight = 17
+obj = "obj.coins"
+count = 200
+
+[[main.entries]]
+weight = 5
+obj = "obj.coins"
+count = 132
+
+[[main.entries]]
+weight = 5
+obj = "obj.coins"
+count = 11
+
+[[main.entries]]
+weight = 1
+obj = "obj.coins"
+count = 440
+
+[[main.entries]]
+weight = 35
+shared = "herb"
+
+[[main.entries]]
+weight = 5
+shared = "gem"
+
+[[main.separate_rolls]]
+numerator = 5
+denominator = 76
+
+[[main.separate_rolls.entries]]
+weight = 5
+obj = "obj.cert_raw_lobster"
+count = "60..80"
+
+[[main.separate_rolls.entries]]
+weight = 5
+obj = "obj.cert_unicorn_horn"
+count = "60..150"
+
+[[main.separate_rolls]]
+numerator = 10
+denominator = 76
+
+[[main.separate_rolls.entries]]
+weight = 10
+obj = "obj.cert_snape_grass"
+count = "60..150"
+
+[[main.separate_rolls.entries]]
+weight = 10
+obj = "obj.irit_seed"
+count = "10..15"
+
+[[main.separate_rolls.entries]]
+weight = 10
+obj = "obj.cert_limpwurt_root"
+count = "60..150"
+
+[[main.separate_rolls]]
+numerator = 15
+denominator = 76
+
+[[main.separate_rolls.entries]]
+weight = 15
+obj = "obj.cert_yew_logs"
+count = "70..90"
+
+[[main.separate_rolls.entries]]
+weight = 15
+obj = "obj.cert_raw_monkfish"
+count = "60..80"
+
+[[main.separate_rolls]]
+numerator = 6
+denominator = 76
+
+[[main.separate_rolls.entries]]
+weight = 6
+obj = "obj.cert_white_berries"
+count = "60..150"
+
+[[main.separate_rolls]]
+numerator = 1
+denominator = 512
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.mystic_hat_light"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 4
+obj = "obj.rag_baby_basilisk_bone"
+count = 1
+quest = "quest_ragandboneman2"
+quest_mode = "during"
+
+[[tertiary]]
+numerator = 1
+denominator = 2000
+obj = "obj.poh_trophydrop_basilisk"
+count = 1
+
+
+# Drops need manual (konar_key): Brimstone keys are dropped if killed on a Slayer task given by Konar quo Maten.

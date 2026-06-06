@@ -1,0 +1,6 @@
+id = "Ugthanki Drops"
+npcs = ["npc.ugthanki"]
+
+[[guaranteed]]
+obj = "obj.raw_ugthanki_meat"
+count = 1

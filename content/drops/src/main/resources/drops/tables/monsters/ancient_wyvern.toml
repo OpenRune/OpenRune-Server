@@ -1,0 +1,251 @@
+id = "Ancient Wyvern Drops"
+npcs = ["npc.ancient_wyvern"]
+brimstone_key_roll = true
+brimstone_key_roll_konar_bonus = true
+
+[main]
+total = 132
+name = "Ancient Wyvern Drops"
+
+[[main.entries]]
+weight = 4
+obj = "obj.air_battlestaff"
+count = 2
+
+[[main.entries]]
+weight = 3
+obj = "obj.mystic_air_staff"
+count = 1
+
+[[main.entries]]
+weight = 3
+obj = "obj.rune_pickaxe"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.rune_battleaxe"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.rune_kiteshield"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.rune_full_helm"
+count = 1
+
+[[main.entries]]
+weight = 4
+obj = "obj.cert_battlestaff"
+count = 6
+
+[[main.entries]]
+weight = 3
+obj = "obj.adamant_arrow"
+count = "50..76"
+
+[[main.entries]]
+weight = 4
+obj = "obj.naturerune"
+count = "37..43"
+
+[[main.entries]]
+weight = 4
+obj = "obj.deathrune"
+count = "47..53"
+
+[[main.entries]]
+weight = 4
+obj = "obj.bloodrune"
+count = "27..33"
+
+[[main.entries]]
+weight = 3
+obj = "obj.rune_arrow"
+count = "25..50"
+
+[[main.entries]]
+weight = 1
+obj = "obj.xbows_crossbow_bolts_runite"
+count = "30..60"
+
+[[main.entries]]
+weight = 2
+obj = "obj.cert_unidentified_cadantine"
+count = 3
+
+[[main.entries]]
+weight = 2
+obj = "obj.cert_unidentified_dwarf_weed"
+count = 3
+
+[[main.entries]]
+weight = 4
+obj = "obj.unidentified_torstol"
+count = 1
+
+[[main.entries]]
+weight = 4
+obj = "obj.unidentified_ranarr"
+count = "2..4"
+
+[[main.entries]]
+weight = 2
+obj = "obj.seaweed_seed"
+count = "16..24"
+
+[[main.entries]]
+weight = 1
+obj = "obj.ranarr_seed"
+count = "2..3"
+
+[[main.entries]]
+weight = 6
+obj = "obj.cert_adamantite_bar"
+count = 3
+
+[[main.entries]]
+weight = 5
+obj = "obj.cert_adamantite_ore"
+count = 20
+
+[[main.entries]]
+weight = 3
+obj = "obj.cert_runite_ore"
+count = "2..3"
+
+[[main.entries]]
+weight = 3
+obj = "obj.cert_diamond"
+count = "3..5"
+
+[[main.entries]]
+weight = 4
+obj = "obj.xbows_bolt_tips_onyx"
+count = "10..15"
+
+[[main.entries]]
+weight = 6
+obj = "obj.fossil_volcanic_ash"
+count = "80..120"
+
+[[main.entries]]
+weight = 5
+obj = "obj.cert_mahogany_logs"
+count = "25..30"
+
+[[main.entries]]
+weight = 8
+obj = "obj.shark"
+count = 5
+
+[[main.entries]]
+weight = 5
+obj = "obj.2dose2combat"
+count = 1
+
+[[main.entries]]
+weight = 8
+obj = "obj.4dose2restore"
+count = 2
+
+[[main.entries]]
+weight = 7
+obj = "obj.coins"
+count = "2000..6000"
+
+[[main.entries]]
+weight = 3
+obj = "obj.xbows_crossbow_unstrung_runite"
+count = 1
+
+[[main.entries]]
+weight = 3
+obj = "obj.cert_bucket_supercompost"
+count = "7..10"
+
+[[main.entries]]
+weight = 2
+shared = "rareDrop"
+
+[[main.entries]]
+weight = 10
+nothing = true
+
+[[main.separate_rolls]]
+numerator = 1
+denominator = 600
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.granite_longsword"
+count = 1
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.granite_boots"
+count = 1
+
+[[main.separate_rolls]]
+numerator = 5
+denominator = 264
+
+[[main.separate_rolls.entries]]
+weight = 5
+obj = "obj.cert_unidentified_kwuarm"
+count = 3
+
+[[main.separate_rolls]]
+numerator = 3
+denominator = 264
+
+[[main.separate_rolls.entries]]
+weight = 3
+obj = "obj.cert_unidentified_lantadyme"
+count = 3
+
+[[main.separate_rolls]]
+numerator = 1
+denominator = 198
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.magic_tree_seed"
+count = 1
+
+[[main.separate_rolls]]
+numerator = 3
+denominator = 198
+
+[[main.separate_rolls.entries]]
+weight = 3
+obj = "obj.yew_seed"
+count = 1
+
+[[main.separate_rolls]]
+numerator = 1
+denominator = 99
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.mahogany_seed"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 10000
+obj = "obj.wyvern_visage"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 332
+obj = "obj.trail_elite_emote_exp1"
+count = 1
+clue_scroll_box = true
+
+
+# Main table pool padding uses a nothing roll (F2P drops removed and/or subtable access missing from wiki parse) (10 weight)

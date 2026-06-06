@@ -10,49 +10,10 @@ import org.rsmod.content.drops.tables.shared.SharedDropTables
 import org.rsmod.api.droptable.DropRollItem
 import org.rsmod.content.drops.hasCompletedQuest
 import org.rsmod.content.drops.isOnQuest
+import org.rsmod.content.drops.clueScrollTransformObj
 import org.rsmod.api.droptable.ringNothing
 import org.rsmod.api.droptable.RegisterDropTable
 import org.rsmod.game.entity.Player
-
-@field:RegisterDropTable
-@JvmField
-public val goblinDropTable1: RSDropTable<Player, DropRollItem> = RSDropTable(
-    tableIdentifier = "Goblin Drop table 1",
-    npcs = npcs("npc.goblin", "npc.goblin_armed_melee_1", "npc.goblin_armed_melee_2", "npc.goblin_armed_melee_3", "npc.goblin_armed_melee_4", "npc.goblin_unarmed_mcannon_1", "npc.goblin_unarmed_mcannon_2", "npc.goblin_unarmed_mcannon_3", "npc.goblin_unarmed_mcannon_4", "npc.goblin_unarmed_mcannon_5", "npc.goblin_unarmed_mcannon_6", "npc.goblin_unarmed_mcannon_7", "npc.goblin_unarmed_mcannon_8", "npc.goblin_unarmed_mcannon_9", "npc.goblin_unarmed_melee_1", "npc.goblin_unarmed_melee_2", "npc.goblin_unarmed_melee_3", "npc.goblin_unarmed_melee_4", "npc.goblin_unarmed_melee_5", "npc.goblin_unarmed_melee_6", "npc.goblin_unarmed_melee_7", "npc.goblin_unarmed_melee_8", "npc.goblin_unarmed_melee_in_1", "npc.goblin_unarmed_melee_in_2", "npc.goblin_unarmed_melee_in_3", "npc.goblin_unarmed_melee_in_4", "npc.goblin_unarmed_melee_in_5", "npc.goblin_unarmed_melee_in_6", "npc.goblin_unarmed_melee_in_7", "npc.goblin_unarmed_melee_in_8"),
-    mainTable = rsPlayerWeightedTable(total = 128) {
-        name("Goblin Drop table 1")
-        3 weight "obj.bronze_sq_shield" count 1
-        4 weight "obj.bronze_spear" count 1
-        5 weight "obj.bodyrune" count 7
-        6 weight "obj.waterrune" count 6
-        3 weight "obj.earthrune" count 4
-        3 weight "obj.bolt" count 8
-        28 weight "obj.coins" count 5
-        3 weight "obj.coins" count 9
-        3 weight "obj.coins" count 15
-        2 weight "obj.coins" count 20
-        1 weight "obj.coins" count 1
-        38 weight ringNothing()
-        15 weight "obj.hammer" count 1
-        2 weight "obj.slice_goblin_history_book" count 1
-        5 weight "obj.goblin_armour" count 1
-        3 weight "obj.chefs_hat" count 1
-        2 weight "obj.beer" count 1
-        1 weight "obj.brass_necklace" count 1
-        1 weight "obj.air_talisman" count 1
-    },
-    tertiaries = rsPlayerTertiaryTable {
-        1 outOf 4 weight "obj.rag_goblin_bone" count 1 condition {
-            player -> player.isOnQuest("quest_ragandboneman1")
-        }
-        1 outOf 35 weight "obj.arceuus_corpse_goblin" count 1
-        1 outOf 5000 weight "obj.champions_challenge_goblin" count 1
-        1 outOf 64 weight "obj.trail_clue_beginner" count 1 transformObj { player ->
-            // Drops Need Manual (item): Clue scrolls will drop as scroll boxes after the completion of X Marks the Spot.
-             null
-        }
-    },
-)
 
 @field:RegisterDropTable
 @JvmField
@@ -96,8 +57,7 @@ public val goblinDropTable2: RSDropTable<Player, DropRollItem> = RSDropTable(
         1 outOf 30 weight "obj.arceuus_corpse_goblin" count 1
         1 outOf 5000 weight "obj.champions_challenge_goblin" count 1
         1 outOf 80 weight "obj.trail_clue_beginner" count 1 transformObj { player ->
-            // Drops Need Manual (item): Clue scrolls will drop as scroll boxes after the completion of X Marks the Spot.
-             null
+             player.clueScrollTransformObj("obj.trail_clue_beginner")
         }
     },
 )

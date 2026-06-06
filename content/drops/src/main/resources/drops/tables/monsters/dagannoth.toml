@@ -1,0 +1,151 @@
+id = "Dagannoth Drops"
+npcs = ["npc.horror_dagganoth_jr", "npc.horror_dagganoth_jr_darker", "npc.horror_dagganoth_jr_lighter", "npc.horror_dagannoth_medium", "npc.horror_dagannoth_medium_darker", "npc.horror_dagannoth_medium_lighter", "npc.kourend_dagannoth1", "npc.kourend_dagannoth2"]
+brimstone_key_roll = true
+
+[main]
+total = 128
+name = "Dagannoth Drops"
+
+[[main.entries]]
+weight = 6
+obj = "obj.iron_spear"
+count = 1
+
+[[main.entries]]
+weight = 5
+obj = "obj.bronze_spear"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.mithril_spear"
+count = 1
+
+[[main.entries]]
+weight = 4
+obj = "obj.waterrune"
+count = 15
+
+[[main.entries]]
+weight = 2
+obj = "obj.steel_arrow"
+count = 15
+
+[[main.entries]]
+weight = 1
+obj = "obj.mithril_javelin"
+count = 3
+
+[[main.entries]]
+weight = 12
+obj = "obj.lobster_pot"
+count = 1
+
+[[main.entries]]
+weight = 4
+obj = "obj.raw_herring"
+count = 3
+
+[[main.entries]]
+weight = 4
+obj = "obj.raw_sardine"
+count = 5
+
+[[main.entries]]
+weight = 3
+obj = "obj.harpoon"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.feather"
+count = 15
+
+[[main.entries]]
+weight = 2
+obj = "obj.fishing_bait"
+count = 50
+
+[[main.entries]]
+weight = 2
+obj = "obj.raw_lobster"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.raw_tuna"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.seaweed"
+count = 10
+
+[[main.entries]]
+weight = 1
+obj = "obj.bigoysterpearls"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.smalloysterpearls"
+count = 2
+
+[[main.entries]]
+weight = 29
+obj = "obj.coins"
+count = 56
+
+[[main.entries]]
+weight = 9
+obj = "obj.coins"
+count = 25
+
+[[main.entries]]
+weight = 8
+obj = "obj.coins"
+count = 44
+
+[[main.entries]]
+weight = 6
+obj = "obj.coins"
+count = 41
+
+[[main.entries]]
+weight = 1
+obj = "obj.casket"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.opal_bolttips"
+count = 12
+
+[[main.entries]]
+weight = 1
+shared = "gem"
+
+[[main.entries]]
+weight = 18
+shared = "rareSeed"
+
+[[tertiary]]
+numerator = 1
+denominator = 4
+obj = "obj.rag_dagganoth_bone"
+count = 1
+quest = "quest_ragandboneman2"
+quest_mode = "during"
+
+[[tertiary]]
+numerator = 1
+denominator = 40
+obj = "obj.arceuus_corpse_dagannoth"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 121
+obj = "obj.trail_medium_emote_exp1"
+count = 1
+clue_scroll_box = true

@@ -1,0 +1,31 @@
+id = "Unicow Drops"
+npcs = ["npc.tol_unicow"]
+
+[[guaranteed]]
+obj = "obj.unicorn_horn"
+count = "2..4"
+
+[main]
+total = 20
+name = "Unicow Drops"
+
+[[main.entries]]
+weight = 3
+obj = "obj.tol_green_sack"
+count = 1
+
+[[main.entries]]
+weight = 17
+nothing = true
+
+[[main.separate_rolls]]
+numerator = 1
+denominator = 10
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.tol_tea"
+count = 1
+
+
+# Main table pool padding uses a nothing roll (F2P drops removed and/or subtable access missing from wiki parse) (17 weight)

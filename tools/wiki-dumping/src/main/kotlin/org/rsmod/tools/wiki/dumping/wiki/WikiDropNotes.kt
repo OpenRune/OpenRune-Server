@@ -62,6 +62,11 @@ object WikiDropNoteClassifier {
         if (lootingBagWildernessPattern.containsMatchIn(cleaned)) {
             return WikiDropNotes(lootingBagWilderness = true)
         }
+        if (dropName.contains("looting bag", ignoreCase = true) &&
+            Regex("""wilderness""", RegexOption.IGNORE_CASE).containsMatchIn(cleaned)
+        ) {
+            return WikiDropNotes(lootingBagWilderness = true)
+        }
         if (brimstoneKonarTaskPattern.containsMatchIn(cleaned)) {
             return WikiDropNotes(brimstoneKonarTask = true)
         }
@@ -505,6 +510,7 @@ object WikiQuestNameLookup {
             normalize("Lunar Diplomacy") to "quest_lunardiplomacy",
             normalize("Troll Stronghold") to "quest_trollstronghold",
             normalize("Observatory Quest") to "quest_observatoryquest",
+            normalize("X Marks the Spot") to "quest_xmarksthespot",
         )
 
     fun toQuestKey(wikiName: String): String {

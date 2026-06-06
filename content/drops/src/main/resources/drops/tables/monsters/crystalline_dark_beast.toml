@@ -1,0 +1,17 @@
+id = "Crystalline Dark Beast Drops"
+npcs = ["npc.crystal_dark_beast"]
+
+[[guaranteed]]
+obj = "obj.gauntlet_crystal_shard"
+count = 1
+
+[[guaranteed]]
+obj = "obj.gauntlet_generic_component"
+count = 1
+
+
+# Unknown wiki drop rate: Crystal orb [main/Weapon components/Varies]
+# Unknown wiki drop rate: Crystal spike [main/Weapon components/Varies]
+# Unknown wiki drop rate: Crystalline bowstring [main/Weapon components/Varies]
+# Unknown wiki drop rate: Raw paddlefish [main/Resources/Common]
+# Unknown wiki drop rate: Teleport crystal (The Gauntlet) [main/Resources/Uncommon]

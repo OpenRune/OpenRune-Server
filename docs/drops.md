@@ -2,7 +2,9 @@
 
 How NPC loot works in OpenRune, how to add or edit drops, and what the DSL syntax means.
 
-Most monster tables live in `content/drops/src/main/kotlin/org/rsmod/content/drops/tables/monsters/` and are auto-generated from the OSRS Wiki. You edit the generated Kotlin, or re-dump from the wiki when tables change.
+**Simple tables** live in TOML under `content/drops/src/main/resources/drops/tables/` (mostly `monsters/`). They load at startup alongside Kotlin tables. Complex tables (manual conditions, bonus drops, herb variants, pre-roll separate rolls, etc.) stay as `@RegisterDropTable` Kotlin in `content/drops/src/main/kotlin/org/rsmod/content/drops/tables/monsters/`.
+
+The wiki dumper writes simple tables to TOML by default and only emits Kotlin for tables that are not simple enough. Use `--no-toml` to skip TOML export.
 
 ---
 
@@ -19,7 +21,73 @@ Think of it like OSRS: common loot comes from the main weight table; rare stuff 
 
 ---
 
-## A minimal table
+## Simple tables (TOML)
+
+Most wiki-dumped monster tables are **simple** — flat weighted main entries, shared subtables (`gem`, `herb`, …), guaranteed/pre-roll/tertiary chance lines, inline separate rolls, brimstone key roll, and standard hooks (looting bag, quest gates, clue scroll boxes). Those are stored as TOML instead of Kotlin.
+
+**Location:** `content/drops/src/main/resources/drops/tables/monsters/*.toml`
+
+**Loading:** `DropTableRegistry` reads all `drops/tables/**/*.toml` from the classpath **before** scanning `@RegisterDropTable`. If the same NPC is registered in both TOML and Kotlin, startup fails with a conflict error.
+
+**Example** (main + tertiary clue with scroll-box transform and combat-achievement rate baked into the denominator):
+
+```toml
+id = "Zoja Drops"
+npcs = ["npc.canafis_woman11"]
+
+[main]
+total = 512
+name = "Zoja Drops"
+
+[[main.entries]]
+weight = 10
+obj = "obj.steel_axe"
+count = 1
+
+[[main.entries]]
+weight = 2
+shared = "gem"
+
+[[main.entries]]
+weight = 1
+nothing = true
+
+[[tertiary]]
+numerator = 1
+denominator = 121
+obj = "obj.trail_clue_easy_simple001"
+count = 1
+clue_scroll_box = true
+```
+
+| TOML | Meaning |
+|------|---------|
+| `[main]` / `[[main.entries]]` | Weighted main table (`total` = pool size) |
+| `[[main.separate_rolls]]` | Inline `N outOf M separate { ... }` rolls |
+| `[[guaranteed]]` | Always-dropped items |
+| `[[pre_roll]]` / `[[tertiary]]` | `numerator` / `denominator` chance rolls |
+| `[[pre_roll_separate_rolls]]` | Pre-roll `N outOf M rolls rsPlayerWeightedTable { ... }` |
+| `shared = "gem"` | `SharedDropTables.gem` (and other known shared names) |
+| `nothing = true` | Empty main-table roll |
+| `brimstone_key_roll = true` | Tertiary `{Brimstone rarity}` roll |
+| `should_drop_looting_bag = true` | Wilderness looting bag check |
+| `should_drop_brimstone_key = true` | Konar task brimstone key check |
+| `quest` / `quest_mode` | Quest gate (`during`, `completed`, `not_completed`) |
+| `clue_scroll_box = true` | Clue scroll → scroll box after X Marks the Spot (`clueScrollTransformObj`) |
+
+| TOML omits empty defaults (`areas = []`, false booleans, etc.). String values use double quotes. Unresolved wiki drop rates and manual notes are appended as `#` comment lines at the bottom of the file.
+
+**Reformat** existing TOML files to the canonical layout:
+
+```powershell
+./gradlew :tools:wiki-dumping:reformatDropTables
+```
+
+---
+
+## A minimal table (Kotlin)
+
+Use Kotlin when the table is not simple enough for TOML, or when you are prototyping by hand.
 
 ```kotlin
 @field:RegisterDropTable
@@ -169,9 +237,13 @@ The DSL wraps `dropRollable(...)` for you when `killCondition` is set — you do
 
 Return the **obj key string** to drop, or `null` to use the default item. Common for clue scrolls that should become scroll boxes after a quest.
 
+In **TOML**, set `clue_scroll_box = true` on the entry instead of writing `transformObj` by hand.
+
+In **Kotlin**, use `player.clueScrollTransformObj("obj.trail_clue_easy_simple001")` (see `ClueScrollDropChecks.kt`).
+
 ```kotlin
-1 outOf 128 weight "obj.trail_medium_emote_exp1" count 1 transformObj { player ->
-    null  // TODO: return box obj key when quest done
+1 outOf 121 weight "obj.trail_clue_easy_simple001" count 1 transformObj { player ->
+    player.clueScrollTransformObj("obj.trail_clue_easy_simple001")
 }
 ```
 
@@ -240,18 +312,22 @@ Example (bonus drops — from Ancient Zygomite):
 
 ## Adding a new table manually
 
+**Simple table:** add `content/drops/src/main/resources/drops/tables/monsters/my_npc.toml` using the format above. No `@RegisterDropTable` needed.
+
+**Complex table:**
+
 1. Create `content/drops/.../tables/monsters/MyNpcDropTable.kt`.
 2. Define a public `val` with `@field:RegisterDropTable` and `@JvmField`.
 3. Set `tableIdentifier`, `npcs(...)`, and at least `mainTable`.
 4. Build `:content:drops` to verify it compiles.
 
-Tables are discovered automatically — no manual registry entry.
+TOML and Kotlin tables are discovered automatically — no manual registry entry. Do not register the same NPC in both.
 
 ---
 
 ## Generating tables from the OSRS Wiki
 
-The wiki dumper parses drop tables and writes Kotlin using the DSL above.
+The wiki dumper parses drop tables and writes **TOML for simple tables** and **Kotlin for everything else**.
 
 **Single monster:**
 
@@ -265,12 +341,19 @@ The wiki dumper parses drop tables and writes Kotlin using the DSL above.
 ./gradlew :tools:wiki-dumping:dumpNpcDrops --args="--all-monsters --quiet --root=d:\OpenRune\OpenRune-Server --wiki-dump=D:\OpenRune\OpenRune-FileStore-Server\dumps\wiki"
 ```
 
-Use `--wiki-dump=...` for offline mode when you have a local wiki XML dump. Output goes to `content/drops/src/main/kotlin/org/rsmod/content/drops/tables/monsters/`.
+Use `--wiki-dump=...` for offline mode when you have a local wiki XML dump.
+
+| Output | Path |
+|--------|------|
+| Simple tables (TOML) | `content/drops/src/main/resources/drops/tables/monsters/` |
+| Complex tables (Kotlin) | `content/drops/src/main/kotlin/org/rsmod/content/drops/tables/monsters/` |
+
+When a monster’s tables are all simple, the dumper removes the old Kotlin file if one existed. Pass `--no-toml` to generate Kotlin only (legacy behaviour).
 
 After dumping:
 
 1. Build `:content:drops`.
-2. Search for `Drops Need Manual` in new/changed files — those need human logic.
+2. For remaining Kotlin files, search for `Drops Need Manual` — those need human logic.
 3. Fix any unmapped items listed in file comments.
 
 ---
@@ -282,7 +365,7 @@ After dumping:
 | Main weights do not sum to `total` | Adjust weights or `nothing()` padding; check wiki pool size |
 | `condition` after obj-first separate | Use `N outOf M separate "obj" count X condition { }` |
 | `1 outOf 5000 "obj" count 1` will not parse | Add `weight`: `1 outOf 5000 weight "obj" count 1` |
-| Clue should be a scroll box | Implement `transformObj { player -> "obj...." }` |
+| Clue should be a scroll box | TOML: `clue_scroll_box = true`. Kotlin: `clueScrollTransformObj(...)` |
 | Brimstone key on guaranteed | Use `killCondition`, not plain `condition` |
 
 ---

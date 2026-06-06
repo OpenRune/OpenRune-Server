@@ -1,0 +1,21 @@
+id = "Animated Bronze Armour Drops"
+npcs = ["npc.warguild_bronze_armour"]
+
+[main]
+total = 27
+name = "Animated Bronze Armour Drops"
+
+[[main.entries]]
+weight = 9
+obj = "obj.bronze_full_helm"
+count = 1
+
+[[main.entries]]
+weight = 9
+obj = "obj.bronze_platebody"
+count = 1
+
+[[main.entries]]
+weight = 9
+obj = "obj.bronze_platelegs"
+count = 1

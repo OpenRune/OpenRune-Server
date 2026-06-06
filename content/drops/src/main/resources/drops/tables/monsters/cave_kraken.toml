@@ -1,0 +1,196 @@
+id = "Cave kraken Drops"
+npcs = ["npc.slayer_kraken", "npc.slayer_kraken_sub"]
+brimstone_key_roll = true
+brimstone_key_roll_konar_bonus = true
+
+[main]
+total = 200
+name = "Cave kraken Drops"
+
+[[main.entries]]
+weight = 4
+obj = "obj.staff_of_water"
+count = 1
+
+[[main.entries]]
+weight = 7
+obj = "obj.rune_med_helm"
+count = 1
+
+[[main.entries]]
+weight = 4
+obj = "obj.adamant_spear"
+count = 1
+
+[[main.entries]]
+weight = 4
+obj = "obj.rune_warhammer"
+count = 1
+
+[[main.entries]]
+weight = 4
+obj = "obj.battlestaff"
+count = 1
+
+[[main.entries]]
+weight = 4
+obj = "obj.water_battlestaff"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.mystic_water_staff"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.tots_uncharged"
+count = 1
+
+[[main.entries]]
+weight = 6
+obj = "obj.steamrune"
+count = 7
+
+[[main.entries]]
+weight = 10
+obj = "obj.waterrune"
+count = 15
+
+[[main.entries]]
+weight = 10
+obj = "obj.waterrune"
+count = 30
+
+[[main.entries]]
+weight = 10
+obj = "obj.waterrune"
+count = 75
+
+[[main.entries]]
+weight = 10
+obj = "obj.firerune"
+count = 30
+
+[[main.entries]]
+weight = 16
+obj = "obj.deathrune"
+count = 30
+
+[[main.entries]]
+weight = 16
+obj = "obj.chaosrune"
+count = 50
+
+[[main.entries]]
+weight = 8
+obj = "obj.bloodrune"
+count = 5
+
+[[main.entries]]
+weight = 4
+obj = "obj.old_boot"
+count = 1
+
+[[main.entries]]
+weight = 4
+obj = "obj.swamp_tar"
+count = 60
+
+[[main.entries]]
+weight = 4
+nothing = true
+
+[[main.entries]]
+weight = 6
+obj = "obj.cert_seaweed"
+count = 30
+
+[[main.entries]]
+weight = 10
+obj = "obj.coins"
+count = "120..300"
+
+[[main.entries]]
+weight = 4
+obj = "obj.cert_raw_lobster"
+count = 3
+
+[[main.entries]]
+weight = 4
+obj = "obj.cert_water_orb"
+count = 2
+
+[[main.entries]]
+weight = 4
+obj = "obj.oystershell"
+count = 1
+
+[[main.entries]]
+weight = 6
+obj = "obj.swordfish"
+count = 2
+
+[[main.entries]]
+weight = 6
+obj = "obj.shark"
+count = 1
+
+[[main.entries]]
+weight = 6
+obj = "obj.cert_antidote++4"
+count = 1
+
+[[main.entries]]
+weight = 4
+obj = "obj.cert_vial_water"
+count = 50
+
+[[main.entries]]
+weight = 4
+obj = "obj.water_talisman"
+count = 1
+
+[[main.entries]]
+weight = 6
+shared = "herb"
+
+[[main.entries]]
+weight = 6
+shared = "gem"
+
+[[main.entries]]
+weight = 6
+shared = "rareSeed"
+
+[[main.separate_rolls]]
+numerator = 1
+denominator = 240
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.bucket_empty"
+count = 1
+
+[[main.separate_rolls]]
+numerator = 1
+denominator = 1200
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.kraken_tentacle"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 95
+obj = "obj.trail_clue_hard_map001"
+count = 1
+clue_scroll_box = true
+
+[[tertiary]]
+numerator = 1
+denominator = 1140
+obj = "obj.trail_elite_emote_exp1"
+count = 1
+clue_scroll_box = true

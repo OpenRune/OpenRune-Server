@@ -1,0 +1,41 @@
+id = "Zamorak mage Drops"
+npcs = ["npc.rc_zmi_mage", "npc.rc_zmi_mage2"]
+
+[main]
+total = 50
+name = "Zamorak mage Drops"
+
+[[main.entries]]
+weight = 2
+obj = "obj.firerune"
+count = 7
+
+[[main.entries]]
+weight = 2
+obj = "obj.waterrune"
+count = 6
+
+[[main.entries]]
+weight = 2
+obj = "obj.airrune"
+count = 5
+
+[[main.entries]]
+weight = 2
+obj = "obj.naturerune"
+count = 2
+
+[[main.entries]]
+weight = 1
+obj = "obj.lawrune"
+count = 2
+
+[[main.entries]]
+weight = 1
+obj = "obj.bloodrune"
+count = 1
+
+[[main.entries]]
+weight = 40
+obj = "obj.coins"
+count = 100

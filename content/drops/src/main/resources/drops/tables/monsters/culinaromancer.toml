@@ -1,0 +1,6 @@
+id = "Culinaromancer Drops"
+npcs = ["npc.hundred_culinaromancer_base", "npc.culinaromancer_froze", "npc.hundred_culinaromancer_book5", "npc.hundred_culinaromancer_book4", "npc.hundred_culinaromancer_book3", "npc.hundred_culinaromancer_book2", "npc.hundred_culinaromancer_book1", "npc.hundred_culinaromancer_end", "npc.hundred_culinaromancer_final", "npc.hundred_culinaromancer_dead"]
+
+[[guaranteed]]
+obj = "obj.cake"
+count = 1

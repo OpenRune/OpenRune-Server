@@ -1,0 +1,297 @@
+id = "Bloodthirsty abyssal demon Drops"
+npcs = ["npc.league_superior_abyssal_demon"]
+brimstone_key_roll = true
+brimstone_key_roll_konar_bonus = true
+
+[[guaranteed]]
+obj = "obj.arceuus_corpse_abyssal"
+count = 1
+
+[main]
+total = 128
+name = "Bloodthirsty abyssal demon Drops"
+
+[[main.entries]]
+weight = 4
+obj = "obj.black_sword"
+count = 1
+
+[[main.entries]]
+weight = 3
+obj = "obj.steel_battleaxe"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.black_axe"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.mithril_kiteshield"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.rune_chainbody"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.rune_med_helm"
+count = 1
+
+[[main.entries]]
+weight = 35
+obj = "obj.coins"
+count = 132
+
+[[main.entries]]
+weight = 9
+obj = "obj.coins"
+count = 220
+
+[[main.entries]]
+weight = 7
+obj = "obj.coins"
+count = 30
+
+[[main.entries]]
+weight = 6
+obj = "obj.coins"
+count = 44
+
+[[main.entries]]
+weight = 1
+obj = "obj.coins"
+count = 460
+
+[[main.entries]]
+weight = 8
+obj = "obj.airrune"
+count = 50
+
+[[main.entries]]
+weight = 6
+obj = "obj.chaosrune"
+count = 10
+
+[[main.entries]]
+weight = 5
+obj = "obj.cert_blankrune_high"
+count = 60
+
+[[main.entries]]
+weight = 4
+obj = "obj.bloodrune"
+count = 7
+
+[[main.entries]]
+weight = 2
+obj = "obj.lobster"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.adamantite_bar"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.lawrune"
+count = 3
+
+[[main.entries]]
+weight = 1
+obj = "obj.cosmic_talisman"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.chaos_talisman"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.3dose1defense"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.cert_raw_monkfish"
+count = 75
+
+[[main.entries]]
+weight = 19
+shared = "herb"
+
+[[main.entries]]
+weight = 2
+shared = "rareDrop"
+
+[[main.entries]]
+weight = 5
+shared = "gem"
+
+[[main.separate_rolls]]
+numerator = 5
+denominator = 435
+
+[[main.separate_rolls.entries]]
+weight = 5
+obj = "obj.cert_raw_lobster"
+count = "60..80"
+
+[[main.separate_rolls.entries]]
+weight = 5
+obj = "obj.cert_unicorn_horn"
+count = "60..150"
+
+[[main.separate_rolls]]
+numerator = 10
+denominator = 435
+
+[[main.separate_rolls.entries]]
+weight = 10
+obj = "obj.cert_snape_grass"
+count = "60..150"
+
+[[main.separate_rolls.entries]]
+weight = 10
+obj = "obj.irit_seed"
+count = "10..15"
+
+[[main.separate_rolls.entries]]
+weight = 10
+obj = "obj.cert_limpwurt_root"
+count = "60..150"
+
+[[main.separate_rolls]]
+numerator = 15
+denominator = 435
+
+[[main.separate_rolls.entries]]
+weight = 15
+obj = "obj.cert_yew_logs"
+count = "70..90"
+
+[[main.separate_rolls.entries]]
+weight = 15
+obj = "obj.cert_raw_monkfish"
+count = "60..80"
+
+[[main.separate_rolls]]
+numerator = 20
+denominator = 435
+
+[[main.separate_rolls.entries]]
+weight = 20
+obj = "obj.cert_white_berries"
+count = "60..150"
+
+[[main.separate_rolls.entries]]
+weight = 20
+obj = "obj.cert_raw_shark"
+count = "60..80"
+
+[[main.separate_rolls]]
+numerator = 30
+denominator = 435
+
+[[main.separate_rolls.entries]]
+weight = 30
+obj = "obj.kwuarm_seed"
+count = "8..15"
+
+[[main.separate_rolls.entries]]
+weight = 30
+obj = "obj.ranarr_seed"
+count = "8..15"
+
+[[main.separate_rolls.entries]]
+weight = 30
+obj = "obj.cert_wine_of_zamorak"
+count = "30..50"
+
+[[main.separate_rolls.entries]]
+weight = 30
+obj = "obj.cert_raw_mantaray"
+count = "40..60"
+
+[[main.separate_rolls]]
+numerator = 25
+denominator = 435
+
+[[main.separate_rolls.entries]]
+weight = 25
+obj = "obj.cert_blue_dragon_scale"
+count = "20..40"
+
+[[main.separate_rolls.entries]]
+weight = 25
+obj = "obj.cert_red_spiders_eggs"
+count = "40..60"
+
+[[main.separate_rolls]]
+numerator = 35
+denominator = 435
+
+[[main.separate_rolls.entries]]
+weight = 35
+obj = "obj.cert_magic_logs"
+count = "30..50"
+
+[[main.separate_rolls]]
+numerator = 40
+denominator = 435
+
+[[main.separate_rolls.entries]]
+weight = 40
+obj = "obj.dwarf_weed_seed"
+count = "5..8"
+
+[[main.separate_rolls.entries]]
+weight = 40
+obj = "obj.snapdragon_seed"
+count = "5..8"
+
+[[main.separate_rolls.entries]]
+weight = 40
+obj = "obj.toadflax_seed"
+count = "5..8"
+
+[[main.separate_rolls]]
+numerator = 1
+denominator = 512
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.abyssal_whip"
+count = 1
+
+[[main.separate_rolls]]
+numerator = 1
+denominator = 32000
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.abyssal_dagger"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 1
+obj = "obj.trail_clue_hard_map001"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 1
+obj = "obj.trail_elite_emote_exp1"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 6000
+obj = "obj.poh_trophydrop_abyssaldemon"
+count = 1

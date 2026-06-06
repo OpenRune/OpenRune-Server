@@ -1,0 +1,85 @@
+id = "Body Golem Drops"
+npcs = ["npc.camdozaal_golem_body", "npc.camdozaal_golem_body_rock"]
+
+[main]
+total = 52
+name = "Body Golem Drops"
+
+[[main.entries]]
+weight = 6
+obj = "obj.clay"
+count = "3..4"
+
+[[main.entries]]
+weight = 6
+obj = "obj.copper_ore"
+count = "3..4"
+
+[[main.entries]]
+weight = 6
+obj = "obj.tin_ore"
+count = "3..4"
+
+[[main.entries]]
+weight = 6
+obj = "obj.iron_ore"
+count = "2..3"
+
+[[main.entries]]
+weight = 6
+obj = "obj.cert_blankrune"
+count = "4..6"
+
+[[main.entries]]
+weight = 1
+obj = "obj.cert_blankrune"
+count = 1
+
+[[main.entries]]
+weight = 8
+obj = "obj.bodyrune"
+count = "5..10"
+
+[[main.entries]]
+weight = 6
+obj = "obj.bodyrune"
+count = 1
+
+[[main.entries]]
+weight = 4
+obj = "obj.uncut_sapphire"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.uncut_emerald"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.uncut_ruby"
+count = 1
+
+[[tertiary]]
+numerator = 2
+denominator = 10
+obj = "obj.camdozaal_barronite_shard"
+count = "10..20"
+
+[[tertiary]]
+numerator = 2
+denominator = 15
+obj = "obj.camdozaal_golem_core_body"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 250
+obj = "obj.barronite_mace_3"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 62
+obj = "obj.league_clue_box_beginner"
+count = 1

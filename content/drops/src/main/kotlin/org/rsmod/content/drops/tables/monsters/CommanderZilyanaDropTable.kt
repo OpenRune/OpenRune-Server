@@ -9,6 +9,7 @@ import org.rsmod.api.droptable.rsPlayerWeightedTable
 import org.rsmod.api.droptable.dropRollable
 import org.rsmod.api.droptable.DropRollItem
 import org.rsmod.content.drops.brimstoneKeyRoll
+import org.rsmod.content.drops.clueScrollTransformObj
 import org.rsmod.api.droptable.RegisterDropTable
 import org.rsmod.game.entity.Player
 
@@ -19,7 +20,7 @@ public val commanderZilyanaDropTable: RSDropTable<Player, DropRollItem> = RSDrop
     npcs = npcs("npc.godwars_saradomin_avatar"),
     guaranteed = rsPlayerGuaranteedTable {
         "obj.nex_frozen_key_saradomin" count 1 condition { player ->
-            // Drops Need Manual: [[Frozen key (The Frozen Door)
+            // Drops Need Manual: Frozen key pieces are only dropped during The Frozen Door miniquest.
              true
         }
     },
@@ -62,10 +63,8 @@ public val commanderZilyanaDropTable: RSDropTable<Player, DropRollItem> = RSDrop
     tertiaries = rsPlayerTertiaryTable {
         onBuilder { brimstoneKeyRoll() }
         1 outOf 5000 weight "obj.saradominpet" count 1
-        // Drops Need Manual (rate): The elite clue scroll drop rate increases to 1/237 after unlocking the elite Combat Achievements rewards tier.
-        1 outOf 250 weight "obj.trail_elite_emote_exp1" count 1 transformObj { player ->
-            // Drops Need Manual (item): Clue scrolls will drop as scroll boxes after the completion of X Marks the Spot.
-             null
+        1 outOf 237 weight "obj.trail_elite_emote_exp1" count 1 transformObj { player ->
+             player.clueScrollTransformObj("obj.trail_elite_emote_exp1")
         }
     },
 )

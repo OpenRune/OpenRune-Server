@@ -1,0 +1,8 @@
+id = "Skeleton (Ape Atoll) Drops"
+npcs = ["npc.mm_skeleton"]
+
+[[tertiary]]
+numerator = 1
+denominator = 5000
+obj = "obj.champions_challenge_skeleton"
+count = 1

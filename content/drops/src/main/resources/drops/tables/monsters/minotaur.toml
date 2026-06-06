@@ -1,0 +1,100 @@
+id = "Minotaur Drops"
+npcs = ["npc.sos_war_minotaur", "npc.sos_war_minotaur2", "npc.sos_war_minotaur3"]
+
+[main]
+total = 101
+name = "Minotaur Drops"
+
+[[main.entries]]
+weight = 10
+obj = "obj.iron_arrow"
+count = "5..14"
+
+[[main.entries]]
+weight = 10
+obj = "obj.bronze_spear"
+count = 1
+
+[[main.entries]]
+weight = 10
+obj = "obj.bronze_full_helm"
+count = 1
+
+[[main.entries]]
+weight = 3
+obj = "obj.bronze_arrow"
+count = 3
+
+[[main.entries]]
+weight = 4
+obj = "obj.bronze_dagger"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.mindrune"
+count = 1
+
+[[main.entries]]
+weight = 11
+obj = "obj.coins"
+count = 2
+
+[[main.entries]]
+weight = 20
+obj = "obj.coins"
+count = 7
+
+[[main.entries]]
+weight = 7
+obj = "obj.coins"
+count = "5..84"
+
+[[main.entries]]
+weight = 6
+obj = "obj.cert_copper_ore"
+count = 1
+
+[[main.entries]]
+weight = 6
+obj = "obj.cert_tin_ore"
+count = 1
+
+[[main.entries]]
+weight = 5
+obj = "obj.cert_blankrune_high"
+count = 15
+
+[[main.entries]]
+weight = 3
+obj = "obj.cooked_meat"
+count = 1
+
+[[main.entries]]
+weight = 3
+obj = "obj.sos_half_skull1"
+count = 1
+
+[[main.entries]]
+weight = 1
+shared = "gem"
+
+[[main.entries]]
+weight = 1
+nothing = true
+
+[[tertiary]]
+numerator = 1
+denominator = 50
+obj = "obj.arceuus_corpse_minotaur"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 60
+obj = "obj.trail_clue_beginner"
+count = 1
+clue_scroll_box = true
+
+
+# Main table pool padding uses a nothing roll (F2P drops removed and/or subtable access missing from wiki parse) (1 weight)

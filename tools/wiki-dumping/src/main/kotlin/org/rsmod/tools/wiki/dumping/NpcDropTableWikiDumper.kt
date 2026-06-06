@@ -4,6 +4,7 @@ import java.nio.file.Files
 import java.nio.file.Path
 import kotlin.io.path.Path
 import kotlin.io.path.createDirectories
+import kotlin.io.path.deleteIfExists
 import kotlin.io.path.writeText
 import kotlin.system.exitProcess
 import kotlin.system.measureTimeMillis
@@ -82,6 +83,7 @@ class NpcDropTableWikiDumper(
         request: NpcDropDumpRequest,
         outputDir: Path,
         jsonExport: JsonExportConfig? = null,
+        tomlExport: TomlExportConfig? = null,
         kotlinOutput: Boolean = true,
     ): List<DumpResult> {
         lateinit var results: List<DumpResult>
@@ -97,22 +99,20 @@ class NpcDropTableWikiDumper(
 
                 outputDir.createDirectories()
 
-                if (kotlinOutput && specs.isNotEmpty()) {
-                    val output = DropTableOutputLayout.resolveMonsterOutputFile(outputDir, request.wikiPage)
-                    output.parent.createDirectories()
-                    val code =
-                        DropTableCodeGenerator.generateFile(
-                            specs,
-                            packageName = DropTableOutputLayout.MONSTERS_PACKAGE,
-                        )
-                    output.writeText(code)
-
-                    if (results.size > 1) {
-                        cleanupStaleSplitFiles(request.wikiPage, output.parent)
-                    }
-
-                    log.info("wrote ${output.fileName} → ${output.toAbsolutePath()}")
-                }
+                val exportResult =
+                    DropTableExportWriter.exportPage(
+                        wikiPage = request.wikiPage,
+                        specs = specs,
+                        kotlinRoot = outputDir,
+                        tomlExport = tomlExport,
+                        kotlinOutput = kotlinOutput,
+                        log = log,
+                        onKotlinWritten = { output ->
+                            if (results.size > 1) {
+                                cleanupStaleSplitFiles(request.wikiPage, output.parent)
+                            }
+                        },
+                    )
 
                 jsonExport?.let { config ->
                     for (result in exportable) {
@@ -485,6 +485,8 @@ fun main(args: Array<String>) {
     val fetchDumpNpc = flags.contains("--fetch-dump")
     val exportJson = flags.contains("--json") || flags.contains("--json-only")
     val jsonOnly = flags.contains("--json-only")
+    val exportToml = !flags.contains("--no-toml")
+    val tomlOnly = flags.contains("--toml-only")
     val wikiDumpDir = flags.firstOrNull { it.startsWith("--wiki-dump=") }?.substringAfter("--wiki-dump=")
     val bulkDump =
         flags.contains("--all-monsters") ||
@@ -501,6 +503,9 @@ fun main(args: Array<String>) {
     val repoRoot = rootDir?.let { Path(it) } ?: findRepoRoot()
     val outFromFlag = flags.firstOrNull { it.startsWith("--out=") }?.substringAfter("--out=")
     val jsonOutFromFlag = flags.firstOrNull { it.startsWith("--json-out=") }?.substringAfter("--json-out=")
+    val tomlOutFromFlag = flags.firstOrNull { it.startsWith("--toml-out=") }?.substringAfter("--toml-out=")
+    val manifestOutFromFlag =
+        flags.firstOrNull { it.startsWith("--manifest-out=") }?.substringAfter("--manifest-out=")
 
     val outputDir =
         when {
@@ -513,6 +518,14 @@ fun main(args: Array<String>) {
             jsonOutFromFlag != null -> Path(jsonOutFromFlag)
             else -> defaultJsonOutputDir(repoRoot)
         }
+    val tomlOutputDir =
+        when {
+            !exportToml -> null
+            tomlOutFromFlag != null -> Path(tomlOutFromFlag)
+            else -> defaultTomlOutputDir(repoRoot)
+        }
+    val manifestOutputDir =
+        manifestOutFromFlag?.let { Path(it) } ?: DropTableOutputLayout.defaultManifestOutputDir(repoRoot)
     val wikiPages =
         when {
             bulkDump -> emptyList()
@@ -544,6 +557,10 @@ fun main(args: Array<String>) {
                                 npcLookup = resources.npcLookup,
                             )
                         }
+                    val tomlExport =
+                        tomlOutputDir?.let { dir ->
+                            TomlExportConfig(tomlRoot = dir)
+                        }
 
                     if (bulkDump) {
                         val categoryDumper =
@@ -552,15 +569,21 @@ fun main(args: Array<String>) {
                                 wiki = wiki,
                                 log = log,
                                 jsonExport = jsonExport,
-                                kotlinOutput = !jsonOnly,
+                                tomlExport = tomlExport,
+                                kotlinOutput = !jsonOnly && !tomlOnly,
                             )
                         log.info("Infobox Monster scan → ${outputDir.toAbsolutePath()}")
                         if (jsonExport != null) {
                             log.info("json export → ${jsonExport.jsonRoot.toAbsolutePath()}")
                         }
+                        if (tomlExport != null) {
+                            log.info("toml export → ${tomlExport.tomlRoot.toAbsolutePath()}")
+                        }
+                        log.info("manifest export → ${manifestOutputDir.toAbsolutePath()}")
                         val result =
                             categoryDumper.dumpAllMonsters(
                                 outputDir = outputDir,
+                                manifestDir = manifestOutputDir,
                                 limit = limitFlag,
                             )
                         summaryPages =
@@ -577,7 +600,7 @@ fun main(args: Array<String>) {
                         if (result.unknownDropRates.isNotEmpty()) {
                             log.info(
                                 "  ${result.unknownDropRates.size} drop(s) with unknown text rarity " +
-                                    "→ _unknown_drop_rates.txt",
+                                    "→ ${DropTableOutputLayout.UNKNOWN_DROP_RATES_MANIFEST}",
                             )
                         }
                         logSkippedExamples(log, result.skipped)
@@ -597,7 +620,14 @@ fun main(args: Array<String>) {
                                 )
 
                             log.info("— $wikiPage")
-                            val results = dumper.dumpToFile(request, outputDir, jsonExport, kotlinOutput = !jsonOnly)
+                            val results =
+                                dumper.dumpToFile(
+                                    request,
+                                    outputDir,
+                                    jsonExport,
+                                    tomlExport,
+                                    kotlinOutput = !jsonOnly && !tomlOnly,
+                                )
 
                             for (result in results) {
                                 log.info(

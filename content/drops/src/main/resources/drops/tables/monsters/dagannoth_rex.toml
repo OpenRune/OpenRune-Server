@@ -1,0 +1,230 @@
+id = "Dagannoth Rex Drops"
+npcs = ["npc.dagcave_melee_boss"]
+brimstone_key_roll = true
+
+[[guaranteed]]
+obj = "obj.dagganoth_hide"
+count = 1
+
+[main]
+total = 128
+name = "Dagannoth Rex Drops"
+
+[[main.entries]]
+weight = 17
+obj = "obj.steel_kiteshield"
+count = 1
+
+[[main.entries]]
+weight = 11
+obj = "obj.mithril_warhammer"
+count = 1
+
+[[main.entries]]
+weight = 7
+obj = "obj.adamant_axe"
+count = 1
+
+[[main.entries]]
+weight = 4
+obj = "obj.steel_platebody"
+count = 1
+
+[[main.entries]]
+weight = 3
+obj = "obj.mithril_pickaxe"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.adamant_platebody"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.viking_sword"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.dragon_axe"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.rune_axe"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.viking_shield"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.viking_helmet"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.mithril_2h_sword"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.ring_of_life"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.dagganoth_melee_body"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.dagganoth_melee_legs"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.berzerker_ring"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.warrior_ring"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.2dose1antidragon"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.2doseprayerrestore"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.2dosestatrestore"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.2dose2attack"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.2dose2strength"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.2dose2defense"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.2dosepotionofzamorak"
+count = 1
+
+[[main.entries]]
+weight = 10
+obj = "obj.cert_mithril_ore"
+count = 25
+
+[[main.entries]]
+weight = 3
+obj = "obj.adamantite_bar"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.cert_coal"
+count = 100
+
+[[main.entries]]
+weight = 1
+obj = "obj.cert_iron_ore"
+count = 150
+
+[[main.entries]]
+weight = 1
+obj = "obj.cert_steel_bar"
+count = "15..30"
+
+[[main.entries]]
+weight = 10
+obj = "obj.coins"
+count = "100..1209"
+
+[[main.entries]]
+weight = 7
+obj = "obj.unidentified_ranarr"
+count = 1
+
+[[main.entries]]
+weight = 7
+obj = "obj.bass"
+count = 5
+
+[[main.entries]]
+weight = 4
+obj = "obj.swordfish"
+count = 5
+
+[[main.entries]]
+weight = 1
+obj = "obj.shark"
+count = 5
+
+[[main.entries]]
+weight = 8
+shared = "rareDrop"
+
+[[main.entries]]
+weight = 10
+shared = "gem"
+
+[[main.entries]]
+weight = 1
+nothing = true
+
+[[tertiary]]
+numerator = 1
+denominator = 4
+obj = "obj.rag_dagganoth_bone"
+count = 1
+quest = "quest_ragandboneman2"
+quest_mode = "during"
+
+[[tertiary]]
+numerator = 1
+denominator = 20
+obj = "obj.arceuus_corpse_dagannoth"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 5000
+obj = "obj.rexpet"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 39
+obj = "obj.trail_clue_hard_map001"
+count = 1
+clue_scroll_box = true
+
+[[tertiary]]
+numerator = 1
+denominator = 712
+obj = "obj.trail_elite_emote_exp1"
+count = 1
+clue_scroll_box = true
+
+
+# Main table pool padding uses a nothing roll (F2P drops removed and/or subtable access missing from wiki parse) (1 weight)

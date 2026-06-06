@@ -1,0 +1,8 @@
+id = "Damis Drops"
+npcs = ["npc.fd_damis_normal", "npc.fd_damis_tougher"]
+
+[[guaranteed]]
+obj = "obj.fd_dark_diamond"
+count = 1
+quest = "quest_deserttreasure1"
+quest_mode = "during"

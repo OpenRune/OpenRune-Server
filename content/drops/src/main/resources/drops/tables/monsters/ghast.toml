@@ -1,0 +1,103 @@
+id = "Ghast Drops"
+npcs = ["npc.ghast_vis"]
+
+[main]
+total = 128
+name = "Ghast Drops"
+
+[[main.entries]]
+weight = 3
+obj = "obj.iron_mace"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.iron_dagger"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.bronze_kiteshield"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.bodyrune"
+count = 3
+
+[[main.entries]]
+weight = 3
+obj = "obj.airrune"
+count = 4
+
+[[main.entries]]
+weight = 1
+obj = "obj.chaosrune"
+count = 4
+
+[[main.entries]]
+weight = 1
+obj = "obj.cosmicrune"
+count = 2
+
+[[main.entries]]
+weight = 1
+obj = "obj.firerune"
+count = 7
+
+[[main.entries]]
+weight = 10
+obj = "obj.coins"
+count = 10
+
+[[main.entries]]
+weight = 21
+obj = "obj.coins"
+count = 18
+
+[[main.entries]]
+weight = 8
+obj = "obj.coins"
+count = 26
+
+[[main.entries]]
+weight = 6
+obj = "obj.coins"
+count = 35
+
+[[main.entries]]
+weight = 2
+obj = "obj.coins"
+count = 1
+
+[[main.entries]]
+weight = 26
+obj = "obj.fishing_bait"
+count = 7
+
+[[main.entries]]
+weight = 3
+nothing = true
+
+[[main.entries]]
+weight = 2
+obj = "obj.tinderbox"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.eye_of_newt"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.tin_ore"
+count = 1
+
+[[main.entries]]
+weight = 33
+shared = "herb"
+
+[[main.entries]]
+weight = 1
+shared = "gem"

@@ -8,6 +8,7 @@ import org.rsmod.game.entity.Player
 public data class DropRollItem(
     public val obj: String,
     public val count: IntRange,
+    public val countChoices: List<Int>? = null,
     public val condition: (Player) -> Boolean = { true },
     public val killCondition: ((Player, Npc, AreaChecker) -> Boolean)? = null,
     public val transformObj: (Player) -> String? = { null },
@@ -25,6 +26,7 @@ public data class DropRollItem(
     ) : this(
         obj = obj,
         count = count..count,
+        countChoices = null,
         condition = condition,
         killCondition = killCondition,
         transformObj = transformObj,
@@ -44,6 +46,7 @@ public data class DropRollItem(
     ) : this(
         obj = obj,
         count = if (countMax != null && countMax > count) count..countMax else count..count,
+        countChoices = null,
         condition = condition,
         killCondition = killCondition,
         transformObj = transformObj,
@@ -53,6 +56,10 @@ public data class DropRollItem(
 }
 
 public fun DropRollItem.rollCount(random: GameRandom): Int {
+    countChoices?.let { choices ->
+        require(choices.isNotEmpty()) { "Drop count choices must not be empty." }
+        return choices[random.of(choices.size)]
+    }
     if (count.first == count.last) {
         return count.first
     }

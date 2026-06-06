@@ -1,0 +1,22 @@
+id = "Monkey (monster) Drops"
+npcs = ["npc.harmless_island_monkey", "npc.monkey"]
+
+[[guaranteed]]
+obj = "obj.tbwt_monkey_corpse"
+count = 1
+quest = "quest_andaftertaibwowannaitrio"
+quest_mode = "during"
+
+[[tertiary]]
+numerator = 1
+denominator = 1
+obj = "obj.rag_monkey_bone"
+count = 1
+quest = "quest_ragandboneman1"
+quest_mode = "during"
+
+[[tertiary]]
+numerator = 1
+denominator = 35
+obj = "obj.arceuus_corpse_monkey"
+count = 1

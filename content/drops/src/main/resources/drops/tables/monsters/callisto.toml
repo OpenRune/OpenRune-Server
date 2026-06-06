@@ -1,0 +1,288 @@
+id = "Callisto Drops"
+npcs = ["npc.callisto"]
+brimstone_key_roll = true
+
+[main]
+total = 126
+name = "Callisto Drops"
+
+[[main.entries]]
+weight = 2
+obj = "obj.cert_mystic_earth_staff"
+count = 4
+
+[[main.entries]]
+weight = 2
+obj = "obj.cert_mystic_robe_top"
+count = 4
+
+[[main.entries]]
+weight = 2
+obj = "obj.cert_mystic_robe_bottom"
+count = 4
+
+[[main.entries]]
+weight = 8
+obj = "obj.cert_rune_pickaxe"
+count = 5
+
+[[main.entries]]
+weight = 3
+obj = "obj.cert_rune_2h_sword"
+count = 3
+
+[[main.entries]]
+weight = 2
+obj = "obj.cert_rune_kiteshield"
+count = 4
+
+[[main.entries]]
+weight = 2
+obj = "obj.cert_rune_platebody"
+count = 4
+
+[[main.entries]]
+weight = 7
+obj = "obj.bloodrune"
+count = 500
+
+[[main.entries]]
+weight = 7
+obj = "obj.deathrune"
+count = 700
+
+[[main.entries]]
+weight = 7
+obj = "obj.chaosrune"
+count = 900
+
+[[main.entries]]
+weight = 5
+obj = "obj.soulrune"
+count = 450
+
+[[main.entries]]
+weight = 4
+obj = "obj.mcannonball"
+count = 600
+
+[[main.entries]]
+weight = 4
+obj = "obj.cert_uncut_ruby"
+count = 50
+
+[[main.entries]]
+weight = 3
+obj = "obj.cert_uncut_diamond"
+count = 25
+
+[[main.entries]]
+weight = 2
+obj = "obj.cert_uncut_dragonstone"
+count = 5
+
+[[main.entries]]
+weight = 5
+obj = "obj.cert_limpwurt_root"
+count = 100
+
+[[main.entries]]
+weight = 5
+obj = "obj.cert_magic_logs"
+count = 225
+
+[[main.entries]]
+weight = 6
+obj = "obj.cert_mahogany_logs"
+count = 600
+
+[[main.entries]]
+weight = 3
+obj = "obj.cert_dragonhide_red"
+count = 170
+
+[[main.entries]]
+weight = 2
+obj = "obj.cert_coconut"
+count = 135
+
+[[main.entries]]
+weight = 1
+obj = "obj.cert_unidentified_toadflax"
+count = 100
+
+[[main.entries]]
+weight = 1
+obj = "obj.cert_unidentified_dwarf_weed"
+count = 45
+
+[[main.entries]]
+weight = 1
+obj = "obj.cert_unidentified_ranarr"
+count = 45
+
+[[main.entries]]
+weight = 1
+obj = "obj.cert_unidentified_snapdragon"
+count = 45
+
+[[main.entries]]
+weight = 5
+obj = "obj.ranarr_seed"
+count = 11
+
+[[main.entries]]
+weight = 5
+obj = "obj.snapdragon_seed"
+count = 5
+
+[[main.entries]]
+weight = 10
+obj = "obj.coins"
+count = 50000
+
+[[main.entries]]
+weight = 5
+obj = "obj.cert_dark_crab"
+count = 50
+
+[[main.entries]]
+weight = 5
+obj = "obj.cert_4dose2restore"
+count = 10
+
+[[main.entries]]
+weight = 4
+obj = "obj.cert_bucket_supercompost"
+count = 225
+
+[[main.entries]]
+weight = 3
+obj = "obj.cert_dragon_bones"
+count = 75
+
+[[main.entries]]
+weight = 1
+obj = "obj.cert_blighted_anglerfish"
+count = 100
+
+[[main.entries]]
+weight = 3
+obj = "obj.tablet_wildycrabs"
+count = 4
+
+[[main.separate_rolls]]
+numerator = 1
+denominator = 196
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.wbr_callisto_claws"
+count = 1
+
+[[main.separate_rolls]]
+numerator = 1
+denominator = 256
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.dragon_2h_sword"
+count = 1
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.dragon_pickaxe"
+count = 1
+
+[[main.separate_rolls]]
+numerator = 1
+denominator = 360
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.wbr_voidwaker_hilt"
+count = 1
+
+[[main.separate_rolls]]
+numerator = 1
+denominator = 512
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.heavy_ring"
+count = 1
+
+[[main.separate_rolls]]
+numerator = 1
+denominator = 18
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.blighted_anglerfish"
+count = "5..6"
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.blighted_karambwan"
+count = "5..6"
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.blighted_3dose2restore"
+count = "3..4"
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.blighted_4dose2restore"
+count = "3..4"
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.2doserangerspotion"
+count = "2..3"
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.2dose2combat"
+count = "2..3"
+
+[[tertiary]]
+numerator = 1
+denominator = 3
+obj = "obj.looting_bag"
+count = 1
+should_drop_looting_bag = true
+
+[[tertiary]]
+numerator = 1
+denominator = 400
+obj = "obj.dorgesh_construction_bone"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 1500
+obj = "obj.callisto_pet"
+count = 1
+
+[[tertiary]]
+numerator = 2
+denominator = 10025
+obj = "obj.dorgesh_construction_bone_curved"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 95
+obj = "obj.trail_elite_emote_exp1"
+count = 1
+clue_scroll_box = true
+exclude_ring_of_wealth = true
+
+[[tertiary]]
+numerator = 1
+denominator = 50
+obj = "obj.trail_elite_emote_exp1"
+count = 1
+clue_scroll_box = true
+require_ring_of_wealth = true

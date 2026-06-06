@@ -1,0 +1,193 @@
+id = "Vyrewatch Drops"
+npcs = ["npc.sang_myq3_female_walk_vyrewatch_1", "npc.sang_myq3_female_walk_vyrewatch_2", "npc.sang_myq3_female_walk_vyrewatch_3", "npc.sang_myq3_female_walk_vyrewatch_4", "npc.myreque_pt3_takeoff_vyrewatch_female_1", "npc.myreque_pt3_takeoff_vyrewatch_female_2", "npc.myreque_pt3_takeoff_vyrewatch_female_3", "npc.myreque_pt3_takeoff_vyrewatch_female_4", "npc.sang_myq3_female_flying_vyrewatch_1", "npc.sang_myq3_female_flying_vyrewatch_2", "npc.sang_myq3_female_flying_vyrewatch_3", "npc.sang_myq3_female_flying_vyrewatch_4", "npc.sang_myq3_male_walk_vyrewatch_1", "npc.sang_myq3_male_walk_vyrewatch_2", "npc.sang_myq3_male_walk_vyrewatch_3", "npc.sang_myq3_male_walk_vyrewatch_4", "npc.myreque_pt3_takeoff_vyrewatch_male_1", "npc.myreque_pt3_takeoff_vyrewatch_male_2", "npc.myreque_pt3_takeoff_vyrewatch_male_3", "npc.myreque_pt3_takeoff_vyrewatch_male_4", "npc.sang_myq3_male_flying_vyrewatch_1", "npc.sang_myq3_male_flying_vyrewatch_2", "npc.sang_myq3_male_flying_vyrewatch_3", "npc.sang_myq3_male_flying_vyrewatch_4", "npc.sang_myq3_female_flying_ns_vyrewatch_1", "npc.sang_myq3_female_flying_ns_vyrewatch_2", "npc.sang_myq3_female_flying_ns_vyrewatch_3", "npc.sang_myq3_female_flying_ns_vyrewatch_4", "npc.sang_myq3_male_flying_ns_vyrewatch_1", "npc.sang_myq3_male_flying_ns_vyrewatch_2", "npc.sang_myq3_male_flying_ns_vyrewatch_3", "npc.sang_myq3_male_flying_ns_vyrewatch_4", "npc.sang_myq3_female_walk_ns_vyrewatch_1", "npc.sang_myq3_female_walk_ns_vyrewatch_2", "npc.sang_myq3_female_walk_ns_vyrewatch_3", "npc.sang_myq3_female_walk_ns_vyrewatch_4", "npc.sang_myq3_male_walk_ns_vyrewatch_1", "npc.sang_myq3_male_walk_ns_vyrewatch_2", "npc.sang_myq3_male_walk_ns_vyrewatch_3", "npc.sang_myq3_male_walk_ns_vyrewatch_4", "npc.myq4_vyrewatch_1_crowd", "npc.myq4_vyrewatch_2_crowd", "npc.myq4_vyrewatch_3_crowd", "npc.myq4_vyrewatch_4_crowd", "npc.myq4_vyrewatch_1", "npc.myq4_vyrewatch_2", "npc.myq4_vyrewatch_3", "npc.myq4_vyrewatch_4", "npc.slepe_vyrewatch_female_1", "npc.slepe_vyrewatch_female_2", "npc.slepe_vyrewatch_female_3", "npc.slepe_vyrewatch_female_4", "npc.slepe_vyrewatch_male_1", "npc.slepe_vyrewatch_male_2", "npc.slepe_vyrewatch_male_3", "npc.slepe_vyrewatch_male_4", "npc.darkm_vyrewatch_female_1", "npc.darkm_vyrewatch_female_2", "npc.darkm_vyrewatch_female_3", "npc.darkm_vyrewatch_female_4", "npc.darkm_vyrewatch_male_1", "npc.darkm_vyrewatch_male_2", "npc.darkm_vyrewatch_male_3", "npc.darkm_vyrewatch_male_4"]
+brimstone_key_roll = true
+
+[main]
+total = 96
+name = "Vyrewatch Drops"
+
+[[main.entries]]
+weight = 6
+obj = "obj.rune_dagger"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.adamant_platelegs"
+count = 1
+
+[[main.entries]]
+weight = 6
+obj = "obj.adamant_platebody"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.rune_platelegs"
+count = 1
+
+[[main.entries]]
+weight = 6
+obj = "obj.mithril_axe"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.rune_full_helm"
+count = 1
+
+[[main.entries]]
+weight = 10
+obj = "obj.deathrune"
+count = "4..12"
+
+[[main.entries]]
+weight = 10
+obj = "obj.bloodrune"
+count = "4..12"
+
+[[main.entries]]
+weight = 10
+obj = "obj.naturerune"
+count = "6..14"
+
+[[main.entries]]
+weight = 4
+obj = "obj.adamant_arrow"
+count = "8..16"
+
+[[main.entries]]
+weight = 2
+obj = "obj.rune_javelin"
+count = "5..15"
+
+[[main.entries]]
+weight = 2
+obj = "obj.adamantite_ore"
+count = 1
+
+[[main.entries]]
+weight = 4
+obj = "obj.coal"
+count = 6
+
+[[main.entries]]
+weight = 2
+obj = "obj.runite_bar"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.mortmyremushroom"
+count = 2
+
+[[main.entries]]
+weight = 2
+obj = "obj.yew_logs"
+count = 4
+
+[[main.entries]]
+weight = 4
+obj = "obj.hollow_bark"
+count = "4..8"
+
+[[main.entries]]
+weight = 15
+obj = "obj.coins"
+count = "100..1000"
+
+[[main.entries]]
+weight = 1
+shared = "herb"
+
+[[main.entries]]
+weight = 1
+shared = "rareDrop"
+
+[[main.entries]]
+weight = 1
+shared = "gem"
+
+[[main.entries]]
+weight = 1
+shared = "seed"
+
+[[main.entries]]
+weight = 2
+nothing = true
+
+[[main.separate_rolls]]
+numerator = 9
+denominator = 5376
+
+[[main.separate_rolls.entries]]
+weight = 9
+obj = "obj.opal_bolttips"
+count = "4..10"
+
+[[main.separate_rolls.entries]]
+weight = 9
+obj = "obj.pearl_bolttips"
+count = "4..10"
+
+[[main.separate_rolls.entries]]
+weight = 9
+obj = "obj.xbows_bolt_tips_diamond"
+count = "4..10"
+
+[[main.separate_rolls]]
+numerator = 3
+denominator = 5376
+
+[[main.separate_rolls.entries]]
+weight = 3
+obj = "obj.xbows_bolt_tips_jade"
+count = "4..10"
+
+[[main.separate_rolls.entries]]
+weight = 3
+obj = "obj.xbows_bolt_tips_redtopaz"
+count = "4..10"
+
+[[main.separate_rolls.entries]]
+weight = 3
+obj = "obj.xbows_bolt_tips_sapphire"
+count = "4..10"
+
+[[main.separate_rolls.entries]]
+weight = 3
+obj = "obj.xbows_bolt_tips_onyx"
+count = "4..10"
+
+[[main.separate_rolls]]
+numerator = 5
+denominator = 5376
+
+[[main.separate_rolls.entries]]
+weight = 5
+obj = "obj.xbows_bolt_tips_emerald"
+count = "4..10"
+
+[[main.separate_rolls]]
+numerator = 6
+denominator = 5376
+
+[[main.separate_rolls.entries]]
+weight = 6
+obj = "obj.xbows_bolt_tips_ruby"
+count = "4..10"
+
+[[main.separate_rolls.entries]]
+weight = 6
+obj = "obj.xbows_bolt_tips_dragonstone"
+count = "4..10"
+
+[[tertiary]]
+numerator = 1
+denominator = 121
+obj = "obj.trail_clue_hard_map001"
+count = 1
+clue_scroll_box = true
+
+
+# Main table pool padding uses a nothing roll (F2P drops removed and/or subtable access missing from wiki parse) (2 weight)

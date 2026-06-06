@@ -1,0 +1,166 @@
+id = "Blood Reaver Drops"
+npcs = ["npc.nex_prison_blood_reaver", "npc.nex_prison_blood_reaver_boss"]
+
+[main]
+total = 128
+name = "Blood Reaver Drops"
+
+[[main.entries]]
+weight = 2
+obj = "obj.airrune"
+count = 150
+
+[[main.entries]]
+weight = 7
+obj = "obj.airrune"
+count = 250
+
+[[main.entries]]
+weight = 15
+obj = "obj.astralrune"
+count = 25
+
+[[main.entries]]
+weight = 2
+obj = "obj.bloodrune"
+count = 15
+
+[[main.entries]]
+weight = 3
+obj = "obj.chaosrune"
+count = 15
+
+[[main.entries]]
+weight = 4
+obj = "obj.mindrune"
+count = 20
+
+[[main.entries]]
+weight = 7
+obj = "obj.mudrune"
+count = 15
+
+[[main.entries]]
+weight = 4
+obj = "obj.naturerune"
+count = 15
+
+[[main.entries]]
+weight = 3
+obj = "obj.unidentified_avantoe"
+count = 1
+
+[[main.entries]]
+weight = 3
+obj = "obj.unidentified_ranarr"
+count = 1
+
+[[main.entries]]
+weight = 3
+obj = "obj.unidentified_snapdragon"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.unidentified_torstol"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.coins"
+count = 1
+
+[[main.entries]]
+weight = 9
+obj = "obj.coins"
+count = 500
+
+[[main.entries]]
+weight = 6
+obj = "obj.coins"
+count = "1300..1337"
+
+[[main.entries]]
+weight = 11
+obj = "obj.1dose1magic"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.1dose2defense"
+count = 1
+
+[[main.entries]]
+weight = 9
+obj = "obj.2doseprayerrestore"
+count = 1
+
+[[main.entries]]
+weight = 8
+obj = "obj.cert_adamantite_bar"
+count = "1..4"
+
+[[main.entries]]
+weight = 1
+obj = "obj.blood_essence_inactive"
+count = 1
+
+[[main.entries]]
+weight = 8
+obj = "obj.cert_coal"
+count = "1..10"
+
+[[main.entries]]
+weight = 1
+obj = "obj.nihil_shard"
+count = "2..7"
+
+[[main.entries]]
+weight = 7
+obj = "obj.cactus_potato"
+count = 1
+
+[[main.entries]]
+weight = 8
+obj = "obj.cert_blankrune_high"
+count = 23
+
+[[main.entries]]
+weight = 1
+shared = "gem"
+
+[[main.separate_rolls]]
+numerator = 1
+denominator = 640
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.ancient_ceremonial_mask"
+count = 1
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.ancient_ceremonial_top"
+count = 1
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.ancient_ceremonial_legs"
+count = 1
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.ancient_ceremonial_gloves"
+count = 1
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.ancient_ceremonial_boots"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 106
+obj = "obj.trail_clue_hard_map001"
+count = 1
+clue_scroll_box = true

@@ -1,0 +1,6 @@
+id = "Tough Guy Drops"
+npcs = ["npc.feud_menap_toughguy"]
+
+[[guaranteed]]
+obj = "obj.blackjack_willow"
+count = 1

@@ -1,0 +1,151 @@
+id = "Fire giant Drops"
+npcs = ["npc.firegiant_big", "npc.firegiant_big2", "npc.firegiant_big3", "npc.firegiant", "npc.firegiant2", "npc.firegiant3", "npc.firegiant_strongholdcave_1", "npc.firegiant_strongholdcave_2", "npc.firegiant_strongholdcave_3", "npc.firegiant_strongholdcave_4", "npc.kourend_firegiant1", "npc.kourend_firegiant2"]
+brimstone_key_roll = true
+
+[main]
+total = 128
+name = "Fire giant Drops"
+
+[[main.entries]]
+weight = 3
+obj = "obj.steel_axe"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.mithril_sq_shield"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.fire_battlestaff"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.rune_scimitar"
+count = 1
+
+[[main.entries]]
+weight = 10
+obj = "obj.firerune"
+count = 150
+
+[[main.entries]]
+weight = 7
+obj = "obj.chaosrune"
+count = 5
+
+[[main.entries]]
+weight = 5
+obj = "obj.rune_arrow"
+count = 12
+
+[[main.entries]]
+weight = 4
+obj = "obj.bloodrune"
+count = 5
+
+[[main.entries]]
+weight = 1
+obj = "obj.firerune"
+count = 37
+
+[[main.entries]]
+weight = 1
+obj = "obj.lawrune"
+count = 2
+
+[[main.entries]]
+weight = 40
+obj = "obj.coins"
+count = 60
+
+[[main.entries]]
+weight = 7
+obj = "obj.coins"
+count = 15
+
+[[main.entries]]
+weight = 6
+obj = "obj.coins"
+count = 25
+
+[[main.entries]]
+weight = 2
+obj = "obj.coins"
+count = 300
+
+[[main.entries]]
+weight = 1
+obj = "obj.coins"
+count = 50
+
+[[main.entries]]
+weight = 3
+obj = "obj.lobster"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.steel_bar"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.2dose1strength"
+count = 1
+
+[[main.entries]]
+weight = 19
+shared = "herb"
+
+[[main.entries]]
+weight = 1
+shared = "rareDrop"
+
+[[main.entries]]
+weight = 11
+shared = "gem"
+
+[[tertiary]]
+numerator = 1
+denominator = 3
+obj = "obj.looting_bag"
+count = 1
+should_drop_looting_bag = true
+
+[[tertiary]]
+numerator = 1
+denominator = 4
+obj = "obj.rag_fire_giant_bone"
+count = 1
+quest = "quest_ragandboneman2"
+quest_mode = "during"
+
+[[tertiary]]
+numerator = 1
+denominator = 20
+obj = "obj.arceuus_corpse_giant"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 400
+obj = "obj.dorgesh_construction_bone"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 5000
+obj = "obj.champions_challenge_giant"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 5013
+obj = "obj.dorgesh_construction_bone_curved"
+count = 1
+
+
+# Drops need manual rate (konar_key): Brimstone key drop rates for level 86, 104 and 109 fire giants are , and respectively.

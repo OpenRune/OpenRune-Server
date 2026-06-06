@@ -1,0 +1,43 @@
+id = "Corrupted Dark Beast Drops"
+npcs = ["npc.crystal_dark_beast_hm"]
+
+[[guaranteed]]
+obj = "obj.gauntlet_crystal_shard_hm"
+count = "30..60"
+
+[[guaranteed]]
+obj = "obj.gauntlet_generic_component_hm"
+count = 1
+
+[main]
+total = 18
+name = "Corrupted Dark Beast Drops"
+
+[[main.entries]]
+weight = 3
+nothing = true
+
+[[main.entries]]
+weight = 9
+obj = "obj.gauntlet_crystal_shard_hm"
+count = "10..21"
+
+[[main.entries]]
+weight = 3
+obj = "obj.gauntlet_raw_food"
+count = "3..5"
+
+[[main.entries]]
+weight = 2
+obj = "obj.gauntlet_herb_hm"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.gauntlet_teleport_crystal_hm"
+count = 1
+
+
+# Unknown wiki drop rate: Corrupted bowstring [main/Weapon components/Varies]
+# Unknown wiki drop rate: Corrupted orb [main/Weapon components/Varies]
+# Unknown wiki drop rate: Corrupted spike [main/Weapon components/Varies]

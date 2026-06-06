@@ -45,6 +45,7 @@ class MonsterCategoryDropDumper(
     private val wiki: WikiClient,
     private val log: DropDumpLog,
     private val jsonExport: JsonExportConfig? = null,
+    private val tomlExport: TomlExportConfig? = null,
     private val kotlinOutput: Boolean = true,
 ) {
     private class CanonicalEntry(
@@ -55,6 +56,7 @@ class MonsterCategoryDropDumper(
 
     suspend fun dumpAllMonsters(
         outputDir: Path,
+        manifestDir: Path,
         limit: Int? = null,
     ): CategoryDropDumpResult {
         val canonicalByCode = linkedMapOf<String, CanonicalEntry>()
@@ -215,6 +217,7 @@ class MonsterCategoryDropDumper(
         outputDir.createDirectories()
         DropTableOutputLayout.cleanupStaleAlternateEncounterFiles(outputDir, log)
         val writtenPaths = mutableSetOf<Path>()
+        val writtenTomlPaths = mutableSetOf<Path>()
         val jsonCanonical = mutableListOf<DropTableJsonExporter.CanonicalJsonExport>()
 
         for ((_, entry) in canonicalByCode) {
@@ -223,20 +226,17 @@ class MonsterCategoryDropDumper(
                 continue
             }
 
-            if (kotlinOutput) {
-                val output = DropTableOutputLayout.resolveMonsterOutputFile(outputDir, entry.wikiPage)
-                output.parent.createDirectories()
-                val code =
-                    DropTableCodeGenerator.generateFile(
-                        specs,
-                        packageName = DropTableOutputLayout.MONSTERS_PACKAGE,
-                    )
-                output.writeText(code)
-                writtenPaths.add(output)
-
-                val relative = outputDir.relativize(output).toString().replace('\\', '/')
-                log.info("wrote $relative ← ${entry.wikiPage}")
-            }
+            val exportResult =
+                DropTableExportWriter.exportPage(
+                    wikiPage = entry.wikiPage,
+                    specs = specs,
+                    kotlinRoot = outputDir,
+                    tomlExport = tomlExport,
+                    kotlinOutput = kotlinOutput,
+                    log = log,
+                )
+            exportResult.kotlinFile?.let { writtenPaths.add(it) }
+            writtenTomlPaths.addAll(exportResult.tomlFiles)
 
             if (jsonExport != null) {
                 jsonCanonical +=
@@ -251,12 +251,12 @@ class MonsterCategoryDropDumper(
             exportJsonTables(config, jsonCanonical + jsonRemainsOnly, duplicates)
         }
 
-        if (kotlinOutput) {
+        if (kotlinOutput || tomlExport != null) {
             DropTableOutputLayout.cleanupStaleMonsterFiles(outputDir, writtenPaths)
             DropTableOutputLayout.cleanupGroupedSubdirs(outputDir)
             DropTableOutputLayout.cleanupLegacyFlatMonsterFiles(outputDir)
+            DropTableOutputLayout.cleanupLegacyManifestFiles(outputDir, log)
 
-            val manifestDir = outputDir.resolve(DropTableOutputLayout.MONSTERS_DIR)
             manifestDir.createDirectories()
             writeDuplicateManifest(manifestDir, duplicates)
             writeSkippedManifest(manifestDir, skipped)
@@ -319,7 +319,7 @@ class MonsterCategoryDropDumper(
             return
         }
 
-        val manifest = outputDir.resolve("_duplicate_drop_tables.txt")
+        val manifest = outputDir.resolve(DropTableOutputLayout.DUPLICATE_DROP_TABLES_MANIFEST)
         val lines =
             buildList {
                 add("# Exact duplicate drop tables — identical generated code including npc ids")
@@ -338,7 +338,7 @@ class MonsterCategoryDropDumper(
             return
         }
 
-        val manifest = outputDir.resolve("_skipped_monsters.txt")
+        val manifest = outputDir.resolve(DropTableOutputLayout.SKIPPED_MONSTERS_MANIFEST)
         val lines =
             buildList {
                 add("# Skipped Infobox Monster pages")
@@ -370,7 +370,7 @@ class MonsterCategoryDropDumper(
                 .distinctBy { Triple(it.wikiPage, it.itemName, it.rarity) }
                 .sortedWith(compareBy({ it.wikiPage }, { it.itemName }, { it.rarity }))
 
-        val manifest = outputDir.resolve("_unknown_drop_rates.txt")
+        val manifest = outputDir.resolve(DropTableOutputLayout.UNKNOWN_DROP_RATES_MANIFEST)
         val lines =
             buildList {
                 add("# Wiki drops with text rarity — exact rate needs data collection")

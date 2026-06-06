@@ -54,9 +54,8 @@ public val zombieWildernessDropTable: RSDropTable<Player, DropRollItem> = RSDrop
             player -> player.isOnQuest("quest_ragandboneman2")
         }
         1 outOf 5000 weight "obj.champions_challenge_zombie" count 1
-        1 outOf 3 weight "obj.looting_bag" count 1 condition { player ->
-            // Drops Need Manual: Only dropped by those found in the Wilderness.
-             true
+        1 outOf 3 weight "obj.looting_bag" count 1 condition {
+            player -> player.shouldDropLootingBag()
         }
     },
 )

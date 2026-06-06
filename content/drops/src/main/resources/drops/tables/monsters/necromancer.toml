@@ -1,0 +1,140 @@
+id = "Necromancer Drops"
+npcs = ["npc.necromancer"]
+
+[main]
+total = 128
+name = "Necromancer Drops"
+
+[[main.entries]]
+weight = 8
+obj = "obj.plainstaff"
+count = 1
+
+[[main.entries]]
+weight = 4
+obj = "obj.zamrobebottom"
+count = 1
+
+[[main.entries]]
+weight = 3
+obj = "obj.zamrobetop"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.staff_of_fire"
+count = 1
+
+[[main.entries]]
+weight = 4
+obj = "obj.earthrune"
+count = 36
+
+[[main.entries]]
+weight = 3
+obj = "obj.airrune"
+count = 10
+
+[[main.entries]]
+weight = 3
+obj = "obj.waterrune"
+count = 10
+
+[[main.entries]]
+weight = 3
+obj = "obj.earthrune"
+count = 10
+
+[[main.entries]]
+weight = 3
+obj = "obj.firerune"
+count = 10
+
+[[main.entries]]
+weight = 2
+obj = "obj.airrune"
+count = 18
+
+[[main.entries]]
+weight = 2
+obj = "obj.waterrune"
+count = 18
+
+[[main.entries]]
+weight = 2
+obj = "obj.earthrune"
+count = 18
+
+[[main.entries]]
+weight = 2
+obj = "obj.firerune"
+count = 18
+
+[[main.entries]]
+weight = 7
+obj = "obj.naturerune"
+count = 5
+
+[[main.entries]]
+weight = 6
+obj = "obj.chaosrune"
+count = 4
+
+[[main.entries]]
+weight = 3
+obj = "obj.mindrune"
+count = 10
+
+[[main.entries]]
+weight = 3
+obj = "obj.bodyrune"
+count = 10
+
+[[main.entries]]
+weight = 2
+obj = "obj.mindrune"
+count = 18
+
+[[main.entries]]
+weight = 2
+obj = "obj.bodyrune"
+count = 18
+
+[[main.entries]]
+weight = 2
+obj = "obj.bloodrune"
+count = 2
+
+[[main.entries]]
+weight = 1
+obj = "obj.cosmicrune"
+count = 2
+
+[[main.entries]]
+weight = 1
+obj = "obj.lawrune"
+count = 3
+
+[[main.entries]]
+weight = 17
+obj = "obj.coins"
+count = 1
+
+[[main.entries]]
+weight = 16
+obj = "obj.coins"
+count = 2
+
+[[main.entries]]
+weight = 9
+obj = "obj.coins"
+count = 4
+
+[[main.entries]]
+weight = 3
+obj = "obj.coins"
+count = 29
+
+[[main.entries]]
+weight = 16
+nothing = true

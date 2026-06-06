@@ -1,0 +1,89 @@
+id = "Feral Vampyre Drops"
+npcs = ["npc.godwars_ancient_vampire", "npc.vampire_flyer", "npc.vampire_juve", "npc.myq3_angry_juvenile", "npc.myq3_angry_juvinate", "npc.burgh_vampire_juve_angry", "npc.trek_vampire_juve_angry_1", "npc.trek_vampire_juve_angry_2", "npc.trek_vampire_juve_angry_3"]
+
+[main]
+total = 128
+name = "Feral Vampyre Drops"
+
+[[main.entries]]
+weight = 10
+obj = "obj.earthrune"
+count = 4
+
+[[main.entries]]
+weight = 10
+obj = "obj.deathrune"
+count = 2
+
+[[main.entries]]
+weight = 8
+obj = "obj.chaosrune"
+count = 3
+
+[[main.entries]]
+weight = 5
+obj = "obj.bloodrune"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.bloodrune"
+count = 2
+
+[[main.entries]]
+weight = 40
+obj = "obj.coins"
+count = 15
+
+[[main.entries]]
+weight = 16
+nothing = true
+
+[[main.entries]]
+weight = 3
+obj = "obj.black_axe"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.earth_talisman"
+count = 1
+
+[[main.entries]]
+weight = 10
+shared = "herb"
+
+[[main.entries]]
+weight = 4
+shared = "gem"
+
+[[main.entries]]
+weight = 19
+nothing = true
+
+[[tertiary]]
+numerator = 1
+denominator = 3
+obj = "obj.looting_bag"
+count = 1
+should_drop_looting_bag = true
+
+[[tertiary]]
+numerator = 1
+denominator = 121
+obj = "obj.trail_medium_emote_exp1"
+count = 1
+clue_scroll_box = true
+exclude_ring_of_wealth = true
+
+[[tertiary]]
+numerator = 1
+denominator = 64
+obj = "obj.trail_medium_emote_exp1"
+count = 1
+clue_scroll_box = true
+require_ring_of_wealth = true
+require_wilderness = true
+
+
+# Main table pool padding uses a nothing roll (F2P drops removed and/or subtable access missing from wiki parse) (19 weight)

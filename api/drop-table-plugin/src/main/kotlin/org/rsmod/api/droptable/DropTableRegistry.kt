@@ -1,18 +1,32 @@
 package org.rsmod.api.droptable
 
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.databind.PropertyNamingStrategies
+import com.fasterxml.jackson.dataformat.toml.TomlFactory
+import com.fasterxml.jackson.module.kotlin.readValue
+import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import dtx.rs.RSDropTable
+import io.github.classgraph.ClassGraph
 import jakarta.inject.Inject
 import jakarta.inject.Singleton
 import org.rsmod.api.area.checker.AreaChecker
+import org.rsmod.api.droptable.toml.DropTableTomlParser
+import org.rsmod.api.droptable.toml.DropTableTomlResolver
+import org.rsmod.api.droptable.toml.DropTableTomlTextFixer
+import org.rsmod.api.droptable.toml.TomlDropTableDef
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 
 @Singleton
-public class DropTableRegistry @Inject constructor() {
+public class DropTableRegistry
+@Inject
+constructor(tomlResolver: DropTableTomlResolver) {
     private val tablesByNpc: MutableMap<String, MutableList<RSDropTable<Player, DropRollItem>>> = hashMapOf()
+    private val tomlTablesByNpc: MutableMap<String, MutableSet<String>> = hashMapOf()
 
     init {
-        loadRegisteredTables()
+        loadTomlTables(tomlResolver)
+        loadAnnotatedTables()
     }
 
     public fun forNpc(npc: Npc): RSDropTable<Player, DropRollItem>? = forNpc(npc, areaChecker = null)
@@ -46,7 +60,28 @@ public class DropTableRegistry @Inject constructor() {
         return candidates.firstOrNull { it.areas.isEmpty() } ?: candidates.first()
     }
 
-    private fun loadRegisteredTables() {
+    private fun loadTomlTables(resolver: DropTableTomlResolver) {
+        val mapper =
+            ObjectMapper(TomlFactory())
+                .registerKotlinModule()
+                .setPropertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE)
+        ClassGraph()
+            .ignoreClassVisibility()
+            .acceptPaths(TOML_RESOURCE_ROOT)
+            .scan()
+            .use { scan ->
+                scan.allResources
+                    .filter { resource -> resource.path.endsWith(".toml") }
+                    .forEach { resource ->
+                        val raw = DropTableTomlTextFixer.hoistTableLevelKeys(resource.getContentAsString())
+                        val def = mapper.readValue<TomlDropTableDef>(raw)
+                        val table = DropTableTomlParser.parse(def, resolver, sourcePath = resource.path)
+                        register(table, DropTableSource.Toml)
+                    }
+            }
+    }
+
+    private fun loadAnnotatedTables() {
         io.github.classgraph.ClassGraph()
             .ignoreClassVisibility()
             .enableClassInfo()
@@ -77,7 +112,7 @@ public class DropTableRegistry @Inject constructor() {
                 field.isAccessible = true
                 @Suppress("UNCHECKED_CAST")
                 val table = field.get(null) as RSDropTable<Player, DropRollItem>
-                register(table)
+                register(table, DropTableSource.Annotation)
             } catch (exception: Exception) {
                 throw IllegalStateException(
                     "Failed to register drop table from ${clazz.name}.${field.name}",
@@ -87,15 +122,18 @@ public class DropTableRegistry @Inject constructor() {
         }
     }
 
-    private fun register(table: RSDropTable<Player, DropRollItem>) {
+    private fun register(table: RSDropTable<Player, DropRollItem>, source: DropTableSource) {
         check(table.npcs.isNotEmpty()) {
             "Drop table '${table.tableIdentifier}' must define at least one npc."
         }
 
         table.npcs.forEach { npc ->
             val existing = tablesByNpc.getOrPut(npc) { mutableListOf() }
-            validateRegistration(table, npc, existing)
+            validateRegistration(table, npc, existing, source)
             existing += table
+            if (source == DropTableSource.Toml) {
+                tomlTablesByNpc.getOrPut(npc) { mutableSetOf() } += table.tableIdentifier
+            }
         }
     }
 
@@ -103,6 +141,7 @@ public class DropTableRegistry @Inject constructor() {
         table: RSDropTable<Player, DropRollItem>,
         npc: String,
         existing: List<RSDropTable<Player, DropRollItem>>,
+        source: DropTableSource,
     ) {
         if (existing.isEmpty()) {
             return
@@ -114,12 +153,38 @@ public class DropTableRegistry @Inject constructor() {
                     registered.areas.any { it in table.areas }
             }
         check(overlapping.isEmpty()) {
-            "Ambiguous drop tables for npc '$npc': " +
-                "${(overlapping + table).joinToString { it.tableIdentifier }}"
+            buildConflictMessage(npc, overlapping, table, source)
         }
     }
 
+    private fun buildConflictMessage(
+        npc: String,
+        overlapping: List<RSDropTable<Player, DropRollItem>>,
+        table: RSDropTable<Player, DropRollItem>,
+        source: DropTableSource,
+    ): String {
+        val conflicting = overlapping + table
+        val tableNames = conflicting.joinToString { "'${it.tableIdentifier}'" }
+        val tomlLoaded = tomlTablesByNpc[npc]?.isNotEmpty() == true
+        val suffix =
+            when {
+                source == DropTableSource.Annotation && tomlLoaded ->
+                    " Remove the @RegisterDropTable Kotlin definition or the TOML file under drops/tables/."
+                source == DropTableSource.Toml ->
+                    " Duplicate TOML drop tables cannot target the same npc."
+                else ->
+                    " Remove duplicate @RegisterDropTable definitions."
+            }
+        return "Ambiguous drop tables for npc '$npc': $tableNames.$suffix"
+    }
+
+    private enum class DropTableSource {
+        Toml,
+        Annotation,
+    }
+
     private companion object {
+        private const val TOML_RESOURCE_ROOT = "drops/tables"
         private val SEARCH_PACKAGES = arrayOf("org.rsmod.api", "org.rsmod.content")
     }
 }

@@ -7,6 +7,7 @@ import org.rsmod.api.droptable.rsPlayerGuaranteedTable
 import org.rsmod.api.droptable.rsPlayerTertiaryTable
 import org.rsmod.api.droptable.rsPlayerWeightedTable
 import org.rsmod.api.droptable.DropRollItem
+import org.rsmod.content.drops.clueScrollTransformObj
 import org.rsmod.api.droptable.RegisterDropTable
 import org.rsmod.game.entity.Player
 
@@ -59,10 +60,8 @@ public val theNightmareDropTable: RSDropTable<Player, DropRollItem> = RSDropTabl
         // Drops Need Manual (rate): The drop rate of the Little Nightmare depends on the amount of players in the fight; 1/800 for 1, 1/1,600 for 2, 1/2,400 for 3, 1/3,200 for 4, and 1/4,000 for 5 and beyond. The team size is counted when the fight starts.
         1 outOf 800 weight "obj.nightmarepet" count 1
         1 outOf 1900 weight "obj.jar_of_dreams" count 1
-        // Drops Need Manual (rate): The elite clue scroll drop rate increases to 1/180 after unlocking the elite Combat Achievements rewards tier.
-        1 outOf 190 weight "obj.trail_elite_emote_exp1" count 1 transformObj { player ->
-            // Drops Need Manual (item): Clue scrolls will drop as scroll boxes after the completion of X Marks the Spot.
-             null
+        1 outOf 180 weight "obj.trail_elite_emote_exp1" count 1 transformObj { player ->
+             player.clueScrollTransformObj("obj.trail_elite_emote_exp1")
         }
     },
 )

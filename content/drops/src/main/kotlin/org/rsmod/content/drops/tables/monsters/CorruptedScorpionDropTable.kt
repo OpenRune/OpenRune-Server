@@ -29,7 +29,7 @@ public val corruptedScorpionDropTable: RSDropTable<Player, DropRollItem> = RSDro
     },
     tertiaries = rsPlayerTertiaryTable {
         2 outOf 7 weight "obj.gauntlet_generic_component_hm" count 1 condition { player ->
-            // Drops Need Manual: Guaranteed after killing two of the mid-level monsters ([[Corrupted Unicorn
+            // Drops Need Manual: Guaranteed after killing two of the mid-level monsters (Corrupted Unicorn
              true
         }
     },

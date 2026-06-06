@@ -1,0 +1,108 @@
+id = "Black Guard Berserker Drops"
+npcs = ["npc.dwarf_city_berserker_cutscene", "npc.dwarf_city_berserker1", "npc.dwarf_city_berserker2", "npc.dwarf_city_berserker3"]
+
+[main]
+total = 128
+name = "Black Guard Berserker Drops"
+
+[[main.entries]]
+weight = 3
+obj = "obj.bronze_warhammer"
+count = 1
+
+[[main.entries]]
+weight = 6
+obj = "obj.iron_warhammer"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.steel_warhammer"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.black_warhammer"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.copper_ore"
+count = 5
+
+[[main.entries]]
+weight = 1
+obj = "obj.tin_ore"
+count = 1
+
+[[main.entries]]
+weight = 3
+obj = "obj.iron_ore"
+count = 2
+
+[[main.entries]]
+weight = 45
+obj = "obj.coins"
+count = 35
+
+[[main.entries]]
+weight = 5
+obj = "obj.coins"
+count = 42
+
+[[main.entries]]
+weight = 9
+obj = "obj.coins"
+count = 46
+
+[[main.entries]]
+weight = 3
+obj = "obj.coins"
+count = 57
+
+[[main.entries]]
+weight = 1
+obj = "obj.beer"
+count = 1
+
+[[main.entries]]
+weight = 4
+obj = "obj.keg_of_beer"
+count = 1
+
+[[main.entries]]
+weight = 4
+obj = "obj.cake"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.bucket_water"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.ring_mould"
+count = 1
+
+[[main.entries]]
+weight = 2
+shared = "herb"
+
+[[main.entries]]
+weight = 1
+shared = "gem"
+
+[[main.entries]]
+weight = 34
+nothing = true
+
+[[tertiary]]
+numerator = 1
+denominator = 121
+obj = "obj.trail_medium_emote_exp1"
+count = 1
+clue_scroll_box = true
+
+
+# Main table pool padding uses a nothing roll (F2P drops removed and/or subtable access missing from wiki parse) (34 weight)

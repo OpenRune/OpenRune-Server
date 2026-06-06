@@ -1,0 +1,236 @@
+id = "Chaos Elemental Drops"
+npcs = ["npc.chaoselemental"]
+brimstone_key_roll = true
+
+[[pre_roll]]
+numerator = 1
+denominator = 256
+obj = "obj.dragon_pickaxe"
+count = 1
+
+[main]
+total = 128
+name = "Chaos Elemental Drops"
+
+[[main.entries]]
+weight = 5
+obj = "obj.rune_dart"
+count = 100
+
+[[main.entries]]
+weight = 4
+obj = "obj.rune_platelegs"
+count = 1
+
+[[main.entries]]
+weight = 4
+obj = "obj.rune_plateskirt"
+count = 1
+
+[[main.entries]]
+weight = 3
+obj = "obj.rune_2h_sword"
+count = 1
+
+[[main.entries]]
+weight = 3
+obj = "obj.rune_battleaxe"
+count = 1
+
+[[main.entries]]
+weight = 3
+obj = "obj.rune_full_helm"
+count = 1
+
+[[main.entries]]
+weight = 3
+obj = "obj.rune_kiteshield"
+count = 1
+
+[[main.entries]]
+weight = 3
+obj = "obj.mystic_air_staff"
+count = 1
+
+[[main.entries]]
+weight = 3
+obj = "obj.mystic_water_staff"
+count = 1
+
+[[main.entries]]
+weight = 3
+obj = "obj.mystic_earth_staff"
+count = 1
+
+[[main.entries]]
+weight = 3
+obj = "obj.mystic_fire_staff"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.dragon_dagger"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.dragon_2h_sword"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.dragon_platelegs"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.dragon_plateskirt"
+count = 1
+
+[[main.entries]]
+weight = 8
+obj = "obj.chaosrune"
+count = "300..500"
+
+[[main.entries]]
+weight = 8
+obj = "obj.bloodrune"
+count = "100..250"
+
+[[main.entries]]
+weight = 5
+obj = "obj.rune_arrow"
+count = 150
+
+[[main.entries]]
+weight = 4
+obj = "obj.cert_unidentified_ranarr"
+count = "5..8"
+
+[[main.entries]]
+weight = 4
+obj = "obj.cert_unidentified_snapdragon"
+count = "5..8"
+
+[[main.entries]]
+weight = 3
+obj = "obj.cert_unidentified_avantoe"
+count = "5..8"
+
+[[main.entries]]
+weight = 3
+obj = "obj.cert_unidentified_kwuarm"
+count = "5..8"
+
+[[main.entries]]
+weight = 5
+obj = "obj.cert_coal"
+count = "75..150"
+
+[[main.entries]]
+weight = 5
+obj = "obj.cert_plank_mahogany"
+count = "8..16"
+
+[[main.entries]]
+weight = 4
+obj = "obj.cert_runite_bar"
+count = "3..5"
+
+[[main.entries]]
+weight = 4
+obj = "obj.cert_adamantite_bar"
+count = "8..12"
+
+[[main.entries]]
+weight = 7
+obj = "obj.coins"
+count = "20005..29995"
+
+[[main.entries]]
+weight = 5
+obj = "obj.blighted_sack_icebarrage"
+count = "20..40"
+
+[[main.entries]]
+weight = 4
+obj = "obj.cert_blighted_karambwan"
+count = "15..25"
+
+[[main.entries]]
+weight = 4
+obj = "obj.cert_blighted_anglerfish"
+count = "10..15"
+
+[[main.entries]]
+weight = 2
+obj = "obj.tablet_wildycrabs"
+count = 2
+
+[[main.entries]]
+weight = 8
+shared = "rareDrop"
+
+[[main.separate_rolls]]
+numerator = 1
+denominator = 5
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.blighted_anglerfish"
+count = 2
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.blighted_karambwan"
+count = 3
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.blighted_4dose2restore"
+count = 1
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.dragon_bones"
+count = 1
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.1dose2combat"
+count = 1
+
+[[tertiary]]
+numerator = 10
+denominator = 128
+obj = "obj.weapon_poison++"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 3
+obj = "obj.looting_bag"
+count = 1
+should_drop_looting_bag = true
+
+[[tertiary]]
+numerator = 1
+denominator = 300
+obj = "obj.chaoselepet"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 190
+obj = "obj.trail_elite_emote_exp1"
+count = 1
+clue_scroll_box = true
+exclude_ring_of_wealth = true
+
+[[tertiary]]
+numerator = 1
+denominator = 100
+obj = "obj.trail_elite_emote_exp1"
+count = 1
+clue_scroll_box = true
+require_ring_of_wealth = true
