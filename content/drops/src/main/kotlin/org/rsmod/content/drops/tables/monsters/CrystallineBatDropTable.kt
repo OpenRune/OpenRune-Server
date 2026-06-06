@@ -1,0 +1,27 @@
+package org.rsmod.content.drops.tables.monsters
+
+import dtx.rs.RSDropTable
+import dtx.rs.npcs
+import dtx.rs.areas
+import org.rsmod.api.droptable.rsPlayerGuaranteedTable
+import org.rsmod.api.droptable.rsPlayerTertiaryTable
+import org.rsmod.api.droptable.rsPlayerWeightedTable
+import org.rsmod.api.droptable.DropRollItem
+import org.rsmod.api.droptable.RegisterDropTable
+import org.rsmod.game.entity.Player
+
+@field:RegisterDropTable
+@JvmField
+public val crystallineBatDropTable: RSDropTable<Player, DropRollItem> = RSDropTable(
+    tableIdentifier = "Crystalline Bat Drops",
+    npcs = npcs("npc.crystal_bat"),
+    guaranteed = rsPlayerGuaranteedTable {
+        "obj.gauntlet_crystal_shard" count 10..30
+    },
+)
+
+// Unknown wiki drop rates (text rarity — need data collection):
+//   - Raw paddlefish [main/Common]
+//   - Grym leaf [main/Common]
+//   - Weapon frame [main/Common]
+//   - Teleport crystal (The Gauntlet) [main/Uncommon]

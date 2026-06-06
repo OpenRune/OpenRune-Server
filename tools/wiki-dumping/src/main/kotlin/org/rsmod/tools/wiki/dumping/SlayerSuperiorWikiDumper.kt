@@ -3,7 +3,6 @@ package org.rsmod.tools.wiki.dumping
 import java.nio.file.Files
 import java.nio.file.Path
 import kotlin.io.path.writeText
-import kotlinx.coroutines.delay
 import org.rsmod.tools.wiki.dumping.wiki.SuperiorMonsterRow
 import org.rsmod.tools.wiki.dumping.wiki.WikiClient
 import org.rsmod.tools.wiki.dumping.wiki.WikiLinks
@@ -26,7 +25,6 @@ data class SlayerSuperiorDumpResult(
 class SlayerSuperiorWikiDumper(
     private val wiki: WikiClient,
     private val npcLookup: NpcRscmLookup,
-    private val requestDelayMs: Long = 75L,
     private val quiet: Boolean = false,
 ) {
     suspend fun dump(pageTitle: String = "Superior slayer monster"): SlayerSuperiorDumpResult {
@@ -41,7 +39,6 @@ class SlayerSuperiorWikiDumper(
         val resolver =
             WikiNpcResolver(
                 wiki = wiki,
-                requestDelayMs = requestDelayMs,
                 onPageFetch = {
                     wikiFetches++
                     if (!quiet) {
@@ -71,7 +68,6 @@ class SlayerSuperiorWikiDumper(
                     is WikiNpcResolver.DirectResolveResult.Ok -> normalIds += result.npcIds
                     else -> Unit
                 }
-                delay(requestDelayMs)
             }
 
             val superiorTitle = superiorTitles.first()
@@ -80,7 +76,6 @@ class SlayerSuperiorWikiDumper(
                     is WikiNpcResolver.DirectResolveResult.Ok -> result.npcIds
                     else -> emptyList()
                 }
-            delay(requestDelayMs)
 
             val (normalRscm, normalUnmapped) = npcLookup.toRscmList(normalIds.distinct())
             val (superiorRscm, superiorUnmapped) = npcLookup.toRscmList(superiorIds)

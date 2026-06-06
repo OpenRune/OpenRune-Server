@@ -73,6 +73,7 @@ embedded-postgres = { module = "io.zonky.test:embedded-postgres", version.ref = 
 or2-all-cache = { group = "dev.or2", name = "all", version.ref = "or2" }
 or2-tools = { group = "dev.or2", name = "tools", version.ref = "or2" }
 or2-server-utils = { group = "dev.or2", name = "server-utils", version.ref = "or2ServerUtils" }
+or2-wiki = { group = "dev.or2", name = "wiki", version.ref = "or2ServerUtils" }
 joda-time = { group = "joda-time", name = "joda-time", version.ref = "jodatime" }
 or2-definition = { group = "dev.or2", name = "definition", version.ref = "or2" }
 or2-filesystem = { group = "dev.or2", name = "filesystem", version.ref = "or2" }

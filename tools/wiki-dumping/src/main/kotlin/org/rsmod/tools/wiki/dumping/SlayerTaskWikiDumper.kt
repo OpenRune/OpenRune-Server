@@ -14,22 +14,11 @@ import org.rsmod.tools.wiki.dumping.wiki.WikiClient
 import org.rsmod.tools.wiki.dumping.wiki.WikiNpcResolver
 import org.rsmod.tools.wiki.dumping.wiki.WikiTables
 
-private const val DEFAULT_DBROW_URL =
-    "https://raw.githubusercontent.com/Joshua-F/osrs-dumps/refs/heads/master/config/dump.dbrow"
+private const val DEFAULT_DBROW_RELATIVE = ".data/osrs-dumps/dump.dbrow"
 
 const val SLAYER_RAW_CACHE_DIR = ".data/raw-cache/server/slayer"
 
-private fun findRepoRoot(): Path? {
-    var cursor = Path.of(System.getProperty("user.dir")).toAbsolutePath().normalize()
-    while (cursor != null) {
-        val marker = cursor.resolve(".data/gamevals-binary/gamevals.dat")
-        if (Files.isRegularFile(marker)) {
-            return cursor
-        }
-        cursor = cursor.parent
-    }
-    return null
-}
+private fun findRepoRoot(): Path? = GameValLoader.resolveRootOrNull()
 
 private fun defaultSlayerOutputDir(): Path {
     val repo = findRepoRoot()
@@ -162,7 +151,6 @@ class SlayerTaskWikiDumper(
     private val wiki: WikiClient,
     private val npcLookup: NpcRscmLookup,
     private val taskIndex: Map<String, Int> = emptyMap(),
-    private val requestDelayMs: Long = 75L,
     private val quiet: Boolean = false,
 ) {
     suspend fun dump(pageTitle: String = "Slayer_task"): SlayerDumpResult {
@@ -177,7 +165,6 @@ class SlayerTaskWikiDumper(
         val resolver =
             WikiNpcResolver(
                 wiki = wiki,
-                requestDelayMs = requestDelayMs,
                 onPageFetch = {
                     wikiFetches++
                     if (!quiet) {
@@ -378,10 +365,10 @@ fun main(args: Array<String>) {
             ?: output.parent?.resolve("slayer_superior.toml")
             ?: slayerDir.resolve("slayer_superior.toml")
     val quiet = flags.contains("--quiet") || flags.contains("-q")
-    val dbrowSource =
+    val dbrowPath =
         flags.firstOrNull { it.startsWith("--dbrow=") }?.substringAfter("--dbrow=")
             ?: System.getProperty("dbrow")
-            ?: DEFAULT_DBROW_URL
+    val wikiDumpDir = flags.firstOrNull { it.startsWith("--wiki-dump=") }?.substringAfter("--wiki-dump=")
     val rootDir =
         flags.firstOrNull { it.startsWith("--root=") }?.substringAfter("--root=")
             ?: System.getProperty("RSPS_ROOT")
@@ -397,23 +384,15 @@ fun main(args: Array<String>) {
     }
 
     runBlocking {
-        WikiClient.create().use { wiki ->
-            val dbrowText =
-                if (dbrowSource.startsWith("http://") || dbrowSource.startsWith("https://")) {
-                    if (!quiet) {
-                        println("[slayer-dump] Loading dbrow from $dbrowSource")
-                    }
-                    wiki.fetchText(dbrowSource)
-                } else {
-                    val path = Path(dbrowSource)
-                    if (!path.exists()) {
-                        System.err.println("dbrow file not found: $path")
-                        exitProcess(1)
-                    }
-                    path.readText()
-                }
+        WikiClient.open(wikiDumpDir = wikiDumpDir).use { wiki ->
+            val dbrow =
+                DbrowDumpFiles.requireLocal(rootDir, dbrowPath)
+            if (!quiet) {
+                println("[slayer-dump] dbrow: ${dbrow.source.toAbsolutePath()}")
+                println("[slayer-dump] wiki dump: ${WikiClient.resolveDumpDirectory(wikiDumpDir).absolutePath}")
+            }
 
-            val taskIndex = DbrowSlayerTaskIndex.fromSource(dbrowText)
+            val taskIndex = DbrowSlayerTaskIndex.fromSource(dbrow.text)
             if (!quiet) {
                 println("[slayer-dump] ${taskIndex.size} slayer_task name keys from dbrow")
             }

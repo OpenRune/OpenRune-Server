@@ -1,65 +1,73 @@
 package org.rsmod.tools.wiki.dumping.wiki
 
-import com.fasterxml.jackson.databind.JsonNode
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import io.ktor.client.HttpClient
-import io.ktor.client.engine.cio.CIO
+import dev.openrune.wiki.WikiDumpStore
 import java.io.Closeable
-import io.ktor.client.request.get
-import io.ktor.client.request.parameter
-import io.ktor.client.statement.bodyAsText
+import java.io.File
+import kotlin.io.path.Path
 
-class WikiClient(
-    private val client: HttpClient,
-    private val mapper: ObjectMapper = jacksonObjectMapper(),
-    private val apiBaseUrl: String = "https://oldschool.runescape.wiki/api.php",
+/** Reads page wikitext from a local OSRS wiki XML dump. */
+class WikiClient private constructor(
+    private val store: WikiDumpStore,
+    private val onPageFetch: ((String) -> Unit)? = null,
 ) : Closeable {
-    override fun close() {
-        client.close()
-    }
+    private val pageCache = mutableMapOf<String, String>()
 
-    suspend fun fetchText(url: String): String =
-        client.get(url).bodyAsText()
+    val loadedPages: Int get() = store.pageCount
+
+    val infoboxMonsterPages: Int get() = store.infoboxMonsterCount
+
+    val cachedPages: Int get() = pageCache.size
+
+    override fun close() = Unit
 
     suspend fun rawPageSource(title: String): String {
-        val body =
-            client
-                .get(apiBaseUrl) {
-                    parameter("action", "query")
-                    parameter("prop", "revisions")
-                    parameter("rvprop", "content")
-                    parameter("rvslots", "main")
-                    parameter("titles", title)
-                    parameter("format", "json")
-                    parameter("formatversion", "2")
-                    parameter("utf8", "1")
-                }
-                .bodyAsText()
-
-        val root = mapper.readTree(body)
-        val error = root.path("error")
-        if (!error.isMissingNode && !error.isNull) {
-            throw IllegalStateException(error.path("info").asText("Wiki source lookup error"))
-        }
-
-        val page = root.path("query").path("pages").firstOrNull()
-        val missing = page?.path("missing")?.asBoolean(false) ?: true
-        if (missing) {
-            throw IllegalStateException("The page '$title' does not exist.")
-        }
-
-        val revision = page.path("revisions").firstOrNull()
-        val fromMainSlot = revision?.path("slots")?.path("main")?.path("content")?.asText("").orEmpty()
-        val fallback = revision?.path("content")?.asText("").orEmpty()
-        val content = if (fromMainSlot.isNotBlank()) fromMainSlot else fallback
-        if (content.isBlank()) {
-            throw IllegalStateException("No wikitext source available for '$title'.")
-        }
+        pageCache[title]?.let { return it }
+        onPageFetch?.invoke(title)
+        val content = store.rawPageSource(title)
+        pageCache[title] = content
         return content
     }
 
+    suspend fun fetchMonsterPageBatch(
+        batchSize: Int,
+        continueToken: String?,
+    ): MonsterPageBatch {
+        val offset = continueToken?.toIntOrNull() ?: 0
+        val titles =
+            store.listInfoboxMonsterTitles(
+                offset = offset,
+                limit = batchSize.coerceIn(1, 500),
+            )
+        val nextOffset = offset + titles.size
+        val hasMore = nextOffset < store.infoboxMonsterCount
+        return MonsterPageBatch(
+            titles = titles,
+            continueToken = if (hasMore) nextOffset.toString() else null,
+        )
+    }
+
+    data class MonsterPageBatch(
+        val titles: List<String>,
+        val continueToken: String?,
+    )
+
     companion object {
-        fun create(): WikiClient = WikiClient(HttpClient(CIO))
+        private const val DEFAULT_DUMP_DIR = "D:/OpenRune/OpenRune-FileStore-Server/dumps/wiki"
+
+        fun resolveDumpDirectory(flagValue: String?): File {
+            val configured =
+                flagValue?.trim()?.takeIf { it.isNotEmpty() }
+                    ?: System.getenv("WIKI_DUMP_DIR")?.trim()?.takeIf { it.isNotEmpty() }
+                    ?: DEFAULT_DUMP_DIR
+            return Path(configured).toFile()
+        }
+
+        fun open(
+            wikiDumpDir: String? = null,
+            onPageFetch: ((String) -> Unit)? = null,
+        ): WikiClient {
+            val store = WikiDumpStore.load(resolveDumpDirectory(wikiDumpDir))
+            return WikiClient(store, onPageFetch)
+        }
     }
 }
