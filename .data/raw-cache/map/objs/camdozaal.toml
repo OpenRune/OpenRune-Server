@@ -1,0 +1,12 @@
+[[spawn]]
+obj = "obj.hammer"
+coords = "0_46_90_17_42"
+
+[[spawn]]
+obj = "obj.knife"
+coords = "0_45_90_54_13"
+
+[[spawn]]
+obj = "obj.net"
+coords = "0_45_90_55_19"
+

@@ -1,0 +1,46 @@
+## Morytania Slayer Tower Basement
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_53_155_29_13"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_53_155_30_16"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_53_155_33_15"
+
+[[spawn]]
+obj = "obj.hammer"
+coords = "0_53_155_37_11"
+
+[[spawn]]
+obj = "obj.hammer"
+coords = "0_53_155_50_26"
+
+[[spawn]]
+obj = "obj.iron_sword"
+coords = "0_53_155_33_31"
+
+[[spawn]]
+obj = "obj.knife"
+coords = "0_53_155_19_29"
+
+[[spawn]]
+obj = "obj.knife"
+coords = "0_53_155_31_33"
+
+[[spawn]]
+obj = "obj.spade"
+coords = "0_53_155_34_38"
+
+[[spawn]]
+obj = "obj.steel_pickaxe"
+coords = "0_53_155_36_40"
+
+[[spawn]]
+obj = "obj.tinderbox"
+coords = "0_53_155_13_17"
+

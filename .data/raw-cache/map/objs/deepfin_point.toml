@@ -1,0 +1,16 @@
+[[spawn]]
+obj = "obj.beer_glass"
+coords = "0_30_43_18_9"
+
+[[spawn]]
+obj = "obj.bowl_empty"
+coords = "0_30_43_20_11"
+
+[[spawn]]
+obj = "obj.dwarven_stout"
+coords = "0_30_43_18_6"
+
+[[spawn]]
+obj = "obj.iron_pickaxe"
+coords = "0_30_43_25_6"
+

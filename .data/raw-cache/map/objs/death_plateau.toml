@@ -1,0 +1,30 @@
+## Burthorpe
+
+[[spawn]]
+obj = "obj.asgarnian_ale"
+coords = "0_45_55_26_18"
+
+[[spawn]]
+obj = "obj.beer_glass"
+coords = "0_45_55_27_18"
+
+[[spawn]]
+obj = "obj.death_cannonball_red"
+coords = "0_45_55_13_41"
+
+[[spawn]]
+obj = "obj.death_cannonball_red"
+coords = "0_45_55_13_42"
+
+[[spawn]]
+obj = "obj.death_cannonball_red"
+coords = "0_45_55_13_43"
+
+[[spawn]]
+obj = "obj.death_cannonball_red"
+coords = "0_45_55_13_44"
+
+[[spawn]]
+obj = "obj.death_cannonball_red"
+coords = "0_45_55_13_45"
+

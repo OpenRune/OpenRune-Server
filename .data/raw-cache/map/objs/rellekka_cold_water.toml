@@ -1,0 +1,144 @@
+## Fremennik Province
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_42_58_11_17"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_42_58_13_19"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_42_58_20_16"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_42_58_24_20"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_42_58_26_21"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_42_58_31_21"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_42_58_33_19"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_42_58_5_15"
+
+## Rellekka
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_41_58_58_17"
+
+[[spawn]]
+obj = "obj.bronze_axe"
+coords = "0_41_58_54_19"
+
+[[spawn]]
+obj = "obj.sapphire"
+coords = "0_41_58_55_28"
+
+## Rellekka Snowy Region
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_42_58_37_19"
+
+## Trollweiss Mountain
+
+[[spawn]]
+obj = "obj.big_bones"
+coords = "0_43_60_15_15"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_43_59_24_5"
+
+[[spawn]]
+obj = "obj.chaosrune"
+coords = "0_43_58_54_58"
+
+[[spawn]]
+obj = "obj.chaosrune"
+coords = "0_43_59_50_4"
+
+[[spawn]]
+obj = "obj.chaosrune"
+coords = "0_43_60_9_5"
+
+[[spawn]]
+obj = "obj.sapphire"
+coords = "0_43_60_23_10"
+
+[[spawn]]
+obj = "obj.trollromance_toboggon"
+coords = "0_43_59_52_9"
+
+[[spawn]]
+obj = "obj.uncut_sapphire"
+coords = "0_43_60_36_30"
+
+## Weiss Region
+
+[[spawn]]
+obj = "obj.arctic_pine_log"
+coords = "0_44_61_42_24"
+
+[[spawn]]
+obj = "obj.arctic_pine_log"
+coords = "0_44_61_44_19"
+
+[[spawn]]
+obj = "obj.bucket_empty"
+coords = "0_44_61_37_26"
+
+[[spawn]]
+obj = "obj.bucket_water"
+coords = "0_45_61_5_41"
+
+[[spawn]]
+obj = "obj.bucket_water"
+coords = "0_45_61_8_39"
+
+[[spawn]]
+obj = "obj.raw_herring"
+coords = "0_44_61_45_24"
+
+[[spawn]]
+obj = "obj.rope"
+coords = "0_45_61_5_39"
+
+[[spawn]]
+obj = "obj.wolf_bones"
+coords = "0_44_61_32_17"
+
+[[spawn]]
+obj = "obj.wolf_bones"
+coords = "0_44_61_35_23"
+
+[[spawn]]
+obj = "obj.wolf_bones"
+coords = "0_44_61_36_15"
+
+[[spawn]]
+obj = "obj.wolf_bones"
+coords = "0_44_61_37_20"
+
+[[spawn]]
+obj = "obj.wolf_bones"
+coords = "0_44_61_41_41"
+
+[[spawn]]
+obj = "obj.wolf_bones"
+coords = "0_44_61_42_40"
+
+## Weiss Region End
+

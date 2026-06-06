@@ -1,0 +1,96 @@
+[[spawn]]
+obj = "obj.bones"
+coords = "1_37_90_28_59"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "1_37_90_31_56"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "1_37_90_34_59"
+
+[[spawn]]
+obj = "obj.coins"
+coords = "1_37_90_29_57"
+
+[[spawn]]
+obj = "obj.coins"
+coords = "1_37_90_30_60"
+
+[[spawn]]
+obj = "obj.coins"
+coords = "1_37_90_32_54"
+
+[[spawn]]
+obj = "obj.coins"
+coords = "1_37_90_35_58"
+
+[[spawn]]
+obj = "obj.coins"
+coords = "1_37_91_17_20"
+
+[[spawn]]
+obj = "obj.coins"
+coords = "1_37_91_19_23"
+
+[[spawn]]
+obj = "obj.coins"
+coords = "1_37_91_19_58"
+
+[[spawn]]
+obj = "obj.coins"
+coords = "1_37_91_20_21"
+
+[[spawn]]
+obj = "obj.coins"
+coords = "1_37_91_20_62"
+
+[[spawn]]
+obj = "obj.coins"
+coords = "1_37_91_21_55"
+
+[[spawn]]
+obj = "obj.coins"
+coords = "1_37_91_23_59"
+
+[[spawn]]
+obj = "obj.coins"
+coords = "1_37_91_24_53"
+
+[[spawn]]
+obj = "obj.coins"
+coords = "1_37_91_30_46"
+
+[[spawn]]
+obj = "obj.coins"
+coords = "1_37_91_33_44"
+
+[[spawn]]
+obj = "obj.coins"
+coords = "1_37_91_35_47"
+
+[[spawn]]
+obj = "obj.coins"
+coords = "1_37_91_48_3"
+
+[[spawn]]
+obj = "obj.coins"
+coords = "1_37_91_49_7"
+
+[[spawn]]
+obj = "obj.coins"
+coords = "1_37_91_51_5"
+
+[[spawn]]
+obj = "obj.gold_ring"
+coords = "2_37_91_16_22"
+
+[[spawn]]
+obj = "obj.gold_ring"
+coords = "2_37_91_30_43"
+
+[[spawn]]
+obj = "obj.gold_ring"
+coords = "2_37_91_51_2"
+

@@ -1,0 +1,16 @@
+[[spawn]]
+obj = "obj.beer_glass"
+coords = "0_24_147_19_53"
+
+[[spawn]]
+obj = "obj.trappers_tipple"
+coords = "0_24_147_18_46"
+
+[[spawn]]
+obj = "obj.trappers_tipple"
+coords = "0_24_147_24_51"
+
+[[spawn]]
+obj = "obj.trappers_tipple"
+coords = "0_24_147_25_44"
+

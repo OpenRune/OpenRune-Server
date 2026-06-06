@@ -1,0 +1,202 @@
+[[spawn]]
+obj = "obj.bones"
+coords = "0_39_46_12_38"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_39_46_16_38"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_39_46_26_39"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_39_46_46_39"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_39_46_56_40"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_39_46_56_42"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_40_46_41_15"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_40_46_43_20"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_40_46_43_24"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_40_46_47_20"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_40_47_11_22"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_40_47_11_28"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_40_47_14_27"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_40_47_17_21"
+
+[[spawn]]
+obj = "obj.deathrune"
+coords = "0_39_46_4_23"
+
+[[spawn]]
+obj = "obj.doogleleaves"
+coords = "0_40_46_0_27"
+
+[[spawn]]
+obj = "obj.doogleleaves"
+coords = "0_40_46_2_29"
+
+[[spawn]]
+obj = "obj.doogleleaves"
+coords = "0_40_46_3_27"
+
+[[spawn]]
+obj = "obj.doogleleaves"
+coords = "0_40_46_5_28"
+
+[[spawn]]
+obj = "obj.equa_leaves"
+coords = "0_41_46_15_8"
+
+[[spawn]]
+obj = "obj.equa_leaves"
+coords = "0_41_46_24_19"
+
+[[spawn]]
+obj = "obj.equa_leaves"
+coords = "0_41_46_25_12"
+
+[[spawn]]
+obj = "obj.rope"
+coords = "0_40_47_11_18"
+
+[[spawn]]
+obj = "obj.tomato"
+coords = "0_40_46_24_22"
+
+## Feldip Hills Southern Region
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_38_45_53_46"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_38_45_57_42"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_38_45_58_49"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_38_45_61_46"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_39_46_0_10"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_39_46_10_8"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_39_46_3_14"
+
+[[spawn]]
+obj = "obj.bronze_scimitar"
+coords = "1_39_44_61_39"
+
+[[spawn]]
+obj = "obj.bronze_sword"
+coords = "0_38_45_51_49"
+
+[[spawn]]
+obj = "obj.burntfish1"
+coords = "1_38_44_45_44"
+
+[[spawn]]
+obj = "obj.cooked_meat"
+coords = "1_39_44_62_40"
+
+[[spawn]]
+obj = "obj.skull"
+coords = "0_38_45_53_48"
+
+## Gu'tanoth
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_39_47_16_13"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_39_47_16_15"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_39_47_17_12"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_39_47_17_13"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_39_47_18_12"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_39_47_19_12"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_39_47_45_20"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_39_47_46_19"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_39_47_49_23"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_39_47_52_36"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_39_47_53_35"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_39_47_55_34"
+
+[[spawn]]
+obj = "obj.knife"
+coords = "0_39_47_33_22"
+
+## Gu'tanoth End
+

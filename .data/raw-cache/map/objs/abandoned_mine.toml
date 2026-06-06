@@ -1,0 +1,70 @@
+## Abandoned Mine 2
+
+[[spawn]]
+obj = "obj.bronze_dagger"
+coords = "0_43_71_49_28"
+
+[[spawn]]
+obj = "obj.bronze_dagger"
+coords = "0_43_71_54_25"
+
+[[spawn]]
+obj = "obj.bronze_pickaxe"
+coords = "0_43_71_43_35"
+
+[[spawn]]
+obj = "obj.bronze_pickaxe"
+coords = "0_43_71_59_28"
+
+[[spawn]]
+obj = "obj.bronze_spear"
+coords = "0_43_71_56_28"
+
+[[spawn]]
+obj = "obj.steel_longsword"
+coords = "0_43_71_60_22"
+
+[[spawn]]
+obj = "obj.steel_pickaxe"
+coords = "0_43_71_60_27"
+
+## Abandoned Mine 4
+
+[[spawn]]
+obj = "obj.bronze_pickaxe"
+coords = "0_43_70_49_13"
+
+[[spawn]]
+obj = "obj.bronze_pickaxe"
+coords = "0_43_70_49_33"
+
+[[spawn]]
+obj = "obj.chisel"
+coords = "0_43_70_48_20"
+
+[[spawn]]
+obj = "obj.chisel"
+coords = "0_43_70_51_11"
+
+[[spawn]]
+obj = "obj.coins"
+coords = "0_43_70_18_36"
+count = 3
+
+[[spawn]]
+obj = "obj.coins"
+coords = "0_43_70_19_36"
+count = 10
+
+[[spawn]]
+obj = "obj.coins"
+coords = "0_43_70_20_35"
+count = 4
+
+[[spawn]]
+obj = "obj.coins"
+coords = "0_43_70_20_37"
+count = 2
+
+## Abandoned Mine 4 End
+

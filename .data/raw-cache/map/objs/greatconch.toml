@@ -1,0 +1,346 @@
+## The Great Conch
+
+[[spawn]]
+obj = "obj.blunn_hasta"
+coords = "0_49_37_36_60"
+
+[[spawn]]
+obj = "obj.bucket_empty"
+coords = "0_49_37_14_27"
+
+[[spawn]]
+obj = "obj.bucket_empty"
+coords = "0_50_38_48_36"
+
+[[spawn]]
+obj = "obj.chisel"
+coords = "0_49_37_18_39"
+
+[[spawn]]
+obj = "obj.feather"
+coords = "0_49_37_27_54"
+
+[[spawn]]
+obj = "obj.hammer"
+coords = "0_49_37_40_58"
+
+[[spawn]]
+obj = "obj.knife"
+coords = "0_49_37_13_56"
+
+[[spawn]]
+obj = "obj.poh_saw"
+coords = "0_49_37_49_38"
+
+[[spawn]]
+obj = "obj.pot_empty"
+coords = "0_49_37_5_35"
+
+[[spawn]]
+obj = "obj.sea_shell"
+coords = "0_49_37_25_21"
+
+[[spawn]]
+obj = "obj.sea_shell"
+coords = "0_49_37_32_20"
+
+[[spawn]]
+obj = "obj.sea_shell"
+coords = "0_49_37_43_16"
+
+[[spawn]]
+obj = "obj.sea_shell"
+coords = "0_49_37_54_11"
+
+[[spawn]]
+obj = "obj.sea_shell"
+coords = "0_49_37_55_15"
+
+[[spawn]]
+obj = "obj.sea_shell"
+coords = "0_49_37_61_8"
+
+[[spawn]]
+obj = "obj.sea_shell"
+coords = "0_49_39_34_41"
+
+[[spawn]]
+obj = "obj.sea_shell"
+coords = "0_49_39_37_44"
+
+[[spawn]]
+obj = "obj.sea_shell"
+coords = "0_49_39_41_45"
+
+[[spawn]]
+obj = "obj.sea_shell"
+coords = "0_49_39_45_39"
+
+[[spawn]]
+obj = "obj.sea_shell"
+coords = "0_49_39_47_43"
+
+[[spawn]]
+obj = "obj.sea_shell"
+coords = "0_49_39_49_45"
+
+[[spawn]]
+obj = "obj.sea_shell"
+coords = "0_49_39_53_42"
+
+[[spawn]]
+obj = "obj.sea_shell"
+coords = "0_50_37_1_6"
+
+[[spawn]]
+obj = "obj.sea_shell"
+coords = "0_50_38_56_17"
+
+[[spawn]]
+obj = "obj.sea_shell"
+coords = "0_50_38_57_45"
+
+[[spawn]]
+obj = "obj.sea_shell"
+coords = "0_50_38_58_49"
+
+[[spawn]]
+obj = "obj.sea_shell"
+coords = "0_50_38_58_5"
+
+[[spawn]]
+obj = "obj.sea_shell"
+coords = "0_50_38_59_37"
+
+[[spawn]]
+obj = "obj.sea_shell"
+coords = "0_50_38_60_19"
+
+[[spawn]]
+obj = "obj.sea_shell"
+coords = "0_50_38_61_12"
+
+[[spawn]]
+obj = "obj.sea_shell"
+coords = "0_50_38_61_26"
+
+[[spawn]]
+obj = "obj.sea_shell"
+coords = "0_50_38_62_3"
+
+[[spawn]]
+obj = "obj.sea_shell"
+coords = "0_51_36_16_8"
+
+[[spawn]]
+obj = "obj.sea_shell"
+coords = "0_51_36_1_13"
+
+[[spawn]]
+obj = "obj.sea_shell"
+coords = "0_51_36_23_9"
+
+[[spawn]]
+obj = "obj.sea_shell"
+coords = "0_51_36_27_10"
+
+[[spawn]]
+obj = "obj.sea_shell"
+coords = "0_51_36_2_19"
+
+[[spawn]]
+obj = "obj.sea_shell"
+coords = "0_51_36_2_7"
+
+[[spawn]]
+obj = "obj.sea_shell"
+coords = "0_51_36_30_11"
+
+[[spawn]]
+obj = "obj.sea_shell"
+coords = "0_51_36_36_16"
+
+[[spawn]]
+obj = "obj.sea_shell"
+coords = "0_51_36_6_6"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_51_36_24_62"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_51_36_26_60"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_51_36_30_52"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_51_36_32_50"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_51_36_37_43"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_51_36_48_33"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_51_36_53_29"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_51_36_57_22"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_51_37_12_22"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_51_37_13_17"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_51_37_15_11"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_51_37_18_7"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_51_37_21_3"
+
+[[spawn]]
+obj = "obj.spirit_angler_hat"
+coords = "0_49_37_31_55"
+
+[[spawn]]
+obj = "obj.tortugan_fossil_souvenir"
+coords = "0_49_37_32_31"
+
+[[spawn]]
+obj = "obj.tortugan_scute"
+coords = "0_48_37_30_47"
+
+[[spawn]]
+obj = "obj.tortugan_scute"
+coords = "0_48_37_38_62"
+
+[[spawn]]
+obj = "obj.tortugan_scute"
+coords = "0_48_37_43_39"
+
+[[spawn]]
+obj = "obj.tortugan_scute"
+coords = "0_48_37_46_51"
+
+[[spawn]]
+obj = "obj.tortugan_scute"
+coords = "0_48_37_57_47"
+
+[[spawn]]
+obj = "obj.tortugan_scute"
+coords = "0_48_37_59_30"
+
+[[spawn]]
+obj = "obj.tortugan_scute"
+coords = "0_48_37_59_59"
+
+[[spawn]]
+obj = "obj.tortugan_scute"
+coords = "0_48_38_47_11"
+
+[[spawn]]
+obj = "obj.tortugan_scute"
+coords = "0_48_38_52_48"
+
+[[spawn]]
+obj = "obj.tortugan_scute"
+coords = "0_48_39_52_14"
+
+[[spawn]]
+obj = "obj.tortugan_scute"
+coords = "0_49_37_11_50"
+
+[[spawn]]
+obj = "obj.tortugan_scute"
+coords = "0_49_37_24_60"
+
+[[spawn]]
+obj = "obj.tortugan_scute"
+coords = "0_49_37_45_60"
+
+[[spawn]]
+obj = "obj.tortugan_scute"
+coords = "0_49_37_46_31"
+
+[[spawn]]
+obj = "obj.tortugan_scute"
+coords = "0_49_37_58_45"
+
+[[spawn]]
+obj = "obj.tortugan_scute"
+coords = "0_49_37_5_24"
+
+[[spawn]]
+obj = "obj.tortugan_scute"
+coords = "0_49_37_61_27"
+
+[[spawn]]
+obj = "obj.tortugan_scute"
+coords = "0_49_38_46_32"
+
+[[spawn]]
+obj = "obj.tortugan_scute"
+coords = "0_49_38_7_21"
+
+[[spawn]]
+obj = "obj.tortugan_scute"
+coords = "0_49_39_11_12"
+
+[[spawn]]
+obj = "obj.tortugan_scute"
+coords = "0_49_39_53_27"
+
+[[spawn]]
+obj = "obj.tortugan_scute"
+coords = "0_50_37_27_47"
+
+[[spawn]]
+obj = "obj.tortugan_scute"
+coords = "0_50_38_33_43"
+
+[[spawn]]
+obj = "obj.tortugan_scute"
+coords = "0_51_36_20_35"
+
+[[spawn]]
+obj = "obj.tortugan_scute"
+coords = "0_51_36_7_57"
+
+[[spawn]]
+obj = "obj.vial_empty"
+coords = "0_49_37_50_33"
+
+[[spawn]]
+obj = "obj.viking_tankard_empty"
+coords = "1_48_37_61_45"
+
+## The Great Conch bank
+
+[[spawn]]
+obj = "obj.feather"
+coords = "0_49_37_46_53"
+
+[[spawn]]
+obj = "obj.uncut_ruby"
+coords = "0_49_37_49_52"
+
+## The Great Conch bank End
+

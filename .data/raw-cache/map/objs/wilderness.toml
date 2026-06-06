@@ -1,0 +1,1100 @@
+## Demonic Ruins
+
+[[spawn]]
+obj = "obj.bones_burnt"
+coords = "0_51_60_23_47"
+
+[[spawn]]
+obj = "obj.bones_burnt"
+coords = "0_51_60_24_51"
+
+[[spawn]]
+obj = "obj.bones_burnt"
+coords = "0_51_60_26_50"
+
+[[spawn]]
+obj = "obj.bones_burnt"
+coords = "0_51_60_27_48"
+
+[[spawn]]
+obj = "obj.bones_burnt"
+coords = "0_51_60_28_47"
+
+## Frozen Waste Plateau
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_46_61_48_16"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_46_61_50_20"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_46_61_51_18"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_46_61_58_18"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_46_61_60_19"
+
+[[spawn]]
+obj = "obj.cosmicrune"
+coords = "0_46_60_3_58"
+count = 3
+
+[[spawn]]
+obj = "obj.waterrune"
+coords = "0_46_60_16_59"
+count = 5
+
+## Wilderness Chaos Temple
+
+[[spawn]]
+obj = "obj.wine_of_zamorak"
+coords = "0_46_59_6_48"
+
+## Wilderness High
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_50_61_32_44"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_50_61_37_34"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_50_61_50_49"
+
+[[spawn]]
+obj = "obj.bronze_sq_shield"
+coords = "1_51_61_30_31"
+
+[[spawn]]
+obj = "obj.gold_ore"
+coords = "0_51_61_25_22"
+
+[[spawn]]
+obj = "obj.gold_ore"
+coords = "0_51_61_26_24"
+
+[[spawn]]
+obj = "obj.gold_ore"
+coords = "0_51_61_28_29"
+
+[[spawn]]
+obj = "obj.gold_ore"
+coords = "3_51_61_19_32"
+
+[[spawn]]
+obj = "obj.half_a_redberry_pie"
+coords = "0_47_61_34_48"
+
+[[spawn]]
+obj = "obj.headless_arrow"
+coords = "0_50_61_35_46"
+count = 3
+
+[[spawn]]
+obj = "obj.headless_arrow"
+coords = "0_50_61_37_45"
+count = 2
+
+[[spawn]]
+obj = "obj.headless_arrow"
+coords = "0_50_61_40_36"
+count = 3
+
+[[spawn]]
+obj = "obj.iron_dagger"
+coords = "3_51_61_15_34"
+
+[[spawn]]
+obj = "obj.knife"
+coords = "0_48_61_34_52"
+
+## Wilderness Low
+
+[[spawn]]
+obj = "obj.bodyrune"
+coords = "0_50_55_29_46"
+count = 2
+
+[[spawn]]
+obj = "obj.bodyrune"
+coords = "0_50_55_32_54"
+count = 2
+
+[[spawn]]
+obj = "obj.coins"
+coords = "0_48_55_25_58"
+count = 4
+
+[[spawn]]
+obj = "obj.coins"
+coords = "0_48_55_26_44"
+count = 2
+
+[[spawn]]
+obj = "obj.coins"
+coords = "0_48_55_27_37"
+count = 2
+
+[[spawn]]
+obj = "obj.coins"
+coords = "0_48_55_27_52"
+count = 3
+
+[[spawn]]
+obj = "obj.coins"
+coords = "0_48_55_31_28"
+count = 2
+
+[[spawn]]
+obj = "obj.coins"
+coords = "0_48_55_36_14"
+count = 2
+
+[[spawn]]
+obj = "obj.coins"
+coords = "0_50_55_34_36"
+count = 2
+
+[[spawn]]
+obj = "obj.skull"
+coords = "0_46_55_33_9"
+
+[[spawn]]
+obj = "obj.skull"
+coords = "0_46_55_34_11"
+
+## Wilderness Mid
+
+[[spawn]]
+obj = "obj.airrune"
+coords = "0_47_56_22_53"
+count = 5
+
+[[spawn]]
+obj = "obj.beer"
+coords = "0_49_56_12_61"
+
+[[spawn]]
+obj = "obj.big_bones"
+coords = "0_50_58_14_21"
+
+[[spawn]]
+obj = "obj.big_bones"
+coords = "0_50_58_20_34"
+
+[[spawn]]
+obj = "obj.big_bones"
+coords = "0_50_58_26_33"
+
+[[spawn]]
+obj = "obj.big_bones"
+coords = "0_50_58_43_30"
+
+[[spawn]]
+obj = "obj.big_bones"
+coords = "0_50_58_53_24"
+
+[[spawn]]
+obj = "obj.big_bones"
+coords = "0_50_58_63_23"
+
+[[spawn]]
+obj = "obj.bloodrune"
+coords = "0_51_59_19_43"
+
+[[spawn]]
+obj = "obj.bloodrune"
+coords = "0_51_59_26_30"
+
+[[spawn]]
+obj = "obj.bloodrune"
+coords = "0_51_59_41_40"
+
+[[spawn]]
+obj = "obj.bloodrune"
+coords = "0_51_60_33_50"
+
+[[spawn]]
+obj = "obj.bodyrune"
+coords = "0_47_56_13_53"
+count = 5
+
+[[spawn]]
+obj = "obj.bodyrune"
+coords = "0_50_55_23_63"
+count = 2
+
+[[spawn]]
+obj = "obj.bolt"
+coords = "0_48_57_25_47"
+
+[[spawn]]
+obj = "obj.bolt"
+coords = "0_48_57_27_36"
+
+[[spawn]]
+obj = "obj.bolt"
+coords = "0_48_57_27_40"
+
+[[spawn]]
+obj = "obj.bolt"
+coords = "0_48_57_29_54"
+
+[[spawn]]
+obj = "obj.bolt"
+coords = "0_48_57_33_31"
+
+[[spawn]]
+obj = "obj.bolt"
+coords = "0_48_57_33_46"
+
+[[spawn]]
+obj = "obj.bolt"
+coords = "0_48_57_37_43"
+
+[[spawn]]
+obj = "obj.bolt"
+coords = "0_48_57_37_49"
+
+[[spawn]]
+obj = "obj.bolt"
+coords = "0_48_57_40_34"
+
+[[spawn]]
+obj = "obj.bolt"
+coords = "0_48_57_42_42"
+
+[[spawn]]
+obj = "obj.bolt"
+coords = "0_48_57_44_53"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_46_57_18_49"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_46_57_25_41"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_46_57_40_35"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_46_57_55_54"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_46_58_34_51"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_46_58_36_52"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_48_56_40_58"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_48_56_41_63"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_48_56_46_60"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_48_56_54_63"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_48_57_28_49"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_48_57_31_40"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_48_57_40_38"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_48_57_40_47"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_48_57_45_48"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_49_56_22_9"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_49_56_24_3"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_49_56_26_17"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_49_56_27_8"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_49_56_31_15"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_49_56_32_18"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_49_56_32_6"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_49_56_34_3"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_49_56_36_9"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_49_56_38_14"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_49_56_41_6"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_49_56_44_11"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_49_58_46_10"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_49_58_48_16"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_50_58_16_29"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_50_58_16_36"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_50_58_18_27"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_50_58_20_26"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_50_58_20_29"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_50_58_22_32"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_50_58_24_34"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_50_58_25_28"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_50_58_27_30"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_50_58_29_35"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_50_58_36_37"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_50_58_42_29"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_50_58_47_28"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_50_58_47_31"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_50_58_49_32"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_50_58_51_24"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_50_58_51_37"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_50_58_52_26"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_50_58_57_31"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_50_58_59_23"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_50_58_9_28"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_51_57_14_9"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_51_57_15_11"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_51_57_16_10"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_51_57_16_9"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_51_57_17_10"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_51_57_4_12"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_51_57_7_10"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_51_57_9_12"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_51_57_9_16"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_51_58_0_16"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_51_58_11_15"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_51_58_11_17"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_51_58_12_14"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_51_58_14_13"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_51_58_16_12"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_51_58_16_14"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_51_58_1_20"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_51_58_4_18"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_51_58_4_24"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_51_58_5_16"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_51_58_6_12"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_51_58_8_18"
+
+[[spawn]]
+obj = "obj.bones_burnt"
+coords = "0_51_60_49_50"
+
+[[spawn]]
+obj = "obj.bones_burnt"
+coords = "0_51_60_52_48"
+
+[[spawn]]
+obj = "obj.bones_burnt"
+coords = "0_51_60_57_52"
+
+[[spawn]]
+obj = "obj.broken_glass"
+coords = "0_49_56_14_56"
+
+[[spawn]]
+obj = "obj.broken_glass"
+coords = "0_49_56_15_60"
+
+[[spawn]]
+obj = "obj.broken_glass"
+coords = "0_49_56_16_54"
+
+[[spawn]]
+obj = "obj.broken_glass"
+coords = "0_49_56_18_62"
+
+[[spawn]]
+obj = "obj.bronze_arrow"
+coords = "0_48_56_26_12"
+
+[[spawn]]
+obj = "obj.bronze_arrow"
+coords = "0_48_56_26_16"
+count = 2
+
+[[spawn]]
+obj = "obj.bronze_arrow"
+coords = "0_48_56_29_22"
+count = 2
+
+[[spawn]]
+obj = "obj.bronze_arrow"
+coords = "0_48_56_29_8"
+count = 2
+
+[[spawn]]
+obj = "obj.bronze_arrow"
+coords = "0_48_56_31_12"
+count = 2
+
+[[spawn]]
+obj = "obj.bronze_arrow"
+coords = "0_48_56_31_16"
+count = 2
+
+[[spawn]]
+obj = "obj.bronze_arrow"
+coords = "0_48_56_33_23"
+count = 2
+
+[[spawn]]
+obj = "obj.bronze_arrow"
+coords = "0_48_56_37_20"
+count = 2
+
+[[spawn]]
+obj = "obj.bronze_arrow"
+coords = "0_48_56_38_27"
+
+[[spawn]]
+obj = "obj.bronze_dagger"
+coords = "2_49_56_4_38"
+
+[[spawn]]
+obj = "obj.bucket_water"
+coords = "0_49_56_12_58"
+
+[[spawn]]
+obj = "obj.cake_tin"
+coords = "0_46_57_43_38"
+
+[[spawn]]
+obj = "obj.chaosrune"
+coords = "0_47_56_13_56"
+count = 5
+
+[[spawn]]
+obj = "obj.chaosrune"
+coords = "0_49_59_13_47"
+
+[[spawn]]
+obj = "obj.chaosrune"
+coords = "0_49_59_15_55"
+
+[[spawn]]
+obj = "obj.chaosrune"
+coords = "0_49_59_1_57"
+
+[[spawn]]
+obj = "obj.chaosrune"
+coords = "0_49_59_3_38"
+
+[[spawn]]
+obj = "obj.chaosrune"
+coords = "0_49_59_8_50"
+
+[[spawn]]
+obj = "obj.chaosrune"
+coords = "0_49_59_9_38"
+
+[[spawn]]
+obj = "obj.cheese"
+coords = "0_47_57_31_59"
+
+[[spawn]]
+obj = "obj.coins"
+coords = "0_46_57_35_27"
+count = 5
+
+[[spawn]]
+obj = "obj.coins"
+coords = "0_46_57_41_27"
+count = 5
+
+[[spawn]]
+obj = "obj.coins"
+coords = "0_46_57_46_27"
+count = 4
+
+[[spawn]]
+obj = "obj.crossbow"
+coords = "0_49_57_38_15"
+
+[[spawn]]
+obj = "obj.crossbow"
+coords = "0_51_58_20_7"
+
+[[spawn]]
+obj = "obj.digsitearrow"
+coords = "2_48_56_57_37"
+
+[[spawn]]
+obj = "obj.earthrune"
+coords = "0_47_56_24_53"
+count = 5
+
+[[spawn]]
+obj = "obj.firerune"
+coords = "0_47_56_18_53"
+count = 5
+
+[[spawn]]
+obj = "obj.gold_ore"
+coords = "0_49_58_29_27"
+
+[[spawn]]
+obj = "obj.iron_bar"
+coords = "0_48_57_39_9"
+
+[[spawn]]
+obj = "obj.iron_dagger"
+coords = "0_49_57_20_35"
+
+[[spawn]]
+obj = "obj.iron_kiteshield"
+coords = "0_50_59_47_19"
+
+[[spawn]]
+obj = "obj.iron_med_helm"
+coords = "0_49_57_42_36"
+
+[[spawn]]
+obj = "obj.iron_scimitar"
+coords = "0_50_58_14_18"
+
+[[spawn]]
+obj = "obj.mindrune"
+coords = "0_47_56_15_56"
+count = 5
+
+[[spawn]]
+obj = "obj.mindrune"
+coords = "0_51_58_19_16"
+count = 6
+
+[[spawn]]
+obj = "obj.naturerune"
+coords = "0_51_60_43_19"
+count = 4
+
+[[spawn]]
+obj = "obj.naturerune"
+coords = "0_51_60_47_13"
+count = 3
+
+[[spawn]]
+obj = "obj.net"
+coords = "0_46_57_56_51"
+
+[[spawn]]
+obj = "obj.rooftile"
+coords = "0_46_57_11_52"
+
+[[spawn]]
+obj = "obj.rooftile"
+coords = "0_46_57_12_54"
+
+[[spawn]]
+obj = "obj.rooftile"
+coords = "0_46_57_13_49"
+
+[[spawn]]
+obj = "obj.rooftile"
+coords = "0_46_57_15_49"
+
+[[spawn]]
+obj = "obj.rooftile"
+coords = "0_46_57_19_58"
+
+[[spawn]]
+obj = "obj.rooftile"
+coords = "0_46_57_32_34"
+
+[[spawn]]
+obj = "obj.rooftile"
+coords = "0_46_57_34_56"
+
+[[spawn]]
+obj = "obj.rooftile"
+coords = "0_46_57_39_49"
+
+[[spawn]]
+obj = "obj.rooftile"
+coords = "0_46_57_43_36"
+
+[[spawn]]
+obj = "obj.rooftile"
+coords = "0_46_57_49_43"
+
+[[spawn]]
+obj = "obj.rooftile"
+coords = "0_46_57_58_50"
+
+[[spawn]]
+obj = "obj.rooftile"
+coords = "0_49_57_13_26"
+
+[[spawn]]
+obj = "obj.rooftile"
+coords = "0_49_57_29_12"
+
+[[spawn]]
+obj = "obj.rooftile"
+coords = "0_49_57_38_40"
+
+[[spawn]]
+obj = "obj.rooftile"
+coords = "0_49_57_48_24"
+
+[[spawn]]
+obj = "obj.rooftile"
+coords = "0_51_57_14_16"
+
+[[spawn]]
+obj = "obj.rooftile"
+coords = "0_51_57_17_15"
+
+[[spawn]]
+obj = "obj.rooftile"
+coords = "0_51_57_25_3"
+
+[[spawn]]
+obj = "obj.rooftile"
+coords = "0_51_57_7_8"
+
+[[spawn]]
+obj = "obj.sapphire"
+coords = "0_49_60_34_45"
+
+[[spawn]]
+obj = "obj.skull"
+coords = "0_50_58_17_33"
+
+[[spawn]]
+obj = "obj.skull"
+coords = "0_50_58_33_28"
+
+[[spawn]]
+obj = "obj.skull"
+coords = "0_50_58_56_32"
+
+[[spawn]]
+obj = "obj.steel_dagger"
+coords = "0_49_57_22_24"
+
+[[spawn]]
+obj = "obj.steel_dagger"
+coords = "0_51_58_28_50"
+
+[[spawn]]
+obj = "obj.steel_dagger"
+coords = "0_51_58_48_57"
+
+[[spawn]]
+obj = "obj.steel_platelegs"
+coords = "0_49_58_48_21"
+
+[[spawn]]
+obj = "obj.steel_sword"
+coords = "0_51_57_19_10"
+
+[[spawn]]
+obj = "obj.tomato"
+coords = "0_47_57_31_58"
+
+[[spawn]]
+obj = "obj.waterrune"
+coords = "0_47_56_20_53"
+count = 5
+
+[[spawn]]
+obj = "obj.wilderness_fishing_bait"
+coords = "0_46_57_44_35"
+
+[[spawn]]
+obj = "obj.wilderness_fishing_bait"
+coords = "0_46_57_54_57"
+
+[[spawn]]
+obj = "obj.woodplank"
+coords = "0_49_57_12_23"
+
+[[spawn]]
+obj = "obj.woodplank"
+coords = "0_49_57_18_11"
+
+[[spawn]]
+obj = "obj.woodplank"
+coords = "0_49_57_18_22"
+
+[[spawn]]
+obj = "obj.woodplank"
+coords = "0_49_57_35_32"
+
+[[spawn]]
+obj = "obj.woodplank"
+coords = "0_49_57_46_21"
+
+[[spawn]]
+obj = "obj.woodplank"
+coords = "0_51_57_11_16"
+
+[[spawn]]
+obj = "obj.woodplank"
+coords = "0_51_57_27_4"
+
+## Wilderness areas with lava in them
+
+[[spawn]]
+obj = "obj.black_dagger"
+coords = "0_49_59_44_48"
+
+[[spawn]]
+obj = "obj.bodyrune"
+coords = "0_48_60_19_25"
+count = 15
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_50_56_32_21"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_50_56_33_21"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_50_56_34_24"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_50_56_35_19"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_50_56_35_21"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_50_56_35_23"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_50_56_36_20"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_50_56_37_19"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_50_56_37_20"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_50_56_37_27"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_50_56_38_19"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_50_56_39_20"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_50_56_39_22"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_50_56_44_27"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_50_56_46_31"
+
+[[spawn]]
+obj = "obj.bones_burnt"
+coords = "0_49_60_42_12"
+
+[[spawn]]
+obj = "obj.bones_burnt"
+coords = "0_49_60_43_10"
+
+[[spawn]]
+obj = "obj.bones_burnt"
+coords = "0_49_60_43_13"
+
+[[spawn]]
+obj = "obj.bones_burnt"
+coords = "0_49_60_48_16"
+
+[[spawn]]
+obj = "obj.bones_burnt"
+coords = "0_49_60_49_10"
+
+[[spawn]]
+obj = "obj.bones_burnt"
+coords = "0_49_60_51_16"
+
+[[spawn]]
+obj = "obj.bones_burnt"
+coords = "0_50_59_13_45"
+
+[[spawn]]
+obj = "obj.bones_burnt"
+coords = "0_50_59_14_44"
+
+[[spawn]]
+obj = "obj.bones_burnt"
+coords = "0_50_59_18_42"
+
+[[spawn]]
+obj = "obj.bones_burnt"
+coords = "0_50_59_19_40"
+
+[[spawn]]
+obj = "obj.coins"
+coords = "0_48_60_36_19"
+count = 25
+
+[[spawn]]
+obj = "obj.coins"
+coords = "0_48_60_4_5"
+count = 21
+
+[[spawn]]
+obj = "obj.coins"
+coords = "0_50_59_20_50"
+count = 6
+
+[[spawn]]
+obj = "obj.coins"
+coords = "0_50_59_21_53"
+count = 8
+
+[[spawn]]
+obj = "obj.gold_necklace"
+coords = "0_47_60_57_24"
+
+[[spawn]]
+obj = "obj.iron_full_helm"
+coords = "0_47_59_61_55"
+
+[[spawn]]
+obj = "obj.knife"
+coords = "0_47_60_53_11"
+
+[[spawn]]
+obj = "obj.knife"
+coords = "0_48_60_24_16"
+
+[[spawn]]
+obj = "obj.staff_of_earth"
+coords = "0_48_60_28_22"
+
+[[spawn]]
+obj = "obj.steel_platebody"
+coords = "0_48_60_13_19"
+
+[[spawn]]
+obj = "obj.vial_empty"
+coords = "0_49_59_52_63"
+
+[[spawn]]
+obj = "obj.vial_empty"
+coords = "0_49_60_60_9"
+
+[[spawn]]
+obj = "obj.white_berries"
+coords = "0_50_59_14_33"
+
+[[spawn]]
+obj = "obj.white_berries"
+coords = "0_50_59_18_36"
+
+## Wilderness areas with lava in them End
+

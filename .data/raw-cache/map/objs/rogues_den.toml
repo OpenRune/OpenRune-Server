@@ -1,0 +1,36 @@
+[[spawn]]
+obj = "obj.cert_raw_beef"
+coords = "0_47_79_10_24"
+
+[[spawn]]
+obj = "obj.cert_raw_beef"
+coords = "0_47_79_10_30"
+
+[[spawn]]
+obj = "obj.cert_raw_beef"
+coords = "0_47_79_3_26"
+
+[[spawn]]
+obj = "obj.cert_raw_beef"
+coords = "0_47_79_5_34"
+
+[[spawn]]
+obj = "obj.roguesden_flash_powder"
+coords = "0_46_78_25_7"
+count = 5
+
+[[spawn]]
+obj = "obj.roguesden_flash_powder"
+coords = "0_46_78_26_8"
+count = 5
+
+[[spawn]]
+obj = "obj.roguesden_flash_powder"
+coords = "0_47_79_1_14"
+count = 5
+
+[[spawn]]
+obj = "obj.roguesden_flash_powder"
+coords = "0_47_79_1_7"
+count = 5
+

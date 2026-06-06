@@ -1,0 +1,20 @@
+[[spawn]]
+obj = "obj.fishing_rod"
+coords = "0_56_152_11_26"
+
+[[spawn]]
+obj = "obj.logs"
+coords = "0_56_152_7_15"
+
+[[spawn]]
+obj = "obj.logs"
+coords = "0_56_152_8_11"
+
+[[spawn]]
+obj = "obj.logs"
+coords = "0_56_152_9_13"
+
+[[spawn]]
+obj = "obj.myq3_haemalchemy_vol_1"
+coords = "0_56_151_40_26"
+

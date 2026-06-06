@@ -1,0 +1,12 @@
+[[spawn]]
+obj = "obj.bones"
+coords = "0_51_147_16_7"
+
+[[spawn]]
+obj = "obj.bronze_pickaxe"
+coords = "0_51_147_24_23"
+
+[[spawn]]
+obj = "obj.bronze_pickaxe"
+coords = "0_51_147_24_34"
+

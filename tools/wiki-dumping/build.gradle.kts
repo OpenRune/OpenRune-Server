@@ -4,6 +4,7 @@ plugins {
 
 dependencies {
     implementation(projects.orCache)
+    implementation(projects.engine.map)
     implementation(projects.api.dropTable)
     implementation(projects.api.dropTablePlugin)
     implementation(projects.api.parsers.json)

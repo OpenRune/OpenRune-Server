@@ -1,0 +1,24 @@
+[[spawn]]
+obj = "obj.broken_glass"
+coords = "0_43_51_14_13"
+
+[[spawn]]
+obj = "obj.broken_glass"
+coords = "0_43_51_14_25"
+
+[[spawn]]
+obj = "obj.damp_sticks"
+coords = "0_43_51_32_25"
+
+[[spawn]]
+obj = "obj.rope"
+coords = "0_43_51_33_15"
+
+[[spawn]]
+obj = "obj.rope"
+coords = "0_43_51_34_22"
+
+[[spawn]]
+obj = "obj.rope"
+coords = "0_43_51_34_23"
+

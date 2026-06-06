@@ -1,0 +1,12 @@
+[[spawn]]
+obj = "obj.kr_clue_form"
+coords = "1_42_55_51_61"
+
+[[spawn]]
+obj = "obj.murderpot2"
+coords = "0_42_55_59_59"
+
+[[spawn]]
+obj = "obj.murderweapon"
+coords = "0_42_55_58_58"
+

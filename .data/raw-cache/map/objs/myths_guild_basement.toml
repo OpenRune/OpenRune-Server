@@ -1,0 +1,216 @@
+[[spawn]]
+obj = "obj.blue_dragon_scale"
+coords = "0_30_140_12_5"
+
+[[spawn]]
+obj = "obj.blue_dragon_scale"
+coords = "0_30_140_2_7"
+
+[[spawn]]
+obj = "obj.blue_dragon_scale"
+coords = "0_30_140_3_10"
+
+[[spawn]]
+obj = "obj.blue_dragon_scale"
+coords = "0_30_140_5_24"
+
+[[spawn]]
+obj = "obj.blue_dragon_scale"
+coords = "0_30_140_7_30"
+
+[[spawn]]
+obj = "obj.blue_dragon_scale"
+coords = "0_30_140_8_4"
+
+[[spawn]]
+obj = "obj.bread"
+coords = "0_31_140_39_34"
+
+[[spawn]]
+obj = "obj.bread"
+coords = "0_31_140_48_42"
+
+[[spawn]]
+obj = "obj.bread"
+coords = "0_31_140_49_18"
+
+[[spawn]]
+obj = "obj.bread"
+coords = "0_31_140_53_20"
+
+[[spawn]]
+obj = "obj.bucket_empty"
+coords = "0_31_140_57_25"
+
+[[spawn]]
+obj = "obj.burnt_bread"
+coords = "1_30_141_56_53"
+
+[[spawn]]
+obj = "obj.burnt_shrimp"
+coords = "0_31_140_50_24"
+
+[[spawn]]
+obj = "obj.coins"
+coords = "0_31_140_12_12"
+
+[[spawn]]
+obj = "obj.coins"
+coords = "0_31_140_13_11"
+
+[[spawn]]
+obj = "obj.coins"
+coords = "0_31_140_14_11"
+
+[[spawn]]
+obj = "obj.coins"
+coords = "0_31_140_15_10"
+
+[[spawn]]
+obj = "obj.coins"
+coords = "0_31_140_17_20"
+
+[[spawn]]
+obj = "obj.coins"
+coords = "0_31_140_21_9"
+
+[[spawn]]
+obj = "obj.coins"
+coords = "0_31_140_22_28"
+
+[[spawn]]
+obj = "obj.coins"
+coords = "0_31_140_25_45"
+
+[[spawn]]
+obj = "obj.coins"
+coords = "0_31_140_27_22"
+
+[[spawn]]
+obj = "obj.coins"
+coords = "0_31_140_28_34"
+
+[[spawn]]
+obj = "obj.coins"
+coords = "0_31_140_33_39"
+
+[[spawn]]
+obj = "obj.coins"
+coords = "0_31_140_47_19"
+
+[[spawn]]
+obj = "obj.coins"
+coords = "0_31_140_50_26"
+
+[[spawn]]
+obj = "obj.coins"
+coords = "0_31_140_51_27"
+
+[[spawn]]
+obj = "obj.coins"
+coords = "0_31_140_55_22"
+
+[[spawn]]
+obj = "obj.coins"
+coords = "0_32_140_10_27"
+
+[[spawn]]
+obj = "obj.coins"
+coords = "0_32_140_10_44"
+
+[[spawn]]
+obj = "obj.coins"
+coords = "0_32_140_13_45"
+
+[[spawn]]
+obj = "obj.coins"
+coords = "0_32_140_14_44"
+
+[[spawn]]
+obj = "obj.coins"
+coords = "0_32_140_15_42"
+
+[[spawn]]
+obj = "obj.coins"
+coords = "0_32_140_19_28"
+
+[[spawn]]
+obj = "obj.coins"
+coords = "0_32_140_6_42"
+
+[[spawn]]
+obj = "obj.coins"
+coords = "0_32_140_8_42"
+
+[[spawn]]
+obj = "obj.coins"
+coords = "0_32_140_8_46"
+
+[[spawn]]
+obj = "obj.coins"
+coords = "0_32_140_9_45"
+
+[[spawn]]
+obj = "obj.gold_bar"
+coords = "0_30_141_45_58"
+
+[[spawn]]
+obj = "obj.gold_bar"
+coords = "0_30_141_47_60"
+
+[[spawn]]
+obj = "obj.gold_bar"
+coords = "0_30_141_48_59"
+
+[[spawn]]
+obj = "obj.gold_bar"
+coords = "0_30_141_49_59"
+
+[[spawn]]
+obj = "obj.gold_bar"
+coords = "0_30_141_53_57"
+
+[[spawn]]
+obj = "obj.gold_bar"
+coords = "0_32_140_9_25"
+
+[[spawn]]
+obj = "obj.gold_necklace"
+coords = "0_32_140_20_26"
+
+[[spawn]]
+obj = "obj.gold_ring"
+coords = "0_32_140_8_44"
+
+[[spawn]]
+obj = "obj.net"
+coords = "0_31_140_53_26"
+
+[[spawn]]
+obj = "obj.oil_lamp_unlit"
+coords = "0_31_140_46_45"
+
+[[spawn]]
+obj = "obj.raw_shrimp"
+coords = "0_31_140_49_23"
+
+[[spawn]]
+obj = "obj.raw_tuna"
+coords = "0_31_140_53_18"
+
+[[spawn]]
+obj = "obj.rope"
+coords = "0_31_140_15_35"
+
+[[spawn]]
+obj = "obj.rope"
+coords = "0_31_140_39_25"
+
+[[spawn]]
+obj = "obj.rope"
+coords = "0_31_140_54_21"
+
+[[spawn]]
+obj = "obj.spade"
+coords = "0_31_140_47_24"
+

@@ -1,0 +1,84 @@
+[[spawn]]
+obj = "obj.bowl_empty"
+coords = "1_44_52_0_23"
+
+[[spawn]]
+obj = "obj.egg"
+coords = "0_44_52_35_44"
+
+[[spawn]]
+obj = "obj.egg"
+coords = "0_44_52_36_41"
+
+[[spawn]]
+obj = "obj.egg"
+coords = "0_44_52_37_42"
+
+[[spawn]]
+obj = "obj.fishing_rod"
+coords = "0_44_52_44_7"
+
+[[spawn]]
+obj = "obj.glassblowingpipe"
+coords = "0_44_52_6_27"
+
+[[spawn]]
+obj = "obj.kebab"
+coords = "0_44_52_27_41"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_43_52_51_54"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_43_52_52_52"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_43_52_52_57"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_43_52_53_53"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_43_52_53_56"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_43_52_55_56"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_43_52_55_58"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_43_52_57_57"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_43_52_57_60"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_43_52_58_59"
+
+[[spawn]]
+obj = "obj.vial_empty"
+coords = "0_43_52_56_15"
+
+[[spawn]]
+obj = "obj.vial_empty"
+coords = "0_43_52_57_14"
+
+[[spawn]]
+obj = "obj.woodplank"
+coords = "0_44_52_30_56"
+
+[[spawn]]
+obj = "obj.woodplank"
+coords = "0_44_52_32_55"
+

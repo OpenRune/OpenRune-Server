@@ -1,0 +1,12 @@
+[[spawn]]
+obj = "obj.1dose1attack"
+coords = "0_47_161_18_21"
+
+[[spawn]]
+obj = "obj.unidentified_guam"
+coords = "0_47_161_36_9"
+
+[[spawn]]
+obj = "obj.wine_of_zamorak"
+coords = "0_47_161_10_49"
+

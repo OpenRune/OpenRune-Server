@@ -1,0 +1,20 @@
+[[spawn]]
+obj = "obj.leather_boots"
+coords = "0_48_49_39_23"
+
+[[spawn]]
+obj = "obj.leather_boots"
+coords = "1_48_49_40_19"
+
+[[spawn]]
+obj = "obj.logs"
+coords = "0_48_49_33_23"
+
+[[spawn]]
+obj = "obj.logs"
+coords = "0_48_49_34_23"
+
+[[spawn]]
+obj = "obj.logs"
+coords = "0_48_49_34_24"
+

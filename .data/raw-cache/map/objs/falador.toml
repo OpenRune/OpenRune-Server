@@ -1,0 +1,25 @@
+[[spawn]]
+obj = "obj.bronze_arrow"
+coords = "0_46_52_0_4"
+count = 2
+
+[[spawn]]
+obj = "obj.bronze_axe"
+coords = "1_46_52_26_48"
+
+[[spawn]]
+obj = "obj.bronze_pickaxe"
+coords = "0_47_52_1_14"
+
+[[spawn]]
+obj = "obj.cooked_chicken"
+coords = "1_46_52_27_54"
+
+[[spawn]]
+obj = "obj.hammer"
+coords = "1_46_52_31_40"
+
+[[spawn]]
+obj = "obj.spade"
+coords = "0_46_52_37_42"
+

@@ -1,0 +1,1460 @@
+[[spawn]]
+obj = "obj.big_net"
+coords = "0_24_51_29_60"
+
+[[spawn]]
+obj = "obj.big_net"
+coords = "0_24_51_42_43"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_24_51_20_47"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_24_51_39_30"
+
+[[spawn]]
+obj = "obj.coins"
+coords = "0_24_51_33_57"
+
+[[spawn]]
+obj = "obj.coins"
+coords = "0_24_51_44_49"
+
+[[spawn]]
+obj = "obj.coins"
+coords = "0_24_51_50_33"
+
+[[spawn]]
+obj = "obj.knife"
+coords = "0_25_51_29_38"
+
+[[spawn]]
+obj = "obj.leather_boots"
+coords = "1_25_51_29_38"
+
+[[spawn]]
+obj = "obj.net"
+coords = "0_24_51_36_55"
+
+[[spawn]]
+obj = "obj.oil_lantern_unlit"
+coords = "2_25_51_45_21"
+
+[[spawn]]
+obj = "obj.pot_of_butter"
+coords = "0_25_51_47_22"
+
+[[spawn]]
+obj = "obj.potato"
+coords = "0_25_51_45_20"
+
+[[spawn]]
+obj = "obj.rope"
+coords = "0_24_51_32_53"
+
+[[spawn]]
+obj = "obj.rope"
+coords = "0_24_51_38_48"
+
+[[spawn]]
+obj = "obj.rope"
+coords = "0_24_51_45_35"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_24_51_21_60"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_24_51_24_63"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_24_51_28_47"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_24_51_29_54"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_24_51_34_59"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_24_51_39_52"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_24_51_40_45"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_24_51_43_51"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_24_51_45_41"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_24_51_46_47"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_24_51_52_35"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_24_51_52_52"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_24_51_56_30"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_24_51_61_29"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_25_51_28_49"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_25_51_37_41"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_25_51_46_38"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_25_51_48_47"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_25_51_55_40"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_25_51_63_41"
+
+[[spawn]]
+obj = "obj.tinderbox"
+coords = "0_26_51_51_4"
+
+[[spawn]]
+obj = "obj.unlit_candle"
+coords = "0_25_51_45_21"
+
+[[spawn]]
+obj = "obj.unlit_candle"
+coords = "0_26_50_16_32"
+
+[[spawn]]
+obj = "obj.unlit_candle"
+coords = "1_25_51_30_34"
+
+[[spawn]]
+obj = "obj.unlit_candle"
+coords = "1_25_51_44_20"
+
+[[spawn]]
+obj = "obj.unlit_candle"
+coords = "2_25_51_46_19"
+
+[[spawn]]
+obj = "obj.woodplank"
+coords = "0_24_51_27_52"
+
+[[spawn]]
+obj = "obj.woodplank"
+coords = "0_24_51_31_45"
+
+[[spawn]]
+obj = "obj.woodplank"
+coords = "0_24_51_36_57"
+
+[[spawn]]
+obj = "obj.woodplank"
+coords = "0_24_51_38_53"
+
+[[spawn]]
+obj = "obj.woodplank"
+coords = "0_24_51_43_41"
+
+[[spawn]]
+obj = "obj.woodplank"
+coords = "0_24_51_47_51"
+
+## Aldarin
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_22_44_10_45"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_22_44_13_36"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_22_44_13_41"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_22_44_5_39"
+
+[[spawn]]
+obj = "obj.bowl_empty"
+coords = "1_22_46_23_18"
+
+[[spawn]]
+obj = "obj.bucket_empty"
+coords = "0_21_44_44_35"
+
+[[spawn]]
+obj = "obj.bucket_empty"
+coords = "0_21_45_10_34"
+
+[[spawn]]
+obj = "obj.bucket_water"
+coords = "0_21_46_8_2"
+
+[[spawn]]
+obj = "obj.chichilihui_rose"
+coords = "0_21_46_43_6"
+
+[[spawn]]
+obj = "obj.hammer"
+coords = "0_21_46_29_5"
+
+[[spawn]]
+obj = "obj.iron_bar"
+coords = "1_21_44_41_52"
+
+[[spawn]]
+obj = "obj.iron_scimitar"
+coords = "2_21_46_54_33"
+
+[[spawn]]
+obj = "obj.jug_empty"
+coords = "1_21_45_14_40"
+
+[[spawn]]
+obj = "obj.jug_water"
+coords = "1_22_46_6_29"
+
+[[spawn]]
+obj = "obj.jug_wine"
+coords = "0_20_45_35_37"
+
+[[spawn]]
+obj = "obj.onion"
+coords = "0_21_44_32_49"
+
+[[spawn]]
+obj = "obj.pot_empty"
+coords = "2_21_45_51_15"
+
+[[spawn]]
+obj = "obj.pot_flour"
+coords = "0_22_46_24_16"
+
+[[spawn]]
+obj = "obj.rope"
+coords = "0_21_44_39_46"
+
+[[spawn]]
+obj = "obj.rope"
+coords = "0_22_46_34_15"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_20_45_23_60"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_20_45_26_4"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_20_45_27_16"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_20_45_28_54"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_20_45_35_5"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_20_45_9_50"
+
+[[spawn]]
+obj = "obj.spade"
+coords = "0_21_45_61_58"
+
+[[spawn]]
+obj = "obj.sunbeam_ale"
+coords = "0_21_45_34_54"
+
+[[spawn]]
+obj = "obj.sunbeam_ale"
+coords = "0_21_46_32_16"
+
+[[spawn]]
+obj = "obj.vial_empty"
+coords = "0_21_45_49_37"
+
+## Aldarin Wood Floor Interior
+
+[[spawn]]
+obj = "obj.leather_gloves"
+coords = "1_21_46_10_21"
+
+## Auburnvale
+
+[[spawn]]
+obj = "obj.beer"
+coords = "0_21_51_23_41"
+
+[[spawn]]
+obj = "obj.beer_glass"
+coords = "0_21_52_47_24"
+
+[[spawn]]
+obj = "obj.beer_glass"
+coords = "0_21_52_55_29"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_24_51_9_63"
+
+[[spawn]]
+obj = "obj.bucket_empty"
+coords = "0_22_52_12_46"
+
+[[spawn]]
+obj = "obj.cider"
+coords = "0_21_52_48_23"
+
+[[spawn]]
+obj = "obj.fishing_rod"
+coords = "0_20_52_51_2"
+
+[[spawn]]
+obj = "obj.hammer"
+coords = "0_21_52_37_42"
+
+[[spawn]]
+obj = "obj.iron_axe"
+coords = "0_21_52_55_43"
+
+[[spawn]]
+obj = "obj.jug_empty"
+coords = "0_22_51_31_60"
+
+[[spawn]]
+obj = "obj.jug_empty"
+coords = "1_21_52_50_24"
+
+[[spawn]]
+obj = "obj.knife"
+coords = "0_21_51_27_52"
+
+[[spawn]]
+obj = "obj.knife"
+coords = "0_21_52_37_22"
+
+[[spawn]]
+obj = "obj.knife"
+coords = "0_22_52_31_23"
+
+[[spawn]]
+obj = "obj.potato"
+coords = "1_22_52_32_26"
+
+[[spawn]]
+obj = "obj.rope"
+coords = "0_20_51_46_54"
+
+[[spawn]]
+obj = "obj.tinderbox"
+coords = "0_20_51_47_55"
+
+## Chouani
+
+[[spawn]]
+obj = "obj.needle"
+coords = "0_21_52_24_30"
+
+## Colossal Wyrm Agility Course
+
+[[spawn]]
+obj = "obj.big_bones"
+coords = "0_25_45_26_50"
+
+[[spawn]]
+obj = "obj.big_bones"
+coords = "0_25_45_31_28"
+
+[[spawn]]
+obj = "obj.big_bones"
+coords = "0_25_45_46_27"
+
+[[spawn]]
+obj = "obj.big_bones"
+coords = "0_25_45_57_34"
+
+[[spawn]]
+obj = "obj.big_bones"
+coords = "0_25_45_58_42"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_25_45_25_44"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_25_45_27_32"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_25_45_36_54"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_25_45_43_25"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_25_45_52_34"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_25_45_53_30"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_25_45_55_43"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_25_45_57_45"
+
+[[spawn]]
+obj = "obj.bucket_empty"
+coords = "0_25_45_44_46"
+
+[[spawn]]
+obj = "obj.hammer"
+coords = "0_25_45_39_44"
+
+[[spawn]]
+obj = "obj.jug_water"
+coords = "2_25_45_49_26"
+
+[[spawn]]
+obj = "obj.rotten_tomato"
+coords = "2_25_45_23_53"
+
+[[spawn]]
+obj = "obj.steel_arrow"
+coords = "2_25_45_33_26"
+
+[[spawn]]
+obj = "obj.woodplank"
+coords = "0_25_45_36_42"
+
+[[spawn]]
+obj = "obj.woodplank"
+coords = "0_25_45_40_47"
+
+## Fortis Blacksmith
+
+[[spawn]]
+obj = "obj.chisel"
+coords = "0_25_49_57_6"
+
+## Fortis General Store
+
+[[spawn]]
+obj = "obj.bowl_water"
+coords = "0_26_48_1_48"
+
+[[spawn]]
+obj = "obj.bucket_empty"
+coords = "0_26_48_3_52"
+
+[[spawn]]
+obj = "obj.pot_empty"
+coords = "0_26_48_2_52"
+
+## Gloomthorn Trail
+
+[[spawn]]
+obj = "obj.iron_dagger"
+coords = "0_21_50_41_17"
+
+## Hunter Guild Surface
+
+[[spawn]]
+obj = "obj.bucket_water"
+coords = "0_24_47_9_29"
+
+[[spawn]]
+obj = "obj.eclipse_wine"
+coords = "2_24_47_19_27"
+
+[[spawn]]
+obj = "obj.grain"
+coords = "2_24_47_24_39"
+
+[[spawn]]
+obj = "obj.grain"
+coords = "2_24_47_25_37"
+
+[[spawn]]
+obj = "obj.iron_knife"
+coords = "0_24_47_9_27"
+count = 2
+
+[[spawn]]
+obj = "obj.needle"
+coords = "0_24_47_30_27"
+
+## Lunami's Axe Shop
+
+[[spawn]]
+obj = "obj.hammer"
+coords = "0_21_52_55_13"
+
+## Mistrock Mining Supplies
+
+[[spawn]]
+obj = "obj.hammer"
+coords = "0_21_44_57_50"
+
+## Overseer Khougo
+
+[[spawn]]
+obj = "obj.beer"
+coords = "0_21_44_44_43"
+
+[[spawn]]
+obj = "obj.beer_glass"
+coords = "0_21_44_48_44"
+
+[[spawn]]
+obj = "obj.pot_empty"
+coords = "1_21_44_47_43"
+
+## Proudspire
+
+[[spawn]]
+obj = "obj.bronze_axe"
+coords = "0_24_51_46_9"
+
+## Quetzacalli Gorge
+
+[[spawn]]
+obj = "obj.bucket_water"
+coords = "0_23_50_28_36"
+
+[[spawn]]
+obj = "obj.digsitearrow"
+coords = "0_23_50_50_47"
+
+[[spawn]]
+obj = "obj.digsitearrow"
+coords = "0_23_50_50_53"
+
+[[spawn]]
+obj = "obj.digsitearrow"
+coords = "0_23_50_57_53"
+
+[[spawn]]
+obj = "obj.knife"
+coords = "0_23_50_25_54"
+
+[[spawn]]
+obj = "obj.thread"
+coords = "0_23_50_27_51"
+
+## Quetzacalli Gorge General Store
+
+[[spawn]]
+obj = "obj.iron_dagger"
+coords = "1_23_50_47_25"
+
+## Salius' Armour Shop
+
+[[spawn]]
+obj = "obj.bronze_bar"
+coords = "0_25_51_20_28"
+
+[[spawn]]
+obj = "obj.logs"
+coords = "0_25_51_19_28"
+
+## Salvager Overlook General Store
+
+[[spawn]]
+obj = "obj.sack_cabbage_2"
+coords = "0_25_51_25_24"
+
+[[spawn]]
+obj = "obj.tinderbox"
+coords = "0_25_51_25_23"
+
+## Shields of Mistrock
+
+[[spawn]]
+obj = "obj.bucket_water"
+coords = "1_21_44_44_50"
+
+[[spawn]]
+obj = "obj.logs"
+coords = "1_21_44_44_53"
+
+## Southern Varlamore
+
+[[spawn]]
+obj = "obj.ashes"
+coords = "0_23_49_22_41"
+
+[[spawn]]
+obj = "obj.ball_of_wool"
+coords = "1_25_48_62_28"
+
+[[spawn]]
+obj = "obj.beer_glass"
+coords = "0_26_48_47_42"
+
+[[spawn]]
+obj = "obj.beer_glass"
+coords = "0_26_48_60_1"
+
+[[spawn]]
+obj = "obj.beer_glass"
+coords = "1_26_49_9_19"
+
+[[spawn]]
+obj = "obj.big_net"
+coords = "0_23_46_35_40"
+
+[[spawn]]
+obj = "obj.black_robe"
+coords = "2_26_48_54_48"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_25_48_58_13"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_26_45_44_59"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_26_45_49_54"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_26_45_53_58"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_26_45_56_55"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_28_49_36_3"
+
+[[spawn]]
+obj = "obj.bowl_empty"
+coords = "0_27_48_36_30"
+
+[[spawn]]
+obj = "obj.bowl_empty"
+coords = "0_27_48_40_31"
+
+[[spawn]]
+obj = "obj.bowl_empty"
+coords = "1_27_48_36_28"
+
+[[spawn]]
+obj = "obj.bread"
+coords = "1_26_49_8_23"
+
+[[spawn]]
+obj = "obj.bread"
+coords = "1_27_48_42_0"
+
+[[spawn]]
+obj = "obj.bread"
+coords = "2_23_46_49_43"
+
+[[spawn]]
+obj = "obj.broken_glass"
+coords = "0_26_48_61_7"
+
+[[spawn]]
+obj = "obj.broken_glass"
+coords = "1_26_48_62_4"
+
+[[spawn]]
+obj = "obj.bronze_axe"
+coords = "0_26_46_19_31"
+
+[[spawn]]
+obj = "obj.bronze_dagger"
+coords = "0_25_49_24_30"
+
+[[spawn]]
+obj = "obj.bronze_dagger"
+coords = "1_26_48_60_3"
+
+[[spawn]]
+obj = "obj.bronze_pickaxe"
+coords = "0_27_46_3_29"
+
+[[spawn]]
+obj = "obj.bucket_empty"
+coords = "0_25_48_44_21"
+
+[[spawn]]
+obj = "obj.bucket_empty"
+coords = "0_27_46_9_22"
+
+[[spawn]]
+obj = "obj.bucket_water"
+coords = "0_27_48_18_6"
+
+[[spawn]]
+obj = "obj.bucket_water"
+coords = "1_27_48_36_23"
+
+[[spawn]]
+obj = "obj.charcoal"
+coords = "0_26_47_58_55"
+
+[[spawn]]
+obj = "obj.cheese"
+coords = "0_25_48_46_22"
+
+[[spawn]]
+obj = "obj.coins"
+coords = "0_22_47_60_46"
+
+[[spawn]]
+obj = "obj.coins"
+coords = "0_22_47_61_49"
+count = 4
+
+[[spawn]]
+obj = "obj.coins"
+coords = "0_22_47_63_47"
+
+[[spawn]]
+obj = "obj.egg"
+coords = "0_24_48_12_61"
+
+[[spawn]]
+obj = "obj.egg"
+coords = "0_24_48_14_55"
+
+[[spawn]]
+obj = "obj.egg"
+coords = "0_24_48_15_62"
+
+[[spawn]]
+obj = "obj.egg"
+coords = "0_24_48_17_51"
+
+[[spawn]]
+obj = "obj.egg"
+coords = "0_24_48_20_58"
+
+[[spawn]]
+obj = "obj.feather"
+coords = "0_23_46_34_40"
+count = 5
+
+[[spawn]]
+obj = "obj.feather"
+coords = "0_24_46_25_18"
+count = 5
+
+[[spawn]]
+obj = "obj.fishing_rod"
+coords = "0_24_46_21_15"
+
+[[spawn]]
+obj = "obj.fly_fishing_rod"
+coords = "0_23_46_58_35"
+
+[[spawn]]
+obj = "obj.gold_bar"
+coords = "1_27_49_15_40"
+
+[[spawn]]
+obj = "obj.grain"
+coords = "1_23_46_40_52"
+
+[[spawn]]
+obj = "obj.hammer"
+coords = "0_23_46_41_52"
+
+[[spawn]]
+obj = "obj.hammer"
+coords = "0_26_47_32_62"
+
+[[spawn]]
+obj = "obj.hammer"
+coords = "0_27_48_42_42"
+
+[[spawn]]
+obj = "obj.hunting_box_trap"
+coords = "0_25_48_28_21"
+
+[[spawn]]
+obj = "obj.iron_arrow"
+coords = "0_26_45_42_60"
+
+[[spawn]]
+obj = "obj.iron_arrow"
+coords = "0_26_45_43_55"
+
+[[spawn]]
+obj = "obj.iron_arrow"
+coords = "0_26_45_45_58"
+
+[[spawn]]
+obj = "obj.iron_arrow"
+coords = "0_26_45_48_60"
+
+[[spawn]]
+obj = "obj.iron_arrow"
+coords = "0_26_45_51_54"
+
+[[spawn]]
+obj = "obj.iron_arrow"
+coords = "0_26_45_54_51"
+
+[[spawn]]
+obj = "obj.iron_arrow"
+coords = "0_26_45_55_60"
+
+[[spawn]]
+obj = "obj.iron_arrow"
+coords = "0_26_45_56_56"
+
+[[spawn]]
+obj = "obj.iron_arrow"
+coords = "0_26_45_59_56"
+
+[[spawn]]
+obj = "obj.iron_axe"
+coords = "1_26_48_53_47"
+
+[[spawn]]
+obj = "obj.iron_bar"
+coords = "0_23_46_41_51"
+
+[[spawn]]
+obj = "obj.iron_battleaxe"
+coords = "0_26_49_36_49"
+
+[[spawn]]
+obj = "obj.iron_dagger"
+coords = "1_24_49_37_4"
+
+[[spawn]]
+obj = "obj.iron_dart"
+coords = "1_25_49_14_40"
+count = 4
+
+[[spawn]]
+obj = "obj.iron_med_helm"
+coords = "0_25_46_16_19"
+
+[[spawn]]
+obj = "obj.iron_pickaxe"
+coords = "0_26_45_26_24"
+
+[[spawn]]
+obj = "obj.iron_scimitar"
+coords = "0_23_48_28_59"
+
+[[spawn]]
+obj = "obj.iron_sword"
+coords = "0_23_49_22_41"
+
+[[spawn]]
+obj = "obj.jug_empty"
+coords = "0_26_46_5_38"
+
+[[spawn]]
+obj = "obj.jug_empty"
+coords = "0_27_49_9_32"
+
+[[spawn]]
+obj = "obj.jug_wine"
+coords = "0_26_47_54_57"
+
+[[spawn]]
+obj = "obj.jug_wine"
+coords = "1_26_48_48_43"
+
+[[spawn]]
+obj = "obj.knife"
+coords = "0_25_48_46_23"
+
+[[spawn]]
+obj = "obj.leather_boots"
+coords = "0_26_49_37_50"
+
+[[spawn]]
+obj = "obj.leather_boots"
+coords = "1_24_48_54_56"
+
+[[spawn]]
+obj = "obj.leather_gloves"
+coords = "2_26_48_54_43"
+
+[[spawn]]
+obj = "obj.lobster_pot"
+coords = "0_23_46_57_34"
+
+[[spawn]]
+obj = "obj.logs"
+coords = "0_26_47_14_54"
+
+[[spawn]]
+obj = "obj.logs"
+coords = "0_26_47_14_58"
+
+[[spawn]]
+obj = "obj.logs"
+coords = "0_26_47_23_59"
+
+[[spawn]]
+obj = "obj.logs"
+coords = "0_26_47_33_52"
+
+[[spawn]]
+obj = "obj.logs"
+coords = "0_27_48_14_7"
+
+[[spawn]]
+obj = "obj.logs"
+coords = "0_27_48_18_7"
+
+[[spawn]]
+obj = "obj.logs"
+coords = "0_27_49_14_30"
+
+[[spawn]]
+obj = "obj.logs"
+coords = "0_27_49_15_31"
+
+[[spawn]]
+obj = "obj.logs"
+coords = "0_27_49_16_30"
+
+[[spawn]]
+obj = "obj.nails_bronze"
+coords = "0_27_48_41_42"
+
+[[spawn]]
+obj = "obj.needle"
+coords = "1_27_48_37_31"
+
+[[spawn]]
+obj = "obj.net"
+coords = "0_23_46_51_32"
+
+[[spawn]]
+obj = "obj.oak_shortbow"
+coords = "2_26_48_47_40"
+
+[[spawn]]
+obj = "obj.papyrus"
+coords = "1_26_49_8_23"
+
+[[spawn]]
+obj = "obj.pestle_and_mortar"
+coords = "0_26_47_3_60"
+
+[[spawn]]
+obj = "obj.piedish"
+coords = "0_25_48_4_27"
+
+[[spawn]]
+obj = "obj.pot_empty"
+coords = "0_24_48_47_58"
+
+[[spawn]]
+obj = "obj.pot_empty"
+coords = "1_26_47_41_62"
+
+[[spawn]]
+obj = "obj.pot_empty"
+coords = "2_25_47_58_36"
+
+[[spawn]]
+obj = "obj.potato"
+coords = "0_25_48_59_49"
+
+[[spawn]]
+obj = "obj.rope"
+coords = "0_24_48_46_52"
+
+[[spawn]]
+obj = "obj.rope"
+coords = "0_26_47_11_58"
+
+[[spawn]]
+obj = "obj.rope"
+coords = "0_27_47_43_31"
+
+[[spawn]]
+obj = "obj.rope"
+coords = "0_27_47_48_41"
+
+[[spawn]]
+obj = "obj.rope"
+coords = "0_27_47_9_56"
+
+[[spawn]]
+obj = "obj.rope"
+coords = "0_27_48_14_4"
+
+[[spawn]]
+obj = "obj.rope"
+coords = "0_27_48_37_31"
+
+[[spawn]]
+obj = "obj.rope"
+coords = "0_27_49_40_20"
+
+[[spawn]]
+obj = "obj.rope"
+coords = "1_23_46_46_52"
+
+[[spawn]]
+obj = "obj.rope"
+coords = "1_25_48_28_20"
+
+[[spawn]]
+obj = "obj.rope"
+coords = "1_27_48_41_28"
+
+[[spawn]]
+obj = "obj.sack_empty"
+coords = "0_27_49_16_36"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_24_46_17_10"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_24_46_21_8"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_24_46_23_7"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_24_46_27_6"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_24_46_31_8"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_24_46_34_7"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_27_47_56_40"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_27_47_57_18"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_27_47_58_39"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_27_47_58_8"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_27_47_59_20"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_27_47_60_16"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_27_47_60_43"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_27_47_61_11"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_28_47_0_43"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_28_47_10_43"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_28_47_13_44"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_28_47_14_46"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_28_47_1_41"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_28_47_3_42"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_28_47_4_40"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_28_47_7_42"
+
+[[spawn]]
+obj = "obj.silk"
+coords = "1_25_48_62_31"
+
+[[spawn]]
+obj = "obj.snape_grass"
+coords = "0_27_49_8_32"
+
+[[spawn]]
+obj = "obj.softclay"
+coords = "1_27_48_37_23"
+
+[[spawn]]
+obj = "obj.spade"
+coords = "0_25_47_41_44"
+
+[[spawn]]
+obj = "obj.steel_sword"
+coords = "0_27_49_13_53"
+
+[[spawn]]
+obj = "obj.sunbeam_ale"
+coords = "0_26_48_52_45"
+
+[[spawn]]
+obj = "obj.sweetcorn"
+coords = "1_24_49_38_3"
+
+[[spawn]]
+obj = "obj.thread"
+coords = "0_25_48_56_24"
+
+[[spawn]]
+obj = "obj.tinderbox"
+coords = "0_27_49_9_33"
+
+[[spawn]]
+obj = "obj.tinderbox"
+coords = "1_23_46_48_38"
+
+[[spawn]]
+obj = "obj.torch_unlit"
+coords = "1_23_46_36_40"
+
+[[spawn]]
+obj = "obj.vial_water"
+coords = "0_26_47_4_60"
+
+[[spawn]]
+obj = "obj.viking_tankard_full"
+coords = "1_23_46_47_45"
+
+[[spawn]]
+obj = "obj.viking_tankard_full"
+coords = "2_23_46_50_42"
+
+[[spawn]]
+obj = "obj.wooden_shield"
+coords = "0_25_46_19_13"
+
+[[spawn]]
+obj = "obj.woodplank"
+coords = "0_27_49_17_45"
+
+## Spike's Spikes
+
+[[spawn]]
+obj = "obj.hammer"
+coords = "0_27_47_45_52"
+
+[[spawn]]
+obj = "obj.iron_mace"
+coords = "0_27_47_48_52"
+
+## Sunlight's Sanctum
+
+[[spawn]]
+obj = "obj.jug_wine"
+coords = "1_21_45_32_45"
+
+## Tal Teklan - Indoors above ground floor
+
+[[spawn]]
+obj = "obj.chichilihui_rose"
+coords = "2_18_48_46_39"
+
+[[spawn]]
+obj = "obj.pot_empty"
+coords = "1_19_48_27_39"
+
+## Tal Teklan - Indoors ground level
+
+[[spawn]]
+obj = "obj.bowl_empty"
+coords = "0_18_48_56_21"
+
+[[spawn]]
+obj = "obj.bowl_empty"
+coords = "0_19_48_14_48"
+
+[[spawn]]
+obj = "obj.bucket_empty"
+coords = "0_19_48_23_61"
+
+[[spawn]]
+obj = "obj.egg"
+coords = "0_19_48_29_62"
+
+[[spawn]]
+obj = "obj.hammer"
+coords = "0_18_48_55_36"
+
+[[spawn]]
+obj = "obj.poh_saw"
+coords = "0_18_48_60_21"
+
+## The Stranglewood
+
+[[spawn]]
+obj = "obj.iron_scimitar"
+coords = "0_17_52_10_11"
+
+## Twilight Temple Main Floor
+
+[[spawn]]
+obj = "obj.bread"
+coords = "0_26_50_5_50"
+
+[[spawn]]
+obj = "obj.bronze_chainbody"
+coords = "0_26_51_30_6"
+
+[[spawn]]
+obj = "obj.candle_lantern_unlit"
+coords = "0_26_51_36_8"
+
+[[spawn]]
+obj = "obj.jug_water"
+coords = "0_26_50_3_49"
+
+## Varlamore - Tlati Rainforest
+
+[[spawn]]
+obj = "obj.airrune"
+coords = "0_21_49_55_22"
+
+[[spawn]]
+obj = "obj.beer_glass"
+coords = "0_19_48_6_42"
+
+[[spawn]]
+obj = "obj.bronze_axe"
+coords = "0_20_48_17_61"
+
+[[spawn]]
+obj = "obj.bucket_empty"
+coords = "0_20_48_53_47"
+
+[[spawn]]
+obj = "obj.bucket_empty"
+coords = "0_21_47_14_52"
+
+[[spawn]]
+obj = "obj.chocolate_bar"
+coords = "1_21_47_20_32"
+
+[[spawn]]
+obj = "obj.chocolate_bar"
+coords = "1_21_47_33_26"
+
+[[spawn]]
+obj = "obj.chocolate_bar"
+coords = "1_21_47_34_43"
+
+[[spawn]]
+obj = "obj.coins"
+coords = "0_21_48_47_44"
+count = 3
+
+[[spawn]]
+obj = "obj.coins"
+coords = "0_21_48_51_46"
+count = 3
+
+[[spawn]]
+obj = "obj.cup_of_tea"
+coords = "1_21_47_31_26"
+
+[[spawn]]
+obj = "obj.earthrune"
+coords = "0_21_48_41_47"
+count = 4
+
+[[spawn]]
+obj = "obj.earthrune"
+coords = "0_21_48_50_44"
+count = 4
+
+[[spawn]]
+obj = "obj.egg"
+coords = "0_19_49_22_0"
+
+[[spawn]]
+obj = "obj.egg"
+coords = "0_19_49_26_3"
+
+[[spawn]]
+obj = "obj.fishing_bait"
+coords = "0_21_47_31_27"
+
+[[spawn]]
+obj = "obj.mindrune"
+coords = "0_21_48_44_38"
+count = 2
+
+[[spawn]]
+obj = "obj.mindrune"
+coords = "0_21_48_48_46"
+count = 2
+
+[[spawn]]
+obj = "obj.mindrune"
+coords = "0_21_48_55_51"
+count = 2
+
+[[spawn]]
+obj = "obj.orange"
+coords = "0_22_47_11_46"
+
+[[spawn]]
+obj = "obj.orange"
+coords = "0_22_47_14_48"
+
+[[spawn]]
+obj = "obj.orange"
+coords = "0_22_47_9_57"
+
+[[spawn]]
+obj = "obj.plainstaff"
+coords = "0_21_49_55_23"
+
+[[spawn]]
+obj = "obj.sweetcorn_cooked"
+coords = "1_21_47_12_32"
+
+[[spawn]]
+obj = "obj.tinderbox"
+coords = "0_21_47_15_28"
+
+[[spawn]]
+obj = "obj.woodplank"
+coords = "0_19_48_19_2"
+
+[[spawn]]
+obj = "obj.woodplank"
+coords = "0_19_48_22_4"
+
+## Varlamore Snowy Mountains Lower
+
+[[spawn]]
+obj = "obj.bronze_dagger"
+coords = "0_22_51_17_16"
+
+[[spawn]]
+obj = "obj.hammer"
+coords = "0_22_49_12_50"
+
+[[spawn]]
+obj = "obj.knife"
+coords = "0_24_51_51_13"
+
+## Varlamore Snowy Mountains Upper
+
+[[spawn]]
+obj = "obj.bronze_pickaxe"
+coords = "0_23_51_63_26"
+
+[[spawn]]
+obj = "obj.lit_candle"
+coords = "0_22_49_43_57"
+
+[[spawn]]
+obj = "obj.logs"
+coords = "0_23_51_53_25"
+
+[[spawn]]
+obj = "obj.logs"
+coords = "0_23_51_61_29"
+
+[[spawn]]
+obj = "obj.needle"
+coords = "1_22_49_40_59"
+
+[[spawn]]
+obj = "obj.papyrus"
+coords = "0_22_49_44_57"
+
+## Varlamore Temple Crypt
+
+[[spawn]]
+obj = "obj.bucket_empty"
+coords = "0_25_149_21_30"
+
+[[spawn]]
+obj = "obj.bucket_empty"
+coords = "0_25_149_48_41"
+
+## Varlamore Temple Crypt End
+

@@ -1,0 +1,76 @@
+[[spawn]]
+obj = "obj.beer"
+coords = "0_48_53_5_47"
+
+[[spawn]]
+obj = "obj.beer"
+coords = "0_48_53_5_51"
+
+[[spawn]]
+obj = "obj.beer"
+coords = "0_48_53_8_49"
+
+[[spawn]]
+obj = "obj.bronze_pickaxe"
+coords = "0_48_53_9_37"
+
+[[spawn]]
+obj = "obj.bucket_empty"
+coords = "0_41_154_9_52"
+
+[[spawn]]
+obj = "obj.coins"
+coords = "0_50_155_15_9"
+
+[[spawn]]
+obj = "obj.coins"
+coords = "0_50_155_18_20"
+
+[[spawn]]
+obj = "obj.coins"
+coords = "0_50_155_23_21"
+
+[[spawn]]
+obj = "obj.coins"
+coords = "0_50_155_24_8"
+
+[[spawn]]
+obj = "obj.coins"
+coords = "0_50_155_26_19"
+
+[[spawn]]
+obj = "obj.coins"
+coords = "0_50_155_27_16"
+
+[[spawn]]
+obj = "obj.coins"
+coords = "0_50_155_28_18"
+
+[[spawn]]
+obj = "obj.cooked_meat"
+coords = "0_48_53_5_49"
+
+[[spawn]]
+obj = "obj.cooked_meat"
+coords = "0_48_53_8_51"
+
+[[spawn]]
+obj = "obj.ikov_shinykey"
+coords = "0_41_154_4_3"
+
+[[spawn]]
+obj = "obj.ikov_staffofarmardyl"
+coords = "0_41_154_14_50"
+
+[[spawn]]
+obj = "obj.pot_empty"
+coords = "0_48_53_2_39"
+
+[[spawn]]
+obj = "obj.wine_of_zamorak"
+coords = "0_45_54_50_59"
+
+[[spawn]]
+obj = "obj.wine_of_zamorak"
+coords = "1_45_54_58_61"
+

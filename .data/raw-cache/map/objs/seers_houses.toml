@@ -1,0 +1,8 @@
+[[spawn]]
+obj = "obj.garlic"
+coords = "0_42_54_26_22"
+
+[[spawn]]
+obj = "obj.knife"
+coords = "0_42_54_16_19"
+

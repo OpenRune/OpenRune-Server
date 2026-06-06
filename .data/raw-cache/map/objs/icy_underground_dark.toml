@@ -1,0 +1,34 @@
+## Ghorrock Dungeon
+
+[[spawn]]
+obj = "obj.iron_bar"
+coords = "0_45_161_38_23"
+
+[[spawn]]
+obj = "obj.woodplank"
+coords = "0_45_161_35_38"
+
+[[spawn]]
+obj = "obj.woodplank"
+coords = "0_45_161_42_22"
+
+## Weiss Salt Mine
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_44_161_38_34"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_44_161_39_29"
+
+[[spawn]]
+obj = "obj.bucket_empty"
+coords = "0_44_161_33_28"
+
+[[spawn]]
+obj = "obj.iron_pickaxe"
+coords = "0_44_161_27_33"
+
+## Weiss Salt Mine End
+

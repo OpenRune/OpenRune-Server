@@ -1,0 +1,14 @@
+## Zanaris Main
+
+[[spawn]]
+obj = "obj.bucket_empty"
+coords = "0_37_69_29_45"
+
+[[spawn]]
+obj = "obj.chocolate_bar"
+coords = "0_37_69_16_24"
+
+[[spawn]]
+obj = "obj.egg"
+coords = "0_38_69_21_60"
+

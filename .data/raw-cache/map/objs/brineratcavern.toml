@@ -1,0 +1,22 @@
+## Brine Rat Cavern
+
+[[spawn]]
+obj = "obj.olaf2_walkway_repair_barrel_inv"
+coords = "0_42_158_22_45"
+
+[[spawn]]
+obj = "obj.olaf2_walkway_repair_barrel_inv"
+coords = "0_42_158_23_45"
+
+[[spawn]]
+obj = "obj.rope"
+coords = "0_42_158_12_51"
+
+[[spawn]]
+obj = "obj.rope"
+coords = "0_42_158_15_43"
+
+[[spawn]]
+obj = "obj.rope"
+coords = "0_42_158_30_51"
+

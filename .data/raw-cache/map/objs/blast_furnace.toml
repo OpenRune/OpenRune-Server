@@ -1,0 +1,12 @@
+[[spawn]]
+obj = "obj.bucket_empty"
+coords = "0_30_77_23_28"
+
+[[spawn]]
+obj = "obj.hammer"
+coords = "0_30_77_33_46"
+
+[[spawn]]
+obj = "obj.spade"
+coords = "0_30_77_31_36"
+

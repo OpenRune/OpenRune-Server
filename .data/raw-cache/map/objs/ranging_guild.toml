@@ -1,0 +1,80 @@
+[[spawn]]
+obj = "obj.bronze_arrow"
+coords = "0_41_53_54_34"
+
+[[spawn]]
+obj = "obj.bronze_arrow"
+coords = "0_41_53_56_32"
+
+[[spawn]]
+obj = "obj.bronze_arrowheads"
+coords = "0_41_53_48_41"
+
+[[spawn]]
+obj = "obj.digsitearmour1"
+coords = "0_41_53_55_33"
+
+[[spawn]]
+obj = "obj.digsitearrow"
+coords = "0_41_53_33_32"
+
+[[spawn]]
+obj = "obj.digsitearrow"
+coords = "0_41_53_41_32"
+
+[[spawn]]
+obj = "obj.digsitearrow"
+coords = "0_41_53_44_27"
+
+[[spawn]]
+obj = "obj.digsitearrow"
+coords = "0_41_53_46_32"
+
+[[spawn]]
+obj = "obj.digsitearrow"
+coords = "0_41_53_46_45"
+
+[[spawn]]
+obj = "obj.digsitearrow"
+coords = "0_41_53_48_29"
+
+[[spawn]]
+obj = "obj.digsitearrow"
+coords = "0_41_53_49_36"
+
+[[spawn]]
+obj = "obj.digsitearrow"
+coords = "0_41_53_52_39"
+
+[[spawn]]
+obj = "obj.digsitearrow"
+coords = "0_41_53_53_30"
+
+[[spawn]]
+obj = "obj.digsitearrow"
+coords = "0_41_53_53_33"
+
+[[spawn]]
+obj = "obj.digsitearrow"
+coords = "2_41_53_43_33"
+
+[[spawn]]
+obj = "obj.digsitearrow"
+coords = "2_41_53_43_35"
+
+[[spawn]]
+obj = "obj.digsitearrow"
+coords = "2_41_53_45_39"
+
+[[spawn]]
+obj = "obj.longbow"
+coords = "0_41_53_54_35"
+
+[[spawn]]
+obj = "obj.mithril_arrow"
+coords = "0_41_53_57_34"
+
+[[spawn]]
+obj = "obj.oak_shield"
+coords = "0_41_53_32_32"
+

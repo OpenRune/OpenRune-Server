@@ -1,0 +1,64 @@
+[[spawn]]
+obj = "obj.bones"
+coords = "0_41_147_10_46"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_41_147_12_10"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_41_147_13_22"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_41_147_20_52"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_41_147_29_13"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_41_147_35_48"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_41_147_45_20"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_41_147_46_11"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_41_147_46_55"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_41_147_53_23"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_41_147_53_54"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_41_147_55_34"
+
+[[spawn]]
+obj = "obj.bronze_bar"
+coords = "0_41_147_12_55"
+
+[[spawn]]
+obj = "obj.iron_bar"
+coords = "0_41_147_58_55"
+
+[[spawn]]
+obj = "obj.lockpick"
+coords = "0_41_148_7_8"
+
+[[spawn]]
+obj = "obj.steel_bar"
+coords = "0_41_147_6_14"
+
