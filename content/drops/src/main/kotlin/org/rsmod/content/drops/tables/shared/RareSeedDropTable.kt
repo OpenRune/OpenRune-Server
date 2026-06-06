@@ -16,7 +16,7 @@ public val rareSeedDropTable: RSWeightedTable<Player, DropRollItem> = rsWeighted
     81 weight DropRollItem("obj.irit_seed", 1)
     79 weight DropRollItem("obj.belladonna_seed", 1)
     57 weight DropRollItem("obj.avantoe_seed", 1)
-    56 weight DropRollItem("obj.poison_ivy_seed", 1)
+    56 weight DropRollItem("obj.poisonivy_bush_seed", 1)
     53 weight DropRollItem("obj.cactus_seed", 1)
     39 weight DropRollItem("obj.potato_cactus_seed", 1)
     38 weight DropRollItem("obj.kwuarm_seed", 1)

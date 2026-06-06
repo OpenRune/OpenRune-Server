@@ -28,7 +28,7 @@ public val rareDropTable: RSWeightedTable<Player, DropRollItem> = rsWeightedTabl
     2 weight DropRollItem("obj.keyhalf2", 1)
     2 weight DropRollItem("obj.keyhalf1", 1)
     2 weight DropRollItem("obj.dragonstone", 1)
-    2 weight DropRollItem("obj.silver_ore_noted", 100)
+    2 weight DropRollItem("obj.cert_silver_ore", 100)
     1 weight DropRollItem("obj.dragon_med_helm", 1)
     1 weight DropRollItem("obj.rune_kiteshield", 1)
 }
