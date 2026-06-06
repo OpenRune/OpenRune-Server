@@ -1,0 +1,35 @@
+id = "Monk of Zamorak Drops"
+npcs = ["npc.chaosmonk1", "npc.chaosmonk2", "npc.chaosmonk3", "npc.priestperilevilmonk1", "npc.priestperilevilmonk2", "npc.priestperilevilmonk3", "npc.chaos_temple_monk1", "npc.chaos_temple_monk2", "npc.chaos_temple_monk_wilderness"]
+
+[main]
+total = 20
+name = "Monk of Zamorak Drops"
+
+[[main.entries]]
+weight = 1
+obj = "obj.zamrobebottom"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.zamrobetop"
+count = 1
+
+[[main.entries]]
+weight = 18
+nothing = true
+
+[[tertiary]]
+numerator = 1
+denominator = 1
+obj = "obj.pipkey_gold"
+count = 1
+quest = "quest_priestinperil"
+quest_mode = "during"
+
+[[tertiary]]
+numerator = 1
+denominator = 6
+obj = "obj.looting_bag"
+count = 1
+should_drop_looting_bag = true

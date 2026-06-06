@@ -1,0 +1,197 @@
+id = "Skeletal Wyvern Drops"
+npcs = ["npc.skeletal_wyvern1", "npc.skeletal_wyvern2", "npc.skeletal_wyvern3", "npc.skeletal_wyvern4"]
+brimstone_key_roll = true
+brimstone_key_roll_konar_bonus = true
+
+[[pre_roll]]
+numerator = 1
+denominator = 512
+obj = "obj.granite_legs"
+count = 1
+
+[[pre_roll]]
+numerator = 1
+denominator = 512
+obj = "obj.dragon_platelegs"
+count = 1
+
+[[pre_roll]]
+numerator = 1
+denominator = 512
+obj = "obj.dragon_plateskirt"
+count = 1
+
+[main]
+total = 128
+name = "Skeletal Wyvern Drops"
+
+[[main.entries]]
+weight = 4
+obj = "obj.earth_battlestaff"
+count = 1
+
+[[main.entries]]
+weight = 3
+obj = "obj.cert_battlestaff"
+count = 10
+
+[[main.entries]]
+weight = 3
+obj = "obj.rune_axe"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.rune_battleaxe"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.rune_warhammer"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.rune_full_helm"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.rune_kiteshield"
+count = 1
+
+[[main.entries]]
+weight = 6
+obj = "obj.airrune"
+count = 225
+
+[[main.entries]]
+weight = 5
+obj = "obj.rune_arrow"
+count = 36
+
+[[main.entries]]
+weight = 4
+obj = "obj.waterrune"
+count = 150
+
+[[main.entries]]
+weight = 4
+obj = "obj.chaosrune"
+count = 80
+
+[[main.entries]]
+weight = 4
+obj = "obj.lawrune"
+count = 45
+
+[[main.entries]]
+weight = 4
+obj = "obj.deathrune"
+count = 40
+
+[[main.entries]]
+weight = 4
+obj = "obj.bloodrune"
+count = 25
+
+[[main.entries]]
+weight = 3
+obj = "obj.xbows_crossbow_bolts_adamantite"
+count = "75..99"
+
+[[main.entries]]
+weight = 3
+obj = "obj.xbows_crossbow_bolts_runite"
+count = "35..44"
+
+[[main.entries]]
+weight = 1
+obj = "obj.soulrune"
+count = 20
+
+[[main.entries]]
+weight = 8
+obj = "obj.cert_blankrune_high"
+count = 250
+
+[[main.entries]]
+weight = 6
+obj = "obj.cert_magic_logs"
+count = 35
+
+[[main.entries]]
+weight = 6
+obj = "obj.cert_adamantite_bar"
+count = 10
+
+[[main.entries]]
+weight = 3
+obj = "obj.cert_iron_ore"
+count = 200
+
+[[main.entries]]
+weight = 2
+obj = "obj.cert_uncut_ruby"
+count = 10
+
+[[main.entries]]
+weight = 2
+obj = "obj.cert_uncut_diamond"
+count = 5
+
+[[main.entries]]
+weight = 12
+obj = "obj.coins"
+count = 300
+
+[[main.entries]]
+weight = 8
+obj = "obj.lobster"
+count = 6
+
+[[main.entries]]
+weight = 7
+obj = "obj.4doseprayerrestore"
+count = 2
+
+[[main.entries]]
+weight = 2
+obj = "obj.cert_stafforb"
+count = 75
+
+[[main.entries]]
+weight = 2
+obj = "obj.xbows_crossbow_unstrung_runite"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.ranarr_seed"
+count = 3
+
+[[main.entries]]
+weight = 2
+obj = "obj.snapdragon_seed"
+count = 1
+
+[[main.entries]]
+weight = 7
+shared = "herb"
+
+[[main.entries]]
+weight = 3
+shared = "rareDrop"
+
+[[tertiary]]
+numerator = 1
+denominator = 10000
+obj = "obj.dragonfire_visage"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 332
+obj = "obj.trail_elite_emote_exp1"
+count = 1
+clue_scroll_box = true

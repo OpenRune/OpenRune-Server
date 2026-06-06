@@ -1,0 +1,200 @@
+id = "Lava dragon Drops"
+npcs = ["npc.lava_dragon"]
+
+[[guaranteed]]
+obj = "obj.dragonhide_black"
+count = 1
+
+[[guaranteed]]
+obj = "obj.lava_scale"
+count = 1
+
+[main]
+total = 135
+name = "Lava dragon Drops"
+
+[[main.entries]]
+weight = 6
+obj = "obj.rune_dart"
+count = 12
+
+[[main.entries]]
+weight = 4
+obj = "obj.rune_knife"
+count = 8
+
+[[main.entries]]
+weight = 3
+obj = "obj.lava_battlestaff"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.adamant_2h_sword"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.adamant_platebody"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.rune_axe"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.rune_kiteshield"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.rune_longsword"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.rune_med_helm"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.rune_full_helm"
+count = 1
+
+[[main.entries]]
+weight = 10
+obj = "obj.rune_javelin"
+count = 20
+
+[[main.entries]]
+weight = 7
+obj = "obj.firerune"
+count = 75
+
+[[main.entries]]
+weight = 7
+obj = "obj.bloodrune"
+count = 20
+
+[[main.entries]]
+weight = 6
+obj = "obj.xbows_crossbow_bolts_runite"
+count = 30
+
+[[main.entries]]
+weight = 5
+obj = "obj.deathrune"
+count = 20
+
+[[main.entries]]
+weight = 5
+obj = "obj.lawrune"
+count = 20
+
+[[main.entries]]
+weight = 4
+obj = "obj.lavarune"
+count = 15
+
+[[main.entries]]
+weight = 4
+obj = "obj.lavarune"
+count = 30
+
+[[main.entries]]
+weight = 15
+obj = "obj.coins"
+count = 66
+
+[[main.entries]]
+weight = 7
+obj = "obj.coins"
+count = 2960
+quest = "quest_monkeymadness2"
+quest_mode = "not_completed"
+
+[[main.entries]]
+weight = 1
+obj = "obj.coins"
+count = 690
+
+[[main.entries]]
+weight = 1
+obj = "obj.fire_talisman"
+count = 1
+
+[[main.entries]]
+weight = 5
+obj = "obj.cert_fire_orb"
+count = 15
+
+[[main.entries]]
+weight = 3
+obj = "obj.chocolate_cake"
+count = 3
+
+[[main.entries]]
+weight = 5
+obj = "obj.adamantite_bar"
+count = 2
+
+[[main.entries]]
+weight = 5
+obj = "obj.xbows_bolt_tips_onyx"
+count = 12
+
+[[main.entries]]
+weight = 7
+obj = "obj.dragon_javelin_head"
+count = 15
+quest = "quest_monkeymadness2"
+quest_mode = "completed"
+
+[[main.entries]]
+weight = 5
+shared = "herb"
+
+[[main.entries]]
+weight = 3
+shared = "rareDrop"
+
+[[main.entries]]
+weight = 5
+shared = "gem"
+
+[[tertiary]]
+numerator = 1
+denominator = 3
+obj = "obj.looting_bag"
+count = 1
+should_drop_looting_bag = true
+
+[[tertiary]]
+numerator = 1
+denominator = 18
+obj = "obj.arceuus_corpse_dragon"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 10000
+obj = "obj.dragonfire_visage"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 237
+obj = "obj.trail_elite_emote_exp1"
+count = 1
+clue_scroll_box = true
+exclude_ring_of_wealth = true
+
+[[tertiary]]
+numerator = 1
+denominator = 125
+obj = "obj.trail_elite_emote_exp1"
+count = 1
+clue_scroll_box = true
+require_ring_of_wealth = true

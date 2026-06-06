@@ -1,0 +1,128 @@
+id = "Killerwatt Drops"
+npcs = ["npc.slayer_killerwatt", "npc.slayer_killerwatt_ball"]
+
+[main]
+total = 158
+name = "Killerwatt Drops"
+
+[[main.entries]]
+weight = 2
+obj = "obj.staff_of_fire"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.staff_of_air"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.fire_battlestaff"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.air_battlestaff"
+count = 1
+
+[[main.entries]]
+weight = 3
+obj = "obj.airrune"
+count = 5
+
+[[main.entries]]
+weight = 2
+obj = "obj.airrune"
+count = 17
+
+[[main.entries]]
+weight = 5
+obj = "obj.firerune"
+count = 18
+
+[[main.entries]]
+weight = 8
+obj = "obj.firerune"
+count = 45
+
+[[main.entries]]
+weight = 11
+obj = "obj.naturerune"
+count = 8
+
+[[main.entries]]
+weight = 1
+obj = "obj.naturerune"
+count = 37
+
+[[main.entries]]
+weight = 9
+obj = "obj.chaosrune"
+count = 4
+
+[[main.entries]]
+weight = 3
+obj = "obj.deathrune"
+count = 2
+
+[[main.entries]]
+weight = 2
+obj = "obj.steamrune"
+count = 2
+
+[[main.entries]]
+weight = 2
+obj = "obj.mcannonball"
+count = 3
+
+[[main.entries]]
+weight = 23
+obj = "obj.coins"
+count = 11
+
+[[main.entries]]
+weight = 28
+obj = "obj.coins"
+count = 44
+
+[[main.entries]]
+weight = 1
+obj = "obj.coins"
+count = 76
+
+[[main.entries]]
+weight = 1
+obj = "obj.coins"
+count = 127
+
+[[main.entries]]
+weight = 11
+obj = "obj.coins"
+count = 200
+
+[[main.entries]]
+weight = 1
+obj = "obj.fire_orb"
+count = 2
+
+[[main.entries]]
+weight = 1
+obj = "obj.soda_ash"
+count = 4
+
+[[main.entries]]
+weight = 35
+shared = "herb"
+
+[[main.entries]]
+weight = 5
+shared = "gem"
+
+[[main.separate_rolls]]
+numerator = 1
+denominator = 512
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.mystic_fire_staff"
+count = 1

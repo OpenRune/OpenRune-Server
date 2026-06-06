@@ -1,0 +1,54 @@
+id = "Elite Dark Warrior Drops"
+npcs = ["npc.elite_dark_warrior_1", "npc.elite_dark_warrior_2"]
+
+[main]
+total = 117
+name = "Elite Dark Warrior Drops"
+
+[[main.entries]]
+weight = 16
+obj = "obj.lobster"
+count = "1..2"
+
+[[main.entries]]
+weight = 16
+obj = "obj.1doseprayerrestore"
+count = 1
+
+[[main.entries]]
+weight = 16
+obj = "obj.1dose2attack"
+count = 1
+
+[[main.entries]]
+weight = 16
+obj = "obj.1dose2strength"
+count = 1
+
+[[main.entries]]
+weight = 7
+obj = "obj.meat_pie"
+count = 1
+
+[[main.entries]]
+weight = 15
+obj = "obj.coins"
+count = "22..100"
+
+[[main.entries]]
+weight = 15
+obj = "obj.coins"
+count = "153..250"
+
+[[main.entries]]
+weight = 15
+obj = "obj.coins"
+count = "677..1000"
+
+[[main.entries]]
+weight = 1
+obj = "obj.diamond_ring"
+count = 1
+
+
+# Unknown wiki drop rate: Clue scroll (hard) [tertiary/Tertiary/Rare]

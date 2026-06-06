@@ -1,0 +1,134 @@
+id = "Spiritual warrior Drops"
+npcs = ["npc.godwars_spiritual_saradomin_warrior", "npc.godwars_spiritual_bandos_warrior", "npc.godwars_spiritual_zamorak_warrior", "npc.godwars_spiritual_armadyl_warrior", "npc.nex_prison_warrior"]
+
+[main]
+total = 127
+name = "Spiritual warrior Drops"
+
+[[main.entries]]
+weight = 3
+obj = "obj.iron_sword"
+count = 1
+
+[[main.entries]]
+weight = 8
+obj = "obj.iron_scimitar"
+count = 1
+
+[[main.entries]]
+weight = 15
+obj = "obj.steel_longsword"
+count = 1
+
+[[main.entries]]
+weight = 7
+obj = "obj.steel_sword"
+count = 1
+
+[[main.entries]]
+weight = 5
+obj = "obj.black_warhammer"
+count = 1
+
+[[main.entries]]
+weight = 7
+obj = "obj.mithril_mace"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.black_dagger"
+count = 1
+
+[[main.entries]]
+weight = 9
+obj = "obj.mithril_spear_p"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.adamant_battleaxe"
+count = 1
+
+[[main.entries]]
+weight = 8
+obj = "obj.mithril_axe"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.adamant_2h_sword"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.rune_longsword"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.rune_halberd"
+count = 1
+
+[[main.entries]]
+weight = 9
+obj = "obj.leather_gloves"
+count = 1
+
+[[main.entries]]
+weight = 11
+obj = "obj.mithril_platelegs"
+count = 1
+
+[[main.entries]]
+weight = 18
+obj = "obj.steel_chainbody"
+count = 1
+
+[[main.entries]]
+weight = 8
+obj = "obj.adamant_full_helm"
+count = 1
+
+[[main.entries]]
+weight = 3
+obj = "obj.black_kiteshield"
+count = 1
+
+[[main.entries]]
+weight = 4
+obj = "obj.iron_plateskirt"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.rune_kiteshield"
+count = 1
+
+[[main.entries]]
+weight = 4
+shared = "gem"
+
+[[tertiary]]
+numerator = 1
+denominator = 3
+obj = "obj.looting_bag"
+count = 1
+should_drop_looting_bag = true
+
+[[tertiary]]
+numerator = 1
+denominator = 121
+obj = "obj.trail_clue_hard_map001"
+count = 1
+clue_scroll_box = true
+exclude_ring_of_wealth = true
+
+[[tertiary]]
+numerator = 1
+denominator = 64
+obj = "obj.trail_clue_hard_map001"
+count = 1
+clue_scroll_box = true
+require_ring_of_wealth = true
+require_wilderness = true

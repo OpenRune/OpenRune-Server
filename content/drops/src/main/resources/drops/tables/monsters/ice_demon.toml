@@ -1,0 +1,14 @@
+id = "Ice demon Drops"
+npcs = ["npc.raids_icedemon_noncombat", "npc.raids_icedemon_combat"]
+
+[[guaranteed]]
+obj = "obj.raids_stinkhorn_mushroom"
+count = 7
+
+[[guaranteed]]
+obj = "obj.raids_endarkened_juice"
+count = 7
+
+[[guaranteed]]
+obj = "obj.raids_cicely"
+count = 5

@@ -1,0 +1,90 @@
+id = "Salarin the twisted Drops"
+npcs = ["npc.salarin_the_twisted"]
+
+[main]
+total = 128
+name = "Salarin the twisted Drops"
+
+[[main.entries]]
+weight = 1
+obj = "obj.black_dagger"
+count = 1
+
+[[main.entries]]
+weight = 5
+obj = "obj.waterrune"
+count = 12
+
+[[main.entries]]
+weight = 4
+obj = "obj.lawrune"
+count = 2
+
+[[main.entries]]
+weight = 1
+obj = "obj.naturerune"
+count = 3
+
+[[main.entries]]
+weight = 1
+obj = "obj.firerune"
+count = 36
+
+[[main.entries]]
+weight = 5
+obj = "obj.white_berries"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.snape_grass"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.vial_water"
+count = 1
+
+[[main.entries]]
+weight = 5
+obj = "obj.coins"
+count = 3
+
+[[main.entries]]
+weight = 3
+obj = "obj.coins"
+count = 24
+
+[[main.entries]]
+weight = 3
+obj = "obj.coins"
+count = 10
+
+[[main.entries]]
+weight = 37
+nothing = true
+
+[[main.entries]]
+weight = 11
+obj = "obj.1dose2defense"
+count = 1
+
+[[main.entries]]
+weight = 10
+obj = "obj.sinister_key"
+count = 1
+
+[[main.entries]]
+weight = 39
+shared = "herb"
+
+[[main.entries]]
+weight = 1
+shared = "gem"
+
+[[tertiary]]
+numerator = 1
+denominator = 475
+obj = "obj.trail_elite_emote_exp1"
+count = 1
+clue_scroll_box = true

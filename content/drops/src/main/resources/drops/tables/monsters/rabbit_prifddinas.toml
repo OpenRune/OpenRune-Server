@@ -1,0 +1,14 @@
+id = "Rabbit (Prifddinas) Drops"
+npcs = ["npc.caerbannog"]
+
+[[guaranteed]]
+obj = "obj.prif_crystal_grail"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 4
+obj = "obj.rag_rabbit_bone"
+count = 1
+quest = "quest_ragandboneman2"
+quest_mode = "during"

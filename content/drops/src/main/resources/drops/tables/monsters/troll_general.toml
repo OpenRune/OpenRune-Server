@@ -1,0 +1,147 @@
+id = "Troll general Drops"
+npcs = ["npc.troll_general", "npc.troll_general2", "npc.troll_general3"]
+brimstone_key_roll = true
+
+[[guaranteed]]
+obj = "obj.troll_key_prison"
+count = 1
+quest = "quest_trollstrongholdquest"
+quest_mode = "during"
+
+[main]
+total = 128
+name = "Troll general Drops"
+
+[[main.entries]]
+weight = 4
+obj = "obj.steel_platebody"
+count = 1
+
+[[main.entries]]
+weight = 3
+obj = "obj.black_warhammer"
+count = 1
+
+[[main.entries]]
+weight = 3
+obj = "obj.steel_warhammer"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.adamant_axe"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.adamant_sq_shield"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.granite_shield"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.mithril_platebody"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.rune_warhammer"
+count = 1
+
+[[main.entries]]
+weight = 8
+obj = "obj.earthrune"
+count = 80
+
+[[main.entries]]
+weight = 5
+obj = "obj.naturerune"
+count = 16
+
+[[main.entries]]
+weight = 3
+obj = "obj.lawrune"
+count = 4
+
+[[main.entries]]
+weight = 1
+obj = "obj.earthrune"
+count = 65
+
+[[main.entries]]
+weight = 1
+obj = "obj.earthrune"
+count = 25
+
+[[main.entries]]
+weight = 29
+obj = "obj.coins"
+count = 40
+
+[[main.entries]]
+weight = 25
+obj = "obj.coins"
+count = 135
+
+[[main.entries]]
+weight = 10
+obj = "obj.coins"
+count = 190
+
+[[main.entries]]
+weight = 4
+obj = "obj.coins"
+count = 20
+
+[[main.entries]]
+weight = 1
+obj = "obj.coins"
+count = 420
+
+[[main.entries]]
+weight = 3
+obj = "obj.cert_coal"
+count = 6
+
+[[main.entries]]
+weight = 2
+obj = "obj.cert_raw_tuna"
+count = 4
+
+[[main.entries]]
+weight = 15
+shared = "herb"
+
+[[main.entries]]
+weight = 5
+shared = "gem"
+
+[[tertiary]]
+numerator = 1
+denominator = 4
+obj = "obj.rag_troll_bone"
+count = 1
+quest = "quest_ragandboneman2"
+quest_mode = "during"
+
+[[tertiary]]
+numerator = 1
+denominator = 28
+obj = "obj.arceuus_corpse_troll"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 400
+obj = "obj.dorgesh_construction_bone"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 5013
+obj = "obj.dorgesh_construction_bone_curved"
+count = 1

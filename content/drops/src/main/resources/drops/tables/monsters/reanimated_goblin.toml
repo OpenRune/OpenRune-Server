@@ -1,0 +1,16 @@
+id = "Reanimated goblin Drops"
+npcs = ["npc.arceuus_reanimated_goblin"]
+
+[[tertiary]]
+numerator = 1
+denominator = 5000
+obj = "obj.champions_challenge_goblin"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 4
+obj = "obj.rag_goblin_bone"
+count = 1
+quest = "quest_ragandboneman1"
+quest_mode = "during"

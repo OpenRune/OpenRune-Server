@@ -1,0 +1,14 @@
+id = "Yak Drops"
+npcs = ["npc.yak"]
+
+[[guaranteed]]
+obj = "obj.yak_hide"
+count = 1
+
+[[guaranteed]]
+obj = "obj.yak_hair"
+count = 1
+
+[[guaranteed]]
+obj = "obj.yak_meat_raw"
+count = 1

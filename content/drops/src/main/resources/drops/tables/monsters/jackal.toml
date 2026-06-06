@@ -1,0 +1,10 @@
+id = "Jackal Drops"
+npcs = ["npc.ics_little_jackal", "npc.ics_little_jackal_alt"]
+
+[[tertiary]]
+numerator = 1
+denominator = 4
+obj = "obj.rag_jackal_bone"
+count = 1
+quest = "quest_ragandboneman2"
+quest_mode = "during"

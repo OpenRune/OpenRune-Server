@@ -1,0 +1,6 @@
+id = "Oomlie bird Drops"
+npcs = ["npc.oomlie_bird"]
+
+[[guaranteed]]
+obj = "obj.raw_oomlie"
+count = 1

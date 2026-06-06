@@ -1,0 +1,16 @@
+id = "Ghoul Drops"
+npcs = ["npc.ghoul"]
+
+[[tertiary]]
+numerator = 1
+denominator = 4
+obj = "obj.rag_ghoul_bone"
+count = 1
+quest = "quest_ragandboneman2"
+quest_mode = "during"
+
+[[tertiary]]
+numerator = 1
+denominator = 5000
+obj = "obj.champions_challenge_ghoul"
+count = 1

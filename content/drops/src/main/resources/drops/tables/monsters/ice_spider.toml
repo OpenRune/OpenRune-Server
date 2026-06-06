@@ -1,0 +1,25 @@
+id = "Ice spider Drops"
+npcs = ["npc.ice_spider", "npc.ice_spider_shortrange", "npc.tapo_ice_spider_shortrange"]
+
+[[tertiary]]
+numerator = 1
+denominator = 3
+obj = "obj.looting_bag"
+count = 1
+should_drop_looting_bag = true
+
+[[tertiary]]
+numerator = 1
+denominator = 964
+obj = "obj.varlamore_key_half_1"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 128
+obj = "obj.trail_clue_beginner"
+count = 1
+clue_scroll_box = true
+
+
+# Unknown wiki drop rate: Frozen tear [tertiary/Tertiary/<ref name=row group=d>Only dropped in Ruins of Tapoyauik.</ref>]

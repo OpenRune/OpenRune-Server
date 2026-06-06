@@ -1,0 +1,238 @@
+id = "Bloodthirsty Shadow Wyrm Drops"
+npcs = ["npc.league_superior_wyrm_dark", "npc.league_superior_wyrm_light"]
+brimstone_key_roll = true
+brimstone_key_roll_konar_bonus = true
+
+[[pre_roll]]
+numerator = 1
+denominator = 2000
+obj = "obj.dragon_shortsword"
+count = 1
+
+[[pre_roll]]
+numerator = 1
+denominator = 2000
+obj = "obj.dragon_harpoon"
+count = 1
+
+[[pre_roll]]
+numerator = 1
+denominator = 2000
+obj = "obj.dragon_knife"
+count = "75..150"
+
+[[pre_roll]]
+numerator = 1
+denominator = 2000
+obj = "obj.dragon_thrownaxe"
+count = "75..150"
+
+[main]
+total = 76
+name = "Bloodthirsty Shadow Wyrm Drops"
+
+[[main.entries]]
+weight = 2
+obj = "obj.adamant_axe"
+count = 1
+
+[[main.entries]]
+weight = 3
+obj = "obj.red_dragonhide_chaps"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.adamant_sq_shield"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.adamant_battleaxe"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.adamant_2h_sword"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.earth_battlestaff"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.rune_med_helm"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.rune_battleaxe"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.dragon_dagger"
+count = 1
+
+[[main.entries]]
+weight = 10
+obj = "obj.firerune"
+count = 200
+
+[[main.entries]]
+weight = 10
+obj = "obj.earthrune"
+count = "75..150"
+
+[[main.entries]]
+weight = 5
+obj = "obj.soulrune"
+count = "15..20"
+
+[[main.entries]]
+weight = 5
+obj = "obj.bloodrune"
+count = "25..30"
+
+[[main.entries]]
+weight = 8
+obj = "obj.coins"
+count = "950..1450"
+
+[[main.entries]]
+weight = 7
+obj = "obj.bass"
+count = 1
+
+[[main.entries]]
+weight = 3
+obj = "obj.cert_blankrune_high"
+count = "200..300"
+
+[[main.entries]]
+weight = 2
+obj = "obj.rune_arrowheads"
+count = "8..12"
+
+[[main.entries]]
+weight = 2
+obj = "obj.adamant_arrowheads"
+count = "8..12"
+
+[[main.entries]]
+weight = 4
+shared = "herb"
+
+[[main.entries]]
+weight = 1
+shared = "gem"
+
+[[main.entries]]
+weight = 3
+shared = "rareSeed"
+
+[[main.separate_rolls]]
+numerator = 5
+denominator = 255
+
+[[main.separate_rolls.entries]]
+weight = 5
+obj = "obj.cert_raw_lobster"
+count = "60..80"
+
+[[main.separate_rolls.entries]]
+weight = 5
+obj = "obj.cert_unicorn_horn"
+count = "60..150"
+
+[[main.separate_rolls]]
+numerator = 10
+denominator = 255
+
+[[main.separate_rolls.entries]]
+weight = 10
+obj = "obj.cert_snape_grass"
+count = "60..150"
+
+[[main.separate_rolls.entries]]
+weight = 10
+obj = "obj.irit_seed"
+count = "10..15"
+
+[[main.separate_rolls.entries]]
+weight = 10
+obj = "obj.cert_limpwurt_root"
+count = "60..150"
+
+[[main.separate_rolls]]
+numerator = 15
+denominator = 255
+
+[[main.separate_rolls.entries]]
+weight = 15
+obj = "obj.cert_yew_logs"
+count = "70..90"
+
+[[main.separate_rolls.entries]]
+weight = 15
+obj = "obj.cert_raw_monkfish"
+count = "60..80"
+
+[[main.separate_rolls]]
+numerator = 20
+denominator = 255
+
+[[main.separate_rolls.entries]]
+weight = 20
+obj = "obj.cert_white_berries"
+count = "60..150"
+
+[[main.separate_rolls.entries]]
+weight = 20
+obj = "obj.cert_raw_shark"
+count = "60..80"
+
+[[main.separate_rolls]]
+numerator = 30
+denominator = 255
+
+[[main.separate_rolls.entries]]
+weight = 30
+obj = "obj.kwuarm_seed"
+count = "8..15"
+
+[[main.separate_rolls.entries]]
+weight = 30
+obj = "obj.ranarr_seed"
+count = "8..15"
+
+[[main.separate_rolls]]
+numerator = 25
+denominator = 255
+
+[[main.separate_rolls.entries]]
+weight = 25
+obj = "obj.cert_blue_dragon_scale"
+count = "20..40"
+
+[[main.separate_rolls.entries]]
+weight = 25
+obj = "obj.cert_red_spiders_eggs"
+count = "40..60"
+
+[[main.separate_rolls]]
+numerator = 35
+denominator = 255
+
+[[main.separate_rolls.entries]]
+weight = 35
+obj = "obj.cert_magic_logs"
+count = "30..50"
+
+[[tertiary]]
+numerator = 1
+denominator = 1
+obj = "obj.trail_clue_hard_map001"
+count = 1

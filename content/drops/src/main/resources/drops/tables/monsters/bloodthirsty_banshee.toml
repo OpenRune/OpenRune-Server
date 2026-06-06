@@ -1,0 +1,142 @@
+id = "Bloodthirsty banshee Drops"
+npcs = ["npc.league_superior_banshee"]
+
+[main]
+total = 128
+name = "Bloodthirsty banshee Drops"
+
+[[main.entries]]
+weight = 2
+obj = "obj.iron_mace"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.iron_dagger"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.iron_kiteshield"
+count = 1
+
+[[main.entries]]
+weight = 3
+obj = "obj.airrune"
+count = 3
+
+[[main.entries]]
+weight = 3
+obj = "obj.cosmicrune"
+count = 2
+
+[[main.entries]]
+weight = 2
+obj = "obj.chaosrune"
+count = 3
+
+[[main.entries]]
+weight = 1
+obj = "obj.firerune"
+count = 7
+
+[[main.entries]]
+weight = 1
+obj = "obj.chaosrune"
+count = 7
+
+[[main.entries]]
+weight = 10
+obj = "obj.coins"
+count = 13
+
+[[main.entries]]
+weight = 8
+obj = "obj.coins"
+count = 26
+
+[[main.entries]]
+weight = 8
+obj = "obj.coins"
+count = 35
+
+[[main.entries]]
+weight = 22
+obj = "obj.cert_blankrune_high"
+count = 13
+
+[[main.entries]]
+weight = 22
+obj = "obj.fishing_bait"
+count = 15
+
+[[main.entries]]
+weight = 5
+obj = "obj.fishing_bait"
+count = 7
+
+[[main.entries]]
+weight = 1
+obj = "obj.eye_of_newt"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.iron_ore"
+count = 1
+
+[[main.entries]]
+weight = 34
+shared = "herb"
+
+[[main.entries]]
+weight = 2
+shared = "gem"
+
+[[main.separate_rolls]]
+numerator = 5
+denominator = 40
+
+[[main.separate_rolls.entries]]
+weight = 5
+obj = "obj.cert_raw_lobster"
+count = "60..80"
+
+[[main.separate_rolls.entries]]
+weight = 5
+obj = "obj.cert_unicorn_horn"
+count = "60..150"
+
+[[main.separate_rolls]]
+numerator = 10
+denominator = 40
+
+[[main.separate_rolls.entries]]
+weight = 10
+obj = "obj.cert_snape_grass"
+count = "60..150"
+
+[[main.separate_rolls.entries]]
+weight = 10
+obj = "obj.irit_seed"
+count = "10..15"
+
+[[main.separate_rolls.entries]]
+weight = 10
+obj = "obj.cert_limpwurt_root"
+count = "60..150"
+
+[[main.separate_rolls]]
+numerator = 1
+denominator = 512
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.mystic_gloves_dark"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 1
+obj = "obj.trail_clue_easy_simple001"
+count = 1

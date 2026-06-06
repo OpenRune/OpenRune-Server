@@ -1,0 +1,109 @@
+id = "Sourhog Drops"
+npcs = ["npc.sourhog"]
+
+[main]
+total = 110
+name = "Sourhog Drops"
+
+[[main.entries]]
+weight = 2
+obj = "obj.adamant_scimitar"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.adamant_kiteshield"
+count = 1
+
+[[main.entries]]
+weight = 6
+obj = "obj.mindrune"
+count = "3..10"
+
+[[main.entries]]
+weight = 6
+obj = "obj.airrune"
+count = "5..15"
+
+[[main.entries]]
+weight = 6
+obj = "obj.earthrune"
+count = "5..15"
+
+[[main.entries]]
+weight = 4
+obj = "obj.naturerune"
+count = "1..5"
+
+[[main.entries]]
+weight = 5
+obj = "obj.chaosrune"
+count = "1..5"
+
+[[main.entries]]
+weight = 5
+obj = "obj.steel_arrow"
+count = "3..7"
+
+[[main.entries]]
+weight = 15
+obj = "obj.coins"
+count = "5..30"
+
+[[main.entries]]
+weight = 5
+obj = "obj.limpwurt_root"
+count = 1
+
+[[main.entries]]
+weight = 5
+obj = "obj.cabbage"
+count = 1
+
+[[main.entries]]
+weight = 5
+obj = "obj.potato"
+count = 1
+
+[[main.entries]]
+weight = 5
+obj = "obj.cooking_apple"
+count = 1
+
+[[main.entries]]
+weight = 10
+shared = "herb"
+
+[[main.entries]]
+weight = 1
+shared = "rareDrop"
+
+[[main.entries]]
+weight = 5
+shared = "gem"
+
+[[main.entries]]
+weight = 24
+nothing = true
+
+[[tertiary]]
+numerator = 1
+denominator = 400
+obj = "obj.dorgesh_construction_bone"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 5013
+obj = "obj.dorgesh_construction_bone_curved"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 121
+obj = "obj.trail_clue_easy_simple001"
+count = 1
+clue_scroll_box = true
+
+
+# Main table pool padding uses a nothing roll (F2P drops removed and/or subtable access missing from wiki parse) (24 weight)

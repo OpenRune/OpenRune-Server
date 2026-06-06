@@ -1,0 +1,88 @@
+id = "Earth warrior Drops"
+npcs = ["npc.earthwarrior"]
+
+[main]
+total = 128
+name = "Earth warrior Drops"
+
+[[main.entries]]
+weight = 3
+obj = "obj.steel_spear"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.staff_of_earth"
+count = 1
+
+[[main.entries]]
+weight = 13
+obj = "obj.earthrune"
+count = 12
+
+[[main.entries]]
+weight = 9
+obj = "obj.naturerune"
+count = 3
+
+[[main.entries]]
+weight = 7
+obj = "obj.chaosrune"
+count = 3
+
+[[main.entries]]
+weight = 6
+obj = "obj.lawrune"
+count = 2
+
+[[main.entries]]
+weight = 4
+obj = "obj.deathrune"
+count = 2
+
+[[main.entries]]
+weight = 3
+obj = "obj.earthrune"
+count = 60
+
+[[main.entries]]
+weight = 1
+obj = "obj.bloodrune"
+count = 2
+
+[[main.entries]]
+weight = 18
+obj = "obj.coins"
+count = 12
+
+[[main.entries]]
+weight = 28
+nothing = true
+
+[[main.entries]]
+weight = 14
+shared = "herb"
+
+[[main.entries]]
+weight = 2
+shared = "gem"
+
+[[main.entries]]
+weight = 18
+nothing = true
+
+[[tertiary]]
+numerator = 1
+denominator = 3
+obj = "obj.looting_bag"
+count = 1
+should_drop_looting_bag = true
+
+[[tertiary]]
+numerator = 1
+denominator = 5000
+obj = "obj.champions_challenge_earthwarrior"
+count = 1
+
+
+# Main table pool padding uses a nothing roll (F2P drops removed and/or subtable access missing from wiki parse) (18 weight)

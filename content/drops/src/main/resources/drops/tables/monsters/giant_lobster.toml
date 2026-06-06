@@ -1,0 +1,125 @@
+id = "Giant lobster Drops"
+npcs = ["npc.slug2_giant_lobster_peaceful", "npc.slug2_giant_lobster"]
+
+[main]
+total = 128
+name = "Giant lobster Drops"
+
+[[main.entries]]
+weight = 6
+obj = "obj.bronze_pickaxe"
+count = 1
+
+[[main.entries]]
+weight = 5
+obj = "obj.iron_pickaxe"
+count = 1
+
+[[main.entries]]
+weight = 4
+obj = "obj.seaweed"
+count = 1
+
+[[main.entries]]
+weight = 4
+obj = "obj.seaweed"
+count = 2
+
+[[main.entries]]
+weight = 2
+obj = "obj.seaweed"
+count = 5
+
+[[main.entries]]
+weight = 2
+obj = "obj.edible_seaweed"
+count = 2
+
+[[main.entries]]
+weight = 4
+obj = "obj.tin_ore"
+count = 3
+
+[[main.entries]]
+weight = 2
+obj = "obj.iron_ore"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.coal"
+count = 2
+
+[[main.entries]]
+weight = 2
+obj = "obj.copper_ore"
+count = 3
+
+[[main.entries]]
+weight = 12
+obj = "obj.oystershell"
+count = 2
+
+[[main.entries]]
+weight = 9
+obj = "obj.oystershell"
+count = 1
+
+[[main.entries]]
+weight = 3
+obj = "obj.oysterempty"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.oysterempty"
+count = 3
+
+[[main.entries]]
+weight = 1
+obj = "obj.smalloysterpearls"
+count = 1
+
+[[main.entries]]
+weight = 29
+obj = "obj.coins"
+count = 4
+
+[[main.entries]]
+weight = 6
+obj = "obj.coins"
+count = 8
+
+[[main.entries]]
+weight = 8
+obj = "obj.coins"
+count = 36
+
+[[main.entries]]
+weight = 19
+nothing = true
+
+[[main.entries]]
+weight = 2
+obj = "obj.fishing_bait"
+count = 10
+
+[[main.entries]]
+weight = 2
+obj = "obj.opal_bolttips"
+count = 5
+
+[[main.entries]]
+weight = 1
+obj = "obj.slug2_seaslug_young"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.spinach_roll"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.casket"
+count = 1

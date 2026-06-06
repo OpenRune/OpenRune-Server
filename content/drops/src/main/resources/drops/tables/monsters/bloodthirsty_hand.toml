@@ -1,0 +1,106 @@
+id = "Bloodthirsty hand Drops"
+npcs = ["npc.league_superior_crawling_hand"]
+
+[main]
+total = 128
+name = "Bloodthirsty hand Drops"
+
+[[main.entries]]
+weight = 21
+obj = "obj.leather_gloves"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.wolfengloves_purple"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.wolfengloves_tangerine"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.wolfengloves_crimson"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.wolfengloves_ocean"
+count = 1
+
+[[main.entries]]
+weight = 3
+obj = "obj.gold_ring"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.sapphire_ring"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.emerald_ring"
+count = 1
+
+[[main.entries]]
+weight = 21
+obj = "obj.coins"
+count = 5
+
+[[main.entries]]
+weight = 23
+obj = "obj.coins"
+count = 8
+
+[[main.entries]]
+weight = 2
+shared = "gem"
+
+[[main.entries]]
+weight = 46
+nothing = true
+
+[[main.separate_rolls]]
+numerator = 5
+denominator = 40
+
+[[main.separate_rolls.entries]]
+weight = 5
+obj = "obj.cert_raw_lobster"
+count = "60..80"
+
+[[main.separate_rolls.entries]]
+weight = 5
+obj = "obj.cert_unicorn_horn"
+count = "60..150"
+
+[[main.separate_rolls]]
+numerator = 10
+denominator = 40
+
+[[main.separate_rolls.entries]]
+weight = 10
+obj = "obj.cert_snape_grass"
+count = "60..150"
+
+[[main.separate_rolls.entries]]
+weight = 10
+obj = "obj.irit_seed"
+count = "10..15"
+
+[[main.separate_rolls.entries]]
+weight = 10
+obj = "obj.cert_limpwurt_root"
+count = "60..150"
+
+[[tertiary]]
+numerator = 1
+denominator = 500
+obj = "obj.poh_trophydrop_crawlinghand"
+count = 1
+
+
+# Main table pool padding uses a nothing roll (F2P drops removed and/or subtable access missing from wiki parse) (46 weight)

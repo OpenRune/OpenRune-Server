@@ -1,0 +1,73 @@
+id = "Tree spirit Drops"
+npcs = ["npc.fairy2_dryhadguardian_1", "npc.fairy2_dryhadguardian_2", "npc.fairy2_dryhadguardian_3", "npc.fairy2_dryhadguardian_4", "npc.fairy2_dryhadguardian_5", "npc.fairy2_dryhadguardian_6"]
+
+[main]
+total = 128
+name = "Tree spirit Drops"
+
+[[main.entries]]
+weight = 10
+obj = "obj.steel_axe"
+count = 1
+
+[[main.entries]]
+weight = 20
+obj = "obj.mithril_axe"
+count = 1
+
+[[main.entries]]
+weight = 8
+obj = "obj.adamant_axe"
+count = 1
+
+[[main.entries]]
+weight = 4
+obj = "obj.rune_axe"
+count = 1
+
+[[main.entries]]
+weight = 31
+obj = "obj.naturerune"
+count = 22
+
+[[main.entries]]
+weight = 2
+obj = "obj.naturerune"
+count = 10
+
+[[main.entries]]
+weight = 2
+obj = "obj.naturerune"
+count = 5
+
+[[main.entries]]
+weight = 1
+obj = "obj.naturerune"
+count = 2
+
+[[main.entries]]
+weight = 6
+obj = "obj.unidentified_snapdragon"
+count = 1
+
+[[main.entries]]
+weight = 6
+obj = "obj.unidentified_toadflax"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.knife"
+count = 1
+
+[[main.entries]]
+weight = 15
+shared = "herb"
+
+[[main.entries]]
+weight = 8
+shared = "gem"
+
+[[main.entries]]
+weight = 14
+shared = "rareSeed"

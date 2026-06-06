@@ -1,0 +1,202 @@
+id = "Skeleton heavy Drops"
+npcs = ["npc.brut_skeleton5"]
+
+[main]
+total = 128
+name = "Skeleton heavy Drops"
+
+[[main.entries]]
+weight = 8
+obj = "obj.iron_kiteshield"
+count = 1
+
+[[main.entries]]
+weight = 5
+obj = "obj.iron_plateskirt"
+count = 1
+
+[[main.entries]]
+weight = 5
+obj = "obj.brut_steel_spear"
+count = 1
+
+[[main.entries]]
+weight = 5
+obj = "obj.steel_longsword"
+count = 1
+
+[[main.entries]]
+weight = 3
+obj = "obj.yew_shortbow"
+count = 1
+
+[[main.entries]]
+weight = 3
+obj = "obj.steel_knife"
+count = 10
+
+[[main.entries]]
+weight = 2
+obj = "obj.steel_mace"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.steel_scimitar"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.steel_dart"
+count = 10
+
+[[main.entries]]
+weight = 1
+obj = "obj.steel_full_helm"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.steel_kiteshield"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.mithril_med_helm"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.mithril_sq_shield"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.adamant_battleaxe"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.rune_scimitar"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.battlestaff"
+count = 1
+
+[[main.entries]]
+weight = 5
+obj = "obj.deathrune"
+count = 5
+
+[[main.entries]]
+weight = 3
+obj = "obj.bloodrune"
+count = 3
+
+[[main.entries]]
+weight = 3
+obj = "obj.steel_arrow"
+count = 20
+
+[[main.entries]]
+weight = 3
+obj = "obj.xbows_crossbow_bolts_silver"
+count = 5
+
+[[main.entries]]
+weight = 2
+obj = "obj.adamant_arrow"
+count = 5
+
+[[main.entries]]
+weight = 12
+obj = "obj.yew_logs"
+count = 1
+
+[[main.entries]]
+weight = 5
+obj = "obj.cert_steel_bar"
+count = 3
+
+[[main.entries]]
+weight = 5
+obj = "obj.cert_silver_bar"
+count = 3
+
+[[main.entries]]
+weight = 5
+obj = "obj.gold_bar"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.adamantite_bar"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.gold_ore"
+count = 1
+
+[[main.entries]]
+weight = 10
+obj = "obj.coins"
+count = 142
+
+[[main.entries]]
+weight = 5
+obj = "obj.coins"
+count = 106
+
+[[main.entries]]
+weight = 2
+obj = "obj.coins"
+count = 106
+
+[[main.entries]]
+weight = 1
+obj = "obj.coins"
+count = 323
+
+[[main.entries]]
+weight = 5
+obj = "obj.brut_document_0"
+count = 1
+
+[[main.entries]]
+weight = 5
+obj = "obj.brutal_2dose1strength"
+count = 1
+
+[[main.entries]]
+weight = 3
+obj = "obj.xbows_grapple_tip_bolt_mithril_rope"
+count = 2
+
+[[main.entries]]
+weight = 2
+obj = "obj.sapphire_ring"
+count = 1
+
+[[main.entries]]
+weight = 5
+shared = "herb"
+
+[[main.entries]]
+weight = 2
+shared = "gem"
+
+[[tertiary]]
+numerator = 1
+denominator = 5000
+obj = "obj.champions_challenge_skeleton"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 121
+obj = "obj.trail_medium_emote_exp1"
+count = 1
+clue_scroll_box = true

@@ -1,0 +1,139 @@
+id = "Deranged archaeologist Drops"
+npcs = ["npc.fossil_crazy_archaeologist"]
+brimstone_key_roll = true
+
+[main]
+total = 131
+name = "Deranged archaeologist Drops"
+
+[[main.entries]]
+weight = 3
+obj = "obj.steel_ring"
+count = 1
+
+[[main.entries]]
+weight = 6
+obj = "obj.black_dragonhide_body"
+count = 1
+
+[[main.entries]]
+weight = 3
+obj = "obj.rune_2h_sword"
+count = 1
+
+[[main.entries]]
+weight = 4
+obj = "obj.rune_sword"
+count = 1
+
+[[main.entries]]
+weight = 6
+obj = "obj.waterrune"
+count = 100
+
+[[main.entries]]
+weight = 6
+obj = "obj.mudrune"
+count = 40
+
+[[main.entries]]
+weight = 6
+obj = "obj.rune_knife"
+count = 25
+
+[[main.entries]]
+weight = 1
+obj = "obj.dragon_arrow"
+count = 60
+
+[[main.entries]]
+weight = 4
+obj = "obj.mcannonball"
+count = 80
+
+[[main.entries]]
+weight = 8
+obj = "obj.cert_unidentified_dwarf_weed"
+count = 4
+
+[[main.entries]]
+weight = 7
+obj = "obj.cert_white_berries"
+count = 10
+
+[[main.entries]]
+weight = 5
+obj = "obj.xbows_crossbow_limbs_runite"
+count = 1
+
+[[main.entries]]
+weight = 5
+obj = "obj.cert_dragonhide_black"
+count = 8
+
+[[main.entries]]
+weight = 6
+obj = "obj.cert_gold_ore"
+count = 10
+
+[[main.entries]]
+weight = 5
+obj = "obj.cert_uncut_diamond"
+count = 5
+
+[[main.entries]]
+weight = 6
+obj = "obj.xbows_bolt_tips_onyx"
+count = 6
+
+[[main.entries]]
+weight = 4
+obj = "obj.anchovie_pizza"
+count = 2
+
+[[main.entries]]
+weight = 8
+obj = "obj.3doseprayerrestore"
+count = 1
+
+[[main.entries]]
+weight = 8
+obj = "obj.potato_cheese"
+count = 3
+
+[[main.entries]]
+weight = 8
+obj = "obj.shark"
+count = 2
+
+[[main.entries]]
+weight = 7
+obj = "obj.crystal_key"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.dorgesh_construction_bone"
+count = 1
+
+[[main.entries]]
+weight = 6
+shared = "rareDrop"
+
+[[main.entries]]
+weight = 6
+shared = "gem"
+
+[[main.entries]]
+weight = 1
+nothing = true
+
+[[tertiary]]
+numerator = 1
+denominator = 190
+obj = "obj.trail_elite_emote_exp1"
+count = 1
+clue_scroll_box = true
+
+
+# Main table pool padding uses a nothing roll (F2P drops removed and/or subtable access missing from wiki parse) (1 weight)

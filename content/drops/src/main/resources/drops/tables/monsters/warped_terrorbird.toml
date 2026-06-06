@@ -1,0 +1,120 @@
+id = "Warped Terrorbird Drops"
+npcs = ["npc.pog_mutated_terrorbird_1", "npc.pog_mutated_terrorbird_2", "npc.pog_mutated_terrorbird_3", "npc.pog_mutated_terrorbird_4", "npc.pog_mutated_terrorbird_5", "npc.pog_mutated_terrorbird_6", "npc.pog_mutated_terrorbird_7", "npc.pog_mutated_terrorbird_8", "npc.pog_mutated_terrorbird_boss_1", "npc.pog_mutated_terrorbird_boss_2", "npc.pog_mutated_terrorbird_boss_3", "npc.pog_mutated_terrorbird_boss_1_background_vis", "npc.pog_mutated_terrorbird_boss_2_background_vis", "npc.pog_mutated_terrorbird_boss_3_background_vis"]
+brimstone_key_roll = true
+brimstone_key_roll_konar_bonus = true
+
+[main]
+total = 64
+name = "Warped Terrorbird Drops"
+
+[[main.entries]]
+weight = 2
+obj = "obj.adamnt_warhammer"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.adamant_platebody"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.rune_battleaxe"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.rune_kiteshield"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.rune_warhammer"
+count = 1
+
+[[main.entries]]
+weight = 6
+obj = "obj.airrune"
+count = "80..120"
+
+[[main.entries]]
+weight = 6
+obj = "obj.earthrune"
+count = "80..100"
+
+[[main.entries]]
+weight = 3
+obj = "obj.deathrune"
+count = "15..20"
+
+[[main.entries]]
+weight = 3
+obj = "obj.lawrune"
+count = "15..20"
+
+[[main.entries]]
+weight = 3
+obj = "obj.soulrune"
+count = "10..15"
+
+[[main.entries]]
+weight = 8
+obj = "obj.coins"
+count = "600..800"
+
+[[main.entries]]
+weight = 2
+obj = "obj.cert_adamantite_ore"
+count = "3..5"
+
+[[main.entries]]
+weight = 3
+obj = "obj.weapon_poison"
+count = 1
+
+[[main.entries]]
+weight = 3
+obj = "obj.xbows_bolt_tips_diamond"
+count = "24..32"
+
+[[main.entries]]
+weight = 4
+obj = "obj.feather"
+count = "100..200"
+
+[[main.entries]]
+weight = 5
+obj = "obj.cert_raw_shark"
+count = "3..7"
+
+[[main.entries]]
+weight = 5
+obj = "obj.swamp_tar"
+count = "40..60"
+
+[[main.entries]]
+weight = 3
+obj = "obj.chocolate_bomb"
+count = "2..3"
+
+[[main.entries]]
+weight = 3
+nothing = true
+
+[[tertiary]]
+numerator = 1
+denominator = 4
+obj = "obj.rag_terrorbird_bone"
+count = 1
+quest = "quest_ragandboneman2"
+quest_mode = "during"
+
+[[tertiary]]
+numerator = 1
+denominator = 320
+obj = "obj.warped_sceptre_uncharged"
+count = 1
+
+
+# Unknown wiki drop rate: Clue scroll (hard) [tertiary/Tertiary/Rare]
+# Main table pool padding uses a nothing roll (F2P drops removed and/or subtable access missing from wiki parse) (3 weight)

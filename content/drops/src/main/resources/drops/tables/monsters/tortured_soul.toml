@@ -1,0 +1,97 @@
+id = "Tortured soul Drops"
+npcs = ["npc.ahoy_tortured_soul"]
+
+[main]
+total = 128
+name = "Tortured soul Drops"
+
+[[main.entries]]
+weight = 7
+obj = "obj.bodyrune"
+count = 7
+
+[[main.entries]]
+weight = 6
+obj = "obj.waterrune"
+count = 6
+
+[[main.entries]]
+weight = 3
+obj = "obj.lawrune"
+count = 2
+
+[[main.entries]]
+weight = 5
+obj = "obj.unidentified_harralander"
+count = 1
+
+[[main.entries]]
+weight = 3
+obj = "obj.unidentified_tarromin"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.unidentified_marentill"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.unidentified_guam"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.unidentified_ranarr"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.coins"
+count = 12
+
+[[main.entries]]
+weight = 2
+obj = "obj.coins"
+count = 2
+
+[[main.entries]]
+weight = 3
+obj = "obj.coins"
+count = 6
+
+[[main.entries]]
+weight = 3
+obj = "obj.coins"
+count = 5
+
+[[main.entries]]
+weight = 30
+obj = "obj.coins"
+count = 3
+
+[[main.entries]]
+weight = 21
+obj = "obj.coins"
+count = 2
+
+[[main.entries]]
+weight = 16
+nothing = true
+
+[[main.entries]]
+weight = 3
+obj = "obj.limpwurt_root"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.vial_water"
+count = 1
+
+[[main.entries]]
+weight = 20
+nothing = true
+
+
+# Main table pool padding uses a nothing roll (F2P drops removed and/or subtable access missing from wiki parse) (20 weight)

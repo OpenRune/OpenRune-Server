@@ -1,0 +1,6 @@
+id = "Entrana firebird Drops"
+npcs = ["npc.fire_bird"]
+
+[[guaranteed]]
+obj = "obj.hot_feather"
+count = 1

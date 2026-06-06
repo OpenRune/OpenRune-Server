@@ -1,0 +1,117 @@
+id = "Skeletal miner Drops"
+npcs = ["npc.skeletal_miner"]
+
+[main]
+total = 128
+name = "Skeletal miner Drops"
+
+[[main.entries]]
+weight = 6
+obj = "obj.iron_med_helm"
+count = 1
+
+[[main.entries]]
+weight = 4
+obj = "obj.iron_sword"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.iron_axe"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.iron_scimitar"
+count = 1
+
+[[main.entries]]
+weight = 3
+obj = "obj.airrune"
+count = 15
+
+[[main.entries]]
+weight = 3
+obj = "obj.waterrune"
+count = 9
+
+[[main.entries]]
+weight = 3
+obj = "obj.chaosrune"
+count = 5
+
+[[main.entries]]
+weight = 2
+obj = "obj.lawrune"
+count = 2
+
+[[main.entries]]
+weight = 2
+obj = "obj.iron_arrow"
+count = 12
+
+[[main.entries]]
+weight = 1
+obj = "obj.cosmicrune"
+count = 2
+
+[[main.entries]]
+weight = 25
+obj = "obj.coins"
+count = 5
+
+[[main.entries]]
+weight = 24
+obj = "obj.coins"
+count = 10
+
+[[main.entries]]
+weight = 8
+obj = "obj.coins"
+count = 25
+
+[[main.entries]]
+weight = 4
+obj = "obj.coins"
+count = 45
+
+[[main.entries]]
+weight = 3
+obj = "obj.coins"
+count = 65
+
+[[main.entries]]
+weight = 2
+obj = "obj.coins"
+count = 1
+
+[[main.entries]]
+weight = 8
+nothing = true
+
+[[main.entries]]
+weight = 5
+obj = "obj.bronze_bar"
+count = 1
+
+[[main.entries]]
+weight = 20
+shared = "herb"
+
+[[main.entries]]
+weight = 2
+shared = "gem"
+
+[[tertiary]]
+numerator = 1
+denominator = 100
+obj = "obj.trail_clue_beginner"
+count = 1
+clue_scroll_box = true
+
+[[tertiary]]
+numerator = 1
+denominator = 121
+obj = "obj.trail_medium_emote_exp1"
+count = 1
+clue_scroll_box = true

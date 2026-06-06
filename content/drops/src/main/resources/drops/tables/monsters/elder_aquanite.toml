@@ -1,0 +1,159 @@
+id = "Elder aquanite Drops"
+npcs = ["npc.superior_aquanite", "npc.superior_aquanite_nolure"]
+
+[main]
+total = 22
+name = "Elder aquanite Drops"
+
+[[main.entries]]
+weight = 1
+obj = "obj.coral_umbral_frag"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.coral_pillar_frag"
+count = "1..3"
+
+[[main.entries]]
+weight = 1
+obj = "obj.coral_elkhorn_frag"
+count = "2..4"
+
+[[main.entries]]
+weight = 1
+obj = "obj.snape_grass_seed"
+count = "1..3"
+
+[[main.entries]]
+weight = 1
+obj = "obj.watermelon_seed"
+count = "3..5"
+
+[[main.entries]]
+weight = 1
+obj = "obj.pineapple_tree_seed"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.shark_lure"
+count = "3..5"
+
+[[main.entries]]
+weight = 1
+obj = "obj.water_battlestaff"
+count = 1
+
+[[main.entries]]
+weight = 14
+nothing = true
+
+[[main.separate_rolls]]
+numerator = 1
+denominator = 750
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.aquanite_tendon"
+count = 1
+
+[[main.separate_rolls]]
+numerator = 1
+denominator = 128
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.dragon_cannonball"
+count = "9..15"
+
+[[main.separate_rolls]]
+numerator = 1
+denominator = 64
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.rune_cannonball"
+count = "14..22"
+
+[[main.separate_rolls]]
+numerator = 1
+denominator = 16
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.ranarr_seed"
+count = 1
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.irit_seed"
+count = 1
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.avantoe_seed"
+count = 1
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.kwuarm_seed"
+count = 1
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.cadantine_seed"
+count = 1
+
+[[main.separate_rolls]]
+numerator = 1
+denominator = 13
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.snape_grass"
+count = "1..2"
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.seaweed"
+count = 1
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.waterrune"
+count = "150..350"
+
+[[main.separate_rolls]]
+numerator = 1
+denominator = 42
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.uncut_diamond"
+count = 1
+
+[[main.separate_rolls]]
+numerator = 1
+denominator = 32
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.coins"
+count = "104..188"
+
+[[tertiary]]
+numerator = 1
+denominator = 400
+obj = "obj.dorgesh_construction_bone"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 5013
+obj = "obj.dorgesh_construction_bone_curved"
+count = 1
+
+
+# Unknown wiki drop rate: Clue scroll (hard) [tertiary/Tertiary/Unknown]
+# Main table pool padding uses a nothing roll (F2P drops removed and/or subtable access missing from wiki parse) (14 weight)

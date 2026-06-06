@@ -1,0 +1,10 @@
+id = "Evil Chicken Drops"
+npcs = ["npc.evil_chicken"]
+
+[[guaranteed]]
+obj = "obj.raw_chicken"
+count = 1
+
+[[guaranteed]]
+obj = "obj.feather"
+count = "3..242"

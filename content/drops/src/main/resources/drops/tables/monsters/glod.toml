@@ -1,0 +1,32 @@
+id = "Glod Drops"
+npcs = ["npc.grim_glod"]
+
+[[guaranteed]]
+obj = "obj.uncut_sapphire"
+count = 1
+
+[[guaranteed]]
+obj = "obj.uncut_ruby"
+count = 1
+
+[[guaranteed]]
+obj = "obj.watering_can_4"
+count = 1
+
+[[guaranteed]]
+obj = "obj.grim_golden_goblin"
+count = 1
+quest = "quest_grimtales"
+quest_mode = "during"
+
+[[tertiary]]
+numerator = 1
+denominator = 400
+obj = "obj.dorgesh_construction_bone"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 5013
+obj = "obj.dorgesh_construction_bone_curved"
+count = 1

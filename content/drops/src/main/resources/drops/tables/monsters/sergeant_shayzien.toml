@@ -1,0 +1,138 @@
+id = "Sergeant (Shayzien) Drops"
+npcs = ["npc.shayzien_soldier_m1_big", "npc.shayzien_soldier_m2_big", "npc.shayzien_soldier_m3_big", "npc.shayzien_soldier_m4_big", "npc.shayzien_soldier_f1_big", "npc.shayzien_soldier_f2_big", "npc.shayzien_soldier_f3_big", "npc.shayzien_soldier_f4_big", "npc.deadman_shayzien_soldier"]
+
+[[pre_roll]]
+numerator = 1
+denominator = 512
+obj = "obj.rune_kiteshield"
+count = 1
+
+[[pre_roll]]
+numerator = 1
+denominator = 512
+obj = "obj.rune_scimitar"
+count = 1
+
+[main]
+total = 128
+name = "Sergeant (Shayzien) Drops"
+
+[[main.entries]]
+weight = 10
+obj = "obj.xbows_crossbow_bolts_iron"
+count = "2..12"
+
+[[main.entries]]
+weight = 4
+obj = "obj.steel_arrow"
+count = 1
+
+[[main.entries]]
+weight = 3
+obj = "obj.bronze_arrow"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.airrune"
+count = 6
+
+[[main.entries]]
+weight = 2
+obj = "obj.earthrune"
+count = 3
+
+[[main.entries]]
+weight = 2
+obj = "obj.firerune"
+count = 2
+
+[[main.entries]]
+weight = 1
+obj = "obj.bloodrune"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.chaosrune"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.naturerune"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.steel_arrow"
+count = 5
+
+[[main.entries]]
+weight = 19
+obj = "obj.coins"
+count = 1
+
+[[main.entries]]
+weight = 16
+obj = "obj.coins"
+count = 7
+
+[[main.entries]]
+weight = 9
+obj = "obj.coins"
+count = 12
+
+[[main.entries]]
+weight = 8
+obj = "obj.coins"
+count = 4
+
+[[main.entries]]
+weight = 4
+obj = "obj.coins"
+count = 25
+
+[[main.entries]]
+weight = 4
+obj = "obj.coins"
+count = 17
+
+[[main.entries]]
+weight = 2
+obj = "obj.coins"
+count = 30
+
+[[main.entries]]
+weight = 10
+nothing = true
+
+[[main.entries]]
+weight = 6
+obj = "obj.iron_dagger"
+count = 1
+
+[[main.entries]]
+weight = 3
+obj = "obj.body_talisman"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.grain"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.iron_ore"
+count = 1
+
+[[main.entries]]
+weight = 18
+shared = "seed"
+
+[[tertiary]]
+numerator = 1
+denominator = 121
+obj = "obj.trail_medium_emote_exp1"
+count = 1
+clue_scroll_box = true

@@ -1,0 +1,83 @@
+id = "Giant rockslug Drops"
+npcs = ["npc.superior_rockslug"]
+
+[main]
+total = 128
+name = "Giant rockslug Drops"
+
+[[main.entries]]
+weight = 30
+obj = "obj.earthrune"
+count = 5
+
+[[main.entries]]
+weight = 4
+obj = "obj.earthrune"
+count = 42
+
+[[main.entries]]
+weight = 4
+obj = "obj.chaosrune"
+count = 2
+
+[[main.entries]]
+weight = 13
+obj = "obj.coal"
+count = 1
+
+[[main.entries]]
+weight = 22
+obj = "obj.iron_ore"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.bronze_bar"
+count = 1
+
+[[main.entries]]
+weight = 3
+obj = "obj.iron_bar"
+count = 1
+
+[[main.entries]]
+weight = 3
+obj = "obj.copper_ore"
+count = 1
+
+[[main.entries]]
+weight = 8
+obj = "obj.tin_ore"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.mithril_ore"
+count = 1
+
+[[main.entries]]
+weight = 13
+obj = "obj.dwarven_stout"
+count = 1
+
+[[main.entries]]
+weight = 10
+obj = "obj.hammer"
+count = 1
+
+[[main.entries]]
+weight = 6
+shared = "gem"
+
+[[main.entries]]
+weight = 9
+shared = "seed"
+
+[[main.separate_rolls]]
+numerator = 1
+denominator = 512
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.mystic_gloves_light"
+count = 1

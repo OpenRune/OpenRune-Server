@@ -1,0 +1,155 @@
+id = "Werewolf Drops"
+npcs = ["npc.canafis_werewolf_man1", "npc.canafis_werewolf_man2", "npc.canafis_werewolf_man3", "npc.canafis_werewolf_man4", "npc.canafis_werewolf_man5", "npc.canafis_werewolf_man6", "npc.canafis_werewolf_man7", "npc.canafis_werewolf_man8", "npc.canafis_werewolf_woman1", "npc.canafis_werewolf_woman2", "npc.canafis_werewolf_woman3", "npc.canafis_werewolf_woman4", "npc.canafis_werewolf_woman5", "npc.canafis_werewolf_woman6", "npc.canafis_werewolf_woman7", "npc.canafis_werewolf_woman8", "npc.canafis_werewolf_woman9", "npc.canafis_werewolf_woman10", "npc.canafis_werewolf_woman11", "npc.canafis_werewolf_woman12", "npc.godwars_ancient_werewolf1", "npc.godwars_ancient_werewolf2"]
+
+[main]
+total = 512
+name = "Werewolf Drops"
+
+[[main.entries]]
+weight = 25
+obj = "obj.steel_axe"
+count = 1
+
+[[main.entries]]
+weight = 32
+obj = "obj.steel_scimitar"
+count = 1
+
+[[main.entries]]
+weight = 15
+obj = "obj.steel_full_helm"
+count = 1
+
+[[main.entries]]
+weight = 10
+obj = "obj.mithril_chainbody"
+count = 1
+
+[[main.entries]]
+weight = 10
+obj = "obj.mithril_sq_shield"
+count = 1
+
+[[main.entries]]
+weight = 3
+obj = "obj.rune_med_helm"
+count = 1
+
+[[main.entries]]
+weight = 10
+obj = "obj.raw_chicken"
+count = 5
+
+[[main.entries]]
+weight = 10
+obj = "obj.raw_beef"
+count = 5
+
+[[main.entries]]
+weight = 10
+obj = "obj.raw_bear_meat"
+count = 5
+
+[[main.entries]]
+weight = 20
+obj = "obj.jug_wine"
+count = 1
+
+[[main.entries]]
+weight = 80
+obj = "obj.coins"
+count = 10
+
+[[main.entries]]
+weight = 20
+obj = "obj.coins"
+count = 90
+
+[[main.entries]]
+weight = 20
+obj = "obj.coins"
+count = 120
+
+[[main.entries]]
+weight = 20
+obj = "obj.coins"
+count = 222
+
+[[main.entries]]
+weight = 20
+obj = "obj.coins"
+count = 364
+
+[[main.entries]]
+weight = 100
+obj = "obj.grey_wolf_fur"
+count = 1
+
+[[main.entries]]
+weight = 100
+obj = "obj.werewolve_fur"
+count = 1
+
+[[main.entries]]
+weight = 2
+nothing = true
+
+[[main.entries]]
+weight = 3
+shared = "herb"
+
+[[main.entries]]
+weight = 2
+nothing = true
+
+[[tertiary]]
+numerator = 1
+denominator = 4
+obj = "obj.rag_werewolf_bone"
+count = 1
+quest = "quest_ragandboneman2"
+quest_mode = "during"
+
+[[tertiary]]
+numerator = 1
+denominator = 3
+obj = "obj.looting_bag"
+count = 1
+should_drop_looting_bag = true
+
+[[tertiary]]
+numerator = 1
+denominator = 121
+obj = "obj.trail_clue_easy_simple001"
+count = 1
+clue_scroll_box = true
+exclude_ring_of_wealth = true
+
+[[tertiary]]
+numerator = 1
+denominator = 64
+obj = "obj.trail_clue_easy_simple001"
+count = 1
+clue_scroll_box = true
+require_ring_of_wealth = true
+require_wilderness = true
+
+[[tertiary]]
+numerator = 1
+denominator = 486
+obj = "obj.trail_medium_emote_exp1"
+count = 1
+clue_scroll_box = true
+exclude_ring_of_wealth = true
+
+[[tertiary]]
+numerator = 1
+denominator = 256
+obj = "obj.trail_medium_emote_exp1"
+count = 1
+clue_scroll_box = true
+require_ring_of_wealth = true
+require_wilderness = true
+
+
+# Main table pool padding uses a nothing roll (F2P drops removed and/or subtable access missing from wiki parse) (2 weight)

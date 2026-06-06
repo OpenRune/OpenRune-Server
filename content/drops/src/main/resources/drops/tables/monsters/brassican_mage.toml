@@ -1,0 +1,74 @@
+id = "Brassican Mage Drops"
+npcs = ["npc.trail_cabbage_mage"]
+
+[main]
+total = 50
+name = "Brassican Mage Drops"
+
+[[main.entries]]
+weight = 1
+obj = "obj.staff_of_earth"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.earth_battlestaff"
+count = 1
+
+[[main.entries]]
+weight = 5
+obj = "obj.airrune"
+count = "5..24"
+
+[[main.entries]]
+weight = 5
+obj = "obj.earthrune"
+count = "5..24"
+
+[[main.entries]]
+weight = 5
+obj = "obj.deathrune"
+count = "5..24"
+
+[[main.entries]]
+weight = 5
+obj = "obj.cabbage"
+count = "10..19"
+
+[[main.entries]]
+weight = 10
+obj = "obj.coins"
+count = "50..249"
+
+[[main.entries]]
+weight = 7
+obj = "obj.cert_blankrune_high"
+count = 25
+
+[[main.entries]]
+weight = 1
+obj = "obj.uncut_sapphire"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.4doseprayerrestore"
+count = 1
+
+[[main.entries]]
+weight = 5
+shared = "herb"
+
+[[main.entries]]
+weight = 3
+nothing = true
+
+[[tertiary]]
+numerator = 1
+denominator = 3
+obj = "obj.looting_bag"
+count = 1
+should_drop_looting_bag = true
+
+
+# Main table pool padding uses a nothing roll (F2P drops removed and/or subtable access missing from wiki parse) (3 weight)

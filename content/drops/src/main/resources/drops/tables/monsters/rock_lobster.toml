@@ -1,0 +1,83 @@
+id = "Rock lobster Drops"
+npcs = ["npc.dagannoth_rock_lobster_2x2", "npc.dagannoth_rock_lobster_2x2_loc"]
+
+[main]
+total = 128
+name = "Rock lobster Drops"
+
+[[main.entries]]
+weight = 10
+obj = "obj.earthrune"
+count = "1..20"
+
+[[main.entries]]
+weight = 10
+obj = "obj.waterrune"
+count = "1..20"
+
+[[main.entries]]
+weight = 10
+obj = "obj.steel_arrow"
+count = "1..10"
+
+[[main.entries]]
+weight = 10
+obj = "obj.iron_arrow"
+count = "1..20"
+
+[[main.entries]]
+weight = 10
+obj = "obj.blankrune_high"
+count = 4
+
+[[main.entries]]
+weight = 10
+obj = "obj.seaweed"
+count = "1..3"
+
+[[main.entries]]
+weight = 10
+obj = "obj.soda_ash"
+count = 1
+
+[[main.entries]]
+weight = 10
+obj = "obj.snape_grass"
+count = 1
+
+[[main.entries]]
+weight = 10
+obj = "obj.edible_seaweed"
+count = "1..3"
+
+[[main.entries]]
+weight = 10
+obj = "obj.lobster_pot"
+count = 1
+
+[[main.entries]]
+weight = 10
+obj = "obj.tinderbox"
+count = 1
+
+[[main.entries]]
+weight = 3
+shared = "herb"
+
+[[main.entries]]
+weight = 1
+shared = "gem"
+
+[[main.entries]]
+weight = 14
+nothing = true
+
+[[tertiary]]
+numerator = 1
+denominator = 121
+obj = "obj.trail_medium_emote_exp1"
+count = 1
+clue_scroll_box = true
+
+
+# Main table pool padding uses a nothing roll (F2P drops removed and/or subtable access missing from wiki parse) (14 weight)

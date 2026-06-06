@@ -1,0 +1,6 @@
+id = "The Kendal Drops"
+npcs = ["npc.mdaughter_bearman", "npc.mdaughter_bearman_fighter"]
+
+[[guaranteed]]
+obj = "obj.mdaughter_bear_helmet"
+count = 1

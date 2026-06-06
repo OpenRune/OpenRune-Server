@@ -1,0 +1,117 @@
+id = "Gang boss Drops"
+npcs = ["npc.shayzien_criminal_boss_1_chatting", "npc.shayzien_criminal_boss_1_fighting", "npc.shayzien_criminal_boss_2_chatting", "npc.shayzien_criminal_boss_2_fighting"]
+
+[[guaranteed]]
+obj = "obj.shayzien_gang_intelligence"
+count = 1
+
+[[pre_roll]]
+numerator = 1
+denominator = 80
+obj = "obj.rune_scimitar"
+count = 1
+
+[main]
+total = 256
+name = "Gang boss Drops"
+
+[[main.entries]]
+weight = 8
+obj = "obj.black_chainbody"
+count = 1
+
+[[main.entries]]
+weight = 8
+obj = "obj.black_med_helm"
+count = 1
+
+[[main.entries]]
+weight = 8
+obj = "obj.black_plateskirt"
+count = 1
+
+[[main.entries]]
+weight = 11
+obj = "obj.black_scimitar"
+count = 1
+
+[[main.entries]]
+weight = 20
+obj = "obj.cosmicrune"
+count = "30..60"
+
+[[main.entries]]
+weight = 15
+obj = "obj.cert_gold_bar"
+count = "8..16"
+
+[[main.entries]]
+weight = 20
+obj = "obj.cert_plank_mahogany"
+count = "4..8"
+
+[[main.entries]]
+weight = 40
+obj = "obj.cert_plank_oak"
+count = "10..20"
+
+[[main.entries]]
+weight = 30
+obj = "obj.cert_plank_teak"
+count = "5..10"
+
+[[main.entries]]
+weight = 30
+obj = "obj.coins"
+count = "600..800"
+
+[[main.entries]]
+weight = 25
+obj = "obj.cert_bucket_compost"
+count = "45..80"
+
+[[main.entries]]
+weight = 41
+nothing = true
+
+[[main.separate_rolls]]
+numerator = 25
+denominator = 1024
+
+[[main.separate_rolls.entries]]
+weight = 25
+obj = "obj.unidentified_cadantine"
+count = 1
+
+[[main.separate_rolls.entries]]
+weight = 25
+obj = "obj.unidentified_dwarf_weed"
+count = 1
+
+[[main.separate_rolls]]
+numerator = 31
+denominator = 1024
+
+[[main.separate_rolls.entries]]
+weight = 31
+obj = "obj.unidentified_kwuarm"
+count = 1
+
+[[main.separate_rolls]]
+numerator = 19
+denominator = 1024
+
+[[main.separate_rolls.entries]]
+weight = 19
+obj = "obj.unidentified_lantadyme"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 61
+obj = "obj.trail_clue_hard_map001"
+count = 1
+clue_scroll_box = true
+
+
+# Main table pool padding uses a nothing roll (F2P drops removed and/or subtable access missing from wiki parse) (41 weight)

@@ -1,0 +1,17 @@
+id = "Cow calf Drops"
+npcs = ["npc.cow2_calf", "npc.cow3_calf", "npc.calf"]
+
+[[guaranteed]]
+obj = "obj.cow_hide"
+count = 1
+
+[[guaranteed]]
+obj = "obj.raw_beef"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 128
+obj = "obj.trail_clue_beginner"
+count = 1
+clue_scroll_box = true

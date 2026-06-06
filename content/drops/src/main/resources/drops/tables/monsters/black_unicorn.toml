@@ -1,0 +1,27 @@
+id = "Black unicorn Drops"
+npcs = ["npc.black_unicorn"]
+
+[[guaranteed]]
+obj = "obj.unicorn_horn"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 1
+obj = "obj.rag_unicorn_bone"
+count = 1
+quest = "quest_ragandboneman1"
+quest_mode = "during"
+
+[[tertiary]]
+numerator = 1
+denominator = 5
+obj = "obj.looting_bag"
+count = 1
+should_drop_looting_bag = true
+
+[[tertiary]]
+numerator = 1
+denominator = 35
+obj = "obj.arceuus_corpse_unicorn"
+count = 1

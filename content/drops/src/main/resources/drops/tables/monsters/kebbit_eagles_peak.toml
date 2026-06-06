@@ -1,0 +1,8 @@
+id = "Kebbit (Eagles' Peak) Drops"
+npcs = ["npc.eaglepeak_uber_kebbit"]
+
+[[guaranteed]]
+obj = "obj.eaglepeak_crystal_feather2"
+count = 1
+quest = "quest_eaglespeak"
+quest_mode = "during"

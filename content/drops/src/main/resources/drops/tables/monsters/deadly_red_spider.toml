@@ -1,0 +1,16 @@
+id = "Deadly red spider Drops"
+npcs = ["npc.deadly_red_spider"]
+
+[[tertiary]]
+numerator = 1
+denominator = 4
+obj = "obj.looting_bag"
+count = 1
+should_drop_looting_bag = true
+
+[[tertiary]]
+numerator = 1
+denominator = 128
+obj = "obj.trail_clue_beginner"
+count = 1
+clue_scroll_box = true

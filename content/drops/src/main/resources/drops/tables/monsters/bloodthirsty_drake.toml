@@ -1,0 +1,251 @@
+id = "Bloodthirsty Drake Drops"
+npcs = ["npc.league_superior_drake"]
+brimstone_key_roll = true
+brimstone_key_roll_konar_bonus = true
+
+[[pre_roll]]
+numerator = 1
+denominator = 512
+obj = "obj.drake_tooth"
+count = 1
+
+[[pre_roll]]
+numerator = 1
+denominator = 512
+obj = "obj.drake_claw"
+count = 1
+
+[[pre_roll_separate_rolls]]
+numerator = 1
+denominator = 2000
+
+[[pre_roll_separate_rolls.entries]]
+weight = 1
+obj = "obj.dragon_thrownaxe"
+count = "100..200"
+
+[[pre_roll_separate_rolls.entries]]
+weight = 1
+obj = "obj.dragon_knife"
+count = "100..200"
+
+[main]
+total = 442
+name = "Bloodthirsty Drake Drops"
+
+[[main.entries]]
+weight = 5
+obj = "obj.cert_raw_lobster"
+count = "60..80"
+
+[[main.entries]]
+weight = 10
+obj = "obj.cert_snape_grass"
+count = "60..150"
+
+[[main.entries]]
+weight = 10
+obj = "obj.irit_seed"
+count = "10..15"
+
+[[main.entries]]
+weight = 5
+obj = "obj.cert_unicorn_horn"
+count = "60..150"
+
+[[main.entries]]
+weight = 10
+obj = "obj.cert_limpwurt_root"
+count = "60..150"
+
+[[main.entries]]
+weight = 15
+obj = "obj.cert_yew_logs"
+count = "70..90"
+
+[[main.entries]]
+weight = 15
+obj = "obj.cert_raw_monkfish"
+count = "60..80"
+
+[[main.entries]]
+weight = 20
+obj = "obj.cert_white_berries"
+count = "60..150"
+
+[[main.entries]]
+weight = 30
+obj = "obj.kwuarm_seed"
+count = "8..15"
+
+[[main.entries]]
+weight = 30
+obj = "obj.ranarr_seed"
+count = "8..15"
+
+[[main.entries]]
+weight = 25
+obj = "obj.cert_blue_dragon_scale"
+count = "20..40"
+
+[[main.entries]]
+weight = 20
+obj = "obj.cert_raw_shark"
+count = "60..80"
+
+[[main.entries]]
+weight = 25
+obj = "obj.cert_red_spiders_eggs"
+count = "40..60"
+
+[[main.entries]]
+weight = 35
+obj = "obj.cert_magic_logs"
+count = "30..50"
+
+[[main.entries]]
+weight = 30
+obj = "obj.cert_wine_of_zamorak"
+count = "30..50"
+
+[[main.entries]]
+weight = 40
+obj = "obj.dwarf_weed_seed"
+count = "5..8"
+
+[[main.entries]]
+weight = 40
+obj = "obj.snapdragon_seed"
+count = "5..8"
+
+[[main.entries]]
+weight = 30
+obj = "obj.cert_raw_mantaray"
+count = "40..60"
+
+[[main.entries]]
+weight = 40
+obj = "obj.toadflax_seed"
+count = "5..8"
+
+[[main.entries]]
+weight = 5
+shared = "herb"
+
+[[main.entries]]
+weight = 1
+shared = "gem"
+
+[[main.entries]]
+weight = 1
+shared = "rareSeed"
+
+[[main.separate_rolls]]
+numerator = 3
+denominator = 85
+
+[[main.separate_rolls.entries]]
+weight = 3
+obj = "obj.rune_full_helm"
+count = 1
+
+[[main.separate_rolls]]
+numerator = 2
+denominator = 85
+
+[[main.separate_rolls.entries]]
+weight = 2
+obj = "obj.red_dragonhide_body"
+count = 1
+
+[[main.separate_rolls]]
+numerator = 1
+denominator = 85
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.black_dragon_vambraces"
+count = 1
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.mystic_earth_staff"
+count = 1
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.dragon_mace"
+count = 1
+
+[[main.separate_rolls]]
+numerator = 10
+denominator = 85
+
+[[main.separate_rolls.entries]]
+weight = 10
+obj = "obj.firerune"
+count = "100..200"
+
+[[main.separate_rolls.entries]]
+weight = 10
+obj = "obj.naturerune"
+count = "30..60"
+
+[[main.separate_rolls.entries]]
+weight = 10
+obj = "obj.lawrune"
+count = "25..50"
+
+[[main.separate_rolls.entries]]
+weight = 10
+obj = "obj.deathrune"
+count = "20..40"
+
+[[main.separate_rolls.entries]]
+weight = 10
+obj = "obj.rune_arrow"
+count = "35..65"
+
+[[main.separate_rolls]]
+numerator = 4
+denominator = 85
+
+[[main.separate_rolls.entries]]
+weight = 4
+obj = "obj.coins"
+count = "1000..2000"
+
+[[main.separate_rolls.entries]]
+weight = 4
+obj = "obj.cert_diamond"
+count = "3..6"
+
+[[main.separate_rolls.entries]]
+weight = 4
+obj = "obj.swordfish"
+count = "1..2"
+
+[[main.separate_rolls]]
+numerator = 1
+denominator = 85
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.coins"
+count = "5000..7000"
+
+[[tertiary]]
+numerator = 1
+denominator = 1
+obj = "obj.trail_clue_hard_map001"
+count = 1
+
+
+# Unknown wiki drop rate: Grimy avantoe [main/Noted herbs/1/{{#expr:1/(5*{{#var:herbbase}}) round 1}}]
+# Unknown wiki drop rate: Grimy kwuarm [main/Noted herbs/1/{{#expr:1/(5*{{#var:herbbase}}) round 1}}]
+# Unknown wiki drop rate: Grimy ranarr weed [main/Noted herbs/1/{{#expr:1/(4*{{#var:herbbase}}) round 1}}]
+# Unknown wiki drop rate: Grimy snapdragon [main/Noted herbs/1/{{#expr:1/(4*{{#var:herbbase}}) round 1}}]
+# Unknown wiki drop rate: Grimy cadantine [main/Noted herbs/1/{{#expr:1/(4*{{#var:herbbase}}) round 1}}]
+# Unknown wiki drop rate: Grimy dwarf weed [main/Noted herbs/1/{{#expr:1/(4*{{#var:herbbase}}) round 1}}]
+# Unknown wiki drop rate: Grimy lantadyme [main/Noted herbs/1/{{#expr:1/(3*{{#var:herbbase}}) round 1}}]
+# Unknown wiki drop rate: Grimy torstol [main/Noted herbs/1/{{#expr:1/(3*{{#var:herbbase}}) round 1}}]

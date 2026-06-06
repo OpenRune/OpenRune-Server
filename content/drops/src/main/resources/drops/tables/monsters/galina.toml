@@ -1,0 +1,178 @@
+id = "Galina Drops"
+npcs = ["npc.canafis_woman5"]
+
+[main]
+total = 512
+name = "Galina Drops"
+
+[[main.entries]]
+weight = 10
+obj = "obj.steel_axe"
+count = 1
+
+[[main.entries]]
+weight = 10
+obj = "obj.steel_arrow"
+count = 50
+
+[[main.entries]]
+weight = 10
+obj = "obj.steel_arrow_p"
+count = 5
+
+[[main.entries]]
+weight = 2
+obj = "obj.eye_of_newt"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.snape_grass"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.jangerberries"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.white_berries"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.limpwurt_root"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.wine_of_zamorak"
+count = 1
+
+[[main.entries]]
+weight = 10
+obj = "obj.iron_ore"
+count = 5
+
+[[main.entries]]
+weight = 10
+obj = "obj.coal"
+count = 2
+
+[[main.entries]]
+weight = 10
+obj = "obj.steel_bar"
+count = 2
+
+[[main.entries]]
+weight = 10
+obj = "obj.raw_chicken"
+count = 2
+
+[[main.entries]]
+weight = 10
+obj = "obj.raw_beef"
+count = 2
+
+[[main.entries]]
+weight = 10
+obj = "obj.raw_bear_meat"
+count = 2
+
+[[main.entries]]
+weight = 50
+obj = "obj.vial_water"
+count = 2
+
+[[main.entries]]
+weight = 20
+obj = "obj.coins"
+count = 6
+
+[[main.entries]]
+weight = 5
+obj = "obj.coins"
+count = 15
+
+[[main.entries]]
+weight = 5
+obj = "obj.coins"
+count = 16
+
+[[main.entries]]
+weight = 10
+obj = "obj.coins"
+count = 20
+
+[[main.entries]]
+weight = 5
+obj = "obj.coins"
+count = 38
+
+[[main.entries]]
+weight = 5
+obj = "obj.coins"
+count = 50
+
+[[main.entries]]
+weight = 5
+obj = "obj.coins"
+count = 96
+
+[[main.entries]]
+weight = 5
+obj = "obj.coins"
+count = 120
+
+[[main.entries]]
+weight = 25
+obj = "obj.bucket_empty"
+count = 2
+
+[[main.entries]]
+weight = 20
+obj = "obj.tinderbox"
+count = 2
+
+[[main.entries]]
+weight = 50
+obj = "obj.vial_empty"
+count = 2
+
+[[main.entries]]
+weight = 100
+obj = "obj.werewolve_fur"
+count = 1
+
+[[main.entries]]
+weight = 100
+obj = "obj.grey_wolf_fur"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.blamish_oil"
+count = 1
+
+[[main.entries]]
+weight = 2
+shared = "herb"
+
+[[main.entries]]
+weight = 1
+shared = "gem"
+
+[[main.entries]]
+weight = 1
+nothing = true
+
+[[tertiary]]
+numerator = 1
+denominator = 121
+obj = "obj.trail_clue_easy_simple001"
+count = 1
+clue_scroll_box = true
+
+
+# Main table pool padding uses a nothing roll (F2P drops removed and/or subtable access missing from wiki parse) (1 weight)

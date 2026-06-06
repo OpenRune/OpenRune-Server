@@ -1,0 +1,100 @@
+id = "Tyras guard Drops"
+npcs = ["npc.regicide_old_camp_guard", "npc.sailing_transport_tyras_guard", "npc.regicide_tyras_camp_guard", "npc.regicide_tyras_guard", "npc.regicide_tyras_camp_tent_guard", "npc.sote_tyras_guard", "npc.sote_tyras_guard_battle", "npc.sote_tyras_guard_battle_heal", "npc.sote_tyras_guard_catapult", "npc.sote_tyras_guard_cutscene"]
+
+[main]
+total = 128
+name = "Tyras guard Drops"
+
+[[main.entries]]
+weight = 4
+obj = "obj.steel_2h_sword"
+count = 1
+
+[[main.entries]]
+weight = 3
+obj = "obj.steel_axe"
+count = 1
+
+[[main.entries]]
+weight = 3
+obj = "obj.steel_battleaxe"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.mithril_kiteshield"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.adamant_platelegs"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.rune_full_helm"
+count = 1
+
+[[main.entries]]
+weight = 8
+obj = "obj.firerune"
+count = 75
+
+[[main.entries]]
+weight = 5
+obj = "obj.chaosrune"
+count = 15
+
+[[main.entries]]
+weight = 3
+obj = "obj.deathrune"
+count = 5
+
+[[main.entries]]
+weight = 1
+obj = "obj.firerune"
+count = 37
+
+[[main.entries]]
+weight = 40
+obj = "obj.coins"
+count = 132
+
+[[main.entries]]
+weight = 29
+obj = "obj.coins"
+count = 44
+
+[[main.entries]]
+weight = 10
+obj = "obj.coins"
+count = 220
+
+[[main.entries]]
+weight = 7
+obj = "obj.coins"
+count = 11
+
+[[main.entries]]
+weight = 1
+obj = "obj.coins"
+count = 460
+
+[[main.entries]]
+weight = 3
+obj = "obj.tuna"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.gold_bar"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.thread"
+count = 10
+
+[[main.entries]]
+weight = 5
+shared = "gem"

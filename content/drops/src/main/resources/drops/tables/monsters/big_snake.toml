@@ -1,0 +1,6 @@
+id = "Big Snake Drops"
+npcs = ["npc.hundred_ilm_snake"]
+
+[[guaranteed]]
+obj = "obj.hundred_ilm_snake_corpse"
+count = 1

@@ -1,0 +1,3 @@
+id = "Torag the Corrupted Drops"
+npcs = ["npc.barrows_torag"]
+brimstone_key_roll = true

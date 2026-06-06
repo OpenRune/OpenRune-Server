@@ -1,0 +1,16 @@
+id = "Giant snail Drops"
+npcs = ["npc.templetrek_giantsnail_1", "npc.templetrek_giantsnail_2", "npc.templetrek_giantsnail_3"]
+
+[main]
+total = 50
+name = "Giant snail Drops"
+
+[[main.entries]]
+weight = 49
+obj = "obj.templetrek_snail_shell"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.dorgesh_snail_shell"
+count = 1

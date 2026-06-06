@@ -20,5 +20,10 @@ object ScannerModule : ExtendedModule() {
 private class ClassGraphProvider(private val acceptedPackages: Array<String>) :
     Provider<ClassGraph> {
     override fun get(): ClassGraph =
-        ClassGraph().ignoreClassVisibility().enableClassInfo().acceptPackages(*acceptedPackages)
+        ClassGraph()
+            .ignoreClassVisibility()
+            .enableClassInfo()
+            .enableFieldInfo()
+            .enableAnnotationInfo()
+            .acceptPackages(*acceptedPackages)
 }

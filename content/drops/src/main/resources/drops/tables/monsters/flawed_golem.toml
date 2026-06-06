@@ -1,0 +1,66 @@
+id = "Flawed Golem Drops"
+npcs = ["npc.camdozaal_golem_flawed", "npc.camdozaal_golem_flawed_rock"]
+
+[main]
+total = 52
+name = "Flawed Golem Drops"
+
+[[main.entries]]
+weight = 8
+obj = "obj.clay"
+count = 1
+
+[[main.entries]]
+weight = 5
+obj = "obj.clay"
+count = 2
+
+[[main.entries]]
+weight = 3
+obj = "obj.clay"
+count = 3
+
+[[main.entries]]
+weight = 12
+obj = "obj.cert_blankrune"
+count = "1..3"
+
+[[main.entries]]
+weight = 9
+obj = "obj.cert_blankrune"
+count = "2..4"
+
+[[main.entries]]
+weight = 6
+obj = "obj.tin_ore"
+count = "1..2"
+
+[[main.entries]]
+weight = 6
+obj = "obj.copper_ore"
+count = "1..2"
+
+[[main.entries]]
+weight = 2
+obj = "obj.uncut_sapphire"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.uncut_emerald"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 16
+obj = "obj.camdozaal_barronite_shard"
+count = "6..12"
+
+[[tertiary]]
+numerator = 1
+denominator = 800
+obj = "obj.barronite_mace_3"
+count = 1
+
+
+# Unknown wiki drop rate: Clue scroll (beginner) [tertiary/Tertiary/Rare]

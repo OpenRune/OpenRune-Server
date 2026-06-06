@@ -1,0 +1,56 @@
+id = "Maniacal monkey Drops"
+npcs = ["npc.mm2_maniacal_monkey_maze"]
+
+[main]
+total = 20
+name = "Maniacal monkey Drops"
+
+[[main.entries]]
+weight = 2
+obj = "obj.steel_scimitar"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.maple_shortbow"
+count = 1
+
+[[main.entries]]
+weight = 3
+obj = "obj.plank_oak"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.unidentified_guam"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.banana"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.adamant_arrow_p++"
+count = 5
+
+[[main.entries]]
+weight = 2
+obj = "obj.2doseantipoison"
+count = 1
+
+[[main.entries]]
+weight = 4
+obj = "obj.bass"
+count = 2
+
+[[main.entries]]
+weight = 2
+obj = "obj.1doseprayerrestore"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.rope"
+count = 1

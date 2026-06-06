@@ -1,0 +1,14 @@
+id = "Penance Runner Drops"
+npcs = ["npc.barbassault_pen_runner_tutor", "npc.barbassault_pen_runner_lv1", "npc.barbassault_pen_runner_lv2", "npc.barbassault_pen_runner_lv3", "npc.barbassault_pen_runner_lv4", "npc.barbassault_pen_runner_lv5", "npc.barbassault_pen_runner_lv6", "npc.barbassault_pen_runner_lv7", "npc.barbassault_pen_runner_lv8", "npc.barbassault_pen_runner_lv9"]
+
+[[guaranteed]]
+obj = "obj.barbassault_egg_03"
+count = 2
+
+[[guaranteed]]
+obj = "obj.barbassault_egg_01"
+count = 2
+
+[[guaranteed]]
+obj = "obj.barbassault_egg_02"
+count = 2

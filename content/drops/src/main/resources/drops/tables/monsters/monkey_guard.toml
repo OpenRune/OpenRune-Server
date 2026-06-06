@@ -1,0 +1,8 @@
+id = "Monkey Guard Drops"
+npcs = ["npc.mm_religious_guard", "npc.mm_religious_trapdoor_guard"]
+
+[[tertiary]]
+numerator = 1
+denominator = 35
+obj = "obj.arceuus_corpse_monkey"
+count = 1

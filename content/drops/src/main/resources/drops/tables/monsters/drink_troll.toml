@@ -1,0 +1,10 @@
+id = "Drink troll Drops"
+npcs = ["npc.sailing_charting_drink_crate_prying_times_effect_troll"]
+
+[[tertiary]]
+numerator = 1
+denominator = 4
+obj = "obj.rag_troll_bone"
+count = 1
+quest = "quest_ragandboneman2"
+quest_mode = "during"

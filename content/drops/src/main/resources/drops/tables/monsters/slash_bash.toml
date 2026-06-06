@@ -1,0 +1,24 @@
+id = "Slash Bash Drops"
+npcs = ["npc.zogre_slash_bash"]
+
+[[guaranteed]]
+obj = "obj.zogre_ancestral_bones_ourg"
+count = 3
+
+[[guaranteed]]
+obj = "obj.zogre_artifacts"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 4
+obj = "obj.rag_zogre_bone"
+count = 1
+quest = "quest_ragandboneman2"
+quest_mode = "during"
+
+[[tertiary]]
+numerator = 1
+denominator = 5000
+obj = "obj.champions_challenge_zombie"
+count = 1

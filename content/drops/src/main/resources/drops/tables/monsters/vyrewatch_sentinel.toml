@@ -1,0 +1,176 @@
+id = "Vyrewatch Sentinel Drops"
+npcs = ["npc.vyrewatch_elite_1", "npc.vyrewatch_elite_2", "npc.vyrewatch_elite_3", "npc.vyrewatch_elite_4", "npc.vyrewatch_elite_5", "npc.vyrewatch_elite_6", "npc.vyrewatch_elite_7", "npc.vyrewatch_elite_8"]
+brimstone_key_roll = true
+brimstone_key_roll_konar_bonus = true
+
+[main]
+total = 93
+name = "Vyrewatch Sentinel Drops"
+
+[[main.entries]]
+weight = 6
+obj = "obj.rune_dagger"
+count = 1
+
+[[main.entries]]
+weight = 6
+obj = "obj.adamant_platelegs"
+count = 1
+
+[[main.entries]]
+weight = 4
+obj = "obj.adamant_platebody"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.rune_full_helm"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.rune_kiteshield"
+count = 1
+
+[[main.entries]]
+weight = 10
+obj = "obj.deathrune"
+count = "6..10"
+
+[[main.entries]]
+weight = 10
+obj = "obj.bloodrune"
+count = "8..16"
+
+[[main.entries]]
+weight = 10
+obj = "obj.naturerune"
+count = "6..11"
+
+[[main.entries]]
+weight = 4
+obj = "obj.rune_arrow"
+count = "4..10"
+
+[[main.entries]]
+weight = 2
+obj = "obj.rune_javelin"
+count = "5..15"
+
+[[main.entries]]
+weight = 4
+obj = "obj.cert_hollow_bark"
+count = "4..8"
+
+[[main.entries]]
+weight = 4
+obj = "obj.cert_coal"
+count = 8
+
+[[main.entries]]
+weight = 2
+obj = "obj.runite_bar"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.cert_yew_logs"
+count = 6
+
+[[main.entries]]
+weight = 2
+obj = "obj.runite_ore"
+count = 1
+
+[[main.entries]]
+weight = 21
+obj = "obj.coins"
+count = "100..1000"
+
+[[main.entries]]
+weight = 1
+shared = "herb"
+
+[[main.entries]]
+weight = 1
+shared = "rareDrop"
+
+[[main.entries]]
+weight = 2
+nothing = true
+
+[[main.separate_rolls]]
+numerator = 9
+denominator = 5208
+
+[[main.separate_rolls.entries]]
+weight = 9
+obj = "obj.opal_bolttips"
+count = "6..14"
+
+[[main.separate_rolls.entries]]
+weight = 9
+obj = "obj.pearl_bolttips"
+count = "6..14"
+
+[[main.separate_rolls.entries]]
+weight = 9
+obj = "obj.xbows_bolt_tips_diamond"
+count = "6..14"
+
+[[main.separate_rolls]]
+numerator = 3
+denominator = 5208
+
+[[main.separate_rolls.entries]]
+weight = 3
+obj = "obj.xbows_bolt_tips_jade"
+count = "6..14"
+
+[[main.separate_rolls.entries]]
+weight = 3
+obj = "obj.xbows_bolt_tips_redtopaz"
+count = "6..14"
+
+[[main.separate_rolls.entries]]
+weight = 3
+obj = "obj.xbows_bolt_tips_sapphire"
+count = "6..14"
+
+[[main.separate_rolls.entries]]
+weight = 3
+obj = "obj.xbows_bolt_tips_onyx"
+count = "6..14"
+
+[[main.separate_rolls]]
+numerator = 5
+denominator = 5208
+
+[[main.separate_rolls.entries]]
+weight = 5
+obj = "obj.xbows_bolt_tips_emerald"
+count = "6..14"
+
+[[main.separate_rolls]]
+numerator = 6
+denominator = 5208
+
+[[main.separate_rolls.entries]]
+weight = 6
+obj = "obj.xbows_bolt_tips_ruby"
+count = "6..14"
+
+[[main.separate_rolls.entries]]
+weight = 6
+obj = "obj.xbows_bolt_tips_dragonstone"
+count = "6..14"
+
+[[tertiary]]
+numerator = 1
+denominator = 95
+obj = "obj.trail_clue_hard_map001"
+count = 1
+clue_scroll_box = true
+
+
+# Main table pool padding uses a nothing roll (F2P drops removed and/or subtable access missing from wiki parse) (2 weight)

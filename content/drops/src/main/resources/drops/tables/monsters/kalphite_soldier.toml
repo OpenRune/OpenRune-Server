@@ -1,0 +1,106 @@
+id = "Kalphite Soldier Drops"
+npcs = ["npc.kalphite_soldier", "npc.kalphite_soldier_strongholdcave"]
+brimstone_key_roll = true
+
+[main]
+total = 128
+name = "Kalphite Soldier Drops"
+
+[[main.entries]]
+weight = 4
+obj = "obj.steel_full_helm"
+count = 1
+
+[[main.entries]]
+weight = 3
+obj = "obj.steel_scimitar"
+count = 1
+
+[[main.entries]]
+weight = 4
+obj = "obj.steel_axe"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.mithril_chainbody"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.mithril_sq_shield"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.adamant_med_helm"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.firerune"
+count = 30
+
+[[main.entries]]
+weight = 8
+obj = "obj.firerune"
+count = 60
+
+[[main.entries]]
+weight = 5
+obj = "obj.chaosrune"
+count = 12
+
+[[main.entries]]
+weight = 3
+obj = "obj.deathrune"
+count = 3
+
+[[main.entries]]
+weight = 2
+obj = "obj.naturerune"
+count = "1..4"
+
+[[main.entries]]
+weight = 7
+obj = "obj.coins"
+count = 10
+
+[[main.entries]]
+weight = 29
+obj = "obj.coins"
+count = 40
+
+[[main.entries]]
+weight = 40
+obj = "obj.coins"
+count = 120
+
+[[main.entries]]
+weight = 10
+obj = "obj.coins"
+count = 200
+
+[[main.entries]]
+weight = 1
+obj = "obj.coins"
+count = 450
+
+[[main.entries]]
+weight = 3
+obj = "obj.water_skin4"
+count = 1
+
+[[main.entries]]
+weight = 1
+shared = "herb"
+
+[[main.entries]]
+weight = 4
+shared = "gem"
+
+[[tertiary]]
+numerator = 1
+denominator = 90
+obj = "obj.arceuus_corpse_kalphite"
+count = 1

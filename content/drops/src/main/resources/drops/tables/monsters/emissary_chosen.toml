@@ -1,0 +1,85 @@
+id = "Emissary Chosen Drops"
+npcs = ["npc.twilight_cultist_chosen_m_1", "npc.twilight_cultist_chosen_m_2", "npc.twilight_cultist_chosen_m_3", "npc.twilight_cultist_chosen_f_1", "npc.twilight_cultist_chosen_f_2", "npc.twilight_cultist_chosen_f_3"]
+
+[main]
+total = 128
+name = "Emissary Chosen Drops"
+
+[[main.entries]]
+weight = 9
+obj = "obj.steel_scimitar"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.steel_longsword"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.steel_pickaxe"
+count = 1
+
+[[main.entries]]
+weight = 5
+obj = "obj.airrune"
+count = 8
+
+[[main.entries]]
+weight = 5
+obj = "obj.waterrune"
+count = 8
+
+[[main.entries]]
+weight = 5
+obj = "obj.chaosrune"
+count = 6
+
+[[main.entries]]
+weight = 1
+obj = "obj.mindrune"
+count = 2
+
+[[main.entries]]
+weight = 27
+obj = "obj.coins"
+count = 10
+
+[[main.entries]]
+weight = 26
+obj = "obj.coins"
+count = 35
+
+[[main.entries]]
+weight = 13
+obj = "obj.coins"
+count = 1
+
+[[main.entries]]
+weight = 11
+obj = "obj.coins"
+count = 50
+
+[[main.entries]]
+weight = 3
+obj = "obj.coins"
+count = 100
+
+[[main.entries]]
+weight = 2
+nothing = true
+
+[[main.entries]]
+weight = 15
+shared = "herb"
+
+[[main.entries]]
+weight = 3
+shared = "gem"
+
+[[tertiary]]
+numerator = 1
+denominator = 121
+obj = "obj.trail_medium_emote_exp1"
+count = 1
+clue_scroll_box = true

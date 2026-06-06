@@ -1,0 +1,11 @@
+id = "Buffalo Drops"
+npcs = ["npc.varlamore_buffalo"]
+
+[[guaranteed]]
+obj = "obj.raw_beef"
+count = 1
+
+
+# Unknown wiki drop rate: Token (Varlamore) [guaranteed/100%/Varies]
+# Unknown wiki drop rate: Clue scroll (beginner) [tertiary/Tertiary/]
+# Unknown wiki drop rate: Clue scroll (easy) [tertiary/Tertiary/]

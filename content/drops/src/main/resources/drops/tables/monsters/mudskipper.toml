@@ -1,0 +1,18 @@
+id = "Mudskipper Drops"
+npcs = ["npc.hundred_pirate_giant_mudskipper", "npc.hundred_pirate_giant_mudskipper_2"]
+
+[main]
+total = 128
+name = "Mudskipper Drops"
+
+[[main.entries]]
+weight = 22
+obj = "obj.oystershell"
+count = 1
+
+[[main.entries]]
+weight = 106
+nothing = true
+
+
+# Main table pool padding uses a nothing roll (F2P drops removed and/or subtable access missing from wiki parse) (106 weight)

@@ -1,0 +1,16 @@
+id = "Mouse Drops"
+npcs = ["npc.grim_giant_mouse", "npc.grim_giant_mouse2"]
+
+[main]
+total = 4
+name = "Mouse Drops"
+
+[[main.entries]]
+weight = 1
+obj = "obj.cheese"
+count = 1
+
+[[main.entries]]
+weight = 3
+obj = "obj.coins"
+count = "12..131"

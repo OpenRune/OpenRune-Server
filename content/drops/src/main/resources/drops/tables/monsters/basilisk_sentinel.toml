@@ -1,0 +1,139 @@
+id = "Basilisk Sentinel Drops"
+npcs = ["npc.superior_basilisk_knight"]
+
+[[guaranteed]]
+obj = "obj.konar_key"
+count = 1
+should_drop_brimstone_key = true
+
+[main]
+total = 52
+name = "Basilisk Sentinel Drops"
+
+[[main.entries]]
+weight = 1
+obj = "obj.adamant_platelegs"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.adamant_kiteshield"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.rune_axe"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.rune_battleaxe"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.rune_dagger"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.rune_scimitar"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.rune_spear"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.rune_med_helm"
+count = 1
+
+[[main.entries]]
+weight = 6
+obj = "obj.astralrune"
+count = "15..35"
+
+[[main.entries]]
+weight = 6
+obj = "obj.naturerune"
+count = "15..30"
+
+[[main.entries]]
+weight = 6
+obj = "obj.lawrune"
+count = "20..30"
+
+[[main.entries]]
+weight = 3
+obj = "obj.deathrune"
+count = "10..25"
+
+[[main.entries]]
+weight = 3
+obj = "obj.bloodrune"
+count = "8..20"
+
+[[main.entries]]
+weight = 7
+obj = "obj.coins"
+count = "500..2498"
+
+[[main.entries]]
+weight = 1
+obj = "obj.cert_adamantite_ore"
+count = "1..2"
+
+[[main.entries]]
+weight = 8
+shared = "gem"
+
+[[main.entries]]
+weight = 3
+shared = "usefulHerb"
+
+[[tertiary]]
+numerator = 1
+denominator = 4
+obj = "obj.rag_baby_basilisk_bone"
+count = 1
+quest = "quest_ragandboneman2"
+quest_mode = "during"
+
+[[tertiary]]
+numerator = 1
+denominator = 256
+obj = "obj.mystic_hat_light"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 400
+obj = "obj.dorgesh_construction_bone"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 1000
+obj = "obj.poh_trophydrop_basilisk"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 1000
+obj = "obj.basilisk_jaw"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 5013
+obj = "obj.dorgesh_construction_bone_curved"
+count = 1
+
+[[tertiary]]
+numerator = 10
+denominator = 182
+obj = "obj.trail_clue_hard_map001"
+count = 1
+clue_scroll_box = true

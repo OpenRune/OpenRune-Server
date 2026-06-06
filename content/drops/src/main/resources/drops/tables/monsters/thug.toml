@@ -1,0 +1,112 @@
+id = "Thug Drops"
+npcs = ["npc.thug"]
+
+[main]
+total = 128
+name = "Thug Drops"
+
+[[main.entries]]
+weight = 4
+obj = "obj.iron_med_helm"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.iron_battleaxe"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.steel_axe"
+count = 1
+
+[[main.entries]]
+weight = 13
+obj = "obj.naturerune"
+count = 2
+
+[[main.entries]]
+weight = 4
+obj = "obj.chaosrune"
+count = 2
+
+[[main.entries]]
+weight = 1
+obj = "obj.cosmicrune"
+count = 2
+
+[[main.entries]]
+weight = 1
+obj = "obj.lawrune"
+count = 2
+
+[[main.entries]]
+weight = 1
+obj = "obj.deathrune"
+count = 2
+
+[[main.entries]]
+weight = 4
+obj = "obj.iron_ore"
+count = 1
+
+[[main.entries]]
+weight = 3
+obj = "obj.iron_bar"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.coal"
+count = 1
+
+[[main.entries]]
+weight = 23
+obj = "obj.coins"
+count = 8
+
+[[main.entries]]
+weight = 12
+obj = "obj.coins"
+count = 15
+
+[[main.entries]]
+weight = 2
+obj = "obj.coins"
+count = 30
+
+[[main.entries]]
+weight = 1
+obj = "obj.coins"
+count = 20
+
+[[main.entries]]
+weight = 30
+nothing = true
+
+[[main.entries]]
+weight = 24
+shared = "herb"
+
+[[tertiary]]
+numerator = 1
+denominator = 30
+obj = "obj.looting_bag"
+count = 1
+should_drop_looting_bag = true
+
+[[tertiary]]
+numerator = 1
+denominator = 121
+obj = "obj.trail_clue_easy_simple001"
+count = 1
+clue_scroll_box = true
+exclude_ring_of_wealth = true
+
+[[tertiary]]
+numerator = 1
+denominator = 64
+obj = "obj.trail_clue_easy_simple001"
+count = 1
+clue_scroll_box = true
+require_ring_of_wealth = true

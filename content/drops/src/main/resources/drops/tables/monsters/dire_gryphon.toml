@@ -1,0 +1,117 @@
+id = "Dire gryphon Drops"
+npcs = ["npc.superior_gryphon"]
+
+[[guaranteed]]
+obj = "obj.gryphon_feather"
+count = "1..3"
+
+[main]
+total = 128
+name = "Dire gryphon Drops"
+
+[[main.entries]]
+weight = 10
+obj = "obj.onion"
+count = 1
+
+[[main.entries]]
+weight = 10
+obj = "obj.strawberry"
+count = 1
+
+[[main.entries]]
+weight = 10
+obj = "obj.watermelon"
+count = 1
+
+[[main.entries]]
+weight = 10
+obj = "obj.raw_lobster"
+count = 1
+
+[[main.entries]]
+weight = 10
+obj = "obj.raw_swordfish"
+count = 1
+
+[[main.entries]]
+weight = 8
+obj = "obj.raw_shark"
+count = 1
+
+[[main.entries]]
+weight = 8
+obj = "obj.potato"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.cabbage"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.tomato"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.sweetcorn"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.coral_elkhorn_frag"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.coral_pillar_frag"
+count = 1
+
+[[main.entries]]
+weight = 17
+obj = "obj.gryphon_feather"
+count = "10..25"
+
+[[main.entries]]
+weight = 6
+obj = "obj.mithril_cannonball"
+count = "8..12"
+
+[[main.entries]]
+weight = 4
+obj = "obj.basket_empty"
+count = 1
+
+[[main.entries]]
+weight = 4
+obj = "obj.sack_empty"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.adamant_cannonball"
+count = "5..9"
+
+[[main.entries]]
+weight = 11
+shared = "herb"
+
+[[main.entries]]
+weight = 1
+shared = "gem"
+
+[[main.entries]]
+weight = 12
+nothing = true
+
+[[tertiary]]
+numerator = 1
+denominator = 1000
+obj = "obj.horn_of_plenty_uncharged"
+count = 1
+
+
+# Unknown wiki drop rate: Clue scroll (hard) [tertiary/Tertiary/Unknown]
+# Main table pool padding uses a nothing roll (F2P drops removed and/or subtable access missing from wiki parse) (12 weight)

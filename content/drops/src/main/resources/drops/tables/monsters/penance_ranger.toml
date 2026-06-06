@@ -1,0 +1,14 @@
+id = "Penance Ranger Drops"
+npcs = ["npc.barbassault_pen_ranger_tutor", "npc.barbassault_pen_ranger_lv1", "npc.barbassault_pen_ranger_lv2", "npc.barbassault_pen_ranger_lv3", "npc.barbassault_pen_ranger_lv4", "npc.barbassault_pen_ranger_lv5", "npc.barbassault_pen_ranger_lv6", "npc.barbassault_pen_ranger_lv7", "npc.barbassault_pen_ranger_lv8", "npc.barbassault_pen_ranger_lv9"]
+
+[[guaranteed]]
+obj = "obj.barbassault_egg_03"
+count = 2
+
+[[guaranteed]]
+obj = "obj.barbassault_egg_01"
+count = 2
+
+[[guaranteed]]
+obj = "obj.barbassault_egg_02"
+count = 2

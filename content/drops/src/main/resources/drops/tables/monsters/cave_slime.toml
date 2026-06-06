@@ -1,0 +1,96 @@
+id = "Cave slime Drops"
+npcs = ["npc.swamp_cave_slime"]
+
+[[guaranteed]]
+obj = "obj.swamp_tar"
+count = "1..6"
+
+[main]
+total = 128
+name = "Cave slime Drops"
+
+[[main.entries]]
+weight = 3
+obj = "obj.bronze_axe"
+count = 1
+
+[[main.entries]]
+weight = 7
+obj = "obj.iron_sword"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.bronze_full_helm"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.iron_kiteshield"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.iron_armoured_boots"
+count = 1
+
+[[main.entries]]
+weight = 5
+obj = "obj.waterrune"
+count = 15
+
+[[main.entries]]
+weight = 3
+obj = "obj.earthrune"
+count = 5
+
+[[main.entries]]
+weight = 7
+obj = "obj.coins"
+count = 1
+
+[[main.entries]]
+weight = 30
+obj = "obj.coins"
+count = 4
+
+[[main.entries]]
+weight = 39
+obj = "obj.coins"
+count = 10
+
+[[main.entries]]
+weight = 10
+obj = "obj.coins"
+count = 22
+
+[[main.entries]]
+weight = 2
+obj = "obj.coins"
+count = 46
+
+[[main.entries]]
+weight = 11
+obj = "obj.torch_unlit"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.oil_lantern_frame"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.gold_bar"
+count = 1
+
+[[main.entries]]
+weight = 4
+shared = "gem"
+
+[[tertiary]]
+numerator = 1
+denominator = 121
+obj = "obj.trail_clue_easy_simple001"
+count = 1
+clue_scroll_box = true

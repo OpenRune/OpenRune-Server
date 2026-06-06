@@ -1,0 +1,39 @@
+id = "Lizardman shaman (Chambers of Xeric) Drops"
+npcs = ["npc.raids_lizardshaman_a", "npc.raids_lizardshaman_b"]
+
+[[guaranteed]]
+obj = "obj.raids_seed_buchuleaf"
+count = "5..10"
+
+[[guaranteed]]
+obj = "obj.raids_seed_golpar"
+count = "5..10"
+
+[[guaranteed]]
+obj = "obj.raids_seed_noxifer"
+count = "5..10"
+
+[main]
+total = 400
+name = "Lizardman shaman (Chambers of Xeric) Drops"
+
+[[main.entries]]
+weight = 1
+obj = "obj.dorgesh_construction_bone"
+count = 1
+
+[[main.entries]]
+weight = 399
+nothing = true
+
+[[main.separate_rolls]]
+numerator = 1
+denominator = 5013
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.dorgesh_construction_bone_curved"
+count = 1
+
+
+# Main table pool padding uses a nothing roll (F2P drops removed and/or subtable access missing from wiki parse) (399 weight)

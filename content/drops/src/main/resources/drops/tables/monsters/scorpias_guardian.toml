@@ -1,0 +1,18 @@
+id = "Scorpia's guardian Drops"
+npcs = ["npc.scorpia_guardian"]
+
+[[tertiary]]
+numerator = 1
+denominator = 3
+obj = "obj.looting_bag"
+count = 1
+should_drop_looting_bag = true
+
+[[tertiary]]
+numerator = 1
+denominator = 25
+obj = "obj.arceuus_corpse_scorpion"
+count = 1
+
+
+# Unknown wiki drop rate: Clue scroll (beginner) [tertiary/Tertiary/Unknown]

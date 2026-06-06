@@ -1,0 +1,18 @@
+id = "Tower Archer East (level 34)"
+npcs = ["npc.guild_towerarcher2"]
+
+[main]
+total = 100
+name = "Tower Archer East (level 34)"
+
+[[main.entries]]
+weight = 12
+obj = "obj.steel_arrow"
+count = 1
+
+[[main.entries]]
+weight = 88
+nothing = true
+
+
+# Main table pool padding uses a nothing roll (F2P drops removed and/or subtable access missing from wiki parse) (88 weight)

@@ -1,0 +1,10 @@
+id = "Khazard warlord Drops"
+npcs = ["npc.khazard_warlord_chat", "npc.khazard_warlord_combat"]
+
+[[tertiary]]
+numerator = 1
+denominator = 1
+obj = "obj.orbs_of_protection"
+count = 1
+quest = "quest_treegnomevillage"
+quest_mode = "during"

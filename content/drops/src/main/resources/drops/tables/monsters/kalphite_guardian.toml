@@ -1,0 +1,120 @@
+id = "Kalphite Guardian Drops"
+npcs = ["npc.kalphite_lord", "npc.kalphite_lord_chamber"]
+brimstone_key_roll = true
+
+[main]
+total = 128
+name = "Kalphite Guardian Drops"
+
+[[main.entries]]
+weight = 4
+obj = "obj.mithril_sword"
+count = 1
+
+[[main.entries]]
+weight = 3
+obj = "obj.steel_battleaxe"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.mithril_axe"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.adamant_dagger"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.mithril_kiteshield"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.rune_med_helm"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.rune_chainbody"
+count = 1
+
+[[main.entries]]
+weight = 8
+obj = "obj.airrune"
+count = 50
+
+[[main.entries]]
+weight = 7
+obj = "obj.chaosrune"
+count = 10
+
+[[main.entries]]
+weight = 4
+obj = "obj.bloodrune"
+count = 7
+
+[[main.entries]]
+weight = 1
+obj = "obj.firerune"
+count = 37
+
+[[main.entries]]
+weight = 1
+obj = "obj.lawrune"
+count = 3
+
+[[main.entries]]
+weight = 40
+obj = "obj.coins"
+count = 132
+
+[[main.entries]]
+weight = 7
+obj = "obj.coins"
+count = 30
+
+[[main.entries]]
+weight = 6
+obj = "obj.coins"
+count = 44
+
+[[main.entries]]
+weight = 6
+obj = "obj.coins"
+count = 220
+
+[[main.entries]]
+weight = 1
+obj = "obj.coins"
+count = 460
+
+[[main.entries]]
+weight = 3
+obj = "obj.lobster"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.3dose1defense"
+count = 1
+
+[[main.entries]]
+weight = 23
+shared = "herb"
+
+[[main.entries]]
+weight = 1
+shared = "rareDrop"
+
+[[main.entries]]
+weight = 5
+shared = "gem"
+
+[[tertiary]]
+numerator = 1
+denominator = 35
+obj = "obj.arceuus_corpse_kalphite"
+count = 1

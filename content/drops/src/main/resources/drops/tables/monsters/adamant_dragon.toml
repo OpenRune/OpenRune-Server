@@ -1,0 +1,138 @@
+id = "Adamant dragon Drops"
+npcs = ["npc.adamant_dragon", "npc.ds2_adamant_dragon"]
+brimstone_key_roll = true
+
+[[guaranteed]]
+obj = "obj.adamantite_bar"
+count = 2
+
+[main]
+total = 110
+name = "Adamant dragon Drops"
+
+[[main.entries]]
+weight = 9
+obj = "obj.adamant_platebody"
+count = 1
+
+[[main.entries]]
+weight = 7
+obj = "obj.rune_mace"
+count = 1
+
+[[main.entries]]
+weight = 7
+obj = "obj.rune_scimitar"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.dragon_med_helm"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.dragon_platelegs"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.dragon_plateskirt"
+count = 1
+
+[[main.entries]]
+weight = 8
+obj = "obj.adamant_arrow"
+count = "30..40"
+
+[[main.entries]]
+weight = 8
+obj = "obj.wrathrune"
+count = "10..30"
+
+[[main.entries]]
+weight = 7
+obj = "obj.chaosrune"
+count = "60..120"
+
+[[main.entries]]
+weight = 7
+obj = "obj.deathrune"
+count = "30..60"
+
+[[main.entries]]
+weight = 8
+obj = "obj.adamant_javelin_head"
+count = "40..50"
+quest = "quest_monkeymadness2"
+quest_mode = "not_completed"
+
+[[main.entries]]
+weight = 11
+obj = "obj.xbows_crossbow_bolts_adamantite_unfeathered"
+count = "20..40"
+
+[[main.entries]]
+weight = 7
+obj = "obj.cert_diamond"
+count = "1..3"
+
+[[main.entries]]
+weight = 7
+obj = "obj.dragon_javelin_head"
+count = "20..30"
+quest = "quest_monkeymadness2"
+quest_mode = "completed"
+
+[[main.entries]]
+weight = 6
+obj = "obj.cert_adamantite_ore"
+count = "8..20"
+
+[[main.entries]]
+weight = 4
+obj = "obj.cert_adamantite_bar"
+count = "5..35"
+
+[[main.entries]]
+weight = 1
+obj = "obj.dragon_bolts_unfeathered"
+count = "15..20"
+
+[[main.entries]]
+weight = 1
+obj = "obj.wrath_talisman"
+count = 1
+
+[[main.entries]]
+weight = 1
+shared = "rareDrop"
+
+[[main.entries]]
+weight = 8
+shared = "usefulHerb"
+
+[[tertiary]]
+numerator = 1
+denominator = 1000
+obj = "obj.xbows_crossbow_limbs_dragon"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 5000
+obj = "obj.dragon_slice"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 9000
+obj = "obj.dragonfire_visage"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 304
+obj = "obj.trail_elite_emote_exp1"
+count = 1
+clue_scroll_box = true

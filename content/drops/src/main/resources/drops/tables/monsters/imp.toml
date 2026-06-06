@@ -1,0 +1,185 @@
+id = "Imp Drops"
+npcs = ["npc.godwars_ancient_imp", "npc.imp"]
+
+[main]
+total = 128
+name = "Imp Drops"
+
+[[main.entries]]
+weight = 5
+obj = "obj.black_bead"
+count = 1
+
+[[main.entries]]
+weight = 5
+obj = "obj.red_bead"
+count = 1
+
+[[main.entries]]
+weight = 5
+obj = "obj.white_bead"
+count = 1
+
+[[main.entries]]
+weight = 5
+obj = "obj.yellow_bead"
+count = 1
+
+[[main.entries]]
+weight = 8
+obj = "obj.bolt"
+count = 1
+
+[[main.entries]]
+weight = 8
+obj = "obj.bluewizhat"
+count = 1
+
+[[main.entries]]
+weight = 5
+obj = "obj.egg"
+count = 1
+
+[[main.entries]]
+weight = 5
+obj = "obj.raw_chicken"
+count = 1
+
+[[main.entries]]
+weight = 4
+obj = "obj.burnt_bread"
+count = 1
+
+[[main.entries]]
+weight = 4
+obj = "obj.burnt_meat"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.cabbage"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.bread_dough"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.bread"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.cooked_meat"
+count = 1
+
+[[main.entries]]
+weight = 8
+obj = "obj.hammer"
+count = 1
+
+[[main.entries]]
+weight = 5
+obj = "obj.tinderbox"
+count = 1
+
+[[main.entries]]
+weight = 4
+obj = "obj.shears"
+count = 1
+
+[[main.entries]]
+weight = 4
+obj = "obj.bucket_empty"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.bucket_water"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.jug_empty"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.jug_water"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.pot_empty"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.pot_flour"
+count = 1
+
+[[main.entries]]
+weight = 8
+obj = "obj.ball_of_wool"
+count = 1
+
+[[main.entries]]
+weight = 7
+obj = "obj.mind_talisman"
+count = 1
+
+[[main.entries]]
+weight = 6
+obj = "obj.ashes"
+count = 1
+
+[[main.entries]]
+weight = 4
+obj = "obj.clay"
+count = 1
+
+[[main.entries]]
+weight = 4
+obj = "obj.cadavaberries"
+count = 1
+
+[[main.entries]]
+weight = 3
+obj = "obj.grain"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.chefs_hat"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.flier"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.acne_potion"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 25
+obj = "obj.arceuus_corpse_imp"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 15
+obj = "obj.looting_bag"
+count = 1
+should_drop_looting_bag = true
+
+[[tertiary]]
+numerator = 1
+denominator = 5000
+obj = "obj.champions_challenge_imp"
+count = 1

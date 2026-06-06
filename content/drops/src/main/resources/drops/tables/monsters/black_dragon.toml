@@ -1,0 +1,173 @@
+id = "Black dragon Drops"
+npcs = ["npc.black_dragon", "npc.black_dragon2", "npc.black_dragon3", "npc.black_dragon4", "npc.black_dragon5", "npc.black_dragon_strongholdcave_1", "npc.black_dragon_strongholdcave_2", "npc.black_dragon_strongholdcave_3", "npc.wild_cave_black_dragon", "npc.wild_cave_black_dragon2", "npc.wild_cave_black_dragon3", "npc.ds2_black_dragon_cutscene", "npc.ds2_black_dragon"]
+brimstone_key_roll = true
+
+[[guaranteed]]
+obj = "obj.dragonhide_black"
+count = 1
+
+[[guaranteed]]
+obj = "obj.chickenquest_dragon_coin"
+count = 1
+quest = "quest_recipefordisastersiramikvarze"
+quest_mode = "during"
+
+[main]
+total = 128
+name = "Black dragon Drops"
+
+[[main.entries]]
+weight = 4
+obj = "obj.mithril_2h_sword"
+count = 1
+
+[[main.entries]]
+weight = 3
+obj = "obj.mithril_axe"
+count = 1
+
+[[main.entries]]
+weight = 3
+obj = "obj.mithril_battleaxe"
+count = 1
+
+[[main.entries]]
+weight = 3
+obj = "obj.rune_knife"
+count = 2
+
+[[main.entries]]
+weight = 1
+obj = "obj.mithril_kiteshield"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.adamant_platebody"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.rune_longsword"
+count = 1
+
+[[main.entries]]
+weight = 20
+obj = "obj.adamant_javelin"
+count = 30
+
+[[main.entries]]
+weight = 7
+obj = "obj.adamant_dart_p"
+count = 16
+
+[[main.entries]]
+weight = 8
+obj = "obj.firerune"
+count = 50
+
+[[main.entries]]
+weight = 3
+obj = "obj.bloodrune"
+count = 15
+
+[[main.entries]]
+weight = 1
+obj = "obj.airrune"
+count = 75
+
+[[main.entries]]
+weight = 5
+obj = "obj.lawrune"
+count = 10
+
+[[main.entries]]
+weight = 40
+obj = "obj.coins"
+count = 196
+
+[[main.entries]]
+weight = 10
+obj = "obj.coins"
+count = 330
+
+[[main.entries]]
+weight = 1
+obj = "obj.coins"
+count = 690
+
+[[main.entries]]
+weight = 6
+obj = "obj.dragon_javelin_head"
+count = 10
+quest = "quest_monkeymadness2"
+quest_mode = "completed"
+
+[[main.entries]]
+weight = 3
+obj = "obj.adamantite_bar"
+count = 1
+
+[[main.entries]]
+weight = 3
+obj = "obj.chocolate_cake"
+count = 1
+
+[[main.entries]]
+weight = 2
+shared = "rareDrop"
+
+[[main.entries]]
+weight = 3
+shared = "gem"
+
+[[tertiary]]
+numerator = 1
+denominator = 3
+obj = "obj.looting_bag"
+count = 1
+should_drop_looting_bag = true
+
+[[tertiary]]
+numerator = 1
+denominator = 35
+obj = "obj.arceuus_corpse_dragon"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 10000
+obj = "obj.dragonfire_visage"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 121
+obj = "obj.trail_clue_hard_map001"
+count = 1
+clue_scroll_box = true
+exclude_ring_of_wealth = true
+
+[[tertiary]]
+numerator = 1
+denominator = 64
+obj = "obj.trail_clue_hard_map001"
+count = 1
+clue_scroll_box = true
+require_ring_of_wealth = true
+
+[[tertiary]]
+numerator = 1
+denominator = 475
+obj = "obj.trail_elite_emote_exp1"
+count = 1
+clue_scroll_box = true
+exclude_ring_of_wealth = true
+
+[[tertiary]]
+numerator = 1
+denominator = 250
+obj = "obj.trail_elite_emote_exp1"
+count = 1
+clue_scroll_box = true
+require_ring_of_wealth = true

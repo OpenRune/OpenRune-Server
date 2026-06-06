@@ -1,0 +1,49 @@
+id = "Zombie (Stronghold of Security) Drops"
+npcs = ["npc.sos_fam_zombie_unarmed", "npc.sos_fam_zombie_unarmed2", "npc.sos_fam_zombie_unarmed3", "npc.sos_fam_zombie2", "npc.sos_fam_zombie2_b", "npc.sos_fam_zombie2_c", "npc.sos_fam_zombie_armed", "npc.sos_fam_zombie_armed2", "npc.sos_fam_zombie_armed3"]
+
+[main]
+total = 100
+name = "Zombie (Stronghold of Security) Drops"
+
+[[main.entries]]
+weight = 20
+obj = "obj.steel_arrow"
+count = "5..14"
+
+[[main.entries]]
+weight = 10
+obj = "obj.bodyrune"
+count = 7
+
+[[main.entries]]
+weight = 10
+obj = "obj.coins"
+count = "5..84"
+
+[[main.entries]]
+weight = 10
+obj = "obj.beer"
+count = 1
+
+[[main.entries]]
+weight = 4
+obj = "obj.ashes"
+count = 1
+
+[[main.entries]]
+weight = 40
+nothing = true
+
+[[main.entries]]
+weight = 4
+shared = "herb"
+
+[[main.entries]]
+weight = 2
+shared = "gem"
+
+[[tertiary]]
+numerator = 1
+denominator = 5000
+obj = "obj.champions_challenge_zombie"
+count = 1

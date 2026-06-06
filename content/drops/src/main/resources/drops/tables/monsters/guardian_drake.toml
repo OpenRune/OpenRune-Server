@@ -1,0 +1,156 @@
+id = "Guardian Drake Drops"
+npcs = ["npc.superior_drake"]
+
+[[guaranteed]]
+obj = "obj.konar_key"
+count = 1
+should_drop_brimstone_key = true
+
+[[pre_roll]]
+numerator = 1
+denominator = 512
+obj = "obj.drake_tooth"
+count = 1
+
+[[pre_roll]]
+numerator = 1
+denominator = 512
+obj = "obj.drake_claw"
+count = 1
+
+[[pre_roll_separate_rolls]]
+numerator = 1
+denominator = 2000
+
+[[pre_roll_separate_rolls.entries]]
+weight = 1
+obj = "obj.dragon_thrownaxe"
+count = "100..200"
+
+[[pre_roll_separate_rolls.entries]]
+weight = 1
+obj = "obj.dragon_knife"
+count = "100..200"
+
+[main]
+total = 93
+name = "Guardian Drake Drops"
+
+[[main.entries]]
+weight = 3
+obj = "obj.rune_full_helm"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.red_dragonhide_body"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.black_dragon_vambraces"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.mystic_earth_staff"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.dragon_mace"
+count = 1
+
+[[main.entries]]
+weight = 10
+obj = "obj.firerune"
+count = "100..200"
+
+[[main.entries]]
+weight = 10
+obj = "obj.naturerune"
+count = "30..60"
+
+[[main.entries]]
+weight = 10
+obj = "obj.lawrune"
+count = "25..50"
+
+[[main.entries]]
+weight = 10
+obj = "obj.deathrune"
+count = "20..40"
+
+[[main.entries]]
+weight = 10
+obj = "obj.rune_arrow"
+count = "35..65"
+
+[[main.entries]]
+weight = 2
+obj = "obj.cert_raw_shark"
+count = "4..6"
+
+[[main.entries]]
+weight = 2
+obj = "obj.shark_lure"
+count = "8;10;12"
+
+[[main.entries]]
+weight = 1
+obj = "obj.cert_raw_anglerfish"
+count = "4..6"
+
+[[main.entries]]
+weight = 4
+obj = "obj.coins"
+count = "1000..2000"
+
+[[main.entries]]
+weight = 4
+obj = "obj.cert_diamond"
+count = "3..6"
+
+[[main.entries]]
+weight = 4
+obj = "obj.swordfish"
+count = "1..2"
+
+[[main.entries]]
+weight = 1
+obj = "obj.coins"
+count = "5000..7000"
+
+[[main.entries]]
+weight = 10
+shared = "herb"
+
+[[main.entries]]
+weight = 1
+shared = "gem"
+
+[[main.entries]]
+weight = 1
+shared = "rareSeed"
+
+[[main.entries]]
+weight = 5
+nothing = true
+
+[[tertiary]]
+numerator = 10
+denominator = 121
+obj = "obj.trail_clue_hard_map001"
+count = 1
+clue_scroll_box = true
+
+
+# Unknown wiki drop rate: Grimy avantoe [main/Herbs/1/{{#expr:1/(5*{{#var:herbbase}}) round 1}}]
+# Unknown wiki drop rate: Grimy kwuarm [main/Herbs/1/{{#expr:1/(5*{{#var:herbbase}}) round 1}}]
+# Unknown wiki drop rate: Grimy ranarr weed [main/Herbs/1/{{#expr:1/(4*{{#var:herbbase}}) round 1}}]
+# Unknown wiki drop rate: Grimy snapdragon [main/Herbs/1/{{#expr:1/(4*{{#var:herbbase}}) round 1}}]
+# Unknown wiki drop rate: Grimy cadantine [main/Herbs/1/{{#expr:1/(4*{{#var:herbbase}}) round 1}}]
+# Unknown wiki drop rate: Grimy dwarf weed [main/Herbs/1/{{#expr:1/(4*{{#var:herbbase}}) round 1}}]
+# Unknown wiki drop rate: Grimy lantadyme [main/Herbs/1/{{#expr:1/(3*{{#var:herbbase}}) round 1}}]
+# Unknown wiki drop rate: Grimy torstol [main/Herbs/1/{{#expr:1/(3*{{#var:herbbase}}) round 1}}]
+# Main table pool padding uses a nothing roll (F2P drops removed and/or subtable access missing from wiki parse) (5 weight)

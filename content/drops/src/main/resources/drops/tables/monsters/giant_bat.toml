@@ -1,0 +1,17 @@
+id = "Giant bat Drops"
+npcs = ["npc.bat", "npc.bat_unaggressive"]
+
+[[tertiary]]
+numerator = 1
+denominator = 1
+obj = "obj.rag_giant_bat_bone"
+count = 1
+quest = "quest_ragandboneman1"
+quest_mode = "during"
+
+[[tertiary]]
+numerator = 1
+denominator = 5
+obj = "obj.looting_bag"
+count = 1
+should_drop_looting_bag = true

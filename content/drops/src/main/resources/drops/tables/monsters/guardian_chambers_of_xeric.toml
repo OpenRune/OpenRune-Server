@@ -1,0 +1,14 @@
+id = "Guardian (Chambers of Xeric) Drops"
+npcs = ["npc.raids_stoneguardians_left", "npc.raids_stoneguardians_right", "npc.raids_stoneguardians_left_dead", "npc.raids_stoneguardians_right_dead"]
+
+[[guaranteed]]
+obj = "obj.raids_seed_buchuleaf"
+count = "3..5"
+
+[[guaranteed]]
+obj = "obj.raids_seed_golpar"
+count = "3..5"
+
+[[guaranteed]]
+obj = "obj.raids_seed_noxifer"
+count = "3..5"

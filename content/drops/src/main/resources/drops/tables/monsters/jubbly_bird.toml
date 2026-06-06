@@ -1,0 +1,10 @@
+id = "Jubbly bird Drops"
+npcs = ["npc.100_jubbly_bird"]
+
+[[guaranteed]]
+obj = "obj.100_jubbly_meat_raw"
+count = 1
+
+[[guaranteed]]
+obj = "obj.feather"
+count = "15..45"

@@ -6,7 +6,12 @@ import java.io.File
 import java.nio.file.Files
 import java.nio.file.Path
 
-class GameValTool private constructor(private val entries: List<GameValEntry>) {
+class GameValTool private constructor(
+    private val entries: List<GameValEntry>,
+    private val objFullKeyIndex: Map<String, String>,
+    private val objKeyIndex: Map<String, String>,
+    private val objIdIndex: Map<Int, List<String>>,
+) {
     data class GameValEntry(
         val table: String,
         val key: String,
@@ -78,11 +83,25 @@ class GameValTool private constructor(private val entries: List<GameValEntry>) {
 
     fun totalMappingEntries(): Int = entries.size
 
-    fun reverseLookupNpc(id: Int): List<String> =
-        entries
-            .filter { it.table.equals("npc", ignoreCase = true) && it.id == id }
-            .map { it.fullKey }
-            .distinct()
+    fun reverseLookupNpc(id: Int): List<String> = reverseLookup("npc", id)
+
+    fun reverseLookupObj(id: Int): List<String> = objIdIndex[id].orEmpty()
+
+    fun reverseLookup(table: String, id: Int): List<String> =
+        if (table.equals("obj", ignoreCase = true)) {
+            reverseLookupObj(id)
+        } else {
+            entries
+                .filter { it.table.equals(table, ignoreCase = true) && it.id == id }
+                .map { it.fullKey }
+                .distinct()
+        }
+
+    /** O(1) exact match for a full key such as `obj.rune_scimitar`. */
+    fun lookupObjFullKey(fullKey: String): String? = objFullKeyIndex[fullKey.lowercase()]
+
+    /** O(1) exact match for an obj table key such as `rune_scimitar`. */
+    fun lookupObjKey(key: String): String? = objKeyIndex[key.lowercase()]
 
     private data class ScoredEntry(val score: Int, val entry: GameValEntry)
 
@@ -113,7 +132,22 @@ class GameValTool private constructor(private val entries: List<GameValEntry>) {
                         )
                     }
                 }.sortedBy { it.fullKey }
-            return GameValTool(entries)
+
+            val objEntries = entries.filter { it.table.equals("obj", ignoreCase = true) }
+            val objFullKeyIndex =
+                objEntries.associate { entry -> entry.fullKey.lowercase() to entry.fullKey }
+            val objKeyIndex = objEntries.associate { entry -> entry.key.lowercase() to entry.fullKey }
+            val objIdIndex =
+                objEntries
+                    .groupBy { it.id }
+                    .mapValues { (_, group) -> group.map { it.fullKey }.distinct().sorted() }
+
+            return GameValTool(
+                entries = entries,
+                objFullKeyIndex = objFullKeyIndex,
+                objKeyIndex = objKeyIndex,
+                objIdIndex = objIdIndex,
+            )
         }
 
         private fun rootDirPrefix(root: Path): String {

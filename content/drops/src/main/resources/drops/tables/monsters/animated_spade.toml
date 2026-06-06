@@ -1,0 +1,6 @@
+id = "Animated spade Drops"
+npcs = ["npc.lotr_possessed_spade"]
+
+[[guaranteed]]
+obj = "obj.spade"
+count = 1

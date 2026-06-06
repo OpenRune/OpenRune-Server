@@ -1,0 +1,123 @@
+id = "Mogre Drops"
+npcs = ["npc.mudskipper_ogre"]
+
+[main]
+total = 128
+name = "Mogre Drops"
+
+[[main.entries]]
+weight = 4
+obj = "obj.waterrune"
+count = 5
+
+[[main.entries]]
+weight = 4
+obj = "obj.waterrune"
+count = 7
+
+[[main.entries]]
+weight = 4
+obj = "obj.waterrune"
+count = 14
+
+[[main.entries]]
+weight = 20
+obj = "obj.raw_swordfish"
+count = 1
+
+[[main.entries]]
+weight = 9
+obj = "obj.raw_tuna"
+count = 1
+
+[[main.entries]]
+weight = 7
+obj = "obj.raw_pike"
+count = 1
+
+[[main.entries]]
+weight = 4
+obj = "obj.raw_salmon"
+count = 1
+
+[[main.entries]]
+weight = 3
+obj = "obj.raw_herring"
+count = 1
+
+[[main.entries]]
+weight = 3
+obj = "obj.raw_sardine"
+count = 1
+
+[[main.entries]]
+weight = 3
+obj = "obj.raw_shark"
+count = 1
+
+[[main.entries]]
+weight = 30
+obj = "obj.fishing_bait"
+count = 5
+
+[[main.entries]]
+weight = 10
+obj = "obj.fishing_bait"
+count = 15
+
+[[main.entries]]
+weight = 5
+obj = "obj.mudskipper_hat"
+count = 1
+
+[[main.entries]]
+weight = 3
+obj = "obj.oystershell"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.mudskipper_flippers"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.seaweed"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.staff_of_water"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.fishbowl_water"
+count = 1
+
+[[main.entries]]
+weight = 13
+nothing = true
+
+[[tertiary]]
+numerator = 1
+denominator = 4
+obj = "obj.rag_mogre_bone"
+count = 1
+quest = "quest_ragandboneman2"
+quest_mode = "during"
+
+[[tertiary]]
+numerator = 1
+denominator = 400
+obj = "obj.dorgesh_construction_bone"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 5013
+obj = "obj.dorgesh_construction_bone_curved"
+count = 1
+
+
+# Main table pool padding uses a nothing roll (F2P drops removed and/or subtable access missing from wiki parse) (13 weight)

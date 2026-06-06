@@ -1,0 +1,6 @@
+id = "Corrupt Lizardman Drops"
+npcs = ["npc.shayzienquest_lizardman_boss"]
+
+[[guaranteed]]
+obj = "obj.xeric_fabric"
+count = 3

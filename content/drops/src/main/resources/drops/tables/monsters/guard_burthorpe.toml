@@ -1,0 +1,122 @@
+id = "Guard (Burthorpe) Drops"
+npcs = ["npc.death_guard1", "npc.death_guard2"]
+
+[main]
+total = 128
+name = "Guard (Burthorpe) Drops"
+
+[[main.entries]]
+weight = 8
+obj = "obj.steel_warhammer"
+count = 1
+
+[[main.entries]]
+weight = 6
+obj = "obj.mithril_warhammer"
+count = 1
+
+[[main.entries]]
+weight = 4
+obj = "obj.mithril_platebody"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.mithril_full_helm"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.bloodrune"
+count = 3
+
+[[main.entries]]
+weight = 1
+obj = "obj.chaosrune"
+count = 3
+
+[[main.entries]]
+weight = 1
+obj = "obj.naturerune"
+count = 4
+
+[[main.entries]]
+weight = 2
+obj = "obj.firerune"
+count = 22
+
+[[main.entries]]
+weight = 2
+obj = "obj.earthrune"
+count = 23
+
+[[main.entries]]
+weight = 2
+obj = "obj.airrune"
+count = 25
+
+[[main.entries]]
+weight = 3
+obj = "obj.bronze_arrow"
+count = 12
+
+[[main.entries]]
+weight = 2
+obj = "obj.steel_arrow"
+count = 12
+
+[[main.entries]]
+weight = 1
+obj = "obj.coins"
+count = 2
+
+[[main.entries]]
+weight = 37
+obj = "obj.coins"
+count = 4
+
+[[main.entries]]
+weight = 16
+obj = "obj.coins"
+count = 12
+
+[[main.entries]]
+weight = 9
+obj = "obj.coins"
+count = 18
+
+[[main.entries]]
+weight = 4
+obj = "obj.coins"
+count = 32
+
+[[main.entries]]
+weight = 4
+obj = "obj.coins"
+count = 45
+
+[[main.entries]]
+weight = 2
+obj = "obj.coins"
+count = 50
+
+[[main.entries]]
+weight = 18
+nothing = true
+
+[[main.entries]]
+weight = 3
+obj = "obj.earth_talisman"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.mithril_ore"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 121
+obj = "obj.trail_medium_emote_exp1"
+count = 1
+clue_scroll_box = true

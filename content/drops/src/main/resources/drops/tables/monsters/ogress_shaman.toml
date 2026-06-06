@@ -1,0 +1,169 @@
+id = "Ogress Shaman Drops"
+npcs = ["npc.ogress_shaman1", "npc.ogress_shaman2"]
+
+[main]
+total = 116
+name = "Ogress Shaman Drops"
+
+[[main.entries]]
+weight = 7
+obj = "obj.mithril_kiteshield"
+count = 1
+
+[[main.entries]]
+weight = 7
+obj = "obj.mithril_arrow"
+count = "5..15"
+
+[[main.entries]]
+weight = 7
+obj = "obj.chaosrune"
+count = "15..30"
+
+[[main.entries]]
+weight = 7
+obj = "obj.lawrune"
+count = "8..15"
+
+[[main.entries]]
+weight = 7
+obj = "obj.naturerune"
+count = "8..15"
+
+[[main.entries]]
+weight = 6
+obj = "obj.deathrune"
+count = "8..15"
+
+[[main.entries]]
+weight = 5
+obj = "obj.airrune"
+count = "10..20"
+
+[[main.entries]]
+weight = 5
+obj = "obj.cosmicrune"
+count = "10..15"
+
+[[main.entries]]
+weight = 5
+obj = "obj.earthrune"
+count = "10..20"
+
+[[main.entries]]
+weight = 5
+obj = "obj.firerune"
+count = "10..20"
+
+[[main.entries]]
+weight = 5
+obj = "obj.mindrune"
+count = "10..20"
+
+[[main.entries]]
+weight = 5
+obj = "obj.waterrune"
+count = "10..20"
+
+[[main.entries]]
+weight = 5
+obj = "obj.steel_arrow"
+count = "10..30"
+
+[[main.entries]]
+weight = 5
+obj = "obj.iron_arrow"
+count = "20..40"
+
+[[main.entries]]
+weight = 5
+obj = "obj.limpwurt_root"
+count = 1
+
+[[main.entries]]
+weight = 4
+obj = "obj.uncut_diamond"
+count = 1
+
+[[main.entries]]
+weight = 4
+obj = "obj.uncut_emerald"
+count = 1
+
+[[main.entries]]
+weight = 4
+obj = "obj.uncut_ruby"
+count = 1
+
+[[main.entries]]
+weight = 4
+obj = "obj.uncut_sapphire"
+count = 1
+
+[[main.entries]]
+weight = 9
+obj = "obj.coins"
+count = "500..1000"
+
+[[main.entries]]
+weight = 5
+nothing = true
+
+[[tertiary]]
+numerator = 1
+denominator = 4
+obj = "obj.rag_ogre_bone"
+count = 1
+quest = "quest_ragandboneman2"
+quest_mode = "during"
+
+[[tertiary]]
+numerator = 1
+denominator = 20
+obj = "obj.salmon"
+count = "1..3"
+
+[[tertiary]]
+numerator = 1
+denominator = 30
+obj = "obj.arceuus_corpse_ogre"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 40
+obj = "obj.rune_med_helm"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 100
+obj = "obj.rune_full_helm"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 100
+obj = "obj.rune_battleaxe"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 400
+obj = "obj.dorgesh_construction_bone"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 1200
+obj = "obj.ogre_helmet"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 5013
+obj = "obj.dorgesh_construction_bone_curved"
+count = 1
+
+
+# Main table pool padding uses a nothing roll (F2P drops removed and/or subtable access missing from wiki parse) (5 weight)

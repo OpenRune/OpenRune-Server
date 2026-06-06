@@ -1,0 +1,10 @@
+id = "Vulture Drops"
+npcs = ["npc.rag_vulture", "npc.rag_vulture_flying"]
+
+[[tertiary]]
+numerator = 1
+denominator = 4
+obj = "obj.rag_vulture_bone"
+count = 1
+quest = "quest_ragandboneman2"
+quest_mode = "during"

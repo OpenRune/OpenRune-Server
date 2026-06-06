@@ -1,0 +1,267 @@
+id = "Thermonuclear smoke devil Drops"
+npcs = ["npc.smoke_devil_boss"]
+brimstone_key_roll = true
+brimstone_key_roll_konar_bonus = true
+
+[[pre_roll]]
+numerator = 1
+denominator = 350
+obj = "obj.occult_necklace"
+count = 1
+
+[[pre_roll_separate_rolls]]
+numerator = 1
+denominator = 512
+
+[[pre_roll_separate_rolls.entries]]
+weight = 1
+obj = "obj.smoke_battlestaff"
+count = 1
+
+[[pre_roll_separate_rolls]]
+numerator = 1
+denominator = 2000
+
+[[pre_roll_separate_rolls.entries]]
+weight = 1
+obj = "obj.dragon_chainbody"
+count = 1
+
+[main]
+total = 107
+name = "Thermonuclear smoke devil Drops"
+
+[[main.entries]]
+weight = 5
+obj = "obj.rune_dagger"
+count = 1
+
+[[main.entries]]
+weight = 4
+obj = "obj.rune_chainbody"
+count = 1
+
+[[main.entries]]
+weight = 3
+obj = "obj.red_dragonhide_body"
+count = 1
+
+[[main.entries]]
+weight = 3
+obj = "obj.rune_battleaxe"
+count = 1
+
+[[main.entries]]
+weight = 3
+obj = "obj.mystic_air_staff"
+count = 1
+
+[[main.entries]]
+weight = 3
+obj = "obj.mystic_fire_staff"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.rune_scimitar"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.rune_knife_p++"
+count = 50
+
+[[main.entries]]
+weight = 1
+obj = "obj.dragon_scimitar"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.staff_of_zaros"
+count = 1
+
+[[main.entries]]
+weight = 10
+obj = "obj.smokerune"
+count = 100
+
+[[main.entries]]
+weight = 8
+obj = "obj.airrune"
+count = 300
+
+[[main.entries]]
+weight = 8
+obj = "obj.soulrune"
+count = 100
+
+[[main.entries]]
+weight = 2
+obj = "obj.rune_arrow"
+count = 100
+
+[[main.entries]]
+weight = 1
+obj = "obj.ugthanki_kebab"
+count = 3
+
+[[main.entries]]
+weight = 3
+obj = "obj.potato_tuna+sweetcorn"
+count = 3
+
+[[main.entries]]
+weight = 3
+obj = "obj.sanfew_salve_4_dose"
+count = 2
+
+[[main.entries]]
+weight = 1
+obj = "obj.4doseprayerrestore"
+count = 2
+
+[[main.entries]]
+weight = 2
+obj = "obj.cert_blankrune_high"
+count = 300
+
+[[main.entries]]
+weight = 2
+obj = "obj.cert_molten_glass"
+count = 100
+
+[[main.entries]]
+weight = 2
+obj = "obj.cert_mithril_bar"
+count = 20
+
+[[main.entries]]
+weight = 2
+obj = "obj.cert_magic_logs"
+count = 20
+
+[[main.entries]]
+weight = 2
+obj = "obj.cert_gold_ore"
+count = 200
+
+[[main.entries]]
+weight = 1
+obj = "obj.cert_diamond"
+count = 10
+
+[[main.entries]]
+weight = 15
+obj = "obj.coins"
+count = "10000..19999"
+
+[[main.entries]]
+weight = 1
+obj = "obj.tinderbox"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.fire_talisman"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.cert_desert_goat_horn"
+count = 50
+
+[[main.entries]]
+weight = 2
+obj = "obj.cert_unidentified_toadflax"
+count = 15
+
+[[main.entries]]
+weight = 2
+obj = "obj.xbows_bolt_tips_onyx"
+count = 12
+
+[[main.entries]]
+weight = 2
+obj = "obj.snapdragon_seed"
+count = 2
+
+[[main.entries]]
+weight = 2
+obj = "obj.ranarr_seed"
+count = 2
+
+[[main.entries]]
+weight = 1
+obj = "obj.cert_grapes"
+count = 100
+
+[[main.entries]]
+weight = 1
+obj = "obj.magic_tree_seed"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.dragonstone_ring"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.crystal_key"
+count = 1
+
+[[main.entries]]
+weight = 2
+shared = "gem"
+
+[[main.entries]]
+weight = 1
+nothing = true
+
+[[main.separate_rolls]]
+numerator = 5
+denominator = 856
+
+[[main.separate_rolls.entries]]
+weight = 5
+obj = "obj.cert_raw_shark"
+count = 30
+
+[[main.separate_rolls]]
+numerator = 3
+denominator = 856
+
+[[main.separate_rolls.entries]]
+weight = 3
+obj = "obj.shark_lure"
+count = 60
+
+[[tertiary]]
+numerator = 1
+denominator = 2000
+obj = "obj.jar_of_smoke"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 3000
+obj = "obj.smokepet"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 91
+obj = "obj.trail_clue_hard_map001"
+count = 1
+clue_scroll_box = true
+
+[[tertiary]]
+numerator = 1
+denominator = 475
+obj = "obj.trail_elite_emote_exp1"
+count = 1
+clue_scroll_box = true
+
+
+# Main table pool padding uses a nothing roll (F2P drops removed and/or subtable access missing from wiki parse) (1 weight)

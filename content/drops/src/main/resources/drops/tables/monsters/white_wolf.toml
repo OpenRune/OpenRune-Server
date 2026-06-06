@@ -1,0 +1,17 @@
+id = "White wolf Drops"
+npcs = ["npc.whitewolf_sentry", "npc.whitewolf"]
+
+[[tertiary]]
+numerator = 1
+denominator = 4
+obj = "obj.rag_wolf_bone"
+count = 1
+quest = "quest_ragandboneman2"
+quest_mode = "during"
+
+[[tertiary]]
+numerator = 1
+denominator = 3
+obj = "obj.looting_bag"
+count = 1
+should_drop_looting_bag = true

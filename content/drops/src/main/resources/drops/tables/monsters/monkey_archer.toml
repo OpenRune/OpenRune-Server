@@ -1,0 +1,8 @@
+id = "Monkey Archer Drops"
+npcs = ["npc.mm_monkey_archer", "npc.mm_ravine_archer", "npc.mm_posted_archer", "npc.mm2_monkey_archer"]
+
+[[tertiary]]
+numerator = 1
+denominator = 35
+obj = "obj.arceuus_corpse_monkey"
+count = 1

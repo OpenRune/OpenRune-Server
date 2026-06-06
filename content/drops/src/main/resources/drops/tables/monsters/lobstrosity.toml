@@ -1,0 +1,123 @@
+id = "Lobstrosity Drops"
+npcs = ["npc.fossil_lobster"]
+
+[main]
+total = 118
+name = "Lobstrosity Drops"
+
+[[main.entries]]
+weight = 8
+obj = "obj.waterrune"
+count = 100
+
+[[main.entries]]
+weight = 8
+obj = "obj.chaosrune"
+count = 20
+
+[[main.entries]]
+weight = 5
+obj = "obj.deathrune"
+count = 10
+
+[[main.entries]]
+weight = 6
+obj = "obj.naturerune"
+count = 10
+
+[[main.entries]]
+weight = 9
+obj = "obj.coins"
+count = 1000
+
+[[main.entries]]
+weight = 8
+obj = "obj.fossil_puffer_fish"
+count = 1
+
+[[main.entries]]
+weight = 8
+obj = "obj.cert_giant_seaweed"
+count = 6
+
+[[main.entries]]
+weight = 8
+obj = "obj.cert_seaweed"
+count = 6
+
+[[main.entries]]
+weight = 6
+obj = "obj.cert_toads_legs"
+count = 2
+
+[[main.entries]]
+weight = 5
+obj = "obj.cert_brut_caviar"
+count = 2
+
+[[main.entries]]
+weight = 4
+obj = "obj.bigoysterpearls"
+count = 1
+
+[[main.entries]]
+weight = 14
+shared = "herb"
+
+[[main.entries]]
+weight = 3
+shared = "gem"
+
+[[main.entries]]
+weight = 5
+shared = "rareSeed"
+
+[[main.entries]]
+weight = 21
+nothing = true
+
+[[main.separate_rolls]]
+numerator = 15
+denominator = 944
+
+[[main.separate_rolls.entries]]
+weight = 15
+obj = "obj.unidentified_kwuarm"
+count = 1
+
+[[main.separate_rolls]]
+numerator = 9
+denominator = 944
+
+[[main.separate_rolls.entries]]
+weight = 9
+obj = "obj.unidentified_lantadyme"
+count = 1
+
+[[main.separate_rolls]]
+numerator = 3
+denominator = 236
+
+[[main.separate_rolls.entries]]
+weight = 3
+obj = "obj.unidentified_cadantine"
+count = 1
+
+[[main.separate_rolls]]
+numerator = 3
+denominator = 326
+
+[[main.separate_rolls.entries]]
+weight = 3
+obj = "obj.unidentified_dwarf_weed"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 121
+obj = "obj.trail_clue_easy_simple001"
+count = 1
+clue_scroll_box = true
+
+
+# Main table pool padding uses a nothing roll (F2P drops removed and/or subtable access missing from wiki parse) (21 weight)

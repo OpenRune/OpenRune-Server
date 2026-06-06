@@ -1,0 +1,106 @@
+id = "Skeleton fremennik Drops"
+npcs = ["npc.olaf2_undead_viking_lvl40", "npc.olaf2_undead_viking_lvl40_b", "npc.olaf2_undead_viking_lvl40_c", "npc.olaf2_undead_viking_lvl50", "npc.olaf2_undead_viking_lvl50_b", "npc.olaf2_undead_viking_lvl50_c", "npc.olaf2_undead_viking_lvl60", "npc.olaf2_undead_viking_lvl60_b", "npc.olaf2_undead_viking_lvl60_c"]
+
+[[guaranteed]]
+obj = "obj.olaf2_gate_key_1"
+count = 1
+
+[main]
+total = 128
+name = "Skeleton fremennik Drops"
+
+[[main.entries]]
+weight = 2
+obj = "obj.black_axe"
+count = 1
+
+[[main.entries]]
+weight = 6
+obj = "obj.steel_med_helm"
+count = 1
+
+[[main.entries]]
+weight = 4
+obj = "obj.steel_sword"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.mithril_scimitar"
+count = 1
+
+[[main.entries]]
+weight = 3
+obj = "obj.airrune"
+count = 60
+
+[[main.entries]]
+weight = 3
+obj = "obj.chaosrune"
+count = 9
+
+[[main.entries]]
+weight = 2
+obj = "obj.lawrune"
+count = 2
+
+[[main.entries]]
+weight = 2
+obj = "obj.mithril_arrow"
+count = 8
+
+[[main.entries]]
+weight = 3
+obj = "obj.waterrune"
+count = 20
+
+[[main.entries]]
+weight = 1
+obj = "obj.cosmicrune"
+count = 4
+
+[[main.entries]]
+weight = 23
+obj = "obj.coins"
+count = 20
+
+[[main.entries]]
+weight = 8
+obj = "obj.coins"
+count = 50
+
+[[main.entries]]
+weight = 25
+obj = "obj.coins"
+count = 80
+
+[[main.entries]]
+weight = 4
+obj = "obj.coins"
+count = 90
+
+[[main.entries]]
+weight = 3
+obj = "obj.coins"
+count = 185
+
+[[main.entries]]
+weight = 2
+obj = "obj.coins"
+count = 200
+
+[[main.entries]]
+weight = 5
+obj = "obj.mithril_bar"
+count = 1
+
+[[main.entries]]
+weight = 2
+shared = "gem"
+
+[[main.entries]]
+weight = 29
+nothing = true
+
+
+# Main table pool padding uses a nothing roll (F2P drops removed and/or subtable access missing from wiki parse) (29 weight)

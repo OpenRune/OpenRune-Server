@@ -1,0 +1,107 @@
+id = "Cave crawler Drops"
+npcs = ["npc.slayer_cave_crawler_1", "npc.slayer_cave_crawler_2", "npc.slayer_cave_crawler_3", "npc.slayer_cave_crawler_4", "npc.cave_crawler_ice_1", "npc.cave_crawler_ice_2"]
+
+[main]
+total = 128
+name = "Cave crawler Drops"
+
+[[main.entries]]
+weight = 1
+obj = "obj.bronze_armoured_boots"
+count = 1
+
+[[main.entries]]
+weight = 6
+obj = "obj.naturerune"
+count = "3..4"
+
+[[main.entries]]
+weight = 5
+obj = "obj.firerune"
+count = 12
+
+[[main.entries]]
+weight = 2
+obj = "obj.earthrune"
+count = 9
+
+[[main.entries]]
+weight = 13
+obj = "obj.vial_water"
+count = 1
+
+[[main.entries]]
+weight = 5
+obj = "obj.white_berries"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.unicorn_horn_dust"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.eye_of_newt"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.red_spiders_eggs"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.limpwurt_root"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.snape_grass"
+count = 1
+
+[[main.entries]]
+weight = 5
+obj = "obj.coins"
+count = 3
+
+[[main.entries]]
+weight = 3
+obj = "obj.coins"
+count = 8
+
+[[main.entries]]
+weight = 3
+obj = "obj.coins"
+count = 29
+
+[[main.entries]]
+weight = 1
+obj = "obj.coins"
+count = 10
+
+[[main.entries]]
+weight = 29
+nothing = true
+
+[[main.entries]]
+weight = 22
+shared = "herb"
+
+[[main.entries]]
+weight = 1
+shared = "gem"
+
+[[main.entries]]
+weight = 26
+nothing = true
+
+[[tertiary]]
+numerator = 1
+denominator = 1024
+obj = "obj.varlamore_key_half_1"
+count = 1
+
+
+# Unknown wiki drop rate: Frozen tear [tertiary/Tertiary/<ref name=tapoyauik group=d> Only dropped by those found in the [[Ruins of Tapoyauik]].</ref>]
+# Main table pool padding uses a nothing roll (F2P drops removed and/or subtable access missing from wiki parse) (26 weight)

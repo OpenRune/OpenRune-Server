@@ -1,0 +1,137 @@
+id = "Scarab Mage Drops"
+npcs = ["npc.contact_insectoid_mage", "npc.contact_insectoid_mage_b", "npc.bcs_scarab_mage"]
+
+[main]
+total = 128
+name = "Scarab Mage Drops"
+
+[[main.entries]]
+weight = 3
+obj = "obj.adamant_kiteshield"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.cert_battlestaff"
+count = 3
+
+[[main.entries]]
+weight = 2
+obj = "obj.rune_dagger"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.rune_mace"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.rune_sq_shield"
+count = 1
+
+[[main.entries]]
+weight = 4
+obj = "obj.adamant_arrow"
+count = 36
+
+[[main.entries]]
+weight = 4
+obj = "obj.bloodrune"
+count = 18
+
+[[main.entries]]
+weight = 2
+obj = "obj.firerune"
+count = 250
+
+[[main.entries]]
+weight = 2
+obj = "obj.cosmicrune"
+count = 35
+
+[[main.entries]]
+weight = 2
+obj = "obj.lavarune"
+count = 150
+
+[[main.entries]]
+weight = 2
+obj = "obj.rune_arrow"
+count = 18
+
+[[main.entries]]
+weight = 7
+obj = "obj.cert_raw_lobster"
+count = 15
+
+[[main.entries]]
+weight = 2
+obj = "obj.cert_adamantite_ore"
+count = 14
+
+[[main.entries]]
+weight = 6
+obj = "obj.cert_coal"
+count = 32
+
+[[main.entries]]
+weight = 2
+obj = "obj.cert_desert_goat_horn"
+count = 6
+
+[[main.entries]]
+weight = 2
+obj = "obj.cert_mithril_bar"
+count = 22
+
+[[main.entries]]
+weight = 4
+obj = "obj.cert_raw_bass"
+count = 24
+
+[[main.entries]]
+weight = 3
+obj = "obj.cert_uncut_sapphire"
+count = 4
+
+[[main.entries]]
+weight = 32
+obj = "obj.coins"
+count = "2000..3000"
+
+[[main.entries]]
+weight = 1
+obj = "obj.water_skin4"
+count = 1
+
+[[main.entries]]
+weight = 4
+obj = "obj.bass"
+count = 6
+
+[[main.entries]]
+weight = 1
+obj = "obj.lobster"
+count = 5
+
+[[main.entries]]
+weight = 1
+obj = "obj.salamander_tar_orange"
+count = 80
+
+[[main.entries]]
+weight = 20
+shared = "herb"
+
+[[main.entries]]
+weight = 1
+shared = "rareDrop"
+
+[[main.entries]]
+weight = 15
+shared = "gem"
+
+[[main.entries]]
+weight = 2
+shared = "rareSeed"

@@ -1,0 +1,163 @@
+id = "Tortured gorilla Drops"
+npcs = ["npc.mm2_tortured_gorilla_lab", "npc.mm2_tortured_gorilla_lab_defeated", "npc.mm2_tortured_gorilla_stronghold", "npc.mm2_tortured_gorilla_1", "npc.mm2_tortured_gorilla_2", "npc.mm2_tortured_gorilla_noncombat"]
+
+[main]
+total = 1000
+name = "Tortured gorilla Drops"
+
+[[main.entries]]
+weight = 41
+obj = "obj.rune_med_helm"
+count = 1
+
+[[main.entries]]
+weight = 22
+obj = "obj.rune_scimitar"
+count = 1
+
+[[main.entries]]
+weight = 86
+obj = "obj.xbows_crossbow_bolts_adamantite"
+count = 1
+
+[[main.entries]]
+weight = 76
+obj = "obj.cosmicrune"
+count = "20..30"
+
+[[main.entries]]
+weight = 72
+obj = "obj.earthrune"
+count = "400..600"
+
+[[main.entries]]
+weight = 69
+obj = "obj.deathrune"
+count = "10..20"
+
+[[main.entries]]
+weight = 86
+obj = "obj.javelin_shaft"
+count = "100..300"
+
+[[main.entries]]
+weight = 54
+obj = "obj.cert_adamantite_bar"
+count = "1..2"
+
+[[main.entries]]
+weight = 53
+obj = "obj.cert_ruby"
+count = "2..3"
+
+[[main.entries]]
+weight = 46
+obj = "obj.rune_javelin_head"
+count = 10
+
+[[main.entries]]
+weight = 46
+obj = "obj.dragon_javelin_head"
+count = 5
+
+[[main.entries]]
+weight = 92
+obj = "obj.shark"
+count = 1
+
+[[main.entries]]
+weight = 61
+obj = "obj.1doseprayerrestore"
+count = 1
+
+[[main.entries]]
+weight = 96
+obj = "obj.coins"
+count = "1000..2000"
+
+[[main.entries]]
+weight = 7
+shared = "rareDrop"
+
+[[main.entries]]
+weight = 93
+nothing = true
+
+[[main.separate_rolls]]
+numerator = 1
+denominator = 3000
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.zenyte_shard"
+count = 1
+
+[[main.separate_rolls]]
+numerator = 1
+denominator = 5000
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.ballista_limbs"
+count = 1
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.ballista_spring"
+count = 1
+
+[[main.separate_rolls]]
+numerator = 1
+denominator = 7500
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.ballista_frame_light"
+count = 1
+
+[[main.separate_rolls]]
+numerator = 1
+denominator = 15000
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.ballista_frame_heavy"
+count = 1
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.ballista_rope"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 400
+obj = "obj.dorgesh_construction_bone"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 5013
+obj = "obj.dorgesh_construction_bone_curved"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 285
+obj = "obj.trail_clue_hard_map001"
+count = 1
+clue_scroll_box = true
+
+[[tertiary]]
+numerator = 1
+denominator = 1425
+obj = "obj.trail_elite_emote_exp1"
+count = 1
+clue_scroll_box = true
+
+
+# Unknown wiki drop rate: Grimy kwuarm [main/Herbs/1/{{#expr:1/(40*{{#var:herbbase}}) round 1}}]
+# Unknown wiki drop rate: Grimy cadantine [main/Herbs/1/{{#expr:1/(32*{{#var:herbbase}}) round 1}}]
+# Unknown wiki drop rate: Grimy dwarf weed [main/Herbs/1/{{#expr:1/(32*{{#var:herbbase}}) round 1}}]
+# Unknown wiki drop rate: Grimy lantadyme [main/Herbs/1/{{#expr:1/(24*{{#var:herbbase}}) round 1}}]
+# Main table pool padding uses a nothing roll (F2P drops removed and/or subtable access missing from wiki parse) (93 weight)

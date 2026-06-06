@@ -1,0 +1,122 @@
+id = "King Sand Crab Drops"
+npcs = ["npc.kourend_rockcrab", "npc.kourend_rockcrab_inactive"]
+
+[main]
+total = 128
+name = "King Sand Crab Drops"
+
+[[main.entries]]
+weight = 5
+obj = "obj.steel_platebody"
+count = 1
+
+[[main.entries]]
+weight = 5
+obj = "obj.black_claws"
+count = 1
+
+[[main.entries]]
+weight = 5
+obj = "obj.black_platebody"
+count = 1
+
+[[main.entries]]
+weight = 10
+obj = "obj.mithril_axe"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.dagganoth_melee_gloves"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.dagganoth_melee_feet"
+count = 1
+
+[[main.entries]]
+weight = 5
+obj = "obj.black_warhammer"
+count = 1
+
+[[main.entries]]
+weight = 5
+obj = "obj.adamant_longsword"
+count = 1
+
+[[main.entries]]
+weight = 10
+obj = "obj.waterrune"
+count = "1..40"
+
+[[main.entries]]
+weight = 10
+obj = "obj.earthrune"
+count = "1..40"
+
+[[main.entries]]
+weight = 10
+obj = "obj.coins"
+count = "1..140"
+
+[[main.entries]]
+weight = 10
+obj = "obj.raw_lobster"
+count = 1
+
+[[main.entries]]
+weight = 10
+obj = "obj.raw_bass"
+count = 1
+
+[[main.entries]]
+weight = 10
+obj = "obj.tinderbox"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.casket"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.dagganoth_melee_leg_part"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.dagganoth_melee_head_part"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.dagganoth_melee_body_part"
+count = 1
+
+[[main.entries]]
+weight = 8
+shared = "herb"
+
+[[main.entries]]
+weight = 1
+shared = "gem"
+
+[[main.entries]]
+weight = 1
+shared = "rareSeed"
+
+[[main.entries]]
+weight = 11
+nothing = true
+
+[[tertiary]]
+numerator = 1
+denominator = 121
+obj = "obj.trail_medium_emote_exp1"
+count = 1
+clue_scroll_box = true
+
+
+# Main table pool padding uses a nothing roll (F2P drops removed and/or subtable access missing from wiki parse) (11 weight)

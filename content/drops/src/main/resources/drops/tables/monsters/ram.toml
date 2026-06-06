@@ -1,0 +1,10 @@
+id = "Ram Drops"
+npcs = ["npc.ramsheered", "npc.ramunsheered", "npc.ramunsheered2", "npc.ramunsheered3", "npc.ramunsheeredshaggy"]
+
+[[tertiary]]
+numerator = 1
+denominator = 1
+obj = "obj.rag_ram_bone"
+count = 1
+quest = "quest_ragandboneman1"
+quest_mode = "during"

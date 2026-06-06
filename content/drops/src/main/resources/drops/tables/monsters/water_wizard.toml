@@ -1,0 +1,16 @@
+id = "Water wizard Drops"
+npcs = ["npc.water_wizard"]
+
+[main]
+total = 20
+name = "Water wizard Drops"
+
+[[main.entries]]
+weight = 19
+obj = "obj.waterrune"
+count = "5..10"
+
+[[main.entries]]
+weight = 1
+obj = "obj.water_talisman"
+count = 1

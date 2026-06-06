@@ -1,0 +1,13 @@
+id = "Justiciar Zachariah Drops"
+npcs = ["npc.ma2_boss_saradomin_spawning", "npc.ma2_boss_saradomin"]
+
+[[guaranteed]]
+obj = "obj.ma2_saradomin_heart"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 3
+obj = "obj.looting_bag"
+count = 1
+should_drop_looting_bag = true

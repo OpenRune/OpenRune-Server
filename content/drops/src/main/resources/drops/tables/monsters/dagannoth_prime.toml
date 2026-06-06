@@ -1,0 +1,204 @@
+id = "Dagannoth Prime Drops"
+npcs = ["npc.dagcave_magic_boss"]
+brimstone_key_roll = true
+
+[[guaranteed]]
+obj = "obj.dagganoth_hide"
+count = 1
+
+[main]
+total = 128
+name = "Dagannoth Prime Drops"
+
+[[main.entries]]
+weight = 10
+obj = "obj.earth_battlestaff"
+count = 1
+
+[[main.entries]]
+weight = 5
+obj = "obj.water_battlestaff"
+count = 1
+
+[[main.entries]]
+weight = 4
+obj = "obj.air_battlestaff"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.cert_battlestaff"
+count = "1..10"
+
+[[main.entries]]
+weight = 1
+obj = "obj.viking_sword"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.viking_shield"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.viking_helmet"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.mud_battlestaff"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.dragon_axe"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.viking_helmet_magic"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.dagganoth_mage_body"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.dagganoth_mage_legs"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.seer_ring"
+count = 1
+
+[[main.entries]]
+weight = 6
+obj = "obj.airrune"
+count = "100..200"
+
+[[main.entries]]
+weight = 5
+obj = "obj.earthrune"
+count = "50..100"
+
+[[main.entries]]
+weight = 2
+obj = "obj.bloodrune"
+count = "25..75"
+
+[[main.entries]]
+weight = 2
+obj = "obj.lawrune"
+count = "10..75"
+
+[[main.entries]]
+weight = 2
+obj = "obj.naturerune"
+count = "25..75"
+
+[[main.entries]]
+weight = 2
+obj = "obj.mudrune"
+count = "25..75"
+
+[[main.entries]]
+weight = 2
+obj = "obj.deathrune"
+count = "25..85"
+
+[[main.entries]]
+weight = 10
+obj = "obj.cert_earth_talisman"
+count = "25..75"
+
+[[main.entries]]
+weight = 7
+obj = "obj.cert_air_talisman"
+count = "25..75"
+
+[[main.entries]]
+weight = 7
+obj = "obj.cert_water_talisman"
+count = "1..76"
+
+[[main.entries]]
+weight = 10
+obj = "obj.shark"
+count = 5
+
+[[main.entries]]
+weight = 3
+obj = "obj.coins"
+count = "500..1109"
+
+[[main.entries]]
+weight = 5
+obj = "obj.bigoysterpearls"
+count = 1
+
+[[main.entries]]
+weight = 5
+obj = "obj.cert_blankrune_high"
+count = 150
+
+[[main.entries]]
+weight = 5
+obj = "obj.unidentified_ranarr"
+count = 1
+
+[[main.entries]]
+weight = 8
+shared = "rareDrop"
+
+[[main.entries]]
+weight = 10
+shared = "gem"
+
+[[main.entries]]
+weight = 7
+shared = "rareSeed"
+
+[[main.entries]]
+weight = 1
+nothing = true
+
+[[tertiary]]
+numerator = 1
+denominator = 4
+obj = "obj.rag_dagganoth_bone"
+count = 1
+quest = "quest_ragandboneman2"
+quest_mode = "during"
+
+[[tertiary]]
+numerator = 1
+denominator = 20
+obj = "obj.arceuus_corpse_dagannoth"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 5000
+obj = "obj.primepet"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 39
+obj = "obj.trail_clue_hard_map001"
+count = 1
+clue_scroll_box = true
+
+[[tertiary]]
+numerator = 1
+denominator = 712
+obj = "obj.trail_elite_emote_exp1"
+count = 1
+clue_scroll_box = true
+
+
+# Main table pool padding uses a nothing roll (F2P drops removed and/or subtable access missing from wiki parse) (1 weight)

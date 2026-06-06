@@ -1,0 +1,6 @@
+id = "Goat Drops"
+npcs = ["npc.desert_goat_black1", "npc.desert_goat_black2", "npc.desert_goat_white1", "npc.desert_goat_white2"]
+
+[[guaranteed]]
+obj = "obj.desert_goat_horn"
+count = 1

@@ -1,0 +1,9 @@
+id = "Treus Dayth Drops"
+npcs = ["npc.hauntedmine_boss_ghost"]
+
+[[tertiary]]
+numerator = 1
+denominator = 90
+obj = "obj.trail_clue_beginner"
+count = 1
+clue_scroll_box = true

@@ -1,0 +1,149 @@
+id = "Bloodthirsty Jelly Drops"
+npcs = ["npc.league_superior_jelly"]
+brimstone_key_roll = true
+brimstone_key_roll_konar_bonus = true
+
+[main]
+total = 128
+name = "Bloodthirsty Jelly Drops"
+
+[[main.entries]]
+weight = 11
+obj = "obj.steel_battleaxe"
+count = 1
+
+[[main.entries]]
+weight = 7
+obj = "obj.steel_2h_sword"
+count = 1
+
+[[main.entries]]
+weight = 3
+obj = "obj.steel_axe"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.mithril_kiteshield"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.mithril_armoured_boots"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.rune_full_helm"
+count = 1
+
+[[main.entries]]
+weight = 39
+obj = "obj.coins"
+count = 102
+
+[[main.entries]]
+weight = 30
+obj = "obj.coins"
+count = 44
+
+[[main.entries]]
+weight = 10
+obj = "obj.coins"
+count = 220
+
+[[main.entries]]
+weight = 7
+obj = "obj.coins"
+count = 11
+
+[[main.entries]]
+weight = 2
+obj = "obj.coins"
+count = 460
+
+[[main.entries]]
+weight = 5
+obj = "obj.chaosrune"
+count = 15
+
+[[main.entries]]
+weight = 3
+obj = "obj.deathrune"
+count = 5
+
+[[main.entries]]
+weight = 2
+obj = "obj.gold_bar"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.thread"
+count = 10
+
+[[main.entries]]
+weight = 4
+shared = "gem"
+
+[[main.separate_rolls]]
+numerator = 5
+denominator = 76
+
+[[main.separate_rolls.entries]]
+weight = 5
+obj = "obj.cert_raw_lobster"
+count = "60..80"
+
+[[main.separate_rolls.entries]]
+weight = 5
+obj = "obj.cert_unicorn_horn"
+count = "60..150"
+
+[[main.separate_rolls]]
+numerator = 10
+denominator = 76
+
+[[main.separate_rolls.entries]]
+weight = 10
+obj = "obj.cert_snape_grass"
+count = "60..150"
+
+[[main.separate_rolls.entries]]
+weight = 10
+obj = "obj.irit_seed"
+count = "10..15"
+
+[[main.separate_rolls.entries]]
+weight = 10
+obj = "obj.cert_limpwurt_root"
+count = "60..150"
+
+[[main.separate_rolls]]
+numerator = 15
+denominator = 76
+
+[[main.separate_rolls.entries]]
+weight = 15
+obj = "obj.cert_yew_logs"
+count = "70..90"
+
+[[main.separate_rolls.entries]]
+weight = 15
+obj = "obj.cert_raw_monkfish"
+count = "60..80"
+
+[[main.separate_rolls]]
+numerator = 6
+denominator = 76
+
+[[main.separate_rolls.entries]]
+weight = 6
+obj = "obj.cert_white_berries"
+count = "60..150"
+
+[[tertiary]]
+numerator = 1
+denominator = 1
+obj = "obj.trail_clue_hard_map001"
+count = 1

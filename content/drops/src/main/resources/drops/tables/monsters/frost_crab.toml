@@ -1,0 +1,149 @@
+id = "Frost Crab Drops"
+npcs = ["npc.frostcrab", "npc.frostcrab_inactive", "npc.frostcrab_small", "npc.frostcrab_small_inactive"]
+
+[main]
+total = 182
+name = "Frost Crab Drops"
+
+[[main.entries]]
+weight = 12
+obj = "obj.bronze_pickaxe"
+count = 1
+
+[[main.entries]]
+weight = 10
+obj = "obj.iron_pickaxe"
+count = 1
+
+[[main.entries]]
+weight = 16
+obj = "obj.coins"
+count = 2
+
+[[main.entries]]
+weight = 39
+obj = "obj.coins"
+count = 4
+
+[[main.entries]]
+weight = 8
+obj = "obj.coins"
+count = 8
+
+[[main.entries]]
+weight = 12
+obj = "obj.coins"
+count = 24
+
+[[main.entries]]
+weight = 11
+obj = "obj.coins"
+count = 36
+
+[[main.entries]]
+weight = 7
+obj = "obj.waterrune"
+count = 1
+
+[[main.entries]]
+weight = 7
+obj = "obj.waterrune"
+count = 2
+
+[[main.entries]]
+weight = 4
+obj = "obj.waterrune"
+count = 5
+
+[[main.entries]]
+weight = 4
+obj = "obj.waterrune"
+count = 10
+
+[[main.entries]]
+weight = 4
+obj = "obj.waterrune"
+count = 15
+
+[[main.entries]]
+weight = 8
+obj = "obj.tin_ore"
+count = 3
+
+[[main.entries]]
+weight = 4
+obj = "obj.copper_ore"
+count = 3
+
+[[main.entries]]
+weight = 4
+obj = "obj.iron_ore"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.iron_ore"
+count = 2
+
+[[main.entries]]
+weight = 2
+obj = "obj.coal"
+count = 1
+
+[[main.entries]]
+weight = 4
+obj = "obj.coal"
+count = 2
+
+[[main.entries]]
+weight = 2
+obj = "obj.coal"
+count = 3
+
+[[main.entries]]
+weight = 6
+obj = "obj.chisel"
+count = 1
+
+[[main.entries]]
+weight = 6
+obj = "obj.bucket_water"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.spinach_roll"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.casket"
+count = 1
+
+[[main.entries]]
+weight = 4
+obj = "obj.softclay"
+count = 1
+
+[[main.entries]]
+weight = 2
+shared = "gem"
+
+[[tertiary]]
+numerator = 1
+denominator = 90
+obj = "obj.frozen_tear"
+count = 5
+
+[[tertiary]]
+numerator = 1
+denominator = 1354
+obj = "obj.varlamore_key_half_1"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 121
+obj = "obj.trail_clue_easy_simple001"
+count = 1
+clue_scroll_box = true

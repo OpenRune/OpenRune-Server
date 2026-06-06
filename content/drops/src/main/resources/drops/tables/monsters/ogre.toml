@@ -1,0 +1,50 @@
+id = "Ogre Drops"
+npcs = ["npc.poh_ogre", "npc.lathastrainingogre", "npc.ogre", "npc.ogre2", "npc.godwars_ancient_ogre"]
+
+[main]
+total = 128
+name = "Ogre Drops"
+
+[[main.entries]]
+weight = 109
+nothing = true
+
+[[main.entries]]
+weight = 19
+nothing = true
+
+[[tertiary]]
+numerator = 1
+denominator = 3
+obj = "obj.looting_bag"
+count = 1
+should_drop_looting_bag = true
+
+[[tertiary]]
+numerator = 1
+denominator = 4
+obj = "obj.rag_ogre_bone"
+count = 1
+quest = "quest_ragandboneman2"
+quest_mode = "during"
+
+[[tertiary]]
+numerator = 1
+denominator = 30
+obj = "obj.arceuus_corpse_ogre"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 400
+obj = "obj.dorgesh_construction_bone"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 5013
+obj = "obj.dorgesh_construction_bone_curved"
+count = 1
+
+
+# Main table pool padding uses a nothing roll (F2P drops removed and/or subtable access missing from wiki parse) (19 weight)

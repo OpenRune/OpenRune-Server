@@ -1,0 +1,73 @@
+id = "Crushing hand Drops"
+npcs = ["npc.superior_crawling_hand"]
+
+[main]
+total = 128
+name = "Crushing hand Drops"
+
+[[main.entries]]
+weight = 21
+obj = "obj.leather_gloves"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.wolfengloves_purple"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.wolfengloves_tangerine"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.wolfengloves_crimson"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.wolfengloves_ocean"
+count = 1
+
+[[main.entries]]
+weight = 3
+obj = "obj.gold_ring"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.sapphire_ring"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.emerald_ring"
+count = 1
+
+[[main.entries]]
+weight = 21
+obj = "obj.coins"
+count = 5
+
+[[main.entries]]
+weight = 23
+obj = "obj.coins"
+count = 8
+
+[[main.entries]]
+weight = 2
+shared = "gem"
+
+[[main.entries]]
+weight = 46
+nothing = true
+
+[[tertiary]]
+numerator = 1
+denominator = 500
+obj = "obj.poh_trophydrop_crawlinghand"
+count = 1
+
+
+# Main table pool padding uses a nothing roll (F2P drops removed and/or subtable access missing from wiki parse) (46 weight)

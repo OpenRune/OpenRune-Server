@@ -1,0 +1,10 @@
+id = "Ice wolf Drops"
+npcs = ["npc.trollromance_ice_wolf_1", "npc.trollromance_ice_wolf_1b", "npc.trollromance_ice_wolf_2", "npc.ice_wolf_1", "npc.ice_wolf_2", "npc.ice_wolf_3", "npc.ice_wolf_4", "npc.ice_wolf_5", "npc.ice_wolf_6"]
+
+[[tertiary]]
+numerator = 1
+denominator = 4
+obj = "obj.rag_wolf_bone"
+count = 1
+quest = "quest_ragandboneman2"
+quest_mode = "during"

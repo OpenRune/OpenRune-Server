@@ -1,0 +1,6 @@
+id = "Wolf (Soul Wars) Drops"
+npcs = ["npc.soul_wars_tut_wolf", "npc.soul_wars_wolf"]
+
+[[guaranteed]]
+obj = "obj.soul_wars_bones"
+count = 1

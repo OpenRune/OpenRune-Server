@@ -1,0 +1,14 @@
+id = "Animated Rune Armour Drops"
+npcs = ["npc.warguild_rune_armour"]
+
+[[guaranteed]]
+obj = "obj.rune_full_helm"
+count = 1
+
+[[guaranteed]]
+obj = "obj.rune_platebody"
+count = 1
+
+[[guaranteed]]
+obj = "obj.rune_platelegs"
+count = 1

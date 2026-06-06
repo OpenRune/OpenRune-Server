@@ -1,0 +1,127 @@
+id = "Armoured zombie (Zemouregal's Fort) Drops"
+npcs = ["npc.coa_armoured_zombie_melee_1", "npc.coa_armoured_zombie_melee_2", "npc.coa_armoured_zombie_melee_3", "npc.coa_armoured_zombie_melee_4", "npc.coa_armoured_zombie_melee_5", "npc.coa_armoured_zombie_ranged_1", "npc.coa_armoured_zombie_ranged_2", "npc.coa_armoured_zombie_ranged_3", "npc.coa_armoured_zombie_ranged_4", "npc.coa_armoured_zombie_ranged_5"]
+
+[main]
+total = 128
+name = "Armoured zombie (Zemouregal's Fort) Drops"
+
+[[main.entries]]
+weight = 3
+obj = "obj.cosmicrune"
+count = "15..30"
+
+[[main.entries]]
+weight = 2
+obj = "obj.naturerune"
+count = "6..16"
+
+[[main.entries]]
+weight = 1
+obj = "obj.deathrune"
+count = "6..14"
+
+[[main.entries]]
+weight = 1
+obj = "obj.chaosrune"
+count = "15..30"
+
+[[main.entries]]
+weight = 4
+obj = "obj.bloodrune"
+count = "6..14"
+
+[[main.entries]]
+weight = 11
+obj = "obj.cert_blankrune_high"
+count = "20..50"
+
+[[main.entries]]
+weight = 8
+obj = "obj.rune_arrow"
+count = 12
+
+[[main.entries]]
+weight = 3
+obj = "obj.coins"
+count = "20..30"
+
+[[main.entries]]
+weight = 30
+obj = "obj.coins"
+count = "200..600"
+
+[[main.entries]]
+weight = 5
+obj = "obj.cert_woodplank"
+count = 12
+
+[[main.entries]]
+weight = 6
+obj = "obj.cert_plank_oak"
+count = 6
+
+[[main.entries]]
+weight = 2
+obj = "obj.cert_plank_teak"
+count = 3
+
+[[main.entries]]
+weight = 1
+obj = "obj.cert_eye_of_newt"
+count = "4..8"
+
+[[main.entries]]
+weight = 3
+obj = "obj.rune_mace"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.rune_kiteshield"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.fishing_bait"
+count = 6
+
+[[main.entries]]
+weight = 45
+shared = "herb"
+
+[[main.entries]]
+weight = 1
+shared = "gem"
+
+[[tertiary]]
+numerator = 1
+denominator = 4
+obj = "obj.rag_zombie_bone"
+count = 1
+quest = "quest_ragandboneman2"
+quest_mode = "during"
+
+[[tertiary]]
+numerator = 1
+denominator = 600
+obj = "obj.zombie_helmet_broken"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 600
+obj = "obj.zombie_axe_broken"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 5000
+obj = "obj.champions_challenge_zombie"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 95
+obj = "obj.trail_clue_hard_map001"
+count = 1
+clue_scroll_box = true

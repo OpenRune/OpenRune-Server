@@ -1,0 +1,6 @@
+id = "Seagull (Icyene Graveyard) Drops"
+npcs = ["npc.ig_seagull"]
+
+[[guaranteed]]
+obj = "obj.feather"
+count = 1

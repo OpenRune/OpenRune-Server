@@ -1,0 +1,14 @@
+id = "Rowdy slave Drops"
+npcs = ["npc.slave_rowdy"]
+
+[[guaranteed]]
+obj = "obj.slave_shirt"
+count = 1
+
+[[guaranteed]]
+obj = "obj.slave_robe"
+count = 1
+
+[[guaranteed]]
+obj = "obj.slave_boots"
+count = 1

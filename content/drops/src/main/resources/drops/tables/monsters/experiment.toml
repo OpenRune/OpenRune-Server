@@ -1,0 +1,26 @@
+id = "Experiment Drops"
+npcs = ["npc.fenk_experiment_1", "npc.fenk_experiment_2", "npc.fenk_experiment_3"]
+
+[[guaranteed]]
+obj = "obj.fenk_mausoleum_key"
+count = 1
+quest = "quest_creatureoffenkenstrain"
+quest_mode = "during"
+
+[main]
+total = 4
+name = "Experiment Drops"
+
+[[main.entries]]
+weight = 1
+obj = "obj.rag_experiment_bone"
+count = 1
+quest = "quest_ragandboneman2"
+quest_mode = "during"
+
+[[main.entries]]
+weight = 3
+nothing = true
+
+
+# Main table pool padding uses a nothing roll (F2P drops removed and/or subtable access missing from wiki parse) (3 weight)

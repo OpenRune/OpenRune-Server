@@ -1,0 +1,167 @@
+id = "Ork Drops"
+npcs = ["npc.godwars_ancient_ork1", "npc.godwars_ancient_ork2", "npc.godwars_ancient_ork3", "npc.godwars_ancient_ork4"]
+
+[main]
+total = 128
+name = "Ork Drops"
+
+[[main.entries]]
+weight = 5
+obj = "obj.bronze_2h_sword"
+count = 1
+
+[[main.entries]]
+weight = 5
+obj = "obj.bronze_battleaxe"
+count = 1
+
+[[main.entries]]
+weight = 5
+obj = "obj.bronze_dart"
+count = 2
+
+[[main.entries]]
+weight = 5
+obj = "obj.bronze_halberd"
+count = 1
+
+[[main.entries]]
+weight = 5
+obj = "obj.bronze_scimitar"
+count = 1
+
+[[main.entries]]
+weight = 5
+obj = "obj.bronze_warhammer"
+count = 1
+
+[[main.entries]]
+weight = 5
+obj = "obj.iron_dart"
+count = 2
+
+[[main.entries]]
+weight = 5
+obj = "obj.iron_longsword"
+count = 1
+
+[[main.entries]]
+weight = 5
+obj = "obj.iron_mace"
+count = 1
+
+[[main.entries]]
+weight = 5
+obj = "obj.iron_scimitar"
+count = 1
+
+[[main.entries]]
+weight = 5
+obj = "obj.steel_axe"
+count = 1
+
+[[main.entries]]
+weight = 5
+obj = "obj.steel_dagger"
+count = 1
+
+[[main.entries]]
+weight = 5
+obj = "obj.steel_mace"
+count = 1
+
+[[main.entries]]
+weight = 4
+obj = "obj.iron_spear"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.bronze_scimitar"
+count = 1
+
+[[main.entries]]
+weight = 5
+obj = "obj.bronze_med_helm"
+count = 1
+
+[[main.entries]]
+weight = 5
+obj = "obj.bronze_full_helm"
+count = 1
+
+[[main.entries]]
+weight = 5
+obj = "obj.bronze_platelegs"
+count = 1
+
+[[main.entries]]
+weight = 5
+obj = "obj.iron_chainbody"
+count = 1
+
+[[main.entries]]
+weight = 5
+obj = "obj.steel_med_helm"
+count = 1
+
+[[main.entries]]
+weight = 8
+obj = "obj.coins"
+count = 10
+
+[[main.entries]]
+weight = 5
+obj = "obj.coins"
+count = 5
+
+[[main.entries]]
+weight = 5
+obj = "obj.coins"
+count = 8
+
+[[main.entries]]
+weight = 5
+obj = "obj.coins"
+count = 12
+
+[[main.entries]]
+weight = 5
+obj = "obj.coins"
+count = 23
+
+[[main.entries]]
+weight = 5
+obj = "obj.knife"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 3
+obj = "obj.looting_bag"
+count = 1
+should_drop_looting_bag = true
+
+[[tertiary]]
+numerator = 1
+denominator = 121
+obj = "obj.trail_clue_easy_simple001"
+count = 1
+clue_scroll_box = true
+exclude_ring_of_wealth = true
+
+[[tertiary]]
+numerator = 1
+denominator = 64
+obj = "obj.trail_clue_easy_simple001"
+count = 1
+clue_scroll_box = true
+require_ring_of_wealth = true
+require_wilderness = true
+
+[[tertiary]]
+numerator = 1
+denominator = 121
+obj = "obj.trail_clue_hard_map001"
+count = 1
+clue_scroll_box = true

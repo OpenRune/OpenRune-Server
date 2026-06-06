@@ -1,0 +1,6 @@
+id = "Ice Queen Drops"
+npcs = ["npc.ice_queen"]
+
+[[guaranteed]]
+obj = "obj.ice_gloves"
+count = 1

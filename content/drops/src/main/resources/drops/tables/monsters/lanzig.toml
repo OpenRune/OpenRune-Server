@@ -1,0 +1,153 @@
+id = "Lanzig Drops"
+npcs = ["npc.viking_man4"]
+
+[main]
+total = 512
+name = "Lanzig Drops"
+
+[[main.entries]]
+weight = 100
+obj = "obj.bronze_warhammer"
+count = 1
+
+[[main.entries]]
+weight = 70
+obj = "obj.iron_warhammer"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.viking_sword"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.viking_shield"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.viking_helmet"
+count = 1
+
+[[main.entries]]
+weight = 10
+obj = "obj.copper_ore"
+count = 5
+
+[[main.entries]]
+weight = 10
+obj = "obj.tin_ore"
+count = 5
+
+[[main.entries]]
+weight = 10
+obj = "obj.iron_ore"
+count = 5
+
+[[main.entries]]
+weight = 10
+obj = "obj.coal"
+count = 1
+
+[[main.entries]]
+weight = 10
+obj = "obj.steel_bar"
+count = 1
+
+[[main.entries]]
+weight = 20
+obj = "obj.coins"
+count = 6
+
+[[main.entries]]
+weight = 15
+obj = "obj.coins"
+count = 15
+
+[[main.entries]]
+weight = 10
+obj = "obj.coins"
+count = 16
+
+[[main.entries]]
+weight = 10
+obj = "obj.coins"
+count = 20
+
+[[main.entries]]
+weight = 5
+obj = "obj.coins"
+count = 38
+
+[[main.entries]]
+weight = 50
+obj = "obj.tinderbox"
+count = 1
+
+[[main.entries]]
+weight = 50
+obj = "obj.vial_empty"
+count = 1
+
+[[main.entries]]
+weight = 50
+obj = "obj.vial_water"
+count = 1
+
+[[main.entries]]
+weight = 17
+obj = "obj.bucket_empty"
+count = 1
+
+[[main.entries]]
+weight = 30
+obj = "obj.viking_strung_lyre"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.beer"
+count = 1
+
+[[main.entries]]
+weight = 4
+obj = "obj.eye_of_newt"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.snape_grass"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.jangerberries"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.blamish_oil"
+count = 1
+
+[[main.entries]]
+weight = 10
+shared = "herb"
+
+[[main.entries]]
+weight = 1
+shared = "gem"
+
+[[main.entries]]
+weight = 10
+nothing = true
+
+[[tertiary]]
+numerator = 1
+denominator = 121
+obj = "obj.trail_clue_easy_simple001"
+count = 1
+clue_scroll_box = true
+
+
+# Main table pool padding uses a nothing roll (F2P drops removed and/or subtable access missing from wiki parse) (10 weight)

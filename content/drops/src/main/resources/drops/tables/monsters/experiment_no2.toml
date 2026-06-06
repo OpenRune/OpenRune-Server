@@ -1,0 +1,81 @@
+id = "Experiment No.2 Drops"
+npcs = ["npc.grim_experiment"]
+
+[[guaranteed]]
+obj = "obj.grim_turnip"
+count = 1
+
+[main]
+total = 128
+name = "Experiment No.2 Drops"
+
+[[main.entries]]
+weight = 10
+obj = "obj.earthrune"
+count = "1..20"
+
+[[main.entries]]
+weight = 10
+obj = "obj.waterrune"
+count = "1..14"
+
+[[main.entries]]
+weight = 7
+obj = "obj.chaosrune"
+count = "1..15"
+
+[[main.entries]]
+weight = 3
+obj = "obj.naturerune"
+count = "1..5"
+
+[[main.entries]]
+weight = 27
+obj = "obj.unidentified_tarromin"
+count = "1..3"
+
+[[main.entries]]
+weight = 18
+obj = "obj.coins"
+count = "1..75"
+
+[[main.entries]]
+weight = 3
+obj = "obj.coins"
+count = "76..100"
+
+[[main.entries]]
+weight = 1
+obj = "obj.mole_claw"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.mystic_earth_staff"
+count = 1
+
+[[main.entries]]
+weight = 42
+shared = "herb"
+
+[[main.entries]]
+weight = 6
+nothing = true
+
+[[tertiary]]
+numerator = 1
+denominator = 4
+obj = "obj.rag_experiment_bone"
+count = 1
+quest = "quest_ragandboneman2"
+quest_mode = "during"
+
+[[tertiary]]
+numerator = 1
+denominator = 121
+obj = "obj.trail_clue_hard_map001"
+count = 1
+clue_scroll_box = true
+
+
+# Main table pool padding uses a nothing roll (F2P drops removed and/or subtable access missing from wiki parse) (6 weight)

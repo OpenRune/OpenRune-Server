@@ -1,0 +1,22 @@
+id = "Soldier (tier 5) Drops"
+npcs = ["npc.shayzien_armour_5_noncombat", "npc.shayzien_armour_5_combat"]
+
+[[guaranteed]]
+obj = "obj.shayzien_helm_5"
+count = 1
+
+[[guaranteed]]
+obj = "obj.shayzien_body_5"
+count = 1
+
+[[guaranteed]]
+obj = "obj.shayzien_legs_5"
+count = 1
+
+[[guaranteed]]
+obj = "obj.shayzien_gloves_5"
+count = 1
+
+[[guaranteed]]
+obj = "obj.shayzien_boots_5"
+count = 1

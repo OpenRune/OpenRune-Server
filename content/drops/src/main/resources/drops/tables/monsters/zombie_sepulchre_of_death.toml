@@ -1,0 +1,107 @@
+id = "Zombie (Sepulchre of Death) Drops"
+npcs = ["npc.macro_zombie"]
+
+[main]
+total = 268
+name = "Zombie (Sepulchre of Death) Drops"
+
+[[main.entries]]
+weight = 1
+obj = "obj.bones"
+count = 10
+
+[[main.entries]]
+weight = 1
+obj = "obj.big_bones"
+count = 10
+
+[[main.entries]]
+weight = 1
+obj = "obj.dragon_bones"
+count = 2
+
+[[main.entries]]
+weight = 5
+obj = "obj.big_bones"
+count = 1
+
+[[main.entries]]
+weight = 5
+obj = "obj.dragon_bones"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.dragon_bones"
+count = 3
+
+[[main.entries]]
+weight = 51
+obj = "obj.big_bones"
+count = 1
+
+[[main.entries]]
+weight = 20
+obj = "obj.big_bones"
+count = 2
+
+[[main.entries]]
+weight = 15
+obj = "obj.big_bones"
+count = 6
+
+[[main.entries]]
+weight = 5
+obj = "obj.bones"
+count = 3
+
+[[main.entries]]
+weight = 20
+obj = "obj.airrune"
+count = 40
+
+[[main.entries]]
+weight = 20
+obj = "obj.cosmicrune"
+count = 5
+
+[[main.entries]]
+weight = 20
+obj = "obj.chaosrune"
+count = 35
+
+[[main.entries]]
+weight = 15
+obj = "obj.chaosrune"
+count = 50
+
+[[main.entries]]
+weight = 24
+obj = "obj.fishing_bait"
+count = 27
+
+[[main.entries]]
+weight = 40
+obj = "obj.fishing_bait"
+count = 50
+
+[[main.entries]]
+weight = 10
+obj = "obj.coins"
+count = 26
+
+[[main.entries]]
+weight = 14
+shared = "gem"
+
+[[tertiary]]
+numerator = 1
+denominator = 400
+obj = "obj.dorgesh_construction_bone"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 5
+obj = "obj.dorgesh_construction_bone_curved"
+count = 1

@@ -1,0 +1,101 @@
+id = "Cuffs Drops"
+npcs = ["npc.falador_doric_area_man1"]
+
+[main]
+total = 128
+name = "Cuffs Drops"
+
+[[main.entries]]
+weight = 2
+obj = "obj.bronze_med_helm"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.iron_dagger"
+count = 1
+
+[[main.entries]]
+weight = 22
+obj = "obj.bolt"
+count = "2..12"
+
+[[main.entries]]
+weight = 3
+obj = "obj.bronze_arrow"
+count = 7
+
+[[main.entries]]
+weight = 2
+obj = "obj.earthrune"
+count = 4
+
+[[main.entries]]
+weight = 2
+obj = "obj.firerune"
+count = 6
+
+[[main.entries]]
+weight = 2
+obj = "obj.mindrune"
+count = 9
+
+[[main.entries]]
+weight = 1
+obj = "obj.chaosrune"
+count = 2
+
+[[main.entries]]
+weight = 38
+obj = "obj.coins"
+count = 3
+
+[[main.entries]]
+weight = 9
+obj = "obj.coins"
+count = 5
+
+[[main.entries]]
+weight = 4
+obj = "obj.coins"
+count = 15
+
+[[main.entries]]
+weight = 1
+obj = "obj.coins"
+count = 25
+
+[[main.entries]]
+weight = 8
+nothing = true
+
+[[main.entries]]
+weight = 5
+obj = "obj.fishing_bait"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.copper_ore"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.earth_talisman"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.cabbage"
+count = 1
+
+[[main.entries]]
+weight = 23
+shared = "herb"
+
+[[tertiary]]
+numerator = 1
+denominator = 90
+obj = "obj.trail_clue_beginner"
+count = 1
+clue_scroll_box = true

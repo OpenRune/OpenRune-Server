@@ -1,0 +1,78 @@
+id = "Shadow warrior Drops"
+npcs = ["npc.shadow_warrior"]
+
+[main]
+total = 128
+name = "Shadow warrior Drops"
+
+[[main.entries]]
+weight = 1
+obj = "obj.adamant_spear"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.black_dagger_p"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.black_knife"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.black_longsword"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.black_robe"
+count = 1
+
+[[main.entries]]
+weight = 9
+obj = "obj.cosmicrune"
+count = 3
+
+[[main.entries]]
+weight = 6
+obj = "obj.bloodrune"
+count = 2
+
+[[main.entries]]
+weight = 4
+obj = "obj.airrune"
+count = 45
+
+[[main.entries]]
+weight = 4
+obj = "obj.deathrune"
+count = 2
+
+[[main.entries]]
+weight = 47
+obj = "obj.coins"
+count = 8
+
+[[main.entries]]
+weight = 22
+nothing = true
+
+[[main.entries]]
+weight = 4
+obj = "obj.mithril_bar"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.weapon_poison"
+count = 1
+
+[[main.entries]]
+weight = 18
+shared = "herb"
+
+[[main.entries]]
+weight = 8
+shared = "gem"

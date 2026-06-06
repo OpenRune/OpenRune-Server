@@ -1,0 +1,73 @@
+id = "Molanisk Drops"
+npcs = ["npc.molanisk"]
+
+[main]
+total = 128
+name = "Molanisk Drops"
+
+[[main.entries]]
+weight = 10
+obj = "obj.waterrune"
+count = "1..14"
+
+[[main.entries]]
+weight = 10
+obj = "obj.earthrune"
+count = "1..20"
+
+[[main.entries]]
+weight = 3
+obj = "obj.naturerune"
+count = "1..5"
+
+[[main.entries]]
+weight = 5
+obj = "obj.cosmicrune"
+count = "1..7"
+
+[[main.entries]]
+weight = 2
+obj = "obj.mudrune"
+count = "1..15"
+
+[[main.entries]]
+weight = 37
+obj = "obj.dorgesh_swamp_weed"
+count = "1..4"
+
+[[main.entries]]
+weight = 10
+obj = "obj.dorgesh_swamp_weed"
+count = "5..8"
+
+[[main.entries]]
+weight = 10
+obj = "obj.coins"
+count = "1..75"
+
+[[main.entries]]
+weight = 1
+obj = "obj.mole_claw"
+count = 1
+
+[[main.entries]]
+weight = 32
+shared = "herb"
+
+[[main.entries]]
+weight = 7
+shared = "gem"
+
+[[main.entries]]
+weight = 1
+nothing = true
+
+[[tertiary]]
+numerator = 1
+denominator = 121
+obj = "obj.trail_clue_easy_simple001"
+count = 1
+clue_scroll_box = true
+
+
+# Main table pool padding uses a nothing roll (F2P drops removed and/or subtable access missing from wiki parse) (1 weight)

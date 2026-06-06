@@ -1,0 +1,24 @@
+id = "Undead chicken Drops"
+npcs = ["npc.ahoy_undead_chicken"]
+
+[[guaranteed]]
+obj = "obj.raw_chicken_undead"
+count = 1
+
+[main]
+total = 128
+name = "Undead chicken Drops"
+
+[[main.entries]]
+weight = 64
+obj = "obj.feather"
+count = 5
+
+[[main.entries]]
+weight = 32
+obj = "obj.feather"
+count = 15
+
+[[main.entries]]
+weight = 32
+nothing = true

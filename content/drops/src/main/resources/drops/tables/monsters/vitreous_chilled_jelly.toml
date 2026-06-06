@@ -1,0 +1,116 @@
+id = "Vitreous Chilled Jelly Drops"
+npcs = ["npc.superior_chilled_jelly"]
+
+[[guaranteed]]
+obj = "obj.konar_key"
+count = 1
+should_drop_brimstone_key = true
+
+[main]
+total = 128
+name = "Vitreous Chilled Jelly Drops"
+
+[[main.entries]]
+weight = 11
+obj = "obj.adamant_battleaxe"
+count = 1
+
+[[main.entries]]
+weight = 5
+obj = "obj.black_2h_sword"
+count = 1
+
+[[main.entries]]
+weight = 3
+obj = "obj.adamant_axe"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.adamant_2h_sword"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.mithril_armoured_boots"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.rune_kiteshield"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.rune_full_helm"
+count = 1
+
+[[main.entries]]
+weight = 5
+obj = "obj.chaosrune"
+count = 45
+
+[[main.entries]]
+weight = 3
+obj = "obj.deathrune"
+count = 15
+
+[[main.entries]]
+weight = 27
+obj = "obj.coins"
+count = 44
+
+[[main.entries]]
+weight = 27
+obj = "obj.coins"
+count = 102
+
+[[main.entries]]
+weight = 9
+obj = "obj.coins"
+count = 220
+
+[[main.entries]]
+weight = 6
+obj = "obj.coins"
+count = 11
+
+[[main.entries]]
+weight = 2
+obj = "obj.coins"
+count = 460
+
+[[main.entries]]
+weight = 16
+obj = "obj.lobster"
+count = 2
+
+[[main.entries]]
+weight = 2
+obj = "obj.gold_bar"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.thread"
+count = 10
+
+[[main.entries]]
+weight = 4
+shared = "gem"
+
+[[tertiary]]
+numerator = 1
+denominator = 200
+obj = "obj.varlamore_key_half_1"
+count = 1
+
+[[tertiary]]
+numerator = 10
+denominator = 60
+obj = "obj.trail_clue_hard_map001"
+count = 1
+clue_scroll_box = true
+
+
+# Unknown wiki drop rate: Frozen tear [tertiary/Tertiary/Rare]

@@ -1,0 +1,8 @@
+id = "Wormbrain Drops"
+npcs = ["npc.wormbrain"]
+
+[[guaranteed]]
+obj = "obj.mappart2"
+count = 1
+quest = "quest_dragonslayer1"
+quest_mode = "during"

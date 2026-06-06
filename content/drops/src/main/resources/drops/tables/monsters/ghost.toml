@@ -1,0 +1,16 @@
+id = "Ghost Drops"
+npcs = ["npc.ghost", "npc.ghost2", "npc.ghost3", "npc.ghost4", "npc.ghost5", "npc.ghost6", "npc.ghost7", "npc.ghost8", "npc.ghost_unaggressive", "npc.ghost3_unaggressive", "npc.ghost5_unaggressive", "npc.ghost7_unaggressive", "npc.ghost8_unaggressive", "npc.house_ghost", "npc.house_ghost2", "npc.house_ghost3", "npc.house_ghost4", "npc.house_ghost5", "npc.sos_death_ghost", "npc.sos_death_ghost_b", "npc.sos_death_ghost_c", "npc.sos_death_ghost_d", "npc.sos_death_ghost2", "npc.sos_death_ghost2_b", "npc.sos_death_ghost2_c", "npc.sos_death_ghost2_d", "npc.kourend_ghost1", "npc.kourend_ghost2"]
+
+[[tertiary]]
+numerator = 1
+denominator = 7
+obj = "obj.looting_bag"
+count = 1
+should_drop_looting_bag = true
+
+[[tertiary]]
+numerator = 1
+denominator = 90
+obj = "obj.trail_clue_beginner"
+count = 1
+clue_scroll_box = true

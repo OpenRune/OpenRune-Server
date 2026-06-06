@@ -1,0 +1,264 @@
+id = "Calvar'ion Drops"
+npcs = ["npc.vetion_single", "npc.vetion_2_single"]
+brimstone_key_roll = true
+
+[main]
+total = 128
+name = "Calvar'ion Drops"
+
+[[main.entries]]
+weight = 5
+obj = "obj.dark_crab"
+count = 8
+
+[[main.entries]]
+weight = 5
+obj = "obj.4dose2restore"
+count = 3
+
+[[main.entries]]
+weight = 3
+obj = "obj.staff_of_zaros"
+count = 1
+
+[[main.entries]]
+weight = 3
+obj = "obj.rune_2h_sword"
+count = 1
+
+[[main.entries]]
+weight = 12
+obj = "obj.rune_pickaxe"
+count = 1
+
+[[main.entries]]
+weight = 7
+obj = "obj.chaosrune"
+count = 220
+
+[[main.entries]]
+weight = 7
+obj = "obj.deathrune"
+count = 120
+
+[[main.entries]]
+weight = 7
+obj = "obj.bloodrune"
+count = 180
+
+[[main.entries]]
+weight = 4
+obj = "obj.mcannonball"
+count = 180
+
+[[main.entries]]
+weight = 4
+obj = "obj.cert_uncut_ruby"
+count = 17
+
+[[main.entries]]
+weight = 3
+obj = "obj.cert_uncut_diamond"
+count = 7
+
+[[main.entries]]
+weight = 2
+obj = "obj.uncut_dragonstone"
+count = 1
+
+[[main.entries]]
+weight = 6
+obj = "obj.cert_gold_ore"
+count = 200
+
+[[main.entries]]
+weight = 5
+obj = "obj.cert_limpwurt_root"
+count = 19
+
+[[main.entries]]
+weight = 5
+obj = "obj.cert_magic_logs"
+count = 60
+
+[[main.entries]]
+weight = 5
+obj = "obj.cert_plank_oak"
+count = 220
+
+[[main.entries]]
+weight = 3
+obj = "obj.cert_dragon_bones"
+count = 60
+
+[[main.entries]]
+weight = 2
+obj = "obj.cert_mortmyremushroom"
+count = 120
+
+[[main.entries]]
+weight = 5
+obj = "obj.cert_wine_of_zamorak"
+count = 35
+
+[[main.entries]]
+weight = 1
+obj = "obj.cert_unidentified_ranarr"
+count = 60
+
+[[main.entries]]
+weight = 21
+obj = "obj.coins"
+count = 12000
+
+[[main.entries]]
+weight = 1
+obj = "obj.yew_seed"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.magic_tree_seed"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.palm_tree_seed"
+count = 1
+
+[[main.entries]]
+weight = 4
+obj = "obj.cert_bucket_supercompost"
+count = 60
+
+[[main.entries]]
+weight = 5
+obj = "obj.cert_sanfew_salve_4_dose"
+count = 6
+
+[[main.entries]]
+weight = 1
+obj = "obj.wilderness_fishing_bait"
+count = 280
+
+[[main.separate_rolls]]
+numerator = 1
+denominator = 358
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.dragon_2h_sword"
+count = 1
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.dragon_pickaxe"
+count = 1
+
+[[main.separate_rolls]]
+numerator = 1
+denominator = 618
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.wbr_vetion_skull"
+count = 1
+
+[[main.separate_rolls]]
+numerator = 1
+denominator = 716
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.rotg"
+count = 1
+
+[[main.separate_rolls]]
+numerator = 1
+denominator = 912
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.wbr_voidwaker_blade"
+count = 1
+
+[[main.separate_rolls]]
+numerator = 1
+denominator = 18
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.blighted_anglerfish"
+count = "5..6"
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.blighted_karambwan"
+count = "5..6"
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.blighted_3dose2restore"
+count = "3..4"
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.blighted_4dose2restore"
+count = "3..4"
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.2doserangerspotion"
+count = "2..3"
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.2dose2combat"
+count = "2..3"
+
+[[tertiary]]
+numerator = 1
+denominator = 3
+obj = "obj.looting_bag"
+count = 1
+should_drop_looting_bag = true
+
+[[tertiary]]
+numerator = 1
+denominator = 400
+obj = "obj.dorgesh_construction_bone"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 5013
+obj = "obj.dorgesh_construction_bone_curved"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 5000
+obj = "obj.champions_challenge_skeleton"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 2800
+obj = "obj.vetion_pet"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 95
+obj = "obj.trail_elite_emote_exp1"
+count = 1
+clue_scroll_box = true
+exclude_ring_of_wealth = true
+
+[[tertiary]]
+numerator = 1
+denominator = 50
+obj = "obj.trail_elite_emote_exp1"
+count = 1
+clue_scroll_box = true
+require_ring_of_wealth = true

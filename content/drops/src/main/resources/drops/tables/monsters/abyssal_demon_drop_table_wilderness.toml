@@ -1,0 +1,144 @@
+id = "Abyssal demon Wilderness Slayer Cave"
+npcs = ["npc.wild_cave_abyssal"]
+
+[main]
+total = 68
+name = "Abyssal demon Wilderness Slayer Cave"
+
+[[main.entries]]
+weight = 4
+obj = "obj.black_sword"
+count = 1
+
+[[main.entries]]
+weight = 3
+obj = "obj.steel_battleaxe"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.black_axe"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.mithril_kiteshield"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.rune_chainbody"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.rune_med_helm"
+count = 1
+
+[[main.entries]]
+weight = 8
+obj = "obj.airrune"
+count = 50
+
+[[main.entries]]
+weight = 7
+obj = "obj.chaosrune"
+count = 10
+
+[[main.entries]]
+weight = 4
+obj = "obj.bloodrune"
+count = 7
+
+[[main.entries]]
+weight = 1
+obj = "obj.lawrune"
+count = 3
+
+[[main.entries]]
+weight = 5
+obj = "obj.cert_blankrune_high"
+count = 60
+
+[[main.entries]]
+weight = 2
+obj = "obj.adamantite_bar"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.cosmic_talisman"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.chaos_talisman"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.3dose1defense"
+count = 1
+
+[[main.entries]]
+weight = 19
+shared = "herb"
+
+[[main.entries]]
+weight = 2
+shared = "rareDrop"
+
+[[main.entries]]
+weight = 5
+shared = "gem"
+
+[[main.separate_rolls]]
+numerator = 1
+denominator = 512
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.abyssal_whip"
+count = 1
+
+[[main.separate_rolls]]
+numerator = 1
+denominator = 32000
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.abyssal_dagger"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 3
+obj = "obj.looting_bag"
+count = 1
+should_drop_looting_bag = true
+
+[[tertiary]]
+numerator = 1
+denominator = 25
+obj = "obj.arceuus_corpse_abyssal"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 6000
+obj = "obj.poh_trophydrop_abyssaldemon"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 121
+obj = "obj.trail_clue_hard_map001"
+count = 1
+clue_scroll_box = true
+
+[[tertiary]]
+numerator = 1
+denominator = 1140
+obj = "obj.trail_elite_emote_exp1"
+count = 1
+clue_scroll_box = true

@@ -1,0 +1,250 @@
+id = "Mammoth Drops"
+npcs = ["npc.wilderness_mammoth"]
+
+[main]
+total = 640
+name = "Mammoth Drops"
+
+[[main.entries]]
+weight = 30
+obj = "obj.potato_seed"
+count = 3
+
+[[main.entries]]
+weight = 20
+obj = "obj.onion_seed"
+count = 3
+
+[[main.entries]]
+weight = 16
+obj = "obj.cabbage_seed"
+count = 3
+
+[[main.entries]]
+weight = 14
+obj = "obj.tomato_seed"
+count = 3
+
+[[main.entries]]
+weight = 10
+obj = "obj.sweetcorn_seed"
+count = 3
+
+[[main.entries]]
+weight = 8
+obj = "obj.strawberry_seed"
+count = 3
+
+[[main.entries]]
+weight = 2
+obj = "obj.watermelon_seed"
+count = 3
+
+[[main.entries]]
+weight = 30
+obj = "obj.redberry_bush_seed"
+count = 2
+
+[[main.entries]]
+weight = 20
+obj = "obj.cadavaberry_bush_seed"
+count = 2
+
+[[main.entries]]
+weight = 16
+obj = "obj.dwellberry_bush_seed"
+count = 2
+
+[[main.entries]]
+weight = 14
+obj = "obj.jangerberry_bush_seed"
+count = 2
+
+[[main.entries]]
+weight = 10
+obj = "obj.whiteberry_bush_seed"
+count = 2
+
+[[main.entries]]
+weight = 10
+obj = "obj.poisonivy_bush_seed"
+count = 2
+
+[[main.entries]]
+weight = 30
+obj = "obj.barley_seed"
+count = 4
+
+[[main.entries]]
+weight = 20
+obj = "obj.hammerstone_hop_seed"
+count = 4
+
+[[main.entries]]
+weight = 16
+obj = "obj.asgarnian_hop_seed"
+count = 4
+
+[[main.entries]]
+weight = 14
+obj = "obj.jute_seed"
+count = 4
+
+[[main.entries]]
+weight = 10
+obj = "obj.yanillian_hop_seed"
+count = 4
+
+[[main.entries]]
+weight = 8
+obj = "obj.krandorian_hop_seed"
+count = 4
+
+[[main.entries]]
+weight = 2
+obj = "obj.wildblood_hop_seed"
+count = 4
+
+[[main.entries]]
+weight = 18
+obj = "obj.apple_tree_seed"
+count = 1
+
+[[main.entries]]
+weight = 12
+obj = "obj.banana_tree_seed"
+count = 1
+
+[[main.entries]]
+weight = 10
+obj = "obj.orange_tree_seed"
+count = 1
+
+[[main.entries]]
+weight = 6
+obj = "obj.curry_tree_seed"
+count = 1
+
+[[main.entries]]
+weight = 3
+obj = "obj.pineapple_tree_seed"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.papaya_tree_seed"
+count = 1
+
+[[main.entries]]
+weight = 8
+shared = "herb"
+
+[[main.entries]]
+weight = 2
+shared = "rareDrop"
+
+[[main.entries]]
+weight = 3
+shared = "gem"
+
+[[main.entries]]
+weight = 277
+nothing = true
+
+[[main.separate_rolls]]
+numerator = 13
+denominator = 128
+
+[[main.separate_rolls.entries]]
+weight = 13
+obj = "obj.coins"
+count = 30
+
+[[main.separate_rolls]]
+numerator = 7
+denominator = 128
+
+[[main.separate_rolls.entries]]
+weight = 7
+obj = "obj.coins"
+count = 180
+
+[[main.separate_rolls]]
+numerator = 5
+denominator = 128
+
+[[main.separate_rolls.entries]]
+weight = 5
+obj = "obj.acorn"
+count = 1
+
+[[main.separate_rolls.entries]]
+weight = 5
+obj = "obj.limpwurt_seed"
+count = 2
+
+[[main.separate_rolls.entries]]
+weight = 5
+obj = "obj.1doseprayerrestore"
+count = 1
+
+[[main.separate_rolls.entries]]
+weight = 5
+obj = "obj.steel_arrow"
+count = 15
+
+[[main.separate_rolls]]
+numerator = 3
+denominator = 128
+
+[[main.separate_rolls.entries]]
+weight = 3
+obj = "obj.lobster"
+count = 2
+
+[[main.separate_rolls]]
+numerator = 2
+denominator = 128
+
+[[main.separate_rolls.entries]]
+weight = 2
+obj = "obj.wilderness_fishing_bait"
+count = 12
+
+[[tertiary]]
+numerator = 1
+denominator = 3
+obj = "obj.looting_bag"
+count = 1
+should_drop_looting_bag = true
+
+[[tertiary]]
+numerator = 1
+denominator = 400
+obj = "obj.dorgesh_construction_bone"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 5013
+obj = "obj.dorgesh_construction_bone_curved"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 121
+obj = "obj.trail_medium_emote_exp1"
+count = 1
+clue_scroll_box = true
+exclude_ring_of_wealth = true
+
+[[tertiary]]
+numerator = 1
+denominator = 64
+obj = "obj.trail_medium_emote_exp1"
+count = 1
+clue_scroll_box = true
+require_ring_of_wealth = true
+
+
+# Main table pool padding uses a nothing roll (F2P drops removed and/or subtable access missing from wiki parse) (277 weight)

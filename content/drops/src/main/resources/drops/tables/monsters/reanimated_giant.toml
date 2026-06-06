@@ -1,0 +1,18 @@
+id = "Reanimated giant Drops"
+npcs = ["npc.arceuus_reanimated_giant"]
+
+[main]
+total = 5000
+name = "Reanimated giant Drops"
+
+[[main.entries]]
+weight = 1
+obj = "obj.champions_challenge_giant"
+count = 1
+
+[[main.entries]]
+weight = 4999
+nothing = true
+
+
+# Main table pool padding uses a nothing roll (F2P drops removed and/or subtable access missing from wiki parse) (4999 weight)

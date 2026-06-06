@@ -1,6 +1,5 @@
 package org.rsmod.tools.wiki.dumping.wiki
 
-import kotlinx.coroutines.delay
 import org.rsmod.tools.wiki.dumping.SlayerDumpFailure
 
 // ---------------------------------------------------------------------------
@@ -416,10 +415,31 @@ object WikiInfoboxIds {
     private val versionedIds =
         Regex("""\|\s*id(\d+)\s*=\s*([\d,\s]+)""", setOf(RegexOption.IGNORE_CASE, RegexOption.MULTILINE))
     private val bareId = Regex("""\|\s*id\s*=\s*([\d,\s]+)""", setOf(RegexOption.IGNORE_CASE, RegexOption.MULTILINE))
+    private val infoboxIdField =
+        Regex("""(?im)^\s*\|id(\d*)\s*=\s*(.+?)\s*$""")
 
     fun allNpcIds(source: String): List<Int> = parseIds(WikiText.extractNpcInfoboxSources(source))
 
     fun allSlayerTaskIds(source: String): List<Int> = parseIds(WikiText.extractSlayerInfoboxSources(source))
+
+    /** True when the infobox lists id fields but none are numeric (`removed`, `hist309`, `unreleased`, etc.). */
+    fun hasNonNumericNpcId(source: String): Boolean {
+        val infobox = WikiText.extractNpcInfoboxSources(source)
+        if (infobox.isBlank()) {
+            return false
+        }
+        val values = infoboxIdField.findAll(infobox).map { it.groupValues[2].trim() }.toList()
+        if (values.isEmpty()) {
+            return false
+        }
+        val tokens =
+            values
+                .flatMap { value -> value.split(',').map { it.trim() }.filter { it.isNotEmpty() } }
+        if (tokens.isEmpty()) {
+            return false
+        }
+        return tokens.none { it.toIntOrNull() != null }
+    }
 
     private fun parseIds(infoboxSource: String): List<Int> {
         if (infoboxSource.isBlank()) {
@@ -447,15 +467,14 @@ object WikiInfoboxIds {
 
 class WikiNpcResolver(
     private val wiki: WikiClient,
-    private val requestDelayMs: Long = 75L,
     private val onPageFetch: ((String) -> Unit)? = null,
 ) {
     private val pageSourceCache = mutableMapOf<String, String>()
     private val redirectAnchorByTitle = mutableMapOf<String, String>()
     private val npcIdCache = mutableMapOf<String, List<Int>>()
-    private val apiFetchedTitles = mutableSetOf<String>()
+    private val fetchedTitles = mutableSetOf<String>()
 
-    val pagesFetched: Int get() = apiFetchedTitles.size
+    val pagesFetched: Int get() = fetchedTitles.size
 
     suspend fun resolveDirectMonsterTitle(
         title: String,
@@ -513,7 +532,6 @@ class WikiNpcResolver(
                     failures +=
                         SlayerDumpFailure(row.rowIndex, row.wikiTaskName(), title, result.message)
             }
-            delay(requestDelayMs)
         }
         return ids.sorted()
     }
@@ -550,7 +568,6 @@ class WikiNpcResolver(
                 is ResolveResult.Ok -> combined += nested.npcIds
                 else -> Unit
             }
-            delay(requestDelayMs)
         }
         if (combined.isNotEmpty()) {
             return ResolveResult.Ok(combined.sorted())
@@ -616,7 +633,6 @@ class WikiNpcResolver(
                 is ResolveResult.Ok -> combined += nested.npcIds
                 else -> Unit
             }
-            delay(requestDelayMs)
         }
         return combined.sorted()
     }
@@ -626,7 +642,7 @@ class WikiNpcResolver(
         if (depth > 5) {
             throw IllegalStateException("Too many redirects resolving '$title'")
         }
-        if (apiFetchedTitles.add(title)) {
+        if (fetchedTitles.add(title)) {
             onPageFetch?.invoke(title)
         }
         val raw = wiki.rawPageSource(title)
@@ -671,9 +687,3 @@ class WikiNpcResolver(
         }
     }
 }
-
-// Back-compat aliases for tests
-typealias WikiTableParser = WikiTables
-typealias WikiWikitext = WikiText
-typealias WikiLinkParser = WikiLinks
-typealias WikiInfoboxNpcIds = WikiInfoboxIds

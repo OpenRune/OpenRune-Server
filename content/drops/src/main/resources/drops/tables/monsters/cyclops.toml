@@ -1,0 +1,296 @@
+id = "Cyclops Drops"
+npcs = ["npc.warguild_cyclops1_high", "npc.warguild_cyclops2_high", "npc.warguild_cyclops3_high", "npc.warguild_cyclops4_high", "npc.warguild_cyclops5_high", "npc.warguild_cyclops6_high", "npc.warguild_cyclops1", "npc.warguild_cyclops2", "npc.warguild_cyclops3", "npc.warguild_cyclops4", "npc.warguild_cyclops5", "npc.warguild_cyclops6"]
+
+[[pre_roll]]
+numerator = 1
+denominator = 100
+obj = "obj.dragon_parryingdagger"
+count = 1
+
+[main]
+total = 201
+name = "Cyclops Drops"
+
+[[main.entries]]
+weight = 16
+obj = "obj.black_knife"
+count = "4..13"
+
+[[main.entries]]
+weight = 2
+obj = "obj.steel_chainbody"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.iron_2h_sword"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.iron_chainbody"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.steel_dagger"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.steel_mace"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.steel_sword"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.steel_battleaxe"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.steel_2h_sword"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.steel_longsword"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.steel_med_helm"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.black_2h_sword"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.mithril_dagger"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.mithril_longsword"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.adamant_mace"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.black_sword"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.black_longsword"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.black_dagger"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.adamant_2h_sword"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.bronze_parryingdagger"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.iron_parryingdagger"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.steel_parryingdagger"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.black_parryingdagger"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.mithril_parryingdagger"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.adamant_parryingdagger"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.rune_parryingdagger"
+count = 1
+
+[[main.entries]]
+weight = 31
+obj = "obj.coins"
+count = "3..102"
+
+[[main.entries]]
+weight = 10
+obj = "obj.coins"
+count = "5..204"
+
+[[main.entries]]
+weight = 4
+obj = "obj.adamant_2h_sword"
+count = 1
+
+[[main.entries]]
+weight = 6
+obj = "obj.mithril_dart"
+count = 12
+
+[[main.entries]]
+weight = 5
+obj = "obj.adamant_dagger"
+count = 1
+
+[[main.entries]]
+weight = 5
+obj = "obj.black_full_helm"
+count = 1
+
+[[main.entries]]
+weight = 5
+obj = "obj.black_mace"
+count = 1
+
+[[main.entries]]
+weight = 5
+obj = "obj.mithril_scimitar"
+count = 1
+
+[[main.entries]]
+weight = 5
+obj = "obj.mithril_kiteshield"
+count = 1
+
+[[main.entries]]
+weight = 5
+obj = "obj.steel_platebody"
+count = 1
+
+[[main.entries]]
+weight = 7
+obj = "obj.steel_chainbody"
+count = 1
+
+[[main.entries]]
+weight = 4
+obj = "obj.black_knife"
+count = 22
+
+[[main.entries]]
+weight = 4
+obj = "obj.mithril_platelegs"
+count = 1
+
+[[main.entries]]
+weight = 5
+obj = "obj.black_dagger"
+count = 1
+
+[[main.entries]]
+weight = 3
+obj = "obj.rune_med_helm"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.adamant_sq_shield"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.rune_full_helm"
+count = 1
+
+[[main.entries]]
+weight = 11
+obj = "obj.coins"
+count = 96
+
+[[main.entries]]
+weight = 8
+obj = "obj.coins"
+count = "350..449"
+
+[[main.entries]]
+weight = 7
+obj = "obj.lobster"
+count = 1
+
+[[main.entries]]
+weight = 3
+shared = "herb"
+
+[[main.entries]]
+weight = 4
+shared = "herb"
+
+[[main.entries]]
+weight = 2
+shared = "gem"
+
+[[main.entries]]
+weight = 2
+shared = "rareDrop"
+
+[[tertiary]]
+numerator = 1
+denominator = 400
+obj = "obj.dorgesh_construction_bone"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 5013
+obj = "obj.dorgesh_construction_bone_curved"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 486
+obj = "obj.trail_clue_hard_map001"
+count = 1
+clue_scroll_box = true
+
+[[tertiary]]
+numerator = 1
+denominator = 400
+obj = "obj.dorgesh_construction_bone"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 5013
+obj = "obj.dorgesh_construction_bone_curved"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 243
+obj = "obj.trail_clue_hard_map001"
+count = 1
+clue_scroll_box = true

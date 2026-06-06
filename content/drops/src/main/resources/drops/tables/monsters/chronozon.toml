@@ -1,0 +1,15 @@
+id = "Chronozon Drops"
+npcs = ["npc.chronozon"]
+
+[[guaranteed]]
+obj = "obj.johnathon_crest"
+count = 1
+quest = "quest_familycrest"
+quest_mode = "during"
+
+[[tertiary]]
+numerator = 1
+denominator = 3
+obj = "obj.looting_bag"
+count = 1
+should_drop_looting_bag = true

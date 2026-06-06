@@ -1,0 +1,16 @@
+id = "Zombie (Temple Trekking) Drops"
+npcs = ["npc.templetrek_zombie"]
+
+[[tertiary]]
+numerator = 1
+denominator = 4
+obj = "obj.rag_zombie_bone"
+count = 1
+quest = "quest_ragandboneman2"
+quest_mode = "during"
+
+[[tertiary]]
+numerator = 1
+denominator = 5000
+obj = "obj.champions_challenge_zombie"
+count = 1

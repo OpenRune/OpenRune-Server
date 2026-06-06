@@ -1,0 +1,138 @@
+id = "Lizardman shaman Drops"
+npcs = ["npc.zeah_lizardshaman_1", "npc.zeah_lizardshaman_2", "npc.lizardman_cave_shaman_1", "npc.lizardman_cave_shaman_2", "npc.molch_lizardshaman_1"]
+brimstone_key_roll = true
+
+[main]
+total = 500
+name = "Lizardman shaman Drops"
+
+[[main.entries]]
+weight = 18
+obj = "obj.rune_med_helm"
+count = 1
+
+[[main.entries]]
+weight = 17
+obj = "obj.earth_battlestaff"
+count = 1
+
+[[main.entries]]
+weight = 17
+obj = "obj.mystic_earth_staff"
+count = 1
+
+[[main.entries]]
+weight = 16
+obj = "obj.rune_warhammer"
+count = 1
+
+[[main.entries]]
+weight = 12
+obj = "obj.rune_chainbody"
+count = 1
+
+[[main.entries]]
+weight = 10
+obj = "obj.red_dragon_vambraces"
+count = 1
+
+[[main.entries]]
+weight = 25
+obj = "obj.airrune"
+count = "60..80"
+
+[[main.entries]]
+weight = 25
+obj = "obj.chaosrune"
+count = "40..60"
+
+[[main.entries]]
+weight = 25
+obj = "obj.deathrune"
+count = "20..30"
+
+[[main.entries]]
+weight = 25
+obj = "obj.firerune"
+count = "60..80"
+
+[[main.entries]]
+weight = 40
+obj = "obj.xeric_fabric"
+count = 2
+
+[[main.entries]]
+weight = 20
+obj = "obj.cert_coal"
+count = "20..25"
+
+[[main.entries]]
+weight = 20
+obj = "obj.cert_iron_ore"
+count = "30..35"
+
+[[main.entries]]
+weight = 8
+obj = "obj.cert_runite_ore"
+count = "3..5"
+
+[[main.entries]]
+weight = 70
+obj = "obj.coins"
+count = "100..6000"
+
+[[main.entries]]
+weight = 40
+obj = "obj.lizardman_fang"
+count = "10..14"
+
+[[main.entries]]
+weight = 30
+obj = "obj.potato_chilli+carne"
+count = 2
+
+[[main.entries]]
+weight = 2
+obj = "obj.xeric_talisman_empty"
+count = 1
+
+[[main.entries]]
+weight = 20
+shared = "rareDrop"
+
+[[main.entries]]
+weight = 60
+nothing = true
+
+[[tertiary]]
+numerator = 1
+denominator = 400
+obj = "obj.dorgesh_construction_bone"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 5013
+obj = "obj.dorgesh_construction_bone_curved"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 190
+obj = "obj.trail_clue_hard_map001"
+count = 1
+clue_scroll_box = true
+
+[[tertiary]]
+numerator = 1
+denominator = 1140
+obj = "obj.trail_elite_emote_exp1"
+count = 1
+clue_scroll_box = true
+
+
+# Unknown wiki drop rate: Grimy kwuarm [main/Herbs/1/{{#expr:1/(5*{{#var:uht}}) round 2}}]
+# Unknown wiki drop rate: Grimy cadantine [main/Herbs/1/{{#expr:1/(4*{{#var:uht}}) round 2}}]
+# Unknown wiki drop rate: Grimy dwarf weed [main/Herbs/1/{{#expr:1/(4*{{#var:uht}}) round 2}}]
+# Unknown wiki drop rate: Grimy lantadyme [main/Herbs/1/{{#expr:1/(3*{{#var:uht}}) round 2}}]
+# Main table pool padding uses a nothing roll (F2P drops removed and/or subtable access missing from wiki parse) (60 weight)

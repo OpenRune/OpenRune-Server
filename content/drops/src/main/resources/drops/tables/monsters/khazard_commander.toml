@@ -1,0 +1,10 @@
+id = "Khazard commander Drops"
+npcs = ["npc.khazard_commander"]
+
+[[tertiary]]
+numerator = 1
+denominator = 1
+obj = "obj.orb_of_protection"
+count = 1
+quest = "quest_treegnomevillage"
+quest_mode = "during"

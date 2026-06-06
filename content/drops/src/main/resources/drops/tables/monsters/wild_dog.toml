@@ -1,0 +1,8 @@
+id = "Wild dog Drops"
+npcs = ["npc.dog_wild", "npc.dog_wild_2"]
+
+[[tertiary]]
+numerator = 1
+denominator = 25
+obj = "obj.arceuus_corpse_dog"
+count = 1

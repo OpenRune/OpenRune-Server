@@ -1,0 +1,10 @@
+id = "Blessed giant rat Drops"
+npcs = ["npc.blessed_giantrat", "npc.blessed_giantrat2"]
+
+[[tertiary]]
+numerator = 1
+denominator = 1
+obj = "obj.rag_giant_rat_bone"
+count = 1
+quest = "quest_ragandboneman1"
+quest_mode = "during"

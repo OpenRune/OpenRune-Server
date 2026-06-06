@@ -1,0 +1,149 @@
+id = "Sorebones Drops"
+npcs = ["npc.brain_sawbones_1", "npc.brain_sawbones_2"]
+
+[main]
+total = 129
+name = "Sorebones Drops"
+
+[[main.entries]]
+weight = 3
+obj = "obj.xbows_crossbow_bolts_steel"
+count = "2..12"
+
+[[main.entries]]
+weight = 2
+obj = "obj.mithril_dagger"
+count = 1
+
+[[main.entries]]
+weight = 3
+obj = "obj.pirate_bandana_eyepatch_blue"
+count = 1
+
+[[main.entries]]
+weight = 5
+obj = "obj.pirate_bandana_eyepatch_red"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.eye_patch"
+count = 1
+
+[[main.entries]]
+weight = 3
+obj = "obj.mithril_scimitar"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.waterrune"
+count = 23
+
+[[main.entries]]
+weight = 2
+obj = "obj.bodyrune"
+count = 6
+
+[[main.entries]]
+weight = 1
+obj = "obj.chaosrune"
+count = 7
+
+[[main.entries]]
+weight = 3
+obj = "obj.cosmicrune"
+count = 5
+
+[[main.entries]]
+weight = 3
+obj = "obj.lawrune"
+count = 2
+
+[[main.entries]]
+weight = 10
+obj = "obj.coins"
+count = 30
+
+[[main.entries]]
+weight = 21
+obj = "obj.coins"
+count = 38
+
+[[main.entries]]
+weight = 8
+obj = "obj.coins"
+count = 46
+
+[[main.entries]]
+weight = 6
+obj = "obj.coins"
+count = 55
+
+[[main.entries]]
+weight = 2
+obj = "obj.coins"
+count = 60
+
+[[main.entries]]
+weight = 22
+obj = "obj.fishing_bait"
+count = 10
+
+[[main.entries]]
+weight = 1
+obj = "obj.deal_rusty_scimitar"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.fever_rum"
+count = 1
+
+[[main.entries]]
+weight = 30
+shared = "herb"
+
+[[main.entries]]
+weight = 1
+shared = "gem"
+
+[[tertiary]]
+numerator = 1
+denominator = 1
+obj = "obj.brain_inv_tongs"
+count = 1
+quest = "quest_greatbrainrobbery"
+quest_mode = "during"
+
+[[tertiary]]
+numerator = 1
+denominator = 1
+obj = "obj.brain_inv_cranial_clamp"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 1
+obj = "obj.brain_inv_bell_jar"
+count = 3
+
+[[tertiary]]
+numerator = 1
+denominator = 1
+obj = "obj.brain_inv_skull_staple"
+count = 30
+
+[[tertiary]]
+numerator = 1
+denominator = 4
+obj = "obj.rag_zombie_bone"
+count = 1
+quest = "quest_ragandboneman2"
+quest_mode = "during"
+
+[[tertiary]]
+numerator = 1
+denominator = 5000
+obj = "obj.champions_challenge_zombie"
+count = 1

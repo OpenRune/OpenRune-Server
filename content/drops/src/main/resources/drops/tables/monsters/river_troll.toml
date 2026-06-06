@@ -1,0 +1,94 @@
+id = "River troll Drops"
+npcs = ["npc.fairy2_rivertrollguardian_1", "npc.fairy2_rivertrollguardian_2", "npc.fairy2_rivertrollguardian_3", "npc.fairy2_rivertrollguardian_4", "npc.fairy2_rivertrollguardian_5", "npc.fairy2_rivertrollguardian_6"]
+
+[main]
+total = 128
+name = "River troll Drops"
+
+[[main.entries]]
+weight = 1
+obj = "obj.raw_tuna"
+count = 1
+
+[[main.entries]]
+weight = 4
+obj = "obj.raw_salmon"
+count = 1
+
+[[main.entries]]
+weight = 3
+obj = "obj.raw_herring"
+count = 1
+
+[[main.entries]]
+weight = 6
+obj = "obj.raw_pike"
+count = 1
+
+[[main.entries]]
+weight = 4
+obj = "obj.raw_sardine"
+count = 1
+
+[[main.entries]]
+weight = 19
+obj = "obj.raw_swordfish"
+count = 1
+
+[[main.entries]]
+weight = 12
+obj = "obj.raw_shark"
+count = 1
+
+[[main.entries]]
+weight = 27
+obj = "obj.fishing_bait"
+count = 5
+
+[[main.entries]]
+weight = 9
+obj = "obj.fishing_bait"
+count = 15
+
+[[main.entries]]
+weight = 13
+obj = "obj.fishing_bait"
+count = 30
+
+[[main.entries]]
+weight = 2
+obj = "obj.fishing_bait"
+count = 50
+
+[[main.entries]]
+weight = 4
+obj = "obj.feather"
+count = 20
+
+[[main.entries]]
+weight = 4
+obj = "obj.feather"
+count = 40
+
+[[main.entries]]
+weight = 12
+obj = "obj.oystershell"
+count = 1
+
+[[main.entries]]
+weight = 3
+obj = "obj.3dosefisherspotion"
+count = 1
+
+[[main.entries]]
+weight = 5
+obj = "obj.casket"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 4
+obj = "obj.rag_troll_bone"
+count = 1
+quest = "quest_ragandboneman2"
+quest_mode = "during"

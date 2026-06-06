@@ -1,0 +1,6 @@
+id = "Golem (Zalcano) Drops"
+npcs = ["npc.zalcano_golem"]
+
+[[guaranteed]]
+obj = "obj.zalcano_imbued_ore"
+count = "16..24"

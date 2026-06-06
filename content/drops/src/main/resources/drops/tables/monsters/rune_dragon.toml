@@ -1,0 +1,148 @@
+id = "Rune dragon Drops"
+npcs = ["npc.rune_dragon", "npc.ds2_rune_dragon"]
+brimstone_key_roll = true
+
+[[guaranteed]]
+obj = "obj.runite_bar"
+count = 1
+
+[main]
+total = 132
+name = "Rune dragon Drops"
+
+[[main.entries]]
+weight = 9
+obj = "obj.rune_platebody"
+count = 1
+
+[[main.entries]]
+weight = 8
+obj = "obj.rune_longsword"
+count = 1
+
+[[main.entries]]
+weight = 7
+obj = "obj.rune_mace"
+count = 1
+
+[[main.entries]]
+weight = 7
+obj = "obj.rune_scimitar"
+count = 1
+
+[[main.entries]]
+weight = 7
+obj = "obj.rune_warhammer"
+count = 1
+
+[[main.entries]]
+weight = 6
+obj = "obj.rune_platelegs"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.dragon_platelegs"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.dragon_plateskirt"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.dragon_med_helm"
+count = 1
+
+[[main.entries]]
+weight = 8
+obj = "obj.rune_arrow"
+count = "30..40"
+
+[[main.entries]]
+weight = 8
+obj = "obj.wrathrune"
+count = "30..50"
+
+[[main.entries]]
+weight = 7
+obj = "obj.chaosrune"
+count = "75..150"
+
+[[main.entries]]
+weight = 7
+obj = "obj.deathrune"
+count = "50..100"
+
+[[main.entries]]
+weight = 11
+obj = "obj.xbows_crossbow_bolts_runite_unfeathered"
+count = "20..30"
+
+[[main.entries]]
+weight = 15
+obj = "obj.rune_javelin_head"
+count = "20..30"
+quest = "quest_monkeymadness2"
+quest_mode = "completed"
+
+[[main.entries]]
+weight = 7
+obj = "obj.cert_dragonstone"
+count = 1
+
+[[main.entries]]
+weight = 6
+obj = "obj.cert_runite_ore"
+count = "2..5"
+
+[[main.entries]]
+weight = 5
+obj = "obj.dragon_javelin_head"
+count = "30..40"
+quest = "quest_monkeymadness2"
+quest_mode = "completed"
+
+[[main.entries]]
+weight = 1
+obj = "obj.dragon_bolts_unfeathered"
+count = "20..40"
+
+[[main.entries]]
+weight = 1
+obj = "obj.wrath_talisman"
+count = 1
+
+[[main.entries]]
+weight = 1
+shared = "rareDrop"
+
+[[main.entries]]
+weight = 8
+shared = "usefulHerb"
+
+[[tertiary]]
+numerator = 1
+denominator = 800
+obj = "obj.xbows_crossbow_limbs_dragon"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 5000
+obj = "obj.dragon_lump"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 8000
+obj = "obj.dragonfire_visage"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 285
+obj = "obj.trail_elite_emote_exp1"
+count = 1
+clue_scroll_box = true

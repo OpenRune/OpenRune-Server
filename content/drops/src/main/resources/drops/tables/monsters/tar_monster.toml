@@ -1,0 +1,6 @@
+id = "Tar Monster Drops"
+npcs = ["npc.fossil_tarmonster"]
+
+[[guaranteed]]
+obj = "obj.swamp_tar"
+count = 10

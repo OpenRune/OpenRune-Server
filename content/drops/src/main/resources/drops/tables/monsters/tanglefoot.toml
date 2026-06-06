@@ -1,0 +1,6 @@
+id = "Tanglefoot Drops"
+npcs = ["npc.fairy_tanglefoot"]
+
+[[guaranteed]]
+obj = "obj.fairy_queen_secateurs"
+count = 1

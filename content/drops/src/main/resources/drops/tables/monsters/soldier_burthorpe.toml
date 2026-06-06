@@ -1,0 +1,79 @@
+id = "Soldier (Burthorpe) Drops"
+npcs = ["npc.death_ig_solider_drilling", "npc.death_ig_solider_training", "npc.death_ig_solider_sitting1", "npc.death_ig_solider_sitting2", "npc.death_ig_solider_sitting3"]
+
+[main]
+total = 128
+name = "Soldier (Burthorpe) Drops"
+
+[[main.entries]]
+weight = 1
+obj = "obj.steel_full_helm"
+count = 1
+
+[[main.entries]]
+weight = 9
+obj = "obj.black_dart"
+count = 6
+
+[[main.entries]]
+weight = 13
+obj = "obj.black_knife"
+count = 6
+
+[[main.entries]]
+weight = 2
+obj = "obj.steel_claws"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.black_claws"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.steel_bar"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.mithril_bar"
+count = 1
+
+[[main.entries]]
+weight = 17
+obj = "obj.coins"
+count = 3
+
+[[main.entries]]
+weight = 10
+obj = "obj.coins"
+count = 5
+
+[[main.entries]]
+weight = 20
+obj = "obj.coins"
+count = 18
+
+[[main.entries]]
+weight = 40
+obj = "obj.coins"
+count = 50
+
+[[main.entries]]
+weight = 2
+obj = "obj.coins"
+count = 115
+
+[[main.entries]]
+weight = 1
+obj = "obj.bloodrune"
+count = 2
+
+[[main.entries]]
+weight = 8
+shared = "herb"
+
+[[main.entries]]
+weight = 2
+shared = "gem"

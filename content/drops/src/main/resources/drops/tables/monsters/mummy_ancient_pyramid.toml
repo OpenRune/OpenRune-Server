@@ -1,0 +1,145 @@
+id = "Mummy (Ancient Pyramid) Drops"
+npcs = ["npc.deserttreasure_mummy_2", "npc.deserttreasure_mummy_3", "npc.deserttreasure_mummy_4", "npc.deserttreasure_mummy_5", "npc.deserttreasure_mummy_2_on_fire", "npc.deserttreasure_mummy_3_on_fire", "npc.deserttreasure_mummy_4_on_fire", "npc.deserttreasure_mummy_5_on_fire"]
+
+[main]
+total = 513
+name = "Mummy (Ancient Pyramid) Drops"
+
+[[main.entries]]
+weight = 3
+obj = "obj.rune_sq_shield"
+count = 1
+
+[[main.entries]]
+weight = 3
+obj = "obj.rune_scimitar"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.staff_of_zaros"
+count = 1
+
+[[main.entries]]
+weight = 40
+obj = "obj.gold_ring"
+count = 1
+
+[[main.entries]]
+weight = 25
+obj = "obj.unstrung_gold_amulet"
+count = 1
+
+[[main.entries]]
+weight = 20
+obj = "obj.gold_necklace"
+count = 1
+
+[[main.entries]]
+weight = 10
+obj = "obj.sapphire_necklace"
+count = 1
+
+[[main.entries]]
+weight = 10
+obj = "obj.sapphire_ring"
+count = 1
+
+[[main.entries]]
+weight = 10
+obj = "obj.unstrung_emerald_amulet"
+count = 1
+
+[[main.entries]]
+weight = 10
+obj = "obj.emerald_ring"
+count = 1
+
+[[main.entries]]
+weight = 10
+obj = "obj.ring_of_dueling_1"
+count = 1
+
+[[main.entries]]
+weight = 20
+obj = "obj.coins"
+count = 36
+
+[[main.entries]]
+weight = 20
+obj = "obj.coins"
+count = 95
+
+[[main.entries]]
+weight = 20
+obj = "obj.coins"
+count = 106
+
+[[main.entries]]
+weight = 20
+obj = "obj.coins"
+count = 183
+
+[[main.entries]]
+weight = 20
+obj = "obj.coins"
+count = 222
+
+[[main.entries]]
+weight = 17
+obj = "obj.coins"
+count = 46
+
+[[main.entries]]
+weight = 10
+obj = "obj.coins"
+count = 472
+
+[[main.entries]]
+weight = 30
+obj = "obj.swamp_tar"
+count = 1
+
+[[main.entries]]
+weight = 100
+obj = "obj.gold_ore"
+count = 1
+
+[[main.entries]]
+weight = 40
+obj = "obj.silk"
+count = 1
+
+[[main.entries]]
+weight = 44
+obj = "obj.papyrus"
+count = 1
+
+[[main.entries]]
+weight = 3
+obj = "obj.casket"
+count = 1
+
+[[main.entries]]
+weight = 20
+obj = "obj.gold_bar"
+count = 1
+
+[[main.entries]]
+weight = 2
+nothing = true
+
+[[main.entries]]
+weight = 3
+shared = "herb"
+
+[[main.entries]]
+weight = 2
+shared = "gem"
+
+[[tertiary]]
+numerator = 1
+denominator = 487
+obj = "obj.trail_medium_emote_exp1"
+count = 1
+clue_scroll_box = true

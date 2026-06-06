@@ -1,0 +1,8 @@
+id = "Othainian Drops"
+npcs = ["npc.othainian_vis"]
+
+[[guaranteed]]
+obj = "obj.othainian_amulet"
+count = 1
+quest = "quest_undergroundpass"
+quest_mode = "during"

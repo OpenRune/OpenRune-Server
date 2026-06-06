@@ -1,0 +1,183 @@
+id = "Magma strykewyrm Drops"
+npcs = ["npc.superior_lava_strykewyrm"]
+
+[[guaranteed]]
+obj = "obj.konar_key"
+count = 1
+should_drop_brimstone_key = true
+
+[main]
+total = 128
+name = "Magma strykewyrm Drops"
+
+[[main.entries]]
+weight = 5
+obj = "obj.lava_battlestaff"
+count = 1
+
+[[main.entries]]
+weight = 4
+obj = "obj.adamant_platebody"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.rune_longsword"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.rune_mace"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.rune_med_helm"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.rune_pickaxe"
+count = 1
+
+[[main.entries]]
+weight = 6
+obj = "obj.lavarune"
+count = "50..100"
+
+[[main.entries]]
+weight = 6
+obj = "obj.deathrune"
+count = "5..10"
+
+[[main.entries]]
+weight = 6
+obj = "obj.chaosrune"
+count = "10..20"
+
+[[main.entries]]
+weight = 6
+obj = "obj.firerune"
+count = "50..100"
+
+[[main.entries]]
+weight = 5
+obj = "obj.lavarune"
+count = 200
+
+[[main.entries]]
+weight = 5
+obj = "obj.rune_dart"
+count = "20..30"
+
+[[main.entries]]
+weight = 5
+obj = "obj.rune_knife"
+count = "20..30"
+
+[[main.entries]]
+weight = 5
+obj = "obj.rune_arrow"
+count = "20..30"
+
+[[main.entries]]
+weight = 3
+obj = "obj.adamant_cannonball"
+count = "12..22"
+
+[[main.entries]]
+weight = 1
+obj = "obj.rune_cannonball"
+count = "9..14"
+
+[[main.entries]]
+weight = 6
+obj = "obj.coins"
+count = "100..200"
+
+[[main.entries]]
+weight = 5
+obj = "obj.potato_chilli+carne"
+count = 1
+
+[[main.entries]]
+weight = 5
+obj = "obj.fire_orb"
+count = 1
+
+[[main.entries]]
+weight = 5
+obj = "obj.uncut_diamond"
+count = 1
+
+[[main.entries]]
+weight = 4
+obj = "obj.cert_ashes"
+count = "2..3"
+
+[[main.entries]]
+weight = 4
+obj = "obj.3dose2attack"
+count = 1
+
+[[main.entries]]
+weight = 4
+obj = "obj.3dose2defense"
+count = 1
+
+[[main.entries]]
+weight = 4
+obj = "obj.dragon_arrowheads"
+count = "2..6"
+
+[[main.entries]]
+weight = 4
+obj = "obj.cert_coal"
+count = "4..6"
+
+[[main.entries]]
+weight = 4
+obj = "obj.cert_adamantite_ore"
+count = "2..4"
+
+[[main.entries]]
+weight = 4
+obj = "obj.chaos_talisman"
+count = 1
+
+[[main.entries]]
+weight = 4
+obj = "obj.fire_talisman"
+count = 1
+
+[[main.entries]]
+weight = 3
+obj = "obj.cert_runite_ore"
+count = "1..2"
+
+[[main.entries]]
+weight = 2
+shared = "herb"
+
+[[main.entries]]
+weight = 5
+nothing = true
+
+[[main.separate_rolls]]
+numerator = 1
+denominator = 100
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.dragon_sheet"
+count = 1
+
+
+# Unknown wiki drop rate: Diamond bolt tips [main/Bolt tips/1/{{#expr:1/(5/128 * 25/92) round 1}}]
+# Unknown wiki drop rate: Emerald bolt tips [main/Bolt tips/1/{{#expr:1/(5/128 * 20/92) round 1}}]
+# Unknown wiki drop rate: Ruby bolt tips [main/Bolt tips/1/{{#expr:1/(5/128 * 20/92) round 1}}]
+# Unknown wiki drop rate: Dragonstone bolt tips [main/Bolt tips/1/{{#expr:1/(5/128 * 15/92) round 1}}]
+# Unknown wiki drop rate: Onyx bolt tips [main/Bolt tips/1/{{#expr:1/(5/128 * 7/92) round 1}}]
+# Unknown wiki drop rate: Sapphire bolt tips [main/Bolt tips/1/{{#expr:1/(5/128 * 5/92) round 1}}]
+# Unknown wiki drop rate: Clue scroll (hard) [tertiary/Tertiary/Unknown]
+# Main table pool padding uses a nothing roll (F2P drops removed and/or subtable access missing from wiki parse) (5 weight)

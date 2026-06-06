@@ -1,0 +1,14 @@
+id = "Animated Mithril Armour Drops"
+npcs = ["npc.warguild_mithril_armour"]
+
+[[guaranteed]]
+obj = "obj.mithril_full_helm"
+count = 1
+
+[[guaranteed]]
+obj = "obj.mithril_platebody"
+count = 1
+
+[[guaranteed]]
+obj = "obj.mithril_platelegs"
+count = 1

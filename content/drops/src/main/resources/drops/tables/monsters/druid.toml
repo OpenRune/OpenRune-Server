@@ -1,0 +1,99 @@
+id = "Druid Drops"
+npcs = ["npc.druid"]
+
+[main]
+total = 128
+name = "Druid Drops"
+
+[[main.entries]]
+weight = 4
+obj = "obj.earthrune"
+count = 27
+
+[[main.entries]]
+weight = 2
+obj = "obj.waterrune"
+count = 9
+
+[[main.entries]]
+weight = 2
+obj = "obj.earthrune"
+count = 9
+
+[[main.entries]]
+weight = 2
+obj = "obj.firerune"
+count = 9
+
+[[main.entries]]
+weight = 2
+obj = "obj.chaosrune"
+count = 3
+
+[[main.entries]]
+weight = 1
+obj = "obj.lawrune"
+count = 2
+
+[[main.entries]]
+weight = 10
+obj = "obj.coins"
+count = 2
+
+[[main.entries]]
+weight = 4
+obj = "obj.coins"
+count = 4
+
+[[main.entries]]
+weight = 3
+obj = "obj.coins"
+count = 1
+
+[[main.entries]]
+weight = 3
+obj = "obj.coins"
+count = 15
+
+[[main.entries]]
+weight = 1
+obj = "obj.coins"
+count = 20
+
+[[main.entries]]
+weight = 37
+nothing = true
+
+[[main.entries]]
+weight = 10
+obj = "obj.vial_empty"
+count = 1
+
+[[main.entries]]
+weight = 6
+obj = "obj.iron_dagger"
+count = 1
+
+[[main.entries]]
+weight = 6
+obj = "obj.druidrobetop"
+count = 1
+
+[[main.entries]]
+weight = 5
+obj = "obj.druidrobebottom"
+count = 1
+
+[[main.entries]]
+weight = 3
+obj = "obj.limpwurt_root"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.3doseantipoison"
+count = 1
+
+[[main.entries]]
+weight = 26
+shared = "herb"

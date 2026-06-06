@@ -1,0 +1,127 @@
+id = "Goblin Drop table 1"
+npcs = ["npc.goblin", "npc.goblin_unarmed_melee_1", "npc.goblin_unarmed_melee_2", "npc.goblin_unarmed_melee_3", "npc.goblin_unarmed_melee_4", "npc.goblin_unarmed_melee_5", "npc.goblin_unarmed_melee_6", "npc.goblin_unarmed_melee_7", "npc.goblin_unarmed_melee_8", "npc.goblin_unarmed_melee_in_1", "npc.goblin_unarmed_melee_in_2", "npc.goblin_unarmed_melee_in_3", "npc.goblin_unarmed_melee_in_4", "npc.goblin_unarmed_melee_in_5", "npc.goblin_unarmed_melee_in_6", "npc.goblin_unarmed_melee_in_7", "npc.goblin_unarmed_melee_in_8", "npc.goblin_armed_melee_1", "npc.goblin_armed_melee_2", "npc.goblin_armed_melee_3", "npc.goblin_armed_melee_4", "npc.goblin_unarmed_mcannon_1", "npc.goblin_unarmed_mcannon_2", "npc.goblin_unarmed_mcannon_3", "npc.goblin_unarmed_mcannon_4", "npc.goblin_unarmed_mcannon_5", "npc.goblin_unarmed_mcannon_6", "npc.goblin_unarmed_mcannon_7", "npc.goblin_unarmed_mcannon_8", "npc.goblin_unarmed_mcannon_9"]
+
+[main]
+total = 128
+name = "Goblin Drop table 1"
+
+[[main.entries]]
+weight = 3
+obj = "obj.bronze_sq_shield"
+count = 1
+
+[[main.entries]]
+weight = 4
+obj = "obj.bronze_spear"
+count = 1
+
+[[main.entries]]
+weight = 5
+obj = "obj.bodyrune"
+count = 7
+
+[[main.entries]]
+weight = 6
+obj = "obj.waterrune"
+count = 6
+
+[[main.entries]]
+weight = 3
+obj = "obj.earthrune"
+count = 4
+
+[[main.entries]]
+weight = 3
+obj = "obj.bolt"
+count = 8
+
+[[main.entries]]
+weight = 28
+obj = "obj.coins"
+count = 5
+
+[[main.entries]]
+weight = 3
+obj = "obj.coins"
+count = 9
+
+[[main.entries]]
+weight = 3
+obj = "obj.coins"
+count = 15
+
+[[main.entries]]
+weight = 2
+obj = "obj.coins"
+count = 20
+
+[[main.entries]]
+weight = 1
+obj = "obj.coins"
+count = 1
+
+[[main.entries]]
+weight = 38
+nothing = true
+
+[[main.entries]]
+weight = 15
+obj = "obj.hammer"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.slice_goblin_history_book"
+count = 1
+
+[[main.entries]]
+weight = 5
+obj = "obj.goblin_armour"
+count = 1
+
+[[main.entries]]
+weight = 3
+obj = "obj.chefs_hat"
+count = 1
+
+[[main.entries]]
+weight = 2
+obj = "obj.beer"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.brass_necklace"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.air_talisman"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 4
+obj = "obj.rag_goblin_bone"
+count = 1
+quest = "quest_ragandboneman1"
+quest_mode = "during"
+
+[[tertiary]]
+numerator = 1
+denominator = 35
+obj = "obj.arceuus_corpse_goblin"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 5000
+obj = "obj.champions_challenge_goblin"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 64
+obj = "obj.trail_clue_beginner"
+count = 1
+clue_scroll_box = true

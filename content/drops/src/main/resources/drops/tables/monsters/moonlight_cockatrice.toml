@@ -1,0 +1,130 @@
+id = "Moonlight Cockatrice Drops"
+npcs = ["npc.varlamore_cockatrice_moon01"]
+
+[main]
+total = 128
+name = "Moonlight Cockatrice Drops"
+
+[[main.entries]]
+weight = 3
+obj = "obj.mithril_sword"
+count = 1
+
+[[main.entries]]
+weight = 3
+obj = "obj.mithril_dagger"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.iron_armoured_boots"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.mithril_javelin"
+count = 5
+
+[[main.entries]]
+weight = 1
+obj = "obj.mithril_longsword"
+count = 1
+
+[[main.entries]]
+weight = 6
+obj = "obj.naturerune"
+count = 5
+
+[[main.entries]]
+weight = 4
+obj = "obj.naturerune"
+count = 8
+
+[[main.entries]]
+weight = 2
+obj = "obj.naturerune"
+count = 10
+
+[[main.entries]]
+weight = 3
+obj = "obj.lawrune"
+count = 5
+
+[[main.entries]]
+weight = 2
+obj = "obj.waterrune"
+count = 10
+
+[[main.entries]]
+weight = 2
+obj = "obj.firerune"
+count = 15
+
+[[main.entries]]
+weight = 12
+obj = "obj.coins"
+count = 125
+
+[[main.entries]]
+weight = 4
+obj = "obj.coins"
+count = 62
+
+[[main.entries]]
+weight = 16
+obj = "obj.coins"
+count = 50
+
+[[main.entries]]
+weight = 3
+obj = "obj.coins"
+count = 42
+
+[[main.entries]]
+weight = 1
+obj = "obj.coins"
+count = 30
+
+[[main.entries]]
+weight = 12
+obj = "obj.coins"
+count = 15
+
+[[main.entries]]
+weight = 21
+obj = "obj.limpwurt_root"
+count = 1
+
+[[main.entries]]
+weight = 1
+nothing = true
+
+[[main.entries]]
+weight = 10
+shared = "herb"
+
+[[main.entries]]
+weight = 2
+shared = "gem"
+
+[[main.entries]]
+weight = 18
+shared = "seed"
+
+[[main.separate_rolls]]
+numerator = 1
+denominator = 512
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.mystic_boots_light"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 1000
+obj = "obj.poh_trophydrop_cockatrice"
+count = 1
+
+
+# Unknown wiki drop rate: Clue scroll (medium) [tertiary/Tertiary/Rare]

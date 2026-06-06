@@ -1,0 +1,15 @@
+id = "Giant lobster (Ghosts Ahoy) Drops"
+npcs = ["npc.giant_lobster"]
+
+[[guaranteed]]
+obj = "obj.seaweed"
+count = 1
+
+[[tertiary]]
+numerator = 1
+denominator = 25
+obj = "obj.arceuus_corpse_scorpion"
+count = 1
+
+
+# Unknown wiki drop rate: Clue scroll (beginner) [tertiary/Tertiary/Rare]

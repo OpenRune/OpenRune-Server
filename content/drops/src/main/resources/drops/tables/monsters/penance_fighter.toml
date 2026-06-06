@@ -1,0 +1,14 @@
+id = "Penance Fighter Drops"
+npcs = ["npc.barbassault_pen_fighter_tutor", "npc.barbassault_pen_fighter_lv1", "npc.barbassault_pen_fighter_lv2", "npc.barbassault_pen_fighter_lv3", "npc.barbassault_pen_fighter_lv4", "npc.barbassault_pen_fighter_lv5", "npc.barbassault_pen_fighter_lv6", "npc.barbassault_pen_fighter_lv7", "npc.barbassault_pen_fighter_lv8", "npc.barbassault_pen_fighter_lv9"]
+
+[[guaranteed]]
+obj = "obj.barbassault_egg_03"
+count = 2
+
+[[guaranteed]]
+obj = "obj.barbassault_egg_01"
+count = 2
+
+[[guaranteed]]
+obj = "obj.barbassault_egg_02"
+count = 2

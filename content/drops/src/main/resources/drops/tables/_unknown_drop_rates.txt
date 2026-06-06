@@ -1,0 +1,415 @@
+# Wiki drops with text rarity — exact rate needs data collection
+# Any non-numeric rarity (Common, Rare, Random, Varies, etc.)
+# wikiPage	item	section	subsection	rarity
+
+Alchemical_Hydra	Dragon knife	Main	Pre-roll	1/{{#expr:2000/(1999/2000) round 1}}
+Alchemical_Hydra	Grimy avantoe	Main	Herbs	1/{{#expr:1/(5*{{#var:herbbase}}) round 1}}
+Alchemical_Hydra	Grimy cadantine	Main	Herbs	1/{{#expr:1/(4*{{#var:herbbase}}) round 1}}
+Alchemical_Hydra	Grimy dwarf weed	Main	Herbs	1/{{#expr:1/(4*{{#var:herbbase}}) round 1}}
+Alchemical_Hydra	Grimy kwuarm	Main	Herbs	1/{{#expr:1/(5*{{#var:herbbase}}) round 1}}
+Alchemical_Hydra	Grimy lantadyme	Main	Herbs	1/{{#expr:1/(3*{{#var:herbbase}}) round 1}}
+Alchemical_Hydra	Grimy ranarr weed	Main	Herbs	1/{{#expr:1/(4*{{#var:herbbase}}) round 1}}
+Alchemical_Hydra	Grimy snapdragon	Main	Herbs	1/{{#expr:1/(4*{{#var:herbbase}}) round 1}}
+Alchemical_Hydra	Grimy torstol	Main	Herbs	1/{{#expr:1/(3*{{#var:herbbase}}) round 1}}
+Alchemical_Hydra	Hydra leather	Main	Pre-roll	1/{{#expr:512/(1999/2000*1999/2000*999/1000*511/512) round 1}}
+Alchemical_Hydra	Hydra tail	Main	Pre-roll	1/{{#expr:512/(1999/2000*1999/2000*999/1000) round 1}}
+Alchemical_Hydra	Hydra's claw	Main	Pre-roll	1/{{#expr:1000/(1999/2000*1999/2000) round 1}}
+Alchemical_Hydra	Hydra's eye	Main	Pre-roll	1/{{#expr:180/(1999/2000*1999/2000*999/1000*511/512*511/512) round 1}}
+Alchemical_Hydra	Hydra's fang	Main	Pre-roll	1/{{#expr:180/(1999/2000*1999/2000*999/1000*511/512*511/512) round 1}}
+Alchemical_Hydra	Hydra's heart	Main	Pre-roll	1/{{#expr:180/(1999/2000*1999/2000*999/1000*511/512*511/512) round 1}}
+Armoured_kraken	Avantoe seed	Main	Seeds	1/{{#expr:1/({{#var:rareseed}}*103 + {{#var:uncseed}}*12) round 1}}
+Armoured_kraken	Belladonna seed	Main	Seeds	1/{{#expr:1/({{#var:rareseed}}*143 + {{#var:uncseed}}*18) round 1}}
+Armoured_kraken	Cactus seed	Main	Seeds	1/{{#expr:1/({{#var:rareseed}}*96 + {{#var:uncseed}}*12) round 1}}
+Armoured_kraken	Cadantine seed	Main	Seeds	1/{{#expr:1/({{#var:rareseed}}*32 + {{#var:uncseed}}*4) round 1}}
+Armoured_kraken	Camphor seed	Main	Seeds	1/{{#expr:1/({{#var:sailseed}}*15) round 1}}
+Armoured_kraken	Dwarf weed seed	Main	Seeds	1/{{#expr:1/({{#var:rareseed}}*14 + {{#var:uncseed}}*2) round 0}}
+Armoured_kraken	Harralander seed	Main	Seeds	1/{{#expr:1/({{#var:uncseed}}*56) round 0}}
+Armoured_kraken	Irit seed	Main	Seeds	1/{{#expr:1/({{#var:rareseed}}*148 + {{#var:uncseed}}*18) round 1}}
+Armoured_kraken	Ironwood seed	Main	Seeds	1/{{#expr:1/({{#var:sailseed}}*4) round 1}}
+Armoured_kraken	Jangerberry seed	Main	Seeds	1/{{#expr:1/({{#var:uncseed}}*92) round 1}}
+Armoured_kraken	Kwuarm seed	Main	Seeds	1/{{#expr:1/({{#var:rareseed}}*69 + {{#var:uncseed}}*9) round 1}}
+Armoured_kraken	Lantadyme seed	Main	Seeds	1/{{#expr:1/({{#var:rareseed}}*23 + {{#var:uncseed}}*3) round 1}}
+Armoured_kraken	Limpwurt seed	Main	Seeds	1/{{#expr:1/({{#var:uncseed}}*137) round 1}}
+Armoured_kraken	Marrentill seed	Main	Seeds	1/{{#expr:1/({{#var:uncseed}}*125) round 1}}
+Armoured_kraken	Mushroom spore	Main	Seeds	1/{{#expr:1/({{#var:uncseed}}*29) round 0}}
+Armoured_kraken	Poison ivy seed	Main	Seeds	1/{{#expr:1/({{#var:rareseed}}*101 + {{#var:uncseed}}*13) round 1}}
+Armoured_kraken	Potato cactus seed	Main	Seeds	1/{{#expr:1/({{#var:rareseed}}*70 + {{#var:uncseed}}*8) round 1}}
+Armoured_kraken	Ranarr seed	Main	Seeds	1/{{#expr:1/({{#var:uncseed}}*39) round 0}}
+Armoured_kraken	Rosewood seed	Main	Seeds	1/{{#expr:1/({{#var:sailseed}}*1) round 0}}
+Armoured_kraken	Snapdragon seed	Main	Seeds	1/{{#expr:1/({{#var:rareseed}}*46 + {{#var:uncseed}}*5) round 1}}
+Armoured_kraken	Snape grass seed	Main	Seeds	1/{{#expr:1/({{#var:rareseed}}*20) round 1}}
+Armoured_kraken	Snape grass seed	Main	Seeds	1/{{#expr:1/({{#var:uncseed}}*40) round 0}}
+Armoured_kraken	Strawberry seed	Main	Seeds	1/{{#expr:1/({{#var:uncseed}}*131) round 1}}
+Armoured_kraken	Tarromin seed	Main	Seeds	1/{{#expr:1/({{#var:uncseed}}*85) round 1}}
+Armoured_kraken	Toadflax seed	Main	Seeds	1/{{#expr:1/({{#var:rareseed}}*216 + {{#var:uncseed}}*27) round 1}}
+Armoured_kraken	Torstol seed	Main	Seeds	1/{{#expr:1/({{#var:rareseed}}*9 + {{#var:uncseed}}*1) round 0}}
+Armoured_kraken	Watermelon seed	Main	Seeds	1/{{#expr:1/({{#var:uncseed}}*63) round 1}}
+Armoured_kraken	Whiteberry seed	Main	Seeds	1/{{#expr:1/({{#var:uncseed}}*34) round 0}}
+Armoured_kraken	Wildblood seed	Main	Seeds	1/{{#expr:1/({{#var:uncseed}}*83) round 1}}
+Black_jaguar	Clue scroll (medium)	Tertiary	Tertiary	Rare
+Bloodthirsty_Drake	Grimy avantoe	Main	Noted herbs	1/{{#expr:1/(5*{{#var:herbbase}}) round 1}}
+Bloodthirsty_Drake	Grimy cadantine	Main	Noted herbs	1/{{#expr:1/(4*{{#var:herbbase}}) round 1}}
+Bloodthirsty_Drake	Grimy dwarf weed	Main	Noted herbs	1/{{#expr:1/(4*{{#var:herbbase}}) round 1}}
+Bloodthirsty_Drake	Grimy kwuarm	Main	Noted herbs	1/{{#expr:1/(5*{{#var:herbbase}}) round 1}}
+Bloodthirsty_Drake	Grimy lantadyme	Main	Noted herbs	1/{{#expr:1/(3*{{#var:herbbase}}) round 1}}
+Bloodthirsty_Drake	Grimy ranarr weed	Main	Noted herbs	1/{{#expr:1/(4*{{#var:herbbase}}) round 1}}
+Bloodthirsty_Drake	Grimy snapdragon	Main	Noted herbs	1/{{#expr:1/(4*{{#var:herbbase}}) round 1}}
+Bloodthirsty_Drake	Grimy torstol	Main	Noted herbs	1/{{#expr:1/(3*{{#var:herbbase}}) round 1}}
+Bloodthirsty_Hydra	Diamond bolt tips	Main	Bolt tips	1/{{#expr:1/(10*{{#var:bolttipbase}}) round 1}}
+Bloodthirsty_Hydra	Dragonstone bolt tips	Main	Bolt tips	1/{{#expr:1/(7*{{#var:bolttipbase}}) round 1}}
+Bloodthirsty_Hydra	Emerald bolt tips	Main	Bolt tips	1/{{#expr:1/(9*{{#var:bolttipbase}}) round 1}}
+Bloodthirsty_Hydra	Grimy avantoe	Main	Herbs	1/{{#expr:1/(5*{{#var:uht}}) round 2}}
+Bloodthirsty_Hydra	Grimy ranarr weed	Main	Herbs	1/{{#expr:1/(4*{{#var:uht}}) round 2}}
+Bloodthirsty_Hydra	Grimy snapdragon	Main	Herbs	1/{{#expr:1/(3*{{#var:uht}}) round 2}}
+Bloodthirsty_Hydra	Grimy torstol	Main	Herbs	1/{{#expr:1/(3*{{#var:uht}}) round 2}}
+Bloodthirsty_Hydra	Onyx bolt tips	Main	Bolt tips	1/{{#expr:1/(3*{{#var:bolttipbase}}) round 1}}
+Bloodthirsty_Hydra	Ruby bolt tips	Main	Bolt tips	1/{{#expr:1/(9*{{#var:bolttipbase}}) round 1}}
+Bloodthirsty_Hydra	Sapphire bolt tips	Main	Bolt tips	1/{{#expr:1/(2*{{#var:bolttipbase}}) round 1}}
+Buffalo	Clue scroll (beginner)	Tertiary	Tertiary	
+Buffalo	Clue scroll (easy)	Tertiary	Tertiary	
+Buffalo	Token (Varlamore)	Guaranteed	100%	Varies
+Cave_crawler	Frozen tear	Tertiary	Tertiary	<ref name=tapoyauik group=d> Only dropped by those found in the [[Ruins of Tapoyauik]].</ref>
+Chilled_jelly	Frozen tear	Tertiary	Tertiary	Rare
+Colossal_Hydra	Diamond bolt tips	Main	Bolt tips	1/{{#expr:1/(10*{{#var:bolttipbase}}) round 1}}
+Colossal_Hydra	Dragonstone bolt tips	Main	Bolt tips	1/{{#expr:1/(7*{{#var:bolttipbase}}) round 1}}
+Colossal_Hydra	Emerald bolt tips	Main	Bolt tips	1/{{#expr:1/(9*{{#var:bolttipbase}}) round 1}}
+Colossal_Hydra	Grimy avantoe	Main	Herbs	1/{{#expr:1/(5*{{#var:uht}}) round 2}}
+Colossal_Hydra	Grimy ranarr weed	Main	Herbs	1/{{#expr:1/(4*{{#var:uht}}) round 2}}
+Colossal_Hydra	Grimy snapdragon	Main	Herbs	1/{{#expr:1/(3*{{#var:uht}}) round 2}}
+Colossal_Hydra	Grimy torstol	Main	Herbs	1/{{#expr:1/(3*{{#var:uht}}) round 2}}
+Colossal_Hydra	Onyx bolt tips	Main	Bolt tips	1/{{#expr:1/(3*{{#var:bolttipbase}}) round 1}}
+Colossal_Hydra	Ruby bolt tips	Main	Bolt tips	1/{{#expr:1/(9*{{#var:bolttipbase}}) round 1}}
+Colossal_Hydra	Sapphire bolt tips	Main	Bolt tips	1/{{#expr:1/(2*{{#var:bolttipbase}}) round 1}}
+Corrupted_Bear	Corrupted bowstring	Main	Weapon components	Varies
+Corrupted_Bear	Corrupted orb	Main	Weapon components	Varies
+Corrupted_Bear	Corrupted spike	Main	Weapon components	Varies
+Corrupted_Dark_Beast	Corrupted bowstring	Main	Weapon components	Varies
+Corrupted_Dark_Beast	Corrupted orb	Main	Weapon components	Varies
+Corrupted_Dark_Beast	Corrupted spike	Main	Weapon components	Varies
+Corrupted_Dragon	Corrupted bowstring	Main	Weapon components	Varies
+Corrupted_Dragon	Corrupted orb	Main	Weapon components	Varies
+Corrupted_Dragon	Corrupted spike	Main	Weapon components	Varies
+Crystalline_Bat	Grym leaf	Main	Materials	Common
+Crystalline_Bat	Raw paddlefish	Main	Materials	Common
+Crystalline_Bat	Teleport crystal (The Gauntlet)	Main	Other	Uncommon
+Crystalline_Bat	Weapon frame	Main	Materials	Common
+Crystalline_Bear	Crystal orb	Main	Weapon components	Varies
+Crystalline_Bear	Crystal spike	Main	Weapon components	Varies
+Crystalline_Bear	Crystalline bowstring	Main	Weapon components	Varies
+Crystalline_Bear	Raw paddlefish	Main	Resources	Common
+Crystalline_Bear	Teleport crystal (The Gauntlet)	Main	Resources	Uncommon
+Crystalline_Dark_Beast	Crystal orb	Main	Weapon components	Varies
+Crystalline_Dark_Beast	Crystal spike	Main	Weapon components	Varies
+Crystalline_Dark_Beast	Crystalline bowstring	Main	Weapon components	Varies
+Crystalline_Dark_Beast	Raw paddlefish	Main	Resources	Common
+Crystalline_Dark_Beast	Teleport crystal (The Gauntlet)	Main	Resources	Uncommon
+Crystalline_Dragon	Crystal orb	Main	Weapon components	Varies
+Crystalline_Dragon	Crystal spike	Main	Weapon components	Varies
+Crystalline_Dragon	Crystalline bowstring	Main	Weapon components	Varies
+Crystalline_Dragon	Raw paddlefish	Main	Resources	Common
+Crystalline_Dragon	Teleport crystal (The Gauntlet)	Main	Resources	Uncommon
+Crystalline_Rat	Grym leaf	Main	Materials	Common
+Crystalline_Rat	Raw paddlefish	Main	Materials	Common
+Crystalline_Rat	Teleport crystal (The Gauntlet)	Main	Other	Uncommon
+Crystalline_Rat	Weapon frame	Main	Materials	Common
+Crystalline_Scorpion	Raw paddlefish	Main	Materials	Common
+Crystalline_Scorpion	Teleport crystal (The Gauntlet)	Main	Other	Uncommon
+Crystalline_Scorpion	Weapon frame	Main	Materials	Common
+Crystalline_Spider	Grym leaf	Main	Materials	Common
+Crystalline_Spider	Raw paddlefish	Main	Materials	Common
+Crystalline_Spider	Teleport crystal (The Gauntlet)	Main	Other	Uncommon
+Crystalline_Spider	Weapon frame	Main	Materials	Common
+Crystalline_Unicorn	Raw paddlefish	Main	Materials	Common
+Crystalline_Unicorn	Teleport crystal (The Gauntlet)	Main	Other	Uncommon
+Crystalline_Unicorn	Weapon frame	Main	Materials	Common
+Crystalline_Wolf	Raw paddlefish	Main	Materials	Common
+Crystalline_Wolf	Teleport crystal (The Gauntlet)	Main	Other	Uncommon
+Crystalline_Wolf	Weapon frame	Main	Materials	Common
+Death_wing	Clue scroll (beginner)	Tertiary	Tertiary	Rare
+Demonic_gorilla	Grimy cadantine	Main	Herbs	1/{{#expr:1/(32*{{#var:herbbase}}) round 1}}
+Demonic_gorilla	Grimy dwarf weed	Main	Herbs	1/{{#expr:1/(32*{{#var:herbbase}}) round 1}}
+Demonic_gorilla	Grimy kwuarm	Main	Herbs	1/{{#expr:1/(40*{{#var:herbbase}}) round 1}}
+Demonic_gorilla	Grimy lantadyme	Main	Herbs	1/{{#expr:1/(24*{{#var:herbbase}}) round 1}}
+Dire_gryphon	Clue scroll (hard)	Tertiary	Tertiary	Unknown
+Drake	Grimy avantoe	Main	Herbs	1/{{#expr:1/(5*{{#var:herbbase}}) round 1}}
+Drake	Grimy cadantine	Main	Herbs	1/{{#expr:1/(4*{{#var:herbbase}}) round 1}}
+Drake	Grimy dwarf weed	Main	Herbs	1/{{#expr:1/(4*{{#var:herbbase}}) round 1}}
+Drake	Grimy kwuarm	Main	Herbs	1/{{#expr:1/(5*{{#var:herbbase}}) round 1}}
+Drake	Grimy lantadyme	Main	Herbs	1/{{#expr:1/(3*{{#var:herbbase}}) round 1}}
+Drake	Grimy ranarr weed	Main	Herbs	1/{{#expr:1/(4*{{#var:herbbase}}) round 1}}
+Drake	Grimy snapdragon	Main	Herbs	1/{{#expr:1/(4*{{#var:herbbase}}) round 1}}
+Drake	Grimy torstol	Main	Herbs	1/{{#expr:1/(3*{{#var:herbbase}}) round 1}}
+Dust_devil	Dragon chainbody	Main	Weapons and armour	1/{{#expr:126*256}}
+Dust_devil	Dragon chainbody	Main	Weapons and armour	1/{{#expr:128*256}}
+Dust_devil	Nothing	Main	Other	255/{{#expr:126*256}}
+Dust_devil	Nothing	Main	Other	255/{{#expr:128*256}}
+Elder_aquanite	Clue scroll (hard)	Tertiary	Tertiary	Unknown
+Elite_Black_Knight	Clue scroll (hard)	Tertiary	Tertiary	Rare
+Elite_Black_Knight	Elite black full helm	Main	Unique	Varies
+Elite_Black_Knight	Elite black platebody	Main	Unique	Varies
+Elite_Black_Knight	Elite black platelegs	Main	Unique	Varies
+Elite_Dark_Mage	Clue scroll (hard)	Tertiary	Tertiary	Rare
+Elite_Dark_Ranger	Clue scroll (hard)	Tertiary	Tertiary	Rare
+Elite_Dark_Warrior	Clue scroll (hard)	Tertiary	Tertiary	Rare
+Ent	Logs	Main	Other	Varies
+Ent	Magic logs	Main	Other	Varies
+Ent	Maple logs	Main	Other	Varies
+Ent	Oak logs	Main	Other	Varies
+Ent	Willow logs	Main	Other	Varies
+Ent	Yew logs	Main	Other	Varies
+Flawed_Golem	Clue scroll (beginner)	Tertiary	Tertiary	Rare
+Fox	Copper's crimson collar	Main	-	Common
+Frost_Nagua	Clue scroll (hard)	Tertiary	Tertiary	Rare
+Frost_dragon	Clue scroll (hard)	Tertiary	Tertiary	Rare
+Giant_lobster_(Ghosts_Ahoy)	Clue scroll (beginner)	Tertiary	Tertiary	Rare
+Grimy_Lizard	Clue scroll (medium)	Tertiary	Tertiary	Rare
+Guardian_Drake	Grimy avantoe	Main	Herbs	1/{{#expr:1/(5*{{#var:herbbase}}) round 1}}
+Guardian_Drake	Grimy cadantine	Main	Herbs	1/{{#expr:1/(4*{{#var:herbbase}}) round 1}}
+Guardian_Drake	Grimy dwarf weed	Main	Herbs	1/{{#expr:1/(4*{{#var:herbbase}}) round 1}}
+Guardian_Drake	Grimy kwuarm	Main	Herbs	1/{{#expr:1/(5*{{#var:herbbase}}) round 1}}
+Guardian_Drake	Grimy lantadyme	Main	Herbs	1/{{#expr:1/(3*{{#var:herbbase}}) round 1}}
+Guardian_Drake	Grimy ranarr weed	Main	Herbs	1/{{#expr:1/(4*{{#var:herbbase}}) round 1}}
+Guardian_Drake	Grimy snapdragon	Main	Herbs	1/{{#expr:1/(4*{{#var:herbbase}}) round 1}}
+Guardian_Drake	Grimy torstol	Main	Herbs	1/{{#expr:1/(3*{{#var:herbbase}}) round 1}}
+Guardian_of_Armadyl	Armadyl pendant	Main	Other	Common
+Hermit_crab	Clue scroll (easy)	Tertiary	Tertiary	Unknown
+Hydra	Diamond bolt tips	Main	Bolt tips	1/{{#expr:1/(10*{{#var:bolttipbase}}) round 1}}
+Hydra	Dragonstone bolt tips	Main	Bolt tips	1/{{#expr:1/(7*{{#var:bolttipbase}}) round 1}}
+Hydra	Emerald bolt tips	Main	Bolt tips	1/{{#expr:1/(9*{{#var:bolttipbase}}) round 1}}
+Hydra	Grimy avantoe	Main	Herbs	1/{{#expr:1/(5*{{#var:uht}}) round 2}}
+Hydra	Grimy ranarr weed	Main	Herbs	1/{{#expr:1/(4*{{#var:uht}}) round 2}}
+Hydra	Grimy snapdragon	Main	Herbs	1/{{#expr:1/(3*{{#var:uht}}) round 2}}
+Hydra	Grimy torstol	Main	Herbs	1/{{#expr:1/(3*{{#var:uht}}) round 2}}
+Hydra	Onyx bolt tips	Main	Bolt tips	1/{{#expr:1/(3*{{#var:bolttipbase}}) round 1}}
+Hydra	Ruby bolt tips	Main	Bolt tips	1/{{#expr:1/(9*{{#var:bolttipbase}}) round 1}}
+Hydra	Sapphire bolt tips	Main	Bolt tips	1/{{#expr:1/(2*{{#var:bolttipbase}}) round 1}}
+Ice_giant	Frozen tear	Tertiary	Tertiary	<ref group=d name=tapo>Only dropped in the [[Ruins of Tapoyauik]].</ref>
+Ice_spider	Frozen tear	Tertiary	Tertiary	<ref name=row group=d>Only dropped in Ruins of Tapoyauik.</ref>
+Ice_warrior	Frozen tear	Tertiary	Tertiary	<ref name=row group=d>Only dropped in Ruins of Tapoyauik</ref>
+Jaguar	Clue scroll (medium)	Tertiary	Tertiary	Rare
+Jaguar_cub	Clue scroll (easy)	Tertiary	Tertiary	Rare
+Jungle_spider_(Ape_Atoll)	Clue scroll (beginner)	Tertiary	Tertiary	Rare
+Kalphite_Queen	Kq head (tattered)	Tertiary	Tertiary	Once
+Lava_Strykewyrm	Diamond bolt tips	Main	Bolt tips	1/{{#expr:1/(5/128 * 25/92) round 1}}
+Lava_Strykewyrm	Dragonstone bolt tips	Main	Bolt tips	1/{{#expr:1/(5/128 * 15/92) round 1}}
+Lava_Strykewyrm	Emerald bolt tips	Main	Bolt tips	1/{{#expr:1/(5/128 * 20/92) round 1}}
+Lava_Strykewyrm	Onyx bolt tips	Main	Bolt tips	1/{{#expr:1/(5/128 * 7/92) round 1}}
+Lava_Strykewyrm	Ruby bolt tips	Main	Bolt tips	1/{{#expr:1/(5/128 * 20/92) round 1}}
+Lava_Strykewyrm	Sapphire bolt tips	Main	Bolt tips	1/{{#expr:1/(5/128 * 5/92) round 1}}
+Lizardman_shaman	Grimy cadantine	Main	Herbs	1/{{#expr:1/(4*{{#var:uht}}) round 2}}
+Lizardman_shaman	Grimy dwarf weed	Main	Herbs	1/{{#expr:1/(4*{{#var:uht}}) round 2}}
+Lizardman_shaman	Grimy kwuarm	Main	Herbs	1/{{#expr:1/(5*{{#var:uht}}) round 2}}
+Lizardman_shaman	Grimy lantadyme	Main	Herbs	1/{{#expr:1/(3*{{#var:uht}}) round 2}}
+Long-tailed_Wyvern	Celastrus seed	Main	Seeds	1/{{#expr:1/(2*{{#var:seedbase}}) round 1}}
+Long-tailed_Wyvern	Dragonfruit tree seed	Main	Seeds	1/{{#expr:1/(3*{{#var:seedbase}}) round 1}}
+Long-tailed_Wyvern	Grimy cadantine	Main	Herbs	1/{{#expr:1/(32*{{#var:herbbase}}) round 1}}
+Long-tailed_Wyvern	Grimy dwarf weed	Main	Herbs	1/{{#expr:1/(32*{{#var:herbbase}}) round 1}}
+Long-tailed_Wyvern	Grimy kwuarm	Main	Herbs	1/{{#expr:1/(40*{{#var:herbbase}}) round 1}}
+Long-tailed_Wyvern	Grimy lantadyme	Main	Herbs	1/{{#expr:1/(24*{{#var:herbbase}}) round 1}}
+Long-tailed_Wyvern	Magic seed	Main	Seeds	1/{{#expr:1/(6*{{#var:seedbase}}) round 1}}
+Long-tailed_Wyvern	Mahogany seed	Main	Seeds	1/{{#expr:1/(9*{{#var:seedbase}} + (1/123 * 1/3)) round 1}}
+Long-tailed_Wyvern	Maple seed	Main	Seeds	1/{{#expr:1/(9*{{#var:seedbase}}) round 1}}
+Long-tailed_Wyvern	Palm tree seed	Main	Seeds	1/{{#expr:1/(5*{{#var:seedbase}}) round 1}}
+Long-tailed_Wyvern	Papaya tree seed	Main	Seeds	1/{{#expr:1/(7*{{#var:seedbase}}) round 1}}
+Long-tailed_Wyvern	Ranarr seed	Main	Seeds	1/{{#expr:1/(15*{{#var:seedbase}} + 2/123) round 1}}
+Long-tailed_Wyvern	Redwood tree seed	Main	Seeds	1/{{#expr:1/(2*{{#var:seedbase}}) round 1}}
+Long-tailed_Wyvern	Snapdragon seed	Main	Seeds	1/{{#expr:1/(14*{{#var:seedbase}}) round 1}}
+Long-tailed_Wyvern	Spirit seed	Main	Seeds	1/{{#expr:1/(4*{{#var:seedbase}}) round 1}}
+Long-tailed_Wyvern	Teak seed	Main	Seeds	1/{{#expr:1/(9*{{#var:seedbase}} + (1/123 * 2/3)) round 1}}
+Long-tailed_Wyvern	Torstol seed	Main	Seeds	1/{{#expr:1/(11*{{#var:seedbase}}) round 1}}
+Long-tailed_Wyvern	Watermelon seed	Main	Seeds	1/{{#expr:1/(10*{{#var:seedbase}}) round 1}}
+Long-tailed_Wyvern	Willow seed	Main	Seeds	1/{{#expr:1/(10*{{#var:seedbase}}) round 1}}
+Long-tailed_Wyvern	Yew seed	Main	Seeds	1/{{#expr:1/(9*{{#var:seedbase}} + 1/123) round 1}}
+Magma_strykewyrm	Clue scroll (hard)	Tertiary	Tertiary	Unknown
+Magma_strykewyrm	Diamond bolt tips	Main	Bolt tips	1/{{#expr:1/(5/128 * 25/92) round 1}}
+Magma_strykewyrm	Dragonstone bolt tips	Main	Bolt tips	1/{{#expr:1/(5/128 * 15/92) round 1}}
+Magma_strykewyrm	Emerald bolt tips	Main	Bolt tips	1/{{#expr:1/(5/128 * 20/92) round 1}}
+Magma_strykewyrm	Onyx bolt tips	Main	Bolt tips	1/{{#expr:1/(5/128 * 7/92) round 1}}
+Magma_strykewyrm	Ruby bolt tips	Main	Bolt tips	1/{{#expr:1/(5/128 * 20/92) round 1}}
+Magma_strykewyrm	Sapphire bolt tips	Main	Bolt tips	1/{{#expr:1/(5/128 * 5/92) round 1}}
+Manta_ray_(monster)	Avantoe seed	Main	Seeds	1/{{#expr:1/({{#var:rareseed}}*103) round 1}}
+Manta_ray_(monster)	Belladonna seed	Main	Seeds	1/{{#expr:1/({{#var:rareseed}}*143) round 1}}
+Manta_ray_(monster)	Cactus seed	Main	Seeds	1/{{#expr:1/({{#var:rareseed}}*96) round 1}}
+Manta_ray_(monster)	Cadantine seed	Main	Seeds	1/{{#expr:1/({{#var:rareseed}}*32) round 1}}
+Manta_ray_(monster)	Celastrus seed	Main	Seeds	1/{{#expr:1/({{#var:treeseed}}*4) round 1}}
+Manta_ray_(monster)	Dragonfruit tree seed	Main	Seeds	1/{{#expr:1/({{#var:treeseed}}*6) round 1}}
+Manta_ray_(monster)	Dwarf weed seed	Main	Seeds	1/{{#expr:1/({{#var:rareseed}}*14) round 1}}
+Manta_ray_(monster)	Grimy avantoe	Main	Unnoted herbs	1/{{#expr:1/({{#var:hdt}}*6 + {{#var:usefulHdt}}*5) round 1}}
+Manta_ray_(monster)	Grimy cadantine	Main	Unnoted herbs	1/{{#expr:1/({{#var:hdt}}*4) round 1}}
+Manta_ray_(monster)	Grimy dwarf weed	Main	Unnoted herbs	1/{{#expr:1/({{#var:hdt}}*3) round 1}}
+Manta_ray_(monster)	Grimy guam leaf	Main	Unnoted herbs	1/{{#expr:1/({{#var:hdt}}*32) round 1}}
+Manta_ray_(monster)	Grimy harralander	Main	Unnoted herbs	1/{{#expr:1/({{#var:hdt}}*14) round 1}}
+Manta_ray_(monster)	Grimy irit leaf	Main	Unnoted herbs	1/{{#expr:1/({{#var:hdt}}*8) round 1}}
+Manta_ray_(monster)	Grimy kwuarm	Main	Unnoted herbs	1/{{#expr:1/({{#var:hdt}}*5) round 1}}
+Manta_ray_(monster)	Grimy lantadyme	Main	Unnoted herbs	1/{{#expr:1/({{#var:hdt}}*3) round 1}}
+Manta_ray_(monster)	Grimy marrentill	Main	Unnoted herbs	1/{{#expr:1/({{#var:hdt}}*24) round 1}}
+Manta_ray_(monster)	Grimy ranarr weed	Main	Unnoted herbs	1/{{#expr:1/({{#var:hdt}}*11 + {{#var:usefulHdt}}*4) round 1}}
+Manta_ray_(monster)	Grimy snapdragon	Main	Unnoted herbs	1/{{#expr:1/({{#var:usefulHdt}}*4) round 1}}
+Manta_ray_(monster)	Grimy tarromin	Main	Unnoted herbs	1/{{#expr:1/({{#var:hdt}}*18) round 1}}
+Manta_ray_(monster)	Grimy torstol	Main	Unnoted herbs	1/{{#expr:1/({{#var:usefulHdt}}*3) round 1}}
+Manta_ray_(monster)	Irit seed	Main	Seeds	1/{{#expr:1/({{#var:rareseed}}*148) round 1}}
+Manta_ray_(monster)	Kwuarm seed	Main	Seeds	1/{{#expr:1/({{#var:rareseed}}*69) round 1}}
+Manta_ray_(monster)	Lantadyme seed	Main	Seeds	1/{{#expr:1/({{#var:rareseed}}*23) round 1}}
+Manta_ray_(monster)	Magic seed	Main	Seeds	1/{{#expr:1/({{#var:treeseed}}*11) round 1}}
+Manta_ray_(monster)	Mahogany seed	Main	Seeds	1/{{#expr:1/({{#var:treeseed}}*18) round 1}}
+Manta_ray_(monster)	Maple seed	Main	Seeds	1/{{#expr:1/({{#var:treeseed}}*18) round 1}}
+Manta_ray_(monster)	Palm tree seed	Main	Seeds	1/{{#expr:1/({{#var:treeseed}}*10) round 1}}
+Manta_ray_(monster)	Papaya tree seed	Main	Seeds	1/{{#expr:1/({{#var:treeseed}}*14) round 1}}
+Manta_ray_(monster)	Poison ivy seed	Main	Seeds	1/{{#expr:1/({{#var:rareseed}}*101) round 1}}
+Manta_ray_(monster)	Potato cactus seed	Main	Seeds	1/{{#expr:1/({{#var:rareseed}}*70) round 1}}
+Manta_ray_(monster)	Ranarr seed	Main	Seeds	1/{{#expr:1/({{#var:treeseed}}*30) round 1}}
+Manta_ray_(monster)	Redwood tree seed	Main	Seeds	1/{{#expr:1/({{#var:treeseed}}*4) round 1}}
+Manta_ray_(monster)	Snapdragon seed	Main	Seeds	1/{{#expr:1/({{#var:rareseed}}*46 + {{#var:treeseed}}*28) round 1}}
+Manta_ray_(monster)	Snape grass seed	Main	Seeds	1/{{#expr:1/({{#var:rareseed}}*20) round 1}}
+Manta_ray_(monster)	Spirit seed	Main	Seeds	1/{{#expr:1/({{#var:treeseed}}*8) round 1}}
+Manta_ray_(monster)	Teak seed	Main	Seeds	1/{{#expr:1/({{#var:treeseed}}*18) round 1}}
+Manta_ray_(monster)	Toadflax seed	Main	Seeds	1/{{#expr:1/({{#var:rareseed}}*216) round 1}}
+Manta_ray_(monster)	Torstol seed	Main	Seeds	1/{{#expr:1/({{#var:rareseed}}*9 + {{#var:treeseed}}*22) round 1}}
+Manta_ray_(monster)	Watermelon seed	Main	Seeds	1/{{#expr:1/({{#var:treeseed}}*21) round 1}}
+Manta_ray_(monster)	Willow seed	Main	Seeds	1/{{#expr:1/({{#var:treeseed}}*20) round 1}}
+Manta_ray_(monster)	Yew seed	Main	Seeds	1/{{#expr:1/({{#var:treeseed}}*18) round 1}}
+Moonlight_Cockatrice	Clue scroll (medium)	Tertiary	Tertiary	Rare
+Mutated_Terrorbird	Clue scroll (hard)	Tertiary	Tertiary	Rare
+Mutated_Tortoise	Clue scroll (hard)	Tertiary	Tertiary	Rare
+Nex	Air orb	Main	Resources	Common
+Nex	Air rune	Main	Runes and ammunition	Uncommon
+Nex	Blood rune	Main	Runes and ammunition	Common
+Nex	Coal	Main	Resources	Uncommon
+Nex	Coins	Main	Other	Uncommon
+Nex	Death rune	Main	Runes and ammunition	Common
+Nex	Dragon bolts (unf)	Main	Runes and ammunition	Common
+Nex	Ecumenical key shard	Main	Other	Common
+Nex	Fire rune	Main	Runes and ammunition	Uncommon
+Nex	Onyx bolts (e)	Main	Runes and ammunition	Uncommon
+Nex	Prayer potion(4)	Main	Consumables	Common
+Nex	Runite ore	Main	Resources	Uncommon
+Nex	Saradomin brew(4)	Main	Consumables	Common
+Nex	Shark	Main	Consumables	Common
+Nex	Soul rune	Main	Runes and ammunition	Common
+Nex	Steel cannonball	Main	Runes and ammunition	Common
+Nex	Super restore(4)	Main	Consumables	Common
+Nex	Uncut diamond	Main	Resources	Common
+Nex	Uncut ruby	Main	Resources	Common
+Nex	Water rune	Main	Runes and ammunition	Uncommon
+Nex	Wine of zamorak	Main	Resources	Common
+Poison_spider	Clue scroll (beginner)	Tertiary	Tertiary	Rare
+Porcupine	Clue scroll (beginner)	Tertiary	Tertiary	
+Possessed_Priest	Coins	Main	Other	Uncommon
+Pygmy_kraken	Clue scroll (medium)	Tertiary	Tertiary	Rare
+Reanimated_abyssal	Brimstone key	Tertiary	Tertiary	Unknown
+Scorpia's_guardian	Clue scroll (beginner)	Tertiary	Tertiary	Unknown
+Shellbane_gryphon	Cabbage seed	Main	Seeds and frags	1/{{#expr:1/({{#var:allotseed}}*16) round 1}}
+Shellbane_gryphon	Grimy avantoe	Main	Herbs	1/{{#expr:1/({{#var:herb}}*6) round 1}}
+Shellbane_gryphon	Grimy cadantine	Main	Herbs	1/{{#expr:1/({{#var:herb}}*4 + {{#var:combatherb}}*4) round 1}}
+Shellbane_gryphon	Grimy dwarf weed	Main	Herbs	1/{{#expr:1/({{#var:herb}}*3 + {{#var:combatherb}}*4) round 1}}
+Shellbane_gryphon	Grimy guam leaf	Main	Herbs	1/{{#expr:1/({{#var:herb}}*32) round 1}}
+Shellbane_gryphon	Grimy harralander	Main	Herbs	1/{{#expr:1/({{#var:herb}}*14) round 1}}
+Shellbane_gryphon	Grimy irit leaf	Main	Herbs	1/{{#expr:1/({{#var:herb}}*8) round 1}}
+Shellbane_gryphon	Grimy kwuarm	Main	Herbs	1/{{#expr:1/({{#var:herb}}*5 + {{#var:combatherb}}*5) round 1}}
+Shellbane_gryphon	Grimy lantadyme	Main	Herbs	1/{{#expr:1/({{#var:herb}}*3 + {{#var:combatherb}}*3) round 1}}
+Shellbane_gryphon	Grimy marrentill	Main	Herbs	1/{{#expr:1/({{#var:herb}}*24) round 1}}
+Shellbane_gryphon	Grimy ranarr weed	Main	Herbs	1/{{#expr:1/({{#var:herb}}*11) round 1}}
+Shellbane_gryphon	Grimy tarromin	Main	Herbs	1/{{#expr:1/({{#var:herb}}*18) round 1}}
+Shellbane_gryphon	Onion seed	Main	Seeds and frags	1/{{#expr:1/({{#var:allotseed}}*32) round 1}}
+Shellbane_gryphon	Potato seed	Main	Seeds and frags	1/{{#expr:1/({{#var:allotseed}}*64) round 1}}
+Shellbane_gryphon	Snape grass seed	Main	Seeds and frags	1/{{#expr:1/({{#var:allotseed}}*1 + {{#var:allotseedgood}}*1) round 1}}
+Shellbane_gryphon	Strawberry seed	Main	Seeds and frags	1/{{#expr:1/({{#var:allotseed}}*2 + {{#var:allotseedgood}}*2) round 1}}
+Shellbane_gryphon	Sweetcorn seed	Main	Seeds and frags	1/{{#expr:1/({{#var:allotseed}}*4 + {{#var:allotseedgood}}*4) round 1}}
+Shellbane_gryphon	Tomato seed	Main	Seeds and frags	1/{{#expr:1/({{#var:allotseed}}*8 + {{#var:allotseedgood}}*8) round 1}}
+Shellbane_gryphon	Watermelon seed	Main	Seeds and frags	1/{{#expr:1/({{#var:allotseed}}*1 + {{#var:allotseedgood}}*1) round 1}}
+Skeleton_(Melzar's_Maze)	Coins	Main	Coins	Common
+Spider_(Ape_Atoll)	Clue scroll (beginner)	Tertiary	Tertiary	Rare
+Spider_(Ungael)	Clue scroll (beginner)	Tertiary	Tertiary	Rare
+Spined_kraken	Clue scroll (hard)	Tertiary	Tertiary	Rare
+Spitting_Wyvern	Celastrus seed	Main	Seeds	1/{{#expr:1/(2*{{#var:seedbase}}) round 1}}
+Spitting_Wyvern	Dragonfruit tree seed	Main	Seeds	1/{{#expr:1/(3*{{#var:seedbase}}) round 1}}
+Spitting_Wyvern	Grimy cadantine	Main	Herbs	1/{{#expr:1/(32*{{#var:herbbase}}) round 1}}
+Spitting_Wyvern	Grimy dwarf weed	Main	Herbs	1/{{#expr:1/(32*{{#var:herbbase}}) round 1}}
+Spitting_Wyvern	Grimy kwuarm	Main	Herbs	1/{{#expr:1/(40*{{#var:herbbase}}) round 1}}
+Spitting_Wyvern	Grimy lantadyme	Main	Herbs	1/{{#expr:1/(24*{{#var:herbbase}}) round 1}}
+Spitting_Wyvern	Magic seed	Main	Seeds	1/{{#expr:1/(6*{{#var:seedbase}}) round 1}}
+Spitting_Wyvern	Mahogany seed	Main	Seeds	1/{{#expr:1/(9*{{#var:seedbase}} + (1/123 * 1/3)) round 1}}
+Spitting_Wyvern	Maple seed	Main	Seeds	1/{{#expr:1/(9*{{#var:seedbase}}) round 1}}
+Spitting_Wyvern	Palm tree seed	Main	Seeds	1/{{#expr:1/(5*{{#var:seedbase}}) round 1}}
+Spitting_Wyvern	Papaya tree seed	Main	Seeds	1/{{#expr:1/(7*{{#var:seedbase}}) round 1}}
+Spitting_Wyvern	Ranarr seed	Main	Seeds	1/{{#expr:1/(15*{{#var:seedbase}} + 2/123) round 1}}
+Spitting_Wyvern	Redwood tree seed	Main	Seeds	1/{{#expr:1/(2*{{#var:seedbase}}) round 1}}
+Spitting_Wyvern	Snapdragon seed	Main	Seeds	1/{{#expr:1/(14*{{#var:seedbase}}) round 1}}
+Spitting_Wyvern	Spirit seed	Main	Seeds	1/{{#expr:1/(4*{{#var:seedbase}}) round 1}}
+Spitting_Wyvern	Teak seed	Main	Seeds	1/{{#expr:1/(9*{{#var:seedbase}} + (1/123 * 2/3)) round 1}}
+Spitting_Wyvern	Torstol seed	Main	Seeds	1/{{#expr:1/(11*{{#var:seedbase}}) round 1}}
+Spitting_Wyvern	Watermelon seed	Main	Seeds	1/{{#expr:1/(10*{{#var:seedbase}}) round 1}}
+Spitting_Wyvern	Willow seed	Main	Seeds	1/{{#expr:1/(10*{{#var:seedbase}}) round 1}}
+Spitting_Wyvern	Yew seed	Main	Seeds	1/{{#expr:1/(9*{{#var:seedbase}} + 1/123) round 1}}
+Stingray	Avantoe seed	Main	Seeds	1/{{#expr:1/({{#var:rareseed}}*103 + {{#var:uncseed}}*12) round 1}}
+Stingray	Belladonna seed	Main	Seeds	1/{{#expr:1/({{#var:rareseed}}*143 + {{#var:uncseed}}*18) round 1}}
+Stingray	Cactus seed	Main	Seeds	1/{{#expr:1/({{#var:rareseed}}*96 + {{#var:uncseed}}*12) round 1}}
+Stingray	Cadantine seed	Main	Seeds	1/{{#expr:1/({{#var:rareseed}}*32 + {{#var:uncseed}}*4) round 1}}
+Stingray	Dwarf weed seed	Main	Seeds	1/{{#expr:1/({{#var:rareseed}}*14 + {{#var:uncseed}}*2) round 1}}
+Stingray	Grimy avantoe	Main	Unnoted herbs	1/{{#expr:1/({{#var:hdt}}*6 + {{#var:usefulHdt}}*5) round 1}}
+Stingray	Grimy cadantine	Main	Unnoted herbs	1/{{#expr:1/({{#var:hdt}}*4) round 1}}
+Stingray	Grimy dwarf weed	Main	Unnoted herbs	1/{{#expr:1/({{#var:hdt}}*3) round 1}}
+Stingray	Grimy guam leaf	Main	Unnoted herbs	1/{{#expr:1/({{#var:hdt}}*32) round 1}}
+Stingray	Grimy harralander	Main	Unnoted herbs	1/{{#expr:1/({{#var:hdt}}*14) round 1}}
+Stingray	Grimy irit leaf	Main	Unnoted herbs	1/{{#expr:1/({{#var:hdt}}*8) round 1}}
+Stingray	Grimy kwuarm	Main	Unnoted herbs	1/{{#expr:1/({{#var:hdt}}*5) round 1}}
+Stingray	Grimy lantadyme	Main	Unnoted herbs	1/{{#expr:1/({{#var:hdt}}*3) round 1}}
+Stingray	Grimy marrentill	Main	Unnoted herbs	1/{{#expr:1/({{#var:hdt}}*24) round 1}}
+Stingray	Grimy ranarr weed	Main	Unnoted herbs	1/{{#expr:1/({{#var:hdt}}*11 + {{#var:usefulHdt}}*4) round 1}}
+Stingray	Grimy snapdragon	Main	Unnoted herbs	1/{{#expr:1/({{#var:usefulHdt}}*4) round 1}}
+Stingray	Grimy tarromin	Main	Unnoted herbs	1/{{#expr:1/({{#var:hdt}}*18) round 1}}
+Stingray	Grimy torstol	Main	Unnoted herbs	1/{{#expr:1/({{#var:usefulHdt}}*3) round 1}}
+Stingray	Harralander seed	Main	Seeds	1/{{#expr:1/({{#var:uncseed}}*56) round 1}}
+Stingray	Irit seed	Main	Seeds	1/{{#expr:1/({{#var:rareseed}}*148 + {{#var:uncseed}}*18) round 1}}
+Stingray	Jangerberry seed	Main	Seeds	1/{{#expr:1/({{#var:uncseed}}*92) round 1}}
+Stingray	Kwuarm seed	Main	Seeds	1/{{#expr:1/({{#var:rareseed}}*69 + {{#var:uncseed}}*9) round 1}}
+Stingray	Lantadyme seed	Main	Seeds	1/{{#expr:1/({{#var:rareseed}}*23 + {{#var:uncseed}}*3) round 1}}
+Stingray	Limpwurt seed	Main	Seeds	1/{{#expr:1/({{#var:uncseed}}*137) round 1}}
+Stingray	Marrentill seed	Main	Seeds	1/{{#expr:1/({{#var:uncseed}}*125) round 1}}
+Stingray	Mushroom spore	Main	Seeds	1/{{#expr:1/({{#var:uncseed}}*29) round 1}}
+Stingray	Poison ivy seed	Main	Seeds	1/{{#expr:1/({{#var:rareseed}}*101 + {{#var:uncseed}}*13) round 1}}
+Stingray	Potato cactus seed	Main	Seeds	1/{{#expr:1/({{#var:rareseed}}*70 + {{#var:uncseed}}*8) round 1}}
+Stingray	Ranarr seed	Main	Seeds	1/{{#expr:1/({{#var:uncseed}}*39) round 1}}
+Stingray	Snapdragon seed	Main	Seeds	1/{{#expr:1/({{#var:rareseed}}*46 + {{#var:uncseed}}*5) round 1}}
+Stingray	Snape grass seed	Main	Seeds	1/{{#expr:1/({{#var:rareseed}}*20) round 1}}
+Stingray	Snape grass seed	Main	Seeds	1/{{#expr:1/({{#var:uncseed}}*40) round 1}}
+Stingray	Strawberry seed	Main	Seeds	1/{{#expr:1/({{#var:uncseed}}*131) round 1}}
+Stingray	Tarromin seed	Main	Seeds	1/{{#expr:1/({{#var:uncseed}}*85) round 1}}
+Stingray	Toadflax seed	Main	Seeds	1/{{#expr:1/({{#var:rareseed}}*216 + {{#var:uncseed}}*27) round 1}}
+Stingray	Torstol seed	Main	Seeds	1/{{#expr:1/({{#var:rareseed}}*9 + {{#var:uncseed}}*1) round 0}}
+Stingray	Watermelon seed	Main	Seeds	1/{{#expr:1/({{#var:uncseed}}*63) round 1}}
+Stingray	Whiteberry seed	Main	Seeds	1/{{#expr:1/({{#var:uncseed}}*34) round 1}}
+Stingray	Wildblood seed	Main	Seeds	1/{{#expr:1/({{#var:uncseed}}*83) round 1}}
+Taloned_Wyvern	Celastrus seed	Main	Seeds	1/{{#expr:1/(2*{{#var:seedbase}}) round 1}}
+Taloned_Wyvern	Dragonfruit tree seed	Main	Seeds	1/{{#expr:1/(3*{{#var:seedbase}}) round 1}}
+Taloned_Wyvern	Grimy cadantine	Main	Herbs	1/{{#expr:1/(32*{{#var:herbbase}}) round 1}}
+Taloned_Wyvern	Grimy dwarf weed	Main	Herbs	1/{{#expr:1/(32*{{#var:herbbase}}) round 1}}
+Taloned_Wyvern	Grimy kwuarm	Main	Herbs	1/{{#expr:1/(40*{{#var:herbbase}}) round 1}}
+Taloned_Wyvern	Grimy lantadyme	Main	Herbs	1/{{#expr:1/(24*{{#var:herbbase}}) round 1}}
+Taloned_Wyvern	Magic seed	Main	Seeds	1/{{#expr:1/(6*{{#var:seedbase}}) round 1}}
+Taloned_Wyvern	Mahogany seed	Main	Seeds	1/{{#expr:1/(9*{{#var:seedbase}} + (1/123 * 1/3)) round 1}}
+Taloned_Wyvern	Maple seed	Main	Seeds	1/{{#expr:1/(9*{{#var:seedbase}}) round 1}}
+Taloned_Wyvern	Palm tree seed	Main	Seeds	1/{{#expr:1/(5*{{#var:seedbase}}) round 1}}
+Taloned_Wyvern	Papaya tree seed	Main	Seeds	1/{{#expr:1/(7*{{#var:seedbase}}) round 1}}
+Taloned_Wyvern	Ranarr seed	Main	Seeds	1/{{#expr:1/(15*{{#var:seedbase}} + 2/123) round 1}}
+Taloned_Wyvern	Redwood tree seed	Main	Seeds	1/{{#expr:1/(2*{{#var:seedbase}}) round 1}}
+Taloned_Wyvern	Snapdragon seed	Main	Seeds	1/{{#expr:1/(14*{{#var:seedbase}}) round 1}}
+Taloned_Wyvern	Spirit seed	Main	Seeds	1/{{#expr:1/(4*{{#var:seedbase}}) round 1}}
+Taloned_Wyvern	Teak seed	Main	Seeds	1/{{#expr:1/(9*{{#var:seedbase}} + (1/123 * 2/3)) round 1}}
+Taloned_Wyvern	Torstol seed	Main	Seeds	1/{{#expr:1/(11*{{#var:seedbase}}) round 1}}
+Taloned_Wyvern	Watermelon seed	Main	Seeds	1/{{#expr:1/(10*{{#var:seedbase}}) round 1}}
+Taloned_Wyvern	Willow seed	Main	Seeds	1/{{#expr:1/(10*{{#var:seedbase}}) round 1}}
+Taloned_Wyvern	Yew seed	Main	Seeds	1/{{#expr:1/(9*{{#var:seedbase}} + 1/123) round 1}}
+Tiger_shark	Clue scroll (hard)	Tertiary	Tertiary	Rare
+Tortured_gorilla	Grimy cadantine	Main	Herbs	1/{{#expr:1/(32*{{#var:herbbase}}) round 1}}
+Tortured_gorilla	Grimy dwarf weed	Main	Herbs	1/{{#expr:1/(32*{{#var:herbbase}}) round 1}}
+Tortured_gorilla	Grimy kwuarm	Main	Herbs	1/{{#expr:1/(40*{{#var:herbbase}}) round 1}}
+Tortured_gorilla	Grimy lantadyme	Main	Herbs	1/{{#expr:1/(24*{{#var:herbbase}}) round 1}}
+Veiled_kraken	Camphor seed	Main	Seeds	1/{{#expr:1/(15/20 * 2/272) round 1}}
+Veiled_kraken	Ironwood seed	Main	Seeds	1/{{#expr:1/(4/20 * 2/272) round 1}}
+Veiled_kraken	Rosewood seed	Main	Seeds	1/{{#expr:1/(1/20 * 2/272) round 1}}
+Vitreous_Chilled_Jelly	Frozen tear	Tertiary	Tertiary	Rare
+Warped_Terrorbird	Clue scroll (hard)	Tertiary	Tertiary	Rare
+Warped_Tortoise	Clue scroll (hard)	Tertiary	Tertiary	Rare
+White_jaguar	Clue scroll (medium)	Tertiary	Tertiary	Rare
+Wolf	Clue scroll (beginner)	Tertiary	Tertiary	Rare

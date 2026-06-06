@@ -1,0 +1,78 @@
+id = "Grimy Lizard Drops"
+npcs = ["npc.grimy_lizard", "npc.crypt_of_tonali_grimy_lizard"]
+
+[main]
+total = 128
+name = "Grimy Lizard Drops"
+
+[[main.entries]]
+weight = 27
+obj = "obj.earthrune"
+count = "10..25"
+
+[[main.entries]]
+weight = 4
+obj = "obj.naturerune"
+count = "5..10"
+
+[[main.entries]]
+weight = 4
+obj = "obj.waterrune"
+count = "40..60"
+
+[[main.entries]]
+weight = 1
+obj = "obj.earth_talisman"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.water_talisman"
+count = 1
+
+[[main.entries]]
+weight = 19
+obj = "obj.hunting_fish_special"
+count = 1
+
+[[main.entries]]
+weight = 13
+obj = "obj.oak_roots"
+count = "1..3"
+
+[[main.entries]]
+weight = 10
+shared = "herb"
+
+[[main.entries]]
+weight = 4
+shared = "gem"
+
+[[main.entries]]
+weight = 1
+shared = "usefulHerb"
+
+[[main.entries]]
+weight = 33
+shared = "seed"
+
+[[main.entries]]
+weight = 5
+shared = "rareSeed"
+
+[[main.entries]]
+weight = 6
+nothing = true
+
+[[main.separate_rolls]]
+numerator = 1
+denominator = 512
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.mystic_gloves_light"
+count = 1
+
+
+# Unknown wiki drop rate: Clue scroll (medium) [tertiary/Tertiary/Rare]
+# Main table pool padding uses a nothing roll (F2P drops removed and/or subtable access missing from wiki parse) (6 weight)

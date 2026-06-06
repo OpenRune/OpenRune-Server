@@ -1,0 +1,8 @@
+id = "Holthion Drops"
+npcs = ["npc.holthion_vis"]
+
+[[guaranteed]]
+obj = "obj.holthion_amulet"
+count = 1
+quest = "quest_undergroundpass"
+quest_mode = "during"
