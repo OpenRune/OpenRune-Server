@@ -1,0 +1,22 @@
+[[spawn]]
+obj = "obj.leather_gloves"
+coords = "0_48_54_25_30"
+
+## Edgeville Guard Tower Floor
+
+[[spawn]]
+obj = "obj.iron_mace"
+coords = "0_48_54_39_61"
+
+## Edgeville Monastery
+
+[[spawn]]
+obj = "obj.monkrobebottom"
+coords = "1_47_54_51_32"
+
+[[spawn]]
+obj = "obj.monkrobetop"
+coords = "1_47_54_51_31"
+
+## Edgeville Monastery End
+

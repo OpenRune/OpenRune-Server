@@ -1,0 +1,132 @@
+## Fremennik Province
+
+[[spawn]]
+obj = "obj.doogleleaves"
+coords = "0_42_56_46_54"
+
+[[spawn]]
+obj = "obj.doogleleaves"
+coords = "0_42_56_47_52"
+
+[[spawn]]
+obj = "obj.doogleleaves"
+coords = "0_42_56_48_56"
+
+[[spawn]]
+obj = "obj.doogleleaves"
+coords = "0_42_56_48_58"
+
+[[spawn]]
+obj = "obj.doogleleaves"
+coords = "0_42_56_49_53"
+
+[[spawn]]
+obj = "obj.doogleleaves"
+coords = "0_42_56_50_58"
+
+[[spawn]]
+obj = "obj.doogleleaves"
+coords = "0_42_56_51_50"
+
+[[spawn]]
+obj = "obj.doogleleaves"
+coords = "0_42_56_53_55"
+
+[[spawn]]
+obj = "obj.doogleleaves"
+coords = "0_42_56_54_52"
+
+[[spawn]]
+obj = "obj.doogleleaves"
+coords = "0_42_56_54_54"
+
+[[spawn]]
+obj = "obj.doogleleaves"
+coords = "0_42_56_54_57"
+
+[[spawn]]
+obj = "obj.doogleleaves"
+coords = "0_42_56_54_59"
+
+[[spawn]]
+obj = "obj.doogleleaves"
+coords = "0_42_56_56_54"
+
+## Mountain Camp
+
+[[spawn]]
+obj = "obj.bronze_axe"
+coords = "0_43_57_53_55"
+
+[[spawn]]
+obj = "obj.mdaughter_rock"
+coords = "0_43_57_52_12"
+
+[[spawn]]
+obj = "obj.mdaughter_rock"
+coords = "0_43_57_57_31"
+
+[[spawn]]
+obj = "obj.mdaughter_rock"
+coords = "0_43_57_60_32"
+
+[[spawn]]
+obj = "obj.mdaughter_rock"
+coords = "0_43_57_60_39"
+
+[[spawn]]
+obj = "obj.mdaughter_stick"
+coords = "0_43_57_61_37"
+
+[[spawn]]
+obj = "obj.steel_knife"
+coords = "0_43_57_53_55"
+
+## Mountain Camp Lake
+
+[[spawn]]
+obj = "obj.mdaughter_broken_stick"
+coords = "0_43_57_18_28"
+
+## Rellekka
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_41_58_51_7"
+
+[[spawn]]
+obj = "obj.bucket_milk"
+coords = "0_41_57_61_35"
+
+[[spawn]]
+obj = "obj.iron_pickaxe"
+coords = "0_41_58_48_16"
+
+[[spawn]]
+obj = "obj.keg_of_beer"
+coords = "0_41_57_36_28"
+
+[[spawn]]
+obj = "obj.knife"
+coords = "0_41_58_57_5"
+
+[[spawn]]
+obj = "obj.naturerune"
+coords = "0_41_58_47_25"
+count = 2
+
+[[spawn]]
+obj = "obj.naturerune"
+coords = "0_41_58_48_26"
+count = 2
+
+[[spawn]]
+obj = "obj.viking_tankard_empty"
+coords = "0_41_57_35_28"
+
+[[spawn]]
+obj = "obj.viking_tankard_full"
+coords = "0_41_57_34_28"
+
+## Rellekka End
+

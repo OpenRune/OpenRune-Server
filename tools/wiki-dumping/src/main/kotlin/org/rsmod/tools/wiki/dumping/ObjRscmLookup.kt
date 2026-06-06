@@ -44,6 +44,20 @@ class ObjRscmLookup {
         }
     }
 
+    /** Resolves spawn-line names that use the infobox base name instead of the disambiguated page title. */
+    suspend fun resolveWikiItemOnPage(
+        itemLookup: ItemWikiLookup,
+        spawnName: String,
+        pageTitle: String,
+        noted: Boolean = false,
+    ): String? {
+        resolveWikiItem(itemLookup, spawnName, noted)?.let { return it }
+        if (!spawnName.equals(pageTitle, ignoreCase = true)) {
+            resolveWikiItem(itemLookup, pageTitle, noted)?.let { return it }
+        }
+        return null
+    }
+
     fun canResolveLocally(displayName: String, noted: Boolean = false): Boolean =
         if (noted) {
             resolveNotedByDisplayName(displayName) != null

@@ -1,0 +1,21 @@
+[[spawn]]
+obj = "obj.coins"
+coords = "0_47_41_38_24"
+
+[[spawn]]
+obj = "obj.coins"
+coords = "0_47_41_39_28"
+
+[[spawn]]
+obj = "obj.coins"
+coords = "0_47_41_41_32"
+
+[[spawn]]
+obj = "obj.coins"
+coords = "0_47_41_45_27"
+count = 128
+
+[[spawn]]
+obj = "obj.coins"
+coords = "0_47_41_45_30"
+

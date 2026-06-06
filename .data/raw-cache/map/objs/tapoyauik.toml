@@ -1,0 +1,80 @@
+[[spawn]]
+obj = "obj.blue_dragon_scale"
+coords = "0_25_150_2_13"
+
+[[spawn]]
+obj = "obj.blue_dragon_scale"
+coords = "0_25_150_43_12"
+
+[[spawn]]
+obj = "obj.blue_dragon_scale"
+coords = "0_25_150_49_18"
+
+[[spawn]]
+obj = "obj.blue_dragon_scale"
+coords = "0_25_150_49_5"
+
+[[spawn]]
+obj = "obj.blue_dragon_scale"
+coords = "0_25_150_4_4"
+
+[[spawn]]
+obj = "obj.blue_dragon_scale"
+coords = "0_25_150_54_15"
+
+[[spawn]]
+obj = "obj.blue_dragon_scale"
+coords = "0_25_150_59_3"
+
+[[spawn]]
+obj = "obj.blue_dragon_scale"
+coords = "0_25_150_62_13"
+
+## Ruins of Tapoyauik
+
+[[spawn]]
+obj = "obj.blue_dragon_scale"
+coords = "0_24_150_41_17"
+
+[[spawn]]
+obj = "obj.blue_dragon_scale"
+coords = "0_24_150_46_5"
+
+[[spawn]]
+obj = "obj.blue_dragon_scale"
+coords = "0_24_150_49_12"
+
+[[spawn]]
+obj = "obj.blue_dragon_scale"
+coords = "0_24_150_49_21"
+
+[[spawn]]
+obj = "obj.blue_dragon_scale"
+coords = "0_24_150_55_22"
+
+[[spawn]]
+obj = "obj.blue_dragon_scale"
+coords = "0_24_150_61_8"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "2_26_150_19_4"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "2_26_150_21_3"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "2_26_150_24_6"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "2_26_150_26_2"
+
+[[spawn]]
+obj = "obj.slayer_buglan_off"
+coords = "0_26_150_25_61"
+
+## Ruins of Tapoyauik End
+

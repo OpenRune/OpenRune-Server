@@ -1,0 +1,38 @@
+## Trollheim
+
+[[spawn]]
+obj = "obj.bucket_empty"
+coords = "0_44_56_42_2"
+
+[[spawn]]
+obj = "obj.bucket_empty"
+coords = "0_44_56_48_1"
+
+## Weiss Region
+
+[[spawn]]
+obj = "obj.arctic_pine_log"
+coords = "0_44_61_56_17"
+
+[[spawn]]
+obj = "obj.arctic_pine_log"
+coords = "0_44_61_60_16"
+
+[[spawn]]
+obj = "obj.arctic_pine_log"
+coords = "0_44_61_61_18"
+
+[[spawn]]
+obj = "obj.burnt_meat"
+coords = "0_44_61_60_17"
+
+[[spawn]]
+obj = "obj.burnt_meat"
+coords = "0_44_61_61_19"
+
+[[spawn]]
+obj = "obj.spit_iron"
+coords = "0_44_61_59_16"
+
+## Weiss Region End
+

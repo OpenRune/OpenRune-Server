@@ -1,0 +1,62 @@
+## Mos Le Harmless
+
+[[spawn]]
+obj = "obj.edible_seaweed"
+coords = "0_59_47_35_48"
+
+[[spawn]]
+obj = "obj.edible_seaweed"
+coords = "0_59_47_37_50"
+
+[[spawn]]
+obj = "obj.edible_seaweed"
+coords = "0_59_47_52_52"
+
+[[spawn]]
+obj = "obj.edible_seaweed"
+coords = "0_59_47_58_57"
+
+[[spawn]]
+obj = "obj.edible_seaweed"
+coords = "0_59_47_58_60"
+
+[[spawn]]
+obj = "obj.game_brew_instruction_book"
+coords = "0_59_46_42_54"
+
+[[spawn]]
+obj = "obj.game_brew_instruction_book"
+coords = "0_59_46_47_57"
+
+[[spawn]]
+obj = "obj.game_brew_instruction_book"
+coords = "0_59_47_28_2"
+
+[[spawn]]
+obj = "obj.game_brew_instruction_book"
+coords = "0_59_47_36_9"
+
+[[spawn]]
+obj = "obj.game_brew_instruction_book"
+coords = "0_59_47_37_6"
+
+[[spawn]]
+obj = "obj.game_brew_instruction_book"
+coords = "0_59_47_42_2"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_59_47_32_52"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_59_47_38_57"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_59_47_39_56"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_59_47_53_44"
+

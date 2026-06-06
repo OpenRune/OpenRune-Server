@@ -1,0 +1,48 @@
+[[spawn]]
+obj = "obj.big_bones"
+coords = "0_39_39_31_28"
+
+[[spawn]]
+obj = "obj.big_bones"
+coords = "0_39_39_32_35"
+
+[[spawn]]
+obj = "obj.big_bones"
+coords = "0_39_39_33_30"
+
+[[spawn]]
+obj = "obj.big_bones"
+coords = "0_39_39_35_25"
+
+[[spawn]]
+obj = "obj.big_bones"
+coords = "0_39_39_39_42"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_39_39_29_32"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_39_39_31_31"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_39_39_33_26"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_39_39_35_37"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_39_39_37_27"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_39_39_37_43"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_39_39_43_44"
+

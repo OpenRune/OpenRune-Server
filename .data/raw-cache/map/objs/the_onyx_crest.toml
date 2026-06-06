@@ -1,0 +1,16 @@
+[[spawn]]
+obj = "obj.bowl_empty"
+coords = "0_46_35_37_47"
+
+[[spawn]]
+obj = "obj.bronze_dart"
+coords = "0_46_35_42_44"
+
+[[spawn]]
+obj = "obj.coins"
+coords = "0_46_35_11_51"
+
+[[spawn]]
+obj = "obj.hammer"
+coords = "0_46_35_37_44"
+

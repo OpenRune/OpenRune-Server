@@ -1,0 +1,32 @@
+[[spawn]]
+obj = "obj.brain_deck_gun_powder_barrel"
+coords = "1_59_44_25_54"
+
+[[spawn]]
+obj = "obj.brain_deck_gun_powder_barrel"
+coords = "1_59_44_25_60"
+
+[[spawn]]
+obj = "obj.brain_deck_gun_powder_barrel"
+coords = "1_59_44_27_54"
+
+[[spawn]]
+obj = "obj.brain_deck_gun_powder_barrel"
+coords = "1_59_44_27_60"
+
+[[spawn]]
+obj = "obj.brain_inv_gun_powder_barrel"
+coords = "1_59_44_25_54"
+
+[[spawn]]
+obj = "obj.brain_inv_gun_powder_barrel"
+coords = "1_59_44_25_60"
+
+[[spawn]]
+obj = "obj.brain_inv_gun_powder_barrel"
+coords = "1_59_44_27_54"
+
+[[spawn]]
+obj = "obj.brain_inv_gun_powder_barrel"
+coords = "1_59_44_27_60"
+

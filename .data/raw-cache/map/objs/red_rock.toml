@@ -1,0 +1,28 @@
+[[spawn]]
+obj = "obj.hammer"
+coords = "0_43_39_37_28"
+
+[[spawn]]
+obj = "obj.poh_saw"
+coords = "0_43_39_38_21"
+
+[[spawn]]
+obj = "obj.rope"
+coords = "0_43_39_39_5"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_43_39_35_20"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_43_39_50_34"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_43_39_54_36"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_43_39_60_33"
+

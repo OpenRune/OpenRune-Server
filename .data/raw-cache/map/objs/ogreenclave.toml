@@ -1,0 +1,38 @@
+## Gutanoth Cave
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_40_147_53_33"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_40_147_54_9"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_40_147_55_30"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_40_147_55_34"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_40_147_55_7"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_40_147_56_35"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_40_147_57_32"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_40_147_57_38"
+
+[[spawn]]
+obj = "obj.shaman_robe"
+coords = "0_40_147_57_29"
+

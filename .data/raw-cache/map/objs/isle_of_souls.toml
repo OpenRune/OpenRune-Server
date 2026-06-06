@@ -1,0 +1,182 @@
+## Isle Of Souls Mainland
+
+[[spawn]]
+obj = "obj.big_net"
+coords = "0_33_43_49_51"
+
+[[spawn]]
+obj = "obj.chisel"
+coords = "0_34_43_41_37"
+
+[[spawn]]
+obj = "obj.fishing_rod"
+coords = "0_34_46_22_57"
+
+[[spawn]]
+obj = "obj.hammer"
+coords = "0_33_43_45_51"
+
+[[spawn]]
+obj = "obj.hunting_box_trap"
+coords = "0_33_46_52_39"
+
+[[spawn]]
+obj = "obj.knife"
+coords = "0_33_46_51_35"
+
+[[spawn]]
+obj = "obj.knife"
+coords = "0_35_43_48_38"
+
+[[spawn]]
+obj = "obj.lobster_pot"
+coords = "0_32_45_39_16"
+
+[[spawn]]
+obj = "obj.net"
+coords = "0_33_46_57_39"
+
+[[spawn]]
+obj = "obj.pestle_and_mortar"
+coords = "2_33_46_20_54"
+
+[[spawn]]
+obj = "obj.rope"
+coords = "1_33_46_25_49"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_35_43_14_33"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_35_43_17_35"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_35_43_19_38"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_35_43_27_35"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_35_43_30_37"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_35_43_39_42"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_35_43_40_35"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_35_43_42_56"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_35_43_44_61"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_35_43_45_45"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_35_43_47_50"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_35_43_49_52"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_35_43_50_44"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_35_43_51_31"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_35_43_53_35"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_35_43_56_31"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_35_43_57_35"
+
+## Isle of Souls Dungeon
+
+[[spawn]]
+obj = "obj.blue_dragon_scale"
+coords = "0_33_145_14_18"
+
+[[spawn]]
+obj = "obj.blue_dragon_scale"
+coords = "0_33_145_15_25"
+
+[[spawn]]
+obj = "obj.blue_dragon_scale"
+coords = "0_33_145_17_28"
+
+[[spawn]]
+obj = "obj.blue_dragon_scale"
+coords = "0_33_145_23_26"
+
+[[spawn]]
+obj = "obj.blue_dragon_scale"
+coords = "0_33_145_8_29"
+
+[[spawn]]
+obj = "obj.blue_dragon_scale"
+coords = "0_33_145_9_21"
+
+## Soul Wars Arena
+
+[[spawn]]
+obj = "obj.fly_fishing_rod"
+coords = "0_35_45_23_6"
+
+[[spawn]]
+obj = "obj.woodplank"
+coords = "0_35_45_25_8"
+
+## Tear Of The Soul
+
+[[spawn]]
+obj = "obj.iron_axe"
+coords = "0_36_43_34_9"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_36_43_11_27"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_36_43_17_24"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_36_43_17_27"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_36_43_19_19"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_36_43_21_24"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_36_43_22_25"
+
+## Tear Of The Soul End
+

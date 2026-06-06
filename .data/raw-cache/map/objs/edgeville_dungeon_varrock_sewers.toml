@@ -1,0 +1,218 @@
+[[spawn]]
+obj = "obj.bones"
+coords = "0_48_153_29_33"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_48_153_35_31"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_48_153_37_31"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_48_153_38_33"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_48_154_21_23"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_48_154_21_28"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_48_154_22_50"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_48_154_25_45"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_48_154_26_30"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_48_154_44_35"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_48_154_47_38"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_48_154_48_38"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_48_154_50_35"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_48_155_31_33"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_48_155_32_30"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_48_155_38_32"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_48_155_38_38"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_48_155_39_39"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_48_155_40_36"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_48_155_44_30"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_48_155_55_37"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_49_154_2_24"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_49_154_5_23"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_49_154_6_24"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_49_154_7_22"
+
+[[spawn]]
+obj = "obj.brass_necklace"
+coords = "0_48_154_50_25"
+
+[[spawn]]
+obj = "obj.bronze_arrow"
+coords = "0_48_154_58_47"
+count = 3
+
+[[spawn]]
+obj = "obj.bronze_arrow"
+coords = "0_48_154_63_60"
+
+[[spawn]]
+obj = "obj.coins"
+coords = "0_48_154_16_42"
+count = 4
+
+[[spawn]]
+obj = "obj.coins"
+coords = "0_48_154_16_43"
+
+[[spawn]]
+obj = "obj.coins"
+coords = "0_48_154_19_43"
+
+[[spawn]]
+obj = "obj.edgevilledungeonkey"
+coords = "0_48_154_59_6"
+
+[[spawn]]
+obj = "obj.red_spiders_eggs"
+coords = "0_48_155_45_31"
+
+[[spawn]]
+obj = "obj.red_spiders_eggs"
+coords = "0_48_155_46_28"
+
+[[spawn]]
+obj = "obj.red_spiders_eggs"
+coords = "0_48_155_47_29"
+
+[[spawn]]
+obj = "obj.red_spiders_eggs"
+coords = "0_48_155_54_38"
+
+[[spawn]]
+obj = "obj.red_spiders_eggs"
+coords = "0_48_155_56_36"
+
+[[spawn]]
+obj = "obj.red_spiders_eggs"
+coords = "0_48_155_57_34"
+
+[[spawn]]
+obj = "obj.steel_arrowheads"
+coords = "0_48_156_53_13"
+
+## Varrock Sewers
+
+[[spawn]]
+obj = "obj.bodyrune"
+coords = "0_50_154_26_54"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_49_154_37_47"
+
+[[spawn]]
+obj = "obj.coins"
+coords = "0_49_154_31_41"
+count = 8
+
+[[spawn]]
+obj = "obj.coins"
+coords = "0_49_154_33_24"
+count = 5
+
+[[spawn]]
+obj = "obj.coins"
+coords = "0_49_154_37_25"
+count = 7
+
+[[spawn]]
+obj = "obj.coins"
+coords = "0_49_154_37_41"
+
+[[spawn]]
+obj = "obj.coins"
+coords = "0_51_154_10_14"
+
+[[spawn]]
+obj = "obj.earthrune"
+coords = "0_49_154_49_32"
+count = 6
+
+[[spawn]]
+obj = "obj.iron_axe"
+coords = "0_49_154_26_32"
+
+[[spawn]]
+obj = "obj.knife"
+coords = "0_50_154_18_31"
+
+[[spawn]]
+obj = "obj.mindrune"
+coords = "0_50_154_24_54"
+
+[[spawn]]
+obj = "obj.red_spiders_eggs"
+coords = "0_49_154_41_24"
+
+[[spawn]]
+obj = "obj.red_spiders_eggs"
+coords = "0_49_154_43_25"
+
+## Varrock Sewers End
+

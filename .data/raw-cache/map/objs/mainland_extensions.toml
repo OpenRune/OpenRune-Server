@@ -1,0 +1,138 @@
+## Arandar Mainland
+
+[[spawn]]
+obj = "obj.red_spiders_eggs"
+coords = "0_36_51_32_52"
+
+[[spawn]]
+obj = "obj.red_spiders_eggs"
+coords = "0_36_51_34_49"
+
+[[spawn]]
+obj = "obj.red_spiders_eggs"
+coords = "0_36_51_35_45"
+
+[[spawn]]
+obj = "obj.red_spiders_eggs"
+coords = "0_36_51_36_48"
+
+[[spawn]]
+obj = "obj.red_spiders_eggs"
+coords = "0_36_51_39_49"
+
+[[spawn]]
+obj = "obj.red_spiders_eggs"
+coords = "0_36_51_42_46"
+
+## Fisher Kings Realm
+
+[[spawn]]
+obj = "obj.grail_bell"
+coords = "0_43_73_10_22"
+
+[[spawn]]
+obj = "obj.holy_grail"
+coords = "2_41_73_25_12"
+
+[[spawn]]
+obj = "obj.magic_whistle"
+coords = "0_41_73_13_20"
+
+[[spawn]]
+obj = "obj.magic_whistle"
+coords = "0_41_73_2_50"
+
+[[spawn]]
+obj = "obj.magic_whistle"
+coords = "0_41_73_3_56"
+
+## Gwenith
+
+[[spawn]]
+obj = "obj.bread"
+coords = "0_34_53_33_22"
+
+[[spawn]]
+obj = "obj.bucket_water"
+coords = "0_34_53_37_23"
+
+## Mynydd
+
+[[spawn]]
+obj = "obj.iron_bar"
+coords = "0_33_53_57_38"
+
+[[spawn]]
+obj = "obj.iron_knife"
+coords = "0_33_53_57_35"
+
+[[spawn]]
+obj = "obj.iron_knife"
+coords = "0_33_53_58_38"
+
+[[spawn]]
+obj = "obj.iron_knife"
+coords = "0_33_53_58_40"
+
+## Tirannwn Mainland
+
+[[spawn]]
+obj = "obj.plank_teak"
+coords = "0_35_52_49_29"
+
+[[spawn]]
+obj = "obj.pot_empty"
+coords = "0_34_50_23_57"
+
+[[spawn]]
+obj = "obj.regicide_barrel_empty"
+coords = "0_34_49_13_4"
+
+[[spawn]]
+obj = "obj.regicide_barrel_empty"
+coords = "0_34_49_14_8"
+
+[[spawn]]
+obj = "obj.regicide_barrel_empty"
+coords = "0_34_49_8_3"
+
+[[spawn]]
+obj = "obj.regicide_barrel_empty"
+coords = "0_34_50_29_57"
+
+[[spawn]]
+obj = "obj.regicide_barrel_empty"
+coords = "0_34_50_32_59"
+
+[[spawn]]
+obj = "obj.white_berries"
+coords = "0_35_49_22_32"
+
+## Tree Gnome Stronghold
+
+[[spawn]]
+obj = "obj.bones_burnt"
+coords = "0_31_87_27_32"
+
+[[spawn]]
+obj = "obj.bones_burnt"
+coords = "0_31_87_28_28"
+
+[[spawn]]
+obj = "obj.bones_burnt"
+coords = "0_31_87_35_30"
+
+[[spawn]]
+obj = "obj.bones_burnt"
+coords = "0_31_87_39_41"
+
+[[spawn]]
+obj = "obj.bones_burnt"
+coords = "0_31_87_41_40"
+
+[[spawn]]
+obj = "obj.burntfish5"
+coords = "0_31_87_42_53"
+
+## Tree Gnome Stronghold End
+

@@ -1,0 +1,250 @@
+[[spawn]]
+obj = "obj.bodyrune"
+coords = "0_49_54_58_39"
+count = 2
+
+[[spawn]]
+obj = "obj.bowl_empty"
+coords = "1_49_53_5_58"
+
+[[spawn]]
+obj = "obj.cake_tin"
+coords = "1_49_53_5_60"
+
+[[spawn]]
+obj = "obj.chocolate_bar"
+coords = "0_49_53_7_61"
+
+[[spawn]]
+obj = "obj.coins"
+coords = "0_50_54_28_48"
+count = 3
+
+[[spawn]]
+obj = "obj.coins"
+coords = "0_50_54_32_44"
+count = 4
+
+[[spawn]]
+obj = "obj.cooking_apple"
+coords = "1_49_53_4_55"
+
+[[spawn]]
+obj = "obj.cooking_apple"
+coords = "1_49_53_5_55"
+
+[[spawn]]
+obj = "obj.cooking_apple"
+coords = "2_49_53_5_55"
+
+[[spawn]]
+obj = "obj.cup_of_tea"
+coords = "0_51_53_7_21"
+
+[[spawn]]
+obj = "obj.earthrune"
+coords = "0_49_54_59_59"
+
+[[spawn]]
+obj = "obj.grapes"
+coords = "2_49_53_8_58"
+
+[[spawn]]
+obj = "obj.jug_empty"
+coords = "0_49_53_6_55"
+
+[[spawn]]
+obj = "obj.jug_empty"
+coords = "0_51_53_8_17"
+
+[[spawn]]
+obj = "obj.leather_boots"
+coords = "1_50_52_44_58"
+
+[[spawn]]
+obj = "obj.piedish"
+coords = "0_49_53_6_55"
+
+[[spawn]]
+obj = "obj.poh_saw"
+coords = "0_50_54_41_14"
+
+[[spawn]]
+obj = "obj.pot_empty"
+coords = "2_49_53_8_57"
+
+[[spawn]]
+obj = "obj.wooden_shield"
+coords = "0_50_54_4_59"
+
+## Lumber Yard
+
+[[spawn]]
+obj = "obj.logs"
+coords = "0_51_54_34_56"
+
+[[spawn]]
+obj = "obj.logs"
+coords = "0_51_54_36_52"
+
+[[spawn]]
+obj = "obj.logs"
+coords = "0_51_54_37_51"
+
+[[spawn]]
+obj = "obj.logs"
+coords = "0_51_54_38_46"
+
+[[spawn]]
+obj = "obj.logs"
+coords = "0_51_54_38_51"
+
+[[spawn]]
+obj = "obj.logs"
+coords = "0_51_54_38_54"
+
+[[spawn]]
+obj = "obj.logs"
+coords = "0_51_54_39_47"
+
+[[spawn]]
+obj = "obj.logs"
+coords = "0_51_54_46_47"
+
+[[spawn]]
+obj = "obj.logs"
+coords = "0_51_54_46_48"
+
+## Varrock Blue Moon Inn Kitchen
+
+[[spawn]]
+obj = "obj.pot_empty"
+coords = "0_50_53_32_7"
+
+## Varrock Castle
+
+[[spawn]]
+obj = "obj.bucket_empty"
+coords = "1_50_54_21_41"
+
+[[spawn]]
+obj = "obj.bucket_empty"
+coords = "1_50_54_22_35"
+
+[[spawn]]
+obj = "obj.piedish"
+coords = "0_50_54_22_38"
+
+## Varrock General Store
+
+[[spawn]]
+obj = "obj.knife"
+coords = "1_50_53_18_26"
+
+[[spawn]]
+obj = "obj.spade"
+coords = "1_50_53_18_20"
+
+## Varrock House Poor Houses
+
+[[spawn]]
+obj = "obj.leather_armour"
+coords = "0_50_53_47_15"
+
+[[spawn]]
+obj = "obj.logs"
+coords = "0_50_53_44_6"
+
+[[spawn]]
+obj = "obj.logs"
+coords = "0_50_53_45_6"
+
+## Varrock House Very Poor Houses
+
+[[spawn]]
+obj = "obj.iron_dagger"
+coords = "1_50_52_42_55"
+
+[[spawn]]
+obj = "obj.leather_gloves"
+coords = "1_50_52_42_57"
+
+[[spawn]]
+obj = "obj.phoenix_crossbow"
+coords = "1_50_52_43_55"
+
+[[spawn]]
+obj = "obj.phoenix_crossbow"
+coords = "1_50_52_45_57"
+
+## Varrock Jolly Boar Inn
+
+[[spawn]]
+obj = "obj.thread"
+coords = "0_51_54_22_35"
+
+## Varrock Swordshop
+
+[[spawn]]
+obj = "obj.lit_candle"
+coords = "1_50_53_8_3"
+
+## Varrock West bank
+
+[[spawn]]
+obj = "obj.brass_necklace"
+coords = "0_49_153_55_28"
+
+[[spawn]]
+obj = "obj.coins"
+coords = "0_49_153_52_27"
+count = 26
+
+[[spawn]]
+obj = "obj.coins"
+coords = "0_49_153_52_28"
+count = 42
+
+[[spawn]]
+obj = "obj.coins"
+coords = "0_49_153_53_27"
+count = 35
+
+[[spawn]]
+obj = "obj.coins"
+coords = "0_49_153_54_27"
+count = 56
+
+[[spawn]]
+obj = "obj.coins"
+coords = "0_49_153_55_29"
+count = 66
+
+[[spawn]]
+obj = "obj.coins"
+coords = "0_49_153_59_28"
+count = 4
+
+[[spawn]]
+obj = "obj.coins"
+coords = "0_49_153_59_42"
+count = 3
+
+[[spawn]]
+obj = "obj.gold_bar"
+coords = "0_49_153_56_30"
+
+[[spawn]]
+obj = "obj.gold_necklace"
+coords = "0_49_153_56_29"
+
+[[spawn]]
+obj = "obj.gold_ore"
+coords = "0_49_153_59_29"
+
+[[spawn]]
+obj = "obj.ruby_ring"
+coords = "0_49_153_60_30"
+
+## Varrock West bank End
+

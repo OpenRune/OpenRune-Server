@@ -1,0 +1,52 @@
+[[spawn]]
+obj = "obj.broken_glass"
+coords = "0_45_159_31_47"
+
+[[spawn]]
+obj = "obj.broken_glass"
+coords = "0_45_159_32_45"
+
+[[spawn]]
+obj = "obj.broken_glass"
+coords = "0_45_159_33_46"
+
+[[spawn]]
+obj = "obj.broken_glass"
+coords = "0_45_159_33_49"
+
+[[spawn]]
+obj = "obj.broken_glass"
+coords = "0_45_159_34_49"
+
+[[spawn]]
+obj = "obj.broken_glass"
+coords = "0_45_159_35_44"
+
+[[spawn]]
+obj = "obj.broken_glass"
+coords = "0_45_159_35_48"
+
+[[spawn]]
+obj = "obj.broken_glass"
+coords = "0_45_159_36_46"
+
+[[spawn]]
+obj = "obj.dwarf_perfect_left_boot"
+coords = "0_44_159_22_44"
+
+[[spawn]]
+obj = "obj.dwarf_perfect_right_boot"
+coords = "0_44_159_20_50"
+
+[[spawn]]
+obj = "obj.rake"
+coords = "0_44_159_36_15"
+
+## Keldagrim Interiors
+
+[[spawn]]
+obj = "obj.pot_empty"
+coords = "1_45_159_38_15"
+
+## Keldagrim Interiors End
+

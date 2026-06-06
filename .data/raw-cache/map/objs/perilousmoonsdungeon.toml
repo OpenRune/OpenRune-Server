@@ -1,0 +1,70 @@
+## Cam Torum
+
+[[spawn]]
+obj = "obj.beer_glass"
+coords = "0_22_149_23_48"
+
+[[spawn]]
+obj = "obj.beer_glass"
+coords = "0_22_149_24_47"
+
+[[spawn]]
+obj = "obj.beer_glass"
+coords = "0_22_149_26_47"
+
+[[spawn]]
+obj = "obj.beer_glass"
+coords = "0_22_149_26_50"
+
+[[spawn]]
+obj = "obj.bowl_empty"
+coords = "1_23_149_4_17"
+
+[[spawn]]
+obj = "obj.bread"
+coords = "0_22_149_7_19"
+
+[[spawn]]
+obj = "obj.broken_glass"
+coords = "0_22_149_19_45"
+
+[[spawn]]
+obj = "obj.bronze_bar"
+coords = "0_22_149_58_37"
+
+[[spawn]]
+obj = "obj.bucket_water"
+coords = "2_22_149_27_51"
+
+[[spawn]]
+obj = "obj.burnt_chicken"
+coords = "1_23_149_4_18"
+
+[[spawn]]
+obj = "obj.chisel"
+coords = "0_22_149_44_49"
+
+[[spawn]]
+obj = "obj.knife"
+coords = "1_23_149_4_19"
+
+[[spawn]]
+obj = "obj.steamforge_brew"
+coords = "2_22_149_59_17"
+
+[[spawn]]
+obj = "obj.sweetcorn"
+coords = "1_23_149_4_16"
+
+[[spawn]]
+obj = "obj.tinderbox"
+coords = "2_22_149_17_21"
+
+## Cam Torum Building Tiles
+
+[[spawn]]
+obj = "obj.hammer"
+coords = "1_22_149_44_51"
+
+## Cam Torum Building Tiles End
+

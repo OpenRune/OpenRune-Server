@@ -1,0 +1,140 @@
+[[spawn]]
+obj = "obj.snape_grass"
+coords = "0_45_51_26_33"
+
+[[spawn]]
+obj = "obj.snape_grass"
+coords = "0_45_51_27_31"
+
+## Crafting Guild
+
+[[spawn]]
+obj = "obj.amulet_mould"
+coords = "0_45_51_48_26"
+
+[[spawn]]
+obj = "obj.chisel"
+coords = "0_45_51_55_22"
+
+[[spawn]]
+obj = "obj.hammer"
+coords = "0_45_51_54_22"
+
+[[spawn]]
+obj = "obj.holy_symbol_mould"
+coords = "1_45_51_51_23"
+
+[[spawn]]
+obj = "obj.jewl_bracelet_mould"
+coords = "0_45_51_48_25"
+
+[[spawn]]
+obj = "obj.jug_empty"
+coords = "0_45_51_56_28"
+
+[[spawn]]
+obj = "obj.necklace_mould"
+coords = "1_45_51_52_23"
+
+[[spawn]]
+obj = "obj.ring_mould"
+coords = "1_45_51_55_19"
+
+[[spawn]]
+obj = "obj.shears"
+coords = "1_45_51_50_21"
+
+[[spawn]]
+obj = "obj.snape_grass"
+coords = "0_45_51_37_10"
+
+[[spawn]]
+obj = "obj.tiara_mould"
+coords = "1_45_51_55_18"
+
+## Mudskipper Point
+
+[[spawn]]
+obj = "obj.broken_rod"
+coords = "0_46_48_40_40"
+
+[[spawn]]
+obj = "obj.forlorn_boot"
+coords = "0_46_48_40_42"
+
+## Port Sarim
+
+[[spawn]]
+obj = "obj.banana"
+coords = "0_47_50_1_7"
+
+[[spawn]]
+obj = "obj.bolt"
+coords = "1_47_50_20_59"
+
+[[spawn]]
+obj = "obj.bolt"
+coords = "1_47_50_8_44"
+
+[[spawn]]
+obj = "obj.cheese"
+coords = "0_47_50_10_32"
+
+[[spawn]]
+obj = "obj.port_sarim_beer"
+coords = "0_47_50_41_57"
+
+[[spawn]]
+obj = "obj.white_apron"
+coords = "0_47_50_1_4"
+
+[[spawn]]
+obj = "obj.white_apron"
+coords = "0_47_50_8_29"
+
+## Rimmington
+
+[[spawn]]
+obj = "obj.bones"
+coords = "2_45_50_45_51"
+
+[[spawn]]
+obj = "obj.bronze_arrow"
+coords = "0_46_50_13_5"
+
+[[spawn]]
+obj = "obj.bronze_pickaxe"
+coords = "0_46_50_19_16"
+
+[[spawn]]
+obj = "obj.bronze_scimitar"
+coords = "1_46_50_21_11"
+
+[[spawn]]
+obj = "obj.logs"
+coords = "0_46_50_14_5"
+
+[[spawn]]
+obj = "obj.logs"
+coords = "0_46_50_15_5"
+
+## South Falador Farm
+
+[[spawn]]
+obj = "obj.bucket_empty"
+coords = "0_47_51_12_27"
+
+[[spawn]]
+obj = "obj.bucket_empty"
+coords = "0_47_51_18_25"
+
+[[spawn]]
+obj = "obj.egg"
+coords = "0_47_51_8_31"
+
+[[spawn]]
+obj = "obj.egg"
+coords = "0_47_51_9_31"
+
+## South Falador Farm End
+

@@ -1,0 +1,96 @@
+[[spawn]]
+obj = "obj.edible_seaweed"
+coords = "0_58_58_11_36"
+
+[[spawn]]
+obj = "obj.edible_seaweed"
+coords = "0_58_58_15_53"
+
+[[spawn]]
+obj = "obj.edible_seaweed"
+coords = "0_58_58_17_59"
+
+[[spawn]]
+obj = "obj.edible_seaweed"
+coords = "0_58_58_18_63"
+
+[[spawn]]
+obj = "obj.edible_seaweed"
+coords = "0_58_58_21_20"
+
+[[spawn]]
+obj = "obj.edible_seaweed"
+coords = "0_58_58_25_15"
+
+[[spawn]]
+obj = "obj.edible_seaweed"
+coords = "0_58_58_29_8"
+
+[[spawn]]
+obj = "obj.edible_seaweed"
+coords = "0_58_58_35_5"
+
+[[spawn]]
+obj = "obj.edible_seaweed"
+coords = "0_58_58_40_13"
+
+[[spawn]]
+obj = "obj.edible_seaweed"
+coords = "0_58_59_18_16"
+
+[[spawn]]
+obj = "obj.edible_seaweed"
+coords = "0_58_59_22_8"
+
+[[spawn]]
+obj = "obj.edible_seaweed"
+coords = "0_58_60_16_48"
+
+[[spawn]]
+obj = "obj.edible_seaweed"
+coords = "0_58_60_17_55"
+
+[[spawn]]
+obj = "obj.edible_seaweed"
+coords = "0_58_60_31_8"
+
+[[spawn]]
+obj = "obj.edible_seaweed"
+coords = "0_58_60_36_11"
+
+[[spawn]]
+obj = "obj.edible_seaweed"
+coords = "0_58_60_5_8"
+
+[[spawn]]
+obj = "obj.edible_seaweed"
+coords = "0_58_60_8_25"
+
+[[spawn]]
+obj = "obj.woodplank"
+coords = "0_58_59_18_41"
+
+[[spawn]]
+obj = "obj.woodplank"
+coords = "0_58_59_22_29"
+
+## Fossil Island Volcano
+
+[[spawn]]
+obj = "obj.edible_seaweed"
+coords = "0_59_58_23_39"
+
+[[spawn]]
+obj = "obj.edible_seaweed"
+coords = "0_59_58_34_43"
+
+[[spawn]]
+obj = "obj.edible_seaweed"
+coords = "0_59_58_37_42"
+
+[[spawn]]
+obj = "obj.edible_seaweed"
+coords = "0_59_58_44_46"
+
+## Fossil Island Volcano End
+

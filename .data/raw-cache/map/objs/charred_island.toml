@@ -1,0 +1,44 @@
+[[spawn]]
+obj = "obj.rope"
+coords = "0_41_37_26_20"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_41_37_25_18"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_41_37_27_17"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_41_37_27_36"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_41_37_27_40"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_41_37_28_32"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_41_37_28_45"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_41_37_31_16"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_41_37_31_30"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_41_37_33_28"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_41_37_36_24"
+

@@ -1,0 +1,398 @@
+## Al Kharid
+
+[[spawn]]
+obj = "obj.bucket_empty"
+coords = "0_51_49_43_59"
+
+## Al Kharid Buildings
+
+[[spawn]]
+obj = "obj.bodyrune"
+coords = "1_51_49_26_55"
+
+[[spawn]]
+obj = "obj.cabbage"
+coords = "0_51_49_21_39"
+
+[[spawn]]
+obj = "obj.jug_water"
+coords = "0_51_49_38_34"
+
+[[spawn]]
+obj = "obj.leather_boots"
+coords = "0_51_49_38_54"
+
+## Al Kharid Mine
+
+[[spawn]]
+obj = "obj.firerune"
+coords = "0_51_51_40_47"
+count = 3
+
+[[spawn]]
+obj = "obj.waterrune"
+coords = "0_51_51_34_52"
+count = 4
+
+## Desert Mining Camp
+
+[[spawn]]
+obj = "obj.beer"
+coords = "1_51_47_22_25"
+
+[[spawn]]
+obj = "obj.bowl_water"
+coords = "0_51_47_27_26"
+
+[[spawn]]
+obj = "obj.jug_wine"
+coords = "1_51_47_27_25"
+
+[[spawn]]
+obj = "obj.papyrus"
+coords = "1_51_47_26_25"
+
+## East Al Kharid
+
+[[spawn]]
+obj = "obj.beer_glass"
+coords = "0_53_49_12_29"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_52_49_40_16"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_52_49_47_9"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_52_49_48_16"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_52_49_49_21"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_52_49_52_12"
+
+[[spawn]]
+obj = "obj.bronze_pickaxe"
+coords = "0_52_49_34_30"
+
+[[spawn]]
+obj = "obj.bronze_scimitar"
+coords = "0_52_49_34_18"
+
+[[spawn]]
+obj = "obj.bucket_empty"
+coords = "0_53_49_16_40"
+
+[[spawn]]
+obj = "obj.coins"
+coords = "0_52_49_43_13"
+
+[[spawn]]
+obj = "obj.coins"
+coords = "0_52_49_47_17"
+
+[[spawn]]
+obj = "obj.coins"
+coords = "0_52_49_48_12"
+
+[[spawn]]
+obj = "obj.coins"
+coords = "0_52_49_53_20"
+
+[[spawn]]
+obj = "obj.coins"
+coords = "0_52_49_55_11"
+
+[[spawn]]
+obj = "obj.coins"
+coords = "0_52_49_58_15"
+
+[[spawn]]
+obj = "obj.hammer"
+coords = "0_52_49_22_26"
+
+[[spawn]]
+obj = "obj.logs"
+coords = "0_53_49_19_47"
+
+[[spawn]]
+obj = "obj.plainstaff"
+coords = "0_52_49_43_8"
+
+[[spawn]]
+obj = "obj.tinderbox"
+coords = "0_52_49_34_31"
+
+[[spawn]]
+obj = "obj.wooden_shield"
+coords = "0_52_49_33_18"
+
+## Kharidian Desert
+
+[[spawn]]
+obj = "obj.bcs_bottle"
+coords = "0_52_43_55_42"
+
+[[spawn]]
+obj = "obj.bcs_spectacles"
+coords = "0_52_43_55_41"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_53_43_1_48"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_53_43_6_53"
+
+[[spawn]]
+obj = "obj.bronze_arrow"
+coords = "0_52_48_61_16"
+
+[[spawn]]
+obj = "obj.bronze_arrow"
+coords = "0_52_48_63_15"
+
+[[spawn]]
+obj = "obj.golem_letter"
+coords = "0_54_48_23_20"
+
+[[spawn]]
+obj = "obj.rope"
+coords = "0_53_43_3_47"
+
+[[spawn]]
+obj = "obj.rope"
+coords = "0_53_43_5_50"
+
+[[spawn]]
+obj = "obj.shortbow"
+coords = "0_52_48_61_51"
+
+## Kharidian Desert Deep
+
+[[spawn]]
+obj = "obj.hammer"
+coords = "0_53_44_43_19"
+
+## Kharidian Desert Mid
+
+[[spawn]]
+obj = "obj.bucket_empty"
+coords = "0_52_46_18_22"
+
+[[spawn]]
+obj = "obj.elid_key"
+coords = "0_53_45_40_48"
+
+[[spawn]]
+obj = "obj.elid_shoes"
+coords = "0_53_45_47_33"
+
+## Necropolis
+
+[[spawn]]
+obj = "obj.bronze_pickaxe"
+coords = "0_51_42_31_48"
+
+[[spawn]]
+obj = "obj.bronze_pickaxe"
+coords = "0_51_42_48_38"
+
+[[spawn]]
+obj = "obj.bronze_pickaxe"
+coords = "0_51_42_51_16"
+
+[[spawn]]
+obj = "obj.bronze_pickaxe"
+coords = "0_52_42_11_24"
+
+[[spawn]]
+obj = "obj.bronze_pickaxe"
+coords = "0_52_42_4_31"
+
+[[spawn]]
+obj = "obj.bronze_pickaxe"
+coords = "0_52_43_11_8"
+
+[[spawn]]
+obj = "obj.chisel"
+coords = "0_51_42_56_20"
+
+[[spawn]]
+obj = "obj.chisel"
+coords = "0_51_42_61_52"
+
+[[spawn]]
+obj = "obj.hunting_ojibway_bird_snare"
+coords = "0_51_42_60_54"
+
+[[spawn]]
+obj = "obj.nails_bronze"
+coords = "0_51_42_61_39"
+count = 5
+
+[[spawn]]
+obj = "obj.spade"
+coords = "0_52_42_10_63"
+
+[[spawn]]
+obj = "obj.spade"
+coords = "0_52_42_5_14"
+
+[[spawn]]
+obj = "obj.spade"
+coords = "0_52_42_6_31"
+
+[[spawn]]
+obj = "obj.spade"
+coords = "0_52_43_27_6"
+
+[[spawn]]
+obj = "obj.water_skin4"
+coords = "0_51_42_32_43"
+
+[[spawn]]
+obj = "obj.water_skin4"
+coords = "0_51_42_33_49"
+
+[[spawn]]
+obj = "obj.water_skin4"
+coords = "0_51_42_38_51"
+
+[[spawn]]
+obj = "obj.woodplank"
+coords = "0_51_42_48_36"
+
+[[spawn]]
+obj = "obj.woodplank"
+coords = "0_51_42_59_45"
+
+[[spawn]]
+obj = "obj.woodplank"
+coords = "0_52_42_24_59"
+
+## Pvp Arena
+
+[[spawn]]
+obj = "obj.bronze_axe"
+coords = "0_52_50_40_38"
+
+[[spawn]]
+obj = "obj.cheese"
+coords = "0_52_51_62_4"
+
+[[spawn]]
+obj = "obj.coins"
+coords = "0_52_50_10_34"
+
+[[spawn]]
+obj = "obj.coins"
+coords = "0_52_50_19_31"
+count = 2
+
+[[spawn]]
+obj = "obj.coins"
+coords = "0_52_50_29_33"
+count = 3
+
+[[spawn]]
+obj = "obj.coins"
+coords = "0_52_50_37_28"
+
+[[spawn]]
+obj = "obj.coins"
+coords = "0_52_50_40_38"
+
+[[spawn]]
+obj = "obj.coins"
+coords = "0_52_50_42_31"
+count = 2
+
+## River Elid
+
+[[spawn]]
+obj = "obj.beer_glass"
+coords = "0_52_46_30_11"
+
+[[spawn]]
+obj = "obj.bronze_arrow"
+coords = "0_52_48_59_10"
+
+[[spawn]]
+obj = "obj.bronze_pickaxe"
+coords = "0_52_48_32_35"
+
+[[spawn]]
+obj = "obj.bucket_empty"
+coords = "0_52_46_23_22"
+
+## Ruins Of Unkah
+
+[[spawn]]
+obj = "obj.fishing_rod"
+coords = "0_49_44_18_0"
+
+[[spawn]]
+obj = "obj.harpoon"
+coords = "0_49_44_34_22"
+
+[[spawn]]
+obj = "obj.iron_dagger"
+coords = "0_49_44_56_22"
+
+[[spawn]]
+obj = "obj.lobster_pot"
+coords = "0_49_44_35_13"
+
+[[spawn]]
+obj = "obj.net"
+coords = "0_49_44_31_22"
+
+[[spawn]]
+obj = "obj.rope"
+coords = "0_49_44_33_20"
+
+[[spawn]]
+obj = "obj.water_skin0"
+coords = "0_49_44_36_41"
+
+## Sophanem
+
+[[spawn]]
+obj = "obj.ics_little_bookofembalming"
+coords = "1_51_43_23_2"
+
+## Sorceress Garden House
+
+[[spawn]]
+obj = "obj.bronze_mace"
+coords = "0_51_49_56_1"
+
+## Uzer Oasis
+
+[[spawn]]
+obj = "obj.cup_of_tea"
+coords = "0_54_47_34_51"
+
+[[spawn]]
+obj = "obj.jug_empty"
+coords = "0_54_47_56_41"
+
+[[spawn]]
+obj = "obj.jug_water"
+coords = "0_54_47_29_48"
+
+[[spawn]]
+obj = "obj.jug_wine"
+coords = "0_54_47_55_41"
+
+## Uzer Oasis End
+

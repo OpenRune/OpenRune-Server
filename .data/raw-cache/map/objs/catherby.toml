@@ -1,0 +1,32 @@
+[[spawn]]
+obj = "obj.bucket_water"
+coords = "0_44_53_4_60"
+
+[[spawn]]
+obj = "obj.bucket_water"
+coords = "0_44_53_7_57"
+
+[[spawn]]
+obj = "obj.burntfish3"
+coords = "0_44_53_4_61"
+
+[[spawn]]
+obj = "obj.insect_repellent"
+coords = "0_43_53_55_58"
+
+[[spawn]]
+obj = "obj.jug_wine"
+coords = "1_43_53_54_57"
+
+[[spawn]]
+obj = "obj.knife"
+coords = "0_44_53_4_58"
+
+[[spawn]]
+obj = "obj.piedish"
+coords = "0_44_53_4_63"
+
+[[spawn]]
+obj = "obj.piedish"
+coords = "1_43_53_61_57"
+

@@ -1,0 +1,34 @@
+## Draynor Manor Interior
+
+[[spawn]]
+obj = "obj.bronze_med_helm"
+coords = "0_48_52_50_32"
+
+[[spawn]]
+obj = "obj.bucket_empty"
+coords = "0_48_52_49_31"
+
+[[spawn]]
+obj = "obj.fish_food"
+coords = "1_48_52_37_29"
+
+[[spawn]]
+obj = "obj.poison"
+coords = "0_48_52_25_38"
+
+[[spawn]]
+obj = "obj.rubber_tube"
+coords = "0_48_52_39_39"
+
+[[spawn]]
+obj = "obj.shears"
+coords = "0_48_52_54_28"
+
+[[spawn]]
+obj = "obj.spade"
+coords = "0_48_52_48_31"
+
+[[spawn]]
+obj = "obj.tinderbox"
+coords = "2_48_52_40_41"
+

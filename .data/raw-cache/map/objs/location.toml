@@ -1,0 +1,12 @@
+[[spawn]]
+obj = "obj.ball"
+coords = "0_45_54_55_4"
+
+[[spawn]]
+obj = "obj.witches_diary"
+coords = "0_45_54_23_15"
+
+[[spawn]]
+obj = "obj.witches_doorkey"
+coords = "1_45_54_25_19"
+

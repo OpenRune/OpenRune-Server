@@ -1,0 +1,20 @@
+[[spawn]]
+obj = "obj.woodplank"
+coords = "0_44_50_31_32"
+
+[[spawn]]
+obj = "obj.woodplank"
+coords = "0_44_50_31_38"
+
+[[spawn]]
+obj = "obj.woodplank"
+coords = "0_44_50_35_39"
+
+[[spawn]]
+obj = "obj.woodplank"
+coords = "0_44_50_40_31"
+
+[[spawn]]
+obj = "obj.woodplank"
+coords = "0_44_50_40_36"
+

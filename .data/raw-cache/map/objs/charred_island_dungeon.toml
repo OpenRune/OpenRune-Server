@@ -1,0 +1,24 @@
+[[spawn]]
+obj = "obj.black_dagger"
+coords = "0_42_138_3_52"
+
+[[spawn]]
+obj = "obj.bones_burnt"
+coords = "0_41_138_39_31"
+
+[[spawn]]
+obj = "obj.bones_burnt"
+coords = "0_41_138_47_25"
+
+[[spawn]]
+obj = "obj.bones_burnt"
+coords = "0_41_138_50_24"
+
+[[spawn]]
+obj = "obj.bones_burnt"
+coords = "0_41_138_52_30"
+
+[[spawn]]
+obj = "obj.magic_staff"
+coords = "0_42_138_10_59"
+

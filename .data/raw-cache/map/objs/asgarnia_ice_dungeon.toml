@@ -1,0 +1,22 @@
+## Asgarnia Ice Dungeon Normal
+
+[[spawn]]
+obj = "obj.coins"
+coords = "0_46_149_43_47"
+
+[[spawn]]
+obj = "obj.coins"
+coords = "0_46_149_44_46"
+
+[[spawn]]
+obj = "obj.coins"
+coords = "0_46_149_44_48"
+
+## Asgarnia Ice Dungeon Snowy
+
+[[spawn]]
+obj = "obj.iron_longsword"
+coords = "0_46_149_32_19"
+
+## Asgarnia Ice Dungeon Snowy End
+

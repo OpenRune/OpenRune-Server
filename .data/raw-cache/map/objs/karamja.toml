@@ -1,0 +1,309 @@
+[[spawn]]
+obj = "obj.airrune"
+coords = "0_45_49_58_22"
+
+[[spawn]]
+obj = "obj.banana"
+coords = "0_45_49_27_10"
+
+[[spawn]]
+obj = "obj.beer"
+coords = "0_43_49_44_29"
+
+[[spawn]]
+obj = "obj.beer"
+coords = "0_43_49_47_20"
+
+[[spawn]]
+obj = "obj.beer_glass"
+coords = "0_43_49_42_29"
+
+[[spawn]]
+obj = "obj.beer_glass"
+coords = "0_43_49_43_24"
+
+[[spawn]]
+obj = "obj.beer_glass"
+coords = "0_43_49_43_29"
+
+[[spawn]]
+obj = "obj.beer_glass"
+coords = "0_43_49_46_20"
+
+[[spawn]]
+obj = "obj.beer_glass"
+coords = "0_43_49_46_24"
+
+[[spawn]]
+obj = "obj.beer_glass"
+coords = "0_43_49_46_25"
+
+[[spawn]]
+obj = "obj.beer_glass"
+coords = "0_43_49_47_19"
+
+[[spawn]]
+obj = "obj.bronze_axe"
+coords = "0_43_49_43_25"
+
+[[spawn]]
+obj = "obj.bronze_axe"
+coords = "0_44_48_10_11"
+
+[[spawn]]
+obj = "obj.bronze_axe"
+coords = "0_44_48_9_16"
+
+[[spawn]]
+obj = "obj.bucket_water"
+coords = "0_43_49_38_63"
+
+[[spawn]]
+obj = "obj.cake_slice"
+coords = "0_42_50_3_18"
+
+[[spawn]]
+obj = "obj.cake_slice"
+coords = "0_42_50_3_3"
+
+[[spawn]]
+obj = "obj.coins"
+coords = "0_43_49_13_62"
+count = 2
+
+[[spawn]]
+obj = "obj.coins"
+coords = "0_43_49_15_61"
+count = 5
+
+[[spawn]]
+obj = "obj.coins"
+coords = "0_43_49_15_63"
+count = 2
+
+[[spawn]]
+obj = "obj.coins"
+coords = "0_43_49_16_62"
+count = 4
+
+[[spawn]]
+obj = "obj.coins"
+coords = "0_43_49_20_61"
+count = 5
+
+[[spawn]]
+obj = "obj.gold_ore"
+coords = "0_42_50_45_24"
+
+[[spawn]]
+obj = "obj.hammer"
+coords = "0_46_47_10_52"
+
+[[spawn]]
+obj = "obj.hammer"
+coords = "0_46_47_19_50"
+
+[[spawn]]
+obj = "obj.hammer"
+coords = "0_46_47_42_40"
+
+[[spawn]]
+obj = "obj.hammer"
+coords = "0_46_47_45_53"
+
+[[spawn]]
+obj = "obj.hunting_teasing_stick"
+coords = "0_43_46_23_50"
+
+[[spawn]]
+obj = "obj.iron_axe"
+coords = "0_44_48_5_14"
+
+[[spawn]]
+obj = "obj.jug_empty"
+coords = "0_45_49_25_10"
+
+[[spawn]]
+obj = "obj.knife"
+coords = "0_45_49_23_12"
+
+[[spawn]]
+obj = "obj.premade_blurberry_special"
+coords = "0_46_46_28_28"
+
+[[spawn]]
+obj = "obj.rope"
+coords = "0_45_49_24_16"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_43_46_10_57"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_43_46_19_51"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_43_46_30_43"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_43_46_34_16"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_43_46_3_8"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_43_46_5_3"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_43_47_3_41"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_43_47_3_63"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_43_47_3_9"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_43_47_4_0"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_43_48_1_47"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_43_48_4_3"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_43_48_4_53"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_43_48_55_57"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_43_48_5_37"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_44_46_24_30"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_44_46_38_33"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_44_46_50_32"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_44_49_48_59"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_45_48_16_47"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_45_48_33_39"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_45_48_46_38"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_45_48_59_1"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_45_48_60_30"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_46_46_16_15"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_46_46_8_7"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_46_47_11_2"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_46_47_31_5"
+
+[[spawn]]
+obj = "obj.seaweed"
+coords = "0_46_47_3_59"
+
+## Karamja Volcano Dungeon
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_44_149_13_28"
+
+[[spawn]]
+obj = "obj.bones"
+coords = "0_44_149_14_29"
+
+[[spawn]]
+obj = "obj.coins"
+coords = "0_44_150_40_45"
+
+[[spawn]]
+obj = "obj.coins"
+coords = "0_44_150_44_43"
+
+[[spawn]]
+obj = "obj.coins"
+coords = "0_44_150_45_28"
+
+[[spawn]]
+obj = "obj.coins"
+coords = "0_44_150_47_29"
+
+[[spawn]]
+obj = "obj.coins"
+coords = "0_44_150_47_32"
+
+[[spawn]]
+obj = "obj.firerune"
+coords = "0_44_149_17_25"
+
+[[spawn]]
+obj = "obj.firerune"
+coords = "0_44_149_20_30"
+
+[[spawn]]
+obj = "obj.firerune"
+coords = "0_44_149_22_16"
+
+[[spawn]]
+obj = "obj.firerune"
+coords = "0_44_149_26_16"
+
+[[spawn]]
+obj = "obj.firerune"
+coords = "0_44_149_27_24"
+
+[[spawn]]
+obj = "obj.red_spiders_eggs"
+coords = "0_44_149_16_50"
+
+## Karamja Volcano Dungeon End
+

@@ -1,0 +1,54 @@
+## Construction supplies
+
+[[spawn]]
+obj = "obj.mahogany_logs"
+coords = "0_51_95_50_39"
+
+## Iorwerth's Arms
+
+[[spawn]]
+obj = "obj.steel_scimitar"
+coords = "0_50_94_58_41"
+
+## Prifddinas Interiors
+
+[[spawn]]
+obj = "obj.chisel"
+coords = "0_50_94_52_45"
+
+[[spawn]]
+obj = "obj.hammer"
+coords = "0_50_94_51_45"
+
+[[spawn]]
+obj = "obj.iron_platebody"
+coords = "0_50_94_53_44"
+
+[[spawn]]
+obj = "obj.needle"
+coords = "0_50_94_29_52"
+
+[[spawn]]
+obj = "obj.pot_empty"
+coords = "0_50_94_28_42"
+
+[[spawn]]
+obj = "obj.silk"
+coords = "0_50_94_30_54"
+
+[[spawn]]
+obj = "obj.spade"
+coords = "0_50_94_19_42"
+
+[[spawn]]
+obj = "obj.thread"
+coords = "0_50_94_29_53"
+
+## Prifddinas Interiors Raised
+
+[[spawn]]
+obj = "obj.pineapple"
+coords = "0_50_95_31_7"
+
+## Prifddinas Interiors Raised End
+

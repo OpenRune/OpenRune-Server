@@ -1,0 +1,20 @@
+[[spawn]]
+obj = "obj.rottenapples"
+coords = "0_39_52_39_5"
+
+[[spawn]]
+obj = "obj.rottenapples"
+coords = "0_39_52_53_4"
+
+## West Ardougne Concrete Houses
+
+[[spawn]]
+obj = "obj.chisel"
+coords = "0_39_51_47_23"
+
+[[spawn]]
+obj = "obj.knife"
+coords = "0_39_51_47_24"
+
+## West Ardougne Concrete Houses End
+

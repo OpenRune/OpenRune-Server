@@ -10,13 +10,18 @@ class WikiClient private constructor(
     private val store: WikiDumpStore,
     private val onPageFetch: ((String) -> Unit)? = null,
 ) : Closeable {
+    fun wikiDumpStore(): WikiDumpStore = store
     private val pageCache = mutableMapOf<String, String>()
 
     val loadedPages: Int get() = store.pageCount
 
     val infoboxMonsterPages: Int get() = store.infoboxMonsterCount
 
+    val itemSpawnPageCount: Int get() = cachedItemSpawnTitles().size
+
     val cachedPages: Int get() = pageCache.size
+
+    private var itemSpawnTitlesCache: List<String>? = null
 
     override fun close() = Unit
 
@@ -26,6 +31,21 @@ class WikiClient private constructor(
         val content = store.rawPageSource(title)
         pageCache[title] = content
         return content
+    }
+
+    suspend fun fetchItemSpawnPageBatch(
+        batchSize: Int,
+        continueToken: String?,
+    ): MonsterPageBatch {
+        val all = cachedItemSpawnTitles()
+        val offset = continueToken?.toIntOrNull() ?: 0
+        val titles = all.drop(offset).take(batchSize.coerceIn(1, 500))
+        val nextOffset = offset + titles.size
+        val hasMore = nextOffset < all.size
+        return MonsterPageBatch(
+            titles = titles,
+            continueToken = if (hasMore) nextOffset.toString() else null,
+        )
     }
 
     suspend fun fetchMonsterPageBatch(
@@ -50,6 +70,13 @@ class WikiClient private constructor(
         val titles: List<String>,
         val continueToken: String?,
     )
+
+    private fun cachedItemSpawnTitles(): List<String> {
+        itemSpawnTitlesCache?.let { return it }
+        val titles = WikiDumpStorePages.listItemSpawnLineTitles(store)
+        itemSpawnTitlesCache = titles
+        return titles
+    }
 
     companion object {
         private const val DEFAULT_DUMP_DIR = "D:/OpenRune/OpenRune-FileStore-Server/dumps/wiki"

@@ -1,0 +1,24 @@
+[[spawn]]
+obj = "obj.blackcog"
+coords = "0_40_150_53_39"
+
+[[spawn]]
+obj = "obj.bluecog"
+coords = "0_40_150_14_33"
+
+[[spawn]]
+obj = "obj.childs_blanket"
+coords = "0_40_150_10_4"
+
+[[spawn]]
+obj = "obj.rat_poison"
+coords = "0_40_150_4_62"
+
+[[spawn]]
+obj = "obj.redcog"
+coords = "0_40_150_23_13"
+
+[[spawn]]
+obj = "obj.whitecog"
+coords = "0_40_150_18_55"
+

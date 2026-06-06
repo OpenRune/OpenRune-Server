@@ -1,0 +1,28 @@
+[[spawn]]
+obj = "obj.cup_of_tea"
+coords = "0_45_53_23_49"
+
+[[spawn]]
+obj = "obj.cup_of_tea"
+coords = "0_45_53_6_20"
+
+[[spawn]]
+obj = "obj.king_worm"
+coords = "0_45_53_16_22"
+
+[[spawn]]
+obj = "obj.shortbow"
+coords = "1_45_53_34_47"
+
+[[spawn]]
+obj = "obj.swamp_toad"
+coords = "0_45_53_23_8"
+
+[[spawn]]
+obj = "obj.swamp_toad"
+coords = "0_45_53_27_2"
+
+[[spawn]]
+obj = "obj.swamp_toad"
+coords = "0_45_53_28_18"
+

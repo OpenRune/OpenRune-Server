@@ -1,0 +1,8 @@
+[[spawn]]
+obj = "obj.lotr_diary"
+coords = "0_49_72_43_26"
+
+[[spawn]]
+obj = "obj.toad_batta"
+coords = "0_49_71_3_10"
+

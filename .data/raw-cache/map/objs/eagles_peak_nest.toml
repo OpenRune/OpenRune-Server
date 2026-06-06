@@ -1,0 +1,12 @@
+[[spawn]]
+obj = "obj.coins"
+coords = "0_31_77_33_21"
+
+[[spawn]]
+obj = "obj.coins"
+coords = "0_31_77_36_20"
+
+[[spawn]]
+obj = "obj.ep_transport_book01"
+coords = "0_31_77_20_55"
+

@@ -1,0 +1,28 @@
+[[spawn]]
+obj = "obj.coins"
+coords = "2_39_91_14_38"
+
+[[spawn]]
+obj = "obj.coins"
+coords = "2_39_91_22_38"
+
+[[spawn]]
+obj = "obj.coins"
+coords = "2_39_91_54_25"
+
+[[spawn]]
+obj = "obj.coins"
+coords = "2_39_91_54_31"
+
+[[spawn]]
+obj = "obj.coins"
+coords = "2_39_91_56_27"
+
+[[spawn]]
+obj = "obj.coins"
+coords = "2_39_91_57_30"
+
+[[spawn]]
+obj = "obj.gold_ring"
+coords = "2_39_91_57_31"
+
