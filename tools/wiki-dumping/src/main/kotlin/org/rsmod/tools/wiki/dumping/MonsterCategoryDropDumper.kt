@@ -44,10 +44,13 @@ class MonsterCategoryDropDumper(
     private val dumper: NpcDropTableWikiDumper,
     private val wiki: WikiClient,
     private val log: DropDumpLog,
+    private val jsonExport: JsonExportConfig? = null,
+    private val kotlinOutput: Boolean = true,
 ) {
     private class CanonicalEntry(
         val wikiPage: String,
         val specs: List<GeneratedDropTableSpec>,
+        val results: List<DumpResult>,
     )
 
     suspend fun dumpAllMonsters(
@@ -58,6 +61,7 @@ class MonsterCategoryDropDumper(
         val duplicates = mutableListOf<DuplicateDropTable>()
         val skipped = mutableListOf<SkippedMonsterPage>()
         val unknownDropRates = mutableListOf<UnknownDropRateEntry>()
+        val jsonRemainsOnly = mutableListOf<DropTableJsonExporter.CanonicalJsonExport>()
         var skippedNoDropSection = 0
         var skippedNoResolvedDrops = 0
         var skippedAlternateEncounter = 0
@@ -129,8 +133,9 @@ class MonsterCategoryDropDumper(
 
                     val results = dumper.dumpAll(request)
                     unknownDropRates += results.flatMap { it.unknownDropRates }
-                    val specs = results.map { it.spec }.filter { it.hasDropContent() }
-                    if (specs.isEmpty()) {
+                    val exportableResults = results.filter { it.hasJsonDropContent() }
+                    val specs = exportableResults.map { it.spec }.filter { it.hasDropContent() }
+                    if (exportableResults.isEmpty()) {
                         if (dumper.isIgnorableNonLootDropContent(tables)) {
                             log.verbose("  skip — no loot (remains/nothing/informational)")
                             continue
@@ -138,6 +143,19 @@ class MonsterCategoryDropDumper(
                         skippedNoResolvedDrops++
                         skipped += SkippedMonsterPage(wikiPage, MonsterSkipReason.NO_RESOLVED_DROPS)
                         log.verbose("  skip — no resolved drops")
+                        continue
+                    }
+
+                    if (specs.isEmpty()) {
+                        if (jsonExport != null) {
+                            jsonRemainsOnly +=
+                                DropTableJsonExporter.CanonicalJsonExport(
+                                    wikiPage = wikiPage,
+                                    results = exportableResults,
+                                )
+                            withDropPages++
+                            log.verbose("  json-only — remains")
+                        }
                         continue
                     }
 
@@ -168,6 +186,7 @@ class MonsterCategoryDropDumper(
                         CanonicalEntry(
                             wikiPage = wikiPage,
                             specs = specs,
+                            results = exportableResults.filter { it.spec.hasDropContent() },
                         )
                 } catch (e: Exception) {
                     failedPages++
@@ -196,6 +215,7 @@ class MonsterCategoryDropDumper(
         outputDir.createDirectories()
         DropTableOutputLayout.cleanupStaleAlternateEncounterFiles(outputDir, log)
         val writtenPaths = mutableSetOf<Path>()
+        val jsonCanonical = mutableListOf<DropTableJsonExporter.CanonicalJsonExport>()
 
         for ((_, entry) in canonicalByCode) {
             val specs = entry.specs.filter { it.hasDropContent() }
@@ -203,29 +223,45 @@ class MonsterCategoryDropDumper(
                 continue
             }
 
-            val output = DropTableOutputLayout.resolveMonsterOutputFile(outputDir, entry.wikiPage)
-            output.parent.createDirectories()
-            val code =
-                DropTableCodeGenerator.generateFile(
-                    specs,
-                    packageName = DropTableOutputLayout.MONSTERS_PACKAGE,
-                )
-            output.writeText(code)
-            writtenPaths.add(output)
+            if (kotlinOutput) {
+                val output = DropTableOutputLayout.resolveMonsterOutputFile(outputDir, entry.wikiPage)
+                output.parent.createDirectories()
+                val code =
+                    DropTableCodeGenerator.generateFile(
+                        specs,
+                        packageName = DropTableOutputLayout.MONSTERS_PACKAGE,
+                    )
+                output.writeText(code)
+                writtenPaths.add(output)
 
-            val relative = outputDir.relativize(output).toString().replace('\\', '/')
-            log.info("wrote $relative ← ${entry.wikiPage}")
+                val relative = outputDir.relativize(output).toString().replace('\\', '/')
+                log.info("wrote $relative ← ${entry.wikiPage}")
+            }
+
+            if (jsonExport != null) {
+                jsonCanonical +=
+                    DropTableJsonExporter.CanonicalJsonExport(
+                        wikiPage = entry.wikiPage,
+                        results = entry.results,
+                    )
+            }
         }
 
-        DropTableOutputLayout.cleanupStaleMonsterFiles(outputDir, writtenPaths)
-        DropTableOutputLayout.cleanupGroupedSubdirs(outputDir)
-        DropTableOutputLayout.cleanupLegacyFlatMonsterFiles(outputDir)
+        jsonExport?.let { config ->
+            exportJsonTables(config, jsonCanonical + jsonRemainsOnly, duplicates)
+        }
 
-        val manifestDir = outputDir.resolve(DropTableOutputLayout.MONSTERS_DIR)
-        manifestDir.createDirectories()
-        writeDuplicateManifest(manifestDir, duplicates)
-        writeSkippedManifest(manifestDir, skipped)
-        writeUnknownDropRatesManifest(manifestDir, unknownDropRates)
+        if (kotlinOutput) {
+            DropTableOutputLayout.cleanupStaleMonsterFiles(outputDir, writtenPaths)
+            DropTableOutputLayout.cleanupGroupedSubdirs(outputDir)
+            DropTableOutputLayout.cleanupLegacyFlatMonsterFiles(outputDir)
+
+            val manifestDir = outputDir.resolve(DropTableOutputLayout.MONSTERS_DIR)
+            manifestDir.createDirectories()
+            writeDuplicateManifest(manifestDir, duplicates)
+            writeSkippedManifest(manifestDir, skipped)
+            writeUnknownDropRatesManifest(manifestDir, unknownDropRates)
+        }
 
         return CategoryDropDumpResult(
             canonicalPages = canonicalByCode.size,
@@ -238,6 +274,43 @@ class MonsterCategoryDropDumper(
             duplicates = duplicates,
             skipped = skipped,
             unknownDropRates = unknownDropRates.distinctBy { Triple(it.wikiPage, it.itemName, it.rarity) },
+        )
+    }
+
+    private fun exportJsonTables(
+        config: JsonExportConfig,
+        canonical: List<DropTableJsonExporter.CanonicalJsonExport>,
+        duplicates: List<DuplicateDropTable>,
+    ) {
+        config.jsonRoot.createDirectories()
+
+        for (entry in canonical) {
+            for (result in entry.results) {
+                val table =
+                    DropTableJsonExporter.exportTable(
+                        result = result,
+                        wikiPage = entry.wikiPage,
+                    )
+                DropTableJsonExporter.writeTable(config.jsonRoot, result.spec.tableVarName, table)
+                val relative =
+                    config.jsonRoot
+                        .relativize(
+                            DropTableJsonOutputLayout.resolveTableFile(config.jsonRoot, result.spec.tableVarName),
+                        ).toString()
+                        .replace('\\', '/')
+                log.info("wrote json $relative ← ${entry.wikiPage}")
+            }
+        }
+
+        val manifest =
+            DropTableJsonExporter.buildManifest(
+                jsonRoot = config.jsonRoot,
+                canonical = canonical,
+                duplicates = duplicates,
+            )
+        DropTableJsonExporter.writeManifest(config.jsonRoot, manifest)
+        log.info(
+            "wrote json manifest (${manifest.size} npc entries) → ${DropTableJsonOutputLayout.MANIFEST_FILE}",
         )
     }
 
