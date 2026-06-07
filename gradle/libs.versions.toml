@@ -24,6 +24,7 @@ otp-kotlin = "2.4.1"
 openrs2 = "0.1.0-SNAPSHOT"
 rsprot = "1.0.0-ALPHA-20260506"
 simmetrics = "4.1.1"
+shadow = "8.3.7"
 spotless = "7.0.4"
 postgresql-jdbc = "42.7.5"
 embedded-postgres = "2.2.2"
@@ -87,5 +88,6 @@ openrune-central-all = { module = "dev.or2:central-all", version.ref = "openrune
 logging = ["logback-classic", "kotlin-inline-logger"]
 
 [plugins]
+shadow = { id = "com.gradleup.shadow", version.ref = "shadow" }
 gradle-download = { id = "de.undercouch.download", version.ref = "gradle-download" }
 manes-versions = { id = "com.github.ben-manes.versions", version.ref = "manes-versions" }

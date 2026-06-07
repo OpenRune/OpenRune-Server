@@ -35,16 +35,15 @@ class GameNetworkRsaGenerator : CliktCommand(name = "generate-rsa") {
         get() = preferredDir?.let { Paths.get(it) } ?: DirectoryConstants.DATA_PATH
 
     override fun run() {
-        if (!fileOverwrite) {
-            val foundFile = cacheDir.resolve(privateKeyFileName)
-            if (foundFile.exists()) {
-                logger.info { "RSA key file already found: $foundFile" }
-                return
-            }
-        }
-        cacheDir.createDirectories()
         val gameKeyFile = cacheDir.resolve(privateKeyFileName)
         val clientModFile = cacheDir.resolve(publicModFileName)
+        if (!fileOverwrite && gameKeyFile.exists() && clientModFile.exists()) {
+            logger.info {
+                "RSA key files already found: $gameKeyFile and $clientModFile"
+            }
+            return
+        }
+        cacheDir.createDirectories()
         logger.info { "Generating RSA key to ${gameKeyFile.absolutePathString()}" }
         create(gameKeyFile, clientModFile)
         logger.info { "Generated RSA key." }

@@ -1,0 +1,106 @@
+name: Release Server
+
+permissions:
+  contents: write
+
+on:
+  push:
+    branches:
+      - production
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: "Optional branch, tag, or SHA to build (defaults to the selected branch)"
+        required: false
+        type: string
+      create_release:
+        description: "Publish a GitHub release with the built zip"
+        required: false
+        type: boolean
+        default: true
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.ref || github.ref }}
+          fetch-depth: 1
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: gradle
+
+      - name: Prepare game config
+        run: cp game.example.yml game.yml
+
+      - name: Build cache and server jar
+        run: |
+          chmod +x gradlew
+          ./gradlew :or-cache:freshCache :or-cache:mergePluginGamevals :server:app:shadowJar --no-daemon --stacktrace
+
+      - name: Prepare release bundle
+        run: |
+          mkdir -p release-bundle/.data
+          cp server/app/build/libs/server.jar release-bundle/
+          cp game.yml release-bundle/
+          rsync -a --exclude 'raw-cache' .data/ release-bundle/.data/
+          cd release-bundle
+          zip -r ../openrune-server-release.zip .
+
+      - name: Set release metadata
+        id: meta
+        run: |
+          DATE="$(date -u +'%Y-%m-%d')"
+          BRANCH="${{ github.ref_name }}"
+          if [ -n "${{ inputs.ref }}" ]; then
+            BRANCH="${{ inputs.ref }}"
+          fi
+          BRANCH_TAG="$(echo "$BRANCH" | tr '/' '-')"
+          SHORT_SHA="$(git rev-parse --short HEAD)"
+          FULL_SHA="$(git rev-parse HEAD)"
+          REPO="${{ github.repository }}"
+
+          echo "date=$DATE" >> "$GITHUB_OUTPUT"
+          echo "branch=$BRANCH" >> "$GITHUB_OUTPUT"
+          echo "tag=${DATE}-${BRANCH_TAG}-${SHORT_SHA}" >> "$GITHUB_OUTPUT"
+          echo "short_sha=$SHORT_SHA" >> "$GITHUB_OUTPUT"
+          echo "full_sha=$FULL_SHA" >> "$GITHUB_OUTPUT"
+          echo "commit_url=${{ github.server_url }}/${REPO}/commit/${FULL_SHA}" >> "$GITHUB_OUTPUT"
+
+      - name: Upload release artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: openrune-server-release
+          path: openrune-server-release.zip
+          retention-days: 14
+
+      - name: Create GitHub release
+        if: github.event_name == 'push' || inputs.create_release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.meta.outputs.tag }}
+          name: "${{ steps.meta.outputs.date }} - ${{ steps.meta.outputs.branch }}"
+          body: |
+            OpenRune Server release built from branch `${{ steps.meta.outputs.branch }}`.
+
+            **Commit:** [`${{ steps.meta.outputs.short_sha }}`](${{ steps.meta.outputs.commit_url }})
+
+            ## Contents
+            - `server.jar` - runnable server (`java -jar server.jar`)
+            - `game.yml` - server configuration
+            - `.data/` - compiled cache, gamevals, and RSA keys (raw-cache sources omitted)
+
+            Extract the zip, then run from that directory:
+            ```bash
+            java -jar server.jar
+            ```
+          files: openrune-server-release.zip
+          generate_release_notes: false

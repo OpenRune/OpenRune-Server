@@ -43,4 +43,15 @@ tasks {
         args = listOf("FRESH_INSTALL")
     }
 
+    register<JavaExec>("mergePluginGamevals") {
+        group = "cache"
+        description =
+            "Writes plugin gamevals.toml entries into .data/gamevals/*.rscm (used by release CI)"
+
+        classpath = sourceSets["main"].runtimeClasspath
+        mainClass.set("dev.openrune.gamevals.PluginGamevalMergerKt")
+        workingDir = rootProject.projectDir
+        dependsOn("classes")
+    }
+
 }

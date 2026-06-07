@@ -1,4 +1,7 @@
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+
 plugins {
+    alias(libs.plugins.shadow)
     id("base-conventions")
     application
 }
@@ -42,4 +45,9 @@ dependencies {
 tasks.named<JavaExec>("run") {
     description = "Runs the RS Mod game server"
     workingDir = rootProject.projectDir
+}
+
+tasks.named<ShadowJar>("shadowJar") {
+    archiveFileName.set("server.jar")
+    mergeServiceFiles()
 }

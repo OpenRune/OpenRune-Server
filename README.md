@@ -84,6 +84,12 @@ Note: RSprox for Private Servers only works currently on Windows and Linux, NOT 
 
 > [!WARNING]
 > And stay away from client's like Devious, as they have been caught adding Account Stealer into their client.
+## 📦 Release builds
+
+CI can produce a self-contained `openrune-server-release.zip` with `server.jar`, `game.yml`, and compiled `.data/`. Pushes to `production` publish automatically; other branches can be built manually from **Actions → Release Server**.
+
+See [.github/docs/RELEASE_CI.md](.github/docs/RELEASE_CI.md) for what the workflow does, how to run it manually, and how to build from `production` vs `main`/feature branches.
+
 ## 🗺️ Project Planning
 - Public roadmap and task board: [OpenRune Server Trello](https://trello.com/b/A0LefFDs/later).
 - Trello write access and contributor listing are reserved for active maintainers—contact Chris via Discord with a short summary of your work if you need access.

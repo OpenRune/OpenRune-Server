@@ -83,7 +83,12 @@ tasks.register<JavaExec>("cleanInstall") {
 
 tasks.register<JavaExec>("generateRsa") {
     group = "security"
-    description = "Runs the rsa-key generation task."
+    description =
+        "Generates RSA network keys when .data/game.key or .data/client.key is missing."
+
+    val gameKey = layout.projectDirectory.file(".data/game.key")
+    val clientKey = layout.projectDirectory.file(".data/client.key")
+    onlyIf { !gameKey.asFile.isFile || !clientKey.asFile.isFile }
 
     args = getArgsFromProperty("rsa")
     mainClass.set("org.rsmod.server.install.GameNetworkRsaGeneratorKt")

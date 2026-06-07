@@ -1,20 +1,17 @@
 package dev.openrune.gamevals
 
-import com.fasterxml.jackson.core.type.TypeReference
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.dataformat.toml.TomlFactory
 import dev.openrune.definition.constants.MappingProvider
 import dev.openrune.definition.constants.use
 import dev.openrune.rscm.RSCMType
 import java.io.DataInputStream
 import java.io.File
 import java.io.FileInputStream
+import java.io.InputStream
 import java.nio.file.Paths
 import kotlin.io.use
 
 class GameValProvider : MappingProvider {
 
-    private val tomlMapper = ObjectMapper(TomlFactory()).findAndRegisterModules()
     override val mappings: MutableMap<String, MutableMap<String, Int>> = mutableMapOf()
     val maxBaseID: MutableMap<String, Int> = mutableMapOf()
 
@@ -71,31 +68,55 @@ class GameValProvider : MappingProvider {
     }
 
     private fun processGameValToml(file: File) {
-        val root: Map<String, Any?> = tomlMapper.readValue(file, object : TypeReference<Map<String, Any?>>() {})
-        val gamevalsSection = root["gamevals"] as? Map<*, *> ?: return
+        file.inputStream().use { stream -> processGameValToml(stream, file.name) }
+    }
 
-        gamevalsSection.forEach { (tableNameAny, tableValuesAny) ->
-            val tableName = tableNameAny as? String ?: return@forEach
-            val tableValues = tableValuesAny as? Map<*, *> ?: return@forEach
+    private fun processGameValToml(input: InputStream, source: String) {
+        var currentTable: String? = null
 
-            require(tableName in RSCMType.RSCM_PREFIXES) {
-                "Invalid TOML table '$tableName' in ${file.name}. Expected one of: ${RSCMType.RSCM_PREFIXES}"
-            }
-
-            mappings.putIfAbsent(tableName, mutableMapOf())
-
-            tableValues.forEach { (k, v) ->
-                val key = k.toString()
-                val value = when (v) {
-                    is Number -> v.toInt()
-                    is String -> v.toIntOrNull() ?: return@forEach
-                    else -> return@forEach
+        input.bufferedReader().useLines { lines ->
+            lines.forEach { line ->
+                val trimmed = line.trim()
+                if (trimmed.isEmpty() || trimmed.startsWith("#")) {
+                    return@forEach
                 }
 
+                GAMEVALS_SECTION_REGEX.find(trimmed)?.let { match ->
+                    currentTable = match.groupValues[1].takeIf { it in RSCMType.RSCM_PREFIXES }
+                    return@forEach
+                }
+
+                val table = currentTable ?: return@forEach
+                val (key, value) = parseGameValTomlEntry(trimmed, source) ?: return@forEach
+
+                mappings.putIfAbsent(table, mutableMapOf())
                 val (parsedKey, parsedValue) = parseRSCMV2Line("$key=$value", 0)
-                putMapping(tableName, parsedKey, parsedValue, file.name)
+                putMapping(table, parsedKey, parsedValue, source)
             }
         }
+    }
+
+    private fun parseGameValTomlEntry(line: String, source: String): Pair<String, Int>? {
+        if (line.startsWith("[")) {
+            return null
+        }
+
+        val equalsIndex = line.indexOf('=')
+        if (equalsIndex <= 0) {
+            return null
+        }
+
+        val key = line.substring(0, equalsIndex).trim()
+        val value = line.substring(equalsIndex + 1).trim().toIntOrNull()
+        if (value == null) {
+            return null
+        }
+
+        if (key.isEmpty()) {
+            throw IllegalArgumentException("Invalid empty key in $source: '$line'")
+        }
+
+        return key to value
     }
 
     private fun processRSCMFile(file: File) {
@@ -207,3 +228,5 @@ private fun File.isGeneratedOutputPath(): Boolean {
     val normalized = invariantSeparatorsPath
     return "/build/" in normalized || "/out/" in normalized || "/target/" in normalized
 }
+
+private val GAMEVALS_SECTION_REGEX = Regex("^\\s*\\[gamevals\\.([^.\\]]+)\\]\\s*$")
