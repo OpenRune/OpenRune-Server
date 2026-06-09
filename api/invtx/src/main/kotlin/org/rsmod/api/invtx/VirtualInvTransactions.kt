@@ -18,6 +18,7 @@ internal fun Player.invDelWithVirtualStorage(
     strict: Boolean,
     placehold: Boolean,
     autoCommit: Boolean,
+    ignoreVirtualStorage: Boolean,
     raw: (
         inv: Inventory,
         type: String,
@@ -29,7 +30,7 @@ internal fun Player.invDelWithVirtualStorage(
     ) -> TransactionResultList<InvObj>,
 ): TransactionResultList<InvObj> {
     val storage = cachedPlayerItemStorage
-    if (!storage.isManaged(this, inv, type)) {
+    if (ignoreVirtualStorage || !storage.isManaged(this, inv, type)) {
         return raw(inv, type, count, slot, strict, placehold, autoCommit)
     }
 

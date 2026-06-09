@@ -299,3 +299,33 @@ isServerOnly = true
 id = "varp.slayer_dialogue_flags"
 scope = "Perm"
 transmit = "Never"
+
+[[varp]]
+isServerOnly = true
+id = "varp.rcu_pouch_essence_type_small"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+isServerOnly = true
+id = "varp.rcu_pouch_essence_type_med"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+isServerOnly = true
+id = "varp.rcu_pouch_essence_type_large"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+isServerOnly = true
+id = "varp.rcu_pouch_essence_type_giant"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+isServerOnly = true
+id = "varp.rcu_pouch_essence_type_colossal"
+scope = "Perm"
+transmit = "Never"

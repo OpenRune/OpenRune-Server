@@ -994,6 +994,7 @@ public class ProtectedAccess(
         slot: Int? = null,
         strict: Boolean = true,
         autoCommit: Boolean = true,
+        ignoreVirtualStorage: Boolean = false,
     ): TransactionResultList<InvObj> {
         return player.invDel(
             inv = inv,
@@ -1002,6 +1003,7 @@ public class ProtectedAccess(
             slot = slot,
             strict = strict,
             autoCommit = autoCommit,
+            ignoreVirtualStorage = ignoreVirtualStorage,
         )
     }
 

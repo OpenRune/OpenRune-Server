@@ -28,6 +28,7 @@ import dev.openrune.tables.skills.Cooking
 import dev.openrune.tables.skills.Firemaking
 import dev.openrune.tables.skills.Herblore
 import dev.openrune.tables.skills.Slayer
+import dev.openrune.tables.skills.Runecrafting
 import dev.openrune.tables.skills.Smithing
 import dev.openrune.tables.skills.prayer.EctofuntusBonemeal
 import dev.openrune.tables.skills.prayer.PrayerBlessedBone
@@ -82,6 +83,10 @@ fun tablesToPack() = listOf(
     Smithing.dragonForge(),
     Smithing.crystalSinging(),
     Slayer.masters(),
+    Runecrafting.altars(),
+    Runecrafting.runes(),
+    Runecrafting.tiara(),
+    Runecrafting.combo(),
 )
 
 fun downloadRev(type: TaskType) {

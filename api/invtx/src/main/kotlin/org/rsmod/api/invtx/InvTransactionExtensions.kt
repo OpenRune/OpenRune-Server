@@ -185,6 +185,10 @@ public fun Player.invDel(
         )
     }
 
+/**
+ * @param ignoreVirtualStorage When `true`, items are removed only from [inv] slots and are not
+ *   taken from virtual storage hooks (e.g. essence pouches).
+ */
 public fun Player.invDel(
     inv: Inventory,
     type: String,
@@ -193,6 +197,7 @@ public fun Player.invDel(
     strict: Boolean = true,
     placehold: Boolean = false,
     autoCommit: Boolean = true,
+    ignoreVirtualStorage: Boolean = false,
 ): TransactionResultList<InvObj> =
     invDelWithVirtualStorage(
         inv = inv,
@@ -202,6 +207,7 @@ public fun Player.invDel(
         strict = strict,
         placehold = placehold,
         autoCommit = autoCommit,
+        ignoreVirtualStorage = ignoreVirtualStorage,
     ) { targetInv, objType, objCount, objSlot, objStrict, objPlacehold, objAutoCommit ->
         invDel(
             inv = targetInv,

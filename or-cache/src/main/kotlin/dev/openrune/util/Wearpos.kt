@@ -9,7 +9,7 @@ public enum class Wearpos(public val slot: Int) {
     LeftHand(5),
     Arms(6),
     Legs(7),
-    Head(8), // "Hair"
+    Hair(8), // "Hair"
     Hands(9),
     Feet(10),
     Jaw(11),
@@ -17,7 +17,7 @@ public enum class Wearpos(public val slot: Int) {
     Quiver(13);
 
     public val isClientOnly: Boolean
-        get() = this == Arms || this == Head || this == Jaw
+        get() = this == Arms || this == Hair || this == Jaw
 
     public companion object {
         public val visibleWearpos: List<Wearpos> =
@@ -33,7 +33,7 @@ public enum class Wearpos(public val slot: Int) {
                 5 -> LeftHand
                 6 -> Arms
                 7 -> Legs
-                8 -> Head
+                8 -> Hair
                 9 -> Hands
                 10 -> Feet
                 11 -> Jaw

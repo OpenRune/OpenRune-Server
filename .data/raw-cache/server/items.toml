@@ -44206,6 +44206,14 @@ tradeable = false
 
 
 [[item]]
+id = "obj.gotr_guardian_essence"
+inherit = "obj.gotr_guardian_essence"
+tradeable = false
+[item.params]
+"param.destroy_note_desc"="The Guardian essence is destroyed as you drop it."
+
+
+[[item]]
 id = "obj.gotr_guardian_stone_catalytic"
 inherit = "obj.gotr_guardian_stone_catalytic"
 tradeable = false

@@ -10,7 +10,7 @@ public const val Z_BIT_OFFSET: Int = 0
 public const val X_BIT_OFFSET: Int = Z_BIT_OFFSET + Z_BIT_COUNT
 public const val LEVEL_BIT_OFFSET: Int = X_BIT_OFFSET + X_BIT_COUNT
 
-public data class Coord(public val x: Int, public val z: Int, public val level: Int) {
+public data class Coord(public val x: Int, public val z: Int, public val level: Int = 0) {
 
     fun pack(): Int {
         require(x in 0..X_BIT_MASK) { "`x` value must be within range [0..$X_BIT_MASK]. (x=$x)" }
