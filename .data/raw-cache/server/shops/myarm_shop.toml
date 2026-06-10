@@ -1,0 +1,75 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.myarm_shop"
+name = "Leprechaun Larry's Farming Supplies."
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1300
+buyMultiplier = 400
+delta = 100
+
+size = 11
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.rake"
+count = 6
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.dibber"
+count = 4
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.secateurs"
+count = 1
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.spade"
+count = 3
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.gardening_trowel"
+count = 2
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.watering_can_0"
+count = 2
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.bucket_compost"
+count = 2
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.pack_compost"
+count = 10
+restockCycles = 50
+
+[[inventory.stock]]
+obj = "obj.plant_cure"
+count = 5
+restockCycles = 3
+
+[[inventory.stock]]
+obj = "obj.cocktail_glass_empty"
+count = 523
+restockCycles = 10000
+
+[[inventory.stock]]
+obj = "obj.swamprocks1"
+count = 3
+restockCycles = 10000
+

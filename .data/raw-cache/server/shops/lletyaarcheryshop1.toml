@@ -1,0 +1,75 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.lletyaarcheryshop1"
+name = "Lletya Archery Shop"
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1300
+buyMultiplier = 400
+delta = 30
+
+size = 11
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.iron_arrow"
+count = 2000
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.steel_arrow"
+count = 500
+restockCycles = 40
+
+[[inventory.stock]]
+obj = "obj.mithril_arrow"
+count = 500
+restockCycles = 60
+
+[[inventory.stock]]
+obj = "obj.adamant_arrow"
+count = 450
+restockCycles = 120
+
+[[inventory.stock]]
+obj = "obj.rune_arrow"
+count = 400
+restockCycles = 130
+
+[[inventory.stock]]
+obj = "obj.bolt"
+count = 1500
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.oak_shortbow"
+count = 5
+restockCycles = 200
+
+[[inventory.stock]]
+obj = "obj.oak_longbow"
+count = 5
+restockCycles = 200
+
+[[inventory.stock]]
+obj = "obj.crossbow"
+count = 5
+restockCycles = 400
+
+[[inventory.stock]]
+obj = "obj.willow_shortbow"
+count = 5
+restockCycles = 70
+
+[[inventory.stock]]
+obj = "obj.willow_longbow"
+count = 5
+restockCycles = 70
+

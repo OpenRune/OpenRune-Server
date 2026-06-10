@@ -1,0 +1,60 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.werewolfstore1"
+name = "Rufus' Meat Emporium"
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1300
+buyMultiplier = 700
+delta = 30
+
+size = 8
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.raw_beef"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.raw_chicken"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.raw_rat_meat"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.raw_bear_meat"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.raw_trout"
+count = 5
+restockCycles = 500
+
+[[inventory.stock]]
+obj = "obj.raw_pike"
+count = 5
+restockCycles = 500
+
+[[inventory.stock]]
+obj = "obj.raw_salmon"
+count = 5
+restockCycles = 500
+
+[[inventory.stock]]
+obj = "obj.raw_shark"
+count = 1
+restockCycles = 1000
+

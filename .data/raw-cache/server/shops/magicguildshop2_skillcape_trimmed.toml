@@ -1,0 +1,50 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.magicguildshop2_skillcape_trimmed"
+name = "Magic Guild Store"
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1000
+buyMultiplier = 600
+delta = 1
+
+size = 6
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.mystic_hat"
+count = 1000
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.mystic_robe_top"
+count = 1000
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.mystic_robe_bottom"
+count = 1000
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.mystic_gloves"
+count = 1000
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.mystic_boots"
+count = 1000
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.skillcape_magic_trimmed"
+count = 1
+restockCycles = 1
+

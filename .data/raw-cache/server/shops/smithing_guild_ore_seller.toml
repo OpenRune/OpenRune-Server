@@ -1,0 +1,55 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.smithing_guild_ore_seller"
+name = "Ore seller."
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1500
+buyMultiplier = 400
+delta = 0
+
+size = 7
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.copper_ore"
+count = 100
+restockCycles = 200
+
+[[inventory.stock]]
+obj = "obj.tin_ore"
+count = 100
+restockCycles = 200
+
+[[inventory.stock]]
+obj = "obj.iron_ore"
+count = 100
+restockCycles = 200
+
+[[inventory.stock]]
+obj = "obj.mithril_ore"
+count = 100
+restockCycles = 200
+
+[[inventory.stock]]
+obj = "obj.silver_ore"
+count = 100
+restockCycles = 200
+
+[[inventory.stock]]
+obj = "obj.gold_ore"
+count = 100
+restockCycles = 200
+
+[[inventory.stock]]
+obj = "obj.coal"
+count = 100
+restockCycles = 200
+

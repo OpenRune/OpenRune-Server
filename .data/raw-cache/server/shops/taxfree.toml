@@ -1,16 +1,16 @@
 [[inventory]]
 isServerOnly = true
-id = "inv.generalshop1"
-name = "Al Kharid General Store"
+id = "inv.taxfree"
+name = "Bandit Duty Free"
 
 scope = "Shared"
 stack = "Always"
 
-sellMultiplier = 1300
-buyMultiplier = 400
+sellMultiplier = 900
+buyMultiplier = 600
 delta = 30
 
-size = 13
+size = 8
 
 protect = false
 runWeight = false
@@ -21,7 +21,7 @@ placeholders = false
 [[inventory.stock]]
 obj = "obj.pot_empty"
 count = 5
-restockCycles = 10
+restockCycles = 50
 
 [[inventory.stock]]
 obj = "obj.jug_empty"
@@ -31,32 +31,7 @@ restockCycles = 100
 [[inventory.stock]]
 obj = "obj.pack_jug_empty"
 count = 5
-restockCycles = 20
-
-[[inventory.stock]]
-obj = "obj.shears"
-count = 2
-restockCycles = 100
-
-[[inventory.stock]]
-obj = "obj.bucket_empty"
-count = 3
-restockCycles = 10
-
-[[inventory.stock]]
-obj = "obj.pack_bucket"
-count = 15
-restockCycles = 10
-
-[[inventory.stock]]
-obj = "obj.bowl_empty"
-count = 2
-restockCycles = 50
-
-[[inventory.stock]]
-obj = "obj.cake_tin"
-count = 2
-restockCycles = 50
+restockCycles = 15
 
 [[inventory.stock]]
 obj = "obj.tinderbox"
@@ -74,12 +49,12 @@ count = 5
 restockCycles = 100
 
 [[inventory.stock]]
-obj = "obj.newcomer_map"
+obj = "obj.bronze_pickaxe"
 count = 5
 restockCycles = 100
 
 [[inventory.stock]]
-obj = "obj.sos_security_book"
-count = 5
+obj = "obj.bronze_axe"
+count = 10
 restockCycles = 100
 

@@ -1,0 +1,40 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.royal_bar"
+name = "The Esoterican Arms"
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1000
+buyMultiplier = 550
+delta = 20
+
+size = 4
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.beer"
+count = 10
+restockCycles = 28
+
+[[inventory.stock]]
+obj = "obj.cider"
+count = 10
+restockCycles = 28
+
+[[inventory.stock]]
+obj = "obj.jug_wine"
+count = 5
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.cup_of_tea"
+count = 5
+restockCycles = 76
+

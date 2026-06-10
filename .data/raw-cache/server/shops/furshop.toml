@@ -1,0 +1,80 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.furshop"
+name = "Fremennik Fur Trader"
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1200
+buyMultiplier = 950
+delta = 20
+
+size = 12
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.fur"
+count = 3
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.grey_wolf_fur"
+count = 3
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.huntingbeast_polar_fur"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.huntingbeast_woodland_fur"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.huntingbeast_jungle_fur"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.huntingbeast_desert_fur"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.hunting_fur_jaguar_shabby"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.hunting_fur_jaguar_perfect"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.hunting_fur_leopard_shabby"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.hunting_fur_leopard_perfect"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.hunting_fur_tiger_shabby"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.hunting_fur_tiger_perfect"
+count = 0
+restockCycles = 100
+

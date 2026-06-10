@@ -1,0 +1,70 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.dorgesh_lamp_shop"
+name = "Miltog's Lamps"
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1500
+buyMultiplier = 400
+delta = 30
+
+size = 10
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.torch_unlit"
+count = 15
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.oil_lamp_empty"
+count = 4
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.oil_lantern_empty"
+count = 2
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.bullseye_lantern_empty"
+count = 1
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.cave_goblin_mining_helmet_unlit"
+count = 1
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.tinderbox"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.dorgesh_light_bulb"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.oil_lamp_unlit"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.oil_lantern_unlit"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.bullseye_lantern_unlit"
+count = 0
+restockCycles = 100
+

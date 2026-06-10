@@ -1,0 +1,40 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.myths_guild_weaponry"
+name = "Myths' Guild Weaponry"
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1000
+buyMultiplier = 600
+delta = 20
+
+size = 4
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.dragon_dagger"
+count = 2
+restockCycles = 500
+
+[[inventory.stock]]
+obj = "obj.dragon_longsword"
+count = 2
+restockCycles = 500
+
+[[inventory.stock]]
+obj = "obj.dragon_mace"
+count = 2
+restockCycles = 500
+
+[[inventory.stock]]
+obj = "obj.dragon_battleaxe"
+count = 2
+restockCycles = 500
+

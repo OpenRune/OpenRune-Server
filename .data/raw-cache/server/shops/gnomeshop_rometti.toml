@@ -1,0 +1,120 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.gnomeshop_rometti"
+name = "Fine Fashions"
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1000
+buyMultiplier = 550
+delta = 10
+
+size = 20
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.gnome_hat_pink"
+count = 5
+restockCycles = 200
+
+[[inventory.stock]]
+obj = "obj.gnome_hat_green"
+count = 5
+restockCycles = 200
+
+[[inventory.stock]]
+obj = "obj.gnome_hat_blue"
+count = 5
+restockCycles = 200
+
+[[inventory.stock]]
+obj = "obj.gnome_hat_cream"
+count = 5
+restockCycles = 200
+
+[[inventory.stock]]
+obj = "obj.gnome_hat_turquoise"
+count = 5
+restockCycles = 200
+
+[[inventory.stock]]
+obj = "obj.gnome_robetop_pink"
+count = 5
+restockCycles = 200
+
+[[inventory.stock]]
+obj = "obj.gnome_robetop_green"
+count = 5
+restockCycles = 200
+
+[[inventory.stock]]
+obj = "obj.gnome_robetop_blue"
+count = 5
+restockCycles = 200
+
+[[inventory.stock]]
+obj = "obj.gnome_robetop_cream"
+count = 5
+restockCycles = 200
+
+[[inventory.stock]]
+obj = "obj.gnome_robetop_turquoise"
+count = 5
+restockCycles = 200
+
+[[inventory.stock]]
+obj = "obj.gnome_robebottoms_pink"
+count = 5
+restockCycles = 200
+
+[[inventory.stock]]
+obj = "obj.gnome_robebottoms_green"
+count = 5
+restockCycles = 200
+
+[[inventory.stock]]
+obj = "obj.gnome_robebottoms_blue"
+count = 5
+restockCycles = 200
+
+[[inventory.stock]]
+obj = "obj.gnome_robebottoms_cream"
+count = 5
+restockCycles = 200
+
+[[inventory.stock]]
+obj = "obj.gnome_robebottoms_turquoise"
+count = 5
+restockCycles = 200
+
+[[inventory.stock]]
+obj = "obj.gnome_boots_pink"
+count = 5
+restockCycles = 200
+
+[[inventory.stock]]
+obj = "obj.gnome_boots_green"
+count = 5
+restockCycles = 200
+
+[[inventory.stock]]
+obj = "obj.gnome_boots_blue"
+count = 5
+restockCycles = 200
+
+[[inventory.stock]]
+obj = "obj.gnome_boots_cream"
+count = 5
+restockCycles = 200
+
+[[inventory.stock]]
+obj = "obj.gnome_boots_turquoise"
+count = 5
+restockCycles = 200
+

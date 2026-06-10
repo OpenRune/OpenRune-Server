@@ -1,0 +1,135 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.magicguildshop"
+name = "Magic Guild Store"
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1000
+buyMultiplier = 600
+delta = 1
+
+size = 23
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.airrune"
+count = 5000
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.waterrune"
+count = 5000
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.earthrune"
+count = 5000
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.firerune"
+count = 5000
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.mindrune"
+count = 5000
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.bodyrune"
+count = 5000
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.chaosrune"
+count = 250
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.naturerune"
+count = 250
+restockCycles = 30
+
+[[inventory.stock]]
+obj = "obj.deathrune"
+count = 250
+restockCycles = 15
+
+[[inventory.stock]]
+obj = "obj.lawrune"
+count = 250
+restockCycles = 30
+
+[[inventory.stock]]
+obj = "obj.bloodrune"
+count = 250
+restockCycles = 30
+
+[[inventory.stock]]
+obj = "obj.soulrune"
+count = 250
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.pack_firerune"
+count = 80
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.pack_waterrune"
+count = 80
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.pack_airrune"
+count = 80
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.pack_earthrune"
+count = 80
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.pack_mindrune"
+count = 40
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.pack_chaosrune"
+count = 35
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.battlestaff"
+count = 5
+restockCycles = 90
+
+[[inventory.stock]]
+obj = "obj.staff_of_fire"
+count = 2
+restockCycles = 1000
+
+[[inventory.stock]]
+obj = "obj.staff_of_water"
+count = 2
+restockCycles = 1000
+
+[[inventory.stock]]
+obj = "obj.staff_of_air"
+count = 2
+restockCycles = 1000
+
+[[inventory.stock]]
+obj = "obj.staff_of_earth"
+count = 2
+restockCycles = 1000
+

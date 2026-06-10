@@ -1,14 +1,14 @@
 [[inventory]]
 isServerOnly = true
-id = "inv.generalshop1"
-name = "Al Kharid General Store"
+id = "inv.pest_general_store"
+name = "Void Knight General Store"
 
 scope = "Shared"
 stack = "Always"
 
 sellMultiplier = 1300
 buyMultiplier = 400
-delta = 30
+delta = 3
 
 size = 13
 
@@ -74,12 +74,12 @@ count = 5
 restockCycles = 100
 
 [[inventory.stock]]
-obj = "obj.newcomer_map"
-count = 5
+obj = "obj.bronze_axe"
+count = 10
 restockCycles = 100
 
 [[inventory.stock]]
-obj = "obj.sos_security_book"
-count = 5
-restockCycles = 100
+obj = "obj.pest_field_ration"
+count = 25
+restockCycles = 10
 

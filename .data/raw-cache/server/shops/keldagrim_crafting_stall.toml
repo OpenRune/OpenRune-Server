@@ -1,0 +1,50 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.keldagrim_crafting_stall"
+name = "Carefree Crafting Stall"
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1500
+buyMultiplier = 800
+delta = 30
+
+size = 6
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.chisel"
+count = 2
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.ring_mould"
+count = 4
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.necklace_mould"
+count = 2
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.needle"
+count = 3
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.thread"
+count = 100
+restockCycles = 5
+
+[[inventory.stock]]
+obj = "obj.ball_of_wool"
+count = 100
+restockCycles = 5
+

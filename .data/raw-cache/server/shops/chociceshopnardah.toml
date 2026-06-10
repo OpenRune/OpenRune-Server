@@ -1,0 +1,30 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.chociceshopnardah"
+name = "Rok's Chocs Box."
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1000
+buyMultiplier = 650
+delta = 20
+
+size = 2
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.elid_choc_ice"
+count = 30
+restockCycles = 50
+
+[[inventory.stock]]
+obj = "obj.chocolate_bar"
+count = 25
+restockCycles = 20
+

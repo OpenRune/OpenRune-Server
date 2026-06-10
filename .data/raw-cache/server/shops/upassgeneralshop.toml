@@ -1,16 +1,16 @@
 [[inventory]]
 isServerOnly = true
-id = "inv.generalshop1"
-name = "Al Kharid General Store"
+id = "inv.upassgeneralshop"
+name = "West Ardougne General Store"
 
 scope = "Shared"
 stack = "Always"
 
-sellMultiplier = 1300
-buyMultiplier = 400
-delta = 30
+sellMultiplier = 1200
+buyMultiplier = 550
+delta = 20
 
-size = 13
+size = 14
 
 protect = false
 runWeight = false
@@ -20,43 +20,28 @@ placeholders = false
 
 [[inventory.stock]]
 obj = "obj.pot_empty"
-count = 5
-restockCycles = 10
-
-[[inventory.stock]]
-obj = "obj.jug_empty"
-count = 2
+count = 3
 restockCycles = 100
 
 [[inventory.stock]]
-obj = "obj.pack_jug_empty"
-count = 5
-restockCycles = 20
+obj = "obj.rope"
+count = 3
+restockCycles = 100
 
 [[inventory.stock]]
-obj = "obj.shears"
+obj = "obj.bronze_pickaxe"
 count = 2
 restockCycles = 100
 
 [[inventory.stock]]
 obj = "obj.bucket_empty"
-count = 3
-restockCycles = 10
+count = 2
+restockCycles = 100
 
 [[inventory.stock]]
 obj = "obj.pack_bucket"
-count = 15
+count = 10
 restockCycles = 10
-
-[[inventory.stock]]
-obj = "obj.bowl_empty"
-count = 2
-restockCycles = 50
-
-[[inventory.stock]]
-obj = "obj.cake_tin"
-count = 2
-restockCycles = 50
 
 [[inventory.stock]]
 obj = "obj.tinderbox"
@@ -64,22 +49,42 @@ count = 2
 restockCycles = 100
 
 [[inventory.stock]]
-obj = "obj.chisel"
+obj = "obj.hammer"
+count = 3
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.leather_boots"
 count = 2
 restockCycles = 100
 
 [[inventory.stock]]
-obj = "obj.hammer"
+obj = "obj.longbow"
+count = 2
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.bronze_arrow"
+count = 20
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.salmon"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.meat_pie"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.bread"
 count = 5
 restockCycles = 100
 
 [[inventory.stock]]
-obj = "obj.newcomer_map"
-count = 5
-restockCycles = 100
-
-[[inventory.stock]]
-obj = "obj.sos_security_book"
-count = 5
+obj = "obj.cooked_meat"
+count = 10
 restockCycles = 100
 

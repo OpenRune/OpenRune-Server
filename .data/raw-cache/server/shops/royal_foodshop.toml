@@ -1,0 +1,60 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.royal_foodshop"
+name = "Miscellanian Food Shop"
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1000
+buyMultiplier = 550
+delta = 20
+
+size = 8
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.bread"
+count = 5
+restockCycles = 50
+
+[[inventory.stock]]
+obj = "obj.cheese"
+count = 5
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.cabbage"
+count = 5
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.potato"
+count = 5
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.onion"
+count = 5
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.pot_flour"
+count = 5
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.chocolate_bar"
+count = 2
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.bucket_milk"
+count = 5
+restockCycles = 100
+

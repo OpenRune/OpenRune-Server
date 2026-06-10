@@ -1,0 +1,70 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.shop_pies"
+name = "Pie Shop"
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1000
+buyMultiplier = 550
+delta = 10
+
+size = 10
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.book_recipie_pie"
+count = 50
+restockCycles = 50
+
+[[inventory.stock]]
+obj = "obj.redberry_pie"
+count = 5
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.meat_pie"
+count = 4
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.mud_pie"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.apple_pie"
+count = 3
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.garden_pie"
+count = 2
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.fish_pie"
+count = 1
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.admiral_pie"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.wild_pie"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.summer_pie"
+count = 0
+restockCycles = 100
+

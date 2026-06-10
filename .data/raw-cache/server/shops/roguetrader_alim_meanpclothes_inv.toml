@@ -1,0 +1,60 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.roguetrader_alim_meanpclothes_inv"
+name = "Ali's Discount Wares."
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1000
+buyMultiplier = 550
+delta = 10
+
+size = 8
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.roguetrader_menaphite_hat"
+count = 25
+restockCycles = 50
+
+[[inventory.stock]]
+obj = "obj.roguetrader_menaphite_top"
+count = 25
+restockCycles = 50
+
+[[inventory.stock]]
+obj = "obj.roguetrader_menaphite_legs"
+count = 25
+restockCycles = 50
+
+[[inventory.stock]]
+obj = "obj.roguetrader_menaphite_legs2"
+count = 25
+restockCycles = 50
+
+[[inventory.stock]]
+obj = "obj.roguetrader_menaphite_hat_red"
+count = 25
+restockCycles = 50
+
+[[inventory.stock]]
+obj = "obj.roguetrader_menaphite_top_red"
+count = 25
+restockCycles = 50
+
+[[inventory.stock]]
+obj = "obj.roguetrader_menaphite_legs_red"
+count = 25
+restockCycles = 50
+
+[[inventory.stock]]
+obj = "obj.roguetrader_menaphite_legs_red2"
+count = 25
+restockCycles = 50
+

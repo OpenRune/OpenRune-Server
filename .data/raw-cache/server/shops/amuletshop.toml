@@ -1,0 +1,45 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.amuletshop"
+name = "Davon's Amulet Store."
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1200
+buyMultiplier = 900
+delta = 20
+
+size = 5
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.blessedstar"
+count = 0
+restockCycles = 200
+
+[[inventory.stock]]
+obj = "obj.amulet_of_magic"
+count = 0
+restockCycles = 200
+
+[[inventory.stock]]
+obj = "obj.amulet_of_defence"
+count = 0
+restockCycles = 200
+
+[[inventory.stock]]
+obj = "obj.amulet_of_strength"
+count = 0
+restockCycles = 200
+
+[[inventory.stock]]
+obj = "obj.amulet_of_power"
+count = 0
+restockCycles = 200
+

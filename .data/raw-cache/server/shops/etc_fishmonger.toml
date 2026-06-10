@@ -1,0 +1,140 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.etc_fishmonger"
+name = "Etceteria Fish"
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1300
+buyMultiplier = 700
+delta = 30
+
+size = 24
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.net"
+count = 5
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.fishing_rod"
+count = 5
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.fly_fishing_rod"
+count = 5
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.harpoon"
+count = 2
+restockCycles = 400
+
+[[inventory.stock]]
+obj = "obj.lobster_pot"
+count = 2
+restockCycles = 400
+
+[[inventory.stock]]
+obj = "obj.fishing_bait"
+count = 1500
+restockCycles = 1
+
+[[inventory.stock]]
+obj = "obj.pack_fishing_bait"
+count = 80
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.feather"
+count = 1000
+restockCycles = 1
+
+[[inventory.stock]]
+obj = "obj.pack_feather"
+count = 100
+restockCycles = 2
+
+[[inventory.stock]]
+obj = "obj.big_net"
+count = 5
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.raw_shrimp"
+count = 0
+restockCycles = 300
+
+[[inventory.stock]]
+obj = "obj.raw_sardine"
+count = 200
+restockCycles = 1
+
+[[inventory.stock]]
+obj = "obj.raw_herring"
+count = 0
+restockCycles = 900
+
+[[inventory.stock]]
+obj = "obj.raw_mackerel"
+count = 0
+restockCycles = 1000
+
+[[inventory.stock]]
+obj = "obj.raw_cod"
+count = 0
+restockCycles = 1100
+
+[[inventory.stock]]
+obj = "obj.raw_anchovies"
+count = 0
+restockCycles = 1200
+
+[[inventory.stock]]
+obj = "obj.raw_trout"
+count = 0
+restockCycles = 1500
+
+[[inventory.stock]]
+obj = "obj.raw_pike"
+count = 0
+restockCycles = 1800
+
+[[inventory.stock]]
+obj = "obj.raw_salmon"
+count = 0
+restockCycles = 2100
+
+[[inventory.stock]]
+obj = "obj.raw_tuna"
+count = 0
+restockCycles = 2300
+
+[[inventory.stock]]
+obj = "obj.raw_lobster"
+count = 0
+restockCycles = 2600
+
+[[inventory.stock]]
+obj = "obj.raw_bass"
+count = 0
+restockCycles = 2700
+
+[[inventory.stock]]
+obj = "obj.raw_swordfish"
+count = 0
+restockCycles = 2900
+
+[[inventory.stock]]
+obj = "obj.raw_shark"
+count = 0
+restockCycles = 3500
+

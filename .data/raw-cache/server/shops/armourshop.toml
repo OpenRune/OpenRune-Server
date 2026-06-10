@@ -1,0 +1,80 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.armourshop"
+name = "Horvik's Armour Shop."
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1000
+buyMultiplier = 600
+delta = 20
+
+size = 12
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.bronze_chainbody"
+count = 5
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.iron_chainbody"
+count = 3
+restockCycles = 200
+
+[[inventory.stock]]
+obj = "obj.steel_chainbody"
+count = 3
+restockCycles = 400
+
+[[inventory.stock]]
+obj = "obj.mithril_chainbody"
+count = 1
+restockCycles = 3000
+
+[[inventory.stock]]
+obj = "obj.bronze_platebody"
+count = 3
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.iron_platebody"
+count = 1
+restockCycles = 200
+
+[[inventory.stock]]
+obj = "obj.steel_platebody"
+count = 1
+restockCycles = 400
+
+[[inventory.stock]]
+obj = "obj.black_platebody"
+count = 1
+restockCycles = 3000
+
+[[inventory.stock]]
+obj = "obj.mithril_platebody"
+count = 1
+restockCycles = 3000
+
+[[inventory.stock]]
+obj = "obj.iron_platelegs"
+count = 1
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.studded_body"
+count = 1
+restockCycles = 700
+
+[[inventory.stock]]
+obj = "obj.studded_chaps"
+count = 1
+restockCycles = 700
+

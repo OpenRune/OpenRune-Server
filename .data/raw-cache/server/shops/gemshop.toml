@@ -1,0 +1,60 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.gemshop"
+name = "Gem Trader"
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1000
+buyMultiplier = 700
+delta = 30
+
+size = 8
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.uncut_sapphire"
+count = 1
+restockCycles = 25000
+
+[[inventory.stock]]
+obj = "obj.uncut_emerald"
+count = 1
+restockCycles = 40000
+
+[[inventory.stock]]
+obj = "obj.uncut_ruby"
+count = 0
+restockCycles = 2000
+
+[[inventory.stock]]
+obj = "obj.uncut_diamond"
+count = 0
+restockCycles = 4000
+
+[[inventory.stock]]
+obj = "obj.sapphire"
+count = 1
+restockCycles = 15000
+
+[[inventory.stock]]
+obj = "obj.emerald"
+count = 1
+restockCycles = 35000
+
+[[inventory.stock]]
+obj = "obj.ruby"
+count = 0
+restockCycles = 2000
+
+[[inventory.stock]]
+obj = "obj.diamond"
+count = 0
+restockCycles = 4000
+

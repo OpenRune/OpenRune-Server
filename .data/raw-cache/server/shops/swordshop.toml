@@ -1,0 +1,110 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.swordshop"
+name = "Varrock Swordshop"
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1000
+buyMultiplier = 600
+delta = 20
+
+size = 18
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.bronze_sword"
+count = 5
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.iron_sword"
+count = 4
+restockCycles = 200
+
+[[inventory.stock]]
+obj = "obj.steel_sword"
+count = 4
+restockCycles = 400
+
+[[inventory.stock]]
+obj = "obj.black_sword"
+count = 3
+restockCycles = 1000
+
+[[inventory.stock]]
+obj = "obj.mithril_sword"
+count = 3
+restockCycles = 3000
+
+[[inventory.stock]]
+obj = "obj.adamant_sword"
+count = 2
+restockCycles = 12000
+
+[[inventory.stock]]
+obj = "obj.bronze_longsword"
+count = 4
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.iron_longsword"
+count = 3
+restockCycles = 200
+
+[[inventory.stock]]
+obj = "obj.steel_longsword"
+count = 3
+restockCycles = 400
+
+[[inventory.stock]]
+obj = "obj.black_longsword"
+count = 2
+restockCycles = 1000
+
+[[inventory.stock]]
+obj = "obj.mithril_longsword"
+count = 2
+restockCycles = 3000
+
+[[inventory.stock]]
+obj = "obj.adamant_longsword"
+count = 1
+restockCycles = 12000
+
+[[inventory.stock]]
+obj = "obj.bronze_dagger"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.iron_dagger"
+count = 6
+restockCycles = 200
+
+[[inventory.stock]]
+obj = "obj.steel_dagger"
+count = 5
+restockCycles = 400
+
+[[inventory.stock]]
+obj = "obj.black_dagger"
+count = 4
+restockCycles = 1000
+
+[[inventory.stock]]
+obj = "obj.mithril_dagger"
+count = 3
+restockCycles = 3000
+
+[[inventory.stock]]
+obj = "obj.adamant_dagger"
+count = 2
+restockCycles = 12000
+

@@ -1,0 +1,160 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.junglestore"
+name = "Jiminua's Jungle Store."
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1500
+buyMultiplier = 500
+delta = 20
+
+size = 28
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.tinderbox"
+count = 2
+restockCycles = 500
+
+[[inventory.stock]]
+obj = "obj.unlit_candle"
+count = 10
+restockCycles = 500
+
+[[inventory.stock]]
+obj = "obj.torch_unlit"
+count = 10
+restockCycles = 500
+
+[[inventory.stock]]
+obj = "obj.pot_empty"
+count = 3
+restockCycles = 500
+
+[[inventory.stock]]
+obj = "obj.rope"
+count = 10
+restockCycles = 200
+
+[[inventory.stock]]
+obj = "obj.leather_armour"
+count = 12
+restockCycles = 500
+
+[[inventory.stock]]
+obj = "obj.leather_gloves"
+count = 10
+restockCycles = 500
+
+[[inventory.stock]]
+obj = "obj.leather_boots"
+count = 10
+restockCycles = 500
+
+[[inventory.stock]]
+obj = "obj.cooked_meat"
+count = 2
+restockCycles = 500
+
+[[inventory.stock]]
+obj = "obj.bread"
+count = 10
+restockCycles = 500
+
+[[inventory.stock]]
+obj = "obj.vial_empty"
+count = 10
+restockCycles = 500
+
+[[inventory.stock]]
+obj = "obj.pack_vial_empty"
+count = 100
+restockCycles = 50
+
+[[inventory.stock]]
+obj = "obj.vial_water"
+count = 50
+restockCycles = 200
+
+[[inventory.stock]]
+obj = "obj.pack_vial_water"
+count = 50
+restockCycles = 50
+
+[[inventory.stock]]
+obj = "obj.pestle_and_mortar"
+count = 3
+restockCycles = 500
+
+[[inventory.stock]]
+obj = "obj.3doseantipoison"
+count = 10
+restockCycles = 150
+
+[[inventory.stock]]
+obj = "obj.papyrus"
+count = 50
+restockCycles = 200
+
+[[inventory.stock]]
+obj = "obj.charcoal"
+count = 50
+restockCycles = 200
+
+[[inventory.stock]]
+obj = "obj.knife"
+count = 2
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.hammer"
+count = 10
+restockCycles = 500
+
+[[inventory.stock]]
+obj = "obj.machette"
+count = 50
+restockCycles = 200
+
+[[inventory.stock]]
+obj = "obj.chisel"
+count = 10
+restockCycles = 500
+
+[[inventory.stock]]
+obj = "obj.spade"
+count = 10
+restockCycles = 500
+
+[[inventory.stock]]
+obj = "obj.bronze_axe"
+count = 2
+restockCycles = 500
+
+[[inventory.stock]]
+obj = "obj.bronze_pickaxe"
+count = 2
+restockCycles = 500
+
+[[inventory.stock]]
+obj = "obj.iron_axe"
+count = 5
+restockCycles = 700
+
+[[inventory.stock]]
+obj = "obj.bronze_bar"
+count = 10
+restockCycles = 500
+
+[[inventory.stock]]
+obj = "obj.blankrune_high"
+count = 0
+restockCycles = 1000
+

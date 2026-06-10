@@ -1,0 +1,40 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.scimitarshop"
+name = "Zeke's Superior Scimitars."
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1000
+buyMultiplier = 550
+delta = 20
+
+size = 4
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.bronze_scimitar"
+count = 5
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.iron_scimitar"
+count = 3
+restockCycles = 200
+
+[[inventory.stock]]
+obj = "obj.steel_scimitar"
+count = 2
+restockCycles = 600
+
+[[inventory.stock]]
+obj = "obj.mithril_scimitar"
+count = 1
+restockCycles = 4000
+

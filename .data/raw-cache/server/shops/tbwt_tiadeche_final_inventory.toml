@@ -1,0 +1,35 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.tbwt_tiadeche_final_inventory"
+name = "Tiadeche's Karambwan Stall"
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 550
+buyMultiplier = 450
+delta = 10
+
+size = 3
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.tbwt_raw_karambwan"
+count = 10
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.tbwt_raw_karambwanji"
+count = 50
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.tbwt_karambwan_vessel"
+count = 2
+restockCycles = 100
+

@@ -1,0 +1,70 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.contact_craftingshop"
+name = "Jamila's Craft Stall."
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1500
+buyMultiplier = 250
+delta = 10
+
+size = 10
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.chisel"
+count = 2
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.ring_mould"
+count = 4
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.necklace_mould"
+count = 2
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.amulet_mould"
+count = 2
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.needle"
+count = 3
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.thread"
+count = 100
+restockCycles = 5
+
+[[inventory.stock]]
+obj = "obj.holy_symbol_mould"
+count = 3
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.sickle_mould"
+count = 6
+restockCycles = 15
+
+[[inventory.stock]]
+obj = "obj.tiara_mould"
+count = 10
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.jewl_bracelet_mould"
+count = 5
+restockCycles = 100
+

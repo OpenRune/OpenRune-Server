@@ -1,0 +1,39 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.templeknight_armoury1"
+name = "Initiate Temple Knight Armoury"
+
+scope = "Shared"
+stack = "Always"
+
+buyMultiplier = 500
+delta = 0
+
+size = 4
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.basic_tk_helm"
+count = 30
+restockCycles = 1
+
+[[inventory.stock]]
+obj = "obj.basic_tk_legs"
+count = 30
+restockCycles = 1
+
+[[inventory.stock]]
+obj = "obj.basic_tk_body"
+count = 30
+restockCycles = 1
+
+[[inventory.stock]]
+obj = "obj.basic_tk_pack_yellow"
+count = 30
+restockCycles = 1
+

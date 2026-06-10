@@ -1,0 +1,30 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.dragonswordshop"
+name = "Jukat"
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1000
+buyMultiplier = 600
+delta = 10
+
+size = 2
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.dragon_longsword"
+count = 2
+restockCycles = 500
+
+[[inventory.stock]]
+obj = "obj.dragon_dagger"
+count = 2
+restockCycles = 500
+

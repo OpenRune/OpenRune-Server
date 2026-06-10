@@ -1,0 +1,95 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.runeshop_skillcape"
+name = "Aubury's Rune Shop."
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1000
+buyMultiplier = 600
+delta = 1
+
+size = 15
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.airrune"
+count = 5000
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.firerune"
+count = 5000
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.waterrune"
+count = 5000
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.earthrune"
+count = 5000
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.mindrune"
+count = 5000
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.bodyrune"
+count = 5000
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.chaosrune"
+count = 250
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.deathrune"
+count = 250
+restockCycles = 15
+
+[[inventory.stock]]
+obj = "obj.pack_firerune"
+count = 80
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.pack_waterrune"
+count = 80
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.pack_airrune"
+count = 80
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.pack_earthrune"
+count = 80
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.pack_mindrune"
+count = 40
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.pack_chaosrune"
+count = 35
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.skillcape_runecrafting"
+count = 1
+restockCycles = 1
+

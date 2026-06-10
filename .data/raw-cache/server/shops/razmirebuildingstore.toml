@@ -1,0 +1,45 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.razmirebuildingstore"
+name = "Razmire Builders Merchants."
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1050
+buyMultiplier = 950
+delta = 40
+
+size = 5
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.limestone"
+count = 1000
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.limestonebrick"
+count = 1000
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.timberbeam"
+count = 1000
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.swamppaste"
+count = 1000
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.woodplank"
+count = 10
+restockCycles = 1000
+

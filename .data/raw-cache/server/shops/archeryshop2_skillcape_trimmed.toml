@@ -1,0 +1,165 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.archeryshop2_skillcape_trimmed"
+name = "Hickton's Archery Emporium."
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1000
+buyMultiplier = 500
+delta = 10
+
+size = 29
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.bolt"
+count = 200
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.bronze_arrow"
+count = 1000
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.iron_arrow"
+count = 800
+restockCycles = 20
+
+[[inventory.stock]]
+obj = "obj.steel_arrow"
+count = 0
+restockCycles = 1000
+
+[[inventory.stock]]
+obj = "obj.mithril_arrow"
+count = 0
+restockCycles = 2000
+
+[[inventory.stock]]
+obj = "obj.adamant_arrow"
+count = 0
+restockCycles = 3000
+
+[[inventory.stock]]
+obj = "obj.rune_arrow"
+count = 0
+restockCycles = 4000
+
+[[inventory.stock]]
+obj = "obj.zogre_brutal_bronze"
+count = 0
+restockCycles = 1000
+
+[[inventory.stock]]
+obj = "obj.zogre_brutal_iron"
+count = 0
+restockCycles = 1000
+
+[[inventory.stock]]
+obj = "obj.zogre_brutal_steel"
+count = 0
+restockCycles = 1000
+
+[[inventory.stock]]
+obj = "obj.zogre_brutal_black"
+count = 0
+restockCycles = 1500
+
+[[inventory.stock]]
+obj = "obj.zogre_brutal_mithril"
+count = 0
+restockCycles = 2000
+
+[[inventory.stock]]
+obj = "obj.zogre_brutal_adamant"
+count = 0
+restockCycles = 3000
+
+[[inventory.stock]]
+obj = "obj.zogre_brutal_rune"
+count = 0
+restockCycles = 4000
+
+[[inventory.stock]]
+obj = "obj.bronze_arrowheads"
+count = 1000
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.iron_arrowheads"
+count = 800
+restockCycles = 20
+
+[[inventory.stock]]
+obj = "obj.steel_arrowheads"
+count = 600
+restockCycles = 40
+
+[[inventory.stock]]
+obj = "obj.mithril_arrowheads"
+count = 400
+restockCycles = 40
+
+[[inventory.stock]]
+obj = "obj.adamant_arrowheads"
+count = 200
+restockCycles = 40
+
+[[inventory.stock]]
+obj = "obj.rune_arrowheads"
+count = 100
+restockCycles = 40
+
+[[inventory.stock]]
+obj = "obj.shortbow"
+count = 4
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.longbow"
+count = 2
+restockCycles = 200
+
+[[inventory.stock]]
+obj = "obj.crossbow"
+count = 2
+restockCycles = 400
+
+[[inventory.stock]]
+obj = "obj.oak_shortbow"
+count = 4
+restockCycles = 800
+
+[[inventory.stock]]
+obj = "obj.oak_longbow"
+count = 4
+restockCycles = 1600
+
+[[inventory.stock]]
+obj = "obj.zogre_bow"
+count = 0
+restockCycles = 2000
+
+[[inventory.stock]]
+obj = "obj.studded_body"
+count = 2
+restockCycles = 1000
+
+[[inventory.stock]]
+obj = "obj.studded_chaps"
+count = 2
+restockCycles = 1000
+
+[[inventory.stock]]
+obj = "obj.skillcape_fletching_trimmed"
+count = 1
+restockCycles = 1
+

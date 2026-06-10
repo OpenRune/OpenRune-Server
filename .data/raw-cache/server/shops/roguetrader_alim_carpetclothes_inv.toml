@@ -1,0 +1,45 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.roguetrader_alim_carpetclothes_inv"
+name = "Ali's Discount Wares."
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1000
+buyMultiplier = 550
+delta = 10
+
+size = 5
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.roguetrader_fez_hat"
+count = 25
+restockCycles = 50
+
+[[inventory.stock]]
+obj = "obj.roguetrader_carpetsller_top"
+count = 25
+restockCycles = 50
+
+[[inventory.stock]]
+obj = "obj.roguetrader_carpetsller_top2"
+count = 25
+restockCycles = 50
+
+[[inventory.stock]]
+obj = "obj.roguetrader_carpetsller_legs2"
+count = 25
+restockCycles = 50
+
+[[inventory.stock]]
+obj = "obj.roguetrader_carpetsller_legs"
+count = 25
+restockCycles = 50
+

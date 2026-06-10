@@ -1,0 +1,25 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.cheapringshop"
+name = "Irksol"
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 500
+buyMultiplier = 300
+delta = 10
+
+size = 1
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.ruby_ring"
+count = 5
+restockCycles = 500
+

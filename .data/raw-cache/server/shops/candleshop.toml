@@ -1,0 +1,25 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.candleshop"
+name = "Candle Shop"
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1300
+buyMultiplier = 400
+delta = 30
+
+size = 1
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.unlit_candle"
+count = 10
+restockCycles = 100
+

@@ -1,0 +1,120 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.viking_general_store"
+name = "Sigmund the Merchant"
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1300
+buyMultiplier = 500
+delta = 30
+
+size = 20
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.tinderbox"
+count = 2
+restockCycles = 500
+
+[[inventory.stock]]
+obj = "obj.rope"
+count = 10
+restockCycles = 200
+
+[[inventory.stock]]
+obj = "obj.pestle_and_mortar"
+count = 3
+restockCycles = 500
+
+[[inventory.stock]]
+obj = "obj.pot_empty"
+count = 3
+restockCycles = 500
+
+[[inventory.stock]]
+obj = "obj.cooked_meat"
+count = 2
+restockCycles = 500
+
+[[inventory.stock]]
+obj = "obj.bread"
+count = 10
+restockCycles = 500
+
+[[inventory.stock]]
+obj = "obj.spade"
+count = 10
+restockCycles = 500
+
+[[inventory.stock]]
+obj = "obj.unlit_candle"
+count = 10
+restockCycles = 500
+
+[[inventory.stock]]
+obj = "obj.chisel"
+count = 10
+restockCycles = 500
+
+[[inventory.stock]]
+obj = "obj.hammer"
+count = 10
+restockCycles = 500
+
+[[inventory.stock]]
+obj = "obj.vial_empty"
+count = 10
+restockCycles = 500
+
+[[inventory.stock]]
+obj = "obj.pack_vial_empty"
+count = 10
+restockCycles = 50
+
+[[inventory.stock]]
+obj = "obj.vial_water"
+count = 10
+restockCycles = 200
+
+[[inventory.stock]]
+obj = "obj.pack_vial_water"
+count = 10
+restockCycles = 20
+
+[[inventory.stock]]
+obj = "obj.bucket_empty"
+count = 10
+restockCycles = 500
+
+[[inventory.stock]]
+obj = "obj.pack_bucket"
+count = 15
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.bucket_water"
+count = 10
+restockCycles = 200
+
+[[inventory.stock]]
+obj = "obj.egg"
+count = 10
+restockCycles = 200
+
+[[inventory.stock]]
+obj = "obj.potato"
+count = 10
+restockCycles = 200
+
+[[inventory.stock]]
+obj = "obj.cabbage"
+count = 10
+restockCycles = 200
+

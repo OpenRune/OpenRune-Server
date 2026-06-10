@@ -1,7 +1,7 @@
 [[inventory]]
 isServerOnly = true
-id = "inv.generalshop1"
-name = "Al Kharid General Store"
+id = "inv.generalshop8"
+name = "Zanaris General Store"
 
 scope = "Shared"
 stack = "Always"

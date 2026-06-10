@@ -1,0 +1,55 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.blurberrybar"
+name = "Blurberry Bar"
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1000
+buyMultiplier = 250
+delta = 10
+
+size = 7
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.premade_blurberry_special"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.premade_choc_saturday"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.premade_drunk_dragon"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.premade_fruit_blast"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.premade_pineapple_punch"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.premade_sgg"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.premade_wizard_blizzard"
+count = 10
+restockCycles = 100
+

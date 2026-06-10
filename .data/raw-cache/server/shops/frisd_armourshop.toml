@@ -1,0 +1,60 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.frisd_armourshop"
+name = "Armour Shop"
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1100
+buyMultiplier = 700
+delta = 30
+
+size = 8
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.mithril_chainbody"
+count = 4
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.mithril_med_helm"
+count = 4
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.mithril_full_helm"
+count = 4
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.mithril_sq_shield"
+count = 4
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.mithril_kiteshield"
+count = 4
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.mithril_platelegs"
+count = 4
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.mithril_plateskirt"
+count = 4
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.mithril_platebody"
+count = 4
+restockCycles = 100
+

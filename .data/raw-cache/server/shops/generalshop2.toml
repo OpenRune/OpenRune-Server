@@ -1,0 +1,32 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.generalshop2"
+name = "Edgeville General Store"
+
+scope = "Shared"
+stack = "Always"
+
+obj = "obj.chisel"
+count = 2
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.hammer"
+count = 5
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.knife"
+count = 1
+restockCycles = 2
+
+[[inventory.stock]]
+obj = "obj.newcomer_map"
+count = 5
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.sos_security_book"
+count = 5
+restockCycles = 100
+

@@ -1,0 +1,40 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.ardougnegemstall"
+name = "Ardougne Gem Stall."
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1500
+buyMultiplier = 800
+delta = 30
+
+size = 4
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.sapphire"
+count = 2
+restockCycles = 15000
+
+[[inventory.stock]]
+obj = "obj.emerald"
+count = 1
+restockCycles = 35000
+
+[[inventory.stock]]
+obj = "obj.ruby"
+count = 1
+restockCycles = 60000
+
+[[inventory.stock]]
+obj = "obj.diamond"
+count = 0
+restockCycles = 4000
+

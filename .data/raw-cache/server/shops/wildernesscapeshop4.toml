@@ -1,0 +1,45 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.wildernesscapeshop4"
+name = "Darren's Wilderness Cape Shop."
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1000
+buyMultiplier = 600
+delta = 10
+
+size = 5
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.wilderness_cape_4"
+count = 100
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.wilderness_cape_14"
+count = 100
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.wilderness_cape_24"
+count = 100
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.wilderness_cape_34"
+count = 100
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.wilderness_cape_44"
+count = 100
+restockCycles = 100
+

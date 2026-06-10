@@ -1,0 +1,35 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.magearena_staffshop"
+name = "Mage Arena Staffs."
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1000
+buyMultiplier = 0
+delta = 20
+
+size = 3
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.saradomin_staff"
+count = 5
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.guthix_staff"
+count = 5
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.zamorak_staff"
+count = 5
+restockCycles = 100
+

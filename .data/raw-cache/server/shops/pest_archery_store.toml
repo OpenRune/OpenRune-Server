@@ -1,0 +1,80 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.pest_archery_store"
+name = "Void Knight Archery Store"
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1000
+buyMultiplier = 600
+delta = 1
+
+size = 12
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.bronze_javelin"
+count = 10
+restockCycles = 20
+
+[[inventory.stock]]
+obj = "obj.iron_javelin"
+count = 10
+restockCycles = 20
+
+[[inventory.stock]]
+obj = "obj.steel_javelin"
+count = 10
+restockCycles = 40
+
+[[inventory.stock]]
+obj = "obj.mithril_javelin"
+count = 5
+restockCycles = 60
+
+[[inventory.stock]]
+obj = "obj.adamant_javelin"
+count = 5
+restockCycles = 80
+
+[[inventory.stock]]
+obj = "obj.rune_javelin"
+count = 5
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.bronze_arrowheads"
+count = 10
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.iron_arrowheads"
+count = 10
+restockCycles = 20
+
+[[inventory.stock]]
+obj = "obj.steel_arrowheads"
+count = 10
+restockCycles = 40
+
+[[inventory.stock]]
+obj = "obj.mithril_arrowheads"
+count = 5
+restockCycles = 40
+
+[[inventory.stock]]
+obj = "obj.adamant_arrowheads"
+count = 5
+restockCycles = 40
+
+[[inventory.stock]]
+obj = "obj.rune_arrowheads"
+count = 5
+restockCycles = 40
+

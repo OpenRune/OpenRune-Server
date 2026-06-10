@@ -1,0 +1,35 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.keldagrim_bread_stall"
+name = "Keldagrim's Best Bread"
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1500
+buyMultiplier = 800
+delta = 30
+
+size = 3
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.bread"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.cake"
+count = 3
+restockCycles = 800
+
+[[inventory.stock]]
+obj = "obj.chocolate_slice"
+count = 8
+restockCycles = 200
+

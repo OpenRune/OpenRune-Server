@@ -1,0 +1,60 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.mm_general_shop"
+name = "Ifaba's General Store"
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1000
+buyMultiplier = 500
+delta = 20
+
+size = 8
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.pot_empty"
+count = 3
+restockCycles = 50
+
+[[inventory.stock]]
+obj = "obj.jug_empty"
+count = 2
+restockCycles = 50
+
+[[inventory.stock]]
+obj = "obj.pack_jug_empty"
+count = 8
+restockCycles = 9
+
+[[inventory.stock]]
+obj = "obj.rope"
+count = 8
+restockCycles = 50
+
+[[inventory.stock]]
+obj = "obj.bucket_empty"
+count = 2
+restockCycles = 50
+
+[[inventory.stock]]
+obj = "obj.pack_bucket"
+count = 10
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.tinderbox"
+count = 2
+restockCycles = 50
+
+[[inventory.stock]]
+obj = "obj.hammer"
+count = 5
+restockCycles = 50
+

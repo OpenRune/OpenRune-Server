@@ -1,0 +1,50 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.frisb_n_shop"
+name = "Neitiznot supplies."
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1050
+buyMultiplier = 250
+delta = 10
+
+size = 6
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.knife"
+count = 10
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.hammer"
+count = 10
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.thread"
+count = 10
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.needle"
+count = 10
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.bronze_axe"
+count = 10
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.ball_of_wool"
+count = 100
+restockCycles = 10
+

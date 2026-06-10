@@ -1,0 +1,105 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.royal_clotheshop"
+name = "Miscellanian Clothes Shop"
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1000
+buyMultiplier = 550
+delta = 20
+
+size = 17
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.viking_top_darkbrown"
+count = 5
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.viking_top_green"
+count = 5
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.viking_top_beige"
+count = 5
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.viking_top_red"
+count = 5
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.viking_top_blue"
+count = 5
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.vikingrobetop"
+count = 5
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.vikingrobebottom"
+count = 5
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.dwarf_skirt2"
+count = 3
+restockCycles = 50
+
+[[inventory.stock]]
+obj = "obj.dwarf_skirt3"
+count = 3
+restockCycles = 50
+
+[[inventory.stock]]
+obj = "obj.dwarf_trousers2"
+count = 3
+restockCycles = 40
+
+[[inventory.stock]]
+obj = "obj.dwarf_trousers3"
+count = 3
+restockCycles = 40
+
+[[inventory.stock]]
+obj = "obj.dwarf_shorts2"
+count = 3
+restockCycles = 35
+
+[[inventory.stock]]
+obj = "obj.dwarf_shorts3"
+count = 3
+restockCycles = 35
+
+[[inventory.stock]]
+obj = "obj.dwarf_jumper2"
+count = 3
+restockCycles = 55
+
+[[inventory.stock]]
+obj = "obj.dwarf_jumper3"
+count = 3
+restockCycles = 55
+
+[[inventory.stock]]
+obj = "obj.dwarf_shirt2"
+count = 3
+restockCycles = 50
+
+[[inventory.stock]]
+obj = "obj.dwarf_shirt3"
+count = 3
+restockCycles = 50
+

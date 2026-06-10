@@ -1,0 +1,75 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.roguetrader_alim_runewholesale_inv"
+name = "Ali's Discount Wares."
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1250
+buyMultiplier = 500
+delta = 0
+
+size = 11
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.naturerune"
+count = 100
+restockCycles = 50
+
+[[inventory.stock]]
+obj = "obj.lawrune"
+count = 100
+restockCycles = 50
+
+[[inventory.stock]]
+obj = "obj.chaosrune"
+count = 100
+restockCycles = 50
+
+[[inventory.stock]]
+obj = "obj.deathrune"
+count = 100
+restockCycles = 50
+
+[[inventory.stock]]
+obj = "obj.mindrune"
+count = 100
+restockCycles = 50
+
+[[inventory.stock]]
+obj = "obj.bodyrune"
+count = 100
+restockCycles = 50
+
+[[inventory.stock]]
+obj = "obj.bloodrune"
+count = 100
+restockCycles = 50
+
+[[inventory.stock]]
+obj = "obj.cosmicrune"
+count = 10
+restockCycles = 50
+
+[[inventory.stock]]
+obj = "obj.soulrune"
+count = 100
+restockCycles = 50
+
+[[inventory.stock]]
+obj = "obj.pack_mindrune"
+count = 5
+restockCycles = 70
+
+[[inventory.stock]]
+obj = "obj.pack_chaosrune"
+count = 5
+restockCycles = 70
+

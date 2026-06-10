@@ -1,0 +1,135 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.poh_garden_centre"
+name = "Garden Centre"
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1000
+buyMultiplier = 400
+delta = 30
+
+size = 23
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.poh_sapling_tree_1"
+count = 20
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.poh_sapling_tree_2"
+count = 20
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.poh_sapling_tree_3"
+count = 20
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.poh_sapling_tree_4"
+count = 20
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.poh_sapling_tree_5"
+count = 20
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.poh_sapling_tree_6"
+count = 20
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.poh_sapling_tree_7"
+count = 20
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.poh_sapling_plant_1"
+count = 20
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.poh_sapling_plant_2"
+count = 20
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.poh_sapling_plant_3"
+count = 20
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.poh_sapling_hedge1"
+count = 20
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.poh_sapling_hedge2"
+count = 20
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.poh_sapling_hedge3"
+count = 20
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.poh_sapling_hedge4"
+count = 20
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.poh_sapling_hedge5"
+count = 20
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.poh_sapling_hedge6"
+count = 20
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.poh_sapling_hedge7"
+count = 20
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.poh_sapling_flowerb1"
+count = 20
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.poh_sapling_flowerb2"
+count = 20
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.poh_sapling_flowerb3"
+count = 20
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.poh_sapling_flowera1"
+count = 20
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.poh_sapling_flowera2"
+count = 20
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.poh_sapling_flowera3"
+count = 20
+restockCycles = 100
+

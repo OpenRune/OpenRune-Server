@@ -1,0 +1,50 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.skirtshop"
+name = "Ranael's Super Skirt Store."
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1000
+buyMultiplier = 650
+delta = 10
+
+size = 6
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.bronze_plateskirt"
+count = 5
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.iron_plateskirt"
+count = 3
+restockCycles = 400
+
+[[inventory.stock]]
+obj = "obj.steel_plateskirt"
+count = 2
+restockCycles = 900
+
+[[inventory.stock]]
+obj = "obj.black_plateskirt"
+count = 1
+restockCycles = 1200
+
+[[inventory.stock]]
+obj = "obj.mithril_plateskirt"
+count = 1
+restockCycles = 2000
+
+[[inventory.stock]]
+obj = "obj.adamant_plateskirt"
+count = 1
+restockCycles = 13000
+

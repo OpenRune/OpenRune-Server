@@ -1,0 +1,100 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.hundred_rewardchest8"
+name = "Culinaromancer's Chest"
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1300
+buyMultiplier = 400
+delta = 20
+
+size = 16
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.hundred_gauntlets_level_1"
+count = 30
+restockCycles = 1
+
+[[inventory.stock]]
+obj = "obj.hundred_gauntlets_level_2"
+count = 30
+restockCycles = 1
+
+[[inventory.stock]]
+obj = "obj.hundred_gauntlets_level_3"
+count = 30
+restockCycles = 1
+
+[[inventory.stock]]
+obj = "obj.hundred_gauntlets_level_4"
+count = 30
+restockCycles = 1
+
+[[inventory.stock]]
+obj = "obj.hundred_gauntlets_level_5"
+count = 30
+restockCycles = 1
+
+[[inventory.stock]]
+obj = "obj.hundred_gauntlets_level_6"
+count = 30
+restockCycles = 1
+
+[[inventory.stock]]
+obj = "obj.hundred_gauntlets_level_7"
+count = 30
+restockCycles = 1
+
+[[inventory.stock]]
+obj = "obj.hundred_gauntlets_level_8"
+count = 30
+restockCycles = 1
+
+[[inventory.stock]]
+obj = "obj.hundred_spoon"
+count = 5
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.hundred_whisk"
+count = 5
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.hundred_spork"
+count = 5
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.hundred_spatula"
+count = 5
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.hundred_frying_pan"
+count = 5
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.hundred_skewer"
+count = 5
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.hundred_rollingpin"
+count = 5
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.hundred_knife"
+count = 5
+restockCycles = 100
+

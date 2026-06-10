@@ -1,0 +1,70 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.charleyshop"
+name = "Two Feet Charley's Fish Shop."
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1000
+buyMultiplier = 600
+delta = 20
+
+size = 10
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.raw_shrimp"
+count = 10
+restockCycles = 300
+
+[[inventory.stock]]
+obj = "obj.raw_sardine"
+count = 10
+restockCycles = 600
+
+[[inventory.stock]]
+obj = "obj.raw_herring"
+count = 7
+restockCycles = 900
+
+[[inventory.stock]]
+obj = "obj.raw_mackerel"
+count = 7
+restockCycles = 1000
+
+[[inventory.stock]]
+obj = "obj.raw_cod"
+count = 6
+restockCycles = 1100
+
+[[inventory.stock]]
+obj = "obj.raw_anchovies"
+count = 5
+restockCycles = 1200
+
+[[inventory.stock]]
+obj = "obj.raw_tuna"
+count = 4
+restockCycles = 2300
+
+[[inventory.stock]]
+obj = "obj.raw_lobster"
+count = 2
+restockCycles = 2600
+
+[[inventory.stock]]
+obj = "obj.raw_bass"
+count = 2
+restockCycles = 2700
+
+[[inventory.stock]]
+obj = "obj.raw_swordfish"
+count = 1
+restockCycles = 2900
+

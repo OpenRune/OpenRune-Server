@@ -1,0 +1,35 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.runeplateshop"
+name = "Oziach"
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1300
+buyMultiplier = 400
+delta = 30
+
+size = 3
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.rune_platebody"
+count = 2
+restockCycles = 500
+
+[[inventory.stock]]
+obj = "obj.dragonhide_body"
+count = 2
+restockCycles = 500
+
+[[inventory.stock]]
+obj = "obj.antidragonbreathshield"
+count = 35
+restockCycles = 1
+

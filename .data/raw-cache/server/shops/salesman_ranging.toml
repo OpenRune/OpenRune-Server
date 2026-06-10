@@ -1,0 +1,65 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.salesman_ranging"
+name = "Brian's Archery Supplies."
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1000
+buyMultiplier = 650
+delta = 20
+
+size = 9
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.steel_arrow"
+count = 1500
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.mithril_arrow"
+count = 1000
+restockCycles = 15
+
+[[inventory.stock]]
+obj = "obj.adamant_arrow"
+count = 800
+restockCycles = 20
+
+[[inventory.stock]]
+obj = "obj.oak_shortbow"
+count = 4
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.oak_longbow"
+count = 4
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.willow_shortbow"
+count = 3
+restockCycles = 200
+
+[[inventory.stock]]
+obj = "obj.willow_longbow"
+count = 3
+restockCycles = 200
+
+[[inventory.stock]]
+obj = "obj.maple_shortbow"
+count = 2
+restockCycles = 200
+
+[[inventory.stock]]
+obj = "obj.maple_longbow"
+count = 2
+restockCycles = 200
+

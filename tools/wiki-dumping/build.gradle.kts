@@ -31,3 +31,12 @@ tasks.register<JavaExec>("dumpNpcDrops") {
     classpath = sourceSets["main"].runtimeClasspath
     mainClass.set("org.rsmod.tools.wiki.dumping.NpcDropTableWikiDumperKt")
 }
+
+tasks.register<JavaExec>("dumpShops") {
+    group = "application"
+    description =
+        "Dumps wiki shop stock to .data/raw-cache/server/shops TOML files. " +
+            "Example: ./gradlew :tools:wiki-dumping:dumpShops --args=\"--inv=axeshop --quiet\""
+    classpath = sourceSets["main"].runtimeClasspath
+    mainClass.set("org.rsmod.tools.wiki.dumping.ShopWikiDumperKt")
+}

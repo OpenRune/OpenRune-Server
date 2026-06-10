@@ -1,0 +1,75 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.adventurershop"
+name = "Aemad's Adventuring Supplies."
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1300
+buyMultiplier = 400
+delta = 20
+
+size = 11
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.vial_water"
+count = 500
+restockCycles = 30
+
+[[inventory.stock]]
+obj = "obj.pack_vial_water"
+count = 250
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.bronze_pickaxe"
+count = 2
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.iron_axe"
+count = 2
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.cooked_meat"
+count = 2
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.tinderbox"
+count = 2
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.ball_of_wool"
+count = 30
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.bronze_arrow"
+count = 500
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.rope"
+count = 20
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.papyrus"
+count = 50
+restockCycles = 1000
+
+[[inventory.stock]]
+obj = "obj.knife"
+count = 2
+restockCycles = 100
+

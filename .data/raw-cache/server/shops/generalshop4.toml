@@ -1,7 +1,7 @@
 [[inventory]]
 isServerOnly = true
-id = "inv.generalshop1"
-name = "Al Kharid General Store"
+id = "inv.generalshop4"
+name = "Nardah General Store."
 
 scope = "Shared"
 stack = "Always"
@@ -10,7 +10,7 @@ sellMultiplier = 1300
 buyMultiplier = 400
 delta = 30
 
-size = 13
+size = 12
 
 protect = false
 runWeight = false
@@ -30,8 +30,8 @@ restockCycles = 100
 
 [[inventory.stock]]
 obj = "obj.pack_jug_empty"
-count = 5
-restockCycles = 20
+count = 7
+restockCycles = 10
 
 [[inventory.stock]]
 obj = "obj.shears"
@@ -45,7 +45,7 @@ restockCycles = 10
 
 [[inventory.stock]]
 obj = "obj.pack_bucket"
-count = 15
+count = 10
 restockCycles = 10
 
 [[inventory.stock]]
@@ -74,12 +74,7 @@ count = 5
 restockCycles = 100
 
 [[inventory.stock]]
-obj = "obj.newcomer_map"
-count = 5
-restockCycles = 100
-
-[[inventory.stock]]
-obj = "obj.sos_security_book"
-count = 5
+obj = "obj.cooked_meat"
+count = 4
 restockCycles = 100
 

@@ -1,0 +1,116 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.hunting_customfurshop"
+name = "Fancy Clothes Store"
+
+scope = "Shared"
+stack = "Always"
+
+size = 20
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.hunting_camoflauge_robe_polar"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.hunting_trousers_polar"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.hunting_camoflauge_robe_wood"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.hunting_trousers_wood"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.hunting_camoflauge_robe_jungle"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.hunting_trousers_jungle"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.hunting_camoflauge_robe_desert"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.hunting_trousers_desert"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.hunting_hat_jaguar"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.hunting_torso_jaguar"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.hunting_trousers_jaguar"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.hunting_hat_leopard"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.hunting_torso_leopard"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.hunting_trousers_leopard"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.hunting_hat_tiger"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.hunting_torso_tiger"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.hunting_trousers_tiger"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.hunting_silent_gloves"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.hunting_light_cape"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.hunting_lighter_cape"
+count = 0
+restockCycles = 100
+

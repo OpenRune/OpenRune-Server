@@ -1,0 +1,80 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.ranging_guild_tribalshop"
+name = "Authentic Throwing Weapons."
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1300
+buyMultiplier = 500
+delta = 10
+
+size = 12
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.bronze_javelin"
+count = 900
+restockCycles = 20
+
+[[inventory.stock]]
+obj = "obj.iron_javelin"
+count = 800
+restockCycles = 20
+
+[[inventory.stock]]
+obj = "obj.steel_javelin"
+count = 700
+restockCycles = 40
+
+[[inventory.stock]]
+obj = "obj.mithril_javelin"
+count = 600
+restockCycles = 60
+
+[[inventory.stock]]
+obj = "obj.adamant_javelin"
+count = 500
+restockCycles = 80
+
+[[inventory.stock]]
+obj = "obj.rune_javelin"
+count = 400
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.bronze_thrownaxe"
+count = 900
+restockCycles = 20
+
+[[inventory.stock]]
+obj = "obj.iron_thrownaxe"
+count = 800
+restockCycles = 20
+
+[[inventory.stock]]
+obj = "obj.steel_thrownaxe"
+count = 700
+restockCycles = 40
+
+[[inventory.stock]]
+obj = "obj.mithril_thrownaxe"
+count = 600
+restockCycles = 60
+
+[[inventory.stock]]
+obj = "obj.adamnt_thrownaxe"
+count = 500
+restockCycles = 80
+
+[[inventory.stock]]
+obj = "obj.rune_thrownaxe"
+count = 400
+restockCycles = 100
+

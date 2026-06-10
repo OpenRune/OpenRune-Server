@@ -1,0 +1,120 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.shantayshop"
+name = "Shantay Pass Shop"
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1000
+buyMultiplier = 700
+delta = 10
+
+size = 20
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.water_skin4"
+count = 100
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.water_skin0"
+count = 100
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.jug_water"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.bowl_water"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.bucket_water"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.knife"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.desert_shirt"
+count = 10
+restockCycles = 500
+
+[[inventory.stock]]
+obj = "obj.desert_robe"
+count = 10
+restockCycles = 500
+
+[[inventory.stock]]
+obj = "obj.desert_boots"
+count = 10
+restockCycles = 500
+
+[[inventory.stock]]
+obj = "obj.bronze_bar"
+count = 10
+restockCycles = 500
+
+[[inventory.stock]]
+obj = "obj.feather"
+count = 500
+restockCycles = 50
+
+[[inventory.stock]]
+obj = "obj.pack_feather"
+count = 50
+restockCycles = 20
+
+[[inventory.stock]]
+obj = "obj.hammer"
+count = 10
+restockCycles = 500
+
+[[inventory.stock]]
+obj = "obj.pack_bucket"
+count = 15
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.bucket_empty"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.bowl_empty"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.jug_empty"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.pack_jug_empty"
+count = 0
+restockCycles = 50
+
+[[inventory.stock]]
+obj = "obj.shantay_pass"
+count = 500
+restockCycles = 1
+
+[[inventory.stock]]
+obj = "obj.rope"
+count = 20
+restockCycles = 200
+

@@ -1,0 +1,100 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.uglug_nar_shop"
+name = "~ Uglug's stuffsies ~"
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1000
+buyMultiplier = 600
+delta = 20
+
+size = 16
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.relicyms_balm3"
+count = 100
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.sanfew_salve_3_dose"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.achey_tree_logs"
+count = 100
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.bow_string"
+count = 10
+restockCycles = 200
+
+[[inventory.stock]]
+obj = "obj.raw_chompy"
+count = 0
+restockCycles = 500
+
+[[inventory.stock]]
+obj = "obj.cooked_chompy"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.zogre_coffinkey"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.knife"
+count = 5
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.zogre_brutal_bronze"
+count = 0
+restockCycles = 1000
+
+[[inventory.stock]]
+obj = "obj.zogre_brutal_iron"
+count = 0
+restockCycles = 1000
+
+[[inventory.stock]]
+obj = "obj.zogre_brutal_steel"
+count = 0
+restockCycles = 1000
+
+[[inventory.stock]]
+obj = "obj.zogre_brutal_black"
+count = 0
+restockCycles = 1500
+
+[[inventory.stock]]
+obj = "obj.zogre_brutal_mithril"
+count = 0
+restockCycles = 2000
+
+[[inventory.stock]]
+obj = "obj.zogre_brutal_adamant"
+count = 0
+restockCycles = 3000
+
+[[inventory.stock]]
+obj = "obj.zogre_brutal_rune"
+count = 0
+restockCycles = 4000
+
+[[inventory.stock]]
+obj = "obj.zogre_bow"
+count = 0
+restockCycles = 2000
+

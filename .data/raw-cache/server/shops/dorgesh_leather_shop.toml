@@ -1,0 +1,35 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.dorgesh_leather_shop"
+name = "Reldak's Leather Armour"
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1000
+buyMultiplier = 400
+delta = 30
+
+size = 3
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.dorgesh_frog_armour_top"
+count = 50
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.dorgesh_frog_armour_bottoms"
+count = 50
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.dorgesh_frog_armour_shoes"
+count = 50
+restockCycles = 100
+

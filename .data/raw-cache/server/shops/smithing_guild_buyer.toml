@@ -1,0 +1,140 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.smithing_guild_buyer"
+name = "Armour store."
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1000
+buyMultiplier = 600
+delta = 20
+
+size = 24
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.rune_med_helm"
+count = 0
+restockCycles = 500
+
+[[inventory.stock]]
+obj = "obj.rune_full_helm"
+count = 0
+restockCycles = 500
+
+[[inventory.stock]]
+obj = "obj.rune_platebody"
+count = 0
+restockCycles = 500
+
+[[inventory.stock]]
+obj = "obj.rune_plateskirt"
+count = 0
+restockCycles = 500
+
+[[inventory.stock]]
+obj = "obj.rune_sq_shield"
+count = 0
+restockCycles = 500
+
+[[inventory.stock]]
+obj = "obj.rune_kiteshield"
+count = 0
+restockCycles = 500
+
+[[inventory.stock]]
+obj = "obj.rune_chainbody"
+count = 0
+restockCycles = 500
+
+[[inventory.stock]]
+obj = "obj.rune_platelegs"
+count = 0
+restockCycles = 500
+
+[[inventory.stock]]
+obj = "obj.adamant_med_helm"
+count = 0
+restockCycles = 500
+
+[[inventory.stock]]
+obj = "obj.adamant_full_helm"
+count = 0
+restockCycles = 500
+
+[[inventory.stock]]
+obj = "obj.adamant_platebody"
+count = 0
+restockCycles = 500
+
+[[inventory.stock]]
+obj = "obj.adamant_plateskirt"
+count = 0
+restockCycles = 500
+
+[[inventory.stock]]
+obj = "obj.adamant_sq_shield"
+count = 0
+restockCycles = 500
+
+[[inventory.stock]]
+obj = "obj.adamant_kiteshield"
+count = 0
+restockCycles = 500
+
+[[inventory.stock]]
+obj = "obj.adamant_chainbody"
+count = 0
+restockCycles = 500
+
+[[inventory.stock]]
+obj = "obj.adamant_platelegs"
+count = 0
+restockCycles = 500
+
+[[inventory.stock]]
+obj = "obj.mithril_med_helm"
+count = 0
+restockCycles = 500
+
+[[inventory.stock]]
+obj = "obj.mithril_full_helm"
+count = 0
+restockCycles = 500
+
+[[inventory.stock]]
+obj = "obj.mithril_platebody"
+count = 0
+restockCycles = 500
+
+[[inventory.stock]]
+obj = "obj.mithril_plateskirt"
+count = 0
+restockCycles = 500
+
+[[inventory.stock]]
+obj = "obj.mithril_sq_shield"
+count = 0
+restockCycles = 500
+
+[[inventory.stock]]
+obj = "obj.mithril_kiteshield"
+count = 0
+restockCycles = 500
+
+[[inventory.stock]]
+obj = "obj.mithril_chainbody"
+count = 0
+restockCycles = 500
+
+[[inventory.stock]]
+obj = "obj.mithril_platelegs"
+count = 0
+restockCycles = 500
+

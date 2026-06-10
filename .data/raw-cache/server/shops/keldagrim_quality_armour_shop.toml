@@ -1,0 +1,65 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.keldagrim_quality_armour_shop"
+name = "Quality Armour Shop"
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1300
+buyMultiplier = 550
+delta = 30
+
+size = 9
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.steel_chainbody"
+count = 3
+restockCycles = 400
+
+[[inventory.stock]]
+obj = "obj.mithril_chainbody"
+count = 1
+restockCycles = 3000
+
+[[inventory.stock]]
+obj = "obj.black_chainbody"
+count = 1
+restockCycles = 2500
+
+[[inventory.stock]]
+obj = "obj.adamant_chainbody"
+count = 1
+restockCycles = 9000
+
+[[inventory.stock]]
+obj = "obj.steel_med_helm"
+count = 3
+restockCycles = 400
+
+[[inventory.stock]]
+obj = "obj.mithril_med_helm"
+count = 1
+restockCycles = 3000
+
+[[inventory.stock]]
+obj = "obj.adamant_med_helm"
+count = 1
+restockCycles = 12000
+
+[[inventory.stock]]
+obj = "obj.steel_sq_shield"
+count = 0
+restockCycles = 1500
+
+[[inventory.stock]]
+obj = "obj.black_kiteshield"
+count = 0
+restockCycles = 1500
+

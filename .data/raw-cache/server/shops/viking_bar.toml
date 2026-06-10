@@ -1,0 +1,35 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.viking_bar"
+name = "Rellekka Longhall Bar"
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1300
+buyMultiplier = 700
+delta = 30
+
+size = 3
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.beer"
+count = 50
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.viking_tankard_full"
+count = 50
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.keg_of_beer"
+count = 20
+restockCycles = 10
+

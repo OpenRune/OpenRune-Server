@@ -1,0 +1,45 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.wildernesscapeshop9"
+name = "Simon's Wilderness Cape Shop."
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1000
+buyMultiplier = 600
+delta = 10
+
+size = 5
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.wilderness_cape_9"
+count = 100
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.wilderness_cape_19"
+count = 100
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.wilderness_cape_29"
+count = 100
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.wilderness_cape_39"
+count = 100
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.wilderness_cape_49"
+count = 100
+restockCycles = 100
+

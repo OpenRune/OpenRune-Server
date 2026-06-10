@@ -1,0 +1,80 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.hunting_shop_nardah"
+name = "Nardah Hunter Shop."
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1200
+buyMultiplier = 700
+delta = 20
+
+size = 12
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.hunting_butterfly_net"
+count = 5
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.butterfly_jar"
+count = 100
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.magic_imp_box"
+count = 30
+restockCycles = 50
+
+[[inventory.stock]]
+obj = "obj.noose_wand"
+count = 50
+restockCycles = 5
+
+[[inventory.stock]]
+obj = "obj.hunting_ojibway_bird_snare"
+count = 50
+restockCycles = 5
+
+[[inventory.stock]]
+obj = "obj.hunting_box_trap"
+count = 25
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.hunting_teasing_stick"
+count = 5
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.torch_unlit"
+count = 20
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.hunting_snare"
+count = 10
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.pack_ojibway_bird_snare"
+count = 3
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.pack_box_trap"
+count = 3
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.pack_magic_imp_box"
+count = 3
+restockCycles = 10
+

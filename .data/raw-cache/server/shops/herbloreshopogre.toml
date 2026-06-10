@@ -1,0 +1,55 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.herbloreshopogre"
+name = "Frincos' Fabulous Herb Store."
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1000
+buyMultiplier = 700
+delta = 20
+
+size = 7
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.vial_empty"
+count = 50
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.pack_vial_empty"
+count = 10
+restockCycles = 50
+
+[[inventory.stock]]
+obj = "obj.vial_water"
+count = 45
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.pack_vial_water"
+count = 8
+restockCycles = 50
+
+[[inventory.stock]]
+obj = "obj.pestle_and_mortar"
+count = 3
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.eye_of_newt"
+count = 50
+restockCycles = 20
+
+[[inventory.stock]]
+obj = "obj.pack_eye_newt"
+count = 20
+restockCycles = 100
+

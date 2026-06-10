@@ -1,0 +1,40 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.mm_food_shop"
+name = "Solihib's Food Stall"
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1000
+buyMultiplier = 500
+delta = 20
+
+size = 4
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.mm_monkey_nuts"
+count = 200
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.banana"
+count = 1000
+restockCycles = 1000
+
+[[inventory.stock]]
+obj = "obj.mm_banana_stew"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.mm_monkey_bar"
+count = 20
+restockCycles = 100
+

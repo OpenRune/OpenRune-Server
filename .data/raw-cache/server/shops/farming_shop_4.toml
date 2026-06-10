@@ -1,0 +1,175 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.farming_shop_4"
+name = "Vanessa's Farming shop."
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1000
+buyMultiplier = 700
+delta = 10
+
+size = 31
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.rake"
+count = 500
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.dibber"
+count = 500
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.secateurs"
+count = 500
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.spade"
+count = 500
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.gardening_trowel"
+count = 500
+restockCycles = 120
+
+[[inventory.stock]]
+obj = "obj.watering_can_0"
+count = 500
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.plantpot_compost"
+count = 500
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.pack_plant_pot_compost"
+count = 30
+restockCycles = 2
+
+[[inventory.stock]]
+obj = "obj.bucket_compost"
+count = 500
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.pack_compost"
+count = 10
+restockCycles = 50
+
+[[inventory.stock]]
+obj = "obj.sack_empty"
+count = 500
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.pack_sack"
+count = 30
+restockCycles = 2
+
+[[inventory.stock]]
+obj = "obj.basket_empty"
+count = 500
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.pack_basket"
+count = 30
+restockCycles = 2
+
+[[inventory.stock]]
+obj = "obj.bucket_empty"
+count = 100
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.pack_bucket"
+count = 15
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.potato"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.onion"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.cabbage"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.tomato"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.sweetcorn"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.strawberry"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.watermelon"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.hammerstone_hops"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.asgarnian_hops"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.yanillian_hops"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.krandorian_hops"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.wildblood_hops"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.jute_fibre"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.barley"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.plant_cure"
+count = 100
+restockCycles = 10
+

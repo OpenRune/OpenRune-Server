@@ -1,0 +1,55 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.armourshopnardah"
+name = "Seddu's Adventurer's Store."
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 950
+buyMultiplier = 650
+delta = 20
+
+size = 7
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.rune_plateskirt"
+count = 1
+restockCycles = 12000
+
+[[inventory.stock]]
+obj = "obj.rune_platelegs"
+count = 1
+restockCycles = 11500
+
+[[inventory.stock]]
+obj = "obj.rune_chainbody"
+count = 1
+restockCycles = 15000
+
+[[inventory.stock]]
+obj = "obj.dragonhide_chaps"
+count = 1
+restockCycles = 500
+
+[[inventory.stock]]
+obj = "obj.dragon_vambraces"
+count = 1
+restockCycles = 500
+
+[[inventory.stock]]
+obj = "obj.steel_kiteshield"
+count = 1
+restockCycles = 500
+
+[[inventory.stock]]
+obj = "obj.black_med_helm"
+count = 1
+restockCycles = 400
+

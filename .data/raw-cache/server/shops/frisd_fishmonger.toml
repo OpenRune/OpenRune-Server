@@ -1,0 +1,45 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.frisd_fishmonger"
+name = "Flosi's Fishmongers"
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1100
+buyMultiplier = 700
+delta = 30
+
+size = 5
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.raw_lobster"
+count = 5
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.raw_tuna"
+count = 20
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.raw_salmon"
+count = 20
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.raw_cod"
+count = 20
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.raw_shark"
+count = 0
+restockCycles = 10
+

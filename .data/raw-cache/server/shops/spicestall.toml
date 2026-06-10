@@ -1,0 +1,35 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.spicestall"
+name = "Ardougne Spice Stall."
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1000
+buyMultiplier = 600
+delta = 20
+
+size = 3
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.spicespot"
+count = 1
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.knife"
+count = 1
+restockCycles = 2
+
+[[inventory.stock]]
+obj = "obj.garlic"
+count = 2
+restockCycles = 5
+

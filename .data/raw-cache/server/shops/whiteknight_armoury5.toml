@@ -1,0 +1,95 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.whiteknight_armoury5"
+name = "White Knight Armoury"
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1000
+buyMultiplier = 1000
+delta = 0
+
+size = 15
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.white_chainbody"
+count = 20
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.white_platelegs"
+count = 20
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.white_plateskirt"
+count = 20
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.white_med_helm"
+count = 20
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.white_sq_shield"
+count = 20
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.white_full_helm"
+count = 20
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.white_kiteshield"
+count = 20
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.white_platebody"
+count = 20
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.white_armoured_boots"
+count = 20
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.white_gloves"
+count = 20
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.white_dagger"
+count = 20
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.white_sword"
+count = 20
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.white_mace"
+count = 20
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.white_magic_staff"
+count = 20
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.white_longsword"
+count = 20
+restockCycles = 100
+

@@ -1,0 +1,85 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.mikeshop"
+name = "Dodgy Mike's Second Hand Clothing."
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1000
+buyMultiplier = 600
+delta = 20
+
+size = 13
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.pirate_boots"
+count = 15
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.pirate_torso"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.pirate_bandanna"
+count = 20
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.pirate_legs"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.pirate_torso_red"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.pirate_bandana_red"
+count = 20
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.pirate_legs_red"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.pirate_torso_blue"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.pirate_bandana_blue"
+count = 20
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.pirate_legs_blue"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.pirate_torso_brown"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.pirate_bandana_brown"
+count = 20
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.pirate_legs_brown"
+count = 10
+restockCycles = 100
+

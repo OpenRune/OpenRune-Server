@@ -1,0 +1,80 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.clotheshop"
+name = "Thessalia's Fine Clothes."
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1000
+buyMultiplier = 550
+delta = 10
+
+size = 12
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.white_apron"
+count = 3
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.leather_armour"
+count = 12
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.leather_gloves"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.leather_boots"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.brown_apron"
+count = 1
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.pink_skirt"
+count = 5
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.black_skirt"
+count = 3
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.blue_skirt"
+count = 2
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.red_cape"
+count = 4
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.silk"
+count = 5
+restockCycles = 500
+
+[[inventory.stock]]
+obj = "obj.priest_robe"
+count = 3
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.priest_gown"
+count = 3
+restockCycles = 100
+

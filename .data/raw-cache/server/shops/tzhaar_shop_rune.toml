@@ -1,0 +1,40 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.tzhaar_shop_rune"
+name = "TzHaar-Mej-Roh's Rune Store"
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1500
+buyMultiplier = 150
+delta = 20
+
+size = 4
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.pack_firerune_tzhaar"
+count = 50
+restockCycles = 40
+
+[[inventory.stock]]
+obj = "obj.pack_waterrune_tzhaar"
+count = 50
+restockCycles = 40
+
+[[inventory.stock]]
+obj = "obj.pack_airrune_tzhaar"
+count = 50
+restockCycles = 40
+
+[[inventory.stock]]
+obj = "obj.pack_earthrune_tzhaar"
+count = 50
+restockCycles = 40
+

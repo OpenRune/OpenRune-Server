@@ -1,0 +1,45 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.wildernesscapeshop1"
+name = "William's Wilderness Cape Shop."
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1000
+buyMultiplier = 600
+delta = 10
+
+size = 5
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.wilderness_cape_1"
+count = 100
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.wilderness_cape_11"
+count = 100
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.wilderness_cape_21"
+count = 100
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.wilderness_cape_31"
+count = 100
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.wilderness_cape_41"
+count = 100
+restockCycles = 100
+

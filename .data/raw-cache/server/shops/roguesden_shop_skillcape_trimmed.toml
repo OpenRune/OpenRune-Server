@@ -1,0 +1,80 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.roguesden_shop_skillcape_trimmed"
+name = "Martin Thwait's Lost and Found."
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1000
+buyMultiplier = 600
+delta = 20
+
+size = 12
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.rope"
+count = 50
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.lockpick"
+count = 25
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.chisel"
+count = 30
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.knife"
+count = 20
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.roguesden_stethoscope"
+count = 25
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.bronze_knife"
+count = 15
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.iron_knife"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.steel_knife"
+count = 5
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.bronze_claws"
+count = 3
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.iron_claws"
+count = 2
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.steel_claws"
+count = 1
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.skillcape_thieving_trimmed"
+count = 1
+restockCycles = 1
+

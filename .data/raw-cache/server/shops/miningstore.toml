@@ -1,0 +1,65 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.miningstore"
+name = "Drogo's Mining Emporium."
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1000
+buyMultiplier = 700
+delta = 30
+
+size = 9
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.hammer"
+count = 4
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.bronze_pickaxe"
+count = 4
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.copper_ore"
+count = 0
+restockCycles = 15000
+
+[[inventory.stock]]
+obj = "obj.tin_ore"
+count = 0
+restockCycles = 15000
+
+[[inventory.stock]]
+obj = "obj.iron_ore"
+count = 0
+restockCycles = 5000
+
+[[inventory.stock]]
+obj = "obj.coal"
+count = 0
+restockCycles = 5000
+
+[[inventory.stock]]
+obj = "obj.bronze_bar"
+count = 0
+restockCycles = 4000
+
+[[inventory.stock]]
+obj = "obj.iron_bar"
+count = 0
+restockCycles = 4000
+
+[[inventory.stock]]
+obj = "obj.gold_bar"
+count = 0
+restockCycles = 3000
+

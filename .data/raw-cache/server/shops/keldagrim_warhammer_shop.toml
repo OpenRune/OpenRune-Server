@@ -1,0 +1,50 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.keldagrim_warhammer_shop"
+name = "Vigr's Warhammers"
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1300
+buyMultiplier = 550
+delta = 30
+
+size = 6
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.bronze_warhammer"
+count = 5
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.iron_warhammer"
+count = 4
+restockCycles = 200
+
+[[inventory.stock]]
+obj = "obj.steel_warhammer"
+count = 3
+restockCycles = 400
+
+[[inventory.stock]]
+obj = "obj.black_warhammer"
+count = 3
+restockCycles = 600
+
+[[inventory.stock]]
+obj = "obj.mithril_warhammer"
+count = 2
+restockCycles = 800
+
+[[inventory.stock]]
+obj = "obj.adamnt_warhammer"
+count = 1
+restockCycles = 1000
+

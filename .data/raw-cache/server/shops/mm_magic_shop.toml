@@ -1,0 +1,80 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.mm_magic_shop"
+name = "Tutab's Magical Market"
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1000
+buyMultiplier = 600
+delta = 1
+
+size = 12
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.firerune"
+count = 1000
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.waterrune"
+count = 1000
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.airrune"
+count = 1000
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.earthrune"
+count = 1000
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.lawrune"
+count = 250
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.pack_firerune"
+count = 40
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.pack_waterrune"
+count = 40
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.pack_airrune"
+count = 40
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.pack_earthrune"
+count = 40
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.mm_eye_of_gnome"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.mm_monkey_dentures"
+count = 100
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.mm_monkey_talisman"
+count = 50
+restockCycles = 100
+

@@ -1,0 +1,90 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.sunset_coast_general_store"
+name = "Sunset Coast General Store"
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1300
+buyMultiplier = 400
+delta = 30
+
+size = 14
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.bronze_pickaxe"
+count = 5
+restockCycles = 20
+
+[[inventory.stock]]
+obj = "obj.bronze_axe"
+count = 5
+restockCycles = 20
+
+[[inventory.stock]]
+obj = "obj.chisel"
+count = 5
+restockCycles = 20
+
+[[inventory.stock]]
+obj = "obj.spade"
+count = 5
+restockCycles = 20
+
+[[inventory.stock]]
+obj = "obj.hammer"
+count = 5
+restockCycles = 20
+
+[[inventory.stock]]
+obj = "obj.knife"
+count = 5
+restockCycles = 20
+
+[[inventory.stock]]
+obj = "obj.tinderbox"
+count = 5
+restockCycles = 20
+
+[[inventory.stock]]
+obj = "obj.pestle_and_mortar"
+count = 5
+restockCycles = 20
+
+[[inventory.stock]]
+obj = "obj.torch_unlit"
+count = 5
+restockCycles = 20
+
+[[inventory.stock]]
+obj = "obj.rope"
+count = 10
+restockCycles = 30
+
+[[inventory.stock]]
+obj = "obj.charcoal"
+count = 10
+restockCycles = 30
+
+[[inventory.stock]]
+obj = "obj.papyrus"
+count = 10
+restockCycles = 30
+
+[[inventory.stock]]
+obj = "obj.pot_empty"
+count = 15
+restockCycles = 20
+
+[[inventory.stock]]
+obj = "obj.bucket_empty"
+count = 15
+restockCycles = 20
+

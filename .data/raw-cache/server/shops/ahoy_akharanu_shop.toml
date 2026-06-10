@@ -1,0 +1,25 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.ahoy_akharanu_shop"
+name = "Ak-Haranu's Exotic Shop."
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1000
+buyMultiplier = 550
+delta = 10
+
+size = 1
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.barrows_karil_ammo"
+count = 500
+restockCycles = 50
+

@@ -1,0 +1,130 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.fancyclothesstore"
+name = "Fancy Clothes Store"
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1300
+buyMultiplier = 400
+delta = 20
+
+size = 22
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.chefs_hat"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.bluewizhat"
+count = 3
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.yellow_cape"
+count = 1
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.grey_wolf_fur"
+count = 3
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.fur"
+count = 3
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.needle"
+count = 3
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.thread"
+count = 100
+restockCycles = 5
+
+[[inventory.stock]]
+obj = "obj.leather_gloves"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.leather_boots"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.priest_robe"
+count = 3
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.priest_gown"
+count = 3
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.brown_apron"
+count = 1
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.pink_skirt"
+count = 5
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.black_skirt"
+count = 3
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.blue_skirt"
+count = 2
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.red_cape"
+count = 4
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.eye_patch"
+count = 3
+restockCycles = 2000
+
+[[inventory.stock]]
+obj = "obj.hunting_jungle_feather"
+count = 0
+restockCycles = 20
+
+[[inventory.stock]]
+obj = "obj.hunting_desert_feather"
+count = 0
+restockCycles = 20
+
+[[inventory.stock]]
+obj = "obj.hunting_woodland_feather"
+count = 0
+restockCycles = 20
+
+[[inventory.stock]]
+obj = "obj.hunting_polar_feather"
+count = 0
+restockCycles = 20
+
+[[inventory.stock]]
+obj = "obj.hunting_stripy_bird_feather"
+count = 0
+restockCycles = 20
+

@@ -1,0 +1,50 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.chainmailshop"
+name = "Wayne's Chains! - Chainmail specialist."
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1000
+buyMultiplier = 650
+delta = 10
+
+size = 6
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.bronze_chainbody"
+count = 3
+restockCycles = 200
+
+[[inventory.stock]]
+obj = "obj.iron_chainbody"
+count = 2
+restockCycles = 300
+
+[[inventory.stock]]
+obj = "obj.steel_chainbody"
+count = 1
+restockCycles = 2000
+
+[[inventory.stock]]
+obj = "obj.black_chainbody"
+count = 1
+restockCycles = 2500
+
+[[inventory.stock]]
+obj = "obj.mithril_chainbody"
+count = 1
+restockCycles = 3500
+
+[[inventory.stock]]
+obj = "obj.adamant_chainbody"
+count = 1
+restockCycles = 9000
+

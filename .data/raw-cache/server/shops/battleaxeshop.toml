@@ -1,0 +1,50 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.battleaxeshop"
+name = "Brian's Battleaxe Bazaar."
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1000
+buyMultiplier = 550
+delta = 10
+
+size = 6
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.bronze_battleaxe"
+count = 4
+restockCycles = 200
+
+[[inventory.stock]]
+obj = "obj.iron_battleaxe"
+count = 3
+restockCycles = 300
+
+[[inventory.stock]]
+obj = "obj.steel_battleaxe"
+count = 2
+restockCycles = 500
+
+[[inventory.stock]]
+obj = "obj.black_battleaxe"
+count = 1
+restockCycles = 700
+
+[[inventory.stock]]
+obj = "obj.mithril_battleaxe"
+count = 1
+restockCycles = 1000
+
+[[inventory.stock]]
+obj = "obj.adamant_battleaxe"
+count = 1
+restockCycles = 15000
+

@@ -1,0 +1,45 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.rangingguild_trade_tickets"
+
+scope = "Shared"
+stack = "Always"
+
+size = 6
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.barbed_bolttips"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.studded_body"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.rune_arrow"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.coif"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.dragonhide_body"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.adamant_javelin"
+count = 0
+restockCycles = 100
+

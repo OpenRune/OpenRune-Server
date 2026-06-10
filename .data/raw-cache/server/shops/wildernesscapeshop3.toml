@@ -1,0 +1,45 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.wildernesscapeshop3"
+name = "Larry's Wilderness Cape Shop."
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1000
+buyMultiplier = 600
+delta = 10
+
+size = 5
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.wilderness_cape_3"
+count = 100
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.wilderness_cape_13"
+count = 100
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.wilderness_cape_23"
+count = 100
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.wilderness_cape_33"
+count = 100
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.wilderness_cape_43"
+count = 100
+restockCycles = 100
+

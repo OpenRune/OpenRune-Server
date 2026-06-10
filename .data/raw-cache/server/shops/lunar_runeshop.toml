@@ -1,0 +1,115 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.lunar_runeshop"
+name = "Crossbow Shop"
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 3600
+buyMultiplier = 500
+delta = 20
+
+size = 19
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.xbows_crossbow_stock_wood"
+count = 5
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.xbows_crossbow_stock_oak"
+count = 5
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.xbows_crossbow_stock_willow"
+count = 5
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.xbows_crossbow_stock_teak"
+count = 5
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.xbows_crossbow_stock_maple"
+count = 5
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.xbows_crossbow_stock_mahogany"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.xbows_crossbow_stock_yew"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.xbows_crossbow_limbs_bronze"
+count = 5
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.xbows_crossbow_limbs_iron"
+count = 5
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.xbows_crossbow_limbs_steel"
+count = 5
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.xbows_crossbow_limbs_mithril"
+count = 5
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.xbows_crossbow_limbs_adamantite"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.xbows_crossbow_limbs_runite"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.xbows_crossbow_bronze"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.xbows_crossbow_iron"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.xbows_crossbow_steel"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.xbows_crossbow_mithril"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.xbows_crossbow_adamantite"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.xbows_crossbow_runite"
+count = 0
+restockCycles = 100
+

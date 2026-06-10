@@ -1,0 +1,50 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.keldagrim_clothes_stall"
+name = "Vermundi's Clothes Stall"
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1300
+buyMultiplier = 550
+delta = 30
+
+size = 6
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.dwarf_skirt1"
+count = 3
+restockCycles = 40
+
+[[inventory.stock]]
+obj = "obj.dwarf_trousers1"
+count = 3
+restockCycles = 30
+
+[[inventory.stock]]
+obj = "obj.dwarf_shorts1"
+count = 3
+restockCycles = 25
+
+[[inventory.stock]]
+obj = "obj.dwarf_jumper1"
+count = 3
+restockCycles = 45
+
+[[inventory.stock]]
+obj = "obj.dwarf_shirt1"
+count = 3
+restockCycles = 40
+
+[[inventory.stock]]
+obj = "obj.silk"
+count = 5
+restockCycles = 100
+

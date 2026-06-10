@@ -1,0 +1,45 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.poh_sawmill_shop"
+name = "Construction supplies"
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1300
+buyMultiplier = 500
+delta = 0
+
+size = 5
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.poh_saw"
+count = 1000
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.cloth"
+count = 1000
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.nails_bronze"
+count = 1000
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.nails_iron"
+count = 1000
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.nails"
+count = 1000
+restockCycles = 100
+

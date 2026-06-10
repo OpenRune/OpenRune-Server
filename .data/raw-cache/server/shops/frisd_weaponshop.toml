@@ -1,0 +1,45 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.frisd_weaponshop"
+name = "Weapons galore"
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1100
+buyMultiplier = 700
+delta = 30
+
+size = 5
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.mithril_longsword"
+count = 4
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.mithril_warhammer"
+count = 4
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.mithril_battleaxe"
+count = 4
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.mithril_claws"
+count = 4
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.mithril_2h_sword"
+count = 4
+restockCycles = 100
+

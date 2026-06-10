@@ -1,0 +1,50 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.sophanem_cloth_store_updated"
+name = "Raetul and Co's Cloth Store."
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1000
+buyMultiplier = 550
+delta = 10
+
+size = 6
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.ics_little_linen"
+count = 14
+restockCycles = 20
+
+[[inventory.stock]]
+obj = "obj.desert_shirt"
+count = 12
+restockCycles = 12
+
+[[inventory.stock]]
+obj = "obj.desert_robe"
+count = 9
+restockCycles = 20
+
+[[inventory.stock]]
+obj = "obj.silk"
+count = 7
+restockCycles = 22
+
+[[inventory.stock]]
+obj = "obj.thread"
+count = 10
+restockCycles = 30
+
+[[inventory.stock]]
+obj = "obj.needle"
+count = 15
+restockCycles = 28
+

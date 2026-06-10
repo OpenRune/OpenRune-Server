@@ -1,0 +1,170 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.werewolfstore2"
+name = "Barkers' Haberdashery"
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1300
+buyMultiplier = 400
+delta = 30
+
+size = 30
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.wolfenboots_grey"
+count = 5
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.wolfenrobetop_grey"
+count = 5
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.wolfenrobebottom_grey"
+count = 5
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.wolfenhat_grey"
+count = 5
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.wolfengloves_grey"
+count = 5
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.wolfenboots_crimson"
+count = 5
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.wolfenrobetop_crimson"
+count = 5
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.wolfenrobebottom_crimson"
+count = 5
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.wolfenhat_crimson"
+count = 5
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.wolfengloves_crimson"
+count = 5
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.wolfenboots_tangerine"
+count = 5
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.wolfenrobetop_tangerine"
+count = 5
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.wolfenrobebottom_tangerine"
+count = 5
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.wolfenhat_tangerine"
+count = 5
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.wolfengloves_tangerine"
+count = 5
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.wolfenboots_ocean"
+count = 5
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.wolfenrobetop_ocean"
+count = 5
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.wolfenrobebottom_ocean"
+count = 5
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.wolfenhat_ocean"
+count = 5
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.wolfengloves_ocean"
+count = 5
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.wolfenboots_purple"
+count = 5
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.wolfenrobetop_purple"
+count = 5
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.wolfenrobebottom_purple"
+count = 5
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.wolfenhat_purple"
+count = 5
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.wolfengloves_purple"
+count = 5
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.red_cape"
+count = 5
+restockCycles = 500
+
+[[inventory.stock]]
+obj = "obj.black_cape"
+count = 5
+restockCycles = 500
+
+[[inventory.stock]]
+obj = "obj.blue_cape"
+count = 5
+restockCycles = 500
+
+[[inventory.stock]]
+obj = "obj.yellow_cape"
+count = 5
+restockCycles = 500
+
+[[inventory.stock]]
+obj = "obj.green_cape"
+count = 5
+restockCycles = 500
+

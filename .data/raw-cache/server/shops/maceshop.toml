@@ -1,0 +1,45 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.maceshop"
+name = "Flynn's Mace Market."
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1000
+buyMultiplier = 600
+delta = 10
+
+size = 5
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.bronze_mace"
+count = 5
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.iron_mace"
+count = 4
+restockCycles = 200
+
+[[inventory.stock]]
+obj = "obj.steel_mace"
+count = 4
+restockCycles = 400
+
+[[inventory.stock]]
+obj = "obj.mithril_mace"
+count = 3
+restockCycles = 3000
+
+[[inventory.stock]]
+obj = "obj.adamant_mace"
+count = 2
+restockCycles = 12000
+

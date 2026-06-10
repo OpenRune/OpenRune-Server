@@ -1,0 +1,65 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.lletyaseamstressshop1"
+name = "Lletya Seamstress"
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1300
+buyMultiplier = 550
+delta = 10
+
+size = 9
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.thread"
+count = 8
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.needle"
+count = 3
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.ball_of_wool"
+count = 5
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.reddye"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.yellowdye"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.bluedye"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.orangedye"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.greendye"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.purpledye"
+count = 10
+restockCycles = 100
+

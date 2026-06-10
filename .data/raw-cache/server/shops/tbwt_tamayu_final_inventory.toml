@@ -1,0 +1,55 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.tbwt_tamayu_final_inventory"
+name = "Tamayu's Spear Stall"
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1000
+buyMultiplier = 750
+delta = 10
+
+size = 7
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.tbwt_bronze_spear_kp"
+count = 10
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.tbwt_iron_spear_kp"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.tbwt_steel_spear_kp"
+count = 5
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.tbwt_mithril_spear_kp"
+count = 2
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.tbwt_adamant_spear_kp"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.tbwt_rune_spear_kp"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.tbwt_cleaning_cloth"
+count = 10
+restockCycles = 5
+

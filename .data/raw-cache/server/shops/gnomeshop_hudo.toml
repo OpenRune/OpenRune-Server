@@ -1,0 +1,150 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.gnomeshop_hudo"
+name = "Grand Tree Groceries"
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1000
+buyMultiplier = 550
+delta = 10
+
+size = 26
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.gianne_dough"
+count = 50
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.equa_leaves"
+count = 20
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.pot_flour"
+count = 10
+restockCycles = 200
+
+[[inventory.stock]]
+obj = "obj.gnome_spice"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.onion"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.potato"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.cabbage"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.tomato"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.cheese"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.tbw_spider_on_stick_cooked"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.tbw_spider_on_shaft_cooked"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.lime"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.orange"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.lemon"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.pineapple"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.dwellberries"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.cocktail_shaker"
+count = 10
+restockCycles = 200
+
+[[inventory.stock]]
+obj = "obj.chocolate_bar"
+count = 20
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.chocolate_dust"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.pot_of_cream"
+count = 5
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.bucket_milk"
+count = 5
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.knife"
+count = 5
+restockCycles = 200
+
+[[inventory.stock]]
+obj = "obj.giannes_cook_book"
+count = 5
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.batta_tin"
+count = 5
+restockCycles = 200
+
+[[inventory.stock]]
+obj = "obj.crunchy_tray"
+count = 5
+restockCycles = 200
+
+[[inventory.stock]]
+obj = "obj.gnomebowl_mould"
+count = 5
+restockCycles = 200
+

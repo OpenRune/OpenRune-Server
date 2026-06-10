@@ -1,7 +1,7 @@
 [[inventory]]
 isServerOnly = true
-id = "inv.generalshop1"
-name = "Al Kharid General Store"
+id = "inv.razmiregeneralstore"
+name = "Razmire General Store."
 
 scope = "Shared"
 stack = "Always"
@@ -10,7 +10,7 @@ sellMultiplier = 1300
 buyMultiplier = 400
 delta = 30
 
-size = 13
+size = 15
 
 protect = false
 runWeight = false
@@ -20,8 +20,8 @@ placeholders = false
 
 [[inventory.stock]]
 obj = "obj.pot_empty"
-count = 5
-restockCycles = 10
+count = 3
+restockCycles = 100
 
 [[inventory.stock]]
 obj = "obj.jug_empty"
@@ -31,7 +31,7 @@ restockCycles = 100
 [[inventory.stock]]
 obj = "obj.pack_jug_empty"
 count = 5
-restockCycles = 20
+restockCycles = 15
 
 [[inventory.stock]]
 obj = "obj.shears"
@@ -40,23 +40,13 @@ restockCycles = 100
 
 [[inventory.stock]]
 obj = "obj.bucket_empty"
-count = 3
-restockCycles = 10
+count = 2
+restockCycles = 100
 
 [[inventory.stock]]
 obj = "obj.pack_bucket"
-count = 15
+count = 10
 restockCycles = 10
-
-[[inventory.stock]]
-obj = "obj.bowl_empty"
-count = 2
-restockCycles = 50
-
-[[inventory.stock]]
-obj = "obj.cake_tin"
-count = 2
-restockCycles = 50
 
 [[inventory.stock]]
 obj = "obj.tinderbox"
@@ -74,12 +64,32 @@ count = 5
 restockCycles = 100
 
 [[inventory.stock]]
-obj = "obj.newcomer_map"
-count = 5
+obj = "obj.oliveoil4"
+count = 150
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.pack_olive_oil"
+count = 20
 restockCycles = 100
 
 [[inventory.stock]]
-obj = "obj.sos_security_book"
-count = 5
+obj = "obj.vial_water"
+count = 100
 restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.pack_vial_water"
+count = 50
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.pot_flour"
+count = 100
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.flamtaer_hammer"
+count = 3
+restockCycles = 10
 

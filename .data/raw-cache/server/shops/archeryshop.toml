@@ -1,0 +1,95 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.archeryshop"
+name = "Lowe's Archery Emporium"
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1000
+buyMultiplier = 550
+delta = 10
+
+size = 15
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.bronze_arrow"
+count = 2000
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.iron_arrow"
+count = 1500
+restockCycles = 15
+
+[[inventory.stock]]
+obj = "obj.steel_arrow"
+count = 1000
+restockCycles = 20
+
+[[inventory.stock]]
+obj = "obj.mithril_arrow"
+count = 800
+restockCycles = 15
+
+[[inventory.stock]]
+obj = "obj.adamant_arrow"
+count = 600
+restockCycles = 20
+
+[[inventory.stock]]
+obj = "obj.bolt"
+count = 1500
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.shortbow"
+count = 4
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.longbow"
+count = 4
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.oak_shortbow"
+count = 3
+restockCycles = 200
+
+[[inventory.stock]]
+obj = "obj.oak_longbow"
+count = 3
+restockCycles = 200
+
+[[inventory.stock]]
+obj = "obj.willow_shortbow"
+count = 2
+restockCycles = 200
+
+[[inventory.stock]]
+obj = "obj.willow_longbow"
+count = 2
+restockCycles = 200
+
+[[inventory.stock]]
+obj = "obj.maple_shortbow"
+count = 1
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.maple_longbow"
+count = 1
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.crossbow"
+count = 2
+restockCycles = 400
+

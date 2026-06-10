@@ -1,0 +1,40 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.generallegends"
+name = "Legends Guild General Store."
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1550
+buyMultiplier = 550
+delta = 10
+
+size = 4
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.swordfish"
+count = 20
+restockCycles = 200
+
+[[inventory.stock]]
+obj = "obj.apple_pie"
+count = 5
+restockCycles = 200
+
+[[inventory.stock]]
+obj = "obj.3dose1attack"
+count = 3
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.steel_arrow"
+count = 500
+restockCycles = 100
+

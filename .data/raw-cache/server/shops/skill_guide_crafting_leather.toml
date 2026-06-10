@@ -1,0 +1,80 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.skill_guide_crafting_leather"
+name = "Arnold's Eclectic Supplies."
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1050
+buyMultiplier = 550
+delta = 20
+
+size = 12
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.net"
+count = 2
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.harpoon"
+count = 2
+restockCycles = 75
+
+[[inventory.stock]]
+obj = "obj.raw_monkfish"
+count = 1
+restockCycles = 1000
+
+[[inventory.stock]]
+obj = "obj.monkfish"
+count = 0
+restockCycles = 500
+
+[[inventory.stock]]
+obj = "obj.bread"
+count = 1
+restockCycles = 1000
+
+[[inventory.stock]]
+obj = "obj.pot_empty"
+count = 4
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.bucket_milk"
+count = 1
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.needle"
+count = 3
+restockCycles = 60
+
+[[inventory.stock]]
+obj = "obj.thread"
+count = 15
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.beer"
+count = 10
+restockCycles = 4
+
+[[inventory.stock]]
+obj = "obj.glassblowingpipe"
+count = 2
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.knife"
+count = 1
+restockCycles = 15
+

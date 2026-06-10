@@ -1,0 +1,69 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.templeknight_armoury2"
+name = "Proselyte Temple Knight Armoury"
+
+scope = "Shared"
+stack = "Always"
+
+buyMultiplier = 500
+delta = 0
+
+size = 10
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.basic_tk_helm"
+count = 30
+restockCycles = 1
+
+[[inventory.stock]]
+obj = "obj.basic_tk_legs"
+count = 30
+restockCycles = 1
+
+[[inventory.stock]]
+obj = "obj.basic_tk_body"
+count = 30
+restockCycles = 1
+
+[[inventory.stock]]
+obj = "obj.basic_tk_pack_yellow"
+count = 30
+restockCycles = 1
+
+[[inventory.stock]]
+obj = "obj.basic_tk_rank2_helm"
+count = 30
+restockCycles = 1
+
+[[inventory.stock]]
+obj = "obj.basic_tk_rank2_legs"
+count = 30
+restockCycles = 1
+
+[[inventory.stock]]
+obj = "obj.basic_tk_rank2_body"
+count = 30
+restockCycles = 1
+
+[[inventory.stock]]
+obj = "obj.basic_tk_rank2_plateskirt"
+count = 30
+restockCycles = 1
+
+[[inventory.stock]]
+obj = "obj.basic_tk_pack_orange"
+count = 30
+restockCycles = 1
+
+[[inventory.stock]]
+obj = "obj.basic_tk_pack_female"
+count = 30
+restockCycles = 1
+

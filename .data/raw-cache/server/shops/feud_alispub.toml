@@ -1,0 +1,50 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.feud_alispub"
+name = "The Asp & Snake Bar."
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1000
+buyMultiplier = 550
+delta = 10
+
+size = 6
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.beer"
+count = 83
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.whisky"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.jug_wine"
+count = 13
+restockCycles = 150
+
+[[inventory.stock]]
+obj = "obj.vodka"
+count = 5
+restockCycles = 5
+
+[[inventory.stock]]
+obj = "obj.brandy"
+count = 4
+restockCycles = 1500
+
+[[inventory.stock]]
+obj = "obj.grog"
+count = 12
+restockCycles = 2500
+

@@ -1,0 +1,35 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.death_pub"
+name = "The Toad and Chicken"
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1000
+buyMultiplier = 0
+delta = 10
+
+size = 3
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.asgarnian_ale"
+count = 12
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.wizards_mind_bomb"
+count = 12
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.dwarven_stout"
+count = 12
+restockCycles = 10
+

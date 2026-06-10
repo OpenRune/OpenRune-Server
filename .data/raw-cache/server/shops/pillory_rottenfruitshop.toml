@@ -1,0 +1,25 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.pillory_rottenfruitshop"
+name = "Shop of Distaste"
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1000
+buyMultiplier = 550
+delta = 10
+
+size = 1
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.rotten_tomato"
+count = 2000
+restockCycles = 10
+

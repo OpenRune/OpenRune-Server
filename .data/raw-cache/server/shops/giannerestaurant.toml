@@ -1,0 +1,85 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.giannerestaurant"
+name = "Gianne's Restaurant"
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1000
+buyMultiplier = 250
+delta = 10
+
+size = 13
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.premade_vegetable_batta"
+count = 3
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.premade_worm_batta"
+count = 3
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.premade_toad_batta"
+count = 3
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.premade_fruit_batta"
+count = 3
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.premade_cheese+tom_batta"
+count = 3
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.premade_worm_hole"
+count = 3
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.premade_tangled_toads_legs"
+count = 3
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.premade_veg_ball"
+count = 3
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.premade_chocolate_bomb"
+count = 3
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.premade_worm_crunchies"
+count = 3
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.premade_toad_crunchies"
+count = 3
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.premade_chocchip_crunchies"
+count = 3
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.premade_spicy_crunchies"
+count = 3
+restockCycles = 100
+

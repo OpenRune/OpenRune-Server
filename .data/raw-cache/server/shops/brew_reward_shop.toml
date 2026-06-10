@@ -1,0 +1,166 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.brew_reward_shop"
+name = "Honest Jimmy's House of Stuff"
+
+scope = "Shared"
+stack = "Always"
+
+size = 30
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.brew_uniform_blue"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.brew_tricorn_blue"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.brew_navy_slacks_blue"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.brew_uniform_green"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.brew_tricorn_green"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.brew_navy_slacks_green"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.brew_uniform_red"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.brew_tricorn_red"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.brew_navy_slacks_red"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.brew_uniform_brown"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.brew_tricorn_brown"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.brew_navy_slacks_brown"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.brew_uniform_black"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.brew_tricorn_black"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.brew_navy_slacks_black"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.brew_uniform_purple"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.brew_tricorn_purple"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.brew_navy_slacks_purple"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.brew_uniform_grey"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.brew_tricorn_grey"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.brew_navy_slacks_grey"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.brew_flag_1"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.brew_flag_2"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.brew_flag_3"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.brew_flag_4"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.brew_flag_5"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.brew_flag_6"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.brew_hyper_yeast"
+count = 200
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.brew_red_rum"
+count = 200
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.brew_blue_rum"
+count = 200
+restockCycles = 100
+

@@ -1,0 +1,75 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.contact_daggershop"
+name = "Blades by Urbi."
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1500
+buyMultiplier = 250
+delta = 10
+
+size = 11
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.bronze_dagger"
+count = 1
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.iron_dagger"
+count = 1
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.steel_dagger"
+count = 1
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.black_dagger"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.mithril_dagger"
+count = 1
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.adamant_dagger"
+count = 1
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.rune_dagger"
+count = 1
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.dragon_dagger"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.bronze_scimitar"
+count = 1
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.iron_scimitar"
+count = 1
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.steel_scimitar"
+count = 1
+restockCycles = 100
+

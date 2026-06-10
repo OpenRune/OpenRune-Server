@@ -1,0 +1,60 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.shieldshop"
+name = "Cassie's Shield Shop."
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1000
+buyMultiplier = 600
+delta = 20
+
+size = 8
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.wooden_shield"
+count = 5
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.bronze_sq_shield"
+count = 3
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.bronze_kiteshield"
+count = 3
+restockCycles = 300
+
+[[inventory.stock]]
+obj = "obj.iron_sq_shield"
+count = 2
+restockCycles = 400
+
+[[inventory.stock]]
+obj = "obj.iron_kiteshield"
+count = 0
+restockCycles = 1500
+
+[[inventory.stock]]
+obj = "obj.steel_sq_shield"
+count = 0
+restockCycles = 1500
+
+[[inventory.stock]]
+obj = "obj.steel_kiteshield"
+count = 0
+restockCycles = 1500
+
+[[inventory.stock]]
+obj = "obj.mithril_sq_shield"
+count = 0
+restockCycles = 1500
+

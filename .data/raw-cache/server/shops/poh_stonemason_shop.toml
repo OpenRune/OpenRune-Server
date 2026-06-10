@@ -1,0 +1,45 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.poh_stonemason_shop"
+name = "Keldagrim Stonemason"
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1300
+buyMultiplier = 500
+delta = 30
+
+size = 5
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.limestonebrick"
+count = 1000
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.marble_block"
+count = 20
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.gold_leaf"
+count = 20
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.poh_magic_crystal"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.poh_condensed_gold"
+count = 10
+restockCycles = 100
+

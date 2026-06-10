@@ -1,16 +1,16 @@
 [[inventory]]
 isServerOnly = true
-id = "inv.generalshop1"
-name = "Al Kharid General Store"
+id = "inv.generaldwarf"
+name = "Dwarven shopping store"
 
 scope = "Shared"
 stack = "Always"
 
 sellMultiplier = 1300
-buyMultiplier = 400
+buyMultiplier = 300
 delta = 30
 
-size = 13
+size = 9
 
 protect = false
 runWeight = false
@@ -20,8 +20,8 @@ placeholders = false
 
 [[inventory.stock]]
 obj = "obj.pot_empty"
-count = 5
-restockCycles = 10
+count = 3
+restockCycles = 100
 
 [[inventory.stock]]
 obj = "obj.jug_empty"
@@ -49,16 +49,6 @@ count = 15
 restockCycles = 10
 
 [[inventory.stock]]
-obj = "obj.bowl_empty"
-count = 2
-restockCycles = 50
-
-[[inventory.stock]]
-obj = "obj.cake_tin"
-count = 2
-restockCycles = 50
-
-[[inventory.stock]]
 obj = "obj.tinderbox"
 count = 2
 restockCycles = 100
@@ -70,16 +60,6 @@ restockCycles = 100
 
 [[inventory.stock]]
 obj = "obj.hammer"
-count = 5
-restockCycles = 100
-
-[[inventory.stock]]
-obj = "obj.newcomer_map"
-count = 5
-restockCycles = 100
-
-[[inventory.stock]]
-obj = "obj.sos_security_book"
 count = 5
 restockCycles = 100
 

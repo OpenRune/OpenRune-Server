@@ -1,0 +1,55 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.tai_bwo_wannai_drinksies"
+name = "Gabooty's Tai Bwo Wannai Drinky Store."
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1000
+buyMultiplier = 600
+delta = 20
+
+size = 7
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.fruit_blast"
+count = 0
+restockCycles = 50
+
+[[inventory.stock]]
+obj = "obj.drunk_dragon"
+count = 0
+restockCycles = 50
+
+[[inventory.stock]]
+obj = "obj.pineapple_punch"
+count = 0
+restockCycles = 50
+
+[[inventory.stock]]
+obj = "obj.wizard_blizzard"
+count = 0
+restockCycles = 50
+
+[[inventory.stock]]
+obj = "obj.blurberry_special"
+count = 0
+restockCycles = 50
+
+[[inventory.stock]]
+obj = "obj.chocolate_saturday"
+count = 0
+restockCycles = 50
+
+[[inventory.stock]]
+obj = "obj.sgg"
+count = 0
+restockCycles = 50
+

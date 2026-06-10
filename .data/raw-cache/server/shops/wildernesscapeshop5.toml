@@ -1,0 +1,45 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.wildernesscapeshop5"
+name = "Edward's Wilderness Cape Shop."
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1000
+buyMultiplier = 600
+delta = 10
+
+size = 5
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.wilderness_cape_5"
+count = 100
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.wilderness_cape_15"
+count = 100
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.wilderness_cape_25"
+count = 100
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.wilderness_cape_35"
+count = 100
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.wilderness_cape_45"
+count = 100
+restockCycles = 100
+

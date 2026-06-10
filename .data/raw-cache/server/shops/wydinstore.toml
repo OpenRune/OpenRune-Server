@@ -1,0 +1,75 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.wydinstore"
+name = "Food Store"
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1000
+buyMultiplier = 700
+delta = 10
+
+size = 11
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.pot_flour"
+count = 3
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.raw_beef"
+count = 1
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.raw_chicken"
+count = 1
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.cabbage"
+count = 3
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.banana"
+count = 3
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.redberries"
+count = 1
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.bread"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.chocolate_bar"
+count = 1
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.cheese"
+count = 3
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.tomato"
+count = 3
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.potato"
+count = 1
+restockCycles = 100
+

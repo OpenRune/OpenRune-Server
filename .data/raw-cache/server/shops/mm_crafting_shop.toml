@@ -1,0 +1,60 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.mm_crafting_shop"
+name = "Hamab's Crafting Emporium"
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1000
+buyMultiplier = 500
+delta = 20
+
+size = 8
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.chisel"
+count = 2
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.ring_mould"
+count = 4
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.necklace_mould"
+count = 2
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.mm_monkey_amulet_mould"
+count = 2
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.needle"
+count = 3
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.thread"
+count = 100
+restockCycles = 5
+
+[[inventory.stock]]
+obj = "obj.ball_of_wool"
+count = 100
+restockCycles = 5
+
+[[inventory.stock]]
+obj = "obj.jewl_bracelet_mould"
+count = 2
+restockCycles = 100
+

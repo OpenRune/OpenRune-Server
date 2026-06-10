@@ -1,0 +1,106 @@
+name: Shop mapping progress
+
+permissions:
+  issues: write
+
+on:
+  push:
+    paths:
+      - "tools/wiki-dumping/src/main/resources/shopmappings.csv"
+      - "tools/wiki-dumping/scripts/shop_progress_report.py"
+      - ".data/raw-cache/server/shops/**"
+      - ".github/workflows/shop-mapping-progress.yml"
+  workflow_dispatch:
+  schedule:
+    - cron: "0 8 * * 1"
+
+jobs:
+  update-issue:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Build progress report
+        env:
+          REPO_ROOT: ${{ github.workspace }}
+          OUTPUT: ${{ github.workspace }}/shop-mapping-progress.md
+        run: python3 tools/wiki-dumping/scripts/shop_progress_report.py
+
+      - name: Ensure shop-mapping label exists
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const label = "shop-mapping";
+            try {
+              await github.rest.issues.createLabel({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                name: label,
+                color: "1d76db",
+                description: "OSRS wiki shop mapping and stock dump tracking",
+              });
+            } catch (error) {
+              if (error.status !== 422) {
+                throw error;
+              }
+            }
+
+      - name: Create or update progress issue
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require("fs");
+            const body = fs.readFileSync("shop-mapping-progress.md", "utf8");
+            const title = "[Shop mapping] Progress tracker";
+            const label = "shop-mapping";
+
+            const marker = "<!-- shop-mapping-progress -->";
+            if (!body.includes(marker)) {
+              core.setFailed("Progress report is missing the shop-mapping marker.");
+              return;
+            }
+
+            const mappingMatch = body.match(/Mapping complete \(`inv` \+ wiki article\) \| (\d+)/);
+            const needsInvMatch = body.match(/\*\*Needs matching `inv\.\*` gameval\*\* \| \*\*(\d+)\*\*/);
+            const dumpedMatch = body.match(/Stock TOML dumped \| (\d+)/);
+            const dumpableMatch = body.match(/Dump progress:\*\* (\d+) \/ (\d+)/);
+
+            const mappingDone = mappingMatch ? mappingMatch[1] : "?";
+            const needsInv = needsInvMatch ? needsInvMatch[1] : "?";
+            const dumped = dumpedMatch ? dumpedMatch[1] : "?";
+            const dumpable = dumpableMatch ? dumpableMatch[2] : "?";
+
+            const dynamicTitle =
+              `[Shop mapping] ${dumped}/${dumpable} dumped · ${needsInv} need inv gameval`;
+
+            const { data: issues } = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: "open",
+              labels: label,
+              per_page: 100,
+            });
+
+            const existing = issues.find((issue) => issue.title.startsWith("[Shop mapping]"));
+
+            if (existing) {
+              await github.rest.issues.update({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: existing.number,
+                title: dynamicTitle,
+                body,
+              });
+              core.info(`Updated issue #${existing.number}`);
+            } else {
+              const { data: created } = await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: dynamicTitle,
+                body,
+                labels: [label],
+              });
+              core.info(`Created issue #${created.number}`);
+            }

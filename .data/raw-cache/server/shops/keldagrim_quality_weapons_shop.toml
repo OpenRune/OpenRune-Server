@@ -1,0 +1,75 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.keldagrim_quality_weapons_shop"
+name = "Quality Weapons Shop"
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1300
+buyMultiplier = 550
+delta = 30
+
+size = 11
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.steel_battleaxe"
+count = 2
+restockCycles = 200
+
+[[inventory.stock]]
+obj = "obj.mithril_battleaxe"
+count = 1
+restockCycles = 3000
+
+[[inventory.stock]]
+obj = "obj.mithril_sword"
+count = 3
+restockCycles = 3000
+
+[[inventory.stock]]
+obj = "obj.adamant_sword"
+count = 2
+restockCycles = 12000
+
+[[inventory.stock]]
+obj = "obj.steel_scimitar"
+count = 2
+restockCycles = 600
+
+[[inventory.stock]]
+obj = "obj.black_longsword"
+count = 2
+restockCycles = 1500
+
+[[inventory.stock]]
+obj = "obj.rune_longsword"
+count = 1
+restockCycles = 4000
+
+[[inventory.stock]]
+obj = "obj.maple_shortbow"
+count = 1
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.maple_longbow"
+count = 1
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.mithril_arrow"
+count = 800
+restockCycles = 15
+
+[[inventory.stock]]
+obj = "obj.adamant_arrow"
+count = 600
+restockCycles = 20
+

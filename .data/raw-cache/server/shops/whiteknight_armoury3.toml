@@ -1,0 +1,55 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.whiteknight_armoury3"
+name = "White Knight Armoury"
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1000
+buyMultiplier = 1000
+delta = 0
+
+size = 7
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.white_chainbody"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.white_platelegs"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.white_plateskirt"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.white_med_helm"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.white_sq_shield"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.white_dagger"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.white_sword"
+count = 10
+restockCycles = 100
+

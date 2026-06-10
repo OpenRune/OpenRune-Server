@@ -1,0 +1,125 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.gnomeshop_gulluck"
+name = "Gulluck and Sons"
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1000
+buyMultiplier = 250
+delta = 10
+
+size = 21
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.bronze_arrow"
+count = 200
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.bolt"
+count = 150
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.pearl_bolt"
+count = 1
+restockCycles = 1500
+
+[[inventory.stock]]
+obj = "obj.shortbow"
+count = 4
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.longbow"
+count = 2
+restockCycles = 200
+
+[[inventory.stock]]
+obj = "obj.crossbow"
+count = 2
+restockCycles = 400
+
+[[inventory.stock]]
+obj = "obj.bronze_arrowheads"
+count = 200
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.iron_arrowheads"
+count = 180
+restockCycles = 20
+
+[[inventory.stock]]
+obj = "obj.steel_arrowheads"
+count = 160
+restockCycles = 40
+
+[[inventory.stock]]
+obj = "obj.mithril_arrowheads"
+count = 140
+restockCycles = 80
+
+[[inventory.stock]]
+obj = "obj.iron_axe"
+count = 5
+restockCycles = 200
+
+[[inventory.stock]]
+obj = "obj.steel_axe"
+count = 3
+restockCycles = 400
+
+[[inventory.stock]]
+obj = "obj.iron_battleaxe"
+count = 5
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.steel_battleaxe"
+count = 2
+restockCycles = 200
+
+[[inventory.stock]]
+obj = "obj.mithril_battleaxe"
+count = 1
+restockCycles = 3000
+
+[[inventory.stock]]
+obj = "obj.bronze_2h_sword"
+count = 4
+restockCycles = 200
+
+[[inventory.stock]]
+obj = "obj.iron_2h_sword"
+count = 3
+restockCycles = 300
+
+[[inventory.stock]]
+obj = "obj.steel_2h_sword"
+count = 2
+restockCycles = 500
+
+[[inventory.stock]]
+obj = "obj.black_2h_sword"
+count = 1
+restockCycles = 700
+
+[[inventory.stock]]
+obj = "obj.mithril_2h_sword"
+count = 1
+restockCycles = 1000
+
+[[inventory.stock]]
+obj = "obj.adamant_2h_sword"
+count = 1
+restockCycles = 15000
+

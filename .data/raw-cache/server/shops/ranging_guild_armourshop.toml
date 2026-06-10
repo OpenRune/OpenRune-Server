@@ -1,0 +1,60 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.ranging_guild_armourshop"
+name = "Aaron's Archery Appendages."
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1000
+buyMultiplier = 500
+delta = 10
+
+size = 8
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.leather_armour"
+count = 10
+restockCycles = 50
+
+[[inventory.stock]]
+obj = "obj.hardleather_body"
+count = 10
+restockCycles = 60
+
+[[inventory.stock]]
+obj = "obj.studded_body"
+count = 10
+restockCycles = 70
+
+[[inventory.stock]]
+obj = "obj.leather_chaps"
+count = 20
+restockCycles = 50
+
+[[inventory.stock]]
+obj = "obj.studded_chaps"
+count = 15
+restockCycles = 80
+
+[[inventory.stock]]
+obj = "obj.coif"
+count = 10
+restockCycles = 50
+
+[[inventory.stock]]
+obj = "obj.leather_cowl"
+count = 10
+restockCycles = 70
+
+[[inventory.stock]]
+obj = "obj.leather_vambraces"
+count = 10
+restockCycles = 150
+

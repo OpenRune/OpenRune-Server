@@ -1,0 +1,45 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.roguetrader_alim_defendbj_inv"
+name = "Ali's Discount Wares."
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1000
+buyMultiplier = 550
+delta = 10
+
+size = 5
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.roguetrader_bj_defend_oak"
+count = 25
+restockCycles = 50
+
+[[inventory.stock]]
+obj = "obj.roguetrader_bj_defend_willow"
+count = 25
+restockCycles = 50
+
+[[inventory.stock]]
+obj = "obj.roguetrader_bj_defend_maple"
+count = 25
+restockCycles = 50
+
+[[inventory.stock]]
+obj = "obj.roguetrader_bj_maple"
+count = 25
+restockCycles = 50
+
+[[inventory.stock]]
+obj = "obj.blackjack_willow"
+count = 25
+restockCycles = 50
+

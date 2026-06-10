@@ -1,0 +1,150 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.slayershop"
+name = "Slayer Equipment"
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1000
+buyMultiplier = 600
+delta = 1
+
+size = 26
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.slayer_gem"
+count = 50
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.slayer_mirror_shield"
+count = 100
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.slayer_leafbladed_spear"
+count = 50
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.slayer_broad_arrows"
+count = 50000
+restockCycles = 5
+
+[[inventory.stock]]
+obj = "obj.slayer_bag_of_salt"
+count = 5000
+restockCycles = 5
+
+[[inventory.stock]]
+obj = "obj.slayer_rock_hammer"
+count = 50
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.slayer_facemask"
+count = 50
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.slayer_earmuffs"
+count = 50
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.slayer_nosepeg"
+count = 50
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.slayer_staff"
+count = 50
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.wallbeast_spike_helmet"
+count = 50
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.fishing_explosive"
+count = 5000
+restockCycles = 50
+
+[[inventory.stock]]
+obj = "obj.slayer_icy_water"
+count = 5000
+restockCycles = 5
+
+[[inventory.stock]]
+obj = "obj.deal_slayer_gloves"
+count = 50
+restockCycles = 16
+
+[[inventory.stock]]
+obj = "obj.slayer_buglan_off"
+count = 50
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.slayer_boots"
+count = 50
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.slayer_spray_pump_10"
+count = 50
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.slayer_fungicide"
+count = 5000
+restockCycles = 5
+
+[[inventory.stock]]
+obj = "obj.witchwood_icon"
+count = 50
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.molanisk_bell"
+count = 50
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.slayer_broad_arrowhead"
+count = 3000
+restockCycles = 1
+
+[[inventory.stock]]
+obj = "obj.pack_slayer_broad_arrowhead"
+count = 800
+restockCycles = 1
+
+[[inventory.stock]]
+obj = "obj.slayer_broad_bolt_unfinished"
+count = 5000
+restockCycles = 1
+
+[[inventory.stock]]
+obj = "obj.pack_slayer_broad_bolt_unfinished"
+count = 1000
+restockCycles = 1
+
+[[inventory.stock]]
+obj = "obj.slayer_rock_thrownhammer"
+count = 5000
+restockCycles = 5
+
+[[inventory.stock]]
+obj = "obj.boots_of_stone"
+count = 50
+restockCycles = 1
+

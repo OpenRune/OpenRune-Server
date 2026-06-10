@@ -1,0 +1,100 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.seed_stall"
+name = "Draynor Seed Market"
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1200
+buyMultiplier = 600
+delta = 30
+
+size = 16
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.potato_seed"
+count = 20
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.onion_seed"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.cabbage_seed"
+count = 5
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.tomato_seed"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.sweetcorn_seed"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.strawberry_seed"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.watermelon_seed"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.barley_seed"
+count = 20
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.jute_seed"
+count = 5
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.rosemary_seed"
+count = 20
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.marigold_seed"
+count = 20
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.hammerstone_hop_seed"
+count = 20
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.asgarnian_hop_seed"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.yanillian_hop_seed"
+count = 5
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.krandorian_hop_seed"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.wildblood_hop_seed"
+count = 0
+restockCycles = 100
+

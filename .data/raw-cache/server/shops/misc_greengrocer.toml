@@ -1,0 +1,45 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.misc_greengrocer"
+name = "Greengrocer of Miscellania"
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1200
+buyMultiplier = 950
+delta = 20
+
+size = 5
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.cabbage"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.potato"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.onion"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.tomato"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.garlic"
+count = 2
+restockCycles = 400
+

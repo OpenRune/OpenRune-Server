@@ -1,0 +1,120 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.hundred_rewardchest10"
+name = "Culinaromancer's Chest"
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1300
+buyMultiplier = 400
+delta = 20
+
+size = 20
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.hundred_gauntlets_level_1"
+count = 60
+restockCycles = 1
+
+[[inventory.stock]]
+obj = "obj.hundred_gauntlets_level_2"
+count = 60
+restockCycles = 1
+
+[[inventory.stock]]
+obj = "obj.hundred_gauntlets_level_3"
+count = 60
+restockCycles = 1
+
+[[inventory.stock]]
+obj = "obj.hundred_gauntlets_level_4"
+count = 60
+restockCycles = 1
+
+[[inventory.stock]]
+obj = "obj.hundred_gauntlets_level_5"
+count = 60
+restockCycles = 1
+
+[[inventory.stock]]
+obj = "obj.hundred_gauntlets_level_6"
+count = 60
+restockCycles = 1
+
+[[inventory.stock]]
+obj = "obj.hundred_gauntlets_level_7"
+count = 60
+restockCycles = 1
+
+[[inventory.stock]]
+obj = "obj.hundred_gauntlets_level_8"
+count = 60
+restockCycles = 1
+
+[[inventory.stock]]
+obj = "obj.hundred_gauntlets_level_9"
+count = 60
+restockCycles = 1
+
+[[inventory.stock]]
+obj = "obj.hundred_gauntlets_level_10"
+count = 60
+restockCycles = 1
+
+[[inventory.stock]]
+obj = "obj.hundred_spoon"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.hundred_whisk"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.hundred_spork"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.hundred_spatula"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.hundred_frying_pan"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.hundred_skewer"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.hundred_rollingpin"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.hundred_knife"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.hundred_hammer"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.hundred_cleaver"
+count = 10
+restockCycles = 100
+

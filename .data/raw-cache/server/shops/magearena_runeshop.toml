@@ -1,0 +1,105 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.magearena_runeshop"
+name = "Lundail's Arena-side Rune Shop."
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1000
+buyMultiplier = 600
+delta = 1
+
+size = 17
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.firerune"
+count = 200
+restockCycles = 50
+
+[[inventory.stock]]
+obj = "obj.waterrune"
+count = 200
+restockCycles = 50
+
+[[inventory.stock]]
+obj = "obj.airrune"
+count = 200
+restockCycles = 50
+
+[[inventory.stock]]
+obj = "obj.earthrune"
+count = 200
+restockCycles = 50
+
+[[inventory.stock]]
+obj = "obj.mindrune"
+count = 140
+restockCycles = 50
+
+[[inventory.stock]]
+obj = "obj.bodyrune"
+count = 140
+restockCycles = 50
+
+[[inventory.stock]]
+obj = "obj.naturerune"
+count = 250
+restockCycles = 30
+
+[[inventory.stock]]
+obj = "obj.chaosrune"
+count = 250
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.lawrune"
+count = 250
+restockCycles = 30
+
+[[inventory.stock]]
+obj = "obj.cosmicrune"
+count = 20
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.deathrune"
+count = 250
+restockCycles = 15
+
+[[inventory.stock]]
+obj = "obj.pack_firerune"
+count = 5
+restockCycles = 40
+
+[[inventory.stock]]
+obj = "obj.pack_waterrune"
+count = 5
+restockCycles = 40
+
+[[inventory.stock]]
+obj = "obj.pack_airrune"
+count = 5
+restockCycles = 40
+
+[[inventory.stock]]
+obj = "obj.pack_earthrune"
+count = 5
+restockCycles = 40
+
+[[inventory.stock]]
+obj = "obj.pack_mindrune"
+count = 4
+restockCycles = 40
+
+[[inventory.stock]]
+obj = "obj.pack_chaosrune"
+count = 3
+restockCycles = 40
+

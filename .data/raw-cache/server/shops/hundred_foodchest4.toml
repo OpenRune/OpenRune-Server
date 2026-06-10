@@ -1,0 +1,125 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.hundred_foodchest4"
+name = "Culinaromancer's Chest"
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1300
+buyMultiplier = 400
+delta = 20
+
+size = 21
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.chocolate_bar"
+count = 4
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.cheese"
+count = 4
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.tomato"
+count = 4
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.cooking_apple"
+count = 4
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.grapes"
+count = 4
+restockCycles = 500
+
+[[inventory.stock]]
+obj = "obj.pot_flour"
+count = 4
+restockCycles = 200
+
+[[inventory.stock]]
+obj = "obj.pizza_base"
+count = 1
+restockCycles = 500
+
+[[inventory.stock]]
+obj = "obj.egg"
+count = 4
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.bucket_milk"
+count = 4
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.pot_of_cream"
+count = 4
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.pot_of_butter"
+count = 4
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.spicespot"
+count = 4
+restockCycles = 500
+
+[[inventory.stock]]
+obj = "obj.piedish"
+count = 4
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.cake_tin"
+count = 4
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.bowl_empty"
+count = 4
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.jug_empty"
+count = 4
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.pack_jug_empty"
+count = 2
+restockCycles = 50
+
+[[inventory.stock]]
+obj = "obj.pot_empty"
+count = 4
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.cup_empty"
+count = 4
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.bucket_empty"
+count = 4
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.pack_bucket"
+count = 4
+restockCycles = 100
+

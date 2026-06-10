@@ -1,0 +1,175 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.aprilfoolshorseshop"
+name = "Diango's Toy Store"
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1500
+buyMultiplier = 500
+delta = 20
+
+size = 31
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.horsey_brown"
+count = 5
+restockCycles = 20
+
+[[inventory.stock]]
+obj = "obj.horsey_white"
+count = 5
+restockCycles = 20
+
+[[inventory.stock]]
+obj = "obj.horsey_black"
+count = 5
+restockCycles = 20
+
+[[inventory.stock]]
+obj = "obj.horsey_grey"
+count = 5
+restockCycles = 20
+
+[[inventory.stock]]
+obj = "obj.spinning_plate"
+count = 250
+restockCycles = 20
+
+[[inventory.stock]]
+obj = "obj.beachparty_boxinggloves_yellow"
+count = 5
+restockCycles = 5
+
+[[inventory.stock]]
+obj = "obj.beachparty_boxinggloves_purple"
+count = 5
+restockCycles = 5
+
+[[inventory.stock]]
+obj = "obj.goblinraid_warhammer"
+count = 3
+restockCycles = 5
+
+[[inventory.stock]]
+obj = "obj.goblinraid_bow"
+count = 3
+restockCycles = 5
+
+[[inventory.stock]]
+obj = "obj.goblinraid_staff"
+count = 3
+restockCycles = 5
+
+[[inventory.stock]]
+obj = "obj.goblin_rpg"
+count = 100
+restockCycles = 1
+
+[[inventory.stock]]
+obj = "obj.af15_dragon_claws"
+count = 5
+restockCycles = 5
+
+[[inventory.stock]]
+obj = "obj.charity_banner"
+count = 5
+restockCycles = 5
+
+[[inventory.stock]]
+obj = "obj.chronicle"
+count = 1
+restockCycles = 1
+
+[[inventory.stock]]
+obj = "obj.chronicle_tele_card"
+count = 100
+restockCycles = 1
+
+[[inventory.stock]]
+obj = "obj.skillcape_cabbage"
+count = 10
+restockCycles = 1
+
+[[inventory.stock]]
+obj = "obj.eoc_book"
+count = 15
+restockCycles = 2
+
+[[inventory.stock]]
+obj = "obj.wwf_toy_tiger"
+count = 15
+restockCycles = 3
+
+[[inventory.stock]]
+obj = "obj.wwf_toy_lion"
+count = 15
+restockCycles = 2
+
+[[inventory.stock]]
+obj = "obj.wwf_toy_snow_leopard"
+count = 15
+restockCycles = 2
+
+[[inventory.stock]]
+obj = "obj.wwf_toy_amur_leopard"
+count = 15
+restockCycles = 2
+
+[[inventory.stock]]
+obj = "obj.pride17_scarf"
+count = 5
+restockCycles = 1
+
+[[inventory.stock]]
+obj = "obj.easter18_handegg_light"
+count = 100
+restockCycles = 1
+
+[[inventory.stock]]
+obj = "obj.easter18_handegg_balance"
+count = 100
+restockCycles = 1
+
+[[inventory.stock]]
+obj = "obj.easter18_handegg_chaos"
+count = 100
+restockCycles = 1
+
+[[inventory.stock]]
+obj = "obj.midsum_helm16"
+count = 100
+restockCycles = 1
+
+[[inventory.stock]]
+obj = "obj.midsummer_fan"
+count = 100
+restockCycles = 1
+
+[[inventory.stock]]
+obj = "obj.summer2015_mask"
+count = 100
+restockCycles = 1
+
+[[inventory.stock]]
+obj = "obj.wreath"
+count = 100
+restockCycles = 1
+
+[[inventory.stock]]
+obj = "obj.discofreturning"
+count = 7
+restockCycles = 160
+
+[[inventory.stock]]
+obj = "obj.oculus"
+count = 100
+restockCycles = 1
+

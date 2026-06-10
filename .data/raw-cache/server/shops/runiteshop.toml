@@ -1,0 +1,64 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.runiteshop"
+name = "Scavvo's Rune Store"
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1000
+buyMultiplier = 600
+
+size = 9
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.rune_plateskirt"
+count = 1
+restockCycles = 12000
+
+[[inventory.stock]]
+obj = "obj.rune_platelegs"
+count = 1
+restockCycles = 11500
+
+[[inventory.stock]]
+obj = "obj.rune_mace"
+count = 1
+restockCycles = 7000
+
+[[inventory.stock]]
+obj = "obj.rune_chainbody"
+count = 1
+restockCycles = 15000
+
+[[inventory.stock]]
+obj = "obj.rune_longsword"
+count = 1
+restockCycles = 14000
+
+[[inventory.stock]]
+obj = "obj.rune_sword"
+count = 1
+restockCycles = 10000
+
+[[inventory.stock]]
+obj = "obj.dragonhide_chaps"
+count = 1
+restockCycles = 500
+
+[[inventory.stock]]
+obj = "obj.dragon_vambraces"
+count = 1
+restockCycles = 500
+
+[[inventory.stock]]
+obj = "obj.coif"
+count = 2
+restockCycles = 1000
+

@@ -1,0 +1,212 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.poh_costume_room_armour_inv"
+
+scope = "Shared"
+stack = "Always"
+
+delta = 0
+
+size = 39
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.castlewars_med_helm"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.castlewars_full_helm"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.castlewars_armour_body"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.castlewars_armour_legs"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.castlewars_armour_skirt"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.castlewars_boots"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.castlewars_shield"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.castlewars_sword"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.castlewars_med_helm_2"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.castlewars_full_helm_2"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.castlewars_armour_body_2"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.castlewars_armour_legs_2"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.castlewars_armour_skirt_2"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.castlewars_boots_2"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.castlewars_shield_2"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.castlewars_sword_2"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.castlewars_med_helm_3"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.castlewars_full_helm_3"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.castlewars_armour_body_3"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.castlewars_armour_legs_3"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.castlewars_armour_skirt_3"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.castlewars_boots_3"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.castlewars_shield_3"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.castlewars_sword_3"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.castlewars_hood_zamorak_prize"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.castlewars_cloak_zamorak_prize"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.castlewars_hood_saradomin_prize"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.castlewars_cloak_saradomin_prize"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.castlewars_saradomin_banner"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.castlewars_zamorak_banner"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.castlewars_mage_hat"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.castlewars_mage_top"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.castlewars_mage_legs"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.castlewars_range_top"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.castlewars_range_legs"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.castlewars_range_quiver"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.castlewars_saradomin_halo"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.castlewars_zamorak_halo"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.castlewars_guthix_halo"
+count = 0
+restockCycles = 100
+

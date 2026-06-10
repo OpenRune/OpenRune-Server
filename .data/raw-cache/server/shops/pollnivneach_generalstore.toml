@@ -1,0 +1,105 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.pollnivneach_generalstore"
+name = "Pollnivneach general store."
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1000
+buyMultiplier = 550
+delta = 10
+
+size = 17
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.pot_empty"
+count = 3
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.jug_empty"
+count = 2
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.pack_jug_empty"
+count = 5
+restockCycles = 15
+
+[[inventory.stock]]
+obj = "obj.water_skin3"
+count = 20
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.desert_shirt"
+count = 3
+restockCycles = 12
+
+[[inventory.stock]]
+obj = "obj.desert_boots"
+count = 2
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.bucket_empty"
+count = 12
+restockCycles = 400
+
+[[inventory.stock]]
+obj = "obj.pack_bucket"
+count = 15
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.feud_karidian_fakebeard"
+count = 11
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.feud_karidian_turban"
+count = 12
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.cheese"
+count = 5
+restockCycles = 200
+
+[[inventory.stock]]
+obj = "obj.lime"
+count = 5
+restockCycles = 200
+
+[[inventory.stock]]
+obj = "obj.orange"
+count = 5
+restockCycles = 200
+
+[[inventory.stock]]
+obj = "obj.tomato"
+count = 5
+restockCycles = 200
+
+[[inventory.stock]]
+obj = "obj.jug_water"
+count = 5
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.bowl_water"
+count = 7
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.bucket_water"
+count = 8
+restockCycles = 10
+

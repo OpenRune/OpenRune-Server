@@ -1,0 +1,50 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.frisd_cook"
+name = "Keepa Kettilon's store"
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1100
+buyMultiplier = 700
+delta = 30
+
+size = 6
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.tuna"
+count = 20
+restockCycles = 5
+
+[[inventory.stock]]
+obj = "obj.salmon"
+count = 20
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.cod"
+count = 20
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.lobster"
+count = 10
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.swordfish"
+count = 0
+restockCycles = 5
+
+[[inventory.stock]]
+obj = "obj.shark"
+count = 0
+restockCycles = 1
+

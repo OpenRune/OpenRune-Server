@@ -1,0 +1,60 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.roguetrader_alim_runeretail_inv"
+name = "Ali's Discount Wares."
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1300
+buyMultiplier = 500
+delta = 0
+
+size = 8
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.waterrune"
+count = 20
+restockCycles = 50
+
+[[inventory.stock]]
+obj = "obj.firerune"
+count = 20
+restockCycles = 50
+
+[[inventory.stock]]
+obj = "obj.airrune"
+count = 20
+restockCycles = 50
+
+[[inventory.stock]]
+obj = "obj.earthrune"
+count = 20
+restockCycles = 50
+
+[[inventory.stock]]
+obj = "obj.pack_firerune"
+count = 3
+restockCycles = 70
+
+[[inventory.stock]]
+obj = "obj.pack_waterrune"
+count = 3
+restockCycles = 70
+
+[[inventory.stock]]
+obj = "obj.pack_airrune"
+count = 3
+restockCycles = 70
+
+[[inventory.stock]]
+obj = "obj.pack_earthrune"
+count = 3
+restockCycles = 70
+

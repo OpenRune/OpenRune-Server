@@ -1,0 +1,50 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.karamja_fishrestaurant"
+name = "The Shrimp and Parrot"
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1300
+buyMultiplier = 750
+delta = 30
+
+size = 6
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.herring"
+count = 5
+restockCycles = 900
+
+[[inventory.stock]]
+obj = "obj.cod"
+count = 5
+restockCycles = 1100
+
+[[inventory.stock]]
+obj = "obj.tuna"
+count = 5
+restockCycles = 2300
+
+[[inventory.stock]]
+obj = "obj.lobster"
+count = 3
+restockCycles = 2600
+
+[[inventory.stock]]
+obj = "obj.swordfish"
+count = 2
+restockCycles = 2900
+
+[[inventory.stock]]
+obj = "obj.tbwt_cooked_karambwan"
+count = 3
+restockCycles = 900
+

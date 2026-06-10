@@ -1,0 +1,49 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.mcannonshop"
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1070
+buyMultiplier = 400
+delta = 10
+
+size = 6
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.twpart2"
+count = 5
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.twpart1"
+count = 5
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.twpart4"
+count = 5
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.twpart3"
+count = 5
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.mcannonbook"
+count = 5
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.ammo_mould"
+count = 5
+restockCycles = 100
+

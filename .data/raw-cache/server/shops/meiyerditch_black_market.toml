@@ -1,0 +1,50 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.meiyerditch_black_market"
+name = "Trader Sven's Black-market Goods."
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1300
+buyMultiplier = 400
+delta = 30
+
+size = 6
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.myreque_citizen_torso"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.myreque_citizen_legs"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.myreque_citizen_feet"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.vyre_torso"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.vyre_legs"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.vyre_shoes"
+count = 10
+restockCycles = 100
+

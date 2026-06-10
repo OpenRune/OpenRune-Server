@@ -1,0 +1,90 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.darkruneshop_crap"
+name = "Battle Runes"
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1300
+buyMultiplier = 400
+delta = 30
+
+size = 14
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.firerune"
+count = 100
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.waterrune"
+count = 100
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.airrune"
+count = 100
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.earthrune"
+count = 100
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.mindrune"
+count = 100
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.bodyrune"
+count = 100
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.chaosrune"
+count = 50
+restockCycles = 25
+
+[[inventory.stock]]
+obj = "obj.deathrune"
+count = 50
+restockCycles = 50
+
+[[inventory.stock]]
+obj = "obj.pack_firerune"
+count = 35
+restockCycles = 15
+
+[[inventory.stock]]
+obj = "obj.pack_waterrune"
+count = 35
+restockCycles = 15
+
+[[inventory.stock]]
+obj = "obj.pack_airrune"
+count = 35
+restockCycles = 15
+
+[[inventory.stock]]
+obj = "obj.pack_earthrune"
+count = 35
+restockCycles = 15
+
+[[inventory.stock]]
+obj = "obj.pack_mindrune"
+count = 25
+restockCycles = 25
+
+[[inventory.stock]]
+obj = "obj.pack_chaosrune"
+count = 25
+restockCycles = 25
+

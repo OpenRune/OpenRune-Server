@@ -1,0 +1,170 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.tai_bwo_wannai_cooperative"
+name = "Gabooty's Tai Bwo Wannai Cooperative."
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1200
+buyMultiplier = 600
+delta = 20
+
+size = 30
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.tbw_villager_shirt_cream"
+count = 50
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.tbw_villager_robe_cream"
+count = 50
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.tbw_villager_hat_cream"
+count = 50
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.tbw_villager_sandals_cream"
+count = 50
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.tbw_villager_armband_cream"
+count = 50
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.machette_opal"
+count = 50
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.machette_jade"
+count = 50
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.machette_redtopaz"
+count = 50
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.tbw_villager_shirt_blue"
+count = 50
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.tbw_villager_robe_blue"
+count = 50
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.tbw_villager_hat_blue"
+count = 50
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.tbw_villager_sandals_blue"
+count = 50
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.tbw_villager_armband_blue"
+count = 50
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.uncut_opal"
+count = 0
+restockCycles = 50
+
+[[inventory.stock]]
+obj = "obj.uncut_jade"
+count = 0
+restockCycles = 50
+
+[[inventory.stock]]
+obj = "obj.uncut_red_topaz"
+count = 0
+restockCycles = 50
+
+[[inventory.stock]]
+obj = "obj.tbw_villager_shirt_yellow"
+count = 50
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.tbw_villager_robe_yellow"
+count = 50
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.tbw_villager_hat_yellow"
+count = 50
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.tbw_villager_sandals_yellow"
+count = 50
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.tbw_villager_armband_yellow"
+count = 50
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.opal"
+count = 0
+restockCycles = 50
+
+[[inventory.stock]]
+obj = "obj.jade"
+count = 0
+restockCycles = 50
+
+[[inventory.stock]]
+obj = "obj.red_topaz"
+count = 0
+restockCycles = 50
+
+[[inventory.stock]]
+obj = "obj.tbw_villager_shirt_purple"
+count = 50
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.tbw_villager_robe_purple"
+count = 50
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.tbw_villager_hat_purple"
+count = 50
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.tbw_villager_sandals_purple"
+count = 50
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.tbw_villager_armband_purple"
+count = 50
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.village_rare_tuber"
+count = 0
+restockCycles = 15
+

@@ -1,0 +1,40 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.championshop"
+name = "Valaine's Shop of Champions."
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1300
+buyMultiplier = 400
+delta = 30
+
+size = 4
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.blue_cape"
+count = 2
+restockCycles = 1000
+
+[[inventory.stock]]
+obj = "obj.black_full_helm"
+count = 1
+restockCycles = 1000
+
+[[inventory.stock]]
+obj = "obj.black_platelegs"
+count = 1
+restockCycles = 20000
+
+[[inventory.stock]]
+obj = "obj.adamant_platebody"
+count = 1
+restockCycles = 8000
+

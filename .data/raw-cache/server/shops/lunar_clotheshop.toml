@@ -1,0 +1,65 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.lunar_clotheshop"
+name = "Moon Clan Fine Clothes."
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1000
+buyMultiplier = 550
+delta = 10
+
+size = 9
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.lunar_moonclan_headgear"
+count = 9
+restockCycles = 800
+
+[[inventory.stock]]
+obj = "obj.lunar_moonclan_hat"
+count = 10
+restockCycles = 800
+
+[[inventory.stock]]
+obj = "obj.lunar_moonclan_torso"
+count = 10
+restockCycles = 800
+
+[[inventory.stock]]
+obj = "obj.lunar_moonclan_skirt"
+count = 10
+restockCycles = 800
+
+[[inventory.stock]]
+obj = "obj.lunar_moonclan_gloves"
+count = 9
+restockCycles = 800
+
+[[inventory.stock]]
+obj = "obj.lunar_moonclan_boots"
+count = 12
+restockCycles = 800
+
+[[inventory.stock]]
+obj = "obj.lunar_moonclan_cape"
+count = 15
+restockCycles = 800
+
+[[inventory.stock]]
+obj = "obj.needle"
+count = 50
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.thread"
+count = 500
+restockCycles = 10
+

@@ -1,0 +1,95 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.goldshop"
+name = "Grum's Gold Exchange."
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1000
+buyMultiplier = 700
+delta = 20
+
+size = 15
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.gold_ring"
+count = 0
+restockCycles = 1000
+
+[[inventory.stock]]
+obj = "obj.sapphire_ring"
+count = 0
+restockCycles = 1000
+
+[[inventory.stock]]
+obj = "obj.emerald_ring"
+count = 0
+restockCycles = 2000
+
+[[inventory.stock]]
+obj = "obj.ruby_ring"
+count = 0
+restockCycles = 2000
+
+[[inventory.stock]]
+obj = "obj.diamond_ring"
+count = 0
+restockCycles = 3000
+
+[[inventory.stock]]
+obj = "obj.gold_necklace"
+count = 0
+restockCycles = 1000
+
+[[inventory.stock]]
+obj = "obj.sapphire_necklace"
+count = 0
+restockCycles = 2000
+
+[[inventory.stock]]
+obj = "obj.emerald_necklace"
+count = 0
+restockCycles = 2000
+
+[[inventory.stock]]
+obj = "obj.ruby_necklace"
+count = 0
+restockCycles = 3000
+
+[[inventory.stock]]
+obj = "obj.diamond_necklace"
+count = 0
+restockCycles = 3000
+
+[[inventory.stock]]
+obj = "obj.strung_gold_amulet"
+count = 0
+restockCycles = 1000
+
+[[inventory.stock]]
+obj = "obj.strung_sapphire_amulet"
+count = 0
+restockCycles = 2000
+
+[[inventory.stock]]
+obj = "obj.strung_emerald_amulet"
+count = 0
+restockCycles = 3000
+
+[[inventory.stock]]
+obj = "obj.strung_ruby_amulet"
+count = 0
+restockCycles = 4000
+
+[[inventory.stock]]
+obj = "obj.strung_diamond_amulet"
+count = 0
+restockCycles = 5000
+

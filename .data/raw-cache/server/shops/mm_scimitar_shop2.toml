@@ -1,0 +1,45 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.mm_scimitar_shop2"
+name = "Daga's Scimitar Smithy"
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1000
+buyMultiplier = 500
+delta = 20
+
+size = 5
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.bronze_scimitar"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.iron_scimitar"
+count = 10
+restockCycles = 200
+
+[[inventory.stock]]
+obj = "obj.steel_scimitar"
+count = 8
+restockCycles = 600
+
+[[inventory.stock]]
+obj = "obj.mithril_scimitar"
+count = 6
+restockCycles = 400
+
+[[inventory.stock]]
+obj = "obj.dragon_scimitar"
+count = 0
+restockCycles = 500
+

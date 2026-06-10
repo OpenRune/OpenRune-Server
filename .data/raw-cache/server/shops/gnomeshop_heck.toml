@@ -1,0 +1,105 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.gnomeshop_heck"
+name = "Funch's Fine Groceries"
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1000
+buyMultiplier = 550
+delta = 10
+
+size = 17
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.brandy"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.gin"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.vodka"
+count = 10
+restockCycles = 1
+
+[[inventory.stock]]
+obj = "obj.whisky"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.pineapple"
+count = 10
+restockCycles = 200
+
+[[inventory.stock]]
+obj = "obj.equa_leaves"
+count = 20
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.orange"
+count = 20
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.lemon"
+count = 20
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.lime"
+count = 20
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.dwellberries"
+count = 5
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.cocktail_shaker"
+count = 10
+restockCycles = 200
+
+[[inventory.stock]]
+obj = "obj.chocolate_bar"
+count = 20
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.chocolate_dust"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.pot_of_cream"
+count = 5
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.bucket_milk"
+count = 5
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.knife"
+count = 5
+restockCycles = 200
+
+[[inventory.stock]]
+obj = "obj.cocktail_glass_empty"
+count = 20
+restockCycles = 10
+

@@ -1,0 +1,105 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.salvager_overlook_general_store"
+name = "Salvager Overlook General Store"
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1300
+buyMultiplier = 400
+delta = 30
+
+size = 17
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.bronze_pickaxe"
+count = 5
+restockCycles = 20
+
+[[inventory.stock]]
+obj = "obj.bronze_axe"
+count = 5
+restockCycles = 20
+
+[[inventory.stock]]
+obj = "obj.chisel"
+count = 5
+restockCycles = 20
+
+[[inventory.stock]]
+obj = "obj.spade"
+count = 5
+restockCycles = 20
+
+[[inventory.stock]]
+obj = "obj.hammer"
+count = 5
+restockCycles = 20
+
+[[inventory.stock]]
+obj = "obj.knife"
+count = 5
+restockCycles = 20
+
+[[inventory.stock]]
+obj = "obj.tinderbox"
+count = 5
+restockCycles = 20
+
+[[inventory.stock]]
+obj = "obj.fishing_rod"
+count = 5
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.rope"
+count = 10
+restockCycles = 30
+
+[[inventory.stock]]
+obj = "obj.swamppaste"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.pot_empty"
+count = 15
+restockCycles = 20
+
+[[inventory.stock]]
+obj = "obj.jug_empty"
+count = 15
+restockCycles = 20
+
+[[inventory.stock]]
+obj = "obj.bucket_empty"
+count = 15
+restockCycles = 20
+
+[[inventory.stock]]
+obj = "obj.vial_empty"
+count = 50
+restockCycles = 150
+
+[[inventory.stock]]
+obj = "obj.pack_jug_empty"
+count = 5
+restockCycles = 30
+
+[[inventory.stock]]
+obj = "obj.pack_bucket"
+count = 5
+restockCycles = 30
+
+[[inventory.stock]]
+obj = "obj.pack_vial_empty"
+count = 5
+restockCycles = 100
+

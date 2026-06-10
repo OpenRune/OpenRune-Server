@@ -1,0 +1,40 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.frisd_yak_contraband"
+name = "Contraband yak produce."
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1100
+buyMultiplier = 700
+delta = 30
+
+size = 4
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.yak_hide"
+count = 25
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.yak_meat_raw"
+count = 50
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.yak_hair"
+count = 50
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.yak_hide_cured"
+count = 10
+restockCycles = 100
+

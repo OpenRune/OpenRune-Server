@@ -1,0 +1,145 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.rasoolshop1"
+name = "Rasolo the Wandering Merchant"
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 2000
+buyMultiplier = 50
+delta = 30
+
+size = 25
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.spinach_roll"
+count = 5
+restockCycles = 20
+
+[[inventory.stock]]
+obj = "obj.cocktail_guide"
+count = 1
+restockCycles = 500
+
+[[inventory.stock]]
+obj = "obj.gnome_hat_blue"
+count = 1
+restockCycles = 500
+
+[[inventory.stock]]
+obj = "obj.dragon_dagger"
+count = 1
+restockCycles = 500
+
+[[inventory.stock]]
+obj = "obj.newcomer_map"
+count = 20
+restockCycles = 500
+
+[[inventory.stock]]
+obj = "obj.bucket_bailing"
+count = 1
+restockCycles = 500
+
+[[inventory.stock]]
+obj = "obj.swamppaste"
+count = 1
+restockCycles = 500
+
+[[inventory.stock]]
+obj = "obj.poison"
+count = 1
+restockCycles = 500
+
+[[inventory.stock]]
+obj = "obj.papyrus"
+count = 5
+restockCycles = 500
+
+[[inventory.stock]]
+obj = "obj.machette"
+count = 1
+restockCycles = 500
+
+[[inventory.stock]]
+obj = "obj.holy_symbol_mould"
+count = 1
+restockCycles = 500
+
+[[inventory.stock]]
+obj = "obj.sickle_mould"
+count = 1
+restockCycles = 500
+
+[[inventory.stock]]
+obj = "obj.water_skin4"
+count = 1
+restockCycles = 500
+
+[[inventory.stock]]
+obj = "obj.desert_boots"
+count = 1
+restockCycles = 500
+
+[[inventory.stock]]
+obj = "obj.shantay_pass"
+count = 1
+restockCycles = 500
+
+[[inventory.stock]]
+obj = "obj.horsey_black"
+count = 10
+restockCycles = 20
+
+[[inventory.stock]]
+obj = "obj.empty_dye_bottle"
+count = 10
+restockCycles = 20
+
+[[inventory.stock]]
+obj = "obj.wolfenboots_grey"
+count = 1
+restockCycles = 500
+
+[[inventory.stock]]
+obj = "obj.greenmans_ale"
+count = 1
+restockCycles = 500
+
+[[inventory.stock]]
+obj = "obj.viking_cloak_pink"
+count = 1
+restockCycles = 500
+
+[[inventory.stock]]
+obj = "obj.keg_of_beer"
+count = 20
+restockCycles = 20
+
+[[inventory.stock]]
+obj = "obj.flamtaer_hammer"
+count = 1
+restockCycles = 500
+
+[[inventory.stock]]
+obj = "obj.oliveoil3"
+count = 2
+restockCycles = 500
+
+[[inventory.stock]]
+obj = "obj.limestonebrick"
+count = 2
+restockCycles = 500
+
+[[inventory.stock]]
+obj = "obj.mcannonbook"
+count = 1
+restockCycles = 500
+

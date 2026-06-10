@@ -1,0 +1,50 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.anma_shop"
+name = "Ava's Odds and Ends"
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1300
+buyMultiplier = 400
+delta = 30
+
+size = 6
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.feather"
+count = 1000
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.pack_feather"
+count = 100
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.iron_arrow"
+count = 40
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.steel_arrow"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.iron_arrowheads"
+count = 30
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.steel_arrowheads"
+count = 20
+restockCycles = 100
+

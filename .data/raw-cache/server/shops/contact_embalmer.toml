@@ -1,0 +1,50 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.contact_embalmer"
+name = "The Spice Is Right."
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1500
+buyMultiplier = 250
+delta = 10
+
+size = 6
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.pot_empty"
+count = 5
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.gnome_spice"
+count = 10
+restockCycles = 300
+
+[[inventory.stock]]
+obj = "obj.curry_leaf"
+count = 0
+restockCycles = 12
+
+[[inventory.stock]]
+obj = "obj.ics_little_pileofsalt"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.ics_little_sap_bucket"
+count = 0
+restockCycles = 400
+
+[[inventory.stock]]
+obj = "obj.3doseantipoison"
+count = 20
+restockCycles = 100
+

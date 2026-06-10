@@ -1,0 +1,30 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.dragonaxeshop"
+name = "Happy Heroes' H'emporium."
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1000
+buyMultiplier = 550
+delta = 30
+
+size = 2
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.dragon_battleaxe"
+count = 1
+restockCycles = 500
+
+[[inventory.stock]]
+obj = "obj.dragon_mace"
+count = 1
+restockCycles = 500
+

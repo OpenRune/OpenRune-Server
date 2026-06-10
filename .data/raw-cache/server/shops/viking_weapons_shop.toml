@@ -1,16 +1,16 @@
 [[inventory]]
 isServerOnly = true
-id = "inv.generalshop1"
-name = "Al Kharid General Store"
+id = "inv.viking_weapons_shop"
+name = "Skulgrimen's Battle Gear"
 
 scope = "Shared"
 stack = "Always"
 
 sellMultiplier = 1300
-buyMultiplier = 400
+buyMultiplier = 700
 delta = 30
 
-size = 13
+size = 11
 
 protect = false
 runWeight = false
@@ -19,67 +19,57 @@ allStock = false
 placeholders = false
 
 [[inventory.stock]]
-obj = "obj.pot_empty"
+obj = "obj.bronze_warhammer"
 count = 5
-restockCycles = 10
-
-[[inventory.stock]]
-obj = "obj.jug_empty"
-count = 2
 restockCycles = 100
 
 [[inventory.stock]]
-obj = "obj.pack_jug_empty"
-count = 5
-restockCycles = 20
-
-[[inventory.stock]]
-obj = "obj.shears"
-count = 2
+obj = "obj.iron_warhammer"
+count = 4
 restockCycles = 100
 
 [[inventory.stock]]
-obj = "obj.bucket_empty"
+obj = "obj.steel_warhammer"
 count = 3
-restockCycles = 10
+restockCycles = 100
 
 [[inventory.stock]]
-obj = "obj.pack_bucket"
-count = 15
-restockCycles = 10
+obj = "obj.black_warhammer"
+count = 3
+restockCycles = 100
 
 [[inventory.stock]]
-obj = "obj.bowl_empty"
-count = 2
-restockCycles = 50
-
-[[inventory.stock]]
-obj = "obj.cake_tin"
-count = 2
-restockCycles = 50
-
-[[inventory.stock]]
-obj = "obj.tinderbox"
+obj = "obj.mithril_warhammer"
 count = 2
 restockCycles = 100
 
 [[inventory.stock]]
-obj = "obj.chisel"
-count = 2
+obj = "obj.adamnt_warhammer"
+count = 1
 restockCycles = 100
 
 [[inventory.stock]]
-obj = "obj.hammer"
+obj = "obj.rune_warhammer"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.viking_helmet_range"
 count = 5
 restockCycles = 100
 
 [[inventory.stock]]
-obj = "obj.newcomer_map"
+obj = "obj.viking_helmet_crush"
 count = 5
 restockCycles = 100
 
 [[inventory.stock]]
-obj = "obj.sos_security_book"
+obj = "obj.viking_helmet_slash"
+count = 5
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.viking_helmet_magic"
 count = 5
 restockCycles = 100
 

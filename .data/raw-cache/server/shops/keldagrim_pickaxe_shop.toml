@@ -1,0 +1,45 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.keldagrim_pickaxe_shop"
+name = "Pickaxe-Is-Mine"
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1300
+buyMultiplier = 550
+delta = 30
+
+size = 5
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.bronze_pickaxe"
+count = 6
+restockCycles = 50
+
+[[inventory.stock]]
+obj = "obj.steel_pickaxe"
+count = 4
+restockCycles = 200
+
+[[inventory.stock]]
+obj = "obj.mithril_pickaxe"
+count = 3
+restockCycles = 300
+
+[[inventory.stock]]
+obj = "obj.adamant_pickaxe"
+count = 2
+restockCycles = 500
+
+[[inventory.stock]]
+obj = "obj.rune_pickaxe"
+count = 1
+restockCycles = 600
+

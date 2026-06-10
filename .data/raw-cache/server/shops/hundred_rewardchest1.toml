@@ -1,0 +1,30 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.hundred_rewardchest1"
+name = "Culinaromancer's Chest"
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1300
+buyMultiplier = 400
+delta = 20
+
+size = 2
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.hundred_gauntlets_level_1"
+count = 30
+restockCycles = 1
+
+[[inventory.stock]]
+obj = "obj.hundred_spoon"
+count = 5
+restockCycles = 100
+
