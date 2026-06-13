@@ -22,7 +22,7 @@ class CannonBallScript : PluginScript() {
 
     override fun ScriptContext.startup() {
         allCannonBalls.forEach { ball ->
-            onOpLocCategoryU("category.furnace", ball.bar.internalName) {
+            onOpLocCategoryU("category.furnace", ball.input.internalName) {
                 if (hasAmmoMould()) {
                     startSmelting(it, ball)
                 }
@@ -54,7 +54,7 @@ class CannonBallScript : PluginScript() {
         amount: Int,
     ) {
         val barsPerSmelt = barsPerSmelt(inv)
-        val maxSmelts = minOf(amount, inv.count(ball.bar.internalName) / barsPerSmelt)
+        val maxSmelts = minOf(amount, inv.count(ball.input.internalName) / barsPerSmelt)
         if (maxSmelts <= 0) {
             return
         }
@@ -91,13 +91,13 @@ class CannonBallScript : PluginScript() {
     private suspend fun ProtectedAccess.performSmelt(ball: SmithingCannonBallsRow) {
         val barsPerSmelt = barsPerSmelt(inv)
         val ballsPerSmelt = ballsPerSmelt(inv)
-        val barName = SmithingUtils.itemName(ball.bar, "bar")
+        val barName = SmithingUtils.itemName(ball.input, "bar")
         val ballName = SmithingUtils.itemName(ball.output, "cannonball")
 
         anim("seq.human_furnace")
         soundSynth("synth.furnace")
 
-        invDel(inv, ball.bar.internalName, barsPerSmelt)
+        invDel(inv, ball.input.internalName, barsPerSmelt)
 
         mes("You heat the $barName into a liquid state.")
         delay(2)
@@ -125,9 +125,9 @@ class CannonBallScript : PluginScript() {
 
         val barsPerSmelt = barsPerSmelt(inv)
         val ballName = ball.output.name
-        val barName = ball.bar.name
+        val barName = ball.input.name
 
-        if (inv.count(ball.bar.internalName) < barsPerSmelt) {
+        if (inv.count(ball.input.internalName) < barsPerSmelt) {
             mesbox(
                 "You need ${SmithingUtils.countLiteral(barsPerSmelt)} $barName to make " +
                     SmithingUtils.prefixAn(ballName) + ".",
@@ -137,7 +137,7 @@ class CannonBallScript : PluginScript() {
 
         return SmithingUtils.requireSmithingLevel(
             this,
-            ball.level,
+            ball.statReq.first().t1,
             "smelt ${SmithingUtils.prefixAn(ballName)}",
         )
     }
@@ -180,7 +180,7 @@ internal fun ProtectedAccess.hasCannonballFurnaceMould(): Boolean =
 /** @return `true` if a cannonball smelt menu was opened. */
 internal suspend fun ProtectedAccess.openCannonballFurnaceMenu(locInternal: String): Boolean {
     val allCannonBalls = SmithingCannonBallsRow.all()
-    val available = allCannonBalls.filter { inv.contains(it.bar.internalName) }
+    val available = allCannonBalls.filter { inv.contains(it.input.internalName) }
     if (available.isEmpty()) {
         return false
     }
@@ -194,13 +194,13 @@ internal suspend fun ProtectedAccess.openCannonballFurnaceMenu(locInternal: Stri
                 available.map { ball ->
                     SkillMultiEntry(
                         ball.output.internalName,
-                        listOf(Material(ball.bar.internalName)),
+                        listOf(Material(ball.input.internalName)),
                     )
                 },
             maxCountProvider = { inventory, entry ->
                 val ball = ballsByOutput[entry.internal] ?: return@SkillMultiConfig 0
                 val barsPerSmelt = cannonballBarsPerSmelt(inventory)
-                inventory.count(ball.bar.internalName) / barsPerSmelt
+                inventory.count(ball.input.internalName) / barsPerSmelt
             },
         ),
     ) { selection ->
@@ -219,7 +219,7 @@ private suspend fun ProtectedAccess.startCannonballFurnaceSmelting(
     amount: Int,
 ) {
     val barsPerSmelt = cannonballBarsPerSmelt(inv)
-    val maxSmelts = minOf(amount, inv.count(ball.bar.internalName) / barsPerSmelt)
+    val maxSmelts = minOf(amount, inv.count(ball.input.internalName) / barsPerSmelt)
     if (maxSmelts <= 0) {
         return
     }

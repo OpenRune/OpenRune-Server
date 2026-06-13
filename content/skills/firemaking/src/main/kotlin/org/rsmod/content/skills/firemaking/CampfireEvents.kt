@@ -64,7 +64,7 @@ class CampfireEvents @Inject constructor(
             onOpLoc3(camp) { anim("seq.forestry_sitting_tea_loop") }
 
             FiremakingLogsRow.all().forEach { log ->
-                onOpLocU(camp, log.item.internalName) {
+                onOpLocU(camp, log.input.internalName) {
                     tendCampfireWithLog(it.vis, log)
                 }
             }
@@ -72,7 +72,7 @@ class CampfireEvents @Inject constructor(
 
         basicFires.forEach { fire ->
             FiremakingLogsRow.all().forEach { log ->
-                onOpLocU(fire, log.item.internalName) {
+                onOpLocU(fire, log.input.internalName) {
                     lightCampfire(it, log)
                 }
             }
@@ -90,10 +90,10 @@ class CampfireEvents @Inject constructor(
             return
         }
 
-        val fireObject = campfireLocForColoredLog[log.item.internalName] ?: "loc.forestry_fire"
+        val fireObject = campfireLocForColoredLog[log.input.internalName] ?: "loc.forestry_fire"
 
         locRepo.del(fire, Int.MAX_VALUE)
-        invDel(player.inv, log.item.internalName, 1)
+        invDel(player.inv, log.input.internalName, 1)
 
         spawnCampfire(
             fire,
@@ -133,7 +133,7 @@ class CampfireEvents @Inject constructor(
         val xpModifier = xpMods.get(player, "stat.firemaking")
         val xp = task.log.xp * xpModifier
         statAdvance("stat.firemaking", xp)
-        invDel(player.inv, task.log.item.internalName, 1)
+        invDel(player.inv, task.log.input.internalName, 1)
 
         spotanimMap(worldRepo, "spotanim.forestry_campfire_burning_spotanim", camp.coords)
 
@@ -159,7 +159,7 @@ class CampfireEvents @Inject constructor(
 
     private fun ProtectedAccess.canTend(log: FiremakingLogsRow, camp: BoundLocInfo): Boolean {
         if (!hasTinderboxOrMes()) return false
-        if (inv.count(log.item.internalName) <= 0) return false
+        if (inv.count(log.input.internalName) <= 0) return false
         if (!locRepo.findLoc(camp.coords, camp.internalName)) return false
         return hasFiremakingLevelOrMes(log)
     }
@@ -171,8 +171,8 @@ class CampfireEvents @Inject constructor(
     }
 
     private fun ProtectedAccess.hasFiremakingLevelOrMes(log: FiremakingLogsRow): Boolean {
-        if (player.firemakingLvl >= log.level) return true
-        player.mes("You need a Firemaking level of ${log.level} to burn ${log.item.name} logs.")
+        if (player.firemakingLvl >= log.statReq.first().t1) return true
+        player.mes("You need a Firemaking level of ${log.statReq.first().t1} to burn ${log.input.name} logs.")
         return false
     }
 
@@ -187,9 +187,9 @@ class CampfireEvents @Inject constructor(
         var chosen: FiremakingLogsRow? = null
 
         openSkillMulti(SkillMultiConfig(verb = "burn", entries = logs.map {
-          SkillMultiEntry(it.item.internalName)
+          SkillMultiEntry(it.input.internalName)
         }),) { selection ->
-            chosen = logs.firstOrNull { it.item.internalName == selection.entry.internal }
+            chosen = logs.firstOrNull { it.input.internalName == selection.entry.internal }
         }
 
         return chosen
@@ -197,7 +197,7 @@ class CampfireEvents @Inject constructor(
 
     private fun ProtectedAccess.logsCarriedForTending(): List<FiremakingLogsRow> =
         FiremakingLogsRow.all().filter {
-            player.firemakingLvl >= it.level && inv.count(it.item.internalName) > 0
+            player.firemakingLvl >= it.statReq.first().t1 && inv.count(it.input.internalName) > 0
         }
 
 

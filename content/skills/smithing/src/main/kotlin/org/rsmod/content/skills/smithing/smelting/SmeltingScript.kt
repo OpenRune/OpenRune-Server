@@ -107,9 +107,9 @@ class SmeltingScript @Inject constructor(private val xpMods: XpModifiers, ) : Pl
 
     private fun ProtectedAccess.smeltEntry(bar: SmithingBarsRow): SkillMultiEntry {
         val materials = buildList {
-            add(Material(bar.inputPrimary.internalName, bar.inputPrimaryAmt))
-            val secondary = bar.inputSecondary
-            val secondaryAmt = bar.inputSecondaryAmt
+            add(Material(bar.input.first().internalName, bar.inputAmount.first()))
+            val secondary = bar.input.getOrNull(1)
+            val secondaryAmt = bar.input.getOrNull(1)?.let { bar.inputAmount.getOrNull(1) }
             if (secondary != null && secondaryAmt != null && secondaryAmt > 0) {
                 add(Material(secondary.internalName, effectiveCoalAmount(player, inv, bar, regularFurnace = true)))
             }
@@ -196,9 +196,9 @@ class SmeltingScript @Inject constructor(private val xpMods: XpModifiers, ) : Pl
         soundSynth("synth.furnace")
         delay(2)
 
-        val primaryAmt = bar.inputPrimaryAmt
-        val secondary = bar.inputSecondary
-        val requiresSecondary = secondary != null && (bar.inputSecondaryAmt ?: 0) > 0
+        val primaryAmt = bar.inputAmount.first()
+        val secondary = bar.input.getOrNull(1)
+        val requiresSecondary = secondary != null && (bar.input.getOrNull(1)?.let { bar.inputAmount.getOrNull(1) } ?: 0) > 0
         val effectiveSecondaryAmt =
             if (requiresSecondary) {
                 effectiveCoalAmount(player, inv, bar, regularFurnace)
@@ -206,7 +206,7 @@ class SmeltingScript @Inject constructor(private val xpMods: XpModifiers, ) : Pl
                 0
             }
 
-        val primaryRemoved = invDel(inv, bar.inputPrimary.internalName, primaryAmt).success
+        val primaryRemoved = invDel(inv, bar.input.first().internalName, primaryAmt).success
         val secondaryRemoved =
             if (!requiresSecondary) {
                 true
@@ -235,7 +235,7 @@ class SmeltingScript @Inject constructor(private val xpMods: XpModifiers, ) : Pl
             if (invAdd(inv, bar.output.internalName, outputCount).success) {
                 val xp = SmithingSmeltXp.resolve(player, inv, bar, isSuperHeat, xpMods, regularFurnace)
                 statAdvance("stat.smithing", xp)
-                val oreName = SmithingUtils.itemName(bar.inputPrimary, "ore")
+                val oreName = SmithingUtils.itemName(bar.input.first(), "ore")
                 mes("You smelt the $oreName in the furnace.")
                 if (outputCount > 1) {
                     val barName = SmithingUtils.itemName(bar.output, "bar")
@@ -263,13 +263,13 @@ class SmeltingScript @Inject constructor(private val xpMods: XpModifiers, ) : Pl
     }
 
     private suspend fun ProtectedAccess.canSmelt(bar: SmithingBarsRow, regularFurnace: Boolean = true): Boolean {
-        val primaryAmt = bar.inputPrimaryAmt
-        val secondary = bar.inputSecondary
+        val primaryAmt = bar.inputAmount.first()
+        val secondary = bar.input.getOrNull(1)
         val secondaryAmt = effectiveCoalAmount(player, inv, bar, regularFurnace)
-        val primaryName = SmithingUtils.itemName(bar.inputPrimary, "ore")
+        val primaryName = SmithingUtils.itemName(bar.input.first(), "ore")
 
-        val hasPrimary = inv.count(bar.inputPrimary.internalName) >= primaryAmt
-        val requiresSecondary = secondary != null && (bar.inputSecondaryAmt ?: 0) > 0
+        val hasPrimary = inv.count(bar.input.first().internalName) >= primaryAmt
+        val requiresSecondary = secondary != null && (bar.input.getOrNull(1)?.let { bar.inputAmount.getOrNull(1) } ?: 0) > 0
         val hasSecondary = !requiresSecondary || inv.count(secondary.internalName) >= secondaryAmt
 
         if (!hasPrimary || !hasSecondary) {
@@ -289,17 +289,17 @@ class SmeltingScript @Inject constructor(private val xpMods: XpModifiers, ) : Pl
 
         return SmithingUtils.requireSmithingLevel(
             this,
-            bar.level,
+            bar.statReq.first().t1,
             "smelt $primaryName",
         )
     }
 
     private fun ProtectedAccess.hasItemsForBar(bar: SmithingBarsRow, regularFurnace: Boolean = true): Boolean {
-        val primaryAmt = bar.inputPrimaryAmt
+        val primaryAmt = bar.inputAmount.first()
         val secondaryAmt = effectiveCoalAmount(player, inv, bar, regularFurnace)
-        val secondary = bar.inputSecondary
-        val hasPrimary = inv.count(bar.inputPrimary.internalName) >= primaryAmt
-        val requiresSecondary = secondary != null && (bar.inputSecondaryAmt ?: 0) > 0
+        val secondary = bar.input.getOrNull(1)
+        val hasPrimary = inv.count(bar.input.first().internalName) >= primaryAmt
+        val requiresSecondary = secondary != null && (bar.input.getOrNull(1)?.let { bar.inputAmount.getOrNull(1) } ?: 0) > 0
         val hasSecondary = !requiresSecondary || inv.count(secondary.internalName) >= secondaryAmt
         return hasPrimary && hasSecondary
     }
@@ -310,12 +310,12 @@ class SmeltingScript @Inject constructor(private val xpMods: XpModifiers, ) : Pl
         bar: SmithingBarsRow,
         regularFurnace: Boolean = true,
     ): Int {
-        val primaryAmt = bar.inputPrimaryAmt
+        val primaryAmt = bar.inputAmount.first()
         val effectiveSecondaryAmt = effectiveCoalAmount(player, inventory, bar, regularFurnace)
-        val secondary = bar.inputSecondary
-        val requiresSecondary = secondary != null && (bar.inputSecondaryAmt ?: 0) > 0
+        val secondary = bar.input.getOrNull(1)
+        val requiresSecondary = secondary != null && (bar.input.getOrNull(1)?.let { bar.inputAmount.getOrNull(1) } ?: 0) > 0
 
-        val primaryCount = inventory.count(bar.inputPrimary.internalName)
+        val primaryCount = inventory.count(bar.input.first().internalName)
         val secondaryCount =
             if (requiresSecondary) {
                 inventory.count(secondary.internalName)

@@ -96,7 +96,7 @@ class AnvilSmithingScript @Inject constructor(private val xpMods: XpModifiers) :
         val barName = SmithingUtils.itemName(bar.output, "bar").lowercase()
         return SmithingUtils.requireSmithingLevel(
             this,
-            bar.level,
+            bar.statReq.first().t1,
             "work $barName",
         )
     }
@@ -110,15 +110,15 @@ class AnvilSmithingScript @Inject constructor(private val xpMods: XpModifiers) :
         val smithingLevel = player.smithingLvl
 
         SmithingData.barAtIndex(smithingBarType)
-            ?.takeIf { inv.contains(it.output.internalName) && smithingLevel >= it.level }
+            ?.takeIf { inv.contains(it.output.internalName) && smithingLevel >= it.statReq.first().t1 }
             ?.let {
                 return it
             }
 
         val bestBar =
             SmithingData.allBars
-                .filter { inv.contains(it.output.internalName) && smithingLevel >= it.level }
-                .maxByOrNull { it.level }
+                .filter { inv.contains(it.output.internalName) && smithingLevel >= it.statReq.first().t1 }
+                .maxByOrNull { it.statReq.first().t1 }
 
         if (bestBar != null) {
             SmithingData.barIndexFor(bestBar)?.let { smithingBarType = it }

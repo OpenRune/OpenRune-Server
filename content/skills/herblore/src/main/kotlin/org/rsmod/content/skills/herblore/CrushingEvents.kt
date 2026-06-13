@@ -2,7 +2,6 @@ package org.rsmod.content.skills.herblore
 
 import org.rsmod.api.config.Constants
 import org.rsmod.api.player.protect.ProtectedAccess
-import org.rsmod.api.player.stat.herbloreLvl
 import org.rsmod.api.script.onOpHeldU
 import org.rsmod.api.script.onPlayerQueueWithArgs
 import org.rsmod.api.table.herblore.HerbloreCrushingRow
@@ -18,9 +17,8 @@ class CrushingEvents : PluginScript() {
         onPlayerQueueWithArgs<CrushTask>("queue.herblore_crush") { processCrushTick(it.args) }
     }
 
-    private fun ProtectedAccess.crushItem(recipe: HerbloreCrushingRow) {
-        if (player.herbloreLvl < recipe.level) {
-            mes("You need a Herblore level of ${recipe.level} to crush this item.")
+    private suspend fun ProtectedAccess.crushItem(recipe: HerbloreCrushingRow) {
+        if (!meetsStatReqs(recipe.statReq)) {
             return
         }
 
@@ -40,7 +38,7 @@ class CrushingEvents : PluginScript() {
     private suspend fun ProtectedAccess.processCrushTick(task: CrushTask) {
         val recipe = task.recipe
 
-        if (player.herbloreLvl < recipe.level) {
+        if (!meetsStatReqs(recipe.statReq)) {
             resetAnim()
             return
         }

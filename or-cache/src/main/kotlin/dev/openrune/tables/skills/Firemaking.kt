@@ -2,189 +2,209 @@ package dev.openrune.tables.skills
 
 import dev.openrune.definition.dbtables.dbTable
 import dev.openrune.definition.util.VarType
+import dev.openrune.tables.production.productionTable
 
 object Firemaking {
 
-    const val COL_ITEM = 0
-    const val COL_LEVEL = 1
-    const val COL_XP = 2
-    const val COL_INITIAL_TICKS = 3
-    const val COL_PER_LOG_TICKS = 4
-    const val COL_PER_ANIMATION = 5
+    const val COL_FORESTER_INITIAL_TICKS = 7
+    const val COL_FORESTER_LOG_TICKS = 8
+    const val COL_FORESTER_ANIMATION = 9
 
-    fun logs() = dbTable("dbtable.firemaking_logs", serverOnly = true) {
-
-        column("item", COL_ITEM, VarType.OBJ)
-        column("level", COL_LEVEL, VarType.INT)
-        column("xp", COL_XP, VarType.INT)
-        column("forester_initial_ticks", COL_INITIAL_TICKS, VarType.INT)
-        column("forester_log_ticks", COL_PER_LOG_TICKS, VarType.INT)
-        column("forester_animation", COL_PER_ANIMATION, VarType.SEQ)
-
+    fun logs() = productionTable(
+        "dbtable.firemaking_logs",
+        serverOnly = true,
+        defaultCategory = "Burn",
+        requireOutput = false,
+        extraColumns = {
+            column("forester_initial_ticks", COL_FORESTER_INITIAL_TICKS, VarType.INT)
+            column("forester_log_ticks", COL_FORESTER_LOG_TICKS, VarType.INT)
+            column("forester_animation", COL_FORESTER_ANIMATION, VarType.SEQ)
+        },
+    ) {
         row("dbrow.firemaking_normal_logs") {
-            columnRSCM(COL_ITEM, "obj.logs")
-            column(COL_LEVEL, 1)
-            column(COL_XP, 40)
-            column(COL_INITIAL_TICKS, 102)
-            column(COL_PER_LOG_TICKS, 3)
-            columnRSCM(COL_PER_ANIMATION, "seq.forestry_campfire_burning_logs")
+            production {
+                input("obj.logs")
+                statReq("stat.firemaking", 1)
+                xp(40)
+            }
+            column(COL_FORESTER_INITIAL_TICKS, 102)
+            column(COL_FORESTER_LOG_TICKS, 3)
+            columnRSCM(COL_FORESTER_ANIMATION, "seq.forestry_campfire_burning_logs")
         }
-
         row("dbrow.firemaking_achey_tree_logs") {
-            columnRSCM(COL_ITEM, "obj.achey_tree_logs")
-            column(COL_LEVEL, 1)
-            column(COL_XP, 40)
-            column(COL_INITIAL_TICKS, 102)
-            column(COL_PER_LOG_TICKS, 3)
-            columnRSCM(COL_PER_ANIMATION, "seq.forestry_campfire_burning_achey_tree_logs")
+            production {
+                input("obj.achey_tree_logs")
+                statReq("stat.firemaking", 1)
+                xp(40)
+            }
+            column(COL_FORESTER_INITIAL_TICKS, 102)
+            column(COL_FORESTER_LOG_TICKS, 3)
+            columnRSCM(COL_FORESTER_ANIMATION, "seq.forestry_campfire_burning_achey_tree_logs")
         }
-
         row("dbrow.firemaking_oak_logs") {
-            columnRSCM(COL_ITEM, "obj.oak_logs")
-            column(COL_LEVEL, 15)
-            column(COL_XP, 60)
-            column(COL_INITIAL_TICKS, 109)
-            column(COL_PER_LOG_TICKS, 10)
-            columnRSCM(COL_PER_ANIMATION, "seq.forestry_campfire_burning_oak_logs")
+            production {
+                input("obj.oak_logs")
+                statReq("stat.firemaking", 15)
+                xp(60)
+            }
+            column(COL_FORESTER_INITIAL_TICKS, 109)
+            column(COL_FORESTER_LOG_TICKS, 10)
+            columnRSCM(COL_FORESTER_ANIMATION, "seq.forestry_campfire_burning_oak_logs")
         }
-
         row("dbrow.firemaking_willow_logs") {
-            columnRSCM(COL_ITEM, "obj.willow_logs")
-            column(COL_LEVEL, 30)
-            column(COL_XP, 90)
-            column(COL_INITIAL_TICKS, 116)
-            column(COL_PER_LOG_TICKS, 17)
-            columnRSCM(COL_PER_ANIMATION, "seq.forestry_campfire_burning_willow_logs")
+            production {
+                input("obj.willow_logs")
+                statReq("stat.firemaking", 30)
+                xp(90)
+            }
+            column(COL_FORESTER_INITIAL_TICKS, 116)
+            column(COL_FORESTER_LOG_TICKS, 17)
+            columnRSCM(COL_FORESTER_ANIMATION, "seq.forestry_campfire_burning_willow_logs")
         }
-
         row("dbrow.firemaking_teak_logs") {
-            columnRSCM(COL_ITEM, "obj.teak_logs")
-            column(COL_LEVEL, 35)
-            column(COL_XP, 105)
-            column(COL_INITIAL_TICKS, 118)
-            column(COL_PER_LOG_TICKS, 19)
-            columnRSCM(COL_PER_ANIMATION, "seq.forestry_campfire_burning_teak_logs")
+            production {
+                input("obj.teak_logs")
+                statReq("stat.firemaking", 35)
+                xp(105)
+            }
+            column(COL_FORESTER_INITIAL_TICKS, 118)
+            column(COL_FORESTER_LOG_TICKS, 19)
+            columnRSCM(COL_FORESTER_ANIMATION, "seq.forestry_campfire_burning_teak_logs")
         }
-
         row("dbrow.firemaking_arctic_pine_logs") {
-            columnRSCM(COL_ITEM, "obj.arctic_pine_log")
-            column(COL_LEVEL, 42)
-            column(COL_XP, 125)
-            column(COL_INITIAL_TICKS, 121)
-            column(COL_PER_LOG_TICKS, 22)
-            columnRSCM(COL_PER_ANIMATION, "seq.forestry_campfire_burning_arctic_pine_log")
+            production {
+                input("obj.arctic_pine_log")
+                statReq("stat.firemaking", 42)
+                xp(125)
+            }
+            column(COL_FORESTER_INITIAL_TICKS, 121)
+            column(COL_FORESTER_LOG_TICKS, 22)
+            columnRSCM(COL_FORESTER_ANIMATION, "seq.forestry_campfire_burning_arctic_pine_log")
         }
-
         row("dbrow.firemaking_maple_logs") {
-            columnRSCM(COL_ITEM, "obj.maple_logs")
-            column(COL_LEVEL, 45)
-            column(COL_XP, 135)
-            column(COL_INITIAL_TICKS, 123)
-            column(COL_PER_LOG_TICKS, 24)
-            columnRSCM(COL_PER_ANIMATION, "seq.forestry_campfire_burning_maple_logs")
+            production {
+                input("obj.maple_logs")
+                statReq("stat.firemaking", 45)
+                xp(135)
+            }
+            column(COL_FORESTER_INITIAL_TICKS, 123)
+            column(COL_FORESTER_LOG_TICKS, 24)
+            columnRSCM(COL_FORESTER_ANIMATION, "seq.forestry_campfire_burning_maple_logs")
         }
-
         row("dbrow.firemaking_mahogany_logs") {
-            columnRSCM(COL_ITEM, "obj.mahogany_logs")
-            column(COL_LEVEL, 50)
-            column(COL_XP, 157)
-            column(COL_INITIAL_TICKS, 125)
-            column(COL_PER_LOG_TICKS, 26)
-            columnRSCM(COL_PER_ANIMATION, "seq.forestry_campfire_burning_mahogany_logs")
+            production {
+                input("obj.mahogany_logs")
+                statReq("stat.firemaking", 50)
+                xp(157)
+            }
+            column(COL_FORESTER_INITIAL_TICKS, 125)
+            column(COL_FORESTER_LOG_TICKS, 26)
+            columnRSCM(COL_FORESTER_ANIMATION, "seq.forestry_campfire_burning_mahogany_logs")
         }
-
         row("dbrow.firemaking_yew_logs") {
-            columnRSCM(COL_ITEM, "obj.yew_logs")
-            column(COL_LEVEL, 60)
-            column(COL_XP, 202)
-            column(COL_INITIAL_TICKS, 130)
-            column(COL_PER_LOG_TICKS, 31)
-            columnRSCM(COL_PER_ANIMATION, "seq.forestry_campfire_burning_yew_logs")
+            production {
+                input("obj.yew_logs")
+                statReq("stat.firemaking", 60)
+                xp(202)
+            }
+            column(COL_FORESTER_INITIAL_TICKS, 130)
+            column(COL_FORESTER_LOG_TICKS, 31)
+            columnRSCM(COL_FORESTER_ANIMATION, "seq.forestry_campfire_burning_yew_logs")
         }
-
         row("dbrow.firemaking_blisterwood_logs") {
-            columnRSCM(COL_ITEM, "obj.blisterwood_logs")
-            column(COL_LEVEL, 62)
-            column(COL_XP, 96)
-            column(COL_INITIAL_TICKS, 131)
-            column(COL_PER_LOG_TICKS, 32)
-            columnRSCM(COL_PER_ANIMATION, "seq.forestry_campfire_burning_blisterwood_logs")
+            production {
+                input("obj.blisterwood_logs")
+                statReq("stat.firemaking", 62)
+                xp(96)
+            }
+            column(COL_FORESTER_INITIAL_TICKS, 131)
+            column(COL_FORESTER_LOG_TICKS, 32)
+            columnRSCM(COL_FORESTER_ANIMATION, "seq.forestry_campfire_burning_blisterwood_logs")
         }
-
         row("dbrow.firemaking_magic_logs") {
-            columnRSCM(COL_ITEM, "obj.magic_logs")
-            column(COL_LEVEL, 75)
-            column(COL_XP, 305)
-            column(COL_INITIAL_TICKS, 137)
-            column(COL_PER_LOG_TICKS, 38)
-            columnRSCM(COL_PER_ANIMATION, "seq.forestry_campfire_burning_magic_logs")
+            production {
+                input("obj.magic_logs")
+                statReq("stat.firemaking", 75)
+                xp(305)
+            }
+            column(COL_FORESTER_INITIAL_TICKS, 137)
+            column(COL_FORESTER_LOG_TICKS, 38)
+            columnRSCM(COL_FORESTER_ANIMATION, "seq.forestry_campfire_burning_magic_logs")
         }
-
         row("dbrow.firemaking_ironwood_logs") {
-            columnRSCM(COL_ITEM, "obj.ironwood_logs")
-            column(COL_LEVEL, 80)
-            column(COL_XP, 220)
-            column(COL_INITIAL_TICKS, 144)
-            column(COL_PER_LOG_TICKS, 45)
-            columnRSCM(COL_PER_ANIMATION, "seq.forestry_campfire_burning_ironwood_logs")
+            production {
+                input("obj.ironwood_logs")
+                statReq("stat.firemaking", 80)
+                xp(220)
+            }
+            column(COL_FORESTER_INITIAL_TICKS, 144)
+            column(COL_FORESTER_LOG_TICKS, 45)
+            columnRSCM(COL_FORESTER_ANIMATION, "seq.forestry_campfire_burning_ironwood_logs")
         }
-
         row("dbrow.firemaking_redwood_logs") {
-            columnRSCM(COL_ITEM, "obj.redwood_logs")
-            column(COL_LEVEL, 90)
-            column(COL_XP, 350)
-            column(COL_INITIAL_TICKS, 144)
-            column(COL_PER_LOG_TICKS, 45)
-            columnRSCM(COL_PER_ANIMATION, "seq.forestry_campfire_burning_redwood_logs")
+            production {
+                input("obj.redwood_logs")
+                statReq("stat.firemaking", 90)
+                xp(350)
+            }
+            column(COL_FORESTER_INITIAL_TICKS, 144)
+            column(COL_FORESTER_LOG_TICKS, 45)
+            columnRSCM(COL_FORESTER_ANIMATION, "seq.forestry_campfire_burning_redwood_logs")
         }
-
         row("dbrow.firemaking_rosewood_logs") {
-            columnRSCM(COL_ITEM, "obj.rosewood_logs")
-            column(COL_LEVEL, 92)
-            column(COL_XP, 268)
-            column(COL_INITIAL_TICKS, 144)
-            column(COL_PER_LOG_TICKS, 45)
-            columnRSCM(COL_PER_ANIMATION, "seq.forestry_campfire_burning_rosewood_logs")
+            production {
+                input("obj.rosewood_logs")
+                statReq("stat.firemaking", 92)
+                xp(268)
+            }
+            column(COL_FORESTER_INITIAL_TICKS, 144)
+            column(COL_FORESTER_LOG_TICKS, 45)
+            columnRSCM(COL_FORESTER_ANIMATION, "seq.forestry_campfire_burning_rosewood_logs")
         }
-
         row("dbrow.firemaking_blue_logs") {
-            columnRSCM(COL_ITEM, "obj.blue_logs")
-            column(COL_LEVEL, 1)
-            column(COL_XP, 50)
-            column(COL_INITIAL_TICKS, 102)
-            column(COL_PER_LOG_TICKS, 3)
+            production {
+                input("obj.blue_logs")
+                statReq("stat.firemaking", 1)
+                xp(50)
+            }
+            column(COL_FORESTER_INITIAL_TICKS, 102)
+            column(COL_FORESTER_LOG_TICKS, 3)
         }
-
         row("dbrow.firemaking_green_logs") {
-            columnRSCM(COL_ITEM, "obj.green_logs")
-            column(COL_LEVEL, 1)
-            column(COL_XP, 50)
-            column(COL_INITIAL_TICKS, 102)
-            column(COL_PER_LOG_TICKS, 3)
+            production {
+                input("obj.green_logs")
+                statReq("stat.firemaking", 1)
+                xp(50)
+            }
+            column(COL_FORESTER_INITIAL_TICKS, 102)
+            column(COL_FORESTER_LOG_TICKS, 3)
         }
-
         row("dbrow.firemaking_purple_logs") {
-            columnRSCM(COL_ITEM, "obj.trail_logs_purple")
-            column(COL_LEVEL, 1)
-            column(COL_XP, 50)
-            column(COL_INITIAL_TICKS, 102)
-            column(COL_PER_LOG_TICKS, 3)
+            production {
+                input("obj.trail_logs_purple")
+                statReq("stat.firemaking", 1)
+                xp(50)
+            }
+            column(COL_FORESTER_INITIAL_TICKS, 102)
+            column(COL_FORESTER_LOG_TICKS, 3)
         }
-
         row("dbrow.firemaking_red_logs") {
-            columnRSCM(COL_ITEM, "obj.red_logs")
-            column(COL_LEVEL, 1)
-            column(COL_XP, 50)
-            column(COL_INITIAL_TICKS, 102)
-            column(COL_PER_LOG_TICKS, 3)
+            production {
+                input("obj.red_logs")
+                statReq("stat.firemaking", 1)
+                xp(50)
+            }
+            column(COL_FORESTER_INITIAL_TICKS, 102)
+            column(COL_FORESTER_LOG_TICKS, 3)
         }
-
         row("dbrow.firemaking_white_logs") {
-            columnRSCM(COL_ITEM, "obj.trail_logs_white")
-            column(COL_LEVEL, 1)
-            column(COL_XP, 50)
-            column(COL_INITIAL_TICKS, 102)
-            column(COL_PER_LOG_TICKS, 3)
+            production {
+                input("obj.trail_logs_white")
+                statReq("stat.firemaking", 1)
+                xp(50)
+            }
+            column(COL_FORESTER_INITIAL_TICKS, 102)
+            column(COL_FORESTER_LOG_TICKS, 3)
         }
     }
 

@@ -5,7 +5,6 @@ import org.rsmod.api.invtx.invAdd
 import org.rsmod.api.invtx.invDel
 import org.rsmod.api.player.events.interact.HeldUEvents
 import org.rsmod.api.player.protect.ProtectedAccess
-import org.rsmod.api.player.stat.herbloreLvl
 import org.rsmod.api.script.onOpHeldU
 import org.rsmod.api.script.onPlayerQueueWithArgs
 import org.rsmod.api.table.herblore.HerbloreBarbarianMixesRow
@@ -39,9 +38,10 @@ class BarbarianMixesEvents : PluginScript() {
             return
         }
 
-        val validCandidates = candidates.filter { mix -> player.herbloreLvl >= mix.level &&
-            inv.contains(mix.twoDosePotion.internalName) &&
-            inv.contains(mix.mixIngredient.internalName)
+        val validCandidates = candidates.filter { mix ->
+            mix.statReq.all { statBase(it.t0.internalName) >= it.t1 } &&
+                inv.contains(mix.twoDosePotion.internalName) &&
+                inv.contains(mix.mixIngredient.internalName)
         }
 
         if (validCandidates.isEmpty()) {
@@ -97,9 +97,8 @@ class BarbarianMixesEvents : PluginScript() {
         }
     }
 
-    private fun ProtectedAccess.startBarbarianMix(mix: HerbloreBarbarianMixesRow, amount: Int) {
-        if (player.herbloreLvl < mix.level) {
-            mes("You need a Herblore level of ${mix.level} to make this mix.")
+    private suspend fun ProtectedAccess.startBarbarianMix(mix: HerbloreBarbarianMixesRow, amount: Int) {
+        if (!meetsStatReqs(mix.statReq)) {
             return
         }
 
@@ -114,7 +113,7 @@ class BarbarianMixesEvents : PluginScript() {
     private suspend fun ProtectedAccess.processBarbarianMixTick(task: BarbarianMixTask) {
         val mix = task.mix
 
-        if (player.herbloreLvl < mix.level) {
+        if (!meetsStatReqs(mix.statReq)) {
             resetAnim()
             return
         }

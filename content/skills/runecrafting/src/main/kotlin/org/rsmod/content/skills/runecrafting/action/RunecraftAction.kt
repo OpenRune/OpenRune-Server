@@ -53,7 +53,7 @@ object RunecraftAction {
 
         preCraft()
 
-        val validEssence = rune.validEssences.map { it.internalName }.toSet()
+        val validEssence = rune.input.map { it.internalName }.toSet()
         val acceptsDaeyalt = PURE_ESSENCE in validEssence
         val daeyaltEssCount =
             if (acceptsDaeyalt) {
@@ -81,7 +81,7 @@ object RunecraftAction {
         }
 
         val level = player.baseRunecraftingLvl
-        val baseMultiplier = getBonusMultiplier(rune.runeOutput.internalName, level).toInt()
+        val baseMultiplier = getBonusMultiplier(rune.output.internalName, level).toInt()
         val baseProduced = daeyaltEssCount * baseMultiplier
         val produced = applyBonus(baseProduced)
 
@@ -141,7 +141,7 @@ object RunecraftAction {
         }
 
         val level = player.baseRunecraftingLvl
-        val baseMultiplier = getBonusMultiplier(rune.runeOutput.internalName, level).toInt()
+        val baseMultiplier = getBonusMultiplier(rune.output.internalName, level).toInt()
 
         val basePure = pureEssCount * baseMultiplier
         val baseGuardian = guardianEssCount * baseMultiplier
@@ -174,7 +174,7 @@ object RunecraftAction {
         producedRunes: Int? = null,
     ) {
         val level = player.baseRunecraftingLvl
-        val baseMultiplier = getBonusMultiplier(rune.runeOutput.internalName, level).toInt()
+        val baseMultiplier = getBonusMultiplier(rune.output.internalName, level).toInt()
         var totalRunes = producedRunes ?: applyBonus(essenceConsumed * baseMultiplier)
 
         if (inv.contains(rune.extract.internalName)) {
@@ -183,27 +183,27 @@ object RunecraftAction {
 
         if (
             !ouraniaAltar &&
-            rune.runeOutput.internalName == BloodEssence.BLOOD_RUNE
+            rune.output.internalName == BloodEssence.BLOOD_RUNE
         ) {
             applyBloodRuneBonus(essenceConsumed)?.let { bonus ->
                 totalRunes += bonus
             }
         }
 
-        invAdd(inv, rune.runeOutput.internalName, totalRunes)
+        invAdd(inv, rune.output.internalName, totalRunes)
         advanceRunecraftingXp(xp, xpMods)
     }
 
     private suspend fun ProtectedAccess.canCraftRune(rune: RunecraftingRunesRow): Boolean {
         val level = player.baseRunecraftingLvl
-        if (level < rune.level) {
+        if (level < rune.statReq.first().t1) {
             mesbox(
-                "You need Runecrafting level ${rune.level} to craft ${rune.runeOutput.name.lowercase()}s.",
+                "You need Runecrafting level ${rune.statReq.first().t1} to craft ${rune.output.name.lowercase()}s.",
             )
             return false
         }
 
-        val validEssenceIds = rune.validEssences.map { it.internalName }.toSet()
+        val validEssenceIds = rune.input.map { it.internalName }.toSet()
         val acceptsPureSubstitutes = PURE_ESSENCE in validEssenceIds
         val checkIds =
             when {
@@ -215,7 +215,7 @@ object RunecraftAction {
             }
         val hasEssence = checkIds.any(inv::contains)
         if (!hasEssence) {
-            val essenceName = rune.validEssences.first().name.lowercase()
+            val essenceName = rune.input.first().name.lowercase()
             if (acceptsPureSubstitutes) {
                 mesbox(
                     "You do not have any $essenceName, Daeyalt essence, or guardian essence to bind.",
@@ -273,10 +273,10 @@ object RunecraftAction {
 
         repeat(essenceCount) {
             val rune = rollOuraniaRune(level)
-            val multiplier = getBonusMultiplier(rune.runeOutput.internalName, level).toInt()
+            val multiplier = getBonusMultiplier(rune.output.internalName, level).toInt()
             val produced = applyBonus(multiplier)
             totalXp += rune.xp * xpMultiplier * multiplier
-            invAdd(inv, rune.runeOutput.internalName, produced)
+            invAdd(inv, rune.output.internalName, produced)
         }
 
         advanceRunecraftingXp(totalXp, xpMods)
@@ -292,9 +292,9 @@ object RunecraftAction {
         }
 
         val level = player.baseRunecraftingLvl
-        if (level < rune.level) {
+        if (level < rune.statReq.first().t1) {
             mesbox(
-                "You need Runecrafting level ${rune.level} to craft ${rune.runeOutput.name.lowercase()}s.",
+                "You need Runecrafting level ${rune.statReq.first().t1} to craft ${rune.output.name.lowercase()}s.",
             )
             return
         }
@@ -305,21 +305,21 @@ object RunecraftAction {
             return
         }
 
-        val multiplier = getBonusMultiplier(rune.runeOutput.internalName, level).toInt()
+        val multiplier = getBonusMultiplier(rune.output.internalName, level).toInt()
         val produced = applyBonus(CORE_RUNE_MULTIPLIER * multiplier)
-        invAdd(inv, rune.runeOutput.internalName, produced)
+        invAdd(inv, rune.output.internalName, produced)
         advanceRunecraftingXp(rune.xp * CORE_XP_MULTIPLIER.toDouble(), xpMods)
     }
 
     suspend fun ProtectedAccess.craftAether(xpMods: XpModifiers) {
         val aetherRune =
             RunecraftingRunesRow.all().firstOrNull {
-                it.runeOutput.internalName == "obj.aetherrune"
+                it.output.internalName == "obj.aetherrune"
             } ?: return
 
         val level = player.baseRunecraftingLvl
-        if (level < aetherRune.level) {
-            mesbox("You need Runecrafting level ${aetherRune.level} to craft aether runes.")
+        if (level < aetherRune.statReq.first().t1) {
+            mesbox("You need Runecrafting level ${aetherRune.statReq.first().t1} to craft aether runes.")
             return
         }
 
@@ -353,19 +353,19 @@ object RunecraftAction {
             totalRunes += runecraftingExtract["obj.scar_extract_scarred"] ?: 0
         }
 
-        invAdd(inv, aetherRune.runeOutput.internalName, totalRunes)
+        invAdd(inv, aetherRune.output.internalName, totalRunes)
         advanceRunecraftingXp(craftCount * aetherRune.xp.toDouble(), xpMods)
     }
 
     private fun rollOuraniaRune(level: Int): RunecraftingRunesRow {
         val eligible =
             RunecraftingRunesRow.all().filter { row ->
-                val output = row.runeOutput.internalName
+                val output = row.output.internalName
                 output !in ouraniaExcludedRunes &&
-                    row.level <= level &&
-                    PURE_ESSENCE in row.validEssences.map { it.internalName }
+                    row.statReq.first().t1 <= level &&
+                    PURE_ESSENCE in row.input.map { it.internalName }
             }
-        return eligible.randomOrNull() ?: RunecraftingRunesRow.all().first { it.runeOutput.internalName == "obj.airrune" }
+        return eligible.randomOrNull() ?: RunecraftingRunesRow.all().first { it.output.internalName == "obj.airrune" }
     }
 
     private val ouraniaExcludedRunes =
@@ -391,12 +391,12 @@ object RunecraftAction {
         }
 
     suspend fun ProtectedAccess.craftCombination(combo: ComboruneRecipeRow, xpMods: XpModifiers) {
-        val output = combo.runeOutput ?: return
-        val input = combo.runeInput ?: return
+        val output = combo.output ?: return
+        val input = combo.input ?: return
         val talisman = combo.talisman ?: return
         val xp = combo.xp ?: return
 
-        if (!canCraftCombo(output, input, talisman, combo.level)) {
+        if (!canCraftCombo(output, input, talisman, combo.statReq.first().t1)) {
             return
         }
 

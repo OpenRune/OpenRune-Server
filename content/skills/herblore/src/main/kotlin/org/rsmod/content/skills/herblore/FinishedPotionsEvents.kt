@@ -4,14 +4,10 @@ import jakarta.inject.Inject
 import org.rsmod.api.config.Constants
 import org.rsmod.api.player.events.interact.HeldUDefaultEvents
 import org.rsmod.api.player.protect.ProtectedAccess
-import org.rsmod.api.player.stat.herbloreLvl
 import org.rsmod.api.random.GameRandom
 import org.rsmod.api.script.onOpHeldU
 import org.rsmod.api.script.onPlayerQueueWithArgs
 import org.rsmod.api.table.herblore.HerbloreFinishedRow
-import org.rsmod.content.skills.herblore.HerbloreDefinitions.hasRequiredMaterials
-import org.rsmod.content.skills.herblore.HerbloreDefinitions.maxProducible
-import org.rsmod.content.skills.herblore.HerbloreDefinitions.skillMultiMaterials
 import org.rsmod.content.skills.SkillMultiConfig
 import org.rsmod.content.skills.SkillMultiEntry
 import org.rsmod.content.skills.openSkillMulti
@@ -44,11 +40,13 @@ class FinishedPotionsEvents @Inject constructor(private val random: GameRandom) 
         }
 
         val validCandidates = candidates.filter { potion ->
-            player.herbloreLvl >= potion.levelRequired && potion.hasRequiredMaterials(inv)
+            potion.statReq.all { statBase(it.t0.internalName) >= it.t1 } && potion.hasRequiredMaterials(inv)
         }
 
         if (validCandidates.isEmpty()) {
-            val belowLevel = candidates.filter { player.herbloreLvl < it.levelRequired }
+            val belowLevel = candidates.filter { potion ->
+                potion.statReq.any { statBase(it.t0.internalName) < it.t1 }
+            }
             if (belowLevel.isNotEmpty()) {
                 val required = belowLevel.minOf { it.levelRequired }
                 mesbox("You need a Herblore level of $required to make this potion.")
@@ -90,8 +88,7 @@ class FinishedPotionsEvents @Inject constructor(private val random: GameRandom) 
     }
 
     private suspend fun ProtectedAccess.startFinishedPotion(potion: HerbloreFinishedRow, amount: Int) {
-        if (player.herbloreLvl < potion.levelRequired) {
-            mesbox("You need a Herblore level of ${potion.levelRequired} to make this potion.")
+        if (!meetsStatReqs(potion.statReq)) {
             return
         }
 
@@ -108,7 +105,7 @@ class FinishedPotionsEvents @Inject constructor(private val random: GameRandom) 
         val brewResult = AmuletOfChemistry.rollBrewOutput(player, random, potion)
         val output = brewResult.output
 
-        if (player.herbloreLvl < potion.levelRequired) {
+        if (!meetsStatReqs(potion.statReq)) {
             resetAnim()
             return
         }

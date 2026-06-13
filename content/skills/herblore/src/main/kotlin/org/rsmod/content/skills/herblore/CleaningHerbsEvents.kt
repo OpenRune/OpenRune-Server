@@ -1,7 +1,6 @@
 package org.rsmod.content.skills.herblore
 
 import org.rsmod.api.player.protect.ProtectedAccess
-import org.rsmod.api.player.stat.herbloreLvl
 import org.rsmod.api.script.onOpHeld1
 import org.rsmod.api.script.onPlayerQueueWithArgs
 import org.rsmod.api.table.herblore.HerbloreCleaningRow
@@ -12,22 +11,21 @@ class CleaningHerbsEvents : PluginScript() {
 
     override fun ScriptContext.startup() {
         HerbloreDefinitions.cleaningHerbs.forEach { row ->
-            onOpHeld1(row.grimyHerb) { startCleanHerb(row) }
+            onOpHeld1(row.input) { startCleanHerb(row) }
         }
         onPlayerQueueWithArgs<CleanHerbTask>("queue.herblore_clean") { processCleanHerbTick(it.args) }
     }
 
     private suspend fun ProtectedAccess.startCleanHerb(row: HerbloreCleaningRow) {
-        if (player.herbloreLvl < row.level) {
-            mesbox("You need a Herblore level of ${row.level} to clean this herb.")
+        if (!meetsStatReqs(row.statReq)) {
             return
         }
 
-        if (!inv.contains(row.grimyHerb.internalName)) {
+        if (!inv.contains(row.input.internalName)) {
             return
         }
 
-        if (inv.freeSpace() < 1 && !inv.contains(row.cleanHerb.internalName)) {
+        if (inv.freeSpace() < 1 && !inv.contains(row.output.internalName)) {
             mes("You don't have enough inventory space.")
             return
         }
@@ -38,24 +36,23 @@ class CleaningHerbsEvents : PluginScript() {
     private suspend fun ProtectedAccess.processCleanHerbTick(task: CleanHerbTask) {
         val row = task.row
 
-        if (player.herbloreLvl < row.level) {
-            mesbox("You need a Herblore level of ${row.level} to clean this herb.")
+        if (!meetsStatReqs(row.statReq)) {
             return
         }
 
         if (
-            !inv.contains(row.grimyHerb.internalName) ||
-            (inv.freeSpace() < 1 && !inv.contains(row.cleanHerb.internalName))
+            !inv.contains(row.input.internalName) ||
+            (inv.freeSpace() < 1 && !inv.contains(row.output.internalName))
         ) {
             return
         }
 
-        if (invDel(inv, row.grimyHerb.internalName, 1).failure) {
+        if (invDel(inv, row.input.internalName, 1).failure) {
             return
         }
 
-        if (invAdd(inv, row.cleanHerb.internalName, 1).failure) {
-            invAdd(inv, row.grimyHerb.internalName, 1)
+        if (invAdd(inv, row.output.internalName, 1).failure) {
+            invAdd(inv, row.input.internalName, 1)
             mes("You don't have enough inventory space.")
             return
         }
@@ -65,8 +62,8 @@ class CleaningHerbsEvents : PluginScript() {
         }
 
         if (
-            inv.contains(row.grimyHerb.internalName) &&
-            (inv.freeSpace() >= 1 || inv.contains(row.cleanHerb.internalName))
+            inv.contains(row.input.internalName) &&
+            (inv.freeSpace() >= 1 || inv.contains(row.output.internalName))
         ) {
             weakQueue("queue.herblore_clean", 2, task)
         }

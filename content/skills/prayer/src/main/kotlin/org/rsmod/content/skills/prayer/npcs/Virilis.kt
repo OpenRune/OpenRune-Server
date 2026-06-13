@@ -15,7 +15,7 @@ import org.rsmod.plugin.scripts.ScriptContext
 
 class Virilis : PluginScript() {
 
-    private val blessableBones = PrayerBlessedBoneRow.all().map { it.bone.internalName }.toSet()
+    private val blessableBones = PrayerBlessedBoneRow.all().map { it.input.internalName }.toSet()
 
     override fun ScriptContext.startup() {
         onOpNpc1("npc.vm_prayer_uncerter") { startDialogue(it.npc) }

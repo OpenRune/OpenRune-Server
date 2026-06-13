@@ -9,40 +9,70 @@ import org.rsmod.api.table.herblore.HerbloreUnfinishedRow
 import org.rsmod.content.skills.Material
 import org.rsmod.game.inv.Inventory
 
-object HerbloreDefinitions {
-
-    val HerbloreFinishedRow.skillMultiMaterials: List<Material> get() = buildList {
-        add(Material(unfPot.internalName, 1))
-        if (secondaries.size == 1) {
-            add(Material(secondaries.first().internalName, secondariesAmount?: 1))
+private fun amountsFor(count: Int, amounts: List<Int>?): List<Int> =
+    amounts?.take(count)?.let { list ->
+        if (list.size >= count) {
+            list
         } else {
-            secondaries.forEach { add(Material(it.internalName, 1)) }
+            List(count) { index -> list.getOrNull(index) ?: 1 }
+        }
+    } ?: List(count) { 1 }
+
+private fun HerbloreFinishedRow.resolvedInputAmounts(): List<Int> = amountsFor(input.size, inputAmount)
+
+val HerbloreUnfinishedRow.herbItem get() = input
+val HerbloreUnfinishedRow.unfinishedPotion get() = output
+val HerbloreUnfinishedRow.level get() = statReq.primaryLevel()
+
+val HerbloreFinishedRow.unfPot get() = input.first()
+val HerbloreFinishedRow.secondaries get() = input.drop(1)
+val HerbloreFinishedRow.secondariesAmount: Int?
+    get() = if (secondaries.size == 1) resolvedInputAmounts().drop(1).firstOrNull() ?: 1 else null
+val HerbloreFinishedRow.outputPotion get() = output
+val HerbloreFinishedRow.levelRequired get() = statReq.primaryLevel()
+
+val HerbloreBarbarianMixesRow.twoDosePotion get() = input.first()
+val HerbloreBarbarianMixesRow.mixIngredient get() = input[1]
+val HerbloreBarbarianMixesRow.barbarianMix get() = output
+val HerbloreBarbarianMixesRow.level get() = statReq.primaryLevel()
+
+val HerbloreSwampTarRow.herb get() = input
+val HerbloreSwampTarRow.finishedTar get() = output
+val HerbloreSwampTarRow.level get() = statReq.primaryLevel()
+
+val HerbloreCrushingRow.item get() = input
+val HerbloreCrushingRow.crushedItem get() = output
+val HerbloreCrushingRow.level get() = statReq.primaryLevel()
+
+val HerbloreFinishedRow.skillMultiMaterials: List<Material>
+    get() = buildList {
+        val amounts = resolvedInputAmounts()
+        add(Material(unfPot.internalName, amounts.firstOrNull() ?: 1))
+        secondaries.forEachIndexed { index, secondary ->
+            add(Material(secondary.internalName, amounts.getOrNull(index + 1) ?: 1))
         }
     }
 
-    fun HerbloreFinishedRow.hasRequiredMaterials(inventory: Inventory): Boolean {
-        if (inventory.count(unfPot.internalName) < 1) {
+fun HerbloreFinishedRow.hasRequiredMaterials(inventory: Inventory): Boolean {
+    val amounts = resolvedInputAmounts()
+    input.forEachIndexed { index, item ->
+        val needed = amounts.getOrNull(index) ?: 1
+        if (inventory.count(item.internalName) < needed) {
             return false
         }
-        if (secondaries.size == 1) {
-            val needed = secondariesAmount?: 1
-            return inventory.count(secondaries.first().internalName) >= needed
-        }
-        return secondaries.all { inventory.count(it.internalName) >= 1 }
     }
+    return true
+}
 
-    fun HerbloreFinishedRow.maxProducible(inventory: Inventory): Int {
-        val counts = buildList {
-            add(inventory.count(unfPot.internalName))
-            if (secondaries.size == 1) {
-                val needed = secondariesAmount?: 1
-                add(inventory.count(secondaries.first().internalName) / needed)
-            } else {
-                secondaries.forEach { add(inventory.count(it.internalName)) }
-            }
-        }
-        return counts.minOrNull() ?: 0
+fun HerbloreFinishedRow.maxProducible(inventory: Inventory): Int {
+    val amounts = resolvedInputAmounts()
+    return input.indices.minOf { index ->
+        val needed = amounts.getOrNull(index) ?: 1
+        inventory.count(input[index].internalName) / needed
     }
+}
+
+object HerbloreDefinitions {
 
     val unfinishedPotions: List<HerbloreUnfinishedRow> = HerbloreUnfinishedRow.all()
 

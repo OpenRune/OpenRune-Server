@@ -46,7 +46,7 @@ object SmithingBonuses {
     }
 
     fun isBarEligibleForVarrockArmour(bar: SmithingBarsRow, tier: Int): Boolean =
-        bar.level <= maxBarLevelForVarrockTier(tier)
+        bar.statReq.first().t1 <= maxBarLevelForVarrockTier(tier)
 
     fun rollVarrockDoubleBar(): Boolean = Random.nextInt(100) < 10
 
@@ -55,7 +55,8 @@ object SmithingBonuses {
     fun Inventory.hasSmithingCatalyst(): Boolean = contains(SMITHING_CATALYST)
 
     fun requiresCoal(bar: SmithingBarsRow): Boolean =
-        bar.inputSecondary?.internalName == COAL && (bar.inputSecondaryAmt ?: 0) > 0
+        bar.input.getOrNull(1)?.internalName == COAL &&
+            (bar.input.getOrNull(1)?.let { bar.inputAmount.getOrNull(1) } ?: 0) > 0
 
     /**
      * Half coal and double XP at regular furnaces when wearing Smith's gloves (i) or when a
@@ -84,7 +85,7 @@ object SmithingBonuses {
         bar: SmithingBarsRow,
         regularFurnace: Boolean = true,
     ): Int {
-        val secondaryAmt = bar.inputSecondaryAmt ?: 0
+        val secondaryAmt = bar.input.getOrNull(1)?.let { bar.inputAmount.getOrNull(1) } ?: 0
         if (!hasCoalSmeltBoost(player, inventory, bar, regularFurnace)) {
             return secondaryAmt
         }

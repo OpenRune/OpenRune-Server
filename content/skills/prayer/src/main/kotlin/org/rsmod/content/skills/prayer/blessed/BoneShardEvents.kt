@@ -27,9 +27,9 @@ class BoneShardEvents : PluginScript() {
     override fun ScriptContext.startup() {
 
         rows.forEach { row ->
-            onOpLocU("loc.varlamore_prayer_activity_altar", row.bone) { blessBones(row) }
-            onOpHeld1(row.boneBlessed) { breakDownBone(row) }
-            onOpHeldU(row.boneBlessed, "obj.chisel") { breakDownBone(row) }
+            onOpLocU("loc.varlamore_prayer_activity_altar", row.input) { blessBones(row) }
+            onOpHeld1(row.output) { breakDownBone(row) }
+            onOpHeldU(row.output, "obj.chisel") { breakDownBone(row) }
         }
 
         wines.forEach { (wine, blessedWine) ->
@@ -40,7 +40,7 @@ class BoneShardEvents : PluginScript() {
 
         onOpLoc1("loc.varlamore_prayer_activity_altar") {
 
-            val availableBones = rows.filter { inv.contains(it.bone.internalName) }
+            val availableBones = rows.filter { inv.contains(it.input.internalName) }
 
             val availableWines = wines.filterKeys(inv::contains)
 
@@ -49,7 +49,7 @@ class BoneShardEvents : PluginScript() {
             if (totalOptions == 1) {
 
                 availableBones.firstOrNull()?.let { row ->
-                    blessBones(row, inv.count(row.bone.internalName))
+                    blessBones(row, inv.count(row.input.internalName))
                     return@onOpLoc1
                 }
 
@@ -62,14 +62,14 @@ class BoneShardEvents : PluginScript() {
             openSkillMulti(SkillMultiConfig(
                 verb = "bless",
                 entries = buildList {
-                    addAll(availableBones.map { SkillMultiEntry(it.bone.internalName) })
+                    addAll(availableBones.map { SkillMultiEntry(it.input.internalName) })
                     addAll(availableWines.keys.map(::SkillMultiEntry))
                 }),
             ) { selection ->
 
                 val selected = selection.entry.item.internalName
 
-                availableBones.firstOrNull { it.bone.internalName == selected }?.let { row ->
+                availableBones.firstOrNull { it.input.internalName == selected }?.let { row ->
                     blessBones(row, selection.amount)
                     return@openSkillMulti
                 }
@@ -81,7 +81,7 @@ class BoneShardEvents : PluginScript() {
         }
 
         onPlayerQueueWithArgs("queue.prayer_break_down_bone") { queue ->
-            rows.firstOrNull { it.boneBlessed == queue.args }?.let { row ->
+            rows.firstOrNull { it.output == queue.args }?.let { row ->
                 breakDownBone(row)
             }
         }
@@ -95,27 +95,27 @@ class BoneShardEvents : PluginScript() {
 
         player.anim("seq.human_cutting")
 
-        if (invDel(inv, row.boneBlessed.internalName, 1).success && invAdd(inv, "obj.blessed_bone_shard", row.shardCount,).success) {
+        if (invDel(inv, row.output.internalName, 1).success && invAdd(inv, "obj.blessed_bone_shard", row.shardCount,).success) {
             statAdvance("stat.crafting", 5.0)
         }
 
-        if (inv.contains(row.boneBlessed.internalName)) {
-            weakQueue("queue.prayer_break_down_bone", 4, row.boneBlessed)
+        if (inv.contains(row.output.internalName)) {
+            weakQueue("queue.prayer_break_down_bone", 4, row.output)
         }
 
     }
 
-    private fun ProtectedAccess.blessBones(row: PrayerBlessedBoneRow, amount: Int = inv.count(row.bone.internalName)) {
+    private fun ProtectedAccess.blessBones(row: PrayerBlessedBoneRow, amount: Int = inv.count(row.input.internalName)) {
         player.anim("seq.human_openchest")
         player.soundSynth(2738)
 
-        val blessedName = row.boneBlessed.internalName
+        val blessedName = row.output.internalName
 
-        val targets = inv.objs.count { it.isType(row.bone) }
+        val targets = inv.objs.count { it.isType(row.input) }
         val toConvert = minOf(amount, targets)
 
         repeat(toConvert) {
-            invReplace(inv, row.bone.internalName, 1, blessedName)
+            invReplace(inv, row.input.internalName, 1, blessedName)
         }
 
         mes("You bless $toConvert bone${if (toConvert == 1) "" else "s"} on the altar.")

@@ -1,7 +1,7 @@
 package dev.openrune.tables.skills.runecrafting
 
-import dev.openrune.definition.dbtables.dbTable
 import dev.openrune.definition.util.VarType
+import dev.openrune.tables.production.productionTable
 
 enum class Rune(
     val id: String,
@@ -163,29 +163,26 @@ enum class Rune(
 
 object RunecraftRune {
 
-    val ITEM = 0
-    val ESSENCE = 1
-    val LEVEL = 2
-    val XP = 3
-    val EXTRACT = 4
+    const val COL_EXTRACT = 7
 
-    fun runecraftRune() = dbTable("dbtable.runecrafting_runes", serverOnly = true) {
-        column("rune_output", ITEM, VarType.OBJ)
-        column("valid_essences", ESSENCE, VarType.OBJ)
-        column("xp", XP, VarType.INT)
-        column("level", LEVEL, VarType.INT)
-        column("extract", EXTRACT, VarType.OBJ)
-        Rune.entries.forEach {
-            row(it.dbId) {
-                columnRSCM(ITEM, it.id)
-                columnRSCM(ESSENCE, *it.essence.toTypedArray())
-                column(LEVEL, it.level)
-                column(XP, it.xp)
-                columnRSCM(EXTRACT, it.extract)
+    fun runecraftRune() = productionTable(
+        "dbtable.runecrafting_runes",
+        serverOnly = true,
+        defaultCategory = "Runecraft",
+        extraColumns = {
+            column("extract", COL_EXTRACT, VarType.OBJ)
+        },
+    ) {
+        Rune.entries.forEach { rune ->
+            row(rune.dbId) {
+                production {
+                    input(rune.essence)
+                    statReq("stat.runecrafting", rune.level)
+                    xp(rune.xp)
+                    output(rune.id)
+                }
+                columnRSCM(COL_EXTRACT, rune.extract)
             }
         }
-
-
     }
-
 }

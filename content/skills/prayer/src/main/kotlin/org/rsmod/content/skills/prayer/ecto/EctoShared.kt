@@ -15,11 +15,11 @@ internal data class EctoRecipe(
 
 internal val ECTO_RECIPES: List<EctoRecipe> by lazy { PrayerEctofuntusBonemealRow.all().mapIndexed { index, row ->
     EctoRecipe(
-        id = index + 1, bones = row.bone.internalName,
-        bonemeal = row.bonemeal.internalName,
-        bonesName = row.bone.name,
-        xp = row.worshipXp.toDouble(),
-        prayerLevel = row.requiredLevel
+        id = index + 1, bones = row.input.internalName,
+        bonemeal = row.output.internalName,
+        bonesName = row.input.name,
+        xp = row.xp.toDouble(),
+        prayerLevel = row.statReq.first().t1
     )}
 }
 

@@ -2,7 +2,6 @@ package org.rsmod.content.skills.herblore
 
 import org.rsmod.api.player.events.interact.HeldUEvents
 import org.rsmod.api.player.protect.ProtectedAccess
-import org.rsmod.api.player.stat.herbloreLvl
 import org.rsmod.api.script.onOpHeldU
 import org.rsmod.api.script.onPlayerQueueWithArgs
 import org.rsmod.api.table.herblore.HerbloreUnfinishedRow
@@ -37,8 +36,7 @@ class UnfinishedPotionsEvents : PluginScript() {
             it.herbItem.internalName == herbName
         } ?: return
 
-        if (player.herbloreLvl < potionForHerb.level) {
-            mesbox("You need a Herblore level of ${potionForHerb.level} to make this potion.")
+        if (!meetsStatReqs(potionForHerb.statReq)) {
             return
         }
 
@@ -46,7 +44,7 @@ class UnfinishedPotionsEvents : PluginScript() {
             HerbloreDefinitions.unfinishedPotions.filter { potion ->
                 inv.contains(potion.herbItem.internalName) &&
                     inv.contains("obj.vial_water") &&
-                    player.herbloreLvl >= potion.level
+                    potion.statReq.all { statBase(it.t0.internalName) >= it.t1 }
             }
 
         if (validCandidates.isEmpty()) {
@@ -102,8 +100,7 @@ class UnfinishedPotionsEvents : PluginScript() {
     }
 
     private suspend fun ProtectedAccess.startUnfinishedPotion(potion: HerbloreUnfinishedRow, amount: Int) {
-        if (player.herbloreLvl < potion.level) {
-            mesbox("You need a Herblore level of ${potion.level} to make this potion.")
+        if (!meetsStatReqs(potion.statReq)) {
             return
         }
 
@@ -118,8 +115,7 @@ class UnfinishedPotionsEvents : PluginScript() {
     private suspend fun ProtectedAccess.processUnfinishedTick(task: UnfinishedPotionTask) {
         val potion = task.potion
 
-        if (player.herbloreLvl < potion.level) {
-            mesbox("You need a Herblore level of ${potion.level} to make this potion.")
+        if (!meetsStatReqs(potion.statReq)) {
             resetAnim()
             return
         }

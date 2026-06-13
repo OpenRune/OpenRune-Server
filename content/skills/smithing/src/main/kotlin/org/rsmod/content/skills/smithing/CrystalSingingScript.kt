@@ -58,17 +58,17 @@ class CrystalSingingScript : PluginScript() {
 
     private fun toEntry(item: SmithingCrystalSingingRow): SkillMultiEntry = SkillMultiEntry(
         item.output.internalName,
-        item.materials.zip(item.materialscount).map { (material, amount) ->
+        item.input.zip(item.inputAmount).map { (material, amount) ->
                 Material(material.internalName, amount)
             },
         )
 
     private fun ProtectedAccess.canUseItem(item: SmithingCrystalSingingRow): Boolean {
-        if (player.smithingLvl < item.level || player.craftingLvl < item.level) {
+        if (player.smithingLvl < item.statReq.first().t1 || player.craftingLvl < item.statReq.first().t1) {
             return false
         }
 
-        return item.materials.zip(item.materialscount).any { (material, _) ->
+        return item.input.zip(item.inputAmount).any { (material, _) ->
             material.internalName != crystalShardInternal &&
                 inv.contains(material.internalName)
         }
@@ -97,7 +97,7 @@ class CrystalSingingScript : PluginScript() {
             return true
         }
 
-        val materialsText = item.materials.zip(item.materialscount)
+        val materialsText = item.input.zip(item.inputAmount)
             .filterNot { (material, _) ->
                 material.internalName == crystalShardInternal
             }.joinToString(" and ") { (material, amount) ->
@@ -163,7 +163,7 @@ class CrystalSingingScript : PluginScript() {
         anim("seq.prif_crystal_singing")
         soundSynth("synth.crystal_sing")
 
-        val removed = item.materials.zip(item.materialscount).all { (material, amount) ->
+        val removed = item.input.zip(item.inputAmount).all { (material, amount) ->
             invDel(inv, material.internalName, amount).success
         }
 
@@ -178,7 +178,7 @@ class CrystalSingingScript : PluginScript() {
     }
 
     private suspend fun ProtectedAccess.canProduce(item: SmithingCrystalSingingRow, ): Boolean {
-        val missingMaterials = item.materials.zip(item.materialscount).mapNotNull { (material, required) ->
+        val missingMaterials = item.input.zip(item.inputAmount).mapNotNull { (material, required) ->
             val missing = required - inv.count(material.internalName)
 
             if (missing > 0) {
@@ -205,13 +205,13 @@ class CrystalSingingScript : PluginScript() {
 
         return SmithingUtils.requireSmithingAndCraftingLevel(
             this,
-            item.level,
+            item.statReq.first().t1,
             "create ${SmithingUtils.itemName(item.output).lowercase()}",
         )
     }
 
     private fun maxCraftCount(inventory: Inventory, item: SmithingCrystalSingingRow, ): Int =
-        item.materials.zip(item.materialscount).minOfOrNull { (material, required) ->
+        item.input.zip(item.inputAmount).minOfOrNull { (material, required) ->
             inventory.count(material.internalName) / required
         }?: 0
 

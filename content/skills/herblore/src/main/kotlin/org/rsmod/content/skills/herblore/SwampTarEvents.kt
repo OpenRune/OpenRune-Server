@@ -4,7 +4,6 @@ import org.rsmod.api.config.Constants
 import org.rsmod.api.invtx.invAdd
 import org.rsmod.api.invtx.invDel
 import org.rsmod.api.player.protect.ProtectedAccess
-import org.rsmod.api.player.stat.herbloreLvl
 import org.rsmod.api.script.onOpHeldU
 import org.rsmod.api.script.onPlayerQueueWithArgs
 import org.rsmod.api.table.herblore.HerbloreSwampTarRow
@@ -22,9 +21,8 @@ class SwampTarEvents : PluginScript() {
         }
     }
 
-    private fun ProtectedAccess.createSwampTar(recipe: HerbloreSwampTarRow) {
-        if (player.herbloreLvl < recipe.level) {
-            mes("You need a Herblore level of ${recipe.level} to make this tar.")
+    private suspend fun ProtectedAccess.createSwampTar(recipe: HerbloreSwampTarRow) {
+        if (!meetsStatReqs(recipe.statReq)) {
             return
         }
 
@@ -46,7 +44,7 @@ class SwampTarEvents : PluginScript() {
     private suspend fun ProtectedAccess.processSwampTarTick(task: SwampTarTask) {
         val recipe = task.recipe
 
-        if (player.herbloreLvl < recipe.level) {
+        if (!meetsStatReqs(recipe.statReq)) {
             resetAnim()
             return
         }

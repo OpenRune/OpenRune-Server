@@ -50,8 +50,8 @@ public class BurnLogEvents @Inject constructor(
 
     override fun ScriptContext.startup() {
         FiremakingLogsRow.all().forEach { log ->
-            onOpHeldU("obj.tinderbox", log.item) { startBurn(log, method = BurnMethod.Tinderbox) }
-            onOpHeldU(log.item) {
+            onOpHeldU("obj.tinderbox", log.input) { startBurn(log, method = BurnMethod.Tinderbox) }
+            onOpHeldU(log.input) {
                 val barbarianAnim = it.second.paramOrNull(params.barbarian_firemaking_anim)
                     ?: return@onOpHeldU
                 val animName = RSCM.getReverseMapping(RSCMType.SEQ, barbarianAnim.id)
@@ -60,7 +60,7 @@ public class BurnLogEvents @Inject constructor(
                 }
                 startBurn(log, method = BurnMethod.Bow, burnAnim = animName)
             }
-            onOpObj4(log.item) { startBurn(log, it.obj, BurnMethod.Tinderbox) }
+            onOpObj4(log.input) { startBurn(log, it.obj, BurnMethod.Tinderbox) }
         }
 
         onPlayerQueueWithArgs("queue.firemaking_light") { processBurnTick(it.args) }
@@ -80,8 +80,8 @@ public class BurnLogEvents @Inject constructor(
         var obj = groundObj
 
         if (obj == null) {
-            invDel(player.inv, log.item.internalName)
-            obj = Obj.fromServer(worldClock, coords, log.item.internalName, 1)
+            invDel(player.inv, log.input.internalName)
+            obj = Obj.fromServer(worldClock, coords, log.input.internalName, 1)
             objRegistry.add(obj)
         }
 
@@ -112,11 +112,11 @@ public class BurnLogEvents @Inject constructor(
         }
 
         val reqLevel = when (method) {
-            BurnMethod.Tinderbox -> log.level
-            BurnMethod.Bow -> (log.level + 20).coerceAtMost(99)
+            BurnMethod.Tinderbox -> log.statReq.first().t1
+            BurnMethod.Bow -> (log.statReq.first().t1 + 20).coerceAtMost(99)
         }
         if (player.firemakingLvl < reqLevel) {
-            player.mes("You need a Firemaking level of $reqLevel to burn ${log.item.name} logs this way.")
+            player.mes("You need a Firemaking level of $reqLevel to burn ${log.input.name} logs this way.")
             return false
         }
 
@@ -139,7 +139,7 @@ public class BurnLogEvents @Inject constructor(
             return
         }
 
-        val success = coloredLogs.contains(task.log.item.internalName) ||
+        val success = coloredLogs.contains(task.log.input.internalName) ||
             skillSuccess(64, 512, player.firemakingLvl)
 
         if (!success) {
@@ -154,7 +154,7 @@ public class BurnLogEvents @Inject constructor(
         objRepo.del(task.obj)
 
         val fireCoords = task.obj.coords
-        val fireId = coloredFire[task.log.item.internalName] ?: "loc.fire"
+        val fireId = coloredFire[task.log.input.internalName] ?: "loc.fire"
 
         locRepo.add(
             fireCoords,
@@ -170,7 +170,7 @@ public class BurnLogEvents @Inject constructor(
 
         resetAnim()
         val xpModifier = xpMods.get(player, "stat.firemaking")
-        val xp = task.log.xp * task.method.xpMultiplier(task.log.item.internalName) * xpModifier
+        val xp = task.log.xp * task.method.xpMultiplier(task.log.input.internalName) * xpModifier
         statAdvance("stat.firemaking", xp)
         mes("The fire catches and the logs begin to burn.")
 

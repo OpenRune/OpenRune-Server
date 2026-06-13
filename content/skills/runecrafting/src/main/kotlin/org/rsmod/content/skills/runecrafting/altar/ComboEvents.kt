@@ -32,7 +32,7 @@ class ComboEvents @Inject constructor(
                         altar.combo.filter { it.talisman?.internalName == talisman }
                     val selectedCombo =
                         matchingCombos.firstOrNull { candidate ->
-                            val input = candidate.runeInput?.internalName
+                            val input = candidate.input?.internalName
                             input != null &&
                                 inv.contains(input) &&
                                 (inv.contains("obj.blankrune_high") || inv.contains("obj.gotr_guardian_essence"))
