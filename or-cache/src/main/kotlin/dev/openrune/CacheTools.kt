@@ -23,6 +23,7 @@ import dev.openrune.impl.GameframeTable
 import dev.openrune.impl.Music
 import dev.openrune.map.packing.MapPackers
 import dev.openrune.tables.PickableObjects
+import dev.openrune.tables.SettingConfigs
 import dev.openrune.tables.StatComponents
 import dev.openrune.tables.skills.Cooking
 import dev.openrune.tables.skills.Firemaking
@@ -46,6 +47,8 @@ val revision : Triple<Int, Int, String> = readRevision()
 
 private val logger = InlineLogger()
 
+val VARBIT = CacheVarLiteral.registerExternal(254, ']', name = "VARBIT")
+
 fun main(args: Array<String>) {
     if (args.isEmpty()) {
         println("Usage: <buildType>")
@@ -53,7 +56,6 @@ fun main(args: Array<String>) {
     }
 
     CacheVarLiteral.registerExternal(253, '[', name = "PROJANIM")
-    CacheVarLiteral.registerExternal(254, ']', name = "VARBIT")
 
     downloadRev(TaskType.valueOf(args.first().uppercase()))
 }
@@ -87,6 +89,7 @@ fun tablesToPack() = listOf(
     Runecrafting.runes(),
     Runecrafting.tiara(),
     Runecrafting.combo(),
+    SettingConfigs.settings(),
 )
 
 fun downloadRev(type: TaskType) {

@@ -50,7 +50,6 @@ constructor(
     private val transmitVars by lazy { transmitVars() }
 
     private var Player.chatboxUnlocked: Boolean by boolVarBit("varbit.has_displayname_transmitter")
-    private var Player.hideRoofs by boolVarBit("varbit.option_hide_rooftops")
 
     override fun ScriptContext.startup() {
         onEvent<SessionStateEvent.EngineLogin>(0L) { player.engineLogin() }
@@ -92,8 +91,6 @@ constructor(
     private fun Player.sendVars() {
         client.write(VarpReset)
         chatboxUnlocked = displayName.isNotBlank()
-        setDefaultAudioOptions()
-        hideRoofs = true
         for (varp in transmitVars) {
             if (varp in vars) {
                 resyncVar(varp)
@@ -151,60 +148,8 @@ constructor(
         MiscOutput.setPlayerOp(this, slot = 8, op = "Report")
     }
 
-    private fun Player.setDefaultAudioOptions() {
-        setDefaultVarp("varp.option_master_volume", DEFAULT_AUDIO_VOLUME)
-        setDefaultVarp("varp.option_music", DEFAULT_AUDIO_VOLUME)
-        setDefaultVarp("varp.option_sounds", DEFAULT_AUDIO_VOLUME)
-        setDefaultVarp("varp.option_areasounds", DEFAULT_AUDIO_VOLUME)
-        setDefaultDesktopAudioOptions()
-        setUnmuteAudioSavedOptions()
-    }
-
-    private fun Player.setDefaultDesktopAudioOptions() {
-        val desktopAudio =  ServerCacheManager.getVarbit("varbit.option_master_volume_desktop".asRSCM(RSCMType.VARBIT))!!.baseVar
-        if (desktopAudio !in vars) {
-            setVarBit("varbit.option_master_volume_desktop", DEFAULT_AUDIO_VOLUME)
-            setVarBit("varbit.option_music_desktop", DEFAULT_AUDIO_VOLUME)
-            setVarBit("varbit.option_master_volume_saved_desktop", DEFAULT_UNMUTE_VOLUME)
-            setVarBit("varbit.option_music_saved_desktop", DEFAULT_UNMUTE_VOLUME)
-        }
-
-        val desktopEffects = ServerCacheManager.getVarbit("varbit.option_sounds_desktop".asRSCM(RSCMType.VARBIT))!!.baseVar
-        if (desktopEffects !in vars) {
-            setVarBit("varbit.option_sounds_desktop", DEFAULT_AUDIO_VOLUME)
-            setVarBit("varbit.option_areasounds_desktop", DEFAULT_AUDIO_VOLUME)
-            setVarBit("varbit.option_sounds_saved_desktop", DEFAULT_UNMUTE_VOLUME)
-            setVarBit("varbit.option_areasounds_saved_desktop", DEFAULT_UNMUTE_VOLUME)
-        }
-    }
-
-    private fun Player.setUnmuteAudioSavedOptions() {
-        setVarBit("varbit.option_master_volume_saved_desktop", DEFAULT_UNMUTE_VOLUME)
-        setVarBit("varbit.option_music_saved_desktop", DEFAULT_UNMUTE_VOLUME)
-        setVarBit("varbit.option_sounds_saved_desktop", DEFAULT_UNMUTE_VOLUME)
-        setVarBit("varbit.option_areasounds_saved_desktop", DEFAULT_UNMUTE_VOLUME)
-        setVarBit("varbit.option_master_volume_saved", DEFAULT_UNMUTE_VOLUME)
-        setVarBit("varbit.option_music_saved", DEFAULT_UNMUTE_VOLUME)
-        setVarBit("varbit.option_sounds_saved", DEFAULT_UNMUTE_VOLUME)
-        setVarBit("varbit.option_areasounds_saved", DEFAULT_UNMUTE_VOLUME)
-    }
-
-    private fun Player.setDefaultVarp(varp: String, value: Int) {
-        if (vars.contains(varp)) {
-            VarPlayerIntMapSetter.set(this, varp, value)
-        }
-    }
-
-    private fun Player.setVarBit(varbit: String, value: Int) {
-        VarPlayerIntMapSetter.set(this, varbit, value)
-    }
-
     private fun transmitVars(): List<VarpServerType> {
         return ServerCacheManager.getVarps().values.filter { !it.transmit.never }.sortedBy { it.id }
     }
 
-    private companion object {
-        private const val DEFAULT_AUDIO_VOLUME = 100
-        private const val DEFAULT_UNMUTE_VOLUME = 5
-    }
 }

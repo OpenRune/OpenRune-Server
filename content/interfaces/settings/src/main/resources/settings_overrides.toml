@@ -1,0 +1,28 @@
+[number_settings]
+
+[number_settings.38]
+prompt = "Set threshold value:"
+min = 0
+max = 500000000
+enable_toggle_setting_id = "dbrow.setting_38"
+
+[number_settings.43]
+prompt = "Set threshold value:"
+min = 0
+max = 500000000
+enable_toggle_setting_id = "dbrow.setting_42"
+
+[number_settings.66]
+prompt = "Set value threshold for alchemy warnings:"
+min = 0
+max = 500000000
+
+[number_settings.280]
+prompt = "Set value threshold for max hits (2-500):"
+min = 2
+max = 500
+
+[number_settings.389]
+prompt = "Set energy threshold for auto-enabling run mode:"
+min = 0
+max = 100

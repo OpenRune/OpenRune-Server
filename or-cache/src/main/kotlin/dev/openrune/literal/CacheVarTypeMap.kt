@@ -7,6 +7,7 @@ import dev.openrune.definition.type.DBTableType
 import dev.openrune.definition.type.EnumType
 import dev.openrune.definition.type.HitSplatType
 import dev.openrune.definition.type.SpotAnimType
+import dev.openrune.definition.type.StructType
 import dev.openrune.definition.type.VarBitType
 import dev.openrune.definition.type.widget.ComponentType
 import dev.openrune.definition.util.CacheVarLiteral
@@ -52,6 +53,7 @@ public object CacheVarTypeMap {
             ItemServerType::class to CacheVarLiteral.NAMEDOBJ,
             String::class to CacheVarLiteral.STRING,
             StatType::class to CacheVarLiteral.STAT,
+            StructType::class to CacheVarLiteral.STRUCT,
             SynthType::class to CacheVarLiteral.SYNTH,
             VarBitType::class to ServerCacheManager.VARBIT,
             VarpServerType::class to CacheVarLiteral.VARP,
@@ -78,6 +80,7 @@ public object CacheVarTypeMap {
             ProjAnimType::class to CacheVarProjAnimCodec,
             SequenceServerType::class to CacheVarSeqCodec,
             SpotanimType::class to CacheVarSpotanimCodec,
+            StructType::class to CacheVarStructCodec,
             ItemServerType::class to CacheVarNamedObjCodec,
             String::class to CacheVarStringCodec,
             StatType::class to CacheVarStatCodec,

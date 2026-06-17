@@ -1,17 +1,26 @@
-package org.rsmod.content.interfaces.settings.scripts
+package org.rsmod.content.interfaces.settings.scripts.tab.impl
 
+import dev.openrune.definition.type.widget.IfEvent
 import jakarta.inject.Inject
 import kotlin.math.min
 import org.rsmod.api.player.music.MusicPlayer
+import org.rsmod.api.player.ui.IfScriptArgs
+import org.rsmod.api.player.ui.ifSetEvents
 import org.rsmod.api.player.vars.intVarBit
 import org.rsmod.api.player.vars.intVarp
 import org.rsmod.api.script.onIfOverlayButton
+import org.rsmod.api.script.onIfScriptTrigger
+import org.rsmod.api.script.onPlayerLogin
 import org.rsmod.game.entity.Player
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
-class AudioSettingsScript @Inject constructor(private val musicPlayer: MusicPlayer) :
-    PluginScript() {
+class AudioSettingsScript @Inject constructor(private val musicPlayer: MusicPlayer) : PluginScript() {
+
+    internal data class VolumeWithOpArg(val volume: Int, val option: Int) : IfScriptArgs
+
+    internal data class VolumeArg(val volume: Int) : IfScriptArgs
+
     private var Player.optionMaster by intVarBit("varbit.option_master_volume_desktop")
     private var Player.optionMasterLegacy by intVarp("varp.option_master_volume")
     private var Player.optionMasterSaved by intVarBit("varbit.option_master_volume_saved_desktop")
@@ -33,49 +42,61 @@ class AudioSettingsScript @Inject constructor(private val musicPlayer: MusicPlay
     private var Player.optionAreaSoundsSavedLegacy by intVarBit("varbit.option_areasounds_saved")
 
     override fun ScriptContext.startup() {
+
+        onPlayerLogin {
+            listOf(
+                "component.settings_side:master_slider_bobble",
+                "component.settings_side:music_slider_bobble",
+                "component.settings_side:sound_slider_bobble",
+                "component.settings_side:areasounds_slider_bobble",
+                "component.settings:settings_clickzone",
+            ).forEach {
+                player.ifSetEvents(it, -1..-1, IfEvent.ScriptTrigger)
+            }
+        }
+
         onIfOverlayButton("component.settings_side:master_icon") { player.toggleMaster() }
         onIfOverlayButton("component.settings_side:master_bobble_container") {
             player.selectMasterSlider(it.comsub)
         }
-        //onIfOverlayScriptTrigger("component.settings_side:master_slider_bobble", MASTER_VOLUME_SCRIPT) {
-            //player.setMasterVolume(volumeArg(), forceMusicResume = volumeArg() > 0)
-        //}
+        onIfScriptTrigger<VolumeArg>("component.settings_side:master_slider_bobble") {
+            player.setMasterVolume(it.volume, forceMusicResume = it.volume > 0)
+        }
 
         onIfOverlayButton("component.settings_side:music_icon") { player.toggleMusic() }
         onIfOverlayButton("component.settings_side:music_bobble_container") {
             player.selectMusicSlider(it.comsub)
         }
-        //onIfOverlayScriptTrigger("component.settings_side:music_slider_bobble", AUDIO_VOLUME_SCRIPT) {
-            //player.setMusicVolume(volumeArg(), forceMusicResume = volumeArg() > 0)
-        //}
+        onIfScriptTrigger<VolumeArg>("component.settings_side:music_slider_bobble") {
+            player.setMusicVolume(it.volume, forceMusicResume = it.volume > 0)
+        }
 
         onIfOverlayButton("component.settings_side:sound_icon") { player.toggleSounds() }
         onIfOverlayButton("component.settings_side:sound_bobble_container") {
             player.selectSoundSlider(it.comsub)
         }
-        //onIfOverlayScriptTrigger("component.settings_side:sound_slider_bobble", SOUND_VOLUME_SCRIPT) {
-            //player.setSoundsVolume(volumeArg())
-        //}
+        onIfScriptTrigger<VolumeArg>("component.settings_side:sound_slider_bobble") {
+            player.setSoundsVolume(it.volume)
+        }
 
         onIfOverlayButton("component.settings_side:areasound_icon") { player.toggleAreaSounds() }
         onIfOverlayButton("component.settings_side:areasounds_bobble_container") {
             player.selectAreaSoundSlider(it.comsub)
         }
-        //onIfOverlayScriptTrigger("component.settings_side:areasounds_slider_bobble", AREA_SOUND_VOLUME_SCRIPT) {
-            //player.setAreaSoundsVolume(volumeArg())
-        //}
+        onIfScriptTrigger<VolumeArg>("component.settings_side:areasounds_slider_bobble") {
+            player.setAreaSoundsVolume(it.volume)
+        }
 
-        //onIfOverlayScriptTrigger("component.settings:settings_clickzone", SETTINGS_VOLUME_SCRIPT) {
-            //player.setSettingsVolume(optionArg(), volumeArg())
-        //}
+        onIfScriptTrigger<VolumeWithOpArg>("component.settings:settings_clickzone") {
+            player.setSettingsVolume(it.option, it.volume)
+        }
     }
 
     private fun Player.toggleMaster() {
-        val volume =
-            when {
-                optionMaster > 0 -> 0
-                else -> UNMUTE_VOLUME
-            }
+        val volume = when {
+            optionMaster > 0 -> 0
+            else -> UNMUTE_VOLUME
+        }
         setMasterVolume(volume, forceMusicResume = volume > 0)
     }
 
@@ -98,11 +119,10 @@ class AudioSettingsScript @Inject constructor(private val musicPlayer: MusicPlay
     }
 
     private fun Player.toggleMusic() {
-        val volume =
-            when {
-                optionMusic > 0 -> 0
-                else -> UNMUTE_VOLUME
-            }
+        val volume = when {
+            optionMusic > 0 -> 0
+            else -> UNMUTE_VOLUME
+        }
         setMusicVolume(volume, forceMusicResume = volume > 0)
     }
 
@@ -125,11 +145,10 @@ class AudioSettingsScript @Inject constructor(private val musicPlayer: MusicPlay
     }
 
     private fun Player.toggleSounds() {
-        val volume =
-            when {
-                optionSounds > 0 -> 0
-                else -> UNMUTE_VOLUME
-            }
+        val volume = when {
+            optionSounds > 0 -> 0
+            else -> UNMUTE_VOLUME
+        }
         setSoundsVolume(volume)
     }
 
@@ -145,11 +164,10 @@ class AudioSettingsScript @Inject constructor(private val musicPlayer: MusicPlay
     }
 
     private fun Player.toggleAreaSounds() {
-        val volume =
-            when {
-                optionAreaSounds > 0 -> 0
-                else -> UNMUTE_VOLUME
-            }
+        val volume = when {
+            optionAreaSounds > 0 -> 0
+            else -> UNMUTE_VOLUME
+        }
         setAreaSoundsVolume(volume)
     }
 
@@ -229,11 +247,6 @@ class AudioSettingsScript @Inject constructor(private val musicPlayer: MusicPlay
     }
 
     private companion object {
-        private const val MASTER_VOLUME_SCRIPT = -1213750982 // 3081216314
-        private const val AUDIO_VOLUME_SCRIPT = 406545006
-        private const val SOUND_VOLUME_SCRIPT = -1069744872 // 3225222424
-        private const val AREA_SOUND_VOLUME_SCRIPT = -1801605717 // 2493361579
-        private const val SETTINGS_VOLUME_SCRIPT = -878888337 // 3416078959
 
         private const val MASTER_VOLUME_OPTION = 319
         private const val MUSIC_VOLUME_OPTION = 30

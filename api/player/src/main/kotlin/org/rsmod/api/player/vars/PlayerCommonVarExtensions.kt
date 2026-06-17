@@ -26,10 +26,15 @@ public var Player.varMoveSpeed: MoveSpeed
     }
 
 public fun Player.resyncVar(internal: String) {
-    val varp = ServerCacheManager.getVarp(internal.asRSCM(RSCMType.VARP))
-        ?: error("Varp '$internal' not found")
-
-    resyncVar(varp)
+    val prefix = internal.substringBefore('.')
+    if (prefix == "varbit") {
+        val varBitId = internal.asRSCM(RSCMType.VARBIT)
+        val varBit = ServerCacheManager.getVarbit(varBitId) ?: error("VarBit '$internal' (id=$varBitId) not found")
+        resyncVar(varBit)
+    } else {
+        val varp = ServerCacheManager.getVarp(internal.asRSCM(RSCMType.VARP)) ?: error("Varp '$internal' not found")
+        resyncVar(varp)
+    }
 }
 
 public fun Player.resyncVar(varp: VarpServerType) {

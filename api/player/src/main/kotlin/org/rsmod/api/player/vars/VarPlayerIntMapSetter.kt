@@ -67,6 +67,24 @@ public object VarPlayerIntMapSetter {
         }
     }
 
+    public fun toggle(player: Player, varp: String) {
+        if (varp.startsWith("varp.")) {
+            toggle(player, ServerCacheManager.getVarp(varp.asRSCM(RSCMType.VARP))!!)
+        } else {
+            toggle(player, ServerCacheManager.getVarbit(varp.asRSCM(RSCMType.VARBIT))!!)
+        }
+    }
+
+    public fun toggle(player: Player, varp: VarpServerType) {
+        val current = player.vars[varp]
+        set(player, varp, if (current == 0) 1 else 0)
+    }
+
+    public fun toggle(player: Player, varbit: VarBitType) {
+        val current = player.vars[varbit]
+        set(player, varbit, if (current == 0) 1 else 0)
+    }
+
     public fun set(player: Player, varbit: VarBitType, value: Int) {
         VarPlayerIntMap.assertVarBitBounds(varbit, value)
         val mappedValue = player.vars[varbit.baseVar]

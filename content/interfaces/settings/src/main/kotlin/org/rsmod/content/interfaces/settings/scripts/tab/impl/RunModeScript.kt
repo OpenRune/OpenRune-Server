@@ -1,4 +1,4 @@
-package org.rsmod.content.interfaces.settings.scripts
+package org.rsmod.content.interfaces.settings.scripts.tab.impl
 
 import jakarta.inject.Inject
 import org.rsmod.api.player.protect.ProtectedAccessLauncher

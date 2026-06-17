@@ -43,7 +43,15 @@ public value class VarPlayerIntMap(public val backing: Int2IntMap = Int2IntOpenH
         return extracted
     }
 
-    public operator fun contains(key: String): Boolean = backing.containsKey(key.asRSCM(RSCMType.VARP))
+    public operator fun contains(key: String): Boolean {
+        return if (key.startsWith("varp")) {
+            val varp = ServerCacheManager.getVarp(key.asRSCM(RSCMType.VARP))
+            varp != null && backing.containsKey(varp.id)
+        } else {
+            val varbit = ServerCacheManager.getVarbit(key.asRSCM(RSCMType.VARBIT))
+            varbit != null && backing.containsKey(varbit.baseVar.id)
+        }
+    }
 
     public operator fun contains(key: VarpServerType): Boolean = backing.containsKey(key.id)
 

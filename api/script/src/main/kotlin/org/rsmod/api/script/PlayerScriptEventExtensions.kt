@@ -12,6 +12,7 @@ import org.rsmod.api.player.events.PlayerTimerEvent
 import org.rsmod.api.player.events.interact.PlayerTEvents
 import org.rsmod.api.player.events.interact.PlayerUContentEvents
 import org.rsmod.api.player.events.interact.PlayerUEvents
+import org.rsmod.api.player.input.DialogInput
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.ui.WorldMapClick
 import org.rsmod.game.entity.player.SessionStateEvent
@@ -21,6 +22,9 @@ public fun ScriptContext.onPlayerInit(action: SessionStateEvent.Initialize.() ->
     onEvent(action)
 
 public fun ScriptContext.onPlayerLogin(action: SessionStateEvent.Login.() -> Unit): Unit =
+    onEvent(action)
+
+public fun ScriptContext.onDialogInput(action: DialogInput.() -> Unit): Unit =
     onEvent(action)
 
 public fun ScriptContext.onPlayerLogout(action: SessionStateEvent.Logout.() -> Unit): Unit =

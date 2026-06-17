@@ -1,13 +1,15 @@
-package org.rsmod.content.interfaces.settings.scripts
+package org.rsmod.content.interfaces.settings.scripts.tab.impl
 
 import jakarta.inject.Inject
 import org.rsmod.api.config.constants
 import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.protect.ProtectedAccessLauncher
-import org.rsmod.api.player.vars.boolVarBit
-import org.rsmod.api.player.vars.enumVarp
+import org.rsmod.api.player.vars.VarPlayerIntMapSetter
 import org.rsmod.api.script.onIfOverlayButton
-import org.rsmod.api.utils.vars.VarEnumDelegate
+import org.rsmod.api.table.SettingsConfigsRow
+import org.rsmod.content.interfaces.settings.scripts.SettingUtils
+import org.rsmod.content.interfaces.settings.scripts.Settings
+import org.rsmod.content.interfaces.settings.scripts.varValue
 import org.rsmod.game.entity.Player
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
@@ -15,10 +17,6 @@ import org.rsmod.plugin.scripts.ScriptContext
 class ControlSettingsScript
 @Inject
 constructor(private val protectedAccess: ProtectedAccessLauncher) : PluginScript() {
-    private var Player.acceptAid by boolVarBit("varbit.option_acceptaid")
-    private var Player.skullPrevention by boolVarBit("varbit.skull_prevent_enabled")
-    private var Player.priorityPlayer by enumVarp<PlayerPriority>("varp.option_attackpriority")
-    private var Player.priorityNpc by enumVarp<NpcPriority>("varp.option_attackpriority_npc")
 
     override fun ScriptContext.startup() {
         onIfOverlayButton("component.settings_side:skull_prevention") { player.toggleSkullPrevention() }
@@ -37,36 +35,27 @@ constructor(private val protectedAccess: ProtectedAccessLauncher) : PluginScript
     }
 
     private fun Player.toggleSkullPrevention() {
-        skullPrevention = !skullPrevention
+        val row = SettingsConfigsRow.all().find { it.settingId == 206 }
+        row?.varValue?.let {
+            VarPlayerIntMapSetter.toggle(this, it)
+        }
     }
 
     private fun Player.selectPlayerPriority(comsub: Int) {
-        val priority =
-            when (comsub) {
-                1 -> PlayerPriority.CombatLevel
-                2 -> PlayerPriority.RightClickAlways
-                3 -> PlayerPriority.LeftClick
-                4 -> PlayerPriority.Hidden
-                5 -> PlayerPriority.RightClickClan
-                else -> error("Invalid comsub: $comsub")
-            }
-        priorityPlayer = priority
+        val setting = Settings.getSetting(55)
+        SettingUtils.setDropdown(this, comsub, setting)
     }
 
     private fun Player.selectNpcPriority(comsub: Int) {
-        val priority =
-            when (comsub) {
-                1 -> NpcPriority.CombatLevel
-                2 -> NpcPriority.RightClickAlways
-                3 -> NpcPriority.LeftClick
-                4 -> NpcPriority.Hidden
-                else -> error("Invalid comsub: $comsub")
-            }
-        priorityNpc = priority
+        val setting = Settings.getSetting(56)
+        SettingUtils.setDropdown(this, comsub, setting)
     }
 
     private fun Player.toggleAcceptAid() {
-        acceptAid = !acceptAid
+        val row = SettingsConfigsRow.all().find { it.settingId == 59 }
+        row?.varValue?.let {
+            VarPlayerIntMapSetter.toggle(this, it)
+        }
     }
 
     private fun Player.selectHouseOptions() {
@@ -79,19 +68,4 @@ constructor(private val protectedAccess: ProtectedAccessLauncher) : PluginScript
             mes(constants.dm_busy)
         }
     }
-}
-
-private enum class PlayerPriority(override val varValue: Int) : VarEnumDelegate {
-    CombatLevel(0),
-    RightClickAlways(1),
-    LeftClick(2),
-    Hidden(3),
-    RightClickClan(4),
-}
-
-private enum class NpcPriority(override val varValue: Int) : VarEnumDelegate {
-    CombatLevel(0),
-    RightClickAlways(1),
-    LeftClick(2),
-    Hidden(3),
 }

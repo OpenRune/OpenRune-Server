@@ -5,6 +5,7 @@ import dev.openrune.cache.filestore.definition.InterfaceType
 import dev.openrune.definition.type.DBRowType
 import dev.openrune.definition.type.DBTableType
 import dev.openrune.definition.type.HitSplatType
+import dev.openrune.definition.type.StructType
 import dev.openrune.definition.type.VarBitType
 import dev.openrune.definition.type.widget.ComponentType
 import dev.openrune.types.HealthBarServerType
@@ -111,6 +112,12 @@ public object CacheVarHitmarkCodec : BaseIntVarCodec<HitSplatType>(HitSplatType:
     override fun decode(value: Int): HitSplatType? = ServerCacheManager.getHitSplats(value)
 
     override fun encode(value: HitSplatType): Int = value.id
+}
+
+public object CacheVarStructCodec : BaseIntVarCodec<StructType>(StructType::class) {
+    override fun decode(value: Int): StructType? = ServerCacheManager.getStruct(value)
+
+    override fun encode(value: StructType): Int = value.id
 }
 
 public object CacheVarInterfaceCodec : BaseIntVarCodec<InterfaceType>(InterfaceType::class) {
