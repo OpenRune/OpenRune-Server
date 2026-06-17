@@ -33,6 +33,7 @@ import org.rsmod.api.realm.Realm
 import org.rsmod.api.script.onEvent
 import org.rsmod.api.server.config.ServerConfig
 import org.rsmod.api.stats.levelmod.InvisibleLevels
+import org.rsmod.api.table.DidyouknowRow
 import org.rsmod.game.MapClock
 import org.rsmod.game.entity.Player
 import org.rsmod.game.entity.player.SessionStateEvent
@@ -64,6 +65,8 @@ constructor(
         sendChatFilters()
         sendOpVisibility()
         sendWelcomeMessage()
+        val validDidYouKnow = DidyouknowRow.all().filter { it.mobileonly != true }.random()
+        mes("Did you know? ${validDidYouKnow.tip}", ChatType.DidYouKnow)
         sendVars()
     }
 

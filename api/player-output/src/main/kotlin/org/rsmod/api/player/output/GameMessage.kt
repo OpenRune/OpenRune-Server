@@ -85,4 +85,9 @@ public enum class ChatType(public val id: Int) {
     GimGroupReqTrade(113),
     Dialogue(114),
     Mesbox(115),
+    NpcSay(116),
+    DidYouKnow(117),
+    LevelUpMessage(118),
+
+
 }

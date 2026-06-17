@@ -22,6 +22,7 @@ import dev.openrune.gamevals.GamevalDumper
 import dev.openrune.impl.GameframeTable
 import dev.openrune.impl.Music
 import dev.openrune.map.packing.MapPackers
+import dev.openrune.tables.DidYouKnow
 import dev.openrune.tables.PickableObjects
 import dev.openrune.tables.SettingConfigs
 import dev.openrune.tables.StatComponents
@@ -90,6 +91,7 @@ fun tablesToPack() = listOf(
     Runecrafting.tiara(),
     Runecrafting.combo(),
     SettingConfigs.settings(),
+    DidYouKnow.didYouknow(),
 )
 
 fun downloadRev(type: TaskType) {
