@@ -81,7 +81,7 @@ class SkillGuideEvents @Inject constructor(
     }
 
     private fun ProtectedAccess.openStatGuide(skillGuideBit: Int) {
-        player.openSkillGuide(skillGuideBit, player.vars["varp.skill_guide_v2"] != 0)
+        player.openSkillGuide(skillGuideBit, player.vars["varbit.option_skill_guide"] != 0)
     }
 
     private fun Player.openSkillGuide(
@@ -104,6 +104,7 @@ class SkillGuideEvents @Inject constructor(
         skillGuideBit: Int,
         sectionVar: Int,
     ) {
+
         ifOpenOverlay("interface.skill_guide_v2", eventBus)
         ifSetEvents("component.skill_guide_v2:tabs", 0..200, IfEvent.Op1)
         runClientScript(1902, skillGuideBit, sectionVar)
