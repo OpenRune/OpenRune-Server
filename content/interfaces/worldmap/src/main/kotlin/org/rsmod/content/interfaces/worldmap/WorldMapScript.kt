@@ -9,6 +9,7 @@ import org.rsmod.api.player.ui.ifOpenOverlay
 import org.rsmod.api.player.vars.boolVarBit
 import org.rsmod.api.script.onIfOverlayButton
 import org.rsmod.api.script.onPlayerCoordsChanged
+import org.rsmod.api.script.onPlayerLogin
 import org.rsmod.api.script.onWorldMapClick
 import org.rsmod.content.interfaces.gameframe.script.GameframeScript.Companion.resolveGameframeMove
 import org.rsmod.content.interfaces.gameframe.script.gameframeTopLevel
@@ -23,6 +24,7 @@ class WorldMapScript @Inject constructor(
 ) : PluginScript() {
 
     private var Player.isFullScreenMap by boolVarBit("varbit.fullscreen_worldmap")
+    private var Player.orbsMinimized by boolVarBit("varbit.minimap_toggle")
 
     private val mapInterface = "interface.worldmap"
     private val synthSound = "synth.interface_select"
@@ -33,7 +35,12 @@ class WorldMapScript @Inject constructor(
     private val fullscreenTopLevel = "interface.toplevel_display"
 
     override fun ScriptContext.startup() {
+        onPlayerLogin {
+            player.orbsMinimized = false
+        }
         onIfOverlayButton(worldMapOrb) { player.openMap(it.op) }
+        onIfOverlayButton("component.orbs_nomap:worldmap") { player.openMap(it.op) }
+
         onIfOverlayButton(worldMapClose) { player.closeMap() }
         onPlayerCoordsChanged { player.runClientScript(1749, player.coords.packed) }
         onWorldMapClick("modlevel.owner") { telejump(it.coord) }
@@ -47,6 +54,10 @@ class WorldMapScript @Inject constructor(
         when (option) {
             IfButtonOp.Op2 -> openMapOverlay()
             IfButtonOp.Op3 -> openFullscreen()
+            IfButtonOp.Op4 -> {
+                this.ifOpenOverlay(if (orbsMinimized) "interface.orbs" else "interface.orbs_nomap", "component.toplevel_osrs_stretch:orbs", eventBus)
+                orbsMinimized = !orbsMinimized
+            }
             else -> error("Invalid option on world map: $option")
         }
     }
@@ -84,5 +95,7 @@ class WorldMapScript @Inject constructor(
 
         val move = resolveGameframeMove(from = from, dest = to)
         softQueue("queue.fullscreen_map", 1, move)
+
+        delay(2)
     }
 }

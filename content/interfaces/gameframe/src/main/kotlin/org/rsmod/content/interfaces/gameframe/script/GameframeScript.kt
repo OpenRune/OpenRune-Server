@@ -39,6 +39,7 @@ class GameframeScript @Inject internal constructor(private val eventBus: EventBu
 
     private lateinit var moveEvents: List<MoveEvent>
     private lateinit var default: Gameframe
+    private var Player.orbsMinimized by boolVarBit("varbit.minimap_toggle")
 
     override fun ScriptContext.startup() {
         loadAll()
@@ -156,7 +157,7 @@ class GameframeScript @Inject internal constructor(private val eventBus: EventBu
             //  more information before adding this.
         }
 
-        ifOpenOverlay("interface.orbs", "component.toplevel_osrs_stretch:orbs", eventBus)
+        this.ifOpenOverlay(if (orbsMinimized && dest.resizable) "interface.orbs_nomap" else "interface.orbs", "component.toplevel_osrs_stretch:orbs", eventBus)
         Cinematic.syncMinimapState(this)
     }
 
