@@ -3,7 +3,6 @@ package org.rsmod.api.player.output
 import net.rsprot.protocol.game.outgoing.logout.Logout
 import net.rsprot.protocol.game.outgoing.logout.LogoutWithReason
 import net.rsprot.protocol.game.outgoing.misc.client.ServerTickEnd
-import net.rsprot.protocol.game.outgoing.misc.client.UpdateRebootTimer
 import net.rsprot.protocol.game.outgoing.misc.client.UpdateRebootTimerV2
 import net.rsprot.protocol.game.outgoing.misc.player.SetPlayerOp
 import org.rsmod.game.entity.Player
@@ -11,7 +10,20 @@ import org.rsmod.game.entity.Player
 public object MiscOutput {
     /** @see [SetPlayerOp] */
     public fun setPlayerOp(player: Player, slot: Int, op: String?, priority: Boolean = false) {
+        player.options.add(slot ,op)
         player.client.write(SetPlayerOp(slot, priority, op))
+    }
+
+    public fun findPlayerOption(player: Player,query: String): Int? {
+        val index = player.options.indexOfFirst { it == query }
+        return if (index >= 0) index else null
+    }
+
+    public fun clearPlayerOp(player: Player, slot: Int, query: String) {
+        val optionIdx = findPlayerOption(player,query)
+        if (optionIdx == slot) {
+            setPlayerOp(player,slot,null)
+        }
     }
 
     /** @see [ServerTickEnd] */

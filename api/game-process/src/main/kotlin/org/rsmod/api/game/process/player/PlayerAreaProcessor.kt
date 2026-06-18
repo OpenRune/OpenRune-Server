@@ -26,7 +26,7 @@ public class PlayerAreaProcessor @Inject constructor(private val regions: Region
         val normalizedCoords = normalizedCoords()
         pendingAreas.clear()
         if (!forceExitAreas) {
-            MapSingletons.areaIndex.putAreas(normalizedCoords, pendingAreas)
+            MapSingletons.areaIndex.putAreasIncludingParents(normalizedCoords, pendingAreas)
         }
 
         for (area in activeAreas.iterator()) {

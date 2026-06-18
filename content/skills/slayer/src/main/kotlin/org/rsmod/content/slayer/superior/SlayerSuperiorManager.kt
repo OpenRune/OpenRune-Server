@@ -46,7 +46,7 @@ constructor(
 
         val killedType = killed.visType
         if (!killedType.hasParam(BaseParams.slayer_superior)) return
-        if (killed.coords.isInWilderness() && !killedType.isAvailableInWilderness()) return
+        if (killed.coords.isInWilderness(areaChecker) && !killedType.isAvailableInWilderness()) return
         if (!canSpawnAnother(player)) return
 
         val superiorType = killedType.paramOrNull(BaseParams.slayer_superior)?.let { ServerCacheManager.getNpc(it.id) } ?: return

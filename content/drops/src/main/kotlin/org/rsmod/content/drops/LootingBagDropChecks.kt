@@ -1,6 +1,7 @@
 package org.rsmod.content.drops
 
 import org.rsmod.api.area.checker.isInWilderness
+import org.rsmod.api.area.checker.isInWildernessBasic
 import org.rsmod.game.entity.Player
 
 private const val LOOTING_BAG = "obj.looting_bag"
@@ -8,7 +9,7 @@ private const val INV = "inv.inv"
 private const val BANK = "inv.bank"
 
 public fun Player.shouldDropLootingBag(): Boolean {
-    if (!coords.isInWilderness()) {
+    if (!coords.isInWildernessBasic()) {
         return false
     }
     return !ownsLootingBag()

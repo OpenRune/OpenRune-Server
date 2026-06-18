@@ -11,6 +11,12 @@ object MapAreaDefinitions {
     public fun putAreas(index: AreaIndex, square: MapSquareKey, areaDef: MapAreaDefinition) {
         val squareBase = square.toCoords(level = 0)
 
+        if (areaDef.includes.isNotEmpty()) {
+            for ((area, includes) in areaDef.includes.short2ObjectEntrySet()) {
+                index.registerIncludes(area, includes)
+            }
+        }
+
         if (areaDef.mapSquareAreas.isNotEmpty()) {
             index.registerAll(square, areaDef.mapSquareAreas.iterator())
         }

@@ -48,7 +48,7 @@ public object MapAreaPacker {
     private fun loadAndCollect(path: Path, gson: Gson): List<MapAreaEntry> {
         val mapAreas = loadMapAreas(path, gson)
         val areas = collectAreas(mapAreas)
-        return toAreaConfigList(areas)
+        return toAreaConfigList(areas, mapAreas)
     }
 
     private fun loadMapAreas(path: Path, gson: Gson): Array<JsonMapArea> {
@@ -57,9 +57,23 @@ public object MapAreaPacker {
         return gson.fromJson(input, type)
     }
 
-    private fun toAreaConfigList(polygonArea: PolygonArea): List<MapAreaEntry> {
+    private fun toAreaConfigList(
+        polygonArea: PolygonArea,
+        mapAreas: Array<JsonMapArea>,
+    ): List<MapAreaEntry> {
+        val includesById =
+            mapAreas.associate { area ->
+                val id = area.areaId.asRSCM().toShort()
+                val includes = area.includes?.map { it.asRSCM().toShort() }?.toShortArray() ?: shortArrayOf()
+
+                id to includes
+            }
+
         return polygonArea.mapSquares.map { (square, polygon) ->
-            val areaDef = MapAreaDefinition.from(polygon)
+            val areaDef = MapAreaDefinition.from(
+                polygon,
+                includesById,
+            )
             MapAreaEntry(square, areaDef)
         }
     }
@@ -96,6 +110,7 @@ public object MapAreaPacker {
         val areaId: String,
         val levels: List<Int>,
         val polygons: List<JsonPolygon>,
+        val includes: List<String> = emptyList(),
     )
 
     private data class JsonPolygon(val vertices: List<Point>) {

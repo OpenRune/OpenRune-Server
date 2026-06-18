@@ -2,7 +2,11 @@ package org.rsmod.game.area
 
 import it.unimi.dsi.fastutil.ints.Int2LongOpenHashMap
 import it.unimi.dsi.fastutil.ints.Int2ShortOpenHashMap
+import it.unimi.dsi.fastutil.shorts.Short2ObjectOpenHashMap
 import it.unimi.dsi.fastutil.shorts.ShortArrayList
+import it.unimi.dsi.fastutil.shorts.ShortArraySet
+import it.unimi.dsi.fastutil.shorts.ShortOpenHashSet
+import it.unimi.dsi.fastutil.shorts.ShortSet
 import org.rsmod.map.CoordGrid
 import org.rsmod.map.square.MapSquareKey
 import org.rsmod.map.util.FastPack
@@ -21,6 +25,8 @@ public class AreaIndex {
     private val coordAreas = PackedAreaMap()
     private val zoneAreas = PackedAreaMap()
     private val mapSquareAreas = PackedAreaMap()
+    private val includes = Short2ObjectOpenHashMap<ShortSet>()
+    private val parentAreas = Short2ObjectOpenHashMap<ShortSet>()
 
     /**
      * Appends all areas found at the given coordinate to [dest].
@@ -35,6 +41,52 @@ public class AreaIndex {
 
         val mapSquare = FastPack.mapSquareKey(coord)
         mapSquareAreas.get(mapSquare, dest)
+    }
+
+    public fun putAreasIncludingParents(
+        coord: CoordGrid,
+        dest: ShortArrayList,
+    ) {
+        putAreas(coord, dest)
+
+        val queue = ShortArrayList(dest)
+        val visited = ShortOpenHashSet(dest)
+
+        while (!queue.isEmpty()) {
+            val area = queue.removeShort(queue.size - 1)
+
+            val parents = getParents(area) ?: continue
+            val it = parents.iterator()
+
+            while (it.hasNext()) {
+                val parent = it.nextShort()
+                if (visited.add(parent)) {
+                    dest.add(parent)
+                    queue.add(parent)
+                }
+            }
+        }
+    }
+
+    public fun registerIncludes(area: Short, includes: ShortSet) {
+        val it = includes.iterator()
+        while (it.hasNext()) {
+            val child = it.nextShort()
+
+            val parents = parentAreas.getOrPut(child) {
+                ShortArraySet()
+            }
+
+            parents.add(area)
+        }
+    }
+
+    public fun getParents(area: Short): ShortSet? {
+        return parentAreas[area]
+    }
+
+    public fun getIncludes(area: Short): ShortSet? {
+        return includes[area]
     }
 
     public fun registerAll(coord: CoordGrid, areas: Iterator<Short>) {

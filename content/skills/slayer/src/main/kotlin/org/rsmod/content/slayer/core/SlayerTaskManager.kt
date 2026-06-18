@@ -225,7 +225,7 @@ object SlayerTaskManager {
         getCurrentAssignedMaster(player)?.let(::isWildernessMaster) == true
 
     fun countsKillTowardTask(player: Player, npc: Npc, areaChecker: AreaChecker): Boolean {
-        if (isOnWildernessSlayerTask(player) && !npc.coords.isInWilderness()) {
+        if (isOnWildernessSlayerTask(player) && !npc.coords.isInWilderness(areaChecker)) {
             return false
         }
         return KonarSlayerAreas.countsKillInTaskArea(player, npc, areaChecker)

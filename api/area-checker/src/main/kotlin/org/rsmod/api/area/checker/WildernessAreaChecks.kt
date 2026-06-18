@@ -2,7 +2,11 @@ package org.rsmod.api.area.checker
 
 import org.rsmod.map.CoordGrid
 
-public fun CoordGrid.isInWilderness(): Boolean {
+public fun CoordGrid.isInWilderness(areaChecker: AreaChecker): Boolean {
+    return areaChecker.inArea("area.wilderness", this)
+}
+
+public fun CoordGrid.isInWildernessBasic(): Boolean {
     if (isInWildernessSlayerCave()) return true
     if (level != 0) return false
     return x in SURFACE_MIN_X..SURFACE_MAX_X && z in SURFACE_MIN_Z..SURFACE_MAX_Z

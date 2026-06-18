@@ -9,11 +9,8 @@ import org.rsmod.api.droptable.rsPlayerWeightedTable
 import org.rsmod.content.drops.tables.shared.SharedDropTables
 import org.rsmod.api.droptable.DropRollItem
 import org.rsmod.content.drops.shouldDropLootingBag
-import org.rsmod.content.drops.hasCompletedQuest
 import org.rsmod.content.drops.isOnQuest
 import org.rsmod.content.drops.clueScrollTransformObj
-import org.rsmod.api.droptable.wearingRingOfWealth
-import org.rsmod.api.area.checker.isInWilderness
 import org.rsmod.api.droptable.nothing
 import org.rsmod.api.droptable.RegisterDropTable
 import org.rsmod.game.entity.Player

@@ -1,0 +1,17 @@
+[
+  {
+    "name": "Minor Wilderness Bosses Dungeons",
+    "areaId": "area.minor_wilderness_bosses_dungeons",
+    "levels": [0],
+    "polygons": [
+      {
+        "vertices": [
+          { "x": 1600, "z": 11524 },
+          { "x": 1910, "z": 11524 },
+          { "x": 1910, "z": 11584 },
+          { "x": 1600, "z": 11584 }
+        ]
+      }
+    ]
+  }
+]

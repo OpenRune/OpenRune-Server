@@ -1,0 +1,34 @@
+[
+  {
+    "name": "Wilderness",
+    "areaId": "area.wilderness",
+    "levels": [0, 1, 2, 3],
+    "includes": [
+      "area.wilderness_dungeons",
+      "area.minor_wilderness_bosses_dungeons",
+      "area.demonic_ruins",
+      "area.chaos_temple"
+    ],
+    "polygons": [
+      {
+        "vertices": [
+          { "x": 2947, "z": 3681 },
+          { "x": 2947, "z": 3676 },
+          { "x": 2944, "z": 3676 },
+          { "x": 2944, "z": 3525 },
+          { "x": 2994, "z": 3525 },
+          { "x": 2997, "z": 3528 },
+          { "x": 2998, "z": 3535 },
+          { "x": 2999, "z": 3536 },
+          { "x": 3007, "z": 3546 },
+          { "x": 3023, "z": 3546 },
+          { "x": 3028, "z": 3537 },
+          { "x": 3032, "z": 3529 },
+          { "x": 3037, "z": 3525 },
+          { "x": 3392, "z": 3525 },
+          { "x": 3392, "z": 3968 }
+        ]
+      }
+    ]
+  }
+]

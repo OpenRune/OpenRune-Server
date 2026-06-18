@@ -59,6 +59,7 @@ constructor(
     private fun Player.engineLogin() {
         sendHighPriority()
         sendLowPriority()
+        VarPlayerIntMapSetter.set(this,"varbit.inside_wilderness",0)
     }
 
     private fun Player.sendHighPriority() {

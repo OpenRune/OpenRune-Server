@@ -70,6 +70,8 @@ public class Player(
 
     override val heroPoints: HeroPoints = HeroPoints(size = 16)
 
+    public val options: MutableList<String?> = MutableList(7) { null }
+
     public val vars: VarPlayerIntMap = VarPlayerIntMap()
     public val strVars: VarPlayerStrMap = VarPlayerStrMap()
 

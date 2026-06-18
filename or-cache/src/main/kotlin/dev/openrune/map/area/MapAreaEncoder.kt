@@ -45,10 +45,13 @@ public object MapAreaEncoder {
                     val localZone = LocalMapSquareZone(packed.toInt())
                     "Area count for zone should not exceed 255: zone=$localZone, def=$area"
                 }
+
                 data.writeByte(packed.toInt())
                 data.writeByte(areas.size)
-                for (area in areas.iterator()) {
-                    data.writeShort(area.toInt())
+
+                val it = areas.iterator()
+                while (it.hasNext()) {
+                    data.writeShort(it.nextShort().toInt())
                 }
             }
 
@@ -62,10 +65,29 @@ public object MapAreaEncoder {
                     val grid = MapSquareGrid(packed.toInt())
                     "Area count for grid should not exceed 255: grid=$grid, def=$area"
                 }
+
                 data.writeShort(packed.toInt())
                 data.writeByte(areas.size)
-                for (area in areas.iterator()) {
-                    data.writeShort(area.toInt())
+
+                val it = areas.iterator()
+                while (it.hasNext()) {
+                    data.writeShort(it.nextShort().toInt())
+                }
+            }
+
+            data.writeShort(includes.size)
+
+            for ((parent, refs) in includes) {
+                check(refs.size <= 255) {
+                    "Include count for area $parent exceeds 255: ${refs.size}"
+                }
+
+                data.writeShort(parent.toInt())
+                data.writeByte(refs.size)
+
+                val it = refs.iterator()
+                while (it.hasNext()) {
+                    data.writeShort(it.nextShort().toInt())
                 }
             }
         }

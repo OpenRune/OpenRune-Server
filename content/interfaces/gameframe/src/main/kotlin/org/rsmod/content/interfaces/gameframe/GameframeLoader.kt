@@ -68,7 +68,6 @@ internal class GameframeLoader {
             GameframeOverlay("interface.stat_boosts_hud", "component.toplevel_osrs_stretch:stat_boosts_hud"),
             GameframeOverlay("interface.pm_chat", "component.toplevel_osrs_stretch:pm_container"),
             GameframeOverlay("interface.hpbar_hud", "component.toplevel_osrs_stretch:hpbar_hud"),
-            GameframeOverlay("interface.pvp_icons", "component.toplevel_osrs_stretch:pvp_icons"),
             GameframeOverlay("interface.orbs", "component.toplevel_osrs_stretch:orbs"),
             GameframeOverlay("interface.xp_drops", "component.toplevel_osrs_stretch:xp_drops"),
             GameframeOverlay("interface.popout", "component.toplevel_osrs_stretch:popout"),

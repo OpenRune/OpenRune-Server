@@ -9,6 +9,8 @@ import org.rsmod.api.droptable.toml.TomlDropHooks
 import org.rsmod.content.drops.hasCompletedQuest
 import org.rsmod.content.drops.isOnQuest
 import dtx.rs.RSPrerollTableBuilder
+import jakarta.inject.Inject
+import org.rsmod.api.area.checker.AreaChecker
 import org.rsmod.content.drops.brimstoneKeyRoll
 import org.rsmod.content.drops.clueScrollTransformObj
 import org.rsmod.api.area.checker.isInWilderness
@@ -16,10 +18,12 @@ import org.rsmod.api.droptable.wearingRingOfWealth
 import org.rsmod.content.drops.shouldDropBrimstoneKey
 import org.rsmod.content.drops.shouldDropLootingBag
 import org.rsmod.content.drops.tables.shared.SharedDropTables
+import org.rsmod.game.MapClock
 import org.rsmod.game.entity.Player
+import org.rsmod.game.entity.PlayerList
 
 @Singleton
-public class ContentDropTableTomlResolver : DropTableTomlResolver {
+public class ContentDropTableTomlResolver @Inject constructor(private val areaChecker: AreaChecker) : DropTableTomlResolver {
     override fun sharedTable(name: String): RSWeightedTable<Player, DropRollItem> {
         val table =
             SHARED_TABLES[name]
@@ -62,7 +66,7 @@ public class ContentDropTableTomlResolver : DropTableTomlResolver {
             config.condition = andCondition(config.condition) { player -> !player.wearingRingOfWealth() }
         }
         if (hooks.requireWilderness) {
-            config.condition = andCondition(config.condition) { player -> player.coords.isInWilderness() }
+            config.condition = andCondition(config.condition) { player -> player.coords.isInWilderness(areaChecker) }
         }
         if (hooks.shouldDropBrimstoneKey) {
             config.killCondition = { player, npc, areaChecker ->
