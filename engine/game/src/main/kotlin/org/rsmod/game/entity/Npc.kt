@@ -20,6 +20,7 @@ import org.rsmod.game.entity.npc.OpVisibility
 import org.rsmod.game.entity.player.PlayerUid
 import org.rsmod.game.entity.util.EntityFaceTarget
 import org.rsmod.game.entity.util.PathingEntityCommon
+import org.rsmod.game.damage.DamageContributions
 import org.rsmod.game.headbar.Headbar
 import org.rsmod.game.hero.HeroPoints
 import org.rsmod.game.hit.Hitmark
@@ -63,6 +64,8 @@ public class Npc(
         get() = moveRestrict.collisionStrategy
 
     override val heroPoints: HeroPoints = HeroPoints(type.heroCount)
+
+    override val damageContributions: DamageContributions = DamageContributions()
 
     public val vars: VarNpcIntMap = VarNpcIntMap()
     public val strVars: VarNpcStrMap = VarNpcStrMap()

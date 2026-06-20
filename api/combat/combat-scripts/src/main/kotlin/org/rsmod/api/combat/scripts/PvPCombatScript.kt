@@ -12,10 +12,14 @@ import org.rsmod.api.combat.player.resolveAutocastSpell
 import org.rsmod.api.combat.player.resolveCombatAttack
 import org.rsmod.api.combat.weapon.styles.AttackStyles
 import org.rsmod.api.combat.weapon.types.AttackTypes
+import org.rsmod.api.death.PvPAttackValidateHook
+import org.rsmod.api.death.PvPAttackValidateResult
 import org.rsmod.api.player.isInPvpCombat
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.righthand
+import org.rsmod.api.script.advanced.onApPlayer1
 import org.rsmod.api.script.advanced.onApPlayer2
+import org.rsmod.api.script.advanced.onOpPlayer1
 import org.rsmod.api.script.advanced.onOpPlayer2
 import org.rsmod.api.script.onApPlayerT
 import org.rsmod.api.spells.MagicSpellRegistry
@@ -34,9 +38,12 @@ constructor(
     private val spells: MagicSpellRegistry,
     private val runes: MagicRuneManager,
     private val autocast: AutocastWeapons,
+    private val attackValidateHooks: Set<PvPAttackValidateHook>,
 ) : PluginScript() {
     override fun ScriptContext.startup() {
+        onApPlayer1 { attemptCombatAp(it.target) }
         onApPlayer2 { attemptCombatAp(it.target) }
+        onOpPlayer1 { attemptCombatOp(it.target) }
         onOpPlayer2 { attemptCombatOp(it.target) }
         for (spell in spells.combatSpells()) {
             onApPlayerT(spell.component) { attemptCombatSpell(it.target, spell) }
@@ -47,17 +54,19 @@ constructor(
         val type = types.get(player)
         val style = styles.get(player)
         val attackRange = attackRange(style)
-        val canAttack = canAttack(target)
 
         // Weapons such as salamanders have an attack range of `1` but can attack with both ranged
         // and magic. These attacks should be treated as ap range, not op.
         val isMeleeAttackType = type == null || type.isMelee
         if (attackRange == 1 && isMeleeAttackType) {
+            if (!canAttack(target)) {
+                return
+            }
             apRange(-1)
             return
         }
 
-        if (!canAttack) {
+        if (!canAttack(target)) {
             return
         }
 
@@ -117,6 +126,17 @@ constructor(
         if ("queue.dinhs_combat_delay" in player.queueList) {
             clearPendingAction()
             return false
+        }
+
+        for (hook in attackValidateHooks) {
+            when (val result = hook.validate(player, target)) {
+                is PvPAttackValidateResult.Pass -> Unit
+                is PvPAttackValidateResult.Deny -> {
+                    spam(result.message)
+                    clearPendingAction()
+                    return false
+                }
+            }
         }
 
         // TODO(combat): Updated multiway logic.

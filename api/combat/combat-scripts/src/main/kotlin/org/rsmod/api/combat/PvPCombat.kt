@@ -12,6 +12,7 @@ import org.rsmod.api.combat.player.activateRangedSpecial
 import org.rsmod.api.combat.player.activateShieldSpecial
 import org.rsmod.api.combat.player.setPkVars
 import org.rsmod.api.combat.player.specialAttackType
+import org.rsmod.api.death.PvPSkullHook
 import org.rsmod.api.combat.weapon.WeaponSpeeds
 import org.rsmod.api.config.constants
 import org.rsmod.api.config.refs.params
@@ -41,6 +42,7 @@ constructor(
     private val manager: PlayerAttackManager,
     private val ammunition: RangedAmmoManager,
     private val spellsReg: SpellAttackRegistry,
+    private val skullHooks: Set<PvPSkullHook>,
 ) {
     suspend fun attack(access: ProtectedAccess, target: Player, attack: CombatAttack.PlayerAttack) {
         when (attack) {
@@ -49,6 +51,13 @@ constructor(
             is CombatAttack.Spell -> access.attackMagicSpell(target, attack)
             is CombatAttack.Staff -> access.attackMagicStaff(target, attack)
         }
+    }
+
+    private fun ProtectedAccess.applyPkVars(target: Player) {
+        for (hook in skullHooks) {
+            hook.onPlayerAttack(player, target)
+        }
+        setPkVars(target)
     }
 
     private suspend fun ProtectedAccess.attackMelee(target: Player, attack: CombatAttack.Melee) {
@@ -76,7 +85,7 @@ constructor(
             specialAttackType = SpecialAttackType.None
             val activatedSpec = activateMeleeSpecial(target, attack, specialsReg, specialEnergy)
             if (activatedSpec) {
-                setPkVars(target)
+                applyPkVars(target)
                 return
             }
         }
@@ -85,7 +94,7 @@ constructor(
             specialAttackType = SpecialAttackType.None
             val activatedSpec = activateShieldSpecial(target, player.lefthand, specialsReg)
             if (activatedSpec) {
-                setPkVars(target)
+                applyPkVars(target)
                 return
             }
         }
@@ -96,12 +105,12 @@ constructor(
         if (specializedWeapon != null) {
             val attackHandled = specializedWeapon.attack(this, target, attack)
             if (attackHandled) {
-                setPkVars(target)
+                applyPkVars(target)
                 return
             }
         }
 
-        setPkVars(target)
+        applyPkVars(target)
 
         val damage = manager.rollMeleeDamage(player, target, attack)
         manager.giveCombatXp(player, target, attack, damage)
@@ -132,7 +141,7 @@ constructor(
             specialAttackType = SpecialAttackType.None
             val activatedSpec = activateRangedSpecial(target, attack, specialsReg, specialEnergy)
             if (activatedSpec) {
-                setPkVars(target)
+                applyPkVars(target)
                 return
             }
         }
@@ -141,7 +150,7 @@ constructor(
             specialAttackType = SpecialAttackType.None
             val activatedSpec = activateShieldSpecial(target, player.lefthand, specialsReg)
             if (activatedSpec) {
-                setPkVars(target)
+                applyPkVars(target)
                 return
             }
         }
@@ -154,7 +163,7 @@ constructor(
         if (specializedWeapon != null) {
             val attackHandled = specializedWeapon.attack(this, target, attack)
             if (attackHandled) {
-                setPkVars(target)
+                applyPkVars(target)
                 return
             }
         }
@@ -210,7 +219,7 @@ constructor(
             return
         }
 
-        setPkVars(target)
+        applyPkVars(target)
 
         // Official behavior: If the weapon (quiver or righthand, based on the thrown weapon flag)
         // has no `proj_launch` param, a "null" (-1) spotanim will still be sent in the same slot
@@ -264,7 +273,7 @@ constructor(
 
         val spell = spellsReg[RSCM.getReverseMapping(RSCMType.OBJ,attack.spell.obj.id)]
         if (spell != null) {
-            setPkVars(target)
+            applyPkVars(target)
             spell.attack(this, target, attack)
             return
         }
@@ -299,7 +308,7 @@ constructor(
             specialAttackType = SpecialAttackType.None
             val activatedSpec = activateMagicSpecial(target, attack, specialsReg, specialEnergy)
             if (activatedSpec) {
-                setPkVars(target)
+                applyPkVars(target)
                 return
             }
         }
@@ -308,7 +317,7 @@ constructor(
             specialAttackType = SpecialAttackType.None
             val activatedSpec = activateShieldSpecial(target, player.lefthand, specialsReg)
             if (activatedSpec) {
-                setPkVars(target)
+                applyPkVars(target)
                 return
             }
         }
@@ -319,7 +328,7 @@ constructor(
         if (specializedWeapon != null) {
             val attackHandled = specializedWeapon.attack(this, target, attack)
             if (attackHandled) {
-                setPkVars(target)
+                applyPkVars(target)
                 return
             }
         }

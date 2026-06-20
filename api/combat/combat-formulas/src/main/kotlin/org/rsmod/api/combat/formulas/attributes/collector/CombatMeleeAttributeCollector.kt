@@ -30,7 +30,7 @@ public class CombatMeleeAttributeCollector {
             attributes += CombatMeleeAttributes.Stab
         }
 
-        if (player.skullIcon == constants.skullicon_forinthry_surge) {
+        if (player.skullIcon != null && constants.isForinthrySurgeSkull(player.skullIcon!!)) {
             attributes += CombatMeleeAttributes.ForinthrySurge
         }
 

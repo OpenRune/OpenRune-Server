@@ -11,6 +11,7 @@ dependencies {
     implementation(projects.api.combat.combatCommons)
     implementation(projects.api.combat.combatFormulas)
     implementation(projects.api.config)
+    implementation(projects.api.death)
     implementation(projects.api.invtx)
     implementation(projects.api.npc)
     implementation(projects.api.objCharges)

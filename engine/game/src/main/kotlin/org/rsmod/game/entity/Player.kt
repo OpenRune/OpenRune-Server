@@ -30,6 +30,7 @@ import org.rsmod.game.entity.player.PlayerUid
 import org.rsmod.game.entity.player.PublicMessage
 import org.rsmod.game.entity.util.EntityFaceAngle
 import org.rsmod.game.entity.util.PathingEntityCommon
+import org.rsmod.game.damage.DamageContributions
 import org.rsmod.game.headbar.Headbar
 import org.rsmod.game.hero.HeroPoints
 import org.rsmod.game.hit.Hitmark
@@ -69,6 +70,8 @@ public class Player(
     override val blockWalkCollisionFlag: Int = CollisionFlag.BLOCK_NPCS
 
     override val heroPoints: HeroPoints = HeroPoints(size = 16)
+
+    override val damageContributions: DamageContributions = DamageContributions()
 
     public val options: MutableList<String?> = MutableList(7) { null }
 
@@ -168,6 +171,7 @@ public class Player(
     public var username: String = ""
     public var displayName: String by avatar::name
     public var members: Boolean = false
+    public var gamemode: Int = 0
     public var lastKnownDevice: Int? = null
     public var previousDisplayName: String = ""
     public var displayNameChangedAtMillis: Long? = null

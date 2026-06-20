@@ -70,6 +70,13 @@ endBit = 1
 
 [[varbit]]
 isServerOnly = true
+id = "varbit.player_in_instance"
+varp = "varp.generic_temp_state_65516"
+startBit = 2
+endBit = 2
+
+[[varbit]]
+isServerOnly = true
 id = "varbit.bonecrusher_activity_enabled"
 varp = "varp.bonecrusher_activity"
 startBit = 2

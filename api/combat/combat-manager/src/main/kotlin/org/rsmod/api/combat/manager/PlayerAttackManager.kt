@@ -30,6 +30,7 @@ import org.rsmod.api.combat.commons.types.RangedAttackType
 import org.rsmod.api.combat.formulas.AccuracyFormulae
 import org.rsmod.api.combat.formulas.MaxHitFormulae
 import org.rsmod.api.config.refs.params
+import org.rsmod.api.death.PvPPlayerHitHook
 import org.rsmod.api.npc.hit.modifier.NpcHitModifier
 import org.rsmod.api.npc.hit.queueHit
 import org.rsmod.api.player.hit.queueHit
@@ -68,6 +69,7 @@ constructor(
     private val npcTInteractions: NpcTInteractions,
     private val playerInteractions: PlayerInteractions,
     private val playerTInteractions: PlayerTInteractions,
+    private val pvpPlayerHitHooks: Set<PvPPlayerHitHook>,
 ) {
     /**
      * Determines if the player is still under an active attack delay.
@@ -671,7 +673,6 @@ constructor(
         target.queueCombatRetaliate(source)
 
         val hit = target.queueHit(source, delay, HitType.Melee, damage, npcHitModifier)
-        target.heroPoints(source, min(hit.damage, target.hitpoints))
         target.combatPlayDefendAnim()
         return hit
     }
@@ -683,7 +684,7 @@ constructor(
         target.queueCombatRetaliate(source)
 
         val hit = target.queueHit(source, delay, HitType.Melee, damage)
-        target.heroPoints(source, min(hit.damage, target.hitpoints))
+        notifyPlayerHit(source, target)
         target.combatPlayDefendAnim()
         return hit
     }
@@ -992,7 +993,6 @@ constructor(
                 modifier = npcHitModifier,
                 sourceSecondary = ammo,
             )
-        target.heroPoints(source, min(hit.damage, target.hitpoints))
         target.combatPlayDefendAnim(clientDelay)
         target.combatPlayDefendSpot(ammo, clientDelay)
         return hit
@@ -1019,10 +1019,16 @@ constructor(
                 damage = damage,
                 sourceSecondary = ammo,
             )
-        target.heroPoints(source, min(hit.damage, target.hitpoints))
+        notifyPlayerHit(source, target)
         target.combatPlayDefendAnim(clientDelay)
         target.combatPlayDefendSpot(ammo, clientDelay)
         return hit
+    }
+
+    private fun notifyPlayerHit(source: Player, target: Player) {
+        for (hook in pvpPlayerHitHooks) {
+            hook.onPlayerHit(source, target)
+        }
     }
 
     /**
@@ -1065,7 +1071,6 @@ constructor(
                 damage = damage,
                 sourceSecondary = ammo,
             )
-        target.heroPoints(source, min(hit.damage, target.hitpoints))
         return hit
     }
 
@@ -1085,7 +1090,6 @@ constructor(
                 modifier = npcHitModifier,
                 sourceSecondary = ammo,
             )
-        target.heroPoints(source, min(hit.damage, target.hitpoints))
         return hit
     }
 
@@ -1490,7 +1494,6 @@ constructor(
                 modifier = npcHitModifier,
                 sourceSecondary = spell,
             )
-        target.heroPoints(source, min(hit.damage, target.hitpoints))
         target.combatPlayDefendAnim(clientDelay)
         return hit
     }
@@ -1517,7 +1520,7 @@ constructor(
                 damage = damage,
                 sourceSecondary = spell,
             )
-        target.heroPoints(source, min(hit.damage, target.hitpoints))
+        notifyPlayerHit(source, target)
         target.combatPlayDefendAnim(clientDelay)
         return hit
     }

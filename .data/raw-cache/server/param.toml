@@ -360,6 +360,30 @@ defaultInt = 0
 isMembers = true
 
 [[params]]
+id = "param.death_always_kept"
+type = "BOOLEAN"
+defaultInt = 0
+isMembers = true
+
+[[params]]
+id = "param.death_never_kept"
+type = "BOOLEAN"
+defaultInt = 0
+isMembers = true
+
+[[params]]
+id = "param.death_auto_protected"
+type = "BOOLEAN"
+defaultInt = 0
+isMembers = true
+
+[[params]]
+id = "param.death_pvp_coin_value"
+type = "INT"
+defaultInt = 0
+isMembers = true
+
+[[params]]
 id = "param.bonus_undead_buff"
 type = "INT"
 defaultInt = 0

@@ -10,6 +10,8 @@ import jakarta.inject.Inject
 import kotlin.math.max
 import kotlin.math.min
 import org.rsmod.annotations.InternalApi
+import org.rsmod.api.death.prepareAdminDieTest
+import org.rsmod.api.death.preparePvpDeath
 import org.rsmod.api.invtx.invAdd
 import org.rsmod.api.mechanics.toxins.impl.PlayerDisease
 import org.rsmod.api.mechanics.toxins.impl.PlayerPoison
@@ -18,12 +20,14 @@ import org.rsmod.api.invtx.invClear
 import org.rsmod.api.player.output.MiscOutput
 import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.protect.ProtectedAccessLauncher
+import org.rsmod.api.player.queueDeath
 import org.rsmod.api.player.stat.PlayerSkillXP
 import org.rsmod.api.player.stat.stat
 import org.rsmod.api.player.stat.statAdvance
 import org.rsmod.api.player.stat.statSub
 import org.rsmod.api.player.ui.PlayerInterfaceUpdates
 import org.rsmod.api.player.vars.VarPlayerIntMapSetter
+import org.rsmod.api.player.vars.boolVarBit
 import org.rsmod.api.player.vars.resyncVar
 import org.rsmod.api.repo.loc.LocRepository
 import org.rsmod.api.repo.npc.NpcRepository
@@ -62,6 +66,8 @@ constructor(
     private val logger = InlineLogger()
 
     private val levenshteinMetric = StringMetrics.levenshtein()
+
+    private var Player.insideWilderness by boolVarBit("varbit.inside_wilderness")
 
     override fun ScriptContext.startup() {
         onCommand("master", "Max out all stats", ::master)
@@ -122,6 +128,9 @@ constructor(
             invalidArgs = "Use as ::disease [drainPerTick] (e.g. ::disease 5)"
         }
         onCommand("diseaseclear", "Clears disease timer (stats recover via normal regen)", ::diseaseClear)
+        onCommand("die", "Simulate death: ::die pvm|pvp [true=in wildy]", ::dieTest) {
+            invalidArgs = "Usage: ::die pvm|pvp [true|false]  (second arg = in Wilderness, default false)"
+        }
     }
 
     private fun poisonTest(cheat: Cheat) =
@@ -434,6 +443,27 @@ constructor(
                 MiscOutput.updateRebootTimer(p, cycles)
             }
         }
+
+    private fun dieTest(cheat: Cheat) = with(cheat) {
+        val mode = args.getOrNull(0)?.lowercase()
+        val inWildy = args.getOrNull(1)?.lowercase() == "true"
+        when (mode) {
+            "pvm" -> {
+                if (inWildy) player.insideWilderness = true
+                player.mes("Simulating PvM death${if (inWildy) " in Wilderness" else ""}.")
+                player.prepareAdminDieTest()
+                player.queueDeath()
+            }
+            "pvp" -> {
+                player.preparePvpDeath(player)
+                if (inWildy) player.insideWilderness = true
+                player.mes("Simulating PvP death${if (inWildy) " in Wilderness" else ""}. (self as killer)")
+                player.prepareAdminDieTest()
+                player.queueDeath()
+            }
+            else -> player.mes("Usage: ::die pvm|pvp [true|false]  (true = in Wilderness)")
+        }
+    }
 
     private fun resolveArgTypeId(arg: String, names: Map<String, Int>): Int? {
         val argAsInt = arg.toIntOrNull()

@@ -11,3 +11,4 @@ player_poison=9
 player_venom=10
 player_disease=11
 music_resume=12
+skull_timer=13

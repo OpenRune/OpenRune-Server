@@ -104,7 +104,7 @@ public class CombatMagicAttributeCollector {
             attributes += CombatSpellAttributes.SmokeStaff
         }
 
-        if (player.skullIcon == constants.skullicon_forinthry_surge) {
+        if (player.skullIcon != null && constants.isForinthrySurgeSkull(player.skullIcon!!)) {
             attributes += CombatSpellAttributes.ForinthrySurge
         }
 
@@ -190,7 +190,7 @@ public class CombatMagicAttributeCollector {
             attributes += CombatStaffAttributes.BrimstonePassive
         }
 
-        if (player.skullIcon == constants.skullicon_forinthry_surge) {
+        if (player.skullIcon != null && constants.isForinthrySurgeSkull(player.skullIcon!!)) {
             attributes += CombatStaffAttributes.ForinthrySurge
         }
 

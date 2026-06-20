@@ -147,6 +147,7 @@ import org.rsmod.events.KeyedEvent
 import org.rsmod.events.SuspendEvent
 import org.rsmod.events.UnboundEvent
 import org.rsmod.game.entity.Npc
+import org.rsmod.game.damage.recordDamageOn
 import org.rsmod.game.entity.PathingEntity
 import org.rsmod.game.entity.Player
 import org.rsmod.game.entity.npc.NpcUid
@@ -1732,6 +1733,10 @@ public class ProtectedAccess(
         return hit.resolvePlayerSource(context.playerList)
     }
 
+    internal fun recordHitDamage(target: PathingEntity, hit: Hit, damage: Int) {
+        hit.recordDamageOn(target, damage, context.playerList, context.npcList)
+    }
+
     @InternalApi
     public fun processQueuedHit(hit: Hit) {
         processQueuedHit(hit, StandardPlayerHitProcessor)
@@ -1818,6 +1823,16 @@ public class ProtectedAccess(
     public fun findHero(): Player? {
         return player.findHero(context.playerList)
     }
+
+    public fun topDamager(): Player? = player.damageContributions.topPlayer(context.playerList)
+
+    public fun leastDamager(): Player? = player.damageContributions.leastPlayer(context.playerList)
+
+    public fun topDamager(target: PathingEntity): Player? =
+        target.damageContributions.topPlayer(context.playerList)
+
+    public fun leastDamager(target: PathingEntity): Player? =
+        target.damageContributions.leastPlayer(context.playerList)
 
     /** Returns `true` if [coords] is within [area]. */
     public fun inArea(area: String, coords: CoordGrid): Boolean {
