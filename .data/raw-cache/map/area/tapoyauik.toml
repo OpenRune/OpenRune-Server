@@ -1,0 +1,12 @@
+[[area]]
+name = "Tapoyauik"
+area_id = "area.tapoyauik"
+levels = [0, 1, 2, 3]
+
+[[area.polygons]]
+vertices = [
+    [1569, 9667],
+    [1729, 9669],
+    [1727, 9595],
+    [1557, 9600],
+]

@@ -7,8 +7,6 @@ kotlin {
 }
 
 dependencies {
-    // Source: https://mvnrepository.com/artifact/com.google.code.gson/gson
-    implementation("com.google.code.gson:gson:2.13.2")
     // Source: https://mvnrepository.com/artifact/cc.ekblad/4koma
     implementation("cc.ekblad:4koma:1.2.0")
 

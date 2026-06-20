@@ -1,0 +1,14 @@
+[[area]]
+name = "Brimhaven Dungeon"
+area_id = "area.brimhaven_dungeon"
+levels = [0, 1, 2, 3]
+
+[[area.polygons]]
+vertices = [
+    [2624, 9408],
+    [2752, 9408],
+    [2752, 9505],
+    [2729, 9536],
+    [2729, 9600],
+    [2624, 9600],
+]

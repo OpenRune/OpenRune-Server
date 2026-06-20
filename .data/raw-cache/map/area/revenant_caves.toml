@@ -1,0 +1,12 @@
+[[area]]
+name = "Revenant caves"
+area_id = "area.revenant_caves"
+levels = [0, 1, 2, 3]
+
+[[area.polygons]]
+vertices = [
+    [3136, 10048],
+    [3263, 10048],
+    [3263, 10239],
+    [3136, 10239],
+]

@@ -1,0 +1,12 @@
+[[area]]
+name = "Lithkren Dungeon"
+area_id = "area.lithkren_vault"
+levels = [0, 1, 2, 3]
+
+[[area.polygons]]
+vertices = [
+    [1536, 5056],
+    [1599, 5056],
+    [1599, 5119],
+    [1536, 5119],
+]

@@ -1,0 +1,14 @@
+[[area]]
+name = "Fremennik Slayer Dungeon"
+area_id = "area.fremennik_slayer_dungeon"
+levels = [0, 1, 2, 3]
+
+[[area.polygons]]
+vertices = [
+    [2686, 9945],
+    [2727, 9945],
+    [2727, 9984],
+    [2815, 9984],
+    [2815, 10047],
+    [2686, 10047],
+]

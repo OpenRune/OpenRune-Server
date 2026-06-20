@@ -1,0 +1,12 @@
+[[area]]
+name = "Godwars Dungeon"
+area_id = "area.godwars_dungeon"
+levels = [0, 1, 2, 3]
+
+[[area.polygons]]
+vertices = [
+    [2815, 5375],
+    [2816, 5184],
+    [2943, 5184],
+    [2943, 5376],
+]

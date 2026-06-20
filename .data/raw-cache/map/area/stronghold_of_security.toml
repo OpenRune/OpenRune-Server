@@ -1,0 +1,36 @@
+[[area]]
+name = "Stronghold of Security"
+area_id = "area.stronghold_of_security"
+levels = [0]
+
+[[area.polygons]]
+vertices = [
+    [1854, 5182],
+    [1919, 5182],
+    [1919, 5247],
+    [1854, 5247],
+]
+
+[[area.polygons]]
+vertices = [
+    [1980, 5180],
+    [2049, 5180],
+    [2049, 5249],
+    [1980, 5249],
+]
+
+[[area.polygons]]
+vertices = [
+    [2108, 5245],
+    [2179, 5245],
+    [2179, 5311],
+    [2108, 5311],
+]
+
+[[area.polygons]]
+vertices = [
+    [2304, 5184],
+    [2367, 5184],
+    [2367, 5247],
+    [2304, 5247],
+]

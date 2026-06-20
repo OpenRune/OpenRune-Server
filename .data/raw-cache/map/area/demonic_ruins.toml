@@ -1,0 +1,13 @@
+[[area]]
+name = "Demonic Ruins"
+area_id = "area.demonic_ruins"
+levels = [0]
+
+[[area.polygons]]
+vertices = [
+    [3278, 3893],
+    [3296, 3894],
+    [3296, 3874],
+    [3278, 3872],
+    [3278, 3878],
+]

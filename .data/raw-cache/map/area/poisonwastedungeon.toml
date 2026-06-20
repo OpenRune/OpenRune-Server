@@ -1,0 +1,12 @@
+[[area]]
+name = "Poison Waste Dungeon"
+area_id = "area.poisonwastedungeon"
+levels = [0, 1, 2, 3]
+
+[[area.polygons]]
+vertices = [
+    [1463, 4335],
+    [1555, 4336],
+    [1537, 4226],
+    [1471, 4226],
+]

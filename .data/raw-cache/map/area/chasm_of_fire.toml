@@ -1,0 +1,12 @@
+[[area]]
+name = "Chasm of Fire"
+area_id = "area.chasm_of_fire"
+levels = [0, 1, 2, 3]
+
+[[area.polygons]]
+vertices = [
+    [1408, 10048],
+    [1471, 10048],
+    [1471, 10111],
+    [1408, 10111],
+]
