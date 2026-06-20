@@ -132,6 +132,7 @@ constructor(
         coords: CoordGrid,
     ) {
         player.inv.fillNulls()
+        player.worn.fillNulls()
 
         for (item in result.kept) {
             addToInvDirect(player, item)
