@@ -4,6 +4,10 @@ import jakarta.inject.Inject
 import jakarta.inject.Singleton
 import org.rsmod.api.config.refs.params
 import org.rsmod.api.market.MarketPrices
+import org.rsmod.api.player.SupplyItems
+import org.rsmod.api.player.hook.GroundItemDropContext
+import org.rsmod.api.player.hook.GroundItemDropResolver
+import org.rsmod.api.player.hook.GroundItemDropSource
 import org.rsmod.api.repo.obj.ObjRepository
 import org.rsmod.game.MapClock
 import org.rsmod.game.entity.Player
@@ -19,6 +23,7 @@ constructor(
     private val mapClock: MapClock,
     private val objRepo: ObjRepository,
     private val marketPrices: MarketPrices,
+    private val groundItemDrops: GroundItemDropResolver,
 ) {
     public fun selectDrops(
         player: Player,
@@ -170,13 +175,34 @@ constructor(
         handling: PlayerDeathHandling,
         receiver: Player?,
     ) {
+        val type = getInvObj(item)
+        val dropParams =
+            groundItemDrops.resolve(
+                GroundItemDropContext(
+                    player = player,
+                    type = type,
+                    coords = coords,
+                    source = GroundItemDropSource.Death,
+                    receiver = receiver,
+                ),
+                duration = handling.dropDuration,
+                reveal = handling.revealDelay,
+            )
+
+        val effectiveReceiver =
+            when {
+                dropParams.ownerOnly -> player
+                else -> receiver
+            }
+
         val obj =
             when {
-                receiver != null && receiver !== player -> Obj.fromPvp(receiver, player, item)
-                receiver != null -> Obj.fromOwner(receiver, coords, item)
+                effectiveReceiver != null && effectiveReceiver !== player ->
+                    Obj.fromPvp(effectiveReceiver, player, item)
+                effectiveReceiver != null -> Obj.fromOwner(effectiveReceiver, coords, item)
                 else -> Obj.fromServer(mapClock, coords, item)
             }
-        objRepo.add(obj, handling.dropDuration, handling.revealDelay)
+        objRepo.add(obj, dropParams.duration, dropParams.reveal)
     }
 
     private fun addToInvDirect(player: Player, item: InvObj) {
@@ -214,10 +240,7 @@ constructor(
             internalName.startsWith("divine_rune_pouch")
 
     private fun isSupplyPileItem(obj: InvObj): Boolean {
-        val type = getInvObj(obj)
-        return type.interfaceOptions.any { option ->
-            option.equals("Eat", ignoreCase = true) || option.equals("Drink", ignoreCase = true)
-        }
+        return SupplyItems.isFoodOrPotion(getInvObj(obj))
     }
 
     private fun isUntradeable(obj: InvObj): Boolean = !getInvObj(obj).tradeable

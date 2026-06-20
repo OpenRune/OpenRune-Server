@@ -12,7 +12,7 @@ import org.rsmod.api.death.PvPSkullHook
 import org.rsmod.api.player.isInPvpCombat
 import org.rsmod.content.areas.wilderness.WildernessAreaScript.Companion.canPvp
 import org.rsmod.game.entity.Player
-import org.rsmod.map.CoordGrid
+import org.rsmod.api.area.checker.wildernessLevel
 
 public class WildernessPvPHook @Inject constructor(private val areaChecker: AreaChecker) :
     PvPAttackValidateHook, PvPSkullHook, PvPPlayerHitHook {
@@ -44,8 +44,8 @@ public class WildernessPvPHook @Inject constructor(private val areaChecker: Area
             return PvPAttackValidateResult.Deny("That player is not in the wilderness.")
         }
 
-        val level = wildernessLevel(attacker.coords)
-        val otherLevel = wildernessLevel(target.coords)
+        val level = attacker.coords.wildernessLevel(areaChecker)
+        val otherLevel = target.coords.wildernessLevel(areaChecker)
         val minimumLevel = minOf(level, otherLevel)
 
         if (minimumLevel >= 1) {
@@ -130,19 +130,5 @@ public class WildernessPvPHook @Inject constructor(private val areaChecker: Area
         if (target.vars["varp.pk_predator2"] == playerPacked) return false
 
         return true
-    }
-
-    private fun wildernessLevel(tile: CoordGrid): Int {
-        if (!areaChecker.inArea("area.wilderness", tile)) return -1
-        val x = tile.x
-        val y = tile.z
-        return when (x) {
-            in 2944..3392 if y in 3520..4351 -> ((y - 3520) shr 3) + 1
-            in 3008..3071 if y in 10112..10175 -> ((y - 9920) shr 3) - 1
-            in 2944..3455 if y in 9920..10879 -> ((y - 9920) shr 3) + 1
-            in 1725..1919 if y in 11520..11583 -> 21
-            in 1600..1663 if y in 11520..11583 -> 29
-            else -> -1
-        }
     }
 }

@@ -13,6 +13,7 @@ import org.rsmod.api.combat.player.activateShieldSpecial
 import org.rsmod.api.combat.player.setPkVars
 import org.rsmod.api.combat.player.specialAttackType
 import org.rsmod.api.death.PvPSkullHook
+import org.rsmod.api.death.PvPSpecialAttackHook
 import org.rsmod.api.combat.weapon.WeaponSpeeds
 import org.rsmod.api.config.constants
 import org.rsmod.api.config.refs.params
@@ -43,6 +44,7 @@ constructor(
     private val ammunition: RangedAmmoManager,
     private val spellsReg: SpellAttackRegistry,
     private val skullHooks: Set<PvPSkullHook>,
+    private val specialAttackHooks: Set<PvPSpecialAttackHook>,
 ) {
     suspend fun attack(access: ProtectedAccess, target: Player, attack: CombatAttack.PlayerAttack) {
         when (attack) {
@@ -58,6 +60,12 @@ constructor(
             hook.onPlayerAttack(player, target)
         }
         setPkVars(target)
+    }
+
+    private fun ProtectedAccess.applySpecialAttackHooks(target: Player) {
+        for (hook in specialAttackHooks) {
+            hook.onPlayerSpecialAttack(player, target)
+        }
     }
 
     private suspend fun ProtectedAccess.attackMelee(target: Player, attack: CombatAttack.Melee) {
@@ -85,6 +93,7 @@ constructor(
             specialAttackType = SpecialAttackType.None
             val activatedSpec = activateMeleeSpecial(target, attack, specialsReg, specialEnergy)
             if (activatedSpec) {
+                applySpecialAttackHooks(target)
                 applyPkVars(target)
                 return
             }
@@ -94,6 +103,7 @@ constructor(
             specialAttackType = SpecialAttackType.None
             val activatedSpec = activateShieldSpecial(target, player.lefthand, specialsReg)
             if (activatedSpec) {
+                applySpecialAttackHooks(target)
                 applyPkVars(target)
                 return
             }
@@ -141,6 +151,7 @@ constructor(
             specialAttackType = SpecialAttackType.None
             val activatedSpec = activateRangedSpecial(target, attack, specialsReg, specialEnergy)
             if (activatedSpec) {
+                applySpecialAttackHooks(target)
                 applyPkVars(target)
                 return
             }
@@ -150,6 +161,7 @@ constructor(
             specialAttackType = SpecialAttackType.None
             val activatedSpec = activateShieldSpecial(target, player.lefthand, specialsReg)
             if (activatedSpec) {
+                applySpecialAttackHooks(target)
                 applyPkVars(target)
                 return
             }
@@ -308,6 +320,7 @@ constructor(
             specialAttackType = SpecialAttackType.None
             val activatedSpec = activateMagicSpecial(target, attack, specialsReg, specialEnergy)
             if (activatedSpec) {
+                applySpecialAttackHooks(target)
                 applyPkVars(target)
                 return
             }
