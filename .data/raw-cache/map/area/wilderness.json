@@ -9,6 +9,7 @@
       "area.demonic_ruins",
       "area.chaos_temple"
     ],
+    "excludes": ["area.ferox_enclave"],
     "polygons": [
       {
         "vertices": [

@@ -110,11 +110,40 @@ public object MapAreaDecoder {
                 map
             }
 
+        // Excludes
+        cursor = buf.readShort(cursor)
+        val excludeCount = cursor.value
+        val excludes: Short2ObjectMap<ShortSet> =
+            if (excludeCount == 0) {
+                Short2ObjectMaps.emptyMap()
+            } else {
+                val map = Short2ObjectOpenHashMap<ShortSet>(excludeCount)
+
+                repeat(excludeCount) {
+                    cursor = buf.readShort(cursor)
+                    val area = cursor.value.toShort()
+
+                    cursor = buf.readUnsignedByte(cursor)
+                    val refCount = cursor.value
+
+                    val refs = ShortArraySet(refCount)
+                    repeat(refCount) {
+                        cursor = buf.readShort(cursor)
+                        refs.add(cursor.value.toShort())
+                    }
+
+                    map[area] = refs
+                }
+
+                map
+            }
+
         return MapAreaDefinition(
             mapSquareAreas = fullMapSqAreas,
             zoneAreas = zoneAreas,
             coordAreas = coordAreas,
             includes = includes,
+            excludes = excludes,
         )
     }
 }
