@@ -69,10 +69,19 @@ public object MapAreaPacker {
                 id to includes
             }
 
+        val excludesById =
+            mapAreas.associate { area ->
+                val id = area.areaId.asRSCM().toShort()
+                val excludes = area.excludes?.map { it.asRSCM().toShort() }?.toShortArray() ?: shortArrayOf()
+
+                id to excludes
+            }
+
         return polygonArea.mapSquares.map { (square, polygon) ->
             val areaDef = MapAreaDefinition.from(
                 polygon,
                 includesById,
+                excludesById,
             )
             MapAreaEntry(square, areaDef)
         }
@@ -111,6 +120,7 @@ public object MapAreaPacker {
         val levels: List<Int>,
         val polygons: List<JsonPolygon>,
         val includes: List<String> = emptyList(),
+        val excludes: List<String> = emptyList(),
     )
 
     private data class JsonPolygon(val vertices: List<Point>) {

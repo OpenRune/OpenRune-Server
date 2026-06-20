@@ -12,6 +12,7 @@ import org.rsmod.annotations.InternalApi
 import org.rsmod.coroutine.GameCoroutine
 import org.rsmod.coroutine.suspension.GameCoroutineSimpleCompletion
 import org.rsmod.game.entity.player.ProtectedAccessLostException
+import org.rsmod.game.damage.DamageContributions
 import org.rsmod.game.entity.util.EntityExactMove
 import org.rsmod.game.entity.util.EntityFaceAngle
 import org.rsmod.game.entity.util.EntityFaceTarget
@@ -46,6 +47,8 @@ public sealed class PathingEntity {
     public abstract val blockWalkCollisionFlag: Int?
 
     public abstract val heroPoints: HeroPoints
+
+    public abstract val damageContributions: DamageContributions
 
     public var slotId: Int = INVALID_SLOT
 
@@ -471,6 +474,21 @@ public sealed class PathingEntity {
         heroPoints.add(uuid, points)
     }
 
+    public fun recordDamage(source: Player, damage: Int) {
+        if (damage <= 0) {
+            return
+        }
+        damageContributions.record(source, damage)
+        heroPoints(source, damage)
+    }
+
+    public fun recordDamage(source: Npc, damage: Int) {
+        if (damage <= 0) {
+            return
+        }
+        damageContributions.record(source, damage)
+    }
+
     public fun findHero(playerList: PlayerList): Player? {
         val heroes = heroPoints.toMutableList()
         if (heroes.isEmpty()) {
@@ -486,6 +504,7 @@ public sealed class PathingEntity {
     @InternalApi
     public fun clearHeroPoints() {
         heroPoints.clear()
+        damageContributions.clear()
     }
 
     @InternalApi

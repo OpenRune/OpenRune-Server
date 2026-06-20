@@ -65,7 +65,7 @@ public class CombatRangedAttributeCollector {
             attributes += CombatRangedAttributes.CrystalLegs
         }
 
-        if (player.skullIcon == constants.skullicon_forinthry_surge) {
+        if (player.skullIcon != null && constants.isForinthrySurgeSkull(player.skullIcon!!)) {
             attributes += CombatRangedAttributes.ForinthrySurge
         }
 

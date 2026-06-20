@@ -16,6 +16,9 @@ import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.player.events.interact.HeldContentEvents
 import org.rsmod.api.player.events.interact.HeldDropEvents
 import org.rsmod.api.player.events.interact.HeldObjEvents
+import org.rsmod.api.player.hook.GroundItemDropContext
+import org.rsmod.api.player.hook.GroundItemDropResolver
+import org.rsmod.api.player.hook.GroundItemDropSource
 import org.rsmod.api.player.output.ChatType
 import org.rsmod.api.player.output.UpdateInventory.resendSlot
 import org.rsmod.api.player.output.mes
@@ -278,6 +281,7 @@ constructor(
     private val eventBus: EventBus,
     private val objRepo: ObjRepository,
     private val marketPrices: MarketPrices,
+    private val groundItemDrops: GroundItemDropResolver,
 ) {
     suspend fun dropOrDestroy(
         access: ProtectedAccess,
@@ -489,11 +493,24 @@ constructor(
             return false
         }
 
+        val type = getInvObj(invObj)
+        val dropParams =
+            groundItemDrops.resolve(
+                GroundItemDropContext(
+                    player = this,
+                    type = type,
+                    coords = coords,
+                    source = GroundItemDropSource.Manual,
+                ),
+                duration = duration,
+                reveal = reveal,
+            )
+
         val observer = observerUUID ?: error("`observerUUID` not set for player: $this")
         val entity =
             ObjEntity(id = invObj.id, count = transaction.completed(), scope = ObjScope.Private.id)
         val obj = Obj(coords, entity, currentMapClock, observer)
-        val dropped = repo.add(obj, duration, reveal)
+        val dropped = repo.add(obj, dropParams.duration, dropParams.reveal)
         if (!dropped) {
             return false
         }

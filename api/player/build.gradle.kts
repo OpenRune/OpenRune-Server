@@ -14,6 +14,7 @@ dependencies {
     implementation(libs.kotlin.reflect)
     implementation(libs.rsprot.api)
     implementation(projects.api.areaChecker)
+    implementation(projects.api.attr)
     implementation(projects.api.config)
     implementation(projects.api.hunt)
     implementation(projects.api.invtx)

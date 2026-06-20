@@ -17,6 +17,12 @@ object MapAreaDefinitions {
             }
         }
 
+        if (areaDef.excludes.isNotEmpty()) {
+            for ((area, excludes) in areaDef.excludes.short2ObjectEntrySet()) {
+                index.registerExcludes(area, excludes)
+            }
+        }
+
         if (areaDef.mapSquareAreas.isNotEmpty()) {
             index.registerAll(square, areaDef.mapSquareAreas.iterator())
         }

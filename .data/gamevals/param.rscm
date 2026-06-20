@@ -311,3 +311,8 @@ opensound=65534
 npc_poison_severity=65535
 barbarian_firemaking_anim=65536
 spectral=65528
+death_always_kept=65537
+death_never_kept=65538
+
+death_auto_protected=65540
+death_pvp_coin_value=65541

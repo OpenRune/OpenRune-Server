@@ -33,6 +33,8 @@ public fun Player.combatClearQueue() {
     clearQueue("queue.impact_hit")
 }
 
+public fun Player.hasProtectItemPrayer(): Boolean = vars["varbit.prayer_protectitem"] == 1
+
 public fun Player.disablePrayers() {
     enabledPrayers = 0
     prayerDrainCounter = 0

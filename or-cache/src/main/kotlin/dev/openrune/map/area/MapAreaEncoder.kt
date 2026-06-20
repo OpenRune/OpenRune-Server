@@ -90,6 +90,22 @@ public object MapAreaEncoder {
                     data.writeShort(it.nextShort().toInt())
                 }
             }
+
+            data.writeShort(excludes.size)
+
+            for ((parent, refs) in excludes) {
+                check(refs.size <= 255) {
+                    "Exclude count for area $parent exceeds 255: ${refs.size}"
+                }
+
+                data.writeShort(parent.toInt())
+                data.writeByte(refs.size)
+
+                val it = refs.iterator()
+                while (it.hasNext()) {
+                    data.writeShort(it.nextShort().toInt())
+                }
+            }
         }
 
     public fun validateAreaLimits(mapSquare: MapSquareKey, area: MapAreaDefinition) {

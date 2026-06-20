@@ -316,6 +316,12 @@ public class StandardNpcAccess(
         return npc.findHero(playerList)
     }
 
+    public fun topDamager(playerList: PlayerList): Player? =
+        npc.damageContributions.topPlayer(playerList)
+
+    public fun leastDamager(playerList: PlayerList): Player? =
+        npc.damageContributions.leastPlayer(playerList)
+
     public fun inArea(area: String, coords: CoordGrid, checker: AreaChecker): Boolean {
         return checker.inArea(area, coords)
     }

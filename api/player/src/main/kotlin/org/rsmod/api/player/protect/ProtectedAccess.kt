@@ -61,6 +61,7 @@ import org.rsmod.api.player.hit.processor.StandardPlayerHitProcessor
 import org.rsmod.api.player.hit.queueHit
 import org.rsmod.api.player.hit.queueImpactHit
 import org.rsmod.api.player.hit.takeInstantHit
+import org.rsmod.api.player.hook.WildernessTeleportType
 import org.rsmod.api.player.input.ResumePCountDialogInput
 import org.rsmod.api.player.input.ResumePObjDialogInput
 import org.rsmod.api.player.input.ResumePStringDialogInput
@@ -147,6 +148,7 @@ import org.rsmod.events.KeyedEvent
 import org.rsmod.events.SuspendEvent
 import org.rsmod.events.UnboundEvent
 import org.rsmod.game.entity.Npc
+import org.rsmod.game.damage.recordDamageOn
 import org.rsmod.game.entity.PathingEntity
 import org.rsmod.game.entity.Player
 import org.rsmod.game.entity.npc.NpcUid
@@ -305,7 +307,14 @@ public class ProtectedAccess(
         player.setActiveMoveSpeed(speed)
     }
 
-    public fun telejump(dest: CoordGrid, collision: CollisionFlagMap) {
+    public fun telejump(
+        dest: CoordGrid,
+        collision: CollisionFlagMap,
+        teleportType: WildernessTeleportType = WildernessTeleportType.Standard,
+    ) {
+        if (!validateTeleport(teleportType)) {
+            return
+        }
         if (!collision.isZoneValid(dest)) {
             player.clearMapFlag()
             mes("Invalid teleport!", ChatType.Engine)
@@ -314,11 +323,18 @@ public class ProtectedAccess(
         PathingEntityCommon.telejump(player, collision, dest)
     }
 
-    public fun telejump(dest: CoordGrid) {
-        telejump(dest, context.collision)
+    public fun telejump(dest: CoordGrid, teleportType: WildernessTeleportType = WildernessTeleportType.Standard) {
+        telejump(dest, context.collision, teleportType)
     }
 
-    public fun teleport(dest: CoordGrid, collision: CollisionFlagMap) {
+    public fun teleport(
+        dest: CoordGrid,
+        collision: CollisionFlagMap,
+        teleportType: WildernessTeleportType = WildernessTeleportType.Standard,
+    ) {
+        if (!validateTeleport(teleportType)) {
+            return
+        }
         if (!collision.isZoneValid(dest)) {
             player.clearMapFlag()
             mes("Invalid teleport!", ChatType.Engine)
@@ -327,8 +343,8 @@ public class ProtectedAccess(
         PathingEntityCommon.teleport(player, collision, dest)
     }
 
-    public fun teleport(dest: CoordGrid) {
-        teleport(dest, context.collision)
+    public fun teleport(dest: CoordGrid, teleportType: WildernessTeleportType = WildernessTeleportType.Standard) {
+        teleport(dest, context.collision, teleportType)
     }
 
     /**
@@ -343,7 +359,17 @@ public class ProtectedAccess(
      *   upon reaching [end]. Common values can be found in the `constants` file, prefixed with
      *   "em_face_" (e.g. `em_face_north`).
      */
-    public fun exactMove(start: CoordGrid, end: CoordGrid, delay1: Int, delay2: Int, dir: Int) {
+    public fun exactMove(
+        start: CoordGrid,
+        end: CoordGrid,
+        delay1: Int,
+        delay2: Int,
+        dir: Int,
+        teleportType: WildernessTeleportType = WildernessTeleportType.Standard,
+    ) {
+        if (!validateTeleport(teleportType)) {
+            return
+        }
         val collision = context.collision
         if (!collision.isZoneValid(end)) {
             player.clearMapFlag()
@@ -351,6 +377,17 @@ public class ProtectedAccess(
             return
         }
         PathingEntityCommon.exactMove(player, start, end, delay1, delay2, dir, collision)
+    }
+
+    private fun validateTeleport(teleportType: WildernessTeleportType): Boolean {
+        val denial =
+            context.teleportValidator.validate(player, teleportType, context.areaChecker)
+        if (denial == null) {
+            return true
+        }
+        player.clearMapFlag()
+        mes(denial, ChatType.Engine)
+        return false
     }
 
     public fun anim(seq: String, delay: Int = 0) {
@@ -1732,6 +1769,10 @@ public class ProtectedAccess(
         return hit.resolvePlayerSource(context.playerList)
     }
 
+    internal fun recordHitDamage(target: PathingEntity, hit: Hit, damage: Int) {
+        hit.recordDamageOn(target, damage, context.playerList, context.npcList)
+    }
+
     @InternalApi
     public fun processQueuedHit(hit: Hit) {
         processQueuedHit(hit, StandardPlayerHitProcessor)
@@ -1818,6 +1859,16 @@ public class ProtectedAccess(
     public fun findHero(): Player? {
         return player.findHero(context.playerList)
     }
+
+    public fun topDamager(): Player? = player.damageContributions.topPlayer(context.playerList)
+
+    public fun leastDamager(): Player? = player.damageContributions.leastPlayer(context.playerList)
+
+    public fun topDamager(target: PathingEntity): Player? =
+        target.damageContributions.topPlayer(context.playerList)
+
+    public fun leastDamager(target: PathingEntity): Player? =
+        target.damageContributions.leastPlayer(context.playerList)
 
     /** Returns `true` if [coords] is within [area]. */
     public fun inArea(area: String, coords: CoordGrid): Boolean {
