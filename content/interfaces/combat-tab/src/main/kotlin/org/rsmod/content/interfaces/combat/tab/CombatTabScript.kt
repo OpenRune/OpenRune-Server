@@ -1,6 +1,9 @@
 package org.rsmod.content.interfaces.combat.tab
 
 import dev.openrune.ServerCacheManager
+import dev.openrune.definition.type.widget.IfEvent
+import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.rscm.RSCMType
 import dev.openrune.types.ItemServerType
 import dev.openrune.types.aconverted.interf.IfButtonOp
 import dev.openrune.types.enums.EnumTypeNonNullMap
@@ -14,18 +17,24 @@ import org.rsmod.api.combat.commons.styles.MeleeAttackStyle
 import org.rsmod.api.combat.manager.MagicRuneManager
 import org.rsmod.api.combat.weapon.styles.AttackStyles
 import org.rsmod.api.enums.NamedEnums.weapon_last_stance_varbits
+import org.rsmod.api.player.output.ClientScripts
 import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.protect.ProtectedAccessLauncher
 import org.rsmod.api.player.righthand
 import org.rsmod.api.player.ui.PlayerInterfaceUpdates
+import org.rsmod.api.player.ui.IfOverlayButton
 import org.rsmod.api.player.ui.ifClose
+import org.rsmod.api.player.ui.ifOpenOverlay
+import org.rsmod.api.player.ui.ifSetEvents
 import org.rsmod.api.player.vars.VarPlayerIntMapSetter
 import org.rsmod.api.player.vars.boolVarBit
 import org.rsmod.api.player.vars.boolVarp
 import org.rsmod.api.player.vars.enumVarBit
 import org.rsmod.api.player.vars.enumVarp
 import org.rsmod.api.player.vars.intVarBit
+import org.rsmod.api.player.vars.intVarp
+import org.rsmod.api.script.onIfClose
 import org.rsmod.api.script.advanced.onWearposChange
 import org.rsmod.api.script.onIfOpen
 import org.rsmod.api.script.onIfOverlayButton
@@ -42,6 +51,8 @@ import org.rsmod.game.entity.Player
 import org.rsmod.game.type.getOrNull
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
+import java.util.Collections
+import java.util.WeakHashMap
 
 /*
  * Note: The logic and execution order in this script are designed for emulation accuracy. While
@@ -69,6 +80,8 @@ constructor(
     private var Player.autocastSpell by intVarBit("varbit.autocast_spell")
     private var Player.defensiveCasting by boolVarBit("varbit.autocast_defmode")
     private var Player.spellbook by enumVarBit<Spellbook>("varbit.spellbook")
+    private var Player.autocastSetupObj by intVarp("varp.spitfire_coord")
+    private var Player.activeAutocastSpellObj by intVarp("varp.autocast_spell_obj")
 
     private lateinit var stanceSaveVarBits: EnumTypeNonNullMap<Int, Int>
 
@@ -76,6 +89,8 @@ constructor(
         stanceSaveVarBits = weapon_last_stance_varbits.filterValuesNotNull()
 
         onIfOpen("interface.combat_interface") { player.updateCombatTab() }
+        onIfClose("interface.autocast") { pendingAutocastDefensiveCast.remove(player) }
+        onIfClose("interface.magic_spellbook") { pendingAutocastDefensiveCast.remove(player) }
         onWearposChange { player.onWearposChange(wearpos) }
 
         onIfOverlayButton("component.combat_interface:retaliate") { player.selectAutoRetaliate() }
@@ -90,9 +105,17 @@ constructor(
         onIfOverlayButton("component.orbs:specbutton") { player.toggleSpecialAttack() }
         onPlayerQueue("queue.sa_instant_spec") { activateInstantSpecial() }
 
+        onIfOverlayButton("component.combat_interface:autocast_defensive") {
+            player.openAutocastSelection(defensiveCast = true)
+        }
+        onIfOverlayButton("component.combat_interface:autocast_normal") {
+            player.openAutocastSelection(defensiveCast = false)
+        }
+
         for ((autocastId, spell) in spells.autocastSpells()) {
             onIfOverlayButton(spell.component) { player.selectAutocastSpell(autocastId, spell, it.op) }
         }
+        onIfOverlayButton("component.autocast:spells") { player.selectAutocastSpell(it) }
     }
 
     private fun Player.updateCombatTab() {
@@ -131,30 +154,23 @@ constructor(
         val autocastVarBits = autocast.getVarBits(weaponCategory)
 
         if (weaponType == null || autocastVarBits == null) {
-            autocastEnabled = false
-            autocastSpell = 0
-            defensiveCasting = false
+            clearActiveAutocast()
             return
         }
 
         val savedAutocastId = vars[autocastVarBits.autocastId]
         val savedAutocastSpell = spells.getAutocastSpell(savedAutocastId)
         if (savedAutocastId == 0 || savedAutocastSpell == null) {
-            autocastEnabled = false
-            autocastSpell = 0
-            defensiveCasting = false
+            clearActiveAutocast()
             return
         }
 
         // Note: As of writing this logic, the official game does _not_ check that the spell's
         // spellbook param matches the player's current spellbook when switching weapons.
 
-        // `canStaffAutocast` is responsible for sending the "error" message to the player.
-        val isValidStaff = autocast.canStaffAutocast(this, weaponType, savedAutocastId)
+        val isValidStaff = autocast.canStaffAutocast(weaponType, savedAutocastId)
         if (!isValidStaff) {
-            autocastEnabled = false
-            autocastSpell = 0
-            defensiveCasting = false
+            clearActiveAutocast()
             return
         }
 
@@ -162,9 +178,7 @@ constructor(
         val hasRunes = runes.hasRunes(this, savedAutocastSpell)
         if (!hasRunes) {
             autocast.reset(this, autocastVarBits)
-            autocastEnabled = false
-            autocastSpell = 0
-            defensiveCasting = false
+            clearActiveAutocast()
             return
         }
 
@@ -172,15 +186,132 @@ constructor(
         autocastSpell = savedAutocastId
         defensiveCasting = savedDefensiveCast
         autocastEnabled = autocastSpell != 0
+        activeAutocastSpellObj = savedAutocastSpell.obj.id
     }
 
-    private fun Player.selectAutocastSpell(autocastId: Int, spell: MagicSpell, op: IfButtonOp) {
-        val opText = spell.component.op.getOrNull(op.slot - 1) ?: return
-        if (!opText.contains("autocast", ignoreCase = true)) {
+    private fun Player.openAutocastSelection(defensiveCast: Boolean) {
+        ifClose(eventBus)
+
+        val weaponType = getOrNull(righthand)
+        val weaponCategory = WeaponCategory.getOrUnarmed(weaponType?.weaponCategory?.id)
+        val autocastVarBits = autocast.getVarBits(weaponCategory)
+        if (weaponType == null || autocastVarBits == null) {
+            mes("You need to wield a staff to autocast spells.")
+            clearActiveAutocast()
+            updateCombatTab()
             return
         }
 
+        if (!autocast.canAutocastSpellbook(weaponType, spellbook)) {
+            mes(autocast.unsupportedSpellbookMessage(spellbook))
+            clearActiveAutocast()
+            updateCombatTab()
+            return
+        }
+
+        pendingAutocastDefensiveCast[this] = defensiveCast
+        syncAutocastSetupObj()
+        ifOpenOverlay(
+            "interface.autocast",
+            "component.toplevel_osrs_stretch:side0",
+            eventBus,
+        )
+        ifSetEvents("component.toplevel_osrs_stretch:stone0", -1..-1, IfEvent.Op1)
+        ifSetEvents("component.autocast:spells", 0..58, IfEvent.Op1)
+        ClientScripts.toplevelSidebuttonSwitch(this, ToplevelCombatTab)
+    }
+
+    private fun Player.syncAutocastSetupObj() {
+        val weapon = getOrNull(righthand)
+        autocastSetupObj = resolveAutocastSetupObj(weapon)
+    }
+
+    private fun Player.resolveAutocastSetupObj(weapon: ItemServerType?): Int =
+        if (weapon == null) {
+            NullObj
+        } else {
+            when (spellbook) {
+                Spellbook.Standard -> StandardAutocastSelectors[weapon.id] ?: NullObj
+                Spellbook.Ancients ->
+                    if (autocast.canAutocastSpellbook(weapon, Spellbook.Ancients)) {
+                        AncientLayoutObj
+                    } else {
+                        EmptyLayoutObj
+                    }
+                Spellbook.Arceuus ->
+                    if (autocast.canAutocastSpellbook(weapon, Spellbook.Arceuus)) {
+                        ArceuusLayoutObj
+                    } else {
+                        EmptyLayoutObj
+                    }
+                else -> EmptyLayoutObj
+            }
+        }
+
+    private fun Player.clearActiveAutocast() {
+        autocastEnabled = false
+        autocastSpell = 0
+        defensiveCasting = false
+        activeAutocastSpellObj = NullObj
+    }
+
+    private fun Player.restoreCombatTabOverlay() {
+        ifOpenOverlay(
+            "interface.combat_interface",
+            "component.toplevel_osrs_stretch:side0",
+            eventBus,
+        )
+        ClientScripts.toplevelSidebuttonSwitch(this, ToplevelCombatTab)
+        updateCombatTab()
+    }
+
+    private fun Player.selectAutocastSpell(autocastId: Int, spell: MagicSpell, op: IfButtonOp) {
+        val pendingDefensiveCast = pendingAutocastDefensiveCast[this]
+        val opText = spell.component.op.getOrNull(op.slot - 1)
+        if (pendingDefensiveCast == null && opText?.contains("autocast", ignoreCase = true) != true) {
+            return
+        }
+
+        val defensiveCast =
+            pendingDefensiveCast ?: opText?.contains("defensive", ignoreCase = true) == true
+        selectAutocastSpell(
+            autocastId = autocastId,
+            spell = spell,
+            defensiveCast = defensiveCast,
+            restoreCombatTab = pendingDefensiveCast != null,
+        )
+    }
+
+    private fun Player.selectAutocastSpell(event: IfOverlayButton) {
+        val defensiveCast = pendingAutocastDefensiveCast[this] ?: return
+        if (event.op != IfButtonOp.Op1) {
+            return
+        }
+        if (event.comsub == AutocastCancelSub) {
+            cancelAutocastSelection()
+            return
+        }
+
+        val selection = resolveAutocastSelection(event) ?: return
+        selectAutocastSpell(
+            autocastId = selection.autocastId,
+            spell = selection.spell,
+            defensiveCast = defensiveCast,
+            restoreCombatTab = true,
+        )
+    }
+
+    private fun Player.selectAutocastSpell(
+        autocastId: Int,
+        spell: MagicSpell,
+        defensiveCast: Boolean,
+        restoreCombatTab: Boolean,
+    ) {
+        pendingAutocastDefensiveCast.remove(this)
         ifClose(eventBus)
+        if (restoreCombatTab) {
+            restoreCombatTabOverlay()
+        }
 
         val weaponType = getOrNull(righthand)
         val weaponCategory = WeaponCategory.getOrUnarmed(weaponType?.weaponCategory?.id)
@@ -205,13 +336,51 @@ constructor(
             return
         }
 
-        val defensiveCast = opText.contains("defensive", ignoreCase = true)
         autocast.set(this, autocastVarBits, autocastId, defensiveCast)
         autocastSpell = autocastId
         defensiveCasting = defensiveCast
         autocastEnabled = true
-        PlayerInterfaceUpdates.updateCombatTab(this)
+        activeAutocastSpellObj = spell.obj.id
+        updateCombatTab()
     }
+
+    private fun Player.cancelAutocastSelection() {
+        pendingAutocastDefensiveCast.remove(this)
+        ifClose(eventBus)
+        restoreCombatTabOverlay()
+
+        val weaponType = getOrNull(righthand)
+        val weaponCategory = WeaponCategory.getOrUnarmed(weaponType?.weaponCategory?.id)
+        val autocastVarBits = autocast.getVarBits(weaponCategory)
+        if (autocastVarBits != null) {
+            autocast.reset(this, autocastVarBits)
+        }
+        autocastSpell = 0
+        defensiveCasting = false
+        autocastEnabled = false
+        activeAutocastSpellObj = NullObj
+        updateCombatTab()
+    }
+
+    private fun Player.resolveAutocastSelection(event: IfOverlayButton): AutocastSelection? {
+        val obj = event.obj
+        if (obj != null) {
+            autocastSpellByObj(obj)?.let {
+                return it
+            }
+        }
+
+        spells.getAutocastSpell(event.comsub)?.takeIf { it.spellbook == spellbook }?.let {
+            return AutocastSelection(event.comsub, it)
+        }
+        return null
+    }
+
+    private fun autocastSpellByObj(obj: ItemServerType): AutocastSelection? =
+        spells.autocastSpells()
+            .entries
+            .firstOrNull { it.value.obj.id == obj.id }
+            ?.let { AutocastSelection(it.key, it.value) }
 
     private fun Player.validateStanceStyle() {
         val weaponType = getOrNull(righthand)
@@ -368,5 +537,76 @@ constructor(
 
     private fun Player.resetSpecialType() {
         specialType = SpecialAttackType.None
+    }
+
+    private data class AutocastSelection(val autocastId: Int, val spell: MagicSpell)
+
+    private companion object {
+        val pendingAutocastDefensiveCast: MutableMap<Player, Boolean> =
+            Collections.synchronizedMap(WeakHashMap())
+        const val AutocastCancelSub = 0
+        const val ToplevelCombatTab = 0
+        const val NullObj = -1
+        val EmptyLayoutObj = obj("obj.coins")
+        val AncientLayoutObj = obj("obj.staff_of_zaros")
+        val ArceuusLayoutObj = obj("obj.sos_skull_sceptre")
+        val SkullSceptreImbuedObj = obj("obj.sos_skull_sceptre_imbued")
+        val VoidKnightMaceObj = obj("obj.pest_void_knight_mace")
+        val VoidKnightMaceLockedObj = obj("obj.pest_void_knight_mace_trouver")
+        val IbansStaffObj = obj("obj.ibanstaff")
+        val IbansStaffUpgradedObj = obj("obj.ibanstaff_upgraded")
+        val SaradominStaffObj = obj("obj.saradomin_staff")
+        val GuthixStaffObj = obj("obj.guthix_staff")
+        val ZamorakStaffObj = obj("obj.zamorak_staff")
+        val SlayerStaffObj = obj("obj.slayer_staff")
+        val SlayerStaffEnchantedObj = obj("obj.slayer_staff_enchanted")
+        val StaffOfTheDeadObj = obj("obj.sotd")
+        val BrStaffOfTheDeadObj = obj("obj.br_sotd")
+        val ToxicStaffOfTheDeadObj = obj("obj.toxic_sotd")
+        val ToxicStaffOfTheDeadChargedObj = obj("obj.toxic_sotd_charged")
+        val ToxicStaffOfTheDeadDeadmanObj = obj("obj.toxic_sotd_deadman")
+        val ToxicStaffOfTheDeadChargedDeadmanObj = obj("obj.toxic_sotd_charged_deadman")
+        val StaffOfLightObj = obj("obj.staff_of_light")
+        val StaffOfBalanceObj = obj("obj.staff_of_balance")
+        val ThammaronsSceptreUnchargedObj = obj("obj.wild_cave_sceptre_uncharged")
+        val ThammaronsSceptreChargedObj = obj("obj.wild_cave_sceptre_charged")
+        val ThammaronsSceptreUnchargedAObj = obj("obj.wild_cave_sceptre_uncharged_recol")
+        val ThammaronsSceptreChargedAObj = obj("obj.wild_cave_sceptre_charged_recol")
+        val AccursedSceptreUnchargedObj = obj("obj.wild_cave_accursed_uncharged")
+        val AccursedSceptreChargedObj = obj("obj.wild_cave_accursed_charged")
+        val AccursedSceptreUnchargedAObj = obj("obj.wild_cave_accursed_uncharged_recol")
+        val AccursedSceptreChargedAObj = obj("obj.wild_cave_accursed_charged_recol")
+
+        val StandardAutocastSelectors =
+            mapOf(
+                SaradominStaffObj to SaradominStaffObj,
+                GuthixStaffObj to GuthixStaffObj,
+                ZamorakStaffObj to ZamorakStaffObj,
+                SkullSceptreImbuedObj to SkullSceptreImbuedObj,
+                VoidKnightMaceObj to VoidKnightMaceObj,
+                VoidKnightMaceLockedObj to VoidKnightMaceObj,
+                IbansStaffObj to IbansStaffObj,
+                IbansStaffUpgradedObj to IbansStaffObj,
+                SlayerStaffObj to SlayerStaffObj,
+                SlayerStaffEnchantedObj to SlayerStaffObj,
+                StaffOfTheDeadObj to StaffOfTheDeadObj,
+                BrStaffOfTheDeadObj to StaffOfTheDeadObj,
+                ToxicStaffOfTheDeadObj to StaffOfTheDeadObj,
+                ToxicStaffOfTheDeadChargedObj to StaffOfTheDeadObj,
+                ToxicStaffOfTheDeadDeadmanObj to StaffOfTheDeadObj,
+                ToxicStaffOfTheDeadChargedDeadmanObj to StaffOfTheDeadObj,
+                StaffOfLightObj to StaffOfLightObj,
+                StaffOfBalanceObj to StaffOfBalanceObj,
+                ThammaronsSceptreUnchargedObj to ThammaronsSceptreUnchargedAObj,
+                ThammaronsSceptreChargedObj to ThammaronsSceptreChargedAObj,
+                ThammaronsSceptreUnchargedAObj to ThammaronsSceptreUnchargedAObj,
+                ThammaronsSceptreChargedAObj to ThammaronsSceptreChargedAObj,
+                AccursedSceptreUnchargedObj to AccursedSceptreUnchargedAObj,
+                AccursedSceptreChargedObj to AccursedSceptreChargedAObj,
+                AccursedSceptreUnchargedAObj to AccursedSceptreUnchargedAObj,
+                AccursedSceptreChargedAObj to AccursedSceptreChargedAObj,
+            )
+
+        private fun obj(ref: String): Int = ref.asRSCM(RSCMType.OBJ)
     }
 }
