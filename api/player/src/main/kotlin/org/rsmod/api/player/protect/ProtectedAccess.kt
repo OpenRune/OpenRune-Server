@@ -380,6 +380,9 @@ public class ProtectedAccess(
     }
 
     private fun validateTeleport(teleportType: WildernessTeleportType): Boolean {
+        if (teleportType == WildernessTeleportType.Exempt) {
+            return true
+        }
         val denial =
             context.teleportValidator.validate(player, teleportType, context.areaChecker)
         if (denial == null) {
