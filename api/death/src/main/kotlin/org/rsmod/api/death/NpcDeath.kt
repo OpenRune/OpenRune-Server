@@ -11,6 +11,7 @@ import org.rsmod.api.config.constants
 import org.rsmod.api.config.refs.params
 import org.rsmod.api.npc.access.StandardNpcAccess
 import org.rsmod.api.npc.vars.typePlayerUidVarn
+import org.rsmod.api.player.output.ClientScripts
 import org.rsmod.api.player.output.soundSynth
 import org.rsmod.api.player.vars.intVarp
 import org.rsmod.api.player.vars.typeNpcUidVarp
@@ -32,6 +33,8 @@ constructor(
     private val deathDropHooks: Set<NpcDeathDropHook>,
     private val deathKillHooks: Set<NpcDeathKillHook>,
 ) {
+    private var lootTrackerEventId: Int = 0
+
     public suspend fun deathNoDrops(access: StandardNpcAccess) {
         access.death(npcRepo, players)
     }
@@ -49,8 +52,12 @@ constructor(
         val hero = findHero(players)
         if (hero != null) {
             val duration = hero.lootDropDuration ?: constants.lootdrop_duration
+            val lootTrackerEventId = nextLootTrackerEventId()
 
-            val droppedRemains = paramOrNull(params.dropped_remains)?: ServerCacheManager.getItem("obj.bones".asRSCM())?: error("No bones")
+            val droppedRemains =
+                paramOrNull(params.dropped_remains)
+                    ?: ServerCacheManager.getItem("obj.bones".asRSCM())
+                    ?: error("No bones")
             val ctx = NpcDeathDropContext(
                 hero = hero,
                 dropType = droppedRemains,
@@ -67,14 +74,31 @@ constructor(
                 }
             }
             if (!dropConsumed) {
-                objRepo.add(droppedRemains, dropCoords, duration, hero)
+                val spawned = objRepo.add(droppedRemains, dropCoords, duration, hero)
+                ClientScripts.lootTrackerAddLoot(
+                    hero,
+                    id,
+                    lootTrackerEventId,
+                    spawned.type,
+                    spawned.count,
+                )
             }
 
-            val killCtx = NpcDeathKillContext(hero = hero, npc = this)
+            val killCtx =
+                NpcDeathKillContext(
+                    hero = hero,
+                    npc = this,
+                    lootTrackerEventId = lootTrackerEventId,
+                )
             for (hook in deathKillHooks) {
                 hook.onKill(killCtx)
             }
         }
+    }
+
+    private fun nextLootTrackerEventId(): Int {
+        lootTrackerEventId = if (lootTrackerEventId == Int.MAX_VALUE) 1 else lootTrackerEventId + 1
+        return lootTrackerEventId
     }
 
     // Note: We may be able to have `Npc` as the arg instead of `StandardNpcAccess`, however we

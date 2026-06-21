@@ -6,6 +6,7 @@ import org.rsmod.game.entity.Player
 public data class NpcDeathKillContext(
     public val hero: Player,
     public val npc: Npc,
+    public val lootTrackerEventId: Int,
 )
 
 /**
