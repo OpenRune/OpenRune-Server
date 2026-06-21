@@ -2009,11 +2009,13 @@ constructor(
         target: PathingEntity,
         spotanim: String,
         projanim: String,
-    ): ProjAnim =
-        when (target) {
-            is Npc -> spawnProjectile(source, target, spotanim, projanim)
-            is Player -> spawnProjectile(source, target, spotanim, projanim)
+    ): ProjAnim {
+        val spotanimType = SpotanimType(spotanim.asRSCM(RSCMType.SPOTANIM))
+        return when (target) {
+            is Npc -> spawnProjectile(source, target, spotanimType, projanim)
+            is Player -> spawnProjectile(source, target, spotanimType, projanim)
         }
+    }
 
     public fun spawnProjectile(
         source: Player,
