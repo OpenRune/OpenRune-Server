@@ -1,0 +1,72 @@
+[[spawn]]
+npc = "npc.zqskeleton_armed"
+coords = "0_45_145_6_13"
+
+[[spawn]]
+npc = "npc.zqskeleton_armed2"
+coords = "0_45_145_37_24"
+
+[[spawn]]
+npc = "npc.zqskeleton_unarmed"
+coords = "0_45_145_37_25"
+
+[[spawn]]
+npc = "npc.zqskeleton_unarmed2"
+coords = "0_45_145_51_37"
+
+[[spawn]]
+npc = "npc.zqskeleton_unarmed2"
+coords = "0_45_145_6_14"
+
+[[spawn]]
+npc = "npc.zqzombie_armed"
+coords = "0_45_145_12_32"
+
+[[spawn]]
+npc = "npc.zqzombie_armed"
+coords = "0_45_145_44_12"
+
+[[spawn]]
+npc = "npc.zqzombie_armed"
+coords = "0_45_145_54_5"
+
+[[spawn]]
+npc = "npc.zqzombie_armed"
+coords = "0_45_145_57_21"
+
+[[spawn]]
+npc = "npc.zqzombie_armed2"
+coords = "0_45_145_17_42"
+
+[[spawn]]
+npc = "npc.zqzombie_armed2"
+coords = "0_45_145_50_14"
+
+[[spawn]]
+npc = "npc.zqzombie_armed2"
+coords = "0_45_145_54_29"
+
+[[spawn]]
+npc = "npc.zqzombie_armed3"
+coords = "0_45_145_17_41"
+
+[[spawn]]
+npc = "npc.zqzombie_armed3"
+coords = "0_45_145_53_14"
+
+[[spawn]]
+npc = "npc.zqzombie_armed3"
+coords = "0_45_145_54_37"
+
+[[spawn]]
+npc = "npc.zqzombie_unarmed"
+coords = "0_45_145_7_32"
+
+[[spawn]]
+npc = "npc.zqzombie_unarmed2"
+coords = "0_45_145_53_3"
+
+[[spawn]]
+npc = "npc.zqzombie_unarmed3"
+coords = "0_45_145_57_19"
+

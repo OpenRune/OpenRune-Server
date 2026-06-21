@@ -1,0 +1,340 @@
+## The Scar Essence Mine
+
+[[spawn]]
+npc = "npc.hagus"
+coords = "0_30_99_34_30"
+
+## The Scar Main Area
+
+[[spawn]]
+npc = "npc.dt2_persten_scar"
+coords = "0_32_100_3_43"
+
+[[spawn]]
+npc = "npc.dt2_persten_scar_island"
+coords = "0_32_99_50_38"
+
+[[spawn]]
+npc = "npc.dt2_scar_leech"
+coords = "0_31_100_34_32"
+
+[[spawn]]
+npc = "npc.dt2_scar_leech"
+coords = "0_31_100_41_35"
+
+[[spawn]]
+npc = "npc.dt2_scar_leech"
+coords = "0_31_100_56_33"
+
+[[spawn]]
+npc = "npc.leviathan_buff_npc"
+coords = "0_32_99_33_36"
+
+[[spawn]]
+npc = "npc.leviathan_cutscene_fake"
+coords = "0_32_99_33_36"
+
+[[spawn]]
+npc = "npc.leviathan_tail_ring_1_base"
+coords = "0_32_99_27_57"
+
+[[spawn]]
+npc = "npc.leviathan_tail_ring_1_base"
+coords = "0_32_99_47_21"
+
+[[spawn]]
+npc = "npc.leviathan_tail_ring_2_base"
+coords = "0_32_99_31_10"
+
+[[spawn]]
+npc = "npc.leviathan_tail_ring_3_base"
+coords = "0_32_99_48_53"
+
+[[spawn]]
+npc = "npc.leviathan_tail_ring_3_base"
+coords = "0_32_99_5_19"
+
+## The Scar Quest Areas
+
+[[spawn]]
+npc = "npc.0_18_57_memberfish"
+coords = "0_27_100_16_12"
+
+[[spawn]]
+npc = "npc.0_18_57_memberfish"
+coords = "0_34_100_61_29"
+
+[[spawn]]
+npc = "npc.abyssal_leech"
+coords = "0_34_100_14_32"
+
+[[spawn]]
+npc = "npc.abyssal_leech"
+coords = "0_34_100_24_60"
+
+[[spawn]]
+npc = "npc.abyssal_leech"
+coords = "0_34_100_2_25"
+
+[[spawn]]
+npc = "npc.abyssal_leech"
+coords = "0_34_100_32_2"
+
+[[spawn]]
+npc = "npc.abyssal_leech"
+coords = "0_34_100_32_53"
+
+[[spawn]]
+npc = "npc.abyssal_leech"
+coords = "0_34_100_39_38"
+
+[[spawn]]
+npc = "npc.abyssal_leech"
+coords = "0_34_100_51_53"
+
+[[spawn]]
+npc = "npc.dt2_scar_maze_1_electric_npc"
+coords = "0_34_100_27_41"
+
+[[spawn]]
+npc = "npc.dt2_scar_maze_1_electric_npc_reverse"
+coords = "0_34_100_27_41"
+
+[[spawn]]
+npc = "npc.dt2_scar_maze_1_ritual_catalyst"
+coords = "0_34_100_22_15"
+
+[[spawn]]
+npc = "npc.dt2_scar_maze_1_ritual_npc"
+coords = "0_34_100_21_15"
+
+[[spawn]]
+npc = "npc.dt2_scar_maze_1_ritual_npc"
+coords = "0_34_100_21_17"
+
+[[spawn]]
+npc = "npc.dt2_scar_maze_1_ritual_npc"
+coords = "0_34_100_23_14"
+
+[[spawn]]
+npc = "npc.dt2_scar_maze_1_ritual_npc"
+coords = "0_34_100_23_18"
+
+[[spawn]]
+npc = "npc.dt2_scar_maze_1_ritual_npc"
+coords = "0_34_100_25_15"
+
+[[spawn]]
+npc = "npc.dt2_scar_maze_1_ritual_npc"
+coords = "0_34_100_25_17"
+
+[[spawn]]
+npc = "npc.dt2_scar_maze_2_pillar_attacker"
+coords = "0_29_100_48_8"
+
+[[spawn]]
+npc = "npc.dt2_scar_maze_2_pillar_attacker_dog"
+coords = "0_29_100_48_3"
+
+[[spawn]]
+npc = "npc.dt2_scar_maze_2_pillar_repairer"
+coords = "0_29_100_36_4"
+
+[[spawn]]
+npc = "npc.dt2_scar_maze_2_pillar_repairer"
+coords = "0_29_100_36_9"
+
+[[spawn]]
+npc = "npc.dt2_scar_maze_2_pillar_repairer"
+coords = "0_29_100_37_5"
+
+[[spawn]]
+npc = "npc.dt2_scar_maze_2_pillar_repairer"
+coords = "0_29_100_37_8"
+
+[[spawn]]
+npc = "npc.dt2_scar_maze_3_link_chanter"
+coords = "0_27_100_14_47"
+
+[[spawn]]
+npc = "npc.dt2_scar_maze_3_link_chanter"
+coords = "0_27_100_16_45"
+
+[[spawn]]
+npc = "npc.dt2_scar_maze_3_link_chanter"
+coords = "0_27_100_16_49"
+
+[[spawn]]
+npc = "npc.dt2_scar_maze_3_link_chanter"
+coords = "0_27_100_18_47"
+
+[[spawn]]
+npc = "npc.dt2_scar_maze_3_pathing_npc"
+coords = "0_27_100_15_24"
+
+[[spawn]]
+npc = "npc.dt2_scar_maze_3_pathing_npc"
+coords = "0_27_100_21_19"
+
+[[spawn]]
+npc = "npc.dt2_scar_maze_3_pathing_npc"
+coords = "0_27_100_7_22"
+
+[[spawn]]
+npc = "npc.dt2_scar_maze_leech"
+coords = "0_27_100_20_7"
+
+[[spawn]]
+npc = "npc.dt2_scar_maze_leech"
+coords = "0_27_100_30_2"
+
+[[spawn]]
+npc = "npc.dt2_scar_maze_leech"
+coords = "0_27_100_31_38"
+
+[[spawn]]
+npc = "npc.dt2_scar_maze_leech"
+coords = "0_27_100_32_55"
+
+[[spawn]]
+npc = "npc.dt2_scar_maze_leech"
+coords = "0_27_100_45_44"
+
+[[spawn]]
+npc = "npc.dt2_scar_maze_leech"
+coords = "0_27_100_53_13"
+
+[[spawn]]
+npc = "npc.dt2_scar_maze_leech"
+coords = "0_27_100_9_36"
+
+[[spawn]]
+npc = "npc.dt2_scar_maze_leech"
+coords = "0_29_100_15_7"
+
+[[spawn]]
+npc = "npc.dt2_scar_maze_leech"
+coords = "0_29_100_29_19"
+
+[[spawn]]
+npc = "npc.dt2_scar_maze_leech"
+coords = "0_29_100_3_32"
+
+[[spawn]]
+npc = "npc.dt2_scar_maze_leech"
+coords = "0_29_100_40_60"
+
+[[spawn]]
+npc = "npc.dt2_scar_maze_leech"
+coords = "0_29_100_50_24"
+
+[[spawn]]
+npc = "npc.dt2_scar_maze_leech"
+coords = "0_29_100_7_54"
+
+[[spawn]]
+npc = "npc.dt2_scar_maze_light_leech"
+coords = "0_29_100_19_39"
+
+[[spawn]]
+npc = "npc.dt2_scar_maze_light_leech"
+coords = "0_29_100_7_24"
+
+[[spawn]]
+npc = "npc.dt2_scar_maze_light_leech"
+coords = "0_34_100_46_34"
+
+[[spawn]]
+npc = "npc.dt2_scar_maze_light_leech"
+coords = "0_34_100_47_28"
+
+[[spawn]]
+npc = "npc.dt2_scar_maze_light_leech"
+coords = "0_34_100_52_25"
+
+[[spawn]]
+npc = "npc.dt2_scar_maze_light_leech"
+coords = "0_34_100_54_33"
+
+[[spawn]]
+npc = "npc.dt2_scar_maze_mage_demon"
+coords = "0_29_100_15_16"
+
+[[spawn]]
+npc = "npc.dt2_scar_maze_mage_demon"
+coords = "0_29_100_26_3"
+
+[[spawn]]
+npc = "npc.dt2_scar_maze_mage_demon"
+coords = "0_29_100_26_45"
+
+[[spawn]]
+npc = "npc.dt2_scar_maze_mage_demon"
+coords = "0_29_100_36_17"
+
+[[spawn]]
+npc = "npc.dt2_scar_maze_mage_demon"
+coords = "0_29_100_36_46"
+
+[[spawn]]
+npc = "npc.dt2_scar_maze_mage_demon"
+coords = "0_29_100_55_16"
+
+[[spawn]]
+npc = "npc.dt2_scar_maze_melee_demon"
+coords = "0_27_100_21_59"
+
+[[spawn]]
+npc = "npc.dt2_scar_maze_melee_demon"
+coords = "0_27_100_28_27"
+
+[[spawn]]
+npc = "npc.dt2_scar_maze_melee_demon"
+coords = "0_27_100_32_8"
+
+[[spawn]]
+npc = "npc.dt2_scar_maze_melee_demon"
+coords = "0_27_100_36_32"
+
+[[spawn]]
+npc = "npc.dt2_scar_maze_melee_demon"
+coords = "0_27_100_42_14"
+
+[[spawn]]
+npc = "npc.dt2_scar_maze_melee_demon"
+coords = "0_27_100_46_2"
+
+[[spawn]]
+npc = "npc.dt2_scar_maze_ranged_demon"
+coords = "0_34_100_14_57"
+
+[[spawn]]
+npc = "npc.dt2_scar_maze_ranged_demon"
+coords = "0_34_100_22_24"
+
+[[spawn]]
+npc = "npc.dt2_scar_maze_ranged_demon"
+coords = "0_34_100_34_59"
+
+[[spawn]]
+npc = "npc.dt2_scar_maze_ranged_demon"
+coords = "0_34_100_38_56"
+
+[[spawn]]
+npc = "npc.dt2_scar_maze_ranged_demon"
+coords = "0_34_100_40_16"
+
+[[spawn]]
+npc = "npc.dt2_scar_maze_ranged_demon"
+coords = "0_34_100_44_46"
+
+[[spawn]]
+npc = "npc.dt2_scar_maze_ranged_demon"
+coords = "0_34_100_4_8"
+
+[[spawn]]
+npc = "npc.dt2_scar_maze_ranged_demon"
+coords = "0_34_100_6_42"
+
+## The Scar Quest Areas End
+

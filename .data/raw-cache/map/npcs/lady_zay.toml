@@ -1,0 +1,44 @@
+[[spawn]]
+npc = "npc.lunar_pirate_cabin_boy"
+coords = "3_33_60_26_51"
+
+[[spawn]]
+npc = "npc.lunar_pirate_captain"
+coords = "2_33_60_26_59"
+
+[[spawn]]
+npc = "npc.lunar_pirate_cook"
+coords = "0_33_60_26_52"
+
+[[spawn]]
+npc = "npc.lunar_pirate_first_mate"
+coords = "2_33_60_29_51"
+
+[[spawn]]
+npc = "npc.lunar_pirate_generic_pirate_1"
+coords = "1_33_60_27_60"
+
+[[spawn]]
+npc = "npc.lunar_pirate_generic_pirate_2"
+coords = "1_33_60_29_58"
+
+[[spawn]]
+npc = "npc.lunar_pirate_generic_pirate_3"
+coords = "1_33_60_27_57"
+
+[[spawn]]
+npc = "npc.lunar_pirate_generic_pirate_4"
+coords = "2_33_60_31_60"
+
+[[spawn]]
+npc = "npc.lunar_pirate_generic_pirate_9"
+coords = "3_33_60_30_54"
+
+[[spawn]]
+npc = "npc.lunar_pirate_navigator_multi"
+coords = "1_33_60_26_51"
+
+[[spawn]]
+npc = "npc.lunar_suqka"
+coords = "0_33_60_30_60"
+

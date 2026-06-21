@@ -1,0 +1,8 @@
+[[spawn]]
+npc = "npc.nora_t_hagg"
+coords = "0_45_54_24_7"
+
+[[spawn]]
+npc = "npc.witchrat"
+coords = "0_45_54_22_11"
+

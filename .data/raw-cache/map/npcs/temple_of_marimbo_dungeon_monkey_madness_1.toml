@@ -1,0 +1,252 @@
+[[spawn]]
+npc = "npc.mm_warehouse_spider"
+coords = "0_43_143_12_43"
+
+[[spawn]]
+npc = "npc.mm_warehouse_spider"
+coords = "0_43_143_15_11"
+
+[[spawn]]
+npc = "npc.mm_warehouse_spider"
+coords = "0_43_143_16_35"
+
+[[spawn]]
+npc = "npc.mm_warehouse_spider"
+coords = "0_43_143_17_41"
+
+[[spawn]]
+npc = "npc.mm_warehouse_spider"
+coords = "0_43_143_18_49"
+
+[[spawn]]
+npc = "npc.mm_warehouse_spider"
+coords = "0_43_143_21_42"
+
+[[spawn]]
+npc = "npc.mm_warehouse_spider"
+coords = "0_43_143_24_11"
+
+[[spawn]]
+npc = "npc.mm_warehouse_spider"
+coords = "0_43_143_27_11"
+
+[[spawn]]
+npc = "npc.mm_warehouse_spider"
+coords = "0_43_143_32_49"
+
+[[spawn]]
+npc = "npc.mm_warehouse_spider"
+coords = "0_43_143_33_12"
+
+[[spawn]]
+npc = "npc.mm_warehouse_spider"
+coords = "0_43_143_33_38"
+
+[[spawn]]
+npc = "npc.mm_warehouse_spider"
+coords = "0_43_143_35_17"
+
+[[spawn]]
+npc = "npc.mm_warehouse_spider"
+coords = "0_43_143_36_44"
+
+[[spawn]]
+npc = "npc.mm_warehouse_spider"
+coords = "0_43_143_37_20"
+
+[[spawn]]
+npc = "npc.mm_warehouse_spider"
+coords = "0_43_143_40_15"
+
+[[spawn]]
+npc = "npc.mm_warehouse_spider"
+coords = "0_43_143_44_18"
+
+[[spawn]]
+npc = "npc.mm_warehouse_spider"
+coords = "0_43_143_44_23"
+
+[[spawn]]
+npc = "npc.mm_warehouse_spider"
+coords = "0_43_143_45_46"
+
+[[spawn]]
+npc = "npc.mm_warehouse_spider"
+coords = "0_43_143_47_53"
+
+[[spawn]]
+npc = "npc.mm_warehouse_spider"
+coords = "0_43_143_48_10"
+
+[[spawn]]
+npc = "npc.mm_warehouse_spider"
+coords = "0_43_143_49_46"
+
+[[spawn]]
+npc = "npc.mm_warehouse_spider"
+coords = "0_43_143_9_37"
+
+[[spawn]]
+npc = "npc.mm_zombie_monkey_large"
+coords = "0_43_143_11_49"
+
+[[spawn]]
+npc = "npc.mm_zombie_monkey_large"
+coords = "0_43_143_12_39"
+
+[[spawn]]
+npc = "npc.mm_zombie_monkey_large"
+coords = "0_43_143_14_47"
+
+[[spawn]]
+npc = "npc.mm_zombie_monkey_large"
+coords = "0_43_143_17_38"
+
+[[spawn]]
+npc = "npc.mm_zombie_monkey_large"
+coords = "0_43_143_9_45"
+
+[[spawn]]
+npc = "npc.mm_zombie_monkey_large_guard"
+coords = "0_43_143_16_51"
+
+[[spawn]]
+npc = "npc.mm_zombie_monkey_large_guard"
+coords = "0_43_143_17_50"
+
+[[spawn]]
+npc = "npc.mm_zombie_monkey_large_guard"
+coords = "0_43_143_18_50"
+
+[[spawn]]
+npc = "npc.mm_zombie_monkey_large_guard"
+coords = "0_43_143_56_39"
+
+[[spawn]]
+npc = "npc.mm_zombie_monkey_large_guard"
+coords = "0_43_143_56_58"
+
+[[spawn]]
+npc = "npc.mm_zombie_monkey_large_guard"
+coords = "0_43_143_57_41"
+
+[[spawn]]
+npc = "npc.mm_zombie_monkey_large_guard"
+coords = "0_43_143_57_56"
+
+[[spawn]]
+npc = "npc.mm_zombie_monkey_small"
+coords = "0_43_143_11_53"
+
+[[spawn]]
+npc = "npc.mm_zombie_monkey_small"
+coords = "0_43_143_12_41"
+
+[[spawn]]
+npc = "npc.mm_zombie_monkey_small"
+coords = "0_43_143_12_45"
+
+[[spawn]]
+npc = "npc.mm_zombie_monkey_small"
+coords = "0_43_143_13_36"
+
+[[spawn]]
+npc = "npc.mm_zombie_monkey_small"
+coords = "0_43_143_13_50"
+
+[[spawn]]
+npc = "npc.mm_zombie_monkey_small"
+coords = "0_43_143_13_51"
+
+[[spawn]]
+npc = "npc.mm_zombie_monkey_small"
+coords = "0_43_143_14_39"
+
+[[spawn]]
+npc = "npc.mm_zombie_monkey_small"
+coords = "0_43_143_14_44"
+
+[[spawn]]
+npc = "npc.mm_zombie_monkey_small"
+coords = "0_43_143_16_45"
+
+[[spawn]]
+npc = "npc.mm_zombie_monkey_small"
+coords = "0_43_143_16_49"
+
+[[spawn]]
+npc = "npc.mm_zombie_monkey_small"
+coords = "0_43_143_18_36"
+
+[[spawn]]
+npc = "npc.mm_zombie_monkey_small"
+coords = "0_43_143_18_40"
+
+[[spawn]]
+npc = "npc.mm_zombie_monkey_small"
+coords = "0_43_143_18_47"
+
+[[spawn]]
+npc = "npc.mm_zombie_monkey_small"
+coords = "0_43_143_19_43"
+
+[[spawn]]
+npc = "npc.mm_zombie_monkey_small"
+coords = "0_43_143_30_41"
+
+[[spawn]]
+npc = "npc.mm_zombie_monkey_small"
+coords = "0_43_143_33_48"
+
+[[spawn]]
+npc = "npc.mm_zombie_monkey_small"
+coords = "0_43_143_34_52"
+
+[[spawn]]
+npc = "npc.mm_zombie_monkey_small"
+coords = "0_43_143_38_42"
+
+[[spawn]]
+npc = "npc.mm_zombie_monkey_small"
+coords = "0_43_143_46_44"
+
+[[spawn]]
+npc = "npc.mm_zombie_monkey_small"
+coords = "0_43_143_46_47"
+
+[[spawn]]
+npc = "npc.mm_zombie_monkey_small"
+coords = "0_43_143_46_52"
+
+[[spawn]]
+npc = "npc.mm_zombie_monkey_small"
+coords = "0_43_143_48_44"
+
+[[spawn]]
+npc = "npc.mm_zombie_monkey_small"
+coords = "0_43_143_48_46"
+
+[[spawn]]
+npc = "npc.mm_zombie_monkey_small"
+coords = "0_43_143_48_51"
+
+[[spawn]]
+npc = "npc.mm_zombie_monkey_small"
+coords = "0_43_143_54_49"
+
+[[spawn]]
+npc = "npc.mm_zombie_monkey_small"
+coords = "0_43_143_55_48"
+
+[[spawn]]
+npc = "npc.mm_zombie_monkey_small"
+coords = "0_43_143_55_50"
+
+[[spawn]]
+npc = "npc.mm_zombie_monkey_small"
+coords = "0_43_143_9_41"
+
+[[spawn]]
+npc = "npc.mm_zombie_monkey_small"
+coords = "0_43_143_9_52"
+

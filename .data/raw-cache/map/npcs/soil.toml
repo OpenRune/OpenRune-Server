@@ -1,0 +1,8 @@
+[[spawn]]
+npc = "npc.qip_digsite_digworkman_03"
+coords = "0_52_53_26_16"
+
+[[spawn]]
+npc = "npc.qip_digsite_digworkman_04"
+coords = "0_52_53_34_16"
+

@@ -1,0 +1,154 @@
+[[spawn]]
+npc = "npc.firegiant"
+coords = "0_40_154_17_34"
+
+[[spawn]]
+npc = "npc.firegiant"
+coords = "0_40_154_17_41"
+
+[[spawn]]
+npc = "npc.firegiant"
+coords = "0_40_154_21_39"
+
+[[spawn]]
+npc = "npc.firegiant"
+coords = "0_40_154_8_33"
+
+[[spawn]]
+npc = "npc.firegiant2"
+coords = "0_40_154_13_39"
+
+[[spawn]]
+npc = "npc.firegiant2"
+coords = "0_40_154_20_34"
+
+[[spawn]]
+npc = "npc.firegiant2"
+coords = "0_40_154_5_31"
+
+[[spawn]]
+npc = "npc.firegiant2"
+coords = "0_40_154_9_30"
+
+[[spawn]]
+npc = "npc.firegiant3"
+coords = "0_40_154_15_35"
+
+[[spawn]]
+npc = "npc.firegiant3"
+coords = "0_40_154_18_39"
+
+[[spawn]]
+npc = "npc.firegiant3"
+coords = "0_40_154_2_30"
+
+[[spawn]]
+npc = "npc.giantskeleton"
+coords = "0_40_154_26_28"
+
+[[spawn]]
+npc = "npc.giantskeleton"
+coords = "0_40_154_28_27"
+
+[[spawn]]
+npc = "npc.giantskeleton"
+coords = "0_40_154_29_30"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_40_154_12_9"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_40_154_14_33"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_40_154_23_19"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_40_154_24_40"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_40_154_6_21"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_40_154_6_35"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_40_154_8_42"
+
+[[spawn]]
+npc = "npc.shadow_spider"
+coords = "0_40_154_12_19"
+
+[[spawn]]
+npc = "npc.shadow_spider"
+coords = "0_40_154_14_20"
+
+[[spawn]]
+npc = "npc.shadow_spider"
+coords = "0_40_154_16_19"
+
+[[spawn]]
+npc = "npc.shadow_spider"
+coords = "0_40_154_16_21"
+
+[[spawn]]
+npc = "npc.shadow_spider"
+coords = "0_40_154_20_20"
+
+[[spawn]]
+npc = "npc.skeletonmage"
+coords = "0_40_154_25_22"
+
+[[spawn]]
+npc = "npc.skeletonmage"
+coords = "0_40_154_28_24"
+
+[[spawn]]
+npc = "npc.skeletonmage"
+coords = "0_40_154_30_26"
+
+[[spawn]]
+npc = "npc.skeletonmage"
+coords = "0_40_154_32_28"
+
+[[spawn]]
+npc = "npc.sote_arianwyn_waterfall"
+coords = "0_40_154_5_49"
+
+## Waterfall Dungeon Chalice Room
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_40_154_44_34"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_40_154_46_41"
+
+[[spawn]]
+npc = "npc.sote_arianwyn_waterfall"
+coords = "0_40_154_43_48"
+
+[[spawn]]
+npc = "npc.sote_arianwyn_waterfall_baxtorian"
+coords = "0_40_154_47_58"
+
+[[spawn]]
+npc = "npc.sote_baxtorian_waterfall"
+coords = "0_40_154_45_59"
+
+## Waterfall Dungeon Chalice Room Flooded
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_39_154_46_41"
+
+## Waterfall Dungeon Chalice Room Flooded End
+

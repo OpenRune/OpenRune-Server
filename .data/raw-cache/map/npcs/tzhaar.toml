@@ -1,0 +1,494 @@
+## Tzhaar City Region
+
+[[spawn]]
+npc = "npc.inferno_master"
+coords = "0_38_79_62_57"
+
+[[spawn]]
+npc = "npc.morulrek_eels_fishingspot"
+coords = "0_38_79_14_48"
+
+[[spawn]]
+npc = "npc.morulrek_eels_fishingspot"
+coords = "0_38_79_45_22"
+
+[[spawn]]
+npc = "npc.morulrek_eels_fishingspot"
+coords = "0_38_79_47_22"
+
+[[spawn]]
+npc = "npc.tzhaar_banker2"
+coords = "0_39_80_46_20"
+
+[[spawn]]
+npc = "npc.tzhaar_elder1"
+coords = "0_39_80_54_8"
+
+[[spawn]]
+npc = "npc.tzhaar_elder2"
+coords = "0_38_79_27_35"
+
+[[spawn]]
+npc = "npc.tzhaar_fightpit_master"
+coords = "0_37_80_31_58"
+
+[[spawn]]
+npc = "npc.tzhaar_hur_city1"
+coords = "0_38_79_45_52"
+
+[[spawn]]
+npc = "npc.tzhaar_hur_city1"
+coords = "0_39_80_32_25"
+
+[[spawn]]
+npc = "npc.tzhaar_hur_city2"
+coords = "0_39_80_35_8"
+
+[[spawn]]
+npc = "npc.tzhaar_hur_city3"
+coords = "0_38_79_20_32"
+
+[[spawn]]
+npc = "npc.tzhaar_hur_city3"
+coords = "0_38_79_40_62"
+
+[[spawn]]
+npc = "npc.tzhaar_hur_city3"
+coords = "0_39_80_12_15"
+
+[[spawn]]
+npc = "npc.tzhaar_hur_city3"
+coords = "0_39_80_23_10"
+
+[[spawn]]
+npc = "npc.tzhaar_hur_city3"
+coords = "0_39_80_5_49"
+
+[[spawn]]
+npc = "npc.tzhaar_hur_city3"
+coords = "0_39_80_7_42"
+
+[[spawn]]
+npc = "npc.tzhaar_hur_city5"
+coords = "0_38_79_54_47"
+
+[[spawn]]
+npc = "npc.tzhaar_hur_city5"
+coords = "0_39_80_14_12"
+
+[[spawn]]
+npc = "npc.tzhaar_hur_city5"
+coords = "0_39_80_30_12"
+
+[[spawn]]
+npc = "npc.tzhaar_hur_city5"
+coords = "0_39_80_6_23"
+
+[[spawn]]
+npc = "npc.tzhaar_hur_city6"
+coords = "0_38_79_27_37"
+
+[[spawn]]
+npc = "npc.tzhaar_hur_city6"
+coords = "0_39_80_21_9"
+
+[[spawn]]
+npc = "npc.tzhaar_ket1"
+coords = "0_38_79_58_20"
+
+[[spawn]]
+npc = "npc.tzhaar_ket1"
+coords = "0_39_80_10_48"
+
+[[spawn]]
+npc = "npc.tzhaar_ket2"
+coords = "0_39_80_21_38"
+
+[[spawn]]
+npc = "npc.tzhaar_ket2"
+coords = "0_39_80_26_11"
+
+[[spawn]]
+npc = "npc.tzhaar_ket3"
+coords = "0_38_79_25_61"
+
+[[spawn]]
+npc = "npc.tzhaar_ket3"
+coords = "0_38_79_44_31"
+
+[[spawn]]
+npc = "npc.tzhaar_ket3"
+coords = "0_39_80_17_14"
+
+[[spawn]]
+npc = "npc.tzhaar_ket3"
+coords = "0_39_80_30_32"
+
+[[spawn]]
+npc = "npc.tzhaar_ket4"
+coords = "0_38_79_32_43"
+
+[[spawn]]
+npc = "npc.tzhaar_ket4"
+coords = "0_39_80_31_22"
+
+[[spawn]]
+npc = "npc.tzhaar_ket5"
+coords = "0_38_79_24_49"
+
+[[spawn]]
+npc = "npc.tzhaar_ket5"
+coords = "0_38_79_34_41"
+
+[[spawn]]
+npc = "npc.tzhaar_ket5"
+coords = "0_38_79_54_27"
+
+[[spawn]]
+npc = "npc.tzhaar_ket5"
+coords = "0_39_80_1_23"
+
+[[spawn]]
+npc = "npc.tzhaar_ket5"
+coords = "0_39_80_45_2"
+
+[[spawn]]
+npc = "npc.tzhaar_ket6"
+coords = "0_39_80_15_16"
+
+[[spawn]]
+npc = "npc.tzhaar_ket6"
+coords = "0_39_80_20_5"
+
+[[spawn]]
+npc = "npc.tzhaar_ket6"
+coords = "0_39_80_5_22"
+
+[[spawn]]
+npc = "npc.tzhaar_ket7"
+coords = "0_38_79_16_55"
+
+[[spawn]]
+npc = "npc.tzhaar_ket7"
+coords = "0_38_79_19_61"
+
+[[spawn]]
+npc = "npc.tzhaar_ket7"
+coords = "0_38_79_28_52"
+
+[[spawn]]
+npc = "npc.tzhaar_ket7"
+coords = "0_38_79_29_48"
+
+[[spawn]]
+npc = "npc.tzhaar_ket7"
+coords = "0_38_79_46_55"
+
+[[spawn]]
+npc = "npc.tzhaar_ket7"
+coords = "0_38_79_48_28"
+
+[[spawn]]
+npc = "npc.tzhaar_ket7"
+coords = "0_38_79_52_48"
+
+[[spawn]]
+npc = "npc.tzhaar_ket7"
+coords = "0_38_79_54_25"
+
+[[spawn]]
+npc = "npc.tzhaar_ket7"
+coords = "0_38_79_7_57"
+
+[[spawn]]
+npc = "npc.tzhaar_ket7"
+coords = "0_39_80_23_8"
+
+[[spawn]]
+npc = "npc.tzhaar_ket_strong"
+coords = "0_38_79_14_54"
+
+[[spawn]]
+npc = "npc.tzhaar_ket_strong"
+coords = "0_38_79_15_57"
+
+[[spawn]]
+npc = "npc.tzhaar_ket_strong"
+coords = "0_38_79_26_47"
+
+[[spawn]]
+npc = "npc.tzhaar_ket_strong"
+coords = "0_38_79_27_56"
+
+[[spawn]]
+npc = "npc.tzhaar_ket_strong"
+coords = "0_38_79_28_45"
+
+[[spawn]]
+npc = "npc.tzhaar_ket_strong"
+coords = "0_38_79_31_39"
+
+[[spawn]]
+npc = "npc.tzhaar_ket_strong"
+coords = "0_38_79_37_35"
+
+[[spawn]]
+npc = "npc.tzhaar_ket_strong"
+coords = "0_38_79_38_39"
+
+[[spawn]]
+npc = "npc.tzhaar_ket_strong"
+coords = "0_38_79_3_61"
+
+[[spawn]]
+npc = "npc.tzhaar_ket_strong"
+coords = "0_38_79_40_58"
+
+[[spawn]]
+npc = "npc.tzhaar_ket_strong"
+coords = "0_38_79_44_55"
+
+[[spawn]]
+npc = "npc.tzhaar_ket_strong"
+coords = "0_38_79_47_25"
+
+[[spawn]]
+npc = "npc.tzhaar_ket_strong"
+coords = "0_38_79_48_51"
+
+[[spawn]]
+npc = "npc.tzhaar_ket_strong"
+coords = "0_38_79_49_48"
+
+[[spawn]]
+npc = "npc.tzhaar_ket_strong"
+coords = "0_38_79_54_45"
+
+[[spawn]]
+npc = "npc.tzhaar_ket_strong"
+coords = "0_38_79_56_27"
+
+[[spawn]]
+npc = "npc.tzhaar_ket_strong"
+coords = "0_38_79_60_43"
+
+[[spawn]]
+npc = "npc.tzhaar_ket_strong"
+coords = "0_38_79_63_38"
+
+[[spawn]]
+npc = "npc.tzhaar_ket_strong"
+coords = "0_38_79_8_58"
+
+[[spawn]]
+npc = "npc.tzhaar_ket_strong"
+coords = "0_39_80_17_10"
+
+[[spawn]]
+npc = "npc.tzhaar_ket_strong"
+coords = "0_39_80_17_40"
+
+[[spawn]]
+npc = "npc.tzhaar_ket_strong"
+coords = "0_39_80_19_1"
+
+[[spawn]]
+npc = "npc.tzhaar_ket_strong"
+coords = "0_39_80_19_8"
+
+[[spawn]]
+npc = "npc.tzhaar_ket_strong"
+coords = "0_39_80_24_9"
+
+[[spawn]]
+npc = "npc.tzhaar_ket_strong"
+coords = "0_39_80_27_35"
+
+[[spawn]]
+npc = "npc.tzhaar_ket_strong"
+coords = "0_39_80_28_25"
+
+[[spawn]]
+npc = "npc.tzhaar_ket_strong"
+coords = "0_39_80_33_15"
+
+[[spawn]]
+npc = "npc.tzhaar_ket_strong"
+coords = "0_39_80_37_18"
+
+[[spawn]]
+npc = "npc.tzhaar_ket_strong"
+coords = "0_39_80_3_23"
+
+[[spawn]]
+npc = "npc.tzhaar_ket_strong"
+coords = "0_39_80_42_9"
+
+[[spawn]]
+npc = "npc.tzhaar_ket_strong"
+coords = "0_39_80_9_16"
+
+[[spawn]]
+npc = "npc.tzhaar_ket_strong"
+coords = "0_39_80_9_22"
+
+[[spawn]]
+npc = "npc.tzhaar_mej2"
+coords = "0_39_80_41_1"
+
+[[spawn]]
+npc = "npc.tzhaar_mej3"
+coords = "0_38_79_11_55"
+
+[[spawn]]
+npc = "npc.tzhaar_mej3"
+coords = "0_38_79_24_52"
+
+[[spawn]]
+npc = "npc.tzhaar_mej3"
+coords = "0_38_79_40_34"
+
+[[spawn]]
+npc = "npc.tzhaar_mej3"
+coords = "0_38_79_50_45"
+
+[[spawn]]
+npc = "npc.tzhaar_mej3"
+coords = "0_39_80_21_12"
+
+[[spawn]]
+npc = "npc.tzhaar_mej3"
+coords = "0_39_80_33_22"
+
+[[spawn]]
+npc = "npc.tzhaar_mej4"
+coords = "0_38_79_45_28"
+
+[[spawn]]
+npc = "npc.tzhaar_mej4"
+coords = "0_38_79_5_58"
+
+[[spawn]]
+npc = "npc.tzhaar_mej4"
+coords = "0_39_80_2_20"
+
+[[spawn]]
+npc = "npc.tzhaar_mej4"
+coords = "0_39_80_6_19"
+
+[[spawn]]
+npc = "npc.tzhaar_mej5"
+coords = "0_39_80_8_19"
+
+[[spawn]]
+npc = "npc.tzhaar_mej6"
+coords = "0_38_79_58_45"
+
+[[spawn]]
+npc = "npc.tzhaar_mej6"
+coords = "0_39_80_24_3"
+
+[[spawn]]
+npc = "npc.tzhaar_mej7"
+coords = "0_38_79_60_22"
+
+[[spawn]]
+npc = "npc.tzhaar_merchant_cityequipment"
+coords = "0_38_79_58_14"
+
+[[spawn]]
+npc = "npc.tzhaar_xil1"
+coords = "0_38_79_42_30"
+
+[[spawn]]
+npc = "npc.tzhaar_xil1"
+coords = "0_39_80_12_19"
+
+[[spawn]]
+npc = "npc.tzhaar_xil2"
+coords = "0_38_79_36_38"
+
+[[spawn]]
+npc = "npc.tzhaar_xil2"
+coords = "0_39_80_12_43"
+
+[[spawn]]
+npc = "npc.tzhaar_xil2"
+coords = "0_39_80_22_42"
+
+[[spawn]]
+npc = "npc.tzhaar_xil2"
+coords = "0_39_80_27_38"
+
+[[spawn]]
+npc = "npc.tzhaar_xil2"
+coords = "0_39_80_33_13"
+
+[[spawn]]
+npc = "npc.tzhaar_xil2"
+coords = "0_39_80_41_4"
+
+[[spawn]]
+npc = "npc.tzhaar_xil2"
+coords = "0_39_80_4_40"
+
+[[spawn]]
+npc = "npc.tzhaar_xil2"
+coords = "0_39_80_4_52"
+
+[[spawn]]
+npc = "npc.tzhaar_xil3"
+coords = "0_38_79_23_60"
+
+[[spawn]]
+npc = "npc.tzhaar_xil3"
+coords = "0_39_80_25_42"
+
+[[spawn]]
+npc = "npc.tzhaar_xil3"
+coords = "0_39_80_47_12"
+
+[[spawn]]
+npc = "npc.tzhaar_xil4"
+coords = "0_38_79_63_24"
+
+[[spawn]]
+npc = "npc.tzhaar_xil4"
+coords = "0_39_80_37_22"
+
+[[spawn]]
+npc = "npc.tzhaar_xil5"
+coords = "0_38_79_41_32"
+
+[[spawn]]
+npc = "npc.tzhaar_xil5"
+coords = "0_38_79_53_23"
+
+[[spawn]]
+npc = "npc.tzhaar_xil5"
+coords = "0_38_79_58_25"
+
+[[spawn]]
+npc = "npc.tzhaar_xil5"
+coords = "0_39_80_14_14"
+
+[[spawn]]
+npc = "npc.tzhaar_xil5"
+coords = "0_39_80_45_8"
+
+[[spawn]]
+npc = "npc.tzhaar_xil6"
+coords = "0_39_80_10_14"
+
+[[spawn]]
+npc = "npc.tzhaar_xil6"
+coords = "0_39_80_23_5"
+
+[[spawn]]
+npc = "npc.tzhaar_xil6"
+coords = "0_39_80_27_29"
+
+[[spawn]]
+npc = "npc.tzhaar_xil6"
+coords = "0_39_80_34_19"
+

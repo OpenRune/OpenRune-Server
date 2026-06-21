@@ -1,0 +1,16 @@
+[[spawn]]
+npc = "npc.macro_mime"
+coords = "0_31_74_27_26"
+
+[[spawn]]
+npc = "npc.macro_theatre_guthix"
+coords = "0_31_74_28_18"
+
+[[spawn]]
+npc = "npc.macro_theatre_saradomin"
+coords = "0_31_74_31_20"
+
+[[spawn]]
+npc = "npc.macro_theatre_zamorak"
+coords = "0_31_74_22_19"
+

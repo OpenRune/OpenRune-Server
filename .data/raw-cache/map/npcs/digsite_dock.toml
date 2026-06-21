@@ -1,0 +1,32 @@
+[[spawn]]
+npc = "npc.fossilquest_barge_guard_barge"
+coords = "1_52_53_34_59"
+
+[[spawn]]
+npc = "npc.fossilquest_barge_guard_port"
+coords = "0_52_53_34_54"
+
+[[spawn]]
+npc = "npc.fossilquest_david"
+coords = "1_52_53_35_60"
+
+[[spawn]]
+npc = "npc.fossilquest_john"
+coords = "1_52_53_36_61"
+
+[[spawn]]
+npc = "npc.fossilquest_jr_navigator"
+coords = "1_52_53_35_61"
+
+[[spawn]]
+npc = "npc.fossilquest_lead_navigator"
+coords = "1_52_53_35_62"
+
+[[spawn]]
+npc = "npc.vm_canal_barge_foremen_talking"
+coords = "0_52_53_36_53"
+
+[[spawn]]
+npc = "npc.vm_canal_barge_workman_painting_tar"
+coords = "0_52_53_29_54"
+

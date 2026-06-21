@@ -1,0 +1,304 @@
+[[spawn]]
+npc = "npc.bat"
+coords = "0_42_79_21_30"
+
+[[spawn]]
+npc = "npc.giantrat"
+coords = "0_42_79_33_46"
+
+[[spawn]]
+npc = "npc.giantrat1_3"
+coords = "0_42_79_49_6"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_42_79_11_13"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_42_79_12_5"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_42_79_18_58"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_42_79_19_23"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_42_79_20_14"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_42_79_24_54"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_42_79_25_5"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_42_79_33_20"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_42_79_36_57"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_42_79_51_56"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_42_79_53_21"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_42_79_5_55"
+
+[[spawn]]
+npc = "npc.shadow_dog_wild"
+coords = "0_42_79_29_25"
+
+[[spawn]]
+npc = "npc.shadow_dog_wild"
+coords = "0_42_79_30_52"
+
+[[spawn]]
+npc = "npc.shadow_dog_wild"
+coords = "0_42_79_33_48"
+
+[[spawn]]
+npc = "npc.shadow_dog_wild"
+coords = "0_42_79_38_35"
+
+[[spawn]]
+npc = "npc.shadow_dog_wild"
+coords = "0_42_79_43_4"
+
+[[spawn]]
+npc = "npc.shadow_dog_wild"
+coords = "0_42_79_44_17"
+
+[[spawn]]
+npc = "npc.shadow_dog_wild"
+coords = "0_42_79_52_27"
+
+[[spawn]]
+npc = "npc.shadow_dog_wild"
+coords = "0_42_79_54_47"
+
+[[spawn]]
+npc = "npc.shadow_dog_wild"
+coords = "0_42_79_59_38"
+
+[[spawn]]
+npc = "npc.shadow_dog_wild"
+coords = "0_42_79_6_11"
+
+[[spawn]]
+npc = "npc.small_bat"
+coords = "0_42_79_11_27"
+
+[[spawn]]
+npc = "npc.small_bat"
+coords = "0_42_79_19_50"
+
+[[spawn]]
+npc = "npc.small_bat"
+coords = "0_42_79_33_6"
+
+[[spawn]]
+npc = "npc.small_bat"
+coords = "0_42_79_47_17"
+
+[[spawn]]
+npc = "npc.small_bat"
+coords = "0_42_79_47_49"
+
+[[spawn]]
+npc = "npc.small_bat"
+coords = "0_42_79_54_41"
+
+[[spawn]]
+npc = "npc.small_bat"
+coords = "0_42_79_56_9"
+
+[[spawn]]
+npc = "npc.small_bat"
+coords = "0_42_79_5_46"
+
+[[spawn]]
+npc = "npc.sword_skeleton_3"
+coords = "0_41_79_13_43"
+
+[[spawn]]
+npc = "npc.sword_skeleton_3"
+coords = "0_41_79_14_2"
+
+[[spawn]]
+npc = "npc.sword_skeleton_3"
+coords = "0_41_79_20_34"
+
+[[spawn]]
+npc = "npc.sword_skeleton_3"
+coords = "0_41_79_2_9"
+
+[[spawn]]
+npc = "npc.sword_skeleton_3"
+coords = "0_41_79_34_26"
+
+[[spawn]]
+npc = "npc.sword_skeleton_3"
+coords = "0_41_79_42_41"
+
+[[spawn]]
+npc = "npc.sword_skeleton_3"
+coords = "0_41_79_56_18"
+
+[[spawn]]
+npc = "npc.sword_skeleton_3"
+coords = "0_42_79_15_8"
+
+[[spawn]]
+npc = "npc.sword_skeleton_3"
+coords = "0_42_79_22_49"
+
+[[spawn]]
+npc = "npc.sword_skeleton_3"
+coords = "0_42_79_31_22"
+
+[[spawn]]
+npc = "npc.sword_skeleton_3"
+coords = "0_42_79_31_56"
+
+[[spawn]]
+npc = "npc.sword_skeleton_3"
+coords = "0_42_79_32_40"
+
+[[spawn]]
+npc = "npc.sword_skeleton_3"
+coords = "0_42_79_38_30"
+
+[[spawn]]
+npc = "npc.sword_skeleton_3"
+coords = "0_42_79_41_40"
+
+[[spawn]]
+npc = "npc.sword_skeleton_3"
+coords = "0_42_79_47_5"
+
+[[spawn]]
+npc = "npc.sword_skeleton_3"
+coords = "0_42_79_52_13"
+
+[[spawn]]
+npc = "npc.sword_skeleton_3"
+coords = "0_42_79_52_29"
+
+[[spawn]]
+npc = "npc.sword_skeleton_3"
+coords = "0_42_79_58_36"
+
+[[spawn]]
+npc = "npc.sword_skeleton_3"
+coords = "0_42_79_58_58"
+
+[[spawn]]
+npc = "npc.sword_skeleton_3"
+coords = "0_42_79_5_19"
+
+[[spawn]]
+npc = "npc.sword_skeleton_3"
+coords = "0_42_79_7_33"
+
+[[spawn]]
+npc = "npc.sword_skeleton_3"
+coords = "0_42_79_9_40"
+
+[[spawn]]
+npc = "npc.sword_skeleton_3b"
+coords = "0_41_79_14_34"
+
+[[spawn]]
+npc = "npc.sword_skeleton_3b"
+coords = "0_41_79_27_49"
+
+[[spawn]]
+npc = "npc.sword_skeleton_3b"
+coords = "0_41_79_30_23"
+
+[[spawn]]
+npc = "npc.sword_skeleton_3b"
+coords = "0_41_79_39_60"
+
+[[spawn]]
+npc = "npc.sword_skeleton_3b"
+coords = "0_41_79_3_37"
+
+[[spawn]]
+npc = "npc.sword_skeleton_3b"
+coords = "0_41_79_59_3"
+
+[[spawn]]
+npc = "npc.sword_skeleton_3b"
+coords = "0_41_79_5_5"
+
+[[spawn]]
+npc = "npc.sword_skeleton_3b"
+coords = "0_41_79_61_55"
+
+[[spawn]]
+npc = "npc.sword_skeleton_3b"
+coords = "0_42_79_16_35"
+
+[[spawn]]
+npc = "npc.sword_skeleton_3b"
+coords = "0_42_79_22_39"
+
+[[spawn]]
+npc = "npc.sword_skeleton_3b"
+coords = "0_42_79_24_20"
+
+[[spawn]]
+npc = "npc.sword_skeleton_3b"
+coords = "0_42_79_26_52"
+
+[[spawn]]
+npc = "npc.sword_skeleton_3b"
+coords = "0_42_79_28_36"
+
+[[spawn]]
+npc = "npc.sword_skeleton_3b"
+coords = "0_42_79_31_15"
+
+[[spawn]]
+npc = "npc.sword_skeleton_3b"
+coords = "0_42_79_34_5"
+
+[[spawn]]
+npc = "npc.sword_skeleton_3b"
+coords = "0_42_79_44_31"
+
+[[spawn]]
+npc = "npc.sword_skeleton_3b"
+coords = "0_42_79_51_22"
+
+[[spawn]]
+npc = "npc.sword_skeleton_3b"
+coords = "0_42_79_52_48"
+
+[[spawn]]
+npc = "npc.sword_skeleton_3b"
+coords = "0_42_79_59_27"
+
+[[spawn]]
+npc = "npc.sword_skeleton_3b"
+coords = "0_42_79_5_33"
+
+[[spawn]]
+npc = "npc.sword_skeleton_3b"
+coords = "0_42_79_5_9"
+

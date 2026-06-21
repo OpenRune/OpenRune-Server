@@ -1,0 +1,796 @@
+[[spawn]]
+npc = "npc.blessed_spider"
+coords = "0_36_154_45_38"
+
+[[spawn]]
+npc = "npc.blessed_spider"
+coords = "0_36_154_45_43"
+
+[[spawn]]
+npc = "npc.blessed_spider"
+coords = "0_36_154_46_40"
+
+[[spawn]]
+npc = "npc.blessed_spider"
+coords = "0_36_154_47_39"
+
+[[spawn]]
+npc = "npc.blessed_spider"
+coords = "0_36_154_47_40"
+
+[[spawn]]
+npc = "npc.blessed_spider"
+coords = "0_36_154_48_41"
+
+[[spawn]]
+npc = "npc.blessed_spider"
+coords = "0_36_154_48_43"
+
+[[spawn]]
+npc = "npc.blessed_spider"
+coords = "0_36_154_49_40"
+
+[[spawn]]
+npc = "npc.blessed_spider_kalrag"
+coords = "0_36_154_43_60"
+
+[[spawn]]
+npc = "npc.blessed_spider_kalrag"
+coords = "0_36_154_44_58"
+
+[[spawn]]
+npc = "npc.blessed_spider_kalrag"
+coords = "0_36_154_45_62"
+
+[[spawn]]
+npc = "npc.blessed_spider_kalrag"
+coords = "0_36_154_46_55"
+
+[[spawn]]
+npc = "npc.blessed_spider_kalrag"
+coords = "0_36_154_47_54"
+
+[[spawn]]
+npc = "npc.blessed_spider_kalrag"
+coords = "0_36_154_48_58"
+
+[[spawn]]
+npc = "npc.blessed_spider_kalrag"
+coords = "0_36_154_49_60"
+
+[[spawn]]
+npc = "npc.blessed_spider_kalrag"
+coords = "0_36_154_50_46"
+
+[[spawn]]
+npc = "npc.blessed_spider_kalrag"
+coords = "0_36_154_50_47"
+
+[[spawn]]
+npc = "npc.blessed_spider_kalrag"
+coords = "0_36_154_51_46"
+
+[[spawn]]
+npc = "npc.blessed_spider_kalrag"
+coords = "0_36_154_51_54"
+
+[[spawn]]
+npc = "npc.blessed_spider_kalrag"
+coords = "0_36_154_51_55"
+
+[[spawn]]
+npc = "npc.blessed_spider_kalrag"
+coords = "0_36_154_52_53"
+
+[[spawn]]
+npc = "npc.blessed_spider_kalrag"
+coords = "0_36_154_53_46"
+
+[[spawn]]
+npc = "npc.blessed_spider_kalrag"
+coords = "0_36_154_53_60"
+
+[[spawn]]
+npc = "npc.blessed_spider_kalrag"
+coords = "0_36_154_54_46"
+
+[[spawn]]
+npc = "npc.blessed_spider_kalrag"
+coords = "0_36_154_54_60"
+
+[[spawn]]
+npc = "npc.blessed_spider_kalrag"
+coords = "0_36_154_55_56"
+
+[[spawn]]
+npc = "npc.blessed_spider_kalrag"
+coords = "0_36_154_56_55"
+
+[[spawn]]
+npc = "npc.blessed_spider_kalrag"
+coords = "0_36_154_56_56"
+
+[[spawn]]
+npc = "npc.blessed_spider_kalrag"
+coords = "0_36_154_56_58"
+
+[[spawn]]
+npc = "npc.blessed_spider_kalrag"
+coords = "0_36_154_57_50"
+
+[[spawn]]
+npc = "npc.blessed_spider_kalrag"
+coords = "0_36_154_59_52"
+
+[[spawn]]
+npc = "npc.blessed_spider_kalrag"
+coords = "0_36_154_60_56"
+
+[[spawn]]
+npc = "npc.kalrag"
+coords = "0_36_154_52_55"
+
+[[spawn]]
+npc = "npc.kalrag_vis"
+coords = "0_36_154_52_55"
+
+[[spawn]]
+npc = "npc.sote_islwyn_upass_pre"
+coords = "0_36_153_8_22"
+
+[[spawn]]
+npc = "npc.sote_lady_hefin_upass_pre"
+coords = "0_36_153_24_4"
+
+[[spawn]]
+npc = "npc.sote_lady_ithell_upass_pre"
+coords = "0_36_153_14_16"
+
+[[spawn]]
+npc = "npc.sote_lady_meilyr_upass_pre"
+coords = "0_36_153_24_11"
+
+[[spawn]]
+npc = "npc.sote_lady_trahaearn_upass_pre"
+coords = "0_36_153_8_9"
+
+[[spawn]]
+npc = "npc.sote_lord_amlodd_upass_pre"
+coords = "0_36_153_4_12"
+
+[[spawn]]
+npc = "npc.sote_lord_crwys_upass_pre"
+coords = "0_36_153_17_6"
+
+[[spawn]]
+npc = "npc.souless"
+coords = "0_36_153_11_59"
+
+[[spawn]]
+npc = "npc.souless"
+coords = "0_36_153_14_55"
+
+[[spawn]]
+npc = "npc.souless"
+coords = "0_36_153_15_60"
+
+[[spawn]]
+npc = "npc.souless"
+coords = "0_36_153_18_54"
+
+[[spawn]]
+npc = "npc.souless"
+coords = "0_36_153_19_51"
+
+[[spawn]]
+npc = "npc.souless"
+coords = "0_36_153_19_60"
+
+[[spawn]]
+npc = "npc.souless"
+coords = "0_36_153_22_56"
+
+[[spawn]]
+npc = "npc.souless"
+coords = "0_36_153_27_60"
+
+[[spawn]]
+npc = "npc.souless"
+coords = "0_36_153_29_59"
+
+[[spawn]]
+npc = "npc.souless"
+coords = "0_36_153_30_61"
+
+[[spawn]]
+npc = "npc.souless"
+coords = "0_36_153_31_55"
+
+[[spawn]]
+npc = "npc.souless"
+coords = "0_36_153_34_52"
+
+[[spawn]]
+npc = "npc.souless"
+coords = "0_36_153_34_59"
+
+[[spawn]]
+npc = "npc.souless"
+coords = "0_36_153_36_56"
+
+[[spawn]]
+npc = "npc.souless"
+coords = "0_36_153_37_60"
+
+[[spawn]]
+npc = "npc.souless"
+coords = "0_36_153_38_48"
+
+[[spawn]]
+npc = "npc.souless"
+coords = "0_36_153_38_49"
+
+[[spawn]]
+npc = "npc.souless"
+coords = "0_36_153_39_57"
+
+[[spawn]]
+npc = "npc.souless"
+coords = "0_36_153_41_59"
+
+[[spawn]]
+npc = "npc.souless"
+coords = "0_36_153_42_62"
+
+[[spawn]]
+npc = "npc.souless"
+coords = "0_36_153_43_62"
+
+[[spawn]]
+npc = "npc.souless"
+coords = "0_36_153_44_51"
+
+[[spawn]]
+npc = "npc.souless"
+coords = "0_36_153_9_61"
+
+[[spawn]]
+npc = "npc.souless"
+coords = "0_36_154_10_6"
+
+[[spawn]]
+npc = "npc.souless"
+coords = "0_36_154_11_1"
+
+[[spawn]]
+npc = "npc.souless"
+coords = "0_36_154_13_11"
+
+[[spawn]]
+npc = "npc.souless"
+coords = "0_36_154_16_0"
+
+[[spawn]]
+npc = "npc.souless"
+coords = "0_36_154_16_3"
+
+[[spawn]]
+npc = "npc.souless"
+coords = "0_36_154_19_7"
+
+[[spawn]]
+npc = "npc.souless"
+coords = "0_36_154_20_0"
+
+[[spawn]]
+npc = "npc.souless"
+coords = "0_36_154_20_18"
+
+[[spawn]]
+npc = "npc.souless"
+coords = "0_36_154_21_11"
+
+[[spawn]]
+npc = "npc.souless"
+coords = "0_36_154_21_3"
+
+[[spawn]]
+npc = "npc.souless"
+coords = "0_36_154_21_8"
+
+[[spawn]]
+npc = "npc.souless"
+coords = "0_36_154_24_15"
+
+[[spawn]]
+npc = "npc.souless"
+coords = "0_36_154_25_0"
+
+[[spawn]]
+npc = "npc.souless"
+coords = "0_36_154_26_3"
+
+[[spawn]]
+npc = "npc.souless"
+coords = "0_36_154_27_1"
+
+[[spawn]]
+npc = "npc.souless"
+coords = "0_36_154_29_2"
+
+[[spawn]]
+npc = "npc.souless"
+coords = "0_36_154_31_12"
+
+[[spawn]]
+npc = "npc.souless"
+coords = "0_36_154_33_0"
+
+[[spawn]]
+npc = "npc.souless"
+coords = "0_36_154_33_16"
+
+[[spawn]]
+npc = "npc.souless"
+coords = "0_36_154_34_6"
+
+[[spawn]]
+npc = "npc.souless"
+coords = "0_36_154_36_4"
+
+[[spawn]]
+npc = "npc.souless"
+coords = "0_36_154_38_1"
+
+[[spawn]]
+npc = "npc.souless"
+coords = "0_36_154_38_10"
+
+[[spawn]]
+npc = "npc.souless"
+coords = "0_36_154_38_6"
+
+[[spawn]]
+npc = "npc.souless"
+coords = "0_36_154_42_0"
+
+[[spawn]]
+npc = "npc.souless"
+coords = "0_36_154_42_8"
+
+[[spawn]]
+npc = "npc.souless"
+coords = "0_36_154_43_0"
+
+[[spawn]]
+npc = "npc.souless"
+coords = "0_36_154_46_11"
+
+[[spawn]]
+npc = "npc.souless"
+coords = "0_36_154_48_0"
+
+[[spawn]]
+npc = "npc.souless"
+coords = "0_36_154_7_1"
+
+[[spawn]]
+npc = "npc.souless_vis"
+coords = "0_36_153_11_59"
+
+[[spawn]]
+npc = "npc.souless_vis"
+coords = "0_36_153_14_55"
+
+[[spawn]]
+npc = "npc.souless_vis"
+coords = "0_36_153_15_60"
+
+[[spawn]]
+npc = "npc.souless_vis"
+coords = "0_36_153_18_54"
+
+[[spawn]]
+npc = "npc.souless_vis"
+coords = "0_36_153_19_51"
+
+[[spawn]]
+npc = "npc.souless_vis"
+coords = "0_36_153_19_60"
+
+[[spawn]]
+npc = "npc.souless_vis"
+coords = "0_36_153_22_56"
+
+[[spawn]]
+npc = "npc.souless_vis"
+coords = "0_36_153_27_60"
+
+[[spawn]]
+npc = "npc.souless_vis"
+coords = "0_36_153_29_59"
+
+[[spawn]]
+npc = "npc.souless_vis"
+coords = "0_36_153_30_61"
+
+[[spawn]]
+npc = "npc.souless_vis"
+coords = "0_36_153_31_55"
+
+[[spawn]]
+npc = "npc.souless_vis"
+coords = "0_36_153_34_52"
+
+[[spawn]]
+npc = "npc.souless_vis"
+coords = "0_36_153_34_59"
+
+[[spawn]]
+npc = "npc.souless_vis"
+coords = "0_36_153_36_56"
+
+[[spawn]]
+npc = "npc.souless_vis"
+coords = "0_36_153_37_60"
+
+[[spawn]]
+npc = "npc.souless_vis"
+coords = "0_36_153_38_48"
+
+[[spawn]]
+npc = "npc.souless_vis"
+coords = "0_36_153_38_49"
+
+[[spawn]]
+npc = "npc.souless_vis"
+coords = "0_36_153_39_57"
+
+[[spawn]]
+npc = "npc.souless_vis"
+coords = "0_36_153_41_59"
+
+[[spawn]]
+npc = "npc.souless_vis"
+coords = "0_36_153_42_62"
+
+[[spawn]]
+npc = "npc.souless_vis"
+coords = "0_36_153_43_62"
+
+[[spawn]]
+npc = "npc.souless_vis"
+coords = "0_36_153_44_51"
+
+[[spawn]]
+npc = "npc.souless_vis"
+coords = "0_36_153_9_61"
+
+[[spawn]]
+npc = "npc.souless_vis"
+coords = "0_36_154_10_6"
+
+[[spawn]]
+npc = "npc.souless_vis"
+coords = "0_36_154_11_1"
+
+[[spawn]]
+npc = "npc.souless_vis"
+coords = "0_36_154_13_11"
+
+[[spawn]]
+npc = "npc.souless_vis"
+coords = "0_36_154_16_0"
+
+[[spawn]]
+npc = "npc.souless_vis"
+coords = "0_36_154_16_3"
+
+[[spawn]]
+npc = "npc.souless_vis"
+coords = "0_36_154_19_7"
+
+[[spawn]]
+npc = "npc.souless_vis"
+coords = "0_36_154_20_0"
+
+[[spawn]]
+npc = "npc.souless_vis"
+coords = "0_36_154_20_18"
+
+[[spawn]]
+npc = "npc.souless_vis"
+coords = "0_36_154_21_11"
+
+[[spawn]]
+npc = "npc.souless_vis"
+coords = "0_36_154_21_3"
+
+[[spawn]]
+npc = "npc.souless_vis"
+coords = "0_36_154_21_8"
+
+[[spawn]]
+npc = "npc.souless_vis"
+coords = "0_36_154_24_15"
+
+[[spawn]]
+npc = "npc.souless_vis"
+coords = "0_36_154_25_0"
+
+[[spawn]]
+npc = "npc.souless_vis"
+coords = "0_36_154_26_3"
+
+[[spawn]]
+npc = "npc.souless_vis"
+coords = "0_36_154_27_1"
+
+[[spawn]]
+npc = "npc.souless_vis"
+coords = "0_36_154_29_2"
+
+[[spawn]]
+npc = "npc.souless_vis"
+coords = "0_36_154_31_12"
+
+[[spawn]]
+npc = "npc.souless_vis"
+coords = "0_36_154_33_0"
+
+[[spawn]]
+npc = "npc.souless_vis"
+coords = "0_36_154_33_16"
+
+[[spawn]]
+npc = "npc.souless_vis"
+coords = "0_36_154_34_6"
+
+[[spawn]]
+npc = "npc.souless_vis"
+coords = "0_36_154_36_4"
+
+[[spawn]]
+npc = "npc.souless_vis"
+coords = "0_36_154_38_1"
+
+[[spawn]]
+npc = "npc.souless_vis"
+coords = "0_36_154_38_10"
+
+[[spawn]]
+npc = "npc.souless_vis"
+coords = "0_36_154_38_6"
+
+[[spawn]]
+npc = "npc.souless_vis"
+coords = "0_36_154_42_0"
+
+[[spawn]]
+npc = "npc.souless_vis"
+coords = "0_36_154_42_8"
+
+[[spawn]]
+npc = "npc.souless_vis"
+coords = "0_36_154_43_0"
+
+[[spawn]]
+npc = "npc.souless_vis"
+coords = "0_36_154_46_11"
+
+[[spawn]]
+npc = "npc.souless_vis"
+coords = "0_36_154_48_0"
+
+[[spawn]]
+npc = "npc.souless_vis"
+coords = "0_36_154_7_1"
+
+[[spawn]]
+npc = "npc.upass_little_spider"
+coords = "0_36_154_25_42"
+
+[[spawn]]
+npc = "npc.upass_little_spider"
+coords = "0_36_154_26_58"
+
+[[spawn]]
+npc = "npc.upass_little_spider"
+coords = "0_36_154_28_38"
+
+[[spawn]]
+npc = "npc.upass_little_spider"
+coords = "0_36_154_30_22"
+
+[[spawn]]
+npc = "npc.upass_little_spider"
+coords = "0_36_154_30_31"
+
+[[spawn]]
+npc = "npc.upass_little_spider"
+coords = "0_36_154_30_44"
+
+[[spawn]]
+npc = "npc.upass_little_spider"
+coords = "0_36_154_32_37"
+
+[[spawn]]
+npc = "npc.upass_little_spider"
+coords = "0_36_154_33_32"
+
+[[spawn]]
+npc = "npc.upass_little_spider"
+coords = "0_36_154_33_42"
+
+[[spawn]]
+npc = "npc.upass_little_spider"
+coords = "0_36_154_34_50"
+
+[[spawn]]
+npc = "npc.upass_little_spider"
+coords = "0_36_154_35_19"
+
+[[spawn]]
+npc = "npc.upass_little_spider"
+coords = "0_36_154_35_25"
+
+[[spawn]]
+npc = "npc.upass_little_spider"
+coords = "0_36_154_35_37"
+
+[[spawn]]
+npc = "npc.upass_little_spider"
+coords = "0_36_154_35_58"
+
+[[spawn]]
+npc = "npc.upass_little_spider"
+coords = "0_36_154_37_41"
+
+[[spawn]]
+npc = "npc.upass_little_spider"
+coords = "0_36_154_40_23"
+
+[[spawn]]
+npc = "npc.upass_little_spider"
+coords = "0_36_154_40_49"
+
+[[spawn]]
+npc = "npc.upass_little_spider"
+coords = "0_36_154_41_32"
+
+[[spawn]]
+npc = "npc.upass_little_spider"
+coords = "0_36_154_42_17"
+
+[[spawn]]
+npc = "npc.upass_little_spider"
+coords = "0_36_154_42_25"
+
+[[spawn]]
+npc = "npc.upass_little_spider"
+coords = "0_36_154_42_34"
+
+[[spawn]]
+npc = "npc.upass_little_spider"
+coords = "0_36_154_42_59"
+
+[[spawn]]
+npc = "npc.upass_little_spider"
+coords = "0_36_154_43_22"
+
+[[spawn]]
+npc = "npc.upass_little_spider"
+coords = "0_36_154_43_31"
+
+[[spawn]]
+npc = "npc.upass_little_spider"
+coords = "0_36_154_43_44"
+
+[[spawn]]
+npc = "npc.upass_little_spider"
+coords = "0_36_154_45_41"
+
+[[spawn]]
+npc = "npc.upass_little_spider"
+coords = "0_36_154_45_60"
+
+[[spawn]]
+npc = "npc.upass_little_spider"
+coords = "0_36_154_46_19"
+
+[[spawn]]
+npc = "npc.upass_little_spider"
+coords = "0_36_154_48_53"
+
+[[spawn]]
+npc = "npc.upass_little_spider"
+coords = "0_36_154_49_43"
+
+[[spawn]]
+npc = "npc.upass_little_spider"
+coords = "0_36_154_50_22"
+
+[[spawn]]
+npc = "npc.upass_little_spider"
+coords = "0_36_154_50_58"
+
+[[spawn]]
+npc = "npc.upass_little_spider"
+coords = "0_36_154_51_49"
+
+[[spawn]]
+npc = "npc.upass_little_spider"
+coords = "0_36_154_51_51"
+
+[[spawn]]
+npc = "npc.upass_little_spider"
+coords = "0_36_154_52_25"
+
+[[spawn]]
+npc = "npc.upass_little_spider"
+coords = "0_36_154_53_29"
+
+[[spawn]]
+npc = "npc.upass_little_spider"
+coords = "0_36_154_53_33"
+
+[[spawn]]
+npc = "npc.upass_little_spider"
+coords = "0_36_154_54_62"
+
+[[spawn]]
+npc = "npc.upass_little_spider"
+coords = "0_36_154_56_23"
+
+[[spawn]]
+npc = "npc.upass_little_spider"
+coords = "0_36_154_56_35"
+
+[[spawn]]
+npc = "npc.upass_little_spider"
+coords = "0_36_154_57_28"
+
+[[spawn]]
+npc = "npc.upass_little_spider"
+coords = "0_36_154_57_55"
+
+[[spawn]]
+npc = "npc.upass_little_spider"
+coords = "0_36_154_58_38"
+
+[[spawn]]
+npc = "npc.upass_little_spider"
+coords = "0_36_154_58_48"
+
+[[spawn]]
+npc = "npc.upass_little_spider"
+coords = "0_36_154_59_49"
+
+[[spawn]]
+npc = "npc.upass_little_spider"
+coords = "0_36_154_59_54"
+
+[[spawn]]
+npc = "npc.upass_little_spider"
+coords = "0_36_154_59_60"
+
+[[spawn]]
+npc = "npc.upass_little_spider"
+coords = "0_36_154_60_41"
+
+[[spawn]]
+npc = "npc.upass_little_spider"
+coords = "0_36_154_60_58"
+
+[[spawn]]
+npc = "npc.upassdwarf1"
+coords = "0_36_153_11_14"
+
+[[spawn]]
+npc = "npc.upassdwarf2"
+coords = "0_36_153_19_12"
+
+[[spawn]]
+npc = "npc.upassdwarf3"
+coords = "0_36_153_21_7"
+

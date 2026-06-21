@@ -1,0 +1,6 @@
+## The Gauntlet Lobby
+
+[[spawn]]
+npc = "npc.gauntlet_instructor"
+coords = "1_47_95_22_48"
+

@@ -1,0 +1,52 @@
+[[spawn]]
+npc = "npc.werewolf_skullballboss"
+coords = "0_55_154_29_11"
+
+[[spawn]]
+npc = "npc.werewolf_trainer_1"
+coords = "0_55_154_34_30"
+
+[[spawn]]
+npc = "npc.werewolf_trainer_1"
+coords = "0_55_154_40_52"
+
+[[spawn]]
+npc = "npc.werewolf_trainer_1"
+coords = "0_55_154_45_9"
+
+[[spawn]]
+npc = "npc.werewolf_trainer_1"
+coords = "0_55_154_52_52"
+
+[[spawn]]
+npc = "npc.werewolf_trainer_1"
+coords = "0_55_154_53_35"
+
+[[spawn]]
+npc = "npc.werewolf_trainer_1"
+coords = "0_55_154_57_19"
+
+[[spawn]]
+npc = "npc.werewolf_trainer_2"
+coords = "0_55_154_13_56"
+
+[[spawn]]
+npc = "npc.werewolf_trainer_2"
+coords = "0_55_154_20_36"
+
+[[spawn]]
+npc = "npc.werewolf_trainer_2"
+coords = "0_55_154_20_46"
+
+[[spawn]]
+npc = "npc.werewolf_trainer_2"
+coords = "0_55_154_7_53"
+
+[[spawn]]
+npc = "npc.werewolf_trainer_start"
+coords = "0_55_154_20_17"
+
+[[spawn]]
+npc = "npc.werewolf_trainer_stick"
+coords = "0_55_154_8_9"
+

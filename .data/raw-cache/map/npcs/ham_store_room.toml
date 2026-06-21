@@ -1,0 +1,20 @@
+[[spawn]]
+npc = "npc.dttd_ham_guard_1_postquest"
+coords = "0_40_81_6_5"
+
+[[spawn]]
+npc = "npc.dttd_ham_guard_2_postquest"
+coords = "0_40_81_6_17"
+
+[[spawn]]
+npc = "npc.dttd_ham_guard_3_postquest"
+coords = "0_40_81_7_11"
+
+[[spawn]]
+npc = "npc.dttd_ham_guard_4_postquest"
+coords = "0_40_81_17_17"
+
+[[spawn]]
+npc = "npc.dttd_ham_guard_5_postquest"
+coords = "0_40_81_7_18"
+

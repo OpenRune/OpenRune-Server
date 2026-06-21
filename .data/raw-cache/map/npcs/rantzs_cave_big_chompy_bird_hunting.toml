@@ -1,0 +1,8 @@
+[[spawn]]
+npc = "npc.bugs"
+coords = "0_41_146_16_47"
+
+[[spawn]]
+npc = "npc.fycie"
+coords = "0_41_146_26_49"
+

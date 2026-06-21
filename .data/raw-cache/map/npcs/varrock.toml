@@ -1,0 +1,1376 @@
+[[spawn]]
+npc = "npc.apothecary"
+coords = "0_49_53_59_12"
+
+[[spawn]]
+npc = "npc.aris"
+coords = "0_50_53_3_32"
+
+[[spawn]]
+npc = "npc.artist2"
+coords = "0_51_52_8_61"
+
+[[spawn]]
+npc = "npc.banker1_new"
+coords = "0_49_53_11_56"
+
+[[spawn]]
+npc = "npc.banker1_new"
+coords = "0_49_53_51_48"
+
+[[spawn]]
+npc = "npc.banker1_new"
+coords = "0_49_53_51_52"
+
+[[spawn]]
+npc = "npc.banker2_new"
+coords = "0_49_53_12_56"
+
+[[spawn]]
+npc = "npc.banker2_new"
+coords = "0_49_53_51_46"
+
+[[spawn]]
+npc = "npc.banker2_new"
+coords = "0_49_53_51_50"
+
+[[spawn]]
+npc = "npc.baraek"
+coords = "0_50_53_17_43"
+
+[[spawn]]
+npc = "npc.black_knight"
+coords = "0_50_54_26_59"
+
+[[spawn]]
+npc = "npc.black_knight"
+coords = "0_50_54_34_62"
+
+[[spawn]]
+npc = "npc.boardgames_barmaid3"
+coords = "0_49_54_7_16"
+
+[[spawn]]
+npc = "npc.bond_james_bond"
+coords = "0_49_54_34_5"
+
+[[spawn]]
+npc = "npc.bond_james_visible"
+coords = "0_49_54_34_5"
+
+[[spawn]]
+npc = "npc.brownbear"
+coords = "0_50_54_30_44"
+
+[[spawn]]
+npc = "npc.clan_clerk"
+coords = "0_49_54_45_15"
+
+[[spawn]]
+npc = "npc.con_contract_client_1"
+coords = "0_50_54_37_28"
+
+[[spawn]]
+npc = "npc.con_contractor_varrock"
+coords = "0_50_54_41_15"
+
+[[spawn]]
+npc = "npc.deadman_banker_blue_west"
+coords = "0_49_53_51_44"
+
+[[spawn]]
+npc = "npc.deadman_guard_varrock"
+coords = "0_49_53_47_14"
+
+[[spawn]]
+npc = "npc.deadman_guard_varrock"
+coords = "0_49_53_49_48"
+
+[[spawn]]
+npc = "npc.deadman_guard_varrock"
+coords = "0_49_53_62_37"
+
+[[spawn]]
+npc = "npc.deadman_guard_varrock"
+coords = "0_49_54_12_21"
+
+[[spawn]]
+npc = "npc.deadman_guard_varrock"
+coords = "0_49_54_40_52"
+
+[[spawn]]
+npc = "npc.deadman_guard_varrock"
+coords = "0_49_54_44_18"
+
+[[spawn]]
+npc = "npc.deadman_guard_varrock"
+coords = "0_49_54_57_33"
+
+[[spawn]]
+npc = "npc.deadman_guard_varrock"
+coords = "0_49_54_9_52"
+
+[[spawn]]
+npc = "npc.deadman_guard_varrock"
+coords = "0_50_52_10_57"
+
+[[spawn]]
+npc = "npc.deadman_guard_varrock"
+coords = "0_50_52_12_60"
+
+[[spawn]]
+npc = "npc.deadman_guard_varrock"
+coords = "0_50_53_11_14"
+
+[[spawn]]
+npc = "npc.deadman_guard_varrock"
+coords = "0_50_53_13_57"
+
+[[spawn]]
+npc = "npc.deadman_guard_varrock"
+coords = "0_50_53_38_37"
+
+[[spawn]]
+npc = "npc.deadman_guard_varrock"
+coords = "0_50_53_43_10"
+
+[[spawn]]
+npc = "npc.deadman_guard_varrock"
+coords = "0_50_53_46_56"
+
+[[spawn]]
+npc = "npc.deadman_guard_varrock"
+coords = "0_50_53_9_41"
+
+[[spawn]]
+npc = "npc.deadman_guard_varrock"
+coords = "0_50_54_22_8"
+
+[[spawn]]
+npc = "npc.deadman_guard_varrock"
+coords = "0_50_54_44_40"
+
+[[spawn]]
+npc = "npc.deadman_guard_varrock"
+coords = "0_50_54_46_23"
+
+[[spawn]]
+npc = "npc.deadman_guard_varrock"
+coords = "0_50_54_46_7"
+
+[[spawn]]
+npc = "npc.deadman_guard_varrock"
+coords = "0_50_54_5_7"
+
+[[spawn]]
+npc = "npc.deadman_guard_varrock"
+coords = "0_51_53_1_37"
+
+[[spawn]]
+npc = "npc.deadman_guard_varrock"
+coords = "0_51_53_2_36"
+
+[[spawn]]
+npc = "npc.dimintheis"
+coords = "0_51_53_15_12"
+
+[[spawn]]
+npc = "npc.dog_stray"
+coords = "0_50_53_0_7"
+
+[[spawn]]
+npc = "npc.dog_stray"
+coords = "0_51_52_13_53"
+
+[[spawn]]
+npc = "npc.dog_stray2"
+coords = "0_49_53_32_48"
+
+[[spawn]]
+npc = "npc.donkey_bartender"
+coords = "0_51_53_4_1"
+
+[[spawn]]
+npc = "npc.drunk2"
+coords = "0_51_52_4_61"
+
+[[spawn]]
+npc = "npc.emblem_trader"
+coords = "0_49_54_27_48"
+
+[[spawn]]
+npc = "npc.fai_varrock_bench"
+coords = "0_51_54_21_13"
+
+[[spawn]]
+npc = "npc.fai_varrock_cleaner"
+coords = "0_50_53_50_37"
+
+[[spawn]]
+npc = "npc.fai_varrock_guard02"
+coords = "0_50_54_12_6"
+
+[[spawn]]
+npc = "npc.fai_varrock_guard02"
+coords = "0_51_53_7_36"
+
+[[spawn]]
+npc = "npc.fai_varrock_guard02_f"
+coords = "0_50_54_17_5"
+
+[[spawn]]
+npc = "npc.fai_varrock_guard02_f"
+coords = "1_49_53_39_11"
+
+[[spawn]]
+npc = "npc.fai_varrock_guard02_f_variant01"
+coords = "0_50_54_11_7"
+
+[[spawn]]
+npc = "npc.fai_varrock_guard02_f_variant02"
+coords = "0_49_53_37_37"
+
+[[spawn]]
+npc = "npc.fai_varrock_guard02_f_variant02"
+coords = "0_50_54_46_45"
+
+[[spawn]]
+npc = "npc.fai_varrock_guard02_f_variant02"
+coords = "0_51_53_11_36"
+
+[[spawn]]
+npc = "npc.fai_varrock_guard02_variant01"
+coords = "0_50_54_15_8"
+
+[[spawn]]
+npc = "npc.fai_varrock_guard02_variant02"
+coords = "0_50_52_11_53"
+
+[[spawn]]
+npc = "npc.fai_varrock_guard02_variant02"
+coords = "0_50_54_6_6"
+
+[[spawn]]
+npc = "npc.fai_varrock_guard_captain02"
+coords = "0_49_53_39_36"
+
+[[spawn]]
+npc = "npc.fai_varrock_guard_captain02"
+coords = "0_50_52_11_50"
+
+[[spawn]]
+npc = "npc.fai_varrock_guard_captain02"
+coords = "0_50_54_13_9"
+
+[[spawn]]
+npc = "npc.fai_varrock_guard_captain02"
+coords = "0_51_53_9_38"
+
+[[spawn]]
+npc = "npc.fai_varrock_guard_captain02"
+coords = "1_49_53_39_22"
+
+[[spawn]]
+npc = "npc.farming_gardener_tree_3_02"
+coords = "0_50_54_26_2"
+
+[[spawn]]
+npc = "npc.farming_tools_leprechaun"
+coords = "0_50_53_32_63"
+
+[[spawn]]
+npc = "npc.gambler2"
+coords = "0_51_52_7_60"
+
+[[spawn]]
+npc = "npc.game_zone_recruiter_saradomin"
+coords = "0_49_54_5_16"
+
+[[spawn]]
+npc = "npc.game_zone_recruiter_zamorak"
+coords = "0_49_54_7_14"
+
+[[spawn]]
+npc = "npc.ge_boss"
+coords = "0_49_54_29_21"
+
+[[spawn]]
+npc = "npc.ge_expert_logs"
+coords = "0_49_54_16_33"
+
+[[spawn]]
+npc = "npc.gertrude"
+coords = "0_49_53_15_18"
+
+[[spawn]]
+npc = "npc.giantrat1"
+coords = "0_51_52_0_55"
+
+[[spawn]]
+npc = "npc.giantrat1"
+coords = "0_51_52_28_49"
+
+[[spawn]]
+npc = "npc.guidor"
+coords = "0_51_52_20_54"
+
+[[spawn]]
+npc = "npc.guidors_wife"
+coords = "0_51_52_17_55"
+
+[[spawn]]
+npc = "npc.head_chef"
+coords = "0_49_53_7_52"
+
+[[spawn]]
+npc = "npc.ii_common_impling_precursor"
+coords = "0_51_53_19_36"
+
+[[spawn]]
+npc = "npc.imp"
+coords = "0_49_53_41_13"
+
+[[spawn]]
+npc = "npc.imp"
+coords = "0_50_52_38_62"
+
+[[spawn]]
+npc = "npc.imp"
+coords = "0_50_54_13_46"
+
+[[spawn]]
+npc = "npc.imp"
+coords = "0_50_54_34_50"
+
+[[spawn]]
+npc = "npc.imp"
+coords = "0_50_54_46_2"
+
+[[spawn]]
+npc = "npc.imp"
+coords = "0_50_54_61_58"
+
+[[spawn]]
+npc = "npc.juliet"
+coords = "1_49_53_23_34"
+
+[[spawn]]
+npc = "npc.juliet_multi_visible"
+coords = "1_49_53_22_33"
+
+[[spawn]]
+npc = "npc.kanel"
+coords = "0_49_53_19_14"
+
+[[spawn]]
+npc = "npc.katrine"
+coords = "0_49_52_50_57"
+
+[[spawn]]
+npc = "npc.lost_property_merchant_model"
+coords = "0_49_54_30_48"
+
+[[spawn]]
+npc = "npc.lowe"
+coords = "0_50_53_32_31"
+
+[[spawn]]
+npc = "npc.man"
+coords = "0_50_53_34_6"
+
+[[spawn]]
+npc = "npc.man3"
+coords = "0_49_53_58_4"
+
+[[spawn]]
+npc = "npc.merchant_pies"
+coords = "0_49_53_3_56"
+
+[[spawn]]
+npc = "npc.mugger"
+coords = "0_50_52_49_63"
+
+[[spawn]]
+npc = "npc.philop"
+coords = "0_49_53_14_15"
+
+[[spawn]]
+npc = "npc.pillory_tramp_thrower_varrock"
+coords = "0_50_53_28_20"
+
+[[spawn]]
+npc = "npc.pmod_town_crier_varrock"
+coords = "0_50_53_53_37"
+
+[[spawn]]
+npc = "npc.poh_estate_agent"
+coords = "0_50_54_40_20"
+
+[[spawn]]
+npc = "npc.qip_ds_young_dark_wizard1"
+coords = "0_50_52_25_37"
+
+[[spawn]]
+npc = "npc.qip_ds_young_dark_wizard1"
+coords = "0_50_52_25_46"
+
+[[spawn]]
+npc = "npc.qip_ds_young_dark_wizard1"
+coords = "0_50_52_32_39"
+
+[[spawn]]
+npc = "npc.qip_ds_young_dark_wizard2"
+coords = "0_50_52_23_44"
+
+[[spawn]]
+npc = "npc.qip_ds_young_dark_wizard2"
+coords = "0_50_52_32_44"
+
+[[spawn]]
+npc = "npc.qip_ds_young_dark_wizard3"
+coords = "0_50_52_23_39"
+
+[[spawn]]
+npc = "npc.qip_ds_young_dark_wizard3"
+coords = "0_50_52_30_37"
+
+[[spawn]]
+npc = "npc.qip_ds_young_dark_wizard3"
+coords = "0_50_52_30_46"
+
+[[spawn]]
+npc = "npc.qip_ds_young_dark_wizard4"
+coords = "0_50_52_24_42"
+
+[[spawn]]
+npc = "npc.qip_ds_young_dark_wizard4"
+coords = "0_50_52_28_45"
+
+[[spawn]]
+npc = "npc.qip_soa_newspaperseller"
+coords = "0_50_53_19_40"
+
+[[spawn]]
+npc = "npc.qip_soa_thief_female01"
+coords = "0_49_52_48_61"
+
+[[spawn]]
+npc = "npc.qip_soa_thief_female02"
+coords = "0_49_52_49_62"
+
+[[spawn]]
+npc = "npc.qip_soa_thief_male01"
+coords = "0_49_52_48_57"
+
+[[spawn]]
+npc = "npc.qip_soa_thief_male01"
+coords = "0_50_52_30_63"
+
+[[spawn]]
+npc = "npc.queen_ellamaria"
+coords = "0_50_54_28_21"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_49_53_15_22"
+
+[[spawn]]
+npc = "npc.romeo"
+coords = "0_50_53_11_33"
+
+[[spawn]]
+npc = "npc.rooftops_bigredjapan"
+coords = "3_50_53_32_9"
+
+[[spawn]]
+npc = "npc.shilop"
+coords = "0_50_53_21_42"
+
+[[spawn]]
+npc = "npc.speedrunning_shop"
+coords = "0_50_53_20_32"
+
+[[spawn]]
+npc = "npc.star_timer_npc"
+coords = "0_51_52_15_32"
+
+[[spawn]]
+npc = "npc.surok_annajones"
+coords = "0_51_54_21_12"
+
+[[spawn]]
+npc = "npc.tailorp"
+coords = "0_51_53_17_6"
+
+[[spawn]]
+npc = "npc.tea_seller"
+coords = "0_51_53_7_19"
+
+[[spawn]]
+npc = "npc.thessalia"
+coords = "0_50_53_4_25"
+
+[[spawn]]
+npc = "npc.tob_spectator_misthalin"
+coords = "0_49_54_49_60"
+
+[[spawn]]
+npc = "npc.toby_varrock_diary"
+coords = "0_50_53_25_23"
+
+[[spawn]]
+npc = "npc.tramp"
+coords = "0_50_53_35_9"
+
+[[spawn]]
+npc = "npc.tramppg"
+coords = "0_50_52_8_63"
+
+[[spawn]]
+npc = "npc.unicorn"
+coords = "0_51_52_19_27"
+
+[[spawn]]
+npc = "npc.varrock_bank_doorguard"
+coords = "0_49_53_51_54"
+
+[[spawn]]
+npc = "npc.varrock_granny_1"
+coords = "0_50_53_4_27"
+
+[[spawn]]
+npc = "npc.vc_hooknosed_jack"
+coords = "0_51_53_4_8"
+
+[[spawn]]
+npc = "npc.vc_pox"
+coords = "0_51_53_4_7"
+
+[[spawn]]
+npc = "npc.vm_museum_guard3"
+coords = "0_50_53_63_49"
+
+[[spawn]]
+npc = "npc.wilough"
+coords = "0_50_53_21_43"
+
+[[spawn]]
+npc = "npc.zaff"
+coords = "0_50_53_3_41"
+
+[[spawn]]
+npc = "npc.zep_assist_varr"
+coords = "0_51_54_35_24"
+
+[[spawn]]
+npc = "npc.zep_multi_assistant_varr"
+coords = "0_51_54_34_27"
+
+## Aubury
+
+[[spawn]]
+npc = "npc.aubury"
+coords = "0_50_53_53_10"
+
+## Grand Exchange Clerk
+
+[[spawn]]
+npc = "npc.banker1_east"
+coords = "0_49_54_30_33"
+
+[[spawn]]
+npc = "npc.banker1_west"
+coords = "0_49_54_27_33"
+
+[[spawn]]
+npc = "npc.banker2_east"
+coords = "0_49_54_30_34"
+
+[[spawn]]
+npc = "npc.deadman_banker_grey_west"
+coords = "0_49_54_27_34"
+
+[[spawn]]
+npc = "npc.ge_clerk_1"
+coords = "0_49_54_29_32"
+
+[[spawn]]
+npc = "npc.ge_clerk_2"
+coords = "0_49_54_28_32"
+
+[[spawn]]
+npc = "npc.ge_clerk_3"
+coords = "0_49_54_29_35"
+
+[[spawn]]
+npc = "npc.ge_clerk_4"
+coords = "0_49_54_28_35"
+
+## Lumber Yard
+
+[[spawn]]
+npc = "npc.gertrudescat"
+coords = "1_51_54_42_56"
+
+[[spawn]]
+npc = "npc.kittens_mew"
+coords = "0_51_54_34_58"
+
+[[spawn]]
+npc = "npc.kittens_mew"
+coords = "0_51_54_39_50"
+
+[[spawn]]
+npc = "npc.kittens_mew"
+coords = "0_51_54_41_44"
+
+[[spawn]]
+npc = "npc.kittens_mew"
+coords = "0_51_54_43_51"
+
+[[spawn]]
+npc = "npc.kittens_mew"
+coords = "0_51_54_46_43"
+
+[[spawn]]
+npc = "npc.kittens_mew"
+coords = "0_51_54_51_59"
+
+[[spawn]]
+npc = "npc.poh_sawmill_opp"
+coords = "0_51_54_38_36"
+
+## Mahogany Homes
+
+[[spawn]]
+npc = "npc.con_contract_client_2"
+coords = "0_50_53_42_60"
+
+## Varrock Anvils
+
+[[spawn]]
+npc = "npc.aide_tutor_smithing_master"
+coords = "0_49_53_51_31"
+
+## Varrock Blue Moon Inn Kitchen
+
+[[spawn]]
+npc = "npc.dog_stray2"
+coords = "0_50_53_33_2"
+
+[[spawn]]
+npc = "npc.fai_varrock_bluemoon_chef"
+coords = "0_50_53_30_9"
+
+## Varrock Building Ruins
+
+[[spawn]]
+npc = "npc.bioguard1"
+coords = "0_50_53_63_15"
+
+[[spawn]]
+npc = "npc.dog_stray"
+coords = "0_50_53_62_18"
+
+## Varrock Castle
+
+[[spawn]]
+npc = "npc.aluft_gnome_diplomat_varrock"
+coords = "1_50_54_9_18"
+
+[[spawn]]
+npc = "npc.captain_rovin"
+coords = "2_50_54_4_39"
+
+[[spawn]]
+npc = "npc.chaosmonk2"
+coords = "0_50_54_13_20"
+
+[[spawn]]
+npc = "npc.death_growncat_black_varrock"
+coords = "0_50_54_24_21"
+
+[[spawn]]
+npc = "npc.fai_varrock_guard02"
+coords = "0_50_54_4_40"
+
+[[spawn]]
+npc = "npc.fai_varrock_guard02"
+coords = "1_50_54_4_35"
+
+[[spawn]]
+npc = "npc.fai_varrock_guard02"
+coords = "2_50_54_11_12"
+
+[[spawn]]
+npc = "npc.fai_varrock_guard02"
+coords = "2_50_54_6_22"
+
+[[spawn]]
+npc = "npc.fai_varrock_guard02"
+coords = "2_50_54_9_15"
+
+[[spawn]]
+npc = "npc.fai_varrock_guard02_f"
+coords = "1_50_54_1_39"
+
+[[spawn]]
+npc = "npc.fai_varrock_guard02_f"
+coords = "2_50_54_8_17"
+
+[[spawn]]
+npc = "npc.fai_varrock_guard02_f_variant01"
+coords = "2_50_54_7_20"
+
+[[spawn]]
+npc = "npc.fai_varrock_guard02_f_variant02"
+coords = "1_50_54_5_42"
+
+[[spawn]]
+npc = "npc.fai_varrock_guard02_f_variant02"
+coords = "2_50_54_22_14"
+
+[[spawn]]
+npc = "npc.fai_varrock_guard02_f_variant02"
+coords = "2_50_54_3_23"
+
+[[spawn]]
+npc = "npc.fai_varrock_guard02_variant01"
+coords = "2_50_54_10_18"
+
+[[spawn]]
+npc = "npc.fai_varrock_guard02_variant02"
+coords = "1_50_54_5_38"
+
+[[spawn]]
+npc = "npc.fai_varrock_guard02_variant02"
+coords = "2_50_54_21_27"
+
+[[spawn]]
+npc = "npc.fai_varrock_guard02_variant02"
+coords = "2_50_54_4_21"
+
+[[spawn]]
+npc = "npc.fai_varrock_guard02_variant02"
+coords = "2_50_54_6_25"
+
+[[spawn]]
+npc = "npc.fai_varrock_guard_trainer02"
+coords = "2_50_54_13_35"
+
+[[spawn]]
+npc = "npc.fai_varrock_guard_training02"
+coords = "2_50_54_13_34"
+
+[[spawn]]
+npc = "npc.fai_varrock_guard_training02"
+coords = "2_50_54_9_34"
+
+[[spawn]]
+npc = "npc.fai_varrock_guard_training02_f"
+coords = "2_50_54_15_34"
+
+[[spawn]]
+npc = "npc.fai_varrock_guard_training02_f_variant01"
+coords = "2_50_54_11_34"
+
+[[spawn]]
+npc = "npc.fai_varrock_guard_training02_variant01"
+coords = "2_50_54_17_34"
+
+[[spawn]]
+npc = "npc.jardric_varrock"
+coords = "0_50_54_21_20"
+
+[[spawn]]
+npc = "npc.king_roald"
+coords = "0_50_54_22_16"
+
+[[spawn]]
+npc = "npc.myq3_aeonisig_roalds_advisor"
+coords = "0_50_54_24_17"
+
+[[spawn]]
+npc = "npc.reldo"
+coords = "0_50_54_9_39"
+
+[[spawn]]
+npc = "npc.sir_prysin"
+coords = "0_50_54_4_17"
+
+[[spawn]]
+npc = "npc.surok_surok"
+coords = "0_50_54_8_40"
+
+[[spawn]]
+npc = "npc.warrior_woman"
+coords = "0_50_54_2_31"
+
+[[spawn]]
+npc = "npc.warrior_woman_variant01"
+coords = "0_50_54_5_31"
+
+## Varrock Champions Guild
+
+[[spawn]]
+npc = "npc.guildmaster"
+coords = "0_49_52_53_32"
+
+[[spawn]]
+npc = "npc.scavvo"
+coords = "1_49_52_55_23"
+
+[[spawn]]
+npc = "npc.valaine"
+coords = "1_49_52_57_33"
+
+## Varrock East Bank
+
+[[spawn]]
+npc = "npc.banker1_new"
+coords = "0_50_53_52_26"
+
+[[spawn]]
+npc = "npc.banker1_new"
+coords = "0_50_53_53_26"
+
+[[spawn]]
+npc = "npc.banker2_new"
+coords = "0_50_53_54_26"
+
+[[spawn]]
+npc = "npc.banker2_new"
+coords = "0_50_53_55_26"
+
+[[spawn]]
+npc = "npc.banker2_new"
+coords = "0_50_53_56_26"
+
+[[spawn]]
+npc = "npc.deadman_banker_blue_north"
+coords = "0_50_53_51_26"
+
+## Varrock East Bank Center
+
+[[spawn]]
+npc = "npc.deadman_guard_varrock"
+coords = "0_50_53_51_29"
+
+## Varrock General Store
+
+[[spawn]]
+npc = "npc.generalassistant2"
+coords = "0_50_53_17_19"
+
+[[spawn]]
+npc = "npc.generalshopkeeper2"
+coords = "0_50_53_18_23"
+
+## Varrock Grand Exchange Roof
+
+[[spawn]]
+npc = "npc.ge_expert_combat"
+coords = "0_49_54_20_42"
+
+[[spawn]]
+npc = "npc.ge_expert_herbs"
+coords = "0_49_54_20_25"
+
+[[spawn]]
+npc = "npc.ge_expert_ores"
+coords = "0_49_54_37_42"
+
+[[spawn]]
+npc = "npc.ge_expert_runes"
+coords = "0_49_54_37_25"
+
+## Varrock Guard Posts
+
+[[spawn]]
+npc = "npc.fai_varrock_guard02_variant01"
+coords = "0_50_54_40_44"
+
+[[spawn]]
+npc = "npc.fai_varrock_guard02_variant01"
+coords = "0_51_53_11_30"
+
+## Varrock Hairdresser
+
+[[spawn]]
+npc = "npc.hairdresser_boutique"
+coords = "0_50_54_56_5"
+
+[[spawn]]
+npc = "npc.tailor_boutique"
+coords = "0_50_54_59_7"
+
+## Varrock Horviks Anvil
+
+[[spawn]]
+npc = "npc.horvik_the_armourer"
+coords = "0_50_53_29_46"
+
+## Varrock House 2
+
+[[spawn]]
+npc = "npc.con_contract_client_3"
+coords = "0_50_52_35_55"
+
+[[spawn]]
+npc = "npc.man2"
+coords = "1_50_52_34_57"
+
+## Varrock House Poor Houses
+
+[[spawn]]
+npc = "npc.daddyshome_daddy"
+coords = "0_50_53_39_3"
+
+[[spawn]]
+npc = "npc.man"
+coords = "0_50_53_37_14"
+
+[[spawn]]
+npc = "npc.man3"
+coords = "0_50_53_38_14"
+
+[[spawn]]
+npc = "npc.rat_indoors"
+coords = "0_50_53_43_1"
+
+[[spawn]]
+npc = "npc.spider"
+coords = "0_50_53_38_0"
+
+## Varrock House Very Poor Houses
+
+[[spawn]]
+npc = "npc.fai_varrock_guard02"
+coords = "0_49_53_39_31"
+
+[[spawn]]
+npc = "npc.fai_varrock_guard02_f"
+coords = "0_50_52_5_51"
+
+[[spawn]]
+npc = "npc.fai_varrock_guard02_variant02"
+coords = "0_49_53_44_9"
+
+[[spawn]]
+npc = "npc.giantrat1_3"
+coords = "0_51_52_2_53"
+
+[[spawn]]
+npc = "npc.man2"
+coords = "0_50_53_61_10"
+
+[[spawn]]
+npc = "npc.weaponsmaster"
+coords = "1_50_52_46_56"
+
+[[spawn]]
+npc = "npc.weaponsmaster_vis"
+coords = "1_50_52_46_56"
+
+## Varrock Jolly Boar Inn
+
+[[spawn]]
+npc = "npc.black_knight"
+coords = "0_51_54_13_49"
+
+[[spawn]]
+npc = "npc.fai_varrock_jollyboar_chef"
+coords = "0_51_54_21_33"
+
+[[spawn]]
+npc = "npc.johnathon_fitzharmon"
+coords = "1_51_54_15_47"
+
+[[spawn]]
+npc = "npc.jollyboar_bartender"
+coords = "0_51_54_13_32"
+
+[[spawn]]
+npc = "npc.man3"
+coords = "0_51_54_19_45"
+
+[[spawn]]
+npc = "npc.thief1"
+coords = "0_51_54_21_45"
+
+[[spawn]]
+npc = "npc.varrock_man1"
+coords = "1_51_54_13_39"
+
+[[spawn]]
+npc = "npc.varrock_woman1"
+coords = "0_51_54_15_40"
+
+[[spawn]]
+npc = "npc.woman2"
+coords = "0_51_54_14_46"
+
+## Varrock Juliets House
+
+[[spawn]]
+npc = "npc.draul_leptoc"
+coords = "0_49_53_25_43"
+
+[[spawn]]
+npc = "npc.man"
+coords = "0_49_53_18_36"
+
+[[spawn]]
+npc = "npc.phillipa"
+coords = "1_49_53_26_38"
+
+## Varrock Moon Inn Floor
+
+[[spawn]]
+npc = "npc.barbarianwoman_varrock"
+coords = "0_50_53_25_10"
+
+[[spawn]]
+npc = "npc.bluemoon_bartender"
+coords = "0_50_53_26_7"
+
+[[spawn]]
+npc = "npc.dr_harlow"
+coords = "0_50_53_22_5"
+
+[[spawn]]
+npc = "npc.jonny_the_beard"
+coords = "0_50_53_23_3"
+
+[[spawn]]
+npc = "npc.man3"
+coords = "1_50_53_31_7"
+
+[[spawn]]
+npc = "npc.varrock_man1"
+coords = "1_50_53_31_3"
+
+[[spawn]]
+npc = "npc.varrock_woman1"
+coords = "0_50_53_18_3"
+
+## Varrock Museum
+
+[[spawn]]
+npc = "npc.curator"
+coords = "0_50_53_57_55"
+
+[[spawn]]
+npc = "npc.vm_advent_01"
+coords = "1_50_53_53_61"
+
+[[spawn]]
+npc = "npc.vm_advent_02"
+coords = "1_50_53_62_50"
+
+[[spawn]]
+npc = "npc.vm_archaeologist1_npc_dummy"
+coords = "0_50_53_53_53"
+
+[[spawn]]
+npc = "npc.vm_archaeologist2_npc_dummy"
+coords = "0_50_53_54_52"
+
+[[spawn]]
+npc = "npc.vm_archaeologist3_npc_dummy"
+coords = "0_50_53_56_51"
+
+[[spawn]]
+npc = "npc.vm_archaeologist4_npc_dummy"
+coords = "0_50_53_57_50"
+
+[[spawn]]
+npc = "npc.vm_archaeologist5_npc_dummy"
+coords = "0_51_53_2_53"
+
+[[spawn]]
+npc = "npc.vm_archaeologist6_npc_dummy"
+coords = "0_51_53_3_52"
+
+[[spawn]]
+npc = "npc.vm_art_critic"
+coords = "2_50_53_57_62"
+
+[[spawn]]
+npc = "npc.vm_collector"
+coords = "0_51_53_1_63"
+
+[[spawn]]
+npc = "npc.vm_info_booth_lady"
+coords = "0_50_53_53_62"
+
+[[spawn]]
+npc = "npc.vm_museum_guard"
+coords = "0_50_53_60_55"
+
+[[spawn]]
+npc = "npc.vm_school_boy_blonde"
+coords = "0_50_53_61_63"
+
+[[spawn]]
+npc = "npc.vm_school_girl_blonde"
+coords = "0_50_53_63_60"
+
+[[spawn]]
+npc = "npc.vm_teacher_girl_multi"
+coords = "0_50_53_60_60"
+
+[[spawn]]
+npc = "npc.vm_teacher_girl_multi"
+coords = "2_50_53_61_59"
+
+[[spawn]]
+npc = "npc.vm_timeline_historian"
+coords = "1_51_53_0_63"
+
+## Varrock Museum Basement
+
+[[spawn]]
+npc = "npc.vm_fossil_expert"
+coords = "0_25_77_31_47"
+
+[[spawn]]
+npc = "npc.vm_nathis_apprentice"
+coords = "0_27_77_31_27"
+
+[[spawn]]
+npc = "npc.vm_natural_historian_east"
+coords = "0_27_77_43_33"
+
+[[spawn]]
+npc = "npc.vm_natural_historian_east"
+coords = "0_27_77_47_22"
+
+[[spawn]]
+npc = "npc.vm_natural_historian_north"
+coords = "0_27_77_30_45"
+
+[[spawn]]
+npc = "npc.vm_natural_historian_north"
+coords = "0_27_77_44_52"
+
+[[spawn]]
+npc = "npc.vm_natural_historian_south"
+coords = "0_27_77_26_19"
+
+[[spawn]]
+npc = "npc.vm_natural_historian_south"
+coords = "0_27_77_31_11"
+
+[[spawn]]
+npc = "npc.vm_natural_historian_west"
+coords = "0_27_77_21_33"
+
+[[spawn]]
+npc = "npc.vm_natural_historian_west"
+coords = "0_27_77_9_22"
+
+[[spawn]]
+npc = "npc.vm_natural_history_display_case_battle_tortoise"
+coords = "0_27_77_22_51"
+
+[[spawn]]
+npc = "npc.vm_natural_history_display_case_camel"
+coords = "0_27_77_7_36"
+
+[[spawn]]
+npc = "npc.vm_natural_history_display_case_leech"
+coords = "0_27_77_14_36"
+
+[[spawn]]
+npc = "npc.vm_natural_history_display_case_lizard"
+coords = "0_27_77_12_51"
+
+[[spawn]]
+npc = "npc.vm_natural_history_display_case_mole"
+coords = "0_27_77_7_26"
+
+[[spawn]]
+npc = "npc.vm_natural_history_display_case_monkey"
+coords = "0_27_77_46_26"
+
+[[spawn]]
+npc = "npc.vm_natural_history_display_case_penguin"
+coords = "0_27_77_14_26"
+
+[[spawn]]
+npc = "npc.vm_natural_history_display_case_seaslugs"
+coords = "0_27_77_53_26"
+
+[[spawn]]
+npc = "npc.vm_natural_history_display_case_snail"
+coords = "0_27_77_46_36"
+
+[[spawn]]
+npc = "npc.vm_natural_history_display_case_terror_bird"
+coords = "0_27_77_24_10"
+
+[[spawn]]
+npc = "npc.vm_natural_history_display_case_wyvern"
+coords = "0_27_77_47_51"
+
+[[spawn]]
+npc = "npc.vm_natural_history_display_dragon"
+coords = "0_27_77_37_51"
+
+[[spawn]]
+npc = "npc.vm_school_boy_blonde"
+coords = "0_27_77_14_31"
+
+[[spawn]]
+npc = "npc.vm_school_boy_blonde"
+coords = "0_27_77_19_53"
+
+[[spawn]]
+npc = "npc.vm_school_boy_blonde"
+coords = "0_27_77_29_8"
+
+[[spawn]]
+npc = "npc.vm_school_boy_blonde"
+coords = "0_27_77_31_15"
+
+[[spawn]]
+npc = "npc.vm_school_boy_blonde"
+coords = "0_27_77_36_45"
+
+[[spawn]]
+npc = "npc.vm_school_boy_blonde"
+coords = "0_27_77_54_33"
+
+[[spawn]]
+npc = "npc.vm_school_boy_blonde"
+coords = "0_27_77_57_42"
+
+[[spawn]]
+npc = "npc.vm_school_boy_brunnete"
+coords = "0_27_77_13_42"
+
+[[spawn]]
+npc = "npc.vm_school_boy_brunnete"
+coords = "0_27_77_21_15"
+
+[[spawn]]
+npc = "npc.vm_school_boy_brunnete"
+coords = "0_27_77_25_42"
+
+[[spawn]]
+npc = "npc.vm_school_boy_brunnete"
+coords = "0_27_77_31_52"
+
+[[spawn]]
+npc = "npc.vm_school_boy_brunnete"
+coords = "0_27_77_44_42"
+
+[[spawn]]
+npc = "npc.vm_school_boy_brunnete"
+coords = "0_27_77_8_32"
+
+[[spawn]]
+npc = "npc.vm_school_girl_blonde"
+coords = "0_27_77_17_22"
+
+[[spawn]]
+npc = "npc.vm_school_girl_blonde"
+coords = "0_27_77_35_47"
+
+[[spawn]]
+npc = "npc.vm_school_girl_blonde"
+coords = "0_27_77_38_36"
+
+[[spawn]]
+npc = "npc.vm_school_girl_blonde"
+coords = "0_27_77_43_11"
+
+[[spawn]]
+npc = "npc.vm_school_girl_blonde"
+coords = "0_27_77_45_31"
+
+[[spawn]]
+npc = "npc.vm_school_girl_brunette"
+coords = "0_27_77_24_49"
+
+[[spawn]]
+npc = "npc.vm_school_girl_brunette"
+coords = "0_27_77_27_23"
+
+[[spawn]]
+npc = "npc.vm_school_girl_brunette"
+coords = "0_27_77_43_57"
+
+[[spawn]]
+npc = "npc.vm_school_girl_brunette"
+coords = "0_27_77_55_23"
+
+[[spawn]]
+npc = "npc.vm_school_girl_brunette"
+coords = "0_27_77_5_42"
+
+[[spawn]]
+npc = "npc.vm_school_teacher_male_and_boy"
+coords = "0_27_77_17_33"
+
+[[spawn]]
+npc = "npc.vm_school_teacher_male_and_boy"
+coords = "0_27_77_31_49"
+
+[[spawn]]
+npc = "npc.vm_school_teacher_male_and_boy"
+coords = "0_27_77_37_18"
+
+[[spawn]]
+npc = "npc.vm_teacher_girl_multi"
+coords = "0_27_77_32_18"
+
+[[spawn]]
+npc = "npc.vm_teacher_girl_multi"
+coords = "0_27_77_34_50"
+
+[[spawn]]
+npc = "npc.vm_teacher_girl_multi"
+coords = "0_27_77_51_33"
+
+[[spawn]]
+npc = "npc.vm_teacher_girl_multi"
+coords = "0_27_77_6_32"
+
+## Varrock Saradomin Church
+
+[[spawn]]
+npc = "npc.father_lawrence"
+coords = "0_50_54_54_28"
+
+[[spawn]]
+npc = "npc.romeo_juliet_pew_sleeping_man"
+coords = "0_50_54_53_21"
+
+[[spawn]]
+npc = "npc.romeo_juliet_pew_sleeping_woman"
+coords = "0_50_54_56_25"
+
+[[spawn]]
+npc = "npc.varrock_granny_2"
+coords = "1_50_54_55_32"
+
+## Varrock Swordshop
+
+[[spawn]]
+npc = "npc.swordshop1"
+coords = "0_50_53_3_5"
+
+[[spawn]]
+npc = "npc.swordshop2"
+coords = "0_50_53_5_7"
+
+## Varrock Zamorak Temple
+
+[[spawn]]
+npc = "npc.rcu_zammy_mage1_edge"
+coords = "0_50_52_60_55"
+
+## Varrock Zamorak Temple End
+

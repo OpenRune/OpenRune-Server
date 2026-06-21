@@ -1,0 +1,40 @@
+[[spawn]]
+npc = "npc.banker1"
+coords = "0_42_54_33_39"
+
+[[spawn]]
+npc = "npc.banker1"
+coords = "0_42_54_36_39"
+
+[[spawn]]
+npc = "npc.banker1"
+coords = "0_42_54_41_39"
+
+[[spawn]]
+npc = "npc.banker2"
+coords = "0_42_54_34_39"
+
+[[spawn]]
+npc = "npc.banker2"
+coords = "0_42_54_38_40"
+
+[[spawn]]
+npc = "npc.banker2"
+coords = "0_42_54_39_39"
+
+[[spawn]]
+npc = "npc.banker2"
+coords = "0_42_54_41_40"
+
+[[spawn]]
+npc = "npc.deadman_banker_grey_south"
+coords = "0_42_54_40_39"
+
+[[spawn]]
+npc = "npc.deadman_guard_seers"
+coords = "0_42_54_35_36"
+
+[[spawn]]
+npc = "npc.deadman_guard_seers"
+coords = "0_42_54_40_36"
+

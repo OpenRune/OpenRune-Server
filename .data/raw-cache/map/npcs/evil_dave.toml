@@ -1,0 +1,92 @@
+[[spawn]]
+npc = "npc.hundred_dave_bigrat"
+coords = "0_47_154_61_39"
+
+[[spawn]]
+npc = "npc.hundred_dave_bigrat"
+coords = "0_47_154_62_25"
+
+[[spawn]]
+npc = "npc.hundred_dave_bigrat"
+coords = "0_48_154_6_45"
+
+[[spawn]]
+npc = "npc.hundred_dave_bigrat"
+coords = "0_48_154_9_19"
+
+[[spawn]]
+npc = "npc.hundred_dave_hellrat"
+coords = "0_48_154_3_24"
+
+[[spawn]]
+npc = "npc.hundred_dave_hellrat"
+coords = "0_48_154_3_25"
+
+[[spawn]]
+npc = "npc.hundred_dave_hellrat"
+coords = "0_48_154_4_24"
+
+[[spawn]]
+npc = "npc.hundred_dave_hellrat"
+coords = "0_48_154_4_25"
+
+[[spawn]]
+npc = "npc.hundred_dave_hellrat"
+coords = "0_48_154_4_30"
+
+[[spawn]]
+npc = "npc.hundred_dave_hellrat"
+coords = "0_48_154_4_31"
+
+[[spawn]]
+npc = "npc.hundred_dave_hellrat"
+coords = "0_48_154_5_27"
+
+[[spawn]]
+npc = "npc.hundred_dave_hellrat"
+coords = "0_48_154_5_29"
+
+[[spawn]]
+npc = "npc.hundred_dave_hellrat"
+coords = "0_48_154_6_25"
+
+[[spawn]]
+npc = "npc.hundred_dave_hellrat"
+coords = "0_48_154_6_30"
+
+[[spawn]]
+npc = "npc.hundred_dave_hellrat"
+coords = "0_48_154_6_38"
+
+[[spawn]]
+npc = "npc.hundred_dave_hellrat"
+coords = "0_48_154_7_26"
+
+[[spawn]]
+npc = "npc.hundred_dave_hellrat"
+coords = "0_48_154_7_32"
+
+[[spawn]]
+npc = "npc.hundred_dave_hellrat"
+coords = "0_48_154_7_34"
+
+[[spawn]]
+npc = "npc.hundred_dave_hellrat"
+coords = "0_48_154_7_39"
+
+[[spawn]]
+npc = "npc.hundred_dave_hellrat"
+coords = "0_48_154_8_24"
+
+[[spawn]]
+npc = "npc.hundred_dave_hellrat"
+coords = "0_48_154_8_32"
+
+[[spawn]]
+npc = "npc.hundred_dave_hellrat"
+coords = "0_48_154_8_37"
+
+[[spawn]]
+npc = "npc.hundred_evil_dave"
+coords = "0_48_154_8_34"
+

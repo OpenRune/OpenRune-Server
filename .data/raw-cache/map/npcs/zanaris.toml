@@ -1,0 +1,614 @@
+## Zanaris Fairy Queens Hideout
+
+[[spawn]]
+npc = "npc.fairy_nuff_multi2"
+coords = "0_36_69_51_40"
+
+[[spawn]]
+npc = "npc.fairy_queen_multi2"
+coords = "0_36_69_48_41"
+
+[[spawn]]
+npc = "npc.fairyliquid_multi"
+coords = "0_36_69_49_30"
+
+[[spawn]]
+npc = "npc.fairyliquid_multi2"
+coords = "0_36_69_45_19"
+
+[[spawn]]
+npc = "npc.fairyqueen_multi3"
+coords = "0_36_69_44_17"
+
+[[spawn]]
+npc = "npc.fairyresistance_multi"
+coords = "0_36_69_29_34"
+
+[[spawn]]
+npc = "npc.fairyresistance_multi"
+coords = "0_36_69_41_16"
+
+[[spawn]]
+npc = "npc.fairyresistance_multi"
+coords = "0_36_69_43_28"
+
+[[spawn]]
+npc = "npc.fairyresistance_multi2"
+coords = "0_36_69_36_37"
+
+[[spawn]]
+npc = "npc.fairyresistance_multi2"
+coords = "0_36_69_53_35"
+
+[[spawn]]
+npc = "npc.fairyresistance_multi3"
+coords = "0_36_69_42_34"
+
+[[spawn]]
+npc = "npc.fairyresistance_multi3"
+coords = "0_36_69_50_23"
+
+[[spawn]]
+npc = "npc.fairyresistance_multi4"
+coords = "0_36_69_29_41"
+
+[[spawn]]
+npc = "npc.fairyresistance_multi4"
+coords = "0_36_69_53_21"
+
+[[spawn]]
+npc = "npc.fairyresistance_multi5"
+coords = "0_36_69_30_36"
+
+[[spawn]]
+npc = "npc.fairyresistance_multi5"
+coords = "0_36_69_39_26"
+
+## Zanaris Main
+
+[[spawn]]
+npc = "npc.butterfly"
+coords = "0_37_69_47_50"
+
+[[spawn]]
+npc = "npc.butterfly"
+coords = "0_37_69_51_11"
+
+[[spawn]]
+npc = "npc.butterfly"
+coords = "0_37_69_53_52"
+
+[[spawn]]
+npc = "npc.butterfly"
+coords = "0_37_69_58_15"
+
+[[spawn]]
+npc = "npc.butterfly"
+coords = "0_38_69_32_5"
+
+[[spawn]]
+npc = "npc.butterfly"
+coords = "0_38_69_34_7"
+
+[[spawn]]
+npc = "npc.butterfly"
+coords = "0_38_69_54_48"
+
+[[spawn]]
+npc = "npc.butterfly2"
+coords = "0_37_69_26_37"
+
+[[spawn]]
+npc = "npc.butterfly2"
+coords = "0_37_69_26_41"
+
+[[spawn]]
+npc = "npc.butterfly2"
+coords = "0_37_69_38_31"
+
+[[spawn]]
+npc = "npc.butterfly2"
+coords = "0_38_69_43_43"
+
+[[spawn]]
+npc = "npc.butterfly2"
+coords = "0_38_69_48_42"
+
+[[spawn]]
+npc = "npc.butterfly2"
+coords = "0_38_69_49_38"
+
+[[spawn]]
+npc = "npc.butterfly2"
+coords = "0_38_69_56_49"
+
+[[spawn]]
+npc = "npc.fairy"
+coords = "2_38_69_40_37"
+
+[[spawn]]
+npc = "npc.fairy"
+coords = "2_38_69_48_38"
+
+[[spawn]]
+npc = "npc.fairy"
+coords = "2_38_69_51_48"
+
+[[spawn]]
+npc = "npc.fairy"
+coords = "2_38_69_58_35"
+
+[[spawn]]
+npc = "npc.fairy2_repair"
+coords = "0_37_69_42_18"
+
+[[spawn]]
+npc = "npc.fairy_banker"
+coords = "0_37_69_15_40"
+
+[[spawn]]
+npc = "npc.fairy_banker"
+coords = "0_37_69_15_43"
+
+[[spawn]]
+npc = "npc.fairy_banker"
+coords = "0_37_69_17_41"
+
+[[spawn]]
+npc = "npc.fairy_banker"
+coords = "0_37_69_18_44"
+
+[[spawn]]
+npc = "npc.fairy_chef"
+coords = "0_37_69_18_23"
+
+[[spawn]]
+npc = "npc.fairy_coordinator"
+coords = "0_38_69_20_35"
+
+[[spawn]]
+npc = "npc.fairy_cow"
+coords = "0_38_69_3_26"
+
+[[spawn]]
+npc = "npc.fairy_cow"
+coords = "0_38_69_7_41"
+
+[[spawn]]
+npc = "npc.fairy_cow"
+coords = "0_38_69_9_32"
+
+[[spawn]]
+npc = "npc.fairy_frog"
+coords = "0_38_69_1_2"
+
+[[spawn]]
+npc = "npc.fairy_godfather_multi"
+coords = "0_38_69_14_11"
+
+[[spawn]]
+npc = "npc.fairy_godfatherarmy_multi1"
+coords = "0_37_69_28_39"
+
+[[spawn]]
+npc = "npc.fairy_godfatherarmy_multi1"
+coords = "0_38_69_4_39"
+
+[[spawn]]
+npc = "npc.fairy_godfatherarmy_multi1"
+coords = "0_38_69_6_37"
+
+[[spawn]]
+npc = "npc.fairy_godfatherarmy_multi2"
+coords = "0_37_69_30_37"
+
+[[spawn]]
+npc = "npc.fairy_godfatherarmy_multi2"
+coords = "0_38_69_20_50"
+
+[[spawn]]
+npc = "npc.fairy_godfatherarmy_multi2"
+coords = "0_38_69_24_51"
+
+[[spawn]]
+npc = "npc.fairy_henchman1"
+coords = "0_38_69_17_13"
+
+[[spawn]]
+npc = "npc.fairy_henchman1_multi"
+coords = "0_38_69_16_12"
+
+[[spawn]]
+npc = "npc.fairy_henchman2"
+coords = "0_38_69_14_15"
+
+[[spawn]]
+npc = "npc.fairy_henchman2_multi"
+coords = "0_38_69_13_14"
+
+[[spawn]]
+npc = "npc.fairy_ladder_attendant"
+coords = "0_38_69_54_54"
+
+[[spawn]]
+npc = "npc.fairy_lunderwin"
+coords = "0_38_69_43_49"
+
+[[spawn]]
+npc = "npc.fairy_mindslayer"
+coords = "0_38_69_32_20"
+
+[[spawn]]
+npc = "npc.fairy_mindslayer"
+coords = "0_38_69_34_16"
+
+[[spawn]]
+npc = "npc.fairy_mindslayer"
+coords = "0_38_69_35_22"
+
+[[spawn]]
+npc = "npc.fairy_mindslayer"
+coords = "0_38_69_39_20"
+
+[[spawn]]
+npc = "npc.fairy_mindslayer_guard_multi"
+coords = "0_37_68_33_26"
+
+[[spawn]]
+npc = "npc.fairy_multi"
+coords = "0_37_69_13_43"
+
+[[spawn]]
+npc = "npc.fairy_multi"
+coords = "0_37_69_15_39"
+
+[[spawn]]
+npc = "npc.fairy_multi"
+coords = "0_37_69_15_8"
+
+[[spawn]]
+npc = "npc.fairy_multi"
+coords = "0_37_69_17_42"
+
+[[spawn]]
+npc = "npc.fairy_multi"
+coords = "0_37_69_18_15"
+
+[[spawn]]
+npc = "npc.fairy_multi"
+coords = "0_37_69_20_9"
+
+[[spawn]]
+npc = "npc.fairy_multi"
+coords = "0_37_69_23_37"
+
+[[spawn]]
+npc = "npc.fairy_multi"
+coords = "0_37_69_25_31"
+
+[[spawn]]
+npc = "npc.fairy_multi"
+coords = "0_37_69_26_24"
+
+[[spawn]]
+npc = "npc.fairy_multi"
+coords = "0_37_69_27_45"
+
+[[spawn]]
+npc = "npc.fairy_multi"
+coords = "0_37_69_28_41"
+
+[[spawn]]
+npc = "npc.fairy_multi"
+coords = "0_37_69_30_32"
+
+[[spawn]]
+npc = "npc.fairy_multi"
+coords = "0_37_69_40_29"
+
+[[spawn]]
+npc = "npc.fairy_multi"
+coords = "0_37_69_44_21"
+
+[[spawn]]
+npc = "npc.fairy_multi"
+coords = "0_37_69_47_22"
+
+[[spawn]]
+npc = "npc.fairy_multi"
+coords = "0_37_69_50_21"
+
+[[spawn]]
+npc = "npc.fairy_multi"
+coords = "0_37_69_50_31"
+
+[[spawn]]
+npc = "npc.fairy_multi"
+coords = "0_37_69_51_49"
+
+[[spawn]]
+npc = "npc.fairy_multi"
+coords = "0_37_69_55_45"
+
+[[spawn]]
+npc = "npc.fairy_multi"
+coords = "0_37_69_58_17"
+
+[[spawn]]
+npc = "npc.fairy_multi"
+coords = "0_37_69_59_45"
+
+[[spawn]]
+npc = "npc.fairy_multi"
+coords = "0_37_69_5_31"
+
+[[spawn]]
+npc = "npc.fairy_multi"
+coords = "0_37_69_63_41"
+
+[[spawn]]
+npc = "npc.fairy_multi"
+coords = "0_37_69_7_32"
+
+[[spawn]]
+npc = "npc.fairy_multi"
+coords = "0_37_69_8_29"
+
+[[spawn]]
+npc = "npc.fairy_multi"
+coords = "0_37_69_9_34"
+
+[[spawn]]
+npc = "npc.fairy_multi"
+coords = "0_38_69_14_16"
+
+[[spawn]]
+npc = "npc.fairy_multi"
+coords = "0_38_69_19_11"
+
+[[spawn]]
+npc = "npc.fairy_multi"
+coords = "0_38_69_19_7"
+
+[[spawn]]
+npc = "npc.fairy_multi"
+coords = "0_38_69_20_15"
+
+[[spawn]]
+npc = "npc.fairy_multi"
+coords = "0_38_69_42_39"
+
+[[spawn]]
+npc = "npc.fairy_multi"
+coords = "0_38_69_44_25"
+
+[[spawn]]
+npc = "npc.fairy_multi"
+coords = "0_38_69_49_34"
+
+[[spawn]]
+npc = "npc.fairy_multi"
+coords = "0_38_69_52_47"
+
+[[spawn]]
+npc = "npc.fairy_multi"
+coords = "0_38_69_56_41"
+
+[[spawn]]
+npc = "npc.fairy_multi"
+coords = "0_38_69_57_12"
+
+[[spawn]]
+npc = "npc.fairy_multi"
+coords = "0_38_69_8_9"
+
+[[spawn]]
+npc = "npc.fairy_multi"
+coords = "0_38_69_9_13"
+
+[[spawn]]
+npc = "npc.fairy_nuff_multi"
+coords = "0_37_69_20_54"
+
+[[spawn]]
+npc = "npc.fairy_queen_multi"
+coords = "0_38_69_13_11"
+
+[[spawn]]
+npc = "npc.fairy_sheep"
+coords = "0_37_69_47_35"
+
+[[spawn]]
+npc = "npc.fairy_sheep"
+coords = "0_37_69_48_19"
+
+[[spawn]]
+npc = "npc.fairy_sheep"
+coords = "0_37_69_55_16"
+
+[[spawn]]
+npc = "npc.fairy_sheep2"
+coords = "0_37_69_42_40"
+
+[[spawn]]
+npc = "npc.fairy_sheep2"
+coords = "0_37_69_47_13"
+
+[[spawn]]
+npc = "npc.fairy_tanglefoot_sml1"
+coords = "0_37_68_24_27"
+
+[[spawn]]
+npc = "npc.fairy_tanglefoot_sml1"
+coords = "0_37_68_5_35"
+
+[[spawn]]
+npc = "npc.fairy_tanglefoot_sml1"
+coords = "0_37_68_5_39"
+
+[[spawn]]
+npc = "npc.fairy_tanglefoot_sml1"
+coords = "0_37_68_9_24"
+
+[[spawn]]
+npc = "npc.fairy_tanglefoot_sml1"
+coords = "0_37_68_9_34"
+
+[[spawn]]
+npc = "npc.fairy_tanglefoot_sml2"
+coords = "0_37_68_26_26"
+
+[[spawn]]
+npc = "npc.fairy_tanglefoot_sml2"
+coords = "0_37_68_29_6"
+
+[[spawn]]
+npc = "npc.fairy_tanglefoot_sml2"
+coords = "0_37_68_7_29"
+
+[[spawn]]
+npc = "npc.fat_cow_dumby_npc"
+coords = "0_38_69_3_34"
+
+[[spawn]]
+npc = "npc.generalassistant8"
+coords = "0_37_69_8_31"
+
+[[spawn]]
+npc = "npc.generalshopkeeper8"
+coords = "0_37_69_10_31"
+
+[[spawn]]
+npc = "npc.handsand_blaec"
+coords = "0_38_69_6_26"
+
+[[spawn]]
+npc = "npc.ii_common_impling_precursor"
+coords = "0_38_69_49_26"
+
+[[spawn]]
+npc = "npc.ii_fairy"
+coords = "0_37_69_58_26"
+
+[[spawn]]
+npc = "npc.ii_lost_impling"
+coords = "0_37_69_56_20"
+
+[[spawn]]
+npc = "npc.irksol"
+coords = "0_38_69_47_53"
+
+[[spawn]]
+npc = "npc.jakut"
+coords = "0_38_69_52_36"
+
+[[spawn]]
+npc = "npc.otherworldly_being"
+coords = "0_37_69_13_9"
+
+[[spawn]]
+npc = "npc.otherworldly_being"
+coords = "0_37_69_14_13"
+
+[[spawn]]
+npc = "npc.otherworldly_being"
+coords = "0_37_69_14_5"
+
+[[spawn]]
+npc = "npc.otherworldly_being"
+coords = "0_37_69_18_3"
+
+[[spawn]]
+npc = "npc.otherworldly_being"
+coords = "0_37_69_20_12"
+
+[[spawn]]
+npc = "npc.otherworldly_being"
+coords = "0_37_69_21_6"
+
+[[spawn]]
+npc = "npc.slayer_master_4"
+coords = "0_38_69_12_15"
+
+[[spawn]]
+npc = "npc.slayer_mutated_zygomite_adolescent"
+coords = "0_37_68_44_18"
+
+[[spawn]]
+npc = "npc.slayer_mutated_zygomite_adolescent"
+coords = "0_37_68_48_24"
+
+[[spawn]]
+npc = "npc.slayer_mutated_zygomite_adolescent"
+coords = "0_37_68_51_22"
+
+[[spawn]]
+npc = "npc.slayer_mutated_zygomite_adolescent"
+coords = "0_37_68_52_25"
+
+[[spawn]]
+npc = "npc.slayer_mutated_zygomite_adolescent"
+coords = "0_37_68_53_18"
+
+[[spawn]]
+npc = "npc.slayer_mutated_zygomite_adolescent"
+coords = "0_37_69_44_54"
+
+[[spawn]]
+npc = "npc.slayer_mutated_zygomite_adolescent"
+coords = "0_37_69_46_51"
+
+[[spawn]]
+npc = "npc.slayer_mutated_zygomite_adolescent"
+coords = "0_37_69_47_59"
+
+[[spawn]]
+npc = "npc.slayer_mutated_zygomite_adolescent"
+coords = "0_37_69_51_51"
+
+[[spawn]]
+npc = "npc.slayer_mutated_zygomite_adolescent"
+coords = "0_37_69_51_58"
+
+[[spawn]]
+npc = "npc.slayer_mutated_zygomite_adolescent_cap"
+coords = "0_37_69_44_54"
+
+[[spawn]]
+npc = "npc.slayer_mutated_zygomite_adolescent_cap"
+coords = "0_37_69_46_51"
+
+[[spawn]]
+npc = "npc.slayer_mutated_zygomite_adolescent_cap"
+coords = "0_37_69_47_59"
+
+[[spawn]]
+npc = "npc.slayer_mutated_zygomite_adolescent_cap"
+coords = "0_37_69_51_51"
+
+[[spawn]]
+npc = "npc.slayer_mutated_zygomite_adolescent_cap"
+coords = "0_37_69_51_58"
+
+[[spawn]]
+npc = "npc.slayer_mutated_zygomite_adult_cap"
+coords = "0_37_68_44_18"
+
+[[spawn]]
+npc = "npc.slayer_mutated_zygomite_adult_cap"
+coords = "0_37_68_48_24"
+
+[[spawn]]
+npc = "npc.slayer_mutated_zygomite_adult_cap"
+coords = "0_37_68_51_22"
+
+[[spawn]]
+npc = "npc.slayer_mutated_zygomite_adult_cap"
+coords = "0_37_68_52_25"
+
+[[spawn]]
+npc = "npc.slayer_mutated_zygomite_adult_cap"
+coords = "0_37_68_53_18"
+
+## Zanaris Main End
+

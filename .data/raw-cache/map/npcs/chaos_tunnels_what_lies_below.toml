@@ -1,0 +1,12 @@
+[[spawn]]
+npc = "npc.surok_monk1"
+coords = "0_49_81_47_21"
+
+[[spawn]]
+npc = "npc.surok_monk2"
+coords = "0_49_81_23_28"
+
+[[spawn]]
+npc = "npc.surok_monk3"
+coords = "0_49_81_39_33"
+

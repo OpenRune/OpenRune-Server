@@ -1,0 +1,106 @@
+## Meiyerditch Mines
+
+[[spawn]]
+npc = "npc.myreque_pt3_miner1"
+coords = "2_37_72_24_18"
+
+[[spawn]]
+npc = "npc.myreque_pt3_miner2"
+coords = "2_37_72_27_23"
+
+[[spawn]]
+npc = "npc.myreque_pt3_miner3"
+coords = "2_37_72_21_26"
+
+[[spawn]]
+npc = "npc.myreque_pt3_miner4"
+coords = "2_37_72_29_26"
+
+[[spawn]]
+npc = "npc.myreque_pt3_miner5"
+coords = "2_37_72_15_28"
+
+[[spawn]]
+npc = "npc.myreque_pt3_miner6"
+coords = "2_37_72_10_16"
+
+[[spawn]]
+npc = "npc.sang_myq3_mine_guard_juvinate_female"
+coords = "2_37_72_12_19"
+
+[[spawn]]
+npc = "npc.sang_myq3_mine_guard_juvinate_female"
+coords = "2_37_72_18_24"
+
+[[spawn]]
+npc = "npc.sang_myq3_mine_guard_juvinate_male"
+coords = "2_37_72_23_11"
+
+[[spawn]]
+npc = "npc.sang_myq3_mine_guard_juvinate_male"
+coords = "2_37_72_24_15"
+
+## Meiyerditch Myreque Hideout
+
+[[spawn]]
+npc = "npc.myq4_andiess"
+coords = "0_56_150_54_36"
+
+[[spawn]]
+npc = "npc.myq4_flaygian"
+coords = "0_56_150_39_43"
+
+[[spawn]]
+npc = "npc.myq4_kael"
+coords = "0_56_150_40_30"
+
+[[spawn]]
+npc = "npc.myq4_kael_new_hideout"
+coords = "0_56_150_10_13"
+
+[[spawn]]
+npc = "npc.myq4_mekritus"
+coords = "0_56_150_50_23"
+
+[[spawn]]
+npc = "npc.myq4_safalaan_new_hideout"
+coords = "0_56_150_16_15"
+
+[[spawn]]
+npc = "npc.myq4_vertida_new_hideout"
+coords = "0_56_150_15_11"
+
+[[spawn]]
+npc = "npc.myq5_ivan_hideout"
+coords = "0_56_150_14_13"
+
+[[spawn]]
+npc = "npc.myq5_polmafi_hideout"
+coords = "0_56_150_17_12"
+
+[[spawn]]
+npc = "npc.myq5_radigad_hideout"
+coords = "0_56_150_14_16"
+
+[[spawn]]
+npc = "npc.myq5_veliaf_hideout"
+coords = "0_56_150_16_14"
+
+[[spawn]]
+npc = "npc.myreque_pt3_multi_safalaan_basecamp"
+coords = "0_56_150_43_46"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_56_150_35_21"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_56_150_43_18"
+
+[[spawn]]
+npc = "npc.sanguinesti_vertida_sefalatis"
+coords = "0_56_150_46_43"
+
+## Meiyerditch Myreque Hideout End
+

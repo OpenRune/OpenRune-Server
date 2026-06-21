@@ -1,0 +1,8 @@
+[[spawn]]
+npc = "npc.mm_daero"
+coords = "0_37_154_24_34"
+
+[[spawn]]
+npc = "npc.mm_waydar"
+coords = "0_37_154_24_39"
+

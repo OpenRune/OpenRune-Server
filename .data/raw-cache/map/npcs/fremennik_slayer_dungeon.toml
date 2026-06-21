@@ -1,0 +1,360 @@
+[[spawn]]
+npc = "npc.slayer_basilisk"
+coords = "0_42_156_50_24"
+
+[[spawn]]
+npc = "npc.slayer_basilisk"
+coords = "0_42_156_52_19"
+
+[[spawn]]
+npc = "npc.slayer_basilisk"
+coords = "0_42_156_52_30"
+
+[[spawn]]
+npc = "npc.slayer_basilisk"
+coords = "0_42_156_54_24"
+
+[[spawn]]
+npc = "npc.slayer_basilisk"
+coords = "0_42_156_55_34"
+
+[[spawn]]
+npc = "npc.slayer_basilisk"
+coords = "0_42_156_57_18"
+
+[[spawn]]
+npc = "npc.slayer_basilisk"
+coords = "0_42_156_58_22"
+
+[[spawn]]
+npc = "npc.slayer_basilisk"
+coords = "0_42_156_58_31"
+
+[[spawn]]
+npc = "npc.slayer_cave_crawler_1"
+coords = "0_43_156_32_14"
+
+[[spawn]]
+npc = "npc.slayer_cave_crawler_1"
+coords = "0_43_156_43_10"
+
+[[spawn]]
+npc = "npc.slayer_cave_crawler_2"
+coords = "0_43_156_35_12"
+
+[[spawn]]
+npc = "npc.slayer_cave_crawler_3"
+coords = "0_43_156_29_16"
+
+[[spawn]]
+npc = "npc.slayer_cave_crawler_3"
+coords = "0_43_156_33_8"
+
+[[spawn]]
+npc = "npc.slayer_cave_crawler_3"
+coords = "0_43_156_38_10"
+
+[[spawn]]
+npc = "npc.slayer_cave_crawler_4"
+coords = "0_43_156_30_11"
+
+[[spawn]]
+npc = "npc.slayer_cave_crawler_4"
+coords = "0_43_156_41_14"
+
+[[spawn]]
+npc = "npc.slayer_cockatrice"
+coords = "0_43_156_33_51"
+
+[[spawn]]
+npc = "npc.slayer_cockatrice"
+coords = "0_43_156_34_54"
+
+[[spawn]]
+npc = "npc.slayer_cockatrice"
+coords = "0_43_156_37_48"
+
+[[spawn]]
+npc = "npc.slayer_cockatrice"
+coords = "0_43_156_39_52"
+
+[[spawn]]
+npc = "npc.slayer_cockatrice"
+coords = "0_43_156_43_49"
+
+[[spawn]]
+npc = "npc.slayer_cockatrice"
+coords = "0_43_156_45_52"
+
+[[spawn]]
+npc = "npc.slayer_cockatrice"
+coords = "0_43_156_47_47"
+
+[[spawn]]
+npc = "npc.slayer_jelly_1"
+coords = "0_42_156_11_45"
+
+[[spawn]]
+npc = "npc.slayer_jelly_2"
+coords = "0_42_156_13_39"
+
+[[spawn]]
+npc = "npc.slayer_jelly_2"
+coords = "0_42_156_15_47"
+
+[[spawn]]
+npc = "npc.slayer_jelly_3"
+coords = "0_42_156_18_45"
+
+[[spawn]]
+npc = "npc.slayer_jelly_4"
+coords = "0_42_156_20_43"
+
+[[spawn]]
+npc = "npc.slayer_jelly_4"
+coords = "0_42_156_23_45"
+
+[[spawn]]
+npc = "npc.slayer_jelly_5"
+coords = "0_42_156_13_43"
+
+[[spawn]]
+npc = "npc.slayer_jelly_5"
+coords = "0_42_156_20_40"
+
+[[spawn]]
+npc = "npc.slayer_jelly_6"
+coords = "0_42_156_15_41"
+
+[[spawn]]
+npc = "npc.slayer_jelly_6"
+coords = "0_42_156_16_44"
+
+[[spawn]]
+npc = "npc.slayer_kurask_troll"
+coords = "0_42_156_18_0"
+
+[[spawn]]
+npc = "npc.slayer_kursk_1"
+coords = "0_42_155_10_42"
+
+[[spawn]]
+npc = "npc.slayer_kursk_1"
+coords = "0_42_155_11_57"
+
+[[spawn]]
+npc = "npc.slayer_kursk_1"
+coords = "0_42_155_16_39"
+
+[[spawn]]
+npc = "npc.slayer_kursk_1"
+coords = "0_42_155_17_49"
+
+[[spawn]]
+npc = "npc.slayer_kursk_1"
+coords = "0_42_155_21_56"
+
+[[spawn]]
+npc = "npc.slayer_kursk_1"
+coords = "0_42_155_22_43"
+
+[[spawn]]
+npc = "npc.slayer_kursk_1"
+coords = "0_42_155_25_50"
+
+[[spawn]]
+npc = "npc.slayer_kursk_1"
+coords = "0_42_155_28_44"
+
+[[spawn]]
+npc = "npc.slayer_kursk_1"
+coords = "0_42_155_8_49"
+
+[[spawn]]
+npc = "npc.slayer_kursk_1"
+coords = "0_42_156_10_8"
+
+[[spawn]]
+npc = "npc.slayer_kursk_1"
+coords = "0_42_156_11_17"
+
+[[spawn]]
+npc = "npc.slayer_kursk_1"
+coords = "0_42_156_13_12"
+
+[[spawn]]
+npc = "npc.slayer_kursk_1"
+coords = "0_42_156_6_11"
+
+[[spawn]]
+npc = "npc.slayer_kursk_2"
+coords = "0_42_156_6_15"
+
+[[spawn]]
+npc = "npc.slayer_pyrefiend_1"
+coords = "0_43_156_13_18"
+
+[[spawn]]
+npc = "npc.slayer_pyrefiend_1"
+coords = "0_43_156_6_20"
+
+[[spawn]]
+npc = "npc.slayer_pyrefiend_1"
+coords = "0_43_156_8_25"
+
+[[spawn]]
+npc = "npc.slayer_pyrefiend_1"
+coords = "0_43_156_9_14"
+
+[[spawn]]
+npc = "npc.slayer_pyrefiend_2"
+coords = "0_43_156_11_15"
+
+[[spawn]]
+npc = "npc.slayer_pyrefiend_2"
+coords = "0_43_156_11_23"
+
+[[spawn]]
+npc = "npc.slayer_pyrefiend_2"
+coords = "0_43_156_6_17"
+
+[[spawn]]
+npc = "npc.slayer_pyrefiend_3"
+coords = "0_43_156_11_17"
+
+[[spawn]]
+npc = "npc.slayer_pyrefiend_3"
+coords = "0_43_156_5_24"
+
+[[spawn]]
+npc = "npc.slayer_pyrefiend_3"
+coords = "0_43_156_6_28"
+
+[[spawn]]
+npc = "npc.slayer_pyrefiend_4"
+coords = "0_43_156_13_21"
+
+[[spawn]]
+npc = "npc.slayer_pyrefiend_4"
+coords = "0_43_156_8_23"
+
+[[spawn]]
+npc = "npc.slayer_pyrefiend_4"
+coords = "0_43_156_9_19"
+
+[[spawn]]
+npc = "npc.slayer_rockslug"
+coords = "0_43_156_41_32"
+
+[[spawn]]
+npc = "npc.slayer_rockslug"
+coords = "0_43_156_43_33"
+
+[[spawn]]
+npc = "npc.slayer_rockslug"
+coords = "0_43_156_46_34"
+
+[[spawn]]
+npc = "npc.slayer_rockslug"
+coords = "0_43_156_48_36"
+
+[[spawn]]
+npc = "npc.slayer_rockslug"
+coords = "0_43_156_49_31"
+
+[[spawn]]
+npc = "npc.slayer_rockslug"
+coords = "0_43_156_51_33"
+
+[[spawn]]
+npc = "npc.slayer_rockslug"
+coords = "0_43_156_52_35"
+
+[[spawn]]
+npc = "npc.slayer_turoth_baby"
+coords = "0_42_156_31_27"
+
+[[spawn]]
+npc = "npc.slayer_turoth_baby"
+coords = "0_42_156_36_29"
+
+[[spawn]]
+npc = "npc.slayer_turoth_baby"
+coords = "0_42_156_37_28"
+
+[[spawn]]
+npc = "npc.slayer_turoth_baby"
+coords = "0_42_156_38_26"
+
+[[spawn]]
+npc = "npc.slayer_turoth_baby"
+coords = "0_42_156_38_29"
+
+[[spawn]]
+npc = "npc.slayer_turoth_baby"
+coords = "0_42_156_39_11"
+
+[[spawn]]
+npc = "npc.slayer_turoth_baby"
+coords = "0_42_156_39_27"
+
+[[spawn]]
+npc = "npc.slayer_turoth_baby"
+coords = "0_42_156_40_12"
+
+[[spawn]]
+npc = "npc.slayer_turoth_baby"
+coords = "0_42_156_40_13"
+
+[[spawn]]
+npc = "npc.slayer_turoth_child"
+coords = "0_42_156_29_23"
+
+[[spawn]]
+npc = "npc.slayer_turoth_child"
+coords = "0_42_156_30_24"
+
+[[spawn]]
+npc = "npc.slayer_turoth_child"
+coords = "0_42_156_32_19"
+
+[[spawn]]
+npc = "npc.slayer_turoth_child"
+coords = "0_42_156_33_25"
+
+[[spawn]]
+npc = "npc.slayer_turoth_child"
+coords = "0_42_156_33_30"
+
+[[spawn]]
+npc = "npc.slayer_turoth_child"
+coords = "0_42_156_35_18"
+
+[[spawn]]
+npc = "npc.slayer_turoth_child"
+coords = "0_42_156_35_26"
+
+[[spawn]]
+npc = "npc.slayer_turoth_child"
+coords = "0_42_156_36_12"
+
+[[spawn]]
+npc = "npc.slayer_turoth_child"
+coords = "0_42_156_37_11"
+
+[[spawn]]
+npc = "npc.slayer_turoth_dad"
+coords = "0_42_156_30_22"
+
+[[spawn]]
+npc = "npc.slayer_turoth_mum"
+coords = "0_42_156_33_19"
+
+[[spawn]]
+npc = "npc.slayer_turoth_mum"
+coords = "0_42_156_34_24"
+
+[[spawn]]
+npc = "npc.slayer_turoth_mum"
+coords = "0_42_156_35_10"
+

@@ -1,0 +1,20 @@
+[[spawn]]
+npc = "npc.fionella"
+coords = "1_42_52_37_50"
+
+[[spawn]]
+npc = "npc.radimus_erkle"
+coords = "0_42_52_38_40"
+
+[[spawn]]
+npc = "npc.radimus_erkle_guild"
+coords = "0_42_52_36_50"
+
+[[spawn]]
+npc = "npc.radimus_erkle_hut"
+coords = "0_42_52_36_40"
+
+[[spawn]]
+npc = "npc.siegfried_erkle"
+coords = "2_42_52_37_53"
+

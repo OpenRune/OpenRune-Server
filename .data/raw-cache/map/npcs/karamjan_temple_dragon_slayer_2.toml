@@ -1,0 +1,120 @@
+[[spawn]]
+npc = "npc.ds2_golem_magic"
+coords = "0_44_144_12_24"
+
+[[spawn]]
+npc = "npc.ds2_golem_magic"
+coords = "0_44_144_15_3"
+
+[[spawn]]
+npc = "npc.ds2_golem_magic"
+coords = "0_44_144_23_51"
+
+[[spawn]]
+npc = "npc.ds2_golem_magic"
+coords = "0_44_144_24_35"
+
+[[spawn]]
+npc = "npc.ds2_golem_magic"
+coords = "0_44_144_3_42"
+
+[[spawn]]
+npc = "npc.ds2_golem_magic"
+coords = "0_44_144_40_51"
+
+[[spawn]]
+npc = "npc.ds2_golem_magic"
+coords = "0_44_144_44_40"
+
+[[spawn]]
+npc = "npc.ds2_golem_magic"
+coords = "0_44_144_58_59"
+
+[[spawn]]
+npc = "npc.ds2_golem_magic"
+coords = "0_44_144_59_18"
+
+[[spawn]]
+npc = "npc.ds2_golem_magic"
+coords = "0_44_144_59_5"
+
+[[spawn]]
+npc = "npc.ds2_golem_melee"
+coords = "0_44_144_10_15"
+
+[[spawn]]
+npc = "npc.ds2_golem_melee"
+coords = "0_44_144_12_36"
+
+[[spawn]]
+npc = "npc.ds2_golem_melee"
+coords = "0_44_144_13_59"
+
+[[spawn]]
+npc = "npc.ds2_golem_melee"
+coords = "0_44_144_25_23"
+
+[[spawn]]
+npc = "npc.ds2_golem_melee"
+coords = "0_44_144_28_7"
+
+[[spawn]]
+npc = "npc.ds2_golem_melee"
+coords = "0_44_144_35_48"
+
+[[spawn]]
+npc = "npc.ds2_golem_melee"
+coords = "0_44_144_43_28"
+
+[[spawn]]
+npc = "npc.ds2_golem_melee"
+coords = "0_44_144_47_7"
+
+[[spawn]]
+npc = "npc.ds2_golem_melee"
+coords = "0_44_144_48_58"
+
+[[spawn]]
+npc = "npc.ds2_golem_melee"
+coords = "0_44_144_59_39"
+
+[[spawn]]
+npc = "npc.ds2_golem_ranged"
+coords = "0_44_144_16_31"
+
+[[spawn]]
+npc = "npc.ds2_golem_ranged"
+coords = "0_44_144_27_44"
+
+[[spawn]]
+npc = "npc.ds2_golem_ranged"
+coords = "0_44_144_32_19"
+
+[[spawn]]
+npc = "npc.ds2_golem_ranged"
+coords = "0_44_144_34_4"
+
+[[spawn]]
+npc = "npc.ds2_golem_ranged"
+coords = "0_44_144_40_58"
+
+[[spawn]]
+npc = "npc.ds2_golem_ranged"
+coords = "0_44_144_42_35"
+
+[[spawn]]
+npc = "npc.ds2_golem_ranged"
+coords = "0_44_144_4_12"
+
+[[spawn]]
+npc = "npc.ds2_golem_ranged"
+coords = "0_44_144_4_57"
+
+[[spawn]]
+npc = "npc.ds2_golem_ranged"
+coords = "0_44_144_52_25"
+
+[[spawn]]
+npc = "npc.ds2_golem_ranged"
+coords = "0_44_144_54_47"
+

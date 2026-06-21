@@ -1,0 +1,248 @@
+[[spawn]]
+npc = "npc.0_45_90_cavefish"
+coords = "0_45_90_41_47"
+
+[[spawn]]
+npc = "npc.camdozaal_fishingspot_1"
+coords = "0_45_90_42_28"
+
+[[spawn]]
+npc = "npc.camdozaal_fishingspot_1"
+coords = "0_45_90_46_24"
+
+[[spawn]]
+npc = "npc.camdozaal_fishingspot_1"
+coords = "0_45_90_48_17"
+
+[[spawn]]
+npc = "npc.camdozaal_ghost_1"
+coords = "0_45_90_42_61"
+
+[[spawn]]
+npc = "npc.camdozaal_ghost_2"
+coords = "0_46_90_46_43"
+
+[[spawn]]
+npc = "npc.camdozaal_ghost_3"
+coords = "0_47_90_9_19"
+
+[[spawn]]
+npc = "npc.camdozaal_golem_body_rock"
+coords = "0_47_90_13_52"
+
+[[spawn]]
+npc = "npc.camdozaal_golem_body_rock"
+coords = "0_47_90_14_48"
+
+[[spawn]]
+npc = "npc.camdozaal_golem_body_rock"
+coords = "0_47_90_17_42"
+
+[[spawn]]
+npc = "npc.camdozaal_golem_body_rock"
+coords = "0_47_90_17_45"
+
+[[spawn]]
+npc = "npc.camdozaal_golem_body_rock"
+coords = "0_47_90_7_48"
+
+[[spawn]]
+npc = "npc.camdozaal_golem_body_rock"
+coords = "0_47_90_9_50"
+
+[[spawn]]
+npc = "npc.camdozaal_golem_chaos_rock"
+coords = "0_47_90_14_12"
+
+[[spawn]]
+npc = "npc.camdozaal_golem_chaos_rock"
+coords = "0_47_90_16_25"
+
+[[spawn]]
+npc = "npc.camdozaal_golem_chaos_rock"
+coords = "0_47_90_17_14"
+
+[[spawn]]
+npc = "npc.camdozaal_golem_chaos_rock"
+coords = "0_47_90_17_20"
+
+[[spawn]]
+npc = "npc.camdozaal_golem_chaos_rock"
+coords = "0_47_90_6_17"
+
+[[spawn]]
+npc = "npc.camdozaal_golem_chaos_rock"
+coords = "0_47_90_7_12"
+
+[[spawn]]
+npc = "npc.camdozaal_golem_chaos_rock"
+coords = "0_47_90_9_24"
+
+[[spawn]]
+npc = "npc.camdozaal_golem_flawed_rock"
+coords = "0_46_90_32_15"
+
+[[spawn]]
+npc = "npc.camdozaal_golem_flawed_rock"
+coords = "0_46_90_34_21"
+
+[[spawn]]
+npc = "npc.camdozaal_golem_flawed_rock"
+coords = "0_46_90_35_10"
+
+[[spawn]]
+npc = "npc.camdozaal_golem_flawed_rock"
+coords = "0_46_90_35_24"
+
+[[spawn]]
+npc = "npc.camdozaal_golem_flawed_rock"
+coords = "0_46_90_40_13"
+
+[[spawn]]
+npc = "npc.camdozaal_golem_flawed_rock"
+coords = "0_46_90_40_20"
+
+[[spawn]]
+npc = "npc.camdozaal_golem_flawed_rock"
+coords = "0_46_90_47_20"
+
+[[spawn]]
+npc = "npc.camdozaal_golem_flawed_rock"
+coords = "0_46_90_48_17"
+
+[[spawn]]
+npc = "npc.camdozaal_golem_mind_rock"
+coords = "0_46_90_54_15"
+
+[[spawn]]
+npc = "npc.camdozaal_golem_mind_rock"
+coords = "0_46_90_57_14"
+
+[[spawn]]
+npc = "npc.camdozaal_golem_mind_rock"
+coords = "0_46_90_57_28"
+
+[[spawn]]
+npc = "npc.camdozaal_golem_mind_rock"
+coords = "0_46_90_58_25"
+
+[[spawn]]
+npc = "npc.camdozaal_golem_mind_rock"
+coords = "0_46_90_59_19"
+
+[[spawn]]
+npc = "npc.camdozaal_golem_mind_rock"
+coords = "0_46_90_59_22"
+
+[[spawn]]
+npc = "npc.camdozaal_little_frog"
+coords = "0_45_90_34_12"
+
+[[spawn]]
+npc = "npc.camdozaal_little_frog"
+coords = "0_45_90_46_10"
+
+[[spawn]]
+npc = "npc.camdozaal_little_frog"
+coords = "0_45_90_47_25"
+
+[[spawn]]
+npc = "npc.camdozaal_ramarno_multi"
+coords = "0_46_90_15_49"
+
+[[spawn]]
+npc = "npc.dt2_camdozaal_archaeologist_1"
+coords = "0_46_90_27_38"
+
+[[spawn]]
+npc = "npc.dt2_camdozaal_archaeologist_1_vis"
+coords = "0_46_90_29_37"
+
+[[spawn]]
+npc = "npc.dt2_camdozaal_archaeologist_2"
+coords = "0_46_90_29_35"
+
+[[spawn]]
+npc = "npc.dt2_camdozaal_archaeologist_2_vis"
+coords = "0_46_90_29_37"
+
+[[spawn]]
+npc = "npc.spider_nocombat2"
+coords = "0_45_90_29_52"
+
+[[spawn]]
+npc = "npc.spider_nocombat2"
+coords = "0_45_90_33_48"
+
+[[spawn]]
+npc = "npc.spider_nocombat2"
+coords = "0_45_90_38_55"
+
+[[spawn]]
+npc = "npc.spider_nocombat2"
+coords = "0_45_90_40_49"
+
+[[spawn]]
+npc = "npc.spider_nocombat2"
+coords = "0_45_90_54_37"
+
+[[spawn]]
+npc = "npc.spider_nocombat2"
+coords = "0_45_90_57_51"
+
+[[spawn]]
+npc = "npc.spider_nocombat2"
+coords = "0_45_90_58_34"
+
+[[spawn]]
+npc = "npc.spider_nocombat2"
+coords = "0_45_90_60_35"
+
+[[spawn]]
+npc = "npc.spider_nocombat2"
+coords = "0_46_90_12_42"
+
+[[spawn]]
+npc = "npc.spider_nocombat2"
+coords = "0_46_90_21_23"
+
+[[spawn]]
+npc = "npc.spider_nocombat2"
+coords = "0_46_90_23_20"
+
+[[spawn]]
+npc = "npc.spider_nocombat2"
+coords = "0_46_90_24_24"
+
+[[spawn]]
+npc = "npc.spider_nocombat2"
+coords = "0_46_90_32_40"
+
+[[spawn]]
+npc = "npc.spider_nocombat2"
+coords = "0_46_90_40_48"
+
+[[spawn]]
+npc = "npc.spider_nocombat2"
+coords = "0_46_90_43_32"
+
+[[spawn]]
+npc = "npc.spider_nocombat2"
+coords = "0_46_90_4_57"
+
+[[spawn]]
+npc = "npc.spider_nocombat2"
+coords = "0_46_90_50_53"
+
+[[spawn]]
+npc = "npc.spider_nocombat2"
+coords = "0_46_90_55_41"
+
+## Camdozaal Tiled Floor
+
+[[spawn]]
+npc = "npc.camdozaal_ramarno_entrance_multi"
+coords = "0_46_90_7_19"
+
+## Camdozaal Tiled Floor End
+

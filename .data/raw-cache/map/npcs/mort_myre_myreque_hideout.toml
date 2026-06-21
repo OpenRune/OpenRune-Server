@@ -1,0 +1,180 @@
+[[spawn]]
+npc = "npc.giantrat"
+coords = "0_54_153_24_38"
+
+[[spawn]]
+npc = "npc.giantrat"
+coords = "0_54_153_28_32"
+
+[[spawn]]
+npc = "npc.giantrat"
+coords = "0_54_153_39_20"
+
+[[spawn]]
+npc = "npc.giantrat"
+coords = "0_54_153_46_14"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_54_153_20_50"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_54_153_23_43"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_54_153_23_48"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_54_153_23_49"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_54_153_24_49"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_54_153_25_36"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_54_153_29_52"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_54_153_29_53"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_54_153_30_30"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_54_153_30_51"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_54_153_30_52"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_54_153_30_53"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_54_153_31_51"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_54_153_31_52"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_54_153_36_23"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_54_153_41_16"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_54_153_46_16"
+
+[[spawn]]
+npc = "npc.route_harold_evans"
+coords = "0_54_153_48_41"
+
+[[spawn]]
+npc = "npc.route_ivan_strom_parent"
+coords = "0_54_153_57_51"
+
+[[spawn]]
+npc = "npc.route_polmafi_ferdygris"
+coords = "0_54_153_58_46"
+
+[[spawn]]
+npc = "npc.route_polmafi_ferdygris_parent"
+coords = "0_54_153_58_46"
+
+[[spawn]]
+npc = "npc.route_radigad_ponfit"
+coords = "0_54_153_53_39"
+
+[[spawn]]
+npc = "npc.route_radigad_ponfit_parent"
+coords = "0_54_153_53_39"
+
+[[spawn]]
+npc = "npc.route_sani_piliu"
+coords = "0_54_153_54_44"
+
+[[spawn]]
+npc = "npc.route_veliaf_hurtz_parent"
+coords = "0_54_153_50_46"
+
+## Mort Myre Myreque Hideout west cave 1
+
+[[spawn]]
+npc = "npc.deadly_red_spider"
+coords = "0_54_153_10_23"
+
+[[spawn]]
+npc = "npc.giantrat1"
+coords = "0_54_153_8_26"
+
+[[spawn]]
+npc = "npc.giantrat1_2"
+coords = "0_54_153_7_21"
+
+[[spawn]]
+npc = "npc.giantrat1_3"
+coords = "0_54_153_13_24"
+
+## Mort Myre Myreque Hideout west cave 2
+
+[[spawn]]
+npc = "npc.deadly_red_spider"
+coords = "0_54_153_15_14"
+
+[[spawn]]
+npc = "npc.dog"
+coords = "0_54_153_13_14"
+
+[[spawn]]
+npc = "npc.dog"
+coords = "0_54_153_14_12"
+
+## Mort Myre Myreque Hideout west cave 3
+
+[[spawn]]
+npc = "npc.goblin"
+coords = "0_54_153_10_6"
+
+[[spawn]]
+npc = "npc.goblin_armed"
+coords = "0_54_153_9_5"
+
+[[spawn]]
+npc = "npc.goblin_helmet"
+coords = "0_54_153_10_4"
+
+[[spawn]]
+npc = "npc.hobgoblin_armed"
+coords = "0_54_153_13_4"
+
+[[spawn]]
+npc = "npc.hobgoblin_unarmed"
+coords = "0_54_153_13_5"
+
+[[spawn]]
+npc = "npc.poisonspider"
+coords = "0_54_153_11_5"
+
+[[spawn]]
+npc = "npc.poisonspider"
+coords = "0_54_153_15_4"
+
+## Mort Myre Myreque Hideout west cave 3 End
+

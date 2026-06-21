@@ -1,0 +1,422 @@
+## Abandoned Mine 1
+
+[[spawn]]
+npc = "npc.bat"
+coords = "0_53_150_18_32"
+
+[[spawn]]
+npc = "npc.bat"
+coords = "0_53_150_19_20"
+
+[[spawn]]
+npc = "npc.bat"
+coords = "0_53_150_24_20"
+
+[[spawn]]
+npc = "npc.bat"
+coords = "0_53_150_33_37"
+
+[[spawn]]
+npc = "npc.lotr_possessed_pickaxe"
+coords = "0_53_150_31_58"
+
+[[spawn]]
+npc = "npc.lotr_possessed_spade"
+coords = "0_53_150_28_57"
+
+[[spawn]]
+npc = "npc.lotr_possessed_spade"
+coords = "0_53_150_37_48"
+
+[[spawn]]
+npc = "npc.lotr_skeleton_miner1"
+coords = "0_53_150_35_44"
+
+[[spawn]]
+npc = "npc.lotr_skeleton_miner1"
+coords = "0_53_150_36_58"
+
+[[spawn]]
+npc = "npc.small_bat"
+coords = "0_53_150_17_37"
+
+[[spawn]]
+npc = "npc.small_bat"
+coords = "0_53_150_18_40"
+
+[[spawn]]
+npc = "npc.small_bat"
+coords = "0_53_150_19_44"
+
+[[spawn]]
+npc = "npc.small_bat"
+coords = "0_53_150_22_43"
+
+[[spawn]]
+npc = "npc.small_bat"
+coords = "0_53_150_26_42"
+
+[[spawn]]
+npc = "npc.small_bat"
+coords = "0_53_150_27_46"
+
+[[spawn]]
+npc = "npc.small_bat"
+coords = "0_53_150_28_31"
+
+[[spawn]]
+npc = "npc.small_bat"
+coords = "0_53_150_29_29"
+
+[[spawn]]
+npc = "npc.small_bat"
+coords = "0_53_150_31_25"
+
+[[spawn]]
+npc = "npc.small_bat"
+coords = "0_53_150_41_38"
+
+[[spawn]]
+npc = "npc.small_bat"
+coords = "0_53_150_42_36"
+
+[[spawn]]
+npc = "npc.small_bat"
+coords = "0_53_150_44_36"
+
+## Abandoned Mine 2
+
+[[spawn]]
+npc = "npc.hauntedmine_suprise_ghost_hidden"
+coords = "0_43_71_34_27"
+
+[[spawn]]
+npc = "npc.hauntedmine_suprise_ghost_hidden"
+coords = "0_43_71_39_16"
+
+[[spawn]]
+npc = "npc.hauntedmine_suprise_ghost_hidden"
+coords = "0_43_71_40_23"
+
+[[spawn]]
+npc = "npc.hauntedmine_suprise_ghost_hidden"
+coords = "0_43_71_44_43"
+
+[[spawn]]
+npc = "npc.hauntedmine_suprise_ghost_hidden"
+coords = "0_43_71_46_48"
+
+[[spawn]]
+npc = "npc.hauntedmine_suprise_ghost_hidden"
+coords = "0_43_71_46_52"
+
+[[spawn]]
+npc = "npc.hauntedmine_suprise_ghost_hidden"
+coords = "0_43_71_50_47"
+
+[[spawn]]
+npc = "npc.hauntedmine_suprise_ghost_hidden"
+coords = "0_43_71_56_53"
+
+[[spawn]]
+npc = "npc.hauntedmine_suprise_ghost_hidden"
+coords = "0_43_71_56_57"
+
+[[spawn]]
+npc = "npc.possessed_pickaxe_stationary"
+coords = "0_43_71_17_49"
+
+[[spawn]]
+npc = "npc.possessed_pickaxe_stationary"
+coords = "0_43_71_18_47"
+
+[[spawn]]
+npc = "npc.possessed_pickaxe_stationary"
+coords = "0_43_71_22_48"
+
+[[spawn]]
+npc = "npc.possessed_pickaxe_stationary"
+coords = "0_43_71_31_47"
+
+[[spawn]]
+npc = "npc.possessed_pickaxe_stationary"
+coords = "0_43_71_33_50"
+
+[[spawn]]
+npc = "npc.possessed_pickaxe_stationary"
+coords = "0_43_71_33_54"
+
+[[spawn]]
+npc = "npc.possessed_pickaxe_stationary"
+coords = "0_43_71_40_53"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_43_71_24_33"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_43_71_25_38"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_43_71_28_48"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_43_71_31_49"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_43_71_33_36"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_43_71_34_34"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_43_71_35_35"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_43_71_50_55"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_43_71_60_33"
+
+[[spawn]]
+npc = "npc.skeletal_miner_sitting"
+coords = "0_43_71_48_29"
+
+[[spawn]]
+npc = "npc.skeletal_miner_sitting"
+coords = "0_43_71_49_36"
+
+[[spawn]]
+npc = "npc.skeletal_miner_sitting"
+coords = "0_43_71_50_36"
+
+[[spawn]]
+npc = "npc.skeletal_miner_sitting"
+coords = "0_43_71_55_28"
+
+[[spawn]]
+npc = "npc.skeletal_miner_sitting"
+coords = "0_43_71_58_29"
+
+[[spawn]]
+npc = "npc.skeletal_miner_sitting"
+coords = "0_43_71_59_23"
+
+[[spawn]]
+npc = "npc.skeletal_miner_sitting"
+coords = "0_43_71_61_27"
+
+## Abandoned Mine 3
+
+[[spawn]]
+npc = "npc.hauntedmine_cart1"
+coords = "0_42_70_39_29"
+
+[[spawn]]
+npc = "npc.hauntedmine_cart2"
+coords = "0_42_70_9_18"
+
+[[spawn]]
+npc = "npc.hauntedmine_cart3"
+coords = "0_42_70_27_36"
+
+[[spawn]]
+npc = "npc.hauntedmine_cart4"
+coords = "0_42_70_51_48"
+
+## Abandoned Mine 4
+
+[[spawn]]
+npc = "npc.bat"
+coords = "0_43_70_35_23"
+
+[[spawn]]
+npc = "npc.bat"
+coords = "0_43_70_37_19"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_43_70_46_51"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_43_70_48_46"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_43_70_51_46"
+
+[[spawn]]
+npc = "npc.skeletal_miner_sitting"
+coords = "0_43_70_10_29"
+
+[[spawn]]
+npc = "npc.skeletal_miner_sitting"
+coords = "0_43_70_15_43"
+
+[[spawn]]
+npc = "npc.skeletal_miner_sitting"
+coords = "0_43_70_17_21"
+
+[[spawn]]
+npc = "npc.skeletal_miner_sitting"
+coords = "0_43_70_17_37"
+
+[[spawn]]
+npc = "npc.skeletal_miner_sitting"
+coords = "0_43_70_21_35"
+
+[[spawn]]
+npc = "npc.skeletal_miner_sitting"
+coords = "0_43_70_21_52"
+
+[[spawn]]
+npc = "npc.skeletal_miner_sitting"
+coords = "0_43_70_31_14"
+
+[[spawn]]
+npc = "npc.skeletal_miner_sitting"
+coords = "0_43_70_37_36"
+
+[[spawn]]
+npc = "npc.skeletal_miner_sitting"
+coords = "0_43_70_40_10"
+
+[[spawn]]
+npc = "npc.skeletal_miner_sitting"
+coords = "0_43_70_43_16"
+
+[[spawn]]
+npc = "npc.skeletal_miner_sitting"
+coords = "0_43_70_52_45"
+
+[[spawn]]
+npc = "npc.skeletal_miner_sitting"
+coords = "0_43_70_54_22"
+
+[[spawn]]
+npc = "npc.skeletal_miner_sitting"
+coords = "0_43_70_55_33"
+
+[[spawn]]
+npc = "npc.skeletal_miner_sitting"
+coords = "0_43_70_56_38"
+
+[[spawn]]
+npc = "npc.small_bat"
+coords = "0_43_70_10_20"
+
+[[spawn]]
+npc = "npc.small_bat"
+coords = "0_43_70_30_11"
+
+[[spawn]]
+npc = "npc.small_bat"
+coords = "0_43_70_31_7"
+
+[[spawn]]
+npc = "npc.small_bat"
+coords = "0_43_70_40_8"
+
+[[spawn]]
+npc = "npc.small_bat"
+coords = "0_43_70_7_18"
+
+[[spawn]]
+npc = "npc.small_bat"
+coords = "0_43_70_9_15"
+
+## Abandoned Mine 5
+
+[[spawn]]
+npc = "npc.possessed_pickaxe_stationary"
+coords = "0_42_69_25_22"
+
+[[spawn]]
+npc = "npc.possessed_pickaxe_stationary"
+coords = "0_42_69_28_27"
+
+[[spawn]]
+npc = "npc.possessed_pickaxe_stationary"
+coords = "0_42_69_31_26"
+
+[[spawn]]
+npc = "npc.possessed_pickaxe_stationary"
+coords = "0_42_69_36_26"
+
+[[spawn]]
+npc = "npc.possessed_pickaxe_stationary"
+coords = "0_42_69_40_29"
+
+[[spawn]]
+npc = "npc.possessed_pickaxe_stationary"
+coords = "0_42_69_41_31"
+
+[[spawn]]
+npc = "npc.possessed_pickaxe_stationary"
+coords = "0_42_69_47_19"
+
+[[spawn]]
+npc = "npc.possessed_pickaxe_stationary"
+coords = "0_42_69_50_23"
+
+## Abandoned Mine 6
+
+[[spawn]]
+npc = "npc.crane_posessed_mine"
+coords = "0_43_69_30_42"
+
+[[spawn]]
+npc = "npc.crane_posessed_mine"
+coords = "0_43_69_35_30"
+
+[[spawn]]
+npc = "npc.crane_posessed_mine"
+coords = "0_43_69_35_35"
+
+[[spawn]]
+npc = "npc.crane_posessed_mine"
+coords = "0_43_69_41_42"
+
+[[spawn]]
+npc = "npc.hauntedmine_boss_cart"
+coords = "0_43_69_29_46"
+
+[[spawn]]
+npc = "npc.hauntedmine_boss_cart"
+coords = "0_43_69_31_30"
+
+[[spawn]]
+npc = "npc.hauntedmine_boss_cart"
+coords = "0_43_69_33_31"
+
+[[spawn]]
+npc = "npc.hauntedmine_boss_cart"
+coords = "0_43_69_33_40"
+
+[[spawn]]
+npc = "npc.hauntedmine_boss_cart"
+coords = "0_43_69_39_31"
+
+[[spawn]]
+npc = "npc.hauntedmine_boss_cart"
+coords = "0_43_69_39_40"
+
+[[spawn]]
+npc = "npc.hauntedmine_boss_cart"
+coords = "0_43_69_41_30"
+
+[[spawn]]
+npc = "npc.hauntedmine_boss_key"
+coords = "0_43_69_36_39"
+
+## Abandoned Mine 6 End
+

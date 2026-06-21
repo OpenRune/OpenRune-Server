@@ -1,0 +1,26 @@
+## Temple Of The Eye Center Platform
+
+[[spawn]]
+npc = "npc.gotr_great_guardian"
+coords = "0_56_148_29_29"
+
+## Temple Of The Eye Regular
+
+[[spawn]]
+npc = "npc.dt2_catalytic_guardian"
+coords = "0_56_148_27_0"
+
+[[spawn]]
+npc = "npc.gotr_cordelia"
+coords = "0_56_148_32_18"
+
+[[spawn]]
+npc = "npc.gotr_reward_trader"
+coords = "0_56_148_35_3"
+
+[[spawn]]
+npc = "npc.gotr_tamara_parent"
+coords = "0_56_148_30_17"
+
+## Temple Of The Eye Regular End
+

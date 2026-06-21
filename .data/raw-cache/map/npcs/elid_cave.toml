@@ -1,0 +1,44 @@
+[[spawn]]
+npc = "npc.0_52_149_freshfish"
+coords = "0_52_149_22_31"
+
+[[spawn]]
+npc = "npc.0_52_149_freshfish"
+coords = "0_52_149_26_30"
+
+[[spawn]]
+npc = "npc.0_52_149_freshfish"
+coords = "0_52_149_28_30"
+
+[[spawn]]
+npc = "npc.0_52_149_freshfish"
+coords = "0_52_149_32_31"
+
+[[spawn]]
+npc = "npc.0_52_149_freshfish"
+coords = "0_52_149_34_52"
+
+[[spawn]]
+npc = "npc.0_52_149_freshfish"
+coords = "0_52_149_43_40"
+
+[[spawn]]
+npc = "npc.0_52_149_freshfish"
+coords = "0_52_149_43_42"
+
+[[spawn]]
+npc = "npc.elid_ranging_target_multinpc"
+coords = "0_52_149_51_20"
+
+[[spawn]]
+npc = "npc.elid_waterspirit"
+coords = "0_52_149_39_50"
+
+[[spawn]]
+npc = "npc.elid_waterspirit_male"
+coords = "0_52_149_40_49"
+
+[[spawn]]
+npc = "npc.elid_waterspirit_sitting"
+coords = "0_52_149_40_51"
+

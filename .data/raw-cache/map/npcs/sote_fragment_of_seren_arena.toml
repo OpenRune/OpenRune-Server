@@ -1,0 +1,8 @@
+[[spawn]]
+npc = "npc.dark_seren_cutscene"
+coords = "1_51_92_30_30"
+
+[[spawn]]
+npc = "npc.dark_seren_healer"
+coords = "0_51_92_30_30"
+

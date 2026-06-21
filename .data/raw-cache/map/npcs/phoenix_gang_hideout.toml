@@ -1,0 +1,28 @@
+[[spawn]]
+npc = "npc.qip_soa_thief_female01"
+coords = "0_50_152_51_40"
+
+[[spawn]]
+npc = "npc.qip_soa_thief_female02"
+coords = "0_50_152_38_36"
+
+[[spawn]]
+npc = "npc.qip_soa_thief_female02"
+coords = "0_50_152_45_44"
+
+[[spawn]]
+npc = "npc.qip_soa_thief_male01"
+coords = "0_50_152_37_41"
+
+[[spawn]]
+npc = "npc.qip_soa_thief_male01"
+coords = "0_50_152_47_48"
+
+[[spawn]]
+npc = "npc.qip_soa_thief_male02"
+coords = "0_50_152_45_41"
+
+[[spawn]]
+npc = "npc.straven"
+coords = "0_50_152_46_52"
+

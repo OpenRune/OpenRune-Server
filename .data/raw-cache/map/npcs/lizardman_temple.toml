@@ -1,0 +1,36 @@
+[[spawn]]
+npc = "npc.molch_lizardman_guard"
+coords = "0_20_157_18_41"
+
+[[spawn]]
+npc = "npc.molch_lizardshaman_1"
+coords = "0_20_157_10_50"
+
+[[spawn]]
+npc = "npc.molch_lizardshaman_1"
+coords = "0_20_157_14_46"
+
+[[spawn]]
+npc = "npc.molch_lizardshaman_1"
+coords = "0_20_157_32_46"
+
+[[spawn]]
+npc = "npc.molch_lizardshaman_1"
+coords = "0_20_157_32_50"
+
+[[spawn]]
+npc = "npc.molch_lizardshaman_1"
+coords = "0_20_157_47_46"
+
+[[spawn]]
+npc = "npc.molch_lizardshaman_1"
+coords = "0_20_157_51_50"
+
+[[spawn]]
+npc = "npc.molch_temple_shaman"
+coords = "0_20_157_50_36"
+
+[[spawn]]
+npc = "npc.molch_temple_shaman_vis"
+coords = "0_20_157_51_36"
+

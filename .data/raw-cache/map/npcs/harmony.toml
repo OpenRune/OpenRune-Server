@@ -1,0 +1,266 @@
+[[spawn]]
+npc = "npc.brain_puffin"
+coords = "0_59_44_13_1"
+
+[[spawn]]
+npc = "npc.brain_puffin"
+coords = "0_59_44_18_5"
+
+[[spawn]]
+npc = "npc.brain_puffin"
+coords = "0_59_44_32_7"
+
+[[spawn]]
+npc = "npc.brain_puffin"
+coords = "0_59_44_36_45"
+
+[[spawn]]
+npc = "npc.brain_puffin"
+coords = "0_59_44_37_6"
+
+[[spawn]]
+npc = "npc.brain_puffin"
+coords = "0_59_44_3_10"
+
+[[spawn]]
+npc = "npc.brain_puffin"
+coords = "0_59_44_42_46"
+
+[[spawn]]
+npc = "npc.brain_puffin"
+coords = "0_59_44_43_54"
+
+[[spawn]]
+npc = "npc.brain_puffin"
+coords = "0_59_44_45_8"
+
+[[spawn]]
+npc = "npc.brain_puffin"
+coords = "0_59_44_55_12"
+
+[[spawn]]
+npc = "npc.brain_sawbones_1"
+coords = "0_59_44_32_29"
+
+[[spawn]]
+npc = "npc.brain_sawbones_1"
+coords = "0_59_44_36_30"
+
+[[spawn]]
+npc = "npc.brain_sawbones_1"
+coords = "0_59_44_39_28"
+
+[[spawn]]
+npc = "npc.brain_sawbones_1"
+coords = "0_59_44_43_23"
+
+[[spawn]]
+npc = "npc.brain_sawbones_1"
+coords = "0_59_44_43_35"
+
+[[spawn]]
+npc = "npc.brain_sawbones_1"
+coords = "1_59_44_43_22"
+
+[[spawn]]
+npc = "npc.brain_sawbones_1"
+coords = "1_59_44_47_20"
+
+[[spawn]]
+npc = "npc.brain_sawbones_1"
+coords = "1_59_44_47_30"
+
+[[spawn]]
+npc = "npc.brain_sawbones_2"
+coords = "0_59_44_34_27"
+
+[[spawn]]
+npc = "npc.brain_sawbones_2"
+coords = "0_59_44_37_28"
+
+[[spawn]]
+npc = "npc.brain_sawbones_2"
+coords = "0_59_44_45_21"
+
+[[spawn]]
+npc = "npc.brain_sawbones_2"
+coords = "1_59_44_44_24"
+
+[[spawn]]
+npc = "npc.brain_sawbones_2"
+coords = "1_59_44_44_35"
+
+[[spawn]]
+npc = "npc.brain_sawbones_2"
+coords = "1_59_44_47_23"
+
+[[spawn]]
+npc = "npc.brain_zombie_pirate_1"
+coords = "0_59_44_35_10"
+
+[[spawn]]
+npc = "npc.brain_zombie_pirate_10"
+coords = "0_59_44_23_39"
+
+[[spawn]]
+npc = "npc.brain_zombie_pirate_11"
+coords = "0_59_44_20_42"
+
+[[spawn]]
+npc = "npc.brain_zombie_pirate_13"
+coords = "0_59_44_19_29"
+
+[[spawn]]
+npc = "npc.brain_zombie_pirate_15"
+coords = "0_59_44_16_14"
+
+[[spawn]]
+npc = "npc.brain_zombie_pirate_16"
+coords = "1_59_44_27_56"
+
+[[spawn]]
+npc = "npc.brain_zombie_pirate_18"
+coords = "0_59_44_24_19"
+
+[[spawn]]
+npc = "npc.brain_zombie_pirate_2"
+coords = "0_59_44_51_17"
+
+[[spawn]]
+npc = "npc.brain_zombie_pirate_21"
+coords = "0_59_44_18_57"
+
+[[spawn]]
+npc = "npc.brain_zombie_pirate_22"
+coords = "0_59_44_28_57"
+
+[[spawn]]
+npc = "npc.brain_zombie_pirate_23"
+coords = "1_59_44_29_58"
+
+[[spawn]]
+npc = "npc.brain_zombie_pirate_24"
+coords = "2_59_44_18_58"
+
+[[spawn]]
+npc = "npc.brain_zombie_pirate_26"
+coords = "0_59_44_27_32"
+
+[[spawn]]
+npc = "npc.brain_zombie_pirate_3"
+coords = "0_59_44_39_43"
+
+[[spawn]]
+npc = "npc.brain_zombie_pirate_4"
+coords = "0_59_44_17_35"
+
+[[spawn]]
+npc = "npc.brain_zombie_pirate_5"
+coords = "0_59_44_8_27"
+
+[[spawn]]
+npc = "npc.brain_zombie_pirate_6"
+coords = "0_59_44_27_27"
+
+[[spawn]]
+npc = "npc.brain_zombie_pirate_7"
+coords = "0_59_44_34_17"
+
+[[spawn]]
+npc = "npc.brain_zombie_pirate_8"
+coords = "0_59_44_48_41"
+
+[[spawn]]
+npc = "npc.brain_zombie_pirate_9"
+coords = "0_59_44_41_8"
+
+[[spawn]]
+npc = "npc.farming_tools_leprechaun"
+coords = "0_59_44_16_24"
+
+## Brother Tranquility
+
+[[spawn]]
+npc = "npc.brain_island_tranquility"
+coords = "0_59_44_11_8"
+
+[[spawn]]
+npc = "npc.brain_multi_monk_1"
+coords = "0_59_44_11_11"
+
+[[spawn]]
+npc = "npc.brain_multi_monk_2"
+coords = "1_59_44_10_11"
+
+[[spawn]]
+npc = "npc.brain_multi_monk_3"
+coords = "1_59_44_12_10"
+
+[[spawn]]
+npc = "npc.brain_multi_monk_4"
+coords = "2_59_44_12_9"
+
+[[spawn]]
+npc = "npc.brain_real_monk_1"
+coords = "2_59_44_10_11"
+
+[[spawn]]
+npc = "npc.brain_real_monk_2"
+coords = "1_59_44_10_8"
+
+[[spawn]]
+npc = "npc.brain_real_monk_3"
+coords = "0_59_44_9_11"
+
+[[spawn]]
+npc = "npc.brain_real_monk_4"
+coords = "0_59_44_8_8"
+
+## Harmony Island Underwater Tunnel
+
+[[spawn]]
+npc = "npc.brain_zombie_pirate_underwater_1"
+coords = "1_59_144_21_37"
+
+[[spawn]]
+npc = "npc.brain_zombie_pirate_underwater_17"
+coords = "1_59_144_16_38"
+
+[[spawn]]
+npc = "npc.brain_zombie_pirate_underwater_18"
+coords = "1_59_144_33_37"
+
+[[spawn]]
+npc = "npc.brain_zombie_pirate_underwater_19"
+coords = "1_59_144_22_42"
+
+[[spawn]]
+npc = "npc.brain_zombie_pirate_underwater_2"
+coords = "1_59_144_43_37"
+
+[[spawn]]
+npc = "npc.brain_zombie_pirate_underwater_20"
+coords = "1_59_144_23_31"
+
+[[spawn]]
+npc = "npc.brain_zombie_pirate_underwater_21"
+coords = "1_59_144_38_34"
+
+[[spawn]]
+npc = "npc.brain_zombie_pirate_underwater_23"
+coords = "1_59_144_41_43"
+
+[[spawn]]
+npc = "npc.brain_zombie_pirate_underwater_24"
+coords = "1_59_144_29_39"
+
+[[spawn]]
+npc = "npc.brain_zombie_pirate_underwater_25"
+coords = "1_59_144_47_38"
+
+[[spawn]]
+npc = "npc.brain_zombie_pirate_underwater_5"
+coords = "1_59_144_27_33"
+
+## Harmony Island Underwater Tunnel End
+

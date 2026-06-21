@@ -1,0 +1,20 @@
+[[spawn]]
+npc = "npc.kr_court_house_guard_01"
+coords = "0_42_54_46_14"
+
+[[spawn]]
+npc = "npc.kr_court_house_guard_02"
+coords = "0_42_54_47_12"
+
+[[spawn]]
+npc = "npc.kr_court_prosecutor"
+coords = "0_42_54_48_13"
+
+[[spawn]]
+npc = "npc.kr_judge_dummy"
+coords = "0_42_54_48_13"
+
+[[spawn]]
+npc = "npc.kr_multi_murderer"
+coords = "0_42_54_49_10"
+

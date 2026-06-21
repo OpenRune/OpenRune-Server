@@ -1,0 +1,68 @@
+[[spawn]]
+npc = "npc.butterfly"
+coords = "0_39_153_44_28"
+
+[[spawn]]
+npc = "npc.butterfly"
+coords = "0_39_153_47_21"
+
+[[spawn]]
+npc = "npc.butterfly"
+coords = "0_39_153_50_25"
+
+[[spawn]]
+npc = "npc.roving_mossgiant"
+coords = "0_39_153_32_51"
+
+[[spawn]]
+npc = "npc.roving_mossgiant"
+coords = "0_39_153_45_53"
+
+[[spawn]]
+npc = "npc.roving_mossgiant"
+coords = "0_39_153_46_27"
+
+[[spawn]]
+npc = "npc.skeleton_armed"
+coords = "0_39_153_33_49"
+
+[[spawn]]
+npc = "npc.skeleton_armed2"
+coords = "0_39_153_47_55"
+
+[[spawn]]
+npc = "npc.skeleton_armed2"
+coords = "0_39_153_49_30"
+
+[[spawn]]
+npc = "npc.skeleton_armed4"
+coords = "0_39_153_44_21"
+
+[[spawn]]
+npc = "npc.skeleton_armed5"
+coords = "0_39_153_34_54"
+
+[[spawn]]
+npc = "npc.skeleton_unarmed"
+coords = "0_39_153_42_24"
+
+[[spawn]]
+npc = "npc.zombie_armed2"
+coords = "0_39_153_46_48"
+
+[[spawn]]
+npc = "npc.zombie_armed3"
+coords = "0_39_153_50_50"
+
+[[spawn]]
+npc = "npc.zombie_unarmed"
+coords = "0_39_153_44_31"
+
+[[spawn]]
+npc = "npc.zombie_unarmed4"
+coords = "0_39_153_37_50"
+
+[[spawn]]
+npc = "npc.zombie_unarmed5"
+coords = "0_39_153_44_51"
+

@@ -1,0 +1,92 @@
+[[spawn]]
+npc = "npc.caroline"
+coords = "0_42_51_28_38"
+
+[[spawn]]
+npc = "npc.chicken"
+coords = "0_42_51_7_10"
+
+[[spawn]]
+npc = "npc.holgartland"
+coords = "0_42_51_32_42"
+
+[[spawn]]
+npc = "npc.slug2_jeb"
+coords = "0_42_51_31_40"
+
+[[spawn]]
+npc = "npc.slug2_oniall"
+coords = "0_42_51_52_46"
+
+[[spawn]]
+npc = "npc.slug2_villager1_stage1_multi"
+coords = "0_42_51_27_14"
+
+[[spawn]]
+npc = "npc.slug2_villager1_stage1_multi"
+coords = "0_42_51_33_28"
+
+[[spawn]]
+npc = "npc.slug2_villager1_stage2_multi"
+coords = "0_42_51_28_14"
+
+[[spawn]]
+npc = "npc.slug2_villager1_stage2_multi"
+coords = "0_42_51_34_28"
+
+[[spawn]]
+npc = "npc.slug2_villager2_stage1_multi"
+coords = "0_42_51_28_25"
+
+[[spawn]]
+npc = "npc.slug2_villager2_stage1_multi"
+coords = "0_42_51_45_20"
+
+[[spawn]]
+npc = "npc.slug2_villager2_stage2_multi"
+coords = "0_42_51_18_21"
+
+[[spawn]]
+npc = "npc.slug2_villager2_stage2_multi"
+coords = "0_42_51_29_25"
+
+[[spawn]]
+npc = "npc.slug2_villager2_stage2_multi"
+coords = "0_42_51_46_20"
+
+[[spawn]]
+npc = "npc.slug2_villager3_stage1_multi"
+coords = "0_42_51_40_10"
+
+[[spawn]]
+npc = "npc.slug2_villager3_stage1_multi"
+coords = "0_42_51_49_36"
+
+[[spawn]]
+npc = "npc.slug2_villager3_stage2_multi"
+coords = "0_42_51_41_10"
+
+## Witchaven Interiors
+
+[[spawn]]
+npc = "npc.kennith_land"
+coords = "0_42_51_22_19"
+
+[[spawn]]
+npc = "npc.kent_land"
+coords = "1_42_51_22_17"
+
+[[spawn]]
+npc = "npc.slug2_hobb"
+coords = "0_42_51_23_28"
+
+[[spawn]]
+npc = "npc.slug2_lovecraft"
+coords = "0_42_51_44_26"
+
+[[spawn]]
+npc = "npc.slug2_maledict"
+coords = "0_42_51_34_19"
+
+## Witchaven Interiors End
+

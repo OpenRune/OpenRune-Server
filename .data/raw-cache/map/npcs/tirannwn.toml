@@ -1,0 +1,66 @@
+## Tirannwn Sea
+
+[[spawn]]
+npc = "npc.0_33_52_rarefish"
+coords = "0_33_52_51_37"
+
+[[spawn]]
+npc = "npc.0_34_53_memberfish"
+coords = "0_34_53_50_38"
+
+[[spawn]]
+npc = "npc.0_34_53_memberfish"
+coords = "0_34_53_52_36"
+
+[[spawn]]
+npc = "npc.0_34_53_memberfish"
+coords = "0_34_53_58_50"
+
+[[spawn]]
+npc = "npc.0_34_53_memberfish"
+coords = "0_34_53_59_41"
+
+[[spawn]]
+npc = "npc.0_34_53_rarefish"
+coords = "0_34_53_49_36"
+
+[[spawn]]
+npc = "npc.0_34_53_rarefish"
+coords = "0_34_53_52_37"
+
+[[spawn]]
+npc = "npc.0_34_53_rarefish"
+coords = "0_34_53_57_32"
+
+[[spawn]]
+npc = "npc.0_34_53_rarefish"
+coords = "0_34_53_58_49"
+
+[[spawn]]
+npc = "npc.prif_slippers"
+coords = "0_33_51_46_61"
+
+[[spawn]]
+npc = "npc.sailing_transport_trader_stan_crew_man3"
+coords = "0_33_52_45_2"
+
+[[spawn]]
+npc = "npc.sailing_transport_trader_stan_crew_woman3"
+coords = "0_33_52_45_1"
+
+[[spawn]]
+npc = "npc.viking_fox"
+coords = "0_33_55_21_33"
+
+[[spawn]]
+npc = "npc.viking_fox"
+coords = "0_33_55_22_40"
+
+[[spawn]]
+npc = "npc.viking_fox"
+coords = "0_33_55_30_42"
+
+[[spawn]]
+npc = "npc.viking_fox"
+coords = "0_33_55_40_35"
+

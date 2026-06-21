@@ -1,0 +1,170 @@
+[[spawn]]
+npc = "npc.duck"
+coords = "0_49_52_12_44"
+
+[[spawn]]
+npc = "npc.duck"
+coords = "0_49_52_14_40"
+
+[[spawn]]
+npc = "npc.duck"
+coords = "0_49_52_14_43"
+
+[[spawn]]
+npc = "npc.duck"
+coords = "0_49_52_14_45"
+
+[[spawn]]
+npc = "npc.duck"
+coords = "0_49_52_4_59"
+
+[[spawn]]
+npc = "npc.duck"
+coords = "0_49_52_7_56"
+
+[[spawn]]
+npc = "npc.duck_female"
+coords = "0_49_52_12_46"
+
+[[spawn]]
+npc = "npc.duck_female"
+coords = "0_49_52_14_42"
+
+[[spawn]]
+npc = "npc.duck_female"
+coords = "0_49_52_6_58"
+
+[[spawn]]
+npc = "npc.duck_female"
+coords = "0_49_52_8_54"
+
+[[spawn]]
+npc = "npc.giantspider1"
+coords = "0_48_52_63_12"
+
+[[spawn]]
+npc = "npc.nasty_tree"
+coords = "0_49_52_2_24"
+
+[[spawn]]
+npc = "npc.nasty_tree"
+coords = "0_49_52_4_32"
+
+[[spawn]]
+npc = "npc.nasty_tree"
+coords = "0_49_52_7_29"
+
+[[spawn]]
+npc = "npc.nasty_tree"
+coords = "0_49_52_7_37"
+
+## Draynor Manor
+
+[[spawn]]
+npc = "npc.farming_tools_leprechaun_draynor"
+coords = "0_48_52_16_29"
+
+[[spawn]]
+npc = "npc.nasty_tree"
+coords = "0_48_52_31_19"
+
+[[spawn]]
+npc = "npc.nasty_tree"
+coords = "0_48_52_35_14"
+
+[[spawn]]
+npc = "npc.nasty_tree"
+coords = "0_48_52_35_16"
+
+[[spawn]]
+npc = "npc.nasty_tree"
+coords = "0_48_52_35_9"
+
+[[spawn]]
+npc = "npc.nasty_tree"
+coords = "0_48_52_36_18"
+
+[[spawn]]
+npc = "npc.nasty_tree"
+coords = "0_48_52_39_11"
+
+[[spawn]]
+npc = "npc.nasty_tree"
+coords = "0_48_52_39_20"
+
+[[spawn]]
+npc = "npc.nasty_tree"
+coords = "0_48_52_43_16"
+
+[[spawn]]
+npc = "npc.nasty_tree"
+coords = "0_48_52_48_16"
+
+[[spawn]]
+npc = "npc.nasty_tree"
+coords = "0_48_52_50_7"
+
+[[spawn]]
+npc = "npc.veronica"
+coords = "0_48_52_39_1"
+
+## Draynor Manor Interior
+
+[[spawn]]
+npc = "npc.anma_assistant"
+coords = "0_48_52_22_29"
+
+[[spawn]]
+npc = "npc.anma_assistant_multi"
+coords = "0_48_52_21_29"
+
+[[spawn]]
+npc = "npc.anma_witch"
+coords = "0_48_52_29_42"
+
+[[spawn]]
+npc = "npc.anma_witch_multi"
+coords = "0_48_52_27_42"
+
+[[spawn]]
+npc = "npc.draynor_skeleton"
+coords = "0_48_52_38_39"
+
+[[spawn]]
+npc = "npc.ernest_multichicken"
+coords = "2_48_52_38_36"
+
+[[spawn]]
+npc = "npc.house_ghost"
+coords = "1_48_52_22_28"
+
+[[spawn]]
+npc = "npc.house_ghost2"
+coords = "1_48_52_26_31"
+
+[[spawn]]
+npc = "npc.house_ghost3"
+coords = "1_48_52_29_28"
+
+[[spawn]]
+npc = "npc.house_ghost4"
+coords = "1_48_52_36_30"
+
+[[spawn]]
+npc = "npc.house_ghost5"
+coords = "1_48_52_51_28"
+
+[[spawn]]
+npc = "npc.professor_oddenstein"
+coords = "2_48_52_38_39"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_48_52_27_38"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_48_52_29_27"
+
+## Draynor Manor Interior End
+

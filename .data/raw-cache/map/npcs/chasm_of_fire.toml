@@ -1,0 +1,180 @@
+[[spawn]]
+npc = "npc.black_demon_strongholdcave_1"
+coords = "1_22_157_20_39"
+
+[[spawn]]
+npc = "npc.black_demon_strongholdcave_1"
+coords = "1_22_157_39_20"
+
+[[spawn]]
+npc = "npc.black_demon_strongholdcave_1"
+coords = "1_22_157_39_30"
+
+[[spawn]]
+npc = "npc.black_demon_strongholdcave_1"
+coords = "1_22_157_39_41"
+
+[[spawn]]
+npc = "npc.black_demon_strongholdcave_2"
+coords = "1_22_157_12_23"
+
+[[spawn]]
+npc = "npc.black_demon_strongholdcave_2"
+coords = "1_22_157_21_18"
+
+[[spawn]]
+npc = "npc.black_demon_strongholdcave_2"
+coords = "1_22_157_32_43"
+
+[[spawn]]
+npc = "npc.black_demon_strongholdcave_2"
+coords = "1_22_157_33_17"
+
+[[spawn]]
+npc = "npc.black_demon_strongholdcave_3"
+coords = "1_22_157_22_45"
+
+[[spawn]]
+npc = "npc.black_demon_strongholdcave_3"
+coords = "1_22_157_45_34"
+
+[[spawn]]
+npc = "npc.black_demon_strongholdcave_4"
+coords = "1_22_157_15_29"
+
+[[spawn]]
+npc = "npc.black_demon_strongholdcave_4"
+coords = "1_22_157_16_43"
+
+[[spawn]]
+npc = "npc.black_demon_strongholdcave_4"
+coords = "1_22_157_26_24"
+
+[[spawn]]
+npc = "npc.black_demon_strongholdcave_4"
+coords = "1_22_157_38_13"
+
+[[spawn]]
+npc = "npc.black_demon_strongholdcave_5"
+coords = "1_22_157_28_19"
+
+[[spawn]]
+npc = "npc.black_demon_strongholdcave_5"
+coords = "1_22_157_33_38"
+
+[[spawn]]
+npc = "npc.black_demon_strongholdcave_5"
+coords = "1_22_157_44_26"
+
+[[spawn]]
+npc = "npc.disciple_of_yama_cavern"
+coords = "2_22_157_48_30"
+
+[[spawn]]
+npc = "npc.greater_demon_strongholdcave_1"
+coords = "2_22_157_18_30"
+
+[[spawn]]
+npc = "npc.greater_demon_strongholdcave_1"
+coords = "2_22_157_25_43"
+
+[[spawn]]
+npc = "npc.greater_demon_strongholdcave_1"
+coords = "2_22_157_35_30"
+
+[[spawn]]
+npc = "npc.greater_demon_strongholdcave_1"
+coords = "2_22_157_42_43"
+
+[[spawn]]
+npc = "npc.greater_demon_strongholdcave_2"
+coords = "2_22_157_12_39"
+
+[[spawn]]
+npc = "npc.greater_demon_strongholdcave_2"
+coords = "2_22_157_20_26"
+
+[[spawn]]
+npc = "npc.greater_demon_strongholdcave_2"
+coords = "2_22_157_33_27"
+
+[[spawn]]
+npc = "npc.greater_demon_strongholdcave_2"
+coords = "2_22_157_33_44"
+
+[[spawn]]
+npc = "npc.greater_demon_strongholdcave_2"
+coords = "2_22_157_40_33"
+
+[[spawn]]
+npc = "npc.greater_demon_strongholdcave_2"
+coords = "2_22_157_45_42"
+
+[[spawn]]
+npc = "npc.greater_demon_strongholdcave_3"
+coords = "2_22_157_19_34"
+
+[[spawn]]
+npc = "npc.greater_demon_strongholdcave_3"
+coords = "2_22_157_24_31"
+
+[[spawn]]
+npc = "npc.greater_demon_strongholdcave_3"
+coords = "2_22_157_31_40"
+
+[[spawn]]
+npc = "npc.greater_demon_strongholdcave_3"
+coords = "2_22_157_38_26"
+
+[[spawn]]
+npc = "npc.greater_demon_strongholdcave_3"
+coords = "2_22_157_39_37"
+
+[[spawn]]
+npc = "npc.greater_demon_strongholdcave_3"
+coords = "2_22_157_44_36"
+
+[[spawn]]
+npc = "npc.greater_demon_strongholdcave_3"
+coords = "2_22_157_47_46"
+
+[[spawn]]
+npc = "npc.lesser_demon_slayercave_1"
+coords = "3_22_157_29_33"
+
+[[spawn]]
+npc = "npc.lesser_demon_slayercave_1"
+coords = "3_22_157_33_28"
+
+[[spawn]]
+npc = "npc.lesser_demon_slayercave_1"
+coords = "3_22_157_38_34"
+
+[[spawn]]
+npc = "npc.lesser_demon_slayercave_2"
+coords = "3_22_157_26_36"
+
+[[spawn]]
+npc = "npc.lesser_demon_slayercave_2"
+coords = "3_22_157_32_25"
+
+[[spawn]]
+npc = "npc.lesser_demon_slayercave_2"
+coords = "3_22_157_35_31"
+
+[[spawn]]
+npc = "npc.lesser_demon_slayercave_3"
+coords = "3_22_157_26_31"
+
+[[spawn]]
+npc = "npc.lesser_demon_slayercave_3"
+coords = "3_22_157_30_37"
+
+[[spawn]]
+npc = "npc.lesser_demon_slayercave_3"
+coords = "3_22_157_37_28"
+
+[[spawn]]
+npc = "npc.voice_of_yama"
+coords = "1_22_157_31_31"
+

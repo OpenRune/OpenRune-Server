@@ -56,10 +56,14 @@ class NpcRscmLookup(
     companion object {
         /** Sync load for tools that only need npc RSCM (e.g. slayer dumper). */
         fun load(rootDir: String? = null): NpcRscmLookup {
-            GameValLoader.ensureLoaded(rootDir)
             val dump = NpcDumpFiles.requireLocal(rootDir)
+            return load(rootDir, dump.text)
+        }
+
+        fun load(rootDir: String?, dumpText: String): NpcRscmLookup {
+            GameValLoader.ensureLoaded(rootDir)
             val objLookup = ObjRscmLookup.load(rootDir)
-            val dumpIndex = NpcDumpIndex.parse(dump.text, objLookup)
+            val dumpIndex = NpcDumpIndex.parse(dumpText, objLookup)
             return NpcRscmLookup(dumpIndex.namesById)
         }
     }

@@ -1,0 +1,8 @@
+[[spawn]]
+npc = "npc.haskell_stone"
+coords = "0_38_62_39_27"
+
+[[spawn]]
+npc = "npc.vikingexile_brundt_island_multi"
+coords = "0_38_62_34_42"
+

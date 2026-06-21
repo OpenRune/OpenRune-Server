@@ -1,0 +1,256 @@
+[[spawn]]
+npc = "npc.favour_deacon"
+coords = "0_49_150_29_28"
+
+[[spawn]]
+npc = "npc.favour_female_ham_civilian"
+coords = "0_49_150_13_24"
+
+[[spawn]]
+npc = "npc.favour_female_ham_civilian"
+coords = "0_49_150_25_32"
+
+[[spawn]]
+npc = "npc.favour_female_ham_civilian"
+coords = "0_49_150_28_34"
+
+[[spawn]]
+npc = "npc.favour_female_ham_civilian"
+coords = "0_49_150_30_30"
+
+[[spawn]]
+npc = "npc.favour_female_ham_civilian"
+coords = "0_49_150_30_36"
+
+[[spawn]]
+npc = "npc.favour_female_ham_civilian"
+coords = "0_49_150_36_51"
+
+[[spawn]]
+npc = "npc.favour_female_ham_civilian"
+coords = "0_49_150_38_43"
+
+[[spawn]]
+npc = "npc.favour_female_ham_civilian"
+coords = "0_49_150_39_46"
+
+[[spawn]]
+npc = "npc.favour_female_ham_civilian"
+coords = "0_49_150_41_30"
+
+[[spawn]]
+npc = "npc.favour_female_ham_civilian"
+coords = "0_49_150_45_33"
+
+[[spawn]]
+npc = "npc.favour_guard_long_beard"
+coords = "0_49_150_14_50"
+
+[[spawn]]
+npc = "npc.favour_guard_long_beard"
+coords = "0_49_150_19_29"
+
+[[spawn]]
+npc = "npc.favour_guard_long_beard"
+coords = "0_49_150_22_29"
+
+[[spawn]]
+npc = "npc.favour_guard_long_beard"
+coords = "0_49_150_35_29"
+
+[[spawn]]
+npc = "npc.favour_guard_long_beard"
+coords = "0_49_150_41_17"
+
+[[spawn]]
+npc = "npc.favour_guard_long_beard"
+coords = "0_49_150_42_44"
+
+[[spawn]]
+npc = "npc.favour_guard_male_bearded"
+coords = "0_49_150_11_20"
+
+[[spawn]]
+npc = "npc.favour_guard_male_bearded"
+coords = "0_49_150_16_47"
+
+[[spawn]]
+npc = "npc.favour_guard_male_bearded"
+coords = "0_49_150_21_42"
+
+[[spawn]]
+npc = "npc.favour_guard_male_bearded"
+coords = "0_49_150_23_21"
+
+[[spawn]]
+npc = "npc.favour_guard_male_bearded"
+coords = "0_49_150_28_26"
+
+[[spawn]]
+npc = "npc.favour_guard_male_bearded"
+coords = "0_49_150_30_26"
+
+[[spawn]]
+npc = "npc.favour_guard_male_bearded"
+coords = "0_49_150_36_22"
+
+[[spawn]]
+npc = "npc.favour_guard_male_bearded"
+coords = "0_49_150_37_48"
+
+[[spawn]]
+npc = "npc.favour_guard_male_bearded"
+coords = "0_49_150_39_40"
+
+[[spawn]]
+npc = "npc.favour_guard_male_no_beard"
+coords = "0_49_150_23_13"
+
+[[spawn]]
+npc = "npc.favour_guard_male_no_beard"
+coords = "0_49_150_25_16"
+
+[[spawn]]
+npc = "npc.favour_guard_male_no_beard"
+coords = "0_49_150_25_38"
+
+[[spawn]]
+npc = "npc.favour_guard_male_no_beard"
+coords = "0_49_150_27_28"
+
+[[spawn]]
+npc = "npc.favour_guard_male_no_beard"
+coords = "0_49_150_31_28"
+
+[[spawn]]
+npc = "npc.favour_guard_male_no_beard"
+coords = "0_49_150_33_38"
+
+[[spawn]]
+npc = "npc.favour_guard_male_no_beard"
+coords = "0_49_150_43_14"
+
+[[spawn]]
+npc = "npc.favour_jimmy"
+coords = "0_49_150_48_10"
+
+[[spawn]]
+npc = "npc.favour_johanhus_ulsbrecht"
+coords = "0_49_150_35_20"
+
+[[spawn]]
+npc = "npc.favour_male_ham_civilian"
+coords = "0_49_150_14_21"
+
+[[spawn]]
+npc = "npc.favour_male_ham_civilian"
+coords = "0_49_150_16_27"
+
+[[spawn]]
+npc = "npc.favour_male_ham_civilian"
+coords = "0_49_150_21_12"
+
+[[spawn]]
+npc = "npc.favour_male_ham_civilian"
+coords = "0_49_150_22_11"
+
+[[spawn]]
+npc = "npc.favour_male_ham_civilian"
+coords = "0_49_150_24_18"
+
+[[spawn]]
+npc = "npc.favour_male_ham_civilian"
+coords = "0_49_150_25_14"
+
+[[spawn]]
+npc = "npc.favour_male_ham_civilian"
+coords = "0_49_150_26_36"
+
+[[spawn]]
+npc = "npc.favour_male_ham_civilian"
+coords = "0_49_150_28_30"
+
+[[spawn]]
+npc = "npc.favour_male_ham_civilian"
+coords = "0_49_150_30_32"
+
+[[spawn]]
+npc = "npc.favour_male_ham_civilian"
+coords = "0_49_150_31_34"
+
+[[spawn]]
+npc = "npc.favour_male_ham_civilian"
+coords = "0_49_150_33_32"
+
+[[spawn]]
+npc = "npc.favour_male_ham_civilian"
+coords = "0_49_150_33_34"
+
+[[spawn]]
+npc = "npc.favour_male_ham_civilian"
+coords = "0_49_150_36_46"
+
+[[spawn]]
+npc = "npc.favour_male_ham_civilian"
+coords = "0_49_150_37_55"
+
+[[spawn]]
+npc = "npc.favour_male_ham_civilian"
+coords = "0_49_150_46_30"
+
+[[spawn]]
+npc = "npc.favour_male_ham_civilian"
+coords = "0_49_150_8_19"
+
+[[spawn]]
+npc = "npc.favour_npc_chair"
+coords = "0_49_150_26_33"
+
+[[spawn]]
+npc = "npc.favour_npc_chair"
+coords = "0_49_150_26_35"
+
+[[spawn]]
+npc = "npc.favour_npc_chair"
+coords = "0_49_150_28_31"
+
+[[spawn]]
+npc = "npc.favour_npc_chair"
+coords = "0_49_150_28_33"
+
+[[spawn]]
+npc = "npc.favour_npc_chair"
+coords = "0_49_150_30_31"
+
+[[spawn]]
+npc = "npc.favour_npc_chair"
+coords = "0_49_150_31_33"
+
+[[spawn]]
+npc = "npc.favour_npc_floor"
+coords = "0_49_150_15_25"
+
+[[spawn]]
+npc = "npc.favour_npc_floor"
+coords = "0_49_150_17_25"
+
+[[spawn]]
+npc = "npc.favour_npc_floor"
+coords = "0_49_150_44_30"
+
+[[spawn]]
+npc = "npc.favour_npc_floor"
+coords = "0_49_150_45_32"
+
+[[spawn]]
+npc = "npc.favour_npc_floor"
+coords = "0_49_150_46_31"
+
+[[spawn]]
+npc = "npc.lost_tribe_sigmund_ham"
+coords = "0_49_150_33_27"
+
+[[spawn]]
+npc = "npc.lost_tribe_sigmund_there"
+coords = "0_49_150_30_31"
+

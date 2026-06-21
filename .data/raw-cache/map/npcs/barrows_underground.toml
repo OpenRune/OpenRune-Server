@@ -1,0 +1,136 @@
+[[spawn]]
+npc = "npc.barrows_bloodworm"
+coords = "0_55_151_28_11"
+
+[[spawn]]
+npc = "npc.barrows_bloodworm"
+coords = "0_55_151_29_15"
+
+[[spawn]]
+npc = "npc.barrows_bloodworm"
+coords = "0_55_151_31_12"
+
+[[spawn]]
+npc = "npc.barrows_bloodworm"
+coords = "0_55_151_32_15"
+
+[[spawn]]
+npc = "npc.barrows_bloodworm"
+coords = "0_55_151_32_18"
+
+[[spawn]]
+npc = "npc.barrows_bloodworm"
+coords = "0_55_151_35_11"
+
+[[spawn]]
+npc = "npc.barrows_bloodworm"
+coords = "0_55_151_35_15"
+
+[[spawn]]
+npc = "npc.barrows_giantrat"
+coords = "0_55_151_13_28"
+
+[[spawn]]
+npc = "npc.barrows_giantrat"
+coords = "0_55_151_16_33"
+
+[[spawn]]
+npc = "npc.barrows_giantrat2"
+coords = "0_55_151_12_32"
+
+[[spawn]]
+npc = "npc.barrows_giantrat3"
+coords = "0_55_151_17_30"
+
+[[spawn]]
+npc = "npc.barrows_giantspider"
+coords = "0_55_151_46_31"
+
+[[spawn]]
+npc = "npc.barrows_giantspider"
+coords = "0_55_151_47_27"
+
+[[spawn]]
+npc = "npc.barrows_giantspider"
+coords = "0_55_151_47_33"
+
+[[spawn]]
+npc = "npc.barrows_giantspider"
+coords = "0_55_151_50_33"
+
+[[spawn]]
+npc = "npc.barrows_giantspider"
+coords = "0_55_151_51_28"
+
+[[spawn]]
+npc = "npc.barrows_giantspider"
+coords = "0_55_151_52_30"
+
+[[spawn]]
+npc = "npc.barrows_rat"
+coords = "0_55_151_11_30"
+
+[[spawn]]
+npc = "npc.barrows_rat"
+coords = "0_55_151_14_26"
+
+[[spawn]]
+npc = "npc.barrows_rat"
+coords = "0_55_151_14_34"
+
+[[spawn]]
+npc = "npc.barrows_rat"
+coords = "0_55_151_15_31"
+
+[[spawn]]
+npc = "npc.barrows_rat"
+coords = "0_55_151_17_28"
+
+[[spawn]]
+npc = "npc.barrows_rat"
+coords = "0_55_151_19_31"
+
+[[spawn]]
+npc = "npc.barrows_skeleton_armed"
+coords = "0_55_151_31_50"
+
+[[spawn]]
+npc = "npc.barrows_skeleton_armed"
+coords = "0_55_151_35_45"
+
+[[spawn]]
+npc = "npc.barrows_skeleton_armed2"
+coords = "0_55_151_34_49"
+
+[[spawn]]
+npc = "npc.barrows_skeleton_unarmed"
+coords = "0_55_151_29_49"
+
+[[spawn]]
+npc = "npc.barrows_skeleton_unarmed"
+coords = "0_55_151_33_43"
+
+[[spawn]]
+npc = "npc.barrows_skeleton_unarmed2"
+coords = "0_55_151_28_45"
+
+[[spawn]]
+npc = "npc.barrows_spider"
+coords = "0_55_151_46_29"
+
+[[spawn]]
+npc = "npc.barrows_spider"
+coords = "0_55_151_47_34"
+
+[[spawn]]
+npc = "npc.barrows_spider"
+coords = "0_55_151_49_31"
+
+[[spawn]]
+npc = "npc.barrows_spider"
+coords = "0_55_151_50_27"
+
+[[spawn]]
+npc = "npc.barrows_spider"
+coords = "0_55_151_52_33"
+

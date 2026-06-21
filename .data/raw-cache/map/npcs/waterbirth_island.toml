@@ -1,0 +1,92 @@
+[[spawn]]
+npc = "npc.hobgoblin_unarmed"
+coords = "0_39_58_30_27"
+
+[[spawn]]
+npc = "npc.hobgoblin_unarmed"
+coords = "0_39_58_7_18"
+
+[[spawn]]
+npc = "npc.horror_rockcrab_inactive"
+coords = "0_39_58_18_54"
+
+[[spawn]]
+npc = "npc.horror_rockcrab_inactive"
+coords = "0_39_58_26_4"
+
+[[spawn]]
+npc = "npc.horror_rockcrab_inactive"
+coords = "0_39_58_27_11"
+
+[[spawn]]
+npc = "npc.horror_rockcrab_inactive"
+coords = "0_39_58_38_7"
+
+[[spawn]]
+npc = "npc.horror_rockcrab_inactive"
+coords = "0_39_58_41_53"
+
+[[spawn]]
+npc = "npc.horror_rockcrab_inactive"
+coords = "0_39_58_57_34"
+
+[[spawn]]
+npc = "npc.horror_rockcrab_inactive"
+coords = "0_39_58_6_42"
+
+[[spawn]]
+npc = "npc.horror_rockcrab_small_inactive"
+coords = "0_39_58_16_53"
+
+[[spawn]]
+npc = "npc.horror_rockcrab_small_inactive"
+coords = "0_39_58_16_54"
+
+[[spawn]]
+npc = "npc.horror_rockcrab_small_inactive"
+coords = "0_39_58_25_44"
+
+[[spawn]]
+npc = "npc.horror_rockcrab_small_inactive"
+coords = "0_39_58_28_12"
+
+[[spawn]]
+npc = "npc.horror_rockcrab_small_inactive"
+coords = "0_39_58_33_28"
+
+[[spawn]]
+npc = "npc.horror_rockcrab_small_inactive"
+coords = "0_39_58_34_50"
+
+[[spawn]]
+npc = "npc.horror_rockcrab_small_inactive"
+coords = "0_39_58_35_9"
+
+[[spawn]]
+npc = "npc.horror_rockcrab_small_inactive"
+coords = "0_39_58_36_48"
+
+[[spawn]]
+npc = "npc.horror_rockcrab_small_inactive"
+coords = "0_39_58_45_45"
+
+[[spawn]]
+npc = "npc.horror_rockcrab_small_inactive"
+coords = "0_39_58_47_42"
+
+[[spawn]]
+npc = "npc.horror_rockcrab_small_inactive"
+coords = "0_39_58_52_22"
+
+[[spawn]]
+npc = "npc.horror_rockcrab_small_inactive"
+coords = "0_39_58_5_43"
+
+[[spawn]]
+npc = "npc.viking_askelapen_dagganoth_mountain"
+coords = "0_39_58_43_27"
+
+[[spawn]]
+npc = "npc.viking_dagganoth_cave_waterbirth_island"
+coords = "0_39_58_48_49"
+

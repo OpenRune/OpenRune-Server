@@ -1,0 +1,300 @@
+[[spawn]]
+npc = "npc.clocktower_rat"
+coords = "0_40_150_19_55"
+
+[[spawn]]
+npc = "npc.clocktower_rat"
+coords = "0_40_150_21_59"
+
+[[spawn]]
+npc = "npc.clocktower_rat"
+coords = "0_40_150_23_59"
+
+[[spawn]]
+npc = "npc.clocktower_rat"
+coords = "0_40_150_27_56"
+
+[[spawn]]
+npc = "npc.clocktower_rat"
+coords = "0_40_150_29_58"
+
+[[spawn]]
+npc = "npc.clocktower_rat2"
+coords = "0_40_150_21_56"
+
+[[spawn]]
+npc = "npc.clocktower_rat2"
+coords = "0_40_150_29_54"
+
+[[spawn]]
+npc = "npc.clocktower_rat2"
+coords = "0_40_150_31_56"
+
+[[spawn]]
+npc = "npc.clocktower_rat3"
+coords = "0_40_150_24_56"
+
+[[spawn]]
+npc = "npc.clocktower_rat3"
+coords = "0_40_150_26_59"
+
+[[spawn]]
+npc = "npc.clocktower_rat3"
+coords = "0_40_150_31_59"
+
+[[spawn]]
+npc = "npc.dungeon_rat"
+coords = "0_40_150_13_30"
+
+[[spawn]]
+npc = "npc.giantspider1"
+coords = "0_40_150_42_40"
+
+[[spawn]]
+npc = "npc.giantspider1"
+coords = "0_40_150_43_35"
+
+[[spawn]]
+npc = "npc.giantspider1"
+coords = "0_40_150_43_38"
+
+[[spawn]]
+npc = "npc.giantspider1"
+coords = "0_40_150_45_37"
+
+[[spawn]]
+npc = "npc.giantspider1"
+coords = "0_40_150_45_39"
+
+[[spawn]]
+npc = "npc.giantspider1"
+coords = "0_40_150_46_35"
+
+[[spawn]]
+npc = "npc.giantspider1"
+coords = "0_40_150_46_46"
+
+[[spawn]]
+npc = "npc.giantspider1"
+coords = "0_40_150_47_37"
+
+[[spawn]]
+npc = "npc.giantspider1"
+coords = "0_40_150_47_41"
+
+[[spawn]]
+npc = "npc.giantspider1"
+coords = "0_40_150_47_44"
+
+[[spawn]]
+npc = "npc.giantspider1"
+coords = "0_40_150_47_48"
+
+[[spawn]]
+npc = "npc.giantspider1"
+coords = "0_40_150_48_35"
+
+[[spawn]]
+npc = "npc.giantspider1"
+coords = "0_40_150_48_42"
+
+[[spawn]]
+npc = "npc.giantspider1"
+coords = "0_40_150_49_39"
+
+[[spawn]]
+npc = "npc.giantspider1"
+coords = "0_40_150_49_43"
+
+[[spawn]]
+npc = "npc.goblin"
+coords = "0_40_150_47_21"
+
+[[spawn]]
+npc = "npc.goblin"
+coords = "0_40_150_4_53"
+
+[[spawn]]
+npc = "npc.goblin"
+coords = "0_40_150_5_55"
+
+[[spawn]]
+npc = "npc.goblin"
+coords = "0_40_150_6_26"
+
+[[spawn]]
+npc = "npc.goblin"
+coords = "0_40_150_7_53"
+
+[[spawn]]
+npc = "npc.goblin"
+coords = "0_40_150_9_33"
+
+[[spawn]]
+npc = "npc.goblin_armed"
+coords = "0_40_150_2_59"
+
+[[spawn]]
+npc = "npc.goblin_armed"
+coords = "0_40_150_39_26"
+
+[[spawn]]
+npc = "npc.goblin_armed"
+coords = "0_40_150_3_61"
+
+[[spawn]]
+npc = "npc.goblin_armed"
+coords = "0_40_150_41_27"
+
+[[spawn]]
+npc = "npc.goblin_armed"
+coords = "0_40_150_45_21"
+
+[[spawn]]
+npc = "npc.goblin_armed"
+coords = "0_40_150_50_20"
+
+[[spawn]]
+npc = "npc.goblin_helmet"
+coords = "0_40_150_11_53"
+
+[[spawn]]
+npc = "npc.goblin_helmet"
+coords = "0_40_150_2_57"
+
+[[spawn]]
+npc = "npc.headthief_blanket"
+coords = "0_40_150_9_6"
+
+[[spawn]]
+npc = "npc.hobgoblin_unarmed"
+coords = "0_40_150_13_26"
+
+[[spawn]]
+npc = "npc.hobgoblin_unarmed"
+coords = "0_40_150_6_32"
+
+[[spawn]]
+npc = "npc.ogre"
+coords = "0_40_150_25_8"
+
+[[spawn]]
+npc = "npc.ogre"
+coords = "0_40_150_26_14"
+
+[[spawn]]
+npc = "npc.ogre"
+coords = "0_40_150_28_6"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_40_150_13_12"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_40_150_19_31"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_40_150_20_0"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_40_150_20_14"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_40_150_20_20"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_40_150_20_26"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_40_150_23_32"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_40_150_24_25"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_40_150_24_37"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_40_150_29_44"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_40_150_30_1"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_40_150_30_38"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_40_150_31_1"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_40_150_31_21"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_40_150_34_36"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_40_150_34_44"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_40_150_37_4"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_40_150_47_15"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_40_150_48_28"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_40_150_54_51"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_40_150_54_56"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_40_150_55_47"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_40_150_55_61"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_40_150_56_33"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_40_150_58_30"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_40_150_8_20"
+
+[[spawn]]
+npc = "npc.thief_blanket"
+coords = "0_40_150_4_9"
+
+[[spawn]]
+npc = "npc.thief_blanket"
+coords = "0_40_150_6_5"
+

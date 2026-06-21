@@ -1,0 +1,98 @@
+## Woodcutting Guild ents
+
+[[spawn]]
+npc = "npc.wcguild_ent"
+coords = "0_24_154_12_37"
+
+[[spawn]]
+npc = "npc.wcguild_ent"
+coords = "0_24_154_14_30"
+
+[[spawn]]
+npc = "npc.wcguild_ent"
+coords = "0_24_154_16_46"
+
+[[spawn]]
+npc = "npc.wcguild_ent"
+coords = "0_24_154_18_36"
+
+[[spawn]]
+npc = "npc.wcguild_ent"
+coords = "0_24_154_21_12"
+
+[[spawn]]
+npc = "npc.wcguild_ent"
+coords = "0_24_154_23_46"
+
+[[spawn]]
+npc = "npc.wcguild_ent"
+coords = "0_24_154_23_8"
+
+[[spawn]]
+npc = "npc.wcguild_ent"
+coords = "0_24_154_25_52"
+
+[[spawn]]
+npc = "npc.wcguild_ent"
+coords = "0_24_154_26_12"
+
+[[spawn]]
+npc = "npc.wcguild_ent"
+coords = "0_24_154_32_44"
+
+[[spawn]]
+npc = "npc.wcguild_ent"
+coords = "0_24_154_32_53"
+
+[[spawn]]
+npc = "npc.wcguild_ent"
+coords = "0_24_154_35_23"
+
+[[spawn]]
+npc = "npc.wcguild_ent"
+coords = "0_24_154_35_27"
+
+[[spawn]]
+npc = "npc.wcguild_ent"
+coords = "0_24_154_38_15"
+
+[[spawn]]
+npc = "npc.wcguild_ent"
+coords = "0_24_154_39_34"
+
+[[spawn]]
+npc = "npc.wcguild_ent"
+coords = "0_24_154_41_43"
+
+[[spawn]]
+npc = "npc.wcguild_ent"
+coords = "0_24_154_42_28"
+
+[[spawn]]
+npc = "npc.wcguild_ent"
+coords = "0_24_154_43_24"
+
+[[spawn]]
+npc = "npc.wcguild_ent"
+coords = "0_24_154_43_56"
+
+[[spawn]]
+npc = "npc.wcguild_ent"
+coords = "0_24_154_44_49"
+
+[[spawn]]
+npc = "npc.wcguild_ent"
+coords = "0_24_154_51_9"
+
+[[spawn]]
+npc = "npc.wcguild_ent"
+coords = "0_24_154_54_7"
+
+[[spawn]]
+npc = "npc.wcguild_ent"
+coords = "0_24_154_56_12"
+
+[[spawn]]
+npc = "npc.wcguild_kai"
+coords = "0_24_154_57_44"
+

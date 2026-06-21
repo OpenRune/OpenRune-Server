@@ -1,0 +1,12 @@
+[[spawn]]
+npc = "npc.sailing_shipyard_worker_13"
+coords = "0_32_42_20_33"
+
+## Shipyard Concrete
+
+[[spawn]]
+npc = "npc.sailing_shipyard_manager_vis"
+coords = "0_32_42_34_34"
+
+## Shipyard Concrete End
+

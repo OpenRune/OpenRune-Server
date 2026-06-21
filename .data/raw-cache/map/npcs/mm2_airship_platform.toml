@@ -1,0 +1,88 @@
+[[spawn]]
+npc = "npc.mm2_monkey_platform_guard_1"
+coords = "1_32_84_20_26"
+
+[[spawn]]
+npc = "npc.mm2_monkey_platform_guard_10"
+coords = "2_32_84_19_44"
+
+[[spawn]]
+npc = "npc.mm2_monkey_platform_guard_11a"
+coords = "2_32_84_41_32"
+
+[[spawn]]
+npc = "npc.mm2_monkey_platform_guard_11b"
+coords = "2_32_84_50_27"
+
+[[spawn]]
+npc = "npc.mm2_monkey_platform_guard_12"
+coords = "2_32_84_50_19"
+
+[[spawn]]
+npc = "npc.mm2_monkey_platform_guard_13"
+coords = "2_32_84_49_49"
+
+[[spawn]]
+npc = "npc.mm2_monkey_platform_guard_14"
+coords = "3_32_84_19_44"
+
+[[spawn]]
+npc = "npc.mm2_monkey_platform_guard_15"
+coords = "3_32_84_21_32"
+
+[[spawn]]
+npc = "npc.mm2_monkey_platform_guard_16"
+coords = "3_32_84_32_32"
+
+[[spawn]]
+npc = "npc.mm2_monkey_platform_guard_17"
+coords = "3_32_84_50_27"
+
+[[spawn]]
+npc = "npc.mm2_monkey_platform_guard_18"
+coords = "3_32_84_36_12"
+
+[[spawn]]
+npc = "npc.mm2_monkey_platform_guard_19"
+coords = "3_32_84_40_9"
+
+[[spawn]]
+npc = "npc.mm2_monkey_platform_guard_2"
+coords = "1_32_84_21_10"
+
+[[spawn]]
+npc = "npc.mm2_monkey_platform_guard_20"
+coords = "3_32_84_49_12"
+
+[[spawn]]
+npc = "npc.mm2_monkey_platform_guard_21"
+coords = "1_32_84_51_49"
+
+[[spawn]]
+npc = "npc.mm2_monkey_platform_guard_3"
+coords = "1_32_84_34_24"
+
+[[spawn]]
+npc = "npc.mm2_monkey_platform_guard_4"
+coords = "1_32_84_22_32"
+
+[[spawn]]
+npc = "npc.mm2_monkey_platform_guard_5"
+coords = "1_32_84_19_44"
+
+[[spawn]]
+npc = "npc.mm2_monkey_platform_guard_6"
+coords = "1_32_84_35_37"
+
+[[spawn]]
+npc = "npc.mm2_monkey_platform_guard_7"
+coords = "1_32_84_35_35"
+
+[[spawn]]
+npc = "npc.mm2_monkey_platform_guard_8"
+coords = "2_32_84_30_33"
+
+[[spawn]]
+npc = "npc.mm2_monkey_platform_guard_9"
+coords = "2_32_84_19_17"
+

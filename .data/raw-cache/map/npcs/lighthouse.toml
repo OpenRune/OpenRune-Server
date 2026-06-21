@@ -1,0 +1,94 @@
+## Lighthouse Dungeon
+
+[[spawn]]
+npc = "npc.horror_dagannoth_medium"
+coords = "0_39_156_19_32"
+
+[[spawn]]
+npc = "npc.horror_dagannoth_medium"
+coords = "0_39_156_27_35"
+
+[[spawn]]
+npc = "npc.horror_dagannoth_medium_darker"
+coords = "0_39_156_15_36"
+
+[[spawn]]
+npc = "npc.horror_dagannoth_medium_darker"
+coords = "0_39_156_18_43"
+
+[[spawn]]
+npc = "npc.horror_dagannoth_medium_darker"
+coords = "0_39_156_38_41"
+
+[[spawn]]
+npc = "npc.horror_dagannoth_medium_lighter"
+coords = "0_39_156_23_47"
+
+[[spawn]]
+npc = "npc.horror_dagannoth_medium_lighter"
+coords = "0_39_156_31_40"
+
+[[spawn]]
+npc = "npc.horror_dagganoth_jr"
+coords = "0_39_156_17_34"
+
+[[spawn]]
+npc = "npc.horror_dagganoth_jr"
+coords = "0_39_156_22_43"
+
+[[spawn]]
+npc = "npc.horror_dagganoth_jr"
+coords = "0_39_156_24_34"
+
+[[spawn]]
+npc = "npc.horror_dagganoth_jr"
+coords = "0_39_156_26_44"
+
+[[spawn]]
+npc = "npc.horror_dagganoth_jr"
+coords = "0_39_156_31_35"
+
+[[spawn]]
+npc = "npc.horror_dagganoth_jr_darker"
+coords = "0_39_156_19_46"
+
+[[spawn]]
+npc = "npc.horror_dagganoth_jr_darker"
+coords = "0_39_156_22_29"
+
+[[spawn]]
+npc = "npc.horror_dagganoth_jr_darker"
+coords = "0_39_156_25_31"
+
+[[spawn]]
+npc = "npc.horror_dagganoth_jr_darker"
+coords = "0_39_156_26_39"
+
+[[spawn]]
+npc = "npc.horror_dagganoth_jr_darker"
+coords = "0_39_156_28_49"
+
+[[spawn]]
+npc = "npc.horror_dagganoth_jr_darker"
+coords = "0_39_156_36_39"
+
+[[spawn]]
+npc = "npc.horror_dagganoth_jr_darker"
+coords = "0_39_156_39_46"
+
+[[spawn]]
+npc = "npc.horror_dagganoth_jr_lighter"
+coords = "0_39_156_18_28"
+
+[[spawn]]
+npc = "npc.horror_dagganoth_jr_lighter"
+coords = "0_39_156_28_30"
+
+[[spawn]]
+npc = "npc.horror_dagganoth_jr_lighter"
+coords = "0_39_156_30_51"
+
+[[spawn]]
+npc = "npc.horror_lighthousekeeeper_injured"
+coords = "0_39_72_22_25"
+

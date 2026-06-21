@@ -1,0 +1,8 @@
+[[spawn]]
+npc = "npc.dallas_jones_lithkren"
+coords = "0_55_62_63_6"
+
+[[spawn]]
+npc = "npc.jardric_lithkren"
+coords = "0_55_62_62_5"
+

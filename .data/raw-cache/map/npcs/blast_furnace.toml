@@ -1,0 +1,80 @@
+[[spawn]]
+npc = "npc.blast_furnace_adamantite_ore"
+coords = "0_30_77_24_38"
+
+[[spawn]]
+npc = "npc.blast_furnace_automaton_cog_repairer"
+coords = "0_30_77_24_40"
+
+[[spawn]]
+npc = "npc.blast_furnace_automaton_pedaller"
+coords = "0_30_77_28_39"
+
+[[spawn]]
+npc = "npc.blast_furnace_automaton_pipe_repairer"
+coords = "0_30_77_28_32"
+
+[[spawn]]
+npc = "npc.blast_furnace_automaton_pumper"
+coords = "0_30_77_31_34"
+
+[[spawn]]
+npc = "npc.blast_furnace_coal"
+coords = "0_30_77_24_38"
+
+[[spawn]]
+npc = "npc.blast_furnace_copper_ore"
+coords = "0_30_77_24_38"
+
+[[spawn]]
+npc = "npc.blast_furnace_gold_ore"
+coords = "0_30_77_24_38"
+
+[[spawn]]
+npc = "npc.blast_furnace_instructor"
+coords = "0_30_77_24_30"
+
+[[spawn]]
+npc = "npc.blast_furnace_iron_ore"
+coords = "0_30_77_24_38"
+
+[[spawn]]
+npc = "npc.blast_furnace_lead_ore"
+coords = "0_30_77_24_38"
+
+[[spawn]]
+npc = "npc.blast_furnace_mithril_ore"
+coords = "0_30_77_24_38"
+
+[[spawn]]
+npc = "npc.blast_furnace_nickel_ore"
+coords = "0_30_77_24_38"
+
+[[spawn]]
+npc = "npc.blast_furnace_perfect_gold_ore"
+coords = "0_30_77_24_38"
+
+[[spawn]]
+npc = "npc.blast_furnace_runite_ore"
+coords = "0_30_77_24_38"
+
+[[spawn]]
+npc = "npc.blast_furnace_silver_ore"
+coords = "0_30_77_24_38"
+
+[[spawn]]
+npc = "npc.blast_furnace_smithing_catalyst"
+coords = "0_30_77_24_38"
+
+[[spawn]]
+npc = "npc.blast_furnace_tin_ore"
+coords = "0_30_77_24_38"
+
+[[spawn]]
+npc = "npc.smithing_guild_buyer"
+coords = "0_30_77_19_40"
+
+[[spawn]]
+npc = "npc.smithing_guild_ore_seller"
+coords = "0_30_77_16_38"
+

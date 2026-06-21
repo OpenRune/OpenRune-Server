@@ -1,0 +1,16 @@
+[[spawn]]
+npc = "npc.nightmare_totem_1_dormant"
+coords = "3_60_155_23_22"
+
+[[spawn]]
+npc = "npc.nightmare_totem_2_dormant"
+coords = "3_60_155_39_22"
+
+[[spawn]]
+npc = "npc.nightmare_totem_3_dormant"
+coords = "3_60_155_23_38"
+
+[[spawn]]
+npc = "npc.nightmare_totem_4_dormant"
+coords = "3_60_155_39_38"
+

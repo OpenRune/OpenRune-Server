@@ -1,0 +1,144 @@
+[[spawn]]
+npc = "npc.mm2_demon_gorilla_1_magic"
+coords = "0_32_88_25_13"
+
+[[spawn]]
+npc = "npc.mm2_demon_gorilla_1_magic"
+coords = "0_32_88_34_44"
+
+[[spawn]]
+npc = "npc.mm2_demon_gorilla_1_magic"
+coords = "0_32_88_47_26"
+
+[[spawn]]
+npc = "npc.mm2_demon_gorilla_1_magic"
+coords = "0_32_88_48_13"
+
+[[spawn]]
+npc = "npc.mm2_demon_gorilla_1_magic"
+coords = "0_32_88_57_27"
+
+[[spawn]]
+npc = "npc.mm2_demon_gorilla_1_magic"
+coords = "0_33_88_11_44"
+
+[[spawn]]
+npc = "npc.mm2_demon_gorilla_1_magic"
+coords = "0_33_88_18_39"
+
+[[spawn]]
+npc = "npc.mm2_demon_gorilla_1_melee"
+coords = "0_32_88_24_19"
+
+[[spawn]]
+npc = "npc.mm2_demon_gorilla_1_melee"
+coords = "0_33_88_0_19"
+
+[[spawn]]
+npc = "npc.mm2_demon_gorilla_1_melee"
+coords = "0_33_88_40_36"
+
+[[spawn]]
+npc = "npc.mm2_demon_gorilla_1_ranged"
+coords = "0_32_88_24_49"
+
+[[spawn]]
+npc = "npc.mm2_demon_gorilla_1_ranged"
+coords = "0_32_88_54_47"
+
+[[spawn]]
+npc = "npc.mm2_demon_gorilla_1_ranged"
+coords = "0_33_88_30_46"
+
+[[spawn]]
+npc = "npc.mm2_demon_gorilla_1_ranged"
+coords = "0_33_88_45_26"
+
+[[spawn]]
+npc = "npc.mm2_demon_gorilla_1_ranged"
+coords = "0_33_88_7_28"
+
+[[spawn]]
+npc = "npc.mm2_demon_gorilla_2_magic"
+coords = "0_32_88_52_9"
+
+[[spawn]]
+npc = "npc.mm2_demon_gorilla_2_magic"
+coords = "0_32_88_59_14"
+
+[[spawn]]
+npc = "npc.mm2_demon_gorilla_2_magic"
+coords = "0_32_88_63_29"
+
+[[spawn]]
+npc = "npc.mm2_demon_gorilla_2_melee"
+coords = "0_32_88_24_41"
+
+[[spawn]]
+npc = "npc.mm2_demon_gorilla_2_melee"
+coords = "0_32_88_31_12"
+
+[[spawn]]
+npc = "npc.mm2_demon_gorilla_2_melee"
+coords = "0_32_88_32_19"
+
+[[spawn]]
+npc = "npc.mm2_demon_gorilla_2_melee"
+coords = "0_32_88_46_19"
+
+[[spawn]]
+npc = "npc.mm2_demon_gorilla_2_melee"
+coords = "0_32_88_54_40"
+
+[[spawn]]
+npc = "npc.mm2_demon_gorilla_2_melee"
+coords = "0_33_88_40_46"
+
+[[spawn]]
+npc = "npc.mm2_demon_gorilla_2_ranged"
+coords = "0_32_88_47_41"
+
+[[spawn]]
+npc = "npc.mm2_demon_gorilla_2_ranged"
+coords = "0_32_88_54_19"
+
+[[spawn]]
+npc = "npc.mm2_demon_gorilla_2_ranged"
+coords = "0_33_88_19_48"
+
+[[spawn]]
+npc = "npc.mm2_demon_gorilla_2_ranged"
+coords = "0_33_88_40_26"
+
+[[spawn]]
+npc = "npc.mm2_tortured_gorilla_1"
+coords = "0_33_88_19_12"
+
+[[spawn]]
+npc = "npc.mm2_tortured_gorilla_1"
+coords = "0_33_88_25_28"
+
+[[spawn]]
+npc = "npc.mm2_tortured_gorilla_1"
+coords = "0_33_88_33_11"
+
+[[spawn]]
+npc = "npc.mm2_tortured_gorilla_1"
+coords = "0_33_88_39_17"
+
+[[spawn]]
+npc = "npc.mm2_tortured_gorilla_2"
+coords = "0_33_88_20_28"
+
+[[spawn]]
+npc = "npc.mm2_tortured_gorilla_2"
+coords = "0_33_88_24_14"
+
+[[spawn]]
+npc = "npc.mm2_tortured_gorilla_2"
+coords = "0_33_88_29_29"
+
+[[spawn]]
+npc = "npc.mm2_tortured_gorilla_2"
+coords = "0_33_88_34_18"
+

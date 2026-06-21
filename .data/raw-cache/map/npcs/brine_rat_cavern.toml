@@ -1,0 +1,148 @@
+[[spawn]]
+npc = "npc.horror_rockcrab"
+coords = "0_42_158_18_47"
+
+[[spawn]]
+npc = "npc.horror_rockcrab"
+coords = "0_42_158_60_54"
+
+[[spawn]]
+npc = "npc.horror_rockcrab_small"
+coords = "0_42_158_22_56"
+
+[[spawn]]
+npc = "npc.horror_rockcrab_small"
+coords = "0_42_158_51_41"
+
+[[spawn]]
+npc = "npc.olaf2_brine_rats"
+coords = "0_42_158_14_23"
+
+[[spawn]]
+npc = "npc.olaf2_brine_rats"
+coords = "0_42_158_16_19"
+
+[[spawn]]
+npc = "npc.olaf2_brine_rats"
+coords = "0_42_158_17_21"
+
+[[spawn]]
+npc = "npc.olaf2_brine_rats"
+coords = "0_42_158_19_25"
+
+[[spawn]]
+npc = "npc.olaf2_brine_rats"
+coords = "0_42_158_20_19"
+
+[[spawn]]
+npc = "npc.olaf2_brine_rats"
+coords = "0_42_158_22_22"
+
+[[spawn]]
+npc = "npc.olaf2_brine_rats"
+coords = "0_42_158_24_20"
+
+[[spawn]]
+npc = "npc.olaf2_cave_boulder"
+coords = "0_42_158_3_12"
+
+[[spawn]]
+npc = "npc.olaf2_giant_bat"
+coords = "0_42_158_32_22"
+
+[[spawn]]
+npc = "npc.olaf2_giant_bat"
+coords = "0_42_158_35_10"
+
+[[spawn]]
+npc = "npc.olaf2_giant_bat"
+coords = "0_42_158_42_19"
+
+[[spawn]]
+npc = "npc.olaf2_giant_bat"
+coords = "0_42_158_44_10"
+
+[[spawn]]
+npc = "npc.olaf2_giant_bat"
+coords = "0_42_158_46_16"
+
+[[spawn]]
+npc = "npc.olaf2_undead_viking_lvl40"
+coords = "0_42_158_20_34"
+
+[[spawn]]
+npc = "npc.olaf2_undead_viking_lvl40"
+coords = "0_42_158_39_31"
+
+[[spawn]]
+npc = "npc.olaf2_undead_viking_lvl40"
+coords = "0_42_158_49_26"
+
+[[spawn]]
+npc = "npc.olaf2_undead_viking_lvl40_b"
+coords = "0_42_158_24_30"
+
+[[spawn]]
+npc = "npc.olaf2_undead_viking_lvl40_b"
+coords = "0_42_158_44_29"
+
+[[spawn]]
+npc = "npc.olaf2_undead_viking_lvl40_c"
+coords = "0_42_158_27_33"
+
+[[spawn]]
+npc = "npc.olaf2_undead_viking_lvl40_c"
+coords = "0_42_158_35_30"
+
+[[spawn]]
+npc = "npc.olaf2_undead_viking_lvl40_c"
+coords = "0_42_158_41_27"
+
+[[spawn]]
+npc = "npc.olaf2_undead_viking_lvl50"
+coords = "0_42_158_12_53"
+
+[[spawn]]
+npc = "npc.olaf2_undead_viking_lvl50"
+coords = "0_42_158_17_43"
+
+[[spawn]]
+npc = "npc.olaf2_undead_viking_lvl50_b"
+coords = "0_42_158_19_51"
+
+[[spawn]]
+npc = "npc.olaf2_undead_viking_lvl50_b"
+coords = "0_42_158_22_46"
+
+[[spawn]]
+npc = "npc.olaf2_undead_viking_lvl50_c"
+coords = "0_42_158_14_48"
+
+[[spawn]]
+npc = "npc.olaf2_undead_viking_lvl50_c"
+coords = "0_42_158_27_51"
+
+[[spawn]]
+npc = "npc.olaf2_undead_viking_lvl60"
+coords = "0_42_158_29_48"
+
+[[spawn]]
+npc = "npc.olaf2_undead_viking_lvl60"
+coords = "0_42_158_54_42"
+
+[[spawn]]
+npc = "npc.olaf2_undead_viking_lvl60"
+coords = "0_42_158_58_53"
+
+[[spawn]]
+npc = "npc.olaf2_undead_viking_lvl60_b"
+coords = "0_42_158_21_56"
+
+[[spawn]]
+npc = "npc.olaf2_undead_viking_lvl60_b"
+coords = "0_42_158_46_53"
+
+[[spawn]]
+npc = "npc.olaf2_undead_viking_lvl60_b"
+coords = "0_42_158_49_44"
+

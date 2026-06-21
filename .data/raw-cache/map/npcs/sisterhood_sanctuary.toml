@@ -1,0 +1,32 @@
+[[spawn]]
+npc = "npc.rat"
+coords = "1_58_151_21_46"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "1_58_151_26_45"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "1_58_151_32_47"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "1_58_151_38_46"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "1_58_151_45_47"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "1_58_151_48_45"
+
+[[spawn]]
+npc = "npc.slepe_jester"
+coords = "1_58_151_42_47"
+
+[[spawn]]
+npc = "npc.slepe_thief"
+coords = "1_58_151_47_44"
+

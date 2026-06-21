@@ -1,0 +1,32 @@
+[[spawn]]
+npc = "npc.macro_frog_noncombat"
+coords = "0_38_74_23_48"
+
+[[spawn]]
+npc = "npc.macro_frog_noncombat"
+coords = "0_38_74_26_37"
+
+[[spawn]]
+npc = "npc.macro_frog_noncombat"
+coords = "0_38_74_31_42"
+
+[[spawn]]
+npc = "npc.macro_frog_noncombat"
+coords = "0_38_74_32_34"
+
+[[spawn]]
+npc = "npc.macro_frog_noncombat"
+coords = "0_38_74_35_38"
+
+[[spawn]]
+npc = "npc.macro_frog_noncombat"
+coords = "0_38_74_36_53"
+
+[[spawn]]
+npc = "npc.macro_frog_noncombat"
+coords = "0_38_74_42_45"
+
+[[spawn]]
+npc = "npc.macro_frog_sulking"
+coords = "0_38_74_31_46"
+

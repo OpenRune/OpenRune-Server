@@ -1,0 +1,8 @@
+[[spawn]]
+npc = "npc.lathas_shopkeeper"
+coords = "0_39_52_18_57"
+
+[[spawn]]
+npc = "npc.lathastrainer1"
+coords = "0_39_52_15_55"
+

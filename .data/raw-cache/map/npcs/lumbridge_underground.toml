@@ -1,0 +1,544 @@
+## Goblin Maze
+
+[[spawn]]
+npc = "npc.cave_goblin_guard1"
+coords = "0_51_150_54_2"
+
+[[spawn]]
+npc = "npc.cave_goblin_guard1"
+coords = "0_51_150_59_45"
+
+[[spawn]]
+npc = "npc.cave_goblin_guard2"
+coords = "0_51_150_56_32"
+
+[[spawn]]
+npc = "npc.cave_goblin_guard2"
+coords = "0_51_150_58_17"
+
+[[spawn]]
+npc = "npc.cave_goblin_miner"
+coords = "0_51_150_48_52"
+
+[[spawn]]
+npc = "npc.cave_goblin_miner"
+coords = "0_51_150_52_32"
+
+[[spawn]]
+npc = "npc.cave_goblin_miner2"
+coords = "0_51_150_48_46"
+
+[[spawn]]
+npc = "npc.cave_goblin_miner2"
+coords = "0_51_150_50_36"
+
+[[spawn]]
+npc = "npc.cave_goblin_miner3"
+coords = "0_51_150_51_20"
+
+[[spawn]]
+npc = "npc.cave_goblin_miner3"
+coords = "0_51_150_60_21"
+
+[[spawn]]
+npc = "npc.cave_goblin_miner4"
+coords = "0_51_150_50_30"
+
+[[spawn]]
+npc = "npc.cave_goblin_miner4_mining"
+coords = "0_51_150_57_46"
+
+[[spawn]]
+npc = "npc.dttd_bone_dealer"
+coords = "0_51_150_60_7"
+
+[[spawn]]
+npc = "npc.dttd_maze_guide"
+coords = "0_50_150_45_47"
+
+[[spawn]]
+npc = "npc.dttd_maze_guide_there"
+coords = "0_50_150_46_48"
+
+[[spawn]]
+npc = "npc.lost_tribe_guide"
+coords = "0_50_150_31_10"
+
+[[spawn]]
+npc = "npc.lost_tribe_mistag"
+coords = "0_51_150_55_15"
+
+[[spawn]]
+npc = "npc.lotg_grubfoot_at_entrance"
+coords = "0_51_150_54_15"
+
+## Lumbridge Castle Basement
+
+[[spawn]]
+npc = "npc.dttd_zanik_cellar"
+coords = "0_50_150_10_23"
+
+[[spawn]]
+npc = "npc.spider"
+coords = "0_50_150_11_21"
+
+[[spawn]]
+npc = "npc.spider"
+coords = "0_50_150_16_16"
+
+[[spawn]]
+npc = "npc.spider"
+coords = "0_50_150_16_24"
+
+[[spawn]]
+npc = "npc.spider"
+coords = "0_50_150_9_18"
+
+## Lumbridge Swamp Caves
+
+[[spawn]]
+npc = "npc.0_49_149_cavefish"
+coords = "0_49_149_18_8"
+
+[[spawn]]
+npc = "npc.0_50_149_cavefish"
+coords = "0_50_149_45_34"
+
+[[spawn]]
+npc = "npc.cave_goblin"
+coords = "0_50_149_56_36"
+
+[[spawn]]
+npc = "npc.cave_goblin2"
+coords = "0_50_149_47_22"
+
+[[spawn]]
+npc = "npc.cave_goblin3"
+coords = "0_50_149_53_29"
+
+[[spawn]]
+npc = "npc.cave_goblin4"
+coords = "0_50_149_46_45"
+
+[[spawn]]
+npc = "npc.cave_littlebug"
+coords = "0_49_149_12_40"
+
+[[spawn]]
+npc = "npc.cave_littlebug"
+coords = "0_49_149_16_15"
+
+[[spawn]]
+npc = "npc.cave_littlebug"
+coords = "0_49_149_17_23"
+
+[[spawn]]
+npc = "npc.cave_littlebug"
+coords = "0_49_149_17_38"
+
+[[spawn]]
+npc = "npc.cave_littlebug"
+coords = "0_49_149_21_11"
+
+[[spawn]]
+npc = "npc.cave_littlebug"
+coords = "0_49_149_23_36"
+
+[[spawn]]
+npc = "npc.cave_littlebug"
+coords = "0_49_149_24_53"
+
+[[spawn]]
+npc = "npc.cave_littlebug"
+coords = "0_49_149_27_11"
+
+[[spawn]]
+npc = "npc.cave_littlebug"
+coords = "0_49_149_30_51"
+
+[[spawn]]
+npc = "npc.cave_littlebug"
+coords = "0_49_149_31_37"
+
+[[spawn]]
+npc = "npc.cave_littlebug"
+coords = "0_49_149_31_9"
+
+[[spawn]]
+npc = "npc.cave_littlebug"
+coords = "0_49_149_32_20"
+
+[[spawn]]
+npc = "npc.cave_littlebug"
+coords = "0_49_149_34_35"
+
+[[spawn]]
+npc = "npc.cave_littlebug"
+coords = "0_49_149_39_49"
+
+[[spawn]]
+npc = "npc.cave_littlebug"
+coords = "0_49_149_45_13"
+
+[[spawn]]
+npc = "npc.cave_littlebug"
+coords = "0_49_149_48_19"
+
+[[spawn]]
+npc = "npc.cave_littlebug"
+coords = "0_49_149_48_45"
+
+[[spawn]]
+npc = "npc.cave_littlebug"
+coords = "0_49_149_49_35"
+
+[[spawn]]
+npc = "npc.cave_littlebug"
+coords = "0_49_149_51_14"
+
+[[spawn]]
+npc = "npc.cave_littlebug"
+coords = "0_49_149_57_41"
+
+[[spawn]]
+npc = "npc.cave_littlebug"
+coords = "0_49_149_58_17"
+
+[[spawn]]
+npc = "npc.cave_littlebug"
+coords = "0_49_149_58_34"
+
+[[spawn]]
+npc = "npc.cave_littlebug"
+coords = "0_50_149_11_53"
+
+[[spawn]]
+npc = "npc.cave_littlebug"
+coords = "0_50_149_21_23"
+
+[[spawn]]
+npc = "npc.cave_littlebug"
+coords = "0_50_149_22_30"
+
+[[spawn]]
+npc = "npc.cave_littlebug"
+coords = "0_50_149_23_51"
+
+[[spawn]]
+npc = "npc.cave_littlebug"
+coords = "0_50_149_26_35"
+
+[[spawn]]
+npc = "npc.cave_littlebug"
+coords = "0_50_149_28_44"
+
+[[spawn]]
+npc = "npc.cave_littlebug"
+coords = "0_50_149_40_31"
+
+[[spawn]]
+npc = "npc.cave_littlebug"
+coords = "0_50_149_43_35"
+
+[[spawn]]
+npc = "npc.cave_littlebug"
+coords = "0_50_149_45_42"
+
+[[spawn]]
+npc = "npc.cave_littlebug"
+coords = "0_50_149_46_28"
+
+[[spawn]]
+npc = "npc.cave_littlebug"
+coords = "0_50_149_50_41"
+
+[[spawn]]
+npc = "npc.cave_littlebug"
+coords = "0_50_149_51_33"
+
+[[spawn]]
+npc = "npc.cave_littlebug"
+coords = "0_50_149_7_51"
+
+[[spawn]]
+npc = "npc.cave_littlebug"
+coords = "0_50_149_9_36"
+
+[[spawn]]
+npc = "npc.giant_frog"
+coords = "0_50_149_21_13"
+
+[[spawn]]
+npc = "npc.giant_frog"
+coords = "0_50_149_24_8"
+
+[[spawn]]
+npc = "npc.giant_frog"
+coords = "0_50_149_31_11"
+
+[[spawn]]
+npc = "npc.medium_frog"
+coords = "0_49_149_15_14"
+
+[[spawn]]
+npc = "npc.medium_frog"
+coords = "0_49_149_15_26"
+
+[[spawn]]
+npc = "npc.medium_frog"
+coords = "0_49_149_18_20"
+
+[[spawn]]
+npc = "npc.medium_frog"
+coords = "0_49_149_23_18"
+
+[[spawn]]
+npc = "npc.medium_frog"
+coords = "0_49_149_47_7"
+
+[[spawn]]
+npc = "npc.medium_frog"
+coords = "0_50_149_21_21"
+
+[[spawn]]
+npc = "npc.medium_frog"
+coords = "0_50_149_24_16"
+
+[[spawn]]
+npc = "npc.medium_frog"
+coords = "0_50_149_24_23"
+
+[[spawn]]
+npc = "npc.medium_frog"
+coords = "0_50_149_44_34"
+
+[[spawn]]
+npc = "npc.medium_frog"
+coords = "0_50_149_48_31"
+
+[[spawn]]
+npc = "npc.medium_frog"
+coords = "0_50_149_50_37"
+
+[[spawn]]
+npc = "npc.slayer_cave_crawler_1"
+coords = "0_49_149_50_46"
+
+[[spawn]]
+npc = "npc.slayer_cave_crawler_3"
+coords = "0_49_149_53_38"
+
+[[spawn]]
+npc = "npc.slayer_cave_crawler_4"
+coords = "0_49_149_53_30"
+
+[[spawn]]
+npc = "npc.slayer_rockslug"
+coords = "0_50_149_22_35"
+
+[[spawn]]
+npc = "npc.slayer_rockslug"
+coords = "0_50_149_25_41"
+
+[[spawn]]
+npc = "npc.slayer_rockslug"
+coords = "0_50_149_25_47"
+
+[[spawn]]
+npc = "npc.slayer_rockslug_baby"
+coords = "0_50_149_22_44"
+
+[[spawn]]
+npc = "npc.slayer_rockslug_baby"
+coords = "0_50_149_26_37"
+
+[[spawn]]
+npc = "npc.slice_sergeant_mossfists_cave"
+coords = "0_49_149_32_36"
+
+[[spawn]]
+npc = "npc.slice_sergeant_slimetoes_cave"
+coords = "0_49_149_34_36"
+
+[[spawn]]
+npc = "npc.swamp_cave_bug"
+coords = "0_49_149_13_42"
+
+[[spawn]]
+npc = "npc.swamp_cave_bug"
+coords = "0_49_149_14_35"
+
+[[spawn]]
+npc = "npc.swamp_cave_bug"
+coords = "0_49_149_16_40"
+
+[[spawn]]
+npc = "npc.swamp_cave_bug"
+coords = "0_49_149_20_22"
+
+[[spawn]]
+npc = "npc.swamp_cave_bug"
+coords = "0_49_149_28_6"
+
+[[spawn]]
+npc = "npc.swamp_cave_bug"
+coords = "0_49_149_33_10"
+
+[[spawn]]
+npc = "npc.swamp_cave_bug"
+coords = "0_49_149_36_22"
+
+[[spawn]]
+npc = "npc.swamp_cave_bug"
+coords = "0_49_149_42_22"
+
+[[spawn]]
+npc = "npc.swamp_cave_bug"
+coords = "0_49_149_45_49"
+
+[[spawn]]
+npc = "npc.swamp_cave_bug"
+coords = "0_49_149_46_20"
+
+[[spawn]]
+npc = "npc.swamp_cave_bug"
+coords = "0_49_149_48_14"
+
+[[spawn]]
+npc = "npc.swamp_cave_bug"
+coords = "0_49_149_51_25"
+
+[[spawn]]
+npc = "npc.swamp_cave_bug"
+coords = "0_49_149_51_41"
+
+[[spawn]]
+npc = "npc.swamp_cave_bug"
+coords = "0_49_149_53_14"
+
+[[spawn]]
+npc = "npc.swamp_cave_bug"
+coords = "0_49_149_55_35"
+
+[[spawn]]
+npc = "npc.swamp_cave_bug"
+coords = "0_49_149_55_46"
+
+[[spawn]]
+npc = "npc.swamp_cave_bug"
+coords = "0_50_149_20_39"
+
+[[spawn]]
+npc = "npc.swamp_cave_bug"
+coords = "0_50_149_27_47"
+
+[[spawn]]
+npc = "npc.swamp_cave_bug"
+coords = "0_50_149_29_39"
+
+[[spawn]]
+npc = "npc.swamp_cave_bug"
+coords = "0_50_149_7_53"
+
+[[spawn]]
+npc = "npc.swamp_cave_bug"
+coords = "0_50_149_9_49"
+
+[[spawn]]
+npc = "npc.swamp_cave_slime"
+coords = "0_49_149_14_19"
+
+[[spawn]]
+npc = "npc.swamp_cave_slime"
+coords = "0_49_149_17_10"
+
+[[spawn]]
+npc = "npc.swamp_cave_slime"
+coords = "0_49_149_21_25"
+
+[[spawn]]
+npc = "npc.swamp_cave_slime"
+coords = "0_49_149_21_8"
+
+[[spawn]]
+npc = "npc.swamp_cave_slime"
+coords = "0_49_149_23_55"
+
+[[spawn]]
+npc = "npc.swamp_cave_slime"
+coords = "0_49_149_26_21"
+
+[[spawn]]
+npc = "npc.swamp_cave_slime"
+coords = "0_49_149_28_55"
+
+[[spawn]]
+npc = "npc.swamp_cave_slime"
+coords = "0_49_149_32_56"
+
+[[spawn]]
+npc = "npc.swamp_cave_slime"
+coords = "0_49_149_42_12"
+
+[[spawn]]
+npc = "npc.swamp_cave_slime"
+coords = "0_49_149_44_7"
+
+[[spawn]]
+npc = "npc.swamp_cave_slime"
+coords = "0_49_149_45_10"
+
+[[spawn]]
+npc = "npc.swamp_cave_slime"
+coords = "0_50_149_10_20"
+
+[[spawn]]
+npc = "npc.swamp_cave_slime"
+coords = "0_50_149_10_34"
+
+[[spawn]]
+npc = "npc.swamp_cave_slime"
+coords = "0_50_149_46_32"
+
+[[spawn]]
+npc = "npc.swamp_cave_slime"
+coords = "0_50_149_46_37"
+
+[[spawn]]
+npc = "npc.swamp_cave_slime"
+coords = "0_50_149_53_35"
+
+[[spawn]]
+npc = "npc.swamp_cave_slime"
+coords = "0_50_149_7_18"
+
+[[spawn]]
+npc = "npc.swamp_wallbeast"
+coords = "0_49_149_25_11"
+
+[[spawn]]
+npc = "npc.swamp_wallbeast"
+coords = "0_49_149_26_38"
+
+[[spawn]]
+npc = "npc.swamp_wallbeast"
+coords = "0_49_149_28_20"
+
+[[spawn]]
+npc = "npc.swamp_wallbeast"
+coords = "0_49_149_62_18"
+
+[[spawn]]
+npc = "npc.swamp_wallbeast"
+coords = "0_49_149_62_36"
+
+[[spawn]]
+npc = "npc.swamp_wallbeast"
+coords = "0_50_149_15_24"
+
+[[spawn]]
+npc = "npc.swamp_wallbeast"
+coords = "0_50_149_16_52"
+
+## Lumbridge Swamp Caves End
+

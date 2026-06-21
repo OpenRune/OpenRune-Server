@@ -1,0 +1,772 @@
+## Burthorpe
+
+[[spawn]]
+npc = "npc.chicken"
+coords = "0_44_55_0_41"
+
+[[spawn]]
+npc = "npc.chicken"
+coords = "0_44_55_3_41"
+
+[[spawn]]
+npc = "npc.chicken_brown"
+coords = "0_44_55_2_39"
+
+[[spawn]]
+npc = "npc.chicken_brown"
+coords = "0_44_55_3_42"
+
+[[spawn]]
+npc = "npc.death_mountain_goat"
+coords = "0_44_55_0_39"
+
+[[spawn]]
+npc = "npc.death_sherpa"
+coords = "0_44_55_4_36"
+
+[[spawn]]
+npc = "npc.max_boulder"
+coords = "0_43_55_62_14"
+
+[[spawn]]
+npc = "npc.rooster"
+coords = "0_44_55_0_40"
+
+[[spawn]]
+npc = "npc.warguild_ghommal_npc"
+coords = "0_44_55_63_27"
+
+[[spawn]]
+npc = "npc.warguild_laidee"
+coords = "0_44_55_63_27"
+
+[[spawn]]
+npc = "npc.wgs_thaerisk_cemphier_multinpc2"
+coords = "0_44_55_61_26"
+
+## Interior Weiss Throne Tent
+
+[[spawn]]
+npc = "npc.my2arm_mother_multi_enthroned"
+coords = "0_44_61_55_27"
+
+[[spawn]]
+npc = "npc.my2arm_mother_multi_standing"
+coords = "0_44_61_55_30"
+
+[[spawn]]
+npc = "npc.my2arm_mushroom_throneroom"
+coords = "0_44_61_59_31"
+
+[[spawn]]
+npc = "npc.my2arm_snowflake"
+coords = "0_44_61_56_31"
+
+[[spawn]]
+npc = "npc.my2arm_snowflake_postquest"
+coords = "0_44_61_56_30"
+
+[[spawn]]
+npc = "npc.my2arm_wom_endquest"
+coords = "0_44_61_57_32"
+
+[[spawn]]
+npc = "npc.myarm_multi_postquest"
+coords = "0_44_61_58_30"
+
+[[spawn]]
+npc = "npc.myarm_multi_throneroom"
+coords = "0_44_61_56_32"
+
+## Troll Ice Path
+
+[[spawn]]
+npc = "npc.fd_troll_dad"
+coords = "0_44_58_20_29"
+
+[[spawn]]
+npc = "npc.fd_troll_mum"
+coords = "0_44_58_20_29"
+
+[[spawn]]
+npc = "npc.fourdiamonds_troll_child"
+coords = "0_44_58_20_28"
+
+[[spawn]]
+npc = "npc.godwars_dying_paladin"
+coords = "0_45_58_32_37"
+
+[[spawn]]
+npc = "npc.godwars_paladin_multi"
+coords = "0_45_58_32_38"
+
+[[spawn]]
+npc = "npc.i_troll_guard"
+coords = "0_44_58_25_26"
+
+[[spawn]]
+npc = "npc.ice_wolf_1"
+coords = "0_45_58_10_12"
+
+[[spawn]]
+npc = "npc.ice_wolf_1"
+coords = "0_45_58_10_9"
+
+[[spawn]]
+npc = "npc.ice_wolf_1"
+coords = "0_45_58_29_24"
+
+[[spawn]]
+npc = "npc.ice_wolf_1"
+coords = "0_45_58_6_11"
+
+[[spawn]]
+npc = "npc.ice_wolf_1"
+coords = "0_45_58_7_8"
+
+[[spawn]]
+npc = "npc.ice_wolf_2"
+coords = "0_45_58_12_14"
+
+[[spawn]]
+npc = "npc.ice_wolf_2"
+coords = "0_45_58_14_13"
+
+[[spawn]]
+npc = "npc.ice_wolf_2"
+coords = "0_45_58_15_16"
+
+[[spawn]]
+npc = "npc.ice_wolf_2"
+coords = "0_45_58_15_18"
+
+[[spawn]]
+npc = "npc.ice_wolf_2"
+coords = "0_45_58_42_45"
+
+[[spawn]]
+npc = "npc.ice_wolf_3"
+coords = "0_45_58_17_25"
+
+[[spawn]]
+npc = "npc.ice_wolf_3"
+coords = "0_45_58_18_21"
+
+[[spawn]]
+npc = "npc.ice_wolf_3"
+coords = "0_45_58_33_24"
+
+[[spawn]]
+npc = "npc.ice_wolf_4"
+coords = "0_45_58_15_39"
+
+[[spawn]]
+npc = "npc.ice_wolf_4"
+coords = "0_45_58_15_43"
+
+[[spawn]]
+npc = "npc.ice_wolf_4"
+coords = "0_45_58_19_39"
+
+[[spawn]]
+npc = "npc.ice_wolf_4"
+coords = "0_45_58_19_43"
+
+[[spawn]]
+npc = "npc.ice_wolf_4"
+coords = "0_45_58_50_53"
+
+[[spawn]]
+npc = "npc.ice_wolf_5"
+coords = "0_45_58_15_28"
+
+[[spawn]]
+npc = "npc.ice_wolf_5"
+coords = "0_45_58_15_32"
+
+[[spawn]]
+npc = "npc.ice_wolf_5"
+coords = "0_45_58_18_28"
+
+[[spawn]]
+npc = "npc.ice_wolf_5"
+coords = "0_45_58_19_32"
+
+[[spawn]]
+npc = "npc.ice_wolf_5"
+coords = "0_45_58_25_27"
+
+[[spawn]]
+npc = "npc.ice_wolf_5"
+coords = "0_45_58_48_51"
+
+[[spawn]]
+npc = "npc.ice_wolf_6"
+coords = "0_45_58_10_44"
+
+[[spawn]]
+npc = "npc.ice_wolf_6"
+coords = "0_45_58_10_50"
+
+[[spawn]]
+npc = "npc.ice_wolf_6"
+coords = "0_45_58_48_41"
+
+[[spawn]]
+npc = "npc.ice_wolf_6"
+coords = "0_45_58_6_46"
+
+[[spawn]]
+npc = "npc.ice_wolf_6"
+coords = "0_45_58_6_50"
+
+[[spawn]]
+npc = "npc.troll_frozen_1"
+coords = "0_44_58_19_28"
+
+[[spawn]]
+npc = "npc.troll_frozen_2"
+coords = "0_44_58_21_28"
+
+[[spawn]]
+npc = "npc.trollrescue_icetroll_melee1"
+coords = "0_44_58_36_23"
+
+[[spawn]]
+npc = "npc.trollrescue_icetroll_melee1"
+coords = "0_44_58_39_17"
+
+[[spawn]]
+npc = "npc.trollrescue_icetroll_melee1"
+coords = "0_44_58_45_13"
+
+[[spawn]]
+npc = "npc.trollrescue_icetroll_melee2"
+coords = "0_44_58_34_20"
+
+[[spawn]]
+npc = "npc.trollrescue_icetroll_melee2"
+coords = "0_44_58_41_14"
+
+[[spawn]]
+npc = "npc.trollrescue_icetroll_melee2"
+coords = "0_44_58_49_17"
+
+[[spawn]]
+npc = "npc.trollrescue_icetroll_melee3"
+coords = "0_44_58_33_23"
+
+[[spawn]]
+npc = "npc.trollrescue_icetroll_melee3"
+coords = "0_44_58_37_19"
+
+[[spawn]]
+npc = "npc.trollrescue_icetroll_melee3"
+coords = "0_44_58_43_16"
+
+[[spawn]]
+npc = "npc.trollrescue_icetroll_melee4"
+coords = "0_44_58_40_16"
+
+[[spawn]]
+npc = "npc.trollrescue_icetroll_melee4"
+coords = "0_44_58_46_10"
+
+[[spawn]]
+npc = "npc.trollrescue_icetroll_melee4"
+coords = "0_44_58_48_11"
+
+[[spawn]]
+npc = "npc.trollrescue_icetroll_melee5"
+coords = "0_44_58_37_16"
+
+[[spawn]]
+npc = "npc.trollrescue_icetroll_melee5"
+coords = "0_44_58_40_20"
+
+[[spawn]]
+npc = "npc.trollrescue_icetroll_melee5"
+coords = "0_44_58_47_8"
+
+[[spawn]]
+npc = "npc.trollrescue_icetroll_melee6"
+coords = "0_44_58_38_13"
+
+[[spawn]]
+npc = "npc.trollrescue_icetroll_melee6"
+coords = "0_44_58_46_16"
+
+[[spawn]]
+npc = "npc.trollrescue_icetroll_melee6"
+coords = "0_44_58_46_19"
+
+[[spawn]]
+npc = "npc.trollrescue_icetroll_melee7"
+coords = "0_44_58_39_23"
+
+[[spawn]]
+npc = "npc.trollrescue_icetroll_melee7"
+coords = "0_44_58_42_18"
+
+[[spawn]]
+npc = "npc.trollrescue_icetroll_melee7"
+coords = "0_44_58_49_14"
+
+## Trollheim
+
+[[spawn]]
+npc = "npc.death_ig_solider_wounded"
+coords = "0_44_56_24_5"
+
+[[spawn]]
+npc = "npc.death_troll_commander"
+coords = "0_44_56_39_7"
+
+[[spawn]]
+npc = "npc.death_troll_cook1"
+coords = "0_44_56_46_4"
+
+[[spawn]]
+npc = "npc.death_troll_cook2"
+coords = "0_44_56_48_4"
+
+[[spawn]]
+npc = "npc.death_troll_guard1"
+coords = "0_44_56_56_14"
+
+[[spawn]]
+npc = "npc.death_troll_guard2"
+coords = "0_44_56_59_14"
+
+[[spawn]]
+npc = "npc.death_troll_leuitanant"
+coords = "0_44_56_41_7"
+
+[[spawn]]
+npc = "npc.death_troll_melee1"
+coords = "0_44_56_36_7"
+
+[[spawn]]
+npc = "npc.death_troll_melee1"
+coords = "0_44_56_47_11"
+
+[[spawn]]
+npc = "npc.death_troll_melee1"
+coords = "0_44_56_55_0"
+
+[[spawn]]
+npc = "npc.death_troll_melee1"
+coords = "0_44_57_40_35"
+
+[[spawn]]
+npc = "npc.death_troll_melee1"
+coords = "0_45_56_36_47"
+
+[[spawn]]
+npc = "npc.death_troll_melee2"
+coords = "0_44_56_48_11"
+
+[[spawn]]
+npc = "npc.death_troll_melee2"
+coords = "0_44_56_56_0"
+
+[[spawn]]
+npc = "npc.death_troll_melee2"
+coords = "0_44_57_27_27"
+
+[[spawn]]
+npc = "npc.death_troll_melee2"
+coords = "0_44_57_34_34"
+
+[[spawn]]
+npc = "npc.death_troll_melee2"
+coords = "0_45_56_37_50"
+
+[[spawn]]
+npc = "npc.death_troll_melee3"
+coords = "0_44_56_42_2"
+
+[[spawn]]
+npc = "npc.death_troll_melee3"
+coords = "0_44_56_49_11"
+
+[[spawn]]
+npc = "npc.death_troll_melee3"
+coords = "0_44_57_36_29"
+
+[[spawn]]
+npc = "npc.death_troll_melee4"
+coords = "0_44_56_50_11"
+
+[[spawn]]
+npc = "npc.death_troll_melee4"
+coords = "0_44_56_60_5"
+
+[[spawn]]
+npc = "npc.death_troll_melee4"
+coords = "0_44_57_31_28"
+
+[[spawn]]
+npc = "npc.death_troll_melee4"
+coords = "0_45_56_29_57"
+
+[[spawn]]
+npc = "npc.death_troll_melee5"
+coords = "0_44_56_51_11"
+
+[[spawn]]
+npc = "npc.death_troll_melee5"
+coords = "0_44_56_55_3"
+
+[[spawn]]
+npc = "npc.death_troll_melee5"
+coords = "0_44_57_34_25"
+
+[[spawn]]
+npc = "npc.death_troll_melee6"
+coords = "0_44_56_52_11"
+
+[[spawn]]
+npc = "npc.death_troll_melee6"
+coords = "0_44_56_60_2"
+
+[[spawn]]
+npc = "npc.death_troll_melee6"
+coords = "0_44_57_29_36"
+
+[[spawn]]
+npc = "npc.death_troll_melee7"
+coords = "0_44_56_53_11"
+
+[[spawn]]
+npc = "npc.death_troll_melee7"
+coords = "0_44_56_57_6"
+
+[[spawn]]
+npc = "npc.death_troll_melee7"
+coords = "0_44_57_27_34"
+
+[[spawn]]
+npc = "npc.death_troll_thrower1"
+coords = "0_44_56_38_16"
+
+[[spawn]]
+npc = "npc.death_troll_thrower2"
+coords = "0_44_56_43_16"
+
+[[spawn]]
+npc = "npc.death_troll_thrower3"
+coords = "0_44_56_47_16"
+
+[[spawn]]
+npc = "npc.death_troll_thrower4"
+coords = "0_44_56_51_16"
+
+[[spawn]]
+npc = "npc.death_troll_thrower5"
+coords = "0_44_56_35_14"
+
+[[spawn]]
+npc = "npc.death_troll_thrower5"
+coords = "0_44_56_54_16"
+
+[[spawn]]
+npc = "npc.eadgar_troll_thistle"
+coords = "0_45_57_11_28"
+
+[[spawn]]
+npc = "npc.jack_frost_transmog"
+coords = "0_43_55_39_19"
+
+[[spawn]]
+npc = "npc.mountain_goat2"
+coords = "0_44_56_16_13"
+
+[[spawn]]
+npc = "npc.mountain_goat2"
+coords = "0_44_56_40_26"
+
+[[spawn]]
+npc = "npc.myarm"
+coords = "0_44_57_14_49"
+
+[[spawn]]
+npc = "npc.myarm_leprechaun"
+coords = "0_44_57_10_37"
+
+[[spawn]]
+npc = "npc.myarm_multi_teacher"
+coords = "0_44_57_14_50"
+
+[[spawn]]
+npc = "npc.myarm_pupil_multi"
+coords = "0_44_57_15_49"
+
+[[spawn]]
+npc = "npc.myarm_troll_deaddwarf_multi"
+coords = "0_44_57_25_43"
+
+[[spawn]]
+npc = "npc.troll_champion"
+coords = "0_45_56_31_28"
+
+[[spawn]]
+npc = "npc.troll_melee1"
+coords = "0_45_56_24_58"
+
+[[spawn]]
+npc = "npc.troll_mountain_goat"
+coords = "0_45_57_12_37"
+
+[[spawn]]
+npc = "npc.troll_mountain_goat"
+coords = "0_45_57_20_23"
+
+[[spawn]]
+npc = "npc.troll_mountain_goat"
+coords = "0_45_57_8_27"
+
+[[spawn]]
+npc = "npc.troll_mountain_goat2"
+coords = "0_45_57_13_30"
+
+[[spawn]]
+npc = "npc.troll_mountain_goat2"
+coords = "0_45_57_5_22"
+
+[[spawn]]
+npc = "npc.troll_spectator1"
+coords = "0_45_56_26_39"
+
+[[spawn]]
+npc = "npc.troll_spectator2"
+coords = "0_45_56_40_38"
+
+[[spawn]]
+npc = "npc.troll_spectator3"
+coords = "0_45_56_43_32"
+
+[[spawn]]
+npc = "npc.troll_spectator4"
+coords = "0_45_56_43_28"
+
+[[spawn]]
+npc = "npc.troll_spectator5"
+coords = "0_45_56_36_17"
+
+[[spawn]]
+npc = "npc.troll_spectator6"
+coords = "0_45_56_22_20"
+
+[[spawn]]
+npc = "npc.troll_spectator7"
+coords = "0_45_56_42_22"
+
+[[spawn]]
+npc = "npc.troll_stronghold_camp_guard"
+coords = "0_44_57_38_41"
+
+[[spawn]]
+npc = "npc.troll_thrower1"
+coords = "0_45_57_22_48"
+
+[[spawn]]
+npc = "npc.troll_thrower2"
+coords = "0_45_57_18_50"
+
+[[spawn]]
+npc = "npc.troll_thrower3"
+coords = "0_45_57_13_52"
+
+[[spawn]]
+npc = "npc.troll_thrower4"
+coords = "0_45_57_9_51"
+
+[[spawn]]
+npc = "npc.troll_thrower5"
+coords = "0_45_57_6_50"
+
+## Warriors Guild
+
+[[spawn]]
+npc = "npc.deadman_guard_warguild"
+coords = "0_44_55_24_30"
+
+[[spawn]]
+npc = "npc.deadman_guard_warguild"
+coords = "0_44_55_29_18"
+
+[[spawn]]
+npc = "npc.deadman_guard_warguild"
+coords = "0_44_55_30_22"
+
+[[spawn]]
+npc = "npc.deadman_guard_warguild"
+coords = "0_44_55_35_28"
+
+[[spawn]]
+npc = "npc.deadman_guard_warguild"
+coords = "0_44_55_41_21"
+
+[[spawn]]
+npc = "npc.deadman_guard_warguild"
+coords = "0_44_55_52_21"
+
+[[spawn]]
+npc = "npc.deadman_guard_warguild"
+coords = "0_44_55_54_31"
+
+[[spawn]]
+npc = "npc.deadman_guard_warguild"
+coords = "1_44_55_28_18"
+
+[[spawn]]
+npc = "npc.deadman_guard_warguild"
+coords = "1_44_55_34_24"
+
+[[spawn]]
+npc = "npc.deadman_guard_warguild"
+coords = "1_44_55_34_31"
+
+[[spawn]]
+npc = "npc.deadman_guard_warguild"
+coords = "1_44_55_38_15"
+
+[[spawn]]
+npc = "npc.deadman_guard_warguild"
+coords = "1_44_55_39_29"
+
+[[spawn]]
+npc = "npc.deadman_guard_warguild"
+coords = "1_44_55_40_22"
+
+[[spawn]]
+npc = "npc.deadman_guard_warguild"
+coords = "1_44_55_52_20"
+
+[[spawn]]
+npc = "npc.deadman_guard_warguild"
+coords = "2_44_55_26_19"
+
+[[spawn]]
+npc = "npc.strength_referree2"
+coords = "1_44_55_51_24"
+
+[[spawn]]
+npc = "npc.war_strength_drunken_warrior"
+coords = "1_44_55_56_19"
+
+[[spawn]]
+npc = "npc.warguild_ajjat"
+coords = "0_44_55_35_33"
+
+[[spawn]]
+npc = "npc.warguild_armour_shopkeeper"
+coords = "1_44_55_39_16"
+
+[[spawn]]
+npc = "npc.warguild_banker"
+coords = "0_44_55_25_23"
+
+[[spawn]]
+npc = "npc.warguild_cyclops1"
+coords = "2_44_55_32_31"
+
+[[spawn]]
+npc = "npc.warguild_cyclops1"
+coords = "2_44_55_50_24"
+
+[[spawn]]
+npc = "npc.warguild_cyclops2"
+coords = "2_44_55_38_22"
+
+[[spawn]]
+npc = "npc.warguild_cyclops2"
+coords = "2_44_55_56_32"
+
+[[spawn]]
+npc = "npc.warguild_cyclops3"
+coords = "2_44_55_39_15"
+
+[[spawn]]
+npc = "npc.warguild_cyclops3"
+coords = "2_44_55_42_30"
+
+[[spawn]]
+npc = "npc.warguild_cyclops4"
+coords = "2_44_55_35_20"
+
+[[spawn]]
+npc = "npc.warguild_cyclops4"
+coords = "2_44_55_46_30"
+
+[[spawn]]
+npc = "npc.warguild_cyclops5"
+coords = "2_44_55_35_15"
+
+[[spawn]]
+npc = "npc.warguild_cyclops5"
+coords = "2_44_55_52_32"
+
+[[spawn]]
+npc = "npc.warguild_cyclops6"
+coords = "2_44_55_26_30"
+
+[[spawn]]
+npc = "npc.warguild_cyclops6"
+coords = "2_44_55_54_21"
+
+[[spawn]]
+npc = "npc.warguild_food_shopkeeper"
+coords = "0_44_55_26_31"
+
+[[spawn]]
+npc = "npc.warguild_gamfred"
+coords = "1_44_55_24_21"
+
+[[spawn]]
+npc = "npc.warguild_harrallak_npc"
+coords = "0_44_55_50_27"
+
+[[spawn]]
+npc = "npc.warguild_kamfreena"
+coords = "2_44_55_30_19"
+
+[[spawn]]
+npc = "npc.warguild_potion_shopkeeper"
+coords = "0_44_55_29_33"
+
+[[spawn]]
+npc = "npc.warguild_shanomi"
+coords = "0_44_55_38_21"
+
+[[spawn]]
+npc = "npc.wgs_hunting_broav_multi"
+coords = "0_44_55_50_26"
+
+[[spawn]]
+npc = "npc.wgs_silif_falador_multi"
+coords = "1_44_55_39_32"
+
+## Warriors' Guild
+
+[[spawn]]
+npc = "npc.strength_referree1"
+coords = "1_44_55_51_36"
+
+## Weiss Region
+
+[[spawn]]
+npc = "npc.my2arm_sentry_goatpoo_background"
+coords = "0_44_61_60_23"
+
+[[spawn]]
+npc = "npc.my2arm_sentry_oddstone_background"
+coords = "0_44_61_53_23"
+
+[[spawn]]
+npc = "npc.troll_mountain_goat"
+coords = "0_44_61_53_12"
+
+## Weiss Region End
+

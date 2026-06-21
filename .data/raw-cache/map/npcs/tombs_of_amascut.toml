@@ -1,0 +1,26 @@
+## Toa Entrance Lobby
+
+[[spawn]]
+npc = "npc.toa_lobby_apmeken"
+coords = "0_52_142_41_29"
+
+[[spawn]]
+npc = "npc.toa_lobby_crondis"
+coords = "0_52_142_40_31"
+
+[[spawn]]
+npc = "npc.toa_lobby_het"
+coords = "0_52_142_41_30"
+
+[[spawn]]
+npc = "npc.toa_lobby_maisa"
+coords = "0_52_142_36_36"
+
+## Toa Final Boss Phase 2
+
+[[spawn]]
+npc = "npc.toa_amascut_p3"
+coords = "1_61_80_28_7"
+
+## Toa Final Boss Phase 2 End
+

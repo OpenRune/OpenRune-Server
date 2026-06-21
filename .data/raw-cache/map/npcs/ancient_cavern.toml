@@ -1,0 +1,326 @@
+## Ancient Cavern 1
+
+[[spawn]]
+npc = "npc.brut_angry_spirit1"
+coords = "0_25_83_18_14"
+
+[[spawn]]
+npc = "npc.brut_angry_spirit2"
+coords = "0_25_83_23_19"
+
+[[spawn]]
+npc = "npc.brut_angry_spirit2"
+coords = "0_25_83_47_12"
+
+[[spawn]]
+npc = "npc.brut_angry_spirit3"
+coords = "0_25_83_51_13"
+
+[[spawn]]
+npc = "npc.brut_barbarian1"
+coords = "0_25_83_39_33"
+
+[[spawn]]
+npc = "npc.brut_barbarian7"
+coords = "0_25_83_33_10"
+
+[[spawn]]
+npc = "npc.brut_green_dragon"
+coords = "0_25_83_28_22"
+
+[[spawn]]
+npc = "npc.brut_green_dragon"
+coords = "0_25_83_35_14"
+
+[[spawn]]
+npc = "npc.brut_green_dragon"
+coords = "0_25_83_37_20"
+
+[[spawn]]
+npc = "npc.brut_green_dragon"
+coords = "0_25_83_43_28"
+
+[[spawn]]
+npc = "npc.brut_green_dragon"
+coords = "0_25_83_45_46"
+
+[[spawn]]
+npc = "npc.brut_green_dragon"
+coords = "0_25_83_46_38"
+
+[[spawn]]
+npc = "npc.brut_green_dragon"
+coords = "0_25_83_50_20"
+
+[[spawn]]
+npc = "npc.brut_mithril_dragon"
+coords = "1_25_83_27_14"
+
+[[spawn]]
+npc = "npc.brut_mithril_dragon"
+coords = "1_25_83_34_26"
+
+[[spawn]]
+npc = "npc.brut_mithril_dragon"
+coords = "1_25_83_38_19"
+
+[[spawn]]
+npc = "npc.brut_mithril_dragon"
+coords = "1_25_83_39_31"
+
+[[spawn]]
+npc = "npc.brut_mithril_dragon"
+coords = "1_25_83_52_27"
+
+[[spawn]]
+npc = "npc.brut_mithril_dragon"
+coords = "1_25_83_53_44"
+
+[[spawn]]
+npc = "npc.brut_mithril_dragon"
+coords = "1_25_83_55_16"
+
+[[spawn]]
+npc = "npc.brut_skeleton2"
+coords = "0_25_83_20_11"
+
+[[spawn]]
+npc = "npc.brut_skeleton3"
+coords = "0_25_83_35_43"
+
+[[spawn]]
+npc = "npc.brut_skeleton3"
+coords = "1_25_83_61_21"
+
+[[spawn]]
+npc = "npc.brut_skeleton6"
+coords = "0_25_83_59_28"
+
+[[spawn]]
+npc = "npc.brut_waterfiend"
+coords = "0_25_83_10_31"
+
+[[spawn]]
+npc = "npc.brut_waterfiend"
+coords = "0_25_83_10_36"
+
+[[spawn]]
+npc = "npc.brut_waterfiend"
+coords = "0_25_83_10_40"
+
+[[spawn]]
+npc = "npc.brut_waterfiend"
+coords = "0_25_83_13_44"
+
+[[spawn]]
+npc = "npc.brut_waterfiend"
+coords = "0_25_83_14_30"
+
+[[spawn]]
+npc = "npc.brut_waterfiend"
+coords = "0_25_83_14_49"
+
+[[spawn]]
+npc = "npc.brut_waterfiend"
+coords = "0_25_83_18_28"
+
+[[spawn]]
+npc = "npc.brut_waterfiend"
+coords = "0_25_83_19_51"
+
+[[spawn]]
+npc = "npc.brut_waterfiend"
+coords = "0_25_83_23_30"
+
+[[spawn]]
+npc = "npc.brut_waterfiend"
+coords = "0_25_83_24_39"
+
+[[spawn]]
+npc = "npc.brut_waterfiend"
+coords = "0_25_83_27_43"
+
+[[spawn]]
+npc = "npc.brut_waterfiend"
+coords = "0_25_83_27_48"
+
+[[spawn]]
+npc = "npc.brut_waterfiend"
+coords = "0_25_83_29_49"
+
+[[spawn]]
+npc = "npc.brut_waterfiend"
+coords = "0_25_83_35_49"
+
+[[spawn]]
+npc = "npc.brut_waterfiend"
+coords = "0_25_83_38_51"
+
+[[spawn]]
+npc = "npc.brut_waterfiend"
+coords = "0_25_83_39_47"
+
+## Ancient Cavern 2
+
+[[spawn]]
+npc = "npc.brut_angry_spirit1"
+coords = "0_27_83_18_14"
+
+[[spawn]]
+npc = "npc.brut_angry_spirit2"
+coords = "0_27_83_23_19"
+
+[[spawn]]
+npc = "npc.brut_angry_spirit2"
+coords = "0_27_83_47_12"
+
+[[spawn]]
+npc = "npc.brut_angry_spirit3"
+coords = "0_27_83_51_13"
+
+[[spawn]]
+npc = "npc.brut_barbarian1"
+coords = "0_27_83_39_33"
+
+[[spawn]]
+npc = "npc.brut_barbarian7"
+coords = "0_27_83_33_10"
+
+[[spawn]]
+npc = "npc.brut_green_dragon"
+coords = "0_27_83_28_22"
+
+[[spawn]]
+npc = "npc.brut_green_dragon"
+coords = "0_27_83_35_14"
+
+[[spawn]]
+npc = "npc.brut_green_dragon"
+coords = "0_27_83_37_20"
+
+[[spawn]]
+npc = "npc.brut_green_dragon"
+coords = "0_27_83_43_28"
+
+[[spawn]]
+npc = "npc.brut_green_dragon"
+coords = "0_27_83_45_46"
+
+[[spawn]]
+npc = "npc.brut_green_dragon"
+coords = "0_27_83_46_38"
+
+[[spawn]]
+npc = "npc.brut_green_dragon"
+coords = "0_27_83_50_20"
+
+[[spawn]]
+npc = "npc.brut_mithril_dragon"
+coords = "1_27_83_27_14"
+
+[[spawn]]
+npc = "npc.brut_mithril_dragon"
+coords = "1_27_83_34_26"
+
+[[spawn]]
+npc = "npc.brut_mithril_dragon"
+coords = "1_27_83_38_19"
+
+[[spawn]]
+npc = "npc.brut_mithril_dragon"
+coords = "1_27_83_39_31"
+
+[[spawn]]
+npc = "npc.brut_mithril_dragon"
+coords = "1_27_83_52_27"
+
+[[spawn]]
+npc = "npc.brut_mithril_dragon"
+coords = "1_27_83_53_44"
+
+[[spawn]]
+npc = "npc.brut_mithril_dragon"
+coords = "1_27_83_55_16"
+
+[[spawn]]
+npc = "npc.brut_skeleton2"
+coords = "0_27_83_20_11"
+
+[[spawn]]
+npc = "npc.brut_skeleton3"
+coords = "0_27_83_35_43"
+
+[[spawn]]
+npc = "npc.brut_skeleton3"
+coords = "1_27_83_61_21"
+
+[[spawn]]
+npc = "npc.brut_skeleton6"
+coords = "0_27_83_59_28"
+
+[[spawn]]
+npc = "npc.brut_waterfiend"
+coords = "0_27_83_10_31"
+
+[[spawn]]
+npc = "npc.brut_waterfiend"
+coords = "0_27_83_10_36"
+
+[[spawn]]
+npc = "npc.brut_waterfiend"
+coords = "0_27_83_10_40"
+
+[[spawn]]
+npc = "npc.brut_waterfiend"
+coords = "0_27_83_13_44"
+
+[[spawn]]
+npc = "npc.brut_waterfiend"
+coords = "0_27_83_14_30"
+
+[[spawn]]
+npc = "npc.brut_waterfiend"
+coords = "0_27_83_14_49"
+
+[[spawn]]
+npc = "npc.brut_waterfiend"
+coords = "0_27_83_18_28"
+
+[[spawn]]
+npc = "npc.brut_waterfiend"
+coords = "0_27_83_19_51"
+
+[[spawn]]
+npc = "npc.brut_waterfiend"
+coords = "0_27_83_23_30"
+
+[[spawn]]
+npc = "npc.brut_waterfiend"
+coords = "0_27_83_24_39"
+
+[[spawn]]
+npc = "npc.brut_waterfiend"
+coords = "0_27_83_27_43"
+
+[[spawn]]
+npc = "npc.brut_waterfiend"
+coords = "0_27_83_27_48"
+
+[[spawn]]
+npc = "npc.brut_waterfiend"
+coords = "0_27_83_29_49"
+
+[[spawn]]
+npc = "npc.brut_waterfiend"
+coords = "0_27_83_35_49"
+
+[[spawn]]
+npc = "npc.brut_waterfiend"
+coords = "0_27_83_38_51"
+
+[[spawn]]
+npc = "npc.brut_waterfiend"
+coords = "0_27_83_39_47"
+
+## Ancient Cavern 2 End
+

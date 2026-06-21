@@ -1,0 +1,2030 @@
+## Stronghold Of Security Death
+
+[[spawn]]
+npc = "npc.macro_shade"
+coords = "0_36_81_52_32"
+
+[[spawn]]
+npc = "npc.macro_shade"
+coords = "0_36_81_53_29"
+
+[[spawn]]
+npc = "npc.macro_shade"
+coords = "0_36_81_59_28"
+
+[[spawn]]
+npc = "npc.macro_shade"
+coords = "0_36_81_61_32"
+
+[[spawn]]
+npc = "npc.macro_zombie"
+coords = "0_36_81_59_25"
+
+[[spawn]]
+npc = "npc.sos_barb_spirit"
+coords = "0_36_81_34_29"
+
+[[spawn]]
+npc = "npc.sos_death_ankou"
+coords = "0_36_81_51_57"
+
+[[spawn]]
+npc = "npc.sos_death_ankou"
+coords = "0_36_81_53_56"
+
+[[spawn]]
+npc = "npc.sos_death_ankou"
+coords = "0_36_81_54_59"
+
+[[spawn]]
+npc = "npc.sos_death_ankou"
+coords = "0_36_81_54_61"
+
+[[spawn]]
+npc = "npc.sos_death_ankou"
+coords = "0_36_81_55_55"
+
+[[spawn]]
+npc = "npc.sos_death_ankou"
+coords = "0_36_81_55_57"
+
+[[spawn]]
+npc = "npc.sos_death_ankou"
+coords = "0_36_81_57_56"
+
+[[spawn]]
+npc = "npc.sos_death_ankou"
+coords = "0_36_81_57_58"
+
+[[spawn]]
+npc = "npc.sos_death_ankou"
+coords = "0_36_81_59_56"
+
+[[spawn]]
+npc = "npc.sos_death_ankou2"
+coords = "0_36_81_20_14"
+
+[[spawn]]
+npc = "npc.sos_death_ankou2"
+coords = "0_36_81_21_13"
+
+[[spawn]]
+npc = "npc.sos_death_ankou2"
+coords = "0_36_81_22_17"
+
+[[spawn]]
+npc = "npc.sos_death_ankou2"
+coords = "0_36_81_22_21"
+
+[[spawn]]
+npc = "npc.sos_death_ankou2"
+coords = "0_36_81_22_22"
+
+[[spawn]]
+npc = "npc.sos_death_ankou2"
+coords = "0_36_81_23_15"
+
+[[spawn]]
+npc = "npc.sos_death_ankou2"
+coords = "0_36_81_23_18"
+
+[[spawn]]
+npc = "npc.sos_death_ankou2"
+coords = "0_36_81_24_13"
+
+[[spawn]]
+npc = "npc.sos_death_ankou2"
+coords = "0_36_81_25_19"
+
+[[spawn]]
+npc = "npc.sos_death_ankou2"
+coords = "0_36_81_26_11"
+
+[[spawn]]
+npc = "npc.sos_death_ankou2"
+coords = "0_36_81_27_18"
+
+[[spawn]]
+npc = "npc.sos_death_ankou3"
+coords = "0_36_81_11_45"
+
+[[spawn]]
+npc = "npc.sos_death_ankou3"
+coords = "0_36_81_13_42"
+
+[[spawn]]
+npc = "npc.sos_death_ankou3"
+coords = "0_36_81_14_46"
+
+[[spawn]]
+npc = "npc.sos_death_ankou3"
+coords = "0_36_81_16_40"
+
+[[spawn]]
+npc = "npc.sos_death_ankou3"
+coords = "0_36_81_17_48"
+
+[[spawn]]
+npc = "npc.sos_death_ankou3"
+coords = "0_36_81_18_38"
+
+[[spawn]]
+npc = "npc.sos_death_ankou3"
+coords = "0_36_81_18_43"
+
+[[spawn]]
+npc = "npc.sos_death_ankou3"
+coords = "0_36_81_18_45"
+
+[[spawn]]
+npc = "npc.sos_death_ankou3"
+coords = "0_36_81_19_40"
+
+[[spawn]]
+npc = "npc.sos_death_ankou3"
+coords = "0_36_81_20_46"
+
+[[spawn]]
+npc = "npc.sos_death_ankou3"
+coords = "0_36_81_20_52"
+
+[[spawn]]
+npc = "npc.sos_death_ankou3"
+coords = "0_36_81_23_43"
+
+[[spawn]]
+npc = "npc.sos_death_ghost"
+coords = "0_36_81_48_5"
+
+[[spawn]]
+npc = "npc.sos_death_ghost"
+coords = "0_36_81_49_13"
+
+[[spawn]]
+npc = "npc.sos_death_ghost"
+coords = "0_36_81_52_20"
+
+[[spawn]]
+npc = "npc.sos_death_ghost"
+coords = "0_36_81_53_10"
+
+[[spawn]]
+npc = "npc.sos_death_ghost2"
+coords = "0_36_81_10_53"
+
+[[spawn]]
+npc = "npc.sos_death_ghost2"
+coords = "0_36_81_10_60"
+
+[[spawn]]
+npc = "npc.sos_death_ghost2"
+coords = "0_36_81_11_52"
+
+[[spawn]]
+npc = "npc.sos_death_ghost2"
+coords = "0_36_81_12_43"
+
+[[spawn]]
+npc = "npc.sos_death_ghost2"
+coords = "0_36_81_18_51"
+
+[[spawn]]
+npc = "npc.sos_death_ghost2"
+coords = "0_36_81_1_49"
+
+[[spawn]]
+npc = "npc.sos_death_ghost2"
+coords = "0_36_81_1_57"
+
+[[spawn]]
+npc = "npc.sos_death_ghost2"
+coords = "0_36_81_21_44"
+
+[[spawn]]
+npc = "npc.sos_death_ghost2"
+coords = "0_36_81_2_45"
+
+[[spawn]]
+npc = "npc.sos_death_ghost2"
+coords = "0_36_81_2_59"
+
+[[spawn]]
+npc = "npc.sos_death_ghost2"
+coords = "0_36_81_5_62"
+
+[[spawn]]
+npc = "npc.sos_death_ghost2"
+coords = "0_36_81_7_53"
+
+[[spawn]]
+npc = "npc.sos_death_ghost_b"
+coords = "0_36_81_11_42"
+
+[[spawn]]
+npc = "npc.sos_death_ghost_b"
+coords = "0_36_81_21_48"
+
+[[spawn]]
+npc = "npc.sos_death_ghost_b"
+coords = "0_36_81_22_42"
+
+[[spawn]]
+npc = "npc.sos_death_ghost_b"
+coords = "0_36_81_44_10"
+
+[[spawn]]
+npc = "npc.sos_death_ghost_b"
+coords = "0_36_81_50_18"
+
+[[spawn]]
+npc = "npc.sos_death_ghost_c"
+coords = "0_36_81_14_40"
+
+[[spawn]]
+npc = "npc.sos_death_ghost_c"
+coords = "0_36_81_18_46"
+
+[[spawn]]
+npc = "npc.sos_death_ghost_c"
+coords = "0_36_81_20_40"
+
+[[spawn]]
+npc = "npc.sos_death_ghost_c"
+coords = "0_36_81_48_16"
+
+[[spawn]]
+npc = "npc.sos_death_ghost_c"
+coords = "0_36_81_50_10"
+
+[[spawn]]
+npc = "npc.sos_death_ghost_d"
+coords = "0_36_81_16_42"
+
+[[spawn]]
+npc = "npc.sos_death_ghost_d"
+coords = "0_36_81_16_45"
+
+[[spawn]]
+npc = "npc.sos_death_ghost_d"
+coords = "0_36_81_17_41"
+
+[[spawn]]
+npc = "npc.sos_death_ghost_d"
+coords = "0_36_81_50_16"
+
+[[spawn]]
+npc = "npc.sos_death_ghost_d"
+coords = "0_36_81_52_9"
+
+[[spawn]]
+npc = "npc.sos_death_skeleton_armed"
+coords = "0_36_81_7_3"
+
+[[spawn]]
+npc = "npc.sos_death_skeleton_armed"
+coords = "0_36_81_7_9"
+
+[[spawn]]
+npc = "npc.sos_death_skeleton_armed2"
+coords = "0_36_81_5_3"
+
+[[spawn]]
+npc = "npc.sos_death_skeleton_armed2"
+coords = "0_36_81_7_7"
+
+[[spawn]]
+npc = "npc.sos_death_skeleton_armed3"
+coords = "0_36_81_6_5"
+
+[[spawn]]
+npc = "npc.sos_death_skeleton_armed3"
+coords = "0_36_81_8_4"
+
+[[spawn]]
+npc = "npc.sos_death_skeleton_unarmed"
+coords = "0_36_81_22_15"
+
+[[spawn]]
+npc = "npc.sos_death_skeleton_unarmed"
+coords = "0_36_81_22_24"
+
+[[spawn]]
+npc = "npc.sos_death_skeleton_unarmed"
+coords = "0_36_81_28_18"
+
+[[spawn]]
+npc = "npc.sos_death_skeleton_unarmed"
+coords = "0_36_81_46_16"
+
+[[spawn]]
+npc = "npc.sos_death_skeleton_unarmed"
+coords = "0_36_81_48_11"
+
+[[spawn]]
+npc = "npc.sos_death_skeleton_unarmed"
+coords = "0_36_81_49_8"
+
+[[spawn]]
+npc = "npc.sos_death_skeleton_unarmed"
+coords = "0_36_81_51_14"
+
+[[spawn]]
+npc = "npc.sos_death_skeleton_unarmed2"
+coords = "0_36_81_24_21"
+
+[[spawn]]
+npc = "npc.sos_death_skeleton_unarmed2"
+coords = "0_36_81_25_16"
+
+[[spawn]]
+npc = "npc.sos_death_skeleton_unarmed2"
+coords = "0_36_81_44_13"
+
+[[spawn]]
+npc = "npc.sos_death_skeleton_unarmed2"
+coords = "0_36_81_49_19"
+
+[[spawn]]
+npc = "npc.sos_death_skeleton_unarmed2"
+coords = "0_36_81_50_7"
+
+[[spawn]]
+npc = "npc.sos_death_skeleton_unarmed3"
+coords = "0_36_81_42_12"
+
+[[spawn]]
+npc = "npc.sos_death_skeleton_unarmed3"
+coords = "0_36_81_51_11"
+
+[[spawn]]
+npc = "npc.sos_death_skeleton_unarmed3"
+coords = "0_36_81_52_6"
+
+[[spawn]]
+npc = "npc.sos_death_skeleton_unarmed4"
+coords = "0_36_81_18_15"
+
+[[spawn]]
+npc = "npc.sos_death_skeleton_unarmed4"
+coords = "0_36_81_20_22"
+
+[[spawn]]
+npc = "npc.sos_death_skeleton_unarmed4"
+coords = "0_36_81_29_18"
+
+[[spawn]]
+npc = "npc.sos_death_skeleton_unarmed4"
+coords = "0_36_81_45_13"
+
+[[spawn]]
+npc = "npc.sos_death_skeleton_unarmed4"
+coords = "0_36_81_50_5"
+
+## Stronghold Of Security Famine
+
+[[spawn]]
+npc = "npc.sos_fam_fleshcrawler"
+coords = "0_31_81_29_53"
+
+[[spawn]]
+npc = "npc.sos_fam_fleshcrawler"
+coords = "0_31_81_37_53"
+
+[[spawn]]
+npc = "npc.sos_fam_fleshcrawler"
+coords = "0_31_81_48_47"
+
+[[spawn]]
+npc = "npc.sos_fam_fleshcrawler"
+coords = "0_31_81_56_47"
+
+[[spawn]]
+npc = "npc.sos_fam_fleshcrawler"
+coords = "0_31_81_61_49"
+
+[[spawn]]
+npc = "npc.sos_fam_fleshcrawler2"
+coords = "0_31_81_53_9"
+
+[[spawn]]
+npc = "npc.sos_fam_fleshcrawler2"
+coords = "0_31_81_54_3"
+
+[[spawn]]
+npc = "npc.sos_fam_fleshcrawler2"
+coords = "0_31_81_56_2"
+
+[[spawn]]
+npc = "npc.sos_fam_fleshcrawler2"
+coords = "0_31_81_57_6"
+
+[[spawn]]
+npc = "npc.sos_fam_fleshcrawler2"
+coords = "0_31_81_58_8"
+
+[[spawn]]
+npc = "npc.sos_fam_fleshcrawler2"
+coords = "0_31_81_59_2"
+
+[[spawn]]
+npc = "npc.sos_fam_fleshcrawler2"
+coords = "0_31_81_60_5"
+
+[[spawn]]
+npc = "npc.sos_fam_fleshcrawler2"
+coords = "0_31_81_61_9"
+
+[[spawn]]
+npc = "npc.sos_fam_fleshcrawler3"
+coords = "0_31_81_10_55"
+
+[[spawn]]
+npc = "npc.sos_fam_fleshcrawler3"
+coords = "0_31_81_10_57"
+
+[[spawn]]
+npc = "npc.sos_fam_fleshcrawler3"
+coords = "0_31_81_19_18"
+
+[[spawn]]
+npc = "npc.sos_fam_fleshcrawler3"
+coords = "0_31_81_19_21"
+
+[[spawn]]
+npc = "npc.sos_fam_fleshcrawler3"
+coords = "0_31_81_21_15"
+
+[[spawn]]
+npc = "npc.sos_fam_fleshcrawler3"
+coords = "0_31_81_22_18"
+
+[[spawn]]
+npc = "npc.sos_fam_fleshcrawler3"
+coords = "0_31_81_22_21"
+
+[[spawn]]
+npc = "npc.sos_fam_fleshcrawler3"
+coords = "0_31_81_24_17"
+
+[[spawn]]
+npc = "npc.sos_fam_fleshcrawler3"
+coords = "0_31_81_24_20"
+
+[[spawn]]
+npc = "npc.sos_fam_fleshcrawler3"
+coords = "0_31_81_4_51"
+
+[[spawn]]
+npc = "npc.sos_fam_fleshcrawler3"
+coords = "0_31_81_5_55"
+
+[[spawn]]
+npc = "npc.sos_fam_fleshcrawler3"
+coords = "0_31_81_7_58"
+
+[[spawn]]
+npc = "npc.sos_fam_fleshcrawler3"
+coords = "0_31_81_8_51"
+
+[[spawn]]
+npc = "npc.sos_fam_giantrat"
+coords = "0_31_81_31_52"
+
+[[spawn]]
+npc = "npc.sos_fam_giantrat"
+coords = "0_31_81_4_5"
+
+[[spawn]]
+npc = "npc.sos_fam_giantrat"
+coords = "0_31_81_53_27"
+
+[[spawn]]
+npc = "npc.sos_fam_giantrat"
+coords = "0_31_81_5_8"
+
+[[spawn]]
+npc = "npc.sos_fam_giantrat2"
+coords = "0_31_81_35_51"
+
+[[spawn]]
+npc = "npc.sos_fam_giantrat2"
+coords = "0_31_81_56_31"
+
+[[spawn]]
+npc = "npc.sos_fam_giantrat2"
+coords = "0_31_81_6_6"
+
+[[spawn]]
+npc = "npc.sos_fam_giantrat2"
+coords = "0_31_81_8_4"
+
+[[spawn]]
+npc = "npc.sos_fam_giantrat3"
+coords = "0_31_81_11_6"
+
+[[spawn]]
+npc = "npc.sos_fam_giantrat3"
+coords = "0_31_81_35_54"
+
+[[spawn]]
+npc = "npc.sos_fam_rat"
+coords = "0_31_81_10_23"
+
+[[spawn]]
+npc = "npc.sos_fam_rat"
+coords = "0_31_81_10_27"
+
+[[spawn]]
+npc = "npc.sos_fam_rat"
+coords = "0_31_81_10_34"
+
+[[spawn]]
+npc = "npc.sos_fam_rat"
+coords = "0_31_81_11_30"
+
+[[spawn]]
+npc = "npc.sos_fam_rat"
+coords = "0_31_81_11_55"
+
+[[spawn]]
+npc = "npc.sos_fam_rat"
+coords = "0_31_81_16_3"
+
+[[spawn]]
+npc = "npc.sos_fam_rat"
+coords = "0_31_81_20_2"
+
+[[spawn]]
+npc = "npc.sos_fam_rat"
+coords = "0_31_81_20_20"
+
+[[spawn]]
+npc = "npc.sos_fam_rat"
+coords = "0_31_81_20_23"
+
+[[spawn]]
+npc = "npc.sos_fam_rat"
+coords = "0_31_81_20_5"
+
+[[spawn]]
+npc = "npc.sos_fam_rat"
+coords = "0_31_81_21_6"
+
+[[spawn]]
+npc = "npc.sos_fam_rat"
+coords = "0_31_81_23_19"
+
+[[spawn]]
+npc = "npc.sos_fam_rat"
+coords = "0_31_81_25_3"
+
+[[spawn]]
+npc = "npc.sos_fam_rat"
+coords = "0_31_81_28_10"
+
+[[spawn]]
+npc = "npc.sos_fam_rat"
+coords = "0_31_81_29_52"
+
+[[spawn]]
+npc = "npc.sos_fam_rat"
+coords = "0_31_81_30_6"
+
+[[spawn]]
+npc = "npc.sos_fam_rat"
+coords = "0_31_81_30_8"
+
+[[spawn]]
+npc = "npc.sos_fam_rat"
+coords = "0_31_81_31_2"
+
+[[spawn]]
+npc = "npc.sos_fam_rat"
+coords = "0_31_81_33_8"
+
+[[spawn]]
+npc = "npc.sos_fam_rat"
+coords = "0_31_81_34_54"
+
+[[spawn]]
+npc = "npc.sos_fam_rat"
+coords = "0_31_81_34_6"
+
+[[spawn]]
+npc = "npc.sos_fam_rat"
+coords = "0_31_81_38_4"
+
+[[spawn]]
+npc = "npc.sos_fam_rat"
+coords = "0_31_81_3_18"
+
+[[spawn]]
+npc = "npc.sos_fam_rat"
+coords = "0_31_81_40_9"
+
+[[spawn]]
+npc = "npc.sos_fam_rat"
+coords = "0_31_81_43_4"
+
+[[spawn]]
+npc = "npc.sos_fam_rat"
+coords = "0_31_81_43_8"
+
+[[spawn]]
+npc = "npc.sos_fam_rat"
+coords = "0_31_81_44_48"
+
+[[spawn]]
+npc = "npc.sos_fam_rat"
+coords = "0_31_81_45_1"
+
+[[spawn]]
+npc = "npc.sos_fam_rat"
+coords = "0_31_81_46_51"
+
+[[spawn]]
+npc = "npc.sos_fam_rat"
+coords = "0_31_81_46_60"
+
+[[spawn]]
+npc = "npc.sos_fam_rat"
+coords = "0_31_81_47_59"
+
+[[spawn]]
+npc = "npc.sos_fam_rat"
+coords = "0_31_81_47_7"
+
+[[spawn]]
+npc = "npc.sos_fam_rat"
+coords = "0_31_81_48_46"
+
+[[spawn]]
+npc = "npc.sos_fam_rat"
+coords = "0_31_81_48_58"
+
+[[spawn]]
+npc = "npc.sos_fam_rat"
+coords = "0_31_81_49_58"
+
+[[spawn]]
+npc = "npc.sos_fam_rat"
+coords = "0_31_81_49_62"
+
+[[spawn]]
+npc = "npc.sos_fam_rat"
+coords = "0_31_81_4_16"
+
+[[spawn]]
+npc = "npc.sos_fam_rat"
+coords = "0_31_81_4_21"
+
+[[spawn]]
+npc = "npc.sos_fam_rat"
+coords = "0_31_81_50_50"
+
+[[spawn]]
+npc = "npc.sos_fam_rat"
+coords = "0_31_81_50_60"
+
+[[spawn]]
+npc = "npc.sos_fam_rat"
+coords = "0_31_81_52_18"
+
+[[spawn]]
+npc = "npc.sos_fam_rat"
+coords = "0_31_81_54_23"
+
+[[spawn]]
+npc = "npc.sos_fam_rat"
+coords = "0_31_81_56_6"
+
+[[spawn]]
+npc = "npc.sos_fam_rat"
+coords = "0_31_81_57_2"
+
+[[spawn]]
+npc = "npc.sos_fam_rat"
+coords = "0_31_81_58_16"
+
+[[spawn]]
+npc = "npc.sos_fam_rat"
+coords = "0_31_81_58_20"
+
+[[spawn]]
+npc = "npc.sos_fam_rat"
+coords = "0_31_81_5_39"
+
+[[spawn]]
+npc = "npc.sos_fam_rat"
+coords = "0_31_81_5_42"
+
+[[spawn]]
+npc = "npc.sos_fam_rat"
+coords = "0_31_81_5_52"
+
+[[spawn]]
+npc = "npc.sos_fam_rat"
+coords = "0_31_81_60_6"
+
+[[spawn]]
+npc = "npc.sos_fam_rat"
+coords = "0_31_81_60_9"
+
+[[spawn]]
+npc = "npc.sos_fam_rat"
+coords = "0_31_81_62_17"
+
+[[spawn]]
+npc = "npc.sos_fam_rat"
+coords = "0_31_81_6_44"
+
+[[spawn]]
+npc = "npc.sos_fam_rat"
+coords = "0_31_81_6_53"
+
+[[spawn]]
+npc = "npc.sos_fam_rat"
+coords = "0_31_81_7_49"
+
+[[spawn]]
+npc = "npc.sos_fam_rat"
+coords = "0_31_81_8_16"
+
+[[spawn]]
+npc = "npc.sos_fam_rat"
+coords = "0_31_81_8_58"
+
+[[spawn]]
+npc = "npc.sos_fam_rat"
+coords = "0_31_81_9_15"
+
+[[spawn]]
+npc = "npc.sos_fam_rat"
+coords = "0_31_81_9_51"
+
+[[spawn]]
+npc = "npc.sos_fam_rat"
+coords = "0_31_81_9_7"
+
+[[spawn]]
+npc = "npc.sos_fam_zombie2"
+coords = "0_31_81_19_16"
+
+[[spawn]]
+npc = "npc.sos_fam_zombie2"
+coords = "0_31_81_21_17"
+
+[[spawn]]
+npc = "npc.sos_fam_zombie2"
+coords = "0_31_81_23_25"
+
+[[spawn]]
+npc = "npc.sos_fam_zombie2"
+coords = "0_31_81_4_8"
+
+[[spawn]]
+npc = "npc.sos_fam_zombie2"
+coords = "0_31_81_55_28"
+
+[[spawn]]
+npc = "npc.sos_fam_zombie2"
+coords = "0_31_81_55_31"
+
+[[spawn]]
+npc = "npc.sos_fam_zombie2"
+coords = "0_31_81_55_34"
+
+[[spawn]]
+npc = "npc.sos_fam_zombie2"
+coords = "0_31_81_56_29"
+
+[[spawn]]
+npc = "npc.sos_fam_zombie2"
+coords = "0_31_81_57_34"
+
+[[spawn]]
+npc = "npc.sos_fam_zombie2"
+coords = "0_31_81_58_29"
+
+[[spawn]]
+npc = "npc.sos_fam_zombie2"
+coords = "0_31_81_58_31"
+
+[[spawn]]
+npc = "npc.sos_fam_zombie2"
+coords = "0_31_81_59_31"
+
+[[spawn]]
+npc = "npc.sos_fam_zombie2"
+coords = "0_31_81_59_33"
+
+[[spawn]]
+npc = "npc.sos_fam_zombie2"
+coords = "0_31_81_6_4"
+
+[[spawn]]
+npc = "npc.sos_fam_zombie2"
+coords = "0_31_81_9_6"
+
+[[spawn]]
+npc = "npc.sos_fam_zombie2_b"
+coords = "0_31_81_11_8"
+
+[[spawn]]
+npc = "npc.sos_fam_zombie2_b"
+coords = "0_31_81_20_16"
+
+[[spawn]]
+npc = "npc.sos_fam_zombie2_b"
+coords = "0_31_81_21_22"
+
+[[spawn]]
+npc = "npc.sos_fam_zombie2_b"
+coords = "0_31_81_25_16"
+
+[[spawn]]
+npc = "npc.sos_fam_zombie2_b"
+coords = "0_31_81_4_4"
+
+[[spawn]]
+npc = "npc.sos_fam_zombie2_b"
+coords = "0_31_81_8_8"
+
+[[spawn]]
+npc = "npc.sos_fam_zombie2_c"
+coords = "0_31_81_11_5"
+
+[[spawn]]
+npc = "npc.sos_fam_zombie2_c"
+coords = "0_31_81_25_21"
+
+[[spawn]]
+npc = "npc.sos_fam_zombie2_c"
+coords = "0_31_81_5_3"
+
+[[spawn]]
+npc = "npc.sos_fam_zombie2_c"
+coords = "0_31_81_9_8"
+
+[[spawn]]
+npc = "npc.sos_fam_zombie_armed"
+coords = "0_31_81_24_6"
+
+[[spawn]]
+npc = "npc.sos_fam_zombie_armed"
+coords = "0_31_81_30_3"
+
+[[spawn]]
+npc = "npc.sos_fam_zombie_armed"
+coords = "0_31_81_39_9"
+
+[[spawn]]
+npc = "npc.sos_fam_zombie_armed"
+coords = "0_31_81_41_5"
+
+[[spawn]]
+npc = "npc.sos_fam_zombie_armed"
+coords = "0_31_81_4_58"
+
+[[spawn]]
+npc = "npc.sos_fam_zombie_armed"
+coords = "0_31_81_6_50"
+
+[[spawn]]
+npc = "npc.sos_fam_zombie_armed"
+coords = "0_31_81_8_54"
+
+[[spawn]]
+npc = "npc.sos_fam_zombie_armed2"
+coords = "0_31_81_10_51"
+
+[[spawn]]
+npc = "npc.sos_fam_zombie_armed2"
+coords = "0_31_81_11_56"
+
+[[spawn]]
+npc = "npc.sos_fam_zombie_armed2"
+coords = "0_31_81_28_5"
+
+[[spawn]]
+npc = "npc.sos_fam_zombie_armed2"
+coords = "0_31_81_32_9"
+
+[[spawn]]
+npc = "npc.sos_fam_zombie_armed2"
+coords = "0_31_81_38_2"
+
+[[spawn]]
+npc = "npc.sos_fam_zombie_armed2"
+coords = "0_31_81_47_10"
+
+[[spawn]]
+npc = "npc.sos_fam_zombie_armed2"
+coords = "0_31_81_6_52"
+
+[[spawn]]
+npc = "npc.sos_fam_zombie_armed3"
+coords = "0_31_81_34_2"
+
+[[spawn]]
+npc = "npc.sos_fam_zombie_armed3"
+coords = "0_31_81_43_2"
+
+[[spawn]]
+npc = "npc.sos_fam_zombie_armed3"
+coords = "0_31_81_45_7"
+
+[[spawn]]
+npc = "npc.sos_fam_zombie_armed3"
+coords = "0_31_81_4_53"
+
+[[spawn]]
+npc = "npc.sos_fam_zombie_unarmed"
+coords = "0_31_81_42_52"
+
+[[spawn]]
+npc = "npc.sos_fam_zombie_unarmed"
+coords = "0_31_81_44_50"
+
+[[spawn]]
+npc = "npc.sos_fam_zombie_unarmed"
+coords = "0_31_81_45_47"
+
+[[spawn]]
+npc = "npc.sos_fam_zombie_unarmed"
+coords = "0_31_81_49_49"
+
+[[spawn]]
+npc = "npc.sos_fam_zombie_unarmed2"
+coords = "0_31_81_45_52"
+
+[[spawn]]
+npc = "npc.sos_fam_zombie_unarmed2"
+coords = "0_31_81_47_46"
+
+[[spawn]]
+npc = "npc.sos_fam_zombie_unarmed2"
+coords = "0_31_81_47_51"
+
+[[spawn]]
+npc = "npc.sos_fam_zombie_unarmed3"
+coords = "0_31_81_42_50"
+
+[[spawn]]
+npc = "npc.sos_fam_zombie_unarmed3"
+coords = "0_31_81_47_49"
+
+## Stronghold Of Security Pestilence
+
+[[spawn]]
+npc = "npc.sos_pest_catablepon"
+coords = "0_33_82_30_4"
+
+[[spawn]]
+npc = "npc.sos_pest_catablepon"
+coords = "0_33_82_33_4"
+
+[[spawn]]
+npc = "npc.sos_pest_catablepon"
+coords = "0_33_82_33_8"
+
+[[spawn]]
+npc = "npc.sos_pest_catablepon"
+coords = "0_33_82_36_5"
+
+[[spawn]]
+npc = "npc.sos_pest_catablepon"
+coords = "0_33_82_37_7"
+
+[[spawn]]
+npc = "npc.sos_pest_catablepon"
+coords = "0_33_82_40_3"
+
+[[spawn]]
+npc = "npc.sos_pest_catablepon"
+coords = "0_33_82_41_6"
+
+[[spawn]]
+npc = "npc.sos_pest_catablepon"
+coords = "0_33_82_43_4"
+
+[[spawn]]
+npc = "npc.sos_pest_catablepon2"
+coords = "0_33_82_46_34"
+
+[[spawn]]
+npc = "npc.sos_pest_catablepon2"
+coords = "0_33_82_49_33"
+
+[[spawn]]
+npc = "npc.sos_pest_catablepon2"
+coords = "0_33_82_50_36"
+
+[[spawn]]
+npc = "npc.sos_pest_catablepon2"
+coords = "0_33_82_52_32"
+
+[[spawn]]
+npc = "npc.sos_pest_catablepon3"
+coords = "0_33_82_10_43"
+
+[[spawn]]
+npc = "npc.sos_pest_catablepon3"
+coords = "0_33_82_11_54"
+
+[[spawn]]
+npc = "npc.sos_pest_catablepon3"
+coords = "0_33_82_15_57"
+
+[[spawn]]
+npc = "npc.sos_pest_catablepon3"
+coords = "0_33_82_17_54"
+
+[[spawn]]
+npc = "npc.sos_pest_catablepon3"
+coords = "0_33_82_18_50"
+
+[[spawn]]
+npc = "npc.sos_pest_catablepon3"
+coords = "0_33_82_51_53"
+
+[[spawn]]
+npc = "npc.sos_pest_catablepon3"
+coords = "0_33_82_54_55"
+
+[[spawn]]
+npc = "npc.sos_pest_catablepon3"
+coords = "0_33_82_54_58"
+
+[[spawn]]
+npc = "npc.sos_pest_catablepon3"
+coords = "0_33_82_55_52"
+
+[[spawn]]
+npc = "npc.sos_pest_catablepon3"
+coords = "0_33_82_57_55"
+
+[[spawn]]
+npc = "npc.sos_pest_catablepon3"
+coords = "0_33_82_58_58"
+
+[[spawn]]
+npc = "npc.sos_pest_catablepon3"
+coords = "0_33_82_7_48"
+
+[[spawn]]
+npc = "npc.sos_pest_catablepon3"
+coords = "0_33_82_8_44"
+
+[[spawn]]
+npc = "npc.sos_pest_catablepon3"
+coords = "0_33_82_8_51"
+
+[[spawn]]
+npc = "npc.sos_pest_giantspider1"
+coords = "0_33_82_11_22"
+
+[[spawn]]
+npc = "npc.sos_pest_giantspider1"
+coords = "0_33_82_11_27"
+
+[[spawn]]
+npc = "npc.sos_pest_giantspider1"
+coords = "0_33_82_12_24"
+
+[[spawn]]
+npc = "npc.sos_pest_giantspider1"
+coords = "0_33_82_12_26"
+
+[[spawn]]
+npc = "npc.sos_pest_giantspider1"
+coords = "0_33_82_13_22"
+
+[[spawn]]
+npc = "npc.sos_pest_giantspider1"
+coords = "0_33_82_14_26"
+
+[[spawn]]
+npc = "npc.sos_pest_giantspider1"
+coords = "0_33_82_15_24"
+
+[[spawn]]
+npc = "npc.sos_pest_giantspider1"
+coords = "0_33_82_17_20"
+
+[[spawn]]
+npc = "npc.sos_pest_giantspider1"
+coords = "0_33_82_17_22"
+
+[[spawn]]
+npc = "npc.sos_pest_giantspider1"
+coords = "0_33_82_18_24"
+
+[[spawn]]
+npc = "npc.sos_pest_giantspider1"
+coords = "0_33_82_19_19"
+
+[[spawn]]
+npc = "npc.sos_pest_giantspider1"
+coords = "0_33_82_30_8"
+
+[[spawn]]
+npc = "npc.sos_pest_giantspider1"
+coords = "0_33_82_31_3"
+
+[[spawn]]
+npc = "npc.sos_pest_giantspider1"
+coords = "0_33_82_33_5"
+
+[[spawn]]
+npc = "npc.sos_pest_giantspider1"
+coords = "0_33_82_33_58"
+
+[[spawn]]
+npc = "npc.sos_pest_giantspider1"
+coords = "0_33_82_34_11"
+
+[[spawn]]
+npc = "npc.sos_pest_giantspider1"
+coords = "0_33_82_34_58"
+
+[[spawn]]
+npc = "npc.sos_pest_giantspider1"
+coords = "0_33_82_35_57"
+
+[[spawn]]
+npc = "npc.sos_pest_giantspider1"
+coords = "0_33_82_35_59"
+
+[[spawn]]
+npc = "npc.sos_pest_giantspider1"
+coords = "0_33_82_35_7"
+
+[[spawn]]
+npc = "npc.sos_pest_giantspider1"
+coords = "0_33_82_37_56"
+
+[[spawn]]
+npc = "npc.sos_pest_giantspider1"
+coords = "0_33_82_37_57"
+
+[[spawn]]
+npc = "npc.sos_pest_giantspider1"
+coords = "0_33_82_37_58"
+
+[[spawn]]
+npc = "npc.sos_pest_giantspider1"
+coords = "0_33_82_38_59"
+
+[[spawn]]
+npc = "npc.sos_pest_giantspider1"
+coords = "0_33_82_38_60"
+
+[[spawn]]
+npc = "npc.sos_pest_giantspider1"
+coords = "0_33_82_39_20"
+
+[[spawn]]
+npc = "npc.sos_pest_giantspider1"
+coords = "0_33_82_39_57"
+
+[[spawn]]
+npc = "npc.sos_pest_giantspider1"
+coords = "0_33_82_39_60"
+
+[[spawn]]
+npc = "npc.sos_pest_giantspider1"
+coords = "0_33_82_40_20"
+
+[[spawn]]
+npc = "npc.sos_pest_giantspider1"
+coords = "0_33_82_40_58"
+
+[[spawn]]
+npc = "npc.sos_pest_giantspider1"
+coords = "0_33_82_41_22"
+
+[[spawn]]
+npc = "npc.sos_pest_giantspider1"
+coords = "0_33_82_41_57"
+
+[[spawn]]
+npc = "npc.sos_pest_giantspider1"
+coords = "0_33_82_41_58"
+
+[[spawn]]
+npc = "npc.sos_pest_giantspider1"
+coords = "0_33_82_41_59"
+
+[[spawn]]
+npc = "npc.sos_pest_giantspider1"
+coords = "0_33_82_42_21"
+
+[[spawn]]
+npc = "npc.sos_pest_giantspider1"
+coords = "0_33_82_42_23"
+
+[[spawn]]
+npc = "npc.sos_pest_giantspider1"
+coords = "0_33_82_42_25"
+
+[[spawn]]
+npc = "npc.sos_pest_giantspider1"
+coords = "0_33_82_42_57"
+
+[[spawn]]
+npc = "npc.sos_pest_giantspider1"
+coords = "0_33_82_43_57"
+
+[[spawn]]
+npc = "npc.sos_pest_giantspider1"
+coords = "0_33_82_43_6"
+
+[[spawn]]
+npc = "npc.sos_pest_giantspider1"
+coords = "0_33_82_45_23"
+
+[[spawn]]
+npc = "npc.sos_pest_giantspider1"
+coords = "0_33_82_45_25"
+
+[[spawn]]
+npc = "npc.sos_pest_giantspider1"
+coords = "0_33_82_45_26"
+
+[[spawn]]
+npc = "npc.sos_pest_giantspider1"
+coords = "0_33_82_8_27"
+
+[[spawn]]
+npc = "npc.sos_pest_giantspider1"
+coords = "0_33_82_9_25"
+
+[[spawn]]
+npc = "npc.sos_pest_scorpion"
+coords = "0_33_82_57_42"
+
+[[spawn]]
+npc = "npc.sos_pest_scorpion"
+coords = "0_33_82_58_37"
+
+[[spawn]]
+npc = "npc.sos_pest_scorpion"
+coords = "0_33_82_59_32"
+
+[[spawn]]
+npc = "npc.sos_pest_scorpion"
+coords = "0_33_82_60_26"
+
+[[spawn]]
+npc = "npc.sos_pest_scorpion2"
+coords = "0_33_82_58_29"
+
+[[spawn]]
+npc = "npc.sos_pest_scorpion2"
+coords = "0_33_82_58_40"
+
+[[spawn]]
+npc = "npc.sos_pest_scorpion2"
+coords = "0_33_82_60_35"
+
+[[spawn]]
+npc = "npc.sos_pest_scorpion2"
+coords = "0_33_82_61_24"
+
+[[spawn]]
+npc = "npc.sos_pest_spider"
+coords = "0_33_82_10_23"
+
+[[spawn]]
+npc = "npc.sos_pest_spider"
+coords = "0_33_82_12_21"
+
+[[spawn]]
+npc = "npc.sos_pest_spider"
+coords = "0_33_82_12_25"
+
+[[spawn]]
+npc = "npc.sos_pest_spider"
+coords = "0_33_82_14_22"
+
+[[spawn]]
+npc = "npc.sos_pest_spider"
+coords = "0_33_82_14_24"
+
+[[spawn]]
+npc = "npc.sos_pest_spider"
+coords = "0_33_82_15_21"
+
+[[spawn]]
+npc = "npc.sos_pest_spider"
+coords = "0_33_82_15_25"
+
+[[spawn]]
+npc = "npc.sos_pest_spider"
+coords = "0_33_82_16_23"
+
+[[spawn]]
+npc = "npc.sos_pest_spider"
+coords = "0_33_82_17_19"
+
+[[spawn]]
+npc = "npc.sos_pest_spider"
+coords = "0_33_82_17_25"
+
+[[spawn]]
+npc = "npc.sos_pest_spider"
+coords = "0_33_82_38_19"
+
+[[spawn]]
+npc = "npc.sos_pest_spider"
+coords = "0_33_82_40_22"
+
+[[spawn]]
+npc = "npc.sos_pest_spider"
+coords = "0_33_82_43_22"
+
+[[spawn]]
+npc = "npc.sos_pest_spider"
+coords = "0_33_82_43_23"
+
+[[spawn]]
+npc = "npc.sos_pest_spider"
+coords = "0_33_82_44_25"
+
+[[spawn]]
+npc = "npc.sos_pest_spider"
+coords = "0_33_82_44_26"
+
+[[spawn]]
+npc = "npc.sos_pest_spider"
+coords = "0_33_82_53_7"
+
+[[spawn]]
+npc = "npc.sos_pest_spider"
+coords = "0_33_82_54_8"
+
+[[spawn]]
+npc = "npc.sos_pest_spider"
+coords = "0_33_82_55_3"
+
+[[spawn]]
+npc = "npc.sos_pest_spider"
+coords = "0_33_82_55_5"
+
+[[spawn]]
+npc = "npc.sos_pest_spider"
+coords = "0_33_82_55_7"
+
+[[spawn]]
+npc = "npc.sos_pest_spider"
+coords = "0_33_82_56_5"
+
+[[spawn]]
+npc = "npc.sos_pest_spider"
+coords = "0_33_82_56_8"
+
+[[spawn]]
+npc = "npc.sos_pest_spider"
+coords = "0_33_82_56_9"
+
+[[spawn]]
+npc = "npc.sos_pest_spider"
+coords = "0_33_82_57_2"
+
+[[spawn]]
+npc = "npc.sos_pest_spider"
+coords = "0_33_82_57_6"
+
+[[spawn]]
+npc = "npc.sos_pest_spider"
+coords = "0_33_82_57_7"
+
+[[spawn]]
+npc = "npc.sos_pest_spider"
+coords = "0_33_82_58_4"
+
+[[spawn]]
+npc = "npc.sos_pest_spider"
+coords = "0_33_82_58_6"
+
+[[spawn]]
+npc = "npc.sos_pest_spider"
+coords = "0_33_82_58_8"
+
+[[spawn]]
+npc = "npc.sos_pest_spider"
+coords = "0_33_82_59_5"
+
+[[spawn]]
+npc = "npc.sos_pest_spider"
+coords = "0_33_82_60_6"
+
+[[spawn]]
+npc = "npc.sos_pest_spider"
+coords = "0_33_82_7_26"
+
+[[spawn]]
+npc = "npc.sos_pest_spider"
+coords = "0_33_82_8_29"
+
+[[spawn]]
+npc = "npc.sos_pest_spider"
+coords = "0_33_82_9_28"
+
+## Stronghold Of Security War
+
+[[spawn]]
+npc = "npc.butterfly"
+coords = "0_29_81_50_39"
+
+[[spawn]]
+npc = "npc.butterfly"
+coords = "0_29_81_51_37"
+
+[[spawn]]
+npc = "npc.butterfly2"
+coords = "0_29_81_52_38"
+
+[[spawn]]
+npc = "npc.sos_war_goblin_armed"
+coords = "0_29_81_4_21"
+
+[[spawn]]
+npc = "npc.sos_war_goblin_armed"
+coords = "0_29_81_4_38"
+
+[[spawn]]
+npc = "npc.sos_war_goblin_armed"
+coords = "0_29_81_4_42"
+
+[[spawn]]
+npc = "npc.sos_war_goblin_armed"
+coords = "0_29_81_6_17"
+
+[[spawn]]
+npc = "npc.sos_war_goblin_armed2"
+coords = "0_29_81_28_23"
+
+[[spawn]]
+npc = "npc.sos_war_goblin_armed2"
+coords = "0_29_81_29_19"
+
+[[spawn]]
+npc = "npc.sos_war_goblin_armed2"
+coords = "0_29_81_35_52"
+
+[[spawn]]
+npc = "npc.sos_war_goblin_armed2"
+coords = "0_29_81_38_45"
+
+[[spawn]]
+npc = "npc.sos_war_goblin_armed2"
+coords = "0_29_81_54_52"
+
+[[spawn]]
+npc = "npc.sos_war_goblin_armed2"
+coords = "0_29_81_57_55"
+
+[[spawn]]
+npc = "npc.sos_war_goblin_green_soldier_1"
+coords = "0_29_81_3_35"
+
+[[spawn]]
+npc = "npc.sos_war_goblin_green_soldier_1"
+coords = "0_29_81_5_40"
+
+[[spawn]]
+npc = "npc.sos_war_goblin_green_soldier_1"
+coords = "0_29_81_6_44"
+
+[[spawn]]
+npc = "npc.sos_war_goblin_green_soldier_1"
+coords = "0_29_81_8_20"
+
+[[spawn]]
+npc = "npc.sos_war_goblin_green_soldier_2"
+coords = "0_29_81_21_15"
+
+[[spawn]]
+npc = "npc.sos_war_goblin_green_soldier_2"
+coords = "0_29_81_36_42"
+
+[[spawn]]
+npc = "npc.sos_war_goblin_green_soldier_2"
+coords = "0_29_81_38_49"
+
+[[spawn]]
+npc = "npc.sos_war_goblin_green_soldier_2"
+coords = "0_29_81_49_51"
+
+[[spawn]]
+npc = "npc.sos_war_goblin_green_soldier_2"
+coords = "0_29_81_56_58"
+
+[[spawn]]
+npc = "npc.sos_war_goblin_helmet"
+coords = "0_29_81_3_17"
+
+[[spawn]]
+npc = "npc.sos_war_goblin_helmet"
+coords = "0_29_81_4_31"
+
+[[spawn]]
+npc = "npc.sos_war_goblin_helmet"
+coords = "0_29_81_6_36"
+
+[[spawn]]
+npc = "npc.sos_war_goblin_helmet"
+coords = "0_29_81_7_31"
+
+[[spawn]]
+npc = "npc.sos_war_goblin_helmet"
+coords = "0_29_81_7_33"
+
+[[spawn]]
+npc = "npc.sos_war_goblin_helmet"
+coords = "0_29_81_8_34"
+
+[[spawn]]
+npc = "npc.sos_war_goblin_helmet2"
+coords = "0_29_81_20_14"
+
+[[spawn]]
+npc = "npc.sos_war_goblin_helmet2"
+coords = "0_29_81_28_17"
+
+[[spawn]]
+npc = "npc.sos_war_goblin_helmet2"
+coords = "0_29_81_31_21"
+
+[[spawn]]
+npc = "npc.sos_war_goblin_helmet2"
+coords = "0_29_81_37_51"
+
+[[spawn]]
+npc = "npc.sos_war_goblin_helmet2"
+coords = "0_29_81_39_44"
+
+[[spawn]]
+npc = "npc.sos_war_goblin_helmet2"
+coords = "0_29_81_40_48"
+
+[[spawn]]
+npc = "npc.sos_war_goblin_helmet2"
+coords = "0_29_81_55_56"
+
+[[spawn]]
+npc = "npc.sos_war_goblin_helmet2"
+coords = "0_29_81_56_60"
+
+[[spawn]]
+npc = "npc.sos_war_goblin_helmet2"
+coords = "0_29_81_57_52"
+
+[[spawn]]
+npc = "npc.sos_war_minotaur"
+coords = "0_29_81_11_4"
+
+[[spawn]]
+npc = "npc.sos_war_minotaur"
+coords = "0_29_81_14_51"
+
+[[spawn]]
+npc = "npc.sos_war_minotaur"
+coords = "0_29_81_15_58"
+
+[[spawn]]
+npc = "npc.sos_war_minotaur"
+coords = "0_29_81_15_7"
+
+[[spawn]]
+npc = "npc.sos_war_minotaur"
+coords = "0_29_81_16_43"
+
+[[spawn]]
+npc = "npc.sos_war_minotaur"
+coords = "0_29_81_17_28"
+
+[[spawn]]
+npc = "npc.sos_war_minotaur"
+coords = "0_29_81_17_54"
+
+[[spawn]]
+npc = "npc.sos_war_minotaur"
+coords = "0_29_81_18_32"
+
+[[spawn]]
+npc = "npc.sos_war_minotaur"
+coords = "0_29_81_19_30"
+
+[[spawn]]
+npc = "npc.sos_war_minotaur"
+coords = "0_29_81_19_34"
+
+[[spawn]]
+npc = "npc.sos_war_minotaur"
+coords = "0_29_81_22_32"
+
+[[spawn]]
+npc = "npc.sos_war_minotaur"
+coords = "0_29_81_23_34"
+
+[[spawn]]
+npc = "npc.sos_war_minotaur"
+coords = "0_29_81_24_33"
+
+[[spawn]]
+npc = "npc.sos_war_minotaur"
+coords = "0_29_81_24_36"
+
+[[spawn]]
+npc = "npc.sos_war_minotaur"
+coords = "0_29_81_6_6"
+
+[[spawn]]
+npc = "npc.sos_war_minotaur"
+coords = "0_29_81_7_5"
+
+[[spawn]]
+npc = "npc.sos_war_minotaur3"
+coords = "0_29_81_34_11"
+
+[[spawn]]
+npc = "npc.sos_war_minotaur3"
+coords = "0_29_81_34_59"
+
+[[spawn]]
+npc = "npc.sos_war_minotaur3"
+coords = "0_29_81_37_14"
+
+[[spawn]]
+npc = "npc.sos_war_minotaur3"
+coords = "0_29_81_37_5"
+
+[[spawn]]
+npc = "npc.sos_war_minotaur3"
+coords = "0_29_81_37_54"
+
+[[spawn]]
+npc = "npc.sos_war_minotaur3"
+coords = "0_29_81_37_57"
+
+[[spawn]]
+npc = "npc.sos_war_minotaur3"
+coords = "0_29_81_38_59"
+
+[[spawn]]
+npc = "npc.sos_war_minotaur3"
+coords = "0_29_81_41_12"
+
+[[spawn]]
+npc = "npc.sos_war_minotaur3"
+coords = "0_29_81_41_60"
+
+[[spawn]]
+npc = "npc.sos_war_minotaur3"
+coords = "0_29_81_43_14"
+
+[[spawn]]
+npc = "npc.sos_war_minotaur3"
+coords = "0_29_81_43_58"
+
+[[spawn]]
+npc = "npc.sos_war_minotaur3"
+coords = "0_29_81_44_24"
+
+[[spawn]]
+npc = "npc.sos_war_minotaur3"
+coords = "0_29_81_44_26"
+
+[[spawn]]
+npc = "npc.sos_war_minotaur3"
+coords = "0_29_81_45_13"
+
+[[spawn]]
+npc = "npc.sos_war_minotaur3"
+coords = "0_29_81_45_17"
+
+[[spawn]]
+npc = "npc.sos_war_minotaur3"
+coords = "0_29_81_45_22"
+
+[[spawn]]
+npc = "npc.sos_war_minotaur3"
+coords = "0_29_81_45_7"
+
+[[spawn]]
+npc = "npc.sos_war_minotaur3"
+coords = "0_29_81_46_15"
+
+[[spawn]]
+npc = "npc.sos_war_minotaur3"
+coords = "0_29_81_46_20"
+
+[[spawn]]
+npc = "npc.sos_war_minotaur3"
+coords = "0_29_81_46_23"
+
+[[spawn]]
+npc = "npc.sos_war_minotaur3"
+coords = "0_29_81_46_58"
+
+[[spawn]]
+npc = "npc.sos_war_minotaur3"
+coords = "0_29_81_46_9"
+
+[[spawn]]
+npc = "npc.sos_war_minotaur3"
+coords = "0_29_81_48_7"
+
+[[spawn]]
+npc = "npc.sos_war_rat"
+coords = "0_29_81_10_20"
+
+[[spawn]]
+npc = "npc.sos_war_rat"
+coords = "0_29_81_12_5"
+
+[[spawn]]
+npc = "npc.sos_war_rat"
+coords = "0_29_81_13_42"
+
+[[spawn]]
+npc = "npc.sos_war_rat"
+coords = "0_29_81_14_8"
+
+[[spawn]]
+npc = "npc.sos_war_rat"
+coords = "0_29_81_15_48"
+
+[[spawn]]
+npc = "npc.sos_war_rat"
+coords = "0_29_81_16_34"
+
+[[spawn]]
+npc = "npc.sos_war_rat"
+coords = "0_29_81_16_55"
+
+[[spawn]]
+npc = "npc.sos_war_rat"
+coords = "0_29_81_16_6"
+
+[[spawn]]
+npc = "npc.sos_war_rat"
+coords = "0_29_81_17_4"
+
+[[spawn]]
+npc = "npc.sos_war_rat"
+coords = "0_29_81_18_16"
+
+[[spawn]]
+npc = "npc.sos_war_rat"
+coords = "0_29_81_18_26"
+
+[[spawn]]
+npc = "npc.sos_war_rat"
+coords = "0_29_81_20_32"
+
+[[spawn]]
+npc = "npc.sos_war_rat"
+coords = "0_29_81_20_5"
+
+[[spawn]]
+npc = "npc.sos_war_rat"
+coords = "0_29_81_21_36"
+
+[[spawn]]
+npc = "npc.sos_war_rat"
+coords = "0_29_81_23_14"
+
+[[spawn]]
+npc = "npc.sos_war_rat"
+coords = "0_29_81_23_46"
+
+[[spawn]]
+npc = "npc.sos_war_rat"
+coords = "0_29_81_23_50"
+
+[[spawn]]
+npc = "npc.sos_war_rat"
+coords = "0_29_81_24_16"
+
+[[spawn]]
+npc = "npc.sos_war_rat"
+coords = "0_29_81_24_55"
+
+[[spawn]]
+npc = "npc.sos_war_rat"
+coords = "0_29_81_24_59"
+
+[[spawn]]
+npc = "npc.sos_war_rat"
+coords = "0_29_81_25_48"
+
+[[spawn]]
+npc = "npc.sos_war_rat"
+coords = "0_29_81_25_57"
+
+[[spawn]]
+npc = "npc.sos_war_rat"
+coords = "0_29_81_26_15"
+
+[[spawn]]
+npc = "npc.sos_war_rat"
+coords = "0_29_81_26_17"
+
+[[spawn]]
+npc = "npc.sos_war_rat"
+coords = "0_29_81_26_59"
+
+[[spawn]]
+npc = "npc.sos_war_rat"
+coords = "0_29_81_27_22"
+
+[[spawn]]
+npc = "npc.sos_war_rat"
+coords = "0_29_81_27_50"
+
+[[spawn]]
+npc = "npc.sos_war_rat"
+coords = "0_29_81_28_46"
+
+[[spawn]]
+npc = "npc.sos_war_rat"
+coords = "0_29_81_28_48"
+
+[[spawn]]
+npc = "npc.sos_war_rat"
+coords = "0_29_81_29_21"
+
+[[spawn]]
+npc = "npc.sos_war_rat"
+coords = "0_29_81_30_47"
+
+[[spawn]]
+npc = "npc.sos_war_rat"
+coords = "0_29_81_31_19"
+
+[[spawn]]
+npc = "npc.sos_war_rat"
+coords = "0_29_81_33_22"
+
+[[spawn]]
+npc = "npc.sos_war_rat"
+coords = "0_29_81_34_58"
+
+[[spawn]]
+npc = "npc.sos_war_rat"
+coords = "0_29_81_39_58"
+
+[[spawn]]
+npc = "npc.sos_war_rat"
+coords = "0_29_81_3_19"
+
+[[spawn]]
+npc = "npc.sos_war_rat"
+coords = "0_29_81_3_9"
+
+[[spawn]]
+npc = "npc.sos_war_rat"
+coords = "0_29_81_42_57"
+
+[[spawn]]
+npc = "npc.sos_war_rat"
+coords = "0_29_81_44_56"
+
+[[spawn]]
+npc = "npc.sos_war_rat"
+coords = "0_29_81_44_60"
+
+[[spawn]]
+npc = "npc.sos_war_rat"
+coords = "0_29_81_48_51"
+
+[[spawn]]
+npc = "npc.sos_war_rat"
+coords = "0_29_81_52_19"
+
+[[spawn]]
+npc = "npc.sos_war_rat"
+coords = "0_29_81_53_59"
+
+[[spawn]]
+npc = "npc.sos_war_rat"
+coords = "0_29_81_54_18"
+
+[[spawn]]
+npc = "npc.sos_war_rat"
+coords = "0_29_81_55_21"
+
+[[spawn]]
+npc = "npc.sos_war_rat"
+coords = "0_29_81_56_54"
+
+[[spawn]]
+npc = "npc.sos_war_rat"
+coords = "0_29_81_57_51"
+
+[[spawn]]
+npc = "npc.sos_war_rat"
+coords = "0_29_81_5_16"
+
+[[spawn]]
+npc = "npc.sos_war_rat"
+coords = "0_29_81_5_45"
+
+[[spawn]]
+npc = "npc.sos_war_rat"
+coords = "0_29_81_5_47"
+
+[[spawn]]
+npc = "npc.sos_war_rat"
+coords = "0_29_81_5_8"
+
+[[spawn]]
+npc = "npc.sos_war_rat"
+coords = "0_29_81_6_20"
+
+[[spawn]]
+npc = "npc.sos_war_rat"
+coords = "0_29_81_6_4"
+
+[[spawn]]
+npc = "npc.sos_war_rat"
+coords = "0_29_81_7_43"
+
+[[spawn]]
+npc = "npc.sos_war_rat"
+coords = "0_29_81_8_18"
+
+[[spawn]]
+npc = "npc.sos_war_rat"
+coords = "0_29_81_9_4"
+
+[[spawn]]
+npc = "npc.sos_war_wolf"
+coords = "0_29_81_14_42"
+
+[[spawn]]
+npc = "npc.sos_war_wolf"
+coords = "0_29_81_15_45"
+
+[[spawn]]
+npc = "npc.sos_war_wolf"
+coords = "0_29_81_15_52"
+
+[[spawn]]
+npc = "npc.sos_war_wolf"
+coords = "0_29_81_16_49"
+
+[[spawn]]
+npc = "npc.sos_war_wolf"
+coords = "0_29_81_17_55"
+
+[[spawn]]
+npc = "npc.sos_war_wolf2"
+coords = "0_29_81_30_4"
+
+[[spawn]]
+npc = "npc.sos_war_wolf2"
+coords = "0_29_81_31_37"
+
+[[spawn]]
+npc = "npc.sos_war_wolf2"
+coords = "0_29_81_33_3"
+
+[[spawn]]
+npc = "npc.sos_war_wolf2"
+coords = "0_29_81_33_30"
+
+[[spawn]]
+npc = "npc.sos_war_wolf2"
+coords = "0_29_81_33_33"
+
+[[spawn]]
+npc = "npc.sos_war_wolf2"
+coords = "0_29_81_33_7"
+
+[[spawn]]
+npc = "npc.sos_war_wolf2"
+coords = "0_29_81_34_40"
+
+[[spawn]]
+npc = "npc.sos_war_wolf2"
+coords = "0_29_81_36_33"
+
+[[spawn]]
+npc = "npc.sos_war_wolf2"
+coords = "0_29_81_36_36"
+
+[[spawn]]
+npc = "npc.sos_war_wolf2"
+coords = "0_29_81_38_9"
+
+[[spawn]]
+npc = "npc.sos_war_wolf2"
+coords = "0_29_81_41_5"
+
+## Stronghold Of Security War End
+

@@ -1,0 +1,18 @@
+## Trollheim tunnel
+
+[[spawn]]
+npc = "npc.death_troll_melee4"
+coords = "0_45_156_41_48"
+
+[[spawn]]
+npc = "npc.death_troll_melee6"
+coords = "0_45_156_45_50"
+
+[[spawn]]
+npc = "npc.death_troll_melee7"
+coords = "0_45_156_44_47"
+
+[[spawn]]
+npc = "npc.troll_melee1"
+coords = "0_45_156_41_43"
+

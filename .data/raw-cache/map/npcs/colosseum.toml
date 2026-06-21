@@ -1,0 +1,20 @@
+[[spawn]]
+npc = "npc.colosseum_duelist_flavour"
+coords = "0_28_148_33_57"
+
+[[spawn]]
+npc = "npc.colosseum_glory"
+coords = "0_28_148_11_40"
+
+[[spawn]]
+npc = "npc.colosseum_teoki_ralos"
+coords = "0_28_148_33_15"
+
+[[spawn]]
+npc = "npc.colosseum_teoki_ranul"
+coords = "0_28_148_36_11"
+
+[[spawn]]
+npc = "npc.mag_lelia"
+coords = "0_28_148_28_13"
+

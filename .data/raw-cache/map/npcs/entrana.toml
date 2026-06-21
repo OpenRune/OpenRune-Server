@@ -1,0 +1,148 @@
+[[spawn]]
+npc = "npc.0_44_52_freshfish"
+coords = "0_44_52_24_28"
+
+[[spawn]]
+npc = "npc.0_44_52_freshfish"
+coords = "0_44_52_26_31"
+
+[[spawn]]
+npc = "npc.0_44_52_freshfish"
+coords = "0_44_52_29_28"
+
+[[spawn]]
+npc = "npc.0_44_52_freshfish"
+coords = "0_44_52_33_33"
+
+[[spawn]]
+npc = "npc.0_44_52_saltfish"
+coords = "0_44_52_59_14"
+
+[[spawn]]
+npc = "npc.0_44_52_saltfish"
+coords = "0_44_52_60_3"
+
+[[spawn]]
+npc = "npc.0_44_52_saltfish"
+coords = "0_44_52_61_14"
+
+[[spawn]]
+npc = "npc.0_44_52_saltfish"
+coords = "0_44_52_61_3"
+
+[[spawn]]
+npc = "npc.cave_monk"
+coords = "0_44_52_6_46"
+
+[[spawn]]
+npc = "npc.chicken"
+coords = "0_44_52_30_46"
+
+[[spawn]]
+npc = "npc.chicken"
+coords = "0_44_52_34_40"
+
+[[spawn]]
+npc = "npc.chicken"
+coords = "0_44_52_36_42"
+
+[[spawn]]
+npc = "npc.chicken_brown"
+coords = "0_44_52_34_43"
+
+[[spawn]]
+npc = "npc.chicken_brown"
+coords = "0_44_52_37_40"
+
+[[spawn]]
+npc = "npc.chicken_brown"
+coords = "0_44_52_37_45"
+
+[[spawn]]
+npc = "npc.darkbear"
+coords = "0_43_52_57_48"
+
+[[spawn]]
+npc = "npc.entrana_glassblower"
+coords = "0_44_52_15_22"
+
+[[spawn]]
+npc = "npc.entrana_monk"
+coords = "0_44_52_27_18"
+
+[[spawn]]
+npc = "npc.entrana_monk"
+coords = "0_44_52_34_26"
+
+[[spawn]]
+npc = "npc.entrana_monk"
+coords = "0_44_52_35_17"
+
+[[spawn]]
+npc = "npc.entrana_monk"
+coords = "1_44_52_35_14"
+
+[[spawn]]
+npc = "npc.entrana_monk"
+coords = "1_44_52_38_22"
+
+[[spawn]]
+npc = "npc.farming_tools_leprechaun"
+coords = "0_43_52_60_4"
+
+[[spawn]]
+npc = "npc.fire_bird"
+coords = "0_44_52_31_58"
+
+[[spawn]]
+npc = "npc.francis"
+coords = "0_43_52_62_9"
+
+[[spawn]]
+npc = "npc.frincos"
+coords = "0_43_52_56_14"
+
+[[spawn]]
+npc = "npc.handsand_naziom"
+coords = "0_44_52_2_14"
+
+[[spawn]]
+npc = "npc.high_priest_of_entrana"
+coords = "0_44_52_35_21"
+
+[[spawn]]
+npc = "npc.secret_ghost11"
+coords = "0_44_52_34_20"
+
+[[spawn]]
+npc = "npc.shipmonk2"
+coords = "0_44_52_14_7"
+
+[[spawn]]
+npc = "npc.shipmonk2_b"
+coords = "0_44_52_19_8"
+
+[[spawn]]
+npc = "npc.shipmonk2_c"
+coords = "0_44_52_23_7"
+
+[[spawn]]
+npc = "npc.unicorn"
+coords = "0_44_52_22_42"
+
+[[spawn]]
+npc = "npc.unicorn"
+coords = "0_44_52_34_50"
+
+[[spawn]]
+npc = "npc.unicorn"
+coords = "0_44_52_44_47"
+
+[[spawn]]
+npc = "npc.unicorn"
+coords = "0_44_52_47_50"
+
+[[spawn]]
+npc = "npc.zep_piccard"
+coords = "0_43_52_56_27"
+

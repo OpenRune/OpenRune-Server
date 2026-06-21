@@ -1,0 +1,1018 @@
+## Mos Le Harmless
+
+[[spawn]]
+npc = "npc.brain_tranquility"
+coords = "0_57_46_33_19"
+
+[[spawn]]
+npc = "npc.brew_monkey"
+coords = "0_59_46_30_31"
+
+[[spawn]]
+npc = "npc.brew_monkey"
+coords = "0_59_46_34_28"
+
+[[spawn]]
+npc = "npc.brew_monkey"
+coords = "0_59_46_36_32"
+
+[[spawn]]
+npc = "npc.brew_monkey"
+coords = "0_59_46_56_30"
+
+[[spawn]]
+npc = "npc.brew_monkey"
+coords = "0_59_46_9_30"
+
+[[spawn]]
+npc = "npc.fancy_dan"
+coords = "0_59_47_25_7"
+
+[[spawn]]
+npc = "npc.fever_banker_01"
+coords = "0_57_46_34_37"
+
+[[spawn]]
+npc = "npc.fever_banker_01"
+coords = "0_57_46_34_39"
+
+[[spawn]]
+npc = "npc.fever_banker_02"
+coords = "0_57_46_34_38"
+
+[[spawn]]
+npc = "npc.fever_dodgy_mike"
+coords = "0_57_46_47_34"
+
+[[spawn]]
+npc = "npc.fever_harmless_port_ship_teach"
+coords = "1_57_46_35_4"
+
+[[spawn]]
+npc = "npc.fever_harmless_teach"
+coords = "0_57_46_19_37"
+
+[[spawn]]
+npc = "npc.fever_harpoon_joe"
+coords = "0_57_46_18_46"
+
+[[spawn]]
+npc = "npc.fever_mama_la_fiette"
+coords = "0_57_46_15_36"
+
+[[spawn]]
+npc = "npc.fever_pirate_island_01"
+coords = "0_57_46_10_8"
+
+[[spawn]]
+npc = "npc.fever_pirate_island_01"
+coords = "0_57_46_16_51"
+
+[[spawn]]
+npc = "npc.fever_pirate_island_01"
+coords = "0_57_46_24_23"
+
+[[spawn]]
+npc = "npc.fever_pirate_island_01"
+coords = "0_57_46_27_10"
+
+[[spawn]]
+npc = "npc.fever_pirate_island_01"
+coords = "0_57_46_47_25"
+
+[[spawn]]
+npc = "npc.fever_pirate_island_01"
+coords = "0_57_46_47_6"
+
+[[spawn]]
+npc = "npc.fever_pirate_island_02"
+coords = "0_57_46_20_50"
+
+[[spawn]]
+npc = "npc.fever_pirate_island_02"
+coords = "0_57_46_30_13"
+
+[[spawn]]
+npc = "npc.fever_pirate_island_02"
+coords = "0_57_46_42_35"
+
+[[spawn]]
+npc = "npc.fever_pirate_island_02"
+coords = "0_57_46_43_40"
+
+[[spawn]]
+npc = "npc.fever_pirate_island_02"
+coords = "1_57_46_22_35"
+
+[[spawn]]
+npc = "npc.fever_pirate_island_03"
+coords = "0_57_46_18_39"
+
+[[spawn]]
+npc = "npc.fever_pirate_island_03"
+coords = "0_57_46_43_33"
+
+[[spawn]]
+npc = "npc.fever_pirate_island_03"
+coords = "1_57_46_17_39"
+
+[[spawn]]
+npc = "npc.fever_pirate_island_04"
+coords = "0_57_46_22_39"
+
+[[spawn]]
+npc = "npc.fever_pirate_island_04"
+coords = "0_57_46_7_29"
+
+[[spawn]]
+npc = "npc.fever_pirate_island_04"
+coords = "1_57_46_15_34"
+
+[[spawn]]
+npc = "npc.fever_pirate_island_05"
+coords = "0_57_46_19_49"
+
+[[spawn]]
+npc = "npc.fever_pirate_island_05"
+coords = "0_57_46_28_47"
+
+[[spawn]]
+npc = "npc.fever_pirate_island_05"
+coords = "0_57_46_35_10"
+
+[[spawn]]
+npc = "npc.fever_pirate_island_05"
+coords = "0_57_46_49_46"
+
+[[spawn]]
+npc = "npc.fever_pirate_island_05"
+coords = "1_57_46_36_5"
+
+[[spawn]]
+npc = "npc.fever_pirate_island_06"
+coords = "0_57_46_18_33"
+
+[[spawn]]
+npc = "npc.fever_pirate_island_06"
+coords = "0_57_46_8_16"
+
+[[spawn]]
+npc = "npc.fever_pirate_island_06"
+coords = "1_57_46_18_32"
+
+[[spawn]]
+npc = "npc.fever_pirate_island_06"
+coords = "1_57_46_34_3"
+
+[[spawn]]
+npc = "npc.fever_pirate_island_06"
+coords = "1_57_46_8_48"
+
+[[spawn]]
+npc = "npc.fever_pirate_island_07"
+coords = "1_57_46_17_51"
+
+[[spawn]]
+npc = "npc.fever_pirate_island_07"
+coords = "1_57_46_31_6"
+
+[[spawn]]
+npc = "npc.fever_pirate_island_07"
+coords = "1_57_46_50_53"
+
+[[spawn]]
+npc = "npc.fever_pirate_island_08"
+coords = "0_57_46_23_34"
+
+[[spawn]]
+npc = "npc.fever_pirate_island_08"
+coords = "0_57_46_27_44"
+
+[[spawn]]
+npc = "npc.fever_pirate_island_08"
+coords = "1_57_46_22_39"
+
+[[spawn]]
+npc = "npc.fever_pirate_island_09"
+coords = "0_57_46_35_27"
+
+[[spawn]]
+npc = "npc.fever_pirate_island_09"
+coords = "1_57_46_16_48"
+
+[[spawn]]
+npc = "npc.fever_pirate_island_09"
+coords = "1_57_46_28_5"
+
+[[spawn]]
+npc = "npc.fever_pirate_island_10"
+coords = "0_57_46_19_19"
+
+[[spawn]]
+npc = "npc.fever_pirate_island_10"
+coords = "0_57_46_38_11"
+
+[[spawn]]
+npc = "npc.fever_pirate_island_10"
+coords = "1_57_46_17_46"
+
+[[spawn]]
+npc = "npc.fever_pirate_millitia_01"
+coords = "0_57_46_1_60"
+
+[[spawn]]
+npc = "npc.fever_pirate_millitia_02"
+coords = "0_57_46_5_62"
+
+[[spawn]]
+npc = "npc.fever_pirate_millitia_03"
+coords = "0_57_46_12_61"
+
+[[spawn]]
+npc = "npc.fever_pirate_millitia_04"
+coords = "0_57_46_17_62"
+
+[[spawn]]
+npc = "npc.fever_pirate_millitia_05"
+coords = "0_57_46_25_62"
+
+[[spawn]]
+npc = "npc.fever_pirate_millitia_06"
+coords = "0_57_46_34_62"
+
+[[spawn]]
+npc = "npc.fever_pirate_millitia_07"
+coords = "0_57_46_40_62"
+
+[[spawn]]
+npc = "npc.fever_pirate_millitia_08"
+coords = "0_57_46_44_61"
+
+[[spawn]]
+npc = "npc.fever_pirate_millitia_09"
+coords = "0_57_46_53_62"
+
+[[spawn]]
+npc = "npc.fever_pirate_millitia_10"
+coords = "0_57_46_62_60"
+
+[[spawn]]
+npc = "npc.fever_pirate_two_feet_charley"
+coords = "0_57_46_25_26"
+
+[[spawn]]
+npc = "npc.fever_smithing_smith"
+coords = "0_57_46_41_10"
+
+[[spawn]]
+npc = "npc.game_brew_blue_parrot_helper"
+coords = "0_59_46_46_10"
+
+[[spawn]]
+npc = "npc.game_brew_red_parrot_helper"
+coords = "0_59_46_46_61"
+
+[[spawn]]
+npc = "npc.harmless_island_cave_pirate"
+coords = "0_58_46_37_28"
+
+[[spawn]]
+npc = "npc.harmless_island_crab"
+coords = "0_57_47_10_46"
+
+[[spawn]]
+npc = "npc.harmless_island_crab"
+coords = "0_57_47_22_43"
+
+[[spawn]]
+npc = "npc.harmless_island_crab"
+coords = "0_57_47_24_52"
+
+[[spawn]]
+npc = "npc.harmless_island_crab"
+coords = "0_57_47_37_47"
+
+[[spawn]]
+npc = "npc.harmless_island_crab"
+coords = "0_57_47_41_38"
+
+[[spawn]]
+npc = "npc.harmless_island_crab"
+coords = "0_57_47_46_48"
+
+[[spawn]]
+npc = "npc.harmless_island_crab"
+coords = "0_57_47_49_54"
+
+[[spawn]]
+npc = "npc.harmless_island_crab"
+coords = "0_57_47_62_49"
+
+[[spawn]]
+npc = "npc.harmless_island_crab"
+coords = "0_58_46_42_32"
+
+[[spawn]]
+npc = "npc.harmless_island_crab"
+coords = "0_58_46_46_37"
+
+[[spawn]]
+npc = "npc.harmless_island_crab"
+coords = "0_58_46_47_15"
+
+[[spawn]]
+npc = "npc.harmless_island_crab"
+coords = "0_58_46_52_8"
+
+[[spawn]]
+npc = "npc.harmless_island_crab"
+coords = "0_58_46_59_42"
+
+[[spawn]]
+npc = "npc.harmless_island_crab"
+coords = "0_58_46_60_12"
+
+[[spawn]]
+npc = "npc.harmless_island_crab"
+coords = "0_58_47_14_55"
+
+[[spawn]]
+npc = "npc.harmless_island_crab"
+coords = "0_58_47_16_51"
+
+[[spawn]]
+npc = "npc.harmless_island_crab"
+coords = "0_58_47_23_50"
+
+[[spawn]]
+npc = "npc.harmless_island_crab"
+coords = "0_58_47_25_44"
+
+[[spawn]]
+npc = "npc.harmless_island_crab"
+coords = "0_58_47_25_54"
+
+[[spawn]]
+npc = "npc.harmless_island_crab"
+coords = "0_58_47_29_48"
+
+[[spawn]]
+npc = "npc.harmless_island_crab"
+coords = "0_58_47_30_58"
+
+[[spawn]]
+npc = "npc.harmless_island_crab"
+coords = "0_58_47_43_39"
+
+[[spawn]]
+npc = "npc.harmless_island_crab"
+coords = "0_58_47_44_48"
+
+[[spawn]]
+npc = "npc.harmless_island_crab"
+coords = "0_58_47_46_54"
+
+[[spawn]]
+npc = "npc.harmless_island_crab"
+coords = "0_58_47_52_34"
+
+[[spawn]]
+npc = "npc.harmless_island_crab"
+coords = "0_58_47_52_45"
+
+[[spawn]]
+npc = "npc.harmless_island_crab"
+coords = "0_58_47_52_51"
+
+[[spawn]]
+npc = "npc.harmless_island_crab"
+coords = "0_58_47_57_39"
+
+[[spawn]]
+npc = "npc.harmless_island_crab"
+coords = "0_58_47_60_53"
+
+[[spawn]]
+npc = "npc.harmless_island_crab"
+coords = "0_58_47_6_46"
+
+[[spawn]]
+npc = "npc.harmless_island_crab"
+coords = "0_59_47_15_34"
+
+[[spawn]]
+npc = "npc.harmless_island_crab"
+coords = "0_59_47_15_40"
+
+[[spawn]]
+npc = "npc.harmless_island_crab"
+coords = "0_59_47_1_48"
+
+[[spawn]]
+npc = "npc.harmless_island_crab"
+coords = "0_59_47_22_43"
+
+[[spawn]]
+npc = "npc.harmless_island_crab"
+coords = "0_59_47_27_41"
+
+[[spawn]]
+npc = "npc.harmless_island_crab"
+coords = "0_59_47_32_37"
+
+[[spawn]]
+npc = "npc.harmless_island_crab"
+coords = "0_59_47_33_30"
+
+[[spawn]]
+npc = "npc.harmless_island_crab"
+coords = "0_59_47_36_49"
+
+[[spawn]]
+npc = "npc.harmless_island_crab"
+coords = "0_59_47_40_54"
+
+[[spawn]]
+npc = "npc.harmless_island_crab"
+coords = "0_59_47_41_35"
+
+[[spawn]]
+npc = "npc.harmless_island_crab"
+coords = "0_59_47_51_30"
+
+[[spawn]]
+npc = "npc.harmless_island_crab"
+coords = "0_59_47_52_43"
+
+[[spawn]]
+npc = "npc.harmless_island_crab"
+coords = "0_59_47_54_58"
+
+[[spawn]]
+npc = "npc.harmless_island_crab"
+coords = "0_59_47_55_15"
+
+[[spawn]]
+npc = "npc.harmless_island_crab"
+coords = "0_59_47_55_22"
+
+[[spawn]]
+npc = "npc.harmless_island_crab"
+coords = "0_59_47_58_49"
+
+[[spawn]]
+npc = "npc.harmless_island_crab"
+coords = "0_59_47_62_21"
+
+[[spawn]]
+npc = "npc.harmless_island_crab"
+coords = "0_59_47_9_45"
+
+[[spawn]]
+npc = "npc.harmless_island_jungle_horror_guard"
+coords = "0_57_47_38_31"
+
+[[spawn]]
+npc = "npc.harmless_island_jungle_horror_guard"
+coords = "0_57_47_39_12"
+
+[[spawn]]
+npc = "npc.harmless_island_jungle_horror_guard"
+coords = "0_57_47_55_3"
+
+[[spawn]]
+npc = "npc.harmless_island_jungle_horror_guard"
+coords = "0_57_47_9_2"
+
+[[spawn]]
+npc = "npc.harmless_island_jungle_horror_guard"
+coords = "0_58_46_9_61"
+
+[[spawn]]
+npc = "npc.harmless_island_jungle_horror_guard"
+coords = "0_58_47_16_13"
+
+[[spawn]]
+npc = "npc.harmless_island_jungle_horror_guard"
+coords = "0_58_47_32_1"
+
+[[spawn]]
+npc = "npc.harmless_island_jungle_horror_guard"
+coords = "0_59_47_6_2"
+
+[[spawn]]
+npc = "npc.harmless_island_jungle_horror_warrior"
+coords = "0_57_47_38_22"
+
+[[spawn]]
+npc = "npc.harmless_island_jungle_horror_warrior"
+coords = "0_57_47_50_16"
+
+[[spawn]]
+npc = "npc.harmless_island_jungle_horror_warrior"
+coords = "0_57_47_60_22"
+
+[[spawn]]
+npc = "npc.harmless_island_jungle_horror_warrior"
+coords = "0_58_46_32_3"
+
+[[spawn]]
+npc = "npc.harmless_island_jungle_horror_warrior"
+coords = "0_58_46_32_58"
+
+[[spawn]]
+npc = "npc.harmless_island_jungle_horror_warrior"
+coords = "0_58_47_14_3"
+
+[[spawn]]
+npc = "npc.harmless_island_jungle_horror_warrior"
+coords = "0_58_47_17_24"
+
+[[spawn]]
+npc = "npc.harmless_island_jungle_horror_warrior"
+coords = "0_58_47_36_31"
+
+[[spawn]]
+npc = "npc.harmless_island_jungle_horror_warrior"
+coords = "0_58_47_37_42"
+
+[[spawn]]
+npc = "npc.harmless_island_jungle_horror_warrior"
+coords = "0_58_47_39_21"
+
+[[spawn]]
+npc = "npc.harmless_island_jungle_horror_warrior"
+coords = "0_58_47_40_11"
+
+[[spawn]]
+npc = "npc.harmless_island_jungle_horror_warrior"
+coords = "0_58_47_48_1"
+
+[[spawn]]
+npc = "npc.harmless_island_jungle_horror_warrior"
+coords = "0_58_47_57_15"
+
+[[spawn]]
+npc = "npc.harmless_island_jungle_horror_warrior"
+coords = "0_58_47_61_34"
+
+[[spawn]]
+npc = "npc.harmless_island_jungle_horror_warrior"
+coords = "0_58_47_9_31"
+
+[[spawn]]
+npc = "npc.harmless_island_jungle_horror_warrior"
+coords = "0_59_47_14_11"
+
+[[spawn]]
+npc = "npc.harmless_island_jungle_horror_warrior"
+coords = "0_59_47_4_13"
+
+[[spawn]]
+npc = "npc.harmless_island_jungle_horror_worker"
+coords = "0_57_47_22_13"
+
+[[spawn]]
+npc = "npc.harmless_island_jungle_horror_worker"
+coords = "0_57_47_33_4"
+
+[[spawn]]
+npc = "npc.harmless_island_jungle_horror_worker"
+coords = "0_57_47_48_35"
+
+[[spawn]]
+npc = "npc.harmless_island_jungle_horror_worker"
+coords = "0_58_46_21_13"
+
+[[spawn]]
+npc = "npc.harmless_island_jungle_horror_worker"
+coords = "0_58_47_22_32"
+
+[[spawn]]
+npc = "npc.harmless_island_jungle_horror_worker"
+coords = "0_58_47_24_11"
+
+[[spawn]]
+npc = "npc.harmless_island_jungle_horror_worker"
+coords = "0_58_47_29_34"
+
+[[spawn]]
+npc = "npc.harmless_island_jungle_horror_worker"
+coords = "0_58_47_32_47"
+
+[[spawn]]
+npc = "npc.harmless_island_jungle_horror_worker"
+coords = "0_58_47_50_20"
+
+[[spawn]]
+npc = "npc.harmless_island_jungle_horror_worker"
+coords = "0_58_47_5_28"
+
+[[spawn]]
+npc = "npc.harmless_island_jungle_horror_worker"
+coords = "0_58_47_63_45"
+
+[[spawn]]
+npc = "npc.harmless_island_jungle_horror_young_warrior"
+coords = "0_57_47_53_13"
+
+[[spawn]]
+npc = "npc.harmless_island_jungle_horror_young_warrior"
+coords = "0_58_46_11_42"
+
+[[spawn]]
+npc = "npc.harmless_island_jungle_horror_young_warrior"
+coords = "0_59_47_10_14"
+
+[[spawn]]
+npc = "npc.harmless_island_jungle_horror_young_worker"
+coords = "0_57_47_28_13"
+
+[[spawn]]
+npc = "npc.harmless_island_jungle_horror_young_worker"
+coords = "0_57_47_28_22"
+
+[[spawn]]
+npc = "npc.harmless_island_jungle_horror_young_worker"
+coords = "0_57_47_36_24"
+
+[[spawn]]
+npc = "npc.harmless_island_jungle_horror_young_worker"
+coords = "0_57_47_49_3"
+
+[[spawn]]
+npc = "npc.harmless_island_jungle_horror_young_worker"
+coords = "0_58_46_62_62"
+
+[[spawn]]
+npc = "npc.harmless_island_jungle_horror_young_worker"
+coords = "0_58_47_19_8"
+
+[[spawn]]
+npc = "npc.harmless_island_jungle_horror_young_worker"
+coords = "0_58_47_1_16"
+
+[[spawn]]
+npc = "npc.harmless_island_jungle_horror_young_worker"
+coords = "0_58_47_27_26"
+
+[[spawn]]
+npc = "npc.harmless_island_jungle_horror_young_worker"
+coords = "0_58_47_46_8"
+
+[[spawn]]
+npc = "npc.harmless_island_jungle_horror_young_worker"
+coords = "0_58_47_52_37"
+
+[[spawn]]
+npc = "npc.harmless_island_jungle_horror_young_worker"
+coords = "0_59_47_10_29"
+
+[[spawn]]
+npc = "npc.harmless_island_monkey"
+coords = "0_57_47_19_1"
+
+[[spawn]]
+npc = "npc.harmless_island_monkey"
+coords = "0_57_47_20_10"
+
+[[spawn]]
+npc = "npc.harmless_island_monkey"
+coords = "0_57_47_45_28"
+
+[[spawn]]
+npc = "npc.harmless_island_monkey"
+coords = "0_57_47_54_30"
+
+[[spawn]]
+npc = "npc.harmless_island_monkey"
+coords = "0_58_46_12_9"
+
+[[spawn]]
+npc = "npc.harmless_island_monkey"
+coords = "0_58_46_26_9"
+
+[[spawn]]
+npc = "npc.harmless_island_monkey"
+coords = "0_58_46_38_31"
+
+[[spawn]]
+npc = "npc.harmless_island_monkey"
+coords = "0_58_46_4_61"
+
+[[spawn]]
+npc = "npc.harmless_island_monkey"
+coords = "0_58_47_0_35"
+
+[[spawn]]
+npc = "npc.harmless_island_monkey"
+coords = "0_58_47_31_6"
+
+[[spawn]]
+npc = "npc.harmless_island_monkey"
+coords = "0_58_47_36_40"
+
+[[spawn]]
+npc = "npc.harmless_island_monkey"
+coords = "0_58_47_42_25"
+
+[[spawn]]
+npc = "npc.harmless_island_monkey"
+coords = "0_58_47_46_13"
+
+[[spawn]]
+npc = "npc.harmless_island_monkey"
+coords = "0_58_47_62_31"
+
+[[spawn]]
+npc = "npc.harmless_island_monkey"
+coords = "0_58_47_8_21"
+
+[[spawn]]
+npc = "npc.harmless_island_monkey"
+coords = "0_59_47_13_19"
+
+[[spawn]]
+npc = "npc.harmless_island_monkey"
+coords = "0_59_47_56_48"
+
+[[spawn]]
+npc = "npc.harmless_island_monkey"
+coords = "0_59_47_58_13"
+
+[[spawn]]
+npc = "npc.harmless_island_mosquito"
+coords = "0_57_47_26_36"
+
+[[spawn]]
+npc = "npc.harmless_island_mosquito"
+coords = "0_57_47_27_34"
+
+[[spawn]]
+npc = "npc.harmless_island_mosquito"
+coords = "0_57_47_28_37"
+
+[[spawn]]
+npc = "npc.harmless_island_mosquito"
+coords = "0_57_47_29_34"
+
+[[spawn]]
+npc = "npc.harmless_island_mosquito"
+coords = "0_57_47_35_36"
+
+[[spawn]]
+npc = "npc.harmless_island_mosquito"
+coords = "0_57_47_37_36"
+
+[[spawn]]
+npc = "npc.harmless_island_mosquito"
+coords = "0_57_47_37_38"
+
+[[spawn]]
+npc = "npc.harmless_island_mosquito"
+coords = "0_57_47_39_44"
+
+[[spawn]]
+npc = "npc.harmless_island_mosquito"
+coords = "0_57_47_40_43"
+
+[[spawn]]
+npc = "npc.harmless_island_mosquito"
+coords = "0_57_47_43_44"
+
+[[spawn]]
+npc = "npc.harmless_island_mosquito"
+coords = "0_57_47_45_40"
+
+[[spawn]]
+npc = "npc.harmless_island_mosquito"
+coords = "0_58_46_41_28"
+
+[[spawn]]
+npc = "npc.harmless_island_mosquito"
+coords = "0_58_46_42_23"
+
+[[spawn]]
+npc = "npc.harmless_island_mosquito"
+coords = "0_58_46_43_21"
+
+[[spawn]]
+npc = "npc.harmless_island_mosquito"
+coords = "0_58_46_43_26"
+
+[[spawn]]
+npc = "npc.harmless_island_mosquito"
+coords = "0_58_46_43_29"
+
+[[spawn]]
+npc = "npc.harmless_island_mosquito"
+coords = "0_58_46_44_32"
+
+[[spawn]]
+npc = "npc.harmless_island_mosquito"
+coords = "0_58_46_45_30"
+
+[[spawn]]
+npc = "npc.harmless_island_mosquito"
+coords = "0_58_47_17_37"
+
+[[spawn]]
+npc = "npc.harmless_island_mosquito"
+coords = "0_58_47_18_36"
+
+[[spawn]]
+npc = "npc.harmless_island_mosquito"
+coords = "0_58_47_18_39"
+
+[[spawn]]
+npc = "npc.harmless_island_mosquito"
+coords = "0_58_47_22_37"
+
+[[spawn]]
+npc = "npc.harmless_island_mosquito"
+coords = "0_58_47_23_37"
+
+[[spawn]]
+npc = "npc.harmless_island_mosquito"
+coords = "0_58_47_24_42"
+
+[[spawn]]
+npc = "npc.harmless_island_mosquito"
+coords = "0_58_47_28_25"
+
+[[spawn]]
+npc = "npc.harmless_island_mosquito"
+coords = "0_58_47_29_27"
+
+[[spawn]]
+npc = "npc.harmless_island_mosquito"
+coords = "0_58_47_29_45"
+
+[[spawn]]
+npc = "npc.harmless_island_mosquito"
+coords = "0_58_47_30_11"
+
+[[spawn]]
+npc = "npc.harmless_island_mosquito"
+coords = "0_58_47_30_27"
+
+[[spawn]]
+npc = "npc.harmless_island_mosquito"
+coords = "0_58_47_30_45"
+
+[[spawn]]
+npc = "npc.harmless_island_mosquito"
+coords = "0_58_47_33_18"
+
+[[spawn]]
+npc = "npc.harmless_island_mosquito"
+coords = "0_58_47_34_17"
+
+[[spawn]]
+npc = "npc.harmless_island_mosquito"
+coords = "0_58_47_35_19"
+
+[[spawn]]
+npc = "npc.harmless_island_mosquito"
+coords = "0_58_47_43_21"
+
+[[spawn]]
+npc = "npc.harmless_island_mosquito"
+coords = "0_58_47_47_18"
+
+[[spawn]]
+npc = "npc.harmless_island_mosquito"
+coords = "0_58_47_48_19"
+
+[[spawn]]
+npc = "npc.harmless_island_mosquito"
+coords = "0_58_47_54_28"
+
+[[spawn]]
+npc = "npc.harmless_island_mosquito"
+coords = "0_58_47_54_29"
+
+[[spawn]]
+npc = "npc.harmless_island_mosquito"
+coords = "0_58_47_54_37"
+
+[[spawn]]
+npc = "npc.harmless_island_snake"
+coords = "0_57_47_41_10"
+
+[[spawn]]
+npc = "npc.harmless_island_snake"
+coords = "0_58_46_13_61"
+
+[[spawn]]
+npc = "npc.harmless_island_snake"
+coords = "0_58_46_18_10"
+
+[[spawn]]
+npc = "npc.harmless_island_snake"
+coords = "0_58_46_22_15"
+
+[[spawn]]
+npc = "npc.harmless_island_snake"
+coords = "0_58_46_23_45"
+
+[[spawn]]
+npc = "npc.harmless_island_snake"
+coords = "0_58_46_32_60"
+
+[[spawn]]
+npc = "npc.harmless_island_snake"
+coords = "0_58_46_34_6"
+
+[[spawn]]
+npc = "npc.harmless_island_snake"
+coords = "0_58_46_40_2"
+
+[[spawn]]
+npc = "npc.harmless_island_snake"
+coords = "0_58_46_44_55"
+
+[[spawn]]
+npc = "npc.harmless_island_snake"
+coords = "0_58_47_10_40"
+
+[[spawn]]
+npc = "npc.harmless_island_snake"
+coords = "0_58_47_10_6"
+
+[[spawn]]
+npc = "npc.harmless_island_snake"
+coords = "0_58_47_32_40"
+
+[[spawn]]
+npc = "npc.harmless_island_snake"
+coords = "0_58_47_41_30"
+
+[[spawn]]
+npc = "npc.harmless_island_snake"
+coords = "0_58_47_43_8"
+
+[[spawn]]
+npc = "npc.harmless_island_snake"
+coords = "0_59_47_16_25"
+
+[[spawn]]
+npc = "npc.harmless_island_snake"
+coords = "0_59_47_29_20"
+
+[[spawn]]
+npc = "npc.harmless_island_snake"
+coords = "0_59_47_3_3"
+
+[[spawn]]
+npc = "npc.harmless_island_snake"
+coords = "0_59_47_45_25"
+
+[[spawn]]
+npc = "npc.harmless_island_snake"
+coords = "0_59_47_52_50"
+
+[[spawn]]
+npc = "npc.harmless_island_snake"
+coords = "0_59_47_5_22"
+
+[[spawn]]
+npc = "npc.harmless_island_snake"
+coords = "0_59_47_60_6"
+
+[[spawn]]
+npc = "npc.honest_jimmy"
+coords = "0_59_47_36_13"
+
+[[spawn]]
+npc = "npc.ii_rare_impling_precursor"
+coords = "0_58_47_18_8"
+
+[[spawn]]
+npc = "npc.mac"
+coords = "0_57_46_29_34"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_57_46_34_4"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_57_46_40_3"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "1_57_46_31_5"
+
+[[spawn]]
+npc = "npc.sailing_transport_trader_stan_crew_man2"
+coords = "0_57_45_23_50"
+
+[[spawn]]
+npc = "npc.sailing_transport_trader_stan_crew_woman2"
+coords = "0_57_45_24_50"
+
+[[spawn]]
+npc = "npc.san_fan"
+coords = "0_59_47_48_7"
+

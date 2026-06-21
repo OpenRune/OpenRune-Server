@@ -1,0 +1,36 @@
+[[spawn]]
+npc = "npc.deathwing"
+coords = "0_43_145_44_24"
+
+[[spawn]]
+npc = "npc.deathwing"
+coords = "0_43_145_47_28"
+
+[[spawn]]
+npc = "npc.deathwing"
+coords = "0_43_145_48_21"
+
+[[spawn]]
+npc = "npc.deathwing"
+coords = "0_43_145_51_16"
+
+[[spawn]]
+npc = "npc.deathwing"
+coords = "0_43_145_54_12"
+
+[[spawn]]
+npc = "npc.deathwing"
+coords = "0_43_145_56_28"
+
+[[spawn]]
+npc = "npc.deathwing"
+coords = "0_43_145_59_16"
+
+[[spawn]]
+npc = "npc.deathwing"
+coords = "0_43_145_59_21"
+
+[[spawn]]
+npc = "npc.ungadulu_good"
+coords = "0_43_145_40_47"
+

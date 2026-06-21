@@ -1,0 +1,64 @@
+[[spawn]]
+npc = "npc.mole_baby_02"
+coords = "0_58_88_33_34"
+
+[[spawn]]
+npc = "npc.motherlode_mguild_guard"
+coords = "0_58_88_7_46"
+
+[[spawn]]
+npc = "npc.motherlode_miner_1"
+coords = "0_58_88_9_47"
+
+[[spawn]]
+npc = "npc.motherlode_miner_10"
+coords = "0_58_88_46_41"
+
+[[spawn]]
+npc = "npc.motherlode_miner_11"
+coords = "0_58_88_52_36"
+
+[[spawn]]
+npc = "npc.motherlode_miner_12"
+coords = "0_58_88_26_53"
+
+[[spawn]]
+npc = "npc.motherlode_miner_2"
+coords = "0_58_88_8_29"
+
+[[spawn]]
+npc = "npc.motherlode_miner_3"
+coords = "0_58_88_16_9"
+
+[[spawn]]
+npc = "npc.motherlode_miner_4"
+coords = "0_58_88_33_6"
+
+[[spawn]]
+npc = "npc.motherlode_miner_5"
+coords = "0_58_88_54_12"
+
+[[spawn]]
+npc = "npc.motherlode_miner_6"
+coords = "0_58_88_56_31"
+
+[[spawn]]
+npc = "npc.motherlode_miner_7"
+coords = "0_58_88_56_49"
+
+[[spawn]]
+npc = "npc.motherlode_miner_8"
+coords = "0_58_88_43_56"
+
+[[spawn]]
+npc = "npc.motherlode_miner_9"
+coords = "0_58_88_29_57"
+
+[[spawn]]
+npc = "npc.motherlode_mother"
+coords = "0_58_88_40_45"
+
+[[spawn]]
+npc = "npc.motherlode_percy"
+coords = "0_58_88_44_34"
+

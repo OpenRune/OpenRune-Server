@@ -1,0 +1,64 @@
+[[spawn]]
+npc = "npc.mm_jungle_bird_blue"
+coords = "0_45_42_11_35"
+
+[[spawn]]
+npc = "npc.mm_jungle_bird_blue"
+coords = "0_45_42_20_51"
+
+[[spawn]]
+npc = "npc.mm_jungle_bird_blue"
+coords = "0_45_42_22_13"
+
+[[spawn]]
+npc = "npc.mm_jungle_bird_blue"
+coords = "0_45_42_26_21"
+
+[[spawn]]
+npc = "npc.mm_jungle_bird_blue"
+coords = "0_45_42_59_30"
+
+[[spawn]]
+npc = "npc.mm_jungle_scorpion"
+coords = "0_45_42_14_27"
+
+[[spawn]]
+npc = "npc.mm_jungle_scorpion"
+coords = "0_45_42_19_46"
+
+[[spawn]]
+npc = "npc.mm_jungle_scorpion"
+coords = "0_45_42_21_33"
+
+[[spawn]]
+npc = "npc.mm_jungle_scorpion"
+coords = "0_45_42_22_39"
+
+[[spawn]]
+npc = "npc.mm_jungle_snake"
+coords = "0_45_42_31_30"
+
+[[spawn]]
+npc = "npc.mm_jungle_snake"
+coords = "0_45_42_33_38"
+
+[[spawn]]
+npc = "npc.mm_jungle_snake"
+coords = "0_45_42_41_25"
+
+[[spawn]]
+npc = "npc.mm_jungle_snake"
+coords = "0_45_42_41_39"
+
+[[spawn]]
+npc = "npc.mm_jungle_snake"
+coords = "0_45_42_47_31"
+
+[[spawn]]
+npc = "npc.mm_lumdo"
+coords = "0_45_42_11_36"
+
+[[spawn]]
+npc = "npc.mm_waydar"
+coords = "0_45_42_17_39"
+

@@ -1,0 +1,44 @@
+[[spawn]]
+npc = "npc.grim_experiment"
+coords = "0_45_154_20_7"
+
+[[spawn]]
+npc = "npc.grim_experiment"
+coords = "0_45_154_23_6"
+
+[[spawn]]
+npc = "npc.grim_experiment"
+coords = "0_45_154_28_9"
+
+[[spawn]]
+npc = "npc.grim_experiment"
+coords = "0_45_154_33_6"
+
+[[spawn]]
+npc = "npc.grim_experiment"
+coords = "0_45_154_37_9"
+
+[[spawn]]
+npc = "npc.grim_experiment"
+coords = "0_45_154_40_7"
+
+[[spawn]]
+npc = "npc.grim_gnome_cage"
+coords = "0_45_154_33_11"
+
+[[spawn]]
+npc = "npc.grim_gnome_cage"
+coords = "0_45_154_35_11"
+
+[[spawn]]
+npc = "npc.grim_gnome_cage"
+coords = "0_45_154_36_11"
+
+[[spawn]]
+npc = "npc.grim_gnome_cage"
+coords = "0_45_154_37_11"
+
+[[spawn]]
+npc = "npc.grim_gnome_incage_2"
+coords = "0_45_154_34_11"
+

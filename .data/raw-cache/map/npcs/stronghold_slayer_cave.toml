@@ -1,0 +1,236 @@
+[[spawn]]
+npc = "npc.firegiant_strongholdcave_1"
+coords = "0_37_152_24_57"
+
+[[spawn]]
+npc = "npc.firegiant_strongholdcave_1"
+coords = "0_37_152_27_43"
+
+[[spawn]]
+npc = "npc.firegiant_strongholdcave_1"
+coords = "0_37_152_32_49"
+
+[[spawn]]
+npc = "npc.firegiant_strongholdcave_1"
+coords = "0_37_152_42_49"
+
+[[spawn]]
+npc = "npc.firegiant_strongholdcave_2"
+coords = "0_37_152_23_53"
+
+[[spawn]]
+npc = "npc.firegiant_strongholdcave_2"
+coords = "0_37_152_31_42"
+
+[[spawn]]
+npc = "npc.firegiant_strongholdcave_2"
+coords = "0_37_152_34_52"
+
+[[spawn]]
+npc = "npc.firegiant_strongholdcave_2"
+coords = "0_37_152_44_46"
+
+[[spawn]]
+npc = "npc.firegiant_strongholdcave_3"
+coords = "0_37_152_26_50"
+
+[[spawn]]
+npc = "npc.firegiant_strongholdcave_3"
+coords = "0_37_152_33_56"
+
+[[spawn]]
+npc = "npc.firegiant_strongholdcave_3"
+coords = "0_37_152_35_41"
+
+[[spawn]]
+npc = "npc.firegiant_strongholdcave_3"
+coords = "0_37_152_47_44"
+
+[[spawn]]
+npc = "npc.gnome_brimstail"
+coords = "0_37_153_41_25"
+
+[[spawn]]
+npc = "npc.hellhound_strongholdcave"
+coords = "0_37_152_41_58"
+
+[[spawn]]
+npc = "npc.hellhound_strongholdcave"
+coords = "0_37_152_44_56"
+
+[[spawn]]
+npc = "npc.hellhound_strongholdcave"
+coords = "0_37_152_47_58"
+
+[[spawn]]
+npc = "npc.hellhound_strongholdcave"
+coords = "0_37_152_58_45"
+
+[[spawn]]
+npc = "npc.hellhound_strongholdcave"
+coords = "0_37_152_58_54"
+
+[[spawn]]
+npc = "npc.hellhound_strongholdcave"
+coords = "0_37_152_61_42"
+
+[[spawn]]
+npc = "npc.hellhound_strongholdcave"
+coords = "0_37_152_61_58"
+
+[[spawn]]
+npc = "npc.hellhound_strongholdcave"
+coords = "0_37_152_62_47"
+
+[[spawn]]
+npc = "npc.hellhound_strongholdcave"
+coords = "0_37_153_42_9"
+
+[[spawn]]
+npc = "npc.hellhound_strongholdcave"
+coords = "0_37_153_45_5"
+
+[[spawn]]
+npc = "npc.hellhound_strongholdcave"
+coords = "0_37_153_49_4"
+
+[[spawn]]
+npc = "npc.hellhound_strongholdcave"
+coords = "0_38_152_1_43"
+
+[[spawn]]
+npc = "npc.hellhound_strongholdcave"
+coords = "0_38_152_1_56"
+
+[[spawn]]
+npc = "npc.slayer_aberrantspectre_1_strongholdcave"
+coords = "0_38_152_11_57"
+
+[[spawn]]
+npc = "npc.slayer_aberrantspectre_1_strongholdcave"
+coords = "0_38_152_12_49"
+
+[[spawn]]
+npc = "npc.slayer_aberrantspectre_1_strongholdcave"
+coords = "0_38_152_24_49"
+
+[[spawn]]
+npc = "npc.slayer_aberrantspectre_1_strongholdcave"
+coords = "0_38_152_38_54"
+
+[[spawn]]
+npc = "npc.slayer_aberrantspectre_1_strongholdcave"
+coords = "0_38_152_39_48"
+
+[[spawn]]
+npc = "npc.slayer_aberrantspectre_1_strongholdcave"
+coords = "0_38_153_20_2"
+
+[[spawn]]
+npc = "npc.slayer_aberrantspectre_1_strongholdcave"
+coords = "0_38_153_28_1"
+
+[[spawn]]
+npc = "npc.slayer_aberrantspectre_2_strongholdcave"
+coords = "0_38_152_11_53"
+
+[[spawn]]
+npc = "npc.slayer_aberrantspectre_2_strongholdcave"
+coords = "0_38_152_24_62"
+
+[[spawn]]
+npc = "npc.slayer_aberrantspectre_2_strongholdcave"
+coords = "0_38_152_26_52"
+
+[[spawn]]
+npc = "npc.slayer_aberrantspectre_2_strongholdcave"
+coords = "0_38_152_27_46"
+
+[[spawn]]
+npc = "npc.slayer_aberrantspectre_2_strongholdcave"
+coords = "0_38_152_36_50"
+
+[[spawn]]
+npc = "npc.slayer_aberrantspectre_2_strongholdcave"
+coords = "0_38_152_9_47"
+
+[[spawn]]
+npc = "npc.slayer_bloodveld_baby_strongholdcave"
+coords = "0_38_153_21_30"
+
+[[spawn]]
+npc = "npc.slayer_bloodveld_baby_strongholdcave"
+coords = "0_38_153_40_38"
+
+[[spawn]]
+npc = "npc.slayer_bloodveld_baby_strongholdcave"
+coords = "0_38_153_56_35"
+
+[[spawn]]
+npc = "npc.slayer_bloodveld_baby_strongholdcave"
+coords = "0_38_153_8_29"
+
+[[spawn]]
+npc = "npc.slayer_bloodveld_strongholdcave"
+coords = "0_38_153_15_30"
+
+[[spawn]]
+npc = "npc.slayer_bloodveld_strongholdcave"
+coords = "0_38_153_19_25"
+
+[[spawn]]
+npc = "npc.slayer_bloodveld_strongholdcave"
+coords = "0_38_153_2_25"
+
+[[spawn]]
+npc = "npc.slayer_bloodveld_strongholdcave"
+coords = "0_38_153_2_32"
+
+[[spawn]]
+npc = "npc.slayer_bloodveld_strongholdcave"
+coords = "0_38_153_33_38"
+
+[[spawn]]
+npc = "npc.slayer_bloodveld_strongholdcave"
+coords = "0_38_153_38_42"
+
+[[spawn]]
+npc = "npc.slayer_bloodveld_strongholdcave"
+coords = "0_38_153_53_30"
+
+[[spawn]]
+npc = "npc.slayer_bloodveld_strongholdcave"
+coords = "0_38_153_57_26"
+
+[[spawn]]
+npc = "npc.sos_death_ankou_strongholdcave"
+coords = "0_38_153_43_6"
+
+[[spawn]]
+npc = "npc.sos_death_ankou_strongholdcave"
+coords = "0_38_153_45_15"
+
+[[spawn]]
+npc = "npc.sos_death_ankou_strongholdcave"
+coords = "0_38_153_51_9"
+
+[[spawn]]
+npc = "npc.sos_death_ankou_strongholdcave_2"
+coords = "0_38_153_38_11"
+
+[[spawn]]
+npc = "npc.sos_death_ankou_strongholdcave_2"
+coords = "0_38_153_40_5"
+
+[[spawn]]
+npc = "npc.sos_death_ankou_strongholdcave_2"
+coords = "0_38_153_49_7"
+
+[[spawn]]
+npc = "npc.sos_death_ankou_strongholdcave_3"
+coords = "0_38_153_36_10"
+
+[[spawn]]
+npc = "npc.sos_death_ankou_strongholdcave_3"
+coords = "0_38_153_43_16"
+

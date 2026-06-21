@@ -1,0 +1,20 @@
+[[spawn]]
+npc = "npc.kr_multi_king_arthur"
+coords = "0_29_66_11_9"
+
+[[spawn]]
+npc = "npc.rat_indoors"
+coords = "0_29_66_12_19"
+
+[[spawn]]
+npc = "npc.rat_indoors"
+coords = "0_29_66_13_13"
+
+[[spawn]]
+npc = "npc.rat_indoors"
+coords = "0_29_66_9_13"
+
+[[spawn]]
+npc = "npc.rat_indoors"
+coords = "0_29_66_9_16"
+

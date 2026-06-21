@@ -1,0 +1,10 @@
+## Soul Wars Arena Tutorial
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_32_93_22_4"
+
+[[spawn]]
+npc = "npc.sw_adventurer"
+coords = "0_32_93_24_8"
+

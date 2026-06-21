@@ -1,0 +1,378 @@
+## Shayzien Crypt
+
+[[spawn]]
+npc = "npc.ds2_skeleton_magic"
+coords = "1_23_155_23_27"
+
+[[spawn]]
+npc = "npc.ds2_skeleton_magic"
+coords = "1_23_155_32_10"
+
+[[spawn]]
+npc = "npc.ds2_skeleton_magic"
+coords = "1_23_155_39_41"
+
+[[spawn]]
+npc = "npc.ds2_skeleton_magic"
+coords = "1_23_155_9_30"
+
+[[spawn]]
+npc = "npc.ds2_skeleton_magic"
+coords = "2_23_155_16_35"
+
+[[spawn]]
+npc = "npc.ds2_skeleton_magic"
+coords = "2_23_155_20_50"
+
+[[spawn]]
+npc = "npc.ds2_skeleton_magic"
+coords = "2_23_155_30_21"
+
+[[spawn]]
+npc = "npc.ds2_skeleton_magic"
+coords = "2_23_155_35_46"
+
+[[spawn]]
+npc = "npc.ds2_skeleton_magic"
+coords = "2_23_155_41_30"
+
+[[spawn]]
+npc = "npc.ds2_skeleton_magic"
+coords = "2_23_155_47_18"
+
+[[spawn]]
+npc = "npc.ds2_skeleton_magic"
+coords = "2_23_155_54_40"
+
+[[spawn]]
+npc = "npc.ds2_skeleton_magic"
+coords = "2_23_155_9_25"
+
+[[spawn]]
+npc = "npc.ds2_skeleton_magic"
+coords = "3_23_155_19_37"
+
+[[spawn]]
+npc = "npc.ds2_skeleton_magic"
+coords = "3_23_155_44_12"
+
+[[spawn]]
+npc = "npc.ds2_skeleton_melee"
+coords = "1_23_155_24_38"
+
+[[spawn]]
+npc = "npc.ds2_skeleton_melee"
+coords = "1_23_155_37_25"
+
+[[spawn]]
+npc = "npc.ds2_skeleton_melee"
+coords = "1_23_155_39_45"
+
+[[spawn]]
+npc = "npc.ds2_skeleton_melee"
+coords = "1_23_155_40_12"
+
+[[spawn]]
+npc = "npc.ds2_skeleton_melee"
+coords = "1_23_155_49_40"
+
+[[spawn]]
+npc = "npc.ds2_skeleton_melee"
+coords = "1_23_155_50_53"
+
+[[spawn]]
+npc = "npc.ds2_skeleton_melee"
+coords = "2_23_155_14_13"
+
+[[spawn]]
+npc = "npc.ds2_skeleton_melee"
+coords = "2_23_155_15_42"
+
+[[spawn]]
+npc = "npc.ds2_skeleton_melee"
+coords = "2_23_155_30_36"
+
+[[spawn]]
+npc = "npc.ds2_skeleton_melee"
+coords = "2_23_155_43_49"
+
+[[spawn]]
+npc = "npc.ds2_skeleton_melee"
+coords = "2_23_155_47_35"
+
+[[spawn]]
+npc = "npc.ds2_skeleton_melee"
+coords = "2_23_155_54_30"
+
+[[spawn]]
+npc = "npc.ds2_skeleton_melee"
+coords = "3_23_155_11_23"
+
+[[spawn]]
+npc = "npc.ds2_skeleton_melee"
+coords = "3_23_155_32_44"
+
+[[spawn]]
+npc = "npc.ds2_skeleton_melee"
+coords = "3_23_155_35_17"
+
+[[spawn]]
+npc = "npc.ds2_skeleton_melee"
+coords = "3_23_155_52_28"
+
+[[spawn]]
+npc = "npc.ds2_skeleton_ranged"
+coords = "1_23_155_11_41"
+
+[[spawn]]
+npc = "npc.ds2_skeleton_ranged"
+coords = "1_23_155_12_24"
+
+[[spawn]]
+npc = "npc.ds2_skeleton_ranged"
+coords = "1_23_155_24_48"
+
+[[spawn]]
+npc = "npc.ds2_skeleton_ranged"
+coords = "1_23_155_31_28"
+
+[[spawn]]
+npc = "npc.ds2_skeleton_ranged"
+coords = "1_23_155_42_30"
+
+[[spawn]]
+npc = "npc.ds2_skeleton_ranged"
+coords = "1_23_155_43_59"
+
+[[spawn]]
+npc = "npc.ds2_skeleton_ranged"
+coords = "2_23_155_21_38"
+
+[[spawn]]
+npc = "npc.ds2_skeleton_ranged"
+coords = "2_23_155_33_22"
+
+[[spawn]]
+npc = "npc.ds2_skeleton_ranged"
+coords = "2_23_155_35_58"
+
+[[spawn]]
+npc = "npc.ds2_skeleton_ranged"
+coords = "2_23_155_44_10"
+
+[[spawn]]
+npc = "npc.ds2_skeleton_ranged"
+coords = "2_23_155_48_20"
+
+[[spawn]]
+npc = "npc.ds2_skeleton_ranged"
+coords = "2_23_155_9_30"
+
+[[spawn]]
+npc = "npc.ds2_skeleton_ranged"
+coords = "3_23_155_27_31"
+
+[[spawn]]
+npc = "npc.ds2_skeleton_ranged"
+coords = "3_23_155_31_12"
+
+[[spawn]]
+npc = "npc.ds2_skeleton_ranged"
+coords = "3_23_155_34_58"
+
+[[spawn]]
+npc = "npc.ds2_skeleton_ranged"
+coords = "3_23_155_44_37"
+
+[[spawn]]
+npc = "npc.ds2_zombie_magic"
+coords = "1_23_155_12_53"
+
+[[spawn]]
+npc = "npc.ds2_zombie_magic"
+coords = "1_23_155_25_22"
+
+[[spawn]]
+npc = "npc.ds2_zombie_magic"
+coords = "1_23_155_28_34"
+
+[[spawn]]
+npc = "npc.ds2_zombie_magic"
+coords = "1_23_155_51_42"
+
+[[spawn]]
+npc = "npc.ds2_zombie_magic"
+coords = "2_23_155_16_19"
+
+[[spawn]]
+npc = "npc.ds2_zombie_magic"
+coords = "2_23_155_22_10"
+
+[[spawn]]
+npc = "npc.ds2_zombie_magic"
+coords = "2_23_155_26_59"
+
+[[spawn]]
+npc = "npc.ds2_zombie_magic"
+coords = "2_23_155_31_32"
+
+[[spawn]]
+npc = "npc.ds2_zombie_magic"
+coords = "2_23_155_48_42"
+
+[[spawn]]
+npc = "npc.ds2_zombie_magic"
+coords = "3_23_155_11_43"
+
+[[spawn]]
+npc = "npc.ds2_zombie_magic"
+coords = "3_23_155_29_46"
+
+[[spawn]]
+npc = "npc.ds2_zombie_magic"
+coords = "3_23_155_29_57"
+
+[[spawn]]
+npc = "npc.ds2_zombie_magic"
+coords = "3_23_155_34_30"
+
+[[spawn]]
+npc = "npc.ds2_zombie_magic"
+coords = "3_23_155_52_42"
+
+[[spawn]]
+npc = "npc.ds2_zombie_melee"
+coords = "1_23_155_13_44"
+
+[[spawn]]
+npc = "npc.ds2_zombie_melee"
+coords = "1_23_155_16_30"
+
+[[spawn]]
+npc = "npc.ds2_zombie_melee"
+coords = "1_23_155_29_53"
+
+[[spawn]]
+npc = "npc.ds2_zombie_melee"
+coords = "1_23_155_38_38"
+
+[[spawn]]
+npc = "npc.ds2_zombie_melee"
+coords = "1_23_155_39_19"
+
+[[spawn]]
+npc = "npc.ds2_zombie_melee"
+coords = "1_23_155_43_54"
+
+[[spawn]]
+npc = "npc.ds2_zombie_melee"
+coords = "2_23_155_25_30"
+
+[[spawn]]
+npc = "npc.ds2_zombie_melee"
+coords = "2_23_155_28_16"
+
+[[spawn]]
+npc = "npc.ds2_zombie_melee"
+coords = "2_23_155_28_44"
+
+[[spawn]]
+npc = "npc.ds2_zombie_melee"
+coords = "2_23_155_31_51"
+
+[[spawn]]
+npc = "npc.ds2_zombie_melee"
+coords = "2_23_155_42_22"
+
+[[spawn]]
+npc = "npc.ds2_zombie_melee"
+coords = "2_23_155_49_25"
+
+[[spawn]]
+npc = "npc.ds2_zombie_melee"
+coords = "2_23_155_9_19"
+
+[[spawn]]
+npc = "npc.ds2_zombie_melee"
+coords = "3_23_155_19_12"
+
+[[spawn]]
+npc = "npc.ds2_zombie_melee"
+coords = "3_23_155_31_37"
+
+[[spawn]]
+npc = "npc.ds2_zombie_melee"
+coords = "3_23_155_44_23"
+
+[[spawn]]
+npc = "npc.ds2_zombie_melee"
+coords = "3_23_155_44_51"
+
+[[spawn]]
+npc = "npc.ds2_zombie_melee"
+coords = "3_23_155_52_17"
+
+[[spawn]]
+npc = "npc.ds2_zombie_ranged"
+coords = "1_23_155_20_58"
+
+[[spawn]]
+npc = "npc.ds2_zombie_ranged"
+coords = "1_23_155_24_12"
+
+[[spawn]]
+npc = "npc.ds2_zombie_ranged"
+coords = "1_23_155_32_49"
+
+[[spawn]]
+npc = "npc.ds2_zombie_ranged"
+coords = "1_23_155_38_33"
+
+[[spawn]]
+npc = "npc.ds2_zombie_ranged"
+coords = "1_23_155_51_26"
+
+[[spawn]]
+npc = "npc.ds2_zombie_ranged"
+coords = "2_23_155_21_23"
+
+[[spawn]]
+npc = "npc.ds2_zombie_ranged"
+coords = "2_23_155_30_23"
+
+[[spawn]]
+npc = "npc.ds2_zombie_ranged"
+coords = "2_23_155_34_14"
+
+[[spawn]]
+npc = "npc.ds2_zombie_ranged"
+coords = "2_23_155_34_7"
+
+[[spawn]]
+npc = "npc.ds2_zombie_ranged"
+coords = "2_23_155_54_14"
+
+[[spawn]]
+npc = "npc.ds2_zombie_ranged"
+coords = "2_23_155_9_44"
+
+[[spawn]]
+npc = "npc.ds2_zombie_ranged"
+coords = "3_23_155_11_46"
+
+[[spawn]]
+npc = "npc.ds2_zombie_ranged"
+coords = "3_23_155_19_25"
+
+[[spawn]]
+npc = "npc.ds2_zombie_ranged"
+coords = "3_23_155_19_51"
+
+[[spawn]]
+npc = "npc.ds2_zombie_ranged"
+coords = "3_23_155_31_23"
+
+[[spawn]]
+npc = "npc.ds2_zombie_ranged"
+coords = "3_23_155_51_15"
+

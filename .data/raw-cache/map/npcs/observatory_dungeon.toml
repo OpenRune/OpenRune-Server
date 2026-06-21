@@ -1,0 +1,160 @@
+[[spawn]]
+npc = "npc.goblin"
+coords = "0_36_146_12_48"
+
+[[spawn]]
+npc = "npc.goblin"
+coords = "0_36_146_15_23"
+
+[[spawn]]
+npc = "npc.goblin"
+coords = "0_36_146_17_58"
+
+[[spawn]]
+npc = "npc.goblin"
+coords = "0_36_146_18_43"
+
+[[spawn]]
+npc = "npc.goblin"
+coords = "0_36_146_21_16"
+
+[[spawn]]
+npc = "npc.goblin"
+coords = "0_36_146_29_2"
+
+[[spawn]]
+npc = "npc.goblin"
+coords = "0_36_146_31_38"
+
+[[spawn]]
+npc = "npc.goblin"
+coords = "0_36_146_33_43"
+
+[[spawn]]
+npc = "npc.goblin"
+coords = "0_36_146_39_16"
+
+[[spawn]]
+npc = "npc.goblin"
+coords = "0_36_146_40_25"
+
+[[spawn]]
+npc = "npc.goblin"
+coords = "0_36_146_44_46"
+
+[[spawn]]
+npc = "npc.goblin"
+coords = "0_36_146_45_36"
+
+[[spawn]]
+npc = "npc.goblin"
+coords = "0_36_146_45_58"
+
+[[spawn]]
+npc = "npc.goblin"
+coords = "0_36_146_55_1"
+
+[[spawn]]
+npc = "npc.goblin"
+coords = "0_36_146_55_15"
+
+[[spawn]]
+npc = "npc.goblin"
+coords = "0_36_146_55_30"
+
+[[spawn]]
+npc = "npc.goblin"
+coords = "0_36_146_55_38"
+
+[[spawn]]
+npc = "npc.goblin"
+coords = "0_36_146_59_59"
+
+[[spawn]]
+npc = "npc.goblin_armed"
+coords = "0_36_146_13_27"
+
+[[spawn]]
+npc = "npc.goblin_armed"
+coords = "0_36_146_13_39"
+
+[[spawn]]
+npc = "npc.goblin_armed"
+coords = "0_36_146_1_41"
+
+[[spawn]]
+npc = "npc.goblin_armed"
+coords = "0_36_146_20_60"
+
+[[spawn]]
+npc = "npc.goblin_armed"
+coords = "0_36_146_29_22"
+
+[[spawn]]
+npc = "npc.goblin_armed"
+coords = "0_36_146_31_49"
+
+[[spawn]]
+npc = "npc.goblin_armed"
+coords = "0_36_146_35_59"
+
+[[spawn]]
+npc = "npc.goblin_armed"
+coords = "0_36_146_38_3"
+
+[[spawn]]
+npc = "npc.goblin_armed"
+coords = "0_36_146_3_15"
+
+[[spawn]]
+npc = "npc.goblin_armed"
+coords = "0_36_146_3_59"
+
+[[spawn]]
+npc = "npc.goblin_armed"
+coords = "0_36_146_47_15"
+
+[[spawn]]
+npc = "npc.goblin_armed"
+coords = "0_36_146_55_48"
+
+[[spawn]]
+npc = "npc.goblin_armed"
+coords = "0_36_146_6_52"
+
+[[spawn]]
+npc = "npc.observatory_goblin_patrol1"
+coords = "0_36_146_19_33"
+
+[[spawn]]
+npc = "npc.observatory_goblin_patrol2"
+coords = "0_36_146_47_14"
+
+[[spawn]]
+npc = "npc.qip_obs_goblin_female1"
+coords = "0_36_146_60_55"
+
+[[spawn]]
+npc = "npc.qip_obs_goblin_female2"
+coords = "0_36_146_60_54"
+
+[[spawn]]
+npc = "npc.qip_obs_goblin_guard"
+coords = "0_36_146_23_50"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_36_146_35_12"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_36_146_50_46"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_36_146_57_59"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_36_146_58_3"
+

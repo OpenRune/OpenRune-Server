@@ -1,0 +1,528 @@
+[[spawn]]
+npc = "npc.colonel_radick"
+coords = "0_39_48_39_19"
+
+[[spawn]]
+npc = "npc.cow"
+coords = "0_40_48_20_45"
+
+[[spawn]]
+npc = "npc.cow"
+coords = "0_40_48_22_50"
+
+[[spawn]]
+npc = "npc.cow"
+coords = "0_40_48_28_47"
+
+[[spawn]]
+npc = "npc.cow"
+coords = "0_40_48_44_42"
+
+[[spawn]]
+npc = "npc.deadman_guard_yanille"
+coords = "0_39_48_44_20"
+
+[[spawn]]
+npc = "npc.deadman_guard_yanille"
+coords = "0_39_48_62_18"
+
+[[spawn]]
+npc = "npc.deadman_guard_yanille"
+coords = "0_40_48_15_18"
+
+[[spawn]]
+npc = "npc.deadman_guard_yanille"
+coords = "0_40_48_39_15"
+
+[[spawn]]
+npc = "npc.deadman_guard_yanille"
+coords = "0_40_48_54_32"
+
+[[spawn]]
+npc = "npc.dragon_bartender"
+coords = "0_39_48_60_6"
+
+[[spawn]]
+npc = "npc.farming_gardener_hops_1"
+coords = "0_40_48_18_29"
+
+[[spawn]]
+npc = "npc.farming_tools_leprechaun"
+coords = "0_40_48_13_36"
+
+[[spawn]]
+npc = "npc.fat_cow_dumby_npc"
+coords = "0_40_48_25_50"
+
+[[spawn]]
+npc = "npc.frenita"
+coords = "0_40_48_6_26"
+
+[[spawn]]
+npc = "npc.handsand_bert"
+coords = "0_39_48_54_28"
+
+[[spawn]]
+npc = "npc.handsand_guard_captain"
+coords = "0_39_48_55_6"
+
+[[spawn]]
+npc = "npc.hunting_shop_owner_yanille"
+coords = "0_40_48_8_10"
+
+[[spawn]]
+npc = "npc.hunting_weapon_designer"
+coords = "0_40_48_7_13"
+
+[[spawn]]
+npc = "npc.imp"
+coords = "0_40_48_37_48"
+
+[[spawn]]
+npc = "npc.imp"
+coords = "0_40_48_46_54"
+
+[[spawn]]
+npc = "npc.imp"
+coords = "0_40_48_54_44"
+
+[[spawn]]
+npc = "npc.imp"
+coords = "0_40_48_56_54"
+
+[[spawn]]
+npc = "npc.imp"
+coords = "0_40_48_62_46"
+
+[[spawn]]
+npc = "npc.man"
+coords = "0_40_48_36_32"
+
+[[spawn]]
+npc = "npc.man3"
+coords = "0_40_48_36_34"
+
+[[spawn]]
+npc = "npc.nzone_host"
+coords = "0_40_48_48_44"
+
+[[spawn]]
+npc = "npc.pillory_tramp_thrower_yanille"
+coords = "0_40_48_46_28"
+
+[[spawn]]
+npc = "npc.qip_watchtower_wizard_02"
+coords = "2_39_48_48_45"
+
+[[spawn]]
+npc = "npc.qip_watchtower_wizard_03"
+coords = "2_39_48_48_40"
+
+[[spawn]]
+npc = "npc.qip_watchtower_wizard_04"
+coords = "2_39_48_53_40"
+
+[[spawn]]
+npc = "npc.tower_guard"
+coords = "0_39_48_44_18"
+
+[[spawn]]
+npc = "npc.tower_guard"
+coords = "0_39_48_58_45"
+
+[[spawn]]
+npc = "npc.watchtower_wizard"
+coords = "2_39_48_53_44"
+
+[[spawn]]
+npc = "npc.yanille_soldier"
+coords = "0_39_48_44_30"
+
+[[spawn]]
+npc = "npc.yanille_soldier"
+coords = "0_39_48_46_22"
+
+[[spawn]]
+npc = "npc.yanille_soldier"
+coords = "0_39_48_47_16"
+
+[[spawn]]
+npc = "npc.yanille_soldier"
+coords = "0_39_48_49_22"
+
+[[spawn]]
+npc = "npc.yanille_soldier"
+coords = "0_39_48_50_13"
+
+[[spawn]]
+npc = "npc.yanille_soldier"
+coords = "0_39_48_51_19"
+
+[[spawn]]
+npc = "npc.yanille_soldier"
+coords = "1_39_48_37_14"
+
+[[spawn]]
+npc = "npc.yanille_soldier"
+coords = "1_39_48_37_22"
+
+[[spawn]]
+npc = "npc.yanille_soldier"
+coords = "1_39_48_38_25"
+
+[[spawn]]
+npc = "npc.yanille_soldier"
+coords = "1_39_48_39_16"
+
+[[spawn]]
+npc = "npc.yanille_soldier"
+coords = "1_39_48_41_30"
+
+[[spawn]]
+npc = "npc.yanille_soldier"
+coords = "1_39_48_41_6"
+
+[[spawn]]
+npc = "npc.yanille_soldier"
+coords = "1_39_48_43_35"
+
+[[spawn]]
+npc = "npc.yanille_soldier"
+coords = "1_39_48_55_37"
+
+[[spawn]]
+npc = "npc.yanille_soldier"
+coords = "1_39_48_57_1"
+
+[[spawn]]
+npc = "npc.yanille_soldier"
+coords = "1_39_48_62_1"
+
+[[spawn]]
+npc = "npc.yanille_soldier"
+coords = "1_40_48_12_37"
+
+[[spawn]]
+npc = "npc.yanille_soldier"
+coords = "1_40_48_35_1"
+
+[[spawn]]
+npc = "npc.yanille_soldier"
+coords = "1_40_48_40_37"
+
+[[spawn]]
+npc = "npc.yanille_soldier"
+coords = "1_40_48_49_1"
+
+[[spawn]]
+npc = "npc.yanille_soldier"
+coords = "1_40_48_50_35"
+
+[[spawn]]
+npc = "npc.yanille_soldier"
+coords = "1_40_48_55_1"
+
+[[spawn]]
+npc = "npc.yanille_soldier"
+coords = "1_40_48_58_27"
+
+[[spawn]]
+npc = "npc.yanille_soldier"
+coords = "1_40_48_60_23"
+
+[[spawn]]
+npc = "npc.yanille_soldier"
+coords = "1_40_48_60_5"
+
+[[spawn]]
+npc = "npc.yanille_soldier"
+coords = "1_40_48_7_37"
+
+## Wizards' Guild
+
+[[spawn]]
+npc = "npc.aluft_gnome_mage_2"
+coords = "0_40_48_30_20"
+
+[[spawn]]
+npc = "npc.guild_wizard"
+coords = "0_40_48_34_17"
+
+[[spawn]]
+npc = "npc.magic_store_owner"
+coords = "1_40_48_35_15"
+
+[[spawn]]
+npc = "npc.magic_store_owner2"
+coords = "1_40_48_35_16"
+
+[[spawn]]
+npc = "npc.wizard"
+coords = "0_40_48_28_18"
+
+[[spawn]]
+npc = "npc.wizard"
+coords = "0_40_48_29_12"
+
+[[spawn]]
+npc = "npc.wizard"
+coords = "1_40_48_26_17"
+
+[[spawn]]
+npc = "npc.wizard"
+coords = "1_40_48_33_12"
+
+[[spawn]]
+npc = "npc.wizard"
+coords = "1_40_48_35_18"
+
+[[spawn]]
+npc = "npc.wizard"
+coords = "2_40_48_26_16"
+
+[[spawn]]
+npc = "npc.wizard"
+coords = "2_40_48_29_13"
+
+[[spawn]]
+npc = "npc.wizard"
+coords = "2_40_48_33_18"
+
+[[spawn]]
+npc = "npc.zogre_human_zavistic_rarve"
+coords = "0_40_48_28_15"
+
+## Yanille Bank
+
+[[spawn]]
+npc = "npc.banker1"
+coords = "0_40_48_55_20"
+
+[[spawn]]
+npc = "npc.banker2"
+coords = "0_40_48_55_19"
+
+[[spawn]]
+npc = "npc.deadman_banker_grey_west"
+coords = "0_40_48_55_22"
+
+[[spawn]]
+npc = "npc.deadman_guard_yanille"
+coords = "0_40_48_52_20"
+
+## Yanille Dungeon
+
+[[spawn]]
+npc = "npc.bat"
+coords = "0_40_148_11_53"
+
+[[spawn]]
+npc = "npc.bat"
+coords = "0_40_148_15_53"
+
+[[spawn]]
+npc = "npc.bat"
+coords = "0_40_148_39_13"
+
+[[spawn]]
+npc = "npc.bat"
+coords = "0_40_148_40_8"
+
+[[spawn]]
+npc = "npc.bat"
+coords = "0_40_148_41_6"
+
+[[spawn]]
+npc = "npc.bat"
+coords = "0_40_148_42_12"
+
+[[spawn]]
+npc = "npc.bat"
+coords = "0_40_148_47_13"
+
+[[spawn]]
+npc = "npc.bat"
+coords = "0_40_148_9_58"
+
+[[spawn]]
+npc = "npc.chaos_druid"
+coords = "0_40_148_51_11"
+
+[[spawn]]
+npc = "npc.chaos_druid"
+coords = "0_40_148_51_15"
+
+[[spawn]]
+npc = "npc.chaos_druid"
+coords = "0_40_148_52_16"
+
+[[spawn]]
+npc = "npc.chaos_druid"
+coords = "0_40_148_53_10"
+
+[[spawn]]
+npc = "npc.chaos_druid"
+coords = "0_40_148_53_49"
+
+[[spawn]]
+npc = "npc.chaos_druid"
+coords = "0_40_148_54_11"
+
+[[spawn]]
+npc = "npc.chaos_druid"
+coords = "0_40_148_54_49"
+
+[[spawn]]
+npc = "npc.chaos_druid"
+coords = "0_40_148_54_53"
+
+[[spawn]]
+npc = "npc.chaos_druid"
+coords = "0_40_148_55_15"
+
+[[spawn]]
+npc = "npc.chaos_druid"
+coords = "0_40_148_56_12"
+
+[[spawn]]
+npc = "npc.chaos_druid"
+coords = "0_40_148_56_50"
+
+[[spawn]]
+npc = "npc.chaos_druid_warrior"
+coords = "0_40_148_16_29"
+
+[[spawn]]
+npc = "npc.chaos_druid_warrior"
+coords = "0_40_148_18_28"
+
+[[spawn]]
+npc = "npc.chaos_druid_warrior"
+coords = "0_40_148_19_36"
+
+[[spawn]]
+npc = "npc.chaos_druid_warrior"
+coords = "0_40_148_20_25"
+
+[[spawn]]
+npc = "npc.chaos_druid_warrior"
+coords = "0_40_148_20_30"
+
+[[spawn]]
+npc = "npc.chaos_druid_warrior"
+coords = "0_40_148_23_27"
+
+[[spawn]]
+npc = "npc.chaos_druid_warrior"
+coords = "0_40_148_28_26"
+
+[[spawn]]
+npc = "npc.chaos_druid_warrior"
+coords = "0_40_148_34_26"
+
+[[spawn]]
+npc = "npc.chaos_druid_warrior"
+coords = "0_40_148_38_25"
+
+[[spawn]]
+npc = "npc.giantskeleton"
+coords = "0_40_148_2_34"
+
+[[spawn]]
+npc = "npc.giantskeleton"
+coords = "0_40_148_4_32"
+
+[[spawn]]
+npc = "npc.giantskeleton"
+coords = "0_40_148_4_37"
+
+[[spawn]]
+npc = "npc.giantskeleton"
+coords = "0_40_148_5_35"
+
+[[spawn]]
+npc = "npc.giantskeleton"
+coords = "0_40_148_7_34"
+
+[[spawn]]
+npc = "npc.giantskeleton"
+coords = "0_40_148_8_37"
+
+[[spawn]]
+npc = "npc.salarin_the_twisted"
+coords = "0_40_148_53_51"
+
+[[spawn]]
+npc = "npc.sigbert_the_adventurer"
+coords = "0_40_148_53_34"
+
+[[spawn]]
+npc = "npc.wizard_frumscone"
+coords = "0_40_148_28_17"
+
+[[spawn]]
+npc = "npc.zombie_armed"
+coords = "0_40_148_23_21"
+
+[[spawn]]
+npc = "npc.zombie_armed"
+coords = "0_40_148_30_21"
+
+[[spawn]]
+npc = "npc.zombie_armed"
+coords = "0_40_148_33_20"
+
+[[spawn]]
+npc = "npc.zombie_armed2"
+coords = "0_40_148_24_19"
+
+[[spawn]]
+npc = "npc.zombie_armed2"
+coords = "0_40_148_31_20"
+
+[[spawn]]
+npc = "npc.zombie_armed2"
+coords = "0_40_148_33_19"
+
+[[spawn]]
+npc = "npc.zombie_armed3"
+coords = "0_40_148_27_20"
+
+[[spawn]]
+npc = "npc.zombie_armed3"
+coords = "0_40_148_30_19"
+
+## Yanille Watchtower Bottom
+
+[[spawn]]
+npc = "npc.tower_guard"
+coords = "0_39_48_49_41"
+
+[[spawn]]
+npc = "npc.tower_guard"
+coords = "0_39_48_50_44"
+
+[[spawn]]
+npc = "npc.tower_guard"
+coords = "0_39_48_53_40"
+
+## Yanille Watchtower Middle
+
+[[spawn]]
+npc = "npc.yanille_watchman"
+coords = "1_39_48_48_40"
+
+[[spawn]]
+npc = "npc.yanille_watchman"
+coords = "1_39_48_49_44"
+
+[[spawn]]
+npc = "npc.yanille_watchman"
+coords = "1_39_48_53_40"
+
+[[spawn]]
+npc = "npc.yanille_watchman"
+coords = "1_39_48_53_44"
+
+## Yanille Watchtower Middle End
+

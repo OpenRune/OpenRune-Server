@@ -1,0 +1,24 @@
+[[spawn]]
+npc = "npc.bat"
+coords = "0_45_154_16_55"
+
+[[spawn]]
+npc = "npc.bat"
+coords = "0_45_154_54_31"
+
+[[spawn]]
+npc = "npc.bat"
+coords = "0_45_154_56_40"
+
+[[spawn]]
+npc = "npc.bat"
+coords = "0_45_154_59_36"
+
+[[spawn]]
+npc = "npc.bat"
+coords = "0_45_154_9_51"
+
+[[spawn]]
+npc = "npc.blue_dragon2"
+coords = "0_45_154_28_49"
+

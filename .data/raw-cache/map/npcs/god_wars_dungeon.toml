@@ -1,0 +1,794 @@
+[[spawn]]
+npc = "npc.godwars_ancient_black_demon"
+coords = "2_45_83_41_7"
+
+[[spawn]]
+npc = "npc.godwars_ancient_greater_demon"
+coords = "2_45_83_52_16"
+
+[[spawn]]
+npc = "npc.godwars_ancient_hellhound"
+coords = "2_45_83_1_12"
+
+[[spawn]]
+npc = "npc.godwars_ancient_hellhound"
+coords = "2_45_83_35_33"
+
+[[spawn]]
+npc = "npc.godwars_ancient_hellhound"
+coords = "2_45_83_9_17"
+
+[[spawn]]
+npc = "npc.godwars_ancient_imp"
+coords = "2_45_83_18_1"
+
+[[spawn]]
+npc = "npc.godwars_ancient_imp"
+coords = "2_45_83_22_45"
+
+[[spawn]]
+npc = "npc.godwars_ancient_imp"
+coords = "2_45_83_27_36"
+
+[[spawn]]
+npc = "npc.godwars_ancient_imp"
+coords = "2_45_83_40_44"
+
+[[spawn]]
+npc = "npc.godwars_ancient_imp"
+coords = "2_45_83_45_40"
+
+[[spawn]]
+npc = "npc.godwars_ancient_imp"
+coords = "2_45_83_6_1"
+
+[[spawn]]
+npc = "npc.godwars_ancient_lesser_demon"
+coords = "2_45_83_39_15"
+
+[[spawn]]
+npc = "npc.godwars_ancient_vampire"
+coords = "2_45_83_0_20"
+
+[[spawn]]
+npc = "npc.godwars_ancient_vampire"
+coords = "2_45_83_0_6"
+
+[[spawn]]
+npc = "npc.godwars_ancient_vampire"
+coords = "2_45_83_14_13"
+
+[[spawn]]
+npc = "npc.godwars_ancient_vampire"
+coords = "2_45_83_18_0"
+
+[[spawn]]
+npc = "npc.godwars_ancient_vampire"
+coords = "2_45_83_5_0"
+
+[[spawn]]
+npc = "npc.godwars_ancient_vampire"
+coords = "2_45_83_8_8"
+
+[[spawn]]
+npc = "npc.godwars_ancient_werewolf1"
+coords = "2_45_83_12_8"
+
+[[spawn]]
+npc = "npc.godwars_ancient_werewolf1"
+coords = "2_45_83_16_0"
+
+[[spawn]]
+npc = "npc.godwars_ancient_werewolf2"
+coords = "2_45_83_11_49"
+
+[[spawn]]
+npc = "npc.godwars_ancient_werewolf2"
+coords = "2_45_83_17_40"
+
+[[spawn]]
+npc = "npc.godwars_ancient_werewolf2"
+coords = "2_45_83_20_43"
+
+[[spawn]]
+npc = "npc.godwars_ancient_werewolf2"
+coords = "2_45_83_30_30"
+
+[[spawn]]
+npc = "npc.godwars_ancient_werewolf2"
+coords = "2_45_83_32_41"
+
+[[spawn]]
+npc = "npc.godwars_ancient_werewolf2"
+coords = "2_45_83_34_23"
+
+[[spawn]]
+npc = "npc.godwars_ancient_werewolf2"
+coords = "2_45_83_36_30"
+
+[[spawn]]
+npc = "npc.godwars_ancient_werewolf2"
+coords = "2_45_83_36_42"
+
+[[spawn]]
+npc = "npc.godwars_ancient_werewolf2"
+coords = "2_45_83_40_35"
+
+[[spawn]]
+npc = "npc.godwars_ancient_werewolf2"
+coords = "2_45_83_4_42"
+
+[[spawn]]
+npc = "npc.godwars_ancient_werewolf2"
+coords = "2_45_83_53_35"
+
+[[spawn]]
+npc = "npc.godwars_ancient_werewolf2"
+coords = "2_45_83_56_38"
+
+[[spawn]]
+npc = "npc.godwars_bloodveld"
+coords = "2_45_83_0_9"
+
+[[spawn]]
+npc = "npc.godwars_bloodveld"
+coords = "2_45_83_14_38"
+
+[[spawn]]
+npc = "npc.godwars_bloodveld"
+coords = "2_45_83_14_50"
+
+[[spawn]]
+npc = "npc.godwars_bloodveld"
+coords = "2_45_83_3_37"
+
+[[spawn]]
+npc = "npc.godwars_bloodveld"
+coords = "2_45_83_40_46"
+
+[[spawn]]
+npc = "npc.godwars_bloodveld"
+coords = "2_45_83_42_46"
+
+[[spawn]]
+npc = "npc.godwars_bloodveld"
+coords = "2_45_83_47_42"
+
+[[spawn]]
+npc = "npc.godwars_bloodveld"
+coords = "2_45_83_48_44"
+
+[[spawn]]
+npc = "npc.godwars_bloodveld"
+coords = "2_45_83_4_13"
+
+[[spawn]]
+npc = "npc.godwars_bloodveld"
+coords = "2_45_83_51_45"
+
+[[spawn]]
+npc = "npc.godwars_bloodveld"
+coords = "2_45_83_55_41"
+
+[[spawn]]
+npc = "npc.godwars_bloodveld"
+coords = "2_45_83_5_3"
+
+[[spawn]]
+npc = "npc.godwars_bloodveld"
+coords = "2_45_83_6_11"
+
+[[spawn]]
+npc = "npc.godwars_bloodveld"
+coords = "2_45_83_6_47"
+
+[[spawn]]
+npc = "npc.godwars_bloodveld"
+coords = "2_45_83_9_10"
+
+[[spawn]]
+npc = "npc.godwars_gorak"
+coords = "2_45_83_1_17"
+
+[[spawn]]
+npc = "npc.godwars_gorak"
+coords = "2_45_83_23_36"
+
+[[spawn]]
+npc = "npc.godwars_gorak"
+coords = "2_45_83_23_51"
+
+[[spawn]]
+npc = "npc.godwars_gorak"
+coords = "2_45_83_26_34"
+
+[[spawn]]
+npc = "npc.godwars_gorak"
+coords = "2_45_83_42_41"
+
+[[spawn]]
+npc = "npc.godwars_gorak"
+coords = "2_45_83_50_33"
+
+[[spawn]]
+npc = "npc.godwars_gorak"
+coords = "2_45_83_6_39"
+
+[[spawn]]
+npc = "npc.godwars_gorak"
+coords = "2_45_83_8_1"
+
+[[spawn]]
+npc = "npc.godwars_icefiend_1"
+coords = "2_45_83_18_3"
+
+[[spawn]]
+npc = "npc.godwars_icefiend_1"
+coords = "2_45_83_7_0"
+
+[[spawn]]
+npc = "npc.godwars_spiritual_zamorak_mage"
+coords = "2_45_83_22_49"
+
+[[spawn]]
+npc = "npc.godwars_spiritual_zamorak_mage"
+coords = "2_45_83_25_43"
+
+[[spawn]]
+npc = "npc.godwars_spiritual_zamorak_mage"
+coords = "2_45_83_37_27"
+
+[[spawn]]
+npc = "npc.godwars_spiritual_zamorak_mage"
+coords = "2_45_83_39_48"
+
+[[spawn]]
+npc = "npc.godwars_spiritual_zamorak_mage"
+coords = "2_45_83_3_44"
+
+[[spawn]]
+npc = "npc.godwars_spiritual_zamorak_mage"
+coords = "2_45_83_40_26"
+
+[[spawn]]
+npc = "npc.godwars_spiritual_zamorak_mage"
+coords = "2_45_83_44_28"
+
+[[spawn]]
+npc = "npc.godwars_spiritual_zamorak_mage"
+coords = "2_45_83_49_35"
+
+[[spawn]]
+npc = "npc.godwars_spiritual_zamorak_mage"
+coords = "2_45_83_56_36"
+
+[[spawn]]
+npc = "npc.godwars_spiritual_zamorak_mage"
+coords = "2_45_83_7_45"
+
+[[spawn]]
+npc = "npc.godwars_spiritual_zamorak_mage"
+coords = "2_45_83_8_51"
+
+[[spawn]]
+npc = "npc.godwars_spiritual_zamorak_ranger"
+coords = "2_45_83_57_39"
+
+[[spawn]]
+npc = "npc.godwars_spiritual_zamorak_warrior"
+coords = "2_45_83_10_44"
+
+[[spawn]]
+npc = "npc.godwars_spiritual_zamorak_warrior"
+coords = "2_45_83_23_39"
+
+[[spawn]]
+npc = "npc.godwars_spiritual_zamorak_warrior"
+coords = "2_45_83_32_26"
+
+[[spawn]]
+npc = "npc.godwars_spiritual_zamorak_warrior"
+coords = "2_45_83_33_45"
+
+[[spawn]]
+npc = "npc.godwars_spiritual_zamorak_warrior"
+coords = "2_45_83_38_25"
+
+[[spawn]]
+npc = "npc.godwars_spiritual_zamorak_warrior"
+coords = "2_45_83_38_32"
+
+[[spawn]]
+npc = "npc.godwars_spiritual_zamorak_warrior"
+coords = "2_45_83_39_30"
+
+[[spawn]]
+npc = "npc.godwars_spiritual_zamorak_warrior"
+coords = "2_45_83_42_33"
+
+[[spawn]]
+npc = "npc.godwars_spiritual_zamorak_warrior"
+coords = "2_45_83_46_29"
+
+[[spawn]]
+npc = "npc.godwars_spiritual_zamorak_warrior"
+coords = "2_45_83_47_27"
+
+[[spawn]]
+npc = "npc.godwars_spiritual_zamorak_warrior"
+coords = "2_45_83_47_33"
+
+[[spawn]]
+npc = "npc.godwars_zamorak_avatar"
+coords = "2_45_83_45_10"
+
+## God Wars Dungeon Ancient Prison
+
+[[spawn]]
+npc = "npc.godwars_ancient_saradomin_wizard"
+coords = "0_45_81_38_49"
+
+[[spawn]]
+npc = "npc.godwars_ancient_saradomin_wizard"
+coords = "0_45_81_43_56"
+
+[[spawn]]
+npc = "npc.nex_prison_blood_reaver"
+coords = "0_44_81_38_22"
+
+[[spawn]]
+npc = "npc.nex_prison_blood_reaver"
+coords = "0_44_81_42_24"
+
+[[spawn]]
+npc = "npc.nex_prison_blood_reaver"
+coords = "0_44_81_43_16"
+
+[[spawn]]
+npc = "npc.nex_prison_blood_reaver"
+coords = "0_44_81_48_19"
+
+[[spawn]]
+npc = "npc.nex_prison_blood_reaver"
+coords = "0_44_81_54_38"
+
+[[spawn]]
+npc = "npc.nex_prison_blood_reaver"
+coords = "0_44_81_57_24"
+
+[[spawn]]
+npc = "npc.nex_prison_blood_reaver"
+coords = "0_44_81_59_30"
+
+[[spawn]]
+npc = "npc.nex_prison_blood_reaver"
+coords = "0_44_81_62_17"
+
+[[spawn]]
+npc = "npc.nex_prison_blood_reaver"
+coords = "0_45_81_15_23"
+
+[[spawn]]
+npc = "npc.nex_prison_blood_reaver"
+coords = "0_45_81_5_13"
+
+[[spawn]]
+npc = "npc.nex_prison_blood_reaver"
+coords = "0_45_81_5_24"
+
+[[spawn]]
+npc = "npc.nex_prison_blood_reaver"
+coords = "0_45_81_7_31"
+
+[[spawn]]
+npc = "npc.nex_prison_mage"
+coords = "0_44_81_48_26"
+
+[[spawn]]
+npc = "npc.nex_prison_mage"
+coords = "0_44_81_53_18"
+
+[[spawn]]
+npc = "npc.nex_prison_mage"
+coords = "0_44_81_60_37"
+
+[[spawn]]
+npc = "npc.nex_prison_mage"
+coords = "0_45_81_0_29"
+
+[[spawn]]
+npc = "npc.nex_prison_mage"
+coords = "0_45_81_7_18"
+
+[[spawn]]
+npc = "npc.nex_prison_ranger"
+coords = "0_44_81_40_20"
+
+[[spawn]]
+npc = "npc.nex_prison_ranger"
+coords = "0_44_81_46_23"
+
+[[spawn]]
+npc = "npc.nex_prison_ranger"
+coords = "0_44_81_47_15"
+
+[[spawn]]
+npc = "npc.nex_prison_ranger"
+coords = "0_44_81_49_31"
+
+[[spawn]]
+npc = "npc.nex_prison_ranger"
+coords = "0_44_81_57_34"
+
+[[spawn]]
+npc = "npc.nex_prison_ranger"
+coords = "0_45_81_11_19"
+
+[[spawn]]
+npc = "npc.nex_prison_ranger"
+coords = "0_45_81_1_24"
+
+[[spawn]]
+npc = "npc.nex_prison_ranger"
+coords = "0_45_81_3_39"
+
+[[spawn]]
+npc = "npc.nex_prison_ranger"
+coords = "0_45_81_9_36"
+
+[[spawn]]
+npc = "npc.nex_prison_warrior"
+coords = "0_44_81_36_24"
+
+[[spawn]]
+npc = "npc.nex_prison_warrior"
+coords = "0_44_81_44_19"
+
+[[spawn]]
+npc = "npc.nex_prison_warrior"
+coords = "0_44_81_51_35"
+
+[[spawn]]
+npc = "npc.nex_prison_warrior"
+coords = "0_44_81_53_28"
+
+[[spawn]]
+npc = "npc.nex_prison_warrior"
+coords = "0_44_81_57_20"
+
+[[spawn]]
+npc = "npc.nex_prison_warrior"
+coords = "0_45_81_10_24"
+
+[[spawn]]
+npc = "npc.nex_prison_warrior"
+coords = "0_45_81_14_16"
+
+[[spawn]]
+npc = "npc.nex_prison_warrior"
+coords = "0_45_81_1_34"
+
+[[spawn]]
+npc = "npc.nex_prison_warrior"
+coords = "0_45_81_3_20"
+
+[[spawn]]
+npc = "npc.nex_story_npc_inner"
+coords = "0_45_81_24_21"
+
+[[spawn]]
+npc = "npc.nex_story_npc_outer"
+coords = "0_44_81_40_38"
+
+## God Wars Dungeon Wilderness
+
+[[spawn]]
+npc = "npc.godwars_ancient_imp"
+coords = "0_47_158_32_30"
+
+[[spawn]]
+npc = "npc.godwars_ancient_imp"
+coords = "0_47_158_38_32"
+
+[[spawn]]
+npc = "npc.godwars_ancient_imp"
+coords = "0_47_158_45_29"
+
+[[spawn]]
+npc = "npc.godwars_ancient_ogre"
+coords = "0_47_158_46_24"
+
+[[spawn]]
+npc = "npc.godwars_ancient_ork1"
+coords = "0_47_158_32_35"
+
+[[spawn]]
+npc = "npc.godwars_ancient_ork1"
+coords = "0_47_158_46_8"
+
+[[spawn]]
+npc = "npc.godwars_ancient_ork1"
+coords = "0_47_158_49_11"
+
+[[spawn]]
+npc = "npc.godwars_ancient_ork1"
+coords = "0_47_158_52_15"
+
+[[spawn]]
+npc = "npc.godwars_ancient_ork2"
+coords = "0_47_158_41_20"
+
+[[spawn]]
+npc = "npc.godwars_ancient_ork2"
+coords = "0_47_158_42_10"
+
+[[spawn]]
+npc = "npc.godwars_ancient_ork4"
+coords = "0_47_158_35_12"
+
+[[spawn]]
+npc = "npc.godwars_ancient_ork4"
+coords = "0_47_158_37_17"
+
+[[spawn]]
+npc = "npc.godwars_ancient_vampire"
+coords = "0_47_158_28_29"
+
+[[spawn]]
+npc = "npc.godwars_ancient_vampire"
+coords = "0_47_158_29_26"
+
+[[spawn]]
+npc = "npc.godwars_ancient_werewolf1"
+coords = "0_47_158_37_27"
+
+[[spawn]]
+npc = "npc.godwars_ancient_werewolf2"
+coords = "0_47_158_42_27"
+
+[[spawn]]
+npc = "npc.godwars_armadyl_female_armor01_blue"
+coords = "0_47_158_19_47"
+
+[[spawn]]
+npc = "npc.godwars_armadyl_female_armor01_red"
+coords = "0_47_158_10_43"
+
+[[spawn]]
+npc = "npc.godwars_armadyl_female_armor02_green"
+coords = "0_47_158_23_43"
+
+[[spawn]]
+npc = "npc.godwars_armadyl_female_armor02_red"
+coords = "0_47_158_11_37"
+
+[[spawn]]
+npc = "npc.godwars_armadyl_female_armor03_blue"
+coords = "0_47_158_18_34"
+
+[[spawn]]
+npc = "npc.godwars_armadyl_male_armor01_blue"
+coords = "0_47_158_18_51"
+
+[[spawn]]
+npc = "npc.godwars_armadyl_male_armor01_red"
+coords = "0_47_158_17_40"
+
+[[spawn]]
+npc = "npc.godwars_armadyl_male_armor03_green"
+coords = "0_47_158_14_50"
+
+[[spawn]]
+npc = "npc.godwars_bloodveld"
+coords = "0_47_158_22_13"
+
+[[spawn]]
+npc = "npc.godwars_bloodveld"
+coords = "0_47_158_24_18"
+
+[[spawn]]
+npc = "npc.godwars_bloodveld"
+coords = "0_47_158_28_27"
+
+[[spawn]]
+npc = "npc.godwars_bloodveld"
+coords = "0_47_158_33_27"
+
+[[spawn]]
+npc = "npc.godwars_bloodveld"
+coords = "0_47_158_40_29"
+
+[[spawn]]
+npc = "npc.godwars_goblin4"
+coords = "0_47_158_39_14"
+
+[[spawn]]
+npc = "npc.godwars_goblin5"
+coords = "0_47_158_42_17"
+
+[[spawn]]
+npc = "npc.godwars_gorak"
+coords = "0_47_158_44_16"
+
+[[spawn]]
+npc = "npc.godwars_gorak"
+coords = "0_47_158_46_19"
+
+[[spawn]]
+npc = "npc.godwars_icefiend_1"
+coords = "0_47_158_30_18"
+
+[[spawn]]
+npc = "npc.godwars_icefiend_1"
+coords = "0_47_158_34_16"
+
+[[spawn]]
+npc = "npc.godwars_pyrefiend_1"
+coords = "0_47_158_31_21"
+
+[[spawn]]
+npc = "npc.godwars_pyrefiend_1"
+coords = "0_47_158_34_19"
+
+[[spawn]]
+npc = "npc.godwars_saradomin_knight_1"
+coords = "0_47_158_15_15"
+
+[[spawn]]
+npc = "npc.godwars_saradomin_knight_1"
+coords = "0_47_158_23_11"
+
+[[spawn]]
+npc = "npc.godwars_saradomin_knight_2"
+coords = "0_47_158_20_18"
+
+[[spawn]]
+npc = "npc.godwars_saradomin_knight_2"
+coords = "0_47_158_24_13"
+
+[[spawn]]
+npc = "npc.godwars_spiritual_armadyl_mage"
+coords = "0_47_158_18_30"
+
+[[spawn]]
+npc = "npc.godwars_spiritual_armadyl_mage"
+coords = "0_47_158_24_40"
+
+[[spawn]]
+npc = "npc.godwars_spiritual_armadyl_ranger"
+coords = "0_47_158_14_35"
+
+[[spawn]]
+npc = "npc.godwars_spiritual_armadyl_ranger"
+coords = "0_47_158_23_36"
+
+[[spawn]]
+npc = "npc.godwars_spiritual_armadyl_warrior"
+coords = "0_47_158_18_44"
+
+[[spawn]]
+npc = "npc.godwars_spiritual_armadyl_warrior"
+coords = "0_47_158_29_39"
+
+[[spawn]]
+npc = "npc.godwars_spiritual_bandos_mage"
+coords = "0_47_158_40_11"
+
+[[spawn]]
+npc = "npc.godwars_spiritual_bandos_mage"
+coords = "0_47_158_43_13"
+
+[[spawn]]
+npc = "npc.godwars_spiritual_bandos_ranger"
+coords = "0_47_158_48_16"
+
+[[spawn]]
+npc = "npc.godwars_spiritual_bandos_ranger"
+coords = "0_47_158_50_19"
+
+[[spawn]]
+npc = "npc.godwars_spiritual_bandos_warrior"
+coords = "0_47_158_34_22"
+
+[[spawn]]
+npc = "npc.godwars_spiritual_bandos_warrior"
+coords = "0_47_158_46_12"
+
+[[spawn]]
+npc = "npc.godwars_spiritual_saradomin_mage"
+coords = "0_47_158_21_15"
+
+[[spawn]]
+npc = "npc.godwars_spiritual_saradomin_mage"
+coords = "0_47_158_32_24"
+
+[[spawn]]
+npc = "npc.godwars_spiritual_saradomin_ranger"
+coords = "0_47_158_17_12"
+
+[[spawn]]
+npc = "npc.godwars_spiritual_saradomin_ranger"
+coords = "0_47_158_20_9"
+
+[[spawn]]
+npc = "npc.godwars_spiritual_saradomin_warrior"
+coords = "0_47_158_14_10"
+
+[[spawn]]
+npc = "npc.godwars_spiritual_saradomin_warrior"
+coords = "0_47_158_19_6"
+
+[[spawn]]
+npc = "npc.godwars_spiritual_zamorak_mage"
+coords = "0_47_158_12_47"
+
+[[spawn]]
+npc = "npc.godwars_spiritual_zamorak_mage"
+coords = "0_47_158_19_12"
+
+[[spawn]]
+npc = "npc.godwars_spiritual_zamorak_mage"
+coords = "0_47_158_26_32"
+
+[[spawn]]
+npc = "npc.godwars_spiritual_zamorak_mage"
+coords = "0_47_158_29_13"
+
+[[spawn]]
+npc = "npc.godwars_spiritual_zamorak_mage"
+coords = "0_47_158_32_40"
+
+[[spawn]]
+npc = "npc.godwars_spiritual_zamorak_mage"
+coords = "0_47_158_35_31"
+
+[[spawn]]
+npc = "npc.godwars_spiritual_zamorak_ranger"
+coords = "0_47_158_15_45"
+
+[[spawn]]
+npc = "npc.godwars_spiritual_zamorak_ranger"
+coords = "0_47_158_16_8"
+
+[[spawn]]
+npc = "npc.godwars_spiritual_zamorak_ranger"
+coords = "0_47_158_35_24"
+
+[[spawn]]
+npc = "npc.godwars_spiritual_zamorak_ranger"
+coords = "0_47_158_37_30"
+
+[[spawn]]
+npc = "npc.godwars_spiritual_zamorak_ranger"
+coords = "0_47_158_39_26"
+
+[[spawn]]
+npc = "npc.godwars_spiritual_zamorak_ranger"
+coords = "0_47_158_50_17"
+
+[[spawn]]
+npc = "npc.godwars_spiritual_zamorak_warrior"
+coords = "0_47_158_14_13"
+
+[[spawn]]
+npc = "npc.godwars_spiritual_zamorak_warrior"
+coords = "0_47_158_29_32"
+
+[[spawn]]
+npc = "npc.godwars_spiritual_zamorak_warrior"
+coords = "0_47_158_31_26"
+
+[[spawn]]
+npc = "npc.godwars_spiritual_zamorak_warrior"
+coords = "0_47_158_34_33"
+
+[[spawn]]
+npc = "npc.godwars_spiritual_zamorak_warrior"
+coords = "0_47_158_45_10"
+
+[[spawn]]
+npc = "npc.wilderness_gwd_boulder"
+coords = "3_47_158_45_53"
+
+## God Wars Dungeon Wilderness End
+

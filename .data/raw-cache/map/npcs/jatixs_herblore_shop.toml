@@ -1,0 +1,12 @@
+[[spawn]]
+npc = "npc.druid"
+coords = "0_45_53_17_37"
+
+[[spawn]]
+npc = "npc.jatix"
+coords = "0_45_53_19_35"
+
+[[spawn]]
+npc = "npc.sanfew"
+coords = "1_45_53_17_34"
+

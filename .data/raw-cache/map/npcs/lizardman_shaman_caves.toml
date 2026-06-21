@@ -1,0 +1,44 @@
+[[spawn]]
+npc = "npc.lizardman_cave_guard"
+coords = "0_20_155_27_52"
+
+[[spawn]]
+npc = "npc.lizardman_cave_shaman_1"
+coords = "0_20_155_39_29"
+
+[[spawn]]
+npc = "npc.lizardman_cave_shaman_1"
+coords = "0_20_155_47_50"
+
+[[spawn]]
+npc = "npc.lizardman_cave_shaman_1"
+coords = "0_20_155_50_44"
+
+[[spawn]]
+npc = "npc.lizardman_cave_shaman_1"
+coords = "0_20_155_6_38"
+
+[[spawn]]
+npc = "npc.lizardman_cave_shaman_2"
+coords = "0_20_155_10_32"
+
+[[spawn]]
+npc = "npc.lizardman_cave_shaman_2"
+coords = "0_20_155_23_25"
+
+[[spawn]]
+npc = "npc.lizardman_cave_shaman_2"
+coords = "0_20_155_27_31"
+
+[[spawn]]
+npc = "npc.lizardman_cave_shaman_2"
+coords = "0_20_155_44_34"
+
+[[spawn]]
+npc = "npc.lizardman_cave_soldier"
+coords = "0_20_155_22_50"
+
+[[spawn]]
+npc = "npc.lizardman_cave_soldier"
+coords = "0_20_155_31_49"
+

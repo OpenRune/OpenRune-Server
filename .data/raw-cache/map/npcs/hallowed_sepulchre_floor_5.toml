@@ -1,0 +1,8 @@
+[[spawn]]
+npc = "npc.hallowed_bat_01"
+coords = "2_35_91_12_52"
+
+[[spawn]]
+npc = "npc.hallowed_spider_01"
+coords = "2_35_91_32_52"
+

@@ -1,0 +1,44 @@
+[[spawn]]
+npc = "npc.butterfly_ruby"
+coords = "0_38_42_39_20"
+
+[[spawn]]
+npc = "npc.butterfly_ruby"
+coords = "0_38_42_40_26"
+
+[[spawn]]
+npc = "npc.butterfly_ruby"
+coords = "0_38_42_41_34"
+
+[[spawn]]
+npc = "npc.butterfly_ruby"
+coords = "0_38_42_43_13"
+
+[[spawn]]
+npc = "npc.butterfly_ruby"
+coords = "0_38_42_48_29"
+
+[[spawn]]
+npc = "npc.butterfly_ruby"
+coords = "0_38_42_50_12"
+
+[[spawn]]
+npc = "npc.butterfly_ruby"
+coords = "0_38_42_51_25"
+
+[[spawn]]
+npc = "npc.farming_gardener_hardwood_tree_5"
+coords = "0_38_42_39_18"
+
+[[spawn]]
+npc = "npc.hunting_bird_woodland"
+coords = "0_38_42_45_12"
+
+[[spawn]]
+npc = "npc.hunting_bird_woodland"
+coords = "0_38_42_48_11"
+
+[[spawn]]
+npc = "npc.hunting_bird_woodland"
+coords = "0_38_42_52_16"
+

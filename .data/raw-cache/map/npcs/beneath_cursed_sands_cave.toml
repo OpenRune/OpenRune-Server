@@ -1,0 +1,104 @@
+[[spawn]]
+npc = "npc.bcs_mehhar"
+coords = "0_52_144_49_32"
+
+[[spawn]]
+npc = "npc.bcs_scabaras_high_priest"
+coords = "2_53_144_18_32"
+
+[[spawn]]
+npc = "npc.bcs_scarab_mage_friendly_n"
+coords = "2_53_144_25_28"
+
+[[spawn]]
+npc = "npc.bcs_scarab_mage_friendly_s"
+coords = "2_53_144_25_36"
+
+[[spawn]]
+npc = "npc.contact_insectoid_mage"
+coords = "0_53_144_16_57"
+
+[[spawn]]
+npc = "npc.contact_insectoid_mage"
+coords = "0_53_144_17_7"
+
+[[spawn]]
+npc = "npc.contact_insectoid_mage"
+coords = "0_53_144_20_19"
+
+[[spawn]]
+npc = "npc.contact_insectoid_mage"
+coords = "0_53_144_20_43"
+
+[[spawn]]
+npc = "npc.contact_insectoid_mage"
+coords = "0_53_144_22_32"
+
+[[spawn]]
+npc = "npc.contact_insectoid_mage"
+coords = "0_53_144_31_55"
+
+[[spawn]]
+npc = "npc.contact_insectoid_mage"
+coords = "0_53_144_32_10"
+
+[[spawn]]
+npc = "npc.contact_insectoid_mage"
+coords = "0_53_144_41_23"
+
+[[spawn]]
+npc = "npc.contact_insectoid_mage"
+coords = "0_53_144_43_41"
+
+[[spawn]]
+npc = "npc.contact_insectoid_mage"
+coords = "0_53_144_44_58"
+
+[[spawn]]
+npc = "npc.contact_insectoid_mage"
+coords = "0_53_144_45_7"
+
+[[spawn]]
+npc = "npc.contact_locust_bow"
+coords = "0_53_144_18_23"
+
+[[spawn]]
+npc = "npc.contact_locust_bow"
+coords = "0_53_144_19_47"
+
+[[spawn]]
+npc = "npc.contact_locust_bow"
+coords = "0_53_144_26_8"
+
+[[spawn]]
+npc = "npc.contact_locust_bow"
+coords = "0_53_144_38_34"
+
+[[spawn]]
+npc = "npc.contact_locust_bow"
+coords = "0_53_144_38_54"
+
+[[spawn]]
+npc = "npc.contact_locust_lance"
+coords = "0_53_144_18_36"
+
+[[spawn]]
+npc = "npc.contact_locust_lance"
+coords = "0_53_144_19_13"
+
+[[spawn]]
+npc = "npc.contact_locust_lance"
+coords = "0_53_144_22_55"
+
+[[spawn]]
+npc = "npc.contact_locust_lance"
+coords = "0_53_144_29_32"
+
+[[spawn]]
+npc = "npc.contact_locust_lance"
+coords = "0_53_144_37_9"
+
+[[spawn]]
+npc = "npc.contact_locust_lance"
+coords = "0_53_144_38_26"
+

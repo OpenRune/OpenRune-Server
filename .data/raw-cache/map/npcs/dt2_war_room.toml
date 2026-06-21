@@ -1,0 +1,20 @@
+[[spawn]]
+npc = "npc.dt2_banikan_war_room"
+coords = "0_43_100_30_27"
+
+[[spawn]]
+npc = "npc.dt2_war_room_blood_totem"
+coords = "0_43_100_23_45"
+
+[[spawn]]
+npc = "npc.dt2_war_room_ice_totem"
+coords = "0_43_100_23_39"
+
+[[spawn]]
+npc = "npc.dt2_war_room_shadow_totem"
+coords = "0_43_100_19_45"
+
+[[spawn]]
+npc = "npc.dt2_war_room_smoke_totem"
+coords = "0_43_100_19_39"
+

@@ -1,0 +1,238 @@
+## Poison Waste Dungeon Post Quest
+
+[[spawn]]
+npc = "npc.pog_engineered_terror_bird_guard_1"
+coords = "1_23_67_54_31"
+
+[[spawn]]
+npc = "npc.pog_engineered_terror_bird_guard_2"
+coords = "1_23_67_52_32"
+
+[[spawn]]
+npc = "npc.pog_mutated_terrorbird_1"
+coords = "0_23_66_19_55"
+
+[[spawn]]
+npc = "npc.pog_mutated_terrorbird_1"
+coords = "1_23_66_21_15"
+
+[[spawn]]
+npc = "npc.pog_mutated_terrorbird_1"
+coords = "1_23_66_31_44"
+
+[[spawn]]
+npc = "npc.pog_mutated_terrorbird_1"
+coords = "1_23_66_38_6"
+
+[[spawn]]
+npc = "npc.pog_mutated_terrorbird_1"
+coords = "1_23_67_27_15"
+
+[[spawn]]
+npc = "npc.pog_mutated_terrorbird_2"
+coords = "0_23_66_15_57"
+
+[[spawn]]
+npc = "npc.pog_mutated_terrorbird_2"
+coords = "1_23_66_22_10"
+
+[[spawn]]
+npc = "npc.pog_mutated_terrorbird_2"
+coords = "1_23_66_49_33"
+
+[[spawn]]
+npc = "npc.pog_mutated_terrorbird_2"
+coords = "1_23_66_6_37"
+
+[[spawn]]
+npc = "npc.pog_mutated_terrorbird_2"
+coords = "1_23_67_20_49"
+
+[[spawn]]
+npc = "npc.pog_mutated_terrorbird_2"
+coords = "1_23_67_47_14"
+
+[[spawn]]
+npc = "npc.pog_mutated_terrorbird_3"
+coords = "1_23_66_11_44"
+
+[[spawn]]
+npc = "npc.pog_mutated_terrorbird_3"
+coords = "1_23_66_26_6"
+
+[[spawn]]
+npc = "npc.pog_mutated_terrorbird_3"
+coords = "1_23_66_27_29"
+
+[[spawn]]
+npc = "npc.pog_mutated_terrorbird_3"
+coords = "1_23_67_15_12"
+
+[[spawn]]
+npc = "npc.pog_mutated_terrorbird_4"
+coords = "1_23_66_12_52"
+
+[[spawn]]
+npc = "npc.pog_mutated_terrorbird_4"
+coords = "1_23_66_30_13"
+
+[[spawn]]
+npc = "npc.pog_mutated_terrorbird_4"
+coords = "1_23_66_36_38"
+
+[[spawn]]
+npc = "npc.pog_mutated_terrorbird_4"
+coords = "1_23_67_53_7"
+
+[[spawn]]
+npc = "npc.pog_mutated_terrorbird_5"
+coords = "1_23_66_43_15"
+
+[[spawn]]
+npc = "npc.pog_mutated_terrorbird_5"
+coords = "1_23_66_45_41"
+
+[[spawn]]
+npc = "npc.pog_mutated_terrorbird_5"
+coords = "1_23_67_15_3"
+
+[[spawn]]
+npc = "npc.pog_mutated_terrorbird_5"
+coords = "1_23_67_26_54"
+
+[[spawn]]
+npc = "npc.pog_mutated_terrorbird_6"
+coords = "1_23_66_12_60"
+
+[[spawn]]
+npc = "npc.pog_mutated_terrorbird_6"
+coords = "1_23_66_36_28"
+
+[[spawn]]
+npc = "npc.pog_mutated_terrorbird_6"
+coords = "1_23_66_44_9"
+
+[[spawn]]
+npc = "npc.pog_mutated_terrorbird_6"
+coords = "1_23_67_25_47"
+
+[[spawn]]
+npc = "npc.pog_mutated_terrorbird_6"
+coords = "1_23_67_41_3"
+
+[[spawn]]
+npc = "npc.pog_mutated_terrorbird_7"
+coords = "0_23_66_23_56"
+
+[[spawn]]
+npc = "npc.pog_mutated_terrorbird_7"
+coords = "1_23_66_33_8"
+
+[[spawn]]
+npc = "npc.pog_mutated_terrorbird_7"
+coords = "1_23_66_51_11"
+
+[[spawn]]
+npc = "npc.pog_mutated_terrorbird_7"
+coords = "1_23_66_5_31"
+
+[[spawn]]
+npc = "npc.pog_mutated_terrorbird_7"
+coords = "1_23_67_26_3"
+
+[[spawn]]
+npc = "npc.pog_mutated_terrorbird_8"
+coords = "1_23_66_23_40"
+
+[[spawn]]
+npc = "npc.pog_mutated_terrorbird_8"
+coords = "1_23_66_59_10"
+
+[[spawn]]
+npc = "npc.pog_mutated_terrorbird_8"
+coords = "1_23_66_8_41"
+
+[[spawn]]
+npc = "npc.pog_mutated_terrorbird_boss_1_background"
+coords = "1_23_67_41_39"
+
+[[spawn]]
+npc = "npc.pog_mutated_terrorbird_boss_2_background"
+coords = "1_23_67_42_33"
+
+[[spawn]]
+npc = "npc.pog_mutated_terrorbird_boss_3_background"
+coords = "1_23_67_40_27"
+
+[[spawn]]
+npc = "npc.pog_mutated_tortoise"
+coords = "0_23_66_4_13"
+
+[[spawn]]
+npc = "npc.pog_mutated_tortoise"
+coords = "0_23_66_54_25"
+
+[[spawn]]
+npc = "npc.pog_mutated_tortoise"
+coords = "0_23_66_55_17"
+
+[[spawn]]
+npc = "npc.pog_mutated_tortoise"
+coords = "1_23_66_12_13"
+
+[[spawn]]
+npc = "npc.pog_mutated_tortoise"
+coords = "1_23_66_16_38"
+
+[[spawn]]
+npc = "npc.pog_mutated_tortoise"
+coords = "1_23_66_18_28"
+
+[[spawn]]
+npc = "npc.pog_mutated_tortoise"
+coords = "1_23_66_31_39"
+
+[[spawn]]
+npc = "npc.pog_mutated_tortoise"
+coords = "1_23_66_33_58"
+
+[[spawn]]
+npc = "npc.pog_mutated_tortoise"
+coords = "1_23_66_35_53"
+
+[[spawn]]
+npc = "npc.pog_mutated_tortoise"
+coords = "1_23_66_42_29"
+
+[[spawn]]
+npc = "npc.pog_mutated_tortoise"
+coords = "1_23_66_47_38"
+
+[[spawn]]
+npc = "npc.pog_mutated_tortoise"
+coords = "1_23_66_7_25"
+
+[[spawn]]
+npc = "npc.pog_mutated_tortoise"
+coords = "1_23_67_22_35"
+
+[[spawn]]
+npc = "npc.pog_mutated_tortoise"
+coords = "1_23_67_27_30"
+
+[[spawn]]
+npc = "npc.pog_mutated_tortoise"
+coords = "1_23_67_7_29"
+
+## Poison Waste Dungeon Quest Area 1
+
+[[spawn]]
+npc = "npc.pog_mutated_tortoise"
+coords = "0_21_66_8_11"
+
+[[spawn]]
+npc = "npc.pog_mutated_tortoise"
+coords = "1_21_66_16_11"
+
+## Poison Waste Dungeon Quest Area 1 End
+

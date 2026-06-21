@@ -1,0 +1,312 @@
+[[spawn]]
+npc = "npc.caveguide5"
+coords = "1_33_73_58_55"
+
+[[spawn]]
+npc = "npc.caveguide7"
+coords = "1_31_73_28_41"
+
+[[spawn]]
+npc = "npc.cavewitch"
+coords = "1_33_71_43_22"
+
+[[spawn]]
+npc = "npc.cavewitchcat"
+coords = "1_33_71_19_58"
+
+[[spawn]]
+npc = "npc.doomion"
+coords = "1_33_71_22_21"
+
+[[spawn]]
+npc = "npc.doomion_vis"
+coords = "0_33_71_22_21"
+
+[[spawn]]
+npc = "npc.holthion"
+coords = "1_33_71_20_10"
+
+[[spawn]]
+npc = "npc.holthion_vis"
+coords = "0_33_71_20_10"
+
+[[spawn]]
+npc = "npc.iban"
+coords = "1_33_72_21_39"
+
+[[spawn]]
+npc = "npc.iban_vis"
+coords = "0_33_72_24_40"
+
+[[spawn]]
+npc = "npc.ibanmonk"
+coords = "1_33_72_37_38"
+
+[[spawn]]
+npc = "npc.ibanmonk"
+coords = "1_33_72_38_40"
+
+[[spawn]]
+npc = "npc.ibanmonk"
+coords = "1_33_72_41_38"
+
+[[spawn]]
+npc = "npc.ibanmonk"
+coords = "1_33_72_41_41"
+
+[[spawn]]
+npc = "npc.ibanmonk"
+coords = "1_33_72_44_38"
+
+[[spawn]]
+npc = "npc.ibanmonk"
+coords = "1_33_72_45_41"
+
+[[spawn]]
+npc = "npc.ibanmonk"
+coords = "1_33_72_47_27"
+
+[[spawn]]
+npc = "npc.ibanmonk"
+coords = "1_33_72_47_34"
+
+[[spawn]]
+npc = "npc.ibanmonk"
+coords = "1_33_72_47_38"
+
+[[spawn]]
+npc = "npc.ibanmonk"
+coords = "1_33_72_47_42"
+
+[[spawn]]
+npc = "npc.ibanmonk"
+coords = "1_33_72_48_54"
+
+[[spawn]]
+npc = "npc.ibanmonk"
+coords = "1_33_72_51_45"
+
+[[spawn]]
+npc = "npc.ibanmonk"
+coords = "1_33_72_51_52"
+
+[[spawn]]
+npc = "npc.ibanmonk_vis"
+coords = "0_33_72_37_38"
+
+[[spawn]]
+npc = "npc.ibanmonk_vis"
+coords = "0_33_72_38_40"
+
+[[spawn]]
+npc = "npc.ibanmonk_vis"
+coords = "0_33_72_41_38"
+
+[[spawn]]
+npc = "npc.ibanmonk_vis"
+coords = "0_33_72_41_41"
+
+[[spawn]]
+npc = "npc.ibanmonk_vis"
+coords = "0_33_72_44_38"
+
+[[spawn]]
+npc = "npc.ibanmonk_vis"
+coords = "0_33_72_45_41"
+
+[[spawn]]
+npc = "npc.ibanmonk_vis"
+coords = "0_33_72_47_27"
+
+[[spawn]]
+npc = "npc.ibanmonk_vis"
+coords = "0_33_72_47_34"
+
+[[spawn]]
+npc = "npc.ibanmonk_vis"
+coords = "0_33_72_47_38"
+
+[[spawn]]
+npc = "npc.ibanmonk_vis"
+coords = "0_33_72_47_42"
+
+[[spawn]]
+npc = "npc.ibanmonk_vis"
+coords = "0_33_72_48_54"
+
+[[spawn]]
+npc = "npc.ibanmonk_vis"
+coords = "0_33_72_51_45"
+
+[[spawn]]
+npc = "npc.ibanmonk_vis"
+coords = "0_33_72_51_52"
+
+[[spawn]]
+npc = "npc.non_combat_bat"
+coords = "1_33_71_38_47"
+
+[[spawn]]
+npc = "npc.non_combat_bat"
+coords = "1_33_73_15_7"
+
+[[spawn]]
+npc = "npc.non_combat_bat"
+coords = "1_33_73_20_40"
+
+[[spawn]]
+npc = "npc.non_combat_bat"
+coords = "1_33_73_31_3"
+
+[[spawn]]
+npc = "npc.non_combat_bat"
+coords = "1_33_73_34_19"
+
+[[spawn]]
+npc = "npc.non_combat_bat"
+coords = "1_33_73_37_39"
+
+[[spawn]]
+npc = "npc.non_combat_bat"
+coords = "1_33_73_49_48"
+
+[[spawn]]
+npc = "npc.non_combat_bat"
+coords = "1_33_73_53_20"
+
+[[spawn]]
+npc = "npc.othainian"
+coords = "1_33_71_10_18"
+
+[[spawn]]
+npc = "npc.othainian_vis"
+coords = "0_33_71_10_18"
+
+[[spawn]]
+npc = "npc.sote_upass_gravestone"
+coords = "1_33_71_41_2"
+
+[[spawn]]
+npc = "npc.sote_upass_gravestone"
+coords = "1_33_73_4_60"
+
+[[spawn]]
+npc = "npc.souless"
+coords = "1_33_73_42_14"
+
+[[spawn]]
+npc = "npc.souless"
+coords = "1_33_73_42_23"
+
+[[spawn]]
+npc = "npc.souless"
+coords = "1_33_73_43_36"
+
+[[spawn]]
+npc = "npc.souless"
+coords = "1_33_73_45_27"
+
+[[spawn]]
+npc = "npc.souless"
+coords = "1_33_73_49_17"
+
+[[spawn]]
+npc = "npc.souless_vis"
+coords = "0_33_73_42_14"
+
+[[spawn]]
+npc = "npc.souless_vis"
+coords = "0_33_73_42_23"
+
+[[spawn]]
+npc = "npc.souless_vis"
+coords = "0_33_73_43_36"
+
+[[spawn]]
+npc = "npc.souless_vis"
+coords = "0_33_73_45_27"
+
+[[spawn]]
+npc = "npc.souless_vis"
+coords = "0_33_73_49_17"
+
+[[spawn]]
+npc = "npc.soulman"
+coords = "1_33_73_10_23"
+
+[[spawn]]
+npc = "npc.soulman"
+coords = "1_33_73_10_48"
+
+[[spawn]]
+npc = "npc.soulman"
+coords = "1_33_73_11_29"
+
+[[spawn]]
+npc = "npc.soulman"
+coords = "1_33_73_16_47"
+
+[[spawn]]
+npc = "npc.soulman"
+coords = "1_33_73_17_26"
+
+[[spawn]]
+npc = "npc.soulman"
+coords = "1_33_73_17_35"
+
+[[spawn]]
+npc = "npc.soulman"
+coords = "1_33_73_17_53"
+
+[[spawn]]
+npc = "npc.soulman"
+coords = "1_33_73_22_30"
+
+[[spawn]]
+npc = "npc.soulman"
+coords = "1_33_73_24_46"
+
+[[spawn]]
+npc = "npc.soulman"
+coords = "1_33_73_25_53"
+
+[[spawn]]
+npc = "npc.soulman"
+coords = "1_33_73_27_25"
+
+[[spawn]]
+npc = "npc.soulman"
+coords = "1_33_73_29_37"
+
+[[spawn]]
+npc = "npc.soulman"
+coords = "1_33_73_33_31"
+
+[[spawn]]
+npc = "npc.soulman"
+coords = "1_33_73_33_49"
+
+[[spawn]]
+npc = "npc.soulman"
+coords = "1_33_73_8_36"
+
+[[spawn]]
+npc = "npc.soulman"
+coords = "1_33_73_9_42"
+
+[[spawn]]
+npc = "npc.wizard"
+coords = "0_31_73_26_38"
+
+[[spawn]]
+npc = "npc.wizard"
+coords = "0_31_73_26_42"
+
+[[spawn]]
+npc = "npc.wizard"
+coords = "1_31_73_26_38"
+
+[[spawn]]
+npc = "npc.wizard"
+coords = "1_31_73_26_42"
+

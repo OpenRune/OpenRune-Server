@@ -1,0 +1,262 @@
+[[spawn]]
+npc = "npc.0_48_48_newbiefishing"
+coords = "0_48_48_27_18"
+
+[[spawn]]
+npc = "npc.0_48_48_newbiefishing"
+coords = "0_48_48_29_20"
+
+[[spawn]]
+npc = "npc.0_48_48_newbiefishing"
+coords = "0_48_48_31_20"
+
+[[spawn]]
+npc = "npc.butterfly"
+coords = "0_48_48_10_5"
+
+[[spawn]]
+npc = "npc.butterfly"
+coords = "0_48_48_20_10"
+
+[[spawn]]
+npc = "npc.butterfly"
+coords = "0_48_48_37_18"
+
+[[spawn]]
+npc = "npc.butterfly"
+coords = "0_48_48_40_21"
+
+[[spawn]]
+npc = "npc.butterfly2"
+coords = "0_48_48_53_12"
+
+[[spawn]]
+npc = "npc.butterfly_bluemorpo"
+coords = "0_48_48_21_14"
+
+[[spawn]]
+npc = "npc.butterfly_bluemorpo"
+coords = "0_48_48_25_13"
+
+[[spawn]]
+npc = "npc.butterfly_bluemorpo"
+coords = "0_48_48_57_19"
+
+[[spawn]]
+npc = "npc.butterfly_bluemorpo"
+coords = "0_48_48_63_12"
+
+[[spawn]]
+npc = "npc.ironman_tutor_2"
+coords = "0_48_48_60_13"
+
+[[spawn]]
+npc = "npc.newbie_survival_instructor"
+coords = "0_48_48_31_23"
+
+## Tutorial Island Bank
+
+[[spawn]]
+npc = "npc.newbie_account_instructor"
+coords = "0_48_48_55_52"
+
+[[spawn]]
+npc = "npc.noobbanker"
+coords = "0_48_48_48_53"
+
+[[spawn]]
+npc = "npc.noobbanker"
+coords = "0_48_48_50_53"
+
+## Tutorial Island Church
+
+[[spawn]]
+npc = "npc.brother_noob"
+coords = "0_48_48_53_34"
+
+## Tutorial Island Kitchen
+
+[[spawn]]
+npc = "npc.newbie_cook_instructor"
+coords = "0_48_48_3_13"
+
+## Tutorial Island Quest Building
+
+[[spawn]]
+npc = "npc.newbie_quest_instructor"
+coords = "0_48_48_13_50"
+
+## Tutorial Island Start Building
+
+[[spawn]]
+npc = "npc.newbie_basics_instructor"
+coords = "0_48_48_22_35"
+
+## Tutorial Island The Node
+
+[[spawn]]
+npc = "npc.boar"
+coords = "0_48_47_26_4"
+
+[[spawn]]
+npc = "npc.boar"
+coords = "0_48_47_32_3"
+
+[[spawn]]
+npc = "npc.boar"
+coords = "0_48_47_34_5"
+
+[[spawn]]
+npc = "npc.butterfly_bluemorpo"
+coords = "0_48_47_35_24"
+
+[[spawn]]
+npc = "npc.gim_boar"
+coords = "0_48_47_28_3"
+
+[[spawn]]
+npc = "npc.gim_boar_killer"
+coords = "0_48_47_27_3"
+
+[[spawn]]
+npc = "npc.gim_fisher"
+coords = "0_48_47_42_37"
+
+[[spawn]]
+npc = "npc.gim_miner"
+coords = "0_48_47_34_4"
+
+[[spawn]]
+npc = "npc.gim_regent"
+coords = "0_48_47_32_16"
+
+[[spawn]]
+npc = "npc.gim_tutor_shared_storage"
+coords = "0_48_47_24_19"
+
+[[spawn]]
+npc = "npc.ironman_tutor_node"
+coords = "0_48_47_35_20"
+
+[[spawn]]
+npc = "npc.sarim_seagull_pier"
+coords = "0_48_47_34_37"
+
+[[spawn]]
+npc = "npc.sarim_seagull_pier"
+coords = "0_48_47_38_31"
+
+[[spawn]]
+npc = "npc.seagull"
+coords = "0_48_47_12_34"
+
+[[spawn]]
+npc = "npc.seagull"
+coords = "0_48_47_15_17"
+
+[[spawn]]
+npc = "npc.seagull"
+coords = "0_48_47_27_40"
+
+[[spawn]]
+npc = "npc.seagull"
+coords = "0_48_47_42_34"
+
+[[spawn]]
+npc = "npc.seagull"
+coords = "0_48_47_47_19"
+
+[[spawn]]
+npc = "npc.seagull"
+coords = "0_48_47_49_1"
+
+## Tutorial Island Underground
+
+[[spawn]]
+npc = "npc.newbie_combat_instructor"
+coords = "0_48_148_34_37"
+
+[[spawn]]
+npc = "npc.newbie_mining_instructor"
+coords = "0_48_148_9_32"
+
+[[spawn]]
+npc = "npc.newbiegiantrat"
+coords = "0_48_148_26_47"
+
+[[spawn]]
+npc = "npc.newbiegiantrat"
+coords = "0_48_148_27_42"
+
+[[spawn]]
+npc = "npc.newbiegiantrat"
+coords = "0_48_148_28_45"
+
+[[spawn]]
+npc = "npc.newbiegiantrat"
+coords = "0_48_148_28_49"
+
+[[spawn]]
+npc = "npc.newbiegiantrat"
+coords = "0_48_148_30_41"
+
+[[spawn]]
+npc = "npc.newbiegiantrat"
+coords = "0_48_148_31_46"
+
+[[spawn]]
+npc = "npc.newbiegiantrat"
+coords = "0_48_148_31_49"
+
+[[spawn]]
+npc = "npc.newbiegiantrat"
+coords = "0_48_148_32_40"
+
+[[spawn]]
+npc = "npc.newbiegiantrat"
+coords = "0_48_148_33_42"
+
+[[spawn]]
+npc = "npc.newbiegiantrat"
+coords = "0_48_148_33_46"
+
+[[spawn]]
+npc = "npc.newbiegiantrat"
+coords = "0_48_148_35_44"
+
+[[spawn]]
+npc = "npc.newbiegiantrat"
+coords = "0_48_148_35_49"
+
+[[spawn]]
+npc = "npc.newbiegiantrat"
+coords = "0_48_148_37_46"
+
+## Tutorial Island Wizard Building
+
+[[spawn]]
+npc = "npc.newbie_magic_instructor"
+coords = "0_49_48_5_16"
+
+[[spawn]]
+npc = "npc.newbiechicken"
+coords = "0_49_48_2_21"
+
+[[spawn]]
+npc = "npc.newbiechicken"
+coords = "0_49_48_2_23"
+
+[[spawn]]
+npc = "npc.newbiechicken"
+coords = "0_49_48_4_21"
+
+[[spawn]]
+npc = "npc.newbiechicken"
+coords = "0_49_48_4_22"
+
+[[spawn]]
+npc = "npc.newbiechicken"
+coords = "0_49_48_4_24"
+
+## Tutorial Island Wizard Building End
+

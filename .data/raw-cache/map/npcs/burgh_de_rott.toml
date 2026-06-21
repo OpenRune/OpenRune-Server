@@ -1,0 +1,14 @@
+## Burgh De Rott Basement
+
+[[spawn]]
+npc = "npc.myq5_polmafi_burgh_hideout"
+coords = "0_54_150_38_26"
+
+[[spawn]]
+npc = "npc.myq5_radigad_burgh_hideout"
+coords = "0_54_150_41_26"
+
+[[spawn]]
+npc = "npc.myq5_veliaf_burgh_hideout"
+coords = "0_54_150_38_28"
+

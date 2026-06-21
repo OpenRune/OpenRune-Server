@@ -1,0 +1,124 @@
+[[spawn]]
+npc = "npc.bat"
+coords = "0_38_151_36_32"
+
+[[spawn]]
+npc = "npc.bat"
+coords = "0_38_151_39_29"
+
+[[spawn]]
+npc = "npc.bat"
+coords = "0_38_151_53_40"
+
+[[spawn]]
+npc = "npc.bat"
+coords = "0_38_151_56_39"
+
+[[spawn]]
+npc = "npc.bat"
+coords = "0_38_151_58_34"
+
+[[spawn]]
+npc = "npc.bat"
+coords = "0_38_151_59_41"
+
+[[spawn]]
+npc = "npc.blessed_spider"
+coords = "0_37_151_27_19"
+
+[[spawn]]
+npc = "npc.blessed_spider"
+coords = "0_37_151_29_20"
+
+[[spawn]]
+npc = "npc.blessed_spider"
+coords = "0_37_151_32_18"
+
+[[spawn]]
+npc = "npc.blessed_spider"
+coords = "0_37_151_34_16"
+
+[[spawn]]
+npc = "npc.blessed_spider"
+coords = "0_38_151_0_60"
+
+[[spawn]]
+npc = "npc.blessed_spider"
+coords = "0_38_151_1_23"
+
+[[spawn]]
+npc = "npc.blessed_spider"
+coords = "0_38_151_2_29"
+
+[[spawn]]
+npc = "npc.blessed_spider"
+coords = "0_38_151_2_57"
+
+[[spawn]]
+npc = "npc.blessed_spider"
+coords = "0_38_151_3_26"
+
+[[spawn]]
+npc = "npc.blessed_spider"
+coords = "0_38_151_4_61"
+
+[[spawn]]
+npc = "npc.blessed_spider"
+coords = "0_38_151_5_24"
+
+[[spawn]]
+npc = "npc.blessed_spider"
+coords = "0_38_151_5_28"
+
+[[spawn]]
+npc = "npc.blessed_spider"
+coords = "0_38_151_5_58"
+
+[[spawn]]
+npc = "npc.blessed_spider"
+coords = "0_38_151_8_25"
+
+[[spawn]]
+npc = "npc.caveguide2"
+coords = "0_38_151_17_52"
+
+[[spawn]]
+npc = "npc.caveguide3"
+coords = "0_38_151_47_15"
+
+[[spawn]]
+npc = "npc.goblin_armed"
+coords = "0_38_151_6_36"
+
+[[spawn]]
+npc = "npc.goblin_armed"
+coords = "0_38_151_7_32"
+
+[[spawn]]
+npc = "npc.goblin_armed"
+coords = "0_38_151_9_34"
+
+[[spawn]]
+npc = "npc.ogre"
+coords = "0_37_151_19_21"
+
+[[spawn]]
+npc = "npc.ogre"
+coords = "0_37_151_21_19"
+
+[[spawn]]
+npc = "npc.zombie_armed"
+coords = "0_38_151_23_16"
+
+[[spawn]]
+npc = "npc.zombie_unarmed"
+coords = "0_38_151_20_20"
+
+[[spawn]]
+npc = "npc.zombie_unarmed3"
+coords = "0_38_151_21_16"
+
+[[spawn]]
+npc = "npc.zombie_unarmed5"
+coords = "0_38_151_23_13"
+

@@ -1,0 +1,68 @@
+[[spawn]]
+npc = "npc.ghost"
+coords = "0_34_75_12_55"
+
+[[spawn]]
+npc = "npc.ghost"
+coords = "0_34_75_17_45"
+
+[[spawn]]
+npc = "npc.ghost"
+coords = "0_34_75_40_29"
+
+[[spawn]]
+npc = "npc.ghost2"
+coords = "0_34_75_16_52"
+
+[[spawn]]
+npc = "npc.ghost2"
+coords = "0_34_75_42_18"
+
+[[spawn]]
+npc = "npc.ghost3"
+coords = "0_34_75_21_49"
+
+[[spawn]]
+npc = "npc.ghost3"
+coords = "0_34_75_51_19"
+
+[[spawn]]
+npc = "npc.ghost4"
+coords = "0_34_75_34_24"
+
+[[spawn]]
+npc = "npc.ghost4"
+coords = "0_34_75_42_43"
+
+[[spawn]]
+npc = "npc.ghost5"
+coords = "0_34_75_30_24"
+
+[[spawn]]
+npc = "npc.ghost5"
+coords = "0_34_75_47_48"
+
+[[spawn]]
+npc = "npc.ghost6"
+coords = "0_34_75_22_25"
+
+[[spawn]]
+npc = "npc.ghost6"
+coords = "0_34_75_49_50"
+
+[[spawn]]
+npc = "npc.ghost7"
+coords = "0_34_75_18_24"
+
+[[spawn]]
+npc = "npc.ghost7"
+coords = "0_34_75_50_55"
+
+[[spawn]]
+npc = "npc.ghost8"
+coords = "0_34_75_14_20"
+
+[[spawn]]
+npc = "npc.ghost8"
+coords = "0_34_75_42_37"
+

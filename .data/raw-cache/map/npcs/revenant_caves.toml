@@ -1,0 +1,28 @@
+[[spawn]]
+npc = "npc.wild_cave_dragon"
+coords = "0_50_159_30_25"
+
+[[spawn]]
+npc = "npc.wild_cave_dragon"
+coords = "0_50_159_44_22"
+
+[[spawn]]
+npc = "npc.wild_cave_imp"
+coords = "0_49_157_61_22"
+
+[[spawn]]
+npc = "npc.wild_cave_imp"
+coords = "0_50_159_12_20"
+
+[[spawn]]
+npc = "npc.wild_cave_imp"
+coords = "0_50_159_18_12"
+
+[[spawn]]
+npc = "npc.wild_cave_knight"
+coords = "0_50_159_28_45"
+
+[[spawn]]
+npc = "npc.wild_cave_knight"
+coords = "0_50_159_9_40"
+

@@ -1,0 +1,702 @@
+[[spawn]]
+npc = "npc.chicken"
+coords = "0_51_95_36_28"
+
+[[spawn]]
+npc = "npc.chicken"
+coords = "0_51_95_46_24"
+
+[[spawn]]
+npc = "npc.chicken_brown"
+coords = "0_51_95_35_26"
+
+[[spawn]]
+npc = "npc.chicken_brown"
+coords = "0_51_95_41_24"
+
+[[spawn]]
+npc = "npc.crab_2"
+coords = "0_51_94_34_26"
+
+[[spawn]]
+npc = "npc.crab_2"
+coords = "0_51_94_39_28"
+
+[[spawn]]
+npc = "npc.crab_2"
+coords = "0_51_94_40_25"
+
+[[spawn]]
+npc = "npc.deadman_guard_prif"
+coords = "0_50_94_62_60"
+
+[[spawn]]
+npc = "npc.deadman_guard_prif"
+coords = "0_50_95_60_8"
+
+[[spawn]]
+npc = "npc.deadman_guard_prif"
+coords = "0_51_95_7_3"
+
+[[spawn]]
+npc = "npc.deadman_guard_prif"
+coords = "2_50_94_59_62"
+
+[[spawn]]
+npc = "npc.deadman_guard_prif"
+coords = "2_50_95_59_7"
+
+[[spawn]]
+npc = "npc.deadman_guard_prif"
+coords = "2_51_94_0_62"
+
+[[spawn]]
+npc = "npc.deadman_guard_prif"
+coords = "2_51_95_4_3"
+
+[[spawn]]
+npc = "npc.eluned_prif"
+coords = "0_50_94_29_46"
+
+[[spawn]]
+npc = "npc.fai_squirrel_02"
+coords = "0_51_95_36_37"
+
+[[spawn]]
+npc = "npc.farming_tools_leprechaun"
+coords = "0_51_95_31_25"
+
+[[spawn]]
+npc = "npc.ii_impling_type_12_precursor"
+coords = "0_51_95_44_37"
+
+[[spawn]]
+npc = "npc.ilfeen_prif"
+coords = "0_50_94_37_56"
+
+[[spawn]]
+npc = "npc.islwyn_prif"
+coords = "0_51_94_36_48"
+
+[[spawn]]
+npc = "npc.lady_hefin"
+coords = "0_50_95_45_46"
+
+[[spawn]]
+npc = "npc.lady_ithell"
+coords = "0_50_94_21_48"
+
+[[spawn]]
+npc = "npc.lady_meilyr"
+coords = "0_51_95_15_45"
+
+[[spawn]]
+npc = "npc.lady_trahaearn"
+coords = "0_51_94_15_24"
+
+[[spawn]]
+npc = "npc.lord_amlodd"
+coords = "0_50_95_22_18"
+
+[[spawn]]
+npc = "npc.lord_cadarn"
+coords = "0_51_94_41_50"
+
+[[spawn]]
+npc = "npc.lord_crwys"
+coords = "0_51_95_41_20"
+
+[[spawn]]
+npc = "npc.lord_iorwerth_new"
+coords = "0_50_94_48_24"
+
+[[spawn]]
+npc = "npc.prif_acorn_trader"
+coords = "0_51_95_28_40"
+
+[[spawn]]
+npc = "npc.prif_agility"
+coords = "0_50_95_49_26"
+
+[[spawn]]
+npc = "npc.prif_citizen_anaire"
+coords = "0_51_94_18_59"
+
+[[spawn]]
+npc = "npc.prif_citizen_aranwe"
+coords = "2_50_95_38_37"
+
+[[spawn]]
+npc = "npc.prif_citizen_caranthir"
+coords = "2_51_94_38_49"
+
+[[spawn]]
+npc = "npc.prif_citizen_celegorm"
+coords = "0_51_94_51_33"
+
+[[spawn]]
+npc = "npc.prif_citizen_cirdan"
+coords = "0_51_94_27_45"
+
+[[spawn]]
+npc = "npc.prif_citizen_curufin"
+coords = "0_50_95_44_36"
+
+[[spawn]]
+npc = "npc.prif_citizen_earwen"
+coords = "2_51_94_21_28"
+
+[[spawn]]
+npc = "npc.prif_citizen_edrahil"
+coords = "0_51_95_34_19"
+
+[[spawn]]
+npc = "npc.prif_citizen_elenwe"
+coords = "0_50_94_58_35"
+
+[[spawn]]
+npc = "npc.prif_citizen_enel"
+coords = "2_51_95_42_24"
+
+[[spawn]]
+npc = "npc.prif_citizen_enerdhil"
+coords = "0_50_95_31_19"
+
+[[spawn]]
+npc = "npc.prif_citizen_erestor"
+coords = "0_50_94_50_50"
+
+[[spawn]]
+npc = "npc.prif_citizen_feanor"
+coords = "0_50_94_40_40"
+
+[[spawn]]
+npc = "npc.prif_citizen_findis"
+coords = "2_50_95_26_25"
+
+[[spawn]]
+npc = "npc.prif_citizen_finduilas"
+coords = "0_50_95_24_7"
+
+[[spawn]]
+npc = "npc.prif_citizen_fingolfin"
+coords = "0_50_95_60_9"
+
+[[spawn]]
+npc = "npc.prif_citizen_fingon"
+coords = "0_51_95_52_23"
+
+[[spawn]]
+npc = "npc.prif_citizen_galathil"
+coords = "2_50_94_36_39"
+
+[[spawn]]
+npc = "npc.prif_citizen_gelmir"
+coords = "0_50_94_47_62"
+
+[[spawn]]
+npc = "npc.prif_citizen_guilin"
+coords = "0_51_94_11_41"
+
+[[spawn]]
+npc = "npc.prif_citizen_hendor"
+coords = "2_50_95_42_41"
+
+[[spawn]]
+npc = "npc.prif_citizen_idril"
+coords = "0_50_94_21_40"
+
+[[spawn]]
+npc = "npc.prif_citizen_imin"
+coords = "0_51_95_24_53"
+
+[[spawn]]
+npc = "npc.prif_citizen_iminye"
+coords = "0_50_95_45_12"
+
+[[spawn]]
+npc = "npc.prif_citizen_indis"
+coords = "0_51_94_5_63"
+
+[[spawn]]
+npc = "npc.prif_citizen_ingwion"
+coords = "0_50_94_30_33"
+
+[[spawn]]
+npc = "npc.prif_citizen_lenwe"
+coords = "2_51_95_24_27"
+
+[[spawn]]
+npc = "npc.prif_citizen_maeglin"
+coords = "0_51_95_33_2"
+
+[[spawn]]
+npc = "npc.prif_citizen_mahtan"
+coords = "0_50_95_55_2"
+
+[[spawn]]
+npc = "npc.prif_citizen_nellas"
+coords = "0_51_95_33_16"
+
+[[spawn]]
+npc = "npc.prif_citizen_nerdanel"
+coords = "2_50_94_42_29"
+
+[[spawn]]
+npc = "npc.prif_citizen_oropher"
+coords = "0_51_95_18_30"
+
+[[spawn]]
+npc = "npc.prif_citizen_orophin"
+coords = "0_50_94_63_27"
+
+[[spawn]]
+npc = "npc.prif_citizen_saeros"
+coords = "0_51_94_37_57"
+
+[[spawn]]
+npc = "npc.prif_citizen_turgon"
+coords = "2_51_94_16_50"
+
+[[spawn]]
+npc = "npc.prif_citizen_vaire"
+coords = "0_51_94_0_41"
+
+[[spawn]]
+npc = "npc.prif_gardener"
+coords = "0_51_95_28_21"
+
+[[spawn]]
+npc = "npc.prif_gem"
+coords = "0_51_95_13_21"
+
+[[spawn]]
+npc = "npc.prif_gladiator1"
+coords = "0_50_94_46_35"
+
+[[spawn]]
+npc = "npc.prif_gladiator2"
+coords = "0_50_94_47_34"
+
+[[spawn]]
+npc = "npc.prif_guard0"
+coords = "0_50_94_10_61"
+
+[[spawn]]
+npc = "npc.prif_guard0"
+coords = "2_51_95_30_33"
+
+[[spawn]]
+npc = "npc.prif_guard1"
+coords = "0_50_95_48_2"
+
+[[spawn]]
+npc = "npc.prif_guard1"
+coords = "0_51_95_54_2"
+
+[[spawn]]
+npc = "npc.prif_guard1"
+coords = "2_50_95_33_33"
+
+[[spawn]]
+npc = "npc.prif_guard2"
+coords = "0_50_95_63_19"
+
+[[spawn]]
+npc = "npc.prif_guard2"
+coords = "0_51_94_54_61"
+
+[[spawn]]
+npc = "npc.prif_guard2"
+coords = "0_51_95_11_18"
+
+[[spawn]]
+npc = "npc.prif_guard2"
+coords = "2_50_95_52_14"
+
+[[spawn]]
+npc = "npc.prif_guard3"
+coords = "0_51_94_2_10"
+
+[[spawn]]
+npc = "npc.prif_guard3"
+coords = "0_51_95_15_20"
+
+[[spawn]]
+npc = "npc.prif_guard3"
+coords = "0_51_95_17_2"
+
+[[spawn]]
+npc = "npc.prif_guard3"
+coords = "0_51_95_2_53"
+
+[[spawn]]
+npc = "npc.prif_guard3"
+coords = "2_51_94_12_54"
+
+[[spawn]]
+npc = "npc.prif_guard4"
+coords = "0_50_94_61_10"
+
+[[spawn]]
+npc = "npc.prif_guard4"
+coords = "2_50_94_33_36"
+
+[[spawn]]
+npc = "npc.prif_guard5"
+coords = "2_50_94_52_55"
+
+[[spawn]]
+npc = "npc.prif_guard6"
+coords = "0_50_95_61_53"
+
+[[spawn]]
+npc = "npc.prif_guard6"
+coords = "0_51_94_0_50"
+
+[[spawn]]
+npc = "npc.prif_guard6"
+coords = "0_51_95_15_14"
+
+[[spawn]]
+npc = "npc.prif_guard6"
+coords = "2_51_94_30_36"
+
+[[spawn]]
+npc = "npc.prif_guard7"
+coords = "0_50_95_10_2"
+
+[[spawn]]
+npc = "npc.prif_guard7"
+coords = "2_51_95_11_14"
+
+[[spawn]]
+npc = "npc.prif_priest"
+coords = "2_50_95_63_10"
+
+[[spawn]]
+npc = "npc.prif_rangestore"
+coords = "0_51_94_41_58"
+
+[[spawn]]
+npc = "npc.prif_raven"
+coords = "0_50_95_35_26"
+
+[[spawn]]
+npc = "npc.prif_ry"
+coords = "0_51_94_38_28"
+
+[[spawn]]
+npc = "npc.prif_silk"
+coords = "0_51_95_17_13"
+
+[[spawn]]
+npc = "npc.prif_silver"
+coords = "0_51_95_18_19"
+
+[[spawn]]
+npc = "npc.prif_spectator1"
+coords = "0_50_94_44_34"
+
+[[spawn]]
+npc = "npc.prif_spectator10"
+coords = "0_50_94_45_32"
+
+[[spawn]]
+npc = "npc.prif_spectator2"
+coords = "0_50_94_44_35"
+
+[[spawn]]
+npc = "npc.prif_spectator3"
+coords = "0_50_94_46_37"
+
+[[spawn]]
+npc = "npc.prif_spectator4"
+coords = "0_50_94_47_37"
+
+[[spawn]]
+npc = "npc.prif_spectator5"
+coords = "0_50_94_49_35"
+
+[[spawn]]
+npc = "npc.prif_spectator6"
+coords = "0_50_94_49_34"
+
+[[spawn]]
+npc = "npc.prif_spectator7"
+coords = "0_50_94_48_32"
+
+[[spawn]]
+npc = "npc.prif_spectator8"
+coords = "0_50_94_46_38"
+
+[[spawn]]
+npc = "npc.prif_spectator9"
+coords = "0_50_94_43_33"
+
+[[spawn]]
+npc = "npc.prif_spice"
+coords = "0_51_95_13_13"
+
+[[spawn]]
+npc = "npc.regicide_bunny1"
+coords = "0_51_94_20_34"
+
+[[spawn]]
+npc = "npc.regicide_bunny1"
+coords = "0_51_94_27_47"
+
+[[spawn]]
+npc = "npc.regicide_bunny1"
+coords = "0_51_94_47_38"
+
+[[spawn]]
+npc = "npc.regicide_bunny1"
+coords = "0_51_94_47_50"
+
+[[spawn]]
+npc = "npc.regicide_bunny1"
+coords = "0_51_95_27_45"
+
+[[spawn]]
+npc = "npc.regicide_bunny1"
+coords = "0_51_95_33_37"
+
+[[spawn]]
+npc = "npc.regicide_bunny1"
+coords = "0_51_95_36_48"
+
+[[spawn]]
+npc = "npc.regicide_bunny1"
+coords = "0_51_95_36_50"
+
+[[spawn]]
+npc = "npc.regicide_bunny1"
+coords = "0_51_95_42_42"
+
+[[spawn]]
+npc = "npc.regicide_bunny1"
+coords = "0_51_95_44_43"
+
+[[spawn]]
+npc = "npc.regicide_bunny1"
+coords = "0_51_95_46_30"
+
+[[spawn]]
+npc = "npc.regicide_bunny1"
+coords = "0_51_95_50_41"
+
+[[spawn]]
+npc = "npc.regicide_bunny2"
+coords = "0_51_94_12_17"
+
+[[spawn]]
+npc = "npc.regicide_bunny2"
+coords = "0_51_94_19_36"
+
+[[spawn]]
+npc = "npc.regicide_bunny2"
+coords = "0_51_94_34_24"
+
+[[spawn]]
+npc = "npc.regicide_bunny2"
+coords = "0_51_94_39_54"
+
+[[spawn]]
+npc = "npc.regicide_bunny2"
+coords = "0_51_94_41_34"
+
+[[spawn]]
+npc = "npc.regicide_rabbit"
+coords = "0_51_94_46_24"
+
+## Branwen's Farming Shop
+
+[[spawn]]
+npc = "npc.prif_farmingstore"
+coords = "0_51_95_32_8"
+
+## Construction supplies
+
+[[spawn]]
+npc = "npc.fai_squirrel_02"
+coords = "0_51_95_49_37"
+
+[[spawn]]
+npc = "npc.prif_sawmill_operator"
+coords = "0_51_95_51_36"
+
+## Iorwerth's Arms
+
+[[spawn]]
+npc = "npc.prif_weaponstore"
+coords = "0_50_94_58_42"
+
+## Iwan's Maces
+
+[[spawn]]
+npc = "npc.prif_macestore"
+coords = "0_50_95_55_46"
+
+## Prifddinas Bank
+
+[[spawn]]
+npc = "npc.prif_bankerf2"
+coords = "0_50_95_55_23"
+
+[[spawn]]
+npc = "npc.prif_bankerm2"
+coords = "0_50_95_56_31"
+
+[[spawn]]
+npc = "npc.prif_bankerm3"
+coords = "0_50_95_58_31"
+
+[[spawn]]
+npc = "npc.prif_bankerm4"
+coords = "0_50_95_56_23"
+
+[[spawn]]
+npc = "npc.prif_bankerm4"
+coords = "0_50_95_58_23"
+
+## Prifddinas General Store
+
+[[spawn]]
+npc = "npc.prif_generalstore"
+coords = "0_51_94_38_36"
+
+## Prifddinas Herbal Supplies
+
+[[spawn]]
+npc = "npc.prif_citizen_nimloth"
+coords = "2_51_95_22_40"
+
+[[spawn]]
+npc = "npc.prif_herbstore"
+coords = "0_51_95_23_38"
+
+## Prifddinas Interiors
+
+[[spawn]]
+npc = "npc.elena_prif"
+coords = "0_51_95_12_38"
+
+[[spawn]]
+npc = "npc.prif_armourstore"
+coords = "0_50_94_52_44"
+
+[[spawn]]
+npc = "npc.prif_bartender"
+coords = "0_50_95_37_47"
+
+[[spawn]]
+npc = "npc.prif_citizen_amrod"
+coords = "0_50_95_35_45"
+
+[[spawn]]
+npc = "npc.prif_citizen_aredhel"
+coords = "0_51_94_43_40"
+
+[[spawn]]
+npc = "npc.prif_citizen_celebrian"
+coords = "0_51_95_5_45"
+
+[[spawn]]
+npc = "npc.prif_citizen_elladan"
+coords = "0_51_94_9_21"
+
+[[spawn]]
+npc = "npc.prif_citizen_enelye"
+coords = "2_50_94_27_42"
+
+[[spawn]]
+npc = "npc.prif_citizen_glorfindel"
+coords = "0_51_94_45_38"
+
+[[spawn]]
+npc = "npc.prif_citizen_ingwe"
+coords = "0_51_94_23_38"
+
+[[spawn]]
+npc = "npc.prif_citizen_lindir"
+coords = "0_50_94_43_54"
+
+[[spawn]]
+npc = "npc.prif_citizen_miriel"
+coords = "0_50_95_38_44"
+
+[[spawn]]
+npc = "npc.prif_citizen_mithrellas"
+coords = "0_50_94_31_60"
+
+[[spawn]]
+npc = "npc.prif_citizen_salgant"
+coords = "0_51_95_5_34"
+
+[[spawn]]
+npc = "npc.prif_citizen_thingol"
+coords = "0_50_94_37_25"
+
+[[spawn]]
+npc = "npc.prif_dyestore"
+coords = "0_50_94_28_39"
+
+[[spawn]]
+npc = "npc.prif_estate_agent"
+coords = "0_50_94_18_42"
+
+[[spawn]]
+npc = "npc.prif_foodstore"
+coords = "0_51_95_10_23"
+
+[[spawn]]
+npc = "npc.prif_lliann"
+coords = "0_50_94_30_52"
+
+[[spawn]]
+npc = "npc.prif_miningstore"
+coords = "0_51_94_26_28"
+
+[[spawn]]
+npc = "npc.prif_seamstress"
+coords = "0_50_94_22_58"
+
+[[spawn]]
+npc = "npc.prif_singer1_multi"
+coords = "0_51_94_31_27"
+
+[[spawn]]
+npc = "npc.prif_singer2_multi"
+coords = "0_50_94_38_50"
+
+## Prifddinas Interiors Raised
+
+[[spawn]]
+npc = "npc.prif_citizen_tatie"
+coords = "0_50_95_32_9"
+
+[[spawn]]
+npc = "npc.prif_runestore"
+coords = "0_50_95_21_36"
+
+[[spawn]]
+npc = "npc.prif_staffstore"
+coords = "0_50_95_17_9"
+
+## Prifddinas south bank
+
+[[spawn]]
+npc = "npc.prif_bankerf1"
+coords = "0_51_94_33_42"
+
+[[spawn]]
+npc = "npc.prif_bankerf1"
+coords = "0_51_94_33_44"
+
+[[spawn]]
+npc = "npc.prif_bankerm1"
+coords = "0_51_94_33_43"
+
+## Prifddinas south bank End
+

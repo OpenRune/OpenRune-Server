@@ -1,0 +1,122 @@
+## Fishing Trawler Boat Port Khazard
+
+[[spawn]]
+npc = "npc.murphy_lobby"
+coords = "1_41_49_47_36"
+
+## Fishing Trawler Flooded
+
+[[spawn]]
+npc = "npc.gull1"
+coords = "0_31_75_36_16"
+
+[[spawn]]
+npc = "npc.gull2"
+coords = "0_31_75_30_18"
+
+[[spawn]]
+npc = "npc.gull2"
+coords = "0_31_75_30_32"
+
+[[spawn]]
+npc = "npc.gull2"
+coords = "0_31_75_34_31"
+
+[[spawn]]
+npc = "npc.gull2"
+coords = "0_31_75_39_20"
+
+[[spawn]]
+npc = "npc.murphy_halfsunk"
+coords = "0_31_75_29_25"
+
+[[spawn]]
+npc = "npc.trawler_tentacle_port"
+coords = "0_31_75_27_30"
+
+[[spawn]]
+npc = "npc.trawler_tentacle_port"
+coords = "1_31_75_27_30"
+
+[[spawn]]
+npc = "npc.trawler_tentacle_starboard"
+coords = "0_31_75_27_18"
+
+[[spawn]]
+npc = "npc.trawler_tentacle_starboard"
+coords = "1_31_75_27_18"
+
+## Fishing Trawler Main
+
+[[spawn]]
+npc = "npc.gull1"
+coords = "0_29_75_28_15"
+
+[[spawn]]
+npc = "npc.gull1"
+coords = "0_29_75_37_32"
+
+[[spawn]]
+npc = "npc.gull1"
+coords = "0_29_75_40_19"
+
+[[spawn]]
+npc = "npc.gull2"
+coords = "0_29_75_32_31"
+
+[[spawn]]
+npc = "npc.gull2"
+coords = "0_29_75_33_18"
+
+[[spawn]]
+npc = "npc.murphy_normal"
+coords = "0_29_75_29_25"
+
+[[spawn]]
+npc = "npc.trawler_tentacle_port"
+coords = "0_29_75_27_30"
+
+[[spawn]]
+npc = "npc.trawler_tentacle_port"
+coords = "1_29_75_27_30"
+
+[[spawn]]
+npc = "npc.trawler_tentacle_starboard"
+coords = "0_29_75_27_18"
+
+[[spawn]]
+npc = "npc.trawler_tentacle_starboard"
+coords = "1_29_75_27_18"
+
+## Fishing Trawler Sunk
+
+[[spawn]]
+npc = "npc.fin1"
+coords = "0_30_75_35_33"
+
+[[spawn]]
+npc = "npc.fin2"
+coords = "0_30_75_30_19"
+
+[[spawn]]
+npc = "npc.gull1"
+coords = "0_30_75_20_31"
+
+[[spawn]]
+npc = "npc.gull1"
+coords = "0_30_75_24_14"
+
+[[spawn]]
+npc = "npc.gull2"
+coords = "0_30_75_28_33"
+
+[[spawn]]
+npc = "npc.gull2"
+coords = "0_30_75_45_16"
+
+[[spawn]]
+npc = "npc.murphy_sunk"
+coords = "0_30_75_27_27"
+
+## Fishing Trawler Sunk End
+

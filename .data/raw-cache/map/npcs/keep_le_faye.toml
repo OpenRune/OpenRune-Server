@@ -1,0 +1,88 @@
+[[spawn]]
+npc = "npc.bat"
+coords = "0_43_53_0_17"
+
+[[spawn]]
+npc = "npc.bat"
+coords = "0_43_53_1_4"
+
+[[spawn]]
+npc = "npc.bat"
+coords = "0_43_53_7_9"
+
+[[spawn]]
+npc = "npc.renegade_knight"
+coords = "0_43_53_14_5"
+
+[[spawn]]
+npc = "npc.renegade_knight"
+coords = "0_43_53_15_7"
+
+[[spawn]]
+npc = "npc.renegade_knight"
+coords = "0_43_53_21_7"
+
+[[spawn]]
+npc = "npc.renegade_knight"
+coords = "1_43_53_14_14"
+
+[[spawn]]
+npc = "npc.renegade_knight"
+coords = "1_43_53_15_8"
+
+[[spawn]]
+npc = "npc.renegade_knight"
+coords = "1_43_53_18_4"
+
+[[spawn]]
+npc = "npc.renegade_knight"
+coords = "1_43_53_19_10"
+
+[[spawn]]
+npc = "npc.renegade_knight"
+coords = "1_43_53_22_13"
+
+[[spawn]]
+npc = "npc.sir_mordred"
+coords = "2_43_53_17_11"
+
+## Keep Le Faye Jail
+
+[[spawn]]
+npc = "npc.kr_cam_gawain_jail"
+coords = "0_29_66_50_53"
+
+[[spawn]]
+npc = "npc.kr_cam_kay_jail"
+coords = "0_29_66_48_50"
+
+[[spawn]]
+npc = "npc.kr_cam_pelleas_jail"
+coords = "0_29_66_48_55"
+
+[[spawn]]
+npc = "npc.kr_keep_guard_hair"
+coords = "0_29_66_50_46"
+
+[[spawn]]
+npc = "npc.kr_keep_knight"
+coords = "0_29_66_45_47"
+
+[[spawn]]
+npc = "npc.kr_keep_knight"
+coords = "0_29_66_53_47"
+
+[[spawn]]
+npc = "npc.kr_multi_merlin_jail"
+coords = "0_29_66_50_57"
+
+[[spawn]]
+npc = "npc.renegade_knight"
+coords = "0_29_66_45_47"
+
+[[spawn]]
+npc = "npc.renegade_knight"
+coords = "0_29_66_53_47"
+
+## Keep Le Faye Jail End
+

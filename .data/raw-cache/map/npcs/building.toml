@@ -1,0 +1,8 @@
+[[spawn]]
+npc = "npc.brother_kojo"
+coords = "0_40_50_9_49"
+
+[[spawn]]
+npc = "npc.tol_homonculus_multi"
+coords = "3_41_50_24_17"
+

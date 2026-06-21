@@ -1,0 +1,16 @@
+[[spawn]]
+npc = "npc.fairytale2_cosmic_entity"
+coords = "0_32_75_42_29"
+
+[[spawn]]
+npc = "npc.shootingstar_cosmic_entity_npc"
+coords = "2_32_75_10_28"
+
+[[spawn]]
+npc = "npc.shootingstar_cosmic_entity_npc"
+coords = "2_32_75_51_33"
+
+[[spawn]]
+npc = "npc.shootingstar_cosmic_entity_npc2"
+coords = "2_32_75_17_34"
+
