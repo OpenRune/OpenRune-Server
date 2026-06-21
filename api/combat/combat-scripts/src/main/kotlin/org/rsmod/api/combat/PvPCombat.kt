@@ -236,8 +236,8 @@ constructor(
         // Official behavior: If the weapon (quiver or righthand, based on the thrown weapon flag)
         // has no `proj_launch` param, a "null" (-1) spotanim will still be sent in the same slot
         // and height as usual.
-        val launchSpotanim = weaponType.paramOrNull(params.proj_launch)
-        spotanim(RSCM.getReverseMapping(RSCMType.SPOTANIM,launchSpotanim!!.id), height = 96, slot = constants.spotanim_slot_combat)
+        val launchSpotanim = weaponType.paramOrNull(params.proj_launch)?.id ?: NULL_SPOTANIM_ID
+        player.spotanim(launchSpotanim, height = 96, slot = constants.spotanim_slot_combat)
 
         val projanim = manager.spawnProjectile(player, target, travelSpotanim, projanimType)
         val (serverDelay, clientDelay) = projanim.durations
