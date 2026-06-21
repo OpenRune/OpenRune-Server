@@ -6,6 +6,7 @@ import org.rsmod.plugin.module.PluginModule
 public class MagicSpellModule : PluginModule() {
     override fun bind() {
         bindProvider(RepositoryProvider::class.java)
+        bindInstance<MagicSpellCoverage>()
     }
 
     // Since other plugin scripts rely on `MagicSpellRegistry` always being populated with the

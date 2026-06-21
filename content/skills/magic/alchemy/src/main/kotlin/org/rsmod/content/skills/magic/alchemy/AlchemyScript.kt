@@ -136,8 +136,8 @@ constructor(
         }
 
         actionDelay = mapClock + alchemy.castDelay
-        PathingEntityCommon.anim(player, alchemy.castingAnim, delay = 0, priority = 0)
-        player.spotanim(alchemy.castingSpotanim, height = AlchemySpotanimHeight)
+        PathingEntityCommon.anim(player, RSCM.getReverseMapping(RSCMType.SEQ,alchemy.castingAnim), delay = 0, priority = 0)
+        player.spotanim(RSCM.getReverseMapping(RSCMType.SPOTANIM,alchemy.castingSpotanim), height = AlchemySpotanimHeight)
         soundSynth(alchemy.sound, delay = AlchemySoundDelay)
         runClientScript(ToplevelSidebuttonSwitch, SpellbookSideTab)
         statAdvance("stat.magic", spell.castXp)

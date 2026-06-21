@@ -1,29 +1,32 @@
 package org.rsmod.content.drops.toml
 
+import dtx.rs.RSPrerollTableBuilder
 import dtx.rs.RSWeightedTable
+import jakarta.inject.Inject
 import jakarta.inject.Singleton
+import org.rsmod.api.area.checker.AreaChecker
+import org.rsmod.api.area.checker.isInWilderness
 import org.rsmod.api.droptable.DropRollItem
 import org.rsmod.api.droptable.PendingDropItemConfig
 import org.rsmod.api.droptable.toml.DropTableTomlResolver
 import org.rsmod.api.droptable.toml.TomlDropHooks
-import org.rsmod.content.drops.hasCompletedQuest
-import org.rsmod.content.drops.isOnQuest
-import dtx.rs.RSPrerollTableBuilder
-import jakarta.inject.Inject
-import org.rsmod.api.area.checker.AreaChecker
+import org.rsmod.api.droptable.wearingRingOfWealth
 import org.rsmod.content.drops.brimstoneKeyRoll
 import org.rsmod.content.drops.clueScrollTransformObj
-import org.rsmod.api.area.checker.isInWilderness
-import org.rsmod.api.droptable.wearingRingOfWealth
 import org.rsmod.content.drops.shouldDropBrimstoneKey
 import org.rsmod.content.drops.shouldDropLootingBag
 import org.rsmod.content.drops.tables.shared.SharedDropTables
-import org.rsmod.game.MapClock
+import org.rsmod.content.quest.manager.QuestRequirement
+import org.rsmod.content.quest.manager.QuestRequirementResolver
 import org.rsmod.game.entity.Player
-import org.rsmod.game.entity.PlayerList
 
 @Singleton
-public class ContentDropTableTomlResolver @Inject constructor(private val areaChecker: AreaChecker) : DropTableTomlResolver {
+public class ContentDropTableTomlResolver
+@Inject
+constructor(
+    private val areaChecker: AreaChecker,
+    private val questRequirements: QuestRequirementResolver,
+) : DropTableTomlResolver {
     override fun sharedTable(name: String): RSWeightedTable<Player, DropRollItem> {
         val table =
             SHARED_TABLES[name]
@@ -48,9 +51,15 @@ public class ContentDropTableTomlResolver @Inject constructor(private val areaCh
             val quest = hooks.quest!!
             val questCondition: (Player) -> Boolean =
                 when (hooks.questMode?.lowercase()) {
-                    "completed" -> { player -> player.hasCompletedQuest(quest) }
-                    "not_completed" -> { player -> !player.hasCompletedQuest(quest) }
-                    "during", null -> { player -> player.isOnQuest(quest) }
+                    "completed" -> { player ->
+                        questRequirements.satisfies(player, quest, QuestRequirement.Completed)
+                    }
+                    "not_completed" -> { player ->
+                        questRequirements.satisfies(player, quest, QuestRequirement.NotCompleted)
+                    }
+                    "during", null -> { player ->
+                        questRequirements.satisfies(player, quest, QuestRequirement.InProgress)
+                    }
                     else ->
                         error(
                             "Invalid quest_mode '${hooks.questMode}' for quest '$quest'. " +

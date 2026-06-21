@@ -81,7 +81,7 @@ constructor(
             }
 
             val priority = type.priority.coerceIn(0, 254)
-            npc.anim(seqId, priority = priority)
+            npc.anim(type.internalName, priority = priority)
             player.mes(
                 "NPC anim: `${npc.name}` (${npc.id}) seq=$seqId${mappingSuffix(RSCMType.SEQ, seqId)} priority=$priority"
             )
@@ -123,7 +123,7 @@ constructor(
             }
 
             val slot = 0
-            npc.spotanim(spotanimId, height = height, slot = slot)
+            npc.spotanim(RSCM.getReverseMapping(RSCMType.SPOTANIM,spotanimId), height = height, slot = slot)
             player.mes(
                 "NPC spotanim: `${npc.name}` (${npc.id}) spot=$spotanimId${mappingSuffix(RSCMType.SPOTANIM, spotanimId)} height=$height slot=$slot"
             )
@@ -195,7 +195,7 @@ constructor(
                     type = projanimType,
                 )
             if (impactSpotanimId != NO_IMPACT_SPOTANIM) {
-                player.spotanim(impactSpotanimId, delay = projectile.clientCycles)
+                player.spotanim(RSCM.getReverseMapping(RSCMType.SPOTANIM,impactSpotanimId), delay = projectile.clientCycles)
             }
 
             val impact =

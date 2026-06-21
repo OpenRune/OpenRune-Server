@@ -2,11 +2,14 @@ package org.rsmod.content.interfaces.combat.tab
 
 import dev.openrune.ServerCacheManager
 import dev.openrune.types.ItemServerType
+import dev.openrune.types.aconverted.interf.IfButtonOp
 import dev.openrune.types.enums.EnumTypeNonNullMap
 import dev.openrune.util.WeaponCategory
 import dev.openrune.util.Wearpos
 import jakarta.inject.Inject
 import org.rsmod.api.combat.commons.CombatStance
+import org.rsmod.api.combat.commons.magic.MagicSpell
+import org.rsmod.api.combat.commons.magic.Spellbook
 import org.rsmod.api.combat.commons.styles.MeleeAttackStyle
 import org.rsmod.api.combat.manager.MagicRuneManager
 import org.rsmod.api.combat.weapon.styles.AttackStyles
@@ -20,6 +23,7 @@ import org.rsmod.api.player.ui.ifClose
 import org.rsmod.api.player.vars.VarPlayerIntMapSetter
 import org.rsmod.api.player.vars.boolVarBit
 import org.rsmod.api.player.vars.boolVarp
+import org.rsmod.api.player.vars.enumVarBit
 import org.rsmod.api.player.vars.enumVarp
 import org.rsmod.api.player.vars.intVarBit
 import org.rsmod.api.script.advanced.onWearposChange
@@ -64,6 +68,7 @@ constructor(
     private var Player.autocastEnabled by boolVarBit("varbit.autocast_set")
     private var Player.autocastSpell by intVarBit("varbit.autocast_spell")
     private var Player.defensiveCasting by boolVarBit("varbit.autocast_defmode")
+    private var Player.spellbook by enumVarBit<Spellbook>("varbit.spellbook")
 
     private lateinit var stanceSaveVarBits: EnumTypeNonNullMap<Int, Int>
 
@@ -84,6 +89,10 @@ constructor(
         onIfOverlayButton("component.combat_interface:special_attack") { player.toggleSpecialAttack() }
         onIfOverlayButton("component.orbs:specbutton") { player.toggleSpecialAttack() }
         onPlayerQueue("queue.sa_instant_spec") { activateInstantSpecial() }
+
+        for ((autocastId, spell) in spells.autocastSpells()) {
+            onIfOverlayButton(spell.component) { player.selectAutocastSpell(autocastId, spell, it.op) }
+        }
     }
 
     private fun Player.updateCombatTab() {
@@ -163,6 +172,45 @@ constructor(
         autocastSpell = savedAutocastId
         defensiveCasting = savedDefensiveCast
         autocastEnabled = autocastSpell != 0
+    }
+
+    private fun Player.selectAutocastSpell(autocastId: Int, spell: MagicSpell, op: IfButtonOp) {
+        val opText = spell.component.op.getOrNull(op.slot - 1) ?: return
+        if (!opText.contains("autocast", ignoreCase = true)) {
+            return
+        }
+
+        ifClose(eventBus)
+
+        val weaponType = getOrNull(righthand)
+        val weaponCategory = WeaponCategory.getOrUnarmed(weaponType?.weaponCategory?.id)
+        val autocastVarBits = autocast.getVarBits(weaponCategory)
+        if (weaponType == null || autocastVarBits == null) {
+            mes("You need to wield a staff to autocast spells.")
+            return
+        }
+
+        if (spell.spellbook != spellbook) {
+            mes("You can't autocast that spell with your current active spellbook.")
+            return
+        }
+
+        val canUseStaff = autocast.canStaffAutocast(this, weaponType, autocastId)
+        if (!canUseStaff) {
+            return
+        }
+
+        val canCastSpell = runes.canCastSpell(this, spell)
+        if (!canCastSpell) {
+            return
+        }
+
+        val defensiveCast = opText.contains("defensive", ignoreCase = true)
+        autocast.set(this, autocastVarBits, autocastId, defensiveCast)
+        autocastSpell = autocastId
+        defensiveCasting = defensiveCast
+        autocastEnabled = true
+        PlayerInterfaceUpdates.updateCombatTab(this)
     }
 
     private fun Player.validateStanceStyle() {

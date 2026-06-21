@@ -22,6 +22,10 @@ public class MagicSpellRegistry {
 
     public fun getAutocastSpell(autocastId: Int): MagicSpell? = autocastSpells[autocastId]
 
+    public fun allSpells(): Collection<MagicSpell> = objSpells.values
+
+    public fun autocastSpells(): Map<Int, MagicSpell> = autocastSpells
+
     public fun combatSpells(): List<MagicSpell> =
         objSpells.values.filter { it.type == MagicSpellType.Combat }
 

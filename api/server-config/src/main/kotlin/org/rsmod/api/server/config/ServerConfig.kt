@@ -33,12 +33,28 @@ public data class PostgresDbYaml(
 )
 
 @JsonIgnoreProperties(ignoreUnknown = true)
+public data class GameplayConfig(
+    @JsonProperty("quest-requirements")
+    val questRequirements: QuestRequirementsYaml = QuestRequirementsYaml(),
+)
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+public data class QuestRequirementsYaml(
+    val mode: String = "assume-completed",
+    @JsonProperty("virtual-completions")
+    val virtualCompletions: Set<String> = emptySet(),
+    @JsonProperty("virtual-lines")
+    val virtualLines: Set<String> = emptySet(),
+)
+
+@JsonIgnoreProperties(ignoreUnknown = true)
 public data class ServerConfig(
     val name: String,
     @JsonProperty("game-port") val gamePort: Int,
     val revision: Int,
     val environment: String,
     val world: Int,
+    val gameplay: GameplayConfig = GameplayConfig(),
     val database: GameDatabaseYaml? = null,
     val central: OpenRuneCentralGameConfig? = null,
 )

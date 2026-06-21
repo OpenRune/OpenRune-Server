@@ -38,6 +38,11 @@ data class Quest(
 
     companion object {
         private val logger = InlineLogger()
+        private val questsByKey = mutableMapOf<String, Quest>()
+
+        fun get(key: String): Quest? = questsByKey[key.normalizedQuestKey()]
+
+        fun all(): Collection<Quest> = questsByKey.values
 
         fun register(
             rowKey: String,
@@ -48,7 +53,7 @@ data class Quest(
 
             val rowKeyID = "dbrow.${rowKey}".asRSCM()
             val questRow = QuestRow.getRow(rowKeyID)
-            return Quest(
+            val quest = Quest(
                 id = questRow.id,
                 rowID = rowKeyID,
                 key = rowKey,
@@ -61,6 +66,8 @@ data class Quest(
                 itemDisplay = itemDisplay,
                 rewards = rewards
             )
+            questsByKey[rowKey.normalizedQuestKey()] = quest
+            return quest
         }
     }
 
