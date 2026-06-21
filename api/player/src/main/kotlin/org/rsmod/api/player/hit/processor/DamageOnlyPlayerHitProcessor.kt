@@ -3,6 +3,7 @@ package org.rsmod.api.player.hit.processor
 import jakarta.inject.Inject
 import kotlin.math.min
 import org.rsmod.game.damage.recordDamageOn
+import org.rsmod.api.player.cheat.adminGodMode
 import org.rsmod.api.player.death.recordDeathCause
 import org.rsmod.api.player.death.resolveDeathCause
 import org.rsmod.api.player.events.PlayerHitpointsChangedEvent
@@ -26,6 +27,10 @@ constructor(
     private val playerList: PlayerList,
 ) : InstantPlayerHitProcessor {
     override fun Player.process(hit: Hit) {
+        if (adminGodMode) {
+            return
+        }
+
         val oldHitpoints = hitpoints
         val damage = min(oldHitpoints, hit.damage)
         if (damage > 0) {

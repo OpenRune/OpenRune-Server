@@ -34,6 +34,7 @@ import org.rsmod.api.death.PvPPlayerHitHook
 import org.rsmod.api.npc.hit.modifier.NpcHitModifier
 import org.rsmod.api.npc.hit.queueHit
 import org.rsmod.api.player.hit.queueHit
+import org.rsmod.api.player.cheat.adminMaxHit
 import org.rsmod.api.player.interact.NpcInteractions
 import org.rsmod.api.player.interact.NpcTInteractions
 import org.rsmod.api.player.interact.PlayerInteractions
@@ -519,6 +520,9 @@ constructor(
         blockType: MeleeAttackType?,
         multiplier: Double,
     ): Boolean {
+        if (source.adminMaxHit) {
+            return true
+        }
         return when (target) {
             is Npc -> {
                 rollMeleeAccuracy(source, target, attackType, attackStyle, blockType, multiplier)
@@ -587,6 +591,9 @@ constructor(
         multiplier: Double,
     ): Int {
         val maxHit = calculateMeleeMaxHit(source, target, attackType, attackStyle, multiplier)
+        if (source.adminMaxHit) {
+            return maxHit
+        }
         return random.of(1..maxHit)
     }
 
@@ -769,6 +776,9 @@ constructor(
         blockType: RangedAttackType?,
         multiplier: Double,
     ): Boolean {
+        if (source.adminMaxHit) {
+            return true
+        }
         return when (target) {
             is Npc -> {
                 rollRangedAccuracy(source, target, attackType, attackStyle, blockType, multiplier)
@@ -844,6 +854,9 @@ constructor(
                 multiplier = multiplier,
                 boltSpecDamage = boltSpecDamage,
             )
+        if (source.adminMaxHit) {
+            return maxHit
+        }
         return random.of(1..maxHit)
     }
 
@@ -1112,11 +1125,15 @@ constructor(
         spell: ItemServerType,
         spellbook: Spellbook?,
         sunfireRune: Boolean,
-    ): Boolean =
-        when (target) {
+    ): Boolean {
+        if (source.adminMaxHit) {
+            return true
+        }
+        return when (target) {
             is Npc -> rollSpellAccuracy(source, target, spell, spellbook, sunfireRune)
             is Player -> rollSpellAccuracy(source, target, spell, spellbook, sunfireRune)
         }
+    }
 
     private fun rollSpellAccuracy(
         source: Player,
@@ -1188,6 +1205,9 @@ constructor(
                 attackRate = attackRate,
                 sunfireRune = sunfireRune,
             )
+        if (source.adminMaxHit) {
+            return hitRange.last
+        }
         return random.of(hitRange)
     }
 
@@ -1351,6 +1371,9 @@ constructor(
         multiplier: Double,
     ): Int {
         val maxHit = calculateStaffMaxHit(source, target, baseMaxHit, multiplier)
+        if (source.adminMaxHit) {
+            return maxHit
+        }
         return random.of(1..maxHit)
     }
 

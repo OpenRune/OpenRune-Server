@@ -19,6 +19,8 @@ import org.rsmod.api.mechanics.toxins.impl.PlayerVenom
 import org.rsmod.api.invtx.invClear
 import org.rsmod.api.player.output.MiscOutput
 import org.rsmod.api.player.output.mes
+import org.rsmod.api.player.cheat.adminGodMode
+import org.rsmod.api.player.cheat.adminMaxHit
 import org.rsmod.api.player.protect.ProtectedAccessLauncher
 import org.rsmod.api.player.queueDeath
 import org.rsmod.api.player.stat.PlayerSkillXP
@@ -131,7 +133,21 @@ constructor(
         onCommand("die", "Simulate death: ::die pvm|pvp [true=in wildy]", ::dieTest) {
             invalidArgs = "Usage: ::die pvm|pvp [true|false]  (second arg = in Wilderness, default false)"
         }
+        onCommand("god", "Toggle god mode (invincibility)", ::god)
+        onCommand("maxhit", "Toggle always max hit", ::maxhit)
     }
+
+    private fun god(cheat: Cheat) =
+        with(cheat) {
+            player.adminGodMode = !player.adminGodMode
+            player.mes("God mode ${if (player.adminGodMode) "enabled" else "disabled"}.")
+        }
+
+    private fun maxhit(cheat: Cheat) =
+        with(cheat) {
+            player.adminMaxHit = !player.adminMaxHit
+            player.mes("Max hit ${if (player.adminMaxHit) "enabled" else "disabled"}.")
+        }
 
     private fun poisonTest(cheat: Cheat) =
         with(cheat) {
