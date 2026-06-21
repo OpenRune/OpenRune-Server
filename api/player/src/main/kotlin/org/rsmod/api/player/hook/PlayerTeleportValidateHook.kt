@@ -9,7 +9,7 @@ public fun interface PlayerTeleportValidateHook {
      */
     public fun validate(
         player: Player,
-        type: WildernessTeleportType,
+        type: TeleportType,
         areaChecker: AreaChecker,
     ): String?
 }

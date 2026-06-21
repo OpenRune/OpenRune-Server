@@ -1,6 +1,6 @@
 package org.rsmod.api.player.hook
 
-public enum class WildernessTeleportType {
+public enum class TeleportType {
     /** Standard spell, tablet, or similar teleport - works up to level 20 Wilderness. */
     Standard,
 

@@ -10,7 +10,6 @@ import org.rsmod.api.player.interact.NpcInteractions
 import org.rsmod.api.player.interact.PlayerInteractions
 import org.rsmod.api.player.interact.WornInteractions
 import org.rsmod.api.player.music.MusicPlayer
-import org.rsmod.api.player.hook.WildernessTeleportType
 import org.rsmod.api.player.hook.PlayerTeleportValidator
 import org.rsmod.api.random.GameRandom
 import org.rsmod.events.EventBus

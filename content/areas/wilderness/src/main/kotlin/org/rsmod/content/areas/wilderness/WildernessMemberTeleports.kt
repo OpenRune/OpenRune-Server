@@ -1,6 +1,6 @@
 package org.rsmod.content.areas.wilderness
 
-import org.rsmod.api.player.hook.WildernessTeleportType
+import org.rsmod.api.player.hook.TeleportType
 
 /**
  * Member jewellery and items that may teleport up to level 30 Wilderness.
@@ -34,10 +34,10 @@ public object WildernessMemberTeleports {
         }
     }
 
-    public fun teleportTypeFor(obj: String): WildernessTeleportType =
+    public fun teleportTypeFor(obj: String): TeleportType =
         if (isMemberLevel30Teleport(obj)) {
-            WildernessTeleportType.MemberLevel30
+            TeleportType.MemberLevel30
         } else {
-            WildernessTeleportType.Standard
+            TeleportType.Standard
         }
 }

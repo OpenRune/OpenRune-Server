@@ -5,13 +5,13 @@ import org.rsmod.api.area.checker.AreaChecker
 import org.rsmod.api.area.checker.wildernessLevel
 import org.rsmod.api.attr.AttributeKey
 import org.rsmod.api.player.hook.PlayerTeleportValidateHook
-import org.rsmod.api.player.hook.WildernessTeleportType
+import org.rsmod.api.player.hook.TeleportType
 import org.rsmod.game.entity.Player
 
 public class WildernessTeleportHook @Inject constructor() : PlayerTeleportValidateHook {
     override fun validate(
         player: Player,
-        type: WildernessTeleportType,
+        type: TeleportType,
         areaChecker: AreaChecker,
     ): String? {
         val level = player.coords.wildernessLevel(areaChecker)
@@ -19,11 +19,11 @@ public class WildernessTeleportHook @Inject constructor() : PlayerTeleportValida
             return null
         }
 
-        if (type == WildernessTeleportType.Chronicle) {
+        if (type == TeleportType.Chronicle) {
             return "The Chronicle doesn't work in the Wilderness."
         }
 
-        if (type == WildernessTeleportType.Minigame) {
+        if (type == TeleportType.Minigame) {
             return "You cannot teleport to a minigame from the Wilderness."
         }
 
@@ -37,16 +37,16 @@ public class WildernessTeleportHook @Inject constructor() : PlayerTeleportValida
 
         val maxLevel =
             when (type) {
-                WildernessTeleportType.MemberLevel30 ->
+                TeleportType.MemberLevel30 ->
                     if (player.members) {
                         MEMBER_MAX_WILDERNESS_LEVEL
                     } else {
                         STANDARD_MAX_WILDERNESS_LEVEL
                     }
-                WildernessTeleportType.Standard -> STANDARD_MAX_WILDERNESS_LEVEL
-                WildernessTeleportType.Chronicle,
-                WildernessTeleportType.Minigame,
-                WildernessTeleportType.Exempt,
+                TeleportType.Standard -> STANDARD_MAX_WILDERNESS_LEVEL
+                TeleportType.Chronicle,
+                TeleportType.Minigame,
+                TeleportType.Exempt,
                 -> return null
             }
 

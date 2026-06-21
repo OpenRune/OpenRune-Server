@@ -18,7 +18,6 @@ import dev.openrune.types.SequenceServerType
 import dev.openrune.types.InvScope
 import dev.openrune.types.WalkTriggerType
 import dev.openrune.types.aconverted.CategoryType
-import dev.openrune.types.aconverted.MidiType
 import dev.openrune.types.aconverted.SpotanimType
 import dev.openrune.types.aconverted.SynthType
 import dev.openrune.types.aconverted.interf.IfSubType
@@ -61,7 +60,7 @@ import org.rsmod.api.player.hit.processor.StandardPlayerHitProcessor
 import org.rsmod.api.player.hit.queueHit
 import org.rsmod.api.player.hit.queueImpactHit
 import org.rsmod.api.player.hit.takeInstantHit
-import org.rsmod.api.player.hook.WildernessTeleportType
+import org.rsmod.api.player.hook.TeleportType
 import org.rsmod.api.player.input.ResumePCountDialogInput
 import org.rsmod.api.player.input.ResumePObjDialogInput
 import org.rsmod.api.player.input.ResumePStringDialogInput
@@ -310,7 +309,7 @@ public class ProtectedAccess(
     public fun telejump(
         dest: CoordGrid,
         collision: CollisionFlagMap,
-        teleportType: WildernessTeleportType = WildernessTeleportType.Standard,
+        teleportType: TeleportType = TeleportType.Standard,
     ) {
         if (!validateTeleport(teleportType)) {
             return
@@ -323,14 +322,14 @@ public class ProtectedAccess(
         PathingEntityCommon.telejump(player, collision, dest)
     }
 
-    public fun telejump(dest: CoordGrid, teleportType: WildernessTeleportType = WildernessTeleportType.Standard) {
+    public fun telejump(dest: CoordGrid, teleportType: TeleportType = TeleportType.Standard) {
         telejump(dest, context.collision, teleportType)
     }
 
     public fun teleport(
         dest: CoordGrid,
         collision: CollisionFlagMap,
-        teleportType: WildernessTeleportType = WildernessTeleportType.Standard,
+        teleportType: TeleportType = TeleportType.Standard,
     ) {
         if (!validateTeleport(teleportType)) {
             return
@@ -343,7 +342,7 @@ public class ProtectedAccess(
         PathingEntityCommon.teleport(player, collision, dest)
     }
 
-    public fun teleport(dest: CoordGrid, teleportType: WildernessTeleportType = WildernessTeleportType.Standard) {
+    public fun teleport(dest: CoordGrid, teleportType: TeleportType = TeleportType.Standard) {
         teleport(dest, context.collision, teleportType)
     }
 
@@ -365,7 +364,7 @@ public class ProtectedAccess(
         delay1: Int,
         delay2: Int,
         dir: Int,
-        teleportType: WildernessTeleportType = WildernessTeleportType.Standard,
+        teleportType: TeleportType = TeleportType.Standard,
     ) {
         if (!validateTeleport(teleportType)) {
             return
@@ -379,8 +378,8 @@ public class ProtectedAccess(
         PathingEntityCommon.exactMove(player, start, end, delay1, delay2, dir, collision)
     }
 
-    private fun validateTeleport(teleportType: WildernessTeleportType): Boolean {
-        if (teleportType == WildernessTeleportType.Exempt) {
+    private fun validateTeleport(teleportType: TeleportType): Boolean {
+        if (teleportType == TeleportType.Exempt) {
             return true
         }
         val denial =
