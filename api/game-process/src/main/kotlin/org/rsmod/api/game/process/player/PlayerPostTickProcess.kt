@@ -84,7 +84,6 @@ constructor(
             clientCycle.release()
             return
         }
-        clientCycle.update(this)
         clientCycle.flush(this)
     }
 
