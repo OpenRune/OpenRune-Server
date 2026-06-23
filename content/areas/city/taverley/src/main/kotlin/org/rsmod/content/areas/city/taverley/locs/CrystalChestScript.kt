@@ -23,7 +23,7 @@ private const val KEY_HALF_LOOP = "obj.keyhalf2"
 
 private const val CHEST_CLOSED = "loc.crystal_chestclosed"
 private const val CHEST_OPEN = "loc.crystal_chestopen"
-private const val CHEST_OPEN_TICKS = 1
+private const val CHEST_OPEN_TICKS = 2
 
 private const val VARP_KC_CRYSTAL_CHEST = "varp.kc_crystal_chest"
 

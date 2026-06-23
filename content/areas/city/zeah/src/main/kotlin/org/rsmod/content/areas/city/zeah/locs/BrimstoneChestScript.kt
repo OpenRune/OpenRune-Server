@@ -1,4 +1,4 @@
-package org.rsmod.content.areas.city.prifddinas.locs
+package org.rsmod.content.areas.city.zeah.locs
 
 import dtx.core.ArgMap
 import dtx.core.RollResult
@@ -17,15 +17,15 @@ import org.rsmod.game.loc.BoundLocInfo
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
-private const val PRIF_CRYSTAL_KEY = "obj.prif_crystal_key"
+private const val BRIMSTONE_KEY = "obj.konar_key"
 
-private const val CHEST_CLOSED = "loc.prif_crystal_chest_closed"
-private const val CHEST_OPEN = "loc.prif_crystal_chest_open"
+private const val CHEST_CLOSED = "loc.brimstone_konar_chest_closed"
+private const val CHEST_OPEN = "loc.brimstone_konar_chest_open"
 private const val CHEST_OPEN_TICKS = 2
 
-private const val VARP_KC_ELVEN_CRYSTAL_CHEST = "varp.kc_elven_crystal_chest"
+private const val VARP_KC = "varp.kc_brimstone_chest"
 
-class ElvenCrystalChestScript @Inject constructor(
+class BrimstoneChestScript @Inject constructor(
     private val locRepo: LocRepository,
     private val objRepo: ObjRepository,
     private val dropRegistry: DropTableRegistry,
@@ -39,21 +39,17 @@ class ElvenCrystalChestScript @Inject constructor(
     private suspend fun ProtectedAccess.openChest(loc: BoundLocInfo) {
         arriveDelay()
 
-        if (invTotal(inv, PRIF_CRYSTAL_KEY) == 0) {
-            mes("The chest is locked. You need a key to open it.")
+        if (invTotal(inv, BRIMSTONE_KEY) == 0) {
+            mes("The chest is locked. You need a brimstone key to open it.")
             return
         }
 
-        invDel(inv, PRIF_CRYSTAL_KEY)
+        invDel(inv, BRIMSTONE_KEY)
         anim("seq.human_openchest")
         locRepo.change(loc, CHEST_OPEN, CHEST_OPEN_TICKS)
         mes("You unlock the chest with your key.")
 
-        VarPlayerIntMapSetter.set(
-            player,
-            VARP_KC_ELVEN_CRYSTAL_CHEST,
-            player.vars[VARP_KC_ELVEN_CRYSTAL_CHEST] + 1,
-        )
+        VarPlayerIntMapSetter.set(player, VARP_KC, player.vars[VARP_KC] + 1)
 
         val table = dropRegistry.forLoc(CHEST_CLOSED) ?: return
         when (val result = table.roll(player, ArgMap()).flatten()) {
@@ -64,8 +60,8 @@ class ElvenCrystalChestScript @Inject constructor(
     }
 
     private fun ProtectedAccess.checkCount() {
-        val count = player.vars[VARP_KC_ELVEN_CRYSTAL_CHEST]
-        mes("You have opened the Elven Crystal Chest $count ${if (count == 1) "time" else "times"}.")
+        val count = player.vars[VARP_KC]
+        mes("You have opened the Brimstone chest $count ${if (count == 1) "time" else "times"}.")
     }
 
     private fun ProtectedAccess.giveDrop(drop: DropRollItem) {

@@ -353,3 +353,9 @@ isServerOnly = true
 id = "varp.kc_larrans_big_chest"
 scope = "Perm"
 transmit = "Never"
+
+[[varp]]
+isServerOnly = true
+id = "varp.kc_brimstone_chest"
+scope = "Perm"
+transmit = "Never"
