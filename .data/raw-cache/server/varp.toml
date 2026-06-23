@@ -329,3 +329,15 @@ isServerOnly = true
 id = "varp.rcu_pouch_essence_type_colossal"
 scope = "Perm"
 transmit = "Never"
+
+[[varp]]
+isServerOnly = true
+id = "varp.kc_crystal_chest"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+isServerOnly = true
+id = "varp.kc_elven_crystal_chest"
+scope = "Perm"
+transmit = "Never"
