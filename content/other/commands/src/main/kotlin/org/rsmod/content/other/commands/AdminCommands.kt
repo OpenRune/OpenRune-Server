@@ -21,6 +21,7 @@ import org.rsmod.api.player.output.MiscOutput
 import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.cheat.adminGodMode
 import org.rsmod.api.player.cheat.adminMaxHit
+import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.protect.ProtectedAccessLauncher
 import org.rsmod.api.player.queueDeath
 import org.rsmod.api.player.stat.PlayerSkillXP
@@ -135,6 +136,7 @@ constructor(
         }
         onCommand("god", "Toggle god mode (invincibility)", ::god)
         onCommand("maxhit", "Toggle always max hit", ::maxhit)
+        onCommand("openbank", "Open the bank", ::bank)
     }
 
     private fun god(cheat: Cheat) =
@@ -478,6 +480,12 @@ constructor(
                 player.queueDeath()
             }
             else -> player.mes("Usage: ::die pvm|pvp [true|false]  (true = in Wilderness)")
+        }
+    }
+
+    private fun bank(cheat: Cheat) = with(cheat) {
+        protectedAccess.launch(player) {
+            ifOpenMainSidePair(main = "interface.bankmain", side = "interface.bankside")
         }
     }
 
