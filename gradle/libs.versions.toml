@@ -28,7 +28,7 @@ shadow = "8.3.7"
 spotless = "7.0.4"
 postgresql-jdbc = "42.7.5"
 embedded-postgres = "2.2.2"
-or2 = "2.4.11"
+or2 = "2.4.11-nc"
 openruneCentral = "1.2"
 or2ServerUtils = "0.8"
 jodatime = "2.14.0"
@@ -77,7 +77,7 @@ or2-server-utils = { group = "dev.or2", name = "server-utils", version.ref = "or
 or2-wiki = { group = "dev.or2", name = "wiki", version.ref = "or2ServerUtils" }
 joda-time = { group = "joda-time", name = "joda-time", version.ref = "jodatime" }
 or2-definition = { group = "dev.or2", name = "definition", version.ref = "or2" }
-or2-filesystem = { group = "dev.or2", name = "filesystem", version.ref = "or2" }
+or2-filesystem = { group = "dev.or2", name = "cache", version.ref = "or2" }
 or2-filestore = { group = "dev.or2", name = "filestore", version.ref = "or2" }
 
 openrune-central-common = { module = "dev.or2:central-common", version.ref = "openruneCentral" }

@@ -165,7 +165,7 @@ fun buildCache(taskType: TaskType) {
     }
 
     if (builder.type == TaskType.SERVER_CACHE_BUILD) {
-        MinifyServerCache().init(getServerCacheLocation())
+
         val cache = Cache.load(File(getServerCacheLocation()).toPath())
         GamevalDumper.dumpCols(cache, revision.first)
 
