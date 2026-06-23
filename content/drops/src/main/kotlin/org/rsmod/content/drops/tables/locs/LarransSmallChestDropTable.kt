@@ -1,10 +1,14 @@
 package org.rsmod.content.drops.tables.locs
 
+import dtx.core.RollResult
+import dtx.core.singleRollable
 import dtx.rs.RSDropTable
 import dtx.rs.locs
+import kotlin.random.Random
 import org.rsmod.api.droptable.DropRollItem
 import org.rsmod.api.droptable.RegisterDropTable
 import org.rsmod.api.droptable.rsPlayerWeightedTable
+import org.rsmod.api.player.stat.statBase
 import org.rsmod.game.entity.Player
 
 @field:RegisterDropTable
@@ -37,15 +41,22 @@ public val larransSmallChestDropTable: RSDropTable<Player, DropRollItem> = RSDro
         1 weight "obj.torstol_seed" count 2..4
         1 weight "obj.snapdragon_seed" count 2..4
         1 weight "obj.ranarr_seed" count 2..4
-        // Note: in OSRS, the fish type depends on fishing level — this is a simplified flat table
-        3 weight rsPlayerWeightedTable {
-            1 weight "obj.cert_raw_manta_ray" count 1
-            1 weight "obj.cert_raw_seaturtle" count 81..177
-            2 weight "obj.cert_raw_shark" count 126..250
-            2 weight "obj.cert_raw_monkfish" count 162..297
-            2 weight "obj.cert_raw_swordfish" count 113..264
-            2 weight "obj.cert_raw_lobster" count 163..342
-            2 weight "obj.cert_raw_tuna" count 112..307
+        3 weight singleRollable<Player, DropRollItem> {
+            selectResult { player, _ ->
+                val fishing = player.statBase("stat.fishing")
+                val successChance = 1 + fishing / 33
+                fun roll(n: Int) = Random.nextInt(n) < successChance
+                RollResult.Single(
+                    when {
+                        fishing >= 33 && roll(20) -> DropRollItem("obj.cert_raw_mantaray", 81..144)
+                        fishing >= 17 && roll(20) -> DropRollItem("obj.cert_raw_seaturtle", 81..177)
+                        fishing >= 17 && roll(8) -> DropRollItem("obj.cert_raw_shark", 126..250)
+                        roll(3) -> DropRollItem("obj.cert_raw_monkfish", 162..297)
+                        roll(2) -> DropRollItem("obj.cert_raw_swordfish", 113..264)
+                        else -> DropRollItem("obj.cert_raw_lobster", 163..342)
+                    },
+                )
+            }
         }
     },
 )

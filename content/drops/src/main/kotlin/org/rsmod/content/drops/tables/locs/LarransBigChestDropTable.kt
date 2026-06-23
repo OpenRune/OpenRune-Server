@@ -1,11 +1,15 @@
 package org.rsmod.content.drops.tables.locs
 
+import dtx.core.RollResult
+import dtx.core.singleRollable
 import dtx.rs.RSDropTable
 import dtx.rs.locs
+import kotlin.random.Random
 import org.rsmod.api.droptable.DropRollItem
 import org.rsmod.api.droptable.RegisterDropTable
 import org.rsmod.api.droptable.rsPlayerTertiaryTable
 import org.rsmod.api.droptable.rsPlayerWeightedTable
+import org.rsmod.api.player.stat.statBase
 import org.rsmod.game.entity.Player
 
 @field:RegisterDropTable
@@ -43,16 +47,27 @@ public val larransBigChestDropTable: RSDropTable<Player, DropRollItem> = RSDropT
         1 weight "obj.torstol_seed" count 4..6
         1 weight "obj.snapdragon_seed" count 4..6
         1 weight "obj.ranarr_seed" count 4..6
-        // Note: in OSRS, the fish type depends on fishing level — this is a simplified flat table
-        3 weight rsPlayerWeightedTable {
-            1 weight "obj.cert_raw_manta_ray" count 120..240
-            1 weight "obj.cert_raw_seaturtle" count 120..300
-            2 weight "obj.cert_raw_shark" count 120..375
-            2 weight "obj.shark_lure" count 240..750
-            2 weight "obj.cert_raw_monkfish" count 150..450
-            2 weight "obj.cert_raw_swordfish" count 150..450
-            2 weight "obj.cert_raw_tuna" count 150..525
-            2 weight "obj.cert_raw_lobster" count 150..525
+        3 weight singleRollable<Player, DropRollItem> {
+            selectResult { player, _ ->
+                val fishing = player.statBase("stat.fishing")
+                val successChance = 1 + fishing / 33
+                fun roll(n: Int) = Random.nextInt(n) < successChance
+                fun fishOrLure(item: DropRollItem) : DropRollItem {
+                    val res = if (Random.nextBoolean())  DropRollItem("obj.shark_lure", 240..750) else item
+                    return res
+                }
+                RollResult.Single(
+                    when {
+                        fishing >= 33 && roll(20) -> fishOrLure(DropRollItem("obj.cert_raw_mantaray", 120..240))
+                        fishing >= 17 && roll(20) -> fishOrLure(DropRollItem("obj.cert_raw_seaturtle", 120..300))
+                        fishing >= 17 && roll(8) -> fishOrLure(DropRollItem("obj.cert_raw_shark", 120..375))
+                        roll(3) -> DropRollItem("obj.cert_raw_monkfish", 150..450)
+                        roll(2) -> DropRollItem("obj.cert_raw_swordfish", 150..450)
+                        roll(2) -> DropRollItem("obj.cert_raw_tuna", 150..525)
+                        else -> DropRollItem("obj.cert_raw_lobster", 150..525)
+                    },
+                )
+            }
         }
     },
 )
