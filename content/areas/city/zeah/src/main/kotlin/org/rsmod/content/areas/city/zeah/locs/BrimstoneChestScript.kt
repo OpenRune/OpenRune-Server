@@ -47,7 +47,6 @@ class BrimstoneChestScript @Inject constructor(
         anim("seq.human_openchest")
         VarPlayerIntMapSetter.toggle(player, VARBIT_CHEST)
         mes("You unlock the chest with your key.")
-
         VarPlayerIntMapSetter.set(player, VARP_KC, player.vars[VARP_KC] + 1)
 
         val table = dropRegistry.forLoc(CHEST_CLOSED) ?: return
@@ -56,6 +55,9 @@ class BrimstoneChestScript @Inject constructor(
             is RollResult.Single -> giveDrop(result.result)
             is RollResult.ListOf -> result.results.forEach { giveDrop(it) }
         }
+
+        delay(1)
+        VarPlayerIntMapSetter.toggle(player, VARBIT_CHEST)
     }
 
     private fun ProtectedAccess.checkCount() {

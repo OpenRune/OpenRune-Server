@@ -65,6 +65,9 @@ class LarransChestScript @Inject constructor(
             is RollResult.Single -> giveDrop(result.result)
             is RollResult.ListOf -> result.results.forEach { giveDrop(it) }
         }
+
+        delay(1)
+        VarPlayerIntMapSetter.toggle(player, VARBIT_CHEST)
     }
 
     private fun ProtectedAccess.checkCount(kcVarp: String, chestName: String) {
