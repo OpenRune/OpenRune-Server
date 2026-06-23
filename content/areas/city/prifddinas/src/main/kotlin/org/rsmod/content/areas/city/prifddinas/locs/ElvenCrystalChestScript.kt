@@ -20,10 +20,9 @@ import org.rsmod.plugin.scripts.ScriptContext
 private const val PRIF_CRYSTAL_KEY = "obj.prif_crystal_key"
 
 private const val CHEST_CLOSED = "loc.prif_crystal_chest_closed"
-private const val CHEST_OPEN = "loc.prif_crystal_chest_open"
-private const val CHEST_OPEN_TICKS = 2
 
 private const val VARP_KC_ELVEN_CRYSTAL_CHEST = "varp.kc_elven_crystal_chest"
+private const val VARBIT_CHEST = "varbit.prif_crystal_chest_open"
 
 class ElvenCrystalChestScript @Inject constructor(
     private val locRepo: LocRepository,
@@ -46,7 +45,7 @@ class ElvenCrystalChestScript @Inject constructor(
 
         invDel(inv, PRIF_CRYSTAL_KEY)
         anim("seq.human_openchest")
-        locRepo.change(loc, CHEST_OPEN, CHEST_OPEN_TICKS)
+        VarPlayerIntMapSetter.toggle(player, VARBIT_CHEST)
         mes("You unlock the chest with your key.")
 
         VarPlayerIntMapSetter.set(

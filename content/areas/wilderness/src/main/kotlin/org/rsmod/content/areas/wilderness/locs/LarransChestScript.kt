@@ -20,14 +20,12 @@ import org.rsmod.plugin.scripts.ScriptContext
 private const val WILDERNESS_KEY = "obj.slayer_wilderness_key"
 
 private const val SMALL_CHEST_CLOSED = "loc.slayer_larran_chest_small_closed"
-private const val SMALL_CHEST_OPEN = "loc.slayer_larran_chest_small_open"
 private const val VARP_KC_SMALL = "varp.kc_larrans_small_chest"
 
 private const val BIG_CHEST_CLOSED = "loc.slayer_larran_chest_big_closed"
-private const val BIG_CHEST_OPEN = "loc.slayer_larran_chest_big_open"
 private const val VARP_KC_BIG = "varp.kc_larrans_big_chest"
 
-private const val CHEST_OPEN_TICKS = 2
+private const val VARBIT_CHEST = "varbit.brimstone_opening_konar_chest"
 
 class LarransChestScript @Inject constructor(
     private val locRepo: LocRepository,
@@ -36,16 +34,15 @@ class LarransChestScript @Inject constructor(
 ) : PluginScript() {
 
     override fun ScriptContext.startup() {
-        onOpLoc1(SMALL_CHEST_CLOSED) { openChest(it.loc, SMALL_CHEST_CLOSED, SMALL_CHEST_OPEN, VARP_KC_SMALL) }
+        onOpLoc1(SMALL_CHEST_CLOSED) { openChest(it.loc, SMALL_CHEST_CLOSED, VARP_KC_SMALL) }
         onOpLoc2(SMALL_CHEST_CLOSED) { checkCount(VARP_KC_SMALL, "Larran's small chest") }
-        onOpLoc1(BIG_CHEST_CLOSED) { openChest(it.loc, BIG_CHEST_CLOSED, BIG_CHEST_OPEN, VARP_KC_BIG) }
+        onOpLoc1(BIG_CHEST_CLOSED) { openChest(it.loc, BIG_CHEST_CLOSED,  VARP_KC_BIG) }
         onOpLoc2(BIG_CHEST_CLOSED) { checkCount(VARP_KC_BIG, "Larran's big chest") }
     }
 
     private suspend fun ProtectedAccess.openChest(
         loc: BoundLocInfo,
         closedLocName: String,
-        openLocName: String,
         kcVarp: String,
     ) {
         arriveDelay()
@@ -57,7 +54,7 @@ class LarransChestScript @Inject constructor(
 
         invDel(inv, WILDERNESS_KEY)
         anim("seq.human_openchest")
-        locRepo.change(loc, openLocName, CHEST_OPEN_TICKS)
+        VarPlayerIntMapSetter.toggle(player, VARBIT_CHEST)
         mes("You unlock the chest with your key.")
 
         VarPlayerIntMapSetter.set(player, kcVarp, player.vars[kcVarp] + 1)
