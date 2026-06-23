@@ -35,3 +35,5 @@ poison_severity=65535
 fullscreen_worldmap=65536
 kc_crystal_chest=65537
 kc_elven_crystal_chest=65538
+kc_larrans_small_chest=65539
+kc_larrans_big_chest=65540

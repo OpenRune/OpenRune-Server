@@ -341,3 +341,15 @@ isServerOnly = true
 id = "varp.kc_elven_crystal_chest"
 scope = "Perm"
 transmit = "Never"
+
+[[varp]]
+isServerOnly = true
+id = "varp.kc_larrans_small_chest"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+isServerOnly = true
+id = "varp.kc_larrans_big_chest"
+scope = "Perm"
+transmit = "Never"
