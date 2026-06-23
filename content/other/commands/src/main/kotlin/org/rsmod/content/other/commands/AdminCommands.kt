@@ -135,6 +135,7 @@ constructor(
         }
         onCommand("god", "Toggle god mode (invincibility)", ::god)
         onCommand("maxhit", "Toggle always max hit", ::maxhit)
+        onCommand("openbank", "Open the bank", ::bank)
     }
 
     private fun god(cheat: Cheat) =
@@ -478,6 +479,12 @@ constructor(
                 player.queueDeath()
             }
             else -> player.mes("Usage: ::die pvm|pvp [true|false]  (true = in Wilderness)")
+        }
+    }
+
+    private fun bank(cheat: Cheat) = with(cheat) {
+        protectedAccess.launch(player) {
+            ifOpenMainSidePair(main = "interface.bankmain", side = "interface.bankside")
         }
     }
 
