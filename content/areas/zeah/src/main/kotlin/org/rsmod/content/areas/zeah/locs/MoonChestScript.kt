@@ -1,4 +1,4 @@
-package org.rsmod.content.areas.city.zeah.locs
+package org.rsmod.content.areas.zeah.locs
 
 import dtx.core.ArgMap
 import dtx.core.RollResult
