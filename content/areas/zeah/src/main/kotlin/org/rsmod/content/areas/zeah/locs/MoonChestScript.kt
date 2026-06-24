@@ -11,12 +11,15 @@ import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.vars.VarPlayerIntMapSetter
 import org.rsmod.api.repo.loc.LocRepository
 import org.rsmod.api.repo.obj.ObjRepository
+import org.rsmod.api.script.onOpHeldU
 import org.rsmod.api.script.onOpLoc1
 import org.rsmod.game.loc.BoundLocInfo
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
 private const val MOON_KEY = "obj.varlamore_key"
+private const val MOON_HALF_1 = "obj.varlamore_key_half_1"
+private const val MOON_HALF_2 = "obj.varlamore_key_half_2"
 
 private const val VARP_KC = "varp.kc_moon_chest"
 
@@ -34,6 +37,7 @@ constructor(
 
     override fun ScriptContext.startup() {
         onOpLoc1(CHEST_CLOSED) { openChest(it.loc) }
+        onOpHeldU(MOON_HALF_1, MOON_HALF_2) { combineKeyHalves() }
     }
 
     private suspend fun ProtectedAccess.openChest(loc: BoundLocInfo) {
@@ -65,4 +69,11 @@ constructor(
         val obj = drop.transformObj(player) ?: drop.obj
         invAddOrDrop(objRepo, obj, drop.rollCount(random))
     }
+
+    private fun ProtectedAccess.combineKeyHalves() {
+        invDel(inv, MOON_HALF_1, 1, MOON_HALF_2, 1)
+        invAddOrDrop(objRepo, MOON_KEY)
+        mes("You join the two halves of the key together.")
+    }
+
 }
