@@ -9,6 +9,7 @@ import dtx.table.TableHooks
 public class RSDropTable<T, R>(
     public override val tableIdentifier: String,
     public val npcs: List<String> = emptyList(),
+    public val locs: List<String> = emptyList(),
     public val areas: List<String> = emptyList(),
     private val guaranteed: RSTable<T, R> = RSGuaranteedTable.Empty(),
     private val preRoll: RSTable<T, R> = RSPreRollTable.Empty(),

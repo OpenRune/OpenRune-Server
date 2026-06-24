@@ -399,7 +399,7 @@ constructor(
 
     private fun setVarBit(cheat: Cheat) =
         with(cheat) {
-            val typeId = "varbits.${args[0]}".asRSCM()
+            val typeId = "varbit.${args[0]}".asRSCM()
 
             val type = ServerCacheManager.getVarbit(typeId)
             if (type == null) {

@@ -9,4 +9,6 @@ dependencies {
     implementation(projects.api.pluginCommons)
     implementation(projects.api.scriptAdvanced)
     implementation(projects.api.attr)
+    implementation(projects.api.dropTable)
+    implementation(projects.api.dropTablePlugin)
 }

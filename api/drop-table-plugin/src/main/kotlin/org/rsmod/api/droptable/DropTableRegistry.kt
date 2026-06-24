@@ -22,6 +22,7 @@ public class DropTableRegistry
 @Inject
 constructor(tomlResolver: DropTableTomlResolver) {
     private val tablesByNpc: MutableMap<String, MutableList<RSDropTable<Player, DropRollItem>>> = hashMapOf()
+    private val tablesByLoc: MutableMap<String, RSDropTable<Player, DropRollItem>> = hashMapOf()
     private val tomlTablesByNpc: MutableMap<String, MutableSet<String>> = hashMapOf()
 
     init {
@@ -59,6 +60,8 @@ constructor(tomlResolver: DropTableTomlResolver) {
 
         return candidates.firstOrNull { it.areas.isEmpty() } ?: candidates.first()
     }
+
+    public fun forLoc(loc: String): RSDropTable<Player, DropRollItem>? = tablesByLoc[loc]
 
     private fun loadTomlTables(resolver: DropTableTomlResolver) {
         val mapper =
@@ -123,8 +126,8 @@ constructor(tomlResolver: DropTableTomlResolver) {
     }
 
     private fun register(table: RSDropTable<Player, DropRollItem>, source: DropTableSource) {
-        check(table.npcs.isNotEmpty()) {
-            "Drop table '${table.tableIdentifier}' must define at least one npc."
+        check(table.npcs.isNotEmpty() || table.locs.isNotEmpty()) {
+            "Drop table '${table.tableIdentifier}' must define at least one npc or loc."
         }
 
         table.npcs.forEach { npc ->
@@ -134,6 +137,13 @@ constructor(tomlResolver: DropTableTomlResolver) {
             if (source == DropTableSource.Toml) {
                 tomlTablesByNpc.getOrPut(npc) { mutableSetOf() } += table.tableIdentifier
             }
+        }
+
+        table.locs.forEach { loc ->
+            check(!tablesByLoc.containsKey(loc)) {
+                "Duplicate drop table for loc '$loc': '${tablesByLoc[loc]?.tableIdentifier}' and '${table.tableIdentifier}'."
+            }
+            tablesByLoc[loc] = table
         }
     }
 
