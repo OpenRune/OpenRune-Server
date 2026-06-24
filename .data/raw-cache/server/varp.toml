@@ -359,3 +359,27 @@ isServerOnly = true
 id = "varp.kc_brimstone_chest"
 scope = "Perm"
 transmit = "Never"
+
+[[varp]]
+isServerOnly = true
+id = "varp.kc_muddy_chest"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+isServerOnly = true
+id = "varp.kc_grubby_chest"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+isServerOnly = true
+id = "varp.kc_zombie_pirate_locker"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+isServerOnly = true
+id = "varp.kc_moon_chest"
+scope = "Perm"
+transmit = "Never"
