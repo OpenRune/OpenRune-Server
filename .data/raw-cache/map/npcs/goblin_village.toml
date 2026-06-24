@@ -1,0 +1,102 @@
+[[spawn]]
+npc = "npc.catwalk_goblin"
+coords = "0_46_54_11_54"
+
+[[spawn]]
+npc = "npc.general_bentnoze_red"
+coords = "0_46_54_14_55"
+
+[[spawn]]
+npc = "npc.general_wartface_green"
+coords = "0_46_54_13_55"
+
+[[spawn]]
+npc = "npc.goblin_green_soldier_2"
+coords = "0_46_54_8_54"
+
+[[spawn]]
+npc = "npc.goblin_green_soldier_3"
+coords = "0_46_54_13_52"
+
+[[spawn]]
+npc = "npc.goblin_green_soldier_4"
+coords = "0_46_54_14_51"
+
+[[spawn]]
+npc = "npc.goblin_green_soldier_5"
+coords = "0_46_54_19_58"
+
+[[spawn]]
+npc = "npc.goblin_green_soldier_7"
+coords = "0_46_54_10_35"
+
+[[spawn]]
+npc = "npc.goblin_green_soldier_7"
+coords = "0_46_54_12_44"
+
+[[spawn]]
+npc = "npc.goblin_green_soldier_8"
+coords = "0_46_54_10_47"
+
+[[spawn]]
+npc = "npc.goblin_green_soldier_8"
+coords = "0_46_54_7_41"
+
+[[spawn]]
+npc = "npc.goblin_green_soldier_8"
+coords = "2_46_54_11_40"
+
+[[spawn]]
+npc = "npc.goblin_red_soldier_2"
+coords = "0_46_54_11_51"
+
+[[spawn]]
+npc = "npc.goblin_red_soldier_2"
+coords = "0_46_54_20_55"
+
+[[spawn]]
+npc = "npc.goblin_red_soldier_4"
+coords = "0_46_54_10_44"
+
+[[spawn]]
+npc = "npc.goblin_red_soldier_4"
+coords = "0_46_54_18_47"
+
+[[spawn]]
+npc = "npc.goblin_red_soldier_4"
+coords = "0_46_54_21_38"
+
+[[spawn]]
+npc = "npc.goblin_red_soldier_5"
+coords = "0_46_54_7_45"
+
+[[spawn]]
+npc = "npc.goblin_red_soldier_5"
+coords = "0_46_54_8_51"
+
+[[spawn]]
+npc = "npc.goblin_red_soldier_6"
+coords = "0_46_54_13_36"
+
+[[spawn]]
+npc = "npc.goblin_red_soldier_6"
+coords = "2_46_54_14_41"
+
+[[spawn]]
+npc = "npc.goblin_red_soldier_8"
+coords = "0_46_54_15_43"
+
+## Goblin Village Cooks Chamber Post Rfd
+
+[[spawn]]
+npc = "npc.goblin_cook_charred"
+coords = "0_46_154_36_15"
+
+## Goblin Village Cooks Chamber Pre Rfd
+
+[[spawn]]
+npc = "npc.goblin_cook"
+coords = "0_46_154_38_53"
+
+## Goblin Village Cooks Chamber Pre Rfd End
+

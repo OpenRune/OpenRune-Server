@@ -1,0 +1,666 @@
+[[spawn]]
+npc = "npc.dwarf_city_berserker_cutscene_multi"
+coords = "0_45_159_10_48"
+
+[[spawn]]
+npc = "npc.dwarf_city_berserker_cutscene_multi"
+coords = "0_45_159_10_50"
+
+[[spawn]]
+npc = "npc.dwarf_city_boatman_city"
+coords = "0_45_159_8_51"
+
+[[spawn]]
+npc = "npc.dwarf_city_boatman_mines"
+coords = "0_44_158_26_17"
+
+[[spawn]]
+npc = "npc.dwarf_city_drunken_dwarf"
+coords = "0_45_159_32_46"
+
+[[spawn]]
+npc = "npc.dwarf_city_drunken_dwarf_multi"
+coords = "0_45_159_32_46"
+
+[[spawn]]
+npc = "npc.dwarf_city_dwarf_man2"
+coords = "0_45_159_53_43"
+
+[[spawn]]
+npc = "npc.dwarf_city_dwarf_man3"
+coords = "0_45_159_19_42"
+
+[[spawn]]
+npc = "npc.dwarf_city_dwarf_man4"
+coords = "0_45_159_46_49"
+
+[[spawn]]
+npc = "npc.dwarf_city_dwarf_man5"
+coords = "0_45_159_20_51"
+
+[[spawn]]
+npc = "npc.dwarf_city_dwarf_sack_in_cart_full2"
+coords = "0_45_159_63_6"
+
+[[spawn]]
+npc = "npc.dwarf_city_factory_guard"
+coords = "0_45_159_51_8"
+
+[[spawn]]
+npc = "npc.dwarf_city_old_dwarf3"
+coords = "0_45_159_43_27"
+
+[[spawn]]
+npc = "npc.dwarf_city_rowdy_dwarf"
+coords = "0_45_159_26_22"
+
+[[spawn]]
+npc = "npc.dwarf_city_train_conductor1"
+coords = "0_45_159_39_4"
+
+[[spawn]]
+npc = "npc.dwarf_city_train_conductor2"
+coords = "0_45_159_45_0"
+
+[[spawn]]
+npc = "npc.dwarf_city_train_conductor3"
+coords = "0_45_159_56_5"
+
+[[spawn]]
+npc = "npc.dwarf_city_train_conductor4"
+coords = "0_45_159_45_4"
+
+[[spawn]]
+npc = "npc.dwarf_city_train_conductor5"
+coords = "0_45_159_28_12"
+
+[[spawn]]
+npc = "npc.dwarf_mountain"
+coords = "0_44_158_10_40"
+
+[[spawn]]
+npc = "npc.dwarf_mountain"
+coords = "0_44_158_21_36"
+
+[[spawn]]
+npc = "npc.dwarf_mountain"
+coords = "0_44_158_38_13"
+
+[[spawn]]
+npc = "npc.dwarf_mountain"
+coords = "0_44_158_38_52"
+
+[[spawn]]
+npc = "npc.dwarf_mountain"
+coords = "0_44_158_45_55"
+
+[[spawn]]
+npc = "npc.dwarf_mountain"
+coords = "0_44_158_50_14"
+
+[[spawn]]
+npc = "npc.dwarf_mountain"
+coords = "0_44_158_56_6"
+
+[[spawn]]
+npc = "npc.dwarfrock_boatman_bruv1"
+coords = "0_44_158_54_28"
+
+[[spawn]]
+npc = "npc.dwarfrock_boatman_bruv2"
+coords = "0_44_158_54_27"
+
+[[spawn]]
+npc = "npc.dwarfrock_boatman_bruv3"
+coords = "0_44_158_54_26"
+
+[[spawn]]
+npc = "npc.dwarfrock_ferryman1"
+coords = "0_44_158_23_16"
+
+[[spawn]]
+npc = "npc.dwarfrock_ferryman2"
+coords = "0_44_158_39_32"
+
+[[spawn]]
+npc = "npc.dwarfrock_gold_boatman"
+coords = "0_44_158_57_54"
+
+[[spawn]]
+npc = "npc.dwarfrock_multi_dondakan"
+coords = "0_44_158_8_56"
+
+[[spawn]]
+npc = "npc.dwarfrock_multi_gold_boatman"
+coords = "0_44_158_57_54"
+
+[[spawn]]
+npc = "npc.vc_smokin_joe"
+coords = "0_45_159_50_37"
+
+## Keldagrim Interiors
+
+[[spawn]]
+npc = "npc.blandebir"
+coords = "1_45_159_35_18"
+
+[[spawn]]
+npc = "npc.dwarf_city_barmaid_poor"
+coords = "0_45_159_36_19"
+
+[[spawn]]
+npc = "npc.dwarf_city_barman_rich"
+coords = "0_44_159_25_21"
+
+[[spawn]]
+npc = "npc.dwarf_city_blue_trader1"
+coords = "1_44_159_61_25"
+
+[[spawn]]
+npc = "npc.dwarf_city_blue_trader2"
+coords = "1_44_159_61_26"
+
+[[spawn]]
+npc = "npc.dwarf_city_brown_trader1"
+coords = "1_45_159_0_19"
+
+[[spawn]]
+npc = "npc.dwarf_city_brown_trader2"
+coords = "1_45_159_0_18"
+
+[[spawn]]
+npc = "npc.dwarf_city_director_blue_opal"
+coords = "1_44_159_51_27"
+
+[[spawn]]
+npc = "npc.dwarf_city_director_brown_engine"
+coords = "1_45_159_12_14"
+
+[[spawn]]
+npc = "npc.dwarf_city_director_green_gemstone"
+coords = "1_45_159_11_34"
+
+[[spawn]]
+npc = "npc.dwarf_city_director_purple_pewter"
+coords = "1_44_159_54_20"
+
+[[spawn]]
+npc = "npc.dwarf_city_director_red_axe_multi"
+coords = "1_44_159_56_13"
+
+[[spawn]]
+npc = "npc.dwarf_city_director_silver_cog"
+coords = "1_45_159_13_20"
+
+[[spawn]]
+npc = "npc.dwarf_city_director_white_chisel"
+coords = "1_45_159_10_29"
+
+[[spawn]]
+npc = "npc.dwarf_city_director_yellow_fortune"
+coords = "1_44_159_52_33"
+
+[[spawn]]
+npc = "npc.dwarf_city_dwarf_man6"
+coords = "0_44_159_22_19"
+
+[[spawn]]
+npc = "npc.dwarf_city_dwarf_man8"
+coords = "0_45_159_26_40"
+
+[[spawn]]
+npc = "npc.dwarf_city_evil_cat_multi"
+coords = "1_44_159_54_14"
+
+[[spawn]]
+npc = "npc.dwarf_city_factory_worker1"
+coords = "0_45_159_49_15"
+
+[[spawn]]
+npc = "npc.dwarf_city_factory_worker2"
+coords = "0_45_159_51_15"
+
+[[spawn]]
+npc = "npc.dwarf_city_factory_worker3"
+coords = "0_45_159_50_12"
+
+[[spawn]]
+npc = "npc.dwarf_city_factory_worker4"
+coords = "0_45_159_51_11"
+
+[[spawn]]
+npc = "npc.dwarf_city_gnome_emissary_multi"
+coords = "1_44_159_56_14"
+
+[[spawn]]
+npc = "npc.dwarf_city_gnome_female_emissary_multi"
+coords = "1_44_159_20_16"
+
+[[spawn]]
+npc = "npc.dwarf_city_gnome_male_emissary_multi"
+coords = "1_44_159_19_17"
+
+[[spawn]]
+npc = "npc.dwarf_city_green_trader1"
+coords = "1_45_159_2_25"
+
+[[spawn]]
+npc = "npc.dwarf_city_green_trader2"
+coords = "1_45_159_4_27"
+
+[[spawn]]
+npc = "npc.dwarf_city_inn_keeper_rich"
+coords = "1_44_159_23_19"
+
+[[spawn]]
+npc = "npc.dwarf_city_librarian"
+coords = "0_44_159_42_49"
+
+[[spawn]]
+npc = "npc.dwarf_city_library_assistant"
+coords = "0_44_159_44_50"
+
+[[spawn]]
+npc = "npc.dwarf_city_library_customer"
+coords = "1_44_159_46_49"
+
+[[spawn]]
+npc = "npc.dwarf_city_library_customer_human"
+coords = "0_44_159_48_51"
+
+[[spawn]]
+npc = "npc.dwarf_city_old_dwarf1"
+coords = "0_44_159_35_49"
+
+[[spawn]]
+npc = "npc.dwarf_city_old_dwarf2"
+coords = "0_44_159_34_47"
+
+[[spawn]]
+npc = "npc.dwarf_city_purple_trader1"
+coords = "1_44_159_61_23"
+
+[[spawn]]
+npc = "npc.dwarf_city_purple_trader2"
+coords = "1_44_159_59_22"
+
+[[spawn]]
+npc = "npc.dwarf_city_red_trader1_multi"
+coords = "1_44_159_62_20"
+
+[[spawn]]
+npc = "npc.dwarf_city_red_trader2_multi"
+coords = "1_44_159_61_19"
+
+[[spawn]]
+npc = "npc.dwarf_city_secretary_blue_opal"
+coords = "1_44_159_53_29"
+
+[[spawn]]
+npc = "npc.dwarf_city_secretary_brown_engine"
+coords = "1_45_159_10_16"
+
+[[spawn]]
+npc = "npc.dwarf_city_secretary_green_gemstone"
+coords = "1_45_159_9_35"
+
+[[spawn]]
+npc = "npc.dwarf_city_secretary_purple_pewter"
+coords = "1_44_159_52_18"
+
+[[spawn]]
+npc = "npc.dwarf_city_secretary_red_axe"
+coords = "1_44_159_53_13"
+
+[[spawn]]
+npc = "npc.dwarf_city_secretary_red_axe_multi"
+coords = "1_44_159_53_13"
+
+[[spawn]]
+npc = "npc.dwarf_city_secretary_silver_cog"
+coords = "1_45_159_11_20"
+
+[[spawn]]
+npc = "npc.dwarf_city_secretary_white_chisel"
+coords = "1_45_159_10_31"
+
+[[spawn]]
+npc = "npc.dwarf_city_secretary_yellow_fortune"
+coords = "1_44_159_54_33"
+
+[[spawn]]
+npc = "npc.dwarf_city_shop_sculpture"
+coords = "0_45_159_26_29"
+
+[[spawn]]
+npc = "npc.dwarf_city_shop_sculpture_model_multi"
+coords = "0_45_159_24_31"
+
+[[spawn]]
+npc = "npc.dwarf_city_shop_weapons"
+coords = "0_44_159_12_53"
+
+[[spawn]]
+npc = "npc.dwarf_city_silver_trader1"
+coords = "1_45_159_2_20"
+
+[[spawn]]
+npc = "npc.dwarf_city_silver_trader2"
+coords = "1_45_159_4_19"
+
+[[spawn]]
+npc = "npc.dwarf_city_trader_referee"
+coords = "1_45_159_0_23"
+
+[[spawn]]
+npc = "npc.dwarf_city_white_trader1"
+coords = "1_45_159_2_23"
+
+[[spawn]]
+npc = "npc.dwarf_city_white_trader2"
+coords = "1_45_159_5_23"
+
+[[spawn]]
+npc = "npc.dwarf_city_yellow_trader1"
+coords = "1_45_159_0_25"
+
+[[spawn]]
+npc = "npc.dwarf_city_yellow_trader2"
+coords = "1_44_159_63_26"
+
+[[spawn]]
+npc = "npc.poh_stonemason"
+coords = "0_44_159_33_8"
+
+[[spawn]]
+npc = "npc.vc_the_beast"
+coords = "0_45_159_33_13"
+
+## Keldagrim Palace
+
+[[spawn]]
+npc = "npc.aluft_gnome_inventor"
+coords = "0_44_159_52_22"
+
+[[spawn]]
+npc = "npc.dwarf_city_black_guard1"
+coords = "0_45_159_9_31"
+
+[[spawn]]
+npc = "npc.dwarf_city_black_guard2"
+coords = "0_45_159_11_16"
+
+[[spawn]]
+npc = "npc.dwarf_city_black_guard3"
+coords = "0_45_159_11_23"
+
+[[spawn]]
+npc = "npc.dwarf_city_dwarf_man10"
+coords = "0_44_159_49_18"
+
+[[spawn]]
+npc = "npc.dwarf_city_dwarf_man11"
+coords = "0_44_159_50_30"
+
+[[spawn]]
+npc = "npc.dwarf_city_shop_bakery"
+coords = "0_45_159_12_36"
+
+[[spawn]]
+npc = "npc.dwarf_city_shop_cloth"
+coords = "0_44_159_53_35"
+
+[[spawn]]
+npc = "npc.dwarf_city_shop_cloth_poor"
+coords = "0_45_159_7_13"
+
+[[spawn]]
+npc = "npc.dwarf_city_shop_craft"
+coords = "0_45_159_5_31"
+
+[[spawn]]
+npc = "npc.dwarf_city_shop_gems"
+coords = "0_45_159_8_36"
+
+[[spawn]]
+npc = "npc.dwarf_city_shop_general_store"
+coords = "0_44_159_53_14"
+
+[[spawn]]
+npc = "npc.dwarf_city_shop_ship_mechanic"
+coords = "0_44_159_54_24"
+
+[[spawn]]
+npc = "npc.dwarf_city_shop_silver"
+coords = "0_45_159_5_21"
+
+[[spawn]]
+npc = "npc.dwarf_city_shop_warhammer"
+coords = "0_44_159_57_33"
+
+[[spawn]]
+npc = "npc.dwarfrock_engineer1"
+coords = "0_44_159_55_22"
+
+[[spawn]]
+npc = "npc.xbows_sales_dwarf_keldegrim"
+coords = "0_45_159_5_26"
+
+## Keldagrim Rat Pits
+
+[[spawn]]
+npc = "npc.pitrat_keldagrim_agr"
+coords = "0_30_73_14_26"
+
+[[spawn]]
+npc = "npc.pitrat_keldagrim_agr"
+coords = "0_30_73_16_31"
+
+[[spawn]]
+npc = "npc.pitrat_keldagrim_agr"
+coords = "0_30_73_18_32"
+
+[[spawn]]
+npc = "npc.pitrat_keldagrim_agr"
+coords = "0_30_73_29_32"
+
+[[spawn]]
+npc = "npc.pitrat_keldagrim_agr"
+coords = "0_30_73_31_36"
+
+[[spawn]]
+npc = "npc.pitrat_keldagrim_agr"
+coords = "0_30_73_34_31"
+
+[[spawn]]
+npc = "npc.pitrat_keldagrim_agr"
+coords = "0_30_73_34_34"
+
+[[spawn]]
+npc = "npc.pitrat_keldagrim_agr"
+coords = "0_30_73_37_28"
+
+[[spawn]]
+npc = "npc.pitrat_keldagrim_agr"
+coords = "0_30_73_38_32"
+
+[[spawn]]
+npc = "npc.pitrat_keldagrim_def"
+coords = "0_30_73_15_30"
+
+[[spawn]]
+npc = "npc.pitrat_keldagrim_def"
+coords = "0_30_73_16_27"
+
+[[spawn]]
+npc = "npc.pitrat_keldagrim_def"
+coords = "0_30_73_18_30"
+
+[[spawn]]
+npc = "npc.pitrat_keldagrim_def"
+coords = "0_30_73_29_36"
+
+[[spawn]]
+npc = "npc.pitrat_keldagrim_def"
+coords = "0_30_73_29_38"
+
+[[spawn]]
+npc = "npc.pitrat_keldagrim_def"
+coords = "0_30_73_32_33"
+
+[[spawn]]
+npc = "npc.pitrat_keldagrim_def"
+coords = "0_30_73_36_31"
+
+[[spawn]]
+npc = "npc.pitrat_keldagrim_def"
+coords = "0_30_73_38_29"
+
+[[spawn]]
+npc = "npc.pitrat_keldagrim_neu"
+coords = "0_30_73_14_28"
+
+[[spawn]]
+npc = "npc.pitrat_keldagrim_neu"
+coords = "0_30_73_16_33"
+
+[[spawn]]
+npc = "npc.pitrat_keldagrim_neu"
+coords = "0_30_73_18_28"
+
+[[spawn]]
+npc = "npc.pitrat_keldagrim_neu"
+coords = "0_30_73_30_34"
+
+[[spawn]]
+npc = "npc.pitrat_keldagrim_neu"
+coords = "0_30_73_32_35"
+
+[[spawn]]
+npc = "npc.pitrat_keldagrim_neu"
+coords = "0_30_73_33_31"
+
+[[spawn]]
+npc = "npc.pitrat_keldagrim_neu"
+coords = "0_30_73_35_34"
+
+[[spawn]]
+npc = "npc.pitrat_keldagrim_neu"
+coords = "0_30_73_39_30"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_30_73_21_28"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_30_73_22_17"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_30_73_25_14"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_30_73_25_20"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_30_73_26_40"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_30_73_34_39"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_30_73_38_24"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_30_73_42_30"
+
+[[spawn]]
+npc = "npc.vc_captaintom"
+coords = "0_30_73_16_29"
+
+[[spawn]]
+npc = "npc.vc_dwarf_poor1"
+coords = "0_30_73_12_27"
+
+[[spawn]]
+npc = "npc.vc_dwarf_poor2"
+coords = "0_30_73_12_29"
+
+[[spawn]]
+npc = "npc.vc_dwarf_poor3"
+coords = "0_30_73_26_37"
+
+[[spawn]]
+npc = "npc.vc_dwarf_poor4"
+coords = "0_30_73_28_40"
+
+[[spawn]]
+npc = "npc.vc_dwarf_rich1"
+coords = "0_30_73_18_17"
+
+[[spawn]]
+npc = "npc.vc_dwarf_rich2"
+coords = "0_30_73_17_18"
+
+[[spawn]]
+npc = "npc.vc_loki"
+coords = "0_30_73_17_29"
+
+## Keldagrim Tunnel
+
+[[spawn]]
+npc = "npc.death_troll_melee1"
+coords = "0_43_158_17_37"
+
+[[spawn]]
+npc = "npc.death_troll_melee1"
+coords = "0_43_158_25_30"
+
+[[spawn]]
+npc = "npc.death_troll_melee2"
+coords = "0_43_158_29_31"
+
+[[spawn]]
+npc = "npc.death_troll_melee3"
+coords = "0_43_158_31_28"
+
+[[spawn]]
+npc = "npc.death_troll_melee4"
+coords = "0_43_158_32_22"
+
+[[spawn]]
+npc = "npc.death_troll_melee5"
+coords = "0_43_158_19_31"
+
+[[spawn]]
+npc = "npc.death_troll_melee6"
+coords = "0_43_158_36_19"
+
+## Keldagrim bank
+
+[[spawn]]
+npc = "npc.dwarf_city_banker1"
+coords = "0_44_159_20_29"
+
+[[spawn]]
+npc = "npc.dwarf_city_banker2"
+coords = "0_44_159_22_29"
+
+## Pickaxe-Is-Mine
+
+[[spawn]]
+npc = "npc.dwarf_city_dwarf_man1"
+coords = "0_45_159_44_37"
+
+[[spawn]]
+npc = "npc.dwarf_city_shop_pickaxe"
+coords = "0_45_159_45_34"
+
+## Pickaxe-Is-Mine End
+

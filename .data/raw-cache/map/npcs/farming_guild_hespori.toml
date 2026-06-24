@@ -1,0 +1,16 @@
+[[spawn]]
+npc = "npc.hespori_healer_inactive"
+coords = "0_19_157_27_35"
+
+[[spawn]]
+npc = "npc.hespori_healer_inactive"
+coords = "0_19_157_27_43"
+
+[[spawn]]
+npc = "npc.hespori_healer_inactive"
+coords = "0_19_157_35_35"
+
+[[spawn]]
+npc = "npc.hespori_healer_inactive"
+coords = "0_19_157_35_43"
+

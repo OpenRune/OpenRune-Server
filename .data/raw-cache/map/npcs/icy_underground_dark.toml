@@ -1,0 +1,80 @@
+## Ghorrock Dungeon
+
+[[spawn]]
+npc = "npc.sotn_khazard_muspah_soldier"
+coords = "0_45_161_30_11"
+
+[[spawn]]
+npc = "npc.sotn_khazard_muspah_soldier_vis"
+coords = "0_45_161_30_12"
+
+[[spawn]]
+npc = "npc.sotn_khazard_scout_vis"
+coords = "0_45_161_46_50"
+
+[[spawn]]
+npc = "npc.sotn_khazard_soldier_1"
+coords = "0_45_161_39_24"
+
+[[spawn]]
+npc = "npc.sotn_khazard_soldier_2"
+coords = "0_45_161_25_31"
+
+[[spawn]]
+npc = "npc.sotn_khazard_soldier_2"
+coords = "0_45_161_42_17"
+
+[[spawn]]
+npc = "npc.sotn_khazard_soldier_2"
+coords = "0_45_161_43_31"
+
+[[spawn]]
+npc = "npc.sotn_khazard_soldier_3"
+coords = "0_45_161_32_20"
+
+[[spawn]]
+npc = "npc.sotn_khazard_soldier_3"
+coords = "0_45_161_50_23"
+
+[[spawn]]
+npc = "npc.sotn_khazard_soldier_4"
+coords = "0_45_161_35_30"
+
+## Ghorrock Dungeon Duke Arena
+
+[[spawn]]
+npc = "npc.dt2_assassin_ghorrock_asylum"
+coords = "0_47_100_9_27"
+
+[[spawn]]
+npc = "npc.duke_sucellus_base"
+coords = "0_47_100_28_52"
+
+## Ghorrock Dungeon Tiles
+
+[[spawn]]
+npc = "npc.sotn_khazard_head_soldier"
+coords = "0_45_161_47_44"
+
+[[spawn]]
+npc = "npc.sotn_khazard_head_soldier_vis"
+coords = "0_45_161_47_44"
+
+[[spawn]]
+npc = "npc.sotn_khazard_scout"
+coords = "0_45_161_45_48"
+
+[[spawn]]
+npc = "npc.sotn_khazard_soldier_1"
+coords = "0_45_161_51_46"
+
+[[spawn]]
+npc = "npc.sotn_khazard_soldier_2"
+coords = "0_45_161_49_41"
+
+[[spawn]]
+npc = "npc.sotn_khazard_soldier_3"
+coords = "0_45_161_43_44"
+
+## Ghorrock Dungeon Tiles End
+

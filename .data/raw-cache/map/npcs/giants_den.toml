@@ -1,0 +1,108 @@
+[[spawn]]
+npc = "npc.giants_den_natural_historian"
+coords = "0_22_154_52_23"
+
+[[spawn]]
+npc = "npc.kourend_firegiant1"
+coords = "0_22_154_43_44"
+
+[[spawn]]
+npc = "npc.kourend_firegiant1"
+coords = "0_22_154_47_46"
+
+[[spawn]]
+npc = "npc.kourend_firegiant1"
+coords = "0_22_154_52_38"
+
+[[spawn]]
+npc = "npc.kourend_firegiant1"
+coords = "0_22_154_52_51"
+
+[[spawn]]
+npc = "npc.kourend_firegiant2"
+coords = "0_22_154_43_52"
+
+[[spawn]]
+npc = "npc.kourend_firegiant2"
+coords = "0_22_154_47_50"
+
+[[spawn]]
+npc = "npc.kourend_firegiant2"
+coords = "0_22_154_49_41"
+
+[[spawn]]
+npc = "npc.kourend_firegiant2"
+coords = "0_22_154_53_47"
+
+[[spawn]]
+npc = "npc.kourend_hillgiant"
+coords = "0_22_154_18_31"
+
+[[spawn]]
+npc = "npc.kourend_hillgiant"
+coords = "0_22_154_20_28"
+
+[[spawn]]
+npc = "npc.kourend_hillgiant"
+coords = "0_22_154_21_24"
+
+[[spawn]]
+npc = "npc.kourend_hillgiant"
+coords = "0_22_154_24_32"
+
+[[spawn]]
+npc = "npc.kourend_hillgiant"
+coords = "0_22_154_25_23"
+
+[[spawn]]
+npc = "npc.kourend_hillgiant"
+coords = "0_22_154_28_27"
+
+[[spawn]]
+npc = "npc.kourend_hillgiant"
+coords = "0_22_154_31_30"
+
+[[spawn]]
+npc = "npc.kourend_hillgiant"
+coords = "0_22_154_36_25"
+
+[[spawn]]
+npc = "npc.kourend_mossgiant"
+coords = "0_22_154_11_13"
+
+[[spawn]]
+npc = "npc.kourend_mossgiant"
+coords = "0_22_154_11_6"
+
+[[spawn]]
+npc = "npc.kourend_mossgiant"
+coords = "0_22_154_16_8"
+
+[[spawn]]
+npc = "npc.kourend_mossgiant"
+coords = "0_22_154_17_14"
+
+[[spawn]]
+npc = "npc.kourend_mossgiant"
+coords = "0_22_154_21_6"
+
+[[spawn]]
+npc = "npc.kourend_mossgiant"
+coords = "0_22_154_38_9"
+
+[[spawn]]
+npc = "npc.kourend_mossgiant"
+coords = "0_22_154_44_6"
+
+[[spawn]]
+npc = "npc.kourend_mossgiant"
+coords = "0_22_154_46_10"
+
+[[spawn]]
+npc = "npc.kourend_mossgiant"
+coords = "0_22_154_51_11"
+
+[[spawn]]
+npc = "npc.kourend_mossgiant"
+coords = "0_22_154_52_6"
+

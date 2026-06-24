@@ -1,0 +1,36 @@
+[[spawn]]
+npc = "npc.lunar_moon_dream_dice_game_man"
+coords = "2_27_79_9_12"
+
+[[spawn]]
+npc = "npc.lunar_moon_dream_jumping_game_man"
+coords = "2_27_79_6_55"
+
+[[spawn]]
+npc = "npc.lunar_moon_dream_lady"
+coords = "2_27_79_33_31"
+
+[[spawn]]
+npc = "npc.lunar_moon_dream_man"
+coords = "2_27_79_33_32"
+
+[[spawn]]
+npc = "npc.lunar_moon_dream_music_game_man"
+coords = "2_27_79_42_14"
+
+[[spawn]]
+npc = "npc.lunar_moon_dream_numbers_game_man"
+coords = "2_27_79_58_10"
+
+[[spawn]]
+npc = "npc.lunar_moon_dream_power_game_man"
+coords = "2_27_79_59_23"
+
+[[spawn]]
+npc = "npc.lunar_moon_dream_trees_game_man"
+coords = "2_27_79_37_56"
+
+[[spawn]]
+npc = "npc.quest_lunar_mirror_of_player"
+coords = "2_28_79_31_31"
+

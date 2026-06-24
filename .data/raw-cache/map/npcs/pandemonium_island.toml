@@ -1,0 +1,104 @@
+[[spawn]]
+npc = "npc.brass_hand_harry"
+coords = "0_47_46_35_21"
+
+[[spawn]]
+npc = "npc.pandemonium_fiora"
+coords = "0_47_46_38_33"
+
+[[spawn]]
+npc = "npc.pandemonium_fishmonger"
+coords = "0_47_46_38_39"
+
+[[spawn]]
+npc = "npc.pandemonium_polly"
+coords = "0_47_46_44_25"
+
+[[spawn]]
+npc = "npc.pandemonium_rosalee"
+coords = "0_47_46_38_28"
+
+[[spawn]]
+npc = "npc.red_crab"
+coords = "0_47_46_28_30"
+
+[[spawn]]
+npc = "npc.sailing_intro_ribs_vis"
+coords = "0_47_46_43_30"
+
+[[spawn]]
+npc = "npc.seabird1"
+coords = "0_47_46_11_3"
+
+[[spawn]]
+npc = "npc.seabird1"
+coords = "0_47_46_2_23"
+
+[[spawn]]
+npc = "npc.seabird1"
+coords = "0_47_46_41_6"
+
+[[spawn]]
+npc = "npc.seabird1"
+coords = "0_47_46_43_58"
+
+[[spawn]]
+npc = "npc.seabird1"
+coords = "0_47_46_45_51"
+
+[[spawn]]
+npc = "npc.seabird1"
+coords = "0_47_46_47_55"
+
+[[spawn]]
+npc = "npc.seabird1"
+coords = "0_47_46_47_9"
+
+[[spawn]]
+npc = "npc.seabird1"
+coords = "0_47_46_4_58"
+
+[[spawn]]
+npc = "npc.seabird1"
+coords = "0_47_46_55_22"
+
+[[spawn]]
+npc = "npc.seabird1"
+coords = "0_47_46_5_33"
+
+[[spawn]]
+npc = "npc.seabird1"
+coords = "0_47_46_60_45"
+
+[[spawn]]
+npc = "npc.tempoross_island_crab"
+coords = "0_47_46_16_36"
+
+[[spawn]]
+npc = "npc.tempoross_island_crab"
+coords = "0_47_46_30_61"
+
+[[spawn]]
+npc = "npc.tempoross_island_crab"
+coords = "0_47_46_33_60"
+
+[[spawn]]
+npc = "npc.tempoross_island_crab"
+coords = "0_47_46_39_15"
+
+[[spawn]]
+npc = "npc.tempoross_island_crab"
+coords = "0_47_46_4_41"
+
+[[spawn]]
+npc = "npc.tempoross_island_crab"
+coords = "0_47_46_5_38"
+
+[[spawn]]
+npc = "npc.tempoross_island_crab"
+coords = "0_47_46_6_40"
+
+[[spawn]]
+npc = "npc.tortugan_kebba"
+coords = "0_47_46_22_40"
+

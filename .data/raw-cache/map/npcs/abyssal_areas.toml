@@ -1,0 +1,708 @@
+## Abyss Area Alr
+
+[[spawn]]
+npc = "npc.abyssal_leech"
+coords = "0_47_76_12_13"
+
+[[spawn]]
+npc = "npc.abyssal_leech"
+coords = "0_47_76_13_54"
+
+[[spawn]]
+npc = "npc.abyssal_leech"
+coords = "0_47_76_21_53"
+
+[[spawn]]
+npc = "npc.abyssal_leech"
+coords = "0_47_76_22_12"
+
+[[spawn]]
+npc = "npc.abyssal_leech"
+coords = "0_47_76_28_45"
+
+[[spawn]]
+npc = "npc.abyssal_leech"
+coords = "0_47_76_32_6"
+
+[[spawn]]
+npc = "npc.abyssal_leech"
+coords = "0_47_76_37_52"
+
+[[spawn]]
+npc = "npc.abyssal_leech"
+coords = "0_47_76_42_9"
+
+[[spawn]]
+npc = "npc.abyssal_leech"
+coords = "0_47_76_48_48"
+
+[[spawn]]
+npc = "npc.abyssal_leech"
+coords = "0_47_76_53_16"
+
+[[spawn]]
+npc = "npc.abyssal_leech"
+coords = "0_47_76_56_37"
+
+[[spawn]]
+npc = "npc.abyssal_leech"
+coords = "0_47_76_9_39"
+
+[[spawn]]
+npc = "npc.abyssal_leech"
+coords = "0_47_76_9_46"
+
+[[spawn]]
+npc = "npc.abyssal_pyramid"
+coords = "0_47_76_12_32"
+
+[[spawn]]
+npc = "npc.abyssal_pyramid"
+coords = "0_47_76_19_50"
+
+[[spawn]]
+npc = "npc.abyssal_pyramid"
+coords = "0_47_76_30_42"
+
+[[spawn]]
+npc = "npc.abyssal_pyramid"
+coords = "0_47_76_36_20"
+
+[[spawn]]
+npc = "npc.abyssal_pyramid"
+coords = "0_47_76_44_34"
+
+[[spawn]]
+npc = "npc.abyssal_pyramid"
+coords = "0_47_76_49_44"
+
+[[spawn]]
+npc = "npc.abyssal_walker"
+coords = "0_47_76_12_50"
+
+[[spawn]]
+npc = "npc.abyssal_walker"
+coords = "0_47_76_23_38"
+
+[[spawn]]
+npc = "npc.abyssal_walker"
+coords = "0_47_76_23_8"
+
+[[spawn]]
+npc = "npc.abyssal_walker"
+coords = "0_47_76_25_22"
+
+[[spawn]]
+npc = "npc.abyssal_walker"
+coords = "0_47_76_35_38"
+
+[[spawn]]
+npc = "npc.abyssal_walker"
+coords = "0_47_76_53_51"
+
+[[spawn]]
+npc = "npc.abyssal_walker"
+coords = "0_47_76_55_21"
+
+[[spawn]]
+npc = "npc.slayer_abyssal"
+coords = "0_47_76_10_38"
+
+[[spawn]]
+npc = "npc.slayer_abyssal"
+coords = "0_47_76_15_13"
+
+[[spawn]]
+npc = "npc.slayer_abyssal"
+coords = "0_47_76_17_52"
+
+[[spawn]]
+npc = "npc.slayer_abyssal"
+coords = "0_47_76_21_35"
+
+[[spawn]]
+npc = "npc.slayer_abyssal"
+coords = "0_47_76_27_19"
+
+[[spawn]]
+npc = "npc.slayer_abyssal"
+coords = "0_47_76_28_41"
+
+[[spawn]]
+npc = "npc.slayer_abyssal"
+coords = "0_47_76_38_10"
+
+[[spawn]]
+npc = "npc.slayer_abyssal"
+coords = "0_47_76_38_23"
+
+[[spawn]]
+npc = "npc.slayer_abyssal"
+coords = "0_47_76_40_53"
+
+[[spawn]]
+npc = "npc.slayer_abyssal"
+coords = "0_47_76_45_28"
+
+[[spawn]]
+npc = "npc.slayer_abyssal"
+coords = "0_47_76_48_45"
+
+[[spawn]]
+npc = "npc.slayer_abyssal"
+coords = "0_47_76_53_18"
+
+[[spawn]]
+npc = "npc.slayer_abyssal"
+coords = "0_47_76_8_27"
+
+## Abyssal Nexus
+
+[[spawn]]
+npc = "npc.abyssalsire_herohandler"
+coords = "2_46_74_23_58"
+
+[[spawn]]
+npc = "npc.abyssalsire_herohandler"
+coords = "2_46_75_33_58"
+
+[[spawn]]
+npc = "npc.abyssalsire_herohandler"
+coords = "2_48_74_35_58"
+
+[[spawn]]
+npc = "npc.abyssalsire_herohandler"
+coords = "2_48_75_30_58"
+
+[[spawn]]
+npc = "npc.abyssalsire_lung"
+coords = "0_46_74_10_44"
+
+[[spawn]]
+npc = "npc.abyssalsire_lung"
+coords = "0_46_74_13_34"
+
+[[spawn]]
+npc = "npc.abyssalsire_lung"
+coords = "0_46_74_38_43"
+
+[[spawn]]
+npc = "npc.abyssalsire_lung"
+coords = "0_46_74_41_33"
+
+[[spawn]]
+npc = "npc.abyssalsire_lung"
+coords = "0_46_75_20_44"
+
+[[spawn]]
+npc = "npc.abyssalsire_lung"
+coords = "0_46_75_23_34"
+
+[[spawn]]
+npc = "npc.abyssalsire_lung"
+coords = "0_46_75_48_43"
+
+[[spawn]]
+npc = "npc.abyssalsire_lung"
+coords = "0_46_75_51_33"
+
+[[spawn]]
+npc = "npc.abyssalsire_lung"
+coords = "0_48_74_22_44"
+
+[[spawn]]
+npc = "npc.abyssalsire_lung"
+coords = "0_48_74_25_34"
+
+[[spawn]]
+npc = "npc.abyssalsire_lung"
+coords = "0_48_74_50_43"
+
+[[spawn]]
+npc = "npc.abyssalsire_lung"
+coords = "0_48_74_53_33"
+
+[[spawn]]
+npc = "npc.abyssalsire_lung"
+coords = "0_48_75_17_44"
+
+[[spawn]]
+npc = "npc.abyssalsire_lung"
+coords = "0_48_75_20_34"
+
+[[spawn]]
+npc = "npc.abyssalsire_lung"
+coords = "0_48_75_45_43"
+
+[[spawn]]
+npc = "npc.abyssalsire_lung"
+coords = "0_48_75_48_33"
+
+[[spawn]]
+npc = "npc.abyssalsire_peek_green"
+coords = "0_47_74_19_50"
+
+[[spawn]]
+npc = "npc.abyssalsire_peek_green"
+coords = "0_47_74_43_35"
+
+[[spawn]]
+npc = "npc.abyssalsire_peek_yellow"
+coords = "0_47_74_16_34"
+
+[[spawn]]
+npc = "npc.abyssalsire_peek_yellow"
+coords = "0_47_74_43_54"
+
+[[spawn]]
+npc = "npc.abyssalsire_sire_stasis_sleeping"
+coords = "0_46_74_23_55"
+
+[[spawn]]
+npc = "npc.abyssalsire_sire_stasis_sleeping"
+coords = "0_46_75_33_55"
+
+[[spawn]]
+npc = "npc.abyssalsire_sire_stasis_sleeping"
+coords = "0_48_74_35_55"
+
+[[spawn]]
+npc = "npc.abyssalsire_sire_stasis_sleeping"
+coords = "0_48_75_30_55"
+
+[[spawn]]
+npc = "npc.abyssalsire_tentacle_sleeping_north"
+coords = "0_46_74_14_26"
+
+[[spawn]]
+npc = "npc.abyssalsire_tentacle_sleeping_north"
+coords = "0_46_74_31_26"
+
+[[spawn]]
+npc = "npc.abyssalsire_tentacle_sleeping_north"
+coords = "0_46_75_24_26"
+
+[[spawn]]
+npc = "npc.abyssalsire_tentacle_sleeping_north"
+coords = "0_46_75_41_26"
+
+[[spawn]]
+npc = "npc.abyssalsire_tentacle_sleeping_north"
+coords = "0_48_74_26_26"
+
+[[spawn]]
+npc = "npc.abyssalsire_tentacle_sleeping_north"
+coords = "0_48_74_43_26"
+
+[[spawn]]
+npc = "npc.abyssalsire_tentacle_sleeping_north"
+coords = "0_48_75_21_26"
+
+[[spawn]]
+npc = "npc.abyssalsire_tentacle_sleeping_north"
+coords = "0_48_75_38_26"
+
+[[spawn]]
+npc = "npc.abyssalsire_tentacle_sleeping_south"
+coords = "0_46_74_13_44"
+
+[[spawn]]
+npc = "npc.abyssalsire_tentacle_sleeping_south"
+coords = "0_46_74_30_44"
+
+[[spawn]]
+npc = "npc.abyssalsire_tentacle_sleeping_south"
+coords = "0_46_75_23_44"
+
+[[spawn]]
+npc = "npc.abyssalsire_tentacle_sleeping_south"
+coords = "0_46_75_40_44"
+
+[[spawn]]
+npc = "npc.abyssalsire_tentacle_sleeping_south"
+coords = "0_48_74_25_44"
+
+[[spawn]]
+npc = "npc.abyssalsire_tentacle_sleeping_south"
+coords = "0_48_74_42_44"
+
+[[spawn]]
+npc = "npc.abyssalsire_tentacle_sleeping_south"
+coords = "0_48_75_20_44"
+
+[[spawn]]
+npc = "npc.abyssalsire_tentacle_sleeping_south"
+coords = "0_48_75_37_44"
+
+[[spawn]]
+npc = "npc.abyssalsire_tentacle_sleeping_upright"
+coords = "0_46_74_16_35"
+
+[[spawn]]
+npc = "npc.abyssalsire_tentacle_sleeping_upright"
+coords = "0_46_74_28_35"
+
+[[spawn]]
+npc = "npc.abyssalsire_tentacle_sleeping_upright"
+coords = "0_46_75_26_35"
+
+[[spawn]]
+npc = "npc.abyssalsire_tentacle_sleeping_upright"
+coords = "0_46_75_38_35"
+
+[[spawn]]
+npc = "npc.abyssalsire_tentacle_sleeping_upright"
+coords = "0_48_74_28_35"
+
+[[spawn]]
+npc = "npc.abyssalsire_tentacle_sleeping_upright"
+coords = "0_48_74_40_35"
+
+[[spawn]]
+npc = "npc.abyssalsire_tentacle_sleeping_upright"
+coords = "0_48_75_23_35"
+
+[[spawn]]
+npc = "npc.abyssalsire_tentacle_sleeping_upright"
+coords = "0_48_75_35_35"
+
+## The Abyss
+
+[[spawn]]
+npc = "npc.abyssal_leech"
+coords = "0_47_75_10_41"
+
+[[spawn]]
+npc = "npc.abyssal_leech"
+coords = "0_47_75_10_44"
+
+[[spawn]]
+npc = "npc.abyssal_leech"
+coords = "0_47_75_11_16"
+
+[[spawn]]
+npc = "npc.abyssal_leech"
+coords = "0_47_75_12_47"
+
+[[spawn]]
+npc = "npc.abyssal_leech"
+coords = "0_47_75_13_13"
+
+[[spawn]]
+npc = "npc.abyssal_leech"
+coords = "0_47_75_15_51"
+
+[[spawn]]
+npc = "npc.abyssal_leech"
+coords = "0_47_75_17_51"
+
+[[spawn]]
+npc = "npc.abyssal_leech"
+coords = "0_47_75_20_54"
+
+[[spawn]]
+npc = "npc.abyssal_leech"
+coords = "0_47_75_21_10"
+
+[[spawn]]
+npc = "npc.abyssal_leech"
+coords = "0_47_75_25_54"
+
+[[spawn]]
+npc = "npc.abyssal_leech"
+coords = "0_47_75_30_55"
+
+[[spawn]]
+npc = "npc.abyssal_leech"
+coords = "0_47_75_35_9"
+
+[[spawn]]
+npc = "npc.abyssal_leech"
+coords = "0_47_75_36_54"
+
+[[spawn]]
+npc = "npc.abyssal_leech"
+coords = "0_47_75_39_53"
+
+[[spawn]]
+npc = "npc.abyssal_leech"
+coords = "0_47_75_43_52"
+
+[[spawn]]
+npc = "npc.abyssal_leech"
+coords = "0_47_75_47_11"
+
+[[spawn]]
+npc = "npc.abyssal_leech"
+coords = "0_47_75_47_49"
+
+[[spawn]]
+npc = "npc.abyssal_leech"
+coords = "0_47_75_51_17"
+
+[[spawn]]
+npc = "npc.abyssal_leech"
+coords = "0_47_75_52_38"
+
+[[spawn]]
+npc = "npc.abyssal_leech"
+coords = "0_47_75_54_37"
+
+[[spawn]]
+npc = "npc.abyssal_leech"
+coords = "0_47_75_58_22"
+
+[[spawn]]
+npc = "npc.abyssal_leech"
+coords = "0_47_75_6_38"
+
+[[spawn]]
+npc = "npc.abyssal_leech"
+coords = "0_47_75_7_28"
+
+[[spawn]]
+npc = "npc.abyssal_leech"
+coords = "0_47_75_7_37"
+
+[[spawn]]
+npc = "npc.abyssal_leech"
+coords = "0_47_75_8_24"
+
+[[spawn]]
+npc = "npc.abyssal_leech"
+coords = "0_47_75_8_30"
+
+[[spawn]]
+npc = "npc.abyssal_leech"
+coords = "0_47_75_8_34"
+
+[[spawn]]
+npc = "npc.abyssal_leech"
+coords = "0_47_75_8_38"
+
+[[spawn]]
+npc = "npc.abyssal_leech"
+coords = "0_47_75_9_13"
+
+[[spawn]]
+npc = "npc.abyssal_leech"
+coords = "0_47_75_9_16"
+
+[[spawn]]
+npc = "npc.abyssal_leech"
+coords = "0_47_75_9_25"
+
+[[spawn]]
+npc = "npc.abyssal_pyramid"
+coords = "0_47_75_19_8"
+
+[[spawn]]
+npc = "npc.abyssal_pyramid"
+coords = "0_47_75_32_57"
+
+[[spawn]]
+npc = "npc.abyssal_pyramid"
+coords = "0_47_75_42_55"
+
+[[spawn]]
+npc = "npc.abyssal_pyramid"
+coords = "0_47_75_48_51"
+
+[[spawn]]
+npc = "npc.abyssal_pyramid"
+coords = "0_47_75_49_17"
+
+[[spawn]]
+npc = "npc.abyssal_pyramid"
+coords = "0_47_75_49_46"
+
+[[spawn]]
+npc = "npc.abyssal_pyramid"
+coords = "0_47_75_50_48"
+
+[[spawn]]
+npc = "npc.abyssal_pyramid"
+coords = "0_47_75_51_12"
+
+[[spawn]]
+npc = "npc.abyssal_pyramid"
+coords = "0_47_75_52_10"
+
+[[spawn]]
+npc = "npc.abyssal_pyramid"
+coords = "0_47_75_52_19"
+
+[[spawn]]
+npc = "npc.abyssal_pyramid"
+coords = "0_47_75_52_24"
+
+[[spawn]]
+npc = "npc.abyssal_pyramid"
+coords = "0_47_75_52_36"
+
+[[spawn]]
+npc = "npc.abyssal_pyramid"
+coords = "0_47_75_53_41"
+
+[[spawn]]
+npc = "npc.abyssal_pyramid"
+coords = "0_47_75_55_23"
+
+[[spawn]]
+npc = "npc.abyssal_pyramid"
+coords = "0_47_75_56_30"
+
+[[spawn]]
+npc = "npc.abyssal_pyramid"
+coords = "0_47_75_56_40"
+
+[[spawn]]
+npc = "npc.abyssal_pyramid"
+coords = "0_47_75_6_26"
+
+[[spawn]]
+npc = "npc.abyssal_pyramid"
+coords = "0_47_75_9_47"
+
+[[spawn]]
+npc = "npc.abyssal_walker"
+coords = "0_47_75_12_17"
+
+[[spawn]]
+npc = "npc.abyssal_walker"
+coords = "0_47_75_14_49"
+
+[[spawn]]
+npc = "npc.abyssal_walker"
+coords = "0_47_75_15_13"
+
+[[spawn]]
+npc = "npc.abyssal_walker"
+coords = "0_47_75_17_11"
+
+[[spawn]]
+npc = "npc.abyssal_walker"
+coords = "0_47_75_18_9"
+
+[[spawn]]
+npc = "npc.abyssal_walker"
+coords = "0_47_75_20_11"
+
+[[spawn]]
+npc = "npc.abyssal_walker"
+coords = "0_47_75_20_7"
+
+[[spawn]]
+npc = "npc.abyssal_walker"
+coords = "0_47_75_22_56"
+
+[[spawn]]
+npc = "npc.abyssal_walker"
+coords = "0_47_75_22_8"
+
+[[spawn]]
+npc = "npc.abyssal_walker"
+coords = "0_47_75_23_11"
+
+[[spawn]]
+npc = "npc.abyssal_walker"
+coords = "0_47_75_24_8"
+
+[[spawn]]
+npc = "npc.abyssal_walker"
+coords = "0_47_75_26_9"
+
+[[spawn]]
+npc = "npc.abyssal_walker"
+coords = "0_47_75_28_8"
+
+[[spawn]]
+npc = "npc.abyssal_walker"
+coords = "0_47_75_29_10"
+
+[[spawn]]
+npc = "npc.abyssal_walker"
+coords = "0_47_75_30_7"
+
+[[spawn]]
+npc = "npc.abyssal_walker"
+coords = "0_47_75_32_10"
+
+[[spawn]]
+npc = "npc.abyssal_walker"
+coords = "0_47_75_37_11"
+
+[[spawn]]
+npc = "npc.abyssal_walker"
+coords = "0_47_75_39_8"
+
+[[spawn]]
+npc = "npc.abyssal_walker"
+coords = "0_47_75_42_11"
+
+[[spawn]]
+npc = "npc.abyssal_walker"
+coords = "0_47_75_44_11"
+
+[[spawn]]
+npc = "npc.abyssal_walker"
+coords = "0_47_75_44_55"
+
+[[spawn]]
+npc = "npc.abyssal_walker"
+coords = "0_47_75_45_9"
+
+[[spawn]]
+npc = "npc.abyssal_walker"
+coords = "0_47_75_46_13"
+
+[[spawn]]
+npc = "npc.abyssal_walker"
+coords = "0_47_75_50_10"
+
+[[spawn]]
+npc = "npc.abyssal_walker"
+coords = "0_47_75_50_13"
+
+[[spawn]]
+npc = "npc.abyssal_walker"
+coords = "0_47_75_50_16"
+
+[[spawn]]
+npc = "npc.abyssal_walker"
+coords = "0_47_75_51_44"
+
+[[spawn]]
+npc = "npc.abyssal_walker"
+coords = "0_47_75_52_20"
+
+[[spawn]]
+npc = "npc.abyssal_walker"
+coords = "0_47_75_53_11"
+
+[[spawn]]
+npc = "npc.abyssal_walker"
+coords = "0_47_75_53_19"
+
+[[spawn]]
+npc = "npc.abyssal_walker"
+coords = "0_47_75_53_28"
+
+[[spawn]]
+npc = "npc.abyssal_walker"
+coords = "0_47_75_54_20"
+
+[[spawn]]
+npc = "npc.abyssal_walker"
+coords = "0_47_75_8_32"
+
+[[spawn]]
+npc = "npc.abyssal_walker"
+coords = "0_47_75_9_23"
+
+[[spawn]]
+npc = "npc.rcu_zammy_mage2"
+coords = "0_47_75_31_34"
+
+## The Abyss End
+

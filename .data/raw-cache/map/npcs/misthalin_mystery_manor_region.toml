@@ -1,0 +1,40 @@
+[[spawn]]
+npc = "npc.mistmyst_killer_background"
+coords = "0_25_75_44_19"
+
+[[spawn]]
+npc = "npc.mistmyst_lacey"
+coords = "0_25_75_29_50"
+
+[[spawn]]
+npc = "npc.mistmyst_lacey_vis"
+coords = "0_25_75_29_50"
+
+[[spawn]]
+npc = "npc.mistmyst_mandy_post"
+coords = "0_25_75_36_17"
+
+[[spawn]]
+npc = "npc.mistmyst_sid"
+coords = "0_25_75_15_32"
+
+## Misthalin Mystery Manor
+
+[[spawn]]
+npc = "npc.mistmyst_mandy"
+coords = "0_25_75_26_40"
+
+[[spawn]]
+npc = "npc.mistmyst_mirror"
+coords = "0_25_75_22_28"
+
+[[spawn]]
+npc = "npc.mistmyst_tayten"
+coords = "0_25_75_39_38"
+
+[[spawn]]
+npc = "npc.mistmyst_tayten_vis"
+coords = "0_25_75_39_38"
+
+## Misthalin Mystery Manor End
+

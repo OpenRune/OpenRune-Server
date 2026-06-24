@@ -1,0 +1,20 @@
+[[spawn]]
+npc = "npc.skeleton_armed"
+coords = "0_37_150_12_9"
+
+[[spawn]]
+npc = "npc.skeleton_armed2"
+coords = "0_37_150_4_6"
+
+[[spawn]]
+npc = "npc.skeleton_armed4"
+coords = "0_37_150_15_5"
+
+[[spawn]]
+npc = "npc.skeleton_unarmed"
+coords = "0_37_150_3_11"
+
+[[spawn]]
+npc = "npc.skeleton_unarmed2"
+coords = "0_37_150_7_9"
+

@@ -11,6 +11,7 @@ import org.rsmod.api.player.interact.NpcInteractions
 import org.rsmod.api.player.interact.PlayerInteractions
 import org.rsmod.api.player.interact.WornInteractions
 import org.rsmod.api.player.music.MusicPlayer
+import org.rsmod.api.player.hook.PlayerTeleportValidator
 import org.rsmod.api.random.GameRandom
 import org.rsmod.events.EventBus
 import org.rsmod.game.entity.NpcList
@@ -35,6 +36,7 @@ constructor(
     private val musicPlayer: MusicPlayer,
     private val marketPrices: MarketPrices,
     private val instantHitProcessor: InstantPlayerHitProcessor,
+    private val teleportValidator: PlayerTeleportValidator,
 ) {
     public fun create(): ProtectedAccessContext =
         ProtectedAccessContext(
@@ -53,6 +55,7 @@ constructor(
             getMusicPlayer = { musicPlayer },
             getMarketPrices = { marketPrices },
             getInstantHitProcessor = { instantHitProcessor },
+            getTeleportValidator = { teleportValidator },
         )
 
     public companion object {
@@ -73,6 +76,7 @@ constructor(
                 getMusicPlayer = { error("No music player provided.") },
                 getMarketPrices = { error("No market prices provided.") },
                 getInstantHitProcessor = { error("No instant hit processor provided.") },
+                getTeleportValidator = { error("No teleport validator provided.") },
             )
 
         /**

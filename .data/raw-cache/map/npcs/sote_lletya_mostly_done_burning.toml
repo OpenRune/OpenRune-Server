@@ -1,0 +1,96 @@
+[[spawn]]
+npc = "npc.elena_lletya"
+coords = "0_43_95_22_13"
+
+[[spawn]]
+npc = "npc.farming_gardener_fruit_tree_5"
+coords = "0_43_95_42_24"
+
+[[spawn]]
+npc = "npc.farming_tools_leprechaun"
+coords = "0_43_95_42_28"
+
+[[spawn]]
+npc = "npc.mourning_bow_seller"
+coords = "0_43_95_20_28"
+
+[[spawn]]
+npc = "npc.mourning_elf_bankerf"
+coords = "0_43_95_50_30"
+
+[[spawn]]
+npc = "npc.mourning_elf_bankerm"
+coords = "0_43_95_48_30"
+
+[[spawn]]
+npc = "npc.mourning_elf_kid_1"
+coords = "0_43_95_38_41"
+
+[[spawn]]
+npc = "npc.mourning_elf_kid_2"
+coords = "0_43_95_28_39"
+
+[[spawn]]
+npc = "npc.mourning_elven_cook"
+coords = "1_43_95_37_22"
+
+[[spawn]]
+npc = "npc.mourning_guard_melee"
+coords = "0_43_95_39_31"
+
+[[spawn]]
+npc = "npc.mourning_guard_melee2"
+coords = "0_43_95_25_37"
+
+[[spawn]]
+npc = "npc.mourning_guard_range"
+coords = "0_43_95_25_34"
+
+[[spawn]]
+npc = "npc.mourning_guard_range2"
+coords = "1_43_95_32_31"
+
+[[spawn]]
+npc = "npc.mourning_seamstress"
+coords = "0_43_95_20_43"
+
+[[spawn]]
+npc = "npc.mourning_stores_man"
+coords = "0_43_95_30_46"
+
+[[spawn]]
+npc = "npc.mourning_town_elf_1"
+coords = "0_43_95_33_23"
+
+[[spawn]]
+npc = "npc.mourning_town_elf_3"
+coords = "0_43_95_29_42"
+
+[[spawn]]
+npc = "npc.mourning_town_elf_4"
+coords = "0_43_95_27_29"
+
+[[spawn]]
+npc = "npc.sote_baxtorian_ruined_lletya"
+coords = "0_43_95_49_36"
+
+[[spawn]]
+npc = "npc.sote_eluned_lletya"
+coords = "0_43_95_22_25"
+
+[[spawn]]
+npc = "npc.sote_iestin_ruined_lletya"
+coords = "0_43_95_47_38"
+
+[[spawn]]
+npc = "npc.sote_ilfeen_lletya"
+coords = "0_43_95_50_19"
+
+[[spawn]]
+npc = "npc.sote_islwyn_lletya"
+coords = "0_43_95_19_24"
+
+[[spawn]]
+npc = "npc.sote_lady_ithell_village"
+coords = "0_43_95_32_36"
+

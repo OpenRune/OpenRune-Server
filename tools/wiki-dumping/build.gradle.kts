@@ -32,6 +32,15 @@ tasks.register<JavaExec>("dumpNpcDrops") {
     mainClass.set("org.rsmod.tools.wiki.dumping.NpcDropTableWikiDumperKt")
 }
 
+tasks.register<JavaExec>("dumpNpcSpawns") {
+    group = "application"
+    description =
+        "Dumps 2021-spawns.csv to .data/raw-cache/map/npcs TOML files (area-bucketed) " +
+            "and npc_radius.txt. Example: ./gradlew :tools:wiki-dumping:dumpNpcSpawns --args=\"--quiet\""
+    classpath = sourceSets["main"].runtimeClasspath
+    mainClass.set("org.rsmod.tools.wiki.dumping.NpcSpawnCsvDumperKt")
+}
+
 tasks.register<JavaExec>("dumpShops") {
     group = "application"
     description =

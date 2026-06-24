@@ -1,0 +1,8 @@
+[[spawn]]
+npc = "npc.akd_councillor_orson_lookout"
+coords = "0_24_155_26_32"
+
+[[spawn]]
+npc = "npc.akd_kandur_hosidius"
+coords = "0_24_155_32_35"
+

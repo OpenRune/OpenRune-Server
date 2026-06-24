@@ -6,6 +6,14 @@ revision: 238
 environment: "LIVE"
 world: 255
 
+gameplay:
+  quest-requirements:
+    # Temporary core-mechanics default. Use "respect-progress" when quest gates should use real
+    # quest state, or "virtual-completions" for league-style profiles.
+    mode: "assume-completed"
+    virtual-completions: []
+    virtual-lines: []
+
 central:
   same-instance: true
   host: "127.0.0.1"

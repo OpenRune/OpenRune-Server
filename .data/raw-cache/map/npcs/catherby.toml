@@ -1,0 +1,124 @@
+[[spawn]]
+npc = "npc.0_44_53_memberfish"
+coords = "0_44_53_30_37"
+
+[[spawn]]
+npc = "npc.0_44_53_memberfish"
+coords = "0_44_53_39_31"
+
+[[spawn]]
+npc = "npc.0_44_53_memberfish"
+coords = "0_44_53_43_34"
+
+[[spawn]]
+npc = "npc.0_44_53_rarefish"
+coords = "0_44_53_28_37"
+
+[[spawn]]
+npc = "npc.0_44_53_rarefish"
+coords = "0_44_53_37_31"
+
+[[spawn]]
+npc = "npc.0_44_53_saltfish"
+coords = "0_44_53_20_39"
+
+[[spawn]]
+npc = "npc.0_44_53_saltfish"
+coords = "0_44_53_22_39"
+
+[[spawn]]
+npc = "npc.arhein"
+coords = "0_43_53_51_38"
+
+[[spawn]]
+npc = "npc.caleb_fitzharmon"
+coords = "0_44_53_3_59"
+
+[[spawn]]
+npc = "npc.candle_maker"
+coords = "0_43_53_48_47"
+
+[[spawn]]
+npc = "npc.dantaera"
+coords = "0_43_54_56_8"
+
+[[spawn]]
+npc = "npc.farming_gardener_fruit_4"
+coords = "0_44_53_45_40"
+
+[[spawn]]
+npc = "npc.farming_shopkeeper_2"
+coords = "0_44_54_4_7"
+
+[[spawn]]
+npc = "npc.farming_tools_leprechaun"
+coords = "0_43_54_63_11"
+
+[[spawn]]
+npc = "npc.harry"
+coords = "0_44_53_18_53"
+
+[[spawn]]
+npc = "npc.hickton"
+coords = "0_44_53_6_50"
+
+[[spawn]]
+npc = "npc.lost_property_merchant_standard"
+coords = "0_43_53_56_62"
+
+[[spawn]]
+npc = "npc.man"
+coords = "0_43_53_51_39"
+
+[[spawn]]
+npc = "npc.man"
+coords = "0_43_53_53_36"
+
+[[spawn]]
+npc = "npc.man3"
+coords = "0_44_53_0_50"
+
+[[spawn]]
+npc = "npc.sailing_shipwright_catherby"
+coords = "0_43_53_53_36"
+
+[[spawn]]
+npc = "npc.sailing_transport_trader_stan_crew_man3"
+coords = "0_43_53_44_23"
+
+[[spawn]]
+npc = "npc.sailing_transport_trader_stan_crew_woman3"
+coords = "0_43_53_45_23"
+
+[[spawn]]
+npc = "npc.unicorn"
+coords = "0_43_54_39_4"
+
+[[spawn]]
+npc = "npc.woman2"
+coords = "0_44_53_1_51"
+
+## Catherby Bank
+
+[[spawn]]
+npc = "npc.banker1"
+coords = "0_43_53_55_51"
+
+[[spawn]]
+npc = "npc.banker2"
+coords = "0_43_53_57_51"
+
+[[spawn]]
+npc = "npc.banker2"
+coords = "0_43_53_59_51"
+
+[[spawn]]
+npc = "npc.deadman_banker_grey_south"
+coords = "0_43_53_58_51"
+
+[[spawn]]
+npc = "npc.deadman_guard_catherby"
+coords = "0_43_53_55_48"
+
+## Catherby Bank End
+

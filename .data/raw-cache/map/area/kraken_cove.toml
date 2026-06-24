@@ -1,0 +1,12 @@
+[[area]]
+name = "Kraken Cove"
+area_id = "area.kraken_cove"
+levels = [0]
+
+[[area.polygons]]
+vertices = [
+    [2235, 9980],
+    [2307, 9980],
+    [2307, 10052],
+    [2235, 10052],
+]

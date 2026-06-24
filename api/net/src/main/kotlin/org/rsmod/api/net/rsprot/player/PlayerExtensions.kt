@@ -1,6 +1,7 @@
 package org.rsmod.api.net.rsprot.player
 
 import org.rsmod.api.config.constants
+import org.rsmod.api.player.hook.TeleportType
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.protect.ProtectedAccessContextFactory
 import org.rsmod.game.entity.Player
@@ -15,7 +16,7 @@ internal fun Player.protectedTelejump(collision: CollisionFlagMap, dest: CoordGr
     launch {
         val context = ProtectedAccessContextFactory.empty()
         val access = ProtectedAccess(this@protectedTelejump, this, context)
-        access.telejump(dest, collision)
+        access.telejump(dest, collision, TeleportType.Exempt)
     }
     return true
 }

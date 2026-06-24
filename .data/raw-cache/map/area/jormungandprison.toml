@@ -1,0 +1,12 @@
+[[area]]
+name = "Jormungand's Prison"
+area_id = "area.jormungandprison"
+levels = [0, 1, 2, 3]
+
+[[area.polygons]]
+vertices = [
+    [2385, 10472],
+    [2501, 10473],
+    [2497, 10344],
+    [2401, 10354],
+]

@@ -1,0 +1,104 @@
+[[spawn]]
+npc = "npc.deadman_guard_warguild"
+coords = "0_45_155_29_48"
+
+[[spawn]]
+npc = "npc.warguild_cyclops1_high"
+coords = "0_45_155_26_40"
+
+[[spawn]]
+npc = "npc.warguild_cyclops1_high"
+coords = "0_45_155_31_39"
+
+[[spawn]]
+npc = "npc.warguild_cyclops1_high"
+coords = "0_45_155_39_41"
+
+[[spawn]]
+npc = "npc.warguild_cyclops1_high"
+coords = "0_45_155_49_39"
+
+[[spawn]]
+npc = "npc.warguild_cyclops1_high"
+coords = "0_45_155_57_51"
+
+[[spawn]]
+npc = "npc.warguild_cyclops2_high"
+coords = "0_45_155_26_43"
+
+[[spawn]]
+npc = "npc.warguild_cyclops2_high"
+coords = "0_45_155_48_52"
+
+[[spawn]]
+npc = "npc.warguild_cyclops2_high"
+coords = "0_45_155_58_38"
+
+[[spawn]]
+npc = "npc.warguild_cyclops3_high"
+coords = "0_45_155_33_51"
+
+[[spawn]]
+npc = "npc.warguild_cyclops3_high"
+coords = "0_45_155_39_44"
+
+[[spawn]]
+npc = "npc.warguild_cyclops3_high"
+coords = "0_45_155_53_43"
+
+[[spawn]]
+npc = "npc.warguild_cyclops3_high"
+coords = "0_45_155_57_43"
+
+[[spawn]]
+npc = "npc.warguild_cyclops4_high"
+coords = "0_45_155_33_43"
+
+[[spawn]]
+npc = "npc.warguild_cyclops4_high"
+coords = "0_45_155_38_51"
+
+[[spawn]]
+npc = "npc.warguild_cyclops4_high"
+coords = "0_45_155_44_51"
+
+[[spawn]]
+npc = "npc.warguild_cyclops4_high"
+coords = "0_45_155_47_44"
+
+[[spawn]]
+npc = "npc.warguild_cyclops5_high"
+coords = "0_45_155_39_48"
+
+[[spawn]]
+npc = "npc.warguild_cyclops5_high"
+coords = "0_45_155_44_38"
+
+[[spawn]]
+npc = "npc.warguild_cyclops5_high"
+coords = "0_45_155_52_46"
+
+[[spawn]]
+npc = "npc.warguild_cyclops5_high"
+coords = "0_45_155_52_50"
+
+[[spawn]]
+npc = "npc.warguild_cyclops6_high"
+coords = "0_45_155_36_38"
+
+[[spawn]]
+npc = "npc.warguild_cyclops6_high"
+coords = "0_45_155_47_47"
+
+[[spawn]]
+npc = "npc.warguild_cyclops6_high"
+coords = "0_45_155_53_39"
+
+[[spawn]]
+npc = "npc.warguild_cyclops_pet"
+coords = "0_45_155_28_52"
+
+[[spawn]]
+npc = "npc.warguild_lorelai"
+coords = "0_45_155_29_52"
+

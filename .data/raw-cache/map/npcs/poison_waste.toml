@@ -1,0 +1,52 @@
+[[spawn]]
+npc = "npc.pog_gnome_longramble"
+coords = "0_36_48_36_24"
+
+[[spawn]]
+npc = "npc.pog_gnome_longramble_vis"
+coords = "0_36_48_36_19"
+
+[[spawn]]
+npc = "npc.snakeboss_fisherman"
+coords = "0_34_47_13_61"
+
+[[spawn]]
+npc = "npc.snakeboss_fishingspot"
+coords = "0_34_47_23_58"
+
+[[spawn]]
+npc = "npc.snakeboss_fishingspot"
+coords = "0_34_47_6_59"
+
+[[spawn]]
+npc = "npc.snakeboss_gnome_1"
+coords = "0_34_47_28_42"
+
+[[spawn]]
+npc = "npc.snakeboss_gnome_2"
+coords = "0_34_47_25_40"
+
+[[spawn]]
+npc = "npc.snakeboss_gnome_victim"
+coords = "0_34_47_34_48"
+
+[[spawn]]
+npc = "npc.snakeboss_highpriest"
+coords = "0_34_47_16_47"
+
+[[spawn]]
+npc = "npc.snakeboss_ogre_1"
+coords = "0_34_47_23_47"
+
+[[spawn]]
+npc = "npc.snakeboss_priest"
+coords = "0_34_47_36_49"
+
+[[spawn]]
+npc = "npc.snakeboss_tyrasguard_1"
+coords = "0_34_47_18_51"
+
+[[spawn]]
+npc = "npc.snakeboss_tyrasguard_2"
+coords = "0_34_47_21_53"
+

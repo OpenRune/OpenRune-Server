@@ -1,0 +1,20 @@
+[[spawn]]
+npc = "npc.black_dragon"
+coords = "0_38_68_28_24"
+
+[[spawn]]
+npc = "npc.black_dragon3"
+coords = "0_38_68_27_7"
+
+[[spawn]]
+npc = "npc.black_dragon4"
+coords = "0_38_68_22_18"
+
+[[spawn]]
+npc = "npc.black_dragon5"
+coords = "0_38_68_16_7"
+
+[[spawn]]
+npc = "npc.chickenquest_baby_black_dragon"
+coords = "0_38_68_6_41"
+

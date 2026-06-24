@@ -1,0 +1,24 @@
+[[spawn]]
+npc = "npc.shayzienquest_duffy"
+coords = "0_18_155_19_15"
+
+[[spawn]]
+npc = "npc.shayzienquest_gnosi"
+coords = "0_18_155_16_20"
+
+[[spawn]]
+npc = "npc.shayzienquest_historian"
+coords = "0_18_155_22_19"
+
+[[spawn]]
+npc = "npc.shayzienquest_lizard"
+coords = "0_18_155_15_10"
+
+[[spawn]]
+npc = "npc.shayzienquest_lizard"
+coords = "0_18_155_25_21"
+
+[[spawn]]
+npc = "npc.shayzienquest_lizard"
+coords = "0_18_155_49_53"
+

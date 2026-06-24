@@ -1,0 +1,20 @@
+[[spawn]]
+npc = "npc.cam_torum_citizen_cuica"
+coords = "1_22_149_26_49"
+
+[[spawn]]
+npc = "npc.cam_torum_citizen_drunk_1"
+coords = "1_22_149_24_49"
+
+[[spawn]]
+npc = "npc.cam_torum_citizen_drunk_2"
+coords = "1_22_149_21_49"
+
+[[spawn]]
+npc = "npc.cam_torum_friendly_miner"
+coords = "1_23_149_37_3"
+
+[[spawn]]
+npc = "npc.varlamore_buffalo_gear_unattackable"
+coords = "1_22_149_17_42"
+

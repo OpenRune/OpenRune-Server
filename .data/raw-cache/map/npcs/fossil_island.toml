@@ -1,0 +1,1462 @@
+[[spawn]]
+npc = "npc.crab_1"
+coords = "0_57_60_52_60"
+
+[[spawn]]
+npc = "npc.crab_1"
+coords = "0_57_60_9_36"
+
+[[spawn]]
+npc = "npc.crab_1"
+coords = "0_58_60_10_47"
+
+[[spawn]]
+npc = "npc.crab_1"
+coords = "0_58_60_15_4"
+
+[[spawn]]
+npc = "npc.crab_1"
+coords = "0_58_60_17_53"
+
+[[spawn]]
+npc = "npc.crab_1"
+coords = "0_58_60_1_8"
+
+[[spawn]]
+npc = "npc.crab_1"
+coords = "0_58_60_23_7"
+
+[[spawn]]
+npc = "npc.crab_1"
+coords = "0_58_60_2_16"
+
+[[spawn]]
+npc = "npc.crab_1"
+coords = "0_58_60_32_8"
+
+[[spawn]]
+npc = "npc.crab_1"
+coords = "0_58_60_38_11"
+
+[[spawn]]
+npc = "npc.crab_1"
+coords = "0_58_60_6_25"
+
+[[spawn]]
+npc = "npc.crab_1"
+coords = "0_58_60_6_7"
+
+[[spawn]]
+npc = "npc.crab_1"
+coords = "0_58_60_7_32"
+
+[[spawn]]
+npc = "npc.crab_1"
+coords = "0_58_60_9_58"
+
+[[spawn]]
+npc = "npc.dallas_jones_fossil_boat"
+coords = "0_57_60_14_8"
+
+[[spawn]]
+npc = "npc.farming_tools_leprechaun"
+coords = "0_58_59_0_63"
+
+[[spawn]]
+npc = "npc.fossil_ammonitecrab"
+coords = "0_57_60_10_35"
+
+[[spawn]]
+npc = "npc.fossil_ammonitecrab"
+coords = "0_57_60_59_58"
+
+[[spawn]]
+npc = "npc.fossil_ammonitecrab"
+coords = "0_57_60_8_38"
+
+[[spawn]]
+npc = "npc.fossil_ammonitecrab"
+coords = "0_57_60_9_32"
+
+[[spawn]]
+npc = "npc.fossil_ammonitecrab"
+coords = "0_58_60_10_5"
+
+[[spawn]]
+npc = "npc.fossil_ammonitecrab"
+coords = "0_58_60_11_57"
+
+[[spawn]]
+npc = "npc.fossil_ammonitecrab"
+coords = "0_58_60_14_49"
+
+[[spawn]]
+npc = "npc.fossil_ammonitecrab"
+coords = "0_58_60_19_4"
+
+[[spawn]]
+npc = "npc.fossil_ammonitecrab"
+coords = "0_58_60_20_8"
+
+[[spawn]]
+npc = "npc.fossil_ammonitecrab"
+coords = "0_58_60_23_48"
+
+[[spawn]]
+npc = "npc.fossil_ammonitecrab"
+coords = "0_58_60_24_5"
+
+[[spawn]]
+npc = "npc.fossil_ammonitecrab"
+coords = "0_58_60_2_41"
+
+[[spawn]]
+npc = "npc.fossil_ammonitecrab"
+coords = "0_58_60_2_47"
+
+[[spawn]]
+npc = "npc.fossil_ammonitecrab"
+coords = "0_58_60_2_58"
+
+[[spawn]]
+npc = "npc.fossil_ammonitecrab"
+coords = "0_58_60_34_8"
+
+[[spawn]]
+npc = "npc.fossil_ammonitecrab"
+coords = "0_58_60_39_13"
+
+[[spawn]]
+npc = "npc.fossil_ammonitecrab"
+coords = "0_58_60_3_30"
+
+[[spawn]]
+npc = "npc.fossil_ammonitecrab"
+coords = "0_58_60_3_5"
+
+[[spawn]]
+npc = "npc.fossil_ammonitecrab"
+coords = "0_58_60_4_22"
+
+[[spawn]]
+npc = "npc.fossil_ammonitecrab"
+coords = "0_58_60_4_9"
+
+[[spawn]]
+npc = "npc.fossil_ammonitecrab"
+coords = "0_58_60_6_3"
+
+[[spawn]]
+npc = "npc.fossil_ammonitecrab"
+coords = "0_58_60_6_38"
+
+[[spawn]]
+npc = "npc.fossil_ammonitecrab"
+coords = "0_58_60_6_52"
+
+[[spawn]]
+npc = "npc.fossil_ammonitecrab"
+coords = "0_58_60_8_28"
+
+[[spawn]]
+npc = "npc.fossil_ammonitecrab_inactive"
+coords = "0_57_60_10_35"
+
+[[spawn]]
+npc = "npc.fossil_ammonitecrab_inactive"
+coords = "0_57_60_59_58"
+
+[[spawn]]
+npc = "npc.fossil_ammonitecrab_inactive"
+coords = "0_57_60_8_38"
+
+[[spawn]]
+npc = "npc.fossil_ammonitecrab_inactive"
+coords = "0_57_60_9_32"
+
+[[spawn]]
+npc = "npc.fossil_ammonitecrab_inactive"
+coords = "0_58_60_10_5"
+
+[[spawn]]
+npc = "npc.fossil_ammonitecrab_inactive"
+coords = "0_58_60_11_57"
+
+[[spawn]]
+npc = "npc.fossil_ammonitecrab_inactive"
+coords = "0_58_60_14_49"
+
+[[spawn]]
+npc = "npc.fossil_ammonitecrab_inactive"
+coords = "0_58_60_19_4"
+
+[[spawn]]
+npc = "npc.fossil_ammonitecrab_inactive"
+coords = "0_58_60_20_8"
+
+[[spawn]]
+npc = "npc.fossil_ammonitecrab_inactive"
+coords = "0_58_60_23_48"
+
+[[spawn]]
+npc = "npc.fossil_ammonitecrab_inactive"
+coords = "0_58_60_24_5"
+
+[[spawn]]
+npc = "npc.fossil_ammonitecrab_inactive"
+coords = "0_58_60_2_41"
+
+[[spawn]]
+npc = "npc.fossil_ammonitecrab_inactive"
+coords = "0_58_60_2_47"
+
+[[spawn]]
+npc = "npc.fossil_ammonitecrab_inactive"
+coords = "0_58_60_2_58"
+
+[[spawn]]
+npc = "npc.fossil_ammonitecrab_inactive"
+coords = "0_58_60_34_8"
+
+[[spawn]]
+npc = "npc.fossil_ammonitecrab_inactive"
+coords = "0_58_60_39_13"
+
+[[spawn]]
+npc = "npc.fossil_ammonitecrab_inactive"
+coords = "0_58_60_3_30"
+
+[[spawn]]
+npc = "npc.fossil_ammonitecrab_inactive"
+coords = "0_58_60_3_5"
+
+[[spawn]]
+npc = "npc.fossil_ammonitecrab_inactive"
+coords = "0_58_60_4_22"
+
+[[spawn]]
+npc = "npc.fossil_ammonitecrab_inactive"
+coords = "0_58_60_4_9"
+
+[[spawn]]
+npc = "npc.fossil_ammonitecrab_inactive"
+coords = "0_58_60_6_3"
+
+[[spawn]]
+npc = "npc.fossil_ammonitecrab_inactive"
+coords = "0_58_60_6_38"
+
+[[spawn]]
+npc = "npc.fossil_ammonitecrab_inactive"
+coords = "0_58_60_6_52"
+
+[[spawn]]
+npc = "npc.fossil_ammonitecrab_inactive"
+coords = "0_58_60_8_28"
+
+[[spawn]]
+npc = "npc.fossil_charles"
+coords = "0_58_59_25_48"
+
+[[spawn]]
+npc = "npc.fossil_chemist"
+coords = "0_57_60_42_38"
+
+[[spawn]]
+npc = "npc.fossil_david_camp"
+coords = "0_58_59_23_39"
+
+[[spawn]]
+npc = "npc.fossil_dog_tray"
+coords = "0_58_59_27_29"
+
+[[spawn]]
+npc = "npc.fossil_herbiboar_2"
+coords = "0_57_59_56_32"
+
+[[spawn]]
+npc = "npc.fossil_herbiboar_3"
+coords = "0_57_59_57_51"
+
+[[spawn]]
+npc = "npc.fossil_herbiboar_4"
+coords = "0_57_60_62_43"
+
+[[spawn]]
+npc = "npc.fossil_herbiboar_5"
+coords = "0_57_60_49_36"
+
+[[spawn]]
+npc = "npc.fossil_herbiboar_6"
+coords = "0_58_60_5_0"
+
+[[spawn]]
+npc = "npc.fossil_herbiboar_7"
+coords = "0_58_60_41_11"
+
+[[spawn]]
+npc = "npc.fossil_herbiboar_8"
+coords = "0_57_60_35_30"
+
+[[spawn]]
+npc = "npc.fossil_herbiboar_9"
+coords = "0_57_60_33_25"
+
+[[spawn]]
+npc = "npc.fossil_john"
+coords = "0_58_59_41_26"
+
+[[spawn]]
+npc = "npc.fossil_john_camp"
+coords = "0_58_59_20_36"
+
+[[spawn]]
+npc = "npc.fossil_panner"
+coords = "0_58_59_2_28"
+
+[[spawn]]
+npc = "npc.fossil_pool_bobber_1"
+coords = "0_57_60_38_43"
+
+[[spawn]]
+npc = "npc.fossil_pool_bobber_2"
+coords = "0_57_60_44_43"
+
+[[spawn]]
+npc = "npc.fossil_pool_bobber_3"
+coords = "0_57_60_38_44"
+
+[[spawn]]
+npc = "npc.fossil_pool_bobber_4"
+coords = "0_57_60_38_42"
+
+[[spawn]]
+npc = "npc.fossil_pool_bobber_5"
+coords = "0_57_60_44_44"
+
+[[spawn]]
+npc = "npc.fossil_pool_bobber_6"
+coords = "0_57_60_44_42"
+
+[[spawn]]
+npc = "npc.fossil_pool_bobber_7"
+coords = "0_57_60_40_40"
+
+[[spawn]]
+npc = "npc.fossil_pool_bobber_8"
+coords = "0_57_60_42_40"
+
+[[spawn]]
+npc = "npc.fossil_shopkeeper"
+coords = "0_58_59_24_29"
+
+[[spawn]]
+npc = "npc.fossil_squirrel_gardener1"
+coords = "0_58_59_3_56"
+
+[[spawn]]
+npc = "npc.fossil_squirrel_gardener2"
+coords = "0_57_59_60_60"
+
+[[spawn]]
+npc = "npc.fossil_squirrel_gardener3"
+coords = "0_57_59_57_62"
+
+[[spawn]]
+npc = "npc.fossil_twitcher"
+coords = "0_58_59_49_52"
+
+[[spawn]]
+npc = "npc.fossil_zygomite"
+coords = "0_57_59_32_49"
+
+[[spawn]]
+npc = "npc.fossil_zygomite"
+coords = "0_57_59_32_59"
+
+[[spawn]]
+npc = "npc.fossil_zygomite"
+coords = "0_57_59_38_47"
+
+[[spawn]]
+npc = "npc.fossil_zygomite"
+coords = "0_57_59_42_55"
+
+[[spawn]]
+npc = "npc.fossil_zygomite"
+coords = "0_57_59_44_40"
+
+[[spawn]]
+npc = "npc.fossil_zygomite"
+coords = "0_57_59_44_62"
+
+[[spawn]]
+npc = "npc.fossil_zygomite"
+coords = "0_57_59_45_47"
+
+[[spawn]]
+npc = "npc.fossil_zygomite"
+coords = "0_57_60_25_18"
+
+[[spawn]]
+npc = "npc.fossil_zygomite"
+coords = "0_57_60_26_38"
+
+[[spawn]]
+npc = "npc.fossil_zygomite"
+coords = "0_57_60_29_10"
+
+[[spawn]]
+npc = "npc.fossil_zygomite"
+coords = "0_57_60_30_27"
+
+[[spawn]]
+npc = "npc.fossil_zygomite"
+coords = "0_57_60_30_6"
+
+[[spawn]]
+npc = "npc.fossil_zygomite"
+coords = "0_57_60_31_17"
+
+[[spawn]]
+npc = "npc.fossil_zygomite"
+coords = "0_57_60_34_8"
+
+[[spawn]]
+npc = "npc.fossil_zygomite"
+coords = "0_57_60_37_18"
+
+[[spawn]]
+npc = "npc.fossil_zygomite"
+coords = "0_57_60_37_27"
+
+[[spawn]]
+npc = "npc.fossil_zygomite"
+coords = "0_57_60_37_50"
+
+[[spawn]]
+npc = "npc.fossil_zygomite"
+coords = "0_57_60_41_17"
+
+[[spawn]]
+npc = "npc.fossil_zygomite"
+coords = "0_57_60_41_5"
+
+[[spawn]]
+npc = "npc.fossil_zygomite"
+coords = "0_57_60_44_28"
+
+[[spawn]]
+npc = "npc.fossil_zygomite"
+coords = "0_57_60_45_7"
+
+[[spawn]]
+npc = "npc.fossil_zygomite"
+coords = "0_57_60_46_13"
+
+[[spawn]]
+npc = "npc.fossil_zygomite"
+coords = "0_57_60_48_19"
+
+[[spawn]]
+npc = "npc.fossil_zygomite"
+coords = "0_57_60_49_24"
+
+[[spawn]]
+npc = "npc.fossil_zygomite"
+coords = "0_57_60_49_50"
+
+[[spawn]]
+npc = "npc.fossil_zygomite"
+coords = "0_57_60_50_6"
+
+[[spawn]]
+npc = "npc.fossil_zygomite"
+coords = "0_57_60_55_32"
+
+[[spawn]]
+npc = "npc.fossil_zygomite_cap"
+coords = "0_57_59_32_49"
+
+[[spawn]]
+npc = "npc.fossil_zygomite_cap"
+coords = "0_57_59_32_59"
+
+[[spawn]]
+npc = "npc.fossil_zygomite_cap"
+coords = "0_57_59_38_47"
+
+[[spawn]]
+npc = "npc.fossil_zygomite_cap"
+coords = "0_57_59_42_55"
+
+[[spawn]]
+npc = "npc.fossil_zygomite_cap"
+coords = "0_57_59_44_40"
+
+[[spawn]]
+npc = "npc.fossil_zygomite_cap"
+coords = "0_57_59_44_62"
+
+[[spawn]]
+npc = "npc.fossil_zygomite_cap"
+coords = "0_57_59_45_47"
+
+[[spawn]]
+npc = "npc.fossil_zygomite_cap"
+coords = "0_57_60_25_18"
+
+[[spawn]]
+npc = "npc.fossil_zygomite_cap"
+coords = "0_57_60_26_38"
+
+[[spawn]]
+npc = "npc.fossil_zygomite_cap"
+coords = "0_57_60_29_10"
+
+[[spawn]]
+npc = "npc.fossil_zygomite_cap"
+coords = "0_57_60_30_27"
+
+[[spawn]]
+npc = "npc.fossil_zygomite_cap"
+coords = "0_57_60_30_6"
+
+[[spawn]]
+npc = "npc.fossil_zygomite_cap"
+coords = "0_57_60_31_17"
+
+[[spawn]]
+npc = "npc.fossil_zygomite_cap"
+coords = "0_57_60_34_8"
+
+[[spawn]]
+npc = "npc.fossil_zygomite_cap"
+coords = "0_57_60_37_18"
+
+[[spawn]]
+npc = "npc.fossil_zygomite_cap"
+coords = "0_57_60_37_27"
+
+[[spawn]]
+npc = "npc.fossil_zygomite_cap"
+coords = "0_57_60_37_50"
+
+[[spawn]]
+npc = "npc.fossil_zygomite_cap"
+coords = "0_57_60_41_17"
+
+[[spawn]]
+npc = "npc.fossil_zygomite_cap"
+coords = "0_57_60_41_5"
+
+[[spawn]]
+npc = "npc.fossil_zygomite_cap"
+coords = "0_57_60_44_28"
+
+[[spawn]]
+npc = "npc.fossil_zygomite_cap"
+coords = "0_57_60_45_7"
+
+[[spawn]]
+npc = "npc.fossil_zygomite_cap"
+coords = "0_57_60_46_13"
+
+[[spawn]]
+npc = "npc.fossil_zygomite_cap"
+coords = "0_57_60_48_19"
+
+[[spawn]]
+npc = "npc.fossil_zygomite_cap"
+coords = "0_57_60_49_24"
+
+[[spawn]]
+npc = "npc.fossil_zygomite_cap"
+coords = "0_57_60_49_50"
+
+[[spawn]]
+npc = "npc.fossil_zygomite_cap"
+coords = "0_57_60_50_6"
+
+[[spawn]]
+npc = "npc.fossil_zygomite_cap"
+coords = "0_57_60_55_32"
+
+[[spawn]]
+npc = "npc.harmless_island_crab"
+coords = "0_58_60_11_54"
+
+[[spawn]]
+npc = "npc.harmless_island_crab"
+coords = "0_58_60_22_51"
+
+[[spawn]]
+npc = "npc.harmless_island_crab"
+coords = "0_58_60_31_5"
+
+[[spawn]]
+npc = "npc.harmless_island_crab"
+coords = "0_58_60_4_28"
+
+[[spawn]]
+npc = "npc.harmless_island_crab"
+coords = "0_58_60_4_35"
+
+[[spawn]]
+npc = "npc.harmless_island_crab"
+coords = "0_58_60_4_55"
+
+[[spawn]]
+npc = "npc.harmless_island_crab"
+coords = "0_58_60_6_46"
+
+[[spawn]]
+npc = "npc.jardric_boat"
+coords = "0_57_60_13_9"
+
+[[spawn]]
+npc = "npc.jardric_camp"
+coords = "0_58_59_8_36"
+
+[[spawn]]
+npc = "npc.maz"
+coords = "0_57_60_55_12"
+
+[[spawn]]
+npc = "npc.seabird1"
+coords = "0_57_59_12_52"
+
+[[spawn]]
+npc = "npc.seabird1"
+coords = "0_57_59_15_61"
+
+[[spawn]]
+npc = "npc.seabird1"
+coords = "0_57_60_12_53"
+
+[[spawn]]
+npc = "npc.seabird1"
+coords = "0_57_60_3_44"
+
+[[spawn]]
+npc = "npc.seabird1"
+coords = "0_57_60_44_62"
+
+[[spawn]]
+npc = "npc.seabird1"
+coords = "0_57_60_61_62"
+
+[[spawn]]
+npc = "npc.seabird1"
+coords = "0_58_58_17_17"
+
+[[spawn]]
+npc = "npc.seabird1"
+coords = "0_58_59_16_9"
+
+[[spawn]]
+npc = "npc.seabird1"
+coords = "0_58_59_61_62"
+
+[[spawn]]
+npc = "npc.seabird1"
+coords = "0_58_60_14_19"
+
+[[spawn]]
+npc = "npc.seabird1"
+coords = "0_58_60_19_60"
+
+[[spawn]]
+npc = "npc.seabird1"
+coords = "0_58_60_20_34"
+
+[[spawn]]
+npc = "npc.seabird1"
+coords = "0_58_60_24_12"
+
+[[spawn]]
+npc = "npc.seabird1"
+coords = "0_58_60_30_42"
+
+[[spawn]]
+npc = "npc.seabird1"
+coords = "0_58_60_33_33"
+
+[[spawn]]
+npc = "npc.seabird1"
+coords = "0_58_60_40_60"
+
+[[spawn]]
+npc = "npc.seabird1"
+coords = "0_58_60_45_48"
+
+[[spawn]]
+npc = "npc.seabird2"
+coords = "0_58_59_49_59"
+
+[[spawn]]
+npc = "npc.seabird3"
+coords = "0_58_59_55_55"
+
+## Fossil Island General Store
+
+[[spawn]]
+npc = "npc.fossil_general_store"
+coords = "0_58_59_14_40"
+
+## Fossil Island Hill House Interior
+
+[[spawn]]
+npc = "npc.dallas_jones_fossil_island"
+coords = "0_58_60_49_29"
+
+## Fossil Island Underwater Area
+
+[[spawn]]
+npc = "npc.100_pirate_fish_fantail"
+coords = "1_58_160_19_31"
+
+[[spawn]]
+npc = "npc.100_pirate_fish_harlequin"
+coords = "1_58_160_16_26"
+
+[[spawn]]
+npc = "npc.100_pirate_fish_paradise"
+coords = "1_58_160_21_23"
+
+[[spawn]]
+npc = "npc.fossil_fish_shoal"
+coords = "0_58_160_25_59"
+
+[[spawn]]
+npc = "npc.fossil_fish_shoal"
+coords = "0_58_160_26_57"
+
+[[spawn]]
+npc = "npc.fossil_fish_shoal"
+coords = "0_58_160_26_60"
+
+[[spawn]]
+npc = "npc.fossil_fish_shoal"
+coords = "0_58_160_27_52"
+
+[[spawn]]
+npc = "npc.fossil_fish_shoal"
+coords = "0_58_160_27_55"
+
+[[spawn]]
+npc = "npc.fossil_fish_shoal"
+coords = "0_58_160_29_52"
+
+[[spawn]]
+npc = "npc.fossil_fish_shoal"
+coords = "0_58_160_29_59"
+
+[[spawn]]
+npc = "npc.fossil_fish_shoal"
+coords = "0_58_160_30_50"
+
+[[spawn]]
+npc = "npc.fossil_fish_shoal"
+coords = "0_58_160_32_60"
+
+[[spawn]]
+npc = "npc.fossil_fish_shoal"
+coords = "0_58_160_35_60"
+
+[[spawn]]
+npc = "npc.fossil_fish_shoal"
+coords = "0_58_160_36_58"
+
+[[spawn]]
+npc = "npc.fossil_fish_shoal"
+coords = "1_58_160_25_59"
+
+[[spawn]]
+npc = "npc.fossil_fish_shoal"
+coords = "1_58_160_26_57"
+
+[[spawn]]
+npc = "npc.fossil_fish_shoal"
+coords = "1_58_160_26_60"
+
+[[spawn]]
+npc = "npc.fossil_fish_shoal"
+coords = "1_58_160_27_52"
+
+[[spawn]]
+npc = "npc.fossil_fish_shoal"
+coords = "1_58_160_27_55"
+
+[[spawn]]
+npc = "npc.fossil_fish_shoal"
+coords = "1_58_160_29_52"
+
+[[spawn]]
+npc = "npc.fossil_fish_shoal"
+coords = "1_58_160_29_59"
+
+[[spawn]]
+npc = "npc.fossil_fish_shoal"
+coords = "1_58_160_30_50"
+
+[[spawn]]
+npc = "npc.fossil_fish_shoal"
+coords = "1_58_160_32_60"
+
+[[spawn]]
+npc = "npc.fossil_fish_shoal"
+coords = "1_58_160_35_60"
+
+[[spawn]]
+npc = "npc.fossil_fish_shoal"
+coords = "1_58_160_36_58"
+
+[[spawn]]
+npc = "npc.fossil_gardener_underwater"
+coords = "1_58_160_23_31"
+
+[[spawn]]
+npc = "npc.fossil_leprechaun_underwater"
+coords = "1_58_160_20_30"
+
+[[spawn]]
+npc = "npc.fossil_lobster"
+coords = "0_59_160_36_11"
+
+[[spawn]]
+npc = "npc.fossil_lobster"
+coords = "0_59_160_41_14"
+
+[[spawn]]
+npc = "npc.fossil_lobster"
+coords = "0_59_160_45_10"
+
+[[spawn]]
+npc = "npc.fossil_lobster"
+coords = "0_59_160_48_14"
+
+[[spawn]]
+npc = "npc.fossil_lobster"
+coords = "0_59_160_49_8"
+
+[[spawn]]
+npc = "npc.fossil_lobster"
+coords = "0_59_160_50_21"
+
+[[spawn]]
+npc = "npc.fossil_lobster"
+coords = "0_59_160_53_16"
+
+[[spawn]]
+npc = "npc.fossil_lobster"
+coords = "0_59_160_54_20"
+
+[[spawn]]
+npc = "npc.fossil_lobster"
+coords = "0_59_160_56_5"
+
+[[spawn]]
+npc = "npc.fossil_lobster"
+coords = "1_59_160_36_11"
+
+[[spawn]]
+npc = "npc.fossil_lobster"
+coords = "1_59_160_41_14"
+
+[[spawn]]
+npc = "npc.fossil_lobster"
+coords = "1_59_160_45_10"
+
+[[spawn]]
+npc = "npc.fossil_lobster"
+coords = "1_59_160_48_14"
+
+[[spawn]]
+npc = "npc.fossil_lobster"
+coords = "1_59_160_49_8"
+
+[[spawn]]
+npc = "npc.fossil_lobster"
+coords = "1_59_160_50_21"
+
+[[spawn]]
+npc = "npc.fossil_lobster"
+coords = "1_59_160_53_16"
+
+[[spawn]]
+npc = "npc.fossil_lobster"
+coords = "1_59_160_54_20"
+
+[[spawn]]
+npc = "npc.fossil_lobster"
+coords = "1_59_160_56_5"
+
+[[spawn]]
+npc = "npc.fossil_mermaid_deepwater"
+coords = "1_58_160_53_50"
+
+[[spawn]]
+npc = "npc.fossil_mermaid_fishing"
+coords = "1_58_160_16_53"
+
+[[spawn]]
+npc = "npc.fossil_puffer_fish_1"
+coords = "1_58_160_15_12"
+
+[[spawn]]
+npc = "npc.fossil_puffer_fish_1"
+coords = "1_58_160_20_4"
+
+[[spawn]]
+npc = "npc.fossil_puffer_fish_1"
+coords = "1_58_160_26_14"
+
+[[spawn]]
+npc = "npc.fossil_puffer_fish_1"
+coords = "1_58_160_30_33"
+
+[[spawn]]
+npc = "npc.fossil_puffer_fish_1"
+coords = "1_58_160_30_41"
+
+[[spawn]]
+npc = "npc.fossil_puffer_fish_1"
+coords = "1_58_160_40_45"
+
+[[spawn]]
+npc = "npc.fossil_puffer_fish_1"
+coords = "1_58_160_43_8"
+
+[[spawn]]
+npc = "npc.fossil_puffer_fish_1"
+coords = "1_58_160_57_31"
+
+[[spawn]]
+npc = "npc.fossil_puffer_fish_1"
+coords = "1_58_160_59_56"
+
+[[spawn]]
+npc = "npc.fossil_puffer_fish_1"
+coords = "1_58_160_60_13"
+
+[[spawn]]
+npc = "npc.fossil_puffer_fish_1"
+coords = "1_58_160_60_45"
+
+[[spawn]]
+npc = "npc.fossil_puffer_fish_2"
+coords = "1_58_160_15_11"
+
+[[spawn]]
+npc = "npc.fossil_puffer_fish_2"
+coords = "1_58_160_19_4"
+
+[[spawn]]
+npc = "npc.fossil_puffer_fish_2"
+coords = "1_58_160_27_14"
+
+[[spawn]]
+npc = "npc.fossil_puffer_fish_2"
+coords = "1_58_160_30_32"
+
+[[spawn]]
+npc = "npc.fossil_puffer_fish_2"
+coords = "1_58_160_31_41"
+
+[[spawn]]
+npc = "npc.fossil_puffer_fish_2"
+coords = "1_58_160_41_45"
+
+[[spawn]]
+npc = "npc.fossil_puffer_fish_2"
+coords = "1_58_160_42_8"
+
+[[spawn]]
+npc = "npc.fossil_puffer_fish_2"
+coords = "1_58_160_56_31"
+
+[[spawn]]
+npc = "npc.fossil_puffer_fish_2"
+coords = "1_58_160_60_12"
+
+[[spawn]]
+npc = "npc.fossil_puffer_fish_2"
+coords = "1_58_160_60_56"
+
+[[spawn]]
+npc = "npc.fossil_puffer_fish_2"
+coords = "1_58_160_61_45"
+
+[[spawn]]
+npc = "npc.fossil_puffer_fish_3"
+coords = "1_58_160_16_11"
+
+[[spawn]]
+npc = "npc.fossil_puffer_fish_3"
+coords = "1_58_160_19_5"
+
+[[spawn]]
+npc = "npc.fossil_puffer_fish_3"
+coords = "1_58_160_26_13"
+
+[[spawn]]
+npc = "npc.fossil_puffer_fish_3"
+coords = "1_58_160_30_40"
+
+[[spawn]]
+npc = "npc.fossil_puffer_fish_3"
+coords = "1_58_160_31_33"
+
+[[spawn]]
+npc = "npc.fossil_puffer_fish_3"
+coords = "1_58_160_40_44"
+
+[[spawn]]
+npc = "npc.fossil_puffer_fish_3"
+coords = "1_58_160_42_7"
+
+[[spawn]]
+npc = "npc.fossil_puffer_fish_3"
+coords = "1_58_160_58_31"
+
+[[spawn]]
+npc = "npc.fossil_puffer_fish_3"
+coords = "1_58_160_59_55"
+
+[[spawn]]
+npc = "npc.fossil_puffer_fish_3"
+coords = "1_58_160_60_14"
+
+[[spawn]]
+npc = "npc.fossil_puffer_fish_3"
+coords = "1_58_160_60_46"
+
+[[spawn]]
+npc = "npc.fossil_puffer_fish_4"
+coords = "1_58_160_16_12"
+
+[[spawn]]
+npc = "npc.fossil_puffer_fish_4"
+coords = "1_58_160_20_5"
+
+[[spawn]]
+npc = "npc.fossil_puffer_fish_4"
+coords = "1_58_160_27_13"
+
+[[spawn]]
+npc = "npc.fossil_puffer_fish_4"
+coords = "1_58_160_31_32"
+
+[[spawn]]
+npc = "npc.fossil_puffer_fish_4"
+coords = "1_58_160_31_40"
+
+[[spawn]]
+npc = "npc.fossil_puffer_fish_4"
+coords = "1_58_160_41_44"
+
+[[spawn]]
+npc = "npc.fossil_puffer_fish_4"
+coords = "1_58_160_43_7"
+
+[[spawn]]
+npc = "npc.fossil_puffer_fish_4"
+coords = "1_58_160_58_30"
+
+[[spawn]]
+npc = "npc.fossil_puffer_fish_4"
+coords = "1_58_160_60_55"
+
+[[spawn]]
+npc = "npc.fossil_puffer_fish_4"
+coords = "1_58_160_61_14"
+
+[[spawn]]
+npc = "npc.fossil_puffer_fish_4"
+coords = "1_58_160_61_46"
+
+[[spawn]]
+npc = "npc.fossil_puffer_fish_5"
+coords = "1_58_160_16_13"
+
+[[spawn]]
+npc = "npc.fossil_puffer_fish_5"
+coords = "1_58_160_21_5"
+
+[[spawn]]
+npc = "npc.fossil_puffer_fish_5"
+coords = "1_58_160_26_12"
+
+[[spawn]]
+npc = "npc.fossil_puffer_fish_5"
+coords = "1_58_160_29_40"
+
+[[spawn]]
+npc = "npc.fossil_puffer_fish_5"
+coords = "1_58_160_32_32"
+
+[[spawn]]
+npc = "npc.fossil_puffer_fish_5"
+coords = "1_58_160_39_45"
+
+[[spawn]]
+npc = "npc.fossil_puffer_fish_5"
+coords = "1_58_160_44_8"
+
+[[spawn]]
+npc = "npc.fossil_puffer_fish_5"
+coords = "1_58_160_59_12"
+
+[[spawn]]
+npc = "npc.fossil_puffer_fish_5"
+coords = "1_58_160_59_30"
+
+[[spawn]]
+npc = "npc.fossil_puffer_fish_5"
+coords = "1_58_160_60_47"
+
+[[spawn]]
+npc = "npc.fossil_puffer_fish_5"
+coords = "1_58_160_60_54"
+
+[[spawn]]
+npc = "npc.fossil_puffer_fish_6"
+coords = "1_58_160_15_13"
+
+[[spawn]]
+npc = "npc.fossil_puffer_fish_6"
+coords = "1_58_160_21_4"
+
+[[spawn]]
+npc = "npc.fossil_puffer_fish_6"
+coords = "1_58_160_27_12"
+
+[[spawn]]
+npc = "npc.fossil_puffer_fish_6"
+coords = "1_58_160_29_41"
+
+[[spawn]]
+npc = "npc.fossil_puffer_fish_6"
+coords = "1_58_160_32_33"
+
+[[spawn]]
+npc = "npc.fossil_puffer_fish_6"
+coords = "1_58_160_39_44"
+
+[[spawn]]
+npc = "npc.fossil_puffer_fish_6"
+coords = "1_58_160_44_7"
+
+[[spawn]]
+npc = "npc.fossil_puffer_fish_6"
+coords = "1_58_160_58_12"
+
+[[spawn]]
+npc = "npc.fossil_puffer_fish_6"
+coords = "1_58_160_58_29"
+
+[[spawn]]
+npc = "npc.fossil_puffer_fish_6"
+coords = "1_58_160_59_54"
+
+[[spawn]]
+npc = "npc.fossil_puffer_fish_6"
+coords = "1_58_160_61_47"
+
+[[spawn]]
+npc = "npc.fossil_puffer_fish_7"
+coords = "1_58_160_15_14"
+
+[[spawn]]
+npc = "npc.fossil_puffer_fish_7"
+coords = "1_58_160_20_6"
+
+[[spawn]]
+npc = "npc.fossil_puffer_fish_7"
+coords = "1_58_160_27_15"
+
+[[spawn]]
+npc = "npc.fossil_puffer_fish_7"
+coords = "1_58_160_30_39"
+
+[[spawn]]
+npc = "npc.fossil_puffer_fish_7"
+coords = "1_58_160_31_34"
+
+[[spawn]]
+npc = "npc.fossil_puffer_fish_7"
+coords = "1_58_160_40_46"
+
+[[spawn]]
+npc = "npc.fossil_puffer_fish_7"
+coords = "1_58_160_43_9"
+
+[[spawn]]
+npc = "npc.fossil_puffer_fish_7"
+coords = "1_58_160_57_12"
+
+[[spawn]]
+npc = "npc.fossil_puffer_fish_7"
+coords = "1_58_160_58_55"
+
+[[spawn]]
+npc = "npc.fossil_puffer_fish_7"
+coords = "1_58_160_59_29"
+
+[[spawn]]
+npc = "npc.fossil_puffer_fish_7"
+coords = "1_58_160_59_46"
+
+## Fossil Island Volcano
+
+[[spawn]]
+npc = "npc.crab_1"
+coords = "0_59_58_25_42"
+
+[[spawn]]
+npc = "npc.crab_1"
+coords = "0_59_58_41_43"
+
+[[spawn]]
+npc = "npc.fossil_ammonitecrab"
+coords = "0_59_58_24_40"
+
+[[spawn]]
+npc = "npc.fossil_ammonitecrab"
+coords = "0_59_58_26_44"
+
+[[spawn]]
+npc = "npc.fossil_ammonitecrab"
+coords = "0_59_58_30_43"
+
+[[spawn]]
+npc = "npc.fossil_ammonitecrab"
+coords = "0_59_58_41_48"
+
+[[spawn]]
+npc = "npc.fossil_ammonitecrab_inactive"
+coords = "0_59_58_24_40"
+
+[[spawn]]
+npc = "npc.fossil_ammonitecrab_inactive"
+coords = "0_59_58_26_44"
+
+[[spawn]]
+npc = "npc.fossil_ammonitecrab_inactive"
+coords = "0_59_58_30_43"
+
+[[spawn]]
+npc = "npc.fossil_ammonitecrab_inactive"
+coords = "0_59_58_41_48"
+
+[[spawn]]
+npc = "npc.fossil_mineguard"
+coords = "0_59_59_42_33"
+
+## Fossil Island Wyvern Task Cave
+
+[[spawn]]
+npc = "npc.ancient_wyvern"
+coords = "0_56_160_43_6"
+
+[[spawn]]
+npc = "npc.ancient_wyvern"
+coords = "0_56_160_48_12"
+
+[[spawn]]
+npc = "npc.ancient_wyvern"
+coords = "0_56_160_52_6"
+
+[[spawn]]
+npc = "npc.fossil_ammonitecrab"
+coords = "0_56_160_12_45"
+
+[[spawn]]
+npc = "npc.fossil_ammonitecrab"
+coords = "0_56_160_19_55"
+
+[[spawn]]
+npc = "npc.fossil_ammonitecrab"
+coords = "0_56_160_22_53"
+
+[[spawn]]
+npc = "npc.fossil_ammonitecrab"
+coords = "0_56_160_45_26"
+
+[[spawn]]
+npc = "npc.fossil_ammonitecrab"
+coords = "0_56_160_53_25"
+
+[[spawn]]
+npc = "npc.fossil_ammonitecrab"
+coords = "0_56_160_55_28"
+
+[[spawn]]
+npc = "npc.fossil_ammonitecrab"
+coords = "0_56_160_56_23"
+
+[[spawn]]
+npc = "npc.fossil_ammonitecrab_inactive"
+coords = "0_56_160_12_45"
+
+[[spawn]]
+npc = "npc.fossil_ammonitecrab_inactive"
+coords = "0_56_160_19_55"
+
+[[spawn]]
+npc = "npc.fossil_ammonitecrab_inactive"
+coords = "0_56_160_22_53"
+
+[[spawn]]
+npc = "npc.fossil_ammonitecrab_inactive"
+coords = "0_56_160_45_26"
+
+[[spawn]]
+npc = "npc.fossil_ammonitecrab_inactive"
+coords = "0_56_160_53_25"
+
+[[spawn]]
+npc = "npc.fossil_ammonitecrab_inactive"
+coords = "0_56_160_55_28"
+
+[[spawn]]
+npc = "npc.fossil_ammonitecrab_inactive"
+coords = "0_56_160_56_23"
+
+[[spawn]]
+npc = "npc.fossil_slayerdungeonguard"
+coords = "0_56_160_13_53"
+
+[[spawn]]
+npc = "npc.wyvern_long_tailed"
+coords = "0_56_160_13_14"
+
+[[spawn]]
+npc = "npc.wyvern_long_tailed"
+coords = "0_56_160_18_10"
+
+[[spawn]]
+npc = "npc.wyvern_long_tailed"
+coords = "0_56_160_25_11"
+
+[[spawn]]
+npc = "npc.wyvern_long_tailed"
+coords = "0_56_160_31_9"
+
+[[spawn]]
+npc = "npc.wyvern_spitting"
+coords = "0_56_160_19_33"
+
+[[spawn]]
+npc = "npc.wyvern_spitting"
+coords = "0_56_160_20_26"
+
+[[spawn]]
+npc = "npc.wyvern_spitting"
+coords = "0_56_160_27_40"
+
+[[spawn]]
+npc = "npc.wyvern_spitting"
+coords = "0_56_160_28_34"
+
+[[spawn]]
+npc = "npc.wyvern_taloned"
+coords = "0_56_160_38_51"
+
+[[spawn]]
+npc = "npc.wyvern_taloned"
+coords = "0_56_160_43_48"
+
+[[spawn]]
+npc = "npc.wyvern_taloned"
+coords = "0_56_160_44_42"
+
+[[spawn]]
+npc = "npc.wyvern_taloned"
+coords = "0_56_160_50_40"
+
+## Tar Swamp
+
+[[spawn]]
+npc = "npc.fossil_crazy_archaeologist"
+coords = "0_57_57_35_58"
+
+[[spawn]]
+npc = "npc.fossil_herbiboar_1"
+coords = "0_57_59_48_20"
+
+[[spawn]]
+npc = "npc.fossil_hoopsnake"
+coords = "0_57_58_30_41"
+
+[[spawn]]
+npc = "npc.fossil_hoopsnake"
+coords = "0_57_58_32_44"
+
+[[spawn]]
+npc = "npc.fossil_hoopsnake"
+coords = "0_57_58_36_59"
+
+[[spawn]]
+npc = "npc.fossil_hoopsnake"
+coords = "0_57_58_38_54"
+
+[[spawn]]
+npc = "npc.fossil_hoopsnake"
+coords = "0_57_59_16_8"
+
+[[spawn]]
+npc = "npc.fossil_hoopsnake"
+coords = "0_57_59_17_27"
+
+[[spawn]]
+npc = "npc.fossil_hoopsnake"
+coords = "0_57_59_18_30"
+
+[[spawn]]
+npc = "npc.fossil_hoopsnake"
+coords = "0_57_59_18_4"
+
+[[spawn]]
+npc = "npc.fossil_hoopsnake"
+coords = "0_57_59_30_28"
+
+[[spawn]]
+npc = "npc.fossil_hoopsnake"
+coords = "0_57_59_34_31"
+
+[[spawn]]
+npc = "npc.fossil_hoopsnake"
+coords = "0_57_59_47_26"
+
+[[spawn]]
+npc = "npc.fossil_hoopsnake"
+coords = "0_57_59_51_23"
+
+[[spawn]]
+npc = "npc.fossil_swamp_corrupted_archaeologist"
+coords = "0_57_58_6_34"
+
+[[spawn]]
+npc = "npc.fossil_tarmonster_bubbles"
+coords = "0_57_58_21_30"
+
+[[spawn]]
+npc = "npc.fossil_tarmonster_bubbles"
+coords = "0_57_58_28_32"
+
+[[spawn]]
+npc = "npc.fossil_tarmonster_bubbles"
+coords = "0_57_58_29_55"
+
+[[spawn]]
+npc = "npc.fossil_tarmonster_bubbles"
+coords = "0_57_58_35_34"
+
+[[spawn]]
+npc = "npc.fossil_tarmonster_bubbles"
+coords = "0_57_59_18_16"
+
+## Tar Swamp End
+

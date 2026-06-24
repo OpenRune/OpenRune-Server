@@ -1,0 +1,90 @@
+## Balloon animal
+
+[[spawn]]
+npc = "npc.prisonpete_balloon1"
+coords = "0_32_69_30_46"
+
+[[spawn]]
+npc = "npc.prisonpete_balloon1"
+coords = "0_32_69_34_50"
+
+[[spawn]]
+npc = "npc.prisonpete_balloon1"
+coords = "0_32_69_39_54"
+
+[[spawn]]
+npc = "npc.prisonpete_balloon1"
+coords = "0_32_69_42_48"
+
+[[spawn]]
+npc = "npc.prisonpete_balloon1"
+coords = "0_32_69_43_45"
+
+[[spawn]]
+npc = "npc.prisonpete_balloon2"
+coords = "0_32_69_30_50"
+
+[[spawn]]
+npc = "npc.prisonpete_balloon2"
+coords = "0_32_69_32_54"
+
+[[spawn]]
+npc = "npc.prisonpete_balloon2"
+coords = "0_32_69_37_47"
+
+[[spawn]]
+npc = "npc.prisonpete_balloon2"
+coords = "0_32_69_38_51"
+
+[[spawn]]
+npc = "npc.prisonpete_balloon2"
+coords = "0_32_69_43_54"
+
+[[spawn]]
+npc = "npc.prisonpete_balloon3"
+coords = "0_32_69_32_51"
+
+[[spawn]]
+npc = "npc.prisonpete_balloon3"
+coords = "0_32_69_36_49"
+
+[[spawn]]
+npc = "npc.prisonpete_balloon3"
+coords = "0_32_69_36_54"
+
+[[spawn]]
+npc = "npc.prisonpete_balloon3"
+coords = "0_32_69_39_46"
+
+[[spawn]]
+npc = "npc.prisonpete_balloon3"
+coords = "0_32_69_41_50"
+
+[[spawn]]
+npc = "npc.prisonpete_balloon4"
+coords = "0_32_69_32_48"
+
+[[spawn]]
+npc = "npc.prisonpete_balloon4"
+coords = "0_32_69_34_56"
+
+[[spawn]]
+npc = "npc.prisonpete_balloon4"
+coords = "0_32_69_35_46"
+
+[[spawn]]
+npc = "npc.prisonpete_balloon4"
+coords = "0_32_69_35_47"
+
+[[spawn]]
+npc = "npc.prisonpete_balloon4"
+coords = "0_32_69_36_52"
+
+[[spawn]]
+npc = "npc.prisonpete_balloon4"
+coords = "0_32_69_40_48"
+
+[[spawn]]
+npc = "npc.prisonpete_pete"
+coords = "0_32_69_45_50"
+

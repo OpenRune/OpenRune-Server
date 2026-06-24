@@ -1,0 +1,196 @@
+## Troll Stronghold Plane 0
+
+[[spawn]]
+npc = "npc.eadgar_storeroom_guard"
+coords = "0_44_157_41_27"
+
+[[spawn]]
+npc = "npc.troll_eadgar"
+coords = "0_44_157_13_35"
+
+[[spawn]]
+npc = "npc.troll_godric"
+coords = "0_44_157_11_29"
+
+[[spawn]]
+npc = "npc.troll_prison_guard1"
+coords = "0_44_157_16_31"
+
+[[spawn]]
+npc = "npc.troll_prison_guard2"
+coords = "0_44_157_16_35"
+
+[[spawn]]
+npc = "npc.troll_sguard1"
+coords = "0_44_157_34_44"
+
+[[spawn]]
+npc = "npc.troll_sguard2"
+coords = "0_44_157_34_41"
+
+[[spawn]]
+npc = "npc.troll_sguard3"
+coords = "0_44_157_39_41"
+
+[[spawn]]
+npc = "npc.troll_sguard4"
+coords = "0_44_157_34_38"
+
+[[spawn]]
+npc = "npc.troll_sguard5"
+coords = "0_44_157_45_32"
+
+[[spawn]]
+npc = "npc.troll_sguard6"
+coords = "0_44_157_39_34"
+
+[[spawn]]
+npc = "npc.troll_sguard7"
+coords = "0_44_157_42_28"
+
+[[spawn]]
+npc = "npc.troll_sguard8"
+coords = "0_44_157_48_37"
+
+## Troll Stronghold Plane 1
+
+[[spawn]]
+npc = "npc.death_troll_melee1"
+coords = "1_44_157_13_31"
+
+[[spawn]]
+npc = "npc.death_troll_melee2"
+coords = "1_44_157_20_41"
+
+[[spawn]]
+npc = "npc.death_troll_melee4"
+coords = "1_44_157_20_29"
+
+[[spawn]]
+npc = "npc.death_troll_melee4"
+coords = "1_44_157_9_38"
+
+[[spawn]]
+npc = "npc.death_troll_melee5"
+coords = "1_44_157_13_35"
+
+[[spawn]]
+npc = "npc.death_troll_melee6"
+coords = "1_44_157_23_53"
+
+[[spawn]]
+npc = "npc.death_troll_melee7"
+coords = "1_44_157_14_38"
+
+[[spawn]]
+npc = "npc.eadgar_troll_chief_cook"
+coords = "1_44_157_28_9"
+
+[[spawn]]
+npc = "npc.my2arm_ambassador_multi"
+coords = "1_44_157_25_13"
+
+[[spawn]]
+npc = "npc.myarm_multi_kitchen"
+coords = "1_44_157_39_4"
+
+[[spawn]]
+npc = "npc.troll_cook"
+coords = "1_44_157_26_8"
+
+[[spawn]]
+npc = "npc.troll_cook2"
+coords = "1_44_157_24_6"
+
+[[spawn]]
+npc = "npc.troll_cook3"
+coords = "1_44_157_30_7"
+
+[[spawn]]
+npc = "npc.troll_melee1"
+coords = "1_44_157_11_33"
+
+[[spawn]]
+npc = "npc.troll_mountain_goat"
+coords = "1_44_157_40_8"
+
+[[spawn]]
+npc = "npc.troll_mountain_goat"
+coords = "1_44_157_42_10"
+
+[[spawn]]
+npc = "npc.troll_mountain_goat2"
+coords = "1_44_157_43_7"
+
+[[spawn]]
+npc = "npc.troll_mountain_goat_smaller"
+coords = "1_44_157_41_11"
+
+[[spawn]]
+npc = "npc.troll_mountain_goat_smaller"
+coords = "1_44_157_41_7"
+
+[[spawn]]
+npc = "npc.trollromance_aga"
+coords = "1_44_157_12_56"
+
+[[spawn]]
+npc = "npc.trollromance_arrg"
+coords = "1_44_157_12_47"
+
+[[spawn]]
+npc = "npc.trollromance_ug"
+coords = "1_44_157_11_16"
+
+## Troll Stronghold Plane 2
+
+[[spawn]]
+npc = "npc.death_troll_melee3"
+coords = "2_44_157_39_6"
+
+[[spawn]]
+npc = "npc.death_troll_melee4"
+coords = "2_44_157_22_50"
+
+[[spawn]]
+npc = "npc.death_troll_melee5"
+coords = "2_44_157_20_47"
+
+[[spawn]]
+npc = "npc.death_troll_melee5"
+coords = "2_44_157_36_59"
+
+[[spawn]]
+npc = "npc.death_troll_melee6"
+coords = "2_44_157_20_39"
+
+[[spawn]]
+npc = "npc.death_troll_melee6"
+coords = "2_44_157_35_4"
+
+[[spawn]]
+npc = "npc.death_troll_melee7"
+coords = "2_44_157_20_26"
+
+[[spawn]]
+npc = "npc.mm2_kob_multi"
+coords = "2_44_157_14_13"
+
+[[spawn]]
+npc = "npc.troll_general"
+coords = "2_44_157_15_38"
+
+[[spawn]]
+npc = "npc.troll_general2"
+coords = "2_44_157_6_25"
+
+[[spawn]]
+npc = "npc.troll_general3"
+coords = "2_44_157_13_52"
+
+[[spawn]]
+npc = "npc.troll_melee1"
+coords = "2_44_157_20_34"
+
+## Troll Stronghold Plane 2 End
+

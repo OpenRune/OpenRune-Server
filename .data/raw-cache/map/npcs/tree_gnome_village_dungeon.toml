@@ -1,0 +1,120 @@
+[[spawn]]
+npc = "npc.bat"
+coords = "0_39_149_44_30"
+
+[[spawn]]
+npc = "npc.bat"
+coords = "0_39_149_46_21"
+
+[[spawn]]
+npc = "npc.bat"
+coords = "0_39_149_47_28"
+
+[[spawn]]
+npc = "npc.bat"
+coords = "0_40_69_44_30"
+
+[[spawn]]
+npc = "npc.bat"
+coords = "0_40_69_46_21"
+
+[[spawn]]
+npc = "npc.bat"
+coords = "0_40_69_47_28"
+
+[[spawn]]
+npc = "npc.golrie_waterfall_quest"
+coords = "0_39_149_19_45"
+
+[[spawn]]
+npc = "npc.hobgoblin_unarmed"
+coords = "0_39_149_17_33"
+
+[[spawn]]
+npc = "npc.hobgoblin_unarmed"
+coords = "0_39_149_19_32"
+
+[[spawn]]
+npc = "npc.hobgoblin_unarmed"
+coords = "0_39_149_19_35"
+
+[[spawn]]
+npc = "npc.hobgoblin_unarmed"
+coords = "0_39_149_19_37"
+
+[[spawn]]
+npc = "npc.hobgoblin_unarmed"
+coords = "0_39_149_23_25"
+
+[[spawn]]
+npc = "npc.hobgoblin_unarmed"
+coords = "0_39_149_23_35"
+
+[[spawn]]
+npc = "npc.hobgoblin_unarmed"
+coords = "0_39_149_26_25"
+
+[[spawn]]
+npc = "npc.hobgoblin_unarmed"
+coords = "0_39_149_33_19"
+
+[[spawn]]
+npc = "npc.hobgoblin_unarmed"
+coords = "0_39_149_37_20"
+
+[[spawn]]
+npc = "npc.hobgoblin_unarmed"
+coords = "0_40_69_16_44"
+
+[[spawn]]
+npc = "npc.hobgoblin_unarmed"
+coords = "0_40_69_16_46"
+
+[[spawn]]
+npc = "npc.hobgoblin_unarmed"
+coords = "0_40_69_19_42"
+
+[[spawn]]
+npc = "npc.hobgoblin_unarmed"
+coords = "0_40_69_19_45"
+
+[[spawn]]
+npc = "npc.hobgoblin_unarmed"
+coords = "0_40_69_19_47"
+
+[[spawn]]
+npc = "npc.hobgoblin_unarmed"
+coords = "0_40_69_21_46"
+
+[[spawn]]
+npc = "npc.hobgoblin_unarmed"
+coords = "0_40_69_22_45"
+
+[[spawn]]
+npc = "npc.roving_golrie"
+coords = "0_40_69_19_35"
+
+[[spawn]]
+npc = "npc.zombie_armed"
+coords = "0_39_149_43_30"
+
+[[spawn]]
+npc = "npc.zombie_armed"
+coords = "0_40_69_43_30"
+
+[[spawn]]
+npc = "npc.zombie_unarmed"
+coords = "0_39_149_45_33"
+
+[[spawn]]
+npc = "npc.zombie_unarmed2"
+coords = "0_40_69_45_33"
+
+[[spawn]]
+npc = "npc.zombie_unarmed3"
+coords = "0_39_149_52_31"
+
+[[spawn]]
+npc = "npc.zombie_unarmed3"
+coords = "0_40_69_52_31"
+

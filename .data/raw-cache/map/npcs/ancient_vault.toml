@@ -1,0 +1,30 @@
+## Ancient Vault Lower
+
+[[spawn]]
+npc = "npc.dt2_azzanadra_vault"
+coords = "0_51_100_34_40"
+
+[[spawn]]
+npc = "npc.dt2_hazeel_vault"
+coords = "0_51_100_29_40"
+
+[[spawn]]
+npc = "npc.dt2_vault_bandit"
+coords = "0_51_100_25_15"
+
+[[spawn]]
+npc = "npc.dt2_vault_bandit_vis"
+coords = "0_51_100_31_20"
+
+## Ancient Vault Upper
+
+[[spawn]]
+npc = "npc.dt2_asgarnia_smith_vault"
+coords = "1_61_150_33_31"
+
+[[spawn]]
+npc = "npc.dt2_asgarnia_smith_vault_initial"
+coords = "1_61_150_28_31"
+
+## Ancient Vault Upper End
+

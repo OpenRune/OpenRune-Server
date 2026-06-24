@@ -1,0 +1,12 @@
+[[area]]
+name = "Witchaven Dungeon"
+area_id = "area.witchaven_dungeon"
+levels = [0, 1, 2, 3]
+
+[[area.polygons]]
+vertices = [
+    [2688, 9664],
+    [2751, 9664],
+    [2751, 9727],
+    [2688, 9727],
+]

@@ -1,0 +1,36 @@
+[[area]]
+name = "Waterbirth Dungeon"
+area_id = "area.waterbirth_dungeon"
+levels = [0, 1, 2, 3]
+
+[[area.polygons]]
+vertices = [
+    [2433, 10109],
+    [2564, 10109],
+    [2563, 10181],
+    [2433, 10178],
+]
+
+[[area.polygons]]
+vertices = [
+    [1870, 4342],
+    [1975, 4342],
+    [1975, 4417],
+    [1870, 4417],
+]
+
+[[area.polygons]]
+vertices = [
+    [2880, 4352],
+    [2943, 4352],
+    [2943, 4479],
+    [2880, 4479],
+]
+
+[[area.polygons]]
+vertices = [
+    [1792, 4352],
+    [1983, 4352],
+    [1983, 4415],
+    [1792, 4415],
+]

@@ -1,0 +1,60 @@
+[[spawn]]
+npc = "npc.black_dragon4"
+coords = "0_47_160_40_26"
+
+[[spawn]]
+npc = "npc.black_dragon5"
+coords = "0_47_160_46_29"
+
+[[spawn]]
+npc = "npc.greater_demon3"
+coords = "0_47_160_27_5"
+
+[[spawn]]
+npc = "npc.greater_demon4"
+coords = "0_47_160_22_19"
+
+[[spawn]]
+npc = "npc.greater_demon5"
+coords = "0_47_160_20_10"
+
+[[spawn]]
+npc = "npc.poisonspider"
+coords = "0_47_160_29_23"
+
+[[spawn]]
+npc = "npc.poisonspider"
+coords = "0_47_160_35_22"
+
+[[spawn]]
+npc = "npc.poisonspider"
+coords = "0_47_160_36_12"
+
+[[spawn]]
+npc = "npc.poisonspider"
+coords = "0_47_160_43_17"
+
+[[spawn]]
+npc = "npc.poisonspider"
+coords = "0_47_160_47_13"
+
+[[spawn]]
+npc = "npc.poisonspider"
+coords = "0_47_160_59_15"
+
+[[spawn]]
+npc = "npc.poisonspider"
+coords = "0_47_160_59_17"
+
+[[spawn]]
+npc = "npc.poisonspider"
+coords = "0_47_160_60_13"
+
+[[spawn]]
+npc = "npc.poisonspider"
+coords = "0_47_160_61_17"
+
+[[spawn]]
+npc = "npc.poisonspider"
+coords = "0_47_160_61_19"
+

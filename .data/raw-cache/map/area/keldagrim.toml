@@ -1,0 +1,20 @@
+[[area]]
+name = "Keldagrim"
+area_id = "area.keldagrim"
+levels = [0, 1, 2, 3]
+
+[[area.polygons]]
+vertices = [
+    [2816, 10112],
+    [2943, 10112],
+    [2943, 10239],
+    [2816, 10239],
+]
+
+[[area.polygons]]
+vertices = [
+    [2752, 10112],
+    [2815, 10112],
+    [2815, 10175],
+    [2752, 10175],
+]

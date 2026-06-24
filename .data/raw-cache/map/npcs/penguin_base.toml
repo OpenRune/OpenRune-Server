@@ -1,0 +1,44 @@
+[[spawn]]
+npc = "npc.peng_generic"
+coords = "0_41_162_31_21"
+
+[[spawn]]
+npc = "npc.peng_generic"
+coords = "0_41_162_31_34"
+
+[[spawn]]
+npc = "npc.peng_generic"
+coords = "0_41_162_36_10"
+
+[[spawn]]
+npc = "npc.peng_icelord_warrior01"
+coords = "0_41_162_17_58"
+
+[[spawn]]
+npc = "npc.peng_icelord_warrior02"
+coords = "0_41_162_20_56"
+
+[[spawn]]
+npc = "npc.peng_icelord_warrior03"
+coords = "0_41_162_23_57"
+
+[[spawn]]
+npc = "npc.peng_icelord_warrior04"
+coords = "0_41_162_26_55"
+
+[[spawn]]
+npc = "npc.peng_kgp"
+coords = "0_41_162_24_16"
+
+[[spawn]]
+npc = "npc.peng_multi_kgp_booth"
+coords = "0_41_162_31_40"
+
+[[spawn]]
+npc = "npc.peng_ping"
+coords = "0_41_162_46_27"
+
+[[spawn]]
+npc = "npc.peng_pong"
+coords = "0_41_162_46_29"
+

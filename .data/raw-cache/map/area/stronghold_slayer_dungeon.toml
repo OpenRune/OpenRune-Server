@@ -1,0 +1,16 @@
+[[area]]
+name = "Stronghold Slayer Dungeon"
+area_id = "area.stronghold_slayer_dungeon"
+levels = [0]
+
+[[area.polygons]]
+vertices = [
+    [2381, 9778],
+    [2402, 9757],
+    [2479, 9771],
+    [2503, 9832],
+    [2473, 9841],
+    [2423, 9843],
+    [2416, 9809],
+    [2396, 9802],
+]

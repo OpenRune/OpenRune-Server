@@ -1,0 +1,292 @@
+[[spawn]]
+npc = "npc.mm2_maniacal_monkey_maze"
+coords = "0_41_141_42_20"
+
+[[spawn]]
+npc = "npc.mm2_maniacal_monkey_maze"
+coords = "0_41_141_43_17"
+
+[[spawn]]
+npc = "npc.mm2_maniacal_monkey_maze"
+coords = "0_41_141_44_15"
+
+[[spawn]]
+npc = "npc.mm2_maniacal_monkey_maze"
+coords = "0_41_141_47_15"
+
+[[spawn]]
+npc = "npc.mm2_maniacal_monkey_maze"
+coords = "0_41_141_47_21"
+
+[[spawn]]
+npc = "npc.mm2_maniacal_monkey_maze"
+coords = "0_41_141_49_22"
+
+[[spawn]]
+npc = "npc.mm2_maniacal_monkey_maze"
+coords = "1_39_144_59_45"
+
+[[spawn]]
+npc = "npc.mm2_maniacal_monkey_maze"
+coords = "1_39_144_61_43"
+
+[[spawn]]
+npc = "npc.mm2_maniacal_monkey_maze"
+coords = "1_39_144_63_49"
+
+[[spawn]]
+npc = "npc.mm2_maniacal_monkey_maze"
+coords = "1_41_141_12_45"
+
+[[spawn]]
+npc = "npc.mm2_maniacal_monkey_maze"
+coords = "1_41_141_14_34"
+
+[[spawn]]
+npc = "npc.mm2_maniacal_monkey_maze"
+coords = "1_41_141_17_62"
+
+[[spawn]]
+npc = "npc.mm2_maniacal_monkey_maze"
+coords = "1_41_141_18_31"
+
+[[spawn]]
+npc = "npc.mm2_maniacal_monkey_maze"
+coords = "1_41_141_24_33"
+
+[[spawn]]
+npc = "npc.mm2_maniacal_monkey_maze"
+coords = "1_41_141_25_30"
+
+[[spawn]]
+npc = "npc.mm2_maniacal_monkey_maze"
+coords = "1_41_141_25_63"
+
+[[spawn]]
+npc = "npc.mm2_maniacal_monkey_maze"
+coords = "1_41_141_27_26"
+
+[[spawn]]
+npc = "npc.mm2_maniacal_monkey_maze"
+coords = "1_41_141_27_46"
+
+[[spawn]]
+npc = "npc.mm2_maniacal_monkey_maze"
+coords = "1_41_141_28_37"
+
+[[spawn]]
+npc = "npc.mm2_maniacal_monkey_maze"
+coords = "1_41_141_2_16"
+
+[[spawn]]
+npc = "npc.mm2_maniacal_monkey_maze"
+coords = "1_41_141_34_54"
+
+[[spawn]]
+npc = "npc.mm2_maniacal_monkey_maze"
+coords = "1_41_141_34_56"
+
+[[spawn]]
+npc = "npc.mm2_maniacal_monkey_maze"
+coords = "1_41_141_35_19"
+
+[[spawn]]
+npc = "npc.mm2_maniacal_monkey_maze"
+coords = "1_41_141_3_47"
+
+[[spawn]]
+npc = "npc.mm2_maniacal_monkey_maze"
+coords = "1_41_141_45_58"
+
+[[spawn]]
+npc = "npc.mm2_maniacal_monkey_maze"
+coords = "1_41_141_48_55"
+
+[[spawn]]
+npc = "npc.mm2_maniacal_monkey_maze"
+coords = "1_41_141_51_25"
+
+[[spawn]]
+npc = "npc.mm2_maniacal_monkey_maze"
+coords = "1_41_141_53_40"
+
+[[spawn]]
+npc = "npc.mm2_maniacal_monkey_maze"
+coords = "1_41_141_53_47"
+
+[[spawn]]
+npc = "npc.mm2_maniacal_monkey_maze"
+coords = "1_41_141_54_20"
+
+[[spawn]]
+npc = "npc.mm2_maniacal_monkey_maze"
+coords = "1_41_141_54_25"
+
+[[spawn]]
+npc = "npc.mm2_maniacal_monkey_maze"
+coords = "1_41_141_54_32"
+
+[[spawn]]
+npc = "npc.mm2_maniacal_monkey_maze"
+coords = "1_41_141_54_47"
+
+[[spawn]]
+npc = "npc.mm2_maniacal_monkey_maze"
+coords = "1_41_141_55_39"
+
+[[spawn]]
+npc = "npc.mm2_maniacal_monkey_maze"
+coords = "1_41_141_56_39"
+
+[[spawn]]
+npc = "npc.mm2_maniacal_monkey_maze"
+coords = "1_41_141_9_21"
+
+[[spawn]]
+npc = "npc.mm2_maniacal_monkey_maze"
+coords = "1_41_141_9_29"
+
+[[spawn]]
+npc = "npc.mm2_monkey_archer_maze"
+coords = "0_41_141_42_18"
+
+[[spawn]]
+npc = "npc.mm2_monkey_archer_maze"
+coords = "0_41_141_45_21"
+
+[[spawn]]
+npc = "npc.mm2_monkey_archer_maze"
+coords = "0_41_141_46_16"
+
+[[spawn]]
+npc = "npc.mm2_monkey_archer_maze"
+coords = "0_41_141_49_19"
+
+[[spawn]]
+npc = "npc.mm2_monkey_archer_maze"
+coords = "0_41_141_50_21"
+
+[[spawn]]
+npc = "npc.mm2_monkey_archer_maze"
+coords = "1_41_141_11_30"
+
+[[spawn]]
+npc = "npc.mm2_monkey_archer_maze"
+coords = "1_41_141_12_34"
+
+[[spawn]]
+npc = "npc.mm2_monkey_archer_maze"
+coords = "1_41_141_13_43"
+
+[[spawn]]
+npc = "npc.mm2_monkey_archer_maze"
+coords = "1_41_141_15_32"
+
+[[spawn]]
+npc = "npc.mm2_monkey_archer_maze"
+coords = "1_41_141_15_40"
+
+[[spawn]]
+npc = "npc.mm2_monkey_archer_maze"
+coords = "1_41_141_23_30"
+
+[[spawn]]
+npc = "npc.mm2_monkey_archer_maze"
+coords = "1_41_141_23_63"
+
+[[spawn]]
+npc = "npc.mm2_monkey_archer_maze"
+coords = "1_41_141_26_37"
+
+[[spawn]]
+npc = "npc.mm2_monkey_archer_maze"
+coords = "1_41_141_27_21"
+
+[[spawn]]
+npc = "npc.mm2_monkey_archer_maze"
+coords = "1_41_141_27_45"
+
+[[spawn]]
+npc = "npc.mm2_monkey_archer_maze"
+coords = "1_41_141_29_47"
+
+[[spawn]]
+npc = "npc.mm2_monkey_archer_maze"
+coords = "1_41_141_32_52"
+
+[[spawn]]
+npc = "npc.mm2_monkey_archer_maze"
+coords = "1_41_141_33_20"
+
+[[spawn]]
+npc = "npc.mm2_monkey_archer_maze"
+coords = "1_41_141_45_60"
+
+[[spawn]]
+npc = "npc.mm2_monkey_archer_maze"
+coords = "1_41_141_47_58"
+
+[[spawn]]
+npc = "npc.mm2_monkey_archer_maze"
+coords = "1_41_141_4_48"
+
+[[spawn]]
+npc = "npc.mm2_monkey_archer_maze"
+coords = "1_41_141_50_26"
+
+[[spawn]]
+npc = "npc.mm2_monkey_archer_maze"
+coords = "1_41_141_51_16"
+
+[[spawn]]
+npc = "npc.mm2_monkey_archer_maze"
+coords = "1_41_141_53_49"
+
+[[spawn]]
+npc = "npc.mm2_monkey_archer_maze"
+coords = "1_41_141_54_34"
+
+[[spawn]]
+npc = "npc.mm2_monkey_archer_maze"
+coords = "1_41_141_54_46"
+
+[[spawn]]
+npc = "npc.mm2_monkey_archer_maze"
+coords = "1_41_141_55_22"
+
+[[spawn]]
+npc = "npc.mm2_monkey_archer_maze"
+coords = "1_41_141_55_46"
+
+[[spawn]]
+npc = "npc.mm2_monkey_archer_maze"
+coords = "1_41_141_56_32"
+
+[[spawn]]
+npc = "npc.mm2_monkey_archer_maze"
+coords = "1_41_141_5_16"
+
+[[spawn]]
+npc = "npc.mm_jungle_scorpion"
+coords = "1_41_141_15_44"
+
+[[spawn]]
+npc = "npc.mm_jungle_scorpion"
+coords = "1_41_141_26_23"
+
+[[spawn]]
+npc = "npc.mm_jungle_scorpion"
+coords = "1_41_141_31_58"
+
+[[spawn]]
+npc = "npc.mm_jungle_scorpion"
+coords = "1_41_141_48_52"
+
+[[spawn]]
+npc = "npc.mm_jungle_scorpion"
+coords = "1_41_141_55_18"
+
+[[spawn]]
+npc = "npc.mm_jungle_scorpion"
+coords = "1_41_141_8_18"
+

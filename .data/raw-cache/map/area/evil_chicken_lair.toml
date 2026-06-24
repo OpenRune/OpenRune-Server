@@ -1,0 +1,12 @@
+[[area]]
+name = "Evil Chicken Lair"
+area_id = "area.evil_chicken_lair"
+levels = [0, 1, 2, 3]
+
+[[area.polygons]]
+vertices = [
+    [2432, 4352],
+    [2495, 4352],
+    [2495, 4415],
+    [2432, 4415],
+]

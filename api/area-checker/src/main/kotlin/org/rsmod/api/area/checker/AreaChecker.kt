@@ -27,6 +27,10 @@ public class AreaChecker @Inject constructor(
 
         areaIndex.putAreas(normalized, areaBuffer)
 
+        if (areaIndex.isExcludedBy(target, areaBuffer)) {
+            return false
+        }
+
         for (i in 0 until areaBuffer.size) {
             val found = areaBuffer.getShort(i)
             if (contains(found, target)) {

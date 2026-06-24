@@ -15,6 +15,7 @@ import org.rsmod.api.npc.vars.intVarn
 import org.rsmod.api.npc.vars.typePlayerUidVarn
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
+import org.rsmod.game.interact.InteractionOp
 
 private var Npc.lastCombat: Int by intVarn("varn.lastcombat")
 private var Npc.aggressivePlayer by typePlayerUidVarn("varn.aggressive_player")
@@ -31,6 +32,16 @@ public fun Npc.queueCombatRetaliate(source: Player, delay: Int = 1) {
     queue("queue.com_retaliate_player", delay)
     aggressivePlayer = source.uid
     lastCombat = max(lastCombat, currentMapClock)
+}
+
+public fun Npc.combatDefaultRetaliate(interactions: AiPlayerInteractions) {
+    if (!canRetaliate()) {
+        return
+    }
+    val target = interactions.resolvePlayer(aggressivePlayer) ?: return
+    attackingPlayer = target.uid
+    actionDelay = currentMapClock + (attackRate() / 2)
+    retaliate(target, interactions, ap = shouldRetaliateAp(interactions, target))
 }
 
 public fun Npc.combatDefaultRetaliateOp(interactions: AiPlayerInteractions) {
@@ -51,6 +62,13 @@ public fun Npc.combatDefaultRetaliateAp(interactions: AiPlayerInteractions) {
     attackingPlayer = target.uid
     actionDelay = currentMapClock + (attackRate() / 2)
     retaliate(target, interactions, ap = true)
+}
+
+private fun Npc.shouldRetaliateAp(interactions: AiPlayerInteractions, target: Player): Boolean {
+    if (visType.attackRange <= 1) {
+        return false
+    }
+    return interactions.apTrigger(this, target, InteractionOp.Op2) != null
 }
 
 private fun Npc.retaliate(target: Player, interactions: AiPlayerInteractions, ap: Boolean) {

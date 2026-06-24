@@ -60,13 +60,13 @@ constructor(
             try {
                 player.tryOrDisconnect {
                     processMapChanges()
-                    processClientCycle()
                     processZoneUpdates()
                     processInvUpdates()
                     processStatUpdates()
                     processRunUpdates()
-                    processClientState()
                     processPostTickHooks()
+                    processClientCycle()
+                    processClientState()
                     cleanUpPendingUpdates()
                 }
             } finally {

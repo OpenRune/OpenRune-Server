@@ -1,0 +1,210 @@
+## Fremennik Isles Ice Troll Dungeon
+
+[[spawn]]
+npc = "npc.fris_baby_troll_lowxp"
+coords = "0_37_160_22_46"
+
+[[spawn]]
+npc = "npc.fris_baby_troll_lowxp"
+coords = "0_37_160_25_46"
+
+[[spawn]]
+npc = "npc.fris_baby_troll_lowxp"
+coords = "0_37_160_28_46"
+
+[[spawn]]
+npc = "npc.fris_baby_troll_lowxp"
+coords = "1_37_160_22_46"
+
+[[spawn]]
+npc = "npc.fris_baby_troll_lowxp"
+coords = "1_37_160_25_46"
+
+[[spawn]]
+npc = "npc.fris_baby_troll_lowxp"
+coords = "1_37_160_28_46"
+
+[[spawn]]
+npc = "npc.fris_baby_troll_pc"
+coords = "1_37_160_38_19"
+
+[[spawn]]
+npc = "npc.fris_baby_troll_pc"
+coords = "1_37_160_46_17"
+
+[[spawn]]
+npc = "npc.fris_troll_bodyguard_lowxp"
+coords = "0_37_160_15_41"
+
+[[spawn]]
+npc = "npc.fris_troll_bodyguard_lowxp"
+coords = "0_37_160_20_37"
+
+[[spawn]]
+npc = "npc.fris_troll_bodyguard_lowxp"
+coords = "0_37_160_26_34"
+
+[[spawn]]
+npc = "npc.fris_troll_bodyguard_lowxp"
+coords = "1_37_160_15_41"
+
+[[spawn]]
+npc = "npc.fris_troll_bodyguard_lowxp"
+coords = "1_37_160_20_37"
+
+[[spawn]]
+npc = "npc.fris_troll_bodyguard_lowxp"
+coords = "1_37_160_26_34"
+
+[[spawn]]
+npc = "npc.fris_troll_bodyguard_pc"
+coords = "1_37_160_45_25"
+
+[[spawn]]
+npc = "npc.fris_troll_bodyguard_pc"
+coords = "1_37_160_46_37"
+
+[[spawn]]
+npc = "npc.fris_troll_bodyguard_pc"
+coords = "1_37_160_52_30"
+
+[[spawn]]
+npc = "npc.fris_trollf_lowxp"
+coords = "0_37_160_13_45"
+
+[[spawn]]
+npc = "npc.fris_trollf_lowxp"
+coords = "0_37_160_14_35"
+
+[[spawn]]
+npc = "npc.fris_trollf_lowxp"
+coords = "0_37_160_20_32"
+
+[[spawn]]
+npc = "npc.fris_trollf_lowxp"
+coords = "0_37_160_20_43"
+
+[[spawn]]
+npc = "npc.fris_trollf_lowxp"
+coords = "0_37_160_25_40"
+
+[[spawn]]
+npc = "npc.fris_trollf_lowxp"
+coords = "0_37_160_30_38"
+
+[[spawn]]
+npc = "npc.fris_trollf_lowxp"
+coords = "0_37_160_52_34"
+
+[[spawn]]
+npc = "npc.fris_trollf_lowxp"
+coords = "1_37_160_13_45"
+
+[[spawn]]
+npc = "npc.fris_trollf_lowxp"
+coords = "1_37_160_14_35"
+
+[[spawn]]
+npc = "npc.fris_trollf_lowxp"
+coords = "1_37_160_20_32"
+
+[[spawn]]
+npc = "npc.fris_trollf_lowxp"
+coords = "1_37_160_20_43"
+
+[[spawn]]
+npc = "npc.fris_trollf_lowxp"
+coords = "1_37_160_25_40"
+
+[[spawn]]
+npc = "npc.fris_trollf_lowxp"
+coords = "1_37_160_30_38"
+
+[[spawn]]
+npc = "npc.fris_trollf_lowxp"
+coords = "1_37_160_52_34"
+
+[[spawn]]
+npc = "npc.fris_trollf_pc"
+coords = "1_37_160_48_32"
+
+[[spawn]]
+npc = "npc.fris_trollf_pc"
+coords = "1_37_160_51_42"
+
+[[spawn]]
+npc = "npc.fris_trollm_lowxp"
+coords = "0_37_160_10_31"
+
+[[spawn]]
+npc = "npc.fris_trollm_lowxp"
+coords = "0_37_160_18_28"
+
+[[spawn]]
+npc = "npc.fris_trollm_lowxp"
+coords = "0_37_160_29_31"
+
+[[spawn]]
+npc = "npc.fris_trollm_lowxp"
+coords = "0_37_160_33_45"
+
+[[spawn]]
+npc = "npc.fris_trollm_lowxp"
+coords = "0_37_160_8_40"
+
+[[spawn]]
+npc = "npc.fris_trollm_lowxp"
+coords = "1_37_160_10_31"
+
+[[spawn]]
+npc = "npc.fris_trollm_lowxp"
+coords = "1_37_160_18_28"
+
+[[spawn]]
+npc = "npc.fris_trollm_lowxp"
+coords = "1_37_160_29_31"
+
+[[spawn]]
+npc = "npc.fris_trollm_lowxp"
+coords = "1_37_160_33_45"
+
+[[spawn]]
+npc = "npc.fris_trollm_lowxp"
+coords = "1_37_160_8_40"
+
+[[spawn]]
+npc = "npc.fris_trollm_pc"
+coords = "1_37_160_47_44"
+
+[[spawn]]
+npc = "npc.fris_trollm_pc"
+coords = "1_37_160_53_26"
+
+[[spawn]]
+npc = "npc.frisb_n_brg_grd_troll_cave"
+coords = "1_37_160_21_50"
+
+[[spawn]]
+npc = "npc.frisb_n_brg_grd_troll_cave"
+coords = "1_37_160_23_50"
+
+[[spawn]]
+npc = "npc.frisb_n_brg_grd_troll_cave"
+coords = "1_37_160_25_50"
+
+[[spawn]]
+npc = "npc.frisb_n_brg_grd_troll_cave"
+coords = "1_37_160_27_50"
+
+[[spawn]]
+npc = "npc.frisb_n_brg_grd_troll_cave"
+coords = "1_37_160_28_55"
+
+[[spawn]]
+npc = "npc.frisb_n_brg_grd_troll_cave"
+coords = "1_37_160_29_49"
+
+[[spawn]]
+npc = "npc.frisb_n_phy"
+coords = "1_37_160_29_54"
+

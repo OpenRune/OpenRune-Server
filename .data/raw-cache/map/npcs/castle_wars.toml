@@ -1,0 +1,14 @@
+## Castle Wars Lobby
+
+[[spawn]]
+npc = "npc.castlewars_judge"
+coords = "0_38_48_9_17"
+
+[[spawn]]
+npc = "npc.castlewars_judge_model"
+coords = "0_38_48_9_18"
+
+[[spawn]]
+npc = "npc.postie_pete"
+coords = "0_38_48_13_25"
+

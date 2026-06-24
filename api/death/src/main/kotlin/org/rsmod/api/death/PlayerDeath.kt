@@ -3,18 +3,38 @@ package org.rsmod.api.death
 import dev.openrune.ServerCacheManager
 import dev.openrune.rscm.RSCM
 import dev.openrune.rscm.RSCMType
+import jakarta.inject.Inject
 import jakarta.inject.Singleton
+import org.rsmod.api.area.checker.AreaChecker
+import org.rsmod.api.area.checker.isInWildernessBasic
+import org.rsmod.api.death.hasSkullDeathPenalty
+import org.rsmod.api.death.isHighRiskSkulled
+import org.rsmod.api.player.death.DEATH_CAUSE_ATTR
+import org.rsmod.api.player.death.DeathCause
+import org.rsmod.api.player.hasProtectItemPrayer
 import org.rsmod.api.mechanics.toxins.Toxin.cureAllToxins
 import org.rsmod.api.player.deathResetTimers
 import org.rsmod.api.player.disablePrayers
 import org.rsmod.api.player.protect.ProtectedAccess
+import org.rsmod.api.player.vars.boolVarBit
 import org.rsmod.api.player.vars.intVarp
+import org.rsmod.game.MapClock
 import org.rsmod.game.entity.Player
 import org.rsmod.map.CoordGrid
 
 @Singleton
-public class PlayerDeath() {
+public class PlayerDeath
+@Inject
+constructor(
+    private val mapClock: MapClock,
+    private val drops: PlayerDeathDrops,
+    private val handlingResolver: PlayerDeathHandlingResolver,
+    private val cleanupHooks: Set<PlayerDeathCleanupHook>,
+    private val areaChecker: AreaChecker,
+) {
     private var Player.specialAttackType by intVarp("varp.sa_attack")
+    private var Player.inInstance by boolVarBit("varbit.player_in_instance")
+    private var Player.insideWilderness by boolVarBit("varbit.inside_wilderness")
 
     public suspend fun death(access: ProtectedAccess) {
         access.deathSequence()
@@ -23,18 +43,23 @@ public class PlayerDeath() {
     private suspend fun ProtectedAccess.deathSequence() {
         val respawn = CoordGrid(0, 50, 50, 21, 18)
         val randomRespawn = mapFindSquareLineOfWalk(respawn, minRadius = 0, maxRadius = 2)
+
         stopAction()
         delay(2)
+        soundSynth("synth.human_death")
         anim("seq.human_death")
         delay(4)
         combatClearQueue()
         clearQueue("queue.death")
+
+        val deathCoords = player.coords
+        handleDeathDrops(player, deathCoords)
+
         midiSong("midi.stop_music")
         midiJingle("jingle.air_guitar_jingle")
         mes("Oh dear, you are dead!")
         telejump(randomRespawn ?: respawn)
         resetAnim()
-        // TODO: Drop death invs, etc.
         resetPlayerState()
         restoreToplevelTabs(
             "component.toplevel_osrs_stretch:pvp_icons",
@@ -53,6 +78,46 @@ public class PlayerDeath() {
         )
     }
 
+    private fun handleDeathDrops(player: Player, deathCoords: CoordGrid) {
+        val bypassAdmin = player.deathDropsBypassAdmin()
+        player.attr.remove(DEATH_DROPS_BYPASS_ADMIN_ATTR)
+        if (player.modLevel.hasAccessTo("modlevel.admin") && !bypassAdmin) return
+
+        val killer = when (val cause = player.attr[DEATH_CAUSE_ATTR]) {
+            is DeathCause.ByPlayer -> cause.killer
+            else -> player.attr[DEATH_KILLER_ATTR]
+        }
+
+        val context = buildContext(player, deathCoords, killer)
+        val handling = handlingResolver.resolve(context)
+
+        val result = drops.selectDrops(player, context, handling)
+        drops.applyDrops(player, result, handling, deathCoords)
+        drops.spawnRemains(deathCoords, handling)
+
+        player.attr.remove(DEATH_KILLER_ATTR)
+        player.attr.remove(DEATH_CAUSE_ATTR)
+    }
+
+    private fun buildContext(player: Player, deathCoords: CoordGrid, killer: Player?): PlayerDeathContext {
+        val wildernessLevel = deathCoords.wildernessLevel()
+        val recentPvp = wasRecentlyHitByPlayer(player)
+
+        return PlayerDeathContext(
+            player = player,
+            coords = deathCoords,
+            inWilderness = player.insideWilderness,
+            wildernessLevel = wildernessLevel,
+            inRevenantCaves = areaChecker.inArea("area.revenant_caves", deathCoords),
+            inInstance = player.inInstance,
+            isSkulled = player.hasSkullDeathPenalty(),
+            hasProtectItem = player.hasProtectItemPrayer() && !player.isHighRiskSkulled(),
+            recentPvpDamage = recentPvp,
+            gamemode = player.gamemode,
+            killer = killer,
+        )
+    }
+
     private fun ProtectedAccess.resetPlayerState() {
         player.disablePrayers()
         player.cureAllToxins()
@@ -61,10 +126,31 @@ public class PlayerDeath() {
         player.specialAttackType = 0
         player.skullIcon = null
 
-        rebuildAppearance()
+        for (hook in cleanupHooks) {
+            hook.cleanup(player)
+        }
 
+        rebuildAppearance()
         camReset()
         statRestoreAll(ServerCacheManager.getStats().values.map { RSCM.getReverseMapping(RSCMType.STAT, it.id) })
         minimapReset()
+    }
+
+    private fun wasRecentlyHitByPlayer(player: Player): Boolean {
+        val lastHitTick = player.attr[LAST_PVP_HIT_TICK_ATTR] ?: return false
+        return (mapClock - lastHitTick) <= RECENT_PVP_HIT_TICKS
+    }
+
+    private companion object {
+        private fun CoordGrid.wildernessLevel(): Int {
+            if (!isInWildernessBasic()) return -1
+            val y = z
+            return when {
+                level == 0 && x in 2944..3392 && y in 3520..4351 -> ((y - 3520) shr 3) + 1
+                level == 0 && x in 3008..3071 && y in 10112..10175 -> ((y - 9920) shr 3) - 1
+                level == 0 && x in 2944..3455 && y in 9920..10879 -> ((y - 9920) shr 3) + 1
+                else -> 1
+            }
+        }
     }
 }

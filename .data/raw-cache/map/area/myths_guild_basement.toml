@@ -1,0 +1,16 @@
+[[area]]
+name = "Myth's Guild Basement"
+area_id = "area.myths_guild_basement"
+levels = [0, 1, 2, 3]
+
+[[area.polygons]]
+vertices = [
+    [1856, 8960],
+    [2111, 8960],
+    [2111, 9023],
+    [1983, 9023],
+    [1983, 9087],
+    [1920, 9087],
+    [1920, 9023],
+    [1856, 9023],
+]

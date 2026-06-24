@@ -1,0 +1,12 @@
+[[spawn]]
+npc = "npc.invrigar_the_necromancer"
+coords = "1_41_50_43_41"
+
+[[spawn]]
+npc = "npc.necromancer"
+coords = "0_41_50_47_40"
+
+[[spawn]]
+npc = "npc.zogre_necromancers_assistant"
+coords = "0_41_50_42_46"
+

@@ -61,6 +61,12 @@ constructor(private val playerList: PlayerList, private val eventBus: EventBus) 
         // TODO(combat): Process recoils, retribution(?), etc.
         npc.hitpoints -= hit.damage
 
+        if (hit.damage > 0 && hit.isFromPlayer) {
+            hit.resolvePlayerSource(playerList)?.let { source ->
+                npc.recordDamage(source, hit.damage)
+            }
+        }
+
         playDefendSound(hit)
 
         val queueDeath = npc.hitpoints == 0 && "queue.death" !in npc.queueList

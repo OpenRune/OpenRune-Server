@@ -1,0 +1,20 @@
+[[spawn]]
+npc = "npc.eaglepeak_eagle_guard"
+coords = "3_31_77_23_26"
+
+[[spawn]]
+npc = "npc.eaglepeak_eagle_todesert"
+coords = "3_31_77_35_29"
+
+[[spawn]]
+npc = "npc.eaglepeak_eagle_tojungle"
+coords = "3_31_77_39_33"
+
+[[spawn]]
+npc = "npc.eaglepeak_eagle_topolar"
+coords = "3_31_77_42_35"
+
+[[spawn]]
+npc = "npc.eaglepeak_nickolaus"
+coords = "3_31_77_22_31"
+

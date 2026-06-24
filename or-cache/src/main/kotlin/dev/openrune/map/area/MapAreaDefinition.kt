@@ -14,18 +14,21 @@ public data class MapAreaDefinition(
     val zoneAreas: Byte2ObjectMap<ShortSet>,
     val coordAreas: Short2ObjectMap<ShortSet>,
     val includes: Short2ObjectMap<ShortSet>,
+    val excludes: Short2ObjectMap<ShortSet>,
 ) {
     public companion object {
 
         public fun from(
             polygon: PolygonMapSquare,
             includes: Map<Short, ShortArray>,
+            excludes: Map<Short, ShortArray> = emptyMap(),
         ): MapAreaDefinition {
-            return polygon.toMapAreaDefinition(includes)
+            return polygon.toMapAreaDefinition(includes, excludes)
         }
 
         private fun PolygonMapSquare.toMapAreaDefinition(
             includesByArea: Map<Short, ShortArray>,
+            excludesByArea: Map<Short, ShortArray>,
         ): MapAreaDefinition {
             val flippedZoneAreas = Byte2ObjectOpenHashMap<ShortSet>()
             for ((area, bitset) in zoneAreas) {
@@ -58,11 +61,18 @@ public data class MapAreaDefinition(
                 flippedIncludes[area] = ShortArraySet(refs)
             }
 
+            val flippedExcludes = Short2ObjectOpenHashMap<ShortSet>()
+            for (area in mapSquareAreas) {
+                val refs = excludesByArea[area] ?: continue
+                flippedExcludes[area] = ShortArraySet(refs)
+            }
+
             return MapAreaDefinition(
                 mapSquareAreas = mapSquareAreas,
                 zoneAreas = flippedZoneAreas,
                 coordAreas = flippedCoordAreas,
                 includes = flippedIncludes,
+                excludes = flippedExcludes,
             )
         }
 
@@ -123,11 +133,28 @@ public data class MapAreaDefinition(
                 merged.addAll(refs)
             }
 
+            val mergedExcludes =
+                Short2ObjectOpenHashMap<ShortSet>(
+                    base.excludes.size + edit.excludes.size
+                )
+
+            for ((area, refs) in base.excludes) {
+                mergedExcludes[area] = ShortArraySet(refs)
+            }
+
+            for ((area, refs) in edit.excludes) {
+                val merged = mergedExcludes.getOrPut(area) {
+                    ShortArraySet()
+                }
+                merged.addAll(refs)
+            }
+
             return MapAreaDefinition(
                 mapSquareAreas = mergedMapSquares,
                 zoneAreas = mergedZoneAreas,
                 coordAreas = mergedCoordAreas,
                 includes = mergedIncludes,
+                excludes = mergedExcludes,
             )
         }
     }

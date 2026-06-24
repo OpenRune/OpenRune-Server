@@ -1,0 +1,28 @@
+[[spawn]]
+npc = "npc.edmond_bottom"
+coords = "0_39_152_21_27"
+
+[[spawn]]
+npc = "npc.elena_basement"
+coords = "0_39_152_49_18"
+
+[[spawn]]
+npc = "npc.sote_carla"
+coords = "0_39_152_41_17"
+
+[[spawn]]
+npc = "npc.sote_halgrive"
+coords = "0_39_152_50_17"
+
+[[spawn]]
+npc = "npc.sote_jethick"
+coords = "0_39_152_46_16"
+
+[[spawn]]
+npc = "npc.sote_kilron"
+coords = "0_39_152_43_13"
+
+[[spawn]]
+npc = "npc.sote_omart"
+coords = "0_39_152_44_13"
+

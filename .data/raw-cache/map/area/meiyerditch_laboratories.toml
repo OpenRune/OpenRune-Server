@@ -1,0 +1,16 @@
+[[area]]
+name = "Meiyerditch Labratories"
+area_id = "area.meiyerditch_laboratories"
+levels = [0, 1, 2, 3]
+
+[[area.polygons]]
+vertices = [
+    [3510, 9823],
+    [3524, 9724],
+    [3596, 9727],
+    [3603, 9679],
+    [3616, 9667],
+    [3643, 9668],
+    [3641, 9766],
+    [3562, 9843],
+]

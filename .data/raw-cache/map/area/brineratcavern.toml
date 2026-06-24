@@ -1,0 +1,12 @@
+[[area]]
+name = "Brine Rat Cavern"
+area_id = "area.brineratcavern"
+levels = [0, 1, 2, 3]
+
+[[area.polygons]]
+vertices = [
+    [2685, 10179],
+    [2753, 10179],
+    [2749, 10112],
+    [2688, 10114],
+]

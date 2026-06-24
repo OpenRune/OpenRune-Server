@@ -1,0 +1,236 @@
+[[spawn]]
+npc = "npc.achietties"
+coords = "0_45_54_23_54"
+
+[[spawn]]
+npc = "npc.bernald"
+coords = "0_45_55_38_14"
+
+[[spawn]]
+npc = "npc.death_archer1"
+coords = "0_45_55_17_29"
+
+[[spawn]]
+npc = "npc.death_archer1"
+coords = "1_45_55_12_38"
+
+[[spawn]]
+npc = "npc.death_archer1"
+coords = "1_45_55_23_39"
+
+[[spawn]]
+npc = "npc.death_archer1"
+coords = "1_45_55_24_50"
+
+[[spawn]]
+npc = "npc.death_archer2"
+coords = "0_45_55_20_29"
+
+[[spawn]]
+npc = "npc.death_archer2"
+coords = "1_45_55_13_39"
+
+[[spawn]]
+npc = "npc.death_archer2"
+coords = "1_45_55_24_48"
+
+[[spawn]]
+npc = "npc.death_archer2"
+coords = "1_45_55_25_37"
+
+[[spawn]]
+npc = "npc.death_archer_trapped"
+coords = "1_45_55_13_49"
+
+[[spawn]]
+npc = "npc.death_barman"
+coords = "0_45_55_26_17"
+
+[[spawn]]
+npc = "npc.death_cook"
+coords = "0_45_55_13_38"
+
+[[spawn]]
+npc = "npc.death_growncat_black"
+coords = "0_45_55_44_45"
+
+[[spawn]]
+npc = "npc.death_guard1"
+coords = "0_45_55_16_46"
+
+[[spawn]]
+npc = "npc.death_guard1"
+coords = "0_45_55_17_36"
+
+[[spawn]]
+npc = "npc.death_guard2"
+coords = "0_45_55_20_36"
+
+[[spawn]]
+npc = "npc.death_guard_equiproom"
+coords = "1_45_55_25_19"
+
+[[spawn]]
+npc = "npc.death_headservant"
+coords = "1_45_55_22_45"
+
+[[spawn]]
+npc = "npc.death_ig_commander"
+coords = "0_45_55_16_8"
+
+[[spawn]]
+npc = "npc.death_ig_sergeant_drilling"
+coords = "0_45_55_13_21"
+
+[[spawn]]
+npc = "npc.death_ig_sergeant_training"
+coords = "0_45_55_20_12"
+
+[[spawn]]
+npc = "npc.death_ig_solider_drilling"
+coords = "0_45_55_11_17"
+
+[[spawn]]
+npc = "npc.death_ig_solider_drilling"
+coords = "0_45_55_11_19"
+
+[[spawn]]
+npc = "npc.death_ig_solider_drilling"
+coords = "0_45_55_12_17"
+
+[[spawn]]
+npc = "npc.death_ig_solider_drilling"
+coords = "0_45_55_12_19"
+
+[[spawn]]
+npc = "npc.death_ig_solider_drilling"
+coords = "0_45_55_13_17"
+
+[[spawn]]
+npc = "npc.death_ig_solider_drilling"
+coords = "0_45_55_13_19"
+
+[[spawn]]
+npc = "npc.death_ig_solider_drilling"
+coords = "0_45_55_14_17"
+
+[[spawn]]
+npc = "npc.death_ig_solider_drilling"
+coords = "0_45_55_14_19"
+
+[[spawn]]
+npc = "npc.death_ig_solider_drilling"
+coords = "0_45_55_15_17"
+
+[[spawn]]
+npc = "npc.death_ig_solider_drilling"
+coords = "0_45_55_15_19"
+
+[[spawn]]
+npc = "npc.death_ig_solider_sitting1"
+coords = "0_45_55_12_12"
+
+[[spawn]]
+npc = "npc.death_ig_solider_sitting2"
+coords = "0_45_55_13_13"
+
+[[spawn]]
+npc = "npc.death_ig_solider_sitting3"
+coords = "0_45_55_14_12"
+
+[[spawn]]
+npc = "npc.death_ig_solider_training"
+coords = "0_45_55_20_11"
+
+[[spawn]]
+npc = "npc.death_ig_solider_training"
+coords = "0_45_55_20_13"
+
+[[spawn]]
+npc = "npc.death_ig_solider_wander"
+coords = "0_45_55_20_19"
+
+[[spawn]]
+npc = "npc.death_ig_solider_wander"
+coords = "0_45_55_27_22"
+
+[[spawn]]
+npc = "npc.death_ig_solider_wander"
+coords = "0_45_55_31_22"
+
+[[spawn]]
+npc = "npc.death_ig_solider_wander"
+coords = "0_45_55_5_13"
+
+[[spawn]]
+npc = "npc.death_ig_solider_wander"
+coords = "0_45_55_5_8"
+
+[[spawn]]
+npc = "npc.death_man_indoors2"
+coords = "0_45_55_30_19"
+
+[[spawn]]
+npc = "npc.death_man_outdoors1"
+coords = "0_45_55_39_30"
+
+[[spawn]]
+npc = "npc.death_man_outdoors2"
+coords = "0_45_55_47_39"
+
+[[spawn]]
+npc = "npc.death_servant1"
+coords = "0_45_55_21_44"
+
+[[spawn]]
+npc = "npc.death_shopkeeper"
+coords = "0_45_55_48_26"
+
+[[spawn]]
+npc = "npc.death_smithy"
+coords = "0_45_55_39_54"
+
+[[spawn]]
+npc = "npc.death_woman_indoors1"
+coords = "0_45_55_50_46"
+
+[[spawn]]
+npc = "npc.death_woman_outdoors1"
+coords = "0_45_55_46_16"
+
+[[spawn]]
+npc = "npc.death_woman_outdoors2"
+coords = "0_45_55_36_3"
+
+[[spawn]]
+npc = "npc.niete_burthorpe"
+coords = "0_45_55_50_37"
+
+[[spawn]]
+npc = "npc.slayer_master_1_aya"
+coords = "0_45_55_51_16"
+
+[[spawn]]
+npc = "npc.slayer_master_1_tureal"
+coords = "0_45_55_51_16"
+
+[[spawn]]
+npc = "npc.tog_light_creature"
+coords = "0_45_55_51_16"
+
+[[spawn]]
+npc = "npc.twocats_niete"
+coords = "0_45_55_43_46"
+
+[[spawn]]
+npc = "npc.twocats_unferth"
+coords = "0_45_55_38_38"
+
+## Heroes Guild
+
+[[spawn]]
+npc = "npc.helemos"
+coords = "1_45_54_14_54"
+
+## Heroes Guild End
+

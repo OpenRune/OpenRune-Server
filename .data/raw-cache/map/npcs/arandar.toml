@@ -1,0 +1,74 @@
+## Arandar Mainland
+
+[[spawn]]
+npc = "npc.goblin_armed"
+coords = "0_37_52_26_6"
+
+## Arandar Prifddinas
+
+[[spawn]]
+npc = "npc.deadly_red_spider"
+coords = "0_52_94_33_47"
+
+[[spawn]]
+npc = "npc.deadly_red_spider"
+coords = "0_52_94_33_50"
+
+[[spawn]]
+npc = "npc.deadly_red_spider"
+coords = "0_52_94_34_46"
+
+[[spawn]]
+npc = "npc.deadly_red_spider"
+coords = "0_52_94_37_45"
+
+[[spawn]]
+npc = "npc.deadly_red_spider"
+coords = "0_52_94_38_47"
+
+[[spawn]]
+npc = "npc.deadly_red_spider"
+coords = "0_52_94_39_45"
+
+[[spawn]]
+npc = "npc.deadly_red_spider"
+coords = "0_52_94_40_54"
+
+[[spawn]]
+npc = "npc.deadly_red_spider"
+coords = "0_52_94_41_46"
+
+[[spawn]]
+npc = "npc.deadly_red_spider"
+coords = "0_52_94_41_48"
+
+[[spawn]]
+npc = "npc.deadly_red_spider"
+coords = "0_52_94_46_46"
+
+[[spawn]]
+npc = "npc.direwolf"
+coords = "0_52_94_13_7"
+
+[[spawn]]
+npc = "npc.direwolf"
+coords = "0_52_94_16_2"
+
+[[spawn]]
+npc = "npc.direwolf"
+coords = "0_52_94_31_12"
+
+[[spawn]]
+npc = "npc.direwolf"
+coords = "0_52_94_35_15"
+
+[[spawn]]
+npc = "npc.direwolf"
+coords = "0_52_94_35_8"
+
+[[spawn]]
+npc = "npc.direwolf"
+coords = "0_52_94_7_7"
+
+## Arandar Prifddinas End
+

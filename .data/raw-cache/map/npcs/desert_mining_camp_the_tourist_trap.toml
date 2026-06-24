@@ -1,0 +1,276 @@
+[[spawn]]
+npc = "npc.ana"
+coords = "0_51_147_38_58"
+
+[[spawn]]
+npc = "npc.mining_slave_male"
+coords = "0_51_147_2_51"
+
+[[spawn]]
+npc = "npc.slave_rowdy"
+coords = "0_51_147_24_38"
+
+[[spawn]]
+npc = "npc.slave_rowdy"
+coords = "0_51_147_9_12"
+
+[[spawn]]
+npc = "npc.tourtrap_qip_ana_multi"
+coords = "0_51_147_38_58"
+
+[[spawn]]
+npc = "npc.tourtrap_qip_desert_mining_guard_1"
+coords = "0_51_147_13_44"
+
+[[spawn]]
+npc = "npc.tourtrap_qip_desert_mining_guard_1"
+coords = "0_51_147_22_58"
+
+[[spawn]]
+npc = "npc.tourtrap_qip_desert_mining_guard_1"
+coords = "0_51_147_34_24"
+
+[[spawn]]
+npc = "npc.tourtrap_qip_desert_mining_guard_1"
+coords = "0_51_147_4_9"
+
+[[spawn]]
+npc = "npc.tourtrap_qip_desert_mining_guard_1"
+coords = "0_51_147_53_33"
+
+[[spawn]]
+npc = "npc.tourtrap_qip_desert_mining_guard_2"
+coords = "0_51_147_35_59"
+
+[[spawn]]
+npc = "npc.tourtrap_qip_desert_mining_guard_4"
+coords = "0_51_147_23_8"
+
+[[spawn]]
+npc = "npc.tourtrap_qip_desert_mining_guard_6"
+coords = "0_51_147_23_6"
+
+[[spawn]]
+npc = "npc.tourtrap_qip_desert_mining_guard_still_1"
+coords = "0_51_147_27_15"
+
+[[spawn]]
+npc = "npc.tourtrap_qip_desert_mining_guard_still_1"
+coords = "0_51_147_29_27"
+
+[[spawn]]
+npc = "npc.tourtrap_qip_desert_mining_guard_still_2"
+coords = "0_51_147_15_8"
+
+[[spawn]]
+npc = "npc.tourtrap_qip_desert_mining_guard_still_3"
+coords = "0_51_147_15_6"
+
+[[spawn]]
+npc = "npc.tourtrap_qip_mining_slave_female_1"
+coords = "0_51_147_11_51"
+
+[[spawn]]
+npc = "npc.tourtrap_qip_mining_slave_female_1"
+coords = "0_51_147_13_46"
+
+[[spawn]]
+npc = "npc.tourtrap_qip_mining_slave_female_1"
+coords = "0_51_147_25_51"
+
+[[spawn]]
+npc = "npc.tourtrap_qip_mining_slave_female_1"
+coords = "0_51_147_25_60"
+
+[[spawn]]
+npc = "npc.tourtrap_qip_mining_slave_female_1"
+coords = "0_51_147_33_18"
+
+[[spawn]]
+npc = "npc.tourtrap_qip_mining_slave_female_1"
+coords = "0_51_147_33_60"
+
+[[spawn]]
+npc = "npc.tourtrap_qip_mining_slave_female_1"
+coords = "0_51_147_34_5"
+
+[[spawn]]
+npc = "npc.tourtrap_qip_mining_slave_female_1"
+coords = "0_51_147_41_35"
+
+[[spawn]]
+npc = "npc.tourtrap_qip_mining_slave_female_1"
+coords = "0_51_147_42_17"
+
+[[spawn]]
+npc = "npc.tourtrap_qip_mining_slave_female_1"
+coords = "0_51_147_42_4"
+
+[[spawn]]
+npc = "npc.tourtrap_qip_mining_slave_female_1"
+coords = "0_51_147_50_50"
+
+[[spawn]]
+npc = "npc.tourtrap_qip_mining_slave_female_1"
+coords = "0_51_147_58_18"
+
+[[spawn]]
+npc = "npc.tourtrap_qip_mining_slave_female_1"
+coords = "0_51_147_8_25"
+
+[[spawn]]
+npc = "npc.tourtrap_qip_mining_slave_female_1"
+coords = "0_51_147_8_44"
+
+[[spawn]]
+npc = "npc.tourtrap_qip_mining_slave_female_1"
+coords = "0_51_147_9_14"
+
+[[spawn]]
+npc = "npc.tourtrap_qip_mining_slave_female_2"
+coords = "0_51_147_12_26"
+
+[[spawn]]
+npc = "npc.tourtrap_qip_mining_slave_female_2"
+coords = "0_51_147_30_5"
+
+[[spawn]]
+npc = "npc.tourtrap_qip_mining_slave_female_2"
+coords = "0_51_147_36_4"
+
+[[spawn]]
+npc = "npc.tourtrap_qip_mining_slave_female_2"
+coords = "0_51_147_37_17"
+
+[[spawn]]
+npc = "npc.tourtrap_qip_mining_slave_female_2"
+coords = "0_51_147_3_20"
+
+[[spawn]]
+npc = "npc.tourtrap_qip_mining_slave_female_2"
+coords = "0_51_147_3_33"
+
+[[spawn]]
+npc = "npc.tourtrap_qip_mining_slave_female_2"
+coords = "0_51_147_45_14"
+
+[[spawn]]
+npc = "npc.tourtrap_qip_mining_slave_female_2"
+coords = "0_51_147_6_7"
+
+[[spawn]]
+npc = "npc.tourtrap_qip_mining_slave_female_2"
+coords = "0_51_147_9_52"
+
+[[spawn]]
+npc = "npc.tourtrap_qip_mining_slave_male_2"
+coords = "0_51_147_10_57"
+
+[[spawn]]
+npc = "npc.tourtrap_qip_mining_slave_male_2"
+coords = "0_51_147_18_38"
+
+[[spawn]]
+npc = "npc.tourtrap_qip_mining_slave_male_2"
+coords = "0_51_147_26_58"
+
+[[spawn]]
+npc = "npc.tourtrap_qip_mining_slave_male_2"
+coords = "0_51_147_28_5"
+
+[[spawn]]
+npc = "npc.tourtrap_qip_mining_slave_male_2"
+coords = "0_51_147_2_49"
+
+[[spawn]]
+npc = "npc.tourtrap_qip_mining_slave_male_2"
+coords = "0_51_147_31_60"
+
+[[spawn]]
+npc = "npc.tourtrap_qip_mining_slave_male_2"
+coords = "0_51_147_39_17"
+
+[[spawn]]
+npc = "npc.tourtrap_qip_mining_slave_male_2"
+coords = "0_51_147_3_23"
+
+[[spawn]]
+npc = "npc.tourtrap_qip_mining_slave_male_2"
+coords = "0_51_147_3_35"
+
+[[spawn]]
+npc = "npc.tourtrap_qip_mining_slave_male_2"
+coords = "0_51_147_59_31"
+
+[[spawn]]
+npc = "npc.tourtrap_qip_mining_slave_male_2"
+coords = "0_51_147_5_12"
+
+[[spawn]]
+npc = "npc.tourtrap_qip_mining_slave_male_2"
+coords = "0_51_147_9_22"
+
+[[spawn]]
+npc = "npc.tourtrap_qip_slave_male_1"
+coords = "0_51_147_12_56"
+
+[[spawn]]
+npc = "npc.tourtrap_qip_slave_male_1"
+coords = "0_51_147_17_30"
+
+[[spawn]]
+npc = "npc.tourtrap_qip_slave_male_1"
+coords = "0_51_147_28_52"
+
+[[spawn]]
+npc = "npc.tourtrap_qip_slave_male_1"
+coords = "0_51_147_33_4"
+
+[[spawn]]
+npc = "npc.tourtrap_qip_slave_male_1"
+coords = "0_51_147_33_55"
+
+[[spawn]]
+npc = "npc.tourtrap_qip_slave_male_1"
+coords = "0_51_147_34_30"
+
+[[spawn]]
+npc = "npc.tourtrap_qip_slave_male_1"
+coords = "0_51_147_35_17"
+
+[[spawn]]
+npc = "npc.tourtrap_qip_slave_male_1"
+coords = "0_51_147_36_45"
+
+[[spawn]]
+npc = "npc.tourtrap_qip_slave_male_1"
+coords = "0_51_147_37_5"
+
+[[spawn]]
+npc = "npc.tourtrap_qip_slave_male_1"
+coords = "0_51_147_40_43"
+
+[[spawn]]
+npc = "npc.tourtrap_qip_slave_male_1"
+coords = "0_51_147_43_16"
+
+[[spawn]]
+npc = "npc.tourtrap_qip_slave_male_1"
+coords = "0_51_147_43_49"
+
+[[spawn]]
+npc = "npc.tourtrap_qip_slave_male_1"
+coords = "0_51_147_56_57"
+
+[[spawn]]
+npc = "npc.tourtrap_qip_slave_male_1"
+coords = "0_51_147_59_24"
+
+[[spawn]]
+npc = "npc.tourtrap_qip_slave_male_1"
+coords = "0_51_147_7_42"
+
+[[spawn]]
+npc = "npc.tourtrap_qip_slave_male_1"
+coords = "0_51_147_8_21"
+

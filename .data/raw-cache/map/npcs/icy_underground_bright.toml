@@ -1,0 +1,280 @@
+## Goblin Village Ice Cave
+
+[[spawn]]
+npc = "npc.xmas20_firefly_green_no_catch"
+coords = "0_30_97_11_19"
+
+[[spawn]]
+npc = "npc.xmas20_firefly_green_no_catch"
+coords = "0_30_97_17_17"
+
+[[spawn]]
+npc = "npc.xmas20_firefly_green_no_catch"
+coords = "0_30_97_19_9"
+
+[[spawn]]
+npc = "npc.xmas20_firefly_green_no_catch"
+coords = "0_30_97_21_13"
+
+[[spawn]]
+npc = "npc.xmas20_firefly_green_no_catch"
+coords = "0_30_97_25_12"
+
+[[spawn]]
+npc = "npc.xmas20_firefly_green_no_catch"
+coords = "0_30_97_8_6"
+
+[[spawn]]
+npc = "npc.xmas20_firefly_red_no_catch"
+coords = "0_30_97_14_16"
+
+[[spawn]]
+npc = "npc.xmas20_firefly_red_no_catch"
+coords = "0_30_97_15_19"
+
+[[spawn]]
+npc = "npc.xmas20_firefly_red_no_catch"
+coords = "0_30_97_18_15"
+
+[[spawn]]
+npc = "npc.xmas20_firefly_red_no_catch"
+coords = "0_30_97_19_12"
+
+[[spawn]]
+npc = "npc.xmas20_firefly_red_no_catch"
+coords = "0_30_97_24_9"
+
+[[spawn]]
+npc = "npc.xmas20_firefly_red_no_catch"
+coords = "0_30_97_8_15"
+
+[[spawn]]
+npc = "npc.xmas20_goblin_green"
+coords = "3_30_97_45_13"
+
+[[spawn]]
+npc = "npc.xmas20_goblin_green"
+coords = "3_30_97_50_16"
+
+[[spawn]]
+npc = "npc.xmas20_goblin_red"
+coords = "3_30_97_50_9"
+
+[[spawn]]
+npc = "npc.xmas20_scrubfoot_crashed"
+coords = "0_30_97_20_6"
+
+## Ice Queens Dungeon
+
+[[spawn]]
+npc = "npc.ice_queen"
+coords = "0_44_155_50_36"
+
+[[spawn]]
+npc = "npc.ice_spider"
+coords = "0_44_154_53_56"
+
+[[spawn]]
+npc = "npc.ice_spider"
+coords = "0_44_155_11_5"
+
+[[spawn]]
+npc = "npc.ice_spider"
+coords = "0_44_155_12_36"
+
+[[spawn]]
+npc = "npc.ice_spider"
+coords = "0_44_155_3_30"
+
+[[spawn]]
+npc = "npc.ice_spider"
+coords = "0_44_155_41_49"
+
+[[spawn]]
+npc = "npc.ice_spider"
+coords = "0_44_155_56_52"
+
+[[spawn]]
+npc = "npc.ice_spider"
+coords = "0_44_155_8_14"
+
+[[spawn]]
+npc = "npc.ice_spider"
+coords = "0_45_155_5_42"
+
+[[spawn]]
+npc = "npc.ice_spider"
+coords = "0_45_155_7_16"
+
+[[spawn]]
+npc = "npc.icegiant"
+coords = "0_45_155_0_7"
+
+[[spawn]]
+npc = "npc.icegiant"
+coords = "0_45_155_10_30"
+
+[[spawn]]
+npc = "npc.icegiant"
+coords = "0_45_155_11_21"
+
+[[spawn]]
+npc = "npc.icegiant"
+coords = "0_45_155_3_12"
+
+[[spawn]]
+npc = "npc.icegiant"
+coords = "0_45_155_3_45"
+
+[[spawn]]
+npc = "npc.icegiant"
+coords = "0_45_155_4_39"
+
+[[spawn]]
+npc = "npc.icegiant"
+coords = "0_45_155_7_35"
+
+[[spawn]]
+npc = "npc.icewarrior"
+coords = "0_44_154_20_49"
+
+[[spawn]]
+npc = "npc.icewarrior"
+coords = "0_44_154_22_61"
+
+[[spawn]]
+npc = "npc.icewarrior"
+coords = "0_44_154_31_63"
+
+[[spawn]]
+npc = "npc.icewarrior"
+coords = "0_44_154_32_56"
+
+[[spawn]]
+npc = "npc.icewarrior"
+coords = "0_44_154_6_45"
+
+[[spawn]]
+npc = "npc.icewarrior"
+coords = "0_44_155_18_20"
+
+[[spawn]]
+npc = "npc.icewarrior"
+coords = "0_44_155_20_33"
+
+[[spawn]]
+npc = "npc.icewarrior"
+coords = "0_44_155_28_24"
+
+[[spawn]]
+npc = "npc.icewarrior_queen"
+coords = "0_44_155_48_30"
+
+[[spawn]]
+npc = "npc.icewarrior_queen"
+coords = "0_44_155_49_31"
+
+[[spawn]]
+npc = "npc.icewarrior_queen"
+coords = "0_44_155_50_28"
+
+[[spawn]]
+npc = "npc.icewarrior_queen"
+coords = "0_44_155_51_28"
+
+[[spawn]]
+npc = "npc.icewarrior_queen"
+coords = "0_44_155_51_31"
+
+[[spawn]]
+npc = "npc.icewarrior_queen"
+coords = "0_44_155_52_30"
+
+## Trollweiss Caves
+
+[[spawn]]
+npc = "npc.trollromance_icetroll_melee1"
+coords = "0_43_159_23_48"
+
+[[spawn]]
+npc = "npc.trollromance_icetroll_melee1"
+coords = "0_43_159_31_23"
+
+[[spawn]]
+npc = "npc.trollromance_icetroll_melee1"
+coords = "0_43_159_32_57"
+
+[[spawn]]
+npc = "npc.trollromance_icetroll_melee2"
+coords = "0_43_159_25_48"
+
+[[spawn]]
+npc = "npc.trollromance_icetroll_melee2"
+coords = "0_43_159_32_55"
+
+[[spawn]]
+npc = "npc.trollromance_icetroll_melee2"
+coords = "0_43_159_40_46"
+
+[[spawn]]
+npc = "npc.trollromance_icetroll_melee3"
+coords = "0_43_159_20_45"
+
+[[spawn]]
+npc = "npc.trollromance_icetroll_melee3"
+coords = "0_43_159_33_25"
+
+[[spawn]]
+npc = "npc.trollromance_icetroll_melee3"
+coords = "0_43_159_35_56"
+
+[[spawn]]
+npc = "npc.trollromance_icetroll_melee4"
+coords = "0_43_159_21_44"
+
+[[spawn]]
+npc = "npc.trollromance_icetroll_melee4"
+coords = "0_43_159_36_22"
+
+[[spawn]]
+npc = "npc.trollromance_icetroll_melee4"
+coords = "0_43_159_38_44"
+
+[[spawn]]
+npc = "npc.trollromance_icetroll_melee4"
+coords = "0_43_159_48_42"
+
+[[spawn]]
+npc = "npc.trollromance_icetroll_melee5"
+coords = "0_43_159_18_43"
+
+[[spawn]]
+npc = "npc.trollromance_icetroll_melee5"
+coords = "0_43_159_36_54"
+
+[[spawn]]
+npc = "npc.trollromance_icetroll_melee5"
+coords = "0_43_159_46_40"
+
+[[spawn]]
+npc = "npc.trollromance_icetroll_melee6"
+coords = "0_43_159_36_45"
+
+[[spawn]]
+npc = "npc.trollromance_icetroll_melee6"
+coords = "0_43_159_49_40"
+
+[[spawn]]
+npc = "npc.trollromance_icetroll_melee7"
+coords = "0_43_159_34_23"
+
+[[spawn]]
+npc = "npc.trollromance_icetroll_melee7"
+coords = "0_43_159_38_46"
+
+[[spawn]]
+npc = "npc.trollromance_icetroll_melee7"
+coords = "0_43_159_47_38"
+
+## Trollweiss Caves End
+

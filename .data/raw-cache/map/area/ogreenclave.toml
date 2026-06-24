@@ -1,0 +1,12 @@
+[[area]]
+name = "Ogre Enclave"
+area_id = "area.ogreenclave"
+levels = [0, 1, 2, 3]
+
+[[area.polygons]]
+vertices = [
+    [2560, 9472],
+    [2622, 9472],
+    [2623, 9398],
+    [2565, 9413],
+]

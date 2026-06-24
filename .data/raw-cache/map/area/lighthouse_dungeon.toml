@@ -1,0 +1,12 @@
+[[area]]
+name = "Lighthouse Dungeon"
+area_id = "area.lighthouse_dungeon"
+levels = [0, 1, 2, 3]
+
+[[area.polygons]]
+vertices = [
+    [2496, 9984],
+    [2559, 9984],
+    [2559, 10047],
+    [2496, 10047],
+]

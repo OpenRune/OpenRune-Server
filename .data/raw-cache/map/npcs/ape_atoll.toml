@@ -1,0 +1,480 @@
+[[spawn]]
+npc = "npc.0_42_42_memberfish"
+coords = "0_42_42_6_18"
+
+[[spawn]]
+npc = "npc.hundred_ilm_iwazaru"
+coords = "0_43_43_37_43"
+
+[[spawn]]
+npc = "npc.hundred_ilm_kikazaru"
+coords = "0_43_43_36_43"
+
+[[spawn]]
+npc = "npc.hundred_ilm_mizaru"
+coords = "0_43_43_35_43"
+
+[[spawn]]
+npc = "npc.mm2_javelinstoreowner"
+coords = "0_43_43_22_26"
+
+[[spawn]]
+npc = "npc.mm2_le_smith_pos3_multi"
+coords = "2_43_43_16_46"
+
+[[spawn]]
+npc = "npc.mm2_le_smith_pos4_multi"
+coords = "2_43_43_3_18"
+
+[[spawn]]
+npc = "npc.mm2_monkey_banker"
+coords = "0_43_43_29_30"
+
+[[spawn]]
+npc = "npc.mm2_monkey_banker_model"
+coords = "0_43_43_29_32"
+
+[[spawn]]
+npc = "npc.mm_aberab"
+coords = "0_43_43_12_51"
+
+[[spawn]]
+npc = "npc.mm_bunkdo"
+coords = "0_43_43_23_46"
+
+[[spawn]]
+npc = "npc.mm_carado"
+coords = "0_43_43_23_49"
+
+[[spawn]]
+npc = "npc.mm_daga"
+coords = "0_43_43_7_23"
+
+[[spawn]]
+npc = "npc.mm_denadu"
+coords = "1_43_43_53_36"
+
+[[spawn]]
+npc = "npc.mm_elder_guard_1"
+coords = "0_43_43_46_8"
+
+[[spawn]]
+npc = "npc.mm_elder_guard_2"
+coords = "0_43_43_49_5"
+
+[[spawn]]
+npc = "npc.mm_garkor"
+coords = "0_43_43_53_10"
+
+[[spawn]]
+npc = "npc.mm_hafuba"
+coords = "1_43_43_45_46"
+
+[[spawn]]
+npc = "npc.mm_hamab"
+coords = "0_43_43_29_41"
+
+[[spawn]]
+npc = "npc.mm_ifaba"
+coords = "0_43_43_2_23"
+
+[[spawn]]
+npc = "npc.mm_jungle_bird_blue"
+coords = "0_42_42_25_9"
+
+[[spawn]]
+npc = "npc.mm_jungle_bird_blue"
+coords = "0_42_42_49_7"
+
+[[spawn]]
+npc = "npc.mm_jungle_bird_blue"
+coords = "0_42_42_8_21"
+
+[[spawn]]
+npc = "npc.mm_jungle_bird_blue"
+coords = "0_43_43_16_5"
+
+[[spawn]]
+npc = "npc.mm_jungle_bird_blue"
+coords = "0_43_43_1_2"
+
+[[spawn]]
+npc = "npc.mm_jungle_bird_blue"
+coords = "0_43_43_27_57"
+
+[[spawn]]
+npc = "npc.mm_jungle_bird_blue"
+coords = "0_43_43_35_0"
+
+[[spawn]]
+npc = "npc.mm_jungle_bird_blue"
+coords = "0_43_43_45_58"
+
+[[spawn]]
+npc = "npc.mm_jungle_bird_blue"
+coords = "0_43_43_4_59"
+
+[[spawn]]
+npc = "npc.mm_jungle_bird_blue"
+coords = "0_43_43_61_5"
+
+[[spawn]]
+npc = "npc.mm_jungle_bird_green"
+coords = "0_42_42_30_38"
+
+[[spawn]]
+npc = "npc.mm_jungle_bird_green"
+coords = "0_42_42_53_24"
+
+[[spawn]]
+npc = "npc.mm_jungle_scorpion"
+coords = "0_43_43_0_10"
+
+[[spawn]]
+npc = "npc.mm_jungle_scorpion"
+coords = "0_43_43_14_9"
+
+[[spawn]]
+npc = "npc.mm_jungle_scorpion"
+coords = "0_43_43_17_54"
+
+[[spawn]]
+npc = "npc.mm_jungle_scorpion"
+coords = "0_43_43_24_12"
+
+[[spawn]]
+npc = "npc.mm_jungle_scorpion"
+coords = "0_43_43_40_44"
+
+[[spawn]]
+npc = "npc.mm_jungle_scorpion"
+coords = "0_43_43_41_26"
+
+[[spawn]]
+npc = "npc.mm_jungle_scorpion"
+coords = "0_43_43_52_45"
+
+[[spawn]]
+npc = "npc.mm_jungle_scorpion"
+coords = "0_43_43_9_51"
+
+[[spawn]]
+npc = "npc.mm_jungle_snake"
+coords = "0_42_42_28_31"
+
+[[spawn]]
+npc = "npc.mm_jungle_snake"
+coords = "0_42_42_38_24"
+
+[[spawn]]
+npc = "npc.mm_jungle_snake"
+coords = "0_42_42_43_36"
+
+[[spawn]]
+npc = "npc.mm_jungle_snake"
+coords = "0_42_42_52_33"
+
+[[spawn]]
+npc = "npc.mm_jungle_snake"
+coords = "0_42_42_54_19"
+
+[[spawn]]
+npc = "npc.mm_jungle_snake"
+coords = "0_43_43_37_6"
+
+[[spawn]]
+npc = "npc.mm_jungle_snake"
+coords = "0_43_43_57_2"
+
+[[spawn]]
+npc = "npc.mm_jungle_spider"
+coords = "0_42_42_28_34"
+
+[[spawn]]
+npc = "npc.mm_jungle_spider"
+coords = "0_42_42_33_41"
+
+[[spawn]]
+npc = "npc.mm_jungle_spider"
+coords = "0_42_42_44_26"
+
+[[spawn]]
+npc = "npc.mm_jungle_spider"
+coords = "0_42_42_50_34"
+
+[[spawn]]
+npc = "npc.mm_jungle_spider"
+coords = "0_42_42_54_16"
+
+[[spawn]]
+npc = "npc.mm_jungle_spider"
+coords = "0_42_42_54_23"
+
+[[spawn]]
+npc = "npc.mm_jungle_spider"
+coords = "0_42_42_61_22"
+
+[[spawn]]
+npc = "npc.mm_karam"
+coords = "0_43_43_15_24"
+
+[[spawn]]
+npc = "npc.mm_karam"
+coords = "0_43_43_6_37"
+
+[[spawn]]
+npc = "npc.mm_karam_talker"
+coords = "0_43_43_29_47"
+
+[[spawn]]
+npc = "npc.mm_lofu"
+coords = "1_43_43_53_30"
+
+[[spawn]]
+npc = "npc.mm_lumo"
+coords = "0_43_43_23_44"
+
+[[spawn]]
+npc = "npc.mm_monkey_archer"
+coords = "1_43_43_16_42"
+
+[[spawn]]
+npc = "npc.mm_monkey_archer"
+coords = "1_43_43_22_47"
+
+[[spawn]]
+npc = "npc.mm_monkey_archer"
+coords = "2_43_43_22_16"
+
+[[spawn]]
+npc = "npc.mm_monkey_archer"
+coords = "2_43_43_22_25"
+
+[[spawn]]
+npc = "npc.mm_monkey_archer"
+coords = "2_43_43_28_39"
+
+[[spawn]]
+npc = "npc.mm_monkey_archer"
+coords = "2_43_43_35_41"
+
+[[spawn]]
+npc = "npc.mm_murowoi"
+coords = "0_43_43_52_12"
+
+[[spawn]]
+npc = "npc.mm_padulah"
+coords = "0_43_43_5_36"
+
+[[spawn]]
+npc = "npc.mm_posted_archer"
+coords = "0_43_43_0_30"
+
+[[spawn]]
+npc = "npc.mm_posted_archer"
+coords = "0_43_43_10_41"
+
+[[spawn]]
+npc = "npc.mm_posted_archer"
+coords = "0_43_43_13_27"
+
+[[spawn]]
+npc = "npc.mm_posted_archer"
+coords = "0_43_43_15_32"
+
+[[spawn]]
+npc = "npc.mm_posted_archer"
+coords = "0_43_43_17_2"
+
+[[spawn]]
+npc = "npc.mm_posted_archer"
+coords = "0_43_43_18_22"
+
+[[spawn]]
+npc = "npc.mm_posted_archer"
+coords = "0_43_43_20_29"
+
+[[spawn]]
+npc = "npc.mm_posted_archer"
+coords = "0_43_43_22_35"
+
+[[spawn]]
+npc = "npc.mm_posted_archer"
+coords = "0_43_43_23_4"
+
+[[spawn]]
+npc = "npc.mm_posted_archer"
+coords = "0_43_43_25_38"
+
+[[spawn]]
+npc = "npc.mm_posted_archer"
+coords = "0_43_43_28_21"
+
+[[spawn]]
+npc = "npc.mm_posted_archer"
+coords = "0_43_43_2_26"
+
+[[spawn]]
+npc = "npc.mm_posted_archer"
+coords = "0_43_43_33_16"
+
+[[spawn]]
+npc = "npc.mm_posted_archer"
+coords = "0_43_43_37_2"
+
+[[spawn]]
+npc = "npc.mm_posted_archer"
+coords = "0_43_43_39_11"
+
+[[spawn]]
+npc = "npc.mm_posted_archer"
+coords = "0_43_43_3_22"
+
+[[spawn]]
+npc = "npc.mm_posted_archer"
+coords = "0_43_43_4_37"
+
+[[spawn]]
+npc = "npc.mm_posted_archer"
+coords = "0_43_43_7_4"
+
+[[spawn]]
+npc = "npc.mm_posted_archer"
+coords = "0_43_43_9_26"
+
+[[spawn]]
+npc = "npc.mm_religious_guard"
+coords = "0_43_43_36_26"
+
+[[spawn]]
+npc = "npc.mm_religious_guard"
+coords = "0_43_43_41_30"
+
+[[spawn]]
+npc = "npc.mm_religious_guard"
+coords = "0_43_43_41_37"
+
+[[spawn]]
+npc = "npc.mm_religious_guard"
+coords = "0_43_43_43_23"
+
+[[spawn]]
+npc = "npc.mm_religious_guard"
+coords = "0_43_43_49_30"
+
+[[spawn]]
+npc = "npc.mm_religious_guard"
+coords = "0_43_43_49_37"
+
+[[spawn]]
+npc = "npc.mm_religious_guard"
+coords = "1_43_43_38_38"
+
+[[spawn]]
+npc = "npc.mm_religious_guard"
+coords = "1_43_43_45_28"
+
+[[spawn]]
+npc = "npc.mm_religious_guard"
+coords = "1_43_43_45_39"
+
+[[spawn]]
+npc = "npc.mm_religious_trapdoor_guard"
+coords = "0_43_43_51_33"
+
+[[spawn]]
+npc = "npc.mm_religious_trapdoor_guard"
+coords = "0_43_43_53_31"
+
+[[spawn]]
+npc = "npc.mm_religious_trapdoor_guard"
+coords = "0_43_43_53_34"
+
+[[spawn]]
+npc = "npc.mm_sleeping_monkey_guard"
+coords = "0_43_43_8_19"
+
+[[spawn]]
+npc = "npc.mm_solihib"
+coords = "0_43_43_17_37"
+
+[[spawn]]
+npc = "npc.mm_trefaji"
+coords = "0_43_43_16_51"
+
+[[spawn]]
+npc = "npc.mm_tutab"
+coords = "0_43_43_5_18"
+
+[[spawn]]
+npc = "npc.mm_uwogo"
+coords = "0_43_43_49_12"
+
+[[spawn]]
+npc = "npc.mm_warehouse_spider"
+coords = "0_43_43_15_42"
+
+[[spawn]]
+npc = "npc.mm_warehouse_spider"
+coords = "0_43_43_18_14"
+
+[[spawn]]
+npc = "npc.mm_warehouse_spider"
+coords = "0_43_43_1_47"
+
+[[spawn]]
+npc = "npc.mm_warehouse_spider"
+coords = "0_43_43_23_25"
+
+[[spawn]]
+npc = "npc.mm_warehouse_spider"
+coords = "0_43_43_28_39"
+
+[[spawn]]
+npc = "npc.mm_warehouse_spider"
+coords = "0_43_43_39_28"
+
+[[spawn]]
+npc = "npc.mm_warehouse_spider"
+coords = "0_43_43_44_11"
+
+[[spawn]]
+npc = "npc.mm_warehouse_spider"
+coords = "0_43_43_46_40"
+
+[[spawn]]
+npc = "npc.mm_warehouse_spider"
+coords = "0_43_43_49_28"
+
+[[spawn]]
+npc = "npc.mm_warehouse_spider"
+coords = "0_43_43_9_18"
+
+[[spawn]]
+npc = "npc.mm_warehouse_spider"
+coords = "1_43_43_15_13"
+
+[[spawn]]
+npc = "npc.mm_warehouse_spider"
+coords = "1_43_43_17_46"
+
+[[spawn]]
+npc = "npc.mm_warehouse_spider"
+coords = "1_43_43_26_16"
+
+[[spawn]]
+npc = "npc.mm_warehouse_spider"
+coords = "1_43_43_41_37"
+
+[[spawn]]
+npc = "npc.mm_warehouse_spider"
+coords = "1_43_43_42_28"
+
+[[spawn]]
+npc = "npc.mm_warehouse_spider"
+coords = "1_43_43_54_35"
+
+[[spawn]]
+npc = "npc.mm_warehouse_spider"
+coords = "2_43_43_0_46"
+

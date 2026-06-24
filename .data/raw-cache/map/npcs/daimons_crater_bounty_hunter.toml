@@ -1,0 +1,16 @@
+[[spawn]]
+npc = "npc.bh_emblem_trader"
+coords = "0_53_63_27_33"
+
+[[spawn]]
+npc = "npc.bh_guard_1"
+coords = "0_53_63_35_33"
+
+[[spawn]]
+npc = "npc.bh_guard_2"
+coords = "0_53_63_32_27"
+
+[[spawn]]
+npc = "npc.lost_property_merchant_model"
+coords = "0_53_63_37_38"
+

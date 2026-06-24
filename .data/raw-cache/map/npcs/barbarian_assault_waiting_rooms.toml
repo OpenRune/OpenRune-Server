@@ -1,0 +1,20 @@
+[[spawn]]
+npc = "npc.barbassault_barbarian_army_02"
+coords = "0_40_82_29_16"
+
+[[spawn]]
+npc = "npc.barbassault_barbarian_army_03"
+coords = "0_40_82_44_42"
+
+[[spawn]]
+npc = "npc.barbassault_barbarian_army_04"
+coords = "0_40_82_23_32"
+
+[[spawn]]
+npc = "npc.barbassault_barbarian_army_05"
+coords = "0_40_82_19_42"
+
+[[spawn]]
+npc = "npc.barbassault_barbarian_quickstart"
+coords = "0_40_82_42_32"
+

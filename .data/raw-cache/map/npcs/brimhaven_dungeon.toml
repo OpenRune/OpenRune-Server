@@ -1,0 +1,552 @@
+[[spawn]]
+npc = "npc.babygreendragon1"
+coords = "2_41_149_33_34"
+
+[[spawn]]
+npc = "npc.babygreendragon1"
+coords = "2_41_149_36_46"
+
+[[spawn]]
+npc = "npc.babygreendragon1"
+coords = "2_41_149_40_45"
+
+[[spawn]]
+npc = "npc.babygreendragon1"
+coords = "2_41_149_45_41"
+
+[[spawn]]
+npc = "npc.babygreendragon1"
+coords = "2_41_149_46_44"
+
+[[spawn]]
+npc = "npc.babygreendragon1"
+coords = "2_41_149_49_40"
+
+[[spawn]]
+npc = "npc.babygreendragon1"
+coords = "2_41_149_52_38"
+
+[[spawn]]
+npc = "npc.babygreendragon2"
+coords = "2_41_149_38_37"
+
+[[spawn]]
+npc = "npc.babygreendragon3"
+coords = "2_41_149_39_42"
+
+[[spawn]]
+npc = "npc.babygreendragon3"
+coords = "2_41_149_43_46"
+
+[[spawn]]
+npc = "npc.babygreendragon3"
+coords = "2_41_149_53_34"
+
+[[spawn]]
+npc = "npc.babyreddragon"
+coords = "0_42_148_23_44"
+
+[[spawn]]
+npc = "npc.babyreddragon"
+coords = "0_42_148_33_39"
+
+[[spawn]]
+npc = "npc.babyreddragon"
+coords = "0_42_148_33_58"
+
+[[spawn]]
+npc = "npc.babyreddragon"
+coords = "0_42_148_8_29"
+
+[[spawn]]
+npc = "npc.babyreddragon"
+coords = "0_42_149_13_12"
+
+[[spawn]]
+npc = "npc.babyreddragon2"
+coords = "0_42_148_20_28"
+
+[[spawn]]
+npc = "npc.babyreddragon2"
+coords = "0_42_148_20_54"
+
+[[spawn]]
+npc = "npc.babyreddragon2"
+coords = "0_42_148_42_40"
+
+[[spawn]]
+npc = "npc.babyreddragon3"
+coords = "0_42_148_10_52"
+
+[[spawn]]
+npc = "npc.babyreddragon3"
+coords = "0_42_148_26_33"
+
+[[spawn]]
+npc = "npc.babyreddragon3"
+coords = "0_42_149_21_9"
+
+[[spawn]]
+npc = "npc.babyreddragon3"
+coords = "0_42_149_32_0"
+
+[[spawn]]
+npc = "npc.black_demon"
+coords = "0_42_148_15_11"
+
+[[spawn]]
+npc = "npc.black_demon"
+coords = "0_42_148_27_10"
+
+[[spawn]]
+npc = "npc.black_demon2"
+coords = "0_42_148_21_7"
+
+[[spawn]]
+npc = "npc.black_demon3"
+coords = "0_42_148_12_17"
+
+[[spawn]]
+npc = "npc.bronze_dragon"
+coords = "0_42_148_43_10"
+
+[[spawn]]
+npc = "npc.bronze_dragon"
+coords = "0_42_148_43_19"
+
+[[spawn]]
+npc = "npc.bronze_dragon"
+coords = "0_42_148_52_20"
+
+[[spawn]]
+npc = "npc.bronze_dragon_strongholdcave"
+coords = "0_41_147_12_42"
+
+[[spawn]]
+npc = "npc.bronze_dragon_strongholdcave"
+coords = "0_41_147_15_48"
+
+[[spawn]]
+npc = "npc.bronze_dragon_strongholdcave"
+coords = "0_41_147_18_38"
+
+[[spawn]]
+npc = "npc.bronze_dragon_strongholdcave"
+coords = "0_41_147_22_47"
+
+[[spawn]]
+npc = "npc.bronze_dragon_strongholdcave"
+coords = "0_41_147_8_49"
+
+[[spawn]]
+npc = "npc.dog_wild"
+coords = "0_41_148_33_43"
+
+[[spawn]]
+npc = "npc.dog_wild"
+coords = "0_41_148_38_43"
+
+[[spawn]]
+npc = "npc.dog_wild"
+coords = "0_41_148_38_45"
+
+[[spawn]]
+npc = "npc.dog_wild"
+coords = "0_41_148_38_50"
+
+[[spawn]]
+npc = "npc.dog_wild"
+coords = "0_41_148_42_51"
+
+[[spawn]]
+npc = "npc.dog_wild"
+coords = "0_41_148_43_41"
+
+[[spawn]]
+npc = "npc.dog_wild"
+coords = "0_41_148_47_47"
+
+[[spawn]]
+npc = "npc.dog_wild"
+coords = "0_41_148_48_43"
+
+[[spawn]]
+npc = "npc.dog_wild"
+coords = "0_42_148_52_30"
+
+[[spawn]]
+npc = "npc.dog_wild"
+coords = "0_42_148_52_36"
+
+[[spawn]]
+npc = "npc.dog_wild"
+coords = "0_42_148_55_31"
+
+[[spawn]]
+npc = "npc.dog_wild"
+coords = "0_42_149_6_6"
+
+[[spawn]]
+npc = "npc.firegiant"
+coords = "0_41_148_34_29"
+
+[[spawn]]
+npc = "npc.firegiant"
+coords = "0_41_148_35_9"
+
+[[spawn]]
+npc = "npc.firegiant"
+coords = "2_41_149_11_21"
+
+[[spawn]]
+npc = "npc.firegiant"
+coords = "2_41_149_8_49"
+
+[[spawn]]
+npc = "npc.firegiant2"
+coords = "0_41_148_40_10"
+
+[[spawn]]
+npc = "npc.firegiant2"
+coords = "2_41_149_10_41"
+
+[[spawn]]
+npc = "npc.firegiant2"
+coords = "2_41_149_11_26"
+
+[[spawn]]
+npc = "npc.firegiant2"
+coords = "2_41_149_19_27"
+
+[[spawn]]
+npc = "npc.firegiant2"
+coords = "2_41_149_4_7"
+
+[[spawn]]
+npc = "npc.firegiant3"
+coords = "0_41_148_31_8"
+
+[[spawn]]
+npc = "npc.firegiant3"
+coords = "0_41_148_43_24"
+
+[[spawn]]
+npc = "npc.firegiant3"
+coords = "2_41_149_16_30"
+
+[[spawn]]
+npc = "npc.firegiant3"
+coords = "2_41_149_6_15"
+
+[[spawn]]
+npc = "npc.greater_demon"
+coords = "2_41_148_7_33"
+
+[[spawn]]
+npc = "npc.greater_demon2"
+coords = "2_41_148_14_29"
+
+[[spawn]]
+npc = "npc.greater_demon2"
+coords = "2_41_148_6_10"
+
+[[spawn]]
+npc = "npc.greater_demon3"
+coords = "2_41_148_18_34"
+
+[[spawn]]
+npc = "npc.greater_demon4"
+coords = "2_41_148_11_5"
+
+[[spawn]]
+npc = "npc.greater_demon4"
+coords = "2_41_148_9_19"
+
+[[spawn]]
+npc = "npc.greater_demon5"
+coords = "2_41_148_22_4"
+
+[[spawn]]
+npc = "npc.iron_dragon"
+coords = "0_42_147_16_23"
+
+[[spawn]]
+npc = "npc.iron_dragon"
+coords = "0_42_147_16_49"
+
+[[spawn]]
+npc = "npc.iron_dragon"
+coords = "0_42_147_17_16"
+
+[[spawn]]
+npc = "npc.iron_dragon"
+coords = "0_42_147_26_12"
+
+[[spawn]]
+npc = "npc.iron_dragon"
+coords = "0_42_147_26_41"
+
+[[spawn]]
+npc = "npc.iron_dragon"
+coords = "0_42_147_26_52"
+
+[[spawn]]
+npc = "npc.iron_dragon"
+coords = "0_42_147_34_16"
+
+[[spawn]]
+npc = "npc.iron_dragon"
+coords = "0_42_147_36_27"
+
+[[spawn]]
+npc = "npc.iron_dragon"
+coords = "0_42_147_42_29"
+
+[[spawn]]
+npc = "npc.iron_dragon"
+coords = "0_42_147_44_51"
+
+[[spawn]]
+npc = "npc.iron_dragon"
+coords = "0_42_147_48_16"
+
+[[spawn]]
+npc = "npc.iron_dragon"
+coords = "0_42_147_50_32"
+
+[[spawn]]
+npc = "npc.iron_dragon"
+coords = "0_42_147_51_42"
+
+[[spawn]]
+npc = "npc.iron_dragon_strongholdcave"
+coords = "0_41_147_37_45"
+
+[[spawn]]
+npc = "npc.iron_dragon_strongholdcave"
+coords = "0_41_147_39_51"
+
+[[spawn]]
+npc = "npc.iron_dragon_strongholdcave"
+coords = "0_41_147_42_44"
+
+[[spawn]]
+npc = "npc.iron_dragon_strongholdcave"
+coords = "0_41_147_46_39"
+
+[[spawn]]
+npc = "npc.iron_dragon_strongholdcave"
+coords = "0_41_147_46_51"
+
+[[spawn]]
+npc = "npc.iron_dragon_strongholdcave"
+coords = "0_41_147_49_45"
+
+[[spawn]]
+npc = "npc.iron_dragon_strongholdcave"
+coords = "0_41_147_50_34"
+
+[[spawn]]
+npc = "npc.iron_dragon_strongholdcave"
+coords = "0_41_147_54_49"
+
+[[spawn]]
+npc = "npc.karam_dungeon_metaldragonguardian"
+coords = "0_41_147_59_26"
+
+[[spawn]]
+npc = "npc.mossgiant"
+coords = "0_41_148_18_20"
+
+[[spawn]]
+npc = "npc.mossgiant"
+coords = "0_41_148_21_60"
+
+[[spawn]]
+npc = "npc.mossgiant"
+coords = "0_41_149_12_8"
+
+[[spawn]]
+npc = "npc.mossgiant"
+coords = "0_41_149_27_28"
+
+[[spawn]]
+npc = "npc.mossgiant"
+coords = "0_41_149_29_38"
+
+[[spawn]]
+npc = "npc.mossgiant"
+coords = "0_41_149_39_20"
+
+[[spawn]]
+npc = "npc.mossgiant"
+coords = "0_41_149_46_8"
+
+[[spawn]]
+npc = "npc.mossgiant2"
+coords = "0_41_148_12_56"
+
+[[spawn]]
+npc = "npc.mossgiant2"
+coords = "0_41_148_23_15"
+
+[[spawn]]
+npc = "npc.mossgiant2"
+coords = "0_41_149_16_47"
+
+[[spawn]]
+npc = "npc.mossgiant2"
+coords = "0_41_149_23_18"
+
+[[spawn]]
+npc = "npc.mossgiant2"
+coords = "0_41_149_49_56"
+
+[[spawn]]
+npc = "npc.mossgiant2"
+coords = "0_41_149_56_8"
+
+[[spawn]]
+npc = "npc.mossgiant3"
+coords = "0_41_148_22_12"
+
+[[spawn]]
+npc = "npc.mossgiant3"
+coords = "0_41_149_24_1"
+
+[[spawn]]
+npc = "npc.mossgiant3"
+coords = "0_41_149_30_51"
+
+[[spawn]]
+npc = "npc.mossgiant3"
+coords = "0_41_149_56_58"
+
+[[spawn]]
+npc = "npc.mossgiant3"
+coords = "0_41_149_58_37"
+
+[[spawn]]
+npc = "npc.mossgiant4"
+coords = "0_41_148_18_46"
+
+[[spawn]]
+npc = "npc.mossgiant4"
+coords = "0_41_149_35_12"
+
+[[spawn]]
+npc = "npc.red_dragon"
+coords = "0_42_148_14_32"
+
+[[spawn]]
+npc = "npc.red_dragon"
+coords = "0_42_148_36_44"
+
+[[spawn]]
+npc = "npc.red_dragon"
+coords = "0_42_149_24_7"
+
+[[spawn]]
+npc = "npc.red_dragon2"
+coords = "0_42_148_15_60"
+
+[[spawn]]
+npc = "npc.red_dragon2"
+coords = "0_42_148_23_28"
+
+[[spawn]]
+npc = "npc.red_dragon2"
+coords = "0_42_148_26_54"
+
+[[spawn]]
+npc = "npc.red_dragon2"
+coords = "0_42_148_33_50"
+
+[[spawn]]
+npc = "npc.red_dragon2"
+coords = "0_42_149_23_14"
+
+[[spawn]]
+npc = "npc.red_dragon3"
+coords = "0_42_148_15_50"
+
+[[spawn]]
+npc = "npc.red_dragon3"
+coords = "0_42_148_29_44"
+
+[[spawn]]
+npc = "npc.red_dragon3"
+coords = "0_42_149_16_10"
+
+[[spawn]]
+npc = "npc.red_dragon4"
+coords = "0_42_148_18_44"
+
+[[spawn]]
+npc = "npc.red_dragon4"
+coords = "0_42_149_16_3"
+
+[[spawn]]
+npc = "npc.red_dragon5"
+coords = "0_42_148_20_36"
+
+[[spawn]]
+npc = "npc.red_dragon5"
+coords = "0_42_148_9_34"
+
+[[spawn]]
+npc = "npc.red_dragon5"
+coords = "0_42_149_23_1"
+
+[[spawn]]
+npc = "npc.steel_dragon"
+coords = "0_42_147_14_39"
+
+[[spawn]]
+npc = "npc.steel_dragon"
+coords = "0_42_147_24_27"
+
+[[spawn]]
+npc = "npc.steel_dragon"
+coords = "0_42_147_35_50"
+
+[[spawn]]
+npc = "npc.steel_dragon"
+coords = "0_42_147_38_37"
+
+[[spawn]]
+npc = "npc.steel_dragon_strongholdcave"
+coords = "0_41_147_13_17"
+
+[[spawn]]
+npc = "npc.steel_dragon_strongholdcave"
+coords = "0_41_147_14_24"
+
+[[spawn]]
+npc = "npc.steel_dragon_strongholdcave"
+coords = "0_41_147_15_10"
+
+[[spawn]]
+npc = "npc.steel_dragon_strongholdcave"
+coords = "0_41_147_22_16"
+
+[[spawn]]
+npc = "npc.steel_dragon_strongholdcave"
+coords = "0_41_147_22_23"
+
+[[spawn]]
+npc = "npc.steel_dragon_strongholdcave"
+coords = "0_41_147_29_19"
+
+[[spawn]]
+npc = "npc.steel_dragon_strongholdcave"
+coords = "0_41_147_31_11"
+
+[[spawn]]
+npc = "npc.steel_dragon_strongholdcave"
+coords = "0_41_147_39_9"
+
+[[spawn]]
+npc = "npc.steel_dragon_strongholdcave"
+coords = "0_41_147_8_12"
+

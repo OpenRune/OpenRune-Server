@@ -1,0 +1,228 @@
+[[spawn]]
+npc = "npc.contact_insectoid_mage"
+coords = "0_33_68_11_10"
+
+[[spawn]]
+npc = "npc.contact_insectoid_mage"
+coords = "0_33_68_12_32"
+
+[[spawn]]
+npc = "npc.contact_insectoid_mage"
+coords = "0_33_68_15_6"
+
+[[spawn]]
+npc = "npc.contact_insectoid_mage"
+coords = "0_33_68_18_28"
+
+[[spawn]]
+npc = "npc.contact_insectoid_mage"
+coords = "0_33_68_18_57"
+
+[[spawn]]
+npc = "npc.contact_insectoid_mage"
+coords = "0_33_68_22_11"
+
+[[spawn]]
+npc = "npc.contact_insectoid_mage"
+coords = "0_33_68_24_49"
+
+[[spawn]]
+npc = "npc.contact_insectoid_mage"
+coords = "0_33_68_32_32"
+
+[[spawn]]
+npc = "npc.contact_insectoid_mage"
+coords = "0_33_68_33_16"
+
+[[spawn]]
+npc = "npc.contact_insectoid_mage"
+coords = "0_33_68_34_9"
+
+[[spawn]]
+npc = "npc.contact_insectoid_mage"
+coords = "0_33_68_36_25"
+
+[[spawn]]
+npc = "npc.contact_insectoid_mage"
+coords = "0_33_68_37_36"
+
+[[spawn]]
+npc = "npc.contact_insectoid_mage"
+coords = "0_33_68_39_19"
+
+[[spawn]]
+npc = "npc.contact_insectoid_mage"
+coords = "0_33_68_45_49"
+
+[[spawn]]
+npc = "npc.contact_insectoid_mage"
+coords = "0_33_68_45_8"
+
+[[spawn]]
+npc = "npc.contact_insectoid_mage"
+coords = "0_33_68_52_39"
+
+[[spawn]]
+npc = "npc.contact_insectoid_mage"
+coords = "0_33_68_53_24"
+
+[[spawn]]
+npc = "npc.contact_insectoid_mage"
+coords = "0_33_68_9_47"
+
+[[spawn]]
+npc = "npc.contact_insectoid_mage"
+coords = "2_33_68_12_52"
+
+[[spawn]]
+npc = "npc.contact_insectoid_mage"
+coords = "2_33_68_13_36"
+
+[[spawn]]
+npc = "npc.contact_insectoid_mage"
+coords = "2_33_68_13_59"
+
+[[spawn]]
+npc = "npc.contact_insectoid_mage"
+coords = "2_33_68_15_18"
+
+[[spawn]]
+npc = "npc.contact_insectoid_mage"
+coords = "2_33_68_25_20"
+
+[[spawn]]
+npc = "npc.contact_insectoid_mage"
+coords = "2_33_68_32_40"
+
+[[spawn]]
+npc = "npc.contact_insectoid_mage"
+coords = "2_33_68_37_59"
+
+[[spawn]]
+npc = "npc.contact_insectoid_mage"
+coords = "2_33_68_41_40"
+
+[[spawn]]
+npc = "npc.contact_insectoid_mage"
+coords = "2_33_68_44_5"
+
+[[spawn]]
+npc = "npc.contact_insectoid_mage"
+coords = "2_33_68_47_10"
+
+[[spawn]]
+npc = "npc.contact_locust_bow"
+coords = "0_33_68_10_46"
+
+[[spawn]]
+npc = "npc.contact_locust_bow"
+coords = "0_33_68_10_7"
+
+[[spawn]]
+npc = "npc.contact_locust_bow"
+coords = "0_33_68_16_24"
+
+[[spawn]]
+npc = "npc.contact_locust_bow"
+coords = "0_33_68_16_35"
+
+[[spawn]]
+npc = "npc.contact_locust_bow"
+coords = "0_33_68_20_31"
+
+[[spawn]]
+npc = "npc.contact_locust_bow"
+coords = "0_33_68_26_16"
+
+[[spawn]]
+npc = "npc.contact_locust_bow"
+coords = "0_33_68_27_46"
+
+[[spawn]]
+npc = "npc.contact_locust_bow"
+coords = "0_33_68_31_35"
+
+[[spawn]]
+npc = "npc.contact_locust_bow"
+coords = "0_33_68_32_13"
+
+[[spawn]]
+npc = "npc.contact_locust_bow"
+coords = "0_33_68_35_28"
+
+[[spawn]]
+npc = "npc.contact_locust_bow"
+coords = "0_33_68_38_16"
+
+[[spawn]]
+npc = "npc.contact_locust_bow"
+coords = "0_33_68_40_36"
+
+[[spawn]]
+npc = "npc.contact_locust_bow"
+coords = "0_33_68_42_7"
+
+[[spawn]]
+npc = "npc.contact_locust_bow"
+coords = "0_33_68_44_46"
+
+[[spawn]]
+npc = "npc.contact_locust_bow"
+coords = "0_33_68_46_21"
+
+[[spawn]]
+npc = "npc.contact_locust_bow"
+coords = "0_33_68_9_35"
+
+[[spawn]]
+npc = "npc.contact_locust_bow"
+coords = "2_33_68_28_40"
+
+[[spawn]]
+npc = "npc.contact_locust_bow"
+coords = "2_33_68_35_4"
+
+[[spawn]]
+npc = "npc.contact_locust_lance"
+coords = "0_33_68_12_19"
+
+[[spawn]]
+npc = "npc.contact_locust_lance"
+coords = "0_33_68_19_27"
+
+[[spawn]]
+npc = "npc.contact_locust_lance"
+coords = "0_33_68_20_36"
+
+[[spawn]]
+npc = "npc.contact_locust_lance"
+coords = "0_33_68_23_52"
+
+[[spawn]]
+npc = "npc.contact_locust_lance"
+coords = "0_33_68_30_17"
+
+[[spawn]]
+npc = "npc.contact_locust_lance"
+coords = "0_33_68_32_45"
+
+[[spawn]]
+npc = "npc.contact_locust_lance"
+coords = "0_33_68_35_38"
+
+[[spawn]]
+npc = "npc.contact_locust_lance"
+coords = "0_33_68_39_50"
+
+[[spawn]]
+npc = "npc.contact_locust_lance"
+coords = "0_33_68_41_18"
+
+[[spawn]]
+npc = "npc.contact_locust_lance"
+coords = "0_33_68_6_48"
+
+[[spawn]]
+npc = "npc.contact_locust_lance"
+coords = "0_33_68_8_30"
+

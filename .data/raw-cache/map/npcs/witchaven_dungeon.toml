@@ -1,0 +1,130 @@
+## Witchaven Dungeon First Section
+
+[[spawn]]
+npc = "npc.dagcave_magic_boss"
+coords = "0_41_151_63_3"
+
+[[spawn]]
+npc = "npc.hellhound"
+coords = "0_42_151_46_19"
+
+[[spawn]]
+npc = "npc.hellhound"
+coords = "0_42_151_46_24"
+
+[[spawn]]
+npc = "npc.hellhound"
+coords = "0_42_151_46_29"
+
+[[spawn]]
+npc = "npc.hellhound"
+coords = "0_42_151_52_24"
+
+[[spawn]]
+npc = "npc.hellhound"
+coords = "0_42_151_52_34"
+
+[[spawn]]
+npc = "npc.hellhound"
+coords = "0_42_151_53_14"
+
+[[spawn]]
+npc = "npc.hellhound"
+coords = "0_42_151_56_19"
+
+[[spawn]]
+npc = "npc.hellhound"
+coords = "0_42_151_56_27"
+
+[[spawn]]
+npc = "npc.ogre"
+coords = "0_42_151_31_4"
+
+[[spawn]]
+npc = "npc.ogre"
+coords = "0_42_151_31_51"
+
+[[spawn]]
+npc = "npc.ogre"
+coords = "0_42_151_32_38"
+
+[[spawn]]
+npc = "npc.ogre"
+coords = "0_42_151_34_5"
+
+[[spawn]]
+npc = "npc.ogre"
+coords = "0_42_151_35_43"
+
+[[spawn]]
+npc = "npc.ogre"
+coords = "0_42_151_36_49"
+
+[[spawn]]
+npc = "npc.rimmington_hobgoblin_armed_1"
+coords = "0_42_151_11_24"
+
+[[spawn]]
+npc = "npc.rimmington_hobgoblin_armed_1"
+coords = "0_42_151_6_23"
+
+[[spawn]]
+npc = "npc.rimmington_hobgoblin_armed_1"
+coords = "0_42_151_8_25"
+
+[[spawn]]
+npc = "npc.rimmington_hobgoblin_armed_1"
+coords = "0_42_151_9_29"
+
+## Witchaven Dungeon Second Section
+
+[[spawn]]
+npc = "npc.slug2_giant_lobster"
+coords = "0_36_79_10_12"
+
+[[spawn]]
+npc = "npc.slug2_giant_lobster"
+coords = "0_36_79_23_37"
+
+[[spawn]]
+npc = "npc.slug2_giant_lobster"
+coords = "0_36_79_23_9"
+
+[[spawn]]
+npc = "npc.slug2_giant_lobster"
+coords = "0_36_79_30_30"
+
+[[spawn]]
+npc = "npc.slug2_giant_lobster"
+coords = "0_36_79_36_20"
+
+[[spawn]]
+npc = "npc.slug2_giant_lobster"
+coords = "0_36_79_36_52"
+
+[[spawn]]
+npc = "npc.slug2_giant_lobster"
+coords = "0_36_79_8_30"
+
+[[spawn]]
+npc = "npc.slug2_hobgoblin_armed_1"
+coords = "0_36_79_11_49"
+
+[[spawn]]
+npc = "npc.slug2_hobgoblin_armed_1"
+coords = "0_36_79_12_53"
+
+[[spawn]]
+npc = "npc.slug2_hobgoblin_armed_1"
+coords = "0_36_79_14_48"
+
+[[spawn]]
+npc = "npc.slug2_hobgoblin_armed_1"
+coords = "0_36_79_9_47"
+
+[[spawn]]
+npc = "npc.slug2_seaslug"
+coords = "0_36_79_47_37"
+
+## Witchaven Dungeon Second Section End
+

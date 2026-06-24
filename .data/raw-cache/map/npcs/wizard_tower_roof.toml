@@ -1,0 +1,64 @@
+[[spawn]]
+npc = "npc.aluft_gnome_mage"
+coords = "0_48_49_43_24"
+
+[[spawn]]
+npc = "npc.armourmaking_wizard"
+coords = "1_48_49_36_25"
+
+[[spawn]]
+npc = "npc.lesser_demon"
+coords = "2_48_49_38_21"
+
+[[spawn]]
+npc = "npc.secret_ghost5"
+coords = "0_48_49_40_22"
+
+[[spawn]]
+npc = "npc.telecrystal_wizard"
+coords = "1_48_49_36_28"
+
+[[spawn]]
+npc = "npc.tote_cordelia_wizard_tower_parent"
+coords = "1_48_49_38_25"
+
+[[spawn]]
+npc = "npc.tote_felix_wizard_tower_parent"
+coords = "1_48_49_39_28"
+
+[[spawn]]
+npc = "npc.tote_tamara_wizard_tower_parent"
+coords = "1_48_49_41_27"
+
+[[spawn]]
+npc = "npc.traiborn"
+coords = "1_48_49_40_26"
+
+[[spawn]]
+npc = "npc.wizard"
+coords = "0_48_49_35_22"
+
+[[spawn]]
+npc = "npc.wizard"
+coords = "0_48_49_38_22"
+
+[[spawn]]
+npc = "npc.wizard"
+coords = "0_48_49_39_30"
+
+[[spawn]]
+npc = "npc.wizard"
+coords = "1_48_49_35_21"
+
+[[spawn]]
+npc = "npc.wizard"
+coords = "1_48_49_40_21"
+
+[[spawn]]
+npc = "npc.wizard_grayzag"
+coords = "2_48_49_38_25"
+
+[[spawn]]
+npc = "npc.wizard_mizgog"
+coords = "2_48_49_31_27"
+

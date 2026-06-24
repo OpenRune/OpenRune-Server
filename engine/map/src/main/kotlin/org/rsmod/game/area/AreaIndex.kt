@@ -26,6 +26,7 @@ public class AreaIndex {
     private val zoneAreas = PackedAreaMap()
     private val mapSquareAreas = PackedAreaMap()
     private val includes = Short2ObjectOpenHashMap<ShortSet>()
+    private val excludes = Short2ObjectOpenHashMap<ShortSet>()
     private val parentAreas = Short2ObjectOpenHashMap<ShortSet>()
 
     /**
@@ -66,6 +67,44 @@ public class AreaIndex {
                 }
             }
         }
+
+        removeExcludedAreas(dest)
+    }
+
+    public fun isExcludedBy(area: Short, presentAreas: ShortArrayList): Boolean {
+        val excluded = excludes[area] ?: return false
+        for (i in 0 until presentAreas.size) {
+            if (excluded.contains(presentAreas.getShort(i))) {
+                return true
+            }
+        }
+        return false
+    }
+
+    private fun removeExcludedAreas(dest: ShortArrayList) {
+        val toRemove = ShortOpenHashSet()
+        for (i in 0 until dest.size) {
+            val area = dest.getShort(i)
+            val excluded = excludes[area] ?: continue
+            for (j in 0 until dest.size) {
+                if (excluded.contains(dest.getShort(j))) {
+                    toRemove.add(area)
+                    break
+                }
+            }
+        }
+        if (toRemove.isEmpty()) {
+            return
+        }
+        val filtered = ShortArrayList(dest.size)
+        for (i in 0 until dest.size) {
+            val area = dest.getShort(i)
+            if (area !in toRemove) {
+                filtered.add(area)
+            }
+        }
+        dest.clear()
+        dest.addAll(filtered)
     }
 
     public fun registerIncludes(area: Short, includes: ShortSet) {
@@ -81,12 +120,20 @@ public class AreaIndex {
         }
     }
 
+    public fun registerExcludes(area: Short, excludes: ShortSet) {
+        this.excludes[area] = excludes
+    }
+
     public fun getParents(area: Short): ShortSet? {
         return parentAreas[area]
     }
 
     public fun getIncludes(area: Short): ShortSet? {
         return includes[area]
+    }
+
+    public fun getExcludes(area: Short): ShortSet? {
+        return excludes[area]
     }
 
     public fun registerAll(coord: CoordGrid, areas: Iterator<Short>) {

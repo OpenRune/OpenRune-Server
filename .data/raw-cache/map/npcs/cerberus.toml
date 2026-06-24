@@ -1,0 +1,20 @@
+[[spawn]]
+npc = "npc.cerberus_sitting"
+coords = "0_19_19_22_34"
+
+[[spawn]]
+npc = "npc.cerberus_sitting"
+coords = "0_20_20_22_34"
+
+[[spawn]]
+npc = "npc.cerberus_sitting"
+coords = "0_21_19_22_34"
+
+## Cerberus entrance
+
+[[spawn]]
+npc = "npc.patchy_the_pirate"
+coords = "0_20_19_30_35"
+
+## Cerberus entrance End
+

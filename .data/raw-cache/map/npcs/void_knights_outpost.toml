@@ -1,0 +1,92 @@
+[[spawn]]
+npc = "npc.deadman_banker_pest_north"
+coords = "0_41_41_42_27"
+
+[[spawn]]
+npc = "npc.deadman_guard_voidknight"
+coords = "0_41_41_28_31"
+
+[[spawn]]
+npc = "npc.deadman_guard_voidknight"
+coords = "0_41_41_34_34"
+
+[[spawn]]
+npc = "npc.deadman_guard_voidknight"
+coords = "0_41_41_38_30"
+
+[[spawn]]
+npc = "npc.pest_squire_1"
+coords = "0_41_41_34_44"
+
+[[spawn]]
+npc = "npc.pest_squire_2"
+coords = "0_41_41_32_34"
+
+[[spawn]]
+npc = "npc.pest_squire_3"
+coords = "0_41_41_43_30"
+
+[[spawn]]
+npc = "npc.pest_squire_4"
+coords = "0_41_41_38_37"
+
+[[spawn]]
+npc = "npc.pest_squire_bank_2"
+coords = "0_41_41_44_27"
+
+[[spawn]]
+npc = "npc.pest_squire_blacksmith"
+coords = "0_41_41_25_35"
+
+[[spawn]]
+npc = "npc.pest_squire_lander"
+coords = "0_41_41_33_13"
+
+[[spawn]]
+npc = "npc.pest_squire_lander_2"
+coords = "0_41_41_20_17"
+
+[[spawn]]
+npc = "npc.pest_squire_lander_3"
+coords = "0_41_41_14_32"
+
+[[spawn]]
+npc = "npc.pest_squire_rangeshop"
+coords = "0_41_41_43_36"
+
+[[spawn]]
+npc = "npc.pest_squire_refunds"
+coords = "0_41_41_43_33"
+
+[[spawn]]
+npc = "npc.pest_squire_runeshop"
+coords = "0_41_41_34_28"
+
+[[spawn]]
+npc = "npc.pest_squire_ship_island"
+coords = "0_41_41_35_52"
+
+[[spawn]]
+npc = "npc.pest_squire_storemaster"
+coords = "0_41_41_24_41"
+
+[[spawn]]
+npc = "npc.pest_voidknight_1"
+coords = "0_41_41_30_39"
+
+[[spawn]]
+npc = "npc.pest_voidknight_2"
+coords = "0_41_41_35_41"
+
+[[spawn]]
+npc = "npc.pest_voidknight_3"
+coords = "0_41_41_38_25"
+
+[[spawn]]
+npc = "npc.pest_voidknight_4"
+coords = "0_41_41_38_29"
+
+[[spawn]]
+npc = "npc.pest_voidknight_elite"
+coords = "0_41_41_43_24"
+

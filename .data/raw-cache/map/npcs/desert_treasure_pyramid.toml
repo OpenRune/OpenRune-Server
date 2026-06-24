@@ -1,0 +1,326 @@
+## Desert Treasure Pyramid Level 1
+
+[[spawn]]
+npc = "npc.deserttreasure_mummy_3"
+coords = "3_45_77_20_20"
+
+[[spawn]]
+npc = "npc.deserttreasure_mummy_4"
+coords = "3_45_77_46_37"
+
+## Desert Treasure Pyramid Level 2
+
+[[spawn]]
+npc = "npc.deserttreasure_mummy_2"
+coords = "2_44_77_16_31"
+
+[[spawn]]
+npc = "npc.deserttreasure_mummy_3"
+coords = "2_44_77_22_20"
+
+[[spawn]]
+npc = "npc.deserttreasure_mummy_4"
+coords = "2_44_77_42_36"
+
+[[spawn]]
+npc = "npc.deserttreasure_mummy_5"
+coords = "2_44_77_48_18"
+
+## Desert Treasure Pyramid Level 3
+
+[[spawn]]
+npc = "npc.deserttreasure_mummy_2"
+coords = "1_43_77_12_16"
+
+[[spawn]]
+npc = "npc.deserttreasure_mummy_2"
+coords = "1_43_77_44_48"
+
+[[spawn]]
+npc = "npc.deserttreasure_mummy_2"
+coords = "1_43_77_46_22"
+
+[[spawn]]
+npc = "npc.deserttreasure_mummy_2"
+coords = "1_43_77_54_11"
+
+[[spawn]]
+npc = "npc.deserttreasure_mummy_3"
+coords = "1_43_77_10_34"
+
+[[spawn]]
+npc = "npc.deserttreasure_mummy_3"
+coords = "1_43_77_11_45"
+
+[[spawn]]
+npc = "npc.deserttreasure_mummy_3"
+coords = "1_43_77_28_49"
+
+[[spawn]]
+npc = "npc.deserttreasure_mummy_3"
+coords = "1_43_77_35_39"
+
+[[spawn]]
+npc = "npc.deserttreasure_mummy_3"
+coords = "1_43_77_44_31"
+
+[[spawn]]
+npc = "npc.deserttreasure_mummy_4"
+coords = "1_43_77_19_19"
+
+[[spawn]]
+npc = "npc.deserttreasure_mummy_4"
+coords = "1_43_77_23_35"
+
+[[spawn]]
+npc = "npc.deserttreasure_mummy_4"
+coords = "1_43_77_29_20"
+
+[[spawn]]
+npc = "npc.deserttreasure_mummy_4"
+coords = "1_43_77_40_14"
+
+[[spawn]]
+npc = "npc.deserttreasure_mummy_4"
+coords = "1_43_77_46_26"
+
+[[spawn]]
+npc = "npc.deserttreasure_mummy_5"
+coords = "1_43_77_13_10"
+
+[[spawn]]
+npc = "npc.deserttreasure_mummy_5"
+coords = "1_43_77_18_27"
+
+[[spawn]]
+npc = "npc.deserttreasure_mummy_5"
+coords = "1_43_77_20_12"
+
+[[spawn]]
+npc = "npc.deserttreasure_mummy_5"
+coords = "1_43_77_25_15"
+
+[[spawn]]
+npc = "npc.deserttreasure_mummy_5"
+coords = "1_43_77_30_39"
+
+[[spawn]]
+npc = "npc.deserttreasure_mummy_5"
+coords = "1_43_77_45_37"
+
+[[spawn]]
+npc = "npc.deserttreasure_mummy_5"
+coords = "1_43_77_47_13"
+
+[[spawn]]
+npc = "npc.deserttreasure_mummy_5"
+coords = "1_43_77_47_9"
+
+[[spawn]]
+npc = "npc.deserttreasure_mummy_5"
+coords = "1_43_77_55_40"
+
+[[spawn]]
+npc = "npc.deserttreasure_mummy_5"
+coords = "1_43_77_56_47"
+
+[[spawn]]
+npc = "npc.deserttreasure_mummy_5"
+coords = "1_43_77_57_25"
+
+[[spawn]]
+npc = "npc.deserttreasure_mummy_5"
+coords = "1_43_77_9_22"
+
+## Desert Treasure Pyramid Level 4
+
+[[spawn]]
+npc = "npc.azzanadra"
+coords = "0_50_145_33_36"
+
+[[spawn]]
+npc = "npc.deserttreasure_mummy_2"
+coords = "0_50_145_11_4"
+
+[[spawn]]
+npc = "npc.deserttreasure_mummy_2"
+coords = "0_50_145_1_13"
+
+[[spawn]]
+npc = "npc.deserttreasure_mummy_2"
+coords = "0_50_145_20_9"
+
+[[spawn]]
+npc = "npc.deserttreasure_mummy_2"
+coords = "0_50_145_24_54"
+
+[[spawn]]
+npc = "npc.deserttreasure_mummy_2"
+coords = "0_50_145_49_6"
+
+[[spawn]]
+npc = "npc.deserttreasure_mummy_2"
+coords = "0_50_145_51_23"
+
+[[spawn]]
+npc = "npc.deserttreasure_mummy_2"
+coords = "0_50_145_52_47"
+
+[[spawn]]
+npc = "npc.deserttreasure_mummy_2"
+coords = "0_50_145_52_52"
+
+[[spawn]]
+npc = "npc.deserttreasure_mummy_2"
+coords = "0_50_145_55_35"
+
+[[spawn]]
+npc = "npc.deserttreasure_mummy_2"
+coords = "0_50_145_5_23"
+
+[[spawn]]
+npc = "npc.deserttreasure_mummy_2"
+coords = "0_50_145_61_16"
+
+[[spawn]]
+npc = "npc.deserttreasure_mummy_2"
+coords = "0_50_145_61_26"
+
+[[spawn]]
+npc = "npc.deserttreasure_mummy_2"
+coords = "0_50_145_6_48"
+
+[[spawn]]
+npc = "npc.deserttreasure_mummy_2"
+coords = "0_50_145_7_30"
+
+[[spawn]]
+npc = "npc.deserttreasure_mummy_3"
+coords = "0_50_145_10_12"
+
+[[spawn]]
+npc = "npc.deserttreasure_mummy_3"
+coords = "0_50_145_21_30"
+
+[[spawn]]
+npc = "npc.deserttreasure_mummy_3"
+coords = "0_50_145_25_43"
+
+[[spawn]]
+npc = "npc.deserttreasure_mummy_3"
+coords = "0_50_145_43_30"
+
+[[spawn]]
+npc = "npc.deserttreasure_mummy_3"
+coords = "0_50_145_46_10"
+
+[[spawn]]
+npc = "npc.deserttreasure_mummy_3"
+coords = "0_50_145_55_21"
+
+[[spawn]]
+npc = "npc.deserttreasure_mummy_3"
+coords = "0_50_145_55_41"
+
+[[spawn]]
+npc = "npc.deserttreasure_mummy_3"
+coords = "0_50_145_5_49"
+
+[[spawn]]
+npc = "npc.deserttreasure_mummy_3"
+coords = "0_50_145_61_51"
+
+[[spawn]]
+npc = "npc.deserttreasure_mummy_4"
+coords = "0_50_145_14_53"
+
+[[spawn]]
+npc = "npc.deserttreasure_mummy_4"
+coords = "0_50_145_19_17"
+
+[[spawn]]
+npc = "npc.deserttreasure_mummy_4"
+coords = "0_50_145_39_20"
+
+[[spawn]]
+npc = "npc.deserttreasure_mummy_4"
+coords = "0_50_145_40_50"
+
+[[spawn]]
+npc = "npc.deserttreasure_mummy_4"
+coords = "0_50_145_40_6"
+
+[[spawn]]
+npc = "npc.deserttreasure_mummy_4"
+coords = "0_50_145_45_26"
+
+[[spawn]]
+npc = "npc.deserttreasure_mummy_4"
+coords = "0_50_145_4_29"
+
+[[spawn]]
+npc = "npc.deserttreasure_mummy_4"
+coords = "0_50_145_50_36"
+
+[[spawn]]
+npc = "npc.deserttreasure_mummy_4"
+coords = "0_50_145_50_37"
+
+[[spawn]]
+npc = "npc.deserttreasure_mummy_4"
+coords = "0_50_145_57_10"
+
+[[spawn]]
+npc = "npc.deserttreasure_mummy_5"
+coords = "0_50_145_19_21"
+
+[[spawn]]
+npc = "npc.deserttreasure_mummy_5"
+coords = "0_50_145_26_5"
+
+[[spawn]]
+npc = "npc.deserttreasure_mummy_5"
+coords = "0_50_145_27_23"
+
+[[spawn]]
+npc = "npc.deserttreasure_mummy_5"
+coords = "0_50_145_28_13"
+
+[[spawn]]
+npc = "npc.deserttreasure_mummy_5"
+coords = "0_50_145_29_53"
+
+[[spawn]]
+npc = "npc.deserttreasure_mummy_5"
+coords = "0_50_145_2_3"
+
+[[spawn]]
+npc = "npc.deserttreasure_mummy_5"
+coords = "0_50_145_37_13"
+
+[[spawn]]
+npc = "npc.deserttreasure_mummy_5"
+coords = "0_50_145_46_41"
+
+[[spawn]]
+npc = "npc.deserttreasure_mummy_5"
+coords = "0_50_145_56_16"
+
+[[spawn]]
+npc = "npc.deserttreasure_mummy_5"
+coords = "0_50_145_60_5"
+
+[[spawn]]
+npc = "npc.deserttreasure_mummy_5"
+coords = "0_50_145_62_37"
+
+[[spawn]]
+npc = "npc.deserttreasure_mummy_5"
+coords = "0_50_145_6_53"
+
+[[spawn]]
+npc = "npc.deserttreasure_mummy_5"
+coords = "0_50_145_9_19"
+
+## Desert Treasure Pyramid Level 4 End
+

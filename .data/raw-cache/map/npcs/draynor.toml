@@ -1,0 +1,364 @@
+[[spawn]]
+npc = "npc.0_48_50_saltfish"
+coords = "0_48_50_13_30"
+
+[[spawn]]
+npc = "npc.0_48_50_saltfish"
+coords = "0_48_50_14_27"
+
+[[spawn]]
+npc = "npc.aprilfoolshorsesalesman"
+coords = "0_48_50_9_47"
+
+[[spawn]]
+npc = "npc.diary_queen"
+coords = "0_48_50_24_27"
+
+[[spawn]]
+npc = "npc.diary_queen_pet"
+coords = "0_48_50_25_27"
+
+[[spawn]]
+npc = "npc.farmer_farming_on_48_51"
+coords = "0_48_51_47_12"
+
+[[spawn]]
+npc = "npc.farming_market_guard"
+coords = "0_48_50_11_47"
+
+[[spawn]]
+npc = "npc.farming_market_guard"
+coords = "0_48_50_11_53"
+
+[[spawn]]
+npc = "npc.forestry_forester"
+coords = "0_48_50_24_38"
+
+[[spawn]]
+npc = "npc.goblin_unarmed_melee_6"
+coords = "0_48_51_38_17"
+
+[[spawn]]
+npc = "npc.ii_common_impling_precursor"
+coords = "0_48_50_21_38"
+
+[[spawn]]
+npc = "npc.imp"
+coords = "0_48_50_1_50"
+
+[[spawn]]
+npc = "npc.jailguard"
+coords = "0_48_50_55_48"
+
+[[spawn]]
+npc = "npc.jailguard_four_patrol"
+coords = "0_48_50_49_49"
+
+[[spawn]]
+npc = "npc.jailguard_three_patrol"
+coords = "0_48_50_48_38"
+
+[[spawn]]
+npc = "npc.jailguard_two_patrol"
+coords = "0_48_50_37_37"
+
+[[spawn]]
+npc = "npc.joe"
+coords = "0_48_50_51_45"
+
+[[spawn]]
+npc = "npc.joe_vis"
+coords = "0_48_50_52_44"
+
+[[spawn]]
+npc = "npc.lady_keli"
+coords = "0_48_50_56_44"
+
+[[spawn]]
+npc = "npc.lady_keli_vis"
+coords = "0_48_50_56_44"
+
+[[spawn]]
+npc = "npc.leela"
+coords = "0_48_50_40_62"
+
+[[spawn]]
+npc = "npc.martin_the_master_farmer"
+coords = "0_48_50_6_58"
+
+[[spawn]]
+npc = "npc.master_farmer_1"
+coords = "0_48_50_8_50"
+
+[[spawn]]
+npc = "npc.morgan"
+coords = "0_48_51_26_4"
+
+[[spawn]]
+npc = "npc.ned"
+coords = "0_48_50_27_58"
+
+[[spawn]]
+npc = "npc.pig_1"
+coords = "0_48_50_3_61"
+
+[[spawn]]
+npc = "npc.pig_1"
+coords = "0_48_50_5_59"
+
+[[spawn]]
+npc = "npc.pig_2"
+coords = "0_48_50_3_59"
+
+[[spawn]]
+npc = "npc.pig_2"
+coords = "0_48_50_5_60"
+
+[[spawn]]
+npc = "npc.piglet_1"
+coords = "0_48_50_4_61"
+
+[[spawn]]
+npc = "npc.piglet_2"
+coords = "0_48_50_7_61"
+
+[[spawn]]
+npc = "npc.piglet_3"
+coords = "0_48_50_7_60"
+
+[[spawn]]
+npc = "npc.pmod_town_crier_draynor"
+coords = "0_48_50_7_49"
+
+[[spawn]]
+npc = "npc.prince_ali_prison"
+coords = "0_48_50_51_42"
+
+[[spawn]]
+npc = "npc.rag_wine_merchant"
+coords = "0_48_50_13_51"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_48_51_28_9"
+
+[[spawn]]
+npc = "npc.seed_merchant"
+coords = "0_48_50_6_51"
+
+[[spawn]]
+npc = "npc.slayer_master_9"
+coords = "0_48_51_19_2"
+
+[[spawn]]
+npc = "npc.wom_bankguard"
+coords = "0_48_50_16_47"
+
+[[spawn]]
+npc = "npc.wom_bed_inactive"
+coords = "1_48_50_15_54"
+
+[[spawn]]
+npc = "npc.wom_fakeplayer5"
+coords = "0_48_50_9_53"
+
+[[spawn]]
+npc = "npc.wom_gossip"
+coords = "0_48_50_23_52"
+
+[[spawn]]
+npc = "npc.wom_multi"
+coords = "0_48_50_16_55"
+
+[[spawn]]
+npc = "npc.woman"
+coords = "1_48_51_25_5"
+
+[[spawn]]
+npc = "npc.young_dark_wizard"
+coords = "0_48_50_12_36"
+
+[[spawn]]
+npc = "npc.young_dark_wizard"
+coords = "0_48_50_13_38"
+
+## Draynor Aggies House
+
+[[spawn]]
+npc = "npc.aggie"
+coords = "0_48_50_14_59"
+
+## Draynor Bank
+
+[[spawn]]
+npc = "npc.banker1"
+coords = "0_48_50_16_42"
+
+[[spawn]]
+npc = "npc.banker1"
+coords = "0_48_50_18_45"
+
+[[spawn]]
+npc = "npc.banker2"
+coords = "0_48_50_18_42"
+
+[[spawn]]
+npc = "npc.banker2"
+coords = "0_48_50_18_43"
+
+## Draynor Manor Basement
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_48_152_21_26"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_48_152_27_27"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_48_152_27_37"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_48_152_29_20"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_48_152_31_36"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_48_152_32_32"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_48_152_39_24"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_48_152_41_26"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_48_152_44_26"
+
+[[spawn]]
+npc = "npc.spider"
+coords = "0_48_152_38_17"
+
+[[spawn]]
+npc = "npc.spider"
+coords = "0_48_152_39_18"
+
+[[spawn]]
+npc = "npc.spider"
+coords = "0_48_152_40_20"
+
+[[spawn]]
+npc = "npc.spider"
+coords = "0_48_152_40_21"
+
+## Draynor Northern House Floor
+
+[[spawn]]
+npc = "npc.man"
+coords = "0_48_51_28_15"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_48_51_28_13"
+
+## Draynor Sewers
+
+[[spawn]]
+npc = "npc.malak"
+coords = "0_48_151_40_26"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_48_151_11_9"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_48_151_19_6"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_48_151_27_10"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_48_151_34_25"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_48_151_36_8"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_48_151_41_19"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_48_151_45_30"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_48_151_46_6"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_48_151_50_9"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_48_151_51_2"
+
+[[spawn]]
+npc = "npc.skeleton_armed"
+coords = "0_48_151_37_11"
+
+[[spawn]]
+npc = "npc.skeleton_armed3"
+coords = "0_48_151_29_7"
+
+[[spawn]]
+npc = "npc.skeleton_unarmed"
+coords = "0_48_151_43_10"
+
+[[spawn]]
+npc = "npc.skeleton_unarmed3"
+coords = "0_48_151_51_5"
+
+[[spawn]]
+npc = "npc.zombie_armed_sewer1"
+coords = "0_48_150_52_62"
+
+[[spawn]]
+npc = "npc.zombie_armed_sewer2"
+coords = "0_48_151_16_8"
+
+[[spawn]]
+npc = "npc.zombie_armed_sewer3"
+coords = "0_48_150_50_58"
+
+[[spawn]]
+npc = "npc.zombie_armed_sewer4"
+coords = "0_48_151_24_8"
+
+[[spawn]]
+npc = "npc.zombie_unarmed_sewer1"
+coords = "0_48_150_47_47"
+
+[[spawn]]
+npc = "npc.zombie_unarmed_sewer2"
+coords = "0_48_151_14_10"
+
+[[spawn]]
+npc = "npc.zombie_unarmed_sewer3"
+coords = "0_48_150_52_51"
+
+## Draynor Sewers End
+

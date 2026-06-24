@@ -1,0 +1,12 @@
+[[area]]
+name = "Kalphite Lair"
+area_id = "area.kalphite_lair"
+levels = [0, 1, 2, 3]
+
+[[area.polygons]]
+vertices = [
+    [3456, 9472],
+    [3519, 9472],
+    [3519, 9535],
+    [3456, 9535],
+]

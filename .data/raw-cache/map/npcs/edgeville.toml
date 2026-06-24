@@ -1,0 +1,266 @@
+[[spawn]]
+npc = "npc.bim_marley_edge"
+coords = "0_48_54_16_15"
+
+[[spawn]]
+npc = "npc.canoeing_hari"
+coords = "0_48_54_61_53"
+
+[[spawn]]
+npc = "npc.diary_rabbit"
+coords = "0_48_54_49_62"
+
+[[spawn]]
+npc = "npc.emblem_trader"
+coords = "0_48_54_24_48"
+
+[[spawn]]
+npc = "npc.giantspider1"
+coords = "0_48_54_59_30"
+
+[[spawn]]
+npc = "npc.giantspider1"
+coords = "0_48_54_62_27"
+
+[[spawn]]
+npc = "npc.guard1"
+coords = "0_48_54_21_62"
+
+[[spawn]]
+npc = "npc.guard1_f"
+coords = "0_48_54_13_62"
+
+[[spawn]]
+npc = "npc.guard1_f_variant01"
+coords = "0_48_54_42_61"
+
+[[spawn]]
+npc = "npc.imp"
+coords = "0_48_54_1_42"
+
+[[spawn]]
+npc = "npc.imp"
+coords = "0_48_54_62_31"
+
+[[spawn]]
+npc = "npc.imp"
+coords = "0_48_54_6_43"
+
+[[spawn]]
+npc = "npc.imp"
+coords = "0_48_54_6_5"
+
+[[spawn]]
+npc = "npc.oziach"
+coords = "0_47_54_61_61"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_48_54_47_29"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_48_54_50_31"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_48_54_53_29"
+
+[[spawn]]
+npc = "npc.surok_outlaw1"
+coords = "0_48_54_46_18"
+
+[[spawn]]
+npc = "npc.surok_outlaw10"
+coords = "0_48_54_46_14"
+
+[[spawn]]
+npc = "npc.surok_outlaw2"
+coords = "0_48_54_47_16"
+
+[[spawn]]
+npc = "npc.surok_outlaw3"
+coords = "0_48_54_49_15"
+
+[[spawn]]
+npc = "npc.surok_outlaw4"
+coords = "0_48_54_51_17"
+
+[[spawn]]
+npc = "npc.surok_outlaw5"
+coords = "0_48_54_52_20"
+
+[[spawn]]
+npc = "npc.surok_outlaw6"
+coords = "0_48_54_51_21"
+
+[[spawn]]
+npc = "npc.surok_outlaw7"
+coords = "0_48_54_47_21"
+
+[[spawn]]
+npc = "npc.surok_outlaw8"
+coords = "0_48_54_45_21"
+
+[[spawn]]
+npc = "npc.surok_outlaw9"
+coords = "0_48_54_44_17"
+
+[[spawn]]
+npc = "npc.wgs_silif_darksquall_cell_armour"
+coords = "0_48_54_50_27"
+
+[[spawn]]
+npc = "npc.wilderness_capeseller_6"
+coords = "0_48_54_27_63"
+
+## Edgeville Bank
+
+[[spawn]]
+npc = "npc.banker1"
+coords = "0_48_54_24_33"
+
+[[spawn]]
+npc = "npc.banker2"
+coords = "0_48_54_24_35"
+
+[[spawn]]
+npc = "npc.banker2"
+coords = "0_48_54_24_36"
+
+## Edgeville Bank Tiling
+
+[[spawn]]
+npc = "npc.banker1"
+coords = "0_48_54_26_36"
+
+[[spawn]]
+npc = "npc.lost_property_merchant_combatty"
+coords = "0_48_54_18_38"
+
+## Edgeville Doris House
+
+[[spawn]]
+npc = "npc.hundred_dave_mum"
+coords = "0_48_54_7_36"
+
+## Edgeville General Store Floor
+
+[[spawn]]
+npc = "npc.generalassistant5"
+coords = "0_48_54_9_55"
+
+[[spawn]]
+npc = "npc.generalshopkeeper5"
+coords = "0_48_54_8_55"
+
+[[spawn]]
+npc = "npc.lost_property_merchant_standard"
+coords = "1_48_54_8_57"
+
+## Edgeville Guard Tower Floor
+
+[[spawn]]
+npc = "npc.guard1"
+coords = "0_48_54_38_59"
+
+[[spawn]]
+npc = "npc.guard1_variant01"
+coords = "0_48_54_37_57"
+
+[[spawn]]
+npc = "npc.slayer_master_7"
+coords = "0_48_54_37_60"
+
+## Edgeville Mans House Floor
+
+[[spawn]]
+npc = "npc.man"
+coords = "0_48_54_21_56"
+
+[[spawn]]
+npc = "npc.man"
+coords = "0_48_54_25_56"
+
+[[spawn]]
+npc = "npc.man"
+coords = "0_48_54_28_53"
+
+[[spawn]]
+npc = "npc.man2"
+coords = "0_48_54_28_55"
+
+[[spawn]]
+npc = "npc.man3"
+coords = "0_48_54_20_54"
+
+[[spawn]]
+npc = "npc.man3"
+coords = "0_48_54_25_52"
+
+## Edgeville Monastery
+
+[[spawn]]
+npc = "npc.abbot_langley"
+coords = "0_47_54_50_28"
+
+[[spawn]]
+npc = "npc.brother_althric"
+coords = "0_47_54_41_51"
+
+[[spawn]]
+npc = "npc.brother_jered"
+coords = "1_47_54_38_32"
+
+[[spawn]]
+npc = "npc.monk"
+coords = "0_47_54_37_28"
+
+[[spawn]]
+npc = "npc.monk"
+coords = "0_47_54_37_41"
+
+[[spawn]]
+npc = "npc.monk"
+coords = "0_47_54_42_35"
+
+[[spawn]]
+npc = "npc.monk"
+coords = "0_47_54_46_35"
+
+[[spawn]]
+npc = "npc.monk"
+coords = "1_47_54_37_36"
+
+[[spawn]]
+npc = "npc.monk"
+coords = "1_47_54_48_41"
+
+[[spawn]]
+npc = "npc.questscorpionc"
+coords = "1_47_54_50_32"
+
+[[spawn]]
+npc = "npc.secret_ghost6"
+coords = "1_47_54_44_40"
+
+[[spawn]]
+npc = "npc.secret_ghost_mage"
+coords = "1_47_54_44_42"
+
+## Edgeville Path Overlay
+
+[[spawn]]
+npc = "npc.guard1_f"
+coords = "0_48_54_42_56"
+
+[[spawn]]
+npc = "npc.lesser_fanatic_diary"
+coords = "0_48_54_49_61"
+
+[[spawn]]
+npc = "npc.man3"
+coords = "0_48_54_29_53"
+
+## Edgeville Path Overlay End
+

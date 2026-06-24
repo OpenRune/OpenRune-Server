@@ -1,0 +1,44 @@
+[[spawn]]
+npc = "npc.100_agrith_dave"
+coords = "0_29_83_9_35"
+
+[[spawn]]
+npc = "npc.100_dwarf_mountain"
+coords = "0_29_83_6_33"
+
+[[spawn]]
+npc = "npc.100_general_bentnoze"
+coords = "0_29_83_6_37"
+
+[[spawn]]
+npc = "npc.100_general_wartface"
+coords = "0_29_83_6_39"
+
+[[spawn]]
+npc = "npc.100_lumbridge_guide"
+coords = "0_29_83_9_37"
+
+[[spawn]]
+npc = "npc.100_mm_awowogei_cutscene"
+coords = "0_29_83_9_31"
+
+[[spawn]]
+npc = "npc.100_pirate"
+coords = "0_29_83_6_35"
+
+[[spawn]]
+npc = "npc.100_sir_amik_varze"
+coords = "0_29_83_9_33"
+
+[[spawn]]
+npc = "npc.100_skrach_uglogwee"
+coords = "0_29_83_7_40"
+
+[[spawn]]
+npc = "npc.culinaromancer_froze"
+coords = "0_29_83_7_5"
+
+[[spawn]]
+npc = "npc.hundred_aris"
+coords = "0_29_83_10_15"
+

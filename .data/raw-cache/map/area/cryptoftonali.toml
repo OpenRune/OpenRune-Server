@@ -1,0 +1,12 @@
+[[area]]
+name = "Crypt of Tonali"
+area_id = "area.cryptoftonali"
+levels = [1, 2]
+
+[[area.polygons]]
+vertices = [
+    [1259, 9538],
+    [1350, 9542],
+    [1350, 9335],
+    [1282, 9339],
+]

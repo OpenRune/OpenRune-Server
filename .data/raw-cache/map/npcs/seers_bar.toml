@@ -1,0 +1,40 @@
+[[spawn]]
+npc = "npc.foresters_bartender"
+coords = "0_42_54_2_37"
+
+[[spawn]]
+npc = "npc.man"
+coords = "0_42_54_6_41"
+
+[[spawn]]
+npc = "npc.man2"
+coords = "0_42_54_5_33"
+
+[[spawn]]
+npc = "npc.man3"
+coords = "0_42_54_10_35"
+
+[[spawn]]
+npc = "npc.poison_salesman"
+coords = "0_42_54_7_39"
+
+[[spawn]]
+npc = "npc.woman"
+coords = "0_42_54_3_40"
+
+[[spawn]]
+npc = "npc.woman"
+coords = "0_42_54_8_41"
+
+[[spawn]]
+npc = "npc.woman"
+coords = "0_42_54_9_41"
+
+[[spawn]]
+npc = "npc.woman2"
+coords = "0_42_54_11_38"
+
+[[spawn]]
+npc = "npc.woman2"
+coords = "0_42_54_2_33"
+

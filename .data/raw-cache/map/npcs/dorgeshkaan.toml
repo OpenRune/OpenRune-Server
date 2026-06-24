@@ -1,0 +1,352 @@
+[[spawn]]
+npc = "npc.dorgesh_baby1"
+coords = "1_42_83_53_32"
+
+[[spawn]]
+npc = "npc.dorgesh_baby2"
+coords = "1_42_83_56_21"
+
+[[spawn]]
+npc = "npc.dorgesh_baby3"
+coords = "1_42_83_55_33"
+
+[[spawn]]
+npc = "npc.dorgesh_baby4"
+coords = "1_42_83_58_21"
+
+[[spawn]]
+npc = "npc.dorgesh_childminder"
+coords = "1_42_83_54_27"
+
+[[spawn]]
+npc = "npc.dorgesh_female_1"
+coords = "0_42_82_10_16"
+
+[[spawn]]
+npc = "npc.dorgesh_female_1"
+coords = "0_42_83_37_37"
+
+[[spawn]]
+npc = "npc.dorgesh_female_4"
+coords = "0_42_83_24_30"
+
+[[spawn]]
+npc = "npc.dorgesh_female_4"
+coords = "1_42_82_47_27"
+
+[[spawn]]
+npc = "npc.dorgesh_female_5"
+coords = "0_42_82_46_27"
+
+[[spawn]]
+npc = "npc.dorgesh_female_5"
+coords = "0_42_83_6_21"
+
+[[spawn]]
+npc = "npc.dorgesh_female_6"
+coords = "0_42_82_33_46"
+
+[[spawn]]
+npc = "npc.dorgesh_female_6"
+coords = "1_42_83_13_40"
+
+[[spawn]]
+npc = "npc.dorgesh_female_7"
+coords = "0_42_83_31_19"
+
+[[spawn]]
+npc = "npc.dorgesh_female_7"
+coords = "0_42_83_7_19"
+
+[[spawn]]
+npc = "npc.dorgesh_female_8"
+coords = "0_42_82_25_45"
+
+[[spawn]]
+npc = "npc.dorgesh_female_banker"
+coords = "0_42_83_11_37"
+
+[[spawn]]
+npc = "npc.dorgesh_female_child1"
+coords = "1_42_83_55_29"
+
+[[spawn]]
+npc = "npc.dorgesh_female_child2"
+coords = "1_42_83_56_26"
+
+[[spawn]]
+npc = "npc.dorgesh_female_child3"
+coords = "1_42_83_56_24"
+
+[[spawn]]
+npc = "npc.dorgesh_female_child4"
+coords = "1_42_83_52_22"
+
+[[spawn]]
+npc = "npc.dorgesh_female_council_1"
+coords = "0_42_83_28_47"
+
+[[spawn]]
+npc = "npc.dorgesh_female_council_2"
+coords = "0_42_82_3_55"
+
+[[spawn]]
+npc = "npc.dorgesh_female_council_3"
+coords = "0_42_82_59_15"
+
+[[spawn]]
+npc = "npc.dorgesh_female_council_4"
+coords = "0_42_82_60_15"
+
+[[spawn]]
+npc = "npc.dorgesh_female_lamp_seller"
+coords = "0_42_83_35_9"
+
+[[spawn]]
+npc = "npc.dorgesh_female_patrol1"
+coords = "0_42_83_13_36"
+
+[[spawn]]
+npc = "npc.dorgesh_goblin_fish"
+coords = "0_42_82_25_14"
+
+[[spawn]]
+npc = "npc.dorgesh_goblin_fish"
+coords = "0_42_82_26_39"
+
+[[spawn]]
+npc = "npc.dorgesh_goblin_fish"
+coords = "0_42_83_32_44"
+
+[[spawn]]
+npc = "npc.dorgesh_goblin_fish"
+coords = "0_42_83_36_42"
+
+[[spawn]]
+npc = "npc.dorgesh_goblin_frogspit"
+coords = "0_42_82_41_21"
+
+[[spawn]]
+npc = "npc.dorgesh_gourmet_female1"
+coords = "0_42_83_27_1"
+
+[[spawn]]
+npc = "npc.dorgesh_gourmet_female2"
+coords = "0_42_82_28_62"
+
+[[spawn]]
+npc = "npc.dorgesh_gourmet_male1"
+coords = "0_42_82_32_61"
+
+[[spawn]]
+npc = "npc.dorgesh_gourmet_male2"
+coords = "0_42_83_30_1"
+
+[[spawn]]
+npc = "npc.dorgesh_guard1"
+coords = "0_42_83_31_23"
+
+[[spawn]]
+npc = "npc.dorgesh_guard1"
+coords = "0_42_83_59_61"
+
+[[spawn]]
+npc = "npc.dorgesh_guard2"
+coords = "0_42_82_34_12"
+
+[[spawn]]
+npc = "npc.dorgesh_guard2"
+coords = "0_42_83_42_21"
+
+[[spawn]]
+npc = "npc.dorgesh_male_1"
+coords = "0_42_82_29_46"
+
+[[spawn]]
+npc = "npc.dorgesh_male_1"
+coords = "0_42_83_23_19"
+
+[[spawn]]
+npc = "npc.dorgesh_male_2"
+coords = "0_42_83_9_20"
+
+[[spawn]]
+npc = "npc.dorgesh_male_4"
+coords = "0_42_83_35_24"
+
+[[spawn]]
+npc = "npc.dorgesh_male_4"
+coords = "2_42_82_55_36"
+
+[[spawn]]
+npc = "npc.dorgesh_male_5"
+coords = "0_42_82_19_38"
+
+[[spawn]]
+npc = "npc.dorgesh_male_5"
+coords = "1_42_83_14_40"
+
+[[spawn]]
+npc = "npc.dorgesh_male_6"
+coords = "0_42_83_55_46"
+
+[[spawn]]
+npc = "npc.dorgesh_male_6"
+coords = "1_42_82_44_27"
+
+[[spawn]]
+npc = "npc.dorgesh_male_7"
+coords = "0_42_83_41_17"
+
+[[spawn]]
+npc = "npc.dorgesh_male_7"
+coords = "0_42_83_5_20"
+
+[[spawn]]
+npc = "npc.dorgesh_male_8"
+coords = "2_42_82_52_37"
+
+[[spawn]]
+npc = "npc.dorgesh_male_banker"
+coords = "0_42_83_11_36"
+
+[[spawn]]
+npc = "npc.dorgesh_male_bone_seller"
+coords = "0_42_83_9_4"
+
+[[spawn]]
+npc = "npc.dorgesh_male_child1_ball"
+coords = "1_42_83_53_22"
+
+[[spawn]]
+npc = "npc.dorgesh_male_child2"
+coords = "1_42_83_53_29"
+
+[[spawn]]
+npc = "npc.dorgesh_male_child3"
+coords = "1_42_83_56_30"
+
+[[spawn]]
+npc = "npc.dorgesh_male_child4"
+coords = "1_42_83_54_26"
+
+[[spawn]]
+npc = "npc.dorgesh_male_council_1"
+coords = "0_42_83_29_47"
+
+[[spawn]]
+npc = "npc.dorgesh_male_council_2"
+coords = "0_42_83_34_21"
+
+[[spawn]]
+npc = "npc.dorgesh_male_ironmonger"
+coords = "0_42_82_20_27"
+
+[[spawn]]
+npc = "npc.dorgesh_male_leather_seller"
+coords = "0_42_83_34_1"
+
+[[spawn]]
+npc = "npc.dorgesh_male_patrol1"
+coords = "0_42_82_45_26"
+
+[[spawn]]
+npc = "npc.dorgesh_male_patrol2"
+coords = "1_42_83_38_60"
+
+[[spawn]]
+npc = "npc.dorgesh_male_scribe"
+coords = "1_42_83_24_57"
+
+[[spawn]]
+npc = "npc.dorgesh_market_female1"
+coords = "0_42_82_24_61"
+
+[[spawn]]
+npc = "npc.dorgesh_market_female2"
+coords = "0_42_83_23_2"
+
+[[spawn]]
+npc = "npc.dorgesh_market_female3"
+coords = "0_42_82_35_59"
+
+[[spawn]]
+npc = "npc.dorgesh_market_head"
+coords = "0_42_83_29_3"
+
+[[spawn]]
+npc = "npc.dorgesh_market_male1"
+coords = "0_42_82_24_55"
+
+[[spawn]]
+npc = "npc.dorgesh_market_male2"
+coords = "0_42_82_35_55"
+
+[[spawn]]
+npc = "npc.dorgesh_market_male3"
+coords = "0_42_83_24_9"
+
+[[spawn]]
+npc = "npc.dorgesh_moths"
+coords = "0_42_82_24_49"
+
+[[spawn]]
+npc = "npc.dorgesh_moths"
+coords = "0_42_82_27_11"
+
+[[spawn]]
+npc = "npc.dorgesh_moths"
+coords = "0_42_82_34_49"
+
+[[spawn]]
+npc = "npc.dorgesh_moths"
+coords = "0_42_82_42_11"
+
+[[spawn]]
+npc = "npc.dorgesh_moths"
+coords = "0_42_82_44_22"
+
+[[spawn]]
+npc = "npc.dorgesh_moths"
+coords = "0_42_82_47_22"
+
+[[spawn]]
+npc = "npc.dorgesh_moths"
+coords = "0_42_83_11_17"
+
+[[spawn]]
+npc = "npc.dorgesh_moths"
+coords = "0_42_83_11_23"
+
+[[spawn]]
+npc = "npc.dorgesh_moths"
+coords = "0_42_83_59_30"
+
+[[spawn]]
+npc = "npc.dorgesh_oldak"
+coords = "0_42_83_16_54"
+
+[[spawn]]
+npc = "npc.dorgesh_urtaq"
+coords = "1_42_83_42_53"
+
+[[spawn]]
+npc = "npc.dorgesh_zanik"
+coords = "1_42_83_56_41"
+
+[[spawn]]
+npc = "npc.lotg_zanik_in_lab"
+coords = "0_42_83_15_53"
+
+[[spawn]]
+npc = "npc.slice_dwarf_alvijar"
+coords = "1_42_83_42_54"
+
+[[spawn]]
+npc = "npc.slice_dwarf_alvijar_postquest"
+coords = "1_42_83_49_39"
+
+[[spawn]]
+npc = "npc.slice_goblin_archaeologist_post_quest"
+coords = "0_42_83_56_32"
+

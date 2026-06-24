@@ -1,0 +1,12 @@
+[[area]]
+name = "Giants' Den"
+area_id = "area.giantsden"
+levels = [0, 1, 2, 3]
+
+[[area.polygons]]
+vertices = [
+    [1410, 9917],
+    [1473, 9917],
+    [1470, 9854],
+    [1411, 9853],
+]

@@ -1,0 +1,12 @@
+[[spawn]]
+npc = "npc.boardgames_barmaid"
+coords = "0_34_77_25_14"
+
+## Games Room Inner
+
+[[spawn]]
+npc = "npc.boardgames_barmaid2"
+coords = "0_34_77_31_30"
+
+## Games Room Inner End
+

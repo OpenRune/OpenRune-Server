@@ -1,0 +1,272 @@
+[[spawn]]
+npc = "npc.100_pirate_fish_angel"
+coords = "1_46_148_32_13"
+
+[[spawn]]
+npc = "npc.100_pirate_fish_angel"
+coords = "1_46_148_39_15"
+
+[[spawn]]
+npc = "npc.100_pirate_fish_angel_higher"
+coords = "1_46_148_15_23"
+
+[[spawn]]
+npc = "npc.100_pirate_fish_angel_higher"
+coords = "1_46_148_37_21"
+
+[[spawn]]
+npc = "npc.100_pirate_fish_angel_lower"
+coords = "1_46_148_15_13"
+
+[[spawn]]
+npc = "npc.100_pirate_fish_angel_lower"
+coords = "1_46_148_34_9"
+
+[[spawn]]
+npc = "npc.100_pirate_fish_danio_shoal"
+coords = "1_46_148_23_26"
+
+[[spawn]]
+npc = "npc.100_pirate_fish_danio_shoal"
+coords = "1_46_148_28_28"
+
+[[spawn]]
+npc = "npc.100_pirate_fish_danio_shoal_higher"
+coords = "1_46_148_13_31"
+
+[[spawn]]
+npc = "npc.100_pirate_fish_danio_shoal_higher"
+coords = "1_46_148_40_24"
+
+[[spawn]]
+npc = "npc.100_pirate_fish_danio_shoal_lower"
+coords = "1_46_148_29_18"
+
+[[spawn]]
+npc = "npc.100_pirate_fish_danio_shoal_lower"
+coords = "1_46_148_49_26"
+
+[[spawn]]
+npc = "npc.100_pirate_fish_discus"
+coords = "1_46_148_25_22"
+
+[[spawn]]
+npc = "npc.100_pirate_fish_discus_higher"
+coords = "1_46_148_16_28"
+
+[[spawn]]
+npc = "npc.100_pirate_fish_discus_higher"
+coords = "1_46_148_28_22"
+
+[[spawn]]
+npc = "npc.100_pirate_fish_discus_lower"
+coords = "1_46_148_14_28"
+
+[[spawn]]
+npc = "npc.100_pirate_fish_discus_lower"
+coords = "1_46_148_18_31"
+
+[[spawn]]
+npc = "npc.100_pirate_fish_fantail"
+coords = "1_46_148_28_25"
+
+[[spawn]]
+npc = "npc.100_pirate_fish_fantail"
+coords = "1_46_148_39_22"
+
+[[spawn]]
+npc = "npc.100_pirate_fish_fantail_black"
+coords = "1_46_148_19_20"
+
+[[spawn]]
+npc = "npc.100_pirate_fish_fantail_black_higher"
+coords = "1_46_148_20_13"
+
+[[spawn]]
+npc = "npc.100_pirate_fish_fantail_black_higher"
+coords = "1_46_148_44_25"
+
+[[spawn]]
+npc = "npc.100_pirate_fish_fantail_black_lower"
+coords = "1_46_148_32_18"
+
+[[spawn]]
+npc = "npc.100_pirate_fish_fantail_black_lower"
+coords = "1_46_148_36_13"
+
+[[spawn]]
+npc = "npc.100_pirate_fish_fantail_higher"
+coords = "1_46_148_24_15"
+
+[[spawn]]
+npc = "npc.100_pirate_fish_fantail_higher"
+coords = "1_46_148_40_27"
+
+[[spawn]]
+npc = "npc.100_pirate_fish_fantail_lower"
+coords = "1_46_148_26_20"
+
+[[spawn]]
+npc = "npc.100_pirate_fish_fantail_lower"
+coords = "1_46_148_34_23"
+
+[[spawn]]
+npc = "npc.100_pirate_fish_harlequin"
+coords = "1_46_148_42_22"
+
+[[spawn]]
+npc = "npc.100_pirate_fish_harlequin_higher"
+coords = "1_46_148_31_26"
+
+[[spawn]]
+npc = "npc.100_pirate_fish_harlequin_higher"
+coords = "1_46_148_42_15"
+
+[[spawn]]
+npc = "npc.100_pirate_fish_harlequin_lower"
+coords = "1_46_148_19_26"
+
+[[spawn]]
+npc = "npc.100_pirate_fish_harlequin_lower"
+coords = "1_46_148_30_20"
+
+[[spawn]]
+npc = "npc.100_pirate_fish_paradise"
+coords = "1_46_148_19_16"
+
+[[spawn]]
+npc = "npc.100_pirate_fish_paradise"
+coords = "1_46_148_31_23"
+
+[[spawn]]
+npc = "npc.100_pirate_fish_paradise_higher"
+coords = "1_46_148_34_26"
+
+[[spawn]]
+npc = "npc.100_pirate_fish_paradise_higher"
+coords = "1_46_148_48_13"
+
+[[spawn]]
+npc = "npc.100_pirate_fish_paradise_lower"
+coords = "1_46_148_20_24"
+
+[[spawn]]
+npc = "npc.100_pirate_fish_paradise_lower"
+coords = "1_46_148_20_30"
+
+[[spawn]]
+npc = "npc.100_pirate_fish_tetra_shoal"
+coords = "1_46_148_27_14"
+
+[[spawn]]
+npc = "npc.100_pirate_fish_tetra_shoal"
+coords = "1_46_148_39_18"
+
+[[spawn]]
+npc = "npc.100_pirate_fish_tetra_shoal_higher"
+coords = "1_46_148_14_18"
+
+[[spawn]]
+npc = "npc.100_pirate_fish_tetra_shoal_higher"
+coords = "1_46_148_37_10"
+
+[[spawn]]
+npc = "npc.100_pirate_fish_tetra_shoal_lower"
+coords = "1_46_148_18_8"
+
+[[spawn]]
+npc = "npc.100_pirate_fish_tetra_shoal_lower"
+coords = "1_46_148_44_20"
+
+[[spawn]]
+npc = "npc.100_pirate_mogre_guard"
+coords = "1_46_148_24_51"
+
+[[spawn]]
+npc = "npc.100_pirate_mogre_guard"
+coords = "1_46_148_25_40"
+
+[[spawn]]
+npc = "npc.100_pirate_mogre_guard"
+coords = "1_46_148_36_39"
+
+[[spawn]]
+npc = "npc.100_pirate_mogre_guard"
+coords = "1_46_148_46_47"
+
+[[spawn]]
+npc = "npc.100_pirate_mogre_nung"
+coords = "1_46_148_31_40"
+
+[[spawn]]
+npc = "npc.hundred_pirate_giant_crab"
+coords = "1_46_148_28_47"
+
+[[spawn]]
+npc = "npc.hundred_pirate_giant_crab"
+coords = "1_46_148_31_46"
+
+[[spawn]]
+npc = "npc.hundred_pirate_giant_crab"
+coords = "1_46_148_32_44"
+
+[[spawn]]
+npc = "npc.hundred_pirate_giant_crab"
+coords = "1_46_148_33_48"
+
+[[spawn]]
+npc = "npc.hundred_pirate_giant_crab"
+coords = "1_46_148_33_50"
+
+[[spawn]]
+npc = "npc.hundred_pirate_giant_crab"
+coords = "1_46_148_37_45"
+
+[[spawn]]
+npc = "npc.hundred_pirate_giant_crab"
+coords = "1_46_148_39_47"
+
+[[spawn]]
+npc = "npc.hundred_pirate_giant_crab"
+coords = "1_46_148_40_44"
+
+[[spawn]]
+npc = "npc.hundred_pirate_giant_crab_2"
+coords = "1_46_148_28_44"
+
+[[spawn]]
+npc = "npc.hundred_pirate_giant_crab_2"
+coords = "1_46_148_34_46"
+
+[[spawn]]
+npc = "npc.hundred_pirate_giant_mudskipper"
+coords = "1_46_148_10_58"
+
+[[spawn]]
+npc = "npc.hundred_pirate_giant_mudskipper"
+coords = "1_46_148_4_50"
+
+[[spawn]]
+npc = "npc.hundred_pirate_giant_mudskipper"
+coords = "1_46_148_5_53"
+
+[[spawn]]
+npc = "npc.hundred_pirate_giant_mudskipper"
+coords = "1_46_148_7_50"
+
+[[spawn]]
+npc = "npc.hundred_pirate_giant_mudskipper"
+coords = "1_46_148_8_56"
+
+[[spawn]]
+npc = "npc.hundred_pirate_giant_mudskipper"
+coords = "1_46_148_9_51"
+
+[[spawn]]
+npc = "npc.hundred_pirate_giant_mudskipper_2"
+coords = "1_46_148_5_56"
+
+[[spawn]]
+npc = "npc.hundred_pirate_giant_mudskipper_2"
+coords = "1_46_148_8_53"
+

@@ -1,0 +1,48 @@
+[[spawn]]
+npc = "npc.roguesden_banker"
+coords = "1_47_77_34_44"
+
+[[spawn]]
+npc = "npc.roguesden_guard1"
+coords = "1_46_78_14_11"
+
+[[spawn]]
+npc = "npc.roguesden_guard1"
+coords = "1_47_79_10_16"
+
+[[spawn]]
+npc = "npc.roguesden_guard2"
+coords = "1_46_78_12_16"
+
+[[spawn]]
+npc = "npc.roguesden_guard2"
+coords = "1_47_79_9_4"
+
+[[spawn]]
+npc = "npc.roguesden_guard3"
+coords = "1_46_78_18_16"
+
+[[spawn]]
+npc = "npc.roguesden_mazemaster"
+coords = "1_47_77_41_49"
+
+[[spawn]]
+npc = "npc.roguesden_trader"
+coords = "1_47_77_40_47"
+
+[[spawn]]
+npc = "npc.roguesden_trap_floor_spinningblades_0"
+coords = "1_47_79_36_49"
+
+[[spawn]]
+npc = "npc.roguesden_trap_floor_spinningblades_1"
+coords = "1_47_79_51_34"
+
+[[spawn]]
+npc = "npc.rooftops_grace"
+coords = "1_47_77_42_34"
+
+[[spawn]]
+npc = "npc.rooftops_grace_dog"
+coords = "1_47_77_43_35"
+

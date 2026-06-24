@@ -1,0 +1,12 @@
+[[area]]
+name = "Smoke Dungeon"
+area_id = "area.smoke_dungeon"
+levels = [0, 1, 2, 3]
+
+[[area.polygons]]
+vertices = [
+    [3199, 9406],
+    [3201, 9343],
+    [3329, 9344],
+    [3328, 9407],
+]

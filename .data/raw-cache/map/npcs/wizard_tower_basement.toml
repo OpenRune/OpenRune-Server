@@ -1,0 +1,16 @@
+[[spawn]]
+npc = "npc.chicken"
+coords = "0_48_149_37_33"
+
+[[spawn]]
+npc = "npc.head_wizard"
+coords = "0_48_149_31_35"
+
+[[spawn]]
+npc = "npc.tote_persten_tower_parent"
+coords = "0_48_149_33_36"
+
+[[spawn]]
+npc = "npc.wizard"
+coords = "0_48_149_37_22"
+

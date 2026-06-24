@@ -1,0 +1,16 @@
+[[area]]
+name = "Karuulm Slayer Dungeon"
+area_id = "area.karuulm_slayer_dungeon"
+levels = [0, 1, 2, 3]
+
+[[area.polygons]]
+vertices = [
+    [1216, 10112],
+    [1344, 10112],
+    [1344, 10176],
+    [1374, 10176],
+    [1373, 10240],
+    [1408, 10240],
+    [1408, 10304],
+    [1216, 10304],
+]

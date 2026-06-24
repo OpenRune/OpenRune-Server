@@ -1,0 +1,32 @@
+[[spawn]]
+npc = "npc.king_arthur"
+coords = "0_43_54_12_59"
+
+[[spawn]]
+npc = "npc.sir_bedivere"
+coords = "1_43_54_14_55"
+
+[[spawn]]
+npc = "npc.sir_gawain"
+coords = "0_43_54_11_50"
+
+[[spawn]]
+npc = "npc.sir_lancelot"
+coords = "1_43_54_7_59"
+
+[[spawn]]
+npc = "npc.sir_lucan"
+coords = "0_43_54_2_59"
+
+[[spawn]]
+npc = "npc.sir_palomedes"
+coords = "0_43_54_2_53"
+
+[[spawn]]
+npc = "npc.sir_pelleas"
+coords = "1_43_54_9_47"
+
+[[spawn]]
+npc = "npc.sir_tristram"
+coords = "1_43_54_3_56"
+

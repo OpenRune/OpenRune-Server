@@ -1,0 +1,176 @@
+[[spawn]]
+npc = "npc.whitewolf_sentry"
+coords = "0_44_53_26_58"
+
+[[spawn]]
+npc = "npc.whitewolf_sentry"
+coords = "0_44_53_54_46"
+
+[[spawn]]
+npc = "npc.whitewolf_sentry"
+coords = "0_44_53_56_53"
+
+## Catherby
+
+[[spawn]]
+npc = "npc.farming_tools_leprechaun"
+coords = "0_44_53_47_40"
+
+## Ice Mountain
+
+[[spawn]]
+npc = "npc.oracle"
+coords = "0_47_54_5_45"
+
+[[spawn]]
+npc = "npc.slayer_icefiend_1"
+coords = "0_46_54_51_12"
+
+[[spawn]]
+npc = "npc.slayer_icefiend_1"
+coords = "0_46_54_54_9"
+
+[[spawn]]
+npc = "npc.slayer_icefiend_1"
+coords = "0_46_54_57_14"
+
+[[spawn]]
+npc = "npc.slayer_icefiend_1"
+coords = "0_46_54_59_27"
+
+[[spawn]]
+npc = "npc.slayer_icefiend_1"
+coords = "0_46_54_60_40"
+
+[[spawn]]
+npc = "npc.slayer_icefiend_1"
+coords = "0_46_54_61_17"
+
+[[spawn]]
+npc = "npc.slayer_icefiend_1"
+coords = "0_46_54_61_24"
+
+[[spawn]]
+npc = "npc.slayer_icefiend_1"
+coords = "0_46_54_61_29"
+
+[[spawn]]
+npc = "npc.slayer_icefiend_1"
+coords = "0_46_54_61_45"
+
+[[spawn]]
+npc = "npc.slayer_icefiend_1"
+coords = "0_46_54_62_12"
+
+## White Wolf Mountain Environment
+
+[[spawn]]
+npc = "npc.grim_grimgnash"
+coords = "0_44_54_45_54"
+
+[[spawn]]
+npc = "npc.grim_grimgnash_awake"
+coords = "0_44_54_49_54"
+
+[[spawn]]
+npc = "npc.icegiant"
+coords = "0_43_54_59_50"
+
+[[spawn]]
+npc = "npc.icegiant2"
+coords = "0_44_54_1_58"
+
+[[spawn]]
+npc = "npc.icegiant3"
+coords = "0_43_54_52_51"
+
+[[spawn]]
+npc = "npc.icegiant3"
+coords = "0_44_54_8_54"
+
+[[spawn]]
+npc = "npc.icewarrior"
+coords = "0_44_54_31_58"
+
+[[spawn]]
+npc = "npc.icewarrior"
+coords = "0_44_54_34_56"
+
+[[spawn]]
+npc = "npc.pack_wolf_whiter"
+coords = "0_44_54_20_39"
+
+[[spawn]]
+npc = "npc.pack_wolf_whiter"
+coords = "0_44_54_21_43"
+
+[[spawn]]
+npc = "npc.pack_wolf_whiter"
+coords = "0_44_54_23_46"
+
+[[spawn]]
+npc = "npc.pack_wolf_whiter"
+coords = "0_44_54_23_50"
+
+[[spawn]]
+npc = "npc.pack_wolf_whiter"
+coords = "0_44_54_26_48"
+
+[[spawn]]
+npc = "npc.pack_wolf_whiter"
+coords = "0_44_54_28_51"
+
+[[spawn]]
+npc = "npc.pilot_white_wolf"
+coords = "0_44_54_31_43"
+
+[[spawn]]
+npc = "npc.whitewolf"
+coords = "0_44_54_15_59"
+
+[[spawn]]
+npc = "npc.whitewolf"
+coords = "0_44_54_17_57"
+
+[[spawn]]
+npc = "npc.whitewolf"
+coords = "0_44_54_32_31"
+
+[[spawn]]
+npc = "npc.whitewolf"
+coords = "0_44_54_34_28"
+
+[[spawn]]
+npc = "npc.whitewolf"
+coords = "0_44_54_38_53"
+
+[[spawn]]
+npc = "npc.whitewolf"
+coords = "0_44_54_40_52"
+
+[[spawn]]
+npc = "npc.whitewolf_sentry"
+coords = "0_44_53_48_61"
+
+[[spawn]]
+npc = "npc.whitewolf_sentry"
+coords = "0_44_54_30_21"
+
+[[spawn]]
+npc = "npc.whitewolf_sentry"
+coords = "0_44_54_31_18"
+
+[[spawn]]
+npc = "npc.whitewolf_sentry"
+coords = "0_44_54_44_36"
+
+[[spawn]]
+npc = "npc.whitewolf_sentry"
+coords = "0_44_54_50_42"
+
+[[spawn]]
+npc = "npc.wolfpack_leader_whiter"
+coords = "0_44_54_24_41"
+
+## White Wolf Mountain Environment End
+

@@ -1,0 +1,12 @@
+[[area]]
+name = "Forthos Dungeon"
+area_id = "area.forthos_dungeon"
+levels = [0, 1, 2, 3]
+
+[[area.polygons]]
+vertices = [
+    [1779, 9997],
+    [1869, 9998],
+    [1868, 9871],
+    [1777, 9874],
+]

@@ -1,0 +1,44 @@
+[[spawn]]
+npc = "npc.enakh_akthanakos_boneguard_multinpc"
+coords = "1_48_145_32_16"
+
+[[spawn]]
+npc = "npc.enakh_akthanakos_multinpc"
+coords = "1_48_145_33_17"
+
+[[spawn]]
+npc = "npc.enakh_bone_pile"
+coords = "2_48_145_32_27"
+
+[[spawn]]
+npc = "npc.enakh_boneguard_multinpc"
+coords = "2_48_145_32_27"
+
+[[spawn]]
+npc = "npc.enakh_dummy_fountain_multinpc"
+coords = "1_48_145_19_27"
+
+[[spawn]]
+npc = "npc.enakh_dummy_furnace_multinpc"
+coords = "1_48_145_43_43"
+
+[[spawn]]
+npc = "npc.enakh_enakhra_multinpc"
+coords = "1_48_145_32_6"
+
+[[spawn]]
+npc = "npc.enakh_lazim_altar_multinpc"
+coords = "2_48_145_36_40"
+
+[[spawn]]
+npc = "npc.enakh_lazim_fallen_statue_east_multinpc"
+coords = "0_48_145_55_45"
+
+[[spawn]]
+npc = "npc.enakh_lazim_pedestal_multinpc"
+coords = "1_48_145_30_31"
+
+[[spawn]]
+npc = "npc.enakh_pentyn"
+coords = "1_48_145_19_44"
+

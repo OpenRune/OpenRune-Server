@@ -1,0 +1,92 @@
+[[spawn]]
+npc = "npc.ranging_advisor1"
+coords = "2_41_53_43_38"
+
+[[spawn]]
+npc = "npc.ranging_advisor2"
+coords = "2_41_53_46_37"
+
+[[spawn]]
+npc = "npc.ranging_advisor3"
+coords = "2_41_53_45_34"
+
+[[spawn]]
+npc = "npc.ranging_advisor4"
+coords = "2_41_53_42_35"
+
+[[spawn]]
+npc = "npc.ranging_guild_armour_salesman"
+coords = "0_41_53_43_44"
+
+[[spawn]]
+npc = "npc.ranging_guild_bow_salesman"
+coords = "0_41_53_49_42"
+
+[[spawn]]
+npc = "npc.ranging_guild_competition_judge"
+coords = "0_41_53_45_26"
+
+[[spawn]]
+npc = "npc.ranging_guild_guard"
+coords = "0_41_53_31_37"
+
+[[spawn]]
+npc = "npc.ranging_guild_guard"
+coords = "0_41_53_32_36"
+
+[[spawn]]
+npc = "npc.ranging_guild_guard"
+coords = "0_41_53_35_46"
+
+[[spawn]]
+npc = "npc.ranging_guild_guard"
+coords = "0_41_53_39_33"
+
+[[spawn]]
+npc = "npc.ranging_guild_guard"
+coords = "0_41_53_42_23"
+
+[[spawn]]
+npc = "npc.ranging_guild_guard"
+coords = "0_41_53_45_23"
+
+[[spawn]]
+npc = "npc.ranging_guild_guard"
+coords = "0_41_53_45_49"
+
+[[spawn]]
+npc = "npc.ranging_guild_guard"
+coords = "0_41_53_46_46"
+
+[[spawn]]
+npc = "npc.ranging_guild_guard"
+coords = "0_41_53_49_47"
+
+[[spawn]]
+npc = "npc.ranging_guild_guard"
+coords = "0_41_53_51_36"
+
+[[spawn]]
+npc = "npc.ranging_guild_guard"
+coords = "0_41_53_58_38"
+
+[[spawn]]
+npc = "npc.ranging_guild_leatherworker"
+coords = "0_41_53_54_42"
+
+[[spawn]]
+npc = "npc.ranging_guild_shield_master"
+coords = "0_41_53_31_33"
+
+[[spawn]]
+npc = "npc.ranging_guild_ticket_exchange"
+coords = "0_41_53_35_37"
+
+[[spawn]]
+npc = "npc.ranging_guild_ticket_exchange"
+coords = "0_41_53_35_39"
+
+[[spawn]]
+npc = "npc.ranging_guild_tribal_salesman"
+coords = "0_41_53_37_27"
+

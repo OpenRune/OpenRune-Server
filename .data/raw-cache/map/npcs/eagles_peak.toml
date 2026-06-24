@@ -1,0 +1,32 @@
+[[spawn]]
+npc = "npc.eagle_winged"
+coords = "0_36_54_15_21"
+
+[[spawn]]
+npc = "npc.eagle_winged"
+coords = "0_36_54_19_29"
+
+[[spawn]]
+npc = "npc.eagle_winged"
+coords = "0_36_54_30_29"
+
+[[spawn]]
+npc = "npc.eagle_winged"
+coords = "0_36_54_30_39"
+
+[[spawn]]
+npc = "npc.hunting_ferret"
+coords = "0_36_54_12_44"
+
+## Eagles Peak Jungle Nest
+
+[[spawn]]
+npc = "npc.eaglepeak_eagle_jungle"
+coords = "0_39_145_20_42"
+
+[[spawn]]
+npc = "npc.eaglepeak_eagle_jungle"
+coords = "0_39_145_27_37"
+
+## Eagles Peak Jungle Nest End
+

@@ -1,0 +1,112 @@
+[[spawn]]
+npc = "npc.dragonslayer_ned_on_crandor"
+coords = "1_44_50_33_35"
+
+[[spawn]]
+npc = "npc.hobgoblin_unarmed"
+coords = "0_44_51_18_41"
+
+[[spawn]]
+npc = "npc.hobgoblin_unarmed"
+coords = "0_44_51_2_27"
+
+[[spawn]]
+npc = "npc.hobgoblin_unarmed"
+coords = "0_44_51_6_18"
+
+[[spawn]]
+npc = "npc.hobgoblin_unarmed"
+coords = "0_44_51_6_24"
+
+[[spawn]]
+npc = "npc.hobgoblin_unarmed"
+coords = "0_44_51_8_34"
+
+[[spawn]]
+npc = "npc.kingscorpion"
+coords = "0_44_51_26_34"
+
+[[spawn]]
+npc = "npc.kingscorpion"
+coords = "0_44_51_28_27"
+
+[[spawn]]
+npc = "npc.kingscorpion"
+coords = "0_44_51_35_34"
+
+[[spawn]]
+npc = "npc.kingscorpion"
+coords = "0_44_51_39_39"
+
+[[spawn]]
+npc = "npc.kingscorpion"
+coords = "0_44_51_43_19"
+
+[[spawn]]
+npc = "npc.kingscorpion"
+coords = "0_44_51_45_31"
+
+[[spawn]]
+npc = "npc.lesser_demon3"
+coords = "0_44_51_21_16"
+
+[[spawn]]
+npc = "npc.lesser_demon5"
+coords = "0_44_51_16_14"
+
+[[spawn]]
+npc = "npc.mossgiant"
+coords = "0_44_50_15_43"
+
+[[spawn]]
+npc = "npc.mossgiant2"
+coords = "0_44_50_18_42"
+
+[[spawn]]
+npc = "npc.mossgiant3"
+coords = "0_44_50_11_46"
+
+[[spawn]]
+npc = "npc.skeleton_armed"
+coords = "0_44_50_34_56"
+
+[[spawn]]
+npc = "npc.skeleton_armed"
+coords = "0_44_50_4_59"
+
+[[spawn]]
+npc = "npc.skeleton_armed"
+coords = "0_44_50_8_37"
+
+[[spawn]]
+npc = "npc.skeleton_armed2"
+coords = "0_44_50_16_34"
+
+[[spawn]]
+npc = "npc.skeleton_armed2"
+coords = "0_44_50_38_49"
+
+[[spawn]]
+npc = "npc.skeleton_armed3"
+coords = "0_44_50_24_38"
+
+[[spawn]]
+npc = "npc.skeleton_armed3"
+coords = "0_44_50_36_60"
+
+[[spawn]]
+npc = "npc.skeleton_armed4"
+coords = "0_44_50_30_49"
+
+[[spawn]]
+npc = "npc.skeleton_armed5"
+coords = "0_44_50_34_47"
+
+## Crandor Lab
+
+[[spawn]]
+npc = "npc.dallas_jones_crandor_lab"
+coords = "0_44_151_50_11"
+
+## Crandor Lab End
+

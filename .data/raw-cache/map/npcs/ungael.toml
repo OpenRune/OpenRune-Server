@@ -1,0 +1,12 @@
+[[spawn]]
+npc = "npc.torfinn_ungael"
+coords = "0_35_63_38_2"
+
+## Ungael Snow
+
+[[spawn]]
+npc = "npc.vorkath_sleeping_noop"
+coords = "0_35_63_29_30"
+
+## Ungael Snow End
+

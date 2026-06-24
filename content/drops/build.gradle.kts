@@ -10,6 +10,7 @@ dependencies {
     implementation(projects.api.dropTable)
     implementation(projects.api.dropTablePlugin)
     implementation(projects.api.player)
+    implementation(projects.api.playerOutput)
     implementation(projects.api.random)
     implementation(projects.api.repo)
     implementation(projects.content.skills.slayer)

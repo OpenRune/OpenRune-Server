@@ -1,0 +1,56 @@
+[[spawn]]
+npc = "npc.fairy2_butterfly1"
+coords = "0_47_70_17_33"
+
+[[spawn]]
+npc = "npc.fairy2_butterfly2"
+coords = "0_47_70_23_13"
+
+[[spawn]]
+npc = "npc.fairy2_centaur_female"
+coords = "0_47_70_16_26"
+
+[[spawn]]
+npc = "npc.fairy2_centaur_male"
+coords = "0_47_70_17_23"
+
+[[spawn]]
+npc = "npc.fairy2_dryad"
+coords = "0_47_70_19_40"
+
+[[spawn]]
+npc = "npc.fairy2_fakefish"
+coords = "0_47_70_34_30"
+
+[[spawn]]
+npc = "npc.fairy2_rabbit1"
+coords = "0_47_70_26_25"
+
+[[spawn]]
+npc = "npc.fairy2_rabbit1"
+coords = "0_47_70_51_23"
+
+[[spawn]]
+npc = "npc.fairy2_rabbit2"
+coords = "0_47_70_24_25"
+
+[[spawn]]
+npc = "npc.fairy2_rabbit2"
+coords = "0_47_70_37_10"
+
+[[spawn]]
+npc = "npc.fairy2_stag"
+coords = "0_47_70_29_23"
+
+[[spawn]]
+npc = "npc.fairy2_stag"
+coords = "0_47_70_42_14"
+
+## Enchanted Valley Ledges
+
+[[spawn]]
+npc = "npc.sote_lord_amlodd_valley"
+coords = "0_47_70_43_6"
+
+## Enchanted Valley Ledges End
+

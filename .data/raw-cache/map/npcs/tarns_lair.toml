@@ -1,0 +1,292 @@
+[[spawn]]
+npc = "npc.lotr_banker"
+coords = "0_49_71_58_25"
+
+[[spawn]]
+npc = "npc.lotr_giant_skeleton"
+coords = "0_49_71_29_54"
+
+[[spawn]]
+npc = "npc.lotr_giant_skeleton"
+coords = "0_49_71_31_33"
+
+[[spawn]]
+npc = "npc.lotr_mage_skeleton"
+coords = "1_49_71_55_51"
+
+[[spawn]]
+npc = "npc.lotr_mage_skeleton"
+coords = "1_49_71_55_57"
+
+[[spawn]]
+npc = "npc.lotr_skeleton_lvl_13"
+coords = "0_49_71_22_8"
+
+[[spawn]]
+npc = "npc.lotr_skeleton_lvl_13"
+coords = "0_49_71_27_25"
+
+[[spawn]]
+npc = "npc.lotr_skeleton_lvl_13"
+coords = "0_49_71_41_5"
+
+[[spawn]]
+npc = "npc.lotr_skeleton_lvl_13"
+coords = "0_49_71_48_6"
+
+[[spawn]]
+npc = "npc.lotr_skeleton_lvl_13"
+coords = "1_49_71_22_16"
+
+[[spawn]]
+npc = "npc.lotr_skeleton_lvl_13"
+coords = "1_49_71_38_22"
+
+[[spawn]]
+npc = "npc.lotr_skeleton_lvl_13"
+coords = "1_49_71_59_33"
+
+[[spawn]]
+npc = "npc.lotr_skeleton_lvl_21"
+coords = "0_49_71_46_18"
+
+[[spawn]]
+npc = "npc.lotr_skeleton_lvl_21"
+coords = "0_49_71_49_16"
+
+[[spawn]]
+npc = "npc.lotr_skeleton_lvl_22"
+coords = "0_49_71_21_24"
+
+[[spawn]]
+npc = "npc.lotr_skeleton_lvl_22"
+coords = "0_49_71_49_18"
+
+[[spawn]]
+npc = "npc.lotr_skeleton_lvl_25"
+coords = "2_49_71_20_23"
+
+[[spawn]]
+npc = "npc.lotr_skeleton_lvl_45"
+coords = "0_49_71_22_40"
+
+[[spawn]]
+npc = "npc.lotr_skeleton_lvl_45"
+coords = "0_49_71_23_33"
+
+[[spawn]]
+npc = "npc.lotr_skeleton_lvl_45"
+coords = "0_49_71_33_43"
+
+[[spawn]]
+npc = "npc.lotr_skeleton_lvl_45"
+coords = "1_49_71_16_25"
+
+[[spawn]]
+npc = "npc.lotr_skeleton_lvl_77"
+coords = "0_49_71_46_33"
+
+[[spawn]]
+npc = "npc.lotr_skeleton_lvl_77"
+coords = "0_49_71_51_34"
+
+[[spawn]]
+npc = "npc.lotr_skeleton_lvl_77"
+coords = "0_49_71_7_51"
+
+[[spawn]]
+npc = "npc.lotr_skeleton_lvl_77"
+coords = "0_49_71_9_54"
+
+[[spawn]]
+npc = "npc.lotr_skeleton_lvl_77"
+coords = "1_49_71_22_45"
+
+[[spawn]]
+npc = "npc.lotr_skeleton_lvl_77"
+coords = "1_49_71_58_55"
+
+[[spawn]]
+npc = "npc.lotr_terror_dog_large"
+coords = "0_49_72_10_40"
+
+[[spawn]]
+npc = "npc.lotr_terror_dog_large"
+coords = "0_49_72_12_37"
+
+[[spawn]]
+npc = "npc.lotr_terror_dog_large"
+coords = "0_49_72_15_45"
+
+[[spawn]]
+npc = "npc.lotr_terror_dog_large"
+coords = "0_49_72_16_39"
+
+[[spawn]]
+npc = "npc.lotr_terror_dog_small"
+coords = "0_49_72_10_48"
+
+[[spawn]]
+npc = "npc.lotr_terror_dog_small"
+coords = "0_49_72_22_39"
+
+[[spawn]]
+npc = "npc.lotr_terror_dog_small"
+coords = "0_49_72_22_45"
+
+[[spawn]]
+npc = "npc.lotr_terror_dog_small"
+coords = "0_49_72_4_39"
+
+[[spawn]]
+npc = "npc.lotr_terror_dog_small"
+coords = "0_49_72_4_45"
+
+[[spawn]]
+npc = "npc.lotr_zombie1_lvl_18"
+coords = "1_49_71_34_15"
+
+[[spawn]]
+npc = "npc.lotr_zombie1_lvl_24"
+coords = "0_49_71_27_15"
+
+[[spawn]]
+npc = "npc.lotr_zombie1_lvl_24"
+coords = "1_49_71_10_21"
+
+[[spawn]]
+npc = "npc.lotr_zombie1_lvl_24"
+coords = "1_49_71_59_38"
+
+[[spawn]]
+npc = "npc.lotr_zombie1_lvl_25"
+coords = "0_49_71_18_15"
+
+[[spawn]]
+npc = "npc.lotr_zombie1_lvl_25"
+coords = "1_49_71_35_27"
+
+[[spawn]]
+npc = "npc.lotr_zombie1_lvl_25"
+coords = "1_49_71_43_42"
+
+[[spawn]]
+npc = "npc.lotr_zombie1_lvl_30"
+coords = "2_49_71_4_13"
+
+[[spawn]]
+npc = "npc.lotr_zombie1_lvl_30"
+coords = "2_49_71_52_34"
+
+[[spawn]]
+npc = "npc.lotr_zombie1_lvl_44"
+coords = "1_49_71_9_39"
+
+[[spawn]]
+npc = "npc.lotr_zombie1_lvl_53"
+coords = "0_49_71_10_52"
+
+[[spawn]]
+npc = "npc.lotr_zombie1_lvl_53"
+coords = "0_49_71_27_54"
+
+[[spawn]]
+npc = "npc.lotr_zombie1_lvl_53"
+coords = "1_49_71_19_47"
+
+[[spawn]]
+npc = "npc.lotr_zombie2_lvl_18"
+coords = "0_49_71_37_6"
+
+[[spawn]]
+npc = "npc.lotr_zombie2_lvl_18"
+coords = "0_49_71_54_7"
+
+[[spawn]]
+npc = "npc.lotr_zombie2_lvl_24"
+coords = "1_49_71_23_59"
+
+[[spawn]]
+npc = "npc.lotr_zombie2_lvl_25"
+coords = "0_49_71_5_13"
+
+[[spawn]]
+npc = "npc.lotr_zombie2_lvl_25"
+coords = "2_49_71_46_33"
+
+[[spawn]]
+npc = "npc.lotr_zombie2_lvl_30"
+coords = "1_49_71_39_35"
+
+[[spawn]]
+npc = "npc.lotr_zombie2_lvl_30"
+coords = "2_49_71_23_25"
+
+[[spawn]]
+npc = "npc.lotr_zombie2_lvl_30"
+coords = "2_49_71_6_16"
+
+[[spawn]]
+npc = "npc.lotr_zombie2_lvl_44"
+coords = "0_49_71_19_39"
+
+[[spawn]]
+npc = "npc.lotr_zombie2_lvl_44"
+coords = "1_49_71_40_32"
+
+[[spawn]]
+npc = "npc.lotr_zombie2_lvl_53"
+coords = "0_49_71_31_45"
+
+[[spawn]]
+npc = "npc.lotr_zombie2_lvl_53"
+coords = "0_49_71_36_54"
+
+[[spawn]]
+npc = "npc.lotr_zombie3_lvl_18"
+coords = "0_49_71_54_17"
+
+[[spawn]]
+npc = "npc.lotr_zombie3_lvl_24"
+coords = "1_49_71_5_3"
+
+[[spawn]]
+npc = "npc.lotr_zombie3_lvl_25"
+coords = "0_49_71_7_11"
+
+[[spawn]]
+npc = "npc.lotr_zombie3_lvl_25"
+coords = "1_49_71_54_43"
+
+[[spawn]]
+npc = "npc.lotr_zombie3_lvl_25"
+coords = "1_49_71_8_5"
+
+[[spawn]]
+npc = "npc.lotr_zombie3_lvl_25"
+coords = "2_49_71_50_32"
+
+[[spawn]]
+npc = "npc.lotr_zombie3_lvl_30"
+coords = "1_49_71_15_29"
+
+[[spawn]]
+npc = "npc.lotr_zombie3_lvl_44"
+coords = "1_49_71_46_42"
+
+[[spawn]]
+npc = "npc.lotr_zombie3_lvl_44"
+coords = "1_49_71_9_30"
+
+[[spawn]]
+npc = "npc.lotr_zombie3_lvl_53"
+coords = "0_49_71_34_48"
+
+[[spawn]]
+npc = "npc.lotr_zombie3_lvl_53"
+coords = "0_49_71_5_54"
+
+[[spawn]]
+npc = "npc.lotr_zombie3_lvl_53"
+coords = "1_49_71_8_45"
+

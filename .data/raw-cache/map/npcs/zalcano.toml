@@ -1,0 +1,8 @@
+[[spawn]]
+npc = "npc.zalcano"
+coords = "0_47_94_23_32"
+
+[[spawn]]
+npc = "npc.zalcano_instructor"
+coords = "0_47_94_25_51"
+

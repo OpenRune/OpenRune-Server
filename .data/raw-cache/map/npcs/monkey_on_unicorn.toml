@@ -1,0 +1,12 @@
+[[spawn]]
+npc = "npc.butterfly_viceroy"
+coords = "0_49_50_7_10"
+
+[[spawn]]
+npc = "npc.unicorn"
+coords = "0_49_50_4_9"
+
+[[spawn]]
+npc = "npc.zanarisleprechaun"
+coords = "0_49_50_2_11"
+

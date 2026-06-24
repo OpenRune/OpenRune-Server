@@ -1,0 +1,160 @@
+[[spawn]]
+npc = "npc.bat"
+coords = "0_40_147_48_13"
+
+[[spawn]]
+npc = "npc.bat"
+coords = "0_40_147_52_8"
+
+[[spawn]]
+npc = "npc.bat"
+coords = "0_40_147_59_19"
+
+[[spawn]]
+npc = "npc.bat"
+coords = "0_40_147_60_11"
+
+[[spawn]]
+npc = "npc.blue_dragon"
+coords = "0_40_147_30_53"
+
+[[spawn]]
+npc = "npc.blue_dragon"
+coords = "0_40_147_32_23"
+
+[[spawn]]
+npc = "npc.blue_dragon2"
+coords = "0_40_147_44_35"
+
+[[spawn]]
+npc = "npc.blue_dragon3"
+coords = "0_40_147_49_51"
+
+[[spawn]]
+npc = "npc.blue_dragon4"
+coords = "0_40_147_19_37"
+
+[[spawn]]
+npc = "npc.blue_dragon5"
+coords = "0_40_147_8_29"
+
+[[spawn]]
+npc = "npc.greater_demon"
+coords = "0_40_147_26_50"
+
+[[spawn]]
+npc = "npc.greater_demon"
+coords = "0_40_147_55_18"
+
+[[spawn]]
+npc = "npc.greater_demon2"
+coords = "0_40_147_58_16"
+
+[[spawn]]
+npc = "npc.greater_demon3"
+coords = "0_40_147_55_15"
+
+[[spawn]]
+npc = "npc.greater_demon4"
+coords = "0_40_147_52_15"
+
+[[spawn]]
+npc = "npc.ogre_chieftan"
+coords = "0_40_147_13_39"
+
+[[spawn]]
+npc = "npc.ogre_chieftan"
+coords = "0_40_147_19_33"
+
+[[spawn]]
+npc = "npc.ogre_chieftan"
+coords = "0_40_147_20_23"
+
+[[spawn]]
+npc = "npc.ogre_chieftan"
+coords = "0_40_147_51_46"
+
+[[spawn]]
+npc = "npc.ogre_chieftan"
+coords = "0_40_147_56_39"
+
+[[spawn]]
+npc = "npc.ogre_chieftan"
+coords = "0_40_147_8_24"
+
+[[spawn]]
+npc = "npc.qip_watchtower_ogre_shaman_01"
+coords = "0_40_147_32_28"
+
+[[spawn]]
+npc = "npc.qip_watchtower_ogre_shaman_02"
+coords = "0_40_147_22_29"
+
+[[spawn]]
+npc = "npc.qip_watchtower_ogre_shaman_03"
+coords = "0_40_147_17_43"
+
+[[spawn]]
+npc = "npc.qip_watchtower_ogre_shaman_04"
+coords = "0_40_147_39_53"
+
+[[spawn]]
+npc = "npc.qip_watchtower_ogre_shaman_05"
+coords = "0_40_147_47_43"
+
+[[spawn]]
+npc = "npc.qip_watchtower_ogre_shaman_06"
+coords = "0_40_147_46_30"
+
+[[spawn]]
+npc = "npc.skeleton_unarmed"
+coords = "0_40_147_16_28"
+
+[[spawn]]
+npc = "npc.skeleton_unarmed"
+coords = "0_40_147_19_53"
+
+[[spawn]]
+npc = "npc.skeleton_unarmed"
+coords = "0_40_147_30_29"
+
+[[spawn]]
+npc = "npc.spider"
+coords = "0_40_147_16_46"
+
+[[spawn]]
+npc = "npc.spider"
+coords = "0_40_147_26_15"
+
+[[spawn]]
+npc = "npc.spider"
+coords = "0_40_147_28_23"
+
+[[spawn]]
+npc = "npc.spider"
+coords = "0_40_147_40_24"
+
+[[spawn]]
+npc = "npc.spider"
+coords = "0_40_147_44_33"
+
+[[spawn]]
+npc = "npc.spider"
+coords = "0_40_147_47_52"
+
+[[spawn]]
+npc = "npc.spider"
+coords = "0_40_147_48_28"
+
+[[spawn]]
+npc = "npc.spider"
+coords = "0_40_147_50_38"
+
+[[spawn]]
+npc = "npc.spider"
+coords = "0_40_147_57_43"
+
+[[spawn]]
+npc = "npc.spider"
+coords = "0_40_147_5_35"
+

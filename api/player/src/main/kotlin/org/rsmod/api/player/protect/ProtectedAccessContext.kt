@@ -10,6 +10,7 @@ import org.rsmod.api.player.interact.NpcInteractions
 import org.rsmod.api.player.interact.PlayerInteractions
 import org.rsmod.api.player.interact.WornInteractions
 import org.rsmod.api.player.music.MusicPlayer
+import org.rsmod.api.player.hook.PlayerTeleportValidator
 import org.rsmod.api.random.GameRandom
 import org.rsmod.events.EventBus
 import org.rsmod.game.entity.NpcList
@@ -82,6 +83,7 @@ public data class ProtectedAccessContext(
     private val getMusicPlayer: () -> MusicPlayer,
     private val getMarketPrices: () -> MarketPrices,
     private val getInstantHitProcessor: () -> InstantPlayerHitProcessor,
+    private val getTeleportValidator: () -> PlayerTeleportValidator,
 ) {
     public val random: GameRandom by lazyLoad { getRandom() }
     public val eventBus: EventBus by lazyLoad { getEventBus() }
@@ -100,6 +102,7 @@ public data class ProtectedAccessContext(
     public val instantHitProcessor: InstantPlayerHitProcessor by lazyLoad {
         getInstantHitProcessor()
     }
+    public val teleportValidator: PlayerTeleportValidator by lazyLoad { getTeleportValidator() }
 }
 
 private fun <T> lazyLoad(init: () -> T): Lazy<T> = lazy(LazyThreadSafetyMode.NONE, init)

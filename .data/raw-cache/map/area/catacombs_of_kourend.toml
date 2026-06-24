@@ -1,0 +1,12 @@
+[[area]]
+name = "Catacombs of Kourend"
+area_id = "area.catacombs_of_kourend"
+levels = [0, 1, 2, 3]
+
+[[area.polygons]]
+vertices = [
+    [1585, 9975],
+    [1750, 9975],
+    [1750, 10949],
+    [1585, 10949],
+]

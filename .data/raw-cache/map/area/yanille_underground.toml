@@ -1,0 +1,15 @@
+[[area]]
+name = "Smoke Devil Dungeon"
+area_id = "area.yanille_underground"
+levels = [0]
+
+[[area.polygons]]
+vertices = [
+    [2337, 9441],
+    [2388, 9406],
+    [2423, 9404],
+    [2439, 9459],
+    [2411, 9474],
+    [2367, 9473],
+    [2344, 9467],
+]

@@ -13,6 +13,7 @@ dependencies {
     implementation(projects.api.combat.combatCommons)
     implementation(projects.api.player)
     implementation(projects.api.playerOutput)
+    implementation(projects.api.utils.utilsVars)
 
 
 

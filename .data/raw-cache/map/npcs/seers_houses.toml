@@ -1,0 +1,28 @@
+[[spawn]]
+npc = "npc.favour_phantuwti_farsight"
+coords = "0_42_54_17_18"
+
+[[spawn]]
+npc = "npc.man"
+coords = "0_42_54_25_24"
+
+[[spawn]]
+npc = "npc.poh_estate_agent"
+coords = "0_42_54_49_46"
+
+[[spawn]]
+npc = "npc.seer"
+coords = "0_42_54_14_19"
+
+[[spawn]]
+npc = "npc.seer"
+coords = "0_42_54_17_17"
+
+[[spawn]]
+npc = "npc.seer"
+coords = "0_42_54_26_15"
+
+[[spawn]]
+npc = "npc.shadow_maj_seer"
+coords = "1_42_54_12_19"
+

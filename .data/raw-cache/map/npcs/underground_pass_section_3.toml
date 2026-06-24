@@ -1,0 +1,80 @@
+[[spawn]]
+npc = "npc.upass_paladin1"
+coords = "0_37_151_56_57"
+
+[[spawn]]
+npc = "npc.upass_paladin1_vis"
+coords = "0_37_151_56_57"
+
+[[spawn]]
+npc = "npc.upass_paladin2"
+coords = "0_37_151_54_54"
+
+[[spawn]]
+npc = "npc.upass_paladin2_vis"
+coords = "0_37_151_54_54"
+
+[[spawn]]
+npc = "npc.upass_paladin3"
+coords = "0_37_151_58_54"
+
+[[spawn]]
+npc = "npc.upass_paladin3_vis"
+coords = "0_37_151_58_54"
+
+[[spawn]]
+npc = "npc.zombie_armed"
+coords = "0_37_151_28_46"
+
+[[spawn]]
+npc = "npc.zombie_armed"
+coords = "0_37_151_39_38"
+
+[[spawn]]
+npc = "npc.zombie_armed"
+coords = "0_37_151_40_48"
+
+[[spawn]]
+npc = "npc.zombie_armed2"
+coords = "0_37_151_30_43"
+
+[[spawn]]
+npc = "npc.zombie_armed2"
+coords = "0_37_151_33_50"
+
+[[spawn]]
+npc = "npc.zombie_armed2"
+coords = "0_37_151_41_40"
+
+[[spawn]]
+npc = "npc.zombie_armed3"
+coords = "0_37_151_29_38"
+
+[[spawn]]
+npc = "npc.zombie_armed3"
+coords = "0_37_151_31_48"
+
+[[spawn]]
+npc = "npc.zombie_armed3"
+coords = "0_37_151_38_45"
+
+[[spawn]]
+npc = "npc.zombie_unarmed"
+coords = "0_37_151_37_49"
+
+[[spawn]]
+npc = "npc.zombie_unarmed2"
+coords = "0_37_151_26_43"
+
+[[spawn]]
+npc = "npc.zombie_unarmed3"
+coords = "0_37_151_42_43"
+
+[[spawn]]
+npc = "npc.zombie_unarmed4"
+coords = "0_37_151_30_40"
+
+[[spawn]]
+npc = "npc.zombie_unarmed6"
+coords = "0_37_151_32_37"
+

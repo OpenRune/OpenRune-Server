@@ -1,0 +1,40 @@
+[[spawn]]
+npc = "npc.death_growncat_black_lunar"
+coords = "0_32_61_25_9"
+
+[[spawn]]
+npc = "npc.dream_birds_eye_jack_multi"
+coords = "0_32_61_51_17"
+
+[[spawn]]
+npc = "npc.dream_cyrisus_outsidebraziermulti"
+coords = "0_32_61_26_7"
+
+[[spawn]]
+npc = "npc.lunar_moonclan_monk1"
+coords = "0_32_61_25_17"
+
+[[spawn]]
+npc = "npc.lunar_moonclan_monk3"
+coords = "0_32_61_47_2"
+
+[[spawn]]
+npc = "npc.lunar_moonclan_monk5"
+coords = "0_32_61_56_3"
+
+[[spawn]]
+npc = "npc.lunar_moonclan_monk_man"
+coords = "0_32_61_49_17"
+
+[[spawn]]
+npc = "npc.lunar_moonclan_monk_man"
+coords = "0_32_61_50_17"
+
+[[spawn]]
+npc = "npc.quest_lunar_broom_1"
+coords = "0_32_61_39_4"
+
+[[spawn]]
+npc = "npc.quest_lunar_broom_2"
+coords = "0_32_61_18_10"
+

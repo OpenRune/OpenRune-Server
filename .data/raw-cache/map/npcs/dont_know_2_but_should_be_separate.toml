@@ -1,0 +1,40 @@
+[[spawn]]
+npc = "npc.akd_councillor_andrews_jailed"
+coords = "0_22_155_26_29"
+
+[[spawn]]
+npc = "npc.akd_councillor_unkar_jailed"
+coords = "0_22_155_26_20"
+
+[[spawn]]
+npc = "npc.akd_martin_holt_jailed"
+coords = "0_22_155_26_26"
+
+[[spawn]]
+npc = "npc.jail_mugger_noop"
+coords = "0_22_155_26_23"
+
+[[spawn]]
+npc = "npc.kourend_guard_f1"
+coords = "0_22_155_29_38"
+
+[[spawn]]
+npc = "npc.kourend_guard_f2"
+coords = "0_22_155_32_30"
+
+[[spawn]]
+npc = "npc.kourend_guard_f4"
+coords = "0_22_155_31_21"
+
+[[spawn]]
+npc = "npc.kourend_guard_m1"
+coords = "0_22_155_30_25"
+
+[[spawn]]
+npc = "npc.kourend_guard_m3"
+coords = "0_22_155_34_41"
+
+[[spawn]]
+npc = "npc.kourend_guard_m3_big"
+coords = "0_22_155_31_42"
+

@@ -1,0 +1,236 @@
+[[spawn]]
+npc = "npc.bat"
+coords = "0_40_153_36_44"
+
+[[spawn]]
+npc = "npc.bat"
+coords = "0_40_153_39_45"
+
+[[spawn]]
+npc = "npc.bat"
+coords = "0_40_153_46_33"
+
+[[spawn]]
+npc = "npc.bat"
+coords = "0_40_153_49_25"
+
+[[spawn]]
+npc = "npc.bat"
+coords = "0_40_153_49_31"
+
+[[spawn]]
+npc = "npc.bat"
+coords = "0_40_153_52_23"
+
+[[spawn]]
+npc = "npc.dungeon_rat"
+coords = "0_40_153_28_14"
+
+[[spawn]]
+npc = "npc.dungeon_rat2"
+coords = "0_40_153_25_9"
+
+[[spawn]]
+npc = "npc.dungeon_rat2"
+coords = "0_40_153_41_9"
+
+[[spawn]]
+npc = "npc.dungeon_rat3"
+coords = "0_40_153_20_12"
+
+[[spawn]]
+npc = "npc.dungeon_rat3"
+coords = "0_40_153_34_11"
+
+[[spawn]]
+npc = "npc.goblin_armed_mcannon_1"
+coords = "0_40_153_4_44"
+
+[[spawn]]
+npc = "npc.goblin_armed_mcannon_1"
+coords = "0_40_153_8_52"
+
+[[spawn]]
+npc = "npc.goblin_armed_mcannon_2"
+coords = "0_40_153_5_43"
+
+[[spawn]]
+npc = "npc.goblin_armed_mcannon_2"
+coords = "0_40_153_9_55"
+
+[[spawn]]
+npc = "npc.goblin_armed_mcannon_3"
+coords = "0_40_153_10_58"
+
+[[spawn]]
+npc = "npc.goblin_armed_mcannon_3"
+coords = "0_40_153_37_29"
+
+[[spawn]]
+npc = "npc.goblin_armed_mcannon_4"
+coords = "0_40_153_35_29"
+
+[[spawn]]
+npc = "npc.goblin_armed_mcannon_4"
+coords = "0_40_153_6_57"
+
+[[spawn]]
+npc = "npc.goblin_armed_mcannon_5"
+coords = "0_40_153_30_29"
+
+[[spawn]]
+npc = "npc.goblin_unarmed_mcannon_1"
+coords = "0_40_153_10_53"
+
+[[spawn]]
+npc = "npc.goblin_unarmed_mcannon_1"
+coords = "0_40_153_24_37"
+
+[[spawn]]
+npc = "npc.goblin_unarmed_mcannon_2"
+coords = "0_40_153_26_40"
+
+[[spawn]]
+npc = "npc.goblin_unarmed_mcannon_3"
+coords = "0_40_153_31_38"
+
+[[spawn]]
+npc = "npc.goblin_unarmed_mcannon_4"
+coords = "0_40_153_20_33"
+
+[[spawn]]
+npc = "npc.goblin_unarmed_mcannon_4"
+coords = "0_40_153_24_43"
+
+[[spawn]]
+npc = "npc.goblin_unarmed_mcannon_5"
+coords = "0_40_153_29_42"
+
+[[spawn]]
+npc = "npc.goblin_unarmed_mcannon_6"
+coords = "0_40_153_27_45"
+
+[[spawn]]
+npc = "npc.goblin_unarmed_mcannon_7"
+coords = "0_40_153_19_49"
+
+[[spawn]]
+npc = "npc.goblin_unarmed_mcannon_7"
+coords = "0_40_153_31_44"
+
+[[spawn]]
+npc = "npc.goblin_unarmed_mcannon_8"
+coords = "0_40_153_20_55"
+
+[[spawn]]
+npc = "npc.goblin_unarmed_mcannon_8"
+coords = "0_40_153_34_34"
+
+[[spawn]]
+npc = "npc.goblin_unarmed_mcannon_9"
+coords = "0_40_153_20_58"
+
+[[spawn]]
+npc = "npc.goblin_unarmed_mcannon_9"
+coords = "0_40_153_24_34"
+
+[[spawn]]
+npc = "npc.lotg_goblin_guard1"
+coords = "0_40_153_20_60"
+
+[[spawn]]
+npc = "npc.lotg_goblin_guard2"
+coords = "0_40_153_22_60"
+
+[[spawn]]
+npc = "npc.lotg_zanik_outside_temple"
+coords = "0_40_153_57_5"
+
+[[spawn]]
+npc = "npc.mcannon_goblin_guard"
+coords = "0_40_153_32_27"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_40_153_13_13"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_40_153_15_11"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_40_153_18_14"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_40_153_19_12"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_40_153_23_11"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_40_153_25_12"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_40_153_25_38"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_40_153_27_11"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_40_153_28_33"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_40_153_31_9"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_40_153_32_14"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_40_153_34_9"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_40_153_39_11"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_40_153_39_20"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_40_153_41_18"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_40_153_50_14"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_40_153_52_20"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_40_153_53_13"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_40_153_53_14"
+
+[[spawn]]
+npc = "npc.slagilith_hybernate"
+coords = "0_40_153_60_41"
+
+[[spawn]]
+npc = "npc.slagilith_hybernate"
+coords = "0_40_153_60_44"
+

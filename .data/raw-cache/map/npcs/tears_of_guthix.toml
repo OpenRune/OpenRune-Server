@@ -1,0 +1,44 @@
+[[spawn]]
+npc = "npc.kalphite_larva"
+coords = "0_50_148_17_52"
+
+[[spawn]]
+npc = "npc.tog_juna_dummy"
+coords = "1_50_148_52_45"
+
+[[spawn]]
+npc = "npc.wgs_armadyl_guardian_male_multi"
+coords = "2_50_148_24_44"
+
+[[spawn]]
+npc = "npc.wgs_armadyl_guardian_male_multi"
+coords = "2_50_148_24_45"
+
+[[spawn]]
+npc = "npc.wgs_armadyl_guardian_male_multi"
+coords = "2_50_148_24_46"
+
+[[spawn]]
+npc = "npc.wgs_armadyl_guardian_male_multi"
+coords = "2_50_148_25_44"
+
+[[spawn]]
+npc = "npc.wgs_armadyl_guardian_male_multi"
+coords = "2_50_148_25_45"
+
+[[spawn]]
+npc = "npc.wgs_armadyl_guardian_male_multi"
+coords = "2_50_148_25_46"
+
+[[spawn]]
+npc = "npc.wgs_armadyl_guardian_male_multi"
+coords = "2_50_148_26_44"
+
+[[spawn]]
+npc = "npc.wgs_armadyl_guardian_male_multi"
+coords = "2_50_148_26_45"
+
+[[spawn]]
+npc = "npc.wgs_armadyl_guardian_male_multi"
+coords = "2_50_148_26_46"
+

@@ -1,0 +1,32 @@
+[[spawn]]
+npc = "npc.troll_block_1"
+coords = "2_44_59_9_31"
+
+[[spawn]]
+npc = "npc.troll_block_2"
+coords = "2_44_59_9_35"
+
+## Weiss Region
+
+[[spawn]]
+npc = "npc.arctic_squirrel"
+coords = "0_45_61_2_13"
+
+[[spawn]]
+npc = "npc.arctic_squirrel"
+coords = "0_45_61_37_37"
+
+[[spawn]]
+npc = "npc.my2arm_sentry_driftwood_background"
+coords = "0_45_61_8_18"
+
+[[spawn]]
+npc = "npc.my2arm_sentry_icicle_background"
+coords = "0_45_61_1_27"
+
+[[spawn]]
+npc = "npc.my2arm_sentry_root_background"
+coords = "0_45_61_4_35"
+
+## Weiss Region End
+

@@ -1,8 +1,10 @@
 package org.rsmod.api.obj.plugin
 
+import dev.openrune.ServerCacheManager
 import jakarta.inject.Inject
 import org.rsmod.api.config.Constants
 import org.rsmod.api.invtx.invAdd
+import org.rsmod.api.player.hook.PlayerObjTakeValidator
 import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.repo.obj.ObjRepository
@@ -14,12 +16,23 @@ import org.rsmod.objtx.TransactionResultList
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
-public class ObjTakePlugin @Inject constructor(private val repo: ObjRepository) : PluginScript() {
+public class ObjTakePlugin
+@Inject
+constructor(
+    private val repo: ObjRepository,
+    private val takeValidator: PlayerObjTakeValidator,
+) : PluginScript() {
     override fun ScriptContext.startup() {
         onDefaultOpObj3 { triggerTake(it.obj) }
     }
 
     private suspend fun ProtectedAccess.triggerTake(obj: Obj) {
+        val type = ServerCacheManager.getItem(obj.type) ?: return
+        val denial = takeValidator.validate(player, type)
+        if (denial != null) {
+            mes(denial)
+            return
+        }
         if (!player.hasInvSpace(obj)) {
             player.mes(Constants.dm_take_invspace)
             return

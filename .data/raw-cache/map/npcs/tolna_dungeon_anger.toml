@@ -1,0 +1,32 @@
+[[spawn]]
+npc = "npc.soulbane_bear"
+coords = "0_51_153_11_41"
+
+[[spawn]]
+npc = "npc.soulbane_bear"
+coords = "0_51_153_5_51"
+
+[[spawn]]
+npc = "npc.soulbane_goblin"
+coords = "0_51_153_27_51"
+
+[[spawn]]
+npc = "npc.soulbane_goblin"
+coords = "0_51_153_5_57"
+
+[[spawn]]
+npc = "npc.soulbane_rat"
+coords = "0_51_153_16_57"
+
+[[spawn]]
+npc = "npc.soulbane_rat2"
+coords = "0_51_153_22_38"
+
+[[spawn]]
+npc = "npc.soulbane_unicorn"
+coords = "0_51_153_12_44"
+
+[[spawn]]
+npc = "npc.soulbane_unicorn"
+coords = "0_51_153_23_48"
+

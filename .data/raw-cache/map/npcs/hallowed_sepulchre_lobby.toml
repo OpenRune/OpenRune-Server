@@ -1,0 +1,24 @@
+[[spawn]]
+npc = "npc.hallowed_ghost_lobby_archpriest"
+coords = "0_37_93_32_31"
+
+[[spawn]]
+npc = "npc.hallowed_ghost_lobby_lion"
+coords = "0_37_93_34_29"
+
+[[spawn]]
+npc = "npc.hallowed_ghost_lobby_owl"
+coords = "0_37_93_30_29"
+
+[[spawn]]
+npc = "npc.hallowed_ghost_lobby_unicorn"
+coords = "0_37_93_34_33"
+
+[[spawn]]
+npc = "npc.hallowed_ghost_lobby_wolf"
+coords = "0_37_93_30_33"
+
+[[spawn]]
+npc = "npc.hallowed_lobby_npc"
+coords = "0_37_93_32_34"
+

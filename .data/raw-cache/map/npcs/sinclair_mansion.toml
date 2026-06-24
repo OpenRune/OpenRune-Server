@@ -1,0 +1,56 @@
+[[spawn]]
+npc = "npc.carol_sinclair"
+coords = "1_42_55_47_62"
+
+[[spawn]]
+npc = "npc.donovan_the_family_handyman"
+coords = "1_42_55_57_56"
+
+[[spawn]]
+npc = "npc.elizabeth_sinclair"
+coords = "1_42_55_58_62"
+
+[[spawn]]
+npc = "npc.frank_sinclair"
+coords = "0_42_55_54_58"
+
+[[spawn]]
+npc = "npc.hobbes_the_butler"
+coords = "0_42_55_48_55"
+
+[[spawn]]
+npc = "npc.kr_anna_sinclair_multi"
+coords = "0_42_55_46_55"
+
+[[spawn]]
+npc = "npc.kr_carol_sinclair_multi"
+coords = "1_42_55_46_61"
+
+[[spawn]]
+npc = "npc.kr_david_sinclair_multi"
+coords = "0_42_55_51_61"
+
+[[spawn]]
+npc = "npc.kr_elizabeth_sinclair_multi"
+coords = "1_42_55_58_61"
+
+[[spawn]]
+npc = "npc.kr_frank_sinclair_multi"
+coords = "0_42_55_54_57"
+
+[[spawn]]
+npc = "npc.kr_murderguard_house_multi"
+coords = "0_42_55_51_57"
+
+[[spawn]]
+npc = "npc.kr_murderguard_house_multi"
+coords = "1_42_55_51_59"
+
+[[spawn]]
+npc = "npc.louisa_the_cook"
+coords = "0_42_55_46_61"
+
+[[spawn]]
+npc = "npc.mary_the_maid"
+coords = "1_42_55_48_56"
+

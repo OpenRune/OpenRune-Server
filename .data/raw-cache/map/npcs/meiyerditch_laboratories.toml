@@ -1,0 +1,120 @@
+[[spawn]]
+npc = "npc.kourend_bloodveld"
+coords = "0_56_152_10_14"
+
+[[spawn]]
+npc = "npc.kourend_bloodveld"
+coords = "0_56_152_12_22"
+
+[[spawn]]
+npc = "npc.kourend_bloodveld"
+coords = "0_56_152_13_7"
+
+[[spawn]]
+npc = "npc.kourend_bloodveld"
+coords = "0_56_152_15_19"
+
+[[spawn]]
+npc = "npc.kourend_bloodveld"
+coords = "0_56_152_16_11"
+
+[[spawn]]
+npc = "npc.kourend_bloodveld"
+coords = "0_56_152_4_8"
+
+[[spawn]]
+npc = "npc.kourend_bloodveld"
+coords = "0_56_152_8_17"
+
+[[spawn]]
+npc = "npc.myq4_safalaan_basement"
+coords = "0_56_151_10_10"
+
+[[spawn]]
+npc = "npc.myq5_safalaan_lab"
+coords = "0_56_151_49_26"
+
+[[spawn]]
+npc = "npc.myq5_safalaan_lab_inner"
+coords = "0_56_152_27_9"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_56_151_10_13"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_56_151_14_9"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_56_151_45_19"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_56_151_45_26"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_56_151_48_32"
+
+[[spawn]]
+npc = "npc.rat"
+coords = "0_56_151_52_20"
+
+[[spawn]]
+npc = "npc.slayer_bloodveld"
+coords = "0_55_152_44_13"
+
+[[spawn]]
+npc = "npc.slayer_bloodveld"
+coords = "0_55_152_46_7"
+
+[[spawn]]
+npc = "npc.slayer_bloodveld"
+coords = "0_55_152_52_13"
+
+[[spawn]]
+npc = "npc.slayer_bloodveld"
+coords = "0_55_152_54_9"
+
+[[spawn]]
+npc = "npc.slayer_crawling_hand_1"
+coords = "0_56_152_25_48"
+
+[[spawn]]
+npc = "npc.slayer_crawling_hand_1"
+coords = "0_56_152_32_23"
+
+[[spawn]]
+npc = "npc.slayer_crawling_hand_1"
+coords = "0_56_152_33_31"
+
+[[spawn]]
+npc = "npc.slayer_crawling_hand_2"
+coords = "0_56_152_28_46"
+
+[[spawn]]
+npc = "npc.slayer_crawling_hand_2"
+coords = "0_56_152_38_18"
+
+[[spawn]]
+npc = "npc.slayer_crawling_hand_3"
+coords = "0_56_152_24_45"
+
+[[spawn]]
+npc = "npc.slayer_crawling_hand_3"
+coords = "0_56_152_36_27"
+
+[[spawn]]
+npc = "npc.slayer_crawling_hand_4"
+coords = "0_56_152_27_43"
+
+[[spawn]]
+npc = "npc.slayer_crawling_hand_4"
+coords = "0_56_152_35_20"
+
+[[spawn]]
+npc = "npc.slayer_crawling_hand_5"
+coords = "0_56_152_32_28"
+

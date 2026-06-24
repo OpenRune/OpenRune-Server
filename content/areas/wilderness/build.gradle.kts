@@ -3,7 +3,11 @@ plugins {
 }
 
 dependencies {
+    implementation(projects.api.areaChecker)
+    implementation(projects.api.death)
+    implementation(projects.api.player)
     implementation(projects.api.pluginCommons)
+    implementation(projects.api.scriptAdvanced)
     implementation(projects.api.attr)
     implementation(projects.api.dropTable)
     implementation(projects.api.dropTablePlugin)

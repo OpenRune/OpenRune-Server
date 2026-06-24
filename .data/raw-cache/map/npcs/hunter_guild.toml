@@ -1,0 +1,56 @@
+[[spawn]]
+npc = "npc.afl_kiko"
+coords = "0_24_147_16_52"
+
+[[spawn]]
+npc = "npc.hg_aco"
+coords = "0_24_147_23_44"
+
+[[spawn]]
+npc = "npc.hg_cervus"
+coords = "0_24_147_23_51"
+
+[[spawn]]
+npc = "npc.hg_gilman"
+coords = "0_24_147_20_56"
+
+[[spawn]]
+npc = "npc.hg_ornus"
+coords = "0_24_147_23_52"
+
+[[spawn]]
+npc = "npc.hg_teco"
+coords = "0_24_147_25_46"
+
+[[spawn]]
+npc = "npc.hg_verity"
+coords = "0_24_147_23_56"
+
+[[spawn]]
+npc = "npc.hg_wolf"
+coords = "0_24_147_18_54"
+
+[[spawn]]
+npc = "npc.hunter_guild_chinchompa"
+coords = "0_24_147_33_50"
+
+[[spawn]]
+npc = "npc.hunter_guild_witchy"
+coords = "0_24_147_34_51"
+
+[[spawn]]
+npc = "npc.moonlight_antelope"
+coords = "0_24_147_19_8"
+
+[[spawn]]
+npc = "npc.moonlight_antelope"
+coords = "0_24_147_21_14"
+
+[[spawn]]
+npc = "npc.moonlight_antelope"
+coords = "0_24_147_25_13"
+
+[[spawn]]
+npc = "npc.moonlight_antelope"
+coords = "0_24_147_26_9"
+

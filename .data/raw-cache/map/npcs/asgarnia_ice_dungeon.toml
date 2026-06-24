@@ -1,0 +1,238 @@
+## Asgarnia Ice Dungeon Normal
+
+[[spawn]]
+npc = "npc.hobgoblin_armed"
+coords = "0_47_149_11_55"
+
+[[spawn]]
+npc = "npc.hobgoblin_unarmed"
+coords = "0_47_149_2_42"
+
+[[spawn]]
+npc = "npc.hobgoblin_unarmed"
+coords = "0_47_149_2_57"
+
+[[spawn]]
+npc = "npc.hobgoblin_unarmed"
+coords = "0_47_149_2_59"
+
+[[spawn]]
+npc = "npc.hobgoblin_unarmed"
+coords = "0_47_149_3_43"
+
+[[spawn]]
+npc = "npc.hobgoblin_unarmed"
+coords = "0_47_149_8_42"
+
+[[spawn]]
+npc = "npc.hobgoblin_unarmed"
+coords = "0_47_149_8_58"
+
+[[spawn]]
+npc = "npc.mugger"
+coords = "0_46_149_49_9"
+
+[[spawn]]
+npc = "npc.mugger"
+coords = "0_46_149_51_12"
+
+[[spawn]]
+npc = "npc.mugger"
+coords = "0_46_149_53_8"
+
+[[spawn]]
+npc = "npc.mugger"
+coords = "0_46_149_55_14"
+
+[[spawn]]
+npc = "npc.pirate_aggressive"
+coords = "0_46_149_40_39"
+
+[[spawn]]
+npc = "npc.pirate_aggressive"
+coords = "0_46_149_42_46"
+
+[[spawn]]
+npc = "npc.pirate_aggressive"
+coords = "0_46_149_46_35"
+
+[[spawn]]
+npc = "npc.pirate_aggressive"
+coords = "0_46_149_47_47"
+
+[[spawn]]
+npc = "npc.pirate_aggressive"
+coords = "0_46_149_51_40"
+
+[[spawn]]
+npc = "npc.pirate_aggressive"
+coords = "0_46_149_53_33"
+
+[[spawn]]
+npc = "npc.pirate_aggressive"
+coords = "0_46_149_54_36"
+
+[[spawn]]
+npc = "npc.pirate_aggressive"
+coords = "0_46_149_55_48"
+
+[[spawn]]
+npc = "npc.pirate_aggressive"
+coords = "0_46_149_56_43"
+
+## Asgarnia Ice Dungeon Snowy
+
+[[spawn]]
+npc = "npc.icegiant_low_wanderrange"
+coords = "0_47_149_53_37"
+
+[[spawn]]
+npc = "npc.icegiant_low_wanderrange2"
+coords = "0_47_149_49_37"
+
+[[spawn]]
+npc = "npc.icegiant_low_wanderrange2"
+coords = "0_47_149_57_35"
+
+[[spawn]]
+npc = "npc.icewarrior"
+coords = "0_47_149_36_45"
+
+[[spawn]]
+npc = "npc.icewarrior"
+coords = "0_47_149_38_39"
+
+[[spawn]]
+npc = "npc.icewarrior"
+coords = "0_47_149_40_47"
+
+[[spawn]]
+npc = "npc.icewarrior"
+coords = "0_47_149_41_54"
+
+[[spawn]]
+npc = "npc.icewarrior"
+coords = "0_47_149_45_40"
+
+[[spawn]]
+npc = "npc.icewarrior"
+coords = "0_47_149_48_47"
+
+[[spawn]]
+npc = "npc.icewarrior"
+coords = "0_47_149_48_51"
+
+[[spawn]]
+npc = "npc.icewarrior"
+coords = "0_47_149_54_40"
+
+[[spawn]]
+npc = "npc.icewarrior"
+coords = "0_47_149_54_45"
+
+[[spawn]]
+npc = "npc.icewarrior_low_wanderrange"
+coords = "0_47_149_48_36"
+
+[[spawn]]
+npc = "npc.icewarrior_low_wanderrange"
+coords = "0_47_149_52_36"
+
+[[spawn]]
+npc = "npc.skeletal_wyvern1"
+coords = "0_47_149_17_7"
+
+[[spawn]]
+npc = "npc.skeletal_wyvern1"
+coords = "0_47_149_32_33"
+
+[[spawn]]
+npc = "npc.skeletal_wyvern1"
+coords = "0_47_149_55_18"
+
+[[spawn]]
+npc = "npc.skeletal_wyvern1"
+coords = "0_47_149_62_30"
+
+[[spawn]]
+npc = "npc.skeletal_wyvern1"
+coords = "0_48_149_4_42"
+
+[[spawn]]
+npc = "npc.skeletal_wyvern2"
+coords = "0_47_149_17_17"
+
+[[spawn]]
+npc = "npc.skeletal_wyvern2"
+coords = "0_47_149_34_26"
+
+[[spawn]]
+npc = "npc.skeletal_wyvern2"
+coords = "0_47_149_49_3"
+
+[[spawn]]
+npc = "npc.skeletal_wyvern2"
+coords = "0_47_149_62_24"
+
+[[spawn]]
+npc = "npc.skeletal_wyvern2"
+coords = "0_47_149_63_38"
+
+[[spawn]]
+npc = "npc.skeletal_wyvern2"
+coords = "0_48_149_6_49"
+
+[[spawn]]
+npc = "npc.skeletal_wyvern3"
+coords = "0_47_149_25_18"
+
+[[spawn]]
+npc = "npc.skeletal_wyvern3"
+coords = "0_47_149_37_17"
+
+[[spawn]]
+npc = "npc.skeletal_wyvern3"
+coords = "0_47_149_39_24"
+
+[[spawn]]
+npc = "npc.skeletal_wyvern3"
+coords = "0_47_149_63_18"
+
+[[spawn]]
+npc = "npc.skeletal_wyvern3"
+coords = "0_47_149_63_45"
+
+[[spawn]]
+npc = "npc.skeletal_wyvern3"
+coords = "0_48_149_4_31"
+
+[[spawn]]
+npc = "npc.skeletal_wyvern4"
+coords = "0_47_149_31_5"
+
+[[spawn]]
+npc = "npc.skeletal_wyvern4"
+coords = "0_47_149_58_26"
+
+[[spawn]]
+npc = "npc.skeletal_wyvern4"
+coords = "0_47_149_58_9"
+
+[[spawn]]
+npc = "npc.skeletal_wyvern4"
+coords = "0_47_149_62_50"
+
+[[spawn]]
+npc = "npc.skeletal_wyvern4"
+coords = "0_48_149_4_21"
+
+[[spawn]]
+npc = "npc.wyvern_cave_guardian"
+coords = "0_47_149_50_22"
+
+[[spawn]]
+npc = "npc.wyvern_cave_pieve"
+coords = "0_47_149_52_23"
+
+## Asgarnia Ice Dungeon Snowy End
+

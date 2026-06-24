@@ -27,7 +27,7 @@ import org.rsmod.game.inv.InvObj
 import org.rsmod.game.type.getInvObj
 
 internal fun ProtectedAccess.attackRange(style: AttackStyle?): Int =
-    if (autocastSpell > 0) {
+    if (autocastEnabled && autocastSpell > 0) {
         MAGIC_ATTACK_RANGE
     } else {
         weaponAttackRange(style)
@@ -228,7 +228,6 @@ internal suspend fun ProtectedAccess.activateShieldSpecial(
 ): Boolean = TODO()
 
 internal fun ProtectedAccess.setPkVars(target: Player) {
-    // TODO(combat): Set pk skull when applicable.
     pkPrey2 = pkPrey1
     pkPrey1 = target.uid
 

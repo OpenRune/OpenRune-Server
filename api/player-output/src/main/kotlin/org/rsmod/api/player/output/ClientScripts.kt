@@ -22,6 +22,16 @@ public fun Player.runClientScript(id: Int, args: List<Any>) {
 }
 
 public object ClientScripts {
+    private const val LOOTTRACKER_ADD_LOOT_SCRIPT: Int = 7192
+
+    public fun lootTrackerAddLoot(
+        player: Player,
+        npcId: Int,
+        eventId: Int,
+        objId: Int,
+        count: Int,
+    ): Unit = player.runClientScript(LOOTTRACKER_ADD_LOOT_SCRIPT, npcId, eventId, objId, count)
+
     public fun settingsInterfaceScaling(player: Player, scale: Int) {
         player.runClientScript(2358, scale)
     }

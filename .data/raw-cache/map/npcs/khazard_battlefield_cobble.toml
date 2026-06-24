@@ -1,0 +1,24 @@
+[[spawn]]
+npc = "npc.khazard_commander"
+coords = "1_39_50_7_55"
+
+[[spawn]]
+npc = "npc.tracker2"
+coords = "0_39_50_28_57"
+
+## Khazard Battlefield Cobble Outside
+
+[[spawn]]
+npc = "npc.battlefield_khazard_troop"
+coords = "0_39_50_22_48"
+
+[[spawn]]
+npc = "npc.battlefield_khazard_troop"
+coords = "0_39_50_23_48"
+
+[[spawn]]
+npc = "npc.khazard_commander"
+coords = "0_39_50_13_54"
+
+## Khazard Battlefield Cobble Outside End
+
