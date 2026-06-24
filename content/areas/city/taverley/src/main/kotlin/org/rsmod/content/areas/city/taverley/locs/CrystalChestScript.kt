@@ -59,6 +59,7 @@ class CrystalChestScript @Inject constructor(
             is RollResult.Single -> giveDrop(result.result)
             is RollResult.ListOf -> result.results.forEach { giveDrop(it) }
         }
+        delay(1)
     }
 
     private fun ProtectedAccess.giveDrop(drop: DropRollItem) {
