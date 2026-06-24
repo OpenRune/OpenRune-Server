@@ -6,6 +6,7 @@ import dev.openrune.definition.opcode.impl.DefinitionOpcodeEntityOps
 import dev.openrune.definition.opcode.impl.DefinitionOpcodeListActions
 import dev.openrune.definition.opcode.impl.DefinitionOpcodeParams
 import dev.openrune.definition.type.ItemType
+import dev.openrune.definition.type.ObjStackability
 import dev.openrune.types.ItemServerType
 import dev.openrune.types.ObjectServerType
 import dev.openrune.util.DefinitionOpcodeParamMap
@@ -45,7 +46,7 @@ class ItemServerCodec(
             add(DefinitionOpcode(14, OpcodeType.INT, ItemServerType::certtemplate))
             add(DefinitionOpcode(16, OpcodeType.INT, ItemServerType::placeholderLink))
             add(DefinitionOpcode(17, OpcodeType.INT, ItemServerType::placeholderTemplate))
-            add(DefinitionOpcode(18, OpcodeType.INT, ItemServerType::stacks))
+            add(DefinitionOpcode(18, enumType<ObjStackability>(), ItemServerType::stacks))
             add(DefinitionOpcode(19, OpcodeType.INT, ItemServerType::wearpos1))
             add(DefinitionOpcode(20, OpcodeType.INT, ItemServerType::wearpos2))
             add(DefinitionOpcode(21, OpcodeType.INT, ItemServerType::wearpos3))

@@ -5,11 +5,13 @@ import dev.openrune.ServerCacheManager
 import dev.openrune.TypedParamType
 import dev.openrune.definition.Definition
 import dev.openrune.definition.EntityOpsDefinition
+import dev.openrune.definition.type.ObjStackability
 import dev.openrune.definition.type.ParamType
 import dev.openrune.resolve
 import dev.openrune.rscm.RSCM
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
+import dev.openrune.seralizer.ObjStackabilitySerializer
 import dev.openrune.seralizer.ParamSerializer
 import dev.openrune.toml.rsconfig.RsTableHeaders
 import dev.openrune.toml.serialization.TomlField
@@ -31,7 +33,8 @@ data class ItemServerType(
     var certtemplate: Int = 0,
     var placeholderLink: Int = 0,
     var placeholderTemplate: Int = 0,
-    var stacks: Int = 0,
+    @param:TomlField(serializer = ObjStackabilitySerializer::class)
+    var stacks: ObjStackability = ObjStackability.Sometimes,
     var wearpos1: Int = -1,
     var wearpos2: Int = -1,
     var wearpos3: Int = -1,
@@ -70,7 +73,7 @@ data class ItemServerType(
         get() = name.lowercase()
 
     public val stackable: Boolean
-        get() = stacks == 1
+        get() = stacks == ObjStackability.Always
 
     public val isStackable: Boolean
         get() = (stackable || certtemplate > 0) && objvar.isEmpty()
