@@ -42,4 +42,6 @@ dependencies {
     implementation(projects.engine.routefinder)
     implementation(projects.engine.plugin)
     implementation(projects.server.services)
+    implementation(projects.api.social)
+    implementation(projects.api.dbGateway)
 }

@@ -6,6 +6,7 @@ import java.net.InetSocketAddress
 import java.nio.ByteBuffer
 import java.nio.charset.StandardCharsets
 import java.util.concurrent.ConcurrentLinkedQueue
+import net.rsprot.protocol.game.outgoing.social.MessagePrivate
 import net.rsprot.protocol.loginprot.outgoing.LoginResponse
 import org.rsmod.api.player.output.ChatType
 import org.rsmod.api.player.output.MiscOutput
@@ -15,6 +16,7 @@ import org.rsmod.api.net.central.netty.WorldLinkNettyBlockingSession
 import org.rsmod.api.registry.player.PlayerRegistry
 import org.rsmod.api.server.config.OpenRuneCentralGameConfig
 import org.rsmod.api.server.config.ServerConfig
+import org.rsmod.api.social.writeFriendPresenceDelta
 import org.rsmod.game.GameUpdate
 import org.rsmod.game.GameUpdate.Companion.isUpdating
 
@@ -43,6 +45,12 @@ constructor(
 
     private val pendingCentralDisplayNameSyncs =
         ConcurrentLinkedQueue<WorldLinkFrameSpecs.ServerDisplayNameSyncPayload>()
+
+    private val pendingCentralPrivateMessages =
+        ConcurrentLinkedQueue<WorldLinkFrameSpecs.ServerPrivateMessagePayload>()
+
+    private val pendingCentralFriendPresence =
+        ConcurrentLinkedQueue<WorldLinkFrameSpecs.ServerFriendPresencePayload>()
 
     @Volatile
     private var inboundWatchStop: Boolean = true
@@ -169,8 +177,219 @@ constructor(
         }
         while (true) {
             val d = pendingCentralDisplayNameSyncs.poll() ?: break
-            playerRegistry.applyCentralDisplayNameSync(d.accountId, d.characterId, d.newDisplayName, d.priorDisplayName)
+            playerRegistry.applyCentralDisplayNameSync(
+                d.accountId,
+                d.characterId,
+                d.newDisplayName,
+                d.priorDisplayName
+            )
         }
+        while (true) {
+            val presence = pendingCentralFriendPresence.poll() ?: break
+
+            playerRegistry.forEachOnline { player ->
+                if (player.characterId != presence.ownerCharacterId) {
+                    return@forEachOnline
+                }
+
+                player.writeFriendPresenceDelta(
+                    name = presence.friendDisplayName,
+                    previousName = presence.friendPreviousDisplayName,
+                    worldId = presence.friendWorldId,
+                )
+            }
+        }
+
+        while (true) {
+            val pm = pendingCentralPrivateMessages.poll() ?: break
+            var delivered = false
+
+            playerRegistry.forEachOnline { player ->
+                if (player.characterId != pm.toCharacterId) {
+                    return@forEachOnline
+                }
+
+                player.client.write(
+                    MessagePrivate(
+                        sender = pm.senderDisplayName,
+                        worldId = pm.senderWorldId,
+                        worldMessageCounter = nextCentralPrivateMessageCounter(),
+                        chatCrownType = pm.senderCrown,
+                        message = pm.message,
+                    )
+                )
+
+                delivered = true
+            }
+
+            if (!delivered) {
+                logger.debug {
+                    "Central PM target was not online locally: toCharacterId=${pm.toCharacterId}"
+                }
+            }
+        }
+    }
+
+    public fun addFriend(
+        sessionToken: ByteArray,
+        characterId: Int,
+        targetName: String,
+    ): CentralSocialResult {
+        return sendSocialRequest(
+            frame = WorldLinkPackets.friendAdd(sessionToken, characterId, targetName),
+            fallbackMessage = "Unable to add player right now.",
+        )
+    }
+
+    public fun deleteFriend(
+        sessionToken: ByteArray,
+        characterId: Int,
+        targetName: String,
+    ): CentralSocialResult {
+        return sendSocialRequest(
+            frame = WorldLinkPackets.friendDelete(sessionToken, characterId, targetName),
+            fallbackMessage = "Unable to delete friend right now.",
+        )
+    }
+
+    public fun addIgnore(
+        sessionToken: ByteArray,
+        characterId: Int,
+        targetName: String,
+    ): CentralSocialResult {
+        return sendSocialRequest(
+            frame = WorldLinkPackets.ignoreAdd(sessionToken, characterId, targetName),
+            fallbackMessage = "Unable to ignore player right now.",
+        )
+    }
+
+    public fun deleteIgnore(
+        sessionToken: ByteArray,
+        characterId: Int,
+        targetName: String,
+    ): CentralSocialResult {
+        return sendSocialRequest(
+            frame = WorldLinkPackets.ignoreDelete(sessionToken, characterId, targetName),
+            fallbackMessage = "Unable to delete ignore right now.",
+        )
+    }
+
+    public fun sendPrivateMessage(
+        sessionToken: ByteArray,
+        fromCharacterId: Int,
+        targetName: String,
+        senderDisplayName: String,
+        senderCrown: Int,
+        message: String,
+    ): CentralSocialResult {
+        return sendSocialRequest(
+            frame =
+                WorldLinkPackets.privateMessageRelay(
+                    sessionToken = sessionToken,
+                    fromCharacterId = fromCharacterId,
+                    targetName = targetName,
+                    senderDisplayName = senderDisplayName,
+                    senderCrown = senderCrown,
+                    message = message,
+                ),
+            fallbackMessage = "Unable to send private message right now.",
+        )
+    }
+
+    public fun setPrivateChatFilter(
+        sessionToken: ByteArray,
+        characterId: Int,
+        privateChatFilter: Int,
+    ): CentralSocialResult {
+        return sendSocialRequest(
+            frame =
+                WorldLinkPackets.privateChatFilter(
+                    sessionToken = sessionToken,
+                    characterId = characterId,
+                    privateChatFilter = privateChatFilter,
+                ),
+            fallbackMessage = "Unable to update private chat filter right now.",
+        )
+    }
+
+    public sealed class CentralSocialSnapshotResult {
+        public data class Ok(
+            val snapshot: WorldLinkFrameSpecs.CentralSocialSnapshot,
+        ) : CentralSocialSnapshotResult()
+
+        public data class Failed(
+            val message: String,
+        ) : CentralSocialSnapshotResult()
+    }
+
+    public fun socialSnapshot(
+        sessionToken: ByteArray,
+        characterId: Int,
+    ): CentralSocialSnapshotResult {
+        val cfg = settings ?: return CentralSocialSnapshotResult.Failed("Central is not enabled.")
+        val frame = WorldLinkPackets.socialSync(sessionToken, characterId)
+
+        repeat(MAX_AUTH_ATTEMPTS) { attempt ->
+            try {
+                validateGameToCentralFrameOrThrow(frame)
+
+                val session =
+                    WorldLinkNettyBlockingClient.connect(
+                        InetSocketAddress(cfg.host, cfg.port),
+                        readIdleSeconds = SOCKET_TIMEOUT_SECONDS,
+                    )
+
+                try {
+                    sendHello(session, cfg.worldKey, serverConfig.world)
+                    session.send(frame)
+
+                    val response = session.recvInbound(SOCKET_TIMEOUT_MS.toLong())
+                    val invalid = WorldLinkFrameSpecs.validateCentralToGameFrame(response)
+                    if (invalid != null) {
+                        logger.warn {
+                            "Central social sync reply failed validation: " +
+                                WorldLinkFrameSpecs.describeValidationFailure(invalid)
+                        }
+                        return CentralSocialSnapshotResult.Failed("Unable to load social list right now.")
+                    }
+
+                    return when (val op = response[0].toInt() and 0xFF) {
+                        WorldLinkFrameSpecs.OP_WORLD_SOCIAL_SYNC_OK ->
+                            CentralSocialSnapshotResult.Ok(
+                                WorldLinkFrameSpecs.decodeSocialSnapshot(response)
+                            )
+
+                        WorldLinkFrameSpecs.OP_WORLD_SOCIAL_SYNC_FAIL -> {
+                            val reason = if (response.size > 1) response[1].toInt() and 0xFF else 0
+                            CentralSocialSnapshotResult.Failed(socialFailureMessage(reason))
+                        }
+
+                        else -> {
+                            logger.warn {
+                                "Unexpected Central social sync reply opcode 0x${op.toString(16)}"
+                            }
+                            CentralSocialSnapshotResult.Failed("Unable to load social list right now.")
+                        }
+                    }
+                } finally {
+                    session.close()
+                }
+            } catch (e: Exception) {
+                if (!isRetryableCentralNetworkFailure(e) || attempt + 1 >= MAX_AUTH_ATTEMPTS) {
+                    logger.warn(e) { "Central social sync request failed." }
+                    return CentralSocialSnapshotResult.Failed("Unable to load social list right now.")
+                }
+
+                try {
+                    Thread.sleep(RETRY_BASE_MS * (attempt + 1))
+                } catch (_: InterruptedException) {
+                    Thread.currentThread().interrupt()
+                    return CentralSocialSnapshotResult.Failed("Unable to load social list right now.")
+                }
+            }
+        }
+
+        return CentralSocialSnapshotResult.Failed("Unable to load social list right now.")
     }
 
     public fun notifyLogout(sessionToken: ByteArray) {
@@ -202,6 +421,85 @@ constructor(
             }
         }
     }
+
+    private fun sendSocialRequest(
+        frame: ByteArray,
+        fallbackMessage: String,
+    ): CentralSocialResult {
+        val cfg = settings ?: return CentralSocialResult.Failed("Central is not enabled.")
+
+        repeat(MAX_AUTH_ATTEMPTS) { attempt ->
+            try {
+                validateGameToCentralFrameOrThrow(frame)
+
+                val session =
+                    WorldLinkNettyBlockingClient.connect(
+                        InetSocketAddress(cfg.host, cfg.port),
+                        readIdleSeconds = SOCKET_TIMEOUT_SECONDS,
+                    )
+
+                try {
+                    sendHello(session, cfg.worldKey, serverConfig.world)
+                    session.send(frame)
+
+                    val response = session.recvInbound(SOCKET_TIMEOUT_MS.toLong())
+                    val invalid = WorldLinkFrameSpecs.validateCentralToGameFrame(response)
+                    if (invalid != null) {
+                        logger.warn {
+                            "Central social reply failed validation: " +
+                                WorldLinkFrameSpecs.describeValidationFailure(invalid)
+                        }
+                        return CentralSocialResult.Failed(fallbackMessage)
+                    }
+
+                    return when (val op = response[0].toInt() and 0xFF) {
+                        WorldLinkFrameSpecs.OP_WORLD_SOCIAL_OK -> CentralSocialResult.Ok
+
+                        WorldLinkFrameSpecs.OP_WORLD_SOCIAL_FAIL -> {
+                            val reason = if (response.size > 1) response[1].toInt() and 0xFF else 0
+                            CentralSocialResult.Failed(socialFailureMessage(reason))
+                        }
+
+                        else -> {
+                            logger.warn {
+                                "Unexpected Central social reply opcode 0x${op.toString(16)}"
+                            }
+                            CentralSocialResult.Failed(fallbackMessage)
+                        }
+                    }
+                } finally {
+                    session.close()
+                }
+            } catch (e: Exception) {
+                if (!isRetryableCentralNetworkFailure(e) || attempt + 1 >= MAX_AUTH_ATTEMPTS) {
+                    logger.warn(e) { "Central social request failed." }
+                    return CentralSocialResult.Failed(fallbackMessage)
+                }
+
+                try {
+                    Thread.sleep(RETRY_BASE_MS * (attempt + 1))
+                } catch (_: InterruptedException) {
+                    Thread.currentThread().interrupt()
+                    return CentralSocialResult.Failed(fallbackMessage)
+                }
+            }
+        }
+
+        return CentralSocialResult.Failed(fallbackMessage)
+    }
+
+    private fun socialFailureMessage(reason: Int): String =
+        when (reason) {
+            1 -> "Unable to add friend - unknown player."
+            2 -> "You cannot add yourself to your own friends list."
+            3 -> "That player is already on your friend list."
+            4 -> "That player is already on your ignore list."
+            5 -> "That player is not accepting private messages."
+            6 -> "That player is currently offline."
+            7 -> "Your social list is full."
+            8 -> "You are not allowed to do that right now."
+            else -> "Unable to complete social request right now."
+        }
 
     private fun openCentralAuthSession(
         cfg: CentralSettings,
@@ -407,6 +705,8 @@ constructor(
             else -> LoginResponse.InvalidUsernameOrPassword
         }
 
+    // Long-lived Central push subscription. Short-lived request
+    // sessions must not be used for PM/presence delivery.
     private fun runInboundWatchLoop(cfg: CentralSettings) {
         while (!inboundWatchStop && !Thread.currentThread().isInterrupted) {
             var session: WorldLinkNettyBlockingSession? = null
@@ -438,10 +738,11 @@ constructor(
                         onReboot = { pendingCentralReboots.add(it) },
                         onBroadcast = { pendingCentralBroadcasts.add(it) },
                         onDisplayNameSync = { pendingCentralDisplayNameSyncs.add(it) },
+                        onPrivateMessage = { pendingCentralPrivateMessages.add(it) },
+                        onFriendPresence = { pendingCentralFriendPresence.add(it) },
                         onOther = { op ->
                             logger.debug {
-                                "Ignoring Central world-link opcode 0x${op.toString(16)} on push channel " +
-                                    "(not a server push)"
+                                "Ignoring Central world-link opcode 0x${op.toString(16)} on push channel (not a server push)"
                             }
                         },
                     )
@@ -522,6 +823,18 @@ constructor(
         private const val INBOUND_POLL_MS: Long = 1_000L
 
         private const val GAME_CYCLE_MS: Long = 600L
+
+        private var centralPrivateMessageCounter: Int = 1
+
+        private fun nextCentralPrivateMessageCounter(): Int {
+            centralPrivateMessageCounter = (centralPrivateMessageCounter + 1) and 0xFFFFFF
+
+            if (centralPrivateMessageCounter <= 0) {
+                centralPrivateMessageCounter = 1
+            }
+
+            return centralPrivateMessageCounter
+        }
     }
 }
 
