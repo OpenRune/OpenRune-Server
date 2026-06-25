@@ -27,6 +27,8 @@ import org.rsmod.game.entity.player.SessionStateEvent
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
+private const val CENTRAL_SOCIAL_HEARTBEAT_INTERVAL_MS = 30_000L
+
 @OptIn(ExperimentalUnsignedTypes::class, ExperimentalStdlibApi::class)
 class NetworkScript
 @Inject
@@ -83,6 +85,7 @@ constructor(
         service.infoProtocols.update()
         if (openRuneCentral.isEnabled) {
             openRuneCentral.drainInboundRevokesOnGameThread(playerRegistry, gameUpdate)
+            heartbeatCentralSocialSessions(openRuneCentral, playerRegistry)
         }
     }
 
@@ -104,6 +107,55 @@ constructor(
     private fun SessionStateEvent.Delete.closeSession() {
         val client = player.client as? RspClient ?: return
         client.unregister(service, player)
+    }
+
+    @Volatile
+    private var centralSocialHeartbeatInFlight: Boolean = false
+
+    private var nextCentralSocialHeartbeatAt: Long = 0L
+
+    private fun heartbeatCentralSocialSessions(
+        central: OpenRuneCentralWorldLink,
+        playerRegistry: PlayerRegistry,
+    ) {
+        val now = System.currentTimeMillis()
+        if (now < nextCentralSocialHeartbeatAt) {
+            return
+        }
+
+        nextCentralSocialHeartbeatAt = now + CENTRAL_SOCIAL_HEARTBEAT_INTERVAL_MS
+
+        val tokens = mutableListOf<ByteArray>()
+        playerRegistry.forEachOnline { player ->
+            val token = player.openRuneCentralSessionToken ?: return@forEachOnline
+            tokens += token.copyOf()
+        }
+
+        if (tokens.isEmpty()) {
+            return
+        }
+
+        if (centralSocialHeartbeatInFlight) {
+            return
+        }
+
+        centralSocialHeartbeatInFlight = true
+
+        Thread(
+            {
+                try {
+                    for (token in tokens) {
+                        central.heartbeat(token)
+                    }
+                } finally {
+                    centralSocialHeartbeatInFlight = false
+                }
+            },
+            "openrune-central-social-heartbeat",
+        ).apply {
+            isDaemon = true
+            start()
+        }
     }
 
     private fun SessionStateEvent.Login.markDbOnlineSession() {

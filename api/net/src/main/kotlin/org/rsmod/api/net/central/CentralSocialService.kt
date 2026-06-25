@@ -2,6 +2,7 @@ package org.rsmod.api.net.central
 
 import jakarta.inject.Inject
 import org.rsmod.api.db.gateway.model.GameDbResult
+import org.rsmod.api.net.central.WorldLinkFrameSpecs.PRIVATE_MESSAGE_MAX_CHARS
 
 class CentralSocialService
 @Inject
@@ -135,7 +136,7 @@ constructor(
         message: String,
     ): GameDbResult<CentralSocialResult> {
         val cleanedTarget = targetName.trim()
-        val cleanedMessage = message.trim()
+        val cleanedMessage = message.trim().take(PRIVATE_MESSAGE_MAX_CHARS)
 
         if (cleanedTarget.isBlank() || cleanedMessage.isBlank()) {
             return GameDbResult.Ok(CentralSocialResult.Ignored)
@@ -180,11 +181,11 @@ constructor(
     }
 }
 
-    sealed class CentralSocialResult {
-        data object Ok : CentralSocialResult()
-        data object Ignored : CentralSocialResult()
+sealed class CentralSocialResult {
+    data object Ok : CentralSocialResult()
+    data object Ignored : CentralSocialResult()
 
-        data class Failed(
-            val message: String,
+    data class Failed(
+        val message: String,
     ) : CentralSocialResult()
 }

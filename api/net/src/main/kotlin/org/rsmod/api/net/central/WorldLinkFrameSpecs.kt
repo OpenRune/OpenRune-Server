@@ -69,6 +69,7 @@ public object WorldLinkFrameSpecs {
     public const val OP_PUSH_SUBSCRIBE: Int = 0x13
     public const val OP_PUSH_SUBSCRIBE_ACK: Int = 0x14
     public const val OP_HEARTBEAT: Int = 0x30
+    public const val OP_HEARTBEAT_ACK: Int = 0x31
     public const val OP_LOGOUT: Int = 0x40
     public const val OP_LOGOUT_ACK: Int = 0x41
 
@@ -124,6 +125,7 @@ public object WorldLinkFrameSpecs {
             "login_fail_trailing" -> "LOGIN_FAIL has unexpected trailing bytes after the script lines"
             "login_ok_size" -> "LOGIN_OK body length is outside the allowed range for token + account id + rights"
             "logout_ack_size" -> "LOGOUT_ACK must have no body after the opcode"
+            "heartbeat_ack_size" -> "HEARTBEAT_ACK must have no body after the opcode"
             "push_subscribe_ack_size" -> "PUSH_SUBSCRIBE_ACK must have no body after the opcode"
             "server_revoke_login_size" -> "SERVER_REVOKE_LOGIN body must be exactly 12 bytes (account id + character id)"
             "server_mute_update_size" -> "SERVER_MUTE_UPDATE body must be exactly 20 bytes"
@@ -304,6 +306,13 @@ public object WorldLinkFrameSpecs {
             OP_WORLD_SOCIAL_SYNC_FAIL ->
                 if (bodyLen != 1) {
                     "pm_relay_fail_size"
+                } else {
+                    null
+                }
+
+            OP_HEARTBEAT_ACK ->
+                if (bodyLen != 0) {
+                    "heartbeat_ack_size"
                 } else {
                     null
                 }

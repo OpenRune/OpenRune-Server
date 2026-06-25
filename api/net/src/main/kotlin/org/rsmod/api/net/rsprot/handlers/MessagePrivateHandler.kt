@@ -11,6 +11,8 @@ import org.rsmod.api.social.writeSocialMessage
 import org.rsmod.game.entity.Player
 import org.rsmod.game.entity.PlayerList
 
+private const val PRIVATE_MESSAGE_MAX_CHARS = 255
+
 class MessagePrivateHandler
 @Inject
 constructor(
@@ -21,7 +23,7 @@ constructor(
     override fun handle(player: Player, message: MessagePrivate) {
         val uid = player.uid
         val targetName = message.name
-        val text = message.message
+        val text = message.message.trim().take(PRIVATE_MESSAGE_MAX_CHARS)
         val token = player.openRuneCentralSessionToken
         val characterId = player.characterId
         val senderDisplayName = player.displayName.ifBlank { player.username }

@@ -90,6 +90,57 @@ constructor(
         return CentralAuthResult.Denied(LoginResponse.LoginServerOffline)
     }
 
+    public fun heartbeat(sessionToken: ByteArray): Boolean {
+        val cfg = settings ?: return false
+        val frame = WorldLinkPackets.heartbeat(sessionToken)
+
+        repeat(MAX_AUTH_ATTEMPTS) { attempt ->
+            try {
+                validateGameToCentralFrameOrThrow(frame)
+
+                val session =
+                    WorldLinkNettyBlockingClient.connect(
+                        InetSocketAddress(cfg.host, cfg.port),
+                        readIdleSeconds = SOCKET_TIMEOUT_SECONDS,
+                    )
+
+                try {
+                    sendHello(session, cfg.worldKey, serverConfig.world)
+                    session.send(frame)
+
+                    val response = session.recvInbound(SOCKET_TIMEOUT_MS.toLong())
+                    val invalid = WorldLinkFrameSpecs.validateCentralToGameFrame(response)
+                    if (invalid != null) {
+                        logger.debug {
+                            "Central heartbeat reply failed validation: " +
+                                WorldLinkFrameSpecs.describeValidationFailure(invalid)
+                        }
+                        return false
+                    }
+
+                    val op = response[0].toInt() and 0xFF
+                    return op == WorldLinkFrameSpecs.OP_HEARTBEAT_ACK
+                } finally {
+                    session.close()
+                }
+            } catch (e: Exception) {
+                if (!isRetryableCentralNetworkFailure(e) || attempt + 1 >= MAX_AUTH_ATTEMPTS) {
+                    logger.debug(e) { "Central heartbeat failed." }
+                    return false
+                }
+
+                try {
+                    Thread.sleep(RETRY_BASE_MS * (attempt + 1))
+                } catch (_: InterruptedException) {
+                    Thread.currentThread().interrupt()
+                    return false
+                }
+            }
+        }
+
+        return false
+    }
+
     public fun startInboundWatch() {
         val cfg = settings ?: return
         if (!inboundWatchStop) {

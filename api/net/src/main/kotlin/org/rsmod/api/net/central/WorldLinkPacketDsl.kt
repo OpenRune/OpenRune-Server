@@ -173,12 +173,26 @@ internal object WorldLinkPackets {
         value: String,
         maxBytes: Int,
     ) {
-        val bytes = value.toByteArray(StandardCharsets.UTF_8)
-        require(bytes.size <= maxBytes) {
-            "World-link UTF-8 value exceeds max length: ${bytes.size} > $maxBytes"
-        }
+        val bytes = utf8TruncatedTo(value, maxBytes)
         writeShort(bytes.size)
         write(bytes)
+    }
+
+    private fun utf8TruncatedTo(
+        value: String,
+        maxBytes: Int,
+    ): ByteArray {
+        val full = value.toByteArray(StandardCharsets.UTF_8)
+        if (full.size <= maxBytes) {
+            return full
+        }
+
+        var cut = maxBytes
+        while (cut > 0 && (full[cut - 1].toInt() and 0xC0) == 0x80) {
+            cut--
+        }
+
+        return full.copyOf(cut)
     }
 
     fun socialSync(
@@ -190,6 +204,15 @@ internal object WorldLinkPackets {
             d.writeByte(WorldLinkFrameSpecs.OP_WORLD_SOCIAL_SYNC)
             d.writeToken(sessionToken)
             d.writeInt(characterId)
+        }
+        return bos.toByteArray()
+    }
+
+    fun heartbeat(sessionToken: ByteArray): ByteArray {
+        val bos = ByteArrayOutputStream(64)
+        DataOutputStream(bos).use { d ->
+            d.writeByte(WorldLinkFrameSpecs.OP_HEARTBEAT)
+            d.writeToken(sessionToken)
         }
         return bos.toByteArray()
     }
