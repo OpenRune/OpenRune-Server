@@ -25,11 +25,13 @@ constructor(
     public fun enter(instance: Instance, player: Player) {
         instance.players += player
         manager.register(player, instance)
+        instance.invokePlayerEnter(player)
     }
 
     public fun leave(instance: Instance, player: Player) {
         if (!instance.players.remove(player)) return
         manager.unregister(player)
+        instance.invokePlayerLeave(player)
         if (instance.players.isEmpty()) {
             destroy(instance)
         }
@@ -38,6 +40,7 @@ constructor(
     public fun destroy(instance: Instance) {
         for (player in instance.players.toList()) {
             manager.unregister(player)
+            instance.invokePlayerLeave(player)
         }
         instance.players.clear()
         regionRegistry.unregister(instance.region)

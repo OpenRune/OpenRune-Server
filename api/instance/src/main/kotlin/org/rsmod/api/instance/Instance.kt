@@ -12,13 +12,31 @@ internal constructor(
     public val attrs: AttributeMap,
 ) {
     internal val players: MutableList<Player> = mutableListOf()
+    private val enterCallbacks: MutableList<(Player) -> Unit> = mutableListOf()
+    private val leaveCallbacks: MutableList<(Player) -> Unit> = mutableListOf()
     private val teardownCallbacks: MutableList<() -> Unit> = mutableListOf()
 
     public val playerCount: Int
         get() = players.size
 
+    public fun onPlayerEnter(block: (Player) -> Unit) {
+        enterCallbacks += block
+    }
+
+    public fun onPlayerLeave(block: (Player) -> Unit) {
+        leaveCallbacks += block
+    }
+
     public fun onTeardown(block: () -> Unit) {
         teardownCallbacks += block
+    }
+
+    internal fun invokePlayerEnter(player: Player) {
+        enterCallbacks.forEach { it(player) }
+    }
+
+    internal fun invokePlayerLeave(player: Player) {
+        leaveCallbacks.forEach { it(player) }
     }
 
     internal fun invokeTeardown() {
