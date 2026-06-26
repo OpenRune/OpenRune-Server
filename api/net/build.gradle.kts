@@ -20,6 +20,7 @@ dependencies {
     implementation(libs.rsprot.shared)
     implementation(projects.api.account)
     implementation(projects.api.db)
+    implementation(projects.api.attr)
     implementation(projects.api.config)
     implementation(projects.api.cache)
     implementation(projects.api.core)

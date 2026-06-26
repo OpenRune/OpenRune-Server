@@ -148,6 +148,7 @@ object BaseParams {
     val hitmark_tint: ParamHitmark = param("hitmark_tint")
     val hitmark_max: ParamHitmark = param("hitmark_max")
     val headbar: ParamHeadbar = param("headbar")
+    val boss_hp_bar_mode: ParamInt = param("boss_hp_bar_mode")
     val rewarditem: ParamObj = param("rewarditem")
     val next_npc_stage: ParamNpc = param("next_npc_stage")
     val bankside_extraop_flip: ParamBool = param("bankside_extraop_conditional_flip")

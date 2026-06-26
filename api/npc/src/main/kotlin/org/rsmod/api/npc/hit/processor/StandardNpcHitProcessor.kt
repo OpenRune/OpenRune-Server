@@ -10,6 +10,7 @@ import org.rsmod.api.config.refs.params
 import org.rsmod.api.npc.access.StandardNpcAccess
 import org.rsmod.api.npc.events.NpcHitEvents
 import org.rsmod.api.npc.headbar.InternalNpcHeadbars
+import org.rsmod.api.npc.hit.NpcDamageContributor
 import org.rsmod.api.player.output.soundSynth
 import org.rsmod.events.EventBus
 import org.rsmod.game.entity.Npc
@@ -19,7 +20,11 @@ import org.rsmod.game.hit.Hit
 
 public class StandardNpcHitProcessor
 @Inject
-constructor(private val playerList: PlayerList, private val eventBus: EventBus) : NpcHitProcessor {
+constructor(
+    private val playerList: PlayerList,
+    private val eventBus: EventBus,
+    private val damageContributors: Set<NpcDamageContributor>,
+) : NpcHitProcessor {
     override fun StandardNpcAccess.process(hit: Hit) {
         // TODO(combat): Show ironman_blocked hitmark if source is an ironman and target has been
         // damaged by other sources.
@@ -64,6 +69,9 @@ constructor(private val playerList: PlayerList, private val eventBus: EventBus) 
         if (hit.damage > 0 && hit.isFromPlayer) {
             hit.resolvePlayerSource(playerList)?.let { source ->
                 npc.recordDamage(source, hit.damage)
+                for (contributor in damageContributors) {
+                    contributor.onPlayerDamageNpc(npc, source, hit.damage)
+                }
             }
         }
 

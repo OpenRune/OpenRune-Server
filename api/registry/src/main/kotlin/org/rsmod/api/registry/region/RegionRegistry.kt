@@ -47,7 +47,16 @@ constructor(
     }
 
     private val zones: RegionZoneCopyMap = RegionZoneCopyMap()
+    private val pinnedUids = HashSet<Int>()
     private var uid = 0
+
+    public fun protect(uid: Int) {
+        pinnedUids += uid
+    }
+
+    public fun unprotect(uid: Int) {
+        pinnedUids -= uid
+    }
 
     public fun registerSmall(): RegionRegistryResult.Add {
         val slot = smallRegions.nextFreeSlot() ?: return RegionRegistryResult.Add.NoAvailableSlot
@@ -117,14 +126,14 @@ constructor(
     }
 
     public fun removeInactiveSmallRegions() {
-        val filtered = smallRegions.filter(::isEmpty)
+        val filtered = smallRegions.filter { it.uid !in pinnedUids && isEmpty(it) }
         for (region in filtered) {
             unregisterSmall(region)
         }
     }
 
     public fun removeInactiveLargeRegions() {
-        val filtered = largeRegions.filter(::isEmpty)
+        val filtered = largeRegions.filter { it.uid !in pinnedUids && isEmpty(it) }
         for (region in filtered) {
             unregisterLarge(region)
         }

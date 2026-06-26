@@ -173,3 +173,14 @@ angle = 32
 lengthAdjustment = 16
 progress = 40
 stepMultiplier = 10
+
+[[projectile]]
+isServerOnly = true
+id = "projanim.dragonfire"
+startHeight = 43
+endHeight = 31
+delay = 51
+angle = 15
+lengthAdjustment = 5
+progress = 250
+stepMultiplier = 10

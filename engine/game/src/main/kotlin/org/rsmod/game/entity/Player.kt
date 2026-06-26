@@ -268,6 +268,11 @@ public class Player(
     public var actionDelay: Int = -1
     public var skillAnimDelay: Int = -1
     public var refaceDelay: Int = -1
+    public var frozen: Boolean = false
+    public var freezeImmune: Boolean = false
+
+    public val isFrozen: Boolean
+        get() = frozen
 
     public var lootDropDuration: Int? = null
 

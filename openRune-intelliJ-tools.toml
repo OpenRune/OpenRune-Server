@@ -3,7 +3,8 @@
 mappings_directories = [
     ".data/gamevals",
     ".data/gamevals-binary",
-    "content/"
+    "content/",
+    "api/"
 ]
 
 # Enable or disable providers

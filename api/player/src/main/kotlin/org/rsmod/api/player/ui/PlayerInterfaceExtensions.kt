@@ -10,11 +10,13 @@ import dev.openrune.types.ItemServerType
 import dev.openrune.types.NpcServerType
 import dev.openrune.types.SequenceServerType
 import dev.openrune.types.aconverted.interf.IfSubType
+import java.awt.Color
 import net.rsprot.protocol.game.outgoing.interfaces.IfCloseSub
 import net.rsprot.protocol.game.outgoing.interfaces.IfMoveSub
 import net.rsprot.protocol.game.outgoing.interfaces.IfOpenSub
 import net.rsprot.protocol.game.outgoing.interfaces.IfOpenTop
 import net.rsprot.protocol.game.outgoing.interfaces.IfSetAnim
+import net.rsprot.protocol.game.outgoing.interfaces.IfSetColour
 import net.rsprot.protocol.game.outgoing.interfaces.IfSetEventsV2
 import net.rsprot.protocol.game.outgoing.interfaces.IfSetHide
 import net.rsprot.protocol.game.outgoing.interfaces.IfSetNpcHead
@@ -301,6 +303,10 @@ private fun Player.openModal(interf: String, internal: String, eventBus: EventBu
     client.write(IfOpenSub(translated.parent, translated.child, interfaceID, IfSubType.Modal.id))
 
     eventBus.publish(OpenSub(this, idInterface, idComponent, IfSubType.Modal))
+}
+
+public fun Player.setColour(component: String, colour: Color) {
+    client.write(IfSetColour(component.asRSCM(),colour.red, colour.green, colour.blue))
 }
 
 private fun Player.openOverlay(interf: String, internal: String, eventBus: EventBus) {

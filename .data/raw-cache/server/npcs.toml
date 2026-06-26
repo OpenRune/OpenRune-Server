@@ -1322,3 +1322,29 @@ respawnRate = 25
 "param.defend_anim"="seq.human_farmersfork_def"
 "param.death_anim"="seq.human_death"
 "param.npc_attack_type"="category.attacktype_stab"
+
+[[npc]]
+id = "npc.rat_boss_normal"
+inherit = "npc.rat_boss_normal"
+
+[npc.params]
+"param.boss_hp_bar_mode"=2
+
+[[npc]]
+id = "npc.rat_boss_instance"
+inherit = "npc.rat_boss_instance"
+
+[npc.params]
+"param.boss_hp_bar_mode"=2
+
+[[npc]]
+id = "npc.king_dragon"
+inherit = "npc.king_dragon"
+huntMode = 6
+huntRange = 12
+wanderRange = 4
+respawnRate = 16
+
+[npc.params]
+"param.boss_hp_bar_mode"=1
+

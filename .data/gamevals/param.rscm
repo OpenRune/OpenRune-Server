@@ -316,3 +316,4 @@ death_never_kept=65538
 
 death_auto_protected=65540
 death_pvp_coin_value=65541
+boss_hp_bar_mode=65526

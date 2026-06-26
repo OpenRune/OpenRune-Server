@@ -23,6 +23,7 @@ import dev.openrune.impl.GameframeTable
 import dev.openrune.impl.Music
 import dev.openrune.map.packing.MapPackers
 import dev.openrune.tables.DidYouKnow
+import dev.openrune.tables.InstanceSettingsTable
 import dev.openrune.tables.PickableObjects
 import dev.openrune.tables.SettingConfigs
 import dev.openrune.tables.StatComponents
@@ -92,6 +93,7 @@ fun tablesToPack() = listOf(
     Runecrafting.combo(),
     SettingConfigs.settings(),
     DidYouKnow.didYouknow(),
+    InstanceSettingsTable.instanceSettings(),
 )
 
 fun downloadRev(type: TaskType) {
