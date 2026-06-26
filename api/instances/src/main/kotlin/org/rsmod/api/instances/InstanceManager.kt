@@ -448,6 +448,7 @@ constructor(
     }
 
     private fun completeBossKillTimer(session: InstanceSession, currentTick: Int) {
+        if (session.isServerOwned) return
         val startTick = session.bossFightStartTick ?: return
         session.bossFightStartTick = null
         if (!InstanceKillTimer.tracksKillTime(session)) {
@@ -455,6 +456,7 @@ constructor(
         }
         val elapsed = currentTick - startTick
         for (player in InstanceTiming.playersIn(session, playerList)) {
+            if (session.damageContributions.damageBy(player) <= 0) continue
             InstanceKillTimer.reportKillTime(player, session.key, elapsed)
         }
     }
