@@ -7,6 +7,7 @@ kotlin {
 }
 
 dependencies {
+    implementation(projects.api.mechanics.toxins)
     implementation(projects.api.config)
     implementation(projects.api.npc)
     implementation(projects.api.player)
