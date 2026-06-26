@@ -229,7 +229,6 @@ class AccountLoadResponseHook(
     private fun Player.applyConfigTransforms(config: RealmConfig) {
         if (!newAccount) {
             //This is very hacky but updating be weird
-            
             val hasExit = attr[LOGIN_EXIT_COORD]
             if (hasExit != null) {
                 coords = CoordGrid(hasExit)
