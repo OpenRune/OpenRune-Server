@@ -91,8 +91,16 @@ public class Inventory(public val type: InventoryServerType, public val objs: Ar
         modifiedSlots.set(slot)
     }
 
-    public operator fun contains(type: String): Boolean =
-        physicalCount(type) > 0 || virtualCount(type) > 0
+    public operator fun contains(type: String): Boolean {
+        if (type.startsWith("content.")) {
+            val content = type.asRSCM(RSCMType.CONTENT)
+            return objs.any { obj ->
+                obj != null && ServerCacheManager.getItem(obj.id)?.contentGroup == content
+            }
+        }
+
+        return physicalCount(type) > 0 || virtualCount(type) > 0
+    }
 
     public operator fun contains(type: ItemServerType): Boolean =
         objs.any { type.isAssociatedWith(it) }

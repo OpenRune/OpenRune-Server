@@ -1347,3 +1347,4 @@ respawnRate = 16
 
 [npc.params]
 "param.boss_hp_bar_mode"=1
+

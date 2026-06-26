@@ -448,7 +448,9 @@ constructor(
     }
 
     private fun completeBossKillTimer(session: InstanceSession, currentTick: Int) {
+
         if (session.isServerOwned) return
+
         val startTick = session.bossFightStartTick ?: return
         session.bossFightStartTick = null
         if (!InstanceKillTimer.tracksKillTime(session)) {
