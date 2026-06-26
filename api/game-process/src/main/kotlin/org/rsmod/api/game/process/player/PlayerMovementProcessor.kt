@@ -55,7 +55,7 @@ constructor(
     }
 
     private fun Player.processMoveSpeed() {
-        if (routeDestination.isEmpty() || !canProcessMovement) {
+        if (routeDestination.isEmpty() || !canProcessMovement || isFrozen) {
             return
         }
         processWalkTrigger()

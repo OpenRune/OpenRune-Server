@@ -1,0 +1,22 @@
+package org.rsmod.api.bosses.runtime
+
+import jakarta.inject.Inject
+import jakarta.inject.Singleton
+import org.rsmod.api.random.GameRandom
+import org.rsmod.api.repo.npc.NpcRepository
+import org.rsmod.api.repo.world.WorldRepository
+import org.rsmod.game.MapClock
+import org.rsmod.game.entity.PlayerList
+import org.rsmod.game.queue.WorldQueueList
+
+@Singleton
+class BossDeps @Inject constructor(
+    val random: GameRandom,
+    val worldRepo: WorldRepository,
+    val npcRepo: NpcRepository,
+    val playerList: PlayerList,
+    val mapClock: MapClock,
+    val worldQueues: WorldQueueList,
+    val encounterRegistry: EncounterRegistry,
+    val extensionRegistry: BossExtensionRegistry,
+)

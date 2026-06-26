@@ -1336,3 +1336,15 @@ inherit = "npc.rat_boss_instance"
 
 [npc.params]
 "param.boss_hp_bar_mode"=2
+
+[[npc]]
+id = "npc.king_dragon"
+inherit = "npc.king_dragon"
+huntMode = 6
+huntRange = 12
+wanderRange = 4
+respawnRate = 16
+
+[npc.params]
+"param.boss_hp_bar_mode"=1
+

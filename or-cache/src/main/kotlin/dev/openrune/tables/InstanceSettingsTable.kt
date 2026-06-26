@@ -61,5 +61,24 @@ object InstanceSettingsTable {
             columnRSCM(ENTER_OBJECT, "loc.rat_boss_entrance")
             columnRSCM(EXIT_OBJECT, "loc.rat_boss_exit")
         }
+
+        row("dbrow.instance_kbd") {
+            column(KEY, "kbd")
+            columnCoord(EXIT_COORD, CoordGrid(0, 47, 160, 59, 14))
+            columnCoord(ENTER_COORD, CoordGrid(0, 35, 73, 31, 9))
+            column(FEE, 50000)
+            column(MAX_PLAYERS, 5)
+            column(TIME_LIMIT_MINUTES, 0)
+            column(GRACE_MINUTES, 10)
+            columnRSCM(BOSS_NPC, "npc.king_dragon")
+            column(BOSS_NAME, "King Black Dragon")
+            column(RECOMMENDED_COMBAT, 80,90)
+            column(TEAM_SIZE, 1)
+            column(LOOT_MULTIPLIER, "x1.0")
+            column(DESCRIPTION, "King of the dragons.")
+            columnRSCM(ENTER_OBJECT, "loc.dragonkinginlever")
+            columnRSCM(EXIT_OBJECT, "loc.dragonkingoutlever")
+        }
+
     }
 }

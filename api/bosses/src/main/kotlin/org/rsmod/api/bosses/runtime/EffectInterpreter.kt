@@ -1,0 +1,275 @@
+package org.rsmod.api.bosses.runtime
+
+import dev.openrune.ServerCacheManager
+import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.rscm.RSCMType
+import dev.openrune.types.NpcMode
+import dev.openrune.types.ProjAnimType
+import dev.openrune.types.aconverted.SpotanimType
+import org.rsmod.api.bosses.spec.*
+import org.rsmod.api.bosses.spec.HitType as BossHitType
+import org.rsmod.api.combat.commons.CombatEffects
+import org.rsmod.api.combat.commons.DragonfireProtection
+import org.rsmod.api.npc.access.StandardNpcAccess
+import org.rsmod.api.player.hit.queueHit
+import org.rsmod.api.player.output.mes
+import org.rsmod.api.player.stat.hitpoints
+import org.rsmod.game.entity.Npc
+import org.rsmod.game.entity.Player
+import org.rsmod.game.hit.HitType
+import org.rsmod.game.proj.ProjAnim
+
+class EffectInterpreter(
+    private val npc: Npc,
+    private val target: Player,
+    private val spec: BossSpec,
+    private val encounter: BossEncounter,
+    private val deps: BossDeps,
+) {
+
+    suspend fun run(access: StandardNpcAccess, effect: Effect) {
+        when (effect) {
+            is Effect.Anim -> access.anim(effect.seq)
+            is Effect.Say -> access.say(effect.text)
+            is Effect.Sound -> {
+                deps.worldRepo.soundArea(npc.coords, effect.synth, radius = effect.radius)
+            }
+            is Effect.Spotanim -> access.spotanim(effect.spot, effect.delay, effect.height)
+            is Effect.MapSpotanim -> {
+                val coord = resolveTile(effect.at)
+                val spot = SpotanimType(effect.spot.asRSCM(RSCMType.SPOTANIM))
+                deps.worldRepo.spotanimMap(spot, coord, effect.height, effect.delay)
+            }
+            is Effect.Broadcast -> {
+                val radius = effect.radius
+                for (player in deps.playerList) {
+                    if (player.coords.chebyshevDistance(npc.coords) <= radius) {
+                        player.mes(effect.text)
+                    }
+                }
+            }
+            is Effect.Delay -> access.delay(effect.ticks)
+            is Effect.NoOp -> {}
+
+            is Effect.Hit -> applyHit(effect)
+            is Effect.Projectile -> fireProjectile(access, effect)
+            is Effect.TileAoE -> applyTileAoE(effect)
+            is Effect.Summon -> summon(effect)
+            is Effect.Poison -> applyPoison(effect)
+            is Effect.Freeze -> applyFreeze(effect)
+            is Effect.StatDrain -> applyStatDrain(effect)
+            is Effect.Transmog -> {
+                val npcType = ServerCacheManager.getNpc(effect.to.asRSCM(RSCMType.NPC))
+                if (npcType != null) {
+                    access.changeType(npcType, effect.durationTicks)
+                }
+            }
+
+            is Effect.Run -> {
+                val ability = spec.abilities[effect.ability] ?: return
+                run(access, ability)
+            }
+            is Effect.TransitionTo -> {
+                encounter.transitionTo(effect.phase, deps.mapClock.cycle)
+            }
+            is Effect.External -> {
+                deps.extensionRegistry.invoke(effect.handler, access, npc, target, effect.params)
+            }
+
+            is Effect.Sequence -> {
+                for (e in effect.effects) run(access, e)
+            }
+            is Effect.Parallel -> {
+                for (e in effect.effects) run(access, e)
+            }
+            is Effect.Choose -> {
+                val abilityName = encounter.selectAbility(effect.selector, deps.mapClock.cycle) ?: return
+                val branch = effect.branches[abilityName] ?: return
+                run(access, branch)
+            }
+            is Effect.Repeat -> {
+                repeat(effect.times) { run(access, effect.effect) }
+            }
+            is Effect.Whenever -> {
+                if (encounter.evaluate(effect.condition, target)) {
+                    run(access, effect.then)
+                } else {
+                    run(access, effect.otherwise)
+                }
+            }
+            is Effect.OnEach -> {
+                val targets = resolveMulti(effect.targets)
+                for (t in targets) {
+                    val subInterpreter = EffectInterpreter(npc, t, spec, encounter, deps)
+                    subInterpreter.run(access, effect.effect)
+                }
+            }
+        }
+    }
+
+    private fun applyHit(hit: Effect.Hit) {
+        val targets = when (val t = hit.target) {
+            is TargetExpr.Single -> listOfNotNull(resolveSingle(t))
+            is TargetExpr.Multi -> resolveMulti(t)
+            else -> listOf(target)
+        }
+        val delay = hit.delay.coerceAtLeast(1)
+        for (t in targets) {
+            var damage = evaluateDamage(hit.damage)
+            dragonfireType(hit.type)?.let { dfType ->
+                val cap = DragonfireProtection.resolveMaxHit(t, dfType, damageMax(hit.damage))
+                damage = if (cap <= 0) 0 else deps.random.of(cap + 1)
+            }
+            t.queueHit(npc, delay, hit.type.toEngine(), damage)
+        }
+    }
+
+    private fun fireProjectile(access: StandardNpcAccess, proj: Effect.Projectile) {
+        val t = resolveSingle(proj.target as? TargetExpr.Single ?: TargetExpr.CurrentTarget) ?: return
+        val spotId = proj.spotanim.asRSCM(RSCMType.SPOTANIM)
+
+        val type = if (proj.travel != null) {
+            ServerCacheManager.getProjectile(proj.travel.asRSCM(RSCMType.PROJANIM))
+                ?: error("Projectile not found: ${proj.travel}")
+        } else {
+            val cfg = proj.config ?: ProjectileConfig()
+            ProjAnimType(
+                startHeight = cfg.startHeight,
+                endHeight = cfg.endHeight,
+                delay = cfg.startDelay,
+                angle = cfg.angle,
+                lengthAdjustment = cfg.travelTime,
+                progress = cfg.progress,
+                stepMultiplier = cfg.stepMultiplier,
+            )
+        }
+
+        val projAnim = ProjAnim.fromNpcToPlayer(npc, t, spotId, type)
+        deps.worldRepo.projAnim(projAnim)
+
+        proj.hit?.let { hit ->
+            var damage = evaluateDamage(hit.damage)
+            dragonfireType(hit.type)?.let { dfType ->
+                val cap = DragonfireProtection.resolveMaxHit(t, dfType, damageMax(hit.damage))
+                damage = if (cap <= 0) 0 else deps.random.of(cap + 1)
+            }
+            t.queueHit(npc, projAnim.serverCycles, hit.type.toEngine(), damage)
+        }
+    }
+
+    private fun applyTileAoE(aoe: Effect.TileAoE) {
+        val center = resolveTile(aoe.center)
+        val radius = aoe.radius
+        val targets = deps.playerList.filter {
+            it.coords.chebyshevDistance(center) <= radius
+        }
+        for (t in targets) {
+            val damage = evaluateDamage(aoe.damage)
+            t.queueHit(npc, 0, aoe.type.toEngine(), damage)
+        }
+    }
+
+    private fun summon(summon: Effect.Summon) {
+        val npcTypeId = summon.npc.asRSCM(RSCMType.NPC)
+        val npcType = ServerCacheManager.getNpc(npcTypeId) ?: return
+        val center = resolveTile(summon.centeredOn)
+
+        repeat(summon.count) {
+            val spawnCoord = center.translate(
+                deps.random.of(summon.radius * 2 + 1) - summon.radius,
+                deps.random.of(summon.radius * 2 + 1) - summon.radius,
+            )
+            val spawned = Npc(npcType, spawnCoord)
+            spawned.mode = NpcMode.None
+            deps.npcRepo.add(spawned, 100)
+        }
+    }
+
+    private fun applyPoison(effect: Effect.Poison) {
+        if (deps.random.of(effect.outOf) < effect.chance) {
+            CombatEffects.poison(target, effect.damage)
+        }
+    }
+
+    private fun applyFreeze(effect: Effect.Freeze) {
+        if (deps.random.of(effect.outOf) < effect.chance) {
+            CombatEffects.freeze(target, effect.ticks)
+        }
+    }
+
+    private fun applyStatDrain(effect: Effect.StatDrain) {
+        for (entry in effect.entries) {
+            if (deps.random.of(entry.outOf) < entry.chance) {
+                CombatEffects.statDrain(target, listOf(entry.stat), entry.amount)
+            }
+        }
+    }
+
+    private fun resolveSingle(expr: TargetExpr.Single): Player? {
+        return when (expr) {
+            is TargetExpr.CurrentTarget -> target
+            is TargetExpr.Self -> null
+            is TargetExpr.CurrentTargetTile -> null
+            is TargetExpr.HighestDamageDealer -> target
+            is TargetExpr.LowestPrayer -> target
+            is TargetExpr.RandomNearby -> target
+        }
+    }
+
+    private fun resolveTile(expr: TargetExpr): org.rsmod.map.CoordGrid {
+        return when (expr) {
+            is TargetExpr.CurrentTarget -> target.coords
+            is TargetExpr.CurrentTargetTile -> target.coords
+            is TargetExpr.Self -> npc.coords
+            else -> npc.coords
+        }
+    }
+
+    private fun resolveMulti(expr: TargetExpr): List<Player> {
+        return when (expr) {
+            is TargetExpr.AllInRadius -> {
+                val center = resolveTile(expr.of)
+                deps.playerList.filter { it.coords.chebyshevDistance(center) <= expr.radius }
+            }
+            is TargetExpr.TopN -> listOf(target)
+            is TargetExpr.Single -> listOfNotNull(resolveSingle(expr))
+            else -> listOf(target)
+        }
+    }
+
+    private fun damageMax(expr: DamageExpr): Int =
+        when (expr) {
+            is DamageExpr.Roll -> if (expr.range.isEmpty()) 0 else expr.range.last
+            is DamageExpr.Fixed -> expr.value
+            else -> evaluateDamage(expr)
+        }
+
+    private fun dragonfireType(t: BossHitType): DragonfireProtection.DragonfireType? =
+        when (t) {
+            BossHitType.Dragonfire -> DragonfireProtection.DragonfireType.Chromatic
+            BossHitType.DragonfireMetal -> DragonfireProtection.DragonfireType.Metal
+            BossHitType.WyvernIce -> DragonfireProtection.DragonfireType.WyvernIce
+            else -> null
+        }
+
+    private fun evaluateDamage(expr: DamageExpr): Int {
+        return when (expr) {
+            is DamageExpr.Fixed -> expr.value
+            is DamageExpr.Roll -> if (expr.range.isEmpty()) 0 else deps.random.of(expr.range.last + 1)
+            is DamageExpr.Accuracy -> evaluateDamage(expr.on)
+            is DamageExpr.PercentOfTargetHp -> (target.hitpoints * expr.fraction).toInt()
+            is DamageExpr.Min -> minOf(evaluateDamage(expr.a), evaluateDamage(expr.b))
+            is DamageExpr.Max -> maxOf(evaluateDamage(expr.a), evaluateDamage(expr.b))
+        }
+    }
+
+    private fun BossHitType.toEngine(): HitType = when (this) {
+        BossHitType.Melee -> HitType.Melee
+        BossHitType.Ranged -> HitType.Ranged
+        BossHitType.Magic -> HitType.Magic
+        BossHitType.Dragonfire -> HitType.Magic
+        BossHitType.DragonfireMetal -> HitType.Magic
+        BossHitType.WyvernIce -> HitType.Magic
+        BossHitType.Typeless -> HitType.Typeless
+    }
+}

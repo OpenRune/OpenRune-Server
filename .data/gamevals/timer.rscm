@@ -12,4 +12,6 @@ player_venom=10
 player_disease=11
 music_resume=12
 skull_timer=13
+combat_freeze=16
+combat_freeze_immunity=17
 boss_hp_bar_check=114
