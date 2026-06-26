@@ -542,7 +542,7 @@ coords = "0_47_61_14_42"
 
 [[spawn]]
 npc = "npc.wilderness_capeseller_4"
-coords = "0_47_60_8_43"
+coords = "0_47_61_8_43"
 
 [[spawn]]
 npc = "npc.wilderness_capeseller_5"
