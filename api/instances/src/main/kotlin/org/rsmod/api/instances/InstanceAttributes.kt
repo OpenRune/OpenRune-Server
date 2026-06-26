@@ -8,11 +8,12 @@ import org.rsmod.game.entity.Player
 public object InstanceAttributes {
     public val CURRENT_INSTANCE_ID: AttributeKey<Long> = AttributeKey(temp = true)
 
+    /** Packed [CoordGrid] the player should be placed at on their next login. Set on logout. */
+    public val LOGIN_EXIT_COORD: AttributeKey<Int> = AttributeKey(persistenceKey = "instance_exit_coord")
+
     internal val KILL_BEST_TICKS: AttributeKey<MutableMap<String, Int>> =
         AttributeKey(temp = true)
 }
-
-private var Player.pendingInstanceRowVar by intVarBit("varbit.pending_instance_row")
 
 public fun Player.currentInstanceId(): InstanceId? =
     attr[InstanceAttributes.CURRENT_INSTANCE_ID]?.let(::InstanceId)
@@ -26,17 +27,6 @@ public fun Player.clearInstance() {
     attr.remove(InstanceAttributes.CURRENT_INSTANCE_ID)
     VarPlayerIntMapSetter.set(this, "varbit.player_in_instance", 0)
 }
-
-public fun Player.setPendingInstanceRow(settingsRowId: Int) {
-    pendingInstanceRowVar = settingsRowId
-}
-
-public fun Player.clearPendingInstanceRow() {
-    pendingInstanceRowVar = 0
-}
-
-public fun Player.consumePendingInstanceRow(): Int =
-    pendingInstanceRowVar.also { pendingInstanceRowVar = 0 }
 
 internal fun Player.instanceKillBest(instanceKey: String): Int? =
     attr[InstanceAttributes.KILL_BEST_TICKS]?.get(instanceKey)

@@ -10,7 +10,9 @@ import jakarta.inject.Singleton
 import java.util.concurrent.atomic.AtomicLong
 import org.rsmod.api.instances.events.InstanceEndedEvent
 import org.rsmod.api.instances.events.InstancePlayerJoinEvent
+import org.rsmod.api.instances.events.InstancePlayerJoinUnboundEvent
 import org.rsmod.api.instances.events.InstancePlayerLeaveEvent
+import org.rsmod.api.instances.events.InstancePlayerLeaveUnboundEvent
 import org.rsmod.api.instances.events.InstanceStartedEvent
 import org.rsmod.api.instances.events.InstanceTimeTickEvent
 import org.rsmod.api.instances.region.InstanceAreaResolver
@@ -31,11 +33,14 @@ import org.rsmod.events.KeyedEvent
 import org.rsmod.game.MapClock
 import org.rsmod.game.damage.DamageContributions
 import org.rsmod.game.entity.Npc
+import org.rsmod.game.entity.PathingEntity
 import org.rsmod.game.entity.Player
 import org.rsmod.game.entity.PlayerList
 import org.rsmod.game.entity.npc.NpcUid
+import org.rsmod.game.entity.util.PathingEntityCommon
 import org.rsmod.game.region.Region
 import org.rsmod.map.CoordGrid
+import org.rsmod.routefinder.collision.CollisionFlagMap
 
 @Singleton
 public class InstanceManager
@@ -47,6 +52,7 @@ constructor(
     private val eventBus: EventBus,
     private val areaResolver: InstanceAreaResolver,
     private val worldClock: MapClock,
+    private val collision: CollisionFlagMap
 ) {
     private val nextId = AtomicLong(1)
 
@@ -113,13 +119,14 @@ constructor(
 
         startSession(session, currentTick)
         assignOccupant(owner, session)
-        publishPlayerJoin(owner, session)
 
         val spawned = mutableListOf<Npc>()
         if (!spec.spawnOnFirstJoin) {
             spawnSessionNpcs(session, region, spawned, currentTick)
         }
         spawnedNpcs[instanceId] = spawned
+
+        publishPlayerJoin(owner, session)
 
         return Result.Created(session, session.enterCoord(region))
     }
@@ -218,6 +225,8 @@ constructor(
         sessionForId(id)?.damageContributions
 
     public fun instanceForNpc(npc: Npc): InstanceId? = npcInstanceIndex[npc.uid]
+
+    public fun npcsForInstance(id: InstanceId): List<Npc> = spawnedNpcs[id] ?: emptyList()
 
     public fun attachNpc(instanceId: InstanceId, npc: Npc) {
         spawnedNpcs.getOrPut(instanceId) { mutableListOf() }.add(npc)
@@ -325,24 +334,11 @@ constructor(
         return session.placement.exitCoord
     }
 
-    public fun handleLogout(player: Player, currentTick: Int): CoordGrid? {
-        val session = sessionForPlayer(player) ?: return null
+    public fun handleLogout(player: Player, currentTick: Int) {
+        val session = sessionForPlayer(player) ?: return
         val exit = session.placement.exitCoord
-        val rowId = session.spec.settingsRowId
         removeOccupant(player, session, currentTick)
-        player.setPendingInstanceRow(rowId)
-        return exit.takeUnless { it == CoordGrid.ZERO }
-    }
-
-    public fun handleLogin(player: Player, currentTick: Int): CoordGrid? {
-        val rowId = player.consumePendingInstanceRow()
-        if (rowId <= 0) {
-            return null
-        }
-        sessionForPlayer(player)?.let { removeOccupant(player, it, currentTick) }
-        return runCatching { InstanceSettingsRow.getRow(rowId).exitCoord }
-            .getOrNull()
-            ?.takeUnless { it == CoordGrid.ZERO }
+        player.attr[InstanceAttributes.LOGIN_EXIT_COORD] = exit.packed
     }
 
     public fun handleDeath(player: Player, currentTick: Int) {
@@ -603,8 +599,13 @@ constructor(
         }
         ownerIndex.remove(session.owner)
         playerIndex.entries.removeIf { it.value == session.id }
+        val exitCoord = session.placement.exitCoord
         for (occupant in session.occupants) {
-            playerList.firstOrNull { it.uuid == occupant }?.clearInstance()
+            val player = playerList.firstOrNull { it.uuid == occupant } ?: continue
+            if (exitCoord != CoordGrid.ZERO) {
+                player.attr[InstanceAttributes.LOGIN_EXIT_COORD] = exitCoord.packed
+            }
+            player.clearInstance()
         }
     }
 
@@ -622,13 +623,11 @@ constructor(
         val playerId = player.playerId()
         session.addOccupant(playerId)
         player.assignInstance(session.id)
-        player.setPendingInstanceRow(session.spec.settingsRowId)
         playerIndex[playerId] = session.id
     }
 
     private fun clearOccupant(player: Player) {
         player.clearInstance()
-        player.clearPendingInstanceRow()
         playerIndex.remove(player.playerId())
     }
 
@@ -655,11 +654,27 @@ constructor(
                 ownerId = session.owner,
             )
         )
+        eventBus.publish(
+            InstancePlayerJoinUnboundEvent(
+                player = player,
+                key = session.key,
+                instanceId = session.id,
+                ownerId = session.owner,
+            )
+        )
     }
 
     private fun publishPlayerLeave(player: Player, session: InstanceSession) {
         publish(
             InstancePlayerLeaveEvent(
+                player = player,
+                key = session.key,
+                instanceId = session.id,
+                ownerId = session.owner,
+            )
+        )
+        eventBus.publish(
+            InstancePlayerLeaveUnboundEvent(
                 player = player,
                 key = session.key,
                 instanceId = session.id,

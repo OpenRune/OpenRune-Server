@@ -19,12 +19,7 @@ constructor(
 ) : PluginScript() {
     override fun ScriptContext.startup() {
         onPlayerLogout {
-            val exit = manager.handleLogout(player, worldClock.cycle) ?: return@onPlayerLogout
-            PathingEntityCommon.telejump(player, collision, exit)
-        }
-        onPlayerLogin {
-            val exit = manager.handleLogin(player, worldClock.cycle) ?: return@onPlayerLogin
-            PathingEntityCommon.telejump(player, collision, exit)
+            manager.handleLogout(player, worldClock.cycle)
         }
     }
 }

@@ -1,13 +1,9 @@
 package org.rsmod.content.other.login
 
 import dev.openrune.ServerCacheManager
-import dev.openrune.definition.type.VarBitType
-import dev.openrune.definition.type.VarpType
 import dev.openrune.rscm.RSCM
-import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import dev.openrune.types.varp.VarpServerType
-import dev.openrune.types.varp.baseVar
 import jakarta.inject.Inject
 import net.rsprot.protocol.game.outgoing.misc.client.HideLocOps
 import net.rsprot.protocol.game.outgoing.misc.client.HideNpcOps
@@ -46,7 +42,7 @@ constructor(
     private val realm: Realm,
     private val mapClock: MapClock,
     private val invisibleLevels: InvisibleLevels,
-    private val config: ServerConfig,
+    private val config: ServerConfig
 ) : PluginScript() {
     private val transmitVars by lazy { transmitVars() }
 

@@ -784,3 +784,11 @@ isServerOnly = true
 type = "BOOLEAN"
 defaultInt = 0
 isMembers = true
+
+[[params]]
+id = "param.boss_hp_bar_mode"
+isServerOnly = true
+type = "INT"
+defaultInt = 0
+isMembers = true
+
