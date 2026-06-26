@@ -57,6 +57,12 @@ public class DamageContributions {
 
     public fun totalDamage(): Int = entries.values.sumOf { it.damage }
 
+    public fun absorbFrom(other: DamageContributions) {
+        for (contributor in other.entries().filterIsInstance<DamageContributor.ByPlayer>()) {
+            recordPlayer(contributor.uuid, contributor.damage)
+        }
+    }
+
     public fun topPlayer(): DamageContributor.ByPlayer? = mostDamage() as? DamageContributor.ByPlayer
 
     public fun leastPlayer(): DamageContributor.ByPlayer? {

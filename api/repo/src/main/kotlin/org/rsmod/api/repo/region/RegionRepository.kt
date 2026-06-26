@@ -55,6 +55,19 @@ public class RegionRepository @Inject constructor(private val registry: RegionRe
         return result.region
     }
 
+    public fun protect(region: Region) {
+        registry.protect(region.uid)
+    }
+
+    public fun unprotect(region: Region) {
+        registry.unprotect(region.uid)
+    }
+
+    public fun isValid(region: Region): Boolean {
+        if (region.slot == Region.INVALID_SLOT) return false
+        return registry.isValid(region.slot, region.uid)
+    }
+
     public fun registerSmall(template: RegionTemplate): Result.Add {
         registry.removeInactiveSmallRegions()
 
