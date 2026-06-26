@@ -23,6 +23,7 @@ class GameValProvider : MappingProvider {
                 Paths.get("${rootDir}.data", "gamevals-binary", "gamevals.dat").toFile(),
                 Paths.get("${rootDir}.data", "gamevals-binary", "gamevals_columns.dat").toFile(),
                 Paths.get("${rootDir}content").toFile(),
+                Paths.get("${rootDir}api").toFile(),
                 Paths.get("${rootDir}.data", "gamevals").toFile(),
             )
 
@@ -41,30 +42,34 @@ class GameValProvider : MappingProvider {
     }
 
     override fun load(vararg files: File) {
-        require(files.size >= 2) { "Expected at least two files for loading: gamevals.dat and gamevals_columns.dat" }
+        require(files.size >= 2) {
+            "Expected at least two files for loading: gamevals.dat and gamevals_columns.dat"
+        }
 
         decodeGameValDat(files[0])
         decodeGameValDat(files[1])
 
-        if (autoAssignIds) {
-            val contentDir = files.getOrNull(2)?.takeIf { it.exists() && it.isDirectory }
-            val gamevalsDir = files.getOrNull(3)?.takeIf { it.exists() && it.isDirectory }
-            if (contentDir != null || gamevalsDir != null) {
-                GameValAutoAssigner(mappings, maxBaseID).run(contentDir, gamevalsDir)
-            }
+        val contentDir = files.getOrNull(2)?.takeIf { it.exists() && it.isDirectory }
+        val apiDir = files.getOrNull(3)?.takeIf { it.exists() && it.isDirectory }
+        val gamevalsDir = files.getOrNull(4)?.takeIf { it.exists() && it.isDirectory }
+
+        if (autoAssignIds && (contentDir != null || apiDir != null || gamevalsDir != null)) {
+            GameValAutoAssigner(mappings, maxBaseID).run(contentDir, apiDir, gamevalsDir)
         }
 
-        files.getOrNull(2)?.takeIf { it.exists() && it.isDirectory }?.walk()
-            ?.filter { it.isFile && it.name == "gamevals.toml" && !it.isGeneratedOutputPath() }
-            ?.forEach { processGameValToml(it) }
-
-        files.drop(3).forEach { dir ->
-            if (!dir.exists()) {
-                return@forEach
-            }
-            check(dir.isDirectory) { "Expected a directory for RSCM mappings, got: ${dir.absolutePath}" }
-            dir.walk().filter { it.isFile }.forEach { processRSCMFile(it) }
+        listOfNotNull(contentDir, apiDir).forEach { dir ->
+            dir.walk()
+                .filter {
+                    it.isFile &&
+                        it.name == "gamevals.toml" &&
+                        !it.isGeneratedOutputPath()
+                }
+                .forEach(::processGameValToml)
         }
+
+        gamevalsDir?.walk()
+            ?.filter(File::isFile)
+            ?.forEach(::processRSCMFile)
     }
 
     private fun processGameValToml(file: File) {

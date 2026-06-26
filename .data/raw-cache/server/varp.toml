@@ -383,3 +383,9 @@ isServerOnly = true
 id = "varp.kc_moon_chest"
 scope = "Perm"
 transmit = "Never"
+
+[[varp]]
+isServerOnly = true
+id = "varp.instance_state"
+scope = "Perm"
+transmit = "Never"

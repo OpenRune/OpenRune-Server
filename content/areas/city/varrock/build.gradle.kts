@@ -3,7 +3,7 @@ plugins {
 }
 
 dependencies {
-    implementation(projects.api.instance)
+    implementation(projects.api.instances)
     implementation(projects.api.pluginCommons)
     implementation(projects.api.repo)
     implementation(projects.api.script)

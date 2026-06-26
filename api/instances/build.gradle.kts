@@ -2,15 +2,12 @@ plugins {
     id("base-conventions")
 }
 
-kotlin {
-    explicitApi()
-}
-
 dependencies {
     implementation(libs.guice)
     implementation(projects.api.attr)
     implementation(projects.api.player)
     implementation(projects.api.registry)
+    implementation(projects.api.pluginCommons)
     implementation(projects.api.repo)
     implementation(projects.api.script)
     implementation(projects.engine.events)

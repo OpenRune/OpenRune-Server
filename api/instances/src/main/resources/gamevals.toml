@@ -1,0 +1,11 @@
+[gamevals.dbtable]
+instance_settings=65513
+
+[gamevals.varp]
+instance_state=65490
+
+[gamevals.varbit]
+pending_instance_row=65526
+
+[gamevals.dbrow]
+instance_scurrius=64681

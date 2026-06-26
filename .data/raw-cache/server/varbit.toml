@@ -487,3 +487,10 @@ id = "varbit.slayer_total_tasks_done"
 varp = "varp.slayer_last_count"
 startBit = 0
 endBit = 15
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.pending_instance_row"
+varp = "varp.instance_state"
+startBit = 0
+endBit = 15

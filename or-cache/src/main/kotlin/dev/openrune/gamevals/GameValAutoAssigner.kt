@@ -12,8 +12,8 @@ class GameValAutoAssigner(
     private val mappings: Map<String, MutableMap<String, Int>>,
     private val maxBaseID: Map<String, Int>,
 ) {
-    fun run(contentDir: File?, gamevalsDir: File?) {
-        val scanResult = scanForUnassigned(contentDir, gamevalsDir)
+    fun run(contentDir: File?, apiDir: File? ,gamevalsDir: File?) {
+        val scanResult = scanForUnassigned(contentDir,apiDir, gamevalsDir)
         if (scanResult.unassigned.isEmpty()) return
 
         val replacements = assignIds(scanResult)
@@ -34,7 +34,7 @@ class GameValAutoAssigner(
         val key: String,
     )
 
-    private fun scanForUnassigned(contentDir: File?, gamevalsDir: File?): ScanResult {
+    private fun scanForUnassigned(contentDir: File?,apiDir: File?, gamevalsDir: File?): ScanResult {
         val usedIds = mutableMapOf<String, MutableSet<Int>>()
         val idsInSameFile = mutableMapOf<Pair<File, String>, MutableSet<Int>>()
         val unassigned = mutableListOf<UnassignedEntry>()
@@ -59,6 +59,23 @@ class GameValAutoAssigner(
                 idsInSameFile.getOrPut(file to table) { mutableSetOf() }.add(value)
             }
         }
+
+        apiDir
+            ?.walk()
+            ?.filter { it.isFile && it.name == "gamevals.toml" && !it.isGeneratedOutputPath() }
+            ?.forEach { file ->
+                var currentTable: String? = null
+                file.readLines().forEachIndexed { index, line ->
+                    GAMEVALS_SECTION_REGEX.find(line.trim())?.let {
+                        currentTable = it.groupValues[1].takeIf { t -> t in RSCMType.RSCM_PREFIXES }
+                    }
+                    if (currentTable != null && line.contains("=")) {
+                        parseKeyValue(line)?.let { (key, value) ->
+                            recordEntry(file, index, line, currentTable!!, key, value)
+                        }
+                    }
+                }
+            }
 
         contentDir
             ?.walk()
