@@ -13,23 +13,10 @@ import org.rsmod.plugin.scripts.ScriptContext
 
 class WildernessCapeMerchants @Inject constructor(private val shops: Shops) : PluginScript() {
 
-    val mapping = mapOf(
-        "William" to 1,
-        "Ian" to 2,
-        "Larry" to 3,
-        "Darren" to 4,
-        "Edward" to 5,
-        "Richard" to 6,
-        "Neil" to 7,
-        "Edmond" to 8,
-        "Simon" to 9,
-        "Sam" to 10,
-    )
-
     override fun ScriptContext.startup() {
         for (i in 1..10) {
             onOpNpc1("npc.wilderness_capeseller_$i") { merchantDialogue(it.npc) }
-            onOpNpc3("npc.wilderness_capeseller_$i") { player.openCapeStore(it.npc) }
+            onOpNpc3("npc.wilderness_capeseller_$i") { shops.open(player, it.npc) }
         }
     }
 
@@ -53,7 +40,7 @@ class WildernessCapeMerchants @Inject constructor(private val shops: Shops) : Pl
             1 -> whatSoSpecial(npc)
             2 -> {
                 chatPlayer(happy, "Yes please!")
-                player.openCapeStore(npc)
+                shops.open(player, npc)
             }
             3 -> chatPlayer(happy, "No thanks.")
         }
@@ -74,14 +61,5 @@ class WildernessCapeMerchants @Inject constructor(private val shops: Shops) : Pl
         )
         chatNpc(happy, "So would you like to buy one?")
         access.merchantDialogue(npc, false)
-    }
-
-    private fun Player.openCapeStore(npc: Npc) {
-        shops.open(
-            this,
-            npc,
-            "${npc.name}'s Wilderness Cape Shop",
-            "inv.wildernesscapeshop${mapping[npc.name]}",
-        )
     }
 }
