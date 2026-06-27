@@ -77,7 +77,7 @@ constructor(
             skillAnimDelay = mapClock + 3
             opLoc1(tree)
         } else {
-            val axe = findAxe(player)
+            val axe = findAxe(player, type)
             if (axe == null) {
                 mes("You need an axe to chop down this tree.")
                 mes("You do not have an axe which you have the woodcutting level to use.")
@@ -90,7 +90,7 @@ constructor(
     }
 
     private fun ProtectedAccess.cut(tree: BoundLocInfo, type: ObjectServerType) {
-        val axe = findAxe(player)
+        val axe = findAxe(player, type)
         if (axe == null) {
             mes("You need an axe to chop down this tree.")
             mes("You do not have an axe which you have the woodcutting level to use.")
@@ -248,11 +248,13 @@ constructor(
         private val ObjectServerType.hasDespawnTimer: Boolean
             get() = hasParam(params.despawn_time)
 
-        fun findAxe(player: Player): InvObj? {
+        fun findAxe(player: Player, type: ObjectServerType): InvObj? {
             val worn = player.wornAxe()
             val carried = player.carriedAxe()
             if (worn != null && carried != null) {
-                if (getInvObj(worn).axeWoodcuttingReq >= getInvObj(carried).axeWoodcuttingReq) {
+                val wornSuccess = cutSuccessRates(type, worn)
+                val carriedSuccess = cutSuccessRates(type, carried)
+                if ((wornSuccess.first + wornSuccess.second) / 2 >= (carriedSuccess.first + carriedSuccess.second) / 2) {
                     return worn
                 }
                 return carried
