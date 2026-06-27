@@ -1348,3 +1348,82 @@ respawnRate = 16
 [npc.params]
 "param.boss_hp_bar_mode"=1
 
+[[npc]]
+id = "npc.wilderness_capeseller_1"
+inherit = "npc.wilderness_capeseller_1"
+
+[npc.params]
+"param.shop_inventory" = "inv.wildernesscapeshop1"
+"param.shop_name" = "William's Wilderness Cape Shop"
+
+[[npc]]
+id = "npc.wilderness_capeseller_2"
+inherit = "npc.wilderness_capeseller_2"
+
+[npc.params]
+"param.shop_inventory" = "inv.wildernesscapeshop2"
+"param.shop_name" = "Ian's Wilderness Cape Shop"
+
+[[npc]]
+id = "npc.wilderness_capeseller_3"
+inherit = "npc.wilderness_capeseller_3"
+
+[npc.params]
+"param.shop_inventory" = "inv.wildernesscapeshop3"
+"param.shop_name" = "Larry's Wilderness Cape Shop"
+
+[[npc]]
+id = "npc.wilderness_capeseller_4"
+inherit = "npc.wilderness_capeseller_4"
+
+[npc.params]
+"param.shop_inventory" = "inv.wildernesscapeshop4"
+"param.shop_name" = "Darren's Wilderness Cape Shop"
+
+[[npc]]
+id = "npc.wilderness_capeseller_5"
+inherit = "npc.wilderness_capeseller_5"
+
+[npc.params]
+"param.shop_inventory" = "inv.wildernesscapeshop5"
+"param.shop_name" = "Edward's Wilderness Cape Shop"
+
+[[npc]]
+id = "npc.wilderness_capeseller_6"
+inherit = "npc.wilderness_capeseller_6"
+
+[npc.params]
+"param.shop_inventory" = "inv.wildernesscapeshop6"
+"param.shop_name" = "Richard's Wilderness Cape Shop"
+
+[[npc]]
+id = "npc.wilderness_capeseller_7"
+inherit = "npc.wilderness_capeseller_7"
+
+[npc.params]
+"param.shop_inventory" = "inv.wildernesscapeshop7"
+"param.shop_name" = "Neil's Wilderness Cape Shop"
+
+[[npc]]
+id = "npc.wilderness_capeseller_8"
+inherit = "npc.wilderness_capeseller_8"
+
+[npc.params]
+"param.shop_inventory" = "inv.wildernesscapeshop8"
+"param.shop_name" = "Edmond's Wilderness Cape Shop"
+
+[[npc]]
+id = "npc.wilderness_capeseller_9"
+inherit = "npc.wilderness_capeseller_9"
+
+[npc.params]
+"param.shop_inventory" = "inv.wildernesscapeshop9"
+"param.shop_name" = "Simon's Wilderness Cape Shop"
+
+[[npc]]
+id = "npc.wilderness_capeseller_10"
+inherit = "npc.wilderness_capeseller_10"
+
+[npc.params]
+"param.shop_inventory" = "inv.wildernesscapeshop10"
+"param.shop_name" = "Sam's Wilderness Cape Shop"
