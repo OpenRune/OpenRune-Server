@@ -13,6 +13,8 @@ import net.rsprot.protocol.game.outgoing.misc.client.ResetAnims
 import net.rsprot.protocol.game.outgoing.misc.player.ChatFilterSettings
 import net.rsprot.protocol.game.outgoing.varp.VarpReset
 import org.rsmod.api.inv.weight.InvWeight
+import org.rsmod.api.net.central.OpenRuneCentralWorldLink
+import org.rsmod.api.net.central.writeCentralSocialSnapshot
 import org.rsmod.api.player.output.Camera
 import org.rsmod.api.player.output.ChatType
 import org.rsmod.api.player.output.MiscOutput
@@ -42,6 +44,7 @@ constructor(
     private val realm: Realm,
     private val mapClock: MapClock,
     private val invisibleLevels: InvisibleLevels,
+    private val central: OpenRuneCentralWorldLink,
     private val config: ServerConfig
 ) : PluginScript() {
     private val transmitVars by lazy { transmitVars() }
@@ -60,6 +63,7 @@ constructor(
 
     private fun Player.sendHighPriority() {
         sendChatFilters()
+        sendSocial()
         sendOpVisibility()
         sendWelcomeMessage()
         val validDidYouKnow = DidyouknowRow.all().filter { it.mobileonly != true }.random()
@@ -150,6 +154,25 @@ constructor(
 
     private fun transmitVars(): List<VarpServerType> {
         return ServerCacheManager.getVarps().values.filter { !it.transmit.never }.sortedBy { it.id }
+    }
+
+    private fun Player.sendSocial() {
+        val token = openRuneCentralSessionToken
+
+        if (token == null || characterId <= 0) {
+            mes("Social list did not load: missing Central session.")
+            return
+        }
+
+        when (val result = central.socialSnapshot(token, characterId)) {
+            is OpenRuneCentralWorldLink.CentralSocialSnapshotResult.Ok -> {
+                writeCentralSocialSnapshot(result.snapshot)
+            }
+
+            is OpenRuneCentralWorldLink.CentralSocialSnapshotResult.Failed -> {
+                mes("Social list did not load: ${result.message}")
+            }
+        }
     }
 
 }

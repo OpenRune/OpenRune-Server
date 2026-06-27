@@ -17,6 +17,39 @@ public object WorldLinkFrameSpecs {
 
     public const val PM_RELAY_MESSAGE_MAX_UTF8: Int = PRIVATE_MESSAGE_MAX_CHARS * 4
 
+    public const val SOCIAL_NAME_MAX_UTF8: Int = 96
+
+    public const val OP_WORLD_PM_RELAY: Int = 0x60
+    public const val OP_WORLD_FRIEND_ADD: Int = 0x61
+    public const val OP_WORLD_FRIEND_DEL: Int = 0x62
+    public const val OP_WORLD_IGNORE_ADD: Int = 0x63
+    public const val OP_WORLD_IGNORE_DEL: Int = 0x64
+    public const val OP_WORLD_CHAT_FILTERS: Int = 0x65
+
+    public const val OP_WORLD_SOCIAL_OK: Int = 0x66
+    public const val OP_WORLD_SOCIAL_FAIL: Int = 0x67
+    public const val OP_WORLD_SOCIAL_SYNC: Int = 0x69
+    public const val OP_WORLD_SOCIAL_SYNC_OK: Int = 0x6A
+    public const val OP_WORLD_SOCIAL_SYNC_FAIL: Int = 0x6B
+
+    public const val OP_SERVER_PRIVATE_MESSAGE: Int = 0x68
+    public const val OP_SERVER_FRIEND_PRESENCE: Int = 0x6C
+
+    private const val SERVER_PRIVATE_MESSAGE_MIN_BODY: Int = 4 + 4 + 4 + 1 + 2 + 0 + 2 + 0
+
+    private const val SERVER_PRIVATE_MESSAGE_MAX_BODY: Int =
+        4 + // sender world id
+            4 + // from character id
+            4 + // to character id
+            1 + // sender crown
+            2 + PM_RELAY_SENDER_DISPLAY_MAX_UTF8 +
+            2 + PM_RELAY_MESSAGE_MAX_UTF8
+
+    private const val SERVER_FRIEND_PRESENCE_MIN_BODY: Int = 4 + 4 + 4 + 2 + 0 + 2 + 0
+
+    private const val SERVER_FRIEND_PRESENCE_MAX_BODY: Int =
+        4 + 4 + 4 + 2 + SOCIAL_NAME_MAX_UTF8 + 2 + SOCIAL_NAME_MAX_UTF8
+
     public const val WORLD_KEY_MAX_BYTES: Int = 4096
 
     public const val LOGIN_FAIL_SCRIPT_LINE_MAX_UTF8_BYTES: Int = 512
@@ -36,6 +69,7 @@ public object WorldLinkFrameSpecs {
     public const val OP_PUSH_SUBSCRIBE: Int = 0x13
     public const val OP_PUSH_SUBSCRIBE_ACK: Int = 0x14
     public const val OP_HEARTBEAT: Int = 0x30
+    public const val OP_HEARTBEAT_ACK: Int = 0x31
     public const val OP_LOGOUT: Int = 0x40
     public const val OP_LOGOUT_ACK: Int = 0x41
 
@@ -64,6 +98,21 @@ public object WorldLinkFrameSpecs {
 
     private const val SERVER_REBOOT_MIN_BODY: Int = 1 + 4 + 8 + 2 + 0
 
+    private const val SOCIAL_NAME_ACTION_MIN_BODY: Int = TOKEN_BODY_BYTES + 4 + 2 + 0
+    private const val SOCIAL_NAME_ACTION_MAX_BODY: Int = TOKEN_BODY_BYTES + 4 + 2 + SOCIAL_NAME_MAX_UTF8
+
+    private const val CHAT_FILTERS_BODY_BYTES: Int = TOKEN_BODY_BYTES + 4 + 3
+
+    private const val PM_RELAY_MIN_BODY: Int = TOKEN_BODY_BYTES + 4 + 1 + 2 + 0 + 2 + 0 + 2 + 0
+
+    private const val PM_RELAY_MAX_BODY: Int =
+        TOKEN_BODY_BYTES +
+            4 +
+            1 +
+            2 + SOCIAL_NAME_MAX_UTF8 +
+            2 + PM_RELAY_SENDER_DISPLAY_MAX_UTF8 +
+            2 + PM_RELAY_MESSAGE_MAX_UTF8
+
     public fun describeValidationFailure(reason: String): String =
         when (reason) {
             "empty" -> "frame was empty (expected at least an opcode byte)"
@@ -76,6 +125,7 @@ public object WorldLinkFrameSpecs {
             "login_fail_trailing" -> "LOGIN_FAIL has unexpected trailing bytes after the script lines"
             "login_ok_size" -> "LOGIN_OK body length is outside the allowed range for token + account id + rights"
             "logout_ack_size" -> "LOGOUT_ACK must have no body after the opcode"
+            "heartbeat_ack_size" -> "HEARTBEAT_ACK must have no body after the opcode"
             "push_subscribe_ack_size" -> "PUSH_SUBSCRIBE_ACK must have no body after the opcode"
             "server_revoke_login_size" -> "SERVER_REVOKE_LOGIN body must be exactly 12 bytes (account id + character id)"
             "server_mute_update_size" -> "SERVER_MUTE_UPDATE body must be exactly 20 bytes"
@@ -141,6 +191,42 @@ public object WorldLinkFrameSpecs {
             OP_HEARTBEAT, OP_LOGOUT -> {
                 if (bodyLen != TOKEN_BODY_BYTES) "bad_token_frame" else null
             }
+            OP_WORLD_PM_RELAY -> {
+                if (bodyLen < PM_RELAY_MIN_BODY) {
+                    "too_short"
+                } else if (bodyLen > PM_RELAY_MAX_BODY) {
+                    "too_long"
+                } else {
+                    null
+                }
+            }
+
+            OP_WORLD_FRIEND_ADD,
+            OP_WORLD_FRIEND_DEL,
+            OP_WORLD_IGNORE_ADD,
+            OP_WORLD_IGNORE_DEL -> {
+                if (bodyLen < SOCIAL_NAME_ACTION_MIN_BODY) {
+                    "too_short"
+                } else if (bodyLen > SOCIAL_NAME_ACTION_MAX_BODY) {
+                    "too_long"
+                } else {
+                    null
+                }
+            }
+            OP_WORLD_CHAT_FILTERS -> {
+                if (bodyLen != CHAT_FILTERS_BODY_BYTES) {
+                    "too_long"
+                } else {
+                    null
+                }
+            }
+            OP_WORLD_SOCIAL_SYNC -> {
+                if (bodyLen != TOKEN_BODY_BYTES + 4) {
+                    "bad_token_frame"
+                } else {
+                    null
+                }
+            }
 
             else -> "unknown_opcode"
         }
@@ -202,11 +288,188 @@ public object WorldLinkFrameSpecs {
                 } else {
                     null
                 }
+            OP_WORLD_SOCIAL_OK ->
+                if (bodyLen != 0) {
+                    "pm_relay_ok_size"
+                } else {
+                    null
+                }
+
+            OP_WORLD_SOCIAL_FAIL ->
+                if (bodyLen != 1) {
+                    "pm_relay_fail_size"
+                } else {
+                    null
+                }
+            OP_WORLD_SOCIAL_SYNC_OK -> validateSocialSyncOkFrame(frame)
+
+            OP_WORLD_SOCIAL_SYNC_FAIL ->
+                if (bodyLen != 1) {
+                    "pm_relay_fail_size"
+                } else {
+                    null
+                }
+
+            OP_HEARTBEAT_ACK ->
+                if (bodyLen != 0) {
+                    "heartbeat_ack_size"
+                } else {
+                    null
+                }
+            OP_SERVER_FRIEND_PRESENCE -> validateServerFriendPresenceFrame(frame)
+            OP_SERVER_PRIVATE_MESSAGE -> validateServerPrivateMessageFrame(frame)
             OP_SERVER_DISPLAY_NAME_SYNC -> validateServerDisplayNameSyncFrame(frame)
             OP_SERVER_REBOOT -> validateServerRebootFrame(frame)
             OP_SERVER_BROADCAST -> validateServerBroadcastFrame(frame)
             else -> "unexpected_opcode"
         }
+    }
+
+    private fun validateServerPrivateMessageFrame(frame: ByteArray): String? {
+        val bodyLen = frame.size - 1
+
+        if (bodyLen !in SERVER_PRIVATE_MESSAGE_MIN_BODY..SERVER_PRIVATE_MESSAGE_MAX_BODY) {
+            return "server_private_message_size"
+        }
+
+        val buf = ByteBuffer.wrap(frame, 1, bodyLen)
+
+        if (buf.remaining() < 4 + 4 + 4 + 1) {
+            return "server_private_message_truncated"
+        }
+
+        buf.int // senderWorldId
+        buf.int // fromCharacterId
+        buf.int // toCharacterId
+        buf.get() // senderCrown
+
+        val displayLen =
+            readCheckedUtf8Length(buf, PM_RELAY_SENDER_DISPLAY_MAX_UTF8)
+                ?: return "server_private_message_truncated"
+
+        if (displayLen == -1) {
+            return "server_private_message_chunk_len"
+        }
+
+        if (buf.remaining() < displayLen) {
+            return "server_private_message_chunk_data"
+        }
+
+        buf.position(buf.position() + displayLen)
+
+        val messageLen =
+            readCheckedUtf8Length(buf, PM_RELAY_MESSAGE_MAX_UTF8)
+                ?: return "server_private_message_truncated"
+
+        if (messageLen == -1) {
+            return "server_private_message_chunk_len"
+        }
+
+        if (buf.remaining() < messageLen) {
+            return "server_private_message_chunk_data"
+        }
+
+        buf.position(buf.position() + messageLen)
+
+        return if (buf.remaining() != 0) {
+            "server_private_message_trailing"
+        } else {
+            null
+        }
+    }
+
+    private fun validateSocialSyncOkFrame(frame: ByteArray): String? {
+        val bodyLen = frame.size - 1
+        if (bodyLen < 3 + 2 + 2) {
+            return "too_short"
+        }
+
+        val buf = ByteBuffer.wrap(frame, 1, bodyLen)
+
+        if (buf.remaining() < 3) {
+            return "too_short"
+        }
+
+        buf.get() // public
+        buf.get() // private
+        buf.get() // trade
+
+        if (buf.remaining() < 2) {
+            return "too_short"
+        }
+
+        val friendCount = buf.short.toInt() and 0xFFFF
+        repeat(friendCount) {
+            val nameLen = readCheckedUtf8Length(buf, SOCIAL_NAME_MAX_UTF8)
+                ?: return "too_short"
+            if (nameLen == -1 || buf.remaining() < nameLen) {
+                return "too_long"
+            }
+            buf.position(buf.position() + nameLen)
+
+            val previousLen = readCheckedUtf8Length(buf, SOCIAL_NAME_MAX_UTF8)
+                ?: return "too_short"
+            if (previousLen == -1 || buf.remaining() < previousLen) {
+                return "too_long"
+            }
+            buf.position(buf.position() + previousLen)
+
+            if (buf.remaining() < 4) {
+                return "too_short"
+            }
+            buf.int
+        }
+
+        if (buf.remaining() < 2) {
+            return "too_short"
+        }
+
+        val ignoreCount = buf.short.toInt() and 0xFFFF
+        repeat(ignoreCount) {
+            val nameLen = readCheckedUtf8Length(buf, SOCIAL_NAME_MAX_UTF8)
+                ?: return "too_short"
+            if (nameLen == -1 || buf.remaining() < nameLen) {
+                return "too_long"
+            }
+            buf.position(buf.position() + nameLen)
+
+            val previousLen = readCheckedUtf8Length(buf, SOCIAL_NAME_MAX_UTF8)
+                ?: return "too_short"
+            if (previousLen == -1 || buf.remaining() < previousLen) {
+                return "too_long"
+            }
+            buf.position(buf.position() + previousLen)
+        }
+
+        return if (buf.remaining() == 0) null else "too_long"
+    }
+
+    private fun validateServerFriendPresenceFrame(frame: ByteArray): String? {
+        val bodyLen = frame.size - 1
+
+        if (bodyLen !in SERVER_FRIEND_PRESENCE_MIN_BODY..SERVER_FRIEND_PRESENCE_MAX_BODY) {
+            return "server_friend_presence_size"
+        }
+
+        val buf = ByteBuffer.wrap(frame, 1, bodyLen)
+
+        if (buf.remaining() < 4 + 4 + 4) {
+            return "server_friend_presence_truncated"
+        }
+
+        buf.int // ownerCharacterId
+        buf.int // friendCharacterId
+        buf.int // friendWorldId
+
+        if (!skipSocialUtf8(buf)) {
+            return "server_friend_presence_truncated"
+        }
+
+        if (!skipSocialUtf8(buf)) {
+            return "server_friend_presence_truncated"
+        }
+
+        return if (buf.remaining() == 0) null else "server_friend_presence_trailing"
     }
 
     private fun validateLoginFailFrame(frame: ByteArray): String? {
@@ -345,6 +608,42 @@ public object WorldLinkFrameSpecs {
         val priorDisplayName: String,
     )
 
+    public data class ServerPrivateMessagePayload(
+        val senderWorldId: Int,
+        val fromCharacterId: Int,
+        val toCharacterId: Int,
+        val senderCrown: Int,
+        val senderDisplayName: String,
+        val message: String,
+    )
+
+    public data class CentralSocialSnapshot(
+        val publicChat: Int,
+        val privateChat: Int,
+        val tradeChat: Int,
+        val friends: List<CentralSocialFriend>,
+        val ignores: List<CentralSocialIgnore>,
+    )
+
+    public data class CentralSocialFriend(
+        val displayName: String,
+        val previousDisplayName: String?,
+        val worldId: Int,
+    )
+
+    public data class CentralSocialIgnore(
+        val displayName: String,
+        val previousDisplayName: String?,
+    )
+
+    public data class ServerFriendPresencePayload(
+        val ownerCharacterId: Int,
+        val friendCharacterId: Int,
+        val friendWorldId: Int,
+        val friendDisplayName: String,
+        val friendPreviousDisplayName: String?,
+    )
+
     public fun decodeServerRevokeLogin(frame: ByteArray): ServerRevokeLoginPayload {
         val buf = ByteBuffer.wrap(frame, 1, frame.size - 1)
         return ServerRevokeLoginPayload(buf.long, buf.int)
@@ -393,11 +692,138 @@ public object WorldLinkFrameSpecs {
         )
     }
 
+    public fun decodeServerPrivateMessage(frame: ByteArray): ServerPrivateMessagePayload {
+        val buf = ByteBuffer.wrap(frame)
+        buf.get() // opcode
+
+        val senderWorldId = buf.int
+        val fromCharacterId = buf.int
+        val toCharacterId = buf.int
+        val senderCrown = buf.get().toInt() and 0xFF
+        val senderDisplayName = readSocialUtf8(buf)
+        val message = readSocialUtf8(buf)
+
+        return ServerPrivateMessagePayload(
+            senderWorldId = senderWorldId,
+            fromCharacterId = fromCharacterId,
+            toCharacterId = toCharacterId,
+            senderCrown = senderCrown,
+            senderDisplayName = senderDisplayName,
+            message = message,
+        )
+    }
+
+    public fun decodeSocialSnapshot(frame: ByteArray): CentralSocialSnapshot {
+        val buf = ByteBuffer.wrap(frame, 1, frame.size - 1)
+
+        val publicChat = buf.get().toInt() and 0xFF
+        val privateChat = buf.get().toInt() and 0xFF
+        val tradeChat = buf.get().toInt() and 0xFF
+
+        val friends = mutableListOf<CentralSocialFriend>()
+        val friendCount = buf.short.toInt() and 0xFFFF
+
+        repeat(friendCount) {
+            val name = readUtf16LengthPrefixed(buf)
+            val previous = readUtf16LengthPrefixed(buf).ifBlank { null }
+            val worldId = buf.int
+
+            friends +=
+                CentralSocialFriend(
+                    displayName = name,
+                    previousDisplayName = previous,
+                    worldId = worldId,
+                )
+        }
+
+        val ignores = mutableListOf<CentralSocialIgnore>()
+        val ignoreCount = buf.short.toInt() and 0xFFFF
+
+        repeat(ignoreCount) {
+            val name = readUtf16LengthPrefixed(buf)
+            val previous = readUtf16LengthPrefixed(buf).ifBlank { null }
+
+            ignores +=
+                CentralSocialIgnore(
+                    displayName = name,
+                    previousDisplayName = previous,
+                )
+        }
+
+        return CentralSocialSnapshot(
+            publicChat = publicChat,
+            privateChat = privateChat,
+            tradeChat = tradeChat,
+            friends = friends,
+            ignores = ignores,
+        )
+    }
+
+    public fun decodeServerFriendPresence(frame: ByteArray): ServerFriendPresencePayload {
+        val buf = ByteBuffer.wrap(frame, 1, frame.size - 1)
+
+        val ownerCharacterId = buf.int
+        val friendCharacterId = buf.int
+        val friendWorldId = buf.int
+        val displayName = readSocialUtf8(buf)
+        val previousDisplayName = readSocialUtf8(buf).ifBlank { null }
+
+        return ServerFriendPresencePayload(
+            ownerCharacterId = ownerCharacterId,
+            friendCharacterId = friendCharacterId,
+            friendWorldId = friendWorldId,
+            friendDisplayName = displayName,
+            friendPreviousDisplayName = previousDisplayName,
+        )
+    }
+
     private fun readUtf16LengthPrefixed(buf: ByteBuffer): String {
         val len = buf.short.toInt() and 0xFFFF
         val bytes = ByteArray(len)
         buf.get(bytes)
         return String(bytes, StandardCharsets.UTF_8)
+    }
+
+    private fun readCheckedUtf8Length(
+        buf: ByteBuffer,
+        max: Int,
+    ): Int? {
+        if (buf.remaining() < 2) {
+            return null
+        }
+
+        val len = buf.short.toInt() and 0xFFFF
+        if (len > max) {
+            return -1
+        }
+
+        return len
+    }
+
+    private fun readSocialUtf8(buf: ByteBuffer): String {
+        val len = buf.short.toInt() and 0xFFFF
+        val bytes = ByteArray(len)
+        buf.get(bytes)
+        return String(bytes, StandardCharsets.UTF_8)
+    }
+
+    private fun skipSocialUtf8(buf: ByteBuffer): Boolean {
+        if (buf.remaining() < 2) {
+            return false
+        }
+
+        val len = buf.short.toInt() and 0xFFFF
+
+        if (len > SOCIAL_NAME_MAX_UTF8) {
+            return false
+        }
+
+        if (buf.remaining() < len) {
+            return false
+        }
+
+        buf.position(buf.position() + len)
+        return true
     }
 
 

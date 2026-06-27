@@ -33,7 +33,7 @@ constructor(
                 Triple(
                     jdbcFromYaml,
                     pg.user.trim().ifBlank { "openrune" },
-                    pg.password,
+                    pg.password.trim().ifBlank { "openrune" },
                 )
             } else {
                 val embeddedCreds =
@@ -43,7 +43,20 @@ constructor(
                                 "Ensure [org.rsmod.server.app.GameBootstrap] calls " +
                                 "`EmbeddedSameInstancePostgres.ensureStarted` before starting embedded Central.",
                         )
-                embeddedCreds
+
+                val embeddedJdbc = embeddedCreds.first
+                val embeddedUser = embeddedCreds.second.trim().ifBlank {
+                    pg.user.trim().ifBlank { "postgres" }
+                }
+                val embeddedPassword = embeddedCreds.third.trim().ifBlank {
+                    pg.password.trim().ifBlank { "openrune" }
+                }
+
+                Triple(
+                    embeddedJdbc,
+                    embeddedUser,
+                    embeddedPassword,
+                )
             }
 
         val usesEmbeddedJdbc = jdbcFromYaml.isEmpty()
