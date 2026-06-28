@@ -255,7 +255,11 @@ class EffectInterpreter(
     private fun evaluateDamage(expr: DamageExpr): Int {
         return when (expr) {
             is DamageExpr.Fixed -> expr.value
-            is DamageExpr.Roll -> if (expr.range.isEmpty()) 0 else deps.random.of(expr.range.last + 1)
+            is DamageExpr.Roll ->
+                if (expr.range.isEmpty()) 0
+                else {
+                    expr.range.first + deps.random.of(expr.range.last - expr.range.first + 1)
+                }
             is DamageExpr.Accuracy -> evaluateDamage(expr.on)
             is DamageExpr.PercentOfTargetHp -> (target.hitpoints * expr.fraction).toInt()
             is DamageExpr.Min -> minOf(evaluateDamage(expr.a), evaluateDamage(expr.b))
