@@ -25,8 +25,6 @@ class BossEncounter(
     private var forceAttackThreshold = -1
 
     init {
-        // Honor `lockMovement` for the starting phase, which is assigned directly above rather than via
-        // `transitionTo` (which is where later phases pick this up).
         npc.movementLocked = currentPhase?.lockMovement == true
     }
 
@@ -44,15 +42,11 @@ class BossEncounter(
 
         val phase = spec.phases[phaseName]
 
-        // Apply the phase's persistent idle pose
-        // Maybe unnecessary to store here, could be handled as an external ability instead
         val idle = phase?.idleAnim
         if (idle != null) npc.setIdleAnim(idle) else npc.clearIdleAnim()
 
-        // Pin (or release) the npc for the phase
         npc.movementLocked = phase?.lockMovement == true
 
-        // Release any scripted facing lock on a phase change
         npc.clearFacingLock()
     }
 

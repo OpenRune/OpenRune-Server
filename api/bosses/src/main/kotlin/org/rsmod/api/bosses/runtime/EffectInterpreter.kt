@@ -176,8 +176,6 @@ class EffectInterpreter(
         val center = resolveTile(effect.center)
         val telegraphSpot = SpotanimType(effect.telegraph.asRSCM(RSCMType.SPOTANIM))
 
-        // Each player in range gets a tile under them; scatter random tiles around the centre to reach
-        // the rolled total. Players are guaranteed a tile so they always have something to dodge.
         val playersInRange =
             deps.playerList.filter { it.coords.chebyshevDistance(center) <= effect.targetRadius }
         val total = effect.count.first + deps.random.of(effect.count.last - effect.count.first + 1)
@@ -195,9 +193,6 @@ class EffectInterpreter(
 
         tiles.forEach { deps.worldRepo.spotanimMap(telegraphSpot, it) }
 
-        // Damage lands after the wind-up via a world queue (not `access.delay`), so the boss is never
-        // marked delayed and keeps acting while debris falls. Re-query players at landing so anyone who
-        // moved off a tile dodges and anyone who moved onto one is caught.
         deps.worldQueues.add(effect.windup) {
             effect.impact?.let { impact ->
                 val impactSpot = SpotanimType(impact.asRSCM(RSCMType.SPOTANIM))

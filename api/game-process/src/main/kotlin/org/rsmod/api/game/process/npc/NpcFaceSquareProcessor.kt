@@ -10,9 +10,6 @@ public class NpcFaceSquareProcessor {
     }
 
     private fun Npc.processFaceSquare() {
-        // While facing is locked, force the angle toward the locked square every tick - this overrides
-        // movement- and combat-driven facing so the npc keeps facing its pinned direction even when
-        // attacking or being attacked.
         if (isFacingLocked) {
             val angle = calculateAngle(faceLockSquare, faceLockWidth, faceLockLength)
             pendingFaceAngle = EntityFaceAngle.fromOrNull(angle)

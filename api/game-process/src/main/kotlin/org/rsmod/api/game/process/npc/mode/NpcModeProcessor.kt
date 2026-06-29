@@ -20,12 +20,6 @@ constructor(
     private val aiObjMode: AiObjModeProcessor,
 ) {
     public fun process(npc: Npc) {
-        // While a scripted sequence has taken over (e.g. a boss walking to a fixed tile), suppress
-        // the npc's own mode AI entirely and keep its interaction cleared. This prevents combat
-        // modes from re-establishing a player interaction (which would re-route the npc toward the
-        // player and cancel the scripted coroutine via the op trigger). Movement still runs in
-        // `NpcInteractionProcessor` since the interaction is null.
-        // This could potentially be a mode
         if (npc.ignoreCombatInteractions) {
             npc.clearInteraction()
             return

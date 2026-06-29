@@ -90,34 +90,10 @@ public class Npc(
 
     public var ignoreCombatInteractions: Boolean = false
 
-    /**
-     * While `true`, [org.rsmod.game.entity.Npc] movement is suppressed: the movement processor drops
-     * any pending route/route-request and refuses to step the npc, so it stays pinned to its current
-     * tile. Unlike [resetMovement] / [ignoreCombatInteractions] this does **not** touch the npc's
-     * interaction, so a locked npc keeps its combat target and can still attack and face it - it simply
-     * cannot relocate (e.g. a boss that fights from a fixed spot during a phase).
-     */
     public var movementLocked: Boolean = false
 
-    /**
-     * Overrides the attack range used when (re)building an AP combat interaction (see
-     * `AiPlayerInteractions.interactAp`). `null` falls back to the npc type's `attackRange`.
-     *
-     * The npc mode processor rebuilds the AP interaction every tick from this value, so a scripted
-     * phase can widen the range at which the npc's AP combat script triggers - e.g. a boss that fights
-     * with ranged/magic attacks from a fixed spot - without mutating the shared npc type (which would
-     * affect every instance and the npc's melee behaviour).
-     */
     public var apRangeOverride: Int? = null
 
-    /**
-     * When `false`, the npc's AP combat-interaction range check (`NpcInteractionProcessor`) skips the
-     * line-of-sight raycast and validates by distance alone. Defaults to `true` (normal behaviour).
-     *
-     * Use for bosses whose ranged/magic/AoE attacks should fire regardless of intervening entities -
-     * e.g. an arena boss that must keep attacking through the adds it summons (whose `BLOCK_PLAYERS`
-     * tiles would otherwise break the npc's line of sight to its target).
-     */
     public var apRequiresLineOfSight: Boolean = true
 
     public var aiTimerStart: Int = type.timer
@@ -184,13 +160,7 @@ public class Npc(
     public var actionDelay: Int = -1
 
     /**
-     * A persistent idle/stand animation override. When set, the engine keeps this sequence displayed
-     * while the npc is stationary and not playing another animation. Set via [setIdleAnim] / cleared
-     * via [clearIdleAnim]; the post-tick processor re-issues it while the npc is idle.
-     *
-     * This exists because npcs have no client-side persistent idle: once a played animation finishes
-     * the client reverts to the npc type's `standAnim`. A boss that should hold a custom pose between
-     * attacks (e.g. Scurrius gnawing cheese) uses this.
+     * A persistent idle/stand animation override.
      */
     public var idleSequence: EntitySeq = EntitySeq.NULL
         private set
@@ -218,13 +188,6 @@ public class Npc(
     public val name: String
         get() = type.name
 
-    /**
-     * Per-instance movement restriction, defaulting to the npc type's. Mutable so scripts can
-     * temporarily override it - e.g. setting [MoveRestrict.PassThru] to let a scripted walk pass
-     * through players/npcs that would otherwise block it (see `Npc.walkTo` in `api/route`). Restore
-     * to `type.moveRestrict` when done. Drives both [collisionStrategy] and the npc's per-step
-     * entity collision in `StepFactory`.
-     */
     public var moveRestrict: MoveRestrict = type.moveRestrict
 
     public val blockWalk: BlockWalk
@@ -266,11 +229,6 @@ public class Npc(
     /**
      * Walks to [dest] and runs [onArrival] once the route completes (the npc reaches the destination
      * or the route otherwise ends).
-     *
-     * Unlike suspending on the npc's AI coroutine and polling [coords], this survives the AI coroutine
-     * being torn down mid-walk (e.g. when [ignoreCombatInteractions] causes the mode processor to
-     * clear the npc's interaction). The engine fires [onArrival] from the post-tick stage via
-     * [processArrivalAction], so a scripted sequence can reliably continue after the walk.
      */
     public fun walk(dest: CoordGrid, onArrival: () -> Unit) {
         walk(dest)
@@ -279,14 +237,7 @@ public class Npc(
 
     /**
      * Walks the npc along a precomputed list of [waypoints] (e.g. the output of a pathfinder), running
-     * [onArrival] once the route completes. The engine steps naively *between* consecutive waypoints,
-     * so the waypoints must describe a route the npc can actually follow tile-by-tile (a proper
-     * pathfound route does); unlike [walk] with a single distant destination, this navigates around
-     * obstacles. If [waypoints] is empty the npc is already at the destination and [onArrival] fires on
-     * the next post-tick.
-     *
-     * See `RouteFactory`-based extensions in `api/route` for computing [waypoints] for a [CoordGrid]
-     * destination while respecting the npc's size and collision.
+     * [onArrival] once the route completes.
      */
     public fun walk(waypoints: List<CoordGrid>, onArrival: (() -> Unit)? = null) {
         abortRoute()
@@ -297,11 +248,6 @@ public class Npc(
 
     private var arrivalAction: (() -> Unit)? = null
 
-    /**
-     * Runs and clears the pending [walk] arrival action once the route has completed. Invoked by the
-     * engine each tick after movement; a no-op when there is no pending action or the route is still
-     * in progress.
-     */
     @InternalApi
     public fun processArrivalAction() {
         val action = arrivalAction ?: return
@@ -466,10 +412,7 @@ public class Npc(
     }
 
     /**
-     * The square this npc's facing is pinned to, or [CoordGrid.NULL] when facing is not locked. While
-     * locked, [NpcFaceSquareProcessor] forces the face angle toward this square every tick and the
-     * entity-facing setters ([facePlayer] / [faceNpc]) are no-ops, so the npc keeps facing this square
-     * even while attacking or being attacked. Set via [lockFacing] / [lockFacingDirection].
+     * The square this npc's facing is pinned to, or [CoordGrid.NULL] when facing is not locked.
      */
     public var faceLockSquare: CoordGrid = CoordGrid.NULL
         private set
@@ -483,12 +426,6 @@ public class Npc(
     public val isFacingLocked: Boolean
         get() = faceLockSquare != CoordGrid.NULL
 
-    /**
-     * Pins this npc's facing toward [target] until [clearFacingLock] is called. Any current
-     * entity-facing is dropped so combat cannot keep the npc oriented at its target, and combat's
-     * [facePlayer] / [faceNpc] are suppressed for the duration. [targetWidth] / [targetLength] let the
-     * npc face the centre of a multi-tile target (e.g. a cheese pile loc).
-     */
     public fun lockFacing(target: CoordGrid, targetWidth: Int = 1, targetLength: Int = 1) {
         faceLockSquare = target
         faceLockWidth = targetWidth

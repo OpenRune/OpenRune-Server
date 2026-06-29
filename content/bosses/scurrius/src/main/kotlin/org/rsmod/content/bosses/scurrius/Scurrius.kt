@@ -26,12 +26,6 @@ constructor(
     private val aiPlayerInteractions: AiPlayerInteractions,
 ) : BossPluginScript(deps) {
 
-    /**
-     * Resolves the player to re-engage after a scripted walk: the original [preferred] combat target
-     * if still valid, otherwise the nearest valid player in the arena. While `ignoreCombatInteractions`
-     * was set the mode processor cleared the interaction every tick, so on arrival the boss has no
-     * target and idles until re-engaged.
-     */
     private fun resolveTarget(npc: Npc, preferred: Player): Player? =
         preferred.takeIf(Player::isValidTarget)
             ?: deps.playerList
@@ -40,31 +34,13 @@ constructor(
                 }
                 .minByOrNull { it.coords.chebyshevDistance(npc.coords) }
 
-    /**
-     * Re-engages for the ranged feeding/enraged phases. Scurrius' npc type has `attackRange == 1`, so
-     * `opPlayer2`/`apPlayer2` would only ever trigger combat in melee range. We force an Ap interaction
-     * and widen its [org.rsmod.game.interact.Interaction.apRange] so the boss's projectile attacks fire
-     * across the whole arena (the engine re-triggers the Ap script every tick the target is within
-     * `apRange` + line-of-sight).
-     */
     private fun engageRanged(npc: Npc, preferred: Player) {
         val target = resolveTarget(npc, preferred) ?: return
-        // The mode processor rebuilds the Ap interaction every tick from `apRangeOverride` (falling
-        // back to the type's attackRange == 1), so the override must be set rather than poking the
-        // interaction's apRange once - otherwise it resets to melee range next tick.
         npc.apRangeOverride = ENGAGE_AP_RANGE
-        // Fire ranged/magic/debris regardless of line of sight: Scurrius summons rats around itself,
-        // whose `BLOCK_PLAYERS` tiles would otherwise break its line to the target and stop it
-        // attacking at range. With this off it engages on distance alone (any player within range).
         npc.apRequiresLineOfSight = false
         npc.apPlayer2(target, aiPlayerInteractions)
     }
 
-    /**
-     * Re-engages for the melee `combat` phase: clears the ranged override and uses a plain Op
-     * interaction so the boss chases into melee range (rather than attacking from afar on the
-     * wide-range Ap interaction left by the ranged phases).
-     */
     private fun engageMelee(npc: Npc, preferred: Player) {
         val target = resolveTarget(npc, preferred) ?: return
         npc.apRangeOverride = null
@@ -204,9 +180,6 @@ constructor(
                 }
 
             phase("combat") {
-                // Runs only when *returning* to combat (e.g. feeding -> combat); the initial combat
-                // phase is entered without an entry. Resets the boss to a melee Op interaction so it
-                // chases the player instead of staying on feeding's wide-range Ap interaction.
                 entry = "resume_combat"
                 weightedSelectorRandom {
                     +random(melee, weight = 7, requires = WithinMeleeRange)
@@ -218,10 +191,6 @@ constructor(
                 entry = "eat_cheese"
             }
 
-            // After `FEEDING_DURATION` ticks the boss stops gnawing and returns to normal combat:
-            // `nextPhase = "combat"` runs through `transitionTo`, which clears the eating idle anim
-            // (combat has none) and unlocks movement (combat is not `lockMovement`), so Scurrius
-            // resumes chasing and meleeing.
             phase(
                 "feeding",
                 lockMovement = true,
@@ -237,9 +206,6 @@ constructor(
                 }
             }
 
-            // At 30% hp Scurrius scuttles to the arena centre before enraging. The walk runs in this
-            // (unlocked) transition phase; on arrival the entry hands off to the movement-locked
-            // `enraged` phase.
             phase("enrage_transition", entryHp = 0.30) {
                 entry = "enrage_walk"
             }
@@ -260,9 +226,6 @@ constructor(
         private const val RAT_SUMMON_COOLDOWN = 50
         private const val FEEDING_DURATION = 30
 
-        // Ap range used to re-engage during the ranged feeding/enraged phases. Scurrius' npc type has
-        // `attackRange == 1`, so without widening this the ranged attacks would only trigger in melee
-        // range. Sized to cover the arena.
         private const val ENGAGE_AP_RANGE = 15
         private const val ARENA_RADIUS = 25
         private const val SCATTER_RADIUS = 7

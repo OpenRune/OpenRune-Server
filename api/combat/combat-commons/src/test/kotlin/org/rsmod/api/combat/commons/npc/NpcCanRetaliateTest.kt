@@ -8,12 +8,6 @@ import org.rsmod.game.entity.Npc
 import org.rsmod.map.CoordGrid
 
 class NpcCanRetaliateTest {
-    /**
-     * [Npc.ignoreCombatInteractions] is the gate that lets a scripted sequence (e.g. Scurrius
-     * walking to a cheese pile at a hp threshold) take full control of the npc: while it is set,
-     * [canRetaliate] must always return `false`, so an attacking player can never make the npc
-     * retaliate and re-route toward them, clobbering the scripted route.
-     */
     @Test
     fun `ignoreCombatInteractions forces canRetaliate to be false`() {
         val npc = newNpc()
@@ -26,11 +20,6 @@ class NpcCanRetaliateTest {
         assertFalse(npc.canRetaliate())
     }
 
-    /**
-     * The gate must short-circuit even the strongest "should retaliate" path: when enough time has
-     * elapsed since the last action ([Npc.actionDelay] well in the past), [canRetaliate] would
-     * otherwise return `true` unconditionally. The flag must still win.
-     */
     @Test
     fun `ignoreCombatInteractions overrides the active-combat-delay shortcut`() {
         val npc = newNpc()
