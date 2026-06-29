@@ -75,6 +75,24 @@ public class StandardNpcAccess(
         coroutine.pause { npc.isNotDelayed }
     }
 
+    /**
+     * Suspends this coroutine for [cycles] ticks **without** marking the [npc] as delayed.
+     *
+     * Unlike [delay], this does not set [Npc.delay], so the npc remains [Npc.canProcess] and—
+     * crucially—stays interactable: players can still click to attack it (a delayed npc is rejected
+     * by `OpNpc` handling), and its movement continues to be processed each tick.
+     *
+     * This is intended for scripted sequences where the npc must keep moving and remain attackable
+     * while the script waits (e.g. a boss walking to a fixed tile). It is almost always paired with
+     * [Npc.ignoreCombatInteractions] so the npc's own combat AI does not cancel this coroutine via an
+     * op trigger.
+     */
+    public suspend fun pauseTicks(cycles: Int = 1) {
+        require(cycles > 0) { "`cycles` must be greater than 0. (cycles=$cycles)" }
+        val resumeAt = npc.currentMapClock + cycles
+        coroutine.pause { npc.currentMapClock >= resumeAt }
+    }
+
     public suspend fun arriveDelay() {
         if (!npc.hasMovedPreviousCycle) {
             return
@@ -368,6 +386,16 @@ public class StandardNpcAccess(
 
     public fun resetAnim() {
         npc.resetAnim()
+    }
+
+    /** Sets a persistent idle animation kept displayed while the npc is stationary and not animating. */
+    public fun setIdleAnim(seq: String) {
+        npc.setIdleAnim(seq)
+    }
+
+    /** Clears the persistent idle animation, reverting the npc to its cache `standAnim`. */
+    public fun clearIdleAnim() {
+        npc.clearIdleAnim()
     }
 
     public fun animProtect(animProtect: Boolean) {

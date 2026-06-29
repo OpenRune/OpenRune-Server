@@ -361,6 +361,11 @@ constructor(
         if (!withinDistance) {
             return false
         }
+        // Some npcs (e.g. arena bosses attacking through their own summoned adds) opt out of the
+        // line-of-sight requirement and engage on distance alone.
+        if (!apRequiresLineOfSight) {
+            return true
+        }
         // Line-of-sight for npcs is always calculated in "reverse."
         val hasLos =
             rayCastValidator.hasLineOfSight(

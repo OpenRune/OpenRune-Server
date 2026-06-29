@@ -1326,6 +1326,8 @@ respawnRate = 25
 [[npc]]
 id = "npc.rat_boss_normal"
 inherit = "npc.rat_boss_normal"
+huntMode = 6
+huntRange = 15
 
 [npc.params]
 "param.boss_hp_bar_mode"=2
@@ -1333,9 +1335,17 @@ inherit = "npc.rat_boss_normal"
 [[npc]]
 id = "npc.rat_boss_instance"
 inherit = "npc.rat_boss_instance"
+huntMode = 6
+huntRange = 15
 
 [npc.params]
 "param.boss_hp_bar_mode"=2
+
+[[npc]]
+id = "npc.rat_boss_giant_rat"
+inherit = "npc.rat_boss_giant_rat"
+huntMode = 6
+huntRange = 10
 
 [[npc]]
 id = "npc.king_dragon"

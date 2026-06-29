@@ -22,6 +22,9 @@ private var Npc.aggressivePlayer by typePlayerUidVarn("varn.aggressive_player")
 private var Npc.attackingPlayer by typePlayerUidVarn("varn.attacking_player")
 
 public fun Npc.canRetaliate(): Boolean {
+    if (ignoreCombatInteractions) {
+        return false
+    }
     if (actionDelay + constants.combat_activecombat_delay < currentMapClock) {
         return true
     }
@@ -91,7 +94,7 @@ private fun Npc.retaliate(target: Player, interactions: AiPlayerInteractions, ap
 public fun Npc.combatPlayDefendAnim(clientDelay: Int = 0) {
     val defendAnim = visType.paramOrNull(params.defend_anim)
     if (defendAnim != null) {
-        anim(RSCM.getReverseMapping(RSCMType.SEQ,defendAnim.id), delay = clientDelay)
+        anim(RSCM.getReverseMapping(RSCMType.SEQ, defendAnim.id), delay = clientDelay)
     }
 }
 

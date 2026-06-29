@@ -40,6 +40,8 @@ class BossSpecBuilder(private val npcType: String) {
         transmog: String? = null,
         lockMovement: Boolean = false,
         exitAfter: Int? = null,
+        nextPhase: String? = null,
+        idleAnim: String? = null,
         block: PhaseBuilder.() -> Unit,
     ): PhaseRef {
         val builder = PhaseBuilder(name).apply(block)
@@ -50,6 +52,8 @@ class BossSpecBuilder(private val npcType: String) {
                 transmog = transmog,
                 lockMovement = lockMovement,
                 exitAfter = exitAfter,
+                nextPhase = nextPhase,
+                idleAnim = idleAnim,
                 entry = builder.entry,
                 exit = builder.exit,
                 selector = builder.selector,
@@ -293,6 +297,37 @@ class AbilityBuilder {
         centeredOn: TargetExpr = TargetExpr.Self,
     ) {
         effects += Effect.Summon(npc, count, radius, centeredOn)
+    }
+
+    /**
+     * Telegraphed, dodgeable area attack (falling rocks/debris). See [Effect.Debris]. A [telegraph]
+     * spotanim marks each tile, then after [windup] ticks players still standing on a marked tile take
+     * [damage]. Tiles target every player within [targetRadius] of the boss plus random scatter within
+     * [scatterRadius], totaling a value drawn from [count].
+     */
+    fun debris(
+        telegraph: String,
+        damage: DamageExpr,
+        type: HitType = HitType.Typeless,
+        impact: String? = null,
+        windup: Int = 3,
+        targetRadius: Int = 15,
+        scatterRadius: Int = 5,
+        count: IntRange = 1..1,
+        center: TargetExpr = TargetExpr.Self,
+    ) {
+        effects +=
+            Effect.Debris(
+                telegraph,
+                damage,
+                type,
+                impact,
+                windup,
+                targetRadius,
+                scatterRadius,
+                count,
+                center,
+            )
     }
 
     fun build(): Effect = if (effects.size == 1) effects.first() else Effect.Sequence(effects)

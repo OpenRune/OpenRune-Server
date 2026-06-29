@@ -17,7 +17,9 @@ import org.rsmod.api.player.stat.hitpoints
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.game.hit.HitType
+import org.rsmod.game.map.collision.isWalkBlocked
 import org.rsmod.game.proj.ProjAnim
+import org.rsmod.map.CoordGrid
 
 class EffectInterpreter(
     private val npc: Npc,
@@ -54,6 +56,7 @@ class EffectInterpreter(
             is Effect.Hit -> applyHit(effect)
             is Effect.Projectile -> fireProjectile(access, effect)
             is Effect.TileAoE -> applyTileAoE(effect)
+            is Effect.Debris -> applyDebris(effect)
             is Effect.Summon -> summon(effect)
             is Effect.Poison -> applyPoison(effect)
             is Effect.Freeze -> applyFreeze(effect)
@@ -169,20 +172,90 @@ class EffectInterpreter(
         }
     }
 
+    private fun applyDebris(effect: Effect.Debris) {
+        val center = resolveTile(effect.center)
+        val telegraphSpot = SpotanimType(effect.telegraph.asRSCM(RSCMType.SPOTANIM))
+
+        // Each player in range gets a tile under them; scatter random tiles around the centre to reach
+        // the rolled total. Players are guaranteed a tile so they always have something to dodge.
+        val playersInRange =
+            deps.playerList.filter { it.coords.chebyshevDistance(center) <= effect.targetRadius }
+        val total = effect.count.first + deps.random.of(effect.count.last - effect.count.first + 1)
+        val scatterCount = (total - playersInRange.size).coerceAtLeast(0)
+        val scatterDiameter = effect.scatterRadius * 2 + 1
+        val tiles =
+            playersInRange.map { it.coords } +
+                List(scatterCount) {
+                    center.translate(
+                        deps.random.of(scatterDiameter) - effect.scatterRadius,
+                        deps.random.of(scatterDiameter) - effect.scatterRadius,
+                    )
+                }
+        val tileSet = tiles.toSet()
+
+        tiles.forEach { deps.worldRepo.spotanimMap(telegraphSpot, it) }
+
+        // Damage lands after the wind-up via a world queue (not `access.delay`), so the boss is never
+        // marked delayed and keeps acting while debris falls. Re-query players at landing so anyone who
+        // moved off a tile dodges and anyone who moved onto one is caught.
+        deps.worldQueues.add(effect.windup) {
+            effect.impact?.let { impact ->
+                val impactSpot = SpotanimType(impact.asRSCM(RSCMType.SPOTANIM))
+                tileSet.forEach { deps.worldRepo.spotanimMap(impactSpot, it) }
+            }
+            val landing =
+                deps.playerList.filter { it.coords.chebyshevDistance(center) <= effect.targetRadius }
+            for (player in landing) {
+                if (player.hitpoints > 0 && player.coords in tileSet) {
+                    player.queueHit(npc, 1, effect.type.toEngine(), evaluateDamage(effect.damage))
+                }
+            }
+        }
+    }
+
     private fun summon(summon: Effect.Summon) {
         val npcTypeId = summon.npc.asRSCM(RSCMType.NPC)
         val npcType = ServerCacheManager.getNpc(npcTypeId) ?: return
         val center = resolveTile(summon.centeredOn)
+        val radius = summon.radius
+
+        // Only consider tiles that are walkable
+        val spawnTiles =
+            buildList {
+                    for (dx in -radius..radius) {
+                        for (dz in -radius..radius) {
+                            val origin = center.translate(dx, dz)
+                            if (canStand(origin, npcType.size)) {
+                                add(origin)
+                            }
+                        }
+                    }
+                }
+                .toMutableList()
 
         repeat(summon.count) {
-            val spawnCoord = center.translate(
-                deps.random.of(summon.radius * 2 + 1) - summon.radius,
-                deps.random.of(summon.radius * 2 + 1) - summon.radius,
-            )
+            val spawnCoord =
+                if (spawnTiles.isNotEmpty()) {
+                    spawnTiles.removeAt(deps.random.of(spawnTiles.size))
+                } else {
+                    center
+                }
             val spawned = Npc(npcType, spawnCoord)
             spawned.mode = NpcMode.None
             deps.npcRepo.add(spawned, 100)
         }
+    }
+
+    /** Whether an npc of [size] can stand at [origin]. */
+    private fun canStand(origin: CoordGrid, size: Int): Boolean {
+        for (dx in 0 until size) {
+            for (dz in 0 until size) {
+                if (deps.collision.isWalkBlocked(origin.translate(dx, dz))) {
+                    return false
+                }
+            }
+        }
+        return true
     }
 
     private fun applyPoison(effect: Effect.Poison) {

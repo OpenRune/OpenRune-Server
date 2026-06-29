@@ -8,10 +8,12 @@ import org.rsmod.api.bosses.validation.SpecValidator
 import org.rsmod.api.npc.access.StandardNpcAccess
 import org.rsmod.api.script.onAiApPlayer2
 import org.rsmod.api.script.onAiOpPlayer2
+import org.rsmod.api.script.onEvent
 import org.rsmod.api.script.onModifyNpcHit
 import org.rsmod.api.npc.events.NpcHitEvents
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
+import org.rsmod.game.entity.npc.NpcStateEvents
 import org.rsmod.plugin.scripts.ScriptContext
 
 object BossCombat {
@@ -48,7 +50,31 @@ object BossCombat {
                     onLethal(npc)
                 }
             }
+
+            // Ensures phases and other states are reset
+            onEvent<NpcStateEvents.Respawn> {
+                if (npc.type.id == npcId) resetBoss(npc, deps)
+            }
+            onEvent<NpcStateEvents.Delete> {
+                if (npc.type.id == npcId) deps.encounterRegistry.remove(npc)
+            }
         }
+    }
+
+    /**
+     * Clears the boss's encounter and any scripted-control overrides left on the npc from the previous
+     * fight, so a respawned boss starts clean in its first phase. The fresh [BossEncounter] is created
+     * lazily on the next combat tick.
+     */
+    private fun resetBoss(npc: Npc, deps: BossDeps) {
+        deps.encounterRegistry.remove(npc)
+        npc.movementLocked = false
+        npc.apRangeOverride = null
+        npc.apRequiresLineOfSight = true
+        npc.moveRestrict = npc.type.moveRestrict
+        npc.ignoreCombatInteractions = false
+        npc.clearFacingLock()
+        npc.clearIdleAnim()
     }
 
     private suspend fun StandardNpcAccess.runCombatTick(
@@ -60,7 +86,8 @@ object BossCombat {
         val phase = encounter.currentPhase ?: return
         val tick = deps.mapClock.cycle
 
-        checkAutoTransitions(encounter, tick, spec)
+        checkAutoTransitions(this, target, encounter, tick, spec, deps)
+        checkTriggers(this, target, spec, deps, encounter)
 
         val ticksSinceLastAttack = tick - encounter.lastAbilityTick
         if (ticksSinceLastAttack < spec.stats.attackRate) return
@@ -74,16 +101,66 @@ object BossCombat {
         interpreter.run(this, effect)
     }
 
-    private fun checkAutoTransitions(encounter: BossEncounter, tick: Int, spec: BossSpec) {
+    private suspend fun checkTriggers(
+        access: StandardNpcAccess,
+        target: Player,
+        spec: BossSpec,
+        deps: BossDeps,
+        encounter: BossEncounter,
+    ) {
+        if (spec.triggers.isEmpty()) return
+        for ((index, trigger) in spec.triggers.withIndex()) {
+            if (index in encounter.firedTriggers) continue
+            if (encounter.evaluate(trigger.condition, target)) {
+                encounter.firedTriggers += index
+                val interpreter = EffectInterpreter(encounter.npc, target, spec, encounter, deps)
+                interpreter.run(access, trigger.effect)
+            }
+        }
+    }
+
+    private suspend fun checkAutoTransitions(
+        access: StandardNpcAccess,
+        target: Player,
+        encounter: BossEncounter,
+        tick: Int,
+        spec: BossSpec,
+        deps: BossDeps,
+    ) {
         for ((name, phase) in spec.phases) {
             if (name == encounter.currentPhaseName) continue
             val entryHp = phase.entryHp ?: continue
-            val hpFraction = encounter.npc.hitpoints.toDouble() /
-                encounter.npc.baseHitpointsLvl.coerceAtLeast(1)
+            // Ensures that phases are only entered once
+            if (name in encounter.firedPhaseEntries) continue
+            val hpFraction =
+                encounter.npc.hitpoints.toDouble() / encounter.npc.baseHitpointsLvl.coerceAtLeast(1)
             if (hpFraction <= entryHp) {
+                encounter.firedPhaseEntries += name
                 encounter.transitionTo(name, tick)
+                phase.entry?.let { runEntry(access, target, it, spec, encounter, deps) }
                 return
             }
         }
+
+        val phase = spec.phases[encounter.currentPhaseName] ?: return
+        val exitAfter = phase.exitAfter ?: return
+        val nextPhase = phase.nextPhase ?: return
+        if (tick - encounter.phaseEnteredTick >= exitAfter) {
+            val next = spec.phases[nextPhase] ?: return
+            encounter.transitionTo(nextPhase, tick)
+            next.entry?.let { runEntry(access, target, it, spec, encounter, deps) }
+        }
+    }
+
+    private suspend fun runEntry(
+        access: StandardNpcAccess,
+        target: Player,
+        abilityName: String,
+        spec: BossSpec,
+        encounter: BossEncounter,
+        deps: BossDeps,
+    ) {
+        val effect = spec.abilities[abilityName] ?: return
+        EffectInterpreter(access.npc, target, spec, encounter, deps).run(access, effect)
     }
 }

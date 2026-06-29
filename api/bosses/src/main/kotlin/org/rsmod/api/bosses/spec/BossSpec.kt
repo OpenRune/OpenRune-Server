@@ -5,7 +5,7 @@ data class BossSpec(
     val stats: BossStats,
     val abilities: Map<String, Effect>,
     val phases: Map<String, PhaseSpec>,
-    val triggers: List<TriggerSpec>
+    val triggers: List<TriggerSpec>,
 )
 
 data class BossStats(
@@ -21,6 +21,8 @@ data class PhaseSpec(
     val transmog: String? = null,
     val lockMovement: Boolean = false,
     val exitAfter: Int? = null,
+    val nextPhase: String? = null,
+    val idleAnim: String? = null,
     val entry: String? = null,
     val exit: String? = null,
     val selector: Selector = Selector.WeightedRandom(),
@@ -34,15 +36,9 @@ data class ForcedAbility(
     val attackMax: Int? = null,
 )
 
-data class TriggerSpec(
-    val condition: Condition,
-    val effect: Effect,
-)
+data class TriggerSpec(val condition: Condition, val effect: Effect)
 
-data class TelegraphSpec(
-    val spotanim: String,
-    val windup: Int,
-)
+data class TelegraphSpec(val spotanim: String, val windup: Int)
 
 data class ProjectileConfig(
     val startHeight: Int = 43,

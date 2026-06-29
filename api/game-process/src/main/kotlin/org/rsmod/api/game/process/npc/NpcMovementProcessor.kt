@@ -24,6 +24,14 @@ constructor(
     private val eventBus: EventBus,
 ) {
     public fun process(npc: Npc) {
+        // A movement-locked npc stays pinned: discard any pending route request and queued route so it
+        // neither steps nor accumulates a destination, while leaving its interaction intact so it can
+        // still attack/face its target.
+        if (npc.movementLocked) {
+            npc.routeRequest = null
+            npc.routeDestination.clear()
+            return
+        }
         npc.routeRequest?.let { consumeRequest(npc, it) }
         npc.routeRequest = null
         npc.processMovement()

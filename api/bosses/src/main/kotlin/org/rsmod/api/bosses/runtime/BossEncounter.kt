@@ -17,21 +17,43 @@ class BossEncounter(
     var damageScale: Double = 1.0
     var lethalHandled: Boolean = false
 
+    internal val firedTriggers = mutableSetOf<Int>()
+    internal val firedPhaseEntries = mutableSetOf<String>()
     private val cooldowns = mutableMapOf<String, Int>()
     private var rotationCursor = 0
     private var basicAttackCount = 0
     private var forceAttackThreshold = -1
 
+    init {
+        // Honor `lockMovement` for the starting phase, which is assigned directly above rather than via
+        // `transitionTo` (which is where later phases pick this up).
+        npc.movementLocked = currentPhase?.lockMovement == true
+    }
+
     val currentPhase: PhaseSpec?
         get() = spec.phases[currentPhaseName]
 
     fun transitionTo(phaseName: String, tick: Int) {
+        val from = currentPhaseName
         currentPhaseName = phaseName
         phaseEnteredTick = tick
         rotationCursor = 0
         cooldowns.clear()
         basicAttackCount = 0
         forceAttackThreshold = -1
+
+        val phase = spec.phases[phaseName]
+
+        // Apply the phase's persistent idle pose
+        // Maybe unnecessary to store here, could be handled as an external ability instead
+        val idle = phase?.idleAnim
+        if (idle != null) npc.setIdleAnim(idle) else npc.clearIdleAnim()
+
+        // Pin (or release) the npc for the phase
+        npc.movementLocked = phase?.lockMovement == true
+
+        // Release any scripted facing lock on a phase change
+        npc.clearFacingLock()
     }
 
     fun selectAbility(selector: Selector, tick: Int, target: Player? = null): String? {
