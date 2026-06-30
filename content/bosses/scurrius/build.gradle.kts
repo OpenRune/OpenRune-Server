@@ -9,4 +9,5 @@ dependencies {
     implementation(projects.api.instances)
     implementation(projects.api.route)
     implementation(projects.api.npc)
+    implementation(projects.api.combat.combatFormulas)
 }

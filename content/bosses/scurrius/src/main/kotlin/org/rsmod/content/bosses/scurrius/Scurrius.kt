@@ -1,5 +1,8 @@
 package org.rsmod.content.bosses.scurrius
 
+import dev.openrune.ServerCacheManager
+import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.rscm.RSCMType
 import jakarta.inject.Inject
 import org.rsmod.api.bosses.dsl.*
 import org.rsmod.api.bosses.runtime.BossCombat
@@ -7,14 +10,21 @@ import org.rsmod.api.bosses.runtime.BossDeps
 import org.rsmod.api.bosses.runtime.BossPluginScript
 import org.rsmod.api.bosses.runtime.encounter
 import org.rsmod.api.bosses.spec.Effect
+import org.rsmod.api.combat.formulas.attributes.CombatMeleeAttributes
+import org.rsmod.api.combat.formulas.attributes.CombatRangedAttributes
+import org.rsmod.api.combat.formulas.attributes.collector.CombatMeleeAttributeCollector
+import org.rsmod.api.combat.formulas.attributes.collector.CombatRangedAttributeCollector
 import org.rsmod.api.npc.apPlayer2
 import org.rsmod.api.npc.interact.AiPlayerInteractions
 import org.rsmod.api.npc.opPlayer2
 import org.rsmod.api.player.isValidTarget
+import org.rsmod.api.player.vars.intVarp
 import org.rsmod.api.route.RouteFactory
 import org.rsmod.api.route.walkTo
+import org.rsmod.api.script.onModifyNpcHit
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
+import org.rsmod.game.entity.player.PlayerUid
 import org.rsmod.map.CoordGrid
 import org.rsmod.plugin.scripts.ScriptContext
 
@@ -24,7 +34,11 @@ constructor(
     deps: BossDeps,
     private val routeFactory: RouteFactory,
     private val aiPlayerInteractions: AiPlayerInteractions,
+    private val meleeAttributes: CombatMeleeAttributeCollector,
+    private val rangedAttributes: CombatRangedAttributeCollector,
 ) : BossPluginScript(deps) {
+
+    private var Player.comMaxHit by intVarp("varp.com_maxhit")
 
     private fun resolveTarget(npc: Npc, preferred: Player): Player? =
         preferred.takeIf(Player::isValidTarget)
@@ -50,9 +64,29 @@ constructor(
 
     override fun ScriptContext.startup() {
         BossCombat.register(this, spec, deps)
+        val giantRatType =
+            ServerCacheManager.getNpc(GIANT_RAT.asRSCM(RSCMType.NPC))
+                ?: error("Missing npc type: $GIANT_RAT")
+        onModifyNpcHit(giantRatType) {
+            if (!hit.isFromPlayer) return@onModifyNpcHit
+            val uid = hit.sourceUid ?: return@onModifyNpcHit
+            val attacker = PlayerUid(uid).resolve(deps.playerList) ?: return@onModifyNpcHit
+            val maxHit = attacker.comMaxHit
+            if (maxHit > 0) {
+                hit.damage = maxHit
+            }
+            val ratbane =
+                CombatMeleeAttributes.RatBoneWeapon in meleeAttributes.collect(attacker, null) ||
+                    CombatRangedAttributes.RatBoneWeapon in
+                        rangedAttributes.collect(attacker, null, null)
+            if (ratbane) {
+                attacker.actionDelay = attacker.currentMapClock
+            }
+        }
 
         deps.extensionRegistry.register("scurrius.eat_cheese") { _, npc, target, _ ->
-            val cheeseTile = CoordGrid(npc.coords.level, npc.coords.mx, npc.coords.mz, 34, 20)
+            val pile = CHEESE_PILES.random()
+            val cheeseTile = CoordGrid(npc.coords.level, npc.coords.mx, npc.coords.mz, pile.first, pile.second)
             npc.resetFaceEntity()
             // Ignore combat interaction so walkTo can't be cancelled
             npc.ignoreCombatInteractions = true
@@ -233,5 +267,6 @@ constructor(
         private const val ROCK_MIN = 15
         private const val ROCK_MAX = 20
         private const val EATING_IDLE_SEQ = "seq.npc_rat_boss_feeding_idle_01"
+        private val CHEESE_PILES = setOf(Pair(34, 20), Pair(43, 11), Pair(34, 3))
     }
 }
