@@ -68,7 +68,7 @@ public fun Npc.combatDefaultRetaliateAp(interactions: AiPlayerInteractions) {
 }
 
 private fun Npc.shouldRetaliateAp(interactions: AiPlayerInteractions, target: Player): Boolean {
-    if (visType.attackRange <= 1) {
+    if (attackRange <= 1) {
         return false
     }
     return interactions.apTrigger(this, target, InteractionOp.Op2) != null
@@ -110,6 +110,6 @@ public fun Npc.combatPlayDefendSpot(ammo: ItemServerType?, clientDelay: Int) {
 
 public fun Npc.attackRate(): Int = visType.param(params.attackrate)
 
-public fun Npc.aggressionRange(): Int = visType.maxRange + visType.attackRange
+public fun Npc.aggressionRange(): Int = visType.maxRange + attackRange
 
 public fun Npc.resolveCombatXpMultiplier(): Double = combatXpMultiplier / 1000.0

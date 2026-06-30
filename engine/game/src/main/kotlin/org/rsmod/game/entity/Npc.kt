@@ -106,6 +106,9 @@ public class Npc(
      */
     public var apRangeOverride: Int? = null
 
+    public val attackRange: Int
+        get() = apRangeOverride ?: visType.attackRange
+
     public var apRequiresLineOfSight: Boolean = true
 
     public var aiTimerStart: Int = type.timer

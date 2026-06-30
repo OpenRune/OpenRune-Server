@@ -30,7 +30,7 @@ public class AiNpcInteractions @Inject constructor(private val eventBus: EventBu
     }
 
     public fun interactAp(npc: Npc, target: Npc, op: InteractionOp) {
-        val apRange = npc.visType.attackRange
+        val apRange = npc.attackRange
         val interaction =
             InteractionNpcOp(
                 target = target,

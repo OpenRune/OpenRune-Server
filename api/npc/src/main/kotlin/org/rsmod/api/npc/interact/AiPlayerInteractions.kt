@@ -32,7 +32,7 @@ constructor(private val eventBus: EventBus, private val playerList: PlayerList) 
     }
 
     public fun interactAp(npc: Npc, target: Player, op: InteractionOp) {
-        val apRange = npc.apRangeOverride ?: npc.visType.attackRange
+        val apRange = npc.attackRange
         val interaction =
             InteractionPlayerOp(
                 target = target,
