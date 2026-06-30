@@ -1328,24 +1328,28 @@ id = "npc.rat_boss_normal"
 inherit = "npc.rat_boss_normal"
 huntMode = 6
 huntRange = 15
-
 [npc.params]
 "param.boss_hp_bar_mode"=2
+"param.death_anim"="seq.npc_rat_boss_death_01"
 
 [[npc]]
 id = "npc.rat_boss_instance"
 inherit = "npc.rat_boss_instance"
 huntMode = 6
 huntRange = 15
-
 [npc.params]
 "param.boss_hp_bar_mode"=2
+"param.death_anim"="seq.npc_rat_boss_death_01"
 
 [[npc]]
 id = "npc.rat_boss_giant_rat"
 inherit = "npc.rat_boss_giant_rat"
 huntMode = 6
 huntRange = 10
+[npc.params]
+"param.attack_anim"="seq.giant_rat_update_attack"
+"param.defend_anim"="seq.giant_rat_update_defend"
+"param.death_anim"="seq.giant_rat_update_death"
 
 [[npc]]
 id = "npc.king_dragon"
