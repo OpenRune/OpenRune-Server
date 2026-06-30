@@ -88,10 +88,22 @@ public class Npc(
 
     public var mode: NpcMode? = type.defaultMode
 
+    /**
+     * Whether or not the Npc should ignore all combat interactions, i.e. not respond in any way
+     * when attacked.
+     */
     public var ignoreCombatInteractions: Boolean = false
 
+    /**
+     * Whether the Npc has locked movement. This is enforced in NpcMovementProcessor.process by
+     * continually resetting the Npc's route.
+     */
     public var movementLocked: Boolean = false
 
+    /**
+     * Used for temporarily overwriting a Npc's ap-range, i.e. the distance at which it can
+     * perform a ranged attack.
+     */
     public var apRangeOverride: Int? = null
 
     public var apRequiresLineOfSight: Boolean = true
