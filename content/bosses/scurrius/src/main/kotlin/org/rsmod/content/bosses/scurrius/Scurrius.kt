@@ -9,12 +9,14 @@ import org.rsmod.api.bosses.runtime.BossCombat
 import org.rsmod.api.bosses.runtime.BossDeps
 import org.rsmod.api.bosses.runtime.BossPluginScript
 import org.rsmod.api.bosses.runtime.encounter
+import org.rsmod.api.bosses.runtime.repeatTick
 import org.rsmod.api.bosses.spec.Effect
 import org.rsmod.api.combat.formulas.attributes.CombatMeleeAttributes
 import org.rsmod.api.combat.formulas.attributes.CombatRangedAttributes
 import org.rsmod.api.combat.formulas.attributes.collector.CombatMeleeAttributeCollector
 import org.rsmod.api.combat.formulas.attributes.collector.CombatRangedAttributeCollector
 import org.rsmod.api.npc.apPlayer2
+import org.rsmod.api.npc.heal
 import org.rsmod.api.npc.interact.AiPlayerInteractions
 import org.rsmod.api.npc.opPlayer2
 import org.rsmod.api.player.isValidTarget
@@ -62,6 +64,22 @@ constructor(
         npc.opPlayer2(target, aiPlayerInteractions)
     }
 
+    private fun startFeedingHeal(npc: Npc) {
+        deps.repeatTick(
+            ticks = FEEDING_DURATION,
+            onTick = { remaining ->
+                if (npc.hitpoints <= 0 || deps.encounter(npc).currentPhaseName != "feeding") {
+                    return@repeatTick false
+                }
+                val elapsed = FEEDING_DURATION - remaining
+                if (elapsed > 0 && elapsed % HEAL_INTERVAL == 0) {
+                    npc.heal(HEAL_AMOUNT, showHitsplat = true)
+                }
+                true
+            },
+        )
+    }
+
     override fun ScriptContext.startup() {
         BossCombat.register(this, spec, deps)
         val giantRatType =
@@ -96,6 +114,7 @@ constructor(
                 engageRanged(npc, target)
                 // Lock facing on cheese pile
                 npc.lockFacing(CoordGrid(npc.coords.level, npc.coords.mx, npc.coords.mz, 34, 20))
+                startFeedingHeal(npc)
             }
         }
 
@@ -259,6 +278,8 @@ constructor(
         private const val DEBRIS_SPOTANIM = "spotanim.vfx_rat_boss_falling_debris_01"
         private const val RAT_SUMMON_COOLDOWN = 50
         private const val FEEDING_DURATION = 30
+        private const val HEAL_INTERVAL = 8
+        private const val HEAL_AMOUNT = 5
 
         private const val ENGAGE_AP_RANGE = 15
         private const val ARENA_RADIUS = 25
