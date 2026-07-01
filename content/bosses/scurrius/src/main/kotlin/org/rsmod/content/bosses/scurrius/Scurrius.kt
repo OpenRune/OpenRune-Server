@@ -130,7 +130,7 @@ constructor(
                 deps.encounter(npc).transitionTo("feeding", deps.mapClock.cycle)
                 engageRanged(npc, target)
                 // Lock facing on cheese pile
-                npc.lockFacing(CoordGrid(npc.coords.level, npc.coords.mx, npc.coords.mz, 34, 20))
+                npc.lockFacing(CoordGrid(npc.coords.level, npc.coords.mx, npc.coords.mz, pile.first, pile.second))
                 startFeedingHeal(npc)
             }
         }
