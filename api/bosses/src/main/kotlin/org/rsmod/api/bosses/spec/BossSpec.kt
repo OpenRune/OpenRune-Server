@@ -1,7 +1,7 @@
 package org.rsmod.api.bosses.spec
 
 data class BossSpec(
-    val npcType: String,
+    val npcTypes: List<String>,
     val stats: BossStats,
     val abilities: Map<String, Effect>,
     val phases: Map<String, PhaseSpec>,
