@@ -8,6 +8,7 @@ import org.rsmod.api.repo.world.WorldRepository
 import org.rsmod.game.MapClock
 import org.rsmod.game.entity.PlayerList
 import org.rsmod.game.queue.WorldQueueList
+import org.rsmod.routefinder.collision.CollisionFlagMap
 
 @Singleton
 class BossDeps @Inject constructor(
@@ -17,6 +18,7 @@ class BossDeps @Inject constructor(
     val playerList: PlayerList,
     val mapClock: MapClock,
     val worldQueues: WorldQueueList,
+    val collision: CollisionFlagMap,
     val encounterRegistry: EncounterRegistry,
     val extensionRegistry: BossExtensionRegistry,
 )

@@ -43,6 +43,24 @@ sealed interface Effect {
         val type: HitType,
     ) : Effect
 
+    /**
+     * A telegraphed, dodgeable area attack (e.g. Scurrius' falling rocks): a [telegraph] spotanim is
+     * shown on a set of tiles, then after [windup] ticks any player standing on one of those tiles
+     * takes [damage]. Tiles are every player within [targetRadius] of the boss (so each is targeted)
+     * plus random scatter within [scatterRadius] of the boss, up to a total drawn from [count].
+     */
+    data class Debris(
+        val telegraph: String,
+        val damage: DamageExpr,
+        val type: HitType = HitType.Typeless,
+        val impact: String? = null,
+        val windup: Int = 3,
+        val targetRadius: Int = 15,
+        val scatterRadius: Int = 5,
+        val count: IntRange = 1..1,
+        val center: TargetExpr = TargetExpr.Self,
+    ) : Effect
+
     data class Summon(
         val npc: String,
         val count: Int = 1,

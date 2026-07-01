@@ -370,6 +370,16 @@ public class StandardNpcAccess(
         npc.resetAnim()
     }
 
+    /** Sets a persistent idle animation kept displayed while the npc is stationary and not animating. */
+    public fun setIdleAnim(seq: String) {
+        npc.setIdleAnim(seq)
+    }
+
+    /** Clears the persistent idle animation, reverting the npc to its cache `standAnim`. */
+    public fun clearIdleAnim() {
+        npc.clearIdleAnim()
+    }
+
     public fun animProtect(animProtect: Boolean) {
         PathingEntityCommon.setAnimProtect(npc, animProtect)
     }

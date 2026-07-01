@@ -361,6 +361,9 @@ constructor(
         if (!withinDistance) {
             return false
         }
+        if (!apRequiresLineOfSight) {
+            return true
+        }
         // Line-of-sight for npcs is always calculated in "reverse."
         val hasLos =
             rayCastValidator.hasLineOfSight(

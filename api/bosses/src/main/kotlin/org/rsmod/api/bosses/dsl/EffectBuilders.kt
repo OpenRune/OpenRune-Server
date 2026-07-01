@@ -54,6 +54,19 @@ fun tileAoE(
     type: HitType,
 ): Effect = Effect.TileAoE(center, radius, telegraph, damage, type)
 
+fun debris(
+    telegraph: String,
+    damage: DamageExpr,
+    type: HitType = HitType.Typeless,
+    impact: String? = null,
+    windup: Int = 3,
+    targetRadius: Int = 15,
+    scatterRadius: Int = 5,
+    count: IntRange = 1..1,
+    center: TargetExpr = TargetExpr.Self,
+): Effect =
+    Effect.Debris(telegraph, damage, type, impact, windup, targetRadius, scatterRadius, count, center)
+
 fun summon(
     npc: String,
     count: Int = 1,

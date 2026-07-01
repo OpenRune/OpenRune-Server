@@ -88,6 +88,29 @@ public class Npc(
 
     public var mode: NpcMode? = type.defaultMode
 
+    /**
+     * Whether or not the Npc should ignore all combat interactions, i.e. not respond in any way
+     * when attacked.
+     */
+    public var ignoreCombatInteractions: Boolean = false
+
+    /**
+     * Whether the Npc has locked movement. This is enforced in NpcMovementProcessor.process by
+     * continually resetting the Npc's route.
+     */
+    public var movementLocked: Boolean = false
+
+    /**
+     * Used for temporarily overwriting a Npc's ap-range, i.e. the distance at which it can
+     * perform a ranged attack.
+     */
+    public var apRangeOverride: Int? = null
+
+    public val attackRange: Int
+        get() = apRangeOverride ?: visType.attackRange
+
+    public var apRequiresLineOfSight: Boolean = true
+
     public var aiTimerStart: Int = type.timer
     public var aiTimer: Int = type.timer
 
@@ -151,6 +174,12 @@ public class Npc(
 
     public var actionDelay: Int = -1
 
+    /**
+     * A persistent idle/stand animation override.
+     */
+    public var idleSequence: EntitySeq = EntitySeq.NULL
+        private set
+
     public var transmog: NpcServerType? = null
         private set
 
@@ -174,8 +203,7 @@ public class Npc(
     public val name: String
         get() = type.name
 
-    public val moveRestrict: MoveRestrict
-        get() = type.moveRestrict
+    public var moveRestrict: MoveRestrict = type.moveRestrict
 
     public val blockWalk: BlockWalk
         get() = type.blockWalk
@@ -210,6 +238,39 @@ public class Npc(
         abortRoute()
         moveSpeed = defaultMoveSpeed
         routeDestination.add(dest)
+        arrivalAction = null
+    }
+
+    /**
+     * Walks to [dest] and runs [onArrival] once the route completes (the npc reaches the destination
+     * or the route otherwise ends).
+     */
+    public fun walk(dest: CoordGrid, onArrival: () -> Unit) {
+        walk(dest)
+        arrivalAction = onArrival
+    }
+
+    /**
+     * Walks the npc along a precomputed list of [waypoints] (e.g. the output of a pathfinder), running
+     * [onArrival] once the route completes.
+     */
+    public fun walk(waypoints: List<CoordGrid>, onArrival: (() -> Unit)? = null) {
+        abortRoute()
+        moveSpeed = defaultMoveSpeed
+        routeDestination.addAll(waypoints)
+        arrivalAction = onArrival
+    }
+
+    private var arrivalAction: (() -> Unit)? = null
+
+    @InternalApi
+    public fun processArrivalAction() {
+        val action = arrivalAction ?: return
+        if (routeDestination.isNotEmpty()) {
+            return
+        }
+        arrivalAction = null
+        action()
     }
 
     public fun teleport(collision: CollisionFlagMap, dest: CoordGrid): Unit =
@@ -323,6 +384,23 @@ public class Npc(
         infoProtocol.setSequence(-1, 0)
     }
 
+    /**
+     * Sets a persistent idle animation [seq] that the engine keeps displayed while the npc is
+     * stationary and not animating. See [idleSequence].
+     */
+    public fun setIdleAnim(seq: String) {
+        idleSequence = EntitySeq(seq.asRSCM(RSCMType.SEQ), delay = 0, priority = 0)
+    }
+
+    /** Clears the persistent idle animation, reverting the npc to its cache `standAnim`. */
+    public fun clearIdleAnim() {
+        val wasSet = idleSequence != EntitySeq.NULL
+        idleSequence = EntitySeq.NULL
+        if (wasSet) {
+            resetAnim()
+        }
+    }
+
     override fun spotanim(spot: String, delay: Int, height: Int, slot: Int) {
         PathingEntityCommon.spotanim(this, spot.asRSCM(RSCMType.SPOTANIM), delay, height, slot)
         infoProtocol.setSpotanim(spot.asRSCM(RSCMType.SPOTANIM), delay, height, slot)
@@ -348,7 +426,45 @@ public class Npc(
         infoProtocol.toggleOps(OpVisibility.hideAll())
     }
 
+    /**
+     * The square this npc's facing is pinned to, or [CoordGrid.NULL] when facing is not locked.
+     */
+    public var faceLockSquare: CoordGrid = CoordGrid.NULL
+        private set
+
+    public var faceLockWidth: Int = 1
+        private set
+
+    public var faceLockLength: Int = 1
+        private set
+
+    public val isFacingLocked: Boolean
+        get() = faceLockSquare != CoordGrid.NULL
+
+    public fun lockFacing(target: CoordGrid, targetWidth: Int = 1, targetLength: Int = 1) {
+        faceLockSquare = target
+        faceLockWidth = targetWidth
+        faceLockLength = targetLength
+        // Drop continuous entity facing; the locked angle is (re)applied by the facing processor.
+        resetFaceEntity()
+        faceSquare(target, targetWidth, targetLength)
+    }
+
+    /** Pins this npc's facing toward the tile one step in [direction]. @see [lockFacing] */
+    public fun lockFacingDirection(direction: Direction) {
+        lockFacing(coords.translate(direction.xOff, direction.zOff))
+    }
+
+    public fun clearFacingLock() {
+        faceLockSquare = CoordGrid.NULL
+        faceLockWidth = 1
+        faceLockLength = 1
+    }
+
     public fun facePlayer(target: Player) {
+        if (isFacingLocked) {
+            return
+        }
         if (faceEntity.playerSlot != target.slotId) {
             PathingEntityCommon.facePlayer(this, target)
             infoProtocol.setFacePathingEntity(faceEntity.entitySlot)
@@ -356,6 +472,9 @@ public class Npc(
     }
 
     public fun faceNpc(target: Npc) {
+        if (isFacingLocked) {
+            return
+        }
         if (faceEntity.npcSlot != target.slotId) {
             PathingEntityCommon.faceNpc(this, target)
             infoProtocol.setFacePathingEntity(faceEntity.entitySlot)
