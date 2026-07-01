@@ -1991,6 +1991,21 @@ public class ProtectedAccess(
      *   the coroutine suspension.
      * @see [resumeWithMainModalProtectedAccess]
      */
+    public suspend fun delayBySeq(anim: String, extra : Int = 0) {
+        val cycles =
+            ServerCacheManager.getAnim(anim.asRSCM(RSCMType.SEQ))?.totalDelay ?: (2 + extra)
+        require(cycles > 0) { "`cycles` must be greater than 0. (cycles=$cycles)" }
+        val modal = player.ui.getModalOrNull("component.toplevel_osrs_stretch:mainmodal")
+        player.delay(cycles)
+        coroutine.pause { player.isNotDelayed }
+        resumeWithMainModalProtectedAccess(Unit, modal)
+    }
+
+    /**
+     * @throws ProtectedAccessLostException if the player could not retain protected access after
+     *   the coroutine suspension.
+     * @see [resumeWithMainModalProtectedAccess]
+     */
     public suspend fun delay(cycles: Int = 1) {
         require(cycles > 0) { "`cycles` must be greater than 0. (cycles=$cycles)" }
         val modal = player.ui.getModalOrNull("component.toplevel_osrs_stretch:mainmodal")
