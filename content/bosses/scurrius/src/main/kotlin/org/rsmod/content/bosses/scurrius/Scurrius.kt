@@ -20,10 +20,12 @@ import org.rsmod.api.npc.heal
 import org.rsmod.api.npc.interact.AiPlayerInteractions
 import org.rsmod.api.npc.opPlayer2
 import org.rsmod.api.player.isValidTarget
+import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.vars.intVarp
 import org.rsmod.api.route.RouteFactory
 import org.rsmod.api.route.walkTo
 import org.rsmod.api.script.onModifyNpcHit
+import org.rsmod.api.script.onOpLoc1
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.game.entity.player.PlayerUid
@@ -41,6 +43,7 @@ constructor(
 ) : BossPluginScript(deps) {
 
     private var Player.comMaxHit by intVarp("varp.com_maxhit")
+    private var Player.foodPileEatCooldown by intVarp("varp.rat_boss_player_eat_from_food_pile")
 
     private fun resolveTarget(npc: Npc, preferred: Player): Player? =
         preferred.takeIf(Player::isValidTarget)
@@ -80,8 +83,22 @@ constructor(
         )
     }
 
+    private suspend fun ProtectedAccess.eatFromFoodPile() {
+        arriveDelay()
+        if (mapClock < player.foodPileEatCooldown) {
+            mes("You've already eaten from the food pile recently.")
+            return
+        }
+        player.foodPileEatCooldown = mapClock + 1000
+        anim("seq.human_eat")
+        statHeal("stat.hitpoints", constant = 0, percent = 100)
+        mes("You eat from the food pile, restoring your hitpoints to full.")
+    }
+
     override fun ScriptContext.startup() {
         BossCombat.register(this, spec, deps)
+        onOpLoc1("loc.rat_boss_food_pile") { eatFromFoodPile() }
+        onOpLoc1("loc.rat_boss_food_pile2") { eatFromFoodPile() }
         val giantRatType =
             ServerCacheManager.getNpc(GIANT_RAT.asRSCM(RSCMType.NPC))
                 ?: error("Missing npc type: $GIANT_RAT")
