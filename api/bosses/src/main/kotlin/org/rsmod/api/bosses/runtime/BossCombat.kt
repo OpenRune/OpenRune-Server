@@ -83,7 +83,7 @@ object BossCombat {
         deps: BossDeps,
     ) {
         val encounter = deps.encounterRegistry.of(npc)
-        val phase = encounter.currentPhase ?: return
+        if (encounter.currentPhase == null) return
         val tick = deps.mapClock.cycle
 
         checkAutoTransitions(this, target, encounter, tick, spec, deps)
@@ -92,6 +92,7 @@ object BossCombat {
         val ticksSinceLastAttack = tick - encounter.lastAbilityTick
         if (ticksSinceLastAttack < spec.stats.attackRate) return
 
+        val phase = encounter.currentPhase ?: return
         val abilityName = encounter.selectAbility(phase.selector, tick, target) ?: return
         val effect = spec.abilities[abilityName] ?: return
 
