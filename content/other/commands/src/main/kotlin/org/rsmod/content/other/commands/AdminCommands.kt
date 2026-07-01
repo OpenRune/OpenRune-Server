@@ -79,7 +79,6 @@ constructor(
         onCommand("master", "Max out all stats", ::master)
         onCommand("reset", "Reset all stats", ::reset)
         onCommand("mypos", "Get current coordinates", ::mypos)
-        onCommand("multizone", "Check multi-combat area at current tile", ::multizone)
         onCommand("tele", "Teleport to coordgrid", ::tele) {
             invalidArgs = "Usage: ::tele mx mz [level](e.g. ::tele 3200 3200 0)"
         }
@@ -144,9 +143,6 @@ constructor(
         onCommand("transmog", "Transmog player to NPC appearance (no args to reset)", ::transmog) {
             invalidArgs = "Use as ::transmog npcNameOrId (ex: goblin or 126) or ::transmog to reset"
         }
-        onCommand("scurrius", "Teleport to the entrance of Scurrius' lair", ::scurrius)
-        onCommand("scurriusidletest", "Spawn an npc with a custom idle anim and walk it over", ::scurriusidletest)
-        onCommand("walktest", "Spawn an npc, walk it over and then have it say a message", ::walktest)
     }
 
     private fun god(cheat: Cheat) =
@@ -216,30 +212,6 @@ constructor(
                 "  ${MapSquareKey.from(player.coords)} - ${MapSquareGrid.from(player.coords)}"
             )
             player.mes("  BuildArea(${player.buildArea})")
-        }
-
-    private fun multizone(cheat: Cheat) =
-        with(cheat) {
-            val coords = player.coords
-            val multiway = areaChecker.inArea("area.multiway", coords)
-            val singlesPlus = areaChecker.inArea("area.singles_plus", coords)
-
-            player.mes("Multi-combat check at $coords:")
-            player.mes("  multiway: $multiway")
-            player.mes("  singles_plus: $singlesPlus")
-
-            // For dynamic regions (instances), `inArea` normalizes back to the base world before
-            // resolving areas. Surface that mapping so we can tell whether the normalization works.
-            if (RegionRegistry.inWorkingArea(coords)) {
-                val normalized = regions.normalizeCoords(coords)
-                if (normalized == CoordGrid.NULL) {
-                    player.mes("  dynamic region: yes, but normalizeCoords -> NULL (no zone copy)")
-                } else {
-                    player.mes("  dynamic region: yes, normalized -> $normalized")
-                }
-            } else {
-                player.mes("  dynamic region: no (overworld coords)")
-            }
         }
 
     private fun tele(cheat: Cheat) =
@@ -543,33 +515,6 @@ constructor(
             }
         protectedAccess.launch(player) { transmog(npcName) }
         player.mes("Transmog: '$npcName'")
-    }
-
-    private fun scurrius(cheat: Cheat) = with(cheat) {
-        protectedAccess.launch(player) {
-            telejump(CoordGrid(3281, 9870))
-        }
-    }
-
-    private fun scurriusidletest(cheat: Cheat) = with(cheat) {
-        // Spawn a few tiles away and walk it over so both the walk and the resulting idle are
-        // visible: while walking the walk anim plays, then the custom idle should show once stopped.
-        val npc = Npc("npc.rat_boss_instance", player.coords.translateX(5))
-        npc.mode = NpcMode.None
-        npcRepo.add(npc, 200)
-        npc.setIdleAnim("seq.npc_rat_boss_feeding_idle_01")
-    }
-
-    private fun walktest(cheat: Cheat) = with(cheat) {
-        // Spawn a few tiles away and walk it over so both the walk and the resulting idle are
-        // visible: while walking the walk anim plays, then the custom idle should show once stopped.
-        player.mes("Walk test")
-        val npc = Npc("npc.rat_boss_instance", player.coords.translateX(5))
-        npc.mode = NpcMode.None
-        npcRepo.add(npc, 200)
-        npc.walk(player.coords) {
-            npc.say("It's cheesing time!!")
-        }
     }
 
     private fun resolveArgTypeId(arg: String, names: Map<String, Int>): Int? {
