@@ -24,12 +24,11 @@ constructor(
         val uid = player.uid
         val targetName = message.name
         val text = message.message.trim().take(PRIVATE_MESSAGE_MAX_CHARS)
-        val token = player.openRuneCentralSessionToken
         val characterId = player.characterId
         val senderDisplayName = player.displayName.ifBlank { player.username }
         val senderCrown = player.modLevel.clientCode
 
-        if (token == null || characterId <= 0) {
+        if (characterId <= 0) {
             player.writeSocialMessage("Private messaging is not available right now.")
             return
         }
@@ -37,7 +36,6 @@ constructor(
         db.request(
             request = {
                 social.sendPrivateMessage(
-                    sessionToken = token,
                     fromCharacterId = characterId,
                     targetName = targetName,
                     senderDisplayName = senderDisplayName,

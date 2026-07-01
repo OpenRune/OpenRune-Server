@@ -4,10 +4,8 @@ import jakarta.inject.Inject
 import net.rsprot.protocol.game.incoming.social.FriendListAdd
 import org.rsmod.api.db.gateway.GameDbManager
 import org.rsmod.api.db.gateway.model.fold
-import org.rsmod.api.net.central.CentralSocialService
 import org.rsmod.api.net.central.CentralSocialResult
-import org.rsmod.api.net.central.OpenRuneCentralWorldLink
-import org.rsmod.api.net.central.writeCentralSocialSnapshot
+import org.rsmod.api.net.central.CentralSocialService
 import org.rsmod.api.social.writeSocialMessage
 import org.rsmod.game.entity.Player
 import org.rsmod.game.entity.PlayerList
@@ -22,10 +20,9 @@ constructor(
     override fun handle(player: Player, message: FriendListAdd) {
         val uid = player.uid
         val requestedName = message.name
-        val token = player.openRuneCentralSessionToken
         val characterId = player.characterId
 
-        if (token == null || characterId <= 0) {
+        if (characterId <= 0) {
             player.writeSocialMessage("Social is not available right now.")
             return
         }
@@ -33,7 +30,6 @@ constructor(
         db.request(
             request = {
                 social.addFriend(
-                    sessionToken = token,
                     characterId = characterId,
                     name = requestedName,
                 )
@@ -44,39 +40,7 @@ constructor(
                 result.fold(
                     onOk = { socialResult ->
                         when (socialResult) {
-                            CentralSocialResult.Ok -> {
-                                val refreshUid = current.uid
-
-                                db.request(
-                                    request = {
-                                        social.socialSnapshot(
-                                            sessionToken = token,
-                                            characterId = characterId,
-                                        )
-                                    },
-                                    response = { refreshResult ->
-                                        val refreshed =
-                                            refreshUid.resolve(playerList) ?: return@request
-
-                                        refreshResult.fold(
-                                            onOk = { sync ->
-                                                when (sync) {
-                                                    is OpenRuneCentralWorldLink.CentralSocialSnapshotResult.Ok -> {
-                                                        refreshed.writeCentralSocialSnapshot(sync.snapshot)
-                                                    }
-
-                                                    is OpenRuneCentralWorldLink.CentralSocialSnapshotResult.Failed -> {
-                                                        refreshed.writeSocialMessage(sync.message)
-                                                    }
-                                                }
-                                            },
-                                            onErr = {
-                                                refreshed.writeSocialMessage("Unable to refresh social list right now.")
-                                            },
-                                        )
-                                    },
-                                )
-                            }
+                            CentralSocialResult.Ok -> Unit
 
                             CentralSocialResult.Ignored -> Unit
 

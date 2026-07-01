@@ -5,6 +5,8 @@ import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import dev.openrune.types.BasType
 import dev.openrune.types.ModLevelType
+import dev.or2.central.account.TwoFactorAuthData
+import dev.or2.central.account.TrustedDeviceData
 import dev.openrune.types.NpcServerType
 import dev.openrune.types.SequenceServerType
 import dev.openrune.types.StatType
@@ -173,8 +175,11 @@ public class Player(
     public var members: Boolean = false
     public var gamemode: Int = 0
     public var lastKnownDevice: Int? = null
+    public var trustedDevices: MutableList<TrustedDeviceData> = mutableListOf()
+    public var twoFactorAuth: TwoFactorAuthData = TwoFactorAuthData()
     public var previousDisplayName: String = ""
     public var displayNameChangedAtMillis: Long? = null
+    public var discordId: Long? = null
     public var createdAt: LocalDateTime? = null
     public var followCoord: CoordGrid = CoordGrid.NULL
     public var buildArea: CoordGrid = CoordGrid.NULL

@@ -3,6 +3,7 @@ package org.rsmod.content.other.login
 import dev.openrune.ServerCacheManager
 import dev.openrune.rscm.RSCM
 import dev.openrune.rscm.RSCMType
+import dev.openrune.types.StatType
 import dev.openrune.types.varp.VarpServerType
 import jakarta.inject.Inject
 import net.rsprot.protocol.game.outgoing.misc.client.HideLocOps
@@ -12,9 +13,11 @@ import net.rsprot.protocol.game.outgoing.misc.client.MinimapToggle
 import net.rsprot.protocol.game.outgoing.misc.client.ResetAnims
 import net.rsprot.protocol.game.outgoing.misc.player.ChatFilterSettings
 import net.rsprot.protocol.game.outgoing.varp.VarpReset
+import net.rsprot.protocol.game.outgoing.misc.player.ChatFilterSettingsPrivateChat
 import org.rsmod.api.inv.weight.InvWeight
 import org.rsmod.api.net.central.OpenRuneCentralWorldLink
 import org.rsmod.api.net.central.writeCentralSocialSnapshot
+import org.rsmod.api.net.central.writeCentralSocialSnapshotEmpty
 import org.rsmod.api.player.output.Camera
 import org.rsmod.api.player.output.ChatType
 import org.rsmod.api.player.output.MiscOutput
@@ -44,10 +47,11 @@ constructor(
     private val realm: Realm,
     private val mapClock: MapClock,
     private val invisibleLevels: InvisibleLevels,
-    private val central: OpenRuneCentralWorldLink,
-    private val config: ServerConfig
+    private val config: ServerConfig,
+    private val openRuneCentral: OpenRuneCentralWorldLink,
 ) : PluginScript() {
     private val transmitVars by lazy { transmitVars() }
+    private val statSyncEntries by lazy { statSyncEntries() }
 
     private var Player.chatboxUnlocked: Boolean by boolVarBit("varbit.has_displayname_transmitter")
 
@@ -73,6 +77,29 @@ constructor(
 
     private fun Player.sendChatFilters() {
         client.write(ChatFilterSettings(0, 0))
+    }
+
+    private fun Player.sendSocial() {
+        if (!openRuneCentral.isEnabled) {
+            return
+        }
+
+        if (characterId <= 0) {
+            mes("Social list did not load: missing character.")
+            writeCentralSocialSnapshotEmpty()
+            return
+        }
+
+        when (val result = openRuneCentral.socialSnapshot(characterId)) {
+            is OpenRuneCentralWorldLink.CentralSocialSnapshotResult.Ok -> {
+                writeCentralSocialSnapshot(result.snapshot)
+            }
+
+            is OpenRuneCentralWorldLink.CentralSocialSnapshotResult.Failed -> {
+                mes("Social list did not load: ${result.message}")
+                writeCentralSocialSnapshotEmpty()
+            }
+        }
     }
 
     private fun Player.sendOpVisibility() {
@@ -127,9 +154,7 @@ constructor(
     }
 
     private fun Player.sendStats() {
-        for (stat in ServerCacheManager.getStats().values) {
-            val statInternal = RSCM.getReverseMapping(RSCMType.STAT,stat.id)
-
+        for ((statInternal, stat) in statSyncEntries) {
             val currXp = statMap.getXP(statInternal)
             val currLvl = stat(statInternal)
             val hiddenLvl = currLvl + invisibleLevels.get(this, statInternal)
@@ -152,27 +177,11 @@ constructor(
         MiscOutput.setPlayerOp(this, slot = 8, op = "Report")
     }
 
-    private fun transmitVars(): List<VarpServerType> {
-        return ServerCacheManager.getVarps().values.filter { !it.transmit.never }.sortedBy { it.id }
-    }
-
-    private fun Player.sendSocial() {
-        val token = openRuneCentralSessionToken
-
-        if (token == null || characterId <= 0) {
-            mes("Social list did not load: missing Central session.")
-            return
+    private fun statSyncEntries(): List<Pair<String, StatType>> =
+        ServerCacheManager.getStats().values.map { stat ->
+            RSCM.getReverseMapping(RSCMType.STAT, stat.id) to stat
         }
 
-        when (val result = central.socialSnapshot(token, characterId)) {
-            is OpenRuneCentralWorldLink.CentralSocialSnapshotResult.Ok -> {
-                writeCentralSocialSnapshot(result.snapshot)
-            }
-
-            is OpenRuneCentralWorldLink.CentralSocialSnapshotResult.Failed -> {
-                mes("Social list did not load: ${result.message}")
-            }
-        }
-    }
-
+    private fun transmitVars(): List<VarpServerType> =
+        ServerCacheManager.getVarps().values.filter { !it.transmit.never }.sortedBy { it.id }
 }

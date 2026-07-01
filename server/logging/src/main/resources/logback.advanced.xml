@@ -15,4 +15,7 @@
   <logger name="org.flywaydb.core" level="warn" additivity="false" />
   <logger name="org.openrs2.compress.bzip2" level="warn" additivity="false" />
   <logger name="io.zonky.test.db.postgres.embedded" level="WARN" />
+  <logger name="org.flywaydb" level="WARN" />
+  <logger name="com.zaxxer.hikari" level="WARN" />
+  <logger name="org.reflections" level="WARN" />
 </configuration>

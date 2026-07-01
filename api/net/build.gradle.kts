@@ -5,6 +5,7 @@ plugins {
 dependencies {
     implementation(libs.openrune.central)
     implementation(libs.openrune.central.common)
+    implementation(libs.openrune.central.worldlink)
     implementation("com.zaxxer:HikariCP:6.2.1")
     implementation(libs.bouncycastle.provider)
     implementation(libs.bundles.logging)
@@ -20,6 +21,8 @@ dependencies {
     implementation(libs.rsprot.shared)
     implementation(projects.api.account)
     implementation(projects.api.db)
+    implementation(projects.api.dbGateway)
+    implementation(projects.api.social)
     implementation(projects.api.attr)
     implementation(projects.api.config)
     implementation(projects.api.cache)
@@ -29,7 +32,6 @@ dependencies {
     implementation(projects.api.npc)
     implementation(projects.api.player)
     implementation(projects.api.playerOutput)
-    implementation(projects.api.pwHash)
     implementation(projects.api.realm)
     implementation(projects.api.registry)
     implementation(projects.api.script)
@@ -43,6 +45,4 @@ dependencies {
     implementation(projects.engine.routefinder)
     implementation(projects.engine.plugin)
     implementation(projects.server.services)
-    implementation(projects.api.social)
-    implementation(projects.api.dbGateway)
 }

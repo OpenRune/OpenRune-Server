@@ -18,7 +18,6 @@ dependencies {
     implementation(projects.api.market)
     implementation(projects.api.npc)
     implementation(projects.api.player)
-    implementation(projects.api.pwHash)
     implementation(projects.api.random)
     implementation(projects.api.realm)
     implementation(projects.api.registry)

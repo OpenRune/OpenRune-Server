@@ -5,7 +5,7 @@ import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
 import dev.or2.central.logs.CentralActivityLog
 import dev.openrune.types.ItemServerType
-import dev.or2.central.server.logging.CentralActivityLogRepository
+import dev.or2.central.logs.CentralActivityLogRepository
 import jakarta.inject.Inject
 import jakarta.inject.Singleton
 import java.util.concurrent.Executors

@@ -1,6 +1,5 @@
 package org.rsmod.api.db.jdbc
 
-import com.github.michaelbull.logging.InlineLogger
 import jakarta.inject.Inject
 import jakarta.inject.Provider
 import java.sql.Connection
@@ -10,21 +9,21 @@ import org.rsmod.api.db.Database
 import org.rsmod.api.db.DatabaseConfig
 import org.rsmod.api.db.DatabaseConnection
 import org.rsmod.api.db.util.DatabaseRollbackException
+import dev.or2.central.db.FlywayMigrator
 
 public class GameDatabase
 @Inject
 constructor(
     private val configProvider: Provider<DatabaseConfig>,
 ) : Database {
-    private val logger = InlineLogger()
     private lateinit var connection: Connection
 
     public fun connect(connector: GameConnection) {
         check(!::connection.isInitialized) { "Connection already initialized." }
+        val config = configProvider.get()
         val connection = connector.connect()
-        val embeddedRecovery = configProvider.get().usesEmbeddedPostgres
         try {
-            runBootstrapWithEmbeddedNukeOnFailure(connection, embeddedRecovery)
+            FlywayMigrator.migrate(config.jdbcUrl, config.user, config.password)
             connection.commit()
         } catch (t: Throwable) {
             try {
@@ -35,37 +34,6 @@ constructor(
             throw t
         }
         this.connection = connection
-    }
-
-    private fun runBootstrapWithEmbeddedNukeOnFailure(
-        connection: Connection,
-        embeddedRecovery: Boolean,
-    ) {
-        var attempt = 0
-        while (true) {
-            try {
-                GameSchemaBootstrap.applyIfNeeded(connection)
-                GameSchemaBootstrap.ensureOnlineSessionColumns(connection)
-                GameSchemaBootstrap.ensureRealmDropIgnorePasswords(connection)
-                return
-            } catch (t: Throwable) {
-                try {
-                    connection.rollback()
-                } catch (_: Throwable) {
-                    // ignore
-                }
-                if (!embeddedRecovery || attempt >= 1) {
-                    throw t
-                }
-                logger.warn(t) {
-                    "Embedded PostgreSQL: game DB bootstrap failed; dropping all objects in schema " +
-                        "`public` and retrying once."
-                }
-                GameSchemaBootstrap.resetPublicSchema(connection)
-                connection.commit()
-                attempt++
-            }
-        }
     }
 
     public fun close() {
@@ -89,6 +57,24 @@ constructor(
                 throw t
             }
         }
+
+    /** Blocking variant for the game thread (avoids [runBlocking] coroutine overhead). */
+    public fun <T> withTransactionBlocking(block: (DatabaseConnection) -> T): T {
+        assertValidConnection()
+        try {
+            val wrapped = DatabaseConnection(connection)
+            val result = block(wrapped)
+            connection.commit()
+            return result
+        } catch (t: Throwable) {
+            try {
+                connection.rollback()
+            } catch (rollbackEx: Throwable) {
+                throw DatabaseRollbackException(t, rollbackEx)
+            }
+            throw t
+        }
+    }
 
     private suspend fun <T> withConnection(block: (Connection) -> T): T {
         assertValidConnection()

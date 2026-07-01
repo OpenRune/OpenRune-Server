@@ -22,10 +22,9 @@ constructor(
     override fun handle(player: Player, message: IgnoreListAdd) {
         val uid = player.uid
         val requestedName = message.name
-        val token = player.openRuneCentralSessionToken
         val characterId = player.characterId
 
-        if (token == null || characterId <= 0) {
+        if (characterId <= 0) {
             player.writeSocialMessage("Social is not available right now.")
             return
         }
@@ -33,7 +32,6 @@ constructor(
         db.request(
             request = {
                 social.addIgnore(
-                    sessionToken = token,
                     characterId = characterId,
                     name = requestedName,
                 )
@@ -50,7 +48,6 @@ constructor(
                                 db.request(
                                     request = {
                                         social.socialSnapshot(
-                                            sessionToken = token,
                                             characterId = characterId,
                                         )
                                     },

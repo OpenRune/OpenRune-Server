@@ -9,13 +9,17 @@ plugins {
     id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
 }
 
+val centralServerBuild = providers.gradleProperty("openrune.central.includeBuild")
+if (centralServerBuild.isPresent) {
+    includeBuild(centralServerBuild.get())
+}
+
 @Suppress("UnstableApiUsage")
 dependencyResolutionManagement {
     includeBuild("build-logic")
     repositories {
         gradlePluginPortal()
         mavenCentral()
-        mavenLocal()
         maven("https://jitpack.io")
         maven("https://repo.openrs2.org/repository/openrs2-snapshots")
         maven("https://raw.githubusercontent.com/OpenRune/hosting/master")

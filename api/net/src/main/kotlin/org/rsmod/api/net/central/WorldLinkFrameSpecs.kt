@@ -1,629 +1,111 @@
 package org.rsmod.api.net.central
 
-import java.nio.ByteBuffer
-import java.nio.charset.StandardCharsets
+import dev.or2.central.worldlink.protocol.CentralPushPackets
+import dev.or2.central.worldlink.protocol.PacketLimits
+import dev.or2.central.worldlink.protocol.PacketCatalog
+import dev.or2.central.worldlink.protocol.WorldOpcodes
 
-/** Length-prefixed binary world-link protocol between game server and OpenRune Central. */
+public typealias ServerRevokeLoginPayload = CentralPushPackets.RevokeLogin
+public typealias ServerKickPayload = CentralPushPackets.Kick
+public typealias ServerMuteUpdatePayload = CentralPushPackets.MuteUpdate
+public typealias ServerRebootPayload = CentralPushPackets.Reboot
+public typealias ServerBroadcastPayload = CentralPushPackets.Broadcast
+public typealias ServerDisplayNameSyncPayload = CentralPushPackets.DisplayNameSync
+public typealias ServerDiscordIdSyncPayload = CentralPushPackets.DiscordIdSync
+public typealias ServerPrivateMessagePayload = dev.or2.central.worldlink.protocol.social.PrivateMessagePush
+public typealias ServerFriendPresencePayload = dev.or2.central.worldlink.protocol.social.FriendPresencePush
+
+/** Shared world-link constants and validation (see `central-worldlink`). */
 public object WorldLinkFrameSpecs {
-    public const val MAX_FRAMED_BODY: Int = 16 * 1024
-
-    public const val MAGIC: Int = 0x4F523231
-    public const val TOKEN_BYTES: Int = 32
-    public const val CLIENT_PROTOCOL_VERSION: Int = 7
-
+    public const val MAX_FRAMED_BODY: Int = PacketLimits.MAX_INBOUND_FRAMED_BODY
+    public const val MAGIC: Int = WorldOpcodes.MAGIC
+    public const val TOKEN_BYTES: Int = WorldOpcodes.TOKEN_BYTES
+    public const val CLIENT_PROTOCOL_VERSION: Int = WorldOpcodes.PROTOCOL_VERSION
     public const val PRIVATE_MESSAGE_MAX_CHARS: Int = 255
-
     public const val PM_RELAY_SENDER_DISPLAY_MAX_UTF8: Int = 96
-
     public const val PM_RELAY_MESSAGE_MAX_UTF8: Int = PRIVATE_MESSAGE_MAX_CHARS * 4
-
-    public const val SOCIAL_NAME_MAX_UTF8: Int = 96
-
-    public const val OP_WORLD_PM_RELAY: Int = 0x60
-    public const val OP_WORLD_FRIEND_ADD: Int = 0x61
-    public const val OP_WORLD_FRIEND_DEL: Int = 0x62
-    public const val OP_WORLD_IGNORE_ADD: Int = 0x63
-    public const val OP_WORLD_IGNORE_DEL: Int = 0x64
-    public const val OP_WORLD_CHAT_FILTERS: Int = 0x65
-
-    public const val OP_WORLD_SOCIAL_OK: Int = 0x66
-    public const val OP_WORLD_SOCIAL_FAIL: Int = 0x67
-    public const val OP_WORLD_SOCIAL_SYNC: Int = 0x69
-    public const val OP_WORLD_SOCIAL_SYNC_OK: Int = 0x6A
-    public const val OP_WORLD_SOCIAL_SYNC_FAIL: Int = 0x6B
-
-    public const val OP_SERVER_PRIVATE_MESSAGE: Int = 0x68
-    public const val OP_SERVER_FRIEND_PRESENCE: Int = 0x6C
-
-    private const val SERVER_PRIVATE_MESSAGE_MIN_BODY: Int = 4 + 4 + 4 + 1 + 2 + 0 + 2 + 0
-
-    private const val SERVER_PRIVATE_MESSAGE_MAX_BODY: Int =
-        4 + // sender world id
-            4 + // from character id
-            4 + // to character id
-            1 + // sender crown
-            2 + PM_RELAY_SENDER_DISPLAY_MAX_UTF8 +
-            2 + PM_RELAY_MESSAGE_MAX_UTF8
-
-    private const val SERVER_FRIEND_PRESENCE_MIN_BODY: Int = 4 + 4 + 4 + 2 + 0 + 2 + 0
-
-    private const val SERVER_FRIEND_PRESENCE_MAX_BODY: Int =
-        4 + 4 + 4 + 2 + SOCIAL_NAME_MAX_UTF8 + 2 + SOCIAL_NAME_MAX_UTF8
-
-    public const val WORLD_KEY_MAX_BYTES: Int = 4096
-
-    public const val LOGIN_FAIL_SCRIPT_LINE_MAX_UTF8_BYTES: Int = 512
-
-    private const val LOGIN_FAIL_MAX_BODY: Int =
-        4 + 3 * (2 + LOGIN_FAIL_SCRIPT_LINE_MAX_UTF8_BYTES)
-    private const val LOGIN_USERNAME_MAX_UTF8: Int = 64 * 4
-    private const val LOGIN_PASSWORD_MAX_UTF8: Int = 256 * 4
-    private const val TOKEN_BODY_BYTES: Int = 2 + TOKEN_BYTES
-
-    public const val OP_WORLD_HELLO: Int = 0x01
-    public const val OP_HELLO_ACK: Int = 0x02
-    public const val OP_HELLO_REJECT: Int = 0x03
-    public const val OP_LOGIN: Int = 0x10
-    public const val OP_LOGIN_OK: Int = 0x11
-    public const val OP_LOGIN_FAIL: Int = 0x12
-    public const val OP_PUSH_SUBSCRIBE: Int = 0x13
-    public const val OP_PUSH_SUBSCRIBE_ACK: Int = 0x14
-    public const val OP_HEARTBEAT: Int = 0x30
-    public const val OP_HEARTBEAT_ACK: Int = 0x31
-    public const val OP_LOGOUT: Int = 0x40
-    public const val OP_LOGOUT_ACK: Int = 0x41
-
-    public const val OP_SERVER_REVOKE_LOGIN: Int = 0x50
-
-    public const val OP_SERVER_MUTE_UPDATE: Int = 0x51
-
-    public const val OP_SERVER_KICK: Int = 0x52
-
-    public const val OP_SERVER_REBOOT: Int = 0x54
-
-    public const val OP_SERVER_BROADCAST: Int = 0x55
-
-    public const val OP_SERVER_DISPLAY_NAME_SYNC: Int = 0x57
-
-    private const val LOGIN_OK_RIGHTS_MAX_BYTES: Int = 4096
-    private const val LOGIN_OK_MAX_BODY: Int = 2 + TOKEN_BYTES + 8 + 2 + LOGIN_OK_RIGHTS_MAX_BYTES
-    private const val LOGIN_OK_MIN_BODY: Int = 2 + TOKEN_BYTES + 8
-
-    private const val WORLD_OPS_UTF8_MAX: Int = 2048
-
-    private const val SERVER_DISPLAY_NAME_SYNC_MIN_BODY: Int = 8 + 4 + 2 + 0 + 2 + 0
-
-    private const val SERVER_DISPLAY_NAME_SYNC_MAX_BODY: Int =
-        8 + 4 + 2 + PM_RELAY_SENDER_DISPLAY_MAX_UTF8 + 2 + PM_RELAY_SENDER_DISPLAY_MAX_UTF8
-
-    private const val SERVER_REBOOT_MIN_BODY: Int = 1 + 4 + 8 + 2 + 0
-
-    private const val SOCIAL_NAME_ACTION_MIN_BODY: Int = TOKEN_BODY_BYTES + 4 + 2 + 0
-    private const val SOCIAL_NAME_ACTION_MAX_BODY: Int = TOKEN_BODY_BYTES + 4 + 2 + SOCIAL_NAME_MAX_UTF8
-
-    private const val CHAT_FILTERS_BODY_BYTES: Int = TOKEN_BODY_BYTES + 4 + 3
-
-    private const val PM_RELAY_MIN_BODY: Int = TOKEN_BODY_BYTES + 4 + 1 + 2 + 0 + 2 + 0 + 2 + 0
-
-    private const val PM_RELAY_MAX_BODY: Int =
-        TOKEN_BODY_BYTES +
-            4 +
-            1 +
-            2 + SOCIAL_NAME_MAX_UTF8 +
-            2 + PM_RELAY_SENDER_DISPLAY_MAX_UTF8 +
-            2 + PM_RELAY_MESSAGE_MAX_UTF8
-
-    public fun describeValidationFailure(reason: String): String =
-        when (reason) {
-            "empty" -> "frame was empty (expected at least an opcode byte)"
-            "hello_ack_size" -> "HELLO_ACK must have no body after the opcode"
-            "hello_reject_size" -> "HELLO_REJECT must have exactly one reason byte after the opcode"
-            "login_fail_short" -> "LOGIN_FAIL body too short (need at least the 4-byte failure code)"
-            "login_fail_long" -> "LOGIN_FAIL body exceeds the maximum allowed size"
-            "login_fail_script" -> "LOGIN_FAIL optional script trailer is truncated or malformed"
-            "login_fail_script_line" -> "LOGIN_FAIL script line exceeds max UTF-8 length"
-            "login_fail_trailing" -> "LOGIN_FAIL has unexpected trailing bytes after the script lines"
-            "login_ok_size" -> "LOGIN_OK body length is outside the allowed range for token + account id + rights"
-            "logout_ack_size" -> "LOGOUT_ACK must have no body after the opcode"
-            "heartbeat_ack_size" -> "HEARTBEAT_ACK must have no body after the opcode"
-            "push_subscribe_ack_size" -> "PUSH_SUBSCRIBE_ACK must have no body after the opcode"
-            "server_revoke_login_size" -> "SERVER_REVOKE_LOGIN body must be exactly 12 bytes (account id + character id)"
-            "server_mute_update_size" -> "SERVER_MUTE_UPDATE body must be exactly 20 bytes"
-            "server_kick_size" -> "SERVER_KICK body must be exactly 12 bytes (account id + character id)"
-            "server_private_message_size" -> "SERVER_PRIVATE_MESSAGE body length is outside the allowed range"
-            "server_private_message_truncated" -> "SERVER_PRIVATE_MESSAGE is truncated before a length-prefixed string"
-            "server_private_message_chunk_len" -> "SERVER_PRIVATE_MESSAGE string length exceeds maximum UTF-8 size"
-            "server_private_message_chunk_data" -> "SERVER_PRIVATE_MESSAGE string data is truncated"
-            "server_private_message_trailing" -> "SERVER_PRIVATE_MESSAGE has unexpected trailing bytes"
-            "pm_relay_ok_size" -> "WORLD_PM_RELAY_OK must have no body after the opcode"
-            "pm_relay_fail_size" -> "WORLD_PM_RELAY_FAIL must have exactly one reason byte after the opcode"
-            "server_reboot_short" -> "SERVER_REBOOT body is shorter than the minimum fixed fields + message length"
-            "server_reboot_long" -> "SERVER_REBOOT body exceeds the maximum allowed size"
-            "server_reboot_msg_len" -> "SERVER_REBOOT message UTF-8 block length is invalid"
-            "server_reboot_msg_mismatch" -> "SERVER_REBOOT declared message length does not match frame size"
-            "server_broadcast_size" -> "SERVER_BROADCAST body length is outside the allowed range"
-            "server_broadcast_truncated" -> "SERVER_BROADCAST is truncated before a length-prefixed string"
-            "server_broadcast_chunk_len" -> "SERVER_BROADCAST string length exceeds maximum UTF-8 size"
-            "server_broadcast_chunk_data" -> "SERVER_BROADCAST string data is truncated"
-            "server_broadcast_trailing" -> "SERVER_BROADCAST has unexpected trailing bytes"
-            "friend_fanout_ok_size" -> "WORLD_FRIEND_FANOUT_ACK must have no body after the opcode"
-            "friend_fanout_fail_size" -> "WORLD_FRIEND_FANOUT_FAIL must have exactly one reason byte after the opcode"
-            "server_friend_presence_size" -> "SERVER_FRIEND_PRESENCE body length is outside the allowed range"
-            "server_friend_presence_truncated" -> "SERVER_FRIEND_PRESENCE is truncated before a length-prefixed string"
-            "server_friend_presence_chunk_len" -> "SERVER_FRIEND_PRESENCE string length exceeds maximum UTF-8 size"
-            "server_friend_presence_chunk_data" -> "SERVER_FRIEND_PRESENCE string data is truncated"
-            "server_friend_presence_trailing" -> "SERVER_FRIEND_PRESENCE has unexpected trailing bytes"
-            "server_display_name_sync_size" -> "SERVER_DISPLAY_NAME_SYNC body length is outside the allowed range"
-            "server_display_name_sync_truncated" -> "SERVER_DISPLAY_NAME_SYNC is truncated before a length-prefixed string"
-            "server_display_name_sync_chunk_len" -> "SERVER_DISPLAY_NAME_SYNC string length exceeds maximum UTF-8 size"
-            "server_display_name_sync_chunk_data" -> "SERVER_DISPLAY_NAME_SYNC string data is truncated"
-            "server_display_name_sync_trailing" -> "SERVER_DISPLAY_NAME_SYNC has unexpected trailing bytes"
-            "unexpected_opcode" -> "opcode is not defined for this direction in the protocol"
-            "too_short" -> "frame body is shorter than the minimum for this opcode"
-            "too_long" -> "frame body is longer than the maximum for this opcode"
-            "push_subscribe_size" -> "PUSH_SUBSCRIBE must have no body after the opcode"
-            "bad_token_frame" -> "frame must carry token as u16 length + exactly $TOKEN_BYTES bytes"
-            "unknown_opcode" -> "opcode is not valid for game-to-Central frames"
-            else -> "validation code: $reason"
-        }
-
-    public fun validateGameToCentralBody(
-        opcode: Int,
-        bodyLen: Int,
-    ): String? =
-        when (opcode) {
-            OP_WORLD_HELLO -> {
-                val min = 4 + 2 + 4 + 2 + 0
-                val max = 4 + 2 + 4 + 2 + WORLD_KEY_MAX_BYTES
-                if (bodyLen < min) "too_short" else if (bodyLen > max) "too_long" else null
-            }
-            OP_LOGIN -> {
-                val min = 2 + 0 + 2 + 0
-                val max = 2 + LOGIN_USERNAME_MAX_UTF8 + 2 + LOGIN_PASSWORD_MAX_UTF8 + 4
-                if (bodyLen < min) "too_short" else if (bodyLen > max) "too_long" else null
-            }
-            OP_PUSH_SUBSCRIBE ->
-                if (bodyLen != 0) {
-                    "push_subscribe_size"
-                } else {
-                    null
-                }
-            OP_HEARTBEAT, OP_LOGOUT -> {
-                if (bodyLen != TOKEN_BODY_BYTES) "bad_token_frame" else null
-            }
-            OP_WORLD_PM_RELAY -> {
-                if (bodyLen < PM_RELAY_MIN_BODY) {
-                    "too_short"
-                } else if (bodyLen > PM_RELAY_MAX_BODY) {
-                    "too_long"
-                } else {
-                    null
-                }
-            }
-
-            OP_WORLD_FRIEND_ADD,
-            OP_WORLD_FRIEND_DEL,
-            OP_WORLD_IGNORE_ADD,
-            OP_WORLD_IGNORE_DEL -> {
-                if (bodyLen < SOCIAL_NAME_ACTION_MIN_BODY) {
-                    "too_short"
-                } else if (bodyLen > SOCIAL_NAME_ACTION_MAX_BODY) {
-                    "too_long"
-                } else {
-                    null
-                }
-            }
-            OP_WORLD_CHAT_FILTERS -> {
-                if (bodyLen != CHAT_FILTERS_BODY_BYTES) {
-                    "too_long"
-                } else {
-                    null
-                }
-            }
-            OP_WORLD_SOCIAL_SYNC -> {
-                if (bodyLen != TOKEN_BODY_BYTES + 4) {
-                    "bad_token_frame"
-                } else {
-                    null
-                }
-            }
-
-            else -> "unknown_opcode"
-        }
-
-    /** Central → game full frame (includes opcode as [frame][0]). */
-    public fun validateCentralToGameFrame(frame: ByteArray): String? {
-        if (frame.isEmpty()) {
-            return "empty"
-        }
-        val op = frame[0].toInt() and 0xFF
-        val bodyLen = frame.size - 1
-        return when (op) {
-            OP_HELLO_ACK ->
-                if (bodyLen != 0) {
-                    "hello_ack_size"
-                } else {
-                    null
-                }
-            OP_HELLO_REJECT ->
-                if (bodyLen != 1) {
-                    "hello_reject_size"
-                } else {
-                    null
-                }
-            OP_LOGIN_FAIL -> validateLoginFailFrame(frame)
-            OP_LOGIN_OK ->
-                if (bodyLen < LOGIN_OK_MIN_BODY || bodyLen > LOGIN_OK_MAX_BODY) {
-                    "login_ok_size"
-                } else {
-                    null
-                }
-            OP_LOGOUT_ACK ->
-                if (bodyLen != 0) {
-                    "logout_ack_size"
-                } else {
-                    null
-                }
-            OP_PUSH_SUBSCRIBE_ACK ->
-                if (bodyLen != 0) {
-                    "push_subscribe_ack_size"
-                } else {
-                    null
-                }
-            OP_SERVER_REVOKE_LOGIN ->
-                if (bodyLen != 8 + 4) {
-                    "server_revoke_login_size"
-                } else {
-                    null
-                }
-            OP_SERVER_MUTE_UPDATE ->
-                if (bodyLen != 8 + 4 + 8) {
-                    "server_mute_update_size"
-                } else {
-                    null
-                }
-            OP_SERVER_KICK ->
-                if (bodyLen != 8 + 4) {
-                    "server_kick_size"
-                } else {
-                    null
-                }
-            OP_WORLD_SOCIAL_OK ->
-                if (bodyLen != 0) {
-                    "pm_relay_ok_size"
-                } else {
-                    null
-                }
-
-            OP_WORLD_SOCIAL_FAIL ->
-                if (bodyLen != 1) {
-                    "pm_relay_fail_size"
-                } else {
-                    null
-                }
-            OP_WORLD_SOCIAL_SYNC_OK -> validateSocialSyncOkFrame(frame)
-
-            OP_WORLD_SOCIAL_SYNC_FAIL ->
-                if (bodyLen != 1) {
-                    "pm_relay_fail_size"
-                } else {
-                    null
-                }
-
-            OP_HEARTBEAT_ACK ->
-                if (bodyLen != 0) {
-                    "heartbeat_ack_size"
-                } else {
-                    null
-                }
-            OP_SERVER_FRIEND_PRESENCE -> validateServerFriendPresenceFrame(frame)
-            OP_SERVER_PRIVATE_MESSAGE -> validateServerPrivateMessageFrame(frame)
-            OP_SERVER_DISPLAY_NAME_SYNC -> validateServerDisplayNameSyncFrame(frame)
-            OP_SERVER_REBOOT -> validateServerRebootFrame(frame)
-            OP_SERVER_BROADCAST -> validateServerBroadcastFrame(frame)
-            else -> "unexpected_opcode"
-        }
-    }
-
-    private fun validateServerPrivateMessageFrame(frame: ByteArray): String? {
-        val bodyLen = frame.size - 1
-
-        if (bodyLen !in SERVER_PRIVATE_MESSAGE_MIN_BODY..SERVER_PRIVATE_MESSAGE_MAX_BODY) {
-            return "server_private_message_size"
-        }
-
-        val buf = ByteBuffer.wrap(frame, 1, bodyLen)
-
-        if (buf.remaining() < 4 + 4 + 4 + 1) {
-            return "server_private_message_truncated"
-        }
-
-        buf.int // senderWorldId
-        buf.int // fromCharacterId
-        buf.int // toCharacterId
-        buf.get() // senderCrown
-
-        val displayLen =
-            readCheckedUtf8Length(buf, PM_RELAY_SENDER_DISPLAY_MAX_UTF8)
-                ?: return "server_private_message_truncated"
-
-        if (displayLen == -1) {
-            return "server_private_message_chunk_len"
-        }
-
-        if (buf.remaining() < displayLen) {
-            return "server_private_message_chunk_data"
-        }
-
-        buf.position(buf.position() + displayLen)
-
-        val messageLen =
-            readCheckedUtf8Length(buf, PM_RELAY_MESSAGE_MAX_UTF8)
-                ?: return "server_private_message_truncated"
-
-        if (messageLen == -1) {
-            return "server_private_message_chunk_len"
-        }
-
-        if (buf.remaining() < messageLen) {
-            return "server_private_message_chunk_data"
-        }
-
-        buf.position(buf.position() + messageLen)
-
-        return if (buf.remaining() != 0) {
-            "server_private_message_trailing"
-        } else {
-            null
-        }
-    }
-
-    private fun validateSocialSyncOkFrame(frame: ByteArray): String? {
-        val bodyLen = frame.size - 1
-        if (bodyLen < 3 + 2 + 2) {
-            return "too_short"
-        }
-
-        val buf = ByteBuffer.wrap(frame, 1, bodyLen)
-
-        if (buf.remaining() < 3) {
-            return "too_short"
-        }
-
-        buf.get() // public
-        buf.get() // private
-        buf.get() // trade
-
-        if (buf.remaining() < 2) {
-            return "too_short"
-        }
-
-        val friendCount = buf.short.toInt() and 0xFFFF
-        repeat(friendCount) {
-            val nameLen = readCheckedUtf8Length(buf, SOCIAL_NAME_MAX_UTF8)
-                ?: return "too_short"
-            if (nameLen == -1 || buf.remaining() < nameLen) {
-                return "too_long"
-            }
-            buf.position(buf.position() + nameLen)
-
-            val previousLen = readCheckedUtf8Length(buf, SOCIAL_NAME_MAX_UTF8)
-                ?: return "too_short"
-            if (previousLen == -1 || buf.remaining() < previousLen) {
-                return "too_long"
-            }
-            buf.position(buf.position() + previousLen)
-
-            if (buf.remaining() < 4) {
-                return "too_short"
-            }
-            buf.int
-        }
-
-        if (buf.remaining() < 2) {
-            return "too_short"
-        }
-
-        val ignoreCount = buf.short.toInt() and 0xFFFF
-        repeat(ignoreCount) {
-            val nameLen = readCheckedUtf8Length(buf, SOCIAL_NAME_MAX_UTF8)
-                ?: return "too_short"
-            if (nameLen == -1 || buf.remaining() < nameLen) {
-                return "too_long"
-            }
-            buf.position(buf.position() + nameLen)
-
-            val previousLen = readCheckedUtf8Length(buf, SOCIAL_NAME_MAX_UTF8)
-                ?: return "too_short"
-            if (previousLen == -1 || buf.remaining() < previousLen) {
-                return "too_long"
-            }
-            buf.position(buf.position() + previousLen)
-        }
-
-        return if (buf.remaining() == 0) null else "too_long"
-    }
-
-    private fun validateServerFriendPresenceFrame(frame: ByteArray): String? {
-        val bodyLen = frame.size - 1
-
-        if (bodyLen !in SERVER_FRIEND_PRESENCE_MIN_BODY..SERVER_FRIEND_PRESENCE_MAX_BODY) {
-            return "server_friend_presence_size"
-        }
-
-        val buf = ByteBuffer.wrap(frame, 1, bodyLen)
-
-        if (buf.remaining() < 4 + 4 + 4) {
-            return "server_friend_presence_truncated"
-        }
-
-        buf.int // ownerCharacterId
-        buf.int // friendCharacterId
-        buf.int // friendWorldId
-
-        if (!skipSocialUtf8(buf)) {
-            return "server_friend_presence_truncated"
-        }
-
-        if (!skipSocialUtf8(buf)) {
-            return "server_friend_presence_truncated"
-        }
-
-        return if (buf.remaining() == 0) null else "server_friend_presence_trailing"
-    }
-
-    private fun validateLoginFailFrame(frame: ByteArray): String? {
-        val bodyLen = frame.size - 1
-        if (bodyLen < 4) {
-            return "login_fail_short"
-        }
-        if (bodyLen > LOGIN_FAIL_MAX_BODY) {
-            return "login_fail_long"
-        }
-        if (bodyLen == 4) {
-            return null
-        }
-        val buf = ByteBuffer.wrap(frame, 5, bodyLen - 4)
-        repeat(3) {
-            if (buf.remaining() < 2) {
-                return "login_fail_script"
-            }
-            val chunk = buf.short.toInt() and 0xFFFF
-            if (chunk > LOGIN_FAIL_SCRIPT_LINE_MAX_UTF8_BYTES) {
-                return "login_fail_script_line"
-            }
-            if (buf.remaining() < chunk) {
-                return "login_fail_script"
-            }
-            buf.position(buf.position() + chunk)
-        }
-        return if (buf.remaining() != 0) "login_fail_trailing" else null
-    }
-
-    private fun validateServerRebootFrame(frame: ByteArray): String? {
-        val bodyLen = frame.size - 1
-        if (bodyLen < SERVER_REBOOT_MIN_BODY) {
-            return "server_reboot_short"
-        }
-        if (bodyLen > SERVER_REBOOT_MIN_BODY + WORLD_OPS_UTF8_MAX) {
-            return "server_reboot_long"
-        }
-        val buf = ByteBuffer.wrap(frame, 1, bodyLen)
-        buf.get()
-        buf.int
-        buf.long
-        val msgLen = buf.short.toInt() and 0xFFFF
-        if (msgLen > WORLD_OPS_UTF8_MAX) {
-            return "server_reboot_msg_len"
-        }
-        if (15 + msgLen != bodyLen) {
-            return "server_reboot_msg_mismatch"
-        }
-        return null
-    }
-
-    private fun validateServerBroadcastFrame(frame: ByteArray): String? {
-        val bodyLen = frame.size - 1
-        val min = 4 + 2 + 0 + 2 + 0 + 2 + 0
-        val max = 4 + (2 + WORLD_OPS_UTF8_MAX) * 3
-        if (bodyLen < min || bodyLen > max) {
-            return "server_broadcast_size"
-        }
-        val buf = ByteBuffer.wrap(frame, 1, bodyLen)
-        buf.int
-        repeat(3) {
-            if (buf.remaining() < 2) {
-                return "server_broadcast_truncated"
-            }
-            val chunk = buf.short.toInt() and 0xFFFF
-            if (chunk > WORLD_OPS_UTF8_MAX) {
-                return "server_broadcast_chunk_len"
-            }
-            if (buf.remaining() < chunk) {
-                return "server_broadcast_chunk_data"
-            }
-            buf.position(buf.position() + chunk)
-        }
-        return if (buf.remaining() != 0) "server_broadcast_trailing" else null
-    }
-
-    private fun validateServerDisplayNameSyncFrame(frame: ByteArray): String? {
-        val bodyLen = frame.size - 1
-        if (bodyLen !in SERVER_DISPLAY_NAME_SYNC_MIN_BODY..SERVER_DISPLAY_NAME_SYNC_MAX_BODY) {
-            return "server_display_name_sync_size"
-        }
-        val buf = ByteBuffer.wrap(frame, 1, bodyLen)
-        buf.long
-        buf.int
-        repeat(2) {
-            if (buf.remaining() < 2) {
-                return "server_display_name_sync_truncated"
-            }
-            val chunk = buf.short.toInt() and 0xFFFF
-            if (chunk > PM_RELAY_SENDER_DISPLAY_MAX_UTF8) {
-                return "server_display_name_sync_chunk_len"
-            }
-            if (buf.remaining() < chunk) {
-                return "server_display_name_sync_chunk_data"
-            }
-            buf.position(buf.position() + chunk)
-        }
-        return if (buf.remaining() != 0) "server_display_name_sync_trailing" else null
-    }
-
-    public data class ServerRevokeLoginPayload(
-        val accountId: Long,
-        val characterId: Int,
+    public const val WORLD_KEY_MAX_BYTES: Int = PacketLimits.WORLD_KEY_MAX_BYTES
+    public const val LOGIN_FAIL_SCRIPT_LINE_MAX_UTF8_BYTES: Int = WorldOpcodes.LOGIN_FAIL_SCRIPT_LINE_MAX_UTF8_BYTES
+
+    public const val OP_WORLD_HELLO: Int = WorldOpcodes.OP_WORLD_HELLO
+    public const val OP_HELLO_ACK: Int = WorldOpcodes.OP_HELLO_ACK
+    public const val OP_HELLO_REJECT: Int = WorldOpcodes.OP_HELLO_REJECT
+    public const val OP_LOGIN: Int = WorldOpcodes.OP_LOGIN
+    public const val OP_LOGIN_OK: Int = WorldOpcodes.OP_LOGIN_OK
+    public const val OP_LOGIN_FAIL: Int = WorldOpcodes.OP_LOGIN_FAIL
+    public const val OP_PUSH_SUBSCRIBE: Int = WorldOpcodes.OP_PUSH_SUBSCRIBE
+    public const val OP_PUSH_SUBSCRIBE_ACK: Int = WorldOpcodes.OP_PUSH_SUBSCRIBE_ACK
+    public const val OP_HEARTBEAT: Int = WorldOpcodes.OP_HEARTBEAT
+    public const val OP_HEARTBEAT_ACK: Int = WorldOpcodes.OP_HEARTBEAT_ACK
+    public const val OP_LOGOUT: Int = WorldOpcodes.OP_LOGOUT
+    public const val OP_LOGOUT_ACK: Int = WorldOpcodes.OP_LOGOUT_ACK
+    public const val OP_SERVER_REVOKE_LOGIN: Int = WorldOpcodes.OP_SERVER_REVOKE_LOGIN
+    public const val OP_SERVER_MUTE_UPDATE: Int = WorldOpcodes.OP_SERVER_MUTE_UPDATE
+    public const val OP_SERVER_KICK: Int = WorldOpcodes.OP_SERVER_KICK
+    public const val OP_SERVER_REBOOT: Int = WorldOpcodes.OP_SERVER_REBOOT
+    public const val OP_SERVER_BROADCAST: Int = WorldOpcodes.OP_SERVER_BROADCAST
+    public const val OP_SERVER_DISPLAY_NAME_SYNC: Int = WorldOpcodes.OP_SERVER_DISPLAY_NAME_SYNC
+    public const val OP_SERVER_DISCORD_ID_SYNC: Int = WorldOpcodes.OP_SERVER_DISCORD_ID_SYNC
+    public const val OP_SERVER_PRIVATE_MESSAGE: Int = WorldOpcodes.OP_SERVER_PRIVATE_MESSAGE
+    public const val OP_SERVER_FRIEND_PRESENCE: Int = WorldOpcodes.OP_SERVER_FRIEND_PRESENCE
+    public const val OP_WORLD_SOCIAL_OK: Int = WorldOpcodes.OP_WORLD_SOCIAL_OK
+    public const val OP_WORLD_SOCIAL_FAIL: Int = WorldOpcodes.OP_WORLD_SOCIAL_FAIL
+    public const val OP_WORLD_SOCIAL_SYNC_OK: Int = WorldOpcodes.OP_WORLD_SOCIAL_SYNC_OK
+    public const val OP_WORLD_SOCIAL_SYNC_FAIL: Int = WorldOpcodes.OP_WORLD_SOCIAL_SYNC_FAIL
+
+    public const val OP_GAME_DISCORD_LINK_PENDING: Int = WorldOpcodes.OP_GAME_DISCORD_LINK_PENDING
+    public const val OP_GAME_DISCORD_LINK_PENDING_OK: Int = WorldOpcodes.OP_GAME_DISCORD_LINK_PENDING_OK
+    public const val OP_GAME_DISCORD_LINK_PENDING_FAIL: Int = WorldOpcodes.OP_GAME_DISCORD_LINK_PENDING_FAIL
+    public const val OP_GAME_DISCORD_LINK_INVALIDATE: Int = WorldOpcodes.OP_GAME_DISCORD_LINK_INVALIDATE
+    public const val OP_GAME_DISCORD_LINK_INVALIDATE_ACK: Int = WorldOpcodes.OP_GAME_DISCORD_LINK_INVALIDATE_ACK
+
+    public const val GAME_DISCORD_LINK_PENDING_FAIL_ALREADY_LINKED: Int =
+        WorldOpcodes.GAME_DISCORD_LINK_PENDING_FAIL_ALREADY_LINKED
+    public const val GAME_DISCORD_LINK_PENDING_FAIL_DISCORD_NOT_FOUND: Int =
+        WorldOpcodes.GAME_DISCORD_LINK_PENDING_FAIL_DISCORD_NOT_FOUND
+
+    public fun decodeServerDiscordIdSync(frame: ByteArray): CentralPushPackets.DiscordIdSync =
+        CentralPushPackets.decodeDiscordIdSync(frame)
+
+    public data class GameDiscordLinkPendingOkPayload(
+        val code: Int,
+        val dmSent: Boolean,
     )
 
-    public data class ServerKickPayload(
-        val accountId: Long,
-        val characterId: Int,
-    )
+    public fun decodeGameDiscordLinkPendingOk(frame: ByteArray): GameDiscordLinkPendingOkPayload {
+        val payload = dev.or2.central.worldlink.protocol.discord.GameDiscordLinkPendingOkPacket.decode(frame)
+        return GameDiscordLinkPendingOkPayload(code = payload.code, dmSent = payload.dmSent)
+    }
 
-    public data class ServerMuteUpdatePayload(
-        val accountId: Long,
-        val characterId: Int,
-        val mutedUntilEpochMillis: Long,
-    )
+    public fun describeValidationFailure(reason: String): String = PacketCatalog.describeFailure(reason)
 
-    public data class ServerRebootPayload(
-        val clear: Boolean,
-        val worldScope: Int,
-        val rebootAtMs: Long,
-        val message: String,
-    )
+    public fun validateGameToCentralBody(opcode: Int, bodyLen: Int): String? =
+        PacketCatalog.validateGameToCentralBody(opcode, bodyLen)
 
-    public data class ServerBroadcastPayload(
-        val worldScope: Int,
-        val message: String,
-        val url: String,
-        val icon: String,
-    )
+    public fun validateCentralToGameFrame(frame: ByteArray): String? =
+        PacketCatalog.validateCentralToGameFrame(frame)
 
-    public data class ServerDisplayNameSyncPayload(
-        val accountId: Long,
-        val characterId: Int,
-        val newDisplayName: String,
-        val priorDisplayName: String,
-    )
+    public fun decodeServerRevokeLogin(frame: ByteArray): ServerRevokeLoginPayload =
+        CentralPushPackets.decodeRevokeLogin(frame)
 
-    public data class ServerPrivateMessagePayload(
-        val senderWorldId: Int,
-        val fromCharacterId: Int,
-        val toCharacterId: Int,
-        val senderCrown: Int,
-        val senderDisplayName: String,
-        val message: String,
-    )
+    public fun decodeServerKick(frame: ByteArray): ServerKickPayload = CentralPushPackets.decodeKick(frame)
 
-    public data class CentralSocialSnapshot(
-        val publicChat: Int,
-        val privateChat: Int,
-        val tradeChat: Int,
-        val friends: List<CentralSocialFriend>,
-        val ignores: List<CentralSocialIgnore>,
-    )
+    public fun decodeServerMuteUpdate(frame: ByteArray): ServerMuteUpdatePayload =
+        CentralPushPackets.decodeMuteUpdate(frame)
+
+    public fun decodeServerReboot(frame: ByteArray): ServerRebootPayload = CentralPushPackets.decodeReboot(frame)
+
+    public fun decodeServerBroadcast(frame: ByteArray): ServerBroadcastPayload =
+        CentralPushPackets.decodeBroadcast(frame)
+
+    public fun decodeServerDisplayNameSync(frame: ByteArray): ServerDisplayNameSyncPayload =
+        CentralPushPackets.decodeDisplayNameSync(frame)
+
+    public fun decodeServerPrivateMessage(frame: ByteArray): ServerPrivateMessagePayload =
+        CentralPushPackets.decodePrivateMessage(frame)
+
+    public fun decodeServerFriendPresence(frame: ByteArray): ServerFriendPresencePayload =
+        CentralPushPackets.decodeFriendPresence(frame)
 
     public data class CentralSocialFriend(
         val displayName: String,
@@ -636,195 +118,11 @@ public object WorldLinkFrameSpecs {
         val previousDisplayName: String?,
     )
 
-    public data class ServerFriendPresencePayload(
-        val ownerCharacterId: Int,
-        val friendCharacterId: Int,
-        val friendWorldId: Int,
-        val friendDisplayName: String,
-        val friendPreviousDisplayName: String?,
+    public data class CentralSocialSnapshot(
+        val publicChat: Int,
+        val privateChat: Int,
+        val tradeChat: Int,
+        val friends: List<CentralSocialFriend>,
+        val ignores: List<CentralSocialIgnore>,
     )
-
-    public fun decodeServerRevokeLogin(frame: ByteArray): ServerRevokeLoginPayload {
-        val buf = ByteBuffer.wrap(frame, 1, frame.size - 1)
-        return ServerRevokeLoginPayload(buf.long, buf.int)
-    }
-
-    public fun decodeServerKick(frame: ByteArray): ServerKickPayload {
-        val buf = ByteBuffer.wrap(frame, 1, frame.size - 1)
-        return ServerKickPayload(buf.long, buf.int)
-    }
-
-    public fun decodeServerMuteUpdate(frame: ByteArray): ServerMuteUpdatePayload {
-        val buf = ByteBuffer.wrap(frame, 1, frame.size - 1)
-        return ServerMuteUpdatePayload(buf.long, buf.int, buf.long)
-    }
-
-    public fun decodeServerReboot(frame: ByteArray): ServerRebootPayload {
-        val buf = ByteBuffer.wrap(frame, 1, frame.size - 1)
-        val kind = buf.get().toInt() and 0xFF
-        val worldScope = buf.int
-        val rebootAtMs = buf.long
-        val message = readUtf16LengthPrefixed(buf)
-        return ServerRebootPayload(clear = kind == 1, worldScope, rebootAtMs, message)
-    }
-
-    public fun decodeServerBroadcast(frame: ByteArray): ServerBroadcastPayload {
-        val buf = ByteBuffer.wrap(frame, 1, frame.size - 1)
-        val worldScope = buf.int
-        val message = readUtf16LengthPrefixed(buf)
-        val url = readUtf16LengthPrefixed(buf)
-        val icon = readUtf16LengthPrefixed(buf)
-        return ServerBroadcastPayload(worldScope, message, url, icon)
-    }
-
-
-    public fun decodeServerDisplayNameSync(frame: ByteArray): ServerDisplayNameSyncPayload {
-        val buf = ByteBuffer.wrap(frame, 1, frame.size - 1)
-        val accountId = buf.long
-        val characterId = buf.int
-        val newName = readUtf16LengthPrefixed(buf)
-        val priorName = readUtf16LengthPrefixed(buf)
-        return ServerDisplayNameSyncPayload(
-            accountId = accountId,
-            characterId = characterId,
-            newDisplayName = newName,
-            priorDisplayName = priorName,
-        )
-    }
-
-    public fun decodeServerPrivateMessage(frame: ByteArray): ServerPrivateMessagePayload {
-        val buf = ByteBuffer.wrap(frame)
-        buf.get() // opcode
-
-        val senderWorldId = buf.int
-        val fromCharacterId = buf.int
-        val toCharacterId = buf.int
-        val senderCrown = buf.get().toInt() and 0xFF
-        val senderDisplayName = readSocialUtf8(buf)
-        val message = readSocialUtf8(buf)
-
-        return ServerPrivateMessagePayload(
-            senderWorldId = senderWorldId,
-            fromCharacterId = fromCharacterId,
-            toCharacterId = toCharacterId,
-            senderCrown = senderCrown,
-            senderDisplayName = senderDisplayName,
-            message = message,
-        )
-    }
-
-    public fun decodeSocialSnapshot(frame: ByteArray): CentralSocialSnapshot {
-        val buf = ByteBuffer.wrap(frame, 1, frame.size - 1)
-
-        val publicChat = buf.get().toInt() and 0xFF
-        val privateChat = buf.get().toInt() and 0xFF
-        val tradeChat = buf.get().toInt() and 0xFF
-
-        val friends = mutableListOf<CentralSocialFriend>()
-        val friendCount = buf.short.toInt() and 0xFFFF
-
-        repeat(friendCount) {
-            val name = readUtf16LengthPrefixed(buf)
-            val previous = readUtf16LengthPrefixed(buf).ifBlank { null }
-            val worldId = buf.int
-
-            friends +=
-                CentralSocialFriend(
-                    displayName = name,
-                    previousDisplayName = previous,
-                    worldId = worldId,
-                )
-        }
-
-        val ignores = mutableListOf<CentralSocialIgnore>()
-        val ignoreCount = buf.short.toInt() and 0xFFFF
-
-        repeat(ignoreCount) {
-            val name = readUtf16LengthPrefixed(buf)
-            val previous = readUtf16LengthPrefixed(buf).ifBlank { null }
-
-            ignores +=
-                CentralSocialIgnore(
-                    displayName = name,
-                    previousDisplayName = previous,
-                )
-        }
-
-        return CentralSocialSnapshot(
-            publicChat = publicChat,
-            privateChat = privateChat,
-            tradeChat = tradeChat,
-            friends = friends,
-            ignores = ignores,
-        )
-    }
-
-    public fun decodeServerFriendPresence(frame: ByteArray): ServerFriendPresencePayload {
-        val buf = ByteBuffer.wrap(frame, 1, frame.size - 1)
-
-        val ownerCharacterId = buf.int
-        val friendCharacterId = buf.int
-        val friendWorldId = buf.int
-        val displayName = readSocialUtf8(buf)
-        val previousDisplayName = readSocialUtf8(buf).ifBlank { null }
-
-        return ServerFriendPresencePayload(
-            ownerCharacterId = ownerCharacterId,
-            friendCharacterId = friendCharacterId,
-            friendWorldId = friendWorldId,
-            friendDisplayName = displayName,
-            friendPreviousDisplayName = previousDisplayName,
-        )
-    }
-
-    private fun readUtf16LengthPrefixed(buf: ByteBuffer): String {
-        val len = buf.short.toInt() and 0xFFFF
-        val bytes = ByteArray(len)
-        buf.get(bytes)
-        return String(bytes, StandardCharsets.UTF_8)
-    }
-
-    private fun readCheckedUtf8Length(
-        buf: ByteBuffer,
-        max: Int,
-    ): Int? {
-        if (buf.remaining() < 2) {
-            return null
-        }
-
-        val len = buf.short.toInt() and 0xFFFF
-        if (len > max) {
-            return -1
-        }
-
-        return len
-    }
-
-    private fun readSocialUtf8(buf: ByteBuffer): String {
-        val len = buf.short.toInt() and 0xFFFF
-        val bytes = ByteArray(len)
-        buf.get(bytes)
-        return String(bytes, StandardCharsets.UTF_8)
-    }
-
-    private fun skipSocialUtf8(buf: ByteBuffer): Boolean {
-        if (buf.remaining() < 2) {
-            return false
-        }
-
-        val len = buf.short.toInt() and 0xFFFF
-
-        if (len > SOCIAL_NAME_MAX_UTF8) {
-            return false
-        }
-
-        if (buf.remaining() < len) {
-            return false
-        }
-
-        buf.position(buf.position() + len)
-        return true
-    }
-
-
 }

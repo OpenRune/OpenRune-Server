@@ -19,20 +19,20 @@ constructor(
 ) : MessageHandler<SetChatFilterSettings> {
     override fun handle(player: Player, message: SetChatFilterSettings) {
         val uid = player.uid
-        val token = player.openRuneCentralSessionToken
         val characterId = player.characterId
 
-        if (token == null || characterId <= 0) {
+        if (characterId <= 0) {
             player.writeSocialMessage("Social settings are not available right now.")
             return
         }
 
         db.request(
             request = {
-                social.setPrivateChatFilter(
-                    sessionToken = token,
+                social.setChatFilters(
                     characterId = characterId,
-                    privateChatFilter = message.privateChatFilter,
+                    publicChat = message.publicChatFilter,
+                    privateChat = message.privateChatFilter,
+                    tradeChat = message.tradeChatFilter,
                 )
             },
             response = { result ->
@@ -41,7 +41,20 @@ constructor(
                 result.fold(
                     onOk = { socialResult ->
                         when (socialResult) {
-                            CentralSocialResult.Ok,
+                            CentralSocialResult.Ok -> {
+                                current.client.write(
+                                    net.rsprot.protocol.game.outgoing.misc.player.ChatFilterSettings(
+                                        message.publicChatFilter,
+                                        message.tradeChatFilter,
+                                    ),
+                                )
+                                current.client.write(
+                                    net.rsprot.protocol.game.outgoing.misc.player.ChatFilterSettingsPrivateChat(
+                                        message.privateChatFilter,
+                                    ),
+                                )
+                            }
+
                             CentralSocialResult.Ignored -> Unit
 
                             is CentralSocialResult.Failed -> {
@@ -50,7 +63,7 @@ constructor(
                         }
                     },
                     onErr = {
-                        current.writeSocialMessage("Unable to update private chat filter right now.")
+                        current.writeSocialMessage("Unable to update chat settings right now.")
                     },
                 )
             },

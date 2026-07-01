@@ -1,12 +1,21 @@
 package org.rsmod.api.net.central
 
 import com.github.michaelbull.logging.InlineLogger
+import dev.or2.central.auth.PasswordAuthConfig
+import dev.or2.central.auth.PasswordHasher
+import dev.or2.central.worldlink.protocol.WorldOpcodes
+import dev.or2.central.worldlink.protocol.packets.outgoing.impl.HelloAckPacket
+import dev.or2.central.worldlink.protocol.social.PmTraceLog
+import dev.or2.central.worldlink.protocol.social.SocialPackets
+import dev.or2.central.worldlink.protocol.social.SocialSyncSnapshot
 import jakarta.inject.Inject
 import java.net.InetSocketAddress
 import java.nio.ByteBuffer
 import java.nio.charset.StandardCharsets
+import java.util.concurrent.CompletableFuture
+import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ConcurrentLinkedQueue
-import net.rsprot.protocol.game.outgoing.social.MessagePrivate
+import java.util.concurrent.Executors
 import net.rsprot.protocol.loginprot.outgoing.LoginResponse
 import org.rsmod.api.player.output.ChatType
 import org.rsmod.api.player.output.MiscOutput
@@ -16,7 +25,6 @@ import org.rsmod.api.net.central.netty.WorldLinkNettyBlockingSession
 import org.rsmod.api.registry.player.PlayerRegistry
 import org.rsmod.api.server.config.OpenRuneCentralGameConfig
 import org.rsmod.api.server.config.ServerConfig
-import org.rsmod.api.social.writeFriendPresenceDelta
 import org.rsmod.game.GameUpdate
 import org.rsmod.game.GameUpdate.Companion.isUpdating
 
@@ -31,34 +39,85 @@ constructor(
     private val settings: CentralSettings? = CentralSettings.resolve(serverConfig)
 
     private val pendingCentralRevokes =
-        ConcurrentLinkedQueue<WorldLinkFrameSpecs.ServerRevokeLoginPayload>()
+        ConcurrentLinkedQueue<ServerRevokeLoginPayload>()
 
-    private val pendingCentralKicks = ConcurrentLinkedQueue<WorldLinkFrameSpecs.ServerKickPayload>()
+    private val pendingCentralKicks = ConcurrentLinkedQueue<ServerKickPayload>()
 
     private val pendingCentralMuteUpdates =
-        ConcurrentLinkedQueue<WorldLinkFrameSpecs.ServerMuteUpdatePayload>()
+        ConcurrentLinkedQueue<ServerMuteUpdatePayload>()
 
-    private val pendingCentralReboots = ConcurrentLinkedQueue<WorldLinkFrameSpecs.ServerRebootPayload>()
+    private val pendingCentralReboots = ConcurrentLinkedQueue<ServerRebootPayload>()
 
     private val pendingCentralBroadcasts =
-        ConcurrentLinkedQueue<WorldLinkFrameSpecs.ServerBroadcastPayload>()
+        ConcurrentLinkedQueue<ServerBroadcastPayload>()
 
     private val pendingCentralDisplayNameSyncs =
-        ConcurrentLinkedQueue<WorldLinkFrameSpecs.ServerDisplayNameSyncPayload>()
+        ConcurrentLinkedQueue<ServerDisplayNameSyncPayload>()
+
+    private val pendingCentralDiscordIdSyncs =
+        ConcurrentLinkedQueue<ServerDiscordIdSyncPayload>()
 
     private val pendingCentralPrivateMessages =
-        ConcurrentLinkedQueue<WorldLinkFrameSpecs.ServerPrivateMessagePayload>()
+        ConcurrentLinkedQueue<ServerPrivateMessagePayload>()
+
+    /** PMs received before the recipient is on the game thread player list — retried each tick. */
+    private val deferredPrivateMessagesByCharacter =
+        ConcurrentHashMap<Int, ConcurrentLinkedQueue<ServerPrivateMessagePayload>>()
 
     private val pendingCentralFriendPresence =
-        ConcurrentLinkedQueue<WorldLinkFrameSpecs.ServerFriendPresencePayload>()
+        ConcurrentLinkedQueue<ServerFriendPresencePayload>()
+
+    @Volatile
+    private var passwordAuthConfig: PasswordAuthConfig? = null
 
     @Volatile
     private var inboundWatchStop: Boolean = true
 
     private var inboundWatchThread: Thread? = null
 
+    private val authExecutor =
+        Executors.newSingleThreadExecutor { runnable ->
+            Thread(runnable, "openrune-central-auth").apply { isDaemon = true }
+        }
+
     public val isEnabled: Boolean
         get() = settings != null
+
+    /** Seeds password hashing before the first HELLO (embedded Central uses the same config as Central). */
+    public fun applyPasswordAuth(config: PasswordAuthConfig) {
+        passwordAuthConfig = config
+    }
+
+    public fun passwordHasher(): PasswordHasher = (passwordAuthConfig ?: PasswordAuthConfig.DEFAULT).toHasher()
+
+    /**
+     * Starts Central auth on a background thread so account DB loading can overlap wall-clock time.
+     * [awaitInflight] must be called exactly once on the returned handle.
+     */
+    public fun beginAuthenticate(
+        loginUsername: String,
+        password: CharArray,
+        loginCharacterId: Int? = null,
+    ): InflightCentralAuth? {
+        if (settings == null) {
+            return null
+        }
+        val passwordCopy = password.copyOf()
+        val future =
+            CompletableFuture.supplyAsync(
+                {
+                    try {
+                        authenticate(loginUsername, passwordCopy, loginCharacterId)
+                    } finally {
+                        passwordCopy.fill('\u0000')
+                    }
+                },
+                authExecutor,
+            )
+        return InflightCentralAuth(future)
+    }
+
+    public fun awaitInflight(inflight: InflightCentralAuth): CentralAuthResult = inflight.future.join()
 
     public fun authenticate(
         loginUsername: String,
@@ -66,13 +125,20 @@ constructor(
         loginCharacterId: Int? = null,
     ): CentralAuthResult {
         val cfg = settings ?: return CentralAuthResult.Skipped
+        val startedAt = System.nanoTime()
+        var attempts = 0
         repeat(MAX_AUTH_ATTEMPTS) { attempt ->
+            attempts = attempt + 1
             try {
-                return openCentralAuthSession(cfg, loginUsername, password, loginCharacterId)
+                val result = openCentralAuthSession(cfg, loginUsername, password, loginCharacterId)
+                logAuthTiming(loginUsername, elapsedMs(startedAt), attempts, result)
+                return result
             } catch (e: IllegalStateException) {
+                logAuthTiming(loginUsername, elapsedMs(startedAt), attempts, null, e)
                 return CentralAuthResult.Denied(LoginResponse.LoginServerNoReply)
             } catch (e: Exception) {
                 if (!isRetryableCentralNetworkFailure(e)) {
+                    logAuthTiming(loginUsername, elapsedMs(startedAt), attempts, null, e)
                     return CentralAuthResult.Denied(LoginResponse.LoginServerNoReply)
                 }
                 if (attempt + 1 >= MAX_AUTH_ATTEMPTS) {
@@ -83,62 +149,13 @@ constructor(
                     Thread.sleep(backoff)
                 } catch (_: InterruptedException) {
                     Thread.currentThread().interrupt()
+                    logAuthTiming(loginUsername, elapsedMs(startedAt), attempts, null, e)
                     return CentralAuthResult.Denied(LoginResponse.LoginServerOffline)
                 }
             }
         }
+        logAuthTiming(loginUsername, elapsedMs(startedAt), attempts, null)
         return CentralAuthResult.Denied(LoginResponse.LoginServerOffline)
-    }
-
-    public fun heartbeat(sessionToken: ByteArray): Boolean {
-        val cfg = settings ?: return false
-        val frame = WorldLinkPackets.heartbeat(sessionToken)
-
-        repeat(MAX_AUTH_ATTEMPTS) { attempt ->
-            try {
-                validateGameToCentralFrameOrThrow(frame)
-
-                val session =
-                    WorldLinkNettyBlockingClient.connect(
-                        InetSocketAddress(cfg.host, cfg.port),
-                        readIdleSeconds = SOCKET_TIMEOUT_SECONDS,
-                    )
-
-                try {
-                    sendHello(session, cfg.worldKey, serverConfig.world)
-                    session.send(frame)
-
-                    val response = session.recvInbound(SOCKET_TIMEOUT_MS.toLong())
-                    val invalid = WorldLinkFrameSpecs.validateCentralToGameFrame(response)
-                    if (invalid != null) {
-                        logger.debug {
-                            "Central heartbeat reply failed validation: " +
-                                WorldLinkFrameSpecs.describeValidationFailure(invalid)
-                        }
-                        return false
-                    }
-
-                    val op = response[0].toInt() and 0xFF
-                    return op == WorldLinkFrameSpecs.OP_HEARTBEAT_ACK
-                } finally {
-                    session.close()
-                }
-            } catch (e: Exception) {
-                if (!isRetryableCentralNetworkFailure(e) || attempt + 1 >= MAX_AUTH_ATTEMPTS) {
-                    logger.debug(e) { "Central heartbeat failed." }
-                    return false
-                }
-
-                try {
-                    Thread.sleep(RETRY_BASE_MS * (attempt + 1))
-                } catch (_: InterruptedException) {
-                    Thread.currentThread().interrupt()
-                    return false
-                }
-            }
-        }
-
-        return false
     }
 
     public fun startInboundWatch() {
@@ -161,6 +178,210 @@ constructor(
         inboundWatchStop = true
         inboundWatchThread?.interrupt()
         inboundWatchThread = null
+    }
+
+    public fun pollPrivateMessage(): ServerPrivateMessagePayload? = pendingCentralPrivateMessages.poll()
+
+    public fun pollFriendPresence(): ServerFriendPresencePayload? = pendingCentralFriendPresence.poll()
+
+    public fun addFriend(
+        characterId: Int,
+        targetName: String,
+    ): CentralSocialResult = runSocialAction(WorldLinkPackets.friendAdd(characterId, targetName))
+
+    public fun deleteFriend(
+        characterId: Int,
+        targetName: String,
+    ): CentralSocialResult = runSocialAction(WorldLinkPackets.friendDel(characterId, targetName))
+
+    public fun addIgnore(
+        characterId: Int,
+        targetName: String,
+    ): CentralSocialResult = runSocialAction(WorldLinkPackets.ignoreAdd(characterId, targetName))
+
+    public fun deleteIgnore(
+        characterId: Int,
+        targetName: String,
+    ): CentralSocialResult = runSocialAction(WorldLinkPackets.ignoreDel(characterId, targetName))
+
+    public fun sendPrivateMessage(
+        fromCharacterId: Int,
+        targetName: String,
+        senderDisplayName: String,
+        senderCrown: Int,
+        message: String,
+    ): CentralSocialResult {
+        pmTrace(
+            stage = PmTraceLog.STAGE_GAME_SEND,
+            fromCharacterId = fromCharacterId,
+            targetName = targetName,
+            messageLen = message.length,
+        )
+        val result =
+            runSocialAction(
+                WorldLinkPackets.pmRelay(
+                    SocialPackets.PmRelayPayload(
+                        fromCharacterId = fromCharacterId,
+                        senderCrown = senderCrown,
+                        targetName = targetName,
+                        senderDisplayName = senderDisplayName,
+                        message = message,
+                    ),
+                ),
+            )
+        tracePmSendResult(result, fromCharacterId, targetName, message.length)
+        return result
+    }
+
+    public fun setPrivateChatFilter(
+        characterId: Int,
+        privateChatFilter: Int,
+    ): CentralSocialResult =
+        runSocialAction(
+            WorldLinkPackets.privateChatFilter(characterId, privateChatFilter),
+        )
+
+    public fun setChatFilters(
+        characterId: Int,
+        publicChat: Int,
+        privateChat: Int,
+        tradeChat: Int,
+    ): CentralSocialResult =
+        runSocialAction(
+            WorldLinkPackets.chatFilters(characterId, publicChat, privateChat, tradeChat),
+        )
+
+    public fun socialSnapshot(
+        characterId: Int,
+    ): CentralSocialSnapshotResult {
+        if (!isEnabled || characterId <= 0) {
+            return CentralSocialSnapshotResult.Failed("Social is not available right now.")
+        }
+        return when (val result = requestSocialSync(characterId)) {
+            is SocialSyncResult.Ok -> CentralSocialSnapshotResult.Ok(result.snapshot.toClientSnapshot())
+            is SocialSyncResult.Fail ->
+                CentralSocialSnapshotResult.Failed(socialFailMessage(result.reason))
+            SocialSyncResult.Unavailable ->
+                CentralSocialSnapshotResult.Failed("Unable to load social list right now.")
+        }
+    }
+
+    public fun requestSocialSync(
+        characterId: Int,
+    ): SocialSyncResult {
+        val cfg = settings ?: return SocialSyncResult.Unavailable
+        if (characterId <= 0) {
+            return SocialSyncResult.Unavailable
+        }
+        repeat(MAX_AUTH_ATTEMPTS) { attempt ->
+            try {
+                return runCentralSocialRoundTrip(cfg) { session ->
+                    session.send(WorldLinkPackets.socialSync(characterId))
+                    parseSocialSyncResponse(session.recvInbound(SOCKET_TIMEOUT_MS.toLong()))
+                }
+            } catch (e: Exception) {
+                if (!isRetryableCentralNetworkFailure(e) || attempt + 1 >= MAX_AUTH_ATTEMPTS) {
+                    logger.warn(e) { "Central social sync failed for characterId=$characterId" }
+                    return SocialSyncResult.Unavailable
+                }
+                try {
+                    Thread.sleep(RETRY_BASE_MS * (attempt + 1))
+                } catch (_: InterruptedException) {
+                    Thread.currentThread().interrupt()
+                    return SocialSyncResult.Unavailable
+                }
+            }
+        }
+        return SocialSyncResult.Unavailable
+    }
+
+    public fun requestSocialAction(frame: ByteArray): SocialActionResult {
+        val cfg = settings ?: return SocialActionResult.Unavailable
+        return try {
+            runCentralSocialRoundTrip(cfg) { session ->
+                session.send(frame)
+                parseSocialActionResponse(session.recvInbound(SOCKET_TIMEOUT_MS.toLong()))
+            }
+        } catch (e: Exception) {
+            logger.warn(e) { "Central social action failed" }
+            SocialActionResult.Unavailable
+        }
+    }
+
+    public fun drainInboundSocialOnGameThread(playerRegistry: PlayerRegistry) {
+        drainDeferredPrivateMessages(playerRegistry)
+        while (true) {
+            val push = pollPrivateMessage() ?: break
+            deliverPrivateMessage(playerRegistry, push)
+        }
+        while (true) {
+            val push = pollFriendPresence() ?: break
+            val player = playerRegistry.findOnlineByCharacterId(push.ownerCharacterId) ?: continue
+            player.writeCentralFriendPresence(push, serverConfig)
+        }
+    }
+
+    private fun drainDeferredPrivateMessages(playerRegistry: PlayerRegistry) {
+        for ((characterId, queue) in deferredPrivateMessagesByCharacter) {
+            val player = playerRegistry.findOnlineByCharacterId(characterId) ?: continue
+            while (true) {
+                val push = queue.poll() ?: break
+                player.writeCentralPrivateMessage(push, serverConfig)
+            }
+            if (queue.isEmpty()) {
+                deferredPrivateMessagesByCharacter.remove(characterId, queue)
+            }
+        }
+    }
+
+    private fun deliverPrivateMessage(
+        playerRegistry: PlayerRegistry,
+        push: ServerPrivateMessagePayload,
+    ) {
+        val player = playerRegistry.findOnlineByCharacterId(push.toCharacterId)
+        if (player == null) {
+            pmTrace(
+                stage = PmTraceLog.STAGE_GAME_DEFERRED,
+                fromCharacterId = push.fromCharacterId,
+                toCharacterId = push.toCharacterId,
+                messageLen = push.message.length,
+            )
+            val queue =
+                deferredPrivateMessagesByCharacter.computeIfAbsent(push.toCharacterId) {
+                    ConcurrentLinkedQueue()
+                }
+            if (queue.size < MAX_DEFERRED_PRIVATE_MESSAGES_PER_CHARACTER) {
+                queue.add(push)
+            } else {
+                logger.warn {
+                    "Dropping private message to characterId=${push.toCharacterId}: deferred queue full"
+                }
+            }
+            return
+        }
+        player.writeCentralPrivateMessage(push, serverConfig)
+    }
+
+    private fun runSocialAction(frame: ByteArray): CentralSocialResult {
+        if (!isEnabled) {
+            return CentralSocialResult.Failed("Social is not available right now.")
+        }
+        return when (val result = requestSocialAction(frame)) {
+            SocialActionResult.Ok -> CentralSocialResult.Ok
+            is SocialActionResult.Fail -> CentralSocialResult.Failed(socialFailMessage(result.reason))
+            SocialActionResult.Unavailable ->
+                CentralSocialResult.Failed("Unable to contact friends service.")
+        }
+    }
+
+    public sealed class CentralSocialSnapshotResult {
+        public data class Ok(
+            val snapshot: WorldLinkFrameSpecs.CentralSocialSnapshot,
+        ) : CentralSocialSnapshotResult()
+
+        public data class Failed(
+            val message: String,
+        ) : CentralSocialSnapshotResult()
     }
 
     public fun drainInboundRevokesOnGameThread(
@@ -228,219 +449,37 @@ constructor(
         }
         while (true) {
             val d = pendingCentralDisplayNameSyncs.poll() ?: break
-            playerRegistry.applyCentralDisplayNameSync(
-                d.accountId,
-                d.characterId,
-                d.newDisplayName,
-                d.priorDisplayName
-            )
+            playerRegistry.applyCentralDisplayNameSync(d.accountId, d.characterId, d.newDisplayName, d.priorDisplayName)
         }
         while (true) {
-            val presence = pendingCentralFriendPresence.poll() ?: break
-
-            playerRegistry.forEachOnline { player ->
-                if (player.characterId != presence.ownerCharacterId) {
-                    return@forEachOnline
-                }
-
-                player.writeFriendPresenceDelta(
-                    name = presence.friendDisplayName,
-                    previousName = presence.friendPreviousDisplayName,
-                    worldId = presence.friendWorldId,
-                )
-            }
-        }
-
-        while (true) {
-            val pm = pendingCentralPrivateMessages.poll() ?: break
-            var delivered = false
-
-            playerRegistry.forEachOnline { player ->
-                if (player.characterId != pm.toCharacterId) {
-                    return@forEachOnline
-                }
-
-                player.client.write(
-                    MessagePrivate(
-                        sender = pm.senderDisplayName,
-                        worldId = pm.senderWorldId,
-                        worldMessageCounter = nextCentralPrivateMessageCounter(),
-                        chatCrownType = pm.senderCrown,
-                        message = pm.message,
-                    )
-                )
-
-                delivered = true
-            }
-
-            if (!delivered) {
-                logger.debug {
-                    "Central PM target was not online locally: toCharacterId=${pm.toCharacterId}"
-                }
-            }
+            val d = pendingCentralDiscordIdSyncs.poll() ?: break
+            playerRegistry.applyCentralDiscordSync(d.accountId, d.discordId)
         }
     }
 
-    public fun addFriend(
-        sessionToken: ByteArray,
-        characterId: Int,
-        targetName: String,
-    ): CentralSocialResult {
-        return sendSocialRequest(
-            frame = WorldLinkPackets.friendAdd(sessionToken, characterId, targetName),
-            fallbackMessage = "Unable to add player right now.",
-        )
+    public fun touchSession(sessionToken: ByteArray): Boolean {
+        val cfg = settings ?: return false
+        return try {
+            runCentralSocialRoundTrip(cfg) { session ->
+                session.send(WorldLinkPackets.heartbeat(sessionToken))
+                val response = session.recvInbound(SOCKET_TIMEOUT_MS.toLong())
+                response[0].toInt() and 0xFF == WorldLinkFrameSpecs.OP_HEARTBEAT_ACK
+            }
+        } catch (e: Exception) {
+            logger.debug(e) { "Central session heartbeat failed" }
+            false
+        }
     }
 
-    public fun deleteFriend(
-        sessionToken: ByteArray,
-        characterId: Int,
-        targetName: String,
-    ): CentralSocialResult {
-        return sendSocialRequest(
-            frame = WorldLinkPackets.friendDelete(sessionToken, characterId, targetName),
-            fallbackMessage = "Unable to delete friend right now.",
-        )
-    }
-
-    public fun addIgnore(
-        sessionToken: ByteArray,
-        characterId: Int,
-        targetName: String,
-    ): CentralSocialResult {
-        return sendSocialRequest(
-            frame = WorldLinkPackets.ignoreAdd(sessionToken, characterId, targetName),
-            fallbackMessage = "Unable to ignore player right now.",
-        )
-    }
-
-    public fun deleteIgnore(
-        sessionToken: ByteArray,
-        characterId: Int,
-        targetName: String,
-    ): CentralSocialResult {
-        return sendSocialRequest(
-            frame = WorldLinkPackets.ignoreDelete(sessionToken, characterId, targetName),
-            fallbackMessage = "Unable to delete ignore right now.",
-        )
-    }
-
-    public fun sendPrivateMessage(
-        sessionToken: ByteArray,
-        fromCharacterId: Int,
-        targetName: String,
-        senderDisplayName: String,
-        senderCrown: Int,
-        message: String,
-    ): CentralSocialResult {
-        return sendSocialRequest(
-            frame =
-                WorldLinkPackets.privateMessageRelay(
-                    sessionToken = sessionToken,
-                    fromCharacterId = fromCharacterId,
-                    targetName = targetName,
-                    senderDisplayName = senderDisplayName,
-                    senderCrown = senderCrown,
-                    message = message,
-                ),
-            fallbackMessage = "Unable to send private message right now.",
-        )
-    }
-
-    public fun setPrivateChatFilter(
-        sessionToken: ByteArray,
-        characterId: Int,
-        privateChatFilter: Int,
-    ): CentralSocialResult {
-        return sendSocialRequest(
-            frame =
-                WorldLinkPackets.privateChatFilter(
-                    sessionToken = sessionToken,
-                    characterId = characterId,
-                    privateChatFilter = privateChatFilter,
-                ),
-            fallbackMessage = "Unable to update private chat filter right now.",
-        )
-    }
-
-    public sealed class CentralSocialSnapshotResult {
-        public data class Ok(
-            val snapshot: WorldLinkFrameSpecs.CentralSocialSnapshot,
-        ) : CentralSocialSnapshotResult()
-
-        public data class Failed(
-            val message: String,
-        ) : CentralSocialSnapshotResult()
-    }
-
-    public fun socialSnapshot(
-        sessionToken: ByteArray,
-        characterId: Int,
-    ): CentralSocialSnapshotResult {
-        val cfg = settings ?: return CentralSocialSnapshotResult.Failed("Central is not enabled.")
-        val frame = WorldLinkPackets.socialSync(sessionToken, characterId)
-
-        repeat(MAX_AUTH_ATTEMPTS) { attempt ->
-            try {
-                validateGameToCentralFrameOrThrow(frame)
-
-                val session =
-                    WorldLinkNettyBlockingClient.connect(
-                        InetSocketAddress(cfg.host, cfg.port),
-                        readIdleSeconds = SOCKET_TIMEOUT_SECONDS,
-                    )
-
-                try {
-                    sendHello(session, cfg.worldKey, serverConfig.world)
-                    session.send(frame)
-
-                    val response = session.recvInbound(SOCKET_TIMEOUT_MS.toLong())
-                    val invalid = WorldLinkFrameSpecs.validateCentralToGameFrame(response)
-                    if (invalid != null) {
-                        logger.warn {
-                            "Central social sync reply failed validation: " +
-                                WorldLinkFrameSpecs.describeValidationFailure(invalid)
-                        }
-                        return CentralSocialSnapshotResult.Failed("Unable to load social list right now.")
-                    }
-
-                    return when (val op = response[0].toInt() and 0xFF) {
-                        WorldLinkFrameSpecs.OP_WORLD_SOCIAL_SYNC_OK ->
-                            CentralSocialSnapshotResult.Ok(
-                                WorldLinkFrameSpecs.decodeSocialSnapshot(response)
-                            )
-
-                        WorldLinkFrameSpecs.OP_WORLD_SOCIAL_SYNC_FAIL -> {
-                            val reason = if (response.size > 1) response[1].toInt() and 0xFF else 0
-                            CentralSocialSnapshotResult.Failed(socialFailureMessage(reason))
-                        }
-
-                        else -> {
-                            logger.warn {
-                                "Unexpected Central social sync reply opcode 0x${op.toString(16)}"
-                            }
-                            CentralSocialSnapshotResult.Failed("Unable to load social list right now.")
-                        }
-                    }
-                } finally {
-                    session.close()
-                }
-            } catch (e: Exception) {
-                if (!isRetryableCentralNetworkFailure(e) || attempt + 1 >= MAX_AUTH_ATTEMPTS) {
-                    logger.warn(e) { "Central social sync request failed." }
-                    return CentralSocialSnapshotResult.Failed("Unable to load social list right now.")
-                }
-
-                try {
-                    Thread.sleep(RETRY_BASE_MS * (attempt + 1))
-                } catch (_: InterruptedException) {
-                    Thread.currentThread().interrupt()
-                    return CentralSocialSnapshotResult.Failed("Unable to load social list right now.")
-                }
+    public fun heartbeatOnlineSessions(sessionTokens: Collection<ByteArray>) {
+        if (!isEnabled || sessionTokens.isEmpty()) {
+            return
+        }
+        authExecutor.execute {
+            for (token in sessionTokens) {
+                touchSession(token)
             }
         }
-
-        return CentralSocialSnapshotResult.Failed("Unable to load social list right now.")
     }
 
     public fun notifyLogout(sessionToken: ByteArray) {
@@ -473,91 +512,10 @@ constructor(
         }
     }
 
-    private fun sendSocialRequest(
-        frame: ByteArray,
-        fallbackMessage: String,
-    ): CentralSocialResult {
-        val cfg = settings ?: return CentralSocialResult.Failed("Central is not enabled.")
-
-        repeat(MAX_AUTH_ATTEMPTS) { attempt ->
-            try {
-                validateGameToCentralFrameOrThrow(frame)
-
-                val session =
-                    WorldLinkNettyBlockingClient.connect(
-                        InetSocketAddress(cfg.host, cfg.port),
-                        readIdleSeconds = SOCKET_TIMEOUT_SECONDS,
-                    )
-
-                try {
-                    sendHello(session, cfg.worldKey, serverConfig.world)
-                    session.send(frame)
-
-                    val response = session.recvInbound(SOCKET_TIMEOUT_MS.toLong())
-                    val invalid = WorldLinkFrameSpecs.validateCentralToGameFrame(response)
-                    if (invalid != null) {
-                        logger.warn {
-                            "Central social reply failed validation: " +
-                                WorldLinkFrameSpecs.describeValidationFailure(invalid)
-                        }
-                        return CentralSocialResult.Failed(fallbackMessage)
-                    }
-
-                    return when (val op = response[0].toInt() and 0xFF) {
-                        WorldLinkFrameSpecs.OP_WORLD_SOCIAL_OK -> CentralSocialResult.Ok
-
-                        WorldLinkFrameSpecs.OP_WORLD_SOCIAL_FAIL -> {
-                            val reason = if (response.size > 1) response[1].toInt() and 0xFF else 0
-                            CentralSocialResult.Failed(socialFailureMessage(reason))
-                        }
-
-                        else -> {
-                            logger.warn {
-                                "Unexpected Central social reply opcode 0x${op.toString(16)}"
-                            }
-                            CentralSocialResult.Failed(fallbackMessage)
-                        }
-                    }
-                } finally {
-                    session.close()
-                }
-            } catch (e: Exception) {
-                if (!isRetryableCentralNetworkFailure(e) || attempt + 1 >= MAX_AUTH_ATTEMPTS) {
-                    logger.warn(e) { "Central social request failed." }
-                    return CentralSocialResult.Failed(fallbackMessage)
-                }
-
-                try {
-                    Thread.sleep(RETRY_BASE_MS * (attempt + 1))
-                } catch (_: InterruptedException) {
-                    Thread.currentThread().interrupt()
-                    return CentralSocialResult.Failed(fallbackMessage)
-                }
-            }
-        }
-
-        return CentralSocialResult.Failed(fallbackMessage)
-    }
-
-    private fun socialFailureMessage(reason: Int): String =
-        when (reason) {
-            1 -> "Unable to add friend - unknown player."
-            2 -> "You cannot add yourself to your own friends list."
-            3 -> "That player is already on your friend list."
-            4 -> "That player is already on your ignore list."
-            5 -> "That player is not accepting private messages."
-            6 -> "That player is currently offline."
-            7 -> "Your social list is full."
-            8 -> "You are not allowed to do that right now."
-            else -> "Unable to complete social request right now."
-        }
-
-    private fun openCentralAuthSession(
+    private fun <T> runCentralSocialRoundTrip(
         cfg: CentralSettings,
-        loginUsername: String,
-        password: CharArray,
-        loginCharacterId: Int?,
-    ): CentralAuthResult {
+        block: (WorldLinkNettyBlockingSession) -> T,
+    ): T {
         val session =
             WorldLinkNettyBlockingClient.connect(
                 InetSocketAddress(cfg.host, cfg.port),
@@ -565,7 +523,95 @@ constructor(
             )
         return try {
             sendHello(session, cfg.worldKey, serverConfig.world)
-            sendLogin(session, loginUsername, password, loginCharacterId)
+            block(session)
+        } finally {
+            session.close()
+        }
+    }
+
+    private fun decodeSocialSyncWire(response: ByteArray): SocialSyncSnapshot =
+        dev.or2.central.worldlink.protocol.readInboundFrame(response).use { reader ->
+            SocialPackets.decodeSocialSyncOk(reader)
+        }
+
+    private fun parseSocialSyncResponse(response: ByteArray): SocialSyncResult {
+        val invalid = WorldLinkFrameSpecs.validateCentralToGameFrame(response)
+        if (invalid != null) {
+            logger.warn {
+                "Central SOCIAL_SYNC reply failed validation: " +
+                    WorldLinkFrameSpecs.describeValidationFailure(invalid)
+            }
+            return SocialSyncResult.Unavailable
+        }
+        return when (val op = response[0].toInt() and 0xFF) {
+            WorldLinkFrameSpecs.OP_WORLD_SOCIAL_SYNC_OK ->
+                SocialSyncResult.Ok(decodeSocialSyncWire(response))
+            WorldLinkFrameSpecs.OP_WORLD_SOCIAL_SYNC_FAIL -> {
+                val reason = if (response.size > 1) response[1].toInt() and 0xFF else WorldOpcodes.SOCIAL_FAIL_NOT_ALLOWED
+                SocialSyncResult.Fail(reason)
+            }
+            WorldLinkFrameSpecs.OP_WORLD_SOCIAL_FAIL -> {
+                val reason = if (response.size > 1) response[1].toInt() and 0xFF else WorldOpcodes.SOCIAL_FAIL_NOT_ALLOWED
+                SocialSyncResult.Fail(reason)
+            }
+            else -> {
+                unexpectedCentralOp(
+                    op,
+                    listOf(
+                        WorldLinkFrameSpecs.OP_WORLD_SOCIAL_SYNC_OK,
+                        WorldLinkFrameSpecs.OP_WORLD_SOCIAL_SYNC_FAIL,
+                    ),
+                )
+            }
+        }
+    }
+
+    private fun parseSocialActionResponse(response: ByteArray): SocialActionResult {
+        val invalid = WorldLinkFrameSpecs.validateCentralToGameFrame(response)
+        if (invalid != null) {
+            logger.warn {
+                "Central social action reply failed validation: " +
+                    WorldLinkFrameSpecs.describeValidationFailure(invalid)
+            }
+            return SocialActionResult.Unavailable
+        }
+        return when (val op = response[0].toInt() and 0xFF) {
+            WorldLinkFrameSpecs.OP_WORLD_SOCIAL_OK -> SocialActionResult.Ok
+            WorldLinkFrameSpecs.OP_WORLD_SOCIAL_FAIL -> {
+                val reason = if (response.size > 1) response[1].toInt() and 0xFF else WorldOpcodes.SOCIAL_FAIL_NOT_ALLOWED
+                SocialActionResult.Fail(reason)
+            }
+            else -> {
+                unexpectedCentralOp(
+                    op,
+                    listOf(WorldLinkFrameSpecs.OP_WORLD_SOCIAL_OK, WorldLinkFrameSpecs.OP_WORLD_SOCIAL_FAIL),
+                )
+            }
+        }
+    }
+
+    private fun openCentralAuthSession(
+        cfg: CentralSettings,
+        loginUsername: String,
+        password: CharArray,
+        loginCharacterId: Int?,
+    ): CentralAuthResult {
+        val connectStart = System.nanoTime()
+        val session =
+            WorldLinkNettyBlockingClient.connect(
+                InetSocketAddress(cfg.host, cfg.port),
+                readIdleSeconds = SOCKET_TIMEOUT_SECONDS,
+            )
+        val connectMs = elapsedMs(connectStart)
+        return try {
+            val helloStart = System.nanoTime()
+            sendHello(session, cfg.worldKey, serverConfig.world)
+            val helloMs = elapsedMs(helloStart)
+            val loginStart = System.nanoTime()
+            val result = sendLogin(session, loginUsername, password, loginCharacterId)
+            val loginMs = elapsedMs(loginStart)
+            logWorldLinkRoundTrip(loginUsername, connectMs, helloMs, loginMs)
+            result
         } finally {
             session.close()
         }
@@ -579,7 +625,10 @@ constructor(
         session.send(WorldLinkPackets.worldHello(worldId, worldKey))
         val response = session.recvInbound(SOCKET_TIMEOUT_MS.toLong())
         when (val op = response[0].toInt() and 0xFF) {
-            WorldLinkFrameSpecs.OP_HELLO_ACK -> return
+            WorldLinkFrameSpecs.OP_HELLO_ACK -> {
+                passwordAuthConfig = HelloAckPacket.decodeAuthConfig(response)
+                return
+            }
             WorldLinkFrameSpecs.OP_HELLO_REJECT -> {
                 val reason = if (response.size > 1) response[1].toInt() and 0xFF else -1
                 error(helloRejectMessage(reason, worldId))
@@ -756,8 +805,6 @@ constructor(
             else -> LoginResponse.InvalidUsernameOrPassword
         }
 
-    // Long-lived Central push subscription. Short-lived request
-    // sessions must not be used for PM/presence delivery.
     private fun runInboundWatchLoop(cfg: CentralSettings) {
         while (!inboundWatchStop && !Thread.currentThread().isInterrupted) {
             var session: WorldLinkNettyBlockingSession? = null
@@ -789,11 +836,21 @@ constructor(
                         onReboot = { pendingCentralReboots.add(it) },
                         onBroadcast = { pendingCentralBroadcasts.add(it) },
                         onDisplayNameSync = { pendingCentralDisplayNameSyncs.add(it) },
-                        onPrivateMessage = { pendingCentralPrivateMessages.add(it) },
+                        onDiscordIdSync = { pendingCentralDiscordIdSyncs.add(it) },
+                        onPrivateMessage = { push ->
+                            pmTrace(
+                                stage = PmTraceLog.STAGE_GAME_INBOUND,
+                                fromCharacterId = push.fromCharacterId,
+                                toCharacterId = push.toCharacterId,
+                                messageLen = push.message.length,
+                            )
+                            pendingCentralPrivateMessages.add(push)
+                        },
                         onFriendPresence = { pendingCentralFriendPresence.add(it) },
                         onOther = { op ->
                             logger.debug {
-                                "Ignoring Central world-link opcode 0x${op.toString(16)} on push channel (not a server push)"
+                                "Ignoring Central world-link opcode 0x${op.toString(16)} on push channel " +
+                                    "(not a server push)"
                             }
                         },
                     )
@@ -873,18 +930,113 @@ constructor(
 
         private const val INBOUND_POLL_MS: Long = 1_000L
 
+        private const val MAX_DEFERRED_PRIVATE_MESSAGES_PER_CHARACTER: Int = 64
+
         private const val GAME_CYCLE_MS: Long = 600L
 
-        private var centralPrivateMessageCounter: Int = 1
+        private const val AUTH_TIMING_INFO_MS: Long = 100L
 
-        private fun nextCentralPrivateMessageCounter(): Int {
-            centralPrivateMessageCounter = (centralPrivateMessageCounter + 1) and 0xFFFFFF
+        private const val AUTH_TIMING_WARN_MS: Long = 500L
+    }
 
-            if (centralPrivateMessageCounter <= 0) {
-                centralPrivateMessageCounter = 1
+    private fun elapsedMs(startNanos: Long): Long =
+        java.util.concurrent.TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - startNanos)
+
+    private fun pmTrace(
+        stage: String,
+        fromCharacterId: Int,
+        toCharacterId: Int? = null,
+        targetName: String? = null,
+        messageLen: Int,
+        extra: String = "",
+    ) {
+        if (!serverConfig.socialPmTraceLogs) {
+            return
+        }
+        logger.info {
+            PmTraceLog.format(
+                stage = stage,
+                fromCharacterId = fromCharacterId,
+                toCharacterId = toCharacterId,
+                targetName = targetName,
+                messageLen = messageLen,
+                extra = extra,
+            )
+        }
+    }
+
+    private fun tracePmSendResult(
+        result: CentralSocialResult,
+        fromCharacterId: Int,
+        targetName: String,
+        messageLen: Int,
+    ) {
+        when (result) {
+            CentralSocialResult.Ok ->
+                pmTrace(
+                    stage = PmTraceLog.STAGE_GAME_CENTRAL_OK,
+                    fromCharacterId = fromCharacterId,
+                    targetName = targetName,
+                    messageLen = messageLen,
+                )
+            is CentralSocialResult.Failed ->
+                pmTrace(
+                    stage = PmTraceLog.STAGE_GAME_CENTRAL_FAIL,
+                    fromCharacterId = fromCharacterId,
+                    targetName = targetName,
+                    messageLen = messageLen,
+                    extra = result.message,
+                )
+            CentralSocialResult.Ignored -> Unit
+        }
+    }
+
+    private fun logWorldLinkRoundTrip(
+        username: String,
+        connectMs: Long,
+        helloMs: Long,
+        loginMs: Long,
+    ) {
+        if (!serverConfig.loginTimingLogs) {
+            return
+        }
+        val totalMs = connectMs + helloMs + loginMs
+        val message =
+            "Central world-link auth user=$username connect=${connectMs}ms hello=${helloMs}ms " +
+                "login=${loginMs}ms total=${totalMs}ms"
+        when {
+            totalMs >= AUTH_TIMING_WARN_MS -> logger.warn { message }
+            totalMs >= AUTH_TIMING_INFO_MS -> logger.info { message }
+            else -> logger.debug { message }
+        }
+    }
+
+    private fun logAuthTiming(
+        username: String,
+        totalMs: Long,
+        attempts: Int,
+        result: CentralAuthResult?,
+        error: Throwable? = null,
+    ) {
+        if (!serverConfig.loginTimingLogs) {
+            return
+        }
+        if (attempts <= 1 && error == null && (result is CentralAuthResult.Ok || result is CentralAuthResult.Skipped)) {
+            return
+        }
+        val outcome =
+            when (result) {
+                is CentralAuthResult.Ok -> "ok"
+                is CentralAuthResult.Denied -> "denied"
+                CentralAuthResult.Skipped -> "skipped"
+                null -> "failed"
             }
-
-            return centralPrivateMessageCounter
+        val message =
+            "Central world-link authenticate user=$username outcome=$outcome attempts=$attempts total=${totalMs}ms"
+        if (error != null || totalMs >= AUTH_TIMING_WARN_MS) {
+            logger.warn(error) { message }
+        } else {
+            logger.info { message }
         }
     }
 }
@@ -909,3 +1061,46 @@ public sealed class CentralAuthResult {
         val response: LoginResponse,
     ) : CentralAuthResult()
 }
+
+/** In-flight Central auth started via [OpenRuneCentralWorldLink.beginAuthenticate]. */
+public class InflightCentralAuth internal constructor(
+    internal val future: CompletableFuture<CentralAuthResult>,
+)
+
+public sealed class SocialSyncResult {
+    public data class Ok(val snapshot: SocialSyncSnapshot) : SocialSyncResult()
+
+    public data class Fail(val reason: Int) : SocialSyncResult()
+
+    public data object Unavailable : SocialSyncResult()
+}
+
+public sealed class SocialActionResult {
+    public data object Ok : SocialActionResult()
+
+    public data class Fail(val reason: Int) : SocialActionResult()
+
+    public data object Unavailable : SocialActionResult()
+}
+
+private fun SocialSyncSnapshot.toClientSnapshot(): WorldLinkFrameSpecs.CentralSocialSnapshot =
+    WorldLinkFrameSpecs.CentralSocialSnapshot(
+        publicChat = publicChat,
+        privateChat = privateChat,
+        tradeChat = tradeChat,
+        friends =
+            friends.map { friend ->
+                WorldLinkFrameSpecs.CentralSocialFriend(
+                    displayName = friend.displayName,
+                    previousDisplayName = friend.previousDisplayName,
+                    worldId = friend.worldId,
+                )
+            },
+        ignores =
+            ignores.map { ignore ->
+                WorldLinkFrameSpecs.CentralSocialIgnore(
+                    displayName = ignore.displayName,
+                    previousDisplayName = ignore.previousDisplayName,
+                )
+            },
+    )
