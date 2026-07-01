@@ -1328,6 +1328,7 @@ id = "npc.rat_boss_normal"
 inherit = "npc.rat_boss_normal"
 huntMode = 6
 huntRange = 15
+respawnRate = 30
 [npc.params]
 "param.boss_hp_bar_mode"=2
 "param.death_anim"="seq.npc_rat_boss_death_01"
@@ -1337,6 +1338,7 @@ id = "npc.rat_boss_instance"
 inherit = "npc.rat_boss_instance"
 huntMode = 6
 huntRange = 15
+respawnRate = 30
 [npc.params]
 "param.boss_hp_bar_mode"=2
 "param.death_anim"="seq.npc_rat_boss_death_01"
