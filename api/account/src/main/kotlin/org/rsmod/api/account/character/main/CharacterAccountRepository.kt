@@ -4,6 +4,9 @@ import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.ObjectMapper
 import dev.or2.central.account.AccountData
 import dev.or2.central.account.CharacterData
+import dev.or2.central.account.Rights
+import dev.or2.central.account.TrustedDeviceData
+import dev.or2.central.account.TwoFactorAuthData
 import dev.or2.sql.OpenRuneSql
 import dev.openrune.ServerCacheManager
 import dev.openrune.types.varp.VarpLifetime
@@ -19,6 +22,7 @@ import org.rsmod.api.account.persistence.GamePersistenceRscmKeys
 import org.rsmod.api.db.DatabaseConnection
 import org.rsmod.api.db.util.getIntOrNull
 import org.rsmod.api.db.util.getLocalDateTime
+import org.rsmod.api.db.util.getStringOrNull
 import org.rsmod.api.db.util.setNullableInt
 import org.rsmod.api.db.util.setNullableString
 import org.rsmod.api.parsers.json.Json
@@ -37,14 +41,14 @@ constructor(
         accountName: String,
         hashedPassword: String,
     ): Int? {
-        val lowercaseName = accountName.lowercase()
+        val storedName = accountName.trim()
 
         val insert =
             connection.prepareStatement(
                 OpenRuneSql.text("game/character/accounts_insert_conflict_do_nothing.sql"),
             )
         insert.use {
-            it.setString(1, lowercaseName)
+            it.setString(1, storedName)
             it.setString(2, hashedPassword)
             it.executeUpdate()
         }
@@ -55,7 +59,7 @@ constructor(
             )
         val accountId =
             select.use {
-                it.setString(1, lowercaseName)
+                it.setString(1, storedName)
                 it.executeQuery().use { resultSet ->
                     if (resultSet.next()) {
                         resultSet.getIntOrNull("id")
@@ -111,7 +115,7 @@ constructor(
         connection: DatabaseConnection,
         accountName: String,
     ): CharacterMetadataList? {
-        val lowercaseName = accountName.lowercase()
+        val loginLookup = accountName.trim()
 
         val select =
             connection.prepareStatement(
@@ -119,20 +123,23 @@ constructor(
             )
 
         select.use {
-            it.setString(1, lowercaseName)
+            it.setString(1, loginLookup)
             it.executeQuery().use { resultSet ->
                 if (resultSet.next()) {
                     val accountId = resultSet.getInt("account_id")
                     val characterId = resultSet.getInt("character_id")
-                    val canonicalName = resultSet.getString("account_name").lowercase()
-                    val rights = resultSet.getString("rights") ?: ""
+                    val canonicalName = resultSet.getString("account_name")
+                    val rights = Rights.fromRightsColumn(resultSet.getString("rights"))
                     val displayName = resultSet.getString("display_name")
                     val email = resultSet.getString("email")
+                    val discordId = resultSet.getStringOrNull("discord_id")?.toLongOrNull()
                     val members = resultSet.getBoolean("members")
-                    val twofaEnabled = resultSet.getBoolean("twofa_enabled")
-                    val twofaSecret = resultSet.getString("twofa_secret")
-                    val twofaLastVerified = resultSet.getLocalDateTime("twofa_last_verified")
-                    val device = resultSet.getIntOrNull("known_device")
+                    val twoFactorAuth =
+                        TwoFactorAuthData(
+                            twoFactorSecret = resultSet.getStringOrNull("two_factor_secret"),
+                            twoFactorRecoveryCodes = resultSet.getStringOrNull("two_factor_recovery_codes"),
+                            twoFactorConfirmedAt = resultSet.getLocalDateTime("two_factor_confirmed_at"),
+                        )
                     val worldId = resultSet.getIntOrNull("world_id")
                     val coordX = resultSet.getInt("x")
                     val coordZ = resultSet.getInt("z")
@@ -179,10 +186,9 @@ constructor(
                             accountName = canonicalName,
                             rights = rights,
                             email = email,
-                            twofaEnabled = twofaEnabled,
-                            twofaSecret = twofaSecret,
-                            twofaLastVerified = twofaLastVerified,
-                            knownDevice = device,
+                            discordId = discordId,
+                            trustedDevices = selectTrustedDevices(connection, accountId),
+                            twoFactorAuth = twoFactorAuth,
                             characterData = characterData,
                         )
                     val metadataList = CharacterMetadataList(accountData, mutableListOf())
@@ -233,12 +239,6 @@ constructor(
                 it.setInt(9, characterId)
             }
             it.executeUpdate()
-        }
-
-        connection.prepareStatement(OpenRuneSql.text("game/character/accounts_update_known_device.sql")).use { ps ->
-            ps.setNullableInt(1, player.lastKnownDevice)
-            ps.setInt(2, accountId)
-            ps.executeUpdate()
         }
 
         replacePersistentVarps(connection, characterId, persistentVarps)
@@ -392,6 +392,60 @@ constructor(
                 }
                 onlineWorld != thisWorldId
             }
+        }
+    }
+
+    private fun selectTrustedDevices(
+        connection: DatabaseConnection,
+        accountId: Int,
+    ): List<TrustedDeviceData> {
+        val sql = OpenRuneSql.text("game/character/trusted_devices_select_by_account.sql")
+        return connection.prepareStatement(sql).use { ps ->
+            ps.setInt(1, accountId)
+            ps.executeQuery().use { rs ->
+                buildList {
+                    while (rs.next()) {
+                        add(
+                            TrustedDeviceData(
+                                deviceId = rs.getInt("device_id"),
+                                verifiedAt = rs.getLocalDateTime("verified_at") ?: continue,
+                            ),
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    public fun saveTrustedDevices(
+        connection: DatabaseConnection,
+        accountId: Int,
+        trustedDevices: List<TrustedDeviceData>,
+    ) {
+        replaceTrustedDevices(connection, accountId, trustedDevices)
+    }
+
+    private fun replaceTrustedDevices(
+        connection: DatabaseConnection,
+        accountId: Int,
+        trustedDevices: List<TrustedDeviceData>,
+    ) {
+        connection.prepareStatement(OpenRuneSql.text("game/character/trusted_devices_delete_by_account.sql")).use { ps ->
+            ps.setInt(1, accountId)
+            ps.executeUpdate()
+        }
+        if (trustedDevices.isEmpty()) {
+            return
+        }
+        val insertSql = OpenRuneSql.text("game/character/trusted_devices_insert.sql")
+        connection.prepareStatement(insertSql).use { ps ->
+            for (device in trustedDevices) {
+                ps.setInt(1, accountId)
+                ps.setInt(2, device.deviceId)
+                ps.setTimestamp(3, Timestamp.valueOf(device.verifiedAt))
+                ps.addBatch()
+            }
+            ps.executeBatch()
         }
     }
 }

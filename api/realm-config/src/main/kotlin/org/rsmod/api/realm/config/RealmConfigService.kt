@@ -44,7 +44,7 @@ constructor(
                     ps.executeUpdate()
                 }
             }
-            logger.info {
+            logger.debug {
                 "Cleared character online-session markers for worldId=$gameWorldId."
             }
         } catch (e: Exception) {

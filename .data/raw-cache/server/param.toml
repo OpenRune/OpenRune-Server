@@ -792,3 +792,19 @@ type = "INT"
 defaultInt = 0
 isMembers = true
 
+[[params]]
+id = "param.shop_inventory"
+isServerOnly = true
+type = "INT"
+defaultInt = -1
+isMembers = true
+
+[[params]]
+id = "param.shop_name"
+isServerOnly = true
+type = "STRING"
+defaultString = ""
+isMembers = true
+
+
+

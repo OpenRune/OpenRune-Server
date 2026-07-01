@@ -18,12 +18,6 @@ constructor(
     private var databaseConnected = false
 
     override suspend fun startup() {
-        val config = configProvider.get()
-        logger.info {
-            "PostgreSQL: ${config.jdbcUrl} (override with OPENRUNE_JDBC_URL / game.yml database.postgres). " +
-                "If core tables (`accounts`, `account_characters`, `realms`, `worlds`) are missing, " +
-                    "bundled `db/game-schema-postgres.sql` is applied."
-        }
         connectDataSource()
     }
 

@@ -214,5 +214,4 @@ object BaseParams {
     val closesound: ParamSynth = param("closesound")
     val opensound: ParamSynth = param("opensound")
     val next_loc_stage: ParamLoc = param("next_loc_stage")
-    val shop_sale_restricted: ParamBool = param("shop_sale_restricted")
 }

@@ -17,12 +17,12 @@ import org.rsmod.api.account.loader.request.AccountLoadAuth
 import org.rsmod.api.db.jdbc.GameDatabase
 import org.rsmod.api.net.central.OpenRuneCentralWorldLink
 import org.rsmod.api.net.rsprot.player.AccountLoadResponseHook
-import org.rsmod.api.pw.hash.PasswordHashing
 import org.rsmod.api.realm.Realm
 import org.rsmod.api.registry.account.AccountRegistry
 import org.rsmod.api.registry.player.PlayerRegistry
 import org.rsmod.api.server.config.ServerConfig
 import org.rsmod.api.totp.Totp
+import org.rsmod.api.totp.laravel.TwoFactorSecretResolver
 import org.rsmod.api.totp.useSecret
 import org.rsmod.events.EventBus
 import org.rsmod.game.GameUpdate
@@ -38,8 +38,8 @@ private constructor(
     private val playerReg: PlayerRegistry,
     private val accountReg: AccountRegistry,
     private val accountManager: AccountManager,
-    private val passwordHashing: PasswordHashing,
     private val totp: Totp,
+    private val twoFactorSecretResolver: TwoFactorSecretResolver,
     private val openRuneCentral: OpenRuneCentralWorldLink,
     private val gameDatabase: GameDatabase,
     private val characterAccountRepository: CharacterAccountRepository,
@@ -50,6 +50,10 @@ private constructor(
 
     private val world: Int
         get() = config.world
+
+    private companion object {
+        private const val PASSWORD_HASH_TIMING_INFO_MS = 50L
+    }
 
     override fun onLogin(
         responseHandler: GameLoginResponseHandler<Player>,
@@ -111,10 +115,14 @@ private constructor(
             responseHandler.writeFailedResponse(LoginResponse.LoginServerOffline)
             return
         }
+        val loadAuth = auth.otpAuthentication.toAccountLoadAuth()
+        val username = block.username
+
         val responseHook =
             AccountLoadResponseHook(
                 world = world,
                 config = realmConfig,
+                loginTimingLogs = config.loginTimingLogs,
                 update = update,
                 eventBus = eventBus,
                 accountRegistry = accountReg,
@@ -124,32 +132,45 @@ private constructor(
                 channelResponses = responseHandler,
                 inputPassword = password.copyOf(),
                 verifyTotp = ::verifyTotp,
+                resolveTotpSecret = twoFactorSecretResolver::resolveStoredSecret,
                 openRuneCentral = openRuneCentral,
                 database = gameDatabase,
                 characterRepository = characterAccountRepository,
             )
-        val loadAuth = auth.otpAuthentication.toAccountLoadAuth()
-        val username = block.username
 
-        // OpenRune Central validates credentials; the game DB still needs rows for account_characters.
-        // Auto-register locally on first login (same as no separate register page).
-        // Password hashing can saturate CPU — tune rsprot `loginFlowExecutor` if needed.
-        val hashedPassword = computePasswordHash(password)
-        if (hashedPassword == null) {
-            responseHandler.writeFailedResponse(LoginResponse.InvalidUsernameOrPassword)
-            return
-        }
+        // Central auth runs after the account row exists (see AccountLoadResponseHook) so character id
+        // and password are available; do not kick off here with a null character id.
+        val passwordForLocalCreate = password.copyOf()
         val requestSubmitted =
-            accountManager.loadOrCreate(loadAuth, username, { hashedPassword }, responseHook)
+            accountManager.loadOrCreate(
+                loadAuth,
+                username,
+                {
+                    try {
+                        val hashStart = System.nanoTime()
+                        val hash = computePasswordHash(passwordForLocalCreate)
+                        val hashMs = java.util.concurrent.TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - hashStart)
+                        if (config.loginTimingLogs && hashMs >= PASSWORD_HASH_TIMING_INFO_MS) {
+                            logger.info { "Login password hash (new local account) user='$username' elapsed=${hashMs}ms" }
+                        }
+                        hash ?: error("Password hash failed")
+                    } finally {
+                        passwordForLocalCreate.fill('\u0000')
+                    }
+                },
+                responseHook,
+            )
 
         if (!requestSubmitted) {
+            passwordForLocalCreate.fill('\u0000')
             responseHandler.writeFailedResponse(LoginResponse.LoginServerLoadError)
         }
     }
 
     private fun computePasswordHash(password: CharArray): String? {
         return try {
-            passwordHashing.hash(password)
+            val plain = password.concatToString()
+            openRuneCentral.passwordHasher().hash(plain)
         } catch (e: Exception) {
             logger.error { "Password hashing error: ${e::class.simpleName}" }
             null

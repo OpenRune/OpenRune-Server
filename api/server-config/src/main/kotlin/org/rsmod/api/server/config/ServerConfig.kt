@@ -18,7 +18,7 @@ public data class CentralPostgresYaml(
     val user: String = "openrune",
     val password: String = "openrune",
     @JsonProperty("pool-size") val poolSize: Int = 10,
-    @JsonProperty("embedded-pgdata-dir") val embeddedPgdataDir: String = ".data/pgdata",
+    @JsonProperty("embedded-pgdata-dir") val embeddedPgdataDir: String = ".data/postgres",
 )
 
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -57,4 +57,6 @@ public data class ServerConfig(
     val gameplay: GameplayConfig = GameplayConfig(),
     val database: GameDatabaseYaml? = null,
     val central: OpenRuneCentralGameConfig? = null,
+    @JsonProperty("login-timing-logs") val loginTimingLogs: Boolean = false,
+    @JsonProperty("social-pm-trace-logs") val socialPmTraceLogs: Boolean = false,
 )

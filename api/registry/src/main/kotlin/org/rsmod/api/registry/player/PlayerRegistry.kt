@@ -195,6 +195,26 @@ constructor(
     }
 
     /**
+     * Applies a Discord link written in Central's DB to any online characters on that account.
+     */
+    public fun applyCentralDiscordSync(
+        centralAccountId: Long,
+        discordId: String,
+    ) {
+        val aid = centralAccountId.toInt()
+        val parsed = discordId.trim().takeIf { it.isNotEmpty() }?.toLongOrNull()
+        for (player in playerList) {
+            if (player.accountId == aid) {
+                val newlyLinked = parsed != null && player.discordId == null
+                player.discordId = parsed
+                if (newlyLinked) {
+                    player.mes("Your account has been successfully linked to Discord!")
+                }
+            }
+        }
+    }
+
+    /**
      * Applies a display name written in Central's DB (staff rename, etc.) to the matching online player
      * and rebuilds appearance so other clients see the new name.
      */

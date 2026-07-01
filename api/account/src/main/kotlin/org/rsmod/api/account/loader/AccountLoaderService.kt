@@ -29,6 +29,7 @@ constructor(
     private val database: GameDatabase,
     private val repository: CharacterAccountRepository,
     private val pipelines: Set<CharacterDataStage.Pipeline>,
+    private val serverConfig: org.rsmod.api.server.config.ServerConfig,
 ) : ScheduledService {
     private val logger = InlineLogger()
 
@@ -188,7 +189,23 @@ constructor(
     }
 
     private suspend fun handleRequest(request: AccountLoadRequest) {
+        val startedAt = System.nanoTime()
         val response = database.withTransaction { connection -> connection.handleRequest(request) }
+        val elapsedMs = java.util.concurrent.TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - startedAt)
+        if (serverConfig.loginTimingLogs && elapsedMs >= ACCOUNT_DB_TIMING_INFO_MS) {
+            val level =
+                if (elapsedMs >= ACCOUNT_DB_TIMING_WARN_MS) {
+                    "warn"
+                } else {
+                    "info"
+                }
+            val message = "Account load DB user='${request.accountName}' elapsed=${elapsedMs}ms"
+            if (level == "warn") {
+                logger.warn { message }
+            } else {
+                logger.info { message }
+            }
+        }
         request.callback(response)
     }
 
@@ -318,5 +335,9 @@ constructor(
          * to recover naturally once requests succeed again.
          */
         private const val MAX_CONSECUTIVE_FAILURES = 5
+
+        private const val ACCOUNT_DB_TIMING_INFO_MS = 100L
+
+        private const val ACCOUNT_DB_TIMING_WARN_MS = 500L
     }
 }

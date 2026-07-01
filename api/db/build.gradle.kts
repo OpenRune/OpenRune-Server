@@ -8,7 +8,7 @@ kotlin {
 
 dependencies {
     implementation(libs.embedded.postgres)
-    implementation(libs.openrune.central.all)
+    implementation(libs.openrune.central.common)
     implementation(libs.bundles.logging)
     implementation(libs.guice)
     implementation(libs.kotlin.coroutines.core)

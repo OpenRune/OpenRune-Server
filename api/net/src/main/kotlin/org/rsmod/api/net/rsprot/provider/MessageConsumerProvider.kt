@@ -11,6 +11,7 @@ import net.rsprot.protocol.game.incoming.buttons.IfSubOp
 import net.rsprot.protocol.game.incoming.locs.OpLocV2
 import net.rsprot.protocol.game.incoming.locs.OpLoc6
 import net.rsprot.protocol.game.incoming.locs.OpLocT
+import net.rsprot.protocol.game.incoming.messaging.MessagePrivate
 import net.rsprot.protocol.game.incoming.messaging.MessagePublic
 import net.rsprot.protocol.game.incoming.misc.client.MapBuildComplete
 import net.rsprot.protocol.game.incoming.misc.client.WindowStatus
@@ -19,6 +20,7 @@ import net.rsprot.protocol.game.incoming.misc.user.ClientCheat
 import net.rsprot.protocol.game.incoming.misc.user.CloseModal
 import net.rsprot.protocol.game.incoming.misc.user.MoveGameClick
 import net.rsprot.protocol.game.incoming.misc.user.MoveMinimapClick
+import net.rsprot.protocol.game.incoming.misc.user.SetChatFilterSettings
 import net.rsprot.protocol.game.incoming.npcs.OpNpcV2
 import net.rsprot.protocol.game.incoming.npcs.OpNpc6
 import net.rsprot.protocol.game.incoming.npcs.OpNpcT
@@ -31,17 +33,26 @@ import net.rsprot.protocol.game.incoming.resumed.ResumePNameDialog
 import net.rsprot.protocol.game.incoming.resumed.ResumePObjDialog
 import net.rsprot.protocol.game.incoming.resumed.ResumePStringDialog
 import net.rsprot.protocol.game.incoming.resumed.ResumePauseButton
+import net.rsprot.protocol.game.incoming.social.FriendListAdd
+import net.rsprot.protocol.game.incoming.social.FriendListDel
+import net.rsprot.protocol.game.incoming.social.IgnoreListAdd
+import net.rsprot.protocol.game.incoming.social.IgnoreListDel
 import net.rsprot.protocol.message.codec.incoming.GameMessageConsumerRepositoryBuilder
 import net.rsprot.protocol.message.codec.incoming.provider.DefaultGameMessageConsumerRepositoryProvider
 import org.rsmod.api.net.rsprot.handlers.ClickWorldMapHandler
 import org.rsmod.api.net.rsprot.handlers.ClientCheatHandler
 import org.rsmod.api.net.rsprot.handlers.CloseModalHandler
+import org.rsmod.api.net.rsprot.handlers.FriendListAddHandler
+import org.rsmod.api.net.rsprot.handlers.FriendListDeleteHandler
 import org.rsmod.api.net.rsprot.handlers.If3ButtonHandler
 import org.rsmod.api.net.rsprot.handlers.IfButtonDHandler
 import org.rsmod.api.net.rsprot.handlers.IfButtonTHandler
 import org.rsmod.api.net.rsprot.handlers.IfScriptTriggerHandler
 import org.rsmod.api.net.rsprot.handlers.IfSubOpHandler
+import org.rsmod.api.net.rsprot.handlers.IgnoreListAddHandler
+import org.rsmod.api.net.rsprot.handlers.IgnoreListDeleteHandler
 import org.rsmod.api.net.rsprot.handlers.MapBuildCompleteHandler
+import org.rsmod.api.net.rsprot.handlers.MessagePrivateHandler
 import org.rsmod.api.net.rsprot.handlers.MessagePublicHandler
 import org.rsmod.api.net.rsprot.handlers.MoveGameClickHandler
 import org.rsmod.api.net.rsprot.handlers.MoveMinimapClickHandler
@@ -60,6 +71,7 @@ import org.rsmod.api.net.rsprot.handlers.ResumePNameDialogHandler
 import org.rsmod.api.net.rsprot.handlers.ResumePObjDialogHandler
 import org.rsmod.api.net.rsprot.handlers.ResumePStringDialogHandler
 import org.rsmod.api.net.rsprot.handlers.ResumePauseButtonHandler
+import org.rsmod.api.net.rsprot.handlers.SetChatFilterSettingsHandler
 import org.rsmod.api.net.rsprot.handlers.WindowStatusHandler
 import org.rsmod.game.entity.Player
 
@@ -81,6 +93,12 @@ constructor(
     private val opPlayer: OpPlayerHandler,
     private val opPlayerT: OpPlayerTHandler,
     private val messagePublic: MessagePublicHandler,
+    private val messagePrivate: MessagePrivateHandler,
+    private val friendListAdd: FriendListAddHandler,
+    private val friendListDelete: FriendListDeleteHandler,
+    private val ignoreListAdd: IgnoreListAddHandler,
+    private val ignoreListDelete: IgnoreListDeleteHandler,
+    private val setChatFilterSettings: SetChatFilterSettingsHandler,
     private val if3Button: If3ButtonHandler,
     private val closeModal: CloseModalHandler,
     private val resumePauseButton: ResumePauseButtonHandler,
@@ -112,6 +130,12 @@ constructor(
         builder.addListener(OpPlayer::class.java, opPlayer)
         builder.addListener(OpPlayerT::class.java, opPlayerT)
         builder.addListener(MessagePublic::class.java, messagePublic)
+        builder.addListener(MessagePrivate::class.java, messagePrivate)
+        builder.addListener(FriendListAdd::class.java, friendListAdd)
+        builder.addListener(FriendListDel::class.java, friendListDelete)
+        builder.addListener(IgnoreListAdd::class.java, ignoreListAdd)
+        builder.addListener(IgnoreListDel::class.java, ignoreListDelete)
+        builder.addListener(SetChatFilterSettings::class.java, setChatFilterSettings)
         builder.addListener(If3Button::class.java, if3Button)
         builder.addListener(CloseModal::class.java, closeModal)
         builder.addListener(ResumePauseButton::class.java, resumePauseButton)

@@ -2,6 +2,7 @@ package org.rsmod.server.app
 
 import jakarta.inject.Inject
 import org.rsmod.api.db.jdbc.EmbeddedSameInstancePostgres
+import org.rsmod.api.net.central.OpenRuneCentralWorldLink
 import org.rsmod.api.net.central.embed.CentralEmbeddedLifecycle
 import org.rsmod.api.server.config.ServerConfig
 import org.rsmod.server.services.Service
@@ -11,6 +12,7 @@ class GameBootstrap @Inject constructor(
     services: Set<Service>,
     private val serverConfig: ServerConfig,
     private val centralEmbedded: CentralEmbeddedLifecycle,
+    private val openRuneCentral: OpenRuneCentralWorldLink,
 ) {
     private val serviceManager = ServiceManager.create(services)
 
@@ -18,6 +20,7 @@ class GameBootstrap @Inject constructor(
         EmbeddedSameInstancePostgres.ensureStarted(serverConfig)
         try {
             centralEmbedded.startIfConfigured()
+            openRuneCentral.startInboundWatch()
             val startupResult = serviceManager.awaitStartup()
             if (startupResult is ServiceManager.StartResult.Error) {
                 throw startupResult.throwable
