@@ -1,5 +1,6 @@
 package org.rsmod.api.bosses.dsl
 
+import dev.openrune.types.NpcMode
 import org.rsmod.api.bosses.spec.*
 import org.rsmod.api.bosses.validation.SpecValidator
 
@@ -299,8 +300,9 @@ class AbilityBuilder {
         count: Int = 1,
         radius: Int = 3,
         centeredOn: TargetExpr = TargetExpr.Self,
+        mode: NpcMode? = null,
     ) {
-        effects += Effect.Summon(npc, count, radius, centeredOn)
+        effects += Effect.Summon(npc, count, radius, centeredOn, mode)
     }
 
     /**

@@ -1,5 +1,7 @@
 package org.rsmod.api.bosses.spec
 
+import dev.openrune.types.NpcMode
+
 public data class StatDrainEntry(
     val stat: String,
     val amount: Int,
@@ -66,6 +68,7 @@ sealed interface Effect {
         val count: Int = 1,
         val radius: Int = 3,
         val centeredOn: TargetExpr = TargetExpr.Self,
+        val mode: NpcMode? = null,
     ) : Effect
 
     data class Transmog(val to: String, val durationTicks: Int) : Effect
