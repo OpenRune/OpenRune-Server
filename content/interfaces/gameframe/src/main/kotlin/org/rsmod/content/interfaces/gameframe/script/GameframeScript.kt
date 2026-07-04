@@ -55,8 +55,7 @@ class GameframeScript @Inject internal constructor(private val eventBus: EventBu
             onIfMoveSub(target) { player.moveSetEvents(event) }
         }
         onIfMoveSub("component.toplevel_osrs_stretch:xp_drops") { player.moveXpDrops() }
-        onIfMoveSub("component.toplevel_osrs_stretch:ehc_listener") { player.moveEhcListener() }
-
+        
         onPlayerSoftQueueWithArgs("queue.client_mode") { player.changeGameframe(args) }
         onPlayerSoftQueueWithArgs("queue.fullscreen_map") { player.changeGameframe(args) }
     }
