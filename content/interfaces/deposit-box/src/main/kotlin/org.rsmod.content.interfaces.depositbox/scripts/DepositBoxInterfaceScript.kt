@@ -41,9 +41,16 @@ constructor(private val eventBus: EventBus, private val bankInv: BankInvScript) 
         onIfModalButton(deposit_constants.comp_quantity_5) { depositQuantityMode = QuantityMode.Five }
         onIfModalButton(deposit_constants.comp_quantity_10) { depositQuantityMode = QuantityMode.Ten }
         onIfModalButton(deposit_constants.comp_quantity_all) { depositQuantityMode = QuantityMode.All }
+        /* An X input that exactly matches a preset button (1/5/10) selects that button instead */
         onIfModalButton(deposit_constants.comp_quantity_x) {
             val input = countDialog()
-            if (input > 0) {
+            if (input <= 0) {
+                return@onIfModalButton
+            }
+            val preset = presetQuantityMode(input)
+            if (preset != null) {
+                depositQuantityMode = preset
+            } else {
                 depositQuantityInput = input
                 depositQuantityMode = QuantityMode.X
             }
@@ -68,6 +75,15 @@ constructor(private val eventBus: EventBus, private val bankInv: BankInvScript) 
             onIfModalButton(deposit_constants.wornComponent(wearpos)) { wornOp(wearpos, it.op) }
         }
     }
+
+    /** Preset quantity button matching an exact amount, or null if only "X" can represent it. */
+    private fun presetQuantityMode(amount: Int): QuantityMode? =
+        when (amount) {
+            1 -> QuantityMode.One
+            5 -> QuantityMode.Five
+            10 -> QuantityMode.Ten
+            else -> null
+        }
 
     private fun Player.onDepositBoxOpen() {
         setItemEvents()
