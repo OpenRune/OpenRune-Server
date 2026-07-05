@@ -212,7 +212,7 @@ constructor(
         invDeposit(slot, count, inv)
     }
 
-    private fun ProtectedAccess.invDeposit(slot: Int, count: Int, inventory: Inventory): Boolean {
+    public fun ProtectedAccess.invDeposit(slot: Int, count: Int, inventory: Inventory): Boolean {
         val obj = inventory[slot]
         if (obj == null) {
             resendSlot(inventory, 0)
@@ -330,7 +330,7 @@ constructor(
         }
     }
 
-    private fun ProtectedAccess.depositInv() {
+    public fun ProtectedAccess.depositInv() {
         if (inv.isEmpty()) {
             mes("You have nothing to deposit.")
             return
@@ -338,7 +338,7 @@ constructor(
         depositInventory(inv)
     }
 
-    private fun ProtectedAccess.depositWorn() {
+    public fun ProtectedAccess.depositWorn() {
         if (worn.isEmpty()) {
             mes("You have nothing to deposit.")
             return
