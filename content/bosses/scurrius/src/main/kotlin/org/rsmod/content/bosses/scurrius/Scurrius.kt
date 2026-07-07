@@ -19,6 +19,7 @@ import org.rsmod.api.npc.apPlayer2
 import org.rsmod.api.npc.heal
 import org.rsmod.api.npc.interact.AiPlayerInteractions
 import org.rsmod.api.npc.opPlayer2
+import org.rsmod.api.player.isInCombat
 import org.rsmod.api.player.isValidTarget
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.vars.intVarp
@@ -84,11 +85,14 @@ constructor(
     }
 
     private suspend fun ProtectedAccess.eatFromFoodPile() {
-        arriveDelay()
         if (mapClock < player.foodPileEatCooldown) {
             mes("You've already eaten from the food pile recently.")
             return
         }
+        if (player.isInCombat()) {
+            mes("You can not eat from the food pile while in combat.")
+        }
+        arriveDelay()
         player.foodPileEatCooldown = mapClock + 1000
         anim("seq.human_eat")
         statHeal("stat.hitpoints", constant = 0, percent = 100)
