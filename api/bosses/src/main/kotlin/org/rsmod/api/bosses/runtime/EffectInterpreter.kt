@@ -213,6 +213,7 @@ class EffectInterpreter(
         val npcType = ServerCacheManager.getNpc(npcTypeId) ?: return
         val center = resolveTile(summon.centeredOn)
         val radius = summon.radius
+        val mode = summon.mode ?: npcType.defaultMode
 
         // Only consider tiles that are walkable
         val spawnTiles =
@@ -236,7 +237,7 @@ class EffectInterpreter(
                     center
                 }
             val spawned = Npc(npcType, spawnCoord)
-            spawned.mode = NpcMode.None
+            spawned.mode = mode
             deps.npcRepo.add(spawned, 100)
         }
     }

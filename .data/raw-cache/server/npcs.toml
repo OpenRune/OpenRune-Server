@@ -1328,6 +1328,8 @@ id = "npc.rat_boss_normal"
 inherit = "npc.rat_boss_normal"
 huntMode = 6
 huntRange = 15
+maxRange = 40
+defaultMode = "None"
 respawnRate = 30
 [npc.params]
 "param.boss_hp_bar_mode"=2
@@ -1338,6 +1340,8 @@ id = "npc.rat_boss_instance"
 inherit = "npc.rat_boss_instance"
 huntMode = 6
 huntRange = 15
+maxRange = 40
+defaultMode = "None"
 respawnRate = 30
 [npc.params]
 "param.boss_hp_bar_mode"=2

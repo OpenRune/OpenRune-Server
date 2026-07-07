@@ -28,35 +28,47 @@ object BossCombat {
         val errors = SpecValidator.validate(spec)
         if (errors.isNotEmpty()) {
             val msg = errors.joinToString("\n") { "  - ${it.message}" }
-            error("Boss spec validation failed for '${spec.npcType}':\n$msg")
+            error("Boss spec validation failed for '${spec.npcTypes.joinToString()}':\n$msg")
         }
 
-        val npcId = spec.npcType.asRSCM(RSCMType.NPC)
-        val npcType = ServerCacheManager.getNpc(npcId)
-            ?: error("Boss NPC type not found: ${spec.npcType}")
+        val npcTypes =
+            spec.npcTypes.map { name ->
+                val npcId = name.asRSCM(RSCMType.NPC)
+                ServerCacheManager.getNpc(npcId) ?: error("Boss NPC type not found: $name")
+            }
 
-        deps.encounterRegistry.register(npcId, spec)
+        for (npcType in npcTypes) {
+            deps.encounterRegistry.register(npcType.id, spec)
+        }
 
         with(ctx) {
-            onAiOpPlayer2(npcType) { runCombatTick(it.target, spec, deps) }
-            onAiApPlayer2(npcType) { runCombatTick(it.target, spec, deps) }
-            onModifyNpcHit(npcType) {
-                val encounter = deps.encounterRegistry.of(npc)
-                hit.damage =
-                    if (encounter.invulnerable) 0 else (hit.damage * encounter.damageScale).toInt()
-                onModifyHit?.invoke(this)
-                if (onLethal != null && !encounter.lethalHandled && npc.hitpoints - hit.damage <= 0) {
-                    encounter.lethalHandled = true
-                    onLethal(npc)
+            for (npcType in npcTypes) {
+                onAiOpPlayer2(npcType) { runCombatTick(it.target, spec, deps) }
+                onAiApPlayer2(npcType) { runCombatTick(it.target, spec, deps) }
+                onModifyNpcHit(npcType) {
+                    val encounter = deps.encounterRegistry.of(npc)
+                    hit.damage =
+                        if (encounter.invulnerable) 0
+                        else (hit.damage * encounter.damageScale).toInt()
+                    onModifyHit?.invoke(this)
+                    if (
+                        onLethal != null &&
+                            !encounter.lethalHandled &&
+                            npc.hitpoints - hit.damage <= 0
+                    ) {
+                        encounter.lethalHandled = true
+                        onLethal(npc)
+                    }
                 }
             }
 
+            val bossIds = npcTypes.map { it.id }.toSet()
             // Ensures phases and other states are reset
             onEvent<NpcStateEvents.Respawn> {
-                if (npc.type.id == npcId) resetBoss(npc, deps)
+                if (npc.type.id in bossIds) resetBoss(npc, deps)
             }
             onEvent<NpcStateEvents.Delete> {
-                if (npc.type.id == npcId) deps.encounterRegistry.remove(npc)
+                if (npc.type.id in bossIds) deps.encounterRegistry.remove(npc)
             }
         }
     }

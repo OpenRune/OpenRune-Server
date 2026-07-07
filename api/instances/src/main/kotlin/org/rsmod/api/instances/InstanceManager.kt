@@ -3,7 +3,6 @@ package org.rsmod.api.instances
 import dev.openrune.ServerCacheManager
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
-import dev.openrune.types.NpcMode
 import dev.openrune.types.NpcServerType
 import jakarta.inject.Inject
 import jakarta.inject.Singleton
@@ -335,7 +334,7 @@ constructor(
         for (entry in placement.npcSpawns) {
             val type = ServerCacheManager.getNpc(entry.npcType.asRSCM(RSCMType.NPC)) ?: continue
             val npc = Npc(type, session.localCoord(region, entry.coord))
-            npc.mode = NpcMode.None
+            npc.mode = type.defaultMode
             npcRepo.add(npc, Int.MAX_VALUE)
             indexNpc(session.id, npc)
             out += npc

@@ -1,5 +1,6 @@
 package org.rsmod.api.bosses.dsl
 
+import dev.openrune.types.NpcMode
 import org.rsmod.api.bosses.spec.*
 
 fun anim(seq: String, delay: Int = 0): Effect = Effect.Anim(seq, delay)
@@ -72,7 +73,8 @@ fun summon(
     count: Int = 1,
     radius: Int = 3,
     centeredOn: TargetExpr = TargetExpr.Self,
-): Effect = Effect.Summon(npc, count, radius, centeredOn)
+    mode: NpcMode? = null,
+): Effect = Effect.Summon(npc, count, radius, centeredOn, mode)
 
 fun transmog(to: String, durationTicks: Int): Effect = Effect.Transmog(to, durationTicks)
 fun poison(damage: Int, chance: Int = 1, outOf: Int = 1): Effect = Effect.Poison(damage, chance, outOf)

@@ -1,15 +1,20 @@
 package org.rsmod.api.bosses.dsl
 
+import dev.openrune.types.NpcMode
 import org.rsmod.api.bosses.spec.*
 import org.rsmod.api.bosses.validation.SpecValidator
 
 @DslMarker annotation class BossDsl
 
-fun boss(npcType: String, block: BossSpecBuilder.() -> Unit): BossSpec =
-    BossSpecBuilder(npcType).apply(block).build()
+fun boss(vararg npcTypes: String, block: BossSpecBuilder.() -> Unit): BossSpec =
+    BossSpecBuilder(npcTypes.toList()).apply(block).build()
 
 @BossDsl
-class BossSpecBuilder(private val npcType: String) {
+class BossSpecBuilder(private val npcTypes: List<String>) {
+    init {
+        require(npcTypes.isNotEmpty()) { "A boss spec must declare at least one npc type." }
+    }
+
     private var stats = BossStats()
     private val abilities = mutableMapOf<String, Effect>()
     private val phases = mutableMapOf<String, PhaseSpec>()
@@ -67,11 +72,11 @@ class BossSpecBuilder(private val npcType: String) {
     }
 
     fun build(): BossSpec {
-        val spec = BossSpec(npcType, stats, abilities, phases, triggers)
+        val spec = BossSpec(npcTypes, stats, abilities, phases, triggers)
         val errors = SpecValidator.validate(spec)
         if (errors.isNotEmpty()) {
             throw IllegalStateException(
-                "Boss spec invalid for '$npcType':\n" +
+                "Boss spec invalid for '${npcTypes.joinToString()}':\n" +
                     errors.joinToString("\n") { " - ${it.message}" }
             )
         }
@@ -295,8 +300,9 @@ class AbilityBuilder {
         count: Int = 1,
         radius: Int = 3,
         centeredOn: TargetExpr = TargetExpr.Self,
+        mode: NpcMode? = null,
     ) {
-        effects += Effect.Summon(npc, count, radius, centeredOn)
+        effects += Effect.Summon(npc, count, radius, centeredOn, mode)
     }
 
     /**
