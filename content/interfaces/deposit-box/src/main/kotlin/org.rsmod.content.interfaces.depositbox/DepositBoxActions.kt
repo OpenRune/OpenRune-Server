@@ -6,7 +6,7 @@ import org.rsmod.api.player.vars.intVarBit
 import org.rsmod.api.player.vars.intVarp
 import org.rsmod.content.interfaces.bank.QuantityMode
 import org.rsmod.content.interfaces.depositbox.configs.DepositBoxConfig
-import org.rsmod.content.interfaces.depositbox.configs.deposit_constants
+import org.rsmod.content.interfaces.depositbox.configs.DepositBoxConstants
 import org.rsmod.game.entity.Player
 
 private var Player.depositBoxMode by intVarBit("varbit.depositbox_mode")
@@ -63,12 +63,12 @@ internal fun ProtectedAccess.depositOption1Qty(): Int =
     }
 
 internal fun ProtectedAccess.playDepositAnim() {
-    anim(deposit_constants.open_seq)
+    anim(DepositBoxConstants.OPEN_SEQ)
 }
 
 /** Determines the next slot that should be deposited. Basically used to resolve the action based on the config option DepositBoxConfig.deposit_top_to_bottom */
 internal fun ProtectedAccess.resolveDepositSlot(clickedSlot: Int): Int {
-    if (!DepositBoxConfig.deposit_top_to_bottom) {
+    if (!DepositBoxConfig.DEPOSIT_TOP_TO_BOTTOM) {
         return clickedSlot
     }
     val id = inv[clickedSlot]?.id ?: return clickedSlot

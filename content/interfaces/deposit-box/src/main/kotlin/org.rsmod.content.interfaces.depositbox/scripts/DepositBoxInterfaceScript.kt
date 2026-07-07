@@ -16,7 +16,7 @@ import org.rsmod.content.interfaces.bank.QuantityMode
 import org.rsmod.content.interfaces.bank.scripts.BankInvScript
 import org.rsmod.content.interfaces.depositbox.bankDepositInv
 import org.rsmod.content.interfaces.depositbox.bankDepositWorn
-import org.rsmod.content.interfaces.depositbox.configs.deposit_constants
+import org.rsmod.content.interfaces.depositbox.configs.DepositBoxConstants
 import org.rsmod.content.interfaces.depositbox.depositInventoryItem
 import org.rsmod.content.interfaces.depositbox.depositOption1Qty
 import org.rsmod.content.interfaces.depositbox.depositQuantityInput
@@ -32,17 +32,17 @@ class DepositBoxInterfaceScript
 @Inject
 constructor(private val eventBus: EventBus, private val bankInv: BankInvScript) : PluginScript() {
     override fun ScriptContext.startup() {
-        onIfOpen(deposit_constants.interface_main) { player.onDepositBoxOpen() }
-        onIfClose(deposit_constants.interface_main) { player.onDepositBoxClose() }
+        onIfOpen(DepositBoxConstants.INTERFACE_MAIN) { player.onDepositBoxOpen() }
+        onIfClose(DepositBoxConstants.INTERFACE_MAIN) { player.onDepositBoxClose() }
 
-        onIfModalButton(deposit_constants.comp_items) { itemOp(it.comsub, it.op) }
+        onIfModalButton(DepositBoxConstants.COMP_ITEMS) { itemOp(it.comsub, it.op) }
 
-        onIfModalButton(deposit_constants.comp_quantity_1) { depositQuantityMode = QuantityMode.One }
-        onIfModalButton(deposit_constants.comp_quantity_5) { depositQuantityMode = QuantityMode.Five }
-        onIfModalButton(deposit_constants.comp_quantity_10) { depositQuantityMode = QuantityMode.Ten }
-        onIfModalButton(deposit_constants.comp_quantity_all) { depositQuantityMode = QuantityMode.All }
+        onIfModalButton(DepositBoxConstants.COMP_QUANTITY_1) { depositQuantityMode = QuantityMode.One }
+        onIfModalButton(DepositBoxConstants.COMP_QUANTITY_5) { depositQuantityMode = QuantityMode.Five }
+        onIfModalButton(DepositBoxConstants.COMP_QUANTITY_10) { depositQuantityMode = QuantityMode.Ten }
+        onIfModalButton(DepositBoxConstants.COMP_QUANTITY_ALL) { depositQuantityMode = QuantityMode.All }
         /* An X input that exactly matches a preset button (1/5/10) selects that button instead */
-        onIfModalButton(deposit_constants.comp_quantity_x) {
+        onIfModalButton(DepositBoxConstants.COMP_QUANTITY_X) {
             val input = countDialog()
             if (input <= 0) {
                 return@onIfModalButton
@@ -56,23 +56,23 @@ constructor(private val eventBus: EventBus, private val bankInv: BankInvScript) 
             }
         }
 
-        onIfModalButton(deposit_constants.comp_deposit_inv) {
+        onIfModalButton(DepositBoxConstants.COMP_DEPOSIT_INV) {
             if (bankDepositInv(bankInv)) {
                 playDepositAnim()
             }
         }
-        onIfModalButton(deposit_constants.comp_deposit_worn) {
+        onIfModalButton(DepositBoxConstants.COMP_DEPOSIT_WORN) {
             if (bankDepositWorn(bankInv)) {
                 playDepositAnim()
             }
         }
 
-        onIfModalButton(deposit_constants.comp_depositworn_toggle) {
+        onIfModalButton(DepositBoxConstants.COMP_DEPOSITWORN_TOGGLE) {
             player.hideDepositWornButton = !player.hideDepositWornButton
         }
 
-        for (wearpos in deposit_constants.worn_wearpos_slots) {
-            onIfModalButton(deposit_constants.wornComponent(wearpos)) { wornOp(wearpos, it.op) }
+        for (wearpos in DepositBoxConstants.WORN_WEAPOS_SLOTS) {
+            onIfModalButton(DepositBoxConstants.wornComponent(wearpos)) { wornOp(wearpos, it.op) }
         }
     }
 
@@ -97,7 +97,7 @@ constructor(private val eventBus: EventBus, private val bankInv: BankInvScript) 
     /** Item options are drawn dynamically by the cache (`bank_depositbox_drawslot`). op1 becomes the selected quantity. */
     private fun Player.setItemEvents() {
         ifSetEvents(
-            deposit_constants.comp_items,
+            DepositBoxConstants.COMP_ITEMS,
             inv.indices,
             IfEvent.Op1,
             IfEvent.Op2,
@@ -150,10 +150,10 @@ constructor(private val eventBus: EventBus, private val bankInv: BankInvScript) 
     /** The box has its own inventory grid, so the real inventory is swapped to the no-ops variant (to gray things out).
      * It's an overlay swap (not a modal), so the other side-panel tabs stay usable since that's the accurate behavior. */
     private fun Player.disableMainInventory() {
-        ifCloseOverlay(deposit_constants.inventory_interface, eventBus)
+        ifCloseOverlay(DepositBoxConstants.INVENTORY_INTERFACE, eventBus)
         ifOpenSub(
-            deposit_constants.inventory_disabled,
-            deposit_constants.inventory_main_target,
+            DepositBoxConstants.INVENTORY_DISABLED,
+            DepositBoxConstants.INVENTORY_MAIN_TARGET,
             IfSubType.Overlay,
             eventBus,
         )
@@ -161,10 +161,10 @@ constructor(private val eventBus: EventBus, private val bankInv: BankInvScript) 
 
     /** Swaps the normal inventory back in, which re-runs the standard inventory open (restoring its events and draw).*/
     private fun Player.enableMainInventory() {
-        ifCloseOverlay(deposit_constants.inventory_disabled, eventBus)
+        ifCloseOverlay(DepositBoxConstants.INVENTORY_DISABLED, eventBus)
         ifOpenSub(
-            deposit_constants.inventory_interface,
-            deposit_constants.inventory_main_target,
+            DepositBoxConstants.INVENTORY_INTERFACE,
+            DepositBoxConstants.INVENTORY_MAIN_TARGET,
             IfSubType.Overlay,
             eventBus,
         )

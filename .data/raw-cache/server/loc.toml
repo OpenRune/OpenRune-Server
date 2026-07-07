@@ -1060,46 +1060,6 @@ inherit = "loc.aide_bankbooth"
 contentGroup = "content.bank_booth"
 
 [[object]]
-id = "loc.bank_deposit_box"
-inherit = "loc.bank_deposit_box"
-contentGroup = "content.bank_deposit_box"
-
-[[object]]
-id = "loc.kr_bank_deposit_box"
-inherit = "loc.kr_bank_deposit_box"
-contentGroup = "content.bank_deposit_box"
-
-[[object]]
-id = "loc.swan_bank_deposit_box"
-inherit = "loc.swan_bank_deposit_box"
-contentGroup = "content.bank_deposit_box"
-
-[[object]]
-id = "loc.burgh_bank_deposit_box"
-inherit = "loc.burgh_bank_deposit_box"
-contentGroup = "content.bank_deposit_box"
-
-[[object]]
-id = "loc.ahoy_bank_deposit_box"
-inherit = "loc.ahoy_bank_deposit_box"
-contentGroup = "content.bank_deposit_box"
-
-[[object]]
-id = "loc.corscurs_bank_deposit_box"
-inherit = "loc.corscurs_bank_deposit_box"
-contentGroup = "content.bank_deposit_box"
-
-[[object]]
-id = "loc.bank_deposit_box_2"
-inherit = "loc.bank_deposit_box_2"
-contentGroup = "content.bank_deposit_box"
-
-[[object]]
-id = "loc.conch_grove_bank_deposit_box"
-inherit = "loc.conch_grove_bank_deposit_box"
-contentGroup = "content.bank_deposit_box"
-
-[[object]]
 id = "loc.rustic_fencegate_r"
 inherit = "loc.rustic_fencegate_r"
 contentGroup = "content.closed_right_picketgate"
