@@ -256,8 +256,8 @@ constructor(
             phase("combat") {
                 entry = "resume_combat"
                 weightedSelectorRandom {
-                    +random(melee, weight = 7, requires = WithinMeleeRange)
-                    +random(rockfall, weight = 3)
+                    +random(melee, weight = 5, requires = WithinMeleeRange)
+                    +random(rockfall, weight = 1)
                 }
             }
 
@@ -275,7 +275,7 @@ constructor(
                 weightedSelectorRandom {
                     +random(feedingMagic, weight = 4)
                     +random(feedingRanged, weight = 4)
-                    +random(feedingRockfall, weight = 2)
+                    +random(feedingRockfall, weight = 1)
                     +random(feedingSummonRats, weight = 1, cooldown = RAT_SUMMON_COOLDOWN)
                 }
             }
@@ -288,7 +288,7 @@ constructor(
                 weightedSelectorRandom {
                     +random(magic, weight = 5)
                     +random(ranged, weight = 5)
-                    +random(rockfall, weight = 5)
+                    +random(rockfall, weight = 1)
                     +random(summonRats, weight = 1, cooldown = RAT_SUMMON_COOLDOWN)
                 }
             }
