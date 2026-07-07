@@ -538,6 +538,41 @@ public class LocUDefaultEvents {
         public val invSlot: Int,
         locContent: Int = type.contentGroup,
     ) : ApEvent(locContent.toLong())
+
+    /**
+     * Fired when _any_ item is used on a loc whose [ObjectServerType.category] matches the
+     * registered category.
+     * @param loc The _base_ loc target of the event.
+     * @param vis The current _visual_ representation of [loc], based on the player's varps. If
+     *   [loc] has a [ObjectServerType.multiLoc], [vis] reflects the resolved variant. Otherwise,
+     *   [vis] is equal to [loc].
+     * @param type The [ObjectServerType] of the [vis] loc.
+     */
+    public class OpCategory(
+        public val loc: BoundLocInfo,
+        public val vis: BoundLocInfo,
+        public val type: ObjectServerType,
+        public val objType: ItemServerType,
+        public val invSlot: Int,
+        category: Int = type.category,
+    ) : OpEvent(category.toLong())
+
+    /**
+     * The approach (`ap`) counterpart to [OpCategory].
+     * @param loc The _base_ loc target of the event.
+     * @param vis The current _visual_ representation of [loc], based on the player's varps. If
+     *   [loc] has a [ObjectServerType.multiLoc], [vis] reflects the resolved variant. Otherwise,
+     *   [vis] is equal to [loc].
+     * @param type The [ObjectServerType] of the [vis] loc.
+     */
+    public class ApCategory(
+        public val loc: BoundLocInfo,
+        public val vis: BoundLocInfo,
+        public val type: ObjectServerType,
+        public val objType: ItemServerType,
+        public val invSlot: Int,
+        category: Int = type.category,
+    ) : ApEvent(category.toLong())
 }
 
 public class LocUCategoryEvents {
