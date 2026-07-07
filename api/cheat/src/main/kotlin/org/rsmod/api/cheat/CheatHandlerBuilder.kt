@@ -1,6 +1,7 @@
 package org.rsmod.api.cheat
 
 import com.github.michaelbull.logging.InlineLogger
+import dev.or2.central.account.Rights
 import org.rsmod.api.player.output.mes
 import org.rsmod.game.cheat.Cheat
 import org.rsmod.game.cheat.CheatHandler
@@ -12,9 +13,9 @@ private val logger = InlineLogger()
 @CheatBuilderDsl
 public class CheatHandlerBuilder(public val command: String) {
     public var desc: String? = null
-    public var internal: String? = null
+    public var requiredRights: Rights? = null
     public var invalidArgs: String? = null
-    public var invalidModLevel: String? = null
+    public var invalidRights: String? = null
     public var exception: String? = DEFAULT_EXCEPTION
 
     private var cheat: (Cheat.() -> Unit)? = null
@@ -23,7 +24,7 @@ public class CheatHandlerBuilder(public val command: String) {
         val cheat = cheat ?: error("`cheat` must be set.")
         val desc = desc ?: error("`desc` must be set.")
         val argsErr = invalidArgs ?: DEFAULT_ARG_ERR
-        val action = wrapCheat(argsErr, invalidModLevel, exception, internal, cheat)
+        val action = wrapCheat(argsErr, invalidRights, exception, requiredRights, cheat)
         return CheatHandler(desc, action)
     }
 
@@ -33,13 +34,13 @@ public class CheatHandlerBuilder(public val command: String) {
 
     private fun wrapCheat(
         invalidArgsMsg: String,
-        modLevelMsg: String?,
+        invalidRightsMsg: String?,
         exceptionMsg: String?,
-        internal: String?,
+        requiredRights: Rights?,
         cheat: Cheat.() -> Unit,
     ): Cheat.() -> Unit = action@{
-        if (internal != null && !player.modLevel.hasAccessTo(internal)) {
-            modLevelMsg?.let(player::mes)
+        if (requiredRights != null && !player.modLevel.isAtLeast(requiredRights)) {
+            invalidRightsMsg?.let(player::mes)
             return@action
         }
         try {

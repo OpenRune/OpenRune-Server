@@ -1,11 +1,5 @@
 package org.rsmod.api.account.character.main
 
-import dev.or2.central.account.AccountData
-import dev.or2.central.account.Rights
-import dev.openrune.ServerCacheManager
-import dev.openrune.rscm.RSCM.asRSCM
-import dev.openrune.rscm.RSCMType
-import dev.openrune.types.ModLevelType
 import jakarta.inject.Inject
 import java.time.LocalDateTime
 import org.rsmod.api.account.character.CharacterAccountLoginSegment
@@ -49,24 +43,6 @@ public class CharacterAccountApplier @Inject constructor() :
         if (c.attrs.isNotEmpty()) {
             player.attr.putAllFromPersistence(c.attrs)
         }
-        player.assignModLevel(d)
-    }
-
-    private fun Player.assignModLevel(d: AccountData) {
-        val levels = ServerCacheManager.getModelLevels().values
-        val defaultLevel = levels.first()
-        modLevel = resolveModLevelFromRights(d.rights) ?: defaultLevel
-    }
-
-    public companion object {
-        public fun resolveModLevelFromRights(rights: Rights): ModLevelType? =
-            when (rights) {
-                Rights.ADMINISTRATOR ->
-                    ServerCacheManager.getModLevel("modlevel.admin".asRSCM(RSCMType.MODLEVEL))
-                Rights.MOD ->
-                    ServerCacheManager.getModLevel("modlevel.moderator".asRSCM(RSCMType.MODLEVEL))
-                Rights.NONE -> null
-            }
+        player.modLevel = d.rights
     }
 }
-

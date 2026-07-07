@@ -42,6 +42,8 @@ data class Quest(
 
         fun get(key: String): Quest? = questsByKey[key.normalizedQuestKey()]
 
+        fun getById(id: Int): Quest? = questsByKey.values.find { it.id == id }
+
         fun all(): Collection<Quest> = questsByKey.values
 
         fun register(

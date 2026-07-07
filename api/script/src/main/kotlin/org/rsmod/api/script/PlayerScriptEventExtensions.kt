@@ -4,7 +4,6 @@ import dev.openrune.definition.type.widget.ComponentType
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import dev.openrune.types.ItemServerType
-import dev.openrune.types.WalkTriggerType
 import org.rsmod.api.player.events.PlayerHitpointsChangedEvent
 import org.rsmod.api.player.events.PlayerMovementEvent
 import org.rsmod.api.player.events.PlayerQueueEvents
@@ -13,6 +12,7 @@ import org.rsmod.api.player.events.interact.PlayerTEvents
 import org.rsmod.api.player.events.interact.PlayerUContentEvents
 import org.rsmod.api.player.events.interact.PlayerUEvents
 import org.rsmod.api.player.input.DialogInput
+import dev.or2.central.account.Rights
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.ui.WorldMapClick
 import org.rsmod.game.entity.player.SessionStateEvent
@@ -107,10 +107,10 @@ public fun ScriptContext.onPlayerHitpointsChanged(action: PlayerHitpointsChanged
     onEvent(action)
 
 public fun ScriptContext.onWorldMapClick(
-    internal: String,
+    requiredRights: Rights,
     action: suspend ProtectedAccess.(WorldMapClick) -> Unit,
 ): Unit = onProtectedEvent(WorldMapClick.BUS_ID) { event: WorldMapClick ->
-    if (!player.modLevel.hasAccessTo(internal)) {
+    if (!player.modLevel.isAtLeast(requiredRights)) {
         return@onProtectedEvent
     }
     action(event)

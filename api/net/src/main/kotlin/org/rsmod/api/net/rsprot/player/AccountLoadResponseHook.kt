@@ -1,15 +1,12 @@
 package org.rsmod.api.net.rsprot.player
 
 import com.github.michaelbull.logging.InlineLogger
-import dev.openrune.types.ModLevelType
 import java.time.LocalDateTime
-import java.time.temporal.ChronoUnit
 import net.rsprot.protocol.api.login.GameLoginResponseHandler
 import net.rsprot.protocol.loginprot.incoming.util.AuthenticationType
 import net.rsprot.protocol.loginprot.incoming.util.LoginBlock
 import net.rsprot.protocol.loginprot.outgoing.LoginResponse
 import net.rsprot.protocol.loginprot.outgoing.util.AuthenticatorResponse
-import org.rsmod.api.account.character.main.CharacterAccountApplier
 import dev.or2.central.account.AccountData
 import dev.or2.central.account.Rights
 import org.rsmod.api.account.character.main.CharacterAccountRepository
@@ -43,7 +40,6 @@ class AccountLoadResponseHook(
     private val eventBus: EventBus,
     private val accountRegistry: AccountRegistry,
     private val playerRegistry: PlayerRegistry,
-    private val devModeModLevel: ModLevelType,
     private val loginBlock: LoginBlock<AuthenticationType>,
     private val channelResponses: GameLoginResponseHandler<Player>,
     private val inputPassword: CharArray,
@@ -295,9 +291,7 @@ class AccountLoadResponseHook(
 
     private fun applyCentralStaffFromPending(player: Player) {
         pendingCentralRights?.takeIf { it.isNotBlank() }?.let { rights ->
-            CharacterAccountApplier.resolveModLevelFromRights(Rights.fromRightsColumn(rights))?.let { resolved ->
-                player.modLevel = resolved
-            }
+            player.modLevel = Rights.fromRightsColumn(rights)
         }
         pendingCentralRights = null
     }
@@ -321,7 +315,7 @@ class AccountLoadResponseHook(
             displayName = username.toDisplayName()
         }
         if (config.devMode) {
-            modLevel = devModeModLevel
+            modLevel = Rights.ADMINISTRATOR
         }
     }
 
@@ -444,7 +438,7 @@ class AccountLoadResponseHook(
         LoginResponse.Ok(
             authenticatorResponse = authenticatorResponse(auth),
             staffModLevel = modLevel.clientCode,
-            playerMod = modLevel.hasAccessTo("modlevel.moderator"),
+            playerMod = modLevel.isAtLeast(Rights.MOD),
             index = slotId,
             member = members,
             accountHash = accountHash,

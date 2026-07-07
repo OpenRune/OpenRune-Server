@@ -8,7 +8,7 @@ kotlin {
 
 dependencies {
     implementation(libs.fastutil)
-    implementation(libs.openrune.central.common)
+    api(libs.openrune.central.common)
     implementation(projects.engine.annotations)
     implementation(projects.api.attr)
     implementation(projects.engine.coroutine)

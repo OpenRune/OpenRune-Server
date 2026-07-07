@@ -135,9 +135,9 @@ public class WorldMapClick(
     public val coord: CoordGrid
 ) : SuspendEvent<ProtectedAccess> {
     /**
-     * Stable event-bus key for [org.rsmod.api.script.onWorldMapClick]. Scripts gate by mod level
-     * with [dev.openrune.types.ModLevelType.hasAccessTo]; this must not vary per player or the
-     * subscription key would not match the published event.
+     * Stable event-bus key for [org.rsmod.api.script.onWorldMapClick]. Scripts gate by
+     * [dev.or2.central.account.Rights]; this must not vary per player or the subscription key
+     * would not match the published event.
      */
     override val id: Long = BUS_ID
 

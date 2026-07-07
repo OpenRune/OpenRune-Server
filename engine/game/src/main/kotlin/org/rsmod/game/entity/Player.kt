@@ -4,13 +4,11 @@ import dev.openrune.rscm.RSCM
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import dev.openrune.types.BasType
-import dev.openrune.types.ModLevelType
+import dev.or2.central.account.Rights
 import dev.or2.central.account.TwoFactorAuthData
 import dev.or2.central.account.TrustedDeviceData
 import dev.openrune.types.NpcServerType
-import dev.openrune.types.SequenceServerType
 import dev.openrune.types.StatType
-import dev.openrune.types.aconverted.SpotanimType
 import it.unimi.dsi.fastutil.ints.IntArrayList
 import it.unimi.dsi.fastutil.ints.IntArraySet
 import it.unimi.dsi.fastutil.ints.IntList
@@ -193,20 +191,7 @@ public class Player(
     public var runEnergy: Int = 1000
     public var runWeight: Int = 0
 
-    /**
-     * The player's current mod level.
-     *
-     * Checking if a player has access to permissions from other mod levels should be done through
-     * [UnpackedModLevelType.hasAccessTo] instead of direct comparisons.
-     *
-     * _Note: This value is **always** expected to be set on login._
-     */
-    // Design note: Using `lateinit` here avoids the ambiguity of a nullable `modLevel`. A nullable
-    // type would require checks like `modLevel?.hasAccessTo(...)`, which could be misinterpreted:
-    // is `null` equivalent to a "player" mod level, or does it signify uninitialized state?
-    // `lateinit` ensures `modLevel` is always initialized before use, making its state explicit.
-    // Given the circumstances, we use `lateinit` even though it can be considered a code smell.
-    public lateinit var modLevel: ModLevelType
+    public var modLevel: Rights = Rights.NONE
 
     public val attr: AttributeMap = AttributeMap()
     public var xpRate: Double = 1.0

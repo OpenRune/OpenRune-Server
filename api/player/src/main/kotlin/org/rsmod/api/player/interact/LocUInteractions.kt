@@ -111,6 +111,13 @@ public class LocUInteractions @Inject private constructor(private val eventBus: 
             return defGroupScript
         }
 
+        if (locType.category >= 0) {
+            val categoryDefaultEvent = LocUDefaultEvents.OpCategory(base, target, locType, objType, invSlot)
+            if (eventBus.contains(categoryDefaultEvent::class.java, categoryDefaultEvent.id)) {
+                return categoryDefaultEvent
+            }
+        }
+
         return null
     }
 
@@ -190,6 +197,13 @@ public class LocUInteractions @Inject private constructor(private val eventBus: 
         val defGroupScript = LocUDefaultEvents.ApContent(base, target, locType, objType, invSlot)
         if (eventBus.contains(defGroupScript::class.java, defGroupScript.id)) {
             return defGroupScript
+        }
+
+        if (locType.category >= 0) {
+            val categoryDefaultEvent = LocUDefaultEvents.ApCategory(base, target, locType, objType, invSlot)
+            if (eventBus.contains(categoryDefaultEvent::class.java, categoryDefaultEvent.id)) {
+                return categoryDefaultEvent
+            }
         }
 
         return null

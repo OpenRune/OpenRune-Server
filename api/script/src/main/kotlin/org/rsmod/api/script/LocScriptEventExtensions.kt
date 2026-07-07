@@ -199,6 +199,15 @@ public fun ScriptContext.onOpLocU(
     action: suspend ProtectedAccess.(LocUEvents.Op) -> Unit,
 ): Unit = onOpLocU(RSCM.getReverseMapping(RSCMType.LOC, type.id), objType, action)
 
+public fun ScriptContext.onOpLocCategoryU( //Overload to allow any generic item via category based.
+    category: String,
+    action: suspend ProtectedAccess.(LocUDefaultEvents.OpCategory) -> Unit,
+): Unit =
+    onProtectedEvent(
+        category.asRSCM(RSCMType.CATEGORY),
+        action
+    )
+
 public fun ScriptContext.onOpLocCategoryU(
     category: String,
     objType: String,
@@ -351,6 +360,11 @@ public fun ScriptContext.onApContentLocU(
     content: String,
     action: suspend ProtectedAccess.(LocUDefaultEvents.ApContent) -> Unit,
 ): Unit = onProtectedEvent(content.asRSCM(RSCMType.CONTENT), action)
+
+public fun ScriptContext.onApLocCategoryU(
+    category: String,
+    action: suspend ProtectedAccess.(LocUDefaultEvents.ApCategory) -> Unit,
+): Unit = onProtectedEvent(category.asRSCM(RSCMType.CATEGORY), action)
 
 public fun ScriptContext.onApLocU(
     type: String,

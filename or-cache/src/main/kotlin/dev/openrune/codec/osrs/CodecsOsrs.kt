@@ -19,8 +19,6 @@ class InventoryDecoder : ConfigDefinitionDecoder<InventoryServerType>(InventoryS
 
 class MesAnimDecoder : ConfigDefinitionDecoder<MesAnimType>(MesAnimServerCodec(), 61)
 
-class ModLevelDecoder : ConfigDefinitionDecoder<ModLevelType>(ModLevelServerCodec(), 62)
-
 class StatTypeDecoder : ConfigDefinitionDecoder<StatType>(StatTypeServerCodec(), 63)
 
 class ProjectileTypeDecoder :

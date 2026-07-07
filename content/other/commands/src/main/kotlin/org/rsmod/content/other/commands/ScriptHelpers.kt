@@ -1,5 +1,6 @@
 package org.rsmod.content.other.commands
 
+import dev.or2.central.account.Rights
 import org.rsmod.api.cheat.CheatHandlerBuilder
 import org.rsmod.api.script.onCommand
 import org.rsmod.game.cheat.Cheat
@@ -12,7 +13,7 @@ internal fun ScriptContext.onCommand(
     init: CheatHandlerBuilder.() -> Unit = {},
 ) {
     onCommand(command) {
-        this.internal = "modlevel.admin"
+        this.requiredRights = Rights.ADMINISTRATOR
         this.desc = desc
         this.cheat(cheat)
         init()

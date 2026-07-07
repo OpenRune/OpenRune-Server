@@ -13,7 +13,6 @@ import dev.openrune.codec.osrs.HuntModeDecoder
 import dev.openrune.codec.osrs.InventoryDecoder
 import dev.openrune.codec.osrs.ItemDecoder
 import dev.openrune.codec.osrs.MesAnimDecoder
-import dev.openrune.codec.osrs.ModLevelDecoder
 import dev.openrune.codec.osrs.NpcDecoder
 import dev.openrune.codec.osrs.ObjectDecoder
 import dev.openrune.codec.osrs.ProjectileTypeDecoder
@@ -64,7 +63,6 @@ object ServerCacheManager {
     private var interfaces = mutableMapOf<Int, InterfaceType>()
     private var inv = mutableMapOf<Int, InventoryServerType>()
     private var mesanim = mutableMapOf<Int, MesAnimType>()
-    private var modLevels = mutableMapOf<Int, ModLevelType>()
     private var statTypes = mutableMapOf<Int, StatType>()
     private var projectiles = mutableMapOf<Int, ProjAnimType>()
     private var hitsplats = mutableMapOf<Int, HitSplatType>()
@@ -123,7 +121,6 @@ object ServerCacheManager {
             DBTableDecoder().load(cache, dbtables)
             ComponentDecoder(cache,rev).load(interfaces)
             MesAnimDecoder().load(cache, mesanim)
-            ModLevelDecoder().load(cache, modLevels)
             StatTypeDecoder().load(cache, statTypes)
             ProjectileTypeDecoder().load(cache, projectiles)
             HitSplatDecoder().load(cache, hitsplats)
@@ -195,8 +192,6 @@ object ServerCacheManager {
 
     fun getMesAnim(id: Int) = mesanim[id]
 
-    fun getModLevel(id: Int) = modLevels[id]
-
     fun getNpcOrDefault(id: Int) = getOrDefault(npcs, id, NpcServerType(), "Npc")
 
     fun getObjectOrDefault(id: Int) = getOrDefault(objects, id, ObjectServerType(), "Object")
@@ -265,8 +260,6 @@ object ServerCacheManager {
     fun getRows() = dbrows.toMap()
 
     fun getParams() = params.toMap()
-
-    fun getModelLevels() = modLevels.toMap()
 
     fun fromInterface(packed: Int): InterfaceType {
         val interfaceId = packed ushr 16
