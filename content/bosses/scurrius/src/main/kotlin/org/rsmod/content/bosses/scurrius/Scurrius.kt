@@ -91,6 +91,7 @@ constructor(
         }
         if (player.isInCombat()) {
             mes("You can not eat from the food pile while in combat.")
+            return
         }
         arriveDelay()
         player.foodPileEatCooldown = mapClock + 1000
