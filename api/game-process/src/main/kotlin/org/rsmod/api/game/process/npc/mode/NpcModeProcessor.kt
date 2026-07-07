@@ -20,6 +20,10 @@ constructor(
     private val aiObjMode: AiObjModeProcessor,
 ) {
     public fun process(npc: Npc) {
+        if (npc.ignoreCombatInteractions) {
+            npc.clearInteraction()
+            return
+        }
         val mode = npc.mode ?: npc.defaultMode
         npc.mode = mode
         npc.processMode(mode)

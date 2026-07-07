@@ -51,7 +51,7 @@ public class BossHpBarScript @Inject constructor(
         onEvent<InstancePlayerLeaveUnboundEvent> {
             for (npc in instances.npcsForInstance(instanceId)) {
                 if (npcBarMode(npc) == BossHpBarMode.ON_ENTER) {
-                    onClose(player, npc)
+                    onClose(player, npc, instant = true)
                 }
             }
         }
@@ -100,11 +100,15 @@ public class BossHpBarScript @Inject constructor(
 
 
     @OptIn(InternalApi::class)
-    public fun onClose(player: Player, npc: Npc) {
+    public fun onClose(player: Player, npc: Npc, instant: Boolean = false) {
+        if (instant) {
+            player.ifSetHide("component.hpbar_hud:hp", true)
+            return
+        }
         protectedAccess.launchLenient(player) {
-            player.runClientScript(2889, commonComponents,0)
+            player.runClientScript(2889, commonComponents, 0)
             delay(2)
-            player.ifSetHide("component.hpbar_hud:hp",true)
+            player.ifSetHide("component.hpbar_hud:hp", true)
         }
     }
 

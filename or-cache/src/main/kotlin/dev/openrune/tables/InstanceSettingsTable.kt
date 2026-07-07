@@ -80,5 +80,34 @@ object InstanceSettingsTable {
             columnRSCM(EXIT_OBJECT, "loc.dragonkingoutlever")
         }
 
+        row("dbrow.instance_cowboss") {
+            column(KEY, "cowboss")
+            columnCoord(EXIT_COORD, CoordGrid(3258, 3289, 0))
+            columnCoord(ENTER_COORD, CoordGrid(0, 50, 51, 58, 28))
+            column(FEE, 0)
+            column(MAX_PLAYERS, 1)
+            column(TIME_LIMIT_MINUTES, 0)
+            column(GRACE_MINUTES, 5)
+            columnRSCM(BOSS_NPC, "npc.cowboss")
+            column(BOSS_NAME, "Brutus")
+            column(RECOMMENDED_COMBAT, 30,30)
+            column(TEAM_SIZE, 1)
+            column(LOOT_MULTIPLIER, "x1.0")
+            column(
+                DESCRIPTION,
+                "The prize bull of the Lumbridge cow field. Dodge his charge and slam.",
+            )
+            columnRSCM(
+                ENTER_OBJECT,
+                "loc.fencegate_l_cowboss_start",
+                "loc.fencegate_r_cowboss_start",
+            )
+            columnRSCM(
+                EXIT_OBJECT,
+                "loc.fencegate_l_cowboss_exit",
+                "loc.fencegate_r_cowboss_exit",
+            )
+        }
+
     }
 }

@@ -10,6 +10,12 @@ public class NpcFaceSquareProcessor {
     }
 
     private fun Npc.processFaceSquare() {
+        if (isFacingLocked) {
+            val angle = calculateAngle(faceLockSquare, faceLockWidth, faceLockLength)
+            pendingFaceAngle = EntityFaceAngle.fromOrNull(angle)
+            resetPendingFaceSquare()
+            return
+        }
         if (!hasMovedThisCycle && pendingFaceSquare != CoordGrid.NULL) {
             val angle = calculateAngle(pendingFaceSquare, pendingFaceWidth, pendingFaceLength)
             pendingFaceAngle = EntityFaceAngle.fromOrNull(angle)
