@@ -42,10 +42,10 @@ len4="seq.chatcon4"
 
 [[mesanim]]
 id="mesanim.silent"
-len1="seq.chat_pleased"
-len2="seq.chat_pleased"
-len3="seq.chat_pleased"
-len4="seq.chat_pleased"
+len1="seq.chatneu_idle"
+len2="seq.chatneu_idle"
+len3="seq.chatneu_idle"
+len4="seq.chatneu_idle"
 
 [[mesanim]]
 id="mesanim.goblin"

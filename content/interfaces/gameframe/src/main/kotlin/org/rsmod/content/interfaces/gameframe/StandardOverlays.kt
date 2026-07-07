@@ -17,6 +17,7 @@ internal object StandardOverlays {
             GameframeOverlay("interface.orbs", "component.toplevel_osrs_stretch:orbs"),
             GameframeOverlay("interface.xp_drops", "component.toplevel_osrs_stretch:xp_drops"),
             GameframeOverlay("interface.popout", "component.toplevel_osrs_stretch:popout"),
+            GameframeOverlay("interface.ehc_worldhop", "component.toplevel_osrs_stretch:tli_listener"),
             GameframeOverlay("interface.stats", "component.toplevel_osrs_stretch:side1"),
             GameframeOverlay("interface.side_journal", "component.toplevel_osrs_stretch:side2"),
             GameframeOverlay("interface.inventory", "component.toplevel_osrs_stretch:side3"),
@@ -66,6 +67,7 @@ internal object StandardOverlays {
             "component.toplevel_osrs_stretch:stat_boosts_hud",
             "component.toplevel_osrs_stretch:helper_content",
             "component.toplevel_osrs_stretch:hpbar_hud",
+            "component.toplevel_osrs_stretch:tli_listener",
             "component.toplevel_osrs_stretch:popout"
         )
 }
