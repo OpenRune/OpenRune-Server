@@ -30,7 +30,7 @@ spotless = "7.0.4"
 postgresql-jdbc = "42.7.5"
 embedded-postgres = "2.2.2"
 or2 = "2.4.12"
-openruneCentral = "2.0.0"
+openruneCentral = "2.0.1"
 or2ServerUtils = "0.8"
 jodatime = "2.14.0"
 
