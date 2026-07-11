@@ -17,21 +17,37 @@ class BossEncounter(
     var damageScale: Double = 1.0
     var lethalHandled: Boolean = false
 
+    internal val firedTriggers = mutableSetOf<Int>()
+    internal val firedPhaseEntries = mutableSetOf<String>()
     private val cooldowns = mutableMapOf<String, Int>()
     private var rotationCursor = 0
     private var basicAttackCount = 0
     private var forceAttackThreshold = -1
 
+    init {
+        npc.movementLocked = currentPhase?.lockMovement == true
+    }
+
     val currentPhase: PhaseSpec?
         get() = spec.phases[currentPhaseName]
 
     fun transitionTo(phaseName: String, tick: Int) {
+        val from = currentPhaseName
         currentPhaseName = phaseName
         phaseEnteredTick = tick
         rotationCursor = 0
         cooldowns.clear()
         basicAttackCount = 0
         forceAttackThreshold = -1
+
+        val phase = spec.phases[phaseName]
+
+        val idle = phase?.idleAnim
+        if (idle != null) npc.setIdleAnim(idle) else npc.clearIdleAnim()
+
+        npc.movementLocked = phase?.lockMovement == true
+
+        npc.clearFacingLock()
     }
 
     fun selectAbility(selector: Selector, tick: Int, target: Player? = null): String? {

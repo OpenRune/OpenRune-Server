@@ -1,15 +1,20 @@
 package org.rsmod.api.bosses.dsl
 
+import dev.openrune.types.NpcMode
 import org.rsmod.api.bosses.spec.*
 import org.rsmod.api.bosses.validation.SpecValidator
 
 @DslMarker annotation class BossDsl
 
-fun boss(npcType: String, block: BossSpecBuilder.() -> Unit): BossSpec =
-    BossSpecBuilder(npcType).apply(block).build()
+fun boss(vararg npcTypes: String, block: BossSpecBuilder.() -> Unit): BossSpec =
+    BossSpecBuilder(npcTypes.toList()).apply(block).build()
 
 @BossDsl
-class BossSpecBuilder(private val npcType: String) {
+class BossSpecBuilder(private val npcTypes: List<String>) {
+    init {
+        require(npcTypes.isNotEmpty()) { "A boss spec must declare at least one npc type." }
+    }
+
     private var stats = BossStats()
     private val abilities = mutableMapOf<String, Effect>()
     private val phases = mutableMapOf<String, PhaseSpec>()
@@ -40,6 +45,8 @@ class BossSpecBuilder(private val npcType: String) {
         transmog: String? = null,
         lockMovement: Boolean = false,
         exitAfter: Int? = null,
+        nextPhase: String? = null,
+        idleAnim: String? = null,
         block: PhaseBuilder.() -> Unit,
     ): PhaseRef {
         val builder = PhaseBuilder(name).apply(block)
@@ -50,6 +57,8 @@ class BossSpecBuilder(private val npcType: String) {
                 transmog = transmog,
                 lockMovement = lockMovement,
                 exitAfter = exitAfter,
+                nextPhase = nextPhase,
+                idleAnim = idleAnim,
                 entry = builder.entry,
                 exit = builder.exit,
                 selector = builder.selector,
@@ -63,11 +72,11 @@ class BossSpecBuilder(private val npcType: String) {
     }
 
     fun build(): BossSpec {
-        val spec = BossSpec(npcType, stats, abilities, phases, triggers)
+        val spec = BossSpec(npcTypes, stats, abilities, phases, triggers)
         val errors = SpecValidator.validate(spec)
         if (errors.isNotEmpty()) {
             throw IllegalStateException(
-                "Boss spec invalid for '$npcType':\n" +
+                "Boss spec invalid for '${npcTypes.joinToString()}':\n" +
                     errors.joinToString("\n") { " - ${it.message}" }
             )
         }
@@ -291,8 +300,40 @@ class AbilityBuilder {
         count: Int = 1,
         radius: Int = 3,
         centeredOn: TargetExpr = TargetExpr.Self,
+        mode: NpcMode? = null,
     ) {
-        effects += Effect.Summon(npc, count, radius, centeredOn)
+        effects += Effect.Summon(npc, count, radius, centeredOn, mode)
+    }
+
+    /**
+     * Telegraphed, dodgeable area attack (falling rocks/debris). See [Effect.Debris]. A [telegraph]
+     * spotanim marks each tile, then after [windup] ticks players still standing on a marked tile take
+     * [damage]. Tiles target every player within [targetRadius] of the boss plus random scatter within
+     * [scatterRadius], totaling a value drawn from [count].
+     */
+    fun debris(
+        telegraph: String,
+        damage: DamageExpr,
+        type: HitType = HitType.Typeless,
+        impact: String? = null,
+        windup: Int = 3,
+        targetRadius: Int = 15,
+        scatterRadius: Int = 5,
+        count: IntRange = 1..1,
+        center: TargetExpr = TargetExpr.Self,
+    ) {
+        effects +=
+            Effect.Debris(
+                telegraph,
+                damage,
+                type,
+                impact,
+                windup,
+                targetRadius,
+                scatterRadius,
+                count,
+                center,
+            )
     }
 
     fun build(): Effect = if (effects.size == 1) effects.first() else Effect.Sequence(effects)

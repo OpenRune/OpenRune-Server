@@ -35279,6 +35279,10 @@ weaponCategory="Spiked"
 tradeable = false
 [item.params]
 "param.equipment_sound"=2246
+"param.attack_anim_stance1"="seq.barrow_guthan_crush"
+"param.attack_anim_stance2"="seq.barrow_guthan_crush"
+"param.attack_anim_stance3"="seq.barrow_guthan_crush"
+"param.attack_anim_stance4"="seq.barrow_guthan_crush"
 
 
 [[item]]
