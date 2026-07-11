@@ -24,7 +24,7 @@ inherit = "inv.bank"
 scope = "Perm"
 stack = "Always"
 protect = false
-placeholders = false
+placeholders = true
 
 [[inventory]]
 isServerOnly = true
