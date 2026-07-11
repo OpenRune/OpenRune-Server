@@ -69,9 +69,10 @@ constructor(
 
 
         val internalName = RSCM.getReverseMapping(RSCMType.OBJ, objType.id)
+        val currencyInternalName = RSCM.getReverseMapping(RSCMType.OBJ, currencyObj.id)
 
         val shopInitialObjCount = shopInv.initialStockCount(obj)
-        val availableCurrencyCount = sideInv.count(internalName)
+        val availableCurrencyCount = sideInv.count(currencyInternalName)
         val cappedRequest =
             if (objType.isStackable) {
                 min(Int.MAX_VALUE - sideInv.count(internalName), initialPurchaseRequest)
