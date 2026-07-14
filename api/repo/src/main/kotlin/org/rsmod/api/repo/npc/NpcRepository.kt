@@ -174,22 +174,40 @@ constructor(
         addNpcs.clear()
     }
 
-    internal fun processDelayedAdd() {
-        if (addDelayedNpcs.isNotEmpty()) {
-            processAddDelayed()
+    internal fun processDelayedAdd(): Int {
+        if (addDelayedNpcs.isEmpty()) {
+            return 0
         }
+        return processAddDelayed()
     }
 
-    private fun processAddDelayed() {
+    /**
+     * Spawns due delayed NPCs, capped per cycle so map-wide [addDelayed] bursts (e.g. server
+     * startup with spawnDelay=0) do not stall the game thread for hundreds of milliseconds.
+     *
+     * Uses [MapClock.cycle] >= trigger so leftovers remain eligible on subsequent cycles.
+     */
+    private fun processAddDelayed(): Int {
+        var added = 0
         val iterator = addDelayedNpcs.iterator()
-        while (iterator.hasNext()) {
+        while (iterator.hasNext() && added < DELAYED_ADDS_PER_CYCLE) {
             val npc = iterator.next()
-            if (shouldTrigger(npc.lifecycleDelayedAddCycle)) {
+            if (mapClock.cycle >= npc.lifecycleDelayedAddCycle) {
                 add(npc, duration = npc.lifecycleDelayedAddDuration)
                 iterator.remove()
+                added++
             }
         }
+        return added
     }
 
     private fun shouldTrigger(triggerCycle: Int): Boolean = mapClock.cycle == triggerCycle
+
+    private companion object {
+        /**
+         * Tuned so a full-map `addDelayed(spawnDelay=0)` drain stays well under one game tick.
+         * At ~55µs/npc and ~18µs/obj, these caps target ~50ms combined worst case.
+         */
+        private const val DELAYED_ADDS_PER_CYCLE: Int = 750
+    }
 }

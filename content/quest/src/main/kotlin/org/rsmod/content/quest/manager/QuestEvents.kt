@@ -14,11 +14,17 @@ class QuestEvents : PluginScript() {
     private var Player.questTotalCount by intVarBit("varbit.quests_total_count")
     private var Player.questPointMax by intVarBit("varbit.qp_max")
 
-    override fun ScriptContext.startup() {
-        onPlayerLogin {
+    private var questCount: Int = 0
+    private var questPointCap: Int = 0
 
-            player.questTotalCount = QuestRow.all().size
-            player.questPointMax = QuestRow.all().sumOf { it.questpoints }
+    override fun ScriptContext.startup() {
+        val rows = QuestRow.all()
+        questCount = rows.size
+        questPointCap = rows.sumOf { it.questpoints }
+
+        onPlayerLogin {
+            player.questTotalCount = questCount
+            player.questPointMax = questPointCap
 
             player.ifSetEvents(
                 "component.questjournal_overview:content_inner",
@@ -26,12 +32,12 @@ class QuestEvents : PluginScript() {
                 IfEvent.Op1,
                 IfEvent.Op2,
                 IfEvent.Op3,
-                IfEvent.Op4
+                IfEvent.Op4,
             )
 
-
             player.ifSetEvents(
-                "component.questlist:list", 0..QuestRow.all().size,
+                "component.questlist:list",
+                0..questCount,
                 IfEvent.Op1,
                 IfEvent.Op2,
                 IfEvent.Op3,
@@ -39,5 +45,4 @@ class QuestEvents : PluginScript() {
             )
         }
     }
-
 }

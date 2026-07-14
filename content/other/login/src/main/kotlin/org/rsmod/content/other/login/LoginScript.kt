@@ -4,7 +4,6 @@ import dev.openrune.ServerCacheManager
 import dev.openrune.rscm.RSCM
 import dev.openrune.rscm.RSCMType
 import dev.openrune.types.StatType
-import dev.openrune.types.varp.VarpServerType
 import jakarta.inject.Inject
 import net.rsprot.protocol.game.outgoing.misc.client.HideLocOps
 import net.rsprot.protocol.game.outgoing.misc.client.HideNpcOps
@@ -13,7 +12,6 @@ import net.rsprot.protocol.game.outgoing.misc.client.MinimapToggle
 import net.rsprot.protocol.game.outgoing.misc.client.ResetAnims
 import net.rsprot.protocol.game.outgoing.misc.player.ChatFilterSettings
 import net.rsprot.protocol.game.outgoing.varp.VarpReset
-import net.rsprot.protocol.game.outgoing.misc.player.ChatFilterSettingsPrivateChat
 import org.rsmod.api.inv.weight.InvWeight
 import org.rsmod.api.net.central.OpenRuneCentralWorldLink
 import org.rsmod.api.net.central.writeCentralSocialSnapshot
@@ -50,7 +48,6 @@ constructor(
     private val config: ServerConfig,
     private val openRuneCentral: OpenRuneCentralWorldLink,
 ) : PluginScript() {
-    private val transmitVars by lazy { transmitVars() }
     private val statSyncEntries by lazy { statSyncEntries() }
 
     private var Player.chatboxUnlocked: Boolean by boolVarBit("varbit.has_displayname_transmitter")
@@ -62,7 +59,7 @@ constructor(
     private fun Player.engineLogin() {
         sendHighPriority()
         sendLowPriority()
-        VarPlayerIntMapSetter.set(this,"varbit.player_in_instance",0)
+        VarPlayerIntMapSetter.set(this, "varbit.player_in_instance", 0)
     }
 
     private fun Player.sendHighPriority() {
@@ -108,7 +105,6 @@ constructor(
         client.write(HideObjOps(false))
     }
 
-
     private fun Player.sendWelcomeMessage() {
         val message = realm.config.loginMessage
         message?.let {
@@ -122,10 +118,12 @@ constructor(
     private fun Player.sendVars() {
         client.write(VarpReset)
         chatboxUnlocked = displayName.isNotBlank()
-        for (varp in transmitVars) {
-            if (varp in vars) {
-                resyncVar(varp)
+        for ((id, _) in vars) {
+            val varp = ServerCacheManager.getVarp(id) ?: continue
+            if (varp.transmit.never) {
+                continue
             }
+            resyncVar(varp)
         }
     }
 
@@ -181,7 +179,4 @@ constructor(
         ServerCacheManager.getStats().values.map { stat ->
             RSCM.getReverseMapping(RSCMType.STAT, stat.id) to stat
         }
-
-    private fun transmitVars(): List<VarpServerType> =
-        ServerCacheManager.getVarps().values.filter { !it.transmit.never }.sortedBy { it.id }
 }

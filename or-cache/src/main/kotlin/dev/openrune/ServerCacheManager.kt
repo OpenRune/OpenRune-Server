@@ -58,6 +58,7 @@ object ServerCacheManager {
     private val enums: MutableMap<Int, EnumType> = mutableMapOf()
     private val varbits: MutableMap<Int, VarBitType> = mutableMapOf()
     private val varps: MutableMap<Int, VarpServerType> = mutableMapOf()
+    private var transmitVarps: List<VarpServerType> = emptyList()
     private val sequences = mutableMapOf<Int, SequenceServerType>()
     private var fonts = mutableMapOf<Int, FontType>()
     private var interfaces = mutableMapOf<Int, InterfaceType>()
@@ -133,6 +134,7 @@ object ServerCacheManager {
             HuntModeDecoder().load(cache, hunt)
             VarnBitDecoder().load(cache, varnbit)
             VarObjBitDecoder().load(cache, varobjBit)
+            transmitVarps = varps.values.filter { !it.transmit.never }.sortedBy { it.id }
         } catch (e: BufferUnderflowException) {
             logger.error(e) { "Error reading definitions" }
             throw e
@@ -242,6 +244,8 @@ object ServerCacheManager {
     fun getVarbits() = varbits.toMap()
 
     fun getVarps() = varps.toMap()
+
+    fun getTransmitVarps(): List<VarpServerType> = transmitVarps
 
     fun getVarns() = varns.toMap()
 

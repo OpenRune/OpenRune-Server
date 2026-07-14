@@ -179,21 +179,25 @@ constructor(private val mapClock: MapClock, private val registry: ObjRegistry) {
         }
     }
 
-    internal fun processDelayedAdd() {
-        if (addDelayed.isNotEmpty()) {
-            processAddDelayed()
+    internal fun processDelayedAdd(): Int {
+        if (addDelayed.isEmpty()) {
+            return 0
         }
+        return processAddDelayed()
     }
 
-    private fun processAddDelayed() {
+    private fun processAddDelayed(): Int {
+        var added = 0
         val iterator = addDelayed.iterator()
-        while (iterator.hasNext()) {
+        while (iterator.hasNext() && added < DELAYED_ADDS_PER_CYCLE) {
             val duration = iterator.next()
             if (duration.shouldTrigger()) {
                 add(duration.obj, duration = duration.duration)
                 iterator.remove()
+                added++
             }
         }
+        return added
     }
 
     private fun ObjCycleDuration.shouldTrigger(): Boolean = mapClock >= triggerCycle
@@ -210,5 +214,8 @@ constructor(private val mapClock: MapClock, private val registry: ObjRegistry) {
 
     public companion object {
         public const val DEFAULT_REVEAL_DELAY: Int = 100
+
+        /** Objs are cheaper to register than NPCs; allow a larger per-cycle drain. */
+        private const val DELAYED_ADDS_PER_CYCLE: Int = 2_500
     }
 }
