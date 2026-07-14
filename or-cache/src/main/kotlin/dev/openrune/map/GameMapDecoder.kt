@@ -18,9 +18,6 @@ import dev.openrune.map.obj.MapObjListDefinition
 import dev.openrune.map.tile.MapTileDecoder
 import dev.openrune.map.tile.MapTileSimpleDefinition
 import dev.openrune.map.util.InlineByteBuf
-import kotlin.collections.component1
-import kotlin.collections.component2
-import kotlin.collections.iterator
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -38,12 +35,10 @@ import org.rsmod.routefinder.flag.CollisionFlag
 import org.rsmod.routefinder.loc.LocLayerConstants
 
 object GameMapDecoder {
-
     public fun decodeAll(spawnSink: GameMapSpawnSink, cache: Cache): Unit =
-        runBlocking(Dispatchers.IO) {
+        runBlocking(Dispatchers.Default) {
             val mapBuffers = cache.readMapBuffers()
             val decodedMaps = decodeAll(mapBuffers)
-
             putMapCollision(decodedMaps)
             putAreas(decodedMaps)
 
@@ -52,22 +47,27 @@ object GameMapDecoder {
             cacheLocs(mapBuilder)
         }
 
-    private fun Cache.readMapBuffers(): List<MapBuffer> = archives(MAPS).asSequence()
-        .filter { it <= 25286 }.mapNotNull { groupId ->
-            val mapData = data(MAPS, groupId, 0) ?: return@mapNotNull null
-            val locData = data(MAPS, groupId, 1) ?: return@mapNotNull null
+    private fun Cache.readMapBuffers(): List<MapBuffer> =
+        archives(MAPS)
+            .asSequence()
+            .filter { it <= 25286 }
+            .mapNotNull { groupId ->
+                val mapData = data(MAPS, groupId, 0) ?: return@mapNotNull null
+                val locData = data(MAPS, groupId, 1) ?: return@mapNotNull null
 
-            val x = groupId shr 8
-            val z = groupId and 0xFF
+                val x = groupId shr 8
+                val z = groupId and 0xFF
 
-            MapBuffer(
-                key = MapSquareKey(x, z),
-                map = InlineByteBuf(mapData),
-                locs = InlineByteBuf(locData),
-                npcs = data(MAPS, groupId, 5)?.let(::InlineByteBuf),
-                objs = data(MAPS, groupId, 6)?.let(::InlineByteBuf),
-                areas = data(MAPS, groupId, 7)?.let(::InlineByteBuf)
-        )}.toList()
+                MapBuffer(
+                    key = MapSquareKey(x, z),
+                    map = InlineByteBuf(mapData),
+                    locs = InlineByteBuf(locData),
+                    npcs = data(MAPS, groupId, 5)?.let(::InlineByteBuf),
+                    objs = data(MAPS, groupId, 6)?.let(::InlineByteBuf),
+                    areas = data(MAPS, groupId, 7)?.let(::InlineByteBuf),
+                )
+            }
+            .toList()
 
     private suspend fun decodeAll(buffers: List<MapBuffer>): List<DecodedMap> = coroutineScope {
         buffers.map { buffer -> async { buffer.decode() } }.awaitAll()
@@ -86,16 +86,26 @@ object GameMapDecoder {
         }
     }
 
-    private fun putSpawns(
+    private suspend fun putSpawns(
         builder: GameMapBuilder,
         decodedMaps: List<DecodedMap>,
         spawnSink: GameMapSpawnSink,
-    ) {
-        for (decoded in decodedMaps) {
-            putLocs(builder, MapSingletons.collision, decoded.key, decoded.map, decoded.locs)
-            decoded.npcs?.let { putNpcs(decoded.key, it, spawnSink) }
-            decoded.objs?.let { putObjs(decoded.key, it, spawnSink) }
-        }
+    ): Unit = coroutineScope {
+        decodedMaps
+            .map { decoded ->
+                async {
+                    putLocs(builder, MapSingletons.collision, decoded.key, decoded.map, decoded.locs)
+                }
+            }
+            .awaitAll()
+        decodedMaps
+            .map { decoded ->
+                async {
+                    decoded.npcs?.let { putNpcs(decoded.key, it, spawnSink) }
+                    decoded.objs?.let { putObjs(decoded.key, it, spawnSink) }
+                }
+            }
+            .awaitAll()
     }
 
     private fun cacheLocs(builder: GameMapBuilder) {
@@ -237,19 +247,14 @@ private class MapBuffer(
     val objs: InlineByteBuf?,
     val areas: InlineByteBuf?,
 ) {
-    suspend fun decode(): DecodedMap = coroutineScope {
-        val mapDef = async { MapTileDecoder.decode(map) }
-        val locDef = async { MapLocListDecoder.decode(locs) }
-        val npcDef = if (npcs != null) async { MapNpcListDecoder.decode(npcs) } else null
-        val objDef = if (objs != null) async { MapObjListDecoder.decode(objs) } else null
-        val areaDef = if (areas != null) async { MapAreaDecoder.decode(areas) } else null
-        DecodedMap(
+    fun decode(): DecodedMap {
+        return DecodedMap(
             key = key,
-            map = mapDef.await(),
-            locs = locDef.await(),
-            npcs = npcDef?.await(),
-            objs = objDef?.await(),
-            areas = areaDef?.await(),
+            map = MapTileDecoder.decode(map),
+            locs = MapLocListDecoder.decode(locs),
+            npcs = npcs?.let(MapNpcListDecoder::decode),
+            objs = objs?.let(MapObjListDecoder::decode),
+            areas = areas?.let(MapAreaDecoder::decode),
         )
     }
 }

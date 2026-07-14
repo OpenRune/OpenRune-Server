@@ -1,7 +1,6 @@
 package org.rsmod.api.invtx
 
 import dev.openrune.ServerCacheManager
-import dev.openrune.types.ItemServerType
 import dev.openrune.types.util.UncheckedType
 import dev.openrune.util.Dummyitem
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
@@ -49,42 +48,38 @@ public class InvTransactions(
 
     public companion object {
         public fun from(): InvTransactions {
-            val certLookup = ServerCacheManager.getItems().values.toCertLookup()
-            val transformLookup = ServerCacheManager.getItems().values.toTransformLookup()
-            val placeholderLookup = ServerCacheManager.getItems().values.toPlaceholderLookup()
-            val stackableLookup = ServerCacheManager.getItems().values.toStackableLookup()
-            val dummyitemLookup = ServerCacheManager.getItems().values.toDummyitemLookup()
+            val certLookup = Int2ObjectOpenHashMap<TransactionObjTemplate>()
+            val transformLookup = Int2ObjectOpenHashMap<TransactionObjTemplate>()
+            val placeholderLookup = Int2ObjectOpenHashMap<TransactionObjTemplate>()
+            val stackableLookup = IntOpenHashSet()
+            val dummyitemLookup = IntOpenHashSet()
+            for (item in ServerCacheManager.getItemTypes()) {
+                if (item.certlink != 0) {
+                    certLookup[item.id] = TransactionObjTemplate(item.certlink, item.certtemplate)
+                }
+                if (item.transformlink != 0) {
+                    transformLookup[item.id] =
+                        TransactionObjTemplate(item.transformlink, item.transformtemplate)
+                }
+                if (item.placeholderLink != 0) {
+                    placeholderLookup[item.id] =
+                        TransactionObjTemplate(item.placeholderLink, item.placeholderTemplate)
+                }
+                if (item.stackable) {
+                    stackableLookup.add(item.id)
+                }
+                if (item.resolvedDummyitem == Dummyitem.GraphicOnly) {
+                    dummyitemLookup.add(item.id)
+                }
+            }
             return InvTransactions(
-                certLookup = Int2ObjectOpenHashMap(certLookup),
-                transformLookup = Int2ObjectOpenHashMap(transformLookup),
-                placeholderLookup = Int2ObjectOpenHashMap(placeholderLookup),
-                stackableLookup = IntOpenHashSet(stackableLookup),
-                dummyitemLookup = IntOpenHashSet(dummyitemLookup),
+                certLookup = certLookup,
+                transformLookup = transformLookup,
+                placeholderLookup = placeholderLookup,
+                stackableLookup = stackableLookup,
+                dummyitemLookup = dummyitemLookup,
             )
         }
-
-        private fun Iterable<ItemServerType>.toCertLookup(): Map<Int, TransactionObjTemplate> =
-            filter { it.certlink != 0 }
-                .associate { it.id to TransactionObjTemplate(it.certlink, it.certtemplate) }
-
-        private fun Iterable<ItemServerType>.toTransformLookup(): Map<Int, TransactionObjTemplate> =
-            filter { it.transformlink != 0 }
-                .associate {
-                    it.id to TransactionObjTemplate(it.transformlink, it.transformtemplate)
-                }
-
-        private fun Iterable<ItemServerType>.toPlaceholderLookup():
-            Map<Int, TransactionObjTemplate> =
-            filter { it.placeholderLink != 0 }
-                .associate {
-                    it.id to TransactionObjTemplate(it.placeholderLink, it.placeholderTemplate)
-                }
-
-        private fun Iterable<ItemServerType>.toStackableLookup(): List<Int> =
-            filter(ItemServerType::stackable).map(ItemServerType::id)
-
-        private fun Iterable<ItemServerType>.toDummyitemLookup(): List<Int> =
-            filter { it.resolvedDummyitem == Dummyitem.GraphicOnly }.map(ItemServerType::id)
     }
 }
 

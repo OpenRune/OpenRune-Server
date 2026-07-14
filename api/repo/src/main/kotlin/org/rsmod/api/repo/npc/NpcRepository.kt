@@ -11,6 +11,7 @@ import org.rsmod.game.entity.NpcList
 import org.rsmod.game.entity.npc.NpcStateEvents
 import org.rsmod.map.CoordGrid
 import org.rsmod.map.zone.ZoneKey
+import java.util.concurrent.ConcurrentLinkedQueue
 
 public class NpcRepository
 @Inject
@@ -21,7 +22,7 @@ constructor(
 ) {
     private val addNpcs = ObjectArrayList<Npc>()
     private val delNpcs = ObjectArrayList<Npc>()
-    private val addDelayedNpcs = ArrayDeque<Npc>()
+    private val addDelayedNpcs = ConcurrentLinkedQueue<Npc>()
 
     /**
      * **Note**: If [duration] is equal to [Int.MAX_VALUE], the [npc] will have its `respawn` flag

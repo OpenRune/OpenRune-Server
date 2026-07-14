@@ -4,27 +4,17 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import com.github.michaelbull.logging.InlineLogger
-import com.google.inject.Provides
-import com.google.inject.Singleton
-import com.google.inject.name.Named
-import jakarta.inject.Inject
 import java.nio.file.Path
 import kotlin.io.path.exists
 import kotlin.io.path.notExists
 import kotlin.io.path.writeText
-import org.rsmod.api.parsers.toml.Toml
 
 public class ServerConfigLoader {
-
-    private val yamlMapper: ObjectMapper =
-        ObjectMapper(YAMLFactory())
-            .registerKotlinModule()
 
     private val logger = InlineLogger()
 
     public fun loadOrCreate(file: Path): ServerConfig {
         if (file.exists()) {
-            migrateWorldBeforeLoad(file)
             return load(file)
         }
         return create(file)
@@ -52,7 +42,7 @@ public class ServerConfigLoader {
     private fun migrateWorldBeforeLoad(gameYml: Path) {
         SameInstanceCentralWorldMigrator.migrateIfNeeded(
             gameYml = gameYml,
-            exampleYml = gameYml.parent.resolve("game.example.yml"),
+            exampleYml = gameYml.resolveSibling("game.example.yml"),
             yamlMapper = yamlMapper,
         )
     }
@@ -78,5 +68,8 @@ public class ServerConfigLoader {
 
     private companion object {
         private const val DEFAULT_WORLD = 255
+
+        private val yamlMapper: ObjectMapper =
+            ObjectMapper(YAMLFactory()).registerKotlinModule()
     }
 }

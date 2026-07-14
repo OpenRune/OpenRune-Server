@@ -23,7 +23,11 @@ private class ClassGraphProvider(private val acceptedPackages: Array<String>) :
         ClassGraph()
             .ignoreClassVisibility()
             .enableClassInfo()
-            .enableFieldInfo()
-            .enableAnnotationInfo()
+            .disableNestedJarScanning()
+            .disableModuleScanning()
+            .rejectPackages(
+                "org.rsmod.api.*.integration",
+                "org.rsmod.content.*.integration",
+            )
             .acceptPackages(*acceptedPackages)
 }

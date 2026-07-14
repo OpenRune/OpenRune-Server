@@ -9,7 +9,6 @@ import org.rsmod.api.player.vars.enumVarp
 import org.rsmod.api.script.onArea
 import org.rsmod.api.script.onAreaExit
 import org.rsmod.api.script.onPlayerLogin
-import org.rsmod.api.table.MusicClassicRow
 import org.rsmod.api.table.MusicModernRow
 import org.rsmod.game.entity.Player
 import org.rsmod.plugin.scripts.PluginScript
@@ -44,20 +43,9 @@ public class MusicAreaScript @Inject constructor(private val musicPlayer: MusicP
     private fun loadScriptAreas(): List<String> {
         val areas = mutableListOf<String>()
 
-        MusicClassicRow.all().forEach {
-            error("ADD CLASSIC MUSIC WE HAVE DATA NOW")
-            //            val area = it.area
-            //            val autoScript = it.auto_script
-            //            if (autoScript) {
-            //                areas += area
-            //            }
-        }
-
         MusicModernRow.all().forEach {
-            val area = "area.${it.area}"
-            val autoScript = it.autoScript
-            if (autoScript) {
-                areas += area
+            if (it.autoScript) {
+                areas += "area.${it.area}"
             }
         }
 

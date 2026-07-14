@@ -15,13 +15,14 @@ import org.rsmod.game.obj.ObjScope
 import org.rsmod.game.type.getObj
 import org.rsmod.map.CoordGrid
 import org.rsmod.map.zone.ZoneKey
+import java.util.concurrent.ConcurrentLinkedQueue
 
 public class ObjRepository
 @Inject
 constructor(private val mapClock: MapClock, private val registry: ObjRegistry) {
     private val addDurations = ArrayDeque<ObjAddDuration>()
     private val delDurations = ArrayDeque<ObjDelDuration>()
-    private val addDelayed = ArrayDeque<ObjAddDelayed>()
+    private val addDelayed = ConcurrentLinkedQueue<ObjAddDelayed>()
 
     public fun add(obj: Obj, duration: Int, reveal: Int = DEFAULT_REVEAL_DELAY): Boolean {
         val register = register(obj, duration, reveal)

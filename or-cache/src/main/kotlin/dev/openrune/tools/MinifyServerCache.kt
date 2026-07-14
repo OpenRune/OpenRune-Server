@@ -3,7 +3,6 @@ package dev.openrune.tools
 import com.displee.cache.CacheLibrary
 import dev.openrune.cache.ANIMATIONS
 import dev.openrune.cache.ANIMAYAS
-import dev.openrune.cache.DBTABLEINDEX
 import dev.openrune.cache.DEFAULTS
 import dev.openrune.cache.MODELS
 import dev.openrune.cache.MUSIC_JINGLES
@@ -35,7 +34,6 @@ class MinifyServerCache() {
         emptyArchive(WORLDMAP_GEOGRAPHY, cache)
         emptyArchive(WORLDMAPAREAS, cache)
         emptyArchive(WORLDMAP_GROUND, cache)
-        emptyArchive(DBTABLEINDEX, cache)
         emptyArchive(ANIMAYAS, cache)
 
         val loc = java.io.File(loc)

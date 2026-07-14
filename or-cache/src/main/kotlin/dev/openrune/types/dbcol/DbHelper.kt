@@ -204,10 +204,9 @@ public class DbHelper(private val row: DBRowType) {
 
             return DbQueryCache.getTable(table) {
                 val tableId = table.asRSCM()
-                ServerCacheManager.getRows()
+                ServerCacheManager.getRowsForTable(tableId)
                     .asSequence()
-                    .filter { it.value.tableId == tableId }
-                    .map { DbHelper(it.value) }
+                    .map { DbHelper(it) }
                     .distinctBy { it.id }
                     .toList()
             }

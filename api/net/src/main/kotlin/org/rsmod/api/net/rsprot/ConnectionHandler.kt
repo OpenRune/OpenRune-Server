@@ -13,6 +13,7 @@ import org.rsmod.api.account.AccountManager
 import org.rsmod.api.account.character.main.CharacterAccountRepository
 import org.rsmod.api.account.loader.request.AccountLoadAuth
 import org.rsmod.api.db.jdbc.GameDatabase
+import org.rsmod.api.game.process.PluginScriptBootGate
 import org.rsmod.api.net.central.OpenRuneCentralWorldLink
 import org.rsmod.api.net.rsprot.player.AccountLoadResponseHook
 import org.rsmod.api.realm.Realm
@@ -41,6 +42,7 @@ private constructor(
     private val openRuneCentral: OpenRuneCentralWorldLink,
     private val gameDatabase: GameDatabase,
     private val characterAccountRepository: CharacterAccountRepository,
+    private val scriptBootGate: PluginScriptBootGate,
 ) : GameConnectionHandler<Player> {
     private val logger = InlineLogger()
 
@@ -55,6 +57,11 @@ private constructor(
         responseHandler: GameLoginResponseHandler<Player>,
         block: LoginBlock<AuthenticationType>,
     ) {
+        if (!scriptBootGate.isReady()) {
+            responseHandler.writeFailedResponse(LoginResponse.LoginServerOffline)
+            return
+        }
+
         if (accountManager.isLoaderShuttingDown()) {
             responseHandler.writeFailedResponse(LoginResponse.LoginServerOffline)
             return

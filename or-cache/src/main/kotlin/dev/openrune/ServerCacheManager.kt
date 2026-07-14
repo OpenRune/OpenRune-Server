@@ -3,6 +3,7 @@ package dev.openrune
 import com.github.michaelbull.logging.InlineLogger
 import dev.openrune.OsrsCacheProvider.*
 import dev.openrune.cache.CacheManager
+import dev.openrune.cache.DBTABLEINDEX
 import dev.openrune.cache.filestore.definition.ComponentDecoder
 import dev.openrune.cache.filestore.definition.FontDecoder
 import dev.openrune.cache.filestore.definition.InterfaceType
@@ -25,7 +26,9 @@ import dev.openrune.codec.osrs.VarnBitDecoder
 import dev.openrune.codec.osrs.VarnDecoder
 import dev.openrune.codec.osrs.VarpDecoder
 import dev.openrune.codec.osrs.WalkTriggerDecoder
+import dev.openrune.definition.codec.DBTableIndexCodec
 import dev.openrune.definition.type.*
+import dev.openrune.definition.type.DBTableIndexKey
 import dev.openrune.definition.type.widget.ComponentType
 import dev.openrune.definition.util.CacheVarLiteral
 import dev.openrune.filesystem.Cache
@@ -45,7 +48,6 @@ import dev.openrune.types.varp.VarpServerType
 import java.nio.BufferUnderflowException
 import java.nio.file.Path
 import java.nio.file.Paths
-
 object ServerCacheManager {
 
     private val items: MutableMap<Int, ItemServerType> = mutableMapOf()
@@ -76,6 +78,7 @@ object ServerCacheManager {
     private val varobjBit: MutableMap<Int, VarObjBitType> = mutableMapOf()
     private val params: MutableMap<Int, ParamType> = mutableMapOf()
     private val hunt: MutableMap<Int, HuntModeType> = mutableMapOf()
+    private var masterRowIdsByTable: Map<Int, List<Int>> = emptyMap()
 
     val logger = InlineLogger()
 
@@ -135,11 +138,32 @@ object ServerCacheManager {
             VarnBitDecoder().load(cache, varnbit)
             VarObjBitDecoder().load(cache, varobjBit)
             transmitVarps = varps.values.filter { !it.transmit.never }.sortedBy { it.id }
+            loadMasterRowIndexes(cache)
         } catch (e: BufferUnderflowException) {
             logger.error(e) { "Error reading definitions" }
             throw e
         }
         return cache
+    }
+
+    private fun loadMasterRowIndexes(cache: Cache) {
+        val codec = DBTableIndexCodec()
+        val mapped = HashMap<Int, List<Int>>()
+        for (tableId in cache.archives(DBTABLEINDEX)) {
+            val data = cache.data(DBTABLEINDEX, tableId, 0) ?: continue
+            try {
+                val def = codec.loadData(tableId, data)
+                val column = def.columns.firstOrNull() ?: continue
+                val rowIds =
+                    column.valueToRowIds[DBTableIndexKey.IntKey(0)]
+                        ?: column.valueToRowIds[DBTableIndexKey.IntKey(-1)]
+                        ?: continue
+                mapped[tableId] = rowIds
+            } catch (e: BufferUnderflowException) {
+                logger.warn(e) { "Failed to decode DB table master index for tableId=$tableId" }
+            }
+        }
+        masterRowIdsByTable = mapped
     }
 
     fun getNpc(id: Int) = npcs[id]
@@ -241,6 +265,8 @@ object ServerCacheManager {
 
     fun getItems() = items.toMap()
 
+    fun getItemTypes(): Collection<ItemServerType> = items.values
+
     fun getVarbits() = varbits.toMap()
 
     fun getVarps() = varps.toMap()
@@ -262,6 +288,32 @@ object ServerCacheManager {
     fun getAnims() = sequences.toMap()
 
     fun getRows() = dbrows.toMap()
+
+    fun getRowsForTable(tableId: Int): List<DBRowType> {
+        val indexed = masterRowIdsByTable[tableId]
+        if (indexed != null) {
+            val out = ArrayList<DBRowType>(indexed.size)
+            for (rowId in indexed) {
+                val row = dbrows[rowId] ?: continue
+                out += row
+            }
+            return out
+        }
+        val fallback = rowsByTableId ?: synchronized(this) {
+            rowsByTableId ?: buildRowsByTableId().also { rowsByTableId = it }
+        }
+        return fallback[tableId].orEmpty()
+    }
+
+    private fun buildRowsByTableId(): Map<Int, List<DBRowType>> {
+        val grouped = HashMap<Int, MutableList<DBRowType>>(dbtables.size.coerceAtLeast(16))
+        for (row in dbrows.values) {
+            grouped.computeIfAbsent(row.tableId) { ArrayList() }.add(row)
+        }
+        return grouped
+    }
+
+    @Volatile private var rowsByTableId: Map<Int, List<DBRowType>>? = null
 
     fun getParams() = params.toMap()
 

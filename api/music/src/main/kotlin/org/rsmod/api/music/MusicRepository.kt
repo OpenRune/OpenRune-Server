@@ -2,12 +2,10 @@ package org.rsmod.api.music
 
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
-import dev.openrune.types.varp.VarpServerType
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 import jakarta.inject.Inject
 import org.rsmod.api.random.GameRandom
-import org.rsmod.api.table.MusicClassicRow
 import org.rsmod.api.table.MusicModernRow
 import org.rsmod.api.table.MusicRow
 
@@ -52,35 +50,28 @@ public class MusicRepository @Inject constructor(private val random: GameRandom)
 
     private fun loadMusicRows(unlockVarps: List<String>): Map<Int, Music> {
         val rows = MusicRow.all()
-        val mapped = mutableMapOf<Int, Music>()
+        val mapped = HashMap<Int, Music>(rows.size)
         var currId = 1
         for (row in rows) {
-            val displayName = row.displayname
-            val unlockHint = row.unlockhint
-            val midi = row.midi
             val variable = row.variable
-            val duration = row.duration
-            val hidden = row.hidden
-            val secondary = row.secondaryTrack
             var unlockVarp: String? = null
             var unlockBitpos = -1
             if (variable.isNotEmpty()) {
                 unlockVarp = unlockVarps.getOrNull(variable[0] - 1)
                 unlockBitpos = variable[1]
             }
-            val music =
+            mapped[row.rowId] =
                 Music(
                     id = currId++,
-                    displayName = displayName,
-                    unlockHint = unlockHint,
-                    duration = duration,
-                    midi = midi,
+                    displayName = row.displayname,
+                    unlockHint = row.unlockhint,
+                    duration = row.duration,
+                    midi = row.midi,
                     unlockVarp = unlockVarp,
                     unlockBitpos = unlockBitpos,
-                    hidden = hidden ?: false,
-                    secondary = secondary,
+                    hidden = row.hidden ?: false,
+                    secondary = null,
                 )
-            mapped[row.rowId] = music
         }
         return mapped
     }
@@ -97,11 +88,7 @@ public class MusicRepository @Inject constructor(private val random: GameRandom)
             val trackRows = it.tracks
             val musicList = ArrayList<Music>(trackRows.size)
             for (trackRow in trackRows) {
-                val musicRow = MusicRow.getRow(trackRow.rowId)
-                val music = musicRows[musicRow.rowId]
-                if (music == null) {
-                    throw IllegalStateException("Music row not found: '${musicRow.displayname}'")
-                }
+                val music = musicRows[trackRow.rowId]?: continue
                 musicList += music
             }
             val mappedList = grouped.computeIfAbsent(area) { mutableListOf() }
@@ -112,27 +99,7 @@ public class MusicRepository @Inject constructor(private val random: GameRandom)
     }
 
     private fun loadClassicAreas(musicRows: Map<Int, Music>): Map<Int, Music> {
-        val areas = mutableMapOf<Int, Music>()
-
-        MusicClassicRow.all().forEach {
-            error("Add Classic Music")
-
-            //            val area = it.area
-            //            if (area.id in areas) {
-            //                val message =
-            //                    "Classic music area can only be mapped to a " +
-            //                        "single track: '${area}' (row=${it.id})"
-            //                throw IllegalStateException(message)
-            //            }
-            //
-            //            val music = musicRows[it.track]
-            //            if (music == null) {
-            //                throw IllegalStateException("Music row not found: '${it.id}'")
-            //            }
-            // areas[area.id] = music
-        }
-
-        return areas
+        return emptyMap()
     }
 
     private fun unlockVarps(): List<String> =

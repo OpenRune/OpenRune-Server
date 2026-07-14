@@ -131,7 +131,7 @@ constructor(
 
     override fun createExecutor(): ExecutorService {
         val threadFactory = ThreadFactory { runnable ->
-            Thread(runnable, SERVICE_THREAD_NAME).apply { isDaemon = false }
+            Thread(runnable, SERVICE_THREAD_NAME).apply { isDaemon = true }
         }
         return Executors.newSingleThreadExecutor(threadFactory)
     }

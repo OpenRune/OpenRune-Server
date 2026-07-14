@@ -23,7 +23,8 @@ class AltarEvents @Inject constructor(
     private val xpMods: XpModifiers,
 ) : PluginScript() {
     override fun ScriptContext.startup() {
-        RunecraftingAltarsRow.all().forEach { altar ->
+        val altars = RunecraftingAltarsRow.all()
+        for (altar in altars) {
             registerRuins(altar)
             registerAltar(altar)
             registerExitPortal(altar)
@@ -32,7 +33,7 @@ class AltarEvents @Inject constructor(
         }
 
         registerOuraniaAltar()
-        registerElementalCatalyticAccess()
+        registerElementalCatalyticAccess(altars)
     }
 
     private fun ScriptContext.registerOuraniaAltar() {
@@ -41,15 +42,15 @@ class AltarEvents @Inject constructor(
         }
     }
 
-    private fun ScriptContext.registerElementalCatalyticAccess() {
+    private fun ScriptContext.registerElementalCatalyticAccess(altars: List<RunecraftingAltarsRow>) {
         val elementalEntrances =
-            RunecraftingAltarsRow.all()
+            altars
                 .filter { it.altarObject.internalName in elementalAltarLocs }
                 .mapNotNull { row -> row.entrance?.let { row.altarObject.internalName to it } }
                 .toMap()
 
         val catalyticEntrances =
-            RunecraftingAltarsRow.all()
+            altars
                 .filter { it.altarObject.internalName in catalyticAltarLocs }
                 .mapNotNull { row -> row.entrance?.let { row.altarObject.internalName to it } }
                 .toMap()
