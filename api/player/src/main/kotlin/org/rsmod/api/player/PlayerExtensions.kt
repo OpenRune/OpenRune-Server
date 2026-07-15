@@ -82,6 +82,11 @@ public fun Player.isInPvnCombat(): Boolean {
     return vars["varp.lastcombat"] + constants.combat_activecombat_delay >= currentMapClock
 }
 
+public fun Player.subjectPronoun(): String {
+    appearance.pronoun = vars["varbit.settings_transmit_pronouns"]
+    return appearance.subjectPronoun()
+}
+
 /** @return `true` if the player is **currently** in a multi-combat area. */
 public fun Player.mapMultiway(checker: AreaChecker): Boolean {
     return checker.inArea("area.multiway", coords)

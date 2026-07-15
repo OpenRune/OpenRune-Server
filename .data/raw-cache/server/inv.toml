@@ -25,6 +25,7 @@ scope = "Perm"
 stack = "Always"
 protect = false
 placeholders = true
+uimBlocked = true
 
 [[inventory]]
 isServerOnly = true
