@@ -1,9 +1,5 @@
 package org.rsmod.api.account.character.main
 
-import dev.openrune.ServerCacheManager
-import dev.openrune.rscm.RSCM.asRSCM
-import dev.openrune.rscm.RSCMType
-import dev.openrune.types.ModLevelType
 import jakarta.inject.Inject
 import java.time.LocalDateTime
 import org.rsmod.api.account.character.CharacterAccountLoginSegment
@@ -29,13 +25,15 @@ public class CharacterAccountApplier @Inject constructor() :
         player.uuid = uuid
         player.observerUUID = uuid
 
-        val device = d.knownDevice
-        player.lastKnownDevice = device
+        player.trustedDevices = d.trustedDevices.toMutableList()
+        player.twoFactorAuth = d.twoFactorAuth
+        player.lastKnownDevice = d.trustedDevices.maxByOrNull { it.verifiedAt }?.deviceId
         player.members = c.members
         player.username = d.accountName
         player.displayName = c.displayName ?: ""
         player.previousDisplayName = c.previousDisplayName ?: ""
         player.displayNameChangedAtMillis = c.displayNameChangedAtMillis
+        player.discordId = d.discordId
         player.coords = CoordGrid(c.coordX, c.coordZ, c.coordLevel)
         player.createdAt = c.createdAt
         player.runEnergy = c.runEnergy
@@ -45,32 +43,6 @@ public class CharacterAccountApplier @Inject constructor() :
         if (c.attrs.isNotEmpty()) {
             player.attr.putAllFromPersistence(c.attrs)
         }
-        player.assignModLevel(d)
-    }
-
-    private fun Player.assignModLevel(d: dev.or2.central.account.AccountData) {
-        val levels = ServerCacheManager.getModelLevels().values
-        val defaultLevel = levels.first()
-        modLevel = resolveModLevelFromRights(d.rights) ?: defaultLevel
-    }
-
-    public companion object {
-        private val RIGHTS_MOD_LEVEL_PRIORITY =
-            arrayOf("modlevel.owner", "modlevel.admin", "modlevel.moderator", "modlevel.player")
-
-        public fun resolveModLevelFromRights(rights: String): ModLevelType? {
-            if (rights.isBlank()) {
-                return null
-            }
-            val tokens =
-                rights.split(',').map { it.trim() }.filter { it.isNotEmpty() }.map { it.lowercase() }
-            for (internal in RIGHTS_MOD_LEVEL_PRIORITY) {
-                if (tokens.contains(internal.lowercase())) {
-                    return ServerCacheManager.getModLevel(internal.asRSCM(RSCMType.MODLEVEL))
-                }
-            }
-            return null
-        }
+        player.modLevel = d.rights
     }
 }
-

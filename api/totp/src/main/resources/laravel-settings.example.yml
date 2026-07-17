@@ -1,0 +1,4 @@
+# Copy to laravel-settings.yml on the game server classpath (same module/resources folder as this file)
+# and set the same APP_KEY as your Laravel website (.env APP_KEY=base64:...).
+# Only required when accounts use Laravel Fortify encrypted two_factor_secret values.
+app-key: "base64:YOUR_LARAVEL_APP_KEY_HERE"

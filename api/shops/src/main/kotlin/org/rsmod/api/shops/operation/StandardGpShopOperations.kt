@@ -13,6 +13,7 @@ import org.rsmod.api.invtx.select
 import org.rsmod.api.market.MarketPrices
 import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.output.objExamine
+import org.rsmod.api.shops.config.ShopParams
 import org.rsmod.api.shops.cost.StandardGpCostCalculations
 import org.rsmod.api.shops.restock.ShopRestockProcess
 import org.rsmod.api.utils.format.formatAmount
@@ -68,9 +69,10 @@ constructor(
 
 
         val internalName = RSCM.getReverseMapping(RSCMType.OBJ, objType.id)
+        val currencyInternalName = RSCM.getReverseMapping(RSCMType.OBJ, currencyObj.id)
 
         val shopInitialObjCount = shopInv.initialStockCount(obj)
-        val availableCurrencyCount = sideInv.count(internalName)
+        val availableCurrencyCount = sideInv.count(currencyInternalName)
         val cappedRequest =
             if (objType.isStackable) {
                 min(Int.MAX_VALUE - sideInv.count(internalName), initialPurchaseRequest)
@@ -163,7 +165,7 @@ constructor(
             return
         }
 
-        val saleRestricted = objType.param(params.shop_sale_restricted)
+        val saleRestricted = objType.param(ShopParams.shop_sale_restricted)
         if (saleRestricted) {
             player.mes("You can't sell this item to a shop.")
             return
@@ -206,7 +208,7 @@ constructor(
             return
         }
 
-        val saleRestricted = uncertType.param(params.shop_sale_restricted)
+        val saleRestricted = uncertType.param(ShopParams.shop_sale_restricted)
         if (saleRestricted) {
             player.mes("You can't sell this item to a shop.")
             return

@@ -7,7 +7,7 @@ kotlin {
 }
 
 dependencies {
-    implementation(libs.openrune.central.all)
+    implementation(libs.openrune.central.common)
     implementation(libs.bundles.logging)
     implementation(libs.guice)
     implementation(projects.api.db)

@@ -10,9 +10,9 @@ import org.rsmod.api.core.module.RegistryModule
 import org.rsmod.api.core.module.StatModModule
 import org.rsmod.api.db.DatabaseModule
 import org.rsmod.api.game.process.GameCycle
+import org.rsmod.api.game.process.PluginScriptBootGate
 import org.rsmod.api.hunt.HuntModule
 import org.rsmod.api.market.MarketModule
-import org.rsmod.api.pw.hash.PasswordHashModule
 import org.rsmod.api.random.RandomModule
 import org.rsmod.api.route.RouteModule
 import org.rsmod.api.server.config.ServerConfigModule
@@ -32,7 +32,6 @@ public object CoreModule : ExtendedModule() {
         install(HuntModule)
         install(MarketModule)
         install(PlayerModule)
-        install(PasswordHashModule)
         install(RandomModule)
         install(RealmModule)
         install(RegistryModule)
@@ -41,6 +40,7 @@ public object CoreModule : ExtendedModule() {
         install(StatModModule)
         install(TotpModule)
         bindInstance<GameCycle>()
+        bindInstance<PluginScriptBootGate>()
         bindInstance<WorldQueueList>()
     }
 }

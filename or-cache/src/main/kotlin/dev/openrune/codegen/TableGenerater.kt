@@ -387,8 +387,14 @@ private fun rowCompanion(
         .addFunction(
             FunSpec.builder("all")
                 .returns(listType.parameterizedBy(rowType))
-                .addStatement(
-                    "return %T.table(%S).map { %T(it) }",
+                .addStatement("return cachedAll")
+                .build()
+        )
+        .addProperty(
+            PropertySpec.builder("cachedAll", listType.parameterizedBy(rowType))
+                .addModifiers(KModifier.PRIVATE)
+                .delegate(
+                    "lazy { %T.table(%S).map { %T(it) } }",
                     dbHelper,
                     "dbtable.$tableName",
                     rowType,
@@ -433,9 +439,6 @@ private class RowPropertyCodegen(
         } else {
             kotlinTypeForVarType(vt, nullable)
         }
-
-    private fun selfReferentialDbRow(col: TableColumn): Boolean =
-        col.dbRowTargetTable != null && col.dbRowTargetTable == def.tableName
 
     private fun addProp(name: String, type: TypeName, init: CodeBlock, lazyInit: Boolean = false) {
         val spec = PropertySpec.builder(name, type).addModifiers(KModifier.PUBLIC)
@@ -595,14 +598,12 @@ private class RowPropertyCodegen(
             when {
                 coordScalar -> false
                 multi && col.optional ->
-                    selfReferentialDbRow(col) && slots.all { it == VarType.DBROW }
+                    col.dbRowTargetTable != null && slots.all { it == VarType.DBROW }
                 multi ->
-                    selfReferentialDbRow(col) &&
+                    col.dbRowTargetTable != null &&
                         first == VarType.DBROW &&
                         slots.all { it == VarType.DBROW }
-                else ->
-                    first == VarType.DBROW &&
-                        col.dbRowTargetTable != null
+                else -> first == VarType.DBROW && col.dbRowTargetTable != null
             }
         addProp(prop, ty, init, lazyInit)
     }

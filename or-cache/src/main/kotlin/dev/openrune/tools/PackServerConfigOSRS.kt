@@ -237,26 +237,6 @@ class PackServerConfig(
             create = { BasType(it) },
         )
 
-        registerParsedOverlayPackType<ModLevelType>(
-            table = "modlevel",
-            decoder = ModLevelDecoder(),
-            tomlMapper =
-                tomlMapper {
-                    addDecoder<ModLevelType> { content, def: ModLevelType ->
-                        val permissions = content.getTomlIntList("permissions")
-                        def.apply {
-                            var flags = 0L
-                            for (permId in permissions) {
-                                flags = flags or (1L shl permId)
-                            }
-                            this.accessflags = flags
-                        }
-                    }
-                },
-            codec = { ModLevelServerCodec(it) },
-            create = { ModLevelType(it) },
-        )
-
         registerMergedBaseAndTomlPackType<InventoryServerType, InventoryType>(
             table = "inventory",
             decoder = InventoryDecoder(),

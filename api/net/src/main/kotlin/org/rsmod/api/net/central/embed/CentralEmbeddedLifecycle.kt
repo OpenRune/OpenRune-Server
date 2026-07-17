@@ -3,11 +3,13 @@ package org.rsmod.api.net.central.embed
 import com.github.michaelbull.logging.InlineLogger
 import dev.or2.central.util.config.centralRuntimeConfigFromJdbc
 import dev.or2.central.embed.OpenRuneCentralEmbeddedServer
+import dev.or2.central.auth.PasswordAuthConfig
 import jakarta.inject.Inject
 import jakarta.inject.Singleton
 import java.sql.DriverManager
 import org.rsmod.api.db.jdbc.EmbeddedSameInstancePostgres
 import org.rsmod.api.db.jdbc.PostgresPublicSchemaReset
+import org.rsmod.api.net.central.OpenRuneCentralWorldLink
 import org.rsmod.api.server.config.SameInstanceCentralConfigValidation
 import org.rsmod.api.server.config.ServerConfig
 
@@ -16,6 +18,7 @@ public class CentralEmbeddedLifecycle
 @Inject
 constructor(
     private val serverConfig: ServerConfig,
+    private val openRuneCentral: OpenRuneCentralWorldLink,
 ) {
     private val logger = InlineLogger()
     private var server: OpenRuneCentralEmbeddedServer? = null
@@ -55,14 +58,24 @@ constructor(
                 dbPassword = dbPassword,
                 dbMaximumPoolSize = pg.poolSize,
                 worldLinkPort = c.linkPort,
+                httpPort = c.httpPort,
+                serverName = serverConfig.name,
                 worldLinkSoBacklog = 512,
+                loginTimingLogs = serverConfig.loginTimingLogs,
+                socialPmTraceLogs = serverConfig.socialPmTraceLogs,
             )
 
-        logger.info {
-            "Starting embedded OpenRune Central (HTTP port ${c.httpPort}, world-link ${c.linkPort}, JDBC $jdbc)"
-        }
+        val runtime = buildRuntime()
+        openRuneCentral.applyPasswordAuth(
+            PasswordAuthConfig(
+                passwordHasher = runtime.auth.passwordHasher,
+                bcryptCost = runtime.auth.bcryptCost,
+                argon2Iterations = runtime.auth.argon2Iterations,
+                argon2MemoryKib = runtime.auth.argon2MemoryKib,
+            ),
+        )
 
-        val centralServer = OpenRuneCentralEmbeddedServer(c.httpPort, buildRuntime())
+        val centralServer = OpenRuneCentralEmbeddedServer(c.httpPort, runtime)
         try {
             centralServer.start()
             server = centralServer

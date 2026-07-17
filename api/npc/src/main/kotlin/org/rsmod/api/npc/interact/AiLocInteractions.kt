@@ -36,7 +36,7 @@ constructor(private val boundValidator: BoundValidator, private val eventBus: Ev
     }
 
     public fun interactAp(npc: Npc, loc: BoundLocInfo, op: InteractionOp) {
-        val apRange = npc.visType.attackRange
+        val apRange = npc.attackRange
         val interaction =
             InteractionLocOp(
                 target = loc,

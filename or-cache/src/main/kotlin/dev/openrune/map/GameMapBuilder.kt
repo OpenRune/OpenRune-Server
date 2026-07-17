@@ -1,17 +1,16 @@
 package dev.openrune.map
 
 import it.unimi.dsi.fastutil.bytes.Byte2IntOpenHashMap
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap
-import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 import org.rsmod.game.loc.LocEntity
 import org.rsmod.game.loc.LocZoneKey
 import org.rsmod.map.zone.ZoneKey
+import java.util.concurrent.ConcurrentHashMap
 
 @DslMarker private annotation class GameMapBuilderDslMarker
 
 @GameMapBuilderDslMarker
 public class GameMapBuilder {
-    public val zoneBuilders: Int2ObjectMap<ZoneBuilder> = Int2ObjectOpenHashMap()
+    public val zoneBuilders: ConcurrentHashMap<Int, ZoneBuilder> = ConcurrentHashMap()
 
     public val zoneCount: Int
         get() = zoneBuilders.size

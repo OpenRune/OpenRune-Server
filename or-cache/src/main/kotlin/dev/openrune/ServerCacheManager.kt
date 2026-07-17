@@ -3,6 +3,7 @@ package dev.openrune
 import com.github.michaelbull.logging.InlineLogger
 import dev.openrune.OsrsCacheProvider.*
 import dev.openrune.cache.CacheManager
+import dev.openrune.cache.DBTABLEINDEX
 import dev.openrune.cache.filestore.definition.ComponentDecoder
 import dev.openrune.cache.filestore.definition.FontDecoder
 import dev.openrune.cache.filestore.definition.InterfaceType
@@ -13,7 +14,6 @@ import dev.openrune.codec.osrs.HuntModeDecoder
 import dev.openrune.codec.osrs.InventoryDecoder
 import dev.openrune.codec.osrs.ItemDecoder
 import dev.openrune.codec.osrs.MesAnimDecoder
-import dev.openrune.codec.osrs.ModLevelDecoder
 import dev.openrune.codec.osrs.NpcDecoder
 import dev.openrune.codec.osrs.ObjectDecoder
 import dev.openrune.codec.osrs.ProjectileTypeDecoder
@@ -26,7 +26,9 @@ import dev.openrune.codec.osrs.VarnBitDecoder
 import dev.openrune.codec.osrs.VarnDecoder
 import dev.openrune.codec.osrs.VarpDecoder
 import dev.openrune.codec.osrs.WalkTriggerDecoder
+import dev.openrune.definition.codec.DBTableIndexCodec
 import dev.openrune.definition.type.*
+import dev.openrune.definition.type.DBTableIndexKey
 import dev.openrune.definition.type.widget.ComponentType
 import dev.openrune.definition.util.CacheVarLiteral
 import dev.openrune.filesystem.Cache
@@ -46,7 +48,6 @@ import dev.openrune.types.varp.VarpServerType
 import java.nio.BufferUnderflowException
 import java.nio.file.Path
 import java.nio.file.Paths
-
 object ServerCacheManager {
 
     private val items: MutableMap<Int, ItemServerType> = mutableMapOf()
@@ -59,12 +60,12 @@ object ServerCacheManager {
     private val enums: MutableMap<Int, EnumType> = mutableMapOf()
     private val varbits: MutableMap<Int, VarBitType> = mutableMapOf()
     private val varps: MutableMap<Int, VarpServerType> = mutableMapOf()
+    private var transmitVarps: List<VarpServerType> = emptyList()
     private val sequences = mutableMapOf<Int, SequenceServerType>()
     private var fonts = mutableMapOf<Int, FontType>()
     private var interfaces = mutableMapOf<Int, InterfaceType>()
     private var inv = mutableMapOf<Int, InventoryServerType>()
     private var mesanim = mutableMapOf<Int, MesAnimType>()
-    private var modLevels = mutableMapOf<Int, ModLevelType>()
     private var statTypes = mutableMapOf<Int, StatType>()
     private var projectiles = mutableMapOf<Int, ProjAnimType>()
     private var hitsplats = mutableMapOf<Int, HitSplatType>()
@@ -77,6 +78,7 @@ object ServerCacheManager {
     private val varobjBit: MutableMap<Int, VarObjBitType> = mutableMapOf()
     private val params: MutableMap<Int, ParamType> = mutableMapOf()
     private val hunt: MutableMap<Int, HuntModeType> = mutableMapOf()
+    private var masterRowIdsByTable: Map<Int, List<Int>> = emptyMap()
 
     val logger = InlineLogger()
 
@@ -123,7 +125,6 @@ object ServerCacheManager {
             DBTableDecoder().load(cache, dbtables)
             ComponentDecoder(cache,rev).load(interfaces)
             MesAnimDecoder().load(cache, mesanim)
-            ModLevelDecoder().load(cache, modLevels)
             StatTypeDecoder().load(cache, statTypes)
             ProjectileTypeDecoder().load(cache, projectiles)
             HitSplatDecoder().load(cache, hitsplats)
@@ -136,11 +137,33 @@ object ServerCacheManager {
             HuntModeDecoder().load(cache, hunt)
             VarnBitDecoder().load(cache, varnbit)
             VarObjBitDecoder().load(cache, varobjBit)
+            transmitVarps = varps.values.filter { !it.transmit.never }.sortedBy { it.id }
+            loadMasterRowIndexes(cache)
         } catch (e: BufferUnderflowException) {
             logger.error(e) { "Error reading definitions" }
             throw e
         }
         return cache
+    }
+
+    private fun loadMasterRowIndexes(cache: Cache) {
+        val codec = DBTableIndexCodec()
+        val mapped = HashMap<Int, List<Int>>()
+        for (tableId in cache.archives(DBTABLEINDEX)) {
+            val data = cache.data(DBTABLEINDEX, tableId, 0) ?: continue
+            try {
+                val def = codec.loadData(tableId, data)
+                val column = def.columns.firstOrNull() ?: continue
+                val rowIds =
+                    column.valueToRowIds[DBTableIndexKey.IntKey(0)]
+                        ?: column.valueToRowIds[DBTableIndexKey.IntKey(-1)]
+                        ?: continue
+                mapped[tableId] = rowIds
+            } catch (e: BufferUnderflowException) {
+                logger.warn(e) { "Failed to decode DB table master index for tableId=$tableId" }
+            }
+        }
+        masterRowIdsByTable = mapped
     }
 
     fun getNpc(id: Int) = npcs[id]
@@ -195,8 +218,6 @@ object ServerCacheManager {
 
     fun getMesAnim(id: Int) = mesanim[id]
 
-    fun getModLevel(id: Int) = modLevels[id]
-
     fun getNpcOrDefault(id: Int) = getOrDefault(npcs, id, NpcServerType(), "Npc")
 
     fun getObjectOrDefault(id: Int) = getOrDefault(objects, id, ObjectServerType(), "Object")
@@ -244,9 +265,13 @@ object ServerCacheManager {
 
     fun getItems() = items.toMap()
 
+    fun getItemTypes(): Collection<ItemServerType> = items.values
+
     fun getVarbits() = varbits.toMap()
 
     fun getVarps() = varps.toMap()
+
+    fun getTransmitVarps(): List<VarpServerType> = transmitVarps
 
     fun getVarns() = varns.toMap()
 
@@ -264,9 +289,33 @@ object ServerCacheManager {
 
     fun getRows() = dbrows.toMap()
 
-    fun getParams() = params.toMap()
+    fun getRowsForTable(tableId: Int): List<DBRowType> {
+        val indexed = masterRowIdsByTable[tableId]
+        if (indexed != null) {
+            val out = ArrayList<DBRowType>(indexed.size)
+            for (rowId in indexed) {
+                val row = dbrows[rowId] ?: continue
+                out += row
+            }
+            return out
+        }
+        val fallback = rowsByTableId ?: synchronized(this) {
+            rowsByTableId ?: buildRowsByTableId().also { rowsByTableId = it }
+        }
+        return fallback[tableId].orEmpty()
+    }
 
-    fun getModelLevels() = modLevels.toMap()
+    private fun buildRowsByTableId(): Map<Int, List<DBRowType>> {
+        val grouped = HashMap<Int, MutableList<DBRowType>>(dbtables.size.coerceAtLeast(16))
+        for (row in dbrows.values) {
+            grouped.computeIfAbsent(row.tableId) { ArrayList() }.add(row)
+        }
+        return grouped
+    }
+
+    @Volatile private var rowsByTableId: Map<Int, List<DBRowType>>? = null
+
+    fun getParams() = params.toMap()
 
     fun fromInterface(packed: Int): InterfaceType {
         val interfaceId = packed ushr 16

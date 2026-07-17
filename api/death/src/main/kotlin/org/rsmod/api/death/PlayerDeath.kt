@@ -1,5 +1,6 @@
 package org.rsmod.api.death
 
+import dev.or2.central.account.Rights
 import dev.openrune.ServerCacheManager
 import dev.openrune.rscm.RSCM
 import dev.openrune.rscm.RSCMType
@@ -7,8 +8,6 @@ import jakarta.inject.Inject
 import jakarta.inject.Singleton
 import org.rsmod.api.area.checker.AreaChecker
 import org.rsmod.api.area.checker.isInWildernessBasic
-import org.rsmod.api.death.hasSkullDeathPenalty
-import org.rsmod.api.death.isHighRiskSkulled
 import org.rsmod.api.player.death.DEATH_CAUSE_ATTR
 import org.rsmod.api.player.death.DeathCause
 import org.rsmod.api.player.hasProtectItemPrayer
@@ -81,7 +80,7 @@ constructor(
     private fun handleDeathDrops(player: Player, deathCoords: CoordGrid) {
         val bypassAdmin = player.deathDropsBypassAdmin()
         player.attr.remove(DEATH_DROPS_BYPASS_ADMIN_ATTR)
-        if (player.modLevel.hasAccessTo("modlevel.admin") && !bypassAdmin) return
+        if (player.modLevel.isAtLeast(Rights.ADMINISTRATOR) && !bypassAdmin) return
 
         val killer = when (val cause = player.attr[DEATH_CAUSE_ATTR]) {
             is DeathCause.ByPlayer -> cause.killer

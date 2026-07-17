@@ -15,24 +15,29 @@ class PluginScriptLoader @Inject constructor(@PluginGraph private val scanner: C
         injector: Injector,
         lenient: Boolean = false,
     ): Collection<T> {
-        val plugins = mutableListOf<T>()
-        val parallelism = Runtime.getRuntime().availableProcessors()
-        val threadPool = Executors.newFixedThreadPool(parallelism)
-        val scan = threadPool.use { scanner.scan(it, parallelism) }
-        scan.use { result ->
-            val infoList = result.getSubclasses(type)
-            infoList.forEach { info ->
-                val clazz = info.loadClass(type)
-                if (Modifier.isAbstract(clazz.modifiers) || Modifier.isInterface(clazz.modifiers)) {
-                    return@forEach
+        val parallelism = Runtime.getRuntime().availableProcessors().coerceAtLeast(2)
+        val classes =
+            Executors.newWorkStealingPool(parallelism).use { pool ->
+                scanner.scan(pool, parallelism).use { result ->
+                    result
+                        .getSubclasses(type)
+                        .parallelStream()
+                        .map { info -> info.loadClass(type) }
+                        .filter { clazz ->
+                            !Modifier.isAbstract(clazz.modifiers) &&
+                                !Modifier.isInterface(clazz.modifiers)
+                        }
+                        .toList()
                 }
-                try {
-                    val instance = injector.getInstance(clazz)
-                    plugins += instance
-                } catch (t: Throwable) {
-                    if (!lenient) throw (t.cause ?: t)
-                    t.printStackTrace()
-                }
+            }
+
+        val plugins = ArrayList<T>(classes.size)
+        for (clazz in classes) {
+            try {
+                plugins += injector.getInstance(clazz)
+            } catch (t: Throwable) {
+                if (!lenient) throw (t.cause ?: t)
+                t.printStackTrace()
             }
         }
         return plugins

@@ -10,12 +10,14 @@ object SpecValidator {
         val errors = mutableListOf<ValidationError>()
         val phaseNames = spec.phases.keys
 
+        val bossName = spec.npcTypes.joinToString()
+
         if (spec.abilities.isEmpty()) {
-            errors += ValidationError("Boss '${spec.npcType}' has no abilities defined.")
+            errors += ValidationError("Boss '$bossName' has no abilities defined.")
         }
 
         if (spec.phases.isEmpty()) {
-            errors += ValidationError("Boss '${spec.npcType}' has no phases defined.")
+            errors += ValidationError("Boss '$bossName' has no phases defined.")
         }
 
         val abilityNames = spec.abilities.keys

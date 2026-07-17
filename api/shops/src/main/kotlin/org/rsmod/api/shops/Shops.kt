@@ -25,6 +25,30 @@ public class Shops @Inject constructor(private val eventBus: EventBus) {
     public fun open(
         player: Player,
         activeNpc: Npc,
+        currency: String = "currency.standard_gp"
+    ) {
+        val buyPercentage = activeNpc.type.param(ShopParams.shop_buy_percentage) / 10.0
+        val sellPercentage = activeNpc.type.param(ShopParams.shop_sell_percentage) / 10.0
+        val changePercentage = activeNpc.type.param(ShopParams.shop_change_percentage) / 10.0
+
+        val inventoryID = activeNpc.paramOrNull(ShopParams.shop_invetnory) ?: return
+        val title = activeNpc.paramOrNull(ShopParams.shop_name) ?: "${activeNpc.name} Shop"
+
+        open(
+            player = player,
+            title = title,
+            shopInv = RSCM.getReverseMapping(RSCMType.INV,inventoryID),
+            buyPercentage = buyPercentage,
+            sellPercentage = sellPercentage,
+            changePercentage = changePercentage,
+            currency = currency
+        )
+    }
+
+
+    public fun open(
+        player: Player,
+        activeNpc: Npc,
         title: String,
         shopInv: String,
         currency: String = "currency.standard_gp",

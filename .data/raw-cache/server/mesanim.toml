@@ -14,10 +14,10 @@ len4="seq.chatbored4"
 
 [[mesanim]]
 id="mesanim.short"
-len1="seq.shortchatneu1"
-len2="seq.shortchatneu1"
-len3="seq.shortchatneu1"
-len4="seq.shortchatneu1"
+len1="seq.chatneu_idle"
+len2="seq.chatneu_idle"
+len3="seq.chatneu_idle"
+len4="seq.chatneu_idle"
 
 [[mesanim]]
 id="mesanim.happy"
@@ -42,10 +42,10 @@ len4="seq.chatcon4"
 
 [[mesanim]]
 id="mesanim.silent"
-len1="seq.chatidleneu1"
-len2="seq.chatidleneu1"
-len3="seq.chatidleneu1"
-len4="seq.chatidleneu1"
+len1="seq.chatneu_idle"
+len2="seq.chatneu_idle"
+len3="seq.chatneu_idle"
+len4="seq.chatneu_idle"
 
 [[mesanim]]
 id="mesanim.goblin"
@@ -84,10 +84,10 @@ len4="seq.chatdrunk4"
 
 [[mesanim]]
 id="mesanim.very_mad"
-len1="seq.evilidle1"
-len2="seq.evilidle1"
-len3="seq.evilidle1"
-len4="seq.evilidle1"
+len1="seq.chat_furious"
+len2="seq.chat_furious"
+len3="seq.chat_furious"
+len4="seq.chat_furious"
 
 [[mesanim]]
 id="mesanim.laugh"
@@ -98,10 +98,10 @@ len4="seq.chatlaugh4"
 
 [[mesanim]]
 id="mesanim.mad_laugh"
-len1="seq.evillaugh1"
-len2="seq.evillaugh1"
-len3="seq.evillaugh1"
-len4="seq.evillaugh1"
+len1="seq.chat_evillaugh"
+len2="seq.chat_evillaugh"
+len3="seq.chat_evillaugh"
+len4="seq.chat_evillaugh"
 
 [[mesanim]]
 id="mesanim.sad"

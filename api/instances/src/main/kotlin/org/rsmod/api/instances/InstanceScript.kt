@@ -3,6 +3,8 @@ package org.rsmod.api.instances
 import jakarta.inject.Inject
 import kotlin.random.Random
 import org.rsmod.api.instances.events.InstanceEndedEvent
+import org.rsmod.api.instances.hook.InstanceEnterAction
+import org.rsmod.api.instances.hook.InstanceEnterPrelude
 import org.rsmod.api.instances.hook.InstanceObjectHookRegistry
 import org.rsmod.api.instances.events.InstancePlayerJoinEvent
 import org.rsmod.api.instances.events.InstancePlayerLeaveEvent
@@ -45,9 +47,15 @@ public abstract class InstanceScript(
 
     protected open fun spawnOnFirstJoin(): Boolean = false
 
+    /** When true the instance is destroyed as soon as the last player leaves (no reclaim/rejoin). */
+    protected open fun destroyWhenEmpty(): Boolean = false
+
     protected fun buildSpec(area: InstanceArea = area()): InstanceSpec {
         val settings = rowData.toInstanceSettings()
-        val resolved = if (spawnOnFirstJoin()) settings.copy(spawnOnFirstJoin = true) else settings
+        var resolved = if (spawnOnFirstJoin()) settings.copy(spawnOnFirstJoin = true) else settings
+        if (destroyWhenEmpty()) {
+            resolved = resolved.copy(destroyWhenEmpty = true)
+        }
         return resolved.withArea(area.withDbCoords(rowData), rowData.rowId)
     }
 
@@ -57,6 +65,67 @@ public abstract class InstanceScript(
 
     protected fun onExitObject(action: suspend ProtectedAccess.() -> Unit) {
         objectHooks.registerExit(key, action)
+    }
+
+    /**
+     * Declarative enter cinematic played before [completeInstanceEntry] telejumps the player in.
+     * Skipped on rejoin by default; override with [completeInstanceEntry]'s [runPreludeWhen].
+     */
+    protected fun onEnterTransition(transition: InstanceEnterTransition) {
+        objectHooks.registerEnterTransition(key, transition)
+    }
+
+    /**
+     * Fully custom enter prelude. Receives an [enter] callback that performs the telejump; call it
+     * whenever your cinematic is ready (e.g. after a fade while the screen is black).
+     */
+    protected fun onEnterPrelude(action: InstanceEnterPrelude) {
+        objectHooks.registerEnterPrelude(key, action)
+    }
+
+    /**
+     * Applies a create/join result, running any registered enter prelude or transition first.
+     */
+    protected suspend fun ProtectedAccess.completeInstanceEntry(
+        result: InstanceManager.Result,
+        runPreludeWhen: (InstanceManager.Result) -> Boolean = { result ->
+            when (result) {
+                is InstanceManager.Result.Created -> true
+                is InstanceManager.Result.Joined -> player.uuid != result.session.owner
+                else -> false
+            }
+        },
+    ) {
+        when (result) {
+            is InstanceManager.Result.Failed -> mes(result.reason)
+            is InstanceManager.Result.Created, is InstanceManager.Result.Joined -> {
+                val enterCoord = when (result) {
+                    is InstanceManager.Result.Created -> result.enter
+                    is InstanceManager.Result.Joined -> result.enter
+                    else -> return
+                }
+                val session = when (result) {
+                    is InstanceManager.Result.Created -> result.session
+                    is InstanceManager.Result.Joined -> result.session
+                    else -> return
+                }
+                val enter: InstanceEnterAction = {
+                    telejump(enterCoord)
+                    manager.finalizeEntry(player, session, worldClock.cycle)
+                }
+                if (runPreludeWhen(result)) {
+                    objectHooks.getEnterPrelude(key)?.let { prelude ->
+                        prelude(this, result, enter)
+                        return
+                    }
+                    objectHooks.getEnterTransition(key)?.let { transition ->
+                        withInstanceEnterTransition(transition, enter)
+                        return
+                    }
+                }
+                enter()
+            }
+        }
     }
 
     protected suspend fun ProtectedAccess.defaultInstanceEntry() {
@@ -226,12 +295,8 @@ public abstract class InstanceScript(
         applyResult(manager.create(player, key, spec, access, worldClock.cycle))
     }
 
-    private fun ProtectedAccess.applyResult(result: InstanceManager.Result) {
-        when (result) {
-            is InstanceManager.Result.Created -> { telejump(result.enter) }
-            is InstanceManager.Result.Joined -> { telejump(result.enter) }
-            is InstanceManager.Result.Failed -> mes(result.reason)
-        }
+    private suspend fun ProtectedAccess.applyResult(result: InstanceManager.Result) {
+        completeInstanceEntry(result)
     }
 
     private fun generateCode(): String =

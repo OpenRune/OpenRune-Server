@@ -1,6 +1,7 @@
 package org.rsmod.content.interfaces.worldmap
 
 import dev.openrune.types.aconverted.interf.IfButtonOp
+import dev.or2.central.account.Rights
 import jakarta.inject.Inject
 import org.rsmod.api.player.hook.TeleportType
 import org.rsmod.api.player.output.runClientScript
@@ -44,7 +45,7 @@ class WorldMapScript @Inject constructor(
 
         onIfOverlayButton(worldMapClose) { player.closeMap() }
         onPlayerCoordsChanged { player.runClientScript(1749, player.coords.packed) }
-        onWorldMapClick("modlevel.owner") { telejump(it.coord, TeleportType.Exempt) }
+        onWorldMapClick(Rights.ADMINISTRATOR) { telejump(it.coord, TeleportType.Exempt) }
     }
 
     private fun Player.openMap(option: IfButtonOp) {

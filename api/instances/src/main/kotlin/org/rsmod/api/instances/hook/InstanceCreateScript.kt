@@ -8,6 +8,8 @@ import org.rsmod.api.instances.InstanceAccess
 import org.rsmod.api.instances.InstanceManager
 import org.rsmod.api.instances.InstanceSession
 import org.rsmod.api.instances.InstanceSpec
+import org.rsmod.api.instances.enterLocObjects
+import org.rsmod.api.instances.exitLocObjects
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.script.onOpLoc1
 import org.rsmod.api.table.InstanceSettingsRow
@@ -25,13 +27,17 @@ internal class InstanceCreateScript @Inject constructor(
 
     override fun ScriptContext.startup() {
         InstanceSettingsRow.all().forEach { row ->
-            onOpLoc1(row.enterObject) {
-                val custom = objectHooks.getEnter(row.key)
-                if (custom != null) custom() else instanceEntry(row.key)
+            row.enterLocObjects().forEach { loc ->
+                onOpLoc1(loc) {
+                    val custom = objectHooks.getEnter(row.key)
+                    if (custom != null) custom() else instanceEntry(row.key)
+                }
             }
-            onOpLoc1(row.exitObject) {
-                val custom = objectHooks.getExit(row.key)
-                if (custom != null) custom() else leaveFlow()
+            row.exitLocObjects().forEach { loc ->
+                onOpLoc1(loc) {
+                    val custom = objectHooks.getExit(row.key)
+                    if (custom != null) custom() else leaveFlow()
+                }
             }
         }
     }
@@ -186,10 +192,18 @@ internal class InstanceCreateScript @Inject constructor(
         telejump(exit)
     }
 
-    private fun ProtectedAccess.applyResult(result: InstanceManager.Result, success: String) {
+    private suspend fun ProtectedAccess.applyResult(result: InstanceManager.Result, success: String) {
         when (result) {
-            is InstanceManager.Result.Created -> { mes(success); telejump(result.enter) }
-            is InstanceManager.Result.Joined -> { mes(success); telejump(result.enter) }
+            is InstanceManager.Result.Created -> {
+                mes(success)
+                telejump(result.enter)
+                manager.finalizeEntry(player, result.session, worldClock.cycle)
+            }
+            is InstanceManager.Result.Joined -> {
+                mes(success)
+                telejump(result.enter)
+                manager.finalizeEntry(player, result.session, worldClock.cycle)
+            }
             is InstanceManager.Result.Failed -> mes(result.reason)
         }
     }

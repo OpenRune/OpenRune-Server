@@ -9,10 +9,16 @@ import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.system.measureNanoTime
 import kotlinx.coroutines.delay
+import org.rsmod.api.game.process.PluginScriptBootGate
 import org.rsmod.game.GameProcess
 import org.rsmod.server.services.concurrent.ScheduledListenerService
 
-class GameService @Inject constructor(private val process: GameProcess) : ScheduledListenerService {
+class GameService
+@Inject
+constructor(
+    private val process: GameProcess,
+    private val scriptBootGate: PluginScriptBootGate,
+) : ScheduledListenerService {
     private val logger = InlineLogger()
 
     private var excessCycleNanos = 0L
@@ -48,14 +54,13 @@ class GameService @Inject constructor(private val process: GameProcess) : Schedu
 
     override fun createExecutor(): ExecutorService {
         val threadFactory = ThreadFactory { runnable ->
-            Thread(runnable, GAME_THREAD_NAME).apply { isDaemon = false }
+            Thread(runnable, GAME_THREAD_NAME).apply { isDaemon = true }
         }
         return Executors.newSingleThreadExecutor(threadFactory)
     }
 
     override suspend fun setup() {
-        // Intentionally call `process.startup` on the game thread instead of in `startup`,
-        // which runs on the main application thread.
+        scriptBootGate.awaitReady()
         process.startup()
     }
 

@@ -3,7 +3,7 @@ package org.rsmod.content.other.login
 import dev.openrune.ServerCacheManager
 import dev.openrune.rscm.RSCM
 import dev.openrune.rscm.RSCMType
-import dev.openrune.types.varp.VarpServerType
+import dev.openrune.types.StatType
 import jakarta.inject.Inject
 import net.rsprot.protocol.game.outgoing.misc.client.HideLocOps
 import net.rsprot.protocol.game.outgoing.misc.client.HideNpcOps
@@ -13,6 +13,9 @@ import net.rsprot.protocol.game.outgoing.misc.client.ResetAnims
 import net.rsprot.protocol.game.outgoing.misc.player.ChatFilterSettings
 import net.rsprot.protocol.game.outgoing.varp.VarpReset
 import org.rsmod.api.inv.weight.InvWeight
+import org.rsmod.api.net.central.OpenRuneCentralWorldLink
+import org.rsmod.api.net.central.writeCentralSocialSnapshot
+import org.rsmod.api.net.central.writeCentralSocialSnapshotEmpty
 import org.rsmod.api.player.output.Camera
 import org.rsmod.api.player.output.ChatType
 import org.rsmod.api.player.output.MiscOutput
@@ -42,9 +45,10 @@ constructor(
     private val realm: Realm,
     private val mapClock: MapClock,
     private val invisibleLevels: InvisibleLevels,
-    private val config: ServerConfig
+    private val config: ServerConfig,
+    private val openRuneCentral: OpenRuneCentralWorldLink,
 ) : PluginScript() {
-    private val transmitVars by lazy { transmitVars() }
+    private val statSyncEntries by lazy { statSyncEntries() }
 
     private var Player.chatboxUnlocked: Boolean by boolVarBit("varbit.has_displayname_transmitter")
 
@@ -55,11 +59,12 @@ constructor(
     private fun Player.engineLogin() {
         sendHighPriority()
         sendLowPriority()
-        VarPlayerIntMapSetter.set(this,"varbit.player_in_instance",0)
+        VarPlayerIntMapSetter.set(this, "varbit.player_in_instance", 0)
     }
 
     private fun Player.sendHighPriority() {
         sendChatFilters()
+        sendSocial()
         sendOpVisibility()
         sendWelcomeMessage()
         val validDidYouKnow = DidyouknowRow.all().filter { it.mobileonly != true }.random()
@@ -71,12 +76,34 @@ constructor(
         client.write(ChatFilterSettings(0, 0))
     }
 
+    private fun Player.sendSocial() {
+        if (!openRuneCentral.isEnabled) {
+            return
+        }
+
+        if (characterId <= 0) {
+            mes("Social list did not load: missing character.")
+            writeCentralSocialSnapshotEmpty()
+            return
+        }
+
+        when (val result = openRuneCentral.socialSnapshot(characterId)) {
+            is OpenRuneCentralWorldLink.CentralSocialSnapshotResult.Ok -> {
+                writeCentralSocialSnapshot(result.snapshot)
+            }
+
+            is OpenRuneCentralWorldLink.CentralSocialSnapshotResult.Failed -> {
+                mes("Social list did not load: ${result.message}")
+                writeCentralSocialSnapshotEmpty()
+            }
+        }
+    }
+
     private fun Player.sendOpVisibility() {
         client.write(HideNpcOps(false))
         client.write(HideLocOps(false))
         client.write(HideObjOps(false))
     }
-
 
     private fun Player.sendWelcomeMessage() {
         val message = realm.config.loginMessage
@@ -91,10 +118,12 @@ constructor(
     private fun Player.sendVars() {
         client.write(VarpReset)
         chatboxUnlocked = displayName.isNotBlank()
-        for (varp in transmitVars) {
-            if (varp in vars) {
-                resyncVar(varp)
+        for ((id, _) in vars) {
+            val varp = ServerCacheManager.getVarp(id) ?: continue
+            if (varp.transmit.never) {
+                continue
             }
+            resyncVar(varp)
         }
     }
 
@@ -123,9 +152,7 @@ constructor(
     }
 
     private fun Player.sendStats() {
-        for (stat in ServerCacheManager.getStats().values) {
-            val statInternal = RSCM.getReverseMapping(RSCMType.STAT,stat.id)
-
+        for ((statInternal, stat) in statSyncEntries) {
             val currXp = statMap.getXP(statInternal)
             val currLvl = stat(statInternal)
             val hiddenLvl = currLvl + invisibleLevels.get(this, statInternal)
@@ -148,8 +175,8 @@ constructor(
         MiscOutput.setPlayerOp(this, slot = 8, op = "Report")
     }
 
-    private fun transmitVars(): List<VarpServerType> {
-        return ServerCacheManager.getVarps().values.filter { !it.transmit.never }.sortedBy { it.id }
-    }
-
+    private fun statSyncEntries(): List<Pair<String, StatType>> =
+        ServerCacheManager.getStats().values.map { stat ->
+            RSCM.getReverseMapping(RSCMType.STAT, stat.id) to stat
+        }
 }

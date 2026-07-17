@@ -307,7 +307,9 @@ private constructor(
         val activeScopes = activeScopes.values
         val activeJobs = activeScopes.mapNotNull { it.coroutineContext[Job] }.filter(Job::isActive)
         activeJobs.forEach(::safeCancel)
-        activeExecutors.forEach(::safeShutdown)
+        val executorCount = activeExecutors.size.coerceAtLeast(1)
+        val perExecutorSecs = (timeoutMillis / 1000L / executorCount).coerceAtLeast(1L)
+        activeExecutors.forEach { safeShutdown(it, perExecutorSecs) }
         try {
             withTimeout(timeoutMillis) { activeJobs.joinAll() }
         } catch (t: TimeoutCancellationException) {

@@ -2,7 +2,6 @@ package org.rsmod.api.net.rsprot
 
 import com.github.michaelbull.logging.InlineLogger
 import jakarta.inject.Inject
-import kotlinx.coroutines.runBlocking
 import net.rsprot.protocol.api.NetworkService
 import net.rsprot.protocol.common.RSProtConstants
 import net.rsprot.protocol.common.client.OldSchoolClientType
@@ -44,6 +43,11 @@ constructor(
 ) : PluginScript() {
     private val logger = InlineLogger()
 
+    private companion object {
+        private const val DB_ONLINE_SESSION_TIMING_INFO_MS = 100L
+        private const val CENTRAL_HEARTBEAT_INTERVAL_CYCLES = 50L
+    }
+
     override fun ScriptContext.startup() {
         check(RSProtConstants.REVISION == config.revision) {
             "RSProt and ${config.name} have mismatching revision builds! " +
@@ -66,9 +70,15 @@ constructor(
         onEvent<HeldDropEvents.Destroy> {
             centralActivityLogWriter.logItemDestroy(player, type, obj)
         }
-        onEvent<GameLifecycle.UpdateInfo> { updateService() }
+        onEvent<GameLifecycle.UpdateInfo> {
+            updateService()
+            maybeHeartbeatCentralSessions()
+        }
         onEvent<SessionStart> { startSession() }
-        onEvent<SessionStateEvent.Delete> { closeSession() }
+        onEvent<SessionStateEvent.Delete> {
+            closeSession()
+            finalizeCentralSessionIfNeeded()
+        }
         onEvent<SessionStateEvent.Login> { markDbOnlineSession() }
         onEvent<SessionStateEvent.Logout> { notifyCentralLogout() }
         onEvent<NpcStateEvents.Create> { createNpcAvatar(npc) }
@@ -83,6 +93,40 @@ constructor(
         service.infoProtocols.update()
         if (openRuneCentral.isEnabled) {
             openRuneCentral.drainInboundRevokesOnGameThread(playerRegistry, gameUpdate)
+            openRuneCentral.drainInboundSocialOnGameThread(playerRegistry)
+        }
+    }
+
+    private fun maybeHeartbeatCentralSessions() {
+        if (!openRuneCentral.isEnabled) {
+            return
+        }
+        if (mapClock.cycle % CENTRAL_HEARTBEAT_INTERVAL_CYCLES != 0L) {
+            return
+        }
+        val tokens = ArrayList<ByteArray>()
+        playerRegistry.forEachOnline { player ->
+            player.openRuneCentralSessionToken?.let { tokens.add(it) }
+        }
+        openRuneCentral.heartbeatOnlineSessions(tokens)
+        touchOnlineSessionHeartbeats()
+    }
+
+    private fun touchOnlineSessionHeartbeats() {
+        try {
+            database.withTransactionBlocking { connection ->
+                playerRegistry.forEachOnline { player ->
+                    if (player.characterId > 0) {
+                        characterRepository.setOnlineSession(
+                            connection,
+                            player.characterId,
+                            config.world,
+                        )
+                    }
+                }
+            }
+        } catch (e: Exception) {
+            logger.warn(e) { "Could not refresh online-session heartbeats" }
         }
     }
 
@@ -106,18 +150,27 @@ constructor(
         client.unregister(service, player)
     }
 
+    private fun SessionStateEvent.Delete.finalizeCentralSessionIfNeeded() {
+        finalizeCentralSession(player)
+    }
+
     private fun SessionStateEvent.Login.markDbOnlineSession() {
-        runBlocking {
-            try {
-                database.withTransaction { connection ->
-                    characterRepository.setOnlineSession(
-                        connection,
-                        player.characterId,
-                        config.world,
-                    )
-                }
-            } catch (e: Exception) {
-                logger.warn(e) { "Could not set DB online-session for characterId=${player.characterId}" }
+        val startedAt = System.nanoTime()
+        try {
+            database.withTransactionBlocking { connection ->
+                characterRepository.setOnlineSession(
+                    connection,
+                    player.characterId,
+                    config.world,
+                )
+            }
+        } catch (e: Exception) {
+            logger.warn(e) { "Could not set DB online-session for characterId=${player.characterId}" }
+        }
+        val elapsedMs = java.util.concurrent.TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - startedAt)
+        if (config.loginTimingLogs && elapsedMs >= DB_ONLINE_SESSION_TIMING_INFO_MS) {
+            logger.info {
+                "Login set-online-session user='${player.username}' characterId=${player.characterId} elapsed=${elapsedMs}ms"
             }
         }
         centralActivityLogWriter.logPlayerLogin(player)
@@ -125,14 +178,16 @@ constructor(
 
     private fun SessionStateEvent.Logout.notifyCentralLogout() {
         centralActivityLogWriter.logPlayerLogout(player)
-        runBlocking {
-            try {
-                database.withTransaction { connection ->
-                    characterRepository.clearOnlineSession(connection, player.characterId)
-                }
-            } catch (e: Exception) {
-                logger.warn(e) { "Could not clear DB online-session for characterId=${player.characterId}" }
+        finalizeCentralSession(player)
+    }
+
+    private fun finalizeCentralSession(player: Player) {
+        try {
+            database.withTransactionBlocking { connection ->
+                characterRepository.clearOnlineSession(connection, player.characterId)
             }
+        } catch (e: Exception) {
+            logger.warn(e) { "Could not clear DB online-session for characterId=${player.characterId}" }
         }
         val token = player.openRuneCentralSessionToken ?: return
         openRuneCentral.notifyLogout(token)

@@ -1,6 +1,7 @@
 package org.rsmod.content.interfaces.skill.guides
 
 import dev.openrune.definition.type.widget.IfEvent
+import dev.or2.central.account.Rights
 import jakarta.inject.Inject
 import org.rsmod.annotations.InternalApi
 import org.rsmod.api.player.output.runClientScript
@@ -36,7 +37,7 @@ class SkillGuideEvents @Inject constructor(
                 ifClose()
 
                 protectedAccess.launch(player) {
-                    if (!player.modLevel.hasAccessTo("modlevel.admin")) {
+                    if (!player.modLevel.isAtLeast(Rights.ADMINISTRATOR)) {
                         openStatGuide(row.bit)
                         return@launch
                     }
