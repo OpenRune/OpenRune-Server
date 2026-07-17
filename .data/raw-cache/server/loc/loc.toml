@@ -1,3 +1,4 @@
+# TODO: This file is worth breaking down by area or type etc, gets packed into cache anyway so file count doesn't matter
 
 [[object]]
 id = "loc.crate3"
@@ -51,15 +52,6 @@ contentGroup = "content.empty_crate"
 id = "loc.bookcase"
 inherit = "loc.bookcase"
 contentGroup = "content.bookcase"
-
-[[object]]
-id = "loc.rustic_fencegate_l"
-inherit = "loc.rustic_fencegate_l"
-contentGroup = "content.closed_left_picketgate"
-
-[object.params]
-"param.next_loc_stage" = "loc.rustic_openfencegate_l"
-"param.opensound" = "synth.picketgate_open"
 
 [[object]]
 id = "loc.tree"
@@ -396,108 +388,6 @@ contentGroup = "content.tree"
 "param.skill_productitem" = "obj.logs"
 "param.skill_xp" = 250
 "param.next_loc_stage" = "loc.deadtree2_stump_dark"
-
-[[object]]
-id = "loc.castledoubledoorl"
-inherit = "loc.castledoubledoorl"
-contentGroup = "content.closed_left_door"
-
-[object.params]
-"param.next_loc_stage" = "loc.opencastledoubledoorl"
-
-[[object]]
-id = "loc.opencastledoubledoorl"
-inherit = "loc.opencastledoubledoorl"
-contentGroup = "content.opened_left_door"
-
-[object.params]
-"param.next_loc_stage" = "loc.castledoubledoorl"
-
-[[object]]
-id = "loc.castledoubledoorr"
-inherit = "loc.castledoubledoorr"
-contentGroup = "content.closed_right_door"
-
-[object.params]
-"param.next_loc_stage" = "loc.opencastledoubledoorr"
-
-[[object]]
-id = "loc.opencastledoubledoorr"
-inherit = "loc.opencastledoubledoorr"
-contentGroup = "content.opened_right_door"
-
-[object.params]
-"param.next_loc_stage" = "loc.castledoubledoorr"
-
-[[object]]
-id = "loc.poordoor"
-inherit = "loc.poordoor"
-contentGroup = "content.closed_single_door"
-
-[object.params]
-"param.next_loc_stage" = "loc.poordooropen"
-
-[[object]]
-id = "loc.poordooropen"
-inherit = "loc.poordooropen"
-contentGroup = "content.opened_single_door"
-
-[object.params]
-"param.next_loc_stage" = "loc.poordoor"
-
-[[object]]
-id = "loc.poshdoor"
-inherit = "loc.poshdoor"
-contentGroup = "content.closed_single_door"
-
-[object.params]
-"param.next_loc_stage" = "loc.poshdooropen"
-"param.opensound" = "synth.nicedoor_open"
-
-[[object]]
-id = "loc.poshdooropen"
-inherit = "loc.poshdooropen"
-contentGroup = "content.opened_single_door"
-
-[object.params]
-"param.closesound" = "synth.nicedoor_close"
-"param.next_loc_stage" = "loc.poshdoor"
-
-[[object]]
-id = "loc.fencegate_l"
-inherit = "loc.fencegate_l"
-contentGroup = "content.closed_left_picketgate"
-
-[object.params]
-"param.next_loc_stage" = "loc.openfencegate_l"
-"param.opensound" = "synth.picketgate_open"
-
-[[object]]
-id = "loc.openfencegate_l"
-inherit = "loc.openfencegate_l"
-contentGroup = "content.opened_left_picketgate"
-
-[object.params]
-"param.closesound" = "synth.picketgate_close"
-"param.next_loc_stage" = "loc.fencegate_l"
-
-[[object]]
-id = "loc.fencegate_r"
-inherit = "loc.fencegate_r"
-contentGroup = "content.closed_right_picketgate"
-
-[object.params]
-"param.next_loc_stage" = "loc.openfencegate_r"
-"param.opensound" = "synth.picketgate_open"
-
-[[object]]
-id = "loc.openfencegate_r"
-inherit = "loc.openfencegate_r"
-contentGroup = "content.opened_right_picketgate"
-
-[object.params]
-"param.closesound" = "synth.picketgate_close"
-"param.next_loc_stage" = "loc.fencegate_r"
 
 [[object]]
 id = "loc.achey_tree"
@@ -940,41 +830,7 @@ contentGroup = "content.empty_crate"
 [object.params]
 "param.game_message" = "You search the crate but find nothing."
 
-[[object]]
-id = "loc.qip_sheep_shearer_fencegate_l"
-inherit = "loc.qip_sheep_shearer_fencegate_l"
-contentGroup = "content.closed_left_picketgate"
 
-[object.params]
-"param.next_loc_stage" = "loc.qip_sheep_shearer_openfencegate_l"
-"param.opensound" = "synth.picketgate_open"
-
-[[object]]
-id = "loc.qip_sheep_shearer_fencegate_r"
-inherit = "loc.qip_sheep_shearer_fencegate_r"
-contentGroup = "content.closed_right_picketgate"
-
-[object.params]
-"param.next_loc_stage" = "loc.qip_sheep_shearer_openfencegate_r"
-"param.opensound" = "synth.picketgate_open"
-
-[[object]]
-id = "loc.qip_sheep_shearer_openfencegate_l"
-inherit = "loc.qip_sheep_shearer_openfencegate_l"
-contentGroup = "content.opened_left_picketgate"
-
-[object.params]
-"param.closesound" = "synth.door_close"
-"param.next_loc_stage" = "loc.qip_sheep_shearer_fencegate_l"
-
-[[object]]
-id = "loc.qip_sheep_shearer_openfencegate_r"
-inherit = "loc.qip_sheep_shearer_openfencegate_r"
-contentGroup = "content.opened_right_picketgate"
-
-[object.params]
-"param.closesound" = "synth.door_close"
-"param.next_loc_stage" = "loc.qip_sheep_shearer_fencegate_r"
 
 [[object]]
 id = "loc.pest_tree"
@@ -1058,33 +914,6 @@ contentGroup = "content.dungeonladder_up"
 id = "loc.aide_bankbooth"
 inherit = "loc.aide_bankbooth"
 contentGroup = "content.bank_booth"
-
-[[object]]
-id = "loc.rustic_fencegate_r"
-inherit = "loc.rustic_fencegate_r"
-contentGroup = "content.closed_right_picketgate"
-
-[object.params]
-"param.next_loc_stage" = "loc.rustic_openfencegate_r"
-"param.opensound" = "synth.picketgate_open"
-
-[[object]]
-id = "loc.rustic_openfencegate_l"
-inherit = "loc.rustic_openfencegate_l"
-contentGroup = "content.opened_left_picketgate"
-
-[object.params]
-"param.closesound" = "synth.door_close"
-"param.next_loc_stage" = "loc.rustic_fencegate_l"
-
-[[object]]
-id = "loc.rustic_openfencegate_r"
-inherit = "loc.rustic_openfencegate_r"
-contentGroup = "content.opened_right_picketgate"
-
-[object.params]
-"param.closesound" = "synth.door_close"
-"param.next_loc_stage" = "loc.rustic_fencegate_r"
 
 [[object]]
 id = "loc.aide_bankbooth_multi"
@@ -1490,22 +1319,6 @@ contentGroup = "content.spiralstaircase_up"
 id = "loc.spiralstairstop_3"
 inherit = "loc.spiralstairstop_3"
 contentGroup = "content.spiralstaircase_down"
-
-[[object]]
-id = "loc.poordoor_m"
-inherit = "loc.poordoor_m"
-contentGroup = "content.closed_single_door"
-
-[object.params]
-"param.next_loc_stage" = "loc.poordooropen_m"
-
-[[object]]
-id = "loc.poordooropen_m"
-inherit = "loc.poordooropen_m"
-contentGroup = "content.opened_single_door"
-
-[object.params]
-"param.next_loc_stage" = "loc.poordoor_m"
 
 [[object]]
 id = "loc.range"

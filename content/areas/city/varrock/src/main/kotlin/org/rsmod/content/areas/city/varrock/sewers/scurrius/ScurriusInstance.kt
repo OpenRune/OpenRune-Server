@@ -1,4 +1,4 @@
-package org.rsmod.content.areas.city.varrock.scurrius
+package org.rsmod.content.areas.city.varrock.sewers.scurrius
 
 import jakarta.inject.Inject
 import org.rsmod.api.instances.BossInstanceRegistry

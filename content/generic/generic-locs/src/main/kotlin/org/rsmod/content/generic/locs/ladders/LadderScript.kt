@@ -18,11 +18,11 @@ class LadderScript : PluginScript() {
     override fun ScriptContext.startup() {
         onOpContentLoc1("content.ladder_down") {
             arriveDelay()
-            climbDown(it.type)
+            climbDown(it.type, it.type.paramOrNull(params.translate_level) ?: -1)
         }
         onOpContentLoc1("content.ladder_up") {
             arriveDelay()
-            climbUp(it.type)
+            climbUp(it.type, it.type.paramOrNull(params.translate_level) ?: 1)
         }
         onOpContentLoc1("content.ladder_option") {
             arriveDelay()
@@ -30,17 +30,17 @@ class LadderScript : PluginScript() {
         }
         onOpContentLoc2("content.ladder_option") {
             arriveDelay()
-            climbUp(it.type)
+            climbUp(it.type, it.type.paramOrNull(params.translate_level) ?: 1)
         }
         onOpContentLoc3("content.ladder_option") {
             arriveDelay()
-            climbDown(it.type)
+            climbDown(it.type, it.type.paramOrNull(params.translate_level) ?: -1)
         }
     }
 
-    private suspend fun ProtectedAccess.climbUp(type: ObjectServerType): Unit = climb(type, 1)
+    private suspend fun ProtectedAccess.climbUp(type: ObjectServerType, translateLevel: Int = 1): Unit = climb(type, translateLevel)
 
-    private suspend fun ProtectedAccess.climbDown(type: ObjectServerType): Unit = climb(type, -1)
+    private suspend fun ProtectedAccess.climbDown(type: ObjectServerType, translateLevel: Int = -1): Unit = climb(type, translateLevel)
 
     private suspend fun ProtectedAccess.climb(type: ObjectServerType, translateLevel: Int) {
         val dest = player.coords.translateLevel(translateLevel)
