@@ -139,31 +139,3 @@ public val Player.constructionLvl: Int
 
 public val Player.baseConstructionLvl: Int
     get() = statBase("stat.construction")
-
-public val Player.skills: Map<String, Int>
-    get() = mapOf(
-        "attack" to stat("stat.attack"),
-        "strength" to stat("stat.strength"),
-        "defence" to stat("stat.defence"),
-        "hitpoints" to stat("stat.hitpoints"),
-        "ranged" to stat("stat.ranged"),
-        "prayer" to stat("stat.prayer"),
-        "magic" to stat("stat.magic"),
-        "cooking" to stat("stat.cooking"),
-        "woodcutting" to stat("stat.woodcutting"),
-        "fletching" to stat("stat.fletching"),
-        "fishing" to stat("stat.fishing"),
-        "firemaking" to stat("stat.firemaking"),
-        "crafting" to stat("stat.crafting"),
-        "smithing" to stat("stat.smithing"),
-        "mining" to stat("stat.mining"),
-        "herblore" to stat("stat.herblore"),
-        "agility" to stat("stat.agility"),
-        "thieving" to stat("stat.thieving"),
-        "slayer" to stat("stat.slayer"),
-        "farming" to stat("stat.farming"),
-        "runecrafting" to stat("stat.runecrafting"),
-        "hunter" to stat("stat.hunter"),
-        "construction" to stat("stat.construction"),
-        "sailing" to stat("stat.sailing"),
-    )

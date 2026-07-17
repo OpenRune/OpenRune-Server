@@ -2,10 +2,9 @@ package org.rsmod.content.areas.city.varrock.npcs.shops
 
 import jakarta.inject.Inject
 import org.rsmod.api.player.dialogue.Dialogue
+import org.rsmod.api.player.hasAtLeast99s
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.stat.runecraftingLvl
-import org.rsmod.api.player.stat.skills
-import org.rsmod.api.player.stat.slayerLvl
 import org.rsmod.api.script.onOpNpc1
 import org.rsmod.api.script.onOpNpc3
 import org.rsmod.api.shops.Shops
@@ -21,20 +20,10 @@ class MagicShop @Inject constructor(private val shops: Shops) : PluginScript() {
         onOpNpc3("npc.aubury") { player.openMagicShop(it.npc) }
     }
 
-    private fun Player.maxSkillCount(): Int {
-        var count = 0
-        for (skill in skills) {
-            if (skill.value >= 99) {
-                count++
-            }
-        }
-        return count
-    }
-
     private fun Player.openMagicShop(npc: Npc) {
         val shopInv = if (this.runecraftingLvl == 99) {
             "inv.runeshop_skillcape"
-        } else if (this.maxSkillCount() >= 2) {
+        } else if (this.hasAtLeast99s(2)) {
             "inv.runeshop_skillcape_trimmed"
         } else {
             "inv.runeshop"
