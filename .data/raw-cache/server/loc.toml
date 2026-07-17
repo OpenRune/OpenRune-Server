@@ -446,6 +446,22 @@ contentGroup = "content.opened_single_door"
 "param.next_loc_stage" = "loc.poordoor"
 
 [[object]]
+id = "loc.fai_wiztower_poor_door"
+inherit = "loc.fai_wiztower_poor_door"
+contentGroup = "content.closed_single_door"
+
+[object.params]
+"param.next_loc_stage" = "loc.fai_wiztower_poor_door_open"
+
+[[object]]
+id = "loc.fai_wiztower_poor_door_open"
+inherit = "loc.fai_wiztower_poor_door_open"
+contentGroup = "content.opened_single_door"
+
+[object.params]
+"param.next_loc_stage" = "loc.fai_wiztower_poor_door"
+
+[[object]]
 id = "loc.poshdoor"
 inherit = "loc.poshdoor"
 contentGroup = "content.closed_single_door"
@@ -462,6 +478,22 @@ contentGroup = "content.opened_single_door"
 [object.params]
 "param.closesound" = "synth.nicedoor_close"
 "param.next_loc_stage" = "loc.poshdoor"
+
+[[object]]
+id = "loc.elfdoor"
+inherit = "loc.elfdoor"
+contentGroup = "content.closed_single_door"
+
+[object.params]
+"param.next_loc_stage" = "loc.elfdooropen"
+
+[[object]]
+id = "loc.elfdooropen"
+inherit = "loc.elfdooropen"
+contentGroup = "content.opened_single_door"
+
+[object.params]
+"param.next_loc_stage" = "loc.elfdoor"
 
 [[object]]
 id = "loc.fencegate_l"
@@ -1053,6 +1085,29 @@ contentGroup = "content.ladder_option"
 id = "loc.ladder_from_cellar"
 inherit = "loc.ladder_from_cellar"
 contentGroup = "content.dungeonladder_up"
+
+[[object]]
+id = "loc.fai_wiztower_spiralstairs"
+inherit = "loc.fai_wiztower_spiralstairs"
+contentGroup = "content.spiralstaircase_up"
+
+[[object]]
+id = "loc.fai_wiztower_spiralstairs_middle"
+inherit = "loc.fai_wiztower_spiralstairs_middle"
+contentGroup = "content.spiralstaircase_option"
+
+[[object]]
+id = "loc.fai_wiztower_spiralstairstop"
+inherit = "loc.fai_wiztower_spiralstairstop"
+contentGroup = "content.spiralstaircase_down"
+
+[[object]]
+id = "loc.wizards_tower_laddertop"
+inherit = "loc.wizards_tower_laddertop"
+
+[[object]]
+id = "loc.wizards_tower_ladder"
+inherit = "loc.wizards_tower_ladder"
 
 [[object]]
 id = "loc.aide_bankbooth"

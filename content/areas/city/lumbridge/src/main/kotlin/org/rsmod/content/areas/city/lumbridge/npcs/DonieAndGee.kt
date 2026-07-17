@@ -343,12 +343,18 @@ private suspend fun Dialogue.dukeStrangeTalismanQuest() {
             "Lumbridge Castle.",
     )
     // Note: dialogue should be different when the quest has been started but not completed.
+    // varp.runemysteries uses real stages (endstate=6 when complete).
     val progress = vars["varp.runemysteries"]
-    if (progress == 0) {
-        chatPlayer(quiz, "Sounds mysterious. I may just do that. Thanks.")
-    } else {
-        chatPlayer(happy, "Yes, I have already solved the rune mysteries.")
-        chatNpc(happy, "Ah excellent. Thank you very much adventurer.")
+    when {
+        progress == 0 -> chatPlayer(quiz, "Sounds mysterious. I may just do that. Thanks.")
+        progress >= 6 -> {
+            chatPlayer(happy, "Yes, I have already solved the rune mysteries.")
+            chatNpc(happy, "Ah excellent. Thank you very much adventurer.")
+        }
+        else -> {
+            chatPlayer(happy, "I'm already looking into that for the Duke.")
+            chatNpc(happy, "Good luck with it.")
+        }
     }
 }
 
