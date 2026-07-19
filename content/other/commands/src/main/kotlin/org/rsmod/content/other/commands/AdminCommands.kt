@@ -18,6 +18,8 @@ import org.rsmod.api.mechanics.toxins.impl.PlayerDisease
 import org.rsmod.api.mechanics.toxins.impl.PlayerPoison
 import org.rsmod.api.mechanics.toxins.impl.PlayerVenom
 import org.rsmod.api.invtx.invClear
+import org.rsmod.api.player.ironman.PlayerGamemode
+import org.rsmod.api.player.ironman.setGamemode
 import org.rsmod.api.player.output.MiscOutput
 import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.cheat.adminGodMode
@@ -143,7 +145,35 @@ constructor(
         onCommand("transmog", "Transmog player to NPC appearance (no args to reset)", ::transmog) {
             invalidArgs = "Use as ::transmog npcNameOrId (ex: goblin or 126) or ::transmog to reset"
         }
+        onCommand("gamemode", "Set account gamemode (normal|ironman|uim|hcim)", ::gamemode) {
+            invalidArgs = "Use as ::gamemode normal|ironman|uim|hcim"
+        }
     }
+
+    private fun gamemode(cheat: Cheat) =
+        with(cheat) {
+            val mode =
+                when (args.getOrNull(0)?.lowercase()) {
+                    "normal",
+                    "main",
+                    "0" -> PlayerGamemode.NORMAL
+                    "ironman",
+                    "iron",
+                    "1" -> PlayerGamemode.IRONMAN
+                    "uim",
+                    "ultimate",
+                    "2" -> PlayerGamemode.ULTIMATE_IRONMAN
+                    "hcim",
+                    "hardcore",
+                    "3" -> PlayerGamemode.HARDCORE_IRONMAN
+                    else -> {
+                        player.mes("Use as ::gamemode normal|ironman|uim|hcim")
+                        return
+                    }
+                }
+            player.setGamemode(mode)
+            player.mes("Gamemode set to $mode (varbit.ironman synced; persists on logout).")
+        }
 
     private fun god(cheat: Cheat) =
         with(cheat) {

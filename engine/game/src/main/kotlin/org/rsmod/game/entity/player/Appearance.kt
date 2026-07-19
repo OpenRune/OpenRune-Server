@@ -107,6 +107,14 @@ public class Appearance {
         rebuild = false
     }
 
+    public fun subjectPronoun(): String =
+        when (pronoun) {
+            PRONOUN_HE -> "He"
+            PRONOUN_SHE -> "She"
+            PRONOUN_THEY -> "They"
+            else -> if (bodyType == BODY_TYPE_A) "He" else "She"
+        }
+
     private fun assignDefaultColours() {
         colours[0] = 0
         colours[1] = 3
@@ -123,5 +131,14 @@ public class Appearance {
         identKit[4] = 33
         identKit[5] = 36
         identKit[6] = 42
+    }
+
+    public companion object {
+        public const val PRONOUN_HE: Int = 0
+        public const val PRONOUN_SHE: Int = 1
+        public const val PRONOUN_THEY: Int = 2
+
+        public const val BODY_TYPE_A: Int = 0
+        public const val BODY_TYPE_B: Int = 1
     }
 }

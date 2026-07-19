@@ -3,6 +3,7 @@ package org.rsmod.api.player.hook
 import dev.openrune.types.ItemServerType
 import jakarta.inject.Inject
 import org.rsmod.game.entity.Player
+import org.rsmod.game.obj.Obj
 import org.rsmod.map.CoordGrid
 
 public enum class GroundItemDropSource {
@@ -40,7 +41,7 @@ public fun interface PlayerObjTakeValidateHook {
     /**
      * @return A denial message if the pickup should be blocked, or `null` if allowed.
      */
-    public fun validateTake(player: Player, objType: ItemServerType): String?
+    public fun validateTake(player: Player, obj: Obj, objType: ItemServerType): String?
 }
 
 public class GroundItemDropResolver
@@ -64,9 +65,9 @@ constructor(private val hooks: Set<@JvmSuppressWildcards PlayerGroundItemDropHoo
 public class PlayerObjTakeValidator
 @Inject
 constructor(private val hooks: Set<@JvmSuppressWildcards PlayerObjTakeValidateHook>) {
-    public fun validate(player: Player, objType: ItemServerType): String? {
+    public fun validate(player: Player, obj: Obj, objType: ItemServerType): String? {
         for (hook in hooks) {
-            val denial = hook.validateTake(player, objType)
+            val denial = hook.validateTake(player, obj, objType)
             if (denial != null) {
                 return denial
             }
