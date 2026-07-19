@@ -806,5 +806,11 @@ type = "STRING"
 defaultString = ""
 isMembers = true
 
+[[params]]
+id = "param.translate_level"
+isServerOnly = true
+type = "INT"
+defaultInt = 0
+isMembers = true
 
 
