@@ -1,6 +1,17 @@
 [[area]]
 name = "Mining Guild"
 area_id = "area.mining_guild"
-levels = [0]
+levels = [0, 1, 2, 3]
 
-# Add [[area.polygons]] vertices when ready.
+[[area.polygons]]
+vertices = [
+    [3004, 9757],
+    [2990, 9799],
+    [2985, 9856],
+    [3056, 9861],
+    [3081, 9843],
+    [3070, 9764],
+    [3066, 9707],
+    [3016, 9679],
+    [2997, 9698],
+]
