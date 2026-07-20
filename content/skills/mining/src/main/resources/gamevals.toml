@@ -1,6 +1,6 @@
 [gamevals.content]
-rock = 51
-mining_pickaxe = 52
+rock = 52
+mining_pickaxe = 53
 
 [gamevals.param]
 skill_action_delay = 65382
