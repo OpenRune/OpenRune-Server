@@ -179,19 +179,32 @@ constructor(
         if (addDelayedNpcs.isEmpty()) {
             return 0
         }
-        return processAddDelayed()
+        return processAddDelayed(DELAYED_ADDS_PER_CYCLE)
     }
 
     /**
-     * Spawns due delayed NPCs, capped per cycle so map-wide [addDelayed] bursts (e.g. server
-     * startup with spawnDelay=0) do not stall the game thread for hundreds of milliseconds.
+     * Drains all due delayed NPC spawns without the per-cycle cap.
+     *
+     * Used during boot after plugin scripts are loaded so map NPCs exist before login opens.
+     * Runtime [addDelayed] calls continue to use the paced [processDelayedAdd] path.
+     */
+    internal fun flushDelayedAdds(): Int {
+        if (addDelayedNpcs.isEmpty()) {
+            return 0
+        }
+        return processAddDelayed(limit = Int.MAX_VALUE)
+    }
+
+    /**
+     * Spawns due delayed NPCs. During the game loop this is capped per cycle so map-wide
+     * [addDelayed] bursts do not stall the game thread for hundreds of milliseconds.
      *
      * Uses [MapClock.cycle] >= trigger so leftovers remain eligible on subsequent cycles.
      */
-    private fun processAddDelayed(): Int {
+    private fun processAddDelayed(limit: Int): Int {
         var added = 0
         val iterator = addDelayedNpcs.iterator()
-        while (iterator.hasNext() && added < DELAYED_ADDS_PER_CYCLE) {
+        while (iterator.hasNext() && added < limit) {
             val npc = iterator.next()
             if (mapClock.cycle >= npc.lifecycleDelayedAddCycle) {
                 add(npc, duration = npc.lifecycleDelayedAddDuration)
@@ -206,8 +219,8 @@ constructor(
 
     private companion object {
         /**
-         * Tuned so a full-map `addDelayed(spawnDelay=0)` drain stays well under one game tick.
-         * At ~55µs/npc and ~18µs/obj, these caps target ~50ms combined worst case.
+         * Cap for runtime [processDelayedAdd] so large [addDelayed] bursts do not stall a tick.
+         * Boot-time map spawns are fully drained via [flushDelayedAdds] before login opens.
          */
         private const val DELAYED_ADDS_PER_CYCLE: Int = 750
     }

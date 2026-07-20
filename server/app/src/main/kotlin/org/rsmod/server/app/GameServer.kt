@@ -29,6 +29,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
 import org.rsmod.api.game.process.PluginScriptBootGate
+import org.rsmod.api.repo.EntityDelayedProcess
 import org.rsmod.api.repo.npc.NpcRepository
 import org.rsmod.api.repo.obj.ObjRepository
 import org.rsmod.api.server.config.ServerConfig
@@ -184,6 +185,10 @@ class GameServer(private val skipTypeVerificationOverride: Boolean? = null) :
         for (script in scripts) {
             startupPluginScript(script, scriptContext)
         }
+        // Map spawns are queued via addDelayed during loadMap so onNpcSpawn handlers exist
+        // first. Flush them here before opening login so players never see entities pop in.
+        logger.info { "Spawning map entities..." }
+        injector.getInstance(EntityDelayedProcess::class.java).flush()
         injector.getInstance(PluginScriptBootGate::class.java).markReady()
         logger.info { "Loaded ${scripts.size} script${if (scripts.size == 1) "" else "s"}." }
     }

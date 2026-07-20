@@ -184,13 +184,26 @@ constructor(private val mapClock: MapClock, private val registry: ObjRegistry) {
         if (addDelayed.isEmpty()) {
             return 0
         }
-        return processAddDelayed()
+        return processAddDelayed(DELAYED_ADDS_PER_CYCLE)
     }
 
-    private fun processAddDelayed(): Int {
+    /**
+     * Drains all due delayed obj spawns without the per-cycle cap.
+     *
+     * Used during boot after plugin scripts are loaded so map objs exist before login opens.
+     * Runtime [addDelayed] calls continue to use the paced [processDelayedAdd] path.
+     */
+    internal fun flushDelayedAdds(): Int {
+        if (addDelayed.isEmpty()) {
+            return 0
+        }
+        return processAddDelayed(limit = Int.MAX_VALUE)
+    }
+
+    private fun processAddDelayed(limit: Int): Int {
         var added = 0
         val iterator = addDelayed.iterator()
-        while (iterator.hasNext() && added < DELAYED_ADDS_PER_CYCLE) {
+        while (iterator.hasNext() && added < limit) {
             val duration = iterator.next()
             if (duration.shouldTrigger()) {
                 add(duration.obj, duration = duration.duration)
@@ -216,7 +229,7 @@ constructor(private val mapClock: MapClock, private val registry: ObjRegistry) {
     public companion object {
         public const val DEFAULT_REVEAL_DELAY: Int = 100
 
-        /** Objs are cheaper to register than NPCs; allow a larger per-cycle drain. */
+        /** Cap for runtime delayed drains; boot flush uses an uncapped path. */
         private const val DELAYED_ADDS_PER_CYCLE: Int = 2_500
     }
 }
