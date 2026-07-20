@@ -366,20 +366,8 @@ constructor(
         return RSCM.getReverseMapping(RSCMType.SEQ, seq.id)
     }
 
-    private fun ProtectedAccess.pickaxeActionDelay(pickaxe: InvObj): Int {
-        val name = getInvObj(pickaxe).internalName
-        val base = getInvObj(pickaxe).pickaxeDelay
-        return when (name) {
-            "obj.dragon_pickaxe",
-            "obj.dragon_pickaxe_pretty",
-            "obj.infernal_pickaxe",
-            "obj.infernal_pickaxe_empty",
-            "obj.3a_pickaxe",
-            "obj.crystal_pickaxe_inactive", -> if (random.of(6) == 0) 2 else 3
-            "obj.crystal_pickaxe" -> if (random.of(4) == 0) 2 else 3
-            else -> base
-        }
-    }
+    private fun ProtectedAccess.pickaxeActionDelay(pickaxe: InvObj): Int =
+        Companion.pickaxeActionDelay(pickaxe, random)
 
     private fun ProtectedAccess.mesPickaxeMissing() {
         mes("You need a pickaxe to mine this rock.")
@@ -415,6 +403,21 @@ constructor(
         val ItemServerType.pickaxeDelay: Int by objParam(MiningParams.skill_action_delay)
         val ItemServerType.pickaxeWallAnim: SequenceServerType by
             objParam(MiningParams.skill_wall_anim)
+
+        fun pickaxeActionDelay(pickaxe: InvObj, random: org.rsmod.api.random.GameRandom): Int {
+            val type = getInvObj(pickaxe)
+            val base = type.pickaxeDelay
+            return when (type.internalName) {
+                "obj.dragon_pickaxe",
+                "obj.dragon_pickaxe_pretty",
+                "obj.infernal_pickaxe",
+                "obj.infernal_pickaxe_empty",
+                "obj.3a_pickaxe",
+                "obj.crystal_pickaxe_inactive", -> if (random.of(6) == 0) 2 else 3
+                "obj.crystal_pickaxe" -> if (random.of(4) == 0) 2 else 3
+                else -> base
+            }
+        }
 
         fun findPickaxe(player: Player): InvObj? {
             val worn = player.wornPickaxe()

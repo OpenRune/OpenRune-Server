@@ -52700,3 +52700,14 @@ contentGroup = "content.ore"
 id = "obj.softclay"
 inherit = "obj.softclay"
 contentGroup = "content.ore"
+
+[[item]]
+id = "obj.poh_tablet_lumbridgeteleport"
+inherit = "obj.poh_tablet_varrockteleport"
+name = "Shooting Star teleport"
+inventoryModel = "models.poh_tablet_shootingstar"
+tradeable = false
+cost = 50
+examine = "A sky full of stars... and one might change your journey."
+[item.params]
+"param.shop_sale_restricted"=1

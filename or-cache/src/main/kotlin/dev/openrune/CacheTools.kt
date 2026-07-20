@@ -8,6 +8,7 @@ import dev.openrune.cache.tools.cs2.PackCs2
 import dev.openrune.cache.tools.tasks.CacheTask
 import dev.openrune.cache.tools.tasks.TaskType
 import dev.openrune.cache.tools.tasks.impl.PackDBTables
+import dev.openrune.cache.tools.tasks.impl.PackModels
 import dev.openrune.cache.tools.tasks.impl.defs.PackConfig
 import dev.openrune.codegen.startEnumGeneration
 import dev.openrune.codegen.startGeneration
@@ -33,6 +34,7 @@ import dev.openrune.tables.skills.Herblore
 import dev.openrune.tables.skills.Mining
 import dev.openrune.tables.skills.Slayer
 import dev.openrune.tables.skills.Runecrafting
+import dev.openrune.tables.skills.ShootingStars
 import dev.openrune.tables.skills.Smithing
 import dev.openrune.tables.skills.prayer.EctofuntusBonemeal
 import dev.openrune.tables.skills.prayer.PrayerBlessedBone
@@ -96,6 +98,7 @@ fun tablesToPack() = listOf(
     SettingConfigs.settings(),
     DidYouKnow.didYouknow(),
     InstanceSettingsTable.instanceSettings(),
+    ShootingStars.locations(),
 )
 
 fun downloadRev(type: TaskType) {
@@ -136,6 +139,7 @@ fun buildCache(taskType: TaskType) {
 
     val tasks: List<CacheTask> =
         listOf(
+            PackModels(File("../.data/raw-cache/models")),
             PackConfig(File("../.data/raw-cache/server")),
             PackDBTables(tablesToPack())
         ).toMutableList()
