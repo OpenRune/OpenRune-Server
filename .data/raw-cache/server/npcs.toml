@@ -1447,3 +1447,220 @@ inherit = "npc.wilderness_capeseller_10"
 [npc.params]
 "param.shop_inventory" = "inv.wildernesscapeshop10"
 "param.shop_name" = "Sam's Wilderness Cape Shop"
+
+[[npc]]
+id = "npc.godwars_bandos_avatar"
+inherit = "npc.godwars_bandos_avatar"
+huntMode = 6
+huntRange = 30
+maxRange = 30
+defaultMode = "Wander"
+[npc.params]
+"param.attack_anim"="seq.godwars_bandos_attack"
+"param.defend_anim"="seq.godwars_bandos_defend"
+"param.death_anim"="seq.godwars_bandos_death"
+
+[[npc]]
+id = "npc.godwars_sergeant_goblin1"
+inherit = "npc.godwars_sergeant_goblin1"
+huntMode = 6
+huntRange = 30
+maxRange = 30
+defaultMode = "Wander"
+[npc.params]
+"param.attack_anim"="seq.slice_surface_goblin_sergent_attack"
+"param.defend_anim"="seq.slice_surface_goblin_sergent_defend"
+"param.death_anim"="seq.slice_surface_goblin_sergent_death"
+"param.npc_attack_type"="category.attacktype_crush"
+
+[[npc]]
+id = "npc.godwars_sergeant_goblin2"
+inherit = "npc.godwars_sergeant_goblin2"
+huntMode = 8
+huntRange = 30
+maxRange = 30
+attackRange = 7
+defaultMode = "Wander"
+[npc.params]
+"param.npc_attack_type"="category.attacktype_magic"
+"param.attack_anim"="seq.godwars_sergeant_goblin2_sonic"
+"param.defend_anim"="seq.slice_surface_goblin_sergent_defend"
+"param.death_anim"="seq.slice_surface_goblin_sergent_death"
+"param.proj_type"="projanim.magic_spell"
+"param.proj_travel"="spotanim.godwars_goblin2_sonic_attk_proj"
+
+[[npc]]
+id = "npc.godwars_sergeant_goblin3"
+inherit = "npc.godwars_sergeant_goblin3"
+huntMode = 8
+huntRange = 30
+maxRange = 30
+attackRange = 7
+defaultMode = "Wander"
+[npc.params]
+"param.npc_attack_type"="category.attacktype_heavy"
+"param.attack_anim"="seq.godwars_sergeant_goblin3_ranged"
+"param.defend_anim"="seq.slice_surface_goblin_sergent_defend"
+"param.death_anim"="seq.slice_surface_goblin_sergent_death"
+"param.proj_type"="projanim.thrown"
+"param.proj_travel"="spotanim.godwars_goblin3_handaxe_proj"
+
+[[npc]]
+id = "npc.godwars_saradomin_avatar"
+inherit = "npc.godwars_saradomin_avatar"
+huntMode = 6
+huntRange = 30
+maxRange = 30
+defaultMode = "Wander"
+
+[[npc]]
+id = "npc.godwars_saradomin_unicorn"
+inherit = "npc.godwars_saradomin_unicorn"
+huntMode = 6
+huntRange = 30
+maxRange = 30
+defaultMode = "Wander"
+[npc.params]
+"param.attack_anim"="seq.unicorn_rework_attack"
+"param.defend_anim"="seq.unicorn_rework_defend"
+"param.death_anim"="seq.unicorn_rework_death"
+"param.npc_attack_type"="category.attacktype_crush"
+
+[[npc]]
+id = "npc.godwars_saradomin_lion"
+inherit = "npc.godwars_saradomin_lion"
+huntMode = 8
+huntRange = 30
+maxRange = 30
+attackRange = 7
+defaultMode = "Wander"
+[npc.params]
+"param.attack_anim"="seq.godwars_lion_magic_attack"
+"param.defend_anim"="seq.godwars_lion_defend"
+"param.death_anim"="seq.godwars_lion_death"
+"param.npc_attack_type"="category.attacktype_magic"
+"param.proj_type"="projanim.magic_spell"
+"param.proj_travel"="spotanim.godwars_lion_magic_proj"
+
+[[npc]]
+id = "npc.godwars_saradomin_centaur"
+inherit = "npc.godwars_saradomin_centaur"
+huntMode = 8
+huntRange = 30
+maxRange = 30
+attackRange = 7
+defaultMode = "Wander"
+[npc.params]
+"param.attack_anim"="seq.godwars_centaur_attack_ranged"
+"param.defend_anim"="seq.godwars_centaur_defend"
+"param.death_anim"="seq.godwars_centaur_death"
+"param.npc_attack_type"="category.attacktype_light"
+"param.proj_type"="projanim.arrow"
+"param.proj_travel"="spotanim.godwars_centaur_arrow_proj"
+
+[[npc]]
+id = "npc.godwars_zamorak_avatar"
+inherit = "npc.godwars_zamorak_avatar"
+huntMode = 6
+huntRange = 30
+maxRange = 30
+defaultMode = "Wander"
+
+[[npc]]
+id = "npc.godwars_ancient_black_demon"
+inherit = "npc.godwars_ancient_black_demon"
+huntMode = 8
+huntRange = 30
+maxRange = 30
+attackRange = 7
+defaultMode = "Wander"
+[npc.params]
+"param.attack_anim"="seq.demon_update_fireball_cast"
+"param.defend_anim"="seq.demon_block"
+"param.death_anim"="seq.demon_death"
+"param.npc_attack_type"="category.attacktype_magic"
+"param.proj_type"="projanim.magic_spell"
+"param.proj_travel"="spotanim.godwars_black_demon_fireball_proj"
+
+[[npc]]
+id = "npc.godwars_ancient_greater_demon"
+inherit = "npc.godwars_ancient_greater_demon"
+huntMode = 6
+huntRange = 30
+maxRange = 30
+defaultMode = "Wander"
+[npc.params]
+"param.attack_anim"="seq.demon_attack_greater"
+"param.defend_anim"="seq.demon_block"
+"param.death_anim"="seq.demon_death_greater"
+"param.npc_attack_type"="category.attacktype_crush"
+
+[[npc]]
+id = "npc.godwars_ancient_lesser_demon"
+inherit = "npc.godwars_ancient_lesser_demon"
+huntMode = 8
+huntRange = 30
+maxRange = 30
+attackRange = 7
+defaultMode = "Wander"
+[npc.params]
+"param.attack_anim"="seq.godwars_zamorak_bdygrd_ranged"
+"param.defend_anim"="seq.demon_block"
+"param.death_anim"="seq.demon_death"
+"param.npc_attack_type"="category.attacktype_heavy"
+"param.proj_type"="projanim.thrown"
+"param.proj_travel"="spotanim.godwars_zamorak_bdygrd_ranged_proj"
+
+[[npc]]
+id = "npc.godwars_armadyl_avatar"
+inherit = "npc.godwars_armadyl_avatar"
+huntMode = 8
+huntRange = 30
+maxRange = 30
+attackRange = 7
+defaultMode = "Wander"
+
+[[npc]]
+id = "npc.godwars_armadyl_bodyguard_geerin"
+inherit = "npc.godwars_armadyl_bodyguard_geerin"
+huntMode = 8
+huntRange = 30
+maxRange = 30
+attackRange = 7
+defaultMode = "Wander"
+[npc.params]
+"param.attack_anim"="seq.godwars_armadyl_spear_attack"
+"param.defend_anim"="seq.godwars_armadyl_defend"
+"param.death_anim"="seq.godwars_armadyl_death"
+"param.npc_attack_type"="category.attacktype_standard"
+"param.proj_type"="projanim.thrown"
+"param.proj_travel"="spotanim.godwars_armadyl_spear_travel_spotanim"
+
+[[npc]]
+id = "npc.godwars_armadyl_bodyguard_kilisa"
+inherit = "npc.godwars_armadyl_bodyguard_kilisa"
+huntMode = 6
+huntRange = 30
+maxRange = 30
+defaultMode = "Wander"
+[npc.params]
+"param.attack_anim"="seq.godwars_armadyl_sword_attack"
+"param.defend_anim"="seq.godwars_armadyl_defend"
+"param.death_anim"="seq.godwars_armadyl_death"
+"param.npc_attack_type"="category.attacktype_slash"
+
+[[npc]]
+id = "npc.godwars_armadyl_bodyguard_skree"
+inherit = "npc.godwars_armadyl_bodyguard_skree"
+huntMode = 8
+huntRange = 30
+maxRange = 30
+attackRange = 7
+defaultMode = "Wander"
+[npc.params]
+"param.attack_anim"="seq.godwars_armadyl_spear_attack"
+"param.defend_anim"="seq.godwars_armadyl_defend"
+"param.death_anim"="seq.godwars_armadyl_death"
+"param.npc_attack_type"="category.attacktype_magic"
+"param.proj_type"="projanim.magic_spell"
+"param.proj_travel"="spotanim.godwars_armadyl_bolt_attack_spotanim"

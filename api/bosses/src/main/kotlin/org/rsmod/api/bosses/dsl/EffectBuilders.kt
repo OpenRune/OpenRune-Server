@@ -4,6 +4,10 @@ import dev.openrune.types.NpcMode
 import org.rsmod.api.bosses.spec.*
 
 fun anim(seq: String, delay: Int = 0): Effect = Effect.Anim(seq, delay)
+
+/** Plays [spot] on the caster (the boss npc itself), not on the target. */
+fun spotanim(spot: String, height: Int = 0, delay: Int = 0): Effect =
+    Effect.Spotanim(spot, height, delay)
 fun say(text: String): Effect = Effect.Say(text)
 fun sound(synth: String, radius: Int = 10): Effect = Effect.Sound(synth, radius)
 fun delay(ticks: Int): Effect = Effect.Delay(ticks)

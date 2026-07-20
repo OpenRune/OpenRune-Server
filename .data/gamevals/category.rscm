@@ -44,3 +44,7 @@ atlatl_dart=1915
 attacktype_stab=65532
 attacktype_slash=65533
 attacktype_crush=65534
+attacktype_magic=65531
+attacktype_light=65530
+attacktype_standard=65529
+attacktype_heavy=65528

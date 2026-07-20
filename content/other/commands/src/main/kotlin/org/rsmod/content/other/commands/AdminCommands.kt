@@ -12,6 +12,8 @@ import kotlin.math.min
 import org.rsmod.annotations.InternalApi
 import org.rsmod.api.area.checker.AreaChecker
 import org.rsmod.api.death.prepareAdminDieTest
+import org.rsmod.api.instances.BossInstanceRegistry
+import org.rsmod.api.instances.InstanceArea
 import org.rsmod.api.death.preparePvpDeath
 import org.rsmod.api.invtx.invAdd
 import org.rsmod.api.mechanics.toxins.impl.PlayerDisease
@@ -20,6 +22,7 @@ import org.rsmod.api.mechanics.toxins.impl.PlayerVenom
 import org.rsmod.api.invtx.invClear
 import org.rsmod.api.player.ironman.PlayerGamemode
 import org.rsmod.api.player.ironman.setGamemode
+import org.rsmod.api.player.hook.TeleportType
 import org.rsmod.api.player.output.MiscOutput
 import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.cheat.adminGodMode
@@ -70,6 +73,7 @@ constructor(
     private val update: GameUpdate,
     private val areaChecker: AreaChecker,
     private val regions: RegionRegistry,
+    private val instanceRegistry: BossInstanceRegistry,
 ) : PluginScript() {
     private val logger = InlineLogger()
 
@@ -147,6 +151,13 @@ constructor(
         }
         onCommand("gamemode", "Set account gamemode (normal|ironman|uim|hcim)", ::gamemode) {
             invalidArgs = "Use as ::gamemode normal|ironman|uim|hcim"
+        }
+        onCommand(
+            "instanceexit",
+            "Teleport to an instance's exit coord",
+            ::instanceExit,
+        ) {
+            invalidArgs = "Use as ::instanceexit instanceKey (ex: ::instanceexit graardor)"
         }
     }
 
@@ -253,7 +264,7 @@ constructor(
             val coords = CoordGrid(x,y,level)
             protectedAccess.launch(player) {
                 player.mes("Teleported to $coords.")
-                telejump(coords)
+                telejump(coords, TeleportType.Exempt)
             }
         }
 
@@ -266,7 +277,7 @@ constructor(
             val coords = ZoneKey(zoneX, zoneZ, level).toCoords()
             protectedAccess.launch(player) {
                 player.mes("Teleported to $coords.")
-                telejump(coords)
+                telejump(coords, TeleportType.Exempt)
             }
         }
 
@@ -307,7 +318,7 @@ constructor(
             val dest = current.copy(level = destLevel)
             protectedAccess.launch(player) {
                 player.mes("Teleported to $dest.")
-                telejump(dest)
+                telejump(dest, TeleportType.Exempt)
             }
         }
     }
@@ -545,6 +556,35 @@ constructor(
             }
         protectedAccess.launch(player) { transmog(npcName) }
         player.mes("Transmog: '$npcName'")
+    }
+
+    private fun instanceExit(cheat: Cheat) = with(cheat) {
+        val key = args.getOrNull(0)?.trim()
+        if (key.isNullOrEmpty()) {
+            player.mes("Usage: ::instanceexit instanceKey")
+            player.mes("Known keys: ${instanceRegistry.keys().sorted().joinToString(", ")}")
+            return@with
+        }
+        val spec = instanceRegistry.get(key)
+        if (spec == null) {
+            player.mes("No instance found with key: '$key'")
+            player.mes("Known keys: ${instanceRegistry.keys().sorted().joinToString(", ")}")
+            return@with
+        }
+        val exit = spec.area.exitCoord()
+        if (exit == null || exit == CoordGrid.ZERO) {
+            player.mes("Instance '$key' has no exit coord configured.")
+            return@with
+        }
+        protectedAccess.launch(player) {
+            player.mes("Teleported to '$key' instance exit coord: $exit")
+            telejump(exit, TeleportType.Exempt)
+        }
+    }
+
+    private fun InstanceArea.exitCoord(): CoordGrid? = when (this) {
+        is InstanceArea.Template -> exitCoord
+        is InstanceArea.CopyRegions -> exitCoord
     }
 
     private fun resolveArgTypeId(arg: String, names: Map<String, Int>): Int? {
