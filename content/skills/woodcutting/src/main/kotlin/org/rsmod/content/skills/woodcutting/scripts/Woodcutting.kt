@@ -13,9 +13,13 @@ import org.rsmod.api.config.locXpParam
 import org.rsmod.api.config.objParam
 import org.rsmod.api.config.refs.params
 import org.rsmod.api.controller.vars.intVarCon
+import org.rsmod.api.player.events.skilling.SkillingProduct
+import org.rsmod.api.player.events.skilling.SkillingProductSource
 import org.rsmod.api.player.output.ClientScripts
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.righthand
+import org.rsmod.api.player.skilling.SkillingAwardResult
+import org.rsmod.api.player.skilling.awardSkillingProduct
 import org.rsmod.api.player.stat.woodcuttingLvl
 import org.rsmod.api.random.GameRandom
 import org.rsmod.api.repo.controller.ControllerRepository
@@ -28,7 +32,6 @@ import org.rsmod.api.script.onOpContentU
 import org.rsmod.api.stats.levelmod.InvisibleLevels
 import org.rsmod.api.stats.xpmod.XpModifiers
 import org.rsmod.content.skills.woodcutting.configs.WoodcuttingParams
-import org.rsmod.events.UnboundEvent
 import org.rsmod.game.MapClock
 import org.rsmod.game.entity.Controller
 import org.rsmod.game.entity.Player
@@ -132,12 +135,21 @@ constructor(
         }
 
         if (cutLogs) {
-            val product = type.treeLogs
+            val logs = type.treeLogs
             val xp = type.treeXp * xpMods.get(player, "stat.woodcutting")
-            spam("You get some ${product.name.lowercase()}.")
-            statAdvance("stat.woodcutting", xp)
-            invAdd(inv, RSCM.getReverseMapping(RSCMType.OBJ, product.id))
-            publish(CutLogs(player, tree, product))
+            val product =
+                SkillingProduct(
+                    player = player,
+                    skill = "stat.woodcutting",
+                    item = RSCM.getReverseMapping(RSCMType.OBJ, logs.id),
+                    count = 1,
+                    experience = xp,
+                    grantsExperience = true,
+                    source = SkillingProductSource.Woodcutting(tree, logs),
+                )
+            if (awardSkillingProduct(product) == SkillingAwardResult.Success) {
+                spam("You get some ${logs.name.lowercase()}.")
+            }
         }
 
         if (despawn) {
@@ -223,9 +235,6 @@ constructor(
             )
         }
     }
-
-    data class CutLogs(val player: Player, val tree: BoundLocInfo, val product: ItemServerType) :
-        UnboundEvent
 
     companion object {
         var Controller.treeActivelyCutTicks: Int by intVarCon("varcon.woodcutting_tree_cut_ticks")

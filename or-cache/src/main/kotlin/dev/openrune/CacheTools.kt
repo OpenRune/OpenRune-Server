@@ -30,6 +30,7 @@ import dev.openrune.tables.StatComponents
 import dev.openrune.tables.skills.Cooking
 import dev.openrune.tables.skills.Firemaking
 import dev.openrune.tables.skills.Herblore
+import dev.openrune.tables.skills.Mining
 import dev.openrune.tables.skills.Slayer
 import dev.openrune.tables.skills.Runecrafting
 import dev.openrune.tables.skills.Smithing
@@ -74,6 +75,7 @@ fun tablesToPack() = listOf(
     EctofuntusBonemeal.table(),
     StatComponents.statsComponents(),
     PickableObjects.pickableObjects(),
+    Mining.rocks(),
     Cooking.foods(),
     Cooking.ales(),
     Herblore.unfinishedPotions(),

@@ -1,0 +1,6 @@
+[[area]]
+name = "Mining Guild"
+area_id = "area.mining_guild"
+levels = [0]
+
+# Add [[area.polygons]] vertices when ready.

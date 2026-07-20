@@ -1551,3 +1551,290 @@ contentGroup = "content.cooking_range_hosidius"
 id = "loc.hos_cooking_range_02"
 inherit = "loc.hos_cooking_range_02"
 contentGroup = "content.cooking_range_hosidius"
+
+# Mining rocks (data in dbtable.mining_rocks; locs only keep content group)
+
+[[object]]
+id = "loc.clayrock1"
+inherit = "loc.clayrock1"
+contentGroup = "content.rock"
+
+[[object]]
+id = "loc.clayrock2"
+inherit = "loc.clayrock2"
+contentGroup = "content.rock"
+
+[[object]]
+id = "loc.copperrock1"
+inherit = "loc.copperrock1"
+contentGroup = "content.rock"
+
+[[object]]
+id = "loc.copperrock2"
+inherit = "loc.copperrock2"
+contentGroup = "content.rock"
+
+[[object]]
+id = "loc.tinrock1"
+inherit = "loc.tinrock1"
+contentGroup = "content.rock"
+
+[[object]]
+id = "loc.tinrock2"
+inherit = "loc.tinrock2"
+contentGroup = "content.rock"
+
+[[object]]
+id = "loc.blurite_rock_1"
+inherit = "loc.blurite_rock_1"
+contentGroup = "content.rock"
+
+[[object]]
+id = "loc.blurite_rock_2"
+inherit = "loc.blurite_rock_2"
+contentGroup = "content.rock"
+
+[[object]]
+id = "loc.ironrock1"
+inherit = "loc.ironrock1"
+contentGroup = "content.rock"
+
+[[object]]
+id = "loc.ironrock2"
+inherit = "loc.ironrock2"
+contentGroup = "content.rock"
+
+[[object]]
+id = "loc.silverrock1"
+inherit = "loc.silverrock1"
+contentGroup = "content.rock"
+
+[[object]]
+id = "loc.silverrock2"
+inherit = "loc.silverrock2"
+contentGroup = "content.rock"
+
+[[object]]
+id = "loc.coalrock1"
+inherit = "loc.coalrock1"
+contentGroup = "content.rock"
+
+[[object]]
+id = "loc.coalrock2"
+inherit = "loc.coalrock2"
+contentGroup = "content.rock"
+
+[[object]]
+id = "loc.goldrock1"
+inherit = "loc.goldrock1"
+contentGroup = "content.rock"
+
+[[object]]
+id = "loc.goldrock2"
+inherit = "loc.goldrock2"
+contentGroup = "content.rock"
+
+[[object]]
+id = "loc.gemrock1"
+inherit = "loc.gemrock1"
+contentGroup = "content.rock"
+
+[[object]]
+id = "loc.gemrock"
+inherit = "loc.gemrock"
+contentGroup = "content.rock"
+
+[[object]]
+id = "loc.mithrilrock1"
+inherit = "loc.mithrilrock1"
+contentGroup = "content.rock"
+
+[[object]]
+id = "loc.mithrilrock2"
+inherit = "loc.mithrilrock2"
+contentGroup = "content.rock"
+
+[[object]]
+id = "loc.lovakite_rock1"
+inherit = "loc.lovakite_rock1"
+contentGroup = "content.rock"
+
+[[object]]
+id = "loc.lovakite_rock2"
+inherit = "loc.lovakite_rock2"
+contentGroup = "content.rock"
+
+[[object]]
+id = "loc.adamantiterock1"
+inherit = "loc.adamantiterock1"
+contentGroup = "content.rock"
+
+[[object]]
+id = "loc.adamantiterock2"
+inherit = "loc.adamantiterock2"
+contentGroup = "content.rock"
+
+[[object]]
+id = "loc.runiterock1"
+inherit = "loc.runiterock1"
+contentGroup = "content.rock"
+
+[[object]]
+id = "loc.runiterock2"
+inherit = "loc.runiterock2"
+contentGroup = "content.rock"
+
+[[object]]
+id = "loc.amethystrock1"
+inherit = "loc.amethystrock1"
+contentGroup = "content.rock"
+
+[[object]]
+id = "loc.amethystrock2"
+inherit = "loc.amethystrock2"
+contentGroup = "content.rock"
+
+[[object]]
+id = "loc.blankrunestone"
+inherit = "loc.blankrunestone"
+contentGroup = "content.rock"
+
+[[object]]
+id = "loc.leadrock1"
+inherit = "loc.leadrock1"
+contentGroup = "content.rock"
+
+[[object]]
+id = "loc.nickelrock1"
+inherit = "loc.nickelrock1"
+contentGroup = "content.rock"
+
+[[object]]
+id = "loc.softclayrock1"
+inherit = "loc.softclayrock1"
+contentGroup = "content.rock"
+
+[[object]]
+id = "loc.softclayrock2"
+inherit = "loc.softclayrock2"
+contentGroup = "content.rock"
+
+[[object]]
+id = "loc.limestone_rock1"
+inherit = "loc.limestone_rock1"
+contentGroup = "content.rock"
+
+[[object]]
+id = "loc.limestone_rock2"
+inherit = "loc.limestone_rock2"
+contentGroup = "content.rock"
+
+[[object]]
+id = "loc.limestone_rock3"
+inherit = "loc.limestone_rock3"
+contentGroup = "content.rock"
+
+[[object]]
+id = "loc.fossil_ashpile"
+inherit = "loc.fossil_ashpile"
+contentGroup = "content.rock"
+
+[[object]]
+id = "loc.enakh_sandstone_rocks"
+inherit = "loc.enakh_sandstone_rocks"
+contentGroup = "content.rock"
+
+[[object]]
+id = "loc.arceuus_runestone_top_mine"
+inherit = "loc.arceuus_runestone_top_mine"
+contentGroup = "content.rock"
+
+[[object]]
+id = "loc.sulphur_rock_01"
+inherit = "loc.sulphur_rock_01"
+contentGroup = "content.rock"
+
+[[object]]
+id = "loc.sulphur_rock_02"
+inherit = "loc.sulphur_rock_02"
+contentGroup = "content.rock"
+
+[[object]]
+id = "loc.sulphur_rock_03"
+inherit = "loc.sulphur_rock_03"
+contentGroup = "content.rock"
+
+[[object]]
+id = "loc.enakh_granite_rocks"
+inherit = "loc.enakh_granite_rocks"
+contentGroup = "content.rock"
+
+[[object]]
+id = "loc.rubiumrock1"
+inherit = "loc.rubiumrock1"
+contentGroup = "content.rock"
+
+[[object]]
+id = "loc.lunar_mine_stalagmite_twin"
+inherit = "loc.lunar_mine_stalagmite_twin"
+contentGroup = "content.rock"
+
+[[object]]
+id = "loc.lunar_mine_stalagmite_small"
+inherit = "loc.lunar_mine_stalagmite_small"
+contentGroup = "content.rock"
+
+[[object]]
+id = "loc.daeyalt_stone_top_active"
+inherit = "loc.daeyalt_stone_top_active"
+contentGroup = "content.rock"
+
+[[object]]
+id = "loc.rubiumdeposit1"
+inherit = "loc.rubiumdeposit1"
+contentGroup = "content.rock"
+
+[[object]]
+id = "loc.my2arm_saltrock_red"
+inherit = "loc.my2arm_saltrock_red"
+contentGroup = "content.rock"
+
+[[object]]
+id = "loc.my2arm_saltrock_blue"
+inherit = "loc.my2arm_saltrock_blue"
+contentGroup = "content.rock"
+
+[[object]]
+id = "loc.my2arm_saltrock_green"
+inherit = "loc.my2arm_saltrock_green"
+contentGroup = "content.rock"
+
+[[object]]
+id = "loc.my2arm_saltrock_special"
+inherit = "loc.my2arm_saltrock_special"
+contentGroup = "content.rock"
+
+[[object]]
+id = "loc.ancient_essence_rock_active"
+inherit = "loc.ancient_essence_rock_active"
+contentGroup = "content.rock"
+
+[[object]]
+id = "loc.varlamore_mining_rock"
+inherit = "loc.varlamore_mining_rock"
+contentGroup = "content.rock"
+
+[[object]]
+id = "loc.varlamore_mining_rock02"
+inherit = "loc.varlamore_mining_rock02"
+contentGroup = "content.rock"
+
+[[object]]
+id = "loc.varlamore_mining_rock03"
+inherit = "loc.varlamore_mining_rock03"
+contentGroup = "content.rock"
+
+[[object]]
+id = "loc.varlamore_mining_rock04"
+inherit = "loc.varlamore_mining_rock04"
+contentGroup = "content.rock"

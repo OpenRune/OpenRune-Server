@@ -20,6 +20,7 @@ class CatacombsPrayerRestoreScript @Inject constructor(private val areas: AreaCh
                     is PrayerSkillAction.BuryComplete -> if (PrayerBuryEvents.Companion.isDemonicAsh(action.itemInternal)) 0 else action.catacombsBonePrayerRestore
                     is PrayerSkillAction.BonecrusherCrushComplete -> action.catacombsBonePrayerRestore
                 }
+                is SkillingActionContext.Product -> 0
             }
             if (restore <= 0) return@onEvent
             if (!areas.inArea("area.catacombs_of_kourend", player.coords)) return@onEvent
