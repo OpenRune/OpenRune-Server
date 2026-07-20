@@ -39,6 +39,7 @@ import org.rsmod.api.player.interact.NpcInteractions
 import org.rsmod.api.player.interact.NpcTInteractions
 import org.rsmod.api.player.interact.PlayerInteractions
 import org.rsmod.api.player.interact.PlayerTInteractions
+import org.rsmod.api.player.ironman.shouldBlockNpcCombatXp
 import org.rsmod.api.player.output.soundSynth
 import org.rsmod.api.player.protect.clearPendingAction
 import org.rsmod.api.player.stat.hitpoints
@@ -242,6 +243,9 @@ constructor(
         }
 
     private fun giveCombatXp(player: Player, target: Npc, attack: CombatAttack.Melee, damage: Int) {
+        if (player.shouldBlockNpcCombatXp(target)) {
+            return
+        }
         val cappedDamage = min(damage, target.hitpoints)
         val multiplier = target.resolveCombatXpMultiplier()
         giveCombatXp(player, attack, cappedDamage, multiplier)
@@ -310,6 +314,9 @@ constructor(
         attack: CombatAttack.Ranged,
         damage: Int,
     ) {
+        if (player.shouldBlockNpcCombatXp(target)) {
+            return
+        }
         val cappedDamage = min(damage, target.hitpoints)
         val multiplier = target.resolveCombatXpMultiplier()
         giveCombatXp(player, attack, cappedDamage, multiplier)
@@ -369,6 +376,9 @@ constructor(
         }
 
     private fun giveCombatXp(player: Player, target: Npc, attack: CombatAttack.Spell, damage: Int) {
+        if (player.shouldBlockNpcCombatXp(target)) {
+            return
+        }
         val cappedDamage = min(damage, target.hitpoints)
         val multiplier = target.resolveCombatXpMultiplier()
         giveCombatXp(player, attack, cappedDamage, multiplier)
@@ -420,6 +430,9 @@ constructor(
 
     @Suppress("unused")
     private fun giveCombatXp(player: Player, target: Npc, attack: CombatAttack.Staff, damage: Int) {
+        if (player.shouldBlockNpcCombatXp(target)) {
+            return
+        }
         val cappedDamage = min(damage, target.hitpoints)
         val multiplier = target.resolveCombatXpMultiplier()
         giveStaffCombatXp(player, cappedDamage, multiplier)

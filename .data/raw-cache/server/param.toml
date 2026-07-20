@@ -807,14 +807,7 @@ defaultString = ""
 isMembers = true
 
 [[params]]
-id = "param.skill_rate_low"
-isServerOnly = true
-type = "INT"
-defaultInt = 0
-isMembers = true
-
-[[params]]
-id = "param.skill_rate_high"
+id = "param.translate_level"
 isServerOnly = true
 type = "INT"
 defaultInt = 0
@@ -831,63 +824,4 @@ isMembers = true
 id = "param.skill_wall_anim"
 isServerOnly = true
 type = "SEQ"
-isMembers = true
-
-[[params]]
-id = "param.deplete_amount_min"
-isServerOnly = true
-type = "INT"
-defaultInt = 1
-isMembers = true
-
-[[params]]
-id = "param.deplete_amount_max"
-isServerOnly = true
-type = "INT"
-defaultInt = 1
-isMembers = true
-
-[[params]]
-id = "param.mining_wall"
-isServerOnly = true
-type = "BOOLEAN"
-defaultInt = 0
-isMembers = true
-
-
-
-
-[[params]]
-id = "param.clue_base_chance"
-isServerOnly = true
-type = "INT"
-defaultInt = 0
-isMembers = true
-
-[[params]]
-id = "param.mining_gloves"
-isServerOnly = true
-type = "INT"
-defaultInt = 0
-isMembers = true
-
-[[params]]
-id = "param.varrock_armour_level"
-isServerOnly = true
-type = "INT"
-defaultInt = 0
-isMembers = true
-
-[[params]]
-id = "param.mining_cape_bonus"
-isServerOnly = true
-type = "BOOLEAN"
-defaultInt = 0
-isMembers = true
-
-[[params]]
-id = "param.celestial_ring_bonus"
-isServerOnly = true
-type = "BOOLEAN"
-defaultInt = 0
 isMembers = true

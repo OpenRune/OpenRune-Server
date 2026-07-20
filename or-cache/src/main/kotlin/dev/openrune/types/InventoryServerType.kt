@@ -17,6 +17,7 @@ data class InventoryServerType(
             runWeight = false,
             dummyInv = false,
             placeholders = false,
+            uimBlocked = false,
         ),
     var stock: List<InvStock> = emptyList(),
 ) : Definition {
@@ -39,6 +40,9 @@ data class InventoryServerType(
     public val placeholders: Boolean
         get() = flags and PLACEHOLDERS_FLAG != 0
 
+    public val uimBlocked: Boolean
+        get() = flags and UIM_BLOCKED_FLAG != 0
+
     public companion object {
         public const val PROTECT_FLAG: Int = 0x1
         public const val ALL_STOCK_FLAG: Int = 0x2
@@ -46,6 +50,7 @@ data class InventoryServerType(
         public const val RUN_WEIGHT_FLAG: Int = 0x8
         public const val DUMMY_INV_FLAG: Int = 0x10
         public const val PLACEHOLDERS_FLAG: Int = 0x20
+        public const val UIM_BLOCKED_FLAG: Int = 0x40
 
         fun pack(
             protect: Boolean,
@@ -54,6 +59,7 @@ data class InventoryServerType(
             runWeight: Boolean,
             dummyInv: Boolean,
             placeholders: Boolean,
+            uimBlocked: Boolean = false,
         ): Int {
             var flags = 0
             if (protect) {
@@ -73,6 +79,9 @@ data class InventoryServerType(
             }
             if (placeholders) {
                 flags = flags or PLACEHOLDERS_FLAG
+            }
+            if (uimBlocked) {
+                flags = flags or UIM_BLOCKED_FLAG
             }
             return flags
         }

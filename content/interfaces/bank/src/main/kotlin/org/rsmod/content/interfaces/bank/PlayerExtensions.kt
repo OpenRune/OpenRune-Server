@@ -5,6 +5,7 @@ import dev.openrune.rscm.RSCMType
 import org.rsmod.api.combat.weapon.WeaponSpeeds
 import org.rsmod.api.config.refs.params
 import org.rsmod.api.player.bonus.WornBonuses
+import org.rsmod.api.player.ironman.IronmanRestrictions
 import org.rsmod.api.player.output.ClientScripts.statGroupTooltip
 import org.rsmod.api.player.output.runClientScript
 import org.rsmod.api.player.ui.ifOpenMainSidePair
@@ -18,15 +19,23 @@ private var Player.extraOpsSpecialBits by intVarp("varp.if1")
 private var Player.extraOpsWearBits by intVarp("varp.if2")
 private var Player.extraOpsConsumableBits by intVarp("varp.if3")
 
-fun Player.openBank(eventBus: EventBus) {
+fun Player.openBank(eventBus: EventBus): Boolean {
+    if (IronmanRestrictions.blockUimBank(this)) {
+        return false
+    }
     ifOpenMainSidePair("interface.bankmain", "interface.bankside", -1, -2, eventBus)
+    return true
 }
 
 /** Opens bank but does not send any events such as `if_setevent`s */
-fun Player.openBankWithoutEvents(eventBus: EventBus) {
+fun Player.openBankWithoutEvents(eventBus: EventBus): Boolean {
+    if (IronmanRestrictions.blockUimBank(this)) {
+        return false
+    }
     disableIfEvents = true
     ifOpenMainSidePair("interface.bankmain", "interface.bankside", -1, -2, eventBus)
     disableIfEvents = false
+    return true
 }
 
 internal fun Player.highlightNoClickClear() {

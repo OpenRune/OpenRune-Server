@@ -2,6 +2,8 @@ package org.rsmod.content.interfaces.settings.scripts.tab.impl
 
 import jakarta.inject.Inject
 import org.rsmod.api.config.constants
+import org.rsmod.api.player.ironman.IronmanActivity
+import org.rsmod.api.player.ironman.IronmanRestrictions
 import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.protect.ProtectedAccessLauncher
 import org.rsmod.api.player.vars.VarPlayerIntMapSetter
@@ -52,6 +54,9 @@ constructor(private val protectedAccess: ProtectedAccessLauncher) : PluginScript
     }
 
     private fun Player.toggleAcceptAid() {
+        if (IronmanRestrictions.block(this, IronmanActivity.ACCEPT_AID)) {
+            return
+        }
         val row = SettingsConfigsRow.all().find { it.settingId == 59 }
         row?.varValue?.let {
             VarPlayerIntMapSetter.toggle(this, it)
