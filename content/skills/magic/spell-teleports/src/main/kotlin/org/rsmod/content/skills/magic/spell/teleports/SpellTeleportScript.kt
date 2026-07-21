@@ -7,12 +7,18 @@ import dev.openrune.rscm.RSCMType
 import dev.openrune.types.ItemServerType
 import dev.openrune.types.aconverted.interf.IfButtonOp
 import jakarta.inject.Inject
+import org.rsmod.api.area.checker.AreaChecker
 import org.rsmod.api.config.refs.params
 import org.rsmod.api.combat.commons.magic.MagicSpell
 import org.rsmod.api.combat.manager.MagicRuneManager
 import org.rsmod.api.combat.manager.MagicRuneManager.Companion.isFailure
 import org.rsmod.api.invtx.invTransaction
 import org.rsmod.api.invtx.select
+import org.rsmod.api.player.hook.PlayerTeleportValidator
+import org.rsmod.api.player.hook.TeleportType
+import org.rsmod.api.player.output.ChatType
+import org.rsmod.api.player.output.clearMapFlag
+import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.script.onIfOverlayButton
 import org.rsmod.api.script.onPlayerQueueWithArgs
@@ -28,6 +34,8 @@ class SpellTeleportScript
 constructor(
     private val spells: MagicSpellRegistry,
     private val runes: MagicRuneManager,
+    private val teleportValidator: PlayerTeleportValidator,
+    private val areaChecker: AreaChecker,
 ) : PluginScript() {
     override fun ScriptContext.startup() {
         for (teleport in StandardSpellTeleport.entries) {
@@ -64,6 +72,10 @@ constructor(
             return
         }
 
+        if (!canTeleport()) {
+            return
+        }
+
         if (!consumeRequirements(spell, teleport)) {
             return
         }
@@ -78,9 +90,23 @@ constructor(
 
     private fun ProtectedAccess.processQueuedTeleport(task: PendingSpellTeleport) {
         val spell = task.teleport.resolveSpell() ?: return
+        if (!canTeleport()) {
+            return
+        }
         telejump(CoordGrid(task.destination))
         anim(TeleportEndAnim)
         statAdvance("stat.magic", spell.castXp)
+    }
+
+    private fun ProtectedAccess.canTeleport(): Boolean {
+        val denial =
+            teleportValidator.validate(player, TeleportType.Standard, areaChecker)
+        if (denial == null) {
+            return true
+        }
+        player.clearMapFlag()
+        player.mes(denial, ChatType.Engine)
+        return false
     }
 
     private fun ProtectedAccess.consumeRequirements(
