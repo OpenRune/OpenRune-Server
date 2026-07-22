@@ -1,0 +1,43 @@
+[clientscript,toolbelt_init](component $border, component $search, component $content, component $scrollbar)
+if (cc_find($content, 100) = true) {
+    ~toolbelt_draw($content, $border);
+    return;
+}
+def_component $universe = if_getlayer($border);
+if_setposition(0, 0, ^setpos_abs_centre, ^setpos_abs_centre, $universe);
+~stoneborder($border, "Toolbelt", 0);
+cc_deleteall($search);
+cc_create($search, ^iftype_graphic, 0);
+cc_setsize(8, 0, ^setsize_minus, ^setsize_minus);
+cc_setposition(0, 0, ^setpos_abs_centre, ^setpos_abs_centre);
+cc_setgraphic("ge_textbackdrop,1");
+cc_create($search, ^iftype_graphic, 1);
+cc_setsize(4, 0, ^setsize_abs, ^setsize_minus);
+cc_setposition(0, 0, ^setpos_abs_left, ^setpos_abs_centre);
+cc_setgraphic("ge_textbackdrop,0");
+cc_create($search, ^iftype_graphic, 2);
+cc_setsize(4, 0, ^setsize_abs, ^setsize_minus);
+cc_setposition(0, 0, ^setpos_abs_right, ^setpos_abs_centre);
+cc_setgraphic("ge_textbackdrop,2");
+cc_create($search, ^iftype_inputfield, 3);
+cc_setposition(4, 4, ^setpos_abs_left, ^setpos_abs_top);
+cc_setsize(8, 8, ^setsize_minus, ^setsize_minus);
+cc_input_setlinewrappingwidth(cc_getwidth);
+cc_input_setacceptmode(0);
+cc_settextfont(p12_full);
+cc_setcolour(^white);
+cc_settextshadow(true);
+cc_settextalign(^settextalign_left, ^settextalign_top, 16);
+cc_input_setselectcolour(^black);
+cc_input_setselectbgcolour(^white);
+cc_input_setwrapmode(0);
+cc_input_setsubmitmode(0);
+cc_input_setlinecountlimit(1);
+cc_input_setplaceholdertext("Search tools...");
+cc_input_setplaceholdertextcolour(0x808080);
+cc_settext("");
+cc_input_setonchange("toolbelt_filter($content, $search, $scrollbar, $border)");
+cc_input_setonfocuschanged("toolbelt_filter($content, $search, $scrollbar, $border)");
+~toolbelt_build($content, $scrollbar);
+~toolbelt_draw($content, $border);
+if_setonvartransmit("toolbelt_init($border, $search, $content, $scrollbar){toolbelt_unlocks,toolbelt_slot_0,toolbelt_slot_1,toolbelt_slot_2,toolbelt_slot_3,toolbelt_slot_4,toolbelt_slot_5,toolbelt_slot_6,toolbelt_slot_7,toolbelt_slot_8,toolbelt_slot_9,toolbelt_slot_10,toolbelt_slot_11,toolbelt_slot_12,toolbelt_slot_13,toolbelt_slot_14,toolbelt_slot_15,toolbelt_slot_16,toolbelt_slot_17,toolbelt_slot_18,toolbelt_slot_19,toolbelt_slot_20,toolbelt_slot_21,toolbelt_slot_22,toolbelt_slot_23,toolbelt_slot_24,toolbelt_slot_25,toolbelt_slot_26,toolbelt_slot_27}", $content);

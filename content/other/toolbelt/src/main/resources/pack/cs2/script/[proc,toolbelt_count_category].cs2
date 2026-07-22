@@ -1,0 +1,18 @@
+[proc,toolbelt_count_category](int $cat)(int)
+def_int $count = 0;
+def_int $slot = 0;
+def_dbrow $row = null;
+def_int $row_cat = 0;
+while ($slot < 28) {
+    if (db_find(toolbelt_slots:slot_index, $slot) = 1) {
+        $row = db_findnext;
+        if ($row ! null) {
+            $row_cat = db_getfield($row, toolbelt_slots:category, 0);
+            if ($row_cat = $cat) {
+                $count = calc($count + 1);
+            }
+        }
+    }
+    $slot = calc($slot + 1);
+}
+return($count);

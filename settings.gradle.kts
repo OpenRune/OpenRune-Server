@@ -18,6 +18,7 @@ if (centralServerBuild.isPresent) {
 dependencyResolutionManagement {
     includeBuild("build-logic")
     repositories {
+        mavenLocal()
         gradlePluginPortal()
         mavenCentral()
         maven("https://jitpack.io")
@@ -32,6 +33,7 @@ include(
     "engine",
     "server",
     "or-cache",
+    "or-cache:pack-api",
     "tools:osrs-mcp",
     "tools:wiki-dumping",
 )

@@ -5,6 +5,7 @@ import dev.openrune.rscm.RSCMType
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.script.onOpNpc1
+import org.rsmod.content.other.toolbelt.ToolbeltBonecrusherUnlock
 import org.rsmod.content.skills.prayer.ecto.ectoTokens
 import org.rsmod.game.entity.Npc
 import org.rsmod.plugin.scripts.PluginScript
@@ -29,6 +30,24 @@ class EctoGhostDiscipleDialogue : PluginScript() {
         worn.any { ITEM_GHOSTSPEAK_AMULET.contains(it?.id ?: -1) }
 
     private suspend fun Dialogue.mainMenu() {
+        if (ToolbeltBonecrusherUnlock.canOfferUnlock(access.player)) {
+            when (
+                choice2(
+                    "Can you unlock the bonecrusher slot on my tool belt?",
+                    1,
+                    "Ask about something else.",
+                    2,
+                )
+            ) {
+                1 -> unlockBonecrusherToolbeltSlot()
+                2 -> standardMainMenu()
+            }
+            return
+        }
+        standardMainMenu()
+    }
+
+    private suspend fun Dialogue.standardMainMenu() {
         when (choice5(
                 "What is this strange fountain?",
                 1,
@@ -39,7 +58,7 @@ class EctoGhostDiscipleDialogue : PluginScript() {
                 "How do I receive Ectotokens?",
                 4,
                 "Can I have the tokens I have earned?",
-                5
+                5,
             )) {
             1 -> explainFountain()
             2 -> explainEctoplasm()
@@ -47,6 +66,70 @@ class EctoGhostDiscipleDialogue : PluginScript() {
             4 -> explainReceivingEctotokens()
             5 -> claimTokens()
         }
+    }
+
+    private suspend fun Dialogue.unlockBonecrusherToolbeltSlot() {
+        chatPlayer(
+            quiz,
+            "Can you unlock the bonecrusher slot on my tool belt?",
+        )
+        chatNpc(
+            neutral,
+            "Ah, you carry a bonecrusher. For two thousand Ectotokens I can unlock the bonecrusher slot on your tool belt.",
+        )
+        chatNpc(
+            neutral,
+            "That only unlocks the slot, mortal. You must still place the bonecrusher on your tool belt yourself.",
+        )
+        when (
+            choice2(
+                "Yes, unlock the bonecrusher tool belt slot. (${ToolbeltBonecrusherUnlock.ECTO_TOKEN_COST} Ectotokens)",
+                1,
+                "No, not yet.",
+                2,
+            )
+        ) {
+            1 -> confirmUnlockBonecrusherToolbeltSlot()
+            2 -> mainMenu()
+        }
+    }
+
+    private suspend fun Dialogue.confirmUnlockBonecrusherToolbeltSlot() {
+        when (val result = ToolbeltBonecrusherUnlock.tryUnlock(access)) {
+            ToolbeltBonecrusherUnlock.PayResult.Success -> {
+                chatNpc(
+                    happy,
+                    "It is done. The bonecrusher slot on your tool belt is unlocked. Add the bonecrusher to your tool belt when you are ready.",
+                )
+            }
+            ToolbeltBonecrusherUnlock.PayResult.AlreadyUnlocked -> {
+                chatNpc(neutral, "That tool belt slot is already unlocked, mortal.")
+            }
+            is ToolbeltBonecrusherUnlock.PayResult.InsufficientTokens -> {
+                chatNpc(
+                    neutral,
+                    "You need ${ToolbeltBonecrusherUnlock.ECTO_TOKEN_COST} Ectotokens. You only have ${result.held}.",
+                )
+            }
+            ToolbeltBonecrusherUnlock.PayResult.NeedsBonecrusher -> {
+                chatNpc(
+                    neutral,
+                    "You must carry a bonecrusher before I can unlock that tool belt slot.",
+                )
+            }
+            is ToolbeltBonecrusherUnlock.PayResult.InsufficientPrayer -> {
+                chatNpc(
+                    neutral,
+                    "You need a Prayer level of ${result.required} before I can unlock that tool belt slot.",
+                )
+            }
+            ToolbeltBonecrusherUnlock.PayResult.NotEnabled,
+            ToolbeltBonecrusherUnlock.PayResult.NoSlot,
+            -> {
+                chatNpc(neutral, "I cannot unlock that tool belt slot for you right now.")
+            }
+        }
+        mainMenu()
     }
 
     private suspend fun Dialogue.explainFountain() {

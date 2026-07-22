@@ -13,6 +13,8 @@ dependencies {
     api(libs.or2.definition)
     api(libs.or2.filestore)
     api(libs.or2.filesystem)
+    api(projects.orCache.packApi)
+    implementation(projects.content.other.toolbelt.pack)
     implementation(projects.engine.map)
     implementation(projects.engine.routefinder)
     implementation("com.michael-bull.kotlin-inline-logger:kotlin-inline-logger:1.0.6")
@@ -23,6 +25,7 @@ dependencies {
     implementation(libs.jackson.databind)
     implementation("dev.or2:toml-rsconfig:1.0")
     implementation(libs.fastutil)
+    implementation(libs.classgraph)
 }
 
 tasks {
@@ -55,3 +58,5 @@ tasks {
     }
 
 }
+
+

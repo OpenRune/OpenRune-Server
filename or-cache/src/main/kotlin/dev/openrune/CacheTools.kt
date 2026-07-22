@@ -5,14 +5,17 @@ import dev.openrune.cache.gameval.GameValHandler
 import dev.openrune.cache.tools.Builder
 import dev.openrune.cache.tools.CacheEnvironment
 import dev.openrune.cache.tools.cs2.PackCs2
+import dev.openrune.cache.tools.cs2.SymbolsCustomConflictStrip
 import dev.openrune.cache.tools.tasks.CacheTask
 import dev.openrune.cache.tools.tasks.TaskType
 import dev.openrune.cache.tools.tasks.impl.PackDBTables
 import dev.openrune.cache.tools.tasks.impl.PackModels
+import dev.openrune.cache.tools.tasks.impl.PackSprites
 import dev.openrune.cache.tools.tasks.impl.defs.PackConfig
 import dev.openrune.codegen.startEnumGeneration
 import dev.openrune.codegen.startGeneration
 import dev.openrune.definition.GameValGroupTypes
+import dev.openrune.definition.dbtables.DBTable
 import dev.openrune.definition.type.DBRowType
 import dev.openrune.definition.type.DBTableType
 import dev.openrune.definition.type.EnumType
@@ -33,15 +36,20 @@ import dev.openrune.tables.skills.Cooking
 import dev.openrune.tables.skills.Firemaking
 import dev.openrune.tables.skills.Herblore
 import dev.openrune.tables.skills.Mining
-import dev.openrune.tables.skills.Slayer
 import dev.openrune.tables.skills.Runecrafting
 import dev.openrune.tables.skills.ShootingStars
+import dev.openrune.tables.skills.Slayer
 import dev.openrune.tables.skills.Smithing
 import dev.openrune.tables.skills.prayer.EctofuntusBonemeal
 import dev.openrune.tables.skills.prayer.PrayerBlessedBone
 import dev.openrune.tables.skills.prayer.PrayerTable
 import dev.openrune.tools.MinifyServerCache
 import dev.openrune.tools.PackServerConfig
+import dev.openrune.cache.tools.iftype.PackIfType
+import dev.openrune.pack.PluginPack
+import dev.openrune.pack.PluginPackLoader
+import dev.openrune.packscript.PackScriptPhase
+import dev.openrune.packscript.PackScripts
 import java.io.File
 import kotlin.system.exitProcess
 
@@ -66,42 +74,44 @@ fun main(args: Array<String>) {
     downloadRev(TaskType.valueOf(args.first().uppercase()))
 }
 
-fun tablesToPack() = listOf(
-    GameframeTable.gameframe(),
-    Music.musicClassic(),
-    Music.musicModern(),
-    Firemaking.logs(),
-    Firemaking.firelighters(),
-    Firemaking.sources(),
-    PrayerTable.skillTable(),
-    PrayerBlessedBone.table(),
-    EctofuntusBonemeal.table(),
-    StatComponents.statsComponents(),
-    PickableObjects.pickableObjects(),
-    Mining.rocks(),
-    Cooking.foods(),
-    Cooking.ales(),
-    Herblore.unfinishedPotions(),
-    Herblore.finishedPotions(),
-    Herblore.cleaningHerbs(),
-    Herblore.barbarianMixes(),
-    Herblore.swampTar(),
-    Herblore.crushing(),
-    Smithing.bars(),
-    Smithing.cannonBalls(),
-    Smithing.dragonForge(),
-    Smithing.crystalSinging(),
-    Slayer.masters(),
-    Runecrafting.altars(),
-    Runecrafting.runes(),
-    Runecrafting.tiara(),
-    Runecrafting.combo(),
-    SettingConfigs.settings(),
-    DidYouKnow.didYouknow(),
-    InstanceSettingsTable.instanceSettings(),
-    ShootingStars.locations(),
-    ShopCurrencyTable.shopCurrencies(),
-)
+fun tablesToPack(): List<DBTable> {
+    return listOf(
+            GameframeTable.gameframe(),
+            Music.musicClassic(),
+            Music.musicModern(),
+            Firemaking.logs(),
+            Firemaking.firelighters(),
+            Firemaking.sources(),
+            PrayerTable.skillTable(),
+            PrayerBlessedBone.table(),
+            EctofuntusBonemeal.table(),
+            StatComponents.statsComponents(),
+            PickableObjects.pickableObjects(),
+            Mining.rocks(),
+            Cooking.foods(),
+            Cooking.ales(),
+            Herblore.unfinishedPotions(),
+            Herblore.finishedPotions(),
+            Herblore.cleaningHerbs(),
+            Herblore.barbarianMixes(),
+            Herblore.swampTar(),
+            Herblore.crushing(),
+            Smithing.bars(),
+            Smithing.cannonBalls(),
+            Smithing.dragonForge(),
+            Smithing.crystalSinging(),
+            Slayer.masters(),
+            Runecrafting.altars(),
+            Runecrafting.runes(),
+            Runecrafting.tiara(),
+            Runecrafting.combo(),
+            SettingConfigs.settings(),
+            DidYouKnow.didYouknow(),
+            InstanceSettingsTable.instanceSettings(),
+            ShootingStars.locations(),
+            ShopCurrencyTable.shopCurrencies(),
+        )
+}
 
 fun downloadRev(type: TaskType) {
 
@@ -139,12 +149,50 @@ fun downloadRev(type: TaskType) {
 fun buildCache(taskType: TaskType) {
     GameValProvider.load("../", autoAssignIds = true)
 
-    val tasks: List<CacheTask> =
-        listOf(
-            PackModels(File("../.data/raw-cache/models")),
-            PackConfig(File("../.data/raw-cache/server")),
-            PackDBTables(tablesToPack())
-        ).toMutableList()
+    val projectRoot = File("..")
+    val pluginPacks = PluginPackLoader.load()
+    val activePacks = pluginPacks.filter { it.shouldPack(projectRoot) }
+    val disabledPacks = pluginPacks.filter { !it.shouldPack(projectRoot) }
+
+    val pluginTables =
+        activePacks.flatMap { it.dbTables() } + disabledPacks.flatMap { it.dbTablesWhenDisabled() }
+    val pluginInterfaces = activePacks.flatMap { it.interfaces() }
+    val pluginTasks = activePacks.flatMap { it.extraTasks() }
+    val pluginConfigDirs =
+        (
+            activePacks.flatMap { it.configDirectories(projectRoot) } +
+                disabledPacks.flatMap { it.configDirectoriesWhenDisabled(projectRoot) }
+        ).filter { it.isDirectory }
+    val pluginSpriteDirs =
+        activePacks.flatMap { it.spriteDirectories(projectRoot) }.filter { it.isDirectory }
+    val pluginScriptDirs =
+        activePacks.flatMap { it.packScriptDirectories(projectRoot) }.filter { it.isDirectory }
+
+    syncPluginCs2(projectRoot, pluginPacks, activePacks)
+
+    val allTables = tablesToPack() + pluginTables
+
+    val tasks = mutableListOf<CacheTask>(
+        PackModels(File("../.data/raw-cache/models")),
+        PackConfig(File("../.data/raw-cache/server")),
+    )
+    pluginConfigDirs.forEach { tasks += PackConfig(it) }
+
+    val legacySpritesDir = File("../.data/raw-cache/sprites")
+    if (legacySpritesDir.isDirectory) {
+        tasks += PackSprites(legacySpritesDir)
+    }
+    pluginSpriteDirs.forEach { tasks += PackSprites(it) }
+
+    tasks += pluginTasks
+    if (pluginInterfaces.isNotEmpty()) {
+        tasks += PackIfType(pluginInterfaces)
+    }
+    tasks += PackCs2(File("../.data/raw-cache/cs2"))
+    tasks += PackDBTables(allTables)
+    if (pluginScriptDirs.isNotEmpty()) {
+        tasks += PackScripts(pluginScriptDirs, PackScriptPhase.AFTER_DB, allTables)
+    }
 
     val builder =
         Builder(
@@ -157,7 +205,7 @@ fun buildCache(taskType: TaskType) {
     builder.extraTasks(*tasks.toTypedArray()).build().initialize()
 
     if (taskType == TaskType.BUILD) {
-        val serverTasks = tasks.filterNot { it is PackCs2 }
+        val serverTasks = tasks.filterNot { it is PackCs2 || it is PackIfType || it is PackScripts }
 
         builder.type = TaskType.SERVER_CACHE_BUILD
 
@@ -178,6 +226,7 @@ fun buildCache(taskType: TaskType) {
         MinifyServerCache().init(getServerCacheLocation())
         val cache = Cache.load(File(getServerCacheLocation()).toPath())
         GamevalDumper.dumpCols(cache, revision.first)
+        GamevalDumper.dumpComponents(cache, revision.first)
 
         val type = GameValHandler.readGameVal(GameValGroupTypes.TABLETYPES, cache = cache, revision.first)
 
@@ -222,4 +271,117 @@ fun readRevision(): Triple<Int, Int, String> {
 
         Triple(major, minor, environment.uppercase())
     }
+}
+
+private fun syncPluginCs2(
+    projectRoot: File,
+    allPacks: List<PluginPack>,
+    activePacks: List<PluginPack>,
+) {
+    val cs2Root = File(projectRoot, ".data/raw-cache/cs2")
+    val customRoot = File(cs2Root, "custom").also { it.mkdirs() }
+    val symbolsCustom = File(cs2Root, "symbols_custom").also { it.mkdirs() }
+
+    fun packName(pack: PluginPack): String =
+        pack::class.java.name.substringAfterLast('.').removeSuffix("PluginPack").lowercase()
+
+    val activeNames = activePacks.map(::packName).toSet()
+    val allNames = allPacks.map(::packName).toSet()
+
+    customRoot.listFiles()?.forEach { child ->
+        if (child.isDirectory && child.name.lowercase() in allNames && child.name.lowercase() !in activeNames) {
+            child.deleteRecursively()
+        }
+    }
+    File(customRoot, "_plugins").takeIf { it.exists() }?.deleteRecursively()
+    File(symbolsCustom, "_plugins").takeIf { it.exists() }?.deleteRecursively()
+
+    for (pack in allPacks) {
+        for (dir in pack.cs2Directories(projectRoot).filter { it.isDirectory }) {
+            val symbols = File(dir, "symbols")
+            if (!symbols.isDirectory) continue
+            symbols.listFiles()?.filter { it.isFile && it.extension.equals("sym", true) }?.forEach { sym ->
+                stripSymbolLines(File(symbolsCustom, sym.name), readSymbolLines(sym))
+            }
+        }
+    }
+
+    for (pack in activePacks) {
+        val name = packName(pack)
+        val scriptDest =
+            File(customRoot, name).also {
+                it.deleteRecursively()
+                it.mkdirs()
+            }
+
+        for (dir in pack.cs2Directories(projectRoot).filter { it.isDirectory }) {
+            val scripts = File(dir, "script")
+            if (scripts.isDirectory) {
+                scripts.walkTopDown().filter { it.isFile && it.extension.equals("cs2", true) }.forEach { src ->
+                    src.copyTo(File(scriptDest, src.name), overwrite = true)
+                }
+            }
+            dir.listFiles()?.filter { it.isFile && it.extension.equals("cs2", true) }?.forEach { src ->
+                src.copyTo(File(scriptDest, src.name), overwrite = true)
+            }
+
+            val symbols = File(dir, "symbols")
+            if (symbols.isDirectory) {
+                symbols.listFiles()?.filter { it.isFile && it.extension.equals("sym", true) }?.forEach { sym ->
+                    mergeSymbolLines(File(symbolsCustom, sym.name), readSymbolLines(sym))
+                }
+            }
+        }
+    }
+
+    SymbolsCustomConflictStrip.strip(cs2Root)
+}
+
+private val SYMBOL_LINE = Regex("""^\s*(\S+)\s+(.+?)\s*$""")
+
+/** id → remainder of the line (name, and for dbcolumn also the type). */
+private fun readSymbolLines(file: File): List<Pair<String, String>> =
+    file.readLines().mapNotNull { line ->
+        val trimmed = line.trim()
+        if (trimmed.isEmpty() || trimmed.startsWith("#")) return@mapNotNull null
+        val match = SYMBOL_LINE.matchEntire(trimmed) ?: return@mapNotNull null
+        match.groupValues[1] to match.groupValues[2].trim()
+    }
+
+private fun symbolName(rest: String): String = rest.substringBefore('\t').substringBefore(' ').trim()
+
+private fun stripSymbolLines(target: File, owned: List<Pair<String, String>>) {
+    if (!target.exists() || owned.isEmpty()) return
+    val ownedIds = owned.map { it.first }.toSet()
+    val ownedNames = owned.map { symbolName(it.second) }.toSet()
+    val kept =
+        target.readLines().filter { line ->
+            val trimmed = line.trim()
+            if (trimmed.isEmpty()) return@filter false
+            val match = SYMBOL_LINE.matchEntire(trimmed) ?: return@filter true
+            val id = match.groupValues[1]
+            val name = symbolName(match.groupValues[2])
+            id !in ownedIds && name !in ownedNames
+        }
+    if (kept.isEmpty()) {
+        target.delete()
+    } else {
+        target.writeText(kept.joinToString("\n", postfix = "\n"))
+    }
+}
+
+private fun mergeSymbolLines(target: File, lines: List<Pair<String, String>>) {
+    if (lines.isEmpty()) return
+    stripSymbolLines(target, lines)
+    val existing = if (target.exists()) target.readText().trimEnd() else ""
+    val body = lines.joinToString("\n") { (id, rest) -> "$id\t$rest" }
+    target.parentFile?.mkdirs()
+    target.writeText(
+        buildString {
+            if (existing.isNotBlank()) {
+                appendLine(existing)
+            }
+            appendLine(body)
+        },
+    )
 }

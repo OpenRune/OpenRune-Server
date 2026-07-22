@@ -34,6 +34,7 @@ enum class RSCMType(val prefix: String) {
     QUEUE("queue"),
     SEQ("seq"),
     SPOTANIM("spotanim"),
+    SPRITES("sprites"),
     STAT("stat"),
     SYNTH("synth"),
     TIMER("timer"),

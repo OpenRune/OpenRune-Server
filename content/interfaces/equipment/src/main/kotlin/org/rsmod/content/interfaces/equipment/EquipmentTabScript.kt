@@ -9,6 +9,7 @@ import org.rsmod.plugin.scripts.ScriptContext
 class EquipmentTabScript : PluginScript() {
     override fun ScriptContext.startup() {
         onIfOverlayButton("component.wornitems:call_follower") { player.callFollower() }
+        onIfOverlayButton("component.wornitems:tb_call_follower") { player.callFollower() }
     }
 
     private fun Player.callFollower() {

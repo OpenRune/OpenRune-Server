@@ -40,6 +40,7 @@ constructor(
 
     override fun ScriptContext.startup() {
         onIfOverlayButton("component.wornitems:pricechecker") { player.selectGuidePrices() }
+        onIfOverlayButton("component.wornitems:tb_pricechecker") { player.selectGuidePrices() }
         onIfModalButton("component.ge_pricechecker:all") { addAllFromInv() }
         onIfModalButton("component.ge_pricechecker_side:items") { addFromSlot(it.comsub, it.op) }
         onIfModalButton("component.ge_pricechecker:items") { takeFromSlot(it.comsub, it.op) }

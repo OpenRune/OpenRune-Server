@@ -1,0 +1,114 @@
+[gamevals.interface]
+toolbelt = 15000
+
+[gamevals.clientscript]
+toolbelt_init = 45400
+toolbelt_build = 45401
+toolbelt_stored_for_row = 45402
+toolbelt_draw = 45403
+toolbelt_count_category = 45404
+toolbelt_filter = 45405
+
+[gamevals.dbtable]
+toolbelt_slots = 55521
+
+[gamevals.enum]
+toolbelt_categories = 65541
+
+[gamevals.dbrow]
+toolbelt_pickaxe = 55300
+toolbelt_axe = 55301
+toolbelt_hammer = 55302
+toolbelt_chisel = 55303
+toolbelt_knife = 55304
+toolbelt_tinderbox = 55305
+toolbelt_pestle_and_mortar = 55306
+toolbelt_spade = 55307
+toolbelt_rake = 55308
+toolbelt_dibber = 55309
+toolbelt_secateurs = 55310
+toolbelt_gardening_trowel = 55311
+toolbelt_watering_can = 55312
+toolbelt_shears = 55313
+toolbelt_needle = 55314
+toolbelt_glassblowing_pipe = 55315
+toolbelt_small_net = 55316
+toolbelt_big_net = 55317
+toolbelt_fishing_rod = 55318
+toolbelt_fly_fishing_rod = 55319
+toolbelt_harpoon = 55320
+toolbelt_lobster_pot = 55321
+toolbelt_amulet_mould = 55322
+toolbelt_necklace_mould = 55323
+toolbelt_ring_mould = 55324
+toolbelt_bracelet_mould = 55325
+toolbelt_tiara_mould = 55326
+toolbelt_bonecrusher = 55327
+
+[gamevals.varp]
+toolbelt_unlocks = 65489
+toolbelt_slot_0 =65488
+toolbelt_slot_1 =65487
+toolbelt_slot_2 =65486
+toolbelt_slot_3 =65480
+toolbelt_slot_4 =65479
+toolbelt_slot_5 =65478
+toolbelt_slot_6 =65477
+toolbelt_slot_7 =65476
+toolbelt_slot_8 =65475
+toolbelt_slot_9 =65474
+toolbelt_slot_10 =65473
+toolbelt_slot_11 =65472
+toolbelt_slot_12 =65471
+toolbelt_slot_13 =65470
+toolbelt_slot_14 =65469
+toolbelt_slot_15 =65468
+toolbelt_slot_16 =65467
+toolbelt_slot_17 =65466
+toolbelt_slot_18 =65465
+toolbelt_slot_19 =65464
+toolbelt_slot_20 =65463
+toolbelt_slot_21 =65462
+toolbelt_slot_22 =65461
+toolbelt_slot_23 =65460
+toolbelt_slot_24 =65459
+toolbelt_slot_25 =65458
+toolbelt_slot_26 =65457
+toolbelt_slot_27 =65456
+
+[gamevals.varbit]
+toolbelt_slot_0 =65525
+toolbelt_slot_1 =65524
+toolbelt_slot_2 =65523
+toolbelt_slot_3 =65522
+toolbelt_slot_4 =65521
+toolbelt_slot_5 =65520
+toolbelt_slot_6 =65458
+toolbelt_slot_7 =65456
+toolbelt_slot_8 =65455
+toolbelt_slot_9 =65454
+toolbelt_slot_10 =65453
+toolbelt_slot_11 =65452
+toolbelt_slot_12 =65451
+toolbelt_slot_13 =65450
+toolbelt_slot_14 =65449
+toolbelt_slot_15 =65448
+toolbelt_slot_16 =65447
+toolbelt_slot_17 =65446
+toolbelt_slot_18 =65445
+toolbelt_slot_19 =65444
+toolbelt_slot_20 =65443
+toolbelt_slot_21 =65442
+toolbelt_slot_22 =65441
+toolbelt_slot_23 =65440
+toolbelt_slot_24 =65439
+toolbelt_slot_25 =65438
+toolbelt_slot_26 =65437
+toolbelt_slot_27 =65436
+
+[gamevals.sprites]
+tool_belt = 21535
+square_button = 21536
+square_button_hover = 21537
+square_button_clicked = 21538
+square_button_disabled = 21539

@@ -32,6 +32,7 @@ import org.rsmod.api.script.onOpContentLoc3
 import org.rsmod.api.script.onOpContentU
 import org.rsmod.api.stats.levelmod.InvisibleLevels
 import org.rsmod.api.stats.xpmod.XpModifiers
+import org.rsmod.content.other.toolbelt.Toolbelt
 import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.content.skills.woodcutting.configs.WoodcuttingParams
 import org.rsmod.game.MapClock
@@ -277,12 +278,16 @@ constructor(
         fun findAxe(player: Player, tree: ObjectServerType): InvObj? {
             val worn = player.wornAxe()
             val carried = player.carriedAxes()
+            val toolbelt = Toolbelt.resolveAxe(player)?.takeIf { getInvObj(it).isUsableAxe(player) }
             val candidates =
                 buildList {
                     if (worn != null) {
                         add(worn)
                     }
                     addAll(carried)
+                    if (toolbelt != null) {
+                        add(toolbelt)
+                    }
                 }
             return candidates.maxWithOrNull(axeComparator(tree))
         }

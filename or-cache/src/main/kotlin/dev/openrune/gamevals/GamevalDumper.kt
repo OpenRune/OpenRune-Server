@@ -40,16 +40,7 @@ object GamevalDumper {
 
                 GameValGroupTypes.IFTYPES_V2 -> {
                     val interfaces = elements.mapNotNull { it.elementAs<Interface>() }
-
-                    gamevals["interfaces"] =
-                        interfaces.map { "${it.name}=${it.id}" }
-
-                    gamevals["components"] =
-                        interfaces.flatMap { iface ->
-                            iface.components.map { comp ->
-                                "${iface.name}:${comp.name}=${comp.packed}"
-                            }
-                        }
+                    gamevals["interfaces"] = interfaces.map { "${it.name}=${it.id}" }
                 }
 
                 GameValGroupTypes.IFTYPES -> Unit
@@ -65,6 +56,21 @@ object GamevalDumper {
         encodeGameValDat(File(outputDir, "gamevals.dat").path, gamevals)
 
         dumpCols(cache, rev)
+        dumpComponents(cache, rev)
+    }
+
+    fun dumpComponents(cache: Cache, rev: Int) {
+        val elements = GameValHandler.readGameVal(GameValGroupTypes.IFTYPES_V2, cache = cache, rev)
+        val data = mutableListOf<String>()
+
+        elements.forEach { gameValElement ->
+            val iftype = gameValElement.elementAs<Interface>() ?: return@forEach
+            iftype.components.forEach { comp ->
+                data.add("${iftype.name}:${comp.name}=${comp.packed}")
+            }
+        }
+
+        encodeGameValDat("../.data/gamevals-binary/gamevals_components.dat", mapOf("component" to data))
     }
 
     fun dumpCols(cache: Cache, rev: Int) {

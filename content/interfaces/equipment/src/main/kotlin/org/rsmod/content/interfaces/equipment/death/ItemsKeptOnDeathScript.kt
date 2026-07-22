@@ -40,6 +40,7 @@ constructor(
 
     override fun ScriptContext.startup() {
         onIfOverlayButton("component.wornitems:deathkeep") { player.selectKeptOnDeath() }
+        onIfOverlayButton("component.wornitems:tb_deathkeep") { player.selectKeptOnDeath() }
         onIfClose("interface.deathkeep") { player.closeKeptOnDeath() }
     }
 

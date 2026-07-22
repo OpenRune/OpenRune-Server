@@ -38,6 +38,7 @@ constructor(
 ) : PluginScript() {
     override fun ScriptContext.startup() {
         onIfOverlayButton("component.wornitems:equipment") { player.selectStats() }
+        onIfOverlayButton("component.wornitems:tb_equipment") { player.selectStats() }
 
         val componentWornSlots = equipment_stats_to_slots_map.filterValuesNotNull().map { it.key to RSCM.getReverseMapping(RSCMType.COMPONENT,it.value.packed) }
         for ((slot, component) in componentWornSlots) {

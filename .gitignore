@@ -57,3 +57,7 @@ logs/
 *.log
 /.cursor
 /.data/raw-cache/cs2
+
+# Extracted library sources (do not commit)
+/dev/
+
