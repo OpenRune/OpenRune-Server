@@ -410,6 +410,7 @@ constructor(
             return when (type.internalName) {
                 "obj.dragon_pickaxe",
                 "obj.dragon_pickaxe_pretty",
+                "obj.zalcano_pickaxe",
                 "obj.infernal_pickaxe",
                 "obj.infernal_pickaxe_empty",
                 "obj.3a_pickaxe",
@@ -421,26 +422,36 @@ constructor(
 
         fun findPickaxe(player: Player): InvObj? {
             val worn = player.wornPickaxe()
-            val carried = player.carriedPickaxe()
-            if (worn != null && carried != null) {
-                return if (getInvObj(worn).pickaxeLevelReq >= getInvObj(carried).pickaxeLevelReq) {
-                    worn
-                } else {
-                    carried
+            val carried = player.carriedPickaxes()
+            val candidates =
+                buildList {
+                    if (worn != null) {
+                        add(worn)
+                    }
+                    addAll(carried)
                 }
-            }
-            return worn ?: carried
+            return candidates.maxWithOrNull(pickaxeComparator)
         }
+
+        /** Higher is better: lower action delay first, then higher mining level req. */
+        private val pickaxeComparator: Comparator<InvObj> =
+            Comparator { left, right ->
+                val leftType = getInvObj(left)
+                val rightType = getInvObj(right)
+                val byDelay = rightType.pickaxeDelay.compareTo(leftType.pickaxeDelay)
+                if (byDelay != 0) {
+                    return@Comparator byDelay
+                }
+                leftType.pickaxeLevelReq.compareTo(rightType.pickaxeLevelReq)
+            }
 
         private fun Player.wornPickaxe(): InvObj? {
             val righthand = righthand ?: return null
             return righthand.takeIf { getInvObj(it).isUsablePickaxe(this) }
         }
 
-        private fun Player.carriedPickaxe(): InvObj? {
-            return inv.filterNotNull { getInvObj(it).isUsablePickaxe(this) }
-                .maxByOrNull { getInvObj(it).pickaxeLevelReq }
-        }
+        private fun Player.carriedPickaxes(): List<InvObj> =
+            inv.filterNotNull { getInvObj(it).isUsablePickaxe(this) }
 
         private fun ItemServerType.isUsablePickaxe(player: Player): Boolean {
             if (!isContentType("content.mining_pickaxe") || player.miningLvl < pickaxeLevelReq) {
