@@ -80,6 +80,78 @@ object InstanceSettingsTable {
             columnRSCM(EXIT_OBJECT, "loc.dragonkingoutlever")
         }
 
+        row("dbrow.instance_graardor") {
+            column(KEY, "graardor")
+            columnCoord(EXIT_COORD, CoordGrid(2862, 5354, 2))
+            columnCoord(ENTER_COORD, CoordGrid(2864, 5354, 2))
+            column(FEE, 0)
+            column(MAX_PLAYERS, 20)
+            column(TIME_LIMIT_MINUTES, 0)
+            column(GRACE_MINUTES, 10)
+            columnRSCM(BOSS_NPC, "npc.godwars_bandos_avatar")
+            column(BOSS_NAME, "General Graardor")
+            column(RECOMMENDED_COMBAT, 80, 90)
+            column(TEAM_SIZE, 20)
+            column(LOOT_MULTIPLIER, "x1.0")
+            column(DESCRIPTION, "Leader of Bandos' forces in the God Wars Dungeon.")
+            columnRSCM(ENTER_OBJECT, "loc.godwars_dungeon_door_bandos")
+            columnRSCM(EXIT_OBJECT, "loc.godwars_dungeon_bandos_altar01")
+        }
+
+        row("dbrow.instance_kreearra") {
+            column(KEY, "kreearra")
+            columnCoord(EXIT_COORD, CoordGrid(2839, 5294, 2))
+            columnCoord(ENTER_COORD, CoordGrid(2839, 5295, 2))
+            column(FEE, 0)
+            column(MAX_PLAYERS, 20)
+            column(TIME_LIMIT_MINUTES, 0)
+            column(GRACE_MINUTES, 10)
+            columnRSCM(BOSS_NPC, "npc.godwars_armadyl_avatar")
+            column(BOSS_NAME, "Kree'arra")
+            column(RECOMMENDED_COMBAT, 80, 90)
+            column(TEAM_SIZE, 20)
+            column(LOOT_MULTIPLIER, "x1.0")
+            column(DESCRIPTION, "Armadyl's aerial commander in the God Wars Dungeon.")
+            columnRSCM(ENTER_OBJECT, "loc.godwars_dungeon_door_armadyl")
+            columnRSCM(EXIT_OBJECT, "loc.godwars_dungeon_armadyl_altar01")
+        }
+
+        row("dbrow.instance_zilyana") {
+            column(KEY, "zilyana")
+            columnCoord(EXIT_COORD, CoordGrid(2909, 5265, 0))
+            columnCoord(ENTER_COORD, CoordGrid(2908, 5265, 0))
+            column(FEE, 0)
+            column(MAX_PLAYERS, 20)
+            column(TIME_LIMIT_MINUTES, 0)
+            column(GRACE_MINUTES, 10)
+            columnRSCM(BOSS_NPC, "npc.godwars_saradomin_avatar")
+            column(BOSS_NAME, "Commander Zilyana")
+            column(RECOMMENDED_COMBAT, 80, 90)
+            column(TEAM_SIZE, 20)
+            column(LOOT_MULTIPLIER, "x1.0")
+            column(DESCRIPTION, "Leader of Saradomin's forces in the God Wars Dungeon.")
+            columnRSCM(ENTER_OBJECT, "loc.godwars_dungeon_door_saradomin")
+            columnRSCM(EXIT_OBJECT, "loc.godwars_dungeon_saradomin_altar01")
+        }
+
+        row("dbrow.instance_kril") {
+            column(KEY, "kril")
+            columnCoord(EXIT_COORD, CoordGrid(2925, 5333, 2))
+            columnCoord(ENTER_COORD, CoordGrid(2925, 5332, 2))
+            column(FEE, 0)
+            column(MAX_PLAYERS, 20)
+            column(TIME_LIMIT_MINUTES, 0)
+            column(GRACE_MINUTES, 10)
+            columnRSCM(BOSS_NPC, "npc.godwars_zamorak_avatar")
+            column(BOSS_NAME, "K'ril Tsutsaroth")
+            column(RECOMMENDED_COMBAT, 80, 90)
+            column(TEAM_SIZE, 20)
+            column(LOOT_MULTIPLIER, "x1.0")
+            column(DESCRIPTION, "Leader of Zamorak's forces in the God Wars Dungeon.")
+            columnRSCM(ENTER_OBJECT, "loc.godwars_dungeon_door_zamorak")
+            columnRSCM(EXIT_OBJECT, "loc.godwars_dungeon_zamorak_altar01")
+        }
+
         row("dbrow.instance_cowboss") {
             column(KEY, "cowboss")
             columnCoord(EXIT_COORD, CoordGrid(3258, 3289, 0))

@@ -124,8 +124,12 @@ constructor(
     public fun findAll(zone: ZoneKey, zoneRadius: Int): Sequence<Npc> {
         return sequence {
             for (x in -zoneRadius..zoneRadius) {
+                val targetX = zone.x + x
+                if (targetX !in 0..ZoneKey.X_BIT_MASK) continue
                 for (z in -zoneRadius..zoneRadius) {
-                    val translate = zone.translate(x, z)
+                    val targetZ = zone.z + z
+                    if (targetZ !in 0..ZoneKey.Z_BIT_MASK) continue
+                    val translate = ZoneKey(x = targetX, z = targetZ, level = zone.level)
                     val players = findAll(translate)
                     yieldAll(players)
                 }

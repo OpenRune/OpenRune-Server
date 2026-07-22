@@ -1447,3 +1447,503 @@ inherit = "npc.wilderness_capeseller_10"
 [npc.params]
 "param.shop_inventory" = "inv.wildernesscapeshop10"
 "param.shop_name" = "Sam's Wilderness Cape Shop"
+
+[[npc]]
+id = "npc.godwars_bandos_avatar"
+inherit = "npc.godwars_bandos_avatar"
+huntMode = 6
+huntRange = 30
+maxRange = 30
+defaultMode = "Wander"
+[npc.params]
+"param.attack_anim"="seq.godwars_bandos_attack"
+"param.defend_anim"="seq.godwars_bandos_defend"
+"param.death_anim"="seq.godwars_bandos_death"
+
+[[npc]]
+id = "npc.godwars_sergeant_goblin1"
+inherit = "npc.godwars_sergeant_goblin1"
+category = 65524
+huntMode = 6
+huntRange = 30
+maxRange = 30
+defaultMode = "Wander"
+[npc.params]
+"param.attack_anim"="seq.slice_surface_goblin_sergent_attack"
+"param.defend_anim"="seq.slice_surface_goblin_sergent_defend"
+"param.death_anim"="seq.slice_surface_goblin_sergent_death"
+"param.npc_attack_type"="category.attacktype_crush"
+
+[[npc]]
+id = "npc.godwars_sergeant_goblin2"
+inherit = "npc.godwars_sergeant_goblin2"
+category = 65524
+huntMode = 8
+huntRange = 30
+maxRange = 30
+attackRange = 7
+defaultMode = "Wander"
+[npc.params]
+"param.npc_attack_type"="category.attacktype_magic"
+"param.attack_anim"="seq.godwars_sergeant_goblin2_sonic"
+"param.defend_anim"="seq.slice_surface_goblin_sergent_defend"
+"param.death_anim"="seq.slice_surface_goblin_sergent_death"
+"param.proj_type"="projanim.magic_spell"
+"param.proj_travel"="spotanim.godwars_goblin2_sonic_attk_proj"
+
+[[npc]]
+id = "npc.godwars_sergeant_goblin3"
+inherit = "npc.godwars_sergeant_goblin3"
+category = 65524
+huntMode = 8
+huntRange = 30
+maxRange = 30
+attackRange = 7
+defaultMode = "Wander"
+[npc.params]
+"param.npc_attack_type"="category.attacktype_heavy"
+"param.attack_anim"="seq.godwars_sergeant_goblin3_ranged"
+"param.defend_anim"="seq.slice_surface_goblin_sergent_defend"
+"param.death_anim"="seq.slice_surface_goblin_sergent_death"
+"param.proj_type"="projanim.thrown"
+"param.proj_travel"="spotanim.godwars_goblin3_handaxe_proj"
+
+[[npc]]
+id = "npc.godwars_saradomin_avatar"
+inherit = "npc.godwars_saradomin_avatar"
+huntMode = 6
+huntRange = 30
+maxRange = 30
+defaultMode = "Wander"
+[npc.params]
+"param.death_anim"="seq.godwars_saradomin_death"
+
+[[npc]]
+id = "npc.godwars_saradomin_unicorn"
+inherit = "npc.godwars_saradomin_unicorn"
+category = 65523
+huntMode = 6
+huntRange = 30
+maxRange = 30
+defaultMode = "Wander"
+[npc.params]
+"param.attack_anim"="seq.unicorn_rework_attack"
+"param.defend_anim"="seq.unicorn_rework_defend"
+"param.death_anim"="seq.unicorn_rework_death"
+"param.npc_attack_type"="category.attacktype_crush"
+
+[[npc]]
+id = "npc.godwars_saradomin_lion"
+inherit = "npc.godwars_saradomin_lion"
+category = 65523
+huntMode = 8
+huntRange = 30
+maxRange = 30
+attackRange = 7
+defaultMode = "Wander"
+[npc.params]
+"param.attack_anim"="seq.godwars_lion_magic_attack"
+"param.defend_anim"="seq.godwars_lion_defend"
+"param.death_anim"="seq.godwars_lion_death"
+"param.npc_attack_type"="category.attacktype_magic"
+"param.proj_type"="projanim.magic_spell"
+"param.proj_travel"="spotanim.godwars_lion_magic_proj"
+
+[[npc]]
+id = "npc.godwars_saradomin_centaur"
+inherit = "npc.godwars_saradomin_centaur"
+category = 65523
+huntMode = 8
+huntRange = 30
+maxRange = 30
+attackRange = 7
+defaultMode = "Wander"
+[npc.params]
+"param.attack_anim"="seq.godwars_centaur_attack_ranged"
+"param.defend_anim"="seq.godwars_centaur_defend"
+"param.death_anim"="seq.godwars_centaur_death"
+"param.npc_attack_type"="category.attacktype_light"
+"param.proj_type"="projanim.arrow"
+"param.proj_travel"="spotanim.godwars_centaur_arrow_proj"
+
+[[npc]]
+id = "npc.godwars_zamorak_avatar"
+inherit = "npc.godwars_zamorak_avatar"
+huntMode = 6
+huntRange = 30
+maxRange = 30
+defaultMode = "Wander"
+[npc.params]
+"param.death_anim"="seq.godwars_zamorak_death"
+
+[[npc]]
+id = "npc.godwars_ancient_black_demon"
+inherit = "npc.godwars_ancient_black_demon"
+category = 65521
+huntMode = 8
+huntRange = 30
+maxRange = 30
+attackRange = 7
+defaultMode = "Wander"
+[npc.params]
+"param.attack_anim"="seq.demon_update_fireball_cast"
+"param.defend_anim"="seq.demon_block"
+"param.death_anim"="seq.demon_death"
+"param.npc_attack_type"="category.attacktype_magic"
+"param.proj_type"="projanim.magic_spell"
+"param.proj_travel"="spotanim.godwars_black_demon_fireball_proj"
+
+[[npc]]
+id = "npc.godwars_ancient_greater_demon"
+inherit = "npc.godwars_ancient_greater_demon"
+category = 65521
+huntMode = 6
+huntRange = 30
+maxRange = 30
+defaultMode = "Wander"
+[npc.params]
+"param.attack_anim"="seq.demon_attack_greater"
+"param.defend_anim"="seq.demon_block"
+"param.death_anim"="seq.demon_death_greater"
+"param.npc_attack_type"="category.attacktype_crush"
+
+[[npc]]
+id = "npc.godwars_ancient_lesser_demon"
+inherit = "npc.godwars_ancient_lesser_demon"
+category = 65521
+huntMode = 8
+huntRange = 30
+maxRange = 30
+attackRange = 7
+defaultMode = "Wander"
+[npc.params]
+"param.attack_anim"="seq.godwars_zamorak_bdygrd_ranged"
+"param.defend_anim"="seq.demon_block"
+"param.death_anim"="seq.demon_death"
+"param.npc_attack_type"="category.attacktype_heavy"
+"param.proj_type"="projanim.thrown"
+"param.proj_travel"="spotanim.godwars_zamorak_bdygrd_ranged_proj"
+
+[[npc]]
+id = "npc.godwars_armadyl_avatar"
+inherit = "npc.godwars_armadyl_avatar"
+huntMode = 8
+huntRange = 30
+maxRange = 30
+attackRange = 7
+defaultMode = "Wander"
+[npc.params]
+"param.death_anim"="seq.godwars_armadyl_avatar_death"
+
+[[npc]]
+id = "npc.godwars_armadyl_bodyguard_geerin"
+inherit = "npc.godwars_armadyl_bodyguard_geerin"
+category = 65522
+huntMode = 8
+huntRange = 30
+maxRange = 30
+attackRange = 7
+defaultMode = "Wander"
+[npc.params]
+"param.attack_anim"="seq.godwars_armadyl_spear_attack"
+"param.defend_anim"="seq.godwars_armadyl_defend"
+"param.death_anim"="seq.godwars_armadyl_death"
+"param.npc_attack_type"="category.attacktype_standard"
+"param.proj_type"="projanim.thrown"
+"param.proj_travel"="spotanim.godwars_armadyl_spear_travel_spotanim"
+
+[[npc]]
+id = "npc.godwars_armadyl_bodyguard_kilisa"
+inherit = "npc.godwars_armadyl_bodyguard_kilisa"
+category = 65522
+huntMode = 6
+huntRange = 30
+maxRange = 30
+defaultMode = "Wander"
+[npc.params]
+"param.attack_anim"="seq.godwars_armadyl_sword_attack"
+"param.defend_anim"="seq.godwars_armadyl_defend"
+"param.death_anim"="seq.godwars_armadyl_death"
+"param.npc_attack_type"="category.attacktype_slash"
+
+[[npc]]
+id = "npc.godwars_armadyl_bodyguard_skree"
+inherit = "npc.godwars_armadyl_bodyguard_skree"
+category = 65522
+huntMode = 8
+huntRange = 30
+maxRange = 30
+attackRange = 7
+defaultMode = "Wander"
+[npc.params]
+"param.attack_anim"="seq.godwars_armadyl_spear_attack"
+"param.defend_anim"="seq.godwars_armadyl_defend"
+"param.death_anim"="seq.godwars_armadyl_death"
+"param.npc_attack_type"="category.attacktype_magic"
+"param.proj_type"="projanim.magic_spell"
+"param.proj_travel"="spotanim.godwars_armadyl_bolt_attack_spotanim"
+
+[[npc]]
+id = "npc.godwars_spiritual_bandos_mage"
+inherit = "npc.godwars_spiritual_bandos_mage"
+category = 65517
+
+[[npc]]
+id = "npc.godwars_spiritual_bandos_ranger"
+inherit = "npc.godwars_spiritual_bandos_ranger"
+category = 65517
+
+[[npc]]
+id = "npc.godwars_spiritual_bandos_warrior"
+inherit = "npc.godwars_spiritual_bandos_warrior"
+category = 65517
+
+[[npc]]
+id = "npc.godwars_ancient_ork1"
+inherit = "npc.godwars_ancient_ork1"
+category = 65517
+
+[[npc]]
+id = "npc.godwars_ancient_ork2"
+inherit = "npc.godwars_ancient_ork2"
+category = 65517
+
+[[npc]]
+id = "npc.godwars_ancient_ork3"
+inherit = "npc.godwars_ancient_ork3"
+category = 65517
+
+[[npc]]
+id = "npc.godwars_ancient_ork4"
+inherit = "npc.godwars_ancient_ork4"
+category = 65517
+
+[[npc]]
+id = "npc.godwars_ancient_cyclops"
+inherit = "npc.godwars_ancient_cyclops"
+category = 65517
+
+[[npc]]
+id = "npc.godwars_ancient_cyclops2"
+inherit = "npc.godwars_ancient_cyclops2"
+category = 65517
+
+[[npc]]
+id = "npc.godwars_ancient_jogre"
+inherit = "npc.godwars_ancient_jogre"
+category = 65517
+
+[[npc]]
+id = "npc.godwars_ancient_ogre"
+inherit = "npc.godwars_ancient_ogre"
+category = 65517
+
+[[npc]]
+id = "npc.godwars_ancient_hobgoblin"
+inherit = "npc.godwars_ancient_hobgoblin"
+category = 65517
+
+[[npc]]
+id = "npc.godwars_goblin1"
+inherit = "npc.godwars_goblin1"
+category = 65517
+
+[[npc]]
+id = "npc.godwars_goblin2"
+inherit = "npc.godwars_goblin2"
+category = 65517
+
+[[npc]]
+id = "npc.godwars_goblin3"
+inherit = "npc.godwars_goblin3"
+category = 65517
+
+[[npc]]
+id = "npc.godwars_goblin4"
+inherit = "npc.godwars_goblin4"
+category = 65517
+
+[[npc]]
+id = "npc.godwars_goblin5"
+inherit = "npc.godwars_goblin5"
+category = 65517
+
+[[npc]]
+id = "npc.godwars_spiritual_armadyl_mage"
+inherit = "npc.godwars_spiritual_armadyl_mage"
+category = 65518
+
+[[npc]]
+id = "npc.godwars_spiritual_armadyl_ranger"
+inherit = "npc.godwars_spiritual_armadyl_ranger"
+category = 65518
+
+[[npc]]
+id = "npc.godwars_spiritual_armadyl_warrior"
+inherit = "npc.godwars_spiritual_armadyl_warrior"
+category = 65518
+
+[[npc]]
+id = "npc.godwars_armadyl_female_armor01_blue"
+inherit = "npc.godwars_armadyl_female_armor01_blue"
+category = 65518
+
+[[npc]]
+id = "npc.godwars_armadyl_female_armor01_green"
+inherit = "npc.godwars_armadyl_female_armor01_green"
+category = 65518
+
+[[npc]]
+id = "npc.godwars_armadyl_female_armor01_red"
+inherit = "npc.godwars_armadyl_female_armor01_red"
+category = 65518
+
+[[npc]]
+id = "npc.godwars_armadyl_female_armor02_blue"
+inherit = "npc.godwars_armadyl_female_armor02_blue"
+category = 65518
+
+[[npc]]
+id = "npc.godwars_armadyl_female_armor02_green"
+inherit = "npc.godwars_armadyl_female_armor02_green"
+category = 65518
+
+[[npc]]
+id = "npc.godwars_armadyl_female_armor02_red"
+inherit = "npc.godwars_armadyl_female_armor02_red"
+category = 65518
+
+[[npc]]
+id = "npc.godwars_armadyl_female_armor03_blue"
+inherit = "npc.godwars_armadyl_female_armor03_blue"
+category = 65518
+
+[[npc]]
+id = "npc.godwars_armadyl_male_armor01_blue"
+inherit = "npc.godwars_armadyl_male_armor01_blue"
+category = 65518
+
+[[npc]]
+id = "npc.godwars_armadyl_male_armor01_green"
+inherit = "npc.godwars_armadyl_male_armor01_green"
+category = 65518
+
+[[npc]]
+id = "npc.godwars_armadyl_male_armor01_red"
+inherit = "npc.godwars_armadyl_male_armor01_red"
+category = 65518
+
+[[npc]]
+id = "npc.godwars_armadyl_male_armor02_blue"
+inherit = "npc.godwars_armadyl_male_armor02_blue"
+category = 65518
+
+[[npc]]
+id = "npc.godwars_armadyl_male_armor02_green"
+inherit = "npc.godwars_armadyl_male_armor02_green"
+category = 65518
+
+[[npc]]
+id = "npc.godwars_armadyl_male_armor02_red"
+inherit = "npc.godwars_armadyl_male_armor02_red"
+category = 65518
+
+[[npc]]
+id = "npc.godwars_armadyl_male_armor03_green"
+inherit = "npc.godwars_armadyl_male_armor03_green"
+category = 65518
+
+[[npc]]
+id = "npc.godwars_armadyl_male_armor03_red"
+inherit = "npc.godwars_armadyl_male_armor03_red"
+category = 65518
+
+[[npc]]
+id = "npc.godwars_spiritual_saradomin_mage"
+inherit = "npc.godwars_spiritual_saradomin_mage"
+category = 65519
+
+[[npc]]
+id = "npc.godwars_spiritual_saradomin_ranger"
+inherit = "npc.godwars_spiritual_saradomin_ranger"
+category = 65519
+
+[[npc]]
+id = "npc.godwars_spiritual_saradomin_warrior"
+inherit = "npc.godwars_spiritual_saradomin_warrior"
+category = 65519
+
+[[npc]]
+id = "npc.godwars_saradomin_knight_1"
+inherit = "npc.godwars_saradomin_knight_1"
+category = 65519
+
+[[npc]]
+id = "npc.godwars_saradomin_knight_2"
+inherit = "npc.godwars_saradomin_knight_2"
+category = 65519
+
+[[npc]]
+id = "npc.godwars_ancient_saradomin_wizard"
+inherit = "npc.godwars_ancient_saradomin_wizard"
+category = 65519
+
+[[npc]]
+id = "npc.godwars_spiritual_zamorak_mage"
+inherit = "npc.godwars_spiritual_zamorak_mage"
+category = 65520
+
+[[npc]]
+id = "npc.godwars_spiritual_zamorak_ranger"
+inherit = "npc.godwars_spiritual_zamorak_ranger"
+category = 65520
+
+[[npc]]
+id = "npc.godwars_spiritual_zamorak_warrior"
+inherit = "npc.godwars_spiritual_zamorak_warrior"
+category = 65520
+
+[[npc]]
+id = "npc.godwars_bloodveld"
+inherit = "npc.godwars_bloodveld"
+category = 65520
+
+[[npc]]
+id = "npc.godwars_gorak"
+inherit = "npc.godwars_gorak"
+category = 65520
+
+[[npc]]
+id = "npc.godwars_icefiend_1"
+inherit = "npc.godwars_icefiend_1"
+category = 65520
+
+[[npc]]
+id = "npc.godwars_pyrefiend_1"
+inherit = "npc.godwars_pyrefiend_1"
+category = 65520
+
+[[npc]]
+id = "npc.godwars_ancient_hellhound"
+inherit = "npc.godwars_ancient_hellhound"
+category = 65520
+
+[[npc]]
+id = "npc.godwars_ancient_imp"
+inherit = "npc.godwars_ancient_imp"
+category = 65520
+
+[[npc]]
+id = "npc.godwars_ancient_vampire"
+inherit = "npc.godwars_ancient_vampire"
+category = 65520
+
+[[npc]]
+id = "npc.godwars_ancient_werewolf1"
+inherit = "npc.godwars_ancient_werewolf1"
+category = 65520
+
+[[npc]]
+id = "npc.godwars_ancient_werewolf2"
+inherit = "npc.godwars_ancient_werewolf2"
+category = 65520

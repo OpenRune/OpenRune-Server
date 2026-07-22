@@ -168,6 +168,7 @@ class NpcServerCodec(
         if (customData != null) {
             customData.paramsRaw?.forEach { (paramId, value) -> paramsRaw?.set(paramId, value) }
 
+            if (customData.category != -1) category = customData.category
             timer = customData.timer
             respawnDir = customData.respawnDir
             patrol = customData.patrol

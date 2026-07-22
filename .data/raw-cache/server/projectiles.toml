@@ -184,3 +184,14 @@ angle = 15
 lengthAdjustment = 5
 progress = 250
 stepMultiplier = 10
+
+[[projectile]]
+isServerOnly = true
+id = "projanim.godwars_bandos_ranged"
+startHeight = 75
+endHeight = 100
+delay = 25
+angle = 8
+lengthAdjustment = 15
+progress = 11
+stepMultiplier = 5

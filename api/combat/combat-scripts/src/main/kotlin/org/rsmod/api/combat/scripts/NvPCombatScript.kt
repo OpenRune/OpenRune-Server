@@ -4,12 +4,15 @@ import jakarta.inject.Inject
 import org.rsmod.api.area.checker.AreaChecker
 import org.rsmod.api.combat.NvPCombat
 import org.rsmod.api.combat.commons.CombatAttack
+import org.rsmod.api.combat.commons.types.AttackType
 import org.rsmod.api.combat.commons.types.MeleeAttackType
+import org.rsmod.api.combat.commons.types.RangedAttackType
 import org.rsmod.api.combat.player.aggressiveNpc
 import org.rsmod.api.config.refs.params
 import org.rsmod.api.npc.access.StandardNpcAccess
 import org.rsmod.api.player.isInPvnCombat
 import org.rsmod.api.player.isInPvpCombat
+import org.rsmod.api.script.advanced.onDefaultAiApPlayer2
 import org.rsmod.api.script.advanced.onDefaultAiOpPlayer2
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
@@ -20,16 +23,16 @@ internal class NvPCombatScript
 @Inject
 constructor(private val combat: NvPCombat, private val areaChecker: AreaChecker) : PluginScript() {
     override fun ScriptContext.startup() {
-        onDefaultAiOpPlayer2 { attemptCombatOp(it.target) }
+        onDefaultAiOpPlayer2 { attemptCombat(it.target) }
+        onDefaultAiApPlayer2 { attemptCombat(it.target) }
     }
 
-    private fun StandardNpcAccess.attemptCombatOp(target: Player) {
+    private fun StandardNpcAccess.attemptCombat(target: Player) {
         if (!canAttack(target)) {
             resetMode()
             return
         }
-        val attackType = npc.resolveMeleeAttackType()
-        val attack = CombatAttack.NpcMelee(attackType)
+        val attack = npc.resolveNpcAttack()
         combat.attack(this, target, attack)
     }
 
@@ -49,16 +52,28 @@ constructor(private val combat: NvPCombat, private val areaChecker: AreaChecker)
         return true
     }
 
-    private fun Npc.resolveMeleeAttackType(): MeleeAttackType {
-        val category = visType.paramOrNull(params.npc_attack_type)
-        if (category == null) {
-            return MeleeAttackType.Crush
+    private fun Npc.resolveNpcAttack(): CombatAttack.NpcAttack {
+        val attackType = resolveAttackType()
+        return when {
+            attackType.isRanged ->
+                CombatAttack.NpcRanged(RangedAttackType.from(attackType) ?: RangedAttackType.Standard)
+            // `maxHit = 0` defers max-hit resolution to the npc's magic stats in [NvPCombat].
+            attackType.isMagic -> CombatAttack.NpcMagic(maxHit = 0)
+            else -> CombatAttack.NpcMelee(MeleeAttackType.from(attackType))
         }
+    }
+
+    private fun Npc.resolveAttackType(): AttackType {
+        val category = visType.paramOrNull(params.npc_attack_type) ?: return AttackType.Crush
 
         return when {
-            category.isType("category.attacktype_stab") -> MeleeAttackType.Stab
-            category.isType("category.attacktype_slash") -> MeleeAttackType.Slash
-            else -> MeleeAttackType.Crush
+            category.isType("category.attacktype_stab") -> AttackType.Stab
+            category.isType("category.attacktype_slash") -> AttackType.Slash
+            category.isType("category.attacktype_light") -> AttackType.Light
+            category.isType("category.attacktype_standard") -> AttackType.Standard
+            category.isType("category.attacktype_heavy") -> AttackType.Heavy
+            category.isType("category.attacktype_magic") -> AttackType.Magic
+            else -> AttackType.Crush
         }
     }
 }
