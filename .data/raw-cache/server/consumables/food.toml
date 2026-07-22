@@ -1,0 +1,1559 @@
+# Special behavior is kept in food_overrides.toml
+[[food]]
+row = "dbrow.shrimp"
+name = "Shrimp"
+objs = ["obj.shrimp"]
+heal = 3
+
+[[food]]
+row = "dbrow.anchovies"
+name = "Anchovies"
+objs = ["obj.anchovies"]
+heal = 1
+
+[[food]]
+row = "dbrow.sardine"
+name = "Sardine"
+objs = ["obj.sardine"]
+heal = 4
+
+[[food]]
+row = "dbrow.herring"
+name = "Herring"
+objs = ["obj.herring"]
+heal = 5
+
+[[food]]
+row = "dbrow.mackerel"
+name = "Mackerel"
+objs = ["obj.mackerel"]
+heal = 6
+
+[[food]]
+row = "dbrow.cod"
+name = "Cod"
+objs = ["obj.cod"]
+heal = 7
+
+[[food]]
+row = "dbrow.trout"
+name = "Trout"
+objs = ["obj.trout"]
+heal = 7
+
+[[food]]
+row = "dbrow.pike"
+name = "Pike"
+objs = ["obj.pike"]
+heal = 8
+
+[[food]]
+row = "dbrow.salmon"
+name = "Salmon"
+objs = ["obj.salmon"]
+heal = 9
+
+[[food]]
+row = "dbrow.tuna"
+name = "Tuna"
+objs = ["obj.tuna"]
+heal = 10
+
+[[food]]
+row = "dbrow.cave_eel"
+name = "Cave eel"
+objs = ["obj.cave_eel"]
+heal = 10
+
+[[food]]
+row = "dbrow.lava_eel"
+name = "Lava eel"
+objs = ["obj.lava_eel"]
+heal = 11
+
+[[food]]
+row = "dbrow.lobster"
+name = "Lobster"
+objs = ["obj.lobster"]
+heal = 12
+
+[[food]]
+row = "dbrow.bass"
+name = "Bass"
+objs = ["obj.bass"]
+heal = 13
+
+[[food]]
+row = "dbrow.swordfish"
+name = "Swordfish"
+objs = ["obj.swordfish"]
+heal = 14
+
+[[food]]
+row = "dbrow.swordtip_squid"
+name = "Swordtip squid"
+objs = ["obj.swordtip_squid"]
+heal = 15
+
+[[food]]
+row = "dbrow.ixcoztic_white"
+name = "Ixcoztic white"
+objs = ["obj.ixcoztic_white"]
+heal = 16
+
+[[food]]
+row = "dbrow.monkfish"
+name = "Monkfish"
+objs = ["obj.monkfish"]
+heal = 16
+
+[[food]]
+row = "dbrow.jumbo_squid"
+name = "Jumbo squid"
+objs = ["obj.jumbo_squid"]
+heal = 17
+
+[[food]]
+row = "dbrow.giant_krill"
+name = "Giant krill"
+objs = ["obj.giant_krill"]
+heal = 17
+
+[[food]]
+row = "dbrow.haddock"
+name = "Haddock"
+objs = ["obj.haddock"]
+heal = 18
+
+[[food]]
+row = "dbrow.yellowfin"
+name = "Yellowfin"
+objs = ["obj.yellowfin"]
+heal = 19
+
+[[food]]
+row = "dbrow.shark"
+name = "Shark"
+objs = ["obj.shark"]
+heal = 20
+
+[[food]]
+row = "dbrow.halibut"
+name = "Halibut"
+objs = ["obj.halibut"]
+heal = 20
+
+[[food]]
+row = "dbrow.sea_turtle"
+name = "Sea turtle"
+objs = ["obj.seaturtle"]
+heal = 21
+
+[[food]]
+row = "dbrow.manta_ray"
+name = "Manta ray"
+objs = ["obj.mantaray"]
+heal = 22
+
+[[food]]
+row = "dbrow.dark_crab"
+name = "Dark crab"
+objs = ["obj.dark_crab"]
+heal = 22
+
+[[food]]
+row = "dbrow.bluefin"
+name = "Bluefin"
+objs = ["obj.bluefin"]
+heal = 22
+
+[[food]]
+row = "dbrow.marlin"
+name = "Marlin"
+objs = ["obj.marlin"]
+heal = 24
+
+#TODO: Replace item options with edible options
+#[[food]]
+#row = "dbrow.cavefish"
+#name = "Cavefish"
+#objs = ["obj.cavefish"]
+#heal = 20
+
+#TODO: Replace item options with edible options
+#[[food]]
+#row = "dbrow.tetra"
+#name = "Tetra"
+#objs = ["obj.tetra"]
+#heal = 22
+
+[[food]]
+row = "dbrow.anglerfish"
+name = "Anglerfish"
+objs = ["obj.anglerfish"]
+heal = -1
+
+[[food]]
+row = "dbrow.bread"
+name = "Bread"
+objs = ["obj.bread"]
+heal = 5
+
+[[food]]
+row = "dbrow.peach"
+name = "Peach"
+objs = ["obj.peach"]
+heal = 8
+
+[[food]]
+row = "dbrow.onion"
+name = "Onion"
+objs = ["obj.onion"]
+heal = 1
+
+[[food]]
+row = "dbrow.potato"
+name = "Potato"
+objs = ["obj.potato"]
+heal = 1
+
+[[food]]
+row = "dbrow.cabbage"
+name = "Cabbage"
+objs = ["obj.cabbage"]
+heal = 1
+
+[[food]]
+row = "dbrow.banana"
+name = "Banana"
+objs = ["obj.banana"]
+heal = 2
+
+[[food]]
+row = "dbrow.tomato"
+name = "Tomato"
+objs = ["obj.tomato"]
+heal = 2
+
+[[food]]
+row = "dbrow.cheese"
+name = "Cheese"
+objs = ["obj.cheese"]
+heal = 2
+
+[[food]]
+row = "dbrow.pot_of_cream"
+name = "Pot of cream"
+objs = ["obj.pot_of_cream"]
+heal = 1
+
+[[food]]
+row = "dbrow.sliced_banana"
+name = "Sliced banana"
+objs = ["obj.tbwt_sliced_banana"]
+heal = 2
+
+[[food]]
+row = "dbrow.orange_chunks"
+name = "Orange chunks"
+objs = ["obj.orange_chunks"]
+heal = 2
+
+[[food]]
+row = "dbrow.orange_slices"
+name = "Orange slices"
+objs = ["obj.orange_slices"]
+heal = 2
+
+[[food]]
+row = "dbrow.pineapple_chunks"
+name = "Pineapple chunks"
+objs = ["obj.pineapple_chunks"]
+heal = 2
+
+[[food]]
+row = "dbrow.pineapple_ring"
+name = "Pineapple ring"
+objs = ["obj.pineapple_ring"]
+heal = 2
+
+[[food]]
+row = "dbrow.lemon_chunks"
+name = "Lemon chunks"
+objs = ["obj.lemon_chunks"]
+heal = 2
+
+[[food]]
+row = "dbrow.lemon_slices"
+name = "Lemon slices"
+objs = ["obj.lemon_slices"]
+heal = 2
+
+[[food]]
+row = "dbrow.lime_chunks"
+name = "Lime chunks"
+objs = ["obj.lime_chunks"]
+heal = 2
+
+[[food]]
+row = "dbrow.lime_slices"
+name = "Lime slices"
+objs = ["obj.lime_slices"]
+heal = 2
+
+[[food]]
+row = "dbrow.king_worm"
+name = "King worm"
+objs = ["obj.king_worm"]
+heal = 2
+
+[[food]]
+row = "dbrow.equa_leaves"
+name = "Equa leaves"
+objs = ["obj.equa_leaves"]
+heal = 1
+
+[[food]]
+row = "dbrow.lemon"
+name = "Lemon"
+objs = ["obj.lemon"]
+heal = 2
+
+[[food]]
+row = "dbrow.orange"
+name = "Orange"
+objs = ["obj.orange"]
+heal = 2
+
+[[food]]
+row = "dbrow.lime"
+name = "Lime"
+objs = ["obj.lime"]
+heal = 2
+
+[[food]]
+row = "dbrow.pineapple"
+name = "Pineapple"
+objs = ["obj.pineapple"]
+heal = 2
+
+[[food]]
+row = "dbrow.dwellberries"
+name = "Dwellberries"
+objs = ["obj.dwellberries"]
+heal = 2
+
+[[food]]
+row = "dbrow.jangerberries"
+name = "Jangerberries"
+objs = ["obj.jangerberries"]
+heal = 2
+
+[[food]]
+row = "dbrow.caerula_berries"
+name = "Caerula berries"
+objs = ["obj.caerula_berries"]
+heal = 2
+
+[[food]]
+row = "dbrow.strawberry"
+name = "Strawberry"
+objs = ["obj.strawberry"]
+heal = 5
+
+[[food]]
+row = "dbrow.watermelon_slice"
+name = "Watermelon slice"
+objs = ["obj.watermelon_slice"]
+heal = 2
+
+[[food]]
+row = "dbrow.papaya_fruit"
+name = "Papaya fruit"
+objs = ["obj.papaya"]
+heal = 8
+
+[[food]]
+row = "dbrow.dragonfruit"
+name = "Dragonfruit"
+objs = ["obj.dragonfruit"]
+heal = 10
+
+[[food]]
+row = "dbrow.chocolate_bar"
+name = "Chocolate bar"
+objs = ["obj.chocolate_bar"]
+heal = 3
+
+[[food]]
+row = "dbrow.edible_seaweed"
+name = "Edible seaweed"
+objs = ["obj.edible_seaweed"]
+heal = 4
+
+[[food]]
+row = "dbrow.magic_cabbage"
+name = "Magic cabbage"
+objs = ["obj.magic_cabbage"]
+heal = 1
+
+[[food]]
+row = "dbrow.cup_of_tea"
+name = "Cup of tea"
+objs = [
+    "obj.cup_of_tea",
+    "obj.cup_empty",
+]
+heal = 3
+
+[[food]]
+row = "dbrow.white_tree_fruit"
+name = "White tree fruit"
+objs = ["obj.garden_white_tree_fruit"]
+heal = 3
+
+[[food]]
+row = "dbrow.strange_fruit"
+name = "Strange fruit"
+objs = ["obj.macro_triffidfruit"]
+heal = 0
+
+[[food]]
+row = "dbrow.mint_cake"
+name = "Mint cake"
+objs = ["obj.aluft_gnome_mint_cake"]
+heal = 0
+
+[[food]]
+row = "dbrow.rare_tuber"
+name = "Rare tuber"
+objs = ["obj.village_rare_tuber"]
+heal = 12
+
+[[food]]
+row = "dbrow.tbone_steak"
+name = "T-bone steak"
+objs = ["obj.tbone_steak"]
+heal = 9
+
+[[food]]
+row = "dbrow.cooked_chicken"
+name = "Cooked chicken"
+objs = ["obj.cooked_chicken"]
+heal = 3
+
+[[food]]
+row = "dbrow.cooked_meat"
+name = "Cooked meat"
+objs = ["obj.cooked_meat"]
+heal = 3
+
+[[food]]
+row = "dbrow.cooked_ugthanki_meat"
+name = "Cooked ugthanki meat"
+objs = ["obj.cooked_ugthanki_meat"]
+heal = 3
+
+[[food]]
+row = "dbrow.ugthanki_kebab"
+name = "Ugthanki kebab"
+objs = ["obj.ugthanki_kebab"]
+heal = 19
+
+[[food]]
+row = "dbrow.kebab"
+name = "Kebab"
+objs = ["obj.kebab"]
+heal = 3
+
+[[food]]
+row = "dbrow.locust_meat"
+name = "Locust meat"
+objs = ["obj.locust_meat"]
+heal = 3
+
+[[food]]
+row = "dbrow.roe"
+name = "Roe"
+objs = ["obj.brut_roe"]
+heal = 3
+
+[[food]]
+row = "dbrow.stew"
+name = "Stew"
+objs = ["obj.stew", "obj.bowl_empty"]
+heal = 11
+
+[[food]]
+row = "dbrow.spicy_stew"
+name = "Spicy stew"
+objs = ["obj.hundred_dave_stew"]
+heal = 11
+
+[[food]]
+row = "dbrow.cooked_rabbit"
+name = "Cooked rabbit"
+objs = ["obj.cooked_rabbit"]
+heal = 5
+
+[[food]]
+row = "dbrow.cooked_mystery_meat"
+name = "Cooked mystery meat"
+objs = ["obj.cooked_mystery_meat"]
+heal = 5
+
+[[food]]
+row = "dbrow.caviar"
+name = "Caviar"
+objs = ["obj.brut_caviar"]
+heal = 5
+
+[[food]]
+row = "dbrow.baguette"
+name = "Baguette"
+objs = ["obj.baguette"]
+heal = 6
+
+[[food]]
+row = "dbrow.giant_frog_legs"
+name = "Giant frog legs"
+objs = ["obj.giant_frog_legs"]
+heal = 6
+
+[[food]]
+row = "dbrow.giant_carp"
+name = "Giant carp"
+objs = ["obj.giant_carp"]
+heal = 6
+
+[[food]]
+row = "dbrow.giant_frogspawn"
+name = "Giant frogspawn"
+objs = ["obj.giant_frogspawn"]
+heal = 3
+
+[[food]]
+row = "dbrow.cooked_slimy_eel"
+name = "Cooked slimy eel"
+objs = ["obj.mort_slimey_eel_cooked"]
+heal = 6
+
+[[food]]
+row = "dbrow.cooked_fishcake"
+name = "Cooked fishcake"
+objs = ["obj.hundred_pirate_fishcake"]
+heal = 11
+
+[[food]]
+row = "dbrow.cooked_chompy"
+name = "Cooked chompy"
+objs = ["obj.cooked_chompy"]
+heal = 10
+
+[[food]]
+row = "dbrow.choc_ice"
+name = "Choc ice"
+objs = ["obj.elid_choc_ice"]
+heal = 7
+
+[[food]]
+row = "dbrow.pumpkin"
+name = "Pumpkin"
+objs = ["obj.pumpkin"]
+heal = 14
+
+[[food]]
+row = "dbrow.easter_egg"
+name = "Easter egg"
+objs = ["obj.easter_egg"]
+heal = 14
+
+[[food]]
+row = "dbrow.cooked_oomlie"
+name = "Cooked oomlie"
+objs = ["obj.cooked_oomlie"]
+heal = 14
+
+[[food]]
+row = "dbrow.cooked_sweetcorn"
+name = "Cooked sweetcorn"
+objs = ["obj.sweetcorn_cooked"]
+heal = 10
+
+[[food]]
+row = "dbrow.bowl_of_sweetcorn"
+name = "Bowl of sweetcorn"
+objs = ["obj.bowl_sweetcorn", "obj.bowl_empty"]
+heal = 10
+
+[[food]]
+row = "dbrow.roast_bird_meat"
+name = "Roast bird meat"
+objs = ["obj.spit_roasted_bird_meat"]
+heal = 6
+
+[[food]]
+row = "dbrow.roast_rabbit"
+name = "Roast rabbit"
+objs = ["obj.spit_roasted_rabbit_meat"]
+heal = 7
+
+[[food]]
+row = "dbrow.roast_beast_meat"
+name = "Roast beast meat"
+objs = ["obj.spit_roasted_beast_meat"]
+heal = 8
+
+[[food]]
+row = "dbrow.thin_snail_meat"
+name = "Thin snail meat"
+objs = ["obj.snail_corpse_cooked1"]
+heal = 5
+
+[[food]]
+row = "dbrow.lean_snail_meat"
+name = "Lean snail meat"
+objs = ["obj.snail_corpse_cooked2"]
+heal = 6
+
+[[food]]
+row = "dbrow.fat_snail_meat"
+name = "Fat snail meat"
+objs = ["obj.snail_corpse_cooked3"]
+heal = 8
+
+[[food]]
+row = "dbrow.spider_on_stick"
+name = "Spider on stick"
+objs = ["obj.tbw_spider_on_stick_cooked"]
+heal = 7
+
+[[food]]
+row = "dbrow.spider_on_shaft"
+name = "Spider on shaft"
+objs = ["obj.tbw_spider_on_shaft_cooked"]
+heal = 7
+
+[[food]]
+row = "dbrow.cooked_jubbly"
+name = "Cooked jubbly"
+objs = ["obj.100_jubbly_meat_cooked"]
+heal = 15
+
+[[food]]
+row = "dbrow.cooked_giant_crab_meat"
+name = "Cooked giant crab meat"
+objs = [
+    "obj.hundred_pirate_giant_crab_meat_5",
+    "obj.hundred_pirate_giant_crab_meat_4",
+    "obj.hundred_pirate_giant_crab_meat_3",
+    "obj.hundred_pirate_giant_crab_meat_2",
+    "obj.hundred_pirate_giant_crab_meat_1",
+]
+heal = 2
+
+[[food]]
+row = "dbrow.cooked_wild_kebbit"
+name = "Cooked wild kebbit"
+objs = ["obj.wildkebbit_cooked"]
+heal = 4
+
+[[food]]
+row = "dbrow.cooked_larupia"
+name = "Cooked larupia"
+objs = ["obj.larupia_cooked"]
+heal = 6
+
+[[food]]
+row = "dbrow.cooked_barb_tailed_kebbit"
+name = "Cooked barb tailed kebbit"
+objs = ["obj.barbkebbit_cooked"]
+heal = 7
+
+[[food]]
+row = "dbrow.cooked_graahk"
+name = "Cooked graahk"
+objs = ["obj.graahk_cooked"]
+heal = 8
+
+[[food]]
+row = "dbrow.cooked_kyatt"
+name = "Cooked kyatt"
+objs = ["obj.kyatt_cooked"]
+heal = 9
+
+[[food]]
+row = "dbrow.cooked_dashing_kebbit"
+name = "Cooked dashing kebbit"
+objs = ["obj.dashingkebbit_cooked"]
+heal = 13
+
+[[food]]
+row = "dbrow.cooked_fennec_fox"
+name = "Cooked fennec fox"
+objs = ["obj.fennecfox_cooked"]
+heal = 11
+
+[[food]]
+row = "dbrow.cooked_sunlight_antelope"
+name = "Cooked sunlight antelope"
+objs = ["obj.antelopesun_cooked"]
+heal = 12
+
+[[food]]
+row = "dbrow.cooked_moonlight_antelope"
+name = "Cooked moonlight antelope"
+objs = ["obj.antelopemoon_cooked"]
+heal = 14
+
+[[food]]
+row = "dbrow.potato_with_cheese"
+name = "Potato with cheese"
+objs = ["obj.potato_cheese"]
+heal = 16
+
+[[food]]
+row = "dbrow.tuna_potato"
+name = "Tuna potato"
+objs = ["obj.potato_tuna+sweetcorn"]
+heal = 22
+
+[[food]]
+row = "dbrow.curry"
+name = "Curry"
+objs = ["obj.curry", "obj.bowl_empty"]
+heal = 19
+
+[[food]]
+row = "dbrow.baked_potato"
+name = "Baked potato"
+objs = ["obj.potato_baked"]
+heal = 4
+
+[[food]]
+row = "dbrow.potato_with_butter"
+name = "Potato with butter"
+objs = ["obj.potato_butter"]
+heal = 14
+
+[[food]]
+row = "dbrow.chilli_potato"
+name = "Chilli potato"
+objs = ["obj.potato_chilli+carne"]
+heal = 14
+
+[[food]]
+row = "dbrow.egg_potato"
+name = "Egg potato"
+objs = ["obj.potato_egg+tomato"]
+heal = 16
+
+[[food]]
+row = "dbrow.mushroom_potato"
+name = "Mushroom potato"
+objs = ["obj.potato_mushroom+onion"]
+heal = 20
+
+[[food]]
+row = "dbrow.bowl_of_onion"
+name = "Bowl of onion"
+objs = ["obj.bowl_onion", "obj.bowl_empty"]
+heal = 1
+
+[[food]]
+row = "dbrow.bowl_of_tomato"
+name = "Bowl of tomato"
+objs = ["obj.bowl_tomato", "obj.bowl_empty"]
+heal = 2
+
+[[food]]
+row = "dbrow.bowl_of_chilli"
+name = "Bowl of chilli"
+objs = ["obj.bowl_chilli", "obj.bowl_empty"]
+heal = 2
+
+[[food]]
+row = "dbrow.bowl_of_meat"
+name = "Bowl of meat"
+objs = ["obj.bowl_carne", "obj.bowl_empty"]
+heal = 2
+
+[[food]]
+row = "dbrow.bowl_of_spicy_tomato"
+name = "Bowl of spicy tomato"
+objs = ["obj.bowl_spicytomato", "obj.bowl_empty"]
+heal = 2
+
+[[food]]
+row = "dbrow.onion_and_tomato"
+name = "Onion and tomato"
+objs = ["obj.bowl_oniontomato", "obj.bowl_empty"]
+heal = 3
+
+[[food]]
+row = "dbrow.spicy_meat"
+name = "Spicy meat"
+objs = ["obj.bowl_spicymeat", "obj.bowl_empty"]
+heal = 3
+
+[[food]]
+row = "dbrow.scrambled_egg_bowl"
+name = "Scrambled egg"
+objs = ["obj.bowl_egg_scrambled", "obj.bowl_empty"]
+heal = 5
+
+[[food]]
+row = "dbrow.fried_onion"
+name = "Fried onion"
+objs = ["obj.bowl_onion_fried", "obj.bowl_empty"]
+heal = 5
+
+[[food]]
+row = "dbrow.bowl_of_chilli_con_carne"
+name = "Bowl of chilli con carne"
+objs = ["obj.bowl_chilli+carne", "obj.bowl_empty"]
+heal = 5
+
+[[food]]
+row = "dbrow.egg_and_tomato"
+name = "Egg and tomato"
+objs = ["obj.bowl_egg+tomato", "obj.bowl_empty"]
+heal = 8
+
+[[food]]
+row = "dbrow.mushroom_and_onion"
+name = "Mushroom and onion"
+objs = ["obj.bowl_mushroom+onion", "obj.bowl_empty"]
+heal = 11
+
+[[food]]
+row = "dbrow.tuna_and_corn"
+name = "Tuna and corn"
+objs = ["obj.bowl_tuna+sweetcorn", "obj.bowl_empty"]
+heal = 13
+
+[[food]]
+row = "dbrow.bat_shish"
+name = "Bat shish"
+objs = ["obj.dorgesh_bat_shish"]
+heal = 2
+
+[[food]]
+row = "dbrow.green_gloop_soup"
+name = "Green gloop soup"
+objs = ["obj.dorgesh_green_gloop_soup"]
+heal = 2
+
+[[food]]
+row = "dbrow.frog_spawn_gumbo"
+name = "Frog spawn gumbo"
+objs = ["obj.dorgesh_frog_spawn_gumbo"]
+heal = 3
+
+[[food]]
+row = "dbrow.fried_mushrooms"
+name = "Fried mushrooms"
+objs = ["obj.bowl_mushroom_fried", "obj.bowl_empty"]
+heal = 5
+
+[[food]]
+row = "dbrow.sauteed_mushrooms"
+name = "Sautéed mushrooms"
+objs = ["obj.dorgesh_sauteed_mushrooms"]
+heal = 6
+
+[[food]]
+row = "dbrow.cave_eel_sushi"
+name = "Cave eel sushi"
+objs = ["obj.dorgesh_cave_eel_sushi"]
+heal = 7
+
+[[food]]
+row = "dbrow.frog_burger"
+name = "Frog burger"
+objs = ["obj.dorgesh_frog_burger"]
+heal = 6
+
+[[food]]
+row = "dbrow.red_crab_meat"
+name = "Red crab meat"
+objs = ["obj.red_crab_meat"]
+heal = 8
+
+[[food]]
+row = "dbrow.blue_crab_meat"
+name = "Blue crab meat"
+objs = ["obj.blue_crab_meat"]
+heal = 14
+
+[[food]]
+row = "dbrow.rainbow_crab_meat"
+name = "Rainbow crab meat"
+objs = ["obj.rainbow_crab_meat"]
+heal = 19
+
+[[food]]
+row = "dbrow.jug_of_wine"
+name = "Jug of wine"
+objs = ["obj.jug_wine"]
+heal = 11
+
+[[food]]
+row = "dbrow.beer"
+name = "Beer"
+objs = ["obj.beer", "obj.beer_glass"]
+heal = 1
+
+[[food]]
+row = "dbrow.asgarnian_ale"
+name = "Asgarnian ale"
+objs = ["obj.asgarnian_ale", "obj.beer_glass"]
+heal = 1
+
+[[food]]
+row = "dbrow.wizards_mind_bomb"
+name = "Wizard's mind bomb"
+objs = ["obj.wizards_mind_bomb", "obj.beer_glass"]
+heal = 1
+
+[[food]]
+row = "dbrow.greenmans_ale"
+name = "Greenman's ale"
+objs = ["obj.greenmans_ale", "obj.beer_glass"]
+heal = 1
+
+[[food]]
+row = "dbrow.dragon_bitter"
+name = "Dragon bitter"
+objs = ["obj.dragon_bitter", "obj.beer_glass"]
+heal = 1
+
+[[food]]
+row = "dbrow.dwarven_stout"
+name = "Dwarven stout"
+objs = ["obj.dwarven_stout", "obj.beer_glass"]
+heal = 1
+
+[[food]]
+row = "dbrow.cider"
+name = "Cider"
+objs = ["obj.cider", "obj.beer_glass"]
+heal = 1
+
+[[food]]
+row = "dbrow.axemans_folly"
+name = "Axeman's folly"
+objs = ["obj.axemans_folly", "obj.beer_glass"]
+heal = 1
+
+[[food]]
+row = "dbrow.chefs_delight"
+name = "Chef's delight"
+objs = ["obj.chefs_delight", "obj.beer_glass"]
+heal = 1
+
+[[food]]
+row = "dbrow.slayers_respite"
+name = "Slayer's respite"
+objs = ["obj.slayers_respite", "obj.beer_glass"]
+heal = 1
+
+[[food]]
+row = "dbrow.grog"
+name = "Grog"
+objs = ["obj.grog"]
+heal = 3
+
+[[food]]
+row = "dbrow.vodka"
+name = "Vodka"
+objs = ["obj.vodka"]
+heal = 5
+
+[[food]]
+row = "dbrow.whisky"
+name = "Whisky"
+objs = ["obj.whisky"]
+heal = 5
+
+[[food]]
+row = "dbrow.gin"
+name = "Gin"
+objs = ["obj.gin"]
+heal = 5
+
+[[food]]
+row = "dbrow.brandy"
+name = "Brandy"
+objs = ["obj.brandy"]
+heal = 5
+
+[[food]]
+row = "dbrow.keg_of_beer"
+name = "Keg of beer"
+objs = ["obj.keg_of_beer"]
+heal = 15
+
+[[food]]
+row = "dbrow.kovacs_grog"
+name = "Kovac's grog"
+objs = ["obj.kovacs_grog"]
+heal = 3
+
+[[food]]
+row = "dbrow.moonlight_mead"
+name = "Moonlight mead"
+objs = [
+    "obj.moonlight_mead",
+    "obj.beer_glass",
+]
+heal = 4
+
+[[food]]
+row = "dbrow.moonlight_mead_keg"
+name = "Keg of moonlight mead"
+objs = [
+    "obj.keg_moonlight_mead_4",
+    "obj.keg_moonlight_mead_3",
+    "obj.keg_moonlight_mead_2",
+    "obj.keg_moonlight_mead_1",
+    "obj.calquat_fruit_keg_empty",
+]
+heal = 4
+
+[[food]]
+row = "dbrow.mature_moonlight_mead"
+name = "Mature moonlight mead"
+objs = [
+    "obj.mature_moonlight_mead",
+    "obj.beer_glass",
+]
+heal = 6
+
+[[food]]
+row = "dbrow.mature_moonlight_mead_keg"
+name = "Keg of mature moonlight mead"
+objs = [
+    "obj.keg_mature_moonlight_mead_4",
+    "obj.keg_mature_moonlight_mead_3",
+    "obj.keg_mature_moonlight_mead_2",
+    "obj.keg_mature_moonlight_mead_1",
+    "obj.calquat_fruit_keg_empty",
+]
+heal = 6
+
+[[food]]
+row = "dbrow.fruit_blast"
+name = "Fruit blast"
+objs = ["obj.fruit_blast"]
+heal = 9
+
+[[food]]
+row = "dbrow.premade_fruit_blast"
+name = "Premade fruit blast"
+objs = ["obj.premade_fruit_blast"]
+heal = 9
+
+[[food]]
+row = "dbrow.pineapple_punch"
+name = "Pineapple punch"
+objs = ["obj.pineapple_punch"]
+heal = 9
+
+[[food]]
+row = "dbrow.premade_pineapple_punch"
+name = "Premade pineapple punch"
+objs = ["obj.premade_pineapple_punch"]
+heal = 9
+
+[[food]]
+row = "dbrow.short_green_guy"
+name = "Short green guy"
+objs = ["obj.sgg"]
+heal = 5
+
+[[food]]
+row = "dbrow.premade_short_green_guy"
+name = "Premade short green guy"
+objs = ["obj.premade_sgg"]
+heal = 5
+
+[[food]]
+row = "dbrow.blurberry_special"
+name = "Blurberry special"
+objs = ["obj.blurberry_special"]
+heal = 7
+
+[[food]]
+row = "dbrow.premade_blurberry_special"
+name = "Premade blurberry special"
+objs = ["obj.premade_blurberry_special"]
+heal = 7
+
+[[food]]
+row = "dbrow.drunk_dragon"
+name = "Drunk dragon"
+objs = ["obj.drunk_dragon"]
+heal = 5
+
+[[food]]
+row = "dbrow.premade_drunk_dragon"
+name = "Premade drunk dragon"
+objs = ["obj.premade_drunk_dragon"]
+heal = 5
+
+[[food]]
+row = "dbrow.wizard_blizzard"
+name = "Wizard blizzard"
+objs = ["obj.wizard_blizzard"]
+heal = 5
+
+[[food]]
+row = "dbrow.premade_wizard_blizzard"
+name = "Premade wizard blizzard"
+objs = ["obj.premade_wizard_blizzard"]
+heal = 5
+
+[[food]]
+row = "dbrow.chocolate_saturday"
+name = "Chocolate Saturday"
+objs = ["obj.chocolate_saturday"]
+heal = 5
+
+[[food]]
+row = "dbrow.premade_chocolate_saturday"
+name = "Premade chocolate Saturday"
+objs = ["obj.premade_choc_saturday"]
+heal = 5
+
+[[food]]
+row = "dbrow.cake"
+name = "Cake"
+objs = ["obj.cake", "obj.partial_cake", "obj.cake_slice"]
+heal = 4
+
+[[food]]
+row = "dbrow.chocolate_cake"
+name = "Chocolate cake"
+objs = ["obj.chocolate_cake", "obj.partial_chocolate_cake", "obj.chocolate_slice"]
+heal = 5
+
+[[food]]
+row = "dbrow.redberry_pie"
+name = "Redberry pie"
+objs = ["obj.redberry_pie", "obj.half_a_redberry_pie", "obj.piedish"]
+heal = 5
+
+[[food]]
+row = "dbrow.meat_pie"
+name = "Meat pie"
+objs = ["obj.meat_pie", "obj.half_a_meat_pie", "obj.piedish"]
+heal = 6
+
+[[food]]
+row = "dbrow.garden_pie"
+name = "Garden pie"
+objs = ["obj.garden_pie", "obj.half_garden_pie", "obj.piedish"]
+heal = 6
+
+[[food]]
+row = "dbrow.fish_pie"
+name = "Fish pie"
+objs = ["obj.fish_pie", "obj.half_fish_pie", "obj.piedish"]
+heal = 6
+
+[[food]]
+row = "dbrow.apple_pie"
+name = "Apple pie"
+objs = ["obj.apple_pie", "obj.half_an_apple_pie", "obj.piedish"]
+heal = 7
+
+[[food]]
+row = "dbrow.botanical_pie"
+name = "Botanical pie"
+objs = ["obj.botanical_pie", "obj.half_botanical_pie", "obj.piedish"]
+heal = 7
+
+[[food]]
+row = "dbrow.mushroom_pie"
+name = "Mushroom pie"
+objs = ["obj.mushroom_pie", "obj.half_mushroom_pie", "obj.piedish"]
+heal = 8
+
+[[food]]
+row = "dbrow.admiral_pie"
+name = "Admiral pie"
+objs = ["obj.admiral_pie", "obj.half_admiral_pie", "obj.piedish"]
+heal = 8
+
+[[food]]
+row = "dbrow.plain_pizza"
+name = "Plain pizza"
+objs = ["obj.plain_pizza", "obj.half_plain_pizza"]
+heal = 3
+
+[[food]]
+row = "dbrow.meat_pizza"
+name = "Meat pizza"
+objs = ["obj.meat_pizza", "obj.half_meat_pizza"]
+heal = 3
+
+[[food]]
+row = "dbrow.anchovy_pizza"
+name = "Anchovy pizza"
+objs = ["obj.anchovie_pizza", "obj.half_anchovie_pizza"]
+heal = 2
+
+[[food]]
+row = "dbrow.dragonfruit_pie"
+name = "Dragonfruit pie"
+objs = ["obj.dragonfruit_pie", "obj.half_dragonfruit_pie"]
+heal = 10
+
+[[food]]
+row = "dbrow.pineapple_pizza"
+name = "Pineapple pizza"
+objs = ["obj.pineapple_pizza", "obj.half_pineapple_pizza"]
+heal = 11
+
+[[food]]
+row = "dbrow.wild_pie"
+name = "Wild pie"
+objs = ["obj.wild_pie", "obj.half_wild_pie"]
+heal = 11
+
+[[food]]
+row = "dbrow.summer_pie"
+name = "Summer pie"
+objs = ["obj.summer_pie", "obj.half_summer_pie"]
+heal = 11
+
+[[food]]
+row = "dbrow.toad_crunchies"
+name = "Toad crunchies"
+objs = ["obj.toad_crunchies"]
+heal = 8
+
+[[food]]
+row = "dbrow.premade_toad_crunchies"
+name = "Premade toad crunchies"
+objs = ["obj.premade_toad_crunchies"]
+heal = 8
+
+[[food]]
+row = "dbrow.spicy_crunchies"
+name = "Spicy crunchies"
+objs = ["obj.spicy_crunchies"]
+heal = 8
+
+[[food]]
+row = "dbrow.premade_spicy_crunchies"
+name = "Premade spicy crunchies"
+objs = ["obj.premade_spicy_crunchies"]
+heal = 8
+
+[[food]]
+row = "dbrow.worm_crunchies"
+name = "Worm crunchies"
+objs = ["obj.worm_crunchies"]
+heal = 8
+
+[[food]]
+row = "dbrow.premade_worm_crunchies"
+name = "Premade worm crunchies"
+objs = ["obj.premade_worm_crunchies"]
+heal = 8
+
+[[food]]
+row = "dbrow.chocolate_chip_crunchies"
+name = "Chocolate chip crunchies"
+objs = ["obj.chocchip_crunchies"]
+heal = 7
+
+[[food]]
+row = "dbrow.premade_chocolate_chip_crunchies"
+name = "Premade chocolate chip crunchies"
+objs = ["obj.premade_chocchip_crunchies"]
+heal = 7
+
+[[food]]
+row = "dbrow.fruit_batta"
+name = "Fruit batta"
+objs = ["obj.fruit_batta"]
+heal = 11
+
+[[food]]
+row = "dbrow.premade_fruit_batta"
+name = "Premade fruit batta"
+objs = ["obj.premade_fruit_batta"]
+heal = 11
+
+[[food]]
+row = "dbrow.toad_batta"
+name = "Toad batta"
+objs = ["obj.toad_batta"]
+heal = 11
+
+[[food]]
+row = "dbrow.premade_toad_batta"
+name = "Premade toad batta"
+objs = ["obj.premade_toad_batta"]
+heal = 11
+
+[[food]]
+row = "dbrow.worm_batta"
+name = "Worm batta"
+objs = ["obj.worm_batta"]
+heal = 11
+
+[[food]]
+row = "dbrow.premade_worm_batta"
+name = "Premade worm batta"
+objs = ["obj.premade_worm_batta"]
+heal = 11
+
+[[food]]
+row = "dbrow.vegetable_batta"
+name = "Vegetable batta"
+objs = ["obj.vegetable_batta"]
+heal = 11
+
+[[food]]
+row = "dbrow.premade_vegetable_batta"
+name = "Premade vegetable batta"
+objs = ["obj.premade_vegetable_batta"]
+heal = 11
+
+[[food]]
+row = "dbrow.cheese_tomato_batta"
+name = "Cheese and tomato batta"
+objs = ["obj.cheese+tom_batta"]
+heal = 11
+
+[[food]]
+row = "dbrow.premade_cheese_tomato_batta"
+name = "Premade cheese and tomato batta"
+objs = ["obj.premade_cheese+tom_batta"]
+heal = 11
+
+[[food]]
+row = "dbrow.worm_hole"
+name = "Worm hole"
+objs = ["obj.worm_hole"]
+heal = 12
+
+[[food]]
+row = "dbrow.premade_worm_hole"
+name = "Premade worm hole"
+objs = ["obj.premade_worm_hole"]
+heal = 12
+
+[[food]]
+row = "dbrow.vegetable_ball"
+name = "Vegetable ball"
+objs = ["obj.veg_ball"]
+heal = 12
+
+[[food]]
+row = "dbrow.premade_vegetable_ball"
+name = "Premade vegetable ball"
+objs = ["obj.premade_veg_ball"]
+heal = 12
+
+[[food]]
+row = "dbrow.chocolate_bomb"
+name = "Chocolate bomb"
+objs = ["obj.chocolate_bomb"]
+heal = 15
+
+[[food]]
+row = "dbrow.premade_chocolate_bomb"
+name = "Premade chocolate bomb"
+objs = ["obj.premade_chocolate_bomb"]
+heal = 15
+
+[[food]]
+row = "dbrow.tangled_toads_legs"
+name = "Tangled toad's legs"
+objs = ["obj.tangled_toads_legs"]
+heal = 15
+
+[[food]]
+row = "dbrow.premade_tangled_toads_legs"
+name = "Premade tangled toad's legs"
+objs = ["obj.premade_tangled_toads_legs"]
+heal = 15
+
+[[food]]
+row = "dbrow.toads_legs"
+name = "Toad's legs"
+objs = ["obj.toads_legs"]
+heal = 3
+
+[[food]]
+row = "dbrow.crystal_paddlefish"
+name = "Crystal paddlefish"
+objs = ["obj.gauntlet_combo_food"]
+heal = 16
+
+[[food]]
+row = "dbrow.corrupted_paddlefish"
+name = "Corrupted paddlefish"
+objs = ["obj.gauntlet_combo_food_hm"]
+heal = 16
+
+[[food]]
+row = "dbrow.cooked_karambwan"
+name = "Cooked karambwan"
+objs = ["obj.tbwt_cooked_karambwan"]
+heal = 18
+
+[[food]]
+row = "dbrow.blighted_karambwan"
+name = "Blighted karambwan"
+objs = ["obj.blighted_karambwan"]
+heal = 18
+
+[[food]]
+row = "dbrow.blighted_manta_ray"
+name = "Blighted manta ray"
+objs = ["obj.blighted_mantaray"]
+heal = 22
+
+[[food]]
+row = "dbrow.blighted_anglerfish"
+name = "Blighted anglerfish"
+objs = ["obj.blighted_anglerfish"]
+heal = -1
+
+[[food]]
+row = "dbrow.purple_sweets"
+name = "Purple sweets"
+objs = ["obj.trail_sweets"]
+heal = -1
+
+[[food]]
+row = "dbrow.aluft_fruit_blast"
+name = "Aluft fruit blast"
+objs = ["obj.aluft_fruit_blast"]
+heal = 9
+
+[[food]]
+row = "dbrow.aluft_pineapple_punch"
+name = "Aluft pineapple punch"
+objs = ["obj.aluft_pineapple_punch"]
+heal = 9
+
+[[food]]
+row = "dbrow.aluft_wizard_blizzard"
+name = "Aluft wizard blizzard"
+objs = ["obj.aluft_wizard_blizzard"]
+heal = 5
+
+[[food]]
+row = "dbrow.aluft_short_green_guy"
+name = "Aluft short green guy"
+objs = ["obj.aluft_sgg"]
+heal = 5
+
+[[food]]
+row = "dbrow.aluft_drunk_dragon"
+name = "Aluft drunk dragon"
+objs = ["obj.aluft_drunk_dragon"]
+heal = 5
+
+[[food]]
+row = "dbrow.aluft_chocolate_saturday"
+name = "Aluft Chocolate Saturday"
+objs = ["obj.aluft_choc_saturday"]
+heal = 5
+
+[[food]]
+row = "dbrow.aluft_blurberry_special"
+name = "Aluft Blurberry special"
+objs = ["obj.aluft_blurberry_special"]
+heal = 7
+
+[[food]]
+row = "dbrow.aluft_fruit_batta"
+name = "Aluft fruit batta"
+objs = ["obj.aluft_fruit_batta"]
+heal = 11
+
+[[food]]
+row = "dbrow.aluft_toad_batta"
+name = "Aluft toad batta"
+objs = ["obj.aluft_toad_batta"]
+heal = 11
+
+[[food]]
+row = "dbrow.aluft_worm_batta"
+name = "Aluft worm batta"
+objs = ["obj.aluft_worm_batta"]
+heal = 11
+
+[[food]]
+row = "dbrow.aluft_vegetable_batta"
+name = "Aluft vegetable batta"
+objs = ["obj.aluft_vegetable_batta"]
+heal = 11
+
+[[food]]
+row = "dbrow.aluft_cheese_tomato_batta"
+name = "Aluft cheese and tomato batta"
+objs = ["obj.aluft_cheese+tom_batta"]
+heal = 11
+
+[[food]]
+row = "dbrow.aluft_toad_crunchies"
+name = "Aluft toad crunchies"
+objs = ["obj.aluft_toad_crunchies"]
+heal = 8
+
+[[food]]
+row = "dbrow.aluft_spicy_crunchies"
+name = "Aluft spicy crunchies"
+objs = ["obj.aluft_spicy_crunchies"]
+heal = 8
+
+[[food]]
+row = "dbrow.aluft_worm_crunchies"
+name = "Aluft worm crunchies"
+objs = ["obj.aluft_worm_crunchies"]
+heal = 8
+
+[[food]]
+row = "dbrow.aluft_chocolate_chip_crunchies"
+name = "Aluft chocolate chip crunchies"
+objs = ["obj.aluft_chocchip_crunchies"]
+heal = 7
+
+[[food]]
+row = "dbrow.aluft_worm_hole"
+name = "Aluft worm hole"
+objs = ["obj.aluft_worm_hole"]
+heal = 12
+
+[[food]]
+row = "dbrow.aluft_vegetable_ball"
+name = "Aluft vegetable ball"
+objs = ["obj.aluft_veg_ball"]
+heal = 12
+
+[[food]]
+row = "dbrow.aluft_tangled_toads_legs"
+name = "Aluft tangled toad's legs"
+objs = ["obj.aluft_tangled_toads_legs"]
+heal = 15
+
+[[food]]
+row = "dbrow.aluft_chocolate_bomb"
+name = "Aluft chocolate bomb"
+objs = ["obj.aluft_chocolate_bomb"]
+heal = 15
+
+[[food]]
+row = "dbrow.vampyrium_mystery_kebab"
+name = "Mystery kebab"
+objs = ["obj.vampyrium_mystery_kebab"]
+heal = 18

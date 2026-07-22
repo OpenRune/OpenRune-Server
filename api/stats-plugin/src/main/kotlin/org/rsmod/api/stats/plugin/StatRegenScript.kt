@@ -6,6 +6,7 @@ import dev.openrune.rscm.RSCMType
 import dev.openrune.types.StatType
 import org.rsmod.api.config.constants
 import org.rsmod.api.player.hands
+import org.rsmod.api.player.stat.StatBoostDecayPrevention
 import org.rsmod.api.player.stat.baseHitpointsLvl
 import org.rsmod.api.player.stat.hitpoints
 import org.rsmod.api.player.stat.stat
@@ -57,8 +58,18 @@ public class StatRegenScript : PluginScript() {
 
             val base = statBase(statInternal)
             val current = stat(statInternal)
-            if (current > base) {
-                statSub(statInternal, constant = 1, percent = 0)
+            if (
+                current > base &&
+                !StatBoostDecayPrevention.prevents(
+                    player = this,
+                    stat = statInternal,
+                )
+            ) {
+                statSub(
+                    statInternal,
+                    constant = 1,
+                    percent = 0,
+                )
             }
         }
     }

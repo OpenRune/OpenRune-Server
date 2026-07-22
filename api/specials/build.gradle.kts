@@ -8,6 +8,7 @@ kotlin {
 
 dependencies {
     implementation(libs.guice)
+    implementation(projects.api.attr)
     implementation(projects.api.config)
     implementation(projects.api.generated)
     implementation(projects.api.combat.combatCommons)

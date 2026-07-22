@@ -2,6 +2,7 @@ package org.rsmod.api.mechanics.toxins.impl
 
 import org.rsmod.api.config.refs.done.hitmark_groups
 import org.rsmod.api.mechanics.toxins.Toxin
+import org.rsmod.api.mechanics.toxins.ToxinImmunity
 import org.rsmod.api.player.hit.modifier.NoopPlayerHitModifier
 import org.rsmod.api.player.hit.queueHit
 import org.rsmod.api.player.output.ChatType
@@ -24,7 +25,13 @@ public object PlayerVenom {
     public fun tryVenom(player: Player): Boolean = applyVenom(player)
 
     private fun applyVenom(player: Player): Boolean {
+        if (ToxinImmunity.hasVenomImmunity(player)) {
+            return false
+        }
         if (PlayerPoison.hasWornPoisonEnvenomImmunity(player)) {
+            return false
+        }
+        if (isEnvenomed(player)) {
             return false
         }
 
@@ -36,6 +43,24 @@ public object PlayerVenom {
         player.timer("timer.player_venom", TICK_INTERVAL)
         player.mes("You have been envenomed!", ChatType.Spam)
         Toxin.syncStatusOrbs(player)
+        return true
+    }
+
+    public fun reduceToPoison(
+        player: Player,
+        initialPoisonDamage: Int = 6,
+    ): Boolean {
+        if (!isEnvenomed(player)) {
+            return false
+        }
+
+        clear(player)
+
+        PlayerPoison.startWithoutInitialHit(
+            player = player,
+            initialDamage = initialPoisonDamage,
+        )
+
         return true
     }
 

@@ -1,0 +1,665 @@
+
+[[food_override]]
+row = "dbrow.anglerfish"
+overheal = true
+
+[[food_override]]
+row = "dbrow.blighted_anglerfish"
+overheal = true
+
+[[food_override]]
+row = "dbrow.magic_cabbage"
+effect = true
+
+[[food_override]]
+row = "dbrow.cup_of_tea"
+effect = true
+
+[[food_override]]
+row = "dbrow.white_tree_fruit"
+effect = true
+
+[[food_override]]
+row = "dbrow.strange_fruit"
+effect = true
+
+[[food_override]]
+row = "dbrow.mint_cake"
+effect = true
+
+[[food_override]]
+row = "dbrow.rare_tuber"
+effect = true
+
+[[food_override]]
+row = "dbrow.tbone_steak"
+effect = true
+
+[[food_override]]
+row = "dbrow.papaya_fruit"
+effect = true
+
+[[food_override]]
+row = "dbrow.cooked_dashing_kebbit"
+effect = true
+
+[[food_override]]
+row = "dbrow.yellowfin"
+effect = true
+
+[[food_override]]
+row = "dbrow.bluefin"
+effect = true
+
+[[food_override]]
+row = "dbrow.jug_of_wine"
+effect = true
+
+[[food_override]]
+row = "dbrow.jangerberries"
+effect = true
+
+[[food_override]]
+row = "dbrow.ixcoztic_white"
+effect = true
+
+[[food_override]]
+row = "dbrow.kebab"
+effect = true
+
+[[food_override]]
+row = "dbrow.haddock"
+effect = true
+overheal = true
+
+[[food_override]]
+row = "dbrow.strawberry"
+effect = true
+
+[[food_override]]
+row = "dbrow.watermelon_slice"
+effect = true
+
+[[food_override]]
+row = "dbrow.cooked_sweetcorn"
+effect = true
+
+[[food_override]]
+row = "dbrow.thin_snail_meat"
+effect = true
+
+[[food_override]]
+row = "dbrow.lean_snail_meat"
+effect = true
+
+[[food_override]]
+row = "dbrow.fat_snail_meat"
+effect = true
+
+[[food_override]]
+row = "dbrow.spider_on_stick"
+effect = true
+
+[[food_override]]
+row = "dbrow.spider_on_shaft"
+effect = true
+
+[[food_override]]
+row = "dbrow.cave_eel"
+effect = true
+
+[[food_override]]
+row = "dbrow.giant_frogspawn"
+effect = true
+
+[[food_override]]
+row = "dbrow.cooked_slimy_eel"
+effect = true
+
+[[food_override]]
+row = "dbrow.bowl_of_sweetcorn"
+effect = "cooked_sweetcorn"
+
+[[food_override]]
+row = "dbrow.cooked_wild_kebbit"
+effect = true
+
+[[food_override]]
+row = "dbrow.cooked_larupia"
+effect = true
+
+[[food_override]]
+row = "dbrow.cooked_barb_tailed_kebbit"
+effect = true
+
+[[food_override]]
+row = "dbrow.cooked_graahk"
+effect = true
+
+[[food_override]]
+row = "dbrow.cooked_kyatt"
+effect = true
+
+[[food_override]]
+row = "dbrow.cooked_fennec_fox"
+effect = true
+
+[[food_override]]
+row = "dbrow.cooked_sunlight_antelope"
+effect = true
+
+[[food_override]]
+row = "dbrow.cooked_moonlight_antelope"
+effect = true
+
+[[food_override]]
+row = "dbrow.spicy_stew"
+effect = true
+
+[[food_override]]
+row = "dbrow.beer"
+effect = true
+
+[[food_override]]
+row = "dbrow.asgarnian_ale"
+effect = true
+
+[[food_override]]
+row = "dbrow.wizards_mind_bomb"
+effect = true
+
+[[food_override]]
+row = "dbrow.greenmans_ale"
+effect = true
+
+[[food_override]]
+row = "dbrow.dragon_bitter"
+effect = true
+
+[[food_override]]
+row = "dbrow.dwarven_stout"
+effect = true
+
+[[food_override]]
+row = "dbrow.cider"
+effect = true
+
+[[food_override]]
+row = "dbrow.axemans_folly"
+effect = true
+
+[[food_override]]
+row = "dbrow.chefs_delight"
+effect = true
+
+[[food_override]]
+row = "dbrow.slayers_respite"
+effect = true
+
+[[food_override]]
+row = "dbrow.grog"
+effect = true
+
+[[food_override]]
+row = "dbrow.vodka"
+effect = true
+
+[[food_override]]
+row = "dbrow.whisky"
+effect = true
+
+[[food_override]]
+row = "dbrow.gin"
+effect = true
+
+[[food_override]]
+row = "dbrow.brandy"
+effect = true
+
+[[food_override]]
+row = "dbrow.keg_of_beer"
+effect = true
+
+[[food_override]]
+row = "dbrow.kovacs_grog"
+effect = true
+
+[[food_override]]
+row = "dbrow.cake"
+eatDelay = [2, 2, 3]
+combatDelay = [3, 3, 3]
+
+[[food_override]]
+row = "dbrow.chocolate_cake"
+eatDelay = [2, 2, 3]
+combatDelay = [3, 3, 3]
+
+[[food_override]]
+row = "dbrow.redberry_pie"
+eatDelay = [1, 2]
+combatDelay = [3, 3]
+
+[[food_override]]
+row = "dbrow.meat_pie"
+eatDelay = [1, 2]
+combatDelay = [3, 3]
+
+[[food_override]]
+row = "dbrow.apple_pie"
+eatDelay = [1, 2]
+combatDelay = [3, 3]
+
+[[food_override]]
+row = "dbrow.plain_pizza"
+eatDelay = [1, 2]
+combatDelay = [3]
+
+[[food_override]]
+row = "dbrow.meat_pizza"
+eatDelay = [1, 2]
+combatDelay = [3]
+
+[[food_override]]
+row = "dbrow.anchovy_pizza"
+eatDelay = [1, 2]
+combatDelay = [3]
+
+[[food_override]]
+row = "dbrow.pineapple_pizza"
+eatDelay = [1, 2]
+combatDelay = [3]
+
+[[food_override]]
+row = "dbrow.garden_pie"
+effect = true
+eatDelay = [1, 1]
+combatDelay = [3, 3]
+
+[[food_override]]
+row = "dbrow.fish_pie"
+effect = true
+eatDelay = [1, 1]
+combatDelay = [3, 3]
+
+[[food_override]]
+row = "dbrow.botanical_pie"
+effect = true
+eatDelay = [1, 1]
+combatDelay = [3, 3]
+
+[[food_override]]
+row = "dbrow.mushroom_pie"
+effect = true
+eatDelay = [1, 1]
+combatDelay = [3, 3]
+
+[[food_override]]
+row = "dbrow.admiral_pie"
+effect = true
+eatDelay = [1, 1]
+combatDelay = [3, 3]
+
+[[food_override]]
+row = "dbrow.dragonfruit_pie"
+effect = true
+eatDelay = [1, 1]
+combatDelay = [3, 3]
+
+[[food_override]]
+row = "dbrow.wild_pie"
+effect = true
+eatDelay = [1, 1]
+combatDelay = [3, 3]
+
+[[food_override]]
+row = "dbrow.summer_pie"
+effect = true
+eatDelay = [1, 1]
+combatDelay = [3, 3]
+
+[[food_override]]
+row = "dbrow.short_green_guy"
+effect = true
+
+[[food_override]]
+row = "dbrow.premade_short_green_guy"
+effect = true
+
+[[food_override]]
+row = "dbrow.blurberry_special"
+effect = true
+
+[[food_override]]
+row = "dbrow.premade_blurberry_special"
+effect = true
+
+[[food_override]]
+row = "dbrow.drunk_dragon"
+effect = true
+
+[[food_override]]
+row = "dbrow.premade_drunk_dragon"
+effect = true
+
+[[food_override]]
+row = "dbrow.wizard_blizzard"
+effect = true
+
+[[food_override]]
+row = "dbrow.premade_wizard_blizzard"
+effect = true
+
+[[food_override]]
+row = "dbrow.chocolate_saturday"
+effect = true
+
+[[food_override]]
+row = "dbrow.premade_chocolate_saturday"
+effect = true
+
+[[food_override]]
+row = "dbrow.toad_crunchies"
+combo = true
+eatDelay = [3]
+combatDelay = [2]
+
+[[food_override]]
+row = "dbrow.premade_toad_crunchies"
+combo = true
+eatDelay = [3]
+combatDelay = [2]
+
+[[food_override]]
+row = "dbrow.spicy_crunchies"
+combo = true
+eatDelay = [3]
+combatDelay = [2]
+
+[[food_override]]
+row = "dbrow.premade_spicy_crunchies"
+combo = true
+eatDelay = [3]
+combatDelay = [2]
+
+[[food_override]]
+row = "dbrow.worm_crunchies"
+combo = true
+eatDelay = [3]
+combatDelay = [2]
+
+[[food_override]]
+row = "dbrow.premade_worm_crunchies"
+combo = true
+eatDelay = [3]
+combatDelay = [2]
+
+[[food_override]]
+row = "dbrow.chocolate_chip_crunchies"
+combo = true
+eatDelay = [3]
+combatDelay = [2]
+
+[[food_override]]
+row = "dbrow.premade_chocolate_chip_crunchies"
+combo = true
+eatDelay = [3]
+combatDelay = [2]
+
+[[food_override]]
+row = "dbrow.fruit_batta"
+combo = true
+eatDelay = [3]
+combatDelay = [2]
+
+[[food_override]]
+row = "dbrow.premade_fruit_batta"
+combo = true
+eatDelay = [3]
+combatDelay = [2]
+
+[[food_override]]
+row = "dbrow.toad_batta"
+combo = true
+eatDelay = [3]
+combatDelay = [2]
+
+[[food_override]]
+row = "dbrow.premade_toad_batta"
+combo = true
+eatDelay = [3]
+combatDelay = [2]
+
+[[food_override]]
+row = "dbrow.worm_batta"
+combo = true
+eatDelay = [3]
+combatDelay = [2]
+
+[[food_override]]
+row = "dbrow.premade_worm_batta"
+combo = true
+eatDelay = [3]
+combatDelay = [2]
+
+[[food_override]]
+row = "dbrow.vegetable_batta"
+combo = true
+eatDelay = [3]
+combatDelay = [2]
+
+[[food_override]]
+row = "dbrow.premade_vegetable_batta"
+combo = true
+eatDelay = [3]
+combatDelay = [2]
+
+[[food_override]]
+row = "dbrow.cheese_tomato_batta"
+combo = true
+eatDelay = [3]
+combatDelay = [2]
+
+[[food_override]]
+row = "dbrow.premade_cheese_tomato_batta"
+combo = true
+eatDelay = [3]
+combatDelay = [2]
+
+[[food_override]]
+row = "dbrow.worm_hole"
+combo = true
+eatDelay = [3]
+combatDelay = [2]
+
+[[food_override]]
+row = "dbrow.premade_worm_hole"
+combo = true
+eatDelay = [3]
+combatDelay = [2]
+
+[[food_override]]
+row = "dbrow.vegetable_ball"
+combo = true
+eatDelay = [3]
+combatDelay = [2]
+
+[[food_override]]
+row = "dbrow.premade_vegetable_ball"
+combo = true
+eatDelay = [3]
+combatDelay = [2]
+
+[[food_override]]
+row = "dbrow.chocolate_bomb"
+combo = true
+eatDelay = [3]
+combatDelay = [2]
+
+[[food_override]]
+row = "dbrow.premade_chocolate_bomb"
+combo = true
+eatDelay = [3]
+combatDelay = [2]
+
+[[food_override]]
+row = "dbrow.tangled_toads_legs"
+combo = true
+eatDelay = [3]
+combatDelay = [2]
+
+[[food_override]]
+row = "dbrow.premade_tangled_toads_legs"
+combo = true
+eatDelay = [3]
+combatDelay = [2]
+
+[[food_override]]
+row = "dbrow.toads_legs"
+combo = true
+eatDelay = [3]
+combatDelay = [2]
+
+[[food_override]]
+row = "dbrow.crystal_paddlefish"
+combo = true
+eatDelay = [3]
+combatDelay = [2]
+
+[[food_override]]
+row = "dbrow.corrupted_paddlefish"
+combo = true
+eatDelay = [3]
+combatDelay = [2]
+
+[[food_override]]
+row = "dbrow.cooked_karambwan"
+combo = true
+eatDelay = [3]
+combatDelay = [2]
+
+[[food_override]]
+row = "dbrow.blighted_karambwan"
+combo = true
+eatDelay = [3]
+combatDelay = [2]
+
+[[food_override]]
+row = "dbrow.aluft_blurberry_special"
+effect = "blurberry_special"
+
+[[food_override]]
+row = "dbrow.aluft_cheese_tomato_batta"
+combo = true
+eatDelay = [3]
+combatDelay = [2]
+
+[[food_override]]
+row = "dbrow.aluft_chocolate_bomb"
+combo = true
+eatDelay = [3]
+combatDelay = [2]
+
+[[food_override]]
+row = "dbrow.aluft_chocolate_chip_crunchies"
+combo = true
+eatDelay = [3]
+combatDelay = [2]
+
+[[food_override]]
+row = "dbrow.aluft_chocolate_saturday"
+effect = "chocolate_saturday"
+
+[[food_override]]
+row = "dbrow.aluft_drunk_dragon"
+effect = "drunk_dragon"
+
+[[food_override]]
+row = "dbrow.aluft_fruit_batta"
+combo = true
+eatDelay = [3]
+combatDelay = [2]
+
+[[food_override]]
+row = "dbrow.aluft_short_green_guy"
+effect = "short_green_guy"
+
+[[food_override]]
+row = "dbrow.aluft_spicy_crunchies"
+combo = true
+eatDelay = [3]
+combatDelay = [2]
+
+[[food_override]]
+row = "dbrow.aluft_tangled_toads_legs"
+combo = true
+eatDelay = [3]
+combatDelay = [2]
+
+[[food_override]]
+row = "dbrow.aluft_toad_batta"
+combo = true
+eatDelay = [3]
+combatDelay = [2]
+
+[[food_override]]
+row = "dbrow.aluft_toad_crunchies"
+combo = true
+eatDelay = [3]
+combatDelay = [2]
+
+[[food_override]]
+row = "dbrow.aluft_vegetable_ball"
+combo = true
+eatDelay = [3]
+combatDelay = [2]
+
+[[food_override]]
+row = "dbrow.aluft_vegetable_batta"
+combo = true
+eatDelay = [3]
+combatDelay = [2]
+
+[[food_override]]
+row = "dbrow.aluft_wizard_blizzard"
+effect = "wizard_blizzard"
+
+[[food_override]]
+row = "dbrow.aluft_worm_batta"
+combo = true
+eatDelay = [3]
+combatDelay = [2]
+
+[[food_override]]
+row = "dbrow.aluft_worm_crunchies"
+combo = true
+eatDelay = [3]
+combatDelay = [2]
+
+[[food_override]]
+row = "dbrow.aluft_worm_hole"
+combo = true
+eatDelay = [3]
+combatDelay = [2]
+
+[[food_override]]
+row = "dbrow.cooked_giant_crab_meat"
+eatDelay = [2, 2, 2, 2, 2]
+combatDelay = [2, 2, 2, 2, 2]
+
+[[food_override]]
+row = "dbrow.halibut"
+combo = true
+eatDelay = [3]
+combatDelay = [2]
+
+[[food_override]]
+row = "dbrow.king_worm"
+combo = true
+eatDelay = [3]
+combatDelay = [2]
+
+[[food_override]]
+row = "dbrow.vampyrium_mystery_kebab"
+combo = true
+eatDelay = [3]
+combatDelay = [2]
