@@ -1,0 +1,585 @@
+[[killcounts]]
+npcs = "npc.godwars_armadyl_avatar"
+varbit = "varp.total_armadyl_kills"
+
+[[killcounts]]
+npcs = "npc.godwars_bandos_avatar"
+varbit = "varp.total_bandos_kills"
+
+[[killcounts]]
+npcs = "npc.godwars_saradomin_avatar"
+varbit = "varp.total_saradomin_kills"
+
+[[killcounts]]
+npcs = "npc.godwars_zamorak_avatar"
+varbit = "varp.total_zamorak_kills"
+
+[[killcounts]]
+npcs = "npc.king_dragon"
+varbit = "varp.total_kbd_kills"
+
+[[killcounts]]
+npcs = ["npc.rat_boss_normal", "npc.rat_boss_instance"]
+varbit = "varp.total_rat_boss_kills"
+
+[[killcounts]]
+npcs = [
+    "npc.slayer_crawling_hand_1",
+    "npc.slayer_crawling_hand_2",
+    "npc.slayer_crawling_hand_3",
+    "npc.slayer_crawling_hand_4",
+    "npc.slayer_crawling_hand_5",
+    "npc.slayer_crawling_hand_big_1",
+    "npc.slayer_crawling_hand_big_2",
+    "npc.slayer_crawling_hand_big_3",
+    "npc.slayer_crawling_hand_big_4",
+    "npc.slayer_crawling_hand_big_5",
+    "npc.superior_crawling_hand",
+]
+varbit = "varp.kc_crawling_hand"
+notify = false
+
+[[killcounts]]
+npcs = ["npc.swamp_cave_bug", "npc.molanisk_giant_cave_bug"]
+varbit = "varp.kc_cave_bug"
+notify = false
+
+[[killcounts]]
+npcs = [
+    "npc.slayer_cave_crawler_1",
+    "npc.slayer_cave_crawler_2",
+    "npc.slayer_cave_crawler_3",
+    "npc.slayer_cave_crawler_4",
+    "npc.cave_crawler_ice_1",
+    "npc.cave_crawler_ice_2",
+    "npc.superior_cave_crawler",
+]
+varbit = "varp.kc_cave_crawler"
+notify = false
+
+[[killcounts]]
+npcs = ["npc.slayer_banshee_1", "npc.kourend_banshee", "npc.superior_banshee", "npc.superior_kourend_banshee"]
+varbit = "varp.kc_banshee"
+notify = false
+
+[[killcounts]]
+npcs = "npc.swamp_cave_slime"
+varbit = "varp.kc_cave_slime"
+notify = false
+
+[[killcounts]]
+npcs = ["npc.slayer_rockslug", "npc.slayer_rockslug_baby", "npc.slayer_rockslug_crypt_of_tonali", "npc.superior_rockslug"]
+varbit = "varp.kc_rockslug"
+notify = false
+
+[[killcounts]]
+npcs = [
+    "npc.slayer_lizard_massive",
+    "npc.slayer_lizard_large1_green",
+    "npc.slayer_lizard_large2_sandy",
+    "npc.slayer_lizard_large3_sandy",
+    "npc.slayer_lizard_small1_green",
+    "npc.slayer_lizard_small2_sandy",
+    "npc.slayer_lizard_large1_green_lowrange",
+    "npc.slayer_lizard_small1_green_lowrange",
+]
+varbit = "varp.kc_desert_lizard"
+notify = false
+
+[[killcounts]]
+npcs = ["npc.slayer_cockatrice", "npc.varlamore_cockatrice_moon01", "npc.superior_cockatrice"]
+varbit = "varp.kc_cockatrice"
+notify = false
+
+[[killcounts]]
+npcs = ["npc.slayer_pyrefiend_1", "npc.slayer_pyrefiend_2", "npc.slayer_pyrefiend_3", "npc.slayer_pyrefiend_4", "npc.godwars_pyrefiend_1", "npc.superior_pyrefiend"]
+varbit = "varp.kc_pyrefiend"
+notify = false
+
+[[killcounts]]
+npcs = ["npc.slayer_pyrebeast_1", "npc.slayer_pyrebeast_2", "npc.superior_pyrelord"]
+varbit = "varp.kc_pyrelord"
+notify = false
+
+[[killcounts]]
+npcs = ["npc.sailing_sea_mogre", "npc.sailing_sea_mogre_f"]
+varbit = "varp.kc_mogre"
+notify = false
+
+[[killcounts]]
+npcs = "npc.slayer_harpiebugswarm"
+varbit = "varp.kc_harpie_bug_swarm"
+notify = false
+
+[[killcounts]]
+npcs = ["npc.swamp_wallbeast", "npc.swamp_wallbeast_combat"]
+varbit = "varp.kc_wall_beast"
+notify = false
+
+[[killcounts]]
+npcs = ["npc.slayer_killerwatt", "npc.slayer_killerwatt_ball"]
+varbit = "varp.kc_killerwatt"
+notify = false
+
+[[killcounts]]
+npcs = [
+    "npc.vyrewatch_elite_1",
+    "npc.vyrewatch_elite_2",
+    "npc.vyrewatch_elite_3",
+    "npc.vyrewatch_elite_4",
+    "npc.vyrewatch_elite_5",
+    "npc.vyrewatch_elite_6",
+    "npc.vyrewatch_elite_7",
+    "npc.vyrewatch_elite_8",
+]
+varbit = "varp.kc_vyrewatch_sentinel"
+notify = false
+
+[[killcounts]]
+npcs = "npc.molanisk"
+varbit = "varp.kc_molanisk"
+notify = false
+
+[[killcounts]]
+npcs = ["npc.slayer_basilisk", "npc.superior_basilisk"]
+varbit = "varp.kc_basilisk"
+notify = false
+
+[[killcounts]]
+npcs = ["npc.lotr_terror_dog_large", "npc.lotr_terror_dog_small"]
+varbit = "varp.kc_terror_dog"
+notify = false
+
+[[killcounts]]
+npcs = ["npc.royal_sea_snake_medium", "npc.royal_sea_snake_baby", "npc.royal_sea_snake_mother_smaller"]
+varbit = "varp.kc_sea_snake_hatchling"
+notify = false
+
+[[killcounts]]
+npcs = "npc.deal_fever_spiders1"
+varbit = "varp.kc_fever_spider"
+notify = false
+
+[[killcounts]]
+npcs = "npc.sulphur_lizard"
+varbit = "varp.kc_sulphur_lizard"
+notify = false
+
+[[killcounts]]
+npcs = ["npc.grimy_lizard", "npc.crypt_of_tonali_grimy_lizard"]
+varbit = "varp.kc_grimy_lizard"
+notify = false
+
+[[killcounts]]
+npcs = [
+    "npc.slayer_infernal_mage_1",
+    "npc.slayer_infernal_mage_2",
+    "npc.slayer_infernal_mage_3",
+    "npc.slayer_infernal_mage_4",
+    "npc.slayer_infernal_mage_5",
+    "npc.superior_infernal_mage",
+]
+varbit = "varp.kc_infernal_mage"
+notify = false
+
+[[killcounts]]
+npcs = "npc.olaf2_brine_rats"
+varbit = "varp.kc_brine_rat"
+notify = false
+
+[[killcounts]]
+npcs = "npc.pmoon_sulphur_nagua"
+varbit = "varp.kc_sulphur_nagua"
+notify = false
+
+[[killcounts]]
+npcs = ["npc.frost_nagua_cutscene", "npc.vmq3_ruins_frost_nagua", "npc.frost_nagua"]
+varbit = "varp.kc_frost_nagua"
+notify = false
+
+[[killcounts]]
+npcs = "npc.amoxliatl"
+varbit = "varp.kc_amoxliatl"
+
+[[killcounts]]
+npcs = ["npc.earth_nagua", "npc.earth_nagua_reinforced"]
+varbit = "varp.kc_earthen_nagua"
+notify = false
+
+[[killcounts]]
+npcs = [
+    "npc.slayer_bloodveld",
+    "npc.slayer_bloodveld_baby",
+    "npc.slayer_bloodveld_strongholdcave",
+    "npc.slayer_bloodveld_baby_strongholdcave",
+    "npc.godwars_bloodveld",
+    "npc.arceuus_reanimated_bloodveld",
+    "npc.kourend_bloodveld",
+    "npc.superior_bloodveld",
+    "npc.superior_kourend_bloodveld",
+]
+varbit = "varp.kc_bloodveld"
+notify = false
+
+[[killcounts]]
+npcs = ["npc.slayer_gryphon_1", "npc.slayer_gryphon_2", "npc.gryphon_boss", "npc.superior_gryphon"]
+varbit = "varp.kc_gryphon"
+notify = false
+
+[[killcounts]]
+npcs = "npc.gryphon_boss"
+varbit = "varp.total_gryphon_boss_kills"
+
+[[killcounts]]
+npcs = [
+    "npc.slayer_jelly_1",
+    "npc.slayer_jelly_2",
+    "npc.slayer_jelly_3",
+    "npc.slayer_jelly_4",
+    "npc.slayer_jelly_5",
+    "npc.slayer_jelly_6",
+    "npc.wild_cave_jelly_1",
+    "npc.wild_cave_jelly_2",
+    "npc.wild_cave_jelly_3",
+    "npc.wild_cave_jelly_4",
+    "npc.wild_cave_jelly_5",
+    "npc.kourend_jelly",
+    "npc.jelly_tapoyauik",
+    "npc.superior_jelly",
+    "npc.superior_kourend_jelly",
+    "npc.superior_chilled_jelly",
+]
+varbit = "varp.kc_jelly"
+notify = false
+
+[[killcounts]]
+npcs = "npc.juvenile_custodian_stalker"
+varbit = "varp.kc_juvenile_custodian_stalker"
+notify = false
+
+[[killcounts]]
+npcs = "npc.mature_custodian_stalker"
+varbit = "varp.kc_mature_custodian_stalker"
+notify = false
+
+[[killcounts]]
+npcs = ["npc.elder_custodian_stalker", "npc.superior_custodian"]
+varbit = "varp.kc_elder_custodian_stalker"
+notify = false
+
+[[killcounts]]
+npcs = ["npc.slayer_turoth_dad", "npc.slayer_turoth_mum", "npc.slayer_turoth_child", "npc.slayer_turoth_baby", "npc.superior_turoth"]
+varbit = "varp.kc_turoth"
+notify = false
+
+[[killcounts]]
+npcs = [
+    "npc.pog_mutated_terrorbird_1",
+    "npc.pog_mutated_terrorbird_2",
+    "npc.pog_mutated_terrorbird_3",
+    "npc.pog_mutated_terrorbird_4",
+    "npc.pog_mutated_terrorbird_5",
+    "npc.pog_mutated_terrorbird_6",
+    "npc.pog_mutated_terrorbird_7",
+    "npc.pog_mutated_terrorbird_8",
+    "npc.superior_warped_terrorbird",
+]
+varbit = "varp.kc_warped_terrorbird"
+notify = false
+
+[[killcounts]]
+npcs = ["npc.pog_mutated_tortoise", "npc.superior_warped_tortoise"]
+varbit = "varp.kc_warped_tortoise"
+notify = false
+
+[[killcounts]]
+npcs = ["npc.slayer_mutated_zygomite_adolescent", "npc.slayer_mutated_zygomite_adult"]
+varbit = "varp.kc_mutated_zygomite"
+notify = false
+
+[[killcounts]]
+npcs = "npc.fossil_zygomite"
+varbit = "varp.kc_ancient_zygomite"
+notify = false
+
+[[killcounts]]
+npcs = [
+    "npc.harmless_island_cave_horror_worker",
+    "npc.harmless_island_cave_horror_young_worker",
+    "npc.harmless_island_cave_horror_guard",
+    "npc.harmless_island_cave_horror_small_guard",
+    "npc.harmless_island_cave_horror_alpha",
+    "npc.superior_cave_horror",
+]
+varbit = "varp.kc_cave_horror"
+notify = false
+
+[[killcounts]]
+npcs = [
+    "npc.slayer_abberant_spectre_1",
+    "npc.slayer_abberant_spectre_2",
+    "npc.slayer_abberant_spectre_3",
+    "npc.slayer_abberant_spectre_4",
+    "npc.slayer_aberrantspectre_1_strongholdcave",
+    "npc.slayer_aberrantspectre_2_strongholdcave",
+    "npc.kourend_spectre",
+    "npc.superior_abberant_spectre",
+    "npc.superior_kourend_spectre",
+]
+varbit = "varp.kc_aberrant_spectre"
+notify = false
+
+[[killcounts]]
+npcs = ["npc.basilisk_knight", "npc.superior_basilisk_knight"]
+varbit = "varp.kc_basilisk_knight"
+notify = false
+
+[[killcounts]]
+npcs = ["npc.wyrm_dark", "npc.wyrm_light", "npc.superior_wyrm_dark"]
+varbit = "varp.kc_wyrm"
+notify = false
+
+[[killcounts]]
+npcs = ["npc.varlamore_wyrm_dark01", "npc.varlamore_wyrm_light01"]
+varbit = "varp.kc_wyrmling"
+notify = false
+
+[[killcounts]]
+npcs = ["npc.slayer_lava_strykewyrm", "npc.superior_lava_strykewyrm"]
+varbit = "varp.kc_lava_strykewyrm"
+notify = false
+
+[[killcounts]]
+npcs = [
+    "npc.godwars_spiritual_saradomin_ranger",
+    "npc.godwars_spiritual_bandos_ranger",
+    "npc.godwars_spiritual_zamorak_ranger",
+    "npc.godwars_spiritual_armadyl_ranger",
+    "npc.nex_prison_ranger",
+]
+varbit = "varp.kc_spiritual_ranger"
+notify = false
+
+[[killcounts]]
+npcs = ["npc.slayer_dustdevil", "npc.kourend_dustdevil", "npc.wild_cave_dustdevil", "npc.superior_dustdevil"]
+varbit = "varp.kc_dust_devil"
+notify = false
+
+[[killcounts]]
+npcs = "npc.wyvern_spitting"
+varbit = "varp.kc_spitting_wyvern"
+notify = false
+
+[[killcounts]]
+npcs = "npc.wyvern_taloned"
+varbit = "varp.kc_taloned_wyvern"
+notify = false
+
+[[killcounts]]
+npcs = "npc.wyvern_long_tailed"
+varbit = "varp.kc_long_tailed_wyvern"
+notify = false
+
+[[killcounts]]
+npcs = [
+    "npc.godwars_spiritual_saradomin_warrior",
+    "npc.godwars_spiritual_bandos_warrior",
+    "npc.godwars_spiritual_zamorak_warrior",
+    "npc.godwars_spiritual_armadyl_warrior",
+    "npc.nex_prison_warrior",
+]
+varbit = "varp.kc_spiritual_warrior"
+notify = false
+
+[[killcounts]]
+npcs = ["npc.slayer_kursk_1", "npc.slayer_kursk_2", "npc.superior_kurask"]
+varbit = "varp.kc_kurask"
+notify = false
+
+[[killcounts]]
+npcs = ["npc.skeletal_wyvern1", "npc.skeletal_wyvern2", "npc.skeletal_wyvern3", "npc.skeletal_wyvern4"]
+varbit = "varp.kc_skeletal_wyvern"
+notify = false
+
+[[killcounts]]
+npcs = ["npc.slayer_gargoyle_1", "npc.slayer_gargoyle_dead", "npc.slayer_cave_gargoyle", "npc.gargboss_dawn_death", "npc.gargboss_dusk_death", "npc.superior_gargoyle"]
+varbit = "varp.kc_gargoyle"
+notify = false
+
+[[killcounts]]
+npcs = ["npc.gargboss_dawn_death", "npc.gargboss_dusk_death"]
+varbit = "varp.total_gargboss_kills"
+
+[[killcounts]]
+npcs = "npc.ds2_brut_black_dragon"
+varbit = "varp.kc_brutal_black_dragon"
+notify = false
+
+[[killcounts]]
+npcs = ["npc.slayer_aquanite", "npc.slayer_aquanite_nolure", "npc.superior_aquanite"]
+varbit = "varp.kc_aquanite"
+notify = false
+
+[[killcounts]]
+npcs = ["npc.slayer_nechryael", "npc.slayer_nechryael_strongholdcave", "npc.kourend_nechryael", "npc.wild_cave_nechryael", "npc.superior_nechryael"]
+varbit = "varp.kc_nechryael"
+notify = false
+
+[[killcounts]]
+npcs = "npc.ancient_wyvern"
+varbit = "varp.kc_ancient_wyvern"
+notify = false
+
+[[killcounts]]
+npcs = [
+    "npc.godwars_spiritual_saradomin_mage",
+    "npc.godwars_spiritual_bandos_mage",
+    "npc.godwars_spiritual_zamorak_mage",
+    "npc.godwars_spiritual_armadyl_mage",
+    "npc.nex_prison_mage",
+]
+varbit = "varp.kc_spiritual_mage"
+notify = false
+
+[[killcounts]]
+npcs = ["npc.drake", "npc.drake_death", "npc.superior_drake"]
+varbit = "varp.kc_drake"
+notify = false
+
+[[killcounts]]
+npcs = [
+    "npc.slayer_abyssal",
+    "npc.slayer_abyssal_strongholdcave",
+    "npc.kourend_abyssal",
+    "npc.wild_cave_abyssal",
+    "npc.abyssalsire_sire_stasis_sleeping",
+    "npc.abyssalsire_sire_stasis_awake",
+    "npc.abyssalsire_sire_stasis_stunned",
+    "npc.abyssalsire_sire_puppet",
+    "npc.abyssalsire_sire_wandering",
+    "npc.abyssalsire_sire_panicking",
+    "npc.abyssalsire_sire_apocalypse",
+    "npc.superior_abyssal_demon",
+]
+varbit = "varp.kc_abyssal_demon"
+notify = false
+
+[[killcounts]]
+npcs = [
+    "npc.abyssalsire_sire_stasis_sleeping",
+    "npc.abyssalsire_sire_stasis_awake",
+    "npc.abyssalsire_sire_stasis_stunned",
+    "npc.abyssalsire_sire_puppet",
+    "npc.abyssalsire_sire_wandering",
+    "npc.abyssalsire_sire_panicking",
+    "npc.abyssalsire_sire_apocalypse",
+]
+varbit = "varp.total_abyssalsire_kills"
+
+[[killcounts]]
+npcs = ["npc.slayer_kraken", "npc.slayer_kraken_sub", "npc.slayer_kraken_boss", "npc.slayer_kraken_boss_whirlpool"]
+varbit = "varp.kc_cave_kraken"
+notify = false
+
+[[killcounts]]
+npcs = ["npc.slayer_kraken_boss", "npc.slayer_kraken_boss_whirlpool"]
+varbit = "varp.total_kraken_boss_kills"
+
+[[killcounts]]
+npcs = ["npc.mourning_dark_beast", "npc.kourend_dark_beast", "npc.superior_dark_beast"]
+varbit = "varp.kc_dark_beast"
+notify = false
+
+[[killcounts]]
+npcs = ["npc.araxyte_normal", "npc.araxyte_large", "npc.araxyte_normal_bigwander", "npc.araxyte_large_bigwander", "npc.araxxor", "npc.superior_araxyte"]
+varbit = "varp.kc_araxyte"
+notify = false
+
+[[killcounts]]
+npcs = "npc.araxxor"
+varbit = "varp.total_araxxor_kills"
+
+[[killcounts]]
+npcs = ["npc.smoke_devil", "npc.smoke_devil_boss", "npc.superior_smoke_devil"]
+varbit = "varp.kc_smoke_devil"
+notify = false
+
+[[killcounts]]
+npcs = "npc.smoke_devil_boss"
+varbit = "varp.kc_thermonuclear_smoke_devil"
+
+[[killcounts]]
+npcs = [
+    "npc.hydra",
+    "npc.hydraboss",
+    "npc.hydraboss_p1_transition",
+    "npc.hydraboss_p2_transition",
+    "npc.hydraboss_p3_transition",
+    "npc.hydraboss_4",
+    "npc.hydraboss_3",
+    "npc.hydraboss_2",
+    "npc.hydraboss_finaldeath",
+    "npc.superior_hydra",
+]
+varbit = "varp.kc_hydra"
+notify = false
+
+[[killcounts]]
+npcs = [
+    "npc.hydraboss",
+    "npc.hydraboss_p1_transition",
+    "npc.hydraboss_p2_transition",
+    "npc.hydraboss_p3_transition",
+    "npc.hydraboss_4",
+    "npc.hydraboss_3",
+    "npc.hydraboss_2",
+    "npc.hydraboss_finaldeath",
+]
+varbit = "varp.total_hydraboss_kills"
+
+[[killcounts]]
+npcs = ["npc.cerberus_attacking", "npc.cerberus_sitting", "npc.cerberus_resetting"]
+varbit = "varp.total_cerberus_kills"
+
+[[killcounts]]
+npcs = [
+    "npc.superior_crawling_hand",
+    "npc.superior_cave_crawler",
+    "npc.superior_banshee",
+    "npc.superior_kourend_banshee",
+    "npc.superior_rockslug",
+    "npc.superior_cockatrice",
+    "npc.superior_pyrefiend",
+    "npc.superior_pyrelord",
+    "npc.superior_basilisk",
+    "npc.superior_infernal_mage",
+    "npc.superior_bloodveld",
+    "npc.superior_kourend_bloodveld",
+    "npc.superior_gryphon",
+    "npc.superior_jelly",
+    "npc.superior_kourend_jelly",
+    "npc.superior_chilled_jelly",
+    "npc.superior_turoth",
+    "npc.superior_warped_terrorbird",
+    "npc.superior_warped_tortoise",
+    "npc.superior_cave_horror",
+    "npc.superior_abberant_spectre",
+    "npc.superior_kourend_spectre",
+    "npc.superior_basilisk_knight",
+    "npc.superior_wyrm_dark",
+    "npc.superior_lava_strykewyrm",
+    "npc.superior_dustdevil",
+    "npc.superior_kurask",
+    "npc.superior_gargoyle",
+    "npc.superior_custodian",
+    "npc.superior_aquanite",
+    "npc.superior_nechryael",
+    "npc.superior_drake",
+    "npc.superior_abyssal_demon",
+    "npc.superior_dark_beast",
+    "npc.superior_araxyte",
+    "npc.superior_smoke_devil",
+    "npc.superior_hydra",
+]
+varbit = "varp.kc_superior_monster"
+notify = false
