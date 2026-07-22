@@ -1515,6 +1515,8 @@ huntMode = 6
 huntRange = 30
 maxRange = 30
 defaultMode = "Wander"
+[npc.params]
+"param.death_anim"="seq.godwars_saradomin_death"
 
 [[npc]]
 id = "npc.godwars_saradomin_unicorn"
@@ -1571,6 +1573,8 @@ huntMode = 6
 huntRange = 30
 maxRange = 30
 defaultMode = "Wander"
+[npc.params]
+"param.death_anim"="seq.godwars_zamorak_death"
 
 [[npc]]
 id = "npc.godwars_ancient_black_demon"
@@ -1628,6 +1632,8 @@ huntRange = 30
 maxRange = 30
 attackRange = 7
 defaultMode = "Wander"
+[npc.params]
+"param.death_anim"="seq.godwars_armadyl_avatar_death"
 
 [[npc]]
 id = "npc.godwars_armadyl_bodyguard_geerin"
