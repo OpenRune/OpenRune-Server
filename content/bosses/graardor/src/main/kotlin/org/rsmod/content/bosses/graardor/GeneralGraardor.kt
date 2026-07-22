@@ -17,7 +17,6 @@ import org.rsmod.plugin.scripts.ScriptContext
 class GeneralGraardor @Inject constructor(deps: BossDeps) : BossPluginScript(deps) {
 
     private val generalId by lazy { GENERAL.asRSCM(RSCMType.NPC) }
-    private val bodyguardIds by lazy { BODYGUARDS.map { it.asRSCM(RSCMType.NPC) }.toHashSet() }
 
     override fun ScriptContext.startup() {
         BossCombat.register(this, spec, deps)
@@ -28,7 +27,7 @@ class GeneralGraardor @Inject constructor(deps: BossDeps) : BossPluginScript(dep
     private fun respawnDeadBodyguards(general: Npc) {
         deps.npcRepo
             .findAll(ZoneKey.from(general.coords), zoneRadius = BODYGUARD_SEARCH_RADIUS)
-            .filter { it.id in bodyguardIds && it.hitpoints == 0 }
+            .filter { it.visType.isCategoryType(BODYGUARD_CATEGORY) && it.hitpoints == 0 }
             .forEach { bodyguard ->
                 bodyguard.lifecycleRespawnCycle = deps.mapClock.cycle + 1
             }
@@ -67,12 +66,7 @@ class GeneralGraardor @Inject constructor(deps: BossDeps) : BossPluginScript(dep
 
     private companion object {
         private const val GENERAL = "npc.godwars_bandos_avatar"
-        private val BODYGUARDS =
-            listOf(
-                "npc.godwars_sergeant_goblin1",
-                "npc.godwars_sergeant_goblin2",
-                "npc.godwars_sergeant_goblin3",
-            )
+        private const val BODYGUARD_CATEGORY = "category.godwars_bandos_bodyguard"
         private const val BODYGUARD_SEARCH_RADIUS = 10
     }
 }

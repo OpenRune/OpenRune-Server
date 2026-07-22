@@ -17,7 +17,6 @@ import org.rsmod.plugin.scripts.ScriptContext
 class KrilTsutsaroth @Inject constructor(deps: BossDeps) : BossPluginScript(deps) {
 
     private val avatarId by lazy { AVATAR.asRSCM(RSCMType.NPC) }
-    private val bodyguardIds by lazy { BODYGUARDS.map { it.asRSCM(RSCMType.NPC) }.toHashSet() }
 
     override fun ScriptContext.startup() {
         BossCombat.register(this, spec, deps)
@@ -32,7 +31,7 @@ class KrilTsutsaroth @Inject constructor(deps: BossDeps) : BossPluginScript(deps
     private fun respawnDeadBodyguards(avatar: Npc) {
         deps.npcRepo
             .findAll(ZoneKey.from(avatar.coords), zoneRadius = BODYGUARD_SEARCH_RADIUS)
-            .filter { it.id in bodyguardIds && it.hitpoints == 0 }
+            .filter { it.visType.isCategoryType(BODYGUARD_CATEGORY) && it.hitpoints == 0 }
             .forEach { bodyguard ->
                 bodyguard.lifecycleRespawnCycle = deps.mapClock.cycle + 1
             }
@@ -83,12 +82,7 @@ class KrilTsutsaroth @Inject constructor(deps: BossDeps) : BossPluginScript(deps
 
     private companion object {
         private const val AVATAR = "npc.godwars_zamorak_avatar"
-        private val BODYGUARDS =
-            listOf(
-                "npc.godwars_ancient_black_demon",
-                "npc.godwars_ancient_greater_demon",
-                "npc.godwars_ancient_lesser_demon",
-            )
+        private const val BODYGUARD_CATEGORY = "category.godwars_zamorak_bodyguard"
         private const val BODYGUARD_SEARCH_RADIUS = 10
     }
 }

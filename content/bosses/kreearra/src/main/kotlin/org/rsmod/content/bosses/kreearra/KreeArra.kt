@@ -24,7 +24,6 @@ import org.rsmod.plugin.scripts.ScriptContext
 class KreeArra @Inject constructor(deps: BossDeps) : BossPluginScript(deps) {
 
     private val avatarId by lazy { AVATAR.asRSCM(RSCMType.NPC) }
-    private val bodyguardIds by lazy { BODYGUARDS.map { it.asRSCM(RSCMType.NPC) }.toHashSet() }
 
     override fun ScriptContext.startup() {
         BossCombat.register(this, spec, deps)
@@ -35,7 +34,7 @@ class KreeArra @Inject constructor(deps: BossDeps) : BossPluginScript(deps) {
     private fun respawnDeadBodyguards(avatar: Npc) {
         deps.npcRepo
             .findAll(ZoneKey.from(avatar.coords), zoneRadius = BODYGUARD_SEARCH_RADIUS)
-            .filter { it.id in bodyguardIds && it.hitpoints == 0 }
+            .filter { it.visType.isCategoryType(BODYGUARD_CATEGORY) && it.hitpoints == 0 }
             .forEach { bodyguard -> bodyguard.lifecycleRespawnCycle = deps.mapClock.cycle + 1 }
     }
 
@@ -86,12 +85,7 @@ class KreeArra @Inject constructor(deps: BossDeps) : BossPluginScript(deps) {
 
     private companion object {
         private const val AVATAR = "npc.godwars_armadyl_avatar"
-        private val BODYGUARDS =
-            listOf(
-                "npc.godwars_armadyl_bodyguard_geerin",
-                "npc.godwars_armadyl_bodyguard_kilisa",
-                "npc.godwars_armadyl_bodyguard_skree",
-            )
+        private const val BODYGUARD_CATEGORY = "category.godwars_armadyl_bodyguard"
         private const val BODYGUARD_SEARCH_RADIUS = 10
 
         private const val ROOM_RADIUS = 15
@@ -106,8 +100,11 @@ public class KreeArraModule : PluginModule() {
 
 internal class KreeArraMeleeBlockHook @Inject constructor(private val types: AttackTypes) :
     NpcAttackValidateHook {
+    private val avatarId by lazy { AVATAR.asRSCM(RSCMType.NPC) }
+
     override fun validate(player: Player, npc: Npc): NpcAttackValidateResult {
-        if (npc.id !in UNREACHABLE_BY_MELEE) {
+        val isUnreachable = npc.id == avatarId || npc.visType.isCategoryType(BODYGUARD_CATEGORY)
+        if (!isUnreachable) {
             return NpcAttackValidateResult.Pass
         }
 
@@ -127,13 +124,7 @@ internal class KreeArraMeleeBlockHook @Inject constructor(private val types: Att
     }
 
     private companion object {
-        private val UNREACHABLE_BY_MELEE =
-            hashSetOf(
-                    "npc.godwars_armadyl_avatar",
-                    "npc.godwars_armadyl_bodyguard_geerin",
-                    "npc.godwars_armadyl_bodyguard_kilisa",
-                    "npc.godwars_armadyl_bodyguard_skree",
-                )
-                .mapTo(HashSet()) { it.asRSCM(RSCMType.NPC) }
+        private const val AVATAR = "npc.godwars_armadyl_avatar"
+        private const val BODYGUARD_CATEGORY = "category.godwars_armadyl_bodyguard"
     }
 }

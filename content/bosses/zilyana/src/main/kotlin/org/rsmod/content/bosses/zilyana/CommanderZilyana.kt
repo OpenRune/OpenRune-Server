@@ -17,7 +17,6 @@ import org.rsmod.plugin.scripts.ScriptContext
 class CommanderZilyana @Inject constructor(deps: BossDeps) : BossPluginScript(deps) {
 
     private val avatarId by lazy { AVATAR.asRSCM(RSCMType.NPC) }
-    private val bodyguardIds by lazy { BODYGUARDS.map { it.asRSCM(RSCMType.NPC) }.toHashSet() }
 
     override fun ScriptContext.startup() {
         BossCombat.register(this, spec, deps)
@@ -28,7 +27,7 @@ class CommanderZilyana @Inject constructor(deps: BossDeps) : BossPluginScript(de
     private fun respawnDeadBodyguards(avatar: Npc) {
         deps.npcRepo
             .findAll(ZoneKey.from(avatar.coords), zoneRadius = BODYGUARD_SEARCH_RADIUS)
-            .filter { it.id in bodyguardIds && it.hitpoints == 0 }
+            .filter { it.visType.isCategoryType(BODYGUARD_CATEGORY) && it.hitpoints == 0 }
             .forEach { bodyguard ->
                 bodyguard.lifecycleRespawnCycle = deps.mapClock.cycle + 1
             }
@@ -66,12 +65,7 @@ class CommanderZilyana @Inject constructor(deps: BossDeps) : BossPluginScript(de
 
     private companion object {
         private const val AVATAR = "npc.godwars_saradomin_avatar"
-        private val BODYGUARDS =
-            listOf(
-                "npc.godwars_saradomin_unicorn",
-                "npc.godwars_saradomin_lion",
-                "npc.godwars_saradomin_centaur",
-            )
+        private const val BODYGUARD_CATEGORY = "category.godwars_saradomin_bodyguard"
         private const val BODYGUARD_SEARCH_RADIUS = 10
     }
 }
