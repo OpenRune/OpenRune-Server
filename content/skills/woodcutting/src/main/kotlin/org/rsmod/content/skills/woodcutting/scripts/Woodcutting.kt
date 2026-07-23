@@ -20,6 +20,7 @@ import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.righthand
 import org.rsmod.api.player.skilling.SkillingAwardResult
 import org.rsmod.api.player.skilling.awardSkillingProduct
+import org.rsmod.api.player.stat.firemakingLvl
 import org.rsmod.api.player.stat.woodcuttingLvl
 import org.rsmod.api.random.GameRandom
 import org.rsmod.api.repo.controller.ControllerRepository
@@ -31,6 +32,7 @@ import org.rsmod.api.script.onOpContentLoc3
 import org.rsmod.api.script.onOpContentU
 import org.rsmod.api.stats.levelmod.InvisibleLevels
 import org.rsmod.api.stats.xpmod.XpModifiers
+import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.content.skills.woodcutting.configs.WoodcuttingParams
 import org.rsmod.game.MapClock
 import org.rsmod.game.entity.Controller
@@ -82,11 +84,10 @@ constructor(
         } else {
             val axe = findAxe(player, type)
             if (axe == null) {
-                mes("You need an axe to chop down this tree.")
-                mes("You do not have an axe which you have the woodcutting level to use.")
+                mesAxeMissing()
                 return
             }
-            anim(RSCM.getReverseMapping(RSCMType.SEQ, getInvObj(axe).axeWoodcuttingAnim.id))
+            anim(axeAnim(axe))
             spam("You swing your axe at the tree.")
             cut(tree, type)
         }
@@ -95,8 +96,7 @@ constructor(
     private fun ProtectedAccess.cut(tree: BoundLocInfo, type: ObjectServerType) {
         val axe = findAxe(player, type)
         if (axe == null) {
-            mes("You need an axe to chop down this tree.")
-            mes("You do not have an axe which you have the woodcutting level to use.")
+            mesAxeMissing()
             return
         }
 
@@ -114,7 +114,7 @@ constructor(
 
         if (skillAnimDelay <= mapClock) {
             skillAnimDelay = mapClock + 4
-            anim(RSCM.getReverseMapping(RSCMType.SEQ,getInvObj(axe).axeWoodcuttingAnim.id))
+            anim(axeAnim(axe))
         }
 
         var cutLogs = false
@@ -236,7 +236,24 @@ constructor(
         }
     }
 
+    private fun ProtectedAccess.axeAnim(axe: InvObj): String =
+        RSCM.getReverseMapping(RSCMType.SEQ, getInvObj(axe).axeWoodcuttingAnim.id)
+
+    private fun ProtectedAccess.mesAxeMissing() {
+        mes("You need an axe to chop down this tree.")
+        when {
+            player.hasBlockedInfernalAxe() ->
+                mes("You need a Firemaking level of 85 to use the infernal axe.")
+            player.hasBlockedCrystalAxe() ->
+                mes("You need to complete Song of the Elves to use this axe.")
+            else -> mes("You do not have an axe which you have the woodcutting level to use.")
+        }
+    }
+
     companion object {
+        private const val INFERNAL_FIREMAKING_REQ = 85
+        private const val SONG_OF_THE_ELVES = "quest_songoftheelves"
+
         var Controller.treeActivelyCutTicks: Int by intVarCon("varcon.woodcutting_tree_cut_ticks")
         var Controller.treeLastCut: Int by intVarCon("varcon.woodcutting_tree_last_cut")
         var Controller.treeLocId: Int by intVarCon("varcon.woodcutting_tree_loc")
@@ -257,32 +274,60 @@ constructor(
         private val ObjectServerType.hasDespawnTimer: Boolean
             get() = hasParam(params.despawn_time)
 
-        fun findAxe(player: Player, type: ObjectServerType): InvObj? {
+        fun findAxe(player: Player, tree: ObjectServerType): InvObj? {
             val worn = player.wornAxe()
-            val carried = player.carriedAxe()
-            if (worn != null && carried != null) {
-                val wornSuccess = cutSuccessRates(type, worn)
-                val carriedSuccess = cutSuccessRates(type, carried)
-                if ((wornSuccess.first + wornSuccess.second) / 2 >= (carriedSuccess.first + carriedSuccess.second) / 2) {
-                    return worn
+            val carried = player.carriedAxes()
+            val candidates =
+                buildList {
+                    if (worn != null) {
+                        add(worn)
+                    }
+                    addAll(carried)
                 }
-                return carried
+            return candidates.maxWithOrNull(axeComparator(tree))
+        }
+
+        private fun axeComparator(tree: ObjectServerType): Comparator<InvObj> =
+            Comparator { left, right ->
+                axeAverageRate(tree, left).compareTo(axeAverageRate(tree, right))
             }
-            return worn ?: carried
+
+        private fun axeAverageRate(tree: ObjectServerType, axe: InvObj): Int {
+            val (low, high) = cutSuccessRates(tree, axe)
+            return (low + high) / 2
         }
 
         private fun Player.wornAxe(): InvObj? {
             val righthand = righthand ?: return null
-            return righthand.takeIf { getInvObj(it).isUsableAxe(woodcuttingLvl) }
+            return righthand.takeIf { getInvObj(it).isUsableAxe(this) }
         }
 
-        private fun Player.carriedAxe(): InvObj? {
-            return inv.filterNotNull { getInvObj(it).isUsableAxe(woodcuttingLvl) }
-                .maxByOrNull { getInvObj(it).axeWoodcuttingReq }
+        private fun Player.carriedAxes(): List<InvObj> =
+            inv.filterNotNull { getInvObj(it).isUsableAxe(this) }
+
+        private fun ItemServerType.isUsableAxe(player: Player): Boolean {
+            if (!isContentType("content.woodcutting_axe") || player.woodcuttingLvl < axeWoodcuttingReq) {
+                return false
+            }
+            return when (internalName) {
+                "obj.infernal_axe" -> player.firemakingLvl >= INFERNAL_FIREMAKING_REQ
+                "obj.crystal_axe",
+                "obj.crystal_axe_inactive", ->
+                    QuestRequirements.hasCompleted(player, SONG_OF_THE_ELVES)
+                else -> true
+            }
         }
 
-        private fun ItemServerType.isUsableAxe(woodcuttingLevel: Int): Boolean =
-            isContentType("content.woodcutting_axe") && woodcuttingLevel >= axeWoodcuttingReq
+        private fun Player.hasBlockedInfernalAxe(): Boolean =
+            ownsAxe("obj.infernal_axe") && firemakingLvl < INFERNAL_FIREMAKING_REQ
+
+        private fun Player.hasBlockedCrystalAxe(): Boolean =
+            (ownsAxe("obj.crystal_axe") || ownsAxe("obj.crystal_axe_inactive")) &&
+                !QuestRequirements.hasCompleted(this, SONG_OF_THE_ELVES)
+
+        private fun Player.ownsAxe(name: String): Boolean =
+            (righthand != null && getInvObj(righthand!!).internalName == name) ||
+                inv.any { it != null && getInvObj(it).internalName == name }
 
         private fun ObjectServerType.resolveRespawnTime(random: GameRandom): Int {
             val fixed = treeRespawnTime

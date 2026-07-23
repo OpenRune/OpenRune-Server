@@ -1,7 +1,9 @@
 package org.rsmod.content.skills.shootingstars.scripts
 
+import dev.openrune.rscm.RSCM
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
+import dev.openrune.types.ItemServerType
 import dev.openrune.types.util.UncheckedType
 import jakarta.inject.Inject
 import org.rsmod.api.player.dialogue.Dialogue
@@ -14,7 +16,6 @@ import org.rsmod.api.shops.operation.ShopOperationMap
 import org.rsmod.content.skills.shootingstars.ALL_TIME_TOTAL_DUST
 import org.rsmod.content.skills.shootingstars.SEEN_SHOOTING_STAR
 import org.rsmod.content.skills.shootingstars.ShootingstarsSettings
-import org.rsmod.content.skills.shootingstars.shops.StardustShopOperations
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.game.inv.InvObj
@@ -34,7 +35,6 @@ class DusuriScript
 constructor(
     private val shops: Shops,
     private val shopOps: ShopOperationMap,
-    private val stardustOps: StardustShopOperations,
 ) : PluginScript() {
     private var Player.starTraderMet by boolVarBit("varbit.star_trader_met")
 
@@ -42,7 +42,7 @@ constructor(
         get() = ShootingstarsSettings.load()
 
     override fun ScriptContext.startup() {
-        shopOps.register(CURRENCY, stardustOps)
+        shopOps.costOf(CURRENCY, ::stardustCost)
         syncStarTeleportShopStock()
 
         for (npc in DUSURI_NPCS) {
@@ -237,5 +237,19 @@ constructor(
         private const val STAR_TELEPORT = "obj.poh_tablet_shootingstar"
         private val DUSURI_NPCS =
             listOf("npc.star_trader", "npc.star_trader_1op", "npc.star_trader_2op")
+
+        private val FIXED_PRICES =
+            mapOf(
+                "obj.celestial_ring" to 2000,
+                "obj.star_fragment" to 3000,
+                "obj.star_reward_gem_bag" to 300,
+                "obj.star_pack_softclay" to 150,
+                "obj.poh_tablet_shootingstar" to 50,
+            )
+
+        private fun stardustCost(type: ItemServerType): Int {
+            val name = RSCM.getReverseMapping(RSCMType.OBJ, type.id)
+            return FIXED_PRICES[name] ?: type.cost.coerceAtLeast(1)
+        }
     }
 }
