@@ -1,0 +1,624 @@
+# Shared potion consumption timing. Potions lock further drinks/regular food
+# for three ticks but do not add an attack delay.
+[potion_defaults]
+drinkDelay = 3
+combatDelay = 0
+
+# Potion effects and special behavior overrides.
+[[potion_effect]]
+id = "attack_boost"
+kind = "stat_boost"
+skills = ["attack"]
+base = 3
+percent = 10
+
+[[potion_effect]]
+id = "strength_boost"
+kind = "stat_boost"
+skills = ["strength"]
+base = 3
+percent = 10
+
+[[potion_effect]]
+id = "defence_boost"
+kind = "stat_boost"
+skills = ["defence"]
+base = 3
+percent = 10
+
+[[potion_effect]]
+id = "combat_boost"
+kind = "stat_boost"
+skills = ["attack", "strength"]
+base = 3
+percent = 10
+
+[[potion_effect]]
+id = "super_attack_boost"
+kind = "stat_boost"
+skills = ["attack"]
+base = 5
+percent = 15
+
+[[potion_effect]]
+id = "super_strength_boost"
+kind = "stat_boost"
+skills = ["strength"]
+base = 5
+percent = 15
+
+[[potion_effect]]
+id = "super_defence_boost"
+kind = "stat_boost"
+skills = ["defence"]
+base = 5
+percent = 15
+
+[[potion_effect]]
+id = "super_combat_boost"
+kind = "stat_boost"
+skills = ["attack", "strength", "defence"]
+base = 5
+percent = 15
+
+[[potion_effect]]
+id = "ranging_boost"
+kind = "stat_boost"
+skills = ["ranged"]
+base = 4
+percent = 10
+
+[[potion_effect]]
+id = "magic_boost"
+kind = "flat_stat_boost"
+skills = ["magic"]
+amount = 4
+
+[[potion_effect]]
+id = "agility_boost"
+kind = "flat_stat_boost"
+skills = ["agility"]
+amount = 3
+
+[[potion_effect]]
+id = "fishing_boost"
+kind = "flat_stat_boost"
+skills = ["fishing"]
+amount = 3
+
+[[potion_effect]]
+id = "hunter_boost"
+kind = "flat_stat_boost"
+skills = ["hunter"]
+amount = 3
+
+[[potion_effect]]
+id = "super_fishing_boost"
+kind = "flat_stat_boost"
+skills = ["fishing"]
+amount = 6
+
+[[potion_effect]]
+id = "extreme_energy_restore"
+kind = "run_energy"
+amount = 40
+
+[[potion_effect]]
+id = "super_hunter_boost"
+kind = "flat_stat_boost"
+skills = ["hunter"]
+amount = 6
+
+[[potion_effect]]
+id = "extended_stamina"
+kind = "compound"
+effects = ["extreme_energy_restore"]
+stamina = true
+duration = "4m"
+
+[[potion_effect]]
+id = "armadyl_brew"
+kind = "handler"
+handler = "armadyl_brew"
+
+[[potion_effect]]
+id = "bastion_boost"
+kind = "compound"
+effects = ["ranging_boost", "super_defence_boost"]
+
+[[potion_effect]]
+id = "battlemage_boost"
+kind = "compound"
+effects = ["magic_boost", "super_defence_boost"]
+
+[[potion_effect]]
+id = "restore_potion"
+kind = "stat_restore"
+excludedSkills = ["hitpoints", "prayer"]
+base = 10
+percent = 30
+
+[[potion_effect]]
+id = "prayer_restore"
+kind = "prayer_restore"
+base = 7
+percent = 25
+
+[[potion_effect]]
+id = "super_restore"
+kind = "stat_restore"
+restorePrayer = true
+excludedSkills = ["hitpoints"]
+base = 8
+percent = 25
+
+[[potion_effect]]
+id = "energy_restore"
+kind = "run_energy"
+amount = 10
+
+[[potion_effect]]
+id = "super_energy_restore"
+kind = "run_energy"
+amount = 20
+
+[[potion_effect]]
+id = "prayer_regeneration"
+kind = "prayer_regeneration"
+duration = "8m"
+
+[[potion_effect]]
+id = "stamina"
+kind = "compound"
+effects = ["super_energy_restore"]
+stamina = true
+duration = "2m"
+
+[[potion_effect]]
+id = "antipoison"
+kind = "poison_cure"
+poisonImmunity = "90s"
+
+[[potion_effect]]
+id = "superantipoison"
+kind = "poison_cure"
+poisonImmunity = "6m"
+
+[[potion_effect]]
+id = "antifire"
+kind = "dragonfire_protection"
+duration = "6m"
+
+[[potion_effect]]
+id = "super_antifire"
+kind = "dragonfire_protection"
+fullProtection = true
+duration = "3m"
+
+[[potion_effect]]
+id = "anti_venom_plus"
+kind = "venom_cure"
+poisonImmunity = "15m"
+venomImmunity = "3m"
+
+[[potion_effect]]
+id = "extended_anti_venom_plus"
+kind = "venom_cure"
+poisonImmunity = "17m"
+venomImmunity = "6m"
+
+[[potion_effect]]
+id = "sanfew_restore"
+kind = "stat_restore"
+restorePrayer = true
+excludedSkills = ["hitpoints"]
+base = 4
+percent = 30
+
+[[potion_effect]]
+id = "sanfew_serum"
+kind = "compound"
+effects = [
+    "sanfew_restore",
+    "superantipoison",
+]
+curesDisease = true
+
+[[potion_effect]]
+id = "saradomin_brew"
+kind = "handler"
+handler = "saradomin_brew"
+
+[[potion_effect]]
+id = "zamorak_brew"
+kind = "handler"
+handler = "zamorak_brew"
+
+[[potion_effect]]
+id = "ancient_brew"
+kind = "handler"
+handler = "ancient_brew"
+
+[[potion_effect]]
+id = "divine_super_attack_boost"
+kind = "divine"
+baseEffect = "super_attack_boost"
+damage = 10
+duration = "5m"
+
+[[potion_effect]]
+id = "divine_super_strength_boost"
+kind = "divine"
+baseEffect = "super_strength_boost"
+damage = 10
+duration = "5m"
+
+[[potion_effect]]
+id = "divine_super_defence_boost"
+kind = "divine"
+baseEffect = "super_defence_boost"
+damage = 10
+duration = "5m"
+
+[[potion_effect]]
+id = "divine_ranging_boost"
+kind = "divine"
+baseEffect = "ranging_boost"
+damage = 10
+duration = "5m"
+
+[[potion_effect]]
+id = "divine_magic_boost"
+kind = "divine"
+baseEffect = "magic_boost"
+damage = 10
+duration = "5m"
+
+[[potion_effect]]
+id = "divine_bastion_boost"
+kind = "divine"
+baseEffect = "bastion_boost"
+damage = 10
+duration = "5m"
+
+[[potion_effect]]
+id = "divine_battlemage_boost"
+kind = "divine"
+baseEffect = "battlemage_boost"
+damage = 10
+duration = "5m"
+
+[[potion_effect]]
+id = "divine_super_combat_boost"
+kind = "divine"
+baseEffect = "super_combat_boost"
+damage = 10
+duration = "5m"
+
+[[potion_override]]
+id = "attack_mix"
+heal = 3
+[[potion_override]]
+id = "strength_mix"
+heal = 3
+[[potion_override]]
+id = "restore_mix"
+heal = 3
+[[potion_override]]
+id = "energy_mix"
+heal = 3
+[[potion_override]]
+id = "defence_mix"
+heal = 6
+[[potion_override]]
+id = "agility_mix"
+heal = 6
+[[potion_override]]
+id = "prayer_mix"
+heal = 6
+[[potion_override]]
+id = "super_attack_mix"
+heal = 6
+[[potion_override]]
+id = "superantipoison_mix"
+heal = 6
+[[potion_override]]
+id = "fishing_mix"
+heal = 6
+[[potion_override]]
+id = "super_energy_mix"
+heal = 6
+[[potion_override]]
+id = "super_strength_mix"
+heal = 6
+[[potion_override]]
+id = "super_restore_mix"
+heal = 6
+[[potion_override]]
+id = "super_defence_mix"
+heal = 6
+[[potion_override]]
+id = "antifire_mix"
+heal = 6
+[[potion_override]]
+id = "extended_antifire_mix"
+heal = 6
+[[potion_override]]
+id = "super_antifire_mix"
+heal = 6
+[[potion_override]]
+id = "extended_super_antifire_mix"
+heal = 6
+[[potion_override]]
+id = "ranging_mix"
+heal = 6
+[[potion_override]]
+id = "magic_mix"
+heal = 6
+[[potion_override]]
+id = "zamorak_mix"
+heal = 6
+[[potion_override]]
+id = "antipoison_mix"
+heal = 3
+[[potion_override]]
+id = "combat_mix"
+heal = 3
+[[potion_override]]
+id = "hunting_mix"
+heal = 6
+[[potion_override]]
+id = "ancient_mix"
+heal = 6
+[[potion_effect]]
+id = "anti_venom"
+kind = "venom_cure"
+poisonImmunity = "12m"
+venomImmunity = "36s"
+
+[[potion_effect]]
+id = "extended_antifire"
+kind = "dragonfire_protection"
+duration = "12m"
+
+[[potion_effect]]
+id = "extended_super_antifire"
+kind = "dragonfire_protection"
+fullProtection = true
+duration = "6m"
+
+[[potion_effect]]
+id = "forgotten_brew"
+kind = "handler"
+handler = "forgotten_brew"
+
+[[potion_effect]]
+id = "menaphite_remedy"
+kind = "handler"
+handler = "menaphite_remedy"
+
+[[potion_effect]]
+id = "guthix_rest"
+kind = "handler"
+handler = "guthix_rest"
+
+[[potion_effect]]
+id = "nzone_overload"
+kind = "handler"
+handler = "nzone_overload"
+
+[[potion_effect]]
+id = "nzone_absorption"
+kind = "handler"
+handler = "nzone_absorption"
+
+[[potion_effect]]
+id = "nzone_super_ranging"
+row = "dbrow.effect_nzone_super_ranging"
+kind = "stat_boost"
+skills = ["stat.ranged"]
+base = 5
+percent = 15
+
+[[potion_effect]]
+id = "nzone_super_magic"
+row = "dbrow.effect_nzone_super_magic"
+kind = "stat_boost"
+skills = ["stat.magic"]
+base = 5
+percent = 15
+
+[[potion_effect]]
+id = "cox_xerics_aid_weak"
+kind = "handler"
+handler = "cox_xerics_aid"
+variant = "weak"
+
+[[potion_effect]]
+id = "cox_xerics_aid"
+kind = "handler"
+handler = "cox_xerics_aid"
+variant = "normal"
+
+[[potion_effect]]
+id = "cox_xerics_aid_strong"
+kind = "handler"
+handler = "cox_xerics_aid"
+variant = "strong"
+
+[[potion_effect]]
+id = "cox_revitalisation_weak"
+kind = "handler"
+handler = "cox_revitalisation"
+variant = "weak"
+
+[[potion_effect]]
+id = "cox_revitalisation"
+kind = "handler"
+handler = "cox_revitalisation"
+variant = "normal"
+
+[[potion_effect]]
+id = "cox_revitalisation_strong"
+kind = "handler"
+handler = "cox_revitalisation"
+variant = "strong"
+
+[[potion_effect]]
+id = "cox_prayer_enhance_weak"
+kind = "handler"
+handler = "cox_prayer_enhance"
+variant = "weak"
+
+[[potion_effect]]
+id = "cox_prayer_enhance"
+kind = "handler"
+handler = "cox_prayer_enhance"
+variant = "normal"
+
+[[potion_effect]]
+id = "cox_prayer_enhance_strong"
+kind = "handler"
+handler = "cox_prayer_enhance"
+variant = "strong"
+
+[[potion_effect]]
+id = "cox_overload_weak"
+kind = "handler"
+handler = "cox_overload"
+variant = "weak"
+
+[[potion_effect]]
+id = "cox_overload"
+kind = "handler"
+handler = "cox_overload"
+variant = "normal"
+
+[[potion_effect]]
+id = "cox_overload_strong"
+kind = "handler"
+handler = "cox_overload"
+variant = "strong"
+
+[[potion_effect]]
+id = "cox_elder_potion_weak"
+kind = "handler"
+handler = "cox_elder_potion"
+variant = "weak"
+
+[[potion_effect]]
+id = "cox_elder_potion"
+kind = "handler"
+handler = "cox_elder_potion"
+variant = "normal"
+
+[[potion_effect]]
+id = "cox_elder_potion_strong"
+kind = "handler"
+handler = "cox_elder_potion"
+variant = "strong"
+
+[[potion_effect]]
+id = "cox_kodai_potion_weak"
+kind = "handler"
+handler = "cox_kodai_potion"
+variant = "weak"
+
+[[potion_effect]]
+id = "cox_kodai_potion"
+kind = "handler"
+handler = "cox_kodai_potion"
+variant = "normal"
+
+[[potion_effect]]
+id = "cox_kodai_potion_strong"
+kind = "handler"
+handler = "cox_kodai_potion"
+variant = "strong"
+
+[[potion_effect]]
+id = "cox_twisted_potion_weak"
+kind = "handler"
+handler = "cox_twisted_potion"
+variant = "weak"
+
+[[potion_effect]]
+id = "cox_twisted_potion"
+kind = "handler"
+handler = "cox_twisted_potion"
+variant = "normal"
+
+[[potion_effect]]
+id = "cox_twisted_potion_strong"
+kind = "handler"
+handler = "cox_twisted_potion"
+variant = "strong"
+
+[[potion_effect]]
+id = "toa_nectar"
+kind = "handler"
+handler = "toa_nectar"
+
+[[potion_effect]]
+id = "toa_ambrosia"
+kind = "handler"
+handler = "toa_ambrosia"
+
+[[potion_effect]]
+id = "toa_tears_of_elidinis"
+kind = "handler"
+handler = "toa_tears_of_elidinis"
+
+[[potion_effect]]
+id = "toa_liquid_adrenaline"
+kind = "handler"
+handler = "toa_liquid_adrenaline"
+
+[[potion_effect]]
+id = "toa_smelling_salts"
+kind = "handler"
+handler = "toa_smelling_salts"
+
+[[potion_effect]]
+id = "toa_silk_dressing"
+kind = "handler"
+handler = "toa_silk_dressing"
+
+[[potion_effect]]
+id = "toa_blessed_crystal_scarab"
+kind = "handler"
+handler = "toa_blessed_crystal_scarab"
+
+[[potion_effect]]
+id = "antidote_plus"
+kind = "poison_cure"
+poisonImmunity = "9m"
+
+[[potion_effect]]
+id = "antidote_plus_plus"
+kind = "poison_cure"
+poisonImmunity = "12m"
+venomImmunity = "36s"
+
+[[potion_override]]
+id = "antidote_plus_mix"
+heal = 6
+
+[[potion_override]]
+id = "stamina_mix"
+heal = 6
+
+[[potion_effect]]
+id = "relicyms_balm"
+kind = "handler"
+handler = "relicyms_balm"
+
+[[potion_effect]]
+id = "moonlight_potion"
+kind = "handler"
+handler = "moonlight_potion"
+
+[[potion_override]]
+id = "relicyms_mix"
+heal = 3
+

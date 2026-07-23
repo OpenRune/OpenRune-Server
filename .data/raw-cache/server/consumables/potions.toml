@@ -1,0 +1,1521 @@
+[[potion]]
+id = "attack_potion"
+row = "dbrow.attack_potion"
+name = "Attack potion"
+objs = [
+    "obj.4dose1attack",
+    "obj.3dose1attack",
+    "obj.2dose1attack",
+    "obj.1dose1attack",
+]
+empty = "obj.vial_empty"
+effect = "dbrow.effect_attack_boost"
+category = "potion"
+
+[[potion]]
+id = "antipoison"
+row = "dbrow.antipoison"
+name = "Antipoison"
+objs = [
+    "obj.4doseantipoison",
+    "obj.3doseantipoison",
+    "obj.2doseantipoison",
+    "obj.1doseantipoison",
+]
+empty = "obj.vial_empty"
+effect = "dbrow.effect_antipoison"
+category = "potion"
+
+[[potion]]
+id = "strength_potion"
+row = "dbrow.strength_potion"
+name = "Strength potion"
+objs = [
+    "obj.strength4",
+    "obj.3dose1strength",
+    "obj.2dose1strength",
+    "obj.1dose1strength",
+]
+empty = "obj.vial_empty"
+effect = "dbrow.effect_strength_boost"
+category = "potion"
+
+[[potion]]
+id = "restore_potion"
+row = "dbrow.restore_potion"
+name = "Restore potion"
+objs = [
+    "obj.4dosestatrestore",
+    "obj.3dosestatrestore",
+    "obj.2dosestatrestore",
+    "obj.1dosestatrestore",
+]
+empty = "obj.vial_empty"
+effect = "dbrow.effect_restore_potion"
+category = "potion"
+
+[[potion]]
+id = "energy_potion"
+row = "dbrow.energy_potion"
+name = "Energy potion"
+objs = [
+    "obj.4dose1energy",
+    "obj.3dose1energy",
+    "obj.2dose1energy",
+    "obj.1dose1energy",
+]
+empty = "obj.vial_empty"
+effect = "dbrow.effect_energy_restore"
+category = "potion"
+
+[[potion]]
+id = "defence_potion"
+row = "dbrow.defence_potion"
+name = "Defence potion"
+objs = [
+    "obj.4dose1defense",
+    "obj.3dose1defense",
+    "obj.2dose1defense",
+    "obj.1dose1defense",
+]
+empty = "obj.vial_empty"
+effect = "dbrow.effect_defence_boost"
+category = "potion"
+
+[[potion]]
+id = "agility_potion"
+row = "dbrow.agility_potion"
+name = "Agility potion"
+objs = [
+    "obj.4dose1agility",
+    "obj.3dose1agility",
+    "obj.2dose1agility",
+    "obj.1dose1agility",
+]
+empty = "obj.vial_empty"
+effect = "dbrow.effect_agility_boost"
+category = "potion"
+
+[[potion]]
+id = "combat_potion"
+row = "dbrow.combat_potion"
+name = "Combat potion"
+objs = [
+    "obj.4dosecombat",
+    "obj.3dosecombat",
+    "obj.2dosecombat",
+    "obj.1dosecombat",
+]
+empty = "obj.vial_empty"
+effect = "dbrow.effect_combat_boost"
+category = "potion"
+
+[[potion]]
+id = "prayer_potion"
+row = "dbrow.prayer_potion"
+name = "Prayer potion"
+objs = [
+    "obj.4doseprayerrestore",
+    "obj.3doseprayerrestore",
+    "obj.2doseprayerrestore",
+    "obj.1doseprayerrestore",
+]
+empty = "obj.vial_empty"
+effect = "dbrow.effect_prayer_restore"
+category = "potion"
+
+[[potion]]
+id = "prayer_regeneration"
+row = "dbrow.prayer_regeneration"
+name = "Prayer regeneration potion"
+objs = [
+    "obj.4dose1prayer_regeneration",
+    "obj.3dose1prayer_regeneration",
+    "obj.2dose1prayer_regeneration",
+    "obj.1dose1prayer_regeneration",
+]
+empty = "obj.vial_empty"
+effect = "dbrow.effect_prayer_regeneration"
+category = "potion"
+
+[[potion]]
+id = "super_attack"
+row = "dbrow.super_attack"
+name = "Super attack"
+objs = [
+    "obj.4dose2attack",
+    "obj.3dose2attack",
+    "obj.2dose2attack",
+    "obj.1dose2attack",
+]
+empty = "obj.vial_empty"
+effect = "dbrow.effect_super_attack_boost"
+category = "potion"
+
+[[potion]]
+id = "superantipoison"
+row = "dbrow.superantipoison"
+name = "Superantipoison"
+objs = [
+    "obj.4dose2antipoison",
+    "obj.3dose2antipoison",
+    "obj.2dose2antipoison",
+    "obj.1dose2antipoison",
+]
+empty = "obj.vial_empty"
+effect = "dbrow.effect_superantipoison"
+category = "potion"
+
+[[potion]]
+id = "fishing_potion"
+row = "dbrow.fishing_potion"
+name = "Fishing potion"
+objs = [
+    "obj.4dosefisherspotion",
+    "obj.3dosefisherspotion",
+    "obj.2dosefisherspotion",
+    "obj.1dosefisherspotion",
+]
+empty = "obj.vial_empty"
+effect = "dbrow.effect_fishing_boost"
+category = "potion"
+
+[[potion]]
+id = "super_energy"
+row = "dbrow.super_energy"
+name = "Super energy"
+objs = [
+    "obj.4dose2energy",
+    "obj.3dose2energy",
+    "obj.2dose2energy",
+    "obj.1dose2energy",
+]
+empty = "obj.vial_empty"
+effect = "dbrow.effect_super_energy_restore"
+category = "potion"
+
+[[potion]]
+id = "hunter_potion"
+row = "dbrow.hunter_potion"
+name = "Hunter potion"
+objs = [
+    "obj.4dosehunting",
+    "obj.3dosehunting",
+    "obj.2dosehunting",
+    "obj.1dosehunting",
+]
+empty = "obj.vial_empty"
+effect = "dbrow.effect_hunter_boost"
+category = "potion"
+
+[[potion]]
+id = "super_strength"
+row = "dbrow.super_strength"
+name = "Super strength"
+objs = [
+    "obj.4dose2strength",
+    "obj.3dose2strength",
+    "obj.2dose2strength",
+    "obj.1dose2strength",
+]
+empty = "obj.vial_empty"
+effect = "dbrow.effect_super_strength_boost"
+category = "potion"
+
+[[potion]]
+id = "super_restore"
+row = "dbrow.super_restore"
+name = "Super restore"
+objs = [
+    "obj.4dose2restore",
+    "obj.3dose2restore",
+    "obj.2dose2restore",
+    "obj.1dose2restore",
+]
+empty = "obj.vial_empty"
+effect = "dbrow.effect_super_restore"
+category = "potion"
+
+[[potion]]
+id = "super_defence"
+row = "dbrow.super_defence"
+name = "Super defence"
+objs = [
+    "obj.4dose2defense",
+    "obj.3dose2defense",
+    "obj.2dose2defense",
+    "obj.1dose2defense",
+]
+empty = "obj.vial_empty"
+effect = "dbrow.effect_super_defence_boost"
+category = "potion"
+
+[[potion]]
+id = "antifire"
+row = "dbrow.antifire"
+name = "Antifire"
+objs = [
+    "obj.4dose1antidragon",
+    "obj.3dose1antidragon",
+    "obj.2dose1antidragon",
+    "obj.1dose1antidragon",
+]
+empty = "obj.vial_empty"
+effect = "dbrow.effect_antifire"
+category = "potion"
+
+[[potion]]
+id = "super_antifire"
+row = "dbrow.super_antifire"
+name = "Super antifire"
+objs = [
+    "obj.4dose2antidragon",
+    "obj.3dose2antidragon",
+    "obj.2dose2antidragon",
+    "obj.1dose2antidragon",
+]
+empty = "obj.vial_empty"
+effect = "dbrow.effect_super_antifire"
+category = "potion"
+
+[[potion]]
+id = "ranging_potion"
+row = "dbrow.ranging_potion"
+name = "Ranging potion"
+objs = [
+    "obj.4doserangerspotion",
+    "obj.3doserangerspotion",
+    "obj.2doserangerspotion",
+    "obj.1doserangerspotion",
+]
+empty = "obj.vial_empty"
+effect = "dbrow.effect_ranging_boost"
+category = "potion"
+
+[[potion]]
+id = "magic_potion"
+row = "dbrow.magic_potion"
+name = "Magic potion"
+objs = [
+    "obj.4dose1magic",
+    "obj.3dose1magic",
+    "obj.2dose1magic",
+    "obj.1dose1magic",
+]
+empty = "obj.vial_empty"
+effect = "dbrow.effect_magic_boost"
+category = "potion"
+
+[[potion]]
+id = "zamorak_brew"
+row = "dbrow.zamorak_brew"
+name = "Zamorak brew"
+objs = [
+    "obj.4dosepotionofzamorak",
+    "obj.3dosepotionofzamorak",
+    "obj.2dosepotionofzamorak",
+    "obj.1dosepotionofzamorak",
+]
+empty = "obj.vial_empty"
+effect = "dbrow.effect_zamorak_brew"
+category = "potion"
+
+[[potion]]
+id = "saradomin_brew"
+row = "dbrow.saradomin_brew"
+name = "Saradomin brew"
+objs = [
+    "obj.4dosepotionofsaradomin",
+    "obj.3dosepotionofsaradomin",
+    "obj.2dosepotionofsaradomin",
+    "obj.1dosepotionofsaradomin",
+]
+empty = "obj.vial_empty"
+effect = "dbrow.effect_saradomin_brew"
+category = "potion"
+
+[[potion]]
+id = "bastion_potion"
+row = "dbrow.bastion_potion"
+name = "Bastion potion"
+objs = [
+    "obj.4dosebastion",
+    "obj.3dosebastion",
+    "obj.2dosebastion",
+    "obj.1dosebastion",
+]
+empty = "obj.vial_empty"
+effect = "dbrow.effect_bastion_boost"
+category = "potion"
+
+[[potion]]
+id = "battlemage_potion"
+row = "dbrow.battlemage_potion"
+name = "Battlemage potion"
+objs = [
+    "obj.4dosebattlemage",
+    "obj.3dosebattlemage",
+    "obj.2dosebattlemage",
+    "obj.1dosebattlemage",
+]
+empty = "obj.vial_empty"
+effect = "dbrow.effect_battlemage_boost"
+category = "potion"
+
+[[potion]]
+id = "super_combat"
+row = "dbrow.super_combat"
+name = "Super combat potion"
+objs = [
+    "obj.4dose2combat",
+    "obj.3dose2combat",
+    "obj.2dose2combat",
+    "obj.1dose2combat",
+]
+empty = "obj.vial_empty"
+effect = "dbrow.effect_super_combat_boost"
+category = "potion"
+
+[[potion]]
+id = "stamina_potion"
+row = "dbrow.stamina_potion"
+name = "Stamina potion"
+objs = [
+    "obj.4dosestamina",
+    "obj.3dosestamina",
+    "obj.2dosestamina",
+    "obj.1dosestamina",
+]
+empty = "obj.vial_empty"
+effect = "dbrow.effect_stamina"
+category = "potion"
+
+[[potion]]
+id = "ancient_brew"
+row = "dbrow.ancient_brew"
+name = "Ancient brew"
+objs = [
+    "obj.4doseancientbrew",
+    "obj.3doseancientbrew",
+    "obj.2doseancientbrew",
+    "obj.1doseancientbrew",
+]
+empty = "obj.vial_empty"
+effect = "dbrow.effect_ancient_brew"
+category = "potion"
+
+[[potion]]
+id = "anti_venom_plus"
+row = "dbrow.anti_venom_plus"
+name = "Anti-venom+"
+objs = [
+    "obj.antivenom+4",
+    "obj.antivenom+3",
+    "obj.antivenom+2",
+    "obj.antivenom+1",
+]
+empty = "obj.vial_empty"
+effect = "dbrow.effect_anti_venom_plus"
+category = "potion"
+
+[[potion]]
+id = "extended_anti_venom_plus"
+row = "dbrow.extended_anti_venom_plus"
+name = "Extended anti-venom+"
+objs = [
+    "obj.extended_antivenom+4",
+    "obj.extended_antivenom+3",
+    "obj.extended_antivenom+2",
+    "obj.extended_antivenom+1",
+]
+empty = "obj.vial_empty"
+effect = "dbrow.effect_extended_anti_venom_plus"
+category = "potion"
+
+[[potion]]
+id = "blighted_super_restore"
+row = "dbrow.blighted_super_restore"
+name = "Blighted super restore"
+objs = [
+    "obj.blighted_4dose2restore",
+    "obj.blighted_3dose2restore",
+    "obj.blighted_2dose2restore",
+    "obj.blighted_1dose2restore",
+]
+empty = "obj.vial_empty"
+effect = "dbrow.effect_super_restore"
+category = "blighted_potion"
+wildernessOnly = true
+
+[[potion]]
+id = "sanfew_serum"
+row = "dbrow.sanfew_serum"
+name = "Sanfew serum"
+objs = [
+    "obj.sanfew_salve_4_dose",
+    "obj.sanfew_salve_3_dose",
+    "obj.sanfew_salve_2_dose",
+    "obj.sanfew_salve_1_dose",
+]
+empty = "obj.vial_empty"
+effect = "dbrow.effect_sanfew_serum"
+category = "potion"
+
+[[potion]]
+id = "super_fishing_potion"
+row = "dbrow.super_fishing_potion"
+name = "Super fishing potion"
+objs = [
+    "obj.4dose2fisherspotion",
+    "obj.3dose2fisherspotion",
+    "obj.2dose2fisherspotion",
+    "obj.1dose2fisherspotion",
+]
+empty = "obj.vial_empty"
+effect = "dbrow.effect_super_fishing_boost"
+category = "potion"
+
+[[potion]]
+id = "extreme_energy_potion"
+row = "dbrow.extreme_energy_potion"
+name = "Extreme energy potion"
+objs = [
+    "obj.4dose3energy",
+    "obj.3dose3energy",
+    "obj.2dose3energy",
+    "obj.1dose3energy",
+]
+empty = "obj.vial_empty"
+effect = "dbrow.effect_extreme_energy_restore"
+category = "potion"
+
+[[potion]]
+id = "super_hunter_potion"
+row = "dbrow.super_hunter_potion"
+name = "Super hunter potion"
+objs = [
+    "obj.4dose2hunting",
+    "obj.3dose2hunting",
+    "obj.2dose2hunting",
+    "obj.1dose2hunting",
+]
+empty = "obj.vial_empty"
+effect = "dbrow.effect_super_hunter_boost"
+category = "potion"
+
+[[potion]]
+id = "extended_stamina_potion"
+row = "dbrow.extended_stamina_potion"
+name = "Extended stamina potion"
+objs = [
+    "obj.4dose2stamina",
+    "obj.3dose2stamina",
+    "obj.2dose2stamina",
+    "obj.1dose2stamina",
+]
+empty = "obj.vial_empty"
+effect = "dbrow.effect_extended_stamina"
+category = "potion"
+
+[[potion]]
+id = "armadyl_brew"
+row = "dbrow.armadyl_brew"
+name = "Armadyl brew"
+objs = [
+    "obj.4dosearmadylbrew",
+    "obj.3dosearmadylbrew",
+    "obj.2dosearmadylbrew",
+    "obj.1dosearmadylbrew",
+]
+empty = "obj.vial_empty"
+effect = "dbrow.effect_armadyl_brew"
+category = "potion"
+
+[[potion]]
+id = "divine_super_attack"
+row = "dbrow.divine_super_attack"
+name = "Divine super attack potion"
+objs = [
+    "obj.4dosedivineattack",
+    "obj.3dosedivineattack",
+    "obj.2dosedivineattack",
+    "obj.1dosedivineattack",
+]
+empty = "obj.vial_empty"
+effect = "dbrow.effect_divine_super_attack_boost"
+category = "divine_potion"
+
+[[potion]]
+id = "divine_super_strength"
+row = "dbrow.divine_super_strength"
+name = "Divine super strength potion"
+objs = [
+    "obj.4dosedivinestrength",
+    "obj.3dosedivinestrength",
+    "obj.2dosedivinestrength",
+    "obj.1dosedivinestrength",
+]
+empty = "obj.vial_empty"
+effect = "dbrow.effect_divine_super_strength_boost"
+category = "divine_potion"
+
+[[potion]]
+id = "divine_super_defence"
+row = "dbrow.divine_super_defence"
+name = "Divine super defence potion"
+objs = [
+    "obj.4dosedivinedefence",
+    "obj.3dosedivinedefence",
+    "obj.2dosedivinedefence",
+    "obj.1dosedivinedefence",
+]
+empty = "obj.vial_empty"
+effect = "dbrow.effect_divine_super_defence_boost"
+category = "divine_potion"
+
+[[potion]]
+id = "divine_ranging"
+row = "dbrow.divine_ranging"
+name = "Divine ranging potion"
+objs = [
+    "obj.4dosedivinerange",
+    "obj.3dosedivinerange",
+    "obj.2dosedivinerange",
+    "obj.1dosedivinerange",
+]
+empty = "obj.vial_empty"
+effect = "dbrow.effect_divine_ranging_boost"
+category = "divine_potion"
+
+[[potion]]
+id = "divine_magic"
+row = "dbrow.divine_magic"
+name = "Divine magic potion"
+objs = [
+    "obj.4dosedivinemagic",
+    "obj.3dosedivinemagic",
+    "obj.2dosedivinemagic",
+    "obj.1dosedivinemagic",
+]
+empty = "obj.vial_empty"
+effect = "dbrow.effect_divine_magic_boost"
+category = "divine_potion"
+
+[[potion]]
+id = "divine_bastion"
+row = "dbrow.divine_bastion"
+name = "Divine bastion potion"
+objs = [
+    "obj.4dosedivinebastion",
+    "obj.3dosedivinebastion",
+    "obj.2dosedivinebastion",
+    "obj.1dosedivinebastion",
+]
+empty = "obj.vial_empty"
+effect = "dbrow.effect_divine_bastion_boost"
+category = "divine_potion"
+
+[[potion]]
+id = "divine_battlemage"
+row = "dbrow.divine_battlemage"
+name = "Divine battlemage potion"
+objs = [
+    "obj.4dosedivinebattlemage",
+    "obj.3dosedivinebattlemage",
+    "obj.2dosedivinebattlemage",
+    "obj.1dosedivinebattlemage",
+]
+empty = "obj.vial_empty"
+effect = "dbrow.effect_divine_battlemage_boost"
+category = "divine_potion"
+
+[[potion]]
+id = "divine_super_combat"
+row = "dbrow.divine_super_combat"
+name = "Divine super combat potion"
+objs = [
+    "obj.4dosedivinecombat",
+    "obj.3dosedivinecombat",
+    "obj.2dosedivinecombat",
+    "obj.1dosedivinecombat",
+]
+empty = "obj.vial_empty"
+effect = "dbrow.effect_divine_super_combat_boost"
+category = "divine_potion"
+
+[[potion]]
+id = "attack_mix"
+row = "dbrow.attack_mix"
+name = "Attack mix"
+objs = [
+    "obj.brutal_2dose1attack",
+    "obj.brutal_1dose1attack",
+]
+empty = "obj.vial_empty"
+effect = "dbrow.effect_attack_boost"
+category = "barbarian_mix"
+mix = true
+
+[[potion]]
+id = "strength_mix"
+row = "dbrow.strength_mix"
+name = "Strength mix"
+objs = [
+    "obj.brutal_2dose1strength",
+    "obj.brutal_1dose1strength",
+]
+empty = "obj.vial_empty"
+effect = "dbrow.effect_strength_boost"
+category = "barbarian_mix"
+mix = true
+
+[[potion]]
+id = "restore_mix"
+row = "dbrow.restore_mix"
+name = "Restore mix"
+objs = [
+    "obj.brutal_2dosestatrestore",
+    "obj.brutal_1dosestatrestore",
+]
+empty = "obj.vial_empty"
+effect = "dbrow.effect_restore_potion"
+category = "barbarian_mix"
+mix = true
+
+[[potion]]
+id = "energy_mix"
+row = "dbrow.energy_mix"
+name = "Energy mix"
+objs = [
+    "obj.brutal_2dose1energy",
+    "obj.brutal_1dose1energy",
+]
+empty = "obj.vial_empty"
+effect = "dbrow.effect_energy_restore"
+category = "barbarian_mix"
+mix = true
+
+[[potion]]
+id = "defence_mix"
+row = "dbrow.defence_mix"
+name = "Defence mix"
+objs = [
+    "obj.brutal_2dose1defense",
+    "obj.brutal_1dose1defense",
+]
+empty = "obj.vial_empty"
+effect = "dbrow.effect_defence_boost"
+category = "barbarian_mix"
+mix = true
+
+[[potion]]
+id = "agility_mix"
+row = "dbrow.agility_mix"
+name = "Agility mix"
+objs = [
+    "obj.brutal_2dose1agility",
+    "obj.brutal_1dose1agility",
+]
+empty = "obj.vial_empty"
+effect = "dbrow.effect_agility_boost"
+category = "barbarian_mix"
+mix = true
+
+[[potion]]
+id = "prayer_mix"
+row = "dbrow.prayer_mix"
+name = "Prayer mix"
+objs = [
+    "obj.brutal_2doseprayerrestore",
+    "obj.brutal_1doseprayerrestore",
+]
+empty = "obj.vial_empty"
+effect = "dbrow.effect_prayer_restore"
+category = "barbarian_mix"
+mix = true
+
+[[potion]]
+id = "super_attack_mix"
+row = "dbrow.super_attack_mix"
+name = "Super attack mix"
+objs = [
+    "obj.brutal_2dose2attack",
+    "obj.brutal_1dose2attack",
+]
+empty = "obj.vial_empty"
+effect = "dbrow.effect_super_attack_boost"
+category = "barbarian_mix"
+mix = true
+
+[[potion]]
+id = "antipoison_mix"
+row = "dbrow.antipoison_mix"
+name = "Antipoison mix"
+objs = [
+    "obj.brutal_2doseantipoison",
+    "obj.brutal_1doseantipoison",
+]
+empty = "obj.vial_empty"
+effect = "dbrow.effect_antipoison"
+category = "barbarian_mix"
+mix = true
+
+[[potion]]
+id = "combat_mix"
+row = "dbrow.combat_mix"
+name = "Combat mix"
+objs = [
+    "obj.brutal_2dosecombat",
+    "obj.brutal_1dosecombat",
+]
+empty = "obj.vial_empty"
+effect = "dbrow.effect_combat_boost"
+category = "barbarian_mix"
+mix = true
+
+[[potion]]
+id = "hunting_mix"
+row = "dbrow.hunting_mix"
+name = "Hunting mix"
+objs = [
+    "obj.brutal_2dose1hunting",
+    "obj.brutal_1dose1hunting",
+]
+empty = "obj.vial_empty"
+effect = "dbrow.effect_hunter_boost"
+category = "barbarian_mix"
+mix = true
+
+[[potion]]
+id = "ancient_mix"
+row = "dbrow.ancient_mix"
+name = "Ancient mix"
+objs = [
+    "obj.brutal_2doseancientbrew",
+    "obj.brutal_1doseancientbrew",
+]
+empty = "obj.vial_empty"
+effect = "dbrow.effect_ancient_brew"
+category = "barbarian_mix"
+mix = true
+
+[[potion]]
+id = "superantipoison_mix"
+row = "dbrow.superantipoison_mix"
+name = "Superantipoison mix"
+objs = [
+    "obj.brutal_2dose2antipoison",
+    "obj.brutal_1dose2antipoison",
+]
+empty = "obj.vial_empty"
+effect = "dbrow.effect_superantipoison"
+category = "barbarian_mix"
+mix = true
+
+[[potion]]
+id = "fishing_mix"
+row = "dbrow.fishing_mix"
+name = "Fishing mix"
+objs = [
+    "obj.brutal_2dosefisherspotion",
+    "obj.brutal_1dosefisherspotion",
+]
+empty = "obj.vial_empty"
+effect = "dbrow.effect_fishing_boost"
+category = "barbarian_mix"
+mix = true
+
+[[potion]]
+id = "super_energy_mix"
+row = "dbrow.super_energy_mix"
+name = "Super energy mix"
+objs = [
+    "obj.brutal_2dose2energy",
+    "obj.brutal_1dose2energy",
+]
+empty = "obj.vial_empty"
+effect = "dbrow.effect_super_energy_restore"
+category = "barbarian_mix"
+mix = true
+
+[[potion]]
+id = "super_strength_mix"
+row = "dbrow.super_strength_mix"
+name = "Super strength mix"
+objs = [
+    "obj.brutal_2dose2strength",
+    "obj.brutal_1dose2strength",
+]
+empty = "obj.vial_empty"
+effect = "dbrow.effect_super_strength_boost"
+category = "barbarian_mix"
+mix = true
+
+[[potion]]
+id = "super_restore_mix"
+row = "dbrow.super_restore_mix"
+name = "Super restore mix"
+objs = [
+    "obj.brutal_2dose2restore",
+    "obj.brutal_1dose2restore",
+]
+empty = "obj.vial_empty"
+effect = "dbrow.effect_super_restore"
+category = "barbarian_mix"
+mix = true
+
+[[potion]]
+id = "super_defence_mix"
+row = "dbrow.super_defence_mix"
+name = "Super defence mix"
+objs = [
+    "obj.brutal_2dose2defense",
+    "obj.brutal_1dose2defense",
+]
+empty = "obj.vial_empty"
+effect = "dbrow.effect_super_defence_boost"
+category = "barbarian_mix"
+mix = true
+
+[[potion]]
+id = "antifire_mix"
+row = "dbrow.antifire_mix"
+name = "Antifire mix"
+objs = [
+    "obj.brutal_2dose1antidragon",
+    "obj.brutal_1dose1antidragon",
+]
+empty = "obj.vial_empty"
+effect = "dbrow.effect_antifire"
+category = "barbarian_mix"
+mix = true
+
+[[potion]]
+id = "extended_antifire_mix"
+row = "dbrow.extended_antifire_mix"
+name = "Extended antifire mix"
+objs = [
+    "obj.brutal_2dose2antidragon",
+    "obj.brutal_1dose2antidragon",
+]
+empty = "obj.vial_empty"
+effect = "dbrow.effect_extended_antifire"
+category = "barbarian_mix"
+mix = true
+
+[[potion]]
+id = "super_antifire_mix"
+row = "dbrow.super_antifire_mix"
+name = "Super antifire mix"
+objs = [
+    "obj.brutal_2dose3antidragon",
+    "obj.brutal_1dose3antidragon",
+]
+empty = "obj.vial_empty"
+effect = "dbrow.effect_super_antifire"
+category = "barbarian_mix"
+mix = true
+
+[[potion]]
+id = "extended_super_antifire_mix"
+row = "dbrow.extended_super_antifire_mix"
+name = "Extended super antifire mix"
+objs = [
+    "obj.brutal_2dose4antidragon",
+    "obj.brutal_1dose4antidragon",
+]
+empty = "obj.vial_empty"
+effect = "dbrow.effect_extended_super_antifire"
+category = "barbarian_mix"
+mix = true
+
+[[potion]]
+id = "ranging_mix"
+row = "dbrow.ranging_mix"
+name = "Ranging mix"
+objs = [
+    "obj.brutal_2doserangerspotion",
+    "obj.brutal_1doserangerspotion",
+]
+empty = "obj.vial_empty"
+effect = "dbrow.effect_ranging_boost"
+category = "barbarian_mix"
+mix = true
+
+[[potion]]
+id = "magic_mix"
+row = "dbrow.magic_mix"
+name = "Magic mix"
+objs = [
+    "obj.brutal_2dose1magic",
+    "obj.brutal_1dose1magic",
+]
+empty = "obj.vial_empty"
+effect = "dbrow.effect_magic_boost"
+category = "barbarian_mix"
+mix = true
+
+[[potion]]
+id = "zamorak_mix"
+row = "dbrow.zamorak_mix"
+name = "Zamorak mix"
+objs = [
+    "obj.brutal_2dosepotionofzamorak",
+    "obj.brutal_1dosepotionofzamorak",
+]
+empty = "obj.vial_empty"
+effect = "dbrow.effect_zamorak_brew"
+category = "barbarian_mix"
+mix = true
+
+[[potion]]
+id = "anti_venom"
+row = "dbrow.anti_venom"
+name = "Anti-venom"
+objs = [
+    "obj.antivenom4",
+    "obj.antivenom3",
+    "obj.antivenom2",
+    "obj.antivenom1",
+]
+empty = "obj.vial_empty"
+effect = "dbrow.effect_anti_venom"
+category = "potion"
+
+[[potion]]
+id = "extended_antifire"
+row = "dbrow.extended_antifire"
+name = "Extended antifire"
+objs = [
+    "obj.4dose4antidragon",
+    "obj.3dose4antidragon",
+    "obj.2dose4antidragon",
+    "obj.1dose4antidragon",
+]
+empty = "obj.vial_empty"
+effect = "dbrow.effect_extended_antifire"
+category = "potion"
+
+[[potion]]
+id = "extended_super_antifire"
+row = "dbrow.extended_super_antifire"
+name = "Extended super antifire"
+objs = [
+    "obj.4dose3antidragon",
+    "obj.3dose3antidragon",
+    "obj.2dose3antidragon",
+    "obj.1dose3antidragon",
+]
+empty = "obj.vial_empty"
+effect = "dbrow.effect_extended_super_antifire"
+category = "potion"
+
+[[potion]]
+id = "forgotten_brew"
+row = "dbrow.forgotten_brew"
+name = "Forgotten brew"
+objs = [
+    "obj.4doseforgottenbrew",
+    "obj.3doseforgottenbrew",
+    "obj.2doseforgottenbrew",
+    "obj.1doseforgottenbrew",
+]
+empty = "obj.vial_empty"
+effect = "dbrow.effect_forgotten_brew"
+category = "potion"
+
+[[potion]]
+id = "menaphite_remedy"
+row = "dbrow.menaphite_remedy"
+name = "Menaphite remedy"
+objs = [
+    "obj.4dosestatrenewal",
+    "obj.3dosestatrenewal",
+    "obj.2dosestatrenewal",
+    "obj.1dosestatrenewal",
+]
+empty = "obj.vial_empty"
+effect = "dbrow.effect_menaphite_remedy"
+category = "potion"
+
+[[potion]]
+id = "guthix_rest"
+row = "dbrow.guthix_rest"
+name = "Guthix rest"
+objs = [
+    "obj.cup_guthix_rest_4",
+    "obj.cup_guthix_rest_3",
+    "obj.cup_guthix_rest_2",
+    "obj.cup_guthix_rest_1",
+]
+empty = "obj.cup_empty"
+effect = "dbrow.effect_guthix_rest"
+category = "tea"
+
+# Nightmare Zone potions.
+
+[[potion]]
+id = "nzone_overload"
+row = "dbrow.nzone_overload"
+name = "Overload"
+objs = [
+    "obj.nzone4doseoverloadpotion",
+    "obj.nzone3doseoverloadpotion",
+    "obj.nzone2doseoverloadpotion",
+    "obj.nzone1doseoverloadpotion",
+]
+empty = "obj.vial_empty"
+effect = "dbrow.effect_nzone_overload"
+category = "nightmare_zone_potion"
+minigameOnly = "nightmare_zone"
+
+[[potion]]
+id = "nzone_absorption"
+row = "dbrow.nzone_absorption"
+name = "Absorption"
+objs = [
+    "obj.nzone4doseabsorptionpotion",
+    "obj.nzone3doseabsorptionpotion",
+    "obj.nzone2doseabsorptionpotion",
+    "obj.nzone1doseabsorptionpotion",
+]
+empty = "obj.vial_empty"
+effect = "dbrow.effect_nzone_absorption"
+category = "nightmare_zone_potion"
+minigameOnly = "nightmare_zone"
+
+[[potion]]
+id = "nzone_super_ranging"
+row = "dbrow.nzone_super_ranging"
+name = "Super ranging potion"
+objs = [
+    "obj.nzone4dose2rangerspotion",
+    "obj.nzone3dose2rangerspotion",
+    "obj.nzone2dose2rangerspotion",
+    "obj.nzone1dose2rangerspotion",
+]
+empty = "obj.vial_empty"
+effect = "dbrow.effect_nzone_super_ranging"
+category = "nightmare_zone_potion"
+minigameOnly = "nightmare_zone"
+
+[[potion]]
+id = "nzone_super_magic"
+row = "dbrow.nzone_super_magic"
+name = "Super magic potion"
+objs = [
+    "obj.nzone4dose2magicpotion",
+    "obj.nzone3dose2magicpotion",
+    "obj.nzone2dose2magicpotion",
+    "obj.nzone1dose2magicpotion",
+]
+empty = "obj.vial_empty"
+effect = "dbrow.effect_nzone_super_magic"
+category = "nightmare_zone_potion"
+minigameOnly = "nightmare_zone"
+
+# Chambers of Xeric raid potions. The weak/normal/strong rows map to (-), normal, and (+) variants.
+
+[[potion]]
+id = "cox_xerics_aid_weak"
+row = "dbrow.cox_xerics_aid_weak"
+name = "Xeric's aid (-)"
+objs = ["obj.raids_vial_xericaid_weak_4", "obj.raids_vial_xericaid_weak_3", "obj.raids_vial_xericaid_weak_2", "obj.raids_vial_xericaid_weak_1"]
+empty = "obj.vial_empty"
+effect = "dbrow.effect_cox_xerics_aid_weak"
+category = "cox_potion"
+raidOnly = "chambers_of_xeric"
+
+[[potion]]
+id = "cox_xerics_aid"
+row = "dbrow.cox_xerics_aid"
+name = "Xeric's aid"
+objs = ["obj.raids_vial_xericaid_4", "obj.raids_vial_xericaid_3", "obj.raids_vial_xericaid_2", "obj.raids_vial_xericaid_1"]
+empty = "obj.vial_empty"
+effect = "dbrow.effect_cox_xerics_aid"
+category = "cox_potion"
+raidOnly = "chambers_of_xeric"
+
+[[potion]]
+id = "cox_xerics_aid_strong"
+row = "dbrow.cox_xerics_aid_strong"
+name = "Xeric's aid (+)"
+objs = ["obj.raids_vial_xericaid_strong_4", "obj.raids_vial_xericaid_strong_3", "obj.raids_vial_xericaid_strong_2", "obj.raids_vial_xericaid_strong_1"]
+empty = "obj.vial_empty"
+effect = "dbrow.effect_cox_xerics_aid_strong"
+category = "cox_potion"
+raidOnly = "chambers_of_xeric"
+
+[[potion]]
+id = "cox_revitalisation_weak"
+row = "dbrow.cox_revitalisation_weak"
+name = "Revitalisation (-)"
+objs = ["obj.raids_vial_revitalisation_weak_4", "obj.raids_vial_revitalisation_weak_3", "obj.raids_vial_revitalisation_weak_2", "obj.raids_vial_revitalisation_weak_1"]
+empty = "obj.vial_empty"
+effect = "dbrow.effect_cox_revitalisation_weak"
+category = "cox_potion"
+raidOnly = "chambers_of_xeric"
+
+[[potion]]
+id = "cox_revitalisation"
+row = "dbrow.cox_revitalisation"
+name = "Revitalisation"
+objs = ["obj.raids_vial_revitalisation_4", "obj.raids_vial_revitalisation_3", "obj.raids_vial_revitalisation_2", "obj.raids_vial_revitalisation_1"]
+empty = "obj.vial_empty"
+effect = "dbrow.effect_cox_revitalisation"
+category = "cox_potion"
+raidOnly = "chambers_of_xeric"
+
+[[potion]]
+id = "cox_revitalisation_strong"
+row = "dbrow.cox_revitalisation_strong"
+name = "Revitalisation (+)"
+objs = ["obj.raids_vial_revitalisation_strong_4", "obj.raids_vial_revitalisation_strong_3", "obj.raids_vial_revitalisation_strong_2", "obj.raids_vial_revitalisation_strong_1"]
+empty = "obj.vial_empty"
+effect = "dbrow.effect_cox_revitalisation_strong"
+category = "cox_potion"
+raidOnly = "chambers_of_xeric"
+
+[[potion]]
+id = "cox_prayer_enhance_weak"
+row = "dbrow.cox_prayer_enhance_weak"
+name = "Prayer enhance (-)"
+objs = ["obj.raids_vial_prayer_weak_4", "obj.raids_vial_prayer_weak_3", "obj.raids_vial_prayer_weak_2", "obj.raids_vial_prayer_weak_1"]
+empty = "obj.vial_empty"
+effect = "dbrow.effect_cox_prayer_enhance_weak"
+category = "cox_potion"
+raidOnly = "chambers_of_xeric"
+
+[[potion]]
+id = "cox_prayer_enhance"
+row = "dbrow.cox_prayer_enhance"
+name = "Prayer enhance"
+objs = ["obj.raids_vial_prayer_4", "obj.raids_vial_prayer_3", "obj.raids_vial_prayer_2", "obj.raids_vial_prayer_1"]
+empty = "obj.vial_empty"
+effect = "dbrow.effect_cox_prayer_enhance"
+category = "cox_potion"
+raidOnly = "chambers_of_xeric"
+
+[[potion]]
+id = "cox_prayer_enhance_strong"
+row = "dbrow.cox_prayer_enhance_strong"
+name = "Prayer enhance (+)"
+objs = ["obj.raids_vial_prayer_strong_4", "obj.raids_vial_prayer_strong_3", "obj.raids_vial_prayer_strong_2", "obj.raids_vial_prayer_strong_1"]
+empty = "obj.vial_empty"
+effect = "dbrow.effect_cox_prayer_enhance_strong"
+category = "cox_potion"
+raidOnly = "chambers_of_xeric"
+
+[[potion]]
+id = "cox_overload_weak"
+row = "dbrow.cox_overload_weak"
+name = "Overload (-)"
+objs = ["obj.raids_vial_overload_weak_4", "obj.raids_vial_overload_weak_3", "obj.raids_vial_overload_weak_2", "obj.raids_vial_overload_weak_1"]
+empty = "obj.vial_empty"
+effect = "dbrow.effect_cox_overload_weak"
+category = "cox_potion"
+raidOnly = "chambers_of_xeric"
+
+[[potion]]
+id = "cox_overload"
+row = "dbrow.cox_overload"
+name = "Overload"
+objs = ["obj.raids_vial_overload_4", "obj.raids_vial_overload_3", "obj.raids_vial_overload_2", "obj.raids_vial_overload_1"]
+empty = "obj.vial_empty"
+effect = "dbrow.effect_cox_overload"
+category = "cox_potion"
+raidOnly = "chambers_of_xeric"
+
+[[potion]]
+id = "cox_overload_strong"
+row = "dbrow.cox_overload_strong"
+name = "Overload (+)"
+objs = ["obj.raids_vial_overload_strong_4", "obj.raids_vial_overload_strong_3", "obj.raids_vial_overload_strong_2", "obj.raids_vial_overload_strong_1"]
+empty = "obj.vial_empty"
+effect = "dbrow.effect_cox_overload_strong"
+category = "cox_potion"
+raidOnly = "chambers_of_xeric"
+
+[[potion]]
+id = "cox_elder_potion_weak"
+row = "dbrow.cox_elder_potion_weak"
+name = "Elder potion (-)"
+objs = ["obj.raids_vial_elder_weak_4", "obj.raids_vial_elder_weak_3", "obj.raids_vial_elder_weak_2", "obj.raids_vial_elder_weak_1"]
+empty = "obj.vial_empty"
+effect = "dbrow.effect_cox_elder_potion_weak"
+category = "cox_potion"
+raidOnly = "chambers_of_xeric"
+
+[[potion]]
+id = "cox_elder_potion"
+row = "dbrow.cox_elder_potion"
+name = "Elder potion"
+objs = ["obj.raids_vial_elder_4", "obj.raids_vial_elder_3", "obj.raids_vial_elder_2", "obj.raids_vial_elder_1"]
+empty = "obj.vial_empty"
+effect = "dbrow.effect_cox_elder_potion"
+category = "cox_potion"
+raidOnly = "chambers_of_xeric"
+
+[[potion]]
+id = "cox_elder_potion_strong"
+row = "dbrow.cox_elder_potion_strong"
+name = "Elder potion (+)"
+objs = ["obj.raids_vial_elder_strong_4", "obj.raids_vial_elder_strong_3", "obj.raids_vial_elder_strong_2", "obj.raids_vial_elder_strong_1"]
+empty = "obj.vial_empty"
+effect = "dbrow.effect_cox_elder_potion_strong"
+category = "cox_potion"
+raidOnly = "chambers_of_xeric"
+
+[[potion]]
+id = "cox_kodai_potion_weak"
+row = "dbrow.cox_kodai_potion_weak"
+name = "Kodai potion (-)"
+objs = ["obj.raids_vial_kodai_weak_4", "obj.raids_vial_kodai_weak_3", "obj.raids_vial_kodai_weak_2", "obj.raids_vial_kodai_weak_1"]
+empty = "obj.vial_empty"
+effect = "dbrow.effect_cox_kodai_potion_weak"
+category = "cox_potion"
+raidOnly = "chambers_of_xeric"
+
+[[potion]]
+id = "cox_kodai_potion"
+row = "dbrow.cox_kodai_potion"
+name = "Kodai potion"
+objs = ["obj.raids_vial_kodai_4", "obj.raids_vial_kodai_3", "obj.raids_vial_kodai_2", "obj.raids_vial_kodai_1"]
+empty = "obj.vial_empty"
+effect = "dbrow.effect_cox_kodai_potion"
+category = "cox_potion"
+raidOnly = "chambers_of_xeric"
+
+[[potion]]
+id = "cox_kodai_potion_strong"
+row = "dbrow.cox_kodai_potion_strong"
+name = "Kodai potion (+)"
+objs = ["obj.raids_vial_kodai_strong_4", "obj.raids_vial_kodai_strong_3", "obj.raids_vial_kodai_strong_2", "obj.raids_vial_kodai_strong_1"]
+empty = "obj.vial_empty"
+effect = "dbrow.effect_cox_kodai_potion_strong"
+category = "cox_potion"
+raidOnly = "chambers_of_xeric"
+
+[[potion]]
+id = "cox_twisted_potion_weak"
+row = "dbrow.cox_twisted_potion_weak"
+name = "Twisted potion (-)"
+objs = ["obj.raids_vial_twisted_weak_4", "obj.raids_vial_twisted_weak_3", "obj.raids_vial_twisted_weak_2", "obj.raids_vial_twisted_weak_1"]
+empty = "obj.vial_empty"
+effect = "dbrow.effect_cox_twisted_potion_weak"
+category = "cox_potion"
+raidOnly = "chambers_of_xeric"
+
+[[potion]]
+id = "cox_twisted_potion"
+row = "dbrow.cox_twisted_potion"
+name = "Twisted potion"
+objs = ["obj.raids_vial_twisted_4", "obj.raids_vial_twisted_3", "obj.raids_vial_twisted_2", "obj.raids_vial_twisted_1"]
+empty = "obj.vial_empty"
+effect = "dbrow.effect_cox_twisted_potion"
+category = "cox_potion"
+raidOnly = "chambers_of_xeric"
+
+[[potion]]
+id = "cox_twisted_potion_strong"
+row = "dbrow.cox_twisted_potion_strong"
+name = "Twisted potion (+)"
+objs = ["obj.raids_vial_twisted_strong_4", "obj.raids_vial_twisted_strong_3", "obj.raids_vial_twisted_strong_2", "obj.raids_vial_twisted_strong_1"]
+empty = "obj.vial_empty"
+effect = "dbrow.effect_cox_twisted_potion_strong"
+category = "cox_potion"
+raidOnly = "chambers_of_xeric"
+
+# Tombs of Amascut supplies. These are included here because they are consumable raid potion/supply effects.
+
+[[potion]]
+id = "toa_nectar"
+row = "dbrow.toa_nectar"
+name = "Nectar"
+objs = [
+    "obj.toa_supply_heal_4",
+    "obj.toa_supply_heal_3",
+    "obj.toa_supply_heal_2",
+    "obj.toa_supply_heal_1",
+]
+empty = "obj.vial_empty"
+effect = "dbrow.effect_toa_nectar"
+category = "toa_supply"
+raidOnly = "tombs_of_amascut"
+
+[[potion]]
+id = "toa_ambrosia"
+row = "dbrow.toa_ambrosia"
+name = "Ambrosia"
+objs = [
+    "obj.toa_supply_panicheal_2",
+    "obj.toa_supply_panicheal_1",
+]
+empty = "obj.vial_empty"
+effect = "dbrow.effect_toa_ambrosia"
+category = "toa_supply"
+raidOnly = "tombs_of_amascut"
+
+[[potion]]
+id = "toa_tears_of_elidinis"
+row = "dbrow.toa_tears_of_elidinis"
+name = "Tears of Elidinis"
+objs = [
+    "obj.toa_supply_prayer_4",
+    "obj.toa_supply_prayer_3",
+    "obj.toa_supply_prayer_2",
+    "obj.toa_supply_prayer_1",
+]
+empty = "obj.vial_empty"
+effect = "dbrow.effect_toa_tears_of_elidinis"
+category = "toa_supply"
+raidOnly = "tombs_of_amascut"
+
+[[potion]]
+id = "toa_liquid_adrenaline"
+row = "dbrow.toa_liquid_adrenaline"
+name = "Liquid adrenaline"
+objs = [
+    "obj.toa_supply_energy_2",
+    "obj.toa_supply_energy_1",
+]
+empty = "obj.vial_empty"
+effect = "dbrow.effect_toa_liquid_adrenaline"
+category = "toa_supply"
+raidOnly = "tombs_of_amascut"
+
+[[potion]]
+id = "toa_smelling_salts"
+row = "dbrow.toa_smelling_salts"
+name = "Smelling salts"
+objs = [
+    "obj.toa_supply_stats_2",
+    "obj.toa_supply_stats_1",
+]
+empty = "obj.vial_empty"
+effect = "dbrow.effect_toa_smelling_salts"
+category = "toa_supply"
+raidOnly = "tombs_of_amascut"
+
+[[potion]]
+id = "toa_silk_dressing"
+row = "dbrow.toa_silk_dressing"
+name = "Silk dressing"
+objs = [
+    "obj.toa_supply_heal_overtime_2",
+    "obj.toa_supply_heal_overtime_1",
+]
+empty = "obj.vial_empty"
+effect = "dbrow.effect_toa_silk_dressing"
+category = "toa_supply"
+raidOnly = "tombs_of_amascut"
+
+[[potion]]
+id = "toa_blessed_crystal_scarab"
+row = "dbrow.toa_blessed_crystal_scarab"
+name = "Blessed crystal scarab"
+objs = [
+    "obj.toa_supply_prayer_overtime_2",
+    "obj.toa_supply_prayer_overtime_1",
+]
+empty = "obj.vial_empty"
+effect = "dbrow.effect_toa_blessed_crystal_scarab"
+category = "toa_supply"
+raidOnly = "tombs_of_amascut"
+
+# Added during the core consumables PR cleanup.
+[[potion]]
+id = "antidote_plus"
+row = "dbrow.antidote_plus"
+name = "Antidote+"
+objs = [
+    "obj.antidote+4",
+    "obj.antidote+3",
+    "obj.antidote+2",
+    "obj.antidote+1",
+]
+empty = "obj.vial_empty"
+effect = "dbrow.effect_antidote_plus"
+category = "potion"
+
+[[potion]]
+id = "antidote_plus_plus"
+row = "dbrow.antidote_plus_plus"
+name = "Antidote++"
+objs = [
+    "obj.antidote++4",
+    "obj.antidote++3",
+    "obj.antidote++2",
+    "obj.antidote++1",
+]
+empty = "obj.vial_empty"
+effect = "dbrow.effect_antidote_plus_plus"
+category = "potion"
+
+[[potion]]
+id = "antidote_plus_mix"
+row = "dbrow.antidote_plus_mix"
+name = "Antidote+ mix"
+objs = [
+    "obj.brutal_antidote+2",
+    "obj.brutal_antidote+1",
+]
+empty = "obj.vial_empty"
+effect = "dbrow.effect_antidote_plus"
+category = "barbarian_mix"
+mix = true
+
+[[potion]]
+id = "stamina_mix"
+row = "dbrow.stamina_mix"
+name = "Stamina mix"
+objs = [
+    "obj.brutal_2dosestamina",
+    "obj.brutal_1dosestamina",
+]
+empty = "obj.vial_empty"
+effect = "dbrow.effect_stamina"
+category = "barbarian_mix"
+mix = true
+
+[[potion]]
+id = "relicyms_balm"
+row = "dbrow.relicyms_balm"
+name = "Relicym's balm"
+objs = [
+    "obj.relicyms_balm4",
+    "obj.relicyms_balm3",
+    "obj.relicyms_balm2",
+    "obj.relicyms_balm1",
+]
+empty = "obj.vial_empty"
+effect = "dbrow.effect_relicyms_balm"
+category = "potion"
+
+[[potion]]
+id = "relicyms_mix"
+row = "dbrow.relicyms_mix"
+name = "Relicym's mix"
+objs = [
+    "obj.brutal_relicyms_balm2",
+    "obj.brutal_relicyms_balm1",
+]
+empty = "obj.vial_empty"
+effect = "dbrow.effect_relicyms_balm"
+category = "barbarian_mix"
+mix = true
+
+[[potion]]
+id = "moonlight_potion"
+row = "dbrow.moonlight_potion"
+name = "Moonlight potion"
+objs = [
+    "obj.4dosemoonlightpotion",
+    "obj.3dosemoonlightpotion",
+    "obj.2dosemoonlightpotion",
+    "obj.1dosemoonlightpotion",
+]
+empty = "obj.vial_empty"
+effect = "dbrow.effect_moonlight_potion"
+category = "potion"
+minigameOnly = "moons_of_peril"

@@ -3,6 +3,7 @@ package org.rsmod.api.mechanics.toxins.impl
 import org.rsmod.api.config.refs.done.hitmark_groups
 import org.rsmod.api.config.refs.params
 import org.rsmod.api.mechanics.toxins.Toxin
+import org.rsmod.api.mechanics.toxins.ToxinImmunity
 import org.rsmod.api.player.hit.modifier.NoopPlayerHitModifier
 import org.rsmod.api.player.hit.queueHit
 import org.rsmod.api.player.output.ChatType
@@ -24,8 +25,72 @@ public object PlayerPoison {
     public fun severityForInitialDamage(initialDamage: Int): Int =
         if (initialDamage <= 0) 0 else 5 * initialDamage - 4
 
+    public fun reduceSeverity(
+        player: Player,
+        amount: Int,
+    ): Boolean {
+        if (amount <= 0) {
+            return false
+        }
+
+        val current =
+            player.vars["varp.poison_severity"]
+
+        if (current <= 0) {
+            return false
+        }
+
+        val reduced =
+            (current - amount)
+                .coerceAtLeast(0)
+
+        if (reduced == 0) {
+            clear(player)
+            return true
+        }
+
+        VarPlayerIntMapSetter.set(
+            player,
+            "varp.poison_severity",
+            reduced,
+        )
+
+        player.timer(
+            "timer.player_poison",
+            TICK_INTERVAL,
+        )
+
+        Toxin.syncStatusOrbs(player)
+        return true
+    }
+
+    internal fun startWithoutInitialHit(
+        player: Player,
+        initialDamage: Int,
+    ) {
+        require(initialDamage > 0) {
+            "`initialDamage` must be greater than 0."
+        }
+
+        val severity =
+            severityForInitialDamage(initialDamage)
+
+        VarPlayerIntMapSetter.set(
+            player,
+            "varp.poison_severity",
+            severity,
+        )
+
+        player.timer(
+            "timer.player_poison",
+            TICK_INTERVAL,
+        )
+
+        Toxin.syncStatusOrbs(player)
+    }
+
     public fun tryPoison(player: Player, source: Npc): Boolean =
-        tryPoison(player, initialDamage = 0, source)
+        tryPoison(player, initialDamage = 0, source = source,)
 
     public fun tryPoison(player: Player, initialDamage: Int = 0, source: Npc): Boolean {
         val fromParam = source.visType.paramOrNull(params.npc_poison_severity) ?: 0
@@ -60,6 +125,9 @@ public object PlayerPoison {
         if (PlayerVenom.isEnvenomed(player)) {
             return false
         }
+        if (ToxinImmunity.hasPoisonImmunity(player)) {
+            return false
+        }
         if (hasWornPoisonEnvenomImmunity(player)) {
             return false
         }
@@ -79,7 +147,8 @@ public object PlayerPoison {
         }
 
         VarPlayerIntMapSetter.set(player, "varp.poison_severity", storedSeverity)
-        val firstHitDamage = if (initialDamage > 0) initialDamage else damageForSeverity(storedSeverity)
+        val firstHitDamage =
+            if (initialDamage > 0) initialDamage else damageForSeverity(storedSeverity)
         queuePoisonHit(player, firstHitDamage)
 
         val severity = storedSeverity - 1
@@ -122,8 +191,19 @@ public object PlayerPoison {
         severity--
         if (severity <= 0) {
             clear(player)
-        } else {
-            VarPlayerIntMapSetter.set(player, "varp.poison_severity", severity)
+            return
         }
+        VarPlayerIntMapSetter.set(
+            player,
+            "varp.poison_severity",
+            severity,
+        )
+
+        player.timer(
+            "timer.player_poison",
+            TICK_INTERVAL,
+        )
+
+        Toxin.syncStatusOrbs(player)
     }
 }

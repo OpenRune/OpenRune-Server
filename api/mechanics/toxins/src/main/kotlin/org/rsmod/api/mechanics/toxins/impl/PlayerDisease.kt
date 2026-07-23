@@ -19,6 +19,7 @@ import org.rsmod.api.player.stat.stat
 import org.rsmod.api.player.stat.statSub
 import org.rsmod.api.player.vars.VarPlayerIntMapSetter
 import org.rsmod.game.entity.Player
+import org.rsmod.game.entity.timerAt
 import org.rsmod.game.hit.Hit
 import org.rsmod.game.hit.HitType
 import org.rsmod.game.type.getInvObj
@@ -84,6 +85,49 @@ public object PlayerDisease {
         Toxin.syncStatusOrbs(player)
     }
 
+    public fun reduceDrain(
+        player: Player,
+        amount: Int,
+    ): Boolean {
+        if (amount <= 0) {
+            return false
+        }
+
+        val current =
+            player.vars["varp.disease_drain"]
+
+        if (current <= 0) {
+            return false
+        }
+
+        val reduced =
+            (current - amount)
+                .coerceAtLeast(0)
+
+        if (reduced == 0) {
+            clear(player)
+            return true
+        }
+
+        VarPlayerIntMapSetter.set(
+            player,
+            "varp.disease_drain",
+            reduced,
+        )
+
+        player.clearTimer(
+            "timer.player_disease",
+        )
+
+        player.timer(
+            "timer.player_disease",
+            TICK_INTERVAL,
+        )
+
+        Toxin.syncStatusOrbs(player)
+        return true
+    }
+
     public fun onDiseaseTimerTick(player: Player) {
         if (!isDiseased(player)) {
             clear(player)
@@ -110,10 +154,24 @@ public object PlayerDisease {
         player.timer("timer.player_disease", TICK_INTERVAL)
     }
 
-    public fun rearmTimerAfterLogin(player: Player) {
-        if (isDiseased(player)) {
-            player.timer("timer.player_disease", TICK_INTERVAL)
+    public fun rearmTimerAfterLogin(
+        player: Player,
+        clock: Int =
+            player.currentMapClock,
+    ) {
+        if (!isDiseased(player)) {
+            return
         }
+
+        player.clearTimer(
+            "timer.player_disease",
+        )
+
+        player.timerAt(
+            timer = "timer.player_disease",
+            mapClock = clock,
+            cycles = TICK_INTERVAL,
+        )
     }
 
     private fun applyDiseaseDrain(player: Player, targetStat: String, drain: Int) {
