@@ -1,13 +1,10 @@
 package org.rsmod.api.shops.operation
 
 import dev.openrune.rscm.RSCM
-import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import dev.openrune.types.ItemServerType
-import jakarta.inject.Inject
 import kotlin.math.max
 import kotlin.math.min
-import org.rsmod.api.config.refs.params
 import org.rsmod.api.invtx.invTransaction
 import org.rsmod.api.invtx.select
 import org.rsmod.api.market.MarketPrices
@@ -15,8 +12,8 @@ import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.output.objExamine
 import org.rsmod.api.shops.config.ShopParams
 import org.rsmod.api.shops.cost.StandardGpCostCalculations
+import org.rsmod.api.shops.currency.ShopCurrency
 import org.rsmod.api.shops.restock.ShopRestockProcess
-import org.rsmod.api.utils.format.formatAmount
 import org.rsmod.game.entity.Player
 import org.rsmod.game.inv.InvObj
 import org.rsmod.game.inv.Inventory
@@ -27,14 +24,12 @@ import org.rsmod.objtx.TransactionResult
 
 private typealias CostCalculation = StandardGpCostCalculations
 
-public class StandardGpShopOperations
-@Inject
-constructor(
+public open class StandardCurrencyShopOperations(
+    protected val currency: ShopCurrency,
     private val restockProcess: ShopRestockProcess,
     private val marketPrices: MarketPrices,
+    private val costOf: (ItemServerType) -> Int = { it.cost },
 ) : StandardShopOperations {
-    private val currencyObj: ItemServerType by lazy { ItemServerType("obj.coins".asRSCM(RSCMType.OBJ)) }
-
     override fun examineShopValue(player: Player, shop: Shop, slot: Int) {
         val obj = shop.inv[slot] ?: return
         val objType = getInvObj(obj)
@@ -44,16 +39,11 @@ constructor(
             CostCalculation.calculateShopSellSingleValue(
                 initialStock = shopInitialObjCount,
                 currentStock = obj.count,
-                baseCost = objType.cost,
+                baseCost = costOf(objType),
                 sellPercentage = shop.sellPercentage,
                 changePercentage = shop.changePercentage,
             )
-
-        if (value == 1) {
-            player.mes("${objType.name}: currently costs 1 coin.")
-        } else {
-            player.mes("${objType.name}: currently costs ${value.formatAmount} coins.")
-        }
+        player.mes(currency.shopCostMessage(objType.name, value))
     }
 
     override fun shopBuy(player: Player, sideInv: Inventory, shop: Shop, slot: Int, request: Int) {
@@ -67,12 +57,9 @@ constructor(
             return
         }
 
-
         val internalName = RSCM.getReverseMapping(RSCMType.OBJ, objType.id)
-        val currencyInternalName = RSCM.getReverseMapping(RSCMType.OBJ, currencyObj.id)
-
         val shopInitialObjCount = shopInv.initialStockCount(obj)
-        val availableCurrencyCount = sideInv.count(currencyInternalName)
+        val availableCurrencyCount = currency.balance(player, sideInv)
         val cappedRequest =
             if (objType.isStackable) {
                 min(Int.MAX_VALUE - sideInv.count(internalName), initialPurchaseRequest)
@@ -84,25 +71,33 @@ constructor(
             CostCalculation.calculateShopSellBulkParameters(
                 initialStock = shopInitialObjCount,
                 currentStock = obj.count,
-                baseCost = objType.cost,
+                baseCost = costOf(objType),
                 requestedCount = max(1, cappedRequest),
                 availableCurrency = availableCurrencyCount,
                 sellPercentage = shop.sellPercentage,
                 changePercentage = shop.changePercentage,
             )
         val finalPurchaseCost = max(totalCost, firstObjPrice)
+        val currencyObj = currency.invObj
+
+        if (currencyObj == null && finalPurchaseCount == 0) {
+            player.mes(currency.notEnoughMessage())
+            return
+        }
 
         val transaction =
             player.invTransaction(sideInv) {
                 val inv = select(sideInv)
-                val shop = select(shopInv)
-                delete {
-                    this.from = inv
-                    this.obj = currencyObj.id
-                    this.strictCount = finalPurchaseCost
+                val shopSelect = select(shopInv)
+                if (currencyObj != null) {
+                    delete {
+                        this.from = inv
+                        this.obj = currencyObj.id
+                        this.strictCount = finalPurchaseCost
+                    }
                 }
                 delete {
-                    this.from = shop
+                    this.from = shopSelect
                     this.obj = obj.id
                     this.strictCount = finalPurchaseCount
                 }
@@ -114,17 +109,20 @@ constructor(
             }
 
         val success = transaction.success
-        val currencyDel = transaction.results[0]
-        val stockObjAdd = transaction.results.getOrNull(2)
+        val currencyDelIndex = if (currencyObj != null) 0 else -1
+        val stockObjAddIndex = if (currencyObj != null) 2 else 1
+        val currencyDel =
+            if (currencyDelIndex >= 0) transaction.results.getOrNull(currencyDelIndex) else null
+        val stockObjAdd = transaction.results.getOrNull(stockObjAddIndex)
 
         val message =
             when {
-                currencyDel == TransactionResult.ObjNotFound -> NOT_ENOUGH_COINS
-                currencyDel == TransactionResult.NotEnoughObjCount -> NOT_ENOUGH_COINS
+                currencyDel == TransactionResult.ObjNotFound -> currency.notEnoughMessage()
+                currencyDel == TransactionResult.NotEnoughObjCount -> currency.notEnoughMessage()
                 stockObjAdd == TransactionResult.NotEnoughSpace -> NOT_ENOUGH_INV_SPACE
                 success && finalPurchaseCount < initialPurchaseRequest -> {
                     if (availableCurrencyCount <= finalPurchaseCost) {
-                        NOT_ENOUGH_COINS
+                        currency.notEnoughMessage()
                     } else {
                         NOT_ENOUGH_INV_SPACE
                     }
@@ -134,6 +132,9 @@ constructor(
         message?.let(player::mes)
 
         if (success) {
+            if (currencyObj == null) {
+                currency.deduct(player, finalPurchaseCost)
+            }
             restockProcess += shopInv
         }
 
@@ -178,23 +179,17 @@ constructor(
         }
 
         val internalName = RSCM.getReverseMapping(RSCMType.OBJ, objType.id)
-
         val shopCurrentObjCount = shopInv.count(internalName)
         val shopInitialObjCount = shopInv.initialStockCount(objType)
         val value =
             CostCalculation.calculateShopBuySingleValue(
                 initialStock = shopInitialObjCount,
                 currentStock = shopCurrentObjCount,
-                baseCost = objType.cost,
+                baseCost = costOf(objType),
                 buyPercentage = shop.buyPercentage,
                 changePercentage = shop.changePercentage,
             )
-
-        if (value == 1) {
-            player.mes("${objType.name}: shop will buy for 1 coin.")
-        } else {
-            player.mes("${objType.name}: shop will buy for ${value.formatAmount} coins.")
-        }
+        player.mes(currency.shopBuyMessage(objType.name, value))
     }
 
     override fun invSell(player: Player, sideInv: Inventory, shop: Shop, slot: Int, request: Int) {
@@ -226,41 +221,37 @@ constructor(
         }
 
         val uncertTypeInternalName = RSCM.getReverseMapping(RSCMType.OBJ, uncertType.id)
-        val currencyObjInternalName = RSCM.getReverseMapping(RSCMType.OBJ, currencyObj.id)
-
-
         val shopCurrentObjCount = shopInv.count(uncertTypeInternalName)
         val shopInitialObjCount = shopInv.initialStockCount(uncertType)
-
-        val currencyCount = sideInv.count(currencyObjInternalName)
         val cappedRequest = min(Int.MAX_VALUE - shopCurrentObjCount, invCappedRequest)
 
         val (count, payment) =
             CostCalculation.calculateShopBuyBulkParameters(
                 initialStock = shopInitialObjCount,
                 currentStock = shopCurrentObjCount,
-                baseCost = uncertType.cost,
+                baseCost = costOf(uncertType),
                 requestedCount = max(1, cappedRequest),
-                currencyCap = Int.MAX_VALUE - currencyCount,
+                currencyCap = currency.receiveCap(player, sideInv),
                 buyPercentage = shop.buyPercentage,
                 changePercentage = shop.changePercentage,
             )
 
+        val currencyObj = currency.invObj
         val transaction =
             player.invTransaction(sideInv) {
                 val inv = select(sideInv)
-                val shop = select(shop.inv)
+                val shopSelect = select(shop.inv)
                 delete {
                     this.from = inv
                     this.obj = obj.id
                     this.strictCount = count
                 }
                 insert {
-                    this.into = shop
+                    this.into = shopSelect
                     this.obj = uncertType.id
                     this.strictCount = count
                 }
-                if (payment > 0) {
+                if (currencyObj != null && payment > 0) {
                     insert {
                         this.into = inv
                         this.obj = currencyObj.id
@@ -270,6 +261,9 @@ constructor(
             }
 
         if (transaction.success) {
+            if (currencyObj == null) {
+                currency.credit(player, payment)
+            }
             restockProcess += shopInv
         }
     }
@@ -297,7 +291,6 @@ constructor(
     }
 
     public companion object {
-        public const val NOT_ENOUGH_COINS: String = "You don't have enough coins."
         public const val NOT_ENOUGH_INV_SPACE: String = "You don't have enough inventory space."
     }
 }

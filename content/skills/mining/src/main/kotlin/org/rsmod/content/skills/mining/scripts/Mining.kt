@@ -366,20 +366,8 @@ constructor(
         return RSCM.getReverseMapping(RSCMType.SEQ, seq.id)
     }
 
-    private fun ProtectedAccess.pickaxeActionDelay(pickaxe: InvObj): Int {
-        val name = getInvObj(pickaxe).internalName
-        val base = getInvObj(pickaxe).pickaxeDelay
-        return when (name) {
-            "obj.dragon_pickaxe",
-            "obj.dragon_pickaxe_pretty",
-            "obj.infernal_pickaxe",
-            "obj.infernal_pickaxe_empty",
-            "obj.3a_pickaxe",
-            "obj.crystal_pickaxe_inactive", -> if (random.of(6) == 0) 2 else 3
-            "obj.crystal_pickaxe" -> if (random.of(4) == 0) 2 else 3
-            else -> base
-        }
-    }
+    private fun ProtectedAccess.pickaxeActionDelay(pickaxe: InvObj): Int =
+        Companion.pickaxeActionDelay(pickaxe, random)
 
     private fun ProtectedAccess.mesPickaxeMissing() {
         mes("You need a pickaxe to mine this rock.")
@@ -416,28 +404,54 @@ constructor(
         val ItemServerType.pickaxeWallAnim: SequenceServerType by
             objParam(MiningParams.skill_wall_anim)
 
+        fun pickaxeActionDelay(pickaxe: InvObj, random: org.rsmod.api.random.GameRandom): Int {
+            val type = getInvObj(pickaxe)
+            val base = type.pickaxeDelay
+            return when (type.internalName) {
+                "obj.dragon_pickaxe",
+                "obj.dragon_pickaxe_pretty",
+                "obj.zalcano_pickaxe",
+                "obj.infernal_pickaxe",
+                "obj.infernal_pickaxe_empty",
+                "obj.3a_pickaxe",
+                "obj.crystal_pickaxe_inactive", -> if (random.of(6) == 0) 2 else 3
+                "obj.crystal_pickaxe" -> if (random.of(4) == 0) 2 else 3
+                else -> base
+            }
+        }
+
         fun findPickaxe(player: Player): InvObj? {
             val worn = player.wornPickaxe()
-            val carried = player.carriedPickaxe()
-            if (worn != null && carried != null) {
-                return if (getInvObj(worn).pickaxeLevelReq >= getInvObj(carried).pickaxeLevelReq) {
-                    worn
-                } else {
-                    carried
+            val carried = player.carriedPickaxes()
+            val candidates =
+                buildList {
+                    if (worn != null) {
+                        add(worn)
+                    }
+                    addAll(carried)
                 }
-            }
-            return worn ?: carried
+            return candidates.maxWithOrNull(pickaxeComparator)
         }
+
+        /** Higher is better: lower action delay first, then higher mining level req. */
+        private val pickaxeComparator: Comparator<InvObj> =
+            Comparator { left, right ->
+                val leftType = getInvObj(left)
+                val rightType = getInvObj(right)
+                val byDelay = rightType.pickaxeDelay.compareTo(leftType.pickaxeDelay)
+                if (byDelay != 0) {
+                    return@Comparator byDelay
+                }
+                leftType.pickaxeLevelReq.compareTo(rightType.pickaxeLevelReq)
+            }
 
         private fun Player.wornPickaxe(): InvObj? {
             val righthand = righthand ?: return null
             return righthand.takeIf { getInvObj(it).isUsablePickaxe(this) }
         }
 
-        private fun Player.carriedPickaxe(): InvObj? {
-            return inv.filterNotNull { getInvObj(it).isUsablePickaxe(this) }
-                .maxByOrNull { getInvObj(it).pickaxeLevelReq }
-        }
+        private fun Player.carriedPickaxes(): List<InvObj> =
+            inv.filterNotNull { getInvObj(it).isUsablePickaxe(this) }
 
         private fun ItemServerType.isUsablePickaxe(player: Player): Boolean {
             if (!isContentType("content.mining_pickaxe") || player.miningLvl < pickaxeLevelReq) {

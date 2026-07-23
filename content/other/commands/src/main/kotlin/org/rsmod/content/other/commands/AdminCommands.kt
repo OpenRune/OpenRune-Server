@@ -24,6 +24,9 @@ import org.rsmod.api.player.ironman.PlayerGamemode
 import org.rsmod.api.player.ironman.setGamemode
 import org.rsmod.api.player.output.MiscOutput
 import org.rsmod.api.player.output.mes
+import org.rsmod.api.player.output.soundSynth
+import org.rsmod.api.player.cheat.adminGodMode
+import org.rsmod.api.player.cheat.adminMaxHit
 import org.rsmod.api.player.protect.ProtectedAccessLauncher
 import org.rsmod.api.player.queueDeath
 import org.rsmod.api.player.stat.PlayerSkillXP
@@ -96,6 +99,9 @@ constructor(
         onCommand("anim", "Play animation", ::anim)
         onCommand("spot", "Play spotanim", ::spotanim) {
             invalidArgs = "Use as ::spot spotanimDebugNameOrId (ex: fx_emote_party01_active)"
+        }
+        onCommand("synth", "Play synth sound", ::synth) {
+            invalidArgs = "Use as ::synth idOrName (ex: ::synth 3600 or ::synth pillory_wrong)"
         }
         onCommand("object", "Spawn loc", ::locAdd) {
             invalidArgs = "Use as ::object duration locDebugNameOrId (ex: 100 bookcase)"
@@ -355,6 +361,29 @@ constructor(
             player.spotanim("spotanim.${typeName}", delay = 0, height = height, slot = 0)
             player.mes("Spotanim: '${typeName}' (height=$height)")
             logger.debug { "Spotanim: $typeName" }
+        }
+
+    private fun synth(cheat: Cheat) =
+        with(cheat) {
+            val arg = args.getOrNull(0)
+            if (arg == null) {
+                player.mes("Use as ::synth idOrName (ex: ::synth 3600 or ::synth pillory_wrong)")
+                return
+            }
+            val id = arg.toIntOrNull()
+            if (id != null) {
+                player.soundSynth(id)
+                player.mes("Synth: $id")
+                return
+            }
+            val typeName = arg.removePrefix("synth.")
+            val typeId = "synth.$typeName".asRSCM()
+            if (typeId == -1) {
+                player.mes("There is no synth mapped to: '$typeName'")
+                return
+            }
+            player.soundSynth("synth.$typeName")
+            player.mes("Synth: '$typeName' ($typeId)")
         }
 
     private fun locAdd(cheat: Cheat) =
