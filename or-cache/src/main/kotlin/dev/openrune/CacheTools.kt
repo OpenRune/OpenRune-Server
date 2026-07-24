@@ -27,6 +27,7 @@ import dev.openrune.tables.DidYouKnow
 import dev.openrune.tables.InstanceSettingsTable
 import dev.openrune.tables.PickableObjects
 import dev.openrune.tables.SettingConfigs
+import dev.openrune.tables.ShopCurrencyTable
 import dev.openrune.tables.StatComponents
 import dev.openrune.tables.skills.Cooking
 import dev.openrune.tables.skills.Firemaking
@@ -105,6 +106,7 @@ fun tablesToPack() = listOf(
     DidYouKnow.didYouknow(),
     InstanceSettingsTable.instanceSettings(),
     ShootingStars.locations(),
+    ShopCurrencyTable.shopCurrencies(),
 )
 
 fun downloadRev(type: TaskType) {

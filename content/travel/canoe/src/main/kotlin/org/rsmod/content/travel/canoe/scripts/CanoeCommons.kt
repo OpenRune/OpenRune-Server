@@ -147,25 +147,29 @@ internal val ItemServerType.axeWoodcuttingReq: Int by objParam(params.levelrequi
 
 internal fun findAxe(player: Player): InvObj? {
     val worn = player.wornAxe()
-    val carried = player.carriedAxe()
-    if (worn != null && carried != null) {
-        if (getInvObj(worn).axeWoodcuttingReq >= getInvObj(carried).axeWoodcuttingReq) {
-            return worn
+    val carried = player.carriedAxes()
+    val candidates =
+        buildList {
+            if (worn != null) {
+                add(worn)
+            }
+            addAll(carried)
         }
-        return carried
-    }
-    return worn ?: carried
+    return candidates.maxWithOrNull(axeComparator)
 }
+
+private val axeComparator: Comparator<InvObj> =
+    Comparator { left, right ->
+        getInvObj(left).axeWoodcuttingReq.compareTo(getInvObj(right).axeWoodcuttingReq)
+    }
 
 private fun Player.wornAxe(): InvObj? {
     val righthand = righthand ?: return null
     return righthand.takeIf { getInvObj(it).isUsableAxe(woodcuttingLvl) }
 }
 
-private fun Player.carriedAxe(): InvObj? {
-    return inv.filterNotNull { getInvObj(it).isUsableAxe(woodcuttingLvl) }
-        .maxByOrNull { getInvObj(it).axeWoodcuttingReq }
-}
+private fun Player.carriedAxes(): List<InvObj> =
+    inv.filterNotNull { getInvObj(it).isUsableAxe(woodcuttingLvl) }
 
 private fun ItemServerType.isUsableAxe(woodcuttingLevel: Int): Boolean =
     isContentType("content.woodcutting_axe") && woodcuttingLevel >= axeWoodcuttingReq
