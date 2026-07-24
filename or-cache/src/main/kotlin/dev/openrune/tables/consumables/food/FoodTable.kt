@@ -4,7 +4,7 @@ import dev.openrune.definition.dbtables.DBTable
 import dev.openrune.definition.dbtables.dbTable
 import dev.openrune.definition.util.VarType
 
-public object FoodTable {
+object FoodTable {
     private const val COL_ITEMS = 0
     private const val COL_HEAL = 1
     private const val COL_COMBO = 2
@@ -13,10 +13,8 @@ public object FoodTable {
     private const val COL_EAT_DELAY = 5
     private const val COL_COMBAT_DELAY = 6
 
-    public fun table(): DBTable {
-        val foods = FoodTomlLoader.load()
-
-        return dbTable(
+    fun table(): DBTable =
+        dbTable(
             "dbtable.food",
             serverOnly = true,
         ) {
@@ -56,7 +54,7 @@ public object FoodTable {
                 VarType.INT,
             )
 
-            foods.forEach { food ->
+            FoodData.entries.forEach { food ->
                 row(food.row) {
                     columnRSCM(
                         COL_ITEMS,
@@ -95,5 +93,4 @@ public object FoodTable {
                 }
             }
         }
-    }
 }

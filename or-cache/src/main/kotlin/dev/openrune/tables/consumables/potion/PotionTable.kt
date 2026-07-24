@@ -19,84 +19,81 @@ public object PotionTable {
     private const val RAID_ONLY = 12
 
     public fun table() =
-        PotionTomlLoader.potions().let { potions ->
+        dbTable(
+            "dbtable.potion",
+            serverOnly = true,
+        ) {
+            column("key", KEY, VarType.STRING)
+            column("name", NAME, VarType.STRING)
+            column(
+                "items",
+                ITEMS,
+                VarType.OBJ,
+            )
+            column("empty", EMPTY, VarType.OBJ)
+            column("effect", EFFECT, VarType.DBROW)
+            column("category", CATEGORY, VarType.STRING)
+            column(
+                "wilderness_only",
+                WILDERNESS_ONLY,
+                VarType.BOOLEAN,
+            )
+            column("mix", MIX, VarType.BOOLEAN)
+            column("heal", HEAL, VarType.INT)
+            column(
+                "drink_delay",
+                DRINK_DELAY,
+                VarType.INT,
+            )
+            column(
+                "combat_delay",
+                COMBAT_DELAY,
+                VarType.INT,
+            )
+            column(
+                "minigame_only",
+                MINIGAME_ONLY,
+                VarType.STRING,
+            )
+            column(
+                "raid_only",
+                RAID_ONLY,
+                VarType.STRING,
+            )
 
-            dbTable(
-                "dbtable.potion",
-                serverOnly = true,
-            ) {
-                column("key", KEY, VarType.STRING)
-                column("name", NAME, VarType.STRING)
-                column(
-                    "items",
-                    ITEMS,
-                    VarType.OBJ,
-                )
-                column("empty", EMPTY, VarType.OBJ)
-                column("effect", EFFECT, VarType.DBROW)
-                column("category", CATEGORY, VarType.STRING)
-                column(
-                    "wilderness_only",
-                    WILDERNESS_ONLY,
-                    VarType.BOOLEAN,
-                )
-                column("mix", MIX, VarType.BOOLEAN)
-                column("heal", HEAL, VarType.INT)
-                column(
-                    "drink_delay",
-                    DRINK_DELAY,
-                    VarType.INT,
-                )
-                column(
-                    "combat_delay",
-                    COMBAT_DELAY,
-                    VarType.INT,
-                )
-                column(
-                    "minigame_only",
-                    MINIGAME_ONLY,
-                    VarType.STRING,
-                )
-                column(
-                    "raid_only",
-                    RAID_ONLY,
-                    VarType.STRING,
-                )
-
-                potions.forEach { potion ->
-                    row(potion.row) {
-                        column(KEY, potion.key)
-                        column(NAME, potion.name)
-                        columnRSCM(
-                            ITEMS,
-                            *potion.items.toTypedArray(),
-                        )
-                        columnRSCM(EMPTY, potion.empty)
-                        columnRSCM(EFFECT, potion.effect)
-                        column(CATEGORY, potion.category)
-                        column(
-                            WILDERNESS_ONLY,
-                            potion.wildernessOnly,
-                        )
-                        column(MIX, potion.mix)
-                        column(HEAL, potion.heal)
-                        column(
-                            DRINK_DELAY,
-                            potion.drinkDelay,
-                        )
-                        column(
-                            COMBAT_DELAY,
-                            potion.combatDelay,
-                        )
-                        column(
-                            MINIGAME_ONLY,
-                            potion.minigameOnly,
-                        )
-                        column(
-                            RAID_ONLY,
-                            potion.raidOnly,
-                        )
-                    }
+            PotionData.entries.forEach { potion ->
+                row(potion.row) {
+                    column(KEY, potion.key)
+                    column(NAME, potion.displayName)
+                    columnRSCM(
+                        ITEMS,
+                        *potion.items.toTypedArray(),
+                    )
+                    columnRSCM(EMPTY, potion.empty)
+                    columnRSCM(EFFECT, potion.effect)
+                    column(CATEGORY, potion.category)
+                    column(
+                        WILDERNESS_ONLY,
+                        potion.wildernessOnly,
+                    )
+                    column(MIX, potion.mix)
+                    column(HEAL, potion.heal)
+                    column(
+                        DRINK_DELAY,
+                        potion.drinkDelay,
+                    )
+                    column(
+                        COMBAT_DELAY,
+                        potion.combatDelay,
+                    )
+                    column(
+                        MINIGAME_ONLY,
+                        potion.minigameOnly,
+                    )
+                    column(
+                        RAID_ONLY,
+                        potion.raidOnly,
+                    )
                 }
             }
         }

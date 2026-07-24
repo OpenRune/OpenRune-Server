@@ -90,7 +90,7 @@ public object PlayerPoison {
     }
 
     public fun tryPoison(player: Player, source: Npc): Boolean =
-        tryPoison(player, initialDamage = 0, source = source,)
+        tryPoison(player, initialDamage = 0, source = source)
 
     public fun tryPoison(player: Player, initialDamage: Int = 0, source: Npc): Boolean {
         val fromParam = source.visType.paramOrNull(params.npc_poison_severity) ?: 0
