@@ -491,6 +491,7 @@ constructor(
         attackType: MeleeAttackType? = attack.type,
         attackStyle: MeleeAttackStyle? = attack.style,
         blockType: MeleeAttackType? = attack.type,
+        roundMaxHitUp: Boolean = false,
     ): Int {
         val successfulAccuracyRoll =
             rollMeleeAccuracy(
@@ -504,7 +505,14 @@ constructor(
         if (!successfulAccuracyRoll) {
             return 0
         }
-        return rollMeleeMaxHit(source, target, attackType, attackStyle, maxHitMultiplier)
+        return rollMeleeMaxHit(
+            source,
+            target,
+            attackType,
+            attackStyle,
+            maxHitMultiplier,
+            roundMaxHitUp,
+        )
     }
 
     /**
@@ -602,8 +610,10 @@ constructor(
         attackType: MeleeAttackType?,
         attackStyle: MeleeAttackStyle?,
         multiplier: Double,
+        roundUp: Boolean = false,
     ): Int {
-        val maxHit = calculateMeleeMaxHit(source, target, attackType, attackStyle, multiplier)
+        val maxHit =
+            calculateMeleeMaxHit(source, target, attackType, attackStyle, multiplier, roundUp)
         if (source.adminMaxHit) {
             return maxHit
         }
@@ -630,10 +640,13 @@ constructor(
         attackType: MeleeAttackType?,
         attackStyle: MeleeAttackStyle?,
         multiplier: Double,
+        roundUp: Boolean = false,
     ): Int {
         return when (target) {
-            is Npc -> calculateMeleeMaxHit(source, target, attackType, attackStyle, multiplier)
-            is Player -> calculateMeleeMaxHit(source, target, attackType, attackStyle, multiplier)
+            is Npc ->
+                calculateMeleeMaxHit(source, target, attackType, attackStyle, multiplier, roundUp)
+            is Player ->
+                calculateMeleeMaxHit(source, target, attackType, attackStyle, multiplier, roundUp)
         }
     }
 
@@ -643,7 +656,9 @@ constructor(
         attackType: MeleeAttackType?,
         attackStyle: MeleeAttackStyle?,
         specMultiplier: Double,
-    ): Int = maxHits.getMeleeMaxHit(source, target, attackType, attackStyle, specMultiplier)
+        roundUp: Boolean,
+    ): Int =
+        maxHits.getMeleeMaxHit(source, target, attackType, attackStyle, specMultiplier, roundUp)
 
     private fun calculateMeleeMaxHit(
         source: Player,
@@ -651,7 +666,9 @@ constructor(
         attackType: MeleeAttackType?,
         attackStyle: MeleeAttackStyle?,
         specMultiplier: Double,
-    ): Int = maxHits.getMeleeMaxHit(source, target, attackType, attackStyle, specMultiplier)
+        roundUp: Boolean,
+    ): Int =
+        maxHits.getMeleeMaxHit(source, target, attackType, attackStyle, specMultiplier, roundUp)
 
     /**
      * Queues a melee hit on [target], applying damage after the specified [delay].

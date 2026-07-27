@@ -3,6 +3,7 @@ package org.rsmod.api.combat.formulas.maxhit.melee
 import dev.openrune.types.NpcServerType
 import jakarta.inject.Inject
 import java.util.EnumSet
+import kotlin.math.ceil
 import org.rsmod.api.combat.commons.styles.MeleeAttackStyle
 import org.rsmod.api.combat.commons.types.MeleeAttackType
 import org.rsmod.api.combat.formulas.attributes.CombatMeleeAttributes
@@ -46,6 +47,7 @@ constructor(
         attackType: MeleeAttackType?,
         attackStyle: MeleeAttackStyle?,
         specialMultiplier: Double,
+        roundUp: Boolean = false,
     ): Int {
         val maxHit =
             computeMaxHit(
@@ -56,6 +58,7 @@ constructor(
                 attackType = attackType,
                 attackStyle = attackStyle,
                 specialMultiplier = specialMultiplier,
+                roundUp = roundUp,
             )
         player.maxHit = maxHit
         return maxHit
@@ -69,6 +72,7 @@ constructor(
         attackType: MeleeAttackType?,
         attackStyle: MeleeAttackStyle?,
         specialMultiplier: Double,
+        roundUp: Boolean = false,
     ): Int {
         val meleeAttributes = meleeAttributes.collect(source, attackType)
         addProcAttributes(meleeAttributes)
@@ -78,7 +82,8 @@ constructor(
 
         val modifiedDamage =
             computeModifiedDamage(source, attackStyle, meleeAttributes, npcAttributes)
-        val specMaxHit = (modifiedDamage * specialMultiplier).toInt()
+        val scaled = modifiedDamage * specialMultiplier
+        val specMaxHit = if (roundUp) ceil(scaled).toInt() else scaled.toInt()
         return modifyPostSpec(source, specMaxHit, meleeAttributes, npcAttributes)
     }
 
