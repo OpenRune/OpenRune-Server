@@ -43,37 +43,21 @@ class DualMacuahuitlWeapons @Inject constructor() : WeaponMap {
             target: PathingEntity,
             attack: CombatAttack.Melee,
         ): Int {
-            val firstLanded = rollAccuracy(target, attack)
-            val firstDamage = if (firstLanded) rollMaxHit(target, attack) else 0
-            manager.queueMeleeHit(this, target, firstDamage, delay = 1)
-
-            val secondLanded = rollAccuracy(target, attack)
-            val secondDamage = if (secondLanded) rollMaxHit(target, attack) else 0
-            manager.queueMeleeHit(this, target, secondDamage, delay = 2)
-
-            return firstDamage + secondDamage
+            var totalDamage = 0
+            for ((delay, roundUp) in listOf(1 to false, 2 to true)) {
+                val damage =
+                    manager.rollMeleeDamage(
+                        source = this,
+                        target = target,
+                        attack = attack,
+                        accuracyMultiplier = 1.0,
+                        maxHitMultiplier = 0.5,
+                        roundMaxHitUp = roundUp,
+                    )
+                totalDamage += damage
+                manager.queueMeleeHit(this, target, damage, delay = delay)
+            }
+            return totalDamage
         }
-
-        private fun ProtectedAccess.rollAccuracy(
-            target: PathingEntity,
-            attack: CombatAttack.Melee,
-        ): Boolean =
-            manager.rollMeleeAccuracy(
-                source = this,
-                target = target,
-                attackType = attack.type,
-                attackStyle = attack.style,
-                blockType = attack.type,
-                multiplier = 1.0,
-            )
-
-        private fun ProtectedAccess.rollMaxHit(target: PathingEntity, attack: CombatAttack.Melee): Int =
-            manager.rollMeleeMaxHit(
-                source = this,
-                target = target,
-                attackType = attack.type,
-                attackStyle = attack.style,
-                multiplier = 1.0,
-            )
     }
 }
