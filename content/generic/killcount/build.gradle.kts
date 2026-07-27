@@ -7,10 +7,8 @@ kotlin {
 }
 
 dependencies {
-    implementation(libs.classgraph)
     implementation(libs.guice)
-    implementation(libs.jackson.dataformat.toml)
-    implementation(libs.jackson.module.kotlin)
+    implementation(projects.api.config)
     implementation(projects.api.death)
     implementation(projects.api.player)
     implementation(projects.api.playerOutput)
