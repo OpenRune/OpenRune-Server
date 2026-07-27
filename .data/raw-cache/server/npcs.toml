@@ -1332,6 +1332,7 @@ maxRange = 40
 defaultMode = "None"
 respawnRate = 30
 [npc.params]
+"param.killcount_varp"="varp.total_rat_boss_kills"
 "param.boss_hp_bar_mode"=2
 "param.death_anim"="seq.npc_rat_boss_death_01"
 
@@ -1344,6 +1345,7 @@ maxRange = 40
 defaultMode = "None"
 respawnRate = 30
 [npc.params]
+"param.killcount_varp"="varp.total_rat_boss_kills"
 "param.boss_hp_bar_mode"=2
 "param.death_anim"="seq.npc_rat_boss_death_01"
 
@@ -1366,6 +1368,7 @@ wanderRange = 4
 respawnRate = 16
 
 [npc.params]
+"param.killcount_varp"="varp.total_kbd_kills"
 "param.boss_hp_bar_mode"=1
 
 [[npc]]
@@ -1447,3 +1450,1786 @@ inherit = "npc.wilderness_capeseller_10"
 [npc.params]
 "param.shop_inventory" = "inv.wildernesscapeshop10"
 "param.shop_name" = "Sam's Wilderness Cape Shop"
+
+[[npc]]
+id = "npc.abyssalsire_sire_apocalypse"
+inherit = "npc.abyssalsire_sire_apocalypse"
+[npc.params]
+"param.killcount_varp"="varp.total_abyssalsire_kills"
+
+[[npc]]
+id = "npc.abyssalsire_sire_panicking"
+inherit = "npc.abyssalsire_sire_panicking"
+[npc.params]
+"param.killcount_varp"="varp.total_abyssalsire_kills"
+
+[[npc]]
+id = "npc.abyssalsire_sire_puppet"
+inherit = "npc.abyssalsire_sire_puppet"
+[npc.params]
+"param.killcount_varp"="varp.total_abyssalsire_kills"
+
+[[npc]]
+id = "npc.abyssalsire_sire_stasis_awake"
+inherit = "npc.abyssalsire_sire_stasis_awake"
+[npc.params]
+"param.killcount_varp"="varp.total_abyssalsire_kills"
+
+[[npc]]
+id = "npc.abyssalsire_sire_stasis_sleeping"
+inherit = "npc.abyssalsire_sire_stasis_sleeping"
+[npc.params]
+"param.killcount_varp"="varp.total_abyssalsire_kills"
+
+[[npc]]
+id = "npc.abyssalsire_sire_stasis_stunned"
+inherit = "npc.abyssalsire_sire_stasis_stunned"
+[npc.params]
+"param.killcount_varp"="varp.total_abyssalsire_kills"
+
+[[npc]]
+id = "npc.abyssalsire_sire_wandering"
+inherit = "npc.abyssalsire_sire_wandering"
+[npc.params]
+"param.killcount_varp"="varp.total_abyssalsire_kills"
+
+[[npc]]
+id = "npc.amoxliatl"
+inherit = "npc.amoxliatl"
+[npc.params]
+"param.killcount_varp"="varp.kc_amoxliatl"
+
+[[npc]]
+id = "npc.ancient_wyvern"
+inherit = "npc.ancient_wyvern"
+[npc.params]
+"param.killcount_varp"="varp.kc_ancient_wyvern"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.araxxor"
+inherit = "npc.araxxor"
+[npc.params]
+"param.killcount_varp"="varp.total_araxxor_kills"
+
+[[npc]]
+id = "npc.araxyte_large"
+inherit = "npc.araxyte_large"
+[npc.params]
+"param.killcount_varp"="varp.kc_araxyte"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.araxyte_large_bigwander"
+inherit = "npc.araxyte_large_bigwander"
+[npc.params]
+"param.killcount_varp"="varp.kc_araxyte"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.araxyte_normal"
+inherit = "npc.araxyte_normal"
+[npc.params]
+"param.killcount_varp"="varp.kc_araxyte"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.araxyte_normal_bigwander"
+inherit = "npc.araxyte_normal_bigwander"
+[npc.params]
+"param.killcount_varp"="varp.kc_araxyte"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.arceuus_reanimated_bloodveld"
+inherit = "npc.arceuus_reanimated_bloodveld"
+[npc.params]
+"param.killcount_varp"="varp.kc_bloodveld"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.basilisk_knight"
+inherit = "npc.basilisk_knight"
+[npc.params]
+"param.killcount_varp"="varp.kc_basilisk_knight"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.cave_crawler_ice_1"
+inherit = "npc.cave_crawler_ice_1"
+[npc.params]
+"param.killcount_varp"="varp.kc_cave_crawler"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.cave_crawler_ice_2"
+inherit = "npc.cave_crawler_ice_2"
+[npc.params]
+"param.killcount_varp"="varp.kc_cave_crawler"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.cerberus_attacking"
+inherit = "npc.cerberus_attacking"
+[npc.params]
+"param.killcount_varp"="varp.total_cerberus_kills"
+
+[[npc]]
+id = "npc.cerberus_resetting"
+inherit = "npc.cerberus_resetting"
+[npc.params]
+"param.killcount_varp"="varp.total_cerberus_kills"
+
+[[npc]]
+id = "npc.cerberus_sitting"
+inherit = "npc.cerberus_sitting"
+[npc.params]
+"param.killcount_varp"="varp.total_cerberus_kills"
+
+[[npc]]
+id = "npc.crypt_of_tonali_grimy_lizard"
+inherit = "npc.crypt_of_tonali_grimy_lizard"
+[npc.params]
+"param.killcount_varp"="varp.kc_grimy_lizard"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.deal_fever_spiders1"
+inherit = "npc.deal_fever_spiders1"
+[npc.params]
+"param.killcount_varp"="varp.kc_fever_spider"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.drake"
+inherit = "npc.drake"
+[npc.params]
+"param.killcount_varp"="varp.kc_drake"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.drake_death"
+inherit = "npc.drake_death"
+[npc.params]
+"param.killcount_varp"="varp.kc_drake"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.ds2_brut_black_dragon"
+inherit = "npc.ds2_brut_black_dragon"
+[npc.params]
+"param.killcount_varp"="varp.kc_brutal_black_dragon"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.earth_nagua"
+inherit = "npc.earth_nagua"
+[npc.params]
+"param.killcount_varp"="varp.kc_earthen_nagua"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.earth_nagua_reinforced"
+inherit = "npc.earth_nagua_reinforced"
+[npc.params]
+"param.killcount_varp"="varp.kc_earthen_nagua"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.elder_custodian_stalker"
+inherit = "npc.elder_custodian_stalker"
+[npc.params]
+"param.killcount_varp"="varp.kc_elder_custodian_stalker"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.fossil_zygomite"
+inherit = "npc.fossil_zygomite"
+[npc.params]
+"param.killcount_varp"="varp.kc_ancient_zygomite"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.frost_nagua"
+inherit = "npc.frost_nagua"
+[npc.params]
+"param.killcount_varp"="varp.kc_frost_nagua"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.frost_nagua_cutscene"
+inherit = "npc.frost_nagua_cutscene"
+[npc.params]
+"param.killcount_varp"="varp.kc_frost_nagua"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.gargboss_dawn_death"
+inherit = "npc.gargboss_dawn_death"
+[npc.params]
+"param.killcount_varp"="varp.total_gargboss_kills"
+
+[[npc]]
+id = "npc.gargboss_dusk_death"
+inherit = "npc.gargboss_dusk_death"
+[npc.params]
+"param.killcount_varp"="varp.total_gargboss_kills"
+
+[[npc]]
+id = "npc.godwars_armadyl_avatar"
+inherit = "npc.godwars_armadyl_avatar"
+[npc.params]
+"param.killcount_varp"="varp.total_armadyl_kills"
+
+[[npc]]
+id = "npc.godwars_bandos_avatar"
+inherit = "npc.godwars_bandos_avatar"
+[npc.params]
+"param.killcount_varp"="varp.total_bandos_kills"
+
+[[npc]]
+id = "npc.godwars_bloodveld"
+inherit = "npc.godwars_bloodveld"
+[npc.params]
+"param.killcount_varp"="varp.kc_bloodveld"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.godwars_pyrefiend_1"
+inherit = "npc.godwars_pyrefiend_1"
+[npc.params]
+"param.killcount_varp"="varp.kc_pyrefiend"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.godwars_saradomin_avatar"
+inherit = "npc.godwars_saradomin_avatar"
+[npc.params]
+"param.killcount_varp"="varp.total_saradomin_kills"
+
+[[npc]]
+id = "npc.godwars_spiritual_armadyl_mage"
+inherit = "npc.godwars_spiritual_armadyl_mage"
+[npc.params]
+"param.killcount_varp"="varp.kc_spiritual_mage"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.godwars_spiritual_armadyl_ranger"
+inherit = "npc.godwars_spiritual_armadyl_ranger"
+[npc.params]
+"param.killcount_varp"="varp.kc_spiritual_ranger"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.godwars_spiritual_armadyl_warrior"
+inherit = "npc.godwars_spiritual_armadyl_warrior"
+[npc.params]
+"param.killcount_varp"="varp.kc_spiritual_warrior"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.godwars_spiritual_bandos_mage"
+inherit = "npc.godwars_spiritual_bandos_mage"
+[npc.params]
+"param.killcount_varp"="varp.kc_spiritual_mage"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.godwars_spiritual_bandos_ranger"
+inherit = "npc.godwars_spiritual_bandos_ranger"
+[npc.params]
+"param.killcount_varp"="varp.kc_spiritual_ranger"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.godwars_spiritual_bandos_warrior"
+inherit = "npc.godwars_spiritual_bandos_warrior"
+[npc.params]
+"param.killcount_varp"="varp.kc_spiritual_warrior"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.godwars_spiritual_saradomin_mage"
+inherit = "npc.godwars_spiritual_saradomin_mage"
+[npc.params]
+"param.killcount_varp"="varp.kc_spiritual_mage"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.godwars_spiritual_saradomin_ranger"
+inherit = "npc.godwars_spiritual_saradomin_ranger"
+[npc.params]
+"param.killcount_varp"="varp.kc_spiritual_ranger"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.godwars_spiritual_saradomin_warrior"
+inherit = "npc.godwars_spiritual_saradomin_warrior"
+[npc.params]
+"param.killcount_varp"="varp.kc_spiritual_warrior"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.godwars_spiritual_zamorak_mage"
+inherit = "npc.godwars_spiritual_zamorak_mage"
+[npc.params]
+"param.killcount_varp"="varp.kc_spiritual_mage"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.godwars_spiritual_zamorak_ranger"
+inherit = "npc.godwars_spiritual_zamorak_ranger"
+[npc.params]
+"param.killcount_varp"="varp.kc_spiritual_ranger"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.godwars_spiritual_zamorak_warrior"
+inherit = "npc.godwars_spiritual_zamorak_warrior"
+[npc.params]
+"param.killcount_varp"="varp.kc_spiritual_warrior"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.godwars_zamorak_avatar"
+inherit = "npc.godwars_zamorak_avatar"
+[npc.params]
+"param.killcount_varp"="varp.total_zamorak_kills"
+
+[[npc]]
+id = "npc.grimy_lizard"
+inherit = "npc.grimy_lizard"
+[npc.params]
+"param.killcount_varp"="varp.kc_grimy_lizard"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.gryphon_boss"
+inherit = "npc.gryphon_boss"
+[npc.params]
+"param.killcount_varp"="varp.total_gryphon_boss_kills"
+
+[[npc]]
+id = "npc.harmless_island_cave_horror_alpha"
+inherit = "npc.harmless_island_cave_horror_alpha"
+[npc.params]
+"param.killcount_varp"="varp.kc_cave_horror"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.harmless_island_cave_horror_guard"
+inherit = "npc.harmless_island_cave_horror_guard"
+[npc.params]
+"param.killcount_varp"="varp.kc_cave_horror"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.harmless_island_cave_horror_small_guard"
+inherit = "npc.harmless_island_cave_horror_small_guard"
+[npc.params]
+"param.killcount_varp"="varp.kc_cave_horror"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.harmless_island_cave_horror_worker"
+inherit = "npc.harmless_island_cave_horror_worker"
+[npc.params]
+"param.killcount_varp"="varp.kc_cave_horror"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.harmless_island_cave_horror_young_worker"
+inherit = "npc.harmless_island_cave_horror_young_worker"
+[npc.params]
+"param.killcount_varp"="varp.kc_cave_horror"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.hydra"
+inherit = "npc.hydra"
+[npc.params]
+"param.killcount_varp"="varp.kc_hydra"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.hydraboss"
+inherit = "npc.hydraboss"
+[npc.params]
+"param.killcount_varp"="varp.total_hydraboss_kills"
+
+[[npc]]
+id = "npc.hydraboss_2"
+inherit = "npc.hydraboss_2"
+[npc.params]
+"param.killcount_varp"="varp.total_hydraboss_kills"
+
+[[npc]]
+id = "npc.hydraboss_3"
+inherit = "npc.hydraboss_3"
+[npc.params]
+"param.killcount_varp"="varp.total_hydraboss_kills"
+
+[[npc]]
+id = "npc.hydraboss_4"
+inherit = "npc.hydraboss_4"
+[npc.params]
+"param.killcount_varp"="varp.total_hydraboss_kills"
+
+[[npc]]
+id = "npc.hydraboss_finaldeath"
+inherit = "npc.hydraboss_finaldeath"
+[npc.params]
+"param.killcount_varp"="varp.total_hydraboss_kills"
+
+[[npc]]
+id = "npc.hydraboss_p1_transition"
+inherit = "npc.hydraboss_p1_transition"
+[npc.params]
+"param.killcount_varp"="varp.total_hydraboss_kills"
+
+[[npc]]
+id = "npc.hydraboss_p2_transition"
+inherit = "npc.hydraboss_p2_transition"
+[npc.params]
+"param.killcount_varp"="varp.total_hydraboss_kills"
+
+[[npc]]
+id = "npc.hydraboss_p3_transition"
+inherit = "npc.hydraboss_p3_transition"
+[npc.params]
+"param.killcount_varp"="varp.total_hydraboss_kills"
+
+[[npc]]
+id = "npc.jelly_tapoyauik"
+inherit = "npc.jelly_tapoyauik"
+[npc.params]
+"param.killcount_varp"="varp.kc_jelly"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.juvenile_custodian_stalker"
+inherit = "npc.juvenile_custodian_stalker"
+[npc.params]
+"param.killcount_varp"="varp.kc_juvenile_custodian_stalker"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.kourend_abyssal"
+inherit = "npc.kourend_abyssal"
+[npc.params]
+"param.killcount_varp"="varp.kc_abyssal_demon"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.kourend_banshee"
+inherit = "npc.kourend_banshee"
+[npc.params]
+"param.killcount_varp"="varp.kc_banshee"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.kourend_bloodveld"
+inherit = "npc.kourend_bloodveld"
+[npc.params]
+"param.killcount_varp"="varp.kc_bloodveld"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.kourend_dark_beast"
+inherit = "npc.kourend_dark_beast"
+[npc.params]
+"param.killcount_varp"="varp.kc_dark_beast"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.kourend_dustdevil"
+inherit = "npc.kourend_dustdevil"
+[npc.params]
+"param.killcount_varp"="varp.kc_dust_devil"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.kourend_jelly"
+inherit = "npc.kourend_jelly"
+[npc.params]
+"param.killcount_varp"="varp.kc_jelly"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.kourend_nechryael"
+inherit = "npc.kourend_nechryael"
+[npc.params]
+"param.killcount_varp"="varp.kc_nechryael"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.kourend_spectre"
+inherit = "npc.kourend_spectre"
+[npc.params]
+"param.killcount_varp"="varp.kc_aberrant_spectre"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.lotr_terror_dog_large"
+inherit = "npc.lotr_terror_dog_large"
+[npc.params]
+"param.killcount_varp"="varp.kc_terror_dog"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.lotr_terror_dog_small"
+inherit = "npc.lotr_terror_dog_small"
+[npc.params]
+"param.killcount_varp"="varp.kc_terror_dog"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.mature_custodian_stalker"
+inherit = "npc.mature_custodian_stalker"
+[npc.params]
+"param.killcount_varp"="varp.kc_mature_custodian_stalker"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.molanisk"
+inherit = "npc.molanisk"
+[npc.params]
+"param.killcount_varp"="varp.kc_molanisk"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.molanisk_giant_cave_bug"
+inherit = "npc.molanisk_giant_cave_bug"
+[npc.params]
+"param.killcount_varp"="varp.kc_cave_bug"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.mourning_dark_beast"
+inherit = "npc.mourning_dark_beast"
+[npc.params]
+"param.killcount_varp"="varp.kc_dark_beast"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.nex_prison_mage"
+inherit = "npc.nex_prison_mage"
+[npc.params]
+"param.killcount_varp"="varp.kc_spiritual_mage"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.nex_prison_ranger"
+inherit = "npc.nex_prison_ranger"
+[npc.params]
+"param.killcount_varp"="varp.kc_spiritual_ranger"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.nex_prison_warrior"
+inherit = "npc.nex_prison_warrior"
+[npc.params]
+"param.killcount_varp"="varp.kc_spiritual_warrior"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.olaf2_brine_rats"
+inherit = "npc.olaf2_brine_rats"
+[npc.params]
+"param.killcount_varp"="varp.kc_brine_rat"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.pmoon_sulphur_nagua"
+inherit = "npc.pmoon_sulphur_nagua"
+[npc.params]
+"param.killcount_varp"="varp.kc_sulphur_nagua"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.pog_mutated_terrorbird_1"
+inherit = "npc.pog_mutated_terrorbird_1"
+[npc.params]
+"param.killcount_varp"="varp.kc_warped_terrorbird"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.pog_mutated_terrorbird_2"
+inherit = "npc.pog_mutated_terrorbird_2"
+[npc.params]
+"param.killcount_varp"="varp.kc_warped_terrorbird"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.pog_mutated_terrorbird_3"
+inherit = "npc.pog_mutated_terrorbird_3"
+[npc.params]
+"param.killcount_varp"="varp.kc_warped_terrorbird"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.pog_mutated_terrorbird_4"
+inherit = "npc.pog_mutated_terrorbird_4"
+[npc.params]
+"param.killcount_varp"="varp.kc_warped_terrorbird"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.pog_mutated_terrorbird_5"
+inherit = "npc.pog_mutated_terrorbird_5"
+[npc.params]
+"param.killcount_varp"="varp.kc_warped_terrorbird"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.pog_mutated_terrorbird_6"
+inherit = "npc.pog_mutated_terrorbird_6"
+[npc.params]
+"param.killcount_varp"="varp.kc_warped_terrorbird"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.pog_mutated_terrorbird_7"
+inherit = "npc.pog_mutated_terrorbird_7"
+[npc.params]
+"param.killcount_varp"="varp.kc_warped_terrorbird"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.pog_mutated_terrorbird_8"
+inherit = "npc.pog_mutated_terrorbird_8"
+[npc.params]
+"param.killcount_varp"="varp.kc_warped_terrorbird"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.pog_mutated_tortoise"
+inherit = "npc.pog_mutated_tortoise"
+[npc.params]
+"param.killcount_varp"="varp.kc_warped_tortoise"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.royal_sea_snake_baby"
+inherit = "npc.royal_sea_snake_baby"
+[npc.params]
+"param.killcount_varp"="varp.kc_sea_snake_hatchling"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.royal_sea_snake_medium"
+inherit = "npc.royal_sea_snake_medium"
+[npc.params]
+"param.killcount_varp"="varp.kc_sea_snake_hatchling"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.royal_sea_snake_mother_smaller"
+inherit = "npc.royal_sea_snake_mother_smaller"
+[npc.params]
+"param.killcount_varp"="varp.kc_sea_snake_hatchling"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.sailing_sea_mogre"
+inherit = "npc.sailing_sea_mogre"
+[npc.params]
+"param.killcount_varp"="varp.kc_mogre"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.sailing_sea_mogre_f"
+inherit = "npc.sailing_sea_mogre_f"
+[npc.params]
+"param.killcount_varp"="varp.kc_mogre"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.skeletal_wyvern1"
+inherit = "npc.skeletal_wyvern1"
+[npc.params]
+"param.killcount_varp"="varp.kc_skeletal_wyvern"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.skeletal_wyvern2"
+inherit = "npc.skeletal_wyvern2"
+[npc.params]
+"param.killcount_varp"="varp.kc_skeletal_wyvern"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.skeletal_wyvern3"
+inherit = "npc.skeletal_wyvern3"
+[npc.params]
+"param.killcount_varp"="varp.kc_skeletal_wyvern"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.skeletal_wyvern4"
+inherit = "npc.skeletal_wyvern4"
+[npc.params]
+"param.killcount_varp"="varp.kc_skeletal_wyvern"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.slayer_abberant_spectre_1"
+inherit = "npc.slayer_abberant_spectre_1"
+[npc.params]
+"param.killcount_varp"="varp.kc_aberrant_spectre"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.slayer_abberant_spectre_2"
+inherit = "npc.slayer_abberant_spectre_2"
+[npc.params]
+"param.killcount_varp"="varp.kc_aberrant_spectre"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.slayer_abberant_spectre_3"
+inherit = "npc.slayer_abberant_spectre_3"
+[npc.params]
+"param.killcount_varp"="varp.kc_aberrant_spectre"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.slayer_abberant_spectre_4"
+inherit = "npc.slayer_abberant_spectre_4"
+[npc.params]
+"param.killcount_varp"="varp.kc_aberrant_spectre"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.slayer_aberrantspectre_1_strongholdcave"
+inherit = "npc.slayer_aberrantspectre_1_strongholdcave"
+[npc.params]
+"param.killcount_varp"="varp.kc_aberrant_spectre"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.slayer_aberrantspectre_2_strongholdcave"
+inherit = "npc.slayer_aberrantspectre_2_strongholdcave"
+[npc.params]
+"param.killcount_varp"="varp.kc_aberrant_spectre"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.slayer_abyssal"
+inherit = "npc.slayer_abyssal"
+[npc.params]
+"param.killcount_varp"="varp.kc_abyssal_demon"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.slayer_abyssal_strongholdcave"
+inherit = "npc.slayer_abyssal_strongholdcave"
+[npc.params]
+"param.killcount_varp"="varp.kc_abyssal_demon"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.slayer_aquanite"
+inherit = "npc.slayer_aquanite"
+[npc.params]
+"param.killcount_varp"="varp.kc_aquanite"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.slayer_aquanite_nolure"
+inherit = "npc.slayer_aquanite_nolure"
+[npc.params]
+"param.killcount_varp"="varp.kc_aquanite"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.slayer_banshee_1"
+inherit = "npc.slayer_banshee_1"
+[npc.params]
+"param.killcount_varp"="varp.kc_banshee"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.slayer_basilisk"
+inherit = "npc.slayer_basilisk"
+[npc.params]
+"param.killcount_varp"="varp.kc_basilisk"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.slayer_bloodveld"
+inherit = "npc.slayer_bloodveld"
+[npc.params]
+"param.killcount_varp"="varp.kc_bloodveld"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.slayer_bloodveld_baby"
+inherit = "npc.slayer_bloodveld_baby"
+[npc.params]
+"param.killcount_varp"="varp.kc_bloodveld"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.slayer_bloodveld_baby_strongholdcave"
+inherit = "npc.slayer_bloodveld_baby_strongholdcave"
+[npc.params]
+"param.killcount_varp"="varp.kc_bloodveld"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.slayer_bloodveld_strongholdcave"
+inherit = "npc.slayer_bloodveld_strongholdcave"
+[npc.params]
+"param.killcount_varp"="varp.kc_bloodveld"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.slayer_cave_crawler_1"
+inherit = "npc.slayer_cave_crawler_1"
+[npc.params]
+"param.killcount_varp"="varp.kc_cave_crawler"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.slayer_cave_crawler_2"
+inherit = "npc.slayer_cave_crawler_2"
+[npc.params]
+"param.killcount_varp"="varp.kc_cave_crawler"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.slayer_cave_crawler_3"
+inherit = "npc.slayer_cave_crawler_3"
+[npc.params]
+"param.killcount_varp"="varp.kc_cave_crawler"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.slayer_cave_crawler_4"
+inherit = "npc.slayer_cave_crawler_4"
+[npc.params]
+"param.killcount_varp"="varp.kc_cave_crawler"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.slayer_cave_gargoyle"
+inherit = "npc.slayer_cave_gargoyle"
+[npc.params]
+"param.killcount_varp"="varp.kc_gargoyle"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.slayer_cockatrice"
+inherit = "npc.slayer_cockatrice"
+[npc.params]
+"param.killcount_varp"="varp.kc_cockatrice"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.slayer_crawling_hand_1"
+inherit = "npc.slayer_crawling_hand_1"
+[npc.params]
+"param.killcount_varp"="varp.kc_crawling_hand"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.slayer_crawling_hand_2"
+inherit = "npc.slayer_crawling_hand_2"
+[npc.params]
+"param.killcount_varp"="varp.kc_crawling_hand"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.slayer_crawling_hand_3"
+inherit = "npc.slayer_crawling_hand_3"
+[npc.params]
+"param.killcount_varp"="varp.kc_crawling_hand"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.slayer_crawling_hand_4"
+inherit = "npc.slayer_crawling_hand_4"
+[npc.params]
+"param.killcount_varp"="varp.kc_crawling_hand"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.slayer_crawling_hand_5"
+inherit = "npc.slayer_crawling_hand_5"
+[npc.params]
+"param.killcount_varp"="varp.kc_crawling_hand"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.slayer_crawling_hand_big_1"
+inherit = "npc.slayer_crawling_hand_big_1"
+[npc.params]
+"param.killcount_varp"="varp.kc_crawling_hand"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.slayer_crawling_hand_big_2"
+inherit = "npc.slayer_crawling_hand_big_2"
+[npc.params]
+"param.killcount_varp"="varp.kc_crawling_hand"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.slayer_crawling_hand_big_3"
+inherit = "npc.slayer_crawling_hand_big_3"
+[npc.params]
+"param.killcount_varp"="varp.kc_crawling_hand"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.slayer_crawling_hand_big_4"
+inherit = "npc.slayer_crawling_hand_big_4"
+[npc.params]
+"param.killcount_varp"="varp.kc_crawling_hand"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.slayer_crawling_hand_big_5"
+inherit = "npc.slayer_crawling_hand_big_5"
+[npc.params]
+"param.killcount_varp"="varp.kc_crawling_hand"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.slayer_dustdevil"
+inherit = "npc.slayer_dustdevil"
+[npc.params]
+"param.killcount_varp"="varp.kc_dust_devil"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.slayer_gargoyle_1"
+inherit = "npc.slayer_gargoyle_1"
+[npc.params]
+"param.killcount_varp"="varp.kc_gargoyle"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.slayer_gargoyle_dead"
+inherit = "npc.slayer_gargoyle_dead"
+[npc.params]
+"param.killcount_varp"="varp.kc_gargoyle"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.slayer_gryphon_1"
+inherit = "npc.slayer_gryphon_1"
+[npc.params]
+"param.killcount_varp"="varp.kc_gryphon"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.slayer_gryphon_2"
+inherit = "npc.slayer_gryphon_2"
+[npc.params]
+"param.killcount_varp"="varp.kc_gryphon"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.slayer_harpiebugswarm"
+inherit = "npc.slayer_harpiebugswarm"
+[npc.params]
+"param.killcount_varp"="varp.kc_harpie_bug_swarm"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.slayer_infernal_mage_1"
+inherit = "npc.slayer_infernal_mage_1"
+[npc.params]
+"param.killcount_varp"="varp.kc_infernal_mage"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.slayer_infernal_mage_2"
+inherit = "npc.slayer_infernal_mage_2"
+[npc.params]
+"param.killcount_varp"="varp.kc_infernal_mage"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.slayer_infernal_mage_3"
+inherit = "npc.slayer_infernal_mage_3"
+[npc.params]
+"param.killcount_varp"="varp.kc_infernal_mage"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.slayer_infernal_mage_4"
+inherit = "npc.slayer_infernal_mage_4"
+[npc.params]
+"param.killcount_varp"="varp.kc_infernal_mage"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.slayer_infernal_mage_5"
+inherit = "npc.slayer_infernal_mage_5"
+[npc.params]
+"param.killcount_varp"="varp.kc_infernal_mage"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.slayer_jelly_1"
+inherit = "npc.slayer_jelly_1"
+[npc.params]
+"param.killcount_varp"="varp.kc_jelly"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.slayer_jelly_2"
+inherit = "npc.slayer_jelly_2"
+[npc.params]
+"param.killcount_varp"="varp.kc_jelly"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.slayer_jelly_3"
+inherit = "npc.slayer_jelly_3"
+[npc.params]
+"param.killcount_varp"="varp.kc_jelly"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.slayer_jelly_4"
+inherit = "npc.slayer_jelly_4"
+[npc.params]
+"param.killcount_varp"="varp.kc_jelly"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.slayer_jelly_5"
+inherit = "npc.slayer_jelly_5"
+[npc.params]
+"param.killcount_varp"="varp.kc_jelly"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.slayer_jelly_6"
+inherit = "npc.slayer_jelly_6"
+[npc.params]
+"param.killcount_varp"="varp.kc_jelly"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.slayer_killerwatt"
+inherit = "npc.slayer_killerwatt"
+[npc.params]
+"param.killcount_varp"="varp.kc_killerwatt"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.slayer_killerwatt_ball"
+inherit = "npc.slayer_killerwatt_ball"
+[npc.params]
+"param.killcount_varp"="varp.kc_killerwatt"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.slayer_kraken"
+inherit = "npc.slayer_kraken"
+[npc.params]
+"param.killcount_varp"="varp.kc_cave_kraken"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.slayer_kraken_boss"
+inherit = "npc.slayer_kraken_boss"
+[npc.params]
+"param.killcount_varp"="varp.total_kraken_boss_kills"
+
+[[npc]]
+id = "npc.slayer_kraken_boss_whirlpool"
+inherit = "npc.slayer_kraken_boss_whirlpool"
+[npc.params]
+"param.killcount_varp"="varp.total_kraken_boss_kills"
+
+[[npc]]
+id = "npc.slayer_kraken_sub"
+inherit = "npc.slayer_kraken_sub"
+[npc.params]
+"param.killcount_varp"="varp.kc_cave_kraken"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.slayer_kursk_1"
+inherit = "npc.slayer_kursk_1"
+[npc.params]
+"param.killcount_varp"="varp.kc_kurask"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.slayer_kursk_2"
+inherit = "npc.slayer_kursk_2"
+[npc.params]
+"param.killcount_varp"="varp.kc_kurask"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.slayer_lava_strykewyrm"
+inherit = "npc.slayer_lava_strykewyrm"
+[npc.params]
+"param.killcount_varp"="varp.kc_lava_strykewyrm"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.slayer_lizard_large1_green"
+inherit = "npc.slayer_lizard_large1_green"
+[npc.params]
+"param.killcount_varp"="varp.kc_desert_lizard"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.slayer_lizard_large1_green_lowrange"
+inherit = "npc.slayer_lizard_large1_green_lowrange"
+[npc.params]
+"param.killcount_varp"="varp.kc_desert_lizard"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.slayer_lizard_large2_sandy"
+inherit = "npc.slayer_lizard_large2_sandy"
+[npc.params]
+"param.killcount_varp"="varp.kc_desert_lizard"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.slayer_lizard_large3_sandy"
+inherit = "npc.slayer_lizard_large3_sandy"
+[npc.params]
+"param.killcount_varp"="varp.kc_desert_lizard"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.slayer_lizard_massive"
+inherit = "npc.slayer_lizard_massive"
+[npc.params]
+"param.killcount_varp"="varp.kc_desert_lizard"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.slayer_lizard_small1_green"
+inherit = "npc.slayer_lizard_small1_green"
+[npc.params]
+"param.killcount_varp"="varp.kc_desert_lizard"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.slayer_lizard_small1_green_lowrange"
+inherit = "npc.slayer_lizard_small1_green_lowrange"
+[npc.params]
+"param.killcount_varp"="varp.kc_desert_lizard"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.slayer_lizard_small2_sandy"
+inherit = "npc.slayer_lizard_small2_sandy"
+[npc.params]
+"param.killcount_varp"="varp.kc_desert_lizard"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.slayer_mutated_zygomite_adolescent"
+inherit = "npc.slayer_mutated_zygomite_adolescent"
+[npc.params]
+"param.killcount_varp"="varp.kc_mutated_zygomite"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.slayer_mutated_zygomite_adult"
+inherit = "npc.slayer_mutated_zygomite_adult"
+[npc.params]
+"param.killcount_varp"="varp.kc_mutated_zygomite"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.slayer_nechryael"
+inherit = "npc.slayer_nechryael"
+[npc.params]
+"param.killcount_varp"="varp.kc_nechryael"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.slayer_nechryael_strongholdcave"
+inherit = "npc.slayer_nechryael_strongholdcave"
+[npc.params]
+"param.killcount_varp"="varp.kc_nechryael"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.slayer_pyrebeast_1"
+inherit = "npc.slayer_pyrebeast_1"
+[npc.params]
+"param.killcount_varp"="varp.kc_pyrelord"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.slayer_pyrebeast_2"
+inherit = "npc.slayer_pyrebeast_2"
+[npc.params]
+"param.killcount_varp"="varp.kc_pyrelord"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.slayer_pyrefiend_1"
+inherit = "npc.slayer_pyrefiend_1"
+[npc.params]
+"param.killcount_varp"="varp.kc_pyrefiend"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.slayer_pyrefiend_2"
+inherit = "npc.slayer_pyrefiend_2"
+[npc.params]
+"param.killcount_varp"="varp.kc_pyrefiend"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.slayer_pyrefiend_3"
+inherit = "npc.slayer_pyrefiend_3"
+[npc.params]
+"param.killcount_varp"="varp.kc_pyrefiend"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.slayer_pyrefiend_4"
+inherit = "npc.slayer_pyrefiend_4"
+[npc.params]
+"param.killcount_varp"="varp.kc_pyrefiend"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.slayer_rockslug"
+inherit = "npc.slayer_rockslug"
+[npc.params]
+"param.killcount_varp"="varp.kc_rockslug"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.slayer_rockslug_baby"
+inherit = "npc.slayer_rockslug_baby"
+[npc.params]
+"param.killcount_varp"="varp.kc_rockslug"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.slayer_rockslug_crypt_of_tonali"
+inherit = "npc.slayer_rockslug_crypt_of_tonali"
+[npc.params]
+"param.killcount_varp"="varp.kc_rockslug"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.slayer_turoth_baby"
+inherit = "npc.slayer_turoth_baby"
+[npc.params]
+"param.killcount_varp"="varp.kc_turoth"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.slayer_turoth_child"
+inherit = "npc.slayer_turoth_child"
+[npc.params]
+"param.killcount_varp"="varp.kc_turoth"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.slayer_turoth_dad"
+inherit = "npc.slayer_turoth_dad"
+[npc.params]
+"param.killcount_varp"="varp.kc_turoth"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.slayer_turoth_mum"
+inherit = "npc.slayer_turoth_mum"
+[npc.params]
+"param.killcount_varp"="varp.kc_turoth"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.smoke_devil"
+inherit = "npc.smoke_devil"
+[npc.params]
+"param.killcount_varp"="varp.kc_smoke_devil"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.smoke_devil_boss"
+inherit = "npc.smoke_devil_boss"
+[npc.params]
+"param.killcount_varp"="varp.kc_thermonuclear_smoke_devil"
+
+[[npc]]
+id = "npc.sulphur_lizard"
+inherit = "npc.sulphur_lizard"
+[npc.params]
+"param.killcount_varp"="varp.kc_sulphur_lizard"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.superior_abberant_spectre"
+inherit = "npc.superior_abberant_spectre"
+[npc.params]
+"param.killcount_varp"="varp.kc_superior_monster"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.superior_abyssal_demon"
+inherit = "npc.superior_abyssal_demon"
+[npc.params]
+"param.killcount_varp"="varp.kc_superior_monster"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.superior_aquanite"
+inherit = "npc.superior_aquanite"
+[npc.params]
+"param.killcount_varp"="varp.kc_superior_monster"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.superior_araxyte"
+inherit = "npc.superior_araxyte"
+[npc.params]
+"param.killcount_varp"="varp.kc_superior_monster"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.superior_banshee"
+inherit = "npc.superior_banshee"
+[npc.params]
+"param.killcount_varp"="varp.kc_superior_monster"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.superior_basilisk"
+inherit = "npc.superior_basilisk"
+[npc.params]
+"param.killcount_varp"="varp.kc_superior_monster"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.superior_basilisk_knight"
+inherit = "npc.superior_basilisk_knight"
+[npc.params]
+"param.killcount_varp"="varp.kc_superior_monster"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.superior_bloodveld"
+inherit = "npc.superior_bloodveld"
+[npc.params]
+"param.killcount_varp"="varp.kc_superior_monster"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.superior_cave_crawler"
+inherit = "npc.superior_cave_crawler"
+[npc.params]
+"param.killcount_varp"="varp.kc_superior_monster"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.superior_cave_horror"
+inherit = "npc.superior_cave_horror"
+[npc.params]
+"param.killcount_varp"="varp.kc_superior_monster"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.superior_chilled_jelly"
+inherit = "npc.superior_chilled_jelly"
+[npc.params]
+"param.killcount_varp"="varp.kc_superior_monster"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.superior_cockatrice"
+inherit = "npc.superior_cockatrice"
+[npc.params]
+"param.killcount_varp"="varp.kc_superior_monster"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.superior_crawling_hand"
+inherit = "npc.superior_crawling_hand"
+[npc.params]
+"param.killcount_varp"="varp.kc_superior_monster"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.superior_custodian"
+inherit = "npc.superior_custodian"
+[npc.params]
+"param.killcount_varp"="varp.kc_superior_monster"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.superior_dark_beast"
+inherit = "npc.superior_dark_beast"
+[npc.params]
+"param.killcount_varp"="varp.kc_superior_monster"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.superior_drake"
+inherit = "npc.superior_drake"
+[npc.params]
+"param.killcount_varp"="varp.kc_superior_monster"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.superior_dustdevil"
+inherit = "npc.superior_dustdevil"
+[npc.params]
+"param.killcount_varp"="varp.kc_superior_monster"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.superior_gargoyle"
+inherit = "npc.superior_gargoyle"
+[npc.params]
+"param.killcount_varp"="varp.kc_superior_monster"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.superior_gryphon"
+inherit = "npc.superior_gryphon"
+[npc.params]
+"param.killcount_varp"="varp.kc_superior_monster"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.superior_hydra"
+inherit = "npc.superior_hydra"
+[npc.params]
+"param.killcount_varp"="varp.kc_superior_monster"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.superior_infernal_mage"
+inherit = "npc.superior_infernal_mage"
+[npc.params]
+"param.killcount_varp"="varp.kc_superior_monster"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.superior_jelly"
+inherit = "npc.superior_jelly"
+[npc.params]
+"param.killcount_varp"="varp.kc_superior_monster"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.superior_kourend_banshee"
+inherit = "npc.superior_kourend_banshee"
+[npc.params]
+"param.killcount_varp"="varp.kc_superior_monster"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.superior_kourend_bloodveld"
+inherit = "npc.superior_kourend_bloodveld"
+[npc.params]
+"param.killcount_varp"="varp.kc_superior_monster"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.superior_kourend_jelly"
+inherit = "npc.superior_kourend_jelly"
+[npc.params]
+"param.killcount_varp"="varp.kc_superior_monster"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.superior_kourend_spectre"
+inherit = "npc.superior_kourend_spectre"
+[npc.params]
+"param.killcount_varp"="varp.kc_superior_monster"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.superior_kurask"
+inherit = "npc.superior_kurask"
+[npc.params]
+"param.killcount_varp"="varp.kc_superior_monster"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.superior_lava_strykewyrm"
+inherit = "npc.superior_lava_strykewyrm"
+[npc.params]
+"param.killcount_varp"="varp.kc_superior_monster"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.superior_nechryael"
+inherit = "npc.superior_nechryael"
+[npc.params]
+"param.killcount_varp"="varp.kc_superior_monster"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.superior_pyrefiend"
+inherit = "npc.superior_pyrefiend"
+[npc.params]
+"param.killcount_varp"="varp.kc_superior_monster"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.superior_pyrelord"
+inherit = "npc.superior_pyrelord"
+[npc.params]
+"param.killcount_varp"="varp.kc_superior_monster"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.superior_rockslug"
+inherit = "npc.superior_rockslug"
+[npc.params]
+"param.killcount_varp"="varp.kc_superior_monster"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.superior_smoke_devil"
+inherit = "npc.superior_smoke_devil"
+[npc.params]
+"param.killcount_varp"="varp.kc_superior_monster"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.superior_turoth"
+inherit = "npc.superior_turoth"
+[npc.params]
+"param.killcount_varp"="varp.kc_superior_monster"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.superior_warped_terrorbird"
+inherit = "npc.superior_warped_terrorbird"
+[npc.params]
+"param.killcount_varp"="varp.kc_superior_monster"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.superior_warped_tortoise"
+inherit = "npc.superior_warped_tortoise"
+[npc.params]
+"param.killcount_varp"="varp.kc_superior_monster"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.superior_wyrm_dark"
+inherit = "npc.superior_wyrm_dark"
+[npc.params]
+"param.killcount_varp"="varp.kc_superior_monster"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.swamp_cave_bug"
+inherit = "npc.swamp_cave_bug"
+[npc.params]
+"param.killcount_varp"="varp.kc_cave_bug"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.swamp_cave_slime"
+inherit = "npc.swamp_cave_slime"
+[npc.params]
+"param.killcount_varp"="varp.kc_cave_slime"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.swamp_wallbeast"
+inherit = "npc.swamp_wallbeast"
+[npc.params]
+"param.killcount_varp"="varp.kc_wall_beast"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.swamp_wallbeast_combat"
+inherit = "npc.swamp_wallbeast_combat"
+[npc.params]
+"param.killcount_varp"="varp.kc_wall_beast"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.varlamore_cockatrice_moon01"
+inherit = "npc.varlamore_cockatrice_moon01"
+[npc.params]
+"param.killcount_varp"="varp.kc_cockatrice"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.varlamore_wyrm_dark01"
+inherit = "npc.varlamore_wyrm_dark01"
+[npc.params]
+"param.killcount_varp"="varp.kc_wyrmling"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.varlamore_wyrm_light01"
+inherit = "npc.varlamore_wyrm_light01"
+[npc.params]
+"param.killcount_varp"="varp.kc_wyrmling"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.vmq3_ruins_frost_nagua"
+inherit = "npc.vmq3_ruins_frost_nagua"
+[npc.params]
+"param.killcount_varp"="varp.kc_frost_nagua"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.vyrewatch_elite_1"
+inherit = "npc.vyrewatch_elite_1"
+[npc.params]
+"param.killcount_varp"="varp.kc_vyrewatch_sentinel"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.vyrewatch_elite_2"
+inherit = "npc.vyrewatch_elite_2"
+[npc.params]
+"param.killcount_varp"="varp.kc_vyrewatch_sentinel"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.vyrewatch_elite_3"
+inherit = "npc.vyrewatch_elite_3"
+[npc.params]
+"param.killcount_varp"="varp.kc_vyrewatch_sentinel"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.vyrewatch_elite_4"
+inherit = "npc.vyrewatch_elite_4"
+[npc.params]
+"param.killcount_varp"="varp.kc_vyrewatch_sentinel"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.vyrewatch_elite_5"
+inherit = "npc.vyrewatch_elite_5"
+[npc.params]
+"param.killcount_varp"="varp.kc_vyrewatch_sentinel"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.vyrewatch_elite_6"
+inherit = "npc.vyrewatch_elite_6"
+[npc.params]
+"param.killcount_varp"="varp.kc_vyrewatch_sentinel"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.vyrewatch_elite_7"
+inherit = "npc.vyrewatch_elite_7"
+[npc.params]
+"param.killcount_varp"="varp.kc_vyrewatch_sentinel"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.vyrewatch_elite_8"
+inherit = "npc.vyrewatch_elite_8"
+[npc.params]
+"param.killcount_varp"="varp.kc_vyrewatch_sentinel"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.wild_cave_abyssal"
+inherit = "npc.wild_cave_abyssal"
+[npc.params]
+"param.killcount_varp"="varp.kc_abyssal_demon"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.wild_cave_dustdevil"
+inherit = "npc.wild_cave_dustdevil"
+[npc.params]
+"param.killcount_varp"="varp.kc_dust_devil"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.wild_cave_jelly_1"
+inherit = "npc.wild_cave_jelly_1"
+[npc.params]
+"param.killcount_varp"="varp.kc_jelly"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.wild_cave_jelly_2"
+inherit = "npc.wild_cave_jelly_2"
+[npc.params]
+"param.killcount_varp"="varp.kc_jelly"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.wild_cave_jelly_3"
+inherit = "npc.wild_cave_jelly_3"
+[npc.params]
+"param.killcount_varp"="varp.kc_jelly"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.wild_cave_jelly_4"
+inherit = "npc.wild_cave_jelly_4"
+[npc.params]
+"param.killcount_varp"="varp.kc_jelly"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.wild_cave_jelly_5"
+inherit = "npc.wild_cave_jelly_5"
+[npc.params]
+"param.killcount_varp"="varp.kc_jelly"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.wild_cave_nechryael"
+inherit = "npc.wild_cave_nechryael"
+[npc.params]
+"param.killcount_varp"="varp.kc_nechryael"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.wyrm_dark"
+inherit = "npc.wyrm_dark"
+[npc.params]
+"param.killcount_varp"="varp.kc_wyrm"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.wyrm_light"
+inherit = "npc.wyrm_light"
+[npc.params]
+"param.killcount_varp"="varp.kc_wyrm"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.wyvern_long_tailed"
+inherit = "npc.wyvern_long_tailed"
+[npc.params]
+"param.killcount_varp"="varp.kc_long_tailed_wyvern"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.wyvern_spitting"
+inherit = "npc.wyvern_spitting"
+[npc.params]
+"param.killcount_varp"="varp.kc_spitting_wyvern"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.wyvern_taloned"
+inherit = "npc.wyvern_taloned"
+[npc.params]
+"param.killcount_varp"="varp.kc_taloned_wyvern"
+"param.killcount_notify"=false

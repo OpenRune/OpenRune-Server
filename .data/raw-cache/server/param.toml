@@ -825,3 +825,16 @@ id = "param.skill_wall_anim"
 isServerOnly = true
 type = "SEQ"
 isMembers = true
+
+[[params]]
+id = "param.killcount_varp"
+isServerOnly = true
+type = "VARP"
+isMembers = true
+
+[[params]]
+id = "param.killcount_notify"
+isServerOnly = true
+type = "BOOLEAN"
+defaultInt = 1
+isMembers = true

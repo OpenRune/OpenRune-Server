@@ -130,6 +130,7 @@ public class WeaponAttackManager @Inject constructor(private val manager: Player
         attackType: MeleeAttackType? = attack.type,
         attackStyle: MeleeAttackStyle? = attack.style,
         blockType: MeleeAttackType? = attack.type,
+        roundMaxHitUp: Boolean = false,
     ): Int =
         manager.rollMeleeDamage(
             source = source.player,
@@ -140,6 +141,7 @@ public class WeaponAttackManager @Inject constructor(private val manager: Player
             attackType = attackType,
             attackStyle = attackStyle,
             blockType = blockType,
+            roundMaxHitUp = roundMaxHitUp,
         )
 
     /** @see [PlayerAttackManager.rollMeleeAccuracy] */
@@ -167,7 +169,16 @@ public class WeaponAttackManager @Inject constructor(private val manager: Player
         attackType: MeleeAttackType?,
         attackStyle: MeleeAttackStyle?,
         multiplier: Double,
-    ): Int = manager.rollMeleeMaxHit(source.player, target, attackType, attackStyle, multiplier)
+        roundUp: Boolean = false,
+    ): Int =
+        manager.rollMeleeMaxHit(
+            source.player,
+            target,
+            attackType,
+            attackStyle,
+            multiplier,
+            roundUp,
+        )
 
     /** @see [PlayerAttackManager.calculateMeleeMaxHit] */
     public fun calculateMeleeMaxHit(
@@ -176,8 +187,16 @@ public class WeaponAttackManager @Inject constructor(private val manager: Player
         attackType: MeleeAttackType?,
         attackStyle: MeleeAttackStyle?,
         multiplier: Double,
+        roundUp: Boolean = false,
     ): Int =
-        manager.calculateMeleeMaxHit(source.player, target, attackType, attackStyle, multiplier)
+        manager.calculateMeleeMaxHit(
+            source.player,
+            target,
+            attackType,
+            attackStyle,
+            multiplier,
+            roundUp,
+        )
 
     /** @see [PlayerAttackManager.queueMeleeHit] */
     public fun queueMeleeHit(
