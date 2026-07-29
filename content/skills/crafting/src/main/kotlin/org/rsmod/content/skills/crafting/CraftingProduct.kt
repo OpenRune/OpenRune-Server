@@ -153,7 +153,7 @@ fun craftingProduct(
         extraReqs = extraReqs,
         extraXp = xpExtra,
         triggers = triggers.map { it.internalName },
-        ticks = ticks.ifEmpty { listOf(section.ticks) }.map { it.coerceAtLeast(1) },
+        ticks = ticks.ifEmpty { listOf(section.ticks) }.map { it.coerceAtLeast(0) },
         anims = CraftingGamevals.filterResolvable(anims.ifEmpty { listOfNotNull(section.anim) }),
         imcandoAnim = CraftingGamevals.optional(section.imcandoAnim),
         locAnim = CraftingGamevals.optional(locAnim ?: section.locAnim),

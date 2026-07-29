@@ -203,8 +203,7 @@ enum class CraftingSection(
         id = "Limestone",
         verb = "cut",
         actionType = SkillingActionType.CUT,
-        ticks = 1,
-        mode = CraftingMode.INSTANT,
+        ticks = 0, //same as mode = CraftingMode.INSTANT
         anim = CraftingConstants.ANIM_LIMESTONE_CUT,
         sound = CraftingConstants.SOUND_GEM_CUTTING,
         tools = listOf(CraftingConstants.CHISEL),
