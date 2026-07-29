@@ -1700,3 +1700,33 @@ contentGroup = "content.shooting_star"
 id = "loc.star_size_one_star"
 inherit = "loc.star_size_one_star"
 contentGroup = "content.shooting_star"
+
+[[object]]
+id = "loc.sandpit"
+inherit = "loc.sandpit"
+contentGroup = "content.sandpit"
+
+[[object]]
+id = "loc.prif_sandpit"
+inherit = "loc.prif_sandpit"
+contentGroup = "content.sandpit"
+
+[[object]]
+id = "loc.sandpit_2"
+inherit = "loc.sandpit_2"
+contentGroup = "content.sandpit"
+
+[[object]]
+id = "loc.viking_sandpit_noop"
+inherit = "loc.viking_sandpit_noop"
+contentGroup = "content.sandpit"
+
+[[object]]
+id = "loc.sarim_spiralstairs"
+inherit = "loc.sarim_spiralstairs"
+contentGroup = "content.spiralstaircase_up"
+
+[[object]]
+id = "loc.sarim_spiralstairstop"
+inherit = "loc.sarim_spiralstairstop"
+contentGroup = "content.spiralstaircase_down"

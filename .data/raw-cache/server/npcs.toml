@@ -3233,3 +3233,27 @@ inherit = "npc.wyvern_taloned"
 [npc.params]
 "param.killcount_varp"="varp.kc_taloned_wyvern"
 "param.killcount_notify"=false
+
+[[npc]]
+id = "npc.ellis_tanner"
+inherit = "npc.ellis_tanner"
+moveRestrict = "Indoors"
+wanderRange = 5
+
+[[npc]]
+id = "npc.master_crafter"
+inherit = "npc.master_crafter"
+moveRestrict = "NoMove"
+wanderRange = 0
+
+[[npc]]
+id = "npc.master_crafter_2"
+inherit = "npc.master_crafter_2"
+moveRestrict = "NoMove"
+wanderRange = 0
+
+[[npc]]
+id = "npc.master_crafter_3"
+inherit = "npc.master_crafter_3"
+moveRestrict = "NoMove"
+wanderRange = 0
