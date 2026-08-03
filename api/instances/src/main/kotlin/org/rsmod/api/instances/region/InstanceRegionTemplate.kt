@@ -1,10 +1,15 @@
 package org.rsmod.api.instances.region
 
+import org.rsmod.api.instances.InstanceRegionRotation
 import org.rsmod.api.repo.region.RegionRepository
 import org.rsmod.api.repo.region.RegionStaticTemplate
 import org.rsmod.api.repo.region.RegionTemplate
 
-internal fun buildRegionTemplate(regionIds: List<Int>, level: Int): RegionStaticTemplate {
+internal fun buildRegionTemplate(
+    regionIds: List<Int>,
+    level: Int,
+    rotation: InstanceRegionRotation = InstanceRegionRotation.NONE,
+): RegionStaticTemplate {
     require(regionIds.isNotEmpty()) { "regionIds must not be empty." }
 
     val minMapSquareX = regionIds.minOf { it.regionMapSquareX() }
@@ -12,24 +17,24 @@ internal fun buildRegionTemplate(regionIds: List<Int>, level: Int): RegionStatic
     val maxMapSquareX = regionIds.maxOf { it.regionMapSquareX() }
     val maxMapSquareZ = regionIds.maxOf { it.regionMapSquareZ() }
 
+    val copyZoneX = minMapSquareX shl 3
+    val copyZoneZ = minMapSquareZ shl 3
     val zoneWidth = (maxMapSquareX - minMapSquareX + 1) * MAP_SQUARE_ZONE_LENGTH
     val zoneLength = (maxMapSquareZ - minMapSquareZ + 1) * MAP_SQUARE_ZONE_LENGTH
-    val useLarge = zoneWidth > RegionRepository.SMALL_REGION_ZONE_LENGTH ||
-        zoneLength > RegionRepository.SMALL_REGION_ZONE_LENGTH
+
+    val destZoneWidth = if (rotation.steps % 2 == 1) zoneLength else zoneWidth
+    val destZoneLength = if (rotation.steps % 2 == 1) zoneWidth else zoneLength
+    val useLarge =
+        destZoneWidth > RegionRepository.SMALL_REGION_ZONE_LENGTH ||
+            destZoneLength > RegionRepository.SMALL_REGION_ZONE_LENGTH
 
     val builder: RegionStaticTemplate.() -> Unit = {
-        for (regionId in regionIds) {
-            val mapSquareX = regionId.regionMapSquareX()
-            val mapSquareZ = regionId.regionMapSquareZ()
-            val (copyZoneX, copyZoneZ) = regionId.regionZoneBase()
-            val destZoneX = (mapSquareX - minMapSquareX) * MAP_SQUARE_ZONE_LENGTH
-            val destZoneZ = (mapSquareZ - minMapSquareZ) * MAP_SQUARE_ZONE_LENGTH
-            copy(copyZoneX, copyZoneZ, level) {
-                this.zoneWidth = MAP_SQUARE_ZONE_LENGTH
-                this.zoneLength = MAP_SQUARE_ZONE_LENGTH
-                regionZoneX = destZoneX
-                regionZoneZ = destZoneZ
-            }
+        copy(copyZoneX, copyZoneZ, level) {
+            this.zoneWidth = zoneWidth
+            this.zoneLength = zoneLength
+            this.rotation = rotation.steps
+            regionZoneX = 0
+            regionZoneZ = 0
         }
     }
 

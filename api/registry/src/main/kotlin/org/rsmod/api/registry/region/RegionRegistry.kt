@@ -544,36 +544,46 @@ constructor(
     public companion object {
         public const val PADDING_SQUARES: Int = 32
 
-        public const val START_COORD_X: Int = 6400 + PADDING_SQUARES
-        public const val START_COORD_Z: Int = 0 + PADDING_SQUARES
+        public const val PADDING_BETWEEN_INSTANCES: Int = PADDING_SQUARES * 2
+
+        public const val INSTANCE_MIN_X: Int = 6400
+
+        public const val SMALL_LARGE_Z_SPLIT: Int = 5248
+
+        public const val MAX_CONCURRENT_SMALL_REGIONS: Int = 1377
+        public const val MAX_CONCURRENT_LARGE_REGIONS: Int = 700
+
+        public const val START_COORD_X: Int = INSTANCE_MIN_X + PADDING_SQUARES
+
+        public const val START_COORD_Z: Int = PADDING_SQUARES
 
         public const val SMALL_REGION_SQUARE_LENGTH: Int = 128
         public const val LARGE_REGION_SQUARE_LENGTH: Int = 320
 
         public val workingAreaSmall: WorkingArea =
             WorkingArea(
-                horizontalRegionCap = 19,
-                verticalRegionCap = 85,
+                horizontalRegionCap = 51,
+                verticalRegionCap = 27,
                 regionSquareLength = SMALL_REGION_SQUARE_LENGTH,
-                startCoordX = START_COORD_X + 3904,
+                startCoordX = START_COORD_X,
                 startCoordZ = START_COORD_Z,
                 maxCoordX = CoordGrid.MAP_WIDTH,
-                maxCoordZ = CoordGrid.MAP_LENGTH,
+                maxCoordZ = SMALL_LARGE_Z_SPLIT,
             )
 
         public val workingAreaLarge: WorkingArea =
             WorkingArea(
-                horizontalRegionCap = 10,
-                verticalRegionCap = 42,
+                horizontalRegionCap = 25,
+                verticalRegionCap = 28,
                 regionSquareLength = LARGE_REGION_SQUARE_LENGTH,
                 startCoordX = START_COORD_X,
-                startCoordZ = START_COORD_Z,
+                startCoordZ = SMALL_LARGE_Z_SPLIT,
                 maxCoordX = CoordGrid.MAP_WIDTH,
                 maxCoordZ = CoordGrid.MAP_LENGTH,
             )
 
-        public fun inWorkingArea(coords: CoordGrid): Boolean = coords.x >= START_COORD_X
+        public fun inWorkingArea(coords: CoordGrid): Boolean = coords.x >= INSTANCE_MIN_X
 
-        public fun inWorkingArea(key: ZoneKey): Boolean = key.x * ZoneGrid.LENGTH >= START_COORD_X
+        public fun inWorkingArea(key: ZoneKey): Boolean = key.x * ZoneGrid.LENGTH >= INSTANCE_MIN_X
     }
 }

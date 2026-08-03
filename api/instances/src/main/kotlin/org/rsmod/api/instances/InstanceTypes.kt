@@ -71,6 +71,7 @@ public sealed class InstanceArea {
     public data class CopyRegions(
         val regionIds: List<Int>,
         val level: Int = 0,
+        val rotation: InstanceRegionRotation = InstanceRegionRotation.NONE,
         val enterCoord: RegionLocal,
         val exitCoord: CoordGrid,
         override val npcSpawns: List<InstanceNpc> = emptyList(),
@@ -101,26 +102,30 @@ public sealed class InstanceArea {
         public fun copyRegions(
             regionIds: List<Int>,
             level: Int = 0,
+            rotation: InstanceRegionRotation = InstanceRegionRotation.NONE,
             npcSpawns: List<InstanceNpc> = emptyList(),
-        ): CopyRegions = CopyRegions(regionIds, level, EMPTY_ENTER, CoordGrid.ZERO, npcSpawns)
+        ): CopyRegions = CopyRegions(regionIds, level, rotation, EMPTY_ENTER, CoordGrid.ZERO, npcSpawns)
 
         public fun copyRegions(
             regionIds: List<Int>,
             level: Int = 0,
+            rotation: InstanceRegionRotation = InstanceRegionRotation.NONE,
             enterCoord: RegionLocal,
             exitCoord: CoordGrid,
             npcSpawns: List<InstanceNpc> = emptyList(),
-        ): CopyRegions = CopyRegions(regionIds, level, enterCoord, exitCoord, npcSpawns)
+        ): CopyRegions = CopyRegions(regionIds, level, rotation, enterCoord, exitCoord, npcSpawns)
 
         public fun copyRegions(
             centerRegionId: Int,
             gridSize: Int = 1,
             level: Int = 0,
+            rotation: InstanceRegionRotation = InstanceRegionRotation.NONE,
             npcSpawns: List<InstanceNpc> = emptyList(),
         ): CopyRegions =
             copyRegions(
                 regionIds = regionIdsGrid(centerRegionId, gridSize),
                 level = level,
+                rotation = rotation,
                 npcSpawns = npcSpawns,
             )
 
@@ -128,6 +133,7 @@ public sealed class InstanceArea {
             centerRegionId: Int,
             gridSize: Int,
             level: Int = 0,
+            rotation: InstanceRegionRotation = InstanceRegionRotation.NONE,
             enterCoord: RegionLocal,
             exitCoord: CoordGrid,
             npcSpawns: List<InstanceNpc> = emptyList(),
@@ -135,6 +141,7 @@ public sealed class InstanceArea {
             copyRegions(
                 regionIds = regionIdsGrid(centerRegionId, gridSize),
                 level = level,
+                rotation = rotation,
                 enterCoord = enterCoord,
                 exitCoord = exitCoord,
                 npcSpawns = npcSpawns,

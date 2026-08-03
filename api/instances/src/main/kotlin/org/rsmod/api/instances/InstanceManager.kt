@@ -16,6 +16,7 @@ import org.rsmod.api.instances.events.InstanceStartedEvent
 import org.rsmod.api.instances.events.InstanceTimeTickEvent
 import org.rsmod.api.instances.region.InstanceAreaResolver
 import org.rsmod.api.instances.region.InstancePlacement
+import org.rsmod.api.instances.region.OsrsInstancing
 import org.rsmod.api.instances.region.enterCoord
 import org.rsmod.api.instances.region.localCoord
 import org.rsmod.api.instances.timer.InstanceKillTimer
@@ -765,7 +766,7 @@ constructor(
             player.username.equals(name, ignoreCase = true)
 
     private companion object {
-        private const val REGION_RADIUS = 64
+        private const val REGION_RADIUS = OsrsInstancing.PADDING_BETWEEN_INSTANCES
         private const val SERVER_OWNER_ID: Long = 0L
     }
 }

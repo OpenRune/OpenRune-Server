@@ -201,7 +201,7 @@ constructor(
         val attackAnim = weapon?.paramOrNull(animParam) ?: SequenceServerType(defaultAnim.asRSCM(RSCMType.SEQ))
         val attackSound = weapon?.paramOrNull(soundParam) ?: SynthType(defaultSound.asRSCM(RSCMType.SYNTH))
 
-        player.anim(RSCM.getReverseMapping(RSCMType.SEQ,attackAnim.id))
+        player.anim(RSCM.getReverseMapping(RSCMType.SEQ,attackAnim.id), priority = 6)
         player.soundSynth(attackSound)
     }
 
@@ -218,7 +218,7 @@ constructor(
     public fun playWeaponFx(player: Player, attack: CombatAttack.Ranged): Boolean {
         val weapon = getInvObj(attack.weapon)
         val attackAnim = weapon.paramOrNull(params.attack_anim_stance1) ?: return false
-        player.anim(RSCM.getReverseMapping(RSCMType.SEQ,attackAnim.id))
+        player.anim(RSCM.getReverseMapping(RSCMType.SEQ,attackAnim.id), priority = 6)
         val attackSound = weapon.paramOrNull(params.attack_sound_stance1)
         attackSound?.let(player::soundSynth)
         return true
