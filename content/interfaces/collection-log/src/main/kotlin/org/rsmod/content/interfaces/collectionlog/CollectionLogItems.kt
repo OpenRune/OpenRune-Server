@@ -1,14 +1,16 @@
 package org.rsmod.content.interfaces.collectionlog
 
-import dev.openrune.ServerCacheManager
 import dev.openrune.definition.type.VarBitType
 import org.rsmod.api.config.refs.params
 import org.rsmod.api.player.vars.VarPlayerIntMapSetter
+import org.rsmod.api.table.CollectionLogCategoriesRow
 import org.rsmod.game.entity.Player
 
 internal object CollectionLogItems {
     private val itemToVarbit: Map<Int, VarBitType> by lazy {
-        ServerCacheManager.getItemTypes()
+        CollectionLogCategoriesRow.all()
+            .asSequence()
+            .flatMap { it.items.asSequence() }
             .mapNotNull { item ->
                 item.paramOrNull(params.collection_log_varbit)?.let { item.id to it }
             }
