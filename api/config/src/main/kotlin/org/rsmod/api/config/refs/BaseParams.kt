@@ -218,4 +218,5 @@ object BaseParams {
     val translate_level: ParamInt = param("translate_level")
     val killcount_varp: ParamVarp = param("killcount_varp")
     val killcount_notify: ParamBool = param("killcount_notify")
+    val collection_log_varbit: ParamVarBit = param("collection_log_varbit")
 }

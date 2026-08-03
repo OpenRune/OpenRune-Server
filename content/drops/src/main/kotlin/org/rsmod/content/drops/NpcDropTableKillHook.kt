@@ -17,6 +17,7 @@ import org.rsmod.api.droptable.rollCount
 import org.rsmod.api.player.output.ClientScripts
 import org.rsmod.api.random.GameRandom
 import org.rsmod.api.repo.obj.ObjRepository
+import org.rsmod.content.interfaces.collectionlog.CollectionLog
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.map.CoordGrid
@@ -88,6 +89,7 @@ constructor(
         }
         val obj = drop.transformObj(receiver) ?: drop.obj
         val count = drop.rollCount(random)
+        CollectionLog.grant(receiver, obj, count)
         val spawned = objRepo.add(obj, coords, duration, receiver, count)
         ClientScripts.lootTrackerAddLoot(receiver, npc.id, eventId, spawned.type, spawned.count)
         for (bonus in drop.bonusDrops) {
