@@ -45,6 +45,7 @@ constructor(
         attackType: MeleeAttackType?,
         attackStyle: MeleeAttackStyle?,
         specMultiplier: Double,
+        roundUp: Boolean = false,
     ): Int =
         pvnMeleeMaxHit.getMaxHit(
             player = player,
@@ -52,6 +53,7 @@ constructor(
             attackType = attackType,
             attackStyle = attackStyle,
             specialMultiplier = specMultiplier,
+            roundUp = roundUp,
         )
 
     /** @see [PvPMeleeMaxHit.getMaxHit] */
@@ -61,6 +63,7 @@ constructor(
         attackType: MeleeAttackType?,
         attackStyle: MeleeAttackStyle?,
         specMultiplier: Double,
+        roundUp: Boolean = false,
     ): Int =
         pvpMeleeMaxHit.getMaxHit(
             player = player,
@@ -68,6 +71,7 @@ constructor(
             attackType = attackType,
             attackStyle = attackStyle,
             specialMultiplier = specMultiplier,
+            roundUp = roundUp,
         )
 
     /** @see [NvPMeleeMaxHit.getMaxHit] */

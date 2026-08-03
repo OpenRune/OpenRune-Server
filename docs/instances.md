@@ -4,6 +4,21 @@ How the instance system works and how to add a new instanced boss.
 
 An instance is a private copy of one or more map regions allocated at runtime for a specific group of players. Each instance has its own NPC spawns, tracks damage contributions separately, and is cleaned up automatically when it goes empty.
 
+## OSRS map instancing (Jagex)
+
+Runtime region slots follow the layout described in [OSRS instancing mechanics](https://osrs-docs.com/docs/mechanics/instancing/):
+
+| Rule | Value |
+|------|--------|
+| Static map | `x < 6400` |
+| Instance map | `x >= 6400` |
+| Small build slot | 128×128 squares; world `z < 5248`; up to **1377** concurrent |
+| Large build slot | 320×320 squares; world `z >= 5248`; up to **700** concurrent |
+| Padding | **64** empty squares between neighbouring build areas (32 per side) |
+| Copy unit | 8×8 zones (Rebuild Region), rotatable 0° / 90° / 180° / 270° |
+
+Constants and helpers for content code: `org.rsmod.api.instances.region.OsrsInstancing`. Allocation is implemented in `RegionRegistry` (`api/registry`).
+
 ---
 
 ## Quick mental model
@@ -134,6 +149,7 @@ InstanceArea.copyRegions(
 InstanceArea.copyRegions(
     centerRegionId = 12345,
     gridSize = 2,
+    rotation = InstanceRegionRotation.CLOCKWISE_90,
     npcSpawns = listOf(...),
 )
 
@@ -145,6 +161,18 @@ InstanceArea.copyRegions(
 ```
 
 `enterCoord` and `exitCoord` can be omitted here and set via the DB row instead.
+
+**Rotation:** Rebuild Region copies 8×8 zones and supports 0° / 90° / 180° / 270° clockwise rotation of the whole copied block. Use `rotation = InstanceRegionRotation.CLOCKWISE_90` (or `fromDegrees(90)`). Enter coords, exit coords, and `InstanceNpc` positions stay in **static map** coordinates; the engine maps them into the rotated instance via `Region.normal`.
+
+```kotlin
+InstanceArea.copyRegions(
+    centerRegionId = 12345,
+    rotation = InstanceRegionRotation.CLOCKWISE_180,
+    npcSpawns = listOf(InstanceNpc("npc.my_boss", CoordGrid(3000, 9000))),
+)
+```
+
+For hand-built templates, set `rotation` on each `copy { }` block in `RegionTemplate.create { ... }` (same 0–3 step values).
 
 ### `InstanceArea.template` — use a static region template
 

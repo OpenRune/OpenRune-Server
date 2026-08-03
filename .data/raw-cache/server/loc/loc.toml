@@ -1651,3 +1651,52 @@ contentGroup = "content.rock"
 id = "loc.varlamore_mining_rock04"
 inherit = "loc.varlamore_mining_rock04"
 contentGroup = "content.rock"
+
+[[object]]
+id = "loc.star_landing_star"
+inherit = "loc.star_landing_star"
+
+[[object]]
+id = "loc.star_size_nine_star"
+inherit = "loc.star_size_nine_star"
+contentGroup = "content.shooting_star"
+
+[[object]]
+id = "loc.star_size_eight_star"
+inherit = "loc.star_size_eight_star"
+contentGroup = "content.shooting_star"
+
+[[object]]
+id = "loc.star_size_seven_star"
+inherit = "loc.star_size_seven_star"
+contentGroup = "content.shooting_star"
+
+[[object]]
+id = "loc.star_size_six_star"
+inherit = "loc.star_size_six_star"
+contentGroup = "content.shooting_star"
+
+[[object]]
+id = "loc.star_size_five_star"
+inherit = "loc.star_size_five_star"
+contentGroup = "content.shooting_star"
+
+[[object]]
+id = "loc.star_size_four_star"
+inherit = "loc.star_size_four_star"
+contentGroup = "content.shooting_star"
+
+[[object]]
+id = "loc.star_size_three_star"
+inherit = "loc.star_size_three_star"
+contentGroup = "content.shooting_star"
+
+[[object]]
+id = "loc.star_size_two_star"
+inherit = "loc.star_size_two_star"
+contentGroup = "content.shooting_star"
+
+[[object]]
+id = "loc.star_size_one_star"
+inherit = "loc.star_size_one_star"
+contentGroup = "content.shooting_star"
