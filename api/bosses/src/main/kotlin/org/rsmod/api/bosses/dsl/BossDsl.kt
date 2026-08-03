@@ -93,6 +93,8 @@ class HitBuilder internal constructor() {
     private var hitType: HitType? = null
     var target: TargetExpr = TargetExpr.CurrentTarget
     var delay: Int = 0
+    private var spotanimSpot: String? = null
+    private var spotanimHeight: Int = 0
 
     fun damage(expr: DamageExpr) {
         damageExpr = expr
@@ -103,6 +105,12 @@ class HitBuilder internal constructor() {
 
     fun type(t: HitType) {
         hitType = t
+    }
+
+    /** Plays [spot] on the resolved target(s) when the hit lands, e.g. a magic impact graphic. */
+    fun spotanim(spot: String, height: Int = 0) {
+        spotanimSpot = spot
+        spotanimHeight = height
     }
 
     internal fun commitDamage(expr: DamageExpr) {
@@ -118,6 +126,8 @@ class HitBuilder internal constructor() {
                 },
             type = requireNotNull(hitType) { "hit { } requires type(…)" },
             delay = delay,
+            spotanim = spotanimSpot,
+            spotanimHeight = spotanimHeight,
         )
 }
 
@@ -140,6 +150,11 @@ class AbilityBuilder {
 
     fun anim(seq: String, delay: Int = 0) {
         effects += Effect.Anim(seq, delay)
+    }
+
+    /** Plays [spot] on the caster (the boss npc itself), not on the target. */
+    fun spotanim(spot: String, height: Int = 0, delay: Int = 0) {
+        effects += Effect.Spotanim(spot, height, delay)
     }
 
     fun say(text: String) {

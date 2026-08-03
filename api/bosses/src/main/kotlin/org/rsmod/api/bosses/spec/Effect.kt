@@ -25,6 +25,8 @@ sealed interface Effect {
         val damage: DamageExpr,
         val type: HitType,
         val delay: Int = 0,
+        val spotanim: String? = null,
+        val spotanimHeight: Int = 0,
     ) : Effect
 
     data class Projectile(

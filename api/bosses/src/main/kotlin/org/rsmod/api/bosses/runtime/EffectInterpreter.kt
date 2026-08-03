@@ -123,6 +123,7 @@ class EffectInterpreter(
                 val cap = DragonfireProtection.resolveMaxHit(t, dfType, damageMax(hit.damage))
                 damage = if (cap <= 0) 0 else deps.random.of(cap + 1)
             }
+            hit.spotanim?.let { t.spotanim(it, height = hit.spotanimHeight) }
             t.queueHit(npc, delay, hit.type.toEngine(), damage)
         }
     }

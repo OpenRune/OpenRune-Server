@@ -6,6 +6,7 @@ dependencies {
     implementation(libs.fastutil)
     implementation(libs.simmetrics.core)
     implementation(projects.api.areaChecker)
+    implementation(projects.api.instances)
     implementation(projects.api.registry)
     implementation(projects.api.db)
     implementation(projects.api.dbGateway)
