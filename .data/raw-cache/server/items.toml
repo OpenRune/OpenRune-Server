@@ -23548,13 +23548,13 @@ inherit = "obj.sulphur_blades"
 weaponCategory="SlashSword"
 [item.params]
 "param.equipment_sound"=2248
-"param.attack_anim_stance1"="seq.barrow_torag_crush"
+"param.attack_anim_stance1"="seq.sulphur_blade_slash"
 "param.attack_sound_stance1"=8895
-"param.attack_anim_stance2"="seq.barrow_torag_crush"
+"param.attack_anim_stance2"="seq.sulphur_blade_slash"
 "param.attack_sound_stance2"=8895
-"param.attack_anim_stance3"="seq.barrow_torag_crush"
+"param.attack_anim_stance3"="seq.sulphur_blade_slash"
 "param.attack_sound_stance3"=2500
-"param.attack_anim_stance4"="seq.barrow_torag_crush"
+"param.attack_anim_stance4"="seq.sulphur_blade_slash"
 "param.attack_sound_stance4"=8895
 
 
@@ -50519,6 +50519,22 @@ tradeable = false
 id = "obj.glacial_temotli"
 inherit = "obj.glacial_temotli"
 weaponCategory="Spiked"
+[item.params]
+"param.attack_anim_stance1"="seq.sulphur_blade_slash"
+"param.attack_anim_stance2"="seq.sulphur_blade_slash"
+"param.attack_anim_stance3"="seq.sulphur_blade_slash"
+"param.attack_anim_stance4"="seq.sulphur_blade_slash"
+
+
+[[item]]
+id = "obj.earthbound_tecpatl"
+inherit = "obj.earthbound_tecpatl"
+weaponCategory="StabSword"
+[item.params]
+"param.attack_anim_stance1"="seq.tecpatl_stab"
+"param.attack_anim_stance2"="seq.tecpatl_stab"
+"param.attack_anim_stance3"="seq.tecpatl_stab"
+"param.attack_anim_stance4"="seq.tecpatl_stab"
 
 
 [[item]]
@@ -52446,6 +52462,16 @@ id = "obj.zombie_axe"
 inherit = "obj.zombie_axe"
 weaponCategory="Axe"
 [item.params]
+"param.equipment_sound"=2248
+"param.attack_anim_stance1"="seq.godwars_godsword_zamorak_player"
+"param.attack_sound_stance1"=2498
+"param.attack_anim_stance2"="seq.godwars_godsword_zamorak_player"
+"param.attack_sound_stance2"=2498
+"param.attack_anim_stance3"="seq.battleaxe_crush"
+"param.attack_sound_stance3"=2497
+"param.attack_anim_stance4"="seq.godwars_godsword_zamorak_player"
+"param.attack_sound_stance4"=2498
+"param.defend_anim"="seq.human_axe_block"
 "param.attackrate"=5
 
 

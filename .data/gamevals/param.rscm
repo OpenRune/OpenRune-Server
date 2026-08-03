@@ -322,3 +322,5 @@ shop_name=65524
 translate_level=65550
 skill_action_delay=65382
 skill_wall_anim=65383
+killcount_varp=65551
+killcount_notify=65552

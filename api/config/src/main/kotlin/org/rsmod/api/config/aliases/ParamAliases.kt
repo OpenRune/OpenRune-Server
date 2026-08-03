@@ -14,6 +14,7 @@ import dev.openrune.types.StatType
 import dev.openrune.types.aconverted.CategoryType
 import dev.openrune.types.aconverted.SpotanimType
 import dev.openrune.types.aconverted.SynthType
+import dev.openrune.types.varp.VarpServerType
 import org.rsmod.map.CoordGrid
 
 typealias ParamInt = TypedParamType<Int>
@@ -51,3 +52,5 @@ typealias ParamStat = TypedParamType<StatType>
 typealias ParamSynth = TypedParamType<SynthType>
 
 typealias ParamVarBit = TypedParamType<VarBitType>
+
+typealias ParamVarp = TypedParamType<VarpServerType>
