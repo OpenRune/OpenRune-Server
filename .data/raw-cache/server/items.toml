@@ -61157,3 +61157,45 @@ id = "obj.zenyte_shard"
 inherit = "obj.zenyte_shard"
 [item.params]
 "param.collection_log_varbit"="varbit.collection_item_zenyte_shard"
+
+
+[[item]]
+id = "obj.teleportscroll_ardeaglais"
+inherit = "obj.teleportscroll_ardeaglais"
+[item.params]
+"param.collection_log_varbit"="varbit.collection_item_teleportscroll_ardeaglais"
+
+
+[[item]]
+id = "obj.goatpitpet"
+inherit = "obj.goatpitpet"
+[item.params]
+"param.collection_log_varbit"="varbit.collection_item_goatpitpet"
+
+
+[[item]]
+id = "obj.hallowfell"
+inherit = "obj.hallowfell"
+[item.params]
+"param.collection_log_varbit"="varbit.collection_item_hallowfell"
+
+
+[[item]]
+id = "obj.jar_of_light"
+inherit = "obj.jar_of_light"
+[item.params]
+"param.collection_log_varbit"="varbit.collection_item_jar_of_light"
+
+
+[[item]]
+id = "obj.jewellers_chisel"
+inherit = "obj.jewellers_chisel"
+[item.params]
+"param.collection_log_varbit"="varbit.collection_item_jewellers_chisel"
+
+
+[[item]]
+id = "obj.madangelpet"
+inherit = "obj.madangelpet"
+[item.params]
+"param.collection_log_varbit"="varbit.collection_item_madangelpet"

@@ -3230,3 +3230,18 @@ transmit = "Never"
 isServerOnly = true
 id = "varp.collection_log_state_482"
 transmit = "Never"
+
+[[varp]]
+isServerOnly = true
+id = "varp.collection_log_state_483"
+transmit = "Never"
+
+[[varp]]
+isServerOnly = true
+id = "varp.collection_log_state_484"
+transmit = "Never"
+
+[[varp]]
+isServerOnly = true
+id = "varp.collection_log_state_485"
+transmit = "Never"

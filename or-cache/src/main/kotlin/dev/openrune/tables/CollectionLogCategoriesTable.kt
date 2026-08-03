@@ -293,6 +293,14 @@ object CollectionLogCategoriesTable {
             columnRSCM(COUNT_VARP_1, "varp.total_leviathan_kills")
         }
 
+        row("dbrow.collection_log_category_the_mad_angel") {
+            column(NAME, "The Mad Angel")
+            columnRSCM(COMPLETED_VARBIT, "varbit.collection_bosses_mad_angel_completed")
+            columnRSCM(ITEMS, "obj.hallowfell", "obj.teleportscroll_ardeaglais", "obj.granite_dust", "obj.madangelpet", "obj.jar_of_light")
+            column(CATEGORY, "Bosses")
+            columnRSCM(COUNT_VARP_1, "varp.total_mad_angel_kills")
+        }
+
         row("dbrow.collection_log_category_maggot_king") {
             column(NAME, "Maggot King")
             columnRSCM(COMPLETED_VARBIT, "varbit.collection_bosses_maggotking_completed")
@@ -750,7 +758,7 @@ object CollectionLogCategoriesTable {
         row("dbrow.collection_log_category_all_pets") {
             column(NAME, "All Pets")
             columnRSCM(COMPLETED_VARBIT, "varbit.collection_other_pets_completed")
-            columnRSCM(ITEMS, "obj.abyssalsire_pet", "obj.hydrapet", "obj.callisto_pet", "obj.hell_pet", "obj.chaoselepet", "obj.saradominpet", "obj.corepet", "obj.primepet", "obj.supremepet", "obj.rexpet", "obj.jad_pet", "obj.bandospet", "obj.molepet", "obj.dawnpet", "obj.infernopet", "obj.kqpet_walking", "obj.kbdpet", "obj.krakenpet", "obj.armadylpet", "obj.zamorakpet", "obj.scorpia_pet", "obj.skotizopet", "obj.smokepet", "obj.venenatis_pet", "obj.vetion_pet", "obj.vorkathpet", "obj.phoenixpet", "obj.snakepet", "obj.olmpet", "obj.verzikpet", "obj.bloodhound_pet", "obj.penancepet", "obj.skillpetfish", "obj.skillpetmining", "obj.skillpetwc", "obj.skillpethunter_grey", "obj.skillpetagility", "obj.skillpetfarming", "obj.skillpetthieving", "obj.skillpetrunecrafting_fire", "obj.herbiboarpet", "obj.chompybird_pet", "obj.sarachnispet", "obj.zalcanopet", "obj.gauntletpet", "obj.nightmarepet", "obj.soulwarspet_blue", "obj.temporosspet", "obj.nexpet", "obj.abyssalpet", "obj.wardenpet_tumeken", "obj.muspahpet", "obj.whispererpet", "obj.dukesucelluspet", "obj.vardorvispet", "obj.leviathanpet", "obj.scurriuspet", "obj.solhereditpet", "obj.quetzalpet", "obj.araxxorpet", "obj.hueypet", "obj.amoxliatlpet", "obj.rtbrandapet", "obj.yamapet", "obj.dompet", "obj.skillpetsailing", "obj.gryphonbosspet", "obj.cowbosspet", "obj.maggotkingpet")
+            columnRSCM(ITEMS, "obj.abyssalsire_pet", "obj.hydrapet", "obj.callisto_pet", "obj.hell_pet", "obj.chaoselepet", "obj.saradominpet", "obj.corepet", "obj.primepet", "obj.supremepet", "obj.rexpet", "obj.jad_pet", "obj.bandospet", "obj.molepet", "obj.dawnpet", "obj.infernopet", "obj.kqpet_walking", "obj.kbdpet", "obj.krakenpet", "obj.armadylpet", "obj.zamorakpet", "obj.scorpia_pet", "obj.skotizopet", "obj.smokepet", "obj.venenatis_pet", "obj.vetion_pet", "obj.vorkathpet", "obj.phoenixpet", "obj.snakepet", "obj.olmpet", "obj.verzikpet", "obj.bloodhound_pet", "obj.penancepet", "obj.skillpetfish", "obj.skillpetmining", "obj.skillpetwc", "obj.skillpethunter_grey", "obj.skillpetagility", "obj.skillpetfarming", "obj.skillpetthieving", "obj.skillpetrunecrafting_fire", "obj.herbiboarpet", "obj.chompybird_pet", "obj.sarachnispet", "obj.zalcanopet", "obj.gauntletpet", "obj.nightmarepet", "obj.soulwarspet_blue", "obj.temporosspet", "obj.nexpet", "obj.abyssalpet", "obj.wardenpet_tumeken", "obj.muspahpet", "obj.whispererpet", "obj.dukesucelluspet", "obj.vardorvispet", "obj.leviathanpet", "obj.scurriuspet", "obj.solhereditpet", "obj.quetzalpet", "obj.araxxorpet", "obj.hueypet", "obj.amoxliatlpet", "obj.rtbrandapet", "obj.yamapet", "obj.dompet", "obj.skillpetsailing", "obj.gryphonbosspet", "obj.cowbosspet", "obj.maggotkingpet", "obj.goatpitpet", "obj.madangelpet")
             column(CATEGORY, "Other")
         }
 
@@ -925,7 +933,7 @@ object CollectionLogCategoriesTable {
         row("dbrow.collection_log_category_skilling_pets") {
             column(NAME, "Skilling Pets")
             columnRSCM(COMPLETED_VARBIT, "varbit.collection_other_skilling_completed")
-            columnRSCM(ITEMS, "obj.skillpetfish", "obj.skillpetmining", "obj.skillpetwc", "obj.skillpethunter_grey", "obj.skillpetagility", "obj.skillpetfarming", "obj.skillpetthieving", "obj.skillpetrunecrafting_fire", "obj.skillpetsailing")
+            columnRSCM(ITEMS, "obj.skillpetfish", "obj.skillpetmining", "obj.skillpetwc", "obj.skillpethunter_grey", "obj.skillpetagility", "obj.skillpetfarming", "obj.skillpetthieving", "obj.skillpetrunecrafting_fire", "obj.skillpetsailing", "obj.goatpitpet")
             column(CATEGORY, "Other")
         }
 
@@ -953,7 +961,7 @@ object CollectionLogCategoriesTable {
         row("dbrow.collection_log_category_miscellaneous") {
             column(NAME, "Miscellaneous")
             columnRSCM(COMPLETED_VARBIT, "varbit.collection_other_misc_completed")
-            columnRSCM(ITEMS, "obj.herbiboarpet", "obj.chompybird_pet", "obj.dragon_warhammer", "obj.poh_trophydrop_swordfish", "obj.poh_trophydrop_shark", "obj.poh_trophydrop_bass", "obj.poh_trophydrop_giant_krill", "obj.poh_trophydrop_haddock", "obj.poh_trophydrop_yellowfin", "obj.poh_trophydrop_halibut", "obj.poh_trophydrop_bluefin", "obj.poh_trophydrop_marlin", "obj.dorgesh_construction_bone", "obj.dorgesh_construction_bone_curved", "obj.ecumenical_key", "obj.pharaohs_sceptre", "obj.cata_totem1", "obj.cata_totem2", "obj.cata_totem3", "obj.brut_barbarian_bones", "obj.brut_dragon_full_helm", "obj.dragonshield_a", "obj.dragon_slice", "obj.dragon_lump", "obj.xbows_crossbow_limbs_dragon", "obj.dragon_spear", "obj.amulet_of_glory_inf", "obj.ogre_helmet", "obj.evil_chicken_head", "obj.evil_chicken_wings", "obj.evil_chicken_legs", "obj.evil_chicken_feet", "obj.mguild_gloves", "obj.mguild_gloves_superior", "obj.mguild_gloves_expert", "obj.sos_half_skull1", "obj.sos_half_skull2", "obj.sos_half_sceptre1", "obj.sos_half_sceptre2", "obj.mossy_key", "obj.hillgiant_boss_key", "obj.hespori_seed", "obj.hundred_pirate_crab_shell_claw", "obj.hundred_pirate_crab_shell_head", "obj.xeric_talisman_empty", "obj.hosdun_temple_mask", "obj.elven_signet", "obj.prif_crystal_grail", "obj.prif_teleport_seed", "obj.dragonstone_helmet", "obj.dragonstone_platebody", "obj.dragonstone_platelegs", "obj.dragonstone_gauntlets", "obj.dragonstone_armoured_boots", "obj.uncut_onyx", "obj.merfolk_trident", "obj.hosdun_orange_egg_sac", "obj.hosdun_blue_egg_sac", "obj.zombie_axe_broken", "obj.zombie_helmet_broken", "obj.moon_helmet", "obj.squid_beak")
+            columnRSCM(ITEMS, "obj.herbiboarpet", "obj.chompybird_pet", "obj.dragon_warhammer", "obj.poh_trophydrop_swordfish", "obj.poh_trophydrop_shark", "obj.poh_trophydrop_bass", "obj.poh_trophydrop_giant_krill", "obj.poh_trophydrop_haddock", "obj.poh_trophydrop_yellowfin", "obj.poh_trophydrop_halibut", "obj.poh_trophydrop_bluefin", "obj.poh_trophydrop_marlin", "obj.dorgesh_construction_bone", "obj.dorgesh_construction_bone_curved", "obj.ecumenical_key", "obj.pharaohs_sceptre", "obj.cata_totem1", "obj.cata_totem2", "obj.cata_totem3", "obj.brut_barbarian_bones", "obj.brut_dragon_full_helm", "obj.dragonshield_a", "obj.dragon_slice", "obj.dragon_lump", "obj.xbows_crossbow_limbs_dragon", "obj.dragon_spear", "obj.amulet_of_glory_inf", "obj.ogre_helmet", "obj.evil_chicken_head", "obj.evil_chicken_wings", "obj.evil_chicken_legs", "obj.evil_chicken_feet", "obj.mguild_gloves", "obj.mguild_gloves_superior", "obj.mguild_gloves_expert", "obj.sos_half_skull1", "obj.sos_half_skull2", "obj.sos_half_sceptre1", "obj.sos_half_sceptre2", "obj.mossy_key", "obj.hillgiant_boss_key", "obj.hespori_seed", "obj.hundred_pirate_crab_shell_claw", "obj.hundred_pirate_crab_shell_head", "obj.xeric_talisman_empty", "obj.hosdun_temple_mask", "obj.elven_signet", "obj.prif_crystal_grail", "obj.prif_teleport_seed", "obj.dragonstone_helmet", "obj.dragonstone_platebody", "obj.dragonstone_platelegs", "obj.dragonstone_gauntlets", "obj.dragonstone_armoured_boots", "obj.uncut_onyx", "obj.merfolk_trident", "obj.hosdun_orange_egg_sac", "obj.hosdun_blue_egg_sac", "obj.zombie_axe_broken", "obj.zombie_helmet_broken", "obj.moon_helmet", "obj.squid_beak", "obj.jewellers_chisel")
             column(CATEGORY, "Other")
         }
 

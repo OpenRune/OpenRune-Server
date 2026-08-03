@@ -12149,3 +12149,45 @@ id = "varbit.collection_item_zombie_helmet_broken"
 varp = "varp.collection_log_state_482"
 startBit = 0
 endBit = 7
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.collection_item_teleportscroll_ardeaglais"
+varp = "varp.collection_log_state_483"
+startBit = 0
+endBit = 31
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.collection_item_goatpitpet"
+varp = "varp.collection_log_state_484"
+startBit = 0
+endBit = 7
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.collection_item_hallowfell"
+varp = "varp.collection_log_state_484"
+startBit = 8
+endBit = 15
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.collection_item_jar_of_light"
+varp = "varp.collection_log_state_484"
+startBit = 16
+endBit = 23
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.collection_item_jewellers_chisel"
+varp = "varp.collection_log_state_484"
+startBit = 24
+endBit = 31
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.collection_item_madangelpet"
+varp = "varp.collection_log_state_485"
+startBit = 0
+endBit = 7

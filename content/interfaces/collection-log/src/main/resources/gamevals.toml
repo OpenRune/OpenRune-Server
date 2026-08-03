@@ -35,6 +35,7 @@ collection_log_category_kraken=64565
 collection_log_category_kree_arra=64564
 collection_log_category_k_ril_tsutsaroth=64563
 collection_log_category_the_leviathan=64562
+collection_log_category_the_mad_angel=64561
 collection_log_category_maggot_king=64560
 collection_log_category_moons_of_peril=64559
 collection_log_category_nex=64558
@@ -130,6 +131,12 @@ collection_log_category_miscellaneous=64471
 collection_log_varbit=65523
 
 [gamevals.varbit]
+collection_item_teleportscroll_ardeaglais=63806
+collection_item_goatpitpet=63805
+collection_item_hallowfell=63804
+collection_item_jar_of_light=63803
+collection_item_jewellers_chisel=63802
+collection_item_madangelpet=63801
 collection_item_3a_axe=65525
 collection_item_3a_druidic_bottoms=65524
 collection_item_3a_druidic_cloak=65523
@@ -1788,6 +1795,9 @@ collection_item_zombie_head=63808
 collection_item_zombie_helmet_broken=63807
 
 [gamevals.varp]
+collection_log_state_483=65001
+collection_log_state_484=65000
+collection_log_state_485=64999
 collection_log_state_0=65489
 collection_log_state_1=65488
 collection_log_state_10=65487
