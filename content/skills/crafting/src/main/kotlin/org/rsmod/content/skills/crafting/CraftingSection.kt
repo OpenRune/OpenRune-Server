@@ -233,7 +233,6 @@ enum class CraftingSection(
         anim = CraftingConstants.ANIM_BATTLESTAFF,
         sound = CraftingConstants.SOUND_BATTLESTAFF_ATTACH,
         actionName = { "make a ${it.output}" },
-        successMessage = { "You attach the orb to the staff, making a ${it.output}." },
     ),
 
     AMULET_STRINGING(
