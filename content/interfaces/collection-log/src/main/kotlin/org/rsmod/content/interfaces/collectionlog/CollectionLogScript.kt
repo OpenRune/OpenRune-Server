@@ -188,22 +188,21 @@ class CollectionLogScript @Inject constructor(private val eventBus: EventBus) : 
     private fun Player.drawCollectionOverview() {
         applyCollectionCount()
         applyTabCounts()
-        val c = OVERVIEW_COMPONENTS
         runClientScript(
             "clientscript.[clientscript,collection_overview_draw]".asRSCM(RSCMType.CLIENTSCRIPT),
-            c.subsectionGeneralContent,
-            c.subsectionButtons,
-            c.subsectionButtonsClick,
-            c.subsectionProgress,
-            c.progressBar,
-            c.progressBarRankLeft,
-            c.progressBarRankRight,
-            c.progressLeftText,
-            c.progressRightText,
-            c.latestItemsData,
-            c.burgerBtnMenu,
-            c.burgerMenuFrame,
-            c.burgerMenuOverlay,
+            "component.collection_overview:subsection_general_content".asRSCM(RSCMType.COMPONENT),
+            "component.collection_overview:subsection_buttons".asRSCM(RSCMType.COMPONENT),
+            "component.collection_overview:subsection_buttons_click".asRSCM(RSCMType.COMPONENT),
+            "component.collection_overview:subsection_progress".asRSCM(RSCMType.COMPONENT),
+            "component.collection_overview:progress_bar".asRSCM(RSCMType.COMPONENT),
+            "component.collection_overview:progress_bar_rank_left".asRSCM(RSCMType.COMPONENT),
+            "component.collection_overview:progress_bar_rank_right".asRSCM(RSCMType.COMPONENT),
+            "component.collection_overview:progress_left_text".asRSCM(RSCMType.COMPONENT),
+            "component.collection_overview:progress_right_text".asRSCM(RSCMType.COMPONENT),
+            "component.collection_overview:latest_items_data".asRSCM(RSCMType.COMPONENT),
+            "component.collection_overview:burger_btn_menu".asRSCM(RSCMType.COMPONENT),
+            "component.collection_overview:burger_menu_frame".asRSCM(RSCMType.COMPONENT),
+            "component.collection_overview:burger_menu_overlay".asRSCM(RSCMType.COMPONENT),
         )
     }
 
@@ -243,35 +242,6 @@ class CollectionLogScript @Inject constructor(private val eventBus: EventBus) : 
         val scrollbar: Int = scrollbar.asRSCM(RSCMType.COMPONENT)
     }
 
-    private class OverviewComponents {
-        val subsectionGeneralContent: Int =
-            "component.collection_overview:subsection_general_content".asRSCM(RSCMType.COMPONENT)
-        val subsectionButtons: Int =
-            "component.collection_overview:subsection_buttons".asRSCM(RSCMType.COMPONENT)
-        val subsectionButtonsClick: Int =
-            "component.collection_overview:subsection_buttons_click".asRSCM(RSCMType.COMPONENT)
-        val subsectionProgress: Int =
-            "component.collection_overview:subsection_progress".asRSCM(RSCMType.COMPONENT)
-        val progressBar: Int =
-            "component.collection_overview:progress_bar".asRSCM(RSCMType.COMPONENT)
-        val progressBarRankLeft: Int =
-            "component.collection_overview:progress_bar_rank_left".asRSCM(RSCMType.COMPONENT)
-        val progressBarRankRight: Int =
-            "component.collection_overview:progress_bar_rank_right".asRSCM(RSCMType.COMPONENT)
-        val progressLeftText: Int =
-            "component.collection_overview:progress_left_text".asRSCM(RSCMType.COMPONENT)
-        val progressRightText: Int =
-            "component.collection_overview:progress_right_text".asRSCM(RSCMType.COMPONENT)
-        val latestItemsData: Int =
-            "component.collection_overview:latest_items_data".asRSCM(RSCMType.COMPONENT)
-        val burgerBtnMenu: Int =
-            "component.collection_overview:burger_btn_menu".asRSCM(RSCMType.COMPONENT)
-        val burgerMenuFrame: Int =
-            "component.collection_overview:burger_menu_frame".asRSCM(RSCMType.COMPONENT)
-        val burgerMenuOverlay: Int =
-            "component.collection_overview:burger_menu_overlay".asRSCM(RSCMType.COMPONENT)
-    }
-
     private companion object {
         const val BOSS_TAB = 0
         const val RAID_TAB = 1
@@ -305,8 +275,6 @@ class CollectionLogScript @Inject constructor(private val eventBus: EventBus) : 
                 "varp.collection_count_minigames" to "varp.collection_count_minigames_max",
                 "varp.collection_count_other" to "varp.collection_count_other_max",
             )
-
-        val OVERVIEW_COMPONENTS = OverviewComponents()
 
         val TAB_COMPONENTS =
             mapOf(
