@@ -837,9 +837,4 @@ id = "param.killcount_notify"
 isServerOnly = true
 type = "BOOLEAN"
 defaultInt = 1
-
-[[params]]
-id = "param.collection_log_varbit"
-isServerOnly = true
-type = "VARBIT"
 isMembers = true

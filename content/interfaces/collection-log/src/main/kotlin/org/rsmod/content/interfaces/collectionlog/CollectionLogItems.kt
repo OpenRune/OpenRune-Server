@@ -1,18 +1,59 @@
 package org.rsmod.content.interfaces.collectionlog
 
+import com.github.michaelbull.logging.InlineLogger
+import dev.openrune.ServerCacheManager
+import dev.openrune.definition.constants.ConstantProvider
 import dev.openrune.definition.type.VarBitType
-import org.rsmod.api.config.refs.params
+import dev.openrune.types.enums.enum
 import org.rsmod.api.player.vars.VarPlayerIntMapSetter
-import org.rsmod.api.table.CollectionLogCategoriesRow
 import org.rsmod.game.entity.Player
 
 internal object CollectionLogItems {
+    private val logger = InlineLogger()
+    private const val ITEMS_ENUM_PARAM = 690
+
+    internal fun itemsInCategoryStruct(structId: Int): List<Int> {
+        val struct = ServerCacheManager.getStruct(structId) ?: return emptyList()
+        val enumId = struct.params?.get(ITEMS_ENUM_PARAM) as? Int ?: return emptyList()
+        return enum<Int, Int>(enumId).backing.values.filterNotNull()
+    }
+
+    private fun reverseObjName(objId: Int): String? =
+        ConstantProvider.mappings["obj"]?.entries?.firstOrNull { it.value == objId }?.key
+
+    /**
+     * This is the central map between items in the collection log and their associated varbits
+     * which is used to track the number of said item the player has received.
+     *
+     * The map is constructed by looping over every struct used in the collection log and extracting
+     * the corresponding enum which contains the list of items displayed under a collection log
+     * category.
+     *
+     * Varbits used in the collection log MUST adhere to the standard
+     * `varbit.collection_item_itemname` where `itemname` is an items gameval.
+     */
     private val itemToVarbit: Map<Int, VarBitType> by lazy {
-        CollectionLogCategoriesRow.all()
+        CollectionLogCategories.allCategoryStructIds
             .asSequence()
-            .flatMap { it.items.asSequence() }
-            .mapNotNull { item ->
-                item.paramOrNull(params.collection_log_varbit)?.let { item.id to it }
+            .flatMap { itemsInCategoryStruct(it).asSequence() }
+            .distinct()
+            .mapNotNull { objId ->
+                val name = reverseObjName(objId)
+                val varbitId = ConstantProvider.getMappingOrNull("varbit.collection_item_$name")
+                if (varbitId == null) {
+                    logger.warn {
+                        "Collection log item obj.$name ($objId) has no RSCM mapping for varbit.collection_item_$name"
+                    }
+                    return@mapNotNull null
+                }
+                val varbit = ServerCacheManager.getVarbit(varbitId)
+                if (varbit == null) {
+                    logger.warn {
+                        "RSCM mapping varbit.collection_item_$name (id $varbitId) exists but is not present in the cache"
+                    }
+                    return@mapNotNull null
+                }
+                objId to varbit
             }
             .toMap()
     }
