@@ -20,6 +20,7 @@ object SlayerMasters {
     const val TASK_NIEVE = 6
     const val TASK_KONAR = 8
     const val TASK_WILDERNESS = 9
+    const val TASK_MORTIMER = 10
 
     object Npc {
         val turael = "npc.slayer_master_1_tureal".asRSCM()
@@ -36,6 +37,7 @@ object SlayerMasters {
         val steve = "npc.slayer_master_steve".asRSCM()
         val krystilia = "npc.slayer_master_7".asRSCM()
         val konar = "npc.slayer_master_8".asRSCM()
+        val mortimer = "npc.slayer_master_mortimer_vis".asRSCM()
     }
 
     fun extraMenuOptions(dialogue: Dialogue, npcId: Int): List<Pair<String, SlayerMenuOption>> {

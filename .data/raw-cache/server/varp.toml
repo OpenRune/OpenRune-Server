@@ -302,6 +302,24 @@ transmit = "Never"
 
 [[varp]]
 isServerOnly = true
+id = "varp.slayer_mortimer_state"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+isServerOnly = true
+id = "varp.slayer_mortimer_offers"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+isServerOnly = true
+id = "varp.slayer_mortimer_last"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+isServerOnly = true
 id = "varp.rcu_pouch_essence_type_small"
 scope = "Perm"
 transmit = "Never"

@@ -115,6 +115,13 @@ object SlayerMasterProfiles {
                     nearContactMessage =
                         "Bringer of death, why do you insist on using such magic when I'm right next to you? Come and talk to me.",
                 ),
+            SlayerMasters.Npc.mortimer to
+                SlayerMasterProfile(
+                    npcId = SlayerMasters.Npc.mortimer,
+                    activeTaskStyle = ActiveTaskMessageStyle.WithComebackSemicolon,
+                    nearContactMessage =
+                        "I may be a skeleton, but I still have feelings! Come talk to me face to... face.",
+                ),
         )
 
     fun forNpc(npcId: Int): SlayerMasterProfile? = profilesByNpcId[npcId]

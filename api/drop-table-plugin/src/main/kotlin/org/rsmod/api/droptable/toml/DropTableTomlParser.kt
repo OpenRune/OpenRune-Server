@@ -4,10 +4,12 @@ import dtx.rs.RSDropTable
 import dtx.rs.RSGuaranteedTable
 import dtx.rs.RSPreRollTable
 import dtx.rs.RSWeightedTable
+import org.rsmod.api.droptable.ChanceRollStyle
 import org.rsmod.api.droptable.DropChanceTableScope
 import org.rsmod.api.droptable.DropWeightedTableScope
 import org.rsmod.api.droptable.DropRollItem
 import org.rsmod.api.droptable.PendingDropItemConfig
+import org.rsmod.api.droptable.addRateFirstItem
 import org.rsmod.api.droptable.dropRollable
 import org.rsmod.api.droptable.nothing
 import org.rsmod.api.droptable.requiresRollableWrapper
@@ -168,18 +170,10 @@ public object DropTableTomlParser {
         useRolls: Boolean,
     ) {
         val item = buildItem(entry.obj, parseCount(entry), entry.toHooks(), resolver)
-        if (useRolls) {
-            if (item.requiresRollableWrapper()) {
-                entry.numerator outOf entry.denominator rolls dropRollable(item)
-            } else {
-                entry.numerator outOf entry.denominator rolls item
-            }
-        } else {
-            if (item.requiresRollableWrapper()) {
-                entry.numerator outOf entry.denominator chance dropRollable(item)
-            } else {
-                entry.numerator outOf entry.denominator chance item
-            }
+        val style = if (useRolls) ChanceRollStyle.Rolls else ChanceRollStyle.Chance
+        // Always go through addRateFirstItem so clue scrolls get rate-boost wiring.
+        onBuilder {
+            addRateFirstItem(entry.numerator, entry.denominator, style, item)
         }
     }
 

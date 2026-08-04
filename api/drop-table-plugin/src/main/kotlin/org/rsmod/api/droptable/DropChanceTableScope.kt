@@ -1,5 +1,6 @@
 package org.rsmod.api.droptable
 
+import dtx.core.Single
 import dtx.core.Rollable
 import dtx.rs.RSPreRollTable
 import dtx.rs.RSPrerollTableBuilder
@@ -35,7 +36,7 @@ public class DropChanceTableScope internal constructor(
     }
 }
 
-internal enum class ChanceRollStyle {
+public enum class ChanceRollStyle {
     Chance,
     Rolls,
 }
@@ -109,34 +110,43 @@ public class PendingRateFirstItem internal constructor(
     }
 }
 
-internal fun RSPrerollTableBuilder<Player, DropRollItem>.addRateFirstItem(
+public fun RSPrerollTableBuilder<Player, DropRollItem>.addRateFirstItem(
     numerator: Int,
     denominator: Int,
     style: ChanceRollStyle,
     item: DropRollItem,
 ) {
-    if (item.requiresRollableWrapper()) {
-        val rollable = dropRollable(item)
-        when (style) {
-            ChanceRollStyle.Chance -> (numerator outOf denominator) chance rollable
-            ChanceRollStyle.Rolls -> (numerator outOf denominator) rolls rollable
+    val rollable =
+        if (item.requiresRollableWrapper()) {
+            dropRollable(item)
+        } else {
+            Single(item)
         }
-        return
-    }
-    when (style) {
-        ChanceRollStyle.Chance -> (numerator outOf denominator) chance item
-        ChanceRollStyle.Rolls -> (numerator outOf denominator) rolls item
-    }
+    addRateFirstRollable(numerator, denominator, style, rollable, item.obj)
 }
 
-internal fun RSPrerollTableBuilder<Player, DropRollItem>.addRateFirstRollable(
+public fun RSPrerollTableBuilder<Player, DropRollItem>.addRateFirstRollable(
     numerator: Int,
     denominator: Int,
     style: ChanceRollStyle,
     rollable: Rollable<Player, DropRollItem>,
+    objHint: String? = null,
 ) {
     when (style) {
-        ChanceRollStyle.Chance -> (numerator outOf denominator) chance rollable
+        ChanceRollStyle.Chance -> {
+            if (objHint != null && looksLikeClueScrollObj(objHint)) {
+                addEntry(
+                    RateBoostChanceRollable(
+                        numerator = numerator,
+                        denominator = denominator,
+                        rollable = rollable,
+                        boostPercent = DropRateBoosts.clueScrollBoostPercent,
+                    ),
+                )
+            } else {
+                (numerator outOf denominator) chance rollable
+            }
+        }
         ChanceRollStyle.Rolls -> (numerator outOf denominator) rolls rollable
     }
 }

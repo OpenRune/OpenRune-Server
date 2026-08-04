@@ -12,6 +12,7 @@ object Slayer {
     const val COL_POINTS_PER_TASK = 4
     const val COL_BLOCK_VARBITS = 5
     const val COL_CAN_ASSIGN_BOSSES = 6
+    const val COL_BLOCK_COST = 7
 
     fun masters() = dbTable("dbtable.slayer_masters",serverOnly = true) {
         column("master_id", COL_MASTER_ID, VarType.INT)
@@ -21,6 +22,7 @@ object Slayer {
         column("points_per_task", COL_POINTS_PER_TASK, VarType.INT)
         column("block_varbits", COL_BLOCK_VARBITS, VarType.INT)
         column("assign_bosses", COL_CAN_ASSIGN_BOSSES, VarType.BOOLEAN)
+        column("block_cost", COL_BLOCK_COST, VarType.INT)
 
         row("dbrow.turael_aya") {
             column(COL_MASTER_ID, 1)
@@ -38,6 +40,7 @@ object Slayer {
                 "varbit.slayer_blocked_turael_diary"
             )
             column(COL_CAN_ASSIGN_BOSSES, false)
+            column(COL_BLOCK_COST, 40)
         }
 
         row("dbrow.spira") {
@@ -56,10 +59,11 @@ object Slayer {
                 "varbit.slayer_blocked_turael_diary"
             )
             column(COL_CAN_ASSIGN_BOSSES, false)
+            column(COL_BLOCK_COST, 40)
         }
 
         row("dbrow.krystilia") {
-            column(COL_MASTER_ID, 9)
+            column(COL_MASTER_ID, 7)
             columnRSCM(COL_NPC_IDS,"npc.slayer_master_7")
             column(COL_SLAYER_LEVEL, 1)
             column(COL_COMBAT_LEVEL, 1)
@@ -74,6 +78,7 @@ object Slayer {
                 "varbit.slayer_blocked_krystilia_diary"
             )
             column(COL_CAN_ASSIGN_BOSSES, false)
+            column(COL_BLOCK_COST, 100)
         }
 
         row("dbrow.mazchna_achtryn") {
@@ -92,6 +97,7 @@ object Slayer {
                 "varbit.slayer_blocked_mazchna_diary"
             )
             column(COL_CAN_ASSIGN_BOSSES, false)
+            column(COL_BLOCK_COST, 50)
         }
 
         row("dbrow.vannaka") {
@@ -110,10 +116,11 @@ object Slayer {
                 "varbit.slayer_blocked_vannaka_diary"
             )
             column(COL_CAN_ASSIGN_BOSSES, false)
+            column(COL_BLOCK_COST, 60)
         }
 
         row("dbrow.chaeldar") {
-            column(COL_MASTER_ID, 3)
+            column(COL_MASTER_ID, 4)
             columnRSCM(COL_NPC_IDS,"npc.slayer_master_4")
             column(COL_SLAYER_LEVEL, 1)
             column(COL_COMBAT_LEVEL, 70)
@@ -128,6 +135,7 @@ object Slayer {
                 "varbit.slayer_blocked_chaeldar_diary"
             )
             column(COL_CAN_ASSIGN_BOSSES, false)
+            column(COL_BLOCK_COST, 70)
         }
 
         row("dbrow.konar") {
@@ -146,6 +154,7 @@ object Slayer {
                 "varbit.slayer_blocked_konar_diary"
             )
             column(COL_CAN_ASSIGN_BOSSES, true)
+            column(COL_BLOCK_COST, 80)
         }
 
         row("dbrow.nieve_steve") {
@@ -164,6 +173,7 @@ object Slayer {
                 "varbit.slayer_blocked_nieve_diary"
             )
             column(COL_CAN_ASSIGN_BOSSES, true)
+            column(COL_BLOCK_COST, 90)
         }
 
         row("dbrow.duradel_kuradal") {
@@ -182,6 +192,22 @@ object Slayer {
                 "varbit.slayer_blocked_duradel_diary"
             )
             column(COL_CAN_ASSIGN_BOSSES, true)
+            column(COL_BLOCK_COST, 100)
+        }
+
+        row("dbrow.mortimer") {
+            column(COL_MASTER_ID, 10)
+            columnRSCM(COL_NPC_IDS, "npc.slayer_master_mortimer_vis")
+            column(COL_SLAYER_LEVEL, 70)
+            column(COL_COMBAT_LEVEL, 100)
+            column(COL_POINTS_PER_TASK, 0)
+            columnRSCM(
+                COL_BLOCK_VARBITS,
+                "varbit.slayer_blocked_mortimer_1",
+                "varbit.slayer_blocked_mortimer_2",
+            )
+            column(COL_CAN_ASSIGN_BOSSES, false)
+            column(COL_BLOCK_COST, 120)
         }
 
     }

@@ -97,6 +97,13 @@ object SlayerAssignmentDialogue {
         masterNpcId: String,
         onAssigned: suspend Dialogue.(taskName: String, count: Int) -> Unit,
     ) {
+        if (SlayerTaskManager.hasPendingMortimerChoice(access)) {
+            chatNpc(
+                neutral,
+                "Hmm... It appears as though Mortimer has provided you with a task choice, you must go to them in order to pick.",
+            )
+            return
+        }
         val master =
             SlayerTaskManager.findMasterByNpc(masterNpcId) ?: run {
                 chatNpc(neutral, "I can't assign you a task right now.")
