@@ -1,0 +1,77 @@
+name: Gameval Conflict Check
+
+permissions:
+  contents: write
+  pull-requests: write
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths:
+      - "content/**/gamevals.toml"
+      - "api/**/gamevals.toml"
+      - ".data/gamevals/**"
+      - ".data/gamevals-binary/max-ids.toml"
+      - "tools/scripts/fix_gameval_conflicts.py"
+      - ".github/workflows/gameval-conflicts.yml"
+
+jobs:
+  resolve:
+    runs-on: ubuntu-latest
+    if: >
+      github.event.pull_request.head.repo.full_name == github.repository &&
+      github.actor != 'github-actions[bot]'
+
+    steps:
+      - name: Checkout PR branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Fix conflicting gamevals
+        id: resolve
+        run: |
+          set +e
+          python3 tools/scripts/fix_gameval_conflicts.py | tee /tmp/gameval-fix-log.txt
+          code=${PIPESTATUS[0]}
+          set -e
+          if [ "$code" -eq 0 ]; then
+            echo "fixed=false" >> "$GITHUB_OUTPUT"
+          elif [ "$code" -eq 2 ]; then
+            echo "fixed=true" >> "$GITHUB_OUTPUT"
+          else
+            exit "$code"
+          fi
+
+      - name: Commit and push fixes
+        if: steps.resolve.outputs.fixed == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          git add -u -- content api .data/gamevals
+
+          if git diff --cached --quiet; then
+            echo "Nothing staged."
+            exit 0
+          fi
+
+          git commit -m "fix(gamevals): reassign IDs conflicting with OSRS reserved range"
+          git push origin "HEAD:${{ github.head_ref }}"
+
+          {
+            echo "## Gameval conflicts auto-fixed"
+            echo
+            echo "Reserved OSRS IDs come from \`.data/gamevals-binary/max-ids.toml\` (written on \`freshCache\`)."
+            echo "Custom gamevals must use IDs **greater than** each table's max."
+            echo
+            echo '```'
+            cat /tmp/gameval-fix-log.txt
+            echo '```'
+          } > /tmp/gameval-pr-body.md
+
+          gh pr comment "${{ github.event.pull_request.number }}" --body-file /tmp/gameval-pr-body.md
