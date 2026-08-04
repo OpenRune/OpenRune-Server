@@ -425,7 +425,7 @@ class ElementalSpells : SpellAttackMap {
             val weaponType = getOrNull(attack.weapon)
             val castAnim = weaponType.castStrikeAnim()
 
-            anim(castAnim)
+            player.anim(castAnim, priority = 6)
             spotanim(launch, height = 92)
 
             val proj = manager.spawnProjectile(this, target, travel, "projanim.magic_spell")

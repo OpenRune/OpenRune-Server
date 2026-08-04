@@ -20,6 +20,7 @@ import org.rsmod.api.config.aliases.ParamStat
 import org.rsmod.api.config.aliases.ParamStr
 import org.rsmod.api.config.aliases.ParamSynth
 import org.rsmod.api.config.aliases.ParamVarBit
+import org.rsmod.api.config.aliases.ParamVarp
 
 typealias params = BaseParams
 
@@ -214,4 +215,7 @@ object BaseParams {
     val closesound: ParamSynth = param("closesound")
     val opensound: ParamSynth = param("opensound")
     val next_loc_stage: ParamLoc = param("next_loc_stage")
+    val translate_level: ParamInt = param("translate_level")
+    val killcount_varp: ParamVarp = param("killcount_varp")
+    val killcount_notify: ParamBool = param("killcount_notify")
 }

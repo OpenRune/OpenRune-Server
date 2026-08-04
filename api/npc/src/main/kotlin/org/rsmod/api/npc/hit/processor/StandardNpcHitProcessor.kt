@@ -1,6 +1,5 @@
 package org.rsmod.api.npc.hit.processor
 
-import dev.openrune.rscm.RSCM
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import dev.openrune.types.HealthBarServerType
@@ -11,6 +10,7 @@ import org.rsmod.api.npc.access.StandardNpcAccess
 import org.rsmod.api.npc.events.NpcHitEvents
 import org.rsmod.api.npc.headbar.InternalNpcHeadbars
 import org.rsmod.api.npc.hit.NpcDamageContributor
+import org.rsmod.api.player.ironman.shouldBlockNpcCombatXp
 import org.rsmod.api.player.output.soundSynth
 import org.rsmod.events.EventBus
 import org.rsmod.game.entity.Npc
@@ -26,9 +26,6 @@ constructor(
     private val damageContributors: Set<NpcDamageContributor>,
 ) : NpcHitProcessor {
     override fun StandardNpcAccess.process(hit: Hit) {
-        // TODO(combat): Show ironman_blocked hitmark if source is an ironman and target has been
-        // damaged by other sources.
-
         var changedDamage: Int? = null
         if (hit.damage > npc.hitpoints) {
             changedDamage = npc.hitpoints
@@ -40,18 +37,33 @@ constructor(
                 hit.hitmark.copy(
                     self = zeroDamageHitmark.lit.asRSCM(RSCMType.HITMARK),
                     source = zeroDamageHitmark.lit.asRSCM(RSCMType.HITMARK),
-                    public = if (hit.hitmark.isPrivate) null else zeroDamageHitmark.tint?.asRSCM(RSCMType.HITMARK),
+                    public =
+                        if (hit.hitmark.isPrivate) null
+                        else zeroDamageHitmark.tint?.asRSCM(RSCMType.HITMARK),
                     damage = changedDamage,
                 )
-            val modifiedHit = hit.copy(hitmark = modifiedHitmark)
-            takeHit(modifiedHit)
+            takeHit(hit.copy(hitmark = modifiedHitmark))
+            return
+        }
+
+        val source = if (hit.isFromPlayer) hit.resolvePlayerSource(playerList) else null
+        if (source != null && source.shouldBlockNpcCombatXp(npc)) {
+            val blocked = hitmark_groups.ironman_blocked
+            val mark = blocked.lit.asRSCM(RSCMType.HITMARK)
+            val modifiedHitmark =
+                hit.hitmark.copy(
+                    self = mark,
+                    source = mark,
+                    public = if (hit.hitmark.isPrivate) null else mark,
+                    damage = changedDamage ?: hit.damage,
+                )
+            takeHit(hit.copy(hitmark = modifiedHitmark))
             return
         }
 
         if (changedDamage != null) {
             val modifiedHitmark = hit.hitmark.copy(damage = changedDamage)
-            val modifiedHit = hit.copy(hitmark = modifiedHitmark)
-            takeHit(modifiedHit)
+            takeHit(hit.copy(hitmark = modifiedHitmark))
             return
         }
 

@@ -39,6 +39,7 @@ import org.rsmod.api.player.interact.NpcInteractions
 import org.rsmod.api.player.interact.NpcTInteractions
 import org.rsmod.api.player.interact.PlayerInteractions
 import org.rsmod.api.player.interact.PlayerTInteractions
+import org.rsmod.api.player.ironman.shouldBlockNpcCombatXp
 import org.rsmod.api.player.output.soundSynth
 import org.rsmod.api.player.protect.clearPendingAction
 import org.rsmod.api.player.stat.hitpoints
@@ -200,7 +201,7 @@ constructor(
         val attackAnim = weapon?.paramOrNull(animParam) ?: SequenceServerType(defaultAnim.asRSCM(RSCMType.SEQ))
         val attackSound = weapon?.paramOrNull(soundParam) ?: SynthType(defaultSound.asRSCM(RSCMType.SYNTH))
 
-        player.anim(RSCM.getReverseMapping(RSCMType.SEQ,attackAnim.id))
+        player.anim(RSCM.getReverseMapping(RSCMType.SEQ,attackAnim.id), priority = 6)
         player.soundSynth(attackSound)
     }
 
@@ -217,7 +218,7 @@ constructor(
     public fun playWeaponFx(player: Player, attack: CombatAttack.Ranged): Boolean {
         val weapon = getInvObj(attack.weapon)
         val attackAnim = weapon.paramOrNull(params.attack_anim_stance1) ?: return false
-        player.anim(RSCM.getReverseMapping(RSCMType.SEQ,attackAnim.id))
+        player.anim(RSCM.getReverseMapping(RSCMType.SEQ,attackAnim.id), priority = 6)
         val attackSound = weapon.paramOrNull(params.attack_sound_stance1)
         attackSound?.let(player::soundSynth)
         return true
@@ -242,6 +243,9 @@ constructor(
         }
 
     private fun giveCombatXp(player: Player, target: Npc, attack: CombatAttack.Melee, damage: Int) {
+        if (player.shouldBlockNpcCombatXp(target)) {
+            return
+        }
         val cappedDamage = min(damage, target.hitpoints)
         val multiplier = target.resolveCombatXpMultiplier()
         giveCombatXp(player, attack, cappedDamage, multiplier)
@@ -310,6 +314,9 @@ constructor(
         attack: CombatAttack.Ranged,
         damage: Int,
     ) {
+        if (player.shouldBlockNpcCombatXp(target)) {
+            return
+        }
         val cappedDamage = min(damage, target.hitpoints)
         val multiplier = target.resolveCombatXpMultiplier()
         giveCombatXp(player, attack, cappedDamage, multiplier)
@@ -369,6 +376,9 @@ constructor(
         }
 
     private fun giveCombatXp(player: Player, target: Npc, attack: CombatAttack.Spell, damage: Int) {
+        if (player.shouldBlockNpcCombatXp(target)) {
+            return
+        }
         val cappedDamage = min(damage, target.hitpoints)
         val multiplier = target.resolveCombatXpMultiplier()
         giveCombatXp(player, attack, cappedDamage, multiplier)
@@ -420,6 +430,9 @@ constructor(
 
     @Suppress("unused")
     private fun giveCombatXp(player: Player, target: Npc, attack: CombatAttack.Staff, damage: Int) {
+        if (player.shouldBlockNpcCombatXp(target)) {
+            return
+        }
         val cappedDamage = min(damage, target.hitpoints)
         val multiplier = target.resolveCombatXpMultiplier()
         giveStaffCombatXp(player, cappedDamage, multiplier)
@@ -478,6 +491,7 @@ constructor(
         attackType: MeleeAttackType? = attack.type,
         attackStyle: MeleeAttackStyle? = attack.style,
         blockType: MeleeAttackType? = attack.type,
+        roundMaxHitUp: Boolean = false,
     ): Int {
         val successfulAccuracyRoll =
             rollMeleeAccuracy(
@@ -491,7 +505,14 @@ constructor(
         if (!successfulAccuracyRoll) {
             return 0
         }
-        return rollMeleeMaxHit(source, target, attackType, attackStyle, maxHitMultiplier)
+        return rollMeleeMaxHit(
+            source,
+            target,
+            attackType,
+            attackStyle,
+            maxHitMultiplier,
+            roundMaxHitUp,
+        )
     }
 
     /**
@@ -589,8 +610,10 @@ constructor(
         attackType: MeleeAttackType?,
         attackStyle: MeleeAttackStyle?,
         multiplier: Double,
+        roundUp: Boolean = false,
     ): Int {
-        val maxHit = calculateMeleeMaxHit(source, target, attackType, attackStyle, multiplier)
+        val maxHit =
+            calculateMeleeMaxHit(source, target, attackType, attackStyle, multiplier, roundUp)
         if (source.adminMaxHit) {
             return maxHit
         }
@@ -617,10 +640,13 @@ constructor(
         attackType: MeleeAttackType?,
         attackStyle: MeleeAttackStyle?,
         multiplier: Double,
+        roundUp: Boolean = false,
     ): Int {
         return when (target) {
-            is Npc -> calculateMeleeMaxHit(source, target, attackType, attackStyle, multiplier)
-            is Player -> calculateMeleeMaxHit(source, target, attackType, attackStyle, multiplier)
+            is Npc ->
+                calculateMeleeMaxHit(source, target, attackType, attackStyle, multiplier, roundUp)
+            is Player ->
+                calculateMeleeMaxHit(source, target, attackType, attackStyle, multiplier, roundUp)
         }
     }
 
@@ -630,7 +656,9 @@ constructor(
         attackType: MeleeAttackType?,
         attackStyle: MeleeAttackStyle?,
         specMultiplier: Double,
-    ): Int = maxHits.getMeleeMaxHit(source, target, attackType, attackStyle, specMultiplier)
+        roundUp: Boolean,
+    ): Int =
+        maxHits.getMeleeMaxHit(source, target, attackType, attackStyle, specMultiplier, roundUp)
 
     private fun calculateMeleeMaxHit(
         source: Player,
@@ -638,7 +666,9 @@ constructor(
         attackType: MeleeAttackType?,
         attackStyle: MeleeAttackStyle?,
         specMultiplier: Double,
-    ): Int = maxHits.getMeleeMaxHit(source, target, attackType, attackStyle, specMultiplier)
+        roundUp: Boolean,
+    ): Int =
+        maxHits.getMeleeMaxHit(source, target, attackType, attackStyle, specMultiplier, roundUp)
 
     /**
      * Queues a melee hit on [target], applying damage after the specified [delay].

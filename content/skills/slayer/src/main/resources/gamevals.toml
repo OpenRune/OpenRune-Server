@@ -26,6 +26,15 @@ slayer_task_tips=65461
 slayer_expeditious_charges=65460
 slayer_total_tasks_done=65459
 slayer_slaughter_charges=65457
+slayer_mortimer_tasks_done=65525
+slayer_mortimer_streak=65524
+slayer_choose_amount_1=65523
+slayer_choose_amount_2=65522
+slayer_choose_amount_3=65521
+slayer_last_mortimer_amount=65520
+slayer_last_mortimer_modifier_id=65458
+slayer_last_mortimer_modifier_value=65456
+slayer_last_mortimer_modifier_negative=65455
 
 [gamevals.varp]
 slayer_player_state=65496
@@ -34,6 +43,9 @@ slayer_last_master=65494
 slayer_last_area=65493
 slayer_last_count=65492
 slayer_dialogue_flags=65491
+slayer_mortimer_state=65489
+slayer_mortimer_offers=65488
+slayer_mortimer_last=65487
 
 [gamevals.dbrow]
 turael_aya=65182
@@ -45,3 +57,4 @@ chaeldar=65177
 konar=65176
 nieve_steve=65175
 duradel_kuradal=65174
+mortimer=64131

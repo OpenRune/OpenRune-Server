@@ -806,5 +806,35 @@ type = "STRING"
 defaultString = ""
 isMembers = true
 
+[[params]]
+id = "param.translate_level"
+isServerOnly = true
+type = "INT"
+defaultInt = 0
+isMembers = true
 
+[[params]]
+id = "param.skill_action_delay"
+isServerOnly = true
+type = "INT"
+defaultInt = 3
+isMembers = true
 
+[[params]]
+id = "param.skill_wall_anim"
+isServerOnly = true
+type = "SEQ"
+isMembers = true
+
+[[params]]
+id = "param.killcount_varp"
+isServerOnly = true
+type = "VARP"
+isMembers = true
+
+[[params]]
+id = "param.killcount_notify"
+isServerOnly = true
+type = "BOOLEAN"
+defaultInt = 1
+isMembers = true

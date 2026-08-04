@@ -1,5 +1,6 @@
 package org.rsmod.content.areas.wilderness
 
+import dev.openrune.types.ItemServerType
 import jakarta.inject.Inject
 import org.rsmod.api.area.checker.AreaChecker
 import org.rsmod.api.area.checker.isInWilderness
@@ -11,7 +12,7 @@ import org.rsmod.api.player.hook.GroundItemDropSource
 import org.rsmod.api.player.hook.PlayerGroundItemDropHook
 import org.rsmod.api.player.hook.PlayerObjTakeValidateHook
 import org.rsmod.game.entity.Player
-import dev.openrune.types.ItemServerType
+import org.rsmod.game.obj.Obj
 
 public class WildernessGroundItemHook @Inject constructor(private val areaChecker: AreaChecker) :
     PlayerGroundItemDropHook, PlayerObjTakeValidateHook {
@@ -53,7 +54,7 @@ public class WildernessGroundItemHook @Inject constructor(private val areaChecke
         return GroundItemDropParams(adjustedDuration, adjustedReveal, ownerOnly)
     }
 
-    override fun validateTake(player: Player, objType: ItemServerType): String? {
+    override fun validateTake(player: Player, obj: Obj, objType: ItemServerType): String? {
         if (!player.coords.isInWilderness(areaChecker)) {
             return null
         }

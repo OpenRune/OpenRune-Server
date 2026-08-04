@@ -28,7 +28,7 @@ constructor(
 
     private suspend fun ProtectedAccess.triggerTake(obj: Obj) {
         val type = ServerCacheManager.getItem(obj.type) ?: return
-        val denial = takeValidator.validate(player, type)
+        val denial = takeValidator.validate(player, obj, type)
         if (denial != null) {
             mes(denial)
             return

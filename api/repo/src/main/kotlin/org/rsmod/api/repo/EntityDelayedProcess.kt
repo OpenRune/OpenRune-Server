@@ -11,4 +11,15 @@ constructor(private val npcRepo: NpcRepository, private val objRepo: ObjReposito
         npcRepo.processDelayedAdd()
         objRepo.processDelayedAdd()
     }
+
+    /**
+     * Registers all due delayed NPC/obj map spawns immediately.
+     *
+     * Call after plugin scripts have started (so `onNpcSpawn` handlers exist) and before the
+     * login gate opens, so players never see entities trickle in after joining.
+     */
+    public fun flush() {
+        npcRepo.flushDelayedAdds()
+        objRepo.flushDelayedAdds()
+    }
 }

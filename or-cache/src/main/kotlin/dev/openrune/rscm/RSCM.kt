@@ -26,6 +26,7 @@ enum class RSCMType(val prefix: String) {
     LOC("loc"),
     MESANIM("mesanim"),
     MIDI("midi"),
+    MODELS("models"),
     NPC("npc"),
     OBJ("obj"),
     PARAM("param"),

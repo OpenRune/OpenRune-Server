@@ -252,6 +252,7 @@ class PackServerConfig(
                                     runWeight = content.bool("runWeight", false),
                                     dummyInv = content.bool("dummyInv", false),
                                     placeholders = content.bool("placeholders", false),
+                                    uimBlocked = content.bool("uimBlocked", false),
                                 )
                         }
                     }

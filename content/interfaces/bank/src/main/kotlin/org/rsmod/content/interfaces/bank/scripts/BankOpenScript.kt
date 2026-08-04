@@ -5,10 +5,12 @@ import jakarta.inject.Inject
 import org.rsmod.api.combat.weapon.WeaponSpeeds
 import org.rsmod.api.config.constants
 import org.rsmod.api.player.bonus.WornBonuses
+import org.rsmod.api.player.ironman.IronmanRestrictions
 import org.rsmod.api.player.output.ClientScripts.mesLayerClose
 import org.rsmod.api.player.output.ClientScripts.tooltip
 import org.rsmod.api.player.startInvTransmit
 import org.rsmod.api.player.stopInvTransmit
+import org.rsmod.api.player.ui.ifClose
 import org.rsmod.api.player.ui.ifSetEvents
 import org.rsmod.api.player.ui.ifSetText
 import org.rsmod.api.player.vars.boolVarBit
@@ -22,14 +24,18 @@ import org.rsmod.content.interfaces.bank.highlightNoClickClear
 import org.rsmod.content.interfaces.bank.setBankWornBonuses
 import org.rsmod.content.interfaces.bank.setBanksideExtraOps
 import org.rsmod.content.interfaces.bank.util.offset
+import org.rsmod.events.EventBus
 import org.rsmod.game.entity.Player
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
 class BankOpenScript
 @Inject
-constructor(private val wornBonuses: WornBonuses, private val weaponSpeeds: WeaponSpeeds) :
-    PluginScript() {
+constructor(
+    private val wornBonuses: WornBonuses,
+    private val weaponSpeeds: WeaponSpeeds,
+    private val eventBus: EventBus,
+) : PluginScript() {
     private val Player.bank
         get() = invMap.getOrPut("inv.bank")
 
@@ -42,6 +48,10 @@ constructor(private val wornBonuses: WornBonuses, private val weaponSpeeds: Weap
     }
 
     private fun Player.onBankOpen() {
+        if (IronmanRestrictions.blockUimBank(this)) {
+            ifClose(eventBus)
+            return
+        }
         if (!disableIfEvents) {
             val capacityIncrease = bank_constants.purchasable_capacity
             withdrawCert = false

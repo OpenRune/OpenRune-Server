@@ -53,6 +53,7 @@ object SlayerTaskManager {
     }
 
     private fun clearAssignedTask(player: Player) {
+        MortimerAssignment.resetTaskExtras(player)
         VarPlayerIntMapSetter.set(player, "varp.slayer_target", 0)
         VarPlayerIntMapSetter.set(player, "varp.slayer_count", 0)
         VarPlayerIntMapSetter.set(player, "varp.slayer_count_original", 0)
@@ -61,6 +62,12 @@ object SlayerTaskManager {
 
     fun getCurrentAssignedMaster(player: Player): SlayerMastersRow? {
         val masterId = player.vars["varbit.slayer_master"]
+        if (masterId == 0) return null
+        return tasks.keys.find { it.masterId == masterId }
+    }
+
+    fun getFocusedMaster(player: Player): SlayerMastersRow? {
+        val masterId = player.vars["varbit.slayer_master_in_focus"]
         if (masterId == 0) return null
         return tasks.keys.find { it.masterId == masterId }
     }
@@ -89,7 +96,18 @@ object SlayerTaskManager {
 
         val xp = slayerXpForKill(npc)
         if (xp > 0) {
-            player.statAdvance("stat.slayer", xp)
+            val boosted =
+                if (MortimerAssignment.isMortimer(getCurrentAssignedMaster(player))) {
+                    val modifier = MortimerAssignment.activeModifier(player)
+                    if (modifier?.id == MortimerModifiers.MODIFIER_XP) {
+                        xp * (100 + modifier.absoluteValue) / 100.0
+                    } else {
+                        xp
+                    }
+                } else {
+                    xp
+                }
+            player.statAdvance("stat.slayer", boosted)
         }
 
         if (newCount == 0) {
@@ -106,23 +124,29 @@ object SlayerTaskManager {
 
         val master = getCurrentAssignedMaster(player) ?: return clearAssignedTask(player)
 
-        val streak = if (isWildernessMaster(master)) {
-            val next = player.vars["varbit.slayer_wildy_streak"] + 1
-            VarPlayerIntMapSetter.set(player, "varbit.slayer_wildy_streak", next)
-            next
-        } else {
-            val next = player.vars["varbit.slayer_streak"] + 1
-            VarPlayerIntMapSetter.set(player, "varbit.slayer_streak", next)
-            next
-        }
+        val pointsToAdd =
+            if (MortimerAssignment.isMortimer(master)) {
+                MortimerAssignment.onTaskComplete(player)
+            } else {
+                val streak =
+                    if (isWildernessMaster(master)) {
+                        val next = player.vars["varbit.slayer_wildy_streak"] + 1
+                        VarPlayerIntMapSetter.set(player, "varbit.slayer_wildy_streak", next)
+                        next
+                    } else {
+                        val next = player.vars["varbit.slayer_streak"] + 1
+                        VarPlayerIntMapSetter.set(player, "varbit.slayer_streak", next)
+                        next
+                    }
 
-        val basePoints = master.pointsPerTask
-        val multiplier = streakPointMultiplier(streak)
-        val pointsToAdd = if (totalTasksDone <= TOTAL_TASKS_NO_POINTS_THRESHOLD || basePoints <= 0) {
-            0
-        } else {
-            basePoints * multiplier
-        }
+                val basePoints = master.pointsPerTask
+                val multiplier = streakPointMultiplier(streak)
+                if (totalTasksDone <= TOTAL_TASKS_NO_POINTS_THRESHOLD || basePoints <= 0) {
+                    0
+                } else {
+                    basePoints * multiplier
+                }
+            }
 
         if (pointsToAdd > 0) {
             val currentPoints = player.vars["varbit.slayer_points"]
@@ -219,10 +243,16 @@ object SlayerTaskManager {
         return type.hitpoints * multiplier
     }
 
-    fun isWildernessMaster(master: SlayerMastersRow): Boolean = master.npcIds.any { it.id == "npc.slayer_master_7".asRSCM() }
+    fun isWildernessMaster(master: SlayerMastersRow): Boolean =
+        master.npcIds.any { it.id == "npc.slayer_master_7".asRSCM() }
+
+    fun isMortimerMaster(master: SlayerMastersRow): Boolean = MortimerAssignment.isMortimer(master)
 
     fun isOnWildernessSlayerTask(player: Player): Boolean =
         getCurrentAssignedMaster(player)?.let(::isWildernessMaster) == true
+
+    fun hasPendingMortimerChoice(access: ProtectedAccess): Boolean =
+        MortimerAssignment.hasPendingChoice(access)
 
     fun countsKillTowardTask(player: Player, npc: Npc, areaChecker: AreaChecker): Boolean {
         if (isOnWildernessSlayerTask(player) && !npc.coords.isInWilderness(areaChecker)) {
@@ -285,6 +315,32 @@ object SlayerTaskManager {
         }
 
         return AssignmentRoll.Regular(chosen, rollTaskAmount(protected, chosen))
+    }
+
+    fun rollDistinctAssignments(
+        protected: ProtectedAccess,
+        master: SlayerMastersRow,
+        count: Int,
+        bypassCombatCheck: Boolean = false,
+    ): List<AssignmentRoll.Regular> {
+        if (!meetsMasterRequirements(protected, master)) return emptyList()
+
+        val blocked = blockedTaskIds(protected, master).toMutableSet()
+        val results = ArrayList<AssignmentRoll.Regular>(count)
+        repeat(count) {
+            val chosen =
+                rollWeightedTask(
+                    master = master,
+                    masterTasks = tasks[master].orEmpty(),
+                    blockedTaskIds = blocked,
+                    protected = protected,
+                    bypassCombatCheck = bypassCombatCheck || SlayerCapePerk.hasSlayerCape(protected),
+                    includeBossTasks = false,
+                ) ?: return@repeat
+            blocked += chosen.task.id
+            results += AssignmentRoll.Regular(chosen, rollTaskAmount(protected, chosen))
+        }
+        return results
     }
 
     fun applyRegularAssignment(
@@ -384,6 +440,11 @@ object SlayerTaskManager {
 
         val masterTask = tasks[master].orEmpty().find { it.task.id == lastTaskId } ?: return AssignPreviousResult.Failed
 
+        if (MortimerAssignment.isMortimer(master)) {
+            MortimerAssignment.restorePreviousAssignment(protected, master, masterTask)
+            return AssignPreviousResult.Success
+        }
+
         val taskId = if (master.masterId == KONAR_MASTER_ID) {
             lastTaskId
         } else {
@@ -446,6 +507,11 @@ object SlayerTaskManager {
     private fun meetsMasterRequirements(access: ProtectedAccess, master: SlayerMastersRow): Boolean {
         val slayerLevel = access.statBase("stat.slayer")
         val combatLevel = access.player.combatLevel
+        if (MortimerAssignment.isMortimer(master)) {
+            if (slayerLevel < master.slayerLevel) return false
+            if (slayerLevel >= 99 && SlayerCapePerk.hasSlayerCape(access)) return true
+            return combatLevel >= master.combatLevel
+        }
         return slayerLevel >= master.slayerLevel && combatLevel >= master.combatLevel
     }
 
@@ -453,8 +519,15 @@ object SlayerTaskManager {
         val slayerLevel = access.statBase("stat.slayer")
         val combatLevel = access.player.combatLevel
         return when {
-            slayerLevel < master.slayerLevel -> "You need a Slayer level of at least ${master.slayerLevel} to get a task from me."
-            combatLevel < master.combatLevel -> "You need a combat level of at least ${master.combatLevel} to get a task from me."
+            MortimerAssignment.isMortimer(master) &&
+                slayerLevel >= 99 &&
+                !SlayerCapePerk.hasSlayerCape(access) &&
+                combatLevel < master.combatLevel ->
+                "You need a combat level of at least ${master.combatLevel} to get a task from me, unless you show me a Slayer cape."
+            slayerLevel < master.slayerLevel ->
+                "You need a Slayer level of at least ${master.slayerLevel} to get a task from me."
+            combatLevel < master.combatLevel ->
+                "You need a combat level of at least ${master.combatLevel} to get a task from me."
             else -> "I don't have any tasks you're able to take right now."
         }
     }
@@ -464,8 +537,8 @@ object SlayerTaskManager {
 
     fun blockedTaskIds(player: Player, master: SlayerMastersRow): Set<Int> {
         val blocked = mutableSetOf<Int>()
-        for (slot in 0 until 7) {
-            val varbit = RSCM.getReverseMapping(RSCMType.VARBIT,master.blockVarbits[slot])
+        for (slot in master.blockVarbits.indices) {
+            val varbit = RSCM.getReverseMapping(RSCMType.VARBIT, master.blockVarbits[slot])
             val taskId = player.vars[varbit]
             if (taskId != 0) {
                 blocked += taskId

@@ -509,7 +509,7 @@ constructor(
         val observer = observerUUID ?: error("`observerUUID` not set for player: $this")
         val entity =
             ObjEntity(id = invObj.id, count = transaction.completed(), scope = ObjScope.Private.id)
-        val obj = Obj(coords, entity, currentMapClock, observer)
+        val obj = Obj(coords, entity, currentMapClock, observer, ownerId = observer)
         val dropped = repo.add(obj, dropParams.duration, dropParams.reveal)
         if (!dropped) {
             return false

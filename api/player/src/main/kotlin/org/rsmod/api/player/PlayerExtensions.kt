@@ -1,8 +1,10 @@
 package org.rsmod.api.player
 
 import dev.openrune.types.InvScope
+import org.rsmod.annotations.InternalApi
 import org.rsmod.api.area.checker.AreaChecker
 import org.rsmod.api.config.constants
+import org.rsmod.api.enums.NamedEnums
 import org.rsmod.api.player.output.UpdateInventory
 import org.rsmod.api.player.output.clearMapFlag
 import org.rsmod.api.player.stat.hitpoints
@@ -82,6 +84,11 @@ public fun Player.isInPvnCombat(): Boolean {
     return vars["varp.lastcombat"] + constants.combat_activecombat_delay >= currentMapClock
 }
 
+public fun Player.subjectPronoun(): String {
+    appearance.pronoun = vars["varbit.settings_transmit_pronouns"]
+    return appearance.subjectPronoun()
+}
+
 /** @return `true` if the player is **currently** in a multi-combat area. */
 public fun Player.mapMultiway(checker: AreaChecker): Boolean {
     return checker.inArea("area.multiway", coords)
@@ -145,3 +152,11 @@ public fun Player.stopInvTransmit(inv: Inventory) {
     transmittedInvAddQueue.remove(inv.type.id)
     UpdateInventory.updateInvStopTransmit(this, inv)
 }
+
+@OptIn(InternalApi::class)
+public fun Player.hasAtLeast99s(requiredCount: Int): Boolean {
+    return NamedEnums.skill_names.count { enum ->
+        return statMap.getBaseLevel("stat.${enum.value?.lowercase()}") >= 99
+    } >= requiredCount
+}
+

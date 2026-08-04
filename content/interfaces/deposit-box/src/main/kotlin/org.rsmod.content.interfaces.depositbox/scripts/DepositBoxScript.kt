@@ -1,6 +1,7 @@
 package org.rsmod.content.interfaces.depositbox.scripts
 
 import jakarta.inject.Inject
+import org.rsmod.api.player.ironman.IronmanRestrictions
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.ui.ifOpenMainModal
 import org.rsmod.api.script.onOpLocCategory1
@@ -25,12 +26,18 @@ constructor(private val eventBus: EventBus, private val bankInv: BankInvScript) 
 
     private suspend fun ProtectedAccess.openDepositBox() {
         arriveDelay()
+        if (IronmanRestrictions.blockUimBank(player)) {
+            return
+        }
         player.ifOpenMainModal(DepositBoxConstants.INTERFACE_MAIN, eventBus)
     }
 
     /** Code that runs when using an item on the deposit box. */
     private suspend fun ProtectedAccess.depositUsedItem(invSlot: Int) {
         arriveDelay()
+        if (IronmanRestrictions.blockUimBank(player)) {
+            return
+        }
         if (opLocUDepositAll) {
             depositInventoryItem(bankInv, invSlot, Int.MAX_VALUE)
             return

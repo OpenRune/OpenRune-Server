@@ -10,6 +10,9 @@ public interface ChanceRollable<T, R>: Rollable<T, R> {
     public val chance: Double
     public val rollable: Rollable<T, R>
 
+    /** Effective chance percentage for [target]; defaults to the static [chance]. */
+    public fun chanceFor(target: T, otherArgs: ArgMap = ArgMap.Empty): Double = chance
+
     public operator fun component1(): Double {
         return chance
     }

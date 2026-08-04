@@ -1,0 +1,98 @@
+[gamevals.content]
+shooting_star =65535
+
+[gamevals.currency]
+stardust =65535
+
+[gamevals.obj]
+poh_tablet_shootingstar =45535
+
+[gamevals.models]
+poh_tablet_shootingstar =60535
+
+[gamevals.dbtable]
+shooting_star_locations =65512
+
+[gamevals.dbrow]
+shooting_star_dwarven_mine =64678
+shooting_star_mining_guild =64677
+shooting_star_west_falador_mine =64676
+shooting_star_taverley =64675
+shooting_star_crafting_guild =64674
+shooting_star_rimmington_mine =64673
+shooting_star_south_crandor_mine =64672
+shooting_star_north_crandor_mine =64671
+shooting_star_north_brimhaven_mine =64670
+shooting_star_south_brimhaven_mine =64669
+shooting_star_karamja_jungle_mine =64668
+shooting_star_shilo_village_mine =64667
+shooting_star_feldip_hunter_area =64666
+shooting_star_rantz_cave =64665
+shooting_star_corsair_cove =64664
+shooting_star_corsair_cove_resource_area =64663
+shooting_star_myths_guild =64662
+shooting_star_isle_of_souls_mine =64661
+shooting_star_fossil_island_mine =64660
+shooting_star_volcanic_mine =64659
+shooting_star_mos_le_harmless =64658
+shooting_star_rellekka_mine =64657
+shooting_star_keldagrim_entrance_mine =64656
+shooting_star_miscellania_mine =64655
+shooting_star_jatizso_mine =64654
+shooting_star_central_fremennik_isles_mine =64653
+shooting_star_lunar_isle_mine =64652
+shooting_star_hosidius_mine =64651
+shooting_star_shayzien_mine =64650
+shooting_star_port_piscarilius_mine =64649
+shooting_star_dense_essence_mine =64648
+shooting_star_lovakite_mine =64647
+shooting_star_lovakengj_bank =64646
+shooting_star_catherby_bank =64645
+shooting_star_yanille_bank =64644
+shooting_star_port_khazard_mine =64643
+shooting_star_legends_guild_mine =64642
+shooting_star_coal_trucks =64641
+shooting_star_south_east_ardougne_mine =64640
+shooting_star_kebos_swamp_mine =64639
+shooting_star_mount_karuulm_mine =64638
+shooting_star_mount_karuulm_bank =64637
+shooting_star_mount_quidamortem_bank =64636
+shooting_star_al_kharid_mine =64635
+shooting_star_al_kharid_bank =64634
+shooting_star_uzer_mine =64633
+shooting_star_desert_quarry =64632
+shooting_star_agility_pyramid_mine =64631
+shooting_star_nardah =64630
+shooting_star_emirs_arena =64629
+shooting_star_east_lumbridge_swamp_mine =64628
+shooting_star_west_lumbridge_swamp_mine =64627
+shooting_star_draynor_village =64626
+shooting_star_varrock_east_bank =64625
+shooting_star_south_east_varrock_mine =64624
+shooting_star_south_west_varrock_mine =64623
+shooting_star_canifis_bank =64622
+shooting_star_burgh_de_rott_bank =64621
+shooting_star_abandoned_mine =64620
+shooting_star_ver_sinhaza_bank =64619
+shooting_star_daeyalt_essence_mine =64618
+shooting_star_piscatoris_mine =64617
+shooting_star_grand_tree =64616
+shooting_star_tree_gnome_stronghold_bank =64615
+shooting_star_isafdar_mine =64614
+shooting_star_arandar_mine =64613
+shooting_star_lletya =64612
+shooting_star_trahaearn_mine =64611
+shooting_star_mynydd_mine =64610
+shooting_star_civitas_illa_fortis =64609
+shooting_star_stonecutter_outpost =64608
+shooting_star_ralos_rise_mine =64607
+shooting_star_mistrock_mine =64606
+shooting_star_salvager_overlook_mine =64605
+shooting_star_custodia_mountains_mine =64604
+shooting_star_south_wilderness_mine =64603
+shooting_star_south_west_wilderness_mine =64602
+shooting_star_bandit_camp_mine =64601
+shooting_star_lava_maze_runite_mine =64600
+shooting_star_resource_area =64599
+shooting_star_mage_arena =64598
+shooting_star_pirates_hideout_mine =64597

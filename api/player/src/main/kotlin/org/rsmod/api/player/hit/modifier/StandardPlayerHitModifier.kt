@@ -1,6 +1,7 @@
 package org.rsmod.api.player.hit.modifier
 
 import org.rsmod.api.player.cheat.adminGodMode
+import org.rsmod.api.player.hit.PlayerAbsorption
 import org.rsmod.game.entity.Player
 import org.rsmod.game.hit.HitBuilder
 import org.rsmod.game.hit.HitType
@@ -23,6 +24,14 @@ public object StandardPlayerHitModifier : PlayerHitModifier {
         if (protectionPrayer) {
             val reduction = if (isFromPlayer) 40 else 100
             damage = (damage * (100 - reduction)) / 100
+        }
+
+        if (isFromNpc) {
+            damage =
+                PlayerAbsorption.absorb(
+                    player = target,
+                    incomingDamage = damage,
+                )
         }
     }
 }

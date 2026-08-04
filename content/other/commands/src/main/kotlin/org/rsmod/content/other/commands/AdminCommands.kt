@@ -12,14 +12,22 @@ import kotlin.math.min
 import org.rsmod.annotations.InternalApi
 import org.rsmod.api.area.checker.AreaChecker
 import org.rsmod.api.death.prepareAdminDieTest
+import org.rsmod.api.instances.BossInstanceRegistry
+import org.rsmod.api.instances.InstanceArea
 import org.rsmod.api.death.preparePvpDeath
 import org.rsmod.api.invtx.invAdd
+import org.rsmod.api.invtx.invClear
 import org.rsmod.api.mechanics.toxins.impl.PlayerDisease
 import org.rsmod.api.mechanics.toxins.impl.PlayerPoison
 import org.rsmod.api.mechanics.toxins.impl.PlayerVenom
-import org.rsmod.api.invtx.invClear
+import org.rsmod.api.player.cheat.adminGodMode
+import org.rsmod.api.player.cheat.adminMaxHit
+import org.rsmod.api.player.ironman.PlayerGamemode
+import org.rsmod.api.player.ironman.setGamemode
+import org.rsmod.api.player.hook.TeleportType
 import org.rsmod.api.player.output.MiscOutput
 import org.rsmod.api.player.output.mes
+import org.rsmod.api.player.output.soundSynth
 import org.rsmod.api.player.cheat.adminGodMode
 import org.rsmod.api.player.cheat.adminMaxHit
 import org.rsmod.api.player.protect.ProtectedAccessLauncher
@@ -68,6 +76,7 @@ constructor(
     private val update: GameUpdate,
     private val areaChecker: AreaChecker,
     private val regions: RegionRegistry,
+    private val instanceRegistry: BossInstanceRegistry,
 ) : PluginScript() {
     private val logger = InlineLogger()
 
@@ -95,6 +104,9 @@ constructor(
         onCommand("spot", "Play spotanim", ::spotanim) {
             invalidArgs = "Use as ::spot spotanimDebugNameOrId (ex: fx_emote_party01_active)"
         }
+        onCommand("synth", "Play synth sound", ::synth) {
+            invalidArgs = "Use as ::synth idOrName (ex: ::synth 3600 or ::synth pillory_wrong)"
+        }
         onCommand("object", "Spawn loc", ::locAdd) {
             invalidArgs = "Use as ::object duration locDebugNameOrId (ex: 100 bookcase)"
         }
@@ -103,7 +115,9 @@ constructor(
             invalidArgs = "Use as ::locadd duration locDebugNameOrId (ex: 100 bookcase)"
         }
         onCommand("locdel", "Remove loc", ::locDel) { invalidArgs = "Use as ::locdel duration" }
-        onCommand("objectdel", "Remove loc", ::locDel) { invalidArgs = "Use as ::objectdel duration" }
+        onCommand("objectdel", "Remove loc", ::locDel) {
+            invalidArgs = "Use as ::objectdel duration"
+        }
 
         onCommand("npc", "Spawn npc", ::npcAdd) {
             invalidArgs = "Use as ::npc duration npcDebugNameOrId (ex: 100 prison_pete)"
@@ -123,19 +137,35 @@ constructor(
         onCommand("varbit", "Set varbit value", ::setVarBit) {
             invalidArgs = "Use as ::varbit debugNameOrId value (ex: emote_hotline_bling 1)"
         }
+        onCommand("getvarp", "Get varp value", ::getVarp) {
+            invalidArgs = "Use as ::getvarp debugNameOrId (ex: option_run)"
+        }
+        onCommand("getvarbit", "Get varbit value", ::getVarBit) {
+            invalidArgs = "Use as ::getvarbit debugNameOrId (ex: emote_hotline_bling)"
+        }
         onCommand("reboot", "Reboots the game world, applying packed changes", ::reboot)
         onCommand("slowreboot", "Reboots the game world, with a timer", ::slowReboot)
-        onCommand("poison", "Test player poison (wiki initial damage, optional raw severity)", ::poisonTest) {
-            invalidArgs = "Use as ::poison initialDamage [severity] (e.g. ::poison 8 or ::poison 0 36)"
+        onCommand(
+            "poison",
+            "Test player poison (wiki initial damage, optional raw severity)",
+            ::poisonTest,
+        ) {
+            invalidArgs =
+                "Use as ::poison initialDamage [severity] (e.g. ::poison 8 or ::poison 0 36)"
         }
         onCommand("venom", "Test player venom (escalating damage timer)", ::venomTest)
         onCommand("venomclear", "Clears Venom", ::venomClear)
         onCommand("disease", "Test disease (drain per tick, default 3)", ::diseaseTest) {
             invalidArgs = "Use as ::disease [drainPerTick] (e.g. ::disease 5)"
         }
-        onCommand("diseaseclear", "Clears disease timer (stats recover via normal regen)", ::diseaseClear)
+        onCommand(
+            "diseaseclear",
+            "Clears disease timer (stats recover via normal regen)",
+            ::diseaseClear,
+        )
         onCommand("die", "Simulate death: ::die pvm|pvp [true=in wildy]", ::dieTest) {
-            invalidArgs = "Usage: ::die pvm|pvp [true|false]  (second arg = in Wilderness, default false)"
+            invalidArgs =
+                "Usage: ::die pvm|pvp [true|false]  (second arg = in Wilderness, default false)"
         }
         onCommand("god", "Toggle god mode (invincibility)", ::god)
         onCommand("maxhit", "Toggle always max hit", ::maxhit)
@@ -143,7 +173,42 @@ constructor(
         onCommand("transmog", "Transmog player to NPC appearance (no args to reset)", ::transmog) {
             invalidArgs = "Use as ::transmog npcNameOrId (ex: goblin or 126) or ::transmog to reset"
         }
+        onCommand("gamemode", "Set account gamemode (normal|ironman|uim|hcim)", ::gamemode) {
+            invalidArgs = "Use as ::gamemode normal|ironman|uim|hcim"
+        }
+        onCommand(
+            "instanceexit",
+            "Teleport to an instance's exit coord",
+            ::instanceExit,
+        ) {
+            invalidArgs = "Use as ::instanceexit instanceKey (ex: ::instanceexit graardor)"
+        }
     }
+
+    private fun gamemode(cheat: Cheat) =
+        with(cheat) {
+            val mode =
+                when (args.getOrNull(0)?.lowercase()) {
+                    "normal",
+                    "main",
+                    "0" -> PlayerGamemode.NORMAL
+                    "ironman",
+                    "iron",
+                    "1" -> PlayerGamemode.IRONMAN
+                    "uim",
+                    "ultimate",
+                    "2" -> PlayerGamemode.ULTIMATE_IRONMAN
+                    "hcim",
+                    "hardcore",
+                    "3" -> PlayerGamemode.HARDCORE_IRONMAN
+                    else -> {
+                        player.mes("Use as ::gamemode normal|ironman|uim|hcim")
+                        return
+                    }
+                }
+            player.setGamemode(mode)
+            player.mes("Gamemode set to $mode (varbit.ironman synced; persists on logout).")
+        }
 
     private fun god(cheat: Cheat) =
         with(cheat) {
@@ -161,25 +226,20 @@ constructor(
         with(cheat) {
             val initialDamage = args.getOrNull(0)?.toIntOrNull() ?: 0
             val severity = args.getOrNull(1)?.toIntOrNull() ?: 0
-            val ok = PlayerPoison.tryPoison(player, initialDamage = initialDamage, severity = severity)
+            val ok =
+                PlayerPoison.tryPoison(player, initialDamage = initialDamage, severity = severity)
             player.mes(
                 if (ok) {
                     "Poison applied (initialDamage=$initialDamage severityParam=$severity)."
                 } else {
                     "Poison not applied (weaker/equal than current, or both inputs zero)."
-                },
+                }
             )
         }
 
-    private fun venomTest(cheat: Cheat) =
-        with(cheat) {
-            PlayerVenom.tryVenom(player)
-        }
+    private fun venomTest(cheat: Cheat) = with(cheat) { PlayerVenom.tryVenom(player) }
 
-    private fun venomClear(cheat: Cheat) =
-        with(cheat) {
-            PlayerVenom.clear(player)
-        }
+    private fun venomClear(cheat: Cheat) = with(cheat) { PlayerVenom.clear(player) }
 
     private fun diseaseTest(cheat: Cheat) =
         with(cheat) {
@@ -190,7 +250,7 @@ constructor(
                     "Disease applied (drain per tick=$drain)."
                 } else {
                     "Disease not applied (no eligible skill)."
-                },
+                }
             )
         }
 
@@ -220,10 +280,10 @@ constructor(
             val x = args[0].toInt()
             val y = args[1].toInt()
             val level = args.getOrNull(2)?.toInt() ?: 0
-            val coords = CoordGrid(x,y,level)
+            val coords = CoordGrid(x, y, level)
             protectedAccess.launch(player) {
                 player.mes("Teleported to $coords.")
-                telejump(coords)
+                telejump(coords, TeleportType.Exempt)
             }
         }
 
@@ -236,7 +296,7 @@ constructor(
             val coords = ZoneKey(zoneX, zoneZ, level).toCoords()
             protectedAccess.launch(player) {
                 player.mes("Teleported to $coords.")
-                telejump(coords)
+                telejump(coords, TeleportType.Exempt)
             }
         }
 
@@ -277,7 +337,7 @@ constructor(
             val dest = current.copy(level = destLevel)
             protectedAccess.launch(player) {
                 player.mes("Teleported to $dest.")
-                telejump(dest)
+                telejump(dest, TeleportType.Exempt)
             }
         }
     }
@@ -312,6 +372,29 @@ constructor(
             player.spotanim("spotanim.${typeName}", delay = 0, height = height, slot = 0)
             player.mes("Spotanim: '${typeName}' (height=$height)")
             logger.debug { "Spotanim: $typeName" }
+        }
+
+    private fun synth(cheat: Cheat) =
+        with(cheat) {
+            val arg = args.getOrNull(0)
+            if (arg == null) {
+                player.mes("Use as ::synth idOrName (ex: ::synth 3600 or ::synth pillory_wrong)")
+                return
+            }
+            val id = arg.toIntOrNull()
+            if (id != null) {
+                player.soundSynth(id)
+                player.mes("Synth: $id")
+                return
+            }
+            val typeName = arg.removePrefix("synth.")
+            val typeId = "synth.$typeName".asRSCM()
+            if (typeId == -1) {
+                player.mes("There is no synth mapped to: '$typeName'")
+                return
+            }
+            player.soundSynth("synth.$typeName")
+            player.mes("Synth: '$typeName' ($typeId)")
         }
 
     private fun locAdd(cheat: Cheat) =
@@ -374,7 +457,8 @@ constructor(
         with(cheat) {
             val (typeName, countArg) = args.asTypeNameAndNumber(defaultNumber = 1)
             val normalizedName = "obj.$typeName"
-            val type = ServerCacheManager.getItem(normalizedName.asRSCM(RSCMType.OBJ))?: return@with
+            val type =
+                ServerCacheManager.getItem(normalizedName.asRSCM(RSCMType.OBJ)) ?: return@with
 
             val count = countArg.toLong().coerceAtMost(Int.MAX_VALUE.toLong()).toInt()
             val objName = type.name.ifEmpty { normalizedName }
@@ -416,6 +500,30 @@ constructor(
             val value = args[1].toInt()
             VarPlayerIntMapSetter.set(player, type, value)
             player.mes("Set varbit '${args[0]}' to value: ${player.vars[type]}")
+        }
+
+    private fun getVarp(cheat: Cheat) =
+        with(cheat) {
+            val typeId = "varp.${args[0]}".asRSCM()
+
+            val type = ServerCacheManager.getVarp(typeId)
+            if (type == null) {
+                player.mes("That varp does not exist: $typeId")
+                return
+            }
+            player.mes("Varp '${args[0]}' (id=$typeId) = ${player.vars[type]}")
+        }
+
+    private fun getVarBit(cheat: Cheat) =
+        with(cheat) {
+            val typeId = "varbit.${args[0]}".asRSCM()
+
+            val type = ServerCacheManager.getVarbit(typeId)
+            if (type == null) {
+                player.mes("That varbit does not exist: $typeId")
+                return
+            }
+            player.mes("Varbit '${args[0]}' (id=$typeId) = ${player.vars[type]}")
         }
 
     @OptIn(InternalApi::class)
@@ -468,53 +576,87 @@ constructor(
             }
         }
 
-    private fun dieTest(cheat: Cheat) = with(cheat) {
-        val mode = args.getOrNull(0)?.lowercase()
-        val inWildy = args.getOrNull(1)?.lowercase() == "true"
-        when (mode) {
-            "pvm" -> {
-                if (inWildy) player.insideWilderness = true
-                player.mes("Simulating PvM death${if (inWildy) " in Wilderness" else ""}.")
-                player.prepareAdminDieTest()
-                player.queueDeath()
-            }
-            "pvp" -> {
-                player.preparePvpDeath(player)
-                if (inWildy) player.insideWilderness = true
-                player.mes("Simulating PvP death${if (inWildy) " in Wilderness" else ""}. (self as killer)")
-                player.prepareAdminDieTest()
-                player.queueDeath()
-            }
-            else -> player.mes("Usage: ::die pvm|pvp [true|false]  (true = in Wilderness)")
-        }
-    }
-
-    private fun bank(cheat: Cheat) = with(cheat) {
-        protectedAccess.launch(player) {
-            ifOpenMainSidePair(main = "interface.bankmain", side = "interface.bankside")
-        }
-    }
-
-    private fun transmog(cheat: Cheat) = with(cheat) {
-        if (args.isEmpty()) {
-            protectedAccess.launch(player) { resetTransmog() }
-            player.mes("Transmog cleared.")
-            return
-        }
-        val first = args[0]
-        val npcName =
-            if (first.toIntOrNull() != null) {
-                val resolved = RSCM.getReverseMapping(RSCMType.NPC, first.toInt())
-                if (resolved.isEmpty()) {
-                    player.mes("No NPC mapped to ID: $first")
-                    return
+    private fun dieTest(cheat: Cheat) =
+        with(cheat) {
+            val mode = args.getOrNull(0)?.lowercase()
+            val inWildy = args.getOrNull(1)?.lowercase() == "true"
+            when (mode) {
+                "pvm" -> {
+                    if (inWildy) player.insideWilderness = true
+                    player.mes("Simulating PvM death${if (inWildy) " in Wilderness" else ""}.")
+                    player.prepareAdminDieTest()
+                    player.queueDeath()
                 }
-                resolved
-            } else {
-                "npc.${args.asTypeName()}"
+                "pvp" -> {
+                    player.preparePvpDeath(player)
+                    if (inWildy) player.insideWilderness = true
+                    player.mes(
+                        "Simulating PvP death${if (inWildy) " in Wilderness" else ""}. (self as killer)"
+                    )
+                    player.prepareAdminDieTest()
+                    player.queueDeath()
+                }
+                else -> player.mes("Usage: ::die pvm|pvp [true|false]  (true = in Wilderness)")
             }
-        protectedAccess.launch(player) { transmog(npcName) }
-        player.mes("Transmog: '$npcName'")
+        }
+
+    private fun bank(cheat: Cheat) =
+        with(cheat) {
+            protectedAccess.launch(player) {
+                ifOpenMainSidePair(main = "interface.bankmain", side = "interface.bankside")
+            }
+        }
+
+    private fun transmog(cheat: Cheat) =
+        with(cheat) {
+            if (args.isEmpty()) {
+                protectedAccess.launch(player) { resetTransmog() }
+                player.mes("Transmog cleared.")
+                return
+            }
+            val first = args[0]
+            val npcName =
+                if (first.toIntOrNull() != null) {
+                    val resolved = RSCM.getReverseMapping(RSCMType.NPC, first.toInt())
+                    if (resolved.isEmpty()) {
+                        player.mes("No NPC mapped to ID: $first")
+                        return
+                    }
+                    resolved
+                } else {
+                    "npc.${args.asTypeName()}"
+                }
+            protectedAccess.launch(player) { transmog(npcName) }
+            player.mes("Transmog: '$npcName'")
+        }
+
+    private fun instanceExit(cheat: Cheat) = with(cheat) {
+        val key = args.getOrNull(0)?.trim()
+        if (key.isNullOrEmpty()) {
+            player.mes("Usage: ::instanceexit instanceKey")
+            player.mes("Known keys: ${instanceRegistry.keys().sorted().joinToString(", ")}")
+            return@with
+        }
+        val spec = instanceRegistry.get(key)
+        if (spec == null) {
+            player.mes("No instance found with key: '$key'")
+            player.mes("Known keys: ${instanceRegistry.keys().sorted().joinToString(", ")}")
+            return@with
+        }
+        val exit = spec.area.exitCoord()
+        if (exit == null || exit == CoordGrid.ZERO) {
+            player.mes("Instance '$key' has no exit coord configured.")
+            return@with
+        }
+        protectedAccess.launch(player) {
+            player.mes("Teleported to '$key' instance exit coord: $exit")
+            telejump(exit, TeleportType.Exempt)
+        }
+    }
+
+    private fun InstanceArea.exitCoord(): CoordGrid? = when (this) {
+        is InstanceArea.Template -> exitCoord
+        is InstanceArea.CopyRegions -> exitCoord
     }
 
     private fun resolveArgTypeId(arg: String, names: Map<String, Int>): Int? {

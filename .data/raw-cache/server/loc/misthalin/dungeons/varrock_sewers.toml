@@ -1,0 +1,10 @@
+# TODO: Not sure how best to implement handling manholes atm so just put climb on closed loc
+[[object]] # Varrock manhole
+id = "loc.manholeclosed"
+inherit = "loc.manholeclosed"
+contentGroup = "content.dungeonladder_down"
+
+[[object]]
+id = "loc.fai_varrock_manhole_ladder"
+inherit = "loc.fai_varrock_manhole_ladder"
+contentGroup = "content.dungeonladder_up"

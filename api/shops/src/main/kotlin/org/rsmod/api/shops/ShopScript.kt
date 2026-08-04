@@ -4,13 +4,14 @@ import com.github.michaelbull.logging.InlineLogger
 import dev.openrune.types.ItemServerType
 import dev.openrune.types.aconverted.interf.IfButtonOp
 import jakarta.inject.Inject
+import org.rsmod.api.market.MarketPrices
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.stopInvTransmit
 import org.rsmod.api.script.onIfClose
 import org.rsmod.api.script.onIfModalButton
 import org.rsmod.api.shops.operation.ShopOperationMap
 import org.rsmod.api.shops.operation.ShopOperations
-import org.rsmod.api.shops.operation.StandardGpShopOperations
+import org.rsmod.api.shops.restock.ShopRestockProcess
 import org.rsmod.game.entity.Player
 import org.rsmod.game.inv.InvObj
 import org.rsmod.game.shop.Shop
@@ -22,21 +23,26 @@ public class ShopScript
 @Inject
 constructor(
     private val operationMap: ShopOperationMap,
-    private val standardGpOperations: StandardGpShopOperations,
+    private val restockProcess: ShopRestockProcess,
+    private val marketPrices: MarketPrices,
 ) : PluginScript() {
     private val logger = InlineLogger()
 
     override fun ScriptContext.startup() {
-        registerDefaultCurrency()
+        val registered = operationMap.registerCurrenciesFromDb(restockProcess, marketPrices)
+        if (registered == 0) {
+            logger.error {
+                "dbtable.shop_currency is empty or missing; no shop currencies registered"
+            }
+        } else {
+            logger.info { "Registered $registered shop currencies from dbtable.shop_currency" }
+        }
+
         onIfModalButton("component.shopmain:items") { shopInvButton(it.comsub, it.op, it.obj) }
         onIfModalButton("component.shopside:items") {
             shopSideInvButton(it.comsub, it.op, it.obj)
         }
         onIfClose("interface.shopmain") { player.closeShop() }
-    }
-
-    private fun registerDefaultCurrency() {
-        operationMap.register("currency.standard_gp", standardGpOperations)
     }
 
     private fun ProtectedAccess.shopInvButton(

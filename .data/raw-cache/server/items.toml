@@ -4114,7 +4114,8 @@ inherit = "obj.bronze_axe"
 contentGroup = 26
 weaponCategory="Axe"
 [item.params]
-"param.skill_anim"=879
+"param.skill_anim"="seq.human_woodcutting_bronze_axe"
+"param.levelrequire"=1
 "param.equipment_sound"=2229
 "param.attack_anim_stance1"="seq.human_axe_hack"
 "param.attack_sound_stance1"=2498
@@ -4134,7 +4135,8 @@ inherit = "obj.iron_axe"
 contentGroup = 26
 weaponCategory="Axe"
 [item.params]
-"param.skill_anim"=877
+"param.skill_anim"="seq.human_woodcutting_iron_axe"
+"param.levelrequire"=1
 "param.respawn_time"=500
 "param.equipment_sound"=2229
 "param.attack_anim_stance1"="seq.human_axe_hack"
@@ -4155,7 +4157,8 @@ inherit = "obj.steel_axe"
 contentGroup = 26
 weaponCategory="Axe"
 [item.params]
-"param.skill_anim"=875
+"param.skill_anim"="seq.human_woodcutting_steel_axe"
+"param.levelrequire"=6
 "param.equipment_sound"=2229
 "param.attack_anim_stance1"="seq.human_axe_hack"
 "param.attack_sound_stance1"=2498
@@ -4175,7 +4178,8 @@ inherit = "obj.black_axe"
 contentGroup = 26
 weaponCategory="Axe"
 [item.params]
-"param.skill_anim"=873
+"param.skill_anim"="seq.human_woodcutting_black_axe"
+"param.levelrequire"=11
 "param.equipment_sound"=2229
 "param.attack_anim_stance1"="seq.human_axe_hack"
 "param.attack_sound_stance1"=2498
@@ -4195,7 +4199,8 @@ inherit = "obj.mithril_axe"
 contentGroup = 26
 weaponCategory="Axe"
 [item.params]
-"param.skill_anim"=871
+"param.skill_anim"="seq.human_woodcutting_mithril_axe"
+"param.levelrequire"=21
 "param.equipment_sound"=2229
 "param.attack_anim_stance1"="seq.human_axe_hack"
 "param.attack_sound_stance1"=2498
@@ -4215,7 +4220,8 @@ inherit = "obj.adamant_axe"
 contentGroup = 26
 weaponCategory="Axe"
 [item.params]
-"param.skill_anim"=869
+"param.skill_anim"="seq.human_woodcutting_adamant_axe"
+"param.levelrequire"=31
 "param.equipment_sound"=2229
 "param.attack_anim_stance1"="seq.human_axe_hack"
 "param.attack_sound_stance1"=2498
@@ -4235,7 +4241,7 @@ inherit = "obj.anma_axe"
 weaponCategory="Axe"
 tradeable = false
 [item.params]
-"param.skill_anim"=5383
+"param.skill_anim"="seq.human_woodcutting_blessed_axe"
 "param.levelrequire"=35
 "param.equipment_sound"=2229
 "param.attack_anim_stance1"="seq.human_axe_hack"
@@ -4257,7 +4263,8 @@ inherit = "obj.rune_axe"
 contentGroup = 26
 weaponCategory="Axe"
 [item.params]
-"param.skill_anim"=867
+"param.skill_anim"="seq.human_woodcutting_rune_axe"
+"param.levelrequire"=41
 "param.equipment_sound"=2229
 "param.attack_anim_stance1"="seq.human_axe_hack"
 "param.attack_sound_stance1"=2498
@@ -4277,7 +4284,8 @@ inherit = "obj.trail_gilded_axe"
 contentGroup = 26
 weaponCategory="Axe"
 [item.params]
-"param.skill_anim"=8303
+"param.skill_anim"="seq.human_woodcutting_gilded_axe"
+"param.levelrequire"=41
 "param.equipment_sound"=2229
 "param.attack_anim_stance1"="seq.human_axe_hack"
 "param.attack_sound_stance1"=2498
@@ -4297,7 +4305,8 @@ inherit = "obj.dragon_axe"
 contentGroup = 26
 weaponCategory="Axe"
 [item.params]
-"param.skill_anim"=2846
+"param.skill_anim"="seq.human_woodcutting_dragon_axe"
+"param.levelrequire"=61
 "param.equipment_sound"=2229
 "param.attack_anim_stance1"="seq.human_axe_hack"
 "param.attack_sound_stance1"=2498
@@ -4318,7 +4327,8 @@ contentGroup = 26
 weaponCategory="Axe"
 tradeable = false
 [item.params]
-"param.skill_anim"=24
+"param.skill_anim"="seq.human_woodcutting_trailblazer_axe_no_infernal"
+"param.levelrequire"=61
 "param.equipment_sound"=2229
 "param.attack_anim_stance1"="seq.human_axe_hack"
 "param.attack_sound_stance1"=2498
@@ -4338,7 +4348,8 @@ inherit = "obj.3a_axe"
 contentGroup = 26
 weaponCategory="Axe"
 [item.params]
-"param.skill_anim"=7264
+"param.skill_anim"="seq.human_woodcutting_3a_axe"
+"param.levelrequire"=61
 "param.equipment_sound"=2229
 "param.attack_anim_stance1"="seq.human_axe_hack"
 "param.attack_sound_stance1"=2498
@@ -4359,7 +4370,8 @@ contentGroup = 26
 weaponCategory="Axe"
 tradeable = false
 [item.params]
-"param.skill_anim"=2117
+"param.skill_anim"="seq.human_woodcutting_infernal_axe"
+"param.levelrequire"=61
 "param.equipment_sound"=2229
 "param.attack_anim_stance1"="seq.human_axe_hack"
 "param.attack_sound_stance1"=2498
@@ -4380,7 +4392,8 @@ contentGroup = 26
 weaponCategory="Axe"
 tradeable = false
 [item.params]
-"param.skill_anim"=12026
+"param.skill_anim"="seq.human_woodcutting_trailblazer_axe"
+"param.levelrequire"=61
 "param.equipment_sound"=2229
 "param.attack_anim_stance1"="seq.human_axe_hack"
 "param.attack_sound_stance1"=2498
@@ -4401,7 +4414,8 @@ contentGroup = 26
 weaponCategory="Axe"
 tradeable = false
 [item.params]
-"param.skill_anim"=8324
+"param.skill_anim"="seq.human_woodcutting_crystal_axe"
+"param.levelrequire"=71
 "param.equipment_sound"=2229
 "param.attack_anim_stance1"="seq.human_axe_hack"
 "param.attack_sound_stance1"=2498
@@ -6120,6 +6134,7 @@ weaponCategory="Spear"
 id = "obj.bronze_pickaxe"
 inherit = "obj.bronze_pickaxe"
 weaponCategory="Pickaxe"
+contentGroup = "content.mining_pickaxe"
 [item.params]
 "param.equipment_sound"=2229
 "param.attack_anim_stance1"="seq.human_blunt_pound"
@@ -6132,12 +6147,15 @@ weaponCategory="Pickaxe"
 "param.attack_sound_stance4"=2498
 "param.defend_anim"="seq.human_axe_block"
 "param.attackrate"=5
-
-
+"param.levelrequire"=1
+"param.skill_action_delay"=8
+"param.skill_anim"="seq.human_mining_bronze_pickaxe"
+"param.skill_wall_anim"="seq.human_mining_bronze_pickaxe_wall"
 [[item]]
 id = "obj.iron_pickaxe"
 inherit = "obj.iron_pickaxe"
 weaponCategory="Pickaxe"
+contentGroup = "content.mining_pickaxe"
 [item.params]
 "param.equipment_sound"=2229
 "param.attack_anim_stance1"="seq.human_blunt_pound"
@@ -6150,12 +6168,15 @@ weaponCategory="Pickaxe"
 "param.attack_sound_stance4"=2498
 "param.defend_anim"="seq.human_axe_block"
 "param.attackrate"=5
-
-
+"param.levelrequire"=1
+"param.skill_action_delay"=7
+"param.skill_anim"="seq.human_mining_iron_pickaxe"
+"param.skill_wall_anim"="seq.human_mining_iron_pickaxe_wall"
 [[item]]
 id = "obj.steel_pickaxe"
 inherit = "obj.steel_pickaxe"
 weaponCategory="Pickaxe"
+contentGroup = "content.mining_pickaxe"
 [item.params]
 "param.equipment_sound"=2229
 "param.attack_anim_stance1"="seq.human_blunt_pound"
@@ -6168,12 +6189,15 @@ weaponCategory="Pickaxe"
 "param.attack_sound_stance4"=2498
 "param.defend_anim"="seq.human_axe_block"
 "param.attackrate"=5
-
-
+"param.levelrequire"=6
+"param.skill_action_delay"=6
+"param.skill_anim"="seq.human_mining_steel_pickaxe"
+"param.skill_wall_anim"="seq.human_mining_steel_pickaxe_wall"
 [[item]]
 id = "obj.adamant_pickaxe"
 inherit = "obj.adamant_pickaxe"
 weaponCategory="Pickaxe"
+contentGroup = "content.mining_pickaxe"
 [item.params]
 "param.equipment_sound"=2229
 "param.attack_anim_stance1"="seq.human_blunt_pound"
@@ -6186,12 +6210,15 @@ weaponCategory="Pickaxe"
 "param.attack_sound_stance4"=2498
 "param.defend_anim"="seq.human_axe_block"
 "param.attackrate"=5
-
-
+"param.levelrequire"=31
+"param.skill_action_delay"=4
+"param.skill_anim"="seq.human_mining_adamant_pickaxe"
+"param.skill_wall_anim"="seq.human_mining_adamant_pickaxe_wall"
 [[item]]
 id = "obj.mithril_pickaxe"
 inherit = "obj.mithril_pickaxe"
 weaponCategory="Pickaxe"
+contentGroup = "content.mining_pickaxe"
 [item.params]
 "param.equipment_sound"=2229
 "param.attack_anim_stance1"="seq.human_blunt_pound"
@@ -6204,12 +6231,15 @@ weaponCategory="Pickaxe"
 "param.attack_sound_stance4"=2498
 "param.defend_anim"="seq.human_axe_block"
 "param.attackrate"=5
-
-
+"param.levelrequire"=21
+"param.skill_action_delay"=5
+"param.skill_anim"="seq.human_mining_mithril_pickaxe"
+"param.skill_wall_anim"="seq.human_mining_mithril_pickaxe_wall"
 [[item]]
 id = "obj.rune_pickaxe"
 inherit = "obj.rune_pickaxe"
 weaponCategory="Pickaxe"
+contentGroup = "content.mining_pickaxe"
 [item.params]
 "param.equipment_sound"=2229
 "param.attack_anim_stance1"="seq.human_blunt_pound"
@@ -6222,8 +6252,10 @@ weaponCategory="Pickaxe"
 "param.attack_sound_stance4"=2498
 "param.defend_anim"="seq.human_axe_block"
 "param.attackrate"=5
-
-
+"param.levelrequire"=41
+"param.skill_action_delay"=3
+"param.skill_anim"="seq.human_mining_rune_pickaxe"
+"param.skill_wall_anim"="seq.human_mining_rune_pickaxe_wall"
 [[item]]
 id = "obj.bronze_sword"
 inherit = "obj.bronze_sword"
@@ -15563,6 +15595,7 @@ weaponCategory="PoweredStaff"
 id = "obj.dragon_pickaxe"
 inherit = "obj.dragon_pickaxe"
 weaponCategory="Pickaxe"
+contentGroup = "content.mining_pickaxe"
 [item.params]
 "param.equipment_sound"=2229
 "param.attack_anim_stance1"="seq.human_blunt_pound"
@@ -15575,8 +15608,10 @@ weaponCategory="Pickaxe"
 "param.attack_sound_stance4"=2498
 "param.defend_anim"="seq.human_axe_block"
 "param.attackrate"=5
-
-
+"param.levelrequire"=61
+"param.skill_action_delay"=3
+"param.skill_anim"="seq.human_mining_dragon_pickaxe"
+"param.skill_wall_anim"="seq.human_mining_dragon_pickaxe_wall"
 [[item]]
 id = "obj.smoke_battlestaff"
 inherit = "obj.smoke_battlestaff"
@@ -15714,6 +15749,7 @@ weaponCategory="Staff"
 id = "obj.black_pickaxe"
 inherit = "obj.black_pickaxe"
 weaponCategory="Pickaxe"
+contentGroup = "content.mining_pickaxe"
 [item.params]
 "param.equipment_sound"=2229
 "param.attack_anim_stance1"="seq.human_blunt_pound"
@@ -15726,8 +15762,10 @@ weaponCategory="Pickaxe"
 "param.attack_sound_stance4"=2498
 "param.defend_anim"="seq.human_axe_block"
 "param.attackrate"=5
-
-
+"param.levelrequire"=11
+"param.skill_action_delay"=5
+"param.skill_anim"="seq.human_mining_black_pickaxe"
+"param.skill_wall_anim"="seq.human_mining_black_pickaxe_wall"
 [[item]]
 id = "obj.katana"
 inherit = "obj.katana"
@@ -16111,6 +16149,7 @@ tradeable = false
 id = "obj.dragon_pickaxe_pretty"
 inherit = "obj.dragon_pickaxe_pretty"
 weaponCategory="Pickaxe"
+contentGroup = "content.mining_pickaxe"
 tradeable = false
 [item.params]
 "param.equipment_sound"=2229
@@ -16124,6 +16163,10 @@ tradeable = false
 "param.attack_sound_stance4"=2498
 "param.defend_anim"="seq.human_axe_block"
 "param.attackrate"=5
+"param.levelrequire"=61
+"param.skill_action_delay"=3
+"param.skill_anim"="seq.human_mining_dragon_pickaxe_pretty"
+"param.skill_wall_anim"="seq.human_mining_dragon_pickaxe_pretty_wall"
 
 
 [[item]]
@@ -16876,6 +16919,7 @@ tradeable = false
 id = "obj.infernal_pickaxe"
 inherit = "obj.infernal_pickaxe"
 weaponCategory="Pickaxe"
+contentGroup = "content.mining_pickaxe"
 tradeable = false
 [item.params]
 "param.equipment_sound"=2229
@@ -16889,12 +16933,15 @@ tradeable = false
 "param.attack_sound_stance4"=2498
 "param.defend_anim"="seq.human_axe_block"
 "param.attackrate"=5
-
-
+"param.levelrequire"=61
+"param.skill_action_delay"=3
+"param.skill_anim"="seq.human_mining_infernal_pickaxe"
+"param.skill_wall_anim"="seq.human_mining_infernal_pickaxe_wall"
 [[item]]
 id = "obj.infernal_pickaxe_empty"
 inherit = "obj.infernal_pickaxe_empty"
 weaponCategory="Pickaxe"
+contentGroup = "content.mining_pickaxe"
 tradeable = false
 [item.params]
 "param.equipment_sound"=2229
@@ -16908,6 +16955,10 @@ tradeable = false
 "param.attack_sound_stance4"=2498
 "param.defend_anim"="seq.human_axe_block"
 "param.attackrate"=5
+"param.levelrequire"=61
+"param.skill_action_delay"=3
+"param.skill_anim"="seq.human_mining_dragon_pickaxe"
+"param.skill_wall_anim"="seq.human_mining_dragon_pickaxe_wall"
 
 
 [[item]]
@@ -17171,6 +17222,7 @@ tradeable = false
 id = "obj.3a_pickaxe"
 inherit = "obj.3a_pickaxe"
 weaponCategory="Pickaxe"
+contentGroup = "content.mining_pickaxe"
 [item.params]
 "param.equipment_sound"=2229
 "param.attack_anim_stance1"="seq.human_blunt_pound"
@@ -17183,8 +17235,10 @@ weaponCategory="Pickaxe"
 "param.attack_sound_stance4"=2498
 "param.defend_anim"="seq.human_axe_block"
 "param.attackrate"=5
-
-
+"param.levelrequire"=61
+"param.skill_action_delay"=3
+"param.skill_anim"="seq.human_mining_3a_pickaxe"
+"param.skill_wall_anim"="seq.human_mining_3a_pickaxe_wall"
 [[item]]
 id = "obj.ale_gods"
 inherit = "obj.ale_gods"
@@ -19448,6 +19502,7 @@ tradeable = false
 id = "obj.trail_gilded_pickaxe"
 inherit = "obj.trail_gilded_pickaxe"
 weaponCategory="Pickaxe"
+contentGroup = "content.mining_pickaxe"
 [item.params]
 "param.equipment_sound"=2229
 "param.attack_anim_stance1"="seq.human_blunt_pound"
@@ -19460,6 +19515,10 @@ weaponCategory="Pickaxe"
 "param.attack_sound_stance4"=2498
 "param.defend_anim"="seq.human_axe_block"
 "param.attackrate"=5
+"param.levelrequire"=41
+"param.skill_action_delay"=3
+"param.skill_anim"="seq.human_mining_gilded_pickaxe"
+"param.skill_wall_anim"="seq.human_mining_gilded_pickaxe_wall"
 
 
 [[item]]
@@ -19897,6 +19956,7 @@ tradeable = false
 id = "obj.zalcano_pickaxe"
 inherit = "obj.zalcano_pickaxe"
 weaponCategory="Pickaxe"
+contentGroup = "content.mining_pickaxe"
 tradeable = false
 [item.params]
 "param.equipment_sound"=2229
@@ -19910,12 +19970,17 @@ tradeable = false
 "param.attack_sound_stance4"=2498
 "param.defend_anim"="seq.human_axe_block"
 "param.attackrate"=5
+"param.levelrequire"=61
+"param.skill_action_delay"=3
+"param.skill_anim"="seq.human_mining_zalcano_pickaxe"
+"param.skill_wall_anim"="seq.human_mining_zalcano_pickaxe_wall"
 
 
 [[item]]
 id = "obj.crystal_pickaxe"
 inherit = "obj.crystal_pickaxe"
 weaponCategory="Pickaxe"
+contentGroup = "content.mining_pickaxe"
 tradeable = false
 [item.params]
 "param.equipment_sound"=2229
@@ -19929,12 +19994,15 @@ tradeable = false
 "param.attack_sound_stance4"=2498
 "param.defend_anim"="seq.human_axe_block"
 "param.attackrate"=5
-
-
+"param.levelrequire"=71
+"param.skill_action_delay"=3
+"param.skill_anim"="seq.human_mining_crystal_pickaxe"
+"param.skill_wall_anim"="seq.human_mining_crystal_pickaxe_wall"
 [[item]]
 id = "obj.crystal_pickaxe_inactive"
 inherit = "obj.crystal_pickaxe_inactive"
 weaponCategory="Pickaxe"
+contentGroup = "content.mining_pickaxe"
 tradeable = false
 [item.params]
 "param.equipment_sound"=2229
@@ -19948,6 +20016,10 @@ tradeable = false
 "param.attack_sound_stance4"=2498
 "param.defend_anim"="seq.human_axe_block"
 "param.attackrate"=5
+"param.levelrequire"=71
+"param.skill_action_delay"=3
+"param.skill_anim"="seq.human_mining_crystal_pickaxe"
+"param.skill_wall_anim"="seq.human_mining_crystal_pickaxe_wall"
 
 
 [[item]]
@@ -23476,13 +23548,13 @@ inherit = "obj.sulphur_blades"
 weaponCategory="SlashSword"
 [item.params]
 "param.equipment_sound"=2248
-"param.attack_anim_stance1"="seq.barrow_torag_crush"
+"param.attack_anim_stance1"="seq.sulphur_blade_slash"
 "param.attack_sound_stance1"=8895
-"param.attack_anim_stance2"="seq.barrow_torag_crush"
+"param.attack_anim_stance2"="seq.sulphur_blade_slash"
 "param.attack_sound_stance2"=8895
-"param.attack_anim_stance3"="seq.barrow_torag_crush"
+"param.attack_anim_stance3"="seq.sulphur_blade_slash"
 "param.attack_sound_stance3"=2500
-"param.attack_anim_stance4"="seq.barrow_torag_crush"
+"param.attack_anim_stance4"="seq.sulphur_blade_slash"
 "param.attack_sound_stance4"=8895
 
 
@@ -29467,6 +29539,15 @@ tradeable = false
 [item.params]
 "param.equipment_sound"=2240
 
+[[item]]
+id = "obj.motherlode_reward_top"
+inherit = "obj.motherlode_reward_top"
+tradeable = false
+
+[[item]]
+id = "obj.motherlode_reward_legs"
+inherit = "obj.motherlode_reward_legs"
+tradeable = false
 
 [[item]]
 id = "obj.motherlode_reward_boots"
@@ -33585,6 +33666,15 @@ tradeable = false
 [item.params]
 "param.equipment_sound"=2240
 
+[[item]]
+id = "obj.motherlode_reward_top_gold"
+inherit = "obj.motherlode_reward_top_gold"
+tradeable = false
+
+[[item]]
+id = "obj.motherlode_reward_legs_gold"
+inherit = "obj.motherlode_reward_legs_gold"
+tradeable = false
 
 [[item]]
 id = "obj.motherlode_reward_boots_gold"
@@ -50429,6 +50519,22 @@ tradeable = false
 id = "obj.glacial_temotli"
 inherit = "obj.glacial_temotli"
 weaponCategory="Spiked"
+[item.params]
+"param.attack_anim_stance1"="seq.sulphur_blade_slash"
+"param.attack_anim_stance2"="seq.sulphur_blade_slash"
+"param.attack_anim_stance3"="seq.sulphur_blade_slash"
+"param.attack_anim_stance4"="seq.sulphur_blade_slash"
+
+
+[[item]]
+id = "obj.earthbound_tecpatl"
+inherit = "obj.earthbound_tecpatl"
+weaponCategory="StabSword"
+[item.params]
+"param.attack_anim_stance1"="seq.tecpatl_stab"
+"param.attack_anim_stance2"="seq.tecpatl_stab"
+"param.attack_anim_stance3"="seq.tecpatl_stab"
+"param.attack_anim_stance4"="seq.tecpatl_stab"
 
 
 [[item]]
@@ -51638,6 +51744,7 @@ tradeable = false
 [[item]]
 id = "obj.gold_ore"
 inherit = "obj.gold_ore"
+contentGroup = "content.ore"
 [item.params]
 "param.respawn_time"=500
 
@@ -52355,6 +52462,16 @@ id = "obj.zombie_axe"
 inherit = "obj.zombie_axe"
 weaponCategory="Axe"
 [item.params]
+"param.equipment_sound"=2248
+"param.attack_anim_stance1"="seq.godwars_godsword_zamorak_player"
+"param.attack_sound_stance1"=2498
+"param.attack_anim_stance2"="seq.godwars_godsword_zamorak_player"
+"param.attack_sound_stance2"=2498
+"param.attack_anim_stance3"="seq.battleaxe_crush"
+"param.attack_sound_stance3"=2497
+"param.attack_anim_stance4"="seq.godwars_godsword_zamorak_player"
+"param.attack_sound_stance4"=2498
+"param.defend_anim"="seq.human_axe_block"
 "param.attackrate"=5
 
 
@@ -52547,3 +52664,100 @@ inherit = "obj.huntguide_desert_beast"
 dummyitem = 2
 tradeable = false
 
+
+# Mining ores
+[[item]]
+id = "obj.clay"
+inherit = "obj.clay"
+contentGroup = "content.ore"
+
+[[item]]
+id = "obj.copper_ore"
+inherit = "obj.copper_ore"
+contentGroup = "content.ore"
+
+[[item]]
+id = "obj.tin_ore"
+inherit = "obj.tin_ore"
+contentGroup = "content.ore"
+
+[[item]]
+id = "obj.blurite_ore"
+inherit = "obj.blurite_ore"
+contentGroup = "content.ore"
+
+[[item]]
+id = "obj.iron_ore"
+inherit = "obj.iron_ore"
+contentGroup = "content.ore"
+
+[[item]]
+id = "obj.silver_ore"
+inherit = "obj.silver_ore"
+contentGroup = "content.ore"
+
+[[item]]
+id = "obj.coal"
+inherit = "obj.coal"
+contentGroup = "content.ore"
+
+[[item]]
+id = "obj.mithril_ore"
+inherit = "obj.mithril_ore"
+contentGroup = "content.ore"
+
+[[item]]
+id = "obj.lovakite_ore"
+inherit = "obj.lovakite_ore"
+contentGroup = "content.ore"
+
+[[item]]
+id = "obj.adamantite_ore"
+inherit = "obj.adamantite_ore"
+contentGroup = "content.ore"
+
+[[item]]
+id = "obj.runite_ore"
+inherit = "obj.runite_ore"
+contentGroup = "content.ore"
+
+[[item]]
+id = "obj.amethyst"
+inherit = "obj.amethyst"
+contentGroup = "content.ore"
+
+[[item]]
+id = "obj.blankrune"
+inherit = "obj.blankrune"
+contentGroup = "content.ore"
+
+[[item]]
+id = "obj.blankrune_high"
+inherit = "obj.blankrune_high"
+contentGroup = "content.ore"
+
+[[item]]
+id = "obj.lead_ore"
+inherit = "obj.lead_ore"
+contentGroup = "content.ore"
+
+[[item]]
+id = "obj.nickel_ore"
+inherit = "obj.nickel_ore"
+contentGroup = "content.ore"
+
+[[item]]
+id = "obj.softclay"
+inherit = "obj.softclay"
+contentGroup = "content.ore"
+
+[[item]]
+id = "obj.poh_tablet_lumbridgeteleport"
+inherit = "obj.poh_tablet_varrockteleport"
+name = "Shooting Star teleport"
+inventoryModel = "models.poh_tablet_shootingstar"
+tradeable = false
+cost = 50
+examine = "A sky full of stars... and one might change your journey."
+[item.params]
+"param.shop_sale_restricted"=1

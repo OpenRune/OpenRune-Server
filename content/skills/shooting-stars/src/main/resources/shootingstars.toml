@@ -1,0 +1,6 @@
+is_enabled = true
+spawn_interval_minutes = 90
+spawn_variation_minutes = 15
+boot_spawn_min_minutes = 20
+boot_spawn_max_minutes = 50
+star_teleport_enabled = true
