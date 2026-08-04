@@ -2,7 +2,6 @@ package org.rsmod.content.skills.crafting.scripts
 
 import org.rsmod.api.table.crafting.CraftingHandRow
 import org.rsmod.content.skills.crafting.CraftingMode
-import org.rsmod.content.skills.crafting.CraftingProduct
 import org.rsmod.content.skills.crafting.registerHeldCrafting
 import org.rsmod.content.skills.crafting.toCraftingProduct
 import org.rsmod.plugin.scripts.PluginScript

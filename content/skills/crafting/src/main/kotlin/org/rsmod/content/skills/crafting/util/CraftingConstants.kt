@@ -152,6 +152,9 @@ object CraftingConstants {
     val CRAFTING_SKILLCAPES: Set<String> =
         setOf("obj.skillcape_crafting", "obj.skillcape_crafting_trimmed")
 
+    /** The crafting cape's hood. */
+    const val CRAFTING_HOOD = "obj.skillcape_crafting_hood"
+
     /** Aprons that get a player through the guild door. */
     val GUILD_APRONS: Set<String> = setOf("obj.brown_apron", "obj.golden_apron")
 

@@ -100,11 +100,12 @@ class MaryScript : PluginScript() {
         }
     }
 
-    private suspend fun ProtectedAccess.usedItemOnMary(npc: Npc, obj: String?) {
+    private suspend fun ProtectedAccess.usedItemOnMary(npc: Npc, obj: String) {
         when {
             !tansForPlayer() -> startDialogue(npc) { chatNpc(neutral, "Er... Thanks, but no thanks!") }
-            obj != null && obj in tannableHideObjs -> openTanner(MARY_PRICES)
-            obj != null && obj in tannedLeatherObjs -> startDialogue(npc) { chatNpc(neutral, "Er... I have no use for that, I make the stuff!") }
+            obj in tannableHideObjs -> openTanner(MARY_PRICES)
+            obj in tannedLeatherObjs ->
+                startDialogue(npc) { chatNpc(neutral, "Er... I have no use for that, I make the stuff!") }
             else -> startDialogue(npc) { chatNpc(neutral, "Er... Thanks, but no thanks!") }
         }
     }

@@ -1,12 +1,9 @@
 package org.rsmod.content.skills.crafting
 
-import dev.openrune.ServerCacheManager
-import org.rsmod.api.player.back
 import org.rsmod.api.player.stat.baseCraftingLvl
 import org.rsmod.api.player.vars.boolVarBit
 import org.rsmod.content.skills.crafting.util.CraftingConstants
 import org.rsmod.game.entity.Player
-import org.rsmod.game.inv.InvObj
 
 private val Player.faladorHardDiaryComplete by boolVarBit("varbit.falador_diary_hard_complete")
 private val Player.faladorEliteDiaryComplete by boolVarBit("varbit.falador_diary_elite_complete")
@@ -19,7 +16,7 @@ internal fun Player.wearingCraftingApron(): Boolean = CraftingConstants.GUILD_AP
 
 internal fun Player.ownsCraftingSkillcape(): Boolean = CraftingConstants.CRAFTING_SKILLCAPES.any { it in inv || it in worn }
 
-internal fun Player.ownsCraftingHood(): Boolean = "obj.skillcape_crafting_hood" in inv || "obj.skillcape_crafting_hood" in worn
+internal fun Player.ownsCraftingHood(): Boolean = CraftingConstants.CRAFTING_HOOD in inv || CraftingConstants.CRAFTING_HOOD in worn
 
 internal fun Player.hasGuildEntryOutfit(): Boolean = wearingCraftingApron() || wearingCraftingSkillcape() || wearingMaxCape()
 

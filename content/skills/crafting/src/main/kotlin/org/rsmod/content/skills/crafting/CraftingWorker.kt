@@ -471,21 +471,19 @@ private suspend fun ProtectedAccess.openSkillMultiForProducts(
     shown: List<CraftingProduct>,
     onSelect: suspend (output: String, amount: Int) -> Unit,
 ) {
-    val entries = shown.map {
-        product -> SkillMultiEntry(product.output, product.inputs)
-    }
+    val entries = shown.map { product -> SkillMultiEntry(product.output, product.inputs) }
+    val byOutput = shown.associateBy { it.output }
     openSkillMulti(
         SkillMultiConfig(
             verb = section.verb,
             actionType = section.actionType,
             entries = entries,
             maxCountProvider = { inventory, entry ->
-                val product = shown.firstOrNull { it.output == entry.internal }
+                val product = byOutput[entry.internal]
                 product?.maxCraftable { inventory.count(it) }?.coerceAtLeast(1) ?: 1
             },
         ),
-    )
-    {
+    ) {
         selection -> onSelect(selection.entry.internal, selection.amount)
     }
 }

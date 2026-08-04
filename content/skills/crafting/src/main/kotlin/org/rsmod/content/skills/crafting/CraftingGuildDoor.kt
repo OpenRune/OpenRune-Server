@@ -41,7 +41,7 @@ class CraftingGuildDoor @Inject constructor(private val locRepo: LocRepository) 
                             type = MASTER_CRAFTER_NPC,
                             mesanim = neutral,
                             text = "Sorry, only experienced crafters are allowed in here. You must be " +
-                                "level 40 or above to enter.",
+                                "level $GUILD_ENTRY_LEVEL or above to enter.",
                         )
                     }
 

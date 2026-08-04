@@ -22,8 +22,7 @@ class EodanScript : PluginScript() {
         }
         onOpNpc1(TANNER_EODAN) { greet(it.npc) }
         onOpNpc3(TANNER_EODAN) { openTanner(eodanPrices()) }
-        onOpNpcU(TANNER_EODAN) { event -> usedItemOnEodan(event.npc, event.objType.internalName)
-        }
+        onOpNpcU(TANNER_EODAN) { usedItemOnEodan(it.npc, it.objType.internalName) }
     }
 
     private suspend fun ProtectedAccess.greet(npc: Npc) {
@@ -106,10 +105,10 @@ class EodanScript : PluginScript() {
         )
     }
 
-    private suspend fun ProtectedAccess.usedItemOnEodan(npc: Npc, obj: String?) {
+    private suspend fun ProtectedAccess.usedItemOnEodan(npc: Npc, obj: String) {
         when {
-            obj != null && obj in tannableHideObjs -> openTanner(eodanPrices())
-            obj != null && obj in tannedLeatherObjs ->
+            obj in tannableHideObjs -> openTanner(eodanPrices())
+            obj in tannedLeatherObjs ->
                 startDialogue(npc) { chatNpc(neutral, "Er... I have no use for that, I make the stuff!") }
             else -> startDialogue(npc) { chatNpc(neutral, "Er... Thanks, but no thanks!") }
         }

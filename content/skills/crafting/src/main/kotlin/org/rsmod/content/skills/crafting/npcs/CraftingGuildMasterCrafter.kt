@@ -1,15 +1,15 @@
 package org.rsmod.content.skills.crafting.npcs
 
-import jakarta.inject.Inject
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.player.stat.baseCraftingLvl
 import org.rsmod.api.script.onOpNpc1
 import org.rsmod.content.skills.crafting.ownsCraftingHood
 import org.rsmod.content.skills.crafting.ownsCraftingSkillcape
+import org.rsmod.content.skills.crafting.util.CraftingConstants
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
-class CraftingGuildMasterCrafter @Inject constructor() : PluginScript() {
+class CraftingGuildMasterCrafter : PluginScript() {
 
     override fun ScriptContext.startup() {
         onOpNpc1(MASTER_CRAFTER) { startDialogue(it.npc) { caped() } }
@@ -18,14 +18,14 @@ class CraftingGuildMasterCrafter @Inject constructor() : PluginScript() {
     }
 
     private suspend fun Dialogue.caped() {
-        if (player.baseCraftingLvl >= 99) {
-            capedAt99()
+        if (player.baseCraftingLvl >= CraftingConstants.MAX_CRAFTING_LEVEL) {
+            capedAtMaxLevel()
         } else {
-            capedBelow99()
+            capedBelowMaxLevel()
         }
     }
 
-    private suspend fun Dialogue.capedBelow99() {
+    private suspend fun Dialogue.capedBelowMaxLevel() {
         chatNpc(
             happy,
             "Hello, and welcome to the Crafting Guild. Accomplished crafters from all over the land " +
@@ -57,7 +57,7 @@ class CraftingGuildMasterCrafter @Inject constructor() : PluginScript() {
         }
     }
 
-    private suspend fun Dialogue.capedAt99() {
+    private suspend fun Dialogue.capedAtMaxLevel() {
         chatNpc(
             happy,
             "Hello, and welcome to the Crafting Guild. Accomplished crafters from all over the land " +

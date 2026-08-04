@@ -7,6 +7,7 @@ import org.rsmod.api.script.onOpNpc2
 import org.rsmod.api.script.onOpNpc3
 import org.rsmod.api.script.onOpNpcU
 import org.rsmod.content.skills.crafting.interfaces.TannerPrices
+import org.rsmod.content.skills.crafting.interfaces.heldTannableHides
 import org.rsmod.content.skills.crafting.interfaces.openTanner
 import org.rsmod.content.skills.crafting.interfaces.tannableHideObjs
 import org.rsmod.content.skills.crafting.interfaces.tannedLeatherObjs
@@ -38,15 +39,16 @@ class LeatherTannerScript : PluginScript() {
             onOpNpc1(npc) { flow.greet(this, it.npc, prices) }
             onOpNpc2(npc) { openTanner(prices) }
             onOpNpc3(npc) { openTanner(prices) }
-            onOpNpcU(npc) { event -> usedItemOnTanner(event.npc, event.objType?.internalName, prices) }
+            onOpNpcU(npc) { usedItemOnTanner(it.npc, it.objType.internalName, prices) }
         }
     }
 
     /** Item-on-tanner interaction */
-    private suspend fun ProtectedAccess.usedItemOnTanner(npc: Npc, obj: String?, prices: TannerPrices) {
+    private suspend fun ProtectedAccess.usedItemOnTanner(npc: Npc, obj: String, prices: TannerPrices) {
         when {
-            obj != null && obj in tannableHideObjs -> openTanner(prices)
-            obj != null && obj in tannedLeatherObjs -> startDialogue(npc) { chatNpc(neutral, "Er... I have no use for that, I make the stuff!") }
+            obj in tannableHideObjs -> openTanner(prices)
+            obj in tannedLeatherObjs ->
+                startDialogue(npc) { chatNpc(neutral, "Er... I have no use for that, I make the stuff!") }
             else -> startDialogue(npc) { chatNpc(neutral, "Er... Thanks, but no thanks!") }
         }
     }
@@ -149,7 +151,6 @@ private suspend fun Dialogue.offerTanning(hides: Int, prices: TannerPrices) {
     }
 }
 
-private fun ProtectedAccess.heldTannableHides(): Int = tannableHideObjs.sumOf { inv.count(it) }
 private fun ProtectedAccess.sirMadam(): String = if (isBodyTypeA()) "sir" else "madam"
 
 /** Ellis, the Al Kharid tanner. */

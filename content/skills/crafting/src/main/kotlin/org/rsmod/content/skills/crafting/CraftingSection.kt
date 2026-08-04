@@ -67,7 +67,6 @@ enum class CraftingSection(
         locAnim = CraftingConstants.LOC_ANIM_WEAVING,
         sound = CraftingConstants.SOUND_WEAVING,
         actionName = { "weave ${it.output}" },
-        successMessage = { null },
         emptyMenuMessage = {
             "You either don't have the required items or don't have enough of them to weave " +
                 "anything at this loom."
@@ -169,7 +168,6 @@ enum class CraftingSection(
         anim = CraftingConstants.ANIM_KNIFE_CUTTING,
         tools = listOf(CraftingConstants.KNIFE),
         actionName = { "make a ${it.output}" },
-        successMessage = { null },
     ),
 
     GEMS(
@@ -323,5 +321,10 @@ internal fun String.plural(): String = when {
     else -> "${this}s"
 }
 
+private const val VOWELS = "aeiou"
+
 /** Prepends the indefinite article, giving an orb or a beer glass. */
-internal fun String.withArticle(): String = if (firstOrNull()?.lowercaseChar() in setOf('a', 'e', 'i', 'o', 'u')) "an $this" else "a $this"
+internal fun String.withArticle(): String {
+    val first = firstOrNull()?.lowercaseChar()
+    return if (first != null && first in VOWELS) "an $this" else "a $this"
+}

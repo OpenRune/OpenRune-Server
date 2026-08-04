@@ -224,6 +224,9 @@ internal val tannableHideObjs: Set<String> by lazy { TANNER_SLOTS.map { it.input
 /** The leather objs tanning produces. */
 internal val tannedLeatherObjs: Set<String> by lazy { TANNER_SLOTS.map { it.output }.toSet() }
 
+/** How many hides the player is carrying that a tanner will take. */
+internal fun ProtectedAccess.heldTannableHides(): Int = tannableHideObjs.sumOf { inv.count(it) }
+
 /** Coin count worded for chat. */
 private fun coins(amount: Int): String = if (amount == 1) "1 coin" else "$amount coins"
 

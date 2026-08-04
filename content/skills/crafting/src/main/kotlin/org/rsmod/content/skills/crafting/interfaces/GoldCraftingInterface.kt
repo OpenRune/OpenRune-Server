@@ -43,9 +43,7 @@ fun ProtectedAccess.openGoldCrafting() {
     ifOpenMainModal(INTERFACE_GOLD_CRAFTING)
     for (slot in goldSlots) {
         ifSetEvents(slot.component, -1..-1, IfEvent.Op1)
-        if (CraftingGamevals.exists(slot.component)) {
-            ifSetHide(slot.component, hide = !slotUnlocked(slot))
-        }
+        ifSetHide(slot.component, hide = !slotUnlocked(slot))
     }
 }
 

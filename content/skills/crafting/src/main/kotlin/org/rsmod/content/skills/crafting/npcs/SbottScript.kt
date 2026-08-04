@@ -6,6 +6,7 @@ import org.rsmod.api.script.onOpNpc1
 import org.rsmod.api.script.onOpNpc3
 import org.rsmod.api.script.onOpNpcU
 import org.rsmod.content.skills.crafting.interfaces.TannerPrices
+import org.rsmod.content.skills.crafting.interfaces.heldTannableHides
 import org.rsmod.content.skills.crafting.interfaces.openTanner
 import org.rsmod.content.skills.crafting.interfaces.tannableHideObjs
 import org.rsmod.content.skills.crafting.interfaces.tannedLeatherObjs
@@ -23,8 +24,7 @@ class SbottScript : PluginScript() {
         }
         onOpNpc1(TANNER_SBOTT) { greet(it.npc) }
         onOpNpc3(TANNER_SBOTT) { openTanner(SBOTT_PRICES) }
-        onOpNpcU(TANNER_SBOTT) { event -> usedItemOnSbott(event.npc, event.objType.internalName)
-        }
+        onOpNpcU(TANNER_SBOTT) { usedItemOnSbott(it.npc, it.objType.internalName) }
     }
 
     private suspend fun ProtectedAccess.greet(npc: Npc) {
@@ -96,16 +96,14 @@ class SbottScript : PluginScript() {
         chatNpc(neutral, "Fair enough. I can't tan what you don't bring me.")
     }
 
-    private suspend fun ProtectedAccess.usedItemOnSbott(npc: Npc, obj: String?) {
+    private suspend fun ProtectedAccess.usedItemOnSbott(npc: Npc, obj: String) {
         when {
-            obj != null && obj in tannableHideObjs -> openTanner(SBOTT_PRICES)
-            obj != null && obj in tannedLeatherObjs -> startDialogue(npc) { chatNpc(neutral, "Er... I have no use for that, I make the stuff!") }
+            obj in tannableHideObjs -> openTanner(SBOTT_PRICES)
+            obj in tannedLeatherObjs ->
+                startDialogue(npc) { chatNpc(neutral, "Er... I have no use for that, I make the stuff!") }
             else -> startDialogue(npc) { chatNpc(neutral, "Er... Thanks, but no thanks!") }
         }
     }
-
-    private fun ProtectedAccess.heldTannableHides(): Int =
-        tannableHideObjs.sumOf { inv.count(it) }
 
     /** Options for the top level Yes, Why and No choice. Only used internally. */
     private enum class OfferChoice { Yes, Why, No }
