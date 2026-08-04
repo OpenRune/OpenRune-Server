@@ -20,6 +20,15 @@ def_int $cat = 0;
 def_int $stored = 0;
 def_int $allowed = 0;
 def_dbrow $row = null;
+def_int $dbg_found = 0;
+def_int $dbg_ghosted = 0;
+def_int $dbg_item_ok = 0;
+def_int $dbg_lock_ok = 0;
+def_string $owned_s = "n";
+def_string $locked_s = "n";
+def_string $ghost_s = "?";
+def_string $obj_s = "?";
+mes("TB draw: unlocks=<tostring(%toolbelt_unlocks)> s0=<tostring(%toolbelt_slot_0)> s1=<tostring(%toolbelt_slot_1)> s27=<tostring(%toolbelt_slot_27)>");
 while ($slot < 28) {
     $row = null;
     $bg = calc(200 + $slot);
@@ -37,8 +46,10 @@ while ($slot < 28) {
     if (db_find(toolbelt_slots:slot_index, $slot) = 1) {
         $row = db_findnext;
         if ($row ! null) {
+            $dbg_found = calc($dbg_found + 1);
             if (db_getfieldcount($row, toolbelt_slots:allowed_items) > 0) {
                 $ghost = db_getfield($row, toolbelt_slots:allowed_items, 0);
+                $dbg_ghosted = calc($dbg_ghosted + 1);
             }
         }
     }
@@ -75,18 +86,19 @@ while ($slot < 28) {
             cc_setonop(null);
         }
         if (cc_find($content, $item) = true) {
+            $dbg_item_ok = calc($dbg_item_ok + 1);
             cc_sethide(false);
             cc_setopbase("<col=ff9040><oc_name($obj)></col>");
             cc_setop(1, "");
             cc_setop(2, "");
             cc_setop(10, "Examine");
             if ($locked = true) {
-                cc_setobject($obj, -1);
+                cc_setobject_nonum($obj, 1);
                 cc_setoutline(1);
                 cc_settrans(140);
                 cc_setop(1, "Info");
             } else if ($empty = true) {
-                cc_setobject($obj, -1);
+                cc_setobject_nonum($obj, 1);
                 cc_setoutline(1);
                 cc_settrans(140);
             } else {
@@ -117,6 +129,7 @@ while ($slot < 28) {
         }
         if ($locked = true) {
             if (cc_find($content, $lock) = true) {
+                $dbg_lock_ok = calc($dbg_lock_ok + 1);
                 cc_sethide(false);
                 cc_setposition(calc($slot_x + 6), calc($slot_y + 2), ^setpos_abs_left, ^setpos_abs_top);
                 cc_setgraphic("magic_spell_padlocks,0");
@@ -125,9 +138,31 @@ while ($slot < 28) {
         } else if (cc_find($content, $lock) = true) {
             cc_sethide(true);
         }
+        if ($slot = 27) {
+            $owned_s = "n";
+            $locked_s = "n";
+            $ghost_s = "?";
+            $obj_s = "?";
+            if ($owned = true) {
+                $owned_s = "y";
+            }
+            if ($locked = true) {
+                $locked_s = "y";
+            }
+            if ($ghost ! null) {
+                $ghost_s = oc_name($ghost);
+            }
+            if ($obj ! null) {
+                $obj_s = oc_name($obj);
+            }
+            mes("TB bone: stored=<tostring($stored)> owned=<$owned_s> locked=<$locked_s> ghost=<$ghost_s> obj=<$obj_s>");
+        }
+    } else if ($slot = 27) {
+        mes("TB bone: no obj/ghost (db miss or empty allowed_items)");
     }
     $slot = calc($slot + 1);
 }
+mes("TB draw done: rows=<tostring($dbg_found)> ghosts=<tostring($dbg_ghosted)> items=<tostring($dbg_item_ok)> locks=<tostring($dbg_lock_ok)> owned=<tostring($owned_total)>");
 def_int $ci = 0;
 def_string $name = "";
 def_int $max = 0;
