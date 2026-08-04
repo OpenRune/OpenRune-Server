@@ -44,14 +44,16 @@ internal object SlayerRewardTasks {
             access.mes("You do not have a Slayer assignment right now.")
             return
         }
-        if (SlayerRewardsPoints.getPoints(access.player) < BLOCK_TASK_COST) {
+
+        val master = SlayerTaskManager.getCurrentAssignedMaster(access.player) ?: return
+        val blockCost = master.blockCost
+        if (SlayerRewardsPoints.getPoints(access.player) < blockCost) {
             access.mes(
-                "You do not have enough Slayer Points to block your task. You need $BLOCK_TASK_COST Slayer Points.",
+                "You do not have enough Slayer Points to block your task. You need $blockCost Slayer Points.",
             )
             return
         }
 
-        val master = SlayerTaskManager.getCurrentAssignedMaster(access.player) ?: return
         val slot = SlayerBlockSlots.firstEmptySlot(access.player, master)
         if (slot == null) {
             access.mes("You don't have any empty slots to block this task!")
@@ -59,7 +61,7 @@ internal object SlayerRewardTasks {
         }
 
         val varbit = RSCM.getReverseMapping(RSCMType.VARBIT,master.blockVarbits[slot])
-        if (!SlayerRewardsPoints.spendPoints(access.player, BLOCK_TASK_COST)) return
+        if (!SlayerRewardsPoints.spendPoints(access.player, blockCost)) return
 
         VarPlayerIntMapSetter.set(access.player, varbit, access.vars["varp.slayer_target"])
         SlayerTaskManager.resetTask(access)
@@ -97,5 +99,4 @@ internal object SlayerRewardTasks {
         get() = taskManagementBase + 8
 
     private const val CANCEL_TASK_COST = 30
-    private const val BLOCK_TASK_COST = 100
 }
