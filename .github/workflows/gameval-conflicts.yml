@@ -1,7 +1,8 @@
 name: Gameval Conflict Check
 
 # Runs on every PR so it can be a required status check (blocks merge until it completes).
-# Auto-fixes conflicting gamevals and pushes — no environment approval, no PR comments when clean.
+# Auto-fixes conflicting gamevals and pushes — no environment approval.
+# Comments on the PR only when conflicts were found/fixed; silent when clean.
 
 on:
   pull_request:
@@ -14,6 +15,7 @@ concurrency:
 permissions:
   contents: write
   checks: write
+  pull-requests: write
 
 jobs:
   gameval-conflicts:
@@ -43,7 +45,7 @@ jobs:
             exit "$code"
           fi
 
-      - name: Commit and push fixes
+      - name: Commit, push, and report conflicts
         if: steps.resolve.outputs.fixed == 'true'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -52,6 +54,16 @@ jobs:
           if [ "$SAME_REPO" != "true" ]; then
             echo "::error::Conflicting gamevals on a fork PR — push fixes to the branch (or open the PR from this repo)."
             cat /tmp/gameval-fix-log.txt
+            {
+              echo "## Gameval conflicts found"
+              echo
+              echo "Could not push fixes (fork PR). Please apply the reassignments below on your branch."
+              echo
+              echo '```'
+              cat /tmp/gameval-fix-log.txt
+              echo '```'
+            } > /tmp/gameval-pr-body.md
+            gh pr comment "${{ github.event.pull_request.number }}" --body-file /tmp/gameval-pr-body.md
             exit 1
           fi
 
@@ -74,6 +86,7 @@ jobs:
           jq -n \
             --arg name "Gameval Conflict Check / gameval-conflicts" \
             --arg sha "$NEW_SHA" \
+            --arg summary "$(cat /tmp/gameval-fix-log.txt)" \
             '{
               name: $name,
               head_sha: $sha,
@@ -81,6 +94,21 @@ jobs:
               conclusion: "success",
               output: {
                 title: "Gameval conflicts auto-fixed",
-                summary: "Conflicting custom gamevals were reassigned and pushed."
+                summary: $summary
               }
             }' | gh api "repos/${{ github.repository }}/check-runs" --input -
+
+          {
+            echo "## Gameval conflicts auto-fixed"
+            echo
+            echo "Reserved OSRS IDs come from \`.data/gamevals-binary/max-ids.toml\` (written on \`freshCache\`)."
+            echo "Custom gamevals must use IDs **greater than** each table's max."
+            echo
+            echo "A fix commit was pushed with these reassignments:"
+            echo
+            echo '```'
+            cat /tmp/gameval-fix-log.txt
+            echo '```'
+          } > /tmp/gameval-pr-body.md
+
+          gh pr comment "${{ github.event.pull_request.number }}" --body-file /tmp/gameval-pr-body.md
