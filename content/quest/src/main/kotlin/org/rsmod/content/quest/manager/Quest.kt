@@ -85,11 +85,13 @@ data class Quest(
     }
 
     fun questState(player: Player): QuestProgressState =
-        QuestProgressState.entries.find { player.questState == it.varp }
-            ?: QuestProgressState.NOT_STARTED
+        QuestProgressState.fromStage(getQuestStage(player), maxSteps)
 
-    fun isQuestCompleted(player: Player): Boolean =
-        questState(player) == QuestProgressState.FINISHED
+    fun isQuestNotStarted(player: Player): Boolean = questState(player).isNotStarted
+
+    fun isQuestInProgress(player: Player): Boolean = questState(player).isInProgress
+
+    fun isQuestCompleted(player: Player): Boolean = questState(player).isCompleted
 
     fun advanceQuestStage(access: ProtectedAccess, amount: Int = 1): Int {
         val currentStage = getQuestStage(access.player)
@@ -105,22 +107,18 @@ data class Quest(
         }
 
         val newStage = attemptedStage.coerceIn(0, maxSteps)
+        val wasCompleted = currentStage >= maxSteps
         setQuestStage(access, newStage)
 
-        val newState = when {
-            newStage <= 0 -> QuestProgressState.NOT_STARTED
-            newStage >= maxSteps -> QuestProgressState.FINISHED
-            else -> QuestProgressState.IN_PROGRESS
+        // Quest varps store the real stage (0..endstate). Multinpc / journal clients depend on
+        // endstate (e.g. runemysteries=6) rather than a collapsed 0/1/2 progress flag.
+        if (access.player.questState != newStage) {
+            access.player.questState = newStage
         }
 
-        if (access.player.questState != newState.varp) {
-            access.player.questState = newState.varp
-        }
-
-        if (newState == QuestProgressState.FINISHED) {
+        if (!wasCompleted && newStage >= maxSteps) {
             completedQuest(access)
         }
-
 
         return newStage
     }

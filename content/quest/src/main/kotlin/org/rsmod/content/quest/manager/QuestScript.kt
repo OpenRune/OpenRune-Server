@@ -11,10 +11,28 @@ import org.rsmod.plugin.scripts.ScriptContext
 
 enum class JournalState { OVERVIEW, LOG }
 
-enum class QuestProgressState(val varp : Int) {
-    NOT_STARTED(0),
-    IN_PROGRESS(1),
-    FINISHED(2),
+enum class QuestProgressState {
+    NOT_STARTED,
+    IN_PROGRESS,
+    FINISHED;
+
+    val isNotStarted: Boolean
+        get() = this == NOT_STARTED
+
+    val isInProgress: Boolean
+        get() = this == IN_PROGRESS
+
+    val isCompleted: Boolean
+        get() = this == FINISHED
+
+    companion object {
+        fun fromStage(stage: Int, endState: Int): QuestProgressState =
+            when {
+                stage <= 0 -> NOT_STARTED
+                stage >= endState -> FINISHED
+                else -> IN_PROGRESS
+            }
+    }
 }
 
 @DslMarker
@@ -86,13 +104,7 @@ abstract class QuestScript(
         )
 
         onPlayerLogin {
-            val state = quest.getQuestStage(player)
-            val prog = when(state) {
-                0 -> QuestProgressState.NOT_STARTED
-                quest.maxSteps -> QuestProgressState.FINISHED
-                else -> QuestProgressState.IN_PROGRESS
-            }
-            player.questState = prog.varp
+            player.questState = quest.getQuestStage(player)
         }
 
         this.init()

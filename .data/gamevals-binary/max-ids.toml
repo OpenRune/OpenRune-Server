@@ -6,6 +6,7 @@
 revision = 239
 
 [max_ids]
+component = 63438864
 dbrow = 16939
 dbtable = 258
 interface = 968

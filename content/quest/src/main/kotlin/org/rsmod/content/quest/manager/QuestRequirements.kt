@@ -42,9 +42,9 @@ public object QuestRequirements {
     ): Boolean {
         val state = Quest.get(quest)?.questState(player) ?: QuestProgressState.NOT_STARTED
         return when (requirement) {
-            QuestRequirement.Completed -> state == QuestProgressState.FINISHED
-            QuestRequirement.InProgress -> state == QuestProgressState.IN_PROGRESS
-            QuestRequirement.NotCompleted -> state != QuestProgressState.FINISHED
+            QuestRequirement.Completed -> state.isCompleted
+            QuestRequirement.InProgress -> state.isInProgress
+            QuestRequirement.NotCompleted -> !state.isCompleted
         }
     }
 }
