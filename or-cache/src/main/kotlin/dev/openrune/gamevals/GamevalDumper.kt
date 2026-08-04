@@ -56,6 +56,7 @@ object GamevalDumper {
         encodeGameValDat(File(outputDir, "gamevals.dat").path, gamevals)
 
         dumpCols(cache, rev)
+
         dumpComponents(cache, rev)
     }
 
@@ -71,6 +72,9 @@ object GamevalDumper {
         }
 
         encodeGameValDat("../.data/gamevals-binary/gamevals_components.dat", mapOf("component" to data))
+
+        GameValMaxIdManifest.writeFromDats(File(".."), revision = rev)
+
     }
 
     fun dumpCols(cache: Cache, rev: Int) {
