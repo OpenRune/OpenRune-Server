@@ -23,6 +23,8 @@ enum class CraftingSection(
     val ticks: Int,
     /** Whether the first craft of a batch runs a tick short, as most crafting does. */
     val shortensFirstCraft: Boolean = true,
+    /** Whether [sound] replays every craft instead of only when the animation restarts. */
+    val repeatsSoundPerCraft: Boolean = false,
     val mode: CraftingMode = CraftingMode.MENU,
     val anim: String? = null,
     val imcandoAnim: String? = null,
@@ -51,6 +53,7 @@ enum class CraftingSection(
         anim = CraftingConstants.ANIM_SPINNING,
         locAnim = CraftingConstants.LOC_ANIM_SPINNING,
         sound = CraftingConstants.SOUND_SPINNING,
+        repeatsSoundPerCraft = true,
         actionName = { "spin ${it.output}" },
         successMessage = { "You spin the ${it.input} into ${it.output}." },
         emptyMenuMessage = { "You don't have anything suitable to spin at this spinning wheel." },
@@ -66,6 +69,7 @@ enum class CraftingSection(
         anim = CraftingConstants.ANIM_WEAVING,
         locAnim = CraftingConstants.LOC_ANIM_WEAVING,
         sound = CraftingConstants.SOUND_WEAVING,
+        repeatsSoundPerCraft = true,
         actionName = { "weave ${it.output}" },
         emptyMenuMessage = {
             "You either don't have the required items or don't have enough of them to weave " +
@@ -81,6 +85,7 @@ enum class CraftingSection(
         anim = CraftingConstants.ANIM_POTTERY_WHEEL,
         locAnim = CraftingConstants.LOC_ANIM_POTTERY_WHEEL,
         sound = CraftingConstants.SOUND_POTTERY_WHEEL,
+        repeatsSoundPerCraft = true,
         actionName = { "make ${it.output}" },
         successMessage = { "You make the clay into ${it.output.removePrefix("unfired ").withArticle()}." }, // Strips the "unfired " prefix off the output name
         emptyMenuMessage = { "You don't have anything suitable to craft with." },
@@ -93,6 +98,7 @@ enum class CraftingSection(
         ticks = 7,
         anim = CraftingConstants.ANIM_POTTERY_OVEN,
         sound = CraftingConstants.SOUND_FURNACE,
+        repeatsSoundPerCraft = true,
         actionName = { "fire ${it.output}" },
         startMessage = { "You put the ${it.output} in the oven." },
         successMessage = { "You remove the ${it.output} from the oven." },
@@ -217,6 +223,7 @@ enum class CraftingSection(
         ticks = 3,
         anim = CraftingConstants.ANIM_GLASSBLOWING,
         sound = CraftingConstants.SOUND_GLASSBLOWING,
+        repeatsSoundPerCraft = true,
         tools = listOf(CraftingConstants.GLASSBLOWING_PIPE),
         actionName = { "make ${it.output}" },
         successMessage = { "You make ${it.output.withArticle()}." },
@@ -292,6 +299,7 @@ enum class CraftingSection(
         ticks = 3,
         anim = CraftingConstants.ANIM_SAND_PIT,
         sound = CraftingConstants.SOUND_SAND_BUCKET,
+        repeatsSoundPerCraft = true,
         actionName = { "fill a bucket with sand" },
         successMessage = { "You fill the bucket with sand." },
     ),

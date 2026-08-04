@@ -125,9 +125,9 @@ private fun ProtectedAccess.beginCycle(
     facility: BoundLocInfo?,
     cycle: Int = 0,
 ) {
-    // The client drops an animation already playing, so a sound fired every craft would outpace it.
+    // The client drops an animation already playing, so a sound fired every craft can outpace it.
     val restarted = startCraftAnim(product, cycle)
-    if (restarted) {
+    if (restarted || product.section.repeatsSoundPerCraft) {
         product.sound?.let { soundSynth(it) }
     }
     product.spotanimAt(cycle)?.let { spotanim(it) }
