@@ -2,7 +2,6 @@ package org.rsmod.content.slayer.rewards
 
 import dev.openrune.rscm.RSCM
 import dev.openrune.rscm.RSCMType
-import org.rsmod.api.attr.AttributeKey
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.vars.VarPlayerIntMapSetter
 import org.rsmod.api.table.slayer.SlayerUnlockRow
@@ -67,18 +66,17 @@ internal object SlayerRewardTasks {
         SlayerRewardsPoints.syncPoints(access)
     }
 
-    fun selectUnblockSlot(access: ProtectedAccess, slotIndex: Int) {
-        access.player.attr[pendingUnblockSlot] = slotIndex
-    }
+    private val unblockConfirmComsubToSlot =
+        mapOf(69 to 0, 70 to 1, 71 to 2, 72 to 3, 73 to 4, 78 to 5, 74 to 6)
 
-    fun confirmPendingUnblock(access: ProtectedAccess) {
-        val slotIndex = access.player.attr[pendingUnblockSlot] ?: return
-        access.player.attr.remove(pendingUnblockSlot)
+    fun tryHandleUnblockConfirm(access: ProtectedAccess, comsub: Int): Boolean {
+        val slotIndex = unblockConfirmComsubToSlot[comsub] ?: return false
         confirmUnblock(access, slotIndex)
+        return true
     }
 
     private fun confirmUnblock(access: ProtectedAccess, slotIndex: Int) {
-        val master = SlayerTaskManager.getCurrentAssignedMaster(access.player) ?: return
+        val master = SlayerTaskManager.getFocusedMaster(access.player) ?: return
         val varbit = RSCM.getReverseMapping(RSCMType.VARBIT,master.blockVarbits[slotIndex])
         if (access.vars[varbit] == 0) {
             access.mes("You don't have a Slayer task blocked in that slot.")
@@ -97,10 +95,6 @@ internal object SlayerRewardTasks {
 
     private val extendAllComsub: Int
         get() = taskManagementBase + 8
-
-    private val pendingUnblockSlot = AttributeKey<Int>(temp = true)
-
-    const val CONFIRM_UNBLOCK_COMSUB = 71
 
     private const val CANCEL_TASK_COST = 30
     private const val BLOCK_TASK_COST = 100

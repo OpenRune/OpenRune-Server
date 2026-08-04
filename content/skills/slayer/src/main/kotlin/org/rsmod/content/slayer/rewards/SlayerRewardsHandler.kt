@@ -23,8 +23,7 @@ object SlayerRewardsHandler {
     }
 
     fun onConfirmButton(access: ProtectedAccess, comsub: Int) {
-        if (comsub == SlayerRewardTasks.CONFIRM_UNBLOCK_COMSUB) {
-            SlayerRewardTasks.confirmPendingUnblock(access)
+        if (SlayerRewardTasks.tryHandleUnblockConfirm(access, comsub)) {
             return
         }
 

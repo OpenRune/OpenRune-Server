@@ -21,17 +21,10 @@ object SlayerInterfaces {
         val master = SlayerTaskManager.findMasterByNpc(npcId) ?: return
 
         VarPlayerIntMapSetter.set(access.player, "varbit.slayer_master", master.masterId)
+        VarPlayerIntMapSetter.set(access.player, "varbit.slayer_master_in_focus", master.masterId)
 
         access.player.ifSetEvents(CONFIRM_COMPONENT, 0..200, IfEvent.Op1)
         access.player.ifSetEvents(UNLOCK_COMPONENT, 0..200, IfEvent.Op1)
-
-        access.player.ifSetEvents("component.slayer_rewards:tasks_slot_1", 0..4, IfEvent.Op1)
-        access.player.ifSetEvents("component.slayer_rewards:tasks_slot_2", 0..4, IfEvent.Op1)
-        access.player.ifSetEvents("component.slayer_rewards:tasks_slot_3", 0..4, IfEvent.Op1)
-        access.player.ifSetEvents("component.slayer_rewards:tasks_slot_4", 0..4, IfEvent.Op1)
-        access.player.ifSetEvents("component.slayer_rewards:tasks_slot_5", 0..4, IfEvent.Op1)
-        access.player.ifSetEvents("component.slayer_rewards:tasks_slot_6", 0..4, IfEvent.Op1)
-        access.player.ifSetEvents("component.slayer_rewards:tasks_slot_diary", 0..4, IfEvent.Op1)
 
         access.player.ifSetEvents(
             BUY_COMPONENT,

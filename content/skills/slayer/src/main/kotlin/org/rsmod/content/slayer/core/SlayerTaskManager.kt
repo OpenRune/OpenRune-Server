@@ -65,6 +65,12 @@ object SlayerTaskManager {
         return tasks.keys.find { it.masterId == masterId }
     }
 
+    fun getFocusedMaster(player: Player): SlayerMastersRow? {
+        val masterId = player.vars["varbit.slayer_master_in_focus"]
+        if (masterId == 0) return null
+        return tasks.keys.find { it.masterId == masterId }
+    }
+
     fun decreaseTask(
         player: Player,
         npc: Npc,
