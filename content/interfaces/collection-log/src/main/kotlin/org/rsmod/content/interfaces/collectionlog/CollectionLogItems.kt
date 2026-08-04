@@ -4,6 +4,7 @@ import com.github.michaelbull.logging.InlineLogger
 import dev.openrune.ServerCacheManager
 import dev.openrune.definition.constants.ConstantProvider
 import dev.openrune.definition.type.VarBitType
+import dev.openrune.types.ItemServerType
 import dev.openrune.types.enums.enum
 import org.rsmod.api.player.vars.VarPlayerIntMapSetter
 import org.rsmod.game.entity.Player
@@ -15,11 +16,12 @@ internal object CollectionLogItems {
     internal fun itemsInCategoryStruct(structId: Int): List<Int> {
         val struct = ServerCacheManager.getStruct(structId) ?: return emptyList()
         val enumId = struct.params?.get(ITEMS_ENUM_PARAM) as? Int ?: return emptyList()
-        return enum<Int, Int>(enumId).backing.values.filterNotNull()
+        return enum<Int, ItemServerType>(enumId).backing.values.filterNotNull().map { it.id }
     }
 
     private fun reverseObjName(objId: Int): String? =
         ConstantProvider.mappings["obj"]?.entries?.firstOrNull { it.value == objId }?.key
+            ?.removePrefix("obj.")
 
     /**
      * This is the central map between items in the collection log and their associated varbits
