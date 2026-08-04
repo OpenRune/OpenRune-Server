@@ -195,6 +195,21 @@ object Slayer {
             column(COL_BLOCK_COST, 100)
         }
 
+        row("dbrow.mortimer") {
+            column(COL_MASTER_ID, 10)
+            columnRSCM(COL_NPC_IDS, "npc.slayer_master_mortimer_vis")
+            column(COL_SLAYER_LEVEL, 70)
+            column(COL_COMBAT_LEVEL, 100)
+            column(COL_POINTS_PER_TASK, 0)
+            columnRSCM(
+                COL_BLOCK_VARBITS,
+                "varbit.slayer_blocked_mortimer_1",
+                "varbit.slayer_blocked_mortimer_2",
+            )
+            column(COL_CAN_ASSIGN_BOSSES, false)
+            column(COL_BLOCK_COST, 120)
+        }
+
     }
 
 }
