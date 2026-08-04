@@ -22,28 +22,6 @@ class SlayerRewardsScript : PluginScript() {
             SlayerRewardsHandler.onUnlockListComsub(this, it.comsub)
         }
 
-        onIfModalButton("component.slayer_rewards:tasks_slot_1") {
-            SlayerRewardTasks.selectUnblockSlot(this,0)
-        }
-        onIfModalButton("component.slayer_rewards:tasks_slot_2") {
-            SlayerRewardTasks.selectUnblockSlot(this,1)
-        }
-        onIfModalButton("component.slayer_rewards:tasks_slot_3") {
-            SlayerRewardTasks.selectUnblockSlot(this,2)
-        }
-        onIfModalButton("component.slayer_rewards:tasks_slot_4") {
-            SlayerRewardTasks.selectUnblockSlot(this,3)
-        }
-        onIfModalButton("component.slayer_rewards:tasks_slot_5") {
-            SlayerRewardTasks.selectUnblockSlot(this,4)
-        }
-        onIfModalButton("component.slayer_rewards:tasks_slot_6") {
-            SlayerRewardTasks.selectUnblockSlot(this,5)
-        }
-        onIfModalButton("component.slayer_rewards:tasks_slot_diary") {
-            SlayerRewardTasks.selectUnblockSlot(this,6)
-        }
-
         onIfModalButton(CONFIRM_COMPONENT) {
             SlayerRewardsHandler.onConfirmButton(this, it.comsub)
         }

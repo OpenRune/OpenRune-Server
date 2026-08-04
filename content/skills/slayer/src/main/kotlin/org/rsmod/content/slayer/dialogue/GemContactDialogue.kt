@@ -115,6 +115,8 @@ object GemContactDialogue {
                     return "I'm in the Edgeville jail, but my tasks are for the Wilderness."
                 assigned.npcIds.any { it.id == SlayerMasters.Npc.konar } ->
                     return "You'll find me on Mount Karuulm. I'll be here when you need a new purpose."
+                assigned.npcIds.any { it.id == SlayerMasters.Npc.mortimer } ->
+                    return "You'll find me in the Wyrmscraig Cavern."
             }
         }
         return when (masterId) {
@@ -127,6 +129,8 @@ object GemContactDialogue {
                 "You'll find me on Mount Karuulm. I'll be here when you need a new purpose."
             SlayerMasters.TASK_WILDERNESS ->
                 "I'm in the Edgeville jail, but my tasks are for the Wilderness."
+            SlayerMasters.TASK_MORTIMER ->
+                "You'll find me in the Wyrmscraig Cavern."
             else -> "You'll find me when you need a new assignment."
         }
     }

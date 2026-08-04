@@ -490,6 +490,69 @@ endBit = 15
 
 [[varbit]]
 isServerOnly = true
+id = "varbit.slayer_mortimer_tasks_done"
+varp = "varp.slayer_mortimer_state"
+startBit = 0
+endBit = 15
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.slayer_mortimer_streak"
+varp = "varp.slayer_mortimer_state"
+startBit = 16
+endBit = 30
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.slayer_choose_amount_1"
+varp = "varp.slayer_mortimer_offers"
+startBit = 0
+endBit = 9
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.slayer_choose_amount_2"
+varp = "varp.slayer_mortimer_offers"
+startBit = 10
+endBit = 19
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.slayer_choose_amount_3"
+varp = "varp.slayer_mortimer_offers"
+startBit = 20
+endBit = 29
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.slayer_last_mortimer_amount"
+varp = "varp.slayer_mortimer_last"
+startBit = 0
+endBit = 9
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.slayer_last_mortimer_modifier_id"
+varp = "varp.slayer_mortimer_last"
+startBit = 10
+endBit = 12
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.slayer_last_mortimer_modifier_value"
+varp = "varp.slayer_mortimer_last"
+startBit = 13
+endBit = 21
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.slayer_last_mortimer_modifier_negative"
+varp = "varp.slayer_mortimer_last"
+startBit = 22
+endBit = 22
+
+[[varbit]]
+isServerOnly = true
 id = "varbit.pending_instance_row"
 varp = "varp.instance_state"
 startBit = 0

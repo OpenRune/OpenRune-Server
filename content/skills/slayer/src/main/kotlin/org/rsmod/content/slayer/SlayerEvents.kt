@@ -18,6 +18,8 @@ import org.rsmod.content.slayer.dialogue.masters.KonarDialogue.needAnotherAssign
 import org.rsmod.content.slayer.dialogue.masters.KonarDialogue.start as konarStart
 import org.rsmod.content.slayer.dialogue.masters.KrystiliaDialogue.needAnotherAssignment as krystiliaNeedAssignment
 import org.rsmod.content.slayer.dialogue.masters.KrystiliaDialogue.start as krystiliaStart
+import org.rsmod.content.slayer.dialogue.masters.MortimerDialogue.needAnotherAssignment as mortimerNeedAssignment
+import org.rsmod.content.slayer.dialogue.masters.MortimerDialogue.start as mortimerStart
 import org.rsmod.content.slayer.dialogue.masters.TuradelDialogue.start as turaelStart
 import org.rsmod.game.entity.Npc
 import org.rsmod.plugin.scripts.PluginScript
@@ -44,6 +46,7 @@ class SlayerEvents : PluginScript() {
                 SlayerMasters.Npc.turael -> turaelStart()
                 SlayerMasters.Npc.krystilia -> krystiliaStart()
                 SlayerMasters.Npc.konar -> konarStart()
+                SlayerMasters.Npc.mortimer -> mortimerStart()
                 SlayerMasters.Npc.spria, SlayerMasters.Npc.spriaActive -> spriaStart()
                 SlayerMasters.Npc.steve -> steveStart()
                 else -> openMain(npc.id,
@@ -60,6 +63,7 @@ class SlayerEvents : PluginScript() {
                 SlayerMasters.Npc.turael -> requestAssignment(SlayerMasters.Npc.turael)
                 SlayerMasters.Npc.krystilia -> krystiliaNeedAssignment()
                 SlayerMasters.Npc.konar -> konarNeedAssignment()
+                SlayerMasters.Npc.mortimer -> mortimerNeedAssignment()
                 SlayerMasters.Npc.spria, SlayerMasters.Npc.spriaActive -> requestAssignment(
                     if (npc.id == SlayerMasters.Npc.spria) SlayerMasters.Npc.spria
                     else SlayerMasters.Npc.spriaActive

@@ -40,7 +40,7 @@ public open class MultiChanceTableImpl<T, R>(
             }
 
             val roll = Random.nextDouble(0.0, maxRollChance)
-            val select = (roll * modifier) <= entry.chance
+            val select = (roll * modifier) <= entry.chanceFor(target, otherArgs)
 
             select
         }

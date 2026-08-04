@@ -2,6 +2,8 @@ package org.rsmod.content.slayer.dialogue
 
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.repo.npc.NpcRepository
+import org.rsmod.content.slayer.core.MortimerAssignment
+import org.rsmod.content.slayer.core.MortimerModifiers
 import org.rsmod.content.slayer.core.SlayerTaskManager
 import org.rsmod.content.slayer.dialogue.GemContactDialogue.contact
 import org.rsmod.content.slayer.dialogue.SlayerMasterDialogue.chatMaster
@@ -9,6 +11,7 @@ import org.rsmod.content.slayer.dialogue.StandardSlayerDialogue.openContact
 import org.rsmod.content.slayer.dialogue.masters.KonarDialogue.gemContact
 import org.rsmod.content.slayer.dialogue.masters.KonarDialogue.npcContactMenu
 import org.rsmod.content.slayer.dialogue.masters.KrystiliaDialogue.npcContactMenu as krystiliaNpcContactMenu
+import org.rsmod.content.slayer.dialogue.masters.MortimerDialogue.npcContactMenu as mortimerNpcContactMenu
 import org.rsmod.content.slayer.dialogue.KonarSlayerDialogueHelpers
 import org.rsmod.game.entity.Player
 import org.rsmod.map.zone.ZoneKey
@@ -65,6 +68,11 @@ object SlayerContact {
             mes("You're assigned to kill ${task.nameUppercase}; you have $count to go.")
         }
 
+        if (MortimerAssignment.isMortimer(master)) {
+            MortimerModifiers.overallBenefitMessage(MortimerAssignment.activeModifier(player))
+                ?.let { mes(it) }
+        }
+
         mes("Your reward point tally is ${player.vars["varbit.slayer_points"]}.")
     }
 
@@ -87,6 +95,7 @@ object SlayerContact {
             when (masterId) {
                 SlayerMasters.TASK_KONAR -> npcContactMenu()
                 SlayerMasters.TASK_WILDERNESS -> krystiliaNpcContactMenu()
+                SlayerMasters.TASK_MORTIMER -> mortimerNpcContactMenu()
                 else -> openContact(npcId)
             }
         }
@@ -96,16 +105,20 @@ object SlayerContact {
         val nearNpcIds = when (masterId) {
             SlayerMasters.TASK_DURADEL -> listOf(SlayerMasters.Npc.duradel, SlayerMasters.Npc.kuradal)
             SlayerMasters.TASK_KONAR -> listOf(SlayerMasters.Npc.konar)
+            SlayerMasters.TASK_MORTIMER -> listOf(SlayerMasters.Npc.mortimer)
             else -> return null
         }
 
         if (!isNearAnyMaster(player, npcRepo, nearNpcIds)) {
             return null
         }
-        return when (masterId) {SlayerMasters.TASK_DURADEL ->
+        return when (masterId) {
+            SlayerMasters.TASK_DURADEL ->
                 SlayerMasterProfiles.forNpc(SlayerMasters.Npc.duradel)?.nearContactMessage
             SlayerMasters.TASK_KONAR ->
                 SlayerMasterProfiles.forNpc(SlayerMasters.Npc.konar)?.nearContactMessage
+            SlayerMasters.TASK_MORTIMER ->
+                SlayerMasterProfiles.forNpc(SlayerMasters.Npc.mortimer)?.nearContactMessage
             else -> null
         }
     }

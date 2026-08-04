@@ -50,6 +50,9 @@ import dev.openrune.pack.PluginPack
 import dev.openrune.pack.PluginPackLoader
 import dev.openrune.packscript.PackScriptPhase
 import dev.openrune.packscript.PackScripts
+import dev.openrune.tables.consumables.food.FoodTable
+import dev.openrune.tables.consumables.potion.PotionEffectTable
+import dev.openrune.tables.consumables.potion.PotionTable
 import java.io.File
 import kotlin.system.exitProcess
 
@@ -74,44 +77,46 @@ fun main(args: Array<String>) {
     downloadRev(TaskType.valueOf(args.first().uppercase()))
 }
 
-fun tablesToPack(): List<DBTable> {
-    return listOf(
-            GameframeTable.gameframe(),
-            Music.musicClassic(),
-            Music.musicModern(),
-            Firemaking.logs(),
-            Firemaking.firelighters(),
-            Firemaking.sources(),
-            PrayerTable.skillTable(),
-            PrayerBlessedBone.table(),
-            EctofuntusBonemeal.table(),
-            StatComponents.statsComponents(),
-            PickableObjects.pickableObjects(),
-            Mining.rocks(),
-            Cooking.foods(),
-            Cooking.ales(),
-            Herblore.unfinishedPotions(),
-            Herblore.finishedPotions(),
-            Herblore.cleaningHerbs(),
-            Herblore.barbarianMixes(),
-            Herblore.swampTar(),
-            Herblore.crushing(),
-            Smithing.bars(),
-            Smithing.cannonBalls(),
-            Smithing.dragonForge(),
-            Smithing.crystalSinging(),
-            Slayer.masters(),
-            Runecrafting.altars(),
-            Runecrafting.runes(),
-            Runecrafting.tiara(),
-            Runecrafting.combo(),
-            SettingConfigs.settings(),
-            DidYouKnow.didYouknow(),
-            InstanceSettingsTable.instanceSettings(),
-            ShootingStars.locations(),
-            ShopCurrencyTable.shopCurrencies(),
-        )
-}
+
+fun tablesToPack() = listOf(
+    GameframeTable.gameframe(),
+    Music.musicClassic(),
+    Music.musicModern(),
+    Firemaking.logs(),
+    Firemaking.firelighters(),
+    Firemaking.sources(),
+    PrayerTable.skillTable(),
+    PrayerBlessedBone.table(),
+    EctofuntusBonemeal.table(),
+    StatComponents.statsComponents(),
+    PickableObjects.pickableObjects(),
+    Mining.rocks(),
+    Cooking.foods(),
+    Cooking.ales(),
+    Herblore.unfinishedPotions(),
+    Herblore.finishedPotions(),
+    Herblore.cleaningHerbs(),
+    Herblore.barbarianMixes(),
+    Herblore.swampTar(),
+    Herblore.crushing(),
+    Smithing.bars(),
+    Smithing.cannonBalls(),
+    Smithing.dragonForge(),
+    Smithing.crystalSinging(),
+    Slayer.masters(),
+    Runecrafting.altars(),
+    Runecrafting.runes(),
+    Runecrafting.tiara(),
+    Runecrafting.combo(),
+    FoodTable.table(),
+    PotionEffectTable.table(),
+    PotionTable.table(),
+    SettingConfigs.settings(),
+    DidYouKnow.didYouknow(),
+    InstanceSettingsTable.instanceSettings(),
+    ShootingStars.locations(),
+    ShopCurrencyTable.shopCurrencies(),
+)
 
 fun downloadRev(type: TaskType) {
 
