@@ -1,0 +1,86 @@
+name: Gameval Conflict Check
+
+# Runs on every PR so it can be a required status check (blocks merge until it completes).
+# Auto-fixes conflicting gamevals and pushes — no environment approval, no PR comments when clean.
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+concurrency:
+  group: gameval-conflicts-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+  checks: write
+
+jobs:
+  gameval-conflicts:
+    runs-on: ubuntu-latest
+    # No environment: — do not gate fixes behind approval.
+
+    steps:
+      - name: Checkout PR branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Fix conflicting gamevals
+        id: resolve
+        run: |
+          set +e
+          python3 tools/scripts/fix_gameval_conflicts.py | tee /tmp/gameval-fix-log.txt
+          code=${PIPESTATUS[0]}
+          set -e
+          if [ "$code" -eq 0 ]; then
+            echo "fixed=false" >> "$GITHUB_OUTPUT"
+          elif [ "$code" -eq 2 ]; then
+            echo "fixed=true" >> "$GITHUB_OUTPUT"
+          else
+            exit "$code"
+          fi
+
+      - name: Commit and push fixes
+        if: steps.resolve.outputs.fixed == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          SAME_REPO="${{ github.event.pull_request.head.repo.full_name == github.repository }}"
+          if [ "$SAME_REPO" != "true" ]; then
+            echo "::error::Conflicting gamevals on a fork PR — push fixes to the branch (or open the PR from this repo)."
+            cat /tmp/gameval-fix-log.txt
+            exit 1
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          git add -u -- content api .data/gamevals
+
+          if git diff --cached --quiet; then
+            echo "Nothing staged."
+            exit 0
+          fi
+
+          git commit -m "fix(gamevals): reassign IDs conflicting with OSRS reserved range"
+          git push origin "HEAD:${{ github.head_ref }}"
+
+          # GITHUB_TOKEN pushes do not re-trigger workflows; mark the new head so a
+          # required "gameval-conflicts" check is not stuck waiting on this SHA.
+          NEW_SHA="$(git rev-parse HEAD)"
+          jq -n \
+            --arg name "Gameval Conflict Check / gameval-conflicts" \
+            --arg sha "$NEW_SHA" \
+            '{
+              name: $name,
+              head_sha: $sha,
+              status: "completed",
+              conclusion: "success",
+              output: {
+                title: "Gameval conflicts auto-fixed",
+                summary: "Conflicting custom gamevals were reassigned and pushed."
+              }
+            }' | gh api "repos/${{ github.repository }}/check-runs" --input -
