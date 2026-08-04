@@ -42,6 +42,9 @@ import dev.openrune.tables.skills.prayer.PrayerBlessedBone
 import dev.openrune.tables.skills.prayer.PrayerTable
 import dev.openrune.tools.MinifyServerCache
 import dev.openrune.tools.PackServerConfig
+import dev.openrune.tables.consumables.food.FoodTable
+import dev.openrune.tables.consumables.potion.PotionEffectTable
+import dev.openrune.tables.consumables.potion.PotionTable
 import java.io.File
 import kotlin.system.exitProcess
 
@@ -96,6 +99,9 @@ fun tablesToPack() = listOf(
     Runecrafting.runes(),
     Runecrafting.tiara(),
     Runecrafting.combo(),
+    FoodTable.table(),
+    PotionEffectTable.table(),
+    PotionTable.table(),
     SettingConfigs.settings(),
     DidYouKnow.didYouknow(),
     InstanceSettingsTable.instanceSettings(),
