@@ -59,7 +59,7 @@ object Slayer {
         }
 
         row("dbrow.krystilia") {
-            column(COL_MASTER_ID, 9)
+            column(COL_MASTER_ID, 7)
             columnRSCM(COL_NPC_IDS,"npc.slayer_master_7")
             column(COL_SLAYER_LEVEL, 1)
             column(COL_COMBAT_LEVEL, 1)
@@ -113,7 +113,7 @@ object Slayer {
         }
 
         row("dbrow.chaeldar") {
-            column(COL_MASTER_ID, 3)
+            column(COL_MASTER_ID, 4)
             columnRSCM(COL_NPC_IDS,"npc.slayer_master_4")
             column(COL_SLAYER_LEVEL, 1)
             column(COL_COMBAT_LEVEL, 70)
