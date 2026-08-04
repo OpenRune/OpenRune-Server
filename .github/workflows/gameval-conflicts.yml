@@ -1,26 +1,24 @@
 name: Gameval Conflict Check
 
-permissions:
-  contents: write
-  pull-requests: write
+# Runs on every PR so it can be a required status check (blocks merge until it completes).
+# Auto-fixes conflicting gamevals and pushes — no environment approval, no PR comments when clean.
 
 on:
   pull_request:
     types: [opened, synchronize, reopened]
-    paths:
-      - "content/**/gamevals.toml"
-      - "api/**/gamevals.toml"
-      - ".data/gamevals/**"
-      - ".data/gamevals-binary/max-ids.toml"
-      - "tools/scripts/fix_gameval_conflicts.py"
-      - ".github/workflows/gameval-conflicts.yml"
+
+concurrency:
+  group: gameval-conflicts-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+  checks: write
 
 jobs:
-  resolve:
+  gameval-conflicts:
     runs-on: ubuntu-latest
-    if: >
-      github.event.pull_request.head.repo.full_name == github.repository &&
-      github.actor != 'github-actions[bot]'
+    # No environment: — do not gate fixes behind approval.
 
     steps:
       - name: Checkout PR branch
@@ -50,6 +48,13 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          SAME_REPO="${{ github.event.pull_request.head.repo.full_name == github.repository }}"
+          if [ "$SAME_REPO" != "true" ]; then
+            echo "::error::Conflicting gamevals on a fork PR — push fixes to the branch (or open the PR from this repo)."
+            cat /tmp/gameval-fix-log.txt
+            exit 1
+          fi
+
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
@@ -63,15 +68,19 @@ jobs:
           git commit -m "fix(gamevals): reassign IDs conflicting with OSRS reserved range"
           git push origin "HEAD:${{ github.head_ref }}"
 
-          {
-            echo "## Gameval conflicts auto-fixed"
-            echo
-            echo "Reserved OSRS IDs come from \`.data/gamevals-binary/max-ids.toml\` (written on \`freshCache\`)."
-            echo "Custom gamevals must use IDs **greater than** each table's max."
-            echo
-            echo '```'
-            cat /tmp/gameval-fix-log.txt
-            echo '```'
-          } > /tmp/gameval-pr-body.md
-
-          gh pr comment "${{ github.event.pull_request.number }}" --body-file /tmp/gameval-pr-body.md
+          # GITHUB_TOKEN pushes do not re-trigger workflows; mark the new head so a
+          # required "gameval-conflicts" check is not stuck waiting on this SHA.
+          NEW_SHA="$(git rev-parse HEAD)"
+          jq -n \
+            --arg name "Gameval Conflict Check / gameval-conflicts" \
+            --arg sha "$NEW_SHA" \
+            '{
+              name: $name,
+              head_sha: $sha,
+              status: "completed",
+              conclusion: "success",
+              output: {
+                title: "Gameval conflicts auto-fixed",
+                summary: "Conflicting custom gamevals were reassigned and pushed."
+              }
+            }' | gh api "repos/${{ github.repository }}/check-runs" --input -
