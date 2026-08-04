@@ -6,6 +6,7 @@ import dev.openrune.cache.tools.Builder
 import dev.openrune.cache.tools.CacheEnvironment
 import dev.openrune.cache.tools.cs2.PackCs2
 import dev.openrune.cache.tools.cs2.SymbolsCustomConflictStrip
+import dev.openrune.cache.tools.iftype.PackIfType
 import dev.openrune.cache.tools.tasks.CacheTask
 import dev.openrune.cache.tools.tasks.TaskType
 import dev.openrune.cache.tools.tasks.impl.PackDBTables
@@ -26,12 +27,19 @@ import dev.openrune.gamevals.GamevalDumper
 import dev.openrune.impl.GameframeTable
 import dev.openrune.impl.Music
 import dev.openrune.map.packing.MapPackers
+import dev.openrune.pack.PluginPack
+import dev.openrune.pack.PluginPackLoader
+import dev.openrune.packscript.PackScriptPhase
+import dev.openrune.packscript.PackScripts
 import dev.openrune.tables.DidYouKnow
 import dev.openrune.tables.InstanceSettingsTable
 import dev.openrune.tables.PickableObjects
 import dev.openrune.tables.SettingConfigs
 import dev.openrune.tables.ShopCurrencyTable
 import dev.openrune.tables.StatComponents
+import dev.openrune.tables.consumables.food.FoodTable
+import dev.openrune.tables.consumables.potion.PotionEffectTable
+import dev.openrune.tables.consumables.potion.PotionTable
 import dev.openrune.tables.skills.Cooking
 import dev.openrune.tables.skills.Firemaking
 import dev.openrune.tables.skills.Herblore
@@ -45,24 +53,21 @@ import dev.openrune.tables.skills.prayer.PrayerBlessedBone
 import dev.openrune.tables.skills.prayer.PrayerTable
 import dev.openrune.tools.MinifyServerCache
 import dev.openrune.tools.PackServerConfig
-import dev.openrune.cache.tools.iftype.PackIfType
-import dev.openrune.pack.PluginPack
-import dev.openrune.pack.PluginPackLoader
-import dev.openrune.packscript.PackScriptPhase
-import dev.openrune.packscript.PackScripts
-import dev.openrune.tables.consumables.food.FoodTable
-import dev.openrune.tables.consumables.potion.PotionEffectTable
-import dev.openrune.tables.consumables.potion.PotionTable
 import java.io.File
 import kotlin.system.exitProcess
 
-fun getCacheLocation() = File("../.data/", "cache/LIVE").path
-
-fun getServerCacheLocation() = File("../.data/", "cache/SERVER").path
-
-val revision : Triple<Int, Int, String> = readRevision()
-
 private val logger = InlineLogger()
+
+private val dataRoot = File("../.data")
+private val rawCache = File(dataRoot, "raw-cache")
+
+fun getCacheLocation() = File(dataRoot, "cache/LIVE").path
+
+fun getServerCacheLocation() = File(dataRoot, "cache/SERVER").path
+
+fun getCs2Location(): File = DirectoryConstants.CS2_PATH.toFile()
+
+val revision: Triple<Int, Int, String> = readRevision()
 
 val VARBIT = CacheVarLiteral.registerExternal(254, ']', name = "VARBIT")
 
@@ -73,10 +78,8 @@ fun main(args: Array<String>) {
     }
 
     CacheVarLiteral.registerExternal(253, '[', name = "PROJANIM")
-
     downloadRev(TaskType.valueOf(args.first().uppercase()))
 }
-
 
 fun tablesToPack() = listOf(
     GameframeTable.gameframe(),
@@ -119,36 +122,25 @@ fun tablesToPack() = listOf(
 )
 
 fun downloadRev(type: TaskType) {
-
     logger.info { "Using Revision: $revision" }
 
-    when (type) {
-        TaskType.FRESH_INSTALL -> {
+    if (type == TaskType.FRESH_INSTALL) {
+        createBuilder(TaskType.FRESH_INSTALL)
+            .apply {
+                subRevision(revision.second)
+                removeXteas(false)
+                environment(CacheEnvironment.valueOf(revision.third))
+            }
+            .build()
+            .initialize()
 
-            val builder =
-                Builder(
-                    type = TaskType.FRESH_INSTALL,
-                    cacheLocation = File(getCacheLocation()),
-                    serverCacheLocation = File(getServerCacheLocation()),
-                )
-            builder.revision(revision.first)
-            builder.subRevision(revision.second)
-            builder.removeXteas(false)
-            builder.environment(CacheEnvironment.valueOf(revision.third))
-
-            builder.build().initialize()
-
-            File(getServerCacheLocation(), "xteas.json").delete()
-
-            val cache = Cache.load(File(getCacheLocation()).toPath())
-
-            GamevalDumper.dumpGamevals(cache, revision.first)
-
-            buildCache(TaskType.BUILD)
-        }
-        TaskType.SERVER_CACHE_BUILD -> buildCache(TaskType.SERVER_CACHE_BUILD)
-        TaskType.BUILD -> buildCache(TaskType.BUILD)
+        File(getServerCacheLocation(), "xteas.json").delete()
+        GamevalDumper.dumpGamevals(Cache.load(File(getCacheLocation()).toPath()), revision.first)
+        buildCache(TaskType.BUILD)
+        return
     }
+
+    buildCache(type)
 }
 
 fun buildCache(taskType: TaskType) {
@@ -159,67 +151,23 @@ fun buildCache(taskType: TaskType) {
     val activePacks = pluginPacks.filter { it.shouldPack(projectRoot) }
     val disabledPacks = pluginPacks.filter { !it.shouldPack(projectRoot) }
 
-    val pluginTables =
-        activePacks.flatMap { it.dbTables() } + disabledPacks.flatMap { it.dbTablesWhenDisabled() }
-    val pluginInterfaces = activePacks.flatMap { it.interfaces() }
-    val pluginTasks = activePacks.flatMap { it.extraTasks() }
-    val pluginConfigDirs =
-        (
-            activePacks.flatMap { it.configDirectories(projectRoot) } +
-                disabledPacks.flatMap { it.configDirectoriesWhenDisabled(projectRoot) }
-        ).filter { it.isDirectory }
-    val pluginSpriteDirs =
-        activePacks.flatMap { it.spriteDirectories(projectRoot) }.filter { it.isDirectory }
-    val pluginScriptDirs =
-        activePacks.flatMap { it.packScriptDirectories(projectRoot) }.filter { it.isDirectory }
-
     syncPluginCs2(projectRoot, pluginPacks, activePacks)
 
-    val allTables = tablesToPack() + pluginTables
+    val allTables =
+        tablesToPack() +
+            activePacks.flatMap { it.dbTables() } +
+            disabledPacks.flatMap { it.dbTablesWhenDisabled() }
 
-    val tasks = mutableListOf<CacheTask>(
-        PackModels(File("../.data/raw-cache/models")),
-        PackConfig(File("../.data/raw-cache/server")),
-    )
-    pluginConfigDirs.forEach { tasks += PackConfig(it) }
-
-    val legacySpritesDir = File("../.data/raw-cache/sprites")
-    if (legacySpritesDir.isDirectory) {
-        tasks += PackSprites(legacySpritesDir)
-    }
-    pluginSpriteDirs.forEach { tasks += PackSprites(it) }
-
-    tasks += pluginTasks
-    if (pluginInterfaces.isNotEmpty()) {
-        tasks += PackIfType(pluginInterfaces)
-    }
-    tasks += PackCs2(File("../.data/raw-cache/cs2"))
-    tasks += PackDBTables(allTables)
-    if (pluginScriptDirs.isNotEmpty()) {
-        tasks += PackScripts(pluginScriptDirs, PackScriptPhase.AFTER_DB, allTables)
-    }
-
-    val builder =
-        Builder(
-            type = taskType,
-            cacheLocation = File(getCacheLocation()),
-            serverCacheLocation = File(getServerCacheLocation()),
-        )
-    builder.revision(revision.first)
-
+    val tasks = buildPackTasks(projectRoot, activePacks, disabledPacks, allTables)
+    val builder = createBuilder(taskType)
     builder.extraTasks(*tasks.toTypedArray()).build().initialize()
 
     if (taskType == TaskType.BUILD) {
         val serverTasks = tasks.filterNot { it is PackCs2 || it is PackIfType || it is PackScripts }
-
         builder.type = TaskType.SERVER_CACHE_BUILD
-
         builder
             .extraTasks(
-                PackServerConfig(
-                    revision.first,
-                    File("../.data/raw-cache/server")
-                ),
+                PackServerConfig(revision.first, File(rawCache, "server")),
                 MapPackers(),
                 *serverTasks.toTypedArray(),
             )
@@ -228,25 +176,80 @@ fun buildCache(taskType: TaskType) {
     }
 
     if (builder.type == TaskType.SERVER_CACHE_BUILD) {
-        MinifyServerCache().init(getServerCacheLocation())
-        val cache = Cache.load(File(getServerCacheLocation()).toPath())
-        GamevalDumper.dumpCols(cache, revision.first)
-        GamevalDumper.dumpComponents(cache, revision.first)
-
-        val type = GameValHandler.readGameVal(GameValGroupTypes.TABLETYPES, cache = cache, revision.first)
-
-        val rows: MutableMap<Int, DBRowType> = mutableMapOf()
-        OsrsCacheProvider.DBRowDecoder().load(cache, rows)
-
-        val enums: MutableMap<Int, EnumType> = mutableMapOf()
-        OsrsCacheProvider.EnumDecoder().load(cache, enums)
-
-        val dbtables: MutableMap<Int, DBTableType> = mutableMapOf()
-        OsrsCacheProvider.DBTableDecoder().load(cache, dbtables)
-
-        startGeneration(type, rows, enums, dbtables)
-        startEnumGeneration(enums)
+        finalizeServerCache()
     }
+}
+
+private fun createBuilder(type: TaskType) =
+    Builder(
+        type = type,
+        cacheLocation = File(getCacheLocation()),
+        serverCacheLocation = File(getServerCacheLocation()),
+    ).also { it.revision(revision.first) }
+
+private fun buildPackTasks(
+    projectRoot: File,
+    activePacks: List<PluginPack>,
+    disabledPacks: List<PluginPack>,
+    allTables: List<DBTable>,
+): MutableList<CacheTask> {
+    val pluginConfigDirs =
+        (
+            activePacks.flatMap { it.configDirectories(projectRoot) } +
+                disabledPacks.flatMap { it.configDirectoriesWhenDisabled(projectRoot) }
+            ).filter { it.isDirectory }
+    val pluginSpriteDirs =
+        activePacks.flatMap { it.spriteDirectories(projectRoot) }.filter { it.isDirectory }
+    val pluginScriptDirs =
+        activePacks.flatMap { it.packScriptDirectories(projectRoot) }.filter { it.isDirectory }
+    val pluginInterfaces = activePacks.flatMap { it.interfaces() }
+
+    val tasks = mutableListOf<CacheTask>(
+        PackModels(File(rawCache, "models")),
+        PackConfig(File(rawCache, "server")),
+    )
+    pluginConfigDirs.forEach { tasks += PackConfig(it) }
+
+    val legacySpritesDir = File(rawCache, "sprites")
+    if (legacySpritesDir.isDirectory) {
+        tasks += PackSprites(legacySpritesDir)
+    }
+    pluginSpriteDirs.forEach { tasks += PackSprites(it) }
+    tasks += activePacks.flatMap { it.extraTasks() }
+
+    if (pluginInterfaces.isNotEmpty()) {
+        tasks += PackIfType(pluginInterfaces)
+    }
+    tasks += PackCs2(getCs2Location())
+    tasks += PackDBTables(allTables)
+
+    if (pluginScriptDirs.isNotEmpty()) {
+        tasks += PackScripts(pluginScriptDirs, PackScriptPhase.AFTER_DB, allTables)
+    }
+    return tasks
+}
+
+private fun finalizeServerCache() {
+    MinifyServerCache().init(getServerCacheLocation())
+
+    val cache = Cache.load(File(getServerCacheLocation()).toPath())
+    GamevalDumper.dumpCols(cache, revision.first)
+    GamevalDumper.dumpComponents(cache, revision.first)
+
+    val type =
+        GameValHandler.readGameVal(GameValGroupTypes.TABLETYPES, cache = cache, revision.first)
+
+    val rows = mutableMapOf<Int, DBRowType>()
+    OsrsCacheProvider.DBRowDecoder().load(cache, rows)
+
+    val enums = mutableMapOf<Int, EnumType>()
+    OsrsCacheProvider.EnumDecoder().load(cache, enums)
+
+    val dbtables = mutableMapOf<Int, DBTableType>()
+    OsrsCacheProvider.DBTableDecoder().load(cache, dbtables)
+
+    startGeneration(type, rows, enums, dbtables)
+    startEnumGeneration(enums)
 }
 
 fun readRevision(): Triple<Int, Int, String> {
@@ -254,28 +257,25 @@ fun readRevision(): Triple<Int, Int, String> {
         listOf("../game.yml", "../game.example.yml").map(::File).firstOrNull { it.exists() }
             ?: error("No game.yml or game.example.yml found")
 
-    return file.useLines { lines ->
-        val revisionLine =
-            lines.firstOrNull { it.trimStart().startsWith("revision:") }
-                ?: error("No revision line found in ${file.name}")
+    val lines = file.readLines()
+    val revisionLine =
+        lines.firstOrNull { it.trimStart().startsWith("revision:") }
+            ?: error("No revision line found in ${file.name}")
 
-        val revisionStr = revisionLine.substringAfter("revision:").trim()
-        val match =
-            Regex("""^(\d+)(?:\.(\d+))?$""").matchEntire(revisionStr)
-                ?: error("Invalid revision format: '$revisionStr'")
+    val revisionStr = revisionLine.substringAfter("revision:").trim()
+    val match =
+        Regex("""^(\d+)(?:\.(\d+))?$""").matchEntire(revisionStr)
+            ?: error("Invalid revision format: '$revisionStr'")
 
-        val major = match.groupValues[1].toInt()
-        val minor = match.groupValues.getOrNull(2)?.toIntOrNull() ?: -1
+    val major = match.groupValues[1].toInt()
+    val minor = match.groupValues.getOrNull(2)?.toIntOrNull() ?: -1
 
-        val envLine = file.readLines().firstOrNull { it.trimStart().startsWith("environment:") }
+    val envLine = lines.firstOrNull { it.trimStart().startsWith("environment:") }
+    val environment =
+        envLine?.substringAfter("environment:")?.trim()?.removeSurrounding("\"")?.ifBlank { "live" }
+            ?: "live"
 
-        val environment =
-            envLine?.substringAfter("environment:")?.trim()?.removeSurrounding("\"")?.ifBlank {
-                "live"
-            } ?: "live"
-
-        Triple(major, minor, environment.uppercase())
-    }
+    return Triple(major, minor, environment.uppercase())
 }
 
 private fun syncPluginCs2(
@@ -283,7 +283,7 @@ private fun syncPluginCs2(
     allPacks: List<PluginPack>,
     activePacks: List<PluginPack>,
 ) {
-    val cs2Root = File(projectRoot, ".data/raw-cache/cs2")
+    val cs2Root = getCs2Location().also { it.mkdirs() }
     val customRoot = File(cs2Root, "custom").also { it.mkdirs() }
     val symbolsCustom = File(cs2Root, "symbols_custom").also { it.mkdirs() }
 
@@ -305,9 +305,10 @@ private fun syncPluginCs2(
         for (dir in pack.cs2Directories(projectRoot).filter { it.isDirectory }) {
             val symbols = File(dir, "symbols")
             if (!symbols.isDirectory) continue
-            symbols.listFiles()?.filter { it.isFile && it.extension.equals("sym", true) }?.forEach { sym ->
-                stripSymbolLines(File(symbolsCustom, sym.name), readSymbolLines(sym))
-            }
+            symbols.listFiles()?.filter { it.isFile && it.extension.equals("sym", true) }
+                ?.forEach { sym ->
+                    stripSymbolLines(File(symbolsCustom, sym.name), readSymbolLines(sym))
+                }
         }
     }
 
@@ -322,19 +323,22 @@ private fun syncPluginCs2(
         for (dir in pack.cs2Directories(projectRoot).filter { it.isDirectory }) {
             val scripts = File(dir, "script")
             if (scripts.isDirectory) {
-                scripts.walkTopDown().filter { it.isFile && it.extension.equals("cs2", true) }.forEach { src ->
+                scripts.walkTopDown().filter { it.isFile && it.extension.equals("cs2", true) }
+                    .forEach { src ->
+                        src.copyTo(File(scriptDest, src.name), overwrite = true)
+                    }
+            }
+            dir.listFiles()?.filter { it.isFile && it.extension.equals("cs2", true) }
+                ?.forEach { src ->
                     src.copyTo(File(scriptDest, src.name), overwrite = true)
                 }
-            }
-            dir.listFiles()?.filter { it.isFile && it.extension.equals("cs2", true) }?.forEach { src ->
-                src.copyTo(File(scriptDest, src.name), overwrite = true)
-            }
 
             val symbols = File(dir, "symbols")
             if (symbols.isDirectory) {
-                symbols.listFiles()?.filter { it.isFile && it.extension.equals("sym", true) }?.forEach { sym ->
-                    mergeSymbolLines(File(symbolsCustom, sym.name), readSymbolLines(sym))
-                }
+                symbols.listFiles()?.filter { it.isFile && it.extension.equals("sym", true) }
+                    ?.forEach { sym ->
+                        mergeSymbolLines(File(symbolsCustom, sym.name), readSymbolLines(sym))
+                    }
             }
         }
     }
@@ -344,7 +348,6 @@ private fun syncPluginCs2(
 
 private val SYMBOL_LINE = Regex("""^\s*(\S+)\s+(.+?)\s*$""")
 
-/** id → remainder of the line (name, and for dbcolumn also the type). */
 private fun readSymbolLines(file: File): List<Pair<String, String>> =
     file.readLines().mapNotNull { line ->
         val trimmed = line.trim()
@@ -353,7 +356,8 @@ private fun readSymbolLines(file: File): List<Pair<String, String>> =
         match.groupValues[1] to match.groupValues[2].trim()
     }
 
-private fun symbolName(rest: String): String = rest.substringBefore('\t').substringBefore(' ').trim()
+private fun symbolName(rest: String): String =
+    rest.substringBefore('\t').substringBefore(' ').trim()
 
 private fun stripSymbolLines(target: File, owned: List<Pair<String, String>>) {
     if (!target.exists() || owned.isEmpty()) return

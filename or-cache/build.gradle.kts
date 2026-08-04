@@ -46,6 +46,16 @@ tasks {
         args = listOf("FRESH_INSTALL")
     }
 
+    register<JavaExec>("cleanCs2") {
+        group = "tools"
+        description =
+            "Deletes the generated CS2 directory from user app data (recreated on next buildCache)"
+        classpath = sourceSets["main"].runtimeClasspath
+        mainClass.set("dev.openrune.CleanCs2Kt")
+        workingDir = project.projectDir
+        dependsOn("classes")
+    }
+
     register<JavaExec>("mergePluginGamevals") {
         group = "cache"
         description =
