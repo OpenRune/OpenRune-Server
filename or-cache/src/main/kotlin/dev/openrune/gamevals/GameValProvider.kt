@@ -21,6 +21,7 @@ class GameValProvider : MappingProvider {
         fun sourceFiles(rootDir: String): Array<File> =
             arrayOf(
                 Paths.get("${rootDir}.data", "gamevals-binary", "gamevals.dat").toFile(),
+                Paths.get("${rootDir}.data", "gamevals-binary", "gamevals_components.dat").toFile(),
                 Paths.get("${rootDir}.data", "gamevals-binary", "gamevals_columns.dat").toFile(),
                 Paths.get("${rootDir}content").toFile(),
                 Paths.get("${rootDir}api").toFile(),
@@ -42,16 +43,17 @@ class GameValProvider : MappingProvider {
     }
 
     override fun load(vararg files: File) {
-        require(files.size >= 2) {
-            "Expected at least two files for loading: gamevals.dat and gamevals_columns.dat"
+        require(files.size >= 3) {
+            "Expected at least three files for loading: gamevals.dat, gamevals_components.dat and gamevals_columns.dat"
         }
 
         decodeGameValDat(files[0])
         decodeGameValDat(files[1])
+        decodeGameValDat(files[2])
 
-        val contentDir = files.getOrNull(2)?.takeIf { it.exists() && it.isDirectory }
-        val apiDir = files.getOrNull(3)?.takeIf { it.exists() && it.isDirectory }
-        val gamevalsDir = files.getOrNull(4)?.takeIf { it.exists() && it.isDirectory }
+        val contentDir = files.getOrNull(3)?.takeIf { it.exists() && it.isDirectory }
+        val apiDir = files.getOrNull(4)?.takeIf { it.exists() && it.isDirectory }
+        val gamevalsDir = files.getOrNull(5)?.takeIf { it.exists() && it.isDirectory }
 
         if (autoAssignIds && (contentDir != null || apiDir != null || gamevalsDir != null)) {
             GameValAutoAssigner(mappings, maxBaseID).run(contentDir, apiDir, gamevalsDir)
@@ -102,16 +104,16 @@ class GameValProvider : MappingProvider {
     }
 
     private fun parseGameValTomlEntry(line: String, source: String): Pair<String, Int>? {
-        if (line.startsWith("[")) {
-            return null
-        }
-
         val equalsIndex = line.indexOf('=')
         if (equalsIndex <= 0) {
             return null
         }
 
-        val key = line.substring(0, equalsIndex).trim()
+        val key =
+            line.substring(0, equalsIndex)
+                .trim()
+                .removeSurrounding("\"")
+                .removeSurrounding("'")
         val value = line.substring(equalsIndex + 1).trim().toIntOrNull()
         if (value == null) {
             return null
@@ -194,6 +196,9 @@ class GameValProvider : MappingProvider {
     }
 
     private fun decodeGameValDat(datFile: File) {
+        if (!datFile.isFile) {
+            return
+        }
         DataInputStream(FileInputStream(datFile)).use { input ->
             val tableCount = input.readInt()
             repeat(tableCount) {

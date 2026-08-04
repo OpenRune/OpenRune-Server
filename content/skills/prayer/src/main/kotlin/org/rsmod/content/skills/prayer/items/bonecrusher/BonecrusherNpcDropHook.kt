@@ -6,16 +6,17 @@ import dev.openrune.util.Wearpos
 import jakarta.inject.Inject
 import jakarta.inject.Singleton
 import org.rsmod.api.area.checker.AreaChecker
+import org.rsmod.api.death.NpcDeathDropContext
+import org.rsmod.api.death.NpcDeathDropHook
 import org.rsmod.api.player.events.prayer.PrayerSkillAction
 import org.rsmod.api.player.events.skilling.SkillingActionCompleteEvent
 import org.rsmod.api.player.events.skilling.SkillingActionContext
-import org.rsmod.api.player.vars.boolVarBit
-import org.rsmod.api.player.vars.intVarBit
-import org.rsmod.api.death.NpcDeathDropContext
-import org.rsmod.api.death.NpcDeathDropHook
 import org.rsmod.api.player.stat.statAdvance
 import org.rsmod.api.player.stat.statBoost
+import org.rsmod.api.player.vars.boolVarBit
+import org.rsmod.api.player.vars.intVarBit
 import org.rsmod.api.table.prayer.SkillPrayerRow
+import org.rsmod.content.other.toolbelt.Toolbelt
 import org.rsmod.events.EventBus
 import org.rsmod.game.entity.Player
 import org.rsmod.game.inv.InvObj
@@ -55,12 +56,18 @@ constructor(
         val prayerXp = row.exp.toDouble() / 2
         player.statAdvance("stat.prayer", prayerXp)
 
-        eventBus.publish(SkillingActionCompleteEvent(player = player, context =
-            SkillingActionContext.Prayer(PrayerSkillAction.BonecrusherCrushComplete(
-                boneItemInternal = internal,
-                experienceGranted = prayerXp,
-                catacombsBonePrayerRestore = row.prayerRestore
-            ))),
+        eventBus.publish(
+            SkillingActionCompleteEvent(
+                player = player,
+                context =
+                    SkillingActionContext.Prayer(
+                        PrayerSkillAction.BonecrusherCrushComplete(
+                            boneItemInternal = internal,
+                            experienceGranted = prayerXp,
+                            catacombsBonePrayerRestore = row.prayerRestore,
+                        ),
+                    ),
+            ),
         )
 
         applyPrayerRestoreFromCrush(player, row, source)
@@ -71,7 +78,7 @@ constructor(
     private fun applyPrayerRestoreFromCrush(
         player: Player,
         row: SkillPrayerRow,
-        source: CrusherSource
+        source: CrusherSource,
     ) {
         val restore = row.prayerRestore
         if (restore <= 0) {
@@ -91,10 +98,20 @@ constructor(
         }
     }
 
-    private fun Player.isBonecrusherNecklacePrayerSource(source: CrusherSource): Boolean =
-        source.inventory === worn && worn[source.slot]?.isType("obj.bonecrusher_necklace") == true
+    private fun Player.isBonecrusherNecklacePrayerSource(source: CrusherSource): Boolean {
+        if (source.fromToolbelt) {
+            return false
+        }
+        if (source.inventory !== worn) {
+            return false
+        }
+        return worn[source.slot]?.isType("obj.bonecrusher_necklace") == true
+    }
 
     private fun Player.isDragonboneNecklaceInvCrushPrayer(source: CrusherSource): Boolean {
+        if (source.fromToolbelt || source.inventory == null) {
+            return false
+        }
         if (source.inventory !== inv) {
             return false
         }
@@ -118,6 +135,10 @@ constructor(
                 return CrusherSource(inv, slot)
             }
         }
+
+        if (Toolbelt.isEnabled() && Toolbelt.provides(this, "obj.bonecrusher") && bonecrusherCharges > 0) {
+            return CrusherSource(fromToolbelt = true)
+        }
         return null
     }
 
@@ -129,7 +150,11 @@ constructor(
         return true
     }
 
-    private data class CrusherSource(val inventory: Inventory, val slot: Int)
+    private data class CrusherSource(
+        val inventory: Inventory? = null,
+        val slot: Int = -1,
+        val fromToolbelt: Boolean = false,
+    )
 }
 
 private var Player.bonecrusherCharges by intVarBit("varbit.charges_bonecrusher_quantity")

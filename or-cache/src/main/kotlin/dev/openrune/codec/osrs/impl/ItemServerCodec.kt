@@ -96,7 +96,7 @@ class ItemServerCodec(
         stockmarket = item.stockMarket
         category = item.category
         options = item.options
-        interfaceOptions = item.interfaceOptions
+        interfaceOptions = item.interfaceOptions.toMutableList()
         certlink = item.noteLinkId
         certtemplate = item.noteTemplateId
         placeholderLink = item.placeholderLink

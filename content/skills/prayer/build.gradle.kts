@@ -11,6 +11,7 @@ dependencies {
     implementation(projects.api.objCharges)
     implementation(projects.api.pluginCommons)
     implementation(projects.api.registry)
+    implementation(projects.content.other.toolbelt)
     implementation(projects.content.skills.utils)
     implementation(projects.engine.events)
     implementation(projects.engine.utilsBits)

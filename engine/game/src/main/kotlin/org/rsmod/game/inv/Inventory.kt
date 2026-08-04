@@ -94,36 +94,71 @@ public class Inventory(public val type: InventoryServerType, public val objs: Ar
     public operator fun contains(type: String): Boolean {
         if (type.startsWith("content.")) {
             val content = type.asRSCM(RSCMType.CONTENT)
-            return objs.any { obj ->
-                obj != null && ServerCacheManager.getItem(obj.id)?.contentGroup == content
+            if (
+                objs.any { obj ->
+                    obj != null &&
+                        obj.count > 0 &&
+                        ServerCacheManager.getItem(obj.id)?.contentGroup == content
+                }
+            ) {
+                return true
             }
+            return virtualProvidesContent(content)
         }
 
         return physicalCount(type) > 0 || virtualCount(type) > 0
     }
 
     public operator fun contains(type: ItemServerType): Boolean =
-        objs.any { type.isAssociatedWith(it) }
+        objs.any { it != null && it.count > 0 && type.isAssociatedWith(it) } ||
+            virtualCount(type.internalName) > 0
 
     public fun count(internal: String): Int = physicalCount(internal) + virtualCount(internal)
 
-    /** Slots-only count; ignores [InvVirtualStorage]. */
+    public fun contentTotal(content: String): Int {
+        require(content.startsWith("content.")) { "Expected content.*: $content" }
+        val contentGroup = content.asRSCM(RSCMType.CONTENT)
+        var total = 0
+        for (obj in objs) {
+            val stack = obj ?: continue
+            if (stack.count <= 0) {
+                continue
+            }
+            val type = ServerCacheManager.getItem(stack.id) ?: continue
+            if (type.contentGroup != contentGroup) {
+                continue
+            }
+            total += count(stack, type)
+        }
+        if (total > 0) {
+            return total
+        }
+        return if (virtualProvidesContent(contentGroup)) 1 else 0
+    }
+
+    /** Slots-only count; ignores [InvVirtualStorage]. Counts of 0 or less are treated as absent. */
     public fun physicalCount(internal: String): Int {
         val objType = ServerCacheManager.getItem(internal.asRSCM(RSCMType.OBJ))
             ?: error("Unable to find item: $internal")
 
-        val obj = objs.firstOrNull { it?.id == objType.id } ?: return 0
+        val obj = objs.firstOrNull { it?.id == objType.id && (it?.count ?: 0) > 0 } ?: return 0
         val singleStack = type.stack == InvStackType.Always || objType.isStackable
         if (singleStack) {
-            return obj.count
+            return obj.count.coerceAtLeast(0)
         }
-        return individualCount(obj)
+        return individualCount(obj).coerceAtLeast(0)
     }
 
     private fun virtualCount(internal: String): Int {
         val player = owner ?: return 0
         val storage = InvVirtualStorageHolder.instance ?: return 0
         return storage.additionalCount(player, this, internal)
+    }
+
+    private fun virtualProvidesContent(contentGroup: Int): Boolean {
+        val player = owner ?: return false
+        val storage = InvVirtualStorageHolder.instance ?: return false
+        return storage.providesContentGroup(player, this, contentGroup)
     }
 
     public fun count(obj: InvObj, objType: ItemServerType): Int {

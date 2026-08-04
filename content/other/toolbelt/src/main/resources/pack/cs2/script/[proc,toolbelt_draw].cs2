@@ -1,0 +1,191 @@
+[proc,toolbelt_draw](component $content, component $border)
+def_int $slot = 0;
+def_int $bg = 0;
+def_int $item = 0;
+def_int $lock = 0;
+def_int $slot_x = 0;
+def_int $slot_y = 0;
+def_obj $obj = null;
+def_obj $ghost = null;
+def_boolean $empty = false;
+def_boolean $locked = false;
+def_boolean $owned = false;
+def_int $owned_total = 0;
+def_int $general = 0;
+def_int $farming = 0;
+def_int $fishing = 0;
+def_int $crafting = 0;
+def_int $misc = 0;
+def_int $cat = 0;
+def_int $stored = 0;
+def_int $allowed = 0;
+def_dbrow $row = null;
+def_int $dbg_found = 0;
+def_int $dbg_ghosted = 0;
+def_int $dbg_item_ok = 0;
+def_int $dbg_lock_ok = 0;
+def_string $owned_s = "n";
+def_string $locked_s = "n";
+def_string $ghost_s = "?";
+def_string $obj_s = "?";
+mes("TB draw: unlocks=<tostring(%toolbelt_unlocks)> s0=<tostring(%toolbelt_slot_0)> s1=<tostring(%toolbelt_slot_1)> s27=<tostring(%toolbelt_slot_27)>");
+while ($slot < 28) {
+    $row = null;
+    $bg = calc(200 + $slot);
+    $item = calc(300 + $slot);
+    $lock = calc(400 + $slot);
+    $ghost = null;
+    $obj = null;
+    $owned = false;
+    $locked = false;
+    if ($slot = 27) {
+        if (testbit(%toolbelt_unlocks, 0) = ^false) {
+            $locked = true;
+        }
+    }
+    if (db_find(toolbelt_slots:slot_index, $slot) = 1) {
+        $row = db_findnext;
+        if ($row ! null) {
+            $dbg_found = calc($dbg_found + 1);
+            if (db_getfieldcount($row, toolbelt_slots:allowed_items) > 0) {
+                $ghost = db_getfield($row, toolbelt_slots:allowed_items, 0);
+                $dbg_ghosted = calc($dbg_ghosted + 1);
+            }
+        }
+    }
+    $stored = 0;
+    if ($row ! null) {
+        $stored = ~toolbelt_stored_for_row($row);
+        if ($stored > 0) {
+            $allowed = db_getfieldcount($row, toolbelt_slots:allowed_items);
+            if ($stored <= $allowed) {
+                $obj = db_getfield($row, toolbelt_slots:allowed_items, calc($stored - 1));
+                $owned = true;
+            }
+        }
+    }
+    if ($owned = false) {
+        $obj = $ghost;
+    }
+    if ($obj ! null) {
+        $empty = true;
+        if ($owned = true & $locked = false) {
+            $empty = false;
+        }
+        if (cc_find($content, $bg) = true) {
+            $slot_x = cc_getx;
+            $slot_y = cc_gety;
+            cc_sethide(false);
+            if ($empty = true | $locked = true) {
+                cc_setgraphic(square_button_disabled);
+            } else {
+                cc_setgraphic(square_button);
+            }
+            cc_setonmouseover(null);
+            cc_setonmouseleave(null);
+            cc_setonop(null);
+        }
+        if (cc_find($content, $item) = true) {
+            $dbg_item_ok = calc($dbg_item_ok + 1);
+            cc_sethide(false);
+            cc_setopbase("<col=ff9040><oc_name($obj)></col>");
+            cc_setop(1, "");
+            cc_setop(2, "");
+            cc_setop(10, "Examine");
+            if ($locked = true) {
+                cc_setobject_nonum($obj, 1);
+                cc_setoutline(1);
+                cc_settrans(140);
+                cc_setop(1, "Info");
+            } else if ($empty = true) {
+                cc_setobject_nonum($obj, 1);
+                cc_setoutline(1);
+                cc_settrans(140);
+            } else {
+                cc_setobject($obj, 1);
+                cc_setoutline(1);
+                cc_setop(1, "Remove");
+                cc_settrans(0);
+                if ($slot = 27) {
+                    cc_setop(2, "Check");
+                    cc_setop(3, "Charge");
+                    cc_setop(4, "Activity");
+                    cc_setop(5, "Uncharge");
+                }
+                $owned_total = calc($owned_total + 1);
+                $cat = db_getfield($row, toolbelt_slots:category, 0);
+                if ($cat = 0) {
+                    $general = calc($general + 1);
+                } else if ($cat = 1) {
+                    $farming = calc($farming + 1);
+                } else if ($cat = 2) {
+                    $fishing = calc($fishing + 1);
+                } else if ($cat = 4) {
+                    $misc = calc($misc + 1);
+                } else {
+                    $crafting = calc($crafting + 1);
+                }
+            }
+        }
+        if ($locked = true) {
+            if (cc_find($content, $lock) = true) {
+                $dbg_lock_ok = calc($dbg_lock_ok + 1);
+                cc_sethide(false);
+                cc_setposition(calc($slot_x + 6), calc($slot_y + 2), ^setpos_abs_left, ^setpos_abs_top);
+                cc_setgraphic("magic_spell_padlocks,0");
+                cc_setsize(30, 30, ^setsize_abs, ^setsize_abs);
+            }
+        } else if (cc_find($content, $lock) = true) {
+            cc_sethide(true);
+        }
+        if ($slot = 27) {
+            $owned_s = "n";
+            $locked_s = "n";
+            $ghost_s = "?";
+            $obj_s = "?";
+            if ($owned = true) {
+                $owned_s = "y";
+            }
+            if ($locked = true) {
+                $locked_s = "y";
+            }
+            if ($ghost ! null) {
+                $ghost_s = oc_name($ghost);
+            }
+            if ($obj ! null) {
+                $obj_s = oc_name($obj);
+            }
+            mes("TB bone: stored=<tostring($stored)> owned=<$owned_s> locked=<$locked_s> ghost=<$ghost_s> obj=<$obj_s>");
+        }
+    } else if ($slot = 27) {
+        mes("TB bone: no obj/ghost (db miss or empty allowed_items)");
+    }
+    $slot = calc($slot + 1);
+}
+mes("TB draw done: rows=<tostring($dbg_found)> ghosts=<tostring($dbg_ghosted)> items=<tostring($dbg_item_ok)> locks=<tostring($dbg_lock_ok)> owned=<tostring($owned_total)>");
+def_int $ci = 0;
+def_string $name = "";
+def_int $max = 0;
+def_int $have = 0;
+while ($ci < 5) {
+    if (cc_find($content, calc(100 + $ci)) = true) {
+        $name = enum(int, string, toolbelt_categories, $ci);
+        $max = ~toolbelt_count_category($ci);
+        if ($ci = 0) {
+            $have = $general;
+        } else if ($ci = 1) {
+            $have = $farming;
+        } else if ($ci = 2) {
+            $have = $fishing;
+        } else if ($ci = 3) {
+            $have = $crafting;
+        } else {
+            $have = $misc;
+        }
+        cc_settext("<$name> - <tostring($have)>/<tostring($max)>");
+    }
+    $ci = calc($ci + 1);
+}
+if (cc_find($border, 1) = true) {
+    cc_settext("Toolbelt - <tostring($owned_total)>/28");
+}
