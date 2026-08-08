@@ -32,7 +32,7 @@ class SequenceServerCodec(val sequences: Map<Int, SequenceType>? = null) :
             totalDelay = seq.frameDelays!!.sum()
         }
         maxLoops = seq.maxLoops
-        priority = seq.priority
+        priority = if (seq.priority == -1) 5 else seq.priority
     }
 
     private fun SequenceType.getSkeletalLength(): Int = rangeEnd - rangeBegin
