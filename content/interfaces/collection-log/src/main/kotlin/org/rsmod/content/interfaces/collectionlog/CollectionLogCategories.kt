@@ -10,7 +10,7 @@ import org.rsmod.game.entity.Player
 internal data class CollectionLogCategory(
     val structId: Int,
     val completedVarbit: VarBitType,
-    val itemVarbits: Set<VarBitType>,
+    val itemIds: Set<Int>,
     val countVarps: List<VarpServerType>,
 )
 
@@ -39,11 +39,11 @@ internal object CollectionLogCategories {
         CollectionLogCategoriesRow.all().mapNotNull(::resolve)
     }
 
-    private val itemVarbitToCategories: Map<VarBitType, List<CollectionLogCategory>> by lazy {
-        val map = mutableMapOf<VarBitType, MutableList<CollectionLogCategory>>()
+    private val itemIdToCategories: Map<Int, List<CollectionLogCategory>> by lazy {
+        val map = mutableMapOf<Int, MutableList<CollectionLogCategory>>()
         for (category in allCategories) {
-            for (itemVarbit in category.itemVarbits) {
-                map.getOrPut(itemVarbit) { mutableListOf() }.add(category)
+            for (itemId in category.itemIds) {
+                map.getOrPut(itemId) { mutableListOf() }.add(category)
             }
         }
         map
@@ -55,40 +55,39 @@ internal object CollectionLogCategories {
             .toMap()
     }
 
-    private val tabItemVarbits: Map<Int, List<VarBitType>> by lazy {
+    private val tabItemIds: Map<Int, List<Int>> by lazy {
         allCategories
             .groupBy { structIdToTabComsub[it.structId]?.first }
             .mapNotNull { (tab, categories) ->
-                tab?.let { it to categories.flatMap { c -> c.itemVarbits }.distinct() }
+                tab?.let { it to categories.flatMap { c -> c.itemIds }.distinct() }
             }
             .toMap()
     }
 
-    fun categoriesContaining(itemVarbit: VarBitType): List<CollectionLogCategory> =
-        itemVarbitToCategories[itemVarbit] ?: emptyList()
+    fun categoriesContaining(itemId: Int): List<CollectionLogCategory> =
+        itemIdToCategories[itemId] ?: emptyList()
 
     fun forCategory(tab: Int, comsub: Int): CollectionLogCategory? =
         categoryByTabAndComsub[tab to comsub]
 
-    fun tabTotalCount(tab: Int): Int = tabItemVarbits[tab]?.size ?: 0
+    fun tabTotalCount(tab: Int): Int = tabItemIds[tab]?.size ?: 0
 
-    fun tabObtainedCount(player: Player, tab: Int): Int =
-        tabItemVarbits[tab]?.count { player.vars[it] > 0 } ?: 0
+    fun tabObtainedCount(player: Player, tab: Int): Int {
+        val inv = player.collectionTransmit
+        return tabItemIds[tab]?.count { inv.countOf(it) > 0 } ?: 0
+    }
 
     private fun resolve(row: CollectionLogCategoriesRow): CollectionLogCategory? {
         if (row.structId !in structIdToTabComsub) return null
         val completedVarbit = ServerCacheManager.getVarbit(row.completedVarbit) ?: return null
-        val itemVarbits =
-            CollectionLogItems.itemsInCategoryStruct(row.structId)
-                .mapNotNull(CollectionLogItems::varbitOf)
-                .toSet()
-        if (itemVarbits.isEmpty()) {
+        val itemIds = CollectionLogItems.itemsInCategoryStruct(row.structId).toSet()
+        if (itemIds.isEmpty()) {
             return null
         }
         val countVarps =
             listOfNotNull(row.countVarp1, row.countVarp2, row.countVarp3).mapNotNull { varpId ->
                 ServerCacheManager.getVarp(varpId)
             }
-        return CollectionLogCategory(row.structId, completedVarbit, itemVarbits, countVarps)
+        return CollectionLogCategory(row.structId, completedVarbit, itemIds, countVarps)
     }
 }

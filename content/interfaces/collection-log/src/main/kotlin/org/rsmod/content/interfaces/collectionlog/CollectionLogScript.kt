@@ -1,11 +1,9 @@
 package org.rsmod.content.interfaces.collectionlog
 
-import dev.openrune.ServerCacheManager
 import dev.openrune.definition.type.widget.IfEvent
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import jakarta.inject.Inject
-import org.rsmod.api.invtx.invAdd
 import org.rsmod.api.player.output.runClientScript
 import org.rsmod.api.player.startInvTransmit
 import org.rsmod.api.player.stopInvTransmit
@@ -19,7 +17,6 @@ import org.rsmod.api.script.onIfOpen
 import org.rsmod.api.script.onIfOverlayButton
 import org.rsmod.events.EventBus
 import org.rsmod.game.entity.Player
-import org.rsmod.game.inv.Inventory
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
@@ -27,14 +24,9 @@ class CollectionLogScript @Inject constructor(private val eventBus: EventBus) : 
     private var Player.lastTab: Int by intVarBit("varbit.collection_last_tab")
     private var Player.lastCategory: Int by intVarBit("varbit.collection_last_category")
 
-    /** The collection log bases the displayed items from an inventory rather than varbits */
-    private val Player.collectionTransmit: Inventory
-        get() = invMap.getOrPut("inv.collection_transmit")
-
     override fun ScriptContext.startup() {
         onIfOpen("interface.collection") {
             player.startInvTransmit(player.collectionTransmit)
-            player.syncCollectionTransmitFromVarbits()
             player.registerCategoryRowEvents()
             player.registerBurgerMenuEvents("component.collection:burger_menu_frame")
             player.drawCollectionLog(
@@ -155,18 +147,6 @@ class CollectionLogScript @Inject constructor(private val eventBus: EventBus) : 
         lastTab = tab
         lastCategory = 0
         drawCollectionLog(tab, 0)
-    }
-
-    /** Adds all items from the player's collection log to the collection transmit inventory */
-    private fun Player.syncCollectionTransmitFromVarbits() {
-        val inv = collectionTransmit
-        for ((objId, varbit) in CollectionLogItems.all()) {
-            val objType = ServerCacheManager.getItem(objId) ?: continue
-            val received = vars[varbit]
-            if (received > 0 && !inv.contains(objType)) {
-                invAdd(inv, objId, received)
-            }
-        }
     }
 
     private fun Player.drawCollectionLog(tab: Int, category: Int) {
