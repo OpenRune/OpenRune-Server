@@ -673,7 +673,7 @@ object SettingConfigs {
 
         row("dbrow.setting_147") {
             column(SETTING_ID, 147)
-            columnRSCM(VARBIT_ID, "varbit.mouseover_text_enabled")
+            columnRSCM(VARBIT_ID, "varbit.mouseover_text_disabled")
         }
 
         row("dbrow.setting_149") {
