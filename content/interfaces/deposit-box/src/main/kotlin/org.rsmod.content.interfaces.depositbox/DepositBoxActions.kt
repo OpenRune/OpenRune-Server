@@ -1,9 +1,11 @@
 package org.rsmod.content.interfaces.depositbox
 
+import dev.openrune.ServerCacheManager
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.vars.boolVarBit
 import org.rsmod.api.player.vars.intVarBit
 import org.rsmod.api.player.vars.intVarp
+import org.rsmod.api.utils.format.formatAmount
 import org.rsmod.content.interfaces.bank.QuantityMode
 import org.rsmod.content.interfaces.depositbox.configs.DepositBoxConfig
 import org.rsmod.content.interfaces.depositbox.configs.DepositBoxConstants
@@ -61,6 +63,42 @@ internal fun ProtectedAccess.depositOption1Qty(): Int =
         QuantityMode.X -> maxOf(1, depositQuantityInput)
         QuantityMode.All -> Int.MAX_VALUE
     }
+
+internal fun ProtectedAccess.heldDepositCount(slot: Int): Int {
+    val obj = inv[slot] ?: return 0
+    val objType = ServerCacheManager.getItem(obj.id) ?: return 0
+    return inv.count(obj, objType)
+}
+
+internal suspend fun ProtectedAccess.requestDepositQuantity(count: Int): Int {
+    if (count == 1) {
+        return 1
+    }
+    val amount = when {
+        count > 10 -> choice5(
+            "1", 1,
+            "5", 5,
+            "10", 10,
+            "X", null,
+            "All", Int.MAX_VALUE,
+            title = "How many would you like to deposit?",
+        )
+        count > 5 -> choice4(
+            "1", 1,
+            "5", 5,
+            "X", null,
+            "All", Int.MAX_VALUE,
+            title = "How many would you like to deposit?",
+        )
+        else -> choice3(
+            "1", 1,
+            "X", null,
+            "All", Int.MAX_VALUE,
+            title = "How many would you like to deposit?",
+        )
+    }
+    return amount ?: countDialog("How many would you like to deposit? 1 - ${count.formatAmount}")
+}
 
 internal fun ProtectedAccess.playDepositAnim() {
     anim(DepositBoxConstants.OPEN_SEQ)

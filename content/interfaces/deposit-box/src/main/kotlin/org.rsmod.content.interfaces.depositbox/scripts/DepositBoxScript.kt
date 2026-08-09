@@ -9,7 +9,9 @@ import org.rsmod.api.script.onOpLocCategoryU
 import org.rsmod.content.interfaces.bank.scripts.BankInvScript
 import org.rsmod.content.interfaces.depositbox.configs.DepositBoxConstants
 import org.rsmod.content.interfaces.depositbox.depositInventoryItem
+import org.rsmod.content.interfaces.depositbox.heldDepositCount
 import org.rsmod.content.interfaces.depositbox.opLocUDepositAll
+import org.rsmod.content.interfaces.depositbox.requestDepositQuantity
 import org.rsmod.events.EventBus
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
@@ -42,7 +44,11 @@ constructor(private val eventBus: EventBus, private val bankInv: BankInvScript) 
             depositInventoryItem(bankInv, invSlot, Int.MAX_VALUE)
             return
         }
-        val amount = countDialog()
+        val count = heldDepositCount(invSlot)
+        if (count <= 0) {
+            return
+        }
+        val amount = requestDepositQuantity(count)
         if (amount <= 0) {
             return
         }
