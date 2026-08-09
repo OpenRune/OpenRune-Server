@@ -172,7 +172,7 @@ class CampfireEvents @Inject constructor(
 
     private fun ProtectedAccess.hasFiremakingLevelOrMes(log: FiremakingLogsRow): Boolean {
         if (player.firemakingLvl >= log.statReq.first().t1) return true
-        player.mes("You need a Firemaking level of ${log.statReq.first().t1} to burn ${log.input.name} logs.")
+        player.mes("You need a Firemaking level of ${log.statReq.first().t1} to burn ${log.input.name}.")
         return false
     }
 
