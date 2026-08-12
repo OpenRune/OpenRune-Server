@@ -12,6 +12,13 @@ wanderRange = 0
 respawnRate = 50
 
 [[npc]]
+id = "npc.0_48_50_saltfish"
+inherit = "npc.0_48_50_saltfish"
+moveRestrict = "NoMove"
+wanderRange = 0
+contentGroup = "content.fishing_spot"
+
+[[npc]]
 id = "npc.imp"
 inherit = "npc.imp"
 giveChase = false

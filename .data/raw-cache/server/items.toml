@@ -52761,3 +52761,8 @@ cost = 50
 examine = "A sky full of stars... and one might change your journey."
 [item.params]
 "param.shop_sale_restricted"=1
+
+[[item]]
+id = "obj.net"
+inherit = "obj.net"
+contentGroup = "content.fishing_net"
