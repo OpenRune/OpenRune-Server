@@ -152,7 +152,10 @@ class RspCycle(
             knownCachedSpeed = cachedMoveSpeed
         }
         val moveSpeed = resolvePendingMoveSpeed()
-        if (moveSpeed != cachedMoveSpeed && coords != knownCoords) {
+        // Telejumps always transmit their temp move speed; it is what tells the client to snap
+        // instead of interpolating, and `cachedMoveSpeed` is already `Stationary` until the
+        // player moves for the first time.
+        if ((moveSpeed != cachedMoveSpeed || pendingTelejump) && coords != knownCoords) {
             val extendedInfo = playerInfo.avatar.extendedInfo
             extendedInfo.setTempMoveSpeed(moveSpeed.steps)
         }
