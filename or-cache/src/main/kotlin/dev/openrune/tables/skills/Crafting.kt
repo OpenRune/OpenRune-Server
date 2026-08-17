@@ -291,10 +291,12 @@ object Crafting {
             row("dbrow.crafting_fire_cup") {
                 production {
                     input("obj.cup_unfired")
-                    statReq("stat.crafting", 3)
+                    statReq("stat.crafting", 1)
                     xp(85)
                     output("obj.cup_empty")
                 }
+                column(COL_SUCCESS_LOW, 180)
+                column(COL_SUCCESS_HIGH, 789)
             }
             row("dbrow.crafting_fire_pie_dish") {
                 production {
