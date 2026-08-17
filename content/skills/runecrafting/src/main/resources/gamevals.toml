@@ -1,3 +1,6 @@
+[gamevals.area]
+rune_essence_mine = 57
+
 [gamevals.dbtable]
 runecrafting_runes=65517
 runecrafting_altars=65516

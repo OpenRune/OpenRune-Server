@@ -49,6 +49,13 @@ object KonarDialogue {
 
     suspend fun Dialogue.needAnotherAssignment() {
         chatPlayer(neutral, "I need another assignment.")
+        if (SlayerTaskManager.hasPendingMortimerChoice(access)) {
+            chatNpc(
+                neutral,
+                "Hmm... It appears as though Mortimer has provided you with a task choice, you must go to them in order to pick.",
+            )
+            return
+        }
         if (player.combatLevel < COMBAT_LEVEL_REQ) {
             lowCombatStart()
             return

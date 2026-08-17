@@ -1,6 +1,10 @@
 /*
 symbols/.local/
 !gamevals/
+!gamevals-binary/
 !raw-cache/
 !symbols/
 !.gitignore
+
+gamevals-binary/*
+!gamevals-binary/max-ids.toml

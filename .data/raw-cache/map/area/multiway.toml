@@ -5260,3 +5260,29 @@ vertices = [
     [3455, 10175],
     [3392, 10175],
 ]
+
+[[area]]
+name = "Callisto's Den Multiway"
+area_id = "area.multiway"
+levels = [0]
+
+[[area.polygons]]
+vertices = [
+    [3328, 10304],
+    [3392, 10304],
+    [3392, 10368],
+    [3328, 10368],
+]
+
+[[area]]
+name = "Vet'ion's Rest Multiway"
+area_id = "area.multiway"
+levels = [1]
+
+[[area.polygons]]
+vertices = [
+    [3264, 10176],
+    [3328, 10176],
+    [3328, 10240],
+    [3264, 10240],
+]

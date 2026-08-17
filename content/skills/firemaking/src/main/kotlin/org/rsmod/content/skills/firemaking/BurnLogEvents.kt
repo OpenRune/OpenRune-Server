@@ -116,7 +116,7 @@ public class BurnLogEvents @Inject constructor(
             BurnMethod.Bow -> (log.statReq.first().t1 + 20).coerceAtMost(99)
         }
         if (player.firemakingLvl < reqLevel) {
-            player.mes("You need a Firemaking level of $reqLevel to burn ${log.input.name} logs this way.")
+            player.mes("You need a Firemaking level of $reqLevel to burn ${log.input.name} this way.")
             return false
         }
 

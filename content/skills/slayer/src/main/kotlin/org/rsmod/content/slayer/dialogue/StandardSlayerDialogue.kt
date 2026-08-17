@@ -194,6 +194,14 @@ object StandardSlayerDialogue {
     }
 
     private suspend fun Dialogue.handleAssignment(npcId: Int, profile: SlayerMasterProfile) {
+        if (SlayerTaskManager.hasPendingMortimerChoice(access)) {
+            chatNpc(
+                neutral,
+                "Hmm... It appears as though Mortimer has provided you with a task choice, you must go to them in order to pick.",
+            )
+            return
+        }
+
         val currentTask = SlayerTaskManager.getCurrentSlayerTask(access)
         if (currentTask == null) {
             assignNewTask(npc!!.visType.internalName)

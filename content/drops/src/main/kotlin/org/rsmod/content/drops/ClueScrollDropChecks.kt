@@ -31,8 +31,19 @@ public fun Player.hasUnlockedMasterCombat(): Boolean = true
 public fun combatAchievementClueDenominator(baseDenominator: Int): Int =
     floor(baseDenominator - baseDenominator * 0.05).toInt()
 
-public fun Player.easyClueDropDenominator(baseDenominator: Int): Int =
-    if (hasUnlockedEasyCombat()) combatAchievementClueDenominator(baseDenominator) else baseDenominator
+public fun Player.clueDropDenominator(baseDenominator: Int, boostPercent: Int = 0): Int {
+    var denom = baseDenominator
+    if (boostPercent > 0) {
+        denom = floor(denom * 100.0 / (100.0 + boostPercent)).toInt().coerceAtLeast(1)
+    }
+    return denom
+}
+
+public fun Player.easyClueDropDenominator(baseDenominator: Int): Int {
+    val base =
+        if (hasUnlockedEasyCombat()) combatAchievementClueDenominator(baseDenominator) else baseDenominator
+    return clueDropDenominator(base)
+}
 
 public fun Player.mediumClueDropDenominator(baseDenominator: Int): Int =
     if (hasUnlockedMediumCombat()) combatAchievementClueDenominator(baseDenominator) else baseDenominator

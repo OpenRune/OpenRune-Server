@@ -70,7 +70,9 @@ object TextAlignment {
             if (char == '>' && tagStart != -1) {
                 val tag = text.substring(tagStart + 1, index)
                 tagStart = -1
-                lineBuilder.append('<').append(tag).append('>')
+                if (tag != "br") {
+                    lineBuilder.append('<').append(tag).append('>')
+                }
                 when (tag) {
                     "br" -> {
                         lineBuffer[lineCount] = lineBuilder.substring(lineStart)

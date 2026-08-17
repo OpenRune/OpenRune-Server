@@ -35,7 +35,7 @@ private fun InstanceArea.CopyRegions.toPlacement(): InstancePlacement {
     return InstancePlacement(
         enterCoord = enterCoord,
         exitCoord = exitCoord,
-        regionTemplate = buildRegionTemplate(regionIds, level),
+        regionTemplate = buildRegionTemplate(regionIds, level, rotation),
         npcSpawns = npcSpawns,
         instanceLevel = level,
         baseAreaKey = BaseAreaKey(zoneBaseX, zoneBaseZ, level),

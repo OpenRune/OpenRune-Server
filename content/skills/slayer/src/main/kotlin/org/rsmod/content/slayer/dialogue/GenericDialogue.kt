@@ -4,6 +4,7 @@ import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.stat.baseSlayerLvl
 import org.rsmod.content.slayer.SlayerInterfaces
+import org.rsmod.content.slayer.core.MortimerAssignment
 import org.rsmod.content.slayer.core.SlayerTaskManager
 import org.rsmod.content.slayer.core.SlayerTaskManager.tasks
 import org.rsmod.content.slayer.dialogue.SlayerAssignmentDialogue.assignNewTask
@@ -56,6 +57,14 @@ object GenericDialogue {
     }
 
     suspend fun Dialogue.offerTuraelReroll(npcId: Int) {
+        val assigned = SlayerTaskManager.getCurrentAssignedMaster(access.player)
+        if (MortimerAssignment.isMortimer(assigned)) {
+            chatNpc(
+                neutral,
+                "Hmm... Mortimer's assignments are special. I can't replace those for you.",
+            )
+            return
+        }
         val streak = SlayerTaskManager.slayerStreak(access)
         val wildyStreak = SlayerTaskManager.slayerWildyStreak(access)
         chatNpc(
