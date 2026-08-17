@@ -41,6 +41,15 @@ tasks.register<JavaExec>("dumpNpcSpawns") {
     mainClass.set("org.rsmod.tools.wiki.dumping.NpcSpawnCsvDumperKt")
 }
 
+tasks.register<JavaExec>("fillUnknownDropRates") {
+    group = "application"
+    description =
+        "Fills 'Unknown wiki drop rate' markers in drop tables from the wiki Dropsline Bucket API"
+    classpath = sourceSets["main"].runtimeClasspath
+    mainClass.set("org.rsmod.tools.wiki.dumping.dropfill.UnknownDropRateFillerKt")
+    args("--root=${rootProject.projectDir.absolutePath}")
+}
+
 tasks.register<JavaExec>("dumpShops") {
     group = "application"
     description =
