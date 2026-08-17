@@ -264,6 +264,7 @@ fun startGeneration(
         val table = el.elementAs<Table>() ?: continue
         val samples = sampleRowsForTable(table.id, rows)
         val meta = mergeColumnMetadata(table, samples)
+        val declared = dbtables[table.id]?.columns
         val maxLen =
             table.columns.associate { c ->
                 c.name to (samples.maxOfOrNull { it.valuesAt(c.id)?.size ?: 0 } ?: 0)
@@ -271,6 +272,12 @@ fun startGeneration(
         val columns =
             table.columns.map { c ->
                 val m = meta.getValue(c.name)
+                // A column no row fills has no sampled types, so fall back to the types the table declared.
+                // Without this the column generates no property at all.
+                if (m.slotTypes.isEmpty()) {
+                    declared?.get(c.id)?.types?.forEachIndexed { i, t -> m.slotTypes[i] = t }
+                    m.optional = true
+                }
                 val slotList = m.slotTypes.toSortedMap().values.toList()
                 TableColumn(
                     name = "dbcol.${table.name}:${c.name}",

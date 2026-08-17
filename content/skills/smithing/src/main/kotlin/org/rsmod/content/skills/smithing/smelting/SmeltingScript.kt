@@ -11,6 +11,10 @@ import org.rsmod.content.skills.Material
 import org.rsmod.content.skills.SkillMultiConfig
 import org.rsmod.content.skills.SkillMultiEntry
 import org.rsmod.content.skills.SkillingActionType
+import org.rsmod.content.skills.crafting.interfaces.hasGoldCraftingBars
+import org.rsmod.content.skills.crafting.interfaces.hasSilverCraftingBars
+import org.rsmod.content.skills.crafting.interfaces.openGoldCrafting
+import org.rsmod.content.skills.crafting.interfaces.openSilverCrafting
 import org.rsmod.content.skills.openSkillMulti
 import org.rsmod.content.skills.smithing.hasCannonballFurnaceMould
 import org.rsmod.content.skills.smithing.openCannonballFurnaceMenu
@@ -42,6 +46,10 @@ class SmeltingScript @Inject constructor(private val xpMods: XpModifiers, ) : Pl
                 openStandardSmeltMenu(locInternal, coords)
             } else if (hasCannonballFurnaceMould()) {
                 openCannonballFurnaceMenu(locInternal)
+            } else if (hasGoldCraftingBars()) {
+                openGoldCrafting()
+            } else if (hasSilverCraftingBars()) {
+                openSilverCrafting()
             }
         }
 
