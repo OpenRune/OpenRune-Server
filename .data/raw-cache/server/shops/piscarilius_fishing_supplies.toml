@@ -1,0 +1,70 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.piscarilius_fishing_supplies"
+name = "Tynan's Fishing Supplies"
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1000
+buyMultiplier = 850
+delta = 10
+
+size = 10
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.bucket_empty"
+count = 1000
+restockCycles = 1
+
+[[inventory.stock]]
+obj = "obj.net"
+count = 5
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.big_net"
+count = 5
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.fishing_rod"
+count = 5
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.harpoon"
+count = 2
+restockCycles = 400
+
+[[inventory.stock]]
+obj = "obj.lobster_pot"
+count = 2
+restockCycles = 400
+
+[[inventory.stock]]
+obj = "obj.fishing_bait"
+count = 1200
+restockCycles = 1
+
+[[inventory.stock]]
+obj = "obj.piscarilius_sandworms"
+count = 500
+restockCycles = 50
+
+[[inventory.stock]]
+obj = "obj.pack_fishing_bait"
+count = 80
+restockCycles = 5
+
+[[inventory.stock]]
+obj = "obj.piscarilius_pack_sandworms"
+count = 50
+restockCycles = 5
+

@@ -1,0 +1,120 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.deepfin_dwarf_durrik_shop"
+name = "Durrik's Goods"
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 2500
+buyMultiplier = 150
+delta = 20
+
+size = 20
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.spade"
+count = 5
+restockCycles = 20
+
+[[inventory.stock]]
+obj = "obj.chisel"
+count = 5
+restockCycles = 20
+
+[[inventory.stock]]
+obj = "obj.hammer"
+count = 5
+restockCycles = 20
+
+[[inventory.stock]]
+obj = "obj.tinderbox"
+count = 5
+restockCycles = 20
+
+[[inventory.stock]]
+obj = "obj.rope"
+count = 10
+restockCycles = 30
+
+[[inventory.stock]]
+obj = "obj.steel_pickaxe"
+count = 4
+restockCycles = 20
+
+[[inventory.stock]]
+obj = "obj.rune_warhammer"
+count = 1
+restockCycles = -1
+
+[[inventory.stock]]
+obj = "obj.lovakengj_dynamite_fused"
+count = 20
+restockCycles = 1000
+
+[[inventory.stock]]
+obj = "obj.hunting_antelopemoon_fur"
+count = 0
+restockCycles = 800
+
+[[inventory.stock]]
+obj = "obj.bucket_sand"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.seaweed"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.flax"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.silk"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.spicespot"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.cosmicrune"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.deathrune"
+count = 200
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.brandy"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.blue_dragon_scale"
+count = 5
+restockCycles = 200
+
+[[inventory.stock]]
+obj = "obj.orangedye"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.gold_bar"
+count = 10
+restockCycles = 200
+

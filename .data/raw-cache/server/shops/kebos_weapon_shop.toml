@@ -1,0 +1,70 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.kebos_weapon_shop"
+name = "Mount Karuulm Weapon Shop"
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1000
+buyMultiplier = 600
+delta = 20
+
+size = 10
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.steel_spear"
+count = 2
+restockCycles = 200
+
+[[inventory.stock]]
+obj = "obj.mithril_spear"
+count = 1
+restockCycles = 3000
+
+[[inventory.stock]]
+obj = "obj.adamant_spear"
+count = 1
+restockCycles = 5000
+
+[[inventory.stock]]
+obj = "obj.rune_spear"
+count = 1
+restockCycles = 8000
+
+[[inventory.stock]]
+obj = "obj.steel_battleaxe"
+count = 2
+restockCycles = 200
+
+[[inventory.stock]]
+obj = "obj.mithril_battleaxe"
+count = 1
+restockCycles = 3000
+
+[[inventory.stock]]
+obj = "obj.adamant_battleaxe"
+count = 1
+restockCycles = 5000
+
+[[inventory.stock]]
+obj = "obj.steel_warhammer"
+count = 2
+restockCycles = 200
+
+[[inventory.stock]]
+obj = "obj.mithril_warhammer"
+count = 1
+restockCycles = 3000
+
+[[inventory.stock]]
+obj = "obj.adamnt_warhammer"
+count = 1
+restockCycles = 5000
+

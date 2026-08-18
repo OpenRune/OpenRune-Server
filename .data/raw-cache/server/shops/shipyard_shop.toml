@@ -1,0 +1,45 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.shipyard_shop"
+name = "Seb's Shipyard Supplies"
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1300
+buyMultiplier = 500
+delta = 0
+
+size = 5
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.nails_bronze"
+count = 1000
+restockCycles = 1
+
+[[inventory.stock]]
+obj = "obj.nails_iron"
+count = 1000
+restockCycles = 1
+
+[[inventory.stock]]
+obj = "obj.swamppaste"
+count = 2500
+restockCycles = 1
+
+[[inventory.stock]]
+obj = "obj.boat_repair_kit"
+count = 500
+restockCycles = 1
+
+[[inventory.stock]]
+obj = "obj.sailing_facility_bottle_empty"
+count = 100
+restockCycles = 1
+

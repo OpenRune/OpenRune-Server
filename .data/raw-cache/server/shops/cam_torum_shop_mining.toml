@@ -1,0 +1,60 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.cam_torum_shop_mining"
+name = "Tizoro's Pickaxes"
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1000
+buyMultiplier = 600
+delta = 20
+
+size = 8
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.hammer"
+count = 6
+restockCycles = 22
+
+[[inventory.stock]]
+obj = "obj.chisel"
+count = 6
+restockCycles = 22
+
+[[inventory.stock]]
+obj = "obj.bronze_pickaxe"
+count = 6
+restockCycles = 22
+
+[[inventory.stock]]
+obj = "obj.iron_pickaxe"
+count = 5
+restockCycles = 22
+
+[[inventory.stock]]
+obj = "obj.steel_pickaxe"
+count = 4
+restockCycles = 22
+
+[[inventory.stock]]
+obj = "obj.mithril_pickaxe"
+count = 3
+restockCycles = 170
+
+[[inventory.stock]]
+obj = "obj.adamant_pickaxe"
+count = 2
+restockCycles = 470
+
+[[inventory.stock]]
+obj = "obj.rune_pickaxe"
+count = 1
+restockCycles = 675
+

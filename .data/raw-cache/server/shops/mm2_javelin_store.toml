@@ -1,0 +1,50 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.mm2_javelin_store"
+name = "Oobapohk's Javelin Store"
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1000
+buyMultiplier = 600
+delta = 1
+
+size = 6
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.bronze_javelin"
+count = 500
+restockCycles = 20
+
+[[inventory.stock]]
+obj = "obj.iron_javelin"
+count = 500
+restockCycles = 20
+
+[[inventory.stock]]
+obj = "obj.steel_javelin"
+count = 500
+restockCycles = 40
+
+[[inventory.stock]]
+obj = "obj.mithril_javelin"
+count = 500
+restockCycles = 60
+
+[[inventory.stock]]
+obj = "obj.adamant_javelin"
+count = 500
+restockCycles = 80
+
+[[inventory.stock]]
+obj = "obj.rune_javelin"
+count = 500
+restockCycles = 100
+

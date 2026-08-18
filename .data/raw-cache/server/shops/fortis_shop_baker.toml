@@ -1,0 +1,35 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.fortis_shop_baker"
+name = "Fortis Baker's Stall"
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1000
+buyMultiplier = 800
+delta = 20
+
+size = 3
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.bread"
+count = 15
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.cake"
+count = 5
+restockCycles = 800
+
+[[inventory.stock]]
+obj = "obj.chocolate_slice"
+count = 5
+restockCycles = 200
+

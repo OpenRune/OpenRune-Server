@@ -1,0 +1,75 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.deepfin_point_oreshop"
+name = "Deepfin Point Ore Exchange"
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1100
+buyMultiplier = 700
+delta = 20
+
+size = 11
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.copper_ore"
+count = 40
+restockCycles = 50
+
+[[inventory.stock]]
+obj = "obj.tin_ore"
+count = 40
+restockCycles = 50
+
+[[inventory.stock]]
+obj = "obj.iron_ore"
+count = 20
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.silver_ore"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.lead_ore"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.gold_ore"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.mithril_ore"
+count = 5
+restockCycles = 200
+
+[[inventory.stock]]
+obj = "obj.adamantite_ore"
+count = 0
+restockCycles = 500
+
+[[inventory.stock]]
+obj = "obj.nickel_ore"
+count = 0
+restockCycles = 800
+
+[[inventory.stock]]
+obj = "obj.runite_ore"
+count = 0
+restockCycles = 2000
+
+[[inventory.stock]]
+obj = "obj.coal"
+count = 20
+restockCycles = 100
+

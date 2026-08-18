@@ -1,0 +1,75 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.great_conch_weapon_shop"
+name = "Elder Blunn's Spear and Shield Stall"
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1000
+buyMultiplier = 600
+delta = 20
+
+size = 11
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.bronze_spear"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.iron_spear"
+count = 8
+restockCycles = 200
+
+[[inventory.stock]]
+obj = "obj.steel_spear"
+count = 8
+restockCycles = -1
+
+[[inventory.stock]]
+obj = "obj.mithril_spear"
+count = 6
+restockCycles = -1
+
+[[inventory.stock]]
+obj = "obj.adamant_spear"
+count = 4
+restockCycles = -1
+
+[[inventory.stock]]
+obj = "obj.bronze_kiteshield"
+count = 5
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.iron_kiteshield"
+count = 4
+restockCycles = 200
+
+[[inventory.stock]]
+obj = "obj.steel_kiteshield"
+count = 4
+restockCycles = -1
+
+[[inventory.stock]]
+obj = "obj.mithril_kiteshield"
+count = 3
+restockCycles = -1
+
+[[inventory.stock]]
+obj = "obj.adamant_kiteshield"
+count = 2
+restockCycles = -1
+
+[[inventory.stock]]
+obj = "obj.tortugan_shield"
+count = 10
+restockCycles = 50
+

@@ -1,0 +1,60 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.prif_weapon_store"
+name = "Iorwerth's Arms"
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1500
+buyMultiplier = 250
+delta = 10
+
+size = 8
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.adamant_dagger"
+count = 4
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.rune_dagger"
+count = 3
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.dragon_dagger"
+count = 2
+restockCycles = 500
+
+[[inventory.stock]]
+obj = "obj.adamant_scimitar"
+count = 2
+restockCycles = 500
+
+[[inventory.stock]]
+obj = "obj.rune_scimitar"
+count = 1
+restockCycles = 1000
+
+[[inventory.stock]]
+obj = "obj.adamant_halberd"
+count = 7
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.rune_halberd"
+count = 7
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.dragon_halberd"
+count = 5
+restockCycles = 500
+

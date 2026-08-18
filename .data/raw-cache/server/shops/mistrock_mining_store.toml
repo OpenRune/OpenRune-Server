@@ -1,0 +1,90 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.mistrock_mining_store"
+name = "Mistrock Mining Supplies"
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1000
+buyMultiplier = 700
+delta = 20
+
+size = 14
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.hammer"
+count = 6
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.chisel"
+count = 6
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.bronze_pickaxe"
+count = 6
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.iron_pickaxe"
+count = 6
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.steel_pickaxe"
+count = 6
+restockCycles = 200
+
+[[inventory.stock]]
+obj = "obj.copper_ore"
+count = 0
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.tin_ore"
+count = 0
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.iron_ore"
+count = 0
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.mithril_ore"
+count = 0
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.adamantite_ore"
+count = 0
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.runite_ore"
+count = 0
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.coal"
+count = 0
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.silver_ore"
+count = 0
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.gold_ore"
+count = 0
+restockCycles = 10
+
