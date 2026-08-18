@@ -901,3 +901,16 @@ valueType = "SEQ"
 "obj.infernal_axe" = "seq.human_canoeing_carve_infernal_axe"
 "obj.trailblazer_axe" = "seq.human_canoeing_carve_league_trailblazer_axe"
 "obj.crystal_axe" = "seq.human_canoeing_carve_crystal_axe"
+
+
+[[enum]]
+isServerOnly = true
+id = "enum.drew_sandstone_amounts"
+keyType = "OBJ"
+valueType = "INT"
+
+[enum.values]
+"obj.enakh_sandstone_large" = 8
+"obj.enakh_sandstone_medium" = 4
+"obj.enakh_sandstone_small" = 2
+"obj.enakh_sandstone_tiny" = 1
