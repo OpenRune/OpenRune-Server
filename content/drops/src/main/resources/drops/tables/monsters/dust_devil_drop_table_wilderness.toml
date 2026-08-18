@@ -126,6 +126,15 @@ weight = 1
 obj = "obj.dust_battlestaff"
 count = 1
 
+[[main.separate_rolls]]
+numerator = 1
+denominator = 32256
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.dragon_chainbody"
+count = 1
+
 [[tertiary]]
 numerator = 1
 denominator = 3
@@ -134,6 +143,5 @@ count = 1
 should_drop_looting_bag = true
 
 
-# Unknown wiki drop rate: Dragon chainbody [main/Weapons and armour/1/{{#expr:126*256}}]
 # Unknown wiki drop rate: Nothing [main/Other/255/{{#expr:126*256}}]
 # Main table pool padding uses a nothing roll (F2P drops removed and/or subtable access missing from wiki parse) (1 weight)

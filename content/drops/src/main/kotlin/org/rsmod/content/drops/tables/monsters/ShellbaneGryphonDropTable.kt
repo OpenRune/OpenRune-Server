@@ -46,6 +46,25 @@ public val shellbaneGryphonDropTable: RSDropTable<Player, DropRollItem> = RSDrop
         6 weight SharedDropTables.herb
         1 weight SharedDropTables.gem
         25 weight nothing()
+        10 outOf 171 separate "obj.potato_seed" count 1..4
+        10 outOf 341 separate "obj.onion_seed" count 1..3
+        10 outOf 683 separate "obj.cabbage_seed" count 1..3
+        5 outOf 186 separate "obj.tomato_seed" count 1..2
+        2 outOf 149 separate "obj.sweetcorn_seed" count 1..2
+        10 outOf 1489 separate "obj.strawberry_seed" count 1
+        10 outOf 2979 separate "obj.watermelon_seed" count 1
+        10 outOf 2979 separate "obj.snape_grass_seed" count 1
+        10 outOf 853 separate "obj.unidentified_guam" count 1
+        5 outOf 569 separate "obj.unidentified_marentill" count 1
+        10 outOf 1517 separate "obj.unidentified_tarromin" count 1
+        1 outOf 195 separate "obj.unidentified_harralander" count 1
+        5 outOf 1241 separate "obj.unidentified_ranarr" count 1
+        10 outOf 3413 separate "obj.unidentified_irit" count 1
+        10 outOf 4551 separate "obj.unidentified_avantoe" count 1
+        5 outOf 356 separate "obj.unidentified_kwuarm" count 1
+        1 outOf 89 separate "obj.unidentified_cadantine" count 1
+        10 outOf 1187 separate "obj.unidentified_lantadyme" count 1
+        1 outOf 92 separate "obj.unidentified_dwarf_weed" count 1
     },
     tertiaries = rsPlayerTertiaryTable {
         1 outOf 1 weight "obj.trail_elite_emote_exp1" count 1 condition { player ->
@@ -65,22 +84,3 @@ public val shellbaneGryphonDropTable: RSDropTable<Player, DropRollItem> = RSDrop
 )
 
 // Unknown wiki drop rates (text rarity — need data collection):
-//   - Potato seed [main/1/{{#expr:1/({{#var:allotseed}}*64) round 1}}]
-//   - Onion seed [main/1/{{#expr:1/({{#var:allotseed}}*32) round 1}}]
-//   - Cabbage seed [main/1/{{#expr:1/({{#var:allotseed}}*16) round 1}}]
-//   - Tomato seed [main/1/{{#expr:1/({{#var:allotseed}}*8 + {{#var:allotseedgood}}*8) round 1}}]
-//   - Sweetcorn seed [main/1/{{#expr:1/({{#var:allotseed}}*4 + {{#var:allotseedgood}}*4) round 1}}]
-//   - Strawberry seed [main/1/{{#expr:1/({{#var:allotseed}}*2 + {{#var:allotseedgood}}*2) round 1}}]
-//   - Watermelon seed [main/1/{{#expr:1/({{#var:allotseed}}*1 + {{#var:allotseedgood}}*1) round 1}}]
-//   - Snape grass seed [main/1/{{#expr:1/({{#var:allotseed}}*1 + {{#var:allotseedgood}}*1) round 1}}]
-//   - Grimy guam leaf [main/1/{{#expr:1/({{#var:herb}}*32) round 1}}]
-//   - Grimy marrentill [main/1/{{#expr:1/({{#var:herb}}*24) round 1}}]
-//   - Grimy tarromin [main/1/{{#expr:1/({{#var:herb}}*18) round 1}}]
-//   - Grimy harralander [main/1/{{#expr:1/({{#var:herb}}*14) round 1}}]
-//   - Grimy ranarr weed [main/1/{{#expr:1/({{#var:herb}}*11) round 1}}]
-//   - Grimy irit leaf [main/1/{{#expr:1/({{#var:herb}}*8) round 1}}]
-//   - Grimy avantoe [main/1/{{#expr:1/({{#var:herb}}*6) round 1}}]
-//   - Grimy kwuarm [main/1/{{#expr:1/({{#var:herb}}*5 + {{#var:combatherb}}*5) round 1}}]
-//   - Grimy cadantine [main/1/{{#expr:1/({{#var:herb}}*4 + {{#var:combatherb}}*4) round 1}}]
-//   - Grimy lantadyme [main/1/{{#expr:1/({{#var:herb}}*3 + {{#var:combatherb}}*3) round 1}}]
-//   - Grimy dwarf weed [main/1/{{#expr:1/({{#var:herb}}*3 + {{#var:combatherb}}*4) round 1}}]

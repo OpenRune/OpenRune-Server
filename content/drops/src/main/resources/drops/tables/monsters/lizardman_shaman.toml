@@ -104,6 +104,42 @@ shared = "rareDrop"
 weight = 60
 nothing = true
 
+[[main.separate_rolls]]
+numerator = 25
+denominator = 889
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.unidentified_kwuarm"
+count = "2..3"
+
+[[main.separate_rolls]]
+numerator = 25
+denominator = 1111
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.unidentified_cadantine"
+count = "2..3"
+
+[[main.separate_rolls]]
+numerator = 25
+denominator = 1111
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.unidentified_dwarf_weed"
+count = "2..3"
+
+[[main.separate_rolls]]
+numerator = 50
+denominator = 2963
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.unidentified_lantadyme"
+count = "2..3"
+
 [[tertiary]]
 numerator = 1
 denominator = 400
@@ -131,8 +167,4 @@ count = 1
 clue_scroll_box = true
 
 
-# Unknown wiki drop rate: Grimy kwuarm [main/Herbs/1/{{#expr:1/(5*{{#var:uht}}) round 2}}]
-# Unknown wiki drop rate: Grimy cadantine [main/Herbs/1/{{#expr:1/(4*{{#var:uht}}) round 2}}]
-# Unknown wiki drop rate: Grimy dwarf weed [main/Herbs/1/{{#expr:1/(4*{{#var:uht}}) round 2}}]
-# Unknown wiki drop rate: Grimy lantadyme [main/Herbs/1/{{#expr:1/(3*{{#var:uht}}) round 2}}]
 # Main table pool padding uses a nothing roll (F2P drops removed and/or subtable access missing from wiki parse) (60 weight)
