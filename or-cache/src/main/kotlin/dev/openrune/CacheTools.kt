@@ -23,6 +23,7 @@ import dev.openrune.gamevals.GamevalDumper
 import dev.openrune.impl.GameframeTable
 import dev.openrune.impl.Music
 import dev.openrune.map.packing.MapPackers
+import dev.openrune.tables.CollectionLogCategoriesTable
 import dev.openrune.tables.DidYouKnow
 import dev.openrune.tables.InstanceSettingsTable
 import dev.openrune.tables.PickableObjects
@@ -105,6 +106,7 @@ fun tablesToPack() = listOf(
     SettingConfigs.settings(),
     DidYouKnow.didYouknow(),
     InstanceSettingsTable.instanceSettings(),
+    CollectionLogCategoriesTable.collectionLogCategories(),
     ShootingStars.locations(),
     ShopCurrencyTable.shopCurrencies(),
 )

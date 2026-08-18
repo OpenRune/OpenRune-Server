@@ -91,4 +91,9 @@ public object VarPlayerIntMapSetter {
         val packedValue = mappedValue.withBits(varbit.bits, value)
         set(player, varbit.baseVar, packedValue)
     }
+
+    public fun toggleBit(player: Player, varbit: VarBitType, bit: Int) {
+        val current = player.vars[varbit]
+        set(player, varbit, current xor (1 shl bit))
+    }
 }
