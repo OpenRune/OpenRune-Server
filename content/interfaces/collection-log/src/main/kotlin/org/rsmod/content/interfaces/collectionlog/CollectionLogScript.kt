@@ -15,6 +15,7 @@ import org.rsmod.api.player.vars.intVarBit
 import org.rsmod.api.script.onIfClose
 import org.rsmod.api.script.onIfOpen
 import org.rsmod.api.script.onIfOverlayButton
+import org.rsmod.api.script.onPlayerInit
 import org.rsmod.events.EventBus
 import org.rsmod.game.entity.Player
 import org.rsmod.plugin.scripts.PluginScript
@@ -25,6 +26,8 @@ class CollectionLogScript @Inject constructor(private val eventBus: EventBus) : 
     private var Player.lastCategory: Int by intVarBit("varbit.collection_last_category")
 
     override fun ScriptContext.startup() {
+        onPlayerInit { CollectionLog.initializeOverviewSlots(player) }
+
         onIfOpen("interface.collection") {
             player.startInvTransmit(player.collectionTransmit)
             player.registerCategoryRowEvents()

@@ -15,7 +15,18 @@ public object CollectionLog {
     private const val CHAT_MESSAGE_ENABLED_MASK = 1 shl 0
     private const val POPUP_ENABLED_MASK = 1 shl 1
 
+    private const val EMPTY_SLOT = -1
+
     private var Player.runeday: Int by intVarBit("varbit.current_runeday")
+
+    public fun initializeOverviewSlots(player: Player) {
+        for (slot in 0 until LATEST_ITEM_SLOT_COUNT) {
+            if (player.vars[latestItemVarp(slot)] == 0) {
+                VarPlayerIntMapSetter.set(player, latestItemVarp(slot), EMPTY_SLOT)
+                VarPlayerIntMapSetter.set(player, latestItemDateVarp(slot), EMPTY_SLOT)
+            }
+        }
+    }
 
     /** Central entry point for marking an item as obtained for the collection log */
     public fun grant(player: Player, obj: String, count: Int = 1) {
