@@ -29,6 +29,7 @@ import org.rsmod.api.script.onOpContentU
 import org.rsmod.api.stats.levelmod.InvisibleLevels
 import org.rsmod.api.stats.xpmod.XpModifiers
 import org.rsmod.api.table.mining.MiningRocksRow
+import org.rsmod.content.other.toolbelt.Toolbelt
 import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.content.skills.mining.MiningEquipment.miningGloveExtras
 import org.rsmod.content.skills.mining.MiningEquipment.wearingChargedGlory
@@ -423,12 +424,17 @@ constructor(
         fun findPickaxe(player: Player): InvObj? {
             val worn = player.wornPickaxe()
             val carried = player.carriedPickaxes()
+            val toolbelt =
+                Toolbelt.resolvePickaxe(player)?.takeIf { getInvObj(it).isUsablePickaxe(player) }
             val candidates =
                 buildList {
                     if (worn != null) {
                         add(worn)
                     }
                     addAll(carried)
+                    if (toolbelt != null) {
+                        add(toolbelt)
+                    }
                 }
             return candidates.maxWithOrNull(pickaxeComparator)
         }

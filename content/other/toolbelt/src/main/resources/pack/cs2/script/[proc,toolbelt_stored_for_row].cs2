@@ -1,0 +1,32 @@
+[proc,toolbelt_stored_for_row](dbrow $row)(int)
+switch_dbrow ($row) {
+    case toolbelt_pickaxe : return(%toolbelt_slot_0);
+    case toolbelt_axe : return(%toolbelt_slot_1);
+    case toolbelt_hammer : return(%toolbelt_slot_2);
+    case toolbelt_chisel : return(%toolbelt_slot_3);
+    case toolbelt_knife : return(%toolbelt_slot_4);
+    case toolbelt_tinderbox : return(%toolbelt_slot_5);
+    case toolbelt_pestle_and_mortar : return(%toolbelt_slot_6);
+    case toolbelt_spade : return(%toolbelt_slot_7);
+    case toolbelt_rake : return(%toolbelt_slot_8);
+    case toolbelt_dibber : return(%toolbelt_slot_9);
+    case toolbelt_secateurs : return(%toolbelt_slot_10);
+    case toolbelt_gardening_trowel : return(%toolbelt_slot_11);
+    case toolbelt_watering_can : return(%toolbelt_slot_12);
+    case toolbelt_shears : return(%toolbelt_slot_13);
+    case toolbelt_needle : return(%toolbelt_slot_14);
+    case toolbelt_glassblowing_pipe : return(%toolbelt_slot_15);
+    case toolbelt_small_net : return(%toolbelt_slot_16);
+    case toolbelt_big_net : return(%toolbelt_slot_17);
+    case toolbelt_fishing_rod : return(%toolbelt_slot_18);
+    case toolbelt_fly_fishing_rod : return(%toolbelt_slot_19);
+    case toolbelt_harpoon : return(%toolbelt_slot_20);
+    case toolbelt_lobster_pot : return(%toolbelt_slot_21);
+    case toolbelt_amulet_mould : return(%toolbelt_slot_22);
+    case toolbelt_necklace_mould : return(%toolbelt_slot_23);
+    case toolbelt_ring_mould : return(%toolbelt_slot_24);
+    case toolbelt_bracelet_mould : return(%toolbelt_slot_25);
+    case toolbelt_tiara_mould : return(%toolbelt_slot_26);
+    case toolbelt_bonecrusher : return(%toolbelt_slot_27);
+    case default : return(0);
+}

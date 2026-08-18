@@ -1,0 +1,11 @@
+[[enum]]
+id = "enum.toolbelt_categories"
+keyType = "INT"
+valueType = "STRING"
+
+[enum.values]
+0 = "General"
+1 = "Farming"
+2 = "Fishing"
+3 = "Crafting"
+4 = "Miscellaneous"

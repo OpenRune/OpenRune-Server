@@ -28,6 +28,9 @@ constructor(private val hooks: Set<@JvmSuppressWildcards PlayerItemStorageHook>)
         return total
     }
 
+    override fun providesContentGroup(player: Player, inventory: Inventory, contentGroup: Int): Boolean =
+        hooks.any { it.providesContentGroup(player, contentGroup) }
+
     public fun consumePolicy(
         player: Player,
         inventory: Inventory,

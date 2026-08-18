@@ -3324,15 +3324,12 @@ public class ProtectedAccess(
         return invTotal(inv, "obj.coins")
     }
 
-    public fun invContentTotal(inv: Inventory, content: String): Int {
-        var count = 0
-        for (obj in inv) {
-            val filtered = obj ?: continue
-            if (getInvObj(filtered).isContentType(content)) {
-                count += filtered.count
-            }
+    public fun invContentTotal(inv: Inventory, query: String): Int {
+        return when {
+            query.startsWith("obj.") -> inv.count(query)
+            query.startsWith("content.") -> inv.contentTotal(query)
+            else -> error("Expected obj.* or content.*: $query")
         }
-        return count
     }
 
     public fun invTotal(inv: Inventory, obj: String): Int {
@@ -3340,7 +3337,8 @@ public class ProtectedAccess(
     }
 
     public fun invContains(inv: Inventory, content: String): Boolean {
-        return inv.any { it != null && getInvObj(it).contentGroup == content.asRSCM(RSCMType.CONTENT) }
+        // Inventory.contains handles content groups + virtual storage (toolbelt, etc.).
+        return inv.contains(content)
     }
 
     /**
@@ -3349,31 +3347,31 @@ public class ProtectedAccess(
      * as shops are excluded.
      */
     public fun playerContainsContent(content: String): Boolean {
-        val contentId = content.asRSCM(RSCMType.CONTENT)
-        return playerContainsInInventories { getInvObj(it).contentGroup == contentId }
-    }
-
-    /**
-     * Returns whether any stack of [obj] exists in any of the player's inventories. Shared
-     * inventories such as shops are excluded.
-     */
-    public fun playerContainsObj(obj: String): Boolean {
-        val objId = obj.asRSCM(RSCMType.OBJ)
-        return playerContainsInInventories { getInvObj(it).id == objId }
-    }
-
-    /** @see [playerContainsObj] */
-    public fun playerContainsAnyObj(vararg objs: String): Boolean = objs.any(::playerContainsObj)
-
-    private inline fun playerContainsInInventories(crossinline predicate: (InvObj) -> Boolean): Boolean {
         for (inventory in player.invMap.values) {
             if (inventory.type.scope == InvScope.Shared) continue
-            if (inventory.any { slot -> slot != null && predicate(slot) }) {
+            if (inventory.contains(content)) {
                 return true
             }
         }
         return false
     }
+
+    /**
+     * Returns whether any stack of [obj] exists in any of the player's inventories. Shared
+     * inventories such as shops are excluded. Includes virtual storage (toolbelt, etc.).
+     */
+    public fun playerContainsObj(obj: String): Boolean {
+        for (inventory in player.invMap.values) {
+            if (inventory.type.scope == InvScope.Shared) continue
+            if (inventory.count(obj) > 0) {
+                return true
+            }
+        }
+        return false
+    }
+
+    /** @see [playerContainsObj] */
+    public fun playerContainsAnyObj(vararg objs: String): Boolean = objs.any(::playerContainsObj)
 
     public fun inv(inv: String): Inventory {
         return player.invMap.getOrPut(inv)

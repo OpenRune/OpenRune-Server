@@ -1,0 +1,5 @@
+tool_belt = "sprites.tool_belt"
+square_button = "sprites.square_button"
+square_button_hover = "sprites.square_button_hover"
+square_button_clicked = "sprites.square_button_clicked"
+square_button_disabled = "sprites.square_button_disabled"

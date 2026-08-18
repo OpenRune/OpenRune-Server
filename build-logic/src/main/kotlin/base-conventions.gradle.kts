@@ -5,7 +5,12 @@ plugins {
     id("test-conventions")
 }
 
-if (path != ":or-cache" && path != ":engine:map" && path != ":engine:routefinder") {
+if (path != ":or-cache" &&
+    path != ":or-cache:pack-api" &&
+    path != ":engine:map" &&
+    path != ":engine:routefinder" &&
+    !path.endsWith(":pack")
+) {
     dependencies {
         implementation(project(":or-cache"))
     }

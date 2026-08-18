@@ -13,6 +13,8 @@ dependencies {
     api(libs.or2.definition)
     api(libs.or2.filestore)
     api(libs.or2.filesystem)
+    api(projects.orCache.packApi)
+    implementation(projects.content.other.toolbelt.pack)
     implementation(projects.engine.map)
     implementation(projects.engine.routefinder)
     implementation("com.michael-bull.kotlin-inline-logger:kotlin-inline-logger:1.0.6")
@@ -23,6 +25,7 @@ dependencies {
     implementation(libs.jackson.databind)
     implementation("dev.or2:toml-rsconfig:1.0")
     implementation(libs.fastutil)
+    implementation(libs.classgraph)
 }
 
 tasks {
@@ -43,6 +46,16 @@ tasks {
         args = listOf("FRESH_INSTALL")
     }
 
+    register<JavaExec>("cleanCs2") {
+        group = "tools"
+        description =
+            "Deletes the generated CS2 directory from user app data (recreated on next buildCache)"
+        classpath = sourceSets["main"].runtimeClasspath
+        mainClass.set("dev.openrune.CleanCs2Kt")
+        workingDir = project.projectDir
+        dependsOn("classes")
+    }
+
     register<JavaExec>("mergePluginGamevals") {
         group = "cache"
         description =
@@ -55,3 +68,5 @@ tasks {
     }
 
 }
+
+

@@ -1,0 +1,18 @@
+[after_db.toolbelt_items]
+for obj in db.toolbelt_slots.allowed_items {
+    val ops = oc.iops(obj)
+
+    var anchor = ops.indexOfFirst { it == "Wear" || it == "Wield" }
+    if (anchor == -1) {
+        anchor = ops.indexOfFirst { it == "Use" }
+    }
+
+    var slot = ops.indexOfFirstBlank(anchor + 1)
+    if (slot == -1) {
+        slot = ops.indexOfFirstBlank()
+    }
+
+    if (slot != -1) {
+        oc.addiop(obj, "Add-to-toolbelt", slot)
+    }
+}
