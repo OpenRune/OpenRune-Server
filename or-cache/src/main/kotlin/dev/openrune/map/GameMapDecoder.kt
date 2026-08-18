@@ -35,6 +35,34 @@ import org.rsmod.routefinder.flag.CollisionFlag
 import org.rsmod.routefinder.loc.LocLayerConstants
 
 object GameMapDecoder {
+
+    /**
+     * The plane carrying the LINK_BELOW ("bridge") tile flag. It is authored on plane 1 only and
+     * governs every plane: the client reads `tileSettings[1][x][z]` regardless of which plane it is
+     * resolving.
+     */
+    private const val BRIDGE_FLAG_LEVEL = 1
+
+    /**
+     * Resolves the plane that content authored on [level] at ([x], [z]) actually occupies.
+     *
+     * A tile flagged LINK_BELOW draws - and therefore collides - one plane lower than authored.
+     * That is what puts you on top of a bridge deck instead of in the river beneath it, and what
+     * lets a staircase span from ground level up onto a raised platform.
+     *
+     * Returns `-1` when the result falls below ground. That is the filler underneath a bridge,
+     * which has nowhere to go, so callers must skip it rather than write it: [CollisionFlagMap]
+     * masks the plane with `(level and 0x3)`, so a negative plane silently wraps to 3.
+     *
+     * [putMaps] and [putLocs] must resolve identically. If they disagree, a square's tile collision
+     * and its loc collision land on different planes.
+     */
+    private fun bridgeLevel(mapDef: MapTileSimpleDefinition, x: Int, z: Int, level: Int): Int {
+        val flags = mapDef[x, z, BRIDGE_FLAG_LEVEL].toInt()
+        val bridged = (flags and MapTileSimpleDefinition.LINK_BELOW) != 0
+        return if (bridged) level - 1 else level
+    }
+
     public fun decodeAll(spawnSink: GameMapSpawnSink, cache: Cache): Unit =
         runBlocking(Dispatchers.Default) {
             val mapBuffers = cache.readMapBuffers()
@@ -139,12 +167,10 @@ object GameMapDecoder {
 
                     val absX = baseX + x
                     val absZ = baseZ + z
-                    val resolvedLevel =
-                        if ((flags and MapTileSimpleDefinition.LINK_BELOW) != 0) {
-                            level - 1
-                        } else {
-                            level
-                        }
+                    val resolvedLevel = bridgeLevel(mapDef, x, z, level)
+                    if (resolvedLevel < 0) {
+                        continue
+                    }
                     collision[absX, absZ, resolvedLevel] = mask
                 }
             }
@@ -161,33 +187,11 @@ object GameMapDecoder {
         with(mapBuilder) {
             for (packedLoc in locDef.spawns.longIterator()) {
                 val loc = MapLocDefinition(packedLoc)
-                val local = MapSquareGrid(loc.localX, loc.localZ, loc.level)
-                val tileFlags = mapDef[local.x, local.z, local.level].toInt()
-                val tileAboveFlags =
-                    if (local.level >= CoordGrid.LEVEL_COUNT - 1) {
-                        tileFlags
-                    } else {
-                        mapDef[local.x, local.z, local.level + 1].toInt()
-                    }
-                val resolvedTileFlags =
-                    if ((tileAboveFlags and MapTileSimpleDefinition.LINK_BELOW) != 0) {
-                        tileAboveFlags
-                    } else {
-                        tileFlags
-                    }
-                // Take into account that any tile that has this bit flag will cause locs below
-                // it to "visually" go one level down.
-                val visualLevel =
-                    if ((resolvedTileFlags and MapTileSimpleDefinition.LINK_BELOW) != 0) {
-                        loc.level - 1
-                    } else {
-                        loc.level
-                    }
+                val visualLevel = bridgeLevel(mapDef, loc.localX, loc.localZ, loc.level)
                 if (visualLevel < 0) {
                     continue
                 }
-                val coords =
-                    square.toCoords(0.coerceAtLeast(visualLevel)).translate(loc.localX, loc.localZ)
+                val coords = square.toCoords(visualLevel).translate(loc.localX, loc.localZ)
                 val zoneGridX = coords.x and ZoneGrid.X_BIT_MASK
                 val zoneGridZ = coords.z and ZoneGrid.Z_BIT_MASK
                 val zone = computeIfAbsent(ZoneKey.from(coords)) { ZoneBuilder() }
