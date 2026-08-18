@@ -174,6 +174,186 @@ weight = 1
 obj = "obj.granite_boots"
 count = 1
 
+[[main.separate_rolls]]
+numerator = 10
+denominator = 437
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.unidentified_kwuarm"
+count = 2
+
+[[main.separate_rolls]]
+numerator = 10
+denominator = 547
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.unidentified_cadantine"
+count = 2
+
+[[main.separate_rolls]]
+numerator = 10
+denominator = 547
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.unidentified_dwarf_weed"
+count = 2
+
+[[main.separate_rolls]]
+numerator = 10
+denominator = 729
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.unidentified_lantadyme"
+count = 2
+
+[[main.separate_rolls]]
+numerator = 1
+denominator = 58
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.ranarr_seed"
+count = 1
+
+[[main.separate_rolls]]
+numerator = 5
+denominator = 5491
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.snapdragon_seed"
+count = 1
+
+[[main.separate_rolls]]
+numerator = 10
+denominator = 13977
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.torstol_seed"
+count = 1
+
+[[main.separate_rolls]]
+numerator = 2
+denominator = 3075
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.watermelon_seed"
+count = 15
+
+[[main.separate_rolls]]
+numerator = 2
+denominator = 3075
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.willow_seed"
+count = 1
+
+[[main.separate_rolls]]
+numerator = 2
+denominator = 607
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.mahogany_seed"
+count = 1
+
+[[main.separate_rolls]]
+numerator = 10
+denominator = 17083
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.maple_seed"
+count = 1
+
+[[main.separate_rolls]]
+numerator = 2
+denominator = 333
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.teak_seed"
+count = 1
+
+[[main.separate_rolls]]
+numerator = 10
+denominator = 1147
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.yew_seed"
+count = 1
+
+[[main.separate_rolls]]
+numerator = 5
+denominator = 10982
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.papaya_tree_seed"
+count = 1
+
+[[main.separate_rolls]]
+numerator = 2
+denominator = 5125
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.magic_tree_seed"
+count = 1
+
+[[main.separate_rolls]]
+numerator = 1
+denominator = 3075
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.palm_tree_seed"
+count = 1
+
+[[main.separate_rolls]]
+numerator = 5
+denominator = 19219
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.spirit_tree_seed"
+count = 1
+
+[[main.separate_rolls]]
+numerator = 1
+denominator = 5125
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.dragonfruit_tree_seed"
+count = 1
+
+[[main.separate_rolls]]
+numerator = 2
+denominator = 15375
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.celastrus_tree_seed"
+count = 1
+
+[[main.separate_rolls]]
+numerator = 2
+denominator = 15375
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.redwood_tree_seed"
+count = 1
+
 [[tertiary]]
 numerator = 1
 denominator = 12000
@@ -188,24 +368,4 @@ count = 1
 clue_scroll_box = true
 
 
-# Unknown wiki drop rate: Grimy kwuarm [main/Herbs/1/{{#expr:1/(40*{{#var:herbbase}}) round 1}}]
-# Unknown wiki drop rate: Grimy cadantine [main/Herbs/1/{{#expr:1/(32*{{#var:herbbase}}) round 1}}]
-# Unknown wiki drop rate: Grimy dwarf weed [main/Herbs/1/{{#expr:1/(32*{{#var:herbbase}}) round 1}}]
-# Unknown wiki drop rate: Grimy lantadyme [main/Herbs/1/{{#expr:1/(24*{{#var:herbbase}}) round 1}}]
-# Unknown wiki drop rate: Ranarr seed [main/Seeds/1/{{#expr:1/(15*{{#var:seedbase}} + 2/123) round 1}}]
-# Unknown wiki drop rate: Snapdragon seed [main/Seeds/1/{{#expr:1/(14*{{#var:seedbase}}) round 1}}]
-# Unknown wiki drop rate: Torstol seed [main/Seeds/1/{{#expr:1/(11*{{#var:seedbase}}) round 1}}]
-# Unknown wiki drop rate: Watermelon seed [main/Seeds/1/{{#expr:1/(10*{{#var:seedbase}}) round 1}}]
-# Unknown wiki drop rate: Willow seed [main/Seeds/1/{{#expr:1/(10*{{#var:seedbase}}) round 1}}]
-# Unknown wiki drop rate: Mahogany seed [main/Seeds/1/{{#expr:1/(9*{{#var:seedbase}} + (1/123 * 1/3)) round 1}}]
-# Unknown wiki drop rate: Maple seed [main/Seeds/1/{{#expr:1/(9*{{#var:seedbase}}) round 1}}]
-# Unknown wiki drop rate: Teak seed [main/Seeds/1/{{#expr:1/(9*{{#var:seedbase}} + (1/123 * 2/3)) round 1}}]
-# Unknown wiki drop rate: Yew seed [main/Seeds/1/{{#expr:1/(9*{{#var:seedbase}} + 1/123) round 1}}]
-# Unknown wiki drop rate: Papaya tree seed [main/Seeds/1/{{#expr:1/(7*{{#var:seedbase}}) round 1}}]
-# Unknown wiki drop rate: Magic seed [main/Seeds/1/{{#expr:1/(6*{{#var:seedbase}}) round 1}}]
-# Unknown wiki drop rate: Palm tree seed [main/Seeds/1/{{#expr:1/(5*{{#var:seedbase}}) round 1}}]
-# Unknown wiki drop rate: Spirit seed [main/Seeds/1/{{#expr:1/(4*{{#var:seedbase}}) round 1}}]
-# Unknown wiki drop rate: Dragonfruit tree seed [main/Seeds/1/{{#expr:1/(3*{{#var:seedbase}}) round 1}}]
-# Unknown wiki drop rate: Celastrus seed [main/Seeds/1/{{#expr:1/(2*{{#var:seedbase}}) round 1}}]
-# Unknown wiki drop rate: Redwood tree seed [main/Seeds/1/{{#expr:1/(2*{{#var:seedbase}}) round 1}}]
 # Main table pool padding uses a nothing roll (F2P drops removed and/or subtable access missing from wiki parse) (14 weight)

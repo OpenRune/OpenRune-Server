@@ -58,6 +58,16 @@ public val hydraDropTable: RSDropTable<Player, DropRollItem> = RSDropTable(
         1 weight SharedDropTables.gem
         4 weight SharedDropTables.rareSeed
         4 weight nothing()
+        1 outOf 192 separate "obj.cert_unidentified_avantoe" count 3
+        1 outOf 240 separate "obj.cert_unidentified_ranarr" count 3
+        1 outOf 320 separate "obj.cert_unidentified_snapdragon" count 3
+        1 outOf 320 separate "obj.cert_unidentified_torstol" count 3
+        1 outOf 256 separate "obj.xbows_bolt_tips_diamond" count 20
+        5 outOf 1422 separate "obj.xbows_bolt_tips_ruby" count 20
+        5 outOf 1422 separate "obj.xbows_bolt_tips_emerald" count 20
+        10 outOf 3657 separate "obj.xbows_bolt_tips_dragonstone" count 20
+        10 outOf 8533 separate "obj.xbows_bolt_tips_onyx" count 20
+        1 outOf 1280 separate "obj.xbows_bolt_tips_sapphire" count 20
     },
     tertiaries = rsPlayerTertiaryTable {
         onBuilder { brimstoneKeyRoll(konarTaskBonus = true) }
@@ -71,13 +81,3 @@ public val hydraDropTable: RSDropTable<Player, DropRollItem> = RSDropTable(
 )
 
 // Unknown wiki drop rates (text rarity — need data collection):
-//   - Grimy avantoe [main/1/{{#expr:1/(5*{{#var:uht}}) round 2}}]
-//   - Grimy ranarr weed [main/1/{{#expr:1/(4*{{#var:uht}}) round 2}}]
-//   - Grimy snapdragon [main/1/{{#expr:1/(3*{{#var:uht}}) round 2}}]
-//   - Grimy torstol [main/1/{{#expr:1/(3*{{#var:uht}}) round 2}}]
-//   - Diamond bolt tips [main/1/{{#expr:1/(10*{{#var:bolttipbase}}) round 1}}]
-//   - Ruby bolt tips [main/1/{{#expr:1/(9*{{#var:bolttipbase}}) round 1}}]
-//   - Emerald bolt tips [main/1/{{#expr:1/(9*{{#var:bolttipbase}}) round 1}}]
-//   - Dragonstone bolt tips [main/1/{{#expr:1/(7*{{#var:bolttipbase}}) round 1}}]
-//   - Onyx bolt tips [main/1/{{#expr:1/(3*{{#var:bolttipbase}}) round 1}}]
-//   - Sapphire bolt tips [main/1/{{#expr:1/(2*{{#var:bolttipbase}}) round 1}}]

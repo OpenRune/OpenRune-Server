@@ -36,6 +36,29 @@ public val mantaRayMonsterDropTable: RSDropTable<Player, DropRollItem> = RSDropT
 
         4 weight SharedDropTables.combatHerb
         70 weight nothing()
+        10 outOf 2063 separate "obj.ranarr_seed" count 1
+        5 outOf 1473 separate "obj.watermelon_seed" count 15
+        5 outOf 1547 separate "obj.willow_seed" count 1
+        5 outOf 1719 separate "obj.mahogany_seed" count 1
+        5 outOf 1719 separate "obj.maple_seed" count 1
+        5 outOf 1719 separate "obj.teak_seed" count 1
+        5 outOf 1719 separate "obj.yew_seed" count 1
+        1 outOf 442 separate "obj.papaya_tree_seed" count 1
+        2 outOf 1125 separate "obj.magic_tree_seed" count 1
+        5 outOf 3094 separate "obj.palm_tree_seed" count 1
+        5 outOf 3867 separate "obj.spirit_tree_seed" count 1
+        10 outOf 10313 separate "obj.dragonfruit_tree_seed" count 1
+        10 outOf 15469 separate "obj.celastrus_tree_seed" count 1
+        10 outOf 15469 separate "obj.redwood_tree_seed" count 1
+        5 outOf 104 separate "obj.unidentified_guam" count 2..3
+        5 outOf 139 separate "obj.unidentified_marentill" count 2..3
+        10 outOf 371 separate "obj.unidentified_tarromin" count 2..3
+        5 outOf 238 separate "obj.unidentified_harralander" count 2..3
+        5 outOf 232 separate "obj.unidentified_ranarr" count 2..3
+        5 outOf 417 separate "obj.unidentified_irit" count 2..3
+        10 outOf 653 separate "obj.unidentified_avantoe" count 2..3
+        1 outOf 198 separate "obj.unidentified_snapdragon" count 2..3
+        1 outOf 264 separate "obj.unidentified_torstol" count 2..3
     },
     tertiaries = rsPlayerTertiaryTable {
         1 outOf 10 weight "obj.sailing_manta_ray_skin" count 1 condition { player ->
@@ -63,30 +86,7 @@ public val mantaRayMonsterDropTable: RSDropTable<Player, DropRollItem> = RSDropT
 //   - Snape grass seed [main/1/{{#expr:1/({{#var:rareseed}}*20) round 1}}]
 //   - Dwarf weed seed [main/1/{{#expr:1/({{#var:rareseed}}*14) round 1}}]
 //   - Torstol seed [main/1/{{#expr:1/({{#var:rareseed}}*9 + {{#var:treeseed}}*22) round 1}}]
-//   - Ranarr seed [main/1/{{#expr:1/({{#var:treeseed}}*30) round 1}}]
-//   - Watermelon seed [main/1/{{#expr:1/({{#var:treeseed}}*21) round 1}}]
-//   - Willow seed [main/1/{{#expr:1/({{#var:treeseed}}*20) round 1}}]
-//   - Mahogany seed [main/1/{{#expr:1/({{#var:treeseed}}*18) round 1}}]
-//   - Maple seed [main/1/{{#expr:1/({{#var:treeseed}}*18) round 1}}]
-//   - Teak seed [main/1/{{#expr:1/({{#var:treeseed}}*18) round 1}}]
-//   - Yew seed [main/1/{{#expr:1/({{#var:treeseed}}*18) round 1}}]
-//   - Papaya tree seed [main/1/{{#expr:1/({{#var:treeseed}}*14) round 1}}]
-//   - Magic seed [main/1/{{#expr:1/({{#var:treeseed}}*11) round 1}}]
-//   - Palm tree seed [main/1/{{#expr:1/({{#var:treeseed}}*10) round 1}}]
-//   - Spirit seed [main/1/{{#expr:1/({{#var:treeseed}}*8) round 1}}]
-//   - Dragonfruit tree seed [main/1/{{#expr:1/({{#var:treeseed}}*6) round 1}}]
-//   - Celastrus seed [main/1/{{#expr:1/({{#var:treeseed}}*4) round 1}}]
-//   - Redwood tree seed [main/1/{{#expr:1/({{#var:treeseed}}*4) round 1}}]
-//   - Grimy guam leaf [main/1/{{#expr:1/({{#var:hdt}}*32) round 1}}]
-//   - Grimy marrentill [main/1/{{#expr:1/({{#var:hdt}}*24) round 1}}]
-//   - Grimy tarromin [main/1/{{#expr:1/({{#var:hdt}}*18) round 1}}]
-//   - Grimy harralander [main/1/{{#expr:1/({{#var:hdt}}*14) round 1}}]
-//   - Grimy ranarr weed [main/1/{{#expr:1/({{#var:hdt}}*11 + {{#var:usefulHdt}}*4) round 1}}]
-//   - Grimy irit leaf [main/1/{{#expr:1/({{#var:hdt}}*8) round 1}}]
-//   - Grimy avantoe [main/1/{{#expr:1/({{#var:hdt}}*6 + {{#var:usefulHdt}}*5) round 1}}]
 //   - Grimy kwuarm [main/1/{{#expr:1/({{#var:hdt}}*5) round 1}}]
 //   - Grimy cadantine [main/1/{{#expr:1/({{#var:hdt}}*4) round 1}}]
 //   - Grimy lantadyme [main/1/{{#expr:1/({{#var:hdt}}*3) round 1}}]
 //   - Grimy dwarf weed [main/1/{{#expr:1/({{#var:hdt}}*3) round 1}}]
-//   - Grimy snapdragon [main/1/{{#expr:1/({{#var:usefulHdt}}*4) round 1}}]
-//   - Grimy torstol [main/1/{{#expr:1/({{#var:usefulHdt}}*3) round 1}}]

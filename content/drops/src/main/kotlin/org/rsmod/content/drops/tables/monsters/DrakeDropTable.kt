@@ -53,6 +53,14 @@ public val drakeDropTable: RSDropTable<Player, DropRollItem> = RSDropTable(
         1 weight SharedDropTables.gem
         1 weight SharedDropTables.rareSeed
         5 weight nothing()
+        5 outOf 496 separate "obj.unidentified_avantoe" count 1..3
+        5 outOf 496 separate "obj.unidentified_kwuarm" count 1..3
+        1 outOf 124 separate "obj.unidentified_ranarr" count 1..3
+        1 outOf 124 separate "obj.unidentified_snapdragon" count 1..3
+        1 outOf 124 separate "obj.unidentified_cadantine" count 1..3
+        1 outOf 124 separate "obj.unidentified_dwarf_weed" count 1..3
+        10 outOf 1653 separate "obj.unidentified_lantadyme" count 1..3
+        10 outOf 1653 separate "obj.unidentified_torstol" count 1..3
     },
     tertiaries = rsPlayerTertiaryTable {
         onBuilder { brimstoneKeyRoll(konarTaskBonus = true) }
@@ -63,11 +71,3 @@ public val drakeDropTable: RSDropTable<Player, DropRollItem> = RSDropTable(
 )
 
 // Unknown wiki drop rates (text rarity — need data collection):
-//   - Grimy avantoe [main/1/{{#expr:1/(5*{{#var:herbbase}}) round 1}}]
-//   - Grimy kwuarm [main/1/{{#expr:1/(5*{{#var:herbbase}}) round 1}}]
-//   - Grimy ranarr weed [main/1/{{#expr:1/(4*{{#var:herbbase}}) round 1}}]
-//   - Grimy snapdragon [main/1/{{#expr:1/(4*{{#var:herbbase}}) round 1}}]
-//   - Grimy cadantine [main/1/{{#expr:1/(4*{{#var:herbbase}}) round 1}}]
-//   - Grimy dwarf weed [main/1/{{#expr:1/(4*{{#var:herbbase}}) round 1}}]
-//   - Grimy lantadyme [main/1/{{#expr:1/(3*{{#var:herbbase}}) round 1}}]
-//   - Grimy torstol [main/1/{{#expr:1/(3*{{#var:herbbase}}) round 1}}]
