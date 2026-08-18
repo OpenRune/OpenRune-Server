@@ -1,0 +1,9 @@
+[gamevals.varp]
+drew_sandstone=65486
+
+[gamevals.enum]
+drew_sandstone_amounts=65474
+
+[gamevals.varbit]
+drew_sandstone_bucket_sand=65454
+drew_sandstone_empty_buckets=65453

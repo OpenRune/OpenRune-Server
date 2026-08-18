@@ -2,6 +2,7 @@ package org.rsmod.content.other.sandstorm.npc
 
 import dev.openrune.types.ItemServerType
 import org.rsmod.api.config.Constants
+import org.rsmod.api.enums.NamedEnums.drew_sandstone_amounts
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.script.onOpNpc1
@@ -15,7 +16,6 @@ import org.rsmod.content.other.sandstorm.SAND_PRICE
 import org.rsmod.content.other.sandstorm.depositSandstone
 import org.rsmod.content.other.sandstorm.heldBuckets
 import org.rsmod.content.other.sandstorm.sandstoneDepositMessage
-import org.rsmod.content.other.sandstorm.sandstoneObjs
 import org.rsmod.content.other.sandstorm.sandstormBucketsEmpty
 import org.rsmod.content.other.sandstorm.sandstormBucketsSand
 import org.rsmod.content.other.sandstorm.storeBuckets
@@ -43,9 +43,8 @@ class Drew : PluginScript() {
 
     private suspend fun ProtectedAccess.useObjOnDrew(npc: Npc, objType: ItemServerType) {
         when {
-            objType.internalName in sandstoneObjs -> depositSandstoneOn(npc)
-            ocUncert(objType).internalName == "obj.bucket_empty" ->
-                startDialogue(npc) { depositBuckets() }
+            drew_sandstone_amounts.filterValuesNotNull().keys.contains(objType) -> depositSandstoneOn(npc)
+            ocUncert(objType).internalName == "obj.bucket_empty" -> startDialogue(npc) { depositBuckets() }
             else -> mes(Constants.dm_default)
         }
     }
