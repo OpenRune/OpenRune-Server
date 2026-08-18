@@ -1,0 +1,101 @@
+name: CI
+
+permissions:
+  contents: read
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths-ignore:
+      - "**.md"
+      - "docs/**"
+  push:
+    branches:
+      - main
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: build & boot
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: "21"
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v6
+
+      # The downloaded game cache only changes when the revision in
+      # game.example.yml bumps (~monthly), so cache it across runs. Runs on
+      # main seed the base-branch scope that all pull requests can read.
+      # The gamevals .dat files ride along because buildCache requires them
+      # at startup (GameValProvider loads both before any packing).
+      - name: Cache game data
+        id: gamecache
+        uses: actions/cache@v6
+        with:
+          path: |
+            .data/cache
+            .data/xteas.json
+            .data/gamevals-binary/gamevals.dat
+            .data/gamevals-binary/gamevals_columns.dat
+          key: game-cache-v2-${{ hashFiles('game.example.yml') }}
+
+      # api/generated/src is gitignored and produced by the cache pipeline
+      # (or-cache TableGenerater and gameval codegen), so a clean checkout
+      # does not compile until these tasks run — same bootstrap as the
+      # Release Server workflow. On a cache hit the 190 MB openrs2 download
+      # is skipped: buildCache repacks and regenerates sources from the
+      # restored game data.
+      - name: Generate cache and gameval sources
+        if: steps.gamecache.outputs.cache-hit != 'true'
+        run: ./gradlew :or-cache:freshCache :or-cache:mergePluginGamevals
+
+      - name: Rebuild sources from cached game data
+        if: steps.gamecache.outputs.cache-hit == 'true'
+        run: ./gradlew :or-cache:buildCache :or-cache:mergePluginGamevals
+
+      - name: Compile and run tests
+        run: ./gradlew assemble test
+
+      # Config errors in a data-driven server surface at boot (unmapped
+      # gamevals throw by design), so start the server and require the
+      # "Server ready" line within the timeout.
+      - name: Boot server to ready
+        run: |
+          ./gradlew generateRsa
+          [ -f game.yml ] || cp game.example.yml game.yml
+          ./gradlew run -q > boot.log 2>&1 &
+          GRADLE_PID=$!
+          for i in $(seq 1 300); do
+            grep -q "Server ready in" boot.log && break
+            kill -0 $GRADLE_PID 2>/dev/null || break
+            sleep 1
+          done
+          if grep -q "Server ready in" boot.log; then
+            READY=$(grep -o "Server ready in [0-9.]*s" boot.log | head -1)
+            echo "$READY"
+            echo ":white_check_mark: $READY" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "Server did not reach ready state"; tail -40 boot.log; exit 1
+          fi
+          kill $GRADLE_PID 2>/dev/null || true
+
+      - name: Upload boot log
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: boot-log
+          path: boot.log
+          if-no-files-found: ignore
