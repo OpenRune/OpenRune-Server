@@ -57,6 +57,9 @@ public val veiledKrakenDropTable: RSDropTable<Player, DropRollItem> = RSDropTabl
 
         9 weight SharedDropTables.herb
         2 weight nothing()
+        10 outOf 1813 separate "obj.camphor_seed" count 1
+        1 outOf 680 separate "obj.ironwood_seed" count 1
+        1 outOf 2720 separate "obj.rosewood_seed" count 1
     },
     tertiaries = rsPlayerTertiaryTable {
         1 outOf 10 weight "obj.sailing_veiled_kraken_ink_sac" count 1 condition { player ->
@@ -71,6 +74,3 @@ public val veiledKrakenDropTable: RSDropTable<Player, DropRollItem> = RSDropTabl
 )
 
 // Unknown wiki drop rates (text rarity — need data collection):
-//   - Camphor seed [main/1/{{#expr:1/(15/20 * 2/272) round 1}}]
-//   - Ironwood seed [main/1/{{#expr:1/(4/20 * 2/272) round 1}}]
-//   - Rosewood seed [main/1/{{#expr:1/(1/20 * 2/272) round 1}}]

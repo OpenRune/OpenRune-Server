@@ -38,6 +38,41 @@ public val stingrayDropTable: RSDropTable<Player, DropRollItem> = RSDropTable(
 
         4 weight SharedDropTables.combatHerb
         86 weight nothing()
+        10 outOf 191 separate "obj.limpwurt_seed" count 1
+        1 outOf 20 separate "obj.strawberry_seed" count 1
+        10 outOf 209 separate "obj.marrentill_seed" count 1
+        5 outOf 142 separate "obj.jangerberry_bush_seed" count 1
+        5 outOf 154 separate "obj.tarromin_seed" count 1
+        2 outOf 63 separate "obj.wildblood_hop_seed" count 1
+        2 outOf 83 separate "obj.watermelon_seed" count 1
+        1 outOf 45 separate "obj.toadflax_seed" count 1
+        10 outOf 467 separate "obj.harralander_seed" count 1
+        5 outOf 327 separate "obj.snape_grass_seed" count 1
+        2 outOf 133 separate "obj.irit_seed" count 1
+        10 outOf 671 separate "obj.ranarr_seed" count 1
+        5 outOf 339 separate "obj.belladonna_seed" count 1
+        10 outOf 769 separate "obj.whiteberry_bush_seed" count 1
+        5 outOf 451 separate "obj.mushroom_seed" count 1
+        1 outOf 95 separate "obj.poisonivy_bush_seed" count 1
+        2 outOf 195 separate "obj.avantoe_seed" count 1
+        10 outOf 1013 separate "obj.cactus_seed" count 1
+        10 outOf 1381 separate "obj.kwuarm_seed" count 1
+        10 outOf 1447 separate "obj.potato_cactus_seed" count 1
+        1 outOf 225 separate "obj.snapdragon_seed" count 1
+        5 outOf 1519 separate "obj.cadantine_seed" count 1
+        5 outOf 2072 separate "obj.lantadyme_seed" count 1
+        10 outOf 6513 separate "obj.dwarf_weed_seed" count 1
+        10 outOf 9083 separate "obj.snape_grass_seed" count 3
+        1 outOf 1139 separate "obj.torstol_seed" count 1
+        10 outOf 143 separate "obj.unidentified_guam" count 1..2
+        1 outOf 19 separate "obj.unidentified_marentill" count 1..2
+        5 outOf 127 separate "obj.unidentified_tarromin" count 1..2
+        10 outOf 327 separate "obj.unidentified_harralander" count 1..2
+        5 outOf 188 separate "obj.unidentified_ranarr" count 1..2
+        10 outOf 571 separate "obj.unidentified_irit" count 1..2
+        2 outOf 123 separate "obj.unidentified_avantoe" count 1..2
+        1 outOf 400 separate "obj.unidentified_snapdragon" count 1..2
+        10 outOf 5333 separate "obj.unidentified_torstol" count 1..2
     },
     tertiaries = rsPlayerTertiaryTable {
         1 outOf 10 weight "obj.sailing_stingray_skin" count 1 condition { player ->
@@ -52,42 +87,7 @@ public val stingrayDropTable: RSDropTable<Player, DropRollItem> = RSDropTable(
 )
 
 // Unknown wiki drop rates (text rarity — need data collection):
-//   - Limpwurt seed [main/1/{{#expr:1/({{#var:uncseed}}*137) round 1}}]
-//   - Strawberry seed [main/1/{{#expr:1/({{#var:uncseed}}*131) round 1}}]
-//   - Marrentill seed [main/1/{{#expr:1/({{#var:uncseed}}*125) round 1}}]
-//   - Jangerberry seed [main/1/{{#expr:1/({{#var:uncseed}}*92) round 1}}]
-//   - Tarromin seed [main/1/{{#expr:1/({{#var:uncseed}}*85) round 1}}]
-//   - Wildblood seed [main/1/{{#expr:1/({{#var:uncseed}}*83) round 1}}]
-//   - Watermelon seed [main/1/{{#expr:1/({{#var:uncseed}}*63) round 1}}]
-//   - Toadflax seed [main/1/{{#expr:1/({{#var:rareseed}}*216 + {{#var:uncseed}}*27) round 1}}]
-//   - Harralander seed [main/1/{{#expr:1/({{#var:uncseed}}*56) round 1}}]
-//   - Snape grass seed [main/1/{{#expr:1/({{#var:uncseed}}*40) round 1}}]
-//   - Irit seed [main/1/{{#expr:1/({{#var:rareseed}}*148 + {{#var:uncseed}}*18) round 1}}]
-//   - Ranarr seed [main/1/{{#expr:1/({{#var:uncseed}}*39) round 1}}]
-//   - Belladonna seed [main/1/{{#expr:1/({{#var:rareseed}}*143 + {{#var:uncseed}}*18) round 1}}]
-//   - Whiteberry seed [main/1/{{#expr:1/({{#var:uncseed}}*34) round 1}}]
-//   - Mushroom spore [main/1/{{#expr:1/({{#var:uncseed}}*29) round 1}}]
-//   - Poison ivy seed [main/1/{{#expr:1/({{#var:rareseed}}*101 + {{#var:uncseed}}*13) round 1}}]
-//   - Avantoe seed [main/1/{{#expr:1/({{#var:rareseed}}*103 + {{#var:uncseed}}*12) round 1}}]
-//   - Cactus seed [main/1/{{#expr:1/({{#var:rareseed}}*96 + {{#var:uncseed}}*12) round 1}}]
-//   - Kwuarm seed [main/1/{{#expr:1/({{#var:rareseed}}*69 + {{#var:uncseed}}*9) round 1}}]
-//   - Potato cactus seed [main/1/{{#expr:1/({{#var:rareseed}}*70 + {{#var:uncseed}}*8) round 1}}]
-//   - Snapdragon seed [main/1/{{#expr:1/({{#var:rareseed}}*46 + {{#var:uncseed}}*5) round 1}}]
-//   - Cadantine seed [main/1/{{#expr:1/({{#var:rareseed}}*32 + {{#var:uncseed}}*4) round 1}}]
-//   - Lantadyme seed [main/1/{{#expr:1/({{#var:rareseed}}*23 + {{#var:uncseed}}*3) round 1}}]
-//   - Dwarf weed seed [main/1/{{#expr:1/({{#var:rareseed}}*14 + {{#var:uncseed}}*2) round 1}}]
-//   - Snape grass seed [main/1/{{#expr:1/({{#var:rareseed}}*20) round 1}}]
-//   - Torstol seed [main/1/{{#expr:1/({{#var:rareseed}}*9 + {{#var:uncseed}}*1) round 0}}]
-//   - Grimy guam leaf [main/1/{{#expr:1/({{#var:hdt}}*32) round 1}}]
-//   - Grimy marrentill [main/1/{{#expr:1/({{#var:hdt}}*24) round 1}}]
-//   - Grimy tarromin [main/1/{{#expr:1/({{#var:hdt}}*18) round 1}}]
-//   - Grimy harralander [main/1/{{#expr:1/({{#var:hdt}}*14) round 1}}]
-//   - Grimy ranarr weed [main/1/{{#expr:1/({{#var:hdt}}*11 + {{#var:usefulHdt}}*4) round 1}}]
-//   - Grimy irit leaf [main/1/{{#expr:1/({{#var:hdt}}*8) round 1}}]
-//   - Grimy avantoe [main/1/{{#expr:1/({{#var:hdt}}*6 + {{#var:usefulHdt}}*5) round 1}}]
 //   - Grimy kwuarm [main/1/{{#expr:1/({{#var:hdt}}*5) round 1}}]
 //   - Grimy cadantine [main/1/{{#expr:1/({{#var:hdt}}*4) round 1}}]
 //   - Grimy lantadyme [main/1/{{#expr:1/({{#var:hdt}}*3) round 1}}]
 //   - Grimy dwarf weed [main/1/{{#expr:1/({{#var:hdt}}*3) round 1}}]
-//   - Grimy snapdragon [main/1/{{#expr:1/({{#var:usefulHdt}}*4) round 1}}]
-//   - Grimy torstol [main/1/{{#expr:1/({{#var:usefulHdt}}*3) round 1}}]

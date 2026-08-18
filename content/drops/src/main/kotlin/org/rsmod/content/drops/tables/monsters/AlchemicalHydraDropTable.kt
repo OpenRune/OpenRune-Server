@@ -62,6 +62,21 @@ public val alchemicalHydraDropTable: RSDropTable<Player, DropRollItem> = RSDropT
         1 weight "obj.crystal_key" count 1
 
         1 weight SharedDropTables.rareDrop
+        10 outOf 1811 separate "obj.hydra_eye" count 1
+        10 outOf 1811 separate "obj.hydra_fang" count 1
+        10 outOf 1811 separate "obj.hydra_heart" count 1
+        1 outOf 513 separate "obj.hydra_tail" count 1
+        1 outOf 514 separate "obj.hydra_leather" count 1
+        1 outOf 1001 separate "obj.hydra_claw" count 1
+        1 outOf 2001 separate "obj.dragon_knife" count 500..1000
+        5 outOf 323 separate "obj.cert_unidentified_avantoe" count 10..15
+        5 outOf 323 separate "obj.cert_unidentified_kwuarm" count 25..30
+        5 outOf 404 separate "obj.cert_unidentified_ranarr" count 10..15
+        5 outOf 404 separate "obj.cert_unidentified_snapdragon" count 10..15
+        5 outOf 404 separate "obj.cert_unidentified_cadantine" count 25..30
+        5 outOf 404 separate "obj.cert_unidentified_dwarf_weed" count 25..30
+        10 outOf 1077 separate "obj.cert_unidentified_lantadyme" count 25..30
+        10 outOf 1077 separate "obj.cert_unidentified_torstol" count 10..15
     },
     tertiaries = rsPlayerTertiaryTable {
         onBuilder { brimstoneKeyRoll(konarTaskBonus = true) }
@@ -78,18 +93,3 @@ public val alchemicalHydraDropTable: RSDropTable<Player, DropRollItem> = RSDropT
 )
 
 // Unknown wiki drop rates (text rarity — need data collection):
-//   - Hydra's eye [main/1/{{#expr:180/(1999/2000*1999/2000*999/1000*511/512*511/512) round 1}}]
-//   - Hydra's fang [main/1/{{#expr:180/(1999/2000*1999/2000*999/1000*511/512*511/512) round 1}}]
-//   - Hydra's heart [main/1/{{#expr:180/(1999/2000*1999/2000*999/1000*511/512*511/512) round 1}}]
-//   - Hydra tail [main/1/{{#expr:512/(1999/2000*1999/2000*999/1000) round 1}}]
-//   - Hydra leather [main/1/{{#expr:512/(1999/2000*1999/2000*999/1000*511/512) round 1}}]
-//   - Hydra's claw [main/1/{{#expr:1000/(1999/2000*1999/2000) round 1}}]
-//   - Dragon knife [main/1/{{#expr:2000/(1999/2000) round 1}}]
-//   - Grimy avantoe [main/1/{{#expr:1/(5*{{#var:herbbase}}) round 1}}]
-//   - Grimy kwuarm [main/1/{{#expr:1/(5*{{#var:herbbase}}) round 1}}]
-//   - Grimy ranarr weed [main/1/{{#expr:1/(4*{{#var:herbbase}}) round 1}}]
-//   - Grimy snapdragon [main/1/{{#expr:1/(4*{{#var:herbbase}}) round 1}}]
-//   - Grimy cadantine [main/1/{{#expr:1/(4*{{#var:herbbase}}) round 1}}]
-//   - Grimy dwarf weed [main/1/{{#expr:1/(4*{{#var:herbbase}}) round 1}}]
-//   - Grimy lantadyme [main/1/{{#expr:1/(3*{{#var:herbbase}}) round 1}}]
-//   - Grimy torstol [main/1/{{#expr:1/(3*{{#var:herbbase}}) round 1}}]
