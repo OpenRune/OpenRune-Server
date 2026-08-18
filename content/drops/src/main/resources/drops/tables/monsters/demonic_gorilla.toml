@@ -140,6 +140,42 @@ weight = 1
 obj = "obj.ballista_rope"
 count = 1
 
+[[main.separate_rolls]]
+numerator = 10
+denominator = 889
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.cert_unidentified_kwuarm"
+count = "7..13"
+
+[[main.separate_rolls]]
+numerator = 10
+denominator = 1111
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.cert_unidentified_cadantine"
+count = "7..13"
+
+[[main.separate_rolls]]
+numerator = 10
+denominator = 1481
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.cert_unidentified_lantadyme"
+count = "7..13"
+
+[[main.separate_rolls]]
+numerator = 10
+denominator = 1111
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.cert_unidentified_dwarf_weed"
+count = "7..13"
+
 [[tertiary]]
 numerator = 1
 denominator = 95
@@ -155,8 +191,4 @@ count = 1
 clue_scroll_box = true
 
 
-# Unknown wiki drop rate: Grimy kwuarm [main/Herbs/1/{{#expr:1/(40*{{#var:herbbase}}) round 1}}]
-# Unknown wiki drop rate: Grimy cadantine [main/Herbs/1/{{#expr:1/(32*{{#var:herbbase}}) round 1}}]
-# Unknown wiki drop rate: Grimy lantadyme [main/Herbs/1/{{#expr:1/(24*{{#var:herbbase}}) round 1}}]
-# Unknown wiki drop rate: Grimy dwarf weed [main/Herbs/1/{{#expr:1/(32*{{#var:herbbase}}) round 1}}]
 # Main table pool padding uses a nothing roll (F2P drops removed and/or subtable access missing from wiki parse) (46 weight)

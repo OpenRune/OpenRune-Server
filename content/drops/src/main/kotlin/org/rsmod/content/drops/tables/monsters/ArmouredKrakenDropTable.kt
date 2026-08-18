@@ -49,6 +49,35 @@ public val armouredKrakenDropTable: RSDropTable<Player, DropRollItem> = RSDropTa
         8 weight SharedDropTables.herb
         1 weight SharedDropTables.gem
         11 weight nothing()
+        10 outOf 727 separate "obj.toadflax_seed" count 1
+        5 outOf 531 separate "obj.irit_seed" count 1
+        5 outOf 549 separate "obj.belladonna_seed" count 1
+        5 outOf 764 separate "obj.avantoe_seed" count 1
+        10 outOf 1553 separate "obj.poisonivy_bush_seed" count 1
+        10 outOf 1587 separate "obj.camphor_seed" count 1
+        5 outOf 818 separate "obj.cactus_seed" count 1
+        10 outOf 2249 separate "obj.potato_cactus_seed" count 1
+        10 outOf 2273 separate "obj.kwuarm_seed" count 1
+        5 outOf 1714 separate "obj.snapdragon_seed" count 1
+        10 outOf 4543 separate "obj.limpwurt_seed" count 1
+        10 outOf 4751 separate "obj.strawberry_seed" count 1
+        10 outOf 4907 separate "obj.cadantine_seed" count 1
+        10 outOf 4979 separate "obj.marrentill_seed" count 1
+        1 outOf 595 separate "obj.ironwood_seed" count 1
+        2 outOf 1353 separate "obj.jangerberry_bush_seed" count 1
+        5 outOf 3409 separate "obj.lantadyme_seed" count 1
+        5 outOf 3661 separate "obj.tarromin_seed" count 1
+        5 outOf 3749 separate "obj.wildblood_hop_seed" count 1
+        10 outOf 8107 separate "obj.snape_grass_seed" count 3
+        10 outOf 9879 separate "obj.watermelon_seed" count 1
+        1 outOf 1111 separate "obj.harralander_seed" count 1
+        1 outOf 1117 separate "obj.dwarf_weed_seed" count 1
+        1 outOf 1556 separate "obj.snape_grass_seed" count 1
+        1 outOf 1596 separate "obj.ranarr_seed" count 1
+        1 outOf 1751 separate "obj.torstol_seed" count 1
+        1 outOf 1831 separate "obj.whiteberry_bush_seed" count 1
+        1 outOf 2146 separate "obj.mushroom_seed" count 1
+        1 outOf 2380 separate "obj.rosewood_seed" count 1
     },
     tertiaries = rsPlayerTertiaryTable {
         1 outOf 2 weight "obj.sailing_armoured_kraken_tentacle" count 1 condition { player ->
@@ -63,32 +92,3 @@ public val armouredKrakenDropTable: RSDropTable<Player, DropRollItem> = RSDropTa
 )
 
 // Unknown wiki drop rates (text rarity — need data collection):
-//   - Toadflax seed [main/1/{{#expr:1/({{#var:rareseed}}*216 + {{#var:uncseed}}*27) round 1}}]
-//   - Irit seed [main/1/{{#expr:1/({{#var:rareseed}}*148 + {{#var:uncseed}}*18) round 1}}]
-//   - Belladonna seed [main/1/{{#expr:1/({{#var:rareseed}}*143 + {{#var:uncseed}}*18) round 1}}]
-//   - Avantoe seed [main/1/{{#expr:1/({{#var:rareseed}}*103 + {{#var:uncseed}}*12) round 1}}]
-//   - Poison ivy seed [main/1/{{#expr:1/({{#var:rareseed}}*101 + {{#var:uncseed}}*13) round 1}}]
-//   - Camphor seed [main/1/{{#expr:1/({{#var:sailseed}}*15) round 1}}]
-//   - Cactus seed [main/1/{{#expr:1/({{#var:rareseed}}*96 + {{#var:uncseed}}*12) round 1}}]
-//   - Potato cactus seed [main/1/{{#expr:1/({{#var:rareseed}}*70 + {{#var:uncseed}}*8) round 1}}]
-//   - Kwuarm seed [main/1/{{#expr:1/({{#var:rareseed}}*69 + {{#var:uncseed}}*9) round 1}}]
-//   - Snapdragon seed [main/1/{{#expr:1/({{#var:rareseed}}*46 + {{#var:uncseed}}*5) round 1}}]
-//   - Limpwurt seed [main/1/{{#expr:1/({{#var:uncseed}}*137) round 1}}]
-//   - Strawberry seed [main/1/{{#expr:1/({{#var:uncseed}}*131) round 1}}]
-//   - Cadantine seed [main/1/{{#expr:1/({{#var:rareseed}}*32 + {{#var:uncseed}}*4) round 1}}]
-//   - Marrentill seed [main/1/{{#expr:1/({{#var:uncseed}}*125) round 1}}]
-//   - Ironwood seed [main/1/{{#expr:1/({{#var:sailseed}}*4) round 1}}]
-//   - Jangerberry seed [main/1/{{#expr:1/({{#var:uncseed}}*92) round 1}}]
-//   - Lantadyme seed [main/1/{{#expr:1/({{#var:rareseed}}*23 + {{#var:uncseed}}*3) round 1}}]
-//   - Tarromin seed [main/1/{{#expr:1/({{#var:uncseed}}*85) round 1}}]
-//   - Wildblood seed [main/1/{{#expr:1/({{#var:uncseed}}*83) round 1}}]
-//   - Snape grass seed [main/1/{{#expr:1/({{#var:rareseed}}*20) round 1}}]
-//   - Watermelon seed [main/1/{{#expr:1/({{#var:uncseed}}*63) round 1}}]
-//   - Harralander seed [main/1/{{#expr:1/({{#var:uncseed}}*56) round 0}}]
-//   - Dwarf weed seed [main/1/{{#expr:1/({{#var:rareseed}}*14 + {{#var:uncseed}}*2) round 0}}]
-//   - Snape grass seed [main/1/{{#expr:1/({{#var:uncseed}}*40) round 0}}]
-//   - Ranarr seed [main/1/{{#expr:1/({{#var:uncseed}}*39) round 0}}]
-//   - Torstol seed [main/1/{{#expr:1/({{#var:rareseed}}*9 + {{#var:uncseed}}*1) round 0}}]
-//   - Whiteberry seed [main/1/{{#expr:1/({{#var:uncseed}}*34) round 0}}]
-//   - Mushroom spore [main/1/{{#expr:1/({{#var:uncseed}}*29) round 0}}]
-//   - Rosewood seed [main/1/{{#expr:1/({{#var:sailseed}}*1) round 0}}]

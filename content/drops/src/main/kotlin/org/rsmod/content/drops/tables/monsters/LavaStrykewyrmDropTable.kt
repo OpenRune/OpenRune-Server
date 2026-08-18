@@ -58,6 +58,12 @@ public val lavaStrykewyrmDropTable: RSDropTable<Player, DropRollItem> = RSDropTa
 
         2 weight SharedDropTables.herb
         5 weight nothing()
+        5 outOf 471 separate "obj.xbows_bolt_tips_diamond" count 5..10
+        5 outOf 589 separate "obj.xbows_bolt_tips_emerald" count 5..10
+        5 outOf 589 separate "obj.xbows_bolt_tips_ruby" count 5..10
+        1 outOf 157 separate "obj.xbows_bolt_tips_dragonstone" count 5..10
+        2 outOf 673 separate "obj.xbows_bolt_tips_onyx" count 5..10
+        1 outOf 471 separate "obj.xbows_bolt_tips_sapphire" count 5..10
     },
     tertiaries = rsPlayerTertiaryTable {
         onBuilder { brimstoneKeyRoll(konarTaskBonus = true) }
@@ -68,9 +74,3 @@ public val lavaStrykewyrmDropTable: RSDropTable<Player, DropRollItem> = RSDropTa
 )
 
 // Unknown wiki drop rates (text rarity — need data collection):
-//   - Diamond bolt tips [main/1/{{#expr:1/(5/128 * 25/92) round 1}}]
-//   - Emerald bolt tips [main/1/{{#expr:1/(5/128 * 20/92) round 1}}]
-//   - Ruby bolt tips [main/1/{{#expr:1/(5/128 * 20/92) round 1}}]
-//   - Dragonstone bolt tips [main/1/{{#expr:1/(5/128 * 15/92) round 1}}]
-//   - Onyx bolt tips [main/1/{{#expr:1/(5/128 * 7/92) round 1}}]
-//   - Sapphire bolt tips [main/1/{{#expr:1/(5/128 * 5/92) round 1}}]

@@ -172,12 +172,60 @@ weight = 1
 obj = "obj.dragon_sheet"
 count = 1
 
+[[main.separate_rolls]]
+numerator = 5
+denominator = 471
 
-# Unknown wiki drop rate: Diamond bolt tips [main/Bolt tips/1/{{#expr:1/(5/128 * 25/92) round 1}}]
-# Unknown wiki drop rate: Emerald bolt tips [main/Bolt tips/1/{{#expr:1/(5/128 * 20/92) round 1}}]
-# Unknown wiki drop rate: Ruby bolt tips [main/Bolt tips/1/{{#expr:1/(5/128 * 20/92) round 1}}]
-# Unknown wiki drop rate: Dragonstone bolt tips [main/Bolt tips/1/{{#expr:1/(5/128 * 15/92) round 1}}]
-# Unknown wiki drop rate: Onyx bolt tips [main/Bolt tips/1/{{#expr:1/(5/128 * 7/92) round 1}}]
-# Unknown wiki drop rate: Sapphire bolt tips [main/Bolt tips/1/{{#expr:1/(5/128 * 5/92) round 1}}]
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.xbows_bolt_tips_diamond"
+count = "5..10"
+
+[[main.separate_rolls]]
+numerator = 5
+denominator = 589
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.xbows_bolt_tips_emerald"
+count = "5..10"
+
+[[main.separate_rolls]]
+numerator = 5
+denominator = 589
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.xbows_bolt_tips_ruby"
+count = "5..10"
+
+[[main.separate_rolls]]
+numerator = 1
+denominator = 157
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.xbows_bolt_tips_dragonstone"
+count = "5..10"
+
+[[main.separate_rolls]]
+numerator = 2
+denominator = 673
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.xbows_bolt_tips_onyx"
+count = "5..10"
+
+[[main.separate_rolls]]
+numerator = 1
+denominator = 471
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.xbows_bolt_tips_sapphire"
+count = "5..10"
+
+
 # Unknown wiki drop rate: Clue scroll (hard) [tertiary/Tertiary/Unknown]
 # Main table pool padding uses a nothing roll (F2P drops removed and/or subtable access missing from wiki parse) (5 weight)
