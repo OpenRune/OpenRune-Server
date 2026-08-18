@@ -1,5 +1,6 @@
 package org.rsmod.content.interfaces.settings.scripts
 
+import dev.openrune.ServerCacheManager
 import dev.openrune.definition.type.widget.IfEvent
 import dev.openrune.rscm.RSCM
 import dev.openrune.rscm.RSCM.asRSCM
@@ -187,7 +188,11 @@ class AllSettingsScript @Inject constructor(private val protectedAccess: Protect
         when (type) {
             SettingType.CHECKBOX -> {
                 setting.row?.varValue?.let {
-                    VarPlayerIntMapSetter.toggle(player, it)
+                    when (settingId) {
+                        COLLECTION_NEW_ITEM_CHAT_SETTING_ID -> toggleSharedVarbitFlag(it, bit = 0)
+                        COLLECTION_NEW_ITEM_POPUP_SETTING_ID -> toggleSharedVarbitFlag(it, bit = 1)
+                        else -> VarPlayerIntMapSetter.toggle(player, it)
+                    }
                 }
             }
 
@@ -202,6 +207,11 @@ class AllSettingsScript @Inject constructor(private val protectedAccess: Protect
 
             else -> println("$type not implemented for setting id=$settingId")
         }
+    }
+
+    private fun ProtectedAccess.toggleSharedVarbitFlag(varp: String, bit: Int) {
+        val varbit = ServerCacheManager.getVarbit(varp.asRSCM(RSCMType.VARBIT)) ?: return
+        VarPlayerIntMapSetter.toggleBit(player, varbit, bit)
     }
 
     private suspend fun ProtectedAccess.setNumberSetting(setting: Setting) {
@@ -312,7 +322,7 @@ class AllSettingsScript @Inject constructor(private val protectedAccess: Protect
         resetVolumeSliders()
 
         VarPlayerIntMapSetter.set(this, "varbit.keybinding_esc_to_close", 1)
-        VarPlayerIntMapSetter.set(this, "varbit.option_collection_new_item", 1)
+        VarPlayerIntMapSetter.set(this, "varbit.option_collection_new_item", 3)
         VarPlayerIntMapSetter.set(this, "varp.option_attackpriority", 2)
         VarPlayerIntMapSetter.set(this, "varp.option_attackpriority_npc", 2)
         VarPlayerIntMapSetter.set(this, "varbit.bank_hidedepositinv", 1)
@@ -404,6 +414,9 @@ class AllSettingsScript @Inject constructor(private val protectedAccess: Protect
         val opaqueChatColourSettingIds = listOf(87, 89, 92, 94, 97, 99, 101, 103, 105, 196, 434)
         val splitChatColourSettingIds = listOf(96)
         val questListColourSettingIds = listOf(224, 225, 226, 227)
+
+        private const val COLLECTION_NEW_ITEM_CHAT_SETTING_ID = 85
+        private const val COLLECTION_NEW_ITEM_POPUP_SETTING_ID = 171
 
         private const val MASTER_VOLUME_DEFAULT = 100
         private const val MUSIC_VOLUME_DEFAULT = 20

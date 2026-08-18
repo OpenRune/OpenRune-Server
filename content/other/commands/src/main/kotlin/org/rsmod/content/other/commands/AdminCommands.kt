@@ -11,6 +11,8 @@ import kotlin.math.max
 import kotlin.math.min
 import org.rsmod.annotations.InternalApi
 import org.rsmod.api.area.checker.AreaChecker
+import org.rsmod.api.death.NpcDeathKillContext
+import org.rsmod.api.death.NpcDeathKillHook
 import org.rsmod.api.death.prepareAdminDieTest
 import org.rsmod.api.instances.BossInstanceRegistry
 import org.rsmod.api.instances.InstanceArea
@@ -24,12 +26,11 @@ import org.rsmod.api.player.cheat.adminGodMode
 import org.rsmod.api.player.cheat.adminMaxHit
 import org.rsmod.api.player.ironman.PlayerGamemode
 import org.rsmod.api.player.ironman.setGamemode
+import org.rsmod.api.player.debug.componentClickDebug
 import org.rsmod.api.player.hook.TeleportType
 import org.rsmod.api.player.output.MiscOutput
 import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.output.soundSynth
-import org.rsmod.api.player.cheat.adminGodMode
-import org.rsmod.api.player.cheat.adminMaxHit
 import org.rsmod.api.player.protect.ProtectedAccessLauncher
 import org.rsmod.api.player.queueDeath
 import org.rsmod.api.player.stat.PlayerSkillXP
@@ -76,6 +77,7 @@ constructor(
     private val update: GameUpdate,
     private val areaChecker: AreaChecker,
     private val regions: RegionRegistry,
+    private val deathKillHooks: Set<NpcDeathKillHook>,
     private val instanceRegistry: BossInstanceRegistry,
 ) : PluginScript() {
     private val logger = InlineLogger()
@@ -168,6 +170,7 @@ constructor(
                 "Usage: ::die pvm|pvp [true|false]  (second arg = in Wilderness, default false)"
         }
         onCommand("god", "Toggle god mode (invincibility)", ::god)
+        onCommand("componentdebug", "Toggle interface component click debug output", ::componentDebug)
         onCommand("maxhit", "Toggle always max hit", ::maxhit)
         onCommand("openbank", "Open the bank", ::bank)
         onCommand("transmog", "Transmog player to NPC appearance (no args to reset)", ::transmog) {
@@ -175,6 +178,21 @@ constructor(
         }
         onCommand("gamemode", "Set account gamemode (normal|ironman|uim|hcim)", ::gamemode) {
             invalidArgs = "Use as ::gamemode normal|ironman|uim|hcim"
+        }
+        onCommand("interface", "Open an interface by id or RSCM name", ::openInterface) {
+            invalidArgs =
+                "Use as ::interface idOrName (ex: ::interface 219 or ::interface bankmain)"
+        }
+        onCommand("ifopen", "Open an interface by id or RSCM name", ::openInterface) {
+            invalidArgs = "Use as ::ifopen idOrName (ex: ::ifopen 219 or ::ifopen bankmain)"
+        }
+        onCommand(
+            "testloot",
+            "Bulk-fire an npc's death drop hooks (no combat/animation) for loot testing",
+            ::testLoot,
+        ) {
+            invalidArgs =
+                "Use as ::testloot npcName [count] (ex: ::testloot godwars_bandos_avatar 100)"
         }
         onCommand(
             "instanceexit",
@@ -220,6 +238,14 @@ constructor(
         with(cheat) {
             player.adminMaxHit = !player.adminMaxHit
             player.mes("Max hit ${if (player.adminMaxHit) "enabled" else "disabled"}.")
+        }
+
+    private fun componentDebug(cheat: Cheat) =
+        with(cheat) {
+            player.componentClickDebug = !player.componentClickDebug
+            player.mes(
+                "Component click debug ${if (player.componentClickDebug) "enabled" else "disabled"}."
+            )
         }
 
     private fun poisonTest(cheat: Cheat) =
@@ -453,6 +479,31 @@ constructor(
             player.mes("Spawned npc `${args[1]}` (duration: $duration cycles)")
         }
 
+    private fun testLoot(cheat: Cheat) =
+        with(cheat) {
+            if (args.isEmpty()) {
+                player.mes(
+                    "Use as ::testloot npcName [count] (ex: ::testloot godwars_bandos_avatar 100)"
+                )
+                return
+            }
+            val typeId = "npc.${args[0]}".asRSCM()
+            val type = ServerCacheManager.getNpc(typeId)
+            if (type == null) {
+                player.mes("That npc does not exist: npc.${args[0]}")
+                return
+            }
+            val count = args.getOrNull(1)?.toIntOrNull() ?: 100
+            repeat(count) { i ->
+                val npc = Npc(type, player.coords)
+                val context = NpcDeathKillContext(hero = player, npc = npc, lootTrackerEventId = i)
+                for (hook in deathKillHooks) {
+                    hook.onKill(context)
+                }
+            }
+            player.mes("Fired death-kill hooks for `npc.${args[0]}` x$count.")
+        }
+
     private fun invAdd(cheat: Cheat) =
         with(cheat) {
             val (typeName, countArg) = args.asTypeNameAndNumber(defaultNumber = 1)
@@ -658,6 +709,40 @@ constructor(
         is InstanceArea.Template -> exitCoord
         is InstanceArea.CopyRegions -> exitCoord
     }
+
+    private fun openInterface(cheat: Cheat) =
+        with(cheat) {
+            if (args.isEmpty()) {
+                player.mes(
+                    "Use as ::interface idOrName (ex: ::interface 219 or ::interface bankmain)"
+                )
+                return
+            }
+            val first = args[0]
+            val interfName =
+                if (first.toIntOrNull() != null) {
+                    val id = first.toInt()
+                    if (ServerCacheManager.getInterface(id) == null) {
+                        player.mes("No interface exists with id: $id")
+                        return
+                    }
+                    val resolved = RSCM.getReverseMapping(RSCMType.INTERFACE, id)
+                    if (resolved.isEmpty()) {
+                        player.mes("No RSCM name mapped to interface id: $id")
+                        return
+                    }
+                    resolved
+                } else {
+                    "interface.${args.asTypeName()}"
+                }
+            val typeId = interfName.asRSCM()
+            if (typeId == -1 || ServerCacheManager.getInterface(typeId) == null) {
+                player.mes("That interface does not exist: '$interfName'")
+                return
+            }
+            protectedAccess.launch(player) { ifOpenMain(interfName) }
+            player.mes("Opened interface: '$interfName' (id=$typeId)")
+        }
 
     private fun resolveArgTypeId(arg: String, names: Map<String, Int>): Int? {
         val argAsInt = arg.toIntOrNull()

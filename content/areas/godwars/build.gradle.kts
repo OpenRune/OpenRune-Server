@@ -3,5 +3,7 @@ plugins {
 }
 
 dependencies {
+    implementation(projects.api.areaChecker)
     implementation(projects.api.pluginCommons)
+    implementation(projects.engine.utilsBits)
 }

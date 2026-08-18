@@ -1,14 +1,18 @@
 package org.rsmod.content.areas.godwars
 
+import dev.openrune.ServerCacheManager
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import jakarta.inject.Inject
+import org.rsmod.api.area.checker.AreaChecker
 import org.rsmod.api.death.NpcDeathKillContext
 import org.rsmod.api.death.NpcDeathKillHook
 import org.rsmod.api.player.vars.VarPlayerIntMapSetter
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
+import dev.openrune.types.varp.bits
 import org.rsmod.plugin.module.PluginModule
+import org.rsmod.utils.bits.bitMask
 
 public class GodwarsModule : PluginModule() {
     override fun bind() {
@@ -16,16 +20,21 @@ public class GodwarsModule : PluginModule() {
     }
 }
 
-internal class GodwarsKillCountHook @Inject constructor() : NpcDeathKillHook {
+internal class GodwarsKillCountHook @Inject constructor(private val areas: AreaChecker) :
+    NpcDeathKillHook {
     override fun onKill(context: NpcDeathKillContext) {
         val player = context.hero
         val npc = context.npc
+        if (!areas.inArea("area.godwars_dungeon", player.coords)) return
         val faction = FACTIONS.firstOrNull { it.matches(npc) } ?: return
         player.increment(faction.counterVarbit)
     }
 
-    private fun Player.increment(varp: String) {
-        VarPlayerIntMapSetter.set(this, varp, vars[varp] + 1)
+    private fun Player.increment(varbit: String) {
+        val next = vars[varbit] + 1
+        val type = ServerCacheManager.getVarbit(varbit.asRSCM(RSCMType.VARBIT))
+        val max = type?.bits?.bitMask ?: Int.MAX_VALUE.toLong()
+        VarPlayerIntMapSetter.set(this, varbit, next.coerceAtMost(max.toInt()))
     }
 
     private class Faction(

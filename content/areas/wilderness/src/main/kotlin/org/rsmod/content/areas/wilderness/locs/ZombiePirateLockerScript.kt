@@ -14,6 +14,7 @@ import org.rsmod.api.repo.loc.LocRepository
 import org.rsmod.api.repo.obj.ObjRepository
 import org.rsmod.api.script.onOpHeld1
 import org.rsmod.api.script.onOpLoc1
+import org.rsmod.content.interfaces.collectionlog.CollectionLog
 import org.rsmod.game.inv.isType
 import org.rsmod.game.loc.BoundLocInfo
 import org.rsmod.plugin.scripts.PluginScript
@@ -71,7 +72,9 @@ constructor(
         if (player.front.isType("obj.wild_cave_amulet")) {
             obj = ocCert(obj).internalName
         }
-        invAddOrDrop(objRepo, obj, drop.rollCount(random))
+        val count = drop.rollCount(random)
+        CollectionLog.grant(player, obj, count)
+        invAddOrDrop(objRepo, obj, count)
     }
 
     private suspend fun ProtectedAccess.unlockBlipScroll() {
