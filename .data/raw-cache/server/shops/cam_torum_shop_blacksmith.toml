@@ -1,0 +1,120 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.cam_torum_shop_blacksmith"
+name = "Cam Torum Blacksmith"
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1000
+buyMultiplier = 600
+delta = 20
+
+size = 20
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.bronze_dagger"
+count = 5
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.iron_dagger"
+count = 4
+restockCycles = 200
+
+[[inventory.stock]]
+obj = "obj.steel_dagger"
+count = 4
+restockCycles = 400
+
+[[inventory.stock]]
+obj = "obj.mithril_dagger"
+count = 3
+restockCycles = 3000
+
+[[inventory.stock]]
+obj = "obj.adamant_dagger"
+count = 2
+restockCycles = 12000
+
+[[inventory.stock]]
+obj = "obj.bronze_sword"
+count = 5
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.iron_sword"
+count = 4
+restockCycles = 200
+
+[[inventory.stock]]
+obj = "obj.steel_sword"
+count = 4
+restockCycles = 400
+
+[[inventory.stock]]
+obj = "obj.mithril_sword"
+count = 3
+restockCycles = 3000
+
+[[inventory.stock]]
+obj = "obj.adamant_sword"
+count = 2
+restockCycles = 12000
+
+[[inventory.stock]]
+obj = "obj.bronze_warhammer"
+count = 5
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.iron_warhammer"
+count = 4
+restockCycles = 200
+
+[[inventory.stock]]
+obj = "obj.steel_warhammer"
+count = 4
+restockCycles = 400
+
+[[inventory.stock]]
+obj = "obj.mithril_warhammer"
+count = 3
+restockCycles = 3000
+
+[[inventory.stock]]
+obj = "obj.adamnt_warhammer"
+count = 2
+restockCycles = 12000
+
+[[inventory.stock]]
+obj = "obj.bronze_sq_shield"
+count = 5
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.iron_sq_shield"
+count = 4
+restockCycles = 200
+
+[[inventory.stock]]
+obj = "obj.steel_sq_shield"
+count = 4
+restockCycles = 400
+
+[[inventory.stock]]
+obj = "obj.mithril_sq_shield"
+count = 3
+restockCycles = 3000
+
+[[inventory.stock]]
+obj = "obj.adamant_sq_shield"
+count = 2
+restockCycles = 12000
+

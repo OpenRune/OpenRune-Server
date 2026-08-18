@@ -1,0 +1,35 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.prif_mace_store"
+name = "Iwan's Maces"
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1000
+buyMultiplier = 600
+delta = 10
+
+size = 3
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.mithril_mace"
+count = 3
+restockCycles = 3000
+
+[[inventory.stock]]
+obj = "obj.adamant_mace"
+count = 2
+restockCycles = 5000
+
+[[inventory.stock]]
+obj = "obj.rune_mace"
+count = 1
+restockCycles = 8000
+

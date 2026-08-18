@@ -557,3 +557,17 @@ id = "varbit.pending_instance_row"
 varp = "varp.instance_state"
 startBit = 0
 endBit = 15
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.drew_sandstone_bucket_sand"
+varp = "varp.drew_sandstone"
+startBit = 0
+endBit = 16
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.drew_sandstone_empty_buckets"
+varp = "varp.drew_sandstone"
+startBit = 16
+endBit = 32

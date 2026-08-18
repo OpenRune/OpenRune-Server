@@ -1,0 +1,30 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.lovakengj_dynamite_shop"
+name = "Thirus Urkar's Fine Dynamite Store"
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 11500
+buyMultiplier = 500
+delta = 1
+
+size = 2
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.lovakengj_dynamite_fused"
+count = 2000
+restockCycles = 2500
+
+[[inventory.stock]]
+obj = "obj.tinderbox"
+count = 2
+restockCycles = 3
+

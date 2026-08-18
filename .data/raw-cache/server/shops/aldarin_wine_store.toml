@@ -1,0 +1,60 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.aldarin_wine_store"
+name = "Moonrise Wines"
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1000
+buyMultiplier = 700
+delta = 0
+
+size = 8
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.blackbird_red"
+count = 20
+restockCycles = -1
+
+[[inventory.stock]]
+obj = "obj.chilhuac_red"
+count = 20
+restockCycles = -1
+
+[[inventory.stock]]
+obj = "obj.eclipse_wine"
+count = 20
+restockCycles = -1
+
+[[inventory.stock]]
+obj = "obj.ixcoztic_white"
+count = 20
+restockCycles = -1
+
+[[inventory.stock]]
+obj = "obj.metztonalli_white"
+count = 20
+restockCycles = -1
+
+[[inventory.stock]]
+obj = "obj.tonameyo_white"
+count = 20
+restockCycles = -1
+
+[[inventory.stock]]
+obj = "obj.chichilihui_rose"
+count = 20
+restockCycles = -1
+
+[[inventory.stock]]
+obj = "obj.imperial_rose"
+count = 20
+restockCycles = -1
+

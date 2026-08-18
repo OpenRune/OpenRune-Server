@@ -1,0 +1,140 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.fortis_shop_food"
+name = "Cobado's Groceries"
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1000
+buyMultiplier = 700
+delta = 10
+
+size = 24
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.cooking_apple"
+count = 20
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.pineapple"
+count = 15
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.banana"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.tomato"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.potato"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.onion"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.cabbage"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.orange"
+count = 2
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.papaya"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.coconut"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.strawberry"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.watermelon"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.sweetcorn"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.redberries"
+count = 2
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.cheese"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.chocolate_bar"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.raw_chicken"
+count = 5
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.raw_beef"
+count = 5
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.raw_rabbit"
+count = 5
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.raw_herring"
+count = 5
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.raw_cod"
+count = 5
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.raw_tuna"
+count = 5
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.raw_bass"
+count = 3
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.raw_swordfish"
+count = 2
+restockCycles = 100
+
