@@ -13,6 +13,7 @@ import org.rsmod.api.repo.loc.LocRepository
 import org.rsmod.api.repo.obj.ObjRepository
 import org.rsmod.api.script.onOpLoc1
 import org.rsmod.api.script.onOpLoc2
+import org.rsmod.content.interfaces.collectionlog.CollectionLog
 import org.rsmod.game.loc.BoundLocInfo
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
@@ -68,6 +69,8 @@ class BrimstoneChestScript @Inject constructor(
     private fun ProtectedAccess.giveDrop(drop: DropRollItem) {
         if (drop.isNothing || !drop.condition(player)) return
         val obj = drop.transformObj(player) ?: drop.obj
-        invAddOrDrop(objRepo, obj, drop.rollCount(random))
+        val count = drop.rollCount(random)
+        CollectionLog.grant(player, obj, count)
+        invAddOrDrop(objRepo, obj, count)
     }
 }

@@ -3,11 +3,15 @@ package org.rsmod.api.net.rsprot.handlers
 import com.github.michaelbull.logging.InlineLogger
 import dev.openrune.ServerCacheManager
 import dev.openrune.definition.type.widget.IfEvent
+import dev.openrune.rscm.RSCM
+import dev.openrune.rscm.RSCMType
 import dev.openrune.types.aconverted.interf.IfButtonOp
 import jakarta.inject.Inject
 import net.rsprot.protocol.game.incoming.buttons.If3Button
 import org.rsmod.annotations.InternalApi
 import org.rsmod.api.net.rsprot.player.InterfaceEvents
+import org.rsmod.api.player.debug.componentClickDebug
+import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.protect.ProtectedAccessLauncher
 import org.rsmod.api.player.ui.IfModalButton
 import org.rsmod.api.player.ui.IfOverlayButton
@@ -47,6 +51,12 @@ constructor(private val eventBus: EventBus, private val protectedAccess: Protect
         val interfaceType = ServerCacheManager.fromInterface(message.asComponent.packed)
         val comsub = message.sub
         val buttonOp = message.buttonOp
+
+        if (player.componentClickDebug) {
+            val name = RSCM.getReverseMapping(RSCMType.COMPONENT, message.asComponent.packed)
+                .ifEmpty { "component.<unmapped:${message.asComponent.packed}>" }
+            player.mes("[componentdebug] $name comsub=$comsub op=$buttonOp")
+        }
 
         val opEnabled =
             InterfaceEvents.isEnabled(player.ui, componentType, comsub, buttonOp.toIfEvent())
