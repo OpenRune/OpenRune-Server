@@ -2,6 +2,7 @@ package org.rsmod.api.bosses.dsl
 
 import dev.openrune.types.NpcMode
 import org.rsmod.api.bosses.spec.*
+import org.rsmod.api.combat.commons.types.MeleeAttackType as EngineMeleeAttackType
 
 fun anim(seq: String, delay: Int = 0): Effect = Effect.Anim(seq, delay)
 
@@ -185,6 +186,7 @@ typealias Rotation = Selector.Rotation
 typealias Run = Effect.Run
 typealias TransitionTo = Effect.TransitionTo
 typealias AllInRadius = TargetExpr.AllInRadius
+typealias MeleeAttackType = EngineMeleeAttackType
 
 val OnDeath: Condition = Condition.OnDeath
 val OnSpawn: Condition = Condition.OnSpawn

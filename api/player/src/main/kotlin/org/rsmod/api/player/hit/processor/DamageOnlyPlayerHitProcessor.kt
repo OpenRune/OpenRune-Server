@@ -6,6 +6,7 @@ import org.rsmod.game.damage.recordDamageOn
 import org.rsmod.api.player.cheat.adminGodMode
 import org.rsmod.api.player.death.recordDeathCause
 import org.rsmod.api.player.death.resolveDeathCause
+import org.rsmod.api.player.events.PlayerHitEvents
 import org.rsmod.api.player.events.PlayerHitpointsChangedEvent
 import org.rsmod.api.player.headbar.InternalPlayerHeadbars
 import org.rsmod.api.player.queueDeath
@@ -59,6 +60,8 @@ constructor(
 
         val headbar = hit.createHeadbar(hitpoints, baseHitpointsLvl)
         showHeadbar(headbar)
+
+        eventBus.publish(PlayerHitEvents.Impact(this, hit))
     }
 
     private fun Hit.createHeadbar(currHp: Int, maxHp: Int): Headbar =

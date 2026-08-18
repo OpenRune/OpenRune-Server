@@ -4,6 +4,7 @@ import dev.openrune.definition.type.widget.ComponentType
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import dev.openrune.types.ItemServerType
+import org.rsmod.api.player.events.PlayerHitEvents
 import org.rsmod.api.player.events.PlayerHitpointsChangedEvent
 import org.rsmod.api.player.events.PlayerMovementEvent
 import org.rsmod.api.player.events.PlayerQueueEvents
@@ -104,6 +105,9 @@ public fun ScriptContext.onPlayerCoordsChanged(action: PlayerMovementEvent.Coord
     onEvent(action)
 
 public fun ScriptContext.onPlayerHitpointsChanged(action: PlayerHitpointsChangedEvent.() -> Unit): Unit =
+    onEvent(action)
+
+public fun ScriptContext.onPlayerHit(action: PlayerHitEvents.Impact.() -> Unit): Unit =
     onEvent(action)
 
 public fun ScriptContext.onWorldMapClick(

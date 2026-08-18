@@ -2,6 +2,8 @@ package org.rsmod.api.bosses.runtime
 
 import jakarta.inject.Inject
 import jakarta.inject.Singleton
+import org.rsmod.api.combat.formulas.AccuracyFormulae
+import org.rsmod.api.player.hit.modifier.PlayerHitModifier
 import org.rsmod.api.random.GameRandom
 import org.rsmod.api.repo.npc.NpcRepository
 import org.rsmod.api.repo.world.WorldRepository
@@ -21,4 +23,6 @@ class BossDeps @Inject constructor(
     val collision: CollisionFlagMap,
     val encounterRegistry: EncounterRegistry,
     val extensionRegistry: BossExtensionRegistry,
+    val accuracy: AccuracyFormulae,
+    val playerHitModifier: PlayerHitModifier,
 )

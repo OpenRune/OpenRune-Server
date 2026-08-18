@@ -6,6 +6,7 @@ dependencies {
     implementation(libs.guice)
     implementation(projects.api.pluginCommons)
     implementation(projects.api.combat.combatCommons)
+    implementation(projects.api.combat.combatFormulas)
     implementation(projects.api.npc)
     implementation(projects.api.player)
     implementation(projects.api.random)

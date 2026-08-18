@@ -32,6 +32,7 @@ import org.rsmod.api.combat.formulas.MaxHitFormulae
 import org.rsmod.api.config.refs.params
 import org.rsmod.api.death.PvPPlayerHitHook
 import org.rsmod.api.npc.hit.modifier.NpcHitModifier
+import org.rsmod.api.player.hit.modifier.PlayerHitModifier
 import org.rsmod.api.npc.hit.queueHit
 import org.rsmod.api.player.hit.queueHit
 import org.rsmod.api.player.cheat.adminMaxHit
@@ -67,6 +68,7 @@ constructor(
     private val accuracy: AccuracyFormulae,
     private val maxHits: MaxHitFormulae,
     private val npcHitModifier: NpcHitModifier,
+    private val playerHitModifier: PlayerHitModifier,
     private val npcInteractions: NpcInteractions,
     private val npcTInteractions: NpcTInteractions,
     private val playerInteractions: PlayerInteractions,
@@ -720,7 +722,7 @@ constructor(
         // last entries in the queue list at the time of processing.
         target.queueCombatRetaliate(source)
 
-        val hit = target.queueHit(source, delay, HitType.Melee, damage)
+        val hit = target.queueHit(source, delay, HitType.Melee, damage, playerHitModifier)
         notifyPlayerHit(source, target)
         target.combatPlayDefendAnim()
         return hit
@@ -1060,6 +1062,7 @@ constructor(
                 delay = hitDelay,
                 type = HitType.Ranged,
                 damage = damage,
+                modifier = playerHitModifier,
                 sourceSecondary = ammo,
             )
         notifyPlayerHit(source, target)
@@ -1112,6 +1115,7 @@ constructor(
                 delay = hitDelay,
                 type = HitType.Ranged,
                 damage = damage,
+                modifier = playerHitModifier,
                 sourceSecondary = ammo,
             )
         return hit
@@ -1571,6 +1575,7 @@ constructor(
                 delay = hitDelay,
                 type = HitType.Magic,
                 damage = damage,
+                modifier = playerHitModifier,
                 sourceSecondary = spell,
             )
         notifyPlayerHit(source, target)

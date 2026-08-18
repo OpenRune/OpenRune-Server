@@ -1432,7 +1432,7 @@ public class ProtectedAccess(
         specific: Boolean = false,
         sourceWeapon: ItemServerType? = null,
         sourceSecondary: ItemServerType? = null,
-        modifier: PlayerHitModifier = StandardPlayerHitModifier,
+        modifier: PlayerHitModifier = context.hitModifier,
     ): Hit {
         return player.queueHit(
             source = source,
@@ -1490,7 +1490,7 @@ public class ProtectedAccess(
         damage: Int,
         hitmark: HitmarkTypeGroup = hitmark_groups.regular_damage,
         sourceSecondary: ItemServerType? = null,
-        modifier: PlayerHitModifier = StandardPlayerHitModifier,
+        modifier: PlayerHitModifier = context.hitModifier,
     ): Hit {
         return player.queueHit(
             source = source,
@@ -1544,7 +1544,7 @@ public class ProtectedAccess(
         damage: Int,
         hitmark: HitmarkTypeGroup = hitmark_groups.regular_damage,
         specific: Boolean = false,
-        modifier: PlayerHitModifier = StandardPlayerHitModifier,
+        modifier: PlayerHitModifier = context.hitModifier,
         strongQueue: Boolean = true,
     ): Hit {
         return player.queueHit(
@@ -1639,7 +1639,7 @@ public class ProtectedAccess(
         specific: Boolean = false,
         sourceWeapon: ItemServerType? = null,
         sourceSecondary: ItemServerType? = null,
-        modifier: PlayerHitModifier = StandardPlayerHitModifier,
+        modifier: PlayerHitModifier = context.hitModifier,
     ) {
         player.queueImpactHit(
             source = source,
@@ -1698,7 +1698,7 @@ public class ProtectedAccess(
         damage: Int,
         hitmark: HitmarkTypeGroup = hitmark_groups.regular_damage,
         sourceSecondary: ItemServerType? = null,
-        modifier: PlayerHitModifier = StandardPlayerHitModifier,
+        modifier: PlayerHitModifier = context.hitModifier,
     ) {
         player.queueImpactHit(
             source = source,
@@ -1750,7 +1750,7 @@ public class ProtectedAccess(
         damage: Int,
         hitmark: HitmarkTypeGroup = hitmark_groups.regular_damage,
         specific: Boolean = false,
-        modifier: PlayerHitModifier = StandardPlayerHitModifier,
+        modifier: PlayerHitModifier = context.hitModifier,
     ) {
         player.queueImpactHit(
             delay = delay,

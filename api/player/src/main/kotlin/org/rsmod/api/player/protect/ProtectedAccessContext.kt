@@ -3,6 +3,7 @@ package org.rsmod.api.player.protect
 import org.rsmod.api.area.checker.AreaChecker
 import org.rsmod.api.market.MarketPrices
 import org.rsmod.api.player.dialogue.align.TextAlignment
+import org.rsmod.api.player.hit.modifier.PlayerHitModifier
 import org.rsmod.api.player.hit.processor.InstantPlayerHitProcessor
 import org.rsmod.api.player.interact.HeldInteractions
 import org.rsmod.api.player.interact.LocInteractions
@@ -84,9 +85,11 @@ public data class ProtectedAccessContext(
     private val getMarketPrices: () -> MarketPrices,
     private val getInstantHitProcessor: () -> InstantPlayerHitProcessor,
     private val getTeleportValidator: () -> PlayerTeleportValidator,
+    private val getHitModifier: () -> PlayerHitModifier,
 ) {
     public val random: GameRandom by lazyLoad { getRandom() }
     public val eventBus: EventBus by lazyLoad { getEventBus() }
+    public val hitModifier: PlayerHitModifier by lazyLoad { getHitModifier() }
     public val npcList: NpcList by lazyLoad { getNpcList() }
     public val playerList: PlayerList by lazyLoad { getPlayerList() }
     public val collision: CollisionFlagMap by lazyLoad { getCollision() }
