@@ -1,0 +1,50 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.stonecutter_stonemason"
+name = "Stonecutter Supplies"
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1300
+buyMultiplier = 500
+delta = 30
+
+size = 6
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.bronze_pickaxe"
+count = 5
+restockCycles = 50
+
+[[inventory.stock]]
+obj = "obj.limestonebrick"
+count = 100
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.marble_block"
+count = 30
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.gold_leaf"
+count = 40
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.poh_magic_crystal"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.poh_condensed_gold"
+count = 10
+restockCycles = -1
+

@@ -1,0 +1,105 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.aldarin_food_store"
+name = "Faustus' Fruit and Veg"
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1000
+buyMultiplier = 700
+delta = 10
+
+size = 17
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.cooking_apple"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.banana"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.orange"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.lemon"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.lime"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.pineapple"
+count = 5
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.redberries"
+count = 5
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.grapes"
+count = 5
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.tomato"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.potato"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.onion"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.cabbage"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.papaya"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.coconut"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.strawberry"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.watermelon"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.sweetcorn"
+count = 0
+restockCycles = 100
+

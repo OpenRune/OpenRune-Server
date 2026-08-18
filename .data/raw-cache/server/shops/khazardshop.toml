@@ -1,0 +1,100 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.khazardshop"
+name = "Khazard General Store"
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1400
+buyMultiplier = 400
+delta = 10
+
+size = 16
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.bronze_pickaxe"
+count = 5
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.pot_empty"
+count = 3
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.jug_empty"
+count = 2
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.pack_jug_empty"
+count = 5
+restockCycles = 20
+
+[[inventory.stock]]
+obj = "obj.shears"
+count = 2
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.bucket_empty"
+count = 2
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.pack_bucket"
+count = 15
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.tinderbox"
+count = 2
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.chisel"
+count = 2
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.hammer"
+count = 5
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.rope"
+count = 30
+restockCycles = 20
+
+[[inventory.stock]]
+obj = "obj.pot_flour"
+count = 30
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.bucket_bailing"
+count = 30
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.swamppaste"
+count = 5000
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.knife"
+count = 2
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.bronze_axe"
+count = 5
+restockCycles = 100
+

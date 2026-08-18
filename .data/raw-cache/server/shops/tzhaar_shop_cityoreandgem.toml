@@ -1,0 +1,100 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.tzhaar_shop_cityoreandgem"
+name = "TzHaar-Hur-Rin's Ore and Gem Store"
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1500
+buyMultiplier = 150
+delta = 20
+
+size = 16
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.tin_ore"
+count = 25
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.copper_ore"
+count = 25
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.iron_ore"
+count = 15
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.silver_ore"
+count = 12
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.coal"
+count = 20
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.gold_ore"
+count = 12
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.mithril_ore"
+count = 4
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.adamantite_ore"
+count = 2
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.runite_ore"
+count = 1
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.uncut_sapphire"
+count = 16
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.uncut_emerald"
+count = 12
+restockCycles = 300
+
+[[inventory.stock]]
+obj = "obj.uncut_ruby"
+count = 8
+restockCycles = 500
+
+[[inventory.stock]]
+obj = "obj.uncut_diamond"
+count = 6
+restockCycles = 1000
+
+[[inventory.stock]]
+obj = "obj.uncut_dragonstone"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.uncut_onyx"
+count = 1
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.xbows_bolt_tips_onyx"
+count = 50
+restockCycles = 100
+

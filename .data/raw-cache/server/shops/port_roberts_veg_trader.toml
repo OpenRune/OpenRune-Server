@@ -1,0 +1,70 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.port_roberts_veg_trader"
+name = "Port Roberts Veg Stall"
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1000
+buyMultiplier = 950
+delta = 20
+
+size = 10
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.potato"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.onion"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.cabbage"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.tomato"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.sweetcorn"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.potato_seed"
+count = 20
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.onion_seed"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.cabbage_seed"
+count = 5
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.tomato_seed"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.sweetcorn_seed"
+count = 0
+restockCycles = 100
+

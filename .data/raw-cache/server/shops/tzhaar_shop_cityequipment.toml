@@ -1,0 +1,75 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.tzhaar_shop_cityequipment"
+name = "TzHaar-Hur-Zal's Equipment Store"
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1500
+buyMultiplier = 150
+delta = 20
+
+size = 11
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.tzhaar_throwingring"
+count = 500
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.tzhaar_splitsword"
+count = 1
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.tzhaar_knife"
+count = 1
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.tzhaar_maul"
+count = 1
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.tzhaar_staff"
+count = 1
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.tzhaar_mace"
+count = 1
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.tzhaar_cape_obsidian"
+count = 1
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.tzhaar_spikeshield"
+count = 1
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.obsidian_helmet"
+count = 1
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.obsidian_platebody"
+count = 1
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.obsidian_platelegs"
+count = 1
+restockCycles = 100
+

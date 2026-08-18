@@ -1,0 +1,70 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.pub_mistrock"
+name = "Stick Your Ore Inn"
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1000
+buyMultiplier = 1000
+delta = 0
+
+size = 10
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.beer"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.cider"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.dwarven_stout"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.wizards_mind_bomb"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.steamforge_brew"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.whisky"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.sunshine"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.jug_wine"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.stew"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.meat_pie"
+count = 0
+restockCycles = 100
+
