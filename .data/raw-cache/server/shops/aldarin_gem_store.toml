@@ -1,0 +1,60 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.aldarin_gem_store"
+name = "Toci's Gem Store"
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1000
+buyMultiplier = 700
+delta = 30
+
+size = 8
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.uncut_sapphire"
+count = 3
+restockCycles = 12000
+
+[[inventory.stock]]
+obj = "obj.uncut_emerald"
+count = 2
+restockCycles = 24000
+
+[[inventory.stock]]
+obj = "obj.uncut_ruby"
+count = 1
+restockCycles = 36000
+
+[[inventory.stock]]
+obj = "obj.uncut_diamond"
+count = 0
+restockCycles = 12000
+
+[[inventory.stock]]
+obj = "obj.sapphire"
+count = 3
+restockCycles = 12000
+
+[[inventory.stock]]
+obj = "obj.emerald"
+count = 2
+restockCycles = 24000
+
+[[inventory.stock]]
+obj = "obj.ruby"
+count = 1
+restockCycles = 36000
+
+[[inventory.stock]]
+obj = "obj.diamond"
+count = 0
+restockCycles = 12000
+

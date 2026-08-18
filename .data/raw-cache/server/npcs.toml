@@ -3719,3 +3719,9 @@ inherit = "npc.wyvern_taloned"
 [npc.params]
 "param.killcount_varp"="varp.kc_taloned_wyvern"
 "param.killcount_notify"=false
+
+[[npc]]
+id = "npc.grinder_drew"
+inherit = "npc.grinder_drew"
+moveRestrict = "NoMove"
+wanderRange = 0

@@ -1,0 +1,110 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.prif_food_store"
+name = "Prifddinas Foodstuffs"
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1000
+buyMultiplier = 700
+delta = 10
+
+size = 18
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.pot_flour"
+count = 3
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.bucket_milk"
+count = 3
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.cod"
+count = 3
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.trout"
+count = 3
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.bass"
+count = 3
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.stew"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.bread"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.cheese"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.potato"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.onion"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.tomato"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.cabbage"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.banana"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.redberries"
+count = 3
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.raw_beef"
+count = 5
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.raw_chicken"
+count = 5
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.chocolate_bar"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.cake"
+count = 5
+restockCycles = 100
+

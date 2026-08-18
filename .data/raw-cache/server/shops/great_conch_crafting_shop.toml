@@ -1,0 +1,85 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.great_conch_crafting_shop"
+name = "Elder Coco's Crafting Stall"
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1000
+buyMultiplier = 650
+delta = 20
+
+size = 13
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.chisel"
+count = 5
+restockCycles = 20
+
+[[inventory.stock]]
+obj = "obj.hammer"
+count = 5
+restockCycles = 20
+
+[[inventory.stock]]
+obj = "obj.needle"
+count = 5
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.thread"
+count = 50
+restockCycles = 5
+
+[[inventory.stock]]
+obj = "obj.glassblowingpipe"
+count = 5
+restockCycles = 20
+
+[[inventory.stock]]
+obj = "obj.ring_mould"
+count = 4
+restockCycles = 50
+
+[[inventory.stock]]
+obj = "obj.necklace_mould"
+count = 4
+restockCycles = 50
+
+[[inventory.stock]]
+obj = "obj.amulet_mould"
+count = 4
+restockCycles = 50
+
+[[inventory.stock]]
+obj = "obj.jewl_bracelet_mould"
+count = 4
+restockCycles = 50
+
+[[inventory.stock]]
+obj = "obj.sapphire"
+count = 2
+restockCycles = -1
+
+[[inventory.stock]]
+obj = "obj.emerald"
+count = 1
+restockCycles = -1
+
+[[inventory.stock]]
+obj = "obj.ruby"
+count = 1
+restockCycles = -1
+
+[[inventory.stock]]
+obj = "obj.diamond"
+count = 0
+restockCycles = -1
+

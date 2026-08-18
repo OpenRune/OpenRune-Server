@@ -1,0 +1,60 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.great_conch_herblore_shop"
+name = "Elder Raley's Herblore Stall"
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1000
+buyMultiplier = 700
+delta = 10
+
+size = 8
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.pestle_and_mortar"
+count = 5
+restockCycles = 20
+
+[[inventory.stock]]
+obj = "obj.knife"
+count = 5
+restockCycles = 20
+
+[[inventory.stock]]
+obj = "obj.vial_empty"
+count = 100
+restockCycles = 150
+
+[[inventory.stock]]
+obj = "obj.vial_water"
+count = 100
+restockCycles = 150
+
+[[inventory.stock]]
+obj = "obj.eye_of_newt"
+count = 50
+restockCycles = 20
+
+[[inventory.stock]]
+obj = "obj.pack_vial_empty"
+count = 100
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.pack_vial_water"
+count = 100
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.pack_eye_newt"
+count = 50
+restockCycles = 100
+

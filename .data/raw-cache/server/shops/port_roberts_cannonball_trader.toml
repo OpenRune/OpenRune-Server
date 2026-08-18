@@ -1,0 +1,50 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.port_roberts_cannonball_trader"
+name = "Port Roberts Cannonball Stall"
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 2500
+buyMultiplier = 500
+delta = 0
+
+size = 6
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.bronze_cannonball"
+count = 10000
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.iron_cannonball"
+count = 10000
+restockCycles = 15
+
+[[inventory.stock]]
+obj = "obj.mcannonball"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.mithril_cannonball"
+count = 8000
+restockCycles = 15
+
+[[inventory.stock]]
+obj = "obj.adamant_cannonball"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.rune_cannonball"
+count = 0
+restockCycles = 200
+

@@ -1,0 +1,120 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.fur_shop_guild"
+name = "Pellem's Fur Store"
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1300
+buyMultiplier = 400
+delta = 20
+
+size = 20
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.thread"
+count = 100
+restockCycles = 5
+
+[[inventory.stock]]
+obj = "obj.needle"
+count = 3
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.werewolve_fur"
+count = 3
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.fur"
+count = 3
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.grey_wolf_fur"
+count = 3
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.varlamore_jaguar_fur"
+count = 2
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.hunting_fennecfox_fur"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.hunting_antelopemoon_fur"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.hunting_antelopesun_fur"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.huntingbeast_polar_fur"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.huntingbeast_woodland_fur"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.huntingbeast_jungle_fur"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.huntingbeast_desert_fur"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.hunting_fur_jaguar_shabby"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.hunting_fur_jaguar_perfect"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.hunting_fur_leopard_shabby"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.hunting_fur_leopard_perfect"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.hunting_fur_tiger_shabby"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.hunting_fur_tiger_perfect"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.hg_mixedhide_base"
+count = 10
+restockCycles = 14
+

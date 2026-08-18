@@ -1,0 +1,75 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.fortis_shop_seamstress"
+name = "Floria's Fashion"
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1000
+buyMultiplier = 550
+delta = 10
+
+size = 11
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.leather_gloves"
+count = 5
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.leather_boots"
+count = 5
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.black_skirt"
+count = 3
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.blue_skirt"
+count = 2
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.pink_skirt"
+count = 2
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.green_cape"
+count = 4
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.blue_cape"
+count = 4
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.yellow_cape"
+count = 4
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.red_cape"
+count = 4
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.white_apron"
+count = 3
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.brown_apron"
+count = 3
+restockCycles = 100
+

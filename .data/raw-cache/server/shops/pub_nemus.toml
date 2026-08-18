@@ -1,0 +1,70 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.pub_nemus"
+name = "Nemus Retreat"
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1000
+buyMultiplier = 1000
+delta = 0
+
+size = 10
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.beer"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.cider"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.sunbeam_ale"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.axemans_folly"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.greenmans_ale"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.vodka"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.rum"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.whisky"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.gin"
+count = 0
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.stew"
+count = 0
+restockCycles = 100
+

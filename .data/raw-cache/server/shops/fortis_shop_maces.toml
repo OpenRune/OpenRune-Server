@@ -1,0 +1,50 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.fortis_shop_maces"
+name = "Spike's Spikes"
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1300
+buyMultiplier = 400
+delta = 30
+
+size = 6
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.bronze_mace"
+count = 5
+restockCycles = -1
+
+[[inventory.stock]]
+obj = "obj.iron_mace"
+count = 4
+restockCycles = -1
+
+[[inventory.stock]]
+obj = "obj.steel_mace"
+count = 4
+restockCycles = -1
+
+[[inventory.stock]]
+obj = "obj.mithril_mace"
+count = 3
+restockCycles = -1
+
+[[inventory.stock]]
+obj = "obj.adamant_mace"
+count = 2
+restockCycles = -1
+
+[[inventory.stock]]
+obj = "obj.rune_mace"
+count = 1
+restockCycles = -1
+
