@@ -7,10 +7,13 @@ import kotlin.io.path.Path
 import kotlin.io.path.createDirectories
 import kotlin.io.path.writeText
 import kotlin.system.exitProcess
+import kotlinx.coroutines.runBlocking
 import org.rsmod.tools.wiki.dumping.wiki.ParsedWikiShopInfobox
 import org.rsmod.tools.wiki.dumping.wiki.WikiClient
 import org.rsmod.tools.wiki.dumping.wiki.WikiDumpStorePages
 import org.rsmod.tools.wiki.dumping.wiki.WikiShopInfoboxParser
+import org.rsmod.tools.wiki.dumping.wiki.bucket.BucketSource
+import org.rsmod.tools.wiki.dumping.wiki.bucket.ShopBuckets
 
 data class ShopMappingEntry(
     val id: Int,
@@ -18,10 +21,9 @@ data class ShopMappingEntry(
     /** When set, used instead of auto-matching against wiki shop names. */
     val wikiArticle: String? = null,
     /**
-     * Selects a store table within a multi-table wiki page.
-     * Format: `section|namenotes` — e.g. `food|0 Subquests`, `items|full`.
-     * Section is the wiki `==Stock==` subsection (`food` / `items`).
-     * Namenotes matches `{{StoreTableHead|namenotes=(...)}}` (parens omitted).
+     * Selects a store table within a multi-table wiki page. Format: `section|namenotes` — e.g.
+     * `food|0 Subquests`, `items|full`. Section is the wiki `==Stock==` subsection (`food` /
+     * `items`). Namenotes matches `{{StoreTableHead|namenotes=(...)}}` (parens omitted).
      */
     val wikiStore: String? = null,
 )
@@ -36,11 +38,20 @@ object ShopNameMapper {
 
     private fun exportCsv(args: Array<String>) {
         val quiet = args.contains("--quiet")
+        val offline = args.contains("--offline")
         val inputPath = args.firstOrNull { it.startsWith("--input=") }?.substringAfter('=')
         val outputPath =
             args.firstOrNull { it.startsWith("--output=") }?.substringAfter('=')
                 ?: inputPath
                 ?: DEFAULT_CSV_PATH
+        val wikiDumpDir = args.firstOrNull { it.startsWith("--wiki-dump=") }?.substringAfter('=')
+        val sourceFlag =
+            args
+                .firstOrNull { it.startsWith("--source=") }
+                ?.substringAfter('=')
+                ?.trim()
+                ?.lowercase()
+        val useBucket = resolveUseBucket(sourceFlag, wikiDumpDir)
 
         GameValLoader.ensureLoaded()
 
@@ -52,10 +63,15 @@ object ShopNameMapper {
         }
 
         val wikiShops =
-            WikiClient.open().use { wiki ->
-                WikiDumpStorePages
-                    .listShopInfoboxPages(wiki.wikiDumpStore())
-                    .sortedBy { it.pageTitle }
+            if (useBucket) {
+                val bucketSource = BucketSource(bucketCacheDir(rootDir = null), offline = offline)
+                runBlocking { ShopBuckets(bucketSource).listShops() }.sortedBy { it.pageTitle }
+            } else {
+                WikiClient.open(wikiDumpDir).use { wiki ->
+                    WikiDumpStorePages.listShopInfoboxPages(wiki.wikiDumpStore()).sortedBy {
+                        it.pageTitle
+                    }
+                }
             }
         val index = buildNameIndex(wikiShops)
 
@@ -68,7 +84,11 @@ object ShopNameMapper {
             }
         val mappedArticles =
             mappedRows
-                .mapNotNull { row -> stripWikiBrackets(row.wikiArticle).takeIf { it.isNotBlank() }?.let(::normalizeShopKey) }
+                .mapNotNull { row ->
+                    stripWikiBrackets(row.wikiArticle)
+                        .takeIf { it.isNotBlank() }
+                        ?.let(::normalizeShopKey)
+                }
                 .toSet()
 
         val wikiOnlyRows =
@@ -87,7 +107,7 @@ object ShopNameMapper {
         println()
         println(
             "Wrote ${rows.size} row(s) (${mappedRows.size} mapped, ${wikiOnlyRows.size} wiki-only, " +
-                "$resolvedWiki wiki matches) -> $csvOutput",
+                "$resolvedWiki wiki matches) -> $csvOutput"
         )
     }
 
@@ -99,8 +119,7 @@ object ShopNameMapper {
     )
 
     fun loadDumpableRowsFromCsv(csvPath: java.nio.file.Path): List<ShopCsvEntry> =
-        Files
-            .readAllLines(csvPath)
+        Files.readAllLines(csvPath)
             .asSequence()
             .dropWhile { it.startsWith("#") || it.startsWith("id,") || it.startsWith("inv,") }
             .mapNotNull { line -> parseCsvEntry(line) }
@@ -134,8 +153,7 @@ object ShopNameMapper {
     }
 
     fun loadMappingsFromCsv(csvPath: java.nio.file.Path): List<ShopMappingEntry> =
-        Files
-            .readAllLines(csvPath)
+        Files.readAllLines(csvPath)
             .asSequence()
             .dropWhile { it.startsWith("#") || it.startsWith("id,") || it.startsWith("inv,") }
             .mapNotNull { line -> parseMappingRow(line) }
@@ -236,7 +254,9 @@ object ShopNameMapper {
             .replace(Regex("['`]"), "")
             .replace(Regex("[^a-z0-9]+"), "")
 
-    fun buildNameIndex(shops: List<ParsedWikiShopInfobox>): Map<String, List<ParsedWikiShopInfobox>> {
+    fun buildNameIndex(
+        shops: List<ParsedWikiShopInfobox>
+    ): Map<String, List<ParsedWikiShopInfobox>> {
         val index = mutableMapOf<String, MutableList<ParsedWikiShopInfobox>>()
 
         fun add(key: String, shop: ParsedWikiShopInfobox) {
@@ -305,10 +325,7 @@ object ShopNameMapper {
 
     private fun resolveInvFullKey(id: Int, slug: String): String {
         val reversed =
-            runCatching { RSCM.getReverseMapping(RSCMType.INV, id) }
-                .getOrNull()
-                ?.trim()
-                .orEmpty()
+            runCatching { RSCM.getReverseMapping(RSCMType.INV, id) }.getOrNull()?.trim().orEmpty()
         if (reversed.isNotBlank() && reversed != "-1") {
             return if (reversed.contains('.')) reversed else "${RSCMType.INV.prefix}.$reversed"
         }
@@ -378,7 +395,8 @@ object ShopNameMapper {
 
     private fun hasInvMapping(fullKey: String): Boolean =
         runCatching {
-            RSCM.getRSCM(fullKey)
-            true
-        }.getOrDefault(false)
+                RSCM.getRSCM(fullKey)
+                true
+            }
+            .getOrDefault(false)
 }
