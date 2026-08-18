@@ -3,6 +3,7 @@ package org.rsmod.content.interfaces.gameframe
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import dev.openrune.types.aconverted.interf.IfSubType
+import org.rsmod.api.player.output.runClientScript
 import org.rsmod.api.player.ui.ifMoveSub
 import org.rsmod.api.player.ui.ifOpenSub
 import org.rsmod.api.player.ui.ifOpenTop
@@ -11,10 +12,16 @@ import org.rsmod.game.entity.Player
 import org.rsmod.game.ui.Component
 import org.rsmod.game.ui.UserInterfaceMap
 
+private const val NOTIFICATION_DISPLAY_INTERFACE = "interface.notification_display"
+private const val NOTIFICATION_END_SCRIPT = 3348
+
 internal fun Player.openGameframe(gameframe: Gameframe, eventBus: EventBus) {
     ui.setGameframe(gameframe.mappings)
     for (overlay in gameframe.overlays) {
         ifOpenSub(overlay.interf, overlay.target, IfSubType.Overlay, eventBus)
+        if (overlay.interf == NOTIFICATION_DISPLAY_INTERFACE) {
+            runClientScript(NOTIFICATION_END_SCRIPT, 6, 0, 0)
+        }
     }
 }
 
