@@ -1,0 +1,41 @@
+name: Formatting
+
+permissions:
+  contents: read
+
+on:
+  workflow_dispatch:
+  pull_request:
+  push:
+    branches:
+      - main
+
+concurrency:
+  group: format-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  spotless:
+    name: spotless (advisory)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: "21"
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v6
+
+      # Spotless is configured with ratchetFrom("origin/main"), so only files
+      # changed relative to main are checked. The ref must exist locally.
+      - name: Check formatting
+        run: |
+          git fetch origin main --depth=1
+          ./gradlew spotlessCheck
