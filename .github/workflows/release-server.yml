@@ -76,7 +76,7 @@ jobs:
           echo "commit_url=${{ github.server_url }}/${REPO}/commit/${FULL_SHA}" >> "$GITHUB_OUTPUT"
 
       - name: Upload release artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: openrune-server-release
           path: openrune-server-release.zip
