@@ -12,17 +12,24 @@ import org.rsmod.api.net.central.OpenRuneCentralWorldLink
 import org.rsmod.api.net.central.logging.CentralActivityLogWriter
 import org.rsmod.api.net.rsprot.player.SessionStart
 import org.rsmod.api.player.events.interact.HeldDropEvents
+import org.rsmod.api.registry.loc.LocRegistry
+import org.rsmod.api.registry.obj.ObjRegistry
 import org.rsmod.api.registry.player.PlayerRegistry
 import org.rsmod.api.registry.region.RegionRegistry
+import org.rsmod.api.registry.zone.ZoneUpdateMap
 import org.rsmod.api.script.onEvent
 import org.rsmod.api.server.config.ServerConfig
+import org.rsmod.api.utils.zone.SharedZoneEnclosedBuffers
 import org.rsmod.game.GameUpdate
 import org.rsmod.game.MapClock
 import org.rsmod.game.client.Client
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
+import org.rsmod.game.entity.WorldEntity
+import org.rsmod.game.entity.WorldEntityList
 import org.rsmod.game.entity.npc.NpcStateEvents
 import org.rsmod.game.entity.player.SessionStateEvent
+import org.rsmod.game.entity.worldentity.WorldEntityStateEvents
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
@@ -39,6 +46,11 @@ constructor(
     private val database: GameDatabase,
     private val characterRepository: CharacterAccountRepository,
     private val playerRegistry: PlayerRegistry,
+    private val worldEntityList: WorldEntityList,
+    private val zoneUpdates: ZoneUpdateMap,
+    private val locReg: LocRegistry,
+    private val objReg: ObjRegistry,
+    private val enclosedBuffers: SharedZoneEnclosedBuffers,
     private val centralActivityLogWriter: CentralActivityLogWriter,
 ) : PluginScript() {
     private val logger = InlineLogger()
@@ -83,6 +95,8 @@ constructor(
         onEvent<SessionStateEvent.Logout> { notifyCentralLogout() }
         onEvent<NpcStateEvents.Create> { createNpcAvatar(npc) }
         onEvent<NpcStateEvents.Delete> { deleteNpcAvatar(npc) }
+        onEvent<WorldEntityStateEvents.Create> { createWorldEntityAvatar(entity) }
+        onEvent<WorldEntityStateEvents.Delete> { deleteWorldEntityAvatar(entity) }
     }
 
     private fun initService() {
@@ -90,6 +104,9 @@ constructor(
     }
 
     private fun updateService() {
+        // `infoProtocols.update()` runs worldentity -> player -> npc in order; the npc info
+        // protocol's first step (`synchronizeModifiedWorlds`) consumes the added/removed
+        // world entity indices itself - no server-side world sync is needed.
         service.infoProtocols.update()
         if (openRuneCentral.isEnabled) {
             openRuneCentral.drainInboundRevokesOnGameThread(playerRegistry, gameUpdate)
@@ -137,7 +154,17 @@ constructor(
         val infos = service.infoProtocols.alloc(slot, OldSchoolClientType.DESKTOP)
 
         val client = RspClient(session, infos) as Client<Any, Any>
-        val cycle = RspCycle(session, infos, regionReg)
+        val cycle =
+            RspCycle(
+                session,
+                infos,
+                regionReg,
+                worldEntityList,
+                zoneUpdates,
+                locReg,
+                objReg,
+                enclosedBuffers,
+            )
 
         player.client = client
         player.clientCycle = cycle
@@ -213,6 +240,34 @@ constructor(
         val infoProtocol = npc.avatar.infoProtocol
         if (infoProtocol is RspNpcInfo) {
             service.npcAvatarFactory.release(infoProtocol.rspAvatar)
+        }
+    }
+
+    private fun createWorldEntityAvatar(entity: WorldEntity) {
+        val rspAvatar =
+            service.worldEntityAvatarFactory.alloc(
+                index = entity.slotId,
+                id = entity.id,
+                ownerIndex = entity.ownerIndex,
+                sizeX = entity.sizeX,
+                sizeZ = entity.sizeZ,
+                southWestZoneX = entity.southWestZoneX,
+                southWestZoneZ = entity.southWestZoneZ,
+                minLevel = entity.minLevel,
+                maxLevel = entity.maxLevel,
+                fineX = entity.fineX,
+                fineZ = entity.fineZ,
+                projectedLevel = entity.projectedLevel,
+                activeLevel = entity.activeLevel,
+                angle = entity.angle,
+            )
+        entity.infoProtocol = RspWorldEntityInfo(rspAvatar)
+    }
+
+    private fun deleteWorldEntityAvatar(entity: WorldEntity) {
+        val infoProtocol = entity.infoProtocol
+        if (infoProtocol is RspWorldEntityInfo) {
+            service.worldEntityAvatarFactory.release(infoProtocol.rspAvatar)
         }
     }
 }

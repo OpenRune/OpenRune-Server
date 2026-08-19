@@ -37,6 +37,7 @@ dependencies {
     implementation(projects.api.script)
     implementation(projects.api.serverConfig)
     implementation(projects.api.totp)
+    implementation(projects.api.utils.utilsZone)
     implementation(projects.engine.annotations)
     implementation(projects.engine.coroutine)
     implementation(projects.engine.events)
