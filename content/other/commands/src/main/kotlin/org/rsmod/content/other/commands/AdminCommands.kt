@@ -654,7 +654,7 @@ constructor(
     private fun bank(cheat: Cheat) =
         with(cheat) {
             protectedAccess.launch(player) {
-                ifOpenMainSidePair(main = "interface.bankmain", side = "interface.bankside")
+                ifOpenMainSidePair(main = "interface.bankmain", side = "interface.bankside", transparency = -2)
             }
         }
 
