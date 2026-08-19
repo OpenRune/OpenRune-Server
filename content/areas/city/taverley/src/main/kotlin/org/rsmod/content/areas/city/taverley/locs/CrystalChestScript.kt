@@ -27,7 +27,9 @@ private const val CHEST_OPEN_TICKS = 2
 
 private const val VARP_KC_CRYSTAL_CHEST = "varp.kc_crystal_chest"
 
-class CrystalChestScript @Inject constructor(
+class CrystalChestScript
+@Inject
+constructor(
     private val locRepo: LocRepository,
     private val objRepo: ObjRepository,
     private val dropRegistry: DropTableRegistry,
@@ -51,7 +53,11 @@ class CrystalChestScript @Inject constructor(
         locRepo.change(loc, CHEST_OPEN, CHEST_OPEN_TICKS)
         mes("You unlock the chest with your key.")
 
-        VarPlayerIntMapSetter.set(player, VARP_KC_CRYSTAL_CHEST, player.vars[VARP_KC_CRYSTAL_CHEST] + 1)
+        VarPlayerIntMapSetter.set(
+            player,
+            VARP_KC_CRYSTAL_CHEST,
+            player.vars[VARP_KC_CRYSTAL_CHEST] + 1,
+        )
 
         val table = dropRegistry.forLoc(CHEST_CLOSED) ?: return
         when (val result = table.roll(player, ArgMap()).flatten()) {

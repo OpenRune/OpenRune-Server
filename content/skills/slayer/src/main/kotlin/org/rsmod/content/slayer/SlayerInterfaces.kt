@@ -13,7 +13,7 @@ import org.rsmod.content.slayer.rewards.SlayerRewardsScript.Companion.UNLOCK_COM
 
 object SlayerInterfaces {
 
-    fun openInterface(access: ProtectedAccess, npcId : String, equipment : Boolean = false) {
+    fun openInterface(access: ProtectedAccess, npcId: String, equipment: Boolean = false) {
         access.ifOpenMainModal("interface.slayer_rewards")
         access.runClientScript(SLAYER_REWARDS_INIT_CS)
         access.runClientScript(SLAYER_REWARDS_TASKS_INIT_CS)
@@ -38,8 +38,6 @@ object SlayerInterfaces {
 
         SlayerRewardsPoints.syncPoints(access)
         SlayerRewardsPoints.update(access.player)
-
-
     }
 
     private const val SLAYER_REWARDS_INIT_CS = 405

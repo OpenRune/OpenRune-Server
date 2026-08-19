@@ -25,7 +25,9 @@ private const val CHEST_CLOSED = "loc.brimstone_konar_chest_closed"
 private const val VARP_KC = "varp.kc_brimstone_chest"
 private const val VARBIT_CHEST = "varbit.brimstone_opening_konar_chest"
 
-class BrimstoneChestScript @Inject constructor(
+class BrimstoneChestScript
+@Inject
+constructor(
     private val locRepo: LocRepository,
     private val objRepo: ObjRepository,
     private val dropRegistry: DropTableRegistry,

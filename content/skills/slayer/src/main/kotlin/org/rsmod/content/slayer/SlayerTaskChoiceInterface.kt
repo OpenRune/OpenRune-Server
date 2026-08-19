@@ -46,7 +46,8 @@ object SlayerTaskChoiceInterface {
     private fun handleInput(access: ProtectedAccess, input: ResumePauseButtonInput) {
         when {
             input.isComponentType(CLOSE) -> access.ifClose()
-            input.isComponentType(CONTENT) || input.isComponentType(UNIVERSE) -> acceptSlot(access, input.subcomponent)
+            input.isComponentType(CONTENT) || input.isComponentType(UNIVERSE) ->
+                acceptSlot(access, input.subcomponent)
             else -> {}
         }
     }
@@ -67,7 +68,7 @@ object SlayerTaskChoiceInterface {
         val offer = MortimerAssignment.acceptSlot(access, slot) ?: return
         access.ifClose()
         access.mes(
-            "Your new task is to kill ${offer.amount} ${offer.masterTask.task.nameUppercase}.",
+            "Your new task is to kill ${offer.amount} ${offer.masterTask.task.nameUppercase}."
         )
     }
 

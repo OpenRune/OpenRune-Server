@@ -36,7 +36,8 @@ public fun Npc.walkTo(
         moveRestrict = MoveRestrict.PassThru
     }
     walk(route.map { CoordGrid(it.x, it.z, it.level) }) {
-        // Restore the original move restriction once the scripted walk finishes, before the caller's
+        // Restore the original move restriction once the scripted walk finishes, before the
+        // caller's
         // arrival logic (which may re-engage combat) runs.
         moveRestrict = previousMoveRestrict
         onArrival?.invoke()

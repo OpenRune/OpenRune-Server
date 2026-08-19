@@ -15,7 +15,6 @@ import org.rsmod.api.instances.events.InstancePlayerLeaveUnboundEvent
 import org.rsmod.api.instances.events.InstanceStartedEvent
 import org.rsmod.api.instances.events.InstanceTimeTickEvent
 import org.rsmod.api.instances.region.InstanceAreaResolver
-import org.rsmod.api.instances.region.InstancePlacement
 import org.rsmod.api.instances.region.OsrsInstancing
 import org.rsmod.api.instances.region.enterCoord
 import org.rsmod.api.instances.region.localCoord
@@ -27,17 +26,14 @@ import org.rsmod.api.player.output.ChatType
 import org.rsmod.api.player.output.mes
 import org.rsmod.api.repo.npc.NpcRepository
 import org.rsmod.api.repo.region.RegionRepository
-import org.rsmod.api.table.InstanceSettingsRow
 import org.rsmod.events.EventBus
 import org.rsmod.events.KeyedEvent
 import org.rsmod.game.MapClock
 import org.rsmod.game.damage.DamageContributions
 import org.rsmod.game.entity.Npc
-import org.rsmod.game.entity.PathingEntity
 import org.rsmod.game.entity.Player
 import org.rsmod.game.entity.PlayerList
 import org.rsmod.game.entity.npc.NpcUid
-import org.rsmod.game.entity.util.PathingEntityCommon
 import org.rsmod.game.region.Region
 import org.rsmod.map.CoordGrid
 import org.rsmod.routefinder.collision.CollisionFlagMap
@@ -52,7 +48,7 @@ constructor(
     private val eventBus: EventBus,
     private val areaResolver: InstanceAreaResolver,
     private val worldClock: MapClock,
-    private val collision: CollisionFlagMap
+    private val collision: CollisionFlagMap,
 ) {
     private val nextId = AtomicLong(1)
 
@@ -139,10 +135,12 @@ constructor(
                 is InstanceAreaResolver.Result.Ready -> resolved.placement
             }
 
-        val region = regionRepo.add(placement.regionTemplate) ?: run {
-            areaResolver.release(spec.area, placement)
-            return null
-        }
+        val region =
+            regionRepo.add(placement.regionTemplate)
+                ?: run {
+                    areaResolver.release(spec.area, placement)
+                    return null
+                }
 
         val instanceId = allocateId()
         val session =
@@ -263,7 +261,9 @@ constructor(
         val region = regions[session.id] ?: return Result.Failed("That instance no longer exists.")
         if (!session.isServerOwned && !regionRepo.isValid(region)) {
             destroy(session)
-            return Result.Failed("That instance is no longer available. Please create a new instance.")
+            return Result.Failed(
+                "That instance is no longer available. Please create a new instance."
+            )
         }
         abandonOwnedSessionIfEmpty(player, session, currentTick)
         if (session.occupants.isEmpty() && !session.arenaExpired) {
@@ -287,10 +287,12 @@ constructor(
     public fun cancelPendingEntry(player: Player, currentTick: Int) {
         val playerId = player.playerId()
         val ownedId = ownerIndex[playerId] ?: return
-        val session = sessions[ownedId] ?: run {
-            ownerIndex.remove(playerId)
-            return
-        }
+        val session =
+            sessions[ownedId]
+                ?: run {
+                    ownerIndex.remove(playerId)
+                    return
+                }
         if (playerId in session.occupants) {
             return
         }
@@ -490,9 +492,7 @@ constructor(
 
     private fun countsAsFightBoss(session: InstanceSession, npc: Npc): Boolean {
         val bossTypes = session.spec.bossNpcs ?: return false
-        return bossTypes.any { bossType ->
-            npcMatchesBossType(npc, bossType)
-        }
+        return bossTypes.any { bossType -> npcMatchesBossType(npc, bossType) }
     }
 
     private fun isBossAlive(session: InstanceSession): Boolean {
@@ -505,9 +505,7 @@ constructor(
 
         val npcs = spawnedNpcs[session.id] ?: return false
         return npcs.any { npc ->
-            npc.isSlotAssigned &&
-                npc.hitpoints > 0 &&
-                npcCountsAsBoss(npc, bossTypes, spawnTypes)
+            npc.isSlotAssigned && npc.hitpoints > 0 && npcCountsAsBoss(npc, bossTypes, spawnTypes)
         }
     }
 
@@ -520,9 +518,7 @@ constructor(
             return true
         }
 
-        return spawnTypes.any { spawnType ->
-            npc.isType(spawnType) || npc.isVisType(spawnType)
-        }
+        return spawnTypes.any { spawnType -> npc.isType(spawnType) || npc.isVisType(spawnType) }
     }
 
     private fun npcMatchesBossType(npc: Npc, bossType: NpcServerType): Boolean {
@@ -652,7 +648,11 @@ constructor(
             destroy(session)
             return
         }
-        if (session.isServerOwned && session.occupants.isEmpty() && session.state is SessionState.Grace) {
+        if (
+            session.isServerOwned &&
+                session.occupants.isEmpty() &&
+                session.state is SessionState.Grace
+        ) {
             resetServerOwned(session, currentTick)
         }
     }

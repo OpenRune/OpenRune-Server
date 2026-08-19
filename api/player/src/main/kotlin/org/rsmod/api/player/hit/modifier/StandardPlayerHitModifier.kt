@@ -27,11 +27,7 @@ public object StandardPlayerHitModifier : PlayerHitModifier {
         }
 
         if (isFromNpc) {
-            damage =
-                PlayerAbsorption.absorb(
-                    player = target,
-                    incomingDamage = damage,
-                )
+            damage = PlayerAbsorption.absorb(player = target, incomingDamage = damage)
         }
     }
 }

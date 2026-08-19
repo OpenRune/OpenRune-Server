@@ -18,8 +18,8 @@ object GenericDialogue {
             "I have quite a few rewards you can earn, and a wide variety of Slayer equipment for sale.",
         )
         when (choice3("Look at rewards.", 1, "Look at shop.", 2, "Cancel.", 3)) {
-            1 -> SlayerInterfaces.openInterface(access,npc!!.visType.internalName)
-            2 -> SlayerInterfaces.openInterface(access,npc!!.visType.internalName)
+            1 -> SlayerInterfaces.openInterface(access, npc!!.visType.internalName)
+            2 -> SlayerInterfaces.openInterface(access, npc!!.visType.internalName)
         }
     }
 
@@ -103,7 +103,14 @@ object GenericDialogue {
             "Well you have performed well as a student. I guess you have earned the right to wear such a prestigious cape now. The Slayer masters will recognize this cape and may offer you the same assignment twice in a row.",
         )
         chatNpc(neutral, "That will be $SLAYER_CAPE_PRICE coins, please.")
-        when (choice2("I've changed my mind, I don't want it.", 1, "Great; I've always wanted one!", 2)) {
+        when (
+            choice2(
+                "I've changed my mind, I don't want it.",
+                1,
+                "Great; I've always wanted one!",
+                2,
+            )
+        ) {
             1 -> {
                 chatPlayer(neutral, "I've changed my mind, I don't want it.")
                 chatNpc(neutral, "Okay. Well, if you change it back again, I will be waiting.")
@@ -149,7 +156,8 @@ object GenericDialogue {
     }
 
     fun masterDoesNotHaveCurrentTask(access: ProtectedAccess, masterNpcId: Int): Boolean {
-        val master = tasks.keys.find { master -> master.npcIds.any { it.id == masterNpcId } } ?: return false
+        val master =
+            tasks.keys.find { master -> master.npcIds.any { it.id == masterNpcId } } ?: return false
         val taskId = access.vars["varp.slayer_target"]
         if (taskId == 0) return false
         return tasks[master].orEmpty().none { it.task.id == taskId }

@@ -1,6 +1,5 @@
 package org.rsmod.api.player.output
 
-import dev.openrune.definition.type.widget.ComponentType
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import dev.openrune.types.InventoryServerType
@@ -127,7 +126,8 @@ public object ClientScripts {
         alignH: Int,
         alignV: Int,
         lineHeight: Int,
-    ): Unit = player.runClientScript(600, alignH, alignV, lineHeight, target.asRSCM(RSCMType.COMPONENT))
+    ): Unit =
+        player.runClientScript(600, alignH, alignV, lineHeight, target.asRSCM(RSCMType.COMPONENT))
 
     public fun objboxSetButtons(player: Player, text: String): Unit =
         player.runClientScript(2868, text)
@@ -253,14 +253,21 @@ public object ClientScripts {
         tooltip: String,
         container: String,
         text: String,
-    ): Unit = player.runClientScript(7065, tooltip.asRSCM(RSCMType.COMPONENT), container.asRSCM(RSCMType.COMPONENT), text)
+    ): Unit =
+        player.runClientScript(
+            7065,
+            tooltip.asRSCM(RSCMType.COMPONENT),
+            container.asRSCM(RSCMType.COMPONENT),
+            text,
+        )
 
-    public fun tooltip(
-        player: Player,
-        text: String,
-        container: String,
-        tooltip: String,
-    ): Unit = player.runClientScript(1495, text, container.asRSCM(RSCMType.COMPONENT), tooltip.asRSCM(RSCMType.COMPONENT))
+    public fun tooltip(player: Player, text: String, container: String, tooltip: String): Unit =
+        player.runClientScript(
+            1495,
+            text,
+            container.asRSCM(RSCMType.COMPONENT),
+            tooltip.asRSCM(RSCMType.COMPONENT),
+        )
 
     public fun confirmOverlayInit(
         player: Player,
@@ -269,5 +276,10 @@ public object ClientScripts {
         text: String,
         cancel: String,
         confirm: String,
-    ): Unit = player.runClientScript(4212, "$title|$text|$cancel|$confirm", target.asRSCM(RSCMType.COMPONENT))
+    ): Unit =
+        player.runClientScript(
+            4212,
+            "$title|$text|$cancel|$confirm",
+            target.asRSCM(RSCMType.COMPONENT),
+        )
 }

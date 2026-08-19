@@ -1,6 +1,5 @@
 package org.rsmod.content.travel.canoe.scripts
 
-import dev.openrune.definition.type.VarBitType
 import dev.openrune.types.ItemServerType
 import dev.openrune.types.SequenceServerType
 import dev.openrune.types.enums.EnumTypeMap
@@ -148,20 +147,18 @@ internal val ItemServerType.axeWoodcuttingReq: Int by objParam(params.levelrequi
 internal fun findAxe(player: Player): InvObj? {
     val worn = player.wornAxe()
     val carried = player.carriedAxes()
-    val candidates =
-        buildList {
-            if (worn != null) {
-                add(worn)
-            }
-            addAll(carried)
+    val candidates = buildList {
+        if (worn != null) {
+            add(worn)
         }
+        addAll(carried)
+    }
     return candidates.maxWithOrNull(axeComparator)
 }
 
-private val axeComparator: Comparator<InvObj> =
-    Comparator { left, right ->
-        getInvObj(left).axeWoodcuttingReq.compareTo(getInvObj(right).axeWoodcuttingReq)
-    }
+private val axeComparator: Comparator<InvObj> = Comparator { left, right ->
+    getInvObj(left).axeWoodcuttingReq.compareTo(getInvObj(right).axeWoodcuttingReq)
+}
 
 private fun Player.wornAxe(): InvObj? {
     val righthand = righthand ?: return null

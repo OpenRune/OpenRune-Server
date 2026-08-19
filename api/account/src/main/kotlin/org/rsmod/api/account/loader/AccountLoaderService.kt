@@ -191,7 +191,8 @@ constructor(
     private suspend fun handleRequest(request: AccountLoadRequest) {
         val startedAt = System.nanoTime()
         val response = database.withTransaction { connection -> connection.handleRequest(request) }
-        val elapsedMs = java.util.concurrent.TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - startedAt)
+        val elapsedMs =
+            java.util.concurrent.TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - startedAt)
         if (serverConfig.loginTimingLogs && elapsedMs >= ACCOUNT_DB_TIMING_INFO_MS) {
             val level =
                 if (elapsedMs >= ACCOUNT_DB_TIMING_WARN_MS) {
@@ -250,7 +251,9 @@ constructor(
 
         val characterId = repository.insertAndSelectCharacterId(this, accountId)
         if (characterId == null) {
-            throw IllegalStateException("Could not insert character for: '$accountName' ($accountId)")
+            throw IllegalStateException(
+                "Could not insert character for: '$accountName' ($accountId)"
+            )
         }
 
         val metadataList = repository.selectAndCreateMetadataList(this, accountName)

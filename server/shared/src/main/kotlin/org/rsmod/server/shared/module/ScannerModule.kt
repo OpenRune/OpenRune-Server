@@ -25,9 +25,6 @@ private class ClassGraphProvider(private val acceptedPackages: Array<String>) :
             .enableClassInfo()
             .disableNestedJarScanning()
             .disableModuleScanning()
-            .rejectPackages(
-                "org.rsmod.api.*.integration",
-                "org.rsmod.content.*.integration",
-            )
+            .rejectPackages("org.rsmod.api.*.integration", "org.rsmod.content.*.integration")
             .acceptPackages(*acceptedPackages)
 }

@@ -139,20 +139,40 @@ public sealed class LocCategoryEvents {
         category: Int,
     ) : OpEvent(category.toLong())
 
-    public class Op1(loc: BoundLocInfo, vis: BoundLocInfo, type: ObjectServerType, category: Int = type.category) :
-        Op(loc, vis, type, category)
+    public class Op1(
+        loc: BoundLocInfo,
+        vis: BoundLocInfo,
+        type: ObjectServerType,
+        category: Int = type.category,
+    ) : Op(loc, vis, type, category)
 
-    public class Op2(loc: BoundLocInfo, vis: BoundLocInfo, type: ObjectServerType, category: Int = type.category) :
-        Op(loc, vis, type, category)
+    public class Op2(
+        loc: BoundLocInfo,
+        vis: BoundLocInfo,
+        type: ObjectServerType,
+        category: Int = type.category,
+    ) : Op(loc, vis, type, category)
 
-    public class Op3(loc: BoundLocInfo, vis: BoundLocInfo, type: ObjectServerType, category: Int = type.category) :
-        Op(loc, vis, type, category)
+    public class Op3(
+        loc: BoundLocInfo,
+        vis: BoundLocInfo,
+        type: ObjectServerType,
+        category: Int = type.category,
+    ) : Op(loc, vis, type, category)
 
-    public class Op4(loc: BoundLocInfo, vis: BoundLocInfo, type: ObjectServerType, category: Int = type.category) :
-        Op(loc, vis, type, category)
+    public class Op4(
+        loc: BoundLocInfo,
+        vis: BoundLocInfo,
+        type: ObjectServerType,
+        category: Int = type.category,
+    ) : Op(loc, vis, type, category)
 
-    public class Op5(loc: BoundLocInfo, vis: BoundLocInfo, type: ObjectServerType, category: Int = type.category) :
-        Op(loc, vis, type, category)
+    public class Op5(
+        loc: BoundLocInfo,
+        vis: BoundLocInfo,
+        type: ObjectServerType,
+        category: Int = type.category,
+    ) : Op(loc, vis, type, category)
 
     /**
      * @param loc The _base_ loc target of the event.
@@ -168,20 +188,40 @@ public sealed class LocCategoryEvents {
         category: Int,
     ) : ApEvent(category.toLong())
 
-    public class Ap1(loc: BoundLocInfo, vis: BoundLocInfo, type: ObjectServerType, category: Int = type.category) :
-        Ap(loc, vis, type, category)
+    public class Ap1(
+        loc: BoundLocInfo,
+        vis: BoundLocInfo,
+        type: ObjectServerType,
+        category: Int = type.category,
+    ) : Ap(loc, vis, type, category)
 
-    public class Ap2(loc: BoundLocInfo, vis: BoundLocInfo, type: ObjectServerType, category: Int = type.category) :
-        Ap(loc, vis, type, category)
+    public class Ap2(
+        loc: BoundLocInfo,
+        vis: BoundLocInfo,
+        type: ObjectServerType,
+        category: Int = type.category,
+    ) : Ap(loc, vis, type, category)
 
-    public class Ap3(loc: BoundLocInfo, vis: BoundLocInfo, type: ObjectServerType, category: Int = type.category) :
-        Ap(loc, vis, type, category)
+    public class Ap3(
+        loc: BoundLocInfo,
+        vis: BoundLocInfo,
+        type: ObjectServerType,
+        category: Int = type.category,
+    ) : Ap(loc, vis, type, category)
 
-    public class Ap4(loc: BoundLocInfo, vis: BoundLocInfo, type: ObjectServerType, category: Int = type.category) :
-        Ap(loc, vis, type, category)
+    public class Ap4(
+        loc: BoundLocInfo,
+        vis: BoundLocInfo,
+        type: ObjectServerType,
+        category: Int = type.category,
+    ) : Ap(loc, vis, type, category)
 
-    public class Ap5(loc: BoundLocInfo, vis: BoundLocInfo, type: ObjectServerType, category: Int = type.category) :
-        Ap(loc, vis, type, category)
+    public class Ap5(
+        loc: BoundLocInfo,
+        vis: BoundLocInfo,
+        type: ObjectServerType,
+        category: Int = type.category,
+    ) : Ap(loc, vis, type, category)
 }
 
 public sealed class LocDefaultEvents {
@@ -542,6 +582,7 @@ public class LocUDefaultEvents {
     /**
      * Fired when _any_ item is used on a loc whose [ObjectServerType.category] matches the
      * registered category.
+     *
      * @param loc The _base_ loc target of the event.
      * @param vis The current _visual_ representation of [loc], based on the player's varps. If
      *   [loc] has a [ObjectServerType.multiLoc], [vis] reflects the resolved variant. Otherwise,
@@ -559,6 +600,7 @@ public class LocUDefaultEvents {
 
     /**
      * The approach (`ap`) counterpart to [OpCategory].
+     *
      * @param loc The _base_ loc target of the event.
      * @param vis The current _visual_ representation of [loc], based on the player's varps. If
      *   [loc] has a [ObjectServerType.multiLoc], [vis] reflects the resolved variant. Otherwise,

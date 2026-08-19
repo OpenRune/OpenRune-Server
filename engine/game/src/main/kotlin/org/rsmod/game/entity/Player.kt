@@ -4,11 +4,11 @@ import dev.openrune.rscm.RSCM
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import dev.openrune.types.BasType
-import dev.or2.central.account.Rights
-import dev.or2.central.account.TwoFactorAuthData
-import dev.or2.central.account.TrustedDeviceData
 import dev.openrune.types.NpcServerType
 import dev.openrune.types.StatType
+import dev.or2.central.account.Rights
+import dev.or2.central.account.TrustedDeviceData
+import dev.or2.central.account.TwoFactorAuthData
 import it.unimi.dsi.fastutil.ints.IntArrayList
 import it.unimi.dsi.fastutil.ints.IntArraySet
 import it.unimi.dsi.fastutil.ints.IntList
@@ -25,12 +25,12 @@ import org.rsmod.game.client.Client
 import org.rsmod.game.client.ClientCycle
 import org.rsmod.game.client.NoopClient
 import org.rsmod.game.client.NoopClientCycle
+import org.rsmod.game.damage.DamageContributions
 import org.rsmod.game.entity.player.Appearance
 import org.rsmod.game.entity.player.PlayerUid
 import org.rsmod.game.entity.player.PublicMessage
 import org.rsmod.game.entity.util.EntityFaceAngle
 import org.rsmod.game.entity.util.PathingEntityCommon
-import org.rsmod.game.damage.DamageContributions
 import org.rsmod.game.headbar.Headbar
 import org.rsmod.game.hero.HeroPoints
 import org.rsmod.game.hit.Hitmark
@@ -88,7 +88,8 @@ public class Player(
 
     /**
      * Opaque session token from OpenRune Central world-link when `OPENRUNE_CENTRAL_HOST` is set.
-     * The game server notifies central on logout so the session ends and the account can log in again.
+     * The game server notifies central on logout so the session ends and the account can log in
+     * again.
      */
     public var openRuneCentralSessionToken: ByteArray? = null
 
@@ -377,7 +378,7 @@ public class Player(
         softTimerMap.remove(timerType)
     }
 
-        public fun weakQueue(queue: String, cycles: Int, args: Any? = null) {
+    public fun weakQueue(queue: String, cycles: Int, args: Any? = null) {
         require(cycles > 0) { "`cycles` must be greater than 0. (cycles=$cycles)" }
         weakQueueList.add(queue, QueueCategory.Weak, cycles, args)
     }

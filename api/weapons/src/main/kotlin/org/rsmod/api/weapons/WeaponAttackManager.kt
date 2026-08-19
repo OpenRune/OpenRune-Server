@@ -1,9 +1,6 @@
 package org.rsmod.api.weapons
 
 import dev.openrune.types.ItemServerType
-import dev.openrune.types.ProjAnimType
-import dev.openrune.types.aconverted.SpotanimType
-import dev.openrune.types.aconverted.SynthType
 import jakarta.inject.Inject
 import org.rsmod.api.combat.commons.CombatAttack
 import org.rsmod.api.combat.commons.styles.MeleeAttackStyle
@@ -171,14 +168,7 @@ public class WeaponAttackManager @Inject constructor(private val manager: Player
         multiplier: Double,
         roundUp: Boolean = false,
     ): Int =
-        manager.rollMeleeMaxHit(
-            source.player,
-            target,
-            attackType,
-            attackStyle,
-            multiplier,
-            roundUp,
-        )
+        manager.rollMeleeMaxHit(source.player, target, attackType, attackStyle, multiplier, roundUp)
 
     /** @see [PlayerAttackManager.calculateMeleeMaxHit] */
     public fun calculateMeleeMaxHit(

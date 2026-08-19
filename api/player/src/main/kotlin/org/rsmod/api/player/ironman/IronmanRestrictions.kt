@@ -7,8 +7,7 @@ import org.rsmod.game.entity.Player
 import org.rsmod.game.inv.Inventory
 
 public object IronmanRestrictions {
-    public const val UIM_BANK_MESSAGE: String =
-        "As an Ultimate Ironman, you cannot use the bank."
+    public const val UIM_BANK_MESSAGE: String = "As an Ultimate Ironman, you cannot use the bank."
 
     public fun block(
         player: Player,
@@ -80,7 +79,6 @@ public enum class IronmanActivity(
     ACCEPT_AID("Ironmen do not accept aid.", Scope.Any),
     POH("As an Ironman, you cannot enter another player's house."),
     GRAND_EXCHANGE("As an Ironman, you cannot use the Grand Exchange."),
-
     UIM_GE_ITEM_SETS("As an Ultimate Ironman, you cannot create item sets.", Scope.Ultimate),
     UIM_MISCELLANIA(
         "As an Ultimate Ironman, you cannot receive resources from Managing Miscellania.",
@@ -111,8 +109,7 @@ public enum class IronmanActivity(
         "As an Ultimate Ironman, you cannot use Chambers of Xeric storage units.",
         Scope.Ultimate,
     ),
-    UIM_PROTECT_ITEM("As an Ultimate Ironman, you cannot keep items on death.", Scope.Ultimate),
-    ;
+    UIM_PROTECT_ITEM("As an Ultimate Ironman, you cannot keep items on death.", Scope.Ultimate);
 
     internal fun appliesTo(player: Player): Boolean =
         when (scope) {

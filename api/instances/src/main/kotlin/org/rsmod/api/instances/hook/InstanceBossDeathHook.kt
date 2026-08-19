@@ -8,7 +8,8 @@ import org.rsmod.game.MapClock
 
 internal class InstanceBossDeathHook
 @Inject
-constructor(private val manager: InstanceManager, private val worldClock: MapClock) : NpcDeathKillHook {
+constructor(private val manager: InstanceManager, private val worldClock: MapClock) :
+    NpcDeathKillHook {
     override fun onKill(context: NpcDeathKillContext) {
         manager.handleBossKill(context.npc, worldClock.cycle)
     }

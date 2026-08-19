@@ -28,11 +28,7 @@ internal data class OverloadDefinition(
     val expiryMessage: String,
     val animation: String,
     val spotAnimation: String,
-    val stateKey: AttributeKey<OverloadState> =
-        AttributeKey(
-            resetOnDeath = true,
-            temp = true,
-        ),
+    val stateKey: AttributeKey<OverloadState> = AttributeKey(resetOnDeath = true, temp = true),
 ) {
     val totalDamage: Int
         get() = damageHits * damagePerHit

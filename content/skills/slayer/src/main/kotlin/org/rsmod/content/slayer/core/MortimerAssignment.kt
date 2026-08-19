@@ -93,7 +93,7 @@ object MortimerAssignment {
                         masterTask = masterTask,
                         amount = amount,
                         modifier = readModifier(access, slot),
-                    ),
+                    )
                 )
             }
         }
@@ -112,8 +112,7 @@ object MortimerAssignment {
     }
 
     fun acceptSlot(access: ProtectedAccess, slot: Int): Offer? {
-        val master =
-            SlayerTaskManager.findMasterByNpc(NPC) ?: return null
+        val master = SlayerTaskManager.findMasterByNpc(NPC) ?: return null
         val offers = readStoredOffers(access, master)
         val offer = offers.getOrNull(slot) ?: return null
         acceptOffer(access, master, offer)
@@ -151,7 +150,11 @@ object MortimerAssignment {
         return MortimerModifiers.RolledModifier(id = id, value = if (negative) -value else value)
     }
 
-    fun restorePreviousAssignment(access: ProtectedAccess, master: SlayerMastersRow, masterTask: SlayerMasterTaskRow) {
+    fun restorePreviousAssignment(
+        access: ProtectedAccess,
+        master: SlayerMastersRow,
+        masterTask: SlayerMasterTaskRow,
+    ) {
         val amount = lastAmount(access.player)
         SlayerTaskManager.applyRegularAssignment(
             protected = access,
@@ -203,7 +206,11 @@ object MortimerAssignment {
             return
         }
         VarPlayerIntMapSetter.set(player, VAR_LAST_MOD_ID, modifier.id)
-        VarPlayerIntMapSetter.set(player, VAR_LAST_MOD_VALUE, modifier.absoluteValue.coerceAtMost(511))
+        VarPlayerIntMapSetter.set(
+            player,
+            VAR_LAST_MOD_VALUE,
+            modifier.absoluteValue.coerceAtMost(511),
+        )
         VarPlayerIntMapSetter.set(player, VAR_LAST_MOD_NEGATIVE, if (modifier.negative) 1 else 0)
     }
 
@@ -213,21 +220,14 @@ object MortimerAssignment {
         VarPlayerIntMapSetter.set(player, VAR_MOD_NEGATIVE, 0)
     }
 
-    fun writeActiveModifier(
-        access: ProtectedAccess,
-        modifier: MortimerModifiers.RolledModifier?,
-    ) {
+    fun writeActiveModifier(access: ProtectedAccess, modifier: MortimerModifiers.RolledModifier?) {
         if (modifier == null) {
             clearActiveModifierVars(access.player)
             return
         }
         VarPlayerIntMapSetter.set(access.player, VAR_MOD_ID, modifier.id)
         VarPlayerIntMapSetter.set(access.player, VAR_MOD_VALUE, modifier.absoluteValue)
-        VarPlayerIntMapSetter.set(
-            access.player,
-            VAR_MOD_NEGATIVE,
-            if (modifier.negative) 1 else 0,
-        )
+        VarPlayerIntMapSetter.set(access.player, VAR_MOD_NEGATIVE, if (modifier.negative) 1 else 0)
     }
 
     private fun writeOfferSlot(access: ProtectedAccess, slot: Int, offer: Offer) {

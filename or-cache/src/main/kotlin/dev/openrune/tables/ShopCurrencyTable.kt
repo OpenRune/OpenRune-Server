@@ -11,25 +11,26 @@ object ShopCurrencyTable {
     const val OBJ = 3
     const val VARBIT = 4
 
-    fun shopCurrencies() = dbTable("dbtable.shop_currency", serverOnly = true) {
-        column("key", KEY, VarType.STRING)
-        column("singular_name", SINGULAR_NAME, VarType.STRING)
-        column("plural_name", PLURAL_NAME, VarType.STRING)
-        column("obj", OBJ, VarType.OBJ)
-        column("varbit", VARBIT, VarType.INT)
+    fun shopCurrencies() =
+        dbTable("dbtable.shop_currency", serverOnly = true) {
+            column("key", KEY, VarType.STRING)
+            column("singular_name", SINGULAR_NAME, VarType.STRING)
+            column("plural_name", PLURAL_NAME, VarType.STRING)
+            column("obj", OBJ, VarType.OBJ)
+            column("varbit", VARBIT, VarType.INT)
 
-        row("dbrow.shop_currency_standard_gp") {
-            column(KEY, "currency.standard_gp")
-            column(SINGULAR_NAME, "coin")
-            column(PLURAL_NAME, "coins")
-            columnRSCM(OBJ, "obj.coins")
-        }
+            row("dbrow.shop_currency_standard_gp") {
+                column(KEY, "currency.standard_gp")
+                column(SINGULAR_NAME, "coin")
+                column(PLURAL_NAME, "coins")
+                columnRSCM(OBJ, "obj.coins")
+            }
 
-        row("dbrow.shop_currency_stardust") {
-            column(KEY, "currency.stardust")
-            column(SINGULAR_NAME, "stardust")
-            column(PLURAL_NAME, "stardust")
-            columnRSCM(OBJ, "obj.star_dust")
+            row("dbrow.shop_currency_stardust") {
+                column(KEY, "currency.stardust")
+                column(SINGULAR_NAME, "stardust")
+                column(PLURAL_NAME, "stardust")
+                columnRSCM(OBJ, "obj.star_dust")
+            }
         }
-    }
 }

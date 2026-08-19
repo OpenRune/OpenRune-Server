@@ -25,7 +25,9 @@ private const val CHEST_CLOSED = "loc.prif_crystal_chest_closed"
 private const val VARP_KC_ELVEN_CRYSTAL_CHEST = "varp.kc_elven_crystal_chest"
 private const val VARBIT_CHEST = "varbit.prif_crystal_chest_open"
 
-class ElvenCrystalChestScript @Inject constructor(
+class ElvenCrystalChestScript
+@Inject
+constructor(
     private val locRepo: LocRepository,
     private val objRepo: ObjRepository,
     private val dropRegistry: DropTableRegistry,
@@ -68,7 +70,9 @@ class ElvenCrystalChestScript @Inject constructor(
 
     private fun ProtectedAccess.checkCount() {
         val count = player.vars[VARP_KC_ELVEN_CRYSTAL_CHEST]
-        mes("You have opened the Elven Crystal Chest $count ${if (count == 1) "time" else "times"}.")
+        mes(
+            "You have opened the Elven Crystal Chest $count ${if (count == 1) "time" else "times"}."
+        )
     }
 
     private fun ProtectedAccess.giveDrop(drop: DropRollItem) {

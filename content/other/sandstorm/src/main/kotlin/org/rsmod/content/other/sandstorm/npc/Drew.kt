@@ -43,8 +43,10 @@ class Drew : PluginScript() {
 
     private suspend fun ProtectedAccess.useObjOnDrew(npc: Npc, objType: ItemServerType) {
         when {
-            drew_sandstone_amounts.filterValuesNotNull().keys.contains(objType) -> depositSandstoneOn(npc)
-            ocUncert(objType).internalName == "obj.bucket_empty" -> startDialogue(npc) { depositBuckets() }
+            drew_sandstone_amounts.filterValuesNotNull().keys.contains(objType) ->
+                depositSandstoneOn(npc)
+            ocUncert(objType).internalName == "obj.bucket_empty" ->
+                startDialogue(npc) { depositBuckets() }
             else -> mes(Constants.dm_default)
         }
     }

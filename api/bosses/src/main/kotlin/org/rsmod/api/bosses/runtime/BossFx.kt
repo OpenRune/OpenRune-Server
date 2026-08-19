@@ -42,11 +42,7 @@ fun BossDeps.suppressAttacks(npc: Npc, ticks: Int) {
 
 fun BossDeps.encounter(npc: Npc): BossEncounter = encounterRegistry.of(npc)
 
-fun BossDeps.repeatTick(
-    ticks: Int,
-    onTick: (remaining: Int) -> Boolean,
-    onStop: () -> Unit = {},
-) {
+fun BossDeps.repeatTick(ticks: Int, onTick: (remaining: Int) -> Boolean, onStop: () -> Unit = {}) {
     fun step(remaining: Int) {
         worldQueues.add(1) {
             if (remaining <= 0 || !onTick(remaining)) {
@@ -74,7 +70,16 @@ fun BossDeps.lob(
     landGfxHeight: Int = 0,
     onLand: (Player) -> Unit,
 ) {
-    bossProjectile(spotanim, npc.coords.translate(2, 2), targetTile, startHeight, endHeight, delay, travel, curve)
+    bossProjectile(
+        spotanim,
+        npc.coords.translate(2, 2),
+        targetTile,
+        startHeight,
+        endHeight,
+        delay,
+        travel,
+        curve,
+    )
     worldQueues.add(landTicks) {
         worldRepo.spotanimMap(SpotanimType(landGfx), targetTile, landGfxHeight)
         val player = targetUid.resolve(playerList) ?: return@add

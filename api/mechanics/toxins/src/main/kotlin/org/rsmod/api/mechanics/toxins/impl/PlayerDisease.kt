@@ -85,44 +85,29 @@ public object PlayerDisease {
         Toxin.syncStatusOrbs(player)
     }
 
-    public fun reduceDrain(
-        player: Player,
-        amount: Int,
-    ): Boolean {
+    public fun reduceDrain(player: Player, amount: Int): Boolean {
         if (amount <= 0) {
             return false
         }
 
-        val current =
-            player.vars["varp.disease_drain"]
+        val current = player.vars["varp.disease_drain"]
 
         if (current <= 0) {
             return false
         }
 
-        val reduced =
-            (current - amount)
-                .coerceAtLeast(0)
+        val reduced = (current - amount).coerceAtLeast(0)
 
         if (reduced == 0) {
             clear(player)
             return true
         }
 
-        VarPlayerIntMapSetter.set(
-            player,
-            "varp.disease_drain",
-            reduced,
-        )
+        VarPlayerIntMapSetter.set(player, "varp.disease_drain", reduced)
 
-        player.clearTimer(
-            "timer.player_disease",
-        )
+        player.clearTimer("timer.player_disease")
 
-        player.timer(
-            "timer.player_disease",
-            TICK_INTERVAL,
-        )
+        player.timer("timer.player_disease", TICK_INTERVAL)
 
         Toxin.syncStatusOrbs(player)
         return true
@@ -134,10 +119,12 @@ public object PlayerDisease {
             return
         }
         val drain = player.vars["varp.disease_drain"]
-        val targetStat = pickDiseaseStat() ?: run {
-            clear(player)
-            return
-        }
+        val targetStat =
+            pickDiseaseStat()
+                ?: run {
+                    clear(player)
+                    return
+                }
 
         if (hasWornDiseaseMitigation(player)) {
             player.takeInstantHit(
@@ -148,30 +135,20 @@ public object PlayerDisease {
                 modifier = NoopPlayerHitModifier,
             )
         } else {
-            applyDiseaseDrain(player, RSCM.getReverseMapping(RSCMType.STAT,targetStat.id), drain)
+            applyDiseaseDrain(player, RSCM.getReverseMapping(RSCMType.STAT, targetStat.id), drain)
         }
 
         player.timer("timer.player_disease", TICK_INTERVAL)
     }
 
-    public fun rearmTimerAfterLogin(
-        player: Player,
-        clock: Int =
-            player.currentMapClock,
-    ) {
+    public fun rearmTimerAfterLogin(player: Player, clock: Int = player.currentMapClock) {
         if (!isDiseased(player)) {
             return
         }
 
-        player.clearTimer(
-            "timer.player_disease",
-        )
+        player.clearTimer("timer.player_disease")
 
-        player.timerAt(
-            timer = "timer.player_disease",
-            mapClock = clock,
-            cycles = TICK_INTERVAL,
-        )
+        player.timerAt(timer = "timer.player_disease", mapClock = clock, cycles = TICK_INTERVAL)
     }
 
     private fun applyDiseaseDrain(player: Player, targetStat: String, drain: Int) {
@@ -208,9 +185,10 @@ public object PlayerDisease {
         }
     }
 
-    private fun eligibleDiseaseStats(): List<StatType> = ServerCacheManager.getStats().values.filter { st ->
-        !st.isType("stat.hitpoints") && !st.isType("stat.prayer")
-    }
+    private fun eligibleDiseaseStats(): List<StatType> =
+        ServerCacheManager.getStats().values.filter { st ->
+            !st.isType("stat.hitpoints") && !st.isType("stat.prayer")
+        }
 
     private fun pickDiseaseStat(): StatType? {
         val pool = eligibleDiseaseStats()

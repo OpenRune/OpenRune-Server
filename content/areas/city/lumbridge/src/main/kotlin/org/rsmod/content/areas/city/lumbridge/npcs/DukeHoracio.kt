@@ -13,7 +13,8 @@ import org.rsmod.game.entity.Player
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
-class DukeHoracio @Inject constructor(private val runeMysteries: RuneMysteriesQuest) : PluginScript() {
+class DukeHoracio @Inject constructor(private val runeMysteries: RuneMysteriesQuest) :
+    PluginScript() {
 
     private val quest
         get() = runeMysteries.quest
@@ -51,12 +52,7 @@ class DukeHoracio @Inject constructor(private val runeMysteries: RuneMysteriesQu
                     3,
                 )
             } else {
-                choice2(
-                    questOption,
-                    2,
-                    "Where can I find money?",
-                    3,
-                )
+                choice2(questOption, 2, "Where can I find money?", 3)
             }
 
         when (choice) {
@@ -88,9 +84,13 @@ class DukeHoracio @Inject constructor(private val runeMysteries: RuneMysteriesQu
                 )
                 chatPlayer(happy, "Okay, will do.")
             }
-            stage in RuneMysteriesQuest.STAGE_TALISMAN_GIVEN until RuneMysteriesQuest.STAGE_COMPLETE -> {
+            stage in
+                RuneMysteriesQuest.STAGE_TALISMAN_GIVEN until RuneMysteriesQuest.STAGE_COMPLETE -> {
                 chatPlayer(quiz, "Have you any quests for me?")
-                chatNpc(happy, "The only job I had was the delivery of that talisman, so I'm afraid not.")
+                chatNpc(
+                    happy,
+                    "The only job I had was the delivery of that talisman, so I'm afraid not.",
+                )
             }
             else -> {
                 chatPlayer(quiz, "Have you any quests for me?")
@@ -180,21 +180,25 @@ class DukeHoracio @Inject constructor(private val runeMysteries: RuneMysteriesQu
         chatNpc(quiz, "A knight going on a dragon quest, hmm? What dragon do you intend to slay?")
 
         when (
-            choice2(
-                "Elvarg, the dragon of Crandor island!",
-                1,
-                "Oh, no dragon in particular.",
-                2,
-            )
+            choice2("Elvarg, the dragon of Crandor island!", 1, "Oh, no dragon in particular.", 2)
         ) {
             1 -> {
                 chatPlayer(happy, "Elvarg, the dragon of Crandor island!")
                 chatNpc(shocked, "Elvarg? Are you sure?")
-                when (choice2("Yes.", 1, "I'd better leave that dragon alone.", 2, title = "Well, are you sure?")) {
+                when (
+                    choice2(
+                        "Yes.",
+                        1,
+                        "I'd better leave that dragon alone.",
+                        2,
+                        title = "Well, are you sure?",
+                    )
+                ) {
                     1 -> {
                         chatPlayer(happy, "Yes.")
                         val gender =
-                            if (player.appearance.bodyType == Constants.bodytype_a) "man" else "woman"
+                            if (player.appearance.bodyType == Constants.bodytype_a) "man"
+                            else "woman"
                         chatNpc(happy, "Well, you're a braver $gender than I!")
                         chatPlayer(quiz, "Why is everyone so scared of this dragon?")
                         chatNpc(

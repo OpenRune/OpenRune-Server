@@ -4,7 +4,6 @@ import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.content.slayer.core.SlayerTaskManager
 import org.rsmod.content.slayer.dialogue.SlayerMasterDialogue.RemoteMaster
 import org.rsmod.content.slayer.dialogue.SlayerMasterDialogue.chatMaster
-import org.rsmod.content.slayer.dialogue.KonarSlayerDialogueHelpers
 import org.rsmod.content.slayer.rewards.SlayerRewardsPoints
 import org.rsmod.game.entity.Player
 
@@ -13,10 +12,8 @@ object GemContactDialogue {
 
     suspend fun Dialogue.contact(remote: RemoteMaster, masterId: Int) {
         when (masterId) {
-            SlayerMasters.TASK_WILDERNESS ->
-                chatMaster(remote, neutral, "Yeah? What do you want?")
-            else ->
-                chatMaster(remote, neutral, "'Ello, can I help you?")
+            SlayerMasters.TASK_WILDERNESS -> chatMaster(remote, neutral, "Yeah? What do you want?")
+            else -> chatMaster(remote, neutral, "'Ello, can I help you?")
         }
         when (
             choice5(
@@ -53,9 +50,9 @@ object GemContactDialogue {
             if (masterId == SlayerMasters.TASK_KONAR) {
                 val monster = KonarSlayerDialogueHelpers.monsterName(task)
                 val areaName =
-                    KonarSlayerDialogueHelpers.currentArea(access.player)
-                        ?.let { KonarSlayerDialogueHelpers.areaShortName(it) }
-                        ?: "the assigned location"
+                    KonarSlayerDialogueHelpers.currentArea(access.player)?.let {
+                        KonarSlayerDialogueHelpers.areaShortName(it)
+                    } ?: "the assigned location"
                 "You're currently assigned to bring balance to $monster in $areaName; you have $count more to go. Your reward point tally is $points."
             } else {
                 "You're currently assigned to kill ${task.nameUppercase}; you have $count more to go. Your reward point tally is $points."
@@ -90,7 +87,11 @@ object GemContactDialogue {
                     val monster = KonarSlayerDialogueHelpers.monsterName(task)
                     chatMaster(remote, neutral, "You must bring balance to $monster.")
                     if (area != null) {
-                        chatMaster(remote, neutral, KonarSlayerDialogueHelpers.areaDescription(area))
+                        chatMaster(
+                            remote,
+                            neutral,
+                            KonarSlayerDialogueHelpers.areaDescription(area),
+                        )
                     }
                 }
                 SlayerMasters.TASK_WILDERNESS ->
@@ -124,13 +125,13 @@ object GemContactDialogue {
             SlayerMasters.TASK_MAZCHNA -> "You'll find me in Canifis."
             SlayerMasters.TASK_VANNAKA ->
                 "You'll find me on the ground floor of the Slayer Tower in Edgeville."
-            SlayerMasters.TASK_DURADEL, SlayerMasters.TASK_NIEVE -> "You'll find me in the Slayer Tower."
+            SlayerMasters.TASK_DURADEL,
+            SlayerMasters.TASK_NIEVE -> "You'll find me in the Slayer Tower."
             SlayerMasters.TASK_KONAR ->
                 "You'll find me on Mount Karuulm. I'll be here when you need a new purpose."
             SlayerMasters.TASK_WILDERNESS ->
                 "I'm in the Edgeville jail, but my tasks are for the Wilderness."
-            SlayerMasters.TASK_MORTIMER ->
-                "You'll find me in the Wyrmscraig Cavern."
+            SlayerMasters.TASK_MORTIMER -> "You'll find me in the Wyrmscraig Cavern."
             else -> "You'll find me when you need a new assignment."
         }
     }

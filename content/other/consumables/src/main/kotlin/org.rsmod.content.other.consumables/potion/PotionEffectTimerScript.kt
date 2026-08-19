@@ -24,45 +24,23 @@ constructor(
             specialEffects.onLogout(player)
         }
 
-        onPlayerTimer(
-            PotionEffectService.STAMINA_TIMER,
-        ) {
-            effects.processStamina(this)
+        onPlayerTimer(PotionEffectService.STAMINA_TIMER) { effects.processStamina(this) }
+
+        onPlayerTimer(PotionEffectService.ANTIFIRE_TIMER) {
+            effects.processDragonfireProtection(access = this, fullProtection = false)
         }
 
-        onPlayerTimer(
-            PotionEffectService.ANTIFIRE_TIMER,
-        ) {
-            effects.processDragonfireProtection(
-                access = this,
-                fullProtection = false,
-            )
+        onPlayerTimer(PotionEffectService.SUPER_ANTIFIRE_TIMER) {
+            effects.processDragonfireProtection(access = this, fullProtection = true)
         }
 
-        onPlayerTimer(
-            PotionEffectService.SUPER_ANTIFIRE_TIMER,
-        ) {
-            effects.processDragonfireProtection(
-                access = this,
-                fullProtection = true,
-            )
-        }
+        onPlayerTimer(PotionEffectService.DIVINE_TIMER) { effects.processDivineEffects(this) }
 
-        onPlayerTimer(
-            PotionEffectService.DIVINE_TIMER,
-        ) {
-            effects.processDivineEffects(this)
-        }
-
-        onPlayerTimer(
-            PotionSpecialEffectService.MENAPHITE_REMEDY_TIMER,
-        ) {
+        onPlayerTimer(PotionSpecialEffectService.MENAPHITE_REMEDY_TIMER) {
             specialEffects.processMenaphiteRemedy(this)
         }
 
-        onPlayerTimer(
-            PotionEffectService.PRAYER_REGENERATION_TIMER,
-        ) {
+        onPlayerTimer(PotionEffectService.PRAYER_REGENERATION_TIMER) {
             effects.processPrayerRegeneration(this)
         }
     }

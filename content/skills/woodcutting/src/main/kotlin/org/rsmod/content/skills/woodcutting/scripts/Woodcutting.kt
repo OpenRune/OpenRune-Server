@@ -277,13 +277,12 @@ constructor(
         fun findAxe(player: Player, tree: ObjectServerType): InvObj? {
             val worn = player.wornAxe()
             val carried = player.carriedAxes()
-            val candidates =
-                buildList {
-                    if (worn != null) {
-                        add(worn)
-                    }
-                    addAll(carried)
+            val candidates = buildList {
+                if (worn != null) {
+                    add(worn)
                 }
+                addAll(carried)
+            }
             return candidates.maxWithOrNull(axeComparator(tree))
         }
 
@@ -306,13 +305,16 @@ constructor(
             inv.filterNotNull { getInvObj(it).isUsableAxe(this) }
 
         private fun ItemServerType.isUsableAxe(player: Player): Boolean {
-            if (!isContentType("content.woodcutting_axe") || player.woodcuttingLvl < axeWoodcuttingReq) {
+            if (
+                !isContentType("content.woodcutting_axe") ||
+                    player.woodcuttingLvl < axeWoodcuttingReq
+            ) {
                 return false
             }
             return when (internalName) {
                 "obj.infernal_axe" -> player.firemakingLvl >= INFERNAL_FIREMAKING_REQ
                 "obj.crystal_axe",
-                "obj.crystal_axe_inactive", ->
+                "obj.crystal_axe_inactive" ->
                     QuestRequirements.hasCompleted(player, SONG_OF_THE_ELVES)
                 else -> true
             }

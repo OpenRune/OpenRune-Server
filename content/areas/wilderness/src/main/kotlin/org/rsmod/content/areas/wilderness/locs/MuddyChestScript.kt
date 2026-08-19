@@ -12,7 +12,6 @@ import org.rsmod.api.player.vars.VarPlayerIntMapSetter
 import org.rsmod.api.repo.loc.LocRepository
 import org.rsmod.api.repo.obj.ObjRepository
 import org.rsmod.api.script.onOpLoc1
-import org.rsmod.api.script.onOpLoc2
 import org.rsmod.game.loc.BoundLocInfo
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext

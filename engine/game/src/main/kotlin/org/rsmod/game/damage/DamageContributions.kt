@@ -37,7 +37,8 @@ public class DamageContributions {
 
     public fun damageBy(source: Player): Int {
         val uuid = source.uuid ?: return 0
-        return (entries[DamageContributorKey.Player(uuid)] as? DamageContributor.ByPlayer)?.damage ?: 0
+        return (entries[DamageContributorKey.Player(uuid)] as? DamageContributor.ByPlayer)?.damage
+            ?: 0
     }
 
     public fun damageBy(source: Npc): Int =
@@ -63,7 +64,8 @@ public class DamageContributions {
         }
     }
 
-    public fun topPlayer(): DamageContributor.ByPlayer? = mostDamage() as? DamageContributor.ByPlayer
+    public fun topPlayer(): DamageContributor.ByPlayer? =
+        mostDamage() as? DamageContributor.ByPlayer
 
     public fun leastPlayer(): DamageContributor.ByPlayer? {
         val players = entries.values.filterIsInstance<DamageContributor.ByPlayer>()

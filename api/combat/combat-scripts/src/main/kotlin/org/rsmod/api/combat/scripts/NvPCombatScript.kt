@@ -56,7 +56,9 @@ constructor(private val combat: NvPCombat, private val areaChecker: AreaChecker)
         val attackType = resolveAttackType()
         return when {
             attackType.isRanged ->
-                CombatAttack.NpcRanged(RangedAttackType.from(attackType) ?: RangedAttackType.Standard)
+                CombatAttack.NpcRanged(
+                    RangedAttackType.from(attackType) ?: RangedAttackType.Standard
+                )
             // `maxHit = 0` defers max-hit resolution to the npc's magic stats in [NvPCombat].
             attackType.isMagic -> CombatAttack.NpcMagic(maxHit = 0)
             else -> CombatAttack.NpcMelee(MeleeAttackType.from(attackType))

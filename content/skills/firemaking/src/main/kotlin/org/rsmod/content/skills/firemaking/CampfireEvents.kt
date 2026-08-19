@@ -36,7 +36,9 @@ import org.rsmod.map.CoordGrid
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
-class CampfireEvents @Inject constructor(
+class CampfireEvents
+@Inject
+constructor(
     private val locRepo: LocRepository,
     private val worldRepo: WorldRepository,
     private val conRepo: ControllerRepository,
@@ -48,7 +50,10 @@ class CampfireEvents @Inject constructor(
     private val coloredLogRows = FiremakingColoredLogsRow.all()
 
     private val campFireObjects =
-        coloredLogRows.map { it.campfireObject.internalName }.toMutableSet().apply { add("loc.forestry_fire") }
+        coloredLogRows
+            .map { it.campfireObject.internalName }
+            .toMutableSet()
+            .apply { add("loc.forestry_fire") }
 
     private val basicFires = coloredLogRows.map { it.fireObject.internalName }.toSet() + "loc.fire"
 
@@ -64,17 +69,13 @@ class CampfireEvents @Inject constructor(
             onOpLoc3(camp) { anim("seq.forestry_sitting_tea_loop") }
 
             FiremakingLogsRow.all().forEach { log ->
-                onOpLocU(camp, log.input.internalName) {
-                    tendCampfireWithLog(it.vis, log)
-                }
+                onOpLocU(camp, log.input.internalName) { tendCampfireWithLog(it.vis, log) }
             }
         }
 
         basicFires.forEach { fire ->
             FiremakingLogsRow.all().forEach { log ->
-                onOpLocU(fire, log.input.internalName) {
-                    lightCampfire(it, log)
-                }
+                onOpLocU(fire, log.input.internalName) { lightCampfire(it, log) }
             }
         }
     }
@@ -86,7 +87,9 @@ class CampfireEvents @Inject constructor(
         val tile = fire.coords
 
         if (locRepo.locNearby(tile, 5, tile, campFireObjects)) {
-            player.mes("There's a Forester's Campfire nearby, help tend to that one or move further away.")
+            player.mes(
+                "There's a Forester's Campfire nearby, help tend to that one or move further away."
+            )
             return
         }
 
@@ -95,11 +98,7 @@ class CampfireEvents @Inject constructor(
         locRepo.del(fire, Int.MAX_VALUE)
         invDel(player.inv, log.input.internalName, 1)
 
-        spawnCampfire(
-            fire,
-            fireObject,
-            log.foresterInitialTicks.coerceAtLeast(1)
-        )
+        spawnCampfire(fire, fireObject, log.foresterInitialTicks.coerceAtLeast(1))
 
         spotanimMap(worldRepo, smokeSpotForAngle(fire.angleId), tile)
     }
@@ -143,13 +142,14 @@ class CampfireEvents @Inject constructor(
     private fun ProtectedAccess.showCampfireStatus(camp: BoundLocInfo) {
         resetAnim()
 
-        val text = when (campfireRemainingTicks(camp)) {
-            in 0..58 -> "The embers glow softly."
-            in 59..118 -> "The flames flicker gently."
-            in 119..178 -> "The fire burns steadily."
-            in 179..238 -> "The fire burns brightly."
-            else -> "The roaring fire crackles invitingly."
-        }
+        val text =
+            when (campfireRemainingTicks(camp)) {
+                in 0..58 -> "The embers glow softly."
+                in 59..118 -> "The flames flicker gently."
+                in 119..178 -> "The fire burns steadily."
+                in 179..238 -> "The fire burns brightly."
+                else -> "The roaring fire crackles invitingly."
+            }
 
         spam(text)
     }
@@ -172,7 +172,9 @@ class CampfireEvents @Inject constructor(
 
     private fun ProtectedAccess.hasFiremakingLevelOrMes(log: FiremakingLogsRow): Boolean {
         if (player.firemakingLvl >= log.statReq.first().t1) return true
-        player.mes("You need a Firemaking level of ${log.statReq.first().t1} to burn ${log.input.name}.")
+        player.mes(
+            "You need a Firemaking level of ${log.statReq.first().t1} to burn ${log.input.name}."
+        )
         return false
     }
 
@@ -186,9 +188,12 @@ class CampfireEvents @Inject constructor(
 
         var chosen: FiremakingLogsRow? = null
 
-        openSkillMulti(SkillMultiConfig(verb = "burn", entries = logs.map {
-          SkillMultiEntry(it.input.internalName)
-        }),) { selection ->
+        openSkillMulti(
+            SkillMultiConfig(
+                verb = "burn",
+                entries = logs.map { SkillMultiEntry(it.input.internalName) },
+            )
+        ) { selection ->
             chosen = logs.firstOrNull { it.input.internalName == selection.entry.internal }
         }
 
@@ -200,13 +205,10 @@ class CampfireEvents @Inject constructor(
             player.firemakingLvl >= it.statReq.first().t1 && inv.count(it.input.internalName) > 0
         }
 
-
     private fun spawnCampfire(template: BoundLocInfo, id: String, duration: Int) {
         val coords = template.coords
 
-        ensureController(coords).apply {
-            firemakingCampfireExpiryCycle = mapClock + duration
-        }
+        ensureController(coords).apply { firemakingCampfireExpiryCycle = mapClock + duration }
 
         locRepo.add(
             coords,
@@ -217,7 +219,7 @@ class CampfireEvents @Inject constructor(
             onDespawn = {
                 conRepo.findExact(coords, "controller.firemaking_campfire")?.let(conRepo::del)
                 objRegistry.add(Obj.fromServer(mapClock, coords, "obj.ashes", 1))
-            }
+            },
         )
     }
 
@@ -228,8 +230,10 @@ class CampfireEvents @Inject constructor(
     }
 
     private fun campfireRemainingTicks(camp: BoundLocInfo): Int {
-        val expiry = conRepo.findExact(camp.coords, "controller.firemaking_campfire")
-            ?.firemakingCampfireExpiryCycle ?: return 300
+        val expiry =
+            conRepo
+                .findExact(camp.coords, "controller.firemaking_campfire")
+                ?.firemakingCampfireExpiryCycle ?: return 300
 
         return (expiry - mapClock.cycle).coerceAtLeast(0)
     }
@@ -242,9 +246,8 @@ class CampfireEvents @Inject constructor(
             }
 
     private fun resolveCampfire(camp: BoundLocInfo): BoundLocInfo? {
-        val type = ServerCacheManager
-            .getObject(camp.internalName.asRSCM(RSCMType.LOC))
-            ?: return null
+        val type =
+            ServerCacheManager.getObject(camp.internalName.asRSCM(RSCMType.LOC)) ?: return null
 
         return locRepo.findExact(camp.coords, type)?.let { BoundLocInfo(it, type) }
     }
@@ -260,17 +263,14 @@ class CampfireEvents @Inject constructor(
     private fun smokeSpotForAngle(angleId: Int): SpotanimType {
         val rot = LocAngle[angleId].ordinal * 90 % 360
         return SpotanimType(
-            smokeByAngle.minBy { abs(it.first - rot) }
-                .second.asRSCM(RSCMType.SPOTANIM)
+            smokeByAngle.minBy { abs(it.first - rot) }.second.asRSCM(RSCMType.SPOTANIM)
         )
     }
 
-    private data class CampfireTendTask(
-        val campfire: BoundLocInfo,
-        val log: FiremakingLogsRow
-    )
+    private data class CampfireTendTask(val campfire: BoundLocInfo, val log: FiremakingLogsRow)
 
     companion object {
-        var Controller.firemakingCampfireExpiryCycle: Int by intVarCon("varcon.firemaking_campfire_expiry_cycle")
+        var Controller.firemakingCampfireExpiryCycle: Int by
+            intVarCon("varcon.firemaking_campfire_expiry_cycle")
     }
 }

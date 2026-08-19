@@ -31,27 +31,15 @@ private object GameframeComponents {
     const val side9: String = "component.toplevel_osrs_stretch:side9"
 }
 
-class FriendsIgnoreScript
-@Inject
-constructor(
-    private val eventBus: EventBus,
-) : PluginScript() {
+class FriendsIgnoreScript @Inject constructor(private val eventBus: EventBus) : PluginScript() {
     override fun ScriptContext.startup() {
-        onIfOpen(FriendsInterface.main) {
-            player.enableFriendsIgnoreButton()
-        }
+        onIfOpen(FriendsInterface.main) { player.enableFriendsIgnoreButton() }
 
-        onIfOpen(IgnoreInterface.main) {
-            player.enableIgnoreFriendsButton()
-        }
+        onIfOpen(IgnoreInterface.main) { player.enableIgnoreFriendsButton() }
 
-        onIfOverlayButton(FriendsComponents.ignore) {
-            player.openIgnoreTab()
-        }
+        onIfOverlayButton(FriendsComponents.ignore) { player.openIgnoreTab() }
 
-        onIfOverlayButton(IgnoreComponents.friends) {
-            player.openFriendsTab()
-        }
+        onIfOverlayButton(IgnoreComponents.friends) { player.openFriendsTab() }
     }
 
     private fun Player.enableFriendsIgnoreButton() {

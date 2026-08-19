@@ -16,7 +16,8 @@ internal object TrustedDevicePolicy {
         when (auth) {
             TrustedDeviceAuth.Unknown -> true
             is TrustedDeviceAuth.Known -> {
-                val device = trustedDevices.firstOrNull { it.deviceId == auth.deviceId } ?: return true
+                val device =
+                    trustedDevices.firstOrNull { it.deviceId == auth.deviceId } ?: return true
                 daysSinceVerification(device, zone) >= DAYS_BETWEEN_2FA_VERIFICATION
             }
         }
@@ -36,14 +37,8 @@ internal object TrustedDevicePolicy {
         }
     }
 
-    private fun daysSinceVerification(
-        device: TrustedDeviceData,
-        zone: ZoneId,
-    ): Long =
-        ChronoUnit.DAYS.between(
-            device.verifiedAt.atZone(zone).toLocalDate(),
-            LocalDate.now(zone),
-        )
+    private fun daysSinceVerification(device: TrustedDeviceData, zone: ZoneId): Long =
+        ChronoUnit.DAYS.between(device.verifiedAt.atZone(zone).toLocalDate(), LocalDate.now(zone))
 }
 
 internal sealed class TrustedDeviceAuth {

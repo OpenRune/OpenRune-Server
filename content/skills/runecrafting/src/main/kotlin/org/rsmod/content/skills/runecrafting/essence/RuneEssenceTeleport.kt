@@ -29,10 +29,7 @@ class EssencePortals : PluginScript() {
             if ((0..1).random() == 0) {
                 return base
             }
-            return CoordGrid(
-                x = base.x + (-1..1).random(),
-                z = base.z + (-1..1).random(),
-            )
+            return CoordGrid(x = base.x + (-1..1).random(), z = base.z + (-1..1).random())
         }
 
         fun auburyDest(): CoordGrid = randomizeLocation(AUBURY)

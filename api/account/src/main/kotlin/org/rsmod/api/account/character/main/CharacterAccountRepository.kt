@@ -2,14 +2,14 @@ package org.rsmod.api.account.character.main
 
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.ObjectMapper
+import dev.openrune.ServerCacheManager
+import dev.openrune.types.varp.VarpLifetime
 import dev.or2.central.account.AccountData
 import dev.or2.central.account.CharacterData
 import dev.or2.central.account.Rights
 import dev.or2.central.account.TrustedDeviceData
 import dev.or2.central.account.TwoFactorAuthData
 import dev.or2.sql.OpenRuneSql
-import dev.openrune.ServerCacheManager
-import dev.openrune.types.varp.VarpLifetime
 import jakarta.inject.Inject
 import java.sql.Statement
 import java.sql.Timestamp
@@ -23,7 +23,6 @@ import org.rsmod.api.db.DatabaseConnection
 import org.rsmod.api.db.util.getIntOrNull
 import org.rsmod.api.db.util.getLocalDateTime
 import org.rsmod.api.db.util.getStringOrNull
-import org.rsmod.api.db.util.setNullableInt
 import org.rsmod.api.db.util.setNullableString
 import org.rsmod.api.parsers.json.Json
 import org.rsmod.game.entity.Player
@@ -45,7 +44,7 @@ constructor(
 
         val insert =
             connection.prepareStatement(
-                OpenRuneSql.text("game/character/accounts_insert_conflict_do_nothing.sql"),
+                OpenRuneSql.text("game/character/accounts_insert_conflict_do_nothing.sql")
             )
         insert.use {
             it.setString(1, storedName)
@@ -55,7 +54,7 @@ constructor(
 
         val select =
             connection.prepareStatement(
-                OpenRuneSql.text("game/character/accounts_select_id_by_account_name.sql"),
+                OpenRuneSql.text("game/character/accounts_select_id_by_account_name.sql")
             )
         val accountId =
             select.use {
@@ -119,7 +118,7 @@ constructor(
 
         val select =
             connection.prepareStatement(
-                OpenRuneSql.text("game/character/characters_select_metadata_by_login.sql"),
+                OpenRuneSql.text("game/character/characters_select_metadata_by_login.sql")
             )
 
         select.use {
@@ -137,8 +136,10 @@ constructor(
                     val twoFactorAuth =
                         TwoFactorAuthData(
                             twoFactorSecret = resultSet.getStringOrNull("two_factor_secret"),
-                            twoFactorRecoveryCodes = resultSet.getStringOrNull("two_factor_recovery_codes"),
-                            twoFactorConfirmedAt = resultSet.getLocalDateTime("two_factor_confirmed_at"),
+                            twoFactorRecoveryCodes =
+                                resultSet.getStringOrNull("two_factor_recovery_codes"),
+                            twoFactorConfirmedAt =
+                                resultSet.getLocalDateTime("two_factor_confirmed_at"),
                         )
                     val worldId = resultSet.getIntOrNull("world_id")
                     val coordX = resultSet.getInt("x")
@@ -257,8 +258,7 @@ constructor(
                     while (rs.next()) {
                         val key = rs.getString("attr_key")
                         val json = rs.getString("value_json")
-                        val value =
-                            objectMapper.readValue(json, object : TypeReference<Any>() {})
+                        val value = objectMapper.readValue(json, object : TypeReference<Any>() {})
                         put(key, value)
                     }
                 }
@@ -409,7 +409,7 @@ constructor(
                             TrustedDeviceData(
                                 deviceId = rs.getInt("device_id"),
                                 verifiedAt = rs.getLocalDateTime("verified_at") ?: continue,
-                            ),
+                            )
                         )
                     }
                 }
@@ -430,10 +430,14 @@ constructor(
         accountId: Int,
         trustedDevices: List<TrustedDeviceData>,
     ) {
-        connection.prepareStatement(OpenRuneSql.text("game/character/trusted_devices_delete_by_account.sql")).use { ps ->
-            ps.setInt(1, accountId)
-            ps.executeUpdate()
-        }
+        connection
+            .prepareStatement(
+                OpenRuneSql.text("game/character/trusted_devices_delete_by_account.sql")
+            )
+            .use { ps ->
+                ps.setInt(1, accountId)
+                ps.executeUpdate()
+            }
         if (trustedDevices.isEmpty()) {
             return
         }

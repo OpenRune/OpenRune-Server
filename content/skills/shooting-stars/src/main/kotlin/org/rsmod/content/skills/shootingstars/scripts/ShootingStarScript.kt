@@ -20,10 +20,8 @@ import org.rsmod.plugin.scripts.ScriptContext
 
 class ShootingStarScript
 @Inject
-constructor(
-    private val stars: ShootingStarManager,
-    private val mining: StarMiningScript,
-) : PluginScript() {
+constructor(private val stars: ShootingStarManager, private val mining: StarMiningScript) :
+    PluginScript() {
     private val settings: ShootingstarsSettings
         get() = ShootingstarsSettings.load()
 
@@ -57,7 +55,7 @@ constructor(
         val stage = stars.currentStage()
         mes(
             "This is a size-${stage.size} star. " +
-                "It has been mined ${stars.percentageToNextLevel()}% of the way to the next layer.",
+                "It has been mined ${stars.percentageToNextLevel()}% of the way to the next layer."
         )
     }
 
@@ -71,7 +69,7 @@ constructor(
                         ?: run {
                             player.mes(
                                 "Unknown location '$arg'. Use ::star ANY or a site key " +
-                                    "(ex: MINING_GUILD).",
+                                    "(ex: MINING_GUILD)."
                             )
                             return
                         }

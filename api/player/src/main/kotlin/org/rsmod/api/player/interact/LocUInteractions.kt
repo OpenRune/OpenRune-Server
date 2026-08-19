@@ -112,7 +112,8 @@ public class LocUInteractions @Inject private constructor(private val eventBus: 
         }
 
         if (locType.category >= 0) {
-            val categoryDefaultEvent = LocUDefaultEvents.OpCategory(base, target, locType, objType, invSlot)
+            val categoryDefaultEvent =
+                LocUDefaultEvents.OpCategory(base, target, locType, objType, invSlot)
             if (eventBus.contains(categoryDefaultEvent::class.java, categoryDefaultEvent.id)) {
                 return categoryDefaultEvent
             }
@@ -200,7 +201,8 @@ public class LocUInteractions @Inject private constructor(private val eventBus: 
         }
 
         if (locType.category >= 0) {
-            val categoryDefaultEvent = LocUDefaultEvents.ApCategory(base, target, locType, objType, invSlot)
+            val categoryDefaultEvent =
+                LocUDefaultEvents.ApCategory(base, target, locType, objType, invSlot)
             if (eventBus.contains(categoryDefaultEvent::class.java, categoryDefaultEvent.id)) {
                 return categoryDefaultEvent
             }

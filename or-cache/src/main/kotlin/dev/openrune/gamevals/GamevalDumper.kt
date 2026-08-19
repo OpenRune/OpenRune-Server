@@ -13,19 +13,20 @@ import java.io.FileOutputStream
 
 object GamevalDumper {
 
-    private val NAME_REMAP = mapOf(
-        "objects" to "loc",
-        "items" to "obj",
-        "jingles" to "jingle",
-        "spotanims" to "spotanim",
-        "npcs" to "npc",
-        "components" to "component",
-        "interfaces" to "interface",
-        "tables" to "dbtable",
-        "dbrows" to "dbrow",
-        "sequences" to "seq",
-        "varbits" to "varbit"
-    )
+    private val NAME_REMAP =
+        mapOf(
+            "objects" to "loc",
+            "items" to "obj",
+            "jingles" to "jingle",
+            "spotanims" to "spotanim",
+            "npcs" to "npc",
+            "components" to "component",
+            "interfaces" to "interface",
+            "tables" to "dbtable",
+            "dbrows" to "dbrow",
+            "sequences" to "seq",
+            "varbits" to "varbit",
+        )
 
     fun dumpGamevals(cache: Cache, rev: Int) {
         val gamevals = mutableMapOf<String, List<String>>()
@@ -35,14 +36,14 @@ object GamevalDumper {
 
             when (group) {
                 GameValGroupTypes.SPRITETYPES -> {
-                    gamevals["sprites"] = elements.mapNotNull { it.elementAs<Sprite>()?.formatSprite() }
+                    gamevals["sprites"] =
+                        elements.mapNotNull { it.elementAs<Sprite>()?.formatSprite() }
                 }
 
                 GameValGroupTypes.IFTYPES_V2 -> {
                     val interfaces = elements.mapNotNull { it.elementAs<Interface>() }
 
-                    gamevals["interfaces"] =
-                        interfaces.map { "${it.name}=${it.id}" }
+                    gamevals["interfaces"] = interfaces.map { "${it.name}=${it.id}" }
 
                     gamevals["components"] =
                         interfaces.flatMap { iface ->
@@ -83,7 +84,6 @@ object GamevalDumper {
         encodeGameValDat("../.data/gamevals-binary/gamevals_columns.dat", mapOf("dbcol" to data))
     }
 
-
     private fun encodeGameValDat(output: String, tables: Map<String, List<String>>) {
         DataOutputStream(FileOutputStream(output)).use { out ->
             out.writeInt(tables.size)
@@ -106,7 +106,5 @@ object GamevalDumper {
         }
     }
 
-    private fun Sprite.formatSprite(): String =
-        if (index == -1) "$name=$id"
-        else "$name:$index=$id"
+    private fun Sprite.formatSprite(): String = if (index == -1) "$name=$id" else "$name:$index=$id"
 }

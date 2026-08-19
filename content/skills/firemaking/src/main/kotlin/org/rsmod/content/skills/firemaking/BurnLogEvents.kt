@@ -27,8 +27,9 @@ import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 import skillSuccess
 
-
-public class BurnLogEvents @Inject constructor(
+public class BurnLogEvents
+@Inject
+constructor(
     private val objRepo: ObjRegistry,
     private val objRegistry: ObjRegistry,
     private val locRepo: LocRepository,
@@ -36,24 +37,22 @@ public class BurnLogEvents @Inject constructor(
     private val xpMods: XpModifiers,
 ) : PluginScript() {
 
-    private val walkDirections = listOf(
-        Direction.West,
-        Direction.East,
-        Direction.South,
-        Direction.North,
-    )
+    private val walkDirections =
+        listOf(Direction.West, Direction.East, Direction.South, Direction.North)
 
     private val coloredLogs = FiremakingColoredLogsRow.all().map { it.logItem.internalName }.toSet()
 
-    private val coloredFire: Map<String, String> = FiremakingColoredLogsRow.all()
-        .associate { it.logItem.internalName to it.fireObject.internalName }
+    private val coloredFire: Map<String, String> =
+        FiremakingColoredLogsRow.all().associate {
+            it.logItem.internalName to it.fireObject.internalName
+        }
 
     override fun ScriptContext.startup() {
         FiremakingLogsRow.all().forEach { log ->
             onOpHeldU("obj.tinderbox", log.input) { startBurn(log, method = BurnMethod.Tinderbox) }
             onOpHeldU(log.input) {
-                val barbarianAnim = it.second.paramOrNull(params.barbarian_firemaking_anim)
-                    ?: return@onOpHeldU
+                val barbarianAnim =
+                    it.second.paramOrNull(params.barbarian_firemaking_anim) ?: return@onOpHeldU
                 val animName = RSCM.getReverseMapping(RSCMType.SEQ, barbarianAnim.id)
                 if (animName.isBlank()) {
                     return@onOpHeldU
@@ -91,7 +90,7 @@ public class BurnLogEvents @Inject constructor(
             when (method) {
                 BurnMethod.Tinderbox -> "You attempt to light the logs."
                 BurnMethod.Bow -> "You attempt to light the logs with your bow."
-            },
+            }
         )
 
         weakQueue("queue.firemaking_light", 4, BurnTask(log, obj, method))
@@ -111,12 +110,15 @@ public class BurnLogEvents @Inject constructor(
             return false
         }
 
-        val reqLevel = when (method) {
-            BurnMethod.Tinderbox -> log.statReq.first().t1
-            BurnMethod.Bow -> (log.statReq.first().t1 + 20).coerceAtMost(99)
-        }
+        val reqLevel =
+            when (method) {
+                BurnMethod.Tinderbox -> log.statReq.first().t1
+                BurnMethod.Bow -> (log.statReq.first().t1 + 20).coerceAtMost(99)
+            }
         if (player.firemakingLvl < reqLevel) {
-            player.mes("You need a Firemaking level of $reqLevel to burn ${log.input.name} this way.")
+            player.mes(
+                "You need a Firemaking level of $reqLevel to burn ${log.input.name} this way."
+            )
             return false
         }
 
@@ -139,8 +141,9 @@ public class BurnLogEvents @Inject constructor(
             return
         }
 
-        val success = coloredLogs.contains(task.log.input.internalName) ||
-            skillSuccess(64, 512, player.firemakingLvl)
+        val success =
+            coloredLogs.contains(task.log.input.internalName) ||
+                skillSuccess(64, 512, player.firemakingLvl)
 
         if (!success) {
             weakQueue("queue.firemaking_light", 4, task)
@@ -183,16 +186,11 @@ public class BurnLogEvents @Inject constructor(
         walk(dest)
     }
 
-    data class BurnTask(
-        val log: FiremakingLogsRow,
-        val obj: Obj,
-        val method: BurnMethod,
-    )
+    data class BurnTask(val log: FiremakingLogsRow, val obj: Obj, val method: BurnMethod)
 
     enum class BurnMethod {
         Tinderbox,
-        Bow,
-        ;
+        Bow;
 
         fun xpMultiplier(logInternalName: String): Double {
             if (this != Bow) {

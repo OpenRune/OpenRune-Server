@@ -29,10 +29,11 @@ internal object SlayerRewardTasks {
         }
         val master = SlayerTaskManager.getCurrentAssignedMaster(access.player)
         val cancelCost =
-            if (MortimerAssignment.isMortimer(master)) MortimerAssignment.CANCEL_COST else CANCEL_TASK_COST
+            if (MortimerAssignment.isMortimer(master)) MortimerAssignment.CANCEL_COST
+            else CANCEL_TASK_COST
         if (SlayerRewardsPoints.getPoints(access.player) < cancelCost) {
             access.mes(
-                "You do not have enough Slayer Points to cancel your task. You need $cancelCost Slayer Points.",
+                "You do not have enough Slayer Points to cancel your task. You need $cancelCost Slayer Points."
             )
             return
         }
@@ -53,7 +54,7 @@ internal object SlayerRewardTasks {
         val blockCost = master.blockCost
         if (SlayerRewardsPoints.getPoints(access.player) < blockCost) {
             access.mes(
-                "You do not have enough Slayer Points to block your task. You need $blockCost Slayer Points.",
+                "You do not have enough Slayer Points to block your task. You need $blockCost Slayer Points."
             )
             return
         }
@@ -64,7 +65,7 @@ internal object SlayerRewardTasks {
             return
         }
 
-        val varbit = RSCM.getReverseMapping(RSCMType.VARBIT,master.blockVarbits[slot])
+        val varbit = RSCM.getReverseMapping(RSCMType.VARBIT, master.blockVarbits[slot])
         if (!SlayerRewardsPoints.spendPoints(access.player, blockCost)) return
 
         VarPlayerIntMapSetter.set(access.player, varbit, access.vars["varp.slayer_target"])
@@ -83,7 +84,7 @@ internal object SlayerRewardTasks {
 
     private fun confirmUnblock(access: ProtectedAccess, slotIndex: Int) {
         val master = SlayerTaskManager.getFocusedMaster(access.player) ?: return
-        val varbit = RSCM.getReverseMapping(RSCMType.VARBIT,master.blockVarbits[slotIndex])
+        val varbit = RSCM.getReverseMapping(RSCMType.VARBIT, master.blockVarbits[slotIndex])
         if (access.vars[varbit] == 0) {
             access.mes("You don't have a Slayer task blocked in that slot.")
             return

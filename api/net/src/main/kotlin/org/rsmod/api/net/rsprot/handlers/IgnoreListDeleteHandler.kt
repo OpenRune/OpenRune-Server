@@ -30,12 +30,7 @@ constructor(
         }
 
         db.request(
-            request = {
-                social.deleteIgnore(
-                    characterId = characterId,
-                    name = requestedName,
-                )
-            },
+            request = { social.deleteIgnore(characterId = characterId, name = requestedName) },
             response = { result ->
                 val current = uid.resolve(playerList) ?: return@request
 
@@ -46,11 +41,7 @@ constructor(
                                 val refreshUid = current.uid
 
                                 db.request(
-                                    request = {
-                                        social.socialSnapshot(
-                                            characterId = characterId,
-                                        )
-                                    },
+                                    request = { social.socialSnapshot(characterId = characterId) },
                                     response = { refreshResult ->
                                         val refreshed =
                                             refreshUid.resolve(playerList) ?: return@request
@@ -59,7 +50,9 @@ constructor(
                                             onOk = { sync ->
                                                 when (sync) {
                                                     is OpenRuneCentralWorldLink.CentralSocialSnapshotResult.Ok -> {
-                                                        refreshed.writeCentralSocialSnapshot(sync.snapshot)
+                                                        refreshed.writeCentralSocialSnapshot(
+                                                            sync.snapshot
+                                                        )
                                                     }
 
                                                     is OpenRuneCentralWorldLink.CentralSocialSnapshotResult.Failed -> {
@@ -68,7 +61,9 @@ constructor(
                                                 }
                                             },
                                             onErr = {
-                                                refreshed.writeSocialMessage("Unable to refresh social list right now.")
+                                                refreshed.writeSocialMessage(
+                                                    "Unable to refresh social list right now."
+                                                )
                                             },
                                         )
                                     },
@@ -82,9 +77,7 @@ constructor(
                             }
                         }
                     },
-                    onErr = {
-                        current.writeSocialMessage("Unable to delete ignore right now.")
-                    },
+                    onErr = { current.writeSocialMessage("Unable to delete ignore right now.") },
                 )
             },
         )

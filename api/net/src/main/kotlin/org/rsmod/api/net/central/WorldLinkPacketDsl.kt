@@ -5,8 +5,8 @@ import dev.or2.central.worldlink.protocol.discord.GameToCentralDiscordPackets
 import dev.or2.central.worldlink.protocol.social.GameToCentralSocialPackets
 
 /**
- * Dispatches a **validated** Central server-push frame (opcode in [ByteArray] index 0).
- * Unknown opcodes go to [onOther].
+ * Dispatches a **validated** Central server-push frame (opcode in [ByteArray] index 0). Unknown
+ * opcodes go to [onOther].
  */
 public inline fun ByteArray.dispatchCentralServerPush(
     crossinline onRevoke: (ServerRevokeLoginPayload) -> Unit = {},
@@ -21,15 +21,23 @@ public inline fun ByteArray.dispatchCentralServerPush(
     crossinline onOther: (Int) -> Unit = {},
 ) {
     when (val op = this[0].toInt() and 0xFF) {
-        WorldLinkFrameSpecs.OP_SERVER_REVOKE_LOGIN -> onRevoke(WorldLinkFrameSpecs.decodeServerRevokeLogin(this))
-        WorldLinkFrameSpecs.OP_SERVER_MUTE_UPDATE -> onMute(WorldLinkFrameSpecs.decodeServerMuteUpdate(this))
+        WorldLinkFrameSpecs.OP_SERVER_REVOKE_LOGIN ->
+            onRevoke(WorldLinkFrameSpecs.decodeServerRevokeLogin(this))
+        WorldLinkFrameSpecs.OP_SERVER_MUTE_UPDATE ->
+            onMute(WorldLinkFrameSpecs.decodeServerMuteUpdate(this))
         WorldLinkFrameSpecs.OP_SERVER_KICK -> onKick(WorldLinkFrameSpecs.decodeServerKick(this))
-        WorldLinkFrameSpecs.OP_SERVER_REBOOT -> onReboot(WorldLinkFrameSpecs.decodeServerReboot(this))
-        WorldLinkFrameSpecs.OP_SERVER_BROADCAST -> onBroadcast(WorldLinkFrameSpecs.decodeServerBroadcast(this))
-        WorldLinkFrameSpecs.OP_SERVER_DISPLAY_NAME_SYNC -> onDisplayNameSync(WorldLinkFrameSpecs.decodeServerDisplayNameSync(this))
-        WorldLinkFrameSpecs.OP_SERVER_DISCORD_ID_SYNC -> onDiscordIdSync(WorldLinkFrameSpecs.decodeServerDiscordIdSync(this))
-        WorldLinkFrameSpecs.OP_SERVER_PRIVATE_MESSAGE -> onPrivateMessage(WorldLinkFrameSpecs.decodeServerPrivateMessage(this))
-        WorldLinkFrameSpecs.OP_SERVER_FRIEND_PRESENCE -> onFriendPresence(WorldLinkFrameSpecs.decodeServerFriendPresence(this))
+        WorldLinkFrameSpecs.OP_SERVER_REBOOT ->
+            onReboot(WorldLinkFrameSpecs.decodeServerReboot(this))
+        WorldLinkFrameSpecs.OP_SERVER_BROADCAST ->
+            onBroadcast(WorldLinkFrameSpecs.decodeServerBroadcast(this))
+        WorldLinkFrameSpecs.OP_SERVER_DISPLAY_NAME_SYNC ->
+            onDisplayNameSync(WorldLinkFrameSpecs.decodeServerDisplayNameSync(this))
+        WorldLinkFrameSpecs.OP_SERVER_DISCORD_ID_SYNC ->
+            onDiscordIdSync(WorldLinkFrameSpecs.decodeServerDiscordIdSync(this))
+        WorldLinkFrameSpecs.OP_SERVER_PRIVATE_MESSAGE ->
+            onPrivateMessage(WorldLinkFrameSpecs.decodeServerPrivateMessage(this))
+        WorldLinkFrameSpecs.OP_SERVER_FRIEND_PRESENCE ->
+            onFriendPresence(WorldLinkFrameSpecs.decodeServerFriendPresence(this))
         else -> onOther(op)
     }
 }
@@ -67,14 +75,12 @@ internal object WorldLinkPackets {
     ): ByteArray =
         GameToCentralSocialPackets.chatFilters(characterId, publicChat, privateChat, tradeChat)
 
-    fun privateChatFilter(
-        characterId: Int,
-        privateChat: Int,
-    ): ByteArray =
+    fun privateChatFilter(characterId: Int, privateChat: Int): ByteArray =
         chatFilters(characterId, publicChat = 0, privateChat = privateChat, tradeChat = 0)
 
-    fun pmRelay(payload: dev.or2.central.worldlink.protocol.social.SocialPackets.PmRelayPayload): ByteArray =
-        GameToCentralSocialPackets.pmRelay(payload)
+    fun pmRelay(
+        payload: dev.or2.central.worldlink.protocol.social.SocialPackets.PmRelayPayload
+    ): ByteArray = GameToCentralSocialPackets.pmRelay(payload)
 
     fun gameDiscordLinkPending(accountId: Int, discordUsername: String): ByteArray =
         GameToCentralDiscordPackets.linkPending(accountId, discordUsername)
@@ -87,7 +93,7 @@ internal fun unexpectedCentralOp(actual: Int, expected: Collection<Int>): Nothin
     val expectedStr = expected.joinToString(", ") { it.toString() }
     error(
         "Unexpected Central world-link opcode: got $actual, expected one of [$expectedStr]. " +
-            "Game server and Central may be on mismatched protocol versions.",
+            "Game server and Central may be on mismatched protocol versions."
     )
 }
 

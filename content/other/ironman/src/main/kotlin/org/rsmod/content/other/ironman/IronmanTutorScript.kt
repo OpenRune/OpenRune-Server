@@ -6,7 +6,6 @@ import org.rsmod.api.invtx.invAdd
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.player.ironman.PlayerGamemode
 import org.rsmod.api.player.ironman.isAnyIronman
-import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.script.onOpNpc1
 import org.rsmod.api.script.onOpNpc3
 import org.rsmod.api.script.onOpNpc4
@@ -23,7 +22,10 @@ public class IronmanTutorScript @Inject constructor() : PluginScript() {
     private suspend fun Dialogue.talk() {
         when {
             player.attr[MET] != true -> {
-                chatNpc(happy, "Hello, ${player.displayName}. I'm Adam, the Iron$iw tutor. What can I do for you?")
+                chatNpc(
+                    happy,
+                    "Hello, ${player.displayName}. I'm Adam, the Iron$iw tutor. What can I do for you?",
+                )
                 player.attr[MET] = true
                 menu(firstMeet = true)
             }
@@ -33,7 +35,10 @@ public class IronmanTutorScript @Inject constructor() : PluginScript() {
                 menu(iron = true)
             }
             else -> {
-                chatNpc(happy, "Hello, ${player.displayName}. I'm the Iron$iw tutor. What can I do for you?")
+                chatNpc(
+                    happy,
+                    "Hello, ${player.displayName}. I'm the Iron$iw tutor. What can I do for you?",
+                )
                 menu(iron = false)
             }
         }
@@ -52,7 +57,11 @@ public class IronmanTutorScript @Inject constructor() : PluginScript() {
                         3,
                     )
                 ) {
-                    1 -> about(groupModes = true).also { adviceForNormal(); afterAbout(iron = false) }
+                    1 ->
+                        about(groupModes = true).also {
+                            adviceForNormal()
+                            afterAbout(iron = false)
+                        }
                     2 -> changeMode(warnTutorial = true)
                     3 -> fine()
                 }
@@ -69,7 +78,11 @@ public class IronmanTutorScript @Inject constructor() : PluginScript() {
                         4,
                     )
                 ) {
-                    1 -> about(groupModes = false).also { adviceForIron(); afterAbout(iron = true) }
+                    1 ->
+                        about(groupModes = false).also {
+                            adviceForIron()
+                            afterAbout(iron = true)
+                        }
                     2 -> reviewMode()
                     3 -> giveArmour()
                     4 -> fine()
@@ -87,7 +100,11 @@ public class IronmanTutorScript @Inject constructor() : PluginScript() {
                         4,
                     )
                 ) {
-                    1 -> about(groupModes = true).also { adviceForNormal(); afterAbout(iron = false) }
+                    1 ->
+                        about(groupModes = true).also {
+                            adviceForNormal()
+                            afterAbout(iron = false)
+                        }
                     2 -> reviewMode()
                     3 -> giveArmour()
                     4 -> fine()
@@ -107,7 +124,10 @@ public class IronmanTutorScript @Inject constructor() : PluginScript() {
             "As an ${std("Iron$iw")}, you choose to have these restrictions imposed on you, " +
                 "so everyone knows you're doing it properly.",
         )
-        chatNpc(happy, "If you think you have what it takes, you can choose to become a ${hc("Hardcore Iron$iw")}.")
+        chatNpc(
+            happy,
+            "If you think you have what it takes, you can choose to become a ${hc("Hardcore Iron$iw")}.",
+        )
         chatNpc(
             happy,
             "In addition to the standard restrictions, ${hc("Hardcore Iron$iws")} only have ${hc("one life")}. " +
@@ -181,7 +201,7 @@ public class IronmanTutorScript @Inject constructor() : PluginScript() {
 
     private suspend fun Dialogue.afterAbout(iron: Boolean) {
         when (
-                choice3(
+            choice3(
                 "I'd like to change my Iron$iw mode.",
                 1,
                 "Have you any armour for me, please?",
@@ -226,7 +246,10 @@ public class IronmanTutorScript @Inject constructor() : PluginScript() {
         }
         for (piece in pieces) {
             if (!player.invAdd(player.inv, piece).success) {
-                chatNpc(sad, "I'd give you some armour but you don't have enough room in your inventory.")
+                chatNpc(
+                    sad,
+                    "I'd give you some armour but you don't have enough room in your inventory.",
+                )
                 return
             }
         }

@@ -2,6 +2,7 @@ package org.rsmod.api.repo.npc
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList
 import jakarta.inject.Inject
+import java.util.concurrent.ConcurrentLinkedQueue
 import org.rsmod.api.registry.npc.NpcRegistry
 import org.rsmod.api.registry.npc.isSuccess
 import org.rsmod.api.registry.region.RegionRegistry
@@ -11,7 +12,6 @@ import org.rsmod.game.entity.NpcList
 import org.rsmod.game.entity.npc.NpcStateEvents
 import org.rsmod.map.CoordGrid
 import org.rsmod.map.zone.ZoneKey
-import java.util.concurrent.ConcurrentLinkedQueue
 
 public class NpcRepository
 @Inject

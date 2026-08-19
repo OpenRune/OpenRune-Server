@@ -21,10 +21,7 @@ public object ShopCurrencyRows {
             )
         }
 
-    public fun toShopCurrency(
-        row: ShopCurrencyRow,
-        sync: (Player) -> Unit = {},
-    ): ShopCurrency {
+    public fun toShopCurrency(row: ShopCurrencyRow, sync: (Player) -> Unit = {}): ShopCurrency {
         val obj = row.obj
         val varbitId = row.varbitId
         return when {

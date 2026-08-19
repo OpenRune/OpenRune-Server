@@ -12,7 +12,10 @@ import org.rsmod.game.entity.Player
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
-/** If true, Drew speaks when depositing at the Sandstorm loc just as it was before the 10 July 2024 update. */
+/**
+ * If true, Drew speaks when depositing at the Sandstorm loc just as it was before the 10 July 2024
+ * update.
+ */
 private const val SHOW_DREW_DIALOGUE_ON_DEPOSIT = false
 
 internal const val MAX_STORED = 25_000
@@ -24,12 +27,8 @@ var Player.sandstormBucketsEmpty by intVarBit("varbit.drew_sandstone_empty_bucke
 class Sandstorm : PluginScript() {
 
     override fun ScriptContext.startup() {
-        onOpLoc1("loc.grinder_machine") {
-            depositAtGrinder()
-        }
-        onOpLocU("loc.grinder_machine") {
-            useObjOnGrinder(it.objType)
-        }
+        onOpLoc1("loc.grinder_machine") { depositAtGrinder() }
+        onOpLocU("loc.grinder_machine") { useObjOnGrinder(it.objType) }
     }
 
     private suspend fun ProtectedAccess.useObjOnGrinder(objType: ItemServerType) {
@@ -45,32 +44,29 @@ class Sandstorm : PluginScript() {
         val deposit = depositSandstone()
 
         if (deposit.deposited <= 0) {
-            mes(if (deposit.overflowed) {
-                "The grinder is full of sandstone."
-            } else {
-                "You do not have any sandstone to grind."
-            })
+            mes(
+                if (deposit.overflowed) {
+                    "The grinder is full of sandstone."
+                } else {
+                    "You do not have any sandstone to grind."
+                }
+            )
             return
         }
 
         if (SHOW_DREW_DIALOGUE_ON_DEPOSIT) {
-            val message = sandstoneDepositMessage(
-                deposit.overflowed,
-                player.sandstormBucketsSand,
-            )
-            startDialogue {
-                chatNpcSpecific("Drew", "npc.grinder_drew", neutral, message)
-            }
+            val message = sandstoneDepositMessage(deposit.overflowed, player.sandstormBucketsSand)
+            startDialogue { chatNpcSpecific("Drew", "npc.grinder_drew", neutral, message) }
         } else {
-            mes("The grinder is holding enough sandstone for " + "${player.sandstormBucketsSand.formatAmount} buckets of sand.")
+            mes(
+                "The grinder is holding enough sandstone for " +
+                    "${player.sandstormBucketsSand.formatAmount} buckets of sand."
+            )
         }
     }
 }
 
-internal fun sandstoneDepositMessage(
-    overflowed: Boolean,
-    bucketsSand: Int,
-): String {
+internal fun sandstoneDepositMessage(overflowed: Boolean, bucketsSand: Int): String {
     if (overflowed) {
         return "The grinder is too full to hold all of that sandstone. It's holding enough " +
             "sandstone equivalent to ${bucketsSand.formatAmount} buckets of sand."
@@ -80,10 +76,7 @@ internal fun sandstoneDepositMessage(
         "${bucketsSand.formatAmount} buckets of sand."
 }
 
-internal data class SandstoneDeposit(
-    val deposited: Int,
-    val overflowed: Boolean,
-)
+internal data class SandstoneDeposit(val deposited: Int, val overflowed: Boolean)
 
 internal fun ProtectedAccess.depositSandstone(): SandstoneDeposit {
     var remaining = (MAX_STORED - player.sandstormBucketsSand).coerceAtLeast(0)
@@ -115,14 +108,10 @@ internal fun ProtectedAccess.depositSandstone(): SandstoneDeposit {
     return SandstoneDeposit(deposited, overflowed)
 }
 
-internal fun ProtectedAccess.heldBuckets(): Int =
-    bucketObjs().sumOf { inv.count(it) }
+internal fun ProtectedAccess.heldBuckets(): Int = bucketObjs().sumOf { inv.count(it) }
 
 internal fun ProtectedAccess.storeBuckets(count: Int): Int {
-    var remaining = minOf(
-        count,
-        MAX_STORED - player.sandstormBucketsEmpty,
-    ).coerceAtLeast(0)
+    var remaining = minOf(count, MAX_STORED - player.sandstormBucketsEmpty).coerceAtLeast(0)
 
     var deposited = 0
 

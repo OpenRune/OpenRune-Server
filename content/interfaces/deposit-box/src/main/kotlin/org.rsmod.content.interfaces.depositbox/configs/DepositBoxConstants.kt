@@ -25,7 +25,7 @@ object DepositBoxConstants {
     const val COMP_QUANTITY_X = "component.bank_depositbox:x"
     const val COMP_QUANTITY_ALL = "component.bank_depositbox:all"
 
-    //TODO: Inventory slot-lock settings button is not implemented.
+    // TODO: Inventory slot-lock settings button is not implemented.
     const val COM_LOCK_MENU = "component.bank_depositbox:lock_menu"
 
     // Wearpos of each equipment slot shown in the box; the per-slot component is "slot<wearpos>".
@@ -33,7 +33,8 @@ object DepositBoxConstants {
 
     fun wornComponent(wearpos: Int): String = "component.bank_depositbox:slot$wearpos"
 
-    // Inventory interfaces we swap to "disable" the inventory when the deposit box interface is open.
+    // Inventory interfaces we swap to "disable" the inventory when the deposit box interface is
+    // open.
     const val INVENTORY_INTERFACE = "interface.inventory"
     const val INVENTORY_DISABLED = "interface.inventory_noops"
     const val INVENTORY_MAIN_TARGET = "component.toplevel_osrs_stretch:side3"

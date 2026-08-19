@@ -8,10 +8,10 @@ import dev.openrune.types.ItemServerType
 import dev.openrune.types.aconverted.interf.IfButtonOp
 import jakarta.inject.Inject
 import org.rsmod.api.area.checker.AreaChecker
-import org.rsmod.api.config.refs.params
 import org.rsmod.api.combat.commons.magic.MagicSpell
 import org.rsmod.api.combat.manager.MagicRuneManager
 import org.rsmod.api.combat.manager.MagicRuneManager.Companion.isFailure
+import org.rsmod.api.config.refs.params
 import org.rsmod.api.invtx.invTransaction
 import org.rsmod.api.invtx.select
 import org.rsmod.api.player.hook.PlayerTeleportValidator
@@ -99,8 +99,7 @@ constructor(
     }
 
     private fun ProtectedAccess.canTeleport(): Boolean {
-        val denial =
-            teleportValidator.validate(player, TeleportType.Standard, areaChecker)
+        val denial = teleportValidator.validate(player, TeleportType.Standard, areaChecker)
         if (denial == null) {
             return true
         }
@@ -135,7 +134,8 @@ constructor(
         return !runes.attemptCast(player, castSpell).isFailure()
     }
 
-    private fun List<MagicSpell.ObjRequirement>.withoutBananaReq(): List<MagicSpell.ObjRequirement> {
+    private fun List<MagicSpell.ObjRequirement>.withoutBananaReq():
+        List<MagicSpell.ObjRequirement> {
         return filterNot { RSCM.getReverseMapping(RSCMType.OBJ, it.obj.id).contains("banana") }
     }
 
@@ -171,20 +171,13 @@ constructor(
         val lockedMessage: String = "You need to complete the required quest to cast this spell.",
         val missingDestinationMessage: String = "That teleport is not implemented yet.",
     ) {
-        Home(
-            "obj.48_home_teleport",
-            CoordGrid(3222, 3222, 0),
-        ),
+        Home("obj.48_home_teleport", CoordGrid(3222, 3222, 0)),
         Varrock(
             "obj.25_varrock_teleport",
             alternate = TeleportOption(destination = CoordGrid(3164, 3487, 0)),
         ),
-        Lumbridge(
-            "obj.31_lumbridge_teleport",
-        ),
-        Falador(
-            "obj.37_falador_teleport",
-        ),
+        Lumbridge("obj.31_lumbridge_teleport"),
+        Falador("obj.37_falador_teleport"),
         TeleportToHouse(
             "obj.67_house_teleport",
             alternate =
@@ -192,7 +185,8 @@ constructor(
                     missingDestinationMessage =
                         "You need to purchase a house before you can teleport outside it."
                 ),
-            missingDestinationMessage = "You need to purchase a house before you can use this spell.",
+            missingDestinationMessage =
+                "You need to purchase a house before you can use this spell.",
         ),
         Camelot(
             "obj.45_camelot_teleport",
@@ -226,15 +220,13 @@ constructor(
             requiredQuest = "quest_eadgarsruse",
             lockedMessage = "You need to complete Eadgar's Ruse to cast this spell.",
         ),
-        ApeAtoll(
-            "obj.64_ape_atoll_teleport",
-            destinationLevel = 1,
-        ),
+        ApeAtoll("obj.64_ape_atoll_teleport", destinationLevel = 1),
         TeleportBoatToMe(
             "obj.56_teleport_boat_to_me",
             requiredQuest = "quest_pandemonium",
             lockedMessage = "You need to complete Pandemonium to cast this spell.",
-            missingDestinationMessage = "Boat teleports need boat-location support before they can be cast.",
+            missingDestinationMessage =
+                "Boat teleports need boat-location support before they can be cast.",
         ),
         TeleportMeToBoat(
             "obj.67_teleport_me_to_boat",
@@ -245,7 +237,8 @@ constructor(
                 ),
             requiredQuest = "quest_pandemonium",
             lockedMessage = "You need to complete Pandemonium to cast this spell.",
-            missingDestinationMessage = "Boat teleports need boat-location support before they can be cast.",
+            missingDestinationMessage =
+                "Boat teleports need boat-location support before they can be cast.",
         );
 
         fun option(op: IfButtonOp): TeleportOption {
@@ -257,7 +250,8 @@ constructor(
         }
 
         fun destination(spell: MagicSpell, option: TeleportOption): CoordGrid? {
-            val coord = option.destination ?: destination ?: spell.obj.paramOrNull(params.spell_telecoord)
+            val coord =
+                option.destination ?: destination ?: spell.obj.paramOrNull(params.spell_telecoord)
             val level = option.destinationLevel ?: destinationLevel
             return if (coord != null && level != null) {
                 coord.copy(level = level)

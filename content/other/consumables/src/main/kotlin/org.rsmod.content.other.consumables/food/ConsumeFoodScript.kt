@@ -27,14 +27,11 @@ constructor(
     private val specialEffects: FoodSpecialEffectService,
 ) : PluginScript() {
     override fun ScriptContext.startup() {
-        val registrations =
-            mutableListOf<FoodRegistration>()
+        val registrations = mutableListOf<FoodRegistration>()
 
-        val registeredItems =
-            mutableMapOf<Int, String>()
+        val registeredItems = mutableMapOf<Int, String>()
 
-        val errors =
-            mutableListOf<String>()
+        val errors = mutableListOf<String>()
 
         FoodRow.all().forEach { food ->
             validateFood(
@@ -47,22 +44,13 @@ constructor(
 
         require(errors.isEmpty()) {
             buildString {
-                appendLine(
-                    "Food table validation failed with " +
-                        "${errors.size} problem(s):",
-                )
+                appendLine("Food table validation failed with " + "${errors.size} problem(s):")
 
-                errors
-                    .sorted()
-                    .forEach { error ->
-                        appendLine(" - $error")
-                    }
+                errors.sorted().forEach { error -> appendLine(" - $error") }
             }
         }
 
-        registrations.forEach { registration ->
-            registerConsumeOption(registration)
-        }
+        registrations.forEach { registration -> registerConsumeOption(registration) }
     }
 
     private fun validateFood(
@@ -76,29 +64,19 @@ constructor(
             return
         }
 
-        val rowName =
-            food.items.first().internalName
+        val rowName = food.items.first().internalName
 
         food.items.forEachIndexed { stage, item ->
-            val option =
-                item.consumeOption()
+            val option = item.consumeOption()
 
             if (option == -1) {
                 if (!food.isTerminalContainer(stage)) {
-                    errors +=
-                        invalidConsumeOptionMessage(
-                            rowName = rowName,
-                            item = item,
-                        )
+                    errors += invalidConsumeOptionMessage(rowName = rowName, item = item)
                 }
                 return@forEachIndexed
             }
 
-            val previous =
-                registeredItems.putIfAbsent(
-                    item.id,
-                    rowName,
-                )
+            val previous = registeredItems.putIfAbsent(item.id, rowName)
 
             if (previous != null) {
                 errors +=
@@ -107,70 +85,37 @@ constructor(
                 return@forEachIndexed
             }
 
-            registrations +=
-                FoodRegistration(
-                    food = food,
-                    item = item,
-                    option = option,
-                )
+            registrations += FoodRegistration(food = food, item = item, option = option)
         }
     }
 
-    private fun ScriptContext.registerConsumeOption(
-        registration: FoodRegistration,
-    ) {
-        val food =
-            registration.food
+    private fun ScriptContext.registerConsumeOption(registration: FoodRegistration) {
+        val food = registration.food
 
-        val item =
-            registration.item
+        val item = registration.item
 
         when (registration.option) {
             1 ->
                 onOpHeld1(item) {
-                    consume(
-                        food = food,
-                        slot = it.slot,
-                        type = it.type,
-                        inventory = it.inventory,
-                    )
+                    consume(food = food, slot = it.slot, type = it.type, inventory = it.inventory)
                 }
 
             2 ->
                 onOpHeld2(item) {
-                    consume(
-                        food = food,
-                        slot = it.slot,
-                        type = it.type,
-                        inventory = it.inventory,
-                    )
+                    consume(food = food, slot = it.slot, type = it.type, inventory = it.inventory)
                 }
 
             3 ->
                 onOpHeld3(item) {
-                    consume(
-                        food = food,
-                        slot = it.slot,
-                        type = it.type,
-                        inventory = it.inventory,
-                    )
+                    consume(food = food, slot = it.slot, type = it.type, inventory = it.inventory)
                 }
 
             4 ->
                 onOpHeld4(item) {
-                    consume(
-                        food = food,
-                        slot = it.slot,
-                        type = it.type,
-                        inventory = it.inventory,
-                    )
+                    consume(food = food, slot = it.slot, type = it.type, inventory = it.inventory)
                 }
 
-            else ->
-                error(
-                    "Unsupported food consume option: " +
-                        "${registration.option}.",
-                )
+            else -> error("Unsupported food consume option: " + "${registration.option}.")
         }
     }
 
@@ -180,62 +125,37 @@ constructor(
         type: ItemServerType,
         inventory: Inventory,
     ) {
-        val consumableType =
-            food.consumableType()
+        val consumableType = food.consumableType()
 
-        if (
-            !ConsumableDelayState.canConsume(
-                access = this,
-                type = consumableType,
-            )
-        ) {
+        if (!ConsumableDelayState.canConsume(access = this, type = consumableType)) {
             return
         }
 
-        val stage =
-            food.items.indexOfFirst { item ->
-                item.id == type.id
-            }
+        val stage = food.items.indexOfFirst { item -> item.id == type.id }
 
         if (stage == -1) {
             return
         }
 
-        val inWilderness =
-            coords.isInWilderness(areaChecker)
+        val inWilderness = coords.isInWilderness(areaChecker)
 
-        val blighted =
-            type.name.startsWith(
-                prefix = "Blighted",
-                ignoreCase = true,
-            )
+        val blighted = type.name.startsWith(prefix = "Blighted", ignoreCase = true)
 
         if (blighted && !inWilderness) {
-            mes(
-                "The ${type.name.lowercase()} can only be " +
-                    "consumed in the Wilderness.",
-            )
+            mes("The ${type.name.lowercase()} can only be " + "consumed in the Wilderness.")
             return
         }
 
-        val sweets =
-            type.isType(PURPLE_SWEETS)
+        val sweets = type.isType(PURPLE_SWEETS)
 
-        val baseHeal =
-            resolveBaseHealAmount(
-                food = food,
-                sweets = sweets,
-                blighted = blighted,
-            )
+        val baseHeal = resolveBaseHealAmount(food = food, sweets = sweets, blighted = blighted)
 
         val outcome =
             specialEffects.prepare(
                 access = this,
                 effect = food.effect,
                 defaultHeal = baseHeal,
-                defaultCanOverheal =
-                    food.overheal &&
-                        !isInPvpCombat(),
+                defaultCanOverheal = food.overheal && !isInPvpCombat(),
             )
 
         if (
@@ -250,44 +170,26 @@ constructor(
             return
         }
 
-        val oldHitpoints =
-            player.hitpoints
+        val oldHitpoints = player.hitpoints
 
         anim(eatAnimation())
         soundSynth(EAT_FOOD_SOUND)
 
-        heal(
-            amount = outcome.healAmount,
-            maximumHitpoints =
-                outcome.maximumHitpoints,
-        )
+        heal(amount = outcome.healAmount, maximumHitpoints = outcome.maximumHitpoints)
 
-        applyConsumptionDelays(
-            food = food,
-            stage = stage,
-            type = consumableType,
-        )
+        applyConsumptionDelays(food = food, stage = stage, type = consumableType)
 
         player.resetFaceEntity()
 
-        sendConsumeMessage(
-            type = type,
-            sweets = sweets,
-        )
+        sendConsumeMessage(type = type, sweets = sweets)
 
         outcome.message?.let(::mes)
 
-        if (
-            outcome.showGenericHealMessage &&
-            player.hitpoints > oldHitpoints
-        ) {
+        if (outcome.showGenericHealMessage && player.hitpoints > oldHitpoints) {
             mes("It heals some health.")
         }
 
-        applySecondaryEffect(
-            food = food,
-            outcome = outcome,
-        )
+        applySecondaryEffect(food = food, outcome = outcome)
     }
 
     private fun ProtectedAccess.replaceConsumedStage(
@@ -297,24 +199,13 @@ constructor(
         type: ItemServerType,
         inventory: Inventory,
     ): Boolean {
-        val nextStage =
-            food.items.getOrNull(stage + 1)
+        val nextStage = food.items.getOrNull(stage + 1)
 
         val transaction =
             if (nextStage == null) {
-                invDel(
-                    inv = inventory,
-                    type = type.internalName,
-                    count = 1,
-                    slot = slot,
-                )
+                invDel(inv = inventory, type = type.internalName, count = 1, slot = slot)
             } else {
-                invReplaceSlot(
-                    inv = inventory,
-                    slot = slot,
-                    count = 1,
-                    replacement = nextStage,
-                )
+                invReplaceSlot(inv = inventory, slot = slot, count = 1, replacement = nextStage)
             }
 
         return !transaction.failure
@@ -326,26 +217,13 @@ constructor(
         blighted: Boolean,
     ): Int =
         when {
-            food.heal >= 0 ->
-                food.heal
+            food.heal >= 0 -> food.heal
 
-            sweets ->
-                random.of(
-                    minInclusive = 1,
-                    maxInclusive = 3,
-                )
+            sweets -> random.of(minInclusive = 1, maxInclusive = 3)
 
-            blighted ->
-                dynamicBlightedHeal(
-                    baseHitpoints =
-                        player.baseHitpointsLvl,
-                )
+            blighted -> dynamicBlightedHeal(baseHitpoints = player.baseHitpointsLvl)
 
-            else ->
-                dynamicHeal(
-                    baseHitpoints =
-                        player.baseHitpointsLvl,
-                )
+            else -> dynamicHeal(baseHitpoints = player.baseHitpointsLvl)
         }
 
     private fun ProtectedAccess.applyConsumptionDelays(
@@ -356,104 +234,61 @@ constructor(
         ConsumableDelayState.recordConsumption(
             access = this,
             type = type,
-            consumeDelay =
-                food.eatDelay.getOrNull(stage)
-                    ?: DEFAULT_EAT_DELAY,
-            combatDelay =
-                food.combatDelay.getOrNull(stage)
-                    ?: DEFAULT_COMBAT_DELAY,
+            consumeDelay = food.eatDelay.getOrNull(stage) ?: DEFAULT_EAT_DELAY,
+            combatDelay = food.combatDelay.getOrNull(stage) ?: DEFAULT_COMBAT_DELAY,
         )
     }
 
-    private fun ProtectedAccess.sendConsumeMessage(
-        type: ItemServerType,
-        sweets: Boolean,
-    ) {
+    private fun ProtectedAccess.sendConsumeMessage(type: ItemServerType, sweets: Boolean) {
         if (sweets) {
             restoreSweetsEnergy()
 
-            mes(
-                "You eat the sweets. " +
-                    "The sugary goodness restores some energy.",
-            )
+            mes("You eat the sweets. " + "The sugary goodness restores some energy.")
             return
         }
 
-        mes(
-            "You ${type.consumeVerb()} " +
-                "the ${type.name.lowercase()}.",
-        )
+        mes("You ${type.consumeVerb()} " + "the ${type.name.lowercase()}.")
     }
 
-    private fun ProtectedAccess.applySecondaryEffect(
-        food: FoodRow,
-        outcome: FoodSpecialOutcome,
-    ) {
-        val effect =
-            food.effect
+    private fun ProtectedAccess.applySecondaryEffect(food: FoodRow, outcome: FoodSpecialOutcome) {
+        val effect = food.effect
 
         if (effect.isBlank()) {
             return
         }
 
         if (specialEffects.handles(effect)) {
-            specialEffects.applyAfterConsume(
-                access = this,
-                effect = effect,
-                outcome = outcome,
-            )
+            specialEffects.applyAfterConsume(access = this, effect = effect, outcome = outcome)
         } else {
-            effects.apply(
-                access = this,
-                effect = effect,
-            )
+            effects.apply(access = this, effect = effect)
         }
     }
 
-    private fun ProtectedAccess.heal(
-        amount: Int,
-        maximumHitpoints: Int,
-    ) {
+    private fun ProtectedAccess.heal(amount: Int, maximumHitpoints: Int) {
         if (amount <= 0) {
             return
         }
 
         val actual =
-            (
-                maximumHitpoints -
-                    player.hitpoints
-                ).coerceIn(
-                    minimumValue = 0,
-                    maximumValue = amount,
-                )
+            (maximumHitpoints - player.hitpoints).coerceIn(minimumValue = 0, maximumValue = amount)
 
         if (actual <= 0) {
             return
         }
 
-        statAdd(
-            stat = HITPOINTS,
-            constant = actual,
-            percent = 0,
-        )
+        statAdd(stat = HITPOINTS, constant = actual, percent = 0)
     }
 
     private fun ProtectedAccess.restoreSweetsEnergy() {
-        val restored =
-            (player.runEnergy + SWEETS_RUN_ENERGY)
-                .coerceAtMost(MAX_RUN_ENERGY)
+        val restored = (player.runEnergy + SWEETS_RUN_ENERGY).coerceAtMost(MAX_RUN_ENERGY)
 
         if (restored == player.runEnergy) {
             return
         }
 
-        player.runEnergy =
-            restored
+        player.runEnergy = restored
 
-        UpdateRun.energy(
-            player = player,
-            energy = restored,
-        )
+        UpdateRun.energy(player = player, energy = restored)
     }
 
     private fun ProtectedAccess.eatAnimation(): String =
@@ -470,17 +305,11 @@ constructor(
             ConsumableType.FOOD
         }
 
-    private fun FoodRow.isTerminalContainer(
-        stage: Int,
-    ): Boolean =
-        items.size > 1 &&
-            stage == items.lastIndex
+    private fun FoodRow.isTerminalContainer(stage: Int): Boolean =
+        items.size > 1 && stage == items.lastIndex
 
     private fun ItemServerType.consumeOption(): Int {
-        val index =
-            interfaceOptions.indexOfFirst { option ->
-                option.isConsumeOption()
-            }
+        val index = interfaceOptions.indexOfFirst { option -> option.isConsumeOption() }
 
         return if (index in 0..3) {
             index + 1
@@ -490,53 +319,27 @@ constructor(
     }
 
     private fun ItemServerType.consumeVerb(): String =
-        interfaceOptions
-            .firstOrNull { option ->
-                option.isConsumeOption()
-            }
-            ?.lowercase()
+        interfaceOptions.firstOrNull { option -> option.isConsumeOption() }?.lowercase()
             ?: "consume"
 
     private fun String?.isConsumeOption(): Boolean =
-        equals(
-            other = "eat",
-            ignoreCase = true,
-        ) ||
-            equals(
-                other = "drink",
-                ignoreCase = true,
-            )
+        equals(other = "eat", ignoreCase = true) || equals(other = "drink", ignoreCase = true)
 
-    private fun invalidConsumeOptionMessage(
-        rowName: String,
-        item: ItemServerType,
-    ): String {
+    private fun invalidConsumeOptionMessage(rowName: String, item: ItemServerType): String {
         val options =
             item.interfaceOptions
-                .mapIndexed { index, value ->
-                    "${index + 1}='$value'"
-                }
-                .joinToString(
-                    prefix = "[",
-                    postfix = "]",
-                )
+                .mapIndexed { index, value -> "${index + 1}='$value'" }
+                .joinToString(prefix = "[", postfix = "]")
 
         return "Food row '$rowName' contains non-consumable item " +
             "'${item.internalName}' (id=${item.id}, name='${item.name}', " +
             "options=$options)."
     }
 
-    private fun dynamicHeal(
-        baseHitpoints: Int,
-    ): Int =
-        baseHitpoints / 10 +
-            2 * (baseHitpoints / 25) +
-            5 * (baseHitpoints / 93) +
-            2
+    private fun dynamicHeal(baseHitpoints: Int): Int =
+        baseHitpoints / 10 + 2 * (baseHitpoints / 25) + 5 * (baseHitpoints / 93) + 2
 
-    private fun dynamicBlightedHeal(
-        baseHitpoints: Int,
-    ): Int {
+    private fun dynamicBlightedHeal(baseHitpoints: Int): Int {
         val extra =
             when (baseHitpoints) {
                 in 1..24 -> 2
@@ -547,8 +350,7 @@ constructor(
                 else -> 0
             }
 
-        return baseHitpoints / 10 +
-            extra
+        return baseHitpoints / 10 + extra
     }
 
     private data class FoodRegistration(
@@ -564,19 +366,14 @@ constructor(
         const val SWEETS_RUN_ENERGY: Int = 100
         const val MAX_RUN_ENERGY: Int = 1_000
 
-        const val PURPLE_SWEETS: String =
-            "obj.trail_sweets"
+        const val PURPLE_SWEETS: String = "obj.trail_sweets"
 
-        const val TOBOGGAN: String =
-            "obj.trollromance_toboggon"
+        const val TOBOGGAN: String = "obj.trollromance_toboggon"
 
-        const val DEFAULT_EAT_ANIM: String =
-            "seq.human_eat"
+        const val DEFAULT_EAT_ANIM: String = "seq.human_eat"
 
-        const val TOBOGGAN_EAT_ANIM: String =
-            "seq.trollromance_toboggan_eat"
+        const val TOBOGGAN_EAT_ANIM: String = "seq.trollromance_toboggan_eat"
 
-        const val HITPOINTS: String =
-            "stat.hitpoints"
+        const val HITPOINTS: String = "stat.hitpoints"
     }
 }

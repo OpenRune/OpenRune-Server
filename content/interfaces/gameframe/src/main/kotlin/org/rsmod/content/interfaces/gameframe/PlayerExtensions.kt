@@ -32,9 +32,11 @@ internal fun Player.moveGameframe(from: Gameframe, dest: Gameframe, eventBus: Ev
     for (moveComponent in moveComponents) {
         val target = Component(moveComponent.asRSCM(RSCMType.COMPONENT))
         val sourceComponent =
-            from.mappings[target] ?: error("Expected move target in source mapping: '${moveComponent}'")
+            from.mappings[target]
+                ?: error("Expected move target in source mapping: '${moveComponent}'")
         val destComponent =
-            dest.mappings[target] ?: error("Expected move target in dest mapping: '${moveComponent}'")
+            dest.mappings[target]
+                ?: error("Expected move target in dest mapping: '${moveComponent}'")
         ifMoveSub(sourceComponent, destComponent, target, eventBus)
     }
 }

@@ -12,27 +12,21 @@ public data class CentralWorldLinkSettings(
 ) {
     public companion object {
         public fun resolve(config: ServerConfig): CentralWorldLinkSettings? {
-            val envHost =
-                System.getenv("OPENRUNE_CENTRAL_HOST")?.trim()?.takeIf { it.isNotEmpty() }
-            val envKey =
-                System.getenv("OPENRUNE_WORLD_KEY")?.trim()?.takeIf { it.isNotEmpty() }
+            val envHost = System.getenv("OPENRUNE_CENTRAL_HOST")?.trim()?.takeIf { it.isNotEmpty() }
+            val envKey = System.getenv("OPENRUNE_WORLD_KEY")?.trim()?.takeIf { it.isNotEmpty() }
             val envPort = System.getenv("OPENRUNE_CENTRAL_PORT")?.trim()?.toIntOrNull()
 
             val yml: OpenRuneCentralGameConfig? = config.central
             val sameInstance = yml?.sameInstance == true
             val hasRemoteYamlAuth =
-                yml != null &&
-                    yml.host.trim().isNotEmpty() &&
-                    yml.worldKey.trim().isNotEmpty()
+                yml != null && yml.host.trim().isNotEmpty() && yml.worldKey.trim().isNotEmpty()
             val ymlOn = sameInstance || hasRemoteYamlAuth
 
             val host =
                 envHost
                     ?: yml?.host?.trim()?.takeIf { it.isNotEmpty() && ymlOn }
                     ?: if (sameInstance && ymlOn) "127.0.0.1" else null
-            val keyStr =
-                envKey
-                    ?: yml?.worldKey?.trim()?.takeIf { it.isNotEmpty() }
+            val keyStr = envKey ?: yml?.worldKey?.trim()?.takeIf { it.isNotEmpty() }
             if (host == null) {
                 return null
             }

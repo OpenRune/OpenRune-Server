@@ -28,12 +28,7 @@ constructor(
         }
 
         db.request(
-            request = {
-                social.addFriend(
-                    characterId = characterId,
-                    name = requestedName,
-                )
-            },
+            request = { social.addFriend(characterId = characterId, name = requestedName) },
             response = { result ->
                 val current = uid.resolve(playerList) ?: return@request
 
@@ -49,9 +44,7 @@ constructor(
                             }
                         }
                     },
-                    onErr = {
-                        current.writeSocialMessage("Unable to add player right now.")
-                    },
+                    onErr = { current.writeSocialMessage("Unable to add player right now.") },
                 )
             },
         )

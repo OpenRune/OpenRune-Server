@@ -99,14 +99,16 @@ object MortimerDialogue {
             )
             val modifier = MortimerAssignment.activeModifier(access.player)
             if (modifier != null) {
-                chatNpc(neutral, "Your assignment's mortifier: ${MortimerModifiers.label(modifier)}.")
+                chatNpc(
+                    neutral,
+                    "Your assignment's mortifier: ${MortimerModifiers.label(modifier)}.",
+                )
             }
             return
         }
 
         if (MortimerAssignment.hasPendingChoice(access)) {
-            val master =
-                SlayerTaskManager.findMasterByNpc(MortimerAssignment.NPC) ?: return
+            val master = SlayerTaskManager.findMasterByNpc(MortimerAssignment.NPC) ?: return
             val offers = MortimerAssignment.readStoredOffers(access, master)
             if (offers.isNotEmpty()) {
                 chatNpc(neutral, "Take your pick. Which of these appeals to you?")
@@ -130,18 +132,12 @@ object MortimerDialogue {
             neutral,
             "You're wearing a Slayer cape. Would you like me to assign you the same task as last time ($previousTaskName)?",
         )
-        when (
-            choice2(
-                "Yes please.",
-                1,
-                "No thanks, I'd like a new task.",
-                2,
-            )
-        ) {
+        when (choice2("Yes please.", 1, "No thanks, I'd like a new task.", 2)) {
             1 -> {
                 chatPlayer(neutral, "Yes please.")
                 when (SlayerTaskManager.assignPreviousTask(access, MortimerAssignment.NPC)) {
-                    AssignPreviousResult.Success, AssignPreviousResult.BlockedPrevious -> {
+                    AssignPreviousResult.Success,
+                    AssignPreviousResult.BlockedPrevious -> {
                         val task = SlayerTaskManager.getCurrentSlayerTask(access)
                         if (task != null) {
                             val count = access.vars["varp.slayer_count"]
@@ -163,10 +159,11 @@ object MortimerDialogue {
 
     private suspend fun Dialogue.offerNewChoices() {
         val master =
-            SlayerTaskManager.findMasterByNpc(MortimerAssignment.NPC) ?: run {
-                chatNpc(neutral, "I can't assign you a task right now.")
-                return
-            }
+            SlayerTaskManager.findMasterByNpc(MortimerAssignment.NPC)
+                ?: run {
+                    chatNpc(neutral, "I can't assign you a task right now.")
+                    return
+                }
         val offers = MortimerAssignment.rollOffers(access, master)
         if (offers.isNullOrEmpty()) {
             chatNpc(neutral, SlayerTaskManager.assignmentUnavailableMessage(access, master))
@@ -257,7 +254,10 @@ object MortimerDialogue {
 
     private suspend fun Dialogue.mortifiersExplained() {
         chatPlayer(quiz, "What kind of modifiers can I expect if I slay for you?")
-        chatNpc(happy, "Modifiers? You mean mortifiers! Coined that term myself a few centuries ago.")
+        chatNpc(
+            happy,
+            "Modifiers? You mean mortifiers! Coined that term myself a few centuries ago.",
+        )
         chatPlayer(quiz, "Okay... so what mortifiers can your tasks have?")
         chatNpc(
             neutral,
@@ -288,10 +288,8 @@ object MortimerDialogue {
                     "By my records, I count $count, so you've already proven yourself more than capable of handling all my mortifiers!"
                 count >= 40 ->
                     "By my records, I count $count. Keep at it and you'll unlock the third task choice."
-                count >= 25 ->
-                    "By my records, I count $count. You're making good progress."
-                count >= 15 ->
-                    "By my records, I count $count. You're starting to prove yourself."
+                count >= 25 -> "By my records, I count $count. You're making good progress."
+                count >= 15 -> "By my records, I count $count. You're starting to prove yourself."
                 else ->
                     "By my records, I count $count. You've got a ways to go. Better get slayin'!"
             }

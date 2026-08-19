@@ -6,8 +6,6 @@ import dev.openrune.definition.type.widget.ComponentType
 import dev.openrune.definition.type.widget.IfEvent
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
-import dev.openrune.types.ItemServerType
-import dev.openrune.types.NpcServerType
 import dev.openrune.types.SequenceServerType
 import dev.openrune.types.aconverted.interf.IfSubType
 import java.awt.Color
@@ -63,7 +61,9 @@ private typealias MoveSub = org.rsmod.api.player.ui.IfMoveSub
 private var Player.chatModalUnclamp: Int by intVarBit("varbit.chatmodal_unclamp")
 
 public fun Player.ifSetObj(target: String, obj: String, zoomOrCount: Int) {
-    client.write(IfSetObject(target.asRSCM(RSCMType.COMPONENT), obj.asRSCM(RSCMType.OBJ), zoomOrCount))
+    client.write(
+        IfSetObject(target.asRSCM(RSCMType.COMPONENT), obj.asRSCM(RSCMType.OBJ), zoomOrCount)
+    )
 }
 
 public fun Player.ifSetObj(target: String, obj: InvObj, zoomOrCount: Int) {
@@ -257,8 +257,9 @@ public fun Player.ifMoveTop(dest: String, eventBus: EventBus) {
         "This function can only be used after `ifOpenTop` has been called. " +
             "Use `ifOpenTop` instead."
     }
-    val destInterface = ServerCacheManager.getInterface(dest.asRSCM(RSCMType.INTERFACE))
-        ?: error("Could not find interface $dest")
+    val destInterface =
+        ServerCacheManager.getInterface(dest.asRSCM(RSCMType.INTERFACE))
+            ?: error("Could not find interface $dest")
     eventBus.publish(IfMoveTop(this, destInterface))
 }
 
@@ -306,7 +307,7 @@ private fun Player.openModal(interf: String, internal: String, eventBus: EventBu
 }
 
 public fun Player.setColour(component: String, colour: Color) {
-    client.write(IfSetColour(component.asRSCM(),colour.red, colour.green, colour.blue))
+    client.write(IfSetColour(component.asRSCM(), colour.red, colour.green, colour.blue))
 }
 
 private fun Player.openOverlay(interf: String, internal: String, eventBus: EventBus) {

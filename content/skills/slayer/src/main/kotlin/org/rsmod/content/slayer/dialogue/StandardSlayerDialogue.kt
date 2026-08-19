@@ -62,12 +62,13 @@ object StandardSlayerDialogue {
         val choices = mutableListOf<Pair<String, SlayerMenuOption>>()
         choices.add("I need another assignment." to { requestAssignment(profile.npcId) })
         choices.add(
-            "Have you any rewards for me, or anything to trade?" to { rewardsOrShopDialogue() },
+            "Have you any rewards for me, or anything to trade?" to { rewardsOrShopDialogue() }
         )
         choices.add(
-            "Let's talk about the difficulty of my assignments." to {
-                combatDifficultyDialogue(profile)
-            },
+            "Let's talk about the difficulty of my assignments." to
+                {
+                    combatDifficultyDialogue(profile)
+                }
         )
         if (profile.supportsCape) {
             val capeLabel =
@@ -87,9 +88,10 @@ object StandardSlayerDialogue {
         val choices = mutableListOf<Pair<String, SlayerMenuOption>>()
         choices.add("I need another assignment." to { contactRequestAssignment(profile.npcId) })
         choices.add(
-            "Let's talk about the difficulty of my assignments." to {
-                contactCombatDifficulty(profile.npcId)
-            },
+            "Let's talk about the difficulty of my assignments." to
+                {
+                    contactCombatDifficulty(profile.npcId)
+                }
         )
         choices.addAll(extras)
         choices.add("Err... Nothing..." to { chatPlayer(neutral, "Err... Nothing...") })
@@ -150,12 +152,7 @@ object StandardSlayerDialogue {
                 }
             else -> {
                 val labels = choices.map { it.first }
-                val index =
-                    access.menu(
-                        "",
-                        hotkeys = true,
-                        choices = labels,
-                    )
+                val index = access.menu("", hotkeys = true, choices = labels)
                 if (index in choices.indices) {
                     choices[index].second.invoke(this)
                 }
@@ -184,11 +181,7 @@ object StandardSlayerDialogue {
                 chatPlayer(neutral, "No that's okay, I'll take a task from you.")
                 handleAssignment(profile.npcId, profile)
             }
-            2 ->
-                chatPlayer(
-                    neutral,
-                    "Oh okay then, I'll go talk to ${redirect.suggestedMaster}.",
-                )
+            2 -> chatPlayer(neutral, "Oh okay then, I'll go talk to ${redirect.suggestedMaster}.")
         }
         return true
     }
@@ -221,14 +214,17 @@ object StandardSlayerDialogue {
         }
     }
 
-    private fun activeTaskMessage(style: ActiveTaskMessageStyle, monster: String, count: Int): String =
+    private fun activeTaskMessage(
+        style: ActiveTaskMessageStyle,
+        monster: String,
+        count: Int,
+    ): String =
         when (style) {
             ActiveTaskMessageStyle.WithComebackSemicolon ->
                 "You're still hunting $monster; you have $count to go. Come back when you've finished your task."
             ActiveTaskMessageStyle.WithComebackComma ->
                 "You're still hunting $monster, you have $count to go. Come back when you've finished your task."
-            ActiveTaskMessageStyle.Short ->
-                "You're still hunting $monster, you have $count to go."
+            ActiveTaskMessageStyle.Short -> "You're still hunting $monster, you have $count to go."
             ActiveTaskMessageStyle.SemicolonOnly ->
                 "You're still hunting $monster; you have $count to go."
         }
@@ -258,7 +254,9 @@ object StandardSlayerDialogue {
                         neutral,
                         "Okay, from now on, all the Slayer Masters will assign you anything from their lists, regardless of your combat level.",
                     )
-                    mesbox("Slayer Masters will no longer take the player's combat level into account.")
+                    mesbox(
+                        "Slayer Masters will no longer take the player's combat level into account."
+                    )
                     SlayerTaskManager.setCombatCheckEnabled(access, false)
                 }
             }

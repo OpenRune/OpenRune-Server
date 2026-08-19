@@ -107,9 +107,7 @@ constructor(
 
     private fun Player.sendWelcomeMessage() {
         val message = realm.config.loginMessage
-        message?.let {
-            mes(it.replace("RS Mod", config.name), ChatType.Welcome)
-        }
+        message?.let { mes(it.replace("RS Mod", config.name), ChatType.Welcome) }
 
         val broadcast = realm.config.loginBroadcast
         broadcast?.let { mes(it, ChatType.Broadcast) }

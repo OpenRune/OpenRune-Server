@@ -88,7 +88,7 @@ public class MusicRepository @Inject constructor(private val random: GameRandom)
             val trackRows = it.tracks
             val musicList = ArrayList<Music>(trackRows.size)
             for (trackRow in trackRows) {
-                val music = musicRows[trackRow.rowId]?: continue
+                val music = musicRows[trackRow.rowId] ?: continue
                 musicList += music
             }
             val mappedList = grouped.computeIfAbsent(area) { mutableListOf() }

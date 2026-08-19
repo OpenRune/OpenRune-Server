@@ -1,15 +1,15 @@
 package org.rsmod.content.slayer.dialogue.masters
 
 import org.rsmod.api.player.dialogue.Dialogue
-import org.rsmod.content.slayer.slayerKrystiliaEdgevilleSpawnActive
-import org.rsmod.content.slayer.slayerKrystiliaEdgevilleSpawnUnlocked
-import org.rsmod.content.slayer.slayerWildernessAssignmentBriefed
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.content.slayer.core.SlayerTaskManager
-import org.rsmod.content.slayer.dialogue.SlayerAssignmentDialogue.assignNewTask
 import org.rsmod.content.slayer.dialogue.GenericDialogue.ineligibleForTask
 import org.rsmod.content.slayer.dialogue.GenericDialogue.offerCancelTask
 import org.rsmod.content.slayer.dialogue.GenericDialogue.rewardsOrShopDialogue
+import org.rsmod.content.slayer.dialogue.SlayerAssignmentDialogue.assignNewTask
+import org.rsmod.content.slayer.slayerKrystiliaEdgevilleSpawnActive
+import org.rsmod.content.slayer.slayerKrystiliaEdgevilleSpawnUnlocked
+import org.rsmod.content.slayer.slayerWildernessAssignmentBriefed
 
 object KrystiliaDialogue {
 
@@ -84,7 +84,9 @@ object KrystiliaDialogue {
         val assignedMaster = SlayerTaskManager.getCurrentAssignedMaster(player)
 
         when {
-            currentTask != null && assignedMaster != null && SlayerTaskManager.isWildernessMaster(assignedMaster) -> {
+            currentTask != null &&
+                assignedMaster != null &&
+                SlayerTaskManager.isWildernessMaster(assignedMaster) -> {
                 val count = access.slayerCount()
                 chatNpc(
                     neutral,
@@ -150,7 +152,10 @@ object KrystiliaDialogue {
                 1 -> krystiliaSlayerTip()
                 2 -> {
                     chatPlayer(happy, "Okay, great!")
-                    chatNpc(neutral, "Good luck! Don't forget to come back when you need a new assignment.")
+                    chatNpc(
+                        neutral,
+                        "Good luck! Don't forget to come back when you need a new assignment.",
+                    )
                 }
             }
         }
@@ -195,12 +200,7 @@ object KrystiliaDialogue {
         if (edgevilleActive) {
             chatNpc(neutral, "So how's that Edgeville respawn working for you?")
             when (
-                choice2(
-                    "Please switch my respawn back to Lumbridge.",
-                    1,
-                    "It's fine, thanks.",
-                    2,
-                )
+                choice2("Please switch my respawn back to Lumbridge.", 1, "It's fine, thanks.", 2)
             ) {
                 1 -> switchRespawnToLumbridge()
                 2 -> chatPlayer(neutral, "It's fine, thanks.")
@@ -274,8 +274,7 @@ object KrystiliaDialogue {
 
     private suspend fun Dialogue.purchaseEdgevilleSpawn() {
         chatPlayer(neutral, "Okay, switch my spawn to Edgeville.")
-        val coinDel =
-            access.invDel(access.inv, "obj.coins", count = EDGE_SPAWN_COST, strict = true)
+        val coinDel = access.invDel(access.inv, "obj.coins", count = EDGE_SPAWN_COST, strict = true)
         if (coinDel.failure) {
             chatPlayer(neutral, "I'm not carrying that much money.")
             chatNpc(neutral, "Scared of dropping it? Hah!")
@@ -289,8 +288,13 @@ object KrystiliaDialogue {
     private suspend fun Dialogue.switchRespawnToEdgeville(paidPreviously: Boolean) {
         chatPlayer(neutral, "Please switch my respawn back to Edgeville.")
         if (!paidPreviously) {
-            chatNpc(neutral, "Sounds like you're looking for some fun! Are you sure you can handle it?")
-            when (choice2("Yes, switch my respawn to Edgeville.", 1, "No, maybe another time.", 2)) {
+            chatNpc(
+                neutral,
+                "Sounds like you're looking for some fun! Are you sure you can handle it?",
+            )
+            when (
+                choice2("Yes, switch my respawn to Edgeville.", 1, "No, maybe another time.", 2)
+            ) {
                 1 -> confirmEdgevilleRespawn()
                 2 -> {
                     chatPlayer(neutral, "No, maybe another time.")
@@ -315,7 +319,14 @@ object KrystiliaDialogue {
             neutral,
             "You really want to respawn in that dead-end slum? Are you sure? Come and see me if you want to respawn in Edgeville again; I won't ask for more money.",
         )
-        when (choice2("Yes, switch my respawn to Lumbridge.", 1, "No, I'll keep the Edgeville respawn.", 2)) {
+        when (
+            choice2(
+                "Yes, switch my respawn to Lumbridge.",
+                1,
+                "No, I'll keep the Edgeville respawn.",
+                2,
+            )
+        ) {
             1 -> {
                 chatPlayer(neutral, "Yes, switch my respawn to Lumbridge.")
                 access.player.slayerKrystiliaEdgevilleSpawnActive = false
@@ -337,7 +348,10 @@ object KrystiliaDialogue {
             neutral,
             "Oh yes, I put the craft in witchcraft! I have plenty of spare time outside of assigning tasks so I've been making comics and stuffed toys.",
         )
-        chatPlayer(neutral, "That's so sweet! I didn't realise Slayer Masters had so much spare time.")
+        chatPlayer(
+            neutral,
+            "That's so sweet! I didn't realise Slayer Masters had so much spare time.",
+        )
         chatNpc(
             neutral,
             "Perhaps I have a little too much spare time! I've made so many things that I'm running out of room.",

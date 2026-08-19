@@ -19,7 +19,8 @@ import org.rsmod.game.entity.Player
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
-class ArchmageSedridor @Inject constructor(private val runeMysteries: RuneMysteriesQuest) : PluginScript() {
+class ArchmageSedridor @Inject constructor(private val runeMysteries: RuneMysteriesQuest) :
+    PluginScript() {
 
     private val quest
         get() = runeMysteries.quest
@@ -33,9 +34,7 @@ class ArchmageSedridor @Inject constructor(private val runeMysteries: RuneMyster
     }
 
     private suspend fun ProtectedAccess.startSedridorDialogue(npc: Npc) {
-        startDialogue(npc) {
-            sedridorDialogue(npc)
-        }
+        startDialogue(npc) { sedridorDialogue(npc) }
     }
 
     private suspend fun Dialogue.sedridorDialogue(npc: Npc) {
@@ -81,7 +80,8 @@ class ArchmageSedridor @Inject constructor(private val runeMysteries: RuneMyster
 
     private suspend fun Dialogue.sedridorReceiveTalisman(npc: Npc) {
         val returningWithoutTalisman =
-            quest.getQuestStage(player) == RuneMysteriesQuest.STAGE_TALISMAN && !hasAirTalisman(player)
+            quest.getQuestStage(player) == RuneMysteriesQuest.STAGE_TALISMAN &&
+                !hasAirTalisman(player)
 
         if (returningWithoutTalisman) {
             chatNpc(quiz, "Welcome back, adventurer. Do you have that talisman now?")
@@ -104,7 +104,10 @@ class ArchmageSedridor @Inject constructor(private val runeMysteries: RuneMyster
             "The Duke of Lumbridge sent me to find him. I have this talisman he found. He said " +
                 "Sedridor would be interested in it.",
         )
-        chatNpc(quiz, "Did he now? Well hand it over then, and we'll see what all the hubbub is about.")
+        chatNpc(
+            quiz,
+            "Did he now? Well hand it over then, and we'll see what all the hubbub is about.",
+        )
 
         when (
             choice3(
@@ -140,7 +143,10 @@ class ArchmageSedridor @Inject constructor(private val runeMysteries: RuneMyster
                     "Well I am the Archmage you know! You don't get to my position without learning " +
                         "a few tricks along the way!",
                 )
-                chatNpc(quiz, "So now that I have proved myself to you, why don't you hand over that talisman, hmm?")
+                chatNpc(
+                    quiz,
+                    "So now that I have proved myself to you, why don't you hand over that talisman, hmm?",
+                )
                 chatPlayer(happy, "Okay, here you are.")
                 doubtedIdentity.set(player, true)
                 handTalismanToSedridor(doubted = true)
@@ -181,14 +187,7 @@ class ArchmageSedridor @Inject constructor(private val runeMysteries: RuneMyster
         chatPlayer(confused, "First tower? Forgotten essence mine? What are you on about?")
         chatNpc(happy, "Ah, my apologies, adventurer. Allow me to fill you in.")
 
-        when (
-            choice2(
-                "Go ahead.",
-                1,
-                "Actually, I'm not interested.",
-                2,
-            )
-        ) {
+        when (choice2("Go ahead.", 1, "Actually, I'm not interested.", 2)) {
             1 -> sedridorLoreThenPackage(doubted)
             2 -> {
                 chatPlayer(bored, "Actually, I'm not interested.")
@@ -211,7 +210,10 @@ class ArchmageSedridor @Inject constructor(private val runeMysteries: RuneMyster
     private suspend fun Dialogue.sedridorLoreThenPackage(doubted: Boolean) {
         player.rmBackstory = true
         chatPlayer(happy, "Go ahead.")
-        chatNpc(happy, "As you are likely aware, when we cast spells, we do so using the power of runes.")
+        chatNpc(
+            happy,
+            "As you are likely aware, when we cast spells, we do so using the power of runes.",
+        )
         chatNpc(
             happy,
             "These runes are crafted from a highly unique material, and then imbued with magical " +
@@ -230,7 +232,10 @@ class ArchmageSedridor @Inject constructor(private val runeMysteries: RuneMyster
                 "the dawn of the Fifth Age. It also resulted in the birth of our order, and the " +
                 "construction of the first Wizards' Tower.",
         )
-        chatPlayer(quiz, "If it was the first tower, I'm guessing it doesn't exist anymore? What happened?")
+        chatPlayer(
+            quiz,
+            "If it was the first tower, I'm guessing it doesn't exist anymore? What happened?",
+        )
         chatNpc(
             sad,
             "It was burnt down by traitorous members of our own order. They followed the evil god " +
@@ -247,7 +252,10 @@ class ArchmageSedridor @Inject constructor(private val runeMysteries: RuneMyster
             "Precisely. Rune essence is the material used to make runes, but it is incredibly rare. " +
                 "That essence mine was the only place it could be found that our order knew of.",
         )
-        chatNpc(sad, "Since the incantation was lost, we have struggled to maintain our stocks of rune essence.")
+        chatNpc(
+            sad,
+            "Since the incantation was lost, we have struggled to maintain our stocks of rune essence.",
+        )
         chatNpc(
             sad,
             "There are seemingly those out there that still know where to find some, but while they " +
@@ -431,7 +439,9 @@ class ArchmageSedridor @Inject constructor(private val runeMysteries: RuneMyster
             quest.advanceQuestStage(access, remaining)
         }
 
-        when (choice2("I'd better get going.", 1, "Can you teleport me to the Rune Essence Mine?", 2)) {
+        when (
+            choice2("I'd better get going.", 1, "Can you teleport me to the Rune Essence Mine?", 2)
+        ) {
             1 -> chatPlayer(happy, "I'd better get going.")
             2 -> teleportToRuneEssenceMine()
         }
@@ -447,15 +457,9 @@ class ArchmageSedridor @Inject constructor(private val runeMysteries: RuneMyster
     }
 
     private suspend fun Dialogue.giveOwedAirTalisman() {
-        chatNpc(
-            happy,
-            "Ah, before I forget - I still have that air talisman for you.",
-        )
+        chatNpc(happy, "Ah, before I forget - I still have that air talisman for you.")
         if (access.invAdd(access.inv, RuneMysteriesQuest.AIR_TALISMAN).failure) {
-            chatNpc(
-                sad,
-                "Your inventory is still full. Free up some space and speak to me again.",
-            )
+            chatNpc(sad, "Your inventory is still full. Free up some space and speak to me again.")
             return
         }
         player.rmOwedTalisman = false

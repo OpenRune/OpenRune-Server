@@ -17,22 +17,19 @@ class QuestJournalScript : PluginScript() {
             val quest = Quest.getById(evt.comsub) ?: return@onIfOverlayButton
             if (QuestJournalRegistry.get(quest) == null) return@onIfOverlayButton
 
-            val journalState = if (quest.questState(player) == QuestProgressState.NOT_STARTED) {
-                JournalState.OVERVIEW
-            } else {
-                JournalState.LOG
-            }
+            val journalState =
+                if (quest.questState(player) == QuestProgressState.NOT_STARTED) {
+                    JournalState.OVERVIEW
+                } else {
+                    JournalState.LOG
+                }
 
             QuestJournalRegistry.openJournal(this, quest, journalState)
         }
 
-        onIfModalButton("component.questjournal_overview:close") {
-            player.ifCloseModals(eventBus)
-        }
+        onIfModalButton("component.questjournal_overview:close") { player.ifCloseModals(eventBus) }
 
-        onIfModalButton("component.questjournal:close") {
-            player.ifCloseModals(eventBus)
-        }
+        onIfModalButton("component.questjournal:close") { player.ifCloseModals(eventBus) }
 
         onIfModalButton("component.questjournal_overview:content_inner") {
             val quest = QuestJournalRegistry.activeQuest(player) ?: return@onIfModalButton
@@ -41,7 +38,10 @@ class QuestJournalScript : PluginScript() {
             player.ifSetEvents(
                 "component.worldmap:close",
                 0..1,
-                IfEvent.Op1, IfEvent.Op2, IfEvent.Op3, IfEvent.Op4,
+                IfEvent.Op1,
+                IfEvent.Op2,
+                IfEvent.Op3,
+                IfEvent.Op4,
             )
 
             quest.startCoord?.let { coord ->

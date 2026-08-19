@@ -31,22 +31,21 @@ constructor(
     }
 
     /**
-     * Clears stale `account_characters.online_*` rows for this JVM's world id after an unclean shutdown.
-     * Runs here (not in [org.rsmod.api.db.jdbc.GameDatabaseService]) so [Realm.config] is initialized
-     * and the configured [worldId][ServerConfig.world] is known.
+     * Clears stale `account_characters.online_*` rows for this JVM's world id after an unclean
+     * shutdown. Runs here (not in [org.rsmod.api.db.jdbc.GameDatabaseService]) so [Realm.config] is
+     * initialized and the configured [worldId][ServerConfig.world] is known.
      */
     private suspend fun clearGhostOnlineSessions(gameWorldId: Int) {
         try {
             database.withTransaction { connection ->
-                val sql = OpenRuneSql.text("game/character/characters_clear_online_presence_on_world.sql")
+                val sql =
+                    OpenRuneSql.text("game/character/characters_clear_online_presence_on_world.sql")
                 connection.prepareStatement(sql).use { ps ->
                     ps.setInt(1, gameWorldId)
                     ps.executeUpdate()
                 }
             }
-            logger.debug {
-                "Cleared character online-session markers for worldId=$gameWorldId."
-            }
+            logger.debug { "Cleared character online-session markers for worldId=$gameWorldId." }
         } catch (e: Exception) {
             logger.warn(e) { "Could not clear online-session markers after realm load." }
         }

@@ -1,6 +1,5 @@
 package org.rsmod.api.music.plugin.scripts
 
-import dev.openrune.types.aconverted.AreaType
 import jakarta.inject.Inject
 import org.rsmod.api.player.music.MusicPlayMode
 import org.rsmod.api.player.music.MusicPlayer
@@ -30,7 +29,6 @@ public class MusicAreaScript @Inject constructor(private val musicPlayer: MusicP
     private fun ProtectedAccess.playAreaMusic(area: String) {
         musicPlayer.enterArea(player, area)
     }
-
 
     private fun ProtectedAccess.stopAreaMusic(area: String) {
         musicPlayer.exitArea(player, area)

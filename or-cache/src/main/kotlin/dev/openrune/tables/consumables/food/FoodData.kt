@@ -11,108 +11,36 @@ internal enum class FoodData(
     val eatDelay: List<Int> = emptyList(),
     val combatDelay: List<Int> = emptyList(),
 ) {
-    SHRIMP(
-        row = "dbrow.shrimp",
-        items = listOf("obj.shrimp"),
-        heal = 3,
-    ),
-    ANCHOVIES(
-        row = "dbrow.anchovies",
-        items = listOf("obj.anchovies"),
-        heal = 1,
-    ),
-    SARDINE(
-        row = "dbrow.sardine",
-        items = listOf("obj.sardine"),
-        heal = 4,
-    ),
-    HERRING(
-        row = "dbrow.herring",
-        items = listOf("obj.herring"),
-        heal = 5,
-    ),
-    MACKEREL(
-        row = "dbrow.mackerel",
-        items = listOf("obj.mackerel"),
-        heal = 6,
-    ),
-    COD(
-        row = "dbrow.cod",
-        items = listOf("obj.cod"),
-        heal = 7,
-    ),
-    TROUT(
-        row = "dbrow.trout",
-        items = listOf("obj.trout"),
-        heal = 7,
-    ),
-    PIKE(
-        row = "dbrow.pike",
-        items = listOf("obj.pike"),
-        heal = 8,
-    ),
-    SALMON(
-        row = "dbrow.salmon",
-        items = listOf("obj.salmon"),
-        heal = 9,
-    ),
-    TUNA(
-        row = "dbrow.tuna",
-        items = listOf("obj.tuna"),
-        heal = 10,
-    ),
+    SHRIMP(row = "dbrow.shrimp", items = listOf("obj.shrimp"), heal = 3),
+    ANCHOVIES(row = "dbrow.anchovies", items = listOf("obj.anchovies"), heal = 1),
+    SARDINE(row = "dbrow.sardine", items = listOf("obj.sardine"), heal = 4),
+    HERRING(row = "dbrow.herring", items = listOf("obj.herring"), heal = 5),
+    MACKEREL(row = "dbrow.mackerel", items = listOf("obj.mackerel"), heal = 6),
+    COD(row = "dbrow.cod", items = listOf("obj.cod"), heal = 7),
+    TROUT(row = "dbrow.trout", items = listOf("obj.trout"), heal = 7),
+    PIKE(row = "dbrow.pike", items = listOf("obj.pike"), heal = 8),
+    SALMON(row = "dbrow.salmon", items = listOf("obj.salmon"), heal = 9),
+    TUNA(row = "dbrow.tuna", items = listOf("obj.tuna"), heal = 10),
     CAVE_EEL(
         row = "dbrow.cave_eel",
         items = listOf("obj.cave_eel"),
         heal = 10,
         effect = "cave_eel",
     ),
-    LAVA_EEL(
-        row = "dbrow.lava_eel",
-        items = listOf("obj.lava_eel"),
-        heal = 11,
-    ),
-    LOBSTER(
-        row = "dbrow.lobster",
-        items = listOf("obj.lobster"),
-        heal = 12,
-    ),
-    BASS(
-        row = "dbrow.bass",
-        items = listOf("obj.bass"),
-        heal = 13,
-    ),
-    SWORDFISH(
-        row = "dbrow.swordfish",
-        items = listOf("obj.swordfish"),
-        heal = 14,
-    ),
-    SWORDTIP_SQUID(
-        row = "dbrow.swordtip_squid",
-        items = listOf("obj.swordtip_squid"),
-        heal = 15,
-    ),
+    LAVA_EEL(row = "dbrow.lava_eel", items = listOf("obj.lava_eel"), heal = 11),
+    LOBSTER(row = "dbrow.lobster", items = listOf("obj.lobster"), heal = 12),
+    BASS(row = "dbrow.bass", items = listOf("obj.bass"), heal = 13),
+    SWORDFISH(row = "dbrow.swordfish", items = listOf("obj.swordfish"), heal = 14),
+    SWORDTIP_SQUID(row = "dbrow.swordtip_squid", items = listOf("obj.swordtip_squid"), heal = 15),
     IXCOZTIC_WHITE(
         row = "dbrow.ixcoztic_white",
         items = listOf("obj.ixcoztic_white"),
         heal = 16,
         effect = "ixcoztic_white",
     ),
-    MONKFISH(
-        row = "dbrow.monkfish",
-        items = listOf("obj.monkfish"),
-        heal = 16,
-    ),
-    JUMBO_SQUID(
-        row = "dbrow.jumbo_squid",
-        items = listOf("obj.jumbo_squid"),
-        heal = 17,
-    ),
-    GIANT_KRILL(
-        row = "dbrow.giant_krill",
-        items = listOf("obj.giant_krill"),
-        heal = 17,
-    ),
+    MONKFISH(row = "dbrow.monkfish", items = listOf("obj.monkfish"), heal = 16),
+    JUMBO_SQUID(row = "dbrow.jumbo_squid", items = listOf("obj.jumbo_squid"), heal = 17),
+    GIANT_KRILL(row = "dbrow.giant_krill", items = listOf("obj.giant_krill"), heal = 17),
     HADDOCK(
         row = "dbrow.haddock",
         items = listOf("obj.haddock"),
@@ -126,11 +54,7 @@ internal enum class FoodData(
         heal = 19,
         effect = "yellowfin",
     ),
-    SHARK(
-        row = "dbrow.shark",
-        items = listOf("obj.shark"),
-        heal = 20,
-    ),
+    SHARK(row = "dbrow.shark", items = listOf("obj.shark"), heal = 20),
     HALIBUT(
         row = "dbrow.halibut",
         items = listOf("obj.halibut"),
@@ -139,128 +63,39 @@ internal enum class FoodData(
         eatDelay = listOf(3),
         combatDelay = listOf(2),
     ),
-    SEA_TURTLE(
-        row = "dbrow.sea_turtle",
-        items = listOf("obj.seaturtle"),
-        heal = 21,
-    ),
-    MANTA_RAY(
-        row = "dbrow.manta_ray",
-        items = listOf("obj.mantaray"),
-        heal = 22,
-    ),
-    DARK_CRAB(
-        row = "dbrow.dark_crab",
-        items = listOf("obj.dark_crab"),
-        heal = 22,
-    ),
-    BLUEFIN(
-        row = "dbrow.bluefin",
-        items = listOf("obj.bluefin"),
-        heal = 22,
-        effect = "bluefin",
-    ),
-    MARLIN(
-        row = "dbrow.marlin",
-        items = listOf("obj.marlin"),
-        heal = 24,
-    ),
+    SEA_TURTLE(row = "dbrow.sea_turtle", items = listOf("obj.seaturtle"), heal = 21),
+    MANTA_RAY(row = "dbrow.manta_ray", items = listOf("obj.mantaray"), heal = 22),
+    DARK_CRAB(row = "dbrow.dark_crab", items = listOf("obj.dark_crab"), heal = 22),
+    BLUEFIN(row = "dbrow.bluefin", items = listOf("obj.bluefin"), heal = 22, effect = "bluefin"),
+    MARLIN(row = "dbrow.marlin", items = listOf("obj.marlin"), heal = 24),
     ANGLERFISH(
         row = "dbrow.anglerfish",
         items = listOf("obj.anglerfish"),
         heal = -1,
         overheal = true,
     ),
-    BREAD(
-        row = "dbrow.bread",
-        items = listOf("obj.bread"),
-        heal = 5,
-    ),
-    PEACH(
-        row = "dbrow.peach",
-        items = listOf("obj.peach"),
-        heal = 8,
-    ),
-    ONION(
-        row = "dbrow.onion",
-        items = listOf("obj.onion"),
-        heal = 1,
-    ),
-    POTATO(
-        row = "dbrow.potato",
-        items = listOf("obj.potato"),
-        heal = 1,
-    ),
-    CABBAGE(
-        row = "dbrow.cabbage",
-        items = listOf("obj.cabbage"),
-        heal = 1,
-    ),
-    BANANA(
-        row = "dbrow.banana",
-        items = listOf("obj.banana"),
-        heal = 2,
-    ),
-    TOMATO(
-        row = "dbrow.tomato",
-        items = listOf("obj.tomato"),
-        heal = 2,
-    ),
-    CHEESE(
-        row = "dbrow.cheese",
-        items = listOf("obj.cheese"),
-        heal = 2,
-    ),
-    POT_OF_CREAM(
-        row = "dbrow.pot_of_cream",
-        items = listOf("obj.pot_of_cream"),
-        heal = 1,
-    ),
-    SLICED_BANANA(
-        row = "dbrow.sliced_banana",
-        items = listOf("obj.tbwt_sliced_banana"),
-        heal = 2,
-    ),
-    ORANGE_CHUNKS(
-        row = "dbrow.orange_chunks",
-        items = listOf("obj.orange_chunks"),
-        heal = 2,
-    ),
-    ORANGE_SLICES(
-        row = "dbrow.orange_slices",
-        items = listOf("obj.orange_slices"),
-        heal = 2,
-    ),
+    BREAD(row = "dbrow.bread", items = listOf("obj.bread"), heal = 5),
+    PEACH(row = "dbrow.peach", items = listOf("obj.peach"), heal = 8),
+    ONION(row = "dbrow.onion", items = listOf("obj.onion"), heal = 1),
+    POTATO(row = "dbrow.potato", items = listOf("obj.potato"), heal = 1),
+    CABBAGE(row = "dbrow.cabbage", items = listOf("obj.cabbage"), heal = 1),
+    BANANA(row = "dbrow.banana", items = listOf("obj.banana"), heal = 2),
+    TOMATO(row = "dbrow.tomato", items = listOf("obj.tomato"), heal = 2),
+    CHEESE(row = "dbrow.cheese", items = listOf("obj.cheese"), heal = 2),
+    POT_OF_CREAM(row = "dbrow.pot_of_cream", items = listOf("obj.pot_of_cream"), heal = 1),
+    SLICED_BANANA(row = "dbrow.sliced_banana", items = listOf("obj.tbwt_sliced_banana"), heal = 2),
+    ORANGE_CHUNKS(row = "dbrow.orange_chunks", items = listOf("obj.orange_chunks"), heal = 2),
+    ORANGE_SLICES(row = "dbrow.orange_slices", items = listOf("obj.orange_slices"), heal = 2),
     PINEAPPLE_CHUNKS(
         row = "dbrow.pineapple_chunks",
         items = listOf("obj.pineapple_chunks"),
         heal = 2,
     ),
-    PINEAPPLE_RING(
-        row = "dbrow.pineapple_ring",
-        items = listOf("obj.pineapple_ring"),
-        heal = 2,
-    ),
-    LEMON_CHUNKS(
-        row = "dbrow.lemon_chunks",
-        items = listOf("obj.lemon_chunks"),
-        heal = 2,
-    ),
-    LEMON_SLICES(
-        row = "dbrow.lemon_slices",
-        items = listOf("obj.lemon_slices"),
-        heal = 2,
-    ),
-    LIME_CHUNKS(
-        row = "dbrow.lime_chunks",
-        items = listOf("obj.lime_chunks"),
-        heal = 2,
-    ),
-    LIME_SLICES(
-        row = "dbrow.lime_slices",
-        items = listOf("obj.lime_slices"),
-        heal = 2,
-    ),
+    PINEAPPLE_RING(row = "dbrow.pineapple_ring", items = listOf("obj.pineapple_ring"), heal = 2),
+    LEMON_CHUNKS(row = "dbrow.lemon_chunks", items = listOf("obj.lemon_chunks"), heal = 2),
+    LEMON_SLICES(row = "dbrow.lemon_slices", items = listOf("obj.lemon_slices"), heal = 2),
+    LIME_CHUNKS(row = "dbrow.lime_chunks", items = listOf("obj.lime_chunks"), heal = 2),
+    LIME_SLICES(row = "dbrow.lime_slices", items = listOf("obj.lime_slices"), heal = 2),
     KING_WORM(
         row = "dbrow.king_worm",
         items = listOf("obj.king_worm"),
@@ -269,47 +104,19 @@ internal enum class FoodData(
         eatDelay = listOf(3),
         combatDelay = listOf(2),
     ),
-    EQUA_LEAVES(
-        row = "dbrow.equa_leaves",
-        items = listOf("obj.equa_leaves"),
-        heal = 1,
-    ),
-    LEMON(
-        row = "dbrow.lemon",
-        items = listOf("obj.lemon"),
-        heal = 2,
-    ),
-    ORANGE(
-        row = "dbrow.orange",
-        items = listOf("obj.orange"),
-        heal = 2,
-    ),
-    LIME(
-        row = "dbrow.lime",
-        items = listOf("obj.lime"),
-        heal = 2,
-    ),
-    PINEAPPLE(
-        row = "dbrow.pineapple",
-        items = listOf("obj.pineapple"),
-        heal = 2,
-    ),
-    DWELLBERRIES(
-        row = "dbrow.dwellberries",
-        items = listOf("obj.dwellberries"),
-        heal = 2,
-    ),
+    EQUA_LEAVES(row = "dbrow.equa_leaves", items = listOf("obj.equa_leaves"), heal = 1),
+    LEMON(row = "dbrow.lemon", items = listOf("obj.lemon"), heal = 2),
+    ORANGE(row = "dbrow.orange", items = listOf("obj.orange"), heal = 2),
+    LIME(row = "dbrow.lime", items = listOf("obj.lime"), heal = 2),
+    PINEAPPLE(row = "dbrow.pineapple", items = listOf("obj.pineapple"), heal = 2),
+    DWELLBERRIES(row = "dbrow.dwellberries", items = listOf("obj.dwellberries"), heal = 2),
     JANGERBERRIES(
         row = "dbrow.jangerberries",
         items = listOf("obj.jangerberries"),
         heal = 2,
         effect = "jangerberries",
     ),
-    CAERULA_BERRIES(
-        row = "dbrow.caerula_berries",
-        items = listOf("obj.caerula_berries"),
-        heal = 2,
-    ),
+    CAERULA_BERRIES(row = "dbrow.caerula_berries", items = listOf("obj.caerula_berries"), heal = 2),
     STRAWBERRY(
         row = "dbrow.strawberry",
         items = listOf("obj.strawberry"),
@@ -328,21 +135,9 @@ internal enum class FoodData(
         heal = 8,
         effect = "papaya_fruit",
     ),
-    DRAGONFRUIT(
-        row = "dbrow.dragonfruit",
-        items = listOf("obj.dragonfruit"),
-        heal = 10,
-    ),
-    CHOCOLATE_BAR(
-        row = "dbrow.chocolate_bar",
-        items = listOf("obj.chocolate_bar"),
-        heal = 3,
-    ),
-    EDIBLE_SEAWEED(
-        row = "dbrow.edible_seaweed",
-        items = listOf("obj.edible_seaweed"),
-        heal = 4,
-    ),
+    DRAGONFRUIT(row = "dbrow.dragonfruit", items = listOf("obj.dragonfruit"), heal = 10),
+    CHOCOLATE_BAR(row = "dbrow.chocolate_bar", items = listOf("obj.chocolate_bar"), heal = 3),
+    EDIBLE_SEAWEED(row = "dbrow.edible_seaweed", items = listOf("obj.edible_seaweed"), heal = 4),
     MAGIC_CABBAGE(
         row = "dbrow.magic_cabbage",
         items = listOf("obj.magic_cabbage"),
@@ -351,10 +146,7 @@ internal enum class FoodData(
     ),
     CUP_OF_TEA(
         row = "dbrow.cup_of_tea",
-        items = listOf(
-            "obj.cup_of_tea",
-            "obj.cup_empty",
-        ),
+        items = listOf("obj.cup_of_tea", "obj.cup_empty"),
         heal = 3,
         effect = "cup_of_tea",
     ),
@@ -388,86 +180,34 @@ internal enum class FoodData(
         heal = 9,
         effect = "tbone_steak",
     ),
-    COOKED_CHICKEN(
-        row = "dbrow.cooked_chicken",
-        items = listOf("obj.cooked_chicken"),
-        heal = 3,
-    ),
-    COOKED_MEAT(
-        row = "dbrow.cooked_meat",
-        items = listOf("obj.cooked_meat"),
-        heal = 3,
-    ),
+    COOKED_CHICKEN(row = "dbrow.cooked_chicken", items = listOf("obj.cooked_chicken"), heal = 3),
+    COOKED_MEAT(row = "dbrow.cooked_meat", items = listOf("obj.cooked_meat"), heal = 3),
     COOKED_UGTHANKI_MEAT(
         row = "dbrow.cooked_ugthanki_meat",
         items = listOf("obj.cooked_ugthanki_meat"),
         heal = 3,
     ),
-    UGTHANKI_KEBAB(
-        row = "dbrow.ugthanki_kebab",
-        items = listOf("obj.ugthanki_kebab"),
-        heal = 19,
-    ),
-    KEBAB(
-        row = "dbrow.kebab",
-        items = listOf("obj.kebab"),
-        heal = 3,
-        effect = "kebab",
-    ),
-    LOCUST_MEAT(
-        row = "dbrow.locust_meat",
-        items = listOf("obj.locust_meat"),
-        heal = 3,
-    ),
-    ROE(
-        row = "dbrow.roe",
-        items = listOf("obj.brut_roe"),
-        heal = 3,
-    ),
-    STEW(
-        row = "dbrow.stew",
-        items = listOf(
-            "obj.stew",
-            "obj.bowl_empty",
-        ),
-        heal = 11,
-    ),
+    UGTHANKI_KEBAB(row = "dbrow.ugthanki_kebab", items = listOf("obj.ugthanki_kebab"), heal = 19),
+    KEBAB(row = "dbrow.kebab", items = listOf("obj.kebab"), heal = 3, effect = "kebab"),
+    LOCUST_MEAT(row = "dbrow.locust_meat", items = listOf("obj.locust_meat"), heal = 3),
+    ROE(row = "dbrow.roe", items = listOf("obj.brut_roe"), heal = 3),
+    STEW(row = "dbrow.stew", items = listOf("obj.stew", "obj.bowl_empty"), heal = 11),
     SPICY_STEW(
         row = "dbrow.spicy_stew",
         items = listOf("obj.hundred_dave_stew"),
         heal = 11,
         effect = "spicy_stew",
     ),
-    COOKED_RABBIT(
-        row = "dbrow.cooked_rabbit",
-        items = listOf("obj.cooked_rabbit"),
-        heal = 5,
-    ),
+    COOKED_RABBIT(row = "dbrow.cooked_rabbit", items = listOf("obj.cooked_rabbit"), heal = 5),
     COOKED_MYSTERY_MEAT(
         row = "dbrow.cooked_mystery_meat",
         items = listOf("obj.cooked_mystery_meat"),
         heal = 5,
     ),
-    CAVIAR(
-        row = "dbrow.caviar",
-        items = listOf("obj.brut_caviar"),
-        heal = 5,
-    ),
-    BAGUETTE(
-        row = "dbrow.baguette",
-        items = listOf("obj.baguette"),
-        heal = 6,
-    ),
-    GIANT_FROG_LEGS(
-        row = "dbrow.giant_frog_legs",
-        items = listOf("obj.giant_frog_legs"),
-        heal = 6,
-    ),
-    GIANT_CARP(
-        row = "dbrow.giant_carp",
-        items = listOf("obj.giant_carp"),
-        heal = 6,
-    ),
+    CAVIAR(row = "dbrow.caviar", items = listOf("obj.brut_caviar"), heal = 5),
+    BAGUETTE(row = "dbrow.baguette", items = listOf("obj.baguette"), heal = 6),
+    GIANT_FROG_LEGS(row = "dbrow.giant_frog_legs", items = listOf("obj.giant_frog_legs"), heal = 6),
+    GIANT_CARP(row = "dbrow.giant_carp", items = listOf("obj.giant_carp"), heal = 6),
     GIANT_FROGSPAWN(
         row = "dbrow.giant_frogspawn",
         items = listOf("obj.giant_frogspawn"),
@@ -485,31 +225,11 @@ internal enum class FoodData(
         items = listOf("obj.hundred_pirate_fishcake"),
         heal = 11,
     ),
-    COOKED_CHOMPY(
-        row = "dbrow.cooked_chompy",
-        items = listOf("obj.cooked_chompy"),
-        heal = 10,
-    ),
-    CHOC_ICE(
-        row = "dbrow.choc_ice",
-        items = listOf("obj.elid_choc_ice"),
-        heal = 7,
-    ),
-    PUMPKIN(
-        row = "dbrow.pumpkin",
-        items = listOf("obj.pumpkin"),
-        heal = 14,
-    ),
-    EASTER_EGG(
-        row = "dbrow.easter_egg",
-        items = listOf("obj.easter_egg"),
-        heal = 14,
-    ),
-    COOKED_OOMLIE(
-        row = "dbrow.cooked_oomlie",
-        items = listOf("obj.cooked_oomlie"),
-        heal = 14,
-    ),
+    COOKED_CHOMPY(row = "dbrow.cooked_chompy", items = listOf("obj.cooked_chompy"), heal = 10),
+    CHOC_ICE(row = "dbrow.choc_ice", items = listOf("obj.elid_choc_ice"), heal = 7),
+    PUMPKIN(row = "dbrow.pumpkin", items = listOf("obj.pumpkin"), heal = 14),
+    EASTER_EGG(row = "dbrow.easter_egg", items = listOf("obj.easter_egg"), heal = 14),
+    COOKED_OOMLIE(row = "dbrow.cooked_oomlie", items = listOf("obj.cooked_oomlie"), heal = 14),
     COOKED_SWEETCORN(
         row = "dbrow.cooked_sweetcorn",
         items = listOf("obj.sweetcorn_cooked"),
@@ -518,10 +238,7 @@ internal enum class FoodData(
     ),
     BOWL_OF_SWEETCORN(
         row = "dbrow.bowl_of_sweetcorn",
-        items = listOf(
-            "obj.bowl_sweetcorn",
-            "obj.bowl_empty",
-        ),
+        items = listOf("obj.bowl_sweetcorn", "obj.bowl_empty"),
         heal = 10,
         effect = "cooked_sweetcorn",
     ),
@@ -577,28 +294,17 @@ internal enum class FoodData(
     ),
     COOKED_GIANT_CRAB_MEAT(
         row = "dbrow.cooked_giant_crab_meat",
-        items = listOf(
-            "obj.hundred_pirate_giant_crab_meat_5",
-            "obj.hundred_pirate_giant_crab_meat_4",
-            "obj.hundred_pirate_giant_crab_meat_3",
-            "obj.hundred_pirate_giant_crab_meat_2",
-            "obj.hundred_pirate_giant_crab_meat_1",
-        ),
+        items =
+            listOf(
+                "obj.hundred_pirate_giant_crab_meat_5",
+                "obj.hundred_pirate_giant_crab_meat_4",
+                "obj.hundred_pirate_giant_crab_meat_3",
+                "obj.hundred_pirate_giant_crab_meat_2",
+                "obj.hundred_pirate_giant_crab_meat_1",
+            ),
         heal = 2,
-        eatDelay = listOf(
-            2,
-            2,
-            2,
-            2,
-            2,
-        ),
-        combatDelay = listOf(
-            2,
-            2,
-            2,
-            2,
-            2,
-        ),
+        eatDelay = listOf(2, 2, 2, 2, 2),
+        combatDelay = listOf(2, 2, 2, 2, 2),
     ),
     COOKED_WILD_KEBBIT(
         row = "dbrow.cooked_wild_kebbit",
@@ -659,24 +365,9 @@ internal enum class FoodData(
         items = listOf("obj.potato_cheese"),
         heal = 16,
     ),
-    TUNA_POTATO(
-        row = "dbrow.tuna_potato",
-        items = listOf("obj.potato_tuna+sweetcorn"),
-        heal = 22,
-    ),
-    CURRY(
-        row = "dbrow.curry",
-        items = listOf(
-            "obj.curry",
-            "obj.bowl_empty",
-        ),
-        heal = 19,
-    ),
-    BAKED_POTATO(
-        row = "dbrow.baked_potato",
-        items = listOf("obj.potato_baked"),
-        heal = 4,
-    ),
+    TUNA_POTATO(row = "dbrow.tuna_potato", items = listOf("obj.potato_tuna+sweetcorn"), heal = 22),
+    CURRY(row = "dbrow.curry", items = listOf("obj.curry", "obj.bowl_empty"), heal = 19),
+    BAKED_POTATO(row = "dbrow.baked_potato", items = listOf("obj.potato_baked"), heal = 4),
     POTATO_WITH_BUTTER(
         row = "dbrow.potato_with_butter",
         items = listOf("obj.potato_butter"),
@@ -687,11 +378,7 @@ internal enum class FoodData(
         items = listOf("obj.potato_chilli+carne"),
         heal = 14,
     ),
-    EGG_POTATO(
-        row = "dbrow.egg_potato",
-        items = listOf("obj.potato_egg+tomato"),
-        heal = 16,
-    ),
+    EGG_POTATO(row = "dbrow.egg_potato", items = listOf("obj.potato_egg+tomato"), heal = 16),
     MUSHROOM_POTATO(
         row = "dbrow.mushroom_potato",
         items = listOf("obj.potato_mushroom+onion"),
@@ -699,113 +386,70 @@ internal enum class FoodData(
     ),
     BOWL_OF_ONION(
         row = "dbrow.bowl_of_onion",
-        items = listOf(
-            "obj.bowl_onion",
-            "obj.bowl_empty",
-        ),
+        items = listOf("obj.bowl_onion", "obj.bowl_empty"),
         heal = 1,
     ),
     BOWL_OF_TOMATO(
         row = "dbrow.bowl_of_tomato",
-        items = listOf(
-            "obj.bowl_tomato",
-            "obj.bowl_empty",
-        ),
+        items = listOf("obj.bowl_tomato", "obj.bowl_empty"),
         heal = 2,
     ),
     BOWL_OF_CHILLI(
         row = "dbrow.bowl_of_chilli",
-        items = listOf(
-            "obj.bowl_chilli",
-            "obj.bowl_empty",
-        ),
+        items = listOf("obj.bowl_chilli", "obj.bowl_empty"),
         heal = 2,
     ),
     BOWL_OF_MEAT(
         row = "dbrow.bowl_of_meat",
-        items = listOf(
-            "obj.bowl_carne",
-            "obj.bowl_empty",
-        ),
+        items = listOf("obj.bowl_carne", "obj.bowl_empty"),
         heal = 2,
     ),
     BOWL_OF_SPICY_TOMATO(
         row = "dbrow.bowl_of_spicy_tomato",
-        items = listOf(
-            "obj.bowl_spicytomato",
-            "obj.bowl_empty",
-        ),
+        items = listOf("obj.bowl_spicytomato", "obj.bowl_empty"),
         heal = 2,
     ),
     ONION_AND_TOMATO(
         row = "dbrow.onion_and_tomato",
-        items = listOf(
-            "obj.bowl_oniontomato",
-            "obj.bowl_empty",
-        ),
+        items = listOf("obj.bowl_oniontomato", "obj.bowl_empty"),
         heal = 3,
     ),
     SPICY_MEAT(
         row = "dbrow.spicy_meat",
-        items = listOf(
-            "obj.bowl_spicymeat",
-            "obj.bowl_empty",
-        ),
+        items = listOf("obj.bowl_spicymeat", "obj.bowl_empty"),
         heal = 3,
     ),
     SCRAMBLED_EGG_BOWL(
         row = "dbrow.scrambled_egg_bowl",
-        items = listOf(
-            "obj.bowl_egg_scrambled",
-            "obj.bowl_empty",
-        ),
+        items = listOf("obj.bowl_egg_scrambled", "obj.bowl_empty"),
         heal = 5,
     ),
     FRIED_ONION(
         row = "dbrow.fried_onion",
-        items = listOf(
-            "obj.bowl_onion_fried",
-            "obj.bowl_empty",
-        ),
+        items = listOf("obj.bowl_onion_fried", "obj.bowl_empty"),
         heal = 5,
     ),
     BOWL_OF_CHILLI_CON_CARNE(
         row = "dbrow.bowl_of_chilli_con_carne",
-        items = listOf(
-            "obj.bowl_chilli+carne",
-            "obj.bowl_empty",
-        ),
+        items = listOf("obj.bowl_chilli+carne", "obj.bowl_empty"),
         heal = 5,
     ),
     EGG_AND_TOMATO(
         row = "dbrow.egg_and_tomato",
-        items = listOf(
-            "obj.bowl_egg+tomato",
-            "obj.bowl_empty",
-        ),
+        items = listOf("obj.bowl_egg+tomato", "obj.bowl_empty"),
         heal = 8,
     ),
     MUSHROOM_AND_ONION(
         row = "dbrow.mushroom_and_onion",
-        items = listOf(
-            "obj.bowl_mushroom+onion",
-            "obj.bowl_empty",
-        ),
+        items = listOf("obj.bowl_mushroom+onion", "obj.bowl_empty"),
         heal = 11,
     ),
     TUNA_AND_CORN(
         row = "dbrow.tuna_and_corn",
-        items = listOf(
-            "obj.bowl_tuna+sweetcorn",
-            "obj.bowl_empty",
-        ),
+        items = listOf("obj.bowl_tuna+sweetcorn", "obj.bowl_empty"),
         heal = 13,
     ),
-    BAT_SHISH(
-        row = "dbrow.bat_shish",
-        items = listOf("obj.dorgesh_bat_shish"),
-        heal = 2,
-    ),
+    BAT_SHISH(row = "dbrow.bat_shish", items = listOf("obj.dorgesh_bat_shish"), heal = 2),
     GREEN_GLOOP_SOUP(
         row = "dbrow.green_gloop_soup",
         items = listOf("obj.dorgesh_green_gloop_soup"),
@@ -818,10 +462,7 @@ internal enum class FoodData(
     ),
     FRIED_MUSHROOMS(
         row = "dbrow.fried_mushrooms",
-        items = listOf(
-            "obj.bowl_mushroom_fried",
-            "obj.bowl_empty",
-        ),
+        items = listOf("obj.bowl_mushroom_fried", "obj.bowl_empty"),
         heal = 5,
     ),
     SAUTEED_MUSHROOMS(
@@ -834,21 +475,9 @@ internal enum class FoodData(
         items = listOf("obj.dorgesh_cave_eel_sushi"),
         heal = 7,
     ),
-    FROG_BURGER(
-        row = "dbrow.frog_burger",
-        items = listOf("obj.dorgesh_frog_burger"),
-        heal = 6,
-    ),
-    RED_CRAB_MEAT(
-        row = "dbrow.red_crab_meat",
-        items = listOf("obj.red_crab_meat"),
-        heal = 8,
-    ),
-    BLUE_CRAB_MEAT(
-        row = "dbrow.blue_crab_meat",
-        items = listOf("obj.blue_crab_meat"),
-        heal = 14,
-    ),
+    FROG_BURGER(row = "dbrow.frog_burger", items = listOf("obj.dorgesh_frog_burger"), heal = 6),
+    RED_CRAB_MEAT(row = "dbrow.red_crab_meat", items = listOf("obj.red_crab_meat"), heal = 8),
+    BLUE_CRAB_MEAT(row = "dbrow.blue_crab_meat", items = listOf("obj.blue_crab_meat"), heal = 14),
     RAINBOW_CRAB_MEAT(
         row = "dbrow.rainbow_crab_meat",
         items = listOf("obj.rainbow_crab_meat"),
@@ -862,124 +491,69 @@ internal enum class FoodData(
     ),
     BEER(
         row = "dbrow.beer",
-        items = listOf(
-            "obj.beer",
-            "obj.beer_glass",
-        ),
+        items = listOf("obj.beer", "obj.beer_glass"),
         heal = 1,
         effect = "beer",
     ),
     ASGARNIAN_ALE(
         row = "dbrow.asgarnian_ale",
-        items = listOf(
-            "obj.asgarnian_ale",
-            "obj.beer_glass",
-        ),
+        items = listOf("obj.asgarnian_ale", "obj.beer_glass"),
         heal = 1,
         effect = "asgarnian_ale",
     ),
     WIZARDS_MIND_BOMB(
         row = "dbrow.wizards_mind_bomb",
-        items = listOf(
-            "obj.wizards_mind_bomb",
-            "obj.beer_glass",
-        ),
+        items = listOf("obj.wizards_mind_bomb", "obj.beer_glass"),
         heal = 1,
         effect = "wizards_mind_bomb",
     ),
     GREENMANS_ALE(
         row = "dbrow.greenmans_ale",
-        items = listOf(
-            "obj.greenmans_ale",
-            "obj.beer_glass",
-        ),
+        items = listOf("obj.greenmans_ale", "obj.beer_glass"),
         heal = 1,
         effect = "greenmans_ale",
     ),
     DRAGON_BITTER(
         row = "dbrow.dragon_bitter",
-        items = listOf(
-            "obj.dragon_bitter",
-            "obj.beer_glass",
-        ),
+        items = listOf("obj.dragon_bitter", "obj.beer_glass"),
         heal = 1,
         effect = "dragon_bitter",
     ),
     DWARVEN_STOUT(
         row = "dbrow.dwarven_stout",
-        items = listOf(
-            "obj.dwarven_stout",
-            "obj.beer_glass",
-        ),
+        items = listOf("obj.dwarven_stout", "obj.beer_glass"),
         heal = 1,
         effect = "dwarven_stout",
     ),
     CIDER(
         row = "dbrow.cider",
-        items = listOf(
-            "obj.cider",
-            "obj.beer_glass",
-        ),
+        items = listOf("obj.cider", "obj.beer_glass"),
         heal = 1,
         effect = "cider",
     ),
     AXEMANS_FOLLY(
         row = "dbrow.axemans_folly",
-        items = listOf(
-            "obj.axemans_folly",
-            "obj.beer_glass",
-        ),
+        items = listOf("obj.axemans_folly", "obj.beer_glass"),
         heal = 1,
         effect = "axemans_folly",
     ),
     CHEFS_DELIGHT(
         row = "dbrow.chefs_delight",
-        items = listOf(
-            "obj.chefs_delight",
-            "obj.beer_glass",
-        ),
+        items = listOf("obj.chefs_delight", "obj.beer_glass"),
         heal = 1,
         effect = "chefs_delight",
     ),
     SLAYERS_RESPITE(
         row = "dbrow.slayers_respite",
-        items = listOf(
-            "obj.slayers_respite",
-            "obj.beer_glass",
-        ),
+        items = listOf("obj.slayers_respite", "obj.beer_glass"),
         heal = 1,
         effect = "slayers_respite",
     ),
-    GROG(
-        row = "dbrow.grog",
-        items = listOf("obj.grog"),
-        heal = 3,
-        effect = "grog",
-    ),
-    VODKA(
-        row = "dbrow.vodka",
-        items = listOf("obj.vodka"),
-        heal = 5,
-        effect = "vodka",
-    ),
-    WHISKY(
-        row = "dbrow.whisky",
-        items = listOf("obj.whisky"),
-        heal = 5,
-        effect = "whisky",
-    ),
-    GIN(
-        row = "dbrow.gin",
-        items = listOf("obj.gin"),
-        heal = 5,
-        effect = "gin",
-    ),
-    BRANDY(
-        row = "dbrow.brandy",
-        items = listOf("obj.brandy"),
-        heal = 5,
-        effect = "brandy",
-    ),
+    GROG(row = "dbrow.grog", items = listOf("obj.grog"), heal = 3, effect = "grog"),
+    VODKA(row = "dbrow.vodka", items = listOf("obj.vodka"), heal = 5, effect = "vodka"),
+    WHISKY(row = "dbrow.whisky", items = listOf("obj.whisky"), heal = 5, effect = "whisky"),
+    GIN(row = "dbrow.gin", items = listOf("obj.gin"), heal = 5, effect = "gin"),
+    BRANDY(row = "dbrow.brandy", items = listOf("obj.brandy"), heal = 5, effect = "brandy"),
     KEG_OF_BEER(
         row = "dbrow.keg_of_beer",
         items = listOf("obj.keg_of_beer"),
@@ -994,57 +568,45 @@ internal enum class FoodData(
     ),
     MOONLIGHT_MEAD(
         row = "dbrow.moonlight_mead",
-        items = listOf(
-            "obj.moonlight_mead",
-            "obj.beer_glass",
-        ),
+        items = listOf("obj.moonlight_mead", "obj.beer_glass"),
         heal = 4,
     ),
     MOONLIGHT_MEAD_KEG(
         row = "dbrow.moonlight_mead_keg",
-        items = listOf(
-            "obj.keg_moonlight_mead_4",
-            "obj.keg_moonlight_mead_3",
-            "obj.keg_moonlight_mead_2",
-            "obj.keg_moonlight_mead_1",
-            "obj.calquat_fruit_keg_empty",
-        ),
+        items =
+            listOf(
+                "obj.keg_moonlight_mead_4",
+                "obj.keg_moonlight_mead_3",
+                "obj.keg_moonlight_mead_2",
+                "obj.keg_moonlight_mead_1",
+                "obj.calquat_fruit_keg_empty",
+            ),
         heal = 4,
     ),
     MATURE_MOONLIGHT_MEAD(
         row = "dbrow.mature_moonlight_mead",
-        items = listOf(
-            "obj.mature_moonlight_mead",
-            "obj.beer_glass",
-        ),
+        items = listOf("obj.mature_moonlight_mead", "obj.beer_glass"),
         heal = 6,
     ),
     MATURE_MOONLIGHT_MEAD_KEG(
         row = "dbrow.mature_moonlight_mead_keg",
-        items = listOf(
-            "obj.keg_mature_moonlight_mead_4",
-            "obj.keg_mature_moonlight_mead_3",
-            "obj.keg_mature_moonlight_mead_2",
-            "obj.keg_mature_moonlight_mead_1",
-            "obj.calquat_fruit_keg_empty",
-        ),
+        items =
+            listOf(
+                "obj.keg_mature_moonlight_mead_4",
+                "obj.keg_mature_moonlight_mead_3",
+                "obj.keg_mature_moonlight_mead_2",
+                "obj.keg_mature_moonlight_mead_1",
+                "obj.calquat_fruit_keg_empty",
+            ),
         heal = 6,
     ),
-    FRUIT_BLAST(
-        row = "dbrow.fruit_blast",
-        items = listOf("obj.fruit_blast"),
-        heal = 9,
-    ),
+    FRUIT_BLAST(row = "dbrow.fruit_blast", items = listOf("obj.fruit_blast"), heal = 9),
     PREMADE_FRUIT_BLAST(
         row = "dbrow.premade_fruit_blast",
         items = listOf("obj.premade_fruit_blast"),
         heal = 9,
     ),
-    PINEAPPLE_PUNCH(
-        row = "dbrow.pineapple_punch",
-        items = listOf("obj.pineapple_punch"),
-        heal = 9,
-    ),
+    PINEAPPLE_PUNCH(row = "dbrow.pineapple_punch", items = listOf("obj.pineapple_punch"), heal = 9),
     PREMADE_PINEAPPLE_PUNCH(
         row = "dbrow.premade_pineapple_punch",
         items = listOf("obj.premade_pineapple_punch"),
@@ -1112,285 +674,130 @@ internal enum class FoodData(
     ),
     CAKE(
         row = "dbrow.cake",
-        items = listOf(
-            "obj.cake",
-            "obj.partial_cake",
-            "obj.cake_slice",
-        ),
+        items = listOf("obj.cake", "obj.partial_cake", "obj.cake_slice"),
         heal = 4,
-        eatDelay = listOf(
-            2,
-            2,
-            3,
-        ),
-        combatDelay = listOf(
-            3,
-            3,
-            3,
-        ),
+        eatDelay = listOf(2, 2, 3),
+        combatDelay = listOf(3, 3, 3),
     ),
     CHOCOLATE_CAKE(
         row = "dbrow.chocolate_cake",
-        items = listOf(
-            "obj.chocolate_cake",
-            "obj.partial_chocolate_cake",
-            "obj.chocolate_slice",
-        ),
+        items = listOf("obj.chocolate_cake", "obj.partial_chocolate_cake", "obj.chocolate_slice"),
         heal = 5,
-        eatDelay = listOf(
-            2,
-            2,
-            3,
-        ),
-        combatDelay = listOf(
-            3,
-            3,
-            3,
-        ),
+        eatDelay = listOf(2, 2, 3),
+        combatDelay = listOf(3, 3, 3),
     ),
     REDBERRY_PIE(
         row = "dbrow.redberry_pie",
-        items = listOf(
-            "obj.redberry_pie",
-            "obj.half_a_redberry_pie",
-            "obj.piedish",
-        ),
+        items = listOf("obj.redberry_pie", "obj.half_a_redberry_pie", "obj.piedish"),
         heal = 5,
-        eatDelay = listOf(
-            1,
-            2,
-        ),
-        combatDelay = listOf(
-            3,
-            3,
-        ),
+        eatDelay = listOf(1, 2),
+        combatDelay = listOf(3, 3),
     ),
     MEAT_PIE(
         row = "dbrow.meat_pie",
-        items = listOf(
-            "obj.meat_pie",
-            "obj.half_a_meat_pie",
-            "obj.piedish",
-        ),
+        items = listOf("obj.meat_pie", "obj.half_a_meat_pie", "obj.piedish"),
         heal = 6,
-        eatDelay = listOf(
-            1,
-            2,
-        ),
-        combatDelay = listOf(
-            3,
-            3,
-        ),
+        eatDelay = listOf(1, 2),
+        combatDelay = listOf(3, 3),
     ),
     GARDEN_PIE(
         row = "dbrow.garden_pie",
-        items = listOf(
-            "obj.garden_pie",
-            "obj.half_garden_pie",
-            "obj.piedish",
-        ),
+        items = listOf("obj.garden_pie", "obj.half_garden_pie", "obj.piedish"),
         heal = 6,
         effect = "garden_pie",
-        eatDelay = listOf(
-            1,
-            1,
-        ),
-        combatDelay = listOf(
-            3,
-            3,
-        ),
+        eatDelay = listOf(1, 1),
+        combatDelay = listOf(3, 3),
     ),
     FISH_PIE(
         row = "dbrow.fish_pie",
-        items = listOf(
-            "obj.fish_pie",
-            "obj.half_fish_pie",
-            "obj.piedish",
-        ),
+        items = listOf("obj.fish_pie", "obj.half_fish_pie", "obj.piedish"),
         heal = 6,
         effect = "fish_pie",
-        eatDelay = listOf(
-            1,
-            1,
-        ),
-        combatDelay = listOf(
-            3,
-            3,
-        ),
+        eatDelay = listOf(1, 1),
+        combatDelay = listOf(3, 3),
     ),
     APPLE_PIE(
         row = "dbrow.apple_pie",
-        items = listOf(
-            "obj.apple_pie",
-            "obj.half_an_apple_pie",
-            "obj.piedish",
-        ),
+        items = listOf("obj.apple_pie", "obj.half_an_apple_pie", "obj.piedish"),
         heal = 7,
-        eatDelay = listOf(
-            1,
-            2,
-        ),
-        combatDelay = listOf(
-            3,
-            3,
-        ),
+        eatDelay = listOf(1, 2),
+        combatDelay = listOf(3, 3),
     ),
     BOTANICAL_PIE(
         row = "dbrow.botanical_pie",
-        items = listOf(
-            "obj.botanical_pie",
-            "obj.half_botanical_pie",
-            "obj.piedish",
-        ),
+        items = listOf("obj.botanical_pie", "obj.half_botanical_pie", "obj.piedish"),
         heal = 7,
         effect = "botanical_pie",
-        eatDelay = listOf(
-            1,
-            1,
-        ),
-        combatDelay = listOf(
-            3,
-            3,
-        ),
+        eatDelay = listOf(1, 1),
+        combatDelay = listOf(3, 3),
     ),
     MUSHROOM_PIE(
         row = "dbrow.mushroom_pie",
-        items = listOf(
-            "obj.mushroom_pie",
-            "obj.half_mushroom_pie",
-            "obj.piedish",
-        ),
+        items = listOf("obj.mushroom_pie", "obj.half_mushroom_pie", "obj.piedish"),
         heal = 8,
         effect = "mushroom_pie",
-        eatDelay = listOf(
-            1,
-            1,
-        ),
-        combatDelay = listOf(
-            3,
-            3,
-        ),
+        eatDelay = listOf(1, 1),
+        combatDelay = listOf(3, 3),
     ),
     ADMIRAL_PIE(
         row = "dbrow.admiral_pie",
-        items = listOf(
-            "obj.admiral_pie",
-            "obj.half_admiral_pie",
-            "obj.piedish",
-        ),
+        items = listOf("obj.admiral_pie", "obj.half_admiral_pie", "obj.piedish"),
         heal = 8,
         effect = "admiral_pie",
-        eatDelay = listOf(
-            1,
-            1,
-        ),
-        combatDelay = listOf(
-            3,
-            3,
-        ),
+        eatDelay = listOf(1, 1),
+        combatDelay = listOf(3, 3),
     ),
     PLAIN_PIZZA(
         row = "dbrow.plain_pizza",
-        items = listOf(
-            "obj.plain_pizza",
-            "obj.half_plain_pizza",
-        ),
+        items = listOf("obj.plain_pizza", "obj.half_plain_pizza"),
         heal = 3,
-        eatDelay = listOf(
-            1,
-            2,
-        ),
+        eatDelay = listOf(1, 2),
         combatDelay = listOf(3),
     ),
     MEAT_PIZZA(
         row = "dbrow.meat_pizza",
-        items = listOf(
-            "obj.meat_pizza",
-            "obj.half_meat_pizza",
-        ),
+        items = listOf("obj.meat_pizza", "obj.half_meat_pizza"),
         heal = 3,
-        eatDelay = listOf(
-            1,
-            2,
-        ),
+        eatDelay = listOf(1, 2),
         combatDelay = listOf(3),
     ),
     ANCHOVY_PIZZA(
         row = "dbrow.anchovy_pizza",
-        items = listOf(
-            "obj.anchovie_pizza",
-            "obj.half_anchovie_pizza",
-        ),
+        items = listOf("obj.anchovie_pizza", "obj.half_anchovie_pizza"),
         heal = 2,
-        eatDelay = listOf(
-            1,
-            2,
-        ),
+        eatDelay = listOf(1, 2),
         combatDelay = listOf(3),
     ),
     DRAGONFRUIT_PIE(
         row = "dbrow.dragonfruit_pie",
-        items = listOf(
-            "obj.dragonfruit_pie",
-            "obj.half_dragonfruit_pie",
-        ),
+        items = listOf("obj.dragonfruit_pie", "obj.half_dragonfruit_pie"),
         heal = 10,
         effect = "dragonfruit_pie",
-        eatDelay = listOf(
-            1,
-            1,
-        ),
-        combatDelay = listOf(
-            3,
-            3,
-        ),
+        eatDelay = listOf(1, 1),
+        combatDelay = listOf(3, 3),
     ),
     PINEAPPLE_PIZZA(
         row = "dbrow.pineapple_pizza",
-        items = listOf(
-            "obj.pineapple_pizza",
-            "obj.half_pineapple_pizza",
-        ),
+        items = listOf("obj.pineapple_pizza", "obj.half_pineapple_pizza"),
         heal = 11,
-        eatDelay = listOf(
-            1,
-            2,
-        ),
+        eatDelay = listOf(1, 2),
         combatDelay = listOf(3),
     ),
     WILD_PIE(
         row = "dbrow.wild_pie",
-        items = listOf(
-            "obj.wild_pie",
-            "obj.half_wild_pie",
-        ),
+        items = listOf("obj.wild_pie", "obj.half_wild_pie"),
         heal = 11,
         effect = "wild_pie",
-        eatDelay = listOf(
-            1,
-            1,
-        ),
-        combatDelay = listOf(
-            3,
-            3,
-        ),
+        eatDelay = listOf(1, 1),
+        combatDelay = listOf(3, 3),
     ),
     SUMMER_PIE(
         row = "dbrow.summer_pie",
-        items = listOf(
-            "obj.summer_pie",
-            "obj.half_summer_pie",
-        ),
+        items = listOf("obj.summer_pie", "obj.half_summer_pie"),
         heal = 11,
         effect = "summer_pie",
-        eatDelay = listOf(
-            1,
-            1,
-        ),
-        combatDelay = listOf(
-            3,
-            3,
-        ),
+        eatDelay = listOf(1, 1),
+        combatDelay = listOf(3, 3),
     ),
     TOAD_CRUNCHIES(
         row = "dbrow.toad_crunchies",
@@ -1651,11 +1058,7 @@ internal enum class FoodData(
         heal = -1,
         overheal = true,
     ),
-    PURPLE_SWEETS(
-        row = "dbrow.purple_sweets",
-        items = listOf("obj.trail_sweets"),
-        heal = -1,
-    ),
+    PURPLE_SWEETS(row = "dbrow.purple_sweets", items = listOf("obj.trail_sweets"), heal = -1),
     ALUFT_FRUIT_BLAST(
         row = "dbrow.aluft_fruit_blast",
         items = listOf("obj.aluft_fruit_blast"),
@@ -1807,5 +1210,5 @@ internal enum class FoodData(
         combo = true,
         eatDelay = listOf(3),
         combatDelay = listOf(2),
-    );
+    ),
 }

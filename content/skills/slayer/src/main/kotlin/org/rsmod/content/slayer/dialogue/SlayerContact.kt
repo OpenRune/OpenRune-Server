@@ -12,7 +12,6 @@ import org.rsmod.content.slayer.dialogue.masters.KonarDialogue.gemContact
 import org.rsmod.content.slayer.dialogue.masters.KonarDialogue.npcContactMenu
 import org.rsmod.content.slayer.dialogue.masters.KrystiliaDialogue.npcContactMenu as krystiliaNpcContactMenu
 import org.rsmod.content.slayer.dialogue.masters.MortimerDialogue.npcContactMenu as mortimerNpcContactMenu
-import org.rsmod.content.slayer.dialogue.KonarSlayerDialogueHelpers
 import org.rsmod.game.entity.Player
 import org.rsmod.map.zone.ZoneKey
 
@@ -27,10 +26,12 @@ object SlayerContact {
             return
         }
 
-        val remote = SlayerMasterDialogue.remoteMaster(masterId, player) ?: run {
-            mes("Your enchanted gem doesn't respond.")
-            return
-        }
+        val remote =
+            SlayerMasterDialogue.remoteMaster(masterId, player)
+                ?: run {
+                    mes("Your enchanted gem doesn't respond.")
+                    return
+                }
 
         val nearMessage = nearMasterMessage(masterId, player, npcRepo)
         if (nearMessage != null) {
@@ -57,8 +58,10 @@ object SlayerContact {
         val master = SlayerTaskManager.getCurrentAssignedMaster(player)
         if (master?.masterId == SlayerMasters.TASK_KONAR) {
             val monster = KonarSlayerDialogueHelpers.monsterName(task)
-            val area = KonarSlayerDialogueHelpers.currentArea(player)
-                ?.let { KonarSlayerDialogueHelpers.areaShortName(it) }
+            val area =
+                KonarSlayerDialogueHelpers.currentArea(player)?.let {
+                    KonarSlayerDialogueHelpers.areaShortName(it)
+                }
             if (area != null) {
                 mes("You're assigned to bring balance to $monster in $area; you have $count to go.")
             } else {
@@ -102,12 +105,14 @@ object SlayerContact {
     }
 
     private fun nearMasterMessage(masterId: Int, player: Player, npcRepo: NpcRepository): String? {
-        val nearNpcIds = when (masterId) {
-            SlayerMasters.TASK_DURADEL -> listOf(SlayerMasters.Npc.duradel, SlayerMasters.Npc.kuradal)
-            SlayerMasters.TASK_KONAR -> listOf(SlayerMasters.Npc.konar)
-            SlayerMasters.TASK_MORTIMER -> listOf(SlayerMasters.Npc.mortimer)
-            else -> return null
-        }
+        val nearNpcIds =
+            when (masterId) {
+                SlayerMasters.TASK_DURADEL ->
+                    listOf(SlayerMasters.Npc.duradel, SlayerMasters.Npc.kuradal)
+                SlayerMasters.TASK_KONAR -> listOf(SlayerMasters.Npc.konar)
+                SlayerMasters.TASK_MORTIMER -> listOf(SlayerMasters.Npc.mortimer)
+                else -> return null
+            }
 
         if (!isNearAnyMaster(player, npcRepo, nearNpcIds)) {
             return null
@@ -123,11 +128,14 @@ object SlayerContact {
         }
     }
 
-    private fun isNearAnyMaster(player: Player, npcRepo: NpcRepository, npcIds: List<Int>): Boolean {
+    private fun isNearAnyMaster(
+        player: Player,
+        npcRepo: NpcRepository,
+        npcIds: List<Int>,
+    ): Boolean {
         val zone = ZoneKey.from(player.coords)
         return npcRepo.findAll(zone, zoneRadius = 2).any { npc ->
-            npc.id in npcIds &&
-                npc.coords.chebyshevDistance(player.coords) <= NEAR_MASTER_DISTANCE
+            npc.id in npcIds && npc.coords.chebyshevDistance(player.coords) <= NEAR_MASTER_DISTANCE
         }
     }
 }

@@ -8,9 +8,9 @@ import net.rsprot.protocol.game.incoming.buttons.IfButtonD
 import net.rsprot.protocol.game.incoming.buttons.IfButtonT
 import net.rsprot.protocol.game.incoming.buttons.IfScriptTrigger
 import net.rsprot.protocol.game.incoming.buttons.IfSubOp
-import net.rsprot.protocol.game.incoming.locs.OpLocV2
 import net.rsprot.protocol.game.incoming.locs.OpLoc6
 import net.rsprot.protocol.game.incoming.locs.OpLocT
+import net.rsprot.protocol.game.incoming.locs.OpLocV2
 import net.rsprot.protocol.game.incoming.messaging.MessagePrivate
 import net.rsprot.protocol.game.incoming.messaging.MessagePublic
 import net.rsprot.protocol.game.incoming.misc.client.MapBuildComplete
@@ -21,11 +21,11 @@ import net.rsprot.protocol.game.incoming.misc.user.CloseModal
 import net.rsprot.protocol.game.incoming.misc.user.MoveGameClick
 import net.rsprot.protocol.game.incoming.misc.user.MoveMinimapClick
 import net.rsprot.protocol.game.incoming.misc.user.SetChatFilterSettings
-import net.rsprot.protocol.game.incoming.npcs.OpNpcV2
 import net.rsprot.protocol.game.incoming.npcs.OpNpc6
 import net.rsprot.protocol.game.incoming.npcs.OpNpcT
-import net.rsprot.protocol.game.incoming.objs.OpObjV2
+import net.rsprot.protocol.game.incoming.npcs.OpNpcV2
 import net.rsprot.protocol.game.incoming.objs.OpObj6
+import net.rsprot.protocol.game.incoming.objs.OpObjV2
 import net.rsprot.protocol.game.incoming.players.OpPlayer
 import net.rsprot.protocol.game.incoming.players.OpPlayerT
 import net.rsprot.protocol.game.incoming.resumed.ResumePCountDialog
@@ -112,7 +112,7 @@ constructor(
     private val ifButtonD: IfButtonDHandler,
     private val ifButtonT: IfButtonTHandler,
     private val mapBuildComplete: MapBuildCompleteHandler,
-    private val scriptTriggerHandler : IfScriptTriggerHandler
+    private val scriptTriggerHandler: IfScriptTriggerHandler,
 ) {
     fun get(): DefaultGameMessageConsumerRepositoryProvider<Player> {
         val builder = GameMessageConsumerRepositoryBuilder<Player>()

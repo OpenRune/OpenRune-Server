@@ -10,7 +10,8 @@ import org.rsmod.plugin.scripts.ScriptContext
 
 internal class InstanceTickScript
 @Inject
-constructor(private val worldClock: MapClock, private val manager: InstanceManager) : PluginScript() {
+constructor(private val worldClock: MapClock, private val manager: InstanceManager) :
+    PluginScript() {
     override fun ScriptContext.startup() {
         onEvent<GameLifecycle.LateCycle> { manager.tickReclaim(worldClock.cycle) }
     }

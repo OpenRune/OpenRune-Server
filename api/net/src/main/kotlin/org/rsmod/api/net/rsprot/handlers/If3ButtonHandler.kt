@@ -53,8 +53,10 @@ constructor(private val eventBus: EventBus, private val protectedAccess: Protect
         val buttonOp = message.buttonOp
 
         if (player.componentClickDebug) {
-            val name = RSCM.getReverseMapping(RSCMType.COMPONENT, message.asComponent.packed)
-                .ifEmpty { "component.<unmapped:${message.asComponent.packed}>" }
+            val name =
+                RSCM.getReverseMapping(RSCMType.COMPONENT, message.asComponent.packed).ifEmpty {
+                    "component.<unmapped:${message.asComponent.packed}>"
+                }
             player.mes("[componentdebug] $name comsub=$comsub op=$buttonOp")
         }
 

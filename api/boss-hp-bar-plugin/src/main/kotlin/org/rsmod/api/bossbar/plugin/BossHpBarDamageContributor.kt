@@ -27,7 +27,8 @@ constructor(
 
     private val tracked = HashMap<Long, AttackEntry>()
 
-    private val script: BossHpBarScript get() = scriptProvider.get()
+    private val script: BossHpBarScript
+        get() = scriptProvider.get()
 
     override fun onPlayerDamageNpc(npc: Npc, source: Player, damage: Int) {
         expireStale()

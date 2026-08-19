@@ -30,10 +30,7 @@ class SwordShop @Inject constructor(private val shops: Shops) : PluginScript() {
     private suspend fun Dialogue.shopKeeper(npc: Npc) {
         chatNpc(happy, "Hello, bold adventurer! Can I interest you in some swords?")
 
-        val choice = choice2(
-            "Yes please!", 1,
-            "No, I'm okay for swords right now.", 2,
-        )
+        val choice = choice2("Yes please!", 1, "No, I'm okay for swords right now.", 2)
 
         when (choice) {
             1 -> player.openSwordShop(npc)
@@ -43,5 +40,4 @@ class SwordShop @Inject constructor(private val shops: Shops) : PluginScript() {
             }
         }
     }
-
 }

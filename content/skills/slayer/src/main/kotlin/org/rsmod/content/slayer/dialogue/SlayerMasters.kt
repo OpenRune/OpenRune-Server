@@ -2,8 +2,8 @@ package org.rsmod.content.slayer.dialogue
 
 import dev.openrune.rscm.RSCM.asRSCM
 import org.rsmod.api.player.dialogue.Dialogue
-import org.rsmod.content.slayer.slayerDuradelNotesReceived
 import org.rsmod.content.slayer.dialogue.StandardSlayerDialogue.openMain
+import org.rsmod.content.slayer.slayerDuradelNotesReceived
 
 object SlayerMasters {
 
@@ -51,7 +51,8 @@ object SlayerMasters {
                         add("About Turael..." to { dialogue.ayaAboutTurael() })
                     }
                 }
-                Npc.spria, Npc.spriaActive -> {
+                Npc.spria,
+                Npc.spriaActive -> {
                     if (WHILE_GUTHIX_SLEEPS_COMPLETE) {
                         add("About Turael..." to { dialogue.spriaAboutTurael() })
                     }
@@ -71,7 +72,12 @@ object SlayerMasters {
                 }
                 Npc.steve -> {
                     if (MONKEY_MADNESS_II_COMPLETE) {
-                        add("I see you're the new Slayer Master here." to { dialogue.steveNewMaster() })
+                        add(
+                            "I see you're the new Slayer Master here." to
+                                {
+                                    dialogue.steveNewMaster()
+                                }
+                        )
                     }
                 }
             }
@@ -88,8 +94,7 @@ object SlayerMasters {
             )
             return
         }
-        val npcId =
-            if (npc?.id == Npc.spria) Npc.spria else Npc.spriaActive
+        val npcId = if (npc?.id == Npc.spria) Npc.spria else Npc.spriaActive
         openMain(npcId, extras = extraMenuOptions(this, npcId))
     }
 

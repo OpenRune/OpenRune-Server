@@ -1,17 +1,17 @@
 package org.rsmod.content.slayer.dialogue.masters
 
 import org.rsmod.api.player.dialogue.Dialogue
-import org.rsmod.content.slayer.slayerKonarIntroComplete
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.table.slayer.SlayerAreaRow
 import org.rsmod.api.table.slayer.SlayerTaskRow
-import org.rsmod.content.slayer.dialogue.KonarSlayerDialogueHelpers
 import org.rsmod.content.slayer.SlayerInterfaces
 import org.rsmod.content.slayer.core.SlayerTaskManager
+import org.rsmod.content.slayer.dialogue.KonarSlayerDialogueHelpers
+import org.rsmod.content.slayer.dialogue.SlayerAssignmentDialogue.assignNewTask
 import org.rsmod.content.slayer.dialogue.SlayerMasterDialogue.RemoteMaster
 import org.rsmod.content.slayer.dialogue.SlayerMasterDialogue.chatMaster
-import org.rsmod.content.slayer.dialogue.SlayerAssignmentDialogue.assignNewTask
 import org.rsmod.content.slayer.rewards.SlayerRewardsPoints
+import org.rsmod.content.slayer.slayerKonarIntroComplete
 
 object KonarDialogue {
 
@@ -187,9 +187,14 @@ object KonarDialogue {
         }
     }
 
-    private suspend fun Dialogue.konarAssignedDialogue(task: SlayerTaskRow, count: Int, area: SlayerAreaRow?) {
+    private suspend fun Dialogue.konarAssignedDialogue(
+        task: SlayerTaskRow,
+        count: Int,
+        area: SlayerAreaRow?,
+    ) {
         val monster = KonarSlayerDialogueHelpers.monsterName(task)
-        val areaName = area?.let { KonarSlayerDialogueHelpers.areaShortName(it) } ?: "the assigned location"
+        val areaName =
+            area?.let { KonarSlayerDialogueHelpers.areaShortName(it) } ?: "the assigned location"
         chatNpc(neutral, "You are to bring balance to $count $monster in $areaName.")
         konarPostAssignMenu(task, area)
     }
@@ -240,7 +245,11 @@ object KonarDialogue {
         }
     }
 
-    private suspend fun Dialogue.konarTips(remote: RemoteMaster, task: SlayerTaskRow, area: SlayerAreaRow?) {
+    private suspend fun Dialogue.konarTips(
+        remote: RemoteMaster,
+        task: SlayerTaskRow,
+        area: SlayerAreaRow?,
+    ) {
         val monster = KonarSlayerDialogueHelpers.monsterName(task)
         chatMaster(remote, neutral, "You must bring balance to $monster.")
         konarWhereIsArea(remote, area)
@@ -315,9 +324,9 @@ object KonarDialogue {
         val count = access.slayerCount()
         val monster = KonarSlayerDialogueHelpers.monsterName(task)
         val areaName =
-            KonarSlayerDialogueHelpers.currentArea(access.player)
-                ?.let { KonarSlayerDialogueHelpers.areaShortName(it) }
-                ?: "the assigned location"
+            KonarSlayerDialogueHelpers.currentArea(access.player)?.let {
+                KonarSlayerDialogueHelpers.areaShortName(it)
+            } ?: "the assigned location"
         val points = SlayerRewardsPoints.getPoints(access.player)
         chatMaster(
             remote,
@@ -337,7 +346,11 @@ object KonarDialogue {
 
     private suspend fun Dialogue.gemWhereAreYou(remote: RemoteMaster) {
         chatPlayer(quiz, "Where are you?")
-        chatMaster(remote, neutral, "You'll find me on Mount Karuulm. I'll be here when you need a new purpose.")
+        chatMaster(
+            remote,
+            neutral,
+            "You'll find me on Mount Karuulm. I'll be here when you need a new purpose.",
+        )
     }
 
     private suspend fun Dialogue.gemTips(remote: RemoteMaster) {
@@ -375,7 +388,9 @@ object KonarDialogue {
                         neutral,
                         "Your zeal is to be commended. From now on, your combat level will not be considered when tasks are assigned.",
                     )
-                    mesbox("Slayer Masters will no longer take the player's combat level into account.")
+                    mesbox(
+                        "Slayer Masters will no longer take the player's combat level into account."
+                    )
                     SlayerTaskManager.setCombatCheckEnabled(access, false)
                 }
             }
@@ -394,7 +409,10 @@ object KonarDialogue {
             ) {
                 1 -> {
                     chatPlayer(neutral, "That's fine - I can handle any task.")
-                    chatNpc(neutral, "Your zeal is to be commended. Use it well when serving the balance.")
+                    chatNpc(
+                        neutral,
+                        "Your zeal is to be commended. Use it well when serving the balance.",
+                    )
                 }
                 2 -> {
                     chatPlayer(neutral, "In future, please don't give anything too tough.")

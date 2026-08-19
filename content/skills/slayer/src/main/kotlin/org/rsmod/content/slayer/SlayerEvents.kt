@@ -27,19 +27,18 @@ import org.rsmod.plugin.scripts.ScriptContext
 
 class SlayerEvents : PluginScript() {
 
-
     override fun ScriptContext.startup() {
         val npcIds = SlayerTaskManager.slayerMasterNpcs.map { it.id }.toSet()
         for (npcId in npcIds) {
             val npcName = RSCM.getReverseMapping(RSCMType.NPC, npcId)
-            onOpNpc1(npcName) { handleOp1(it.npc,npcName) }
-            onOpNpc3(npcName) { handleOp3(it.npc,npcName) }
+            onOpNpc1(npcName) { handleOp1(it.npc, npcName) }
+            onOpNpc3(npcName) { handleOp3(it.npc, npcName) }
             onOpNpc4(npcName) { handleOp4(npcName) }
             onOpNpc5(npcName) { handleOp5(npcName) }
         }
     }
 
-    private suspend fun ProtectedAccess.handleOp1(npc: Npc,internalName : String) {
+    private suspend fun ProtectedAccess.handleOp1(npc: Npc, internalName: String) {
         focusMaster(internalName)
         startDialogue(npc) {
             when (npc.id) {
@@ -47,16 +46,15 @@ class SlayerEvents : PluginScript() {
                 SlayerMasters.Npc.krystilia -> krystiliaStart()
                 SlayerMasters.Npc.konar -> konarStart()
                 SlayerMasters.Npc.mortimer -> mortimerStart()
-                SlayerMasters.Npc.spria, SlayerMasters.Npc.spriaActive -> spriaStart()
+                SlayerMasters.Npc.spria,
+                SlayerMasters.Npc.spriaActive -> spriaStart()
                 SlayerMasters.Npc.steve -> steveStart()
-                else -> openMain(npc.id,
-                    extras = SlayerMasters.extraMenuOptions(this, npc.id)
-                )
+                else -> openMain(npc.id, extras = SlayerMasters.extraMenuOptions(this, npc.id))
             }
         }
     }
 
-    private suspend fun ProtectedAccess.handleOp3(npc: Npc, internalName : String) {
+    private suspend fun ProtectedAccess.handleOp3(npc: Npc, internalName: String) {
         focusMaster(internalName)
         startDialogue(npc) {
             when (npc.id) {
@@ -64,10 +62,12 @@ class SlayerEvents : PluginScript() {
                 SlayerMasters.Npc.krystilia -> krystiliaNeedAssignment()
                 SlayerMasters.Npc.konar -> konarNeedAssignment()
                 SlayerMasters.Npc.mortimer -> mortimerNeedAssignment()
-                SlayerMasters.Npc.spria, SlayerMasters.Npc.spriaActive -> requestAssignment(
-                    if (npc.id == SlayerMasters.Npc.spria) SlayerMasters.Npc.spria
-                    else SlayerMasters.Npc.spriaActive
-                )
+                SlayerMasters.Npc.spria,
+                SlayerMasters.Npc.spriaActive ->
+                    requestAssignment(
+                        if (npc.id == SlayerMasters.Npc.spria) SlayerMasters.Npc.spria
+                        else SlayerMasters.Npc.spriaActive
+                    )
                 SlayerMasters.Npc.steve -> requestAssignment(SlayerMasters.Npc.steve)
                 else -> requestAssignment(npc.id)
             }
@@ -75,16 +75,15 @@ class SlayerEvents : PluginScript() {
     }
 
     private fun ProtectedAccess.handleOp4(npcId: String) {
-        SlayerInterfaces.openInterface(this,npcId)
+        SlayerInterfaces.openInterface(this, npcId)
     }
 
     private fun ProtectedAccess.handleOp5(npcId: String) {
-        SlayerInterfaces.openInterface(this,npcId)
+        SlayerInterfaces.openInterface(this, npcId)
     }
 
     private fun ProtectedAccess.focusMaster(internalName: String) {
         val master = SlayerTaskManager.findMasterByNpc(internalName) ?: return
         VarPlayerIntMapSetter.set(player, "varbit.slayer_master_in_focus", master.masterId)
     }
-
 }

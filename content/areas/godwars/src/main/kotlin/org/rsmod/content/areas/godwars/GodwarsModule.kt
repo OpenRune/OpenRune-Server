@@ -3,6 +3,7 @@ package org.rsmod.content.areas.godwars
 import dev.openrune.ServerCacheManager
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
+import dev.openrune.types.varp.bits
 import jakarta.inject.Inject
 import org.rsmod.api.area.checker.AreaChecker
 import org.rsmod.api.death.NpcDeathKillContext
@@ -10,7 +11,6 @@ import org.rsmod.api.death.NpcDeathKillHook
 import org.rsmod.api.player.vars.VarPlayerIntMapSetter
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
-import dev.openrune.types.varp.bits
 import org.rsmod.plugin.module.PluginModule
 import org.rsmod.utils.bits.bitMask
 

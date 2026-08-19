@@ -6,11 +6,11 @@ import dev.openrune.rscm.RSCMType
 import org.rsmod.api.bosses.spec.BossSpec
 import org.rsmod.api.bosses.validation.SpecValidator
 import org.rsmod.api.npc.access.StandardNpcAccess
+import org.rsmod.api.npc.events.NpcHitEvents
 import org.rsmod.api.script.onAiApPlayer2
 import org.rsmod.api.script.onAiOpPlayer2
 import org.rsmod.api.script.onEvent
 import org.rsmod.api.script.onModifyNpcHit
-import org.rsmod.api.npc.events.NpcHitEvents
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.game.entity.npc.NpcStateEvents
@@ -64,9 +64,7 @@ object BossCombat {
 
             val bossIds = npcTypes.map { it.id }.toSet()
             // Ensures phases and other states are reset
-            onEvent<NpcStateEvents.Respawn> {
-                if (npc.type.id in bossIds) resetBoss(npc, deps)
-            }
+            onEvent<NpcStateEvents.Respawn> { if (npc.type.id in bossIds) resetBoss(npc, deps) }
             onEvent<NpcStateEvents.Delete> {
                 if (npc.type.id in bossIds) deps.encounterRegistry.remove(npc)
             }
@@ -74,9 +72,9 @@ object BossCombat {
     }
 
     /**
-     * Clears the boss's encounter and any scripted-control overrides left on the npc from the previous
-     * fight, so a respawned boss starts clean in its first phase. The fresh [BossEncounter] is created
-     * lazily on the next combat tick.
+     * Clears the boss's encounter and any scripted-control overrides left on the npc from the
+     * previous fight, so a respawned boss starts clean in its first phase. The fresh
+     * [BossEncounter] is created lazily on the next combat tick.
      */
     private fun resetBoss(npc: Npc, deps: BossDeps) {
         deps.encounterRegistry.remove(npc)

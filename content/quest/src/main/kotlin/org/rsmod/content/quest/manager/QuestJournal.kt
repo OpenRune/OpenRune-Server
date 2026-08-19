@@ -20,20 +20,21 @@ internal fun buildCompletionJournal(
 
 enum class PreserveObjectivePlacement {
     /**
-     * Preserved condition text appears above the original objective text.
-     * The preserved line is only struck when [LineContext.ConditionHandle.strike] is used.
+     * Preserved condition text appears above the original objective text. The preserved line is
+     * only struck when [LineContext.ConditionHandle.strike] is used.
      */
     Before,
 
     /**
-     * Preserved condition text appears below the original objective text.
-     * The original objective is struck by default because it is the completed step.
+     * Preserved condition text appears below the original objective text. The original objective is
+     * struck by default because it is the completed step.
      */
     After,
 }
 
 @QuestJournalDsl
-class QuestJournalBuilder internal constructor(
+class QuestJournalBuilder
+internal constructor(
     val access: ProtectedAccess,
     val quest: Quest,
     private val isCompletion: Boolean = false,
@@ -97,9 +98,7 @@ class QuestJournalBuilder internal constructor(
 
         private var hidePredicate: (DescriptionContext.() -> Boolean)? = null
 
-        /**
-         * Hides this description when [predicate] returns true.
-         */
+        /** Hides this description when [predicate] returns true. */
         fun hideWhen(predicate: DescriptionContext.() -> Boolean) {
             hidePredicate = predicate
         }
@@ -132,7 +131,8 @@ class QuestJournalBuilder internal constructor(
     }
 
     @QuestJournalDsl
-    class LineContext internal constructor(
+    class LineContext
+    internal constructor(
         private val access: ProtectedAccess,
         private val quest: Quest,
         initialText: String,
@@ -263,25 +263,16 @@ class QuestJournalBuilder internal constructor(
             }
         }
 
-        private fun setLine(
-            value: String,
-            strike: Boolean,
-        ) {
+        private fun setLine(value: String, strike: Boolean) {
             text = value
             struck = strike
         }
 
-        private fun addPrefix(
-            value: String,
-            strike: Boolean,
-        ) {
+        private fun addPrefix(value: String, strike: Boolean) {
             prefixLines += JournalFragmentLine(value, strike)
         }
 
-        private fun addSuffix(
-            value: String,
-            strike: Boolean,
-        ) {
+        private fun addSuffix(value: String, strike: Boolean) {
             suffixLines += JournalFragmentLine(value, strike)
         }
 
@@ -302,10 +293,7 @@ class QuestJournalBuilder internal constructor(
             return parts.joinToString("\n")
         }
 
-        private fun formatLine(
-            value: String,
-            strike: Boolean,
-        ): String {
+        private fun formatLine(value: String, strike: Boolean): String {
             val shouldStrike = strike || isCompletion
             return when {
                 shouldStrike && isCompletion -> "<str>$value</str>"
@@ -314,12 +302,10 @@ class QuestJournalBuilder internal constructor(
             }
         }
 
-        private data class JournalFragmentLine(
-            val text: String,
-            val struck: Boolean,
-        )
+        private data class JournalFragmentLine(val text: String, val struck: Boolean)
 
-        class ConditionHandle internal constructor(
+        class ConditionHandle
+        internal constructor(
             private val context: LineContext,
             private val applied: Boolean,
             private val text: String,
@@ -346,8 +332,10 @@ class QuestJournalBuilder internal constructor(
                         context.strikeInitialLine()
                     }
                     when (preservePlacement) {
-                        PreserveObjectivePlacement.Before -> context.addPrefix(effectiveText, effectiveStrike)
-                        PreserveObjectivePlacement.After -> context.addSuffix(effectiveText, effectiveStrike)
+                        PreserveObjectivePlacement.Before ->
+                            context.addPrefix(effectiveText, effectiveStrike)
+                        PreserveObjectivePlacement.After ->
+                            context.addSuffix(effectiveText, effectiveStrike)
                     }
                 } else {
                     context.setLine(effectiveText, effectiveStrike)
@@ -373,9 +361,9 @@ class QuestJournalBuilder internal constructor(
              * journal line. Use [strike] to strike only the preserved line.
              *
              * With [PreserveObjectivePlacement.After], the original objective text is struck by
-             * default because it represents the completed step. With [PreserveObjectivePlacement.Before],
-             * the original objective stays active and the preserved line is only struck when
-             * [strike] is used.
+             * default because it represents the completed step. With
+             * [PreserveObjectivePlacement.Before], the original objective stays active and the
+             * preserved line is only struck when [strike] is used.
              */
             fun preserveObjective(
                 placement: PreserveObjectivePlacement = PreserveObjectivePlacement.After,
@@ -417,18 +405,14 @@ class QuestJournalBuilder internal constructor(
     }
 
     @QuestJournalDsl
-    inner class ObjectiveContext internal constructor(
-        private val lineContext: LineContext,
-    ) {
+    inner class ObjectiveContext internal constructor(private val lineContext: LineContext) {
         val access: ProtectedAccess
             get() = this@QuestJournalBuilder.access
 
         val quest: Quest
             get() = this@QuestJournalBuilder.quest
 
-        /**
-         * Hides this objective unless [predicate] returns true.
-         */
+        /** Hides this objective unless [predicate] returns true. */
         fun visibleWhen(predicate: ObjectiveContext.() -> Boolean) {
             lineContext.addVisibilityPredicate { predicate() }
         }
@@ -448,8 +432,7 @@ class QuestJournalBuilder internal constructor(
             strike: Boolean = false,
             colour: String = DEFAULT_UNUSED_COLOUR,
             finalise: Boolean = false,
-        ): LineContext.ConditionHandle =
-            lineContext.hasItem(item, text, strike, colour, finalise)
+        ): LineContext.ConditionHandle = lineContext.hasItem(item, text, strike, colour, finalise)
 
         fun stageAtLeast(
             stage: Int,
@@ -478,10 +461,7 @@ class QuestJournalBuilder internal constructor(
         ): LineContext.ConditionHandle =
             lineContext.custom(condition, text, strike, colour, finalise)
 
-        fun finalise(
-            strike: Boolean = false,
-            strikeColour: String = DEFAULT_UNUSED_COLOUR,
-        ) {
+        fun finalise(strike: Boolean = false, strikeColour: String = DEFAULT_UNUSED_COLOUR) {
             lineContext.finalise(strike)
         }
 
@@ -492,7 +472,9 @@ class QuestJournalBuilder internal constructor(
         private const val DEFAULT_UNUSED_COLOUR = ""
 
         private val COLOUR_TAG_REGEX =
-            Regex("</?(?:col(?:=[0-9A-Fa-f]{6})?|red|blue|black|green|yellow|white|purple|orange|maroon|ruby|lime|teal|cyan|str)>")
+            Regex(
+                "</?(?:col(?:=[0-9A-Fa-f]{6})?|red|blue|black|green|yellow|white|purple|orange|maroon|ruby|lime|teal|cyan|str)>"
+            )
 
         private fun stripColourTags(text: String): String = COLOUR_TAG_REGEX.replace(text, "")
     }

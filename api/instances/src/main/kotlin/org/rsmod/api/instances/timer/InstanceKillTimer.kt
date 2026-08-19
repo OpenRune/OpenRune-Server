@@ -54,11 +54,7 @@ internal object InstanceKillTimer {
                     ChatType.Engine,
                 )
 
-            else ->
-                player.mes(
-                    "Kill time: $duration.",
-                    ChatType.Engine,
-                )
+            else -> player.mes("Kill time: $duration.", ChatType.Engine)
         }
     }
 }

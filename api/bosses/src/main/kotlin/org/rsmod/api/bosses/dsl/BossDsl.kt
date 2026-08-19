@@ -322,9 +322,9 @@ class AbilityBuilder {
 
     /**
      * Telegraphed, dodgeable area attack (falling rocks/debris). See [Effect.Debris]. A [telegraph]
-     * spotanim marks each tile, then after [windup] ticks players still standing on a marked tile take
-     * [damage]. Tiles target every player within [targetRadius] of the boss plus random scatter within
-     * [scatterRadius], totaling a value drawn from [count].
+     * spotanim marks each tile, then after [windup] ticks players still standing on a marked tile
+     * take [damage]. Tiles target every player within [targetRadius] of the boss plus random
+     * scatter within [scatterRadius], totaling a value drawn from [count].
      */
     fun debris(
         telegraph: String,
@@ -370,11 +370,13 @@ class PhaseBuilder(private val name: String) {
     }
 
     fun forceEveryAttacks(min: Int, max: Int, ability: String) {
-        forceAbilities += ForcedAbility(period = 0, ability = ability, attackMin = min, attackMax = max)
+        forceAbilities +=
+            ForcedAbility(period = 0, ability = ability, attackMin = min, attackMax = max)
     }
 
     fun forceEveryAttacks(min: Int, max: Int, ability: AbilityRef) {
-        forceAbilities += ForcedAbility(period = 0, ability = ability.name, attackMin = min, attackMax = max)
+        forceAbilities +=
+            ForcedAbility(period = 0, ability = ability.name, attackMin = min, attackMax = max)
     }
 
     fun weightedSelectorRandom(

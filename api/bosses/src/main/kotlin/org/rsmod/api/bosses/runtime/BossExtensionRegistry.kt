@@ -17,7 +17,13 @@ class BossExtensionRegistry {
         handlers[name] = handler
     }
 
-    suspend fun invoke(name: String, access: StandardNpcAccess, npc: Npc, target: Player, params: Any?) {
+    suspend fun invoke(
+        name: String,
+        access: StandardNpcAccess,
+        npc: Npc,
+        target: Player,
+        params: Any?,
+    ) {
         val handler = handlers[name] ?: error("No boss extension registered: $name")
         handler.invoke(access, npc, target, params)
     }

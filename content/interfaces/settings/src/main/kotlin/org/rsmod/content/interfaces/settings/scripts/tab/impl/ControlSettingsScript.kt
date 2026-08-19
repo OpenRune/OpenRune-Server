@@ -21,7 +21,9 @@ class ControlSettingsScript
 constructor(private val protectedAccess: ProtectedAccessLauncher) : PluginScript() {
 
     override fun ScriptContext.startup() {
-        onIfOverlayButton("component.settings_side:skull_prevention") { player.toggleSkullPrevention() }
+        onIfOverlayButton("component.settings_side:skull_prevention") {
+            player.toggleSkullPrevention()
+        }
 
         onIfOverlayButton("component.settings_side:attack_priority_player_buttons") {
             player.selectPlayerPriority(it.comsub)
@@ -38,9 +40,7 @@ constructor(private val protectedAccess: ProtectedAccessLauncher) : PluginScript
 
     private fun Player.toggleSkullPrevention() {
         val row = SettingsConfigsRow.all().find { it.settingId == 206 }
-        row?.varValue?.let {
-            VarPlayerIntMapSetter.toggle(this, it)
-        }
+        row?.varValue?.let { VarPlayerIntMapSetter.toggle(this, it) }
     }
 
     private fun Player.selectPlayerPriority(comsub: Int) {
@@ -58,9 +58,7 @@ constructor(private val protectedAccess: ProtectedAccessLauncher) : PluginScript
             return
         }
         val row = SettingsConfigsRow.all().find { it.settingId == 59 }
-        row?.varValue?.let {
-            VarPlayerIntMapSetter.toggle(this, it)
-        }
+        row?.varValue?.let { VarPlayerIntMapSetter.toggle(this, it) }
     }
 
     private fun Player.selectHouseOptions() {

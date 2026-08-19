@@ -33,7 +33,9 @@ constructor(private val random: GameRandom, private val eventBus: EventBus) : Pl
             if (data.miningCape && wearingMiningCape() && random.of(100) < 5) {
                 awardBonus(ore, xp = product.experienceGranted, grantsXp = true, source)
             }
-            if (player.wearingVarrockArmourAtLeast(data.varrockArmourLevel) && random.of(100) < 10) {
+            if (
+                player.wearingVarrockArmourAtLeast(data.varrockArmourLevel) && random.of(100) < 10
+            ) {
                 awardBonus(ore, xp = product.experienceGranted, grantsXp = true, source)
             }
             if (data.celestialRing && wearingChargedCelestial() && random.of(100) < 10) {
@@ -67,6 +69,5 @@ constructor(private val random: GameRandom, private val eventBus: EventBus) : Pl
         "obj.skillcape_mining" in player.worn || "obj.skillcape_mining_trimmed" in player.worn
 
     private fun SkillingActionCompleteEvent.wearingChargedCelestial(): Boolean =
-        "obj.celestial_ring_charged" in player.worn ||
-            "obj.celestial_signet_charged" in player.worn
+        "obj.celestial_ring_charged" in player.worn || "obj.celestial_signet_charged" in player.worn
 }

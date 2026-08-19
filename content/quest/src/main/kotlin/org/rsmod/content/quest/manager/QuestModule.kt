@@ -9,4 +9,3 @@ public class QuestModule : PluginModule() {
         bindInstance<RuneMysteriesQuest>()
     }
 }
-

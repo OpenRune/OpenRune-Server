@@ -25,8 +25,7 @@ public class RateBoostChanceRollable(
     override fun chanceFor(target: Player, otherArgs: ArgMap): Double {
         val boost = boostPercent(target, otherArgs).coerceAtLeast(0)
         if (boost == 0) return chance
-        val adjustedDenom =
-            floor(denominator * 100.0 / (100.0 + boost)).toInt().coerceAtLeast(1)
+        val adjustedDenom = floor(denominator * 100.0 / (100.0 + boost)).toInt().coerceAtLeast(1)
         return numerator.toDouble() / adjustedDenom.toDouble() * 100.0
     }
 

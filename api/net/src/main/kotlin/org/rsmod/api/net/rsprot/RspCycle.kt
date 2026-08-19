@@ -224,20 +224,29 @@ class RspCycle(
         session.queue(rebuild)
     }
 
-    private fun createRegionZoneProvider(region: Region): RebuildRegionV2.RebuildRegionZoneProvider {
+    private fun createRegionZoneProvider(
+        region: Region
+    ): RebuildRegionV2.RebuildRegionZoneProvider {
         val regionZones = region.toZoneList()
-        val rebuildZones = regionZones.associateWith { zone ->
-            val copyZone = regions[zone]
-            if (copyZone == RegionZoneCopy.NULL) {
-                return@associateWith null
+        val rebuildZones =
+            regionZones.associateWith { zone ->
+                val copyZone = regions[zone]
+                if (copyZone == RegionZoneCopy.NULL) {
+                    return@associateWith null
+                }
+                ReferenceZone(copyZone.packed)
             }
-            ReferenceZone(copyZone.packed)
-        }
-        val zoneProvider = RebuildRegionV2.RebuildRegionZoneProvider { zoneX, zoneZ, level ->
-            rebuildZones[ZoneKey(zoneX, zoneZ, level)]?.let { ref ->
-                RebuildRegionZone(zoneX = ref.zoneX, zoneZ = ref.zoneZ, level = ref.level, rotation = ref.rotation)
+        val zoneProvider =
+            RebuildRegionV2.RebuildRegionZoneProvider { zoneX, zoneZ, level ->
+                rebuildZones[ZoneKey(zoneX, zoneZ, level)]?.let { ref ->
+                    RebuildRegionZone(
+                        zoneX = ref.zoneX,
+                        zoneZ = ref.zoneZ,
+                        level = ref.level,
+                        rotation = ref.rotation,
+                    )
+                }
             }
-        }
         return zoneProvider
     }
 

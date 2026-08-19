@@ -14,9 +14,9 @@ import org.rsmod.api.area.checker.AreaChecker
 import org.rsmod.api.death.NpcDeathKillContext
 import org.rsmod.api.death.NpcDeathKillHook
 import org.rsmod.api.death.prepareAdminDieTest
+import org.rsmod.api.death.preparePvpDeath
 import org.rsmod.api.instances.BossInstanceRegistry
 import org.rsmod.api.instances.InstanceArea
-import org.rsmod.api.death.preparePvpDeath
 import org.rsmod.api.invtx.invAdd
 import org.rsmod.api.invtx.invClear
 import org.rsmod.api.mechanics.toxins.impl.PlayerDisease
@@ -24,10 +24,10 @@ import org.rsmod.api.mechanics.toxins.impl.PlayerPoison
 import org.rsmod.api.mechanics.toxins.impl.PlayerVenom
 import org.rsmod.api.player.cheat.adminGodMode
 import org.rsmod.api.player.cheat.adminMaxHit
-import org.rsmod.api.player.ironman.PlayerGamemode
-import org.rsmod.api.player.ironman.setGamemode
 import org.rsmod.api.player.debug.componentClickDebug
 import org.rsmod.api.player.hook.TeleportType
+import org.rsmod.api.player.ironman.PlayerGamemode
+import org.rsmod.api.player.ironman.setGamemode
 import org.rsmod.api.player.output.MiscOutput
 import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.output.soundSynth
@@ -170,7 +170,11 @@ constructor(
                 "Usage: ::die pvm|pvp [true|false]  (second arg = in Wilderness, default false)"
         }
         onCommand("god", "Toggle god mode (invincibility)", ::god)
-        onCommand("componentdebug", "Toggle interface component click debug output", ::componentDebug)
+        onCommand(
+            "componentdebug",
+            "Toggle interface component click debug output",
+            ::componentDebug,
+        )
         onCommand("maxhit", "Toggle always max hit", ::maxhit)
         onCommand("openbank", "Open the bank", ::bank)
         onCommand("transmog", "Transmog player to NPC appearance (no args to reset)", ::transmog) {
@@ -194,11 +198,7 @@ constructor(
             invalidArgs =
                 "Use as ::testloot npcName [count] (ex: ::testloot godwars_bandos_avatar 100)"
         }
-        onCommand(
-            "instanceexit",
-            "Teleport to an instance's exit coord",
-            ::instanceExit,
-        ) {
+        onCommand("instanceexit", "Teleport to an instance's exit coord", ::instanceExit) {
             invalidArgs = "Use as ::instanceexit instanceKey (ex: ::instanceexit graardor)"
         }
     }
@@ -654,7 +654,11 @@ constructor(
     private fun bank(cheat: Cheat) =
         with(cheat) {
             protectedAccess.launch(player) {
-                ifOpenMainSidePair(main = "interface.bankmain", side = "interface.bankside", transparency = -2)
+                ifOpenMainSidePair(
+                    main = "interface.bankmain",
+                    side = "interface.bankside",
+                    transparency = -2,
+                )
             }
         }
 
@@ -681,34 +685,36 @@ constructor(
             player.mes("Transmog: '$npcName'")
         }
 
-    private fun instanceExit(cheat: Cheat) = with(cheat) {
-        val key = args.getOrNull(0)?.trim()
-        if (key.isNullOrEmpty()) {
-            player.mes("Usage: ::instanceexit instanceKey")
-            player.mes("Known keys: ${instanceRegistry.keys().sorted().joinToString(", ")}")
-            return@with
+    private fun instanceExit(cheat: Cheat) =
+        with(cheat) {
+            val key = args.getOrNull(0)?.trim()
+            if (key.isNullOrEmpty()) {
+                player.mes("Usage: ::instanceexit instanceKey")
+                player.mes("Known keys: ${instanceRegistry.keys().sorted().joinToString(", ")}")
+                return@with
+            }
+            val spec = instanceRegistry.get(key)
+            if (spec == null) {
+                player.mes("No instance found with key: '$key'")
+                player.mes("Known keys: ${instanceRegistry.keys().sorted().joinToString(", ")}")
+                return@with
+            }
+            val exit = spec.area.exitCoord()
+            if (exit == null || exit == CoordGrid.ZERO) {
+                player.mes("Instance '$key' has no exit coord configured.")
+                return@with
+            }
+            protectedAccess.launch(player) {
+                player.mes("Teleported to '$key' instance exit coord: $exit")
+                telejump(exit, TeleportType.Exempt)
+            }
         }
-        val spec = instanceRegistry.get(key)
-        if (spec == null) {
-            player.mes("No instance found with key: '$key'")
-            player.mes("Known keys: ${instanceRegistry.keys().sorted().joinToString(", ")}")
-            return@with
-        }
-        val exit = spec.area.exitCoord()
-        if (exit == null || exit == CoordGrid.ZERO) {
-            player.mes("Instance '$key' has no exit coord configured.")
-            return@with
-        }
-        protectedAccess.launch(player) {
-            player.mes("Teleported to '$key' instance exit coord: $exit")
-            telejump(exit, TeleportType.Exempt)
-        }
-    }
 
-    private fun InstanceArea.exitCoord(): CoordGrid? = when (this) {
-        is InstanceArea.Template -> exitCoord
-        is InstanceArea.CopyRegions -> exitCoord
-    }
+    private fun InstanceArea.exitCoord(): CoordGrid? =
+        when (this) {
+            is InstanceArea.Template -> exitCoord
+            is InstanceArea.CopyRegions -> exitCoord
+        }
 
     private fun openInterface(cheat: Cheat) =
         with(cheat) {

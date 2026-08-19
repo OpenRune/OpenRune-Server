@@ -8,17 +8,13 @@ internal enum class OverloadType {
 }
 
 internal object OverloadRegistry {
-    const val COX_EFFECT_TIMER: String =
-        "timer.potion_cox_overload"
+    const val COX_EFFECT_TIMER: String = "timer.potion_cox_overload"
 
-    const val COX_DAMAGE_TIMER: String =
-        "timer.potion_cox_overload_damage"
+    const val COX_DAMAGE_TIMER: String = "timer.potion_cox_overload_damage"
 
-    const val NIGHTMARE_ZONE_EFFECT_TIMER: String =
-        "timer.potion_nzone_overload"
+    const val NIGHTMARE_ZONE_EFFECT_TIMER: String = "timer.potion_nzone_overload"
 
-    const val NIGHTMARE_ZONE_DAMAGE_TIMER: String =
-        "timer.potion_nzone_overload_damage"
+    const val NIGHTMARE_ZONE_DAMAGE_TIMER: String = "timer.potion_nzone_overload_damage"
 
     private const val DURATION: Int = 500
     private const val REFRESH_INTERVAL: Int = 25
@@ -28,66 +24,44 @@ internal object OverloadRegistry {
     private const val DAMAGE_HITS: Int = 5
     private const val DAMAGE_PER_HIT: Int = 10
 
-    private const val DAMAGE_ANIMATION: String =
-        "seq.human_killerwatt_electricshock"
+    private const val DAMAGE_ANIMATION: String = "seq.human_killerwatt_electricshock"
 
-    private const val DAMAGE_SPOTANIM: String =
-        "spotanim.skeleton_killerwatt_electricshock"
+    private const val DAMAGE_SPOTANIM: String = "spotanim.skeleton_killerwatt_electricshock"
 
     private const val WARNING_MESSAGE: String =
         "The effects of overload will wear off in 10 seconds."
 
     private const val EXPIRY_MESSAGE: String =
-        "The effects of the overload have worn off, " +
-            "and you feel normal again."
+        "The effects of the overload have worn off, " + "and you feel normal again."
 
     private val COMBAT_STATS: List<String> =
-        listOf(
-            "stat.attack",
-            "stat.strength",
-            "stat.defence",
-            "stat.ranged",
-            "stat.magic",
-        )
+        listOf("stat.attack", "stat.strength", "stat.defence", "stat.ranged", "stat.magic")
 
     val cox: OverloadDefinition =
         definition(
             effectTimer = COX_EFFECT_TIMER,
             damageTimer = COX_DAMAGE_TIMER,
-            timerVarbit =
-                "varbit.raids_overload_timer",
-            tierVarbit =
-                "varbit.raids_overload_tier",
+            timerVarbit = "varbit.raids_overload_timer",
+            tierVarbit = "varbit.raids_overload_tier",
             startClientScript = 483,
             defaultBoost = null,
         )
 
     val nightmareZone: OverloadDefinition =
         definition(
-            effectTimer =
-                NIGHTMARE_ZONE_EFFECT_TIMER,
-            damageTimer =
-                NIGHTMARE_ZONE_DAMAGE_TIMER,
-            timerVarbit =
-                "varbit.nzone_overload_potion_effects",
+            effectTimer = NIGHTMARE_ZONE_EFFECT_TIMER,
+            damageTimer = NIGHTMARE_ZONE_DAMAGE_TIMER,
+            timerVarbit = "varbit.nzone_overload_potion_effects",
             tierVarbit = null,
             startClientScript = null,
-            defaultBoost =
-                PotionStatBoost(
-                    constant = 5,
-                    percent = 15,
-                ),
+            defaultBoost = PotionStatBoost(constant = 5, percent = 15),
         )
 
-    operator fun get(
-        type: OverloadType,
-    ): OverloadDefinition =
+    operator fun get(type: OverloadType): OverloadDefinition =
         when (type) {
-            OverloadType.COX ->
-                cox
+            OverloadType.COX -> cox
 
-            OverloadType.NIGHTMARE_ZONE ->
-                nightmareZone
+            OverloadType.NIGHTMARE_ZONE -> nightmareZone
         }
 
     private fun definition(

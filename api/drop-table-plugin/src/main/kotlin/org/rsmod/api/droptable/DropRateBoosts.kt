@@ -8,8 +8,7 @@ import org.rsmod.game.entity.Player
  * dropping a dependency from this API layer onto skill content.
  */
 public object DropRateBoosts {
-    @Volatile
-    public var clueScrollBoostPercent: (Player, ArgMap) -> Int = { _, _ -> 0 }
+    @Volatile public var clueScrollBoostPercent: (Player, ArgMap) -> Int = { _, _ -> 0 }
 }
 
 public fun looksLikeClueScrollObj(obj: String): Boolean {

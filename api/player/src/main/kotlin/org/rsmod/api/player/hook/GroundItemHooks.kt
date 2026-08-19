@@ -27,9 +27,7 @@ public data class GroundItemDropParams(
 )
 
 public fun interface PlayerGroundItemDropHook {
-    /**
-     * @return Adjusted drop parameters when this hook applies, or `null` to use defaults.
-     */
+    /** @return Adjusted drop parameters when this hook applies, or `null` to use defaults. */
     public fun adjustDrop(
         context: GroundItemDropContext,
         duration: Int,
@@ -38,9 +36,7 @@ public fun interface PlayerGroundItemDropHook {
 }
 
 public fun interface PlayerObjTakeValidateHook {
-    /**
-     * @return A denial message if the pickup should be blocked, or `null` if allowed.
-     */
+    /** @return A denial message if the pickup should be blocked, or `null` if allowed. */
     public fun validateTake(player: Player, obj: Obj, objType: ItemServerType): String?
 }
 

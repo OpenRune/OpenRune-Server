@@ -15,7 +15,7 @@ class MessagePublicHandler : MessageHandler<MessagePublic> {
          * TODO(trade):
          *  - When trade is implemented, trade requests should be blocked when
          *  either side has the other ignored.
-            */
+         */
 
         val publicMessage =
             PublicMessage(

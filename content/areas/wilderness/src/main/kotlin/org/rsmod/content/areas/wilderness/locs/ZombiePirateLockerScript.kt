@@ -79,7 +79,10 @@ constructor(
 
     private suspend fun ProtectedAccess.unlockBlipScroll() {
         if (player.vars[VARBIT_SCROLL] == 1) {
-            objbox(SCROLL, "You can make out some faded words on the ancient parchment, but there's nothing more for you to learn.")
+            objbox(
+                SCROLL,
+                "You can make out some faded words on the ancient parchment, but there's nothing more for you to learn.",
+            )
             return
         }
 
@@ -95,13 +98,15 @@ constructor(
                 true,
                 "Cancel",
                 false,
-                title = "This will consume the scroll."
+                title = "This will consume the scroll.",
             )
         if (!proceed) return
 
         invDel(inv, SCROLL)
-        objbox(SCROLL, "You study the scroll and become immune to the Abyssal demon and Elder Chaos druid teleportation attacks.")
+        objbox(
+            SCROLL,
+            "You study the scroll and become immune to the Abyssal demon and Elder Chaos druid teleportation attacks.",
+        )
         VarPlayerIntMapSetter.set(player, VARBIT_SCROLL, 1)
     }
-
 }

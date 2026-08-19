@@ -32,7 +32,6 @@ internal enum class CoxPotionTier(
         prayerEnhancePercent = 30,
         prayerEnhanceConstant = 13,
     ),
-
     Normal(
         clientTier = 1,
         combatConstant = 5,
@@ -48,7 +47,6 @@ internal enum class CoxPotionTier(
         prayerEnhancePercent = 40,
         prayerEnhanceConstant = 22,
     ),
-
     Strong(
         clientTier = 2,
         combatConstant = 6,
@@ -63,16 +61,10 @@ internal enum class CoxPotionTier(
         xericsAidDrainPercent = 10,
         prayerEnhancePercent = 50,
         prayerEnhanceConstant = 31,
-    ),
-    ;
+    );
 
-    fun prayerEnhanceActivations(
-        basePrayer: Int,
-    ): Int {
-        return basePrayer *
-            prayerEnhancePercent /
-            100 +
-            prayerEnhanceConstant
+    fun prayerEnhanceActivations(basePrayer: Int): Int {
+        return basePrayer * prayerEnhancePercent / 100 + prayerEnhanceConstant
     }
 
     companion object {
@@ -86,17 +78,14 @@ internal enum class CoxPotionTier(
                     error(
                         "Unsupported Chambers of Xeric potion " +
                             "variant '${effect.variant}' for " +
-                            "'${effect.key}'.",
+                            "'${effect.key}'."
                     )
             }
 
-        private const val VARIANT_WEAK: String =
-            "weak"
+        private const val VARIANT_WEAK: String = "weak"
 
-        private const val VARIANT_NORMAL: String =
-            "normal"
+        private const val VARIANT_NORMAL: String = "normal"
 
-        private const val VARIANT_STRONG: String =
-            "strong"
+        private const val VARIANT_STRONG: String = "strong"
     }
 }

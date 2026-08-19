@@ -30,12 +30,15 @@ data class SlayerMasterProfile(
 )
 
 object SlayerMasterProfiles {
-    private val chaeldarRedirect = HighCombatRedirect(minimumCombat = 70, suggestedMaster = "Chaeldar", location = "Zanaris")
+    private val chaeldarRedirect =
+        HighCombatRedirect(minimumCombat = 70, suggestedMaster = "Chaeldar", location = "Zanaris")
 
-    private val vannakaRedirect = HighCombatRedirect(minimumCombat = 40, suggestedMaster = "Vannaka", location = "Edgeville")
+    private val vannakaRedirect =
+        HighCombatRedirect(minimumCombat = 40, suggestedMaster = "Vannaka", location = "Edgeville")
 
     private val profilesByNpcId: Map<Int, SlayerMasterProfile> =
-        mapOf(SlayerMasters.Npc.turael to
+        mapOf(
+            SlayerMasters.Npc.turael to
                 SlayerMasterProfile(
                     npcId = SlayerMasters.Npc.turael,
                     supportsTaskSkip = true,

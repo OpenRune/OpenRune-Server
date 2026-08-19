@@ -1,6 +1,8 @@
 package org.rsmod.content.other.mapclock
 
 import jakarta.inject.Inject
+import java.time.Instant
+import java.time.temporal.ChronoUnit
 import org.rsmod.api.player.vars.intVarBit
 import org.rsmod.api.player.vars.intVarp
 import org.rsmod.api.script.onPlayerLogin
@@ -9,8 +11,6 @@ import org.rsmod.game.MapClock
 import org.rsmod.game.entity.Player
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
-import java.time.Instant
-import java.time.temporal.ChronoUnit
 
 class MapClockScript @Inject constructor(private val clock: MapClock) : PluginScript() {
     private var Player.playtime by intVarp("varp.playtime")

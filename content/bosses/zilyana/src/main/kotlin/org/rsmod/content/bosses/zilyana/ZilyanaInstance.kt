@@ -12,9 +12,8 @@ import org.rsmod.api.script.onOpLoc3
 import org.rsmod.map.CoordGrid
 import org.rsmod.plugin.scripts.ScriptContext
 
-class ZilyanaInstance
-@Inject
-constructor(registry: BossInstanceRegistry) : InstanceScript(registry) {
+class ZilyanaInstance @Inject constructor(registry: BossInstanceRegistry) :
+    InstanceScript(registry) {
 
     override fun settingsRow(): String = "dbrow.instance_zilyana"
 

@@ -146,14 +146,11 @@ fun Player.writeCentralPrivateMessage(
             worldMessageCounter = counter,
             chatCrownType = push.senderCrown,
             message = push.message,
-        ),
+        )
     )
 }
 
-private fun formatWorldName(
-    worldId: Int,
-    serverConfig: ServerConfig? = null,
-): String {
+private fun formatWorldName(worldId: Int, serverConfig: ServerConfig? = null): String {
     val label = if (worldId > 300) worldId - 300 else worldId
     val prefix = serverConfig?.name ?: "OpenRune"
     return "$prefix $label"

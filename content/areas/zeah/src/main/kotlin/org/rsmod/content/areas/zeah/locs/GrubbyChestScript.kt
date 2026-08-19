@@ -22,10 +22,10 @@ private const val CHEST_LOC = "loc.hosdun_grubby_chest"
 private const val VARBIT_CHEST = "varbit.hosdun_chest_status"
 private const val VARP_KC = "varp.kc_grubby_chest"
 
-class GrubbyChestScript @Inject constructor(
-    private val objRepo: ObjRepository,
-    private val dropRegistry: DropTableRegistry,
-) : PluginScript() {
+class GrubbyChestScript
+@Inject
+constructor(private val objRepo: ObjRepository, private val dropRegistry: DropTableRegistry) :
+    PluginScript() {
 
     override fun ScriptContext.startup() {
         onOpLoc1(CHEST_LOC) { openChest() }

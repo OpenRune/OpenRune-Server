@@ -12,24 +12,14 @@ import org.rsmod.game.entity.timerAt
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
-public class PlayerPoisonTimerScript
-@Inject
-constructor(
-    private val worldClock: MapClock,
-) : PluginScript() {
+public class PlayerPoisonTimerScript @Inject constructor(private val worldClock: MapClock) :
+    PluginScript() {
     override fun ScriptContext.startup() {
         onPlayerLogin {
-            val clock =
-                worldClock.cycle
+            val clock = worldClock.cycle
 
-            if (
-                player.vars[
-                    "varp.poison_severity"
-                ] > 0
-            ) {
-                player.clearTimer(
-                    "timer.player_poison",
-                )
+            if (player.vars["varp.poison_severity"] > 0) {
+                player.clearTimer("timer.player_poison")
 
                 player.timerAt(
                     timer = "timer.player_poison",
@@ -38,14 +28,8 @@ constructor(
                 )
             }
 
-            if (
-                player.vars[
-                    "varp.venom_strikes"
-                ] > 0
-            ) {
-                player.clearTimer(
-                    "timer.player_venom",
-                )
+            if (player.vars["varp.venom_strikes"] > 0) {
+                player.clearTimer("timer.player_venom")
 
                 player.timerAt(
                     timer = "timer.player_venom",
@@ -54,49 +38,19 @@ constructor(
                 )
             }
 
-            PlayerDisease.rearmTimerAfterLogin(
-                player = player,
-                clock = clock,
-            )
+            PlayerDisease.rearmTimerAfterLogin(player = player, clock = clock)
 
-            ToxinImmunity.onLogin(
-                player = player,
-                clock = clock,
-            )
+            ToxinImmunity.onLogin(player = player, clock = clock)
         }
 
-        onPlayerLogout {
-            ToxinImmunity.onLogout(player)
-        }
+        onPlayerLogout { ToxinImmunity.onLogout(player) }
 
-        onPlayerTimer(
-            "timer.player_poison",
-        ) {
-            PlayerPoison.onPoisonTimerTick(
-                player,
-            )
-        }
+        onPlayerTimer("timer.player_poison") { PlayerPoison.onPoisonTimerTick(player) }
 
-        onPlayerTimer(
-            "timer.player_venom",
-        ) {
-            PlayerVenom.onVenomTimerTick(
-                player,
-            )
-        }
+        onPlayerTimer("timer.player_venom") { PlayerVenom.onVenomTimerTick(player) }
 
-        onPlayerTimer(
-            "timer.player_disease",
-        ) {
-            PlayerDisease.onDiseaseTimerTick(
-                player,
-            )
-        }
+        onPlayerTimer("timer.player_disease") { PlayerDisease.onDiseaseTimerTick(player) }
 
-        onPlayerTimer(
-            ToxinImmunity.TIMER,
-        ) {
-            ToxinImmunity.onTimer(player)
-        }
+        onPlayerTimer(ToxinImmunity.TIMER) { ToxinImmunity.onTimer(player) }
     }
 }

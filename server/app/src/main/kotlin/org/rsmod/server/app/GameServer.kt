@@ -97,7 +97,7 @@ class GameServer(private val skipTypeVerificationOverride: Boolean? = null) :
             val injector =
                 timedPhase(phases, "guice") {
                     Guice.createInjector(
-                        Modules.combine(GameServerModule, *pluginModules.toTypedArray()),
+                        Modules.combine(GameServerModule, *pluginModules.toTypedArray())
                     )
                 }
             prepareGame(injector, phases)
@@ -117,7 +117,8 @@ class GameServer(private val skipTypeVerificationOverride: Boolean? = null) :
 
     private fun prepareGame(injector: Injector, phases: MutableMap<String, Duration>?) {
         serverConfig = timedPhase(phases, "config") { loadConfig(injector) }
-        val or2cache = timedPhase(phases, "cache") { ServerCacheManager.init(serverConfig.revision) }
+        val or2cache =
+            timedPhase(phases, "cache") { ServerCacheManager.init(serverConfig.revision) }
         timedPhase(phases, "map") { loadMap(or2cache, injector) }
         if (phases == null) {
             loadScripts(injector)
@@ -148,15 +149,9 @@ class GameServer(private val skipTypeVerificationOverride: Boolean? = null) :
                     val type =
                         ServerCacheManager.getItem(def.id)
                             ?: error("Invalid obj type: $def ($coords)")
-                    val entity =
-                        ObjEntity(type.id, count = def.count, scope = ObjScope.Perm.id)
+                    val entity = ObjEntity(type.id, count = def.count, scope = ObjScope.Perm.id)
                     val obj =
-                        Obj(
-                            coords,
-                            entity,
-                            creationCycle = 0,
-                            receiverId = Obj.NULL_OBSERVER_ID,
-                        )
+                        Obj(coords, entity, creationCycle = 0, receiverId = Obj.NULL_OBSERVER_ID)
                     objRepo.addDelayed(obj, spawnDelay = 0, duration = Int.MAX_VALUE)
                 }
             }
@@ -206,12 +201,11 @@ class GameServer(private val skipTypeVerificationOverride: Boolean? = null) :
 
         lateinit var shutdownHook: Thread
         runBlocking {
-            val scriptsDeferred = async(Dispatchers.Default) {
-                timedPhase(phases, "scripts") { loadScripts(injector) }
-            }
-            timedPhase(phases, "services-start") {
-                shutdownHook = bootstrap.startupUntilReady()
-            }
+            val scriptsDeferred =
+                async(Dispatchers.Default) {
+                    timedPhase(phases, "scripts") { loadScripts(injector) }
+                }
+            timedPhase(phases, "services-start") { shutdownHook = bootstrap.startupUntilReady() }
             scriptsDeferred.await()
         }
 

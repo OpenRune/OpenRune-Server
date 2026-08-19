@@ -12,9 +12,7 @@ import org.rsmod.api.script.onOpLoc3
 import org.rsmod.map.CoordGrid
 import org.rsmod.plugin.scripts.ScriptContext
 
-class KrilInstance
-@Inject
-constructor(registry: BossInstanceRegistry) : InstanceScript(registry) {
+class KrilInstance @Inject constructor(registry: BossInstanceRegistry) : InstanceScript(registry) {
 
     override fun settingsRow(): String = "dbrow.instance_kril"
 
@@ -83,18 +81,9 @@ constructor(registry: BossInstanceRegistry) : InstanceScript(registry) {
                 npcSpawns =
                     listOf(
                         InstanceNpc("npc.godwars_zamorak_avatar", CoordGrid(2925, 5322, 2)),
-                        InstanceNpc(
-                            "npc.godwars_ancient_black_demon",
-                            CoordGrid(2921, 5319, 2),
-                        ),
-                        InstanceNpc(
-                            "npc.godwars_ancient_greater_demon",
-                            CoordGrid(2932, 5328, 2),
-                        ),
-                        InstanceNpc(
-                            "npc.godwars_ancient_lesser_demon",
-                            CoordGrid(2919, 5327, 2),
-                        ),
+                        InstanceNpc("npc.godwars_ancient_black_demon", CoordGrid(2921, 5319, 2)),
+                        InstanceNpc("npc.godwars_ancient_greater_demon", CoordGrid(2932, 5328, 2)),
+                        InstanceNpc("npc.godwars_ancient_lesser_demon", CoordGrid(2919, 5327, 2)),
                     ),
             )
     }

@@ -13,32 +13,19 @@ class KebabEffect {
      *
      * This method does not alter stats or send messages.
      */
-    fun prepare(
-        access: ProtectedAccess,
-    ): KebabOutcome {
+    fun prepare(access: ProtectedAccess): KebabOutcome {
         return with(access) {
-            val baseHitpoints =
-                player.baseHitpointsLvl
+            val baseHitpoints = player.baseHitpointsLvl
 
-            when (
-                random.of(
-                    minInclusive = 0,
-                    maxInclusive = OUTCOME_ROLL_MAX,
-                )
-            ) {
+            when (random.of(minInclusive = 0, maxInclusive = OUTCOME_ROLL_MAX)) {
                 OUTCOME_AMAZING ->
                     KebabOutcome(
                         type = KebabOutcomeType.Amazing,
                         healAmount =
                             AMAZING_HEAL_BASE +
-                                ceilPercent(
-                                    value = baseHitpoints,
-                                    percent =
-                                        AMAZING_HEAL_PERCENT,
-                                ),
+                                ceilPercent(value = baseHitpoints, percent = AMAZING_HEAL_PERCENT),
                         message =
-                            "Wow, that was an amazing kebab! " +
-                                "You feel really invigorated.",
+                            "Wow, that was an amazing kebab! " + "You feel really invigorated.",
                         showGenericHealMessage = false,
                     )
 
@@ -47,14 +34,8 @@ class KebabEffect {
                         type = KebabOutcomeType.Good,
                         healAmount =
                             GOOD_HEAL_BASE +
-                                ceilPercent(
-                                    value = baseHitpoints,
-                                    percent =
-                                        GOOD_HEAL_PERCENT,
-                                ),
-                        message =
-                            "That was a good kebab. " +
-                                "You feel a lot better.",
+                                ceilPercent(value = baseHitpoints, percent = GOOD_HEAL_PERCENT),
+                        message = "That was a good kebab. " + "You feel a lot better.",
                         showGenericHealMessage = false,
                     )
 
@@ -63,12 +44,7 @@ class KebabEffect {
                         type = KebabOutcomeType.Normal,
                         healAmount =
                             NORMAL_HEAL_BASE +
-                                ceilPercent(
-                                    value = baseHitpoints,
-                                    percent =
-                                        NORMAL_HEAL_PERCENT,
-                                ),
-
+                                ceilPercent(value = baseHitpoints, percent = NORMAL_HEAL_PERCENT),
                         showGenericHealMessage = true,
                     )
 
@@ -76,56 +52,40 @@ class KebabEffect {
                     KebabOutcome(
                         type = KebabOutcomeType.Nothing,
                         healAmount = 0,
-                        message =
-                            "That kebab didn't seem to do a lot.",
+                        message = "That kebab didn't seem to do a lot.",
                         showGenericHealMessage = false,
                     )
 
                 OUTCOME_DODGY ->
                     prepareDrainOutcome(
                         type = KebabOutcomeType.Dodgy,
-                        message =
-                            "That tasted a bit dodgy. " +
-                                "You feel a bit ill.",
+                        message = "That tasted a bit dodgy. " + "You feel a bit ill.",
                     )
 
                 OUTCOME_VERY_DODGY ->
                     prepareDrainOutcome(
                         type = KebabOutcomeType.VeryDodgy,
-                        message =
-                            "That tasted very dodgy. " +
-                                "You feel very ill.",
+                        message = "That tasted very dodgy. " + "You feel very ill.",
                     )
 
-                else ->
-                    error("Invalid kebab outcome roll.")
+                else -> error("Invalid kebab outcome roll.")
             }
         }
     }
 
-    /**
-     * Applies stat changes only after the kebab was removed
-     * successfully from the inventory.
-     */
-    fun apply(
-        access: ProtectedAccess,
-        outcome: KebabOutcome,
-    ) {
+    /** Applies stat changes only after the kebab was removed successfully from the inventory. */
+    fun apply(access: ProtectedAccess, outcome: KebabOutcome) {
         with(access) {
             when (outcome.type) {
-                KebabOutcomeType.Amazing ->
-                    boostMeleeStats()
+                KebabOutcomeType.Amazing -> boostMeleeStats()
 
-                KebabOutcomeType.Dodgy ->
-                    applyDodgyOutcome(outcome)
+                KebabOutcomeType.Dodgy -> applyDodgyOutcome(outcome)
 
-                KebabOutcomeType.VeryDodgy ->
-                    applyVeryDodgyOutcome(outcome)
+                KebabOutcomeType.VeryDodgy -> applyVeryDodgyOutcome(outcome)
 
                 KebabOutcomeType.Good,
                 KebabOutcomeType.Normal,
-                KebabOutcomeType.Nothing,
-                    -> Unit
+                KebabOutcomeType.Nothing -> Unit
             }
         }
     }
@@ -135,8 +95,7 @@ class KebabEffect {
         message: String,
     ): KebabOutcome {
         val availableStats =
-            ServerCacheManager
-                .getStats()
+            ServerCacheManager.getStats()
                 .values
                 .asSequence()
                 .map { stat -> stat.internalName }
@@ -149,13 +108,7 @@ class KebabEffect {
         }
 
         val randomStat =
-            availableStats[
-                random.of(
-                    minInclusive = 0,
-                    maxInclusive =
-                        availableStats.lastIndex,
-                )
-            ]
+            availableStats[random.of(minInclusive = 0, maxInclusive = availableStats.lastIndex)]
 
         return KebabOutcome(
             type = type,
@@ -164,113 +117,64 @@ class KebabEffect {
             showGenericHealMessage = false,
             randomStat = randomStat,
 
-             // OSRS does not apply the random drain or its follow-up
-             // message when the selected stat is level 2 or lower.
+            // OSRS does not apply the random drain or its follow-up
+            // message when the selected stat is level 2 or lower.
 
-            randomStatWasDrainable =
-                player.stat(randomStat) > MINIMUM_DRAIN_LEVEL,
+            randomStatWasDrainable = player.stat(randomStat) > MINIMUM_DRAIN_LEVEL,
         )
     }
 
     private fun ProtectedAccess.boostMeleeStats() {
         MELEE_STATS.forEach { stat ->
-            statBoost(
-                stat = stat,
-                constant = AMAZING_MELEE_BOOST,
-                percent = 0,
-            )
+            statBoost(stat = stat, constant = AMAZING_MELEE_BOOST, percent = 0)
         }
     }
 
-    private fun ProtectedAccess.applyDodgyOutcome(
-        outcome: KebabOutcome,
-    ) {
-        val randomStat =
-            outcome.randomStat
-                ?: error(
-                    "Dodgy kebab outcome has no random stat.",
-                )
+    private fun ProtectedAccess.applyDodgyOutcome(outcome: KebabOutcome) {
+        val randomStat = outcome.randomStat ?: error("Dodgy kebab outcome has no random stat.")
 
         if (!outcome.randomStatWasDrainable) {
             return
         }
 
-        statDrain(
-            stat = randomStat,
-            constant = DODGY_RANDOM_DRAIN,
-            percent = 0,
-        )
+        statDrain(stat = randomStat, constant = DODGY_RANDOM_DRAIN, percent = 0)
 
-        mes(
-            "Eating the kebab has damaged your " +
-                "${randomStat.displayName()} stat.",
-        )
+        mes("Eating the kebab has damaged your " + "${randomStat.displayName()} stat.")
     }
 
-    private fun ProtectedAccess.applyVeryDodgyOutcome(
-        outcome: KebabOutcome,
-    ) {
+    private fun ProtectedAccess.applyVeryDodgyOutcome(outcome: KebabOutcome) {
 
-         // Individual melee stats at level 2 or lower are not
-         // reduced.
+        // Individual melee stats at level 2 or lower are not
+        // reduced.
 
         MELEE_STATS.forEach { stat ->
             if (player.stat(stat) > MINIMUM_DRAIN_LEVEL) {
-                statDrain(
-                    stat = stat,
-                    constant = VERY_DODGY_MELEE_DRAIN,
-                    percent = 0,
-                )
+                statDrain(stat = stat, constant = VERY_DODGY_MELEE_DRAIN, percent = 0)
             }
         }
 
-        val randomStat =
-            outcome.randomStat
-                ?: error(
-                    "Very-dodgy kebab outcome has no random stat.",
-                )
+        val randomStat = outcome.randomStat ?: error("Very-dodgy kebab outcome has no random stat.")
 
         if (!outcome.randomStatWasDrainable) {
             return
         }
 
-         // The random stat may also be a melee stat. In that case,
-         // both drains intentionally apply.
+        // The random stat may also be a melee stat. In that case,
+        // both drains intentionally apply.
 
-        statDrain(
-            stat = randomStat,
-            constant = VERY_DODGY_RANDOM_DRAIN,
-            percent = 0,
-        )
+        statDrain(stat = randomStat, constant = VERY_DODGY_RANDOM_DRAIN, percent = 0)
 
-        mes(
-            "Eating the kebab has done damage to " +
-                "some of your stats.",
-        )
+        mes("Eating the kebab has done damage to " + "some of your stats.")
     }
 
-    private fun ceilPercent(
-        value: Int,
-        percent: Int,
-    ): Int {
-        return (
-            value * percent +
-                PERCENT_ROUNDING_OFFSET
-            ) / PERCENT_DIVISOR
+    private fun ceilPercent(value: Int, percent: Int): Int {
+        return (value * percent + PERCENT_ROUNDING_OFFSET) / PERCENT_DIVISOR
     }
 
     private fun String.displayName(): String {
-        return substringAfter(
-            delimiter = "stat.",
-            missingDelimiterValue = this,
-        )
-            .replace(
-                oldChar = '_',
-                newChar = ' ',
-            )
-            .replaceFirstChar { character ->
-                character.uppercase()
-            }
+        return substringAfter(delimiter = "stat.", missingDelimiterValue = this)
+            .replace(oldChar = '_', newChar = ' ')
+            .replaceFirstChar { character -> character.uppercase() }
     }
 
     private companion object {
@@ -314,15 +218,9 @@ class KebabEffect {
 
         const val PERCENT_ROUNDING_OFFSET: Int = PERCENT_DIVISOR - 1
 
-        const val HITPOINTS: String =
-            "stat.hitpoints"
+        const val HITPOINTS: String = "stat.hitpoints"
 
-        val MELEE_STATS: List<String> =
-            listOf(
-                "stat.attack",
-                "stat.strength",
-                "stat.defence",
-            )
+        val MELEE_STATS: List<String> = listOf("stat.attack", "stat.strength", "stat.defence")
     }
 }
 

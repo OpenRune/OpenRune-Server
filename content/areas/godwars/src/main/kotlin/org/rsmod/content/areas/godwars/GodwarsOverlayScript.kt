@@ -15,12 +15,11 @@ class GodwarsOverlayScript @Inject constructor(private val eventBus: EventBus) :
             player.ifOpenOverlay(
                 "interface.godwars_overlay",
                 "component.toplevel_osrs_stretch:overlay_hud",
-                eventBus
+                eventBus,
             )
         }
         onAreaExit("area.godwars_dungeon") {
             player.ifCloseOverlay("interface.godwars_overlay", eventBus)
         }
     }
-
 }

@@ -10,17 +10,15 @@ import dev.openrune.types.HuntModeType
 import dev.openrune.types.MoveRestrict
 import dev.openrune.types.NpcMode
 import dev.openrune.types.NpcServerType
-import dev.openrune.types.SequenceServerType
-import dev.openrune.types.aconverted.SpotanimType
 import dev.openrune.util.BlockWalk
 import org.rsmod.annotations.InternalApi
+import org.rsmod.game.damage.DamageContributions
 import org.rsmod.game.entity.npc.NpcInfoProtocol
 import org.rsmod.game.entity.npc.NpcUid
 import org.rsmod.game.entity.npc.OpVisibility
 import org.rsmod.game.entity.player.PlayerUid
 import org.rsmod.game.entity.util.EntityFaceTarget
 import org.rsmod.game.entity.util.PathingEntityCommon
-import org.rsmod.game.damage.DamageContributions
 import org.rsmod.game.headbar.Headbar
 import org.rsmod.game.hero.HeroPoints
 import org.rsmod.game.hit.Hitmark
@@ -49,14 +47,18 @@ public class Npc(
         this.spawnCoords = coords
     }
 
-    public constructor(type: String, coords: CoordGrid) : this(
+    public constructor(
+        type: String,
+        coords: CoordGrid,
+    ) : this(
         requireNotNull(ServerCacheManager.getNpc(type.asRSCM(RSCMType.NPC))) {
             "NPC type '$type' not found in cache"
-        },
+        }
     ) {
         this.coords = coords
         this.spawnCoords = coords
     }
+
     override val blockWalkCollisionFlag: Int?
         get() = blockWalk.collisionFlag
 
@@ -101,8 +103,8 @@ public class Npc(
     public var movementLocked: Boolean = false
 
     /**
-     * Used for temporarily overwriting a Npc's ap-range, i.e. the distance at which it can
-     * perform a ranged attack.
+     * Used for temporarily overwriting a Npc's ap-range, i.e. the distance at which it can perform
+     * a ranged attack.
      */
     public var apRangeOverride: Int? = null
 
@@ -174,9 +176,7 @@ public class Npc(
 
     public var actionDelay: Int = -1
 
-    /**
-     * A persistent idle/stand animation override.
-     */
+    /** A persistent idle/stand animation override. */
     public var idleSequence: EntitySeq = EntitySeq.NULL
         private set
 
@@ -242,8 +242,8 @@ public class Npc(
     }
 
     /**
-     * Walks to [dest] and runs [onArrival] once the route completes (the npc reaches the destination
-     * or the route otherwise ends).
+     * Walks to [dest] and runs [onArrival] once the route completes (the npc reaches the
+     * destination or the route otherwise ends).
      */
     public fun walk(dest: CoordGrid, onArrival: () -> Unit) {
         walk(dest)
@@ -251,8 +251,8 @@ public class Npc(
     }
 
     /**
-     * Walks the npc along a precomputed list of [waypoints] (e.g. the output of a pathfinder), running
-     * [onArrival] once the route completes.
+     * Walks the npc along a precomputed list of [waypoints] (e.g. the output of a pathfinder),
+     * running [onArrival] once the route completes.
      */
     public fun walk(waypoints: List<CoordGrid>, onArrival: (() -> Unit)? = null) {
         abortRoute()
@@ -426,9 +426,7 @@ public class Npc(
         infoProtocol.toggleOps(OpVisibility.hideAll())
     }
 
-    /**
-     * The square this npc's facing is pinned to, or [CoordGrid.NULL] when facing is not locked.
-     */
+    /** The square this npc's facing is pinned to, or [CoordGrid.NULL] when facing is not locked. */
     public var faceLockSquare: CoordGrid = CoordGrid.NULL
         private set
 
@@ -638,7 +636,8 @@ public class Npc(
      */
     public fun <T : Any> param(param: TypedParamType<T>): T = type.param(param)
 
-    public fun isContentType(content: String): Boolean = type.contentGroup == content.asRSCM(RSCMType.CONTENT)
+    public fun isContentType(content: String): Boolean =
+        type.contentGroup == content.asRSCM(RSCMType.CONTENT)
 
     override fun toString(): String = "Npc(uid=$uid, slot=$slotId, coords=$coords, type=$type)"
 }

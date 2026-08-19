@@ -109,8 +109,9 @@ public class Inventory(public val type: InventoryServerType, public val objs: Ar
 
     /** Slots-only count; ignores [InvVirtualStorage]. */
     public fun physicalCount(internal: String): Int {
-        val objType = ServerCacheManager.getItem(internal.asRSCM(RSCMType.OBJ))
-            ?: error("Unable to find item: $internal")
+        val objType =
+            ServerCacheManager.getItem(internal.asRSCM(RSCMType.OBJ))
+                ?: error("Unable to find item: $internal")
 
         val obj = objs.firstOrNull { it?.id == objType.id } ?: return 0
         val singleStack = type.stack == InvStackType.Always || objType.isStackable
@@ -153,8 +154,9 @@ public class Inventory(public val type: InventoryServerType, public val objs: Ar
         @OptIn(UncheckedType::class)
         public fun create(internal: String): Inventory {
 
-            val type = ServerCacheManager.getInventory(internal.asRSCM(RSCMType.INV))
-                ?: error("Unable to find inventory: $internal")
+            val type =
+                ServerCacheManager.getInventory(internal.asRSCM(RSCMType.INV))
+                    ?: error("Unable to find inventory: $internal")
 
             val objs = arrayOfNulls<InvObj>(type.size)
             if (type.stock.isNotEmpty()) {

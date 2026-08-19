@@ -12,12 +12,15 @@ internal object InstanceTiming {
     fun warningThresholds(totalTicks: Int): List<Int> {
         if (totalTicks <= 0) return emptyList()
         return buildList {
-            add(totalTicks / 2)
-            add(totalTicks / 4)
-            add(totalTicks / 8)
-            add(INSTANCE_TICKS_PER_MINUTE)
-            add(INSTANCE_TICKS_PER_MINUTE / 2)
-        }.filter { it in 1..totalTicks }.distinct().sortedDescending()
+                add(totalTicks / 2)
+                add(totalTicks / 4)
+                add(totalTicks / 8)
+                add(INSTANCE_TICKS_PER_MINUTE)
+                add(INSTANCE_TICKS_PER_MINUTE / 2)
+            }
+            .filter { it in 1..totalTicks }
+            .distinct()
+            .sortedDescending()
     }
 
     fun notifyThresholds(
@@ -27,10 +30,12 @@ internal object InstanceTiming {
         players: Iterable<Player>,
         message: (String) -> String,
     ) {
-        warningThresholds(totalTicks).filter { remainingTicks <= it && sent.add(it) }.forEach { threshold ->
-            val text = message(formatRemaining(threshold))
-            players.forEach { it.mes(text, ChatType.Engine) }
-        }
+        warningThresholds(totalTicks)
+            .filter { remainingTicks <= it && sent.add(it) }
+            .forEach { threshold ->
+                val text = message(formatRemaining(threshold))
+                players.forEach { it.mes(text, ChatType.Engine) }
+            }
     }
 
     fun formatRemaining(ticks: Int): String {
@@ -43,7 +48,6 @@ internal object InstanceTiming {
         return "$seconds second${if (seconds == 1) "" else "s"}"
     }
 
-    fun playersIn(session: InstanceSession, playerList: PlayerList) = session.occupants.mapNotNull { uuid ->
-            playerList.firstOrNull { it.uuid == uuid }
-        }
+    fun playersIn(session: InstanceSession, playerList: PlayerList) =
+        session.occupants.mapNotNull { uuid -> playerList.firstOrNull { it.uuid == uuid } }
 }

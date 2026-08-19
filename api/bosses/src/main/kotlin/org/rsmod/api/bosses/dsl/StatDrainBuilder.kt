@@ -29,9 +29,16 @@ class StatDrainBuilder internal constructor() {
 
     private data class Line(val stat: String, val amount: Int?, val chance: Int?, val outOf: Int?)
 
-    /** Named overrides, then `+stat("…")` to commit, e.g. `+stat("stat.attack", amount = 4, chance = 1, outOf = 2)`. */
-    fun stat(stat: String, amount: Int? = null, chance: Int? = null, outOf: Int? = null): PendingStatDrainStat =
-        PendingStatDrainStat(this, stat, amount, chance, outOf)
+    /**
+     * Named overrides, then `+stat("…")` to commit, e.g. `+stat("stat.attack", amount = 4, chance =
+     * 1, outOf = 2)`.
+     */
+    fun stat(
+        stat: String,
+        amount: Int? = null,
+        chance: Int? = null,
+        outOf: Int? = null,
+    ): PendingStatDrainStat = PendingStatDrainStat(this, stat, amount, chance, outOf)
 
     /** Per-stat overrides in a block, then `+stat("…") { … }` to commit. */
     fun stat(stat: String, configure: StatDrainPerStatScope.() -> Unit): PendingStatDrainStat {
@@ -63,7 +70,8 @@ class StatDrainBuilder internal constructor() {
     }
 
     @BossDsl
-    class PendingStatDrainStat internal constructor(
+    class PendingStatDrainStat
+    internal constructor(
         private val builder: StatDrainBuilder,
         private val stat: String,
         private val overrideAmount: Int?,

@@ -22,13 +22,14 @@ import org.rsmod.plugin.scripts.ScriptContext
 
 private sealed interface StatGuideMenuChoice {
     data object Guide : StatGuideMenuChoice
+
     data object SetLevel : StatGuideMenuChoice
 }
 
-class SkillGuideEvents @Inject constructor(
-    private val eventBus: EventBus,
-    private val protectedAccess: ProtectedAccessLauncher,
-) : PluginScript() {
+class SkillGuideEvents
+@Inject
+constructor(private val eventBus: EventBus, private val protectedAccess: ProtectedAccessLauncher) :
+    PluginScript() {
 
     @OptIn(InternalApi::class)
     override fun ScriptContext.startup() {
@@ -42,14 +43,20 @@ class SkillGuideEvents @Inject constructor(
                         return@launch
                     }
 
-                    when (choice2("Guide", StatGuideMenuChoice.Guide, "Set Level", StatGuideMenuChoice.SetLevel)) {
+                    when (
+                        choice2(
+                            "Guide",
+                            StatGuideMenuChoice.Guide,
+                            "Set Level",
+                            StatGuideMenuChoice.SetLevel,
+                        )
+                    ) {
                         StatGuideMenuChoice.Guide -> openStatGuide(row.bit)
                         StatGuideMenuChoice.SetLevel -> setLevel(row)
                     }
                 }
             }
         }
-
 
         onIfOverlayButton("component.skill_guide:close") {
             player.ifCloseOverlay("interface.skill_guide", eventBus)
@@ -63,7 +70,8 @@ class SkillGuideEvents @Inject constructor(
     @OptIn(InternalApi::class)
     private suspend fun ProtectedAccess.setLevel(row: StatComponentsRow) {
         val stat = row.stat.internalName
-        val targetLevel = countDialog("Enter a level for ${row.stat.displayName} (1-99)").coerceIn(1, 99)
+        val targetLevel =
+            countDialog("Enter a level for ${row.stat.displayName} (1-99)").coerceIn(1, 99)
 
         val currentLevel = stat(stat)
         val levelDelta = targetLevel - currentLevel
@@ -73,8 +81,8 @@ class SkillGuideEvents @Inject constructor(
         player.statMap.setBaseLevel(stat, targetLevel.toByte())
 
         when {
-            levelDelta > 0 -> statAdd(stat, constant = levelDelta,percent = 0)
-            levelDelta < 0 -> statSub(stat, constant = -levelDelta,percent = 0)
+            levelDelta > 0 -> statAdd(stat, constant = levelDelta, percent = 0)
+            levelDelta < 0 -> statSub(stat, constant = -levelDelta, percent = 0)
         }
 
         player.appearance.combatLevel = PlayerSkillXP.calculateCombatLevel(player)
@@ -85,15 +93,12 @@ class SkillGuideEvents @Inject constructor(
         player.openSkillGuide(skillGuideBit, player.vars["varbit.option_skill_guide"] != 0)
     }
 
-    private fun Player.openSkillGuide(
-        skillGuideBit: Int,
-        useV2: Boolean,
-        sectionVar: Int = 0,
-    ) = if (useV2) {
-        openSkillGuideV2(skillGuideBit, sectionVar)
-    } else {
-        openSkillGuideV1(skillGuideBit)
-    }
+    private fun Player.openSkillGuide(skillGuideBit: Int, useV2: Boolean, sectionVar: Int = 0) =
+        if (useV2) {
+            openSkillGuideV2(skillGuideBit, sectionVar)
+        } else {
+            openSkillGuideV1(skillGuideBit)
+        }
 
     private fun Player.openSkillGuideV1(skillGuideBit: Int) {
         ifOpenOverlay("interface.skill_guide", eventBus)
@@ -101,10 +106,7 @@ class SkillGuideEvents @Inject constructor(
         runClientScript(9340, skillGuideBit, 0, 0, 0)
     }
 
-    private fun Player.openSkillGuideV2(
-        skillGuideBit: Int,
-        sectionVar: Int,
-    ) {
+    private fun Player.openSkillGuideV2(skillGuideBit: Int, sectionVar: Int) {
 
         ifOpenOverlay("interface.skill_guide_v2", eventBus)
         ifSetEvents("component.skill_guide_v2:tabs", 0..200, IfEvent.Op1)

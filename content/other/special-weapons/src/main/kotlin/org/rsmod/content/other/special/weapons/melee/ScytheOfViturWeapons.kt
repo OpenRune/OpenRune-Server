@@ -15,8 +15,7 @@ import org.rsmod.game.map.CardinalDirection
 import org.rsmod.game.map.Direction
 import org.rsmod.game.map.translate
 
-class ScytheOfViturWeapons @Inject constructor(private val worldRepo: WorldRepository) :
-    WeaponMap {
+class ScytheOfViturWeapons @Inject constructor(private val worldRepo: WorldRepository) : WeaponMap {
     override fun WeaponRepository.register(manager: WeaponAttackManager) {
         register("obj.scythe_of_vitur", ScytheOfVitur(manager, worldRepo))
     }

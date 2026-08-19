@@ -24,10 +24,7 @@ import kotlinx.coroutines.delay
  * verification work without network. Responses are validated before the cache is written; schema
  * drift throws rather than emitting partial data.
  */
-class BucketClient(
-    private val cacheDir: Path,
-    private val offline: Boolean = false,
-) : Closeable {
+class BucketClient(private val cacheDir: Path, private val offline: Boolean = false) : Closeable {
     private val mapper = ObjectMapper()
     private val http by lazy {
         HttpClient(CIO) {

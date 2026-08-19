@@ -7,17 +7,11 @@ import org.rsmod.api.player.protect.ProtectedAccess
 
 @Singleton
 class FoodEffectService {
-    fun apply(
-        access: ProtectedAccess,
-        effect: String,
-    ) {
+    fun apply(access: ProtectedAccess, effect: String) {
         with(access) {
             when (effect) {
                 "jug_of_wine" -> {
-                    drainFlat(
-                        stat = "stat.attack",
-                        amount = 2,
-                    )
+                    drainFlat(stat = "stat.attack", amount = 2)
                 }
 
                 "ixcoztic_white" -> {
@@ -27,33 +21,17 @@ class FoodEffectService {
                 }
 
                 "beer" -> {
-                    boostFormula(
-                        stat = "stat.strength",
-                        percent = 2,
-                        constant = 1,
-                    )
-                    drainFormula(
-                        stat = "stat.attack",
-                        percent = 6,
-                        constant = -1,
-                    )
+                    boostFormula(stat = "stat.strength", percent = 2, constant = 1)
+                    drainFormula(stat = "stat.attack", percent = 6, constant = -1)
                 }
 
                 "asgarnian_ale" -> {
                     boostFlat("stat.strength", 2)
-                    drainFormula(
-                        stat = "stat.attack",
-                        percent = 5,
-                        constant = -2,
-                    )
+                    drainFormula(stat = "stat.attack", percent = 5, constant = -2)
                 }
 
                 "wizards_mind_bomb" -> {
-                    boostFormula(
-                        stat = "stat.magic",
-                        percent = 2,
-                        constant = 2,
-                    )
+                    boostFormula(stat = "stat.magic", percent = 2, constant = 2)
                     drainFormula("stat.attack", 5, -1)
                     drainFormula("stat.defence", 5, -1)
                     drainFormula("stat.strength", 5, -1)
@@ -92,11 +70,7 @@ class FoodEffectService {
                 }
 
                 "chefs_delight" -> {
-                    boostFormula(
-                        stat = "stat.cooking",
-                        percent = 5,
-                        constant = 1,
-                    )
+                    boostFormula(stat = "stat.cooking", percent = 5, constant = 1)
                     drainFormula("stat.attack", 5, -2)
                     drainFormula("stat.strength", 5, -2)
                 }
@@ -109,11 +83,7 @@ class FoodEffectService {
                 }
 
                 "grog" -> {
-                    boostFormula(
-                        stat = "stat.strength",
-                        percent = 4,
-                        constant = 1,
-                    )
+                    boostFormula(stat = "stat.strength", percent = 4, constant = 1)
                     drainFormula("stat.attack", 5, -3)
                 }
 
@@ -122,26 +92,13 @@ class FoodEffectService {
                 "vodka",
                 "whisky",
                 "gin",
-                "brandy",
-                    -> {
-                    boostFormula(
-                        stat = "stat.strength",
-                        percent = 5,
-                        constant = 1,
-                    )
-                    drainFormula(
-                        stat = "stat.attack",
-                        percent = 2,
-                        constant = -3,
-                    )
+                "brandy" -> {
+                    boostFormula(stat = "stat.strength", percent = 5, constant = 1)
+                    drainFormula(stat = "stat.attack", percent = 2, constant = -3)
                 }
 
                 "keg_of_beer" -> {
-                    boostFormula(
-                        stat = "stat.strength",
-                        percent = 10,
-                        constant = 2,
-                    )
+                    boostFormula(stat = "stat.strength", percent = 10, constant = 2)
                     drainFormula("stat.attack", 50, -4)
                 }
 
@@ -152,23 +109,17 @@ class FoodEffectService {
                     drainFlat("stat.magic", 2)
                 }
 
-                "garden_pie" ->
-                    boostFlat("stat.farming", 3)
+                "garden_pie" -> boostFlat("stat.farming", 3)
 
-                "fish_pie" ->
-                    boostFlat("stat.fishing", 3)
+                "fish_pie" -> boostFlat("stat.fishing", 3)
 
-                "botanical_pie" ->
-                    boostFlat("stat.herblore", 4)
+                "botanical_pie" -> boostFlat("stat.herblore", 4)
 
-                "mushroom_pie" ->
-                    boostFlat("stat.crafting", 4)
+                "mushroom_pie" -> boostFlat("stat.crafting", 4)
 
-                "admiral_pie" ->
-                    boostFlat("stat.fishing", 5)
+                "admiral_pie" -> boostFlat("stat.fishing", 5)
 
-                "dragonfruit_pie" ->
-                    boostFlat("stat.fletching", 4)
+                "dragonfruit_pie" -> boostFlat("stat.fletching", 4)
 
                 "wild_pie" -> {
                     boostFlat("stat.slayer", 5)
@@ -184,189 +135,89 @@ class FoodEffectService {
                     boostFlat("stat.attack", 2)
                     boostFlat("stat.strength", 1)
 
-                    statHeal(
-                        stat = "stat.prayer",
-                        constant = 1,
-                        percent = 0,
-                    )
+                    statHeal(stat = "stat.prayer", constant = 1, percent = 0)
 
                     drainFlat("stat.defence", 1)
                 }
 
-                "papaya_fruit" ->
-                    restoreRunEnergy(5)
+                "papaya_fruit" -> restoreRunEnergy(5)
 
-                "yellowfin" ->
-                    restoreRunEnergy(20)
+                "yellowfin" -> restoreRunEnergy(20)
 
-                "bluefin" ->
-                    restoreStat(
-                        stat = "stat.prayer",
-                        amount = 5,
-                    )
+                "bluefin" -> restoreStat(stat = "stat.prayer", amount = 5)
 
-                "magic_cabbage" ->
-                    boostFormula(
-                        stat = "stat.defence",
-                        percent = 2,
-                        constant = 1,
-                    )
+                "magic_cabbage" -> boostFormula(stat = "stat.defence", percent = 2, constant = 1)
 
-                "cup_of_tea" ->
-                    boostFormula(
-                        stat = "stat.attack",
-                        percent = 2,
-                        constant = 2,
-                    )
+                "cup_of_tea" -> boostFormula(stat = "stat.attack", percent = 2, constant = 2)
 
                 "white_tree_fruit" ->
-                    restoreRunEnergy(
-                        random.of(
-                            minInclusive = 5,
-                            maxInclusive = 10,
-                        ),
-                    )
+                    restoreRunEnergy(random.of(minInclusive = 5, maxInclusive = 10))
 
-                "strange_fruit" ->
-                    restoreRunEnergy(30)
+                "strange_fruit" -> restoreRunEnergy(30)
 
                 "mint_cake",
-                "rare_tuber",
-                    -> restoreRunEnergy(50)
+                "rare_tuber" -> restoreRunEnergy(50)
 
-                "tbone_steak" ->
-                    boostFlat(
-                        stat = "stat.strength",
-                        amount = 2,
-                    )
+                "tbone_steak" -> boostFlat(stat = "stat.strength", amount = 2)
 
                 "blurberry_special",
                 "premade_blurberry_special",
                 "drunk_dragon",
                 "premade_drunk_dragon",
                 "chocolate_saturday",
-                "premade_chocolate_saturday",
-                    -> {
-                    boostFormula(
-                        stat = "stat.strength",
-                        percent = 5,
-                        constant = 2,
-                    )
-                    drainFormula(
-                        stat = "stat.attack",
-                        percent = 2,
-                        constant = -3,
-                    )
+                "premade_chocolate_saturday" -> {
+                    boostFormula(stat = "stat.strength", percent = 5, constant = 2)
+                    drainFormula(stat = "stat.attack", percent = 2, constant = -3)
                 }
 
                 "wizard_blizzard",
-                "premade_wizard_blizzard",
-                    -> {
-                    boostFormula(
-                        stat = "stat.strength",
-                        percent = 6,
-                        constant = 1,
-                    )
-                    drainFormula(
-                        stat = "stat.attack",
-                        percent = 2,
-                        constant = -3,
-                    )
+                "premade_wizard_blizzard" -> {
+                    boostFormula(stat = "stat.strength", percent = 6, constant = 1)
+                    drainFormula(stat = "stat.attack", percent = 2, constant = -3)
                 }
 
-                else ->
-                    error(
-                        "Unknown food effect: '$effect'.",
-                    )
+                else -> error("Unknown food effect: '$effect'.")
             }
         }
     }
 
-    private fun ProtectedAccess.boostFlat(
-        stat: String,
-        amount: Int,
-    ) {
+    private fun ProtectedAccess.boostFlat(stat: String, amount: Int) {
         if (amount > 0) {
-            statBoost(
-                stat = stat,
-                constant = amount,
-                percent = 0,
-            )
+            statBoost(stat = stat, constant = amount, percent = 0)
         }
     }
 
-    private fun ProtectedAccess.boostFormula(
-        stat: String,
-        percent: Int,
-        constant: Int,
-    ) {
-        val amount =
-            (
-                statBase(stat) * percent / 100 +
-                    constant
-                ).coerceAtLeast(0)
+    private fun ProtectedAccess.boostFormula(stat: String, percent: Int, constant: Int) {
+        val amount = (statBase(stat) * percent / 100 + constant).coerceAtLeast(0)
 
-        boostFlat(
-            stat = stat,
-            amount = amount,
-        )
+        boostFlat(stat = stat, amount = amount)
     }
 
-    private fun ProtectedAccess.drainFlat(
-        stat: String,
-        amount: Int,
-    ) {
+    private fun ProtectedAccess.drainFlat(stat: String, amount: Int) {
         if (amount > 0) {
-            statSub(
-                stat = stat,
-                constant = amount,
-                percent = 0,
-            )
+            statSub(stat = stat, constant = amount, percent = 0)
         }
     }
 
-    private fun ProtectedAccess.drainFormula(
-        stat: String,
-        percent: Int,
-        constant: Int,
-    ) {
-        val amount =
-            (
-                statBase(stat) * percent / 100 +
-                    constant
-                ).coerceAtLeast(0)
+    private fun ProtectedAccess.drainFormula(stat: String, percent: Int, constant: Int) {
+        val amount = (statBase(stat) * percent / 100 + constant).coerceAtLeast(0)
 
-        drainFlat(
-            stat = stat,
-            amount = amount,
-        )
+        drainFlat(stat = stat, amount = amount)
     }
 
-    private fun ProtectedAccess.restoreStat(
-        stat: String,
-        amount: Int,
-    ) {
+    private fun ProtectedAccess.restoreStat(stat: String, amount: Int) {
         if (amount <= 0) {
             return
         }
 
-        statHeal(
-            stat = stat,
-            constant = amount,
-            percent = 0,
-        )
+        statHeal(stat = stat, constant = amount, percent = 0)
     }
 
-    private fun ProtectedAccess.restoreRunEnergy(
-        percent: Int,
-    ) {
+    private fun ProtectedAccess.restoreRunEnergy(percent: Int) {
         val restored =
-            (
-                player.runEnergy +
-                    percent * RUN_ENERGY_PERCENT_SCALE
-                ).coerceAtMost(
-                    constants.run_max_energy,
-                )
+            (player.runEnergy + percent * RUN_ENERGY_PERCENT_SCALE).coerceAtMost(
+                constants.run_max_energy
+            )
 
         if (restored == player.runEnergy) {
             return

@@ -64,9 +64,7 @@ constructor(
             openRuneCentral.stopInboundWatch()
             centralActivityLogWriter.stop()
         }
-        onEvent<HeldDropEvents.Drop> {
-            centralActivityLogWriter.logItemDrop(player, type, obj)
-        }
+        onEvent<HeldDropEvents.Drop> { centralActivityLogWriter.logItemDrop(player, type, obj) }
         onEvent<HeldDropEvents.Destroy> {
             centralActivityLogWriter.logItemDestroy(player, type, obj)
         }
@@ -158,16 +156,15 @@ constructor(
         val startedAt = System.nanoTime()
         try {
             database.withTransactionBlocking { connection ->
-                characterRepository.setOnlineSession(
-                    connection,
-                    player.characterId,
-                    config.world,
-                )
+                characterRepository.setOnlineSession(connection, player.characterId, config.world)
             }
         } catch (e: Exception) {
-            logger.warn(e) { "Could not set DB online-session for characterId=${player.characterId}" }
+            logger.warn(e) {
+                "Could not set DB online-session for characterId=${player.characterId}"
+            }
         }
-        val elapsedMs = java.util.concurrent.TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - startedAt)
+        val elapsedMs =
+            java.util.concurrent.TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - startedAt)
         if (config.loginTimingLogs && elapsedMs >= DB_ONLINE_SESSION_TIMING_INFO_MS) {
             logger.info {
                 "Login set-online-session user='${player.username}' characterId=${player.characterId} elapsed=${elapsedMs}ms"
@@ -187,7 +184,9 @@ constructor(
                 characterRepository.clearOnlineSession(connection, player.characterId)
             }
         } catch (e: Exception) {
-            logger.warn(e) { "Could not clear DB online-session for characterId=${player.characterId}" }
+            logger.warn(e) {
+                "Could not clear DB online-session for characterId=${player.characterId}"
+            }
         }
         val token = player.openRuneCentralSessionToken ?: return
         openRuneCentral.notifyLogout(token)

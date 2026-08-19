@@ -1,6 +1,9 @@
 package org.rsmod.content.areas.wilderness
 
+import jakarta.inject.Inject
+import kotlin.math.abs
 import org.rsmod.api.area.checker.AreaChecker
+import org.rsmod.api.area.checker.wildernessLevel
 import org.rsmod.api.death.LAST_PVP_HIT_TICK_ATTR
 import org.rsmod.api.death.PvPAttackValidateHook
 import org.rsmod.api.death.PvPAttackValidateResult
@@ -10,9 +13,6 @@ import org.rsmod.api.player.isInPvpCombat
 import org.rsmod.api.player.subjectPronoun
 import org.rsmod.content.areas.wilderness.WildernessAreaScript.Companion.canPvp
 import org.rsmod.game.entity.Player
-import org.rsmod.api.area.checker.wildernessLevel
-import jakarta.inject.Inject
-import kotlin.math.abs
 
 public class WildernessPvPHook @Inject constructor(private val areaChecker: AreaChecker) :
     PvPAttackValidateHook, PvPSkullHook, PvPPlayerHitHook {
@@ -22,21 +22,23 @@ public class WildernessPvPHook @Inject constructor(private val areaChecker: Area
             return PvPAttackValidateResult.Pass
         }
 
-        if (areaChecker.inArea("area.ferox_enclave", target.coords)
-            && target.vars["varbit.teleblock_cycles"] <= 0
-            && attacker.vars["varbit.teleblock_cycles"] <= 0
+        if (
+            areaChecker.inArea("area.ferox_enclave", target.coords) &&
+                target.vars["varbit.teleblock_cycles"] <= 0 &&
+                attacker.vars["varbit.teleblock_cycles"] <= 0
         ) {
             return PvPAttackValidateResult.Deny(
-                "You cannot fight another player whilst next to the Enclave, please move further out.",
+                "You cannot fight another player whilst next to the Enclave, please move further out."
             )
         }
 
-        if (!attacker.isSkulled()
-            && attacker.isSkullPreventionEnabled()
-            && wouldSkull(attacker, target)
+        if (
+            !attacker.isSkulled() &&
+                attacker.isSkullPreventionEnabled() &&
+                wouldSkull(attacker, target)
         ) {
             return PvPAttackValidateResult.Deny(
-                "You cannot attack this target as it would result in you getting skulled.",
+                "You cannot attack this target as it would result in you getting skulled."
             )
         }
 
@@ -49,11 +51,13 @@ public class WildernessPvPHook @Inject constructor(private val areaChecker: Area
         val minimumLevel = minOf(level, otherLevel)
 
         if (minimumLevel >= 1) {
-            if (abs(attacker.appearance.combatLevel - target.appearance.combatLevel) > minimumLevel) {
+            if (
+                abs(attacker.appearance.combatLevel - target.appearance.combatLevel) > minimumLevel
+            ) {
                 val pronouns = target.subjectPronoun()
                 return PvPAttackValidateResult.Deny(
                     "The difference between your Combat level and the Combat level of ${target.displayName} is too great." +
-                        " $pronouns needs to move deeper into the Wilderness before you can attack them.",
+                        " $pronouns needs to move deeper into the Wilderness before you can attack them."
                 )
             }
         }

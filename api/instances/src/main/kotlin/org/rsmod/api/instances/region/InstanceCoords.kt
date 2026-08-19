@@ -8,7 +8,8 @@ internal fun Int.regionMapSquareZ(): Int = this and 0xFF
 
 internal fun regionId(mapSquareX: Int, mapSquareZ: Int): Int = (mapSquareX shl 8) or mapSquareZ
 
-internal fun Int.regionZoneBase(): Pair<Int, Int> = (regionMapSquareX() shl 3) to (regionMapSquareZ() shl 3)
+internal fun Int.regionZoneBase(): Pair<Int, Int> =
+    (regionMapSquareX() shl 3) to (regionMapSquareZ() shl 3)
 
 internal fun regionIdsGrid(centerRegionId: Int, gridSize: Int): List<Int> {
     require(gridSize >= 1 && gridSize % 2 == 1) {

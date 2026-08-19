@@ -17,11 +17,13 @@ private var Player.depositBoxQtyInput by intVarp("varp.depositbox_requestedquant
 /** "Hide deposit worn items" menu toggle. */
 internal var Player.hideDepositWornButton by boolVarBit("varbit.depositbox_hidedepositworn")
 
-/** Settings toggle (setting 424 in the settings interface): when true, using an item on a
-deposit box will deposit the full stack. Otherwise, it will prompt for the quantity.
-The varbit value appears inverted, so the naming is inverted in code to reflect this.  */
-internal val ProtectedAccess.opLocUDepositAll by boolVarBit("varbit.bank_depositbox_oplocu_askquantity")
-
+/**
+ * Settings toggle (setting 424 in the settings interface): when true, using an item on a deposit
+ * box will deposit the full stack. Otherwise, it will prompt for the quantity. The varbit value
+ * appears inverted, so the naming is inverted in code to reflect this.
+ */
+internal val ProtectedAccess.opLocUDepositAll by
+    boolVarBit("varbit.bank_depositbox_oplocu_askquantity")
 
 /** Matches QuantityMode.varValue except swaps the 10 and All values. */
 private fun QuantityMode.toDepositBoxMode(): Int =
@@ -36,11 +38,13 @@ private fun quantityModeOf(depositBoxMode: Int): QuantityMode =
     when (depositBoxMode) {
         QuantityMode.Ten.varValue -> QuantityMode.All
         QuantityMode.All.varValue -> QuantityMode.Ten
-        else -> QuantityMode.entries.firstOrNull { it.varValue == depositBoxMode } ?: QuantityMode.One
+        else ->
+            QuantityMode.entries.firstOrNull { it.varValue == depositBoxMode } ?: QuantityMode.One
     }
 
-
-/** Selected quantity button. Writing it persists the selection and updates the client render state. */
+/**
+ * Selected quantity button. Writing it persists the selection and updates the client render state.
+ */
 internal var ProtectedAccess.depositQuantityMode: QuantityMode
     get() = quantityModeOf(player.depositBoxMode)
     set(value) {
@@ -54,7 +58,10 @@ internal var ProtectedAccess.depositQuantityInput: Int
         player.depositBoxQtyInput = value
     }
 
-/** Amount option 1 deposits for the current selection. E.g. normally this is the option assigned to left clicks directly on the item */
+/**
+ * Amount option 1 deposits for the current selection. E.g. normally this is the option assigned to
+ * left clicks directly on the item
+ */
 internal fun ProtectedAccess.depositOption1Qty(): Int =
     when (depositQuantityMode) {
         QuantityMode.One -> 1
@@ -74,29 +81,45 @@ internal suspend fun ProtectedAccess.requestDepositQuantity(count: Int): Int {
     if (count == 1) {
         return 1
     }
-    val amount = when {
-        count > 10 -> choice5(
-            "1", 1,
-            "5", 5,
-            "10", 10,
-            "X", null,
-            "All", Int.MAX_VALUE,
-            title = "How many would you like to deposit?",
-        )
-        count > 5 -> choice4(
-            "1", 1,
-            "5", 5,
-            "X", null,
-            "All", Int.MAX_VALUE,
-            title = "How many would you like to deposit?",
-        )
-        else -> choice3(
-            "1", 1,
-            "X", null,
-            "All", Int.MAX_VALUE,
-            title = "How many would you like to deposit?",
-        )
-    }
+    val amount =
+        when {
+            count > 10 ->
+                choice5(
+                    "1",
+                    1,
+                    "5",
+                    5,
+                    "10",
+                    10,
+                    "X",
+                    null,
+                    "All",
+                    Int.MAX_VALUE,
+                    title = "How many would you like to deposit?",
+                )
+            count > 5 ->
+                choice4(
+                    "1",
+                    1,
+                    "5",
+                    5,
+                    "X",
+                    null,
+                    "All",
+                    Int.MAX_VALUE,
+                    title = "How many would you like to deposit?",
+                )
+            else ->
+                choice3(
+                    "1",
+                    1,
+                    "X",
+                    null,
+                    "All",
+                    Int.MAX_VALUE,
+                    title = "How many would you like to deposit?",
+                )
+        }
     return amount ?: countDialog("How many would you like to deposit? 1 - ${count.formatAmount}")
 }
 
@@ -104,7 +127,10 @@ internal fun ProtectedAccess.playDepositAnim() {
     anim(DepositBoxConstants.OPEN_SEQ)
 }
 
-/** Determines the next slot that should be deposited. Basically used to resolve the action based on the config option DepositBoxConfig.deposit_top_to_bottom */
+/**
+ * Determines the next slot that should be deposited. Basically used to resolve the action based on
+ * the config option DepositBoxConfig.deposit_top_to_bottom
+ */
 internal fun ProtectedAccess.resolveDepositSlot(clickedSlot: Int): Int {
     if (!DepositBoxConfig.DEPOSIT_TOP_TO_BOTTOM) {
         return clickedSlot

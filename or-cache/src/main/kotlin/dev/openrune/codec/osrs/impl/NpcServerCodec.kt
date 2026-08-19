@@ -6,24 +6,22 @@ import dev.openrune.definition.opcode.OpcodeList
 import dev.openrune.definition.opcode.OpcodeType
 import dev.openrune.definition.opcode.OpcodeType.BOOLEAN.enumType
 import dev.openrune.definition.opcode.impl.DefinitionOpcodeEntityOps
-import dev.openrune.definition.opcode.impl.DefinitionOpcodeParams
 import dev.openrune.definition.opcode.impl.DefinitionOpcodeTransforms
 import dev.openrune.definition.type.NpcType
-import dev.openrune.revision
 import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.tools.SlayerSuperiorMonsterLoader
 import dev.openrune.types.MoveRestrict
 import dev.openrune.types.NpcMode
 import dev.openrune.types.NpcServerType
 import dev.openrune.util.BlockWalk
 import dev.openrune.util.Coord
 import dev.openrune.util.DefinitionOpcodeParamMap
-import dev.openrune.tools.SlayerSuperiorMonsterLoader
 import dev.openrune.util.NpcPatrol
 import dev.openrune.util.NpcPatrolWaypoint
 import org.rsmod.game.map.Direction
 
 class NpcServerCodec(
-    val rev : Int,
+    val rev: Int,
     val npcs: Map<Int, NpcType>? = null,
     val custom: Map<Int, NpcServerType>? = emptyMap(),
     val examines: Map<Int, String> = emptyMap(),

@@ -20,41 +20,27 @@ constructor(
     private val liquidAdrenaline: ToaLiquidAdrenalineEffect,
     private val overTimeEffects: ToaOverTimeEffect,
 ) {
-    fun handles(handler: String): Boolean =
-        handler in HANDLERS
+    fun handles(handler: String): Boolean = handler in HANDLERS
 
-    fun apply(
-        access: ProtectedAccess,
-        effect: PotionEffectRow,
-    ) {
+    fun apply(access: ProtectedAccess, effect: PotionEffectRow) {
         with(access) {
             when (effect.handler) {
-                HANDLER_NECTAR ->
-                    applyNectar()
+                HANDLER_NECTAR -> applyNectar()
 
-                HANDLER_AMBROSIA ->
-                    applyAmbrosia()
+                HANDLER_AMBROSIA -> applyAmbrosia()
 
-                HANDLER_TEARS_OF_ELIDINIS ->
-                    applyTearsOfElidinis()
+                HANDLER_TEARS_OF_ELIDINIS -> applyTearsOfElidinis()
 
-                HANDLER_LIQUID_ADRENALINE ->
-                    liquidAdrenaline.apply(this)
+                HANDLER_LIQUID_ADRENALINE -> liquidAdrenaline.apply(this)
 
-                HANDLER_SMELLING_SALTS ->
-                    smellingSalts.apply(this)
+                HANDLER_SMELLING_SALTS -> smellingSalts.apply(this)
 
-                HANDLER_SILK_DRESSING ->
-                    overTimeEffects.applySilkDressing(this)
+                HANDLER_SILK_DRESSING -> overTimeEffects.applySilkDressing(this)
 
-                HANDLER_BLESSED_CRYSTAL_SCARAB ->
-                    overTimeEffects.applyBlessedCrystalScarab(this)
+                HANDLER_BLESSED_CRYSTAL_SCARAB -> overTimeEffects.applyBlessedCrystalScarab(this)
 
                 else ->
-                    error(
-                        "Unsupported Tombs of Amascut potion handler: " +
-                            "'${effect.handler}'.",
-                    )
+                    error("Unsupported Tombs of Amascut potion handler: " + "'${effect.handler}'.")
             }
         }
     }
@@ -62,23 +48,16 @@ constructor(
     /**
      * Clears every active Tombs-specific timed effect.
      *
-     * The future raid session should call this when the player dies,
-     * leaves, or finishes the raid.
+     * The future raid session should call this when the player dies, leaves, or finishes the raid.
      */
-    fun clearSessionEffects(
-        player: Player,
-    ) {
+    fun clearSessionEffects(player: Player) {
         smellingSalts.clear(player)
         liquidAdrenaline.clear(player)
         overTimeEffects.clear(player)
     }
 
     private fun ProtectedAccess.applyNectar() {
-        statBoost(
-            stat = HITPOINTS,
-            constant = NECTAR_HEAL_CONSTANT,
-            percent = NECTAR_HEAL_PERCENT,
-        )
+        statBoost(stat = HITPOINTS, constant = NECTAR_HEAL_CONSTANT, percent = NECTAR_HEAL_PERCENT)
 
         drainCurrentStats(
             stats = NECTAR_DRAIN_STATS,
@@ -103,31 +82,18 @@ constructor(
         restoreFullRunEnergy()
     }
 
-    private fun ProtectedAccess.restoreToBoostedTarget(
-        stat: String,
-        percent: Int,
-        constant: Int,
-    ) {
-        val base =
-            player.statBase(stat)
+    private fun ProtectedAccess.restoreToBoostedTarget(stat: String, percent: Int, constant: Int) {
+        val base = player.statBase(stat)
 
-        val target =
-            base +
-                base * percent / 100 +
-                constant
+        val target = base + base * percent / 100 + constant
 
-        val current =
-            player.stat(stat)
+        val current = player.stat(stat)
 
         if (current >= target) {
             return
         }
 
-        statAdd(
-            stat = stat,
-            constant = target - current,
-            percent = 0,
-        )
+        statAdd(stat = stat, constant = target - current, percent = 0)
     }
 
     private fun ProtectedAccess.restoreFullRunEnergy() {
@@ -135,13 +101,9 @@ constructor(
             return
         }
 
-        player.runEnergy =
-            constants.run_max_energy
+        player.runEnergy = constants.run_max_energy
 
-        UpdateRun.energy(
-            player,
-            player.runEnergy,
-        )
+        UpdateRun.energy(player, player.runEnergy)
     }
 
     private fun ProtectedAccess.applyTearsOfElidinis() {
@@ -176,32 +138,23 @@ constructor(
         private const val TEARS_PRAYER_CONSTANT: Int = 10
         private const val TEARS_PRAYER_PERCENT: Int = 25
 
-        private const val HITPOINTS: String =
-            "stat.hitpoints"
+        private const val HITPOINTS: String = "stat.hitpoints"
 
-        private const val PRAYER: String =
-            "stat.prayer"
+        private const val PRAYER: String = "stat.prayer"
 
-        private const val HANDLER_NECTAR: String =
-            "toa_nectar"
+        private const val HANDLER_NECTAR: String = "toa_nectar"
 
-        private const val HANDLER_AMBROSIA: String =
-            "toa_ambrosia"
+        private const val HANDLER_AMBROSIA: String = "toa_ambrosia"
 
-        private const val HANDLER_TEARS_OF_ELIDINIS: String =
-            "toa_tears_of_elidinis"
+        private const val HANDLER_TEARS_OF_ELIDINIS: String = "toa_tears_of_elidinis"
 
-        private const val HANDLER_LIQUID_ADRENALINE: String =
-            "toa_liquid_adrenaline"
+        private const val HANDLER_LIQUID_ADRENALINE: String = "toa_liquid_adrenaline"
 
-        private const val HANDLER_SMELLING_SALTS: String =
-            "toa_smelling_salts"
+        private const val HANDLER_SMELLING_SALTS: String = "toa_smelling_salts"
 
-        private const val HANDLER_SILK_DRESSING: String =
-            "toa_silk_dressing"
+        private const val HANDLER_SILK_DRESSING: String = "toa_silk_dressing"
 
-        private const val HANDLER_BLESSED_CRYSTAL_SCARAB: String =
-            "toa_blessed_crystal_scarab"
+        private const val HANDLER_BLESSED_CRYSTAL_SCARAB: String = "toa_blessed_crystal_scarab"
 
         private val HANDLERS: Set<String> =
             setOf(
@@ -215,21 +168,9 @@ constructor(
             )
 
         private val NECTAR_DRAIN_STATS: List<String> =
-            listOf(
-                "stat.attack",
-                "stat.strength",
-                "stat.defence",
-                "stat.ranged",
-                "stat.magic",
-            )
+            listOf("stat.attack", "stat.strength", "stat.defence", "stat.ranged", "stat.magic")
 
         private val TEARS_RESTORE_STATS: List<String> =
-            listOf(
-                "stat.attack",
-                "stat.strength",
-                "stat.defence",
-                "stat.ranged",
-                "stat.magic",
-            )
+            listOf("stat.attack", "stat.strength", "stat.defence", "stat.ranged", "stat.magic")
     }
 }

@@ -41,8 +41,7 @@ class InstanceSession(
         gracePending = false
     }
 
-    fun elapsedTicks(currentTick: Int): Int =
-        currentTick - startedAtTick
+    fun elapsedTicks(currentTick: Int): Int = currentTick - startedAtTick
 
     fun remainingTicks(currentTick: Int): Int? =
         spec.timeLimitTicks?.minus(elapsedTicks(currentTick))
@@ -107,8 +106,7 @@ class InstanceSession(
             occupants.isEmpty() &&
             currentTick >= (state as SessionState.Reclaim).deadlineTick
 
-    fun isFull(): Boolean =
-        occupants.size >= spec.maxPlayers
+    fun isFull(): Boolean = occupants.size >= spec.maxPlayers
 
     fun registerRegion(regionId: Int) {
         regionIds += regionId

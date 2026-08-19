@@ -50,15 +50,10 @@ object MortimerModifiers {
     fun choiceCount(tasksCompleted: Int): Int =
         if (MODIFIER_THIRD_CHOICE in unlockedModifierIds(tasksCompleted)) 3 else 2
 
-    fun rollModifier(
-        masterTask: SlayerMasterTaskRow,
-        tasksCompleted: Int,
-    ): RolledModifier? {
+    fun rollModifier(masterTask: SlayerMasterTaskRow, tasksCompleted: Int): RolledModifier? {
         val unlocked = unlockedModifierIds(tasksCompleted)
         val eligible =
-            parseRanges(masterTask).filter {
-                it.id != MODIFIER_THIRD_CHOICE && it.id in unlocked
-            }
+            parseRanges(masterTask).filter { it.id != MODIFIER_THIRD_CHOICE && it.id in unlocked }
         if (eligible.isEmpty()) return null
         val range = eligible.random()
         return RolledModifier(id = range.id, value = rollSteppedValue(range.min, range.max))
@@ -97,8 +92,9 @@ object MortimerModifiers {
                 val sign = if (modifier.negative) "" else "+"
                 "$name: $sign${modifier.value}%"
             }
-            MODIFIER_CLUES, MODIFIER_SUPERIOR, MODIFIER_XP ->
-                "$name: +${modifier.absoluteValue}%"
+            MODIFIER_CLUES,
+            MODIFIER_SUPERIOR,
+            MODIFIER_XP -> "$name: +${modifier.absoluteValue}%"
             else -> name
         }
     }

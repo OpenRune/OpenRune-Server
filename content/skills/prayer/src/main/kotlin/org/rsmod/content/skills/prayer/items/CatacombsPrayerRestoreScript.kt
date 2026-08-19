@@ -11,17 +11,23 @@ import org.rsmod.content.skills.prayer.PrayerBuryEvents
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
-class CatacombsPrayerRestoreScript @Inject constructor(private val areas: AreaChecker) : PluginScript() {
+class CatacombsPrayerRestoreScript @Inject constructor(private val areas: AreaChecker) :
+    PluginScript() {
 
     override fun ScriptContext.startup() {
         onEvent<SkillingActionCompleteEvent> {
-            val restore = when (val context = context) {
-                is SkillingActionContext.Prayer -> when (val action = context.action) {
-                    is PrayerSkillAction.BuryComplete -> if (PrayerBuryEvents.Companion.isDemonicAsh(action.itemInternal)) 0 else action.catacombsBonePrayerRestore
-                    is PrayerSkillAction.BonecrusherCrushComplete -> action.catacombsBonePrayerRestore
+            val restore =
+                when (val context = context) {
+                    is SkillingActionContext.Prayer ->
+                        when (val action = context.action) {
+                            is PrayerSkillAction.BuryComplete ->
+                                if (PrayerBuryEvents.Companion.isDemonicAsh(action.itemInternal)) 0
+                                else action.catacombsBonePrayerRestore
+                            is PrayerSkillAction.BonecrusherCrushComplete ->
+                                action.catacombsBonePrayerRestore
+                        }
+                    is SkillingActionContext.Product -> 0
                 }
-                is SkillingActionContext.Product -> 0
-            }
             if (restore <= 0) return@onEvent
             if (!areas.inArea("area.catacombs_of_kourend", player.coords)) return@onEvent
             player.statBoost("stat.prayer", restore, 0)

@@ -4,72 +4,34 @@ import org.rsmod.api.attr.AttributeKey
 import org.rsmod.game.entity.Player
 
 /**
- * Prevents ordinary positive-stat decay without blocking explicit stat
- * changes such as brews, drains, restores, overload refreshes, or prayers.
+ * Prevents ordinary positive-stat decay without blocking explicit stat changes such as brews,
+ * drains, restores, overload refreshes, or prayers.
  *
- * Multiple effects may protect the same stat at once. A stat resumes normal
- * decay only after every source protecting it has been removed.
+ * Multiple effects may protect the same stat at once. A stat resumes normal decay only after every
+ * source protecting it has been removed.
  */
 public object StatBoostDecayPrevention {
     private val sources =
-        AttributeKey<
-            MutableMap<String, MutableSet<String>>
-            >(
-            resetOnDeath = true,
-            temp = true,
-        )
+        AttributeKey<MutableMap<String, MutableSet<String>>>(resetOnDeath = true, temp = true)
 
-    public fun add(
-        player: Player,
-        stat: String,
-        source: String,
-    ) {
-        require(stat.isNotBlank()) {
-            "`stat` must not be blank."
-        }
+    public fun add(player: Player, stat: String, source: String) {
+        require(stat.isNotBlank()) { "`stat` must not be blank." }
 
-        require(source.isNotBlank()) {
-            "`source` must not be blank."
-        }
+        require(source.isNotBlank()) { "`source` must not be blank." }
 
-        val byStat =
-            player.attr.getOrPut(sources) {
-                mutableMapOf()
-            }
+        val byStat = player.attr.getOrPut(sources) { mutableMapOf() }
 
-        byStat
-            .getOrPut(stat) {
-                mutableSetOf()
-            }
-            .add(source)
+        byStat.getOrPut(stat) { mutableSetOf() }.add(source)
     }
 
-    public fun add(
-        player: Player,
-        stats: Iterable<String>,
-        source: String,
-    ) {
-        stats.forEach { stat ->
-            add(
-                player = player,
-                stat = stat,
-                source = source,
-            )
-        }
+    public fun add(player: Player, stats: Iterable<String>, source: String) {
+        stats.forEach { stat -> add(player = player, stat = stat, source = source) }
     }
 
-    public fun remove(
-        player: Player,
-        stat: String,
-        source: String,
-    ) {
-        val byStat =
-            player.attr[sources]
-                ?: return
+    public fun remove(player: Player, stat: String, source: String) {
+        val byStat = player.attr[sources] ?: return
 
-        val statSources =
-            byStat[stat]
-                ?: return
+        val statSources = byStat[stat] ?: return
 
         statSources.remove(source)
 
@@ -82,34 +44,17 @@ public object StatBoostDecayPrevention {
         }
     }
 
-    public fun remove(
-        player: Player,
-        stats: Iterable<String>,
-        source: String,
-    ) {
-        stats.forEach { stat ->
-            remove(
-                player = player,
-                stat = stat,
-                source = source,
-            )
-        }
+    public fun remove(player: Player, stats: Iterable<String>, source: String) {
+        stats.forEach { stat -> remove(player = player, stat = stat, source = source) }
     }
 
-    public fun removeSource(
-        player: Player,
-        source: String,
-    ) {
-        val byStat =
-            player.attr[sources]
-                ?: return
+    public fun removeSource(player: Player, source: String) {
+        val byStat = player.attr[sources] ?: return
 
-        val iterator =
-            byStat.iterator()
+        val iterator = byStat.iterator()
 
         while (iterator.hasNext()) {
-            val entry =
-                iterator.next()
+            val entry = iterator.next()
 
             entry.value.remove(source)
 
@@ -123,15 +68,8 @@ public object StatBoostDecayPrevention {
         }
     }
 
-    public fun prevents(
-        player: Player,
-        stat: String,
-    ): Boolean {
-        return player
-            .attr[sources]
-            ?.get(stat)
-            .orEmpty()
-            .isNotEmpty()
+    public fun prevents(player: Player, stat: String): Boolean {
+        return player.attr[sources]?.get(stat).orEmpty().isNotEmpty()
     }
 }
 
@@ -140,18 +78,12 @@ public object StatBoostDecayPrevention {
  *
  * A stat below its base level must remain drained.
  */
-public fun Player.clearPositiveStatBoost(
-    stat: String,
-) {
+public fun Player.clearPositiveStatBoost(stat: String) {
     if (stat(stat) > statBase(stat)) {
         statRestore(stat)
     }
 }
 
-public fun Player.clearPositiveStatBoosts(
-    stats: Iterable<String>,
-) {
-    stats.forEach { stat ->
-        clearPositiveStatBoost(stat)
-    }
+public fun Player.clearPositiveStatBoosts(stats: Iterable<String>) {
+    stats.forEach { stat -> clearPositiveStatBoost(stat) }
 }

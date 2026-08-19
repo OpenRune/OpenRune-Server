@@ -43,15 +43,15 @@ constructor(
                         when (socialResult) {
                             CentralSocialResult.Ok -> {
                                 current.client.write(
-                                    net.rsprot.protocol.game.outgoing.misc.player.ChatFilterSettings(
-                                        message.publicChatFilter,
-                                        message.tradeChatFilter,
-                                    ),
+                                    net.rsprot.protocol.game.outgoing.misc.player
+                                        .ChatFilterSettings(
+                                            message.publicChatFilter,
+                                            message.tradeChatFilter,
+                                        )
                                 )
                                 current.client.write(
-                                    net.rsprot.protocol.game.outgoing.misc.player.ChatFilterSettingsPrivateChat(
-                                        message.privateChatFilter,
-                                    ),
+                                    net.rsprot.protocol.game.outgoing.misc.player
+                                        .ChatFilterSettingsPrivateChat(message.privateChatFilter)
                                 )
                             }
 

@@ -126,7 +126,8 @@ constructor(
 
         deps.extensionRegistry.register("scurrius.eat_cheese") { _, npc, target, _ ->
             val pile = CHEESE_PILES.random()
-            val cheeseTile = CoordGrid(npc.coords.level, npc.coords.mx, npc.coords.mz, pile.first, pile.second)
+            val cheeseTile =
+                CoordGrid(npc.coords.level, npc.coords.mx, npc.coords.mz, pile.first, pile.second)
             npc.resetFaceEntity()
             // Ignore combat interaction so walkTo can't be cancelled
             npc.ignoreCombatInteractions = true
@@ -135,7 +136,15 @@ constructor(
                 deps.encounter(npc).transitionTo("feeding", deps.mapClock.cycle)
                 engageRanged(npc, target)
                 // Lock facing on cheese pile
-                npc.lockFacing(CoordGrid(npc.coords.level, npc.coords.mx, npc.coords.mz, pile.first, pile.second))
+                npc.lockFacing(
+                    CoordGrid(
+                        npc.coords.level,
+                        npc.coords.mx,
+                        npc.coords.mz,
+                        pile.first,
+                        pile.second,
+                    )
+                )
                 startFeedingHeal(npc)
             }
         }
@@ -262,9 +271,7 @@ constructor(
                 }
             }
 
-            phase("eating_transition", entryHp = 0.80) {
-                entry = "eat_cheese"
-            }
+            phase("eating_transition", entryHp = 0.80) { entry = "eat_cheese" }
 
             phase(
                 "feeding",
@@ -281,9 +288,7 @@ constructor(
                 }
             }
 
-            phase("enrage_transition", entryHp = 0.30) {
-                entry = "enrage_walk"
-            }
+            phase("enrage_transition", entryHp = 0.30) { entry = "enrage_walk" }
 
             phase("enraged", lockMovement = true) {
                 weightedSelectorRandom {

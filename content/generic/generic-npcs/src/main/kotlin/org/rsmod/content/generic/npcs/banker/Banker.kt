@@ -425,7 +425,7 @@ private constructor(
         doubleobjbox(
             "obj.shrimp",
             400,
-            RSCM.getReverseMapping(RSCMType.OBJ,ocCert("obj.shrimp").id),
+            RSCM.getReverseMapping(RSCMType.OBJ, ocCert("obj.shrimp").id),
             400,
             "A noted item looks like a piece of paper with the image " +
                 "of the actual item on top of it.",

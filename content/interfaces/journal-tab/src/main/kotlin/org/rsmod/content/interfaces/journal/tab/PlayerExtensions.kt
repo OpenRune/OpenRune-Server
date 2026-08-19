@@ -23,8 +23,11 @@ internal fun Player.openJournalTab(tab: SideJournalTab, eventBus: EventBus) =
 internal fun Player.openSummaryTab(eventBus: EventBus) {
     updateSummaryTimePlayed()
     updateSummaryCombatLevel()
-    ifOpenOverlay("interface.account_summary_sidepanel",
-        "component.side_journal:tab_container", eventBus)
+    ifOpenOverlay(
+        "interface.account_summary_sidepanel",
+        "component.side_journal:tab_container",
+        eventBus,
+    )
 }
 
 internal fun Player.updateSummaryTimePlayed() {

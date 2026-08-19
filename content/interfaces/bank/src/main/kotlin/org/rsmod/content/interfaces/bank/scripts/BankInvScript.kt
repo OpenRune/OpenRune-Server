@@ -99,7 +99,10 @@ constructor(
         onIfModalDrag("component.bankside:wornops") { dragSideInv(it) }
         onIfModalDrag("component.bankmain:items", "component.bankmain:tabs") { dragIntoTab(it) }
 
-        val wornComponents = bank_equipment_tab_to_slots_map.filterValuesNotNull().map { it.key to RSCM.getReverseMapping(RSCMType.COMPONENT,it.value.packed) }
+        val wornComponents =
+            bank_equipment_tab_to_slots_map.filterValuesNotNull().map {
+                it.key to RSCM.getReverseMapping(RSCMType.COMPONENT, it.value.packed)
+            }
         for ((slot, component) in wornComponents) {
             onIfModalButton(component) { wornOp(slot, it.op) }
         }

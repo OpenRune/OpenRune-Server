@@ -25,10 +25,7 @@ object PotionEffectTable {
     private const val VARIANT = 18
 
     fun table() =
-        dbTable(
-            "dbtable.potion_effect",
-            serverOnly = true,
-        ) {
+        dbTable("dbtable.potion_effect", serverOnly = true) {
             column("key", KEY, VarType.STRING)
             column("kind", KIND, VarType.STRING)
             column("skills", SKILLS, VarType.STAT)
@@ -36,44 +33,16 @@ object PotionEffectTable {
             column("percent", PERCENT, VarType.INT)
             column("amount", AMOUNT, VarType.INT)
             column("effects", EFFECTS, VarType.DBROW)
-            column(
-                "excluded_skills",
-                EXCLUDED_SKILLS,
-                VarType.STAT,
-            )
-            column(
-                "restore_prayer",
-                RESTORE_PRAYER,
-                VarType.BOOLEAN,
-            )
+            column("excluded_skills", EXCLUDED_SKILLS, VarType.STAT)
+            column("restore_prayer", RESTORE_PRAYER, VarType.BOOLEAN)
             column("stamina", STAMINA, VarType.BOOLEAN)
             column("duration", DURATION, VarType.INT)
-            column(
-                "poison_immunity",
-                POISON_IMMUNITY,
-                VarType.INT,
-            )
-            column(
-                "venom_immunity",
-                VENOM_IMMUNITY,
-                VarType.INT,
-            )
-            column(
-                "full_protection",
-                FULL_PROTECTION,
-                VarType.BOOLEAN,
-            )
-            column(
-                "cures_disease",
-                CURES_DISEASE,
-                VarType.BOOLEAN,
-            )
+            column("poison_immunity", POISON_IMMUNITY, VarType.INT)
+            column("venom_immunity", VENOM_IMMUNITY, VarType.INT)
+            column("full_protection", FULL_PROTECTION, VarType.BOOLEAN)
+            column("cures_disease", CURES_DISEASE, VarType.BOOLEAN)
             column("handler", HANDLER, VarType.STRING)
-            column(
-                "base_effect",
-                BASE_EFFECT,
-                VarType.DBROW,
-            )
+            column("base_effect", BASE_EFFECT, VarType.DBROW)
             column("damage", DAMAGE, VarType.INT)
             column("variant", VARIANT, VarType.STRING)
 
@@ -83,10 +52,7 @@ object PotionEffectTable {
                     column(KIND, effect.kind)
 
                     if (effect.skills.isNotEmpty()) {
-                        columnRSCM(
-                            SKILLS,
-                            *effect.skills.toTypedArray(),
-                        )
+                        columnRSCM(SKILLS, *effect.skills.toTypedArray())
                     }
 
                     column(BASE, effect.base)
@@ -94,49 +60,23 @@ object PotionEffectTable {
                     column(AMOUNT, effect.amount)
 
                     if (effect.effects.isNotEmpty()) {
-                        columnRSCM(
-                            EFFECTS,
-                            *effect.effects.toTypedArray(),
-                        )
+                        columnRSCM(EFFECTS, *effect.effects.toTypedArray())
                     }
 
                     if (effect.excludedSkills.isNotEmpty()) {
-                        columnRSCM(
-                            EXCLUDED_SKILLS,
-                            *effect.excludedSkills.toTypedArray(),
-                        )
+                        columnRSCM(EXCLUDED_SKILLS, *effect.excludedSkills.toTypedArray())
                     }
 
-                    column(
-                        RESTORE_PRAYER,
-                        effect.restorePrayer,
-                    )
+                    column(RESTORE_PRAYER, effect.restorePrayer)
                     column(STAMINA, effect.stamina)
                     column(DURATION, effect.duration)
-                    column(
-                        POISON_IMMUNITY,
-                        effect.poisonImmunity,
-                    )
-                    column(
-                        VENOM_IMMUNITY,
-                        effect.venomImmunity,
-                    )
-                    column(
-                        FULL_PROTECTION,
-                        effect.fullProtection,
-                    )
-                    column(
-                        CURES_DISEASE,
-                        effect.curesDisease,
-                    )
+                    column(POISON_IMMUNITY, effect.poisonImmunity)
+                    column(VENOM_IMMUNITY, effect.venomImmunity)
+                    column(FULL_PROTECTION, effect.fullProtection)
+                    column(CURES_DISEASE, effect.curesDisease)
                     column(HANDLER, effect.handler)
 
-                    effect.baseEffect?.let { baseEffect ->
-                        columnRSCM(
-                            BASE_EFFECT,
-                            baseEffect,
-                        )
-                    }
+                    effect.baseEffect?.let { baseEffect -> columnRSCM(BASE_EFFECT, baseEffect) }
 
                     column(DAMAGE, effect.damage)
                     column(VARIANT, effect.variant)

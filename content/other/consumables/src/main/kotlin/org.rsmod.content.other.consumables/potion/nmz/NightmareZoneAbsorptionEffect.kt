@@ -31,34 +31,21 @@ class NightmareZoneAbsorptionEffect {
         }
     }
 
-    fun syncDisplay(
-        player: Player,
-    ) {
+    fun syncDisplay(player: Player) {
         VarPlayerIntMapSetter.set(
             player,
             ABSORPTION_VARBIT,
-            PlayerAbsorption
-                .points(player)
-                .coerceIn(
-                    minimumValue = 0,
-                    maximumValue = MAXIMUM_POINTS,
-                ),
+            PlayerAbsorption.points(player)
+                .coerceIn(minimumValue = 0, maximumValue = MAXIMUM_POINTS),
         )
     }
 
-    fun clearDisplay(
-        player: Player,
-    ) {
-        VarPlayerIntMapSetter.set(
-            player,
-            ABSORPTION_VARBIT,
-            0,
-        )
+    fun clearDisplay(player: Player) {
+        VarPlayerIntMapSetter.set(player, ABSORPTION_VARBIT, 0)
     }
 
     companion object {
-        private const val ABSORPTION_VARBIT: String =
-            "varbit.nzone_absorb_potion_effects"
+        private const val ABSORPTION_VARBIT: String = "varbit.nzone_absorb_potion_effects"
 
         private const val POINTS_PER_DOSE: Int = 50
         private const val MAXIMUM_POINTS: Int = 1_000

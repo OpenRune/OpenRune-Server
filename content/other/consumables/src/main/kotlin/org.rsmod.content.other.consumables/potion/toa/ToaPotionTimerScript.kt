@@ -20,35 +20,19 @@ constructor(
          * Temporary behavior until a Tombs session owns pause/resume.
          * This prevents raid-only effects from leaking into the normal world.
          */
-        onPlayerLogin {
-            effects.clearSessionEffects(player)
-        }
+        onPlayerLogin { effects.clearSessionEffects(player) }
 
-        onPlayerLogout {
-            effects.clearSessionEffects(player)
-        }
+        onPlayerLogout { effects.clearSessionEffects(player) }
 
-        onPlayerTimer(
-            ToaSmellingSaltsEffect.TIMER,
-        ) {
-            smellingSalts.process(this)
-        }
+        onPlayerTimer(ToaSmellingSaltsEffect.TIMER) { smellingSalts.process(this) }
 
-        onPlayerTimer(
-            ToaLiquidAdrenalineEffect.TIMER,
-        ) {
-            liquidAdrenaline.process(this)
-        }
+        onPlayerTimer(ToaLiquidAdrenalineEffect.TIMER) { liquidAdrenaline.process(this) }
 
-        onPlayerTimer(
-            ToaOverTimeEffect.SILK_DRESSING_TIMER,
-        ) {
+        onPlayerTimer(ToaOverTimeEffect.SILK_DRESSING_TIMER) {
             overTimeEffects.processSilkDressing(this)
         }
 
-        onPlayerTimer(
-            ToaOverTimeEffect.BLESSED_SCARAB_TIMER,
-        ) {
+        onPlayerTimer(ToaOverTimeEffect.BLESSED_SCARAB_TIMER) {
             overTimeEffects.processBlessedCrystalScarab(this)
         }
     }

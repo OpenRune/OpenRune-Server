@@ -61,7 +61,7 @@ public class ServerConfigLoader {
                             jdbcUrl = "jdbc:postgresql://127.0.0.1:5432/openrune_game",
                             user = "openrune",
                             password = "openrune",
-                        ),
+                        )
                 ),
             central = null,
         )
@@ -69,7 +69,6 @@ public class ServerConfigLoader {
     private companion object {
         private const val DEFAULT_WORLD = 255
 
-        private val yamlMapper: ObjectMapper =
-            ObjectMapper(YAMLFactory()).registerKotlinModule()
+        private val yamlMapper: ObjectMapper = ObjectMapper(YAMLFactory()).registerKotlinModule()
     }
 }

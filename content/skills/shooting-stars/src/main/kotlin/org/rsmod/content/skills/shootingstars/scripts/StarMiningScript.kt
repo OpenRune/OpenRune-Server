@@ -43,7 +43,7 @@ constructor(
             mes(
                 "This is a size-${stage.size} star. A Mining level of at least " +
                     "${stage.miningLevel} is required to mine this layer. " +
-                    "It has been mined ${stars.percentageToNextLevel()}% of the way to the next layer.",
+                    "It has been mined ${stars.percentageToNextLevel()}% of the way to the next layer."
             )
             return
         }
@@ -77,16 +77,18 @@ constructor(
             return
         }
 
-        val live = stars.currentBoundLoc() ?: run {
-            stopMining("The star is no longer here.")
-            return
-        }
+        val live =
+            stars.currentBoundLoc()
+                ?: run {
+                    stopMining("The star is no longer here.")
+                    return
+                }
 
         val stage = stars.currentStage()
         if (player.miningLvl < stage.miningLevel) {
             stopMining(
                 "This is a size-${stage.size} star. A Mining level of at least " +
-                    "${stage.miningLevel} is required to mine this layer.",
+                    "${stage.miningLevel} is required to mine this layer."
             )
             return
         }
@@ -131,10 +133,12 @@ constructor(
                 stopMining(null)
                 return
             }
-            val next = stars.currentBoundLoc() ?: run {
-                stopMining(null)
-                return
-            }
+            val next =
+                stars.currentBoundLoc()
+                    ?: run {
+                        stopMining(null)
+                        return
+                    }
             opLoc3(next)
             return
         }

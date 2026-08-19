@@ -32,9 +32,7 @@ class KrilTsutsaroth @Inject constructor(deps: BossDeps) : BossPluginScript(deps
         deps.npcRepo
             .findAll(ZoneKey.from(avatar.coords), zoneRadius = BODYGUARD_SEARCH_RADIUS)
             .filter { it.visType.isCategoryType(BODYGUARD_CATEGORY) && it.hitpoints == 0 }
-            .forEach { bodyguard ->
-                bodyguard.lifecycleRespawnCycle = deps.mapClock.cycle + 1
-            }
+            .forEach { bodyguard -> bodyguard.lifecycleRespawnCycle = deps.mapClock.cycle + 1 }
     }
 
     override val spec =

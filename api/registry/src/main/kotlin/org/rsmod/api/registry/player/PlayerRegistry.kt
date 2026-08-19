@@ -4,9 +4,7 @@ import jakarta.inject.Inject
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
-import org.rsmod.api.player.output.ChatType
 import org.rsmod.api.player.output.mes
-import org.rsmod.api.player.output.runClientScript
 import org.rsmod.api.registry.zone.ZonePlayerActivityBitSet
 import org.rsmod.events.EventBus
 import org.rsmod.game.entity.PathingEntity.Companion.INVALID_SLOT
@@ -149,19 +147,17 @@ constructor(
             if (characterId != 0 && player.characterId != characterId) {
                 continue
             }
-            //TODO MUTED
+            // TODO MUTED
         }
     }
 
     /**
-     * Marks matching online players disconnected after Central revokes their session (e.g. ban while online).
-     * [centralAccountId] matches [Player.accountId] (shared `accounts.id` with Central).
-     * [characterId] `0` = every character on that account; otherwise only that character row id.
+     * Marks matching online players disconnected after Central revokes their session (e.g. ban
+     * while online). [centralAccountId] matches [Player.accountId] (shared `accounts.id` with
+     * Central). [characterId] `0` = every character on that account; otherwise only that character
+     * row id.
      */
-    public fun disconnectPlayersForCentralRevoke(
-        centralAccountId: Long,
-        characterId: Int,
-    ) {
+    public fun disconnectPlayersForCentralRevoke(centralAccountId: Long, characterId: Int) {
         val aid = centralAccountId.toInt()
         for (player in playerList) {
             if (player.accountId != aid) {
@@ -178,10 +174,7 @@ constructor(
      * Disconnects matching online players after Central applies a `kick` punishment row (one-shot
      * notify). Uses a kick-style client close without clearing Central sessions.
      */
-    public fun disconnectPlayersForCentralKick(
-        centralAccountId: Long,
-        characterId: Int,
-    ) {
+    public fun disconnectPlayersForCentralKick(centralAccountId: Long, characterId: Int) {
         val aid = centralAccountId.toInt()
         for (player in playerList) {
             if (player.accountId != aid) {
@@ -194,13 +187,8 @@ constructor(
         }
     }
 
-    /**
-     * Applies a Discord link written in Central's DB to any online characters on that account.
-     */
-    public fun applyCentralDiscordSync(
-        centralAccountId: Long,
-        discordId: String,
-    ) {
+    /** Applies a Discord link written in Central's DB to any online characters on that account. */
+    public fun applyCentralDiscordSync(centralAccountId: Long, discordId: String) {
         val aid = centralAccountId.toInt()
         val parsed = discordId.trim().takeIf { it.isNotEmpty() }?.toLongOrNull()
         for (player in playerList) {
@@ -215,8 +203,8 @@ constructor(
     }
 
     /**
-     * Applies a display name written in Central's DB (staff rename, etc.) to the matching online player
-     * and rebuilds appearance so other clients see the new name.
+     * Applies a display name written in Central's DB (staff rename, etc.) to the matching online
+     * player and rebuilds appearance so other clients see the new name.
      */
     public fun applyCentralDisplayNameSync(
         centralAccountId: Long,

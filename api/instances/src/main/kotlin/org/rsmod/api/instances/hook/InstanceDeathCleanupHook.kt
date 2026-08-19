@@ -8,7 +8,8 @@ import org.rsmod.game.entity.Player
 
 internal class InstanceDeathCleanupHook
 @Inject
-constructor(private val manager: InstanceManager, private val worldClock: MapClock) : PlayerDeathCleanupHook {
+constructor(private val manager: InstanceManager, private val worldClock: MapClock) :
+    PlayerDeathCleanupHook {
     override fun cleanup(player: Player) {
         manager.handleDeath(player, worldClock.cycle)
     }

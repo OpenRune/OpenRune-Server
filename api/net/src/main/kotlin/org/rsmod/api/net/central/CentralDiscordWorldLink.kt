@@ -6,54 +6,51 @@ import org.rsmod.api.net.central.netty.WorldLinkNettyBlockingClient
 import org.rsmod.api.net.central.netty.WorldLinkNettyBlockingSession
 import org.rsmod.api.server.config.ServerConfig
 
-public class CentralDiscordWorldLink
-@Inject
-constructor(
-    private val serverConfig: ServerConfig,
-) {
-    public fun createGamePending(
-        accountId: Int,
-        discordUsername: String,
-    ): GamePendingResult {
-        val settings = CentralWorldLinkSettings.resolve(serverConfig) ?: return GamePendingResult.Unavailable
+public class CentralDiscordWorldLink @Inject constructor(private val serverConfig: ServerConfig) {
+    public fun createGamePending(accountId: Int, discordUsername: String): GamePendingResult {
+        val settings =
+            CentralWorldLinkSettings.resolve(serverConfig) ?: return GamePendingResult.Unavailable
         return runCatching {
-            withHandshake(settings) { session ->
-                session.send(WorldLinkPackets.gameDiscordLinkPending(accountId, discordUsername))
-                val frame = session.recvInbound(SOCKET_TIMEOUT_MS.toLong())
-                when (val op = frame[0].toInt() and 0xFF) {
-                    WorldLinkFrameSpecs.OP_GAME_DISCORD_LINK_PENDING_OK -> {
-                        val payload = WorldLinkFrameSpecs.decodeGameDiscordLinkPendingOk(frame)
-                        GamePendingResult.Ok(
-                            code = payload.code,
-                            dmSent = payload.dmSent,
-                        )
-                    }
-                    WorldLinkFrameSpecs.OP_GAME_DISCORD_LINK_PENDING_FAIL -> {
-                        val reason = frame[1].toInt() and 0xFF
-                        when (reason) {
-                            WorldLinkFrameSpecs.GAME_DISCORD_LINK_PENDING_FAIL_ALREADY_LINKED ->
-                                GamePendingResult.AlreadyLinked
-                            WorldLinkFrameSpecs.GAME_DISCORD_LINK_PENDING_FAIL_DISCORD_NOT_FOUND ->
-                                GamePendingResult.DiscordNotFound
-                            else -> GamePendingResult.Unavailable
+                withHandshake(settings) { session ->
+                    session.send(
+                        WorldLinkPackets.gameDiscordLinkPending(accountId, discordUsername)
+                    )
+                    val frame = session.recvInbound(SOCKET_TIMEOUT_MS.toLong())
+                    when (val op = frame[0].toInt() and 0xFF) {
+                        WorldLinkFrameSpecs.OP_GAME_DISCORD_LINK_PENDING_OK -> {
+                            val payload = WorldLinkFrameSpecs.decodeGameDiscordLinkPendingOk(frame)
+                            GamePendingResult.Ok(code = payload.code, dmSent = payload.dmSent)
                         }
+                        WorldLinkFrameSpecs.OP_GAME_DISCORD_LINK_PENDING_FAIL -> {
+                            val reason = frame[1].toInt() and 0xFF
+                            when (reason) {
+                                WorldLinkFrameSpecs.GAME_DISCORD_LINK_PENDING_FAIL_ALREADY_LINKED ->
+                                    GamePendingResult.AlreadyLinked
+                                WorldLinkFrameSpecs
+                                    .GAME_DISCORD_LINK_PENDING_FAIL_DISCORD_NOT_FOUND ->
+                                    GamePendingResult.DiscordNotFound
+                                else -> GamePendingResult.Unavailable
+                            }
+                        }
+                        else -> GamePendingResult.Unavailable
                     }
-                    else -> GamePendingResult.Unavailable
                 }
             }
-        }.getOrElse { GamePendingResult.Unavailable }
+            .getOrElse { GamePendingResult.Unavailable }
     }
 
     public fun invalidatePending(accountId: Int): Boolean {
         val settings = CentralWorldLinkSettings.resolve(serverConfig) ?: return false
         return runCatching {
-            withHandshake(settings) { session ->
-                session.send(WorldLinkPackets.gameDiscordLinkInvalidate(accountId))
-                val frame = session.recvInbound(SOCKET_TIMEOUT_MS.toLong())
-                frame.isNotEmpty() &&
-                    frame[0].toInt() and 0xFF == WorldLinkFrameSpecs.OP_GAME_DISCORD_LINK_INVALIDATE_ACK
+                withHandshake(settings) { session ->
+                    session.send(WorldLinkPackets.gameDiscordLinkInvalidate(accountId))
+                    val frame = session.recvInbound(SOCKET_TIMEOUT_MS.toLong())
+                    frame.isNotEmpty() &&
+                        frame[0].toInt() and 0xFF ==
+                            WorldLinkFrameSpecs.OP_GAME_DISCORD_LINK_INVALIDATE_ACK
+                }
             }
-        }.getOrDefault(false)
+            .getOrDefault(false)
     }
 
     private inline fun <T> withHandshake(
@@ -79,10 +76,7 @@ constructor(
     }
 
     public sealed class GamePendingResult {
-        public data class Ok(
-            val code: Int,
-            val dmSent: Boolean,
-        ) : GamePendingResult()
+        public data class Ok(val code: Int, val dmSent: Boolean) : GamePendingResult()
 
         public data object AlreadyLinked : GamePendingResult()
 

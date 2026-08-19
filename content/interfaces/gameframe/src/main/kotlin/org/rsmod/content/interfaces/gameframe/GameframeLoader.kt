@@ -1,6 +1,5 @@
 package org.rsmod.content.interfaces.gameframe
 
-import dev.openrune.definition.type.widget.ComponentType
 import dev.openrune.rscm.RSCM
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
@@ -41,7 +40,9 @@ internal class GameframeLoader {
         val stoneArrangement = row.stoneArrangement
 
         val mappings =
-            row.mappings.filterValuesNotNull().associate { Component(it.key.packed) to Component(it.value.packed) }
+            row.mappings.filterValuesNotNull().associate {
+                Component(it.key.packed) to Component(it.value.packed)
+            }
 
         return Gameframe(
             topLevel = topLevel,
@@ -65,13 +66,19 @@ internal class GameframeLoader {
         listOf(
             GameframeOverlay("interface.chatbox", "component.toplevel_osrs_stretch:chat_container"),
             GameframeOverlay("interface.buff_bar", "component.toplevel_osrs_stretch:buff_bar"),
-            GameframeOverlay("interface.stat_boosts_hud", "component.toplevel_osrs_stretch:stat_boosts_hud"),
+            GameframeOverlay(
+                "interface.stat_boosts_hud",
+                "component.toplevel_osrs_stretch:stat_boosts_hud",
+            ),
             GameframeOverlay("interface.pm_chat", "component.toplevel_osrs_stretch:pm_container"),
             GameframeOverlay("interface.hpbar_hud", "component.toplevel_osrs_stretch:hpbar_hud"),
             GameframeOverlay("interface.orbs", "component.toplevel_osrs_stretch:orbs"),
             GameframeOverlay("interface.xp_drops", "component.toplevel_osrs_stretch:xp_drops"),
             GameframeOverlay("interface.popout", "component.toplevel_osrs_stretch:popout"),
-            GameframeOverlay("interface.ehc_worldhop", "component.toplevel_osrs_stretch:tli_listener"),
+            GameframeOverlay(
+                "interface.ehc_worldhop",
+                "component.toplevel_osrs_stretch:tli_listener",
+            ),
             GameframeOverlay("interface.stats", "component.toplevel_osrs_stretch:side1"),
             GameframeOverlay("interface.side_journal", "component.toplevel_osrs_stretch:side2"),
             GameframeOverlay("interface.inventory", "component.toplevel_osrs_stretch:side3"),
@@ -86,6 +93,9 @@ internal class GameframeLoader {
             GameframeOverlay("interface.music", "component.toplevel_osrs_stretch:side13"),
             GameframeOverlay("interface.side_channels", "component.toplevel_osrs_stretch:side7"),
             GameframeOverlay("interface.combat_interface", "component.toplevel_osrs_stretch:side0"),
-            GameframeOverlay("interface.notification_display", "component.toplevel_osrs_stretch:notifications"),
+            GameframeOverlay(
+                "interface.notification_display",
+                "component.toplevel_osrs_stretch:notifications",
+            ),
         )
 }

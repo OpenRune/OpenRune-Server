@@ -12,18 +12,14 @@ import org.rsmod.api.server.config.CentralPostgresYaml
 import org.rsmod.api.server.config.ServerConfig
 
 public object EmbeddedSameInstancePostgres {
-    @Volatile
-    private var embedded: EmbeddedPostgres? = null
+    @Volatile private var embedded: EmbeddedPostgres? = null
 
-    @Volatile
-    private var reused: EmbeddedPostgresSupport.Session? = null
+    @Volatile private var reused: EmbeddedPostgresSupport.Session? = null
 
-    @Volatile
-    private var activeDataDir: Path? = null
+    @Volatile private var activeDataDir: Path? = null
 
     /** Survives mid-stop clearing of [activeDataDir] so a hung close can still be force-killed. */
-    @Volatile
-    private var lastKnownDataDir: Path? = null
+    @Volatile private var lastKnownDataDir: Path? = null
 
     /**
      * Starts embedded PostgreSQL when same-instance Central is enabled and no JDBC URL is set.
@@ -71,8 +67,8 @@ public object EmbeddedSameInstancePostgres {
 
     /**
      * Stops the owned embedded instance (if any) and ensures the postmaster for [activeDataDir] is
-     * down. Caps wait at [timeoutMs]; on timeout, force-kills the postmaster so IntelliJ Stop cannot
-     * hang indefinitely on `EmbeddedPostgres.close()`.
+     * down. Caps wait at [timeoutMs]; on timeout, force-kills the postmaster so IntelliJ Stop
+     * cannot hang indefinitely on `EmbeddedPostgres.close()`.
      */
     public fun stop(timeoutMs: Long = DEFAULT_STOP_TIMEOUT_MS) {
         val owned: EmbeddedPostgres?

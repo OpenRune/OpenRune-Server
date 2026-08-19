@@ -45,7 +45,7 @@ data class PackType(
 )
 
 class PackServerConfig(
-    private val rev : Int,
+    private val rev: Int,
     private val directory: File,
     private val tokenizedReplacements: Map<String, String> = emptyMap(),
     private val tokenizedFile: Path? = null,
@@ -90,8 +90,10 @@ class PackServerConfig(
         registerMergedBaseAndTomlPackType<ObjectServerType, ObjectType>(
             table = "object",
             decoder = ObjectDecoder(rev),
-            loadBaseInto = { c, dest -> OsrsCacheProvider.ObjectDecoder(dev.openrune.revision.first).load(c, dest) },
-            codec = { base, overlay -> ObjectServerCodec(rev,base, overlay, examinesObject) },
+            loadBaseInto = { c, dest ->
+                OsrsCacheProvider.ObjectDecoder(dev.openrune.revision.first).load(c, dest)
+            },
+            codec = { base, overlay -> ObjectServerCodec(rev, base, overlay, examinesObject) },
             create = { ObjectServerType(it) },
         )
 
@@ -108,12 +110,15 @@ class PackServerConfig(
         val slayerDir = File(directory, "slayer")
         val slayerTaskByNpcId = SlayerTargetMonsterLoader.loadNpcSlayerTaskIds(slayerDir, mapper)
         val slayerTaskTipByNpcId = SlayerNpcTipLoader.loadNpcSlayerTaskTips(slayerDir, mapper)
-        val slayerSuperiorByNpcId = SlayerSuperiorMonsterLoader.loadNpcSuperiorParams(slayerDir, mapper)
+        val slayerSuperiorByNpcId =
+            SlayerSuperiorMonsterLoader.loadNpcSuperiorParams(slayerDir, mapper)
 
         registerMergedBaseAndTomlPackType<NpcServerType, NpcType>(
             table = "npc",
             decoder = NpcDecoder(rev),
-            loadBaseInto = { c, dest -> OsrsCacheProvider.NPCDecoder(dev.openrune.revision.first).load(c, dest) },
+            loadBaseInto = { c, dest ->
+                OsrsCacheProvider.NPCDecoder(dev.openrune.revision.first).load(c, dest)
+            },
             codec = { base, overlay ->
                 NpcServerCodec(
                     rev,
@@ -131,8 +136,10 @@ class PackServerConfig(
         registerMergedBaseAndTomlPackType<ItemServerType, ItemType>(
             table = "item",
             decoder = ItemDecoder(rev),
-            loadBaseInto = { c, dest -> OsrsCacheProvider.ItemDecoder(dev.openrune.revision.first).load(c, dest) },
-            codec = { base, overlay -> ItemServerCodec(rev,base, overlay) },
+            loadBaseInto = { c, dest ->
+                OsrsCacheProvider.ItemDecoder(dev.openrune.revision.first).load(c, dest)
+            },
+            codec = { base, overlay -> ItemServerCodec(rev, base, overlay) },
             create = { ItemServerType(it) },
         )
 

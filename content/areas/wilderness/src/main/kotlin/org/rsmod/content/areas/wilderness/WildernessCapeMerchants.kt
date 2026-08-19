@@ -7,7 +7,6 @@ import org.rsmod.api.script.onOpNpc1
 import org.rsmod.api.script.onOpNpc3
 import org.rsmod.api.shops.Shops
 import org.rsmod.game.entity.Npc
-import org.rsmod.game.entity.Player
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
@@ -20,7 +19,10 @@ class WildernessCapeMerchants @Inject constructor(private val shops: Shops) : Pl
         }
     }
 
-    private suspend fun ProtectedAccess.merchantDialogue(npc: Npc, openingDialogue: Boolean = true) =
+    private suspend fun ProtectedAccess.merchantDialogue(
+        npc: Npc,
+        openingDialogue: Boolean = true,
+    ) =
         startDialogue(npc) {
             if (openingDialogue) {
                 chatNpc(happy, "Hello there, are you interested in buying one of my special capes?")
@@ -28,13 +30,9 @@ class WildernessCapeMerchants @Inject constructor(private val shops: Shops) : Pl
             shopKeeper(npc)
         }
 
-
     private suspend fun Dialogue.shopKeeper(npc: Npc) {
-        val choice = choice3(
-            "What's so special about your capes?", 1,
-            "Yes please!", 2,
-            "No thanks.", 3,
-        )
+        val choice =
+            choice3("What's so special about your capes?", 1, "Yes please!", 2, "No thanks.", 3)
 
         when (choice) {
             1 -> whatSoSpecial(npc)

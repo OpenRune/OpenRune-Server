@@ -9,7 +9,9 @@ import org.rsmod.api.server.config.ServerConfig
 import org.rsmod.server.services.Service
 import org.rsmod.server.services.ServiceManager
 
-class GameBootstrap @Inject constructor(
+class GameBootstrap
+@Inject
+constructor(
     services: Set<Service>,
     private val serverConfig: ServerConfig,
     private val centralEmbedded: CentralEmbeddedLifecycle,

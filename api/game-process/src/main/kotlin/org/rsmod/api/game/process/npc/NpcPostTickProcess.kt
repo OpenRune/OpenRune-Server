@@ -50,9 +50,9 @@ constructor(
     }
 
     /**
-     * Drives the persistent idle animation set via [Npc.setIdleAnim], re-issuing it while the npc is
-     * idle. It is skipped on ticks where another animation already played (e.g. an attack) or where
-     * the npc moved, since both drive their own client-side animation.
+     * Drives the persistent idle animation set via [Npc.setIdleAnim], re-issuing it while the npc
+     * is idle. It is skipped on ticks where another animation already played (e.g. an attack) or
+     * where the npc moved, since both drive their own client-side animation.
      */
     private fun Npc.updateIdleSequence() {
         val idle = idleSequence

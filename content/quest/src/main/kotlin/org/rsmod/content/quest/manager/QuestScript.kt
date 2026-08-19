@@ -9,7 +9,10 @@ import org.rsmod.game.entity.Player
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
-enum class JournalState { OVERVIEW, LOG }
+enum class JournalState {
+    OVERVIEW,
+    LOG,
+}
 
 enum class QuestProgressState {
     NOT_STARTED,
@@ -35,13 +38,12 @@ enum class QuestProgressState {
     }
 }
 
-@DslMarker
-annotation class QuestJournalDsl
+@DslMarker annotation class QuestJournalDsl
 
 data class QuestReward(
     val xp: Map<String, Double> = emptyMap(),
     val items: List<Pair<String, Int>> = emptyList(),
-    val extraText: String? = null
+    val extraText: String? = null,
 )
 
 @QuestJournalDsl
@@ -70,12 +72,11 @@ class QuestRewardBuilder {
     fun build(): QuestReward = QuestReward(_xp, _items, _extraText)
 }
 
-
 abstract class QuestScript(
     val questKey: String,
-    val questVarp : String,
+    val questVarp: String,
     val rewards: QuestReward,
-    val completedQuestItemDisplay: ItemRewardDisplay
+    val completedQuestItemDisplay: ItemRewardDisplay,
 ) : PluginScript() {
 
     private var Player.questState by intVarp(questVarp)
@@ -90,7 +91,6 @@ abstract class QuestScript(
 
     abstract fun ScriptContext.init()
 
-
     override fun ScriptContext.startup() {
         RSCM.requireRSCM(RSCMType.DBROW, "dbrow.${questKey}")
 
@@ -103,21 +103,18 @@ abstract class QuestScript(
             ),
         )
 
-        onPlayerLogin {
-            player.questState = quest.getQuestStage(player)
-        }
+        onPlayerLogin { player.questState = quest.getQuestStage(player) }
 
         this.init()
     }
 
     protected fun questJournal(
         player: ProtectedAccess,
-        builder: QuestJournalBuilder.() -> Unit
+        builder: QuestJournalBuilder.() -> Unit,
     ): String = buildQuestJournal(player, quest, builder)
 
     protected fun completionJournal(
         player: ProtectedAccess,
-        builder: QuestJournalBuilder.() -> Unit
+        builder: QuestJournalBuilder.() -> Unit,
     ): String = buildCompletionJournal(player, quest, builder)
 }
-

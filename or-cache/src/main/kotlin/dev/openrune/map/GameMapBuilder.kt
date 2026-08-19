@@ -1,10 +1,10 @@
 package dev.openrune.map
 
 import it.unimi.dsi.fastutil.bytes.Byte2IntOpenHashMap
+import java.util.concurrent.ConcurrentHashMap
 import org.rsmod.game.loc.LocEntity
 import org.rsmod.game.loc.LocZoneKey
 import org.rsmod.map.zone.ZoneKey
-import java.util.concurrent.ConcurrentHashMap
 
 @DslMarker private annotation class GameMapBuilderDslMarker
 

@@ -25,14 +25,11 @@ constructor(
     private val activityAccess: ConsumableActivityAccess,
 ) : PluginScript() {
     override fun ScriptContext.startup() {
-        val registrations =
-            mutableListOf<PotionRegistration>()
+        val registrations = mutableListOf<PotionRegistration>()
 
-        val registeredItems =
-            mutableMapOf<Int, String>()
+        val registeredItems = mutableMapOf<Int, String>()
 
-        val errors =
-            mutableListOf<String>()
+        val errors = mutableListOf<String>()
 
         PotionRow.all().forEach { potion ->
             if (!effects.supports(potion.effect)) {
@@ -42,8 +39,7 @@ constructor(
             }
 
             potion.items.forEach { item ->
-                val option =
-                    item.consumeOption()
+                val option = item.consumeOption()
 
                 if (option == -1) {
                     errors +=
@@ -54,11 +50,7 @@ constructor(
                     return@forEach
                 }
 
-                val previous =
-                    registeredItems.putIfAbsent(
-                        item.id,
-                        potion.name,
-                    )
+                val previous = registeredItems.putIfAbsent(item.id, potion.name)
 
                 if (previous != null) {
                     errors +=
@@ -67,27 +59,15 @@ constructor(
                     return@forEach
                 }
 
-                registrations +=
-                    PotionRegistration(
-                        potion = potion,
-                        item = item,
-                        option = option,
-                    )
+                registrations += PotionRegistration(potion = potion, item = item, option = option)
             }
         }
 
         require(errors.isEmpty()) {
             buildString {
-                appendLine(
-                    "Potion table validation failed with " +
-                        "${errors.size} problem(s):",
-                )
+                appendLine("Potion table validation failed with " + "${errors.size} problem(s):")
 
-                errors
-                    .sorted()
-                    .forEach { error ->
-                        appendLine(" - $error")
-                    }
+                errors.sorted().forEach { error -> appendLine(" - $error") }
             }
         }
 
@@ -108,48 +88,25 @@ constructor(
         when (option) {
             1 ->
                 onOpHeld1(item) {
-                    drink(
-                        potion = potion,
-                        slot = it.slot,
-                        type = it.type,
-                        inventory = it.inventory,
-                    )
+                    drink(potion = potion, slot = it.slot, type = it.type, inventory = it.inventory)
                 }
 
             2 ->
                 onOpHeld2(item) {
-                    drink(
-                        potion = potion,
-                        slot = it.slot,
-                        type = it.type,
-                        inventory = it.inventory,
-                    )
+                    drink(potion = potion, slot = it.slot, type = it.type, inventory = it.inventory)
                 }
 
             3 ->
                 onOpHeld3(item) {
-                    drink(
-                        potion = potion,
-                        slot = it.slot,
-                        type = it.type,
-                        inventory = it.inventory,
-                    )
+                    drink(potion = potion, slot = it.slot, type = it.type, inventory = it.inventory)
                 }
 
             4 ->
                 onOpHeld4(item) {
-                    drink(
-                        potion = potion,
-                        slot = it.slot,
-                        type = it.type,
-                        inventory = it.inventory,
-                    )
+                    drink(potion = potion, slot = it.slot, type = it.type, inventory = it.inventory)
                 }
 
-            else ->
-                error(
-                    "Unsupported potion consume option: $option.",
-                )
+            else -> error("Unsupported potion consume option: $option.")
         }
     }
 
@@ -159,31 +116,18 @@ constructor(
         type: ItemServerType,
         inventory: Inventory,
     ) {
-        if (
-            !ConsumableDelayState.canConsume(
-                access = this,
-                type = ConsumableType.POTION,
-            )
-        ) {
+        if (!ConsumableDelayState.canConsume(access = this, type = ConsumableType.POTION)) {
             return
         }
 
-        val doseIndex =
-            potion.items.indexOfFirst { item ->
-                item.id == type.id
-            }
+        val doseIndex = potion.items.indexOfFirst { item -> item.id == type.id }
 
         if (doseIndex == -1) {
             return
         }
 
-        if (
-            potion.wildernessOnly &&
-            !coords.isInWilderness(areaChecker)
-        ) {
-            mes(
-                "You can only drink this potion in the Wilderness.",
-            )
+        if (potion.wildernessOnly && !coords.isInWilderness(areaChecker)) {
+            mes("You can only drink this potion in the Wilderness.")
             return
         }
 
@@ -198,7 +142,7 @@ constructor(
                 restrictedActivityMessage(
                     minigameOnly = potion.minigameOnly,
                     raidOnly = potion.raidOnly,
-                ),
+                )
             )
             return
         }
@@ -207,17 +151,10 @@ constructor(
             return
         }
 
-        val replacement =
-            potion.items.getOrNull(doseIndex + 1)
-                ?: potion.empty
+        val replacement = potion.items.getOrNull(doseIndex + 1) ?: potion.empty
 
         val transaction =
-            invReplaceSlot(
-                inv = inventory,
-                slot = slot,
-                count = 1,
-                replacement = replacement,
-            )
+            invReplaceSlot(inv = inventory, slot = slot, count = 1, replacement = replacement)
 
         if (transaction.failure) {
             return
@@ -226,15 +163,9 @@ constructor(
         anim(DRINK_ANIMATION)
         soundSynth(DRINK_SOUND)
 
-        effects.apply(
-            access = this,
-            effect = potion.effect,
-        )
+        effects.apply(access = this, effect = potion.effect)
 
-        effects.healMix(
-            access = this,
-            amount = potion.heal,
-        )
+        effects.healMix(access = this, amount = potion.heal)
 
         ConsumableDelayState.recordConsumption(
             access = this,
@@ -245,24 +176,13 @@ constructor(
 
         player.resetFaceEntity()
 
-        mes(
-            "You drink some of your ${potion.name.lowercase()}.",
-        )
+        mes("You drink some of your ${potion.name.lowercase()}.")
 
-        mes(
-            remainingDoseMessage(
-                potion = potion,
-                consumedIndex = doseIndex,
-            ),
-        )
+        mes(remainingDoseMessage(potion = potion, consumedIndex = doseIndex))
     }
 
-    private fun remainingDoseMessage(
-        potion: PotionRow,
-        consumedIndex: Int,
-    ): String {
-        val remaining =
-            potion.items.lastIndex - consumedIndex
+    private fun remainingDoseMessage(potion: PotionRow, consumedIndex: Int): String {
+        val remaining = potion.items.lastIndex - consumedIndex
 
         return when (remaining) {
             0 -> "You have finished your potion."
@@ -275,10 +195,7 @@ constructor(
         val index =
             interfaceOptions.indexOfFirst { option ->
                 CONSUME_OPTIONS.any { consumeOption ->
-                    option.equals(
-                        other = consumeOption,
-                        ignoreCase = true,
-                    )
+                    option.equals(other = consumeOption, ignoreCase = true)
                 }
             }
 
@@ -291,41 +208,23 @@ constructor(
 
     private fun ItemServerType.optionSummary(): String =
         interfaceOptions
-            .mapIndexed { index, option ->
-                "${index + 1}='$option'"
-            }
-            .joinToString(
-                prefix = "[",
-                postfix = "]",
-            )
+            .mapIndexed { index, option -> "${index + 1}='$option'" }
+            .joinToString(prefix = "[", postfix = "]")
 
-    private fun restrictedActivityMessage(
-        minigameOnly: String,
-        raidOnly: String,
-    ): String {
-        val key =
-            minigameOnly.ifBlank {
-                raidOnly
-            }
+    private fun restrictedActivityMessage(minigameOnly: String, raidOnly: String): String {
+        val key = minigameOnly.ifBlank { raidOnly }
 
         val activity =
             when (key) {
-                "nightmare_zone" ->
-                    "The Nightmare Zone"
+                "nightmare_zone" -> "The Nightmare Zone"
 
-                "chambers_of_xeric" ->
-                    "The Chambers of Xeric"
+                "chambers_of_xeric" -> "The Chambers of Xeric"
 
-                "tombs_of_amascut" ->
-                    "The Tombs of Amascut"
+                "tombs_of_amascut" -> "The Tombs of Amascut"
 
-                "moons_of_peril" ->
-                    "The Moons of Peril"
+                "moons_of_peril" -> "The Moons of Peril"
 
-                else ->
-                    key
-                        .replace('_', ' ')
-                        .replaceFirstChar(Char::uppercase)
+                else -> key.replace('_', ' ').replaceFirstChar(Char::uppercase)
             }
 
         return "You can only drink this potion in $activity."
@@ -338,18 +237,10 @@ constructor(
     )
 
     private companion object {
-        const val DRINK_SOUND: Int =
-            2401
+        const val DRINK_SOUND: Int = 2401
 
-        const val DRINK_ANIMATION: String =
-            "seq.human_eat"
+        const val DRINK_ANIMATION: String = "seq.human_eat"
 
-        val CONSUME_OPTIONS: Set<String> =
-            setOf(
-                "Drink",
-                "Crush",
-                "Apply",
-                "Crack",
-            )
+        val CONSUME_OPTIONS: Set<String> = setOf("Drink", "Crush", "Apply", "Crack")
     }
 }

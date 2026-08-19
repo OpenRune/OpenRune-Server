@@ -269,8 +269,7 @@ constructor(
         val animDelay =
             ServerCacheManager.getAnim(CRASH_IMPACT_ANIM.asRSCM(RSCMType.SEQ))
                 ?.tickDuration
-                ?.takeIf { it > 0 }
-                ?: CRASH_IMPACT_FALLBACK_CYCLES
+                ?.takeIf { it > 0 } ?: CRASH_IMPACT_FALLBACK_CYCLES
         impactEndCycle = mapClock.cycle + animDelay.coerceIn(1, CRASH_IMPACT_MAX_CYCLES)
     }
 
@@ -364,7 +363,7 @@ constructor(
         player.mes("You are the first player to mine this star!")
         player.mes(
             "Congratulations! You were the first person to find this star! " +
-                "Your stardust will be doubled for the next $DISCOVERER_BONUS_DUST dust you mine!",
+                "Your stardust will be doubled for the next $DISCOVERER_BONUS_DUST dust you mine!"
         )
     }
 
@@ -377,8 +376,9 @@ constructor(
     fun chipUnderLevelProgress() {
         if (layerMiningStarted) return
         underLevelProgressCycles =
-            (underLevelProgressCycles + UNDER_LEVEL_CHIP_CYCLES)
-                .coerceAtMost(ShootingStarStages.LAYER_DURATION_CYCLES - 1)
+            (underLevelProgressCycles + UNDER_LEVEL_CHIP_CYCLES).coerceAtMost(
+                ShootingStarStages.LAYER_DURATION_CYCLES - 1
+            )
         updateHeadbar()
     }
 
@@ -408,7 +408,7 @@ constructor(
                         "The star has been replaced by a new crashing star!"
                     } else {
                         "The star has been mined completely!"
-                    },
+                    }
                 )
             }
         }
@@ -459,14 +459,14 @@ constructor(
             } else {
                 0
             }
-        return (activeElapsed + underLevelProgressCycles)
-            .coerceAtMost(ShootingStarStages.LAYER_DURATION_CYCLES)
+        return (activeElapsed + underLevelProgressCycles).coerceAtMost(
+            ShootingStarStages.LAYER_DURATION_CYCLES
+        )
     }
 
     private fun spawnHeadbarNpc(coords: CoordGrid) {
         removeHeadbarNpc()
-        val type =
-            ServerCacheManager.getNpc("npc.star_headbar_npc".asRSCM(RSCMType.NPC)) ?: return
+        val type = ServerCacheManager.getNpc("npc.star_headbar_npc".asRSCM(RSCMType.NPC)) ?: return
         val npc = Npc(type, coords)
         npc.mode = NpcMode.None
         npc.hitpoints = ShootingStarStages.LAYER_DURATION_CYCLES
@@ -501,7 +501,7 @@ constructor(
                 endFill = fill,
                 startTime = 0,
                 endTime = 0,
-            ),
+            )
         )
     }
 

@@ -1,9 +1,9 @@
 package org.rsmod.api.net.central.embed
 
 import com.github.michaelbull.logging.InlineLogger
-import dev.or2.central.util.config.centralRuntimeConfigFromJdbc
-import dev.or2.central.embed.OpenRuneCentralEmbeddedServer
 import dev.or2.central.auth.PasswordAuthConfig
+import dev.or2.central.embed.OpenRuneCentralEmbeddedServer
+import dev.or2.central.util.config.centralRuntimeConfigFromJdbc
 import jakarta.inject.Inject
 import jakarta.inject.Singleton
 import java.sql.DriverManager
@@ -33,18 +33,14 @@ constructor(
         val jdbcFromYaml = pg.jdbcUrl.trim()
         val (jdbc, dbUser, dbPassword) =
             if (jdbcFromYaml.isNotEmpty()) {
-                Triple(
-                    jdbcFromYaml,
-                    pg.user.trim().ifBlank { "openrune" },
-                    pg.password,
-                )
+                Triple(jdbcFromYaml, pg.user.trim().ifBlank { "openrune" }, pg.password)
             } else {
                 val embeddedCreds =
                     EmbeddedSameInstancePostgres.jdbcTripleIfEmbedded()
                         ?: error(
                             "game.yml: `central.postgres.jdbc-url` is blank but embedded PostgreSQL did not start. " +
                                 "Ensure [org.rsmod.server.app.GameBootstrap] calls " +
-                                "`EmbeddedSameInstancePostgres.ensureStarted` before starting embedded Central.",
+                                "`EmbeddedSameInstancePostgres.ensureStarted` before starting embedded Central."
                         )
                 embeddedCreds
             }
@@ -72,7 +68,7 @@ constructor(
                 bcryptCost = runtime.auth.bcryptCost,
                 argon2Iterations = runtime.auth.argon2Iterations,
                 argon2MemoryKib = runtime.auth.argon2MemoryKib,
-            ),
+            )
         )
 
         val centralServer = OpenRuneCentralEmbeddedServer(c.httpPort, runtime)
@@ -86,13 +82,16 @@ constructor(
             }
             logger.warn(t) { "Embedded OpenRune Central failed to start." }
             runCatching {
-                DriverManager.getConnection(jdbc, dbUser, dbPassword).use { conn ->
-                    conn.autoCommit = true
-                    PostgresPublicSchemaReset.dropAllInPublicSchema(conn)
+                    DriverManager.getConnection(jdbc, dbUser, dbPassword).use { conn ->
+                        conn.autoCommit = true
+                        PostgresPublicSchemaReset.dropAllInPublicSchema(conn)
+                    }
                 }
-            }.onFailure { dropEx ->
-                logger.error(dropEx) { "Failed to reset schema `public` after Central startup failure." }
-            }
+                .onFailure { dropEx ->
+                    logger.error(dropEx) {
+                        "Failed to reset schema `public` after Central startup failure."
+                    }
+                }
             logger.error {
                 "Embedded database was reset (schema `public` dropped). Please restart the server."
             }

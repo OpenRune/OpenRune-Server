@@ -3,14 +3,14 @@ package org.rsmod.api.instances
 import jakarta.inject.Inject
 import kotlin.random.Random
 import org.rsmod.api.instances.events.InstanceEndedEvent
-import org.rsmod.api.instances.hook.InstanceEnterAction
-import org.rsmod.api.instances.hook.InstanceEnterPrelude
-import org.rsmod.api.instances.hook.InstanceObjectHookRegistry
 import org.rsmod.api.instances.events.InstancePlayerJoinEvent
 import org.rsmod.api.instances.events.InstancePlayerLeaveEvent
 import org.rsmod.api.instances.events.InstanceStartedEvent
 import org.rsmod.api.instances.events.InstanceTimeTickEvent
 import org.rsmod.api.instances.events.instanceEventId
+import org.rsmod.api.instances.hook.InstanceEnterAction
+import org.rsmod.api.instances.hook.InstanceEnterPrelude
+import org.rsmod.api.instances.hook.InstanceObjectHookRegistry
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.script.onEvent
 import org.rsmod.api.table.InstanceSettingsRow
@@ -18,9 +18,7 @@ import org.rsmod.game.MapClock
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
-public abstract class InstanceScript(
-    private val registry: BossInstanceRegistry,
-) : PluginScript() {
+public abstract class InstanceScript(private val registry: BossInstanceRegistry) : PluginScript() {
 
     @field:Inject private lateinit var objectHooks: InstanceObjectHookRegistry
     @field:Inject protected lateinit var manager: InstanceManager
@@ -28,7 +26,8 @@ public abstract class InstanceScript(
 
     private val rowData: InstanceSettingsRow by lazy { InstanceSettingsRow.getRow(settingsRow()) }
 
-    protected val key: String get() = rowData.key
+    protected val key: String
+        get() = rowData.key
 
     protected abstract fun area(): InstanceArea
 
@@ -47,7 +46,9 @@ public abstract class InstanceScript(
 
     protected open fun spawnOnFirstJoin(): Boolean = false
 
-    /** When true the instance is destroyed as soon as the last player leaves (no reclaim/rejoin). */
+    /**
+     * When true the instance is destroyed as soon as the last player leaves (no reclaim/rejoin).
+     */
     protected open fun destroyWhenEmpty(): Boolean = false
 
     protected fun buildSpec(area: InstanceArea = area()): InstanceSpec {
@@ -83,9 +84,7 @@ public abstract class InstanceScript(
         objectHooks.registerEnterPrelude(key, action)
     }
 
-    /**
-     * Applies a create/join result, running any registered enter prelude or transition first.
-     */
+    /** Applies a create/join result, running any registered enter prelude or transition first. */
     protected suspend fun ProtectedAccess.completeInstanceEntry(
         result: InstanceManager.Result,
         runPreludeWhen: (InstanceManager.Result) -> Boolean = { result ->
@@ -98,17 +97,20 @@ public abstract class InstanceScript(
     ) {
         when (result) {
             is InstanceManager.Result.Failed -> mes(result.reason)
-            is InstanceManager.Result.Created, is InstanceManager.Result.Joined -> {
-                val enterCoord = when (result) {
-                    is InstanceManager.Result.Created -> result.enter
-                    is InstanceManager.Result.Joined -> result.enter
-                    else -> return
-                }
-                val session = when (result) {
-                    is InstanceManager.Result.Created -> result.session
-                    is InstanceManager.Result.Joined -> result.session
-                    else -> return
-                }
+            is InstanceManager.Result.Created,
+            is InstanceManager.Result.Joined -> {
+                val enterCoord =
+                    when (result) {
+                        is InstanceManager.Result.Created -> result.enter
+                        is InstanceManager.Result.Joined -> result.enter
+                        else -> return
+                    }
+                val session =
+                    when (result) {
+                        is InstanceManager.Result.Created -> result.session
+                        is InstanceManager.Result.Joined -> result.session
+                        else -> return
+                    }
                 val enter: InstanceEnterAction = {
                     telejump(enterCoord)
                     manager.finalizeEntry(player, session, worldClock.cycle)
@@ -133,7 +135,12 @@ public abstract class InstanceScript(
             mes("You are already inside an instance.")
             return
         }
-        val spec = registry.get(key) ?: run { mes("No instance available."); return }
+        val spec =
+            registry.get(key)
+                ?: run {
+                    mes("No instance available.")
+                    return
+                }
         val ownedSession = player.uuid?.let { id -> manager.sessionOwnedBy(key, id) }
         if (ownedSession != null) {
             showMenuWithExistingInstance(spec, ownedSession)
@@ -143,13 +150,18 @@ public abstract class InstanceScript(
     }
 
     private suspend fun ProtectedAccess.showMenuNoInstance(spec: InstanceSpec) {
-        val pick = choice4(
-            "Create Private Instance.", 1,
-            "Join Friend's Instance.", 2,
-            "Join by Code.", 3,
-            "Cancel.", 4,
-            title = spec.bossName,
-        )
+        val pick =
+            choice4(
+                "Create Private Instance.",
+                1,
+                "Join Friend's Instance.",
+                2,
+                "Join by Code.",
+                3,
+                "Cancel.",
+                4,
+                title = spec.bossName,
+            )
         when (pick) {
             1 -> showCreateDialogue(spec)
             2 -> joinByName()
@@ -161,18 +173,25 @@ public abstract class InstanceScript(
         spec: InstanceSpec,
         session: InstanceSession,
     ) {
-        val pick = choice5(
-            "Rejoin Private Instance.", 1,
-            "Edit Instance Settings.", 2,
-            "Join Friend's Instance.", 3,
-            "Join by Code.", 4,
-            "Cancel.", 5,
-            title = spec.bossName,
-        )
-        when (pick) {
-            1 -> applyResult(
-                manager.join(player, session, worldClock.cycle, code = null, forceAccess = true)
+        val pick =
+            choice5(
+                "Rejoin Private Instance.",
+                1,
+                "Edit Instance Settings.",
+                2,
+                "Join Friend's Instance.",
+                3,
+                "Join by Code.",
+                4,
+                "Cancel.",
+                5,
+                title = spec.bossName,
             )
+        when (pick) {
+            1 ->
+                applyResult(
+                    manager.join(player, session, worldClock.cycle, code = null, forceAccess = true)
+                )
             2 -> editInstanceSettings(session)
             3 -> joinByName()
             4 -> joinByCode()
@@ -187,16 +206,20 @@ public abstract class InstanceScript(
             mes("No $key instance found for '$name'.")
             return
         }
-        applyResult(manager.join(player, session, worldClock.cycle, code = null, forceAccess = false))
+        applyResult(
+            manager.join(player, session, worldClock.cycle, code = null, forceAccess = false)
+        )
     }
 
     private suspend fun ProtectedAccess.joinByCode() {
         val code = stringDialog("Enter the join code:")
         if (code.isBlank()) return mes("No code entered.")
         val trimmed = code.trim().uppercase()
-        val session = manager.sessionsForKey(key).firstOrNull { s ->
-            (s.access as? InstanceAccess.Code)?.value?.equals(trimmed, ignoreCase = true) == true
-        }
+        val session =
+            manager.sessionsForKey(key).firstOrNull { s ->
+                (s.access as? InstanceAccess.Code)?.value?.equals(trimmed, ignoreCase = true) ==
+                    true
+            }
         if (session == null) {
             mes("No $key instance found with that code.")
             return
@@ -205,25 +228,32 @@ public abstract class InstanceScript(
     }
 
     private suspend fun ProtectedAccess.editInstanceSettings(session: InstanceSession) {
-        val currentLabel = when (val a = session.access) {
-            InstanceAccess.Private -> "Private"
-            InstanceAccess.Friends -> "Friends"
-            is InstanceAccess.Code -> "Code (${a.value})"
-        }
+        val currentLabel =
+            when (val a = session.access) {
+                InstanceAccess.Private -> "Private"
+                InstanceAccess.Friends -> "Friends"
+                is InstanceAccess.Code -> "Code (${a.value})"
+            }
         mes("Current access: $currentLabel")
-        val pick = choice4(
-            "Private - only you.", 1,
-            "Friends - anyone.", 2,
-            "New Code - generate a new join code.", 3,
-            "Cancel.", 4,
-            title = "Change instance access?",
-        )
-        val newAccess: InstanceAccess = when (pick) {
-            1 -> InstanceAccess.Private
-            2 -> InstanceAccess.Friends
-            3 -> InstanceAccess.Code(generateCode())
-            else -> return mes("No changes made.")
-        }
+        val pick =
+            choice4(
+                "Private - only you.",
+                1,
+                "Friends - anyone.",
+                2,
+                "New Code - generate a new join code.",
+                3,
+                "Cancel.",
+                4,
+                title = "Change instance access?",
+            )
+        val newAccess: InstanceAccess =
+            when (pick) {
+                1 -> InstanceAccess.Private
+                2 -> InstanceAccess.Friends
+                3 -> InstanceAccess.Code(generateCode())
+                else -> return mes("No changes made.")
+            }
         session.access = newAccess
         if (newAccess is InstanceAccess.Code) {
             mes("New join code: <col=8f0000>${newAccess.value}</col>")
@@ -233,10 +263,12 @@ public abstract class InstanceScript(
     }
 
     protected suspend fun ProtectedAccess.defaultLeaveFlow() {
-        val session = manager.sessionForPlayer(player) ?: run {
-            mes("You are not inside an instance.")
-            return
-        }
+        val session =
+            manager.sessionForPlayer(player)
+                ?: run {
+                    mes("You are not inside an instance.")
+                    return
+                }
         val exit = manager.leave(player, session, worldClock.cycle)
         telejump(exit)
     }
@@ -250,17 +282,20 @@ public abstract class InstanceScript(
             mes("You are already inside an instance.")
             return
         }
-        val existing = manager.sessionsForKey(key).firstOrNull { session ->
-            session.isServerOwned &&
-                !session.isFull() &&
-                session.state !is SessionState.Grace
-        }
-        val session = existing ?: manager.createServerOwned(key, spec, InstanceAccess.Friends, worldClock.cycle)
+        val existing =
+            manager.sessionsForKey(key).firstOrNull { session ->
+                session.isServerOwned && !session.isFull() && session.state !is SessionState.Grace
+            }
+        val session =
+            existing
+                ?: manager.createServerOwned(key, spec, InstanceAccess.Friends, worldClock.cycle)
         if (session == null) {
             mes("No public room available, try again shortly.")
             return
         }
-        applyResult(manager.join(player, session, worldClock.cycle, code = null, forceAccess = true))
+        applyResult(
+            manager.join(player, session, worldClock.cycle, code = null, forceAccess = true)
+        )
     }
 
     private suspend fun ProtectedAccess.showCreateDialogue(spec: InstanceSpec) {
@@ -268,28 +303,37 @@ public abstract class InstanceScript(
         mes("<col=8f0000>Instance Setup:</col> ${spec.bossName}")
         mes("Recommended Combat: ${spec.recommendedCombat ?: "-"}+ | Team Size: ${spec.teamSize}")
 
-        val pick = choice4(
-            "Private - only you.", 1,
-            "Friends - anyone.", 2,
-            "Code - share a join code.", 3,
-            "Cancel.", 4,
-            title = "Who can join your instance?",
-        )
-        val access: InstanceAccess = when (pick) {
-            1 -> InstanceAccess.Private
-            2 -> InstanceAccess.Friends
-            3 -> InstanceAccess.Code(generateCode())
-            else -> return mes("Instance creation cancelled.")
-        }
+        val pick =
+            choice4(
+                "Private - only you.",
+                1,
+                "Friends - anyone.",
+                2,
+                "Code - share a join code.",
+                3,
+                "Cancel.",
+                4,
+                title = "Who can join your instance?",
+            )
+        val access: InstanceAccess =
+            when (pick) {
+                1 -> InstanceAccess.Private
+                2 -> InstanceAccess.Friends
+                3 -> InstanceAccess.Code(generateCode())
+                else -> return mes("Instance creation cancelled.")
+            }
         if (access is InstanceAccess.Code) {
             mes("Join code: <col=8f0000>${access.value}</col> - share it to let others join.")
         }
 
-        val confirm = choice2(
-            "Yes - pay $fee coins and create.", true,
-            "No.", false,
-            title = "Create a ${spec.bossName} instance?",
-        )
+        val confirm =
+            choice2(
+                "Yes - pay $fee coins and create.",
+                true,
+                "No.",
+                false,
+                title = "Create a ${spec.bossName} instance?",
+            )
         if (!confirm) return mes("Instance creation cancelled.")
 
         applyResult(manager.create(player, key, spec, access, worldClock.cycle))
@@ -299,8 +343,9 @@ public abstract class InstanceScript(
         completeInstanceEntry(result)
     }
 
-    private fun generateCode(): String =
-        buildString { repeat(CODE_LENGTH) { append(CODE_CHARS[Random.nextInt(CODE_CHARS.length)]) } }
+    private fun generateCode(): String = buildString {
+        repeat(CODE_LENGTH) { append(CODE_CHARS[Random.nextInt(CODE_CHARS.length)]) }
+    }
 
     protected fun ScriptContext.onInstancePlayerJoin(action: InstancePlayerJoinEvent.() -> Unit) {
         onEvent(instanceEventId(key), action)

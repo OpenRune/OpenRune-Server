@@ -18,10 +18,8 @@ import org.rsmod.plugin.scripts.ScriptContext
 
 public class ObjTakePlugin
 @Inject
-constructor(
-    private val repo: ObjRepository,
-    private val takeValidator: PlayerObjTakeValidator,
-) : PluginScript() {
+constructor(private val repo: ObjRepository, private val takeValidator: PlayerObjTakeValidator) :
+    PluginScript() {
     override fun ScriptContext.startup() {
         onDefaultOpObj3 { triggerTake(it.obj) }
     }

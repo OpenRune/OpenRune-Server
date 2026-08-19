@@ -18,10 +18,9 @@ import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 
 @Singleton
-public class DropTableRegistry
-@Inject
-constructor(tomlResolver: DropTableTomlResolver) {
-    private val tablesByNpc: MutableMap<String, MutableList<RSDropTable<Player, DropRollItem>>> = hashMapOf()
+public class DropTableRegistry @Inject constructor(tomlResolver: DropTableTomlResolver) {
+    private val tablesByNpc: MutableMap<String, MutableList<RSDropTable<Player, DropRollItem>>> =
+        hashMapOf()
     private val tablesByLoc: MutableMap<String, RSDropTable<Player, DropRollItem>> = hashMapOf()
     private val tomlTablesByNpc: MutableMap<String, MutableSet<String>> = hashMapOf()
 
@@ -30,12 +29,10 @@ constructor(tomlResolver: DropTableTomlResolver) {
         loadAnnotatedTables()
     }
 
-    public fun forNpc(npc: Npc): RSDropTable<Player, DropRollItem>? = forNpc(npc, areaChecker = null)
+    public fun forNpc(npc: Npc): RSDropTable<Player, DropRollItem>? =
+        forNpc(npc, areaChecker = null)
 
-    public fun forNpc(
-        npc: Npc,
-        areaChecker: AreaChecker?,
-    ): RSDropTable<Player, DropRollItem>? {
+    public fun forNpc(npc: Npc, areaChecker: AreaChecker?): RSDropTable<Player, DropRollItem>? {
         val candidates = tablesByNpc[npc.type.internalName] ?: return null
         if (candidates.size == 1) {
             return candidates.first()
@@ -53,7 +50,7 @@ constructor(tomlResolver: DropTableTomlResolver) {
                 else ->
                     error(
                         "Multiple drop tables match npc '${npc.type.internalName}' " +
-                            "at ${npc.coords}: ${areaMatched.map { it.tableIdentifier }}",
+                            "at ${npc.coords}: ${areaMatched.map { it.tableIdentifier }}"
                     )
             }
         }
@@ -68,24 +65,22 @@ constructor(tomlResolver: DropTableTomlResolver) {
             ObjectMapper(TomlFactory())
                 .registerKotlinModule()
                 .setPropertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE)
-        ClassGraph()
-            .ignoreClassVisibility()
-            .acceptPaths(TOML_RESOURCE_ROOT)
-            .scan()
-            .use { scan ->
-                scan.allResources
-                    .filter { resource -> resource.path.endsWith(".toml") }
-                    .forEach { resource ->
-                        val raw = DropTableTomlTextFixer.hoistTableLevelKeys(resource.getContentAsString())
-                        val def = mapper.readValue<TomlDropTableDef>(raw)
-                        val table = DropTableTomlParser.parse(def, resolver, sourcePath = resource.path)
-                        register(table, DropTableSource.Toml)
-                    }
-            }
+        ClassGraph().ignoreClassVisibility().acceptPaths(TOML_RESOURCE_ROOT).scan().use { scan ->
+            scan.allResources
+                .filter { resource -> resource.path.endsWith(".toml") }
+                .forEach { resource ->
+                    val raw =
+                        DropTableTomlTextFixer.hoistTableLevelKeys(resource.getContentAsString())
+                    val def = mapper.readValue<TomlDropTableDef>(raw)
+                    val table = DropTableTomlParser.parse(def, resolver, sourcePath = resource.path)
+                    register(table, DropTableSource.Toml)
+                }
+        }
     }
 
     private fun loadAnnotatedTables() {
-        io.github.classgraph.ClassGraph()
+        io.github.classgraph
+            .ClassGraph()
             .ignoreClassVisibility()
             .enableClassInfo()
             .enableFieldInfo()
@@ -162,9 +157,7 @@ constructor(tomlResolver: DropTableTomlResolver) {
                 registered.areas.isEmpty() && table.areas.isEmpty() ||
                     registered.areas.any { it in table.areas }
             }
-        check(overlapping.isEmpty()) {
-            buildConflictMessage(npc, overlapping, table, source)
-        }
+        check(overlapping.isEmpty()) { buildConflictMessage(npc, overlapping, table, source) }
     }
 
     private fun buildConflictMessage(
@@ -182,8 +175,7 @@ constructor(tomlResolver: DropTableTomlResolver) {
                     " Remove the @RegisterDropTable Kotlin definition or the TOML file under drops/tables/."
                 source == DropTableSource.Toml ->
                     " Duplicate TOML drop tables cannot target the same npc."
-                else ->
-                    " Remove duplicate @RegisterDropTable definitions."
+                else -> " Remove duplicate @RegisterDropTable definitions."
             }
         return "Ambiguous drop tables for npc '$npc': $tableNames.$suffix"
     }

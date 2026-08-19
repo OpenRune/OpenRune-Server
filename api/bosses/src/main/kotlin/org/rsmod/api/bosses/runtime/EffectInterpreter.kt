@@ -3,7 +3,6 @@ package org.rsmod.api.bosses.runtime
 import dev.openrune.ServerCacheManager
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
-import dev.openrune.types.NpcMode
 import dev.openrune.types.ProjAnimType
 import dev.openrune.types.aconverted.SpotanimType
 import org.rsmod.api.bosses.spec.*
@@ -86,7 +85,8 @@ class EffectInterpreter(
                 for (e in effect.effects) run(access, e)
             }
             is Effect.Choose -> {
-                val abilityName = encounter.selectAbility(effect.selector, deps.mapClock.cycle) ?: return
+                val abilityName =
+                    encounter.selectAbility(effect.selector, deps.mapClock.cycle) ?: return
                 val branch = effect.branches[abilityName] ?: return
                 run(access, branch)
             }
@@ -111,11 +111,12 @@ class EffectInterpreter(
     }
 
     private fun applyHit(hit: Effect.Hit) {
-        val targets = when (val t = hit.target) {
-            is TargetExpr.Single -> listOfNotNull(resolveSingle(t))
-            is TargetExpr.Multi -> resolveMulti(t)
-            else -> listOf(target)
-        }
+        val targets =
+            when (val t = hit.target) {
+                is TargetExpr.Single -> listOfNotNull(resolveSingle(t))
+                is TargetExpr.Multi -> resolveMulti(t)
+                else -> listOf(target)
+            }
         val delay = hit.delay.coerceAtLeast(1)
         for (t in targets) {
             var damage = evaluateDamage(hit.damage)
@@ -129,24 +130,26 @@ class EffectInterpreter(
     }
 
     private fun fireProjectile(access: StandardNpcAccess, proj: Effect.Projectile) {
-        val t = resolveSingle(proj.target as? TargetExpr.Single ?: TargetExpr.CurrentTarget) ?: return
+        val t =
+            resolveSingle(proj.target as? TargetExpr.Single ?: TargetExpr.CurrentTarget) ?: return
         val spotId = proj.spotanim.asRSCM(RSCMType.SPOTANIM)
 
-        val type = if (proj.travel != null) {
-            ServerCacheManager.getProjectile(proj.travel.asRSCM(RSCMType.PROJANIM))
-                ?: error("Projectile not found: ${proj.travel}")
-        } else {
-            val cfg = proj.config ?: ProjectileConfig()
-            ProjAnimType(
-                startHeight = cfg.startHeight,
-                endHeight = cfg.endHeight,
-                delay = cfg.startDelay,
-                angle = cfg.angle,
-                lengthAdjustment = cfg.travelTime,
-                progress = cfg.progress,
-                stepMultiplier = cfg.stepMultiplier,
-            )
-        }
+        val type =
+            if (proj.travel != null) {
+                ServerCacheManager.getProjectile(proj.travel.asRSCM(RSCMType.PROJANIM))
+                    ?: error("Projectile not found: ${proj.travel}")
+            } else {
+                val cfg = proj.config ?: ProjectileConfig()
+                ProjAnimType(
+                    startHeight = cfg.startHeight,
+                    endHeight = cfg.endHeight,
+                    delay = cfg.startDelay,
+                    angle = cfg.angle,
+                    lengthAdjustment = cfg.travelTime,
+                    progress = cfg.progress,
+                    stepMultiplier = cfg.stepMultiplier,
+                )
+            }
 
         val projAnim = ProjAnim.fromNpcToPlayer(npc, t, spotId, type)
         deps.worldRepo.projAnim(projAnim)
@@ -164,9 +167,7 @@ class EffectInterpreter(
     private fun applyTileAoE(aoe: Effect.TileAoE) {
         val center = resolveTile(aoe.center)
         val radius = aoe.radius
-        val targets = deps.playerList.filter {
-            it.coords.chebyshevDistance(center) <= radius
-        }
+        val targets = deps.playerList.filter { it.coords.chebyshevDistance(center) <= radius }
         for (t in targets) {
             val damage = evaluateDamage(aoe.damage)
             t.queueHit(npc, 0, aoe.type.toEngine(), damage)
@@ -200,7 +201,9 @@ class EffectInterpreter(
                 tileSet.forEach { deps.worldRepo.spotanimMap(impactSpot, it) }
             }
             val landing =
-                deps.playerList.filter { it.coords.chebyshevDistance(center) <= effect.targetRadius }
+                deps.playerList.filter {
+                    it.coords.chebyshevDistance(center) <= effect.targetRadius
+                }
             for (player in landing) {
                 if (player.hitpoints > 0 && player.coords in tileSet) {
                     player.queueHit(npc, 1, effect.type.toEngine(), evaluateDamage(effect.damage))
@@ -337,13 +340,14 @@ class EffectInterpreter(
         }
     }
 
-    private fun BossHitType.toEngine(): HitType = when (this) {
-        BossHitType.Melee -> HitType.Melee
-        BossHitType.Ranged -> HitType.Ranged
-        BossHitType.Magic -> HitType.Magic
-        BossHitType.Dragonfire -> HitType.Magic
-        BossHitType.DragonfireMetal -> HitType.Magic
-        BossHitType.WyvernIce -> HitType.Magic
-        BossHitType.Typeless -> HitType.Typeless
-    }
+    private fun BossHitType.toEngine(): HitType =
+        when (this) {
+            BossHitType.Melee -> HitType.Melee
+            BossHitType.Ranged -> HitType.Ranged
+            BossHitType.Magic -> HitType.Magic
+            BossHitType.Dragonfire -> HitType.Magic
+            BossHitType.DragonfireMetal -> HitType.Magic
+            BossHitType.WyvernIce -> HitType.Magic
+            BossHitType.Typeless -> HitType.Typeless
+        }
 }

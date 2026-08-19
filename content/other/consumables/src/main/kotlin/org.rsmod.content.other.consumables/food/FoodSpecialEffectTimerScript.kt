@@ -7,13 +7,9 @@ import org.rsmod.plugin.scripts.ScriptContext
 
 class FoodSpecialEffectTimerScript
 @Inject
-constructor(
-    private val effects: FoodSpecialEffectService,
-) : PluginScript() {
+constructor(private val effects: FoodSpecialEffectService) : PluginScript() {
     override fun ScriptContext.startup() {
-        onPlayerTimer(
-            FoodSpecialEffectService.DELAYED_HEAL_TIMER,
-        ) {
+        onPlayerTimer(FoodSpecialEffectService.DELAYED_HEAL_TIMER) {
             effects.processDelayedHeals(this)
         }
     }

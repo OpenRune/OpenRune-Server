@@ -18,19 +18,15 @@ import org.rsmod.game.hit.HitType
 
 @Singleton
 class OverloadEffectService {
-    internal fun canApply(
-        access: ProtectedAccess,
-        type: OverloadType,
-    ): Boolean {
-        val definition =
-            OverloadRegistry[type]
+    internal fun canApply(access: ProtectedAccess, type: OverloadType): Boolean {
+        val definition = OverloadRegistry[type]
 
         return with(access) {
             if (player.hitpoints <= definition.totalDamage) {
                 mes(
                     "You need more than " +
                         "${definition.totalDamage} Hitpoints " +
-                        "to drink this potion.",
+                        "to drink this potion."
                 )
                 false
             } else {
@@ -45,38 +41,26 @@ class OverloadEffectService {
         boost: PotionStatBoost? = null,
         clientTier: Int = 0,
     ) {
-        val definition =
-            OverloadRegistry[type]
+        val definition = OverloadRegistry[type]
 
         val resolvedBoost =
             boost
-                ?: requireNotNull(
-                    definition.defaultBoost,
-                ) {
+                ?: requireNotNull(definition.defaultBoost) {
                     "No boost configured for overload type '$type'."
                 }
 
         with(access) {
-            applyStatBoost(
-                stats = definition.boostedStats,
-                boost = resolvedBoost,
-            )
+            applyStatBoost(stats = definition.boostedStats, boost = resolvedBoost)
 
             player.attr[definition.stateKey] =
                 OverloadState(
-                    expiresAt =
-                        mapClock + definition.duration,
+                    expiresAt = mapClock + definition.duration,
                     boost = resolvedBoost,
-                    damageHitsRemaining =
-                        definition.damageHits,
+                    damageHitsRemaining = definition.damageHits,
                     warned = false,
                 )
 
-            startDisplay(
-                player = player,
-                definition = definition,
-                clientTier = clientTier,
-            )
+            startDisplay(player = player, definition = definition, clientTier = clientTier)
 
             player.restartTimer(
                 timerKey = definition.damageTimer,
@@ -90,198 +74,111 @@ class OverloadEffectService {
         }
     }
 
-    internal fun processDamage(
-        access: ProtectedAccess,
-        type: OverloadType,
-    ) {
-        val definition =
-            OverloadRegistry[type]
+    internal fun processDamage(access: ProtectedAccess, type: OverloadType) {
+        val definition = OverloadRegistry[type]
 
         with(access) {
-            val state =
-                player.attr[definition.stateKey]
-                    ?: return
+            val state = player.attr[definition.stateKey] ?: return
 
             if (state.damageHitsRemaining <= 0) {
                 return
             }
 
-            val remainingHits =
-                state.damageHitsRemaining - 1
+            val remainingHits = state.damageHitsRemaining - 1
 
-            player.attr[definition.stateKey] =
-                state.copy(
-                    damageHitsRemaining =
-                        remainingHits,
-                )
+            player.attr[definition.stateKey] = state.copy(damageHitsRemaining = remainingHits)
 
             playPotionVisual(
                 animation = definition.animation,
-                spotAnimation =
-                    definition.spotAnimation,
+                spotAnimation = definition.spotAnimation,
             )
 
-            takeInstantHit(
-                type = HitType.Typeless,
-                damage = definition.damagePerHit,
-            )
+            takeInstantHit(type = HitType.Typeless, damage = definition.damagePerHit)
 
             if (remainingHits > 0) {
-                player.timer(
-                    definition.damageTimer,
-                    definition.damageInterval,
-                )
+                player.timer(definition.damageTimer, definition.damageInterval)
             }
         }
     }
 
-    internal fun process(
-        access: ProtectedAccess,
-        type: OverloadType,
-    ) {
-        val definition =
-            OverloadRegistry[type]
+    internal fun process(access: ProtectedAccess, type: OverloadType) {
+        val definition = OverloadRegistry[type]
 
         with(access) {
-            var state =
-                player.attr[definition.stateKey]
-                    ?: return
+            var state = player.attr[definition.stateKey] ?: return
 
-            val remaining =
-                state.expiresAt - mapClock
+            val remaining = state.expiresAt - mapClock
 
             if (remaining <= 0) {
-                clear(
-                    player = player,
-                    type = type,
-                )
+                clear(player = player, type = type)
 
-                restoreHitpointsIfDrained(
-                    definition.totalDamage,
-                )
+                restoreHitpointsIfDrained(definition.totalDamage)
 
                 mes(definition.expiryMessage)
                 return
             }
 
-            if (
-                !state.warned &&
-                remaining <= definition.warningLead
-            ) {
+            if (!state.warned && remaining <= definition.warningLead) {
                 mes(definition.warningMessage)
 
-                state =
-                    state.copy(
-                        warned = true,
-                    )
+                state = state.copy(warned = true)
 
-                player.attr[definition.stateKey] =
-                    state
+                player.attr[definition.stateKey] = state
             }
 
-            applyStatBoost(
-                stats = definition.boostedStats,
-                boost = state.boost,
-            )
+            applyStatBoost(stats = definition.boostedStats, boost = state.boost)
 
             VarPlayerIntMapSetter.set(
                 player,
                 definition.timerVarbit,
-                durationUnits(
-                    duration = remaining,
-                    interval =
-                        definition.refreshInterval,
-                ),
+                durationUnits(duration = remaining, interval = definition.refreshInterval),
             )
 
             player.timer(
                 definition.effectTimer,
                 nextTimedEffectDelay(
                     remaining = remaining,
-                    refreshInterval =
-                        definition.refreshInterval,
-                    warningLead =
-                        definition.warningLead,
+                    refreshInterval = definition.refreshInterval,
+                    warningLead = definition.warningLead,
                     warned = state.warned,
                 ),
             )
         }
     }
 
-    internal fun clear(
-        player: Player,
-        type: OverloadType,
-    ) {
-        val definition =
-            OverloadRegistry[type]
+    internal fun clear(player: Player, type: OverloadType) {
+        val definition = OverloadRegistry[type]
 
-        val active =
-            player.attr[definition.stateKey] != null
+        val active = player.attr[definition.stateKey] != null
 
-        player.attr.remove(
-            definition.stateKey,
-        )
+        player.attr.remove(definition.stateKey)
 
-        player.clearTimer(
-            definition.effectTimer,
-        )
+        player.clearTimer(definition.effectTimer)
 
-        player.clearTimer(
-            definition.damageTimer,
-        )
+        player.clearTimer(definition.damageTimer)
 
-        VarPlayerIntMapSetter.set(
-            player,
-            definition.timerVarbit,
-            0,
-        )
+        VarPlayerIntMapSetter.set(player, definition.timerVarbit, 0)
 
-        definition.tierVarbit?.let { varbit ->
-            VarPlayerIntMapSetter.set(
-                player,
-                varbit,
-                0,
-            )
-        }
+        definition.tierVarbit?.let { varbit -> VarPlayerIntMapSetter.set(player, varbit, 0) }
 
         if (active) {
-            player.restoreStatsToBase(
-                definition.boostedStats,
-            )
+            player.restoreStatsToBase(definition.boostedStats)
         }
     }
 
-    private fun startDisplay(
-        player: Player,
-        definition: OverloadDefinition,
-        clientTier: Int,
-    ) {
-        VarPlayerIntMapSetter.set(
-            player,
-            definition.timerVarbit,
-            0,
-        )
+    private fun startDisplay(player: Player, definition: OverloadDefinition, clientTier: Int) {
+        VarPlayerIntMapSetter.set(player, definition.timerVarbit, 0)
 
         definition.tierVarbit?.let { varbit ->
-            VarPlayerIntMapSetter.set(
-                player,
-                varbit,
-                clientTier,
-            )
+            VarPlayerIntMapSetter.set(player, varbit, clientTier)
         }
 
         VarPlayerIntMapSetter.set(
             player,
             definition.timerVarbit,
-            durationUnits(
-                duration = definition.duration,
-                interval =
-                    definition.refreshInterval,
-            ),
+            durationUnits(duration = definition.duration, interval = definition.refreshInterval),
         )
 
-        definition.startClientScript?.let { script ->
-            player.runClientScript(script)
-        }
+        definition.startClientScript?.let { script -> player.runClientScript(script) }
     }
 }

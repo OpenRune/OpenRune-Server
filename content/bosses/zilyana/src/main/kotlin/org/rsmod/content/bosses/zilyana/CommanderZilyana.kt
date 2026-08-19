@@ -7,7 +7,6 @@ import org.rsmod.api.bosses.dsl.*
 import org.rsmod.api.bosses.runtime.BossCombat
 import org.rsmod.api.bosses.runtime.BossDeps
 import org.rsmod.api.bosses.runtime.BossPluginScript
-import org.rsmod.api.bosses.spec.Effect
 import org.rsmod.api.script.onEvent
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.npc.NpcStateEvents
@@ -28,9 +27,7 @@ class CommanderZilyana @Inject constructor(deps: BossDeps) : BossPluginScript(de
         deps.npcRepo
             .findAll(ZoneKey.from(avatar.coords), zoneRadius = BODYGUARD_SEARCH_RADIUS)
             .filter { it.visType.isCategoryType(BODYGUARD_CATEGORY) && it.hitpoints == 0 }
-            .forEach { bodyguard ->
-                bodyguard.lifecycleRespawnCycle = deps.mapClock.cycle + 1
-            }
+            .forEach { bodyguard -> bodyguard.lifecycleRespawnCycle = deps.mapClock.cycle + 1 }
     }
 
     override val spec =

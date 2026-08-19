@@ -47,9 +47,7 @@ enum class RSCMType(val prefix: String) {
     companion object {
         val RSCM_PREFIXES = entries.map { it.prefix }.toSet()
     }
-
 }
-
 
 object RSCM {
 
@@ -95,9 +93,7 @@ object RSCM {
         return cache.getOrPut(entity) {
             val prefix = extractPrefix(entity)
 
-            require(prefix in PREFIX_SET) {
-                "Prefix not found for '$prefix'"
-            }
+            require(prefix in PREFIX_SET) { "Prefix not found for '$prefix'" }
 
             ConstantProvider.getMapping(entity)
         }

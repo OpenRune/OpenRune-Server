@@ -9,10 +9,10 @@ import dev.openrune.types.ObjectServerType
 import org.rsmod.api.player.events.interact.LocCategoryEvents
 import org.rsmod.api.player.events.interact.LocContentEvents
 import org.rsmod.api.player.events.interact.LocEvents
-import org.rsmod.api.player.events.interact.LocUCategoryEvents
 import org.rsmod.api.player.events.interact.LocTContentEvents
 import org.rsmod.api.player.events.interact.LocTDefaultEvents
 import org.rsmod.api.player.events.interact.LocTEvents
+import org.rsmod.api.player.events.interact.LocUCategoryEvents
 import org.rsmod.api.player.events.interact.LocUContentEvents
 import org.rsmod.api.player.events.interact.LocUDefaultEvents
 import org.rsmod.api.player.events.interact.LocUEvents
@@ -115,7 +115,14 @@ public fun ScriptContext.onOpContentU(
     loccontent: String,
     objcontent: String,
     action: suspend ProtectedAccess.(LocUContentEvents.OpContent) -> Unit,
-): Unit = onProtectedEvent(EventBus.composeLongKey(loccontent.asRSCM(RSCMType.CONTENT), objcontent.asRSCM(RSCMType.CONTENT)), action)
+): Unit =
+    onProtectedEvent(
+        EventBus.composeLongKey(
+            loccontent.asRSCM(RSCMType.CONTENT),
+            objcontent.asRSCM(RSCMType.CONTENT),
+        ),
+        action,
+    )
 
 public fun ScriptContext.onOpContentLoc4(
     content: String,
@@ -149,7 +156,11 @@ public fun ScriptContext.onOpContentLocT(
     content: String,
     component: ComponentType,
     action: suspend ProtectedAccess.(LocTContentEvents.Op) -> Unit,
-): Unit = onProtectedEvent(EventBus.composeLongKey(content.asRSCM(RSCMType.CONTENT), component.packed), action)
+): Unit =
+    onProtectedEvent(
+        EventBus.composeLongKey(content.asRSCM(RSCMType.CONTENT), component.packed),
+        action,
+    )
 
 public fun ScriptContext.onOpLocU(
     type: String,
@@ -199,14 +210,10 @@ public fun ScriptContext.onOpLocU(
     action: suspend ProtectedAccess.(LocUEvents.Op) -> Unit,
 ): Unit = onOpLocU(RSCM.getReverseMapping(RSCMType.LOC, type.id), objType, action)
 
-public fun ScriptContext.onOpLocCategoryU( //Overload to allow any generic item via category based.
+public fun ScriptContext.onOpLocCategoryU( // Overload to allow any generic item via category based.
     category: String,
     action: suspend ProtectedAccess.(LocUDefaultEvents.OpCategory) -> Unit,
-): Unit =
-    onProtectedEvent(
-        category.asRSCM(RSCMType.CATEGORY),
-        action
-    )
+): Unit = onProtectedEvent(category.asRSCM(RSCMType.CATEGORY), action)
 
 public fun ScriptContext.onOpLocCategoryU(
     category: String,
@@ -244,7 +251,14 @@ public fun ScriptContext.onOpContentLocU(
     locContent: String,
     objContent: String,
     action: suspend ProtectedAccess.(LocUContentEvents.OpContent) -> Unit,
-): Unit = onProtectedEvent(EventBus.composeLongKey(locContent.asRSCM(RSCMType.CONTENT), objContent.asRSCM(RSCMType.OBJ)), action)
+): Unit =
+    onProtectedEvent(
+        EventBus.composeLongKey(
+            locContent.asRSCM(RSCMType.CONTENT),
+            objContent.asRSCM(RSCMType.OBJ),
+        ),
+        action,
+    )
 
 /* Ap functions */
 public fun ScriptContext.onApLoc1(
@@ -344,7 +358,11 @@ public fun ScriptContext.onApContentLocT(
     content: String,
     component: ComponentType,
     action: suspend ProtectedAccess.(LocTContentEvents.Ap) -> Unit,
-): Unit = onProtectedEvent(EventBus.composeLongKey(content.asRSCM(RSCMType.CONTENT), component.packed), action)
+): Unit =
+    onProtectedEvent(
+        EventBus.composeLongKey(content.asRSCM(RSCMType.CONTENT), component.packed),
+        action,
+    )
 
 public fun ScriptContext.onApLocU(
     type: String,
@@ -419,4 +437,11 @@ public fun ScriptContext.onApContentLocU(
     locContent: String,
     objContent: String,
     action: suspend ProtectedAccess.(LocUContentEvents.ApContent) -> Unit,
-): Unit = onProtectedEvent(EventBus.composeLongKey(locContent.asRSCM(RSCMType.CONTENT), objContent.asRSCM(RSCMType.CONTENT)), action)
+): Unit =
+    onProtectedEvent(
+        EventBus.composeLongKey(
+            locContent.asRSCM(RSCMType.CONTENT),
+            objContent.asRSCM(RSCMType.CONTENT),
+        ),
+        action,
+    )

@@ -15,7 +15,8 @@ import org.rsmod.game.type.getInvObj
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
-class MiningProductPrepareScript @Inject constructor(private val random: GameRandom) : PluginScript() {
+class MiningProductPrepareScript @Inject constructor(private val random: GameRandom) :
+    PluginScript() {
     override fun ScriptContext.startup() {
         onEvent<SkillingProductPrepareEvent> {
             val source = product.source as? SkillingProductSource.Mining ?: return@onEvent

@@ -122,7 +122,13 @@ object GameMapDecoder {
         decodedMaps
             .map { decoded ->
                 async {
-                    putLocs(builder, MapSingletons.collision, decoded.key, decoded.map, decoded.locs)
+                    putLocs(
+                        builder,
+                        MapSingletons.collision,
+                        decoded.key,
+                        decoded.map,
+                        decoded.locs,
+                    )
                 }
             }
             .awaitAll()

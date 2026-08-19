@@ -9,8 +9,6 @@ class SlayerTaskChoiceScript : PluginScript() {
         onIfModalButton(SlayerTaskChoiceInterface.CONTENT) {
             SlayerTaskChoiceInterface.onContentClick(this, it.comsub)
         }
-        onIfModalButton(SlayerTaskChoiceInterface.CLOSE) {
-            SlayerTaskChoiceInterface.onClose(this)
-        }
+        onIfModalButton(SlayerTaskChoiceInterface.CLOSE) { SlayerTaskChoiceInterface.onClose(this) }
     }
 }

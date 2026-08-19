@@ -14,10 +14,12 @@ object SlayerRewardsHandler {
             return
         }
 
-        SlayerUnlockRow.all().find { it.bit == comsub }?.let { unlockRow ->
-            SlayerRewardUnlocks.handleUnlockSlot(access, unlockRow)
-            return
-        }
+        SlayerUnlockRow.all()
+            .find { it.bit == comsub }
+            ?.let { unlockRow ->
+                SlayerRewardUnlocks.handleUnlockSlot(access, unlockRow)
+                return
+            }
 
         SlayerRewardTasks.handleComsub(access, comsub)
     }
@@ -36,7 +38,13 @@ object SlayerRewardsHandler {
 
     fun onBuyItem(access: ProtectedAccess, shopIndex: Int, op: IfButtonOp, item: ItemServerType?) {
         if (op == IfButtonOp.Op10) {
-            SlayerRewardShop.handleBuyReward(access, shopIndex, item, requestedSets = 0, examine = true)
+            SlayerRewardShop.handleBuyReward(
+                access,
+                shopIndex,
+                item,
+                requestedSets = 0,
+                examine = true,
+            )
             return
         }
 

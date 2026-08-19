@@ -173,7 +173,7 @@ constructor(
                 SkillingAwardResult.Cancelled -> Unit
                 SkillingAwardResult.Success -> {
                     spam(
-                        "You manage to mine some ${getInvObj(InvObj(product.item)).name.lowercase()}.",
+                        "You manage to mine some ${getInvObj(InvObj(product.item)).name.lowercase()}."
                     )
                     soundSynth(ORE_OBTAINED_SOUND)
                 }
@@ -276,9 +276,7 @@ constructor(
             val threshold =
                 player.attr
                     .getOrPut(DEPLETION_THRESHOLD_ATTR) { mutableMapOf() }
-                    .getOrPut(rock.coords) {
-                        random.of(range.first, range.last) + gloveExtras
-                    }
+                    .getOrPut(rock.coords) { random.of(range.first, range.last) + gloveExtras }
             val counts = player.attr.getOrPut(MINED_ORE_COUNT_ATTR) { mutableMapOf() }
             val newCount = (counts[rock.coords] ?: 0) + 1
             counts[rock.coords] = newCount
@@ -287,10 +285,7 @@ constructor(
         return handleGloveDeplete(rock, gloveExtras)
     }
 
-    private fun ProtectedAccess.handleGloveDeplete(
-        rock: BoundLocInfo,
-        extras: Int,
-    ): Boolean {
+    private fun ProtectedAccess.handleGloveDeplete(rock: BoundLocInfo, extras: Int): Boolean {
         if (extras <= 0) {
             return true
         }
@@ -414,7 +409,7 @@ constructor(
                 "obj.infernal_pickaxe",
                 "obj.infernal_pickaxe_empty",
                 "obj.3a_pickaxe",
-                "obj.crystal_pickaxe_inactive", -> if (random.of(6) == 0) 2 else 3
+                "obj.crystal_pickaxe_inactive" -> if (random.of(6) == 0) 2 else 3
                 "obj.crystal_pickaxe" -> if (random.of(4) == 0) 2 else 3
                 else -> base
             }
@@ -423,27 +418,25 @@ constructor(
         fun findPickaxe(player: Player): InvObj? {
             val worn = player.wornPickaxe()
             val carried = player.carriedPickaxes()
-            val candidates =
-                buildList {
-                    if (worn != null) {
-                        add(worn)
-                    }
-                    addAll(carried)
+            val candidates = buildList {
+                if (worn != null) {
+                    add(worn)
                 }
+                addAll(carried)
+            }
             return candidates.maxWithOrNull(pickaxeComparator)
         }
 
         /** Higher is better: lower action delay first, then higher mining level req. */
-        private val pickaxeComparator: Comparator<InvObj> =
-            Comparator { left, right ->
-                val leftType = getInvObj(left)
-                val rightType = getInvObj(right)
-                val byDelay = rightType.pickaxeDelay.compareTo(leftType.pickaxeDelay)
-                if (byDelay != 0) {
-                    return@Comparator byDelay
-                }
-                leftType.pickaxeLevelReq.compareTo(rightType.pickaxeLevelReq)
+        private val pickaxeComparator: Comparator<InvObj> = Comparator { left, right ->
+            val leftType = getInvObj(left)
+            val rightType = getInvObj(right)
+            val byDelay = rightType.pickaxeDelay.compareTo(leftType.pickaxeDelay)
+            if (byDelay != 0) {
+                return@Comparator byDelay
             }
+            leftType.pickaxeLevelReq.compareTo(rightType.pickaxeLevelReq)
+        }
 
         private fun Player.wornPickaxe(): InvObj? {
             val righthand = righthand ?: return null
@@ -460,7 +453,7 @@ constructor(
             return when (internalName) {
                 "obj.infernal_pickaxe" -> player.smithingLvl >= INFERNAL_SMITHING_REQ
                 "obj.crystal_pickaxe",
-                "obj.crystal_pickaxe_inactive", ->
+                "obj.crystal_pickaxe_inactive" ->
                     QuestRequirements.hasCompleted(player, SONG_OF_THE_ELVES)
                 else -> true
             }

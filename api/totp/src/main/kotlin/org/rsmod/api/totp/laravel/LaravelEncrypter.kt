@@ -7,9 +7,7 @@ import javax.crypto.Mac
 import javax.crypto.spec.IvParameterSpec
 import javax.crypto.spec.SecretKeySpec
 
-public class LaravelEncrypter(
-    appKey: String,
-) {
+public class LaravelEncrypter(appKey: String) {
     private val key: ByteArray = decodeAppKey(appKey)
 
     public fun decryptString(payload: String): String {
@@ -76,9 +74,5 @@ public class LaravelEncrypter(
         }
     }
 
-    private data class PayloadJson(
-        val iv: String,
-        val value: String,
-        val mac: String,
-    )
+    private data class PayloadJson(val iv: String, val value: String, val mac: String)
 }

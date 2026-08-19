@@ -51,7 +51,9 @@ internal object CollectionLogCategories {
 
     private val categoryByTabAndComsub: Map<Pair<Int, Int>, CollectionLogCategory> by lazy {
         allCategories
-            .mapNotNull { category -> structIdToTabComsub[category.structId]?.let { it to category } }
+            .mapNotNull { category ->
+                structIdToTabComsub[category.structId]?.let { it to category }
+            }
             .toMap()
     }
 

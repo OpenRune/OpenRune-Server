@@ -15,10 +15,7 @@ public val moonChestDropTable: RSDropTable<Player, DropRollItem> =
     RSDropTable(
         tableIdentifier = "Moon Chest",
         locs = locs("loc.varlamore_moon_chestclosed"),
-        guaranteed =
-            rsPlayerGuaranteedTable {
-                "obj.sunfiresplinter" count 250
-            },
+        guaranteed = rsPlayerGuaranteedTable { "obj.sunfiresplinter" count 250 },
         preRoll =
             rsPlayerPrerollTable {
                 1 outOf 5000 weight "obj.uncut_onyx" count 1

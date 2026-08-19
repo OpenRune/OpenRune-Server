@@ -17,11 +17,11 @@ import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ConcurrentLinkedQueue
 import java.util.concurrent.Executors
 import net.rsprot.protocol.loginprot.outgoing.LoginResponse
+import org.rsmod.api.net.central.netty.WorldLinkNettyBlockingClient
+import org.rsmod.api.net.central.netty.WorldLinkNettyBlockingSession
 import org.rsmod.api.player.output.ChatType
 import org.rsmod.api.player.output.MiscOutput
 import org.rsmod.api.player.output.mes
-import org.rsmod.api.net.central.netty.WorldLinkNettyBlockingClient
-import org.rsmod.api.net.central.netty.WorldLinkNettyBlockingSession
 import org.rsmod.api.registry.player.PlayerRegistry
 import org.rsmod.api.server.config.OpenRuneCentralGameConfig
 import org.rsmod.api.server.config.ServerConfig
@@ -30,48 +30,37 @@ import org.rsmod.game.GameUpdate.Companion.isUpdating
 
 public class OpenRuneCentralWorldLink
 @Inject
-constructor(
-    private val serverConfig: ServerConfig,
-    private val gameUpdate: GameUpdate,
-) {
+constructor(private val serverConfig: ServerConfig, private val gameUpdate: GameUpdate) {
     private val logger = InlineLogger()
 
     private val settings: CentralSettings? = CentralSettings.resolve(serverConfig)
 
-    private val pendingCentralRevokes =
-        ConcurrentLinkedQueue<ServerRevokeLoginPayload>()
+    private val pendingCentralRevokes = ConcurrentLinkedQueue<ServerRevokeLoginPayload>()
 
     private val pendingCentralKicks = ConcurrentLinkedQueue<ServerKickPayload>()
 
-    private val pendingCentralMuteUpdates =
-        ConcurrentLinkedQueue<ServerMuteUpdatePayload>()
+    private val pendingCentralMuteUpdates = ConcurrentLinkedQueue<ServerMuteUpdatePayload>()
 
     private val pendingCentralReboots = ConcurrentLinkedQueue<ServerRebootPayload>()
 
-    private val pendingCentralBroadcasts =
-        ConcurrentLinkedQueue<ServerBroadcastPayload>()
+    private val pendingCentralBroadcasts = ConcurrentLinkedQueue<ServerBroadcastPayload>()
 
     private val pendingCentralDisplayNameSyncs =
         ConcurrentLinkedQueue<ServerDisplayNameSyncPayload>()
 
-    private val pendingCentralDiscordIdSyncs =
-        ConcurrentLinkedQueue<ServerDiscordIdSyncPayload>()
+    private val pendingCentralDiscordIdSyncs = ConcurrentLinkedQueue<ServerDiscordIdSyncPayload>()
 
-    private val pendingCentralPrivateMessages =
-        ConcurrentLinkedQueue<ServerPrivateMessagePayload>()
+    private val pendingCentralPrivateMessages = ConcurrentLinkedQueue<ServerPrivateMessagePayload>()
 
     /** PMs received before the recipient is on the game thread player list — retried each tick. */
     private val deferredPrivateMessagesByCharacter =
         ConcurrentHashMap<Int, ConcurrentLinkedQueue<ServerPrivateMessagePayload>>()
 
-    private val pendingCentralFriendPresence =
-        ConcurrentLinkedQueue<ServerFriendPresencePayload>()
+    private val pendingCentralFriendPresence = ConcurrentLinkedQueue<ServerFriendPresencePayload>()
 
-    @Volatile
-    private var passwordAuthConfig: PasswordAuthConfig? = null
+    @Volatile private var passwordAuthConfig: PasswordAuthConfig? = null
 
-    @Volatile
-    private var inboundWatchStop: Boolean = true
+    @Volatile private var inboundWatchStop: Boolean = true
 
     private var inboundWatchThread: Thread? = null
 
@@ -83,12 +72,16 @@ constructor(
     public val isEnabled: Boolean
         get() = settings != null
 
-    /** Seeds password hashing before the first HELLO (embedded Central uses the same config as Central). */
+    /**
+     * Seeds password hashing before the first HELLO (embedded Central uses the same config as
+     * Central).
+     */
     public fun applyPasswordAuth(config: PasswordAuthConfig) {
         passwordAuthConfig = config
     }
 
-    public fun passwordHasher(): PasswordHasher = (passwordAuthConfig ?: PasswordAuthConfig.DEFAULT).toHasher()
+    public fun passwordHasher(): PasswordHasher =
+        (passwordAuthConfig ?: PasswordAuthConfig.DEFAULT).toHasher()
 
     /**
      * Starts Central auth on a background thread so account DB loading can overlap wall-clock time.
@@ -117,7 +110,8 @@ constructor(
         return InflightCentralAuth(future)
     }
 
-    public fun awaitInflight(inflight: InflightCentralAuth): CentralAuthResult = inflight.future.join()
+    public fun awaitInflight(inflight: InflightCentralAuth): CentralAuthResult =
+        inflight.future.join()
 
     public fun authenticate(
         loginUsername: String,
@@ -165,10 +159,7 @@ constructor(
         }
         inboundWatchStop = false
         inboundWatchThread =
-            Thread(
-                { runInboundWatchLoop(cfg) },
-                "openrune-central-worldlink-inbound",
-            ).apply {
+            Thread({ runInboundWatchLoop(cfg) }, "openrune-central-worldlink-inbound").apply {
                 isDaemon = true
                 start()
             }
@@ -180,29 +171,23 @@ constructor(
         inboundWatchThread = null
     }
 
-    public fun pollPrivateMessage(): ServerPrivateMessagePayload? = pendingCentralPrivateMessages.poll()
+    public fun pollPrivateMessage(): ServerPrivateMessagePayload? =
+        pendingCentralPrivateMessages.poll()
 
-    public fun pollFriendPresence(): ServerFriendPresencePayload? = pendingCentralFriendPresence.poll()
+    public fun pollFriendPresence(): ServerFriendPresencePayload? =
+        pendingCentralFriendPresence.poll()
 
-    public fun addFriend(
-        characterId: Int,
-        targetName: String,
-    ): CentralSocialResult = runSocialAction(WorldLinkPackets.friendAdd(characterId, targetName))
+    public fun addFriend(characterId: Int, targetName: String): CentralSocialResult =
+        runSocialAction(WorldLinkPackets.friendAdd(characterId, targetName))
 
-    public fun deleteFriend(
-        characterId: Int,
-        targetName: String,
-    ): CentralSocialResult = runSocialAction(WorldLinkPackets.friendDel(characterId, targetName))
+    public fun deleteFriend(characterId: Int, targetName: String): CentralSocialResult =
+        runSocialAction(WorldLinkPackets.friendDel(characterId, targetName))
 
-    public fun addIgnore(
-        characterId: Int,
-        targetName: String,
-    ): CentralSocialResult = runSocialAction(WorldLinkPackets.ignoreAdd(characterId, targetName))
+    public fun addIgnore(characterId: Int, targetName: String): CentralSocialResult =
+        runSocialAction(WorldLinkPackets.ignoreAdd(characterId, targetName))
 
-    public fun deleteIgnore(
-        characterId: Int,
-        targetName: String,
-    ): CentralSocialResult = runSocialAction(WorldLinkPackets.ignoreDel(characterId, targetName))
+    public fun deleteIgnore(characterId: Int, targetName: String): CentralSocialResult =
+        runSocialAction(WorldLinkPackets.ignoreDel(characterId, targetName))
 
     public fun sendPrivateMessage(
         fromCharacterId: Int,
@@ -226,20 +211,15 @@ constructor(
                         targetName = targetName,
                         senderDisplayName = senderDisplayName,
                         message = message,
-                    ),
-                ),
+                    )
+                )
             )
         tracePmSendResult(result, fromCharacterId, targetName, message.length)
         return result
     }
 
-    public fun setPrivateChatFilter(
-        characterId: Int,
-        privateChatFilter: Int,
-    ): CentralSocialResult =
-        runSocialAction(
-            WorldLinkPackets.privateChatFilter(characterId, privateChatFilter),
-        )
+    public fun setPrivateChatFilter(characterId: Int, privateChatFilter: Int): CentralSocialResult =
+        runSocialAction(WorldLinkPackets.privateChatFilter(characterId, privateChatFilter))
 
     public fun setChatFilters(
         characterId: Int,
@@ -248,17 +228,16 @@ constructor(
         tradeChat: Int,
     ): CentralSocialResult =
         runSocialAction(
-            WorldLinkPackets.chatFilters(characterId, publicChat, privateChat, tradeChat),
+            WorldLinkPackets.chatFilters(characterId, publicChat, privateChat, tradeChat)
         )
 
-    public fun socialSnapshot(
-        characterId: Int,
-    ): CentralSocialSnapshotResult {
+    public fun socialSnapshot(characterId: Int): CentralSocialSnapshotResult {
         if (!isEnabled || characterId <= 0) {
             return CentralSocialSnapshotResult.Failed("Social is not available right now.")
         }
         return when (val result = requestSocialSync(characterId)) {
-            is SocialSyncResult.Ok -> CentralSocialSnapshotResult.Ok(result.snapshot.toClientSnapshot())
+            is SocialSyncResult.Ok ->
+                CentralSocialSnapshotResult.Ok(result.snapshot.toClientSnapshot())
             is SocialSyncResult.Fail ->
                 CentralSocialSnapshotResult.Failed(socialFailMessage(result.reason))
             SocialSyncResult.Unavailable ->
@@ -266,9 +245,7 @@ constructor(
         }
     }
 
-    public fun requestSocialSync(
-        characterId: Int,
-    ): SocialSyncResult {
+    public fun requestSocialSync(characterId: Int): SocialSyncResult {
         val cfg = settings ?: return SocialSyncResult.Unavailable
         if (characterId <= 0) {
             return SocialSyncResult.Unavailable
@@ -368,20 +345,18 @@ constructor(
         }
         return when (val result = requestSocialAction(frame)) {
             SocialActionResult.Ok -> CentralSocialResult.Ok
-            is SocialActionResult.Fail -> CentralSocialResult.Failed(socialFailMessage(result.reason))
+            is SocialActionResult.Fail ->
+                CentralSocialResult.Failed(socialFailMessage(result.reason))
             SocialActionResult.Unavailable ->
                 CentralSocialResult.Failed("Unable to contact friends service.")
         }
     }
 
     public sealed class CentralSocialSnapshotResult {
-        public data class Ok(
-            val snapshot: WorldLinkFrameSpecs.CentralSocialSnapshot,
-        ) : CentralSocialSnapshotResult()
+        public data class Ok(val snapshot: WorldLinkFrameSpecs.CentralSocialSnapshot) :
+            CentralSocialSnapshotResult()
 
-        public data class Failed(
-            val message: String,
-        ) : CentralSocialSnapshotResult()
+        public data class Failed(val message: String) : CentralSocialSnapshotResult()
     }
 
     public fun drainInboundRevokesOnGameThread(
@@ -418,8 +393,7 @@ constructor(
                         MiscOutput.clearUpdateRebootTimer(player)
                     }
                     gameUpdate.reset()
-                } catch (_: Exception) {
-                }
+                } catch (_: Exception) {}
                 continue
             }
             val now = System.currentTimeMillis()
@@ -432,8 +406,7 @@ constructor(
                 if (!gameUpdate.state.isUpdating()) {
                     gameUpdate.startCountdown(cycles)
                 }
-            } catch (_: Exception) {
-            }
+            } catch (_: Exception) {}
             playerRegistry.forEachOnline { player ->
                 MiscOutput.updateRebootTimer(player, cycles, op.message)
             }
@@ -443,13 +416,16 @@ constructor(
             if (b.worldScope != 0 && b.worldScope != serverConfig.world) {
                 continue
             }
-            playerRegistry.forEachOnline { player ->
-                player.mes(b.message, ChatType.Broadcast)
-            }
+            playerRegistry.forEachOnline { player -> player.mes(b.message, ChatType.Broadcast) }
         }
         while (true) {
             val d = pendingCentralDisplayNameSyncs.poll() ?: break
-            playerRegistry.applyCentralDisplayNameSync(d.accountId, d.characterId, d.newDisplayName, d.priorDisplayName)
+            playerRegistry.applyCentralDisplayNameSync(
+                d.accountId,
+                d.characterId,
+                d.newDisplayName,
+                d.priorDisplayName,
+            )
         }
         while (true) {
             val d = pendingCentralDiscordIdSyncs.poll() ?: break
@@ -547,11 +523,15 @@ constructor(
             WorldLinkFrameSpecs.OP_WORLD_SOCIAL_SYNC_OK ->
                 SocialSyncResult.Ok(decodeSocialSyncWire(response))
             WorldLinkFrameSpecs.OP_WORLD_SOCIAL_SYNC_FAIL -> {
-                val reason = if (response.size > 1) response[1].toInt() and 0xFF else WorldOpcodes.SOCIAL_FAIL_NOT_ALLOWED
+                val reason =
+                    if (response.size > 1) response[1].toInt() and 0xFF
+                    else WorldOpcodes.SOCIAL_FAIL_NOT_ALLOWED
                 SocialSyncResult.Fail(reason)
             }
             WorldLinkFrameSpecs.OP_WORLD_SOCIAL_FAIL -> {
-                val reason = if (response.size > 1) response[1].toInt() and 0xFF else WorldOpcodes.SOCIAL_FAIL_NOT_ALLOWED
+                val reason =
+                    if (response.size > 1) response[1].toInt() and 0xFF
+                    else WorldOpcodes.SOCIAL_FAIL_NOT_ALLOWED
                 SocialSyncResult.Fail(reason)
             }
             else -> {
@@ -578,13 +558,18 @@ constructor(
         return when (val op = response[0].toInt() and 0xFF) {
             WorldLinkFrameSpecs.OP_WORLD_SOCIAL_OK -> SocialActionResult.Ok
             WorldLinkFrameSpecs.OP_WORLD_SOCIAL_FAIL -> {
-                val reason = if (response.size > 1) response[1].toInt() and 0xFF else WorldOpcodes.SOCIAL_FAIL_NOT_ALLOWED
+                val reason =
+                    if (response.size > 1) response[1].toInt() and 0xFF
+                    else WorldOpcodes.SOCIAL_FAIL_NOT_ALLOWED
                 SocialActionResult.Fail(reason)
             }
             else -> {
                 unexpectedCentralOp(
                     op,
-                    listOf(WorldLinkFrameSpecs.OP_WORLD_SOCIAL_OK, WorldLinkFrameSpecs.OP_WORLD_SOCIAL_FAIL),
+                    listOf(
+                        WorldLinkFrameSpecs.OP_WORLD_SOCIAL_OK,
+                        WorldLinkFrameSpecs.OP_WORLD_SOCIAL_FAIL,
+                    ),
                 )
             }
         }
@@ -682,7 +667,9 @@ constructor(
                         val dup = buf.duplicate()
                         val parsed = readLoginFailScriptTrailer(dup)
                         if (parsed == null || dup.hasRemaining()) {
-                            return CentralAuthResult.Denied(LoginResponse.UnknownReplyFromLoginServer)
+                            return CentralAuthResult.Denied(
+                                LoginResponse.UnknownReplyFromLoginServer
+                            )
                         }
                         buf.position(dup.position())
                         parsed
@@ -700,7 +687,10 @@ constructor(
         val buf = ByteBuffer.wrap(response)
         buf.get() // opcode
         val tokenLen = buf.short.toInt() and 0xFFFF
-        if (tokenLen != WorldLinkFrameSpecs.TOKEN_BYTES || buf.remaining() < tokenLen + Long.SIZE_BYTES) {
+        if (
+            tokenLen != WorldLinkFrameSpecs.TOKEN_BYTES ||
+                buf.remaining() < tokenLen + Long.SIZE_BYTES
+        ) {
             return CentralAuthResult.Denied(LoginResponse.UnknownReplyFromLoginServer)
         }
         val token = ByteArray(tokenLen)
@@ -725,10 +715,7 @@ constructor(
         return CentralAuthResult.Ok(token, centralRights)
     }
 
-    private fun helloRejectMessage(
-        reason: Int,
-        worldId: Int,
-    ): String {
+    private fun helloRejectMessage(reason: Int, worldId: Int): String {
         val detail =
             when (reason) {
                 1 ->
@@ -744,10 +731,7 @@ constructor(
         return "HELLO_REJECT reason=$reason ($detail)"
     }
 
-    private fun sendLogout(
-        session: WorldLinkNettyBlockingSession,
-        sessionToken: ByteArray,
-    ) {
+    private fun sendLogout(session: WorldLinkNettyBlockingSession, sessionToken: ByteArray) {
         session.send(WorldLinkPackets.logout(sessionToken))
         val response = session.recvInbound(SOCKET_TIMEOUT_MS.toLong())
         val op = response[0].toInt() and 0xFF
@@ -778,10 +762,7 @@ constructor(
         return Triple(l1, l2, l3)
     }
 
-    private fun mapLoginFail(
-        code: Int,
-        script: Triple<String, String, String>?,
-    ): LoginResponse =
+    private fun mapLoginFail(code: Int, script: Triple<String, String, String>?): LoginResponse =
         when (code) {
             1 -> LoginResponse.InvalidUsernameOrPassword
             2 -> LoginResponse.ServerFull
@@ -792,15 +773,13 @@ constructor(
             11 -> LoginResponse.UpdateInProgress
             in 12..15 ->
                 if (script != null) {
-                    // Central (v5+) sends the three lines; do not duplicate wording on the game server.
+                    // Central (v5+) sends the three lines; do not duplicate wording on the game
+                    // server.
                     LoginResponse.DisallowedByScript(script.first, script.second, script.third)
                 } else {
-                    // World-link v4 or older Central: body is code only — no per-denial copy from Central.
-                    LoginResponse.DisallowedByScript(
-                        "You cannot log in to this world.",
-                        "",
-                        "",
-                    )
+                    // World-link v4 or older Central: body is code only — no per-denial copy from
+                    // Central.
+                    LoginResponse.DisallowedByScript("You cannot log in to this world.", "", "")
                 }
             else -> LoginResponse.InvalidUsernameOrPassword
         }
@@ -868,40 +847,30 @@ constructor(
             } finally {
                 try {
                     session?.close()
-                } catch (_: Exception) {
-                }
+                } catch (_: Exception) {}
             }
         }
     }
 
-    private data class CentralSettings(
-        val host: String,
-        val port: Int,
-        val worldKey: ByteArray,
-    ) {
+    private data class CentralSettings(val host: String, val port: Int, val worldKey: ByteArray) {
         companion object {
             fun resolve(config: ServerConfig): CentralSettings? {
                 val envHost =
                     System.getenv("OPENRUNE_CENTRAL_HOST")?.trim()?.takeIf { it.isNotEmpty() }
-                val envKey =
-                    System.getenv("OPENRUNE_WORLD_KEY")?.trim()?.takeIf { it.isNotEmpty() }
+                val envKey = System.getenv("OPENRUNE_WORLD_KEY")?.trim()?.takeIf { it.isNotEmpty() }
                 val envPort = System.getenv("OPENRUNE_CENTRAL_PORT")?.trim()?.toIntOrNull()
 
                 val yml: OpenRuneCentralGameConfig? = config.central
                 val sameInstance = yml?.sameInstance == true
                 val hasRemoteYamlAuth =
-                    yml != null &&
-                        yml.host.trim().isNotEmpty() &&
-                        yml.worldKey.trim().isNotEmpty()
+                    yml != null && yml.host.trim().isNotEmpty() && yml.worldKey.trim().isNotEmpty()
                 val ymlOn = sameInstance || hasRemoteYamlAuth
 
                 val host =
                     envHost
                         ?: yml?.host?.trim()?.takeIf { it.isNotEmpty() && ymlOn }
                         ?: if (sameInstance && ymlOn) "127.0.0.1" else null
-                val keyStr =
-                    envKey
-                        ?: yml?.worldKey?.trim()?.takeIf { it.isNotEmpty() }
+                val keyStr = envKey ?: yml?.worldKey?.trim()?.takeIf { it.isNotEmpty() }
                 if (host == null) {
                     return null
                 }
@@ -909,8 +878,7 @@ constructor(
                     return null
                 }
                 val port = envPort ?: yml?.takeIf { ymlOn }?.linkPort ?: 9091
-                val worldKeyBytes =
-                    (keyStr ?: "").toByteArray(StandardCharsets.UTF_8)
+                val worldKeyBytes = (keyStr ?: "").toByteArray(StandardCharsets.UTF_8)
                 return CentralSettings(host, port, worldKeyBytes)
             }
         }
@@ -1021,7 +989,11 @@ constructor(
         if (!serverConfig.loginTimingLogs) {
             return
         }
-        if (attempts <= 1 && error == null && (result is CentralAuthResult.Ok || result is CentralAuthResult.Skipped)) {
+        if (
+            attempts <= 1 &&
+                error == null &&
+                (result is CentralAuthResult.Ok || result is CentralAuthResult.Skipped)
+        ) {
             return
         }
         val outcome =
@@ -1052,20 +1024,15 @@ private fun isRetryableCentralNetworkFailure(e: Throwable): Boolean =
 public sealed class CentralAuthResult {
     public data object Skipped : CentralAuthResult()
 
-    public data class Ok(
-        val sessionToken: ByteArray,
-        val centralRights: String = "",
-    ) : CentralAuthResult()
+    public data class Ok(val sessionToken: ByteArray, val centralRights: String = "") :
+        CentralAuthResult()
 
-    public data class Denied(
-        val response: LoginResponse,
-    ) : CentralAuthResult()
+    public data class Denied(val response: LoginResponse) : CentralAuthResult()
 }
 
 /** In-flight Central auth started via [OpenRuneCentralWorldLink.beginAuthenticate]. */
-public class InflightCentralAuth internal constructor(
-    internal val future: CompletableFuture<CentralAuthResult>,
-)
+public class InflightCentralAuth
+internal constructor(internal val future: CompletableFuture<CentralAuthResult>)
 
 public sealed class SocialSyncResult {
     public data class Ok(val snapshot: SocialSyncSnapshot) : SocialSyncResult()

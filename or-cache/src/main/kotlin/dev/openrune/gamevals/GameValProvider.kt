@@ -59,17 +59,11 @@ class GameValProvider : MappingProvider {
 
         listOfNotNull(contentDir, apiDir).forEach { dir ->
             dir.walk()
-                .filter {
-                    it.isFile &&
-                        it.name == "gamevals.toml" &&
-                        !it.isGeneratedOutputPath()
-                }
+                .filter { it.isFile && it.name == "gamevals.toml" && !it.isGeneratedOutputPath() }
                 .forEach(::processGameValToml)
         }
 
-        gamevalsDir?.walk()
-            ?.filter(File::isFile)
-            ?.forEach(::processRSCMFile)
+        gamevalsDir?.walk()?.filter(File::isFile)?.forEach(::processRSCMFile)
     }
 
     private fun processGameValToml(file: File) {
@@ -136,14 +130,18 @@ class GameValProvider : MappingProvider {
                 val (key, value) = parseRSCMV2Line(line, lineNumber + 1)
                 putMapping(table, key, value, file.name)
             } catch (e: Exception) {
-                throw IllegalArgumentException("Failed to parse line ${lineNumber + 1} in ${file.name}: '$line'", e)
+                throw IllegalArgumentException(
+                    "Failed to parse line ${lineNumber + 1} in ${file.name}: '$line'",
+                    e,
+                )
             }
         }
     }
 
     private fun putMapping(table: String, key: String, value: Int, file: String) {
-        val tableMappings = mappings[table]
-            ?: throw IllegalArgumentException("Table '$table' does not exist in mappings.")
+        val tableMappings =
+            mappings[table]
+                ?: throw IllegalArgumentException("Table '$table' does not exist in mappings.")
         val fullKey = "$table.$key"
 
         val maxID = maxBaseID[table] ?: -1
@@ -163,35 +161,44 @@ class GameValProvider : MappingProvider {
             )
         }
 
-        tableMappings.entries.find { it.value == value }?.let { existing ->
-            throw IllegalArgumentException(
-                "Mapping conflict in table '$table': value '$value' is already mapped to key " +
-                    "'${existing.key}'. Values must be unique."
-            )
-        }
-
+        tableMappings.entries
+            .find { it.value == value }
+            ?.let { existing ->
+                throw IllegalArgumentException(
+                    "Mapping conflict in table '$table': value '$value' is already mapped to key " +
+                        "'${existing.key}'. Values must be unique."
+                )
+            }
 
         tableMappings[fullKey] = value
     }
 
-    private fun parseRSCMV2Line(line: String, lineNumber: Int): Pair<String, Int> = when {
-        line.contains("=") -> {
-            val parts = line.split("=")
-            require(parts.size == 2) { "Invalid line format at $lineNumber: '$line'. Expected 'key=value'" }
-            parts[0].trim() to parts[1].trim().toInt()
+    private fun parseRSCMV2Line(line: String, lineNumber: Int): Pair<String, Int> =
+        when {
+            line.contains("=") -> {
+                val parts = line.split("=")
+                require(parts.size == 2) {
+                    "Invalid line format at $lineNumber: '$line'. Expected 'key=value'"
+                }
+                parts[0].trim() to parts[1].trim().toInt()
+            }
+            line.contains(":") -> {
+                val parts = line.split(":")
+                require(parts.size == 2) {
+                    "Invalid sub-property format at $lineNumber: '$line'. Expected 'key:subprop=value'"
+                }
+                val key = parts[0].trim()
+                val valueParts = parts[1].trim().split("=")
+                require(valueParts.size == 2) {
+                    "Invalid sub-property value format at $lineNumber: '${parts[1]}'"
+                }
+                key to valueParts[1].trim().toInt()
+            }
+            else ->
+                throw IllegalArgumentException(
+                    "Invalid line format at $lineNumber: '$line'. Expected 'key=value' or 'key:subprop=value'"
+                )
         }
-        line.contains(":") -> {
-            val parts = line.split(":")
-            require(parts.size == 2) { "Invalid sub-property format at $lineNumber: '$line'. Expected 'key:subprop=value'" }
-            val key = parts[0].trim()
-            val valueParts = parts[1].trim().split("=")
-            require(valueParts.size == 2) { "Invalid sub-property value format at $lineNumber: '${parts[1]}'" }
-            key to valueParts[1].trim().toInt()
-        }
-        else -> throw IllegalArgumentException(
-            "Invalid line format at $lineNumber: '$line'. Expected 'key=value' or 'key:subprop=value'"
-        )
-    }
 
     private fun decodeGameValDat(datFile: File) {
         DataInputStream(FileInputStream(datFile)).use { input ->
@@ -216,7 +223,8 @@ class GameValProvider : MappingProvider {
                         mappings[tableName]?.putIfAbsent("$tableName.$key", value)
                     } catch (e: Exception) {
                         throw IllegalArgumentException(
-                            "Failed to parse item in table '$tableName' from ${datFile.name}: '$itemString'", e
+                            "Failed to parse item in table '$tableName' from ${datFile.name}: '$itemString'",
+                            e,
                         )
                     }
                 }

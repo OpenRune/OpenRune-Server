@@ -32,10 +32,7 @@ import org.rsmod.plugin.scripts.ScriptContext
  */
 class DusuriScript
 @Inject
-constructor(
-    private val shops: Shops,
-    private val shopOps: ShopOperationMap,
-) : PluginScript() {
+constructor(private val shops: Shops, private val shopOps: ShopOperationMap) : PluginScript() {
     private var Player.starTraderMet by boolVarBit("varbit.star_trader_met")
 
     private val settings: ShootingstarsSettings
@@ -124,14 +121,7 @@ constructor(
             return
         }
 
-        when (
-            choice2(
-                "I have some here. Can we trade?",
-                1,
-                "I'll bear that in mind.",
-                2,
-            )
-        ) {
+        when (choice2("I have some here. Can we trade?", 1, "I'll bear that in mind.", 2)) {
             1 -> {
                 chatPlayer(happy, "I have some here. Can we trade?")
                 openShopFromDialogue()

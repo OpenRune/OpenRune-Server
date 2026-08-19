@@ -1,8 +1,6 @@
 package org.rsmod.api.totp.laravel
 
-/**
- * Minimal PHP `unserialize` support for Laravel-encrypted string payloads (`s:len:"value";`).
- */
+/** Minimal PHP `unserialize` support for Laravel-encrypted string payloads (`s:len:"value";`). */
 internal object PhpUnserialize {
     fun readString(serialized: String): String {
         if (!serialized.startsWith("s:")) {

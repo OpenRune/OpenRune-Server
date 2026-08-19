@@ -1,11 +1,6 @@
 package org.rsmod.content.skills.magic.spell.attacks.standard
 
-import dev.openrune.rscm.RSCM
-import dev.openrune.rscm.RSCMType
 import dev.openrune.types.ItemServerType
-import dev.openrune.types.SequenceServerType
-import dev.openrune.types.aconverted.SpotanimType
-import dev.openrune.types.aconverted.SynthType
 import org.rsmod.api.combat.commons.CombatAttack
 import org.rsmod.api.combat.manager.MagicRuneManager.Companion.isFailure
 import org.rsmod.api.player.protect.ProtectedAccess

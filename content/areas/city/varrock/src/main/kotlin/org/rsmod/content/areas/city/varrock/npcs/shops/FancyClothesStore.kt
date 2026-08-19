@@ -38,11 +38,13 @@ class FancyClothesStore @Inject constructor(private val shops: Shops) : PluginSc
                 "I'm always on the look out for interesting or unusual new materials.",
         )
 
-
-        val choice = choice2(
-            "Okay, let's see what you've got then.", 1,
-            "I think I might just leave the perusing for now thanks.", 2,
-        )
+        val choice =
+            choice2(
+                "Okay, let's see what you've got then.",
+                1,
+                "I think I might just leave the perusing for now thanks.",
+                2,
+            )
 
         when (choice) {
             1 -> {

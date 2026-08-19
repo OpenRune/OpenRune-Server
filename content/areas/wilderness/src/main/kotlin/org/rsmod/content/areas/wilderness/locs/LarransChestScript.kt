@@ -28,7 +28,9 @@ private const val VARP_KC_BIG = "varp.kc_larrans_big_chest"
 
 private const val VARBIT_CHEST = "varbit.brimstone_opening_konar_chest"
 
-class LarransChestScript @Inject constructor(
+class LarransChestScript
+@Inject
+constructor(
     private val locRepo: LocRepository,
     private val objRepo: ObjRepository,
     private val dropRegistry: DropTableRegistry,
@@ -37,7 +39,7 @@ class LarransChestScript @Inject constructor(
     override fun ScriptContext.startup() {
         onOpLoc1(SMALL_CHEST_CLOSED) { openChest(it.loc, SMALL_CHEST_CLOSED, VARP_KC_SMALL) }
         onOpLoc2(SMALL_CHEST_CLOSED) { checkCount(VARP_KC_SMALL, "Larran's small chest") }
-        onOpLoc1(BIG_CHEST_CLOSED) { openChest(it.loc, BIG_CHEST_CLOSED,  VARP_KC_BIG) }
+        onOpLoc1(BIG_CHEST_CLOSED) { openChest(it.loc, BIG_CHEST_CLOSED, VARP_KC_BIG) }
         onOpLoc2(BIG_CHEST_CLOSED) { checkCount(VARP_KC_BIG, "Larran's big chest") }
     }
 

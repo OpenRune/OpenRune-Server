@@ -18,24 +18,12 @@ constructor(
          * Temporary behavior until a Nightmare Zone dream session owns
          * cleanup and logout restoration.
          */
-        onPlayerLogin {
-            effects.clearSessionEffects(player)
-        }
+        onPlayerLogin { effects.clearSessionEffects(player) }
 
-        onPlayerLogout {
-            effects.clearSessionEffects(player)
-        }
+        onPlayerLogout { effects.clearSessionEffects(player) }
 
-        onPlayerTimer(
-            NightmareZoneOverloadEffect.DAMAGE_TIMER,
-        ) {
-            overload.processDamage(this)
-        }
+        onPlayerTimer(NightmareZoneOverloadEffect.DAMAGE_TIMER) { overload.processDamage(this) }
 
-        onPlayerTimer(
-            NightmareZoneOverloadEffect.TIMER,
-        ) {
-            overload.process(this)
-        }
+        onPlayerTimer(NightmareZoneOverloadEffect.TIMER) { overload.process(this) }
     }
 }

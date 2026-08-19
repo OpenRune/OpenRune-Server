@@ -159,4 +159,3 @@ public fun Player.hasAtLeast99s(requiredCount: Int): Boolean {
         return statMap.getBaseLevel("stat.${enum.value?.lowercase()}") >= 99
     } >= requiredCount
 }
-

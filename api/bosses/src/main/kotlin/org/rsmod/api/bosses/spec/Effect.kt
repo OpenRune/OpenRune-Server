@@ -12,12 +12,24 @@ public data class StatDrainEntry(
 sealed interface Effect {
 
     data class Anim(val seq: String, val delay: Int = 0) : Effect
+
     data class Say(val text: String) : Effect
+
     data class Sound(val synth: String, val radius: Int = 10) : Effect
+
     data class Spotanim(val spot: String, val height: Int = 0, val delay: Int = 0) : Effect
-    data class MapSpotanim(val spot: String, val at: TargetExpr, val height: Int = 0, val delay: Int = 0) : Effect
+
+    data class MapSpotanim(
+        val spot: String,
+        val at: TargetExpr,
+        val height: Int = 0,
+        val delay: Int = 0,
+    ) : Effect
+
     data class Broadcast(val text: String, val radius: Int = 15) : Effect
+
     data class Delay(val ticks: Int) : Effect
+
     data object NoOp : Effect
 
     data class Hit(
@@ -48,10 +60,11 @@ sealed interface Effect {
     ) : Effect
 
     /**
-     * A telegraphed, dodgeable area attack (e.g. Scurrius' falling rocks): a [telegraph] spotanim is
-     * shown on a set of tiles, then after [windup] ticks any player standing on one of those tiles
-     * takes [damage]. Tiles are every player within [targetRadius] of the boss (so each is targeted)
-     * plus random scatter within [scatterRadius] of the boss, up to a total drawn from [count].
+     * A telegraphed, dodgeable area attack (e.g. Scurrius' falling rocks): a [telegraph] spotanim
+     * is shown on a set of tiles, then after [windup] ticks any player standing on one of those
+     * tiles takes [damage]. Tiles are every player within [targetRadius] of the boss (so each is
+     * targeted) plus random scatter within [scatterRadius] of the boss, up to a total drawn from
+     * [count].
      */
     data class Debris(
         val telegraph: String,
@@ -76,7 +89,9 @@ sealed interface Effect {
     data class Transmog(val to: String, val durationTicks: Int) : Effect
 
     data class Poison(val damage: Int, val chance: Int = 1, val outOf: Int = 1) : Effect
+
     data class Freeze(val ticks: Int, val chance: Int = 1, val outOf: Int = 1) : Effect
+
     data class StatDrain(val entries: List<StatDrainEntry>) : Effect {
         init {
             require(entries.isNotEmpty()) { "StatDrain requires at least one entry." }
@@ -84,14 +99,22 @@ sealed interface Effect {
     }
 
     data class Run(val ability: String) : Effect
+
     data class TransitionTo(val phase: String) : Effect
+
     data class External(val handler: String, val params: Any? = null) : Effect
 
     data class Sequence(val effects: List<Effect>) : Effect
+
     data class Parallel(val effects: List<Effect>) : Effect
+
     data class Choose(val selector: Selector, val branches: Map<String, Effect>) : Effect
+
     data class Repeat(val times: Int, val effect: Effect, val gap: Int = 0) : Effect
-    data class Whenever(val condition: Condition, val then: Effect, val otherwise: Effect = NoOp) : Effect
+
+    data class Whenever(val condition: Condition, val then: Effect, val otherwise: Effect = NoOp) :
+        Effect
+
     data class OnEach(val targets: TargetExpr, val effect: Effect) : Effect
 }
 

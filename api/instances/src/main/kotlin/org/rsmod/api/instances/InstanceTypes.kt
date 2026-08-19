@@ -9,17 +9,20 @@ public const val INSTANCE_TICKS_PER_MINUTE: Int = 100
 
 public const val EMPTY_INSTANCE_RECLAIM_MINUTES: Int = 20
 
-public const val DEFAULT_EMPTY_INSTANCE_RECLAIM_TICKS: Int = EMPTY_INSTANCE_RECLAIM_MINUTES * INSTANCE_TICKS_PER_MINUTE
+public const val DEFAULT_EMPTY_INSTANCE_RECLAIM_TICKS: Int =
+    EMPTY_INSTANCE_RECLAIM_MINUTES * INSTANCE_TICKS_PER_MINUTE
 
 public const val INSTANCE_GRACE_MINUTES: Int = 10
 
-public const val DEFAULT_INSTANCE_GRACE_TICKS: Int = INSTANCE_GRACE_MINUTES * INSTANCE_TICKS_PER_MINUTE
+public const val DEFAULT_INSTANCE_GRACE_TICKS: Int =
+    INSTANCE_GRACE_MINUTES * INSTANCE_TICKS_PER_MINUTE
 
 public const val INSTANCE_KILL_TIMER_MAX_PLAYERS: Int = 5
 
 public const val INSTANCE_KILL_TIMER_MAX_TICKS: Int = 60 * INSTANCE_TICKS_PER_MINUTE
 
-public const val INSTANCE_ARENA_EXPIRED_MESSAGE: String = "This arena has now expired and no further bosses will spawn."
+public const val INSTANCE_ARENA_EXPIRED_MESSAGE: String =
+    "This arena has now expired and no further bosses will spawn."
 
 public data class RegionLocal(
     val level: Int,
@@ -30,7 +33,10 @@ public data class RegionLocal(
 )
 
 public data class InstanceNpc(val npcType: String, val coord: RegionLocal) {
-    public constructor(npcType: String, coord: CoordGrid) : this(
+    public constructor(
+        npcType: String,
+        coord: CoordGrid,
+    ) : this(
         npcType,
         RegionLocal(
             level = coord.level,
@@ -104,7 +110,8 @@ public sealed class InstanceArea {
             level: Int = 0,
             rotation: InstanceRegionRotation = InstanceRegionRotation.NONE,
             npcSpawns: List<InstanceNpc> = emptyList(),
-        ): CopyRegions = CopyRegions(regionIds, level, rotation, EMPTY_ENTER, CoordGrid.ZERO, npcSpawns)
+        ): CopyRegions =
+            CopyRegions(regionIds, level, rotation, EMPTY_ENTER, CoordGrid.ZERO, npcSpawns)
 
         public fun copyRegions(
             regionIds: List<Int>,

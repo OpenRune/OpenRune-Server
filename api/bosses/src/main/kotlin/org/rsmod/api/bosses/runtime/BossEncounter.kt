@@ -1,14 +1,11 @@
 package org.rsmod.api.bosses.runtime
 
+import kotlin.random.Random
 import org.rsmod.api.bosses.spec.*
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
-import kotlin.random.Random
 
-class BossEncounter(
-    val npc: Npc,
-    val spec: BossSpec,
-) {
+class BossEncounter(val npc: Npc, val spec: BossSpec) {
     var currentPhaseName: String = spec.phases.keys.firstOrNull() ?: ""
     var phaseEnteredTick: Int = 0
     var lastAbilityTick: Int = 0
@@ -73,11 +70,12 @@ class BossEncounter(
             }
         }
 
-        val selected = when (selector) {
-            is Selector.WeightedRandom -> selectWeightedRandom(selector, tick, target)
-            is Selector.Rotation -> selectRotation(selector)
-            is Selector.Conditional -> null
-        }
+        val selected =
+            when (selector) {
+                is Selector.WeightedRandom -> selectWeightedRandom(selector, tick, target)
+                is Selector.Rotation -> selectRotation(selector)
+                is Selector.Conditional -> null
+            }
         if (selected != null && attackForced != null) {
             basicAttackCount++
         }
@@ -90,11 +88,16 @@ class BossEncounter(
         return if (max == min) min else Random.nextInt(min, max + 1)
     }
 
-    private fun selectWeightedRandom(selector: Selector.WeightedRandom, tick: Int, target: Player? = null): String? {
-        val available = selector.entries.filter { ref ->
-            val onCooldown = cooldowns[ref.ability]?.let { tick - it < ref.cooldown } ?: false
-            !onCooldown && evaluate(ref.requires, target)
-        }
+    private fun selectWeightedRandom(
+        selector: Selector.WeightedRandom,
+        tick: Int,
+        target: Player? = null,
+    ): String? {
+        val available =
+            selector.entries.filter { ref ->
+                val onCooldown = cooldowns[ref.ability]?.let { tick - it < ref.cooldown } ?: false
+                !onCooldown && evaluate(ref.requires, target)
+            }
 
         if (available.isEmpty()) return null
 

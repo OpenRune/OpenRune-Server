@@ -5,7 +5,6 @@ import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import dev.openrune.types.ItemServerType
 import dev.openrune.types.SequenceServerType
-import dev.openrune.types.StatType
 import dev.openrune.types.aconverted.SpotanimType
 import dev.openrune.types.aconverted.SynthType
 import jakarta.inject.Inject
@@ -33,8 +32,8 @@ import org.rsmod.api.config.refs.params
 import org.rsmod.api.death.PvPPlayerHitHook
 import org.rsmod.api.npc.hit.modifier.NpcHitModifier
 import org.rsmod.api.npc.hit.queueHit
-import org.rsmod.api.player.hit.queueHit
 import org.rsmod.api.player.cheat.adminMaxHit
+import org.rsmod.api.player.hit.queueHit
 import org.rsmod.api.player.interact.NpcInteractions
 import org.rsmod.api.player.interact.NpcTInteractions
 import org.rsmod.api.player.interact.PlayerInteractions
@@ -198,10 +197,12 @@ constructor(
         val fx = MeleeAnimationAndSound.from(attack.stance)
         val (animParam, soundParam, defaultAnim, defaultSound) = fx
 
-        val attackAnim = weapon?.paramOrNull(animParam) ?: SequenceServerType(defaultAnim.asRSCM(RSCMType.SEQ))
-        val attackSound = weapon?.paramOrNull(soundParam) ?: SynthType(defaultSound.asRSCM(RSCMType.SYNTH))
+        val attackAnim =
+            weapon?.paramOrNull(animParam) ?: SequenceServerType(defaultAnim.asRSCM(RSCMType.SEQ))
+        val attackSound =
+            weapon?.paramOrNull(soundParam) ?: SynthType(defaultSound.asRSCM(RSCMType.SYNTH))
 
-        player.anim(RSCM.getReverseMapping(RSCMType.SEQ,attackAnim.id), priority = 6)
+        player.anim(RSCM.getReverseMapping(RSCMType.SEQ, attackAnim.id), priority = 6)
         player.soundSynth(attackSound)
     }
 
@@ -218,7 +219,7 @@ constructor(
     public fun playWeaponFx(player: Player, attack: CombatAttack.Ranged): Boolean {
         val weapon = getInvObj(attack.weapon)
         val attackAnim = weapon.paramOrNull(params.attack_anim_stance1) ?: return false
-        player.anim(RSCM.getReverseMapping(RSCMType.SEQ,attackAnim.id), priority = 6)
+        player.anim(RSCM.getReverseMapping(RSCMType.SEQ, attackAnim.id), priority = 6)
         val attackSound = weapon.paramOrNull(params.attack_sound_stance1)
         attackSound?.let(player::soundSynth)
         return true

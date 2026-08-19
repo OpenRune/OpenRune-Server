@@ -46,10 +46,7 @@ internal enum class PotionEffectData(
     COMBAT_BOOST(
         key = "combat_boost",
         kind = "stat_boost",
-        skills = listOf(
-            "stat.attack",
-            "stat.strength",
-        ),
+        skills = listOf("stat.attack", "stat.strength"),
         base = 3,
         percent = 10,
     ),
@@ -77,11 +74,7 @@ internal enum class PotionEffectData(
     SUPER_COMBAT_BOOST(
         key = "super_combat_boost",
         kind = "stat_boost",
-        skills = listOf(
-            "stat.attack",
-            "stat.strength",
-            "stat.defence",
-        ),
+        skills = listOf("stat.attack", "stat.strength", "stat.defence"),
         base = 5,
         percent = 15,
     ),
@@ -122,11 +115,7 @@ internal enum class PotionEffectData(
         skills = listOf("stat.fishing"),
         amount = 6,
     ),
-    EXTREME_ENERGY_RESTORE(
-        key = "extreme_energy_restore",
-        kind = "run_energy",
-        amount = 40,
-    ),
+    EXTREME_ENERGY_RESTORE(key = "extreme_energy_restore", kind = "run_energy", amount = 40),
     SUPER_HUNTER_BOOST(
         key = "super_hunter_boost",
         kind = "flat_stat_boost",
@@ -140,43 +129,25 @@ internal enum class PotionEffectData(
         stamina = true,
         duration = minutes(4),
     ),
-    ARMADYL_BREW(
-        key = "armadyl_brew",
-        kind = "handler",
-        handler = "armadyl_brew",
-    ),
+    ARMADYL_BREW(key = "armadyl_brew", kind = "handler", handler = "armadyl_brew"),
     BASTION_BOOST(
         key = "bastion_boost",
         kind = "compound",
-        effects = listOf(
-            "dbrow.effect_ranging_boost",
-            "dbrow.effect_super_defence_boost",
-        ),
+        effects = listOf("dbrow.effect_ranging_boost", "dbrow.effect_super_defence_boost"),
     ),
     BATTLEMAGE_BOOST(
         key = "battlemage_boost",
         kind = "compound",
-        effects = listOf(
-            "dbrow.effect_magic_boost",
-            "dbrow.effect_super_defence_boost",
-        ),
+        effects = listOf("dbrow.effect_magic_boost", "dbrow.effect_super_defence_boost"),
     ),
     RESTORE_POTION(
         key = "restore_potion",
         kind = "stat_restore",
         base = 10,
         percent = 30,
-        excludedSkills = listOf(
-            "stat.hitpoints",
-            "stat.prayer",
-        ),
+        excludedSkills = listOf("stat.hitpoints", "stat.prayer"),
     ),
-    PRAYER_RESTORE(
-        key = "prayer_restore",
-        kind = "prayer_restore",
-        base = 7,
-        percent = 25,
-    ),
+    PRAYER_RESTORE(key = "prayer_restore", kind = "prayer_restore", base = 7, percent = 25),
     SUPER_RESTORE(
         key = "super_restore",
         kind = "stat_restore",
@@ -185,16 +156,8 @@ internal enum class PotionEffectData(
         excludedSkills = listOf("stat.hitpoints"),
         restorePrayer = true,
     ),
-    ENERGY_RESTORE(
-        key = "energy_restore",
-        kind = "run_energy",
-        amount = 10,
-    ),
-    SUPER_ENERGY_RESTORE(
-        key = "super_energy_restore",
-        kind = "run_energy",
-        amount = 20,
-    ),
+    ENERGY_RESTORE(key = "energy_restore", kind = "run_energy", amount = 10),
+    SUPER_ENERGY_RESTORE(key = "super_energy_restore", kind = "run_energy", amount = 20),
     PRAYER_REGENERATION(
         key = "prayer_regeneration",
         kind = "prayer_regeneration",
@@ -207,21 +170,9 @@ internal enum class PotionEffectData(
         stamina = true,
         duration = minutes(2),
     ),
-    ANTIPOISON(
-        key = "antipoison",
-        kind = "poison_cure",
-        poisonImmunity = seconds(90),
-    ),
-    SUPERANTIPOISON(
-        key = "superantipoison",
-        kind = "poison_cure",
-        poisonImmunity = minutes(6),
-    ),
-    ANTIFIRE(
-        key = "antifire",
-        kind = "dragonfire_protection",
-        duration = minutes(6),
-    ),
+    ANTIPOISON(key = "antipoison", kind = "poison_cure", poisonImmunity = seconds(90)),
+    SUPERANTIPOISON(key = "superantipoison", kind = "poison_cure", poisonImmunity = minutes(6)),
+    ANTIFIRE(key = "antifire", kind = "dragonfire_protection", duration = minutes(6)),
     SUPER_ANTIFIRE(
         key = "super_antifire",
         kind = "dragonfire_protection",
@@ -251,27 +202,12 @@ internal enum class PotionEffectData(
     SANFEW_SERUM(
         key = "sanfew_serum",
         kind = "compound",
-        effects = listOf(
-            "dbrow.effect_sanfew_restore",
-            "dbrow.effect_superantipoison",
-        ),
+        effects = listOf("dbrow.effect_sanfew_restore", "dbrow.effect_superantipoison"),
         curesDisease = true,
     ),
-    SARADOMIN_BREW(
-        key = "saradomin_brew",
-        kind = "handler",
-        handler = "saradomin_brew",
-    ),
-    ZAMORAK_BREW(
-        key = "zamorak_brew",
-        kind = "handler",
-        handler = "zamorak_brew",
-    ),
-    ANCIENT_BREW(
-        key = "ancient_brew",
-        kind = "handler",
-        handler = "ancient_brew",
-    ),
+    SARADOMIN_BREW(key = "saradomin_brew", kind = "handler", handler = "saradomin_brew"),
+    ZAMORAK_BREW(key = "zamorak_brew", kind = "handler", handler = "zamorak_brew"),
+    ANCIENT_BREW(key = "ancient_brew", kind = "handler", handler = "ancient_brew"),
     DIVINE_SUPER_ATTACK_BOOST(
         key = "divine_super_attack_boost",
         kind = "divine",
@@ -345,31 +281,11 @@ internal enum class PotionEffectData(
         duration = minutes(6),
         fullProtection = true,
     ),
-    FORGOTTEN_BREW(
-        key = "forgotten_brew",
-        kind = "handler",
-        handler = "forgotten_brew",
-    ),
-    MENAPHITE_REMEDY(
-        key = "menaphite_remedy",
-        kind = "handler",
-        handler = "menaphite_remedy",
-    ),
-    GUTHIX_REST(
-        key = "guthix_rest",
-        kind = "handler",
-        handler = "guthix_rest",
-    ),
-    NZONE_OVERLOAD(
-        key = "nzone_overload",
-        kind = "handler",
-        handler = "nzone_overload",
-    ),
-    NZONE_ABSORPTION(
-        key = "nzone_absorption",
-        kind = "handler",
-        handler = "nzone_absorption",
-    ),
+    FORGOTTEN_BREW(key = "forgotten_brew", kind = "handler", handler = "forgotten_brew"),
+    MENAPHITE_REMEDY(key = "menaphite_remedy", kind = "handler", handler = "menaphite_remedy"),
+    GUTHIX_REST(key = "guthix_rest", kind = "handler", handler = "guthix_rest"),
+    NZONE_OVERLOAD(key = "nzone_overload", kind = "handler", handler = "nzone_overload"),
+    NZONE_ABSORPTION(key = "nzone_absorption", kind = "handler", handler = "nzone_absorption"),
     NZONE_SUPER_RANGING(
         key = "nzone_super_ranging",
         kind = "stat_boost",
@@ -510,16 +426,8 @@ internal enum class PotionEffectData(
         handler = "cox_twisted_potion",
         variant = "strong",
     ),
-    TOA_NECTAR(
-        key = "toa_nectar",
-        kind = "handler",
-        handler = "toa_nectar",
-    ),
-    TOA_AMBROSIA(
-        key = "toa_ambrosia",
-        kind = "handler",
-        handler = "toa_ambrosia",
-    ),
+    TOA_NECTAR(key = "toa_nectar", kind = "handler", handler = "toa_nectar"),
+    TOA_AMBROSIA(key = "toa_ambrosia", kind = "handler", handler = "toa_ambrosia"),
     TOA_TEARS_OF_ELIDINIS(
         key = "toa_tears_of_elidinis",
         kind = "handler",
@@ -535,41 +443,23 @@ internal enum class PotionEffectData(
         kind = "handler",
         handler = "toa_smelling_salts",
     ),
-    TOA_SILK_DRESSING(
-        key = "toa_silk_dressing",
-        kind = "handler",
-        handler = "toa_silk_dressing",
-    ),
+    TOA_SILK_DRESSING(key = "toa_silk_dressing", kind = "handler", handler = "toa_silk_dressing"),
     TOA_BLESSED_CRYSTAL_SCARAB(
         key = "toa_blessed_crystal_scarab",
         kind = "handler",
         handler = "toa_blessed_crystal_scarab",
     ),
-    ANTIDOTE_PLUS(
-        key = "antidote_plus",
-        kind = "poison_cure",
-        poisonImmunity = minutes(9),
-    ),
+    ANTIDOTE_PLUS(key = "antidote_plus", kind = "poison_cure", poisonImmunity = minutes(9)),
     ANTIDOTE_PLUS_PLUS(
         key = "antidote_plus_plus",
         kind = "poison_cure",
         poisonImmunity = minutes(12),
         venomImmunity = seconds(36),
     ),
-    RELICYMS_BALM(
-        key = "relicyms_balm",
-        kind = "handler",
-        handler = "relicyms_balm",
-    ),
-    MOONLIGHT_POTION(
-        key = "moonlight_potion",
-        kind = "handler",
-        handler = "moonlight_potion",
-    );
+    RELICYMS_BALM(key = "relicyms_balm", kind = "handler", handler = "relicyms_balm"),
+    MOONLIGHT_POTION(key = "moonlight_potion", kind = "handler", handler = "moonlight_potion"),
 }
 
-private fun seconds(value: Int): Int =
-    (value * 5 + 2) / 3
+private fun seconds(value: Int): Int = (value * 5 + 2) / 3
 
-private fun minutes(value: Int): Int =
-    seconds(value * 60)
+private fun minutes(value: Int): Int = seconds(value * 60)

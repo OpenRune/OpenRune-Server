@@ -28,10 +28,7 @@ class ArcheryShop @Inject constructor(private val shops: Shops) : PluginScript()
     private suspend fun Dialogue.shopKeeper(npc: Npc) {
         chatNpc(happy, "Welcome to Lowe's Archery Emporium. Do you want to see my wares?")
 
-        val choice = choice2(
-            "Yes please!", 1,
-            "No, I prefer to bash things close up.", 2,
-        )
+        val choice = choice2("Yes please!", 1, "No, I prefer to bash things close up.", 2)
 
         when (choice) {
             1 -> player.openArcheryShop(npc)
@@ -41,5 +38,4 @@ class ArcheryShop @Inject constructor(private val shops: Shops) : PluginScript()
             }
         }
     }
-
 }

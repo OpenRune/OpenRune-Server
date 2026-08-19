@@ -5,15 +5,15 @@ import java.io.File
 import kotlin.collections.iterator
 
 /**
- * Scans TOML and RSCM files for gamevals = -1, assigns next available IDs from 65535 downward,
- * and rewrites the files.
+ * Scans TOML and RSCM files for gamevals = -1, assigns next available IDs from 65535 downward, and
+ * rewrites the files.
  */
 class GameValAutoAssigner(
     private val mappings: Map<String, MutableMap<String, Int>>,
     private val maxBaseID: Map<String, Int>,
 ) {
-    fun run(contentDir: File?, apiDir: File? ,gamevalsDir: File?) {
-        val scanResult = scanForUnassigned(contentDir,apiDir, gamevalsDir)
+    fun run(contentDir: File?, apiDir: File?, gamevalsDir: File?) {
+        val scanResult = scanForUnassigned(contentDir, apiDir, gamevalsDir)
         if (scanResult.unassigned.isEmpty()) return
 
         val replacements = assignIds(scanResult)
@@ -34,7 +34,11 @@ class GameValAutoAssigner(
         val key: String,
     )
 
-    private fun scanForUnassigned(contentDir: File?,apiDir: File?, gamevalsDir: File?): ScanResult {
+    private fun scanForUnassigned(
+        contentDir: File?,
+        apiDir: File?,
+        gamevalsDir: File?,
+    ): ScanResult {
         val usedIds = mutableMapOf<String, MutableSet<Int>>()
         val idsInSameFile = mutableMapOf<Pair<File, String>, MutableSet<Int>>()
         val unassigned = mutableListOf<UnassignedEntry>()
@@ -141,7 +145,7 @@ class GameValAutoAssigner(
                 (MAX_ID downTo floor).firstOrNull { it !in tableUsed }
                     ?: throw IllegalStateException(
                         "Unable to auto-assign gameval for table '${entry.table}'. " +
-                            "No free IDs in range [$floor..$MAX_ID].",
+                            "No free IDs in range [$floor..$MAX_ID]."
                     )
             tableUsed.add(id)
             replacements

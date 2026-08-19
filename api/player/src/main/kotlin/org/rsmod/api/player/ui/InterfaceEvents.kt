@@ -5,12 +5,10 @@ import dev.openrune.definition.type.widget.ComponentType
 import dev.openrune.types.ItemServerType
 import dev.openrune.types.aconverted.interf.IfButtonOp
 import dev.openrune.types.aconverted.interf.IfSubType
-import dev.openrune.util.Coord
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.events.EventBus
 import org.rsmod.events.KeyedEvent
 import org.rsmod.events.SuspendEvent
-import org.rsmod.events.UnboundEvent
 import org.rsmod.game.entity.Player
 import org.rsmod.game.ui.Component
 import org.rsmod.game.ui.UserInterface
@@ -47,7 +45,6 @@ public data class IfModalButton(
     override val id: Long = component.packed.toLong()
 }
 
-
 public data class IfOverlayScriptTrigger(
     val component: ComponentType,
     val comsub: Int,
@@ -57,7 +54,6 @@ public data class IfOverlayScriptTrigger(
 ) : SuspendEvent<ProtectedAccess> {
     override val id: Long = component.packed.toLong()
 }
-
 
 public data class IfOverlayButton(
     val component: ComponentType,
@@ -130,14 +126,12 @@ public class IfOverlayButtonT(
             ")"
 }
 
-public class WorldMapClick(
-    public val player: Player,
-    public val coord: CoordGrid
-) : SuspendEvent<ProtectedAccess> {
+public class WorldMapClick(public val player: Player, public val coord: CoordGrid) :
+    SuspendEvent<ProtectedAccess> {
     /**
      * Stable event-bus key for [org.rsmod.api.script.onWorldMapClick]. Scripts gate by
-     * [dev.or2.central.account.Rights]; this must not vary per player or the subscription key
-     * would not match the published event.
+     * [dev.or2.central.account.Rights]; this must not vary per player or the subscription key would
+     * not match the published event.
      */
     override val id: Long = BUS_ID
 

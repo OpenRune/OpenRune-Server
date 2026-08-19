@@ -19,15 +19,15 @@ data class ItemRewardDisplay(val item: String, val zoom: Int = 10)
 data class Quest(
     val id: Int,
     val key: String,
-    val rowID : Int,
+    val rowID: Int,
     val displayName: String,
     val mapElement: Int?,
     val startCoord: CoordGrid?,
     val maxSteps: Int,
     val questPoints: Int,
     val questVarp: String,
-    val rewards : QuestReward,
-    val itemDisplay : ItemRewardDisplay
+    val rewards: QuestReward,
+    val itemDisplay: ItemRewardDisplay,
 ) {
 
     private var Player.questState by intVarp(questVarp)
@@ -49,25 +49,26 @@ data class Quest(
         fun register(
             rowKey: String,
             varp: String,
-            itemDisplay : ItemRewardDisplay,
-            rewards : QuestReward
+            itemDisplay: ItemRewardDisplay,
+            rewards: QuestReward,
         ): Quest {
 
             val rowKeyID = "dbrow.${rowKey}".asRSCM()
             val questRow = QuestRow.getRow(rowKeyID)
-            val quest = Quest(
-                id = questRow.id,
-                rowID = rowKeyID,
-                key = rowKey,
-                displayName = questRow.displayname,
-                mapElement = questRow.mapelement,
-                startCoord = questRow.startcoord,
-                maxSteps = questRow.endstate,
-                questPoints = questRow.questpoints,
-                questVarp = varp,
-                itemDisplay = itemDisplay,
-                rewards = rewards
-            )
+            val quest =
+                Quest(
+                    id = questRow.id,
+                    rowID = rowKeyID,
+                    key = rowKey,
+                    displayName = questRow.displayname,
+                    mapElement = questRow.mapelement,
+                    startCoord = questRow.startcoord,
+                    maxSteps = questRow.endstate,
+                    questPoints = questRow.questpoints,
+                    questVarp = varp,
+                    itemDisplay = itemDisplay,
+                    rewards = rewards,
+                )
             questsByKey[rowKey.normalizedQuestKey()] = quest
             return quest
         }
@@ -127,25 +128,26 @@ data class Quest(
         name: String,
         default: T,
         resetOnDeath: Boolean = false,
-        temp: Boolean = false
+        temp: Boolean = false,
     ): QuestAttribute<T> = attribute(name, { default }, resetOnDeath, temp)
 
     fun <T> attribute(
         name: String,
         default: () -> T,
         resetOnDeath: Boolean = false,
-        temp: Boolean = false
+        temp: Boolean = false,
     ): QuestAttribute<T> {
         @Suppress("UNCHECKED_CAST")
         return attributeRegistry.getOrPut(name) {
             QuestAttribute(
                 name = name,
-                attributeKey = AttributeKey(
-                    persistenceKey = "quest.$key.$name",
-                    resetOnDeath = resetOnDeath,
-                    temp = temp
-                ),
-                defaultProvider = default
+                attributeKey =
+                    AttributeKey(
+                        persistenceKey = "quest.$key.$name",
+                        resetOnDeath = resetOnDeath,
+                        temp = temp,
+                    ),
+                defaultProvider = default,
             )
         } as QuestAttribute<T>
     }
@@ -159,27 +161,32 @@ data class Quest(
         access.ifSetText("component.questscroll:quest_title", "You have completed ${displayName}!")
         access.ifSetText("component.questscroll:quest_reward1", "$questPoints Quest Point")
 
-        access.ifSetObj("component.questscroll:quest_model", obj = itemDisplay.item, zoom = itemDisplay.zoom)
+        access.ifSetObj(
+            "component.questscroll:quest_model",
+            obj = itemDisplay.item,
+            zoom = itemDisplay.zoom,
+        )
 
         val rewardLines = mutableListOf<String>()
 
         rewards.xp.forEach { (skill, amount) ->
-            val stat = ServerCacheManager.getStats(skill.asRSCM(RSCMType.STAT))
-                ?: error("No stat found for $skill")
+            val stat =
+                ServerCacheManager.getStats(skill.asRSCM(RSCMType.STAT))
+                    ?: error("No stat found for $skill")
 
-            access.statAdvance(skill,amount)
+            access.statAdvance(skill, amount)
             rewardLines.add("${amount.toInt()} ${stat.displayName} XP")
         }
 
         rewards.items.forEach { (item, amount) ->
-            access.invAdd(access.inv,item,amount)
-            val type = ServerCacheManager.getItem(item.asRSCM(RSCMType.OBJ))?: error("No item found for $item")
+            access.invAdd(access.inv, item, amount)
+            val type =
+                ServerCacheManager.getItem(item.asRSCM(RSCMType.OBJ))
+                    ?: error("No item found for $item")
             rewardLines.add("$amount x ${type.name}")
         }
 
-        rewards.extraText?.let {
-            rewardLines.add(it)
-        }
+        rewards.extraText?.let { rewardLines.add(it) }
 
         val linesToShow = rewardLines.take(6)
 
@@ -188,7 +195,5 @@ data class Quest(
             val text = linesToShow.getOrNull(i) ?: ""
             access.ifSetText(componentId, text)
         }
-
     }
-
 }

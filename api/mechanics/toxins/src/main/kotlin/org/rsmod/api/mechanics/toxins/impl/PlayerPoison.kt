@@ -25,66 +25,40 @@ public object PlayerPoison {
     public fun severityForInitialDamage(initialDamage: Int): Int =
         if (initialDamage <= 0) 0 else 5 * initialDamage - 4
 
-    public fun reduceSeverity(
-        player: Player,
-        amount: Int,
-    ): Boolean {
+    public fun reduceSeverity(player: Player, amount: Int): Boolean {
         if (amount <= 0) {
             return false
         }
 
-        val current =
-            player.vars["varp.poison_severity"]
+        val current = player.vars["varp.poison_severity"]
 
         if (current <= 0) {
             return false
         }
 
-        val reduced =
-            (current - amount)
-                .coerceAtLeast(0)
+        val reduced = (current - amount).coerceAtLeast(0)
 
         if (reduced == 0) {
             clear(player)
             return true
         }
 
-        VarPlayerIntMapSetter.set(
-            player,
-            "varp.poison_severity",
-            reduced,
-        )
+        VarPlayerIntMapSetter.set(player, "varp.poison_severity", reduced)
 
-        player.timer(
-            "timer.player_poison",
-            TICK_INTERVAL,
-        )
+        player.timer("timer.player_poison", TICK_INTERVAL)
 
         Toxin.syncStatusOrbs(player)
         return true
     }
 
-    internal fun startWithoutInitialHit(
-        player: Player,
-        initialDamage: Int,
-    ) {
-        require(initialDamage > 0) {
-            "`initialDamage` must be greater than 0."
-        }
+    internal fun startWithoutInitialHit(player: Player, initialDamage: Int) {
+        require(initialDamage > 0) { "`initialDamage` must be greater than 0." }
 
-        val severity =
-            severityForInitialDamage(initialDamage)
+        val severity = severityForInitialDamage(initialDamage)
 
-        VarPlayerIntMapSetter.set(
-            player,
-            "varp.poison_severity",
-            severity,
-        )
+        VarPlayerIntMapSetter.set(player, "varp.poison_severity", severity)
 
-        player.timer(
-            "timer.player_poison",
-            TICK_INTERVAL,
-        )
+        player.timer("timer.player_poison", TICK_INTERVAL)
 
         Toxin.syncStatusOrbs(player)
     }
@@ -131,11 +105,12 @@ public object PlayerPoison {
         if (hasWornPoisonEnvenomImmunity(player)) {
             return false
         }
-        val storedSeverity = when {
-            paramSeverity > 0 -> paramSeverity
-            initialDamage > 0 -> severityForInitialDamage(initialDamage)
-            else -> 0
-        }
+        val storedSeverity =
+            when {
+                paramSeverity > 0 -> paramSeverity
+                initialDamage > 0 -> severityForInitialDamage(initialDamage)
+                else -> 0
+            }
         if (storedSeverity <= 0) return false
 
         val incomingDamage = damageForSeverity(storedSeverity)
@@ -193,16 +168,9 @@ public object PlayerPoison {
             clear(player)
             return
         }
-        VarPlayerIntMapSetter.set(
-            player,
-            "varp.poison_severity",
-            severity,
-        )
+        VarPlayerIntMapSetter.set(player, "varp.poison_severity", severity)
 
-        player.timer(
-            "timer.player_poison",
-            TICK_INTERVAL,
-        )
+        player.timer("timer.player_poison", TICK_INTERVAL)
 
         Toxin.syncStatusOrbs(player)
     }

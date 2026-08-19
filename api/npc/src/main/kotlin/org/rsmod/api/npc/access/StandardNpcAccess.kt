@@ -5,9 +5,7 @@ import dev.openrune.types.HitmarkTypeGroup
 import dev.openrune.types.ItemServerType
 import dev.openrune.types.NpcServerType
 import dev.openrune.types.SequenceServerType
-import dev.openrune.types.aconverted.AreaType
 import dev.openrune.types.aconverted.CategoryType
-import dev.openrune.types.aconverted.SpotanimType
 import dev.openrune.types.hunt.HuntVis
 import kotlin.getValue
 import kotlin.setValue
@@ -370,7 +368,10 @@ public class StandardNpcAccess(
         npc.resetAnim()
     }
 
-    /** Sets a persistent idle animation kept displayed while the npc is stationary and not animating. */
+    /**
+     * Sets a persistent idle animation kept displayed while the npc is stationary and not
+     * animating.
+     */
     public fun setIdleAnim(seq: String) {
         npc.setIdleAnim(seq)
     }

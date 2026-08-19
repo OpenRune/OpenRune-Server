@@ -3,8 +3,7 @@ package org.rsmod.content.quest.manager
 import org.rsmod.game.entity.Player
 
 public object QuestRequirements {
-    @Volatile
-    private var policy: QuestRequirementPolicy = QuestRequirementPolicy()
+    @Volatile private var policy: QuestRequirementPolicy = QuestRequirementPolicy()
 
     public fun install(policy: QuestRequirementPolicy) {
         this.policy = policy
@@ -24,7 +23,8 @@ public object QuestRequirements {
     public fun satisfies(player: Player, quest: String, requirement: QuestRequirement): Boolean {
         val active = policy
         return when (active.mode) {
-            QuestRequirementMode.RespectProgress -> realProgressSatisfies(player, quest, requirement)
+            QuestRequirementMode.RespectProgress ->
+                realProgressSatisfies(player, quest, requirement)
             QuestRequirementMode.AssumeCompleted -> requirement == QuestRequirement.Completed
             QuestRequirementMode.VirtualCompletions ->
                 if (active.isVirtuallyCompleted(quest)) {
@@ -48,4 +48,3 @@ public object QuestRequirements {
         }
     }
 }
-

@@ -11,7 +11,9 @@ import org.rsmod.game.queue.WorldQueueList
 import org.rsmod.routefinder.collision.CollisionFlagMap
 
 @Singleton
-class BossDeps @Inject constructor(
+class BossDeps
+@Inject
+constructor(
     val random: GameRandom,
     val worldRepo: WorldRepository,
     val npcRepo: NpcRepository,

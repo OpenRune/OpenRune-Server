@@ -25,7 +25,8 @@ class SummarySideScript
 @Inject
 constructor(private val eventBus: EventBus, private val protectedAccess: ProtectedAccessLauncher) :
     PluginScript() {
-    private var ProtectedAccess.displayPlaytime by boolVarBit("varbit.account_summary_display_playtime")
+    private var ProtectedAccess.displayPlaytime by
+        boolVarBit("varbit.account_summary_display_playtime")
     private var ProtectedAccess.displayPlaytimeReminderDisabled by
         boolVarBit("varbit.account_summary_display_playtime_remind_disable")
 

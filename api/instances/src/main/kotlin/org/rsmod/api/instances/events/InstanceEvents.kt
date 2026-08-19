@@ -1,7 +1,7 @@
 package org.rsmod.api.instances.events
 
-import org.rsmod.api.instances.InstanceSpec
 import org.rsmod.api.instances.InstanceId
+import org.rsmod.api.instances.InstanceSpec
 import org.rsmod.events.KeyedEvent
 import org.rsmod.events.UnboundEvent
 import org.rsmod.game.entity.Player

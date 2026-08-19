@@ -29,12 +29,15 @@ class FineClothesShop @Inject constructor(private val shops: Shops) : PluginScri
     private suspend fun Dialogue.shopKeeper(npc: Npc) {
         chatNpc(happy, "Do you want to buy any fine clothes?")
 
-
-        val choice = choice3(
-            "What have you got?", 1,
-            "I'd just like to buy some clothes.", 2,
-            "No, thank you.", 3,
-        )
+        val choice =
+            choice3(
+                "What have you got?",
+                1,
+                "I'd just like to buy some clothes.",
+                2,
+                "No, thank you.",
+                3,
+            )
 
         when (choice) {
             1 -> {

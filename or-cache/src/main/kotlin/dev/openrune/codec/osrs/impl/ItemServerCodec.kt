@@ -4,16 +4,14 @@ import dev.openrune.definition.opcode.*
 import dev.openrune.definition.opcode.OpcodeType.BOOLEAN.enumType
 import dev.openrune.definition.opcode.impl.DefinitionOpcodeEntityOps
 import dev.openrune.definition.opcode.impl.DefinitionOpcodeListActions
-import dev.openrune.definition.opcode.impl.DefinitionOpcodeParams
 import dev.openrune.definition.type.ItemType
 import dev.openrune.definition.type.ObjStackability
 import dev.openrune.types.ItemServerType
-import dev.openrune.types.ObjectServerType
 import dev.openrune.util.DefinitionOpcodeParamMap
 import dev.openrune.util.WeaponCategory
 
 class ItemServerCodec(
-    val rev : Int,
+    val rev: Int,
     val items: Map<Int, ItemType>? = null,
     val custom: Map<Int, ItemServerType>? = emptyMap(),
 ) : OpcodeDefinitionCodec<ItemServerType>() {
@@ -132,11 +130,9 @@ class ItemServerCodec(
         placeholderTemplate = normalize(placeholderTemplate)
         transformlink = normalize(transformlink)
         transformtemplate = normalize(transformtemplate)
-
-
     }
 
-    //Not sure why rsmod uses 0 and not -1 like osrs client but this is what it does
+    // Not sure why rsmod uses 0 and not -1 like osrs client but this is what it does
     fun normalize(value: Int): Int = if (value == -1) 0 else value
 
     override fun createDefinition(): ItemServerType = ItemServerType()

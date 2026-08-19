@@ -1,10 +1,6 @@
 package org.rsmod.content.skills.shootingstars
 
-data class ShootingStarStage(
-    val loc: String,
-    val size: Int,
-    val miningLevel: Int,
-)
+data class ShootingStarStage(val loc: String, val size: Int, val miningLevel: Int)
 
 object ShootingStarStages {
     val ALL =

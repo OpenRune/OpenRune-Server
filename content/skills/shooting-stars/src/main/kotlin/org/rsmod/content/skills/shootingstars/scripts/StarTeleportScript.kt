@@ -13,10 +13,8 @@ import org.rsmod.plugin.scripts.ScriptContext
 
 class StarTeleportScript
 @Inject
-constructor(
-    private val stars: ShootingStarManager,
-    private val areaChecker: AreaChecker,
-) : PluginScript() {
+constructor(private val stars: ShootingStarManager, private val areaChecker: AreaChecker) :
+    PluginScript() {
     override fun ScriptContext.startup() {
         onOpHeld1(ITEM) { breakTablet(it.slot) }
     }
@@ -60,7 +58,7 @@ constructor(
 
         mesbox(
             "<col=7f0000>Warning!</col> The shooting star is in level $level " +
-                "<col=7f0000>Wilderness</col>. Other players will be able to attack you there.",
+                "<col=7f0000>Wilderness</col>. Other players will be able to attack you there."
         )
         val confirm =
             choice2(

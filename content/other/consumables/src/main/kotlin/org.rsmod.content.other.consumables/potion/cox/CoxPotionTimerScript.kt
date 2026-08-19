@@ -20,30 +20,14 @@ constructor(
          * restoration. This prevents raid-only effects from leaking into
          * the normal world if unrestricted potion testing is enabled.
          */
-        onPlayerLogin {
-            effects.clearSessionEffects(player)
-        }
+        onPlayerLogin { effects.clearSessionEffects(player) }
 
-        onPlayerLogout {
-            effects.clearSessionEffects(player)
-        }
+        onPlayerLogout { effects.clearSessionEffects(player) }
 
-        onPlayerTimer(
-            CoxPrayerEnhanceEffect.TIMER,
-        ) {
-            prayerEnhance.process(this)
-        }
+        onPlayerTimer(CoxPrayerEnhanceEffect.TIMER) { prayerEnhance.process(this) }
 
-        onPlayerTimer(
-            CoxOverloadEffect.DAMAGE_TIMER,
-        ) {
-            overload.processDamage(this)
-        }
+        onPlayerTimer(CoxOverloadEffect.DAMAGE_TIMER) { overload.processDamage(this) }
 
-        onPlayerTimer(
-            CoxOverloadEffect.TIMER,
-        ) {
-            overload.process(this)
-        }
+        onPlayerTimer(CoxOverloadEffect.TIMER) { overload.process(this) }
     }
 }

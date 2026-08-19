@@ -43,9 +43,16 @@ object QuestJournalRegistry {
         return Quest.get(key)
     }
 
-    private fun openJournalOverview(access: ProtectedAccess, quest: Quest, content: QuestJournalContent) {
+    private fun openJournalOverview(
+        access: ProtectedAccess,
+        quest: Quest,
+        content: QuestJournalContent,
+    ) {
         access.ifOpenMain("interface.questjournal_overview")
-        access.ifSetText("component.questjournal_overview:title", "<col=7f0000>${quest.displayName}</col>")
+        access.ifSetText(
+            "component.questjournal_overview:title",
+            "<col=7f0000>${quest.displayName}</col>",
+        )
 
         access.runClientScript(
             6821,
@@ -63,9 +70,11 @@ object QuestJournalRegistry {
     }
 
     private fun openQuestLog(access: ProtectedAccess, quest: Quest, content: QuestJournalContent) {
-        val lines = (if (quest.isQuestCompleted(access.player)) content.completedLog(access) else content.questLog(access))
-            .lines()
-            .flatMap { it.toRs(inheritPreviousTags = true, wrapAt = 64).split("<br>") }
+        val lines =
+            (if (quest.isQuestCompleted(access.player)) content.completedLog(access)
+                else content.questLog(access))
+                .lines()
+                .flatMap { it.toRs(inheritPreviousTags = true, wrapAt = 64).split("<br>") }
 
         access.ifOpenMain("interface.questjournal")
         access.runClientScript(5240)

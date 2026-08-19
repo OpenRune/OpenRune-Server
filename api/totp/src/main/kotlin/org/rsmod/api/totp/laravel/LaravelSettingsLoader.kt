@@ -12,25 +12,21 @@ public object LaravelSettingsPaths {
 }
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-internal data class LaravelSettingsYaml(
-    @JsonProperty("app-key") val appKey: String = "",
-)
+internal data class LaravelSettingsYaml(@JsonProperty("app-key") val appKey: String = "")
 
 public class LaravelSettingsLoader {
-    private val yamlMapper: ObjectMapper =
-        ObjectMapper(YAMLFactory())
-            .registerKotlinModule()
+    private val yamlMapper: ObjectMapper = ObjectMapper(YAMLFactory()).registerKotlinModule()
 
     private val logger = InlineLogger()
 
     public fun loadAppKey(): String? {
         val stream =
-            LaravelSettingsLoader::class.java.classLoader.getResourceAsStream(LaravelSettingsPaths.RESOURCE_NAME)
-                ?: return null
+            LaravelSettingsLoader::class
+                .java
+                .classLoader
+                .getResourceAsStream(LaravelSettingsPaths.RESOURCE_NAME) ?: return null
         val settings =
-            stream.use { input ->
-                yamlMapper.readValue(input, LaravelSettingsYaml::class.java)
-            }
+            stream.use { input -> yamlMapper.readValue(input, LaravelSettingsYaml::class.java) }
         val appKey = settings.appKey.trim()
         if (appKey.isEmpty()) {
             return null

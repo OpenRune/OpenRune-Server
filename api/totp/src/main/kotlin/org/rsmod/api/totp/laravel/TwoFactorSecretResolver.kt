@@ -5,9 +5,7 @@ import jakarta.inject.Inject
 import jakarta.inject.Singleton
 
 @Singleton
-public class TwoFactorSecretResolver @Inject constructor(
-    settingsLoader: LaravelSettingsLoader,
-) {
+public class TwoFactorSecretResolver @Inject constructor(settingsLoader: LaravelSettingsLoader) {
     private val logger = InlineLogger()
 
     private val encrypter: LaravelEncrypter? =
@@ -19,7 +17,9 @@ public class TwoFactorSecretResolver @Inject constructor(
                 LaravelEncrypter(appKey)
             }
         } catch (e: Exception) {
-            logger.error(e) { "Invalid Laravel APP_KEY; encrypted two-factor secrets cannot be decoded" }
+            logger.error(e) {
+                "Invalid Laravel APP_KEY; encrypted two-factor secrets cannot be decoded"
+            }
             null
         }
 

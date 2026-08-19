@@ -25,9 +25,10 @@ import org.rsmod.game.entity.npc.NpcStateEvents
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
-
 @Singleton
-public class BossHpBarScript @Inject constructor(
+public class BossHpBarScript
+@Inject
+constructor(
     private val instances: InstanceManager,
     private val contributor: BossHpBarDamageContributor,
     private val protectedAccess: ProtectedAccessLauncher,
@@ -90,14 +91,13 @@ public class BossHpBarScript @Inject constructor(
         player.bossHudCurrentHp = npc.hitpoints
         player.bossHudBarSize = 1
 
-        player.setColour("component.hpbar_hud:inner",ORIGINAL_COLORS[0])
-        player.setColour("component.hpbar_hud:health_bar_back",ORIGINAL_COLORS[1])
-        player.setColour("component.hpbar_hud:health_bar_sliding",ORIGINAL_COLORS[2])
+        player.setColour("component.hpbar_hud:inner", ORIGINAL_COLORS[0])
+        player.setColour("component.hpbar_hud:health_bar_back", ORIGINAL_COLORS[1])
+        player.setColour("component.hpbar_hud:health_bar_sliding", ORIGINAL_COLORS[2])
 
         player.runClientScript(2287, commonComponents, 0)
         openScripts(player)
     }
-
 
     @OptIn(InternalApi::class)
     public fun onClose(player: Player, npc: Npc, instant: Boolean = false) {
@@ -112,7 +112,12 @@ public class BossHpBarScript @Inject constructor(
         }
     }
 
-    public fun onUpdate(player: Player, npc: Npc, currentHp: Int = npc.hitpoints, maxHp: Int = npc.baseHitpointsLvl) {
+    public fun onUpdate(
+        player: Player,
+        npc: Npc,
+        currentHp: Int = npc.hitpoints,
+        maxHp: Int = npc.baseHitpointsLvl,
+    ) {
         if (player.bossHudDisabled) return
 
         player.bossHudBaseHp = maxHp
@@ -131,7 +136,7 @@ public class BossHpBarScript @Inject constructor(
 
     private fun openScripts(player: Player) {
         player.runClientScript(2887, commonComponents, 255)
-        player.runClientScript(2102, commonComponents,1)
+        player.runClientScript(2102, commonComponents, 1)
 
         player.runClientScript(
             2376,
@@ -153,29 +158,30 @@ public class BossHpBarScript @Inject constructor(
             "component.hpbar_hud:health_bar_upper_threshold".asRSCM(),
             "component.hpbar_hud:hp_bar_1".asRSCM(),
             "component.hpbar_hud:hp_bar_2".asRSCM(),
-            "component.hpbar_hud:hpcontentside".asRSCM()
+            "component.hpbar_hud:hpcontentside".asRSCM(),
         )
     }
 
-    public val commonComponents: IntArray = intArrayOf(
-        "component.hpbar_hud:hp".asRSCM(),
-        "component.hpbar_hud:name_area".asRSCM(),
-        "component.hpbar_hud:outer_border".asRSCM(),
-        "component.hpbar_hud:name_backing".asRSCM(),
-        "component.hpbar_hud:creature_name".asRSCM(),
-        "component.hpbar_hud:inner_border".asRSCM(),
-        "component.hpbar_hud:health_bar_back".asRSCM(),
-        "component.hpbar_hud:health_bar_sliding".asRSCM(),
-        "component.hpbar_hud:health_bar_remaining".asRSCM(),
-        "component.hpbar_hud:hp_bar_text".asRSCM(),
-        "component.hpbar_hud:health_bar_lower_threshold".asRSCM(),
-        "component.hpbar_hud:health_bar_upper_threshold".asRSCM(),
-        "component.hpbar_hud:hp_bar_1".asRSCM(),
-        "component.hpbar_hud:hp_bar_2".asRSCM(),
-    )
+    public val commonComponents: IntArray =
+        intArrayOf(
+            "component.hpbar_hud:hp".asRSCM(),
+            "component.hpbar_hud:name_area".asRSCM(),
+            "component.hpbar_hud:outer_border".asRSCM(),
+            "component.hpbar_hud:name_backing".asRSCM(),
+            "component.hpbar_hud:creature_name".asRSCM(),
+            "component.hpbar_hud:inner_border".asRSCM(),
+            "component.hpbar_hud:health_bar_back".asRSCM(),
+            "component.hpbar_hud:health_bar_sliding".asRSCM(),
+            "component.hpbar_hud:health_bar_remaining".asRSCM(),
+            "component.hpbar_hud:hp_bar_text".asRSCM(),
+            "component.hpbar_hud:health_bar_lower_threshold".asRSCM(),
+            "component.hpbar_hud:health_bar_upper_threshold".asRSCM(),
+            "component.hpbar_hud:hp_bar_1".asRSCM(),
+            "component.hpbar_hud:hp_bar_2".asRSCM(),
+        )
 
     public companion object {
-        public val ORIGINAL_COLORS: Array<Color> = arrayOf(Color(204, 0, 0), Color(149, 0, 0), Color(0, 245, 0))
+        public val ORIGINAL_COLORS: Array<Color> =
+            arrayOf(Color(204, 0, 0), Color(149, 0, 0), Color(0, 245, 0))
     }
-
 }

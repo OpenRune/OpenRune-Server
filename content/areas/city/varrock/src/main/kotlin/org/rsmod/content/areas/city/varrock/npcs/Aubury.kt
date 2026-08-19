@@ -17,10 +17,10 @@ import org.rsmod.game.entity.Player
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
-class Aubury @Inject constructor(
-    private val shops: Shops,
-    private val runeMysteries: RuneMysteriesQuest,
-) : PluginScript() {
+class Aubury
+@Inject
+constructor(private val shops: Shops, private val runeMysteries: RuneMysteriesQuest) :
+    PluginScript() {
 
     private val quest
         get() = runeMysteries.quest
@@ -72,7 +72,10 @@ class Aubury @Inject constructor(
                         "extremely important for him to have sent a stranger.",
                 )
                 if (!player.inv.contains(RuneMysteriesQuest.RESEARCH_PACKAGE)) {
-                    chatPlayer(sad, "Uh... yeah... about that... I kind of don't have it with me...")
+                    chatPlayer(
+                        sad,
+                        "Uh... yeah... about that... I kind of don't have it with me...",
+                    )
                     chatNpc(
                         angry,
                         "What kind of person says they have a delivery for me, but not with them? Honestly.",
@@ -94,7 +97,10 @@ class Aubury @Inject constructor(
                         "you, I think we finally have it.",
                 )
                 chatPlayer(quiz, "You mean the incantation?")
-                chatNpc(quiz, "Well when we combine my own research with this latest discovery, I think we might just...")
+                chatNpc(
+                    quiz,
+                    "Well when we combine my own research with this latest discovery, I think we might just...",
+                )
                 chatNpc(
                     happy,
                     "No, no, I'm getting ahead of myself. The signs are promising, but let's not jump " +
@@ -137,7 +143,10 @@ class Aubury @Inject constructor(
             }
             3 -> {
                 chatPlayer(bored, "Oh, it's a rune shop. No thank you, then.")
-                chatNpc(sad, "Well, if you find someone who does want runes, please send them my way.")
+                chatNpc(
+                    sad,
+                    "Well, if you find someone who does want runes, please send them my way.",
+                )
             }
         }
     }
@@ -166,21 +175,17 @@ class Aubury @Inject constructor(
                     "were hoping for.",
             )
             chatNpc(quiz, "Now, did you want to buy some runes?")
-            when (
-                choice2(
-                    "Yes please!",
-                    1,
-                    "No thank you.",
-                    2,
-                )
-            ) {
+            when (choice2("Yes please!", 1, "No thank you.", 2)) {
                 1 -> {
                     chatPlayer(happy, "Yes please!")
                     player.openAuburyShop(npc)
                 }
                 2 -> {
                     chatPlayer(quiz, "No thank you.")
-                    chatNpc(sad, "Well, if you find someone who does want runes, please send them my way.")
+                    chatNpc(
+                        sad,
+                        "Well, if you find someone who does want runes, please send them my way.",
+                    )
                 }
             }
         }
@@ -205,7 +210,10 @@ class Aubury @Inject constructor(
                 }
                 2 -> {
                     chatPlayer(quiz, "No thank you.")
-                    chatNpc(sad, "Well, if you find someone who does want runes, please send them my way.")
+                    chatNpc(
+                        sad,
+                        "Well, if you find someone who does want runes, please send them my way.",
+                    )
                 }
                 3 -> {
                     chatPlayer(quiz, "Can you teleport me to the Rune Essence?")
@@ -218,21 +226,17 @@ class Aubury @Inject constructor(
                 }
             }
         } else {
-            when (
-                choice2(
-                    "Yes please!",
-                    1,
-                    "Oh, it's a rune shop. No thank you, then.",
-                    2,
-                )
-            ) {
+            when (choice2("Yes please!", 1, "Oh, it's a rune shop. No thank you, then.", 2)) {
                 1 -> {
                     chatPlayer(happy, "Yes please!")
                     player.openAuburyShop(npc)
                 }
                 2 -> {
                     chatPlayer(bored, "Oh, it's a rune shop. No thank you, then.")
-                    chatNpc(sad, "Well, if you find someone who does want runes, please send them my way.")
+                    chatNpc(
+                        sad,
+                        "Well, if you find someone who does want runes, please send them my way.",
+                    )
                 }
             }
         }

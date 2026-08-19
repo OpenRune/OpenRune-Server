@@ -17,9 +17,7 @@ object SlayerAssignmentDialogue {
     private fun ProtectedAccess.slayerCount(): Int = vars["varp.slayer_count"]
 
     suspend fun Dialogue.assignNewTask(masterNpcId: String) {
-        assignNewTask(masterNpcId) { taskName, count ->
-            defaultAssignedDialogue(taskName, count)
-        }
+        assignNewTask(masterNpcId) { taskName, count -> defaultAssignedDialogue(taskName, count) }
     }
 
     suspend fun Dialogue.assignNewTask(
@@ -40,7 +38,9 @@ object SlayerAssignmentDialogue {
         onAssigned: suspend Dialogue.(taskName: String, count: Int) -> Unit,
     ) {
         val locationSuffix =
-            if (access.vars[VARP_LAST_MASTER] == KONAR_MASTER_ID && access.vars[VARP_LAST_AREA] != 0) {
+            if (
+                access.vars[VARP_LAST_MASTER] == KONAR_MASTER_ID && access.vars[VARP_LAST_AREA] != 0
+            ) {
                 " at the same location"
             } else {
                 ""
@@ -60,14 +60,7 @@ object SlayerAssignmentDialogue {
                 "You're wearing a Slayer cape. Would you like me to assign you the same task as last time ($previousTaskName)$locationSuffix?"
             }
         chatNpc(neutral, capeMessage)
-        when (
-            choice2(
-                "Yes please.",
-                1,
-                "No thanks, I'd like a new task.",
-                2,
-            )
-        ) {
+        when (choice2("Yes please.", 1, "No thanks, I'd like a new task.", 2)) {
             1 -> {
                 chatPlayer(neutral, "Yes please.")
                 when (SlayerTaskManager.assignPreviousTask(access, masterNpcId)) {
@@ -83,7 +76,8 @@ object SlayerAssignmentDialogue {
                             onAssigned(task.nameUppercase, access.slayerCount())
                         }
                     }
-                    SlayerTaskManager.AssignPreviousResult.Failed -> assignRandomTask(masterNpcId, onAssigned)
+                    SlayerTaskManager.AssignPreviousResult.Failed ->
+                        assignRandomTask(masterNpcId, onAssigned)
                 }
             }
             2 -> {
@@ -105,13 +99,17 @@ object SlayerAssignmentDialogue {
             return
         }
         val master =
-            SlayerTaskManager.findMasterByNpc(masterNpcId) ?: run {
-                chatNpc(neutral, "I can't assign you a task right now.")
-                return
-            }
+            SlayerTaskManager.findMasterByNpc(masterNpcId)
+                ?: run {
+                    chatNpc(neutral, "I can't assign you a task right now.")
+                    return
+                }
         val bypassCombat = SlayerCapePerk.hasSlayerCape(access)
 
-        when (val roll = SlayerTaskManager.rollAssignment(access, master, bypassCombatCheck = bypassCombat)) {
+        when (
+            val roll =
+                SlayerTaskManager.rollAssignment(access, master, bypassCombatCheck = bypassCombat)
+        ) {
             null -> {
                 chatNpc(neutral, SlayerTaskManager.assignmentUnavailableMessage(access, master))
                 return
@@ -139,7 +137,10 @@ object SlayerAssignmentDialogue {
                         onAssigned(fallback.masterTask.task.nameUppercase, fallback.amount)
                     }
                     else -> {
-                        chatNpc(neutral, SlayerTaskManager.assignmentUnavailableMessage(access, master))
+                        chatNpc(
+                            neutral,
+                            SlayerTaskManager.assignmentUnavailableMessage(access, master),
+                        )
                         return
                     }
                 }
@@ -157,7 +158,10 @@ object SlayerAssignmentDialogue {
     }
 
     private suspend fun Dialogue.defaultAssignedDialogue(taskName: String, count: Int) {
-        chatNpc(neutral, "Excellent, you're doing great. Your new task is to kill $count $taskName.")
+        chatNpc(
+            neutral,
+            "Excellent, you're doing great. Your new task is to kill $count $taskName.",
+        )
         when (choice2("Got any tips for me?", 1, "Okay, great!", 2)) {
             1 -> {
                 chatPlayer(quiz, "Got any tips for me?")
@@ -165,7 +169,10 @@ object SlayerAssignmentDialogue {
             }
             2 -> {
                 chatPlayer(happy, "Okay, great!")
-                chatNpc(neutral, "Good luck! Don't forget to come back when you need a new assignment.")
+                chatNpc(
+                    neutral,
+                    "Good luck! Don't forget to come back when you need a new assignment.",
+                )
             }
         }
     }

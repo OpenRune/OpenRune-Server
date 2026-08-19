@@ -31,8 +31,7 @@ data class ShootingstarsSettings(
         private const val CYCLES_PER_MINUTE = 100
         private const val RESOURCE = "shootingstars.toml"
 
-        private val mapper: ObjectMapper =
-            ObjectMapper(TomlFactory()).registerKotlinModule()
+        private val mapper: ObjectMapper = ObjectMapper(TomlFactory()).registerKotlinModule()
 
         @Volatile private var cached: ShootingstarsSettings? = null
 

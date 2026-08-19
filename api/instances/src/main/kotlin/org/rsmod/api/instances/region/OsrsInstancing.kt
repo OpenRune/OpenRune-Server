@@ -3,12 +3,13 @@ package org.rsmod.api.instances.region
 import org.rsmod.api.registry.region.RegionRegistry
 
 /**
- * Jagex instanced map layout as documented in [OSRS instancing mechanics](https://osrs-docs.com/docs/mechanics/instancing/).
+ * Jagex instanced map layout as documented in
+ * [OSRS instancing mechanics](https://osrs-docs.com/docs/mechanics/instancing/).
  *
  * Static overworld occupies `x < 6400`. Copied regions are allocated from `x >= 6400` with padding
- * so adjacent instances are not visible. Small copies use a fixed 128×128 build square; large copies
- * use 320×320 (Soul Wars, Last Man Standing). The client applies zones via **Rebuild Region** in 8×8
- * chunks with rotation at 0°, 90°, 180°, or 270°.
+ * so adjacent instances are not visible. Small copies use a fixed 128×128 build square; large
+ * copies use 320×320 (Soul Wars, Last Man Standing). The client applies zones via **Rebuild
+ * Region** in 8×8 chunks with rotation at 0°, 90°, 180°, or 270°.
  *
  * Engine slot allocation is implemented in [RegionRegistry]; these values mirror the live game caps
  * and coordinate rules.

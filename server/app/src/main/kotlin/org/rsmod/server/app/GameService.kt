@@ -15,10 +15,8 @@ import org.rsmod.server.services.concurrent.ScheduledListenerService
 
 class GameService
 @Inject
-constructor(
-    private val process: GameProcess,
-    private val scriptBootGate: PluginScriptBootGate,
-) : ScheduledListenerService {
+constructor(private val process: GameProcess, private val scriptBootGate: PluginScriptBootGate) :
+    ScheduledListenerService {
     private val logger = InlineLogger()
 
     private var excessCycleNanos = 0L

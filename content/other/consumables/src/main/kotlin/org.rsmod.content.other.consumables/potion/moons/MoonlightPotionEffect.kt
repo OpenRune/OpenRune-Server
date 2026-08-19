@@ -3,24 +3,20 @@ package org.rsmod.content.other.consumables.potion.moons
 import jakarta.inject.Singleton
 import org.rsmod.api.attr.AttributeKey
 import org.rsmod.api.player.protect.ProtectedAccess
+import org.rsmod.api.player.stat.clearPositiveStatBoost
 import org.rsmod.api.player.stat.stat
 import org.rsmod.api.player.stat.statBase
-import org.rsmod.api.player.stat.clearPositiveStatBoost
 import org.rsmod.api.player.vars.VarPlayerIntMapSetter
 import org.rsmod.content.other.consumables.potion.restoreIfDrained
 import org.rsmod.game.entity.Player
 
 @Singleton
 class MoonlightPotionEffect {
-    fun handles(handler: String): Boolean =
-        handler == HANDLER
+    fun handles(handler: String): Boolean = handler == HANDLER
 
-    fun apply(
-        access: ProtectedAccess,
-    ) {
+    fun apply(access: ProtectedAccess) {
         with(access) {
-            val herblore =
-                player.stat(HERBLORE)
+            val herblore = player.stat(HERBLORE)
 
             applyAttackBoost(herblore)
             applyStrengthBoost(herblore)
@@ -29,9 +25,7 @@ class MoonlightPotionEffect {
         }
     }
 
-    fun process(
-        access: ProtectedAccess,
-    ) {
+    fun process(access: ProtectedAccess) {
         with(access) {
             val expiresAt =
                 player.attr[EXPIRES_AT]
@@ -40,14 +34,10 @@ class MoonlightPotionEffect {
                         return
                     }
 
-            val remaining =
-                expiresAt - mapClock
+            val remaining = expiresAt - mapClock
 
             if (remaining > 0) {
-                player.timer(
-                    TIMER,
-                    remaining,
-                )
+                player.timer(TIMER, remaining)
                 return
             }
 
@@ -55,38 +45,24 @@ class MoonlightPotionEffect {
         }
     }
 
-    fun clear(
-        player: Player,
-    ) {
-        val active =
-            player.attr[EXPIRES_AT] != null ||
-                player.vars[MOONLIGHT_TIMER_VARBIT] > 0
+    fun clear(player: Player) {
+        val active = player.attr[EXPIRES_AT] != null || player.vars[MOONLIGHT_TIMER_VARBIT] > 0
 
         player.attr.remove(EXPIRES_AT)
         player.clearTimer(TIMER)
 
-        VarPlayerIntMapSetter.set(
-            player,
-            MOONLIGHT_TIMER_VARBIT,
-            0,
-        )
+        VarPlayerIntMapSetter.set(player, MOONLIGHT_TIMER_VARBIT, 0)
 
         if (!active) {
             return
         }
 
-        VarPlayerIntMapSetter.set(
-            player,
-            DIVINE_DEFENCE_TIMER_VARBIT,
-            0,
-        )
+        VarPlayerIntMapSetter.set(player, DIVINE_DEFENCE_TIMER_VARBIT, 0)
 
         player.clearPositiveStatBoost(DEFENCE)
     }
 
-    private fun ProtectedAccess.applyAttackBoost(
-        herblore: Int,
-    ) {
+    private fun ProtectedAccess.applyAttackBoost(herblore: Int) {
         when {
             herblore >= SUPER_ATTACK_REQUIREMENT ->
                 statBoost(
@@ -104,9 +80,7 @@ class MoonlightPotionEffect {
         }
     }
 
-    private fun ProtectedAccess.applyStrengthBoost(
-        herblore: Int,
-    ) {
+    private fun ProtectedAccess.applyStrengthBoost(herblore: Int) {
         when {
             herblore >= SUPER_STRENGTH_REQUIREMENT ->
                 statBoost(
@@ -124,9 +98,7 @@ class MoonlightPotionEffect {
         }
     }
 
-    private fun ProtectedAccess.applyDefenceBoost(
-        herblore: Int,
-    ) {
+    private fun ProtectedAccess.applyDefenceBoost(herblore: Int) {
         when {
             herblore >= ENHANCED_DEFENCE_REQUIREMENT -> {
                 statBoost(
@@ -155,98 +127,59 @@ class MoonlightPotionEffect {
     }
 
     private fun ProtectedAccess.activateEnhancedDefenceTimer() {
-        player.attr[EXPIRES_AT] =
-            mapClock + ENHANCED_DEFENCE_DURATION
+        player.attr[EXPIRES_AT] = mapClock + ENHANCED_DEFENCE_DURATION
 
+        // The client tracks the Moonlight effect separately while also
+        // using the divine Defence countdown for the level-70 effect.
 
-         // The client tracks the Moonlight effect separately while also
-         // using the divine Defence countdown for the level-70 effect.
+        VarPlayerIntMapSetter.set(player, MOONLIGHT_TIMER_VARBIT, 0)
 
-        VarPlayerIntMapSetter.set(
-            player,
-            MOONLIGHT_TIMER_VARBIT,
-            0,
-        )
+        VarPlayerIntMapSetter.set(player, DIVINE_DEFENCE_TIMER_VARBIT, 0)
 
-        VarPlayerIntMapSetter.set(
-            player,
-            DIVINE_DEFENCE_TIMER_VARBIT,
-            0,
-        )
+        VarPlayerIntMapSetter.set(player, MOONLIGHT_TIMER_VARBIT, ENHANCED_DEFENCE_DURATION)
 
-        VarPlayerIntMapSetter.set(
-            player,
-            MOONLIGHT_TIMER_VARBIT,
-            ENHANCED_DEFENCE_DURATION,
-        )
-
-        VarPlayerIntMapSetter.set(
-            player,
-            DIVINE_DEFENCE_TIMER_VARBIT,
-            ENHANCED_DEFENCE_DURATION,
-        )
+        VarPlayerIntMapSetter.set(player, DIVINE_DEFENCE_TIMER_VARBIT, ENHANCED_DEFENCE_DURATION)
 
         player.clearTimer(TIMER)
-        player.timer(
-            TIMER,
-            ENHANCED_DEFENCE_DURATION,
-        )
+        player.timer(TIMER, ENHANCED_DEFENCE_DURATION)
     }
 
-    private fun ProtectedAccess.restorePrayer(
-        herblore: Int,
-    ) {
+    private fun ProtectedAccess.restorePrayer(herblore: Int) {
         if (herblore < PRAYER_REQUIREMENT) {
             return
         }
 
-        val basePrayer =
-            player.statBase(PRAYER)
+        val basePrayer = player.statBase(PRAYER)
 
-        val prayerScaled =
-            basePrayer * PRAYER_LEVEL_PERCENT / 100
+        val prayerScaled = basePrayer * PRAYER_LEVEL_PERCENT / 100
 
-        val herbloreScaled =
-            herblore * HERBLORE_LEVEL_PERCENT / 100
+        val herbloreScaled = herblore * HERBLORE_LEVEL_PERCENT / 100
 
         restoreIfDrained(
             stat = PRAYER,
-            constant =
-                maxOf(
-                    prayerScaled,
-                    herbloreScaled,
-                ) + PRAYER_RESTORE_CONSTANT,
+            constant = maxOf(prayerScaled, herbloreScaled) + PRAYER_RESTORE_CONSTANT,
             percent = 0,
         )
     }
 
     companion object {
-        const val TIMER: String =
-            "timer.potion_moonlight"
+        const val TIMER: String = "timer.potion_moonlight"
 
-        private const val HANDLER: String =
-            "moonlight_potion"
+        private const val HANDLER: String = "moonlight_potion"
 
-        private const val ATTACK: String =
-            "stat.attack"
+        private const val ATTACK: String = "stat.attack"
 
-        private const val STRENGTH: String =
-            "stat.strength"
+        private const val STRENGTH: String = "stat.strength"
 
-        private const val DEFENCE: String =
-            "stat.defence"
+        private const val DEFENCE: String = "stat.defence"
 
-        private const val PRAYER: String =
-            "stat.prayer"
+        private const val PRAYER: String = "stat.prayer"
 
-        private const val HERBLORE: String =
-            "stat.herblore"
+        private const val HERBLORE: String = "stat.herblore"
 
-        private const val MOONLIGHT_TIMER_VARBIT: String =
-            "varbit.moonlight_potion_time"
+        private const val MOONLIGHT_TIMER_VARBIT: String = "varbit.moonlight_potion_time"
 
-        private const val DIVINE_DEFENCE_TIMER_VARBIT: String =
-            "varbit.divinedefence_potion_time"
+        private const val DIVINE_DEFENCE_TIMER_VARBIT: String = "varbit.divinedefence_potion_time"
 
         private const val ATTACK_REQUIREMENT: Int = 3
         private const val STRENGTH_REQUIREMENT: Int = 12
@@ -269,10 +202,6 @@ class MoonlightPotionEffect {
         private const val HERBLORE_LEVEL_PERCENT: Int = 30
         private const val PRAYER_RESTORE_CONSTANT: Int = 7
 
-        private val EXPIRES_AT: AttributeKey<Int> =
-            AttributeKey(
-                resetOnDeath = true,
-                temp = true,
-            )
+        private val EXPIRES_AT: AttributeKey<Int> = AttributeKey(resetOnDeath = true, temp = true)
     }
 }

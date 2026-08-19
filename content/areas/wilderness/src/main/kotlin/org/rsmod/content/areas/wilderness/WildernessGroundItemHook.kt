@@ -31,8 +31,8 @@ public class WildernessGroundItemHook @Inject constructor(private val areaChecke
 
         val adjustedDuration =
             when {
-                context.source != GroundItemDropSource.Death &&
-                    SupplyItems.isFoodOrPotion(type) -> WILDERNESS_SUPPLY_DROP_DURATION
+                context.source != GroundItemDropSource.Death && SupplyItems.isFoodOrPotion(type) ->
+                    WILDERNESS_SUPPLY_DROP_DURATION
                 else -> duration
             }
 
@@ -41,15 +41,12 @@ public class WildernessGroundItemHook @Inject constructor(private val areaChecke
                 isSupply -> NEVER_REVEAL
                 context.source == GroundItemDropSource.Death &&
                     context.receiver != null &&
-                    context.receiver !== context.player ->
-                    PlayerDeathDrops.PVP_REVEAL_DELAY
+                    context.receiver !== context.player -> PlayerDeathDrops.PVP_REVEAL_DELAY
                 else -> IMMEDIATE_REVEAL
             }
 
         val ownerOnly =
-            context.source == GroundItemDropSource.Death &&
-                context.receiver == null &&
-                isSupply
+            context.source == GroundItemDropSource.Death && context.receiver == null && isSupply
 
         return GroundItemDropParams(adjustedDuration, adjustedReveal, ownerOnly)
     }

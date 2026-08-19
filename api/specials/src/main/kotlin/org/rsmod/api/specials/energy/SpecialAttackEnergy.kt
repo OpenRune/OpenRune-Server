@@ -6,32 +6,19 @@ import org.rsmod.game.entity.Player
 public class SpecialAttackEnergy {
     private var Player.specialEnergy by intVarp("varp.sa_energy")
 
-    public fun hasSpecialEnergy(
-        player: Player,
-        energyInHundreds: Int,
-    ): Boolean {
+    public fun hasSpecialEnergy(player: Player, energyInHundreds: Int): Boolean {
         val cost =
-            SpecialAttackEnergyModifier.adjustedCost(
-                player = player,
-                baseCost = energyInHundreds,
-            )
+            SpecialAttackEnergyModifier.adjustedCost(player = player, baseCost = energyInHundreds)
 
         return player.specialEnergy >= cost
     }
 
-    public fun takeSpecialEnergy(
-        player: Player,
-        energyInHundreds: Int,
-    ) {
+    public fun takeSpecialEnergy(player: Player, energyInHundreds: Int) {
         val cost =
-            SpecialAttackEnergyModifier.adjustedCost(
-                player = player,
-                baseCost = energyInHundreds,
-            )
+            SpecialAttackEnergyModifier.adjustedCost(player = player, baseCost = energyInHundreds)
 
         require(player.specialEnergy >= cost) {
-            "Not enough special energy to take. " +
-                "Use `hasSpecialEnergy` first for validation."
+            "Not enough special energy to take. " + "Use `hasSpecialEnergy` first for validation."
         }
 
         player.specialEnergy -= cost
