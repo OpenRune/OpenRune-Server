@@ -29,7 +29,7 @@ jobs:
         run: python3 tools/wiki-dumping/scripts/shop_progress_report.py
 
       - name: Ensure shop-mapping label exists
-        uses: actions/github-script@v7
+        uses: actions/github-script@v9
         with:
           script: |
             const label = "shop-mapping";
@@ -48,7 +48,7 @@ jobs:
             }
 
       - name: Create or update progress issue
-        uses: actions/github-script@v7
+        uses: actions/github-script@v9
         with:
           script: |
             const fs = require("fs");
