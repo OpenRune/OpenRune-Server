@@ -129,30 +129,80 @@ function loadWikiCache() {
   try { return JSON.parse(fs.readFileSync(WIKI_CACHE, 'utf8')) } catch { return {} }
 }
 
-/**
- * Seed mechanic sub-nodes from wiki section headings. These are the features
- * with no entity footprint (run energy, formulas) that the cache cannot see.
- */
-async function fetchWikiSections(pages) {
-  const cache = loadWikiCache()
-  for (const page of pages) {
-    const url = 'https://oldschool.runescape.wiki/api.php?action=parse&page='
-      + encodeURIComponent(page) + '&prop=sections&format=json'
-    try {
-      const res = await fetch(url, { headers: { 'User-Agent': 'OpenRune-Server progress report' } })
-      const json = await res.json()
-      const sections = (json?.parse?.sections ?? []).filter((s) => s.toclevel <= 2).map((s) => s.line)
-      cache[page] = { sections, fetched: new Date().toISOString().slice(0, 10) }
-      process.stderr.write('  wiki: ' + page + ' -> ' + sections.length + ' sections\n')
-    } catch (err) {
-      process.stderr.write('  wiki: ' + page + ' FAILED (' + err.message + ')\n')
+const API = 'https://oldschool.runescape.wiki/api.php'
+const UA = { 'User-Agent': 'OpenRune-Server progress report' }
+
+async function api(params) {
+  const res = await fetch(API + '?' + new URLSearchParams({ ...params, format: 'json' }), { headers: UA })
+  return res.json()
+}
+
+/** Everything in a wiki category, minus index and meta pages. */
+async function fetchCategory(cat, exclude = []) {
+  const json = await api({ action: 'query', list: 'categorymembers', cmtitle: cat, cmlimit: '500', cmnamespace: '0' })
+  const base = cat.replace('Category:', '')
+  const skip = new Set([base, base.replace(/es$/, ''), base.replace(/s$/, ''), ...exclude])
+  return (json?.query?.categorymembers ?? [])
+    .map((m) => m.title)
+    .filter((t) => !skip.has(t))
+    .sort()
+}
+
+/** Article images, 50 titles per request. Skills use their icon file instead. */
+async function fetchImages(titles) {
+  const out = {}
+  for (let i = 0; i < titles.length; i += 50) {
+    const batch = titles.slice(i, i + 50)
+    const json = await api({
+      action: 'query', titles: batch.join('|'),
+      prop: 'pageimages', piprop: 'thumbnail', pithumbsize: '48',
+    })
+    for (const p of Object.values(json?.query?.pages ?? {})) {
+      if (p.thumbnail?.source) out[p.title] = p.thumbnail.source
     }
   }
-  fs.writeFileSync(WIKI_CACHE, JSON.stringify(cache, null, 2) + '\n')
-  return cache
+  return out
+}
+
+async function fetchSkillIcons(names) {
+  const out = {}
+  const titles = names.map((n) => 'File:' + n + ' icon.png')
+  const json = await api({ action: 'query', titles: titles.join('|'), prop: 'imageinfo', iiprop: 'url' })
+  for (const p of Object.values(json?.query?.pages ?? {})) {
+    const name = String(p.title).replace(/^File:/, '').replace(/ icon\.png$/, '')
+    if (p.imageinfo?.[0]?.url) out[name] = p.imageinfo[0].url
+  }
+  return out
+}
+
+/**
+ * Section headings, used as sub-features. Most of this has no entity footprint
+ * (run energy, formulas) so the symbol scan cannot see it.
+ */
+async function fetchSections(page) {
+  const json = await api({ action: 'parse', page, prop: 'sections' })
+  return (json?.parse?.sections ?? []).filter((s) => s.toclevel <= 2).map((s) => s.line)
 }
 
 // ---------------------------------------------------------------- scoring
+
+const norm = (s) => s.toLowerCase().replace(/[^a-z0-9]/g, '')
+
+/**
+ * Match a wiki-titled feature to a module directory. "General Graardor" finds
+ * content/bosses/graardor because the module name is a substring of the
+ * normalised title. Anything that fails gets an entry in features.json aliases.
+ */
+function findModule(title, moduleRoot, modules, aliases) {
+  const wanted = aliases[title] ? norm(aliases[title]) : null
+  const candidates = modules.filter((m) => m.path.startsWith(moduleRoot + '/'))
+  const leaf = (m) => norm(m.path.split('/').pop())
+  if (wanted) return candidates.find((m) => leaf(m) === wanted) ?? null
+  const t = norm(title)
+  return candidates.find((m) => leaf(m) === t)
+    ?? candidates.find((m) => t.includes(leaf(m)) && leaf(m).length >= 4)
+    ?? null
+}
 
 function scoreFeature(feature, ctx) {
   const { modules, refs, npcSymbols, wiki } = ctx
@@ -203,6 +253,7 @@ function scoreFeature(feature, ctx) {
     ...feature,
     status, note, loc, tests, denom, covered, tagDenom, tagCovered,
     sections: (wiki[feature.wiki]?.sections ?? []).filter((s) => !isNoise(s)),
+    image: wiki[feature.wiki]?.image ?? null,
     moduleExists: !!mod,
   }
 }
@@ -222,19 +273,39 @@ function wikiUrl(title) {
   return 'https://oldschool.runescape.wiki/w/' + encodeURIComponent(title.replace(/ /g, '_'))
 }
 
+const icon = (f) => f.image ? '<img src="' + f.image + '" height="20" alt="">' : ''
+
 function renderTables(categories) {
   const L = []
   for (const cat of categories) {
-    L.push('### ' + cat.name)
+    const done = cat.features.filter((f) => f.status !== RED && f.status !== GREY).length
+    L.push('### ' + cat.name + ' <sup>' + done + '/' + cat.features.length + '</sup>')
     L.push('')
-    L.push('| | Feature | Status | |')
-    L.push('|---|---|---|---|')
-    for (const f of cat.features) {
-      const name = f.moduleExists ? '[' + f.name + '](' + f.module + ')' : f.name
-      const link = f.wiki ? '[wiki](' + wikiUrl(f.wiki) + ')' : ''
-      L.push('| ' + f.status + ' | ' + name + ' | ' + f.note + ' | ' + link + ' |')
+    // Long category-driven groups list the unstarted entries separately, so the
+    // table stays readable instead of being 150 rows of "no module".
+    const started = cat.features.filter((f) => f.status !== RED)
+    const notStarted = cat.features.filter((f) => f.status === RED)
+    const tabled = cat.features.length > 30 ? started : cat.features
+
+    if (tabled.length) {
+      L.push('| | Feature | Status | |')
+      L.push('|---|---|---|---|')
+      for (const f of tabled) {
+        const name = f.moduleExists ? '[' + f.name + '](' + f.module + ')' : f.name
+        const link = f.wiki ? '[wiki](' + wikiUrl(f.wiki) + ')' : ''
+        L.push('| ' + f.status + ' ' + icon(f) + ' | ' + name + ' | ' + f.note + ' | ' + link + ' |')
+      }
+      L.push('')
     }
-    L.push('')
+    if (cat.features.length > 30 && notStarted.length) {
+      L.push('<details>')
+      L.push('<summary>' + RED + ' <b>' + notStarted.length + ' not started</b></summary>')
+      L.push('')
+      L.push(notStarted.map((f) => '[' + f.name + '](' + wikiUrl(f.wiki) + ')').join(' · '))
+      L.push('')
+      L.push('</details>')
+      L.push('')
+    }
   }
   return L.join('\n')
 }
@@ -292,22 +363,65 @@ const npcSymbols = loadNpcSymbols()
 
 let wiki = loadWikiCache()
 if (args.has('--fetch-wiki')) {
-  const pages = spec.categories.flatMap((c) => c.features.map((f) => f.wiki)).filter(Boolean)
-  process.stderr.write('fetching ' + pages.length + ' wiki pages...\n')
-  wiki = await fetchWikiSections(pages)
+  wiki.pages ??= {}
+  wiki.categories ??= {}
+
+  for (const c of spec.categories.filter((c) => c.wikiCategory)) {
+    wiki.categories[c.wikiCategory] = await fetchCategory(c.wikiCategory, c.exclude)
+    process.stderr.write(c.wikiCategory + ': ' + wiki.categories[c.wikiCategory].length + '\n')
+  }
+
+  // Sub-feature lists are only worth pulling for skills; doing it for 170
+  // bosses would add thousands of lines to the report for little gain.
+  const skills = spec.categories.find((c) => c.name === 'Skills')?.features ?? []
+  for (const f of skills) {
+    wiki.pages[f.wiki] ??= {}
+    wiki.pages[f.wiki].sections = await fetchSections(f.wiki)
+  }
+
+  const icons = await fetchSkillIcons(skills.map((f) => f.wiki))
+  for (const [name, url] of Object.entries(icons)) {
+    wiki.pages[name] ??= {}
+    wiki.pages[name].image = url
+  }
+  process.stderr.write('skill icons: ' + Object.keys(icons).length + '/' + skills.length + '\n')
+
+  const titles = Object.values(wiki.categories).flat()
+  const images = await fetchImages(titles)
+  for (const [title, url] of Object.entries(images)) {
+    wiki.pages[title] ??= {}
+    wiki.pages[title].image = url
+  }
+  process.stderr.write('article images: ' + Object.keys(images).length + '/' + titles.length + '\n')
+
+  wiki.fetched = new Date().toISOString().slice(0, 10)
+  fs.writeFileSync(WIKI_CACHE, JSON.stringify(wiki, null, 2) + '\n')
 }
 
-const ctx = { modules, refs, npcSymbols, wiki }
-const categories = spec.categories.map((c) => ({
-  name: c.name,
-  features: c.features.map((f) => scoreFeature(f, ctx)),
-}))
+const pages = wiki.pages ?? {}
+const aliases = spec.aliases ?? {}
+const ctx = { modules, refs, npcSymbols, wiki: pages }
+const categories = spec.categories.map((c) => {
+  if (c.features) return { name: c.name, features: c.features.map((f) => scoreFeature(f, ctx)) }
+  // Category-driven group: every wiki entry becomes a feature, matched to a module by name.
+  const members = wiki.categories?.[c.wikiCategory] ?? []
+  return {
+    name: c.name,
+    features: members.map((title) => {
+      const mod = findModule(title, c.moduleRoot, modules, aliases)
+      return scoreFeature({ name: title, wiki: title, module: mod?.path }, ctx)
+    }),
+  }
+})
 const summary = summarise(categories)
 
 const legend = GREEN + ' implemented & tested · ' + YELLOW + ' partial or untested · ' + RED + ' missing or stub · ' + GREY + ' engine-owned'
-const headline = '**' + summary.pct + '% coverage** — ' + GREEN + ' ' + summary.green + ' done · '
-  + YELLOW + ' ' + summary.yellow + ' partial · ' + RED + ' ' + summary.red + ' missing, of '
-  + summary.total + ' tracked features'
+// A single percentage would weight one quest boss the same as all of Agility,
+// so show it per category instead.
+const headline = categories
+  .map((c) => c.name + ' **' + c.features.filter((f) => f.status !== RED && f.status !== GREY).length
+    + '/' + c.features.length + '**')
+  .join(' · ')
 
 fs.writeFileSync(P('PROGRESS.md'), [
   '# Content progress',
@@ -325,6 +439,10 @@ fs.writeFileSync(P('PROGRESS.md'), [
   renderTables(categories),
   renderMechanics(categories),
   renderModules(modules),
+  '---',
+  '',
+  'Feature lists, images and section headings come from the [OSRS Wiki](https://oldschool.runescape.wiki/),',
+  'used under [CC BY-NC-SA 3.0](https://creativecommons.org/licenses/by-nc-sa/3.0/).',
 ].join('\n') + '\n')
 
 const readmeBlock = [
@@ -354,5 +472,5 @@ if (readme.missing) {
   fs.writeFileSync(P('README.md'), readme.text)
 }
 
-process.stderr.write('PROGRESS.md written — ' + summary.pct + '% ('
-  + summary.green + ' green / ' + summary.yellow + ' yellow / ' + summary.red + ' red of ' + summary.total + ')\n')
+process.stderr.write('PROGRESS.md written: ' + summary.green + ' green, ' + summary.yellow
+  + ' yellow, ' + summary.red + ' red of ' + summary.total + ' features\n')
