@@ -62,6 +62,7 @@ internal fun Player.prepareJournalTab(tab: SideJournalTab) =
     }
 
 internal fun Player.prepareSummaryTab() {
+    resyncVar("varp.collection_count_highscores")
     resyncVar("varp.collection_count_other_max")
     resyncVar("varp.collection_count_other")
     resyncVar("varp.collection_count_minigames_max")

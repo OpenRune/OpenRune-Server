@@ -41,3 +41,12 @@ id = "inv.skill_guide_hunting_tracking"
 inherit = "inv.skill_guide_hunting_tracking"
 stack = "Never"
 
+[[inventory]]
+isServerOnly = true
+id = "inv.collection_transmit"
+inherit = "inv.collection_transmit"
+size = 2000
+scope = "Perm"
+stack = "Always"
+protect = false
+

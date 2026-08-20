@@ -86,5 +86,6 @@ internal class GameframeLoader {
             GameframeOverlay("interface.music", "component.toplevel_osrs_stretch:side13"),
             GameframeOverlay("interface.side_channels", "component.toplevel_osrs_stretch:side7"),
             GameframeOverlay("interface.combat_interface", "component.toplevel_osrs_stretch:side0"),
+            GameframeOverlay("interface.notification_display", "component.toplevel_osrs_stretch:notifications"),
         )
 }
