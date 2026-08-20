@@ -34,6 +34,18 @@ constructor(
                     "(ex: ::moveboat 2 0 or ::moveboat 5 5 512 1)"
             cheat(::moveBoat)
         }
+        onCommand("setheading") {
+            desc = "Set the last debug boat's target heading (0-2047)"
+            requiredRights = Rights.ADMINISTRATOR
+            invalidArgs = "Use as ::setheading angle (0=S 512=W 1024=N 1536=E)"
+            cheat(::setHeading)
+        }
+        onCommand("setspeed") {
+            desc = "Set the last debug boat's target speed in fine units per tick"
+            requiredRights = Rights.ADMINISTRATOR
+            invalidArgs = "Use as ::setspeed speed (ex: ::setspeed 192, 0 to stop)"
+            cheat(::setSpeed)
+        }
         onCommand("delboat") {
             desc = "Delete the last debug boat"
             requiredRights = Rights.ADMINISTRATOR
@@ -95,7 +107,33 @@ constructor(
                 teleport = jump,
             )
             args.getOrNull(2)?.toInt()?.let(entity::updateAngle)
+            boat.targetAngle = entity.angle
             player.mes("Moved boat to ${entity.coords} (angle=${entity.angle}).")
+        }
+
+    private fun setHeading(cheat: Cheat) =
+        with(cheat) {
+            val boat = lastSpawned
+            if (boat == null) {
+                player.mes("No debug boat spawned.")
+                return@with
+            }
+            boat.targetAngle = args[0].toInt() and WorldEntity.MAX_ANGLE
+            player.mes(
+                "Target heading set to ${boat.targetAngle} " +
+                    "(current angle=${boat.entity.angle})."
+            )
+        }
+
+    private fun setSpeed(cheat: Cheat) =
+        with(cheat) {
+            val boat = lastSpawned
+            if (boat == null) {
+                player.mes("No debug boat spawned.")
+                return@with
+            }
+            boat.targetSpeed = args[0].toInt().coerceIn(0, boat.type.speedCap)
+            player.mes("Target speed set to ${boat.targetSpeed} (cap=${boat.type.speedCap}).")
         }
 
     private fun boardBoat(cheat: Cheat) =
@@ -117,6 +155,7 @@ constructor(
         with(cheat) {
             val dest = player.lastKnownNormalCoord
             protectedAccess.launch(player) {
+                boats.releaseHelm(player)
                 player.aboardPlayerBoat = 0
                 player.mes("You disembark.")
                 telejump(dest, TeleportType.Exempt)

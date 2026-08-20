@@ -28,6 +28,7 @@ constructor(private val boats: BoatManager) : PluginScript() {
         onOpLoc1("loc.sailing_gangplank_disembark") {
             val dock = Docks.nearest(it.loc.coords)
             val dest = dock?.returnTile ?: player.lastKnownNormalCoord
+            boats.releaseHelm(player)
             player.aboardPlayerBoat = 0
             telejump(dest, TeleportType.Exempt)
             if (dock != null) {

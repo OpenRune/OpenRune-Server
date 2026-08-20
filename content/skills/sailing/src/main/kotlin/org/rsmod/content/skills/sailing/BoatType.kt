@@ -12,6 +12,13 @@ data class BoatType(
     val boardDestDz: Int,
     val dockFineDx: Int,
     val dockFineDz: Int,
+    val baseSpeed: Int,
+    val speedCap: Int,
+    val acceleration: Int,
+    val helmPlayerGrab: String,
+    val helmSynthGrab: Int,
+    val helmSynthRelease: Int,
+    val deckLocs: List<DeckLoc>,
 )
 
 object BoatTypes {
@@ -28,6 +35,13 @@ object BoatTypes {
             boardDestDz = 4,
             dockFineDx = 0,
             dockFineDz = 0,
+            baseSpeed = 192,
+            speedCap = 320,
+            acceleration = 64,
+            helmPlayerGrab = "seq.human_sailing_alpha_helm_raft01_active01",
+            helmSynthGrab = 10792,
+            helmSynthRelease = 10793,
+            deckLocs = DeckLocs.RAFT,
         )
 
     val SKIFF =
@@ -43,6 +57,13 @@ object BoatTypes {
             boardDestDz = 4,
             dockFineDx = 128,
             dockFineDz = 0,
+            baseSpeed = 192,
+            speedCap = 384,
+            acceleration = 64,
+            helmPlayerGrab = "seq.human_sailing_alpha_helm_small01_active01",
+            helmSynthGrab = 10807,
+            helmSynthRelease = 10808,
+            deckLocs = DeckLocs.SKIFF,
         )
 
     val SLOOP =
@@ -58,6 +79,13 @@ object BoatTypes {
             boardDestDz = 10,
             dockFineDx = 192,
             dockFineDz = 0,
+            baseSpeed = 192,
+            speedCap = 448,
+            acceleration = 64,
+            helmPlayerGrab = "seq.human_sailing_helm_3x8_active01",
+            helmSynthGrab = 10807,
+            helmSynthRelease = 10808,
+            deckLocs = DeckLocs.SLOOP,
         )
 
     val all = listOf(RAFT, SKIFF, SLOOP)

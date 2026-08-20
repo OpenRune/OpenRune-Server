@@ -3,16 +3,20 @@ package org.rsmod.content.skills.sailing
 import com.github.michaelbull.logging.InlineLogger
 import jakarta.inject.Inject
 import jakarta.inject.Singleton
+import org.rsmod.api.player.output.InteractionModes
 import org.rsmod.api.player.output.mes
 import org.rsmod.api.registry.worldentity.WorldEntityRegistry
 import org.rsmod.api.registry.worldentity.WorldEntityRegistryResult
 import org.rsmod.api.registry.worldentity.isSuccess
+import org.rsmod.api.repo.loc.LocRepository
 import org.rsmod.api.repo.region.RegionRepository
 import org.rsmod.api.repo.region.RegionTemplate
 import org.rsmod.game.entity.Player
 import org.rsmod.game.entity.PlayerList
 import org.rsmod.game.entity.WorldEntity
 import org.rsmod.game.entity.util.PathingEntityCommon
+import org.rsmod.game.loc.LocAngle
+import org.rsmod.game.loc.LocShape
 import org.rsmod.map.CoordGrid
 import org.rsmod.routefinder.collision.CollisionFlagMap
 
@@ -21,6 +25,7 @@ class BoatManager
 @Inject
 constructor(
     private val regionRepo: RegionRepository,
+    private val locRepo: LocRepository,
     private val worldEntityRegistry: WorldEntityRegistry,
     private val playerList: PlayerList,
     private val collision: CollisionFlagMap,
@@ -28,6 +33,9 @@ constructor(
     private val logger = InlineLogger()
 
     private val boats = HashMap<Int, Boat>()
+
+    val all: Collection<Boat>
+        get() = boats.values
 
     fun spawn(type: BoatType, level: Int, fineX: Int, fineZ: Int, angle: Int = 0): Boat? {
         val template =
@@ -65,8 +73,22 @@ constructor(
             return null
         }
         val boat = Boat(type, entity, region)
+        furnish(boat)
         boats[entity.slotId] = boat
         return boat
+    }
+
+    private fun furnish(boat: Boat) {
+        val southWest = boat.region.southWest
+        for (deckLoc in boat.type.deckLocs) {
+            locRepo.add(
+                CoordGrid(southWest.x + deckLoc.dx, southWest.z + deckLoc.dz, deckLoc.level),
+                deckLoc.loc,
+                Int.MAX_VALUE,
+                LocAngle.West,
+                deckLoc.shape,
+            )
+        }
     }
 
     fun spawnAtDock(type: BoatType, dock: Dock): Boat? {
@@ -100,11 +122,30 @@ constructor(
 
     fun boatOf(player: Player): Boat? = boatAt(player.coords)
 
+    fun releaseHelm(player: Player) {
+        val boat = boatOf(player) ?: return
+        if (boat.helmsman != player) {
+            return
+        }
+        InteractionModes.resetInteractionMode(player, boat.entity.slotId)
+        InteractionModes.setInteractionMode(
+            player,
+            InteractionModes.WORLD_DEFAULT,
+            InteractionModes.TILE_MODE_WALK,
+            InteractionModes.ENTITY_MODE_ALL,
+        )
+        player.helmLockedIn = 0
+        boat.helmsman = null
+        boat.moveMode = SailingMoveModes.STOPPED
+        boat.targetSpeed = 0
+    }
+
     private fun evacuate(boat: Boat) {
         for (player in playerList) {
             if (!boat.entity.contains(player.coords)) {
                 continue
             }
+            releaseHelm(player)
             PathingEntityCommon.telejump(player, collision, player.lastKnownNormalCoord)
             player.aboardPlayerBoat = 0
             player.mes("You are returned to shore.")
