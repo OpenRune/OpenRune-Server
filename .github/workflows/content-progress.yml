@@ -9,8 +9,6 @@ on:
     paths:
       - "content/**"
       - "osrs-dumps/**"
-      - ".data/gamevals/**"
-      - ".data/raw-cache/server/**"
       - "tools/progress/**"
       - ".github/workflows/content-progress.yml"
   # Weekly run also refreshes the wiki section cache.
