@@ -190,11 +190,13 @@
       "name": "Bosses",
       "wikiCategory": "Category:Bosses",
       "moduleRoot": "content/bosses",
+      "_excludeNote": "Group pages stay only when the group is its own work item: shared doors, chest, loot and kill tracking, with each mob still getting its own combat file. Barrows and Moons of Peril are like that. Dagannoth Kings are not, they share a lair and nothing else, same shape as godwars where the area is content/areas/godwars and each boss is its own module.",
       "exclude": [
         "Boss kill count",
         "Barrows brothers",
         "Boss slayer",
-        "Bossing"
+        "Bossing",
+        "Dagannoth Kings"
       ]
     },
     {
