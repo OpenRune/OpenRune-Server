@@ -40,7 +40,7 @@ class PrayerBuryEvents : PluginScript() {
         }
 
         stopAction()
-        val animation = if (row.ashes) "seq.farming_ingredient_sprinkle" else "seq.human_openchest"
+        val animation = if (row.ashes) "seq.farming_ingredient_sprinkle" else "seq.human_pickupfloor"
         anim(animation)
         player.soundSynth(2738)
         queue("queue.prayer_bury", 2, BuryTask(row, slot))
