@@ -1,0 +1,48 @@
+{
+  "_comment": "module: where it should live, missing on disk = red. rscmPrefixes: symbol prefixes in dump.npc. contentTags: content.* groups. Both optional. wiki: page to pull sub-features from.",
+  "categories": [
+    {
+      "name": "Skills",
+      "features": [
+        { "id": "attack",       "name": "Attack",       "wiki": "Attack",       "engine": "api/combat" },
+        { "id": "strength",     "name": "Strength",     "wiki": "Strength",     "engine": "api/combat" },
+        { "id": "defence",      "name": "Defence",      "wiki": "Defence",      "engine": "api/combat" },
+        { "id": "ranged",       "name": "Ranged",       "wiki": "Ranged",       "engine": "api/combat" },
+        { "id": "hitpoints",    "name": "Hitpoints",    "wiki": "Hitpoints",    "engine": "api/combat" },
+        { "id": "magic",        "name": "Magic",        "wiki": "Magic",        "module": "content/skills/magic" },
+        { "id": "prayer",       "name": "Prayer",       "wiki": "Prayer",       "module": "content/skills/prayer" },
+        { "id": "runecraft",    "name": "Runecraft",    "wiki": "Runecraft",    "module": "content/skills/runecrafting" },
+        { "id": "slayer",       "name": "Slayer",       "wiki": "Slayer",       "module": "content/skills/slayer", "rscmPrefixes": ["slayer_"] },
+        { "id": "mining",       "name": "Mining",       "wiki": "Mining",       "module": "content/skills/mining", "contentTags": ["ore"] },
+        { "id": "smithing",     "name": "Smithing",     "wiki": "Smithing",     "module": "content/skills/smithing" },
+        { "id": "woodcutting",  "name": "Woodcutting",  "wiki": "Woodcutting",  "module": "content/skills/woodcutting", "contentTags": ["tree", "woodcutting_axe"] },
+        { "id": "firemaking",   "name": "Firemaking",   "wiki": "Firemaking",   "module": "content/skills/firemaking" },
+        { "id": "cooking",      "name": "Cooking",      "wiki": "Cooking",      "module": "content/skills/cooking", "contentTags": ["cooking_range_standard", "cooking_range_lumbridge", "cooking_range_hosidius", "food"] },
+        { "id": "herblore",     "name": "Herblore",     "wiki": "Herblore",     "module": "content/skills/herblore", "contentTags": ["potion"] },
+        { "id": "fishing",      "name": "Fishing",      "wiki": "Fishing",      "module": "content/skills/fishing", "rscmPrefixes": ["fishing_"] },
+        { "id": "agility",      "name": "Agility",      "wiki": "Agility",      "module": "content/skills/agility", "rscmPrefixes": ["rooftops_", "agility_", "agilityarena_", "peng_agility_"] },
+        { "id": "thieving",     "name": "Thieving",     "wiki": "Thieving",     "module": "content/skills/thieving" },
+        { "id": "crafting",     "name": "Crafting",     "wiki": "Crafting",     "module": "content/skills/crafting" },
+        { "id": "fletching",    "name": "Fletching",    "wiki": "Fletching",    "module": "content/skills/fletching" },
+        { "id": "construction", "name": "Construction", "wiki": "Construction", "module": "content/skills/construction", "rscmPrefixes": ["poh_"] },
+        { "id": "farming",      "name": "Farming",      "wiki": "Farming",      "module": "content/skills/farming", "rscmPrefixes": ["farming_"] },
+        { "id": "hunter",       "name": "Hunter",       "wiki": "Hunter",       "module": "content/skills/hunter", "rscmPrefixes": ["hunting_", "hunter_"] }
+      ]
+    },
+    {
+      "name": "Bosses",
+      "features": [
+        { "id": "graardor",  "name": "General Graardor",  "wiki": "General Graardor",  "module": "content/bosses/graardor" },
+        { "id": "kreearra",  "name": "Kree'arra",         "wiki": "Kree'arra",         "module": "content/bosses/kreearra" },
+        { "id": "kril",      "name": "K'ril Tsutsaroth",  "wiki": "K'ril Tsutsaroth",  "module": "content/bosses/kril" },
+        { "id": "zilyana",   "name": "Commander Zilyana", "wiki": "Commander Zilyana", "module": "content/bosses/zilyana" },
+        { "id": "kbd",       "name": "King Black Dragon", "wiki": "King Black Dragon", "module": "content/bosses/kbd" },
+        { "id": "scurrius",  "name": "Scurrius",          "wiki": "Scurrius",          "module": "content/bosses/scurrius" },
+        { "id": "corp",      "name": "Corporeal Beast",   "wiki": "Corporeal Beast",   "module": "content/bosses/corp" },
+        { "id": "zulrah",    "name": "Zulrah",            "wiki": "Zulrah",            "module": "content/bosses/zulrah" },
+        { "id": "vorkath",   "name": "Vorkath",           "wiki": "Vorkath",           "module": "content/bosses/vorkath" },
+        { "id": "abyssal_sire", "name": "Abyssal Sire",   "wiki": "Abyssal Sire",      "module": "content/bosses/abyssal-sire" }
+      ]
+    }
+  ]
+}

@@ -30,6 +30,48 @@ Active maintainers review contributions, publish roadmap updates, and support us
 ### 📏 OSRS-compatible
 OpenRune Server adheres to OSRS protocols, giving you the freedom to connect any compliant client and customize server-side behavior.
 
+
+<!-- content-progress:start -->
+
+## 📊 Content progress
+
+**30% coverage** — 🟢 1 done · 🟡 15 partial · 🔴 12 missing, of 28 tracked features
+
+🟢 implemented & tested · 🟡 partial or untested · 🔴 missing or stub · ⚪ engine-owned
+
+### Skills
+
+| | Feature | Status | |
+|---|---|---|---|
+| ⚪ | Attack | engine-owned (`api/combat`) | [wiki](https://oldschool.runescape.wiki/w/Attack) |
+| ⚪ | Strength | engine-owned (`api/combat`) | [wiki](https://oldschool.runescape.wiki/w/Strength) |
+| ⚪ | Defence | engine-owned (`api/combat`) | [wiki](https://oldschool.runescape.wiki/w/Defence) |
+| ⚪ | Ranged | engine-owned (`api/combat`) | [wiki](https://oldschool.runescape.wiki/w/Ranged) |
+| ⚪ | Hitpoints | engine-owned (`api/combat`) | [wiki](https://oldschool.runescape.wiki/w/Hitpoints) |
+| 🟡 | [Magic](content/skills/magic) | 1,031 loc · no tests | [wiki](https://oldschool.runescape.wiki/w/Magic) |
+| 🟡 | [Prayer](content/skills/prayer) | 2,569 loc · no tests | [wiki](https://oldschool.runescape.wiki/w/Prayer) |
+| 🟡 | [Runecraft](content/skills/runecrafting) | 2,556 loc · no tests | [wiki](https://oldschool.runescape.wiki/w/Runecraft) |
+| 🟡 | [Slayer](content/skills/slayer) | 5,494 loc · 95/129 npcs · no tests | [wiki](https://oldschool.runescape.wiki/w/Slayer) |
+| 🟡 | [Mining](content/skills/mining) | 1,050 loc · 1/1 tags · no tests | [wiki](https://oldschool.runescape.wiki/w/Mining) |
+| 🟡 | [Smithing](content/skills/smithing) | 2,045 loc · no tests | [wiki](https://oldschool.runescape.wiki/w/Smithing) |
+| 🟢 | [Woodcutting](content/skills/woodcutting) | 409 loc · 2/2 tags · 2 tests | [wiki](https://oldschool.runescape.wiki/w/Woodcutting) |
+| 🟡 | [Firemaking](content/skills/firemaking) | 589 loc · no tests | [wiki](https://oldschool.runescape.wiki/w/Firemaking) |
+| 🟡 | [Cooking](content/skills/cooking) | 1,358 loc · 4/4 tags · no tests | [wiki](https://oldschool.runescape.wiki/w/Cooking) |
+| 🟡 | [Herblore](content/skills/herblore) | 1,248 loc · 1/1 tags · no tests | [wiki](https://oldschool.runescape.wiki/w/Herblore) |
+| 🔴 | [Fishing](content/skills/fishing) | stub — 0 lines, last touched 2024-09-07 | [wiki](https://oldschool.runescape.wiki/w/Fishing) |
+| 🔴 | Agility | no module | [wiki](https://oldschool.runescape.wiki/w/Agility) |
+| 🔴 | Thieving | no module | [wiki](https://oldschool.runescape.wiki/w/Thieving) |
+| 🔴 | Crafting | no module | [wiki](https://oldschool.runescape.wiki/w/Crafting) |
+| 🔴 | Fletching | no module | [wiki](https://oldschool.runescape.wiki/w/Fletching) |
+| 🔴 | Construction | no module | [wiki](https://oldschool.runescape.wiki/w/Construction) |
+| 🔴 | Farming | no module | [wiki](https://oldschool.runescape.wiki/w/Farming) |
+| 🔴 | Hunter | no module | [wiki](https://oldschool.runescape.wiki/w/Hunter) |
+
+See **[PROGRESS.md](PROGRESS.md)** for bosses, every content module, and untracked mechanics.
+
+Want to help? Grab a 🔴 row, nobody is on those.
+
+<!-- content-progress:end -->
 ## 🛠️ Getting Started
 
 
