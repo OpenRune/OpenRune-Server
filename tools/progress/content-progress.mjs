@@ -105,6 +105,15 @@ function listModules() {
   }).sort((a, b) => a.path.localeCompare(b.path))
 }
 
+/**
+ * Drop tables, keyed by normalised name. A boss with a table but no module has
+ * had real work done on it, and reporting that as a flat "nothing here" hides it.
+ */
+function loadDropTables() {
+  const files = walk(P('content', 'drops', 'src'), (n) => n.endsWith('.toml') || n.endsWith('DropTable.kt'))
+  return new Set(files.map((f) => norm(path.basename(f).replace(/DropTable\.kt$|\.toml$/, ''))))
+}
+
 /** Which RSCM symbols content/** actually references. */
 function scanReferences() {
   const files = walk(P('content'), (n) => n.endsWith('.kt') || n.endsWith('.toml'))
@@ -228,13 +237,15 @@ function scoreFeature(feature, ctx) {
     tagCovered = feature.contentTags.filter((t) => refs.has('content.' + t)).length
   }
 
+  const hasDropTable = ctx.dropTables.has(norm(feature.name))
+
   let status, note
   if (feature.engine) {
     status = GREY
     note = 'engine-owned (`' + feature.engine + '`)'
   } else if (!mod) {
     status = RED
-    note = 'no module'
+    note = hasDropTable ? 'no module, drop table done' : 'no module'
   } else if (loc === 0) {
     status = RED
     note = 'stub — 0 lines, last touched ' + (lastCommit ?? 'never')
@@ -255,6 +266,7 @@ function scoreFeature(feature, ctx) {
     sections: (wiki[feature.wiki]?.sections ?? []).filter((s) => !isNoise(s)),
     image: wiki[feature.wiki]?.image ?? null,
     moduleExists: !!mod,
+    hasDropTable,
   }
 }
 
@@ -298,11 +310,26 @@ function renderTables(categories) {
       L.push('')
     }
     if (cat.features.length > 30 && notStarted.length) {
+      // Split out the ones that already have a drop table. No fight scripted
+      // yet, but the loot is done, so it isn't a cold start.
+      const withDrops = notStarted.filter((f) => f.hasDropTable)
+      const cold = notStarted.filter((f) => !f.hasDropTable)
+      const list = (fs) => fs.map((f) => '[' + f.name + '](' + wikiUrl(f.wiki) + ')').join(' · ')
       L.push('<details>')
       L.push('<summary>' + RED + ' <b>' + notStarted.length + ' not started</b></summary>')
       L.push('')
-      L.push(notStarted.map((f) => '[' + f.name + '](' + wikiUrl(f.wiki) + ')').join(' · '))
-      L.push('')
+      if (withDrops.length) {
+        L.push('**Drop table already done (' + withDrops.length + ')** — needs the encounter scripting.')
+        L.push('')
+        L.push(list(withDrops))
+        L.push('')
+      }
+      if (cold.length) {
+        L.push('**Nothing yet (' + cold.length + ')**')
+        L.push('')
+        L.push(list(cold))
+        L.push('')
+      }
       L.push('</details>')
       L.push('')
     }
@@ -360,6 +387,7 @@ const spec = JSON.parse(fs.readFileSync(P('tools', 'progress', 'features.json'),
 const modules = listModules()
 const refs = scanReferences()
 const npcSymbols = loadNpcSymbols()
+const dropTables = loadDropTables()
 
 let wiki = loadWikiCache()
 if (args.has('--fetch-wiki')) {
@@ -400,7 +428,7 @@ if (args.has('--fetch-wiki')) {
 
 const pages = wiki.pages ?? {}
 const aliases = spec.aliases ?? {}
-const ctx = { modules, refs, npcSymbols, wiki: pages }
+const ctx = { modules, refs, npcSymbols, dropTables, wiki: pages }
 const categories = spec.categories.map((c) => {
   if (c.features) return { name: c.name, features: c.features.map((f) => scoreFeature(f, ctx)) }
   // Category-driven group: every wiki entry becomes a feature, matched to a module by name.
@@ -435,6 +463,10 @@ fs.writeFileSync(P('PROGRESS.md'), [
   legend,
   '',
   headline,
+  '',
+  'These counts only cover skills, bosses, raids and minigames. Interfaces, areas,',
+  'quests, drops and travel are real work that no category above points at, so check',
+  'the module table at the bottom before reading a 0 as "nothing exists".',
   '',
   renderTables(categories),
   renderMechanics(categories),
