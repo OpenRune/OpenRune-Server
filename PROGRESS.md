@@ -18,40 +18,40 @@ the module table at the bottom before reading a 0 as "nothing exists".
 
 | | Feature | Status | |
 |---|---|---|---|
-| ⚪ <img src="https://oldschool.runescape.wiki/images/Attack_icon.png?b4bce" height="20" alt=""> | Attack | engine-owned (`api/combat`) | [wiki](https://oldschool.runescape.wiki/w/Attack) |
-| ⚪ <img src="https://oldschool.runescape.wiki/images/Strength_icon.png?e6e0c" height="20" alt=""> | Strength | engine-owned (`api/combat`) | [wiki](https://oldschool.runescape.wiki/w/Strength) |
-| ⚪ <img src="https://oldschool.runescape.wiki/images/Defence_icon.png?ca0cd" height="20" alt=""> | Defence | engine-owned (`api/combat`) | [wiki](https://oldschool.runescape.wiki/w/Defence) |
-| ⚪ <img src="https://oldschool.runescape.wiki/images/Ranged_icon.png?01b0e" height="20" alt=""> | Ranged | engine-owned (`api/combat`) | [wiki](https://oldschool.runescape.wiki/w/Ranged) |
-| ⚪ <img src="https://oldschool.runescape.wiki/images/Hitpoints_icon.png?a4819" height="20" alt=""> | Hitpoints | engine-owned (`api/combat`) | [wiki](https://oldschool.runescape.wiki/w/Hitpoints) |
-| 🟡 <img src="https://oldschool.runescape.wiki/images/Magic_icon.png?334cf" height="20" alt=""> | [Magic](content/skills/magic) | 1,031 loc · no tests | [wiki](https://oldschool.runescape.wiki/w/Magic) |
-| 🟡 <img src="https://oldschool.runescape.wiki/images/Prayer_icon.png?7e70b" height="20" alt=""> | [Prayer](content/skills/prayer) | 2,569 loc · no tests | [wiki](https://oldschool.runescape.wiki/w/Prayer) |
-| 🟡 <img src="https://oldschool.runescape.wiki/images/Runecraft_icon.png?c278c" height="20" alt=""> | [Runecraft](content/skills/runecrafting) | 2,556 loc · no tests | [wiki](https://oldschool.runescape.wiki/w/Runecraft) |
-| 🟡 <img src="https://oldschool.runescape.wiki/images/Slayer_icon.png?cd34f" height="20" alt=""> | [Slayer](content/skills/slayer) | 5,494 loc · 95/129 npcs · no tests | [wiki](https://oldschool.runescape.wiki/w/Slayer) |
-| 🟡 <img src="https://oldschool.runescape.wiki/images/Mining_icon.png?00870" height="20" alt=""> | [Mining](content/skills/mining) | 1,050 loc · 1/1 tags · no tests | [wiki](https://oldschool.runescape.wiki/w/Mining) |
-| 🟡 <img src="https://oldschool.runescape.wiki/images/Smithing_icon.png?d26c5" height="20" alt=""> | [Smithing](content/skills/smithing) | 2,045 loc · no tests | [wiki](https://oldschool.runescape.wiki/w/Smithing) |
-| 🟢 <img src="https://oldschool.runescape.wiki/images/Woodcutting_icon.png?6ead4" height="20" alt=""> | [Woodcutting](content/skills/woodcutting) | 409 loc · 2/2 tags · 2 tests | [wiki](https://oldschool.runescape.wiki/w/Woodcutting) |
-| 🟡 <img src="https://oldschool.runescape.wiki/images/Firemaking_icon.png?45ea0" height="20" alt=""> | [Firemaking](content/skills/firemaking) | 589 loc · no tests | [wiki](https://oldschool.runescape.wiki/w/Firemaking) |
-| 🟡 <img src="https://oldschool.runescape.wiki/images/Cooking_icon.png?a0156" height="20" alt=""> | [Cooking](content/skills/cooking) | 1,358 loc · 4/4 tags · no tests | [wiki](https://oldschool.runescape.wiki/w/Cooking) |
-| 🟡 <img src="https://oldschool.runescape.wiki/images/Herblore_icon.png?ffa9e" height="20" alt=""> | [Herblore](content/skills/herblore) | 1,248 loc · 1/1 tags · no tests | [wiki](https://oldschool.runescape.wiki/w/Herblore) |
-| 🔴 <img src="https://oldschool.runescape.wiki/images/Fishing_icon.png?15a98" height="20" alt=""> | [Fishing](content/skills/fishing) | stub — 0 lines, last touched 2024-09-07 | [wiki](https://oldschool.runescape.wiki/w/Fishing) |
-| 🔴 <img src="https://oldschool.runescape.wiki/images/Agility_icon.png?389e0" height="20" alt=""> | Agility | no module | [wiki](https://oldschool.runescape.wiki/w/Agility) |
-| 🔴 <img src="https://oldschool.runescape.wiki/images/Thieving_icon.png?973fe" height="20" alt=""> | Thieving | no module | [wiki](https://oldschool.runescape.wiki/w/Thieving) |
-| 🔴 <img src="https://oldschool.runescape.wiki/images/Crafting_icon.png?a1f71" height="20" alt=""> | Crafting | no module | [wiki](https://oldschool.runescape.wiki/w/Crafting) |
-| 🔴 <img src="https://oldschool.runescape.wiki/images/Fletching_icon.png?15cda" height="20" alt=""> | Fletching | no module | [wiki](https://oldschool.runescape.wiki/w/Fletching) |
-| 🔴 <img src="https://oldschool.runescape.wiki/images/Construction_icon.png?f9bf7" height="20" alt=""> | Construction | no module | [wiki](https://oldschool.runescape.wiki/w/Construction) |
-| 🔴 <img src="https://oldschool.runescape.wiki/images/Farming_icon.png?558fa" height="20" alt=""> | Farming | no module | [wiki](https://oldschool.runescape.wiki/w/Farming) |
-| 🔴 <img src="https://oldschool.runescape.wiki/images/Hunter_icon.png?8762f" height="20" alt=""> | Hunter | no module | [wiki](https://oldschool.runescape.wiki/w/Hunter) |
+| ⚪ | <img src="https://oldschool.runescape.wiki/images/Attack_icon.png?b4bce" height="20" alt=""> Attack | engine-owned (`api/combat`) | [wiki](https://oldschool.runescape.wiki/w/Attack) |
+| ⚪ | <img src="https://oldschool.runescape.wiki/images/Strength_icon.png?e6e0c" height="20" alt=""> Strength | engine-owned (`api/combat`) | [wiki](https://oldschool.runescape.wiki/w/Strength) |
+| ⚪ | <img src="https://oldschool.runescape.wiki/images/Defence_icon.png?ca0cd" height="20" alt=""> Defence | engine-owned (`api/combat`) | [wiki](https://oldschool.runescape.wiki/w/Defence) |
+| ⚪ | <img src="https://oldschool.runescape.wiki/images/Ranged_icon.png?01b0e" height="20" alt=""> Ranged | engine-owned (`api/combat`) | [wiki](https://oldschool.runescape.wiki/w/Ranged) |
+| ⚪ | <img src="https://oldschool.runescape.wiki/images/Hitpoints_icon.png?a4819" height="20" alt=""> Hitpoints | engine-owned (`api/combat`) | [wiki](https://oldschool.runescape.wiki/w/Hitpoints) |
+| 🟡 | <img src="https://oldschool.runescape.wiki/images/Magic_icon.png?334cf" height="20" alt=""> [Magic](content/skills/magic) | 1,031 loc · no tests | [wiki](https://oldschool.runescape.wiki/w/Magic) |
+| 🟡 | <img src="https://oldschool.runescape.wiki/images/Prayer_icon.png?7e70b" height="20" alt=""> [Prayer](content/skills/prayer) | 2,569 loc · no tests | [wiki](https://oldschool.runescape.wiki/w/Prayer) |
+| 🟡 | <img src="https://oldschool.runescape.wiki/images/Runecraft_icon.png?c278c" height="20" alt=""> [Runecraft](content/skills/runecrafting) | 2,556 loc · no tests | [wiki](https://oldschool.runescape.wiki/w/Runecraft) |
+| 🟡 | <img src="https://oldschool.runescape.wiki/images/Slayer_icon.png?cd34f" height="20" alt=""> [Slayer](content/skills/slayer) | 5,494 loc · 95/129 npcs · no tests | [wiki](https://oldschool.runescape.wiki/w/Slayer) |
+| 🟡 | <img src="https://oldschool.runescape.wiki/images/Mining_icon.png?00870" height="20" alt=""> [Mining](content/skills/mining) | 1,050 loc · 1/1 tags · no tests | [wiki](https://oldschool.runescape.wiki/w/Mining) |
+| 🟡 | <img src="https://oldschool.runescape.wiki/images/Smithing_icon.png?d26c5" height="20" alt=""> [Smithing](content/skills/smithing) | 2,045 loc · no tests | [wiki](https://oldschool.runescape.wiki/w/Smithing) |
+| 🟢 | <img src="https://oldschool.runescape.wiki/images/Woodcutting_icon.png?6ead4" height="20" alt=""> [Woodcutting](content/skills/woodcutting) | 409 loc · 2/2 tags · 2 tests | [wiki](https://oldschool.runescape.wiki/w/Woodcutting) |
+| 🟡 | <img src="https://oldschool.runescape.wiki/images/Firemaking_icon.png?45ea0" height="20" alt=""> [Firemaking](content/skills/firemaking) | 589 loc · no tests | [wiki](https://oldschool.runescape.wiki/w/Firemaking) |
+| 🟡 | <img src="https://oldschool.runescape.wiki/images/Cooking_icon.png?a0156" height="20" alt=""> [Cooking](content/skills/cooking) | 1,358 loc · 4/4 tags · no tests | [wiki](https://oldschool.runescape.wiki/w/Cooking) |
+| 🟡 | <img src="https://oldschool.runescape.wiki/images/Herblore_icon.png?ffa9e" height="20" alt=""> [Herblore](content/skills/herblore) | 1,248 loc · 1/1 tags · no tests | [wiki](https://oldschool.runescape.wiki/w/Herblore) |
+| 🔴 | <img src="https://oldschool.runescape.wiki/images/Fishing_icon.png?15a98" height="20" alt=""> [Fishing](content/skills/fishing) | stub — 0 lines, last touched 2024-09-07 | [wiki](https://oldschool.runescape.wiki/w/Fishing) |
+| 🔴 | <img src="https://oldschool.runescape.wiki/images/Agility_icon.png?389e0" height="20" alt=""> Agility | no module | [wiki](https://oldschool.runescape.wiki/w/Agility) |
+| 🔴 | <img src="https://oldschool.runescape.wiki/images/Thieving_icon.png?973fe" height="20" alt=""> Thieving | no module | [wiki](https://oldschool.runescape.wiki/w/Thieving) |
+| 🔴 | <img src="https://oldschool.runescape.wiki/images/Crafting_icon.png?a1f71" height="20" alt=""> Crafting | no module | [wiki](https://oldschool.runescape.wiki/w/Crafting) |
+| 🔴 | <img src="https://oldschool.runescape.wiki/images/Fletching_icon.png?15cda" height="20" alt=""> Fletching | no module | [wiki](https://oldschool.runescape.wiki/w/Fletching) |
+| 🔴 | <img src="https://oldschool.runescape.wiki/images/Construction_icon.png?f9bf7" height="20" alt=""> Construction | no module | [wiki](https://oldschool.runescape.wiki/w/Construction) |
+| 🔴 | <img src="https://oldschool.runescape.wiki/images/Farming_icon.png?558fa" height="20" alt=""> Farming | no module | [wiki](https://oldschool.runescape.wiki/w/Farming) |
+| 🔴 | <img src="https://oldschool.runescape.wiki/images/Hunter_icon.png?8762f" height="20" alt=""> Hunter | no module | [wiki](https://oldschool.runescape.wiki/w/Hunter) |
 
 ### Bosses <sup>6/169</sup>
 
 | | Feature | Status | |
 |---|---|---|---|
-| 🟡 <img src="https://oldschool.runescape.wiki/images/thumb/Commander_Zilyana.png/48px-Commander_Zilyana.png?c5eaa" height="20" alt=""> | [Commander Zilyana](content/bosses/zilyana) | 165 loc · no tests | [wiki](https://oldschool.runescape.wiki/w/Commander_Zilyana) |
-| 🟡 <img src="https://oldschool.runescape.wiki/images/thumb/General_Graardor.png/48px-General_Graardor.png?4dd90" height="20" alt=""> | [General Graardor](content/bosses/graardor) | 166 loc · no tests | [wiki](https://oldschool.runescape.wiki/w/General_Graardor) |
-| 🟡 <img src="https://oldschool.runescape.wiki/images/thumb/K%27ril_Tsutsaroth.png/48px-K%27ril_Tsutsaroth.png?73bda" height="20" alt=""> | [K'ril Tsutsaroth](content/bosses/kril) | 191 loc · no tests | [wiki](https://oldschool.runescape.wiki/w/K'ril_Tsutsaroth) |
-| 🟡 <img src="https://oldschool.runescape.wiki/images/thumb/King_Black_Dragon.png/48px-King_Black_Dragon.png?d25f0" height="20" alt=""> | [King Black Dragon](content/bosses/kbd) | 143 loc · no tests | [wiki](https://oldschool.runescape.wiki/w/King_Black_Dragon) |
-| 🟡 <img src="https://oldschool.runescape.wiki/images/thumb/Kree%27arra.png/48px-Kree%27arra.png?ba75c" height="20" alt=""> | [Kree'arra](content/bosses/kreearra) | 229 loc · no tests | [wiki](https://oldschool.runescape.wiki/w/Kree'arra) |
-| 🟡 <img src="https://oldschool.runescape.wiki/images/thumb/Scurrius.png/48px-Scurrius.png?e66a5" height="20" alt=""> | [Scurrius](content/bosses/scurrius) | 403 loc · no tests | [wiki](https://oldschool.runescape.wiki/w/Scurrius) |
+| 🟡 | <img src="https://oldschool.runescape.wiki/images/thumb/Commander_Zilyana.png/48px-Commander_Zilyana.png?c5eaa" height="20" alt=""> [Commander Zilyana](content/bosses/zilyana) | 165 loc · no tests | [wiki](https://oldschool.runescape.wiki/w/Commander_Zilyana) |
+| 🟡 | <img src="https://oldschool.runescape.wiki/images/thumb/General_Graardor.png/48px-General_Graardor.png?4dd90" height="20" alt=""> [General Graardor](content/bosses/graardor) | 166 loc · no tests | [wiki](https://oldschool.runescape.wiki/w/General_Graardor) |
+| 🟡 | <img src="https://oldschool.runescape.wiki/images/thumb/K%27ril_Tsutsaroth.png/48px-K%27ril_Tsutsaroth.png?73bda" height="20" alt=""> [K'ril Tsutsaroth](content/bosses/kril) | 191 loc · no tests | [wiki](https://oldschool.runescape.wiki/w/K'ril_Tsutsaroth) |
+| 🟡 | <img src="https://oldschool.runescape.wiki/images/thumb/King_Black_Dragon.png/48px-King_Black_Dragon.png?d25f0" height="20" alt=""> [King Black Dragon](content/bosses/kbd) | 143 loc · no tests | [wiki](https://oldschool.runescape.wiki/w/King_Black_Dragon) |
+| 🟡 | <img src="https://oldschool.runescape.wiki/images/thumb/Kree%27arra.png/48px-Kree%27arra.png?ba75c" height="20" alt=""> [Kree'arra](content/bosses/kreearra) | 229 loc · no tests | [wiki](https://oldschool.runescape.wiki/w/Kree'arra) |
+| 🟡 | <img src="https://oldschool.runescape.wiki/images/thumb/Scurrius.png/48px-Scurrius.png?e66a5" height="20" alt=""> [Scurrius](content/bosses/scurrius) | 403 loc · no tests | [wiki](https://oldschool.runescape.wiki/w/Scurrius) |
 
 <details>
 <summary>🔴 <b>163 not started</b></summary>
@@ -70,10 +70,10 @@ the module table at the bottom before reading a 0 as "nothing exists".
 
 | | Feature | Status | |
 |---|---|---|---|
-| 🔴 <img src="https://oldschool.runescape.wiki/images/thumb/Chambers_of_Xeric_logo.png/48px-Chambers_of_Xeric_logo.png?34a98" height="20" alt=""> | Chambers of Xeric | no module | [wiki](https://oldschool.runescape.wiki/w/Chambers_of_Xeric) |
-| 🔴 <img src="https://oldschool.runescape.wiki/images/thumb/The_Fractured_Archive_logo.png/48px-The_Fractured_Archive_logo.png?072fb" height="20" alt=""> | The Fractured Archive | no module | [wiki](https://oldschool.runescape.wiki/w/The_Fractured_Archive) |
-| 🔴 <img src="https://oldschool.runescape.wiki/images/thumb/Theatre_of_Blood_logo.png/48px-Theatre_of_Blood_logo.png?e6e68" height="20" alt=""> | Theatre of Blood | no module | [wiki](https://oldschool.runescape.wiki/w/Theatre_of_Blood) |
-| 🔴 <img src="https://oldschool.runescape.wiki/images/thumb/Tombs_of_Amascut.png/48px-Tombs_of_Amascut.png?f9992" height="20" alt=""> | Tombs of Amascut | no module | [wiki](https://oldschool.runescape.wiki/w/Tombs_of_Amascut) |
+| 🔴 | <img src="https://oldschool.runescape.wiki/images/thumb/Chambers_of_Xeric_logo.png/48px-Chambers_of_Xeric_logo.png?34a98" height="20" alt=""> Chambers of Xeric | no module | [wiki](https://oldschool.runescape.wiki/w/Chambers_of_Xeric) |
+| 🔴 | <img src="https://oldschool.runescape.wiki/images/thumb/The_Fractured_Archive_logo.png/48px-The_Fractured_Archive_logo.png?072fb" height="20" alt=""> The Fractured Archive | no module | [wiki](https://oldschool.runescape.wiki/w/The_Fractured_Archive) |
+| 🔴 | <img src="https://oldschool.runescape.wiki/images/thumb/Theatre_of_Blood_logo.png/48px-Theatre_of_Blood_logo.png?e6e68" height="20" alt=""> Theatre of Blood | no module | [wiki](https://oldschool.runescape.wiki/w/Theatre_of_Blood) |
+| 🔴 | <img src="https://oldschool.runescape.wiki/images/thumb/Tombs_of_Amascut.png/48px-Tombs_of_Amascut.png?f9992" height="20" alt=""> Tombs of Amascut | no module | [wiki](https://oldschool.runescape.wiki/w/Tombs_of_Amascut) |
 
 ### Minigames <sup>0/51</sup>
 

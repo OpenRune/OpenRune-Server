@@ -303,9 +303,10 @@ function renderTables(categories) {
       L.push('| | Feature | Status | |')
       L.push('|---|---|---|---|')
       for (const f of tabled) {
-        const name = f.moduleExists ? '[' + f.name + '](' + f.module + ')' : f.name
+        const label = f.moduleExists ? '[' + f.name + '](' + f.module + ')' : f.name
+        const name = f.image ? icon(f) + ' ' + label : label
         const link = f.wiki ? '[wiki](' + wikiUrl(f.wiki) + ')' : ''
-        L.push('| ' + f.status + ' ' + icon(f) + ' | ' + name + ' | ' + f.note + ' | ' + link + ' |')
+        L.push('| ' + f.status + ' | ' + name + ' | ' + f.note + ' | ' + link + ' |')
       }
       L.push('')
     }
