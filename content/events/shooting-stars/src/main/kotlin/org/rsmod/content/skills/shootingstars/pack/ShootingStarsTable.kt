@@ -1,11 +1,11 @@
-package dev.openrune.tables.skills
+package org.rsmod.content.skills.shootingstars.pack
 
 import dev.openrune.definition.dbtables.dbTable
 import dev.openrune.definition.util.VarType
-import dev.openrune.tables.columnCoord
+import dev.openrune.pack.columnCoord
 import org.rsmod.map.CoordGrid
 
-object ShootingStars {
+object ShootingStarsTable {
 
     const val KEY = 0
     const val DESC = 1
