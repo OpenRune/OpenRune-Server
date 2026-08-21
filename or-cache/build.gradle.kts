@@ -28,13 +28,11 @@ dependencies {
     implementation(libs.classgraph)
 }
 
+// Only dedicated `pack` submodules are on the cache-build classpath. A content plugin keeps its
+// cache data (db tables, configs, models, sprites) in a `<plugin>/pack` module so building the
+// cache never has to compile the plugin's game scripts or their api/content dependencies.
 fun findContentPlugins(): List<Project> =
-    project(":content").subprojects.filter { it.buildFile.exists() && it.hasPackPackage() }
-
-fun Project.hasPackPackage(): Boolean {
-    val sources = projectDir.resolve("src/main/kotlin")
-    return sources.isDirectory && sources.walkTopDown().any { it.isDirectory && it.name == "pack" }
-}
+    project(":content").subprojects.filter { it.name == "pack" && it.buildFile.exists() }
 
 tasks {
     register("buildCache",JavaExec::class) {
