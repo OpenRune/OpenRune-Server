@@ -12,7 +12,6 @@ import org.rsmod.content.skills.openSkillMulti
 import org.rsmod.plugin.scripts.ScriptContext
 
 private const val FLETCH_QUEUE = "queue.fletching_produce"
-private const val FLETCH_ANIM = "seq.human_fletching"
 
 data class FletchingTask(val recipe: FletchingRecipe, val amount: Int, val created: Int)
 
@@ -119,9 +118,15 @@ private suspend fun ProtectedAccess.processFletchTick(task: FletchingTask) {
         return
     }
 
-    // Tip and feather attaching is animationless in OSRS; ticks == 0 marks those recipes.
-    if (recipe.ticks > 0) {
-        anim(FLETCH_ANIM)
+    // The shared animation loops, so it suits a run of actions and a lone one takes the one-shot
+    // variant. Its tick gate covers the rows that animate nothing; a row with an animation of its
+    // own is exempt, the dart rows being 0-tick yet animated.
+    val specific = FletchingAnims.forOutput(recipe.output)
+    val looping = specific == null && recipe.ticks > 0 && task.amount > 1
+    if (specific != null) {
+        anim(specific)
+    } else if (recipe.ticks > 0) {
+        anim(if (looping) FletchingAnims.GENERIC else FletchingAnims.GENERIC_SINGLE)
     }
 
     val consumed = mutableListOf<Pair<String, Int>>()
@@ -147,12 +152,15 @@ private suspend fun ProtectedAccess.processFletchTick(task: FletchingTask) {
 
     val created = task.created + 1
     if (created < task.amount) {
+        // A queue submitted while the queue list is being processed is decremented on that same
+        // cycle, so a re-queue arrives a cycle sooner than the opening one in startFletching.
         weakQueue(
             FLETCH_QUEUE,
-            if (recipe.ticks > 0) recipe.ticks else 1,
+            if (recipe.ticks > 0) recipe.ticks + 1 else 1,
             FletchingTask(recipe, task.amount, created),
         )
-    } else {
+    } else if (looping) {
+        // Only the looping animation needs stopping; a one-shot would be cut short instead.
         resetAnim()
     }
 }
