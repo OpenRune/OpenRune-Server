@@ -16,11 +16,71 @@ indent_size = 2
 [*.md]
 max_line_length = 80
 
-# This section approximates ktfmt formatting rules.
 [{*.kt,*.kts}]
 max_line_length = 100
 indent_size = 4
 ij_continuation_indent_size = 4
+
+# Spotless runs ktlint over Kotlin sources. The standard ruleset is switched off
+# and only the hygiene rules below are switched back on, so line breaks, wrapping
+# and line length are left as written. An allow-list also keeps a later ktlint
+# release from adding an opinion. Everything here is auto-correctable.
+ktlint_code_style = intellij_idea
+ktlint_standard = disabled
+
+# Imports.
+ktlint_standard_no-unused-imports = enabled
+ktlint_standard_import-ordering = enabled
+
+# Blank lines.
+ktlint_standard_no-consecutive-blank-lines = enabled
+ktlint_standard_no-blank-line-before-rbrace = enabled
+ktlint_standard_no-blank-lines-in-chained-method-calls = enabled
+ktlint_standard_spacing-between-declarations-with-annotations = enabled
+ktlint_standard_spacing-between-declarations-with-comments = enabled
+
+# Stray whitespace.
+ktlint_standard_no-trailing-spaces = enabled
+ktlint_standard_final-newline = enabled
+ktlint_standard_no-multi-spaces = enabled
+
+# Spacing around tokens.
+ktlint_standard_annotation-spacing = enabled
+ktlint_standard_colon-spacing = enabled
+ktlint_standard_comma-spacing = enabled
+ktlint_standard_curly-spacing = enabled
+ktlint_standard_dot-spacing = enabled
+ktlint_standard_double-colon-spacing = enabled
+ktlint_standard_fun-keyword-spacing = enabled
+ktlint_standard_function-return-type-spacing = enabled
+ktlint_standard_function-start-of-body-spacing = enabled
+ktlint_standard_function-type-modifier-spacing = enabled
+ktlint_standard_keyword-spacing = enabled
+ktlint_standard_modifier-list-spacing = enabled
+ktlint_standard_nullable-type-spacing = enabled
+ktlint_standard_op-spacing = enabled
+ktlint_standard_paren-spacing = enabled
+ktlint_standard_parameter-list-spacing = enabled
+ktlint_standard_range-spacing = enabled
+ktlint_standard_spacing-around-angle-brackets = enabled
+ktlint_standard_spacing-between-function-name-and-opening-parenthesis = enabled
+ktlint_standard_type-argument-list-spacing = enabled
+ktlint_standard_type-parameter-list-spacing = enabled
+ktlint_standard_unary-op-spacing = enabled
+
+# Comments.
+ktlint_standard_comment-spacing = enabled
+ktlint_standard_block-comment-initial-star-alignment = enabled
+
+# Redundant syntax.
+ktlint_standard_no-semi = enabled
+ktlint_standard_no-unit-return = enabled
+ktlint_standard_no-empty-class-body = enabled
+ktlint_standard_unnecessary-parentheses-before-trailing-lambda = enabled
+ktlint_standard_modifier-order = enabled
+
+# IntelliJ's own Kotlin formatter. ktlint does not read these; they decide only
+# what the IDE produces when you reformat.
 ij_java_names_count_to_use_import_on_demand = 9999
 ij_kotlin_align_in_columns_case_branch = false
 ij_kotlin_align_multiline_binary_operation = false
@@ -57,14 +117,14 @@ ij_kotlin_if_rparen_on_new_line = false
 ij_kotlin_import_nested_classes = false
 ij_kotlin_imports_layout = *
 ij_kotlin_insert_whitespaces_in_simple_one_line_method = true
-ij_kotlin_keep_blank_lines_before_right_brace = 2
-ij_kotlin_keep_blank_lines_in_code = 2
-ij_kotlin_keep_blank_lines_in_declarations = 2
+ij_kotlin_keep_blank_lines_before_right_brace = 0
+ij_kotlin_keep_blank_lines_in_code = 1
+ij_kotlin_keep_blank_lines_in_declarations = 1
 ij_kotlin_keep_first_column_comment = true
 ij_kotlin_keep_indents_on_empty_lines = false
 ij_kotlin_keep_line_breaks = true
 ij_kotlin_lbrace_on_next_line = false
-ij_kotlin_line_comment_add_space = false
+ij_kotlin_line_comment_add_space = true
 ij_kotlin_line_comment_at_first_column = true
 ij_kotlin_method_annotation_wrap = split_into_lines
 ij_kotlin_method_call_chain_wrap = normal
