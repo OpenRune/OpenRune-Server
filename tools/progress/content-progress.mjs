@@ -1,9 +1,11 @@
 #!/usr/bin/env node
 // Content progress report generator.
 //
-// Denominator (what OSRS has)   : osrs-dumps/dump.npc + wiki section headings
-// Numerator   (what we've built): RSCM references inside content/**
-// Verified    (what's proven)   : tests under content/**/src/{test,integration}
+// What OSRS has  : wiki categories for the feature lists, osrs-dumps/dump.npc for npcs
+// What we've got : content/ module folders, plus gameval symbols referenced in content/
+//
+// Status is added / not added on purpose. Anything finer would be claiming a
+// level of parity with the wiki that nothing here can actually check.
 //
 // Runs fully offline from committed data. `--fetch-wiki` refreshes wiki-cache.json.
 //
@@ -26,7 +28,7 @@ const END = '<!-- content-progress:end -->'
 const NS = ['npc', 'loc', 'obj', 'content', 'varbit', 'varp', 'inv', 'seq', 'spotanim', 'param', 'enum', 'dbtable', 'dbrow', 'component', 'interface', 'timer', 'queue', 'headbar', 'stat', 'category']
 const RSCM_RE = new RegExp('\\b(' + NS.join('|') + ')\\.([a-z0-9_]+)', 'g')
 
-const RED = '🔴', YELLOW = '🟡', GREEN = '🟢', GREY = '⚪'
+const RED = '🔴', GREEN = '🟢'
 
 // Wiki section headings that are article furniture, not game features.
 const SECTION_NOISE = new Set([
@@ -67,13 +69,29 @@ function gitLastCommit(dir) {
 
 // ---------------------------------------------------------------- denominator
 
-/** Every NPC symbol OSRS has. dump.npc is the only complete name index in-repo. */
-function loadNpcSymbols() {
+/**
+ * Every NPC symbol OSRS has, plus a display-name index. dump.npc is the only
+ * complete name index in the repo. Locs are not dumped anywhere (311 symbols
+ * committed out of 62,400 ids), which is why obstacle-level detection for
+ * things like agility courses is not possible yet.
+ */
+function loadNpcs() {
   const file = P('osrs-dumps', 'dump.npc')
-  if (!fs.existsSync(file)) return []
-  const out = []
-  for (const m of fs.readFileSync(file, 'utf8').matchAll(/^\[([a-z0-9_]+)\]$/gm)) out.push(m[1])
-  return out
+  if (!fs.existsSync(file)) return { symbols: [], byName: new Map() }
+  const symbols = []
+  const byName = new Map()
+  let current = null
+  for (const line of fs.readFileSync(file, 'utf8').split(/\r?\n/)) {
+    const sym = line.match(/^\[([a-z0-9_]+)\]$/)
+    if (sym) { current = sym[1]; symbols.push(current); continue }
+    const name = line.match(/^name=(.+)$/)
+    if (!name || !current) continue
+    const key = name[1].trim().toLowerCase()
+    if (!byName.has(key)) byName.set(key, [])
+    byName.get(key).push(current)
+    current = null
+  }
+  return { symbols, byName }
 }
 
 // ---------------------------------------------------------------- numerator
@@ -114,19 +132,35 @@ function loadDropTables() {
   return new Set(files.map((f) => norm(path.basename(f).replace(/DropTable\.kt$|\.toml$/, ''))))
 }
 
-/** Which RSCM symbols content/** actually references. */
+/**
+ * Files that mention a symbol without implementing it. Every boss has a drop
+ * table and a collection log entry long before anyone scripts the fight, so
+ * counting these marks Cerberus and Corporeal Beast as done when they are not.
+ */
+const NOT_IMPLEMENTATION = /^content\/drops\/|collection-log\/.*gamevals\.toml$/
+
+/**
+ * A file that does something with an npc rather than just naming it. Without
+ * this, a blocklist counts as an implementation: BraceletOfSlaughter.kt lists
+ * tzkalzuk and tztokjad only to exclude them, which marked both as done.
+ */
+const BEHAVIOUR = /\bon[A-Z][A-Za-z0-9]*\(|PluginScript\b|\bencounter\(/
+
+/** RSCM symbols referenced by content/ files that actually do something with them. */
 function scanReferences() {
   const files = walk(P('content'), (n) => n.endsWith('.kt') || n.endsWith('.toml'))
-  const refs = new Map()
+  const implRefs = new Map()
   for (const f of files) {
     const text = fs.readFileSync(f, 'utf8')
+    const name = rel(f)
+    if (NOT_IMPLEMENTATION.test(name) || !BEHAVIOUR.test(text)) continue
     for (const m of text.matchAll(RSCM_RE)) {
       const key = m[1] + '.' + m[2]
-      if (!refs.has(key)) refs.set(key, new Set())
-      refs.get(key).add(rel(f))
+      if (!implRefs.has(key)) implRefs.set(key, new Set())
+      implRefs.get(key).add(name)
     }
   }
-  return refs
+  return implRefs
 }
 
 // ---------------------------------------------------------------- wiki
@@ -214,55 +248,77 @@ function findModule(title, moduleRoot, modules, aliases) {
 }
 
 function scoreFeature(feature, ctx) {
-  const { modules, refs, npcSymbols, wiki } = ctx
+  const { modules, implRefs, npcSymbols, wiki } = ctx
   const subModules = feature.module
     ? modules.filter((m) => m.path === feature.module || m.path.startsWith(feature.module + '/'))
     : []
   const mod = subModules[0] ?? null
   const loc = subModules.reduce((n, m) => n + m.loc, 0)
-  const tests = subModules.reduce((n, m) => n + m.tests, 0)
   const lastCommit = subModules.map((m) => m.lastCommit).filter(Boolean).sort().pop() ?? null
 
-  // Entity denominator: NPC symbols matching the feature's prefixes.
+  // Symbol matching, so a feature counts as added wherever it was written.
+  // Prefixes are gamevals rather than display names: "rooftops_" appears in
+  // code verbatim, "Draynor Village Rooftop Course" never does.
   let denom = 0, covered = 0
+  const foundIn = new Set()
   if (feature.rscmPrefixes?.length) {
     const matched = npcSymbols.filter((s) => feature.rscmPrefixes.some((p) => s.startsWith(p)))
     denom = matched.length
-    covered = matched.filter((s) => refs.has('npc.' + s)).length
+    for (const s of matched) {
+      const files = implRefs.get('npc.' + s)
+      if (!files) continue
+      covered++
+      for (const f of files) foundIn.add(f.split('/').slice(0, 3).join('/'))
+    }
   }
-  // Content-tag denominator: is each tag handled anywhere in content/?
+  // No prefixes configured, so fall back to the npcs whose in-game name is the
+  // feature name. This is what makes a boss count wherever it was written,
+  // rather than only when it sits in the folder we expected.
+  if (!feature.rscmPrefixes?.length) {
+    const named = ctx.npcsByName.get(feature.name.toLowerCase()) ?? []
+    denom = named.length
+    for (const s of named) {
+      const files = implRefs.get('npc.' + s)
+      if (!files) continue
+      covered++
+      for (const f of files) foundIn.add(f.split('/').slice(0, 3).join('/'))
+    }
+  }
+
   let tagDenom = 0, tagCovered = 0
   if (feature.contentTags?.length) {
     tagDenom = feature.contentTags.length
-    tagCovered = feature.contentTags.filter((t) => refs.has('content.' + t)).length
+    for (const t of feature.contentTags) {
+      const files = implRefs.get('content.' + t)
+      if (!files) continue
+      tagCovered++
+      for (const f of files) foundIn.add(f.split('/').slice(0, 3).join('/'))
+    }
   }
 
   const hasDropTable = ctx.dropTables.has(norm(feature.name))
+  const hasModule = !!mod && loc > 0
+  const hasSymbols = covered > 0 || tagCovered > 0
+  const added = feature.engine ? true : hasModule || hasSymbols
 
-  let status, note
-  if (feature.engine) {
-    status = GREY
-    note = 'engine-owned (`' + feature.engine + '`)'
-  } else if (!mod) {
-    status = RED
-    note = hasDropTable ? 'no module, drop table done' : 'no module'
-  } else if (loc === 0) {
-    status = RED
-    note = 'stub — 0 lines, last touched ' + (lastCommit ?? 'never')
-  } else {
-    const parts = [loc.toLocaleString() + ' loc']
-    if (tagDenom) parts.push(tagCovered + '/' + tagDenom + ' tags')
-    if (denom) parts.push(covered + '/' + denom + ' npcs')
-    const complete = (!tagDenom || tagCovered === tagDenom) && (!denom || covered === denom)
-    if (complete && tests > 0) { status = GREEN; parts.push(tests + ' tests') }
-    else if (tests === 0) { status = YELLOW; parts.push('no tests') }
-    else { status = YELLOW; parts.push(tests + ' tests') }
-    note = parts.join(' · ')
-  }
+  // Detail goes in the note. The status stays binary because anything finer
+  // would be claiming a level of parity we cannot actually check.
+  // Deliberately no ratios here. "2/129 npcs" next to a 5,000 line module reads
+  // as a completeness score, and that is the parity claim we are avoiding.
+  const parts = []
+  if (feature.engine) parts.push('in `' + feature.engine + '`')
+  if (hasModule) parts.push(loc.toLocaleString() + ' loc')
+  if (!hasModule && hasSymbols) parts.push('no module, code in ' + [...foundIn].slice(0, 2).join(', '))
+  if (!added && mod && loc === 0) parts.push('empty module, last touched ' + (lastCommit ?? 'never'))
+  if (!added && hasDropTable) parts.push('drop table done')
+  if (!parts.length) parts.push(added ? 'added' : 'nothing yet')
 
   return {
     ...feature,
-    status, note, loc, tests, denom, covered, tagDenom, tagCovered,
+    added,
+    status: added ? GREEN : RED,
+    note: parts.join(' · '),
+    loc, denom, covered, tagDenom, tagCovered,
     sections: (wiki[feature.wiki]?.sections ?? []).filter((s) => !isNoise(s)),
     image: wiki[feature.wiki]?.image ?? null,
     moduleExists: !!mod,
@@ -273,12 +329,9 @@ function scoreFeature(feature, ctx) {
 // ---------------------------------------------------------------- rendering
 
 function summarise(scored) {
-  const all = scored.flatMap((c) => c.features).filter((f) => f.status !== GREY)
-  const green = all.filter((f) => f.status === GREEN).length
-  const yellow = all.filter((f) => f.status === YELLOW).length
-  const red = all.filter((f) => f.status === RED).length
-  const pct = all.length ? Math.round(((green + yellow * 0.5) / all.length) * 100) : 0
-  return { green, yellow, red, total: all.length, pct }
+  const all = scored.flatMap((c) => c.features)
+  const added = all.filter((f) => f.added).length
+  return { added, notAdded: all.length - added, total: all.length }
 }
 
 function wikiUrl(title) {
@@ -290,13 +343,13 @@ const icon = (f) => f.image ? '<img src="' + f.image + '" height="20" alt="">' :
 function renderTables(categories) {
   const L = []
   for (const cat of categories) {
-    const done = cat.features.filter((f) => f.status !== RED && f.status !== GREY).length
+    const done = cat.features.filter((f) => f.added).length
     L.push('### ' + cat.name + ' <sup>' + done + '/' + cat.features.length + '</sup>')
     L.push('')
     // Long category-driven groups list the unstarted entries separately, so the
     // table stays readable instead of being 150 rows of "no module".
-    const started = cat.features.filter((f) => f.status !== RED)
-    const notStarted = cat.features.filter((f) => f.status === RED)
+    const started = cat.features.filter((f) => f.added)
+    const notStarted = cat.features.filter((f) => !f.added)
     const tabled = cat.features.length > 30 ? started : cat.features
 
     if (tabled.length) {
@@ -386,8 +439,8 @@ function injectReadme(block) {
 
 const spec = JSON.parse(fs.readFileSync(P('tools', 'progress', 'features.json'), 'utf8'))
 const modules = listModules()
-const refs = scanReferences()
-const npcSymbols = loadNpcSymbols()
+const implRefs = scanReferences()
+const { symbols: npcSymbols, byName: npcsByName } = loadNpcs()
 const dropTables = loadDropTables()
 
 let wiki = loadWikiCache()
@@ -429,7 +482,7 @@ if (args.has('--fetch-wiki')) {
 
 const pages = wiki.pages ?? {}
 const aliases = spec.aliases ?? {}
-const ctx = { modules, refs, npcSymbols, dropTables, wiki: pages }
+const ctx = { modules, implRefs, npcSymbols, npcsByName, dropTables, wiki: pages }
 const categories = spec.categories.map((c) => {
   if (c.features) return { name: c.name, features: c.features.map((f) => scoreFeature(f, ctx)) }
   // Category-driven group: every wiki entry becomes a feature, matched to a module by name.
@@ -444,11 +497,11 @@ const categories = spec.categories.map((c) => {
 })
 const summary = summarise(categories)
 
-const legend = GREEN + ' implemented & tested · ' + YELLOW + ' partial or untested · ' + RED + ' missing or stub · ' + GREY + ' engine-owned'
+const legend = GREEN + ' added · ' + RED + ' not added'
 // A single percentage would weight one quest boss the same as all of Agility,
 // so show it per category instead.
 const headline = categories
-  .map((c) => c.name + ' **' + c.features.filter((f) => f.status !== RED && f.status !== GREY).length
+  .map((c) => c.name + ' **' + c.features.filter((f) => f.added).length
     + '/' + c.features.length + '**')
   .join(' · ')
 
@@ -457,9 +510,10 @@ fs.writeFileSync(P('PROGRESS.md'), [
   '',
   '_Generated by `tools/progress/content-progress.mjs` — do not edit by hand._',
   '',
-  'What OSRS has comes from `osrs-dumps/dump.npc` (' + npcSymbols.length.toLocaleString() + ' npcs) and wiki',
-  'section headings. What we have comes from the ' + refs.size.toLocaleString() + ' RSCM symbols referenced',
-  'across `content/`. ' + GREEN + ' also needs tests.',
+'The feature lists come from the wiki. Whether something is added comes from `content/`,',
+  'either a module for it or its gameval symbols referenced somewhere in the code, so it',
+  'still counts if it was written somewhere unexpected. Added does not mean it matches the',
+  'wiki, only that it exists.',
   '',
   legend,
   '',
@@ -478,18 +532,16 @@ fs.writeFileSync(P('PROGRESS.md'), [
   'used under [CC BY-NC-SA 3.0](https://creativecommons.org/licenses/by-nc-sa/3.0/).',
 ].join('\n') + '\n')
 
+// Headline and a link only. The readme is already long and the detail belongs
+// in PROGRESS.md, this is here so people know the report exists.
 const readmeBlock = [
   '',
   '## 📊 Content progress',
   '',
   headline,
   '',
-  legend,
-  '',
-  renderTables(categories.filter((c) => c.name === 'Skills')),
-  'See **[PROGRESS.md](PROGRESS.md)** for bosses, every content module, and untracked mechanics.',
-  '',
-  'Want to help? Grab a ' + RED + ' row, nobody is on those.',
+  'Full breakdown in **[PROGRESS.md](PROGRESS.md)**, including every content module and',
+  'the bosses that already have drop tables and only need the encounter writing.',
   '',
 ].join('\n')
 
@@ -505,5 +557,5 @@ if (readme.missing) {
   fs.writeFileSync(P('README.md'), readme.text)
 }
 
-process.stderr.write('PROGRESS.md written: ' + summary.green + ' green, ' + summary.yellow
-  + ' yellow, ' + summary.red + ' red of ' + summary.total + ' features\n')
+process.stderr.write('PROGRESS.md written: ' + summary.added + ' added, '
+  + summary.notAdded + ' not added, of ' + summary.total + ' features\n')

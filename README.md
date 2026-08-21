@@ -35,41 +35,10 @@ OpenRune Server adheres to OSRS protocols, giving you the freedom to connect any
 
 ## 📊 Content progress
 
-Skills **10/23** · Bosses **6/169** · Raids **0/4** · Minigames **0/51**
+Skills **15/23** · Bosses **6/169** · Raids **0/4** · Minigames **0/51**
 
-🟢 implemented & tested · 🟡 partial or untested · 🔴 missing or stub · ⚪ engine-owned
-
-### Skills <sup>10/23</sup>
-
-| | Feature | Status | |
-|---|---|---|---|
-| ⚪ | <img src="https://oldschool.runescape.wiki/images/Attack_icon.png?b4bce" height="20" alt=""> Attack | engine-owned (`api/combat`) | [wiki](https://oldschool.runescape.wiki/w/Attack) |
-| ⚪ | <img src="https://oldschool.runescape.wiki/images/Strength_icon.png?e6e0c" height="20" alt=""> Strength | engine-owned (`api/combat`) | [wiki](https://oldschool.runescape.wiki/w/Strength) |
-| ⚪ | <img src="https://oldschool.runescape.wiki/images/Defence_icon.png?ca0cd" height="20" alt=""> Defence | engine-owned (`api/combat`) | [wiki](https://oldschool.runescape.wiki/w/Defence) |
-| ⚪ | <img src="https://oldschool.runescape.wiki/images/Ranged_icon.png?01b0e" height="20" alt=""> Ranged | engine-owned (`api/combat`) | [wiki](https://oldschool.runescape.wiki/w/Ranged) |
-| ⚪ | <img src="https://oldschool.runescape.wiki/images/Hitpoints_icon.png?a4819" height="20" alt=""> Hitpoints | engine-owned (`api/combat`) | [wiki](https://oldschool.runescape.wiki/w/Hitpoints) |
-| 🟡 | <img src="https://oldschool.runescape.wiki/images/Magic_icon.png?334cf" height="20" alt=""> [Magic](content/skills/magic) | 1,031 loc · no tests | [wiki](https://oldschool.runescape.wiki/w/Magic) |
-| 🟡 | <img src="https://oldschool.runescape.wiki/images/Prayer_icon.png?7e70b" height="20" alt=""> [Prayer](content/skills/prayer) | 2,569 loc · no tests | [wiki](https://oldschool.runescape.wiki/w/Prayer) |
-| 🟡 | <img src="https://oldschool.runescape.wiki/images/Runecraft_icon.png?c278c" height="20" alt=""> [Runecraft](content/skills/runecrafting) | 2,556 loc · no tests | [wiki](https://oldschool.runescape.wiki/w/Runecraft) |
-| 🟡 | <img src="https://oldschool.runescape.wiki/images/Slayer_icon.png?cd34f" height="20" alt=""> [Slayer](content/skills/slayer) | 5,494 loc · 95/129 npcs · no tests | [wiki](https://oldschool.runescape.wiki/w/Slayer) |
-| 🟡 | <img src="https://oldschool.runescape.wiki/images/Mining_icon.png?00870" height="20" alt=""> [Mining](content/skills/mining) | 1,050 loc · 1/1 tags · no tests | [wiki](https://oldschool.runescape.wiki/w/Mining) |
-| 🟡 | <img src="https://oldschool.runescape.wiki/images/Smithing_icon.png?d26c5" height="20" alt=""> [Smithing](content/skills/smithing) | 2,045 loc · no tests | [wiki](https://oldschool.runescape.wiki/w/Smithing) |
-| 🟢 | <img src="https://oldschool.runescape.wiki/images/Woodcutting_icon.png?6ead4" height="20" alt=""> [Woodcutting](content/skills/woodcutting) | 409 loc · 2/2 tags · 2 tests | [wiki](https://oldschool.runescape.wiki/w/Woodcutting) |
-| 🟡 | <img src="https://oldschool.runescape.wiki/images/Firemaking_icon.png?45ea0" height="20" alt=""> [Firemaking](content/skills/firemaking) | 589 loc · no tests | [wiki](https://oldschool.runescape.wiki/w/Firemaking) |
-| 🟡 | <img src="https://oldschool.runescape.wiki/images/Cooking_icon.png?a0156" height="20" alt=""> [Cooking](content/skills/cooking) | 1,358 loc · 4/4 tags · no tests | [wiki](https://oldschool.runescape.wiki/w/Cooking) |
-| 🟡 | <img src="https://oldschool.runescape.wiki/images/Herblore_icon.png?ffa9e" height="20" alt=""> [Herblore](content/skills/herblore) | 1,248 loc · 1/1 tags · no tests | [wiki](https://oldschool.runescape.wiki/w/Herblore) |
-| 🔴 | <img src="https://oldschool.runescape.wiki/images/Fishing_icon.png?15a98" height="20" alt=""> [Fishing](content/skills/fishing) | stub — 0 lines, last touched 2024-09-07 | [wiki](https://oldschool.runescape.wiki/w/Fishing) |
-| 🔴 | <img src="https://oldschool.runescape.wiki/images/Agility_icon.png?389e0" height="20" alt=""> Agility | no module | [wiki](https://oldschool.runescape.wiki/w/Agility) |
-| 🔴 | <img src="https://oldschool.runescape.wiki/images/Thieving_icon.png?973fe" height="20" alt=""> Thieving | no module | [wiki](https://oldschool.runescape.wiki/w/Thieving) |
-| 🔴 | <img src="https://oldschool.runescape.wiki/images/Crafting_icon.png?a1f71" height="20" alt=""> Crafting | no module | [wiki](https://oldschool.runescape.wiki/w/Crafting) |
-| 🔴 | <img src="https://oldschool.runescape.wiki/images/Fletching_icon.png?15cda" height="20" alt=""> Fletching | no module | [wiki](https://oldschool.runescape.wiki/w/Fletching) |
-| 🔴 | <img src="https://oldschool.runescape.wiki/images/Construction_icon.png?f9bf7" height="20" alt=""> Construction | no module | [wiki](https://oldschool.runescape.wiki/w/Construction) |
-| 🔴 | <img src="https://oldschool.runescape.wiki/images/Farming_icon.png?558fa" height="20" alt=""> Farming | no module | [wiki](https://oldschool.runescape.wiki/w/Farming) |
-| 🔴 | <img src="https://oldschool.runescape.wiki/images/Hunter_icon.png?8762f" height="20" alt=""> Hunter | no module | [wiki](https://oldschool.runescape.wiki/w/Hunter) |
-
-See **[PROGRESS.md](PROGRESS.md)** for bosses, every content module, and untracked mechanics.
-
-Want to help? Grab a 🔴 row, nobody is on those.
+Full breakdown in **[PROGRESS.md](PROGRESS.md)**, including every content module and
+the bosses that already have drop tables and only need the encounter writing.
 
 <!-- content-progress:end -->
 ## 🛠️ Getting Started
