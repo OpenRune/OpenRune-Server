@@ -32,7 +32,7 @@ dependencies {
 // cache data (db tables, configs, models, sprites) in a `<plugin>/pack` module so building the
 // cache never has to compile the plugin's game scripts or their api/content dependencies.
 fun findContentPlugins(): List<Project> =
-    project(":content").subprojects.filter { it.name == "pack" && it.buildFile.exists() }
+    project(":content").subprojects.filter { it.name.endsWith("-pack") && it.buildFile.exists() }
 
 tasks {
     register("buildCache",JavaExec::class) {
