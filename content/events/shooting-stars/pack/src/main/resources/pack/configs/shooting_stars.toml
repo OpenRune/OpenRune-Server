@@ -1,0 +1,10 @@
+[[item]]
+id = "obj.poh_tablet_shootingstar"
+inherit = "obj.poh_tablet_varrockteleport"
+name = "Shooting Star teleport"
+inventoryModel = "models.poh_tablet_shootingstar"
+tradeable = false
+cost = 50
+examine = "A sky full of stars... and one might change your journey."
+[item.params]
+"param.shop_sale_restricted"=1

@@ -13,6 +13,7 @@ concurrency:
   cancel-in-progress: true
 
 permissions:
+  actions: write
   contents: write
   checks: write
   pull-requests: write
@@ -113,3 +114,9 @@ jobs:
           } > /tmp/gameval-pr-body.md
 
           gh pr comment "${{ github.event.pull_request.number }}" --body-file /tmp/gameval-pr-body.md
+
+          # Runs from that push are held for approval, so nothing builds the
+          # reassigned IDs; workflow_dispatch is not held. It 422s on branches
+          # that predate ci.yml, which must not fail an otherwise good fix.
+          gh workflow run ci.yml --ref "${{ github.head_ref }}" ||
+            echo "::warning::could not dispatch ci.yml for the fixed head"

@@ -1,0 +1,91 @@
+name: Formatting
+
+permissions:
+  contents: read
+
+on:
+  workflow_dispatch:
+  pull_request:
+  push:
+    branches:
+      - main
+
+concurrency:
+  group: format-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  spotless:
+    name: spotless (advisory)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: "21"
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v6
+
+      # Spotless is configured with ratchetFrom("origin/main"), so only files
+      # changed relative to main are checked. The ref must exist locally.
+      # --continue so every module reports, not just the first to fail.
+      - name: Check formatting
+        id: check
+        run: |
+          git fetch origin main --depth=1
+          ./gradlew spotlessCheck --continue
+
+      # Reporting only; the job has already failed and nothing here clears that.
+      # Every rule ktlint runs is auto-correctable, so applying them names the
+      # files that need it.
+      - name: Report what needs formatting
+        if: failure() && steps.check.outcome == 'failure'
+        run: |
+          if ! ./gradlew spotlessApply; then
+            echo "::error::spotlessCheck failed and spotlessApply could not fix it. See the 'Check formatting' step."
+            exit 0
+          fi
+
+          git diff > "$RUNNER_TEMP/spotless.diff"
+          files=$(git diff --name-only)
+
+          if [ -z "$files" ]; then
+            echo "::error::spotlessCheck failed but spotlessApply changed nothing. See the 'Check formatting' step."
+            exit 0
+          fi
+
+          while IFS= read -r file; do
+            echo "::error file=$file,line=1::Not formatted. Run './gradlew spotlessApply' and commit the result."
+          done <<< "$files"
+
+          {
+            echo "## Formatting"
+            echo
+            echo "$(printf '%s\n' "$files" | wc -l | tr -d ' ') file(s) need formatting. Run this and commit the result:"
+            echo
+            echo '```'
+            echo './gradlew spotlessApply'
+            echo '```'
+            echo
+            printf '%s\n' "$files" | sed 's|^|- `|;s|$|`|'
+            echo
+            echo '<details><summary>What that changes</summary>'
+            echo
+            echo '```diff'
+            head -c 50000 "$RUNNER_TEMP/spotless.diff"
+            echo
+            echo '```'
+            if [ "$(wc -c < "$RUNNER_TEMP/spotless.diff")" -gt 50000 ]; then
+              echo
+              echo '_Diff truncated. Run the command locally to see all of it._'
+            fi
+            echo
+            echo '</details>'
+          } >> "$GITHUB_STEP_SUMMARY"
