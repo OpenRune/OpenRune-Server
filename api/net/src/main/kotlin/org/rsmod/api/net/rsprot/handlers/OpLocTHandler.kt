@@ -13,6 +13,7 @@ import org.rsmod.api.player.vars.ctrlMoveSpeed
 import org.rsmod.api.registry.loc.LocRegistry
 import org.rsmod.events.EventBus
 import org.rsmod.game.entity.Player
+import org.rsmod.game.entity.WorldEntityList
 import org.rsmod.game.interact.InteractionLocT
 import org.rsmod.game.loc.BoundLocInfo
 import org.rsmod.game.movement.RouteRequestLoc
@@ -25,6 +26,7 @@ constructor(
     private val eventBus: EventBus,
     private val locRegistry: LocRegistry,
     private val locInteractions: LocTInteractions,
+    private val worldEntities: WorldEntityList,
 ) : MessageHandler<OpLocT> {
     private val logger = InlineLogger()
 
@@ -36,7 +38,8 @@ constructor(
             return
         }
 
-        val coords = CoordGrid(message.x, message.z, player.level)
+        val coords =
+            CoordGrid(message.x, message.z, worldEntities.locClickLevel(player, message.x, message.z))
         val loc = locRegistry.findType(coords, message.id)
         if (loc == null) {
             player.clearMapFlag()
