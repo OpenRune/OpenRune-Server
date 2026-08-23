@@ -1,0 +1,19 @@
+[[varp]]
+isServerOnly = true
+id = "varp.crafting_state"
+scope = "Perm"
+transmit = "Never"
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.crafting_thread_uses"
+varp = "varp.crafting_state"
+startBit = 0
+endBit = 7
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.crafting_tanner_prices"
+varp = "varp.crafting_state"
+startBit = 8
+endBit = 11

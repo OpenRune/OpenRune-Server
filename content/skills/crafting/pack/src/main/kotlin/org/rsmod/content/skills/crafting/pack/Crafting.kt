@@ -1,4 +1,4 @@
-package dev.openrune.tables.skills
+package org.rsmod.content.skills.crafting.pack
 
 import dev.openrune.definition.constants.ConstantProvider
 import dev.openrune.definition.dbtables.DBTableBuilder
@@ -7,6 +7,8 @@ import dev.openrune.tables.production.ProductionColumns
 import dev.openrune.tables.production.ProductionTableRowScope
 import dev.openrune.tables.production.ProductionTableScope
 import dev.openrune.tables.production.productionTable
+import dev.openrune.tables.skills.QuestReq
+import dev.openrune.tables.skills.VarbitCompare
 
 /**
  * Columns that aren't specified defer to the section default. crafting_facilities and
@@ -2676,38 +2678,5 @@ private class CraftingSectionScope(
             category?.let { column(ProductionColumns.COL_CATEGORY, it) }
             block()
         }
-    }
-}
-
-enum class QuestReq(val id: Int) {
-    Completed(0),
-    InProgress(1),
-    NotCompleted(2);
-
-    companion object {
-        fun of(id: Int?): QuestReq? = entries.firstOrNull { it.id == id }
-    }
-}
-
-enum class VarbitCompare(val id: Int) {
-    EQ(0),
-    NE(1),
-    LT(2),
-    LTE(3),
-    GT(4),
-    GTE(5);
-
-    fun passes(actual: Int, expected: Int): Boolean =
-        when (this) {
-            EQ -> actual == expected
-            NE -> actual != expected
-            LT -> actual < expected
-            LTE -> actual <= expected
-            GT -> actual > expected
-            GTE -> actual >= expected
-        }
-
-    companion object {
-        fun of(id: Int?): VarbitCompare? = entries.firstOrNull { it.id == id }
     }
 }

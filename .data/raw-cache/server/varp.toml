@@ -821,9 +821,3 @@ isServerOnly = true
 id = "varp.drew_sandstone"
 scope = "Perm"
 transmit = "Never"
-
-[[varp]]
-isServerOnly = true
-id = "varp.crafting_state"
-scope = "Perm"
-transmit = "Never"
