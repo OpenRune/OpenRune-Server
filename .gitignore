@@ -57,3 +57,5 @@ logs/
 *.log
 /.cursor
 /.data/raw-cache/cs2
+.claude/settings.local.json
+.mcp.json
