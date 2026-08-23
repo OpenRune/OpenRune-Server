@@ -1,13 +1,9 @@
 package dev.openrune.tables
 
-import dev.openrune.definition.dbtables.DBRowBuilder
 import dev.openrune.definition.dbtables.dbTable
 import dev.openrune.definition.util.VarType
+import dev.openrune.pack.columnCoord
 import org.rsmod.map.CoordGrid
-
-fun DBRowBuilder.columnCoord(id: Int, coord: CoordGrid) {
-    column(id, coord.packed)
-}
 
 object InstanceSettingsTable {
 
