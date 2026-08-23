@@ -1,6 +1,7 @@
 package org.rsmod.content.skills.smithing.smelting
 
 import jakarta.inject.Inject
+import kotlin.random.Random
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.script.onOpLoc1
 import org.rsmod.api.script.onOpLocCategory2
@@ -11,6 +12,10 @@ import org.rsmod.content.skills.Material
 import org.rsmod.content.skills.SkillMultiConfig
 import org.rsmod.content.skills.SkillMultiEntry
 import org.rsmod.content.skills.SkillingActionType
+import org.rsmod.content.skills.crafting.interfaces.hasGoldCraftingBars
+import org.rsmod.content.skills.crafting.interfaces.hasSilverCraftingBars
+import org.rsmod.content.skills.crafting.interfaces.openGoldCrafting
+import org.rsmod.content.skills.crafting.interfaces.openSilverCrafting
 import org.rsmod.content.skills.openSkillMulti
 import org.rsmod.content.skills.smithing.hasCannonballFurnaceMould
 import org.rsmod.content.skills.smithing.openCannonballFurnaceMenu
@@ -26,9 +31,8 @@ import org.rsmod.game.entity.Player
 import org.rsmod.game.inv.Inventory
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
-import kotlin.random.Random
 
-class SmeltingScript @Inject constructor(private val xpMods: XpModifiers, ) : PluginScript() {
+class SmeltingScript @Inject constructor(private val xpMods: XpModifiers) : PluginScript() {
 
     private val allBars = SmithingBarsRow.Companion.all()
     private val normalBars = allBars.filter { it.output.internalName != "obj.lovakite_bar" }
@@ -42,6 +46,10 @@ class SmeltingScript @Inject constructor(private val xpMods: XpModifiers, ) : Pl
                 openStandardSmeltMenu(locInternal, coords)
             } else if (hasCannonballFurnaceMould()) {
                 openCannonballFurnaceMenu(locInternal)
+            } else if (hasGoldCraftingBars()) {
+                openGoldCrafting()
+            } else if (hasSilverCraftingBars()) {
+                openSilverCrafting()
             }
         }
 

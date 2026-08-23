@@ -571,3 +571,17 @@ id = "varbit.drew_sandstone_empty_buckets"
 varp = "varp.drew_sandstone"
 startBit = 16
 endBit = 32
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.crafting_thread_uses"
+varp = "varp.crafting_state"
+startBit = 0
+endBit = 7
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.crafting_tanner_prices"
+varp = "varp.crafting_state"
+startBit = 8
+endBit = 11

@@ -1857,3 +1857,173 @@ contentGroup = "content.shooting_star"
 id = "loc.star_size_one_star"
 inherit = "loc.star_size_one_star"
 contentGroup = "content.shooting_star"
+
+[[object]]
+id = "loc.sandpit"
+inherit = "loc.sandpit"
+contentGroup = "content.sandpit"
+
+[[object]]
+id = "loc.prif_sandpit"
+inherit = "loc.prif_sandpit"
+contentGroup = "content.sandpit"
+
+[[object]]
+id = "loc.sandpit_2"
+inherit = "loc.sandpit_2"
+contentGroup = "content.sandpit"
+
+[[object]]
+id = "loc.viking_sandpit_noop"
+inherit = "loc.viking_sandpit_noop"
+contentGroup = "content.sandpit"
+
+[[object]]
+id = "loc.sarim_spiralstairs"
+inherit = "loc.sarim_spiralstairs"
+contentGroup = "content.spiralstaircase_up"
+
+[[object]]
+id = "loc.sarim_spiralstairstop"
+inherit = "loc.sarim_spiralstairstop"
+contentGroup = "content.spiralstaircase_down"
+
+[[object]]
+id = "loc.viking_spinningwheel"
+inherit = "loc.viking_spinningwheel"
+contentGroup = "content.crafting_spinning_wheel"
+
+[[object]]
+id = "loc.elf_village_spinning_wheel"
+inherit = "loc.elf_village_spinning_wheel"
+contentGroup = "content.crafting_spinning_wheel"
+
+[[object]]
+id = "loc.spinningwheel"
+inherit = "loc.spinningwheel"
+contentGroup = "content.crafting_spinning_wheel"
+
+[[object]]
+id = "loc.contact_spinning_wheel"
+inherit = "loc.contact_spinning_wheel"
+contentGroup = "content.crafting_spinning_wheel"
+
+[[object]]
+id = "loc.iznot_spinning_wheel"
+inherit = "loc.iznot_spinning_wheel"
+contentGroup = "content.crafting_spinning_wheel"
+
+[[object]]
+id = "loc.kr_spinningwheel"
+inherit = "loc.kr_spinningwheel"
+contentGroup = "content.crafting_spinning_wheel"
+
+[[object]]
+id = "loc.murder_qip_spinning_wheel"
+inherit = "loc.murder_qip_spinning_wheel"
+contentGroup = "content.crafting_spinning_wheel"
+
+[[object]]
+id = "loc.fossil_spinning_wheel_built"
+inherit = "loc.fossil_spinning_wheel_built"
+contentGroup = "content.crafting_spinning_wheel"
+
+[[object]]
+id = "loc.sw_spinningwheel_fixed"
+inherit = "loc.sw_spinningwheel_fixed"
+contentGroup = "content.crafting_spinning_wheel"
+
+[[object]]
+id = "loc.spinningwheel_quetzacali"
+inherit = "loc.spinningwheel_quetzacali"
+contentGroup = "content.crafting_spinning_wheel"
+
+[[object]]
+id = "loc.spinningwheel_2"
+inherit = "loc.spinningwheel_2"
+contentGroup = "content.crafting_spinning_wheel"
+
+[[object]]
+id = "loc.amenity_spinning_wheel_built"
+inherit = "loc.amenity_spinning_wheel_built"
+contentGroup = "content.crafting_spinning_wheel"
+
+[[object]]
+id = "loc.loom"
+inherit = "loc.loom"
+contentGroup = "content.crafting_loom"
+
+[[object]]
+id = "loc.regicide_loom"
+inherit = "loc.regicide_loom"
+contentGroup = "content.crafting_loom"
+
+[[object]]
+id = "loc.fossil_loom_built"
+inherit = "loc.fossil_loom_built"
+contentGroup = "content.crafting_loom"
+
+[[object]]
+id = "loc.amenity_loom_built"
+inherit = "loc.amenity_loom_built"
+contentGroup = "content.crafting_loom"
+
+[[object]]
+id = "loc.viking_potterywheel"
+inherit = "loc.viking_potterywheel"
+contentGroup = "content.crafting_pottery_wheel"
+
+[[object]]
+id = "loc.potterywheel"
+inherit = "loc.potterywheel"
+contentGroup = "content.crafting_pottery_wheel"
+
+[[object]]
+id = "loc.contact_potterywheel"
+inherit = "loc.contact_potterywheel"
+contentGroup = "content.crafting_pottery_wheel"
+
+[[object]]
+id = "loc.darkm_poor_potterywheel"
+inherit = "loc.darkm_poor_potterywheel"
+contentGroup = "content.crafting_pottery_wheel"
+
+[[object]]
+id = "loc.sw_potterywheel_fixed"
+inherit = "loc.sw_potterywheel_fixed"
+contentGroup = "content.crafting_pottery_wheel"
+
+[[object]]
+id = "loc.potterywheel_2"
+inherit = "loc.potterywheel_2"
+contentGroup = "content.crafting_pottery_wheel"
+
+[[object]]
+id = "loc.amenity_potterywheel_built"
+inherit = "loc.amenity_potterywheel_built"
+contentGroup = "content.crafting_pottery_wheel"
+
+[[object]]
+id = "loc.potteryoven"
+inherit = "loc.potteryoven"
+contentGroup = "content.crafting_pottery_oven"
+
+[[object]]
+id = "loc.viking_potteryoven"
+inherit = "loc.viking_potteryoven"
+contentGroup = "content.crafting_pottery_oven"
+
+[[object]]
+id = "loc.amenity_potteryoven_built"
+inherit = "loc.amenity_potteryoven_built"
+contentGroup = "content.crafting_pottery_oven"
+
+[[object]]
+id = "loc.fai_barbarian_pottery_oven"
+inherit = "loc.fai_barbarian_pottery_oven"
+contentGroup = "content.crafting_pottery_oven"
+
+[[object]]
+id = "loc.darkm_poor_pottery_oven"
+inherit = "loc.darkm_poor_pottery_oven"
+contentGroup = "content.crafting_pottery_oven"
