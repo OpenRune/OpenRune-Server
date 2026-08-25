@@ -29,6 +29,13 @@ uimBlocked = true
 
 [[inventory]]
 isServerOnly = true
+id = "inv.tackle_box"
+inherit = "inv.tackle_box"
+scope = "Perm"
+protect = false
+
+[[inventory]]
+isServerOnly = true
 id = "inv.tradeoffer"
 inherit = "inv.tradeoffer"
 size = 28
