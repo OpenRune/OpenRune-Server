@@ -25,7 +25,7 @@ the module table at the bottom before reading a 0 as "nothing exists".
 | 🟢 | <img src="https://oldschool.runescape.wiki/images/Ranged_icon.png?01b0e" height="20" alt=""> Ranged | in `api/combat` | [wiki](https://oldschool.runescape.wiki/w/Ranged) |
 | 🟢 | <img src="https://oldschool.runescape.wiki/images/Hitpoints_icon.png?a4819" height="20" alt=""> Hitpoints | in `api/combat` | [wiki](https://oldschool.runescape.wiki/w/Hitpoints) |
 | 🟢 | <img src="https://oldschool.runescape.wiki/images/Magic_icon.png?334cf" height="20" alt=""> [Magic](content/skills/magic) | 1,031 loc | [wiki](https://oldschool.runescape.wiki/w/Magic) |
-| 🟢 | <img src="https://oldschool.runescape.wiki/images/Prayer_icon.png?7e70b" height="20" alt=""> [Prayer](content/skills/prayer) | 2,569 loc | [wiki](https://oldschool.runescape.wiki/w/Prayer) |
+| 🟢 | <img src="https://oldschool.runescape.wiki/images/Prayer_icon.png?7e70b" height="20" alt=""> [Prayer](content/skills/prayer) | 2,568 loc | [wiki](https://oldschool.runescape.wiki/w/Prayer) |
 | 🟢 | <img src="https://oldschool.runescape.wiki/images/Runecraft_icon.png?c278c" height="20" alt=""> [Runecraft](content/skills/runecrafting) | 2,556 loc | [wiki](https://oldschool.runescape.wiki/w/Runecraft) |
 | 🟢 | <img src="https://oldschool.runescape.wiki/images/Slayer_icon.png?cd34f" height="20" alt=""> [Slayer](content/skills/slayer) | 5,494 loc | [wiki](https://oldschool.runescape.wiki/w/Slayer) |
 | 🟢 | <img src="https://oldschool.runescape.wiki/images/Mining_icon.png?00870" height="20" alt=""> [Mining](content/skills/mining) | 1,050 loc | [wiki](https://oldschool.runescape.wiki/w/Mining) |
@@ -352,7 +352,7 @@ Found the same way `settings.gradle.kts` finds them: any dir with a `build.gradl
 | `areas/city/prifddinas` | 1 | 82 | 0 | 0 | 2026-08-18 |
 | `areas/city/taverley` | 1 | 77 | 0 | 0 | 2026-06-25 |
 | `areas/city/varrock` | 7 | 539 | 0 | 1 | 2026-08-04 |
-| `areas/godwars` | 2 | 111 | 0 | 0 | 2026-08-18 |
+| `areas/godwars` | 2 | 154 | 0 | 0 | 2026-08-19 |
 | `areas/misc/multiways` | 2 | 36 | 0 | 0 | 2026-05-03 |
 | `areas/misc/wizards_tower` | 2 | 580 | 0 | 0 | 2026-08-04 |
 | `areas/wilderness` | 18 | 1,315 | 0 | 0 | 2026-08-18 |
@@ -364,6 +364,8 @@ Found the same way `settings.gradle.kts` finds them: any dir with a `build.gradl
 | `bosses/scurrius` | 2 | 403 | 0 | 0 | 2026-07-07 |
 | `bosses/zilyana` | 2 | 165 | 0 | 0 | 2026-08-03 |
 | `drops` | 255 | 14,460 | 0 | 0 | 2026-08-18 |
+| `events/shooting-stars` | 9 | 1,261 | 0 | 0 | 2026-08-21 |
+| `events/shooting-stars/pack` | 2 | 440 | 0 | 0 | 2026-08-21 |
 | `generic/generic-locs` | 20 | 1,165 | 0 | 1 | 2026-07-19 |
 | `generic/generic-npcs` | 7 | 1,183 | 0 | 2 | 2026-07-19 |
 | `generic/killcount` | 1 | 31 | 0 | 0 | 2026-07-27 |
@@ -403,9 +405,8 @@ Found the same way `settings.gradle.kts` finds them: any dir with a `build.gradl
 | `skills/magic/spell-attacks` | 2 | 480 | 0 | 0 | 2026-07-28 |
 | `skills/magic/spell-teleports` | 1 | 298 | 0 | 0 | 2026-07-21 |
 | `skills/mining` | 11 | 1,050 | 0 | 0 | 2026-07-22 |
-| `skills/prayer` | 28 | 2,569 | 0 | 0 | 2026-07-20 |
+| `skills/prayer` | 28 | 2,568 | 0 | 0 | 2026-08-20 |
 | `skills/runecrafting` | 24 | 2,556 | 0 | 0 | 2026-08-04 |
-| `skills/shooting-stars` | 9 | 1,261 | 0 | 0 | 2026-07-22 |
 | `skills/slayer` | 45 | 5,494 | 0 | 0 | 2026-08-04 |
 | `skills/smithing` | 15 | 2,045 | 0 | 0 | 2026-06-14 |
 | `skills/utils` | 2 | 316 | 0 | 0 | 2026-05-10 |
