@@ -9,13 +9,13 @@ wiki, only that it exists.
 
 🟢 added · 🔴 not added
 
-Skills **15/23** · Bosses **6/169** · Raids **0/4** · Minigames **0/51**
+Skills **16/23** · Bosses **6/169** · Raids **0/4** · Minigames **0/51**
 
 These counts only cover skills, bosses, raids and minigames. Interfaces, areas,
 quests, drops and travel are real work that no category above points at, so check
 the module table at the bottom before reading a 0 as "nothing exists".
 
-### Skills <sup>15/23</sup>
+### Skills <sup>16/23</sup>
 
 | | Feature | Status | |
 |---|---|---|---|
@@ -34,7 +34,7 @@ the module table at the bottom before reading a 0 as "nothing exists".
 | 🟢 | <img src="https://oldschool.runescape.wiki/images/Firemaking_icon.png?45ea0" height="20" alt=""> [Firemaking](content/skills/firemaking) | 589 loc | [wiki](https://oldschool.runescape.wiki/w/Firemaking) |
 | 🟢 | <img src="https://oldschool.runescape.wiki/images/Cooking_icon.png?a0156" height="20" alt=""> [Cooking](content/skills/cooking) | 1,358 loc | [wiki](https://oldschool.runescape.wiki/w/Cooking) |
 | 🟢 | <img src="https://oldschool.runescape.wiki/images/Herblore_icon.png?ffa9e" height="20" alt=""> [Herblore](content/skills/herblore) | 1,248 loc | [wiki](https://oldschool.runescape.wiki/w/Herblore) |
-| 🔴 | <img src="https://oldschool.runescape.wiki/images/Fishing_icon.png?15a98" height="20" alt=""> [Fishing](content/skills/fishing) | empty module, last touched 2024-09-07 | [wiki](https://oldschool.runescape.wiki/w/Fishing) |
+| 🟢 | <img src="https://oldschool.runescape.wiki/images/Fishing_icon.png?15a98" height="20" alt=""> [Fishing](content/skills/fishing) | 1,797 loc | [wiki](https://oldschool.runescape.wiki/w/Fishing) |
 | 🔴 | <img src="https://oldschool.runescape.wiki/images/Agility_icon.png?389e0" height="20" alt=""> Agility | nothing yet | [wiki](https://oldschool.runescape.wiki/w/Agility) |
 | 🔴 | <img src="https://oldschool.runescape.wiki/images/Thieving_icon.png?973fe" height="20" alt=""> Thieving | nothing yet | [wiki](https://oldschool.runescape.wiki/w/Thieving) |
 | 🔴 | <img src="https://oldschool.runescape.wiki/images/Crafting_icon.png?a1f71" height="20" alt=""> Crafting | nothing yet | [wiki](https://oldschool.runescape.wiki/w/Crafting) |
@@ -92,46 +92,6 @@ the module table at the bottom before reading a 0 as "nothing exists".
 Pulled from wiki section headings. A lot of this has no cache symbol to match against
 (run energy, failure rates, formulas), so the entity scan cannot see it at all. Listed
 here so it at least shows up. Nothing is ticked until someone claims it.
-
-<details>
-<summary>🔴 <b>Fishing</b> — 34 sub-features</summary>
-
-- [ ] Fish
-- [ ] Clue in a bottle
-- [ ] Fishing methods
-- [ ] Equipment
-- [ ] Fishing shops
-- [ ] Nets
-- [ ] Fishing rods and bait
-- [ ] Fly fishing rods and feathers
-- [ ] Harpoon
-- [ ] Lobster pots
-- [ ] Cormorant's glove
-- [ ] Drift Nets
-- [ ] Karambwan vessels
-- [ ] Barbarian Fishing
-- [ ] Deep sea trawling
-- [ ] Other Equipment
-- [ ] Rada's blessing
-- [ ] Spirit flakes
-- [ ] Diabolic Worms
-- [ ] Shark Lures
-- [ ] Utility equipment
-- [ ] Underwater equipment
-- [ ] Angler's outfit
-- [ ] Fishing spots
-- [ ] Net and bait fishing spots
-- [ ] Lure and bait fishing spots
-- [ ] Big net fishing spots
-- [ ] Harpoon &amp; Lobster Pot fishing spots
-- [ ] Lantern harpooning spots
-- [ ] Other fishing spots
-- [ ] Static fishing spots
-- [ ] Fishing Trawler
-- [ ] Tempoross
-- [ ] Fishing pets
-
-</details>
 
 <details>
 <summary>🔴 <b>Agility</b> — 30 sub-features</summary>
@@ -399,7 +359,8 @@ Found the same way `settings.gradle.kts` finds them: any dir with a `build.gradl
 | `quest` | 18 | 1,697 | 0 | 0 | 2026-08-04 |
 | `skills/cooking` | 12 | 1,358 | 0 | 0 | 2026-06-14 |
 | `skills/firemaking` | 6 | 589 | 0 | 0 | 2026-08-08 |
-| `skills/fishing` | 0 | 0 | 0 | 0 | 2024-09-07 |
+| `skills/fishing` | 15 | 1,591 | 0 | 1 | 2026-08-26 |
+| `skills/fishing/pack` | 3 | 206 | 0 | 0 | 2026-08-26 |
 | `skills/herblore` | 11 | 1,248 | 0 | 0 | 2026-06-14 |
 | `skills/magic/alchemy` | 1 | 253 | 0 | 0 | 2026-06-21 |
 | `skills/magic/spell-attacks` | 2 | 480 | 0 | 0 | 2026-07-28 |
