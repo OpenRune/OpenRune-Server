@@ -348,6 +348,7 @@ Found the same way `settings.gradle.kts` finds them: any dir with a `build.gradl
 | `interfaces/xp-drops` | 1 | 42 | 0 | 0 | 2026-08-19 |
 | `other/commands` | 3 | 1,097 | 0 | 0 | 2026-08-19 |
 | `other/consumables` | 38 | 8,687 | 0 | 0 | 2026-08-04 |
+| `other/dave/pack` | 1 | 6 | 0 | 0 | 2026-08-27 |
 | `other/discord` | 2 | 80 | 0 | 0 | 2026-07-01 |
 | `other/ironman` | 5 | 352 | 0 | 0 | 2026-07-19 |
 | `other/login` | 1 | 183 | 0 | 0 | 2026-07-14 |
