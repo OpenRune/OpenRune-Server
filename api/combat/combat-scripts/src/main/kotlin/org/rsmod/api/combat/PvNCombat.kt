@@ -202,7 +202,13 @@ constructor(
         // has no `proj_launch` param, a "null" (-1) spotanim will still be sent in the same slot
         // and height as usual.
         val launchSpotanim = weaponType.paramOrNull(params.proj_launch)?.id ?: NULL_SPOTANIM_ID
-        player.spotanim(RSCM.getReverseMapping(RSCMType.SPOTANIM,launchSpotanim), height = 96, slot = constants.spotanim_slot_combat)
+        val launchSpotanimName =
+            if (launchSpotanim == NULL_SPOTANIM_ID) {
+                null
+            } else {
+                RSCM.getReverseMapping(RSCMType.SPOTANIM, launchSpotanim)
+            }
+        spotanim(launchSpotanimName, height = 96, slot = constants.spotanim_slot_combat)
 
         val projanim = manager.spawnProjectile(player, npc, travelSpotanim, projanimType)
         val (serverDelay, clientDelay) = projanim.durations
