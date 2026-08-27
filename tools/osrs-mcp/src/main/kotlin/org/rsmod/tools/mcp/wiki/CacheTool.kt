@@ -3,11 +3,18 @@ package org.rsmod.tools.mcp.wiki
 import dev.openrune.OsrsCacheProvider
 import dev.openrune.definition.type.ItemType
 import dev.openrune.definition.type.NpcType
+import dev.openrune.definition.util.CacheVarLiteral
 import dev.openrune.filesystem.Cache
 import java.lang.reflect.Modifier
 import java.nio.file.Files
 import java.nio.file.Path
 import java.util.concurrent.ConcurrentHashMap
+
+private val registerCustomVarLiterals: Unit by lazy {
+    CacheVarLiteral.registerExternal(253, '[', name = "PROJANIM")
+    CacheVarLiteral.registerExternal(254, ']', name = "VARBIT")
+    Unit
+}
 
 enum class CacheKind {
     LIVE,
@@ -129,6 +136,7 @@ class CacheTool {
     }
 
     private fun buildSnapshot(cacheKind: CacheKind, root: Path, revision: Int): Snapshot {
+        registerCustomVarLiterals
         val cachePath = root.resolve(".data").resolve("cache").resolve(cacheKind.name)
         require(Files.isDirectory(cachePath)) { "Unable to find cache directory at: $cachePath" }
 
