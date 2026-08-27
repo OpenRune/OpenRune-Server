@@ -45,12 +45,14 @@ import dev.openrune.definition.type.widget.IfEvent
  * relog - it can keep a stale interface definition cached under the same numeric id, showing old
  * content even when the server-side data (confirmed via `::spawndebug`) is already correct.
  */
-// WIDTH/HEIGHT match origin/toolbelt's buildToolbeltInterface() exactly (419x291, rounded to
-// 420x291 here) - the only other custom interface confirmed to actually fit inside a mainmodal's
-// real viewport in this codebase. The previous 488x370 was picked with no such reference and
-// clipped at the bottom of the game window - don't just guess dimensions again.
-private const val WIDTH = 420
-private const val HEIGHT = 291
+// Real ground truth, not a guess: `component.toplevel_osrs_stretch:mainmodal`'s actual baked
+// width/height, read straight from the cache via a `::spawndebug` dump (see SpawnMenuScript's
+// dumpInterface()). Confirmed 512x334. This also explains the earlier 488x370 clipping bug in
+// hindsight - 488 width was actually fine (under 512), but 370 height overshot the real 334
+// ceiling, which is exactly what clipped at the bottom. toolbelt's own 420x291 was never the
+// actual limit, just a smaller size that happened to also fit under it.
+private const val WIDTH = 512
+private const val HEIGHT = 334
 
 /** Toolbelt's own title-bar height, reused since `~stoneborder` draws the same style header. */
 private const val TITLE_H = 36
@@ -60,14 +62,22 @@ private const val CONTROLS_H = 64
 
 private const val SCROLLBAR_W = 16
 
+/** Right-aligned with an 8px margin, same as before - now derived from WIDTH instead of hardcoded
+ * so it stays right-aligned now that WIDTH grew from 420 to 512. */
+private const val SEARCH_X = WIDTH - 100 - 8
+
 private const val COLS = 10
 private const val SLOT_SIZE = 32
 private const val SLOT_PITCH = 36
 private const val GRID_X = 4
 private const val GRID_Y = 4
 
-/** Rows actually visible in the viewport at once - the grid layer itself is only this tall. */
-private const val VISIBLE_ROWS = 5
+/**
+ * Rows actually visible in the viewport at once - the grid layer itself is only this tall. 6
+ * (up from 5) now that HEIGHT is the real 334, not the smaller 291 guess - fills the extra vertical
+ * space instead of leaving it dead below the old 5-row viewport.
+ */
+private const val VISIBLE_ROWS = 6
 private const val VIEWPORT_H = VISIBLE_ROWS * SLOT_PITCH
 
 /** Total rows the scrollable grid holds - well beyond the old hard 72-item cap. */
@@ -158,14 +168,14 @@ fun buildSpawnMenuInterface() =
             size { WIDTH to CONTROLS_H }
 
             rectangle("searchbg") {
-                position { 312 to 4 }
+                position { SEARCH_X to 4 }
                 size { 100 to 20 }
                 color(COLOUR_BOX)
                 filled { true }
             }
 
             text("searchlbl") {
-                position { 312 to 4 }
+                position { SEARCH_X to 4 }
                 size { 100 to 20 }
                 display { "Search" }
                 font { FontType.FONT_REGULAR }

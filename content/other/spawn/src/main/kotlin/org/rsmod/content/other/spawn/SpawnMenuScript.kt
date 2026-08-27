@@ -95,6 +95,17 @@ class SpawnMenuScript @Inject constructor(private val protectedAccess: Protected
      * `docs/dev-notes.md`'s "Custom from-scratch interfaces" note for the story on why this exists).
      */
     private fun Cheat.dumpInterface() {
+        // Real ground truth for the mainmodal viewport size, instead of guessing interface
+        // dimensions between "clips" and "fits but feels small" data points. mainmodal itself has
+        // real width/height baked into the cache - read them directly rather than assume.
+        val mainmodalId = "component.toplevel_osrs_stretch:mainmodal".asRSCM(RSCMType.COMPONENT)
+        val mainmodal = ServerCacheManager.fromComponent(mainmodalId)
+        println(
+            "[spawndebug] component.toplevel_osrs_stretch:mainmodal " +
+                "width=${mainmodal.width} height=${mainmodal.height} x=${mainmodal.x} y=${mainmodal.y}",
+        )
+        player.mes("[spawndebug] mainmodal is ${mainmodal.width}x${mainmodal.height}, see console")
+
         val id = INTERFACE.asRSCM(RSCMType.INTERFACE)
         val iface = ServerCacheManager.getInterface(id)
         if (iface == null) {
