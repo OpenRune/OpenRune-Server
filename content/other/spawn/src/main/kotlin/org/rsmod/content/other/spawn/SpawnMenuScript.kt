@@ -9,6 +9,7 @@ import jakarta.inject.Inject
 import java.util.WeakHashMap
 import org.rsmod.api.invtx.invAdd
 import org.rsmod.api.player.output.mes
+import org.rsmod.api.player.output.runClientScript
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.protect.ProtectedAccessLauncher
 import org.rsmod.api.player.ui.ifOpenMainModal
@@ -36,8 +37,8 @@ import org.rsmod.plugin.scripts.ScriptContext
  */
 private const val INTERFACE = "interface.spawn_menu"
 
-/** Must stay in sync with `SpawnInterface.kt` (COLS * TOTAL_ROWS). */
-private const val SLOT_COUNT = 150
+/** Must stay in sync with `SpawnInterface.kt` (COLS * TOTAL_ROWS = 13 * 15). */
+private const val SLOT_COUNT = 195
 
 private const val QTY_BUTTON_COUNT = 4
 private const val QTY_CUSTOM_INDEX = 3
@@ -190,6 +191,7 @@ class SpawnMenuScript @Inject constructor(private val protectedAccess: Protected
     }
 
     private fun ProtectedAccess.renderSlots(state: SpawnState) {
+        val tooltip = "clientscript.spawn_menu_set_tooltip".asRSCM(RSCMType.CLIENTSCRIPT)
         for (i in 0 until SLOT_COUNT) {
             val target = "component.spawn_menu:slot$i"
             val item = state.slotItems[i]
@@ -198,6 +200,12 @@ class SpawnMenuScript @Inject constructor(private val protectedAccess: Protected
             } else {
                 ifSetHide(target, false)
                 player.ifSetObj(target, InvObj(item), state.quantity)
+                // Hover text ("Spawn <item name>") isn't something the static DSL can set
+                // per-slot - see the cs2 script's own doc comment for why (real op-base text is
+                // dynamic, client-side state set on an explicit component, not a compile-time
+                // string). One call per populated slot, right after that slot's own ifSetObj.
+                val comp = target.asRSCM(RSCMType.COMPONENT)
+                player.runClientScript(tooltip, comp, item.name)
             }
         }
     }

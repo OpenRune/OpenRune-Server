@@ -66,10 +66,15 @@ private const val SCROLLBAR_W = 16
  * so it stays right-aligned now that WIDTH grew from 420 to 512. */
 private const val SEARCH_X = WIDTH - 100 - 8
 
-private const val COLS = 10
+// COLS/GRID_X now sized to actually fill the grid layer's real content width
+// (WIDTH - SCROLLBAR_W = 496) with a symmetric margin, instead of the old 420-wide-frame values
+// (COLS=10, GRID_X=4) that left a big dead strip on the right once WIDTH grew to 512 - that's
+// what "items shifted to the left" was. 13 * SLOT_PITCH(36) = 468, leaving 28px total margin,
+// 14px each side.
+private const val COLS = 13
 private const val SLOT_SIZE = 32
 private const val SLOT_PITCH = 36
-private const val GRID_X = 4
+private const val GRID_X = 14
 private const val GRID_Y = 4
 
 /**

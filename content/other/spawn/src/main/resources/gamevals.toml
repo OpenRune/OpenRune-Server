@@ -9,13 +9,14 @@
 #
 # searchbg=3 searchlbl=4 qtybg0-3=5-8
 # qtyhl0-3=9-12 qtylbl0-3=13-16 status=17
-# grid=18  slot0-149=19-168  scrollbar=169
+# grid=18  slot0-194=19-213  scrollbar=214
 
 [gamevals.interface]
 spawn_menu = 15060
 
 [gamevals.clientscript]
 spawn_menu_init = 45500
+spawn_menu_set_tooltip = 45501
 
 [gamevals.component]
 spawn_menu:searchbg = 986972163
@@ -184,4 +185,49 @@ spawn_menu:slot146 = 986972325
 spawn_menu:slot147 = 986972326
 spawn_menu:slot148 = 986972327
 spawn_menu:slot149 = 986972328
-spawn_menu:scrollbar = 986972329
+spawn_menu:slot150 = 986972329
+spawn_menu:slot151 = 986972330
+spawn_menu:slot152 = 986972331
+spawn_menu:slot153 = 986972332
+spawn_menu:slot154 = 986972333
+spawn_menu:slot155 = 986972334
+spawn_menu:slot156 = 986972335
+spawn_menu:slot157 = 986972336
+spawn_menu:slot158 = 986972337
+spawn_menu:slot159 = 986972338
+spawn_menu:slot160 = 986972339
+spawn_menu:slot161 = 986972340
+spawn_menu:slot162 = 986972341
+spawn_menu:slot163 = 986972342
+spawn_menu:slot164 = 986972343
+spawn_menu:slot165 = 986972344
+spawn_menu:slot166 = 986972345
+spawn_menu:slot167 = 986972346
+spawn_menu:slot168 = 986972347
+spawn_menu:slot169 = 986972348
+spawn_menu:slot170 = 986972349
+spawn_menu:slot171 = 986972350
+spawn_menu:slot172 = 986972351
+spawn_menu:slot173 = 986972352
+spawn_menu:slot174 = 986972353
+spawn_menu:slot175 = 986972354
+spawn_menu:slot176 = 986972355
+spawn_menu:slot177 = 986972356
+spawn_menu:slot178 = 986972357
+spawn_menu:slot179 = 986972358
+spawn_menu:slot180 = 986972359
+spawn_menu:slot181 = 986972360
+spawn_menu:slot182 = 986972361
+spawn_menu:slot183 = 986972362
+spawn_menu:slot184 = 986972363
+spawn_menu:slot185 = 986972364
+spawn_menu:slot186 = 986972365
+spawn_menu:slot187 = 986972366
+spawn_menu:slot188 = 986972367
+spawn_menu:slot189 = 986972368
+spawn_menu:slot190 = 986972369
+spawn_menu:slot191 = 986972370
+spawn_menu:slot192 = 986972371
+spawn_menu:slot193 = 986972372
+spawn_menu:slot194 = 986972373
+spawn_menu:scrollbar = 986972374
