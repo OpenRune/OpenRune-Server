@@ -45,12 +45,9 @@ import dev.openrune.definition.type.widget.IfEvent
  * relog - it can keep a stale interface definition cached under the same numeric id, showing old
  * content even when the server-side data (confirmed via `::spawndebug`) is already correct.
  */
-// Real ground truth, not a guess: `component.toplevel_osrs_stretch:mainmodal`'s actual baked
-// width/height, read straight from the cache via a `::spawndebug` dump (see SpawnMenuScript's
-// dumpInterface()). Confirmed 512x334. This also explains the earlier 488x370 clipping bug in
-// hindsight - 488 width was actually fine (under 512), but 370 height overshot the real 334
-// ceiling, which is exactly what clipped at the bottom. toolbelt's own 420x291 was never the
-// actual limit, just a smaller size that happened to also fit under it.
+// Matches the real native `component.toplevel_osrs_stretch:mainmodal` width/height exactly, read
+// straight from the cache (see SpawnMenuScript's `dumpInterface()`/`::spawndebug`) rather than
+// guessed - any mismatch either clips the frame or leaves it looking small/off-center.
 private const val WIDTH = 512
 private const val HEIGHT = 334
 
@@ -66,22 +63,16 @@ private const val SCROLLBAR_W = 16
  * so it stays right-aligned now that WIDTH grew from 420 to 512. */
 private const val SEARCH_X = WIDTH - 100 - 8
 
-// COLS/GRID_X now sized to actually fill the grid layer's real content width
-// (WIDTH - SCROLLBAR_W = 496) with a symmetric margin, instead of the old 420-wide-frame values
-// (COLS=10, GRID_X=4) that left a big dead strip on the right once WIDTH grew to 512 - that's
-// what "items shifted to the left" was. 13 * SLOT_PITCH(36) = 468, leaving 28px total margin,
-// 14px each side.
+// Sized to fill the grid layer's real content width (WIDTH - SCROLLBAR_W = 496) with a symmetric
+// margin: 13 * SLOT_PITCH(36) = 468px used, 28px margin split 14px each side. If WIDTH/SCROLLBAR_W
+// change, recompute this pair together - they're what keeps the grid from being lopsided.
 private const val COLS = 13
 private const val SLOT_SIZE = 32
 private const val SLOT_PITCH = 36
 private const val GRID_X = 14
 private const val GRID_Y = 4
 
-/**
- * Rows actually visible in the viewport at once - the grid layer itself is only this tall. 6
- * (up from 5) now that HEIGHT is the real 334, not the smaller 291 guess - fills the extra vertical
- * space instead of leaving it dead below the old 5-row viewport.
- */
+/** Rows actually visible in the viewport at once - the grid layer itself is only this tall. */
 private const val VISIBLE_ROWS = 6
 private const val VIEWPORT_H = VISIBLE_ROWS * SLOT_PITCH
 
@@ -162,15 +153,12 @@ fun buildSpawnMenuInterface() =
             noClickThrough { true }
         }
 
-        // Non-scrolling controls: search button + quantity row + status text.
+        // Non-scrolling controls: search button + quantity row + note toggle + status text.
         //
-        // Real bank quantity buttons (checked via a live screenshot, not just component names)
-        // DO have a background box per button - a dark stone-ish pill, with the active one getting
-        // a red-tinted highlight box - not bare floating text like the first attempt at this
-        // assumed from `bank_filler_*` names alone. Each button here is now a stack of three:
-        // a static dark box (bg), a hidden-unless-active red overlay (hl), then the clickable text
-        // on top. `addOption`/`events` stay on the TEXT component (not the boxes) so clicking
-        // anywhere in the box still hits the same target the box visually represents.
+        // Quantity/note buttons match the real bank's own style: each is a stack of three
+        // components at the same position - a static dark box (bg), a hidden-unless-active
+        // red overlay (hl), then the clickable text on top. `addOption`/`events` stay on the
+        // TEXT component (not the boxes) so clicking anywhere in the box hits the same target.
         layer("content") { // child 1
             position { 0 to TITLE_H }
             size { WIDTH to CONTROLS_H }
@@ -289,17 +277,11 @@ fun buildSpawnMenuInterface() =
                     position { (GRID_X + col * SLOT_PITCH) to (GRID_Y + row * SLOT_PITCH) }
                     size { SLOT_SIZE to SLOT_SIZE }
                     spriteId { BLANK_SPRITE }
-                    // addOption(_, true) got a hover box to appear at all (it didn't with the
-                    // unset/false default), but it only shows the literal string "Spawn", not
-                    // "Spawn <item name>" the way real OSRS action text works (confirmed via a
-                    // live screenshot: "Use Armadyl page 3"). targetVerb alone (tried, then
-                    // removed) made no difference either. opBase is the next real candidate -
-                    // ComponentType (the final packed type, not just this DSL) has a distinct
-                    // opBase field separate from addOption's menu-option strings, and its name
-                    // matches "verb template the client appends the target's name to" far more
-                    // closely than the two already-ruled-out properties.
+                    // addOption(_, true) is what makes this a primary left-click op and renders
+                    // the hover box at all. The "Spawn <item name>" text itself can't be baked
+                    // here statically - it's set dynamically per slot at runtime instead, see
+                    // SpawnMenuScript.renderSlots and [clientscript,spawn_menu_set_tooltip].cs2.
                     addOption("Spawn", true)
-                    opBase { "Spawn" }
                     events = CLICK_EVENTS
                 }
             }

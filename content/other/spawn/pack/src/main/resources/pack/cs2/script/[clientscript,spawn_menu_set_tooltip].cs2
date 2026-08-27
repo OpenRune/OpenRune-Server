@@ -1,11 +1,10 @@
 [clientscript,spawn_menu_set_tooltip](component $target, string $name)
-// Replaces the earlier cc_find-based attempt, which was wrong: cc_find(container, subid) only
-// locates children created dynamically at runtime with an explicit subid (e.g. bank/toolbelt item
-// grids built via cc_create) - it doesn't apply to statically declared sibling components like our
-// slot0..slot(N-1), which don't have subids at all (cc_find returned false every time, so
-// cc_setopbase never ran). if_setopbase(text, component) sets opbase directly on an explicit
-// component reference instead, with no find/subid step - the right tool for our shape, confirmed
-// present in the real CS2 command set (.prelude/interface.cs2).
+// Sets the hover text ("Spawn <item name>") directly on an explicit component reference.
+// Deliberately not cc_find + cc_setopbase: cc_find(container, subid) only locates children
+// created dynamically at runtime with an explicit subid (e.g. bank/toolbelt item grids built via
+// cc_create) - it doesn't apply to our slot0..slot(N-1), which are statically declared sibling
+// components with no subid at all. if_setopbase(text, component) is the direct-addressing
+// equivalent and is what actually works for this shape.
 //
 // Called once per populated slot from Kotlin (SpawnMenuScript.renderSlots), right after that
 // slot's own ifSetObj call - not batched, since if_setopbase only takes one target component at a

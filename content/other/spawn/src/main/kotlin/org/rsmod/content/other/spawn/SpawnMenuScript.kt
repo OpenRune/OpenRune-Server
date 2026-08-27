@@ -71,9 +71,9 @@ class SpawnMenuScript @Inject constructor(private val protectedAccess: Protected
 
         onIfClose(INTERFACE) { states.remove(player) }
 
-        // "searchbtn"/"qty$i" were removed - the quantity row and search control are now
-        // clickable text directly (matching how the real bank's own quantity row is built, see
-        // SpawnInterface.kt's comment), not a separate graphic button sitting behind the label.
+        // The quantity row and search control are clickable text directly (matching how the real
+        // bank's own quantity row is built, see SpawnInterface.kt), not a separate graphic button
+        // sitting behind the label.
         onIfModalButton("component.spawn_menu:searchlbl") { runSearch() }
 
         for (i in 0 until QTY_BUTTON_COUNT) {
@@ -92,16 +92,14 @@ class SpawnMenuScript @Inject constructor(private val protectedAccess: Protected
     }
 
     /**
-     * `::spawndebug` - dumps the real packed component list of `interface.spawn_menu` straight
-     * from the loaded cache. Kept intentionally (not just a one-off): this is the fast, ground-truth
-     * way to verify `[gamevals.component]` ids for any custom interface in this codebase, rather
-     * than inferring the packed-id scheme from documentation/bytecode and guessing wrong (see
-     * `docs/dev-notes.md`'s "Custom from-scratch interfaces" note for the story on why this exists).
+     * `::spawndebug` - dumps the real packed component list of `interface.spawn_menu`, plus the
+     * native `mainmodal`'s real width/height, straight from the loaded cache. Kept intentionally
+     * (not just a one-off): this is the fast, ground-truth way to verify `[gamevals.component]`
+     * ids and frame sizing for any custom interface in this codebase, rather than inferring the
+     * packed-id scheme or guessing dimensions and finding out wrong at runtime. See
+     * `SpawnInterface.kt`'s file doc comment for the addressing formula this verifies.
      */
     private fun Cheat.dumpInterface() {
-        // Real ground truth for the mainmodal viewport size, instead of guessing interface
-        // dimensions between "clips" and "fits but feels small" data points. mainmodal itself has
-        // real width/height baked into the cache - read them directly rather than assume.
         val mainmodalId = "component.toplevel_osrs_stretch:mainmodal".asRSCM(RSCMType.COMPONENT)
         val mainmodal = ServerCacheManager.fromComponent(mainmodalId)
         println(
