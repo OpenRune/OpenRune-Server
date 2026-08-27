@@ -12,6 +12,7 @@ import org.rsmod.game.cheat.CheatCommandMap
 import org.rsmod.game.entity.ControllerList
 import org.rsmod.game.entity.NpcList
 import org.rsmod.game.entity.PlayerList
+import org.rsmod.game.entity.WorldEntityList
 import org.rsmod.game.queue.EngineQueueCache
 import org.rsmod.game.region.RegionListLarge
 import org.rsmod.game.region.RegionListSmall
@@ -26,6 +27,7 @@ object GameModule : ExtendedModule() {
         bindInstance<MapClock>()
         bindInstance<NpcList>()
         bindInstance<PlayerList>()
+        bindInstance<WorldEntityList>()
         bindInstance<ControllerList>()
         bindInstance<RegionListSmall>()
         bindInstance<RegionListLarge>()

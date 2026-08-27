@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test
 import org.rsmod.api.game.process.player.PlayerZoneUpdateProcessor.Companion.ZONE_VIEW_RADIUS
 import org.rsmod.api.registry.loc.LocRegistry
 import org.rsmod.api.registry.loc.LocRegistryNormal
+import org.rsmod.game.entity.WorldEntityList
 import org.rsmod.api.registry.obj.ObjRegistry
 import org.rsmod.api.registry.zone.ZoneUpdateMap
 import org.rsmod.api.testing.GameTestState
@@ -47,7 +48,7 @@ class PlayerZoneUpdateProcessorTest {
     @Test
     fun GameTestState.`process zones in a new build area`() = runAdvancedGameTest {
         val parameters = createZoneProcess()
-        val buildProcessor = PlayerBuildAreaProcessor()
+        val buildProcessor = PlayerBuildAreaProcessor(WorldEntityList())
         val zoneProcessor = parameters.zoneProcessor
         val locZones = parameters.locZones
         val locRegistry = parameters.normalLocReg
@@ -148,7 +149,7 @@ class PlayerZoneUpdateProcessorTest {
     @Test
     fun GameTestState.`only send private obj to receiver`() = runAdvancedGameTest {
         val parameters = createZoneProcess()
-        val buildProcessor = PlayerBuildAreaProcessor()
+        val buildProcessor = PlayerBuildAreaProcessor(WorldEntityList())
         val zoneProcessor = parameters.zoneProcessor
         val zoneUpdateMap = parameters.zoneUpdateMap
         val objRegistry = parameters.objRegistry

@@ -1,6 +1,9 @@
 package org.rsmod.api.game.process.player
 
 import jakarta.inject.Inject
+import kotlin.math.abs
+import kotlin.math.max
+import kotlin.math.min
 import org.rsmod.api.config.Constants
 import org.rsmod.api.npc.isValidTarget
 import org.rsmod.api.player.clearInteractionRoute
@@ -23,6 +26,8 @@ import org.rsmod.api.route.BoundValidator
 import org.rsmod.api.route.RayCastValidator
 import org.rsmod.events.EventBus
 import org.rsmod.game.entity.Player
+import org.rsmod.game.entity.WorldEntity
+import org.rsmod.game.entity.WorldEntityList
 import org.rsmod.game.interact.Interaction
 import org.rsmod.game.interact.InteractionLoc
 import org.rsmod.game.interact.InteractionLocOp
@@ -34,12 +39,15 @@ import org.rsmod.game.interact.InteractionObj
 import org.rsmod.game.interact.InteractionPlayer
 import org.rsmod.game.interact.InteractionPlayerOp
 import org.rsmod.game.interact.InteractionPlayerT
+import org.rsmod.game.loc.BoundLocInfo
 import org.rsmod.game.movement.RouteRequestPathingEntity
 import org.rsmod.interact.InteractionStep
 import org.rsmod.interact.InteractionTarget
 import org.rsmod.interact.Interactions
 import org.rsmod.map.CoordGrid
 import org.rsmod.routefinder.flag.CollisionFlag
+
+private const val MAX_RIDDEN_OP_RANGE: Int = 8
 
 public class PlayerInteractionProcessor
 @Inject
@@ -58,6 +66,7 @@ constructor(
     private val playerTInteractions: PlayerTInteractions,
     private val protectedAccess: ProtectedAccessLauncher,
     private val movement: PlayerMovementProcessor,
+    private val worldEntities: WorldEntityList,
 ) {
     public fun process(player: Player) {
         // Store the current interaction at this stage to ensure that if an interaction triggers a
@@ -257,9 +266,25 @@ constructor(
             validApLine = isWithinApRange(interaction),
         )
 
-    private fun Player.isWithinOpRange(interaction: InteractionLoc): Boolean =
-        boundValidator.collides(source = avatar, target = interaction.target) ||
+    private fun Player.isWithinOpRange(interaction: InteractionLoc): Boolean {
+        val ridden = worldEntities.findAt(coords)
+        if (ridden != null && !ridden.contains(interaction.target.coords)) {
+            return isWithinRiddenOpRange(ridden, interaction.target)
+        }
+        return boundValidator.collides(source = avatar, target = interaction.target) ||
             boundValidator.touches(source = avatar, target = interaction.target)
+    }
+
+    private fun isWithinRiddenOpRange(ridden: WorldEntity, target: BoundLocInfo): Boolean {
+        val root = ridden.coords
+        if (root.level != target.level) {
+            return false
+        }
+        val nearestX = max(target.x, min(root.x, target.x + target.adjustedWidth - 1))
+        val nearestZ = max(target.z, min(root.z, target.z + target.adjustedLength - 1))
+        val distance = max(abs(root.x - nearestX), abs(root.z - nearestZ))
+        return distance <= MAX_RIDDEN_OP_RANGE
+    }
 
     private fun Player.isWithinApRange(interaction: InteractionLoc): Boolean =
         isValidApRange(
