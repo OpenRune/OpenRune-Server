@@ -36,14 +36,12 @@ import org.rsmod.plugin.scripts.ScriptContext
  */
 private const val INTERFACE = "interface.spawn_menu"
 
-/** Must stay in sync with `SpawnInterface.kt` (COLS * ROWS). */
-private const val SLOT_COUNT = 72
+/** Must stay in sync with `SpawnInterface.kt` (COLS * TOTAL_ROWS). */
+private const val SLOT_COUNT = 150
 
 private const val QTY_BUTTON_COUNT = 4
 private const val QTY_CUSTOM_INDEX = 3
 private val QTY_PRESETS = intArrayOf(1, 100, 1000)
-
-private const val COLOUR_ACTIVE = "00ff00"
 
 private class SpawnState {
     var quantity: Int = 1
@@ -71,10 +69,13 @@ class SpawnMenuScript @Inject constructor(private val protectedAccess: Protected
 
         onIfClose(INTERFACE) { states.remove(player) }
 
-        onIfModalButton("component.spawn_menu:searchbtn") { runSearch() }
+        // "searchbtn"/"qty$i" were removed - the quantity row and search control are now
+        // clickable text directly (matching how the real bank's own quantity row is built, see
+        // SpawnInterface.kt's comment), not a separate graphic button sitting behind the label.
+        onIfModalButton("component.spawn_menu:searchlbl") { runSearch() }
 
         for (i in 0 until QTY_BUTTON_COUNT) {
-            onIfModalButton("component.spawn_menu:qty$i") { selectQuantity(i) }
+            onIfModalButton("component.spawn_menu:qtylbl$i") { selectQuantity(i) }
         }
 
         for (i in 0 until SLOT_COUNT) {
@@ -201,8 +202,10 @@ class SpawnMenuScript @Inject constructor(private val protectedAccess: Protected
                     custom -> "X"
                     else -> QTY_PRESETS[i].toString()
                 }
-            val text = if (active) "<col=$COLOUR_ACTIVE>$label</col>" else label
-            ifSetText("component.spawn_menu:qtylbl$i", text)
+            // Active state is now shown by the red "qtyhl$i" box behind the text (matching real
+            // bank quantity buttons), not by recolouring the text itself.
+            ifSetText("component.spawn_menu:qtylbl$i", label)
+            ifSetHide("component.spawn_menu:qtyhl$i", !active)
         }
     }
 

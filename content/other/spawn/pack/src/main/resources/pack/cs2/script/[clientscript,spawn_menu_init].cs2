@@ -1,2 +1,6 @@
-[clientscript,spawn_menu_init](component $border)
+[clientscript,spawn_menu_init](component $border, component $grid, component $scrollbar)
+// 540 = GRID_CONTENT_HEIGHT in SpawnInterface.kt (TOTAL_ROWS * SLOT_PITCH = 15 * 36) - keep in sync
+// if either constant changes there.
 ~stoneborder($border, "Item Spawner", 0);
+if_setscrollsize(0, 540, $grid);
+~scrollbar_vertical($scrollbar, $grid, "scrollbar_dragger_v2,3", "scrollbar_dragger_v2,0", "scrollbar_dragger_v2,1", "scrollbar_dragger_v2,2", "scrollbar_v2,0", "scrollbar_v2,1");
