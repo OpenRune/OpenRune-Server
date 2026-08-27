@@ -1,0 +1,2 @@
+[clientscript,spawn_menu_init](component $border)
+~stoneborder($border, "Item Spawner", 0);

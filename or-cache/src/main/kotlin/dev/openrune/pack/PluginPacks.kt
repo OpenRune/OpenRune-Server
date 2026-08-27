@@ -1,7 +1,10 @@
 package dev.openrune.pack
 
+import dev.openrune.cache.tools.cs2.PackCs2
+import dev.openrune.cache.tools.cs2.UnpackDefaultCs2
 import dev.openrune.cache.tools.iftype.PackIfType
 import dev.openrune.cache.tools.tasks.CacheTask
+import dev.openrune.getCs2Location
 import dev.openrune.cache.tools.tasks.impl.PackDBTables
 import dev.openrune.cache.tools.tasks.impl.PackModels
 import dev.openrune.cache.tools.tasks.impl.PackSprites
@@ -42,8 +45,8 @@ class PluginPacks(val projectRoot: File, val all: List<PluginPack>) {
             tasks += PackIfType(interfaces)
         }
 
-        //Enable this for cs2
-        //tasks += PackCs2(getCs2Location())
+        tasks += UnpackDefaultCs2(getCs2Location(), null, false)
+        tasks += PackCs2(getCs2Location())
 
         val tables = baseTables + active.flatMap { it.dbTables() }
         tasks += PackDBTables(tables)
