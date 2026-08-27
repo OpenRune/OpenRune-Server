@@ -46,6 +46,7 @@ private val QTY_PRESETS = intArrayOf(1, 100, 1000)
 
 private class SpawnState {
     var quantity: Int = 1
+    var note: Boolean = false
     val slotItems: Array<ItemServerType?> = arrayOfNulls(SLOT_COUNT)
 }
 
@@ -78,6 +79,8 @@ class SpawnMenuScript @Inject constructor(private val protectedAccess: Protected
         for (i in 0 until QTY_BUTTON_COUNT) {
             onIfModalButton("component.spawn_menu:qtylbl$i") { selectQuantity(i) }
         }
+
+        onIfModalButton("component.spawn_menu:notelbl") { toggleNote() }
 
         for (i in 0 until SLOT_COUNT) {
             onIfModalButton("component.spawn_menu:slot$i") { spawnSlot(i) }
@@ -127,6 +130,7 @@ class SpawnMenuScript @Inject constructor(private val protectedAccess: Protected
         val state = state(player)
         ifOpenMainModal(INTERFACE)
         renderQuantityLabels(state)
+        renderNoteToggle(state)
         renderSlots(state)
         setStatus("Click Search to begin.")
     }
@@ -178,16 +182,42 @@ class SpawnMenuScript @Inject constructor(private val protectedAccess: Protected
         renderSlots(state)
     }
 
+    private fun ProtectedAccess.toggleNote() {
+        val state = state(player)
+        state.note = !state.note
+        renderNoteToggle(state)
+    }
+
     private fun ProtectedAccess.spawnSlot(index: Int) {
         val state = state(player)
         val item = state.slotItems[index] ?: return
-        val spawned = player.invAdd(player.inv, item.id, state.quantity, strict = false)
+
+        // Note mode: spawn the item's noted counterpart instead of the item itself. Mirrors real
+        // bank behaviour - not every item has one (`canCert` is the same check the bank itself
+        // uses, see ItemServerType.kt), and if it doesn't, say so and spawn nothing rather than
+        // silently falling back to the unnoted item.
+        val toSpawn =
+            if (state.note) {
+                if (!item.canCert) {
+                    player.mes("${item.name} cannot be noted.")
+                    return
+                }
+                ServerCacheManager.getItem(item.certlink)
+                    ?: run {
+                        player.mes("${item.name} cannot be noted.")
+                        return
+                    }
+            } else {
+                item
+            }
+
+        val spawned = player.invAdd(player.inv, toSpawn.id, state.quantity, strict = false)
         val completed = spawned.completed()
         if (completed <= 0) {
-            player.mes("You don't have enough inventory space for ${item.name}.")
+            player.mes("You don't have enough inventory space for ${toSpawn.name}.")
             return
         }
-        player.mes("Spawned ${item.name} x $completed.")
+        player.mes("Spawned ${toSpawn.name} x $completed.")
     }
 
     private fun ProtectedAccess.renderSlots(state: SpawnState) {
@@ -226,6 +256,10 @@ class SpawnMenuScript @Inject constructor(private val protectedAccess: Protected
             ifSetText("component.spawn_menu:qtylbl$i", label)
             ifSetHide("component.spawn_menu:qtyhl$i", !active)
         }
+    }
+
+    private fun ProtectedAccess.renderNoteToggle(state: SpawnState) {
+        ifSetHide("component.spawn_menu:notehl", !state.note)
     }
 
     private fun ProtectedAccess.setStatus(text: String) {

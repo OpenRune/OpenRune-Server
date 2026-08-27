@@ -96,6 +96,9 @@ const val GRID_CONTENT_HEIGHT = TOTAL_ROWS * SLOT_PITCH
 
 const val QTY_BUTTON_COUNT = 4
 
+/** Continues the same row/spacing rhythm as the QTY_BUTTON_COUNT quantity buttons (8 + i*52). */
+private const val NOTE_X = 8 + QTY_BUTTON_COUNT * 52
+
 private const val BLANK_SPRITE = 3023 // sprites.blank
 
 private const val COLOUR_TEXT = 0xffffff
@@ -142,12 +145,12 @@ fun buildSpawnMenuInterface() =
         // layer's OWN children consume indices before the next sibling layer's index, so this has
         // to be computed by walking the full declaration order, not assumed (a Python one-liner
         // walking the same order this file declares components in - see gamevals.toml's comment -
-        // not hand arithmetic). border=0, content=1 (+ 15 children: searchbg, searchlbl, qtybg0-3,
-        // qtyhl0-3, qtylbl0-3, status = indices 2-16), grid=17 (+ SLOT_COUNT children =
-        // 18..(18+SLOT_COUNT-1)), scrollbar=18+SLOT_COUNT.
+        // not hand arithmetic). border=0, content=1 (+ 18 children: searchbg, searchlbl, qtybg0-3,
+        // qtyhl0-3, qtylbl0-3, notebg, notehl, notelbl, status = indices 2-19), grid=20
+        // (+ SLOT_COUNT children = 21..(21+SLOT_COUNT-1)), scrollbar=21+SLOT_COUNT.
         fun comp(childIndex: Int) = (iface shl 16) or (childIndex + 1)
 
-        val gridChildIndex = 17
+        val gridChildIndex = 20
         val scrollbarChildIndex = gridChildIndex + 1 + SLOT_COUNT
 
         onLoadListener { arrayOf(initCs, comp(0), comp(gridChildIndex), comp(scrollbarChildIndex)) }
@@ -226,6 +229,37 @@ fun buildSpawnMenuInterface() =
                     addOption("Select")
                     events = CLICK_EVENTS
                 }
+            }
+
+            // Note-mode toggle - spawns the item's noted counterpart instead of the item itself
+            // when on. Same 3-layer bg/hl/lbl stack as the quantity buttons, just boolean instead
+            // of multi-value (one hl, toggled by whether note mode is currently on).
+            rectangle("notebg") {
+                position { NOTE_X to 28 }
+                size { 48 to 20 }
+                color(COLOUR_BOX)
+                filled { true }
+            }
+
+            rectangle("notehl") {
+                position { NOTE_X to 28 }
+                size { 48 to 20 }
+                color(COLOUR_ACTIVE)
+                filled { true }
+                hide { true }
+            }
+
+            text("notelbl") {
+                position { NOTE_X to 28 }
+                size { 48 to 20 }
+                display { "Note" }
+                font { FontType.FONT_REGULAR }
+                color(COLOUR_TEXT)
+                textShadowed { true }
+                xAllignment { 1 }
+                yAllignment { 1 }
+                addOption("Toggle")
+                events = CLICK_EVENTS
             }
 
             text("status") {
