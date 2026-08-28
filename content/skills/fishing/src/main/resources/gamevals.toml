@@ -1,0 +1,87 @@
+[gamevals.dbtable]
+fishing_spot =65477
+fishing_method =65476
+fishing_spot_def =65475
+
+[gamevals.queue]
+fishing_catch=65527
+
+[gamevals.enum]
+heron_pet_chance=65473
+tackle_box_storable=65472
+
+[gamevals.dbrow]
+fishing_raw_shrimps =63220
+fishing_raw_anchovies =63219
+fishing_raw_sardine =63218
+fishing_raw_herring =63217
+fishing_raw_trout =63216
+fishing_raw_salmon =63215
+fishing_raw_pike =63214
+fishing_raw_lobster =63213
+fishing_raw_tuna =63212
+fishing_raw_swordfish =63211
+fishing_raw_mackerel =63210
+fishing_raw_cod =63209
+fishing_raw_bass =63208
+fishing_raw_shark =63207
+fishing_raw_monkfish =63206
+fishing_raw_slimy_eel =63205
+fishing_raw_cave_eel =63204
+fishing_raw_lava_eel =63203
+fishing_raw_anglerfish =63202
+fishing_raw_dark_crab =63201
+fishing_raw_infernal_eel =63200
+fishing_raw_karambwanji =63199
+fishing_leaping_trout =63198
+fishing_leaping_salmon =63197
+fishing_leaping_sturgeon =63196
+fishing_minnow =63195
+fishing_raw_rainbow_fish =63194
+fishing_barehand_tuna =63193
+fishing_barehand_swordfish =63192
+fishing_barehand_shark =63191
+fishing_method_net =63190
+fishing_method_bait =63189
+fishing_method_lure =63188
+fishing_method_cage =63187
+fishing_method_harpoon =63186
+fishing_method_big_net =63185
+fishing_method_oily_rod =63184
+fishing_method_sandworm =63183
+fishing_method_dark_crab_cage =63182
+fishing_method_barbarian =63181
+fishing_method_barehand =63180
+fishing_spot_net_bait =63179
+fishing_spot_lure_bait =63178
+fishing_spot_cage_harpoon =63177
+fishing_spot_big_net_harpoon =63176
+fishing_spot_monkfish =63175
+fishing_spot_slimy_eel =63174
+fishing_spot_cave_eel =63173
+fishing_spot_lava_eel =63172
+fishing_spot_anglerfish =63171
+fishing_spot_dark_crab =63170
+fishing_spot_infernal_eel =63169
+fishing_spot_karambwanji =63168
+fishing_spot_barbarian =63167
+fishing_spot_minnow =63166
+
+[gamevals.content]
+net_bait_fishing_spot =65533
+lure_bait_fishing_spot =65532
+cage_harpoon_fishing_spot =65531
+big_net_harpoon_fishing_spot =65530
+monkfish_fishing_spot =65529
+slimy_eel_fishing_spot =65528
+cave_eel_fishing_spot =65527
+lava_eel_fishing_spot =65526
+anglerfish_fishing_spot =65525
+dark_crab_fishing_spot =65524
+infernal_eel_fishing_spot =65523
+karambwanji_fishing_spot =65522
+barbarian_fishing_spot =65521
+karambwan_fishing_spot =65520
+minnow_fishing_spot =65519
+minnow_rowboat_to_island =65518
+minnow_rowboat_to_guild =65517

@@ -1,0 +1,62 @@
+name: Content progress
+
+permissions:
+  contents: write
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "content/**"
+      - "osrs-dumps/**"
+      - "tools/progress/**"
+      - ".github/workflows/content-progress.yml"
+  # Weekly run also refreshes the wiki section cache.
+  schedule:
+    - cron: "0 8 * * 1"
+  workflow_dispatch:
+    inputs:
+      fetch_wiki:
+        description: "Refresh the wiki section cache"
+        required: false
+        type: boolean
+        default: false
+
+jobs:
+  report:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+        with:
+          # Needed so the generator can read per-module last-commit dates.
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      # Push builds run offline from the committed wiki cache; only the weekly
+      # run (or a manual dispatch) hits the wiki API.
+      - name: Build progress report
+        run: |
+          if [ "${{ github.event_name }}" = "schedule" ] || [ "${{ inputs.fetch_wiki }}" = "true" ]; then
+            node tools/progress/content-progress.mjs --fetch-wiki
+          else
+            node tools/progress/content-progress.mjs
+          fi
+
+      - name: Commit changes
+        run: |
+          if git diff --quiet -- README.md PROGRESS.md tools/progress/wiki-cache.json; then
+            echo "Progress report already up to date."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add README.md PROGRESS.md tools/progress/wiki-cache.json
+          git commit -m "chore: refresh content progress report"
+          git push

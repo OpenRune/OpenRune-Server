@@ -3,6 +3,7 @@ package org.rsmod.tools.mcp.wiki
 import dev.openrune.OsrsCacheProvider
 import dev.openrune.definition.type.ItemType
 import dev.openrune.definition.type.NpcType
+import dev.openrune.definition.util.CacheVarLiteral
 import dev.openrune.filesystem.Cache
 import java.lang.reflect.Modifier
 import java.nio.file.Files
@@ -132,6 +133,8 @@ class CacheTool {
         val cachePath = root.resolve(".data").resolve("cache").resolve(cacheKind.name)
         require(Files.isDirectory(cachePath)) { "Unable to find cache directory at: $cachePath" }
 
+        CacheVarLiteral.registerExternal(253, '[', name = "PROJANIM")
+        CacheVarLiteral.registerExternal(254, ']', name = "VARBIT")
         val cache = Cache.load(cachePath)
         try {
             val provider = OsrsCacheProvider(cache, revision)

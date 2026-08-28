@@ -1,0 +1,1684 @@
+{
+  "pages": {
+    "Attack": {
+      "sections": [
+        "Fighting accurately",
+        "Attack bonuses",
+        "Other Attack bonuses",
+        "Levels",
+        "Temporary boosts",
+        "Quests",
+        "Quests requiring Attack",
+        "Quests rewarding Attack experience",
+        "Diaries requiring Attack",
+        "Skill choice",
+        "Level up messages",
+        "See also"
+      ],
+      "image": "https://oldschool.runescape.wiki/images/Attack_icon.png?b4bce"
+    },
+    "Strength": {
+      "sections": [
+        "Combat",
+        "Fighting aggressively",
+        "Strength bonus",
+        "Other Strength bonuses",
+        "Levels",
+        "Temporary boosts",
+        "Quests",
+        "Quests requiring Strength",
+        "Quests rewarding Strength experience",
+        "Diaries requiring Strength",
+        "Skill choice",
+        "Level up messages",
+        "Changes",
+        "See also"
+      ],
+      "image": "https://oldschool.runescape.wiki/images/Strength_icon.png?e6e0c"
+    },
+    "Defence": {
+      "sections": [
+        "Mechanics",
+        "Equipment",
+        "Temporary boosts",
+        "Quests",
+        "Quests requiring Defence",
+        "Quests rewarding Defence experience",
+        "Diaries requiring Defence",
+        "Skill choice",
+        "Level up messages",
+        "Changes",
+        "Trivia",
+        "See also"
+      ],
+      "image": "https://oldschool.runescape.wiki/images/Defence_icon.png?ca0cd"
+    },
+    "Ranged": {
+      "sections": [
+        "Equipment",
+        "Stats",
+        "Weapons",
+        "Armour",
+        "Enchanted crossbow bolts",
+        "Temporary boosts",
+        "Quests",
+        "Quests requiring Ranged",
+        "Quests rewarding Ranged experience",
+        "Diaries requiring Ranged",
+        "Skill choice",
+        "Level up messages",
+        "Changes",
+        "See also"
+      ],
+      "image": "https://oldschool.runescape.wiki/images/Ranged_icon.png?01b0e"
+    },
+    "Hitpoints": {
+      "sections": [
+        "Types of damage",
+        "Fighting",
+        "Death",
+        "Recovering Hitpoints",
+        "Regeneration",
+        "Restoration",
+        "Healing from others",
+        "Life Leech",
+        "Overhealing",
+        "Losing Hitpoints",
+        "Self-inflicted damage",
+        "Scenery",
+        "Environment",
+        "Other",
+        "Earning experience",
+        "Temporary boosts",
+        "Quests",
+        "Quests requiring Hitpoints",
+        "Quests rewarding Hitpoints experience",
+        "Diaries requiring Hitpoints",
+        "Skill choice",
+        "Level up messages",
+        "Changes",
+        "Trivia",
+        "See also"
+      ],
+      "image": "https://oldschool.runescape.wiki/images/Hitpoints_icon.png?a4819"
+    },
+    "Magic": {
+      "sections": [
+        "Spells",
+        "Combat spells",
+        "Teleport spells",
+        "Utility spells",
+        "Spellbooks",
+        "Standard spellbook",
+        "Arceuus spellbook",
+        "Ancient Magicks",
+        "Lunar spellbook",
+        "Equipment",
+        "Runes",
+        "Magic weapons",
+        "Magic armour and robes",
+        "Combat",
+        "Monster Magic defence",
+        "Magic accuracy",
+        "Elemental weaknesses",
+        "Activities and locations",
+        "Training Magic",
+        "Temporary boosts",
+        "Quests",
+        "Quests requiring Magic",
+        "Quests rewarding Magic experience",
+        "Diaries requiring Magic",
+        "Skill choice",
+        "Level up messages",
+        "Changes",
+        "Trivia",
+        "See also",
+        "References"
+      ],
+      "image": "https://oldschool.runescape.wiki/images/Magic_icon.png?334cf"
+    },
+    "Prayer": {
+      "sections": [
+        "Prayer points",
+        "Recharging points",
+        "Consumables",
+        "Spells",
+        "Equipable items",
+        "Interactive scenery",
+        "Area effects",
+        "Prayers list",
+        "Conflicting prayers",
+        "Prayer drain",
+        "Prayer drain mechanics",
+        "Quick prayers",
+        "Prayer filtering",
+        "Prayer flicking",
+        "How to prayer flick",
+        "1-tick prayer flicking",
+        "Equipment that affects Prayer",
+        "Special attacks",
+        "Passive/set effects",
+        "Spells",
+        "Automation",
+        "Miscellaneous",
+        "Monsters that use Prayer",
+        "Temporary boosts",
+        "Quests",
+        "Quests requiring Prayer",
+        "Quests rewarding Prayer experience",
+        "Diaries Requiring Prayer",
+        "Skill choice",
+        "Other Prayer experience rewards",
+        "Level up messages",
+        "Changes",
+        "Trivia",
+        "See also",
+        "References"
+      ],
+      "image": "https://oldschool.runescape.wiki/images/Prayer_icon.png?7e70b"
+    },
+    "Runecraft": {
+      "sections": [
+        "Crafting runes",
+        "Essence",
+        "Rune essence",
+        "Pure essence",
+        "Daeyalt essence",
+        "Dark essence fragments",
+        "Blood essence",
+        "Cores",
+        "Talismans",
+        "Elemental and Catalytic talismans",
+        "Talisman tiaras",
+        "Essence pouches",
+        "Other equipment",
+        "Altars",
+        "Regular altars",
+        "Kourend Blood and Soul Altars",
+        "Ourania Altar",
+        "Abyss",
+        "Official worlds",
+        "Multiple runes",
+        "Runic extracts",
+        "Combination runes",
+        "Infusing",
+        "Runecraft pet",
+        "Temporary boosts",
+        "Quests",
+        "Quests requiring Runecraft",
+        "Quests rewarding Runecraft experience",
+        "Diaries requiring Runecraft",
+        "Skill choice",
+        "Level up messages",
+        "Changes",
+        "See also"
+      ],
+      "image": "https://oldschool.runescape.wiki/images/Runecraft_icon.png?c278c"
+    },
+    "Slayer": {
+      "sections": [
+        "Introduction",
+        "Slayer Masters",
+        "Slayer equipment",
+        "Slayer monsters",
+        "Where to slay monsters",
+        "Boss Slayer",
+        "Slayer Partners",
+        "Receiving a Task",
+        "Completing a Task",
+        "Slayer reward points",
+        "Temporary boosts",
+        "Quests",
+        "Quests requiring Slayer",
+        "Quests rewarding Slayer experience",
+        "Diaries requiring Slayer",
+        "Skill choice",
+        "Level up messages",
+        "Changes",
+        "See also"
+      ],
+      "image": "https://oldschool.runescape.wiki/images/Slayer_icon.png?cd34f"
+    },
+    "Mining": {
+      "sections": [
+        "How to mine",
+        "Pickaxes",
+        "Other equipment",
+        "Mineable items",
+        "Gems",
+        "Clue geodes",
+        "Other",
+        "Mines",
+        "Special mining areas and activities",
+        "Mining Guild",
+        "Motherlode Mine",
+        "Blast mine",
+        "Coal Trucks",
+        "Trahaearn mine",
+        "Volcanic mine",
+        "Shooting stars",
+        "Zalcano",
+        "Digsite",
+        "Wyrmscraig Mine",
+        "Cam Torum Mine",
+        "Ruins of Camdozaal",
+        "Other uses",
+        "Tips",
+        "Power-mining",
+        "Mining gloves",
+        "Reduce total weight",
+        "Switch worlds",
+        "Mining pet",
+        "Temporary boosts",
+        "Quests",
+        "Quests requiring Mining",
+        "Quests rewarding Mining experience",
+        "Diaries requiring Mining",
+        "Skill choice",
+        "Level up messages",
+        "Changes",
+        "See also",
+        "References"
+      ],
+      "image": "https://oldschool.runescape.wiki/images/Mining_icon.png?00870"
+    },
+    "Smithing": {
+      "sections": [
+        "Smelting",
+        "Smelting using Magic",
+        "Success rate",
+        "Bar chart",
+        "Smithing",
+        "Smithing tables",
+        "Crystal singing",
+        "Minigames",
+        "Other smithing activities",
+        "Smithing equipment and tools",
+        "Smelting and Smithing tips",
+        "Making money",
+        "High Level Alchemy table",
+        "Temporary boosts",
+        "Quests",
+        "Quests requiring Smithing",
+        "Quests rewarding Smithing experience",
+        "Achievement Diaries requiring Smithing",
+        "Skill choice",
+        "Level up messages",
+        "Changes",
+        "Trivia",
+        "See also"
+      ],
+      "image": "https://oldschool.runescape.wiki/images/Smithing_icon.png?d26c5"
+    },
+    "Woodcutting": {
+      "sections": [
+        "Types of trees",
+        "Trees chopped in quests and minigames",
+        "Logs",
+        "Normal logs",
+        "Hardwood logs",
+        "Other logs",
+        "Special logs",
+        "Equipment",
+        "Axes",
+        "Felling axes",
+        "Other",
+        "Mechanics",
+        "Bird nests (Members only)",
+        "Special Woodcutting locations and activities",
+        "Woodcutting Guild",
+        "Forestry",
+        "Canoes",
+        "Tai Bwo Wannai Cleanup",
+        "Prifddinas",
+        "Ents",
+        "Farmable trees",
+        "Obstacles",
+        "Other",
+        "Woodcutting pet",
+        "Temporary boosts",
+        "Quests",
+        "Quests requiring Woodcutting",
+        "Quests rewarding Woodcutting experience",
+        "Diaries requiring Woodcutting",
+        "Skill choice",
+        "Level up messages",
+        "Changes",
+        "Trivia",
+        "See also",
+        "References"
+      ],
+      "image": "https://oldschool.runescape.wiki/images/Woodcutting_icon.png?6ead4"
+    },
+    "Firemaking": {
+      "sections": [
+        "Making fires",
+        "Forester's Campfire",
+        "List of combustible logs",
+        "Pyre logs",
+        "Barbarian Firemaking",
+        "Bow firemaking",
+        "Pyre ships",
+        "Torches, candles, and lanterns",
+        "Abyssal lantern",
+        "Balloons",
+        "Fire pits",
+        "Success chance",
+        "Temporary boosts",
+        "Quests",
+        "Quests requiring Firemaking",
+        "Quests rewarding Firemaking experience",
+        "Diaries requiring Firemaking",
+        "Skill choice",
+        "Level up messages",
+        "Changes",
+        "See also",
+        "References"
+      ],
+      "image": "https://oldschool.runescape.wiki/images/Firemaking_icon.png?45ea0"
+    },
+    "Cooking": {
+      "sections": [
+        "How to cook",
+        "Burning food",
+        "Items needed",
+        "Types of food",
+        "Meat / fish",
+        "Bread",
+        "Pies",
+        "Stews",
+        "Pizzas",
+        "Cakes",
+        "Wine",
+        "Hot drinks",
+        "Vegetables",
+        "Dairy",
+        "Kebabs",
+        "Brewing",
+        "Gnome cooking",
+        "2-tick cooking",
+        "Temporary boosts",
+        "Quests",
+        "Quests requiring Cooking",
+        "Quests rewarding Cooking experience",
+        "Diaries Requiring Cooking",
+        "Skill choice",
+        "Level up messages",
+        "See also"
+      ],
+      "image": "https://oldschool.runescape.wiki/images/Cooking_icon.png?a0156"
+    },
+    "Herblore": {
+      "sections": [
+        "Requirements",
+        "Training activities",
+        "Cleaning herbs &amp; unfinished potions",
+        "Potions",
+        "Herbed tar",
+        "Other",
+        "Barbarian Mixes",
+        "Ingredient Processing",
+        "Mastering Mixology",
+        "Temporary boosts",
+        "Quests",
+        "Quests requiring Herblore",
+        "Quests rewarding Herblore experience",
+        "Diaries requiring Herblore",
+        "Skill choice",
+        "Level up messages",
+        "Changes",
+        "Trivia",
+        "See also",
+        "References"
+      ],
+      "image": "https://oldschool.runescape.wiki/images/Herblore_icon.png?ffa9e"
+    },
+    "Fishing": {
+      "sections": [
+        "Fish",
+        "Clue in a bottle",
+        "Fishing methods",
+        "Equipment",
+        "Fishing shops",
+        "Nets",
+        "Fishing rods and bait",
+        "Fly fishing rods and feathers",
+        "Harpoon",
+        "Lobster pots",
+        "Cormorant's glove",
+        "Drift Nets",
+        "Karambwan vessels",
+        "Barbarian Fishing",
+        "Deep sea trawling",
+        "Other Equipment",
+        "Rada's blessing",
+        "Spirit flakes",
+        "Diabolic Worms",
+        "Shark Lures",
+        "Utility equipment",
+        "Underwater equipment",
+        "Angler's outfit",
+        "Fishing spots",
+        "Net and bait fishing spots",
+        "Lure and bait fishing spots",
+        "Big net fishing spots",
+        "Harpoon &amp; Lobster Pot fishing spots",
+        "Lantern harpooning spots",
+        "Other fishing spots",
+        "Static fishing spots",
+        "Fishing Trawler",
+        "Tempoross",
+        "Fishing pets",
+        "Temporary boosts",
+        "Quests",
+        "Quests requiring Fishing",
+        "Quests rewarding Fishing experience",
+        "Diaries requiring Fishing",
+        "Skill choice",
+        "Level up messages",
+        "Changes",
+        "See also"
+      ],
+      "image": "https://oldschool.runescape.wiki/images/Fishing_icon.png?15a98"
+    },
+    "Agility": {
+      "sections": [
+        "Run energy",
+        "Agility training areas",
+        "Failure",
+        "Stamina",
+        "Full list",
+        "Regular courses",
+        "Gnome Stronghold Agility Course",
+        "Shayzien Agility Course",
+        "Penguin Agility Course",
+        "Barbarian Outpost Agility Course",
+        "Ape Atoll Agility Course",
+        "Wilderness Agility Course",
+        "Colossal Wyrm Agility Course",
+        "Werewolf Agility Course",
+        "Prifddinas Agility Course",
+        "Rooftop Agility courses",
+        "Other courses",
+        "Brimhaven Agility Arena",
+        "Agility Pyramid",
+        "Dorgesh-Kaan",
+        "Hallowed Sepulchre",
+        "Other training methods",
+        "Barbarian Fishing",
+        "Blast Furnace",
+        "Gnome Ball",
+        "Toy mouse",
+        "Underwater Agility and Thieving",
+        "Werewolf Skullball",
+        "Wintertodt Pillars",
+        "Shortcuts",
+        "Other",
+        "Official worlds",
+        "Giant squirrel pet",
+        "Temporary boosts",
+        "Quests",
+        "Quests requiring Agility",
+        "Quests rewarding Agility experience",
+        "Diaries requiring Agility",
+        "Skill choice",
+        "Level up messages",
+        "Changes",
+        "Trivia",
+        "See also",
+        "References"
+      ],
+      "image": "https://oldschool.runescape.wiki/images/Agility_icon.png?389e0"
+    },
+    "Thieving": {
+      "sections": [
+        "Pickpocketing",
+        "Equipment",
+        "Other effects",
+        "Thievable NPCs",
+        "Stalls",
+        "Thievable stalls",
+        "Chests",
+        "Thievable chests",
+        "Doors",
+        "Pickable doors",
+        "Other",
+        "Training strategies",
+        "Thieving minigames",
+        "Thieving pet",
+        "Temporary boosts",
+        "Quests",
+        "Quests requiring Thieving",
+        "Quests rewarding Thieving experience",
+        "Diaries requiring Thieving",
+        "Skill choice",
+        "Level up messages",
+        "Changes",
+        "Trivia",
+        "See also"
+      ],
+      "image": "https://oldschool.runescape.wiki/images/Thieving_icon.png?973fe"
+    },
+    "Crafting": {
+      "sections": [
+        "Spinning",
+        "Weaving",
+        "Pottery",
+        "Armour",
+        "Leather",
+        "Dragonhides",
+        "Snakeskin",
+        "Yak hide",
+        "Snelms",
+        "Crab armour",
+        "Xerician robes",
+        "Splitbark armour",
+        "Mixed hide armour",
+        "Hueycoatl hide armour",
+        "Glass",
+        "Locations",
+        "Stills and oil lamps",
+        "Jewellery",
+        "Gems",
+        "Silver jewellery",
+        "Gold jewellery",
+        "Weaponry",
+        "Battlestaves and silver bolts",
+        "Amethyst",
+        "Silver",
+        "Birdhouses",
+        "Crystal singing",
+        "Golem Crafting",
+        "Temporary boosts",
+        "Quests",
+        "Quests requiring Crafting",
+        "Quests rewarding Crafting experience",
+        "Diaries requiring Crafting",
+        "Skill choice",
+        "Level up messages",
+        "Changes",
+        "Trivia",
+        "See also"
+      ],
+      "image": "https://oldschool.runescape.wiki/images/Crafting_icon.png?a1f71"
+    },
+    "Fletching": {
+      "sections": [
+        "Materials used",
+        "General",
+        "Making weapons",
+        "Making projectiles",
+        "Making the items",
+        "Weapons",
+        "Shields",
+        "Projectiles",
+        "Training",
+        "Temporary boosts",
+        "Quests",
+        "Quests requiring Fletching",
+        "Quests rewarding Fletching experience",
+        "Diaries requiring Fletching",
+        "Skill choice",
+        "Level up messages",
+        "Changes",
+        "Trivia",
+        "See also"
+      ],
+      "image": "https://oldschool.runescape.wiki/images/Fletching_icon.png?15cda"
+    },
+    "Construction": {
+      "sections": [
+        "How to start training Construction",
+        "Buying a house",
+        "How to get to your house",
+        "How to build in your house",
+        "Materials",
+        "Equipment",
+        "Carpenter's outfit",
+        "Tools",
+        "Tips and tricks",
+        "Servants",
+        "Phials for unnoting",
+        "Training methods",
+        "Mahogany Homes",
+        "Notable milestones",
+        "Rooms",
+        "POH locations",
+        "Teleports",
+        "Pool",
+        "Spellbook altar",
+        "Shipbuilding",
+        "Miscellaneous",
+        "Cape of accomplishment",
+        "STASH units",
+        "Chambers of Xeric",
+        "Temporary boosts",
+        "Quests",
+        "Quests requiring Construction",
+        "Quests rewarding Construction experience",
+        "Diaries requiring Construction",
+        "Skill choice",
+        "Level up messages",
+        "Changes",
+        "Trivia",
+        "See also",
+        "References"
+      ],
+      "image": "https://oldschool.runescape.wiki/images/Construction_icon.png?f9bf7"
+    },
+    "Farming": {
+      "sections": [
+        "General overview",
+        "Compost",
+        "Obtaining seeds",
+        "Growth and disease",
+        "Farming equipment",
+        "Tools",
+        "Magic secateurs",
+        "Farmer's outfit",
+        "Amulet of nature",
+        "Other",
+        "Seeds",
+        "Disease, payment, compost, and watering",
+        "Reducing disease risk",
+        "Eliminating disease risk",
+        "Compost",
+        "Crop types",
+        "Allotment, flower, and herb",
+        "Hops",
+        "Bushes",
+        "Trees",
+        "Fruit trees",
+        "Special patches",
+        "Farming Guild",
+        "Farming contracts",
+        "Hespori patch",
+        "Barbarian Farming",
+        "Tithe Farm",
+        "Requirements",
+        "Rewards",
+        "Mechanics",
+        "Growth timing",
+        "Variable crop yield",
+        "Average yield per crop type",
+        "Farming pet",
+        "Temporary boosts",
+        "Quests",
+        "Quests requiring Farming",
+        "Quests rewarding Farming experience",
+        "Diaries requiring Farming",
+        "Skill choice",
+        "Level up messages",
+        "Changes",
+        "Trivia",
+        "See also",
+        "References"
+      ],
+      "image": "https://oldschool.runescape.wiki/images/Farming_icon.png?558fa"
+    },
+    "Hunter": {
+      "sections": [
+        "Hunting techniques",
+        "Aerial fishing",
+        "Bird house trapping",
+        "Bird snaring",
+        "Box trapping",
+        "Butterfly netting",
+        "Crab trapping",
+        "Deadfall trapping",
+        "Drift net fishing",
+        "Falconry",
+        "Goat Hunting",
+        "Net trapping",
+        "Magic box trapping",
+        "Pitfall trapping",
+        "Rabbit snaring",
+        "Tracking",
+        "Hunter areas",
+        "Miscellaneous",
+        "Bait and smoking traps",
+        "Multiple traps",
+        "Hunter shops",
+        "Hunter Guild &amp; Hunters' Rumours",
+        "Hunter spell",
+        "Hunter crossbow",
+        "Hunter and camouflage clothing",
+        "Storage items",
+        "Hunter pets",
+        "Baby chinchompa",
+        "Herbi",
+        "Quetzin",
+        "Mr McGroot",
+        "Temporary boosts",
+        "Quests",
+        "Quests requiring Hunter",
+        "Quests rewarding Hunter experience",
+        "Diaries requiring Hunter",
+        "Skill choice",
+        "Level up messages",
+        "Changes",
+        "Trivia",
+        "See also",
+        "References"
+      ],
+      "image": "https://oldschool.runescape.wiki/images/Hunter_icon.png?8762f"
+    },
+    "Barrows": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Barrows_minigame.png/48px-Barrows_minigame.png?f7aaf"
+    },
+    "Black Knight Titan": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Black_Knight_Titan.png/48px-Black_Knight_Titan.png?69152"
+    },
+    "Agrith Naar": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Agrith_Naar.png/48px-Agrith_Naar.png?fcbf6"
+    },
+    "Chaos Elemental": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Chaos_Elemental.png/48px-Chaos_Elemental.png?c170c"
+    },
+    "Black demon": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Black_demon.png/48px-Black_demon.png?5ecf8"
+    },
+    "Ahrim the Blighted": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Ahrim_the_Blighted.png/48px-Ahrim_the_Blighted.png?33092"
+    },
+    "Chronozon": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Chronozon.png/48px-Chronozon.png?5ecf8"
+    },
+    "Dagannoth Kings": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Fighting_Dagannoth_Kings.png/48px-Fighting_Dagannoth_Kings.png?7a1a7"
+    },
+    "Dagannoth Rex": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Dagannoth_Rex.png/48px-Dagannoth_Rex.png?a99a9"
+    },
+    "Barrows brothers": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Karil_the_Tainted.png/48px-Karil_the_Tainted.png?33092"
+    },
+    "Culinaromancer": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Culinaromancer.png/48px-Culinaromancer.png?1076b"
+    },
+    "Count Draynor": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Count_Draynor.png/48px-Count_Draynor.png?95156"
+    },
+    "Agrith-Na-Na": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Agrith-Na-Na.png/48px-Agrith-Na-Na.png?9d9fc"
+    },
+    "Dagannoth Supreme": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Dagannoth_Supreme.png/48px-Dagannoth_Supreme.png?81f00"
+    },
+    "Dagannoth Prime": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Dagannoth_Prime.png/48px-Dagannoth_Prime.png?945b1"
+    },
+    "Damis": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Damis_first_form.png/48px-Damis_first_form.png?ee7b6"
+    },
+    "Bouncer": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Bouncer.png/48px-Bouncer.png?4de03"
+    },
+    "Dagannoth mother": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Dagannoth_mother_white.png/48px-Dagannoth_mother_white.png?945b1"
+    },
+    "Barrelchest": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Barrelchest.png/48px-Barrelchest.png?b2ae4"
+    },
+    "Commander Zilyana": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Commander_Zilyana.png/48px-Commander_Zilyana.png?c5eaa"
+    },
+    "Dad": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Dad.png/48px-Dad.png?18a30"
+    },
+    "Arrg": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Arrg.png/48px-Arrg.png?2e0cb"
+    },
+    "Arzinian Being of Bordanzan": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Arzinian_Being_of_Bordanzan.png/48px-Arzinian_Being_of_Bordanzan.png?3e89e"
+    },
+    "Boss": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Boss.png/48px-Boss.png?d025d"
+    },
+    "Callisto": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Callisto.png/48px-Callisto.png?bfba7"
+    },
+    "Crazy archaeologist": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Crazy_archaeologist.png/48px-Crazy_archaeologist.png?3ecc9"
+    },
+    "Chaos Fanatic": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Chaos_Fanatic.png/48px-Chaos_Fanatic.png?8871d"
+    },
+    "Bouncer (ghost)": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Bouncer_%28ghost%29.png/48px-Bouncer_%28ghost%29.png?756db"
+    },
+    "Corporeal Beast": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Corporeal_Beast.png/48px-Corporeal_Beast.png?52ebb"
+    },
+    "Black golem": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Black_golem.png/48px-Black_golem.png?c78b3"
+    },
+    "Cerberus": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Cerberus.png/48px-Cerberus.png?47f4c"
+    },
+    "Abyssal Sire": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Abyssal_Sire_%28phase_1%29.png/48px-Abyssal_Sire_%28phase_1%29.png?0db8f"
+    },
+    "Arzinian Avatar of Magic": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Arzinian_Avatar_of_Magic.png/48px-Arzinian_Avatar_of_Magic.png?3ca7b"
+    },
+    "Arzinian Avatar of Ranging": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Arzinian_Avatar_of_Ranging.png/48px-Arzinian_Avatar_of_Ranging.png?c3678"
+    },
+    "Arzinian Avatar of Strength": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Arzinian_Avatar_of_Strength.png/48px-Arzinian_Avatar_of_Strength.png?c3678"
+    },
+    "Bryophyta": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Bryophyta.png/48px-Bryophyta.png?08bc8"
+    },
+    "Alchemical Hydra": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Alchemical_Hydra_%28serpentine%29.png/48px-Alchemical_Hydra_%28serpentine%29.png?925dd"
+    },
+    "Crystalline Hunllef": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Crystalline_Hunllef.png/48px-Crystalline_Hunllef.png?7737a"
+    },
+    "Corrupted Hunllef": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Corrupted_Hunllef.png/48px-Corrupted_Hunllef.png?0cd55"
+    },
+    "Ba-Ba": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Ba-Ba.png/48px-Ba-Ba.png?648d9"
+    },
+    "Akkha": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Akkha.png/48px-Akkha.png?09042"
+    },
+    "Artio": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Artio.png/48px-Artio.png?bfba7"
+    },
+    "Calvar'ion": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Calvar%27ion.png/48px-Calvar%27ion.png?6268f"
+    },
+    "Boss kill count": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Combat_Achievements_-_boss_overview.png/48px-Combat_Achievements_-_boss_overview.png?07faf"
+    },
+    "Araxxor": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Araxxor.png/48px-Araxxor.png?35d2e"
+    },
+    "Blue Moon": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Blue_Moon.png/48px-Blue_Moon.png?c3e72"
+    },
+    "Blood Moon": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Blood_Moon.png/48px-Blood_Moon.png?c3e72"
+    },
+    "Amoxliatl": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Amoxliatl.png/48px-Amoxliatl.png?01b12"
+    },
+    "Branda the Fire Queen": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Branda_the_Fire_Queen.png/48px-Branda_the_Fire_Queen.png?0687c"
+    },
+    "Brutus": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Brutus.png/48px-Brutus.png?eda9e"
+    },
+    "King Black Dragon": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/King_Black_Dragon.png/48px-King_Black_Dragon.png?d25f0"
+    },
+    "Elvarg": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Elvarg.png/48px-Elvarg.png?336d5"
+    },
+    "Giant Mole": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Giant_Mole.png/48px-Giant_Mole.png?3f58a"
+    },
+    "Kalphite Queen": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Kalphite_Queen.png/48px-Kalphite_Queen.png?a4955"
+    },
+    "Delrith": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Delrith.png/48px-Delrith.png?ceece"
+    },
+    "Dharok the Wretched": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Dharok_the_Wretched.png/48px-Dharok_the_Wretched.png?33092"
+    },
+    "Guthan the Infested": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Guthan_the_Infested.png/48px-Guthan_the_Infested.png?33092"
+    },
+    "Karil the Tainted": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Karil_the_Tainted.png/48px-Karil_the_Tainted.png?33092"
+    },
+    "Flambeed": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Flambeed.png/48px-Flambeed.png?7ad3e"
+    },
+    "Jungle Demon": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Jungle_Demon.png/48px-Jungle_Demon.png?b44f3"
+    },
+    "Glough": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Glough.png/48px-Glough.png?81044"
+    },
+    "Fareed": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Fareed.png/48px-Fareed.png?537e7"
+    },
+    "Koschei the deathless": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Koschei_the_deathless.png/48px-Koschei_the_deathless.png?37d97"
+    },
+    "Karamel": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Karamel.png/48px-Karamel.png?f69b4"
+    },
+    "Kamil": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Kamil.png/48px-Kamil.png?68693"
+    },
+    "General Khazard": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/General_Khazard.png/48px-General_Khazard.png?15c61"
+    },
+    "Dessous": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Dessous.png/48px-Dessous.png?bd2c8"
+    },
+    "Gadderanks": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Gadderanks.png/48px-Gadderanks.png?63d5a"
+    },
+    "Lowerniel Drakan": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Lowerniel_Drakan_%28The_Blood_Moon_Rises%2C_final_battle%29.png/48px-Lowerniel_Drakan_%28The_Blood_Moon_Rises%2C_final_battle%29.png?ece55"
+    },
+    "K'ril Tsutsaroth": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/K%27ril_Tsutsaroth.png/48px-K%27ril_Tsutsaroth.png?73bda"
+    },
+    "Dessourt": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Dessourt.png/48px-Dessourt.png?c2392"
+    },
+    "Kree'arra": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Kree%27arra.png/48px-Kree%27arra.png?ba75c"
+    },
+    "General Graardor": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/General_Graardor.png/48px-General_Graardor.png?4dd90"
+    },
+    "Ice Troll King": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Ice_Troll_King.png/48px-Ice_Troll_King.png?a972f"
+    },
+    "Glod": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Glod.png/48px-Glod.png?1c57f"
+    },
+    "Gelatinnoth Mother": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Gelatinnoth_Mother_%28air%29.png/48px-Gelatinnoth_Mother_%28air%29.png?97725"
+    },
+    "Giant Roc": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Giant_Roc.png/48px-Giant_Roc.png?bd2c8"
+    },
+    "Giant Scarab": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Giant_Scarab.png/48px-Giant_Scarab.png?bd2c8"
+    },
+    "Giant Sea Snake": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Giant_Sea_Snake.png/48px-Giant_Sea_Snake.png?3f58a"
+    },
+    "Kraken": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Kraken.png/48px-Kraken.png?a4955"
+    },
+    "Evil spirit": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Evil_spirit.png/48px-Evil_spirit.png?40157"
+    },
+    "Grey golem": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Grey_golem.png/48px-Grey_golem.png?bf998"
+    },
+    "Great Olm": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Great_Olm.png/48px-Great_Olm.png?f1081"
+    },
+    "Ice demon": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Ice_demon.png/48px-Ice_demon.png?c9bce"
+    },
+    "Deranged archaeologist": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Deranged_archaeologist.png/48px-Deranged_archaeologist.png?32c7e"
+    },
+    "Grotesque Guardians": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Dawn.png/48px-Dawn.png?8b8ea"
+    },
+    "Dawn": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Dawn.png/48px-Dawn.png?8b8ea"
+    },
+    "Dusk": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Dusk.png/48px-Dusk.png?2d6f0"
+    },
+    "Galvek": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Galvek.png/48px-Galvek.png?5cca4"
+    },
+    "Hespori": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Hespori.png/48px-Hespori.png?83c72"
+    },
+    "Judge of Yama (A Kingdom Divided)": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Judge_of_Yama.png/48px-Judge_of_Yama.png?02e2b"
+    },
+    "Kephri": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Kephri.png/48px-Kephri.png?4c3cd"
+    },
+    "Elidinis' Warden": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Elidinis%27_Warden.png/48px-Elidinis%27_Warden.png?c9f68"
+    },
+    "Duke Sucellus": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Duke_Sucellus.png/48px-Duke_Sucellus.png?d588a"
+    },
+    "Eclipse Moon": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Eclipse_Moon.png/48px-Eclipse_Moon.png?c3e72"
+    },
+    "Doom of Mokhaiotl": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Doom_of_Mokhaiotl.png/48px-Doom_of_Mokhaiotl.png?e5edb"
+    },
+    "Eldric the Ice King": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Eldric_the_Ice_King.png/48px-Eldric_the_Ice_King.png?6bd48"
+    },
+    "Gemstone Crab": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Gemstone_Crab.png/48px-Gemstone_Crab.png?79415"
+    },
+    "Demonic Brutus": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Demonic_Brutus.png/48px-Demonic_Brutus.png?eda9e"
+    },
+    "Mad Angel": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Mad_Angel.webp/48px-Mad_Angel.webp?c7990"
+    },
+    "The Inadequacy": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/The_Inadequacy.png/48px-The_Inadequacy.png?1eaf1"
+    },
+    "Torag the Corrupted": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Torag_the_Corrupted.png/48px-Torag_the_Corrupted.png?33092"
+    },
+    "Penance Queen": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Penance_Queen.png/48px-Penance_Queen.png?56343"
+    },
+    "Sigmund": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Sigmund.png/48px-Sigmund.png?00361"
+    },
+    "Tolna": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Tolna_%28boy%29.png/48px-Tolna_%28boy%29.png?0e3b5"
+    },
+    "Salarin the twisted": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Salarin_the_twisted.png/48px-Salarin_the_twisted.png?079fa"
+    },
+    "Melzar the Mad": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Melzar_the_Mad.png/48px-Melzar_the_Mad.png?b3424"
+    },
+    "Slagilith": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Slagilith.png/48px-Slagilith.png?dc8b8"
+    },
+    "Sir Mordred": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Sir_Mordred.png/48px-Sir_Mordred.png?e2886"
+    },
+    "The Draugen": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/The_Draugen.png/48px-The_Draugen.png?74e5c"
+    },
+    "Slug Prince": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Slug_Prince.png/48px-Slug_Prince.png?9805c"
+    },
+    "Tarn": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Mutant_tarn.png/48px-Mutant_tarn.png?658b7"
+    },
+    "Me": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Me.png/48px-Me.png?65f08"
+    },
+    "Slash Bash": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Slash_Bash.png/48px-Slash_Bash.png?ec9d3"
+    },
+    "Tree spirit (Lost City)": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Tree_spirit_%28Lost_City%29.png/48px-Tree_spirit_%28Lost_City%29.png?2446d"
+    },
+    "Nezikchened": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Nezikchened.png/48px-Nezikchened.png?8ee94"
+    },
+    "Sea Troll Queen": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Sea_Troll_Queen.png/48px-Sea_Troll_Queen.png?c0777"
+    },
+    "The Everlasting": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/The_Everlasting.png/48px-The_Everlasting.png?52537"
+    },
+    "The Untouchable": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/The_Untouchable.png/48px-The_Untouchable.png?dc69e"
+    },
+    "The Illusive": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Cyrisus_steps_on_The_Illusive.gif/48px-Cyrisus_steps_on_The_Illusive.gif?1ecf1"
+    },
+    "Scorpia": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Scorpia.png/48px-Scorpia.png?517c9"
+    },
+    "Thermonuclear smoke devil": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Thermonuclear_smoke_devil.png/48px-Thermonuclear_smoke_devil.png?de858"
+    },
+    "Moss Guardian": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Moss_Guardian.png/48px-Moss_Guardian.png?a1e47"
+    },
+    "Nex": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Nex.png/48px-Nex.png?2a1b3"
+    },
+    "Sir Leye": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Sir_Leye.png/48px-Sir_Leye.png?bf298"
+    },
+    "Skotizo": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Skotizo.png/48px-Skotizo.png?dc8b8"
+    },
+    "Obor": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Obor.png/48px-Obor.png?08bc8"
+    },
+    "Tekton": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Tekton.png/48px-Tekton.png?a32ab"
+    },
+    "Muttadile": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Muttadile.png/48px-Muttadile.png?55798"
+    },
+    "Sotetseg": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Sotetseg.png/48px-Sotetseg.png?61151"
+    },
+    "The Maiden of Sugadinti": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/The_Maiden_of_Sugadinti.png/48px-The_Maiden_of_Sugadinti.png?c69d5"
+    },
+    "Pestilent Bloat": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Pestilent_Bloat.png/48px-Pestilent_Bloat.png?b1ab7"
+    },
+    "Nylocas Vasilias": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Nylocas_Vasilias_%28melee%29.png/48px-Nylocas_Vasilias_%28melee%29.png?52075"
+    },
+    "The Mimic": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/The_Mimic.png/48px-The_Mimic.png?b45f4"
+    },
+    "Sarachnis": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Sarachnis.png/48px-Sarachnis.png?8f040"
+    },
+    "The Nightmare": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/The_Nightmare.png/48px-The_Nightmare.png?0128a"
+    },
+    "Phosani's Nightmare": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/The_Nightmare.png/48px-The_Nightmare.png?0128a"
+    },
+    "Tempoross": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Tempoross.png/48px-Tempoross.png?12042"
+    },
+    "Revenant maledictus": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Revenant_maledictus.png/48px-Revenant_maledictus.png?73c48"
+    },
+    "The Whisperer": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/The_Whisperer.png/48px-The_Whisperer.png?aedab"
+    },
+    "The Leviathan": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/The_Leviathan.png/48px-The_Leviathan.png?d588a"
+    },
+    "Phantom Muspah": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Phantom_Muspah_%28ranged%29.png/48px-Phantom_Muspah_%28ranged%29.png?9cf6a"
+    },
+    "Spindel": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Spindel.png/48px-Spindel.png?2c818"
+    },
+    "Scurrius": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Scurrius.png/48px-Scurrius.png?e66a5"
+    },
+    "Moons of Peril": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Eclipse_Moon.png/48px-Eclipse_Moon.png?c3e72"
+    },
+    "Sol Heredit": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Sol_Heredit.png/48px-Sol_Heredit.png?91250"
+    },
+    "The Hueycoatl": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/The_Hueycoatl.png/48px-The_Hueycoatl.png?7b216"
+    },
+    "Royal Titans": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Eldric_the_Ice_King.png/48px-Eldric_the_Ice_King.png?6bd48"
+    },
+    "Shellbane gryphon": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Shellbane_gryphon.png/48px-Shellbane_gryphon.png?bc76e"
+    },
+    "Maggot King": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Maggot_King.png/48px-Maggot_King.png?a6790"
+    },
+    "Gnome Ball": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Gnome_Ball.png/48px-Gnome_Ball.png?49a0c"
+    },
+    "Brimhaven Agility Arena": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Brimhaven_Agility_Arena.png/48px-Brimhaven_Agility_Arena.png?17a54"
+    },
+    "Duel Arena": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Duel_Arena.png/48px-Duel_Arena.png?f7f09"
+    },
+    "Burthorpe Games Room": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Burthorpe_Games_Room.png/48px-Burthorpe_Games_Room.png?193c0"
+    },
+    "Fishing Trawler": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Fishing_Trawler.png/48px-Fishing_Trawler.png?5c1fb"
+    },
+    "Impetuous Impulses": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Hunting_implings.png/48px-Hunting_implings.png?76106"
+    },
+    "Barbarian Assault": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Barbarian_Assault_gameplay.png/48px-Barbarian_Assault_gameplay.png?bac6b"
+    },
+    "Castle Wars": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Castle_Wars.png/48px-Castle_Wars.png?37553"
+    },
+    "Gnome Restaurant": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Gnome_Restaurant.png/48px-Gnome_Restaurant.png?c86bb"
+    },
+    "TzTok-Jad": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/TzTok-Jad.png/48px-TzTok-Jad.png?df681"
+    },
+    "Blast Furnace": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Blast_Furnace.png/48px-Blast_Furnace.png?7bbbc"
+    },
+    "Verac the Defiled": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Verac_the_Defiled.png/48px-Verac_the_Defiled.png?33092"
+    },
+    "Treus Dayth": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Treus_Dayth.png/48px-Treus_Dayth.png?9cace"
+    },
+    "Chompy bird hunting": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Chompy_Marsh.png/48px-Chompy_Marsh.png?ed952"
+    },
+    "Ulfric": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Ulfric.png/48px-Ulfric.png?59d75"
+    },
+    "Vet'ion": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Vet%27ion.png/48px-Vet%27ion.png?8695f"
+    },
+    "Venenatis": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Venenatis.png/48px-Venenatis.png?13693"
+    },
+    "Clan Wars": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Clan_Wars.png/48px-Clan_Wars.png?5dfdf"
+    },
+    "Bounty Hunter": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Bounty_Hunter.png/48px-Bounty_Hunter.png?1544e"
+    },
+    "White golem": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/White_golem.png/48px-White_golem.png?b3020"
+    },
+    "Zulrah": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Zulrah_%28serpentine%29.png/48px-Zulrah_%28serpentine%29.png?29a54"
+    },
+    "Dorgesh-Kaan market trading": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Dorgesh-Kaan_market_trading.png/48px-Dorgesh-Kaan_market_trading.png?51c4d"
+    },
+    "Intelligence Gathering": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Tackle_organised_crime.png/48px-Tackle_organised_crime.png?dee0a"
+    },
+    "Wintertodt": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Howling_Snow_Storm.gif/48px-Howling_Snow_Storm.gif?ec549"
+    },
+    "Inferno": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Inferno_entrance.png/48px-Inferno_entrance.png?daf3a"
+    },
+    "Chambers of Xeric": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Chambers_of_Xeric_logo.png/48px-Chambers_of_Xeric_logo.png?34a98"
+    },
+    "Vasa Nistirio": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Vasa_Nistirio.png/48px-Vasa_Nistirio.png?64087"
+    },
+    "Vespula": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Vespula.png/48px-Vespula.png?09658"
+    },
+    "Vanguard": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Vanguard_%28magic%29.png/48px-Vanguard_%28magic%29.png?db160"
+    },
+    "TzKal-Zuk": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/TzKal-Zuk.png/48px-TzKal-Zuk.png?2d222"
+    },
+    "Vorkath": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Vorkath.png/48px-Vorkath.png?1ce3f"
+    },
+    "Theatre of Blood": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Theatre_of_Blood_logo.png/48px-Theatre_of_Blood_logo.png?e6e68"
+    },
+    "Verzik Vitur": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Verzik_Vitur.png/48px-Verzik_Vitur.png?cfc15"
+    },
+    "Xarpus": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Xarpus_%28phase_1%29.png/48px-Xarpus_%28phase_1%29.png?81ca6"
+    },
+    "Farming contracts": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Farming_Guild.png/48px-Farming_Guild.png?00ecb"
+    },
+    "Yama": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Yama.png/48px-Yama.png?7653a"
+    },
+    "Zalcano": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Zalcano_%28weakened%29.png/48px-Zalcano_%28weakened%29.png?fa423"
+    },
+    "Hallowed Sepulchre": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Hallowed_Sepulchre_lobby.png/48px-Hallowed_Sepulchre_lobby.png?d02f4"
+    },
+    "Vardorvis": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Vardorvis.png/48px-Vardorvis.png?48af8"
+    },
+    "Xamphur": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Xamphur_%28monster%2C_phantom_hands%29.png/48px-Xamphur_%28monster%2C_phantom_hands%29.png?de61a"
+    },
+    "Tombs of Amascut": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Tombs_of_Amascut.png/48px-Tombs_of_Amascut.png?f9992"
+    },
+    "Guardians of the Rift": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Guardians_of_the_Rift.png/48px-Guardians_of_the_Rift.png?79d31"
+    },
+    "Emir's Arena": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Emir%27s_Arena.png/48px-Emir%27s_Arena.png?7c2a8"
+    },
+    "Zebak": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Zebak.png/48px-Zebak.png?23978"
+    },
+    "Giants' Foundry": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Giants%27_Foundry.png/48px-Giants%27_Foundry.png?70b44"
+    },
+    "Tumeken's Warden": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Tumeken%27s_Warden.png/48px-Tumeken%27s_Warden.png?c9f68"
+    },
+    "Fortis Colosseum": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Fortis_Colosseum.png/48px-Fortis_Colosseum.png?4c94a"
+    },
+    "Wrathmaw": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Wrathmaw-_the_Wilderness_World_Boss_-_Summer_Summit_2024_%281%29.png/48px-Wrathmaw-_the_Wilderness_World_Boss_-_Summer_Summit_2024_%281%29.png?ecf88"
+    },
+    "The Fractured Archive": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/The_Fractured_Archive_logo.png/48px-The_Fractured_Archive_logo.png?072fb"
+    },
+    "Golem crafting": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Golem_crafting.png/48px-Golem_crafting.png?5d9bc"
+    },
+    "Rogues' Den": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Rogues%27_Den.png/48px-Rogues%27_Den.png?40d38"
+    },
+    "Mage Arena": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Fighting_Kolodion.png/48px-Fighting_Kolodion.png?e413c"
+    },
+    "Shades of Mort'ton (minigame)": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Shades_of_Mort%27ton_%28minigame%29.png/48px-Shades_of_Mort%27ton_%28minigame%29.png?9b39e"
+    },
+    "Tai Bwo Wannai Cleanup": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Tai_Bwo_Wannai_Cleanup.png/48px-Tai_Bwo_Wannai_Cleanup.png?233cd"
+    },
+    "TzHaar Fight Pit": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/TzHaar_Fight_Pit.png/48px-TzHaar_Fight_Pit.png?50897"
+    },
+    "Rat Pits": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Rat_Pits.png/48px-Rat_Pits.png?02df1"
+    },
+    "Sorceress's Garden": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Sorceress%27s_Garden.png/48px-Sorceress%27s_Garden.png?9f4bc"
+    },
+    "Tears of Guthix (minigame)": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Tears_of_Guthix_%28minigame%29.png/48px-Tears_of_Guthix_%28minigame%29.png?0ec80"
+    },
+    "Pyramid Plunder": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Pyramid_Plunder.png/48px-Pyramid_Plunder.png?4aa28"
+    },
+    "Pest Control": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Pest_Control.png/48px-Pest_Control.png?ed7bb"
+    },
+    "TzHaar Fight Cave": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/TzHaar_Fight_Cave.png/48px-TzHaar_Fight_Cave.png?f5437"
+    },
+    "Temple Trekking": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Temple_Trekking.png/48px-Temple_Trekking.png?b2870"
+    },
+    "Mage Training Arena": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Mage_Training_Arena.png/48px-Mage_Training_Arena.png?485fd"
+    },
+    "Trouble Brewing": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Trouble_Brewing.png/48px-Trouble_Brewing.png?dd992"
+    },
+    "Keldagrim tasks": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Keldagrim_Task_NPC_Map.png/48px-Keldagrim_Task_NPC_Map.png?9d8f2"
+    },
+    "Nightmare Zone": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Nightmare_Zone.png/48px-Nightmare_Zone.png?e0725"
+    },
+    "Soul Wars": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Isle_of_Souls_-_Soul_Wars_lobby.png/48px-Isle_of_Souls_-_Soul_Wars_lobby.png?0e5cc"
+    },
+    "Tithe Farm": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Tithe_Farm_entrance.png/48px-Tithe_Farm_entrance.png?23239"
+    },
+    "Mess": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Mess.png/48px-Mess.png?5e79d"
+    },
+    "Last Man Standing": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Last_Man_Standing.png/48px-Last_Man_Standing.png?45ee0"
+    },
+    "Volcanic Mine": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Volcanic_Mine.png/48px-Volcanic_Mine.png?d30f6"
+    },
+    "Stealing artefacts": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Stealing_artefacts.png/48px-Stealing_artefacts.png?a12b1"
+    },
+    "The Gauntlet": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/The_Gauntlet.png/48px-The_Gauntlet.png?1a926"
+    },
+    "Mahogany Homes": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Mahogany_Homes_logo.png/48px-Mahogany_Homes_logo.png?79681"
+    },
+    "TzHaar-Ket-Rak's Challenges": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/TzHaar-Ket-Rak%27s_Challenges.png/48px-TzHaar-Ket-Rak%27s_Challenges.png?53c80"
+    },
+    "Stealing valuables": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Stealing_valuables.png/48px-Stealing_valuables.png?71f69"
+    },
+    "Mastering Mixology": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Mastering_Mixology_room.png/48px-Mastering_Mixology_room.png?e26f0"
+    },
+    "Vale Totems": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Vale_Totems_%28minigame%29.png/48px-Vale_Totems_%28minigame%29.png?91627"
+    }
+  },
+  "categories": {
+    "Category:Bosses": [
+      "Abyssal Sire",
+      "Agrith Naar",
+      "Agrith-Na-Na",
+      "Ahrim the Blighted",
+      "Akkha",
+      "Alchemical Hydra",
+      "Amoxliatl",
+      "Araxxor",
+      "Arrg",
+      "Artio",
+      "Arzinian Avatar of Magic",
+      "Arzinian Avatar of Ranging",
+      "Arzinian Avatar of Strength",
+      "Arzinian Being of Bordanzan",
+      "Ba-Ba",
+      "Barrelchest",
+      "Barrows",
+      "Black Knight Titan",
+      "Black demon",
+      "Black golem",
+      "Blood Moon",
+      "Blue Moon",
+      "Bouncer",
+      "Bouncer (ghost)",
+      "Branda the Fire Queen",
+      "Brutus",
+      "Bryophyta",
+      "Callisto",
+      "Calvar'ion",
+      "Cerberus",
+      "Chaos Elemental",
+      "Chaos Fanatic",
+      "Chronozon",
+      "Commander Zilyana",
+      "Corporeal Beast",
+      "Corrupted Hunllef",
+      "Count Draynor",
+      "Crazy archaeologist",
+      "Crystalline Hunllef",
+      "Culinaromancer",
+      "Dad",
+      "Dagannoth Prime",
+      "Dagannoth Rex",
+      "Dagannoth Supreme",
+      "Dagannoth mother",
+      "Damis",
+      "Dawn",
+      "Delrith",
+      "Demonic Brutus",
+      "Deranged archaeologist",
+      "Dessourt",
+      "Dessous",
+      "Dharok the Wretched",
+      "Doom of Mokhaiotl",
+      "Duke Sucellus",
+      "Dusk",
+      "Eclipse Moon",
+      "Eldric the Ice King",
+      "Elidinis' Warden",
+      "Elvarg",
+      "Evil spirit",
+      "Fareed",
+      "Flambeed",
+      "Gadderanks",
+      "Galvek",
+      "Gelatinnoth Mother",
+      "Gemstone Crab",
+      "General Graardor",
+      "General Khazard",
+      "Giant Mole",
+      "Giant Roc",
+      "Giant Scarab",
+      "Giant Sea Snake",
+      "Glod",
+      "Glough",
+      "Great Olm",
+      "Grey golem",
+      "Grotesque Guardians",
+      "Guthan the Infested",
+      "Hespori",
+      "Ice Troll King",
+      "Ice demon",
+      "Judge of Yama (A Kingdom Divided)",
+      "Jungle Demon",
+      "K'ril Tsutsaroth",
+      "Kalphite Queen",
+      "Kamil",
+      "Karamel",
+      "Karil the Tainted",
+      "Kephri",
+      "King Black Dragon",
+      "Koschei the deathless",
+      "Kraken",
+      "Kree'arra",
+      "Lowerniel Drakan",
+      "Mad Angel",
+      "Maggot King",
+      "Me",
+      "Melzar the Mad",
+      "Moons of Peril",
+      "Moss Guardian",
+      "Muttadile",
+      "Nex",
+      "Nezikchened",
+      "Nylocas Vasilias",
+      "Obor",
+      "Penance Queen",
+      "Pestilent Bloat",
+      "Phantom Muspah",
+      "Phosani's Nightmare",
+      "Revenant maledictus",
+      "Royal Titans",
+      "Salarin the twisted",
+      "Sarachnis",
+      "Scorpia",
+      "Scurrius",
+      "Sea Troll Queen",
+      "Shellbane gryphon",
+      "Sigmund",
+      "Sir Leye",
+      "Sir Mordred",
+      "Skotizo",
+      "Slagilith",
+      "Slash Bash",
+      "Slug Prince",
+      "Sol Heredit",
+      "Sotetseg",
+      "Spindel",
+      "Tarn",
+      "Tekton",
+      "Tempoross",
+      "The Draugen",
+      "The Everlasting",
+      "The Hueycoatl",
+      "The Illusive",
+      "The Inadequacy",
+      "The Leviathan",
+      "The Maiden of Sugadinti",
+      "The Mimic",
+      "The Nightmare",
+      "The Untouchable",
+      "The Whisperer",
+      "Thermonuclear smoke devil",
+      "Tolna",
+      "Torag the Corrupted",
+      "Tree spirit (Lost City)",
+      "Treus Dayth",
+      "Tumeken's Warden",
+      "TzKal-Zuk",
+      "TzTok-Jad",
+      "Ulfric",
+      "Vanguard",
+      "Vardorvis",
+      "Vasa Nistirio",
+      "Venenatis",
+      "Verac the Defiled",
+      "Verzik Vitur",
+      "Vespula",
+      "Vet'ion",
+      "Vorkath",
+      "White golem",
+      "Wintertodt",
+      "Wrathmaw",
+      "Xamphur",
+      "Xarpus",
+      "Yama",
+      "Zalcano",
+      "Zebak",
+      "Zulrah"
+    ],
+    "Category:Raids": [
+      "Chambers of Xeric",
+      "The Fractured Archive",
+      "Theatre of Blood",
+      "Tombs of Amascut"
+    ],
+    "Category:Minigames": [
+      "Barbarian Assault",
+      "Blast Furnace",
+      "Bounty Hunter",
+      "Brimhaven Agility Arena",
+      "Burthorpe Games Room",
+      "Castle Wars",
+      "Chompy bird hunting",
+      "Clan Wars",
+      "Dorgesh-Kaan market trading",
+      "Duel Arena",
+      "Emir's Arena",
+      "Farming contracts",
+      "Fishing Trawler",
+      "Fortis Colosseum",
+      "Giants' Foundry",
+      "Gnome Ball",
+      "Gnome Restaurant",
+      "Golem crafting",
+      "Guardians of the Rift",
+      "Hallowed Sepulchre",
+      "Impetuous Impulses",
+      "Inferno",
+      "Intelligence Gathering",
+      "Keldagrim tasks",
+      "Last Man Standing",
+      "Mage Arena",
+      "Mage Training Arena",
+      "Mahogany Homes",
+      "Mastering Mixology",
+      "Mess",
+      "Nightmare Zone",
+      "Pest Control",
+      "Pyramid Plunder",
+      "Rat Pits",
+      "Rogues' Den",
+      "Shades of Mort'ton (minigame)",
+      "Sorceress's Garden",
+      "Soul Wars",
+      "Stealing artefacts",
+      "Stealing valuables",
+      "Tai Bwo Wannai Cleanup",
+      "Tears of Guthix (minigame)",
+      "Temple Trekking",
+      "The Gauntlet",
+      "Tithe Farm",
+      "Trouble Brewing",
+      "TzHaar Fight Cave",
+      "TzHaar Fight Pit",
+      "TzHaar-Ket-Rak's Challenges",
+      "Vale Totems",
+      "Volcanic Mine"
+    ]
+  },
+  "fetched": "2026-08-20"
+}
