@@ -54,6 +54,8 @@ data class ItemServerType(
     var weaponCategory: WeaponCategory = WeaponCategory.Unarmed,
     var transformlink: Int = 0,
     var transformtemplate: Int = 0,
+    var countCo: MutableList<Int>? = null,
+    var countObj: MutableList<Int>? = null,
 ) : Definition {
 
     val internalName

@@ -1,0 +1,2 @@
+[clientscript,spawn_menu_labels](component $grid, component $scrollbar, component $message, string $labels)
+if_setoninvtransmit("spawn_menu_draw($grid, $scrollbar, $message, $labels){spawn_results}", $grid);

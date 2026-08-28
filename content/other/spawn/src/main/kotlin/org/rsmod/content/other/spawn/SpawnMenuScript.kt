@@ -2,6 +2,7 @@ package org.rsmod.content.other.spawn
 
 import dev.openrune.ServerCacheManager
 import dev.openrune.definition.type.widget.IfEvent
+import dev.openrune.rscm.RSCM
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import dev.openrune.types.ItemServerType
@@ -14,19 +15,30 @@ import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.output.runClientScript
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.protect.ProtectedAccessLauncher
+import org.rsmod.api.player.stopInvTransmit
+import org.rsmod.api.player.ui.IfScriptArgs
 import org.rsmod.api.player.ui.ifOpenMainModal
+import org.rsmod.api.player.ui.ifSetEvents
+import org.rsmod.api.player.vars.boolVarBit
 import org.rsmod.api.script.onCommand
+import org.rsmod.api.script.onGameStartup
 import org.rsmod.api.script.onIfClose
 import org.rsmod.api.script.onIfModalButton
+import org.rsmod.api.script.onIfScriptTrigger
 import org.rsmod.game.cheat.Cheat
 import org.rsmod.game.entity.Player
+import org.rsmod.game.inv.InvObj
+import org.rsmod.game.inv.Inventory
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
 private const val INTERFACE = "interface.spawn_menu"
+private const val RESULT_INV = "inv.spawn_results"
 
 private const val MAX_RESULTS = 60
-private const val COMPONENTS_PER_CARD = 4
+private const val COMPONENTS_PER_CARD = 5
+
+private const val LABEL_WIDTH = 32
 
 private const val QTY_BUTTON_COUNT = 4
 private const val QTY_CUSTOM_INDEX = 3
@@ -36,6 +48,91 @@ private class SpawnState {
     var quantity: Int = 1
     var note: Boolean = false
     var bank: Boolean = false
+
+    var query: String = ""
+}
+
+private var Player.spawnIncludeNulls by boolVarBit("varbit.spawn_include_nulls")
+
+private object SpawnSearchIndex {
+    private class Entry(val name: String, val gameval: String, val item: ItemServerType)
+
+    @Volatile private var entries: List<Entry> = emptyList()
+
+    @Volatile private var stackVariants: Set<Int> = emptySet()
+
+    fun build() {
+        val items = ServerCacheManager.getItems().values
+        val stackVariants = stackVariantIds(items)
+        this.stackVariants = stackVariants
+        entries =
+            items
+                .mapNotNull { item ->
+                    if (item.id in stackVariants) {
+                        return@mapNotNull null
+                    }
+                    val gameval = gamevalOf(item)
+                    if (!searchable(item, gameval)) {
+                        return@mapNotNull null
+                    }
+                    Entry(displayNameOf(item).lowercase(), gameval.lowercase(), item)
+                }
+                .sortedWith(compareBy({ labelOf(it).length }, { labelOf(it) }, { it.item.id }))
+    }
+
+    private fun stackVariantIds(items: Collection<ItemServerType>): Set<Int> {
+        val variants = HashSet<Int>()
+        for (item in items) {
+            val countObj = item.countObj ?: continue
+            for (id in countObj) {
+                if (id > 0 && id != item.id) {
+                    variants.add(id)
+                }
+            }
+        }
+        return variants
+    }
+
+    fun search(query: String, limit: Int, includeNulls: Boolean): List<ItemServerType> {
+        val exact = ArrayList<ItemServerType>()
+        val prefix = ArrayList<ItemServerType>()
+        val partial = ArrayList<ItemServerType>()
+        for (entry in entries) {
+            if (!includeNulls && entry.name.isEmpty()) {
+                continue
+            }
+            when {
+                entry.name == query || entry.gameval == query -> exact
+                entry.name.startsWith(query) || entry.gameval.startsWith(query) -> prefix
+                entry.name.contains(query) || entry.gameval.contains(query) -> partial
+                else -> null
+            }?.add(entry.item)
+        }
+        return (exact + prefix + partial).take(limit)
+    }
+
+    fun size(): Int = entries.size
+
+    fun gamevalOf(item: ItemServerType): String {
+        val mapped = RSCM.getReverseMapping(RSCMType.OBJ, item.id).removePrefix("obj.")
+        val unmapped = mapped.isBlank() || mapped == "-1" || mapped.toIntOrNull() != null
+        return if (unmapped) "" else mapped
+    }
+
+    fun displayNameOf(item: ItemServerType): String =
+        if (item.name.isBlank() || item.name.equals("null", ignoreCase = true)) {
+            ""
+        } else {
+            item.name
+        }
+
+    private fun labelOf(entry: Entry): String = entry.name.ifEmpty { entry.gameval }
+
+    private fun searchable(item: ItemServerType, gameval: String): Boolean =
+        (displayNameOf(item).isNotEmpty() || gameval.isNotEmpty()) &&
+            !item.isPlaceholder &&
+            !item.isCert &&
+            !item.isDummyItem
 }
 
 class SpawnMenuScript @Inject constructor(private val protectedAccess: ProtectedAccessLauncher) :
@@ -44,16 +141,35 @@ class SpawnMenuScript @Inject constructor(private val protectedAccess: Protected
 
     private fun state(player: Player): SpawnState = states.getOrPut(player) { SpawnState() }
 
+    private val Player.searchResults: Inventory
+        get() = invMap.getOrPut(RESULT_INV)
+
+    internal data class TriggerArgs(val comsub: Int, val op: Int, val text: String) : IfScriptArgs
+
     override fun ScriptContext.startup() {
+        onGameStartup { SpawnSearchIndex.build() }
+
         onCommand("spawn") {
             requiredRights = Rights.ADMINISTRATOR
             desc = "Search for and spawn items from a visual grid"
             cheat { openMenu() }
         }
 
+        onCommand("spawnwhy") {
+            requiredRights = Rights.ADMINISTRATOR
+            desc = "Explain why an obj is missing from the ::spawn grid (ex: ::spawnwhy 4587)"
+            cheat { explainMissing(args.joinToString("_")) }
+        }
+
         onIfClose(INTERFACE) {
             states.remove(player)
+            player.searchResults.fillNulls()
+            player.stopInvTransmit(player.searchResults)
             ClientScripts.chatDefaultRestoreInput(player)
+        }
+
+        onIfScriptTrigger<TriggerArgs>("component.spawn_menu:searchtext") {
+            if (isAdmin()) search(it.text)
         }
 
         for (i in 0 until QTY_BUTTON_COUNT) {
@@ -66,6 +182,8 @@ class SpawnMenuScript @Inject constructor(private val protectedAccess: Protected
 
         onIfModalButton("component.spawn_menu:bankbtn") { if (isAdmin()) toggleBank() }
 
+        onIfModalButton("component.spawn_menu:nullbtn") { if (isAdmin()) toggleNulls() }
+
         onIfModalButton("component.spawn_menu:grid") { if (isAdmin()) spawn(it.obj) }
     }
 
@@ -77,47 +195,82 @@ class SpawnMenuScript @Inject constructor(private val protectedAccess: Protected
         return false
     }
 
+    private fun Cheat.explainMissing(input: String) {
+        val item =
+            input.toIntOrNull()?.let(ServerCacheManager::getItem)
+                ?: ServerCacheManager.getItem("obj.$input".asRSCM(RSCMType.OBJ))
+        if (item == null) {
+            player.mes("No obj mapped to '$input' (index holds ${SpawnSearchIndex.size()} objs)")
+            return
+        }
+        val reason = SpawnSearchIndex.exclusionReason(item)
+        val label =
+            SpawnSearchIndex.displayNameOf(item).ifEmpty {
+                SpawnSearchIndex.gamevalOf(item).ifEmpty { "unnamed" }
+            }
+        if (reason == null) {
+            player.mes("`$label` (${item.id}) is indexed - search it by name or gameval.")
+            return
+        }
+        player.mes("`$label` (${item.id}) excluded: $reason")
+    }
+
     private fun Cheat.openMenu() {
         protectedAccess.launch(player) { open() }
     }
 
-    private fun Cheat.dumpInterface() {
-        val mainmodalId = "component.toplevel_osrs_stretch:mainmodal".asRSCM(RSCMType.COMPONENT)
-        val mainmodal = ServerCacheManager.fromComponent(mainmodalId)
-        println(
-            "[spawndebug] component.toplevel_osrs_stretch:mainmodal " +
-                "width=${mainmodal.width} height=${mainmodal.height} x=${mainmodal.x} y=${mainmodal.y}",
-        )
-        player.mes("[spawndebug] mainmodal is ${mainmodal.width}x${mainmodal.height}, see console")
-
-        val id = INTERFACE.asRSCM(RSCMType.INTERFACE)
-        val iface = ServerCacheManager.getInterface(id)
-        if (iface == null) {
-            player.mes("[spawndebug] no interface loaded for id $id")
-            return
-        }
-        player.mes("[spawndebug] ${iface.components.size} components, see server console")
-        println("[spawndebug] interface.spawn_menu id=$id, ${iface.components.size} components:")
-        for ((key, comp) in iface.components.toSortedMap()) {
-            println(
-                "[spawndebug]   key=$key internalId=${comp.internalId} " +
-                    "name=${comp.internalName} pos=(${comp.x},${comp.y})",
-            )
-        }
-    }
-
     private fun ProtectedAccess.open() {
-        if (!player.modLevel.isAtLeast(Rights.ADMINISTRATOR)) {
-            return
-        }
-        val state = state(player)
+        val results = player.searchResults
+        results.fillNulls()
         ifOpenMainModal(INTERFACE)
         ifSetEvents(
             "component.spawn_menu:grid",
             0 until MAX_RESULTS * COMPONENTS_PER_CARD,
             IfEvent.Op1,
         )
-        renderButtons(state)
+        ifSetEvents(
+            "component.spawn_menu:searchtext",
+            -1..-1,
+            IfEvent.DeprecatedOp1,
+            IfEvent.ScriptTrigger,
+        )
+        invTransmit(results)
+        renderButtons(state(player))
+    }
+
+    private fun ProtectedAccess.search(query: String) {
+        val results = player.searchResults
+        results.fillNulls()
+        state(player).query = query
+
+        val trimmed = query.trim().lowercase()
+        val matches =
+            if (trimmed.isEmpty()) {
+                emptyList()
+            } else {
+                SpawnSearchIndex.search(trimmed, MAX_RESULTS, player.spawnIncludeNulls)
+            }
+
+        sendLabels(matches)
+        for (slot in matches.indices) {
+            results[slot] = InvObj(matches[slot], 1)
+        }
+    }
+
+    private fun ProtectedAccess.sendLabels(matches: List<ItemServerType>) {
+        val blob = buildString {
+            for (item in matches) {
+                val gameval = SpawnSearchIndex.gamevalOf(item).ifEmpty { "obj_${item.id}" }
+                append(gameval.take(LABEL_WIDTH).padEnd(LABEL_WIDTH))
+            }
+        }
+        player.runClientScript(
+            "clientscript.spawn_menu_labels".asRSCM(RSCMType.CLIENTSCRIPT),
+            "component.spawn_menu:grid".asRSCM(RSCMType.COMPONENT),
+            "component.spawn_menu:scrollbar".asRSCM(RSCMType.COMPONENT),
+            "component.spawn_menu:status".asRSCM(RSCMType.COMPONENT),
+            blob,
+        )
     }
 
     private suspend fun ProtectedAccess.selectQuantity(index: Int) {
@@ -141,6 +294,13 @@ class SpawnMenuScript @Inject constructor(private val protectedAccess: Protected
         val state = state(player)
         state.bank = !state.bank
         renderButtons(state)
+    }
+
+    private fun ProtectedAccess.toggleNulls() {
+        val state = state(player)
+        player.spawnIncludeNulls = !player.spawnIncludeNulls
+        renderButtons(state)
+        search(state.query)
     }
 
     private fun ProtectedAccess.spawn(clicked: ItemServerType?) {
@@ -185,13 +345,13 @@ class SpawnMenuScript @Inject constructor(private val protectedAccess: Protected
         val selected =
             if (customActive) QTY_CUSTOM_INDEX else QTY_PRESETS.indexOf(state.quantity)
         val customLabel = if (customActive) state.quantity.toString() else "X"
-        val script = "clientscript.spawn_menu_buttons".asRSCM(RSCMType.CLIENTSCRIPT)
         player.runClientScript(
-            script,
+            "clientscript.spawn_menu_buttons".asRSCM(RSCMType.CLIENTSCRIPT),
             selected,
             customLabel,
             if (state.note) 1 else 0,
             if (state.bank) 1 else 0,
+            if (player.spawnIncludeNulls) 1 else 0,
         )
     }
 }

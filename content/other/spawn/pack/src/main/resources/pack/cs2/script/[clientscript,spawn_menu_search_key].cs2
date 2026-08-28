@@ -27,4 +27,4 @@ if ($key = ^key_del) {
 %settings_search_string = $query;
 ~searchbar_set_text($searchtext);
 def_int $deadline = calc(clientclock + 12);
-if_setontimer("spawn_menu_search_tick($deadline, $grid, $scrollbar, $message)", $grid);
+if_setontimer("spawn_menu_search_tick($deadline, $grid)", $grid);

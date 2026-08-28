@@ -4,3 +4,14 @@ size = 60
 scope = "Temp"
 stack = "Always"
 protect = false
+
+[[varp]]
+id = "varp.spawn_menu"
+scope = "Perm"
+transmit = "Never"
+
+[[varbit]]
+id = "varbit.spawn_include_nulls"
+varp = "varp.spawn_menu"
+startBit = 0
+endBit = 0

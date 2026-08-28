@@ -5,6 +5,7 @@ import dev.openrune.ServerCacheManager
 import dev.openrune.rscm.RSCM
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
+import dev.openrune.types.ItemServerType
 import dev.openrune.types.NpcMode
 import jakarta.inject.Inject
 import kotlin.math.max
@@ -130,7 +131,7 @@ constructor(
         }
 
         onCommand("invadd", "Spawn obj into inv", ::invAdd)
-        onCommand("item", "Spawn obj into inv", ::invAdd)
+        onCommand("item", "Spawn obj into inv (ex: ::item 995 100 or ::item coins 100)", ::invAdd)
 
         onCommand("invclear", "Remove all objs from inv", ::invClear)
         onCommand("varp", "Set varp value", ::setVarp) {
@@ -507,14 +508,16 @@ constructor(
     private fun invAdd(cheat: Cheat) =
         with(cheat) {
             val (typeName, countArg) = args.asTypeNameAndNumber(defaultNumber = 1)
-            val normalizedName = "obj.$typeName"
-            val type =
-                ServerCacheManager.getItem(normalizedName.asRSCM(RSCMType.OBJ)) ?: return@with
+            val type = resolveObj(typeName)
+            if (type == null) {
+                player.mes("There is no obj mapped to: '$typeName'")
+                return
+            }
 
             val count = countArg.toLong().coerceAtMost(Int.MAX_VALUE.toLong()).toInt()
-            val objName = type.name.ifEmpty { normalizedName }
+            val objName = type.name.ifEmpty { typeName }
 
-            val spawned = player.invAdd(player.inv, normalizedName, count, strict = false)
+            val spawned = player.invAdd(player.inv, type.id, count, strict = false)
             if (spawned.err is TransactionResult.RestrictedDummyitem) {
                 player.mes("You can't spawn this item!")
                 return
@@ -766,6 +769,14 @@ constructor(
         } else {
             joinToString("_") to defaultNumber.toString()
         }
+
+    private fun resolveObj(input: String): ItemServerType? {
+        val id = input.toIntOrNull()
+        if (id != null) {
+            return ServerCacheManager.getItem(id)
+        }
+        return ServerCacheManager.getItem("obj.$input".asRSCM(RSCMType.OBJ))
+    }
 
     private fun List<String>.asTypeName(): String = joinToString("_")
 

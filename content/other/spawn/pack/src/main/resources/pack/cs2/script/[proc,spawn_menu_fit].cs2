@@ -1,0 +1,10 @@
+[proc,spawn_menu_fit](string $text, int $width)(string)
+def_int $textwidth = parawidth($text, 0, p11_full);
+if ($textwidth <= $width) {
+    return($text);
+}
+def_int $keep = calc(string_length($text) * $width / $textwidth - 2);
+if ($keep < 1) {
+    $keep = 1;
+}
+return(append(substring($text, 0, $keep), ".."));

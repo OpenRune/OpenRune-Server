@@ -28,7 +28,10 @@ private const val BUTTON_PITCH = 52
 private const val NOTE_X = 8 + QTY_BUTTON_COUNT * BUTTON_PITCH
 private const val BANK_X = NOTE_X + BUTTON_PITCH
 
-private const val SEARCH_X = BANK_X + BUTTON_W + 8
+private const val NULL_X = BANK_X + BUTTON_PITCH
+private const val NULL_W = 56
+
+private const val SEARCH_X = NULL_X + NULL_W + 8
 private const val SEARCH_W = CONTENT_W - 8 - SEARCH_X
 
 private const val COLOUR_GOLD = 0xff981f
@@ -40,7 +43,7 @@ private val CLICK_EVENTS = IfEvent.DeprecatedOp1.bitmask.toInt()
 private const val BORDER_CHILD = 0
 private const val SEARCHBAR_CHILD = 1
 private const val CONTENT_CHILD = 2
-private const val CONTENT_CHILD_COUNT = 1 + QTY_BUTTON_COUNT + 2
+private const val CONTENT_CHILD_COUNT = 1 + QTY_BUTTON_COUNT + 3
 private const val SEARCHTEXT_CHILD = CONTENT_CHILD + 1
 private const val GRID_CHILD = CONTENT_CHILD + 1 + CONTENT_CHILD_COUNT
 private const val MESSAGE_CHILD = GRID_CHILD + 1
@@ -112,6 +115,13 @@ fun buildSpawnMenuInterface() =
             layer("bankbtn") {
                 position { BANK_X to ROW_Y }
                 size { BUTTON_W to ROW_H }
+                addOption("Toggle")
+                events = CLICK_EVENTS
+            }
+
+            layer("nullbtn") {
+                position { NULL_X to ROW_Y }
+                size { NULL_W to ROW_H }
                 addOption("Toggle")
                 events = CLICK_EVENTS
             }

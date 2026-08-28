@@ -11,10 +11,6 @@ import org.rsmod.game.cheat.Cheat
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
-/**
- * Admin item-search-and-spawn tool (`::spawnold`), prompt-based. Kept as a fallback to the v2 grid
- * interface (`content/other/spawn`) - needs no custom cache content, so it always works.
- */
 class ItemSpawnMenuScript
 @Inject
 constructor(private val protectedAccess: ProtectedAccessLauncher) : PluginScript() {

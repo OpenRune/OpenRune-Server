@@ -11,4 +11,4 @@ if_setonkey("spawn_menu_search_key(event_keycode, event_keychar, $searchtext, $g
 if (~on_mobile = true) {
     ~keyboard_show(0, 50);
 }
-~spawn_menu_draw($grid, $scrollbar, $message);
+if_runscript*(ifscript_3414196760, spawn_menu:searchtext, -1)(0, 0, %settings_search_string);
