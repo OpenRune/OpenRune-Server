@@ -3,14 +3,15 @@ package org.rsmod.api.net.rsprot.provider
 import jakarta.inject.Inject
 import jakarta.inject.Singleton
 import kotlin.jvm.java
+import net.rsprot.protocol.game.incoming.buttons.If1Button
 import net.rsprot.protocol.game.incoming.buttons.If3Button
 import net.rsprot.protocol.game.incoming.buttons.IfButtonD
 import net.rsprot.protocol.game.incoming.buttons.IfButtonT
 import net.rsprot.protocol.game.incoming.buttons.IfScriptTrigger
 import net.rsprot.protocol.game.incoming.buttons.IfSubOp
-import net.rsprot.protocol.game.incoming.locs.OpLocV2
 import net.rsprot.protocol.game.incoming.locs.OpLoc6
 import net.rsprot.protocol.game.incoming.locs.OpLocT
+import net.rsprot.protocol.game.incoming.locs.OpLocV2
 import net.rsprot.protocol.game.incoming.messaging.MessagePrivate
 import net.rsprot.protocol.game.incoming.messaging.MessagePublic
 import net.rsprot.protocol.game.incoming.misc.client.MapBuildComplete
@@ -21,11 +22,11 @@ import net.rsprot.protocol.game.incoming.misc.user.CloseModal
 import net.rsprot.protocol.game.incoming.misc.user.MoveGameClick
 import net.rsprot.protocol.game.incoming.misc.user.MoveMinimapClick
 import net.rsprot.protocol.game.incoming.misc.user.SetChatFilterSettings
-import net.rsprot.protocol.game.incoming.npcs.OpNpcV2
 import net.rsprot.protocol.game.incoming.npcs.OpNpc6
 import net.rsprot.protocol.game.incoming.npcs.OpNpcT
-import net.rsprot.protocol.game.incoming.objs.OpObjV2
+import net.rsprot.protocol.game.incoming.npcs.OpNpcV2
 import net.rsprot.protocol.game.incoming.objs.OpObj6
+import net.rsprot.protocol.game.incoming.objs.OpObjV2
 import net.rsprot.protocol.game.incoming.players.OpPlayer
 import net.rsprot.protocol.game.incoming.players.OpPlayerT
 import net.rsprot.protocol.game.incoming.resumed.ResumePCountDialog
@@ -44,6 +45,7 @@ import org.rsmod.api.net.rsprot.handlers.ClientCheatHandler
 import org.rsmod.api.net.rsprot.handlers.CloseModalHandler
 import org.rsmod.api.net.rsprot.handlers.FriendListAddHandler
 import org.rsmod.api.net.rsprot.handlers.FriendListDeleteHandler
+import org.rsmod.api.net.rsprot.handlers.If1ButtonHandler
 import org.rsmod.api.net.rsprot.handlers.If3ButtonHandler
 import org.rsmod.api.net.rsprot.handlers.IfButtonDHandler
 import org.rsmod.api.net.rsprot.handlers.IfButtonTHandler
@@ -99,6 +101,7 @@ constructor(
     private val ignoreListAdd: IgnoreListAddHandler,
     private val ignoreListDelete: IgnoreListDeleteHandler,
     private val setChatFilterSettings: SetChatFilterSettingsHandler,
+    private val if1Button: If1ButtonHandler,
     private val if3Button: If3ButtonHandler,
     private val closeModal: CloseModalHandler,
     private val resumePauseButton: ResumePauseButtonHandler,
@@ -112,7 +115,7 @@ constructor(
     private val ifButtonD: IfButtonDHandler,
     private val ifButtonT: IfButtonTHandler,
     private val mapBuildComplete: MapBuildCompleteHandler,
-    private val scriptTriggerHandler : IfScriptTriggerHandler
+    private val scriptTriggerHandler: IfScriptTriggerHandler
 ) {
     fun get(): DefaultGameMessageConsumerRepositoryProvider<Player> {
         val builder = GameMessageConsumerRepositoryBuilder<Player>()
@@ -136,6 +139,7 @@ constructor(
         builder.addListener(IgnoreListAdd::class.java, ignoreListAdd)
         builder.addListener(IgnoreListDel::class.java, ignoreListDelete)
         builder.addListener(SetChatFilterSettings::class.java, setChatFilterSettings)
+        builder.addListener(If1Button::class.java, if1Button)
         builder.addListener(If3Button::class.java, if3Button)
         builder.addListener(CloseModal::class.java, closeModal)
         builder.addListener(ResumePauseButton::class.java, resumePauseButton)

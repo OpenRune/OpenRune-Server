@@ -1,0 +1,11 @@
+[[enum]]
+isServerOnly = true
+id = "enum.kourend_diary_tiers"
+keyType = "INT"
+valueType = "INT"
+
+[enum.values]
+1 = "varbit.kourend_diary_easy_complete"
+2 = "varbit.kourend_diary_medium_complete"
+3 = "varbit.kourend_diary_hard_complete"
+4 = "varbit.kourend_diary_elite_complete"

@@ -47021,6 +47021,7 @@ tradeable = false
 [[item]]
 id = "obj.skillcape_max_dizanas"
 inherit = "obj.skillcape_max_dizanas"
+contentGroup = "content.max_cape"
 tradeable = false
 [item.params]
 "param.destroy_note_desc"="You can get another from The Colosseum."
@@ -47029,6 +47030,7 @@ tradeable = false
 [[item]]
 id = "obj.skillcape_max_dizanas_trouver"
 inherit = "obj.skillcape_max_dizanas_trouver"
+contentGroup = "content.max_cape"
 tradeable = false
 [item.params]
 "param.destroy_note_desc"="You can get another from The Colosseum."
@@ -49598,6 +49600,7 @@ tradeable = false
 [[item]]
 id = "obj.skillcape_max_anma"
 inherit = "obj.skillcape_max_anma"
+contentGroup = "content.max_cape"
 tradeable = false
 [item.params]
 "param.ammo_recovery_rate"=72
@@ -50596,6 +50599,7 @@ tradeable = false
 [[item]]
 id = "obj.skillcape_max_assembler_masori_trouver"
 inherit = "obj.skillcape_max_assembler_masori_trouver"
+contentGroup = "content.max_cape"
 tradeable = false
 [item.params]
 "param.ammo_recovery_rate"=80
@@ -50785,6 +50789,7 @@ tradeable = false
 [[item]]
 id = "obj.skillcape_max_assembler_trouver"
 inherit = "obj.skillcape_max_assembler_trouver"
+contentGroup = "content.max_cape"
 tradeable = false
 [item.params]
 "param.ammo_recovery_rate"=80
@@ -51124,6 +51129,7 @@ tradeable = false
 [[item]]
 id = "obj.skillcape_max_assembler"
 inherit = "obj.skillcape_max_assembler"
+contentGroup = "content.max_cape"
 tradeable = false
 [item.params]
 "param.ammo_recovery_rate"=80
@@ -51589,6 +51595,7 @@ tradeable = false
 [[item]]
 id = "obj.skillcape_max_assembler_masori"
 inherit = "obj.skillcape_max_assembler_masori"
+contentGroup = "content.max_cape"
 tradeable = false
 [item.params]
 "param.ammo_recovery_rate"=80
@@ -52750,3 +52757,78 @@ contentGroup = "content.ore"
 id = "obj.softclay"
 inherit = "obj.softclay"
 contentGroup = "content.ore"
+
+[[item]]
+id = "obj.skillcape_max_firecape"
+inherit = "obj.skillcape_max_firecape"
+contentGroup = "content.max_cape"
+
+[[item]]
+id = "obj.skillcape_max_saradomin"
+inherit = "obj.skillcape_max_saradomin"
+contentGroup = "content.max_cape"
+
+[[item]]
+id = "obj.skillcape_max_zamorak"
+inherit = "obj.skillcape_max_zamorak"
+contentGroup = "content.max_cape"
+
+[[item]]
+id = "obj.skillcape_max_guthix"
+inherit = "obj.skillcape_max_guthix"
+contentGroup = "content.max_cape"
+
+[[item]]
+id = "obj.skillcape_max_ardy"
+inherit = "obj.skillcape_max_ardy"
+contentGroup = "content.max_cape"
+
+[[item]]
+id = "obj.skillcape_max_infernalcape"
+inherit = "obj.skillcape_max_infernalcape"
+contentGroup = "content.max_cape"
+
+[[item]]
+id = "obj.skillcape_max_saradomin2"
+inherit = "obj.skillcape_max_saradomin2"
+contentGroup = "content.max_cape"
+
+[[item]]
+id = "obj.skillcape_max_zamorak2"
+inherit = "obj.skillcape_max_zamorak2"
+contentGroup = "content.max_cape"
+
+[[item]]
+id = "obj.skillcape_max_guthix2"
+inherit = "obj.skillcape_max_guthix2"
+contentGroup = "content.max_cape"
+
+[[item]]
+id = "obj.skillcape_max_infernalcape_trouver"
+inherit = "obj.skillcape_max_infernalcape_trouver"
+contentGroup = "content.max_cape"
+
+[[item]]
+id = "obj.skillcape_max_firecape_trouver"
+inherit = "obj.skillcape_max_firecape_trouver"
+contentGroup = "content.max_cape"
+
+[[item]]
+id = "obj.skillcape_max_saradomin2_trouver"
+inherit = "obj.skillcape_max_saradomin2_trouver"
+contentGroup = "content.max_cape"
+
+[[item]]
+id = "obj.skillcape_max_zamorak2_trouver"
+inherit = "obj.skillcape_max_zamorak2_trouver"
+contentGroup = "content.max_cape"
+
+[[item]]
+id = "obj.skillcape_max_guthix2_trouver"
+inherit = "obj.skillcape_max_guthix2_trouver"
+contentGroup = "content.max_cape"
+
+[[item]]
+id = "obj.skillcape_max_mythical"
+inherit = "obj.skillcape_max_mythical"
+contentGroup = "content.max_cape"
