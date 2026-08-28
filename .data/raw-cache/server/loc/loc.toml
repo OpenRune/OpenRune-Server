@@ -1857,3 +1857,279 @@ contentGroup = "content.shooting_star"
 id = "loc.star_size_one_star"
 inherit = "loc.star_size_one_star"
 contentGroup = "content.shooting_star"
+
+[[object]]
+id = "loc.ahoy_bankbooth"
+inherit = "loc.ahoy_bankbooth"
+contentGroup = "content.bank_booth"
+
+[[object]]
+id = "loc.ahoy_bankbooth_deadman"
+inherit = "loc.ahoy_bankbooth_deadman"
+contentGroup = "content.bank_booth"
+
+[[object]]
+id = "loc.ahoy_bankbooth_multi"
+inherit = "loc.ahoy_bankbooth_multi"
+contentGroup = "content.bank_booth"
+
+[[object]]
+id = "loc.aide_bankbooth_deadman"
+inherit = "loc.aide_bankbooth_deadman"
+contentGroup = "content.bank_booth"
+
+[[object]]
+id = "loc.archeeus_bank_booth_open_01"
+inherit = "loc.archeeus_bank_booth_open_01"
+contentGroup = "content.bank_booth"
+
+[[object]]
+id = "loc.archeeus_bank_booth_open_02"
+inherit = "loc.archeeus_bank_booth_open_02"
+contentGroup = "content.bank_booth"
+
+[[object]]
+id = "loc.archeeus_bank_booth_open_03"
+inherit = "loc.archeeus_bank_booth_open_03"
+contentGroup = "content.bank_booth"
+
+[[object]]
+id = "loc.archeeus_bank_booth_open_04"
+inherit = "loc.archeeus_bank_booth_open_04"
+contentGroup = "content.bank_booth"
+
+[[object]]
+id = "loc.bankbooth"
+inherit = "loc.bankbooth"
+contentGroup = "content.bank_booth"
+
+[[object]]
+id = "loc.bankbooth_ap1"
+inherit = "loc.bankbooth_ap1"
+contentGroup = "content.bank_booth"
+
+[[object]]
+id = "loc.bankbooth_deadman"
+inherit = "loc.bankbooth_deadman"
+contentGroup = "content.bank_booth"
+
+[[object]]
+id = "loc.bankbooth_multi"
+inherit = "loc.bankbooth_multi"
+contentGroup = "content.bank_booth"
+
+[[object]]
+id = "loc.burgh_bank_booth_multiloc"
+inherit = "loc.burgh_bank_booth_multiloc"
+contentGroup = "content.bank_booth"
+
+[[object]]
+id = "loc.burgh_bankbooth_repaired"
+inherit = "loc.burgh_bankbooth_repaired"
+contentGroup = "content.bank_booth"
+
+[[object]]
+id = "loc.canafis_bank_booth_private"
+inherit = "loc.canafis_bank_booth_private"
+contentGroup = "content.bank_booth"
+
+[[object]]
+id = "loc.canafis_bankbooth"
+inherit = "loc.canafis_bankbooth"
+contentGroup = "content.bank_booth"
+
+[[object]]
+id = "loc.conch_tortugan_bankbooth01"
+inherit = "loc.conch_tortugan_bankbooth01"
+contentGroup = "content.bank_booth"
+
+[[object]]
+id = "loc.contact_bank_booth"
+inherit = "loc.contact_bank_booth"
+contentGroup = "content.bank_booth"
+
+[[object]]
+id = "loc.contact_bank_booth_deadman"
+inherit = "loc.contact_bank_booth_deadman"
+contentGroup = "content.bank_booth"
+
+[[object]]
+id = "loc.contact_bank_booth_multi"
+inherit = "loc.contact_bank_booth_multi"
+contentGroup = "content.bank_booth"
+
+[[object]]
+id = "loc.contact_private_bank_booth"
+inherit = "loc.contact_private_bank_booth"
+contentGroup = "content.bank_booth"
+
+[[object]]
+id = "loc.corscurs_bankbooth_multi"
+inherit = "loc.corscurs_bankbooth_multi"
+contentGroup = "content.bank_booth"
+
+[[object]]
+id = "loc.darkm_bankbooth"
+inherit = "loc.darkm_bankbooth"
+contentGroup = "content.bank_booth"
+
+[[object]]
+id = "loc.dorgesh_bank_booth"
+inherit = "loc.dorgesh_bank_booth"
+contentGroup = "content.bank_booth"
+
+[[object]]
+id = "loc.dwarf_keldagrim_bankbooth"
+inherit = "loc.dwarf_keldagrim_bankbooth"
+contentGroup = "content.bank_booth"
+
+[[object]]
+id = "loc.elid_bankbooth"
+inherit = "loc.elid_bankbooth"
+contentGroup = "content.bank_booth"
+
+[[object]]
+id = "loc.fai_falador_bankbooth"
+inherit = "loc.fai_falador_bankbooth"
+contentGroup = "content.bank_booth"
+
+[[object]]
+id = "loc.fai_falador_bankbooth_deadman"
+inherit = "loc.fai_falador_bankbooth_deadman"
+contentGroup = "content.bank_booth"
+
+[[object]]
+id = "loc.fai_falador_bankbooth_multi"
+inherit = "loc.fai_falador_bankbooth_multi"
+contentGroup = "content.bank_booth"
+
+[[object]]
+id = "loc.fai_varrock_bank_booth_private"
+inherit = "loc.fai_varrock_bank_booth_private"
+contentGroup = "content.bank_booth"
+
+[[object]]
+id = "loc.fai_varrock_bankbooth_deadman"
+inherit = "loc.fai_varrock_bankbooth_deadman"
+contentGroup = "content.bank_booth"
+
+[[object]]
+id = "loc.fai_varrock_bankbooth_multi"
+inherit = "loc.fai_varrock_bankbooth_multi"
+contentGroup = "content.bank_booth"
+
+[[object]]
+id = "loc.fever_bankbooth"
+inherit = "loc.fever_bankbooth"
+contentGroup = "content.bank_booth"
+
+[[object]]
+id = "loc.gim_island_bankbooth"
+inherit = "loc.gim_island_bankbooth"
+contentGroup = "content.bank_booth"
+
+[[object]]
+id = "loc.kr_bankbooth"
+inherit = "loc.kr_bankbooth"
+contentGroup = "content.bank_booth"
+
+[[object]]
+id = "loc.kr_bankbooth_deadman"
+inherit = "loc.kr_bankbooth_deadman"
+contentGroup = "content.bank_booth"
+
+[[object]]
+id = "loc.kr_bankbooth_multi"
+inherit = "loc.kr_bankbooth_multi"
+contentGroup = "content.bank_booth"
+
+[[object]]
+id = "loc.lova_bank_booth_01"
+inherit = "loc.lova_bank_booth_01"
+contentGroup = "content.bank_booth"
+
+[[object]]
+id = "loc.lova_bank_booth_02"
+inherit = "loc.lova_bank_booth_02"
+contentGroup = "content.bank_booth"
+
+[[object]]
+id = "loc.lova_bank_booth_03"
+inherit = "loc.lova_bank_booth_03"
+contentGroup = "content.bank_booth"
+
+[[object]]
+id = "loc.lova_bank_booth_04"
+inherit = "loc.lova_bank_booth_04"
+contentGroup = "content.bank_booth"
+
+[[object]]
+id = "loc.lunar_moonclan_bankbooth"
+inherit = "loc.lunar_moonclan_bankbooth"
+contentGroup = "content.bank_booth"
+
+[[object]]
+id = "loc.newbiebankbooth"
+inherit = "loc.newbiebankbooth"
+contentGroup = "content.bank_booth"
+
+[[object]]
+id = "loc.pest_bankbooth"
+inherit = "loc.pest_bankbooth"
+contentGroup = "content.bank_booth"
+
+[[object]]
+id = "loc.pest_bankbooth_deadman"
+inherit = "loc.pest_bankbooth_deadman"
+contentGroup = "content.bank_booth"
+
+[[object]]
+id = "loc.pest_bankbooth_multi"
+inherit = "loc.pest_bankbooth_multi"
+contentGroup = "content.bank_booth"
+
+[[object]]
+id = "loc.piscarilius_bank_booth_01"
+inherit = "loc.piscarilius_bank_booth_01"
+contentGroup = "content.bank_booth"
+
+[[object]]
+id = "loc.piscarilius_bank_booth_02"
+inherit = "loc.piscarilius_bank_booth_02"
+contentGroup = "content.bank_booth"
+
+[[object]]
+id = "loc.piscarilius_bank_booth_03"
+inherit = "loc.piscarilius_bank_booth_03"
+contentGroup = "content.bank_booth"
+
+[[object]]
+id = "loc.piscarilius_bank_booth_04"
+inherit = "loc.piscarilius_bank_booth_04"
+contentGroup = "content.bank_booth"
+
+[[object]]
+id = "loc.prif_bankbooth_open"
+inherit = "loc.prif_bankbooth_open"
+contentGroup = "content.bank_booth"
+
+[[object]]
+id = "loc.tob_surface_bankbooth"
+inherit = "loc.tob_surface_bankbooth"
+contentGroup = "content.bank_booth"
+
+[[object]]
+id = "loc.tut2_bankbooth"
+inherit = "loc.tut2_bankbooth"
+contentGroup = "content.bank_booth"
+
+
+[[object]]
+id = "loc.minnow_rowboat_access"
+inherit = "loc.minnow_rowboat_access"
+contentGroup = "content.minnow_rowboat_to_island"
+
+[[object]]
+id = "loc.minnow_rowboat_leave"
+inherit = "loc.minnow_rowboat_leave"
+contentGroup = "content.minnow_rowboat_to_guild"
