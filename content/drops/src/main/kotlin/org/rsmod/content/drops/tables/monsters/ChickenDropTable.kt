@@ -27,10 +27,6 @@ public val chickenDropTable: RSDropTable<Player, DropRollItem> = RSDropTable(
         32 weight ringNothing()
     },
     tertiaries = rsPlayerTertiaryTable {
-        1 outOf 1 weight "obj.trail_elite_riddle_key32" count 1 condition { player ->
-            // Drops Need Manual: Keys are only dropped when completing a medium clue scroll asking you to kill a Chicken.
-             true
-        }
         1 outOf 300 weight "obj.trail_clue_beginner" count 1 transformObj { player ->
              player.clueScrollTransformObj("obj.trail_clue_beginner")
         }

@@ -46,10 +46,6 @@ public val pirateDropTable: RSDropTable<Player, DropRollItem> = RSDropTable(
         1 weight SharedDropTables.gem
     },
     tertiaries = rsPlayerTertiaryTable {
-        1 outOf 1 weight "obj.trail_elite_riddle_key32" count 1 condition { player ->
-            // Drops Need Manual: Only dropped when completing a medium clue scroll asking to kill a pirate.
-             true
-        }
         1 outOf 6 weight "obj.looting_bag" count 1 condition {
             player -> player.shouldDropLootingBag()
         }

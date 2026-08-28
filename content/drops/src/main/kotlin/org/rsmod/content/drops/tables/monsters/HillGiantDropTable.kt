@@ -63,10 +63,6 @@ public val hillGiantDropTable: RSDropTable<Player, DropRollItem> = RSDropTable(
         18 weight SharedDropTables.seed
     },
     tertiaries = rsPlayerTertiaryTable {
-        1 outOf 1 weight "obj.trail_elite_riddle_key32" count 1 condition { player ->
-            // Drops Need Manual: The key is only dropped when completing a medium clue scroll asking the player to kill a Hill Giant.
-             true
-        }
         1 outOf 5 weight "obj.looting_bag" count 1 condition {
             player -> player.shouldDropLootingBag()
         }

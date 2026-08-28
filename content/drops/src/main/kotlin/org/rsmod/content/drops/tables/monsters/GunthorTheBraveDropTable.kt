@@ -45,10 +45,6 @@ public val gunthorTheBraveDropTable: RSDropTable<Player, DropRollItem> = RSDropT
         1 weight SharedDropTables.gem
     },
     tertiaries = rsPlayerTertiaryTable {
-        1 outOf 1 weight "obj.trail_elite_riddle_key32" count 1 condition { player ->
-            // Drops Need Manual: Keys are only dropped when completing a medium clue scroll asking to kill a barbarian.
-             true
-        }
         1 outOf 30 weight "obj.trail_clue_beginner" count 1 transformObj { player ->
              player.clueScrollTransformObj("obj.trail_clue_beginner")
         }
