@@ -289,7 +289,7 @@ Found the same way `settings.gradle.kts` finds them: any dir with a `build.gradl
 | `bosses/kril` | 2 | 191 | 0 | 0 | 2026-08-03 |
 | `bosses/scurrius` | 2 | 403 | 0 | 0 | 2026-07-07 |
 | `bosses/zilyana` | 2 | 165 | 0 | 0 | 2026-08-03 |
-| `drops` | 255 | 14,460 | 0 | 0 | 2026-08-18 |
+| `drops` | 255 | 14,370 | 0 | 0 | 2026-08-28 |
 | `events/shooting-stars` | 9 | 1,261 | 0 | 0 | 2026-08-21 |
 | `events/shooting-stars/pack` | 2 | 440 | 0 | 0 | 2026-08-21 |
 | `generic/generic-locs` | 20 | 1,165 | 0 | 1 | 2026-07-19 |
@@ -312,7 +312,7 @@ Found the same way `settings.gradle.kts` finds them: any dir with a `build.gradl
 | `interfaces/spellbook` | 1 | 45 | 0 | 0 | 2026-06-18 |
 | `interfaces/worldmap` | 1 | 104 | 0 | 0 | 2026-07-04 |
 | `interfaces/xp-drops` | 1 | 42 | 0 | 0 | 2026-08-19 |
-| `other/commands` | 3 | 1,097 | 0 | 0 | 2026-08-19 |
+| `other/commands` | 4 | 1,155 | 0 | 0 | 2026-08-28 |
 | `other/consumables` | 38 | 8,687 | 0 | 0 | 2026-08-04 |
 | `other/dave/pack` | 1 | 6 | 0 | 0 | 2026-08-27 |
 | `other/discord` | 2 | 80 | 0 | 0 | 2026-07-01 |
@@ -320,6 +320,8 @@ Found the same way `settings.gradle.kts` finds them: any dir with a `build.gradl
 | `other/login` | 1 | 183 | 0 | 0 | 2026-07-14 |
 | `other/mapclock` | 1 | 49 | 0 | 0 | 2026-08-18 |
 | `other/sandstorm` | 2 | 364 | 0 | 0 | 2026-08-18 |
+| `other/spawn` | 1 | 358 | 0 | 0 | 2026-08-28 |
+| `other/spawn/pack` | 2 | 165 | 0 | 0 | 2026-08-28 |
 | `other/special-attacks` | 4 | 466 | 0 | 0 | 2026-05-03 |
 | `other/special-weapons` | 9 | 750 | 0 | 1 | 2026-07-27 |
 | `other/windmill` | 1 | 43 | 0 | 0 | 2026-05-03 |
