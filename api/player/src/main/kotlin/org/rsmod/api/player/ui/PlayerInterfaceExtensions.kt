@@ -306,7 +306,9 @@ private fun Player.openModal(interf: String, internal: String, eventBus: EventBu
 }
 
 public fun Player.setColour(component: String, colour: Color) {
-    client.write(IfSetColour(component.asRSCM(),colour.red, colour.green, colour.blue))
+    // IfSetColour is 5 bits per channel; the (Int, Color) overload does the 0-255 -> 0-31
+    // conversion correctly, the raw (Int, Int, Int, Int) one does not.
+    client.write(IfSetColour(component.asRSCM(), colour))
 }
 
 private fun Player.openOverlay(interf: String, internal: String, eventBus: EventBus) {

@@ -1,2 +1,2 @@
 45500	[clientscript,spawn_menu_init]
-45501	[clientscript,spawn_menu_set_tooltip]
+45503	[clientscript,spawn_menu_set_scrollsize]

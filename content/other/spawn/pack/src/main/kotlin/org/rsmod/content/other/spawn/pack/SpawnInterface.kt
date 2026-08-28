@@ -8,170 +8,116 @@ import dev.openrune.definition.constants.ConstantProvider
 import dev.openrune.definition.type.widget.IfEvent
 
 /**
- * Admin item-spawner interface (`::spawn`): a search button, a persistent quantity-mode row, and a
- * scrollable grid of item slots. Items are pushed into the slots server-side with `ifSetObj` (see
- * `SpawnMenuScript`). Chrome (frame/title/close button) and the scrollbar are both driven by native
- * CS2 procs (`~stoneborder`, `~scrollbar_vertical`) - see [buildSpawnMenuInterface]'s doc comment
- * for the full story on getting CS2 working at all in this project.
+ * Admin item-spawner interface (`::spawn`): search button, quantity/note row, scrollable result
+ * grid. Items are pushed into slots server-side via `ifSetObj` (see `SpawnMenuScript`). Chrome and
+ * scrollbar are native CS2 procs (`~stoneborder`, `~scrollbar_vertical`).
  *
- * Structural rule #1, from `origin/toolbelt`'s `buildToolbeltInterface()` (the only other
- * from-scratch interface anyone's gotten working here): every top-level declaration is a
- * `layer(...)` block - never a bare `graphic`/`text`/`rectangle` at the interface root.
+ * Structural rules:
+ * - Every top-level declaration must be a `layer(...)` block, never a bare component.
+ * - `border` must stay empty - `~stoneborder` clears its children on load.
+ * - `content` (controls) and `grid` (results) are separate layers so the grid can scroll
+ *   independently.
  *
- * Structural rule #2, found the hard way after enabling CS2: `border` must be chrome-only, empty of
- * real content - `~stoneborder` appears to manage/clear `$border`'s own children on load, so
- * anything nested inside it vanishes even though the frame itself renders. Real content lives in
- * SIBLING layers instead, matching toolbelt's own shape (`border`, `search`, `content`,
- * `scrollbar`, `highlight` as five separate top-level layers, not nested).
+ * Addressing: every component referenced by name needs an entry in `gamevals.toml`, keyed
+ * `<interface>:<component>`. `buildInterface` injects a hidden `"universe"` root at key 0, so a
+ * real packed id is `(interfaceId shl 16) or (childIndex + 1)`. After any structural change here,
+ * regenerate `gamevals.toml` and verify with `::spawndebug`.
  *
- * Structural rule #3 (this pass): the scrollable grid needs its own dedicated layer, separate from
- * the non-scrolling search/quantity controls above it - `content` (controls) stays fixed, `grid`
- * (slots) scrolls independently via `~scrollbar_vertical` wiring a `scrollbar` sibling layer to it.
- *
- * Three hard-won addressing details this file depends on, all verified against the packed cache
- * rather than assumed (getting any wrong fails *silently* - the interface renders but does nothing):
- *
- * 1. Every component referenced by name from Kotlin needs an explicit `[gamevals.component]` entry
- *    in the content module's `gamevals.toml`, keyed `<interface>:<component>`.
- * 2. `buildInterface` auto-injects a hidden root component named `"universe"` at key `0` - every
- *    real component's packed id is `(interfaceId shl 16) or (childIndex + 1)`, not `childIndex`
- *    alone. **After any structural change here, regenerate `gamevals.toml` and verify the new
- *    values against a fresh `::spawndebug` dump** (`ServerCacheManager.getInterface(id).components`)
- *    - don't just recompute the formula by hand again, that's exactly how this went wrong twice.
- * 3. `events` must be built from the `Deprecated*` `IfEvent` variants, not the modern ones - see
- *    [CLICK_EVENTS].
- *
- * Also: after any cache rebuild, **fully close and reopen the client** before testing, not just
- * relog - it can keep a stale interface definition cached under the same numeric id, showing old
- * content even when the server-side data (confirmed via `::spawndebug`) is already correct.
+ * Close and reopen the client after any cache rebuild - it can hold a stale interface definition.
  */
-// Matches the real native `component.toplevel_osrs_stretch:mainmodal` width/height exactly, read
-// straight from the cache (see SpawnMenuScript's `dumpInterface()`/`::spawndebug`) rather than
-// guessed - any mismatch either clips the frame or leaves it looking small/off-center.
 private const val WIDTH = 512
 private const val HEIGHT = 334
 
-/** Toolbelt's own title-bar height, reused since `~stoneborder` draws the same style header. */
 private const val TITLE_H = 36
 
-/** Height of the non-scrolling search/quantity/status row, directly below the title bar. */
-private const val CONTROLS_H = 64
+private const val ROW_Y = 4
+private const val STATUS_Y = ROW_Y + 20 + 4
+private const val CONTROLS_H = STATUS_Y + 12 + 4
 
 private const val SCROLLBAR_W = 16
+private const val SCROLLBAR_GAP = 2
+private const val INSET = 10
 
-/** Right-aligned with an 8px margin, same as before - now derived from WIDTH instead of hardcoded
- * so it stays right-aligned now that WIDTH grew from 420 to 512. */
-private const val SEARCH_X = WIDTH - 100 - 8
+private const val CONTENT_W = WIDTH - INSET * 2
+private const val SEARCH_X = CONTENT_W - 100 - 8
+private const val GRID_W = WIDTH - INSET * 2 - SCROLLBAR_W - SCROLLBAR_GAP
 
-// Sized to fill the grid layer's real content width (WIDTH - SCROLLBAR_W = 496) with a symmetric
-// margin: 13 * SLOT_PITCH(36) = 468px used, 28px margin split 14px each side. If WIDTH/SCROLLBAR_W
-// change, recompute this pair together - they're what keeps the grid from being lopsided.
-private const val COLS = 13
+private const val CARD_COLS = 2
+private const val CARD_GAP = 6
+private val CARD_W = (GRID_W - CARD_GAP) / CARD_COLS
+private const val CARD_H = 42
+private const val CARD_PITCH_Y = CARD_H + CARD_GAP
+
 private const val SLOT_SIZE = 32
-private const val SLOT_PITCH = 36
-private const val GRID_X = 14
-private const val GRID_Y = 4
+private const val ICON_MARGIN = 6
 
-/** Rows actually visible in the viewport at once - the grid layer itself is only this tall. */
-private const val VISIBLE_ROWS = 6
-private const val VIEWPORT_H = VISIBLE_ROWS * SLOT_PITCH
+private const val COLOUR_CARD_BORDER = 0x5a4a2f
+private const val COLOUR_CARD_FILL = 0x2b2318
 
-/** Total rows the scrollable grid holds - well beyond the old hard 72-item cap. */
-private const val TOTAL_ROWS = 15
+private const val VIEWPORT_H = HEIGHT - TITLE_H - CONTROLS_H - INSET
 
-/** Must stay in sync with `SpawnMenuScript`'s copy of this value. */
-const val SLOT_COUNT = COLS * TOTAL_ROWS
+/** 50 rows * 2 cols = 100 max results. */
+private const val TOTAL_ROWS = 50
 
-/** Passed to `if_setscrollsize` in the init cs2 script - the grid's full scrollable height. */
-const val GRID_CONTENT_HEIGHT = TOTAL_ROWS * SLOT_PITCH
+/** Must stay in sync with `SpawnMenuScript`. */
+const val SLOT_COUNT = CARD_COLS * TOTAL_ROWS
+
+const val GRID_CONTENT_HEIGHT = TOTAL_ROWS * CARD_PITCH_Y
 
 const val QTY_BUTTON_COUNT = 4
-
-/** Continues the same row/spacing rhythm as the QTY_BUTTON_COUNT quantity buttons (8 + i*52). */
 private const val NOTE_X = 8 + QTY_BUTTON_COUNT * 52
 
 private const val BLANK_SPRITE = 3023 // sprites.blank
-
 private const val COLOUR_TEXT = 0xffffff
-private const val COLOUR_BOX = 0x2b2318
-private const val COLOUR_ACTIVE = 0x7a1f1f
 
 private val QTY_LABELS = listOf("1", "100", "1000", "X")
 
 /**
- * `ComponentType.hasEvent()` maps `Op1` through `toV1Event()` to `DeprecatedOp1` (bitmask `2`) and
- * tests it against a **32-bit** `events` field. `IfEvent.Op1.bitmask` is `1L shl 32`, so the
- * otherwise-obvious `IfEvent.Op1.bitmask.toInt()` truncates to exactly `0` and the component ends
- * up with no events at all.
- *
- * This matters here specifically because these are *static* components. `If3ButtonHandler` routes
- * a click through `InterfaceEvents.isEnabled(...)`, which for `comsub == -1` (what a component with
- * no subcomponents sends) consults `component.hasEvent(...)` - the value baked into the cache by
- * this file - and ignores any runtime `ifSetEvents` call entirely.
+ * `hasEvent()` checks `DeprecatedOp1` (bitmask 2) against a 32-bit `events` field. The modern
+ * `IfEvent.Op1.bitmask` is `1L shl 32` and truncates to 0 when cast to Int, so it must be the
+ * deprecated variant here.
  */
 private val CLICK_EVENTS = IfEvent.DeprecatedOp1.bitmask.toInt()
 
-/**
- * Getting CS2 working at all took three real fixes, in order:
- * 1. `PackCs2` is disabled by default in this repo's `or-cache` (`//Enable this for cs2`) - just
- *    nothing needed it yet. Uncommented it, and its required companion task `UnpackDefaultCs2`
- *    (undocumented - only surfaced via a runtime error demanding it be present in the same block).
- * 2. First real compile hit `Unable to add basic: type=COMPONENT, name=spawn_menu:universe` -
- *    reproduced with zero custom cs2 content, just from any `buildInterface` interface existing.
- *    Fixed per Mark_ (maintainer, Discord): pin `revision: 240.2` in `game.yml` (Neptune, the CS2
- *    compiler, doesn't fully support the plain `240` default yet) and do a genuinely fresh cache
- *    install (`:or-cache:freshCache`, not incremental `buildCache`) after clearing stale CS2
- *    install state (`:or-cache:cleanCs2`).
- * 3. Past that, `Unable to find id for ClientScriptSymbol(...)` at write time - `gamevals.toml`'s
- *    `[gamevals.clientscript]` entry only feeds the *server's* RSCM registry, not the CS2
- *    *compiler's* own symbol table. That needs its own `.sym` file
- *    (`pack/cs2/symbols/clientscript.sym`, format `<id>\t[clientscript,name]`, matching toolbelt's).
- */
 fun buildSpawnMenuInterface() =
     buildInterface(internalName = "interface.spawn_menu", width = WIDTH, height = HEIGHT) {
         val iface = ConstantProvider.getMapping("interface.spawn_menu")
         val initCs = ConstantProvider.getMapping("clientscript.spawn_menu_init")
-        // Real packed key = childIndex + 1 (the hidden "universe" root consumes index 0) - see the
-        // file doc comment. childIndex is NOT simply "position among top-level layers" - each
-        // layer's OWN children consume indices before the next sibling layer's index, so this has
-        // to be computed by walking the full declaration order, not assumed (a Python one-liner
-        // walking the same order this file declares components in - see gamevals.toml's comment -
-        // not hand arithmetic). border=0, content=1 (+ 18 children: searchbg, searchlbl, qtybg0-3,
-        // qtyhl0-3, qtylbl0-3, notebg, notehl, notelbl, status = indices 2-19), grid=20
-        // (+ SLOT_COUNT children = 21..(21+SLOT_COUNT-1)), scrollbar=21+SLOT_COUNT.
+        // Packed key = childIndex + 1. border=0, content=1 (+19 children, indices 2-20),
+        // grid=21 (+SLOT_COUNT*4 children), scrollbar=21+1+SLOT_COUNT*4.
         fun comp(childIndex: Int) = (iface shl 16) or (childIndex + 1)
 
-        val gridChildIndex = 20
-        val scrollbarChildIndex = gridChildIndex + 1 + SLOT_COUNT
+        val gridChildIndex = 21
+        val scrollbarChildIndex = gridChildIndex + 1 + SLOT_COUNT * 4
 
         onLoadListener { arrayOf(initCs, comp(0), comp(gridChildIndex), comp(scrollbarChildIndex)) }
 
-        // Chrome only - see structural rule #2 above. No children nested here.
         layer("border") { // child 0
             position { 0 to 0 }
             size { WIDTH to HEIGHT }
             noClickThrough { true }
         }
 
-        // Non-scrolling controls: search button + quantity row + note toggle + status text.
-        //
-        // Quantity/note buttons match the real bank's own style: each is a stack of three
-        // components at the same position - a static dark box (bg), a hidden-unless-active
-        // red overlay (hl), then the clickable text on top. `addOption`/`events` stay on the
-        // TEXT component (not the boxes) so clicking anywhere in the box hits the same target.
         layer("content") { // child 1
-            position { 0 to TITLE_H }
-            size { WIDTH to CONTROLS_H }
+            position { INSET to TITLE_H }
+            size { CONTENT_W to CONTROLS_H }
+
+            rectangle("searchborder") {
+                position { SEARCH_X to ROW_Y }
+                size { 100 to 20 }
+                color(COLOUR_CARD_BORDER)
+                filled { true }
+            }
 
             rectangle("searchbg") {
-                position { SEARCH_X to 4 }
-                size { 100 to 20 }
-                color(COLOUR_BOX)
+                position { (SEARCH_X + 1) to (ROW_Y + 1) }
+                size { 98 to 18 }
+                color(COLOUR_CARD_FILL)
                 filled { true }
             }
 
             text("searchlbl") {
-                position { SEARCH_X to 4 }
+                position { SEARCH_X to ROW_Y }
                 size { 100 to 20 }
                 display { "Search" }
                 font { FontType.FONT_REGULAR }
@@ -184,29 +130,26 @@ fun buildSpawnMenuInterface() =
             }
 
             for (i in 0 until QTY_BUTTON_COUNT) {
-                rectangle("qtybg$i") {
-                    position { (8 + i * 52) to 28 }
+                rectangle("qtyborder$i") {
+                    position { (8 + i * 52) to ROW_Y }
                     size { 48 to 20 }
-                    color(COLOUR_BOX)
+                    color(COLOUR_CARD_BORDER)
                     filled { true }
                 }
             }
 
-            // hidden by default; shown over whichever quantity button is currently active.
             for (i in 0 until QTY_BUTTON_COUNT) {
-                rectangle("qtyhl$i") {
-                    position { (8 + i * 52) to 28 }
-                    size { 48 to 20 }
-                    color(COLOUR_ACTIVE)
+                rectangle("qtybg$i") {
+                    position { (9 + i * 52) to (ROW_Y + 1) }
+                    size { 46 to 18 }
+                    color(COLOUR_CARD_FILL)
                     filled { true }
-                    hide { true }
                 }
             }
 
-            // text is replaced at runtime to highlight the active mode.
             for (i in 0 until QTY_BUTTON_COUNT) {
                 text("qtylbl$i") {
-                    position { (8 + i * 52) to 28 }
+                    position { (8 + i * 52) to ROW_Y }
                     size { 48 to 20 }
                     display { QTY_LABELS[i] }
                     font { FontType.FONT_REGULAR }
@@ -219,26 +162,22 @@ fun buildSpawnMenuInterface() =
                 }
             }
 
-            // Note-mode toggle - spawns the item's noted counterpart instead of the item itself
-            // when on. Same 3-layer bg/hl/lbl stack as the quantity buttons, just boolean instead
-            // of multi-value (one hl, toggled by whether note mode is currently on).
-            rectangle("notebg") {
-                position { NOTE_X to 28 }
+            rectangle("noteborder") {
+                position { NOTE_X to ROW_Y }
                 size { 48 to 20 }
-                color(COLOUR_BOX)
+                color(COLOUR_CARD_BORDER)
                 filled { true }
             }
 
-            rectangle("notehl") {
-                position { NOTE_X to 28 }
-                size { 48 to 20 }
-                color(COLOUR_ACTIVE)
+            rectangle("notebg") {
+                position { (NOTE_X + 1) to (ROW_Y + 1) }
+                size { 46 to 18 }
+                color(COLOUR_CARD_FILL)
                 filled { true }
-                hide { true }
             }
 
             text("notelbl") {
-                position { NOTE_X to 28 }
+                position { NOTE_X to ROW_Y }
                 size { 48 to 20 }
                 display { "Note" }
                 font { FontType.FONT_REGULAR }
@@ -251,8 +190,8 @@ fun buildSpawnMenuInterface() =
             }
 
             text("status") {
-                position { 8 to 50 }
-                size { (WIDTH - 16) to 12 }
+                position { 8 to STATUS_Y }
+                size { (CONTENT_W - 16) to 12 }
                 display { "" }
                 font { FontType.FONT_SMALL }
                 color(COLOUR_TEXT)
@@ -262,34 +201,58 @@ fun buildSpawnMenuInterface() =
             }
         }
 
-        // Scrollable grid - only VIEWPORT_H tall, but holds SLOT_COUNT slots across TOTAL_ROWS.
-        // `if_setscrollsize`/`~scrollbar_vertical` (called from the init cs2 script against this
-        // layer + the "scrollbar" sibling below) do the actual scrolling; nothing here needs a
-        // baked scrollHeight DSL property.
         layer("grid") { // child 2
-            position { 0 to (TITLE_H + CONTROLS_H) }
-            size { (WIDTH - SCROLLBAR_W) to VIEWPORT_H }
+            position { INSET to (TITLE_H + CONTROLS_H) }
+            size { GRID_W to VIEWPORT_H }
 
             for (i in 0 until SLOT_COUNT) {
-                val col = i % COLS
-                val row = i / COLS
+                val col = i % CARD_COLS
+                val row = i / CARD_COLS
+                val cellX = col * (CARD_W + CARD_GAP)
+                val cellY = row * CARD_PITCH_Y
+
+                rectangle("cardborder$i") {
+                    position { cellX to cellY }
+                    size { CARD_W to CARD_H }
+                    color(COLOUR_CARD_BORDER)
+                    filled { true }
+                }
+
+                rectangle("cardbg$i") {
+                    position { (cellX + 1) to (cellY + 1) }
+                    size { (CARD_W - 2) to (CARD_H - 2) }
+                    color(COLOUR_CARD_FILL)
+                    filled { true }
+                }
+
                 graphic("slot$i") {
-                    position { (GRID_X + col * SLOT_PITCH) to (GRID_Y + row * SLOT_PITCH) }
+                    position { (cellX + ICON_MARGIN) to (cellY + (CARD_H - SLOT_SIZE) / 2) }
                     size { SLOT_SIZE to SLOT_SIZE }
                     spriteId { BLANK_SPRITE }
-                    // addOption(_, true) is what makes this a primary left-click op and renders
-                    // the hover box at all. The "Spawn <item name>" text itself can't be baked
-                    // here statically - it's set dynamically per slot at runtime instead, see
-                    // SpawnMenuScript.renderSlots and [clientscript,spawn_menu_set_tooltip].cs2.
+                    shadowColor(0x333333)
+                    addOption("Spawn", true)
+                    events = CLICK_EVENTS
+                }
+
+                // Name is set at runtime (SpawnMenuScript.renderSlots); shares slot$i's op so
+                // clicking the name spawns the item too.
+                text("slotname$i") {
+                    position { (cellX + ICON_MARGIN + SLOT_SIZE + 8) to cellY }
+                    size { (CARD_W - ICON_MARGIN - SLOT_SIZE - 8 - 6) to CARD_H }
+                    display { "" }
+                    font { FontType.FONT_SMALL }
+                    color(COLOUR_TEXT)
+                    textShadowed { true }
+                    xAllignment { 0 }
+                    yAllignment { 1 }
                     addOption("Spawn", true)
                     events = CLICK_EVENTS
                 }
             }
         }
 
-        // Drag handle track - wired to "grid" by ~scrollbar_vertical in the init cs2 script.
         layer("scrollbar") { // child 3
-            position { (WIDTH - SCROLLBAR_W) to (TITLE_H + CONTROLS_H) }
+            position { (WIDTH - INSET - SCROLLBAR_W) to (TITLE_H + CONTROLS_H) }
             size { SCROLLBAR_W to VIEWPORT_H }
         }
     }

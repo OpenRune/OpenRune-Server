@@ -6,6 +6,7 @@ import dev.openrune.rscm.RSCMType
 import dev.openrune.types.ItemServerType
 import dev.or2.central.account.Rights
 import jakarta.inject.Inject
+import java.awt.Color
 import java.util.WeakHashMap
 import org.rsmod.api.invtx.invAdd
 import org.rsmod.api.player.output.mes
@@ -14,6 +15,7 @@ import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.protect.ProtectedAccessLauncher
 import org.rsmod.api.player.ui.ifOpenMainModal
 import org.rsmod.api.player.ui.ifSetObj
+import org.rsmod.api.player.ui.setColour
 import org.rsmod.api.script.onCommand
 import org.rsmod.api.script.onIfClose
 import org.rsmod.api.script.onIfModalButton
@@ -24,25 +26,29 @@ import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
 /**
- * `::spawn` - admin item search-and-spawn grid.
+ * `::spawn` - admin item search-and-spawn grid. Set a quantity mode, search, then click as many
+ * result cards as you like.
  *
- * Set a quantity mode once (1 / 100 / 1000 / custom), search once, then click as many result icons
- * as you like: each click spawns that quantity instantly and the interface stays open. This is the
- * point of the whole thing over the old prompt-loop (`::spawnold`), which asked for a quantity
- * again for every single item.
- *
- * The interface itself is defined in the `spawn-pack` module (`SpawnInterface.kt`); read the notes
- * there before changing either file - the component names used here only resolve because of the
- * `[gamevals.component]` entries that mirror that file's declaration order.
+ * The interface is defined in the `spawn-pack` module (`SpawnInterface.kt`) - component names
+ * here only resolve because of the `[gamevals.component]` entries that mirror its declaration
+ * order.
  */
 private const val INTERFACE = "interface.spawn_menu"
 
-/** Must stay in sync with `SpawnInterface.kt` (COLS * TOTAL_ROWS = 13 * 15). */
-private const val SLOT_COUNT = 195
+/** Must stay in sync with `SpawnInterface.kt` (CARD_COLS * TOTAL_ROWS). */
+private const val SLOT_COUNT = 100
+
+/** Must stay in sync with `SpawnInterface.kt`'s CARD_COLS/CARD_PITCH_Y. */
+private const val CARD_COLS = 2
+private const val CARD_PITCH_Y = 48
 
 private const val QTY_BUTTON_COUNT = 4
 private const val QTY_CUSTOM_INDEX = 3
 private val QTY_PRESETS = intArrayOf(1, 100, 1000)
+
+/** Must stay in sync with `SpawnInterface.kt`'s COLOUR_CARD_BORDER/COLOUR_CARD_FILL border. */
+private val COLOUR_BUTTON_NORMAL = Color(0x5a4a2f)
+private val COLOUR_BUTTON_ACTIVE = Color(0xff981f)
 
 private class SpawnState {
     var quantity: Int = 1
@@ -71,9 +77,6 @@ class SpawnMenuScript @Inject constructor(private val protectedAccess: Protected
 
         onIfClose(INTERFACE) { states.remove(player) }
 
-        // The quantity row and search control are clickable text directly (matching how the real
-        // bank's own quantity row is built, see SpawnInterface.kt), not a separate graphic button
-        // sitting behind the label.
         onIfModalButton("component.spawn_menu:searchlbl") { runSearch() }
 
         for (i in 0 until QTY_BUTTON_COUNT) {
@@ -84,6 +87,7 @@ class SpawnMenuScript @Inject constructor(private val protectedAccess: Protected
 
         for (i in 0 until SLOT_COUNT) {
             onIfModalButton("component.spawn_menu:slot$i") { spawnSlot(i) }
+            onIfModalButton("component.spawn_menu:slotname$i") { spawnSlot(i) }
         }
     }
 
@@ -91,14 +95,8 @@ class SpawnMenuScript @Inject constructor(private val protectedAccess: Protected
         protectedAccess.launch(player) { open() }
     }
 
-    /**
-     * `::spawndebug` - dumps the real packed component list of `interface.spawn_menu`, plus the
-     * native `mainmodal`'s real width/height, straight from the loaded cache. Kept intentionally
-     * (not just a one-off): this is the fast, ground-truth way to verify `[gamevals.component]`
-     * ids and frame sizing for any custom interface in this codebase, rather than inferring the
-     * packed-id scheme or guessing dimensions and finding out wrong at runtime. See
-     * `SpawnInterface.kt`'s file doc comment for the addressing formula this verifies.
-     */
+    /** Dumps the packed component list of `interface.spawn_menu` and `mainmodal`'s real
+     * width/height, for verifying `[gamevals.component]` ids and frame sizing. */
     private fun Cheat.dumpInterface() {
         val mainmodalId = "component.toplevel_osrs_stretch:mainmodal".asRSCM(RSCMType.COMPONENT)
         val mainmodal = ServerCacheManager.fromComponent(mainmodalId)
@@ -146,17 +144,26 @@ class SpawnMenuScript @Inject constructor(private val protectedAccess: Protected
                 .filter { !it.isPlaceholder }
                 .filter { it.name.isNotBlank() && !it.name.equals("null", ignoreCase = true) }
                 .filter { it.name.contains(query, ignoreCase = true) }
-                // Shortest name first, so an exact-ish match ("Rune") outranks its many
-                // variants ("Rune platebody (t)") instead of being buried past the slot cap.
+                .toList()
+                // Several ids can share an exact display name (e.g. old "Air rune" duplicates) -
+                // collapse to one representative, preferring the GE-tradeable version.
+                .groupBy { it.name.lowercase() }
+                .values
+                .map { dupes ->
+                    dupes.firstOrNull { it.stockmarket }
+                        ?: dupes.firstOrNull { it.tradeable }
+                        ?: dupes.minBy { it.id }
+                }
+                // Shortest name first, so an exact match outranks its variants.
                 .sortedWith(compareBy({ it.name.length }, { it.name }, { it.id }))
                 .take(SLOT_COUNT)
-                .toList()
 
         state.slotItems.fill(null)
         for ((index, item) in matches.withIndex()) {
             state.slotItems[index] = item
         }
         renderSlots(state)
+        renderScrollSize(matches.size)
 
         val status =
             when {
@@ -176,7 +183,6 @@ class SpawnMenuScript @Inject constructor(private val protectedAccess: Protected
                 QTY_PRESETS[index]
             }
         renderQuantityLabels(state)
-        // Re-push the icons too: the count badge each slot draws is the spawn quantity.
         renderSlots(state)
     }
 
@@ -190,10 +196,8 @@ class SpawnMenuScript @Inject constructor(private val protectedAccess: Protected
         val state = state(player)
         val item = state.slotItems[index] ?: return
 
-        // Note mode: spawn the item's noted counterpart instead of the item itself. Mirrors real
-        // bank behaviour - not every item has one (`canCert` is the same check the bank itself
-        // uses, see ItemServerType.kt), and if it doesn't, say so and spawn nothing rather than
-        // silently falling back to the unnoted item.
+        // Note mode spawns the noted counterpart instead - not every item has one, and if it
+        // doesn't, say so rather than silently falling back to the unnoted item.
         val toSpawn =
             if (state.note) {
                 if (!item.canCert) {
@@ -219,21 +223,24 @@ class SpawnMenuScript @Inject constructor(private val protectedAccess: Protected
     }
 
     private fun ProtectedAccess.renderSlots(state: SpawnState) {
-        val tooltip = "clientscript.spawn_menu_set_tooltip".asRSCM(RSCMType.CLIENTSCRIPT)
         for (i in 0 until SLOT_COUNT) {
-            val target = "component.spawn_menu:slot$i"
+            val iconTarget = "component.spawn_menu:slot$i"
+            val nameTarget = "component.spawn_menu:slotname$i"
+            val borderTarget = "component.spawn_menu:cardborder$i"
+            val bgTarget = "component.spawn_menu:cardbg$i"
             val item = state.slotItems[i]
             if (item == null) {
-                ifSetHide(target, true)
+                ifSetHide(borderTarget, true)
+                ifSetHide(bgTarget, true)
+                ifSetHide(iconTarget, true)
+                ifSetHide(nameTarget, true)
             } else {
-                ifSetHide(target, false)
-                player.ifSetObj(target, InvObj(item), state.quantity)
-                // Hover text ("Spawn <item name>") isn't something the static DSL can set
-                // per-slot - see the cs2 script's own doc comment for why (real op-base text is
-                // dynamic, client-side state set on an explicit component, not a compile-time
-                // string). One call per populated slot, right after that slot's own ifSetObj.
-                val comp = target.asRSCM(RSCMType.COMPONENT)
-                player.runClientScript(tooltip, comp, item.name)
+                ifSetHide(borderTarget, false)
+                ifSetHide(bgTarget, false)
+                ifSetHide(iconTarget, false)
+                ifSetHide(nameTarget, false)
+                player.ifSetObj(iconTarget, InvObj(item), state.quantity)
+                ifSetText(nameTarget, item.name)
             }
         }
     }
@@ -249,15 +256,24 @@ class SpawnMenuScript @Inject constructor(private val protectedAccess: Protected
                     custom -> "X"
                     else -> QTY_PRESETS[i].toString()
                 }
-            // Active state is now shown by the red "qtyhl$i" box behind the text (matching real
-            // bank quantity buttons), not by recolouring the text itself.
             ifSetText("component.spawn_menu:qtylbl$i", label)
-            ifSetHide("component.spawn_menu:qtyhl$i", !active)
+            val colour = if (active) COLOUR_BUTTON_ACTIVE else COLOUR_BUTTON_NORMAL
+            player.setColour("component.spawn_menu:qtyborder$i", colour)
         }
     }
 
+    private fun ProtectedAccess.renderScrollSize(resultCount: Int) {
+        val rows = (resultCount + CARD_COLS - 1) / CARD_COLS // ceiling division
+        val height = rows * CARD_PITCH_Y
+        val setScrollSize = "clientscript.spawn_menu_set_scrollsize".asRSCM(RSCMType.CLIENTSCRIPT)
+        val grid = "component.spawn_menu:grid".asRSCM(RSCMType.COMPONENT)
+        val scrollbar = "component.spawn_menu:scrollbar".asRSCM(RSCMType.COMPONENT)
+        player.runClientScript(setScrollSize, grid, scrollbar, height)
+    }
+
     private fun ProtectedAccess.renderNoteToggle(state: SpawnState) {
-        ifSetHide("component.spawn_menu:notehl", !state.note)
+        val colour = if (state.note) COLOUR_BUTTON_ACTIVE else COLOUR_BUTTON_NORMAL
+        player.setColour("component.spawn_menu:noteborder", colour)
     }
 
     private fun ProtectedAccess.setStatus(text: String) {
