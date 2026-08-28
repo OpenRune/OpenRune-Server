@@ -1,0 +1,31 @@
+[clientscript,spawn_menu_buttons](int $selected, string $qtylabel, int $noteon, int $bankon)
+def_component $qty0 = spawn_menu:qtybtn0;
+def_component $qty1 = spawn_menu:qtybtn1;
+def_component $qty2 = spawn_menu:qtybtn2;
+def_component $qty3 = spawn_menu:qtybtn3;
+def_component $note = spawn_menu:notebtn;
+def_component $bank = spawn_menu:bankbtn;
+def_component $active = null;
+if ($selected = 0) {
+    $active = $qty0;
+} else if ($selected = 1) {
+    $active = $qty1;
+} else if ($selected = 2) {
+    $active = $qty2;
+} else if ($selected = 3) {
+    $active = $qty3;
+}
+~button_setup($active, $qty0, "1");
+~button_setup($active, $qty1, "100");
+~button_setup($active, $qty2, "1000");
+~button_setup($active, $qty3, $qtylabel);
+if ($noteon = 1) {
+    ~button_setup($note, $note, "Note");
+} else {
+    ~button_setup(null, $note, "Note");
+}
+if ($bankon = 1) {
+    ~button_setup($bank, $bank, "Bank");
+} else {
+    ~button_setup(null, $bank, "Bank");
+}

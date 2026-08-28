@@ -1,0 +1,14 @@
+[clientscript,spawn_menu_search_op](component $searchtext, component $grid, component $scrollbar, component $message)
+~chatdefault_stopinput;
+%settings_search_string = "";
+if_setop(1, "", $searchtext);
+if_setonop(null, $searchtext);
+if_setonmouseover(null, $searchtext);
+if_setonmouseleave(null, $searchtext);
+if_setcolour(0xff981f, $searchtext);
+~searchbar_set_text($searchtext);
+if_setonkey("spawn_menu_search_key(event_keycode, event_keychar, $searchtext, $grid, $scrollbar, $message)", $searchtext);
+if (~on_mobile = true) {
+    ~keyboard_show(0, 50);
+}
+~spawn_menu_draw($grid, $scrollbar, $message);

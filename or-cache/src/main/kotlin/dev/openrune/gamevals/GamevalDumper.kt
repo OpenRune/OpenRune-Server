@@ -65,8 +65,23 @@ object GamevalDumper {
         encodeGameValDat(File(outputDir, "gamevals.dat").path, gamevals)
 
         dumpCols(cache, rev)
+        dumpComponents(cache,rev)
 
         GameValMaxIdManifest.writeFromDats(File(".."), revision = rev)
+    }
+
+    fun dumpComponents(cache: Cache, rev: Int) {
+        val elements = GameValHandler.readGameVal(GameValGroupTypes.IFTYPES_V2, cache = cache, rev)
+        val data = mutableListOf<String>()
+
+        elements.forEach { gameValElement ->
+            val iftype = gameValElement.elementAs<Interface>() ?: return@forEach
+            iftype.components.forEach { comp ->
+                data.add("${iftype.name}:${comp.name}=${comp.packed}")
+            }
+        }
+
+        encodeGameValDat("../.data/gamevals-binary/gamevals_components.dat", mapOf("component" to data))
     }
 
     fun dumpCols(cache: Cache, rev: Int) {

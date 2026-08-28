@@ -21,6 +21,7 @@ class GameValProvider : MappingProvider {
         fun sourceFiles(rootDir: String): Array<File> =
             arrayOf(
                 Paths.get("${rootDir}.data", "gamevals-binary", "gamevals.dat").toFile(),
+                Paths.get("${rootDir}.data", "gamevals-binary", "gamevals_components.dat").toFile(),
                 Paths.get("${rootDir}.data", "gamevals-binary", "gamevals_columns.dat").toFile(),
                 Paths.get("${rootDir}content").toFile(),
                 Paths.get("${rootDir}api").toFile(),
@@ -48,10 +49,11 @@ class GameValProvider : MappingProvider {
 
         decodeGameValDat(files[0])
         decodeGameValDat(files[1])
+        decodeGameValDat(files[2])
 
-        val contentDir = files.getOrNull(2)?.takeIf { it.exists() && it.isDirectory }
-        val apiDir = files.getOrNull(3)?.takeIf { it.exists() && it.isDirectory }
-        val gamevalsDir = files.getOrNull(4)?.takeIf { it.exists() && it.isDirectory }
+        val contentDir = files.getOrNull(3)?.takeIf { it.exists() && it.isDirectory }
+        val apiDir = files.getOrNull(4)?.takeIf { it.exists() && it.isDirectory }
+        val gamevalsDir = files.getOrNull(5)?.takeIf { it.exists() && it.isDirectory }
 
         if (autoAssignIds && (contentDir != null || apiDir != null || gamevalsDir != null)) {
             GameValAutoAssigner(mappings, maxBaseID).run(contentDir, apiDir, gamevalsDir)

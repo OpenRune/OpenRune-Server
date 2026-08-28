@@ -1,16 +1,16 @@
 package dev.openrune.pack
 
+import dev.openrune.DirectoryConstants
 import dev.openrune.cache.tools.cs2.PackCs2
-import dev.openrune.cache.tools.cs2.UnpackDefaultCs2
 import dev.openrune.cache.tools.iftype.PackIfType
 import dev.openrune.cache.tools.tasks.CacheTask
 import dev.openrune.cache.tools.tasks.impl.PackDBTables
 import dev.openrune.cache.tools.tasks.impl.PackModels
-import dev.openrune.cache.tools.tasks.impl.PackSprites
 import dev.openrune.cache.tools.tasks.impl.defs.PackConfig
 import dev.openrune.definition.dbtables.DBTable
 import dev.openrune.cache.tools.cs2.SymbolsCustomConflictStrip
-import dev.openrune.getCs2Location
+import dev.openrune.cache.tools.cs2.UnpackDefaultCs2
+import dev.openrune.cache.tools.tasks.impl.PackSprites
 import io.github.classgraph.ClassGraph
 import java.io.File
 
@@ -23,10 +23,14 @@ class PluginPacks(val projectRoot: File, val all: List<PluginPack>) {
 
     fun configDirectories(): List<File> = all.mapNotNull { it.configDirectory() }
 
+    fun validate() {
+        active.forEach { it.validate(projectRoot) }
+    }
+
     fun buildPackTasks(baseTables: List<DBTable>): List<CacheTask> {
         val tasks = mutableListOf(
             PackModels(File("../.data/raw-cache/models")),
-            PackConfig(File("../.data/raw-cache/server")),
+            PackConfig(File("../.data/raw-cache/")),
         )
 
         configDirectories().forEach { tasks += PackConfig(it) }
@@ -40,13 +44,14 @@ class PluginPacks(val projectRoot: File, val all: List<PluginPack>) {
 
         tasks += active.flatMap { it.extraTasks() }
 
+
         val interfaces = active.flatMap { it.interfaces() }
         if (interfaces.isNotEmpty()) {
             tasks += PackIfType(interfaces)
         }
 
-        tasks += UnpackDefaultCs2(getCs2Location(), null, false)
-        tasks += PackCs2(getCs2Location())
+        tasks += UnpackDefaultCs2(DirectoryConstants.CS2_PATH.toFile())
+        tasks += PackCs2(DirectoryConstants.CS2_PATH.toFile())
 
         val tables = baseTables + active.flatMap { it.dbTables() }
         tasks += PackDBTables(tables)
@@ -60,18 +65,17 @@ class PluginPacks(val projectRoot: File, val all: List<PluginPack>) {
         }
 
         cs2Root.mkdirs()
-        val customRoot = File(cs2Root, "custom").also { it.mkdirs() }
-        val symbolsCustom = File(cs2Root, "symbols_custom").also { it.mkdirs() }
 
-        pruneStaleCs2(customRoot, symbolsCustom)
+        val customRoot = File(cs2Root, "custom")
+        val symbolsCustom = File(cs2Root, "symbols_custom")
+        customRoot.deleteRecursively()
+        symbolsCustom.deleteRecursively()
+        customRoot.mkdirs()
+        symbolsCustom.mkdirs()
 
         for (pack in active) {
             val source = pack.cs2Directory() ?: continue
-            val scriptDest =
-                File(customRoot, nameOf(pack)).also {
-                    it.deleteRecursively()
-                    it.mkdirs()
-                }
+            val scriptDest = File(customRoot, nameOf(pack)).also { it.mkdirs() }
 
             copyScripts(source, scriptDest)
             symbolFiles(source).forEach { sym ->
@@ -80,27 +84,6 @@ class PluginPacks(val projectRoot: File, val all: List<PluginPack>) {
         }
 
         SymbolsCustomConflictStrip.strip(cs2Root)
-    }
-
-    private fun pruneStaleCs2(customRoot: File, symbolsCustom: File) {
-        val activeNames = active.map { nameOf(it) }.toSet()
-        val allNames = all.map { nameOf(it) }.toSet()
-
-        customRoot.listFiles()?.forEach { child ->
-            val name = child.name.lowercase()
-            if (child.isDirectory && name in allNames && name !in activeNames) {
-                child.deleteRecursively()
-            }
-        }
-        File(customRoot, "_plugins").takeIf { it.exists() }?.deleteRecursively()
-        File(symbolsCustom, "_plugins").takeIf { it.exists() }?.deleteRecursively()
-
-        for (pack in all) {
-            val source = pack.cs2Directory() ?: continue
-            symbolFiles(source).forEach { sym ->
-                stripSymbolLines(File(symbolsCustom, sym.name), readSymbolLines(sym))
-            }
-        }
     }
 
     companion object {

@@ -1,0 +1,6 @@
+[[inventory]]
+id = "inv.spawn_results"
+size = 60
+scope = "Temp"
+stack = "Always"
+protect = false

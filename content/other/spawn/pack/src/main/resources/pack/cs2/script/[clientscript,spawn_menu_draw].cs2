@@ -1,0 +1,75 @@
+[clientscript,spawn_menu_draw](component $grid, component $scrollbar, component $message)
+cc_deleteall($grid);
+def_int $cardwidth = calc((if_getwidth($grid) - 12) / 3);
+def_int $textwidth = calc($cardwidth - 50);
+def_int $slot = 0;
+def_int $count = 0;
+def_int $id = 0;
+def_int $x = 0;
+def_int $y = 0;
+def_int $namewidth = 0;
+def_int $keep = 0;
+def_string $name = "";
+def_string $label = "";
+def_obj $obj = null;
+while ($slot < 60) {
+    $obj = inv_getobj(spawn_results, $slot);
+    if ($obj ! null) {
+        $id = calc($slot * 4);
+        $x = calc($slot % 3 * ($cardwidth + 6));
+        $y = calc($slot / 3 * 48);
+        $count = calc($slot + 1);
+
+        $name = oc_name($obj);
+        $label = $name;
+        $namewidth = parawidth($name, 0, p11_full);
+        if ($namewidth > $textwidth) {
+            $keep = calc(string_length($name) * $textwidth / $namewidth - 2);
+            if ($keep < 1) {
+                $keep = 1;
+            }
+            $label = append(substring($name, 0, $keep), "..");
+        }
+
+        cc_create($grid, ^iftype_rectangle, $id);
+        cc_setposition($x, $y, ^setpos_abs_left, ^setpos_abs_top);
+        cc_setsize($cardwidth, 42, ^setsize_abs, ^setsize_abs);
+        cc_setcolour(0x5a4a2f);
+        cc_setfill(true);
+
+        cc_create($grid, ^iftype_rectangle, calc($id + 1));
+        cc_setposition(calc($x + 1), calc($y + 1), ^setpos_abs_left, ^setpos_abs_top);
+        cc_setsize(calc($cardwidth - 2), 40, ^setsize_abs, ^setsize_abs);
+        cc_setcolour(0x2b2318);
+        cc_setfill(true);
+
+        cc_create($grid, ^iftype_graphic, calc($id + 2));
+        cc_setposition(calc($x + 6), calc($y + 5), ^setpos_abs_left, ^setpos_abs_top);
+        cc_setsize(32, 32, ^setsize_abs, ^setsize_abs);
+        cc_setgraphicshadow(0x333333);
+        cc_setoutline(1);
+        cc_setobject_nonum($obj, 1);
+        cc_setop(1, "Spawn");
+
+        cc_create($grid, ^iftype_text, calc($id + 3));
+        cc_setposition(calc($x + 44), $y, ^setpos_abs_left, ^setpos_abs_top);
+        cc_setsize($textwidth, 42, ^setsize_abs, ^setsize_abs);
+        cc_settextfont(p11_full);
+        cc_settextalign(^settextalign_left, ^settextalign_centre, 0);
+        cc_settextshadow(true);
+        cc_setcolour(0xffffff);
+        cc_settext($label);
+        cc_setop(1, "Spawn");
+        cc_setonop("spawn_menu_card_op($grid, calc($id + 2))");
+    }
+    $slot = calc($slot + 1);
+}
+if (string_length(%settings_search_string) = 0) {
+    if_settext("Start typing to find items", $message);
+} else if ($count = 0) {
+    if_settext("No results", $message);
+} else {
+    if_settext("", $message);
+}
+if_setscrollsize(0, calc(($count + 2) / 3 * 48), $grid);
+~scrollbar_vertical($scrollbar, $grid, "scrollbar_dragger_v2,3", "scrollbar_dragger_v2,0", "scrollbar_dragger_v2,1", "scrollbar_dragger_v2,2", "scrollbar_v2,0", "scrollbar_v2,1");
