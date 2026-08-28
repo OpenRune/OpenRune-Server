@@ -9,13 +9,13 @@ wiki, only that it exists.
 
 🟢 added · 🔴 not added
 
-Skills **16/23** · Bosses **6/169** · Raids **0/4** · Minigames **0/51**
+Skills **17/23** · Bosses **6/169** · Raids **0/4** · Minigames **0/51**
 
 These counts only cover skills, bosses, raids and minigames. Interfaces, areas,
 quests, drops and travel are real work that no category above points at, so check
 the module table at the bottom before reading a 0 as "nothing exists".
 
-### Skills <sup>16/23</sup>
+### Skills <sup>17/23</sup>
 
 | | Feature | Status | |
 |---|---|---|---|
@@ -29,7 +29,7 @@ the module table at the bottom before reading a 0 as "nothing exists".
 | 🟢 | <img src="https://oldschool.runescape.wiki/images/Runecraft_icon.png?c278c" height="20" alt=""> [Runecraft](content/skills/runecrafting) | 2,556 loc | [wiki](https://oldschool.runescape.wiki/w/Runecraft) |
 | 🟢 | <img src="https://oldschool.runescape.wiki/images/Slayer_icon.png?cd34f" height="20" alt=""> [Slayer](content/skills/slayer) | 5,494 loc | [wiki](https://oldschool.runescape.wiki/w/Slayer) |
 | 🟢 | <img src="https://oldschool.runescape.wiki/images/Mining_icon.png?00870" height="20" alt=""> [Mining](content/skills/mining) | 1,050 loc | [wiki](https://oldschool.runescape.wiki/w/Mining) |
-| 🟢 | <img src="https://oldschool.runescape.wiki/images/Smithing_icon.png?d26c5" height="20" alt=""> [Smithing](content/skills/smithing) | 2,045 loc | [wiki](https://oldschool.runescape.wiki/w/Smithing) |
+| 🟢 | <img src="https://oldschool.runescape.wiki/images/Smithing_icon.png?d26c5" height="20" alt=""> [Smithing](content/skills/smithing) | 2,053 loc | [wiki](https://oldschool.runescape.wiki/w/Smithing) |
 | 🟢 | <img src="https://oldschool.runescape.wiki/images/Woodcutting_icon.png?6ead4" height="20" alt=""> [Woodcutting](content/skills/woodcutting) | 409 loc | [wiki](https://oldschool.runescape.wiki/w/Woodcutting) |
 | 🟢 | <img src="https://oldschool.runescape.wiki/images/Firemaking_icon.png?45ea0" height="20" alt=""> [Firemaking](content/skills/firemaking) | 589 loc | [wiki](https://oldschool.runescape.wiki/w/Firemaking) |
 | 🟢 | <img src="https://oldschool.runescape.wiki/images/Cooking_icon.png?a0156" height="20" alt=""> [Cooking](content/skills/cooking) | 1,358 loc | [wiki](https://oldschool.runescape.wiki/w/Cooking) |
@@ -37,7 +37,7 @@ the module table at the bottom before reading a 0 as "nothing exists".
 | 🟢 | <img src="https://oldschool.runescape.wiki/images/Fishing_icon.png?15a98" height="20" alt=""> [Fishing](content/skills/fishing) | 1,797 loc | [wiki](https://oldschool.runescape.wiki/w/Fishing) |
 | 🔴 | <img src="https://oldschool.runescape.wiki/images/Agility_icon.png?389e0" height="20" alt=""> Agility | nothing yet | [wiki](https://oldschool.runescape.wiki/w/Agility) |
 | 🔴 | <img src="https://oldschool.runescape.wiki/images/Thieving_icon.png?973fe" height="20" alt=""> Thieving | nothing yet | [wiki](https://oldschool.runescape.wiki/w/Thieving) |
-| 🔴 | <img src="https://oldschool.runescape.wiki/images/Crafting_icon.png?a1f71" height="20" alt=""> Crafting | nothing yet | [wiki](https://oldschool.runescape.wiki/w/Crafting) |
+| 🟢 | <img src="https://oldschool.runescape.wiki/images/Crafting_icon.png?a1f71" height="20" alt=""> [Crafting](content/skills/crafting) | 6,374 loc | [wiki](https://oldschool.runescape.wiki/w/Crafting) |
 | 🔴 | <img src="https://oldschool.runescape.wiki/images/Fletching_icon.png?15cda" height="20" alt=""> Fletching | nothing yet | [wiki](https://oldschool.runescape.wiki/w/Fletching) |
 | 🔴 | <img src="https://oldschool.runescape.wiki/images/Construction_icon.png?f9bf7" height="20" alt=""> Construction | nothing yet | [wiki](https://oldschool.runescape.wiki/w/Construction) |
 | 🔴 | <img src="https://oldschool.runescape.wiki/images/Farming_icon.png?558fa" height="20" alt=""> Farming | nothing yet | [wiki](https://oldschool.runescape.wiki/w/Farming) |
@@ -145,40 +145,6 @@ here so it at least shows up. Nothing is ticked until someone claims it.
 - [ ] Training strategies
 - [ ] Thieving minigames
 - [ ] Thieving pet
-
-</details>
-
-<details>
-<summary>🔴 <b>Crafting</b> — 28 sub-features</summary>
-
-- [ ] Spinning
-- [ ] Weaving
-- [ ] Pottery
-- [ ] Armour
-- [ ] Leather
-- [ ] Dragonhides
-- [ ] Snakeskin
-- [ ] Yak hide
-- [ ] Snelms
-- [ ] Crab armour
-- [ ] Xerician robes
-- [ ] Splitbark armour
-- [ ] Mixed hide armour
-- [ ] Hueycoatl hide armour
-- [ ] Glass
-- [ ] Locations
-- [ ] Stills and oil lamps
-- [ ] Jewellery
-- [ ] Gems
-- [ ] Silver jewellery
-- [ ] Gold jewellery
-- [ ] Weaponry
-- [ ] Battlestaves and silver bolts
-- [ ] Amethyst
-- [ ] Silver
-- [ ] Birdhouses
-- [ ] Crystal singing
-- [ ] Golem Crafting
 
 </details>
 
@@ -359,6 +325,8 @@ Found the same way `settings.gradle.kts` finds them: any dir with a `build.gradl
 | `other/windmill` | 1 | 43 | 0 | 0 | 2026-05-03 |
 | `quest` | 18 | 1,697 | 0 | 0 | 2026-08-04 |
 | `skills/cooking` | 12 | 1,358 | 0 | 0 | 2026-06-14 |
+| `skills/crafting` | 30 | 3,675 | 0 | 0 | 2026-08-28 |
+| `skills/crafting/pack` | 2 | 2,699 | 0 | 0 | 2026-08-28 |
 | `skills/firemaking` | 6 | 589 | 0 | 0 | 2026-08-08 |
 | `skills/fishing` | 15 | 1,591 | 0 | 1 | 2026-08-26 |
 | `skills/fishing/pack` | 3 | 206 | 0 | 0 | 2026-08-26 |
@@ -370,7 +338,7 @@ Found the same way `settings.gradle.kts` finds them: any dir with a `build.gradl
 | `skills/prayer` | 28 | 2,568 | 0 | 0 | 2026-08-20 |
 | `skills/runecrafting` | 24 | 2,556 | 0 | 0 | 2026-08-04 |
 | `skills/slayer` | 45 | 5,494 | 0 | 0 | 2026-08-04 |
-| `skills/smithing` | 15 | 2,045 | 0 | 0 | 2026-06-14 |
+| `skills/smithing` | 15 | 2,053 | 0 | 0 | 2026-08-28 |
 | `skills/utils` | 2 | 316 | 0 | 0 | 2026-05-10 |
 | `skills/woodcutting` | 5 | 409 | 2 | 2 | 2026-07-22 |
 | `travel/canoe` | 6 | 1,122 | 1 | 2 | 2026-07-22 |
