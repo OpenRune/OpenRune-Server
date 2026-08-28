@@ -1,0 +1,6 @@
+[clientscript,spawn_menu_search_tick](int $deadline, component $grid)
+if (clientclock < $deadline) {
+    return;
+}
+if_setontimer(null, $grid);
+if_runscript*(ifscript_3414196760, spawn_menu:searchtext, -1)(0, 0, %settings_search_string);

@@ -84,7 +84,32 @@ class ItemServerCodec(
             add(DefinitionOpcode(34, enumType<WeaponCategory>(), ItemServerType::weaponCategory))
             add(DefinitionOpcode(35, OpcodeType.INT, ItemServerType::transformlink))
             add(DefinitionOpcode(36, OpcodeType.INT, ItemServerType::transformtemplate))
+
+            add(intListOpcode(37, ItemServerType::countCo))
+            add(intListOpcode(38, ItemServerType::countObj))
         }
+
+    private fun intListOpcode(
+        opcode: Int,
+        property: kotlin.reflect.KMutableProperty1<ItemServerType, MutableList<Int>?>,
+    ) =
+        DefinitionOpcode<ItemServerType>(
+            opcode,
+            decode = { buf, def, _ ->
+                val count = buf.readUnsignedByte().toInt()
+                val values = ArrayList<Int>(count)
+                repeat(count) { values.add(buf.readInt()) }
+                property.set(def, values)
+            },
+            encode = { buf, def ->
+                val values = property.get(def).orEmpty()
+                buf.writeByte(values.size)
+                for (value in values) {
+                    buf.writeInt(value)
+                }
+            },
+            shouldEncode = { def -> !property.get(def).isNullOrEmpty() },
+        )
 
     override fun ItemServerType.createData() {
         if (items == null) return
@@ -107,6 +132,8 @@ class ItemServerCodec(
         wearpos3 = item.appearanceOverride2
         examine = item.examine
         paramsRaw = item.params
+        countCo = item.countCo
+        countObj = item.countObj
 
         val customData = custom?.get(id)
 

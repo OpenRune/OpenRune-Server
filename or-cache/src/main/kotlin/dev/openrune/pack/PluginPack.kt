@@ -13,6 +13,8 @@ abstract class PluginPack {
 
     fun shouldPack(projectRoot: File): Boolean = shouldAlwaysPack() || isEnabled(projectRoot)
 
+    open fun validate(projectRoot: File) {}
+
     open fun resourceRoot(): File? = conventionResourceRoot()
 
     fun configDirectory(): File? = resourceDirectory(CONFIGS)

@@ -1,0 +1,30 @@
+[clientscript,spawn_menu_search_key](int $key, char $char, component $searchtext, component $grid, component $scrollbar, component $message)
+def_string $query = %settings_search_string;
+def_int $length = string_length($query);
+if ($key = ^key_return | $key = ^key_escape) {
+    if (~on_mobile = true) {
+        ~keyboard_hide;
+    }
+    ~spawn_menu_search_idle($searchtext, $grid, $scrollbar, $message);
+    return;
+}
+if ($key = ^key_del) {
+    $query = "";
+} else if ($key = ^key_backspace) {
+    if ($length = 0) {
+        return;
+    }
+    $query = substring($query, 0, calc($length - 1));
+} else {
+    if (char_isalphanumeric($char) = false & string_indexof_char(" -'()", $char) = -1) {
+        return;
+    }
+    if ($length > 49) {
+        return;
+    }
+    $query = append_char($query, $char);
+}
+%settings_search_string = $query;
+~searchbar_set_text($searchtext);
+def_int $deadline = calc(clientclock + 12);
+if_setontimer("spawn_menu_search_tick($deadline, $grid)", $grid);

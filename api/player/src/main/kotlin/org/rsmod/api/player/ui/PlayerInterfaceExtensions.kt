@@ -306,7 +306,7 @@ private fun Player.openModal(interf: String, internal: String, eventBus: EventBu
 }
 
 public fun Player.setColour(component: String, colour: Color) {
-    client.write(IfSetColour(component.asRSCM(),colour.red, colour.green, colour.blue))
+    client.write(IfSetColour(component.asRSCM(), colour))
 }
 
 private fun Player.openOverlay(interf: String, internal: String, eventBus: EventBus) {

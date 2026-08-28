@@ -1,0 +1,16 @@
+[gamevals.interface]
+spawn_menu = 15060
+
+[gamevals.clientscript]
+spawn_menu_init = 45500
+spawn_menu_buttons = 45518
+spawn_menu_labels = 45524
+
+[gamevals.inv]
+spawn_results = 1100
+
+[gamevals.varp]
+spawn_menu =65480
+
+[gamevals.varbit]
+spawn_include_nulls =65452

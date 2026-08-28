@@ -147,6 +147,7 @@ private fun finalizeServerCache() {
 
     val cache = Cache.load(File(getServerCacheLocation()).toPath())
     GamevalDumper.dumpCols(cache, revision.first)
+    GamevalDumper.dumpComponents(cache, revision.first)
 
     val tableTypes =
         GameValHandler.readGameVal(GameValGroupTypes.TABLETYPES, cache = cache, revision.first)

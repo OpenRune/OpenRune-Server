@@ -1,0 +1,6 @@
+[clientscript,spawn_menu_init](component $border, component $searchbar, component $searchtext, component $grid, component $scrollbar, component $message)
+~stoneborder($border, "Item Spawner", 0);
+~searchbar_create($searchbar, null);
+%settings_search_string = "";
+~spawn_menu_search_idle($searchtext, $grid, $scrollbar, $message);
+if_setoninvtransmit("spawn_menu_draw($grid, $scrollbar, $message, \"\"){spawn_results}", $grid);
