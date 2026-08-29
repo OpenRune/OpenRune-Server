@@ -155,12 +155,6 @@ class SpawnMenuScript @Inject constructor(private val protectedAccess: Protected
             cheat { openMenu() }
         }
 
-        onCommand("spawnwhy") {
-            requiredRights = Rights.ADMINISTRATOR
-            desc = "Explain why an obj is missing from the ::spawn grid (ex: ::spawnwhy 4587)"
-            cheat { explainMissing(args.joinToString("_")) }
-        }
-
         onIfClose(INTERFACE) {
             states.remove(player)
             player.searchResults.fillNulls()
@@ -193,26 +187,6 @@ class SpawnMenuScript @Inject constructor(private val protectedAccess: Protected
         }
         ifClose()
         return false
-    }
-
-    private fun Cheat.explainMissing(input: String) {
-        val item =
-            input.toIntOrNull()?.let(ServerCacheManager::getItem)
-                ?: ServerCacheManager.getItem("obj.$input".asRSCM(RSCMType.OBJ))
-        if (item == null) {
-            player.mes("No obj mapped to '$input' (index holds ${SpawnSearchIndex.size()} objs)")
-            return
-        }
-        val reason = SpawnSearchIndex.exclusionReason(item)
-        val label =
-            SpawnSearchIndex.displayNameOf(item).ifEmpty {
-                SpawnSearchIndex.gamevalOf(item).ifEmpty { "unnamed" }
-            }
-        if (reason == null) {
-            player.mes("`$label` (${item.id}) is indexed - search it by name or gameval.")
-            return
-        }
-        player.mes("`$label` (${item.id}) excluded: $reason")
     }
 
     private fun Cheat.openMenu() {

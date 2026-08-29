@@ -113,10 +113,10 @@ private fun freshInstall() {
 }
 
 fun buildCache(type: TaskType) {
-    GameValProvider.load("../", autoAssignIds = true)
+    val gamevals = GameValProvider.load("../", autoAssignIds = true)
 
     val packs = PluginPacks.discover(projectRoot)
-    packs.syncCs2(getCs2Location())
+    packs.syncCs2(getCs2Location(), gamevals)
 
     val packTasks = packs.buildPackTasks(tablesToPack())
     newCacheTool(type, packTasks).initialize()

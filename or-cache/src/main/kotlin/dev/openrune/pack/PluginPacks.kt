@@ -8,6 +8,7 @@ import dev.openrune.cache.tools.tasks.impl.PackDBTables
 import dev.openrune.cache.tools.tasks.impl.PackModels
 import dev.openrune.cache.tools.tasks.impl.defs.PackConfig
 import dev.openrune.definition.dbtables.DBTable
+import dev.openrune.gamevals.GameValProvider
 import dev.openrune.cache.tools.cs2.SymbolsCustomConflictStrip
 import dev.openrune.cache.tools.cs2.UnpackDefaultCs2
 import dev.openrune.cache.tools.tasks.impl.PackSprites
@@ -59,8 +60,8 @@ class PluginPacks(val projectRoot: File, val all: List<PluginPack>) {
         return tasks
     }
 
-    fun syncCs2(cs2Root: File) {
-        if (all.none { it.cs2Directory() != null }) {
+    fun syncCs2(cs2Root: File, gamevals: GameValProvider? = null) {
+        if (gamevals == null && all.none { it.cs2Directory() != null }) {
             return
         }
 
@@ -72,6 +73,9 @@ class PluginPacks(val projectRoot: File, val all: List<PluginPack>) {
         symbolsCustom.deleteRecursively()
         customRoot.mkdirs()
         symbolsCustom.mkdirs()
+
+        // Emit first so hand-written pack symbol files take precedence on overlap.
+        gamevals?.let { writeCustomGamevalSymbols(symbolsCustom, it) }
 
         for (pack in active) {
             val source = pack.cs2Directory() ?: continue
@@ -86,10 +90,52 @@ class PluginPacks(val projectRoot: File, val all: List<PluginPack>) {
         SymbolsCustomConflictStrip.strip(cs2Root)
     }
 
+    /**
+     * Custom gamevals (ids above the OSRS cache max for their table) are owned by this project, not
+     * by the cache. `SymDumper` re-emits them into `symbols/` on every build and only ever appends
+     * to some of those files, so a renumbered gameval leaves the previous id behind and Neptune
+     * fails with a duplicate symbol name. Staging them under `symbols_custom/` - which is wiped and
+     * rebuilt each run - gives them a single authoritative home, and lets
+     * [SymbolsCustomConflictStrip] drop every stale copy from `symbols/`.
+     */
+    private fun writeCustomGamevalSymbols(symbolsCustom: File, gamevals: GameValProvider) {
+        for ((table, symbolFile) in SYMBOL_FILES) {
+            val entries = gamevals.mappings[table] ?: continue
+            val maxBaseId = gamevals.maxBaseID[table] ?: -1
+
+            val custom =
+                entries
+                    .filterValues { it > maxBaseId }
+                    .map { (key, id) -> id.toString() to key.removePrefix("$table.") }
+                    .sortedBy { it.first.toIntOrNull() ?: 0 }
+
+            mergeSymbolLines(File(symbolsCustom, symbolFile), custom)
+        }
+    }
+
     companion object {
         private val SCANNED_PACKAGES = arrayOf("dev.openrune.pack", "org.rsmod.content")
 
         private val SYMBOL_LINE = Regex("""^\s*(\S+)\s+(.+?)\s*$""")
+
+        /**
+         * Gameval table -> Neptune symbol file. Only tables whose symbol lines are plain
+         * `id<tab>name` with a plain integer id are listed. Left to their existing sources:
+         * `clientscript` (needs the `[trigger,name]` form and is supplied by packs), `dbcol` and
+         * `param` (trailing type column), and `component` (packed `iface:comp` ids on both fields).
+         */
+        private val SYMBOL_FILES = mapOf(
+            "dbrow" to "dbrow.sym",
+            "dbtable" to "dbtable.sym",
+            "interface" to "interface.sym",
+            "inv" to "inv.sym",
+            "loc" to "loc.sym",
+            "npc" to "npc.sym",
+            "obj" to "obj.sym",
+            "seq" to "seq.sym",
+            "varbit" to "varbit.sym",
+            "varp" to "varp.sym",
+        )
 
         fun discover(projectRoot: File): PluginPacks = PluginPacks(projectRoot, loadPacks())
 

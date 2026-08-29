@@ -28,10 +28,11 @@ class GameValProvider : MappingProvider {
                 Paths.get("${rootDir}.data", "gamevals").toFile(),
             )
 
-        fun load(rootDir: String = "", autoAssignIds: Boolean = false) {
+        fun load(rootDir: String = "", autoAssignIds: Boolean = false): GameValProvider {
             val provider = GameValProvider()
             provider.autoAssignIds = autoAssignIds
             provider.use(*sourceFiles(rootDir))
+            return provider
         }
 
         fun loadIsolated(rootDir: String = "", autoAssignIds: Boolean = false): GameValProvider {

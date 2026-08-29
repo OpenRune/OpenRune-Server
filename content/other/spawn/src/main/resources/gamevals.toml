@@ -10,7 +10,7 @@ spawn_menu_labels = 45524
 spawn_results = 1100
 
 [gamevals.varp]
-spawn_menu =65480
+spawn_menu =65479
 
 [gamevals.varbit]
-spawn_include_nulls =65452
+spawn_include_nulls =65450
