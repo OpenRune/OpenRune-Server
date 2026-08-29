@@ -320,7 +320,7 @@ Found the same way `settings.gradle.kts` finds them: any dir with a `build.gradl
 | `other/login` | 1 | 183 | 0 | 0 | 2026-07-14 |
 | `other/mapclock` | 1 | 49 | 0 | 0 | 2026-08-18 |
 | `other/sandstorm` | 2 | 364 | 0 | 0 | 2026-08-18 |
-| `other/spawn` | 1 | 358 | 0 | 0 | 2026-08-28 |
+| `other/spawn` | 1 | 358 | 0 | 0 | 2026-08-29 |
 | `other/spawn/pack` | 2 | 165 | 0 | 0 | 2026-08-28 |
 | `other/special-attacks` | 4 | 466 | 0 | 0 | 2026-05-03 |
 | `other/special-weapons` | 9 | 750 | 0 | 1 | 2026-07-27 |
