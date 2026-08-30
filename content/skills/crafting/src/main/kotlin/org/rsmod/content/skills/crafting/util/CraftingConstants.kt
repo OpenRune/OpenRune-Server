@@ -59,7 +59,6 @@ object CraftingConstants {
     const val SOUND_WEAVING = "synth.loom_weave"
 
     const val ANIM_POTTERY_WHEEL = "seq.human_potterywheel"
-    const val LOC_ANIM_POTTERY_WHEEL = "loc.potterywheel"
     const val SOUND_POTTERY_WHEEL = "synth.crafting_pottery_wheel_craft"
     const val ANIM_POTTERY_OVEN = "seq.potteryoven_quick"
 

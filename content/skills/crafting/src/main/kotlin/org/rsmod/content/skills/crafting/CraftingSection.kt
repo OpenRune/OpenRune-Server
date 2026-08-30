@@ -75,7 +75,6 @@ enum class CraftingSection(
         actionType = SkillingActionType.MAKE,
         ticks = 3,
         anim = CraftingConstants.ANIM_POTTERY_WHEEL,
-        locAnim = CraftingConstants.LOC_ANIM_POTTERY_WHEEL,
         sound = CraftingConstants.SOUND_POTTERY_WHEEL,
         repeatsSoundPerCraft = true,
         actionName = { "make ${it.output}" },
