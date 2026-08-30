@@ -59,7 +59,7 @@ object CraftingConstants {
     const val SOUND_WEAVING = "synth.loom_weave"
 
     const val ANIM_POTTERY_WHEEL = "seq.human_potterywheel"
-    const val LOC_ANIM_POTTERY_WHEEL = "seq.potterywheel"
+    const val LOC_ANIM_POTTERY_WHEEL = "loc.potterywheel"
     const val SOUND_POTTERY_WHEEL = "synth.crafting_pottery_wheel_craft"
     const val ANIM_POTTERY_OVEN = "seq.potteryoven_quick"
 
@@ -68,7 +68,7 @@ object CraftingConstants {
 
     const val ANIM_PHEASANT_COSTUME = "seq.human_pheasant_feathers_crafting"
 
-    const val ANIM_GEM_CUTTING = "seq.human_gem_cutting"
+    const val ANIM_GEM_CUTTING = "seq.human_cutting"
     const val SOUND_GEM_CUTTING = "synth.chisel"
     const val SOUND_GEM_CRUSH = "synth.smash_gem"
     const val ANIM_AMETHYST_CUT = "seq.human_amethystcutting"
