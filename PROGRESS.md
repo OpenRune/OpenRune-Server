@@ -290,7 +290,7 @@ Found the same way `settings.gradle.kts` finds them: any dir with a `build.gradl
 | `bosses/scurrius` | 2 | 403 | 0 | 0 | 2026-07-07 |
 | `bosses/zilyana` | 2 | 165 | 0 | 0 | 2026-08-03 |
 | `drops` | 255 | 14,370 | 0 | 0 | 2026-08-28 |
-| `events/shooting-stars` | 9 | 1,261 | 0 | 0 | 2026-08-21 |
+| `events/shooting-stars` | 9 | 1,261 | 0 | 0 | 2026-08-30 |
 | `events/shooting-stars/pack` | 2 | 440 | 0 | 0 | 2026-08-21 |
 | `generic/generic-locs` | 20 | 1,165 | 0 | 1 | 2026-07-19 |
 | `generic/generic-npcs` | 7 | 1,183 | 0 | 2 | 2026-07-19 |
@@ -320,7 +320,7 @@ Found the same way `settings.gradle.kts` finds them: any dir with a `build.gradl
 | `other/login` | 1 | 183 | 0 | 0 | 2026-07-14 |
 | `other/mapclock` | 1 | 49 | 0 | 0 | 2026-08-18 |
 | `other/sandstorm` | 2 | 364 | 0 | 0 | 2026-08-18 |
-| `other/spawn` | 1 | 332 | 0 | 0 | 2026-08-29 |
+| `other/spawn` | 1 | 332 | 0 | 0 | 2026-08-30 |
 | `other/spawn/pack` | 2 | 165 | 0 | 0 | 2026-08-28 |
 | `other/special-attacks` | 4 | 466 | 0 | 0 | 2026-05-03 |
 | `other/special-weapons` | 9 | 750 | 0 | 1 | 2026-07-27 |
