@@ -327,7 +327,7 @@ Found the same way `settings.gradle.kts` finds them: any dir with a `build.gradl
 | `other/windmill` | 1 | 43 | 0 | 0 | 2026-05-03 |
 | `quest` | 18 | 1,697 | 0 | 0 | 2026-08-04 |
 | `skills/cooking` | 12 | 1,358 | 0 | 0 | 2026-06-14 |
-| `skills/crafting` | 30 | 3,675 | 0 | 0 | 2026-08-28 |
+| `skills/crafting` | 30 | 3,675 | 0 | 0 | 2026-08-30 |
 | `skills/crafting/pack` | 2 | 2,699 | 0 | 0 | 2026-08-28 |
 | `skills/firemaking` | 6 | 589 | 0 | 0 | 2026-08-08 |
 | `skills/fishing` | 15 | 1,591 | 0 | 1 | 2026-08-26 |
