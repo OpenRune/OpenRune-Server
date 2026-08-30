@@ -109,7 +109,7 @@ class GameValTool private constructor(
         fun load(rootDir: String? = null): GameValTool {
             val root = resolveRoot(rootDir)
             val prefix = rootDirPrefix(root)
-            val provider = GameValProvider.loadIsolated(rootDir = prefix, autoAssignIds = false)
+            val provider = GameValProvider.loadIsolated(rootDir = prefix)
             return fromProvider(provider)
         }
 

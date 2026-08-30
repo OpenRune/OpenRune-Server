@@ -1,5 +1,5 @@
 [gamevals.interface]
-spawn_menu = 15060
+spawn_menu = 1099
 
 [gamevals.clientscript]
 spawn_menu_init = 45500

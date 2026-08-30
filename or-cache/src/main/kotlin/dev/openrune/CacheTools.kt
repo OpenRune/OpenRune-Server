@@ -113,10 +113,12 @@ private fun freshInstall() {
 }
 
 fun buildCache(type: TaskType) {
-    val gamevals = GameValProvider.load("../", autoAssignIds = true)
+    GameValProvider.load("../")
 
     val packs = PluginPacks.discover(projectRoot)
-    packs.syncCs2(getCs2Location(), gamevals)
+    packs.validate()
+    packs.syncCs2(DirectoryConstants.CS2_PATH.toFile())
+    GameValProvider.load("../")
 
     val packTasks = packs.buildPackTasks(tablesToPack())
     newCacheTool(type, packTasks).initialize()
@@ -212,6 +214,7 @@ private fun newCacheTool(type: TaskType, packTasks: List<CacheTask>): CacheTool 
         revision(rev)
         cache(getCacheLocation())
         serverCache(getServerCacheLocation())
+        autoCert = true
         tasks { packTasks.forEach { +it } }
     }
 }

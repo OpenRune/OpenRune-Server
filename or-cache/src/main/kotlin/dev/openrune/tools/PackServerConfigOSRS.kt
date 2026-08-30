@@ -65,7 +65,7 @@ class PackServerConfig(
     }
 
     override val priority: TaskPriority
-        get() = TaskPriority.END
+        get() = TaskPriority.VERY_LAST
 
     fun Map<String, Any?>.bool(key: String, default: Boolean = true): Boolean {
         return (this[key] as? TomlValue.Bool)?.value ?: default
