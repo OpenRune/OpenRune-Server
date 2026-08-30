@@ -37,7 +37,7 @@ the module table at the bottom before reading a 0 as "nothing exists".
 | 🟢 | <img src="https://oldschool.runescape.wiki/images/Fishing_icon.png?15a98" height="20" alt=""> [Fishing](content/skills/fishing) | 1,797 loc | [wiki](https://oldschool.runescape.wiki/w/Fishing) |
 | 🔴 | <img src="https://oldschool.runescape.wiki/images/Agility_icon.png?389e0" height="20" alt=""> Agility | nothing yet | [wiki](https://oldschool.runescape.wiki/w/Agility) |
 | 🔴 | <img src="https://oldschool.runescape.wiki/images/Thieving_icon.png?973fe" height="20" alt=""> Thieving | nothing yet | [wiki](https://oldschool.runescape.wiki/w/Thieving) |
-| 🟢 | <img src="https://oldschool.runescape.wiki/images/Crafting_icon.png?a1f71" height="20" alt=""> [Crafting](content/skills/crafting) | 6,374 loc | [wiki](https://oldschool.runescape.wiki/w/Crafting) |
+| 🟢 | <img src="https://oldschool.runescape.wiki/images/Crafting_icon.png?a1f71" height="20" alt=""> [Crafting](content/skills/crafting) | 6,372 loc | [wiki](https://oldschool.runescape.wiki/w/Crafting) |
 | 🔴 | <img src="https://oldschool.runescape.wiki/images/Fletching_icon.png?15cda" height="20" alt=""> Fletching | nothing yet | [wiki](https://oldschool.runescape.wiki/w/Fletching) |
 | 🔴 | <img src="https://oldschool.runescape.wiki/images/Construction_icon.png?f9bf7" height="20" alt=""> Construction | nothing yet | [wiki](https://oldschool.runescape.wiki/w/Construction) |
 | 🔴 | <img src="https://oldschool.runescape.wiki/images/Farming_icon.png?558fa" height="20" alt=""> Farming | nothing yet | [wiki](https://oldschool.runescape.wiki/w/Farming) |
@@ -327,7 +327,7 @@ Found the same way `settings.gradle.kts` finds them: any dir with a `build.gradl
 | `other/windmill` | 1 | 43 | 0 | 0 | 2026-05-03 |
 | `quest` | 18 | 1,697 | 0 | 0 | 2026-08-04 |
 | `skills/cooking` | 12 | 1,358 | 0 | 0 | 2026-06-14 |
-| `skills/crafting` | 30 | 3,675 | 0 | 0 | 2026-08-30 |
+| `skills/crafting` | 30 | 3,673 | 0 | 0 | 2026-08-30 |
 | `skills/crafting/pack` | 2 | 2,699 | 0 | 0 | 2026-08-28 |
 | `skills/firemaking` | 6 | 589 | 0 | 0 | 2026-08-08 |
 | `skills/fishing` | 15 | 1,591 | 0 | 1 | 2026-08-26 |
