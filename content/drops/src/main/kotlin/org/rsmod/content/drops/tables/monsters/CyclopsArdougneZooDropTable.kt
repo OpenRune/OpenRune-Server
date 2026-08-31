@@ -50,10 +50,6 @@ public val cyclopsArdougneZooDropTable: RSDropTable<Player, DropRollItem> = RSDr
         1 weight nothing()
     },
     tertiaries = rsPlayerTertiaryTable {
-        1 outOf 1 weight "obj.trail_elite_riddle_key32" count 1 condition { player ->
-            // Drops Need Manual: The key is only dropped when completing a medium clue scroll asking the player to kill a Hill Giant.
-             true
-        }
         1 outOf 25 weight "obj.arceuus_corpse_giant" count 1
         1 outOf 400 weight "obj.dorgesh_construction_bone" count 1
         1 outOf 5000 weight "obj.champions_challenge_giant" count 1

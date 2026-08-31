@@ -61,5 +61,14 @@ fun searchProject(parentName: String, root: Path, currentPath: Path) {
         return
     }
     val projectName = relativePath.toString().replace(File.separator, ":")
-    include("$parentName:$projectName")
+    val projectPath = "$parentName:$projectName"
+    include(projectPath)
+
+    // Plugin packs all live in a directory named `pack`, so they would share `org.rsmod:pack`
+    // coordinates and Gradle would drop all but one by conflict resolution. Naming them after the
+    // plugin keeps the directory convention and makes the coordinates distinct.
+    val project = project(":$projectPath")
+    if (project.name == "pack") {
+        project.name = "${project.parent?.name}-pack"
+    }
 }

@@ -59,10 +59,6 @@ public val kingBlackDragonDropTable: RSDropTable<Player, DropRollItem> = RSDropT
         2 weight SharedDropTables.gem
     },
     tertiaries = rsPlayerTertiaryTable {
-        1 outOf 1 weight "obj.trail_elite_riddle_key32" count 1 condition { player ->
-            // Drops Need Manual: The key is only dropped when completing an elite clue scroll asking you to kill the King Black Dragon. It will only be dropped if the player does not have a copy of the key in their bank or inventory, however the Drop trick can be used to obtain duplicates.
-             true
-        }
         onBuilder { brimstoneKeyRoll() }
         1 outOf 128 weight "obj.poh_trophydrop_kbd" count 1
         1 outOf 3000 weight "obj.kbdpet" count 1

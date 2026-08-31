@@ -1,0 +1,33 @@
+[[enum]]
+isServerOnly = true
+id = "enum.heron_pet_chance"
+keyType = "OBJ"
+valueType = "INT"
+
+[enum.values]
+"obj.raw_shrimp" = 870330
+"obj.raw_anchovies" = 870330
+"obj.tbwt_raw_karambwanji" = 443697
+"obj.raw_sardine" = 1056000
+"obj.raw_herring" = 1056000
+"obj.raw_mackerel" = 1147827
+"obj.raw_cod" = 1147827
+"obj.raw_bass" = 1147827
+"obj.raw_trout" = 923616
+"obj.raw_salmon" = 923616
+"obj.raw_pike" = 305792
+"obj.hunting_raw_fish_special" = 137739
+"obj.raw_tuna" = 257770
+"obj.raw_swordfish" = 257770
+"obj.raw_lobster" = 116129
+"obj.raw_cave_eel" = 257770
+"obj.raw_monkfish" = 138583
+"obj.tbwt_raw_karambwan" = 170874
+"obj.brut_spawning_trout" = 1280862
+"obj.brut_spawning_salmon" = 1280862
+"obj.brut_sturgeon" = 1280862
+"obj.raw_shark" = 82243
+"obj.infernal_eel" = 165000
+"obj.raw_anglerfish" = 78649
+"obj.minnow" = 977778
+"obj.raw_dark_crab" = 149434

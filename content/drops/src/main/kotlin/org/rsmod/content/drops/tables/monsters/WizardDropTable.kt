@@ -45,10 +45,4 @@ public val wizardDropTable: RSDropTable<Player, DropRollItem> = RSDropTable(
         1 weight "obj.coins" count 30
         16 weight ringNothing()
     },
-    tertiaries = rsPlayerTertiaryTable {
-        1 outOf 1 weight "obj.trail_elite_riddle_key32" count 1 condition { player ->
-            // Drops Need Manual: The key is only dropped when completing a medium clue scroll asking the player to kill a Wizard.
-             true
-        }
-    },
 )

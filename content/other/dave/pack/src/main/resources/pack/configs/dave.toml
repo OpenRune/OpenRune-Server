@@ -1,0 +1,22 @@
+[[npc]]
+id = "npc.dave_chicken"
+inherit = "npc.chicken"
+name = "Dave"
+respawnRate = 25
+examine = "The first and last chicken to ever see this lair"
+
+[npc.params]
+"param.attack_sound"=355
+"param.defend_sound"=357
+"param.death_sound"=356
+"param.defence_light"=-42
+"param.defence_standard"=-42
+"param.defence_heavy"=-42
+"param.attack_melee"=-47
+"param.poison_immunity"=1
+"param.venom_immunity"=2
+"param.slayer_experience"=30
+"param.attack_anim"="seq.lore_chicken_attack"
+"param.defend_anim"="seq.lore_chicken_defend"
+"param.death_anim"="seq.lore_chicken_death"
+"param.npc_attack_type"="category.attacktype_stab"

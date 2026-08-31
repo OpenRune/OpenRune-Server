@@ -3773,3 +3773,772 @@ inherit = "npc.mm2_demon_gorilla_2_magic"
 "param.death_anim"="seq.demonic_gorilla_death"
 "param.killcount_varp"="varp.kc_demonic_gorilla"
 "param.killcount_notify"=false
+id = "npc.0_43_51_saltfish"
+inherit = "npc.0_43_51_saltfish"
+contentGroup = "content.net_bait_fishing_spot"
+moveRestrict = "NoMove"
+wanderRange = 0
+[[npc]]
+id = "npc.0_44_52_saltfish"
+inherit = "npc.0_44_52_saltfish"
+contentGroup = "content.net_bait_fishing_spot"
+moveRestrict = "NoMove"
+wanderRange = 0
+[[npc]]
+id = "npc.0_44_53_saltfish"
+inherit = "npc.0_44_53_saltfish"
+contentGroup = "content.net_bait_fishing_spot"
+moveRestrict = "NoMove"
+wanderRange = 0
+[[npc]]
+id = "npc.0_45_49_saltfish"
+inherit = "npc.0_45_49_saltfish"
+contentGroup = "content.net_bait_fishing_spot"
+moveRestrict = "NoMove"
+wanderRange = 0
+[[npc]]
+id = "npc.0_46_49_saltfish"
+inherit = "npc.0_46_49_saltfish"
+contentGroup = "content.net_bait_fishing_spot"
+moveRestrict = "NoMove"
+wanderRange = 0
+[[npc]]
+id = "npc.0_47_57_saltfish"
+inherit = "npc.0_47_57_saltfish"
+contentGroup = "content.net_bait_fishing_spot"
+moveRestrict = "NoMove"
+wanderRange = 0
+[[npc]]
+id = "npc.0_48_50_saltfish"
+inherit = "npc.0_48_50_saltfish"
+contentGroup = "content.net_bait_fishing_spot"
+moveRestrict = "NoMove"
+wanderRange = 0
+[[npc]]
+id = "npc.0_51_49_saltfish"
+inherit = "npc.0_51_49_saltfish"
+contentGroup = "content.net_bait_fishing_spot"
+moveRestrict = "NoMove"
+wanderRange = 0
+[[npc]]
+id = "npc.0_50_49_saltfish"
+inherit = "npc.0_50_49_saltfish"
+contentGroup = "content.net_bait_fishing_spot"
+moveRestrict = "NoMove"
+wanderRange = 0
+[[npc]]
+id = "npc.0_39_55_saltfish"
+inherit = "npc.0_39_55_saltfish"
+contentGroup = "content.net_bait_fishing_spot"
+moveRestrict = "NoMove"
+wanderRange = 0
+[[npc]]
+id = "npc.0_41_57_saltfish"
+inherit = "npc.0_41_57_saltfish"
+contentGroup = "content.net_bait_fishing_spot"
+moveRestrict = "NoMove"
+wanderRange = 0
+[[npc]]
+id = "npc.0_28_56_saltfish"
+inherit = "npc.0_28_56_saltfish"
+contentGroup = "content.net_bait_fishing_spot"
+moveRestrict = "NoMove"
+wanderRange = 0
+[[npc]]
+id = "npc.0_23_53_saltfish"
+inherit = "npc.0_23_53_saltfish"
+contentGroup = "content.net_bait_fishing_spot"
+moveRestrict = "NoMove"
+wanderRange = 0
+[[npc]]
+id = "npc.0_24_53_saltfish"
+inherit = "npc.0_24_53_saltfish"
+contentGroup = "content.net_bait_fishing_spot"
+moveRestrict = "NoMove"
+wanderRange = 0
+[[npc]]
+id = "npc.0_26_54_saltfish"
+inherit = "npc.0_26_54_saltfish"
+contentGroup = "content.net_bait_fishing_spot"
+moveRestrict = "NoMove"
+wanderRange = 0
+[[npc]]
+id = "npc.0_27_59_saltfish"
+inherit = "npc.0_27_59_saltfish"
+contentGroup = "content.net_bait_fishing_spot"
+moveRestrict = "NoMove"
+wanderRange = 0
+[[npc]]
+id = "npc.0_39_44_saltfish"
+inherit = "npc.0_39_44_saltfish"
+contentGroup = "content.net_bait_fishing_spot"
+moveRestrict = "NoMove"
+wanderRange = 0
+[[npc]]
+id = "npc.0_24_51_saltfish"
+inherit = "npc.0_24_51_saltfish"
+contentGroup = "content.net_bait_fishing_spot"
+moveRestrict = "NoMove"
+wanderRange = 0
+[[npc]]
+id = "npc.0_21_46_saltfish"
+inherit = "npc.0_21_46_saltfish"
+contentGroup = "content.net_bait_fishing_spot"
+moveRestrict = "NoMove"
+wanderRange = 0
+[[npc]]
+id = "npc.0_20_46_saltfish"
+inherit = "npc.0_20_46_saltfish"
+contentGroup = "content.net_bait_fishing_spot"
+moveRestrict = "NoMove"
+wanderRange = 0
+[[npc]]
+id = "npc.0_20_47_saltfish"
+inherit = "npc.0_20_47_saltfish"
+contentGroup = "content.net_bait_fishing_spot"
+moveRestrict = "NoMove"
+wanderRange = 0
+[[npc]]
+id = "npc.0_47_46_saltfish"
+inherit = "npc.0_47_46_saltfish"
+contentGroup = "content.net_bait_fishing_spot"
+moveRestrict = "NoMove"
+wanderRange = 0
+[[npc]]
+id = "npc.0_26_57_freshfish"
+inherit = "npc.0_26_57_freshfish"
+contentGroup = "content.lure_bait_fishing_spot"
+moveRestrict = "NoMove"
+wanderRange = 0
+[[npc]]
+id = "npc.0_37_53_freshfish"
+inherit = "npc.0_37_53_freshfish"
+contentGroup = "content.lure_bait_fishing_spot"
+moveRestrict = "NoMove"
+wanderRange = 0
+[[npc]]
+id = "npc.0_38_49_freshfish"
+inherit = "npc.0_38_49_freshfish"
+contentGroup = "content.lure_bait_fishing_spot"
+moveRestrict = "NoMove"
+wanderRange = 0
+[[npc]]
+id = "npc.0_39_53_freshfish"
+inherit = "npc.0_39_53_freshfish"
+contentGroup = "content.lure_bait_fishing_spot"
+moveRestrict = "NoMove"
+wanderRange = 0
+[[npc]]
+id = "npc.0_40_52_freshfish"
+inherit = "npc.0_40_52_freshfish"
+contentGroup = "content.lure_bait_fishing_spot"
+moveRestrict = "NoMove"
+wanderRange = 0
+[[npc]]
+id = "npc.0_41_73_freshfish"
+inherit = "npc.0_41_73_freshfish"
+contentGroup = "content.lure_bait_fishing_spot"
+moveRestrict = "NoMove"
+wanderRange = 0
+[[npc]]
+id = "npc.0_42_55_freshfish"
+inherit = "npc.0_42_55_freshfish"
+contentGroup = "content.lure_bait_fishing_spot"
+moveRestrict = "NoMove"
+wanderRange = 0
+[[npc]]
+id = "npc.0_44_46_freshfish"
+inherit = "npc.0_44_46_freshfish"
+contentGroup = "content.lure_bait_fishing_spot"
+moveRestrict = "NoMove"
+wanderRange = 0
+[[npc]]
+id = "npc.0_44_52_freshfish"
+inherit = "npc.0_44_52_freshfish"
+contentGroup = "content.lure_bait_fishing_spot"
+moveRestrict = "NoMove"
+wanderRange = 0
+[[npc]]
+id = "npc.0_48_53_freshfish"
+inherit = "npc.0_48_53_freshfish"
+contentGroup = "content.lure_bait_fishing_spot"
+moveRestrict = "NoMove"
+wanderRange = 0
+[[npc]]
+id = "npc.0_52_149_freshfish"
+inherit = "npc.0_52_149_freshfish"
+contentGroup = "content.lure_bait_fishing_spot"
+moveRestrict = "NoMove"
+wanderRange = 0
+[[npc]]
+id = "npc.0_34_50_freshfish"
+inherit = "npc.0_34_50_freshfish"
+contentGroup = "content.lure_bait_fishing_spot"
+moveRestrict = "NoMove"
+wanderRange = 0
+[[npc]]
+id = "npc.0_35_50_freshfish"
+inherit = "npc.0_35_50_freshfish"
+contentGroup = "content.lure_bait_fishing_spot"
+moveRestrict = "NoMove"
+wanderRange = 0
+[[npc]]
+id = "npc.0_24_55_freshfish"
+inherit = "npc.0_24_55_freshfish"
+contentGroup = "content.lure_bait_fishing_spot"
+moveRestrict = "NoMove"
+wanderRange = 0
+[[npc]]
+id = "npc.0_25_55_freshfish"
+inherit = "npc.0_25_55_freshfish"
+contentGroup = "content.lure_bait_fishing_spot"
+moveRestrict = "NoMove"
+wanderRange = 0
+[[npc]]
+id = "npc.0_26_56_freshfish"
+inherit = "npc.0_26_56_freshfish"
+contentGroup = "content.lure_bait_fishing_spot"
+moveRestrict = "NoMove"
+wanderRange = 0
+[[npc]]
+id = "npc.0_19_57_freshfish"
+inherit = "npc.0_19_57_freshfish"
+contentGroup = "content.lure_bait_fishing_spot"
+moveRestrict = "NoMove"
+wanderRange = 0
+[[npc]]
+id = "npc.0_24_49_freshfish"
+inherit = "npc.0_24_49_freshfish"
+contentGroup = "content.lure_bait_fishing_spot"
+moveRestrict = "NoMove"
+wanderRange = 0
+[[npc]]
+id = "npc.0_25_50_freshfish"
+inherit = "npc.0_25_50_freshfish"
+contentGroup = "content.lure_bait_fishing_spot"
+moveRestrict = "NoMove"
+wanderRange = 0
+[[npc]]
+id = "npc.0_19_48_freshfish"
+inherit = "npc.0_19_48_freshfish"
+contentGroup = "content.lure_bait_fishing_spot"
+moveRestrict = "NoMove"
+wanderRange = 0
+[[npc]]
+id = "npc.0_20_152_freshfish"
+inherit = "npc.0_20_152_freshfish"
+contentGroup = "content.lure_bait_fishing_spot"
+moveRestrict = "NoMove"
+wanderRange = 0
+[[npc]]
+id = "npc.0_19_53_freshfish"
+inherit = "npc.0_19_53_freshfish"
+contentGroup = "content.lure_bait_fishing_spot"
+moveRestrict = "NoMove"
+wanderRange = 0
+[[npc]]
+id = "npc.0_20_52_freshfish"
+inherit = "npc.0_20_52_freshfish"
+contentGroup = "content.lure_bait_fishing_spot"
+moveRestrict = "NoMove"
+wanderRange = 0
+[[npc]]
+id = "npc.0_21_51_freshfish"
+inherit = "npc.0_21_51_freshfish"
+contentGroup = "content.lure_bait_fishing_spot"
+moveRestrict = "NoMove"
+wanderRange = 0
+[[npc]]
+id = "npc.0_22_52_freshfish"
+inherit = "npc.0_22_52_freshfish"
+contentGroup = "content.lure_bait_fishing_spot"
+moveRestrict = "NoMove"
+wanderRange = 0
+[[npc]]
+id = "npc.0_50_37_freshfish"
+inherit = "npc.0_50_37_freshfish"
+contentGroup = "content.lure_bait_fishing_spot"
+moveRestrict = "NoMove"
+wanderRange = 0
+[[npc]]
+id = "npc.0_49_38_freshfish"
+inherit = "npc.0_49_38_freshfish"
+contentGroup = "content.lure_bait_fishing_spot"
+moveRestrict = "NoMove"
+wanderRange = 0
+[[npc]]
+id = "npc.0_40_53_rarefish"
+inherit = "npc.0_40_53_rarefish"
+contentGroup = "content.cage_harpoon_fishing_spot"
+moveRestrict = "NoMove"
+wanderRange = 0
+[[npc]]
+id = "npc.0_44_53_rarefish"
+inherit = "npc.0_44_53_rarefish"
+contentGroup = "content.cage_harpoon_fishing_spot"
+moveRestrict = "NoMove"
+wanderRange = 0
+[[npc]]
+id = "npc.0_45_49_rarefish"
+inherit = "npc.0_45_49_rarefish"
+contentGroup = "content.cage_harpoon_fishing_spot"
+moveRestrict = "NoMove"
+wanderRange = 0
+[[npc]]
+id = "npc.52_59_rarefish"
+inherit = "npc.52_59_rarefish"
+contentGroup = "content.cage_harpoon_fishing_spot"
+moveRestrict = "NoMove"
+wanderRange = 0
+[[npc]]
+id = "npc.0_40_60_rarefish"
+inherit = "npc.0_40_60_rarefish"
+contentGroup = "content.cage_harpoon_fishing_spot"
+moveRestrict = "NoMove"
+wanderRange = 0
+[[npc]]
+id = "npc.0_41_57_rarefish"
+inherit = "npc.0_41_57_rarefish"
+contentGroup = "content.cage_harpoon_fishing_spot"
+moveRestrict = "NoMove"
+wanderRange = 0
+[[npc]]
+id = "npc.0_37_59_lobster"
+inherit = "npc.0_37_59_lobster"
+contentGroup = "content.cage_harpoon_fishing_spot"
+moveRestrict = "NoMove"
+wanderRange = 0
+[[npc]]
+id = "npc.0_28_56_rarefish"
+inherit = "npc.0_28_56_rarefish"
+contentGroup = "content.cage_harpoon_fishing_spot"
+moveRestrict = "NoMove"
+wanderRange = 0
+[[npc]]
+id = "npc.0_23_53_rarefish"
+inherit = "npc.0_23_53_rarefish"
+contentGroup = "content.cage_harpoon_fishing_spot"
+moveRestrict = "NoMove"
+wanderRange = 0
+[[npc]]
+id = "npc.0_26_54_rarefish"
+inherit = "npc.0_26_54_rarefish"
+contentGroup = "content.cage_harpoon_fishing_spot"
+moveRestrict = "NoMove"
+wanderRange = 0
+[[npc]]
+id = "npc.0_27_59_rarefish"
+inherit = "npc.0_27_59_rarefish"
+contentGroup = "content.cage_harpoon_fishing_spot"
+moveRestrict = "NoMove"
+wanderRange = 0
+[[npc]]
+id = "npc.0_38_45_rarefish"
+inherit = "npc.0_38_45_rarefish"
+contentGroup = "content.cage_harpoon_fishing_spot"
+moveRestrict = "NoMove"
+wanderRange = 0
+[[npc]]
+id = "npc.0_33_52_rarefish"
+inherit = "npc.0_33_52_rarefish"
+contentGroup = "content.cage_harpoon_fishing_spot"
+moveRestrict = "NoMove"
+wanderRange = 0
+[[npc]]
+id = "npc.0_34_53_rarefish"
+inherit = "npc.0_34_53_rarefish"
+contentGroup = "content.cage_harpoon_fishing_spot"
+moveRestrict = "NoMove"
+wanderRange = 0
+[[npc]]
+id = "npc.0_35_46_rarefish"
+inherit = "npc.0_35_46_rarefish"
+contentGroup = "content.cage_harpoon_fishing_spot"
+moveRestrict = "NoMove"
+wanderRange = 0
+[[npc]]
+id = "npc.0_24_46_rarefish"
+inherit = "npc.0_24_46_rarefish"
+contentGroup = "content.cage_harpoon_fishing_spot"
+moveRestrict = "NoMove"
+wanderRange = 0
+[[npc]]
+id = "npc.0_21_44_rarefish"
+inherit = "npc.0_21_44_rarefish"
+contentGroup = "content.cage_harpoon_fishing_spot"
+moveRestrict = "NoMove"
+wanderRange = 0
+[[npc]]
+id = "npc.0_29_46_rarefish"
+inherit = "npc.0_29_46_rarefish"
+contentGroup = "content.cage_harpoon_fishing_spot"
+moveRestrict = "NoMove"
+wanderRange = 0
+[[npc]]
+id = "npc.0_38_42_rarefish"
+inherit = "npc.0_38_42_rarefish"
+contentGroup = "content.cage_harpoon_fishing_spot"
+moveRestrict = "NoMove"
+wanderRange = 0
+[[npc]]
+id = "npc.0_51_37_rarefish"
+inherit = "npc.0_51_37_rarefish"
+contentGroup = "content.cage_harpoon_fishing_spot"
+moveRestrict = "NoMove"
+wanderRange = 0
+[[npc]]
+id = "npc.0_49_39_rarefish"
+inherit = "npc.0_49_39_rarefish"
+contentGroup = "content.cage_harpoon_fishing_spot"
+moveRestrict = "NoMove"
+wanderRange = 0
+[[npc]]
+id = "npc.0_24_43_rarefish"
+inherit = "npc.0_24_43_rarefish"
+contentGroup = "content.cage_harpoon_fishing_spot"
+moveRestrict = "NoMove"
+wanderRange = 0
+[[npc]]
+id = "npc.0_32_49_rarefish"
+inherit = "npc.0_32_49_rarefish"
+contentGroup = "content.cage_harpoon_fishing_spot"
+moveRestrict = "NoMove"
+wanderRange = 0
+[[npc]]
+id = "npc.0_33_55_rarefish"
+inherit = "npc.0_33_55_rarefish"
+contentGroup = "content.cage_harpoon_fishing_spot"
+moveRestrict = "NoMove"
+wanderRange = 0
+[[npc]]
+id = "npc.0_40_34_rarefish"
+inherit = "npc.0_40_34_rarefish"
+contentGroup = "content.cage_harpoon_fishing_spot"
+moveRestrict = "NoMove"
+wanderRange = 0
+[[npc]]
+id = "npc.0_40_53_memberfish"
+inherit = "npc.0_40_53_memberfish"
+contentGroup = "content.big_net_harpoon_fishing_spot"
+moveRestrict = "NoMove"
+wanderRange = 0
+[[npc]]
+id = "npc.0_44_53_memberfish"
+inherit = "npc.0_44_53_memberfish"
+contentGroup = "content.big_net_harpoon_fishing_spot"
+moveRestrict = "NoMove"
+wanderRange = 0
+[[npc]]
+id = "npc.0_33_51_memberfish"
+inherit = "npc.0_33_51_memberfish"
+contentGroup = "content.big_net_harpoon_fishing_spot"
+moveRestrict = "NoMove"
+wanderRange = 0
+[[npc]]
+id = "npc.0_41_57_memberfish"
+inherit = "npc.0_41_57_memberfish"
+contentGroup = "content.big_net_harpoon_fishing_spot"
+moveRestrict = "NoMove"
+wanderRange = 0
+[[npc]]
+id = "npc.0_54_49_memberfish"
+inherit = "npc.0_54_49_memberfish"
+contentGroup = "content.big_net_harpoon_fishing_spot"
+moveRestrict = "NoMove"
+wanderRange = 0
+[[npc]]
+id = "npc.0_55_49_memberfish"
+inherit = "npc.0_55_49_memberfish"
+contentGroup = "content.big_net_harpoon_fishing_spot"
+moveRestrict = "NoMove"
+wanderRange = 0
+[[npc]]
+id = "npc.0_43_42_memberfish"
+inherit = "npc.0_43_42_memberfish"
+contentGroup = "content.big_net_harpoon_fishing_spot"
+moveRestrict = "NoMove"
+wanderRange = 0
+[[npc]]
+id = "npc.0_42_42_memberfish"
+inherit = "npc.0_42_42_memberfish"
+contentGroup = "content.big_net_harpoon_fishing_spot"
+moveRestrict = "NoMove"
+wanderRange = 0
+[[npc]]
+id = "npc.0_37_59_tuna"
+inherit = "npc.0_37_59_tuna"
+contentGroup = "content.big_net_harpoon_fishing_spot"
+moveRestrict = "NoMove"
+wanderRange = 0
+[[npc]]
+id = "npc.0_28_56_memberfish"
+inherit = "npc.0_28_56_memberfish"
+contentGroup = "content.big_net_harpoon_fishing_spot"
+moveRestrict = "NoMove"
+wanderRange = 0
+[[npc]]
+id = "npc.0_23_53_memberfish"
+inherit = "npc.0_23_53_memberfish"
+contentGroup = "content.big_net_harpoon_fishing_spot"
+moveRestrict = "NoMove"
+wanderRange = 0
+[[npc]]
+id = "npc.0_26_54_memberfish"
+inherit = "npc.0_26_54_memberfish"
+contentGroup = "content.big_net_harpoon_fishing_spot"
+moveRestrict = "NoMove"
+wanderRange = 0
+[[npc]]
+id = "npc.0_18_57_memberfish"
+inherit = "npc.0_18_57_memberfish"
+contentGroup = "content.big_net_harpoon_fishing_spot"
+moveRestrict = "NoMove"
+wanderRange = 0
+[[npc]]
+id = "npc.0_19_58_memberfish"
+inherit = "npc.0_19_58_memberfish"
+contentGroup = "content.big_net_harpoon_fishing_spot"
+moveRestrict = "NoMove"
+wanderRange = 0
+[[npc]]
+id = "npc.0_18_58_memberfish"
+inherit = "npc.0_18_58_memberfish"
+contentGroup = "content.big_net_harpoon_fishing_spot"
+moveRestrict = "NoMove"
+wanderRange = 0
+[[npc]]
+id = "npc.0_33_52_memberfish"
+inherit = "npc.0_33_52_memberfish"
+contentGroup = "content.big_net_harpoon_fishing_spot"
+moveRestrict = "NoMove"
+wanderRange = 0
+[[npc]]
+id = "npc.0_34_53_memberfish"
+inherit = "npc.0_34_53_memberfish"
+contentGroup = "content.big_net_harpoon_fishing_spot"
+moveRestrict = "NoMove"
+wanderRange = 0
+[[npc]]
+id = "npc.0_35_44_memberfish"
+inherit = "npc.0_35_44_memberfish"
+contentGroup = "content.big_net_harpoon_fishing_spot"
+moveRestrict = "NoMove"
+wanderRange = 0
+[[npc]]
+id = "npc.0_24_46_memberfish"
+inherit = "npc.0_24_46_memberfish"
+contentGroup = "content.big_net_harpoon_fishing_spot"
+moveRestrict = "NoMove"
+wanderRange = 0
+[[npc]]
+id = "npc.0_27_46_memberfish"
+inherit = "npc.0_27_46_memberfish"
+contentGroup = "content.big_net_harpoon_fishing_spot"
+moveRestrict = "NoMove"
+wanderRange = 0
+[[npc]]
+id = "npc.0_24_51_memberfish"
+inherit = "npc.0_24_51_memberfish"
+contentGroup = "content.big_net_harpoon_fishing_spot"
+moveRestrict = "NoMove"
+wanderRange = 0
+[[npc]]
+id = "npc.0_19_49_memberfish"
+inherit = "npc.0_19_49_memberfish"
+contentGroup = "content.big_net_harpoon_fishing_spot"
+moveRestrict = "NoMove"
+wanderRange = 0
+[[npc]]
+id = "npc.0_38_42_memberfish"
+inherit = "npc.0_38_42_memberfish"
+contentGroup = "content.big_net_harpoon_fishing_spot"
+moveRestrict = "NoMove"
+wanderRange = 0
+[[npc]]
+id = "npc.0_47_41_memberfish"
+inherit = "npc.0_47_41_memberfish"
+contentGroup = "content.big_net_harpoon_fishing_spot"
+moveRestrict = "NoMove"
+wanderRange = 0
+[[npc]]
+id = "npc.0_49_37_memberfish"
+inherit = "npc.0_49_37_memberfish"
+contentGroup = "content.big_net_harpoon_fishing_spot"
+moveRestrict = "NoMove"
+wanderRange = 0
+[[npc]]
+id = "npc.0_50_38_memberfish"
+inherit = "npc.0_50_38_memberfish"
+contentGroup = "content.big_net_harpoon_fishing_spot"
+moveRestrict = "NoMove"
+wanderRange = 0
+[[npc]]
+id = "npc.0_24_43_memberfish"
+inherit = "npc.0_24_43_memberfish"
+contentGroup = "content.big_net_harpoon_fishing_spot"
+moveRestrict = "NoMove"
+wanderRange = 0
+[[npc]]
+id = "npc.0_18_43_memberfish"
+inherit = "npc.0_18_43_memberfish"
+contentGroup = "content.big_net_harpoon_fishing_spot"
+moveRestrict = "NoMove"
+wanderRange = 0
+[[npc]]
+id = "npc.0_29_53_memberfish"
+inherit = "npc.0_29_53_memberfish"
+contentGroup = "content.big_net_harpoon_fishing_spot"
+moveRestrict = "NoMove"
+wanderRange = 0
+[[npc]]
+id = "npc.0_33_55_memberfish"
+inherit = "npc.0_33_55_memberfish"
+contentGroup = "content.big_net_harpoon_fishing_spot"
+moveRestrict = "NoMove"
+wanderRange = 0
+[[npc]]
+id = "npc.0_40_34_memberfish"
+inherit = "npc.0_40_34_memberfish"
+contentGroup = "content.big_net_harpoon_fishing_spot"
+moveRestrict = "NoMove"
+wanderRange = 0
+[[npc]]
+id = "npc.swan_fishingspot"
+inherit = "npc.swan_fishingspot"
+contentGroup = "content.monkfish_fishing_spot"
+moveRestrict = "NoMove"
+wanderRange = 0
+
+[[npc]]
+id = "npc.0_54_53_slimey_eel"
+inherit = "npc.0_54_53_slimey_eel"
+contentGroup = "content.slimy_eel_fishing_spot"
+moveRestrict = "NoMove"
+wanderRange = 0
+[[npc]]
+id = "npc.0_53_53_slimey_eel"
+inherit = "npc.0_53_53_slimey_eel"
+contentGroup = "content.slimy_eel_fishing_spot"
+moveRestrict = "NoMove"
+wanderRange = 0
+[[npc]]
+id = "npc.0_53_51_slimey_eel"
+inherit = "npc.0_53_51_slimey_eel"
+contentGroup = "content.slimy_eel_fishing_spot"
+moveRestrict = "NoMove"
+wanderRange = 0
+[[npc]]
+id = "npc.0_49_149_cavefish"
+inherit = "npc.0_49_149_cavefish"
+contentGroup = "content.cave_eel_fishing_spot"
+moveRestrict = "NoMove"
+wanderRange = 0
+[[npc]]
+id = "npc.0_45_152_lavafish"
+inherit = "npc.0_45_152_lavafish"
+contentGroup = "content.lava_eel_fishing_spot"
+moveRestrict = "NoMove"
+wanderRange = 0
+[[npc]]
+id = "npc.0_47_59_lavafish"
+inherit = "npc.0_47_59_lavafish"
+contentGroup = "content.lava_eel_fishing_spot"
+moveRestrict = "NoMove"
+wanderRange = 0
+[[npc]]
+id = "npc.0_42_138_lavafish"
+inherit = "npc.0_42_138_lavafish"
+contentGroup = "content.lava_eel_fishing_spot"
+moveRestrict = "NoMove"
+wanderRange = 0
+[[npc]]
+id = "npc.0_40_134_lavafish"
+inherit = "npc.0_40_134_lavafish"
+contentGroup = "content.lava_eel_fishing_spot"
+moveRestrict = "NoMove"
+wanderRange = 0
+[[npc]]
+id = "npc.piscariliusfish"
+inherit = "npc.piscariliusfish"
+contentGroup = "content.anglerfish_fishing_spot"
+moveRestrict = "NoMove"
+wanderRange = 0
+[[npc]]
+id = "npc.49_61_crabs"
+inherit = "npc.49_61_crabs"
+contentGroup = "content.dark_crab_fishing_spot"
+moveRestrict = "NoMove"
+wanderRange = 0
+[[npc]]
+id = "npc.morulrek_eels_fishingspot"
+inherit = "npc.morulrek_eels_fishingspot"
+contentGroup = "content.infernal_eel_fishing_spot"
+moveRestrict = "NoMove"
+wanderRange = 0
+[[npc]]
+id = "npc.0_43_47_karambwanji"
+inherit = "npc.0_43_47_karambwanji"
+contentGroup = "content.karambwanji_fishing_spot"
+moveRestrict = "NoMove"
+wanderRange = 0
+[[npc]]
+id = "npc.general_karambwanji"
+inherit = "npc.general_karambwanji"
+contentGroup = "content.karambwanji_fishing_spot"
+moveRestrict = "NoMove"
+wanderRange = 0
+[[npc]]
+id = "npc.0_39_54_brut_fishing_spot"
+inherit = "npc.0_39_54_brut_fishing_spot"
+contentGroup = "content.barbarian_fishing_spot"
+moveRestrict = "NoMove"
+wanderRange = 0
+[[npc]]
+id = "npc.0_19_55_brut_fishing_spot"
+inherit = "npc.0_19_55_brut_fishing_spot"
+contentGroup = "content.barbarian_fishing_spot"
+moveRestrict = "NoMove"
+wanderRange = 0
+[[npc]]
+id = "npc.0_45_48_karambwan"
+inherit = "npc.0_45_48_karambwan"
+contentGroup = "content.karambwan_fishing_spot"
+moveRestrict = "NoMove"
+wanderRange = 0
+[[npc]]
+id = "npc.general_karambwan"
+inherit = "npc.general_karambwan"
+contentGroup = "content.karambwan_fishing_spot"
+moveRestrict = "NoMove"
+wanderRange = 0
+[[npc]]
+id = "npc.minnow_fishingspot1"
+inherit = "npc.minnow_fishingspot1"
+contentGroup = "content.minnow_fishing_spot"
+moveRestrict = "NoMove"
+wanderRange = 0
+[[npc]]
+id = "npc.minnow_fishingspot2"
+inherit = "npc.minnow_fishingspot2"
+contentGroup = "content.minnow_fishing_spot"
+moveRestrict = "NoMove"
+wanderRange = 0
+[[npc]]
+id = "npc.minnow_fishingspot3"
+inherit = "npc.minnow_fishingspot3"
+contentGroup = "content.minnow_fishing_spot"
+moveRestrict = "NoMove"
+wanderRange = 0
+[[npc]]
+id = "npc.minnow_fishingspot4"
+inherit = "npc.minnow_fishingspot4"
+contentGroup = "content.minnow_fishing_spot"
+moveRestrict = "NoMove"
+wanderRange = 0
+[[npc]]
+id = "npc.52_59_crabs"
+inherit = "npc.52_59_crabs"
+contentGroup = "content.dark_crab_fishing_spot"
+moveRestrict = "NoMove"
+wanderRange = 0
+

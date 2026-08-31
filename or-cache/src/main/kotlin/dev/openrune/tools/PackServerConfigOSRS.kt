@@ -44,9 +44,15 @@ data class PackType(
     val pack: PackServerConfig.(Cache, Map<String, List<Definition>>, String) -> Unit,
 )
 
+/**
+ * [extraDirectories] are the config directories owned by plugin packs; they are scanned for toml
+ * overlays alongside [directory]. The `slayer` sub-directory and the examine CSVs are still read
+ * from [directory] alone.
+ */
 class PackServerConfig(
     private val rev : Int,
     private val directory: File,
+    private val extraDirectories: List<File> = emptyList(),
     private val tokenizedReplacements: Map<String, String> = emptyMap(),
     private val tokenizedFile: Path? = null,
 ) : CacheTask(serverTaskOnly = true) {
@@ -59,7 +65,7 @@ class PackServerConfig(
     }
 
     override val priority: TaskPriority
-        get() = TaskPriority.END
+        get() = TaskPriority.VERY_LAST
 
     fun Map<String, Any?>.bool(key: String, default: Boolean = true): Boolean {
         return (this[key] as? TomlValue.Bool)?.value ?: default
@@ -288,7 +294,7 @@ class PackServerConfig(
 
         ItemRenderDataManager.init()
 
-        val files = getFiles(directory, "toml")
+        val files = (listOf(directory) + extraDirectories).flatMap { getFiles(it, "toml") }
 
         for (file in files) {
             val blocks = mapper.decodeRuneScapeBlocks(file.toPath())

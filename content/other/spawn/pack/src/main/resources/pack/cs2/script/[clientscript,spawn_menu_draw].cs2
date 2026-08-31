@@ -1,0 +1,103 @@
+[clientscript,spawn_menu_draw](component $grid, component $scrollbar, component $message, string $labels)
+cc_deleteall($grid);
+def_int $cardwidth = calc((if_getwidth($grid) - 12) / 3);
+def_int $textwidth = calc($cardwidth - 50);
+def_int $slot = 0;
+def_int $count = 0;
+def_int $id = 0;
+def_int $x = 0;
+def_int $y = 0;
+def_int $pad = 0;
+def_int $start = 0;
+def_string $name = "";
+def_string $gameval = "";
+def_obj $obj = null;
+while ($slot < 60) {
+    $obj = inv_getobj(spawn_results, $slot);
+    if ($obj ! null) {
+        $id = calc($slot * 5);
+        $x = calc($slot % 3 * ($cardwidth + 6));
+        $y = calc($slot / 3 * 48);
+        $count = calc($slot + 1);
+
+        $name = oc_name($obj);
+        $gameval = "";
+        $start = calc($slot * 32);
+        if (string_length($labels) >= calc($start + 32)) {
+            $gameval = substring($labels, $start, calc($start + 32));
+            // Slots are space-padded to a fixed width and gamevals never contain a space, so the
+            // first space marks the end of the label.
+            $pad = string_indexof_string($gameval, " ", 0);
+            if ($pad >= 0) {
+                $gameval = substring($gameval, 0, $pad);
+            }
+        }
+        // Objs with no name of their own show their gameval on the name line instead.
+        if (string_length($name) = 0 | compare(lowercase($name), "null") = 0) {
+            $name = $gameval;
+            $gameval = "";
+        }
+
+        cc_create($grid, ^iftype_rectangle, $id);
+        cc_setposition($x, $y, ^setpos_abs_left, ^setpos_abs_top);
+        cc_setsize($cardwidth, 42, ^setsize_abs, ^setsize_abs);
+        cc_setcolour(0x5a4a2f);
+        cc_setfill(true);
+
+        cc_create($grid, ^iftype_rectangle, calc($id + 1));
+        cc_setposition(calc($x + 1), calc($y + 1), ^setpos_abs_left, ^setpos_abs_top);
+        cc_setsize(calc($cardwidth - 2), 40, ^setsize_abs, ^setsize_abs);
+        cc_setcolour(0x2b2318);
+        cc_setfill(true);
+
+        cc_create($grid, ^iftype_graphic, calc($id + 2));
+        cc_setposition(calc($x + 6), calc($y + 5), ^setpos_abs_left, ^setpos_abs_top);
+        cc_setsize(32, 32, ^setsize_abs, ^setsize_abs);
+        cc_setgraphicshadow(0x333333);
+        cc_setoutline(1);
+        cc_setobject_nonum($obj, 1);
+        cc_setop(1, "Spawn");
+        cc_setopbase($name);
+
+        cc_create($grid, ^iftype_text, calc($id + 3));
+        if (string_length($gameval) = 0) {
+            cc_setposition(calc($x + 44), calc($y + 11), ^setpos_abs_left, ^setpos_abs_top);
+        } else {
+            cc_setposition(calc($x + 44), calc($y + 4), ^setpos_abs_left, ^setpos_abs_top);
+        }
+        cc_setsize($textwidth, 20, ^setsize_abs, ^setsize_abs);
+        cc_settextfont(p11_full);
+        cc_settextalign(^settextalign_left, ^settextalign_centre, 0);
+        cc_settextshadow(true);
+        cc_setcolour(0xffffff);
+        cc_settext(~spawn_menu_fit($name, $textwidth));
+        cc_setop(1, "Spawn");
+        cc_setopbase($name);
+        cc_setonop("spawn_menu_card_op($grid, calc($id + 2))");
+
+        if (string_length($gameval) ! 0) {
+            cc_create($grid, ^iftype_text, calc($id + 4));
+            cc_setposition(calc($x + 44), calc($y + 22), ^setpos_abs_left, ^setpos_abs_top);
+            cc_setsize($textwidth, 16, ^setsize_abs, ^setsize_abs);
+            cc_settextfont(p11_full);
+            cc_settextalign(^settextalign_left, ^settextalign_centre, 0);
+            cc_settextshadow(true);
+            cc_setcolour(0x9f8b6b);
+            cc_settext(~spawn_menu_fit($gameval, $textwidth));
+            cc_setop(1, "Spawn");
+            cc_setopbase($name);
+            cc_setonop("spawn_menu_card_op($grid, calc($id + 2))");
+        }
+    }
+    $slot = calc($slot + 1);
+}
+if (string_length(%settings_search_string) = 0) {
+    if_settext("Start typing to find items", $message);
+} else if ($count = 0) {
+    if_settext("No results", $message);
+} else {
+    if_settext("", $message);
+}
+if_setscrollsize(0, calc(($count + 2) / 3 * 48), $grid);
+if_setscrollpos(0, 0, $grid);
+~scrollbar_vertical($scrollbar, $grid, "scrollbar_dragger_v2,3", "scrollbar_dragger_v2,0", "scrollbar_dragger_v2,1", "scrollbar_dragger_v2,2", "scrollbar_v2,0", "scrollbar_v2,1");

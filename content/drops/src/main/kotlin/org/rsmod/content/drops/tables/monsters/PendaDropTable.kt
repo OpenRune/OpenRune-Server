@@ -41,10 +41,6 @@ public val pendaDropTable: RSDropTable<Player, DropRollItem> = RSDropTable(
         23 weight SharedDropTables.herb
     },
     tertiaries = rsPlayerTertiaryTable {
-        1 outOf 1 weight "obj.trail_elite_riddle_key32" count 1 condition { player ->
-            // Drops Need Manual: Only dropped when completing a medium clue scroll asking to kill Penda.
-             true
-        }
         1 outOf 90 weight "obj.trail_clue_beginner" count 1 transformObj { player ->
              player.clueScrollTransformObj("obj.trail_clue_beginner")
         }

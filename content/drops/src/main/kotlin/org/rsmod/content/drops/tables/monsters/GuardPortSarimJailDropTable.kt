@@ -45,10 +45,4 @@ public val guardPortSarimJailDropTable: RSDropTable<Player, DropRollItem> = RSDr
 
         18 weight SharedDropTables.seed
     },
-    tertiaries = rsPlayerTertiaryTable {
-        1 outOf 1 weight "obj.trail_elite_riddle_key32" count 1 condition { player ->
-            // Drops Need Manual: The key is only dropped when completing a medium clue scroll asking the player to kill an Ardougne knight.
-             true
-        }
-    },
 )

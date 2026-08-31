@@ -11,6 +11,7 @@ import org.rsmod.api.area.checker.isInWildernessBasic
 import org.rsmod.api.player.death.DEATH_CAUSE_ATTR
 import org.rsmod.api.player.death.DeathCause
 import org.rsmod.api.player.hasProtectItemPrayer
+import org.rsmod.api.player.hook.TeleportType
 import org.rsmod.api.mechanics.toxins.Toxin.cureAllToxins
 import org.rsmod.api.player.deathResetTimers
 import org.rsmod.api.player.disablePrayers
@@ -57,7 +58,7 @@ constructor(
         midiSong("midi.stop_music")
         midiJingle("jingle.air_guitar_jingle")
         mes("Oh dear, you are dead!")
-        telejump(randomRespawn ?: respawn)
+        telejump(randomRespawn ?: respawn, TeleportType.Exempt)
         resetAnim()
         resetPlayerState()
         restoreToplevelTabs(

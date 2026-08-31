@@ -1,0 +1,10 @@
+[proc,spawn_menu_search_idle](component $searchtext, component $grid, component $scrollbar, component $message)
+if_setop(1, "Search", $searchtext);
+if_setonop("spawn_menu_search_op($searchtext, $grid, $scrollbar, $message)", $searchtext);
+if_setonmouseover("searchbar_mouseover($searchtext, null)", $searchtext);
+if_setonmouseleave("searchbar_mouseleave($searchtext, null)", $searchtext);
+if_setonkey(null, $searchtext);
+if_setontimer(null, $grid);
+~chatdefault_restoreinput;
+if_setcolour(0xff981f, $searchtext);
+~searchbar_set_text($searchtext);

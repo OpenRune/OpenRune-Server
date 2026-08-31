@@ -8,4 +8,5 @@ dependencies {
     implementation(projects.api.pluginCommons)
     implementation(projects.api.attr)
     implementation(projects.content.skills.utils)
+    implementation(projects.content.skills.crafting)
 }

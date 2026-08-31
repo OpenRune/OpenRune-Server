@@ -7,7 +7,7 @@
 
 <p align="center">
   <a href="https://github.com/OpenRune/OpenRune-Server/blob/main/LICENSE"><img alt="License" src="https://img.shields.io/github/license/OpenRune/OpenRune-Server?style=for-the-badge&color=6f42c1"/></a>
-  <a href="https://oldschool.runescape.wiki/w/Update:Leagues_V:_Raging_Echos_Rewards_Are_Here"><img alt="Revision 240" src="https://img.shields.io/badge/Revision-240-blueviolet?style=for-the-badge"/></a>
+  <a href="https://oldschool.runescape.wiki/w/Update:Leagues_V:_Raging_Echos_Rewards_Are_Here"><img alt="Revision 240.2" src="https://img.shields.io/badge/Revision-240.2-blueviolet?style=for-the-badge"/></a>
   <a href="https://trello.com/b/A0LefFDs/later"><img alt="Roadmap" src="https://img.shields.io/badge/Trello-Roadmap-026AA7?style=for-the-badge&logo=trello&logoColor=white"/></a>
   <a href="https://github.com/Mark7625/OpenRune-Server/"><img alt="Lines of Code" src="https://img.shields.io/endpoint?url=https%3A%2F%2Fghloc.vercel.app%2Fapi%2FOpenRune%2FOpenRune-Server%2Fbadge%3Fformat%3Dhuman&style=for-the-badge&color=teal"/></a>
   <a href="https://discord.gg/v2qcXzBCwf">
@@ -30,6 +30,17 @@ Active maintainers review contributions, publish roadmap updates, and support us
 ### 📏 OSRS-compatible
 OpenRune Server adheres to OSRS protocols, giving you the freedom to connect any compliant client and customize server-side behavior.
 
+
+<!-- content-progress:start -->
+
+## 📊 Content progress
+
+Skills **17/23** · Bosses **6/169** · Raids **0/4** · Minigames **0/51**
+
+Full breakdown in **[PROGRESS.md](PROGRESS.md)**, including every content module and
+the bosses that already have drop tables and only need the encounter writing.
+
+<!-- content-progress:end -->
 ## 🛠️ Getting Started
 
 
@@ -75,7 +86,7 @@ config:
     name: OpenRune Server
     jav_config_url: https://client.blurite.io/jav_local_240.ws
     varp_count: 15000
-    revision: 240
+    revision: 240.2
     modulus: YOUR_MODULUS_KEY_HERE
 ```
 

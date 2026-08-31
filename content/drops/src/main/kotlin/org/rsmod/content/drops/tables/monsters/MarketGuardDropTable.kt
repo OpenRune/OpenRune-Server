@@ -51,10 +51,6 @@ public val marketGuardDropTable: RSDropTable<Player, DropRollItem> = RSDropTable
         33 weight nothing()
     },
     tertiaries = rsPlayerTertiaryTable {
-        1 outOf 1 weight "obj.trail_elite_riddle_key32" count 1 condition { player ->
-            // Drops Need Manual: The key is only dropped when completing a medium clue scroll asking the player to kill a Rellekka marketplace guard.
-             true
-        }
         1 outOf 121 weight "obj.trail_medium_emote_exp1" count 1 transformObj { player ->
              player.clueScrollTransformObj("obj.trail_medium_emote_exp1")
         }

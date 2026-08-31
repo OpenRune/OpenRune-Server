@@ -16,10 +16,6 @@ public val guardDogDropTable: RSDropTable<Player, DropRollItem> = RSDropTable(
     tableIdentifier = "Guard dog Drops",
     npcs = npcs("npc.guarddog", "npc.hosidius_guarddog"),
     tertiaries = rsPlayerTertiaryTable {
-        1 outOf 1 weight "obj.trail_elite_riddle_key32" count 1 condition { player ->
-            // Drops Need Manual: Keys are only dropped by the guard dogs in Handelmort Mansion when completing a medium clue scroll asking you to kill one.
-             true
-        }
         1 outOf 25 weight "obj.arceuus_corpse_dog" count 1
     },
 )

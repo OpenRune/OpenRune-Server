@@ -155,7 +155,7 @@ private fun parseColourMappings(text: String) =
     }.toList()
 
 fun main() {
-    GameValProvider.load(autoAssignIds = true)
+    GameValProvider.load()
 
     val root = findRepoRoot()
 
