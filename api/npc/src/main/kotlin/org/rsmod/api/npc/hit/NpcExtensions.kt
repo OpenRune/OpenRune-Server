@@ -223,6 +223,14 @@ public fun Npc.visHitmark(): HitmarkTypeGroup {
     return hitmark
 }
 
+public fun Npc.isStyleImmuneTo(type: HitType): Boolean =
+    when (type) {
+        HitType.Melee -> vars["varn.immune_melee"] == 1
+        HitType.Ranged -> vars["varn.immune_ranged"] == 1
+        HitType.Magic -> vars["varn.immune_magic"] == 1
+        HitType.Typeless -> false
+    }
+
 private fun Npc.modifyAndQueueHit(delay: Int, builder: HitBuilder, modifier: NpcHitModifier): Hit {
     modifier.modify(builder, this)
     val hit = builder.build()

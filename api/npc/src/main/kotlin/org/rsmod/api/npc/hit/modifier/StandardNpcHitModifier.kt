@@ -4,10 +4,10 @@ import jakarta.inject.Inject
 import kotlin.math.absoluteValue
 import kotlin.math.min
 import org.rsmod.api.npc.events.NpcHitEvents
+import org.rsmod.api.npc.hit.isStyleImmuneTo
 import org.rsmod.events.EventBus
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.hit.HitBuilder
-import org.rsmod.game.hit.HitType
 
 public class StandardNpcHitModifier @Inject constructor(private val eventBus: EventBus) :
     NpcHitModifier {
@@ -23,14 +23,7 @@ public class StandardNpcHitModifier @Inject constructor(private val eventBus: Ev
     }
 
     private fun Npc.applyStyleImmunity(hit: HitBuilder) {
-        val immune =
-            when (hit.type) {
-                HitType.Typeless -> false
-                HitType.Melee -> vars["varn.immune_melee"] == 1
-                HitType.Ranged -> vars["varn.immune_ranged"] == 1
-                HitType.Magic -> vars["varn.immune_magic"] == 1
-            }
-        if (immune) {
+        if (isStyleImmuneTo(hit.type)) {
             hit.damage = 0
         }
     }

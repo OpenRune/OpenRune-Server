@@ -161,7 +161,9 @@ class EffectInterpreter(
                 damage = if (cap <= 0) 0 else deps.random.of(cap + 1)
             }
             if (damage > 0) {
-                hit.spotanim?.let { t.spotanim(it, height = hit.spotanimHeight) }
+                hit.spotanim?.let {
+                    t.spotanim(it, delay = projAnim.clientCycles, height = hit.spotanimHeight)
+                }
             }
             t.finishNpcHit(npc, projAnim.serverCycles, hit.type.toEngine(), damage, deps.playerHitModifier)
         }
