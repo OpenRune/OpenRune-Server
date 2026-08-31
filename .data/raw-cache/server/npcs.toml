@@ -3725,3 +3725,51 @@ id = "npc.grinder_drew"
 inherit = "npc.grinder_drew"
 moveRestrict = "NoMove"
 wanderRange = 0
+
+[[npc]]
+id = "npc.mm2_demon_gorilla_1_melee"
+inherit = "npc.mm2_demon_gorilla_1_melee"
+[npc.params]
+"param.death_anim"="seq.demonic_gorilla_death"
+"param.killcount_varp"="varp.kc_demonic_gorilla"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.mm2_demon_gorilla_1_ranged"
+inherit = "npc.mm2_demon_gorilla_1_ranged"
+[npc.params]
+"param.death_anim"="seq.demonic_gorilla_death"
+"param.killcount_varp"="varp.kc_demonic_gorilla"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.mm2_demon_gorilla_1_magic"
+inherit = "npc.mm2_demon_gorilla_1_magic"
+[npc.params]
+"param.death_anim"="seq.demonic_gorilla_death"
+"param.killcount_varp"="varp.kc_demonic_gorilla"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.mm2_demon_gorilla_2_melee"
+inherit = "npc.mm2_demon_gorilla_2_melee"
+[npc.params]
+"param.death_anim"="seq.demonic_gorilla_death"
+"param.killcount_varp"="varp.kc_demonic_gorilla"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.mm2_demon_gorilla_2_ranged"
+inherit = "npc.mm2_demon_gorilla_2_ranged"
+[npc.params]
+"param.death_anim"="seq.demonic_gorilla_death"
+"param.killcount_varp"="varp.kc_demonic_gorilla"
+"param.killcount_notify"=false
+
+[[npc]]
+id = "npc.mm2_demon_gorilla_2_magic"
+inherit = "npc.mm2_demon_gorilla_2_magic"
+[npc.params]
+"param.death_anim"="seq.demonic_gorilla_death"
+"param.killcount_varp"="varp.kc_demonic_gorilla"
+"param.killcount_notify"=false

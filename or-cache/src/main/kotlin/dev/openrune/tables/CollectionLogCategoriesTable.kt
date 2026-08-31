@@ -620,6 +620,7 @@ object CollectionLogCategoriesTable {
         row("dbrow.collection_log_category_glough_s_experiments") {
             column(STRUCT_ID, 526)
             columnRSCM(COMPLETED_VARBIT, "varbit.collection_other_gorillas_completed")
+            columnRSCM(COUNT_VARP_1, "varp.kc_demonic_gorilla")
         }
 
         row("dbrow.collection_log_category_hunter_guild") {
