@@ -151,6 +151,7 @@ class DemonicGorilla @Inject constructor(private val deps: BossDeps, private val
         val protectStyle = nameByTypeId[npc.type.id]?.substringAfterLast('_') ?: return
         npc.vars["varn.gorilla_protect_damage"] = 0
         npc.vars["varn.gorilla_protect_hits"] = 0
+        npc.vars["varn.gorilla_protect_switching"] = 0
         npc.vars["varn.gorilla_miss_streak"] = 0
         applyImmunity(npc, protectStyle)
 
@@ -178,17 +179,19 @@ class DemonicGorilla @Inject constructor(private val deps: BossDeps, private val
 
         val damage = npc.vars["varn.gorilla_protect_damage"] + event.hit.damage
         val hits = npc.vars["varn.gorilla_protect_hits"] + 1
-        if (hits >= PROTECT_HIT_THRESHOLD && damage >= PROTECT_DAMAGE_THRESHOLD) {
-            npc.vars["varn.gorilla_protect_damage"] = 0
-            npc.vars["varn.gorilla_protect_hits"] = 0
-            // Queue with 1 tick delay to ensure triggering hit lands
+        npc.vars["varn.gorilla_protect_damage"] = damage
+        npc.vars["varn.gorilla_protect_hits"] = hits
+
+        val switchDue = hits >= PROTECT_HIT_THRESHOLD && damage >= PROTECT_DAMAGE_THRESHOLD
+        if (switchDue && npc.vars["varn.gorilla_protect_switching"] == 0) {
+            npc.vars["varn.gorilla_protect_switching"] = 1
             deps.worldQueues.add(1) {
                 applyImmunity(npc, style)
                 transmogToStyle(npc, style)
+                npc.vars["varn.gorilla_protect_damage"] = 0
+                npc.vars["varn.gorilla_protect_hits"] = 0
+                npc.vars["varn.gorilla_protect_switching"] = 0
             }
-        } else {
-            npc.vars["varn.gorilla_protect_damage"] = damage
-            npc.vars["varn.gorilla_protect_hits"] = hits
         }
     }
 
@@ -205,10 +208,6 @@ class DemonicGorilla @Inject constructor(private val deps: BossDeps, private val
         npc.vars["varn.immune_magic"] = if (style == PHASE_MAGIC) 1 else 0
     }
 
-    /**
-     * Transmogs [npc] into the sibling gorilla type sharing its spawn family (the RSCM name minus
-     * its style suffix) with [style]'s suffix.
-     */
     @OptIn(InternalApi::class)
     private fun transmogToStyle(npc: Npc, style: String) {
         val spawnName = nameByTypeId[npc.type.id] ?: return
@@ -218,7 +217,6 @@ class DemonicGorilla @Inject constructor(private val deps: BossDeps, private val
         npc.assignUid()
     }
 
-    /** Tracks the outgoing miss streak that drives the gorilla's style-switch trigger. */
     private fun onAttackImpact(bossIds: Set<Int>, hit: Hit) {
         if (!hit.isFromNpc || hit.type == HitType.Typeless) return
         val npc = hit.resolveNpcSource(npcList) ?: return

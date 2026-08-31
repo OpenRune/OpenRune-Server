@@ -33,3 +33,6 @@ id = "varn.gorilla_protect_hits"
 
 [[varn]]
 id = "varn.gorilla_miss_streak"
+
+[[varn]]
+id = "varn.gorilla_protect_switching"
