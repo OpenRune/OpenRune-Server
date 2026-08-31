@@ -203,7 +203,7 @@ here so it at least shows up. Nothing is ticked until someone claims it.
 - [ ] Tools
 - [ ] Magic secateurs
 - [ ] Farmer's outfit
-- [ ] Amulet of nature
+- [ ] Amulet of Nature
 - [ ] Seeds
 - [ ] Disease, payment, compost, and watering
 - [ ] Reducing disease risk
