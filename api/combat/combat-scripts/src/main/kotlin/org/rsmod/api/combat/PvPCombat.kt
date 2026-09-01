@@ -15,6 +15,8 @@ import org.rsmod.api.combat.player.specialAttackType
 import org.rsmod.api.death.PvPSkullHook
 import org.rsmod.api.death.PvPSpecialAttackHook
 import org.rsmod.api.combat.weapon.WeaponSpeeds
+import org.rsmod.api.mechanics.toxins.EclipseAtlatlBurnEffect
+import org.rsmod.api.mechanics.toxins.WeaponPoisonEffect
 import org.rsmod.api.config.constants
 import org.rsmod.api.config.refs.params
 import org.rsmod.api.player.isValidTarget
@@ -24,6 +26,7 @@ import org.rsmod.api.player.quiver
 import org.rsmod.api.player.righthand
 import org.rsmod.api.specials.SpecialAttackRegistry
 import org.rsmod.api.specials.SpecialAttackType
+import org.rsmod.api.specials.NextCycleRangedSpecialTiming
 import org.rsmod.api.specials.energy.SpecialAttackEnergy
 import org.rsmod.api.spells.attack.SpellAttackRegistry
 import org.rsmod.api.spells.attack.attack
@@ -45,6 +48,8 @@ constructor(
     private val spellsReg: SpellAttackRegistry,
     private val skullHooks: Set<PvPSkullHook>,
     private val specialAttackHooks: Set<PvPSpecialAttackHook>,
+    private val weaponPoison: WeaponPoisonEffect,
+    private val eclipseAtlatlBurn: EclipseAtlatlBurnEffect,
 ) {
     suspend fun attack(access: ProtectedAccess, target: Player, attack: CombatAttack.PlayerAttack) {
         when (attack) {
@@ -126,6 +131,7 @@ constructor(
         manager.giveCombatXp(player, target, attack, damage)
         manager.playWeaponFx(player, attack)
         manager.queueMeleeHit(player, target, damage)
+        attack.weapon?.let { weaponPoison.rollOnMeleeHit(player, target, getInvObj(it), damage) }
         manager.continueCombat(player, target)
     }
 
@@ -134,7 +140,21 @@ constructor(
             return
         }
 
-        if (manager.isAttackDelayed(player)) {
+        val timing =
+            NextCycleRangedSpecialTiming.resolve(
+                player = player,
+                weaponId = attack.weapon.id,
+                specialSelected = specialAttackType == SpecialAttackType.Weapon,
+            )
+        if (timing == NextCycleRangedSpecialTiming.Resolution.Wait) {
+            manager.continueCombat(player, target)
+            return
+        }
+
+        if (
+            manager.isAttackDelayed(player) &&
+                timing != NextCycleRangedSpecialTiming.Resolution.BypassAttackDelay
+        ) {
             manager.continueCombat(player, target)
             return
         }
@@ -258,6 +278,8 @@ constructor(
 
         val hitAmmoObj = if (usingThrown) null else quiverType
         manager.queueRangedHit(player, target, hitAmmoObj, damage, clientDelay, serverDelay)
+        weaponPoison.rollOnRangedHit(player, target, weaponType, damage)
+        eclipseAtlatlBurn.rollOnHit(player, target, damage)
 
         if (usingThrown && player.righthand == null) {
             mes("That was your last one!")

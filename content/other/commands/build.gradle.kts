@@ -12,6 +12,7 @@ dependencies {
     implementation(projects.api.dbGateway)
     implementation(projects.api.mechanics.toxins)
     implementation(projects.api.pluginCommons)
+    implementation(projects.api.specials)
     implementation(projects.api.spellsAutocast)
 
     implementation(projects.api.utils.utilsSystem)

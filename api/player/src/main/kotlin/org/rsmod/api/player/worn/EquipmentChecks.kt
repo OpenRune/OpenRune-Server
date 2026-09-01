@@ -14,6 +14,19 @@ public object EquipmentChecks {
 
     public fun isTwistedBow(obj: InvObj?): Boolean = obj.isType("obj.twisted_bow")
 
+    public fun isEclipseAtlatl(obj: InvObj?): Boolean =
+        obj.isAnyType("obj.eclipse_atlatl", "obj.br_eclipse_atlatl")
+
+    public fun isSerpentineHelm(obj: InvObj?): Boolean =
+        obj.isAnyType(
+            "obj.serpentine_helm",
+            "obj.serpentine_helm_charged",
+            "obj.serpentine_helm_charged_cyan",
+            "obj.serpentine_helm_charged_red",
+            "obj.serpentine_helm_cyan",
+            "obj.serpentine_helm_red",
+        )
+
     public fun isDragonHunterCrossbow(obj: InvObj?): Boolean =
         obj.isAnyType(
             "obj.dragonhunter_xbow",
@@ -142,6 +155,24 @@ public object EquipmentChecks {
             "obj.league_3_void_knight_gloves",
             "obj.league_3_void_knight_gloves_trouver",
         )
+
+    public fun isEclipseMoonSet(helm: InvObj?, top: InvObj?, legs: InvObj?, weapon: InvObj?): Boolean =
+        helm.isAnyType(
+            "obj.eclipse_moon_helm",
+            "obj.eclipse_moon_helm_degraded",
+            "obj.br_eclipse_moon_helm",
+        ) &&
+            top.isAnyType(
+                "obj.eclipse_moon_chestplate",
+                "obj.eclipse_moon_chestplate_degraded",
+                "obj.br_eclipse_moon_chestplate",
+            ) &&
+            legs.isAnyType(
+                "obj.eclipse_moon_tassets",
+                "obj.eclipse_moon_tassets_degraded",
+                "obj.br_eclipse_moon_tassets",
+            ) &&
+            isEclipseAtlatl(weapon)
 
     public fun isDharokSet(helm: InvObj?, top: InvObj?, legs: InvObj?, weapon: InvObj?): Boolean =
         helm.isAnyType(

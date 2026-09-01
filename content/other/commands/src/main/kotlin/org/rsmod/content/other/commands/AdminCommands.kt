@@ -5,8 +5,8 @@ import dev.openrune.ServerCacheManager
 import dev.openrune.rscm.RSCM
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
-import dev.openrune.types.ItemServerType
 import dev.openrune.types.NpcMode
+import dev.openrune.util.Wearpos
 import jakarta.inject.Inject
 import kotlin.math.max
 import kotlin.math.min
@@ -23,8 +23,10 @@ import org.rsmod.api.invtx.invClear
 import org.rsmod.api.mechanics.toxins.impl.PlayerDisease
 import org.rsmod.api.mechanics.toxins.impl.PlayerPoison
 import org.rsmod.api.mechanics.toxins.impl.PlayerVenom
+import org.rsmod.api.obj.charges.ObjChargeManager
 import org.rsmod.api.player.cheat.adminGodMode
 import org.rsmod.api.player.cheat.adminMaxHit
+import org.rsmod.api.player.righthand
 import org.rsmod.api.player.ironman.PlayerGamemode
 import org.rsmod.api.player.ironman.setGamemode
 import org.rsmod.api.player.debug.componentClickDebug
@@ -45,6 +47,7 @@ import org.rsmod.api.player.vars.resyncVar
 import org.rsmod.api.registry.region.RegionRegistry
 import org.rsmod.api.repo.loc.LocRepository
 import org.rsmod.api.repo.npc.NpcRepository
+import org.rsmod.api.specials.energy.SpecialAttackEnergy
 import org.rsmod.api.utils.format.formatAmount
 import org.rsmod.api.utils.system.SafeServiceExit
 import org.rsmod.game.GameUpdate
@@ -80,6 +83,7 @@ constructor(
     private val regions: RegionRegistry,
     private val deathKillHooks: Set<NpcDeathKillHook>,
     private val instanceRegistry: BossInstanceRegistry,
+    private val objCharges: ObjChargeManager,
 ) : PluginScript() {
     private val logger = InlineLogger()
 
@@ -90,6 +94,7 @@ constructor(
     override fun ScriptContext.startup() {
         onCommand("master", "Max out all stats", ::master)
         onCommand("reset", "Reset all stats", ::reset)
+        onCommand("me", "Fill special attack energy to max", ::maxSpecialEnergy)
         onCommand("mypos", "Get current coordinates", ::mypos)
         onCommand("tele", "Teleport to coordgrid", ::tele) {
             invalidArgs = "Usage: ::tele mx mz [level](e.g. ::tele 3200 3200 0)"
@@ -131,7 +136,7 @@ constructor(
         }
 
         onCommand("invadd", "Spawn obj into inv", ::invAdd)
-        onCommand("item", "Spawn obj into inv (ex: ::item 995 100 or ::item coins 100)", ::invAdd)
+        onCommand("item", "Spawn obj into inv", ::invAdd)
 
         onCommand("invclear", "Remove all objs from inv", ::invClear)
         onCommand("varp", "Set varp value", ::setVarp) {
@@ -158,6 +163,14 @@ constructor(
         }
         onCommand("venom", "Test player venom (escalating damage timer)", ::venomTest)
         onCommand("venomclear", "Clears Venom", ::venomClear)
+        onCommand(
+            "charge",
+            "Add charges to the currently wielded weapon (for testing - some raw materials, " +
+                "e.g. revenant ether, don't exist in this cache at all)",
+            ::chargeTest,
+        ) {
+            invalidArgs = "Use as ::charge varobjName amount (ex: ::charge charges_16383 5000)"
+        }
         onCommand("disease", "Test disease (drain per tick, default 3)", ::diseaseTest) {
             invalidArgs = "Use as ::disease [drainPerTick] (e.g. ::disease 5)"
         }
@@ -268,6 +281,32 @@ constructor(
 
     private fun venomClear(cheat: Cheat) = with(cheat) { PlayerVenom.clear(player) }
 
+    private fun chargeTest(cheat: Cheat) =
+        with(cheat) {
+            if (player.righthand == null) {
+                player.mes("You aren't wielding anything.")
+                return@with
+            }
+            val varobjName = "varobj.${args[0]}"
+            val amount = args[1].toIntOrNull()
+            if (amount == null || amount <= 0) {
+                player.mes("Amount must be a positive number.")
+                return@with
+            }
+            // `max` is just a generous debug-tool ceiling, not the item's real cap - if it's too
+            // high for this specific varobj's actual bit width, the thrown message will report
+            // the real valid range to retry with.
+            val result =
+                objCharges.addCharges(
+                    inventory = player.worn,
+                    slot = Wearpos.RightHand.slot,
+                    add = amount,
+                    internal = varobjName,
+                    max = Short.MAX_VALUE.toInt(),
+                )
+            player.mes("Charge result: $result")
+        }
+
     private fun diseaseTest(cheat: Cheat) =
         with(cheat) {
             val drain = args.getOrNull(0)?.toIntOrNull() ?: 3
@@ -290,6 +329,18 @@ constructor(
     private fun master(cheat: Cheat) = with(cheat) { player.setStatLevels(level = 99) }
 
     private fun reset(cheat: Cheat) = with(cheat) { player.setStatLevels(level = 1) }
+
+    private fun maxSpecialEnergy(cheat: Cheat) =
+        with(cheat) {
+            val type = ServerCacheManager.getVarp("varp.sa_energy".asRSCM())
+            if (type == null) {
+                player.mes("Could not find varp 'sa_energy'.")
+                return
+            }
+            player.vars.backing[type.id] = SpecialAttackEnergy.MAX_ENERGY
+            player.resyncVar(type)
+            player.mes("Special attack energy filled to max.")
+        }
 
     private fun mypos(cheat: Cheat) =
         with(cheat) {
@@ -508,16 +559,14 @@ constructor(
     private fun invAdd(cheat: Cheat) =
         with(cheat) {
             val (typeName, countArg) = args.asTypeNameAndNumber(defaultNumber = 1)
-            val type = resolveObj(typeName)
-            if (type == null) {
-                player.mes("There is no obj mapped to: '$typeName'")
-                return
-            }
+            val normalizedName = "obj.$typeName"
+            val type =
+                ServerCacheManager.getItem(normalizedName.asRSCM(RSCMType.OBJ)) ?: return@with
 
             val count = countArg.toLong().coerceAtMost(Int.MAX_VALUE.toLong()).toInt()
-            val objName = type.name.ifEmpty { typeName }
+            val objName = type.name.ifEmpty { normalizedName }
 
-            val spawned = player.invAdd(player.inv, type.id, count, strict = false)
+            val spawned = player.invAdd(player.inv, normalizedName, count, strict = false)
             if (spawned.err is TransactionResult.RestrictedDummyitem) {
                 player.mes("You can't spawn this item!")
                 return
@@ -769,14 +818,6 @@ constructor(
         } else {
             joinToString("_") to defaultNumber.toString()
         }
-
-    private fun resolveObj(input: String): ItemServerType? {
-        val id = input.toIntOrNull()
-        if (id != null) {
-            return ServerCacheManager.getItem(id)
-        }
-        return ServerCacheManager.getItem("obj.$input".asRSCM(RSCMType.OBJ))
-    }
 
     private fun List<String>.asTypeName(): String = joinToString("_")
 

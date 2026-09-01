@@ -32,6 +32,7 @@ constructor(
         attackStyle: MeleeAttackStyle?,
         blockType: MeleeAttackType?,
         specialMultiplier: Double,
+        defenceMultiplier: Double = 1.0,
     ): Int =
         computeHitChance(
             source = player,
@@ -43,6 +44,7 @@ constructor(
             attackStyle = attackStyle,
             blockType = blockType,
             specialMultiplier = specialMultiplier,
+            defenceMultiplier = defenceMultiplier,
         )
 
     public fun computeHitChance(
@@ -55,6 +57,7 @@ constructor(
         attackStyle: MeleeAttackStyle?,
         blockType: MeleeAttackType?,
         specialMultiplier: Double,
+        defenceMultiplier: Double = 1.0,
     ): Int {
         val meleeAttributes = meleeAttributes.collect(source, attackType)
 
@@ -66,7 +69,7 @@ constructor(
         val attackRoll = (baseAttackRoll * specialMultiplier).toInt()
 
         val amascutInvocationLvl = source.vars["varbit.toa_client_raid_level"]
-        val defenceRoll =
+        val baseDefenceRoll =
             computeDefenceRoll(
                 target = target,
                 targetDefence = targetDefence,
@@ -74,6 +77,7 @@ constructor(
                 blockType = blockType,
                 npcAttributes = npcAttributes,
             )
+        val defenceRoll = (baseDefenceRoll * defenceMultiplier).toInt()
 
         val hitChance = AccuracyOperations.calculateHitChance(attackRoll, defenceRoll)
         return MeleeAccuracyOperations.modifyHitChance(

@@ -153,7 +153,10 @@ internal suspend fun ProtectedAccess.activateMeleeSpecial(
     // interaction will either be canceled entirely or proceed with the delay.
 
     val reduceEnergy = special.attack(this, target, attack)
-    if (reduceEnergy) {
+    // Re-checked rather than taken unconditionally: a non-specialized weapon's cost was already
+    // validated above, but re-validating here means a change to the player's energy during the
+    // special's own execution can never turn into an uncaught `takeSpecialEnergy` exception.
+    if (reduceEnergy && energy.hasSpecialEnergy(player, special.energyInHundreds)) {
         energy.takeSpecialEnergy(player, special.energyInHundreds)
     }
     return true
@@ -184,7 +187,8 @@ internal suspend fun ProtectedAccess.activateRangedSpecial(
     // interaction will either be canceled entirely or proceed with the delay.
 
     val reduceEnergy = special.attack(this, target, attack)
-    if (reduceEnergy) {
+    // Re-checked rather than taken unconditionally - see `activateMeleeSpecial`.
+    if (reduceEnergy && energy.hasSpecialEnergy(player, special.energyInHundreds)) {
         energy.takeSpecialEnergy(player, special.energyInHundreds)
     }
     return true
@@ -215,7 +219,8 @@ internal suspend fun ProtectedAccess.activateMagicSpecial(
     // interaction will either be canceled entirely or proceed with the delay.
 
     val reduceEnergy = special.attack(this, target, attack)
-    if (reduceEnergy) {
+    // Re-checked rather than taken unconditionally - see `activateMeleeSpecial`.
+    if (reduceEnergy && energy.hasSpecialEnergy(player, special.energyInHundreds)) {
         energy.takeSpecialEnergy(player, special.energyInHundreds)
     }
     return true

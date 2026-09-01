@@ -18,7 +18,7 @@ import org.rsmod.utils.bits.withBits
 
 public class ObjChargeManager {
     public fun getCharges(obj: InvObj?, internal: String): Int {
-        val varobj = ServerCacheManager.getVarObj(internal.asRSCM(RSCMType.VARCON)) ?: error("Unable to find varobj: $internal")
+        val varobj = ServerCacheManager.getVarObj(internal.asRSCM(RSCMType.VAROBJ)) ?: error("Unable to find varobj: $internal")
         return obj?.vars?.getBits(varobj.bits) ?: 0
     }
 
@@ -47,7 +47,7 @@ public class ObjChargeManager {
         internal: String,
         max: Int,
     ): Charge {
-        val varobj = ServerCacheManager.getVarObj(internal.asRSCM(RSCMType.VARCON)) ?: error("Unable to find varobj: $internal")
+        val varobj = ServerCacheManager.getVarObj(internal.asRSCM(RSCMType.VAROBJ)) ?: error("Unable to find varobj: $internal")
         val chargeRange = 0..varobj.bits.bitMask
         require(max in chargeRange) {
             "`max` charges ($max) must be within range [0..${varobj.bits.bitMask}]. (var=$varobj)"
@@ -109,7 +109,7 @@ public class ObjChargeManager {
             throw IllegalStateException(message)
         }
 
-        val varobj = ServerCacheManager.getVarObj(internal.asRSCM(RSCMType.VARCON))?: error("Unable to find varobj: $internal")
+        val varobj = ServerCacheManager.getVarObj(internal.asRSCM(RSCMType.VAROBJ))?: error("Unable to find varobj: $internal")
 
         val currentCharges = obj.vars.getBits(varobj.bits)
         if (currentCharges < decrement) {

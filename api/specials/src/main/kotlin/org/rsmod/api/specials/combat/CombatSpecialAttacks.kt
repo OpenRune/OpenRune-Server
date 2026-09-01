@@ -55,4 +55,10 @@ public interface MeleeSpecialAttack : CombatSpecialAttack<CombatAttack.Melee>
 
 public interface RangedSpecialAttack : CombatSpecialAttack<CombatAttack.Ranged>
 
+/**
+ * A ranged special that, once armed, executes on the next game cycle even during an existing attack
+ * delay. [org.rsmod.api.specials.NextCycleRangedSpecialTiming] provides the coordination.
+ */
+public interface NextCycleRangedSpecialAttack : RangedSpecialAttack
+
 public interface MagicSpecialAttack : CombatSpecialAttack<CombatAttack.Staff>

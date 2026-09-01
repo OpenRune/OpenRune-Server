@@ -13,28 +13,58 @@ class StatBoostSpecialAttacks @Inject constructor(private val worldRepo: WorldRe
     override fun SpecialAttackRepository.register(manager: SpecialAttackManager) {
         registerInstant("obj.dragon_axe", ::lumberUpRed)
         registerInstant("obj.trailblazer_axe_no_infernal", ::lumberUpRed)
+        registerInstant("obj.trailblazer_reloaded_axe_no_infernal", ::lumberUpRed)
+        registerInstant("obj.dragon_axe_2h", ::lumberUpRed)
+        registerInstant("obj.league_trailblazer_axe", ::lumberUpRed)
         registerInstant("obj.3a_axe", ::lumberUpSilver)
+        registerInstant("obj.3a_axe_2h", ::lumberUpSilver)
         registerInstant("obj.infernal_axe", ::lumberUpRed)
+        registerInstant("obj.infernal_axe_empty", ::lumberUpRed)
         registerInstant("obj.trailblazer_axe", ::lumberUpRed)
+        registerInstant("obj.trailblazer_axe_empty", ::lumberUpRed)
+        registerInstant("obj.trailblazer_reloaded_axe", ::lumberUpRed)
+        registerInstant("obj.trailblazer_reloaded_axe_empty", ::lumberUpRed)
         registerInstant("obj.crystal_axe", ::lumberUpSilver)
+        registerInstant("obj.crystal_axe_inactive", ::lumberUpSilver)
+        registerInstant("obj.crystal_axe_2h", ::lumberUpSilver)
+        registerInstant("obj.crystal_axe_2h_inactive", ::lumberUpSilver)
 
         registerInstant("obj.dragon_harpoon", ::fishstabberDragonHarpoon)
         registerInstant("obj.trailblazer_harpoon_no_infernal", ::fishstabberDragonHarpoonOr)
+        registerInstant("obj.trailblazer_reloaded_harpoon_no_infernal", ::fishstabberDragonHarpoonOr)
+        registerInstant("obj.league_trailblazer_harpoon", ::fishstabberDragonHarpoonOr)
         registerInstant("obj.infernal_harpoon", ::fishstabberInfernalHarpoon)
+        registerInstant("obj.infernal_harpoon_empty", ::fishstabberInfernalHarpoon)
         registerInstant("obj.trailblazer_harpoon", ::fishstabberInfernalHarpoonOr)
         registerInstant("obj.trailblazer_harpoon_empty", ::fishstabberInfernalHarpoonOr)
+        registerInstant("obj.trailblazer_reloaded_harpoon", ::fishstabberInfernalHarpoonOr)
+        registerInstant("obj.trailblazer_reloaded_harpoon_empty", ::fishstabberInfernalHarpoonOr)
         registerInstant("obj.crystal_harpoon", ::fishstabberCrystalHarpoon)
+        registerInstant("obj.crystal_harpoon_inactive", ::fishstabberCrystalHarpoon)
 
         registerInstant("obj.dragon_pickaxe", ::rockKnockerDragonPickaxe)
         registerInstant("obj.zalcano_pickaxe", ::rockKnockerDragonPickaxeOrZalcano)
         registerInstant("obj.trailblazer_pickaxe_no_infernal", ::rockKnockerDragonPickaxeOrTrailblazer)
+        registerInstant("obj.trailblazer_reloaded_pickaxe_no_infernal", ::rockKnockerDragonPickaxeOrTrailblazer)
+        registerInstant("obj.league_trailblazer_pickaxe", ::rockKnockerDragonPickaxeOrTrailblazer)
         registerInstant("obj.dragon_pickaxe_pretty", ::rockKnockerDragonPickaxeUpgraded)
         registerInstant("obj.infernal_pickaxe", ::rockKnockerInfernalPickaxe)
         registerInstant("obj.infernal_pickaxe_empty", ::rockKnockerInfernalPickaxe)
         registerInstant("obj.trailblazer_pickaxe", ::rockKnockerInfernalPickaxeOr)
         registerInstant("obj.trailblazer_pickaxe_empty", ::rockKnockerInfernalPickaxeOr)
+        registerInstant("obj.trailblazer_reloaded_pickaxe", ::rockKnockerInfernalPickaxeOr)
+        registerInstant("obj.trailblazer_reloaded_pickaxe_empty", ::rockKnockerInfernalPickaxeOr)
         registerInstant("obj.3a_pickaxe", ::rockKnockerThirdAgePickaxe)
         registerInstant("obj.crystal_pickaxe", ::rockKnockerCrystalPickaxe)
+        registerInstant("obj.crystal_pickaxe_inactive", ::rockKnockerCrystalPickaxe)
+
+        registerInstant("obj.excalibur", ::sanctuary)
+    }
+
+    private fun sanctuary(access: ProtectedAccess): Boolean {
+        access.statBoost("stat.defence", constant = 8, percent = 0)
+        access.anim("seq.sanctuary")
+        return true
     }
 
     private fun lumberUpRed(access: ProtectedAccess): Boolean {

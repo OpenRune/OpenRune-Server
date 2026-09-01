@@ -42,6 +42,23 @@ lengthAdjustment = 0
 progress = 11
 stepMultiplier = 5
 
+# Dedicated type for Toxic Siphon's own flying-dart effect. Registered as a real alias in
+# .data/gamevals/projanim.rscm (a new custom projanim id needs an entry there, not just a raw
+# `projectiles.toml` block - confirmed the hard way). `projanim.thrown` (163/146) looked too high
+# for this effect; `projanim.dragonfire`'s values (43/31) were tried as an interim reference and
+# reported too low; 95/70 was reported still slightly low. Nudged up a little further - still an
+# unverified visual-tuning guess, needs live confirmation.
+[[projectile]]
+isServerOnly = true
+id = "projanim.toxic_blowpipe_special"
+startHeight = 115
+endHeight = 85
+delay = 32
+angle = 15
+lengthAdjustment = 0
+progress = 11
+stepMultiplier = 5
+
 [[projectile]]
 isServerOnly = true
 id = "projanim.doublearrow_one"
