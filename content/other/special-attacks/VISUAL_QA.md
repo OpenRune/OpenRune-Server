@@ -56,15 +56,22 @@ something's still wrong so we don't lose track between sessions.
 - [ ] Saradomin blessed sword - animation missing entirely
 - [ ] Dragon crossbow - special attack animation missing entirely
 - [ ] Magic bow (longbow) - animation messed up
-- [ ] Magic shortbow - animation messed up + fires wrong projectile. Tried delaying the target-hit
-      spotanim to the projectile's arrival (it was firing instantly at cast time, before the
-      projectiles even existed) - tested live, felt worse, reverted. `proj_type` sourcing checked
-      out fine (matches every other ranged file). No dedicated "green arrow" asset found in the
-      cache for this weapon. You described it as: a green launch flash, then two plain-colored
-      arrows - that sequence may be correct/intentional (Magic shortbow fires your real ammo, not a
-      magic arrow; the green is presumably just the bow's own muzzle-flash), so the actual bug (if
-      any) is still unidentified. Needs a fresh look, ideally with more specific detail on which part
-      looks wrong (timing? color? something firing that shouldn't?).
+- [ ] Magic shortbow - rewritten from scratch off the cache data after a long run of guesswork
+      iterations went nowhere. What the data says: `seq.snapshot` (1074, confirmed as the real spec
+      anim by multiple RuneLite plugins) is two identical 27-client-cycle draw-and-release cycles
+      back to back, so the second arrow looses 27 cycles (~0.9 tick) after the first.
+      `sp_attack_snapshot_spotanim` (256) is Snapshot's only graphic - it's in the RS2 spec-graphic
+      block (246-258) with `sp_attack_puncture`/`cleave`/`shatter`, all *attacker*-side, and its
+      own anim is a single 21-cycle draw glow. So it's the player's per-draw launch glow, NOT a
+      target-hit effect - the old code put it on the target, which was the "arrow appears on the
+      enemy / weird thing on hit" you saw. The unnamed `glow_arrow_launch/travel` pair (249/250)
+      belongs to Powershot/Soulshot by elimination, not Snapshot; arrows in flight are the worn
+      ammo's normal `proj_travel`. Implementation: glow on player at delay 0 and again at delay 27
+      (second in a different spotanim slot so it doesn't overwrite the first), second projectile is
+      a `ProjAnim.copy` of the first with `startTime`/`endTime` +27 (same speed/arc; two
+      byte-identical projectiles in one tick render as one). Dark bow's `doublearrow_one/two` was
+      ruled out via projectiles.toml (different angle/stepMultiplier = intentional high/low arc).
+      **Needs live confirmation.**
 - [ ] Dark bow - fires wrong projectile
 - [ ] Seercull - fires wrong projectile
 - [ ] Dragon hasta - missing an animation (something like Sunspear's thrust)
