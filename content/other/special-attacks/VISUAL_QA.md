@@ -56,7 +56,7 @@ something's still wrong so we don't lose track between sessions.
 - [ ] Saradomin blessed sword - animation missing entirely
 - [ ] Dragon crossbow - special attack animation missing entirely
 - [ ] Magic bow (longbow) - animation messed up
-- [ ] Magic shortbow - rewritten from scratch off the cache data after a long run of guesswork
+- [x] Magic shortbow - rewritten from scratch off the cache data after a long run of guesswork
       iterations went nowhere. What the data says: `seq.snapshot` (1074, confirmed as the real spec
       anim by multiple RuneLite plugins) is two identical 27-client-cycle draw-and-release cycles
       back to back, so the second arrow looses 27 cycles (~0.9 tick) after the first.
@@ -71,7 +71,13 @@ something's still wrong so we don't lose track between sessions.
       a `ProjAnim.copy` of the first with `startTime`/`endTime` +27 (same speed/arc; two
       byte-identical projectiles in one tick render as one). Dark bow's `doublearrow_one/two` was
       ruled out via projectiles.toml (different angle/stepMultiplier = intentional high/low arc).
-      **Needs live confirmation.**
+      Live-tested and confirmed serviceable, **with one follow-up fix**: the arrows themselves were
+      firing on the ammo's generic `projanim.arrow` delay (41 cycles, tuned for a normal single
+      draw), so both fires leaked out after the compressed 27-cycle draws instead of matching them.
+      Built the `ProjAnim`s by hand instead of via `spawnProjectile` so the first can launch at
+      cycle 16 (held-draw frames end, snap/release begins) with `startTime`/`endTime` shifted
+      together to keep the real flight duration unchanged. Confirmed live: arrows now fire
+      alongside their own draw.
 - [ ] Dark bow - fires wrong projectile
 - [ ] Seercull - fires wrong projectile
 - [ ] Dragon hasta - missing an animation (something like Sunspear's thrust)
