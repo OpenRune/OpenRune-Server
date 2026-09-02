@@ -1,6 +1,7 @@
 package org.rsmod.content.other.special.attacks.ranged
 
 import dev.openrune.rscm.RSCM
+import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import dev.openrune.types.ItemServerType
 import jakarta.inject.Inject
@@ -19,6 +20,7 @@ import org.rsmod.api.specials.combat.RangedSpecialAttack
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.PathingEntity
 import org.rsmod.game.entity.Player
+import org.rsmod.game.proj.ProjAnim
 import org.rsmod.game.type.getInvObj
 import org.rsmod.game.type.getOrNull
 
@@ -121,7 +123,29 @@ constructor(
             // ammo's own plain proj_travel entirely rather than layering on top of it.
             val travelSpot = SNAPSHOT_TRAVEL_GLOW_SPOTANIM
             val projanim = RSCM.getReverseMapping(RSCMType.PROJANIM, projectileType.id)
-            val firstProjectile = manager.spawnProjectile(this, target, travelSpot, projanim)
+            val travelSpotId = travelSpot.asRSCM(RSCMType.SPOTANIM)
+            // `manager.spawnProjectile` dispatches immediately using the ammo's generic
+            // `projanim.arrow` delay (41 client cycles) - tuned for a normal single-draw bow shot,
+            // not this animation. `seq.snapshot`'s own draw-and-release cycle is only 27 cycles, so
+            // that default fires the arrow 14 cycles into the *second* draw instead of during the
+            // first. Building the ProjAnim by hand instead lets us launch it at cycle 16 (where the
+            // held-draw frames end and the snap/release frames begin) without dispatching the
+            // wrongly-timed default first. Shifting both startTime and endTime by the same amount
+            // keeps the real flight duration (baked additively into endTime) unchanged - only when
+            // it starts moving changes.
+            val defaultProjectile =
+                when (target) {
+                    is Npc -> ProjAnim.fromBoundsToNpc(player.bounds(), target, travelSpotId, projanim)
+                    is Player ->
+                        ProjAnim.fromBoundsToPlayer(player.bounds(), target, travelSpotId, projanim)
+                }
+            val launchDelta = defaultProjectile.startTime - FIRST_ARROW_RELEASE_CYCLE
+            val firstProjectile =
+                defaultProjectile.copy(
+                    startTime = FIRST_ARROW_RELEASE_CYCLE,
+                    endTime = defaultProjectile.endTime - launchDelta,
+                )
+            worldRepo.projAnim(firstProjectile)
             // Same arrow, same speed and arc, launched 27 client cycles later to match the second
             // draw in the animation. Two projectiles with byte-identical timing dispatched in the
             // same tick render as one, so the offset is what makes the second arrow visible - it
@@ -219,6 +243,15 @@ constructor(
          * (frame delays 2+2+2+2+8+5+2+2+2+2). 30 client cycles = 1 server tick.
          */
         const val SECOND_ARROW_OFFSET_CYCLES = 27
+
+        /**
+         * Client cycle within the first draw where the arrow actually leaves the bow: the pulled-
+         * back hold ends and the snap/release frames begin (2+2+2+2+8 into `seq.snapshot`'s frame
+         * delays). Live-tested as too late at the ammo's generic `projanim.arrow` delay of 41,
+         * which fires the arrow into the *second* draw instead of the first - needs your eyes to
+         * confirm/tune this exact value.
+         */
+        const val FIRST_ARROW_RELEASE_CYCLE = 16
 
         /** Any slot other than [constants.spotanim_slot_combat], so the two glows coexist. */
         const val SECOND_GLOW_SPOTANIM_SLOT = 0
