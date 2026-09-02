@@ -18704,6 +18704,29 @@ weaponCategory="StabSword"
 
 
 [[item]]
+# Was undefined entirely (no weaponCategory, no attack anims) before this fix - wielding it had no
+# combat style options and no attack animation. Wiki: "the attack animation for Belle's folly is
+# identical to the Ghrazi rapier" - same seqs/sounds/category as that entry above, just this item's
+# id. `belles_folly_tarnished` (31245) deliberately has no Wield option in the cache at all (needs
+# repairing first per its own examine text/quest lore), so it doesn't need this treatment.
+id = "obj.belles_folly"
+inherit = "obj.belles_folly"
+weaponCategory="StabSword"
+[item.params]
+"param.equipment_sound"=2248
+"param.attack_anim_stance1"="seq.ghrazi_rapier_attack"
+"param.attack_sound_stance1"=2549
+"param.attack_anim_stance2"="seq.ghrazi_rapier_attack"
+"param.attack_sound_stance2"=2549
+"param.attack_anim_stance3"="seq.human_sword_slash"
+"param.attack_sound_stance3"=2548
+"param.attack_anim_stance4"="seq.ghrazi_rapier_attack"
+"param.attack_sound_stance4"=2549
+"param.bas_readyanim"="seq.human_ds_ready"
+"param.defend_anim"="seq.human_sword_def"
+
+
+[[item]]
 id = "obj.scythe_of_vitur"
 inherit = "obj.scythe_of_vitur"
 weaponCategory="Scythe"
@@ -19148,6 +19171,10 @@ weaponCategory="Thrown"
 "param.proj_travel"="spotanim.morrigans_javelin_travel"
 "param.proj_launch"="spotanim.morrigans_javelin_launch"
 "param.equipment_sound"=2247
+# Missing entirely before this fix - fell back to attackRange=1 (melee-only) since
+# `params.attackrange` had no value on this item. Both cache variants (br_morrigans_javelin,
+# morrigans_javelin_bh) already had this set to 5; the base item was simply never given it.
+"param.attack_range"=5
 "param.attack_anim_stance1"="seq.human_stake2"
 "param.attack_sound_stance1"=2699
 "param.attack_anim_stance2"="seq.human_stake2"

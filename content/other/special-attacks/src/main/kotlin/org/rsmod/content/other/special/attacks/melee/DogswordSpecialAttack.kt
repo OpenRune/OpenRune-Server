@@ -3,6 +3,7 @@ package org.rsmod.content.other.special.attacks.melee
 import jakarta.inject.Inject
 import kotlin.math.max
 import kotlin.math.min
+import org.rsmod.api.combat.commons.BindEffectService
 import org.rsmod.api.combat.commons.CombatAttack
 import org.rsmod.api.combat.commons.CombatEffects
 import org.rsmod.api.combat.commons.types.MeleeAttackType
@@ -27,13 +28,17 @@ import org.rsmod.game.hit.HitType
  */
 class DogswordSpecialAttack
 @Inject
-constructor(private val sacrifice: AncientGodswordBloodSacrifice) : SpecialAttackMap {
+constructor(
+    private val sacrifice: AncientGodswordBloodSacrifice,
+    private val binds: BindEffectService,
+) : SpecialAttackMap {
     override fun SpecialAttackRepository.register(manager: SpecialAttackManager) {
         registerMelee(
             "obj.echo_godsword",
             PowerOfTheGods(
                 manager = manager,
                 sacrifice = sacrifice,
+                binds = binds,
                 bloodSacrificeDamage = LEAGUE_BLOOD_SACRIFICE_DAMAGE,
                 bloodSacrificeHealCap = LEAGUE_BLOOD_SACRIFICE_HEAL_CAP,
             ),
@@ -43,6 +48,7 @@ constructor(private val sacrifice: AncientGodswordBloodSacrifice) : SpecialAttac
             PowerOfTheGods(
                 manager = manager,
                 sacrifice = sacrifice,
+                binds = binds,
                 bloodSacrificeDamage = DEADMAN_BLOOD_SACRIFICE_DAMAGE,
                 bloodSacrificeHealCap = DEADMAN_BLOOD_SACRIFICE_HEAL_CAP,
             ),
@@ -52,6 +58,7 @@ constructor(private val sacrifice: AncientGodswordBloodSacrifice) : SpecialAttac
     private class PowerOfTheGods(
         private val manager: SpecialAttackManager,
         private val sacrifice: AncientGodswordBloodSacrifice,
+        private val binds: BindEffectService,
         private val bloodSacrificeDamage: Int,
         private val bloodSacrificeHealCap: Int,
     ) : MeleeSpecialAttack {
@@ -101,7 +108,14 @@ constructor(private val sacrifice: AncientGodswordBloodSacrifice) : SpecialAttac
                     constant = max(SARADOMIN_MINIMUM_PRAYER_HEAL, (damage + 3) / 4),
                     percent = 0,
                 )
-                (target as? Player)?.let { CombatEffects.freeze(it, ZAMORAK_FREEZE_TICKS) }
+                // Wiki: the Zamorak godsword's freeze is a real PvM tool (Muttadiles, Barrows'
+                // Dharok) - not player-only. Matches ImpactMeleeSpecialAttacks' ZamorakGodsword.
+                // Wiki: "Freezes opponent... with a similar animation to Ice Barrage."
+                target.spotanim("spotanim.ice_barrage_impact")
+                when (target) {
+                    is Player -> CombatEffects.freeze(target, ZAMORAK_FREEZE_TICKS)
+                    is Npc -> binds.bind(target, ZAMORAK_FREEZE_TICKS)
+                }
                 sacrifice.mark(
                     source = source,
                     target = target,

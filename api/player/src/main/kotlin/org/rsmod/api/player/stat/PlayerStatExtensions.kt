@@ -247,7 +247,13 @@ public fun Player.statHeal(internal: String, constant: Int, percent: Int) {
     val base = statBase(internal)
     val current = stat(internal)
     val calculated = current + (constant + (base * percent) / 100)
-    val cappedLevel = calculated.coerceIn(current, base)
+    // `current` can already sit above `base` (an earlier heal/boost overshot it), and
+    // `coerceIn(current, base)` requires its lower bound <= its upper bound - crashed with
+    // "Cannot coerce value to an empty range" whenever that happened (e.g. Dogsword's Power of the
+    // Gods healing a player already boosted past their base level). `maxOf(current, base)` keeps
+    // the normal base-level cap in the common case, and simply holds at the already-boosted
+    // `current` (no further gain, no crash) once that's higher than base.
+    val cappedLevel = calculated.coerceIn(current, maxOf(current, base))
 
     statMap.setCurrentLevel(internal, cappedLevel.toByte())
 

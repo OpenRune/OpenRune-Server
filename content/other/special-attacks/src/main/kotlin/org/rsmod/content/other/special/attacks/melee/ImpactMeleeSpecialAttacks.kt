@@ -239,6 +239,8 @@ constructor(private val binds: BindEffectService) : SpecialAttackMap {
             // freezing effect... Protect from Melee... does not affect the freeze" - gated on the
             // accuracy roll itself, not the post-mitigation damage.
             if (accurate) {
+                // Wiki: "Freezes opponent... with a similar animation to Ice Barrage."
+                target.spotanim("spotanim.ice_barrage_impact")
                 when (target) {
                     is Player -> CombatEffects.freeze(target, ZGS_FREEZE_TICKS)
                     is Npc -> binds.bind(target, ZGS_FREEZE_TICKS)
