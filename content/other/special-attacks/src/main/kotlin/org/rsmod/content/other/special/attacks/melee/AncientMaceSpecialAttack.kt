@@ -54,7 +54,7 @@ class AncientMaceSpecialAttack : SpecialAttackMap {
             spotanim(
                 spot = "spotanim.slice_player_mace_special_attack_spotanim",
                 slot = constants.spotanim_slot_combat,
-                height = 96,
+                height = 0,
             )
 
             val rawDamage =

@@ -64,7 +64,7 @@ class DualMacuahuitlSpecialAttack @Inject constructor(private val random: GameRa
             spotanim(
                 spot = "spotanim.special_dual_macuahuitl_spotanim",
                 slot = constants.spotanim_slot_combat,
-                height = 96,
+                height = 0,
             )
 
             val normalMax =

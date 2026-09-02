@@ -153,7 +153,7 @@ private suspend fun ProtectedAccess.playRetainerVisuals(
     spotanim(
         spot = if (hallowed) HALLOWED_RETAINER_CAST_SPOT else RETAINER_CAST_SPOT,
         slot = constants.spotanim_slot_combat,
-        height = 96,
+        height = 0,
     )
     val projectile =
         manager.spawnProjectile(

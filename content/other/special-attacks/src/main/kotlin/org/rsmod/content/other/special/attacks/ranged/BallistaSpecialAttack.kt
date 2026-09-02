@@ -67,13 +67,13 @@ class BallistaSpecialAttack @Inject constructor(private val ammunition: RangedAm
 
             anim(BallistaAnimation.resolve(ornamented = ornamented, targetIsNpc = target is Npc))
             weaponType.paramOrNull(params.attack_sound_stance1)?.let { soundSynth(it) }
-            spotanim("spotanim.ballista_special", height = 96, slot = constants.spotanim_slot_combat)
+            spotanim("spotanim.ballista_special", height = 0, slot = constants.spotanim_slot_combat)
 
             val launchSpot =
                 quiverType.paramOrNull(params.proj_launch)?.let {
                     RSCM.getReverseMapping(RSCMType.SPOTANIM, it.id)
                 }
-            spotanim(launchSpot, height = 96, slot = constants.spotanim_slot_combat)
+            spotanim(launchSpot, height = 0, slot = constants.spotanim_slot_combat)
 
             val projectile =
                 manager.spawnProjectile(

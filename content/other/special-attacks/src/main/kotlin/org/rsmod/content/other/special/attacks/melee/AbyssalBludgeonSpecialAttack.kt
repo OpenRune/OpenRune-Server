@@ -44,7 +44,7 @@ class AbyssalBludgeonSpecialAttack : SpecialAttackMap {
             target.spotanim(
                 spot = "spotanim.abyssal_miasma_spotanim_bludgeon",
                 slot = constants.spotanim_slot_combat,
-                height = 96,
+                height = 0,
             )
 
             val missingPrayer =

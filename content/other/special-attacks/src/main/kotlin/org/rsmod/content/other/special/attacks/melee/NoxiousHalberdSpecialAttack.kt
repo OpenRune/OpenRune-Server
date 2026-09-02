@@ -33,7 +33,7 @@ class NoxiousHalberdSpecialAttack : SpecialAttackMap {
             spotanim(
                 spot = "spotanim.vfx_noxious_halberd_spec",
                 slot = constants.spotanim_slot_combat,
-                height = 96,
+                height = 0,
             )
             NoxiousHalberdVirulence.activate(player, damage)
             return true

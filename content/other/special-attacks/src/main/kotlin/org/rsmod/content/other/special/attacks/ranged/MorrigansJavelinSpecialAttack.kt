@@ -90,7 +90,7 @@ constructor(
             anim(MORRIGANS_JAVELIN_SEQUENCE)
             spotanim(
                 spot = MORRIGANS_JAVELIN_LAUNCH_SPOTANIM,
-                height = 96,
+                height = 0,
                 slot = constants.spotanim_slot_combat,
             )
             val projectile =

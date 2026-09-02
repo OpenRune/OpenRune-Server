@@ -55,7 +55,7 @@ class StatiusWarhammerSpecialAttack : SpecialAttackMap {
             spotanim(
                 spot = "spotanim.statius_hammer_sa_spotanim",
                 slot = constants.spotanim_slot_combat,
-                height = 96,
+                height = 0,
             )
             val successful =
                 manager.rollMeleeAccuracy(

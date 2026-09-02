@@ -69,7 +69,7 @@ constructor(
             spotanim(
                 spot = "spotanim.special_atlatl_spotanim",
                 slot = constants.spotanim_slot_combat,
-                height = 96,
+                height = 0,
             )
 
             val normalMax =
@@ -112,7 +112,7 @@ constructor(
             target.spotanim(
                 spot = "spotanim.special_atlatl_impact_spotanim",
                 slot = constants.spotanim_slot_combat,
-                height = 96,
+                height = 0,
             )
             manager.continueCombat(this, target)
             return true

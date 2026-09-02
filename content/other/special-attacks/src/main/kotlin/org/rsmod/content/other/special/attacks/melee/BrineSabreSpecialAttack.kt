@@ -50,7 +50,7 @@ class BrineSabreSpecialAttack : SpecialAttackMap {
             spotanim(
                 spot = "spotanim.olaf2_brine_sabre_special_spot",
                 slot = constants.spotanim_slot_combat,
-                height = 96,
+                height = 0,
             )
 
             val damage =

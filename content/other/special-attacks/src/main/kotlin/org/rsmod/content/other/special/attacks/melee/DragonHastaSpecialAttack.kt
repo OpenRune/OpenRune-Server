@@ -96,7 +96,7 @@ constructor(
             spotanim(
                 spot = "spotanim.dragon_hasta_spec_spotanim",
                 slot = constants.spotanim_slot_combat,
-                height = 96,
+                height = 0,
             )
             val damage =
                 manager.rollMeleeDamage(
@@ -156,7 +156,7 @@ constructor(
             spotanim(
                 spot = "spotanim.sp_attack_shove_spotanim",
                 slot = constants.spotanim_slot_combat,
-                height = 96,
+                height = 0,
             )
             // Human sequence 1066 is invalid for non-human NPC skeletons.
             // NPC targets use their cache-defined defend animation; PvP players
@@ -169,7 +169,7 @@ constructor(
             target.spotanim(
                 spot = "spotanim.stunned_shove",
                 slot = constants.spotanim_slot_combat,
-                height = 96,
+                height = 0,
             )
 
             stuns.applyStun(target, STUN_CYCLES)

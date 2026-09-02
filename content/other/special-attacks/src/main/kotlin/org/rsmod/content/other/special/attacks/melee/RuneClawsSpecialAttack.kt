@@ -42,7 +42,7 @@ class RuneClawsSpecialAttack : SpecialAttackMap {
             spotanim(
                 spot = "spotanim.sp_attack_impale_spotanim",
                 slot = constants.spotanim_slot_combat,
-                height = 96,
+                height = 0,
             )
 
             // Rune claws normally attack every four cycles; Impale is a five-cycle attack.

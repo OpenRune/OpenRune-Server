@@ -262,7 +262,7 @@ internal enum class ArmadylEnchantedBolt(
      */
     fun applyEffect(source: Player, target: PathingEntity, damage: Int) {
         if (damage > 0) {
-            target.spotanim(spot = spotanim, height = 96)
+            target.spotanim(spot = spotanim, height = 0)
         }
         when (this) {
             Jade -> {

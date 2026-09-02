@@ -73,7 +73,7 @@ constructor(
             weaponType.paramOrNull(params.attack_sound_stance1)?.let { soundSynth(it) }
             spotanim(
                 SWARM_LAUNCH_SPOTANIM,
-                height = 96,
+                height = 0,
                 slot = constants.spotanim_slot_combat,
             )
 
@@ -110,7 +110,7 @@ constructor(
                 target.spotanim(
                     SWARM_IMPACT_SPOTANIM,
                     delay = hit.clientDelay,
-                    height = 96,
+                    height = 0,
                 )
                 if (index == 0) {
                     manager.queueRangedHit(

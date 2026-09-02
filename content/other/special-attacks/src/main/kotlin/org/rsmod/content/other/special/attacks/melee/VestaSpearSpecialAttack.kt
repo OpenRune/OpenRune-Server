@@ -68,7 +68,7 @@ constructor(
             player.anim(RSCM.getReverseMapping(RSCMType.SEQ, VESTA_SPEAR_WALL_ANIMATION))
             player.spotanim(
                 spot = RSCM.getReverseMapping(RSCMType.SPOTANIM, VESTA_SPEAR_WALL_SPOTANIM),
-                height = 96,
+                height = 0,
                 slot = constants.spotanim_slot_combat,
             )
             VestaSpearCombatImmunity.activate(player)

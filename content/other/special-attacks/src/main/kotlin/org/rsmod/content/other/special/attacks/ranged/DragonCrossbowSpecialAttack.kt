@@ -92,7 +92,7 @@ constructor(
                 }
             spotanim(
                 launchSpotanim,
-                height = 96,
+                height = 0,
                 slot = constants.spotanim_slot_combat,
             )
 

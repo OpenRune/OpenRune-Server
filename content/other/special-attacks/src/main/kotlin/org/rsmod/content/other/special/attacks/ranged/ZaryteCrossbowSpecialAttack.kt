@@ -214,7 +214,7 @@ private fun ArmadylEnchantedBolt.zaryteApplyEffect(
             if (damage <= 0) {
                 return
             }
-            target.spotanim(spot = spotanim, height = 96)
+            target.spotanim(spot = spotanim, height = 0)
             val requested = ZaryteCrossbowSpecialDamage.sapphirePrayerDrain(source.rangedLvl)
             val drained = min(requested, player.prayerLvl)
             if (drained <= 0) {
@@ -231,7 +231,7 @@ private fun ArmadylEnchantedBolt.zaryteApplyEffect(
         ArmadylEnchantedBolt.Emerald -> {
             val player = target as? Player ?: return
             if (damage > 0) {
-                target.spotanim(spot = spotanim, height = 96)
+                target.spotanim(spot = spotanim, height = 0)
                 CombatEffects.poison(player, ZaryteCrossbowSpecialDamage.EMERALD_POISON_DAMAGE)
             }
         }

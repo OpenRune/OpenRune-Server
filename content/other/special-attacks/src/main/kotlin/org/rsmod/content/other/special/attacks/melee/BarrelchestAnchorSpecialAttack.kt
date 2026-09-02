@@ -53,7 +53,7 @@ class BarrelchestAnchorSpecialAttack : SpecialAttackMap {
             anim("seq.brain_player_anchor_special_attack")
             spotanim(
                 spot = "spotanim.brain_anchor_special_attack_spot",
-                height = 96,
+                height = 0,
             )
             val damage =
                 manager.rollMeleeDamage(

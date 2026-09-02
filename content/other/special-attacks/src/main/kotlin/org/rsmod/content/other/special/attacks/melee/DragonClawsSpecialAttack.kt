@@ -56,7 +56,7 @@ class DragonClawsSpecialAttack : SpecialAttackMap {
             spotanim(
                 spot = "spotanim.dragon_claws_spot",
                 slot = constants.spotanim_slot_combat,
-                height = 96,
+                height = 0,
             )
 
             val maxHit =

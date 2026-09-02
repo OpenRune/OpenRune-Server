@@ -49,11 +49,11 @@ class VoidwakerSpecialAttack : SpecialAttackMap {
             spotanim(
                 spot = "spotanim.fx_voidwaker02_special",
                 slot = constants.spotanim_slot_combat,
-                height = 96,
+                height = 0,
             )
             target.spotanim(
                 spot = "spotanim.fx_voidwaker_impact",
-                height = 96,
+                height = 0,
                 slot = constants.spotanim_slot_combat,
             )
 

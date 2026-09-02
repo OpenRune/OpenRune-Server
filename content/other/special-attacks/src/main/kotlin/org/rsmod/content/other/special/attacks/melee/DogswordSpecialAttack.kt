@@ -73,7 +73,7 @@ constructor(private val sacrifice: AncientGodswordBloodSacrifice) : SpecialAttac
             spotanim(
                 spot = "spotanim.league_5_godsword_spotanim",
                 slot = constants.spotanim_slot_combat,
-                height = 96,
+                height = 0,
             )
             val damage =
                 manager.rollMeleeDamage(
