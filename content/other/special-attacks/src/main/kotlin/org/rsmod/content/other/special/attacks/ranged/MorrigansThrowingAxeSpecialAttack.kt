@@ -87,6 +87,10 @@ constructor(private val ammunition: RangedAmmoManager) : SpecialAttackMap {
             }
 
             anim(MORRIGANS_THROWING_AXE_SEQUENCE)
+            // Confirmed against a reference implementation of this exact special (Zenyte-based
+            // Offline_Scape/Near Reality, HAMSTRING in SpecialAttack.java). Unaliased in this
+            // cache's gamevals.
+            soundSynth(HAMSTRING_SOUND)
             spotanim(
                 spot = MORRIGANS_THROWING_AXE_LAUNCH_SPOTANIM,
                 // 96 (blindly copied from Dragon claws) still sat too high even at 48 per live
@@ -179,6 +183,9 @@ constructor(private val ammunition: RangedAmmoManager) : SpecialAttackMap {
         const val MORRIGANS_THROWING_AXE_LAUNCH_SPOTANIM = "spotanim.morrigans_taxe_spotanim"
         const val MORRIGANS_THROWING_AXE_TRAVEL_SPOTANIM = "spotanim.morrigans_taxe_projanim"
         const val THROWN_PROJANIM = "projanim.thrown"
+
+        /** Unaliased in this cache's gamevals - no `synth.` name exists for it. */
+        const val HAMSTRING_SOUND = 2706
     }
 }
 

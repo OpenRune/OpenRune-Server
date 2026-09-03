@@ -87,6 +87,10 @@ constructor(
             // project's own custom white variant of the shared "sp_attack_glow_arrow_launch" family
             // (Powershot's plain one is 250); travel and hit are the real, official Dagannoth
             // Supreme arrow-shower graphics, reused here since Seercull drops from it.
+            // Confirmed against a reference implementation of this exact special (Zenyte-based
+            // Offline_Scape/Near Reality, SOULSHOT in SpecialAttack.java). Unaliased in this
+            // cache's gamevals.
+            soundSynth(SOULSHOT_SOUND)
             spotanim(SOULSHOT_LAUNCH_SPOTANIM, height = 96, slot = constants.spotanim_slot_combat)
 
             val projectile =
@@ -133,6 +137,9 @@ constructor(
         const val SOULSHOT_LAUNCH_SPOTANIM = "spotanim.sp_attack_glow_arrow_launch_white"
         const val SOULSHOT_TRAVEL_SPOTANIM = "spotanim.dagannoth_arrow_spotanim_travel"
         const val SOULSHOT_HIT_SPOTANIM = "spotanim.dagannoth_arrow_spotanim_hit"
+
+        /** Unaliased in this cache's gamevals - no `synth.` name exists for it. */
+        const val SOULSHOT_SOUND = 2546
     }
 }
 

@@ -39,10 +39,14 @@ class RuneClawsSpecialAttack : SpecialAttackMap {
 
         private fun ProtectedAccess.impale(target: PathingEntity, attack: CombatAttack.Melee) {
             anim("seq.impale")
+            // Confirmed against a reference implementation of this exact special (Zenyte-based
+            // Offline_Scape/Near Reality, IMPALE in SpecialAttack.java). Unaliased in this
+            // cache's gamevals.
+            soundSynth(IMPALE_SOUND)
             spotanim(
                 spot = "spotanim.sp_attack_impale_spotanim",
                 slot = constants.spotanim_slot_combat,
-                height = 0,
+                height = 100,
             )
 
             // Rune claws normally attack every four cycles; Impale is a five-cycle attack.
@@ -61,5 +65,10 @@ class RuneClawsSpecialAttack : SpecialAttackMap {
             manager.queueMeleeHit(this, target, damage)
             manager.continueCombat(this, target)
         }
+    }
+
+    private companion object {
+        /** Unaliased in this cache's gamevals - no `synth.` name exists for it. */
+        const val IMPALE_SOUND = 2534
     }
 }

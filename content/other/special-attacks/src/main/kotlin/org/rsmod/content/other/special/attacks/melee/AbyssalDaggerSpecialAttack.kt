@@ -17,6 +17,11 @@ import org.rsmod.game.entity.Player
  * independently rolled damage hits when that roll succeeds.
  */
 class AbyssalDaggerSpecialAttack : SpecialAttackMap {
+    private companion object {
+        /** Unaliased in this cache's gamevals - no `synth.` name exists for it. */
+        const val ABYSSAL_PUNCTURE_SOUND = 2537
+    }
+
     override fun SpecialAttackRepository.register(manager: SpecialAttackManager) {
         val puncture = AbyssalPuncture(manager, maxHitMultiplier = 0.85)
         val imbuedPuncture = AbyssalPuncture(manager, maxHitMultiplier = 0.95)
@@ -61,6 +66,10 @@ class AbyssalDaggerSpecialAttack : SpecialAttackMap {
             // 96 (blindly copied from Dragon claws, the same pattern already fixed on several
             // other weapons this session - all ended up needing 0, not a smaller-but-still-
             // nonzero value) sat too high.
+            // Sound confirmed against a reference implementation of this exact special (Zenyte-
+            // based Offline_Scape/Near Reality, ABYSSAL_PUNCTURE in SpecialAttack.java - same
+            // sound id as Dragon dagger's own Puncture). Unaliased in this cache's gamevals.
+            soundSynth(ABYSSAL_PUNCTURE_SOUND)
             spotanim(
                 spot = "spotanim.abyssal_dagger_special_spotanim",
                 slot = constants.spotanim_slot_combat,

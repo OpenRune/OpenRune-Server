@@ -43,6 +43,10 @@ class DragonSwordSpecialAttack : SpecialAttackMap {
 
         private fun ProtectedAccess.wildStab(target: PathingEntity, attack: CombatAttack.Melee) {
             anim("seq.human_dragon_sword_spec")
+            // Confirmed against a reference implementation of this exact special (Zenyte-based
+            // Offline_Scape/Near Reality, WILD_STAB in SpecialAttack.java). Unaliased in this
+            // cache's gamevals.
+            soundSynth(WILD_STAB_SOUND)
             spotanim(
                 spot = "spotanim.dragon_sword_spec_spotanim",
                 slot = constants.spotanim_slot_combat,
@@ -67,5 +71,10 @@ class DragonSwordSpecialAttack : SpecialAttackMap {
             )
             manager.continueCombat(this, target)
         }
+    }
+
+    private companion object {
+        /** Unaliased in this cache's gamevals - no `synth.` name exists for it. */
+        const val WILD_STAB_SOUND = 3552
     }
 }

@@ -46,6 +46,10 @@ class VoidwakerSpecialAttack : SpecialAttackMap {
 
         private fun ProtectedAccess.disrupt(target: PathingEntity, attack: CombatAttack.Melee) {
             anim("seq.human_special02_voidwaker")
+            // Confirmed against a reference implementation of this exact special (Zenyte-based
+            // Offline_Scape/Near Reality, DISRUPT in SpecialAttack.java). Unaliased in this
+            // cache's gamevals.
+            soundSynth(DISRUPT_SOUND)
             spotanim(
                 spot = "spotanim.fx_voidwaker02_special",
                 slot = constants.spotanim_slot_combat,
@@ -84,6 +88,9 @@ class VoidwakerSpecialAttack : SpecialAttackMap {
         }
         private companion object {
             const val MAGIC_XP_PER_DAMAGE = 2.0
+
+            /** Unaliased in this cache's gamevals - no `synth.` name exists for it. */
+            const val DISRUPT_SOUND = 2945
         }
     }
 }

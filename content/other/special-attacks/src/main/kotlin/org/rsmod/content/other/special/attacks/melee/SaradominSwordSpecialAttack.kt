@@ -42,6 +42,10 @@ class SaradominSwordSpecialAttack : SpecialAttackMap {
 
         private fun ProtectedAccess.lightning(target: PathingEntity, attack: CombatAttack.Melee) {
             anim("seq.saradomin_sword_special_player")
+            // Same reference as the graphics above - two sounds, both unaliased in this cache's
+            // gamevals.
+            soundSynth(SARADOMINS_LIGHTNING_SWORD_SOUND)
+            soundSynth(SARADOMINS_LIGHTNING_SOUND)
             // Was only playing `saradomin_lightning` (76) on the target - confirmed via a real
             // packet capture that's genuinely all this ever sent, no caster effect at all. Found
             // a real reference implementation of this exact weapon's special (Zenyte-based
@@ -114,6 +118,10 @@ class SaradominSwordSpecialAttack : SpecialAttackMap {
         private companion object {
             val MAGIC_DAMAGE_RANGE = 1..16
             const val MAGIC_XP_PER_DAMAGE = 2.0
+
+            /** Unaliased in this cache's gamevals - no `synth.` names exist for these. */
+            const val SARADOMINS_LIGHTNING_SWORD_SOUND = 3869
+            const val SARADOMINS_LIGHTNING_SOUND = 3887
         }
     }
 }

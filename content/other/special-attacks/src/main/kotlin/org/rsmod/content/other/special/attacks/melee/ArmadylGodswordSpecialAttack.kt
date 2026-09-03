@@ -52,6 +52,11 @@ class ArmadylGodswordSpecialAttack : SpecialAttackMap {
 
         private fun ProtectedAccess.smash(target: PathingEntity, attack: CombatAttack.Melee) {
             anim(sequence)
+            // Confirmed against a reference implementation of this exact special (Zenyte-based
+            // Offline_Scape/Near Reality, THE_JUDGEMENT in SpecialAttack.java - the same generic
+            // slash-special sound id reused for several other weapons' own specials there, e.g.
+            // Saradomin sword's lightning). Unaliased in this cache's gamevals.
+            soundSynth(THE_JUDGEMENT_SOUND)
             target.spotanim(
                 spot = graphic,
                 slot = constants.spotanim_slot_combat,
@@ -76,5 +81,8 @@ class ArmadylGodswordSpecialAttack : SpecialAttackMap {
     private companion object {
         const val STANDARD_SPOTANIM = "spotanim.dh_sword_update_armadyl_special_spotanim"
         const val ORNATE_SPOTANIM = "spotanim.armadyl_special_spotanim_gold"
+
+        /** Unaliased in this cache's gamevals - no `synth.` name exists for it. */
+        const val THE_JUDGEMENT_SOUND = 3869
     }
 }

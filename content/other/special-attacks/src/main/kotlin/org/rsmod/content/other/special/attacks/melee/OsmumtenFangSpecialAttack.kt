@@ -47,6 +47,10 @@ class OsmumtenFangSpecialAttack : SpecialAttackMap {
             anim("seq.weapon_sword_osmumten03_special")
             // Same blind height=96-copied-from-Dragon-claws pattern fixed on several other
             // specials this session - reported too high live, dropped to ground level.
+            // Sound confirmed against a reference implementation of this exact special
+            // (Zenyte-based Offline_Scape/Near Reality, EVISCERATE in SpecialAttack.java:
+            // OSMUMTEN_FANG_SOUND); unaliased in this cache's gamevals.
+            soundSynth(OSMUMTEN_FANG_SOUND)
             spotanim(
                 spot = "spotanim.spotanim_weapon_sword_osmumten_special",
                 height = 0,
@@ -80,6 +84,11 @@ class OsmumtenFangSpecialAttack : SpecialAttackMap {
             manager.queueMeleeHit(this, target, damage)
             manager.continueCombat(this, target)
         }
+    }
+
+    private companion object {
+        /** Unaliased in this cache's gamevals - no `synth.` name exists for it. */
+        const val OSMUMTEN_FANG_SOUND = 3473
     }
 }
 

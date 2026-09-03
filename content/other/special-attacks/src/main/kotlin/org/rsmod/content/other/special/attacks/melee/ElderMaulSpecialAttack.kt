@@ -49,6 +49,11 @@ class ElderMaulSpecialAttack : SpecialAttackMap {
             // Pulverize is one cycle slower than the maul's normal six-cycle attack.
             manager.setNextAttackDelay(this, 7)
             anim("seq.human_elder_maul_spec")
+            // Confirmed against a reference implementation of this exact special (Zenyte-based
+            // Offline_Scape/Near Reality, PULVERIZE in SpecialAttack.java: SHIELD_BASH_SOUND -
+            // just how the reference itself names this constant, not shared with another weapon).
+            // Unaliased in this cache's gamevals.
+            soundSynth(SHIELD_BASH_SOUND)
             spotanim(
                 spot = "spotanim.spotanim_elder_maul_special",
                 // 96 (blindly copied from Dragon claws) still sat too high even at 48 per live
@@ -76,6 +81,11 @@ class ElderMaulSpecialAttack : SpecialAttackMap {
             }
             manager.continueCombat(this, target)
         }
+    }
+
+    private companion object {
+        /** Unaliased in this cache's gamevals - no `synth.` name exists for it. */
+        const val SHIELD_BASH_SOUND = 3454
     }
 }
 

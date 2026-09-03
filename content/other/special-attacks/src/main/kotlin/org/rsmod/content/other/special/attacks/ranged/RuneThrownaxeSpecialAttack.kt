@@ -77,6 +77,10 @@ constructor(
             }
 
             anim(CHAINHIT_SEQUENCE)
+            // Confirmed against a reference implementation of this exact special (Zenyte-based
+            // Offline_Scape/Near Reality, CHAINHIT in SpecialAttack.java: THROWNAXE_SOUND).
+            // Unaliased in this cache's gamevals.
+            soundSynth(THROWNAXE_SOUND)
             spotanim(
                 spot = CHAINHIT_LAUNCH_SPOTANIM,
                 height = 96,
@@ -223,6 +227,9 @@ constructor(
         const val CHAINHIT_LAUNCH_SPOTANIM = "spotanim.sp_attack_chainhit_launch_spotanim"
         const val CHAINHIT_TRAVEL_SPOTANIM = "spotanim.sp_attack_chainhit_travel_spotanim"
         const val THROWN_PROJANIM = "projanim.thrown"
+
+        /** Unaliased in this cache's gamevals - no `synth.` name exists for it. */
+        const val THROWNAXE_SOUND = 2528
         const val ENERGY_PER_TARGET = 100
         const val MAX_CHAIN_TARGETS = 5
     }

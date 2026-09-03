@@ -155,8 +155,11 @@ constructor(
             // The cache has a purpose-built attacker/target sequence and matching graphics.
             // Height confirmed as 96 (not this session's earlier 0) against a reference
             // implementation of this exact special (Zenyte-based Offline_Scape, SHOVE in
-            // SpecialAttack.java: `new Graphics(253, 0, 96)`), and confirmed live.
+            // SpecialAttack.java: `new Graphics(253, 0, 96)`), and confirmed live. Sound
+            // confirmed against the same reference (SHOVE_SOUND); unaliased in this cache's
+            // gamevals.
             anim("seq.shove")
+            soundSynth(SHOVE_SOUND)
             spotanim(
                 spot = "spotanim.sp_attack_shove_spotanim",
                 slot = constants.spotanim_slot_combat,
@@ -217,6 +220,9 @@ constructor(
     private companion object {
         const val MINIMUM_ENERGY: Int = 50
         const val STUN_CYCLES: Int = 5
+
+        /** Unaliased in this cache's gamevals - no `synth.` name exists for it. */
+        const val SHOVE_SOUND = 2544
         const val SHOVE_ATTACK_DELAY: Int = 5
     }
 }

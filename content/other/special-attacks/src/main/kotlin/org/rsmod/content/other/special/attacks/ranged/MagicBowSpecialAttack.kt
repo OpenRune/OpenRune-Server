@@ -66,6 +66,10 @@ class MagicBowSpecialAttack @Inject constructor(private val ammunition: RangedAm
                 mes("The bow fails to fire.")
                 return false
             }
+            // Confirmed against a reference implementation of this exact special (Zenyte-based
+            // Offline_Scape/Near Reality, POWERSHOT in SpecialAttack.java). Unaliased in this
+            // cache's gamevals.
+            soundSynth(POWERSHOT_SOUND)
 
             // `spotanim.sp_attack_glow_arrow_launch` (250) is Powershot's own graphic - every other
             // id in this project's spec-graphic block (246-258) is already claimed by a different
@@ -123,6 +127,9 @@ class MagicBowSpecialAttack @Inject constructor(private val ammunition: RangedAm
 
     private companion object {
         const val POWERSHOT_GLOW_SPOTANIM = "spotanim.sp_attack_glow_arrow_launch"
+
+        /** Unaliased in this cache's gamevals - no `synth.` name exists for it. */
+        const val POWERSHOT_SOUND = 2536
     }
 }
 

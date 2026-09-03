@@ -64,6 +64,10 @@ class StatBoostSpecialAttacks @Inject constructor(private val worldRepo: WorldRe
     private fun sanctuary(access: ProtectedAccess): Boolean {
         access.statBoost("stat.defence", constant = 8, percent = 0)
         access.anim("seq.sanctuary")
+        // Confirmed against a reference implementation of this exact special (Zenyte-based
+        // Offline_Scape/Near Reality, SANCTUARY in SpecialAttack.java). Unaliased in this
+        // cache's gamevals.
+        access.soundSynth(SANCTUARY_SOUND)
         return true
     }
 
@@ -81,6 +85,10 @@ class StatBoostSpecialAttacks @Inject constructor(private val worldRepo: WorldRe
         anim("seq.dragon_smallaxe_anim")
         spotanim(spot, height = 96, slot = constants.spotanim_slot_combat)
         soundArea(worldRepo, coords, "synth.clobber", radius = 1)
+        // Confirmed against a reference implementation of this exact special (Zenyte-based
+        // Offline_Scape/Near Reality, LUMBER_UP in SpecialAttack.java). Unaliased in this
+        // cache's gamevals.
+        soundSynth(LUMBER_UP_SOUND)
         return true
     }
 
@@ -167,6 +175,17 @@ class StatBoostSpecialAttacks @Inject constructor(private val worldRepo: WorldRe
         say("Smashing!")
         anim(seq)
         soundArea(worldRepo, coords, "synth.found_gem", radius = 1)
+        // Confirmed against a reference implementation of this exact special (Zenyte-based
+        // Offline_Scape/Near Reality, ROCK_KNOCKER in SpecialAttack.java). Unaliased in this
+        // cache's gamevals.
+        soundSynth(ROCK_KNOCKER_SOUND)
         return true
+    }
+
+    private companion object {
+        /** Unaliased in this cache's gamevals - no `synth.` names exist for these. */
+        const val SANCTUARY_SOUND = 2539
+        const val LUMBER_UP_SOUND = 2531
+        const val ROCK_KNOCKER_SOUND = 2655
     }
 }

@@ -49,6 +49,10 @@ constructor(
             attack: CombatAttack.Melee,
         ): Boolean {
             anim("seq.dragon_two_handed_sword")
+            // Confirmed against a reference implementation of this exact special (Zenyte-based
+            // Offline_Scape/Near Reality, POWERSTAB in SpecialAttack.java). Unaliased in this
+            // cache's gamevals.
+            soundSynth(POWERSTAB_SOUND)
             spotanim("spotanim.dragon_two_handed_sword_blast")
 
             val affected =
@@ -87,6 +91,9 @@ constructor(
         private companion object {
             private const val MAX_NPC_TARGETS: Int = 14
             private const val MAX_PLAYER_TARGETS: Int = 3
+
+            /** Unaliased in this cache's gamevals - no `synth.` name exists for it. */
+            private const val POWERSTAB_SOUND = 2530
         }
     }
 }
