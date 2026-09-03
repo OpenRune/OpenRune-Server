@@ -4637,3 +4637,112 @@ defaultMode = "Wander"
 "param.attack_anim"="seq.small_spider_update_attack"
 "param.defend_anim"="seq.small_spider_update_defend"
 "param.death_anim"="seq.small_spider_update_death"
+
+[[npc]]
+id = "npc.kharidbanker1"
+inherit = "npc.kharidbanker1"
+contentGroup = "content.banker"
+wanderRange = 0
+
+[[npc]]
+id = "npc.kharidbanker2"
+inherit = "npc.kharidbanker2"
+contentGroup = "content.banker"
+wanderRange = 0
+
+[[npc]]
+id = "npc.borderguard1"
+inherit = "npc.borderguard1"
+wanderRange = 0
+
+[[npc]]
+id = "npc.borderguard2"
+inherit = "npc.borderguard2"
+wanderRange = 0
+
+[[npc]]
+id = "npc.gem_trader"
+inherit = "npc.gem_trader"
+wanderRange = 1
+
+[npc.params]
+"param.shop_sell_percentage" = 1000
+"param.shop_buy_percentage" = 700
+"param.shop_change_percentage" = 30
+
+[[npc]]
+id = "npc.zeke"
+inherit = "npc.zeke"
+moveRestrict = "Indoors"
+
+[npc.params]
+"param.shop_sell_percentage" = 1000
+"param.shop_buy_percentage" = 550
+"param.shop_change_percentage" = 20
+
+[[npc]]
+id = "npc.louie_legs"
+inherit = "npc.louie_legs"
+moveRestrict = "Indoors"
+
+[npc.params]
+"param.shop_sell_percentage" = 1000
+"param.shop_buy_percentage" = 650
+"param.shop_change_percentage" = 10
+
+[[npc]]
+id = "npc.ranael"
+inherit = "npc.ranael"
+moveRestrict = "Indoors"
+
+[npc.params]
+"param.shop_sell_percentage" = 1000
+"param.shop_buy_percentage" = 650
+"param.shop_change_percentage" = 10
+
+[[npc]]
+id = "npc.dommik"
+inherit = "npc.dommik"
+moveRestrict = "Indoors"
+
+[npc.params]
+"param.shop_sell_percentage" = 1000
+"param.shop_buy_percentage" = 650
+"param.shop_change_percentage" = 20
+
+[[npc]]
+id = "npc.silk_trader"
+inherit = "npc.silk_trader"
+wanderRange = 1
+
+[[npc]]
+id = "npc.hassan"
+inherit = "npc.hassan"
+moveRestrict = "Indoors"
+wanderRange = 0
+
+[[npc]]
+id = "npc.osman"
+inherit = "npc.osman"
+wanderRange = 0
+
+[[npc]]
+id = "npc.lady_keli"
+inherit = "npc.lady_keli"
+wanderRange = 0
+
+[[npc]]
+id = "npc.joe"
+inherit = "npc.joe"
+wanderRange = 0
+
+[[npc]]
+id = "npc.prince_ali_prison"
+inherit = "npc.prince_ali_prison"
+moveRestrict = "Indoors"
+wanderRange = 0
+
+[[npc]]
+id = "npc.al_kharid_man"
+inherit = "npc.al_kharid_man"
+option1 = "Talk-to"
