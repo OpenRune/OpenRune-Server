@@ -8,7 +8,6 @@ import jakarta.inject.Inject
 import org.rsmod.api.combat.commons.CombatAttack
 import org.rsmod.api.combat.manager.RangedAmmoManager
 import org.rsmod.api.combat.player.PvPAreaAttackManager
-import org.rsmod.api.config.constants
 import org.rsmod.api.config.refs.params
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.quiver
@@ -80,21 +79,16 @@ constructor(
                 mes("You are unable to fire your ammunition.")
                 return false
             }
-            if (!playRangedWeaponFx(weaponType)) {
-                manager.stopCombat(this)
-                mes("The crossbow fails to fire.")
-                return false
-            }
-
-            val launchSpotanim =
-                quiverType.paramOrNull(params.proj_launch)?.let {
-                    RSCM.getReverseMapping(RSCMType.SPOTANIM, it.id)
-                }
-            spotanim(
-                launchSpotanim,
-                height = 0,
-                slot = constants.spotanim_slot_combat,
-            )
+            // Was falling back to the weapon's plain normal-fire animation via
+            // playRangedWeaponFx (whatever attack_anim_stance1 says) plus the ammo's plain
+            // launch colour - the actual cause of "animation missing entirely". Found this
+            // exact special's real values in a reference implementation of it (Zenyte-based
+            // Offline_Scape, ANNIHILATE in SpecialAttack.java): a dedicated fire-and-reload
+            // sequence, and no caster-side spotanim at all (that engine passes a null graphic
+            // into the special's own declaration) - the ammo's plain launch colour it was using
+            // instead shouldn't be there either.
+            weaponType.paramOrNull(params.attack_sound_stance1)?.let { soundSynth(it) }
+            anim("seq.xbows_human_fire_and_reload")
 
             val affected =
                 if (mapMultiway()) {
@@ -118,8 +112,9 @@ constructor(
                     target = primary,
                     attack = attack,
                 )
-            val projectileSpotanim =
-                RSCM.getReverseMapping(RSCMType.SPOTANIM, travelSpotanim.id)
+            // Confirmed via the same reference: the bolt itself uses a dedicated special-attack
+            // travel glow, not the ammo's own plain colour (`travelSpotanim`, still needed above
+            // only to validate the ammo is real).
             val projectileTypeName =
                 RSCM.getReverseMapping(RSCMType.PROJANIM, projectileType.id)
             val projectiles =
@@ -127,7 +122,7 @@ constructor(
                     manager.spawnProjectile(
                         this,
                         target,
-                        projectileSpotanim,
+                        ANNIHILATE_TRAVEL_SPOTANIM,
                         projectileTypeName,
                     )
                 }
@@ -148,6 +143,11 @@ constructor(
                         DragonCrossbowSpecialDamage.secondary(rawDamage)
                     }
                 val projectile = requireNotNull(projectiles[target])
+                target.spotanim(
+                    spot = ANNIHILATE_IMPACT_SPOTANIM,
+                    height = 92,
+                    delay = projectile.clientCycles,
+                )
                 manager.giveCombatXp(this, target, attack, damage)
                 manager.queueRangedHit(
                     source = this,
@@ -168,6 +168,8 @@ constructor(
 
     private companion object {
         const val MAX_TARGETS: Int = 10
+        const val ANNIHILATE_TRAVEL_SPOTANIM = "spotanim.dttd_bone_crossbowbolt_travel_sp_attack"
+        const val ANNIHILATE_IMPACT_SPOTANIM = "spotanim.firesurge_impact"
     }
 }
 

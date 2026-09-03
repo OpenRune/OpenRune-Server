@@ -152,11 +152,14 @@ constructor(
             }
 
             // The cache has a purpose-built attacker/target sequence and matching graphics.
+            // Height confirmed as 96 (not this session's earlier 0) against a reference
+            // implementation of this exact special (Zenyte-based Offline_Scape, SHOVE in
+            // SpecialAttack.java: `new Graphics(253, 0, 96)`), and confirmed live.
             anim("seq.shove")
             spotanim(
                 spot = "spotanim.sp_attack_shove_spotanim",
                 slot = constants.spotanim_slot_combat,
-                height = 0,
+                height = 96,
             )
             // Human sequence 1066 is invalid for non-human NPC skeletons.
             // NPC targets use their cache-defined defend animation; PvP players
