@@ -36,16 +36,16 @@ import org.rsmod.game.type.getOrNull
  *   back, 27 client cycles each (frame delays 2,2,2,2,8,5,2,2,2,2, twice) - a sped-up double of
  *   the normal `human_bow` (426) draw. The second arrow is therefore loosed 27 client cycles after
  *   the first: within the same server tick, not a tick later.
- * - `spotanim.sp_attack_snapshot_spotanim` (256) is Snapshot's only *attacker*-side graphic. It
- *   sits in the original RS2 spec-graphic block (246-258) alongside `sp_attack_puncture`/`cleave`/
- *   `shatter`, all of which play on the caster, and its own animation (1075) is a single 21-cycle
- *   draw glow. It is the player's per-draw launch glow, one per arrow - not a target-hit effect
- *   (an earlier version put it on the target; live testing confirmed that read as a wrong effect
- *   on hit, not a launch).
- * - Live testing also confirmed the in-flight arrow itself needs to glow, not just the draw -
+ * - `spotanim.sp_attack_snapshot_spotanim` (256) is Snapshot's launch glow, one per draw. A
+ *   reference implementation of this special (Zenyte-based Offline_Scape/Near Reality) instead
+ *   uses a single shared glow (250, also Powershot's own) applied once - tried matching that
+ *   exactly, but live testing preferred this original per-draw version, so it's staying.
+ * - Live testing confirmed the in-flight arrow itself needs to glow, not just the draw -
  *   `spotanim.sp_attack_glow_arrow_travel` (249) overrides the ammo's own `proj_travel` for both
- *   shots. (An earlier version assumed this pair belonged to Powershot/Soulshot by elimination and
- *   left the ammo's plain colour in flight; that guess was wrong.)
+ *   shots. The same reference confirms this id and timing exactly (`Projectile(249, ...)` for
+ *   both arrows).
+ * - Sound (`SNAPSHOT_SOUND` = synth 2545, unaliased in this cache) confirmed against the same
+ *   reference.
  */
 class MagicShortbowSpecialAttack
 @Inject
@@ -102,12 +102,13 @@ constructor(
 
             anim(SNAPSHOT_SEQUENCE)
             weaponType.paramOrNull(params.attack_sound_stance1)?.let { soundSynth(it) }
+            soundSynth(SNAPSHOT_SOUND)
 
             // One launch glow per draw, on the shooter. The second is scheduled for the second
             // draw via the spotanim's own client-cycle delay, in a different slot so it doesn't
             // overwrite the first before it has played. This replaces the ammo's generic
             // proj_launch graphic entirely - sending both into the same slot lets the ammo's
-            // plain launch overwrite the spec glow, which is why the old version showed
+            // plain launch overwrite the spec glow, which is why an earlier version showed
             // rune-arrow-coloured launches instead of the green glow.
             spotanim(SNAPSHOT_GLOW_SPOTANIM, height = 96, slot = constants.spotanim_slot_combat)
             spotanim(
@@ -118,9 +119,9 @@ constructor(
             )
 
             // Live testing confirmed the in-flight arrow needs to glow too (not just the draw) -
-            // `sp_attack_glow_arrow_travel` (249), sitting right next to the launch glow (250) and
-            // the attacker's draw glow (256) in the same spec-graphic id block. Overrides the
-            // ammo's own plain proj_travel entirely rather than layering on top of it.
+            // `sp_attack_glow_arrow_travel` (249), sitting right next to the launch glow (250) in
+            // the same spec-graphic id block. Overrides the ammo's own plain proj_travel entirely
+            // rather than layering on top of it.
             val travelSpot = SNAPSHOT_TRAVEL_GLOW_SPOTANIM
             val projanim = RSCM.getReverseMapping(RSCMType.PROJANIM, projectileType.id)
             val travelSpotId = travelSpot.asRSCM(RSCMType.SPOTANIM)
@@ -238,6 +239,12 @@ constructor(
         const val SNAPSHOT_GLOW_SPOTANIM = "spotanim.sp_attack_snapshot_spotanim"
         const val SNAPSHOT_TRAVEL_GLOW_SPOTANIM = "spotanim.sp_attack_glow_arrow_travel"
 
+        /** Unaliased in this cache's gamevals - no `synth.` name exists for it. */
+        const val SNAPSHOT_SOUND = 2545
+
+        /** Any slot other than [constants.spotanim_slot_combat], so the two glows coexist. */
+        const val SECOND_GLOW_SPOTANIM_SLOT = 0
+
         /**
          * Client cycles between the two draws in `seq.snapshot`: one full draw-and-release cycle
          * (frame delays 2+2+2+2+8+5+2+2+2+2). 30 client cycles = 1 server tick.
@@ -252,9 +259,6 @@ constructor(
          * confirm/tune this exact value.
          */
         const val FIRST_ARROW_RELEASE_CYCLE = 16
-
-        /** Any slot other than [constants.spotanim_slot_combat], so the two glows coexist. */
-        const val SECOND_GLOW_SPOTANIM_SLOT = 0
 
         const val ARROWS_PER_SNAPSHOT = 2
         const val SNAPSHOT_LEVEL_BONUS = 10

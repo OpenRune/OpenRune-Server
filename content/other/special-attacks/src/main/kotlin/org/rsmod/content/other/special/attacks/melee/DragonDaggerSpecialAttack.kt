@@ -44,7 +44,11 @@ class DragonDaggerSpecialAttack @Inject constructor(private val poison: WeaponPo
             target: Npc,
             attack: CombatAttack.Melee,
         ): Boolean {
-            puncture(target, attack, secondHitDelay = 2)
+            // Wiki: "There is a slight delay between the two hits when the special is used on
+            // NPCs" - confirmed against a reference implementation of this exact special
+            // (Zenyte-based Offline_Scape/Near Reality, PUNCTURE in SpecialAttack.java) as
+            // exactly one tick, not the two this file had before.
+            puncture(target, attack, secondHitDelay = 1)
             return true
         }
 
@@ -52,7 +56,9 @@ class DragonDaggerSpecialAttack @Inject constructor(private val poison: WeaponPo
             target: Player,
             attack: CombatAttack.Melee,
         ): Boolean {
-            puncture(target, attack, secondHitDelay = 1)
+            // Wiki: "When used against other players, both hits are applied simultaneously" -
+            // same tick, not one tick apart like this file had before.
+            puncture(target, attack, secondHitDelay = 0)
             return true
         }
 
@@ -62,6 +68,9 @@ class DragonDaggerSpecialAttack @Inject constructor(private val poison: WeaponPo
             secondHitDelay: Int,
         ) {
             anim("seq.puncture")
+            // Height and sound confirmed against the same reference (`new Graphics(252, 0,
+            // 100)`, `player.sendSound(PUNCTURE_SOUND)` = synth 2537, unaliased in this cache).
+            soundSynth(PUNCTURE_SOUND)
             spotanim(
                 spot = "spotanim.sp_attack_puncture_spotanim",
                 slot = constants.spotanim_slot_combat,
@@ -97,5 +106,10 @@ class DragonDaggerSpecialAttack @Inject constructor(private val poison: WeaponPo
             }
             manager.continueCombat(this, target)
         }
+    }
+
+    private companion object {
+        /** Unaliased in this cache's gamevals - no `synth.` name exists for it. */
+        const val PUNCTURE_SOUND = 2537
     }
 }

@@ -90,9 +90,10 @@ constructor(
 
             // This was missing entirely - without a player anim, the special's spotanim fired but
             // the player's swing didn't sync with it at all, instead just showing whatever the
-            // normal attack happened to play. `seq.specialattack_unleash` is a generic, named
-            // "Unleash" animation already present in this cache.
-            anim("seq.specialattack_unleash")
+            // normal attack happened to play. The generic `seq.specialattack_unleash` placeholder
+            // didn't actually play correctly live; Sunspear's own thrust anim looks the same and
+            // is confirmed working, so reusing it here instead.
+            anim("seq.human_weapons_sunspear_spec")
             spotanim(
                 spot = "spotanim.dragon_hasta_spec_spotanim",
                 slot = constants.spotanim_slot_combat,

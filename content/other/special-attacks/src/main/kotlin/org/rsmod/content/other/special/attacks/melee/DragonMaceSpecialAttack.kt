@@ -40,6 +40,11 @@ class DragonMaceSpecialAttack : SpecialAttackMap {
 
         private fun ProtectedAccess.shatter(target: PathingEntity, attack: CombatAttack.Melee) {
             anim("seq.shatter")
+            // Height and sound confirmed against a reference implementation of this exact
+            // special (Zenyte-based Offline_Scape/Near Reality, SHATTER in SpecialAttack.java:
+            // `new Graphics(251, 0, 100)`, `player.sendSound(SHATTER_SOUND)` = synth 2541,
+            // unaliased in this cache).
+            soundSynth(SHATTER_SOUND)
             spotanim(
                 spot = "spotanim.sp_attack_shatter_spotanim",
                 slot = constants.spotanim_slot_combat,
@@ -59,5 +64,10 @@ class DragonMaceSpecialAttack : SpecialAttackMap {
             manager.queueMeleeHit(this, target, damage)
             manager.continueCombat(this, target)
         }
+    }
+
+    private companion object {
+        /** Unaliased in this cache's gamevals - no `synth.` name exists for it. */
+        const val SHATTER_SOUND = 2541
     }
 }

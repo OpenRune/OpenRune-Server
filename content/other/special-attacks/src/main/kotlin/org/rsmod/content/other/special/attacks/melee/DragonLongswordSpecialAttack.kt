@@ -58,6 +58,11 @@ class DragonLongswordSpecialAttack : SpecialAttackMap {
                 manager.setNextAttackDelay(this, nextAttackDelay)
             }
 
+            // Height and sound confirmed against a reference implementation of this exact
+            // special (Zenyte-based Offline_Scape/Near Reality, CLEAVE in SpecialAttack.java:
+            // `new Graphics(248, 0, 100)`, `player.sendSound(CLEAVE_SOUND)` = synth 2529, which
+            // has a real gameval alias unlike Puncture/Sever/Shatter's own sounds).
+            soundSynth("synth.cleave")
             spotanim(
                 spot = "spotanim.sp_attack_cleave_spotanim",
                 slot = constants.spotanim_slot_combat,

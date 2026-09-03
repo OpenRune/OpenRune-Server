@@ -5,6 +5,7 @@ import org.rsmod.api.combat.commons.CombatAttack
 import org.rsmod.api.combat.commons.types.MeleeAttackType
 import org.rsmod.api.combat.player.PvPAreaAttackManager
 import org.rsmod.api.player.protect.ProtectedAccess
+import org.rsmod.api.repo.world.WorldRepository
 import org.rsmod.api.specials.SpecialAttackManager
 import org.rsmod.api.specials.SpecialAttackMap
 import org.rsmod.api.specials.SpecialAttackRepository
@@ -12,6 +13,7 @@ import org.rsmod.api.specials.combat.MeleeSpecialAttack
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.PathingEntity
 import org.rsmod.game.entity.Player
+import org.rsmod.map.CoordGrid
 
 /**
  * Sweep hits a large primary NPC twice or sweeps the three-tile line through a small target in
@@ -22,9 +24,10 @@ class DragonHalberdSpecialAttack
 constructor(
     private val targets: AreaMeleeTargetSelector,
     private val pvp: PvPAreaAttackManager,
+    private val worldRepo: WorldRepository,
 ) : SpecialAttackMap {
     override fun SpecialAttackRepository.register(manager: SpecialAttackManager) {
-        val sweep = Sweep(manager, targets, pvp)
+        val sweep = Sweep(manager, targets, pvp, worldRepo)
         registerMelee("obj.dragon_halberd", sweep)
         registerMelee("obj.bh_dragon_halberd_corrupted", sweep)
     }
@@ -33,6 +36,7 @@ constructor(
         private val manager: SpecialAttackManager,
         private val targets: AreaMeleeTargetSelector,
         private val pvp: PvPAreaAttackManager,
+        private val worldRepo: WorldRepository,
     ) : MeleeSpecialAttack {
         override suspend fun ProtectedAccess.attack(
             target: Npc,
@@ -49,7 +53,31 @@ constructor(
             attack: CombatAttack.Melee,
         ): Boolean {
             anim("seq.dragon_halberd_special_attack")
-            spotanim(HalberdSpecialVisuals.forTarget(player.coords, primary.coords))
+            // Sound confirmed against the same reference as HalberdSpecialVisuals' direction fix
+            // (SWEEP_SOUND = synth 2533, unaliased in this cache).
+            soundSynth(SWEEP_SOUND)
+            // Was attaching the sweep graphic to the caster's own entity, which is why it
+            // rendered at your feet facing you instead of out toward the target. The reference
+            // sends it to a ground tile instead: the target's own tile for a single-tile target,
+            // otherwise the midpoint between the target's centre and the caster - and at height
+            // 96 (`Graphics(id, 0, 96)` for all four directions), not the unset default of 0.
+            val tile =
+                if (primary.size == 1) {
+                    primary.coords
+                } else {
+                    val centre = primary.bounds()
+                    CoordGrid(
+                        x = ((centre.fineCentreX + player.coords.x) / 2.0).toInt(),
+                        z = ((centre.fineCentreZ + player.coords.z) / 2.0).toInt(),
+                        level = player.coords.level,
+                    )
+                }
+            spotanimMap(
+                repo = worldRepo,
+                internal = HalberdSpecialVisuals.forTarget(player.coords, tile),
+                coord = tile,
+                height = 96,
+            )
 
             val affected =
                 if (mapMultiway() && primary.size == 1) {
@@ -95,6 +123,9 @@ constructor(
             private const val MAX_PLAYER_TARGETS: Int = 3
             private const val MAX_HIT_MULTIPLIER: Double = 1.1
             private const val SECOND_HIT_ACCURACY: Double = 0.75
+
+            /** Unaliased in this cache's gamevals - no `synth.` name exists for it. */
+            private const val SWEEP_SOUND = 2533
         }
     }
 }
