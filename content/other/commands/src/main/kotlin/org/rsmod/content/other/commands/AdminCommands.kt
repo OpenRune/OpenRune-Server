@@ -55,6 +55,7 @@ import org.rsmod.game.cheat.Cheat
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.game.entity.PlayerList
+import org.rsmod.game.entity.util.PathingEntityCommon
 import org.rsmod.game.loc.LocAngle
 import org.rsmod.game.loc.LocEntity
 import org.rsmod.game.loc.LocInfo
@@ -110,7 +111,7 @@ constructor(
         }
         onCommand("anim", "Play animation", ::anim)
         onCommand("spot", "Play spotanim", ::spotanim) {
-            invalidArgs = "Use as ::spot spotanimDebugNameOrId (ex: fx_emote_party01_active)"
+            invalidArgs = "Use as ::spot spotanimDebugNameOrId [height] (ex: fx_emote_party01_active or 157)"
         }
         onCommand("synth", "Play synth sound", ::synth) {
             invalidArgs = "Use as ::synth idOrName (ex: ::synth 3600 or ::synth pillory_wrong)"
@@ -439,6 +440,22 @@ constructor(
 
     private fun spotanim(cheat: Cheat) =
         with(cheat) {
+            val arg = args.getOrNull(0)
+            if (arg == null) {
+                player.mes("Use as ::spot spotanimDebugNameOrId [height] (ex: fx_emote_party01_active or 157)")
+                return
+            }
+            // Raw numeric id, bypassing RSCM name resolution entirely - for trying out unnamed/
+            // unaliased spotanims still sitting in the raw cache without a debug name yet.
+            val rawId = arg.toIntOrNull()
+            if (rawId != null) {
+                val height = min(args.getOrNull(1)?.toIntOrNull() ?: 0, Short.MAX_VALUE.toInt())
+                PathingEntityCommon.spotanim(player, rawId, delay = 0, height = height, slot = 0)
+                player.mes("Spotanim: $rawId (height=$height)")
+                logger.debug { "Spotanim: $rawId" }
+                return
+            }
+
             val (typeName, heightArg) = args.asTypeNameAndNumber(defaultNumber = 0)
             val typeId = "spotanim.${typeName}".asRSCM()
             if (typeId == -1) {

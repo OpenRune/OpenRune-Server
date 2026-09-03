@@ -67,17 +67,19 @@ class MagicBowSpecialAttack @Inject constructor(private val ammunition: RangedAm
                 return false
             }
 
-            val launchSpot =
-                quiverType.paramOrNull(params.proj_launch)?.let {
-                    RSCM.getReverseMapping(RSCMType.SPOTANIM, it.id)
-                }
-            spotanim(launchSpot, height = 96, slot = constants.spotanim_slot_combat)
+            // `spotanim.sp_attack_glow_arrow_launch` (250) is Powershot's own graphic - every other
+            // id in this project's spec-graphic block (246-258) is already claimed by a different
+            // special (Snapshot's 256/249, Rune thrownaxe's 257/258, Dragon dagger/mace/hasta's
+            // 252/251/253/254, etc.), leaving 250 unused by elimination. Overrides the ammo's plain
+            // proj_launch/proj_travel entirely, same pattern as Snapshot's fix - live testing
+            // confirmed the ammo's default colours showed instead of the green Powershot glow.
+            spotanim(POWERSHOT_GLOW_SPOTANIM, height = 96, slot = constants.spotanim_slot_combat)
 
             val projectile =
                 manager.spawnProjectile(
                     this,
                     target,
-                    RSCM.getReverseMapping(RSCMType.SPOTANIM, travelSpotanim.id),
+                    POWERSHOT_GLOW_SPOTANIM,
                     RSCM.getReverseMapping(RSCMType.PROJANIM, projectileType.id),
                 )
 
@@ -117,6 +119,10 @@ class MagicBowSpecialAttack @Inject constructor(private val ammunition: RangedAm
             manager.continueCombat(this, target)
             return true
         }
+    }
+
+    private companion object {
+        const val POWERSHOT_GLOW_SPOTANIM = "spotanim.sp_attack_glow_arrow_launch"
     }
 }
 

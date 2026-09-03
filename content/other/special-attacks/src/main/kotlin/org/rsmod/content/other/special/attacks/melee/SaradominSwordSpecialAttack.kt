@@ -42,9 +42,31 @@ class SaradominSwordSpecialAttack : SpecialAttackMap {
 
         private fun ProtectedAccess.lightning(target: PathingEntity, attack: CombatAttack.Melee) {
             anim("seq.saradomin_sword_special_player")
+            // Was only playing `saradomin_lightning` (76) on the target - confirmed via a real
+            // packet capture that's genuinely all this ever sent, no caster effect at all. Found
+            // a real reference implementation of this exact weapon's special (Zenyte-based
+            // Offline_Scape, SARADOMINS_LIGHTNING in SpecialAttack.java) with both graphics:
+            // - Caster: `new Graphics(1213)` passed into the special's own declaration, applied
+            //   automatically to the player by the generic combat framework before the per-weapon
+            //   handler runs (PlayerCombat.java: `player.setGraphics(special.getGraphics())`).
+            //   1213's real name is `dh_sword_update_saradomin_god_special_spotanim` - purpose-
+            //   built for this exact special, not reused from anywhere else. height/delay default
+            //   to 0 (Graphics(id) alone means Graphics(id, delay=0, height=0)).
+            // - Target: `new Graphics(1196, 30, 0)` (id, delay, height) - confirms the 1196 id
+            //   already found live, but height 0 (not 96) with a 30-client-cycle delay before it
+            //   plays, timed to the swing's impact point rather than instantly.
+            // `saradomin_lightning` (76) isn't used by this weapon's real special at all - the
+            // earlier "confirmed self-applied" evidence was a real but coincidental reuse of that
+            // id elsewhere (digging, an unrelated NPC), not this weapon.
+            spotanim(
+                spot = "spotanim.dh_sword_update_saradomin_god_special_spotanim",
+                height = 0,
+                slot = constants.spotanim_slot_combat,
+            )
             target.spotanim(
-                spot = "spotanim.saradomin_lightning",
-                height = 96,
+                spot = "spotanim.godwars_saradomin_magic_attack_spotanim",
+                height = 0,
+                delay = 30,
                 slot = constants.spotanim_slot_combat,
             )
 

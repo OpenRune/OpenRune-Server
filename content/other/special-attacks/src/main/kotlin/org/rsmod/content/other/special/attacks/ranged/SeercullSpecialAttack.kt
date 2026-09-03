@@ -80,19 +80,23 @@ constructor(
                 return false
             }
 
-            val launchSpotanim =
-                arrowType.paramOrNull(params.proj_launch)?.let {
-                    RSCM.getReverseMapping(RSCMType.SPOTANIM, it.id)
-                }
-            spotanim(launchSpotanim, height = 96, slot = constants.spotanim_slot_combat)
+            // Soulshot's own dedicated effects, found via live in-game id testing (external wiki/
+            // RuneLite search found nothing - 472 turned out to be this project's own custom
+            // addition, not from the real game). Overrides the ammo's plain proj_launch/proj_travel
+            // entirely, same pattern as every other special in this file. Launch glow is this
+            // project's own custom white variant of the shared "sp_attack_glow_arrow_launch" family
+            // (Powershot's plain one is 250); travel and hit are the real, official Dagannoth
+            // Supreme arrow-shower graphics, reused here since Seercull drops from it.
+            spotanim(SOULSHOT_LAUNCH_SPOTANIM, height = 96, slot = constants.spotanim_slot_combat)
 
             val projectile =
                 manager.spawnProjectile(
                     this,
                     target,
-                    RSCM.getReverseMapping(RSCMType.SPOTANIM, travelSpotanim.id),
+                    SOULSHOT_TRAVEL_SPOTANIM,
                     RSCM.getReverseMapping(RSCMType.PROJANIM, projectileType.id),
                 )
+            target.spotanim(SOULSHOT_HIT_SPOTANIM, height = 0, delay = projectile.clientCycles)
 
             // Do not use rollRangedDamage/max-hit: those include attack style, prayers, Void,
             // worn strength, and conditional bonuses that Soulshot deliberately ignores.
@@ -126,6 +130,9 @@ constructor(
     private companion object {
         const val SEERCULL_ID = 6724
         const val SOULSHOT_ENERGY = 1000
+        const val SOULSHOT_LAUNCH_SPOTANIM = "spotanim.sp_attack_glow_arrow_launch_white"
+        const val SOULSHOT_TRAVEL_SPOTANIM = "spotanim.dagannoth_arrow_spotanim_travel"
+        const val SOULSHOT_HIT_SPOTANIM = "spotanim.dagannoth_arrow_spotanim_hit"
     }
 }
 

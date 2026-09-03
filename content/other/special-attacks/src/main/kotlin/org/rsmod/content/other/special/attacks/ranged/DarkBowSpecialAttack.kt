@@ -79,12 +79,12 @@ class DarkBowSpecialAttack @Inject constructor(private val ammunition: RangedAmm
 
             val descentOfDragons = quiverType.isCategoryType("category.dragon_arrow")
             if (descentOfDragons) {
-                descentOfDragons(target, attack, quiverType, RSCM.getReverseMapping(RSCMType.SPOTANIM, travelSpotanim.id))
+                descentOfDragons(target, attack, quiverType)
                 manager.continueCombat(this, target)
                 return true
             }
 
-            descentOfDarkness(target, attack, quiverType, RSCM.getReverseMapping(RSCMType.SPOTANIM, travelSpotanim.id))
+            descentOfDarkness(target, attack, quiverType)
             manager.continueCombat(this, target)
             return true
         }
@@ -93,7 +93,6 @@ class DarkBowSpecialAttack @Inject constructor(private val ammunition: RangedAmm
             target: PathingEntity,
             attack: CombatAttack.Ranged,
             quiverType: ItemServerType,
-            travelSpot: String,
         ) {
             val launchSpot = quiverType.paramOrNull(params.proj_launch_double)
             anim(DARK_BOW_FIRE_SEQUENCE)
@@ -105,13 +104,18 @@ class DarkBowSpecialAttack @Inject constructor(private val ammunition: RangedAmm
             val descentImpact = "spotanim.darkbow_smoke_arrow_impact"
             val impactSynth = "synth.darkbow_shadow_impact"
 
-            manager.spawnProjectile(this, target, descentTravel, "projanim.doublearrow_one")
-            val proj1 = manager.spawnProjectile(this, target, travelSpot, "projanim.doublearrow_one")
+            // Was spawning two overlapping projectiles per arrow - this special one PLUS a second,
+            // separate one using the ammo's own plain proj_travel colour, both flying the same
+            // path at once. Live testing confirmed that reads as "the wrong arrow in the air"
+            // regardless of ammo, since the plain one renders on top of/alongside the special one.
+            // The ammo's travel spotanim is no longer resolved/passed in at all - calculateEndTime
+            // (and so clientCycles/serverCycles) depends only on the projanim type, not the
+            // spotanim, so dropping the second spawn doesn't change any of the timing below.
+            val proj1 = manager.spawnProjectile(this, target, descentTravel, "projanim.doublearrow_one")
             val clientDelay1 = proj1.clientCycles
             manager.soundArea(target, impactSynth, delay = clientDelay1, radius = 10)
 
-            manager.spawnProjectile(this, target, descentTravel, "projanim.doublearrow_two")
-            val proj2 = manager.spawnProjectile(this, target, travelSpot, "projanim.doublearrow_two")
+            val proj2 = manager.spawnProjectile(this, target, descentTravel, "projanim.doublearrow_two")
             val clientDelay2 = proj2.clientCycles
             manager.soundArea(target, impactSynth, delay = clientDelay2, radius = 10)
 
@@ -145,7 +149,13 @@ class DarkBowSpecialAttack @Inject constructor(private val ammunition: RangedAmm
                 dropDelay = hitDelay2,
             )
 
-            manager.queueRangedDamage(this, target, quiverType, damage[1], hitDelay2)
+            // Both hits resolve on the first arrow's tick (hitDelay1), not the second arrow's own
+            // (slightly later) serverCycles - doublearrow_one/two intentionally have different
+            // stepMultiplier values in projectiles.toml for the visual high/low arc, which grows
+            // with distance and was causing the two hits to land a tick apart at real combat range.
+            // Same fix as Magic shortbow's Snapshot: the arc/offset is purely visual, not a real
+            // gameplay delay between the two hits.
+            manager.queueRangedDamage(this, target, quiverType, damage[1], hitDelay1)
 
             if (player.quiver?.count == 1) {
                 mes("You now have only 1 arrow left in your quiver.")
@@ -156,7 +166,6 @@ class DarkBowSpecialAttack @Inject constructor(private val ammunition: RangedAmm
             target: PathingEntity,
             attack: CombatAttack.Ranged,
             quiverType: ItemServerType,
-            travelSpot: String,
         ) {
             val launchSpot = quiverType.paramOrNull(params.proj_launch_double)
             anim(DARK_BOW_FIRE_SEQUENCE)
@@ -168,13 +177,18 @@ class DarkBowSpecialAttack @Inject constructor(private val ammunition: RangedAmm
             val descentImpact = "spotanim.darkbow_dragon_head_flying_impact_anim"
             val impactSynth = "synth.darkbow_shadow_impact"
 
-            manager.spawnProjectile(this, target, descentTravel, "projanim.doublearrow_one")
-            val proj1 = manager.spawnProjectile(this, target, travelSpot, "projanim.doublearrow_one")
+            // Was spawning two overlapping projectiles per arrow - this special one PLUS a second,
+            // separate one using the ammo's own plain proj_travel colour, both flying the same
+            // path at once. Live testing confirmed that reads as "the wrong arrow in the air"
+            // regardless of ammo, since the plain one renders on top of/alongside the special one.
+            // The ammo's travel spotanim is no longer resolved/passed in at all - calculateEndTime
+            // (and so clientCycles/serverCycles) depends only on the projanim type, not the
+            // spotanim, so dropping the second spawn doesn't change any of the timing below.
+            val proj1 = manager.spawnProjectile(this, target, descentTravel, "projanim.doublearrow_one")
             val clientDelay1 = proj1.clientCycles
             manager.soundArea(target, impactSynth, delay = clientDelay1, radius = 10)
 
-            manager.spawnProjectile(this, target, descentTravel, "projanim.doublearrow_two")
-            val proj2 = manager.spawnProjectile(this, target, travelSpot, "projanim.doublearrow_two")
+            val proj2 = manager.spawnProjectile(this, target, descentTravel, "projanim.doublearrow_two")
             val clientDelay2 = proj2.clientCycles
             manager.soundArea(target, impactSynth, delay = clientDelay2, radius = 10)
 
@@ -208,7 +222,13 @@ class DarkBowSpecialAttack @Inject constructor(private val ammunition: RangedAmm
                 dropDelay = hitDelay2,
             )
 
-            manager.queueRangedDamage(this, target, quiverType, damage[1], hitDelay2)
+            // Both hits resolve on the first arrow's tick (hitDelay1), not the second arrow's own
+            // (slightly later) serverCycles - doublearrow_one/two intentionally have different
+            // stepMultiplier values in projectiles.toml for the visual high/low arc, which grows
+            // with distance and was causing the two hits to land a tick apart at real combat range.
+            // Same fix as Magic shortbow's Snapshot: the arc/offset is purely visual, not a real
+            // gameplay delay between the two hits.
+            manager.queueRangedDamage(this, target, quiverType, damage[1], hitDelay1)
 
             if (player.quiver?.count == 1) {
                 mes("You now have only 1 arrow left in your quiver.")
