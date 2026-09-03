@@ -188,3 +188,38 @@ contentGroup = "content.closed_left_picketgate"
 [object.params]
 "param.next_loc_stage" = "loc.rustic_openfencegate_l"
 "param.opensound" = "synth.picketgate_open"
+# ── Al-Kharid palace double doors (content/areas/city/al-kharid, M5.ALKHARID.1) ──
+# Ported from the pre-sync AlKharidLocEditor. Tagging the closed/open pair with the canonical
+# door content groups is what makes the generic DoubleDoorScript bind Open + Close on both
+# halves with the standard revert timer; `next_loc_stage` wires each half to its counterpart.
+[[object]]
+id = "loc.palacedoor_l"
+inherit = "loc.palacedoor_l"
+contentGroup = "content.closed_left_door"
+
+[object.params]
+"param.next_loc_stage" = "loc.openpalacedoor_l"
+
+[[object]]
+id = "loc.openpalacedoor_l"
+inherit = "loc.openpalacedoor_l"
+contentGroup = "content.opened_left_door"
+
+[object.params]
+"param.next_loc_stage" = "loc.palacedoor_l"
+
+[[object]]
+id = "loc.palacedoor_r"
+inherit = "loc.palacedoor_r"
+contentGroup = "content.closed_right_door"
+
+[object.params]
+"param.next_loc_stage" = "loc.openpalacedoor_r"
+
+[[object]]
+id = "loc.openpalacedoor_r"
+inherit = "loc.openpalacedoor_r"
+contentGroup = "content.opened_right_door"
+
+[object.params]
+"param.next_loc_stage" = "loc.palacedoor_r"

@@ -4496,3 +4496,128 @@ contentGroup = "content.dark_crab_fishing_spot"
 moveRestrict = "NoMove"
 wanderRange = 0
 
+# ══════════════════════════════════════════════════════════════════════════════
+# Al-Kharid module (content/areas/city/al-kharid, M5.F1)
+# Ported from the pre-sync AlKharidNpcEditor.
+# ══════════════════════════════════════════════════════════════════════════════
+
+# Bankers: the rev240 cache does not tag the Al-Kharid bank-booth NPCs with `content.banker`,
+# so the generic Banker script (Talk-to / Bank / Collect) would never bind without this overlay.
+[[npc]]
+id = "npc.kharidbanker1"
+inherit = "npc.kharidbanker1"
+contentGroup = "content.banker"
+wanderRange = 0
+
+[[npc]]
+id = "npc.kharidbanker2"
+inherit = "npc.kharidbanker2"
+contentGroup = "content.banker"
+wanderRange = 0
+
+# Toll-gate border guards — anchored so they cannot wander off the gate.
+[[npc]]
+id = "npc.borderguard1"
+inherit = "npc.borderguard1"
+wanderRange = 0
+
+[[npc]]
+id = "npc.borderguard2"
+inherit = "npc.borderguard2"
+wanderRange = 0
+
+# Named shopkeepers. Sell/buy/change percentages match each OSRS wiki shop page; without them
+# `Shops.open` falls back to the cache param defaults (1300 / 400 / 30), which are wrong for
+# every one of these stores. Stock itself comes from the upstream `.data/raw-cache/server/shops`
+# corpus (inv.gemshop / inv.scimitarshop / inv.legsshop / inv.skirtshop / inv.craftingshop).
+[[npc]]
+id = "npc.gem_trader"
+inherit = "npc.gem_trader"
+wanderRange = 1
+
+[npc.params]
+"param.shop_sell_percentage" = 1000
+"param.shop_buy_percentage" = 700
+"param.shop_change_percentage" = 30
+
+[[npc]]
+id = "npc.zeke"
+inherit = "npc.zeke"
+moveRestrict = "Indoors"
+
+[npc.params]
+"param.shop_sell_percentage" = 1000
+"param.shop_buy_percentage" = 550
+"param.shop_change_percentage" = 20
+
+[[npc]]
+id = "npc.louie_legs"
+inherit = "npc.louie_legs"
+moveRestrict = "Indoors"
+
+[npc.params]
+"param.shop_sell_percentage" = 1000
+"param.shop_buy_percentage" = 650
+"param.shop_change_percentage" = 10
+
+[[npc]]
+id = "npc.ranael"
+inherit = "npc.ranael"
+moveRestrict = "Indoors"
+
+[npc.params]
+"param.shop_sell_percentage" = 1000
+"param.shop_buy_percentage" = 650
+"param.shop_change_percentage" = 10
+
+[[npc]]
+id = "npc.dommik"
+inherit = "npc.dommik"
+moveRestrict = "Indoors"
+
+[npc.params]
+"param.shop_sell_percentage" = 1000
+"param.shop_buy_percentage" = 650
+"param.shop_change_percentage" = 20
+
+# Silk trader — Talk-to-only haggle, no shop interface (OSRS canon).
+[[npc]]
+id = "npc.silk_trader"
+inherit = "npc.silk_trader"
+wanderRange = 1
+
+# Prince Ali Rescue quest NPCs — anchored, indoors where appropriate.
+[[npc]]
+id = "npc.hassan"
+inherit = "npc.hassan"
+moveRestrict = "Indoors"
+wanderRange = 0
+
+[[npc]]
+id = "npc.osman"
+inherit = "npc.osman"
+wanderRange = 0
+
+[[npc]]
+id = "npc.lady_keli"
+inherit = "npc.lady_keli"
+wanderRange = 0
+
+[[npc]]
+id = "npc.joe"
+inherit = "npc.joe"
+wanderRange = 0
+
+[[npc]]
+id = "npc.prince_ali_prison"
+inherit = "npc.prince_ali_prison"
+moveRestrict = "Indoors"
+wanderRange = 0
+
+# Ali Morrisane slot. The rev240 cache ships no dedicated `ali_morrisane` symbol; the Al-Kharid
+# populace symbol stands in, and needs an explicit Talk-to op slot so the AliMorrisane dialogue
+# script is reachable from the right-click menu.
+[[npc]]
+id = "npc.al_kharid_man"
+inherit = "npc.al_kharid_man"
+option1 = "Talk-to"
