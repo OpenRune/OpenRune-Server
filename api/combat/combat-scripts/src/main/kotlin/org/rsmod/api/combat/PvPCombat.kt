@@ -305,6 +305,26 @@ constructor(
         val attackRate = MAGIC_SPELL_ATTACK_RATE
         manager.setNextAttackDelay(player, attackRate)
 
+        // A weapon can be both autocastable and carry its own magic special attack (e.g. the
+        // Nightmare staffs). `resolveCombatAttack` resolves an active autocast to
+        // `CombatAttack.Spell` regardless of the special-attack toggle, so that toggle has to be
+        // handled here too - otherwise activating a special while autocasting just casts the
+        // autocast spell instead, same as it did for the melee/staff resolution paths.
+        if (specialAttackType == SpecialAttackType.Weapon) {
+            specialAttackType = SpecialAttackType.None
+            val weapon = attack.weapon
+            if (weapon != null) {
+                val staffAttack = CombatAttack.Staff(weapon, style = null)
+                val activatedSpec =
+                    activateMagicSpecial(target, staffAttack, specialsReg, specialEnergy)
+                if (activatedSpec) {
+                    applySpecialAttackHooks(target)
+                    applyPkVars(target)
+                    return
+                }
+            }
+        }
+
         val spell = spellsReg[RSCM.getReverseMapping(RSCMType.OBJ,attack.spell.obj.id)]
         if (spell != null) {
             applyPkVars(target)

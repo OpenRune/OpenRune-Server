@@ -61,7 +61,7 @@ class NightmareStaffSpecialAttacks : SpecialAttackMap {
             target.spotanim(
                 spot = VOLATILE_HIT_SPOTANIM,
                 slot = constants.spotanim_slot_combat,
-                height = SPOTANIM_HEIGHT,
+                height = 0,
             )
 
             val successful =
@@ -120,7 +120,7 @@ class NightmareStaffSpecialAttacks : SpecialAttackMap {
             target.spotanim(
                 spot = ELDRITCH_HIT_SPOTANIM,
                 slot = constants.spotanim_slot_combat,
-                height = SPOTANIM_HEIGHT,
+                height = 0,
             )
 
             val successful =

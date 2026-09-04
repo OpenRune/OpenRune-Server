@@ -135,6 +135,17 @@ internal suspend fun ProtectedAccess.activateMeleeSpecial(
 ): Boolean {
     val weapon = attack.weapon ?: return false
     val special = specials[weapon] ?: return false
+
+    // A handful of weapons (e.g. the Nightmare staffs) attack normally with melee - weaponCategory
+    // `Staff` resolves to a melee `AttackType` via `AttackTypes` - but their special attack is
+    // magic-based. `resolveCombatAttack` has no way to know that ahead of time, so it always
+    // resolves these as `CombatAttack.Melee`. Detect that mismatch here and redirect into the
+    // magic special path instead of silently failing and falling through to a normal attack.
+    if (special is SpecialAttack.Magic) {
+        val staffAttack = CombatAttack.Staff(weapon, style = null)
+        return activateMagicSpecial(target, staffAttack, specials, energy)
+    }
+
     if (special !is SpecialAttack.Melee) {
         return false
     }

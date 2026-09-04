@@ -62,7 +62,7 @@ class StaffOfTheDeadSpecialAttack : SpecialAttackMap {
         const val TOXIC_STAFF_OF_THE_DEAD_SEQUENCE = "seq.sotd_special_toxic_charged"
 
         const val POWER_OF_DEATH_SEQUENCE_PRIORITY = 6
-        const val POWER_OF_DEATH_SPOTANIM_HEIGHT = 96
+        const val POWER_OF_DEATH_SPOTANIM_HEIGHT = 300
         const val POWER_OF_DEATH_MESSAGE = "Spirits of deceased evildoers offer you their protection."
     }
 }
