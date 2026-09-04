@@ -61,17 +61,14 @@ public class ObjChargeManager {
         val updatedVar = obj.vars.withBits(varobj.bits, total)
         val added = total - curr
 
-        if (curr == 0) {
-            // If the obj currently has no charges, we assume it is a _valid_ uncharged version
-            // (i.e., it has the `charged_variant` param defined). If not, we throw an exception.
-            // While someone with spawn permissions could technically have a "charged" obj with
-            // 0 charges, we enforce strict correctness here: they should spawn the uncharged
-            // variant and charge it properly. This helps avoid unintended oversights.
-            val charged = getInvObj(obj).paramOrNull(params.charged_variant)
-            if (charged == null) {
-                val message = "Obj missing `charged_variant` param: $obj (type=${getInvObj(obj)})"
-                throw IllegalStateException(message)
-            }
+        // Whether this obj is still the uncharged variant is determined by its own item
+        // definition (does it define a `charged_variant` param at all), not by its current charge
+        // count. `curr == 0` used to gate this instead: that broke a legitimate case where an
+        // obj is already the *charged* item but happens to hold 0 stored charges right now (e.g.
+        // the Webweaver bow activated with exactly its minimum ether cost, none left over as
+        // ammo) - topping that up threw here instead of just adding to the same obj.
+        val charged = getInvObj(obj).paramOrNull(params.charged_variant)
+        if (charged != null) {
             inventory[slot] = InvObj(charged, vars = updatedVar)
             return Charge.Success.AddChangeObj(added = added, total = total, charged = charged)
         }

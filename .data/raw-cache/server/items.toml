@@ -19022,6 +19022,9 @@ weaponCategory="Bow"
 "param.attack_anim_stance4"="seq.human_bow"
 "param.attack_sound_stance4"=2693
 "param.defend_anim"="seq.human_unarmedblock"
+# Needed for ObjChargeManager.addCharges to swap this into its charged variant when ether is
+# added (Configure-Charges).
+"param.charged_variant"="obj.wild_cave_bow_charged"
 
 
 [[item]]
@@ -19042,6 +19045,10 @@ tradeable = false
 "param.attack_anim_stance4"="seq.human_bow"
 "param.attack_sound_stance4"=2693
 "param.defend_anim"="seq.human_unarmedblock"
+# ObjChargeManager.reduceWornCharges (used by both the normal attack and, once implemented, a
+# special attack) throws IllegalStateException without it, since it needs to know what to swap
+# the item into once it runs out of ether.
+"param.uncharged_variant"="obj.wild_cave_bow_uncharged"
 
 
 [[item]]
