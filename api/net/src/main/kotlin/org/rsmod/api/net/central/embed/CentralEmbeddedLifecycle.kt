@@ -1,9 +1,9 @@
 package org.rsmod.api.net.central.embed
 
 import com.github.michaelbull.logging.InlineLogger
-import dev.or2.central.util.config.centralRuntimeConfigFromJdbc
-import dev.or2.central.embed.OpenRuneCentralEmbeddedServer
 import dev.or2.central.auth.PasswordAuthConfig
+import dev.or2.central.embed.OpenRuneCentralEmbeddedServer
+import dev.or2.central.util.config.centralRuntimeConfigFromJdbc
 import jakarta.inject.Inject
 import jakarta.inject.Singleton
 import java.sql.DriverManager
