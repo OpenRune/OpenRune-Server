@@ -103,7 +103,7 @@ public class ObjChargeManager {
             throw IllegalStateException(message)
         }
 
-        val varobj = ServerCacheManager.getVarObj(internal.asRSCM(RSCMType.VAROBJ))?: error("Unable to find varobj: $internal")
+        val varobj = ServerCacheManager.getVarObj(internal.asRSCM(RSCMType.VAROBJ)) ?: error("Unable to find varobj: $internal")
 
         val currentCharges = obj.vars.getBits(varobj.bits)
         if (currentCharges < decrement) {

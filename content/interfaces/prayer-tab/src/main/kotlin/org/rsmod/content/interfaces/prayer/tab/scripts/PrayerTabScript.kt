@@ -6,8 +6,8 @@ import jakarta.inject.Inject
 import org.rsmod.api.player.output.ClientScripts
 import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.output.soundSynth
-import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.prayer.ProtectionPrayerLockout
+import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.protect.ProtectedAccessLauncher
 import org.rsmod.api.player.stat.prayerLvl
 import org.rsmod.api.player.ui.ifClose
@@ -33,7 +33,7 @@ private constructor(
     private val protectedAccess: ProtectedAccessLauncher,
 ) : PluginScript() {
     override fun ScriptContext.startup() {
-        for ((component, prayer) in repo.prayerComponents.map { RSCM.getReverseMapping(RSCMType.COMPONENT,it.key.packed) to it.value }) {
+        for ((component, prayer) in repo.prayerComponents.map { RSCM.getReverseMapping(RSCMType.COMPONENT, it.key.packed) to it.value }) {
             onIfOverlayButton(component) { player.selectPrayer(prayer) }
         }
         onPlayerQueueWithArgs("queue.prayer_toggle") { togglePrayer(it.args) }

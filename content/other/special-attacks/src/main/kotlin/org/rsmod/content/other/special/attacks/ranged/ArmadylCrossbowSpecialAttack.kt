@@ -5,8 +5,8 @@ import dev.openrune.rscm.RSCMType
 import dev.openrune.types.ItemServerType
 import jakarta.inject.Inject
 import kotlin.math.min
-import org.rsmod.api.combat.commons.CombatEffects
 import org.rsmod.api.combat.commons.CombatAttack
+import org.rsmod.api.combat.commons.CombatEffects
 import org.rsmod.api.combat.commons.DragonfireProtection
 import org.rsmod.api.combat.manager.RangedAmmoManager
 import org.rsmod.api.config.constants
@@ -178,18 +178,25 @@ internal enum class ArmadylEnchantedBolt(
 ) {
     // "Lucky Lightning".
     Opal(playerBaseChance = 0.05, npcBaseChance = 0.05, bypassesAccuracy = true, spotanim = "spotanim.xbows_lucky_lightening_strike_spot_anim"),
+
     // "Earth's Fury".
     Jade(playerBaseChance = 0.06, npcBaseChance = 0.06, bypassesAccuracy = true, spotanim = "spotanim.xbows_earths_fury_spot_anim"),
+
     // "Sea Curse".
     Pearl(playerBaseChance = 0.06, npcBaseChance = 0.06, bypassesAccuracy = true, spotanim = "spotanim.xbows_sea_curse_waterfall_spot_anim"),
+
     // "Down to Earth".
     Topaz(playerBaseChance = 0.04, npcBaseChance = null, bypassesAccuracy = true, spotanim = "spotanim.xbows_down_to_earth_spot_anim"),
+
     // "Clear Mind".
     Sapphire(playerBaseChance = 0.05, npcBaseChance = 0.25, bypassesAccuracy = true, spotanim = "spotanim.xbows_clear_mind_glowing_spot_anim"),
+
     // "Magical Poison".
     Emerald(playerBaseChance = 0.54, npcBaseChance = 0.55, bypassesAccuracy = false, spotanim = "spotanim.xbows_magical_poison_spot_anim"),
+
     // "Blood Forfeit".
     Ruby(playerBaseChance = 0.11, npcBaseChance = 0.06, bypassesAccuracy = true, spotanim = "spotanim.xbows_blood_sacrifice_spot_anim"),
+
     // "Armour Piercing".
     Diamond(
         playerBaseChance = 0.05,
@@ -198,8 +205,10 @@ internal enum class ArmadylEnchantedBolt(
         spotanim = "spotanim.xbows_diamond_tips_spotanim",
         maxHitMultiplier = 1.15,
     ),
+
     // "Dragon's Breath".
     Dragonstone(playerBaseChance = 0.06, npcBaseChance = 0.06, bypassesAccuracy = false, spotanim = "spotanim.xbows_dragons_breath_spot_anim"),
+
     // "Life Leech".
     Onyx(
         playerBaseChance = 0.10,

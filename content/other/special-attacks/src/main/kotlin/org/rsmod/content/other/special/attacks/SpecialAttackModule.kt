@@ -67,8 +67,8 @@ import org.rsmod.content.other.special.attacks.ranged.MorrigansThrowingAxeSpecia
 import org.rsmod.content.other.special.attacks.ranged.RosewoodBlowpipeSpecialAttack
 import org.rsmod.content.other.special.attacks.ranged.RuneThrownaxeSpecialAttack
 import org.rsmod.content.other.special.attacks.ranged.SeercullSpecialAttack
-import org.rsmod.content.other.special.attacks.ranged.ToxicBlowpipeSpecialAttack
 import org.rsmod.content.other.special.attacks.ranged.TonalzticsOfRalosSpecialAttack
+import org.rsmod.content.other.special.attacks.ranged.ToxicBlowpipeSpecialAttack
 import org.rsmod.content.other.special.attacks.ranged.WebweaverBowSpecialAttack
 import org.rsmod.content.other.special.attacks.ranged.ZaryteCrossbowSpecialAttack
 import org.rsmod.plugin.module.PluginModule

@@ -304,6 +304,7 @@ public object BlowpipeAmmo {
 
     private enum class BlowpipeFamily(val maxDartIndex: Int, val usesScales: Boolean) {
         Toxic(maxDartIndex = DRAGON_DART_INDEX, usesScales = true),
+
         // Wiki: "It is able to shoot up to rune darts" - torka's original had this capped at
         // adamant, which was wrong (or predates a later expansion of the cap on the live wiki).
         Rosewood(maxDartIndex = RUNE_DART_INDEX, usesScales = false),

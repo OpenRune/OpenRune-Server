@@ -5,7 +5,6 @@ import dev.openrune.rscm.RSCMType
 import jakarta.inject.Inject
 import org.rsmod.api.combat.commons.CombatAttack
 import org.rsmod.api.combat.commons.ranged.RangedAmmunition
-import org.rsmod.api.config.constants
 import org.rsmod.api.config.refs.params
 import org.rsmod.api.mechanics.toxins.NpcPoisonEffectService
 import org.rsmod.api.mechanics.toxins.impl.PlayerVenom
@@ -177,6 +176,7 @@ constructor(private val random: GameRandom, private val poisons: NpcPoisonEffect
         const val VENOM_ROLL_DENOMINATOR: Int = 4
         const val TOXIC_SIPHON_ACCURACY_MULTIPLIER: Double = 2.0
         const val TOXIC_SIPHON_MAX_HIT_MULTIPLIER: Double = 1.5
+
         // Confirmed via the real cache: this spotanim's own embedded "anim" is the flying dart's
         // model animation, not a player pose - no separate player anim() call needed for it.
         const val TOXIC_SIPHON_SPOTANIM: String = "spotanim.toxic_blowpipe_specialattack"

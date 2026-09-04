@@ -3,16 +3,14 @@ package org.rsmod.game.entity
 import dev.openrune.ServerCacheManager
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
-import dev.openrune.types.SequenceServerType
 import dev.openrune.types.WalkTriggerType
-import dev.openrune.types.aconverted.SpotanimType
 import it.unimi.dsi.fastutil.longs.LongArrayList
 import kotlin.coroutines.startCoroutine
 import org.rsmod.annotations.InternalApi
 import org.rsmod.coroutine.GameCoroutine
 import org.rsmod.coroutine.suspension.GameCoroutineSimpleCompletion
-import org.rsmod.game.entity.player.ProtectedAccessLostException
 import org.rsmod.game.damage.DamageContributions
+import org.rsmod.game.entity.player.ProtectedAccessLostException
 import org.rsmod.game.entity.util.EntityExactMove
 import org.rsmod.game.entity.util.EntityFaceAngle
 import org.rsmod.game.entity.util.EntityFaceTarget
@@ -105,6 +103,7 @@ public sealed class PathingEntity {
     public var activeCoroutine: GameCoroutine? = null
     public val routeDestination: RouteDestination = RouteDestination()
     public var routeRequest: RouteRequest? = null
+
     // Used for setting temporary move speed for single requests, aka ctrl run mode.
     public var tempMoveSpeed: MoveSpeed? = null
     public var moveSpeed: MoveSpeed = MoveSpeed.Stationary

@@ -8,15 +8,15 @@ import org.rsmod.api.combat.commons.CombatAttack
 import org.rsmod.api.config.constants
 import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.protect.ProtectedAccess
+import org.rsmod.api.player.righthand
 import org.rsmod.api.specials.SpecialAttackManager
 import org.rsmod.api.specials.SpecialAttackMap
 import org.rsmod.api.specials.SpecialAttackRepository
-import org.rsmod.api.specials.combat.MeleeSpecialAttack
-import org.rsmod.api.player.righthand
 import org.rsmod.api.specials.combat.MagicSpecialAttack
-import org.rsmod.game.inv.InvObj
+import org.rsmod.api.specials.combat.MeleeSpecialAttack
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
+import org.rsmod.game.inv.InvObj
 
 /**
  * Retainer traps a vampyre juvenile or juvinate below half health, preventing retaliation for

@@ -3,7 +3,6 @@ package org.rsmod.content.other.special.attacks.ranged
 import dev.openrune.rscm.RSCM
 import dev.openrune.rscm.RSCMType
 import dev.openrune.types.ItemServerType
-import dev.openrune.types.aconverted.SpotanimType
 import jakarta.inject.Inject
 import org.rsmod.api.combat.commons.CombatAttack
 import org.rsmod.api.combat.manager.RangedAmmoManager
@@ -98,7 +97,7 @@ class DarkBowSpecialAttack @Inject constructor(private val ammunition: RangedAmm
             anim(DARK_BOW_FIRE_SEQUENCE)
             soundSynth("synth.darkbow_doublefire")
             soundSynth("synth.darkbow_shadow_attack")
-            spotanim(RSCM.getReverseMapping(RSCMType.SPOTANIM,launchSpot!!.id), height = 96, slot = constants.spotanim_slot_combat)
+            spotanim(RSCM.getReverseMapping(RSCMType.SPOTANIM, launchSpot!!.id), height = 96, slot = constants.spotanim_slot_combat)
 
             val descentTravel = "spotanim.darkbow_generic_smoke_arrow_flight"
             val descentImpact = "spotanim.darkbow_smoke_arrow_impact"
@@ -171,7 +170,7 @@ class DarkBowSpecialAttack @Inject constructor(private val ammunition: RangedAmm
             anim(DARK_BOW_FIRE_SEQUENCE)
             soundSynth("synth.darkbow_doublefire")
             soundSynth("synth.darkbow_dragon_attack")
-            spotanim(RSCM.getReverseMapping(RSCMType.SPOTANIM,launchSpot!!.id), height = 96, slot = constants.spotanim_slot_combat)
+            spotanim(RSCM.getReverseMapping(RSCMType.SPOTANIM, launchSpot!!.id), height = 96, slot = constants.spotanim_slot_combat)
 
             val descentTravel = "spotanim.darkbow_dragon_head_flying_projanim"
             val descentImpact = "spotanim.darkbow_dragon_head_flying_impact_anim"
