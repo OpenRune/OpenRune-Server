@@ -283,6 +283,7 @@ Found the same way `settings.gradle.kts` finds them: any dir with a `build.gradl
 | `areas/misc/wizards_tower` | 2 | 580 | 0 | 0 | 2026-08-04 |
 | `areas/wilderness` | 18 | 1,315 | 0 | 0 | 2026-08-18 |
 | `areas/zeah` | 3 | 234 | 0 | 0 | 2026-08-18 |
+| `bosses/demonic-gorilla` | 1 | 308 | 0 | 0 | 2026-09-04 |
 | `bosses/graardor` | 2 | 166 | 0 | 0 | 2026-08-03 |
 | `bosses/kbd` | 2 | 143 | 0 | 1 | 2026-07-07 |
 | `bosses/kreearra` | 2 | 229 | 0 | 0 | 2026-08-03 |
