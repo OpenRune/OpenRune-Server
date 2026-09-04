@@ -34,10 +34,16 @@ import org.rsmod.plugin.scripts.ScriptContext
  * slot `TumekensShadowCharging` already uses for its own worn-Check), which is a genuinely free
  * slot in this engine and doesn't touch Remove.
  *
- * The registration order for `onOpHeldU` here is (pipe, ammo), but live testing found only "use
- * blowpipe on scales" actually triggers the interaction - "use scales on blowpipe" does nothing,
- * even though this framework's own `onOpHeldU` doc claims click order shouldn't matter. Not chased
- * further since the working direction is confirmed functional; may be worth revisiting.
+ * "Use scales on blowpipe" used to do nothing (only "blowpipe on scales" worked), despite
+ * `onOpHeldU`'s own dispatch correctly trying both click orders. Root cause wasn't this
+ * registration at all: Zulrah's scales are also a Herblore ingredient (Extended antivenom+,
+ * `obj.antivenom+3` + scales), and `FinishedPotionsEvents` registers a catch-all "any herblore
+ * ingredient used on anything" handler for every such item. Since that catch-all matched first
+ * whenever scales were the item clicked first, and it silently no-ops when the second item isn't a
+ * matching potion, dispatch never got to try the reversed order that would've reached this file's
+ * own (pipe, scale) handler. Fixed by excluding `obj.snakeboss_scale` from that catch-all (see
+ * `FinishedPotionsEvents.heldUExclude`) - the Extended antivenom+ recipe still works via
+ * `obj.antivenom+3`'s own catch-all.
  */
 class BlowpipeCharging @Inject constructor(private val objRepo: ObjRepository) : PluginScript() {
     override fun ScriptContext.startup() {

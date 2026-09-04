@@ -27,13 +27,16 @@ class DemonbaneSpecialAttacks : SpecialAttackMap {
         registerMelee("obj.arclight", arclight)
         registerMelee("obj.arclight_inactive", arclight)
 
-        val emberlight = Weaken(manager, demonDrainPercent = 15)
+        // Only Emberlight's own wiki page documents a "Sound effects" table for this special;
+        // Darklight and Arclight have none, so they get no sound here rather than a guess.
+        val emberlight = Weaken(manager, demonDrainPercent = 15, sounds = EMBERLIGHT_SOUNDS)
         registerMelee("obj.emberlight", emberlight)
     }
 
     private inner class Weaken(
         private val manager: SpecialAttackManager,
         private val demonDrainPercent: Int,
+        private val sounds: IntArray = IntArray(0),
     ) : MeleeSpecialAttack {
         override suspend fun ProtectedAccess.attack(
             target: Npc,
@@ -57,6 +60,10 @@ class DemonbaneSpecialAttacks : SpecialAttackMap {
         ) {
             anim("seq.dark_spec_player")
             spotanim("spotanim.dark_spec_spot")
+            // Staggered to avoid the same-tick collision where only the first of several
+            // same-tick synth sounds plays client-side (see Dragon claws). Unaliased in this
+            // cache's gamevals.
+            sounds.forEachIndexed { index, sound -> soundSynth(sound, delay = index * SOUND_SPACING) }
             val successful =
                 manager.rollMeleeAccuracy(
                     source = this,
@@ -115,5 +122,10 @@ class DemonbaneSpecialAttacks : SpecialAttackMap {
 
     private companion object {
         const val NORMAL_DRAIN_PERCENT: Int = 5
+        const val SOUND_SPACING: Int = 20
+
+        // Emberlight's own wiki "Sound effects" table: crouch/spin/stab, one per special-attack
+        // part.
+        val EMBERLIGHT_SOUNDS = intArrayOf(9319, 9320, 9321)
     }
 }

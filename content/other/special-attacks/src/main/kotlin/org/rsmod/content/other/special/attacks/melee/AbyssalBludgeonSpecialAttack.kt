@@ -41,6 +41,11 @@ class AbyssalBludgeonSpecialAttack : SpecialAttackMap {
             attack: CombatAttack.Melee,
         ) {
             anim("seq.abyssal_bludgeon_special_attack")
+            // Sourced from this item's own wiki "Sound effects" table: the swing itself reuses
+            // Granite maul's "quicksmash" sound, and the miasma pool gets its own "smokepuff"
+            // cue. Both unaliased in this cache's gamevals.
+            soundSynth(QUICKSMASH_SOUND)
+            soundSynth(MIASMA_POOL_SOUND, delay = MIASMA_POOL_SOUND_DELAY)
             target.spotanim(
                 spot = "spotanim.abyssal_miasma_spotanim_bludgeon",
                 slot = constants.spotanim_slot_combat,
@@ -64,6 +69,16 @@ class AbyssalBludgeonSpecialAttack : SpecialAttackMap {
             manager.queueMeleeHit(this, target, damage)
             manager.continueCombat(this, target)
         }
+    }
+
+    private companion object {
+        /** Unaliased in this cache's gamevals - no `synth.` name exists for either. */
+        const val QUICKSMASH_SOUND = 2715
+        const val MIASMA_POOL_SOUND = 1930
+
+        /** Matches this codebase's own same-tick-collision spacing convention (see Dragon
+         * claws). Without it, the swing sound wins and the pool cue never plays. */
+        const val MIASMA_POOL_SOUND_DELAY = 20
     }
 }
 

@@ -47,6 +47,9 @@ class BrineSabreSpecialAttack : SpecialAttackMap {
             }
 
             anim("seq.olaf2_brine_sabre_special")
+            // Sourced from this item's own wiki "Sound effects" table
+            // ("brain_special_brine_saber"). Unaliased in this cache's gamevals.
+            soundSynth(LIQUIFY_SOUND)
             spotanim(
                 spot = "spotanim.olaf2_brine_sabre_special_spot",
                 slot = constants.spotanim_slot_combat,
@@ -73,6 +76,11 @@ class BrineSabreSpecialAttack : SpecialAttackMap {
             manager.continueCombat(this, target)
             return true
         }
+    }
+
+    private companion object {
+        /** Unaliased in this cache's gamevals - no `synth.` name exists for it. */
+        const val LIQUIFY_SOUND = 3473
     }
 }
 

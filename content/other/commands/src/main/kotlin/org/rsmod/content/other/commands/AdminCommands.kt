@@ -140,6 +140,7 @@ constructor(
         onCommand("item", "Spawn obj into inv", ::invAdd)
 
         onCommand("invclear", "Remove all objs from inv", ::invClear)
+        onCommand("wornclear", "Remove all worn objs", ::wornClear)
         onCommand("varp", "Set varp value", ::setVarp) {
             invalidArgs = "Use as ::varp debugNameOrId value (ex: option_run 1)"
         }
@@ -592,6 +593,11 @@ constructor(
         }
 
     private fun invClear(cheat: Cheat) = with(cheat) { player.invClear(player.inv) }
+
+    private fun wornClear(cheat: Cheat) = with(cheat) {
+        player.invClear(player.worn)
+        player.rebuildAppearance()
+    }
 
     private fun setVarp(cheat: Cheat) =
         with(cheat) {

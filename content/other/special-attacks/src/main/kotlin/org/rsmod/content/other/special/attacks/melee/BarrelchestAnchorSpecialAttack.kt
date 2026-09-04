@@ -51,6 +51,9 @@ class BarrelchestAnchorSpecialAttack : SpecialAttackMap {
             attack: CombatAttack.Melee,
         ) {
             anim("seq.brain_player_anchor_special_attack")
+            // Sourced from this item's own wiki "Sound effects" table ("anchor_sunder").
+            // Unaliased in this cache's gamevals.
+            soundSynth(SUNDER_SOUND)
             spotanim(
                 spot = "spotanim.brain_anchor_special_attack_spot",
                 height = 0,
@@ -74,6 +77,11 @@ class BarrelchestAnchorSpecialAttack : SpecialAttackMap {
             }
             manager.continueCombat(this, target)
         }
+    }
+
+    private companion object {
+        /** Unaliased in this cache's gamevals - no `synth.` name exists for it. */
+        const val SUNDER_SOUND = 3481
     }
 }
 

@@ -54,6 +54,9 @@ constructor(
             attack: CombatAttack.Melee,
         ) {
             anim("seq.human_weapon_burning_claws_02_spec")
+            // Sourced from this item's own wiki "Sound effects" table
+            // ("burning_claws_swipe_01"). Unaliased in this cache's gamevals.
+            soundSynth(BURNING_BARRAGE_SOUND)
             spotanim(
                 spot = "spotanim.vfx_burning_claws_spec_02",
                 slot = constants.spotanim_slot_combat,
@@ -101,6 +104,11 @@ constructor(
 
             manager.continueCombat(this, target)
         }
+    }
+
+    private companion object {
+        /** Unaliased in this cache's gamevals - no `synth.` name exists for it. */
+        const val BURNING_BARRAGE_SOUND = 9316
     }
 }
 

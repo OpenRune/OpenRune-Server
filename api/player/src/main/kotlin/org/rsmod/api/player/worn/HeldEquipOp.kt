@@ -1,5 +1,6 @@
 package org.rsmod.api.player.worn
 
+import com.github.michaelbull.logging.InlineLogger
 import dev.openrune.ServerCacheManager
 import dev.openrune.rscm.RSCM
 import dev.openrune.rscm.RSCMType
@@ -24,6 +25,8 @@ import org.rsmod.objtx.TransactionResult
 import org.rsmod.objtx.isErr
 
 public class HeldEquipOp @Inject constructor(private val eventBus: EventBus) {
+    private val logger = InlineLogger()
+
     public fun equip(player: Player, invSlot: Int, inventory: Inventory): HeldEquipResult {
         val obj = inventory[invSlot] ?: return HeldEquipResult.Fail.InvalidObj
         val objType = getInvObj(obj)
@@ -71,9 +74,17 @@ public class HeldEquipOp @Inject constructor(private val eventBus: EventBus) {
 
             val equipTransaction = transaction[0]
             if (equipTransaction.isErr()) {
-                check(equipTransaction is TransactionResult.NotEnoughSpace) {
-                    "Transaction error is expected to only be of " +
-                        "`NotEnoughSpace` type: found=$equipTransaction"
+                if (equipTransaction !is TransactionResult.NotEnoughSpace) {
+                    // A `check()` here used to throw on any unexpected transaction result (e.g. a
+                    // corrupted item elsewhere in the inventory tripping VarObjIncorrectlyHasCert
+                    // during this transaction's own stack-merge scan) - an uncaught exception
+                    // mid-input-cycle disconnects the player instead of just failing the equip.
+                    // Fail cleanly and log server-side instead.
+                    logger.error {
+                        "Unexpected equip transaction error (expected NotEnoughSpace): " +
+                            "found=$equipTransaction, obj=$objType"
+                    }
+                    return HeldEquipResult.Fail.InvalidObj
                 }
                 val message = "You don't have enough free space to do that."
                 return HeldEquipResult.Fail.NotEnoughWornSpace(message)
@@ -81,9 +92,12 @@ public class HeldEquipOp @Inject constructor(private val eventBus: EventBus) {
 
             val unequipTransactionErr = transaction.err
             if (unequipTransactionErr != null) {
-                check(unequipTransactionErr is TransactionResult.NotEnoughSpace) {
-                    "Transaction error is expected to only be of " +
-                        "`NotEnoughSpace` type: found=$unequipTransactionErr"
+                if (unequipTransactionErr !is TransactionResult.NotEnoughSpace) {
+                    logger.error {
+                        "Unexpected unequip transaction error (expected NotEnoughSpace): " +
+                            "found=$unequipTransactionErr, obj=$objType"
+                    }
+                    return HeldEquipResult.Fail.InvalidObj
                 }
                 val message = "You don't have enough free inventory space to do that."
                 return HeldEquipResult.Fail.NotEnoughInvSpace(message)

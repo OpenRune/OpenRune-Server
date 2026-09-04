@@ -11,7 +11,7 @@ something's still wrong so we don't lose track between sessions.
 - [x] Barrelchest anchor
 - [x] Ancient mace
 - [x] Dragon claws
-- [x] Dragon hasta (height only - still missing an animation, see below)
+- [x] Dragon hasta (height + animation - Unleash now uses Sunspear's thrust anim, confirmed live)
 - [x] Dual macuahuitl
 - [x] Rune claws
 - [x] Statius warhammer
@@ -124,7 +124,9 @@ something's still wrong so we don't lose track between sessions.
       custom addition, not from the real game, which is why it never showed up in any external
       search. Animation itself confirmed fine as just the plain normal-attack draw, same as Magic
       longbow's Powershot.
-- [ ] Dragon hasta - missing an animation (something like Sunspear's thrust)
+- [x] Dragon hasta - the generic `seq.specialattack_unleash` placeholder didn't sync correctly
+      live; swapped Unleash to Sunspear's own thrust animation (`seq.human_weapons_sunspear_spec`)
+      instead - looks the same, confirmed working live.
 - [x] Dogsword - `statHeal` crash fixed (`coerceIn(current, base)` could have `current > base` -
       already-boosted stat - and threw; now `coerceIn(current, maxOf(current, base))`, a shared fix
       in `PlayerStatExtensions.kt` that covers every heal-based special, not just Dogsword)
