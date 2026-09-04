@@ -16335,6 +16335,31 @@ tradeable = false
 
 
 [[item]]
+id = "obj.rosewood_blowpipe"
+inherit = "obj.rosewood_blowpipe"
+weaponCategory="Thrown"
+tradeable = false
+[item.params]
+"param.bas_walk_l"="seq.human_halberdwalk_l"
+"param.proj_type"="projanim.thrown"
+"param.bas_walk_r"="seq.human_halberdwalk_r"
+"param.bas_running"="seq.human_halberdrunning"
+"param.attackrate"=3
+"param.attack_range"=5
+"param.attack_anim_stance1"="seq.rosewood_blowpipe_attack"
+"param.attack_sound_stance1"=2696
+"param.attack_anim_stance2"="seq.rosewood_blowpipe_attack"
+"param.attack_sound_stance2"=2696
+"param.attack_anim_stance4"="seq.rosewood_blowpipe_attack"
+"param.attack_sound_stance4"=2696
+"param.bas_readyanim"="seq.human_staffready"
+"param.bas_turnonspot"="seq.human_halberdturnonspot"
+"param.defend_anim"="seq.human_spear_block"
+"param.bas_walk_f"="seq.human_halberdwalk_f"
+"param.bas_walk_b"="seq.human_halberdwalk_b"
+
+
+[[item]]
 id = "obj.ntk_jewelled_sceptre_8"
 inherit = "obj.ntk_jewelled_sceptre_8"
 tradeable = false
@@ -18679,6 +18704,29 @@ weaponCategory="StabSword"
 
 
 [[item]]
+# Was undefined entirely (no weaponCategory, no attack anims) before this fix - wielding it had no
+# combat style options and no attack animation. Wiki: "the attack animation for Belle's folly is
+# identical to the Ghrazi rapier" - same seqs/sounds/category as that entry above, just this item's
+# id. `belles_folly_tarnished` (31245) deliberately has no Wield option in the cache at all (needs
+# repairing first per its own examine text/quest lore), so it doesn't need this treatment.
+id = "obj.belles_folly"
+inherit = "obj.belles_folly"
+weaponCategory="StabSword"
+[item.params]
+"param.equipment_sound"=2248
+"param.attack_anim_stance1"="seq.ghrazi_rapier_attack"
+"param.attack_sound_stance1"=2549
+"param.attack_anim_stance2"="seq.ghrazi_rapier_attack"
+"param.attack_sound_stance2"=2549
+"param.attack_anim_stance3"="seq.human_sword_slash"
+"param.attack_sound_stance3"=2548
+"param.attack_anim_stance4"="seq.ghrazi_rapier_attack"
+"param.attack_sound_stance4"=2549
+"param.bas_readyanim"="seq.human_ds_ready"
+"param.defend_anim"="seq.human_sword_def"
+
+
+[[item]]
 id = "obj.scythe_of_vitur"
 inherit = "obj.scythe_of_vitur"
 weaponCategory="Scythe"
@@ -18974,6 +19022,9 @@ weaponCategory="Bow"
 "param.attack_anim_stance4"="seq.human_bow"
 "param.attack_sound_stance4"=2693
 "param.defend_anim"="seq.human_unarmedblock"
+# Needed for ObjChargeManager.addCharges to swap this into its charged variant when ether is
+# added (Configure-Charges).
+"param.charged_variant"="obj.wild_cave_bow_charged"
 
 
 [[item]]
@@ -18994,6 +19045,10 @@ tradeable = false
 "param.attack_anim_stance4"="seq.human_bow"
 "param.attack_sound_stance4"=2693
 "param.defend_anim"="seq.human_unarmedblock"
+# ObjChargeManager.reduceWornCharges (used by both the normal attack and, once implemented, a
+# special attack) throws IllegalStateException without it, since it needs to know what to swap
+# the item into once it runs out of ether.
+"param.uncharged_variant"="obj.wild_cave_bow_uncharged"
 
 
 [[item]]
@@ -19123,6 +19178,10 @@ weaponCategory="Thrown"
 "param.proj_travel"="spotanim.morrigans_javelin_travel"
 "param.proj_launch"="spotanim.morrigans_javelin_launch"
 "param.equipment_sound"=2247
+# Missing entirely before this fix - fell back to attackRange=1 (melee-only) since
+# `params.attackrange` had no value on this item. Both cache variants (br_morrigans_javelin,
+# morrigans_javelin_bh) already had this set to 5; the base item was simply never given it.
+"param.attack_range"=5
 "param.attack_anim_stance1"="seq.human_stake2"
 "param.attack_sound_stance1"=2699
 "param.attack_anim_stance2"="seq.human_stake2"
@@ -21220,6 +21279,30 @@ tradeable = false
 
 
 [[item]]
+id = "obj.hallowed_flail"
+inherit = "obj.hallowed_flail"
+weaponCategory="Staff"
+tradeable = false
+[item.params]
+"param.bas_walk_l"="seq.ivandis_flail_walk_l"
+"param.bas_walk_r"="seq.ivandis_flail_walk_r"
+"param.bas_running"="seq.ivandis_flail_run"
+"param.equipment_sound"=2246
+"param.attackrate"=5
+"param.attack_anim_stance1"="seq.ivandis_flail_attack"
+"param.attack_sound_stance1"=1713
+"param.attack_anim_stance2"="seq.ivandis_flail_attack"
+"param.attack_sound_stance2"=1713
+"param.attack_anim_stance4"="seq.ivandis_flail_attack"
+"param.attack_sound_stance4"=1713
+"param.bas_readyanim"="seq.ivandis_flail_ready"
+"param.bas_turnonspot"="seq.ivandis_flail_turnonspot"
+"param.defend_anim"="seq.ivandis_flail_defend"
+"param.bas_walk_f"="seq.ivandis_flail_walk_f"
+"param.bas_walk_b"="seq.ivandis_flail_walk_b"
+
+
+[[item]]
 id = "obj.trailblazer_cane"
 inherit = "obj.trailblazer_cane"
 weaponCategory="Spiked"
@@ -22956,6 +23039,9 @@ weaponCategory="Bow"
 "param.attack_anim_stance4"="seq.human_bow"
 "param.attack_sound_stance4"=2693
 "param.defend_anim"="seq.human_unarmedblock"
+# Needed for ObjChargeManager.addCharges to swap this into its charged variant when ether is
+# added (Configure-Charges).
+"param.charged_variant"="obj.wild_cave_webweaver_charged"
 
 
 [[item]]
@@ -22976,6 +23062,10 @@ tradeable = false
 "param.attack_anim_stance4"="seq.human_bow"
 "param.attack_sound_stance4"=2693
 "param.defend_anim"="seq.human_unarmedblock"
+# Missing entirely before this fix - ObjChargeManager.reduceWornCharges (used by both the special
+# attack and the normal-attack fix in WebweaverBowWeapons.kt) throws IllegalStateException without
+# it, since it needs to know what to swap the item into once it runs out of ether.
+"param.uncharged_variant"="obj.wild_cave_webweaver_uncharged"
 
 
 [[item]]
@@ -23396,6 +23486,29 @@ weaponCategory="Axe"
 
 
 [[item]]
+id = "obj.soulreaper_axe_orn"
+inherit = "obj.soulreaper_axe_orn"
+weaponCategory="Axe"
+[item.params]
+"param.bas_walk_l"="seq.ancient_axe_walk"
+"param.bas_walk_r"="seq.ancient_axe_walk"
+"param.equipment_sound"=2232
+"param.attackrate"=5
+"param.attack_anim_stance1"="seq.ancient_axe_crush"
+"param.attack_sound_stance1"=1321
+"param.attack_anim_stance2"="seq.ancient_axe_crush"
+"param.attack_sound_stance2"=1321
+"param.attack_anim_stance3"="seq.ancient_axe_slash"
+"param.attack_sound_stance3"=1316
+"param.attack_anim_stance4"="seq.ancient_axe_crush"
+"param.attack_sound_stance4"=1321
+"param.bas_readyanim"="seq.ancient_axe_idle"
+"param.defend_anim"="seq.human_unarmedblock"
+"param.bas_walk_f"="seq.ancient_axe_walk"
+"param.bas_walk_b"="seq.ancient_axe_walk"
+
+
+[[item]]
 id = "obj.toxic_blowpipe_loaded_ornament"
 inherit = "obj.toxic_blowpipe_loaded_ornament"
 weaponCategory="Thrown"
@@ -23524,6 +23637,7 @@ inherit = "obj.eclipse_atlatl"
 weaponCategory="Bow"
 [item.params]
 "param.bas_walk_l"="seq.human_halberdwalk_l"
+"param.required_ammo"="category.atlatl_dart"
 "param.proj_type"="projanim.arrow"
 "param.bas_walk_r"="seq.human_halberdwalk_r"
 "param.bas_running"="seq.human_halberdrunning"
@@ -23615,6 +23729,7 @@ weaponCategory="Bow"
 tradeable = false
 [item.params]
 "param.bas_walk_l"="seq.human_halberdwalk_l"
+"param.required_ammo"="category.atlatl_dart"
 "param.proj_type"="projanim.arrow"
 "param.bas_walk_r"="seq.human_halberdwalk_r"
 "param.bas_running"="seq.human_halberdrunning"
@@ -34999,6 +35114,15 @@ weaponCategory="StabSword"
 tradeable = false
 [item.params]
 "param.equipment_sound"=2248
+"param.attack_anim_stance1"="seq.human_ddagger_lunge"
+"param.attack_sound_stance1"=2549
+"param.attack_anim_stance2"="seq.human_ddagger_lunge"
+"param.attack_sound_stance2"=2549
+"param.attack_anim_stance3"="seq.human_ddagger_hack"
+"param.attack_sound_stance3"=2548
+"param.attack_anim_stance4"="seq.human_ddagger_lunge"
+"param.attack_sound_stance4"=2549
+"param.defend_anim"="seq.human_ddagger_block"
 
 
 [[item]]
@@ -35008,6 +35132,15 @@ weaponCategory="StabSword"
 tradeable = false
 [item.params]
 "param.equipment_sound"=2248
+"param.attack_anim_stance1"="seq.human_ddagger_lunge"
+"param.attack_sound_stance1"=2549
+"param.attack_anim_stance2"="seq.human_ddagger_lunge"
+"param.attack_sound_stance2"=2549
+"param.attack_anim_stance3"="seq.human_ddagger_hack"
+"param.attack_sound_stance3"=2548
+"param.attack_anim_stance4"="seq.human_ddagger_lunge"
+"param.attack_sound_stance4"=2549
+"param.defend_anim"="seq.human_ddagger_block"
 
 
 [[item]]
@@ -35017,6 +35150,15 @@ weaponCategory="StabSword"
 tradeable = false
 [item.params]
 "param.equipment_sound"=2248
+"param.attack_anim_stance1"="seq.human_ddagger_lunge"
+"param.attack_sound_stance1"=2549
+"param.attack_anim_stance2"="seq.human_ddagger_lunge"
+"param.attack_sound_stance2"=2549
+"param.attack_anim_stance3"="seq.human_ddagger_hack"
+"param.attack_sound_stance3"=2548
+"param.attack_anim_stance4"="seq.human_ddagger_lunge"
+"param.attack_sound_stance4"=2549
+"param.defend_anim"="seq.human_ddagger_block"
 
 
 [[item]]
@@ -35026,6 +35168,15 @@ weaponCategory="StabSword"
 tradeable = false
 [item.params]
 "param.equipment_sound"=2248
+"param.attack_anim_stance1"="seq.human_ddagger_lunge"
+"param.attack_sound_stance1"=2549
+"param.attack_anim_stance2"="seq.human_ddagger_lunge"
+"param.attack_sound_stance2"=2549
+"param.attack_anim_stance3"="seq.human_ddagger_hack"
+"param.attack_sound_stance3"=2548
+"param.attack_anim_stance4"="seq.human_ddagger_lunge"
+"param.attack_sound_stance4"=2549
+"param.defend_anim"="seq.human_ddagger_block"
 
 
 [[item]]
@@ -35035,6 +35186,15 @@ weaponCategory="Spiked"
 tradeable = false
 [item.params]
 "param.equipment_sound"=2246
+"param.attack_anim_stance1"="seq.human_blunt_pound"
+"param.attack_sound_stance1"=2508
+"param.attack_anim_stance2"="seq.human_blunt_pound"
+"param.attack_sound_stance2"=2508
+"param.attack_anim_stance3"="seq.human_blunt_spike"
+"param.attack_sound_stance3"=2509
+"param.attack_anim_stance4"="seq.human_blunt_pound"
+"param.attack_sound_stance4"=2508
+"param.defend_anim"="seq.human_blunt_block"
 
 
 [[item]]
@@ -35044,6 +35204,15 @@ weaponCategory="StabSword"
 tradeable = false
 [item.params]
 "param.equipment_sound"=2248
+"param.attack_anim_stance1"="seq.human_sword_stab"
+"param.attack_sound_stance1"=2549
+"param.attack_anim_stance2"="seq.human_sword_stab"
+"param.attack_sound_stance2"=2549
+"param.attack_anim_stance3"="seq.human_sword_slash"
+"param.attack_sound_stance3"=2548
+"param.attack_anim_stance4"="seq.human_sword_stab"
+"param.attack_sound_stance4"=2549
+"param.defend_anim"="seq.human_sword_def"
 
 
 [[item]]
@@ -35053,6 +35222,14 @@ weaponCategory="SlashSword"
 tradeable = false
 [item.params]
 "param.equipment_sound"=2248
+"param.attack_anim_stance1"="seq.human_sword_slash"
+"param.attack_sound_stance1"=2500
+"param.attack_anim_stance2"="seq.human_sword_slash"
+"param.attack_sound_stance2"=2500
+"param.attack_anim_stance3"="seq.human_sword_stab"
+"param.attack_sound_stance3"=2501
+"param.attack_anim_stance4"="seq.human_sword_slash"
+"param.attack_sound_stance4"=2500
 
 
 [[item]]
@@ -35062,6 +35239,16 @@ weaponCategory="SlashSword"
 tradeable = false
 [item.params]
 "param.equipment_sound"=2248
+"param.attack_anim_stance1"="seq.human_sword_slash"
+"param.attack_sound_stance1"=2500
+"param.attack_anim_stance2"="seq.human_sword_slash"
+"param.attack_sound_stance2"=2500
+"param.attack_anim_stance3"="seq.human_sword_stab"
+"param.attack_sound_stance3"=2501
+"param.attack_anim_stance4"="seq.human_sword_slash"
+"param.attack_sound_stance4"=2500
+"param.bas_readyanim"="seq.human_ds_ready"
+"param.defend_anim"="seq.human_sword_def"
 "param.attackrate"=5
 
 
@@ -35072,6 +35259,13 @@ weaponCategory="Blunt"
 tradeable = false
 [item.params]
 "param.equipment_sound"=2233
+"param.attack_anim_stance1"="seq.human_blunt_pound"
+"param.attack_sound_stance1"=2567
+"param.attack_anim_stance2"="seq.human_blunt_pound"
+"param.attack_sound_stance2"=2567
+"param.attack_anim_stance4"="seq.human_blunt_pound"
+"param.attack_sound_stance4"=2567
+"param.defend_anim"="seq.human_blunt_block"
 "param.attackrate"=6
 
 
@@ -35082,6 +35276,15 @@ weaponCategory="Axe"
 tradeable = false
 [item.params]
 "param.equipment_sound"=2232
+"param.attack_anim_stance1"="seq.human_axe_hack"
+"param.attack_sound_stance1"=2498
+"param.attack_anim_stance2"="seq.human_axe_hack"
+"param.attack_sound_stance2"=2498
+"param.attack_anim_stance3"="seq.human_blunt_pound"
+"param.attack_sound_stance3"=2497
+"param.attack_anim_stance4"="seq.human_axe_hack"
+"param.attack_sound_stance4"=2498
+"param.defend_anim"="seq.human_axe_block"
 "param.attackrate"=6
 
 
@@ -35091,7 +35294,23 @@ inherit = "obj.bh_dragon_spear_corrupted"
 weaponCategory="Spear"
 tradeable = false
 [item.params]
+"param.bas_walk_l"="seq.human_halberdwalk_l"
+"param.bas_walk_r"="seq.human_halberdwalk_r"
+"param.bas_running"="seq.human_halberdrunning"
 "param.equipment_sound"=2247
+"param.attack_anim_stance1"="seq.human_dspear_stab"
+"param.attack_sound_stance1"=2562
+"param.attack_anim_stance2"="seq.human_dspear_slash"
+"param.attack_sound_stance2"=2556
+"param.attack_anim_stance3"="seq.human_dspear_lunge"
+"param.attack_sound_stance3"=2555
+"param.attack_anim_stance4"="seq.human_dspear_stab"
+"param.attack_sound_stance4"=2562
+"param.bas_readyanim"="seq.human_staffready"
+"param.bas_turnonspot"="seq.human_halberdturnonspot"
+"param.defend_anim"="seq.human_dspear_block"
+"param.bas_walk_f"="seq.human_halberdwalk_f"
+"param.bas_walk_b"="seq.human_halberdwalk_b"
 
 
 [[item]]
@@ -35100,7 +35319,23 @@ inherit = "obj.bh_dragon_spear_p_corrupted"
 weaponCategory="Spear"
 tradeable = false
 [item.params]
+"param.bas_walk_l"="seq.human_halberdwalk_l"
+"param.bas_walk_r"="seq.human_halberdwalk_r"
+"param.bas_running"="seq.human_halberdrunning"
 "param.equipment_sound"=2247
+"param.attack_anim_stance1"="seq.human_dspear_stab"
+"param.attack_sound_stance1"=2562
+"param.attack_anim_stance2"="seq.human_dspear_slash"
+"param.attack_sound_stance2"=2556
+"param.attack_anim_stance3"="seq.human_dspear_lunge"
+"param.attack_sound_stance3"=2555
+"param.attack_anim_stance4"="seq.human_dspear_stab"
+"param.attack_sound_stance4"=2562
+"param.bas_readyanim"="seq.human_staffready"
+"param.bas_turnonspot"="seq.human_halberdturnonspot"
+"param.defend_anim"="seq.human_dspear_block"
+"param.bas_walk_f"="seq.human_halberdwalk_f"
+"param.bas_walk_b"="seq.human_halberdwalk_b"
 
 
 [[item]]
@@ -35109,7 +35344,23 @@ inherit = "obj.bh_dragon_spear_p+_corrupted"
 weaponCategory="Spear"
 tradeable = false
 [item.params]
+"param.bas_walk_l"="seq.human_halberdwalk_l"
+"param.bas_walk_r"="seq.human_halberdwalk_r"
+"param.bas_running"="seq.human_halberdrunning"
 "param.equipment_sound"=2247
+"param.attack_anim_stance1"="seq.human_dspear_stab"
+"param.attack_sound_stance1"=2562
+"param.attack_anim_stance2"="seq.human_dspear_slash"
+"param.attack_sound_stance2"=2556
+"param.attack_anim_stance3"="seq.human_dspear_lunge"
+"param.attack_sound_stance3"=2555
+"param.attack_anim_stance4"="seq.human_dspear_stab"
+"param.attack_sound_stance4"=2562
+"param.bas_readyanim"="seq.human_staffready"
+"param.bas_turnonspot"="seq.human_halberdturnonspot"
+"param.defend_anim"="seq.human_dspear_block"
+"param.bas_walk_f"="seq.human_halberdwalk_f"
+"param.bas_walk_b"="seq.human_halberdwalk_b"
 
 
 [[item]]
@@ -35118,7 +35369,23 @@ inherit = "obj.bh_dragon_spear_p++_corrupted"
 weaponCategory="Spear"
 tradeable = false
 [item.params]
+"param.bas_walk_l"="seq.human_halberdwalk_l"
+"param.bas_walk_r"="seq.human_halberdwalk_r"
+"param.bas_running"="seq.human_halberdrunning"
 "param.equipment_sound"=2247
+"param.attack_anim_stance1"="seq.human_dspear_stab"
+"param.attack_sound_stance1"=2562
+"param.attack_anim_stance2"="seq.human_dspear_slash"
+"param.attack_sound_stance2"=2556
+"param.attack_anim_stance3"="seq.human_dspear_lunge"
+"param.attack_sound_stance3"=2555
+"param.attack_anim_stance4"="seq.human_dspear_stab"
+"param.attack_sound_stance4"=2562
+"param.bas_readyanim"="seq.human_staffready"
+"param.bas_turnonspot"="seq.human_halberdturnonspot"
+"param.defend_anim"="seq.human_dspear_block"
+"param.bas_walk_f"="seq.human_halberdwalk_f"
+"param.bas_walk_b"="seq.human_halberdwalk_b"
 
 
 [[item]]
@@ -35127,9 +35394,23 @@ inherit = "obj.bh_dragon_halberd_corrupted"
 weaponCategory="Polearm"
 tradeable = false
 [item.params]
+"param.bas_walk_l"="seq.human_halberdwalk_l"
+"param.bas_walk_r"="seq.human_halberdwalk_r"
+"param.bas_running"="seq.human_halberdrunning"
 "param.equipment_sound"=2247
-"param.attack_range"=2
 "param.attackrate"=7
+"param.attack_range"=2
+"param.attack_anim_stance1"="seq.human_spear_spike"
+"param.attack_sound_stance1"=2562
+"param.attack_anim_stance2"="seq.human_scythe_sweep"
+"param.attack_sound_stance2"=2524
+"param.attack_anim_stance4"="seq.human_spear_spike"
+"param.attack_sound_stance4"=2562
+"param.bas_readyanim"="seq.human_staffready"
+"param.bas_turnonspot"="seq.human_halberdturnonspot"
+"param.defend_anim"="seq.human_spear_block"
+"param.bas_walk_f"="seq.human_halberdwalk_f"
+"param.bas_walk_b"="seq.human_halberdwalk_b"
 
 
 [[item]]
@@ -35138,8 +35419,23 @@ inherit = "obj.bh_dragon_2h_sword_corrupted"
 weaponCategory="TwoHandedSword"
 tradeable = false
 [item.params]
+"param.bas_walk_l"="seq.human_dh_weapon_walk"
+"param.bas_walk_r"="seq.human_dh_weapon_walk"
+"param.bas_running"="seq.human_dh_weapon_run"
 "param.equipment_sound"=2248
 "param.attackrate"=7
+"param.attack_anim_stance1"="seq.human_dhsword_slash"
+"param.attack_sound_stance1"=2503
+"param.attack_anim_stance2"="seq.human_dhsword_slash"
+"param.attack_sound_stance2"=2503
+"param.attack_anim_stance3"="seq.human_dhsword_chop"
+"param.attack_sound_stance3"=2502
+"param.attack_anim_stance4"="seq.human_dhsword_slash"
+"param.attack_sound_stance4"=2503
+"param.bas_readyanim"="seq.human_dh_weapon_ready"
+"param.defend_anim"="seq.human_dhsword_block"
+"param.bas_walk_f"="seq.human_dh_weapon_walk"
+"param.bas_walk_b"="seq.human_dh_weapon_walk"
 
 
 [[item]]
@@ -35149,9 +35445,20 @@ weaponCategory="Crossbow"
 tradeable = false
 [item.params]
 "param.proj_type"="projanim.bolt"
+"param.bas_running"="seq.xbows_human_run"
 "param.equipment_sound"=2244
-"param.attack_range"=7
 "param.attackrate"=6
+"param.attack_range"=7
+"param.attack_anim_stance1"="seq.xbows_human_fire_and_reload_pvn"
+"param.attack_sound_stance1"=2695
+"param.attack_anim_stance2"="seq.xbows_human_fire_and_reload_pvn"
+"param.attack_sound_stance2"=2695
+"param.attack_anim_stance4"="seq.xbows_human_fire_and_reload_pvn"
+"param.attack_sound_stance4"=2695
+"param.bas_readyanim"="seq.xbows_human_ready"
+"param.defend_anim"="seq.human_unarmedblock"
+"param.bas_walk_f"="seq.xbows_human_walk_f"
+"param.bas_walk_b"="seq.xbows_human_walk_b"
 
 
 [[item]]
@@ -35408,6 +35715,7 @@ id = "obj.atlatl_dart"
 inherit = "obj.atlatl_dart"
 [item.params]
 "param.equipment_sound"=2244
+"param.proj_travel"="spotanim.vfx_atlatl_projectile_01"
 
 
 [[item]]
@@ -47021,7 +47329,6 @@ tradeable = false
 [[item]]
 id = "obj.skillcape_max_dizanas"
 inherit = "obj.skillcape_max_dizanas"
-contentGroup = "content.max_cape"
 tradeable = false
 [item.params]
 "param.destroy_note_desc"="You can get another from The Colosseum."
@@ -47030,7 +47337,6 @@ tradeable = false
 [[item]]
 id = "obj.skillcape_max_dizanas_trouver"
 inherit = "obj.skillcape_max_dizanas_trouver"
-contentGroup = "content.max_cape"
 tradeable = false
 [item.params]
 "param.destroy_note_desc"="You can get another from The Colosseum."
@@ -49600,7 +49906,6 @@ tradeable = false
 [[item]]
 id = "obj.skillcape_max_anma"
 inherit = "obj.skillcape_max_anma"
-contentGroup = "content.max_cape"
 tradeable = false
 [item.params]
 "param.ammo_recovery_rate"=72
@@ -49662,6 +49967,16 @@ inherit = "obj.trailblazer_reloaded_axe"
 weaponCategory="Axe"
 tradeable = false
 [item.params]
+"param.equipment_sound"=2229
+"param.attack_anim_stance1"="seq.human_axe_hack"
+"param.attack_sound_stance1"=2498
+"param.attack_anim_stance2"="seq.human_axe_hack"
+"param.attack_sound_stance2"=2498
+"param.attack_anim_stance3"="seq.human_blunt_pound"
+"param.attack_sound_stance3"=2497
+"param.attack_anim_stance4"="seq.human_axe_hack"
+"param.attack_sound_stance4"=2498
+"param.defend_anim"="seq.human_axe_block"
 "param.attackrate"=5
 
 
@@ -49904,6 +50219,16 @@ inherit = "obj.trailblazer_reloaded_axe_empty"
 weaponCategory="Axe"
 tradeable = false
 [item.params]
+"param.equipment_sound"=2229
+"param.attack_anim_stance1"="seq.human_axe_hack"
+"param.attack_sound_stance1"=2498
+"param.attack_anim_stance2"="seq.human_axe_hack"
+"param.attack_sound_stance2"=2498
+"param.attack_anim_stance3"="seq.human_blunt_pound"
+"param.attack_sound_stance3"=2497
+"param.attack_anim_stance4"="seq.human_axe_hack"
+"param.attack_sound_stance4"=2498
+"param.defend_anim"="seq.human_axe_block"
 "param.attackrate"=5
 
 
@@ -49964,7 +50289,22 @@ id = "obj.deadman_blighted_volatile_staff"
 inherit = "obj.deadman_blighted_volatile_staff"
 weaponCategory="Staff"
 [item.params]
+"param.bas_walk_l"="seq.human_halberdwalk_l"
+"param.bas_walk_r"="seq.human_halberdwalk_r"
+"param.bas_running"="seq.human_halberdrunning"
+"param.equipment_sound"=2247
 "param.attackrate"=5
+"param.attack_anim_stance1"="seq.human_nightmare_staff_crush"
+"param.attack_sound_stance1"=2555
+"param.attack_anim_stance2"="seq.human_nightmare_staff_crush"
+"param.attack_sound_stance2"=2555
+"param.attack_anim_stance4"="seq.human_nightmare_staff_crush"
+"param.attack_sound_stance4"=2555
+"param.bas_readyanim"="seq.human_nightmare_staff_ready"
+"param.bas_turnonspot"="seq.human_halberdturnonspot"
+"param.defend_anim"="seq.human_stafforb_block"
+"param.bas_walk_f"="seq.human_halberdwalk_f"
+"param.bas_walk_b"="seq.human_halberdwalk_b"
 
 
 [[item]]
@@ -50022,12 +50362,17 @@ tradeable = false
 id = "obj.deadman_blighted_voidwaker"
 inherit = "obj.deadman_blighted_voidwaker"
 weaponCategory="SlashSword"
-
-
-[[item]]
-id = "obj.bone_claws"
-inherit = "obj.bone_claws"
-weaponCategory="Claw"
+[item.params]
+"param.equipment_sound"=2248
+"param.attack_anim_stance1"="seq.human_sword_slash"
+"param.attack_sound_stance1"=2500
+"param.attack_anim_stance2"="seq.human_sword_slash"
+"param.attack_sound_stance2"=2500
+"param.attack_anim_stance3"="seq.human_sword_stab"
+"param.attack_sound_stance3"=2501
+"param.attack_anim_stance4"="seq.human_sword_slash"
+"param.attack_sound_stance4"=2500
+"param.defend_anim"="seq.human_sword_def"
 
 
 [[item]]
@@ -50141,6 +50486,16 @@ inherit = "obj.trailblazer_reloaded_pickaxe"
 weaponCategory="Pickaxe"
 tradeable = false
 [item.params]
+"param.equipment_sound"=2229
+"param.attack_anim_stance1"="seq.human_blunt_pound"
+"param.attack_sound_stance1"=2498
+"param.attack_anim_stance2"="seq.human_blunt_pound"
+"param.attack_sound_stance2"=2498
+"param.attack_anim_stance3"="seq.human_blunt_spike"
+"param.attack_sound_stance3"=2497
+"param.attack_anim_stance4"="seq.human_blunt_pound"
+"param.attack_sound_stance4"=2498
+"param.defend_anim"="seq.human_axe_block"
 "param.attackrate"=5
 
 
@@ -50275,6 +50630,17 @@ id = "obj.br_dual_macuahuitl"
 inherit = "obj.br_dual_macuahuitl"
 weaponCategory="Spiked"
 tradeable = false
+[item.params]
+"param.equipment_sound"=2233
+"param.attack_anim_stance1"="seq.pmoon_macuahuitl_crush"
+"param.attack_sound_stance1"=7930
+"param.attack_anim_stance2"="seq.pmoon_macuahuitl_crush"
+"param.attack_sound_stance2"=7930
+"param.attack_anim_stance3"="seq.pmoon_macuahuitl_crush"
+"param.attack_sound_stance3"=7930
+"param.attack_anim_stance4"="seq.pmoon_macuahuitl_crush"
+"param.attack_sound_stance4"=7930
+"param.defend_anim"="seq.human_unarmedblock"
 
 
 [[item]]
@@ -50294,7 +50660,22 @@ inherit = "obj.deadman_nightmare_staff_volatile"
 weaponCategory="Staff"
 tradeable = false
 [item.params]
+"param.bas_walk_l"="seq.human_halberdwalk_l"
+"param.bas_walk_r"="seq.human_halberdwalk_r"
+"param.bas_running"="seq.human_halberdrunning"
+"param.equipment_sound"=2247
 "param.attackrate"=5
+"param.attack_anim_stance1"="seq.human_nightmare_staff_crush"
+"param.attack_sound_stance1"=2555
+"param.attack_anim_stance2"="seq.human_nightmare_staff_crush"
+"param.attack_sound_stance2"=2555
+"param.attack_anim_stance4"="seq.human_nightmare_staff_crush"
+"param.attack_sound_stance4"=2555
+"param.bas_readyanim"="seq.human_nightmare_staff_ready"
+"param.bas_turnonspot"="seq.human_halberdturnonspot"
+"param.defend_anim"="seq.human_stafforb_block"
+"param.bas_walk_f"="seq.human_halberdwalk_f"
+"param.bas_walk_b"="seq.human_halberdwalk_b"
 
 
 [[item]]
@@ -50324,6 +50705,16 @@ inherit = "obj.trailblazer_reloaded_pickaxe_no_infernal"
 weaponCategory="Pickaxe"
 tradeable = false
 [item.params]
+"param.equipment_sound"=2229
+"param.attack_anim_stance1"="seq.human_blunt_pound"
+"param.attack_sound_stance1"=2498
+"param.attack_anim_stance2"="seq.human_blunt_pound"
+"param.attack_sound_stance2"=2498
+"param.attack_anim_stance3"="seq.human_blunt_spike"
+"param.attack_sound_stance3"=2497
+"param.attack_anim_stance4"="seq.human_blunt_pound"
+"param.attack_sound_stance4"=2498
+"param.defend_anim"="seq.human_axe_block"
 "param.attackrate"=5
 
 
@@ -50585,6 +50976,17 @@ id = "obj.deadman_voidwaker"
 inherit = "obj.deadman_voidwaker"
 weaponCategory="SlashSword"
 tradeable = false
+[item.params]
+"param.equipment_sound"=2248
+"param.attack_anim_stance1"="seq.human_sword_slash"
+"param.attack_sound_stance1"=2500
+"param.attack_anim_stance2"="seq.human_sword_slash"
+"param.attack_sound_stance2"=2500
+"param.attack_anim_stance3"="seq.human_sword_stab"
+"param.attack_sound_stance3"=2501
+"param.attack_anim_stance4"="seq.human_sword_slash"
+"param.attack_sound_stance4"=2500
+"param.defend_anim"="seq.human_sword_def"
 
 
 [[item]]
@@ -50599,7 +51001,6 @@ tradeable = false
 [[item]]
 id = "obj.skillcape_max_assembler_masori_trouver"
 inherit = "obj.skillcape_max_assembler_masori_trouver"
-contentGroup = "content.max_cape"
 tradeable = false
 [item.params]
 "param.ammo_recovery_rate"=80
@@ -50709,6 +51110,198 @@ id = "obj.thunder_khopesh"
 inherit = "obj.thunder_khopesh"
 weaponCategory="SlashSword"
 tradeable = false
+[item.params]
+"param.equipment_sound"=2248
+"param.attack_anim_stance1"="seq.human_sword_slash"
+"param.attack_sound_stance1"=2500
+"param.attack_anim_stance2"="seq.human_sword_slash"
+"param.attack_sound_stance2"=2500
+"param.attack_anim_stance3"="seq.human_sword_stab"
+"param.attack_sound_stance3"=2501
+"param.attack_anim_stance4"="seq.human_sword_slash"
+"param.attack_sound_stance4"=2500
+
+
+[[item]]
+id = "obj.deadman_thunder_khopesh"
+inherit = "obj.deadman_thunder_khopesh"
+weaponCategory="SlashSword"
+[item.params]
+"param.equipment_sound"=2248
+"param.attack_anim_stance1"="seq.human_sword_slash"
+"param.attack_sound_stance1"=2500
+"param.attack_anim_stance2"="seq.human_sword_slash"
+"param.attack_sound_stance2"=2500
+"param.attack_anim_stance3"="seq.human_sword_stab"
+"param.attack_sound_stance3"=2501
+"param.attack_anim_stance4"="seq.human_sword_slash"
+"param.attack_sound_stance4"=2500
+
+
+[[item]]
+id = "obj.crimson_kisten"
+inherit = "obj.crimson_kisten"
+weaponCategory="Spiked"
+[item.params]
+# These attack_anim_stance* params are NOT what actually controls this weapon's swing animation -
+# CrimsonKistenWeapons.kt hardcodes it directly in code instead (found only after the diagnostic
+# test above showed these overrides have zero visible effect). Kept here matching the item's real
+# named sequences anyway, for accuracy/in case anything else ever reads them.
+"param.attack_anim_stance1"="seq.human_weapons_crimson_kisten_attack"
+"param.attack_sound_stance1"=401
+"param.attack_anim_stance2"="seq.human_weapons_crimson_kisten_attack"
+"param.attack_sound_stance2"=401
+"param.attack_anim_stance3"="seq.human_weapons_crimson_kisten_attack_alt"
+"param.attack_sound_stance3"=401
+"param.attack_anim_stance4"="seq.human_weapons_crimson_kisten_attack"
+"param.attack_sound_stance4"=401
+# Straight from torka's original notes (the actual weapon's own real animation ids, not a
+# borrowed reference weapon - every guess before this, Verac's flail/Blisterwood flail/Rune 2h
+# sword/Soulreaper axe, was wrong): Ready=14251, Walk=14252, Run=14254. Stab (14253) and
+# Defend (14257) above already independently matched these same notes, confirming this source.
+"param.bas_readyanim"=14251
+"param.bas_walk_f"=14252
+"param.bas_walk_b"=14252
+"param.bas_walk_l"=14252
+"param.bas_walk_r"=14252
+"param.bas_running"=14254
+
+
+[[item]]
+id = "obj.fang_of_the_hound"
+inherit = "obj.fang_of_the_hound"
+weaponCategory="StabSword"
+[item.params]
+"param.attack_anim_stance1"="seq.human_karambit_attack"
+"param.attack_sound_stance1"=2549
+"param.attack_anim_stance2"="seq.human_karambit_attack"
+"param.attack_sound_stance2"=2549
+"param.attack_anim_stance3"="seq.human_karambit_attack"
+"param.attack_sound_stance3"=2549
+"param.attack_anim_stance4"="seq.human_karambit_attack"
+"param.attack_sound_stance4"=2549
+# StabSword needs its idle/defend anim overridden per-item (confirmed via Ghrazi rapier, a real
+# StabSword weapon - it has no turn/walk/run override, only these two, so that's all copied here).
+"param.bas_readyanim"=809
+"param.defend_anim"=388
+
+
+[[item]]
+id = "obj.sunspear"
+inherit = "obj.sunspear"
+weaponCategory="Spear"
+[item.params]
+"param.attack_anim_stance1"="seq.human_spear_spike"
+"param.attack_sound_stance1"=2562
+"param.attack_anim_stance2"="seq.human_scythe_sweep"
+"param.attack_sound_stance2"=2556
+"param.attack_anim_stance3"="seq.human_spear_lunge"
+"param.attack_sound_stance3"=2555
+"param.attack_anim_stance4"="seq.human_spear_spike"
+"param.attack_sound_stance4"=2562
+# First attempt reused Dragon spear's set (813 etc) - live feedback said it should match
+# Zamorakian spear specifically instead, and checking the cache confirms Zamorakian spear (id
+# 11824) uses a completely different set (1713 etc) from Dragon spear/Guthan's warspear/
+# Zamorakian hasta (all 813) - a real, distinct "two-handed-looking" Spear-category grip. Switched
+# to Zamorakian spear's exact values.
+"param.bas_readyanim"=1713
+"param.bas_turnonspot"=1702
+"param.bas_walk_f"=1703
+"param.bas_walk_b"=1704
+"param.bas_walk_l"=1706
+"param.bas_walk_r"=1705
+"param.bas_running"=1707
+"param.defend_anim"=1709
+
+
+[[item]]
+id = "obj.echo_godsword"
+inherit = "obj.echo_godsword"
+# GodSword (not the generic TwoHandedSword) - the more accurate category for the combat tab, but
+# NOT what actually drives the idle "holding" pose - see bas_readyanim etc below for that.
+weaponCategory="GodSword"
+tradeable = false
+[item.params]
+"param.equipment_sound"=2248
+"param.attackrate"=6
+"param.attack_anim_stance1"="seq.human_dhsword_slash"
+"param.attack_sound_stance1"=2503
+"param.attack_anim_stance2"="seq.human_dhsword_slash"
+"param.attack_sound_stance2"=2503
+"param.attack_anim_stance3"="seq.human_dhsword_chop"
+"param.attack_sound_stance3"=2502
+"param.attack_anim_stance4"="seq.human_dhsword_slash"
+# The real Bandos godsword's own idle/turn/walk/run/defend animation set (obj id 11804) - these
+# raw ids (7043-7056) have no named RSCM alias in this cache, same situation as the attack-stance
+# ids handled in code via `DogswordWeapons.kt`. Unlike those, these are read by the client directly
+# from the item definition (not something server code can override at attack-time), so they have
+# to go in the cache override as raw ints rather than named `seq.` strings.
+"param.bas_readyanim"=7053
+"param.bas_turnonspot"=7044
+"param.bas_walk_f"=7052
+"param.bas_walk_b"=7052
+"param.bas_walk_l"=7048
+"param.bas_walk_r"=7047
+"param.bas_running"=7043
+"param.defend_anim"=7056
+"param.attack_sound_stance4"=2503
+
+
+[[item]]
+id = "obj.bone_claws"
+inherit = "obj.bone_claws"
+weaponCategory="Claw"
+[item.params]
+"param.equipment_sound"=2238
+"param.attack_anim_stance1"="seq.human_axe_chop"
+"param.attack_sound_stance1"=4139
+"param.attack_anim_stance2"="seq.human_axe_chop"
+"param.attack_sound_stance2"=4139
+"param.attack_anim_stance3"="seq.d_claws_punch"
+"param.attack_sound_stance3"=4139
+"param.attack_anim_stance4"="seq.human_axe_chop"
+"param.attack_sound_stance4"=4139
+
+
+[[item]]
+id = "obj.arkan_blade"
+inherit = "obj.arkan_blade"
+weaponCategory="SlashSword"
+[item.params]
+"param.equipment_sound"=2248
+"param.attack_anim_stance1"="seq.human_sword_slash"
+"param.attack_sound_stance1"=2500
+"param.attack_anim_stance2"="seq.human_sword_slash"
+"param.attack_sound_stance2"=2500
+"param.attack_anim_stance3"="seq.human_sword_stab"
+"param.attack_sound_stance3"=2501
+"param.attack_anim_stance4"="seq.human_sword_slash"
+"param.attack_sound_stance4"=2500
+
+
+[[item]]
+id = "obj.deadman_dogsword"
+inherit = "obj.deadman_dogsword"
+# See obj.echo_godsword above - GodSword category plus the bas_* idle/turn/walk/run/defend set.
+weaponCategory="GodSword"
+[item.params]
+"param.equipment_sound"=2248
+"param.attack_anim_stance1"="seq.human_dhsword_slash"
+"param.attack_sound_stance1"=2503
+"param.attack_anim_stance2"="seq.human_dhsword_slash"
+"param.attack_sound_stance2"=2503
+"param.attack_anim_stance3"="seq.human_dhsword_chop"
+"param.attack_sound_stance3"=2502
+"param.attack_anim_stance4"="seq.human_dhsword_slash"
+"param.bas_readyanim"=7053
+"param.bas_turnonspot"=7044
+"param.bas_walk_f"=7052
+"param.bas_walk_b"=7052
+"param.bas_walk_l"=7048
+"param.bas_walk_r"=7047
+"param.bas_running"=7043
+"param.defend_anim"=7056
+"param.attack_sound_stance4"=2503
 
 
 [[item]]
@@ -50738,7 +51331,16 @@ inherit = "obj.dinhs_bulwark_ornament"
 weaponCategory="Bulwark"
 tradeable = false
 [item.params]
+"param.bas_walk_l"="seq.human_dinhs_bulwark_walk"
+"param.bas_walk_r"="seq.human_dinhs_bulwark_walk"
+"param.bas_running"="seq.human_dinhs_bulwark_run"
+"param.attack_anim_stance1"="seq.human_dinhs_bulwark_bash"
+"param.attack_sound_stance1"=3454
+"param.bas_readyanim"="seq.human_dinhs_bulwark_ready"
+"param.defend_anim"="seq.human_dinhs_bulwark_block"
+"param.bas_walk_f"="seq.human_dinhs_bulwark_walk"
 "param.attackrate"=5
+"param.bas_walk_b"="seq.human_dinhs_bulwark_walk"
 
 
 [[item]]
@@ -50769,7 +51371,24 @@ inherit = "obj.deadman_ags"
 weaponCategory="TwoHandedSword"
 tradeable = false
 [item.params]
+"param.bas_walk_l"="seq.dh_sword_update_walk_left"
+"param.bas_walk_r"="seq.dh_sword_update_walk_right"
+"param.bas_running"="seq.dh_sword_update_run"
+"param.equipment_sound"=2248
 "param.attackrate"=6
+"param.attack_anim_stance1"="seq.dh_sword_update_slash"
+"param.attack_sound_stance1"=3847
+"param.attack_anim_stance2"="seq.dh_sword_update_slash"
+"param.attack_sound_stance2"=3847
+"param.attack_anim_stance3"="seq.dh_sword_update_smash"
+"param.attack_sound_stance3"=3846
+"param.attack_anim_stance4"="seq.dh_sword_update_block"
+"param.attack_sound_stance4"=3847
+"param.bas_readyanim"="seq.dh_sword_update_ready"
+"param.bas_turnonspot"="seq.dh_sword_update_turnonspot"
+"param.defend_anim"="seq.dh_sword_update_defend"
+"param.bas_walk_f"="seq.dh_sword_update_walk"
+"param.bas_walk_b"="seq.dh_sword_update_walk"
 
 
 [[item]]
@@ -50784,12 +51403,21 @@ id = "obj.bh_dragon_claws_corrupted"
 inherit = "obj.bh_dragon_claws_corrupted"
 weaponCategory="Claw"
 tradeable = false
+[item.params]
+"param.attack_anim_stance1"="seq.human_axe_chop"
+"param.attack_sound_stance1"=4139
+"param.attack_anim_stance2"="seq.human_axe_chop"
+"param.attack_sound_stance2"=4139
+"param.attack_anim_stance3"="seq.d_claws_punch"
+"param.attack_sound_stance3"=4139
+"param.attack_anim_stance4"="seq.human_axe_chop"
+"param.attack_sound_stance4"=4139
+"param.defend_anim"="seq.human_unarmedblock"
 
 
 [[item]]
 id = "obj.skillcape_max_assembler_trouver"
 inherit = "obj.skillcape_max_assembler_trouver"
-contentGroup = "content.max_cape"
 tradeable = false
 [item.params]
 "param.ammo_recovery_rate"=80
@@ -51047,7 +51675,24 @@ id = "obj.deadman_blighted_ags"
 inherit = "obj.deadman_blighted_ags"
 weaponCategory="TwoHandedSword"
 [item.params]
+"param.bas_walk_l"="seq.dh_sword_update_walk_left"
+"param.bas_walk_r"="seq.dh_sword_update_walk_right"
+"param.bas_running"="seq.dh_sword_update_run"
+"param.equipment_sound"=2248
 "param.attackrate"=6
+"param.attack_anim_stance1"="seq.dh_sword_update_slash"
+"param.attack_sound_stance1"=3847
+"param.attack_anim_stance2"="seq.dh_sword_update_slash"
+"param.attack_sound_stance2"=3847
+"param.attack_anim_stance3"="seq.dh_sword_update_smash"
+"param.attack_sound_stance3"=3846
+"param.attack_anim_stance4"="seq.dh_sword_update_block"
+"param.attack_sound_stance4"=3847
+"param.bas_readyanim"="seq.dh_sword_update_ready"
+"param.bas_turnonspot"="seq.dh_sword_update_turnonspot"
+"param.defend_anim"="seq.dh_sword_update_defend"
+"param.bas_walk_f"="seq.dh_sword_update_walk"
+"param.bas_walk_b"="seq.dh_sword_update_walk"
 
 
 [[item]]
@@ -51129,7 +51774,6 @@ tradeable = false
 [[item]]
 id = "obj.skillcape_max_assembler"
 inherit = "obj.skillcape_max_assembler"
-contentGroup = "content.max_cape"
 tradeable = false
 [item.params]
 "param.ammo_recovery_rate"=80
@@ -51275,6 +51919,15 @@ inherit = "obj.trailblazer_reloaded_harpoon_empty"
 weaponCategory="StabSword"
 tradeable = false
 [item.params]
+"param.attack_anim_stance1"="seq.human_sword_stab"
+"param.attack_sound_stance1"=2549
+"param.attack_anim_stance2"="seq.human_sword_stab"
+"param.attack_sound_stance2"=2549
+"param.attack_anim_stance3"="seq.human_sword_slash"
+"param.attack_sound_stance3"=2548
+"param.attack_anim_stance4"="seq.human_sword_stab"
+"param.attack_sound_stance4"=2549
+"param.defend_anim"="seq.human_sword_def"
 "param.attackrate"=5
 
 
@@ -51300,15 +51953,6 @@ id = "obj.trail_slidingpuzzled22"
 inherit = "obj.trail_slidingpuzzled22"
 dummyitem = 2
 tradeable = false
-
-
-[[item]]
-id = "obj.echo_godsword"
-inherit = "obj.echo_godsword"
-weaponCategory="TwoHandedSword"
-tradeable = false
-[item.params]
-"param.attackrate"=6
 
 
 [[item]]
@@ -51517,8 +52161,18 @@ weaponCategory="Bow"
 tradeable = false
 [item.params]
 "param.proj_type"="projanim.arrow"
-"param.attack_range"=10
+"param.equipment_sound"=2244
 "param.attackrate"=9
+"param.statreq1_skill"="stat.ranged"
+"param.attack_range"=10
+"param.attack_anim_stance1"="seq.human_bow"
+"param.statreq1_level"=60
+"param.attack_sound_stance1"=3731
+"param.attack_anim_stance2"="seq.human_bow"
+"param.attack_sound_stance2"=3731
+"param.attack_anim_stance4"="seq.human_bow"
+"param.attack_sound_stance4"=3731
+"param.defend_anim"="seq.human_unarmedblock"
 
 
 [[item]]
@@ -51575,6 +52229,16 @@ inherit = "obj.trailblazer_reloaded_axe_no_infernal"
 weaponCategory="Axe"
 tradeable = false
 [item.params]
+"param.equipment_sound"=2229
+"param.attack_anim_stance1"="seq.human_axe_hack"
+"param.attack_sound_stance1"=2498
+"param.attack_anim_stance2"="seq.human_axe_hack"
+"param.attack_sound_stance2"=2498
+"param.attack_anim_stance3"="seq.human_blunt_pound"
+"param.attack_sound_stance3"=2497
+"param.attack_anim_stance4"="seq.human_axe_hack"
+"param.attack_sound_stance4"=2498
+"param.defend_anim"="seq.human_axe_block"
 "param.attackrate"=5
 
 
@@ -51595,7 +52259,6 @@ tradeable = false
 [[item]]
 id = "obj.skillcape_max_assembler_masori"
 inherit = "obj.skillcape_max_assembler_masori"
-contentGroup = "content.max_cape"
 tradeable = false
 [item.params]
 "param.ammo_recovery_rate"=80
@@ -51695,6 +52358,15 @@ inherit = "obj.trailblazer_reloaded_harpoon_no_infernal"
 weaponCategory="StabSword"
 tradeable = false
 [item.params]
+"param.attack_anim_stance1"="seq.human_sword_stab"
+"param.attack_sound_stance1"=2549
+"param.attack_anim_stance2"="seq.human_sword_stab"
+"param.attack_sound_stance2"=2549
+"param.attack_anim_stance3"="seq.human_sword_slash"
+"param.attack_sound_stance3"=2548
+"param.attack_anim_stance4"="seq.human_sword_stab"
+"param.attack_sound_stance4"=2549
+"param.defend_anim"="seq.human_sword_def"
 "param.attackrate"=5
 
 
@@ -51908,8 +52580,18 @@ inherit = "obj.deadman_blighted_dark_bow"
 weaponCategory="Bow"
 [item.params]
 "param.proj_type"="projanim.arrow"
-"param.attack_range"=10
+"param.equipment_sound"=2244
 "param.attackrate"=6
+"param.statreq1_skill"="stat.ranged"
+"param.attack_range"=10
+"param.attack_anim_stance1"="seq.human_bow"
+"param.statreq1_level"=60
+"param.attack_sound_stance1"=3731
+"param.attack_anim_stance2"="seq.human_bow"
+"param.attack_sound_stance2"=3731
+"param.attack_anim_stance4"="seq.human_bow"
+"param.attack_sound_stance4"=3731
+"param.defend_anim"="seq.human_unarmedblock"
 
 
 [[item]]
@@ -52202,6 +52884,15 @@ inherit = "obj.trailblazer_reloaded_harpoon"
 weaponCategory="StabSword"
 tradeable = false
 [item.params]
+"param.attack_anim_stance1"="seq.human_sword_stab"
+"param.attack_sound_stance1"=2549
+"param.attack_anim_stance2"="seq.human_sword_stab"
+"param.attack_sound_stance2"=2549
+"param.attack_anim_stance3"="seq.human_sword_slash"
+"param.attack_sound_stance3"=2548
+"param.attack_anim_stance4"="seq.human_sword_stab"
+"param.attack_sound_stance4"=2549
+"param.defend_anim"="seq.human_sword_def"
 "param.attackrate"=5
 
 
@@ -52348,6 +53039,17 @@ id = "obj.emberlight"
 inherit = "obj.emberlight"
 weaponCategory="SlashSword"
 tradeable = false
+[item.params]
+"param.equipment_sound"=2248
+"param.attack_anim_stance1"="seq.human_sword_slash"
+"param.attack_sound_stance1"=2500
+"param.attack_anim_stance2"="seq.human_sword_slash"
+"param.attack_sound_stance2"=2500
+"param.attack_anim_stance3"="seq.human_sword_stab"
+"param.attack_sound_stance3"=2501
+"param.attack_anim_stance4"="seq.human_sword_slash"
+"param.attack_sound_stance4"=2500
+"param.defend_anim"="seq.human_sword_def"
 
 
 [[item]]
@@ -52510,6 +53212,16 @@ inherit = "obj.trailblazer_reloaded_pickaxe_empty"
 weaponCategory="Pickaxe"
 tradeable = false
 [item.params]
+"param.equipment_sound"=2229
+"param.attack_anim_stance1"="seq.human_blunt_pound"
+"param.attack_sound_stance1"=2498
+"param.attack_anim_stance2"="seq.human_blunt_pound"
+"param.attack_sound_stance2"=2498
+"param.attack_anim_stance3"="seq.human_blunt_spike"
+"param.attack_sound_stance3"=2497
+"param.attack_anim_stance4"="seq.human_blunt_pound"
+"param.attack_sound_stance4"=2498
+"param.defend_anim"="seq.human_axe_block"
 "param.attackrate"=5
 
 
@@ -52627,6 +53339,17 @@ tradeable = false
 id = "obj.deadman_blighted_dragon_claws"
 inherit = "obj.deadman_blighted_dragon_claws"
 weaponCategory="Claw"
+tradeable = false
+[item.params]
+"param.attack_anim_stance1"="seq.human_axe_chop"
+"param.attack_sound_stance1"=4139
+"param.attack_anim_stance2"="seq.human_axe_chop"
+"param.attack_sound_stance2"=4139
+"param.attack_anim_stance3"="seq.d_claws_punch"
+"param.attack_sound_stance3"=4139
+"param.attack_anim_stance4"="seq.human_axe_chop"
+"param.attack_sound_stance4"=4139
+"param.defend_anim"="seq.human_unarmedblock"
 
 
 [[item]]
@@ -52759,76 +53482,48 @@ inherit = "obj.softclay"
 contentGroup = "content.ore"
 
 [[item]]
-id = "obj.skillcape_max_firecape"
-inherit = "obj.skillcape_max_firecape"
-contentGroup = "content.max_cape"
+id = "obj.toxic_sotd_deadman"
+inherit = "obj.toxic_sotd_deadman"
+weaponCategory="BladedStaff"
+tradeable = false
+[item.params]
+"param.bas_walk_l"="seq.human_halberdwalk_l"
+"param.bas_walk_r"="seq.human_halberdwalk_r"
+"param.bas_running"="seq.human_halberdrunning"
+"param.equipment_sound"=2247
+"param.attack_anim_stance1"="seq.human_spear_spike"
+"param.attack_sound_stance1"=2562
+"param.attack_anim_stance2"="seq.human_scythe_sweep"
+"param.attack_sound_stance2"=2524
+"param.attack_anim_stance4"="seq.human_stafforb_pummel"
+"param.attack_sound_stance4"=2555
+"param.bas_readyanim"="seq.human_staffready"
+"param.bas_turnonspot"="seq.human_halberdturnonspot"
+"param.defend_anim"="seq.human_stafforb_block"
+"param.bas_walk_f"="seq.human_halberdwalk_f"
+"param.bas_walk_b"="seq.human_halberdwalk_b"
 
 [[item]]
-id = "obj.skillcape_max_saradomin"
-inherit = "obj.skillcape_max_saradomin"
-contentGroup = "content.max_cape"
-
-[[item]]
-id = "obj.skillcape_max_zamorak"
-inherit = "obj.skillcape_max_zamorak"
-contentGroup = "content.max_cape"
-
-[[item]]
-id = "obj.skillcape_max_guthix"
-inherit = "obj.skillcape_max_guthix"
-contentGroup = "content.max_cape"
-
-[[item]]
-id = "obj.skillcape_max_ardy"
-inherit = "obj.skillcape_max_ardy"
-contentGroup = "content.max_cape"
-
-[[item]]
-id = "obj.skillcape_max_infernalcape"
-inherit = "obj.skillcape_max_infernalcape"
-contentGroup = "content.max_cape"
-
-[[item]]
-id = "obj.skillcape_max_saradomin2"
-inherit = "obj.skillcape_max_saradomin2"
-contentGroup = "content.max_cape"
-
-[[item]]
-id = "obj.skillcape_max_zamorak2"
-inherit = "obj.skillcape_max_zamorak2"
-contentGroup = "content.max_cape"
-
-[[item]]
-id = "obj.skillcape_max_guthix2"
-inherit = "obj.skillcape_max_guthix2"
-contentGroup = "content.max_cape"
-
-[[item]]
-id = "obj.skillcape_max_infernalcape_trouver"
-inherit = "obj.skillcape_max_infernalcape_trouver"
-contentGroup = "content.max_cape"
-
-[[item]]
-id = "obj.skillcape_max_firecape_trouver"
-inherit = "obj.skillcape_max_firecape_trouver"
-contentGroup = "content.max_cape"
-
-[[item]]
-id = "obj.skillcape_max_saradomin2_trouver"
-inherit = "obj.skillcape_max_saradomin2_trouver"
-contentGroup = "content.max_cape"
-
-[[item]]
-id = "obj.skillcape_max_zamorak2_trouver"
-inherit = "obj.skillcape_max_zamorak2_trouver"
-contentGroup = "content.max_cape"
-
-[[item]]
-id = "obj.skillcape_max_guthix2_trouver"
-inherit = "obj.skillcape_max_guthix2_trouver"
-contentGroup = "content.max_cape"
-
-[[item]]
-id = "obj.skillcape_max_mythical"
-inherit = "obj.skillcape_max_mythical"
-contentGroup = "content.max_cape"
+id = "obj.toxic_sotd_charged_deadman"
+inherit = "obj.toxic_sotd_charged_deadman"
+weaponCategory="BladedStaff"
+tradeable = false
+[item.params]
+"param.additional_spell_autocast3"=3310
+"param.additional_spell_autocast1"=3293
+"param.additional_spell_autocast2"=4176
+"param.bas_walk_l"="seq.human_halberdwalk_l"
+"param.bas_walk_r"="seq.human_halberdwalk_r"
+"param.bas_running"="seq.human_halberdrunning"
+"param.equipment_sound"=2247
+"param.attack_anim_stance1"="seq.human_spear_spike"
+"param.attack_sound_stance1"=2562
+"param.attack_anim_stance2"="seq.human_scythe_sweep"
+"param.attack_sound_stance2"=2524
+"param.attack_anim_stance4"="seq.human_stafforb_pummel"
+"param.attack_sound_stance4"=2555
+"param.bas_readyanim"="seq.human_staffready"
+"param.bas_turnonspot"="seq.human_halberdturnonspot"
+"param.defend_anim"="seq.human_stafforb_block"
+"param.bas_walk_f"="seq.human_halberdwalk_f"
+"param.bas_walk_b"="seq.human_halberdwalk_b"

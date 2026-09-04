@@ -7,6 +7,7 @@ import org.rsmod.api.player.output.ClientScripts
 import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.output.soundSynth
 import org.rsmod.api.player.protect.ProtectedAccess
+import org.rsmod.api.player.prayer.ProtectionPrayerLockout
 import org.rsmod.api.player.protect.ProtectedAccessLauncher
 import org.rsmod.api.player.stat.prayerLvl
 import org.rsmod.api.player.ui.ifClose
@@ -66,6 +67,15 @@ private constructor(
             // Note: This is probably implicitly called by some other function, but as of now, we do
             // not know what that is.
             ClientScripts.pvpIconsComLevelRange(player, player.combatLevel)
+            return
+        }
+        // Dragon scimitar's Sever special (PvP) temporarily blocks re-activating protection
+        // prayers after a successful hit - see ProtectionPrayerLockout.
+        if (
+            prayer.enabled in ProtectionPrayerLockout.PROTECTION_PRAYER_VARBITS &&
+                ProtectionPrayerLockout.isLocked(player)
+        ) {
+            player.resyncVar(prayer.enabled)
             return
         }
         if (!prayer.hasAllRequirements(player)) {

@@ -135,6 +135,17 @@ internal suspend fun ProtectedAccess.activateMeleeSpecial(
 ): Boolean {
     val weapon = attack.weapon ?: return false
     val special = specials[weapon] ?: return false
+
+    // A handful of weapons (e.g. the Nightmare staffs) attack normally with melee - weaponCategory
+    // `Staff` resolves to a melee `AttackType` via `AttackTypes` - but their special attack is
+    // magic-based. `resolveCombatAttack` has no way to know that ahead of time, so it always
+    // resolves these as `CombatAttack.Melee`. Detect that mismatch here and redirect into the
+    // magic special path instead of silently failing and falling through to a normal attack.
+    if (special is SpecialAttack.Magic) {
+        val staffAttack = CombatAttack.Staff(weapon, style = null)
+        return activateMagicSpecial(target, staffAttack, specials, energy)
+    }
+
     if (special !is SpecialAttack.Melee) {
         return false
     }
@@ -153,7 +164,10 @@ internal suspend fun ProtectedAccess.activateMeleeSpecial(
     // interaction will either be canceled entirely or proceed with the delay.
 
     val reduceEnergy = special.attack(this, target, attack)
-    if (reduceEnergy) {
+    // Re-checked rather than taken unconditionally: a non-specialized weapon's cost was already
+    // validated above, but re-validating here means a change to the player's energy during the
+    // special's own execution can never turn into an uncaught `takeSpecialEnergy` exception.
+    if (reduceEnergy && energy.hasSpecialEnergy(player, special.energyInHundreds)) {
         energy.takeSpecialEnergy(player, special.energyInHundreds)
     }
     return true
@@ -184,7 +198,8 @@ internal suspend fun ProtectedAccess.activateRangedSpecial(
     // interaction will either be canceled entirely or proceed with the delay.
 
     val reduceEnergy = special.attack(this, target, attack)
-    if (reduceEnergy) {
+    // Re-checked rather than taken unconditionally - see `activateMeleeSpecial`.
+    if (reduceEnergy && energy.hasSpecialEnergy(player, special.energyInHundreds)) {
         energy.takeSpecialEnergy(player, special.energyInHundreds)
     }
     return true
@@ -215,7 +230,8 @@ internal suspend fun ProtectedAccess.activateMagicSpecial(
     // interaction will either be canceled entirely or proceed with the delay.
 
     val reduceEnergy = special.attack(this, target, attack)
-    if (reduceEnergy) {
+    // Re-checked rather than taken unconditionally - see `activateMeleeSpecial`.
+    if (reduceEnergy && energy.hasSpecialEnergy(player, special.energyInHundreds)) {
         energy.takeSpecialEnergy(player, special.energyInHundreds)
     }
     return true

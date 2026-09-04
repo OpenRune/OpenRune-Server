@@ -6,6 +6,7 @@ import kotlin.math.min
 import org.rsmod.api.config.constants
 import org.rsmod.api.config.refs.params
 import org.rsmod.api.inv.weight.InvWeight
+import org.rsmod.api.player.hit.modifier.MorriganHamstring
 import org.rsmod.api.player.output.UpdateRun
 import org.rsmod.api.player.stat.agilityLvl
 import org.rsmod.api.player.vars.setActiveMoveSpeed
@@ -49,6 +50,9 @@ public class PlayerRunUpdateProcessor {
             loss = (loss * 85) / 100
         } else if (hasStaminaEffect()) {
             loss = (loss * 30) / 100
+        }
+        if (MorriganHamstring.isActive(this)) {
+            loss *= MorriganHamstring.RUN_ENERGY_DRAIN_MULTIPLIER
         }
 
         runEnergy = max(0, runEnergy - loss)

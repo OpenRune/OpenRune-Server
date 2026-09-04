@@ -141,7 +141,33 @@ private fun buildServerCache(packTasks: List<CacheTask>, packs: PluginPacks) {
         MapPackers(),
     )
 
-    newCacheTool(TaskType.SERVER_CACHE_BUILD, serverOnly + serverTasks).initialize()
+    // The previous buildCache() pass just wrote a large batch of fresh binary cache files, and
+    // Windows Defender/Search Indexer (both confirmed running) hold a brief scan/index lock on a
+    // freshly-written file before releasing it. CacheTool.initialize() below (external
+    // dev.or2:tools dependency, can't patch directly) then fails to overwrite `SERVER/
+    // main_file_cache.idx255` mid-copy from LIVE - FileAlreadyExistsException: "Tried to overwrite
+    // the destination, but failed to delete it." A single System.gc() didn't help (ruled out - this
+    // isn't a JVM-held mmap like the MinifyServerCache.kt case), and the lock was confirmed to
+    // persist with zero JVM processes running at all - it's a genuine external OS-level lock, not
+    // our own state. Retrying with backoff is the correct mitigation for that, not GC.
+    retryOnFileLock { newCacheTool(TaskType.SERVER_CACHE_BUILD, serverOnly + serverTasks).initialize() }
+}
+
+private fun retryOnFileLock(attempts: Int = 6, block: () -> Unit) {
+    repeat(attempts) { attempt ->
+        try {
+            block()
+            return
+        } catch (e: java.io.IOException) {
+            // kotlin.io.FileAlreadyExistsException (thrown by the external copyTo call this wraps)
+            // is a java.io.IOException, not a java.nio.file.FileSystemException - catch the broader
+            // type deliberately.
+            if (attempt == attempts - 1) throw e
+            val delayMs = 500L * (attempt + 1)
+            logger.warn { "Cache file locked (likely AV/indexer scan) - retrying in ${delayMs}ms: ${e.message}" }
+            Thread.sleep(delayMs)
+        }
+    }
 }
 
 private fun finalizeServerCache() {

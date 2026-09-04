@@ -41,6 +41,12 @@ class MinifyServerCache() {
         temp.mkdirs()
         cache.rebuild(temp)
         cache.close()
+        // `cache.close()` doesn't deterministically release the memory-mapped file handles this
+        // library opened on `loc`'s own cache files (a known JVM-on-Windows limitation - mapped
+        // buffers only unmap on GC, with no explicit API to force it before this JDK's Arena/
+        // Cleaner APIs). Without this, the copy below intermittently throws
+        // FileAlreadyExistsException trying to overwrite a file Windows still considers open.
+        System.gc()
         temp.copyRecursively(loc, true)
         temp.deleteRecursively()
     }

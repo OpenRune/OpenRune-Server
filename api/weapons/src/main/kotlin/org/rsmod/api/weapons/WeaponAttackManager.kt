@@ -6,6 +6,7 @@ import dev.openrune.types.aconverted.SpotanimType
 import dev.openrune.types.aconverted.SynthType
 import jakarta.inject.Inject
 import org.rsmod.api.combat.commons.CombatAttack
+import org.rsmod.api.combat.commons.magic.Spellbook
 import org.rsmod.api.combat.commons.styles.MeleeAttackStyle
 import org.rsmod.api.combat.commons.styles.RangedAttackStyle
 import org.rsmod.api.combat.commons.types.MeleeAttackType
@@ -196,6 +197,26 @@ public class WeaponAttackManager @Inject constructor(private val manager: Player
             attackStyle,
             multiplier,
             roundUp,
+        )
+
+    /** @see [PlayerAttackManager.rollSpellMaxHit] */
+    public fun rollSpellMaxHit(
+        source: ProtectedAccess,
+        target: PathingEntity,
+        spell: ItemServerType,
+        spellbook: Spellbook?,
+        baseMaxHit: Int,
+        attackRate: Int,
+        sunfireRune: Boolean = false,
+    ): Int =
+        manager.rollSpellMaxHit(
+            source = source.player,
+            target = target,
+            spell = spell,
+            spellbook = spellbook,
+            baseMaxHit = baseMaxHit,
+            attackRate = attackRate,
+            sunfireRune = sunfireRune,
         )
 
     /** @see [PlayerAttackManager.queueMeleeHit] */

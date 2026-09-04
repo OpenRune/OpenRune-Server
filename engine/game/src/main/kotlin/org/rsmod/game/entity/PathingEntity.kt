@@ -140,6 +140,16 @@ public sealed class PathingEntity {
     public var walkTrigger: WalkTriggerType? = null
         private set
 
+    /**
+     * The [Player.uuid] of the most recent player to deal positive final damage to this entity.
+     * Updated by [recordDamage] alongside [heroPoints]/[damageContributions], so it reflects
+     * damage from any source (normal attacks and specials alike), not just a single weapon.
+     *
+     * Used by specials whose accuracy depends on whether the acting player was the target's last
+     * damage source (e.g. Bone dagger's Backstab, Dorgeshuun crossbow's Snipe).
+     */
+    public var lastDamagingPlayerUuid: Long? = null
+
     internal var animProtect: Boolean = false
 
     public val isSlotAssigned: Boolean
@@ -480,6 +490,7 @@ public sealed class PathingEntity {
         }
         damageContributions.record(source, damage)
         heroPoints(source, damage)
+        lastDamagingPlayerUuid = source.uuid
     }
 
     public fun recordDamage(source: Npc, damage: Int) {

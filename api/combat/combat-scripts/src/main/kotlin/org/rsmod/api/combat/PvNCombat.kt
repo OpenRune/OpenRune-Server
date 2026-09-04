@@ -8,6 +8,8 @@ import org.rsmod.api.death.NpcAttackValidateResult
 import org.rsmod.api.combat.commons.CombatAttack
 import org.rsmod.api.combat.manager.PlayerAttackManager
 import org.rsmod.api.combat.manager.RangedAmmoManager
+import org.rsmod.api.mechanics.toxins.EclipseAtlatlBurnEffect
+import org.rsmod.api.mechanics.toxins.WeaponPoisonEffect
 import org.rsmod.api.combat.player.activateMagicSpecial
 import org.rsmod.api.combat.player.activateMeleeSpecial
 import org.rsmod.api.combat.player.activateRangedSpecial
@@ -23,6 +25,7 @@ import org.rsmod.api.player.quiver
 import org.rsmod.api.player.righthand
 import org.rsmod.api.specials.SpecialAttackRegistry
 import org.rsmod.api.specials.SpecialAttackType
+import org.rsmod.api.specials.NextCycleRangedSpecialTiming
 import org.rsmod.api.specials.energy.SpecialAttackEnergy
 import org.rsmod.api.spells.attack.SpellAttackRegistry
 import org.rsmod.api.spells.attack.attack
@@ -44,6 +47,8 @@ constructor(
     private val ammunition: RangedAmmoManager,
     private val spellsReg: SpellAttackRegistry,
     private val attackValidateHooks: Set<NpcAttackValidateHook>,
+    private val weaponPoison: WeaponPoisonEffect,
+    private val eclipseAtlatlBurn: EclipseAtlatlBurnEffect,
 ) {
     suspend fun attack(access: ProtectedAccess, target: Npc, attack: CombatAttack.PlayerAttack) {
         when (attack) {
@@ -101,6 +106,7 @@ constructor(
         manager.giveCombatXp(player, npc, attack, damage)
         manager.playWeaponFx(player, attack)
         manager.queueMeleeHit(player, npc, damage)
+        attack.weapon?.let { weaponPoison.rollOnMeleeHit(player, npc, getInvObj(it), damage) }
         manager.continueCombat(player, npc)
     }
 
@@ -109,7 +115,21 @@ constructor(
             return
         }
 
-        if (manager.isAttackDelayed(player)) {
+        val timing =
+            NextCycleRangedSpecialTiming.resolve(
+                player = player,
+                weaponId = attack.weapon.id,
+                specialSelected = specialAttackType == SpecialAttackType.Weapon,
+            )
+        if (timing == NextCycleRangedSpecialTiming.Resolution.Wait) {
+            manager.continueCombat(player, npc)
+            return
+        }
+
+        if (
+            manager.isAttackDelayed(player) &&
+                timing != NextCycleRangedSpecialTiming.Resolution.BypassAttackDelay
+        ) {
             manager.continueCombat(player, npc)
             return
         }
@@ -220,6 +240,8 @@ constructor(
 
         val hitAmmoObj = if (usingThrown) null else quiverType
         manager.queueRangedHit(player, npc, hitAmmoObj, damage, clientDelay, serverDelay)
+        weaponPoison.rollOnRangedHit(player, npc, weaponType, damage)
+        eclipseAtlatlBurn.rollOnHit(player, npc, damage)
 
         if (usingThrown && player.righthand == null) {
             mes("That was your last one!")
@@ -241,6 +263,23 @@ constructor(
 
         val attackRate = MAGIC_SPELL_ATTACK_RATE
         manager.setNextAttackDelay(player, attackRate)
+
+        // A weapon can be both autocastable and carry its own magic special attack (e.g. the
+        // Nightmare staffs). `resolveCombatAttack` resolves an active autocast to
+        // `CombatAttack.Spell` regardless of the special-attack toggle, so that toggle has to be
+        // handled here too - otherwise activating a special while autocasting just casts the
+        // autocast spell instead, same as it did for the melee/staff resolution paths.
+        if (specialAttackType == SpecialAttackType.Weapon) {
+            specialAttackType = SpecialAttackType.None
+            val weapon = attack.weapon
+            if (weapon != null) {
+                val staffAttack = CombatAttack.Staff(weapon, style = null)
+                val activatedSpec = activateMagicSpecial(npc, staffAttack, specialsReg, specialEnergy)
+                if (activatedSpec) {
+                    return
+                }
+            }
+        }
 
         val spell = spellsReg[RSCM.getReverseMapping(RSCMType.OBJ,attack.spell.obj.id)]
         if (spell != null) {

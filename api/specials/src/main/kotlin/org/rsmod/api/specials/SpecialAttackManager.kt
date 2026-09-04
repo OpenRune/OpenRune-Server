@@ -8,12 +8,15 @@ import dev.openrune.types.aconverted.SpotanimType
 import dev.openrune.types.aconverted.SynthType
 import jakarta.inject.Inject
 import org.rsmod.api.combat.commons.CombatAttack
+import org.rsmod.api.combat.commons.magic.Spellbook
 import org.rsmod.api.combat.commons.styles.MagicAttackStyle
 import org.rsmod.api.combat.commons.styles.MeleeAttackStyle
 import org.rsmod.api.combat.commons.styles.RangedAttackStyle
 import org.rsmod.api.combat.commons.types.MeleeAttackType
 import org.rsmod.api.combat.commons.types.RangedAttackType
 import org.rsmod.api.combat.manager.PlayerAttackManager
+import org.rsmod.api.player.hit.modifier.PlayerHitModifier
+import org.rsmod.api.player.hit.modifier.StandardPlayerHitModifier
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.specials.energy.SpecialAttackEnergy
 import org.rsmod.api.specials.weapon.SpecialAttackWeapons
@@ -37,6 +40,13 @@ constructor(
     public fun takeSpecialEnergy(source: ProtectedAccess, energyInHundreds: Int) {
         energy.takeSpecialEnergy(source.player, energyInHundreds)
     }
+
+    /** @see [SpecialAttackEnergy.getSpecialEnergy] */
+    public fun getSpecialEnergy(source: ProtectedAccess): Int = energy.getSpecialEnergy(source.player)
+
+    /** @see [SpecialAttackEnergy.drainAllSpecialEnergy] */
+    public fun drainAllSpecialEnergy(source: ProtectedAccess): Int =
+        energy.drainAllSpecialEnergy(source.player)
 
     public fun getSpecialEnergyRequirement(obj: String): Int? =
         weapons.getSpecialEnergy(obj.asRSCM(RSCMType.OBJ))
@@ -139,6 +149,7 @@ constructor(
         attackStyle: MeleeAttackStyle?,
         blockType: MeleeAttackType?,
         multiplier: Double,
+        defenceMultiplier: Double = 1.0,
     ): Boolean =
         manager.rollMeleeAccuracy(
             source = source.player,
@@ -146,6 +157,39 @@ constructor(
             attackType = attackType,
             attackStyle = attackStyle,
             blockType = blockType,
+            multiplier = multiplier,
+            defenceMultiplier = defenceMultiplier,
+        )
+
+    /** @see [PlayerAttackManager.rollMagicalMeleeAccuracy] */
+    public fun rollMagicalMeleeAccuracy(
+        source: ProtectedAccess,
+        target: PathingEntity,
+        attackType: MeleeAttackType?,
+        attackStyle: MeleeAttackStyle?,
+        multiplier: Double,
+    ): Boolean =
+        manager.rollMagicalMeleeAccuracy(
+            source = source.player,
+            target = target,
+            attackType = attackType,
+            attackStyle = attackStyle,
+            multiplier = multiplier,
+        )
+
+    /** @see [PlayerAttackManager.rollMagicalRangedAccuracy] */
+    public fun rollMagicalRangedAccuracy(
+        source: ProtectedAccess,
+        target: PathingEntity,
+        attackType: RangedAttackType?,
+        attackStyle: RangedAttackStyle?,
+        multiplier: Double,
+    ): Boolean =
+        manager.rollMagicalRangedAccuracy(
+            source = source.player,
+            target = target,
+            attackType = attackType,
+            attackStyle = attackStyle,
             multiplier = multiplier,
         )
 
@@ -174,7 +218,8 @@ constructor(
         target: PathingEntity,
         damage: Int,
         delay: Int = 1,
-    ): Hit = manager.queueMeleeHit(source.player, target, damage, delay)
+        modifier: PlayerHitModifier = StandardPlayerHitModifier,
+    ): Hit = manager.queueMeleeHit(source.player, target, damage, delay, modifier)
 
     /** @see [PlayerAttackManager.rollRangedDamage] */
     public fun rollRangedDamage(
@@ -328,6 +373,26 @@ constructor(
             target = target,
             baseMaxHit = baseMaxHit,
             multiplier = multiplier,
+        )
+
+    /** @see [PlayerAttackManager.rollSpellMaxHit] */
+    public fun rollSpellMaxHit(
+        source: ProtectedAccess,
+        target: PathingEntity,
+        spell: ItemServerType,
+        spellbook: Spellbook?,
+        baseMaxHit: Int,
+        attackRate: Int,
+        sunfireRune: Boolean = false,
+    ): Int =
+        manager.rollSpellMaxHit(
+            source = source.player,
+            target = target,
+            spell = spell,
+            spellbook = spellbook,
+            baseMaxHit = baseMaxHit,
+            attackRate = attackRate,
+            sunfireRune = sunfireRune,
         )
 
     /** @see [PlayerAttackManager.queueMagicHit] */

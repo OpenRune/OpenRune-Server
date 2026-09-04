@@ -33,6 +33,8 @@ import org.rsmod.api.config.refs.params
 import org.rsmod.api.death.PvPPlayerHitHook
 import org.rsmod.api.npc.hit.modifier.NpcHitModifier
 import org.rsmod.api.npc.hit.queueHit
+import org.rsmod.api.player.hit.modifier.PlayerHitModifier
+import org.rsmod.api.player.hit.modifier.StandardPlayerHitModifier
 import org.rsmod.api.player.hit.queueHit
 import org.rsmod.api.player.cheat.adminMaxHit
 import org.rsmod.api.player.interact.NpcInteractions
@@ -540,16 +542,33 @@ constructor(
         attackStyle: MeleeAttackStyle?,
         blockType: MeleeAttackType?,
         multiplier: Double,
+        defenceMultiplier: Double = 1.0,
     ): Boolean {
         if (source.adminMaxHit) {
             return true
         }
         return when (target) {
             is Npc -> {
-                rollMeleeAccuracy(source, target, attackType, attackStyle, blockType, multiplier)
+                rollMeleeAccuracy(
+                    source,
+                    target,
+                    attackType,
+                    attackStyle,
+                    blockType,
+                    multiplier,
+                    defenceMultiplier,
+                )
             }
             is Player -> {
-                rollMeleeAccuracy(source, target, attackType, attackStyle, blockType, multiplier)
+                rollMeleeAccuracy(
+                    source,
+                    target,
+                    attackType,
+                    attackStyle,
+                    blockType,
+                    multiplier,
+                    defenceMultiplier,
+                )
             }
         }
     }
@@ -561,6 +580,7 @@ constructor(
         attackStyle: MeleeAttackStyle?,
         blockType: MeleeAttackType?,
         specMultiplier: Double,
+        defenceMultiplier: Double = 1.0,
     ): Boolean =
         accuracy.rollMeleeAccuracy(
             player = source,
@@ -570,6 +590,7 @@ constructor(
             blockType = blockType,
             specMultiplier = specMultiplier,
             random = random,
+            defenceMultiplier = defenceMultiplier,
         )
 
     private fun rollMeleeAccuracy(
@@ -579,6 +600,7 @@ constructor(
         attackStyle: MeleeAttackStyle?,
         blockType: MeleeAttackType?,
         specMultiplier: Double,
+        defenceMultiplier: Double = 1.0,
     ): Boolean =
         accuracy.rollMeleeAccuracy(
             player = source,
@@ -588,6 +610,7 @@ constructor(
             blockType = blockType,
             specMultiplier = specMultiplier,
             random = random,
+            defenceMultiplier = defenceMultiplier,
         )
 
     /**
@@ -697,10 +720,11 @@ constructor(
         target: PathingEntity,
         damage: Int,
         delay: Int = 1,
+        modifier: PlayerHitModifier = StandardPlayerHitModifier,
     ): Hit =
         when (target) {
             is Npc -> queueMeleeHit(source, target, damage, delay)
-            is Player -> queueMeleeHit(source, target, damage, delay)
+            is Player -> queueMeleeHit(source, target, damage, delay, modifier)
         }
 
     private fun queueMeleeHit(source: Player, target: Npc, damage: Int, delay: Int): Hit {
@@ -714,13 +738,19 @@ constructor(
         return hit
     }
 
-    private fun queueMeleeHit(source: Player, target: Player, damage: Int, delay: Int): Hit {
+    private fun queueMeleeHit(
+        source: Player,
+        target: Player,
+        damage: Int,
+        delay: Int,
+        modifier: PlayerHitModifier = StandardPlayerHitModifier,
+    ): Hit {
         // Note: Retaliation must be queued _before_ the hit. If queued after, every hit would
         // trigger the "speed-up" death mechanic, since the hit queues would no longer be the
         // last entries in the queue list at the time of processing.
         target.queueCombatRetaliate(source)
 
-        val hit = target.queueHit(source, delay, HitType.Melee, damage)
+        val hit = target.queueHit(source, delay, HitType.Melee, damage, modifier = modifier)
         notifyPlayerHit(source, target)
         target.combatPlayDefendAnim()
         return hit

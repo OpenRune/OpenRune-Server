@@ -1,6 +1,5 @@
 package org.rsmod.api.specials
 
-import dev.openrune.types.ItemServerType
 import jakarta.inject.Inject
 import org.rsmod.api.combat.commons.CombatAttack
 import org.rsmod.api.specials.combat.MagicSpecialAttack
@@ -70,6 +69,12 @@ constructor(private val registry: SpecialAttackRegistry) {
         assertValidResult(specWeapon, result)
     }
 
+    /** Registers a melee special for a cache-native item without an RSCM alias. */
+    public fun registerMelee(specWeapon: Int, energyInHundreds: Int, special: MeleeSpecialAttack) {
+        val result = registry.add(specWeapon, energyInHundreds, special)
+        assertValidResult(specWeapon, result)
+    }
+
     /**
      * Registers the [specWeapon] special attack ([special]) as a [RangedSpecialAttack], which
      * activates on the player's next ranged-based attack in combat.
@@ -106,6 +111,16 @@ constructor(private val registry: SpecialAttackRegistry) {
      */
     public fun registerRanged(specWeapon: String, special: RangedSpecialAttack) {
         val result = registry.add(specWeapon, special)
+        assertValidResult(specWeapon, result)
+    }
+
+    /** Registers a ranged special for a cache-native item without an RSCM alias. */
+    public fun registerRanged(
+        specWeapon: Int,
+        energyInHundreds: Int,
+        special: RangedSpecialAttack,
+    ) {
+        val result = registry.add(specWeapon, energyInHundreds, special)
         assertValidResult(specWeapon, result)
     }
 
@@ -152,10 +167,13 @@ constructor(private val registry: SpecialAttackRegistry) {
         assertValidResult(specWeapon, result)
     }
 
-    private fun assertValidResult(
-        specWeapon: String,
-        result: SpecialAttackRegistry.Result.Add,
-    ) {
+    /** Registers a magic special for a cache-native item without an RSCM alias. */
+    public fun registerMagic(specWeapon: Int, energyInHundreds: Int, special: MagicSpecialAttack) {
+        val result = registry.add(specWeapon, energyInHundreds, special)
+        assertValidResult(specWeapon, result)
+    }
+
+    private fun assertValidResult(specWeapon: Any, result: SpecialAttackRegistry.Result.Add) {
         when (result) {
             SpecialAttackRegistry.Result.Add.AlreadyAdded -> {
                 error("Weapon already has a special attack mapped: $specWeapon")
