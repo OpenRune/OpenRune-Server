@@ -52,10 +52,7 @@ class TonalzticsOfRalosSpecialAttack @Inject constructor() : SpecialAttackMap {
         ): Boolean {
             getInvObj(attack.weapon)
             anim(if (hitCount == CHARGED_HIT_COUNT) CHARGED_SPECIAL_ANIM else UNCHARGED_SPECIAL_ANIM)
-            // The charged variant's spinning throw is the only one with dedicated special-attack
-            // sounds on this item's own wiki "Sound effects" table (throw + spin); the uncharged
-            // single throw has no separate special entry there. Unaliased in this cache's
-            // gamevals.
+            // Only the charged variant's spinning throw has a documented sound.
             if (hitCount == CHARGED_HIT_COUNT) {
                 soundSynth(CHARGED_THROW_SOUND)
                 soundSynth(CHARGED_SPIN_SOUND, delay = CHARGED_SPIN_SOUND_DELAY)
@@ -189,8 +186,6 @@ class TonalzticsOfRalosSpecialAttack @Inject constructor() : SpecialAttackMap {
         const val CHARGED_THROW_SOUND = 7942
         const val CHARGED_SPIN_SOUND = 7943
 
-        /** Matches this codebase's own same-tick-collision spacing convention (see Dragon
-         * claws) so the spin cue doesn't collide with the throw cue. */
         const val CHARGED_SPIN_SOUND_DELAY = 20
     }
 }

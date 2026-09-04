@@ -79,14 +79,7 @@ constructor(
                 mes("You are unable to fire your ammunition.")
                 return false
             }
-            // Was falling back to the weapon's plain normal-fire animation via
-            // playRangedWeaponFx (whatever attack_anim_stance1 says) plus the ammo's plain
-            // launch colour - the actual cause of "animation missing entirely". Found this
-            // exact special's real values in a reference implementation of it (Zenyte-based
-            // Offline_Scape, ANNIHILATE in SpecialAttack.java): a dedicated fire-and-reload
-            // sequence, and no caster-side spotanim at all (that engine passes a null graphic
-            // into the special's own declaration) - the ammo's plain launch colour it was using
-            // instead shouldn't be there either.
+            // Dedicated fire-and-reload sequence, no caster-side spotanim.
             weaponType.paramOrNull(params.attack_sound_stance1)?.let { soundSynth(it) }
             anim("seq.xbows_human_fire_and_reload")
 

@@ -97,9 +97,6 @@ constructor(private val binds: BindEffectService) : SpecialAttackMap {
             spotanim(
                 spot = graphic,
                 slot = constants.spotanim_slot_combat,
-                // 96 (blindly copied from Dragon claws) still sat too high even at 48 per live
-                // feedback - dropped to ground level. Visual-tuning guess, not verified against a
-                // real screenshot; needs your eyes to confirm.
                 height = 0,
             )
             val damage =
@@ -149,9 +146,6 @@ constructor(private val binds: BindEffectService) : SpecialAttackMap {
             spotanim(
                 spot = graphic,
                 slot = constants.spotanim_slot_combat,
-                // 96 (blindly copied from Dragon claws) still sat too high even at 48 per live
-                // feedback - dropped to ground level. Visual-tuning guess, not verified against a
-                // real screenshot; needs your eyes to confirm.
                 height = 0,
             )
             val damage =
@@ -207,9 +201,6 @@ constructor(private val binds: BindEffectService) : SpecialAttackMap {
             spotanim(
                 spot = graphic,
                 slot = constants.spotanim_slot_combat,
-                // 96 (blindly copied from Dragon claws) still sat too high even at 48 per live
-                // feedback - dropped to ground level. Visual-tuning guess, not verified against a
-                // real screenshot; needs your eyes to confirm.
                 height = 0,
             )
             val accurate =
@@ -275,9 +266,6 @@ constructor(private val binds: BindEffectService) : SpecialAttackMap {
             spotanim(
                 spot = "spotanim.dragon_warhammer_sa_spotanim",
                 slot = constants.spotanim_slot_combat,
-                // 96 (blindly copied from Dragon claws) still sat too high even at 48 per live
-                // feedback - dropped to ground level. Visual-tuning guess, not verified against a
-                // real screenshot; needs your eyes to confirm.
                 height = 0,
             )
             val accurate =

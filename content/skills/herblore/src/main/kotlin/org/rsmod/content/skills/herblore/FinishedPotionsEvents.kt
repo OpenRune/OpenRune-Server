@@ -234,15 +234,10 @@ class FinishedPotionsEvents @Inject constructor(private val random: GameRandom) 
             add("obj.vial_water")
             add("obj.pestle_and_mortar")
             add("obj.swamp_tar")
-            // Zulrah's scales are also blowpipe/Webweaver bow ammo. This catch-all is a generic
-            // "any herblore ingredient used on anything" handler that silently no-ops when the
-            // second item isn't a matching potion component (see handleFinishedPotionMix's early
-            // `candidates.isEmpty()` return) - and since it's the first thing checked when scales
-            // are the item you click first, it swallowed "scales on blowpipe"/"scales on Webweaver
-            // bow" before dispatch ever got to try the reversed order. Its only real recipe
-            // (Extended antivenom+) still works via the other ingredient's own catch-all
-            // (obj.antivenom+3 used on scales), same as how vial_water/pestle/swamp tar are
-            // excluded here in favour of their own dedicated handlers.
+            // Zulrah's scales are also blowpipe/Webweaver bow ammo. This catch-all silently
+            // no-ops on a non-potion second item, which swallowed "scales on blowpipe" before
+            // dispatch could try the reversed click order. Extended antivenom+ still works via
+            // obj.antivenom+3's own catch-all, same as vial_water/pestle/swamp tar below.
             add("obj.snakeboss_scale")
             addAll(HerbloreDefinitions.herbItemNames)
             HerbloreDefinitions.barbarianMixes.forEach { mix ->

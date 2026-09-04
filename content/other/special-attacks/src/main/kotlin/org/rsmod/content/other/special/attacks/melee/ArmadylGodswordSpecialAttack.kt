@@ -52,10 +52,8 @@ class ArmadylGodswordSpecialAttack : SpecialAttackMap {
 
         private fun ProtectedAccess.smash(target: PathingEntity, attack: CombatAttack.Melee) {
             anim(sequence)
-            // Confirmed against a reference implementation of this exact special (Zenyte-based
-            // Offline_Scape/Near Reality, THE_JUDGEMENT in SpecialAttack.java - the same generic
-            // slash-special sound id reused for several other weapons' own specials there, e.g.
-            // Saradomin sword's lightning). Unaliased in this cache's gamevals.
+            // Wiki-confirmed sound id (shared with Saradomin sword's own lightning). Unaliased
+            // in this cache's gamevals.
             soundSynth(THE_JUDGEMENT_SOUND)
             target.spotanim(
                 spot = graphic,

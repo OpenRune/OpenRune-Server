@@ -54,15 +54,11 @@ constructor(
             attack: CombatAttack.Melee,
         ) {
             anim("seq.human_weapon_burning_claws_02_spec")
-            // Sourced from this item's own wiki "Sound effects" table
-            // ("burning_claws_swipe_01"). Unaliased in this cache's gamevals.
+            // Wiki-sourced ("burning_claws_swipe_01"), unaliased in this cache's gamevals.
             soundSynth(BURNING_BARRAGE_SOUND)
             spotanim(
                 spot = "spotanim.vfx_burning_claws_spec_02",
                 slot = constants.spotanim_slot_combat,
-                // 96 (blindly copied from Dragon claws) still sat too high even at 48 per live
-                // feedback - dropped to ground level. Visual-tuning guess, not verified against a
-                // real screenshot; needs your eyes to confirm.
                 height = 0,
             )
 

@@ -51,8 +51,6 @@ class BarrelchestAnchorSpecialAttack : SpecialAttackMap {
             attack: CombatAttack.Melee,
         ) {
             anim("seq.brain_player_anchor_special_attack")
-            // Sourced from this item's own wiki "Sound effects" table ("anchor_sunder").
-            // Unaliased in this cache's gamevals.
             soundSynth(SUNDER_SOUND)
             spotanim(
                 spot = "spotanim.brain_anchor_special_attack_spot",

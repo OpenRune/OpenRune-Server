@@ -66,9 +66,6 @@ class MagicBowSpecialAttack @Inject constructor(private val ammunition: RangedAm
                 mes("The bow fails to fire.")
                 return false
             }
-            // Confirmed against a reference implementation of this exact special (Zenyte-based
-            // Offline_Scape/Near Reality, POWERSHOT in SpecialAttack.java). Unaliased in this
-            // cache's gamevals.
             soundSynth(POWERSHOT_SOUND)
 
             // `spotanim.sp_attack_glow_arrow_launch` (250) is Powershot's own graphic - every other

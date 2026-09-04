@@ -68,13 +68,8 @@ constructor(
             }
 
             manager.playWeaponFx(this, attack)
-            // Drawback spotanim - confirmed correct live. Left alone.
             spotanim(LAUNCH_SPOTANIM, height = 96, slot = constants.spotanim_slot_combat)
 
-            // Reusing the special's fx_webweaver01_launch/_impact pair here made every normal
-            // attack look like the special was firing - reverted back to the plain arrow. There
-            // are also `_launch02`/`_travel02` variants of the wild_cave_bow_arrow family never
-            // tried yet - possibly worth trying next, but not applied here without confirmation.
             val projectile =
                 manager.spawnProjectile(this, target, ARROW_TRAVEL_SPOTANIM, ARROW_PROJANIM)
             val (serverDelay, clientDelay) = projectile.durations

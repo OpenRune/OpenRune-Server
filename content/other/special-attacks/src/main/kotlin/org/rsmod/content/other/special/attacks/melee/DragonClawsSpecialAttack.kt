@@ -70,18 +70,10 @@ class DragonClawsSpecialAttack : SpecialAttackMap {
 
             val hits = rollHits(target, attack, maxHit)
 
-            // The wiki's own "Sound effects" table for this item names four distinct clips -
-            // one per swing beat, third and fourth sharing a clip - not the single generic sound
-            // this previously played (2537, wrong: that's Dragon dagger/Abyssal dagger's own
-            // Puncture sound, confirmed dead wrong live). Every beat plays regardless of whether
-            // that swing's roll actually connected, same as `hits` itself always has 4 entries.
-            //
-            // All 4 calls land in the same server tick, and `soundSynth`'s `delay` is exactly
-            // what the packet has for this: without it, only the first of several same-tick
-            // synth sounds actually plays client-side (confirmed live - the 1/2/3/3 clips were
-            // firing but silently collapsing into just the first). Staggered using this
-            // codebase's own existing per-hit-sound delay convention (`StandardPlayerHitProcessor`
-            // uses 20 for a single hit-reaction sound), one unit of spacing per swing beat.
+            // One sound per swing beat (third/fourth share a clip), always played regardless of
+            // whether that beat's roll connected. All 4 calls land in the same server tick, so
+            // they need `delay` staggering - otherwise only the first of several same-tick synth
+            // calls actually plays client-side.
             var totalDamage = 0
             for ((index, damage) in hits.withIndex()) {
                 totalDamage += damage
@@ -148,16 +140,12 @@ class DragonClawsSpecialAttack : SpecialAttackMap {
             )
 
         private companion object {
-            // Sourced directly from the Dragon claws wiki page's own "Sound effects" table
-            // (Name/Description/ID), not the reference port - unaliased in this cache's
-            // gamevals, no `synth.` name exists for any of them.
+            // Wiki "Sound effects" table; unaliased in this cache's gamevals.
             const val DRAGONCLAWS_SPECIAL_1_SOUND = 4138
             const val DRAGONCLAWS_SPECIAL_2_SOUND = 4140
             const val DRAGONCLAWS_SPECIAL_3_SOUND = 4141
 
-            /** No wiki-confirmed exact timing exists for these four beats; matches the spacing
-             * already used elsewhere in this codebase for a single hit-reaction sound
-             * (`StandardPlayerHitProcessor`'s `defendSound, delay = 20`). */
+            /** Matches `StandardPlayerHitProcessor`'s hit-reaction sound delay convention. */
             const val HIT_SOUND_SPACING = 20
         }
     }

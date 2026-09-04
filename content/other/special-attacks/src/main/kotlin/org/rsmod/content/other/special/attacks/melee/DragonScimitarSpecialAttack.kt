@@ -42,10 +42,6 @@ class DragonScimitarSpecialAttack : SpecialAttackMap {
 
         private fun ProtectedAccess.sever(target: PathingEntity, attack: CombatAttack.Melee) {
             anim("seq.sp_attack_dragon_scimitar")
-            // Height and sound confirmed against a reference implementation of this exact
-            // special (Zenyte-based Offline_Scape/Near Reality, SEVER in SpecialAttack.java:
-            // `new Graphics(347, 0, 100)`, `player.sendSound(SEVER_SOUND)` = synth 2540,
-            // unaliased in this cache).
             soundSynth(SEVER_SOUND)
             spotanim(
                 spot = "spotanim.sp_attack_dragon_scimitar_trail_spotanim",

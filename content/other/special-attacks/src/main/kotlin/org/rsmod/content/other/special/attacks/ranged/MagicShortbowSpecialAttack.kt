@@ -30,22 +30,14 @@ import org.rsmod.game.type.getOrNull
  * ammunition's ranged-strength value only. Gear strength, Void, prayers, Slayer, and Salve do
  * not enter the damage calculation; the normal ranged accuracy calculation still does.
  *
- * Visuals, all taken from the cache rather than inferred:
- * - `seq.snapshot` (1074) is the spec animation (confirmed by several RuneLite plugins that key
- *   off it as `RANGED_MAGIC_SHORTBOW_SPEC`). It is two identical draw-and-release cycles back to
- *   back, 27 client cycles each (frame delays 2,2,2,2,8,5,2,2,2,2, twice) - a sped-up double of
- *   the normal `human_bow` (426) draw. The second arrow is therefore loosed 27 client cycles after
- *   the first: within the same server tick, not a tick later.
- * - `spotanim.sp_attack_snapshot_spotanim` (256) is Snapshot's launch glow, one per draw. A
- *   reference implementation of this special (Zenyte-based Offline_Scape/Near Reality) instead
- *   uses a single shared glow (250, also Powershot's own) applied once - tried matching that
- *   exactly, but live testing preferred this original per-draw version, so it's staying.
- * - Live testing confirmed the in-flight arrow itself needs to glow, not just the draw -
- *   `spotanim.sp_attack_glow_arrow_travel` (249) overrides the ammo's own `proj_travel` for both
- *   shots. The same reference confirms this id and timing exactly (`Projectile(249, ...)` for
- *   both arrows).
- * - Sound (`SNAPSHOT_SOUND` = synth 2545, unaliased in this cache) confirmed against the same
- *   reference.
+ * Visuals, taken from the cache:
+ * - `seq.snapshot` (1074) is the spec animation - two identical draw-and-release cycles back to
+ *   back, 27 client cycles each, a sped-up double of the normal `human_bow` (426) draw. The
+ *   second arrow looses 27 client cycles after the first, within the same server tick.
+ * - `spotanim.sp_attack_snapshot_spotanim` (256) is Snapshot's launch glow, one per draw.
+ * - `spotanim.sp_attack_glow_arrow_travel` (249) overrides the ammo's own `proj_travel` for both
+ *   shots - the in-flight arrow itself needs to glow, not just the draw.
+ * - Sound: `SNAPSHOT_SOUND` = synth 2545, unaliased in this cache.
  */
 class MagicShortbowSpecialAttack
 @Inject

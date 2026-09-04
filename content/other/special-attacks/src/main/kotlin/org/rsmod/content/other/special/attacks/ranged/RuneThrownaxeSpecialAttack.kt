@@ -77,9 +77,6 @@ constructor(
             }
 
             anim(CHAINHIT_SEQUENCE)
-            // Confirmed against a reference implementation of this exact special (Zenyte-based
-            // Offline_Scape/Near Reality, CHAINHIT in SpecialAttack.java: THROWNAXE_SOUND).
-            // Unaliased in this cache's gamevals.
             soundSynth(THROWNAXE_SOUND)
             spotanim(
                 spot = CHAINHIT_LAUNCH_SPOTANIM,

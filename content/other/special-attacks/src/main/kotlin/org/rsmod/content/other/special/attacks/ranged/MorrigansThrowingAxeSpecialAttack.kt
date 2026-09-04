@@ -87,15 +87,9 @@ constructor(private val ammunition: RangedAmmoManager) : SpecialAttackMap {
             }
 
             anim(MORRIGANS_THROWING_AXE_SEQUENCE)
-            // Confirmed against a reference implementation of this exact special (Zenyte-based
-            // Offline_Scape/Near Reality, HAMSTRING in SpecialAttack.java). Unaliased in this
-            // cache's gamevals.
             soundSynth(HAMSTRING_SOUND)
             spotanim(
                 spot = MORRIGANS_THROWING_AXE_LAUNCH_SPOTANIM,
-                // 96 (blindly copied from Dragon claws) still sat too high even at 48 per live
-                // feedback - dropped to ground level. Visual-tuning guess, not verified against a
-                // real screenshot; needs your eyes to confirm.
                 height = 0,
                 slot = constants.spotanim_slot_combat,
             )

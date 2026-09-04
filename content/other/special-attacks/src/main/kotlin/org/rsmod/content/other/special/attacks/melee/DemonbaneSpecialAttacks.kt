@@ -60,9 +60,6 @@ class DemonbaneSpecialAttacks : SpecialAttackMap {
         ) {
             anim("seq.dark_spec_player")
             spotanim("spotanim.dark_spec_spot")
-            // Staggered to avoid the same-tick collision where only the first of several
-            // same-tick synth sounds plays client-side (see Dragon claws). Unaliased in this
-            // cache's gamevals.
             sounds.forEachIndexed { index, sound -> soundSynth(sound, delay = index * SOUND_SPACING) }
             val successful =
                 manager.rollMeleeAccuracy(

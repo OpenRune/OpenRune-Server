@@ -75,11 +75,7 @@ public class HeldEquipOp @Inject constructor(private val eventBus: EventBus) {
             val equipTransaction = transaction[0]
             if (equipTransaction.isErr()) {
                 if (equipTransaction !is TransactionResult.NotEnoughSpace) {
-                    // A `check()` here used to throw on any unexpected transaction result (e.g. a
-                    // corrupted item elsewhere in the inventory tripping VarObjIncorrectlyHasCert
-                    // during this transaction's own stack-merge scan) - an uncaught exception
-                    // mid-input-cycle disconnects the player instead of just failing the equip.
-                    // Fail cleanly and log server-side instead.
+                    // An uncaught exception here disconnects the player - fail cleanly instead.
                     logger.error {
                         "Unexpected equip transaction error (expected NotEnoughSpace): " +
                             "found=$equipTransaction, obj=$objType"

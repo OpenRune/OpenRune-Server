@@ -48,13 +48,8 @@ class SaradominBlessedSwordSpecialAttack @Inject constructor(private val worldRe
 
         private fun ProtectedAccess.lightning(target: PathingEntity, attack: CombatAttack.Melee) {
             anim("seq.blessed_saradomin_sword_special_player")
-            // Same reference implementation as the base Saradomin sword (Zenyte-based
-            // Offline_Scape, BLESSED_SARADOMINS_LIGHTNING in SpecialAttack.java) - shares the
-            // caster glow (1213) and the target's entity-attached lightning (1196, matching the
-            // base sword exactly) but adds a third effect the base sword doesn't have: a
-            // ground-location graphic at the target's own tile (`godwars_saradomin_light_attk_spot`,
-            // 1221, height 0, delay 30) sent via World.sendGraphics to a coord rather than attached
-            // to the entity - a genuinely richer effect for the blessed upgrade.
+            // Shares the base sword's caster glow and target lightning, plus a third effect the
+            // base sword lacks: a ground-location graphic at the target's own tile.
             spotanim(
                 spot = "spotanim.dh_sword_update_saradomin_god_special_spotanim",
                 height = 0,

@@ -39,9 +39,6 @@ class RuneClawsSpecialAttack : SpecialAttackMap {
 
         private fun ProtectedAccess.impale(target: PathingEntity, attack: CombatAttack.Melee) {
             anim("seq.impale")
-            // Confirmed against a reference implementation of this exact special (Zenyte-based
-            // Offline_Scape/Near Reality, IMPALE in SpecialAttack.java). Unaliased in this
-            // cache's gamevals.
             soundSynth(IMPALE_SOUND)
             spotanim(
                 spot = "spotanim.sp_attack_impale_spotanim",

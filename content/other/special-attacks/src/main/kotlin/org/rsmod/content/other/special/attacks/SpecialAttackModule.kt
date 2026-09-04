@@ -75,7 +75,7 @@ import org.rsmod.plugin.module.PluginModule
 
 // Weapons that need the still-undecided engine-diff-scale subsystems (poison/burn/venom
 // services, shove-stun/bind, blowpipe ammo tracking, PvP area attacks, a few extra magic/hybrid
-// roll variants) are parked in disabled-tier-b/ - see PROGRESS.md.
+// roll variants) are parked in disabled-tier-b/.
 class SpecialAttackModule : PluginModule() {
     override fun bind() {
         addSetBinding<SpecialAttackMap>(DragonBattleaxeSpecialAttack::class.java)

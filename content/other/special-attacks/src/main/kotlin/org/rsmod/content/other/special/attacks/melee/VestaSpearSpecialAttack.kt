@@ -66,9 +66,6 @@ constructor(
         ): Boolean {
             // These cache-native effects do not have RSCM aliases in this revision.
             player.anim(RSCM.getReverseMapping(RSCMType.SEQ, VESTA_SPEAR_WALL_ANIMATION))
-            // Confirmed against a reference implementation of this exact special (Zenyte-based
-            // Offline_Scape/Near Reality, SPEAR_WALL in SpecialAttack.java). Unaliased in this
-            // cache's gamevals.
             soundSynth(SPEAR_WALL_SOUND)
             player.spotanim(
                 spot = RSCM.getReverseMapping(RSCMType.SPOTANIM, VESTA_SPEAR_WALL_SPOTANIM),

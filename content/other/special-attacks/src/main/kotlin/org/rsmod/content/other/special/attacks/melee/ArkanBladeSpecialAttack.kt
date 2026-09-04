@@ -56,9 +56,6 @@ constructor(
             spotanim(
                 spot = "spotanim.vmq4_arkan_blade_special_spotanim",
                 slot = constants.spotanim_slot_combat,
-                // 96 (blindly copied from Dragon claws) still floated too high even at 48 per
-                // live feedback - dropped to ground level. Visual-tuning guess, not verified
-                // against a real screenshot; needs your eyes to confirm.
                 height = 0,
             )
 

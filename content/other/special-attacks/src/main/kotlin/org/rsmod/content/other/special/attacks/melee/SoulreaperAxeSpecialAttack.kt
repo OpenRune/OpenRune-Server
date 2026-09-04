@@ -58,9 +58,6 @@ class SoulreaperAxeSpecialAttack : SpecialAttackMap {
             spotanim(
                 spot = if (ornamented) ORNAMENTED_BEHEAD_SPOTANIM else BEHEAD_SPOTANIM,
                 slot = constants.spotanim_slot_combat,
-                // 96 (blindly copied from Dragon claws) still sat too high even at 48 per live
-                // feedback - dropped to ground level. Visual-tuning guess, not verified against a
-                // real screenshot; needs your eyes to confirm.
                 height = 0,
             )
 

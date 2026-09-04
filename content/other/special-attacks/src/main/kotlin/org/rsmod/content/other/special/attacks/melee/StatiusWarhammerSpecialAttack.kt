@@ -52,10 +52,6 @@ class StatiusWarhammerSpecialAttack : SpecialAttackMap {
 
         private fun ProtectedAccess.smash(target: PathingEntity, attack: CombatAttack.Melee) {
             anim("seq.human_blunt_pound")
-            // Confirmed against a reference implementation of this exact special (Zenyte-based
-            // Offline_Scape/Near Reality, SWH_SMASH in SpecialAttack.java: SMASH_SOUND - shared
-            // with the unrelated Dragon warhammer's own SMASH, same id). Unaliased in this
-            // cache's gamevals.
             soundSynth(SMASH_SOUND)
             spotanim(
                 spot = "spotanim.statius_hammer_sa_spotanim",

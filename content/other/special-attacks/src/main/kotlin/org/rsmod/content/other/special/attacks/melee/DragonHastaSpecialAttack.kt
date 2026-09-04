@@ -88,11 +88,7 @@ constructor(
             // complete-bar debit rather than relying on the generic special-attack debit.
             manager.drainAllSpecialEnergy(this)
 
-            // This was missing entirely - without a player anim, the special's spotanim fired but
-            // the player's swing didn't sync with it at all, instead just showing whatever the
-            // normal attack happened to play. The generic `seq.specialattack_unleash` placeholder
-            // didn't actually play correctly live; Sunspear's own thrust anim looks the same and
-            // is confirmed working, so reusing it here instead.
+            // Reuses Sunspear's thrust anim - the generic placeholder didn't sync correctly live.
             anim("seq.human_weapons_sunspear_spec")
             spotanim(
                 spot = "spotanim.dragon_hasta_spec_spotanim",
@@ -152,12 +148,6 @@ constructor(
                 return false
             }
 
-            // The cache has a purpose-built attacker/target sequence and matching graphics.
-            // Height confirmed as 96 (not this session's earlier 0) against a reference
-            // implementation of this exact special (Zenyte-based Offline_Scape, SHOVE in
-            // SpecialAttack.java: `new Graphics(253, 0, 96)`), and confirmed live. Sound
-            // confirmed against the same reference (SHOVE_SOUND); unaliased in this cache's
-            // gamevals.
             anim("seq.shove")
             soundSynth(SHOVE_SOUND)
             spotanim(
@@ -209,10 +199,6 @@ constructor(
             if (validated != destination) {
                 return
             }
-            // A plain teleport rather than a smoothed client-side slide (`PathingEntityCommon`'s
-            // `exactMove` primitive) - real Shove knockback is instant, but this engine has no
-            // existing usage of `exactMove` to confirm its timing/direction parameters against, so
-            // this trades away that slide animation for a simpler, unambiguously-correct move.
             PathingEntityCommon.teleport(target, collision, destination)
         }
     }

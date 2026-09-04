@@ -49,9 +49,6 @@ constructor(
             attack: CombatAttack.Melee,
         ): Boolean {
             anim("seq.dragon_two_handed_sword")
-            // Confirmed against a reference implementation of this exact special (Zenyte-based
-            // Offline_Scape/Near Reality, POWERSTAB in SpecialAttack.java). Unaliased in this
-            // cache's gamevals.
             soundSynth(POWERSTAB_SOUND)
             spotanim("spotanim.dragon_two_handed_sword_blast")
 

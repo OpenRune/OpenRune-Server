@@ -53,14 +53,9 @@ constructor(
             attack: CombatAttack.Melee,
         ): Boolean {
             anim("seq.dragon_halberd_special_attack")
-            // Sound confirmed against the same reference as HalberdSpecialVisuals' direction fix
-            // (SWEEP_SOUND = synth 2533, unaliased in this cache).
             soundSynth(SWEEP_SOUND)
-            // Was attaching the sweep graphic to the caster's own entity, which is why it
-            // rendered at your feet facing you instead of out toward the target. The reference
-            // sends it to a ground tile instead: the target's own tile for a single-tile target,
-            // otherwise the midpoint between the target's centre and the caster - and at height
-            // 96 (`Graphics(id, 0, 96)` for all four directions), not the unset default of 0.
+            // Ground-tile graphic, not attached to the caster: target's own tile for a
+            // single-tile target, otherwise the midpoint between target and caster.
             val tile =
                 if (primary.size == 1) {
                     primary.coords

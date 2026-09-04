@@ -63,12 +63,6 @@ class AbyssalDaggerSpecialAttack : SpecialAttackMap {
             secondHitDelay: Int,
         ) {
             anim("seq.abyssal_dagger_special")
-            // 96 (blindly copied from Dragon claws, the same pattern already fixed on several
-            // other weapons this session - all ended up needing 0, not a smaller-but-still-
-            // nonzero value) sat too high.
-            // Sound confirmed against a reference implementation of this exact special (Zenyte-
-            // based Offline_Scape/Near Reality, ABYSSAL_PUNCTURE in SpecialAttack.java - same
-            // sound id as Dragon dagger's own Puncture). Unaliased in this cache's gamevals.
             soundSynth(ABYSSAL_PUNCTURE_SOUND)
             spotanim(
                 spot = "spotanim.abyssal_dagger_special_spotanim",

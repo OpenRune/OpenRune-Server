@@ -45,9 +45,7 @@ class DragonDaggerSpecialAttack @Inject constructor(private val poison: WeaponPo
             attack: CombatAttack.Melee,
         ): Boolean {
             // Wiki: "There is a slight delay between the two hits when the special is used on
-            // NPCs" - confirmed against a reference implementation of this exact special
-            // (Zenyte-based Offline_Scape/Near Reality, PUNCTURE in SpecialAttack.java) as
-            // exactly one tick, not the two this file had before.
+            // NPCs" - one tick.
             puncture(target, attack, secondHitDelay = 1)
             return true
         }
