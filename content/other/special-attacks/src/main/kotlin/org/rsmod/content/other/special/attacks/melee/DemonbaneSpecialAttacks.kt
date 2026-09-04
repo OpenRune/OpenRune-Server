@@ -2,6 +2,7 @@ package org.rsmod.content.other.special.attacks.melee
 
 import org.rsmod.api.combat.commons.CombatAttack
 import org.rsmod.api.combat.commons.types.MeleeAttackType
+import org.rsmod.api.config.constants
 import org.rsmod.api.config.refs.params
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.stat.statSub
@@ -59,7 +60,7 @@ class DemonbaneSpecialAttacks : SpecialAttackMap {
             attack: CombatAttack.Melee,
         ) {
             anim("seq.dark_spec_player")
-            spotanim("spotanim.dark_spec_spot")
+            spotanim("spotanim.dark_spec_spot", slot = constants.spotanim_slot_combat)
             sounds.forEachIndexed { index, sound -> soundSynth(sound, delay = index * SOUND_SPACING) }
             val successful =
                 manager.rollMeleeAccuracy(
