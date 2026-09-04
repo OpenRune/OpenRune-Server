@@ -119,9 +119,9 @@ constructor(
      * Spawns a projectile from the npc to [target], returning the number of cycles until impact.
      *
      * The projectile graphic comes from the npc's `proj_travel` (spotanim) param; its flight is
-     * described by the `proj_type` (projanim) param when present, otherwise [DEFAULT_PROJECTILE_TYPE].
-     * When the npc defines no `proj_travel`, no projectile is spawned and the hit lands after
-     * [DEFAULT_PROJECTILE_HIT_DELAY] cycles.
+     * described by the `proj_type` (projanim) param when present, otherwise
+     * [DEFAULT_PROJECTILE_TYPE]. When the npc defines no `proj_travel`, no projectile is spawned
+     * and the hit lands after [DEFAULT_PROJECTILE_HIT_DELAY] cycles.
      */
     private fun StandardNpcAccess.spawnProjectile(target: Player): Int {
         val travelSpot =
@@ -157,7 +157,10 @@ constructor(
         private const val MELEE_HIT_DELAY = 1
         private const val DEFAULT_PROJECTILE_HIT_DELAY = 2
 
-        /** Standard projectile arc used when an npc provides a `proj_travel` graphic but no `proj_type`. */
+        /**
+         * Standard projectile arc used when an npc provides a `proj_travel` graphic but no
+         * `proj_type`.
+         */
         private val DEFAULT_PROJECTILE_TYPE =
             ProjAnimType(
                 startHeight = 43,

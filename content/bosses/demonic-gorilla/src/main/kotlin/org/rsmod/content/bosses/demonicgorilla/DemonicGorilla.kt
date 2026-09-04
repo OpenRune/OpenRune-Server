@@ -113,7 +113,9 @@ class DemonicGorilla @Inject constructor(private val deps: BossDeps, private val
 
     override fun ScriptContext.startup() {
         BossCombat.register(this, spec, deps, onModifyHit = { onModifyProtectionHit(this) })
-        deps.extensionRegistry.register(BOULDER_HANDLER) { _, npc, target, _ -> throwBoulder(npc, target) }
+        deps.extensionRegistry.register(BOULDER_HANDLER) { _, npc, target, _ ->
+            throwBoulder(npc, target)
+        }
 
         val bossIds = spec.npcTypes.mapNotNullTo(mutableSetOf()) { it.npcTypeId() }
         onEvent<NpcStateEvents.Create> { if (npc.type.id in bossIds) resetGorilla(npc) }

@@ -215,9 +215,9 @@ public fun Npc.visHitmark(): HitmarkTypeGroup {
     if (current != null) {
         return current
     }
-    val lit = RSCM.getReverseMapping(RSCMType.HITMARK,visType.param(params.hitmark_lit).id)
-    val tint = RSCM.getReverseMapping(RSCMType.HITMARK,visType.param(params.hitmark_tint).id)
-    val max = RSCM.getReverseMapping(RSCMType.HITMARK,visType.param(params.hitmark_max).id)
+    val lit = RSCM.getReverseMapping(RSCMType.HITMARK, visType.param(params.hitmark_lit).id)
+    val tint = RSCM.getReverseMapping(RSCMType.HITMARK, visType.param(params.hitmark_tint).id)
+    val max = RSCM.getReverseMapping(RSCMType.HITMARK, visType.param(params.hitmark_max).id)
     val hitmark = HitmarkTypeGroup(lit, tint, max)
     this.cachedHitmark = hitmark
     return hitmark
