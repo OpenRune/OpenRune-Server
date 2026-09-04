@@ -3773,6 +3773,8 @@ inherit = "npc.mm2_demon_gorilla_2_magic"
 "param.death_anim"="seq.demonic_gorilla_death"
 "param.killcount_varp"="varp.kc_demonic_gorilla"
 "param.killcount_notify"=false
+
+[[npc]]
 id = "npc.0_43_51_saltfish"
 inherit = "npc.0_43_51_saltfish"
 contentGroup = "content.net_bait_fishing_spot"
