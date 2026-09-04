@@ -118,10 +118,9 @@ constructor(
 
     /**
      * Shove is guaranteed utility: it never rolls accuracy and deliberately never queues a hit.
-     * It stuns for five map cycles (three seconds). Per the wiki's own "Stun (status)" page,
-     * Shove's stun has no immunity window and can be chained indefinitely - unlike torka's
-     * original file, which invented a one-cycle post-stun immunity that doesn't exist in the real
-     * game. A blocked tile prevents only displacement, never the valid stun.
+     * It stuns for five map cycles (three seconds). Per the wiki's "Stun (status)" page, Shove's
+     * stun has no immunity window and can be chained indefinitely. A blocked tile prevents only
+     * displacement, never the valid stun.
      */
     private class Shove(
         private val manager: SpecialAttackManager,

@@ -153,15 +153,6 @@ constructor(
             return true
         }
 
-        // This used to hand-roll the bit manipulation directly (reading/writing `player.righthand`
-        // vars via `getBits`/`withBits`), resolving the varobj via `RSCMType.VAROBJ` - correct on
-        // its own, but `ObjChargeManager` (the shared, intended primitive for this exact purpose)
-        // had its own separate, real bug: three of its four functions resolved the same kind of
-        // "varobj.*" string via `RSCMType.VARCON` instead, which is a completely unrelated
-        // namespace (content-script tracking vars, not item charges) - `asRSCM` enforces an exact
-        // prefix match, so that always threw `IllegalArgumentException`. Fixed at the source in
-        // `ObjChargeManager.kt` rather than worked around here, since it affected every caller
-        // (Tumeken's shadow included) the moment they actually exercised these paths.
         private fun ProtectedAccess.detractWebweaverCharge(): Int? {
             val result = charges.attemptDetractWeapon(player, ETHER_VAROBJ)
             if (result.isFailure()) {
