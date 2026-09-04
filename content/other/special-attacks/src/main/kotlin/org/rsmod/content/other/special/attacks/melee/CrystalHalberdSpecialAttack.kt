@@ -5,6 +5,7 @@ import org.rsmod.api.combat.commons.CombatAttack
 import org.rsmod.api.combat.commons.types.MeleeAttackType
 import org.rsmod.api.combat.player.PvPAreaAttackManager
 import org.rsmod.api.player.protect.ProtectedAccess
+import org.rsmod.api.repo.world.WorldRepository
 import org.rsmod.api.specials.SpecialAttackManager
 import org.rsmod.api.specials.SpecialAttackMap
 import org.rsmod.api.specials.SpecialAttackRepository
@@ -12,6 +13,7 @@ import org.rsmod.api.specials.combat.MeleeSpecialAttack
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.PathingEntity
 import org.rsmod.game.entity.Player
+import org.rsmod.map.CoordGrid
 
 /**
  * Sweep: 110% maximum damage against Slash defence. Large NPCs receive a second independent hit
@@ -22,9 +24,10 @@ class CrystalHalberdSpecialAttack
 constructor(
     private val targets: AreaMeleeTargetSelector,
     private val pvp: PvPAreaAttackManager,
+    private val worldRepo: WorldRepository,
 ) : SpecialAttackMap {
     override fun SpecialAttackRepository.register(manager: SpecialAttackManager) {
-        val sweep = Sweep(manager, targets, pvp)
+        val sweep = Sweep(manager, targets, pvp, worldRepo)
         registerMelee("obj.crystal_halberd", sweep)
         registerMelee("obj.crystal_halberd_2500", sweep)
     }
@@ -33,6 +36,7 @@ constructor(
         private val manager: SpecialAttackManager,
         private val targets: AreaMeleeTargetSelector,
         private val pvp: PvPAreaAttackManager,
+        private val worldRepo: WorldRepository,
     ) : MeleeSpecialAttack {
         override suspend fun ProtectedAccess.attack(
             target: Npc,
@@ -49,7 +53,25 @@ constructor(
             attack: CombatAttack.Melee,
         ): Boolean {
             anim("seq.dragon_halberd_special_attack")
-            spotanim(HalberdSpecialVisuals.forTarget(player.coords, primary.coords))
+            // Ground-tile graphic, not attached to the caster: target's own tile for a
+            // single-tile target, otherwise the midpoint between target and caster.
+            val tile =
+                if (primary.size == 1) {
+                    primary.coords
+                } else {
+                    val centre = primary.bounds()
+                    CoordGrid(
+                        x = ((centre.fineCentreX + player.coords.x) / 2.0).toInt(),
+                        z = ((centre.fineCentreZ + player.coords.z) / 2.0).toInt(),
+                        level = player.coords.level,
+                    )
+                }
+            spotanimMap(
+                repo = worldRepo,
+                internal = HalberdSpecialVisuals.forTarget(player.coords, tile, color = "white"),
+                coord = tile,
+                height = 96,
+            )
 
             val affected =
                 if (mapMultiway() && primary.size == 1) {
