@@ -23469,6 +23469,7 @@ weaponCategory="Axe"
 [item.params]
 "param.bas_walk_l"="seq.ancient_axe_walk"
 "param.bas_walk_r"="seq.ancient_axe_walk"
+"param.bas_running"="seq.ancient_axe_run"
 "param.equipment_sound"=2232
 "param.attackrate"=5
 "param.attack_anim_stance1"="seq.ancient_axe_crush"
@@ -23492,6 +23493,7 @@ weaponCategory="Axe"
 [item.params]
 "param.bas_walk_l"="seq.ancient_axe_walk"
 "param.bas_walk_r"="seq.ancient_axe_walk"
+"param.bas_running"="seq.ancient_axe_run"
 "param.equipment_sound"=2232
 "param.attackrate"=5
 "param.attack_anim_stance1"="seq.ancient_axe_crush"
