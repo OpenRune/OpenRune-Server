@@ -5,7 +5,6 @@ import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import dev.openrune.types.ItemServerType
 import dev.openrune.types.SequenceServerType
-import dev.openrune.types.StatType
 import dev.openrune.types.aconverted.SpotanimType
 import dev.openrune.types.aconverted.SynthType
 import jakarta.inject.Inject
@@ -31,10 +30,12 @@ import org.rsmod.api.combat.formulas.AccuracyFormulae
 import org.rsmod.api.combat.formulas.MaxHitFormulae
 import org.rsmod.api.config.refs.params
 import org.rsmod.api.death.PvPPlayerHitHook
+import org.rsmod.api.npc.hit.isStyleImmuneTo
 import org.rsmod.api.npc.hit.modifier.NpcHitModifier
 import org.rsmod.api.npc.hit.queueHit
-import org.rsmod.api.player.hit.queueHit
 import org.rsmod.api.player.cheat.adminMaxHit
+import org.rsmod.api.player.hit.modifier.PlayerHitModifier
+import org.rsmod.api.player.hit.queueHit
 import org.rsmod.api.player.interact.NpcInteractions
 import org.rsmod.api.player.interact.NpcTInteractions
 import org.rsmod.api.player.interact.PlayerInteractions
@@ -67,6 +68,7 @@ constructor(
     private val accuracy: AccuracyFormulae,
     private val maxHits: MaxHitFormulae,
     private val npcHitModifier: NpcHitModifier,
+    private val playerHitModifier: PlayerHitModifier,
     private val npcInteractions: NpcInteractions,
     private val npcTInteractions: NpcTInteractions,
     private val playerInteractions: PlayerInteractions,
@@ -198,10 +200,12 @@ constructor(
         val fx = MeleeAnimationAndSound.from(attack.stance)
         val (animParam, soundParam, defaultAnim, defaultSound) = fx
 
-        val attackAnim = weapon?.paramOrNull(animParam) ?: SequenceServerType(defaultAnim.asRSCM(RSCMType.SEQ))
-        val attackSound = weapon?.paramOrNull(soundParam) ?: SynthType(defaultSound.asRSCM(RSCMType.SYNTH))
+        val attackAnim =
+            weapon?.paramOrNull(animParam) ?: SequenceServerType(defaultAnim.asRSCM(RSCMType.SEQ))
+        val attackSound =
+            weapon?.paramOrNull(soundParam) ?: SynthType(defaultSound.asRSCM(RSCMType.SYNTH))
 
-        player.anim(RSCM.getReverseMapping(RSCMType.SEQ,attackAnim.id), priority = 6)
+        player.anim(RSCM.getReverseMapping(RSCMType.SEQ, attackAnim.id), priority = 6)
         player.soundSynth(attackSound)
     }
 
@@ -218,7 +222,7 @@ constructor(
     public fun playWeaponFx(player: Player, attack: CombatAttack.Ranged): Boolean {
         val weapon = getInvObj(attack.weapon)
         val attackAnim = weapon.paramOrNull(params.attack_anim_stance1) ?: return false
-        player.anim(RSCM.getReverseMapping(RSCMType.SEQ,attackAnim.id), priority = 6)
+        player.anim(RSCM.getReverseMapping(RSCMType.SEQ, attackAnim.id), priority = 6)
         val attackSound = weapon.paramOrNull(params.attack_sound_stance1)
         attackSound?.let(player::soundSynth)
         return true
@@ -243,7 +247,7 @@ constructor(
         }
 
     private fun giveCombatXp(player: Player, target: Npc, attack: CombatAttack.Melee, damage: Int) {
-        if (player.shouldBlockNpcCombatXp(target)) {
+        if (player.shouldBlockNpcCombatXp(target) || target.isStyleImmuneTo(HitType.Melee)) {
             return
         }
         val cappedDamage = min(damage, target.hitpoints)
@@ -314,7 +318,7 @@ constructor(
         attack: CombatAttack.Ranged,
         damage: Int,
     ) {
-        if (player.shouldBlockNpcCombatXp(target)) {
+        if (player.shouldBlockNpcCombatXp(target) || target.isStyleImmuneTo(HitType.Ranged)) {
             return
         }
         val cappedDamage = min(damage, target.hitpoints)
@@ -376,7 +380,7 @@ constructor(
         }
 
     private fun giveCombatXp(player: Player, target: Npc, attack: CombatAttack.Spell, damage: Int) {
-        if (player.shouldBlockNpcCombatXp(target)) {
+        if (player.shouldBlockNpcCombatXp(target) || target.isStyleImmuneTo(HitType.Magic)) {
             return
         }
         val cappedDamage = min(damage, target.hitpoints)
@@ -430,7 +434,7 @@ constructor(
 
     @Suppress("unused")
     private fun giveCombatXp(player: Player, target: Npc, attack: CombatAttack.Staff, damage: Int) {
-        if (player.shouldBlockNpcCombatXp(target)) {
+        if (player.shouldBlockNpcCombatXp(target) || target.isStyleImmuneTo(HitType.Magic)) {
             return
         }
         val cappedDamage = min(damage, target.hitpoints)
@@ -720,7 +724,7 @@ constructor(
         // last entries in the queue list at the time of processing.
         target.queueCombatRetaliate(source)
 
-        val hit = target.queueHit(source, delay, HitType.Melee, damage)
+        val hit = target.queueHit(source, delay, HitType.Melee, damage, playerHitModifier)
         notifyPlayerHit(source, target)
         target.combatPlayDefendAnim()
         return hit
@@ -1060,6 +1064,7 @@ constructor(
                 delay = hitDelay,
                 type = HitType.Ranged,
                 damage = damage,
+                modifier = playerHitModifier,
                 sourceSecondary = ammo,
             )
         notifyPlayerHit(source, target)
@@ -1112,6 +1117,7 @@ constructor(
                 delay = hitDelay,
                 type = HitType.Ranged,
                 damage = damage,
+                modifier = playerHitModifier,
                 sourceSecondary = ammo,
             )
         return hit
@@ -1571,6 +1577,7 @@ constructor(
                 delay = hitDelay,
                 type = HitType.Magic,
                 damage = damage,
+                modifier = playerHitModifier,
                 sourceSecondary = spell,
             )
         notifyPlayerHit(source, target)

@@ -818,6 +818,12 @@ transmit = "Never"
 
 [[varp]]
 isServerOnly = true
+id = "varp.kc_demonic_gorilla"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+isServerOnly = true
 id = "varp.drew_sandstone"
 scope = "Perm"
 transmit = "Never"

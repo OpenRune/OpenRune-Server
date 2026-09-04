@@ -2,10 +2,10 @@ package org.rsmod.api.player.hit.processor
 
 import jakarta.inject.Inject
 import kotlin.math.min
-import org.rsmod.game.damage.recordDamageOn
 import org.rsmod.api.player.cheat.adminGodMode
 import org.rsmod.api.player.death.recordDeathCause
 import org.rsmod.api.player.death.resolveDeathCause
+import org.rsmod.api.player.events.PlayerHitEvents
 import org.rsmod.api.player.events.PlayerHitpointsChangedEvent
 import org.rsmod.api.player.headbar.InternalPlayerHeadbars
 import org.rsmod.api.player.queueDeath
@@ -13,6 +13,7 @@ import org.rsmod.api.player.stat.baseHitpointsLvl
 import org.rsmod.api.player.stat.hitpoints
 import org.rsmod.api.player.stat.statSub
 import org.rsmod.events.EventBus
+import org.rsmod.game.damage.recordDamageOn
 import org.rsmod.game.entity.NpcList
 import org.rsmod.game.entity.Player
 import org.rsmod.game.entity.PlayerList
@@ -59,6 +60,8 @@ constructor(
 
         val headbar = hit.createHeadbar(hitpoints, baseHitpointsLvl)
         showHeadbar(headbar)
+
+        eventBus.publish(PlayerHitEvents.Impact(this, hit))
     }
 
     private fun Hit.createHeadbar(currHp: Int, maxHp: Int): Headbar =

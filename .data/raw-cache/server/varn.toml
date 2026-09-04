@@ -15,3 +15,24 @@ id = "varn.lastattack"
 
 [[varn]]
 id = "varn.flat_armour"
+
+[[varn]]
+id = "varn.immune_melee"
+
+[[varn]]
+id = "varn.immune_ranged"
+
+[[varn]]
+id = "varn.immune_magic"
+
+[[varn]]
+id = "varn.gorilla_protect_damage"
+
+[[varn]]
+id = "varn.gorilla_protect_hits"
+
+[[varn]]
+id = "varn.gorilla_miss_streak"
+
+[[varn]]
+id = "varn.gorilla_protect_switching"

@@ -9,13 +9,13 @@ import dev.openrune.rscm.RSCM
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import dev.openrune.types.HitmarkTypeGroup
+import dev.openrune.types.InvScope
 import dev.openrune.types.ItemServerType
 import dev.openrune.types.MesAnimType
 import dev.openrune.types.NpcMode
 import dev.openrune.types.NpcServerType
 import dev.openrune.types.ObjectServerType
 import dev.openrune.types.SequenceServerType
-import dev.openrune.types.InvScope
 import dev.openrune.types.WalkTriggerType
 import dev.openrune.types.aconverted.CategoryType
 import dev.openrune.types.aconverted.SpotanimType
@@ -146,8 +146,8 @@ import org.rsmod.events.EventBus
 import org.rsmod.events.KeyedEvent
 import org.rsmod.events.SuspendEvent
 import org.rsmod.events.UnboundEvent
-import org.rsmod.game.entity.Npc
 import org.rsmod.game.damage.recordDamageOn
+import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.PathingEntity
 import org.rsmod.game.entity.Player
 import org.rsmod.game.entity.npc.NpcUid
@@ -382,8 +382,7 @@ public class ProtectedAccess(
         if (teleportType == TeleportType.Exempt) {
             return true
         }
-        val denial =
-            context.teleportValidator.validate(player, teleportType, context.areaChecker)
+        val denial = context.teleportValidator.validate(player, teleportType, context.areaChecker)
         if (denial == null) {
             return true
         }
@@ -1008,7 +1007,7 @@ public class ProtectedAccess(
         coords: CoordGrid = this.coords,
         inv: Inventory = this.inv,
     ): Boolean {
-        return invAddOrDrop(repo, RSCM.getReverseMapping(RSCMType.OBJ,obj.id), count, coords, inv)
+        return invAddOrDrop(repo, RSCM.getReverseMapping(RSCMType.OBJ, obj.id), count, coords, inv)
     }
 
     /**
@@ -1432,7 +1431,7 @@ public class ProtectedAccess(
         specific: Boolean = false,
         sourceWeapon: ItemServerType? = null,
         sourceSecondary: ItemServerType? = null,
-        modifier: PlayerHitModifier = StandardPlayerHitModifier,
+        modifier: PlayerHitModifier = context.hitModifier,
     ): Hit {
         return player.queueHit(
             source = source,
@@ -1490,7 +1489,7 @@ public class ProtectedAccess(
         damage: Int,
         hitmark: HitmarkTypeGroup = hitmark_groups.regular_damage,
         sourceSecondary: ItemServerType? = null,
-        modifier: PlayerHitModifier = StandardPlayerHitModifier,
+        modifier: PlayerHitModifier = context.hitModifier,
     ): Hit {
         return player.queueHit(
             source = source,
@@ -1544,7 +1543,7 @@ public class ProtectedAccess(
         damage: Int,
         hitmark: HitmarkTypeGroup = hitmark_groups.regular_damage,
         specific: Boolean = false,
-        modifier: PlayerHitModifier = StandardPlayerHitModifier,
+        modifier: PlayerHitModifier = context.hitModifier,
         strongQueue: Boolean = true,
     ): Hit {
         return player.queueHit(
@@ -1639,7 +1638,7 @@ public class ProtectedAccess(
         specific: Boolean = false,
         sourceWeapon: ItemServerType? = null,
         sourceSecondary: ItemServerType? = null,
-        modifier: PlayerHitModifier = StandardPlayerHitModifier,
+        modifier: PlayerHitModifier = context.hitModifier,
     ) {
         player.queueImpactHit(
             source = source,
@@ -1698,7 +1697,7 @@ public class ProtectedAccess(
         damage: Int,
         hitmark: HitmarkTypeGroup = hitmark_groups.regular_damage,
         sourceSecondary: ItemServerType? = null,
-        modifier: PlayerHitModifier = StandardPlayerHitModifier,
+        modifier: PlayerHitModifier = context.hitModifier,
     ) {
         player.queueImpactHit(
             source = source,
@@ -1750,7 +1749,7 @@ public class ProtectedAccess(
         damage: Int,
         hitmark: HitmarkTypeGroup = hitmark_groups.regular_damage,
         specific: Boolean = false,
-        modifier: PlayerHitModifier = StandardPlayerHitModifier,
+        modifier: PlayerHitModifier = context.hitModifier,
     ) {
         player.queueImpactHit(
             delay = delay,
@@ -1991,7 +1990,7 @@ public class ProtectedAccess(
      *   the coroutine suspension.
      * @see [resumeWithMainModalProtectedAccess]
      */
-    public suspend fun delayBySeq(anim: String, extra : Int = 0) {
+    public suspend fun delayBySeq(anim: String, extra: Int = 0) {
         val cycles =
             ServerCacheManager.getAnim(anim.asRSCM(RSCMType.SEQ))?.totalDelay ?: (2 + extra)
         require(cycles > 0) { "`cycles` must be greater than 0. (cycles=$cycles)" }
@@ -2323,7 +2322,15 @@ public class ProtectedAccess(
         pauseText: String,
         eventBus: EventBus,
     ) {
-        player.ifDoubleobjbox(text, obj1.asRSCM(RSCMType.OBJ), zoom1, obj2.asRSCM(RSCMType.OBJ), zoom2, pauseText, eventBus)
+        player.ifDoubleobjbox(
+            text,
+            obj1.asRSCM(RSCMType.OBJ),
+            zoom1,
+            obj2.asRSCM(RSCMType.OBJ),
+            zoom2,
+            pauseText,
+            eventBus,
+        )
         val modal = player.ui.getModalOrNull("component.chatbox:chatmodal")
         val input = coroutine.pause(ResumePauseButtonInput::class)
         resumePauseButtonWithProtectedAccess(input, modal, "component.objectbox_double:pausebutton")
@@ -2347,20 +2354,22 @@ public class ProtectedAccess(
      * This dialogue is meant to be used in a script sequence where the script itself will replace
      * or close the dialogue after a certain number of cycles.
      */
-    public fun doubleobjboxNp(
-        obj1: String,
-        zoom1: Int,
-        obj2: String,
-        zoom2: Int,
-        text: String,
-    ) {
+    public fun doubleobjboxNp(obj1: String, zoom1: Int, obj2: String, zoom2: Int, text: String) {
         val alignment = context.alignment
         val pages = alignment.generateChatPageList(text)
         if (pages.size > 1) {
             throw IllegalStateException("Text too long: $text")
         }
         val page = pages.first()
-        player.ifDoubleobjbox(page.text, obj1.asRSCM(RSCMType.OBJ), zoom1, obj2.asRSCM(RSCMType.OBJ), zoom2, "", context.eventBus)
+        player.ifDoubleobjbox(
+            page.text,
+            obj1.asRSCM(RSCMType.OBJ),
+            zoom1,
+            obj2.asRSCM(RSCMType.OBJ),
+            zoom2,
+            "",
+            context.eventBus,
+        )
     }
 
     /**
@@ -2677,7 +2686,15 @@ public class ProtectedAccess(
             npc.playerFace(player, faceFar = faceFar)
         }
         player.facePathingEntitySquare(npc)
-        player.ifChatNpcSpecific(title, RSCM.getReverseMapping(RSCMType.NPC,npc.type.id), text, chatanim, pauseText, lineHeight, eventBus)
+        player.ifChatNpcSpecific(
+            title,
+            RSCM.getReverseMapping(RSCMType.NPC, npc.type.id),
+            text,
+            chatanim,
+            pauseText,
+            lineHeight,
+            eventBus,
+        )
         val modal = player.ui.getModalOrNull("component.chatbox:chatmodal")
         val input = coroutine.pause(ResumePauseButtonInput::class)
         resumePauseButtonWithProtectedAccess(input, modal, "component.chat_left:continue")
@@ -2722,7 +2739,15 @@ public class ProtectedAccess(
         eventBus: EventBus,
     ) {
         player.facePathingEntitySquare(npc)
-        player.ifChatNpcSpecific(title, RSCM.getReverseMapping(RSCMType.NPC,npc.type.id), text, chatanim, pauseText, lineHeight, eventBus)
+        player.ifChatNpcSpecific(
+            title,
+            RSCM.getReverseMapping(RSCMType.NPC, npc.type.id),
+            text,
+            chatanim,
+            pauseText,
+            lineHeight,
+            eventBus,
+        )
         val modal = player.ui.getModalOrNull("component.chatbox:chatmodal")
         val input = coroutine.pause(ResumePauseButtonInput::class)
         resumePauseButtonWithProtectedAccess(input, modal, "component.chat_left:continue")
@@ -2780,12 +2805,7 @@ public class ProtectedAccess(
      * This dialogue is meant to be used in a script sequence where the script itself will replace
      * or close the dialogue after a certain number of cycles.
      */
-    public fun chatNpcSpecificNp(
-        title: String,
-        type: String,
-        mesanim: MesAnimType,
-        text: String,
-    ) {
+    public fun chatNpcSpecificNp(title: String, type: String, mesanim: MesAnimType, text: String) {
         val alignment = context.alignment
         val pages = alignment.generateChatPageList(text)
         if (pages.size > 1) {
@@ -3340,13 +3360,15 @@ public class ProtectedAccess(
     }
 
     public fun invContains(inv: Inventory, content: String): Boolean {
-        return inv.any { it != null && getInvObj(it).contentGroup == content.asRSCM(RSCMType.CONTENT) }
+        return inv.any {
+            it != null && getInvObj(it).contentGroup == content.asRSCM(RSCMType.CONTENT)
+        }
     }
 
     /**
      * Returns whether [content] (content group) exists in any of the player's inventories — e.g.
-     * inventory, worn equipment, bank, and any other loaded containers. Shared inventories such
-     * as shops are excluded.
+     * inventory, worn equipment, bank, and any other loaded containers. Shared inventories such as
+     * shops are excluded.
      */
     public fun playerContainsContent(content: String): Boolean {
         val contentId = content.asRSCM(RSCMType.CONTENT)
@@ -3365,7 +3387,9 @@ public class ProtectedAccess(
     /** @see [playerContainsObj] */
     public fun playerContainsAnyObj(vararg objs: String): Boolean = objs.any(::playerContainsObj)
 
-    private inline fun playerContainsInInventories(crossinline predicate: (InvObj) -> Boolean): Boolean {
+    private inline fun playerContainsInInventories(
+        crossinline predicate: (InvObj) -> Boolean
+    ): Boolean {
         for (inventory in player.invMap.values) {
             if (inventory.type.scope == InvScope.Shared) continue
             if (inventory.any { slot -> slot != null && predicate(slot) }) {
@@ -3447,7 +3471,6 @@ public class ProtectedAccess(
         val spotanim = SpotanimType(internal.asRSCM(RSCMType.SPOTANIM))
         repo.spotanimMap(spotanim, coord, height, delay)
     }
-
 
     public fun spotanimMap(
         repo: WorldRepository,
@@ -3586,11 +3609,7 @@ public class ProtectedAccess(
         return obj.isType(type)
     }
 
-    public fun ocIsType(
-        obj: InvObj?,
-        type: String,
-        vararg others: String,
-    ): Boolean {
+    public fun ocIsType(obj: InvObj?, type: String, vararg others: String): Boolean {
         return obj.isType(type) || others.any(obj::isType)
     }
 

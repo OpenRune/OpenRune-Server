@@ -7,7 +7,6 @@ import org.rsmod.api.config.refs.done.BaseHitmarkGroups
 import org.rsmod.api.config.refs.done.hitmark_groups
 import org.rsmod.api.player.hit.modifier.NoopPlayerHitModifier
 import org.rsmod.api.player.hit.modifier.PlayerHitModifier
-import org.rsmod.api.player.hit.modifier.StandardPlayerHitModifier
 import org.rsmod.api.player.hit.processor.DamageOnlyPlayerHitProcessor
 import org.rsmod.api.player.hit.processor.InstantPlayerHitProcessor
 import org.rsmod.api.player.hit.processor.QueuedPlayerHitProcessor
@@ -63,11 +62,11 @@ public fun Player.queueHit(
     delay: Int,
     type: HitType,
     damage: Int,
+    modifier: PlayerHitModifier,
     hitmark: HitmarkTypeGroup = hitmark_groups.regular_damage,
     specific: Boolean = false,
     sourceWeapon: ItemServerType? = null,
     sourceSecondary: ItemServerType? = null,
-    modifier: PlayerHitModifier = StandardPlayerHitModifier,
 ): Hit {
     val cappedDamage = min(hitpoints, damage)
     val builder =
@@ -123,9 +122,9 @@ public fun Player.queueHit(
     delay: Int,
     type: HitType,
     damage: Int,
+    modifier: PlayerHitModifier,
     hitmark: HitmarkTypeGroup = hitmark_groups.regular_damage,
     sourceSecondary: ItemServerType? = null,
-    modifier: PlayerHitModifier = StandardPlayerHitModifier,
 ): Hit {
     val builder =
         InternalPlayerHits.createBuilder(
@@ -178,9 +177,9 @@ public fun Player.queueHit(
     delay: Int,
     type: HitType,
     damage: Int,
+    modifier: PlayerHitModifier,
     hitmark: HitmarkTypeGroup = hitmark_groups.regular_damage,
     specific: Boolean = false,
-    modifier: PlayerHitModifier = StandardPlayerHitModifier,
     strongQueue: Boolean = true,
 ): Hit {
     val builder =
@@ -311,11 +310,11 @@ public fun Player.queueImpactHit(
     delay: Int,
     type: HitType,
     damage: Int,
+    modifier: PlayerHitModifier,
     hitmark: HitmarkTypeGroup = hitmark_groups.regular_damage,
     specific: Boolean = false,
     sourceWeapon: ItemServerType? = null,
     sourceSecondary: ItemServerType? = null,
-    modifier: PlayerHitModifier = StandardPlayerHitModifier,
 ) {
     val builder =
         InternalPlayerHits.createBuilder(
@@ -371,9 +370,9 @@ public fun Player.queueImpactHit(
     delay: Int,
     type: HitType,
     damage: Int,
+    modifier: PlayerHitModifier,
     hitmark: HitmarkTypeGroup = hitmark_groups.regular_damage,
     sourceSecondary: ItemServerType? = null,
-    modifier: PlayerHitModifier = StandardPlayerHitModifier,
 ) {
     val builder =
         InternalPlayerHits.createBuilder(
@@ -424,9 +423,9 @@ public fun Player.queueImpactHit(
     delay: Int,
     type: HitType,
     damage: Int,
+    modifier: PlayerHitModifier,
     hitmark: HitmarkTypeGroup = hitmark_groups.regular_damage,
     specific: Boolean = false,
-    modifier: PlayerHitModifier = StandardPlayerHitModifier,
     strongQueue: Boolean = true,
 ) {
     val builder =

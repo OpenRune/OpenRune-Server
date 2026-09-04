@@ -4,6 +4,8 @@ import dev.openrune.definition.type.widget.ComponentType
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import dev.openrune.types.ItemServerType
+import dev.or2.central.account.Rights
+import org.rsmod.api.player.events.PlayerHitEvents
 import org.rsmod.api.player.events.PlayerHitpointsChangedEvent
 import org.rsmod.api.player.events.PlayerMovementEvent
 import org.rsmod.api.player.events.PlayerQueueEvents
@@ -12,7 +14,6 @@ import org.rsmod.api.player.events.interact.PlayerTEvents
 import org.rsmod.api.player.events.interact.PlayerUContentEvents
 import org.rsmod.api.player.events.interact.PlayerUEvents
 import org.rsmod.api.player.input.DialogInput
-import dev.or2.central.account.Rights
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.ui.WorldMapClick
 import org.rsmod.game.entity.player.SessionStateEvent
@@ -24,8 +25,7 @@ public fun ScriptContext.onPlayerInit(action: SessionStateEvent.Initialize.() ->
 public fun ScriptContext.onPlayerLogin(action: SessionStateEvent.Login.() -> Unit): Unit =
     onEvent(action)
 
-public fun ScriptContext.onDialogInput(action: DialogInput.() -> Unit): Unit =
-    onEvent(action)
+public fun ScriptContext.onDialogInput(action: DialogInput.() -> Unit): Unit = onEvent(action)
 
 public fun ScriptContext.onPlayerLogout(action: SessionStateEvent.Logout.() -> Unit): Unit =
     onEvent(action)
@@ -100,18 +100,24 @@ public fun ScriptContext.onPlayerWalkTrigger(
     action: PlayerMovementEvent.WalkTrigger.() -> Unit,
 ): Unit = onEvent(trigger.asRSCM(RSCMType.WALKTRIGGER), action)
 
-public fun ScriptContext.onPlayerCoordsChanged(action: PlayerMovementEvent.CoordsMovedEvent.() -> Unit): Unit =
-    onEvent(action)
+public fun ScriptContext.onPlayerCoordsChanged(
+    action: PlayerMovementEvent.CoordsMovedEvent.() -> Unit
+): Unit = onEvent(action)
 
-public fun ScriptContext.onPlayerHitpointsChanged(action: PlayerHitpointsChangedEvent.() -> Unit): Unit =
+public fun ScriptContext.onPlayerHitpointsChanged(
+    action: PlayerHitpointsChangedEvent.() -> Unit
+): Unit = onEvent(action)
+
+public fun ScriptContext.onPlayerHit(action: PlayerHitEvents.Impact.() -> Unit): Unit =
     onEvent(action)
 
 public fun ScriptContext.onWorldMapClick(
     requiredRights: Rights,
     action: suspend ProtectedAccess.(WorldMapClick) -> Unit,
-): Unit = onProtectedEvent(WorldMapClick.BUS_ID) { event: WorldMapClick ->
-    if (!player.modLevel.isAtLeast(requiredRights)) {
-        return@onProtectedEvent
+): Unit =
+    onProtectedEvent(WorldMapClick.BUS_ID) { event: WorldMapClick ->
+        if (!player.modLevel.isAtLeast(requiredRights)) {
+            return@onProtectedEvent
+        }
+        action(event)
     }
-    action(event)
-}

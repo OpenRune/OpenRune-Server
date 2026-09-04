@@ -10,8 +10,9 @@ import org.rsmod.api.bosses.spec.*
 import org.rsmod.api.bosses.spec.HitType as BossHitType
 import org.rsmod.api.combat.commons.CombatEffects
 import org.rsmod.api.combat.commons.DragonfireProtection
+import org.rsmod.api.combat.commons.player.finishNpcHit
+import org.rsmod.api.combat.commons.types.MeleeAttackType
 import org.rsmod.api.npc.access.StandardNpcAccess
-import org.rsmod.api.player.hit.queueHit
 import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.stat.hitpoints
 import org.rsmod.game.entity.Npc
@@ -118,13 +119,15 @@ class EffectInterpreter(
         }
         val delay = hit.delay.coerceAtLeast(1)
         for (t in targets) {
-            var damage = evaluateDamage(hit.damage)
+            var damage = evaluateDamage(hit.damage, hit.type, t)
             dragonfireType(hit.type)?.let { dfType ->
-                val cap = DragonfireProtection.resolveMaxHit(t, dfType, damageMax(hit.damage))
+                val cap = DragonfireProtection.resolveMaxHit(t, dfType, damageMax(hit.damage, hit.type, t))
                 damage = if (cap <= 0) 0 else deps.random.of(cap + 1)
             }
-            hit.spotanim?.let { t.spotanim(it, height = hit.spotanimHeight) }
-            t.queueHit(npc, delay, hit.type.toEngine(), damage)
+            if (damage > 0) {
+                hit.spotanim?.let { t.spotanim(it, height = hit.spotanimHeight) }
+            }
+            t.finishNpcHit(npc, delay, hit.type.toEngine(), damage, deps.playerHitModifier)
         }
     }
 
@@ -152,12 +155,17 @@ class EffectInterpreter(
         deps.worldRepo.projAnim(projAnim)
 
         proj.hit?.let { hit ->
-            var damage = evaluateDamage(hit.damage)
+            var damage = evaluateDamage(hit.damage, hit.type, t)
             dragonfireType(hit.type)?.let { dfType ->
-                val cap = DragonfireProtection.resolveMaxHit(t, dfType, damageMax(hit.damage))
+                val cap = DragonfireProtection.resolveMaxHit(t, dfType, damageMax(hit.damage, hit.type, t))
                 damage = if (cap <= 0) 0 else deps.random.of(cap + 1)
             }
-            t.queueHit(npc, projAnim.serverCycles, hit.type.toEngine(), damage)
+            if (damage > 0) {
+                hit.spotanim?.let {
+                    t.spotanim(it, delay = projAnim.clientCycles, height = hit.spotanimHeight)
+                }
+            }
+            t.finishNpcHit(npc, projAnim.serverCycles, hit.type.toEngine(), damage, deps.playerHitModifier)
         }
     }
 
@@ -168,8 +176,8 @@ class EffectInterpreter(
             it.coords.chebyshevDistance(center) <= radius
         }
         for (t in targets) {
-            val damage = evaluateDamage(aoe.damage)
-            t.queueHit(npc, 0, aoe.type.toEngine(), damage)
+            val damage = evaluateDamage(aoe.damage, aoe.type, t)
+            t.finishNpcHit(npc, 0, aoe.type.toEngine(), damage, deps.playerHitModifier)
         }
     }
 
@@ -203,7 +211,8 @@ class EffectInterpreter(
                 deps.playerList.filter { it.coords.chebyshevDistance(center) <= effect.targetRadius }
             for (player in landing) {
                 if (player.hitpoints > 0 && player.coords in tileSet) {
-                    player.queueHit(npc, 1, effect.type.toEngine(), evaluateDamage(effect.damage))
+                    val damage = evaluateDamage(effect.damage, effect.type, player)
+                    player.finishNpcHit(npc, 1, effect.type.toEngine(), damage, deps.playerHitModifier)
                 }
             }
         }
@@ -307,11 +316,11 @@ class EffectInterpreter(
         }
     }
 
-    private fun damageMax(expr: DamageExpr): Int =
+    private fun damageMax(expr: DamageExpr, hitType: BossHitType, t: Player): Int =
         when (expr) {
             is DamageExpr.Roll -> if (expr.range.isEmpty()) 0 else expr.range.last
             is DamageExpr.Fixed -> expr.value
-            else -> evaluateDamage(expr)
+            else -> evaluateDamage(expr, hitType, t)
         }
 
     private fun dragonfireType(t: BossHitType): DragonfireProtection.DragonfireType? =
@@ -322,7 +331,7 @@ class EffectInterpreter(
             else -> null
         }
 
-    private fun evaluateDamage(expr: DamageExpr): Int {
+    private fun evaluateDamage(expr: DamageExpr, hitType: BossHitType, t: Player): Int {
         return when (expr) {
             is DamageExpr.Fixed -> expr.value
             is DamageExpr.Roll ->
@@ -330,12 +339,30 @@ class EffectInterpreter(
                 else {
                     expr.range.first + deps.random.of(expr.range.last - expr.range.first + 1)
                 }
-            is DamageExpr.Accuracy -> evaluateDamage(expr.on)
-            is DamageExpr.PercentOfTargetHp -> (target.hitpoints * expr.fraction).toInt()
-            is DamageExpr.Min -> minOf(evaluateDamage(expr.a), evaluateDamage(expr.b))
-            is DamageExpr.Max -> maxOf(evaluateDamage(expr.a), evaluateDamage(expr.b))
+            is DamageExpr.Accuracy -> {
+                val landed = rollAccuracy(hitType, t, expr.meleeAttackType)
+                evaluateDamage(if (landed) expr.on else expr.miss, hitType, t)
+            }
+            is DamageExpr.PercentOfTargetHp -> (t.hitpoints * expr.fraction).toInt()
+            is DamageExpr.Min -> minOf(evaluateDamage(expr.a, hitType, t), evaluateDamage(expr.b, hitType, t))
+            is DamageExpr.Max -> maxOf(evaluateDamage(expr.a, hitType, t), evaluateDamage(expr.b, hitType, t))
         }
     }
+
+    private fun rollAccuracy(
+        hitType: BossHitType,
+        t: Player,
+        meleeAttackType: MeleeAttackType? = null,
+    ): Boolean =
+        when (hitType) {
+            BossHitType.Melee -> deps.accuracy.rollMeleeAccuracy(npc, t, meleeAttackType, deps.random)
+            BossHitType.Ranged -> deps.accuracy.rollRangedAccuracy(npc, t, deps.random)
+            BossHitType.Magic,
+            BossHitType.Dragonfire,
+            BossHitType.DragonfireMetal,
+            BossHitType.WyvernIce -> deps.accuracy.rollMagicAccuracy(npc, t, deps.random)
+            BossHitType.Typeless -> true
+        }
 
     private fun BossHitType.toEngine(): HitType = when (this) {
         BossHitType.Melee -> HitType.Melee

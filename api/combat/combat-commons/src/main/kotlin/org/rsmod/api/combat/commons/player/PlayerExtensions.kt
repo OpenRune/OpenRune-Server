@@ -4,9 +4,10 @@ import dev.openrune.ServerCacheManager
 import dev.openrune.rscm.RSCM
 import dev.openrune.rscm.RSCMType
 import dev.openrune.types.ItemServerType
-import dev.openrune.types.SequenceServerType
 import kotlin.math.min
 import org.rsmod.api.config.refs.params
+import org.rsmod.api.player.hit.modifier.PlayerHitModifier
+import org.rsmod.api.player.hit.queueHit
 import org.rsmod.api.player.lefthand
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.righthand
@@ -15,6 +16,8 @@ import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.game.entity.npc.NpcUid
 import org.rsmod.game.entity.player.PlayerUid
+import org.rsmod.game.hit.Hit
+import org.rsmod.game.hit.HitType
 import org.rsmod.game.type.getOrNull
 
 private val ProtectedAccess.autoRetaliateDisabled by boolVarp("varp.option_nodef")
@@ -54,6 +57,19 @@ public fun ProtectedAccess.combatRetaliate(uid: PlayerUid, flinchDelay: Int) {
     opPlayer2(source)
 }
 
+public fun Player.finishNpcHit(
+    source: Npc,
+    delay: Int,
+    type: HitType,
+    damage: Int,
+    modifier: PlayerHitModifier,
+): Hit {
+    queueCombatRetaliate(source)
+    val hit = queueHit(source, delay, type, damage, modifier)
+    combatPlayDefendAnim()
+    return hit
+}
+
 public fun Player.combatPlayDefendAnim(clientDelay: Int = 0) {
     val righthandType = getOrNull(righthand)
     val lefthandType = getOrNull(lefthand)
@@ -61,15 +77,13 @@ public fun Player.combatPlayDefendAnim(clientDelay: Int = 0) {
     anim(defendAnim, delay = clientDelay)
 }
 
-private fun resolveDefendAnim(
-    righthand: ItemServerType?,
-    lefthand: ItemServerType?,
-): String {
+private fun resolveDefendAnim(righthand: ItemServerType?, lefthand: ItemServerType?): String {
     val righthandAnim = righthand?.param(params.defend_anim)
     val lefthandAnim = lefthand?.param(params.defend_anim)
     return when {
-        lefthandAnim != null && !lefthandAnim.isType("seq.human_unarmedblock") -> RSCM.getReverseMapping(RSCMType.SEQ,lefthandAnim.id)
-        righthandAnim != null -> RSCM.getReverseMapping(RSCMType.SEQ,righthandAnim.id)
+        lefthandAnim != null && !lefthandAnim.isType("seq.human_unarmedblock") ->
+            RSCM.getReverseMapping(RSCMType.SEQ, lefthandAnim.id)
+        righthandAnim != null -> RSCM.getReverseMapping(RSCMType.SEQ, righthandAnim.id)
         else -> "seq.human_unarmedblock"
     }
 }

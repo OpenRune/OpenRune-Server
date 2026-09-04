@@ -1,6 +1,5 @@
 package org.rsmod.api.player.hit.processor
 
-import dev.openrune.rscm.RSCM
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import dev.openrune.types.ItemServerType
@@ -8,10 +7,9 @@ import dev.openrune.types.aconverted.SynthType
 import kotlin.math.min
 import org.rsmod.api.config.constants
 import org.rsmod.api.config.refs.BaseParams
-import org.rsmod.api.player.death.DEATH_CAUSE_ATTR
-import org.rsmod.api.player.death.DeathCause
 import org.rsmod.api.player.death.recordDeathCause
 import org.rsmod.api.player.death.resolveDeathCause
+import org.rsmod.api.player.events.PlayerHitEvents
 import org.rsmod.api.player.events.PlayerHitpointsChangedEvent
 import org.rsmod.api.player.headbar.InternalPlayerHeadbars
 import org.rsmod.api.player.lefthand
@@ -27,13 +25,13 @@ import org.rsmod.game.hit.HitType
 
 public object StandardPlayerHitProcessor : QueuedPlayerHitProcessor {
     private val hitSoundsBodyA =
-        listOf("synth.human_hit_1", "synth.human_hit_2", "synth.human_hit_3", "synth.human_hit_4").map {
+        listOf("synth.human_hit_1", "synth.human_hit_2", "synth.human_hit_3", "synth.human_hit_4")
+            .map { SynthType(it.asRSCM(RSCMType.SYNTH)) }
+
+    private val hitSoundsBodyB =
+        listOf("synth.female_hit_1", "synth.female_hit_2").map {
             SynthType(it.asRSCM(RSCMType.SYNTH))
         }
-
-    private val hitSoundsBodyB = listOf("synth.female_hit_1", "synth.female_hit_2").map {
-        SynthType(it.asRSCM(RSCMType.SYNTH))
-    }
 
     override fun ProtectedAccess.process(hit: Hit) {
         if (!hit.isValid(this)) {
@@ -65,6 +63,8 @@ public object StandardPlayerHitProcessor : QueuedPlayerHitProcessor {
 
         val headbar = hit.createHeadbar(player.hitpoints, player.baseHitpointsLvl)
         player.showHeadbar(headbar)
+
+        publish(PlayerHitEvents.Impact(player, hit))
     }
 
     private fun ProtectedAccess.publishPlayerHitpointsChangedEvent(oldHitpoints: Int, hit: Hit) {

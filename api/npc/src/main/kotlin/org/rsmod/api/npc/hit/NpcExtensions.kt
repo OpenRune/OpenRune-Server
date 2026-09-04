@@ -215,13 +215,21 @@ public fun Npc.visHitmark(): HitmarkTypeGroup {
     if (current != null) {
         return current
     }
-    val lit = RSCM.getReverseMapping(RSCMType.HITMARK,visType.param(params.hitmark_lit).id)
-    val tint = RSCM.getReverseMapping(RSCMType.HITMARK,visType.param(params.hitmark_tint).id)
-    val max = RSCM.getReverseMapping(RSCMType.HITMARK,visType.param(params.hitmark_max).id)
+    val lit = RSCM.getReverseMapping(RSCMType.HITMARK, visType.param(params.hitmark_lit).id)
+    val tint = RSCM.getReverseMapping(RSCMType.HITMARK, visType.param(params.hitmark_tint).id)
+    val max = RSCM.getReverseMapping(RSCMType.HITMARK, visType.param(params.hitmark_max).id)
     val hitmark = HitmarkTypeGroup(lit, tint, max)
     this.cachedHitmark = hitmark
     return hitmark
 }
+
+public fun Npc.isStyleImmuneTo(type: HitType): Boolean =
+    when (type) {
+        HitType.Melee -> vars["varn.immune_melee"] == 1
+        HitType.Ranged -> vars["varn.immune_ranged"] == 1
+        HitType.Magic -> vars["varn.immune_magic"] == 1
+        HitType.Typeless -> false
+    }
 
 private fun Npc.modifyAndQueueHit(delay: Int, builder: HitBuilder, modifier: NpcHitModifier): Hit {
     modifier.modify(builder, this)

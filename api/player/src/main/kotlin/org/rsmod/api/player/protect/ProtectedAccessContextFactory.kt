@@ -4,14 +4,15 @@ import jakarta.inject.Inject
 import org.rsmod.api.area.checker.AreaChecker
 import org.rsmod.api.market.MarketPrices
 import org.rsmod.api.player.dialogue.align.TextAlignment
+import org.rsmod.api.player.hit.modifier.PlayerHitModifier
 import org.rsmod.api.player.hit.processor.InstantPlayerHitProcessor
+import org.rsmod.api.player.hook.PlayerTeleportValidator
 import org.rsmod.api.player.interact.HeldInteractions
 import org.rsmod.api.player.interact.LocInteractions
 import org.rsmod.api.player.interact.NpcInteractions
 import org.rsmod.api.player.interact.PlayerInteractions
 import org.rsmod.api.player.interact.WornInteractions
 import org.rsmod.api.player.music.MusicPlayer
-import org.rsmod.api.player.hook.PlayerTeleportValidator
 import org.rsmod.api.random.GameRandom
 import org.rsmod.events.EventBus
 import org.rsmod.game.entity.NpcList
@@ -37,11 +38,13 @@ constructor(
     private val marketPrices: MarketPrices,
     private val instantHitProcessor: InstantPlayerHitProcessor,
     private val teleportValidator: PlayerTeleportValidator,
+    private val hitModifier: PlayerHitModifier,
 ) {
     public fun create(): ProtectedAccessContext =
         ProtectedAccessContext(
             getRandom = { random },
             getEventBus = { eventBus },
+            getHitModifier = { hitModifier },
             getNpcList = { npcList },
             getPlayerList = { playerList },
             getCollision = { collision },
@@ -77,6 +80,7 @@ constructor(
                 getMarketPrices = { error("No market prices provided.") },
                 getInstantHitProcessor = { error("No instant hit processor provided.") },
                 getTeleportValidator = { error("No teleport validator provided.") },
+                getHitModifier = { error("No hit modifier provided.") },
             )
 
         /**
