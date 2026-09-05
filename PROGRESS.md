@@ -289,6 +289,7 @@ Found the same way `settings.gradle.kts` finds them: any dir with a `build.gradl
 | `bosses/kreearra` | 2 | 229 | 0 | 0 | 2026-08-03 |
 | `bosses/kril` | 2 | 191 | 0 | 0 | 2026-08-03 |
 | `bosses/scurrius` | 2 | 403 | 0 | 0 | 2026-07-07 |
+| `bosses/tormented-demon` | 2 | 556 | 0 | 0 | 2026-09-05 |
 | `bosses/zilyana` | 2 | 165 | 0 | 0 | 2026-08-03 |
 | `drops` | 255 | 14,370 | 0 | 0 | 2026-08-28 |
 | `events/shooting-stars` | 9 | 1,261 | 0 | 0 | 2026-08-30 |
