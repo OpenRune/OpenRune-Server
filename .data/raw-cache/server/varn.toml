@@ -36,3 +36,12 @@ id = "varn.gorilla_miss_streak"
 
 [[varn]]
 id = "varn.gorilla_protect_switching"
+
+[[varn]]
+id = "varn.td_shield_up"
+
+[[varn]]
+id = "varn.td_overhead_style"
+
+[[varn]]
+id = "varn.guaranteed_hit"

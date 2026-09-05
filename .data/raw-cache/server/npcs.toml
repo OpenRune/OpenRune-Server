@@ -4544,3 +4544,47 @@ contentGroup = "content.dark_crab_fishing_spot"
 moveRestrict = "NoMove"
 wanderRange = 0
 
+[[npc]]
+id = "npc.tormented_demon_1"
+inherit = "npc.tormented_demon_1"
+huntMode = 6
+huntRange = 30
+maxRange = 30
+defaultMode = "Wander"
+[npc.params]
+"param.tormented_demon"=1
+"param.attackrate"=4
+"param.attack_anim"="seq.luc2_undead_demon_melee"
+"param.attack_anim_stance1"="seq.luc2_undead_demon_melee"
+"param.attack_anim_stance2"="seq.luc2_undead_demon_firey_balls"
+"param.attack_anim_stance3"="seq.luc2_undead_demon_spare_ribs"
+"param.defend_anim"="seq.luc2_undead_demon_defend"
+"param.death_anim"="seq.luc2_undead_demon_death"
+"param.bas_readyanim"="seq.luc2_undead_demon_ready"
+"param.attack_sound_stance1"=9219
+"param.attack_sound_stance2"=9229
+"param.attack_sound_stance3"=9253
+"param.npc_attack_type"="category.attacktype_crush"
+
+[[npc]]
+id = "npc.tormented_demon_2"
+inherit = "npc.tormented_demon_2"
+huntMode = 6
+huntRange = 30
+maxRange = 30
+defaultMode = "Wander"
+[npc.params]
+"param.tormented_demon"=1
+"param.attackrate"=4
+"param.attack_anim"="seq.luc2_undead_demon_melee"
+"param.attack_anim_stance1"="seq.luc2_undead_demon_melee"
+"param.attack_anim_stance2"="seq.luc2_undead_demon_firey_balls"
+"param.attack_anim_stance3"="seq.luc2_undead_demon_spare_ribs"
+"param.defend_anim"="seq.luc2_undead_demon_defend"
+"param.death_anim"="seq.luc2_undead_demon_death"
+"param.bas_readyanim"="seq.luc2_undead_demon_ready"
+"param.attack_sound_stance1"=9219
+"param.attack_sound_stance2"=9229
+"param.attack_sound_stance3"=9253
+"param.npc_attack_type"="category.attacktype_crush"
+
