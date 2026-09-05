@@ -361,7 +361,6 @@ class PhaseBuilder(private val name: String) {
     var entry: String? = null
     var exit: String? = null
 
-    /** Per-phase attack-rate default; see [PhaseSpec.attackRate]. */
     var attackRate: Int? = null
     var selector: Selector = Selector.WeightedRandom()
     internal val forceAbilities = mutableListOf<ForcedAbility>()
