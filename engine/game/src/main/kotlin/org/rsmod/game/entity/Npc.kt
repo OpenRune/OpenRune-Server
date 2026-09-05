@@ -421,12 +421,10 @@ public class Npc(
         infoProtocol.toggleOps(OpVisibility.showAll())
     }
 
-    /** Shows an overhead prayer/status icon (e.g. protection prayers) in the given [slot]. */
     public fun setHeadIcon(slot: Int, graphic: Int, index: Int) {
         infoProtocol.setHeadIcon(slot, graphic, index)
     }
 
-    /** Clears the overhead icon shown in [slot]. */
     public fun clearHeadIcon(slot: Int) {
         infoProtocol.setHeadIcon(slot, -1, -1)
     }
