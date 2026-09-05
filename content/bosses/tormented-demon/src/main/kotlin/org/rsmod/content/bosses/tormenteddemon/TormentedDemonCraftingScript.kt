@@ -101,6 +101,7 @@ class TormentedDemonCraftingScript : PluginScript() {
 
         mesbox("You bind the synapse to the bow, and it begins to smoulder...")
         delay(3)
+        anim("seq.stringing_magic_longbow")
         soundSynth(3771)
         delay(2)
 
