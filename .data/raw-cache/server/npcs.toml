@@ -16792,3 +16792,12 @@ id = "npc.yama_voidflare"
 inherit = "npc.yama_voidflare"
 [npc.params]
 "param.demon"=1
+
+# Gertrude's Cat: the invisible mewing "crates" around the lumber yard. The timer drives their
+# ambient "Mew!"; they stay on their crates so the Search option is always where the sound is.
+[[npc]]
+id = "npc.kittens_mew"
+inherit = "npc.kittens_mew"
+timer = 1
+moveRestrict = "NoMove"
+wanderRange = 0
