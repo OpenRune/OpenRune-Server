@@ -10,6 +10,7 @@ import org.rsmod.plugin.scripts.ScriptContext
 class AliMorrisane : PluginScript() {
     override fun ScriptContext.startup() {
         onOpNpc1(ALI_MORRISANE) { startDialogue(it.npc) }
+        onOpNpc1("npc.feud_ali_m") { startDialogue(it.npc) }
     }
 
     private suspend fun ProtectedAccess.startDialogue(npc: Npc) {

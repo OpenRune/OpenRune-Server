@@ -109,13 +109,18 @@ constructor(
         coords = current
     }
 
-    private fun Player.validatedStep(current: CoordGrid, target: CoordGrid): CoordGrid =
-        stepFactory.validated(
+    private fun Player.validatedStep(current: CoordGrid, target: CoordGrid): CoordGrid {
+        if (collisionBypassSteps > 0) {
+            collisionBypassSteps--
+            return stepFactory.unvalidated(current, target)
+        }
+        return stepFactory.validated(
             source = current,
             dest = target,
             size = size,
             extraFlag = CollisionFlag.BLOCK_PLAYERS,
         )
+    }
 
     private fun Player.addBlockWalkCollision(coords: CoordGrid) {
         if (!hidden) {
