@@ -37,7 +37,7 @@ class SequenceServerCodec(val sequences: Map<Int, SequenceType>? = null) :
 
     private fun SequenceType.getSkeletalLength(): Int = rangeEnd - rangeBegin
 
-    private fun tickDuration(shorts: MutableList<Int>): Int {
+    private fun tickDuration(shorts: List<Int>): Int {
         val validDelays = shorts.dropLastWhile { it > 30 }
         val buffer = if (validDelays.size != shorts.size) 5 else 0
         val duration = (validDelays.sum() + buffer) * 20

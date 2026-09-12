@@ -140,7 +140,7 @@ class NpcServerCodec(
         multiVarBit = obj.multiVarBit
         multiDefault = obj.multiDefault
         multiVarp = obj.multiVarp
-        transforms = obj.transforms
+        transforms = obj.transforms?.toMutableList()
         combatLevel = obj.combatLevel
         renderPriority = obj.renderPriority
         lowPriorityFollowerOps = obj.lowPriorityFollowerOps

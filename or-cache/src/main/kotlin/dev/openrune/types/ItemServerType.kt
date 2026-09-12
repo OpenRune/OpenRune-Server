@@ -4,6 +4,7 @@ import dev.openrune.ParamMap
 import dev.openrune.ServerCacheManager
 import dev.openrune.TypedParamType
 import dev.openrune.definition.Definition
+import dev.openrune.definition.EntityOpsBuilder
 import dev.openrune.definition.EntityOpsDefinition
 import dev.openrune.definition.type.ObjStackability
 import dev.openrune.definition.type.ParamType
@@ -27,7 +28,7 @@ data class ItemServerType(
     var weight: Double = 0.0,
     var stockmarket: Boolean = false,
     var category: Int = -1,
-    var options: EntityOpsDefinition = EntityOpsDefinition().op(2, "Take"),
+    var options: EntityOpsDefinition = DEFAULT_OPTIONS,
     var interfaceOptions: MutableList<String?> = mutableListOf(null, null, null, null, "Drop"),
     var certlink: Int = 0,
     var certtemplate: Int = 0,
@@ -54,9 +55,13 @@ data class ItemServerType(
     var weaponCategory: WeaponCategory = WeaponCategory.Unarmed,
     var transformlink: Int = 0,
     var transformtemplate: Int = 0,
-    var countCo: MutableList<Int>? = null,
-    var countObj: MutableList<Int>? = null,
+    var countCo: List<Int>? = null,
+    var countObj: List<Int>? = null,
 ) : Definition {
+
+    companion object {
+        private val DEFAULT_OPTIONS: EntityOpsDefinition = EntityOpsBuilder().op(2, "Take").build()
+    }
 
     val internalName
         get() = RSCM.getReverseMapping(RSCMType.OBJ, id)

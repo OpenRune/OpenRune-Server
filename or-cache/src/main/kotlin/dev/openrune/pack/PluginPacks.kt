@@ -5,6 +5,7 @@ import dev.openrune.cache.tools.cs2.PackCs2
 import dev.openrune.cache.tools.iftype.PackIfType
 import dev.openrune.cache.tools.tasks.CacheTask
 import dev.openrune.cache.tools.tasks.impl.PackDBTables
+import dev.openrune.cache.tools.tasks.impl.PackWorldMap
 import dev.openrune.cache.tools.tasks.impl.PackModels
 import dev.openrune.cache.tools.tasks.impl.defs.PackConfig
 import dev.openrune.definition.dbtables.DBTable
@@ -57,6 +58,7 @@ class PluginPacks(val projectRoot: File, val all: List<PluginPack>) {
         val tables = baseTables + active.flatMap { it.dbTables() }
         tasks += PackDBTables(tables)
 
+        tasks += PackWorldMap()
         return tasks
     }
 
