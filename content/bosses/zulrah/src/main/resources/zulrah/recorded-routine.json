@@ -1,0 +1,3013 @@
+{
+  "source": "https://rsprox.net/download/3276",
+  "sourceSha256": "af6564b8a0c33f9295d4be79554e41701cd3e184c1dc8e8b9bcb706b4fbcf856",
+  "revision": "234.1",
+  "mode": "Grid Master",
+  "startTick": 8318,
+  "endTick": 520,
+  "caveat": "Finite recorded branch, not a random rotation generator or proof of normal-world timing.",
+  "events": [
+    {
+      "tick": 0,
+      "kind": "emerge",
+      "symbol": "npc.snakeboss_boss_ranged",
+      "x": 0,
+      "z": 0,
+      "initial": true
+    },
+    {
+      "tick": 13,
+      "kind": "gas",
+      "symbol": "spotanim.snakeboss_double_orb",
+      "source": {
+        "x": 2,
+        "z": 1
+      },
+      "target": {
+        "x": 2,
+        "z": -5
+      },
+      "starttime": 40,
+      "endtime": 90,
+      "angle": 0,
+      "progress": 0,
+      "startheight": 370,
+      "endheight": 20,
+      "impactDelay": 3,
+      "rotation": 1,
+      "cloudLifetime": 30
+    },
+    {
+      "tick": 13,
+      "kind": "gas",
+      "symbol": "spotanim.snakeboss_double_orb",
+      "source": {
+        "x": 2,
+        "z": 1
+      },
+      "target": {
+        "x": 5,
+        "z": -5
+      },
+      "starttime": 45,
+      "endtime": 120,
+      "angle": 10,
+      "progress": 0,
+      "startheight": 370,
+      "endheight": 20,
+      "impactDelay": 4,
+      "rotation": 3,
+      "cloudLifetime": 30
+    },
+    {
+      "tick": 16,
+      "kind": "gas",
+      "symbol": "spotanim.snakeboss_double_orb",
+      "source": {
+        "x": 1,
+        "z": 1
+      },
+      "target": {
+        "x": -4,
+        "z": -4
+      },
+      "starttime": 40,
+      "endtime": 90,
+      "angle": 0,
+      "progress": 0,
+      "startheight": 370,
+      "endheight": 20,
+      "impactDelay": 3,
+      "rotation": 3,
+      "cloudLifetime": 30
+    },
+    {
+      "tick": 16,
+      "kind": "gas",
+      "symbol": "spotanim.snakeboss_double_orb",
+      "source": {
+        "x": 1,
+        "z": 1
+      },
+      "target": {
+        "x": -1,
+        "z": -5
+      },
+      "starttime": 45,
+      "endtime": 120,
+      "angle": 10,
+      "progress": 0,
+      "startheight": 370,
+      "endheight": 20,
+      "impactDelay": 4,
+      "rotation": 0,
+      "cloudLifetime": 30
+    },
+    {
+      "tick": 19,
+      "kind": "gas",
+      "symbol": "spotanim.snakeboss_double_orb",
+      "source": {
+        "x": 3,
+        "z": 1
+      },
+      "target": {
+        "x": 6,
+        "z": -2
+      },
+      "starttime": 40,
+      "endtime": 90,
+      "angle": 0,
+      "progress": 0,
+      "startheight": 370,
+      "endheight": 20,
+      "impactDelay": 3,
+      "rotation": 2,
+      "cloudLifetime": 30
+    },
+    {
+      "tick": 19,
+      "kind": "gas",
+      "symbol": "spotanim.snakeboss_double_orb",
+      "source": {
+        "x": 3,
+        "z": 1
+      },
+      "target": {
+        "x": 6,
+        "z": 1
+      },
+      "starttime": 45,
+      "endtime": 120,
+      "angle": 10,
+      "progress": 0,
+      "startheight": 370,
+      "endheight": 20,
+      "impactDelay": 4,
+      "rotation": 1,
+      "cloudLifetime": 30
+    },
+    {
+      "tick": 22,
+      "kind": "gas",
+      "symbol": "spotanim.snakeboss_double_orb",
+      "source": {
+        "x": 1,
+        "z": 2
+      },
+      "target": {
+        "x": -4,
+        "z": 2
+      },
+      "starttime": 40,
+      "endtime": 90,
+      "angle": 0,
+      "progress": 0,
+      "startheight": 370,
+      "endheight": 20,
+      "impactDelay": 3,
+      "rotation": 2,
+      "cloudLifetime": 30
+    },
+    {
+      "tick": 22,
+      "kind": "gas",
+      "symbol": "spotanim.snakeboss_double_orb",
+      "source": {
+        "x": 1,
+        "z": 2
+      },
+      "target": {
+        "x": -4,
+        "z": -1
+      },
+      "starttime": 45,
+      "endtime": 120,
+      "angle": 10,
+      "progress": 0,
+      "startheight": 370,
+      "endheight": 20,
+      "impactDelay": 10,
+      "rotation": 0,
+      "cloudLifetime": 30
+    },
+    {
+      "tick": 26,
+      "kind": "dive"
+    },
+    {
+      "tick": 29,
+      "kind": "emerge",
+      "symbol": "npc.snakeboss_boss_magic",
+      "x": 10,
+      "z": -2,
+      "initial": false
+    },
+    {
+      "tick": 32,
+      "kind": "egg",
+      "symbol": "spotanim.snakeboss_egg",
+      "source": {
+        "x": 11,
+        "z": -1
+      },
+      "target": {
+        "x": 6,
+        "z": -4
+      },
+      "starttime": 40,
+      "endtime": 120,
+      "angle": 0,
+      "progress": 0,
+      "startheight": 370,
+      "endheight": 20,
+      "impactDelay": 4,
+      "spawn": "npc.snakeboss_minion_magic"
+    },
+    {
+      "tick": 35,
+      "kind": "egg",
+      "symbol": "spotanim.snakeboss_egg",
+      "source": {
+        "x": 11,
+        "z": 1
+      },
+      "target": {
+        "x": 7,
+        "z": 5
+      },
+      "starttime": 40,
+      "endtime": 120,
+      "angle": 0,
+      "progress": 0,
+      "startheight": 370,
+      "endheight": 20,
+      "impactDelay": 4,
+      "spawn": "npc.snakeboss_minion_magic"
+    },
+    {
+      "tick": 38,
+      "kind": "egg",
+      "symbol": "spotanim.snakeboss_egg",
+      "source": {
+        "x": 11,
+        "z": 0
+      },
+      "target": {
+        "x": 7,
+        "z": 2
+      },
+      "starttime": 40,
+      "endtime": 120,
+      "angle": 0,
+      "progress": 0,
+      "startheight": 370,
+      "endheight": 20,
+      "impactDelay": 4,
+      "spawn": "npc.snakeboss_minion_melee"
+    },
+    {
+      "tick": 41,
+      "kind": "egg",
+      "symbol": "spotanim.snakeboss_egg",
+      "source": {
+        "x": 11,
+        "z": 0
+      },
+      "target": {
+        "x": 7,
+        "z": -1
+      },
+      "starttime": 40,
+      "endtime": 120,
+      "angle": 0,
+      "progress": 0,
+      "startheight": 370,
+      "endheight": 20,
+      "impactDelay": 4,
+      "spawn": "npc.snakeboss_minion_magic"
+    },
+    {
+      "tick": 45,
+      "kind": "attack",
+      "symbol": "spotanim.snakeboss_orb",
+      "source": {
+        "x": 11,
+        "z": 0
+      },
+      "target": {
+        "x": 6,
+        "z": 5
+      },
+      "starttime": 40,
+      "endtime": 90,
+      "angle": 0,
+      "progress": 0,
+      "startheight": 370,
+      "endheight": 50
+    },
+    {
+      "tick": 48,
+      "kind": "attack",
+      "symbol": "spotanim.snakeboss_fireball",
+      "source": {
+        "x": 11,
+        "z": 1
+      },
+      "target": {
+        "x": 6,
+        "z": 5
+      },
+      "starttime": 40,
+      "endtime": 90,
+      "angle": 0,
+      "progress": 0,
+      "startheight": 370,
+      "endheight": 50
+    },
+    {
+      "tick": 51,
+      "kind": "attack",
+      "symbol": "spotanim.snakeboss_orb",
+      "source": {
+        "x": 11,
+        "z": 1
+      },
+      "target": {
+        "x": 6,
+        "z": 5
+      },
+      "starttime": 40,
+      "endtime": 90,
+      "angle": 0,
+      "progress": 0,
+      "startheight": 370,
+      "endheight": 50
+    },
+    {
+      "tick": 54,
+      "kind": "attack",
+      "symbol": "spotanim.snakeboss_fireball",
+      "source": {
+        "x": 11,
+        "z": 1
+      },
+      "target": {
+        "x": 6,
+        "z": 5
+      },
+      "starttime": 40,
+      "endtime": 90,
+      "angle": 0,
+      "progress": 0,
+      "startheight": 370,
+      "endheight": 50
+    },
+    {
+      "tick": 57,
+      "kind": "attack",
+      "symbol": "spotanim.snakeboss_fireball",
+      "source": {
+        "x": 11,
+        "z": 1
+      },
+      "target": {
+        "x": 6,
+        "z": 5
+      },
+      "starttime": 40,
+      "endtime": 90,
+      "angle": 0,
+      "progress": 0,
+      "startheight": 370,
+      "endheight": 50
+    },
+    {
+      "tick": 60,
+      "kind": "attack",
+      "symbol": "spotanim.snakeboss_fireball",
+      "source": {
+        "x": 11,
+        "z": 1
+      },
+      "target": {
+        "x": 6,
+        "z": 5
+      },
+      "starttime": 40,
+      "endtime": 90,
+      "angle": 0,
+      "progress": 0,
+      "startheight": 370,
+      "endheight": 50
+    },
+    {
+      "tick": 63,
+      "kind": "dive"
+    },
+    {
+      "tick": 66,
+      "kind": "emerge",
+      "symbol": "npc.snakeboss_boss_ranged",
+      "x": 0,
+      "z": -11,
+      "initial": false
+    },
+    {
+      "tick": 70,
+      "kind": "attack",
+      "symbol": "spotanim.snakeboss_orb",
+      "source": {
+        "x": 2,
+        "z": -8
+      },
+      "target": {
+        "x": 6,
+        "z": -1
+      },
+      "starttime": 40,
+      "endtime": 90,
+      "angle": 0,
+      "progress": 0,
+      "startheight": 370,
+      "endheight": 50
+    },
+    {
+      "tick": 73,
+      "kind": "attack",
+      "symbol": "spotanim.snakeboss_orb",
+      "source": {
+        "x": 2,
+        "z": -8
+      },
+      "target": {
+        "x": 2,
+        "z": -4
+      },
+      "starttime": 40,
+      "endtime": 90,
+      "angle": 0,
+      "progress": 0,
+      "startheight": 370,
+      "endheight": 50
+    },
+    {
+      "tick": 76,
+      "kind": "attack",
+      "symbol": "spotanim.snakeboss_orb",
+      "source": {
+        "x": 2,
+        "z": -8
+      },
+      "target": {
+        "x": -1,
+        "z": -3
+      },
+      "starttime": 40,
+      "endtime": 90,
+      "angle": 0,
+      "progress": 0,
+      "startheight": 370,
+      "endheight": 50
+    },
+    {
+      "tick": 79,
+      "kind": "gas",
+      "symbol": "spotanim.snakeboss_double_orb",
+      "source": {
+        "x": 1,
+        "z": -8
+      },
+      "target": {
+        "x": -4,
+        "z": -4
+      },
+      "starttime": 40,
+      "endtime": 90,
+      "angle": 0,
+      "progress": 0,
+      "startheight": 370,
+      "endheight": 20,
+      "impactDelay": 3,
+      "rotation": 0,
+      "cloudLifetime": 30
+    },
+    {
+      "tick": 79,
+      "kind": "gas",
+      "symbol": "spotanim.snakeboss_double_orb",
+      "source": {
+        "x": 1,
+        "z": -8
+      },
+      "target": {
+        "x": 2,
+        "z": -5
+      },
+      "starttime": 45,
+      "endtime": 120,
+      "angle": 10,
+      "progress": 0,
+      "startheight": 370,
+      "endheight": 20,
+      "impactDelay": 4,
+      "rotation": 1,
+      "cloudLifetime": 30
+    },
+    {
+      "tick": 82,
+      "kind": "gas",
+      "symbol": "spotanim.snakeboss_double_orb",
+      "source": {
+        "x": 1,
+        "z": -8
+      },
+      "target": {
+        "x": -1,
+        "z": -5
+      },
+      "starttime": 40,
+      "endtime": 90,
+      "angle": 0,
+      "progress": 0,
+      "startheight": 370,
+      "endheight": 20,
+      "impactDelay": 3,
+      "rotation": 3,
+      "cloudLifetime": 30
+    },
+    {
+      "tick": 82,
+      "kind": "gas",
+      "symbol": "spotanim.snakeboss_double_orb",
+      "source": {
+        "x": 1,
+        "z": -8
+      },
+      "target": {
+        "x": 5,
+        "z": -5
+      },
+      "starttime": 45,
+      "endtime": 120,
+      "angle": 10,
+      "progress": 0,
+      "startheight": 370,
+      "endheight": 20,
+      "impactDelay": 10,
+      "rotation": 0,
+      "cloudLifetime": 30
+    },
+    {
+      "tick": 86,
+      "kind": "dive"
+    },
+    {
+      "tick": 89,
+      "kind": "emerge",
+      "symbol": "npc.snakeboss_boss_magic",
+      "x": -10,
+      "z": -2,
+      "initial": false
+    },
+    {
+      "tick": 92,
+      "kind": "egg",
+      "symbol": "spotanim.snakeboss_egg",
+      "source": {
+        "x": -7,
+        "z": 1
+      },
+      "target": {
+        "x": -3,
+        "z": 3
+      },
+      "starttime": 40,
+      "endtime": 120,
+      "angle": 0,
+      "progress": 0,
+      "startheight": 370,
+      "endheight": 20,
+      "impactDelay": 4,
+      "spawn": "npc.snakeboss_minion_melee"
+    },
+    {
+      "tick": 95,
+      "kind": "egg",
+      "symbol": "spotanim.snakeboss_egg",
+      "source": {
+        "x": -7,
+        "z": 0
+      },
+      "target": {
+        "x": -3,
+        "z": 0
+      },
+      "starttime": 40,
+      "endtime": 120,
+      "angle": 0,
+      "progress": 0,
+      "startheight": 370,
+      "endheight": 20,
+      "impactDelay": 4,
+      "spawn": "npc.snakeboss_minion_melee"
+    },
+    {
+      "tick": 98,
+      "kind": "egg",
+      "symbol": "spotanim.snakeboss_egg",
+      "source": {
+        "x": -7,
+        "z": -1
+      },
+      "target": {
+        "x": 0,
+        "z": -4
+      },
+      "starttime": 40,
+      "endtime": 120,
+      "angle": 0,
+      "progress": 0,
+      "startheight": 370,
+      "endheight": 20,
+      "impactDelay": 4,
+      "spawn": "npc.snakeboss_minion_melee"
+    },
+    {
+      "tick": 101,
+      "kind": "egg",
+      "symbol": "spotanim.snakeboss_egg",
+      "source": {
+        "x": -7,
+        "z": 0
+      },
+      "target": {
+        "x": 3,
+        "z": -4
+      },
+      "starttime": 40,
+      "endtime": 120,
+      "angle": 0,
+      "progress": 0,
+      "startheight": 370,
+      "endheight": 20,
+      "impactDelay": 4,
+      "spawn": "npc.snakeboss_minion_melee"
+    },
+    {
+      "tick": 105,
+      "kind": "attack",
+      "symbol": "spotanim.snakeboss_fireball",
+      "source": {
+        "x": -7,
+        "z": 0
+      },
+      "target": {
+        "x": -3,
+        "z": 0
+      },
+      "starttime": 40,
+      "endtime": 90,
+      "angle": 0,
+      "progress": 0,
+      "startheight": 370,
+      "endheight": 50
+    },
+    {
+      "tick": 108,
+      "kind": "attack",
+      "symbol": "spotanim.snakeboss_fireball",
+      "source": {
+        "x": -7,
+        "z": 0
+      },
+      "target": {
+        "x": -3,
+        "z": 0
+      },
+      "starttime": 40,
+      "endtime": 90,
+      "angle": 0,
+      "progress": 0,
+      "startheight": 370,
+      "endheight": 50
+    },
+    {
+      "tick": 111,
+      "kind": "attack",
+      "symbol": "spotanim.snakeboss_fireball",
+      "source": {
+        "x": -7,
+        "z": 0
+      },
+      "target": {
+        "x": -3,
+        "z": 0
+      },
+      "starttime": 40,
+      "endtime": 90,
+      "angle": 0,
+      "progress": 0,
+      "startheight": 370,
+      "endheight": 50
+    },
+    {
+      "tick": 114,
+      "kind": "attack",
+      "symbol": "spotanim.snakeboss_fireball",
+      "source": {
+        "x": -7,
+        "z": 0
+      },
+      "target": {
+        "x": -3,
+        "z": 0
+      },
+      "starttime": 40,
+      "endtime": 90,
+      "angle": 0,
+      "progress": 0,
+      "startheight": 370,
+      "endheight": 50
+    },
+    {
+      "tick": 117,
+      "kind": "dive"
+    },
+    {
+      "tick": 120,
+      "kind": "emerge",
+      "symbol": "npc.snakeboss_boss_melee",
+      "x": 0,
+      "z": 0,
+      "initial": false
+    },
+    {
+      "tick": 123,
+      "kind": "tail",
+      "symbol": "seq.snakeboss_attack_tail_right"
+    },
+    {
+      "tick": 130,
+      "kind": "tail",
+      "symbol": "seq.snakeboss_attack_tail_right"
+    },
+    {
+      "tick": 138,
+      "kind": "gas",
+      "symbol": "spotanim.snakeboss_double_orb",
+      "source": {
+        "x": 1,
+        "z": 1
+      },
+      "target": {
+        "x": -4,
+        "z": -4
+      },
+      "starttime": 40,
+      "endtime": 90,
+      "angle": 0,
+      "progress": 0,
+      "startheight": 370,
+      "endheight": 20,
+      "impactDelay": 3,
+      "rotation": 1,
+      "cloudLifetime": 30
+    },
+    {
+      "tick": 138,
+      "kind": "gas",
+      "symbol": "spotanim.snakeboss_double_orb",
+      "source": {
+        "x": 1,
+        "z": 1
+      },
+      "target": {
+        "x": 2,
+        "z": -5
+      },
+      "starttime": 45,
+      "endtime": 120,
+      "angle": 10,
+      "progress": 0,
+      "startheight": 370,
+      "endheight": 20,
+      "impactDelay": 4,
+      "rotation": 2,
+      "cloudLifetime": 30
+    },
+    {
+      "tick": 141,
+      "kind": "gas",
+      "symbol": "spotanim.snakeboss_double_orb",
+      "source": {
+        "x": 2,
+        "z": 1
+      },
+      "target": {
+        "x": -1,
+        "z": -5
+      },
+      "starttime": 40,
+      "endtime": 90,
+      "angle": 0,
+      "progress": 0,
+      "startheight": 370,
+      "endheight": 20,
+      "impactDelay": 3,
+      "rotation": 1,
+      "cloudLifetime": 30
+    },
+    {
+      "tick": 141,
+      "kind": "gas",
+      "symbol": "spotanim.snakeboss_double_orb",
+      "source": {
+        "x": 2,
+        "z": 1
+      },
+      "target": {
+        "x": 5,
+        "z": -5
+      },
+      "starttime": 45,
+      "endtime": 120,
+      "angle": 10,
+      "progress": 0,
+      "startheight": 370,
+      "endheight": 20,
+      "impactDelay": 10,
+      "rotation": 0,
+      "cloudLifetime": 30
+    },
+    {
+      "tick": 145,
+      "kind": "dive"
+    },
+    {
+      "tick": 148,
+      "kind": "emerge",
+      "symbol": "npc.snakeboss_boss_ranged",
+      "x": 10,
+      "z": -2,
+      "initial": false
+    },
+    {
+      "tick": 151,
+      "kind": "attack",
+      "symbol": "spotanim.snakeboss_orb",
+      "source": {
+        "x": 11,
+        "z": 0
+      },
+      "target": {
+        "x": 7,
+        "z": -1
+      },
+      "starttime": 40,
+      "endtime": 90,
+      "angle": 0,
+      "progress": 0,
+      "startheight": 370,
+      "endheight": 50
+    },
+    {
+      "tick": 154,
+      "kind": "attack",
+      "symbol": "spotanim.snakeboss_orb",
+      "source": {
+        "x": 11,
+        "z": 0
+      },
+      "target": {
+        "x": 7,
+        "z": 0
+      },
+      "starttime": 40,
+      "endtime": 90,
+      "angle": 0,
+      "progress": 0,
+      "startheight": 370,
+      "endheight": 50
+    },
+    {
+      "tick": 157,
+      "kind": "attack",
+      "symbol": "spotanim.snakeboss_orb",
+      "source": {
+        "x": 11,
+        "z": 0
+      },
+      "target": {
+        "x": 7,
+        "z": 0
+      },
+      "starttime": 40,
+      "endtime": 90,
+      "angle": 0,
+      "progress": 0,
+      "startheight": 370,
+      "endheight": 50
+    },
+    {
+      "tick": 160,
+      "kind": "attack",
+      "symbol": "spotanim.snakeboss_orb",
+      "source": {
+        "x": 11,
+        "z": 0
+      },
+      "target": {
+        "x": 7,
+        "z": 0
+      },
+      "starttime": 40,
+      "endtime": 90,
+      "angle": 0,
+      "progress": 0,
+      "startheight": 370,
+      "endheight": 50
+    },
+    {
+      "tick": 163,
+      "kind": "dive"
+    },
+    {
+      "tick": 166,
+      "kind": "emerge",
+      "symbol": "npc.snakeboss_boss_ranged",
+      "x": 0,
+      "z": -11,
+      "initial": false
+    },
+    {
+      "tick": 169,
+      "kind": "egg",
+      "symbol": "spotanim.snakeboss_egg",
+      "source": {
+        "x": 1,
+        "z": -8
+      },
+      "target": {
+        "x": -3,
+        "z": 3
+      },
+      "starttime": 40,
+      "endtime": 120,
+      "angle": 0,
+      "progress": 0,
+      "startheight": 370,
+      "endheight": 20,
+      "impactDelay": 4,
+      "spawn": "npc.snakeboss_minion_melee"
+    },
+    {
+      "tick": 172,
+      "kind": "egg",
+      "symbol": "spotanim.snakeboss_egg",
+      "source": {
+        "x": 1,
+        "z": -8
+      },
+      "target": {
+        "x": -3,
+        "z": 0
+      },
+      "starttime": 40,
+      "endtime": 120,
+      "angle": 0,
+      "progress": 0,
+      "startheight": 370,
+      "endheight": 20,
+      "impactDelay": 4,
+      "spawn": "npc.snakeboss_minion_magic"
+    },
+    {
+      "tick": 175,
+      "kind": "egg",
+      "symbol": "spotanim.snakeboss_egg",
+      "source": {
+        "x": 1,
+        "z": -8
+      },
+      "target": {
+        "x": -3,
+        "z": -3
+      },
+      "starttime": 40,
+      "endtime": 120,
+      "angle": 0,
+      "progress": 0,
+      "startheight": 370,
+      "endheight": 20,
+      "impactDelay": 4,
+      "spawn": "npc.snakeboss_minion_melee"
+    },
+    {
+      "tick": 178,
+      "kind": "egg",
+      "symbol": "spotanim.snakeboss_egg",
+      "source": {
+        "x": 3,
+        "z": -8
+      },
+      "target": {
+        "x": 7,
+        "z": -1
+      },
+      "starttime": 40,
+      "endtime": 120,
+      "angle": 0,
+      "progress": 0,
+      "startheight": 370,
+      "endheight": 20,
+      "impactDelay": 4,
+      "spawn": "npc.snakeboss_minion_melee"
+    },
+    {
+      "tick": 181,
+      "kind": "egg",
+      "symbol": "spotanim.snakeboss_egg",
+      "source": {
+        "x": 3,
+        "z": -8
+      },
+      "target": {
+        "x": 7,
+        "z": 2
+      },
+      "starttime": 40,
+      "endtime": 120,
+      "angle": 0,
+      "progress": 0,
+      "startheight": 370,
+      "endheight": 20,
+      "impactDelay": 4,
+      "spawn": "npc.snakeboss_minion_magic"
+    },
+    {
+      "tick": 184,
+      "kind": "egg",
+      "symbol": "spotanim.snakeboss_egg",
+      "source": {
+        "x": 2,
+        "z": -8
+      },
+      "target": {
+        "x": 7,
+        "z": 5
+      },
+      "starttime": 40,
+      "endtime": 120,
+      "angle": 0,
+      "progress": 0,
+      "startheight": 370,
+      "endheight": 20,
+      "impactDelay": 4,
+      "spawn": "npc.snakeboss_minion_magic"
+    },
+    {
+      "tick": 188,
+      "kind": "gas",
+      "symbol": "spotanim.snakeboss_double_orb",
+      "source": {
+        "x": 3,
+        "z": -8
+      },
+      "target": {
+        "x": 6,
+        "z": 1
+      },
+      "starttime": 40,
+      "endtime": 90,
+      "angle": 0,
+      "progress": 0,
+      "startheight": 370,
+      "endheight": 20,
+      "impactDelay": 3,
+      "rotation": 0,
+      "cloudLifetime": 30
+    },
+    {
+      "tick": 188,
+      "kind": "gas",
+      "symbol": "spotanim.snakeboss_double_orb",
+      "source": {
+        "x": 3,
+        "z": -8
+      },
+      "target": {
+        "x": 6,
+        "z": 4
+      },
+      "starttime": 45,
+      "endtime": 120,
+      "angle": 10,
+      "progress": 0,
+      "startheight": 370,
+      "endheight": 20,
+      "impactDelay": 4,
+      "rotation": 1,
+      "cloudLifetime": 30
+    },
+    {
+      "tick": 191,
+      "kind": "gas",
+      "symbol": "spotanim.snakeboss_double_orb",
+      "source": {
+        "x": 3,
+        "z": -8
+      },
+      "target": {
+        "x": 5,
+        "z": -5
+      },
+      "starttime": 40,
+      "endtime": 90,
+      "angle": 0,
+      "progress": 0,
+      "startheight": 370,
+      "endheight": 20,
+      "impactDelay": 3,
+      "rotation": 3,
+      "cloudLifetime": 30
+    },
+    {
+      "tick": 191,
+      "kind": "gas",
+      "symbol": "spotanim.snakeboss_double_orb",
+      "source": {
+        "x": 3,
+        "z": -8
+      },
+      "target": {
+        "x": 6,
+        "z": -2
+      },
+      "starttime": 45,
+      "endtime": 120,
+      "angle": 10,
+      "progress": 0,
+      "startheight": 370,
+      "endheight": 20,
+      "impactDelay": 4,
+      "rotation": 2,
+      "cloudLifetime": 30
+    },
+    {
+      "tick": 194,
+      "kind": "gas",
+      "symbol": "spotanim.snakeboss_double_orb",
+      "source": {
+        "x": 2,
+        "z": -8
+      },
+      "target": {
+        "x": 2,
+        "z": -5
+      },
+      "starttime": 40,
+      "endtime": 90,
+      "angle": 0,
+      "progress": 0,
+      "startheight": 370,
+      "endheight": 20,
+      "impactDelay": 3,
+      "rotation": 2,
+      "cloudLifetime": 30
+    },
+    {
+      "tick": 194,
+      "kind": "gas",
+      "symbol": "spotanim.snakeboss_double_orb",
+      "source": {
+        "x": 2,
+        "z": -8
+      },
+      "target": {
+        "x": -1,
+        "z": -5
+      },
+      "starttime": 45,
+      "endtime": 120,
+      "angle": 10,
+      "progress": 0,
+      "startheight": 370,
+      "endheight": 20,
+      "impactDelay": 10,
+      "rotation": 2,
+      "cloudLifetime": 30
+    },
+    {
+      "tick": 198,
+      "kind": "dive"
+    },
+    {
+      "tick": 201,
+      "kind": "emerge",
+      "symbol": "npc.snakeboss_boss_magic",
+      "x": -10,
+      "z": -2,
+      "initial": false
+    },
+    {
+      "tick": 204,
+      "kind": "attack",
+      "symbol": "spotanim.snakeboss_orb",
+      "source": {
+        "x": -7,
+        "z": 0
+      },
+      "target": {
+        "x": -2,
+        "z": 0
+      },
+      "starttime": 40,
+      "endtime": 90,
+      "angle": 0,
+      "progress": 0,
+      "startheight": 370,
+      "endheight": 50
+    },
+    {
+      "tick": 207,
+      "kind": "attack",
+      "symbol": "spotanim.snakeboss_fireball",
+      "source": {
+        "x": -7,
+        "z": 0
+      },
+      "target": {
+        "x": -2,
+        "z": 0
+      },
+      "starttime": 40,
+      "endtime": 90,
+      "angle": 0,
+      "progress": 0,
+      "startheight": 370,
+      "endheight": 50
+    },
+    {
+      "tick": 210,
+      "kind": "attack",
+      "symbol": "spotanim.snakeboss_fireball",
+      "source": {
+        "x": -7,
+        "z": 0
+      },
+      "target": {
+        "x": -2,
+        "z": 0
+      },
+      "starttime": 40,
+      "endtime": 90,
+      "angle": 0,
+      "progress": 0,
+      "startheight": 370,
+      "endheight": 50
+    },
+    {
+      "tick": 213,
+      "kind": "attack",
+      "symbol": "spotanim.snakeboss_fireball",
+      "source": {
+        "x": -7,
+        "z": 0
+      },
+      "target": {
+        "x": -2,
+        "z": 0
+      },
+      "starttime": 40,
+      "endtime": 90,
+      "angle": 0,
+      "progress": 0,
+      "startheight": 370,
+      "endheight": 50
+    },
+    {
+      "tick": 216,
+      "kind": "attack",
+      "symbol": "spotanim.snakeboss_fireball",
+      "source": {
+        "x": -7,
+        "z": 0
+      },
+      "target": {
+        "x": -2,
+        "z": 0
+      },
+      "starttime": 40,
+      "endtime": 90,
+      "angle": 0,
+      "progress": 0,
+      "startheight": 370,
+      "endheight": 50
+    },
+    {
+      "tick": 219,
+      "kind": "egg",
+      "symbol": "spotanim.snakeboss_egg",
+      "source": {
+        "x": -7,
+        "z": 1
+      },
+      "target": {
+        "x": -3,
+        "z": 3
+      },
+      "starttime": 40,
+      "endtime": 120,
+      "angle": 0,
+      "progress": 0,
+      "startheight": 370,
+      "endheight": 20,
+      "impactDelay": 4,
+      "spawn": "npc.snakeboss_minion_magic"
+    },
+    {
+      "tick": 222,
+      "kind": "egg",
+      "symbol": "spotanim.snakeboss_egg",
+      "source": {
+        "x": -7,
+        "z": 0
+      },
+      "target": {
+        "x": -3,
+        "z": 0
+      },
+      "starttime": 40,
+      "endtime": 120,
+      "angle": 0,
+      "progress": 0,
+      "startheight": 370,
+      "endheight": 20,
+      "impactDelay": 4,
+      "spawn": "npc.snakeboss_minion_melee"
+    },
+    {
+      "tick": 225,
+      "kind": "egg",
+      "symbol": "spotanim.snakeboss_egg",
+      "source": {
+        "x": -7,
+        "z": -1
+      },
+      "target": {
+        "x": -3,
+        "z": -3
+      },
+      "starttime": 40,
+      "endtime": 120,
+      "angle": 0,
+      "progress": 0,
+      "startheight": 370,
+      "endheight": 20,
+      "impactDelay": 4,
+      "spawn": "npc.snakeboss_minion_magic"
+    },
+    {
+      "tick": 228,
+      "kind": "egg",
+      "symbol": "spotanim.snakeboss_egg",
+      "source": {
+        "x": -7,
+        "z": -1
+      },
+      "target": {
+        "x": 0,
+        "z": -4
+      },
+      "starttime": 40,
+      "endtime": 120,
+      "angle": 0,
+      "progress": 0,
+      "startheight": 370,
+      "endheight": 20,
+      "impactDelay": 10,
+      "spawn": "npc.snakeboss_minion_melee"
+    },
+    {
+      "tick": 232,
+      "kind": "dive"
+    },
+    {
+      "tick": 235,
+      "kind": "emerge",
+      "symbol": "npc.snakeboss_boss_ranged",
+      "x": 0,
+      "z": 0,
+      "initial": false
+    },
+    {
+      "tick": 238,
+      "kind": "attack",
+      "symbol": "spotanim.snakeboss_orb",
+      "source": {
+        "x": 2,
+        "z": 1
+      },
+      "target": {
+        "x": -2,
+        "z": -1
+      },
+      "starttime": 40,
+      "endtime": 90,
+      "angle": 0,
+      "progress": 0,
+      "startheight": 370,
+      "endheight": 50
+    },
+    {
+      "tick": 241,
+      "kind": "attack",
+      "symbol": "spotanim.snakeboss_orb",
+      "source": {
+        "x": 1,
+        "z": 1
+      },
+      "target": {
+        "x": -2,
+        "z": -1
+      },
+      "starttime": 40,
+      "endtime": 90,
+      "angle": 0,
+      "progress": 0,
+      "startheight": 370,
+      "endheight": 50
+    },
+    {
+      "tick": 244,
+      "kind": "attack",
+      "symbol": "spotanim.snakeboss_orb",
+      "source": {
+        "x": 1,
+        "z": 1
+      },
+      "target": {
+        "x": -2,
+        "z": -1
+      },
+      "starttime": 40,
+      "endtime": 90,
+      "angle": 0,
+      "progress": 0,
+      "startheight": 370,
+      "endheight": 50
+    },
+    {
+      "tick": 247,
+      "kind": "attack",
+      "symbol": "spotanim.snakeboss_orb",
+      "source": {
+        "x": 1,
+        "z": 1
+      },
+      "target": {
+        "x": -2,
+        "z": -1
+      },
+      "starttime": 40,
+      "endtime": 90,
+      "angle": 0,
+      "progress": 0,
+      "startheight": 370,
+      "endheight": 50
+    },
+    {
+      "tick": 250,
+      "kind": "attack",
+      "symbol": "spotanim.snakeboss_orb",
+      "source": {
+        "x": 1,
+        "z": 1
+      },
+      "target": {
+        "x": -2,
+        "z": -1
+      },
+      "starttime": 40,
+      "endtime": 90,
+      "angle": 0,
+      "progress": 0,
+      "startheight": 370,
+      "endheight": 50
+    },
+    {
+      "tick": 253,
+      "kind": "dive"
+    },
+    {
+      "tick": 256,
+      "kind": "emerge",
+      "symbol": "npc.snakeboss_boss_magic",
+      "x": 0,
+      "z": 0,
+      "initial": false
+    },
+    {
+      "tick": 259,
+      "kind": "attack",
+      "symbol": "spotanim.snakeboss_fireball",
+      "source": {
+        "x": 2,
+        "z": 1
+      },
+      "target": {
+        "x": -2,
+        "z": -1
+      },
+      "starttime": 40,
+      "endtime": 90,
+      "angle": 0,
+      "progress": 0,
+      "startheight": 370,
+      "endheight": 50
+    },
+    {
+      "tick": 262,
+      "kind": "attack",
+      "symbol": "spotanim.snakeboss_fireball",
+      "source": {
+        "x": 1,
+        "z": 1
+      },
+      "target": {
+        "x": -2,
+        "z": -1
+      },
+      "starttime": 40,
+      "endtime": 90,
+      "angle": 0,
+      "progress": 0,
+      "startheight": 370,
+      "endheight": 50
+    },
+    {
+      "tick": 265,
+      "kind": "attack",
+      "symbol": "spotanim.snakeboss_fireball",
+      "source": {
+        "x": 2,
+        "z": 1
+      },
+      "target": {
+        "x": 0,
+        "z": -3
+      },
+      "starttime": 40,
+      "endtime": 90,
+      "angle": 0,
+      "progress": 0,
+      "startheight": 370,
+      "endheight": 50
+    },
+    {
+      "tick": 268,
+      "kind": "attack",
+      "symbol": "spotanim.snakeboss_fireball",
+      "source": {
+        "x": 2,
+        "z": 1
+      },
+      "target": {
+        "x": 0,
+        "z": -3
+      },
+      "starttime": 40,
+      "endtime": 90,
+      "angle": 0,
+      "progress": 0,
+      "startheight": 370,
+      "endheight": 50
+    },
+    {
+      "tick": 271,
+      "kind": "gas",
+      "symbol": "spotanim.snakeboss_double_orb",
+      "source": {
+        "x": 2,
+        "z": 1
+      },
+      "target": {
+        "x": -4,
+        "z": -1
+      },
+      "starttime": 40,
+      "endtime": 90,
+      "angle": 0,
+      "progress": 0,
+      "startheight": 370,
+      "endheight": 20,
+      "impactDelay": 3,
+      "rotation": 1,
+      "cloudLifetime": 30
+    },
+    {
+      "tick": 271,
+      "kind": "gas",
+      "symbol": "spotanim.snakeboss_double_orb",
+      "source": {
+        "x": 2,
+        "z": 1
+      },
+      "target": {
+        "x": -1,
+        "z": -5
+      },
+      "starttime": 45,
+      "endtime": 120,
+      "angle": 10,
+      "progress": 0,
+      "startheight": 370,
+      "endheight": 20,
+      "impactDelay": 4,
+      "rotation": 0,
+      "cloudLifetime": 30
+    },
+    {
+      "tick": 274,
+      "kind": "gas",
+      "symbol": "spotanim.snakeboss_double_orb",
+      "source": {
+        "x": 1,
+        "z": 2
+      },
+      "target": {
+        "x": -4,
+        "z": -4
+      },
+      "starttime": 40,
+      "endtime": 90,
+      "angle": 0,
+      "progress": 0,
+      "startheight": 370,
+      "endheight": 20,
+      "impactDelay": 3,
+      "rotation": 3,
+      "cloudLifetime": 30
+    },
+    {
+      "tick": 274,
+      "kind": "gas",
+      "symbol": "spotanim.snakeboss_double_orb",
+      "source": {
+        "x": 1,
+        "z": 2
+      },
+      "target": {
+        "x": -4,
+        "z": 2
+      },
+      "starttime": 45,
+      "endtime": 120,
+      "angle": 10,
+      "progress": 0,
+      "startheight": 370,
+      "endheight": 20,
+      "impactDelay": 4,
+      "rotation": 1,
+      "cloudLifetime": 30
+    },
+    {
+      "tick": 277,
+      "kind": "gas",
+      "symbol": "spotanim.snakeboss_double_orb",
+      "source": {
+        "x": 1,
+        "z": 1
+      },
+      "target": {
+        "x": 2,
+        "z": -5
+      },
+      "starttime": 40,
+      "endtime": 90,
+      "angle": 0,
+      "progress": 0,
+      "startheight": 370,
+      "endheight": 20,
+      "impactDelay": 3,
+      "rotation": 2,
+      "cloudLifetime": 30
+    },
+    {
+      "tick": 277,
+      "kind": "gas",
+      "symbol": "spotanim.snakeboss_double_orb",
+      "source": {
+        "x": 1,
+        "z": 1
+      },
+      "target": {
+        "x": 5,
+        "z": -5
+      },
+      "starttime": 45,
+      "endtime": 120,
+      "angle": 10,
+      "progress": 0,
+      "startheight": 370,
+      "endheight": 20,
+      "impactDelay": 10,
+      "rotation": 1,
+      "cloudLifetime": 30
+    },
+    {
+      "tick": 281,
+      "kind": "dive"
+    },
+    {
+      "tick": 284,
+      "kind": "emerge",
+      "symbol": "npc.snakeboss_boss_ranged",
+      "x": 10,
+      "z": -2,
+      "initial": false
+    },
+    {
+      "tick": 287,
+      "kind": "attack",
+      "symbol": "spotanim.snakeboss_fireball",
+      "source": {
+        "x": 11,
+        "z": 0
+      },
+      "target": {
+        "x": 7,
+        "z": -1
+      },
+      "starttime": 40,
+      "endtime": 90,
+      "angle": 0,
+      "progress": 0,
+      "startheight": 370,
+      "endheight": 50
+    },
+    {
+      "tick": 290,
+      "kind": "attack",
+      "symbol": "spotanim.snakeboss_orb",
+      "source": {
+        "x": 11,
+        "z": 0
+      },
+      "target": {
+        "x": 7,
+        "z": -1
+      },
+      "starttime": 40,
+      "endtime": 90,
+      "angle": 0,
+      "progress": 0,
+      "startheight": 370,
+      "endheight": 50
+    },
+    {
+      "tick": 293,
+      "kind": "attack",
+      "symbol": "spotanim.snakeboss_fireball",
+      "source": {
+        "x": 11,
+        "z": 0
+      },
+      "target": {
+        "x": 7,
+        "z": -1
+      },
+      "starttime": 40,
+      "endtime": 90,
+      "angle": 0,
+      "progress": 0,
+      "startheight": 370,
+      "endheight": 50
+    },
+    {
+      "tick": 296,
+      "kind": "attack",
+      "symbol": "spotanim.snakeboss_orb",
+      "source": {
+        "x": 11,
+        "z": 0
+      },
+      "target": {
+        "x": 7,
+        "z": -1
+      },
+      "starttime": 40,
+      "endtime": 90,
+      "angle": 0,
+      "progress": 0,
+      "startheight": 370,
+      "endheight": 50
+    },
+    {
+      "tick": 299,
+      "kind": "attack",
+      "symbol": "spotanim.snakeboss_fireball",
+      "source": {
+        "x": 11,
+        "z": 0
+      },
+      "target": {
+        "x": 7,
+        "z": -1
+      },
+      "starttime": 40,
+      "endtime": 90,
+      "angle": 0,
+      "progress": 0,
+      "startheight": 370,
+      "endheight": 50
+    },
+    {
+      "tick": 302,
+      "kind": "attack",
+      "symbol": "spotanim.snakeboss_orb",
+      "source": {
+        "x": 11,
+        "z": 0
+      },
+      "target": {
+        "x": 7,
+        "z": -1
+      },
+      "starttime": 40,
+      "endtime": 90,
+      "angle": 0,
+      "progress": 0,
+      "startheight": 370,
+      "endheight": 50
+    },
+    {
+      "tick": 305,
+      "kind": "attack",
+      "symbol": "spotanim.snakeboss_fireball",
+      "source": {
+        "x": 11,
+        "z": 0
+      },
+      "target": {
+        "x": 7,
+        "z": -1
+      },
+      "starttime": 40,
+      "endtime": 90,
+      "angle": 0,
+      "progress": 0,
+      "startheight": 370,
+      "endheight": 50
+    },
+    {
+      "tick": 308,
+      "kind": "attack",
+      "symbol": "spotanim.snakeboss_orb",
+      "source": {
+        "x": 11,
+        "z": 0
+      },
+      "target": {
+        "x": 7,
+        "z": -1
+      },
+      "starttime": 40,
+      "endtime": 90,
+      "angle": 0,
+      "progress": 0,
+      "startheight": 370,
+      "endheight": 50
+    },
+    {
+      "tick": 311,
+      "kind": "dive"
+    },
+    {
+      "tick": 314,
+      "kind": "emerge",
+      "symbol": "npc.snakeboss_boss_magic",
+      "x": 0,
+      "z": 0,
+      "initial": false
+    },
+    {
+      "tick": 317,
+      "kind": "egg",
+      "symbol": "spotanim.snakeboss_egg",
+      "source": {
+        "x": 1,
+        "z": 2
+      },
+      "target": {
+        "x": -3,
+        "z": 3
+      },
+      "starttime": 40,
+      "endtime": 120,
+      "angle": 0,
+      "progress": 0,
+      "startheight": 370,
+      "endheight": 20,
+      "impactDelay": 4,
+      "spawn": "npc.snakeboss_minion_magic"
+    },
+    {
+      "tick": 320,
+      "kind": "egg",
+      "symbol": "spotanim.snakeboss_egg",
+      "source": {
+        "x": 1,
+        "z": 2
+      },
+      "target": {
+        "x": -3,
+        "z": 0
+      },
+      "starttime": 40,
+      "endtime": 120,
+      "angle": 0,
+      "progress": 0,
+      "startheight": 370,
+      "endheight": 20,
+      "impactDelay": 4,
+      "spawn": "npc.snakeboss_minion_magic"
+    },
+    {
+      "tick": 323,
+      "kind": "egg",
+      "symbol": "spotanim.snakeboss_egg",
+      "source": {
+        "x": 3,
+        "z": 2
+      },
+      "target": {
+        "x": 7,
+        "z": 2
+      },
+      "starttime": 40,
+      "endtime": 120,
+      "angle": 0,
+      "progress": 0,
+      "startheight": 370,
+      "endheight": 20,
+      "impactDelay": 4,
+      "spawn": "npc.snakeboss_minion_melee"
+    },
+    {
+      "tick": 326,
+      "kind": "egg",
+      "symbol": "spotanim.snakeboss_egg",
+      "source": {
+        "x": 3,
+        "z": 3
+      },
+      "target": {
+        "x": 7,
+        "z": 5
+      },
+      "starttime": 40,
+      "endtime": 120,
+      "angle": 0,
+      "progress": 0,
+      "startheight": 370,
+      "endheight": 20,
+      "impactDelay": 10,
+      "spawn": "npc.snakeboss_minion_melee"
+    },
+    {
+      "tick": 330,
+      "kind": "dive"
+    },
+    {
+      "tick": 333,
+      "kind": "emerge",
+      "symbol": "npc.snakeboss_boss_ranged",
+      "x": 0,
+      "z": 0,
+      "initial": false
+    },
+    {
+      "tick": 336,
+      "kind": "attack",
+      "symbol": "spotanim.snakeboss_orb",
+      "source": {
+        "x": 2,
+        "z": 1
+      },
+      "target": {
+        "x": 8,
+        "z": 1
+      },
+      "starttime": 40,
+      "endtime": 90,
+      "angle": 0,
+      "progress": 0,
+      "startheight": 370,
+      "endheight": 50
+    },
+    {
+      "tick": 339,
+      "kind": "attack",
+      "symbol": "spotanim.snakeboss_orb",
+      "source": {
+        "x": 3,
+        "z": 2
+      },
+      "target": {
+        "x": 8,
+        "z": 1
+      },
+      "starttime": 40,
+      "endtime": 90,
+      "angle": 0,
+      "progress": 0,
+      "startheight": 370,
+      "endheight": 50
+    },
+    {
+      "tick": 342,
+      "kind": "attack",
+      "symbol": "spotanim.snakeboss_orb",
+      "source": {
+        "x": 3,
+        "z": 2
+      },
+      "target": {
+        "x": 8,
+        "z": 1
+      },
+      "starttime": 40,
+      "endtime": 90,
+      "angle": 0,
+      "progress": 0,
+      "startheight": 370,
+      "endheight": 50
+    },
+    {
+      "tick": 345,
+      "kind": "attack",
+      "symbol": "spotanim.snakeboss_orb",
+      "source": {
+        "x": 3,
+        "z": 2
+      },
+      "target": {
+        "x": 8,
+        "z": 1
+      },
+      "starttime": 40,
+      "endtime": 90,
+      "angle": 0,
+      "progress": 0,
+      "startheight": 370,
+      "endheight": 50
+    },
+    {
+      "tick": 348,
+      "kind": "attack",
+      "symbol": "spotanim.snakeboss_orb",
+      "source": {
+        "x": 3,
+        "z": 1
+      },
+      "target": {
+        "x": 6,
+        "z": -1
+      },
+      "starttime": 40,
+      "endtime": 90,
+      "angle": 0,
+      "progress": 0,
+      "startheight": 370,
+      "endheight": 50
+    },
+    {
+      "tick": 352,
+      "kind": "gas",
+      "symbol": "spotanim.snakeboss_double_orb",
+      "source": {
+        "x": 2,
+        "z": 1
+      },
+      "target": {
+        "x": 2,
+        "z": -5
+      },
+      "starttime": 40,
+      "endtime": 90,
+      "angle": 0,
+      "progress": 0,
+      "startheight": 370,
+      "endheight": 20,
+      "impactDelay": 3,
+      "rotation": 2,
+      "cloudLifetime": 30
+    },
+    {
+      "tick": 352,
+      "kind": "gas",
+      "symbol": "spotanim.snakeboss_double_orb",
+      "source": {
+        "x": 2,
+        "z": 1
+      },
+      "target": {
+        "x": 5,
+        "z": -5
+      },
+      "starttime": 45,
+      "endtime": 120,
+      "angle": 10,
+      "progress": 0,
+      "startheight": 370,
+      "endheight": 20,
+      "impactDelay": 4,
+      "rotation": 0,
+      "cloudLifetime": 30
+    },
+    {
+      "tick": 355,
+      "kind": "gas",
+      "symbol": "spotanim.snakeboss_double_orb",
+      "source": {
+        "x": 1,
+        "z": 1
+      },
+      "target": {
+        "x": -4,
+        "z": -4
+      },
+      "starttime": 40,
+      "endtime": 90,
+      "angle": 0,
+      "progress": 0,
+      "startheight": 370,
+      "endheight": 20,
+      "impactDelay": 3,
+      "rotation": 1,
+      "cloudLifetime": 30
+    },
+    {
+      "tick": 355,
+      "kind": "gas",
+      "symbol": "spotanim.snakeboss_double_orb",
+      "source": {
+        "x": 1,
+        "z": 1
+      },
+      "target": {
+        "x": -1,
+        "z": -5
+      },
+      "starttime": 45,
+      "endtime": 120,
+      "angle": 10,
+      "progress": 0,
+      "startheight": 370,
+      "endheight": 20,
+      "impactDelay": 4,
+      "rotation": 1,
+      "cloudLifetime": 30
+    },
+    {
+      "tick": 358,
+      "kind": "gas",
+      "symbol": "spotanim.snakeboss_double_orb",
+      "source": {
+        "x": 3,
+        "z": 1
+      },
+      "target": {
+        "x": 6,
+        "z": -2
+      },
+      "starttime": 40,
+      "endtime": 90,
+      "angle": 0,
+      "progress": 0,
+      "startheight": 370,
+      "endheight": 20,
+      "impactDelay": 3,
+      "rotation": 2,
+      "cloudLifetime": 30
+    },
+    {
+      "tick": 358,
+      "kind": "gas",
+      "symbol": "spotanim.snakeboss_double_orb",
+      "source": {
+        "x": 3,
+        "z": 1
+      },
+      "target": {
+        "x": 6,
+        "z": 1
+      },
+      "starttime": 45,
+      "endtime": 120,
+      "angle": 10,
+      "progress": 0,
+      "startheight": 370,
+      "endheight": 20,
+      "impactDelay": 4,
+      "rotation": 0,
+      "cloudLifetime": 30
+    },
+    {
+      "tick": 361,
+      "kind": "gas",
+      "symbol": "spotanim.snakeboss_double_orb",
+      "source": {
+        "x": 1,
+        "z": 2
+      },
+      "target": {
+        "x": -4,
+        "z": 2
+      },
+      "starttime": 40,
+      "endtime": 90,
+      "angle": 0,
+      "progress": 0,
+      "startheight": 370,
+      "endheight": 20,
+      "impactDelay": 3,
+      "rotation": 1,
+      "cloudLifetime": 30
+    },
+    {
+      "tick": 361,
+      "kind": "gas",
+      "symbol": "spotanim.snakeboss_double_orb",
+      "source": {
+        "x": 1,
+        "z": 2
+      },
+      "target": {
+        "x": -4,
+        "z": -1
+      },
+      "starttime": 45,
+      "endtime": 120,
+      "angle": 10,
+      "progress": 0,
+      "startheight": 370,
+      "endheight": 20,
+      "impactDelay": 10,
+      "rotation": 3,
+      "cloudLifetime": 30
+    },
+    {
+      "tick": 365,
+      "kind": "dive"
+    },
+    {
+      "tick": 368,
+      "kind": "emerge",
+      "symbol": "npc.snakeboss_boss_melee",
+      "x": 0,
+      "z": 0,
+      "initial": false
+    },
+    {
+      "tick": 371,
+      "kind": "tail",
+      "symbol": "seq.snakeboss_attack_tail_right"
+    },
+    {
+      "tick": 378,
+      "kind": "tail",
+      "symbol": "seq.snakeboss_attack_tail_left"
+    },
+    {
+      "tick": 387,
+      "kind": "dive"
+    },
+    {
+      "tick": 390,
+      "kind": "emerge",
+      "symbol": "npc.snakeboss_boss_magic",
+      "x": 0,
+      "z": 0,
+      "initial": false
+    },
+    {
+      "tick": 393,
+      "kind": "attack",
+      "symbol": "spotanim.snakeboss_fireball",
+      "source": {
+        "x": 2,
+        "z": 1
+      },
+      "target": {
+        "x": -2,
+        "z": 5
+      },
+      "starttime": 40,
+      "endtime": 90,
+      "angle": 0,
+      "progress": 0,
+      "startheight": 370,
+      "endheight": 50
+    },
+    {
+      "tick": 396,
+      "kind": "attack",
+      "symbol": "spotanim.snakeboss_fireball",
+      "source": {
+        "x": 1,
+        "z": 3
+      },
+      "target": {
+        "x": -2,
+        "z": 5
+      },
+      "starttime": 40,
+      "endtime": 90,
+      "angle": 0,
+      "progress": 0,
+      "startheight": 370,
+      "endheight": 50
+    },
+    {
+      "tick": 399,
+      "kind": "attack",
+      "symbol": "spotanim.snakeboss_fireball",
+      "source": {
+        "x": 1,
+        "z": 3
+      },
+      "target": {
+        "x": -2,
+        "z": 5
+      },
+      "starttime": 40,
+      "endtime": 90,
+      "angle": 0,
+      "progress": 0,
+      "startheight": 370,
+      "endheight": 50
+    },
+    {
+      "tick": 402,
+      "kind": "attack",
+      "symbol": "spotanim.snakeboss_fireball",
+      "source": {
+        "x": 1,
+        "z": 3
+      },
+      "target": {
+        "x": -2,
+        "z": 3
+      },
+      "starttime": 40,
+      "endtime": 90,
+      "angle": 0,
+      "progress": 0,
+      "startheight": 370,
+      "endheight": 50
+    },
+    {
+      "tick": 405,
+      "kind": "dive"
+    },
+    {
+      "tick": 408,
+      "kind": "emerge",
+      "symbol": "npc.snakeboss_boss_ranged",
+      "x": -10,
+      "z": -2,
+      "initial": false
+    },
+    {
+      "tick": 411,
+      "kind": "gas",
+      "symbol": "spotanim.snakeboss_double_orb",
+      "source": {
+        "x": -7,
+        "z": 0
+      },
+      "target": {
+        "x": 6,
+        "z": -2
+      },
+      "starttime": 40,
+      "endtime": 90,
+      "angle": 0,
+      "progress": 0,
+      "startheight": 370,
+      "endheight": 20,
+      "impactDelay": 3,
+      "rotation": 1,
+      "cloudLifetime": 30
+    },
+    {
+      "tick": 411,
+      "kind": "gas",
+      "symbol": "spotanim.snakeboss_double_orb",
+      "source": {
+        "x": -7,
+        "z": 0
+      },
+      "target": {
+        "x": 5,
+        "z": -5
+      },
+      "starttime": 45,
+      "endtime": 120,
+      "angle": 10,
+      "progress": 0,
+      "startheight": 370,
+      "endheight": 20,
+      "impactDelay": 4,
+      "rotation": 2,
+      "cloudLifetime": 30
+    },
+    {
+      "tick": 414,
+      "kind": "gas",
+      "symbol": "spotanim.snakeboss_double_orb",
+      "source": {
+        "x": -7,
+        "z": 0
+      },
+      "target": {
+        "x": 6,
+        "z": 1
+      },
+      "starttime": 40,
+      "endtime": 90,
+      "angle": 0,
+      "progress": 0,
+      "startheight": 370,
+      "endheight": 20,
+      "impactDelay": 3,
+      "rotation": 0,
+      "cloudLifetime": 30
+    },
+    {
+      "tick": 414,
+      "kind": "gas",
+      "symbol": "spotanim.snakeboss_double_orb",
+      "source": {
+        "x": -7,
+        "z": 0
+      },
+      "target": {
+        "x": 6,
+        "z": 4
+      },
+      "starttime": 45,
+      "endtime": 120,
+      "angle": 10,
+      "progress": 0,
+      "startheight": 370,
+      "endheight": 20,
+      "impactDelay": 4,
+      "rotation": 1,
+      "cloudLifetime": 30
+    },
+    {
+      "tick": 417,
+      "kind": "gas",
+      "symbol": "spotanim.snakeboss_double_orb",
+      "source": {
+        "x": -7,
+        "z": 0
+      },
+      "target": {
+        "x": 2,
+        "z": -5
+      },
+      "starttime": 40,
+      "endtime": 90,
+      "angle": 0,
+      "progress": 0,
+      "startheight": 370,
+      "endheight": 20,
+      "impactDelay": 3,
+      "rotation": 1,
+      "cloudLifetime": 30
+    },
+    {
+      "tick": 417,
+      "kind": "gas",
+      "symbol": "spotanim.snakeboss_double_orb",
+      "source": {
+        "x": -7,
+        "z": 0
+      },
+      "target": {
+        "x": -1,
+        "z": -5
+      },
+      "starttime": 45,
+      "endtime": 120,
+      "angle": 10,
+      "progress": 0,
+      "startheight": 370,
+      "endheight": 20,
+      "impactDelay": 4,
+      "rotation": 3,
+      "cloudLifetime": 30
+    },
+    {
+      "tick": 421,
+      "kind": "egg",
+      "symbol": "spotanim.snakeboss_egg",
+      "source": {
+        "x": -7,
+        "z": -1
+      },
+      "target": {
+        "x": 0,
+        "z": -4
+      },
+      "starttime": 40,
+      "endtime": 120,
+      "angle": 0,
+      "progress": 0,
+      "startheight": 370,
+      "endheight": 20,
+      "impactDelay": 4,
+      "spawn": "npc.snakeboss_minion_magic"
+    },
+    {
+      "tick": 424,
+      "kind": "egg",
+      "symbol": "spotanim.snakeboss_egg",
+      "source": {
+        "x": -7,
+        "z": -1
+      },
+      "target": {
+        "x": -3,
+        "z": -3
+      },
+      "starttime": 40,
+      "endtime": 120,
+      "angle": 0,
+      "progress": 0,
+      "startheight": 370,
+      "endheight": 20,
+      "impactDelay": 4,
+      "spawn": "npc.snakeboss_minion_melee"
+    },
+    {
+      "tick": 427,
+      "kind": "egg",
+      "symbol": "spotanim.snakeboss_egg",
+      "source": {
+        "x": -7,
+        "z": 0
+      },
+      "target": {
+        "x": -3,
+        "z": 0
+      },
+      "starttime": 40,
+      "endtime": 120,
+      "angle": 0,
+      "progress": 0,
+      "startheight": 370,
+      "endheight": 20,
+      "impactDelay": 4,
+      "spawn": "npc.snakeboss_minion_melee"
+    },
+    {
+      "tick": 430,
+      "kind": "egg",
+      "symbol": "spotanim.snakeboss_egg",
+      "source": {
+        "x": -7,
+        "z": 1
+      },
+      "target": {
+        "x": -3,
+        "z": 3
+      },
+      "starttime": 40,
+      "endtime": 120,
+      "angle": 0,
+      "progress": 0,
+      "startheight": 370,
+      "endheight": 20,
+      "impactDelay": 10,
+      "spawn": "npc.snakeboss_minion_melee"
+    },
+    {
+      "tick": 434,
+      "kind": "dive"
+    },
+    {
+      "tick": 437,
+      "kind": "emerge",
+      "symbol": "npc.snakeboss_boss_magic",
+      "x": 0,
+      "z": -11,
+      "initial": false
+    },
+    {
+      "tick": 440,
+      "kind": "attack",
+      "symbol": "spotanim.snakeboss_orb",
+      "source": {
+        "x": 2,
+        "z": -8
+      },
+      "target": {
+        "x": -2,
+        "z": -1
+      },
+      "starttime": 40,
+      "endtime": 90,
+      "angle": 0,
+      "progress": 0,
+      "startheight": 370,
+      "endheight": 50
+    },
+    {
+      "tick": 443,
+      "kind": "attack",
+      "symbol": "spotanim.snakeboss_orb",
+      "source": {
+        "x": 1,
+        "z": -8
+      },
+      "target": {
+        "x": -2,
+        "z": -1
+      },
+      "starttime": 40,
+      "endtime": 90,
+      "angle": 0,
+      "progress": 0,
+      "startheight": 370,
+      "endheight": 50
+    },
+    {
+      "tick": 446,
+      "kind": "attack",
+      "symbol": "spotanim.snakeboss_fireball",
+      "source": {
+        "x": 1,
+        "z": -8
+      },
+      "target": {
+        "x": -2,
+        "z": -1
+      },
+      "starttime": 40,
+      "endtime": 90,
+      "angle": 0,
+      "progress": 0,
+      "startheight": 370,
+      "endheight": 50
+    },
+    {
+      "tick": 449,
+      "kind": "attack",
+      "symbol": "spotanim.snakeboss_fireball",
+      "source": {
+        "x": 1,
+        "z": -8
+      },
+      "target": {
+        "x": -2,
+        "z": -1
+      },
+      "starttime": 40,
+      "endtime": 90,
+      "angle": 0,
+      "progress": 0,
+      "startheight": 370,
+      "endheight": 50
+    },
+    {
+      "tick": 452,
+      "kind": "attack",
+      "symbol": "spotanim.snakeboss_fireball",
+      "source": {
+        "x": 1,
+        "z": -8
+      },
+      "target": {
+        "x": -2,
+        "z": -1
+      },
+      "starttime": 40,
+      "endtime": 90,
+      "angle": 0,
+      "progress": 0,
+      "startheight": 370,
+      "endheight": 50
+    },
+    {
+      "tick": 455,
+      "kind": "egg",
+      "symbol": "spotanim.snakeboss_egg",
+      "source": {
+        "x": 1,
+        "z": -8
+      },
+      "target": {
+        "x": -3,
+        "z": 3
+      },
+      "starttime": 40,
+      "endtime": 120,
+      "angle": 0,
+      "progress": 0,
+      "startheight": 370,
+      "endheight": 20,
+      "impactDelay": 4,
+      "spawn": "npc.snakeboss_minion_melee"
+    },
+    {
+      "tick": 458,
+      "kind": "egg",
+      "symbol": "spotanim.snakeboss_egg",
+      "source": {
+        "x": 1,
+        "z": -8
+      },
+      "target": {
+        "x": -3,
+        "z": 0
+      },
+      "starttime": 40,
+      "endtime": 120,
+      "angle": 0,
+      "progress": 0,
+      "startheight": 370,
+      "endheight": 20,
+      "impactDelay": 4,
+      "spawn": "npc.snakeboss_minion_magic"
+    },
+    {
+      "tick": 461,
+      "kind": "gas",
+      "symbol": "spotanim.snakeboss_double_orb",
+      "source": {
+        "x": 1,
+        "z": -8
+      },
+      "target": {
+        "x": -4,
+        "z": -4
+      },
+      "starttime": 40,
+      "endtime": 90,
+      "angle": 0,
+      "progress": 0,
+      "startheight": 370,
+      "endheight": 20,
+      "impactDelay": 3,
+      "rotation": 0,
+      "cloudLifetime": 30
+    },
+    {
+      "tick": 461,
+      "kind": "gas",
+      "symbol": "spotanim.snakeboss_double_orb",
+      "source": {
+        "x": 1,
+        "z": -8
+      },
+      "target": {
+        "x": -1,
+        "z": -5
+      },
+      "starttime": 45,
+      "endtime": 120,
+      "angle": 10,
+      "progress": 0,
+      "startheight": 370,
+      "endheight": 20,
+      "impactDelay": 4,
+      "rotation": 1,
+      "cloudLifetime": 30
+    },
+    {
+      "tick": 464,
+      "kind": "gas",
+      "symbol": "spotanim.snakeboss_double_orb",
+      "source": {
+        "x": 3,
+        "z": -8
+      },
+      "target": {
+        "x": 5,
+        "z": -5
+      },
+      "starttime": 40,
+      "endtime": 90,
+      "angle": 0,
+      "progress": 0,
+      "startheight": 370,
+      "endheight": 20,
+      "impactDelay": 3,
+      "rotation": 3,
+      "cloudLifetime": 30
+    },
+    {
+      "tick": 464,
+      "kind": "gas",
+      "symbol": "spotanim.snakeboss_double_orb",
+      "source": {
+        "x": 3,
+        "z": -8
+      },
+      "target": {
+        "x": 6,
+        "z": -2
+      },
+      "starttime": 45,
+      "endtime": 120,
+      "angle": 10,
+      "progress": 0,
+      "startheight": 370,
+      "endheight": 20,
+      "impactDelay": 4,
+      "rotation": 3,
+      "cloudLifetime": 30
+    },
+    {
+      "tick": 467,
+      "kind": "egg",
+      "symbol": "spotanim.snakeboss_egg",
+      "source": {
+        "x": 3,
+        "z": -8
+      },
+      "target": {
+        "x": 7,
+        "z": 2
+      },
+      "starttime": 40,
+      "endtime": 120,
+      "angle": 0,
+      "progress": 0,
+      "startheight": 370,
+      "endheight": 20,
+      "impactDelay": 4,
+      "spawn": "npc.snakeboss_minion_melee"
+    },
+    {
+      "tick": 470,
+      "kind": "egg",
+      "symbol": "spotanim.snakeboss_egg",
+      "source": {
+        "x": 2,
+        "z": -8
+      },
+      "target": {
+        "x": 7,
+        "z": 5
+      },
+      "starttime": 40,
+      "endtime": 120,
+      "angle": 0,
+      "progress": 0,
+      "startheight": 370,
+      "endheight": 20,
+      "impactDelay": 10,
+      "spawn": "npc.snakeboss_minion_melee"
+    },
+    {
+      "tick": 474,
+      "kind": "dive"
+    },
+    {
+      "tick": 477,
+      "kind": "emerge",
+      "symbol": "npc.snakeboss_boss_melee",
+      "x": 0,
+      "z": 0,
+      "initial": false
+    },
+    {
+      "tick": 480,
+      "kind": "tail",
+      "symbol": "seq.snakeboss_attack_tail_left"
+    },
+    {
+      "tick": 488,
+      "kind": "tail",
+      "symbol": "seq.snakeboss_attack_tail_right"
+    },
+    {
+      "tick": 496,
+      "kind": "dive"
+    },
+    {
+      "tick": 499,
+      "kind": "emerge",
+      "symbol": "npc.snakeboss_boss_ranged",
+      "x": 10,
+      "z": -2,
+      "initial": false
+    },
+    {
+      "tick": 502,
+      "kind": "attack",
+      "symbol": "spotanim.snakeboss_orb",
+      "source": {
+        "x": 11,
+        "z": 0
+      },
+      "target": {
+        "x": 8,
+        "z": 4
+      },
+      "starttime": 40,
+      "endtime": 90,
+      "angle": 0,
+      "progress": 0,
+      "startheight": 370,
+      "endheight": 50
+    },
+    {
+      "tick": 505,
+      "kind": "attack",
+      "symbol": "spotanim.snakeboss_orb",
+      "source": {
+        "x": 11,
+        "z": 1
+      },
+      "target": {
+        "x": 8,
+        "z": 2
+      },
+      "starttime": 40,
+      "endtime": 90,
+      "angle": 0,
+      "progress": 0,
+      "startheight": 370,
+      "endheight": 50
+    },
+    {
+      "tick": 508,
+      "kind": "attack",
+      "symbol": "spotanim.snakeboss_orb",
+      "source": {
+        "x": 11,
+        "z": 0
+      },
+      "target": {
+        "x": 7,
+        "z": 0
+      },
+      "starttime": 40,
+      "endtime": 90,
+      "angle": 0,
+      "progress": 0,
+      "startheight": 370,
+      "endheight": 50
+    },
+    {
+      "tick": 511,
+      "kind": "attack",
+      "symbol": "spotanim.snakeboss_orb",
+      "source": {
+        "x": 11,
+        "z": 0
+      },
+      "target": {
+        "x": 7,
+        "z": 0
+      },
+      "starttime": 40,
+      "endtime": 90,
+      "angle": 0,
+      "progress": 0,
+      "startheight": 370,
+      "endheight": 50
+    },
+    {
+      "tick": 514,
+      "kind": "attack",
+      "symbol": "spotanim.snakeboss_orb",
+      "source": {
+        "x": 11,
+        "z": 0
+      },
+      "target": {
+        "x": 7,
+        "z": 0
+      },
+      "starttime": 40,
+      "endtime": 90,
+      "angle": 0,
+      "progress": 0,
+      "startheight": 370,
+      "endheight": 50
+    },
+    {
+      "tick": 517,
+      "kind": "dive"
+    }
+  ]
+}

@@ -4,7 +4,6 @@ import dev.openrune.ServerCacheManager
 import dev.openrune.rscm.RSCM
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
-import dev.openrune.types.ItemServerType
 import jakarta.inject.Inject
 import jakarta.inject.Singleton
 import org.rsmod.api.config.constants
@@ -47,41 +46,43 @@ constructor(
         access.npc.spawnDeathDrops(dropCoords)
     }
 
-    private fun Npc.spawnDeathDrops(dropCoords: CoordGrid) {
+    private fun Npc.spawnDeathDrops(dropCoords: CoordGrid, dropRemains: Boolean = true, dropDuration: Int? = null) {
         // TODO: Drop tables.
         val hero = findHero(players)
         if (hero != null) {
-            val duration = hero.lootDropDuration ?: constants.lootdrop_duration
+            val duration = dropDuration ?: hero.lootDropDuration ?: constants.lootdrop_duration
             val lootTrackerEventId = nextLootTrackerEventId()
 
-            val droppedRemains =
-                paramOrNull(params.dropped_remains)
-                    ?: ServerCacheManager.getItem("obj.bones".asRSCM())
-                    ?: error("No bones")
-            val ctx = NpcDeathDropContext(
-                hero = hero,
-                dropType = droppedRemains,
-                dropCoords = dropCoords,
-                duration = duration,
-                objRepo = objRepo
-            )
-
-            var dropConsumed = false
-            for (hook in deathDropHooks) {
-                if (hook.tryConsume(ctx)) {
-                    dropConsumed = true
-                    break
-                }
-            }
-            if (!dropConsumed) {
-                val spawned = objRepo.add(droppedRemains, dropCoords, duration, hero)
-                ClientScripts.lootTrackerAddLoot(
-                    hero,
-                    id,
-                    lootTrackerEventId,
-                    spawned.type,
-                    spawned.count,
+            if (dropRemains) {
+                val droppedRemains =
+                    paramOrNull(params.dropped_remains)
+                        ?: ServerCacheManager.getItem("obj.bones".asRSCM())
+                        ?: error("No bones")
+                val ctx = NpcDeathDropContext(
+                    hero = hero,
+                    dropType = droppedRemains,
+                    dropCoords = dropCoords,
+                    duration = duration,
+                    objRepo = objRepo
                 )
+
+                var dropConsumed = false
+                for (hook in deathDropHooks) {
+                    if (hook.tryConsume(ctx)) {
+                        dropConsumed = true
+                        break
+                    }
+                }
+                if (!dropConsumed) {
+                    val spawned = objRepo.add(droppedRemains, dropCoords, duration, hero)
+                    ClientScripts.lootTrackerAddLoot(
+                        hero,
+                        id,
+                        lootTrackerEventId,
+                        spawned.type,
+                        spawned.count,
+                    )
+                }
             }
 
             val killCtx =
@@ -89,6 +90,8 @@ constructor(
                     hero = hero,
                     npc = this,
                     lootTrackerEventId = lootTrackerEventId,
+                    dropCoords = dropCoords,
+                    dropDuration = duration,
                 )
             for (hook in deathKillHooks) {
                 hook.onKill(killCtx)
@@ -104,8 +107,13 @@ constructor(
     // Note: We may be able to have `Npc` as the arg instead of `StandardNpcAccess`, however we
     // will need to wait and see how [spawnDeathDrops] ends up once it handles everything it needs
     // to.
-    public fun spawnDrops(access: StandardNpcAccess, dropCoords: CoordGrid = access.coords) {
-        access.npc.spawnDeathDrops(dropCoords)
+    public fun spawnDrops(
+        access: StandardNpcAccess,
+        dropCoords: CoordGrid = access.coords,
+        dropRemains: Boolean = true,
+        dropDuration: Int? = null,
+    ) {
+        access.npc.spawnDeathDrops(dropCoords, dropRemains, dropDuration)
     }
 }
 
@@ -152,7 +160,7 @@ public suspend fun StandardNpcAccess.death(npcRepo: NpcRepository, players: Play
     }
 
     val deathAnim = param(params.death_anim)
-    anim(RSCM.getReverseMapping(RSCMType.SEQ,deathAnim.id))
+    anim(RSCM.getReverseMapping(RSCMType.SEQ, deathAnim.id))
     delay(deathAnim)
 
     if (npc.respawns) {

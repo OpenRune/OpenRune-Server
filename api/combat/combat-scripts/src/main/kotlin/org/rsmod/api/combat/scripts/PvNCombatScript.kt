@@ -1,8 +1,6 @@
 package org.rsmod.api.combat.scripts
 
 import jakarta.inject.Inject
-import org.rsmod.api.death.NpcAttackValidateHook
-import org.rsmod.api.death.NpcAttackValidateResult
 import org.rsmod.api.combat.ACTIVE_COMBAT_DELAY
 import org.rsmod.api.combat.PvNCombat
 import org.rsmod.api.combat.commons.magic.MagicSpell
@@ -16,6 +14,8 @@ import org.rsmod.api.combat.player.resolveAutocastSpell
 import org.rsmod.api.combat.player.resolveCombatAttack
 import org.rsmod.api.combat.weapon.styles.AttackStyles
 import org.rsmod.api.combat.weapon.types.AttackTypes
+import org.rsmod.api.death.NpcAttackValidateHook
+import org.rsmod.api.death.NpcAttackValidateResult
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.righthand
 import org.rsmod.api.script.advanced.onDefaultApNpc2
@@ -108,7 +108,7 @@ constructor(
         for (hook in attackValidateHooks) {
             when (val result = hook.validate(player, npc)) {
                 is NpcAttackValidateResult.Deny -> {
-                    mes(result.message)
+                    result.message?.let { mes(it) }
                     return false
                 }
                 NpcAttackValidateResult.BypassSingleWayPvnRestriction -> bypassSingleWayPvn = true

@@ -10,7 +10,7 @@ public fun interface NpcAttackValidateHook {
 public sealed class NpcAttackValidateResult {
     public data object Pass : NpcAttackValidateResult()
 
-    public data class Deny(val message: String) : NpcAttackValidateResult()
+    public data class Deny(val message: String? = null) : NpcAttackValidateResult()
 
     /**
      * Allow attacking this npc in single-way combat even if the player is already engaged in PvN

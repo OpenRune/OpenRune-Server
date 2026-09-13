@@ -222,6 +222,30 @@ private fun Player.modifyAndQueueHit(
 }
 
 /* "Instant" hit functions. */
+/** Applies an immediate NPC hit while preserving its source for damage and death attribution. */
+public fun Player.takeInstantHit(
+    source: Npc,
+    type: HitType,
+    damage: Int,
+    processor: InstantPlayerHitProcessor,
+    modifier: PlayerHitModifier,
+): Hit {
+    val builder = InternalPlayerHits.createBuilder(
+        source = source,
+        type = type,
+        damage = min(hitpoints, damage),
+        righthand = null,
+        secondaryObj = null,
+        hitmark = hitmark_groups.regular_damage,
+        clientDelay = 0,
+        specific = false,
+    )
+    modifier.modify(builder, this)
+    val hit = builder.build()
+    processor.process(this, hit)
+    return hit
+}
+
 /**
  * Instantly applies [damage] to this [Player]. By default, this function applies no modification to
  * the hit ([NoopPlayerHitModifier]) unless explicitly provided through [modifier].

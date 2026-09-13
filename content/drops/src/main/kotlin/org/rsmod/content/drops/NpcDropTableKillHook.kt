@@ -6,7 +6,6 @@ import dtx.core.flatten
 import dtx.core.with
 import jakarta.inject.Inject
 import jakarta.inject.Singleton
-import org.rsmod.api.config.constants
 import org.rsmod.api.area.checker.AreaChecker
 import org.rsmod.api.death.NpcDeathKillContext
 import org.rsmod.api.death.NpcDeathKillHook
@@ -36,8 +35,8 @@ constructor(
         val table = registry.forNpc(context.npc, areaChecker) ?: return
 
         val player = context.hero
-        val duration = player.lootDropDuration ?: constants.lootdrop_duration
-        val dropCoords = context.npc.coords
+        val duration = context.dropDuration
+        val dropCoords = context.dropCoords
 
         val npc = context.npc
         when (

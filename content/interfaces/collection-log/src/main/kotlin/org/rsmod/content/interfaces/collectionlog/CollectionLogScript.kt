@@ -16,6 +16,7 @@ import org.rsmod.api.script.onIfClose
 import org.rsmod.api.script.onIfOpen
 import org.rsmod.api.script.onIfOverlayButton
 import org.rsmod.api.script.onPlayerInit
+import org.rsmod.content.generic.killcount.BossRecords
 import org.rsmod.events.EventBus
 import org.rsmod.game.entity.Player
 import org.rsmod.plugin.scripts.PluginScript
@@ -207,9 +208,11 @@ class CollectionLogScript @Inject constructor(private val eventBus: EventBus) : 
             val value = countVarps.getOrNull(i)?.let { vars[it] } ?: 0
             VarPlayerIntMapSetter.set(this, COUNT_TARGET_VARPS[i], value)
         }
-        // Placeholder until we have system that saves PBs
-        for (varp in PB_TARGET_VARPS) {
-            VarPlayerIntMapSetter.set(this, varp, 0)
+        for ((index, varp) in PB_TARGET_VARPS.withIndex()) {
+            val ticks = countVarps.getOrNull(index)?.let {
+                BossRecords.bestTicks(this, it.id)
+            } ?: 0
+            VarPlayerIntMapSetter.set(this, varp, ticks)
         }
     }
 

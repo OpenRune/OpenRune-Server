@@ -7,6 +7,7 @@ kotlin {
 }
 
 dependencies {
+    implementation(projects.api.attr)
     implementation(libs.guice)
     implementation(projects.api.config)
     implementation(projects.api.death)

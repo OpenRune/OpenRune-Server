@@ -112,6 +112,8 @@ constructor(
         regions[instanceId] = region
         registerRegion(instanceId, region.uid)
         ownerIndex[ownerId] = instanceId
+        // Keep pending entries and reclaimable sessions out of the allocator's inactive sweep.
+        regionRepo.protect(region)
 
         startSession(session, currentTick)
 
@@ -414,8 +416,14 @@ constructor(
                     player == null || player.coords.chebyshevDistance(center) > REGION_RADIUS
                 }
             for (occupant in leavers) {
-                val player = playerList.firstOrNull { it.uuid == occupant } ?: continue
-                removeOccupant(player, session, currentTick)
+                val player = playerList.firstOrNull { it.uuid == occupant }
+                if (player != null) {
+                    removeOccupant(player, session, currentTick)
+                } else {
+                    session.removeOccupant(occupant, currentTick)
+                    playerIndex.remove(occupant, session.id)
+                    reclaimEmptySession(session, currentTick)
+                }
             }
         }
     }
@@ -631,7 +639,7 @@ constructor(
             regionToInstance.remove(regionId, session.id)
         }
         val region = regions.remove(session.id)
-        if (session.isServerOwned && region != null) {
+        if (region != null) {
             regionRepo.unprotect(region)
         }
         ownerIndex.remove(session.owner)
@@ -651,6 +659,10 @@ constructor(
         session.removeOccupant(playerId, currentTick)
         clearOccupant(player)
         publishPlayerLeave(player, session)
+        reclaimEmptySession(session, currentTick)
+    }
+
+    private fun reclaimEmptySession(session: InstanceSession, currentTick: Int) {
         if (
             session.spec.destroyWhenEmpty &&
                 !session.isServerOwned &&

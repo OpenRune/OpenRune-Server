@@ -257,6 +257,7 @@ public class Player(
     public var preventLogoutCounter: Int = 0
 
     public var actionDelay: Int = -1
+    public var movementDelay: Int = -1
     public var skillAnimDelay: Int = -1
     public var refaceDelay: Int = -1
     public var frozen: Boolean = false
@@ -325,7 +326,7 @@ public class Player(
         get() = queueList.isNotEmpty || weakQueueList.isNotEmpty || engineQueueList.isNotEmpty
 
     public val canProcessMovement: Boolean
-        get() = !isHaltMovementRequired()
+        get() = movementDelay <= currentMapClock && !isHaltMovementRequired()
 
     private fun isHaltMovementRequired(): Boolean {
         // It seems that only "old" interactions (active for > 1 cycle) will bypass this movement

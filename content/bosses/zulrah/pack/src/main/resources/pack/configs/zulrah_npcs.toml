@@ -1,0 +1,5 @@
+[[npc]]
+id = "npc.snakeboss_minion_melee"
+inherit = "npc.snakeboss_minion_melee"
+[npc.params]
+"param.attack_melee" = 120
