@@ -49,6 +49,26 @@ import dev.openrune.types.varp.VarpServerType
 import java.nio.BufferUnderflowException
 import java.nio.file.Path
 import java.nio.file.Paths
+/**
+ * Per-thread overlay used by integration tests to register synthetic type entries
+ * without mutating the shared cache-backed maps. Each JUnit test thread only sees its
+ * own overlay entries, so concurrently running tests can't clobber each other's fake
+ * data, and nothing here ever touches the real decoded cache.
+ */
+private class TestOverlay<T> {
+    private val threadLocal = ThreadLocal.withInitial { mutableMapOf<Int, T>() }
+
+    fun register(id: Int, type: T) {
+        threadLocal.get()[id] = type
+    }
+
+    fun get(id: Int): T? = threadLocal.get()[id]
+
+    fun clear() {
+        threadLocal.get().clear()
+    }
+}
+
 object ServerCacheManager {
 
     /**
@@ -92,6 +112,10 @@ object ServerCacheManager {
     private var enums: Map<Int, EnumType> = emptyMap()
     private var varbits: Map<Int, VarBitType> = emptyMap()
     private var varps: Map<Int, VarpServerType> = emptyMap()
+
+    private val testItemOverlay = TestOverlay<ItemServerType>()
+    private val testNpcOverlay = TestOverlay<NpcServerType>()
+    private val testObjectOverlay = TestOverlay<ObjectServerType>()
     private var transmitVarps: List<VarpServerType> = emptyList()
     private var sequences: Map<Int, SequenceServerType> = emptyMap()
     private var fonts: Map<Int, FontType> = emptyMap()
@@ -239,13 +263,13 @@ object ServerCacheManager {
         masterRowIdsByTable = mapped
     }
 
-    fun getNpc(id: Int) = npcs[id]
+    fun getNpc(id: Int) = testNpcOverlay.get(id) ?: npcs[id]
 
     fun getFont(id: Int) = fonts[id]
 
-    fun getObject(id: Int) = objects[id]
+    fun getObject(id: Int) = testObjectOverlay.get(id) ?: objects[id]
 
-    fun getItem(id: Int) = items[id]
+    fun getItem(id: Int) = testItemOverlay.get(id) ?: items[id]
 
     fun getVarbit(id: Int) = varbits[id]
 
@@ -412,4 +436,22 @@ object ServerCacheManager {
     }
 
     fun fromComponent(id: String) = fromComponent(id.asRSCM())
+
+    /**
+     * Test-only registration API. Entries are visible only on the calling thread via
+     * [getItem]/[getNpc]/[getObject] and never persisted to the real cache-backed maps.
+     * Call [clearTestOverrides] when a test is done to avoid leaking entries to a
+     * pooled thread reused by a later test.
+     */
+    fun registerTestItem(type: ItemServerType) = testItemOverlay.register(type.id, type)
+
+    fun registerTestNpc(type: NpcServerType) = testNpcOverlay.register(type.id, type)
+
+    fun registerTestObject(type: ObjectServerType) = testObjectOverlay.register(type.id, type)
+
+    fun clearTestOverrides() {
+        testItemOverlay.clear()
+        testNpcOverlay.clear()
+        testObjectOverlay.clear()
+    }
 }

@@ -14,6 +14,7 @@ testing.suites {
             dependencies {
                 implementation(project())
                 implementation(project(":api:testing"))
+                implementation(project(":or-cache"))
             }
             testTask.configure {
                 workingDir = rootDir

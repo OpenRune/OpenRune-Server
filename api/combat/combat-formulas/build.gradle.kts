@@ -1,6 +1,6 @@
 plugins {
     id("base-conventions")
-
+    id("integration-test-suite")
 }
 
 kotlin {
@@ -22,4 +22,6 @@ dependencies {
     implementation(projects.engine.map)
     implementation(projects.engine.module)
     implementation(projects.engine.plugin)
+    integrationImplementation(projects.api.combat.combatCommons)
+    integrationImplementation(projects.api.combat.combatWeapon)
 }
