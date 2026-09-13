@@ -10,6 +10,8 @@ import org.rsmod.api.combat.manager.CombatChargeManager
 import org.rsmod.api.combat.manager.RangedAmmoManager
 import org.rsmod.api.config.constants
 import org.rsmod.api.config.refs.params
+import org.rsmod.api.death.NpcAttackValidateHook
+import org.rsmod.api.death.NpcAttackValidateResult
 import org.rsmod.api.npc.isValidTarget
 import org.rsmod.api.obj.charges.ObjChargeManager.Companion.isFailure
 import org.rsmod.api.player.protect.ProtectedAccess
@@ -37,9 +39,13 @@ constructor(
     private val charges: CombatChargeManager,
     private val npcRepo: NpcRepository,
     private val worldRepo: WorldRepository,
+    private val attackValidateHooks: Set<NpcAttackValidateHook>,
 ) : WeaponMap {
     override fun WeaponRepository.register(manager: WeaponAttackManager) {
-        register("obj.venator_bow", VenatorBow(manager, ammunition, charges, npcRepo, worldRepo))
+        register(
+            "obj.venator_bow",
+            VenatorBow(manager, ammunition, charges, npcRepo, worldRepo, attackValidateHooks),
+        )
     }
 
     private class VenatorBow(
@@ -48,6 +54,7 @@ constructor(
         private val charges: CombatChargeManager,
         private val npcRepo: NpcRepository,
         private val worldRepo: WorldRepository,
+        private val attackValidateHooks: Set<NpcAttackValidateHook>,
     ) : RangedWeapon {
         override suspend fun ProtectedAccess.attack(
             target: Npc,
@@ -162,7 +169,7 @@ constructor(
                 return
             }
 
-            val candidates = candidatesNear(origin, exclude = excluded)
+            val candidates = candidatesNear(access.player, origin, exclude = excluded)
             val pool = if (remainingBounces == 1) candidates + primary else candidates
             val nextTarget = pool.minByOrNull { centreDistance(origin, it) } ?: return
 
@@ -199,14 +206,18 @@ constructor(
             )
         }
 
-        private fun candidatesNear(origin: Npc, exclude: Set<Npc>): List<Npc> =
+        private fun candidatesNear(player: Player, origin: Npc, exclude: Set<Npc>): List<Npc> =
             npcRepo
                 .findAll(ZoneKey.from(origin.coords), zoneRadius = 1)
                 .filter { it !in exclude }
                 .filter { it.isValidTarget() }
                 .filter { it.visType.hasOp(InteractionOp.Op2.slot) }
                 .filter { centreDistance(origin, it) <= BOUNCE_RADIUS }
+                .filter { canAttack(player, it) }
                 .toList()
+
+        private fun canAttack(player: Player, npc: Npc): Boolean =
+            attackValidateHooks.none { it.validate(player, npc) is NpcAttackValidateResult.Deny }
 
         private fun centreDistance(a: Npc, b: Npc): Int = centreOf(a).chebyshevDistance(centreOf(b))
 
