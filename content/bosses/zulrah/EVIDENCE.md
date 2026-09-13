@@ -75,6 +75,9 @@ In 3276, death sequence 5804 begins at tick 9382; loot, exit and the kill messag
 appear at 9388. The implementation waits six ticks, then resolves native loot
 and kill hooks before NPC deletion. Only the surviving instance owner can claim
 completion, once. Interrupted/departed encounters cannot award delayed records.
+Loot contents and odds come from the unchanged stock Zulrah TOML table and its
+existing shared tables. Recording observations are used for death timing and
+placement, not to override that table or add encounter-specific ring effects.
 
 Counter varp 1518 is permanent; Collection Log struct 505 refers to it. PBs are
 stored as ticks using the existing attribute save layer. Observed timer rows:

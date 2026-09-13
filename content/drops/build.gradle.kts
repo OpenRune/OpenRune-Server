@@ -2,11 +2,6 @@ plugins {
     id("base-conventions")
 }
 
-tasks.test {
-    workingDir = rootProject.projectDir
-    systemProperty("junit.jupiter.execution.parallel.enabled", "false")
-}
-
 dependencies {
     implementation(libs.guice)
     implementation(projects.api.areaChecker)

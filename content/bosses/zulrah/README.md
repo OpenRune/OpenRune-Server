@@ -26,8 +26,9 @@ silent NPC attack denials, pending-instance protection, an NPC-attributed instan
 hit overload, and an independent movement-delay clock for the tail stun.
 Existing callers keep their defaults.
 
-The Kotlin drop table in `content/drops` replaces the old Zulrah TOML table;
-do not register both. Kill count uses the permanent `total_snakeboss_kills` varp.
+Loot uses the unchanged stock Zulrah TOML table in `content/drops`, including
+its existing shared-table and reward handling. No encounter-specific loot odds
+or ring effects are added. Kill count uses the permanent `total_snakeboss_kills` varp.
 Personal bests use persistent tick attributes and the Collection Log's native
 transmit fields. Ring equipment, ring boss logs and mining changes are outside
 this module's scope.
@@ -38,7 +39,7 @@ Use Java 21 and the repository's provisioned cache and gameval data:
 
 ```sh
 ./gradlew :or-cache:buildCache --max-workers=1
-./gradlew :content:bosses:zulrah:zulrah-pack:test :content:bosses:zulrah:test :content:drops:test :api:death:test :content:interfaces:collection-log:compileKotlin --max-workers=1
+./gradlew :content:bosses:zulrah:zulrah-pack:test :content:bosses:zulrah:test :content:drops:classes :api:death:test :content:interfaces:collection-log:compileKotlin --max-workers=1
 ```
 
 Rebuild the cache before running the encounter so the packed melee bonus is
@@ -53,11 +54,10 @@ Check Collection Log refresh without relogging as well.
 ## Release limitations
 
 Entry is currently administrator-only. Quest/first-visit access, death-item
-retrieval and combat achievements are not complete. Pet and elite-clue awards
-remain disabled pending their supporting systems. These are release gates, not
-features implied by a successful build.
+retrieval and combat achievements are not complete. Drop contents and reward
+handling follow the stock drop system; this module does not replace or complete
+its pet or clue systems. A successful build does not establish those integrations.
 
 Some timings and hazard placements are provisional reconstructions. This is not
 recovered Jagex source or fully verified normal-world OSRS parity. See
-[sources and mechanics](EVIDENCE.md), [rotation coverage](ROTATION_EVIDENCE.md)
-and [drop structure](DROP_EVIDENCE.md).
+[sources and mechanics](EVIDENCE.md) and [rotation coverage](ROTATION_EVIDENCE.md).
