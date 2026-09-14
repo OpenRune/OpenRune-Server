@@ -15,8 +15,8 @@ import org.rsmod.api.combat.commons.player.queueCombatRetaliate
 import org.rsmod.api.combat.commons.types.MeleeAttackType
 import org.rsmod.api.npc.access.StandardNpcAccess
 import org.rsmod.api.player.disablePrayers
-import org.rsmod.api.player.hit.queueImpactHit
 import org.rsmod.api.player.hit.modifier.PlayerHitModifier
+import org.rsmod.api.player.hit.queueImpactHit
 import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.stat.hitpoints
 import org.rsmod.game.entity.Npc
