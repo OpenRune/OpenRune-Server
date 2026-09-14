@@ -6,7 +6,7 @@ import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 
 fun interface BossExtensionHandler {
-    suspend fun invoke(access: StandardNpcAccess, npc: Npc, target: Player, params: Any?)
+    fun invoke(access: StandardNpcAccess, npc: Npc, target: Player, params: Any?)
 }
 
 @Singleton
@@ -17,7 +17,7 @@ class BossExtensionRegistry {
         handlers[name] = handler
     }
 
-    suspend fun invoke(name: String, access: StandardNpcAccess, npc: Npc, target: Player, params: Any?) {
+    fun invoke(name: String, access: StandardNpcAccess, npc: Npc, target: Player, params: Any?) {
         val handler = handlers[name] ?: error("No boss extension registered: $name")
         handler.invoke(access, npc, target, params)
     }
