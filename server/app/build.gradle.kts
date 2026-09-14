@@ -50,4 +50,5 @@ tasks.named<JavaExec>("run") {
 tasks.named<ShadowJar>("shadowJar") {
     archiveFileName.set("server.jar")
     mergeServiceFiles()
+    isZip64 = true
 }
