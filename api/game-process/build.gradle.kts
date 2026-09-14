@@ -34,4 +34,14 @@ dependencies {
     implementation(projects.engine.interact)
     implementation(projects.engine.map)
     implementation(projects.engine.routefinder)
+
+    testImplementation(projects.api.areaChecker)
+    testImplementation(projects.api.market)
+    testImplementation(projects.engine.coroutine)
+}
+
+tasks.test {
+    workingDir(rootProject.projectDir)
+    inputs.dir(rootProject.file(".data/cache/SERVER"))
+    inputs.file(rootProject.file(".data/gamevals-binary/gamevals.dat"))
 }

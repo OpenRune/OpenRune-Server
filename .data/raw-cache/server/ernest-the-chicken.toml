@@ -1,0 +1,6 @@
+[[npc]]
+id = "npc.draynor_possesed_chair"
+inherit = "npc.draynor_possesed_chair"
+defaultMode = "None"
+wanderRange = 0
+timer = 1

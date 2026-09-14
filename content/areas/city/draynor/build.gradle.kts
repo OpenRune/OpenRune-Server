@@ -1,14 +1,14 @@
 plugins {
     id("base-conventions")
-
 }
 
 dependencies {
-    testImplementation(projects.api.invStorage)
-    testImplementation(libs.fastutil)
-    implementation(projects.api.pluginCommons)
     implementation(projects.api.attr)
-    implementation(projects.api.serverConfig)
+    implementation(projects.api.pluginCommons)
+    implementation(projects.content.quest)
+    testImplementation(libs.fastutil)
+    testImplementation(projects.api.registry)
+    testImplementation(projects.api.invStorage)
 }
 
 tasks.test {

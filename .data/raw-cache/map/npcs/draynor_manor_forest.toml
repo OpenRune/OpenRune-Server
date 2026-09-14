@@ -131,6 +131,22 @@ npc = "npc.draynor_skeleton"
 coords = "0_48_52_38_39"
 
 [[spawn]]
+npc = "npc.draynor_possesed_chair"
+coords = "0_48_52_41_26"
+
+[[spawn]]
+npc = "npc.draynor_possesed_chair"
+coords = "0_48_52_42_26"
+
+[[spawn]]
+npc = "npc.draynor_possesed_chair"
+coords = "0_48_52_43_26"
+
+[[spawn]]
+npc = "npc.draynor_possesed_chair"
+coords = "1_48_52_41_41"
+
+[[spawn]]
 npc = "npc.ernest_multichicken"
 coords = "2_48_52_38_36"
 
