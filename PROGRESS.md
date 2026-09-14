@@ -130,7 +130,7 @@ here so it at least shows up. Nothing is ticked until someone claims it.
 - [ ] Werewolf Skullball
 - [ ] Wintertodt Pillars
 - [ ] Shortcuts
-- [ ] Giant squirrel pet
+- [ ] Collection log
 
 </details>
 
