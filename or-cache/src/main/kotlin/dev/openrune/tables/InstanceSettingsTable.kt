@@ -202,6 +202,24 @@ object InstanceSettingsTable {
             columnRSCM(EXIT_OBJECT, "loc.vardorvis_exit")
         }
 
+        row("dbrow.instance_muspah") {
+            column(KEY, "muspah")
+            columnCoord(EXIT_COORD, CoordGrid(2909, 10317, 0))
+            columnCoord(ENTER_COORD, CoordGrid(2846, 4258, 0))
+            column(FEE, 0)
+            column(MAX_PLAYERS, 1)
+            column(TIME_LIMIT_MINUTES, 0)
+            column(GRACE_MINUTES, 10)
+            columnRSCM(BOSS_NPC, "npc.muspah")
+            column(BOSS_NAME, "Phantom Muspah")
+            column(RECOMMENDED_COMBAT, 90, 126)
+            column(TEAM_SIZE, 1)
+            column(LOOT_MULTIPLIER, "x1.0")
+            column(DESCRIPTION, "A phantom creature bound between the mortal and abyssal planes.")
+            columnRSCM(ENTER_OBJECT, "loc.ghorrock_dungeon_cave_entry")
+            columnRSCM(EXIT_OBJECT, "loc.ghorrock_dungeon_cave_exit")
+        }
+
         row("dbrow.instance_amoxliatl") {
             column(KEY, "amoxliatl")
             columnCoord(EXIT_COORD, CoordGrid(1602, 9631, 0))

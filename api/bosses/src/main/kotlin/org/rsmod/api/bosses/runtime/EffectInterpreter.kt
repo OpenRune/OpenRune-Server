@@ -15,6 +15,8 @@ import org.rsmod.api.combat.commons.player.queueCombatRetaliate
 import org.rsmod.api.combat.commons.types.MeleeAttackType
 import org.rsmod.api.npc.access.StandardNpcAccess
 import org.rsmod.api.player.disablePrayers
+import org.rsmod.api.player.output.Camera
+import org.rsmod.api.player.hit.queueImpactHit
 import org.rsmod.api.player.hit.modifier.PlayerHitModifier
 import org.rsmod.api.player.hit.queueImpactHit
 import org.rsmod.api.player.output.mes
@@ -56,6 +58,14 @@ class EffectInterpreter(
                     }
                 }
             }
+            is Effect.CamShake -> {
+                for (player in deps.playerList) {
+                    if (player.coords.chebyshevDistance(npc.coords) <= effect.radius) {
+                        Camera.camShake(player, effect.axis, effect.random, effect.amplitude, effect.rate)
+                    }
+                }
+            }
+            is Effect.Delay -> access.delay(effect.ticks)
             is Effect.Delay -> {
                 scheduleWait(effect.ticks, onComplete)
                 return

@@ -24,6 +24,7 @@ object BossCombat {
         deps: BossDeps,
         onLethal: ((Npc) -> Unit)? = null,
         onModifyHit: (NpcHitEvents.Modify.() -> Unit)? = null,
+        onCombatTick: (suspend StandardNpcAccess.(Player) -> Unit)? = null,
     ) {
         val errors = SpecValidator.validate(spec)
         if (errors.isNotEmpty()) {
@@ -43,8 +44,8 @@ object BossCombat {
 
         with(ctx) {
             for (npcType in npcTypes) {
-                onAiOpPlayer2(npcType) { runCombatTick(it.target, spec, deps) }
-                onAiApPlayer2(npcType) { runCombatTick(it.target, spec, deps) }
+                onAiOpPlayer2(npcType) { runCombatTick(it.target, spec, deps, onCombatTick) }
+                onAiApPlayer2(npcType) { runCombatTick(it.target, spec, deps, onCombatTick) }
                 onModifyNpcHit(npcType) {
                     val encounter = deps.encounterRegistry.of(npc)
                     hit.damage =
@@ -93,7 +94,10 @@ object BossCombat {
         target: Player,
         spec: BossSpec,
         deps: BossDeps,
+        onCombatTick: (suspend StandardNpcAccess.(Player) -> Unit)?,
     ) {
+        onCombatTick?.invoke(this, target)
+
         val encounter = deps.encounterRegistry.of(npc)
         if (encounter.currentPhase == null) return
         val tick = deps.mapClock.cycle

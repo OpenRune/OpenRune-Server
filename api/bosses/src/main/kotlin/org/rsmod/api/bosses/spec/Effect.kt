@@ -18,6 +18,14 @@ sealed interface Effect {
     data class MapSpotanim(val spot: String, val at: TargetExpr, val height: Int = 0, val delay: Int = 0) : Effect
     data class Broadcast(val text: String, val radius: Int = 15) : Effect
 
+    data class CamShake(
+        val axis: Int,
+        val random: Int,
+        val amplitude: Int = 0,
+        val rate: Int = 0,
+        val radius: Int = 15,
+    ) : Effect
+
     data class Message(val text: String, val target: TargetExpr = TargetExpr.CurrentTarget) : Effect
 
     data class Delay(val ticks: Int) : Effect

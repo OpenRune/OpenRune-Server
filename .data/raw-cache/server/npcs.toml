@@ -4671,6 +4671,72 @@ defaultMode = "Wander"
 "param.boss_hp_bar_mode"=1
 
 [[npc]]
+id = "npc.muspah"
+inherit = "npc.muspah"
+huntMode = 2
+huntRange = 15
+maxRange = 15
+attackRange = 10
+defaultMode = "None"
+[npc.params]
+"param.killcount_varp"="varp.total_muspah_kills"
+"param.boss_hp_bar_mode"=2
+
+[[npc]]
+id = "npc.muspah_melee"
+inherit = "npc.muspah_melee"
+huntMode = 2
+huntRange = 15
+maxRange = 15
+attackRange = 10
+defaultMode = "None"
+[npc.params]
+"param.killcount_varp"="varp.total_muspah_kills"
+"param.boss_hp_bar_mode"=2
+
+[[npc]]
+id = "npc.muspah_teleport"
+inherit = "npc.muspah_teleport"
+huntMode = 2
+huntRange = 15
+maxRange = 15
+attackRange = 10
+defaultMode = "None"
+[npc.params]
+"param.killcount_varp"="varp.total_muspah_kills"
+"param.boss_hp_bar_mode"=2
+
+[[npc]]
+id = "npc.muspah_soulsplit"
+inherit = "npc.muspah_soulsplit"
+huntMode = 2
+huntRange = 15
+maxRange = 15
+attackRange = 10
+defaultMode = "None"
+[npc.params]
+"param.killcount_varp"="varp.total_muspah_kills"
+"param.boss_hp_bar_mode"=2
+
+[[npc]]
+id = "npc.muspah_final"
+inherit = "npc.muspah_final"
+huntMode = 2
+huntRange = 15
+maxRange = 15
+attackRange = 10
+defaultMode = "None"
+[npc.params]
+"param.killcount_varp"="varp.total_muspah_kills"
+"param.boss_hp_bar_mode"=2
+"param.death_anim"="seq.npc_muspah_death_02"
+
+[[npc]]
+id = "npc.muspah_projectile"
+inherit = "npc.muspah_projectile"
+defaultMode = "None"
+
+[[npc]]
 id = "npc.venenatis_spiderling"
 inherit = "npc.venenatis_spiderling"
 huntMode = 6

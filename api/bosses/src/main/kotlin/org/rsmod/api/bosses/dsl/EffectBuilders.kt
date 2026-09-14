@@ -15,6 +15,9 @@ fun delay(ticks: Int): Effect = Effect.Delay(ticks)
 
 fun wait(ticks: Int): Effect = Effect.Wait(ticks)
 
+fun camShake(axis: Int, random: Int, amplitude: Int = 0, rate: Int = 0, radius: Int = 15): Effect =
+    Effect.CamShake(axis, random, amplitude, rate, radius)
+
 fun message(text: String, target: TargetExpr = TargetExpr.CurrentTarget): Effect =
     Effect.Message(text, target)
 fun sequence(vararg e: Effect): Effect = Effect.Sequence(e.toList())

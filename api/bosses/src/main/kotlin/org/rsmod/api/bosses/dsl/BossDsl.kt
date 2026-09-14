@@ -175,6 +175,10 @@ class AbilityBuilder {
         effects += Effect.Broadcast(text, radius)
     }
 
+    fun camShake(axis: Int, random: Int, amplitude: Int = 0, rate: Int = 0, radius: Int = 15) {
+        effects += Effect.CamShake(axis, random, amplitude, rate, radius)
+    }
+
     fun message(text: String, target: TargetExpr = TargetExpr.CurrentTarget) {
         effects += Effect.Message(text, target)
     }
