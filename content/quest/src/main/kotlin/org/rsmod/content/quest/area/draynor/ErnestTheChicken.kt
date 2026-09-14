@@ -57,17 +57,20 @@ constructor(
                 attribute(progress.foundErnest, "I found Ernest. He is a chicken.").strike()
             }
 
-            objective(
-                "<red>Professor Oddenstein</red> needs three parts for his machine before he can " +
-                    "turn Ernest back."
-            ) {
-                visibleWhen {
-                    progress.foundErnest.get(access.player) &&
-                        !progress.hasReceivedParts(access.player)
+            if (progress.foundErnest.get(access.player) && !progress.hasReceivedParts(access.player)) {
+                line(
+                    "<red>Professor Oddenstein</red> needs three parts for his machine before he can " +
+                        "turn Ernest back."
+                )
+                objective("I still need to find the <red>rubber tube</red>.") {
+                    hasItem("rubber_tube", "I have found the <red>rubber tube</red>.")
                 }
-                hasItem("rubber_tube", "I have found the <red>rubber tube</red>.")
-                hasItem("pressure_gauge", "I have found the <red>pressure gauge</red>.")
-                hasItem("oil_can", "I have found the <red>oil can</red>.")
+                objective("I still need to find the <red>pressure gauge</red>.") {
+                    hasItem("pressure_gauge", "I have found the <red>pressure gauge</red>.")
+                }
+                objective("I still need to find the <red>oil can</red>.") {
+                    hasItem("oil_can", "I have found the <red>oil can</red>.")
+                }
             }
 
             objective(

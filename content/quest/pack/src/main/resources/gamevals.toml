@@ -6,6 +6,7 @@ chicken_into_human = 1564
 coffin_open = 54
 creakydoor_open = 56
 cupboard_open = 58
+deadtree_attack = 651
 digspade = 1470
 ernest_clunk = 1565
 ernest_sprinkle = 1566

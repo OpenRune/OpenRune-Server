@@ -14,21 +14,28 @@ import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.api.parallel.Execution
 import org.junit.jupiter.api.parallel.ExecutionMode
 import org.junit.jupiter.api.parallel.ResourceLock
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.ValueSource
 import org.rsmod.api.inv.storage.PlayerItemStorage
 import org.rsmod.api.invtx.InvTransactionsScript
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.protect.ProtectedAccessContext
-import org.rsmod.content.quest.manager.ItemRewardDisplay
+import org.rsmod.api.registry.npc.NpcRegistry
+import org.rsmod.api.registry.zone.ZoneUpdateMap
+import org.rsmod.api.repo.npc.NpcRepository
+import org.rsmod.api.repo.world.WorldRepository
 import org.rsmod.content.quest.manager.QUEST_STAGE_MAP_ATTR
 import org.rsmod.content.quest.manager.Quest
-import org.rsmod.content.quest.manager.rewards
 import org.rsmod.coroutine.GameCoroutine
 import org.rsmod.events.EventBus
+import org.rsmod.game.MapClock
 import org.rsmod.game.cheat.CheatCommandMap
+import org.rsmod.game.entity.NpcList
 import org.rsmod.game.entity.Player
 import org.rsmod.game.inv.InvObj
 import org.rsmod.game.queue.EngineQueueCache
 import org.rsmod.plugin.scripts.ScriptContext
+import org.rsmod.routefinder.collision.CollisionFlagMap
 
 @Execution(ExecutionMode.SAME_THREAD)
 @ResourceLock("ServerCacheManager")
@@ -36,6 +43,7 @@ import org.rsmod.plugin.scripts.ScriptContext
 class ErnestProgressTest {
     private val eventBus = EventBus()
     private lateinit var quest: Quest
+    private lateinit var script: ErnestTheChicken
     private lateinit var progress: ErnestProgress
 
     @BeforeAll
@@ -43,12 +51,15 @@ class ErnestProgressTest {
         ServerCacheManager.init(240).close()
         val context = ScriptContext(eventBus, CheatCommandMap(), EngineQueueCache())
         with(InvTransactionsScript(PlayerItemStorage(emptySet()))) { context.startup() }
-        quest = Quest.register(
-            "quest_ernestthechicken",
-            "varp.haunted",
-            ItemRewardDisplay("obj.coins"),
-            rewards { item("obj.coins", ErnestProgress.CoinReward) },
+        val collision = CollisionFlagMap()
+        val npcs = NpcList()
+        val registry = NpcRegistry(npcs, collision, eventBus)
+        script = ErnestTheChicken(
+            WorldRepository(ZoneUpdateMap()),
+            NpcRepository(MapClock(), registry, npcs),
+            collision,
         )
+        quest = script.quest
         progress = ErnestProgress(quest)
     }
 
@@ -158,6 +169,53 @@ class ErnestProgressTest {
         assertTrue(progress.canReceiveReward(access))
         assertEquals(0, access.inv.count("obj.coins"))
         runScene { progress.restoreErnest(access) {} }
+        assertCompleted(access.player)
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = [0, 1, 2, 3, 4, 5, 6, 7])
+    fun `journal reports every held and missing machine part independently`(heldMask: Int) {
+        val access = started()
+        val parts = listOf("rubber_tube", "pressure_gauge", "oil_can")
+        for ((index, part) in parts.withIndex()) {
+            if (heldMask and (1 shl index) != 0) access.inv[index] = InvObj("obj.$part")
+        }
+
+        val journal = script.questLog(access)
+        assertTrue(journal.contains("needs three parts for his machine"))
+        for ((index, part) in parts.withIndex()) {
+            val name = part.replace('_', ' ')
+            val found = "I have found the <red>$name</red>."
+            val missing = "I still need to find the <red>$name</red>."
+            val held = heldMask and (1 shl index) != 0
+            assertEquals(held, journal.contains(found), "$name found status for mask $heldMask")
+            assertEquals(!held, journal.contains(missing), "$name missing status for mask $heldMask")
+        }
+    }
+
+    @Test
+    fun `journal waits for the professor introduction before showing machine parts`() {
+        val access = access()
+        quest.advanceQuestStage(access)
+        addParts(access.player)
+        val journal = script.questLog(access)
+        assertTrue(journal.contains("I should speak to whoever lives in the manor."))
+        assertFalse(journal.contains("I have found the"))
+        assertFalse(journal.contains("I still need to find the"))
+    }
+
+    @Test
+    fun `journal replaces collection objectives after hand in and records completion`() {
+        val access = received()
+        val handedIn = script.questLog(access)
+        assertTrue(handedIn.contains("I gave all three parts to <red>Professor Oddenstein</red>."))
+        assertFalse(handedIn.contains("I have found the"))
+        assertFalse(handedIn.contains("I still need to find the"))
+
+        runScene { progress.restoreErnest(access) {} }
+        val completed = script.completedLog(access)
+        assertTrue(completed.contains("I recovered the rubber tube, pressure gauge and oil can"))
+        assertTrue(completed.contains("QUEST COMPLETE!"))
         assertCompleted(access.player)
     }
 

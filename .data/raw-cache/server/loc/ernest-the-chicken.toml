@@ -1,0 +1,15 @@
+[[object]]
+id = "loc.draynor_panelled_door"
+inherit = "loc.draynor_panelled_door"
+contentGroup = "content.closed_single_door"
+[object.params]
+"param.next_loc_stage" = "loc.draynor_panelled_door_open"
+"param.opensound" = "synth.door_open"
+
+[[object]]
+id = "loc.draynor_panelled_door_open"
+inherit = "loc.draynor_panelled_door_open"
+contentGroup = "content.opened_single_door"
+[object.params]
+"param.next_loc_stage" = "loc.draynor_panelled_door"
+"param.closesound" = "synth.door_close"
