@@ -144,6 +144,21 @@ constructor(
                 }
             player.mes("  [${spot.index + 1}] $where")
         }
+        val door = session.resolveDoor(catalogue, houses, coords)
+        if (door == null) {
+            player.mes("door: this tile is not a doorway of that room.")
+        } else {
+            val target = neighbour(door.slot, door.direction)
+            player.mes(
+                "door -> dir=${door.direction} neighbour=$target " +
+                    "occupiedBy=${target?.let { session.layout.placed(it)?.room }}"
+            )
+        }
+        for (entry in room.doors) {
+            val at =
+                houses.localCoords(session.region, slot, placed.rotation, entry.localX, entry.localZ)
+            player.mes("  door dir=${entry.direction} ${entry.localX},${entry.localZ} -> $at")
+        }
     }
 
     private fun Cheat.dumpRooms(filter: String?) {
@@ -373,7 +388,11 @@ constructor(
             mes("You need to be in building mode to do that.")
             return
         }
-        val door = session.resolveDoor(catalogue, houses, coords) ?: return
+        val door = session.resolveDoor(catalogue, houses, coords)
+        if (door == null) {
+            mes("This doorway is not one the room knows about. Try the other side of it.")
+            return
+        }
         val destination = neighbour(door.slot, door.direction)
         if (destination == null || destination in session.layout.rooms) {
             mes("You can't build a room there.")

@@ -49,6 +49,10 @@ object PohPortals {
     fun portalLoc(material: String, destination: String): Int? =
         locId("$LOC_PREFIX${material}_$destination")
 
+    /** Where [destination] leads, for callers that hold the name rather than a loc. */
+    fun destinationCoord(destination: String): CoordGrid? =
+        DESTINATIONS[destination]?.let(::spellDestination)
+
     /** Every portal loc that leads somewhere, paired with where it leads. */
     val teleports: Map<Int, CoordGrid> by lazy {
         val out = HashMap<Int, CoordGrid>()
