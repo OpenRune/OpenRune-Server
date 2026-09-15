@@ -19,7 +19,7 @@ farming_patch_16 = 65456
 farming_patch_17 = 65457
 farming_patch_18 = 65458
 farming_patch_19 = 65459
-farming_clock = 65460
+farming_clock = 65439
 
 [gamevals.timer]
 farming_transmit = 120
