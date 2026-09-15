@@ -22,6 +22,19 @@ class AgilityCourseTest {
             "Ardougne Rooftop Course" to 889.0,
             "Barbarian Outpost Agility Course" to 153.3,
             "Wilderness Agility Course" to 571.4,
+            "Shayzien Basic Agility Course" to 153.5,
+            "Shayzien Advanced Agility Course" to 508.0,
+            "Colossal Wyrm Basic Agility Course" to 601.6,
+            "Colossal Wyrm Advanced Agility Course" to 1053.6,
+            "Ape Atoll Agility Course" to 580.0,
+            "Werewolf Agility Course" to 730.0,
+        )
+
+    /** Xp a lap of a course pays in live that nothing here awards yet, and why. */
+    private val notModelled =
+        mapOf(
+            // Handing the stick to the Agility Trainer; the stick itself does not spawn.
+            "Werewolf Agility Course" to 380.0
         )
 
     @Test
@@ -30,17 +43,29 @@ class AgilityCourseTest {
             val expected = wikiLapXp[course.name]
             assertTrue(expected != null, "${course.name} has no wiki total to check against")
             val total = course.obstacles.sumOf { it.xp * it.repeats } + course.lapXp
-            assertEquals(expected!!, total, 0.05, "${course.name} pays $total per lap")
+            val target = expected!! - notModelled.getOrDefault(course.name, 0.0)
+            assertEquals(target, total, 0.05, "${course.name} pays $total per lap")
         }
     }
 
+    /**
+     * A basic and an advanced course share the obstacles before they split, and the dispatch that
+     * picks between them reads the step the player is on, so a shared loc has to sit at the same
+     * step in every course that claims it.
+     */
     @Test
-    fun `an obstacle loc belongs to one course only`() {
-        val seen = mutableMapOf<String, String>()
+    fun `a shared obstacle loc is the same step of every course that has it`() {
+        val seen = mutableMapOf<String, Pair<String, Int>>()
         for (course in AgilityCourses.courses) {
-            for (loc in course.obstacles.flatMap { it.locs }) {
-                val owner = seen.put(loc, course.name)
-                assertTrue(owner == null, "$loc is in both $owner and ${course.name}")
+            for ((index, obstacle) in course.obstacles.withIndex()) {
+                for (loc in obstacle.locs) {
+                    val owner = seen.put(loc, course.name to index) ?: continue
+                    assertEquals(
+                        owner.second,
+                        index,
+                        "$loc is step ${owner.second} of ${owner.first} but $index of ${course.name}",
+                    )
+                }
             }
         }
     }
@@ -76,6 +101,12 @@ class AgilityCourseTest {
     @Test
     fun `every course rolls the squirrel and never at a certain rate`() {
         for (course in AgilityCourses.courses) {
+            // The wiki has published no squirrel base for either Colossal Wyrm course since the
+            // rate changed on 19 August 2026, so neither rolls rather than rolling at a made-up one.
+            if (course.name.startsWith("Colossal Wyrm")) {
+                assertEquals(0, course.petBase, "${course.name} has no published rate to use")
+                continue
+            }
             assertTrue(course.petBase > 0, "${course.name} cannot drop the giant squirrel")
             val atMaxLevel = course.petBase - 99 * 25
             assertTrue(atMaxLevel > 1, "${course.name} is a guaranteed pet at level 99")
@@ -102,6 +133,28 @@ class AgilityCourseTest {
                 .fail!!
         assertEquals(2, stall.damage(0))
         assertEquals(7, stall.damage(85))
+    }
+
+    /**
+     * A basic and an advanced course have to agree obstacle for obstacle up to the step they split
+     * at, or the branch a player takes cannot decide which lap they were running.
+     */
+    @Test
+    fun `a basic and advanced pair share an unbroken opening`() {
+        val pairs = listOf("Shayzien", "Colossal Wyrm")
+        for (prefix in pairs) {
+            val basic = AgilityCourses.courses.first { it.name.startsWith("$prefix Basic") }
+            val advanced = AgilityCourses.courses.first { it.name.startsWith("$prefix Advanced") }
+
+            val shared =
+                basic.obstacles.zip(advanced.obstacles).takeWhile { (a, b) -> a.locs == b.locs }
+            assertTrue(shared.isNotEmpty(), "$prefix basic and advanced share no opening")
+            assertEquals(
+                basic.steps.take(shared.size),
+                advanced.steps.take(shared.size),
+                "$prefix courses disagree on the steps before they split",
+            )
+        }
     }
 
     @Test
