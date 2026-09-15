@@ -10,6 +10,7 @@ import org.rsmod.api.registry.loc.LocRegistryNormal
 import org.rsmod.api.table.FurnitureRow
 import org.rsmod.api.table.PohHotspotRow
 import org.rsmod.api.table.PohRoomRow
+import org.rsmod.api.table.construction.ConstructionFurnitureBuildRow
 import org.rsmod.game.loc.LocInfo
 import org.rsmod.map.CoordGrid
 import org.rsmod.map.zone.ZoneKey
@@ -18,8 +19,6 @@ private val logger = InlineLogger()
 
 private const val LOC_PREFIX = "loc."
 private const val OBJ_PREFIX = "obj."
-private const val FURNITURE_LOC_TABLE = "/furniture-locs.tsv"
-
 private val MATERIAL_WORDS =
     listOf("mahogany", "teak", "oak", "marble", "limestone", "gilded", "gold")
 
@@ -28,42 +27,20 @@ private val LOC_ALIASES = mapOf("poh_portal_nexus" to "poh_nexus_portal")
 
 private class FurnitureBuild(
     val locs: List<Int>,
-    val xp: Double?,
+    val xp: Double,
     /** Hotspot loc id -> the loc this piece puts on that part of the hotspot. */
     val parts: Map<Int, Int>,
 )
 
-/** `model_obj` -> what it builds. See `furniture-locs.tsv` for why this cannot be derived. */
+/** `model_obj` -> what it builds, out of `dbtable.construction_furniture_build`. */
 private val FURNITURE_BUILDS: Map<Int, FurnitureBuild> by lazy {
-    val stream =
-        ConstructionCatalogue::class.java.getResourceAsStream(FURNITURE_LOC_TABLE)
-            ?: error("Missing resource: $FURNITURE_LOC_TABLE")
-    stream.bufferedReader().useLines { lines ->
-        lines
-            .map(String::trim)
-            .filter { it.isNotEmpty() && !it.startsWith("#") }
-            .mapNotNull { line ->
-                val cells = line.split('	')
-                if (cells.size < 2) {
-                    return@mapNotNull null
-                }
-                val objId = cells[0].toIntOrNull() ?: return@mapNotNull null
-                val locs = cells.getOrNull(2)?.split(',')?.mapNotNull(String::toIntOrNull).orEmpty()
-                val parts =
-                    cells
-                        .getOrNull(3)
-                        .orEmpty()
-                        .split(',')
-                        .mapNotNull { pair ->
-                            val (spot, built) = pair.split(':').takeIf { it.size == 2 } ?: return@mapNotNull null
-                            val spotId = spot.toIntOrNull() ?: return@mapNotNull null
-                            val builtId = built.toIntOrNull() ?: return@mapNotNull null
-                            spotId to builtId
-                        }
-                        .toMap()
-                objId to FurnitureBuild(locs, cells.getOrNull(1)?.toDoubleOrNull(), parts)
-            }
-            .toMap()
+    ConstructionFurnitureBuildRow.all().associate { row ->
+        row.modelObj.id to
+            FurnitureBuild(
+                locs = row.locs.map { it.id },
+                xp = row.xp / 10.0,
+                parts = row.parts.chunked(2).associate { (spot, built) -> spot.id to built.id },
+            )
     }
 }
 
@@ -198,7 +175,7 @@ class ConstructionCatalogue @Inject constructor(private val locReg: LocRegistryN
     fun builtLocId(furniture: FurnitureRow): Int? = builtLocIds(furniture).firstOrNull()
 
     /**
-     * Resolves content added to the cache after [FURNITURE_LOCS] was transcribed, where the loc name
+     * Resolves content added to the cache after that table was transcribed, where the loc name
      * is a predictable variation on the obj's: the same words in the order the loc table happens to
      * use, a rotation variant, or one of several material variants. A trophy that has a teak and a
      * mahogany loc is told apart by the planks the row actually costs, rather than by guessing.

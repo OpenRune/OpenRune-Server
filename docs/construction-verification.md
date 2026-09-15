@@ -68,7 +68,7 @@ exercised this.**
 Failure modes worth distinguishing:
 - **One tile only** -> the multi-part path did not trigger; the piece is being treated as single-loc.
 - **All tiles look identical** -> the hotspot's loc ids are missing from that piece's `parts` column
-  in `furniture-locs.tsv`, so every part fell back to the first loc. The boot log lists these:
+  in `dbtable.construction_furniture_build`, so every part fell back to the first loc. The boot log lists these:
   13 of 109 pieces are in that state today.
 - **Tiles in the wrong places** (corner art on a middle tile) -> the pairing is mismatched.
 
