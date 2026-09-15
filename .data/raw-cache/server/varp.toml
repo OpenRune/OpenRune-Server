@@ -833,3 +833,21 @@ isServerOnly = true
 id = "varp.overhead_lock_expiration"
 scope = "Temp"
 transmit = "Never"
+
+[[varp]]
+isServerOnly = true
+id = "varp.agility_course"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+isServerOnly = true
+id = "varp.agility_course_progress"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+isServerOnly = true
+id = "varp.agility_mark_clock"
+scope = "Perm"
+transmit = "Never"
