@@ -146,6 +146,14 @@ pieces. The boot log names all seventeen.
 `::pohrooms` dumps every room with its hotspots, and `::pohrooms <name>` filters to one, which is
 the quickest way to see what a room is supposed to offer before you build in it.
 
+`::pohwhere` now also prints the room's doorways and, for the tile under you, which neighbouring
+slot that doorway leads to and whether anything is already in it. A room can only be added through
+a doorway whose neighbour is empty.
+
+**The build menus do not render in the chatbox.** Both the room list and the furniture list are
+centred scroll interfaces (group 187 and 458), so screenshot the middle of the viewport, not the
+bottom. Cropping the chatbox makes a menu that opened correctly look like a silent failure.
+
 ---
 
 ## Known gaps found by running this checklist
@@ -179,6 +187,10 @@ sections above have all been walked at least once.
 | C. Removal | Pass. Removing the rug clears all 16 tiles and restores all 16 hotspots. |
 | D. XP | Pass. Bookcase 115, rug 30, curtains 132, each x150 realm rate. |
 | Room building | Pass. "You build a Parlour." |
+| Pools | Pass. Restoration pool 706 xp, special attack 250 to 1000. Ornate pool restored 93/99 hitpoints and cured venom and disease; still clear a full venom cycle later. |
+| Fence | Pass. Redwood fence laid 20 tiles across three locs. |
+| Portals | Pass. Portal room builds, Teak portal 270 xp, destination menu offers eight, finished portal reads "Varrock Portal" and teleports to 3213,3424, and survives a relog. |
+| Portal nexus | Pass. Portal nexus room builds for 200000, Marble portal nexus builds as loc 33408 with Teleport / Teleport Menu / Configuration / Upgrade / Remove, and Teleport lists the eight destinations and lands on Varrock at 3213,3424. |
 
 **Still open, all minor:**
 
