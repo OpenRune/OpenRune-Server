@@ -225,8 +225,8 @@ course without logging in. Level and xp still come off the wiki.
 - **Multi-stage obstacles.** One obstacle is one animate, wait, land. Live chains several hops
   across a tightrope or a set of stepping stones. Cosmetic; the upgrade path is stages on
   `Obstacle`, not a different model.
-- **Agility shortcuts.** 164 are wired: 157 from `agility-shortcuts.tsv` and seven more the table
-  has no tiles for. Each row is an obstacle's op with the exact tile a player stands on and the
+- **Agility shortcuts.** 174 are wired: 166 from `dbtable.agility_shortcut` and eight more the
+  table has no tiles for. Each row is an obstacle's op with the exact tile a player stands on and the
   tile it puts them on, so climbs, tunnels, stepping stone chains and the 23 crossings that change
   plane all work without a survey. Where a player uses an obstacle from a tile the table does not
   list, the landing falls back to the derived crossing: straight through the loc, first standable

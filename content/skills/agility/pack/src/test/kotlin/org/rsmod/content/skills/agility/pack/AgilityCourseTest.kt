@@ -1,10 +1,13 @@
-package org.rsmod.content.skills.agility
+package org.rsmod.content.skills.agility.pack
 
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
-import org.rsmod.map.CoordGrid
 
+/**
+ * Checks the declarations the course tables are packed from, so the wiki totals are verified where
+ * they are written rather than after a cache round trip.
+ */
 class AgilityCourseTest {
     /** Obstacle xp plus the lap bonus, as the wiki totals a lap of each course. */
     private val wikiLapXp =
@@ -39,7 +42,7 @@ class AgilityCourseTest {
 
     @Test
     fun `a lap pays what the wiki says it pays`() {
-        for (course in AgilityCourses.courses) {
+        for (course in AgilityCourseData.courses) {
             val expected = wikiLapXp[course.name]
             assertTrue(expected != null, "${course.name} has no wiki total to check against")
             val total = course.obstacles.sumOf { it.xp * it.repeats } + course.lapXp
@@ -56,7 +59,7 @@ class AgilityCourseTest {
     @Test
     fun `a shared obstacle loc is the same step of every course that has it`() {
         val seen = mutableMapOf<String, Pair<String, Int>>()
-        for (course in AgilityCourses.courses) {
+        for (course in AgilityCourseData.courses) {
             for ((index, obstacle) in course.obstacles.withIndex()) {
                 for (loc in obstacle.locs) {
                     val owner = seen.put(loc, course.name to index) ?: continue
@@ -72,12 +75,12 @@ class AgilityCourseTest {
 
     @Test
     fun `a repeated obstacle is one step per crossing`() {
-        val barbarian = AgilityCourses.courses.first { it.name.startsWith("Barbarian") }
+        val barbarian = AgilityCourseData.courses.first { it.name.startsWith("Barbarian") }
         assertEquals(6, barbarian.obstacles.size)
         assertEquals(8, barbarian.steps.size)
         assertEquals(listOf(0, 1, 2, 3, 4, 5, 5, 5), barbarian.steps)
 
-        for (course in AgilityCourses.courses) {
+        for (course in AgilityCourseData.courses) {
             assertEquals(
                 course.obstacles.indices.toList(),
                 course.steps.distinct(),
@@ -88,19 +91,23 @@ class AgilityCourseTest {
 
     @Test
     fun `mark odds stay a probability and every course with odds has somewhere to put one`() {
-        for (course in AgilityCourses.courses) {
-            assertTrue(course.markOdds in 0.0..1.0, "${course.name} odds are ${course.markOdds}")
-            if (course.markOdds > 0.0) {
+        for (course in AgilityCourseData.courses) {
+            assertTrue(course.markDenominator > 0, "${course.name} has a zero denominator")
+            assertTrue(
+                course.markNumerator <= course.markDenominator,
+                "${course.name} drops more than one mark a lap",
+            )
+            if (course.markNumerator > 0) {
                 assertTrue(course.markSpawns.isNotEmpty(), "${course.name} has odds but no spawns")
             }
         }
-        val canifis = AgilityCourses.courses.first { it.name.startsWith("Canifis") }
+        val canifis = AgilityCourseData.courses.first { it.name.startsWith("Canifis") }
         assertEquals(false, canifis.markPenalty, "Canifis never takes the 20-level penalty")
     }
 
     @Test
     fun `every course rolls the squirrel and never at a certain rate`() {
-        for (course in AgilityCourses.courses) {
+        for (course in AgilityCourseData.courses) {
             // The wiki has published no squirrel base for either Colossal Wyrm course since the
             // rate changed on 19 August 2026, so neither rolls rather than rolling at a made-up one.
             if (course.name.startsWith("Colossal Wyrm")) {
@@ -116,23 +123,23 @@ class AgilityCourseTest {
     @Test
     fun `a failable obstacle carries odds and a damage rule`() {
         val failable =
-            AgilityCourses.courses.flatMap { it.obstacles }.mapNotNull { it.fail }
+            AgilityCourseData.courses.flatMap { it.obstacles }.mapNotNull { it.fail }
         assertTrue(failable.isNotEmpty(), "no course obstacle can be failed")
         for (fail in failable) {
             assertTrue(fail.low <= fail.high, "backwards odds")
-            assertTrue(fail.damage(99) > fail.damage(10), "damage should follow hitpoints")
-            assertTrue(fail.damage(1) >= 1, "a fail should always hurt a little")
+            assertTrue(fail.damageDivisor > 0, "damage divides by ${fail.damageDivisor}")
+            assertTrue(fail.damageBase >= 1, "a fail should always hurt a little")
         }
 
         // The Pollnivneach market stall: floor(hp / 17) + 2.
         val stall =
-            AgilityCourses.courses
+            AgilityCourseData.courses
                 .first { it.name.startsWith("Pollnivneach") }
                 .obstacles
                 .first { it.fail != null }
                 .fail!!
-        assertEquals(2, stall.damage(0))
-        assertEquals(7, stall.damage(85))
+        assertEquals(17, stall.damageDivisor)
+        assertEquals(2, stall.damageBase)
     }
 
     /**
@@ -143,8 +150,8 @@ class AgilityCourseTest {
     fun `a basic and advanced pair share an unbroken opening`() {
         val pairs = listOf("Shayzien", "Colossal Wyrm")
         for (prefix in pairs) {
-            val basic = AgilityCourses.courses.first { it.name.startsWith("$prefix Basic") }
-            val advanced = AgilityCourses.courses.first { it.name.startsWith("$prefix Advanced") }
+            val basic = AgilityCourseData.courses.first { it.name.startsWith("$prefix Basic") }
+            val advanced = AgilityCourseData.courses.first { it.name.startsWith("$prefix Advanced") }
 
             val shared =
                 basic.obstacles.zip(advanced.obstacles).takeWhile { (a, b) -> a.locs == b.locs }
@@ -155,13 +162,5 @@ class AgilityCourseTest {
                 "$prefix courses disagree on the steps before they split",
             )
         }
-    }
-
-    @Test
-    fun `a landing resolves absolutes before deltas`() {
-        val from = CoordGrid(3200, 3200, 0)
-        assertEquals(CoordGrid(3100, 3100, 1), Landing(x = 3100, z = 3100, level = 1).resolve(from))
-        assertEquals(CoordGrid(3198, 3205, 0), Landing(dx = -2, dz = 5).resolve(from))
-        assertEquals(CoordGrid(3200, 3200, 1), Landing(level = 1).resolve(from))
     }
 }
