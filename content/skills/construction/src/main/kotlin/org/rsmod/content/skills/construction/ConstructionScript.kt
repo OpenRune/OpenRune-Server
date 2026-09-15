@@ -15,6 +15,8 @@ import org.rsmod.api.player.protect.ProtectedAccessLauncher
 import org.rsmod.api.player.stat.constructionLvl
 import org.rsmod.api.player.ui.ifOpenMainModal
 import org.rsmod.api.player.ui.ifSetEvents
+import org.rsmod.api.player.ui.ifSetHide
+import org.rsmod.api.player.ui.ifSetPosition
 import org.rsmod.api.player.vars.boolVarBit
 import org.rsmod.api.repo.loc.LocRepository
 import org.rsmod.api.script.onCommand
@@ -51,15 +53,22 @@ constructor(
         }
         onOpLoc1(EXIT_PORTAL) { leaveHouse() }
 
+        // Every house hotspot, doorway and built piece carries its option at op5: a hotspot is
+        // `ops=[4=Build]` and a built piece `ops=[.., 4=Remove]`. Binding op1 never fires, and
+        // binding Remove to the hotspot's op5 eats the Build click instead.
         for (locId in catalogue.hotspotLocIds()) {
             val type = ServerCacheManager.getObject(locId) ?: continue
-            onOpLoc1(type) { openBuildMenu(it.loc.coords) }
+            onOpLoc5(type) { openBuildMenu(it.loc.coords) }
+        }
+
+        for (locId in catalogue.furnitureLocIds()) {
+            val type = ServerCacheManager.getObject(locId) ?: continue
             onOpLoc5(type) { removeFurniture(it.loc.coords) }
         }
 
         for (locId in catalogue.doorLocIds()) {
             val type = ServerCacheManager.getObject(locId) ?: continue
-            onOpLoc1(type) { openRoomMenu(it.loc.coords) }
+            onOpLoc5(type) { openRoomMenu(it.loc.coords) }
         }
 
         onCommand("house") {
@@ -70,9 +79,61 @@ constructor(
             desc = "Enter your player-owned house in building mode"
             cheat { protectedAccess.launch(player) { enterHouse(buildMode = true) } }
         }
+        onCommand("pohwhere") {
+            desc = "Report how the tile under you resolves to a room slot and hotspot"
+            cheat { dumpWhere() }
+        }
         onCommand("pohrooms") {
             desc = "Dump what the cache says about house rooms and their hotspots"
             cheat { dumpRooms(args.getOrNull(0)) }
+        }
+    }
+
+    /**
+     * Every refusal in [openBuildMenu] is a silent return, so a hotspot that will not open gives
+     * nothing to go on. This walks the same chain out loud.
+     */
+    private fun Cheat.dumpWhere() {
+        val coords = player.coords
+        val session = player.attr[SESSION]
+        if (session == null) {
+            player.mes("No house session: you are not inside your house.")
+            return
+        }
+        player.mes("at $coords  region sw=${session.region.southWest} buildMode=${player.buildMode}")
+        val slot = session.slotAt(coords)
+        if (slot == null) {
+            player.mes("slotAt: no grid slot for this tile.")
+            return
+        }
+        val placed = session.layout.placed(slot)
+        player.mes("slot=$slot placed=${placed?.room} rotation=${placed?.rotation}")
+        val room = placed?.room?.let(catalogue::room)
+        if (room == null) {
+            player.mes("No room placed in this slot.")
+            return
+        }
+        player.mes("room='${room.row.name}' hotspots=${room.hotspots.size}")
+        val target = session.resolve(catalogue, houses, coords)
+        if (target == null) {
+            player.mes("resolve: this tile is not on any hotspot of that room.")
+        } else {
+            val spot = target.hotspot
+            val visible = spot.builds.filter { it.hiddenInBuildMenu != 1 }
+            player.mes(
+                "resolve -> slot=${target.slot} hotspot=${spot.index + 1} " +
+                    "builds=${spot.builds.size} visibleInMenu=${visible.size} " +
+                    "alreadyBuilt=${session.layout.built(target.slot, spot.index)} " +
+                    "saw=${player.inv.contains(OBJ_SAW)} hammer=${player.inv.contains(OBJ_HAMMER)}"
+            )
+        }
+        for (spot in room.hotspots) {
+            val where =
+                spot.parts.joinToString {
+                    houses.localCoords(session.region, slot, placed.rotation, it.localX, it.localZ)
+                        .toString()
+                }
+            player.mes("  [${spot.index + 1}] $where")
         }
     }
 
@@ -157,9 +218,22 @@ constructor(
         }
 
         ifOpenMainModal(INTERFACE_FURNITURE)
-        ifSetEvents(COMPONENT_FURNITURE_CONTENTS, 0 until FURNITURE_SLOTS, IfEvent.PauseButton)
+        // The entry's Build op runs `[clientscript,poh_furniture_creation_op]`, which resumes from
+        // whichever child the entry script built, so the whole child range is enabled.
+        for (slot in 0 until FURNITURE_SLOTS) {
+            ifSetEvents(furnitureEntryComponent(slot), 0 until FURNITURE_ENTRY_CHILDREN, IfEvent.PauseButton)
+        }
+        val interfaceId = RSCM.getRSCM(INTERFACE_FURNITURE)
         for (slot in 0 until FURNITURE_SLOTS) {
             val furniture = builds.getOrNull(slot)
+            val child = slot + FURNITURE_FIRST_ENTRY_CHILD
+            player.ifSetHide(interfaceId, child, furniture == null)
+            player.ifSetPosition(
+                interfaceId,
+                child,
+                (slot % FURNITURE_ENTRY_COLUMNS) * FURNITURE_ENTRY_WIDTH,
+                (slot / FURNITURE_ENTRY_COLUMNS) * FURNITURE_ENTRY_HEIGHT,
+            )
             if (furniture == null) {
                 player.runClientScript(entryScript, slot + 1, 0, -1, "", 0)
                 continue
@@ -174,7 +248,10 @@ constructor(
             )
         }
 
-        val furniture = builds.getOrNull(pauseButton().subcomponent - 1) ?: return
+        // Each entry is its own component, so the chosen slot is in the name rather than in a
+        // subcomponent index.
+        val chosen = pauseButton().component.substringAfterLast(':').toIntOrNull() ?: return
+        val furniture = builds.getOrNull(chosen - 1) ?: return
         buildFurniture(session, target, furniture)
     }
 

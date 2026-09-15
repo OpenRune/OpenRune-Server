@@ -19,15 +19,18 @@ private const val LOC_PREFIX = "loc."
 private const val OBJ_PREFIX = "obj."
 private const val FURNITURE_LOC_TABLE = "/furniture-locs.tsv"
 
-private val PART_WORDS = listOf("middle", "corner", "side", "end", "left", "right", "mid")
-
 private val MATERIAL_WORDS =
     listOf("mahogany", "teak", "oak", "marble", "limestone", "gilded", "gold")
 
 /** Renames between an obj and its loc that are a reordering rather than a new vocabulary. */
 private val LOC_ALIASES = mapOf("poh_portal_nexus" to "poh_nexus_portal")
 
-private class FurnitureBuild(val locs: List<Int>, val xp: Double?)
+private class FurnitureBuild(
+    val locs: List<Int>,
+    val xp: Double?,
+    /** Hotspot loc id -> the loc this piece puts on that part of the hotspot. */
+    val parts: Map<Int, Int>,
+)
 
 /** `model_obj` -> what it builds. See `furniture-locs.tsv` for why this cannot be derived. */
 private val FURNITURE_BUILDS: Map<Int, FurnitureBuild> by lazy {
@@ -44,8 +47,20 @@ private val FURNITURE_BUILDS: Map<Int, FurnitureBuild> by lazy {
                     return@mapNotNull null
                 }
                 val objId = cells[0].toIntOrNull() ?: return@mapNotNull null
-                val locs = cells[1].split(',').mapNotNull(String::toIntOrNull)
-                objId to FurnitureBuild(locs, cells.getOrNull(2)?.toDoubleOrNull())
+                val locs = cells.getOrNull(2)?.split(',')?.mapNotNull(String::toIntOrNull).orEmpty()
+                val parts =
+                    cells
+                        .getOrNull(3)
+                        .orEmpty()
+                        .split(',')
+                        .mapNotNull { pair ->
+                            val (spot, built) = pair.split(':').takeIf { it.size == 2 } ?: return@mapNotNull null
+                            val spotId = spot.toIntOrNull() ?: return@mapNotNull null
+                            val builtId = built.toIntOrNull() ?: return@mapNotNull null
+                            spotId to builtId
+                        }
+                        .toMap()
+                objId to FurnitureBuild(locs, cells.getOrNull(1)?.toDoubleOrNull(), parts)
             }
             .toMap()
     }
@@ -128,6 +143,12 @@ class ConstructionCatalogue @Inject constructor(private val locReg: LocRegistryN
             def.hotspots.flatMap { spot -> spot.parts.map { it.locId } }
         }
 
+    /** Every loc a built piece of furniture can show as, so "Remove" can be bound to them. */
+    fun furnitureLocIds(): Set<Int> =
+        byId.values.flatMapTo(HashSet()) { def ->
+            def.hotspots.flatMap { spot -> spot.builds.flatMap(::builtLocIds) }
+        }
+
     fun doorLocIds(): Set<Int> =
         byId.values.flatMapTo(HashSet()) { def -> def.doors.map { it.locId } }
 
@@ -184,23 +205,18 @@ class ConstructionCatalogue @Inject constructor(private val locReg: LocRegistryN
     private fun locExists(id: Int): Boolean = ServerCacheManager.getObject(id) != null
 
     /**
-     * Picks which of a multi-tile piece's locs goes on [part], by the part word the hotspot loc and
-     * the furniture loc share: a hotspot part named `..._middle` takes the `poh_rugmiddle1` of the
-     * piece's locs. Falls back to the first loc, which is what every single-tile piece uses.
+     * Which loc a piece puts on [part] of its hotspot, so a rug lays corners on the hotspot's corner
+     * tiles rather than repeating one tile. The reference table pairs each hotspot loc id with the
+     * loc built on it; a part it does not name falls back to the first loc, which is what every
+     * single-tile piece uses.
      */
     fun builtLocFor(furniture: FurnitureRow, part: HotspotPart): Int? {
-        val ids = builtLocIds(furniture)
-        if (ids.size <= 1) {
-            return ids.firstOrNull()
+        val build = FURNITURE_BUILDS[furniture.modelObj.id]
+        val paired = build?.parts?.get(part.locId)
+        if (paired != null && locExists(paired)) {
+            return paired
         }
-        val partWord = PART_WORDS.firstOrNull { locName(part.locId).endsWith(it) }
-        if (partWord != null) {
-            val match = ids.firstOrNull { locName(it).contains(partWord) }
-            if (match != null) {
-                return match
-            }
-        }
-        return ids.first()
+        return builtLocIds(furniture).firstOrNull()
     }
 
     private fun load(): Map<Int, RoomDef> {
@@ -373,11 +389,44 @@ class ConstructionCatalogue @Inject constructor(private val locReg: LocRegistryN
                     else "; unplaced locs: ${room.unplaced.joinToString()}."
             }
         }
+        reportMultiPart(rooms)
         if (unresolved.isNotEmpty()) {
             logger.warn {
                 "${unresolved.size} furniture rows have no matching loc and cannot be shown once " +
                     "built: ${unresolved.take(UNRESOLVED_REPORT).joinToString { it.name + '/' + it.modelObj.internalName }}"
             }
+        }
+    }
+
+    /**
+     * A multi-tile piece spreads its locs across the hotspot's parts by name. If that matching ever
+     * collapses - every part taking the same loc, so a rug lays one tile repeated - it is invisible
+     * until someone builds one, so the mapping is exercised here instead of only in a house.
+     */
+    private fun reportMultiPart(rooms: Collection<RoomDef>) {
+        var checked = 0
+        val collapsed = LinkedHashSet<String>()
+        for (room in rooms) {
+            for (spot in room.hotspots.filter { it.parts.size > 1 }) {
+                for (furniture in spot.builds) {
+                    if (builtLocIds(furniture).size < 2) {
+                        continue
+                    }
+                    checked++
+                    val perPart = spot.parts.mapNotNull { builtLocFor(furniture, it) }
+                    if (perPart.distinct().size < 2) {
+                        collapsed += "${room.row.name}/${furniture.name}"
+                    }
+                }
+            }
+        }
+        if (collapsed.isEmpty()) {
+            logger.info { "Multi-tile furniture: $checked pieces spread across their hotspot parts." }
+            return
+        }
+        logger.warn {
+            "${collapsed.size} of $checked multi-tile pieces put the same loc on every part and " +
+                "will render as one repeated tile: ${collapsed.take(UNRESOLVED_REPORT).joinToString()}"
         }
     }
 

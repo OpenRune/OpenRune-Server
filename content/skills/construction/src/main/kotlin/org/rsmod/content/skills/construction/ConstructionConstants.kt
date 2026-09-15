@@ -14,10 +14,32 @@ const val VARBIT_HOUSE_LOCATION: String = "varbit.poh_house_location"
 
 const val INTERFACE_FURNITURE: String = "interface.poh_furniture_creation"
 const val COMPONENT_FURNITURE_CONTENTS: String = "component.poh_furniture_creation:contents"
+
+/**
+ * The entries are named `:01`..`:31` and are static children of the list, not subcomponents of
+ * `contents`, so each one carries its own click event.
+ */
+fun furnitureEntryComponent(slot: Int): String =
+    "component.poh_furniture_creation:%02d".format(slot + 1)
 const val CLIENTSCRIPT_FURNITURE_ENTRY: String =
     "clientscript.[clientscript,poh_furniture_creation_entry]"
 
 const val FURNITURE_SLOTS: Int = 31
+
+/**
+ * The build menu's entries are children 4..34 of the interface, a list layer whose children are
+ * `hide=yes` in the cache, so the server shows the ones it fills. `enum_1461` is the client's own
+ * slot -> component map and starts at this child.
+ */
+const val FURNITURE_FIRST_ENTRY_CHILD: Int = 4
+
+/** The entries carry no position of their own and the list layer does not arrange them. */
+/** How many children the entry script builds inside one entry; its op resumes from one of them. */
+const val FURNITURE_ENTRY_CHILDREN: Int = 16
+
+const val FURNITURE_ENTRY_COLUMNS: Int = 2
+const val FURNITURE_ENTRY_WIDTH: Int = 228
+const val FURNITURE_ENTRY_HEIGHT: Int = 60
 
 const val EXIT_PORTAL: String = "loc.poh_exit_portal"
 
