@@ -59,12 +59,17 @@ constructor(
         // binding Remove to the hotspot's op5 eats the Build click instead.
         for (locId in catalogue.hotspotLocIds()) {
             val type = ServerCacheManager.getObject(locId) ?: continue
-            onOpLoc5(type) { openBuildMenu(it.loc.coords) }
+            onOpLoc5(type) { openBuildMenu(it.loc.coords, it.loc.id) }
         }
 
         for (locId in catalogue.furnitureLocIds()) {
             val type = ServerCacheManager.getObject(locId) ?: continue
-            onOpLoc5(type) { removeFurniture(it.loc.coords) }
+            onOpLoc5(type) { removeFurniture(it.loc.coords, it.loc.id) }
+        }
+
+        for ((locId, destination) in PohPortals.teleports) {
+            val type = ServerCacheManager.getObject(locId) ?: continue
+            onOpLoc1(type) { enterPortal(destination) }
         }
 
         for (locId in catalogue.doorLocIds()) {
@@ -200,13 +205,13 @@ constructor(
         return houses.roomBase(session.region, slot).translate(3, 3)
     }
 
-    private suspend fun ProtectedAccess.openBuildMenu(coords: CoordGrid) {
+    private suspend fun ProtectedAccess.openBuildMenu(coords: CoordGrid, locId: Int? = null) {
         val session = player.attr[SESSION] ?: return
         if (!player.buildMode) {
             mes("You need to be in building mode to do that.")
             return
         }
-        val target = session.resolve(catalogue, houses, coords) ?: return
+        val target = session.resolve(catalogue, houses, coords, locId) ?: return
         if (session.layout.built(target.slot, target.hotspot.index) != null) {
             mes("You need to remove the existing furniture first.")
             return
@@ -269,7 +274,7 @@ constructor(
         startBuild(target, builds[chosen])
     }
 
-    private fun ProtectedAccess.startBuild(target: HotspotTarget, furniture: FurnitureRow) {
+    private suspend fun ProtectedAccess.startBuild(target: HotspotTarget, furniture: FurnitureRow) {
         val required = furniture.buildLevel()
         if (player.constructionLvl < required) {
             mes("You need a Construction level of $required to build that.")
@@ -279,8 +284,13 @@ constructor(
             mes("You don't have the materials to build that.")
             return
         }
+        val variant = portalDestination(furniture) ?: if (isPortal(furniture)) return else null
         anim(SEQ_BUILD)
-        weakQueue(QUEUE_BUILD, BUILD_TICKS, BuildTask(target.slot, target.rotation, target.hotspot.index, furniture.rowId))
+        weakQueue(
+            QUEUE_BUILD,
+            BUILD_TICKS,
+            BuildTask(target.slot, target.rotation, target.hotspot.index, furniture.rowId, variant),
+        )
     }
 
     private fun ProtectedAccess.finishBuild(task: BuildTask) {
@@ -301,7 +311,7 @@ constructor(
             }
         }
 
-        session.layout.build(task.slot, task.hotspot, furniture.rowId)
+        session.layout.build(task.slot, task.hotspot, furniture.rowId, task.variant)
         player.storeLayout(session.layout)
         spawnFurniture(session, task.slot, task.rotation, hotspot, furniture.rowId)
         statAdvance(STAT_CONSTRUCTION, furniture.xp() * xpMods.get(player, STAT_CONSTRUCTION))
@@ -313,15 +323,16 @@ constructor(
         val rotation: Int,
         val hotspot: Int,
         val furniture: Int,
+        val variant: Int?,
     )
 
-    private suspend fun ProtectedAccess.removeFurniture(coords: CoordGrid) {
+    private suspend fun ProtectedAccess.removeFurniture(coords: CoordGrid, locId: Int? = null) {
         val session = player.attr[SESSION] ?: return
         if (!player.buildMode) {
             mes("You need to be in building mode to do that.")
             return
         }
-        val target = session.resolve(catalogue, houses, coords) ?: return
+        val target = session.resolve(catalogue, houses, coords, locId) ?: return
         val built = session.layout.built(target.slot, target.hotspot.index) ?: return
         if (menu("Really remove it?", hotkeys = false, choices = listOf("Yes", "No")) != 0) {
             return
@@ -446,8 +457,9 @@ constructor(
             logger.warn { "Furniture '${furniture.name}' has no matching loc to place." }
             return emptyList()
         }
+        val variant = session.layout.variant(slot, hotspot.index)
         return hotspot.parts.mapNotNull { part ->
-            val locId = catalogue.builtLocFor(furniture, part) ?: return@mapNotNull null
+            val locId = variant ?: catalogue.builtLocFor(furniture, part) ?: return@mapNotNull null
             val coords = houses.partCoords(session.region, slot, rotation, part)
             LocInfo(
                 part.layer,
@@ -462,6 +474,34 @@ constructor(
             return false
         }
         return furniture.materials().all { (material, count) -> materialCount(material) >= count }
+    }
+
+    private fun isPortal(furniture: FurnitureRow): Boolean =
+        catalogue.builtLocIds(furniture).any(PohPortals::isPortalFrame)
+
+    /**
+     * A portal is one furniture row per material whichever destination it leads to, so the
+     * destination is picked when it is built and kept as the layout's variant loc. Returns null for
+     * anything that is not a portal, and for a portal whose menu was cancelled.
+     */
+    private suspend fun ProtectedAccess.portalDestination(furniture: FurnitureRow): Int? {
+        if (!isPortal(furniture)) {
+            return null
+        }
+        val material =
+            PohPortals.MATERIALS.firstOrNull { m ->
+                catalogue.builtLocIds(furniture).any { locName(it).contains("_${m}_") }
+            } ?: return null
+        val labels = PohPortals.labels()
+        val chosen = PohPortals.destinationAt(menu("Where should it lead?", hotkeys = false, choices = labels + "Cancel"))
+        return chosen?.let { PohPortals.portalLoc(material, it) }
+    }
+
+    private fun locName(locId: Int): String = RSCM.getReverseMapping(RSCMType.LOC, locId)
+
+    private fun ProtectedAccess.enterPortal(destination: CoordGrid) {
+        telejump(destination)
+        spam("You step through the portal.")
     }
 
     private fun ProtectedAccess.materialCount(material: String): Int =

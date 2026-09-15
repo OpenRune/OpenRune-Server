@@ -129,7 +129,15 @@ class RoomDef(
     val levelRequirement: Int
         get() = row.levelRequirement.firstOrNull()?.t1 ?: 1
 
-    private val doorDirections: Set<Int> = row.doorLocations.mapTo(HashSet()) { it and 3 }
+    /**
+     * Which walls this room can join a neighbour on. `dbcol.poh_room:door_locations` is empty for
+     * some rooms - the portal room among them, which made it unbuildable - so the doorways actually
+     * found in its chunk stand in.
+     */
+    private val doorDirections: Set<Int> =
+        row.doorLocations.mapTo(HashSet()) { it and 3 }.ifEmpty {
+            doors.mapTo(HashSet()) { it.direction }
+        }
 
     fun doorsAfter(rotation: Int): Set<Int> =
         doorDirections.mapTo(HashSet()) { (it + rotation) and 3 }
@@ -285,8 +293,9 @@ class ConstructionCatalogue @Inject constructor(private val locReg: LocRegistryN
 
         for (loc in chunk) {
             val name = locName(loc.id)
-            val slot = tableSlot(loc.id, rows)
-                ?: HotspotNaming.slotOf(name)
+            val namedSlot = HotspotNaming.slotOf(name)
+            val slot = tableSlot(loc.id, rows, namedSlot)
+                ?: namedSlot
                 ?: HotspotNaming.overrideSlot(row.name, name)
             if (slot != null) {
                 val index = slot - 1
@@ -336,17 +345,31 @@ class ConstructionCatalogue @Inject constructor(private val locReg: LocRegistryN
     /**
      * The 1-based slot whose furniture the reference pairs say is built on [locId].
      *
-     * Only answers when exactly one slot builds that furniture. Several slots of a room often offer
-     * the same thing - a parlour has three chair spaces, all building the same chairs - and there
-     * the pairs cannot say which, while the numbered name can. Where it does answer it beats the
-     * name, which is what stops the formal garden's hedge being read as the flower bed because its
-     * locs are spelled `poh_posh_garden_5end`.
+     * The pairs say which furniture a loc builds, which is what stops the formal garden's hedge
+     * being read as the flower bed just because its locs are spelled `poh_posh_garden_5end`. Where
+     * a room repeats a hotspot the pairs cannot finish the job: a parlour's three chair spaces all
+     * offer the same chairs. There [ordinal] settles it, since the name numbers them in order - and
+     * it need not agree with the row number, which is how the portal room works, its `poh_teleroom_1`
+     * to `_3` filling rows 4 to 6.
      */
-    private fun tableSlot(locId: Int, rows: List<PohHotspotRow>): Int? {
+    private fun tableSlot(locId: Int, rows: List<PohHotspotRow>, ordinal: Int?): Int? {
         val furniture = HOTSPOT_FURNITURE[locId] ?: return null
         val matches =
             rows.indices.filter { i -> rows[i].builddata.any { it.modelObj.id in furniture } }
-        return matches.singleOrNull()?.plus(1)
+        if (matches.isEmpty()) {
+            return null
+        }
+        if (matches.size == 1) {
+            return matches.first() + 1
+        }
+        // Several slots offer this furniture, so the pairs cannot say which. Step in only where the
+        // name points at a row that builds nothing, which means the name is not counting rows: the
+        // portal room's `poh_teleroom_1`..`_3` fill rows 4 to 6, whose rows 1 to 3 are empty.
+        val named = (ordinal ?: return null) - 1
+        if (rows.getOrNull(named)?.builddata?.isNotEmpty() != false) {
+            return null
+        }
+        return matches.getOrNull(named)?.plus(1)
     }
 
     private fun doorsOf(chunk: List<LocInfo>, baseX: Int, baseZ: Int): List<DoorDef> =
