@@ -6,8 +6,6 @@ import dev.openrune.definition.type.widget.ComponentType
 import dev.openrune.definition.type.widget.IfEvent
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
-import dev.openrune.types.ItemServerType
-import dev.openrune.types.NpcServerType
 import dev.openrune.types.SequenceServerType
 import dev.openrune.types.aconverted.interf.IfSubType
 import java.awt.Color
@@ -23,6 +21,7 @@ import net.rsprot.protocol.game.outgoing.interfaces.IfSetNpcHead
 import net.rsprot.protocol.game.outgoing.interfaces.IfSetNpcHeadActive
 import net.rsprot.protocol.game.outgoing.interfaces.IfSetObject
 import net.rsprot.protocol.game.outgoing.interfaces.IfSetPlayerHead
+import net.rsprot.protocol.game.outgoing.interfaces.IfSetPosition
 import net.rsprot.protocol.game.outgoing.interfaces.IfSetText
 import net.rsprot.protocol.game.outgoing.misc.player.TriggerOnDialogAbort
 import org.rsmod.annotations.InternalApi
@@ -243,6 +242,16 @@ public fun Player.ifSetText(internal: String, text: String) {
 public fun Player.ifSetHide(internal: String, hide: Boolean) {
     val target = ServerCacheManager.fromComponent(internal.asRSCM(RSCMType.COMPONENT))
     client.write(IfSetHide(target.interfaceId, target.component, hide))
+}
+
+/** For the children of a list layer, which are addressed by index rather than by their own name. */
+public fun Player.ifSetHide(interfaceId: Int, component: Int, hide: Boolean) {
+    client.write(IfSetHide(interfaceId, component, hide))
+}
+
+/** Places a component within its parent, for lists the client does not lay out on its own. */
+public fun Player.ifSetPosition(interfaceId: Int, component: Int, x: Int, y: Int) {
+    client.write(IfSetPosition(interfaceId, component, x, y))
 }
 
 public fun Player.ifOpenTop(topLevel: String) {
