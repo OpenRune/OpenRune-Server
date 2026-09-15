@@ -17,6 +17,33 @@ private val logger = InlineLogger()
 
 private const val LOC_PREFIX = "loc."
 private const val OBJ_PREFIX = "obj."
+private const val FURNITURE_LOC_TABLE = "/furniture-locs.tsv"
+
+private val PART_WORDS = listOf("middle", "corner", "side", "end", "left", "right", "mid")
+
+private val MATERIAL_WORDS =
+    listOf("mahogany", "teak", "oak", "marble", "limestone", "gilded", "gold")
+
+/** Renames between an obj and its loc that are a reordering rather than a new vocabulary. */
+private val LOC_ALIASES = mapOf("poh_portal_nexus" to "poh_nexus_portal")
+
+/** `model_obj` -> the locs it builds. See `furniture-locs.tsv` for why this cannot be derived. */
+private val FURNITURE_LOCS: Map<Int, List<Int>> by lazy {
+    val stream =
+        ConstructionCatalogue::class.java.getResourceAsStream(FURNITURE_LOC_TABLE)
+            ?: error("Missing resource: $FURNITURE_LOC_TABLE")
+    stream.bufferedReader().useLines { lines ->
+        lines
+            .map(String::trim)
+            .filter { it.isNotEmpty() && !it.startsWith("#") }
+            .mapNotNull { line ->
+                val (obj, locs) = line.split('	', limit = 2).takeIf { it.size == 2 } ?: return@mapNotNull null
+                val objId = obj.toIntOrNull() ?: return@mapNotNull null
+                objId to locs.split(',').mapNotNull(String::toIntOrNull)
+            }
+            .toMap()
+    }
+}
 
 class HotspotPart(
     val locId: Int,
@@ -96,18 +123,75 @@ class ConstructionCatalogue @Inject constructor(private val locReg: LocRegistryN
         byId.values.flatMapTo(HashSet()) { def -> def.doors.map { it.locId } }
 
     /**
-     * The loc a built piece of furniture shows as. `dbtable.furniture` has no loc column; the link
-     * is the shared internal name between the furniture's `model_obj` and its scenery loc, e.g.
-     * `obj.poh_armchair_1` and `loc.poh_armchair_1`.
+     * Every loc a built piece of furniture can show as, the first being what a single-tile piece
+     * places.
+     *
+     * `dbtable.furniture` has no loc column, and the obj and loc names are different vocabularies
+     * rather than spelling variants - `obj.poh_armchair_1` builds `loc.poh_chair1`, `obj.poh_rug_1`
+     * builds three locs - so only about 200 of 500 rows can be matched by name at all. The rest come
+     * from [FURNITURE_LOCS], keyed by `model_obj`. Name matching stays as the fallback for rows
+     * added to the cache since that table was transcribed.
      */
-    fun builtLocId(furniture: FurnitureRow): Int? {
+    fun builtLocIds(furniture: FurnitureRow): List<Int> {
+        val mapped = FURNITURE_LOCS[furniture.modelObj.id]?.filter(::locExists)
+        if (!mapped.isNullOrEmpty()) {
+            return mapped
+        }
+        return listOfNotNull(namedLocId(furniture))
+    }
+
+    fun builtLocId(furniture: FurnitureRow): Int? = builtLocIds(furniture).firstOrNull()
+
+    /**
+     * Resolves content added to the cache after [FURNITURE_LOCS] was transcribed, where the loc name
+     * is a predictable variation on the obj's: the same words in the order the loc table happens to
+     * use, a rotation variant, or one of several material variants. A trophy that has a teak and a
+     * mahogany loc is told apart by the planks the row actually costs, rather than by guessing.
+     */
+    private fun namedLocId(furniture: FurnitureRow): Int? {
         val objName = furniture.modelObj.internalName
         if (!objName.startsWith(OBJ_PREFIX)) {
             return null
         }
-        val locName = LOC_PREFIX + objName.removePrefix(OBJ_PREFIX)
-        val id = runCatching { RSCM.getRSCM(locName) }.getOrDefault(-1)
-        return id.takeIf { it > 0 && ServerCacheManager.getObject(it) != null }
+        val stem = objName.removePrefix(OBJ_PREFIX)
+        val aliased = LOC_ALIASES.entries.firstOrNull { stem.startsWith(it.key) }
+        val materials =
+            furniture.materials().mapNotNull { (material, _) ->
+                MATERIAL_WORDS.firstOrNull { it in material }
+            }
+        val candidates =
+            listOfNotNull(
+                stem,
+                aliased?.let { stem.replaceFirst(it.key, it.value) },
+                *materials.map { "${stem}_$it" }.toTypedArray(),
+                "${stem}_rot0",
+            )
+        return candidates.firstNotNullOfOrNull { name ->
+            val id = runCatching { RSCM.getRSCM(LOC_PREFIX + name) }.getOrDefault(-1)
+            id.takeIf { it > 0 && locExists(it) }
+        }
+    }
+
+    private fun locExists(id: Int): Boolean = ServerCacheManager.getObject(id) != null
+
+    /**
+     * Picks which of a multi-tile piece's locs goes on [part], by the part word the hotspot loc and
+     * the furniture loc share: a hotspot part named `..._middle` takes the `poh_rugmiddle1` of the
+     * piece's locs. Falls back to the first loc, which is what every single-tile piece uses.
+     */
+    fun builtLocFor(furniture: FurnitureRow, part: HotspotPart): Int? {
+        val ids = builtLocIds(furniture)
+        if (ids.size <= 1) {
+            return ids.firstOrNull()
+        }
+        val partWord = PART_WORDS.firstOrNull { locName(part.locId).endsWith(it) }
+        if (partWord != null) {
+            val match = ids.firstOrNull { locName(it).contains(partWord) }
+            if (match != null) {
+                return match
+            }
+        }
+        return ids.first()
     }
 
     private fun load(): Map<Int, RoomDef> {
@@ -283,7 +367,7 @@ class ConstructionCatalogue @Inject constructor(private val locReg: LocRegistryN
         if (unresolved.isNotEmpty()) {
             logger.warn {
                 "${unresolved.size} furniture rows have no matching loc and cannot be shown once " +
-                    "built: ${unresolved.take(UNRESOLVED_REPORT).joinToString { it.name }}"
+                    "built: ${unresolved.take(UNRESOLVED_REPORT).joinToString { it.name + '/' + it.modelObj.internalName }}"
             }
         }
     }
@@ -315,7 +399,7 @@ class ConstructionCatalogue @Inject constructor(private val locReg: LocRegistryN
     private companion object {
         const val ZONE_MAX = 7
         const val TEMPLATE_SCAN_REPORT = 8
-        const val UNRESOLVED_REPORT = 10
+        const val UNRESOLVED_REPORT = 40
 
         /** South-west tile of the house room template grid, verified against every room chunk. */
         val TEMPLATE_BASE = CoordGrid(1856, 7040, 0)

@@ -292,32 +292,44 @@ constructor(
         hotspot: HotspotDef,
         furnitureRow: Int,
     ) {
-        val loc = builtLoc(session, slot, rotation, hotspot, furnitureRow) ?: return
-        locRepo.add(loc, duration = HOUSE_LOC_DURATION)
+        for (loc in builtLocs(session, slot, rotation, hotspot, furnitureRow)) {
+            locRepo.add(loc, duration = HOUSE_LOC_DURATION)
+        }
     }
 
     private fun despawnFurniture(session: HouseSession, target: HotspotTarget, furnitureRow: Int) {
-        val loc =
-            builtLoc(session, target.slot, target.rotation, target.hotspot, furnitureRow) ?: return
-        locRepo.del(loc, duration = HOUSE_LOC_DURATION)
+        val locs =
+            builtLocs(session, target.slot, target.rotation, target.hotspot, furnitureRow)
+        for (loc in locs) {
+            locRepo.del(loc, duration = HOUSE_LOC_DURATION)
+        }
     }
 
-    private fun builtLoc(
+    /**
+     * A multi-tile piece covers every part of its hotspot, each with the loc for that part, so a rug
+     * lays its corners and sides rather than one tile at the hotspot's anchor.
+     */
+    private fun builtLocs(
         session: HouseSession,
         slot: Int,
         rotation: Int,
         hotspot: HotspotDef,
         furnitureRow: Int,
-    ): LocInfo? {
-        val furniture = hotspot.builds.firstOrNull { it.rowId == furnitureRow } ?: return null
-        val locId = catalogue.builtLocId(furniture)
-        if (locId == null) {
+    ): List<LocInfo> {
+        val furniture = hotspot.builds.firstOrNull { it.rowId == furnitureRow } ?: return emptyList()
+        if (catalogue.builtLocIds(furniture).isEmpty()) {
             logger.warn { "Furniture '${furniture.name}' has no matching loc to place." }
-            return null
+            return emptyList()
         }
-        val part = hotspot.primary
-        val coords = houses.partCoords(session.region, slot, rotation, part)
-        return LocInfo(part.layer, coords, LocEntity(locId, part.shapeId, (part.angleId + rotation) and 3))
+        return hotspot.parts.mapNotNull { part ->
+            val locId = catalogue.builtLocFor(furniture, part) ?: return@mapNotNull null
+            val coords = houses.partCoords(session.region, slot, rotation, part)
+            LocInfo(
+                part.layer,
+                coords,
+                LocEntity(locId, part.shapeId, (part.angleId + rotation) and 3),
+            )
+        }
     }
 
     private fun ProtectedAccess.canBuild(furniture: FurnitureRow): Boolean {
