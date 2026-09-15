@@ -77,7 +77,9 @@ needs the same client pass.
   courses - loc, level, landing on the far side, and they work in both directions - so they want
   their own table rather than a `Course` each.
 - **Agility Pyramid, Brimhaven Arena, Werewolf, Penguin, Colossal Wyrm, Hallowed Sepulchre.** All
-  absent. The first two are the ones players expect alongside the courses above.
+  absent. The first two are the ones players expect alongside the courses above. Ape Atoll (48),
+  Shayzien and Dorgesh-Kaan are missing too.
+
 The giant squirrel does roll: every course carries its own base and a completed lap rolls
 1 in `base - level * 25`, the same formula the heron uses. It lands in the inventory, because
 nothing in the server spawns a pet as a follower yet.
