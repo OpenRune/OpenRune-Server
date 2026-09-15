@@ -146,6 +146,33 @@ the quickest way to see what a room is supposed to offer before you build in it.
 
 ---
 
+## Known gaps found by running this checklist
+
+Driven in a client on 2026-09-13. Four dispatch bugs were found and three are fixed; the checklist
+above was written before any of them were known, so read this first.
+
+**Fixed and confirmed in a client:**
+
+- Every house option is at **op5**, not op1. Hotspots are `ops=[4=Build]`, built pieces are
+  `ops=[0=Sit-on, 4=Remove]`. Building, room building and removal were all bound to the wrong op,
+  so nothing in a house responded to a click at all.
+- The build menu's entries are `hide=yes` in the cache, so the server has to show the ones it fills.
+- Those entries carry no position and nothing arranges them, so the server places them in a grid.
+
+**Still broken: you cannot actually build a piece of furniture.** The menu opens and lists the right
+furniture, but clicking an entry does nothing. The entry's Build op runs
+`[clientscript,poh_furniture_creation_op]`, which calls `cc_resume_pausebutton`;
+`InterfaceEvents.isEnabled` (api/net) short-circuits when `comsub == -1` and consults the cache's
+static component flags instead of what `ifSetEvents` registered, and interface 458's entries declare
+no ops of their own. Enabling the whole child range on each entry did not help, which points at
+`comsub` arriving as -1. The next step is one diagnostic boot that logs the `component` and `sub` of
+the incoming ResumePauseButton, which decides whether the fix belongs in the content module or in
+`InterfaceEvents`.
+
+Until that is fixed, sections A to D below cannot be completed: they all need a piece of furniture
+to exist. Sections E and F can be checked as far as "the build menu opens and lists the right
+furniture for that hotspot", which is itself worth confirming across rooms.
+
 ## Results
 
 | Test | Pass / fail | Notes |
