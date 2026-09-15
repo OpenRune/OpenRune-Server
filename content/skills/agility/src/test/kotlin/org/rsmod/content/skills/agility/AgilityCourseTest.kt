@@ -16,7 +16,9 @@ class AgilityCourseTest {
             "Canifis Rooftop Course" to 240.0,
             "Falador Rooftop Course" to 586.0,
             "Seers' Village Rooftop Course" to 570.0,
+            "Pollnivneach Rooftop Course" to 1016.0,
             "Rellekka Rooftop Course" to 920.0,
+            "Prifddinas Agility Course" to 1285.2,
             "Ardougne Rooftop Course" to 889.0,
             "Barbarian Outpost Agility Course" to 153.3,
             "Wilderness Agility Course" to 571.4,
@@ -78,6 +80,28 @@ class AgilityCourseTest {
             val atMaxLevel = course.petBase - 99 * 25
             assertTrue(atMaxLevel > 1, "${course.name} is a guaranteed pet at level 99")
         }
+    }
+
+    @Test
+    fun `a failable obstacle carries odds and a damage rule`() {
+        val failable =
+            AgilityCourses.courses.flatMap { it.obstacles }.mapNotNull { it.fail }
+        assertTrue(failable.isNotEmpty(), "no course obstacle can be failed")
+        for (fail in failable) {
+            assertTrue(fail.low <= fail.high, "backwards odds")
+            assertTrue(fail.damage(99) > fail.damage(10), "damage should follow hitpoints")
+            assertTrue(fail.damage(1) >= 1, "a fail should always hurt a little")
+        }
+
+        // The Pollnivneach market stall: floor(hp / 17) + 2.
+        val stall =
+            AgilityCourses.courses
+                .first { it.name.startsWith("Pollnivneach") }
+                .obstacles
+                .first { it.fail != null }
+                .fail!!
+        assertEquals(2, stall.damage(0))
+        assertEquals(7, stall.damage(85))
     }
 
     @Test
