@@ -1,0 +1,26 @@
+[gamevals.varp]
+farming_patch_00 = 65440
+farming_patch_01 = 65441
+farming_patch_02 = 65442
+farming_patch_03 = 65443
+farming_patch_04 = 65444
+farming_patch_05 = 65445
+farming_patch_06 = 65446
+farming_patch_07 = 65447
+farming_patch_08 = 65448
+farming_patch_09 = 65449
+farming_patch_10 = 65450
+farming_patch_11 = 65451
+farming_patch_12 = 65452
+farming_patch_13 = 65453
+farming_patch_14 = 65454
+farming_patch_15 = 65455
+farming_patch_16 = 65456
+farming_patch_17 = 65457
+farming_patch_18 = 65458
+farming_patch_19 = 65459
+farming_clock = 65460
+
+[gamevals.timer]
+farming_transmit = 120
+
