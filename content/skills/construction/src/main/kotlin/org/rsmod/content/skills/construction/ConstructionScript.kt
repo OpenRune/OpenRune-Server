@@ -23,6 +23,7 @@ import org.rsmod.api.script.onCommand
 import org.rsmod.api.script.onOpLoc1
 import org.rsmod.api.script.onOpLoc2
 import org.rsmod.api.script.onOpLoc5
+import org.rsmod.api.script.onPlayerQueueWithArgs
 import org.rsmod.api.stats.xpmod.XpModifiers
 import org.rsmod.api.table.FurnitureRow
 import org.rsmod.game.cheat.Cheat
@@ -79,6 +80,9 @@ constructor(
             desc = "Enter your player-owned house in building mode"
             cheat { protectedAccess.launch(player) { enterHouse(buildMode = true) } }
         }
+        onPlayerQueueWithArgs<BuildTask>(QUEUE_BUILD) { finishBuild(it.args) }
+        onPlayerQueueWithArgs<RemoveTask>(QUEUE_REMOVE) { finishRemove(it.args) }
+
         onCommand("pohwhere") {
             desc = "Report how the tile under you resolves to a room slot and hotspot"
             cheat { dumpWhere() }
@@ -218,11 +222,6 @@ constructor(
         }
 
         ifOpenMainModal(INTERFACE_FURNITURE)
-        // The entry's Build op runs `[clientscript,poh_furniture_creation_op]`, which resumes from
-        // whichever child the entry script built, so the whole child range is enabled.
-        for (slot in 0 until FURNITURE_SLOTS) {
-            ifSetEvents(furnitureEntryComponent(slot), 0 until FURNITURE_ENTRY_CHILDREN, IfEvent.PauseButton)
-        }
         val interfaceId = RSCM.getRSCM(INTERFACE_FURNITURE)
         for (slot in 0 until FURNITURE_SLOTS) {
             val furniture = builds.getOrNull(slot)
@@ -248,45 +247,73 @@ constructor(
             )
         }
 
+        // The entry script clears its component and rebuilds the children, which drops any event
+        // set on them, so the Build click is enabled only once an entry has been filled. Its op runs
+        // `[clientscript,poh_furniture_creation_op]`, which resumes from whichever child it built.
+        for (slot in builds.indices) {
+            ifSetEvents(
+                furnitureEntryComponent(slot),
+                0 until FURNITURE_ENTRY_CHILDREN,
+                IfEvent.PauseButton,
+            )
+        }
+
         // Each entry is its own component, so the chosen slot is in the name rather than in a
         // subcomponent index.
-        val chosen = pauseButton().component.substringAfterLast(':').toIntOrNull() ?: return
-        val furniture = builds.getOrNull(chosen - 1) ?: return
-        buildFurniture(session, target, furniture)
+        val input = pauseButton()
+        val chosen = builds.indices.firstOrNull { input.isComponentType(furnitureEntryComponent(it)) }
+        if (chosen == null) {
+            logger.warn { "Build menu click on an unknown component: '${input.component}'." }
+            return
+        }
+        startBuild(target, builds[chosen])
     }
 
-    private suspend fun ProtectedAccess.buildFurniture(
-        session: HouseSession,
-        target: HotspotTarget,
-        furniture: FurnitureRow,
-    ) {
+    private fun ProtectedAccess.startBuild(target: HotspotTarget, furniture: FurnitureRow) {
         val required = furniture.buildLevel()
         if (player.constructionLvl < required) {
             mes("You need a Construction level of $required to build that.")
             return
         }
-        val materials = furniture.materials()
-        if (materials.any { inv.count(it.first) < it.second }) {
+        if (furniture.materials().any { (material, count) -> materialCount(material) < count }) {
             mes("You don't have the materials to build that.")
             return
         }
-
         anim(SEQ_BUILD)
-        delay(BUILD_TICKS)
-        for ((obj, count) in materials) {
-            if (invDel(inv, obj, count).failure) {
-                resetAnim()
+        weakQueue(QUEUE_BUILD, BUILD_TICKS, BuildTask(target.slot, target.rotation, target.hotspot.index, furniture.rowId))
+    }
+
+    private fun ProtectedAccess.finishBuild(task: BuildTask) {
+        resetAnim()
+        val session = player.attr[SESSION] ?: return
+        val placed = session.layout.placed(task.slot) ?: return
+        val room = catalogue.room(placed.room) ?: return
+        val hotspot = room.hotspot(task.hotspot) ?: return
+        val furniture = hotspot.builds.firstOrNull { it.rowId == task.furniture } ?: return
+
+        if (session.layout.built(task.slot, task.hotspot) != null) {
+            return
+        }
+        for ((material, count) in furniture.materials()) {
+            if (!takeMaterial(material, count)) {
+                mes("You don't have the materials to build that.")
                 return
             }
         }
-        resetAnim()
 
-        session.layout.build(target.slot, target.hotspot.index, furniture.rowId)
+        session.layout.build(task.slot, task.hotspot, furniture.rowId)
         player.storeLayout(session.layout)
-        spawnFurniture(session, target.slot, target.rotation, target.hotspot, furniture.rowId)
+        spawnFurniture(session, task.slot, task.rotation, hotspot, furniture.rowId)
         statAdvance(STAT_CONSTRUCTION, furniture.xp() * xpMods.get(player, STAT_CONSTRUCTION))
         spam("You build a ${furniture.name}.")
     }
+
+    private data class BuildTask(
+        val slot: Int,
+        val rotation: Int,
+        val hotspot: Int,
+        val furniture: Int,
+    )
 
     private suspend fun ProtectedAccess.removeFurniture(coords: CoordGrid) {
         val session = player.attr[SESSION] ?: return
@@ -300,13 +327,34 @@ constructor(
             return
         }
         anim(SEQ_BUILD)
-        delay(BUILD_TICKS)
+        weakQueue(
+            QUEUE_REMOVE,
+            BUILD_TICKS,
+            RemoveTask(target.slot, target.rotation, target.hotspot.index, built),
+        )
+    }
+
+    private fun ProtectedAccess.finishRemove(task: RemoveTask) {
         resetAnim()
-        session.layout.demolish(target.slot, target.hotspot.index)
+        val session = player.attr[SESSION] ?: return
+        val placed = session.layout.placed(task.slot) ?: return
+        val room = catalogue.room(placed.room) ?: return
+        val hotspot = room.hotspot(task.hotspot) ?: return
+        if (session.layout.built(task.slot, task.hotspot) != task.furniture) {
+            return
+        }
+        session.layout.demolish(task.slot, task.hotspot)
         player.storeLayout(session.layout)
-        despawnFurniture(session, target, built)
+        despawnFurniture(session, HotspotTarget(task.slot, task.rotation, hotspot), task.furniture)
         spam("You remove the furniture.")
     }
+
+    private data class RemoveTask(
+        val slot: Int,
+        val rotation: Int,
+        val hotspot: Int,
+        val furniture: Int,
+    )
 
     private suspend fun ProtectedAccess.openRoomMenu(coords: CoordGrid) {
         val session = player.attr[SESSION] ?: return
@@ -413,7 +461,30 @@ constructor(
         if (player.constructionLvl < furniture.buildLevel()) {
             return false
         }
-        return furniture.materials().all { (obj, count) -> inv.count(obj) >= count }
+        return furniture.materials().all { (material, count) -> materialCount(material) >= count }
+    }
+
+    private fun ProtectedAccess.materialCount(material: String): Int =
+        materialOptions(material).sumOf(inv::count)
+
+    /** Spends [count] of [material], drawing across the nail tiers when the material is any_nails. */
+    private fun ProtectedAccess.takeMaterial(material: String, count: Int): Boolean {
+        var remaining = count
+        for (option in materialOptions(material)) {
+            if (remaining <= 0) {
+                break
+            }
+            val held = inv.count(option)
+            if (held <= 0) {
+                continue
+            }
+            val take = minOf(held, remaining)
+            if (invDel(inv, option, take).failure) {
+                return false
+            }
+            remaining -= take
+        }
+        return remaining <= 0
     }
 
     private fun Player.layout(): HouseLayout = HouseLayout.decode(attr[LAYOUT])
