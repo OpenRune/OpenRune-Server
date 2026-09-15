@@ -150,30 +150,45 @@ the quickest way to see what a room is supposed to offer before you build in it.
 
 ## Known gaps found by running this checklist
 
-Driven in a client on 2026-09-13. Four dispatch bugs were found and three are fixed. The sections
-above were written before any of them were known.
+Driven in a client on 2026-09-13. Seven bugs were found and fixed; Construction now builds, and the
+sections above have all been walked at least once.
 
 **Fixed and confirmed in a client:**
 
 - Every house option is at **op5**, not op1. Hotspots are `ops=[4=Build]`, built pieces are
-  `ops=[0=Sit-on, 4=Remove]`. Building, room building and removal were all bound to the wrong op,
-  so nothing in a house responded to a click at all.
-- The build menu's entries are `hide=yes` in the cache, so the server has to show the ones it fills.
-- Those entries carry no position and nothing arranges them, so the server places them in a grid.
+  `ops=[0=Sit-on, 4=Remove]`. Building, room building and removal were bound to the wrong op, so
+  nothing in a house responded to a click at all.
+- The build menu's entries are `hide=yes` in the cache, and carry no position, and nothing arranges
+  them, so the server shows and places each one.
+- The entry script clears its component and rebuilds the children, so click events have to be set
+  **after** the entries are filled, not before.
+- Each entry is its own component, so the chosen slot comes from the component, not a subcomponent.
+- `dbtable.furniture` asks for `obj.any_nails`, a build menu placeholder nobody can hold, so every
+  plank-and-nails build failed its material check. A build now spends whichever nail tier is held.
+- Resuming from the menu's button costs the script its protected access, so the `delay` for the
+  build animation threw and nothing after it ran. Build and removal finish on a player queue.
+- Hotspot slots come from the reference pairs rather than from loc names, which had the formal
+  garden's 22-tile fence and hedge filed under the flower beds as two-tile stubs.
 
-**Still broken: you cannot actually build a piece of furniture.** The menu opens and lists the right
-furniture, but clicking an entry does nothing. The entry's Build op runs
-`[clientscript,poh_furniture_creation_op]`, which calls `cc_resume_pausebutton`;
-`InterfaceEvents.isEnabled` (api/net) short-circuits when `comsub == -1` and consults the cache's
-static component flags instead of what `ifSetEvents` registered, and interface 458's entries declare
-no ops of their own. Enabling the whole child range on each entry did not help, which points at
-`comsub` arriving as -1. The next step is one diagnostic boot that logs the `component` and `sub` of
-the incoming ResumePauseButton, which decides whether the fix belongs in the content module or in
-`InterfaceEvents`.
+**Measured results:**
 
-Until that is fixed, sections A to D cannot be completed: they all need a piece of furniture to
-exist. Sections E and F can be checked as far as "the build menu opens and lists the right furniture
-for that hotspot", which is itself worth confirming across rooms.
+| Test | Result |
+|---|---|
+| A. Furniture appears | Pass. Wooden bookcase places loc 6768. |
+| B. Multi-tile coverage | Pass. Brown rug lays all 16 tiles: corners on the four corners, middles on the inner 2x2, sides on every edge. |
+| C. Removal | Pass. Removing the rug clears all 16 tiles and restores all 16 hotspots. |
+| D. XP | Pass. Bookcase 115, rug 30, curtains 132, each x150 realm rate. |
+| Room building | Pass. "You build a Parlour." |
+
+**Still open, all minor:**
+
+- **11 of 114 multi-tile pieces** put the same loc on every part: the three chapel windows, five
+  throne room pieces and three portal nexus rugs. Their hotspot loc ids are absent from that piece's
+  `parts` column, so every part falls back to the first loc. The boot log names them.
+- **Portal room slots 4, 5, 6** have no loc in their chunk.
+- **Formal garden slots 4 and 5** are a second pair of flower beds sharing furniture with slots 6
+  and 7, so the pairs cannot tell them apart.
+- **17 furniture rows** are leagues and seasonal cosmetics with no loc mapping.
 
 ## Results
 
