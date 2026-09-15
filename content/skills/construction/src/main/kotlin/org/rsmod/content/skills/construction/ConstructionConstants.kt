@@ -4,9 +4,40 @@ const val STAT_CONSTRUCTION: String = "stat.construction"
 
 const val OBJ_COINS: String = "obj.coins"
 const val OBJ_SAW: String = "obj.poh_saw"
+
+/**
+ * `dbtable.furniture` asks for `obj.any_nails`, which is a build menu placeholder rather than an obj
+ * anyone can hold, so a build that wants nails is paid for with whichever of these the player has.
+ * Ordered cheapest first, so better nails are kept back.
+ */
+const val OBJ_ANY_NAILS: String = "obj.any_nails"
+
+val NAIL_OBJS: List<String> =
+    listOf(
+        "obj.nails_bronze",
+        "obj.nails_iron",
+        "obj.nails",
+        "obj.nails_black",
+        "obj.nails_mithril",
+        "obj.nails_adamant",
+        "obj.nails_rune",
+        "obj.nails_dragon",
+    )
+
+/** The objs that can pay for [material]; all but nails are only ever themselves. */
+fun materialOptions(material: String): List<String> =
+    if (material == OBJ_ANY_NAILS) NAIL_OBJS else listOf(material)
 const val OBJ_HAMMER: String = "obj.hammer"
 
 const val SEQ_BUILD: String = "seq.human_poh_build"
+
+/**
+ * The build runs on a queue rather than inline. Resuming from the menu's button does not survive a
+ * suspension: closing the modal costs the script its protected access, so the wait for the build
+ * animation has to happen in a fresh one.
+ */
+const val QUEUE_BUILD: String = "queue.construction_build"
+const val QUEUE_REMOVE: String = "queue.construction_remove"
 
 const val VARBIT_BUILD_MODE: String = "varbit.poh_building_mode"
 const val VARBIT_HOUSE_STYLE: String = "varbit.poh_house_style"
