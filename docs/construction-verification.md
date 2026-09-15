@@ -1,10 +1,10 @@
 # Construction: in-client verification
 
-Nothing in the Construction module has been seen in a running client. Rooms, hotspots, furniture
-locs and xp are all correct according to the boot log and unit tests, which is not the same thing.
-
 This checklist targets the paths that are **new or changed** rather than re-testing the whole skill.
-Work top to bottom: the first three tests cover the code most likely to be wrong.
+
+**Read "Known gaps found by running this checklist" at the bottom first.** It was driven in a client
+on 2026-09-13: three dispatch bugs were found and fixed, and one is still open that stops furniture
+being built at all, which blocks sections A to D.
 
 ## Setup
 
@@ -56,7 +56,8 @@ console before assuming the loc is wrong.
 ## B. Multi-tile furniture covers its whole hotspot (new code path, highest risk)
 
 `spawnFurniture` used to place one loc at the hotspot's anchor tile. It now places one loc per
-hotspot part, choosing which by name. **Nothing has exercised this.**
+hotspot part, paired by the reference table's own hotspot-loc to built-loc mapping. **Nothing has
+exercised this.**
 
 | Step | Expected |
 |---|---|
@@ -66,9 +67,10 @@ hotspot part, choosing which by name. **Nothing has exercised this.**
 
 Failure modes worth distinguishing:
 - **One tile only** -> the multi-part path did not trigger; the piece is being treated as single-loc.
-- **All tiles look identical** -> parts resolved but the part-word matching picked the same loc for
-  every tile.
-- **Tiles in the wrong places** (corner art on a middle tile) -> part-word matching is mismatching.
+- **All tiles look identical** -> the hotspot's loc ids are missing from that piece's `parts` column
+  in `furniture-locs.tsv`, so every part fell back to the first loc. The boot log lists these:
+  13 of 109 pieces are in that state today.
+- **Tiles in the wrong places** (corner art on a middle tile) -> the pairing is mismatched.
 
 ## C. Removing furniture removes every part
 
@@ -148,8 +150,8 @@ the quickest way to see what a room is supposed to offer before you build in it.
 
 ## Known gaps found by running this checklist
 
-Driven in a client on 2026-09-13. Four dispatch bugs were found and three are fixed; the checklist
-above was written before any of them were known, so read this first.
+Driven in a client on 2026-09-13. Four dispatch bugs were found and three are fixed. The sections
+above were written before any of them were known.
 
 **Fixed and confirmed in a client:**
 
@@ -169,9 +171,9 @@ no ops of their own. Enabling the whole child range on each entry did not help, 
 the incoming ResumePauseButton, which decides whether the fix belongs in the content module or in
 `InterfaceEvents`.
 
-Until that is fixed, sections A to D below cannot be completed: they all need a piece of furniture
-to exist. Sections E and F can be checked as far as "the build menu opens and lists the right
-furniture for that hotspot", which is itself worth confirming across rooms.
+Until that is fixed, sections A to D cannot be completed: they all need a piece of furniture to
+exist. Sections E and F can be checked as far as "the build menu opens and lists the right furniture
+for that hotspot", which is itself worth confirming across rooms.
 
 ## Results
 
