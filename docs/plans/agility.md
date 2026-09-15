@@ -119,11 +119,30 @@ only part no source has.
   resolved to a gameval symbol at generation time, so no raw id is in the file, and 116 rows for
   locs the courses already bind were dropped rather than double-registering them.
 
-  Not in: the 16 rows that need a mith grapple, which wants an equipment check; anything whose op is
-  Enter, Open or Use, since those are cave mouths and gates other content owns; and 27 rows carry a
-  varbit requirement that is kept in the source data but not yet enforced, so a few quest-gated
-  shortcuts open early. Both Catacombs of Kourend cracks are still one loc id, and the spiked floors
-  still cannot be failed.
+  Requirements ride on the link rather than the shortcut, because one loc id can be two shortcuts:
+  both Catacombs of Kourend cracks are `loc.zeah_cata_crack` and both Slayer Tower spiked chains are
+  `loc.slayertower_sc_chain*`, at two levels each. The dataset already separates the chains by row;
+  the cracks it gives at 17 apiece, so the northern one is corrected to the wiki's 34 by an override
+  keyed on the tile.
+
+  **Grapple crossings** check a mith grapple in the quiver and any crossbow in hand, plus the Ranged
+  and Strength the wiki lists, and take the barehanded alternative into account: the same gap at a
+  much higher Agility level with no gear. **Quest gates** run through `QuestRequirements`, so they
+  follow the realm's quest requirement mode rather than reading the quest var directly. Everything
+  else - diary flags, built bridges, rope tied - is the raw comparison the data carries.
+
+  **Failing** is in for the eleven obstacles whose wiki page publishes a success chart: the stepping
+  stones at Lumbridge Swamp Caves and Karamja, both log balances, the four Trollheim rock climbs,
+  two strange floors, the Taverley pipe and the Fremennik chasm. The odds are the wiki's out of 256
+  through the same skilling formula as everything else, a failed attempt still pays its fail xp, and
+  the Ardougne log deals its 2-6. **A failed crossing leaves the player where they started** - live
+  may well drop them in the water instead, and that is the one thing here that wants a client to
+  settle.
+
+  Still out: the Champions' Guild stepping stone and the Forthos strange floor can fail in live but
+  publish no chart, so they cross every time; anything whose op is Enter, Open or Use, since those
+  are cave mouths and gates other content owns; and the Revenant Caves pillar jumps, which the
+  dataset does not carry.
 
 - **Agility Pyramid, Brimhaven Arena, Werewolf, Penguin, Colossal Wyrm, Hallowed Sepulchre.** All
   absent. The first two are the ones players expect alongside the courses above. Ape Atoll (48),
