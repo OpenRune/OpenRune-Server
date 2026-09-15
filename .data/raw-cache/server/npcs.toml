@@ -4681,3 +4681,9 @@ defaultMode = "Wander"
 "param.attack_anim"="seq.small_spider_update_attack"
 "param.defend_anim"="seq.small_spider_update_defend"
 "param.death_anim"="seq.small_spider_update_death"
+
+[[npc]]
+id = "npc.motherlode_mother"
+inherit = "npc.motherlode_mother"
+moveRestrict = "NoMove"
+wanderRange = 0

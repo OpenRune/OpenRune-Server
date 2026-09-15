@@ -1,0 +1,8 @@
+[gamevals.area]
+motherlode_mine = 59
+
+[gamevals.currency]
+golden_nugget = 65534
+
+[gamevals.dbrow]
+shop_currency_golden_nugget = 63500

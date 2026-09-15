@@ -31,5 +31,12 @@ object ShopCurrencyTable {
             column(PLURAL_NAME, "stardust")
             columnRSCM(OBJ, "obj.star_dust")
         }
+
+        row("dbrow.shop_currency_golden_nugget") {
+            column(KEY, "currency.golden_nugget")
+            column(SINGULAR_NAME, "golden nugget")
+            column(PLURAL_NAME, "golden nuggets")
+            columnRSCM(OBJ, "obj.motherlode_nugget")
+        }
     }
 }
