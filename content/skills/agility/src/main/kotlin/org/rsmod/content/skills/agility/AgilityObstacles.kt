@@ -10,6 +10,7 @@ import org.rsmod.api.player.hook.TeleportType
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.stat.agilityLvl
 import org.rsmod.api.player.stat.baseAgilityLvl
+import org.rsmod.api.player.stat.hitpoints
 import org.rsmod.api.player.vars.intVarp
 import org.rsmod.api.repo.obj.ObjRepository
 import org.rsmod.api.script.onOpLoc1
@@ -19,10 +20,12 @@ import org.rsmod.api.script.onOpLoc4
 import org.rsmod.api.script.onOpLoc5
 import org.rsmod.api.stats.xpmod.XpModifiers
 import org.rsmod.game.entity.Player
+import org.rsmod.game.hit.HitType
 import org.rsmod.game.loc.BoundLocInfo
 import org.rsmod.map.CoordGrid
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
+import skillSuccess
 
 class AgilityObstacles
 @Inject
@@ -66,6 +69,13 @@ constructor(private val objRepo: ObjRepository, private val xpMods: XpModifiers)
 
         faceSquare(loc.coords)
         val dest = obstacle.landing.resolve(coords)
+
+        val fail = obstacle.fail
+        if (fail != null && !skillSuccess(fail.low, fail.high, player.agilityLvl)) {
+            slip(fail)
+            return
+        }
+
         anim(obstacle.anim)
 
         if (obstacle.slide) {
@@ -82,6 +92,18 @@ constructor(private val objRepo: ObjRepository, private val xpMods: XpModifiers)
             statAdvance(STAT_AGILITY, obstacle.xp * xpMods.get(player, STAT_AGILITY))
         }
         advance(course, courseIndex, index)
+    }
+
+    /**
+     * A failed obstacle costs the lap and a share of the player's remaining hitpoints. Live drops
+     * them off the roof; here they keep their footing and only the lap is lost, because no source
+     * records the tile each obstacle drops you onto.
+     */
+    private fun ProtectedAccess.slip(fail: ObstacleFail) {
+        mes("You slip and fail to complete the obstacle.")
+        queueHit(delay = 0, type = HitType.Typeless, damage = fail.damage(player.hitpoints))
+        player.agilityCourse = 0
+        player.agilityProgress = 0
     }
 
     /**

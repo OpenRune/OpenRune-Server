@@ -25,6 +25,7 @@ private const val HANDHOLDS = "seq.agilityarena_handholds_middle"
 private const val POLE_VAULT = "seq.rooftops_pole_vault"
 private const val TREE_CLIMB = "seq.mdaughter_tree_climb_combi"
 private const val PIPE = "seq.human_doublepipesqueeze"
+private const val MONKEY_BARS = "seq.human_monkeybars_walk"
 private const val CLIMB_DOWN = "seq.human_climbing_down"
 private const val CRUMBLE_WALL = "seq.human_walk_crumbledwall"
 private const val STEPPING_STONE = "seq.human_steppingstonejump"
@@ -58,7 +59,15 @@ data class Obstacle(
     val ticks: Int = 2,
     val slide: Boolean = false,
     val repeats: Int = 1,
+    val fail: ObstacleFail? = null,
 )
+
+/**
+ * An obstacle that can be failed. [low] and [high] are the wiki's level-1 and level-99 odds out of
+ * 256; the damage is the live formula, a share of the hitpoints the player has left rather than a
+ * flat hit, which is why waiting until low health is the way players save food.
+ */
+data class ObstacleFail(val low: Int, val high: Int, val damage: (Int) -> Int)
 
 /**
  * [markOdds] is the chance of a mark of grace on a completed lap once the shared three minute
@@ -95,7 +104,8 @@ private fun obstacle(
     ticks: Int = 2,
     slide: Boolean = false,
     repeats: Int = 1,
-) = Obstacle(listOf(loc), landing, xp, anim, ticks, slide, repeats)
+    fail: ObstacleFail? = null,
+) = Obstacle(listOf(loc), landing, xp, anim, ticks, slide, repeats, fail)
 
 private fun marks(vararg coords: Triple<Int, Int, Int>) =
     coords.map { CoordGrid(it.first, it.second, it.third) }
@@ -620,6 +630,96 @@ object AgilityCourses {
                     ),
             ),
             Course(
+                name = "Pollnivneach Rooftop Course",
+                level = 70,
+                lapXp = 666.0,
+                petBase = 33422,
+                markOdds = 2.0 / 6,
+                markSpawns =
+                    marks(
+                        Triple(3349, 2967, 1),
+                        Triple(3354, 2974, 1),
+                        Triple(3362, 2979, 1),
+                        Triple(3369, 2974, 1),
+                        Triple(3365, 2985, 1),
+                        Triple(3361, 2981, 2),
+                        Triple(3362, 2994, 2),
+                        Triple(3356, 3004, 2),
+                    ),
+                obstacles =
+                    listOf(
+                        obstacle(
+                            "loc.rooftops_pollnivneach_basket",
+                            at(3351, 2964, 1),
+                            10.0,
+                            CLIMB,
+                            ticks = 3,
+                        ),
+                        obstacle(
+                            "loc.rooftops_pollnivneach_marketstall",
+                            at(3352, 2973, 1),
+                            45.0,
+                            SPOT_JUMP,
+                            ticks = 4,
+                            fail = ObstacleFail(60, 300) { hitpoints -> hitpoints / 17 + 2 },
+                        ),
+                        obstacle(
+                            "loc.rooftops_pollnivneach_hangingbanner",
+                            at(3360, 2978, 1),
+                            65.0,
+                            ROPE_SWING,
+                            ticks = 4,
+                            slide = true,
+                        ),
+                        obstacle(
+                            "loc.rooftops_pollnivneach_gap",
+                            Landing(dx = 4, dz = -1),
+                            35.0,
+                            JUMP_DOWN_FLAT,
+                            ticks = 3,
+                            slide = true,
+                        ),
+                        obstacle(
+                            "loc.rooftops_pollnivneach_tree",
+                            at(3366, 2982, 1),
+                            75.0,
+                            SPOT_JUMP,
+                            ticks = 5,
+                            slide = true,
+                        ),
+                        obstacle(
+                            "loc.rooftops_pollnivneach_wallclimb",
+                            at(3365, 2983, 2),
+                            5.0,
+                            JUMP_UP,
+                            ticks = 3,
+                        ),
+                        obstacle(
+                            "loc.rooftops_pollnivneach_monkeybars_start",
+                            Landing(dz = 7),
+                            55.0,
+                            MONKEY_BARS,
+                            ticks = 8,
+                            slide = true,
+                        ),
+                        obstacle(
+                            "loc.rooftops_pollnivneach_treetop",
+                            at(3359, 3000, 2),
+                            60.0,
+                            HURDLE,
+                            ticks = 5,
+                            slide = true,
+                        ),
+                        obstacle(
+                            "loc.rooftops_pollnivneach_line",
+                            at(3364, 2998, 0),
+                            0.0,
+                            JUMP_DOWN,
+                            ticks = 5,
+                        ),
+                    ),
+            ),
+            Course(
                 name = "Rellekka Rooftop Course",
                 level = 80,
                 lapXp = 615.0,
@@ -761,6 +861,106 @@ object AgilityCourses {
                             0.0,
                             JUMP_DOWN,
                             ticks = 6,
+                        ),
+                    ),
+            ),
+            Course(
+                name = "Prifddinas Agility Course",
+                level = 75,
+                lapXp = 1037.1,
+                petBase = 25146,
+                obstacles =
+                    listOf(
+                        obstacle(
+                            "loc.prif_agility_start_ladder",
+                            at(3255, 6109, 2),
+                            11.5,
+                            CLIMB_UP,
+                            ticks = 3,
+                        ),
+                        obstacle(
+                            "loc.prif_agility_tightrope_start1",
+                            at(3272, 6105, 2),
+                            30.7,
+                            BALANCE,
+                            ticks = 8,
+                            slide = true,
+                        ),
+                        obstacle(
+                            "loc.prif_agility_chimney_jump",
+                            at(3269, 6113, 2),
+                            28.1,
+                            SPOT_JUMP,
+                            ticks = 5,
+                            slide = true,
+                        ),
+                        obstacle(
+                            "loc.prif_agility_roof_jump",
+                            at(3269, 6117, 0),
+                            23.0,
+                            JUMP_DOWN_FLAT,
+                            ticks = 3,
+                        ),
+                        obstacle(
+                            "loc.prif_agility_dark_hole_active",
+                            at(3293, 6141, 0),
+                            11.5,
+                            CLIMB_DOWN,
+                            ticks = 4,
+                        ),
+                        obstacle(
+                            "loc.prif_agility_tree_ladder_long",
+                            at(3293, 6145, 2),
+                            0.0,
+                            CLIMB_UP,
+                            ticks = 3,
+                        ),
+                        obstacle(
+                            "loc.prif_agility_rope_bridge1",
+                            at(3281, 6142, 2),
+                            25.6,
+                            BALANCE,
+                            ticks = 6,
+                            slide = true,
+                        ),
+                        obstacle(
+                            "loc.prif_agility_tightrope1",
+                            at(3271, 6149, 2),
+                            30.7,
+                            BALANCE,
+                            ticks = 6,
+                            slide = true,
+                        ),
+                        obstacle(
+                            "loc.prif_agility_rope_bridge2",
+                            at(3270, 6158, 2),
+                            25.6,
+                            BALANCE,
+                            ticks = 6,
+                            slide = true,
+                        ),
+                        obstacle(
+                            "loc.prif_agility_tightrope2",
+                            at(3274, 6168, 2),
+                            30.7,
+                            BALANCE,
+                            ticks = 6,
+                            slide = true,
+                        ),
+                        obstacle(
+                            "loc.prif_agility_tightrope3",
+                            at(3284, 6177, 0),
+                            30.7,
+                            BALANCE,
+                            ticks = 6,
+                            slide = true,
+                        ),
+                        obstacle(
+                            "loc.prif_agility_dark_hole_end",
+                            at(3240, 6109, 0),
+                            0.0,
+                            CLIMB_DOWN,
+                            ticks = 4,
                         ),
                     ),
             ),
