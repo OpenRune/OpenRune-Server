@@ -107,16 +107,24 @@ only part no source has.
 - **Multi-stage obstacles.** One obstacle is one animate, wait, land. Live chains several hops
   across a tightrope or a set of stepping stones. Cosmetic; the upgrade path is stages on
   `Obstacle`, not a different model.
-- **Agility shortcuts.** 27 of the wiki's 155 are in, in `AgilityShortcuts.kt`: the ones that cross
-  to the far side of an obstacle on one level - walls, fences, railings, crevices, pipes, holes and
-  spiked floors. Level, xp and the op name are the wiki's, every loc was resolved back to this cache
-  by id, and the landing tile is derived at runtime from the loc's own footprint rather than
-  recorded, so none of them needed a survey. The other 128 are climbs, grapples, stepping stone
-  chains and tunnel pairs, which all put the player somewhere no rule can derive.
+- **Agility shortcuts.** 164 are wired: 157 from `agility-shortcuts.tsv` and seven more the table
+  has no tiles for. Each row is an obstacle's op with the exact tile a player stands on and the
+  tile it puts them on, so climbs, tunnels, stepping stone chains and the 23 crossings that change
+  plane all work without a survey. Where a player uses an obstacle from a tile the table does not
+  list, the landing falls back to the derived crossing: straight through the loc, first standable
+  tile past its footprint.
 
-  Two known gaps in what shipped: both Catacombs of Kourend cracks are one loc id, so binding it at
-  the southern crack's level 17 opens the northern one seventeen levels early, and the spiked floors
-  cannot be failed.
+  The tiles come from the shortest-path RuneLite plugin's own dataset (BSD 2-Clause), levels from
+  the same, and xp from the wiki matched by loc id - 36 of the 157 award any. Every loc id was
+  resolved to a gameval symbol at generation time, so no raw id is in the file, and 116 rows for
+  locs the courses already bind were dropped rather than double-registering them.
+
+  Not in: the 16 rows that need a mith grapple, which wants an equipment check; anything whose op is
+  Enter, Open or Use, since those are cave mouths and gates other content owns; and 27 rows carry a
+  varbit requirement that is kept in the source data but not yet enforced, so a few quest-gated
+  shortcuts open early. Both Catacombs of Kourend cracks are still one loc id, and the spiked floors
+  still cannot be failed.
+
 - **Agility Pyramid, Brimhaven Arena, Werewolf, Penguin, Colossal Wyrm, Hallowed Sepulchre.** All
   absent. The first two are the ones players expect alongside the courses above. Ape Atoll (48),
   Shayzien and Dorgesh-Kaan are missing too.

@@ -65,9 +65,31 @@ class AgilityShortcutTest {
     }
 
     @Test
+    fun `the table loads and every row is usable`() {
+        val rows = AgilityShortcutTable.rows
+        assertTrue(rows.size > 100, "only ${rows.size} shortcuts loaded from the table")
+        for (shortcut in rows) {
+            assertTrue(shortcut.links.isNotEmpty(), "${shortcut.locs} has no tiles")
+            assertTrue(shortcut.level in 1..99, "${shortcut.locs} wants level ${shortcut.level}")
+            assertTrue(shortcut.ticks in 1..10, "${shortcut.locs} takes ${shortcut.ticks} ticks")
+            for ((origin, dest) in shortcut.links) {
+                assertTrue(origin != dest, "${shortcut.locs} crosses to where it starts")
+            }
+        }
+    }
+
+    @Test
+    fun `the table and the derived list never claim the same loc`() {
+        val derived = AgilityShortcutData.all.flatMap { it.locs }.toSet()
+        val tabled = AgilityShortcutTable.rows.flatMap { it.locs }.toSet()
+        val both = derived intersect tabled
+        assertTrue(both.isEmpty(), "$both are in both the table and the derived list")
+    }
+
+    @Test
     fun `no loc is bound twice`() {
         val seen = mutableMapOf<String, String>()
-        for (shortcut in AgilityShortcutData.all) {
+        for (shortcut in AgilityShortcutData.all + AgilityShortcutTable.rows) {
             for (loc in shortcut.locs) {
                 val owner = seen.put(loc, "shortcut ${shortcut.level}")
                 assertTrue(owner == null, "$loc is bound by $owner and another shortcut")
