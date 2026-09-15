@@ -12,9 +12,13 @@ import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.PathingEntity
 import org.rsmod.game.entity.Player
 import org.rsmod.game.loc.BoundLocInfo
+import org.rsmod.game.loc.LocAngle
+import org.rsmod.game.loc.LocEntity
 import org.rsmod.game.loc.LocInfo
+import org.rsmod.game.loc.LocShape
 import org.rsmod.game.proj.ProjAnim
 import org.rsmod.map.CoordGrid
+import org.rsmod.routefinder.loc.LocLayerConstants
 
 public class WorldRepository @Inject constructor(private val zoneUpdates: ZoneUpdateMap) {
     public fun locAnim(loc: LocInfo, seq: String) {
@@ -23,6 +27,24 @@ public class WorldRepository @Inject constructor(private val zoneUpdates: ZoneUp
 
     public fun locAnim(loc: BoundLocInfo, seq: String) {
         locAnim(LocInfo(loc.layer, loc.coords, loc.entity), seq)
+    }
+
+    public fun locShow(loc: LocInfo) {
+        zoneUpdates.locAdd(loc)
+    }
+
+    public fun locShow(coords: CoordGrid, internal: String, shape: LocShape, angle: LocAngle) {
+        val entity = LocEntity(internal.asRSCM(RSCMType.LOC), shape.id, angle.id)
+        locShow(LocInfo(LocLayerConstants.of(shape.id), coords, entity))
+    }
+
+    public fun locHide(loc: LocInfo) {
+        zoneUpdates.locDel(loc)
+    }
+
+    public fun locHide(coords: CoordGrid, shape: LocShape, angle: LocAngle) {
+        val entity = LocEntity(0, shape.id, angle.id)
+        locHide(LocInfo(LocLayerConstants.of(shape.id), coords, entity))
     }
 
     public fun soundArea(

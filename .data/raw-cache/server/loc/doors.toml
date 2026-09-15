@@ -188,3 +188,71 @@ contentGroup = "content.closed_left_picketgate"
 [object.params]
 "param.next_loc_stage" = "loc.rustic_openfencegate_l"
 "param.opensound" = "synth.picketgate_open"
+
+[[object]]
+id = "loc.palacedoor_l"
+inherit = "loc.palacedoor_l"
+contentGroup = "content.closed_left_door"
+
+[object.params]
+"param.next_loc_stage" = "loc.openpalacedoor_l"
+
+[[object]]
+id = "loc.openpalacedoor_l"
+inherit = "loc.openpalacedoor_l"
+contentGroup = "content.opened_left_door"
+
+[object.params]
+"param.next_loc_stage" = "loc.palacedoor_l"
+
+[[object]]
+id = "loc.palacedoor_r"
+inherit = "loc.palacedoor_r"
+contentGroup = "content.closed_right_door"
+
+[object.params]
+"param.next_loc_stage" = "loc.openpalacedoor_r"
+
+[[object]]
+id = "loc.openpalacedoor_r"
+inherit = "loc.openpalacedoor_r"
+contentGroup = "content.opened_right_door"
+
+[object.params]
+"param.next_loc_stage" = "loc.palacedoor_r"
+
+[[object]]
+id = "loc.bankdoor_l"
+inherit = "loc.bankdoor_l"
+contentGroup = "content.closed_left_door"
+
+[object.params]
+"param.next_loc_stage" = "loc.openbankdoor_l"
+"param.opensound" = "synth.door_open"
+
+[[object]]
+id = "loc.openbankdoor_l"
+inherit = "loc.openbankdoor_l"
+contentGroup = "content.opened_left_door"
+
+[object.params]
+"param.next_loc_stage" = "loc.bankdoor_l"
+"param.closesound" = "synth.door_close"
+
+[[object]]
+id = "loc.bankdoor_r"
+inherit = "loc.bankdoor_r"
+contentGroup = "content.closed_right_door"
+
+[object.params]
+"param.next_loc_stage" = "loc.openbankdoor_r"
+"param.opensound" = "synth.door_open"
+
+[[object]]
+id = "loc.openbankdoor_r"
+inherit = "loc.openbankdoor_r"
+contentGroup = "content.opened_right_door"
+
+[object.params]
+"param.next_loc_stage" = "loc.bankdoor_r"
+"param.closesound" = "synth.door_close"

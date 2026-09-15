@@ -110,6 +110,8 @@ public sealed class PathingEntity {
     public var moveSpeed: MoveSpeed = MoveSpeed.Stationary
     public var cachedMoveSpeed: MoveSpeed = MoveSpeed.Stationary
 
+    public var collisionBypassSteps: Int = 0
+
     public var lastProcessedZone: ZoneKey = ZoneKey.NULL
     public var lastProcessedCoord: CoordGrid = CoordGrid.NULL
     public var pendingTeleport: Boolean = false
@@ -249,6 +251,7 @@ public sealed class PathingEntity {
     public fun abortRoute() {
         routeRequest = null
         tempMoveSpeed = null
+        collisionBypassSteps = 0
         routeDestination.clear()
     }
 

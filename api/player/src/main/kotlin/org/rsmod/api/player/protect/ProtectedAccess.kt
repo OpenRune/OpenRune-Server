@@ -256,6 +256,11 @@ public class ProtectedAccess(
         }
     }
 
+    public suspend fun playerWalkThroughCollision(dest: CoordGrid) {
+        player.collisionBypassSteps = coords.chebyshevDistance(dest)
+        playerWalk(dest)
+    }
+
     /**
      * Similar to [playerWalk], but ensures a minimum delay of 1 cycle, regardless of distance.
      *
