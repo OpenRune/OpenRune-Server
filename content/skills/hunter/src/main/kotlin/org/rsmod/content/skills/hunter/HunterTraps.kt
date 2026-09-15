@@ -10,8 +10,9 @@ internal const val ANIM_DISMANTLE_BOX: String = "seq.hunting_setting_trap_small"
 data class TrapLoot(val obj: String, val amount: IntRange = 1..1)
 
 /**
- * [catchChance] is the odds at exactly [level]; every level above that adds a relative 2%, capped at
- * [MAX_CATCH_CHANCE]. These are the numbers to turn if a creature feels too fast or too slow.
+ * [low] and [high] are the level-1 and level-99 odds out of 256 that the shared skilling success
+ * formula takes, straight off the wiki's catch chance charts. A value over 256 is a rate the
+ * formula clamps to certain, which is how the early birds stop failing.
  */
 data class HunterCreature(
     val npc: String,
@@ -20,7 +21,8 @@ data class HunterCreature(
     val xp: Double,
     val fullLoc: String,
     val loot: List<TrapLoot>,
-    val catchChance: Double,
+    val low: Int,
+    val high: Int,
 )
 
 data class TrapKind(
@@ -32,8 +34,6 @@ data class TrapKind(
     val creatures: List<HunterCreature>,
 )
 
-internal const val MAX_CATCH_CHANCE: Double = 0.9
-
 private fun bird(
     npc: String,
     name: String,
@@ -41,6 +41,8 @@ private fun bird(
     xp: Double,
     fullLoc: String,
     feather: String,
+    low: Int,
+    high: Int,
 ) =
     HunterCreature(
         npc = npc,
@@ -54,7 +56,8 @@ private fun bird(
                 TrapLoot("obj.spit_raw_bird_meat"),
                 TrapLoot("obj.bones"),
             ),
-        catchChance = 0.5,
+        low = low,
+        high = high,
     )
 
 object HunterTraps {
@@ -75,6 +78,8 @@ object HunterTraps {
                             xp = 34.0,
                             fullLoc = "loc.hunting_ojibway_trap_full_jungle",
                             feather = "obj.hunting_jungle_feather",
+                            low = 100,
+                            high = 420,
                         ),
                         bird(
                             npc = "npc.hunting_bird_desert",
@@ -83,6 +88,8 @@ object HunterTraps {
                             xp = 47.0,
                             fullLoc = "loc.hunting_ojibway_trap_full_desert",
                             feather = "obj.hunting_desert_feather",
+                            low = 92,
+                            high = 400,
                         ),
                         bird(
                             npc = "npc.hunting_bird_woodland",
@@ -91,6 +98,8 @@ object HunterTraps {
                             xp = 61.0,
                             fullLoc = "loc.hunting_ojibway_trap_full_woodland",
                             feather = "obj.hunting_woodland_feather",
+                            low = 85,
+                            high = 390,
                         ),
                         bird(
                             npc = "npc.hunting_bird_polar",
@@ -99,6 +108,8 @@ object HunterTraps {
                             xp = 64.5,
                             fullLoc = "loc.hunting_ojibway_trap_full_polar",
                             feather = "obj.hunting_polar_feather",
+                            low = 82,
+                            high = 380,
                         ),
                         bird(
                             npc = "npc.multicoloured_bird",
@@ -107,6 +118,8 @@ object HunterTraps {
                             xp = 95.8,
                             fullLoc = "loc.hunting_ojibway_trap_full_coloured",
                             feather = "obj.hunting_stripy_bird_feather",
+                            low = 75,
+                            high = 370,
                         ),
                     ),
             ),
@@ -125,7 +138,10 @@ object HunterTraps {
                             xp = 115.0,
                             fullLoc = "loc.hunting_boxtrap_full_ferret",
                             loot = listOf(TrapLoot("obj.hunting_ferret")),
-                            catchChance = 0.55,
+                            // ponytail: the wiki has no ferret chart, so these two are a guess
+                            // sitting between the birds and the chinchompas.
+                            low = 60,
+                            high = 350,
                         ),
                         HunterCreature(
                             npc = "npc.hunting_chinchompa",
@@ -134,7 +150,8 @@ object HunterTraps {
                             xp = 198.4,
                             fullLoc = "loc.hunting_boxtrap_full_chinchompa",
                             loot = listOf(TrapLoot("obj.chinchompa_captured")),
-                            catchChance = 0.55,
+                            low = 6,
+                            high = 268,
                         ),
                         HunterCreature(
                             npc = "npc.hunting_chinchompa_big",
@@ -143,7 +160,8 @@ object HunterTraps {
                             xp = 265.0,
                             fullLoc = "loc.hunting_boxtrap_full_chinchompa_big",
                             loot = listOf(TrapLoot("obj.chinchompa_big_captured")),
-                            catchChance = 0.55,
+                            low = -78,
+                            high = 228,
                         ),
                         HunterCreature(
                             npc = "npc.hunting_chinchompa_black",
@@ -152,7 +170,8 @@ object HunterTraps {
                             xp = 315.4,
                             fullLoc = "loc.hunting_boxtrap_full_chinchompa_black",
                             loot = listOf(TrapLoot("obj.chinchompa_black")),
-                            catchChance = 0.6,
+                            low = -78,
+                            high = 228,
                         ),
                     ),
             ),

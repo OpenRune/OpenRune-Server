@@ -5,7 +5,6 @@ import dev.openrune.map.MapSingletons.collision
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import jakarta.inject.Inject
-import kotlin.math.min
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.stat.hunterLvl
 import org.rsmod.api.repo.loc.LocRepository
@@ -28,6 +27,7 @@ import org.rsmod.map.CoordGrid
 import org.rsmod.map.zone.ZoneKey
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
+import skillSuccess
 
 class TrapHunting
 @Inject
@@ -123,9 +123,7 @@ constructor(
         }
 
         val (npc, creature) = target
-        val bonus = 1.0 + (player.hunterLvl - creature.level) * LEVEL_BONUS
-        val chance = min(MAX_CATCH_CHANCE, creature.catchChance * bonus)
-        val caught = random.of(1, ROLL_RANGE) <= (chance * ROLL_RANGE).toInt()
+        val caught = skillSuccess(creature.low, creature.high, player.hunterLvl)
 
         val into = if (caught) creature.fullLoc else kind.brokenLoc
         val type = ServerCacheManager.getObject(into.asRSCM(RSCMType.LOC)) ?: return
@@ -222,8 +220,6 @@ constructor(
         const val FIRST_CHECK_TICKS = 10
         const val RECHECK_TICKS = 6
         const val CATCH_HIDE_TICKS = 50
-        const val ROLL_RANGE = 1000
-        const val LEVEL_BONUS = 0.02
 
         val STEP_OFF_DIRECTIONS =
             listOf(Direction.West, Direction.East, Direction.South, Direction.North)
