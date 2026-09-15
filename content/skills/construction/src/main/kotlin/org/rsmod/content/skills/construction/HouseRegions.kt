@@ -1,5 +1,6 @@
 package org.rsmod.content.skills.construction
 
+import dev.openrune.ServerCacheManager
 import jakarta.inject.Inject
 import jakarta.inject.Singleton
 import org.rsmod.api.repo.region.RegionRepository
@@ -51,8 +52,28 @@ constructor(private val regionRepo: RegionRepository, private val catalogue: Con
             slotLevel(slot),
         )
 
-    fun partCoords(region: Region, slot: Int, rotation: Int, part: HotspotPart): CoordGrid =
-        localCoords(region, slot, rotation, part.localX, part.localZ)
+    /**
+     * Where a hotspot's part ends up once its room is turned.
+     *
+     * A loc keeps its south-west corner only while it is one tile square. Turn a room holding a 2x1
+     * portal and the portal's anchor moves along its own width, so rotating the tile alone lands a
+     * tile out - which is why this asks [RegionRotations.translateLoc] for the loc's own footprint
+     * rather than [localCoords]. The footprint is swapped when the loc's own angle is a quarter turn.
+     */
+    fun partCoords(region: Region, slot: Int, rotation: Int, part: HotspotPart): CoordGrid {
+        val base = roomBase(region, slot)
+        if (rotation == 0) {
+            return base.translate(part.localX, part.localZ)
+        }
+        val type = ServerCacheManager.getObject(part.locId)
+        val turned = part.angleId and 1 == 1
+        val sizeX = type?.width ?: 1
+        val sizeZ = type?.length ?: 1
+        val width = if (turned) sizeZ else sizeX
+        val length = if (turned) sizeX else sizeZ
+        val grid = ZoneGrid(part.localX, part.localZ, 0)
+        return base.translate(RegionRotations.translateLoc(rotation, grid, width, length))
+    }
 
     fun localCoords(
         region: Region,
