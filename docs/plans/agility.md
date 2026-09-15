@@ -66,7 +66,7 @@ needs the same client pass.
 
 ## What the sibling servers hold
 
-Both reference servers under `D:\Documents RSPS SERVER` were mined for the missing pieces on
+Both reference servers beside this repo were mined for the missing pieces on
 2026-09-14. Neither has a rooftop course beyond the eight already ported, so Pollnivneach and
 Prifddinas still need the client pass above.
 
