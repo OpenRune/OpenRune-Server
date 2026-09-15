@@ -2,9 +2,11 @@
 
 How the player-owned house is assembled, where its data comes from, and what is still stubbed.
 
-Everything lives in [`content/skills/construction`](../content/skills/construction). There is no
-hand-written table of rooms, hotspots, furniture, costs or level requirements: all of it is read out
-of the cache at startup.
+Everything lives in [`content/skills/construction`](../content/skills/construction). Rooms,
+hotspots, furniture, costs and level requirements are read out of the cache at startup; the two
+things the vanilla tables do not carry - which loc a build places, and what it pays in xp - are
+packed into a cache table of our own by
+[`construction/pack`](../content/skills/construction/pack).
 
 ## Where the data comes from
 
@@ -13,6 +15,7 @@ of the cache at startup.
 | `dbtable.poh_room` (111) | room name, coin cost, level requirement, `source_offset`, `door_locations`, ordered hotspot list, `room_obj`, add-room `button` component |
 | `dbtable.poh_hotspot` (112) | each hotspot's `builddata` — the furniture that can go in it |
 | `dbtable.furniture` | `model_obj` (build-menu icon), display name, `material_cost`, level requirement, `hidden_in_build_menu`, upgrade links |
+| `dbtable.construction_furniture_build` (ours) | per `model_obj`: the locs a build places, the loc each hotspot part gets, and the xp it awards |
 | the static map | the actual hotspot and doorway positions inside each room's 8x8 source chunk |
 
 The generated row classes (`PohRoomRow`, `PohHotspotRow`, `FurnitureRow` in `api/generated`) are the
@@ -40,9 +43,12 @@ Two things the tables do not carry are resolved by name instead:
   fragment that fits more than one slot is rejected rather than guessed. Any trailing digit here is
   a part number, not a slot: `poh_leaguehall_pedestal_hotspot_1` is one of three pedestals.
 
-**What built furniture looks like.** `dbtable.furniture` has no loc column. The link is the shared
-internal name between a furniture's `model_obj` and its scenery loc: `obj.poh_armchair_1` pairs with
-`loc.poh_armchair_1`.
+**What built furniture looks like.** `dbtable.furniture` has no loc column, and the obj and loc
+names are different vocabularies rather than spelling variants, so only about 200 of 500 rows can be
+matched by name at all. `dbtable.construction_furniture_build` names the locs outright, keyed by
+`model_obj`, and pairs each hotspot part with the loc that goes on it so a rug lays corners on
+corners. Name matching - `obj.poh_armchair_1` pairs with `loc.poh_armchair_1` - stays as the
+fallback for furniture added to the cache since that table was written.
 
 Doorway hotspots are the `loc.poh_hotspot_door*` family (`_doorl_`/`_doorr_` per house style, plus
 the dungeon variants); their position on a zone edge gives the wall direction.
@@ -66,8 +72,9 @@ Known remaining gaps:
 
 - **A scattering of single slots in classic rooms.** Chapel finds 1, 2, 3, 5, 6, 7 but not 4; portal
   room finds only 1, 2, 3, 7; combat room only 4, 5, 6. Those locs use names neither pattern matches.
-- **Roughly 60% of furniture has no loc by name.** Where the `model_obj` name and the loc name
-  diverge, built furniture has nothing to place.
+- **Roughly 60% of furniture has no loc by name**, which is what
+  `dbtable.construction_furniture_build` exists to answer; the figures above were measured before it
+  was added.
 
 ## How a house is built
 
