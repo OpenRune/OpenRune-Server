@@ -23,20 +23,32 @@ class HouseSession(val region: Region, val layout: HouseLayout) {
         return slotKey(coords.level, x, z)
     }
 
+    /**
+     * The hotspot a click landed on.
+     *
+     * Matched on the loc that was clicked rather than on where the room's template says its parts
+     * sit. Rotating a room rotates the anchor tile of each loc, and a loc wider than one tile does
+     * not keep that anchor once turned - a portal is 2x1, so in a room placed at 180 degrees its
+     * computed tile is one off the tile it is actually on, and comparing coords found nothing.
+     */
     fun resolve(
         catalogue: ConstructionCatalogue,
         houses: HouseRegions,
         coords: CoordGrid,
+        locId: Int? = null,
     ): HotspotTarget? {
         val slot = slotAt(coords) ?: return null
         val placed = layout.placed(slot) ?: return null
         val def = catalogue.room(placed.room) ?: return null
+        val byLoc = locId?.let { id -> def.hotspots.firstOrNull { it.parts.any { p -> p.locId == id } } }
         val hotspot =
-            def.hotspots.firstOrNull { spot ->
-                spot.parts.any {
-                    houses.localCoords(region, slot, placed.rotation, it.localX, it.localZ) == coords
+            byLoc
+                ?: def.hotspots.firstOrNull { spot ->
+                    spot.parts.any {
+                        houses.localCoords(region, slot, placed.rotation, it.localX, it.localZ) == coords
+                    }
                 }
-            } ?: return null
+                ?: return null
         return HotspotTarget(slot, placed.rotation, hotspot)
     }
 
