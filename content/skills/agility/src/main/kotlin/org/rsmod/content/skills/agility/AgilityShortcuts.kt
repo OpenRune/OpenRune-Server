@@ -1,5 +1,6 @@
 package org.rsmod.content.skills.agility
 
+import com.github.michaelbull.logging.InlineLogger
 import dev.openrune.ServerCacheManager
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
@@ -286,7 +287,7 @@ constructor(private val collision: CollisionFlagMap, private val xpMods: XpModif
     override fun ScriptContext.startup() {
         for (shortcut in AgilityShortcutData.all + AgilityShortcutTable.rows) {
             for (loc in shortcut.locs) {
-                val type = ServerCacheManager.getObject(loc.asRSCM(RSCMType.LOC)) ?: continue
+                val type = ServerCacheManager.getObject(locId(loc) ?: continue) ?: continue
                 val slot =
                     (1..5).firstOrNull {
                         type.actions.getOpOrNull(it - 1).equals(shortcut.option, ignoreCase = true)
@@ -398,16 +399,6 @@ constructor(private val collision: CollisionFlagMap, private val xpMods: XpModif
         return true
     }
 
-    /** Any crossbow in hand with a mith grapple in the quiver, which is what live asks for. */
-    private fun ProtectedAccess.wearingGrapple(): Boolean {
-        if (player.worn[Wearpos.Quiver.slot]?.isType(MITH_GRAPPLE) != true) {
-            return false
-        }
-        val weapon = player.worn[Wearpos.RightHand.slot] ?: return false
-        val name = ServerCacheManager.getItem(weapon.id)?.name ?: return false
-        return name.contains("crossbow", ignoreCase = true)
-    }
-
     /**
      * The first standable tile past [loc], straight through it from where the player stands.
      */
@@ -429,9 +420,35 @@ constructor(private val collision: CollisionFlagMap, private val xpMods: XpModif
 
     private companion object {
         const val SEARCH_DEPTH = 2
-        const val MITH_GRAPPLE = "obj.xbows_grapple_tip_bolt_mithril_rope"
         const val CLIMBING_BOOTS = "obj.death_climbingboots"
     }
+}
+
+private const val MITH_GRAPPLE = "obj.xbows_grapple_tip_bolt_mithril_rope"
+
+/**
+ * The shortcut table is data, and a symbol in it that no longer resolves is a bad row rather than a
+ * reason to take the server down: `asRSCM` throws, and thrown out of `startup` it aborts the whole
+ * plugin load. One mistyped name cost three corrupted rows a boot before this was here.
+ */
+internal fun locId(loc: String): Int? {
+    val id = runCatching { loc.asRSCM(RSCMType.LOC) }.getOrNull()
+    if (id == null) {
+        logger.warn { "Agility: no such loc '$loc', skipping it." }
+    }
+    return id
+}
+
+private val logger = InlineLogger()
+
+/** Any crossbow in hand with a mith grapple in the quiver, which is what live asks for. */
+internal fun ProtectedAccess.wearingGrapple(): Boolean {
+    if (player.worn[Wearpos.Quiver.slot]?.isType(MITH_GRAPPLE) != true) {
+        return false
+    }
+    val weapon = player.worn[Wearpos.RightHand.slot] ?: return false
+    val name = ServerCacheManager.getItem(weapon.id)?.name ?: return false
+    return name.contains("crossbow", ignoreCase = true)
 }
 
 /**
