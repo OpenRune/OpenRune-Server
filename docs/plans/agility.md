@@ -19,6 +19,8 @@ mistyped number fails the build rather than quietly paying the wrong xp.
 | Falador Rooftop | 50 | 586 | 2/6 | 26,806 |
 | Wilderness | 52 | 571.4 | none | 34,666 |
 | Seers' Village Rooftop | 60 | 570 | 2/6 | 35,205 |
+| Pollnivneach Rooftop | 70 | 1,016 | 2/6 | 33,422 |
+| Prifddinas | 75 | 1,285.2 | none | 25,146 |
 | Rellekka Rooftop | 80 | 920 | 2/5 | 31,063 |
 | Ardougne Rooftop | 90 | 889 | 2/3 | 34,440 |
 
@@ -35,34 +37,18 @@ minutes and only the player who earned one can see it.
 Not modelled: the diary rerolls (Kandarin at Seers', elite Ardougne) and the diary cooldown
 reductions at Pollnivneach, Rellekka and Ardougne.
 
-## Courses out, and what they need
+## Failing an obstacle
 
-Both are ordinary rooftop courses, so the only thing stopping them is the **landing tile** of each
-obstacle - where the player ends up after crossing. The loc symbols and xp below are settled; walk
-each obstacle in a client, `::mypos` where you land, and the course drops straight into
-`AgilityCourses.courses`.
+Project Rebalance took the failure out of most rooftop obstacles in 2024 - Draynor's tightropes and
+wall-cross, the Pollnivneach banner and others all say so on their own pages. The **Pollnivneach
+market stall** is the one course obstacle that still fails and still publishes a rate, so it is the
+one that is wired: odds of 60 to 300 out of 256, and the live damage rule, `floor(hp / 17) + 2`,
+which is a share of the hitpoints left rather than a flat hit. The Rellekka tightrope (10% of
+current hitpoints) and the Falador hand holds both still fail in live but publish no rate, so they
+do not here.
 
-### Pollnivneach Rooftop Course, level 70, 1016 xp a lap
-
-| # | Obstacle | Loc | Xp | Obstacle tile |
-|---|---|---|---|---|
-| 1 | Basket | `loc.rooftops_pollnivneach_basket` | 10 | 3351, 2962 |
-| 2 | Market stall | `loc.rooftops_pollnivneach_marketstall` | 45 | 3349, 2970 |
-| 3 | Banner | `loc.rooftops_pollnivneach_hangingbanner` | 65 | 3356, 2978 |
-| 4 | Gap | `loc.rooftops_pollnivneach_gap` | 35 | 3363, 2976 |
-| 5 | Tree (jump-to) | `loc.rooftops_pollnivneach_tree` | 75 | |
-| 6 | Rough wall | `loc.rooftops_pollnivneach_wallclimb` | 5 | 3365, 2982 |
-| 7 | Monkeybars | `loc.rooftops_pollnivneach_monkeybars_start` | 55 | 3358, 2985 |
-| 8 | Tree (jump-on) | `loc.rooftops_pollnivneach_treetop` | 60 | |
-| - | Lap | | 666 | |
-
-### Prifddinas Agility Course, level 75, 1315.2 xp a lap
-
-Twelve obstacles, no marks of grace. Symbols are the `prif_agility_*` family: `start_ladder`
-(36221), `tightrope1` (36234), `chimney_jump` (36227), `roof_jump` (36228), `dark_hole_active`
-(36229), `rope_bridge1` (36233), `rope_bridge2` (36235), `tightrope2` (36236),
-`balancing_rope` (36239) and `dark_hole_end` (36238). Which symbol is which step, and every landing,
-needs the same client pass.
+A failed obstacle costs the lap and the damage; live also drops the player off the roof, which this
+does not, because no source records the tile each obstacle drops you onto.
 
 ## What the sibling servers hold
 
@@ -70,7 +56,7 @@ Both reference servers beside this repo were mined for the missing pieces on
 2026-09-14. Neither has a rooftop course beyond the eight already ported, so Pollnivneach and
 Prifddinas still need the client pass above.
 
-**Kronos (rev 184)** is the source the existing courses came from and the only one whose loc ids
+**Kronos (rev 184)** is the source most courses came from and the only one whose loc ids
 still resolve: every id in its Barbarian Outpost and Wilderness files matches both this cache and
 the wiki's own infoboxes, which is why those two courses could be added from it. What is left there
 is not worth taking - its mark of grace roll is `levelReq / 200` with a donator-rank bonus, and its
@@ -92,6 +78,13 @@ has not moved. **Its loc ids are not.** Of 45 agility ids checked against this c
 So anything ported from VIBESCAPE has to have its ids re-resolved against `gamevals` by name first;
 taking them at face value silently wires an obstacle to a signpost. The coordinates, levels and the
 shape of each obstacle are what it is worth reading for.
+
+**Kronos forks on GitHub have the two courses the local copy lacks.** `TuringProblem/Okronos` and
+`tamerab1/Zelus-server-website-monorepo` both carry `PollnivneachCourse.java` and
+`PrifddinasCourse.java` in the same `io.ruin` package the local Kronos uses, landings and mark
+spawns included. That is where the tiles for those two courses came from, with the xp taken from
+the wiki where the two disagreed. `Fludem/dylscape` is an RSMod fork with four rooftops in a DSL
+close to this one, useful for cross-checking a landing but not for new coverage.
 
 This cache is a better source than either server for the missing content: it carries the whole
 `agility_pyramid_*` family (gaps, ledges, climbing rocks, jump hotspots, doors) and 237 symbols with
@@ -144,9 +137,12 @@ only part no source has.
   are cave mouths and gates other content owns; and the Revenant Caves pillar jumps, which the
   dataset does not carry.
 
-- **Agility Pyramid, Brimhaven Arena, Werewolf, Penguin, Colossal Wyrm, Hallowed Sepulchre.** All
-  absent. The first two are the ones players expect alongside the courses above. Ape Atoll (48),
-  Shayzien and Dorgesh-Kaan are missing too.
+- **The special courses.** Agility Pyramid, Brimhaven Arena, Werewolf, Penguin, Colossal Wyrm,
+  Hallowed Sepulchre, Ape Atoll (48), Shayzien and Dorgesh-Kaan are all absent. Each is a course
+  with its own mechanic - tickets, moving blocks, traps, a timer - rather than another list of
+  obstacles, and no source carries landings for them the way the rooftops turned out to.
+- **Prifddinas portals.** One of six portals spawns per lap as a shortcut worth 82 xp; the course
+  runs without them.
 
 The giant squirrel does roll: every course carries its own base and a completed lap rolls
 1 in `base - level * 25`, the same formula the heron uses. It lands in the inventory, because
