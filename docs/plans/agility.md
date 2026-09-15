@@ -64,6 +64,40 @@ Twelve obstacles, no marks of grace. Symbols are the `prif_agility_*` family: `s
 `balancing_rope` (36239) and `dark_hole_end` (36238). Which symbol is which step, and every landing,
 needs the same client pass.
 
+## What the sibling servers hold
+
+Both reference servers under `D:\Documents RSPS SERVER` were mined for the missing pieces on
+2026-09-14. Neither has a rooftop course beyond the eight already ported, so Pollnivneach and
+Prifddinas still need the client pass above.
+
+**Kronos (rev 184)** is the source the existing courses came from and the only one whose loc ids
+still resolve: every id in its Barbarian Outpost and Wilderness files matches both this cache and
+the wiki's own infoboxes, which is why those two courses could be added from it. What is left there
+is not worth taking - its mark of grace roll is `levelReq / 200` with a donator-rank bonus, and its
+pet roll is a flat 1/22,000, both of which the wiki's real rates have replaced.
+
+**VIBESCAPE** is a 2009-era (rev 530) codebase, so it predates rooftops entirely. It does carry the
+whole shortcut category, an Agility Pyramid course with every gap, ledge and crossing coordinate,
+and a Brimhaven Arena - none of which exist here. Its coordinates are still good, because the map
+has not moved. **Its loc ids are not.** Of 45 agility ids checked against this cache, 12 survive:
+
+| Still the same obstacle | Now something else |
+|---|---|
+| 993, 3730, 7527, 12982, 19222, 22302 - stiles | 9300 "fence jump" is now `pinball_first_track` |
+| 3931, 3932, 3933 - `regicide_logbalance*_start` | 2296 "log balance" is now `fai_varrock_fancy_sign` |
+| 19849 - `ep_climbing_rocks01` | 2321 "monkey bars" is now a Varrock inn bar |
+| 2231 - `zqclimbingrocks` | 11844 "Falador crumbling wall" is now a TzHaar door |
+| 20210 - `agility_obstical_pipe_barbarian` | 29370, 29375 are now Yama league scenery |
+
+So anything ported from VIBESCAPE has to have its ids re-resolved against `gamevals` by name first;
+taking them at face value silently wires an obstacle to a signpost. The coordinates, levels and the
+shape of each obstacle are what it is worth reading for.
+
+This cache is a better source than either server for the missing content: it carries the whole
+`agility_pyramid_*` family (gaps, ledges, climbing rocks, jump hotspots, doors) and 237 symbols with
+`shortcut` in the name. Level and xp for each of those come off the wiki; the landing tiles are the
+only part no source has.
+
 ## Mechanics still missing
 
 - **Failing an obstacle.** Live rooftops still fail below certain levels, dropping the player to the
