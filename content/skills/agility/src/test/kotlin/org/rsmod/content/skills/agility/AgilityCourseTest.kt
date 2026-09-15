@@ -72,6 +72,15 @@ class AgilityCourseTest {
     }
 
     @Test
+    fun `every course rolls the squirrel and never at a certain rate`() {
+        for (course in AgilityCourses.courses) {
+            assertTrue(course.petBase > 0, "${course.name} cannot drop the giant squirrel")
+            val atMaxLevel = course.petBase - 99 * 25
+            assertTrue(atMaxLevel > 1, "${course.name} is a guaranteed pet at level 99")
+        }
+    }
+
+    @Test
     fun `a landing resolves absolutes before deltas`() {
         val from = CoordGrid(3200, 3200, 0)
         assertEquals(CoordGrid(3100, 3100, 1), Landing(x = 3100, z = 3100, level = 1).resolve(from))

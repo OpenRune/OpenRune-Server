@@ -112,6 +112,7 @@ constructor(private val objRepo: ObjRepository, private val xpMods: XpModifiers)
         player.agilityProgress = 0
         statAdvance(STAT_AGILITY, course.lapXp * xpMods.get(player, STAT_AGILITY))
         rollMark(course)
+        with(SquirrelPet) { rollSquirrel(course) }
     }
 
     /**

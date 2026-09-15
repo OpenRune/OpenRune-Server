@@ -8,19 +8,19 @@ mistyped number fails the build rather than quietly paying the wrong xp.
 
 ## Courses in
 
-| Course | Level | Xp per lap | Marks |
-|---|---|---|---|
-| Gnome Stronghold | 1 | 110.5 | none |
-| Draynor Village Rooftop | 1 | 120 | 2/6 |
-| Al Kharid Rooftop | 20 | 216 | 2/6 |
-| Varrock Rooftop | 30 | 269.7 | 2/6 |
-| Barbarian Outpost | 35 | 153.3 | none |
-| Canifis Rooftop | 40 | 240 | 2/3, no level penalty |
-| Falador Rooftop | 50 | 586 | 2/6 |
-| Wilderness | 52 | 571.4 | none |
-| Seers' Village Rooftop | 60 | 570 | 2/6 |
-| Rellekka Rooftop | 80 | 920 | 2/5 |
-| Ardougne Rooftop | 90 | 889 | 2/3 |
+| Course | Level | Xp per lap | Marks | Squirrel base |
+|---|---|---|---|---|
+| Gnome Stronghold | 1 | 110.5 | none | 35,609 |
+| Draynor Village Rooftop | 1 | 120 | 2/6 | 33,005 |
+| Al Kharid Rooftop | 20 | 216 | 2/6 | 26,648 |
+| Varrock Rooftop | 30 | 269.7 | 2/6 | 24,410 |
+| Barbarian Outpost | 35 | 153.3 | none | 44,376 |
+| Canifis Rooftop | 40 | 240 | 2/3, no level penalty | 36,842 |
+| Falador Rooftop | 50 | 586 | 2/6 | 26,806 |
+| Wilderness | 52 | 571.4 | none | 34,666 |
+| Seers' Village Rooftop | 60 | 570 | 2/6 | 35,205 |
+| Rellekka Rooftop | 80 | 920 | 2/5 | 31,063 |
+| Ardougne Rooftop | 90 | 889 | 2/3 | 34,440 |
 
 Draynor is level **1**, not 10: Project Rebalance dropped the requirement in May 2024.
 
@@ -78,4 +78,6 @@ needs the same client pass.
   their own table rather than a `Course` each.
 - **Agility Pyramid, Brimhaven Arena, Werewolf, Penguin, Colossal Wyrm, Hallowed Sepulchre.** All
   absent. The first two are the ones players expect alongside the courses above.
-- **Rocky**, the skilling pet, does not roll anywhere.
+The giant squirrel does roll: every course carries its own base and a completed lap rolls
+1 in `base - level * 25`, the same formula the heron uses. It lands in the inventory, because
+nothing in the server spawns a pet as a follower yet.

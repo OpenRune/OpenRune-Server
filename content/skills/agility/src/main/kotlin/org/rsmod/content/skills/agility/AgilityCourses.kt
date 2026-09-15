@@ -65,6 +65,8 @@ data class Obstacle(
  * cooldown has passed: two in six for most rooftops, two in five at Rellekka and two in three at
  * Canifis and Ardougne. [markPenalty] is the 80% cut that applies twenty levels above [level] -
  * Canifis is the one course where live never applies it.
+ *
+ * [petBase] is the course's base for the giant squirrel roll, 1 in `petBase - level * 25`.
  */
 data class Course(
     val name: String,
@@ -74,6 +76,7 @@ data class Course(
     val markSpawns: List<CoordGrid> = emptyList(),
     val markOdds: Double = 0.0,
     val markPenalty: Boolean = true,
+    val petBase: Int = 0,
 ) {
     /**
      * One entry per obstacle crossing a lap needs, so an obstacle placed three times in a row -
@@ -108,6 +111,7 @@ object AgilityCourses {
                 name = "Gnome Stronghold Agility Course",
                 level = 1,
                 lapXp = 50.0,
+                petBase = 35609,
                 obstacles =
                     listOf(
                         obstacle(
@@ -144,6 +148,7 @@ object AgilityCourses {
                 name = "Draynor Village Rooftop Course",
                 level = 1,
                 lapXp = 79.0,
+                petBase = 33005,
                 markOdds = 2.0 / 6,
                 markSpawns =
                     marks(
@@ -214,6 +219,7 @@ object AgilityCourses {
                 name = "Al Kharid Rooftop Course",
                 level = 20,
                 lapXp = 36.0,
+                petBase = 26648,
                 markOdds = 2.0 / 6,
                 markSpawns =
                     marks(
@@ -298,6 +304,7 @@ object AgilityCourses {
                 name = "Varrock Rooftop Course",
                 level = 30,
                 lapXp = 143.7,
+                petBase = 24410,
                 markOdds = 2.0 / 6,
                 markSpawns =
                     marks(
@@ -380,6 +387,7 @@ object AgilityCourses {
                 name = "Canifis Rooftop Course",
                 level = 40,
                 lapXp = 175.0,
+                petBase = 36842,
                 markOdds = 2.0 / 3,
                 markPenalty = false,
                 markSpawns =
@@ -464,6 +472,7 @@ object AgilityCourses {
                 name = "Falador Rooftop Course",
                 level = 50,
                 lapXp = 241.0,
+                petBase = 26806,
                 markOdds = 2.0 / 6,
                 markSpawns =
                     marks(
@@ -548,6 +557,7 @@ object AgilityCourses {
                 name = "Seers' Village Rooftop Course",
                 level = 60,
                 lapXp = 435.0,
+                petBase = 35205,
                 markOdds = 2.0 / 6,
                 markSpawns =
                     marks(
@@ -613,6 +623,7 @@ object AgilityCourses {
                 name = "Rellekka Rooftop Course",
                 level = 80,
                 lapXp = 615.0,
+                petBase = 31063,
                 markOdds = 2.0 / 5,
                 markSpawns =
                     marks(
@@ -688,6 +699,7 @@ object AgilityCourses {
                 name = "Ardougne Rooftop Course",
                 level = 90,
                 lapXp = 625.0,
+                petBase = 34440,
                 markOdds = 2.0 / 3,
                 markSpawns =
                     marks(
@@ -756,6 +768,7 @@ object AgilityCourses {
                 name = "Barbarian Outpost Agility Course",
                 level = 35,
                 lapXp = 46.3,
+                petBase = 44376,
                 obstacles =
                     listOf(
                         obstacle(
@@ -802,6 +815,7 @@ object AgilityCourses {
                 name = "Wilderness Agility Course",
                 level = 52,
                 lapXp = 498.9,
+                petBase = 34666,
                 obstacles =
                     listOf(
                         obstacle(
