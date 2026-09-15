@@ -4,7 +4,6 @@ import dev.openrune.ServerCacheManager
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import dev.openrune.types.NpcServerType
-import dev.openrune.types.ProjAnimType
 import dev.openrune.types.aconverted.SpotanimType
 import jakarta.inject.Inject
 import java.util.IdentityHashMap
@@ -16,23 +15,19 @@ import org.rsmod.api.bosses.runtime.repeatTick
 import org.rsmod.api.bosses.spec.Effect
 import org.rsmod.api.bosses.spec.ProjectileConfig
 import org.rsmod.api.combat.commons.player.finishNpcHit
-import org.rsmod.api.npc.access.StandardNpcAccess
 import org.rsmod.api.npc.heal
-import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.stat.hitpoints
 import org.rsmod.api.repo.loc.LocRepository
 import org.rsmod.api.script.onEvent
 import org.rsmod.api.script.onModifyNpcHit
 import org.rsmod.api.script.onNpcQueue
 import org.rsmod.game.entity.Npc
-import org.rsmod.game.entity.Player
 import org.rsmod.game.entity.npc.NpcStateEvents
 import org.rsmod.game.entity.player.PlayerUid
 import org.rsmod.game.hit.HitType
 import org.rsmod.game.loc.LocAngle
 import org.rsmod.game.loc.LocShape
 import org.rsmod.game.map.collision.isWalkBlocked
-import org.rsmod.game.proj.ProjAnim
 import org.rsmod.map.CoordGrid
 import org.rsmod.plugin.scripts.ScriptContext
 
@@ -83,8 +78,14 @@ class Amoxliatl @Inject constructor(deps: BossDeps, private val locRepo: LocRepo
             deps.worldQueues.add(POOL_SPAWN_DELAY) { spawnIcyPool(npc, poolCoord) }
         }
 
-        deps.extensionRegistry.register("amoxliatl.unstable_ice") { access, npc, target, _ ->
-            runUnstableIce(access, npc, target)
+        deps.extensionRegistry.register("amoxliatl.track_ice_block") { access, block, _, _ ->
+            block.movementLocked = true
+            block.lockFacing(block.coords)
+            block.anim(UNSTABLE_ICE_SPAWN_SEQ)
+            iceBlockOwner[block] = access.npc
+            deps.worldQueues.add(UNSTABLE_ICE_TIMEOUT_TICKS) {
+                if (block.hitpoints > 0) explodeIceBlock(block, block.coords, heal = true)
+            }
         }
     }
 
@@ -105,12 +106,15 @@ class Amoxliatl @Inject constructor(deps: BossDeps, private val locRepo: LocRepo
     }
 
     private fun randomWalkableTile(center: CoordGrid, radius: Int): CoordGrid? {
-        val span = radius * 2 + 1
-        repeat(RANDOM_TILE_ATTEMPTS) {
-            val coord = center.translate(deps.random.of(span) - radius, deps.random.of(span) - radius)
-            if (!deps.collision.isWalkBlocked(coord)) return coord
+        val candidates = mutableListOf<CoordGrid>()
+        for (dx in -radius..radius) {
+            for (dz in -radius..radius) {
+                val coord = center.translate(dx, dz)
+                if (!deps.collision.isWalkBlocked(coord)) candidates += coord
+            }
         }
-        return null
+        if (candidates.isEmpty()) return null
+        return candidates[deps.random.of(candidates.size)]
     }
 
     private fun spawnIcyPool(npc: Npc, coord: CoordGrid) {
@@ -129,48 +133,6 @@ class Amoxliatl @Inject constructor(deps: BossDeps, private val locRepo: LocRepo
             },
         )
         deps.worldQueues.add(POOL_DURATION_TICKS) { locRepo.del(loc, Int.MAX_VALUE) }
-    }
-
-    private suspend fun runUnstableIce(access: StandardNpcAccess, npc: Npc, target: Player) {
-        access.anim("seq.amoxliatl_summon")
-        target.mes("Amoxliatl forms some unstable ice blocks around you.")
-        val count = 1 + deps.random.of(4)
-        repeat(count) {
-            val coord = randomWalkableTile(target.coords, UNSTABLE_ICE_SPAWN_RADIUS) ?: return@repeat
-            launchIceBlockProjectile(npc, coord)
-        }
-    }
-
-    private fun launchIceBlockProjectile(npc: Npc, coord: CoordGrid) {
-        val spot = ICICLE_PROJECTILE.asRSCM(RSCMType.SPOTANIM)
-        val type =
-            ProjAnimType(
-                startHeight = 112,
-                endHeight = 0,
-                delay = 50,
-                angle = 255,
-                lengthAdjustment = 40,
-                progress = 83,
-                stepMultiplier = 0,
-            )
-        val projAnim = ProjAnim.fromNpcToCoord(npc, coord, spot, type)
-        deps.worldRepo.projAnim(projAnim)
-        deps.worldQueues.add(projAnim.serverCycles) {
-            deps.worldRepo.spotanimMap(SpotanimType(ICICLE_IMPACT_SPOTANIM.asRSCM(RSCMType.SPOTANIM)), coord)
-            spawnIceBlock(npc, coord)
-        }
-    }
-
-    private fun spawnIceBlock(npc: Npc, coord: CoordGrid) {
-        val block = Npc(iceBlockType, coord)
-        block.movementLocked = true
-        block.lockFacing(coord)
-        block.anim(UNSTABLE_ICE_SPAWN_SEQ)
-        iceBlockOwner[block] = npc
-        deps.npcRepo.add(block, ICE_BLOCK_FALLBACK_DESPAWN)
-        deps.worldQueues.add(UNSTABLE_ICE_TIMEOUT_TICKS) {
-            if (block.hitpoints > 0) explodeIceBlock(block, coord, heal = true)
-        }
     }
 
     private fun explodeIceBlock(block: Npc, coord: CoordGrid, heal: Boolean) {
@@ -195,7 +157,7 @@ class Amoxliatl @Inject constructor(deps: BossDeps, private val locRepo: LocRepo
     }
 
     private val icicleCrashEffect: Effect =
-        sequence(
+        parallel(
             anim("seq.amoxliatl_point"),
             disablePrayers(),
             message(ICICLE_MESSAGE),
@@ -221,6 +183,39 @@ class Amoxliatl @Inject constructor(deps: BossDeps, private val locRepo: LocRepo
             ),
         )
 
+    private val unstableIceEffect: Effect =
+        sequence(
+            anim("seq.amoxliatl_summon"),
+            message("Amoxliatl forms some unstable ice blocks around you."),
+            repeat(
+                times = 1..4,
+                effect =
+                    projectile(
+                        spotanim = ICICLE_PROJECTILE,
+                        target = randomWalkableTile(radius = UNSTABLE_ICE_SPAWN_RADIUS, of = CurrentTarget),
+                        impact = ICICLE_IMPACT_SPOTANIM,
+                        config =
+                            ProjectileConfig(
+                                startHeight = 112,
+                                endHeight = 0,
+                                startDelay = 50,
+                                angle = 255,
+                                travelTime = 40,
+                                progress = 83,
+                                stepMultiplier = 0,
+                            ),
+                        onImpact =
+                            summon(
+                                npc = ICE_BLOCK,
+                                radius = 0,
+                                centeredOn = ImpactTile,
+                                duration = ICE_BLOCK_FALLBACK_DESPAWN,
+                                onSummon = "amoxliatl.track_ice_block",
+                            ),
+                    ),
+            ),
+        )
+
     override val spec =
         boss(AMOXLIATL_NPC) {
             stats(attackRate = 8, aggressionRadius = 8)
@@ -240,7 +235,7 @@ class Amoxliatl @Inject constructor(deps: BossDeps, private val locRepo: LocRepo
                             branches =
                                 mapOf(
                                     "icicle_crash" to icicleCrashEffect,
-                                    "unstable_ice" to external("amoxliatl.unstable_ice"),
+                                    "unstable_ice" to unstableIceEffect,
                                 ),
                         ),
                     )
@@ -271,7 +266,6 @@ class Amoxliatl @Inject constructor(deps: BossDeps, private val locRepo: LocRepo
         private const val ICE_SPIKE_DAMAGE_MAX = 10
         private const val ICE_SPIKE_DAMAGE_DELAY = 3
         private const val UNSTABLE_ICE_SPAWN_RADIUS = 2
-        private const val RANDOM_TILE_ATTEMPTS = 5
 
         private const val POOL_DAMAGE_MIN = 6
         private const val POOL_DAMAGE_MAX = 10
