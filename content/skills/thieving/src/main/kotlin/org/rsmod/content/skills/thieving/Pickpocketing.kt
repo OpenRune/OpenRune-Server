@@ -22,11 +22,16 @@ class Pickpocketing @Inject constructor(private val xpMods: XpModifiers) : Plugi
     private val targetsByName =
         ThievingData.pickpocketTargets.associateBy { it.displayName.lowercase() }
 
+    private val targetsByPrefix =
+        ThievingData.pickpocketTargets.flatMap { target ->
+            target.symbolPrefixes.map { it to target }
+        }
+
     override fun ScriptContext.startup() {
         for ((id, type) in ServerCacheManager.getNpcs()) {
-            val target = targetsByName[type.name.lowercase()] ?: continue
-            val slot = (1..5).firstOrNull { type.actions.getOpOrNull(it - 1) == PICKPOCKET_OP }
             val internal = RSCM.getReverseMapping(RSCMType.NPC, id)
+            val target = targetFor(type.name, internal) ?: continue
+            val slot = (1..5).firstOrNull { type.actions.getOpOrNull(it - 1) == PICKPOCKET_OP }
             if (slot == null || internal.isBlank()) {
                 continue
             }
@@ -39,6 +44,10 @@ class Pickpocketing @Inject constructor(private val xpMods: XpModifiers) : Plugi
             }
         }
     }
+
+    private fun targetFor(cacheName: String, internal: String): PickpocketTarget? =
+        targetsByName[cacheName.lowercase()]
+            ?: targetsByPrefix.firstOrNull { internal.startsWith(it.first) }?.second
 
     private suspend fun ProtectedAccess.pickpocket(npc: Npc, target: PickpocketTarget) {
         val name = npc.name.lowercase()
@@ -62,10 +71,20 @@ class Pickpocketing @Inject constructor(private val xpMods: XpModifiers) : Plugi
             return
         }
 
-        val (obj, count) = target.loot.roll(random)
-        if (invAdd(inv, obj, count).failure) {
-            mes("You don't have enough inventory space to hold any more items.")
-            return
+        for (entry in target.guaranteed) {
+            val count = random.of(entry.amount.first, entry.amount.last)
+            if (invAdd(inv, entry.obj, count).failure) {
+                mes("You don't have enough inventory space to hold any more items.")
+                return
+            }
+        }
+
+        if (target.loot.isNotEmpty()) {
+            val (obj, count) = target.loot.roll(random)
+            if (invAdd(inv, obj, count).failure) {
+                mes("You don't have enough inventory space to hold any more items.")
+                return
+            }
         }
 
         statAdvance(STAT_THIEVING, target.xp * xpMods.get(player, STAT_THIEVING))
