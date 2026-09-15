@@ -32,6 +32,11 @@ data class PlacedRoom(val room: Int, val rotation: Int)
 class HouseLayout(
     val rooms: MutableMap<Int, PlacedRoom> = LinkedHashMap(),
     val furniture: MutableMap<Long, Int> = LinkedHashMap(),
+    /**
+     * The loc a piece was built as, where the furniture row alone does not say. A portal is one row
+     * whichever destination it leads to, and the destination is the loc.
+     */
+    val variants: MutableMap<Long, Int> = LinkedHashMap(),
 ) {
     fun placed(slot: Int): PlacedRoom? = rooms[slot]
 
@@ -42,16 +47,27 @@ class HouseLayout(
     fun remove(slot: Int) {
         rooms.remove(slot)
         furniture.keys.removeIf { furnitureSlot(it) == slot }
+        variants.keys.removeIf { furnitureSlot(it) == slot }
     }
 
     fun built(slot: Int, hotspot: Int): Int? = furniture[furnitureKey(slot, hotspot)]
 
-    fun build(slot: Int, hotspot: Int, row: Int) {
-        furniture[furnitureKey(slot, hotspot)] = row
+    fun build(slot: Int, hotspot: Int, row: Int, variant: Int? = null) {
+        val key = furnitureKey(slot, hotspot)
+        furniture[key] = row
+        if (variant != null) {
+            variants[key] = variant
+        } else {
+            variants.remove(key)
+        }
     }
 
+    fun variant(slot: Int, hotspot: Int): Int? = variants[furnitureKey(slot, hotspot)]
+
     fun demolish(slot: Int, hotspot: Int) {
-        furniture.remove(furnitureKey(slot, hotspot))
+        val key = furnitureKey(slot, hotspot)
+        furniture.remove(key)
+        variants.remove(key)
     }
 
     fun encode(): String {
@@ -59,7 +75,9 @@ class HouseLayout(
             "$slot:${room.room}:${room.rotation}"
         }
         val furnitureText = furniture.entries.joinToString(",") { (key, row) ->
-            "${furnitureSlot(key)}:${furnitureHotspot(key)}:$row"
+            val variant = variants[key]
+            val suffix = if (variant != null) ":$variant" else ""
+            "${furnitureSlot(key)}:${furnitureHotspot(key)}:$row$suffix"
         }
         return "$VERSION|$roomText|$furnitureText"
     }
@@ -83,16 +101,18 @@ class HouseLayout(
                 val rotation = parts[2].toIntOrNull() ?: continue
                 layout.place(slot, room, rotation)
             }
+            // A fourth field is the built loc, written only for pieces whose row does not name it.
             for (entry in fields[2].split(',')) {
                 val parts = entry.split(':')
-                if (parts.size != 3) {
+                if (parts.size < 3) {
                     continue
                 }
                 val slot = parts[0].toIntOrNull() ?: continue
                 val hotspot = parts[1].toIntOrNull() ?: continue
                 val row = parts[2].toIntOrNull() ?: continue
+                val variant = parts.getOrNull(3)?.toIntOrNull()
                 if (slot in layout.rooms) {
-                    layout.build(slot, hotspot, row)
+                    layout.build(slot, hotspot, row, variant)
                 }
             }
             return layout
