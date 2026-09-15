@@ -64,5 +64,11 @@ fun FurnitureRow.materials(): List<Pair<String, Int>> =
 fun FurnitureRow.materialText(): String =
     materialCost.joinToString(", ") { "${it.t1} x ${it.t0.name}" }
 
+/**
+ * The reference table's value where it has one, because `dbtable.furniture` has no xp column and the
+ * material total only reproduces the standard plank builds: anything made of something outside
+ * [MATERIAL_XP] works out to zero.
+ */
 fun FurnitureRow.xp(): Double =
-    materialCost.sumOf { (MATERIAL_XP[it.t0.internalName] ?: 0.0) * it.t1 }
+    furnitureXp(modelObj.id)
+        ?: materialCost.sumOf { (MATERIAL_XP[it.t0.internalName] ?: 0.0) * it.t1 }
