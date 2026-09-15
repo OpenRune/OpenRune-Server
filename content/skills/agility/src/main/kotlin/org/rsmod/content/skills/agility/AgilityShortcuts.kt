@@ -30,6 +30,9 @@ private const val HOLE_SQUEEZE = "seq.hole_squeeze"
 private const val HURDLE_JUMP = "seq.human_jump_hurdle"
 private const val WALL_CLIMB = "seq.human_walk_crumbledwall"
 private const val CRAWL = "seq.human_crawling"
+private const val BALANCE_WALK = "seq.human_walk_logbalance_loop"
+private const val CLIMB_ROCKS = "seq.human_climbing"
+private const val CLIMB_DOWN_ROCKS = "seq.human_climbing_down"
 
 /**
  * A shortcut is bound by the [option] the wiki lists for it rather than by the first op on the loc,
@@ -42,81 +45,22 @@ data class Shortcut(
     val option: String,
     val anim: String,
     val ticks: Int = 2,
+    val links: Map<CoordGrid, CoordGrid> = emptyMap(),
 )
 
 /**
- * Levels, xp and the op name are the wiki's; every loc was resolved back to this cache by id. Only
- * shortcuts that cross to the far side of the obstacle on one level are here - climbs, grapples and
- * stepping stone chains move the player somewhere no rule can derive, so they wait for a survey.
+ * The handful of shortcuts [AgilityShortcutTable] has no tiles for. They all cross to the far side
+ * of an obstacle on one level, so the landing is derived; levels, xp and the op name are the wiki's.
  */
 object AgilityShortcutData {
     val all: List<Shortcut> =
         listOf(
-            Shortcut(
-                locs = listOf("loc.fai_falador_castle_crumble_mid"),
-                level = 5,
-                xp = 0.5,
-                option = "Climb-over",
-                anim = WALL_CLIMB,
-            ),
-            Shortcut(
-                locs = listOf("loc.lumbridge_sc_fencejump"),
-                level = 13,
-                xp = 0.0,
-                option = "Jump-over",
-                anim = HURDLE_JUMP,
-            ),
-            Shortcut(
-                locs = listOf("loc.burthorpe_diary_shortcut"),
-                level = 14,
-                xp = 0.0,
-                option = "Manoeuvre-past",
-                anim = SQUEEZE,
-            ),
-            // One loc id covers both Catacombs cracks, and the wiki puts the northern one at 34.
-            // Binding it once means the northern crack opens seventeen levels early.
-            Shortcut(
-                locs = listOf("loc.zeah_cata_crack"),
-                level = 17,
-                xp = 0.0,
-                option = "Squeeze-through",
-                anim = SQUEEZE,
-            ),
-            Shortcut(
-                locs = listOf("loc.slayertower_window_shortcut_through"),
-                level = 18,
-                xp = 3.0,
-                option = "Climb-through",
-                anim = HOLE_SQUEEZE,
-            ),
-            Shortcut(
-                locs = listOf("loc.karam_dungeon_pipe2"),
-                level = 22,
-                xp = 8.5,
-                option = "Squeeze-through",
-                anim = PIPE_SQUEEZE,
-                ticks = 3,
-            ),
-            Shortcut(
-                locs = listOf("loc.av_lowwall_climb_1", "loc.av_lowwall_climb_2"),
-                level = 24,
-                xp = 6.0,
-                option = "Climb-over",
-                anim = WALL_CLIMB,
-            ),
             Shortcut(
                 locs = listOf("loc.burgh_agility_shortcut_fence"),
                 level = 25,
                 xp = 0.0,
                 option = "Jump-over",
                 anim = HURDLE_JUMP,
-            ),
-            Shortcut(
-                locs = listOf("loc.dwarf_mines_sc_wall_crack"),
-                level = 42,
-                xp = 0.0,
-                option = "Squeeze-through",
-                anim = SQUEEZE,
             ),
             Shortcut(
                 locs = listOf("loc.slayer_dungeon_floor_spikes_sc"),
@@ -126,62 +70,11 @@ object AgilityShortcutData {
                 anim = HURDLE_JUMP,
             ),
             Shortcut(
-                locs = listOf("loc.varrock_dungeon_pipe_sc"),
-                level = 51,
-                xp = 10.0,
-                option = "Squeeze-through",
-                anim = PIPE_SQUEEZE,
-                ticks = 3,
-            ),
-            Shortcut(
-                locs = listOf("loc.slayer_dungeon_2_sc_wall_crack"),
-                level = 61,
-                xp = 0.0,
-                option = "Squeeze-through",
-                anim = SQUEEZE,
-            ),
-            Shortcut(
-                locs = listOf("loc.deepdungeonlooserailing"),
-                level = 63,
-                xp = 0.0,
-                option = "Squeeze-through",
-                anim = RAILING_SQUEEZE,
-            ),
-            Shortcut(
-                locs = listOf("loc.hosdun_agility_shortcut"),
-                level = 63,
-                xp = 10.0,
-                option = "Jump-over",
-                anim = HURDLE_JUMP,
-            ),
-            Shortcut(
                 locs = listOf("loc.bush_shortcut"),
                 level = 64,
                 xp = 2.0,
                 option = "Crawl-through",
                 anim = CRAWL,
-            ),
-            Shortcut(
-                locs = listOf("loc.morytania_railing_sc_fence_1", "loc.morytania_railing_sc_fence_2"),
-                level = 65,
-                xp = 0.0,
-                option = "Squeeze-through",
-                anim = RAILING_SQUEEZE,
-            ),
-            Shortcut(
-                locs = listOf("loc.taverly_dungeon_pipe_sc"),
-                level = 70,
-                xp = 10.0,
-                option = "Squeeze-through",
-                anim = PIPE_SQUEEZE,
-                ticks = 3,
-            ),
-            Shortcut(
-                locs = listOf("loc.fossil_shortcut_basecamp_a", "loc.fossil_shortcut_basecamp_b"),
-                level = 70,
-                xp = 0.0,
-                option = "Climb through",
-                anim = HOLE_SQUEEZE,
             ),
             Shortcut(
                 locs = listOf("loc.wilderness_slayer_cave_crevice"),
@@ -198,11 +91,15 @@ object AgilityShortcutData {
                 anim = SQUEEZE,
             ),
             Shortcut(
-                locs = listOf("loc.taverly_dungeon_floor_spikes_sc"),
-                level = 80,
-                xp = 12.5,
-                option = "Jump-over",
-                anim = HURDLE_JUMP,
+                locs =
+                    listOf(
+                        "loc.prif_slayer_dungeon_shortcut_2a",
+                        "loc.prif_slayer_dungeon_shortcut_2b",
+                    ),
+                level = 84,
+                xp = 1.5,
+                option = "Pass",
+                anim = SQUEEZE,
             ),
             Shortcut(
                 locs = listOf("loc.dagannoth_crevice"),
@@ -212,41 +109,70 @@ object AgilityShortcutData {
                 anim = SQUEEZE,
             ),
             Shortcut(
-                locs = listOf("loc.prif_slayer_dungeon_shortcut_2a", "loc.prif_slayer_dungeon_shortcut_2b"),
-                level = 84,
-                xp = 1.5,
-                option = "Pass",
-                anim = SQUEEZE,
-            ),
-            Shortcut(
                 locs = listOf("loc.deepfin_cave_shortcut"),
                 level = 84,
                 xp = 0.0,
                 option = "Squeeze-through",
                 anim = SQUEEZE,
             ),
-            Shortcut(
-                locs = listOf("loc.kalphite_wall_shortcut"),
-                level = 86,
-                xp = 0.0,
-                option = "Squeeze-through",
-                anim = SQUEEZE,
-            ),
-            Shortcut(
-                locs = listOf("loc.darkm_wall_rock_shortcut"),
-                level = 86,
-                xp = 0.0,
-                option = "Jump-over",
-                anim = HURDLE_JUMP,
-            ),
-            Shortcut(
-                locs = listOf("loc.legends_quest_cave_shortcut"),
-                level = 96,
-                xp = 7.5,
-                option = "Squeeze-Through",
-                anim = SQUEEZE,
-            ),
         )
+}
+
+/**
+ * Every shortcut whose two ends are recorded in `agility-shortcuts.tsv`. Rows are grouped by loc and
+ * op, so one obstacle with six approach tiles is one binding holding six links.
+ */
+object AgilityShortcutTable {
+    private const val RESOURCE = "/agility-shortcuts.tsv"
+
+    val rows: List<Shortcut> by lazy { parse(read()) }
+
+    private fun read(): String =
+        AgilityShortcutTable::class
+            .java
+            .getResourceAsStream(RESOURCE)
+            ?.bufferedReader()
+            ?.use { it.readText() } ?: ""
+
+    private fun parse(text: String): List<Shortcut> {
+        val links = LinkedHashMap<Pair<String, String>, LinkedHashMap<CoordGrid, CoordGrid>>()
+        val details = HashMap<Pair<String, String>, Triple<Int, Double, Int>>()
+        for (line in text.lineSequence()) {
+            if (line.isBlank() || line.startsWith("#")) {
+                continue
+            }
+            val cells = line.split('	')
+            if (cells.size < 7) {
+                continue
+            }
+            val key = cells[0] to cells[1]
+            details.putIfAbsent(key, Triple(cells[2].toInt(), cells[3].toDouble(), cells[4].toInt()))
+            links.getOrPut(key) { LinkedHashMap() }[coord(cells[5])] = coord(cells[6])
+        }
+        return links.map { (key, pairs) ->
+            val (level, xp, ticks) = details.getValue(key)
+            val (loc, option) = key
+            Shortcut(listOf(loc), level, xp, option, animFor(option), ticks, pairs)
+        }
+    }
+
+    private fun coord(text: String): CoordGrid {
+        val (x, z, level) = text.split(',').map(String::toInt)
+        return CoordGrid(x, z, level)
+    }
+
+    private fun animFor(option: String): String =
+        when {
+            option.startsWith("Squeeze", ignoreCase = true) -> SQUEEZE
+            option.startsWith("Crawl", ignoreCase = true) -> CRAWL
+            option.startsWith("Jump", ignoreCase = true) -> HURDLE_JUMP
+            option.startsWith("Cross", ignoreCase = true) -> BALANCE_WALK
+            option.startsWith("Walk", ignoreCase = true) -> BALANCE_WALK
+            option.startsWith("Step", ignoreCase = true) -> HURDLE_JUMP
+            option.startsWith("Climb-over", ignoreCase = true) -> WALL_CLIMB
+            option.startsWith("Climb-down", ignoreCase = true) -> CLIMB_DOWN_ROCKS
+            else -> CLIMB_ROCKS
+        }
 }
 
 class AgilityShortcuts
@@ -254,7 +180,7 @@ class AgilityShortcuts
 constructor(private val collision: CollisionFlagMap, private val xpMods: XpModifiers) :
     PluginScript() {
     override fun ScriptContext.startup() {
-        for (shortcut in AgilityShortcutData.all) {
+        for (shortcut in AgilityShortcutData.all + AgilityShortcutTable.rows) {
             for (loc in shortcut.locs) {
                 val type = ServerCacheManager.getObject(loc.asRSCM(RSCMType.LOC)) ?: continue
                 val slot =
@@ -278,7 +204,7 @@ constructor(private val collision: CollisionFlagMap, private val xpMods: XpModif
             return
         }
 
-        val dest = farSide(loc)
+        val dest = shortcut.links[player.coords] ?: farSide(loc)
         if (dest == null) {
             mes("You can't find a way through from here.")
             return
