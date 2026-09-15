@@ -53,7 +53,63 @@ class HotspotNamingTest {
     }
 
     @Test
-    fun `a trailing part number is not a slot`() {
+    fun `named hotspots are placed by the room's override table`() {
+        assertEquals(4, HotspotNaming.overrideSlot("chapel", "loc.poh_chapelwindow_hotspot_rimmington"))
+        assertEquals(
+            6,
+            HotspotNaming.overrideSlot("costume room", "loc.poh_cos_room_fancy_dress_box_hotspot"),
+        )
+        assertEquals(1, HotspotNaming.overrideSlot("menagerie", "loc.poh_menagerie_pethouse_hotspot"))
+        assertEquals(7, HotspotNaming.overrideSlot("menagerie", "loc.poh_menagerie_petfeeder_hotspot"))
+        assertEquals(3, HotspotNaming.overrideSlot("menagerie outdoors", "loc.poh_menagerie_habitat_feature"))
+    }
+
+    @Test
+    fun `several locs mapping to one slot are its parts`() {
+        assertEquals(5, HotspotNaming.overrideSlot("menagerie", "loc.poh_menagerie_combatring_hotspot"))
+        assertEquals(
+            5,
+            HotspotNaming.overrideSlot("menagerie", "loc.poh_menagerie_combatring_mat_hotspot"),
+        )
+        for (part in listOf("theme_edge", "theme_outercorner", "theme_path_1", "theme_feature")) {
+            assertEquals(4, HotspotNaming.overrideSlot("superior garden", "loc.poh_superior_garden_hotspot_$part"))
+        }
+        for (part in listOf("rug_side", "rug_corner", "rug_middle")) {
+            assertEquals(4, HotspotNaming.overrideSlot("league hall", "loc.poh_leaguehall_${part}_hotspot"))
+        }
+    }
+
+    @Test
+    fun `the longest matching override fragment wins`() {
+        assertEquals(
+            6,
+            HotspotNaming.overrideSlot("superior garden", "loc.poh_superior_garden_hotspot_seating_a_left"),
+        )
+        assertEquals(
+            7,
+            HotspotNaming.overrideSlot("superior garden", "loc.poh_superior_garden_hotspot_seating_b_right"),
+        )
+        assertEquals(
+            5,
+            HotspotNaming.overrideSlot("superior garden", "loc.poh_superior_garden_hotspot_fence_post_m"),
+        )
+    }
+
+    @Test
+    fun `league hall numbers its three pedestals as separate slots`() {
+        assertEquals(1, HotspotNaming.overrideSlot("league hall", "loc.poh_leaguehall_pedestal_hotspot_1"))
+        assertEquals(2, HotspotNaming.overrideSlot("league hall", "loc.poh_leaguehall_pedestal_hotspot_2"))
+        assertEquals(3, HotspotNaming.overrideSlot("league hall", "loc.poh_leaguehall_pedestal_hotspot_3"))
+    }
+
+    @Test
+    fun `a room with no override table yields nothing`() {
+        assertNull(HotspotNaming.overrideSlot("parlour", "loc.poh_parlour_1"))
+        assertNull(HotspotNaming.overrideSlot("chapel", "loc.poh_dynamic_window"))
+    }
+
+    @Test
+    fun `a trailing part number is not read by the numbered convention`() {
         assertNull(HotspotNaming.slotOf("loc.poh_leaguehall_pedestal_hotspot_1"))
         assertNull(HotspotNaming.slotOf("loc.poh_superior_garden_hotspot_theme_path_2"))
         assertTrue(HotspotNaming.isNamedHotspot("loc.poh_leaguehall_pedestal_hotspot_1"))

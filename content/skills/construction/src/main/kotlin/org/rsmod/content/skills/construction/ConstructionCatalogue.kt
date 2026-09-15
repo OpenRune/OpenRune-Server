@@ -159,7 +159,7 @@ class ConstructionCatalogue @Inject constructor(private val locReg: LocRegistryN
 
         for (loc in chunk) {
             val name = locName(loc.id)
-            val slot = HotspotNaming.slotOf(name)
+            val slot = HotspotNaming.slotOf(name) ?: HotspotNaming.overrideSlot(row.name, name)
             if (slot != null) {
                 val index = slot - 1
                 if (index in rows.indices) {
