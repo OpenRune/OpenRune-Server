@@ -8,6 +8,7 @@ import jakarta.inject.Inject
 import jakarta.inject.Singleton
 import org.rsmod.api.registry.loc.LocRegistryNormal
 import org.rsmod.api.table.FurnitureRow
+import org.rsmod.api.table.PohHotspotRow
 import org.rsmod.api.table.PohRoomRow
 import org.rsmod.game.loc.LocInfo
 import org.rsmod.map.CoordGrid
@@ -68,6 +69,22 @@ private val FURNITURE_BUILDS: Map<Int, FurnitureBuild> by lazy {
 
 /** The xp a build awards, where the reference table knows it. */
 fun furnitureXp(modelObjId: Int): Double? = FURNITURE_BUILDS[modelObjId]?.xp
+
+/**
+ * Hotspot loc -> the `model_obj`s built on it, read back out of the same pairs. This says which
+ * hotspot a loc belongs to without going near its name, which the name conventions get wrong: the
+ * formal garden's hedge runs on `poh_posh_garden_5end`/`_5mid`/`_5cor`, so reading that `5` as a
+ * slot number files the whole hedge under the flower bed.
+ */
+private val HOTSPOT_FURNITURE: Map<Int, Set<Int>> by lazy {
+    val out = HashMap<Int, MutableSet<Int>>()
+    for ((objId, build) in FURNITURE_BUILDS) {
+        for (hotspotLoc in build.parts.keys) {
+            out.getOrPut(hotspotLoc) { HashSet() } += objId
+        }
+    }
+    out
+}
 
 class HotspotPart(
     val locId: Int,
@@ -268,7 +285,9 @@ class ConstructionCatalogue @Inject constructor(private val locReg: LocRegistryN
 
         for (loc in chunk) {
             val name = locName(loc.id)
-            val slot = HotspotNaming.slotOf(name) ?: HotspotNaming.overrideSlot(row.name, name)
+            val slot = tableSlot(loc.id, rows)
+                ?: HotspotNaming.slotOf(name)
+                ?: HotspotNaming.overrideSlot(row.name, name)
             if (slot != null) {
                 val index = slot - 1
                 if (index in rows.indices) {
@@ -312,6 +331,22 @@ class ConstructionCatalogue @Inject constructor(private val locReg: LocRegistryN
                     )
                 }
         return HotspotScan(hotspots, unplaced.toList())
+    }
+
+    /**
+     * The 1-based slot whose furniture the reference pairs say is built on [locId].
+     *
+     * Only answers when exactly one slot builds that furniture. Several slots of a room often offer
+     * the same thing - a parlour has three chair spaces, all building the same chairs - and there
+     * the pairs cannot say which, while the numbered name can. Where it does answer it beats the
+     * name, which is what stops the formal garden's hedge being read as the flower bed because its
+     * locs are spelled `poh_posh_garden_5end`.
+     */
+    private fun tableSlot(locId: Int, rows: List<PohHotspotRow>): Int? {
+        val furniture = HOTSPOT_FURNITURE[locId] ?: return null
+        val matches =
+            rows.indices.filter { i -> rows[i].builddata.any { it.modelObj.id in furniture } }
+        return matches.singleOrNull()?.plus(1)
     }
 
     private fun doorsOf(chunk: List<LocInfo>, baseX: Int, baseZ: Int): List<DoorDef> =
