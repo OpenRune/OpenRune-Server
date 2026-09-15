@@ -107,9 +107,16 @@ only part no source has.
 - **Multi-stage obstacles.** One obstacle is one animate, wait, land. Live chains several hops
   across a tightrope or a set of stepping stones. Cosmetic; the upgrade path is stages on
   `Obstacle`, not a different model.
-- **Agility shortcuts.** None of the roughly fifty shortcuts across the map are wired. They are not
-  courses - loc, level, landing on the far side, and they work in both directions - so they want
-  their own table rather than a `Course` each.
+- **Agility shortcuts.** 27 of the wiki's 155 are in, in `AgilityShortcuts.kt`: the ones that cross
+  to the far side of an obstacle on one level - walls, fences, railings, crevices, pipes, holes and
+  spiked floors. Level, xp and the op name are the wiki's, every loc was resolved back to this cache
+  by id, and the landing tile is derived at runtime from the loc's own footprint rather than
+  recorded, so none of them needed a survey. The other 128 are climbs, grapples, stepping stone
+  chains and tunnel pairs, which all put the player somewhere no rule can derive.
+
+  Two known gaps in what shipped: both Catacombs of Kourend cracks are one loc id, so binding it at
+  the southern crack's level 17 opens the northern one seventeen levels early, and the spiked floors
+  cannot be failed.
 - **Agility Pyramid, Brimhaven Arena, Werewolf, Penguin, Colossal Wyrm, Hallowed Sepulchre.** All
   absent. The first two are the ones players expect alongside the courses above. Ape Atoll (48),
   Shayzien and Dorgesh-Kaan are missing too.
