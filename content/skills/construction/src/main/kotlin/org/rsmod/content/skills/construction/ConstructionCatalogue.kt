@@ -27,8 +27,10 @@ private val MATERIAL_WORDS =
 /** Renames between an obj and its loc that are a reordering rather than a new vocabulary. */
 private val LOC_ALIASES = mapOf("poh_portal_nexus" to "poh_nexus_portal")
 
-/** `model_obj` -> the locs it builds. See `furniture-locs.tsv` for why this cannot be derived. */
-private val FURNITURE_LOCS: Map<Int, List<Int>> by lazy {
+private class FurnitureBuild(val locs: List<Int>, val xp: Double?)
+
+/** `model_obj` -> what it builds. See `furniture-locs.tsv` for why this cannot be derived. */
+private val FURNITURE_BUILDS: Map<Int, FurnitureBuild> by lazy {
     val stream =
         ConstructionCatalogue::class.java.getResourceAsStream(FURNITURE_LOC_TABLE)
             ?: error("Missing resource: $FURNITURE_LOC_TABLE")
@@ -37,13 +39,20 @@ private val FURNITURE_LOCS: Map<Int, List<Int>> by lazy {
             .map(String::trim)
             .filter { it.isNotEmpty() && !it.startsWith("#") }
             .mapNotNull { line ->
-                val (obj, locs) = line.split('	', limit = 2).takeIf { it.size == 2 } ?: return@mapNotNull null
-                val objId = obj.toIntOrNull() ?: return@mapNotNull null
-                objId to locs.split(',').mapNotNull(String::toIntOrNull)
+                val cells = line.split('	')
+                if (cells.size < 2) {
+                    return@mapNotNull null
+                }
+                val objId = cells[0].toIntOrNull() ?: return@mapNotNull null
+                val locs = cells[1].split(',').mapNotNull(String::toIntOrNull)
+                objId to FurnitureBuild(locs, cells.getOrNull(2)?.toDoubleOrNull())
             }
             .toMap()
     }
 }
+
+/** The xp a build awards, where the reference table knows it. */
+fun furnitureXp(modelObjId: Int): Double? = FURNITURE_BUILDS[modelObjId]?.xp
 
 class HotspotPart(
     val locId: Int,
@@ -133,7 +142,7 @@ class ConstructionCatalogue @Inject constructor(private val locReg: LocRegistryN
      * added to the cache since that table was transcribed.
      */
     fun builtLocIds(furniture: FurnitureRow): List<Int> {
-        val mapped = FURNITURE_LOCS[furniture.modelObj.id]?.filter(::locExists)
+        val mapped = FURNITURE_BUILDS[furniture.modelObj.id]?.locs?.filter(::locExists)
         if (!mapped.isNullOrEmpty()) {
             return mapped
         }
