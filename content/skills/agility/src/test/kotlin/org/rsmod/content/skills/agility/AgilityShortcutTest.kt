@@ -72,10 +72,99 @@ class AgilityShortcutTest {
             assertTrue(shortcut.links.isNotEmpty(), "${shortcut.locs} has no tiles")
             assertTrue(shortcut.level in 1..99, "${shortcut.locs} wants level ${shortcut.level}")
             assertTrue(shortcut.ticks in 1..10, "${shortcut.locs} takes ${shortcut.ticks} ticks")
-            for ((origin, dest) in shortcut.links) {
-                assertTrue(origin != dest, "${shortcut.locs} crosses to where it starts")
+            for ((origin, link) in shortcut.links) {
+                assertTrue(origin != link.dest, "${shortcut.locs} crosses to where it starts")
+                assertTrue(link.level in 1..99, "${shortcut.locs} wants level ${link.level}")
             }
         }
+    }
+
+    @Test
+    fun `requirements parse out of the table`() {
+        val rows = AgilityShortcutTable.rows
+        val grapple = rows.flatMap { it.links.values }.filter { it.reqs.gear == ShortcutReqs.Gear.Grapple }
+        assertTrue(grapple.isNotEmpty(), "no grapple crossing loaded")
+        for (link in grapple) {
+            assertTrue(link.reqs.ranged > 0 && link.reqs.strength > 0, "a grapple with no combat levels")
+        }
+
+        val quests = rows.flatMap { it.links.values }.mapNotNull { it.reqs.quest }.distinct()
+        assertTrue(quests.isNotEmpty(), "no quest gate loaded")
+        for (quest in quests) {
+            assertTrue(quest.startsWith("quest_"), "$quest is not a quest key")
+        }
+
+        val gated = rows.flatMap { it.links.values }.mapNotNull { it.reqs.varSymbol }.distinct()
+        for (symbol in gated) {
+            assertTrue(
+                symbol.startsWith("varbit.") || symbol.startsWith("varp."),
+                "$symbol is not a var symbol",
+            )
+        }
+    }
+
+    @Test
+    fun `one loc can be two shortcuts at two levels`() {
+        val crack =
+            AgilityShortcutTable.rows.first { it.locs.contains("loc.zeah_cata_crack") }
+        val levels = crack.links.values.map { it.level }.distinct().sorted()
+        assertEquals(listOf(17, 34), levels, "the Catacombs cracks lost their separate levels")
+    }
+
+    @Test
+    fun `a grapple crossing can be done barehanded at a higher level`() {
+        val reqs = ShortcutReqs.parse("ranged=37;strength=19;gear=grapple;bare=48")
+        assertEquals(37, reqs.ranged)
+        assertEquals(19, reqs.strength)
+        assertEquals(ShortcutReqs.Gear.Grapple, reqs.gear)
+        assertEquals(48, reqs.bareLevel)
+    }
+
+    @Test
+    fun `a var gate parses its comparison`() {
+        val exact = ShortcutReqs.parse("var=varbit.falador_diary_easy_complete=1")
+        assertEquals("varbit.falador_diary_easy_complete", exact.varSymbol)
+        assertEquals(1, exact.varValue)
+        assertTrue(exact.varExact)
+
+        val atLeast = ShortcutReqs.parse("var=varp.dragonquest>=10")
+        assertEquals("varp.dragonquest", atLeast.varSymbol)
+        assertEquals(10, atLeast.varValue)
+        assertTrue(!atLeast.varExact)
+    }
+
+    @Test
+    fun `failable crossings carry the wiki's odds`() {
+        val failable = AgilityShortcutTable.rows.filter { it.fail != null }
+        assertTrue(failable.size >= 10, "only ${failable.size} failable crossings loaded")
+        for (shortcut in failable) {
+            val fail = shortcut.fail!!
+            assertTrue(fail.high in 1..256, "${shortcut.locs} tops out at ${fail.high}")
+            assertTrue(fail.low <= fail.high, "${shortcut.locs} has backwards odds")
+            assertTrue(fail.xp >= 0.0, "${shortcut.locs} pays negative xp on a fail")
+            val damage = fail.damage
+            if (damage != null) {
+                assertTrue(damage.first >= 1, "${shortcut.locs} deals no damage")
+                assertTrue(damage.last >= damage.first, "${shortcut.locs} has a backwards hit")
+            }
+        }
+
+        val ardougne =
+            AgilityShortcutTable.rows.first { it.locs.any { loc -> loc.contains("ardougne_log_balance") } }
+        assertEquals(2..6, ardougne.fail?.damage, "the Ardougne log balance lost its hit")
+    }
+
+    @Test
+    fun `a fail line parses`() {
+        val full = ShortcutFail.parse("90/250/2/2-6")
+        assertEquals(90, full?.low)
+        assertEquals(250, full?.high)
+        assertEquals(2.0, full?.xp)
+        assertEquals(2..6, full?.damage)
+
+        val bare = ShortcutFail.parse("0/220/0/")
+        assertEquals(220, bare?.high)
+        assertEquals(null, bare?.damage)
     }
 
     @Test
