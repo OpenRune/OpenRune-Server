@@ -140,19 +140,15 @@ constructor(private val objRepo: ObjRepository, private val xpMods: XpModifiers)
      * The older animate-wait-land obstacle expressed as stages, so the rooftop courses keep the
      * behaviour they were verified with.
      */
-    private fun singleStage(obstacle: Obstacle): List<Stage> {
-        val corner = obstacle.via
-        val legs =
-            if (corner == null) {
-                listOf(obstacle.landing to obstacle.ticks)
-            } else {
-                val first = (obstacle.ticks + 1) / 2
-                listOf(corner to first, obstacle.landing to obstacle.ticks - first)
-            }
-        return legs.map { (landing, ticks) ->
-            Stage(obstacle.anim, landing, ticks.coerceAtLeast(1), obstacle.slide)
-        }
-    }
+    private fun singleStage(obstacle: Obstacle): List<Stage> =
+        listOf(
+            Stage(
+                obstacle.anim,
+                obstacle.landing,
+                obstacle.ticks.coerceAtLeast(1),
+                obstacle.slide,
+            )
+        )
 
     /** One linked movement: play its animation and carry the player for as long as it runs. */
     private suspend fun ProtectedAccess.runStage(stage: Stage) {

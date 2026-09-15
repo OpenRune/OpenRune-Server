@@ -2,6 +2,7 @@ package org.rsmod.content.skills.agility
 
 import com.github.michaelbull.logging.InlineLogger
 import dev.openrune.ServerCacheManager
+import dev.openrune.rscm.RSCM
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import dev.openrune.util.Wearpos
@@ -19,6 +20,8 @@ import org.rsmod.api.script.onOpLoc3
 import org.rsmod.api.script.onOpLoc4
 import org.rsmod.api.script.onOpLoc5
 import org.rsmod.api.stats.xpmod.XpModifiers
+import org.rsmod.api.table.agility.AgilityShortcutLinkRow
+import org.rsmod.api.table.agility.AgilityShortcutRow
 import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.game.hit.HitType
 import org.rsmod.game.inv.isType
@@ -41,6 +44,9 @@ private const val CRAWL = "seq.human_crawling"
 private const val BALANCE_WALK = "seq.human_walk_logbalance_loop"
 private const val CLIMB_ROCKS = "seq.human_climbing"
 private const val CLIMB_DOWN_ROCKS = "seq.human_climbing_down"
+
+private const val GEAR_GRAPPLE = 1
+private const val GEAR_CLIMBING_BOOTS = 2
 
 /**
  * A shortcut is bound by the [option] the wiki lists for it rather than by the first op on the loc,
@@ -69,24 +75,12 @@ data class ShortcutLink(val dest: CoordGrid, val level: Int, val reqs: ShortcutR
  * 256, run through the same skilling formula as everything else; a failed attempt still pays [xp]
  * and deals [damage], and leaves the player where they started.
  */
-data class ShortcutFail(val low: Int, val high: Int, val xp: Double, val damage: IntRange?) {
-    companion object {
-        fun parse(text: String): ShortcutFail? {
-            val parts = text.split('/')
-            if (parts.size < 3) {
-                return null
-            }
-            val low = parts[0].toIntOrNull() ?: return null
-            val high = parts[1].toIntOrNull() ?: return null
-            val damage =
-                parts.getOrNull(3)?.takeIf { it.isNotBlank() }?.let {
-                    val range = it.split('-')
-                    range[0].toInt()..range[1].toInt()
-                }
-            return ShortcutFail(low, high, parts[2].toDoubleOrNull() ?: 0.0, damage)
-        }
-    }
-}
+/**
+ * A crossing that can go wrong. [low] and [high] are the wiki's level-1 and level-99 odds out of
+ * 256, run through the same skilling formula as everything else; a failed attempt still pays [xp]
+ * and deals [damage], and leaves the player where they started.
+ */
+data class ShortcutFail(val low: Int, val high: Int, val xp: Double, val damage: IntRange?)
 
 /**
  * Everything a crossing asks for beyond the Agility level. [bareLevel] is the alternative live
@@ -109,45 +103,13 @@ data class ShortcutReqs(
 
     companion object {
         val NONE: ShortcutReqs = ShortcutReqs()
-
-        fun parse(text: String): ShortcutReqs {
-            var reqs = NONE
-            for (part in text.split(';')) {
-                if (part.isBlank()) {
-                    continue
-                }
-                val key = part.substringBefore('=')
-                val value = part.substringAfter('=')
-                reqs =
-                    when (key) {
-                        "ranged" -> reqs.copy(ranged = value.toInt())
-                        "strength" -> reqs.copy(strength = value.toInt())
-                        "gear" ->
-                            reqs.copy(
-                                gear = if (value == "grapple") Gear.Grapple else Gear.ClimbingBoots
-                            )
-                        "bare" -> reqs.copy(bareLevel = value.toInt())
-                        "quest" -> reqs.copy(quest = value)
-                        "var" -> reqs.varGate(value)
-                        else -> reqs
-                    }
-            }
-            return reqs
-        }
-
-        private fun ShortcutReqs.varGate(gate: String): ShortcutReqs {
-            val exact = !gate.contains(">=")
-            val separator = if (exact) "=" else ">="
-            val symbol = gate.substringBefore(separator)
-            val value = gate.substringAfter(separator).toIntOrNull() ?: return this
-            return copy(varSymbol = symbol, varValue = value, varExact = exact)
-        }
     }
 }
 
 /**
- * The handful of shortcuts [AgilityShortcutTable] has no tiles for. They all cross to the far side
- * of an obstacle on one level, so the landing is derived; levels, xp and the op name are the wiki's.
+ * The handful of shortcuts `dbtable.agility_shortcut` has no tiles for. They all cross to the far
+ * side of an obstacle on one level, so the landing is derived; levels, xp and the op name are the
+ * wiki's.
  */
 object AgilityShortcutData {
     val all: List<Shortcut> =
@@ -181,7 +143,11 @@ object AgilityShortcutData {
                 anim = SQUEEZE,
             ),
             Shortcut(
-                locs = listOf("loc.prif_slayer_dungeon_shortcut_1a", "loc.prif_slayer_dungeon_shortcut_1b"),
+                locs =
+                    listOf(
+                        "loc.prif_slayer_dungeon_shortcut_1a",
+                        "loc.prif_slayer_dungeon_shortcut_1b",
+                    ),
                 level = 78,
                 xp = 1.0,
                 option = "Pass",
@@ -216,54 +182,57 @@ object AgilityShortcutData {
 }
 
 /**
- * Every shortcut whose two ends are recorded in `agility-shortcuts.tsv`. Rows are grouped by loc and
- * op, so one obstacle with six approach tiles is one binding holding six links.
+ * Every shortcut whose two ends are recorded in `dbtable.agility_shortcut`. Link rows are grouped
+ * by the shortcut they belong to, so one obstacle with six approach tiles is one binding holding
+ * six links.
  */
 object AgilityShortcutTable {
-    private const val RESOURCE = "/agility-shortcuts.tsv"
-
-    val rows: List<Shortcut> by lazy { parse(read()) }
-
-    private fun read(): String =
-        AgilityShortcutTable::class
-            .java
-            .getResourceAsStream(RESOURCE)
-            ?.bufferedReader()
-            ?.use { it.readText() } ?: ""
-
-    private fun parse(text: String): List<Shortcut> {
+    val rows: List<Shortcut> by lazy {
         val links =
-            LinkedHashMap<Pair<String, String>, LinkedHashMap<CoordGrid, ShortcutLink>>()
-        val details = HashMap<Pair<String, String>, Triple<Int, Double, Int>>()
-        val fails = HashMap<Pair<String, String>, ShortcutFail>()
-        for (line in text.lineSequence()) {
-            if (line.isBlank() || line.startsWith("#")) {
-                continue
-            }
-            val cells = line.split('	')
-            if (cells.size < 7) {
-                continue
-            }
-            val key = cells[0] to cells[1]
-            val level = cells[2].toInt()
-            details.putIfAbsent(key, Triple(level, cells[3].toDouble(), cells[4].toInt()))
-            val reqs = if (cells.size > 7) ShortcutReqs.parse(cells[7]) else ShortcutReqs.NONE
-            links.getOrPut(key) { LinkedHashMap() }[coord(cells[5])] =
-                ShortcutLink(coord(cells[6]), level, reqs)
-            if (cells.size > 8 && cells[8].isNotBlank()) {
-                ShortcutFail.parse(cells[8])?.let { fails[key] = it }
-            }
-        }
-        return links.map { (key, pairs) ->
-            val (level, xp, ticks) = details.getValue(key)
-            val (loc, option) = key
-            Shortcut(listOf(loc), level, xp, option, animFor(option), ticks, pairs, fails[key])
+            AgilityShortcutLinkRow.all().groupBy(
+                { it.shortcut.rowId },
+                { it.origin to ShortcutLink(it.dest, it.level, it.reqs()) },
+            )
+        AgilityShortcutRow.all().map { row ->
+            Shortcut(
+                locs = listOf(RSCM.getReverseMapping(RSCMType.LOC, row.loc.id)),
+                level = row.level,
+                xp = row.xp / 10.0,
+                option = row.option,
+                anim = animFor(row.option),
+                ticks = row.ticks,
+                links = links[row.rowId].orEmpty().toMap(),
+                fail = row.toFail(),
+            )
         }
     }
 
-    private fun coord(text: String): CoordGrid {
-        val (x, z, level) = text.split(',').map(String::toInt)
-        return CoordGrid(x, z, level)
+    private fun AgilityShortcutRow.toFail(): ShortcutFail? {
+        val slots = fail
+        if (slots.size < 5) {
+            return null
+        }
+        val damage = if (slots[3] == 0 && slots[4] == 0) null else slots[3]..slots[4]
+        return ShortcutFail(slots[0], slots[1], slots[2] / 10.0, damage)
+    }
+
+    private fun AgilityShortcutLinkRow.reqs(): ShortcutReqs {
+        val gate = varGate.firstOrNull()
+        return ShortcutReqs(
+            ranged = ranged ?: 0,
+            strength = strength ?: 0,
+            gear =
+                when (gear) {
+                    GEAR_GRAPPLE -> ShortcutReqs.Gear.Grapple
+                    GEAR_CLIMBING_BOOTS -> ShortcutReqs.Gear.ClimbingBoots
+                    else -> null
+                },
+            quest = quest,
+            varSymbol = gate?.t0,
+            varValue = gate?.t1 ?: 0,
+            varExact = gate?.t2 == 1,
+            bareLevel = bareLevel ?: 0,
+        )
     }
 
     private fun animFor(option: String): String =
