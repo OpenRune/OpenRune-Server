@@ -9,8 +9,11 @@ package org.rsmod.content.skills.construction
  * `poh_workshop_3a`, `poh_posh_garden_5mid`).
  *
  * The rooms added later name them after what they build instead: `poh_cos_room_cape_rack_hotspot`,
- * `poh_menagerie_pethouse_hotspot`. Any trailing digit there is a part number, not a slot, so
- * `poh_leaguehall_pedestal_hotspot_1` is one of three pedestals rather than slot 1.
+ * `poh_menagerie_pethouse_hotspot`. A trailing digit there is not part of the numbered convention
+ * and is read by [OVERRIDES] or not at all.
+ *
+ * Where a room's locs and its furniture use different words for the same thing, [OVERRIDES] says
+ * which slot each loc fills.
  *
  * All of this is pure string handling, so it is checked directly against real cache names in
  * `HotspotNamingTest` rather than only being visible once a house is entered.
@@ -22,6 +25,51 @@ object HotspotNaming {
     private const val POH_TOKEN = "poh"
 
     private val SLOT_NAME = Regex("""^loc\.poh_.+_(\d+)(?:[a-z]+|_[a-z]+)?$""")
+
+    private val MENAGERIE = mapOf("pethouse" to 1, "combatring" to 5, "petfeeder" to 7)
+
+    /**
+     * Rooms whose hotspot locs describe themselves in words the furniture table never uses: the loc
+     * is a `combatring`, the furniture is a "Simple arena"; the loc is a `fancy_dress_box`, the
+     * furniture is an "Oak costume box". No amount of fragment matching bridges that, so the slot is
+     * named outright.
+     *
+     * Keyed by `poh_room:name`, then by a fragment of the loc name, to the 1-based slot. The longest
+     * matching fragment wins, so `seating_a_` beats a bare `seating_`. Several locs mapping to one
+     * slot are its parts: only [HotspotDef.primary] is ever built on, so a slot naming eight of them
+     * is placed the same way a slot naming one is.
+     */
+    private val OVERRIDES: Map<String, Map<String, Int>> =
+        mapOf(
+            "chapel" to mapOf("chapelwindow" to 4),
+            "combat room" to mapOf("gr_1_" to 1),
+            "costume room" to mapOf("fancy_dress_box" to 6),
+            "menagerie" to MENAGERIE,
+            "menagerie outdoors" to MENAGERIE + mapOf("habitat_" to 3),
+            "superior garden" to
+                mapOf(
+                    "treering" to 1,
+                    "theme_" to 4,
+                    "fence_" to 5,
+                    "seating_a_" to 6,
+                    "seating_b_" to 7,
+                ),
+            "league hall" to
+                mapOf(
+                    "pedestal_hotspot_1" to 1,
+                    "pedestal_hotspot_2" to 2,
+                    "pedestal_hotspot_3" to 3,
+                    "rug_" to 4,
+                ),
+        )
+
+    /** The slot [locName] fills in [roomName], for rooms the naming conventions cannot reach. */
+    fun overrideSlot(roomName: String, locName: String): Int? =
+        OVERRIDES[roomName.lowercase()]
+            ?.entries
+            ?.filter { it.key in locName }
+            ?.maxByOrNull { it.key.length }
+            ?.value
 
     fun isDoor(name: String): Boolean = name.startsWith(DOOR_PREFIX)
 
