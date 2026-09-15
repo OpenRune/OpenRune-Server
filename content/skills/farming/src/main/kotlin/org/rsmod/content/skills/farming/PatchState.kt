@@ -25,9 +25,6 @@ data class PatchState(
     val produce: Int = 0,
     val minutes: Int = 0,
 ) {
-    val crop: Crop?
-        get() = if (cropIndex == 0) null else FarmingCrops.byIndex(cropIndex)
-
     val cleared: Boolean
         get() = weeds >= CLEARED
 
@@ -47,9 +44,8 @@ data class PatchState(
      * Runs [elapsed] minutes of growth. A patch that is diseased when its next stage comes due dies
      * instead of advancing, which is the window the player has to cure it.
      */
-    fun advance(elapsed: Int, diseaseRoll: (Double) -> Boolean): PatchState {
-        val crop = crop ?: return this
-        if (health == Health.DEAD || grown(crop)) {
+    fun advance(crop: Crop?, elapsed: Int, diseaseRoll: (Double) -> Boolean): PatchState {
+        if (crop == null || health == Health.DEAD || grown(crop)) {
             return this
         }
 
@@ -86,8 +82,8 @@ data class PatchState(
     }
 
     /** The value the client reads to pick this patch's appearance out of its transform table. */
-    fun transmit(): Int {
-        val crop = crop ?: return weeds
+    fun transmit(crop: Crop?): Int {
+        if (crop == null) return weeds
         return when (crop.kind) {
             PatchKind.HERB ->
                 when (health) {

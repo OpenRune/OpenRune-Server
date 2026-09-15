@@ -63,7 +63,7 @@ constructor(private val xpMods: XpModifiers, private val random: GameRandom) : P
         VarPlayerIntMapSetter.set(this, patch.varp, state.pack())
         val varbit = transmitVarbits[patch.loc] ?: return
         if (FarmingPatches.nearest(coords) === FarmingPatches.areaOf(patch)) {
-            VarPlayerIntMapSetter.set(this, varbit, state.transmit())
+            VarPlayerIntMapSetter.set(this, varbit, state.transmit(state.crop))
         }
     }
 
@@ -71,7 +71,8 @@ constructor(private val xpMods: XpModifiers, private val random: GameRandom) : P
         val area = FarmingPatches.nearest(coords) ?: return
         for (patch in area.patches) {
             val varbit = transmitVarbits[patch.loc] ?: continue
-            VarPlayerIntMapSetter.set(this, varbit, state(patch).transmit())
+            val state = state(patch)
+            VarPlayerIntMapSetter.set(this, varbit, state.transmit(state.crop))
         }
     }
 
@@ -85,7 +86,7 @@ constructor(private val xpMods: XpModifiers, private val random: GameRandom) : P
         }
         for (patch in FarmingPatches.all) {
             val current = state(patch)
-            val next = current.advance(elapsed) { chance -> random.randomDouble() < chance }
+            val next = current.advance(current.crop, elapsed) { chance -> random.randomDouble() < chance }
             if (next != current) {
                 VarPlayerIntMapSetter.set(this, patch.varp, next.pack())
             }
