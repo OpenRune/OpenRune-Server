@@ -32,6 +32,7 @@ include(
     "engine",
     "server",
     "or-cache",
+    "example-plugin",
     "tools:osrs-mcp",
     "tools:wiki-dumping",
 )

@@ -55,6 +55,17 @@ public class EventBus(
         return suspend.contains(type, key.toLong())
     }
 
+    /**
+     * Removes every subscriber (unbound, keyed, and suspend) whose backing lambda/method-reference
+     * class was defined by [loader]. Used to unregister an external plugin's handlers before
+     * reloading it — see `ExternalPluginLoader`.
+     */
+    public fun removeByClassLoader(loader: ClassLoader): Int {
+        return unbound.removeByClassLoader(loader) +
+            keyed.removeByClassLoader(loader) +
+            suspend.removeByClassLoader(loader)
+    }
+
     public companion object {
         public fun composeLongKey(high: Int, low: Int): Long {
             return (high.toLong() shl 32) or low.toLong()

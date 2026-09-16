@@ -14,6 +14,25 @@ public sealed class EventIdMap<K, V> : EventMap<K, MutableMap<Long, V>>() {
     private fun defaultMap(): Long2ObjectOpenHashMap<V> {
         return Long2ObjectOpenHashMap<V>().apply { defaultReturnValue(null) }
     }
+
+    /**
+     * Removes every registration whose backing lambda/method-reference class was defined by
+     * [loader]. Used to unregister an external plugin's handlers before reloading it — see
+     * `ExternalPluginLoader`.
+     */
+    public fun removeByClassLoader(loader: ClassLoader): Int {
+        var removed = 0
+        for (idMap in events.values) {
+            val iterator = idMap.entries.iterator()
+            while (iterator.hasNext()) {
+                if (iterator.next().value?.javaClass?.classLoader === loader) {
+                    iterator.remove()
+                    removed++
+                }
+            }
+        }
+        return removed
+    }
 }
 
 public class KeyedEventMap : EventIdMap<KeyedEvent, KeyedEvent.() -> Unit>() {

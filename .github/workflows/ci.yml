@@ -9,9 +9,6 @@ on:
     paths-ignore:
       - "**.md"
       - "docs/**"
-  push:
-    branches:
-      - main
 
 concurrency:
   group: ci-${{ github.ref }}
@@ -37,9 +34,8 @@ jobs:
         uses: gradle/actions/setup-gradle@v6
 
       # The downloaded game cache only changes when the revision in
-      # game.example.yml bumps (~monthly), so cache it across runs. Runs on
-      # main seed the base-branch scope that all pull requests can read.
-      # The gamevals .dat files ride along because buildCache requires them
+      # game.example.yml bumps (~monthly), so cache it across runs. The
+      # gamevals .dat files ride along because buildCache requires them
       # at startup (GameValProvider loads both before any packing).
       - name: Cache game data
         id: gamecache

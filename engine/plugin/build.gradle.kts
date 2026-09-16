@@ -8,7 +8,9 @@ kotlin {
 
 dependencies {
     api(libs.classgraph)
-    implementation(libs.guice)
+    api(libs.guice)
+    implementation(libs.kotlin.inline.logger)
+    runtimeOnly(libs.logback.classic)
     implementation(projects.engine.events)
     implementation(projects.engine.game)
 }
