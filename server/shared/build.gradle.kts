@@ -5,7 +5,6 @@ plugins {
 dependencies {
     findValidApiSubProjects().forEach { api(it) }
     findPlugins().forEach { api(it) }
-    implementation(libs.classgraph)
     implementation(libs.guice)
     implementation(libs.kotlin.reflect)
     implementation(libs.openrs2.cache)

@@ -5,10 +5,12 @@ import com.fasterxml.jackson.databind.PropertyNamingStrategies
 import com.fasterxml.jackson.dataformat.toml.TomlFactory
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
+import com.github.michaelbull.logging.InlineLogger
 import dtx.rs.RSDropTable
-import io.github.classgraph.ClassGraph
+import io.github.classgraph.ScanResult
 import jakarta.inject.Inject
 import jakarta.inject.Singleton
+import kotlin.time.measureTimedValue
 import org.rsmod.api.area.checker.AreaChecker
 import org.rsmod.api.droptable.toml.DropTableTomlParser
 import org.rsmod.api.droptable.toml.DropTableTomlResolver
@@ -16,6 +18,7 @@ import org.rsmod.api.droptable.toml.DropTableTomlTextFixer
 import org.rsmod.api.droptable.toml.TomlDropTableDef
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
+import org.rsmod.plugin.scan.PluginClasspathScan
 
 @Singleton
 public class DropTableRegistry
@@ -25,9 +28,19 @@ constructor(tomlResolver: DropTableTomlResolver) {
     private val tablesByLoc: MutableMap<String, RSDropTable<Player, DropRollItem>> = hashMapOf()
     private val tomlTablesByNpc: MutableMap<String, MutableSet<String>> = hashMapOf()
 
+    private val logger = InlineLogger()
+
     init {
-        loadTomlTables(tomlResolver)
-        loadAnnotatedTables()
+        // Reuses the process-wide scan from PluginClasspathScan (also consulted by
+        // PluginModuleLoader/PluginScriptLoader at boot) instead of running a 4th full classpath
+        // walk here. It's never closed by any consumer, so it's safe to read from repeatedly.
+        val scan = PluginClasspathScan.scan
+        val (tomlCount, tomlDuration) = measureTimedValue { loadTomlTables(scan, tomlResolver) }
+        val (annotatedCount, annotatedDuration) = measureTimedValue { loadAnnotatedTables(scan) }
+        logger.info {
+            "DropTableRegistry: $tomlCount toml table(s) loaded in $tomlDuration; " +
+                "$annotatedCount annotated table(s) loaded in $annotatedDuration"
+        }
     }
 
     public fun forNpc(npc: Npc): RSDropTable<Player, DropRollItem>? = forNpc(npc, areaChecker = null)
@@ -63,40 +76,40 @@ constructor(tomlResolver: DropTableTomlResolver) {
 
     public fun forLoc(loc: String): RSDropTable<Player, DropRollItem>? = tablesByLoc[loc]
 
-    private fun loadTomlTables(resolver: DropTableTomlResolver) {
+    /**
+     * Parsing (file I/O + Jackson decode) runs in parallel since each resource is independent;
+     * [register] mutates shared maps, so it's applied back on the calling thread afterward.
+     */
+    private fun loadTomlTables(scan: ScanResult, resolver: DropTableTomlResolver): Int {
         val mapper =
             ObjectMapper(TomlFactory())
                 .registerKotlinModule()
                 .setPropertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE)
-        ClassGraph()
-            .ignoreClassVisibility()
-            .acceptPaths(TOML_RESOURCE_ROOT)
-            .scan()
-            .use { scan ->
-                scan.allResources
-                    .filter { resource -> resource.path.endsWith(".toml") }
-                    .forEach { resource ->
-                        val raw = DropTableTomlTextFixer.hoistTableLevelKeys(resource.getContentAsString())
-                        val def = mapper.readValue<TomlDropTableDef>(raw)
-                        val table = DropTableTomlParser.parse(def, resolver, sourcePath = resource.path)
-                        register(table, DropTableSource.Toml)
-                    }
-            }
+        val tomlResources = scan.allResources.filter { resource -> resource.path.endsWith(".toml") }
+        val tables =
+            tomlResources
+                .parallelStream()
+                .map { resource ->
+                    val raw = DropTableTomlTextFixer.hoistTableLevelKeys(resource.getContentAsString())
+                    val def = mapper.readValue<TomlDropTableDef>(raw)
+                    DropTableTomlParser.parse(def, resolver, sourcePath = resource.path)
+                }
+                .toList()
+        tables.forEach { table -> register(table, DropTableSource.Toml) }
+        return tomlResources.size
     }
 
-    private fun loadAnnotatedTables() {
-        io.github.classgraph.ClassGraph()
-            .ignoreClassVisibility()
-            .enableClassInfo()
-            .enableFieldInfo()
-            .enableAnnotationInfo()
-            .acceptPackages(*SEARCH_PACKAGES)
-            .scan()
-            .use { scan ->
-                scan.allClasses.forEach { classInfo ->
-                    registerAnnotatedFields(classInfo.loadClass())
-                }
-            }
+    /**
+     * Only loads classes that ClassGraph's bytecode-level field-annotation index already flagged
+     * as having a [RegisterDropTable] field, instead of loading (and static-initializing) every
+     * scanned class just to inspect its declared fields. Class loading (and any static-init work
+     * it triggers) runs in parallel; [register] is applied back sequentially.
+     */
+    private fun loadAnnotatedTables(scan: ScanResult): Int {
+        val candidates = scan.getClassesWithFieldAnnotation(RegisterDropTable::class.java.name)
+        val loaded = candidates.parallelStream().map { classInfo -> classInfo.loadClass() }.toList()
+        loaded.forEach { clazz -> registerAnnotatedFields(clazz) }
+        return candidates.size
     }
 
     private fun registerAnnotatedFields(clazz: Class<*>) {
@@ -191,10 +204,5 @@ constructor(tomlResolver: DropTableTomlResolver) {
     private enum class DropTableSource {
         Toml,
         Annotation,
-    }
-
-    private companion object {
-        private const val TOML_RESOURCE_ROOT = "drops/tables"
-        private val SEARCH_PACKAGES = arrayOf("org.rsmod.api", "org.rsmod.content")
     }
 }

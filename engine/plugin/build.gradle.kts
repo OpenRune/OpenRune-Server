@@ -7,6 +7,7 @@ kotlin {
 }
 
 dependencies {
+    api(libs.classgraph)
     implementation(libs.guice)
     implementation(projects.engine.events)
     implementation(projects.engine.game)

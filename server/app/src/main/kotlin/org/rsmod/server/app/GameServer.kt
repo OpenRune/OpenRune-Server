@@ -44,7 +44,6 @@ import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 import org.rsmod.server.install.GameNetworkRsaGenerator
 import org.rsmod.server.install.GameServerLogbackCopy
-import org.rsmod.server.shared.PluginConstants
 import org.rsmod.server.shared.loader.PluginModuleLoader
 import org.rsmod.server.shared.loader.PluginScriptLoader
 
@@ -53,9 +52,6 @@ fun main(args: Array<String>): Unit = GameServer().main(args)
 class GameServer(private val skipTypeVerificationOverride: Boolean? = null) :
     CliktCommand(name = "server") {
     private val logger = InlineLogger()
-
-    private val pluginPackages: Array<String>
-        get() = PluginConstants.searchPackages
 
     private val vanillaCacheDir: Path
         get() = DirectoryConstants.CACHE_PATH.resolve("LIVE")
@@ -126,7 +122,7 @@ class GameServer(private val skipTypeVerificationOverride: Boolean? = null) :
 
     private fun loadModules(): Collection<AbstractModule> {
         logger.info { "Loading plugin modules..." }
-        return PluginModuleLoader.load(PluginModule::class.java, pluginPackages)
+        return PluginModuleLoader.load(PluginModule::class.java)
     }
 
     private fun loadMap(or2cache: Cache, injector: Injector) {
@@ -182,8 +178,17 @@ class GameServer(private val skipTypeVerificationOverride: Boolean? = null) :
         val scriptLoader = injector.getInstance(PluginScriptLoader::class.java)
         val scripts = scriptLoader.load(PluginScript::class.java, injector)
         val scriptContext = injector.getInstance(ScriptContext::class.java)
+        val timings = mutableListOf<Pair<String, Duration>>()
         for (script in scripts) {
-            startupPluginScript(script, scriptContext)
+            val (_, duration) = measureTimedValue { startupPluginScript(script, scriptContext) }
+            timings += script::class.java.name to duration
+        }
+        logger.info {
+            val slowest =
+                timings.sortedByDescending { it.second }.take(10).joinToString { (name, dur) ->
+                    "$name=$dur"
+                }
+            "Slowest script startup() calls: $slowest"
         }
         // Map spawns are queued via addDelayed during loadMap so onNpcSpawn handlers exist
         // first. Flush them here before opening login so players never see entities pop in.
