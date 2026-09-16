@@ -1,0 +1,14 @@
+[[npc]]
+id = "npc.nasty_tree"
+inherit = "npc.nasty_tree"
+moveRestrict = "NoMove"
+defaultMode = "None"
+wanderRange = 0
+huntMode = 6
+huntRange = 1
+maxRange = 1
+giveChase = false
+[npc.params]
+"param.attack_anim" = "seq.deadtree_attack"
+"param.attack_sound" = "synth.deadtree_attack"
+"param.npc_attack_type" = "category.attacktype_crush"

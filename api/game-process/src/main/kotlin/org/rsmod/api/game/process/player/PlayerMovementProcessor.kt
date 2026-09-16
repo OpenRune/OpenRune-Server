@@ -110,12 +110,16 @@ constructor(
     }
 
     private fun Player.validatedStep(current: CoordGrid, target: CoordGrid): CoordGrid =
-        stepFactory.validated(
-            source = current,
-            dest = target,
-            size = size,
-            extraFlag = CollisionFlag.BLOCK_PLAYERS,
-        )
+        if (forcedRoute) {
+            stepFactory.unvalidated(current, target)
+        } else {
+            stepFactory.validated(
+                source = current,
+                dest = target,
+                size = size,
+                extraFlag = CollisionFlag.BLOCK_PLAYERS,
+            )
+        }
 
     private fun Player.addBlockWalkCollision(coords: CoordGrid) {
         if (!hidden) {
