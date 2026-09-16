@@ -2133,3 +2133,50 @@ contentGroup = "content.minnow_rowboat_to_island"
 id = "loc.minnow_rowboat_leave"
 inherit = "loc.minnow_rowboat_leave"
 contentGroup = "content.minnow_rowboat_to_guild"
+
+# Dwarven Mine
+
+[[object]]
+id = "loc.crate2"
+inherit = "loc.crate2"
+contentGroup = "content.empty_crate"
+
+[object.params]
+"param.game_message" = "You search the crate but find nothing."
+
+[[object]]
+id = "loc.crate_old"
+inherit = "loc.crate_old"
+contentGroup = "content.empty_crate"
+
+[object.params]
+"param.game_message" = "You search the crate but find nothing."
+
+[[object]]
+id = "loc.boxes3"
+inherit = "loc.boxes3"
+contentGroup = "content.empty_boxes"
+
+[object.params]
+"param.game_message" = "There is nothing interesting in these boxes."
+
+[[object]]
+id = "loc.dwarfrock_book_cart"
+inherit = "loc.dwarfrock_book_cart"
+contentGroup = "content.empty_crate"
+
+[object.params]
+"param.game_message" = "You search the cart but find nothing."
+
+[[object]]
+id = "loc.fai_dwarf_trapdoor_down"
+inherit = "loc.fai_dwarf_trapdoor_down"
+contentGroup = "content.dungeonladder_down"
+
+[object.params]
+"param.climb_anim" = "seq.human_pickupfloor"
+
+[[object]]
+id = "loc.ladder_from_cellar_directional"
+inherit = "loc.ladder_from_cellar_directional"
+contentGroup = "content.dungeonladder_up"

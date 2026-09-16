@@ -9,11 +9,10 @@ import org.rsmod.api.script.onOpLoc1
 import org.rsmod.api.script.onOpLoc3
 import org.rsmod.api.stats.levelmod.InvisibleLevels
 import org.rsmod.api.stats.xpmod.XpModifiers
-import org.rsmod.content.areas.misc.motherlode.HELD_PAYDIRT
 import org.rsmod.content.areas.misc.motherlode.MotherlodeMine
 import org.rsmod.content.areas.misc.motherlode.PayDirtOre
-import org.rsmod.content.areas.misc.motherlode.cleaningCount
-import org.rsmod.content.areas.misc.motherlode.heldPayDirt
+import org.rsmod.content.areas.misc.motherlode.addHeldPayDirt
+import org.rsmod.content.areas.misc.motherlode.cleaningPayDirtTotal
 import org.rsmod.content.areas.misc.motherlode.sackCapacity
 import org.rsmod.content.areas.misc.motherlode.sackTotal
 import org.rsmod.content.areas.misc.motherlode.veins.MotherlodeVeins
@@ -111,7 +110,7 @@ constructor(
     }
 
     private fun ProtectedAccess.hasEnoughPayDirtForSack(): Boolean {
-        val total = player.sackTotal + player.cleaningCount + inv.count(MotherlodeMine.PAYDIRT)
+        val total = player.sackTotal + player.cleaningPayDirtTotal + inv.count(MotherlodeMine.PAYDIRT)
         return total >= player.sackCapacity
     }
 
@@ -119,13 +118,7 @@ constructor(
         if (invAdd(inv, MotherlodeMine.PAYDIRT).failure) {
             return
         }
-        val held = player.heldPayDirt()
-        val payDirtCount = inv.count(MotherlodeMine.PAYDIRT)
-        while (held.size >= payDirtCount) {
-            held.removeAt(0)
-        }
-        held += PayDirtOre.roll(player.miningLvl, random).ordinal
-        player.attr[HELD_PAYDIRT] = held
+        player.addHeldPayDirt(PayDirtOre.roll(player.miningLvl, random))
 
         statAdvance("stat.mining", PAYDIRT_XP * xpMods.get(player, "stat.mining"))
         spam("You manage to mine some pay-dirt.")

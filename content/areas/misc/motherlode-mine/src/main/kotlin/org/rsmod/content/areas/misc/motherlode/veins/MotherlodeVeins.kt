@@ -1,7 +1,5 @@
 package org.rsmod.content.areas.misc.motherlode.veins
 
-import dev.openrune.rscm.RSCM.asRSCM
-import dev.openrune.rscm.RSCMType
 import jakarta.inject.Inject
 import jakarta.inject.Singleton
 import kotlin.random.Random
@@ -55,15 +53,14 @@ constructor(private val locRepo: LocRepository, private val mapClock: MapClock) 
     }
 
     private fun spawnAll() {
-        val depletedToOre = DEPLETED_TO_ORE.mapKeys { it.key.asRSCM(RSCMType.LOC) }
         val southWest = MotherlodeMine.MAP_SQUARE_SOUTH_WEST
         for (zoneX in 0 until MotherlodeMine.MAP_SQUARE_LENGTH step ZoneGrid.LENGTH) {
             for (zoneZ in 0 until MotherlodeMine.MAP_SQUARE_LENGTH step ZoneGrid.LENGTH) {
                 val zone = ZoneKey.from(southWest.translate(zoneX, zoneZ))
                 for (loc in locRepo.findAll(zone).toList()) {
-                    val ore = depletedToOre[loc.id] ?: continue
-                    val oreLoc = loc.copy(entity = LocEntity(ore.asRSCM(RSCMType.LOC), loc.shapeId, loc.angleId))
-                    val upper = loc.coords in MotherlodeMine.UPPER_LEVEL_VEINS
+                    val type = MotherlodeVein.forDepletedId(loc.id) ?: continue
+                    val oreLoc = loc.copy(entity = LocEntity(type.oreId, loc.shapeId, loc.angleId))
+                    val upper = MotherlodeMine.isUpperFloor(loc.coords)
                     val vein = Vein(depleted = loc, ore = oreLoc, upperLevel = upper)
                     veins[loc.coords] = vein
                     locRepo.add(oreLoc, Int.MAX_VALUE)
@@ -99,13 +96,5 @@ constructor(private val locRepo: LocRepository, private val mapClock: MapClock) 
         val UPPER_LIFESPAN = 60..67
         val LOWER_RESPAWN = 168..176
         val UPPER_RESPAWN = 98..101
-
-        val DEPLETED_TO_ORE =
-            mapOf(
-                "loc.motherlode_depleted_single" to "loc.motherlode_ore_single",
-                "loc.motherlode_depleted_left" to "loc.motherlode_ore_left",
-                "loc.motherlode_depleted_middle" to "loc.motherlode_ore_middle",
-                "loc.motherlode_depleted_right" to "loc.motherlode_ore_right",
-            )
     }
 }

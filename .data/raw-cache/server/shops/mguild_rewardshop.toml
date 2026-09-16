@@ -1,7 +1,7 @@
 [[inventory]]
 isServerOnly = true
 id = "inv.mguild_rewardshop"
-name = "Prospector Percy's Nugget Shop"
+name = "Mining Guild Mineral Exchange"
 
 scope = "Shared"
 stack = "Always"
@@ -10,7 +10,7 @@ sellMultiplier = 1000
 buyMultiplier = 800
 delta = 0
 
-size = 8
+size = 4
 
 protect = false
 runWeight = false
@@ -19,41 +19,21 @@ allStock = false
 placeholders = false
 
 [[inventory.stock]]
-obj = "obj.motherlode_reward_hat"
+obj = "obj.mguild_gloves"
 count = 100
 restockCycles = 1
 
 [[inventory.stock]]
-obj = "obj.motherlode_reward_top"
+obj = "obj.mguild_gloves_superior"
 count = 100
 restockCycles = 1
 
 [[inventory.stock]]
-obj = "obj.motherlode_reward_legs"
-count = 100
-restockCycles = 1
-
-[[inventory.stock]]
-obj = "obj.motherlode_reward_boots"
-count = 100
-restockCycles = 1
-
-[[inventory.stock]]
-obj = "obj.coal_bag"
-count = 1
-restockCycles = 1
-
-[[inventory.stock]]
-obj = "obj.gem_bag"
-count = 1
-restockCycles = 1
-
-[[inventory.stock]]
-obj = "obj.pack_softclay"
+obj = "obj.pack_softclay_guild"
 count = 1000
 restockCycles = 1
 
 [[inventory.stock]]
-obj = "obj.reward_gem_bag"
+obj = "obj.reward_gem_bag_guild"
 count = 100
 restockCycles = 1

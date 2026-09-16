@@ -31,64 +31,55 @@ internal object MotherlodeMine {
     val PAYDIRT_CHANNEL_END = CoordGrid(3748, 5660, 0)
 
     fun isUpperFloor(coords: CoordGrid): Boolean =
-        coords.level == 0 && UPPER_FLOOR_ROWS[coords.z]?.any { coords.x in it } == true
+        coords.level == 0 && UpperFloorRow.forZ(coords.z)?.contains(coords.x) == true
 
-    /** Bridged map tiles that form the upper floor, keyed by z, excluding the washing machine. */
-    private val UPPER_FLOOR_ROWS: Map<Int, List<IntRange>> =
-        buildMap {
-            put(5687, listOf(3743..3744))
-            put(5686, listOf(3733..3736, 3740..3747, 3757..3758))
-            put(5685, listOf(3733..3748, 3750..3761))
-            put(5684, listOf(3733..3763))
-            put(5683, listOf(3733..3764))
-            put(5682, listOf(3734..3764))
-            put(5681, listOf(3735..3739, 3745..3764))
-            put(5680, listOf(3747..3764))
-            put(5679, listOf(3750..3765))
-            put(5678, listOf(3751..3766))
-            put(5677, listOf(3752..3766))
-            put(5676, listOf(3752..3766))
-            put(5675, listOf(3754..3766))
-            put(5674, listOf(3755..3765))
-            put(5673, listOf(3757..3764))
-            put(5672, listOf(3759..3763))
-            put(5671, listOf(3760..3763))
-            for (z in 5668..5670) put(z, listOf(3761..3764))
-            put(5667, listOf(3762..3764))
-            put(5666, listOf(3763..3765))
-            put(5665, listOf(3762..3765))
-            for (z in 5663..5664) put(z, listOf(3761..3765))
-            for (z in 5661..5662) put(z, listOf(3761..3764))
-            put(5660, listOf(3761..3763))
-            put(5659, listOf(3761..3764))
-            put(5658, listOf(3761..3765))
-            for (z in 5655..5657) put(z, listOf(3760..3766))
-            put(5654, listOf(3763..3765))
+    /**
+     * The upper floor is a bridge deck drawn one plane above the mine, so the tiles it covers are
+     * the only way to tell the two floors apart at runtime. One entry per map row, taken from the
+     * raised tiles of the map square, excluding the washing machine beside the lower hopper.
+     */
+    internal enum class UpperFloorRow(val z: Int, private vararg val columns: IntRange) {
+        Row5654(5654, 3763..3765),
+        Row5655(5655, 3760..3766),
+        Row5656(5656, 3760..3766),
+        Row5657(5657, 3760..3766),
+        Row5658(5658, 3761..3765),
+        Row5659(5659, 3761..3764),
+        Row5660(5660, 3761..3763),
+        Row5661(5661, 3761..3764),
+        Row5662(5662, 3761..3764),
+        Row5663(5663, 3761..3765),
+        Row5664(5664, 3761..3765),
+        Row5665(5665, 3762..3765),
+        Row5666(5666, 3763..3765),
+        Row5667(5667, 3762..3764),
+        Row5668(5668, 3761..3764),
+        Row5669(5669, 3761..3764),
+        Row5670(5670, 3761..3764),
+        Row5671(5671, 3760..3763),
+        Row5672(5672, 3759..3763),
+        Row5673(5673, 3757..3764),
+        Row5674(5674, 3755..3765),
+        Row5675(5675, 3754..3766),
+        Row5676(5676, 3752..3766),
+        Row5677(5677, 3752..3766),
+        Row5678(5678, 3751..3766),
+        Row5679(5679, 3750..3765),
+        Row5680(5680, 3747..3764),
+        Row5681(5681, 3735..3739, 3745..3764),
+        Row5682(5682, 3734..3764),
+        Row5683(5683, 3733..3764),
+        Row5684(5684, 3733..3763),
+        Row5685(5685, 3733..3748, 3750..3761),
+        Row5686(5686, 3733..3736, 3740..3747, 3757..3758),
+        Row5687(5687, 3743..3744);
+
+        fun contains(x: Int): Boolean = columns.any { x in it }
+
+        companion object {
+            private val byZ = entries.associateBy(UpperFloorRow::z)
+
+            fun forZ(z: Int): UpperFloorRow? = byZ[z]
         }
-
-    /** Veins stored on the raised (bridged) level of the map; they deplete slower. */
-    val UPPER_LEVEL_VEINS: Set<CoordGrid> =
-        setOf(
-            CoordGrid(3763, 5656, 0), CoordGrid(3764, 5656, 0), CoordGrid(3765, 5656, 0),
-            CoordGrid(3762, 5657, 0), CoordGrid(3762, 5658, 0), CoordGrid(3763, 5662, 0),
-            CoordGrid(3763, 5663, 0), CoordGrid(3764, 5665, 0), CoordGrid(3762, 5670, 0),
-            CoordGrid(3763, 5670, 0), CoordGrid(3762, 5671, 0), CoordGrid(3762, 5672, 0),
-            CoordGrid(3762, 5673, 0), CoordGrid(3759, 5674, 0), CoordGrid(3760, 5674, 0),
-            CoordGrid(3761, 5674, 0), CoordGrid(3758, 5675, 0), CoordGrid(3761, 5675, 0),
-            CoordGrid(3762, 5675, 0), CoordGrid(3759, 5676, 0), CoordGrid(3764, 5677, 0),
-            CoordGrid(3765, 5677, 0), CoordGrid(3756, 5679, 0), CoordGrid(3751, 5680, 0),
-            CoordGrid(3753, 5680, 0), CoordGrid(3758, 5680, 0), CoordGrid(3760, 5680, 0),
-            CoordGrid(3761, 5680, 0), CoordGrid(3762, 5680, 0), CoordGrid(3751, 5681, 0),
-            CoordGrid(3755, 5681, 0), CoordGrid(3758, 5681, 0), CoordGrid(3761, 5681, 0),
-            CoordGrid(3763, 5681, 0), CoordGrid(3737, 5682, 0), CoordGrid(3738, 5682, 0),
-            CoordGrid(3748, 5682, 0), CoordGrid(3749, 5682, 0), CoordGrid(3750, 5682, 0),
-            CoordGrid(3754, 5682, 0), CoordGrid(3755, 5682, 0), CoordGrid(3759, 5682, 0),
-            CoordGrid(3762, 5682, 0), CoordGrid(3763, 5682, 0), CoordGrid(3741, 5683, 0),
-            CoordGrid(3742, 5683, 0), CoordGrid(3747, 5683, 0), CoordGrid(3754, 5683, 0),
-            CoordGrid(3755, 5683, 0), CoordGrid(3762, 5683, 0), CoordGrid(3763, 5683, 0),
-            CoordGrid(3735, 5684, 0), CoordGrid(3743, 5684, 0), CoordGrid(3745, 5684, 0),
-            CoordGrid(3746, 5684, 0), CoordGrid(3752, 5684, 0), CoordGrid(3753, 5684, 0),
-            CoordGrid(3756, 5684, 0), CoordGrid(3757, 5684, 0), CoordGrid(3734, 5685, 0),
-            CoordGrid(3758, 5685, 0),
-        )
+    }
 }

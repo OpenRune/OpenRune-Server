@@ -12,12 +12,13 @@ import org.rsmod.api.repo.npc.NpcRepository
 import org.rsmod.api.stats.xpmod.XpModifiers
 import org.rsmod.content.areas.misc.motherlode.MotherlodeMine
 import org.rsmod.content.areas.misc.motherlode.PayDirtOre
-import org.rsmod.content.areas.misc.motherlode.cleaningPayDirt
+import org.rsmod.content.areas.misc.motherlode.cleaningPayDirtTotal
 import org.rsmod.content.areas.misc.motherlode.sackCapacity
 import org.rsmod.content.areas.misc.motherlode.sackCount
 import org.rsmod.content.areas.misc.motherlode.sackTotal
 import org.rsmod.content.areas.misc.motherlode.setSackCount
 import org.rsmod.content.areas.misc.motherlode.syncMotherlodeVars
+import org.rsmod.content.areas.misc.motherlode.takeCleanedPayDirt
 import org.rsmod.game.MapClock
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
@@ -68,7 +69,7 @@ constructor(
     }
 
     fun resume(player: Player) {
-        val pending = player.cleaningPayDirt().size
+        val pending = player.cleaningPayDirtTotal
         if (pending > 0 && player !in batches) {
             batches[player] = ArrayDeque(listOf(CleaningBatch(pending, CLEANING_CYCLES)))
         }
@@ -112,8 +113,7 @@ constructor(
     }
 
     private fun clean(player: Player, count: Int) {
-        val cleaning = player.cleaningPayDirt()
-        val washed = List(count.coerceAtMost(cleaning.size)) { PayDirtOre.fromOrdinal(cleaning.removeAt(0)) }
+        val washed = player.takeCleanedPayDirt(count)
         if (washed.isEmpty()) {
             return
         }

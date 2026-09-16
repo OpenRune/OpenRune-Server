@@ -3,6 +3,7 @@ package org.rsmod.content.areas.misc.motherlode.scripts
 import jakarta.inject.Inject
 import org.rsmod.api.game.process.GameLifecycle
 import org.rsmod.api.player.protect.ProtectedAccess
+import org.rsmod.api.player.stat.miningLvl
 import org.rsmod.api.player.ui.ifCloseOverlay
 import org.rsmod.api.player.ui.ifOpenOverlay
 import org.rsmod.api.script.onArea
@@ -58,7 +59,7 @@ constructor(
         onOpLoc1("loc.motherlode_entrance") { crawl(MotherlodeMine.FALADOR_ENTRANCE_DEST) }
         onOpLoc1("loc.motherlode_exit") { crawl(MotherlodeMine.FALADOR_EXIT_DEST) }
         onOpLoc1("loc.motherlode_entrance_guild") { crawl(MotherlodeMine.GUILD_ENTRANCE_DEST) }
-        onOpLoc1("loc.motherlode_exit_guild") { crawl(MotherlodeMine.GUILD_EXIT_DEST) }
+        onOpLoc1("loc.motherlode_exit_guild") { enterMiningGuild() }
 
         onOpLoc1("loc.motherlode_ladder_bottom") { climbUp() }
         onOpLoc1("loc.motherlode_ladder_top") { climbDown() }
@@ -74,6 +75,22 @@ constructor(
         telejump(dest)
         player.onUpperLevel = false
         resetAnim()
+    }
+
+    private suspend fun ProtectedAccess.enterMiningGuild() {
+        if (player.miningLvl < MINING_GUILD_LEVEL) {
+            startDialogue {
+                chatNpcSpecific(
+                    "Dwarf",
+                    "npc.motherlode_mguild_guard",
+                    neutral,
+                    "Sorry, but you're not experienced enough to go in there.",
+                )
+                mesbox("You need a Mining level of $MINING_GUILD_LEVEL to access the Mining Guild.")
+            }
+            return
+        }
+        crawl(MotherlodeMine.GUILD_EXIT_DEST)
     }
 
     private suspend fun ProtectedAccess.climbUp() {
@@ -102,5 +119,6 @@ constructor(
         const val HUD_TARGET = "component.toplevel_osrs_stretch:overlay_hud"
         const val CRAWL_SOUND = 2454
         const val LADDER_CYCLES = 2
+        const val MINING_GUILD_LEVEL = 60
     }
 }

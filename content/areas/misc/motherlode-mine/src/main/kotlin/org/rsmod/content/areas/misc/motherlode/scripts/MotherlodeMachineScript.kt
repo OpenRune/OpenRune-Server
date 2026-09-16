@@ -6,15 +6,14 @@ import org.rsmod.api.player.stat.miningLvl
 import org.rsmod.api.player.stat.smithingLvl
 import org.rsmod.api.script.onApLoc1
 import org.rsmod.api.script.onOpLoc1
-import org.rsmod.content.areas.misc.motherlode.CLEANING_PAYDIRT
-import org.rsmod.content.areas.misc.motherlode.HELD_PAYDIRT
 import org.rsmod.content.areas.misc.motherlode.MotherlodeMine
 import org.rsmod.content.areas.misc.motherlode.PayDirtOre
+import org.rsmod.content.areas.misc.motherlode.addCleaningPayDirt
 import org.rsmod.content.areas.misc.motherlode.circuit.MotherlodeWaterCircuit
-import org.rsmod.content.areas.misc.motherlode.cleaningCount
-import org.rsmod.content.areas.misc.motherlode.cleaningPayDirt
+import org.rsmod.content.areas.misc.motherlode.cleaningPayDirtTotal
+import org.rsmod.content.areas.misc.motherlode.clearHeldPayDirt
 import org.rsmod.content.areas.misc.motherlode.hasUpperHopper
-import org.rsmod.content.areas.misc.motherlode.heldPayDirt
+import org.rsmod.content.areas.misc.motherlode.movePayDirtToMachine
 import org.rsmod.content.areas.misc.motherlode.sackCapacity
 import org.rsmod.content.areas.misc.motherlode.sackCount
 import org.rsmod.content.areas.misc.motherlode.sackTotal
@@ -52,7 +51,7 @@ constructor(private val circuit: MotherlodeWaterCircuit) : PluginScript() {
             mes("You don't have any pay-dirt to deposit.")
             return
         }
-        val space = player.sackCapacity - player.sackTotal - player.cleaningCount
+        val space = player.sackCapacity - player.sackTotal - player.cleaningPayDirtTotal
         if (space <= 0) {
             mes("The sack is too full to hold any more pay-dirt. You should collect your ore first.")
             return
@@ -62,16 +61,11 @@ constructor(private val circuit: MotherlodeWaterCircuit) : PluginScript() {
             return
         }
 
-        val rolls = player.heldPayDirt()
-        val cleaning = player.cleaningPayDirt()
-        repeat(count) {
-            cleaning += rolls.removeLastOrNull() ?: PayDirtOre.roll(player.miningLvl, random).ordinal
-        }
+        val moved = player.movePayDirtToMachine(count)
+        repeat(count - moved) { player.addCleaningPayDirt(PayDirtOre.roll(player.miningLvl, random)) }
         if (inv.count(MotherlodeMine.PAYDIRT) == 0) {
-            rolls.clear()
+            player.clearHeldPayDirt()
         }
-        player.attr[HELD_PAYDIRT] = rolls
-        player.attr[CLEANING_PAYDIRT] = cleaning
 
         anim("seq.human_pickuptable")
         soundSynth(HOPPER_SOUND)
@@ -83,7 +77,7 @@ constructor(private val circuit: MotherlodeWaterCircuit) : PluginScript() {
 
     private suspend fun ProtectedAccess.searchSack() {
         if (player.sackTotal == 0) {
-            if (player.cleaningCount > 0) {
+            if (player.cleaningPayDirtTotal > 0) {
                 mes("Your pay-dirt is still being cleaned.")
             } else {
                 mes("The sack is empty.")

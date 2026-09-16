@@ -1,7 +1,6 @@
 package org.rsmod.content.areas.misc.motherlode.scripts
 
 import jakarta.inject.Inject
-import org.rsmod.api.attr.AttributeKey
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.stat.baseMiningLvl
@@ -9,11 +8,11 @@ import org.rsmod.api.script.onOpNpc1
 import org.rsmod.api.script.onOpNpc3
 import org.rsmod.api.shops.Shops
 import org.rsmod.api.shops.operation.ShopOperationMap
-import org.rsmod.content.areas.misc.motherlode.LARGER_SACK_UNLOCKED
 import org.rsmod.content.areas.misc.motherlode.MotherlodeMine
-import org.rsmod.content.areas.misc.motherlode.UPPER_HOPPER_UNLOCKED
-import org.rsmod.content.areas.misc.motherlode.UPPER_LEVEL_UNLOCKED
-import org.rsmod.content.areas.misc.motherlode.markUnlocked
+import org.rsmod.content.areas.misc.motherlode.hasLargerSack
+import org.rsmod.content.areas.misc.motherlode.hasUpperHopper
+import org.rsmod.content.areas.misc.motherlode.hasUpperLevel
+import org.rsmod.content.areas.misc.motherlode.syncMotherlodeVars
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.plugin.scripts.PluginScript
@@ -65,7 +64,7 @@ constructor(private val shops: Shops, private val shopOps: ShopOperationMap) : P
     }
 
     private suspend fun Dialogue.purchase(upgrade: Upgrade) {
-        if (player.attr[upgrade.key] == true) {
+        if (upgrade.unlocked(player)) {
             chatNpc(neutral, "Ye've already paid fer that one.")
             return
         }
@@ -84,7 +83,8 @@ constructor(private val shops: Shops, private val shopOps: ShopOperationMap) : P
         if (access.invDel(player.inv, MotherlodeMine.NUGGET, upgrade.cost).failure) {
             return
         }
-        player.markUnlocked(upgrade.key)
+        upgrade.unlock(player)
+        player.syncMotherlodeVars()
         chatNpc(happy, upgrade.thanks)
     }
 
@@ -100,15 +100,35 @@ constructor(private val shops: Shops, private val shopOps: ShopOperationMap) : P
         )
     }
 
-    private enum class Upgrade(val key: AttributeKey<Boolean>, val cost: Int, val thanks: String) {
-        UpperLevel(UPPER_LEVEL_UNLOCKED, UPPER_LEVEL_COST, "Pleasure doin' business. Ye can use the ladder now."),
-        UpperHopper(UPPER_HOPPER_UNLOCKED, UPPER_HOPPER_COST, "The hopper upstairs is all yours."),
-        LargerSack(LARGER_SACK_UNLOCKED, LARGER_SACK_COST, "I've stitched a bigger sack fer yer ore."),
+    private enum class Upgrade(
+        val cost: Int,
+        val thanks: String,
+        val unlocked: (Player) -> Boolean,
+        val unlock: (Player) -> Unit,
+    ) {
+        UpperLevel(
+            UPPER_LEVEL_COST,
+            "Pleasure doin' business. Ye can use the ladder now.",
+            { it.hasUpperLevel },
+            { it.hasUpperLevel = true },
+        ),
+        UpperHopper(
+            UPPER_HOPPER_COST,
+            "The hopper upstairs is all yours.",
+            { it.hasUpperHopper },
+            { it.hasUpperHopper = true },
+        ),
+        LargerSack(
+            LARGER_SACK_COST,
+            "I've stitched a bigger sack fer yer ore.",
+            { it.hasLargerSack },
+            { it.hasLargerSack = true },
+        ),
     }
 
     private companion object {
         const val PERCY = "npc.motherlode_percy"
-        const val SHOP_INV = "inv.mguild_rewardshop"
+        const val SHOP_INV = "inv.motherlode_nugget_shop"
         const val CURRENCY = "currency.golden_nugget"
 
         const val UPPER_LEVEL_COST = 100
