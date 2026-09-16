@@ -2,7 +2,6 @@ package org.rsmod.content.quest.area.draynor
 
 import org.rsmod.api.invtx.invDelAll
 import org.rsmod.api.player.protect.ProtectedAccess
-import org.rsmod.api.player.protect.questCompleteJingle
 import org.rsmod.api.player.vars.boolVarBit
 import org.rsmod.api.player.vars.intVarp
 import org.rsmod.content.quest.manager.Quest
@@ -53,7 +52,6 @@ internal class ErnestProgress(private val quest: Quest) {
             scene()
         } finally {
             quest.advanceQuestStage(access, quest.maxSteps - quest.getQuestStage(access.player))
-            access.questCompleteJingle()
         }
     }
 
