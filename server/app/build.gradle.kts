@@ -12,7 +12,8 @@ application {
 }
 
 dependencies {
-    implementation(libs.bundles.logging)
+    implementation(libs.kotlin.inline.logger)
+    runtimeOnly(libs.logback.classic)
     implementation(libs.clikt)
     implementation(libs.guice)
     implementation(libs.kotlin.coroutines.core)

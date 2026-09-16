@@ -1,6 +1,6 @@
 plugins {
     id("base-conventions")
-
+    id("game-cache-test-conventions")
 }
 
 kotlin {
@@ -8,7 +8,8 @@ kotlin {
 }
 
 dependencies {
-    implementation(libs.bundles.logging)
+    implementation(libs.kotlin.inline.logger)
+    runtimeOnly(libs.logback.classic)
     implementation(libs.fastutil)
     implementation(libs.guice)
     implementation(libs.rsprot.api)
@@ -38,10 +39,4 @@ dependencies {
     testImplementation(projects.api.areaChecker)
     testImplementation(projects.api.market)
     testImplementation(projects.engine.coroutine)
-}
-
-tasks.test {
-    workingDir(rootProject.projectDir)
-    inputs.dir(rootProject.file(".data/cache/SERVER"))
-    inputs.file(rootProject.file(".data/gamevals-binary/gamevals.dat"))
 }

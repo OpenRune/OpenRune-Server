@@ -20,10 +20,10 @@ private const val UNNAMED_CLUSTER_KEY = "__unnamed__"
 
 private const val MAX_ENUM_ACCESSORS_PER_FILE = 240
 
-fun startEnumGeneration(enums: Map<Int, EnumType>) {
+fun startEnumGeneration(enums: Map<Int, EnumType>, force: Boolean = false) {
     val outDir = File(OUT_CONFIG_KT).canonicalFile
     val enumsDir = File(outDir, PKG_ENUMS.replace('.', '/')).canonicalFile
-    clearGeneratedEnumSources(enumsDir)
+    val tracker = GeneratedFileTracker(enumsDir, force)
     File(outDir, LEGACY_SINGLE_FILE).delete()
 
     val entries =
@@ -35,6 +35,7 @@ fun startEnumGeneration(enums: Map<Int, EnumType>) {
             Triple(id, enum, slug)
         }
     if (entries.isEmpty()) {
+        tracker.pruneStale()
         return
     }
 
@@ -64,7 +65,7 @@ fun startEnumGeneration(enums: Map<Int, EnumType>) {
                         } else {
                             "synthetic enum_* slugs (part ${chunkIdx + 1})"
                         }
-                    writeEnumAccessorObject(outDir, enums, objectName, comment, chunk)
+                    writeEnumAccessorObject(tracker, enums, objectName, comment, chunk)
                 }
             }
             sorted.size == 1 -> singletonNamed += sorted.single()
@@ -77,7 +78,7 @@ fun startEnumGeneration(enums: Map<Int, EnumType>) {
                             chunkIdx > 0 -> "$clusterKey (part ${chunkIdx + 1})"
                             else -> clusterKey
                         }
-                    writeEnumAccessorObject(outDir, enums, objectName, comment, chunk)
+                    writeEnumAccessorObject(tracker, enums, objectName, comment, chunk)
                 }
             }
         }
@@ -92,8 +93,9 @@ fun startEnumGeneration(enums: Map<Int, EnumType>) {
             } else {
                 "named singleton clusters (part ${chunkIdx + 1})"
             }
-        writeEnumAccessorObject(outDir, enums, objectName, comment, chunk)
+        writeEnumAccessorObject(tracker, enums, objectName, comment, chunk)
     }
+    tracker.pruneStale()
 }
 
 private fun namedSingletonBucketObjectName(chunkIndex: Int): String =
@@ -103,7 +105,7 @@ private fun namedSingletonBucketObjectName(chunkIndex: Int): String =
     }
 
 private fun writeEnumAccessorObject(
-    outDir: File,
+    tracker: GeneratedFileTracker,
     enums: Map<Int, EnumType>,
     objectName: String,
     commentSuffix: String,
@@ -146,7 +148,7 @@ private fun writeEnumAccessorObject(
         }
         .addType(obj)
         .build()
-        .writeTo(outDir)
+        .let(tracker::write)
 }
 
 private fun isSyntheticEnumSlug(slug: String): Boolean {
@@ -163,20 +165,6 @@ private fun chunkedObjectName(baseObjectName: String, chunkIndex: Int): String {
     }
     val stem = baseObjectName.removeSuffix("Enums")
     return "${stem}Enums${chunkIndex + 1}"
-}
-
-private fun clearGeneratedEnumSources(root: File) {
-    if (!root.exists()) {
-        root.mkdirs()
-        return
-    }
-    check(root.isDirectory) { "Enum output path is not a directory: ${root.absolutePath}" }
-    root.walkBottomUp()
-        .filter { it.isFile && it.extension.equals("kt", ignoreCase = true) }
-        .forEach { it.delete() }
-    root.walkBottomUp()
-        .filter { it.isDirectory && it != root && it.listFiles().isNullOrEmpty() }
-        .forEach { it.delete() }
 }
 
 /** Trim leading/trailing `_` so `_tree_axes` participates in `tree_*` prefix clusters. */

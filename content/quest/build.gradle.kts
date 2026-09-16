@@ -1,6 +1,6 @@
 plugins {
     id("base-conventions")
-
+    id("game-cache-test-conventions")
 }
 
 dependencies {
@@ -11,10 +11,4 @@ dependencies {
     implementation(projects.api.attr)
     implementation(projects.api.serverConfig)
     implementation(libs.rsprot.api)
-}
-
-tasks.test {
-    workingDir(rootProject.projectDir)
-    inputs.dir(rootProject.file(".data/cache/SERVER"))
-    inputs.file(rootProject.file(".data/gamevals-binary/gamevals.dat"))
 }

@@ -1,5 +1,6 @@
 plugins {
     id("base-conventions")
+    id("game-cache-test-conventions")
 }
 
 dependencies {
@@ -11,10 +12,4 @@ dependencies {
     testImplementation(libs.fastutil)
     testImplementation(projects.api.registry)
     testImplementation(projects.api.invStorage)
-}
-
-tasks.test {
-    workingDir(rootProject.projectDir)
-    inputs.dir(rootProject.file(".data/cache/SERVER"))
-    inputs.file(rootProject.file(".data/gamevals-binary/gamevals.dat"))
 }
