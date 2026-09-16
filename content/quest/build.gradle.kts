@@ -10,6 +10,7 @@ dependencies {
     implementation(projects.api.pluginCommons)
     implementation(projects.api.attr)
     implementation(projects.api.serverConfig)
+    implementation(libs.rsprot.api)
 }
 
 tasks.test {
