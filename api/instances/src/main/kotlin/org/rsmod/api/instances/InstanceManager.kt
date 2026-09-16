@@ -214,6 +214,11 @@ constructor(
     public fun sessionForRegion(regionId: Int): InstanceSession? =
         regionToInstance[regionId]?.let(sessions::get)
 
+    public fun localCoord(session: InstanceSession, local: RegionLocal): CoordGrid? {
+        val region = regions[session.id] ?: return null
+        return session.localCoord(region, local)
+    }
+
     public fun contributionsFor(id: InstanceId): DamageContributions? =
         sessionForId(id)?.damageContributions
 
