@@ -1,0 +1,39 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.mguild_rewardshop"
+name = "Mining Guild Mineral Exchange"
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1000
+buyMultiplier = 800
+delta = 0
+
+size = 4
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.mguild_gloves"
+count = 100
+restockCycles = 1
+
+[[inventory.stock]]
+obj = "obj.mguild_gloves_superior"
+count = 100
+restockCycles = 1
+
+[[inventory.stock]]
+obj = "obj.pack_softclay_guild"
+count = 1000
+restockCycles = 1
+
+[[inventory.stock]]
+obj = "obj.reward_gem_bag_guild"
+count = 100
+restockCycles = 1
