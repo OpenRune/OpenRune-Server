@@ -279,6 +279,7 @@ Found the same way `settings.gradle.kts` finds them: any dir with a `build.gradl
 
 | Module | Files | Lines | Tests | TODO | Last touched |
 |---|---:|---:|---:|---:|---|
+| `areas/city/draynor` | 7 | 781 | 4 | 0 | 2026-09-15 |
 | `areas/city/lumbridge` | 13 | 2,578 | 0 | 3 | 2026-08-04 |
 | `areas/city/prifddinas` | 1 | 82 | 0 | 0 | 2026-08-18 |
 | `areas/city/taverley` | 1 | 77 | 0 | 0 | 2026-06-25 |
@@ -336,8 +337,8 @@ Found the same way `settings.gradle.kts` finds them: any dir with a `build.gradl
 | `other/special-attacks` | 4 | 466 | 0 | 0 | 2026-05-03 |
 | `other/special-weapons` | 11 | 1,111 | 0 | 1 | 2026-09-14 |
 | `other/windmill` | 1 | 43 | 0 | 0 | 2026-05-03 |
-| `quest` | 19 | 1,742 | 0 | 0 | 2026-09-12 |
-| `quest/pack` | 1 | 6 | 0 | 0 | 2026-09-12 |
+| `quest` | 21 | 2,185 | 0 | 0 | 2026-09-15 |
+| `quest/pack` | 1 | 6 | 0 | 0 | 2026-09-15 |
 | `skills/cooking` | 12 | 1,358 | 0 | 0 | 2026-06-14 |
 | `skills/crafting` | 30 | 3,673 | 0 | 0 | 2026-08-30 |
 | `skills/crafting/pack` | 2 | 2,699 | 0 | 0 | 2026-08-28 |
