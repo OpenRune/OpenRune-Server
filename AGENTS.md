@@ -55,6 +55,20 @@ Conventions:
   modules hold Kotlin. Pack modules are merged into the cache automatically.
 - Drop tables: TOML or Kotlin `@RegisterDropTable` DSL — see `docs/drops.md`.
 
+## State storage — attrs are a last resort
+
+The `Attrs`/`AttributeKey` system is for state that genuinely doesn't fit anywhere
+else. Reach for it last, not first:
+
+- Basic state (enums, ints, booleans, timers, counters, flags) should go through
+  varbits/varps, not attrs.
+- Transient/session state (cleared on logout, not needed across ticks/reconnects)
+  → temporary varbits/varps.
+- Persistent state (needs to survive logout/save) → permanent varbits/varps.
+- Only use `AttributeKey`/attrs when the data can't be represented as a varbit/varp
+  (e.g. complex objects, non-serializable runtime-only references) — not as a
+  shortcut to avoid registering a varbit/varp.
+
 ## Gamevals
 
 Gamevals are the symbolic name → id mappings behind every `"npc.bob"` /
