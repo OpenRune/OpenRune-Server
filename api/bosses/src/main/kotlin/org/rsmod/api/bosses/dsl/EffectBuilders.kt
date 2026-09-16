@@ -13,11 +13,15 @@ fun say(text: String): Effect = Effect.Say(text)
 fun sound(synth: String, radius: Int = 10): Effect = Effect.Sound(synth, radius)
 fun delay(ticks: Int): Effect = Effect.Delay(ticks)
 
+fun wait(ticks: Int): Effect = Effect.Wait(ticks)
+
 fun message(text: String, target: TargetExpr = TargetExpr.CurrentTarget): Effect =
     Effect.Message(text, target)
 fun sequence(vararg e: Effect): Effect = Effect.Sequence(e.toList())
 fun parallel(vararg e: Effect): Effect = Effect.Parallel(e.toList())
-fun repeat(times: Int, gap: Int = 0, effect: Effect): Effect = Effect.Repeat(times, effect, gap)
+fun repeat(times: Int, gap: Int = 0, effect: Effect): Effect = Effect.Repeat(times..times, effect, gap)
+
+fun repeat(times: IntRange, gap: Int = 0, effect: Effect): Effect = Effect.Repeat(times, effect, gap)
 fun whenever(condition: Condition, then: Effect, otherwise: Effect = Effect.NoOp): Effect =
     Effect.Whenever(condition, then, otherwise)
 fun onEach(targets: TargetExpr, effect: Effect): Effect = Effect.OnEach(targets, effect)
@@ -62,7 +66,9 @@ fun projectile(
     impact: String? = null,
     hit: Effect.Hit? = null,
     resolveOnImpact: Boolean = false,
-): Effect = Effect.Projectile(spotanim, travel, config, target, launch, impact, hit, resolveOnImpact)
+    onImpact: Effect? = null,
+): Effect =
+    Effect.Projectile(spotanim, travel, config, target, launch, impact, hit, resolveOnImpact, onImpact)
 
 fun tileAoE(
     center: TargetExpr,
@@ -91,7 +97,10 @@ fun summon(
     radius: Int = 3,
     centeredOn: TargetExpr = TargetExpr.Self,
     mode: NpcMode? = null,
-): Effect = Effect.Summon(npc, count, radius, centeredOn, mode)
+    duration: Int = 100,
+    onSummon: String? = null,
+    onSummonParams: Any? = null,
+): Effect = Effect.Summon(npc, count, radius, centeredOn, mode, duration, onSummon, onSummonParams)
 
 fun transmog(to: String, durationTicks: Int): Effect = Effect.Transmog(to, durationTicks)
 fun poison(damage: Int, chance: Int = 1, outOf: Int = 1): Effect = Effect.Poison(damage, chance, outOf)
@@ -118,6 +127,9 @@ fun statDrain(vararg stats: String, amount: Int, odds: Odds): Effect =
     Effect.StatDrain(stats.map { StatDrainEntry(it, amount, odds.chance, odds.outOf) })
 
 fun telegraph(spotanim: String, windup: Int): TelegraphSpec = TelegraphSpec(spotanim, windup)
+
+fun randomWalkableTile(radius: Int, of: TargetExpr.Single = TargetExpr.Self): TargetExpr =
+    TargetExpr.RandomWalkableTile(radius, of)
 
 fun weightedRandom(
     noRepeatBias: Double = 0.5,
@@ -207,9 +219,10 @@ val OnDeath: Condition = Condition.OnDeath
 val OnSpawn: Condition = Condition.OnSpawn
 val Always: Condition = Condition.Always
 val WithinMeleeRange: Condition = Condition.WithinMeleeRange
-val CurrentTarget: TargetExpr = TargetExpr.CurrentTarget
-val CurrentTargetTile: TargetExpr = TargetExpr.CurrentTargetTile
-val Self: TargetExpr = TargetExpr.Self
+val CurrentTarget: TargetExpr.Single = TargetExpr.CurrentTarget
+val CurrentTargetTile: TargetExpr.Single = TargetExpr.CurrentTargetTile
+val Self: TargetExpr.Single = TargetExpr.Self
+val ImpactTile: TargetExpr.Single = TargetExpr.ImpactTile
 val Melee: HitType = HitType.Melee
 val Ranged: HitType = HitType.Ranged
 val Magic: HitType = HitType.Magic

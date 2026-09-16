@@ -263,9 +263,20 @@ class AbilityBuilder {
         impact: String? = null,
         hit: Effect.Hit? = null,
         resolveOnImpact: Boolean = false,
+        onImpact: Effect? = null,
     ) {
         effects +=
-            Effect.Projectile(spotanim, travel, config, target, launch, impact, hit, resolveOnImpact)
+            Effect.Projectile(
+                spotanim,
+                travel,
+                config,
+                target,
+                launch,
+                impact,
+                hit,
+                resolveOnImpact,
+                onImpact,
+            )
     }
 
     /**
@@ -286,6 +297,7 @@ class AbilityBuilder {
         var launch: String? = null
         var impact: String? = null
         var resolveOnImpact: Boolean = false
+        var onImpact: Effect? = null
         private var hitPayload: Effect.Hit? = null
 
         fun hit(
@@ -311,6 +323,7 @@ class AbilityBuilder {
                 impact = impact,
                 hit = hitPayload,
                 resolveOnImpact = resolveOnImpact,
+                onImpact = onImpact,
             )
     }
 
@@ -330,8 +343,21 @@ class AbilityBuilder {
         radius: Int = 3,
         centeredOn: TargetExpr = TargetExpr.Self,
         mode: NpcMode? = null,
+        duration: Int = 100,
+        onSummon: String? = null,
+        onSummonParams: Any? = null,
     ) {
-        effects += Effect.Summon(npc, count, radius, centeredOn, mode)
+        effects +=
+            Effect.Summon(
+                npc = npc,
+                count = count,
+                radius = radius,
+                centeredOn = centeredOn,
+                mode = mode,
+                duration = duration,
+                onSummon = onSummon,
+                onSummonParams = onSummonParams,
+            )
     }
 
     /**

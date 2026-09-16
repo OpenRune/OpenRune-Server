@@ -19,7 +19,10 @@ sealed interface Effect {
     data class Broadcast(val text: String, val radius: Int = 15) : Effect
 
     data class Message(val text: String, val target: TargetExpr = TargetExpr.CurrentTarget) : Effect
+
     data class Delay(val ticks: Int) : Effect
+
+    data class Wait(val ticks: Int) : Effect
     data object NoOp : Effect
 
     data class Hit(
@@ -40,6 +43,12 @@ sealed interface Effect {
         val impact: String? = null,
         val hit: Hit? = null,
         val resolveOnImpact: Boolean = false,
+        /**
+         * Runs once the projectile lands, in addition to [impact]/[hit]. [TargetExpr.ImpactTile]
+         * resolves to the tile it landed on for the duration of this effect — e.g.
+         * `onImpact = summon("npc.ice_block", centeredOn = ImpactTile)`.
+         */
+        val onImpact: Effect? = null,
     ) : Effect
 
     data class TileAoE(
@@ -74,6 +83,16 @@ sealed interface Effect {
         val radius: Int = 3,
         val centeredOn: TargetExpr = TargetExpr.Self,
         val mode: NpcMode? = null,
+        /** Ticks until the spawned npc auto-despawns if still idle; `Int.MAX_VALUE` for permanent. */
+        val duration: Int = 100,
+        /**
+         * A [BossExtensionHandler][org.rsmod.api.bosses.runtime.BossExtensionHandler] name invoked
+         * once per spawned npc, right after it's added to the world — the handler's `npc` parameter
+         * is the newly spawned npc, not the caster. Use it for anything a plain spawn can't express:
+         * tracking ownership, scheduling a per-instance timeout, etc.
+         */
+        val onSummon: String? = null,
+        val onSummonParams: Any? = null,
     ) : Effect
 
     data class Transmog(val to: String, val durationTicks: Int) : Effect
@@ -91,10 +110,19 @@ sealed interface Effect {
     data class TransitionTo(val phase: String) : Effect
     data class External(val handler: String, val params: Any? = null) : Effect
 
+    /**
+     * A timeline of [effects] run in order, tick by tick. Include [Wait] to advance to a later
+     * tick before continuing, e.g. `sequence(anim("seq.foo"), wait(2), parallel(spotanim("spot.bar"),
+     * projectile(...)))` plays a seq, waits 2 ticks, then fires a spotanim and projectile together.
+     */
     data class Sequence(val effects: List<Effect>) : Effect
+
+    /** A bag of [effects] that all fire on the same tick, in no particular declared order. */
     data class Parallel(val effects: List<Effect>) : Effect
     data class Choose(val selector: Selector, val branches: Map<String, Effect>) : Effect
-    data class Repeat(val times: Int, val effect: Effect, val gap: Int = 0) : Effect
+
+    /** Runs [effect] a number of times rolled once from [times] (a fixed count is `n..n`). */
+    data class Repeat(val times: IntRange, val effect: Effect, val gap: Int = 0) : Effect
     data class Whenever(val condition: Condition, val then: Effect, val otherwise: Effect = NoOp) : Effect
     data class OnEach(val targets: TargetExpr, val effect: Effect) : Effect
 }

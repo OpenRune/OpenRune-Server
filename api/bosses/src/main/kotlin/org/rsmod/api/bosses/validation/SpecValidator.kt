@@ -101,7 +101,16 @@ object SpecValidator {
         phaseNames: Set<String>,
         errors: MutableList<ValidationError>,
         context: String = "",
+        insideImpact: Boolean = false,
     ) {
+        if (!insideImpact && targetExprsOf(effect).any { containsImpactTile(it) }) {
+            errors +=
+                ValidationError(
+                    "${prefix(context)}${effect::class.simpleName} references ImpactTile outside a " +
+                        "Projectile.onImpact — it silently falls back to the caster's tile there.",
+                )
+        }
+
         when (effect) {
             is Effect.Run -> {
                 if (effect.ability !in abilityNames) {
@@ -116,21 +125,78 @@ object SpecValidator {
                         )
                 }
             }
-            is Effect.Sequence -> effect.effects.forEach { validateEffect(it, abilityNames, phaseNames, errors, context) }
-            is Effect.Parallel -> effect.effects.forEach { validateEffect(it, abilityNames, phaseNames, errors, context) }
-            is Effect.Repeat -> validateEffect(effect.effect, abilityNames, phaseNames, errors, context)
-            is Effect.Whenever -> {
-                validateEffect(effect.then, abilityNames, phaseNames, errors, context)
-                validateEffect(effect.otherwise, abilityNames, phaseNames, errors, context)
+            is Effect.Wait -> {
+                if (effect.ticks <= 0) {
+                    errors +=
+                        ValidationError(
+                            "${prefix(context)}Wait ticks '${effect.ticks}' must be greater than 0.",
+                        )
+                }
             }
-            is Effect.OnEach -> validateEffect(effect.effect, abilityNames, phaseNames, errors, context)
+            is Effect.Sequence ->
+                effect.effects.forEach { validateEffect(it, abilityNames, phaseNames, errors, context, insideImpact) }
+            is Effect.Parallel -> {
+                for (child in effect.effects) {
+                    if (child is Effect.Wait || child is Effect.Delay) {
+                        errors +=
+                            ValidationError(
+                                "${prefix(context)}Parallel cannot contain a Wait/Delay directly — " +
+                                    "its effects must all fire on the same tick. Give the timed " +
+                                    "branch its own Sequence instead.",
+                            )
+                    }
+                    validateEffect(child, abilityNames, phaseNames, errors, context, insideImpact)
+                }
+            }
+            is Effect.Repeat -> {
+                if (effect.times.isEmpty() || effect.times.first < 0) {
+                    errors +=
+                        ValidationError(
+                            "${prefix(context)}Repeat times '${effect.times}' must be a non-empty, non-negative range.",
+                        )
+                }
+                validateEffect(effect.effect, abilityNames, phaseNames, errors, context, insideImpact)
+            }
+            is Effect.Whenever -> {
+                validateEffect(effect.then, abilityNames, phaseNames, errors, context, insideImpact)
+                validateEffect(effect.otherwise, abilityNames, phaseNames, errors, context, insideImpact)
+            }
+            is Effect.OnEach -> validateEffect(effect.effect, abilityNames, phaseNames, errors, context, insideImpact)
+            is Effect.Projectile -> {
+                effect.onImpact?.let {
+                    validateEffect(it, abilityNames, phaseNames, errors, context, insideImpact = true)
+                }
+            }
             is Effect.Choose -> {
                 validateSelector(effect.selector, context, effect.branches.keys, errors)
-                effect.branches.values.forEach { validateEffect(it, abilityNames, phaseNames, errors, context) }
+                effect.branches.values.forEach {
+                    validateEffect(it, abilityNames, phaseNames, errors, context, insideImpact)
+                }
             }
             else -> {}
         }
     }
+
+    private fun targetExprsOf(effect: Effect): List<TargetExpr> =
+        when (effect) {
+            is Effect.Message -> listOf(effect.target)
+            is Effect.Hit -> listOf(effect.target)
+            is Effect.Projectile -> listOf(effect.target)
+            is Effect.MapSpotanim -> listOf(effect.at)
+            is Effect.TileAoE -> listOf(effect.center)
+            is Effect.Debris -> listOf(effect.center)
+            is Effect.Summon -> listOf(effect.centeredOn)
+            is Effect.OnEach -> listOf(effect.targets)
+            else -> emptyList()
+        }
+
+    private fun containsImpactTile(expr: TargetExpr): Boolean =
+        when (expr) {
+            is TargetExpr.ImpactTile -> true
+            is TargetExpr.RandomWalkableTile -> containsImpactTile(expr.of)
+            is TargetExpr.AllInRadius -> containsImpactTile(expr.of)
+            else -> false
+        }
 
     private fun prefix(context: String): String = if (context.isNotEmpty()) "$context: " else ""
 }

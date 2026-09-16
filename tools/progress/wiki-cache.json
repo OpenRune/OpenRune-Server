@@ -229,6 +229,7 @@
         "Where to slay monsters",
         "Boss Slayer",
         "Slayer reward points",
+        "Collection log",
         "Temporary boosts",
         "Quests",
         "Quests requiring Slayer",
@@ -471,7 +472,7 @@
         "Static fishing spots",
         "Fishing Trawler",
         "Tempoross",
-        "Fishing pets",
+        "Collection log",
         "Temporary boosts",
         "Quests",
         "Quests requiring Fishing",
@@ -518,7 +519,7 @@
         "Shortcuts",
         "Other",
         "Official worlds",
-        "Giant squirrel pet",
+        "Collection log",
         "Temporary boosts",
         "Quests",
         "Quests requiring Agility",
@@ -1683,5 +1684,5 @@
       "Volcanic Mine"
     ]
   },
-  "fetched": "2026-09-07"
+  "fetched": "2026-09-14"
 }
