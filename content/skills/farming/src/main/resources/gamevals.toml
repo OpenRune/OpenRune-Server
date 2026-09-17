@@ -1,0 +1,78 @@
+[gamevals.varp]
+farming_patch_00 = 65440
+farming_patch_01 = 65441
+farming_patch_02 = 65442
+farming_patch_03 = 65443
+farming_patch_04 = 65444
+farming_patch_05 = 65445
+farming_patch_06 = 65446
+farming_patch_07 = 65447
+farming_patch_08 = 65448
+farming_patch_09 = 65449
+farming_patch_10 = 65450
+farming_patch_11 = 65451
+farming_patch_12 = 65452
+farming_patch_13 = 65453
+farming_patch_14 = 65454
+farming_patch_15 = 65455
+farming_patch_16 = 65456
+farming_patch_17 = 65457
+farming_patch_18 = 65458
+farming_patch_19 = 65459
+farming_clock = 65439
+
+[gamevals.timer]
+farming_transmit = 120
+
+[gamevals.dbtable]
+farming_crop = 65478
+farming_patch = 65479
+
+# Crop rows are append-only: a planted patch persists a one-based index into the table's row order.
+[gamevals.dbrow]
+farming_potato = 62000
+farming_onion = 62001
+farming_cabbage = 62002
+farming_tomato = 62003
+farming_sweetcorn = 62004
+farming_strawberry = 62005
+farming_watermelon = 62006
+farming_marigold = 62007
+farming_rosemary = 62008
+farming_nasturtium = 62009
+farming_woad = 62010
+farming_limpwurt = 62011
+farming_guam = 62012
+farming_marrentill = 62013
+farming_tarromin = 62014
+farming_harralander = 62015
+farming_ranarr = 62016
+farming_toadflax = 62017
+farming_irit = 62018
+farming_avantoe = 62019
+farming_kwuarm = 62020
+farming_snapdragon = 62021
+farming_cadantine = 62022
+farming_lantadyme = 62023
+farming_dwarf_weed = 62024
+farming_torstol = 62025
+farming_veg_patch_1 = 62030
+farming_veg_patch_2 = 62031
+farming_flower_patch_1 = 62032
+farming_herb_patch_1 = 62033
+farming_veg_patch_3 = 62034
+farming_veg_patch_4 = 62035
+farming_flower_patch_2 = 62036
+farming_herb_patch_2 = 62037
+farming_veg_patch_5 = 62038
+farming_veg_patch_6 = 62039
+farming_flower_patch_3 = 62040
+farming_herb_patch_3 = 62041
+farming_veg_patch_7 = 62042
+farming_veg_patch_8 = 62043
+farming_flower_patch_4 = 62044
+farming_herb_patch_4 = 62045
+farming_veg_patch_10 = 62046
+farming_veg_patch_11 = 62047
+farming_flower_patch_5 = 62048
+farming_herb_patch_6 = 62049
