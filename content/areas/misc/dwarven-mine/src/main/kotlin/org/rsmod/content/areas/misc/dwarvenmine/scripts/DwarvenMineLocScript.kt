@@ -138,7 +138,7 @@ constructor(private val locRepo: LocRepository, private val worldRepo: WorldRepo
     }
 
     private companion object {
-        val FALADOR_HOUSE = CoordGrid(3061, 3376, 0)
+        val FALADOR_HOUSE = CoordGrid(3061, 3377, 0)
         val MINE_STAIRS_LANDING = CoordGrid(3058, 9776, 0)
         val FALADOR_CELLAR_STAIRS = CoordGrid(3058, 3376, 0)
 
