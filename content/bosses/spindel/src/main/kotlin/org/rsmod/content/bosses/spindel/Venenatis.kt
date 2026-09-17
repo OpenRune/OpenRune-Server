@@ -169,7 +169,7 @@ constructor(
         npc.vars["varn.venenatis_attacks"] = 0
     }
 
-    private suspend fun onStyleAttackResolved(access: StandardNpcAccess, npc: Npc, target: Player) {
+    private fun onStyleAttackResolved(access: StandardNpcAccess, npc: Npc, target: Player) {
         val encounter = deps.encounter(npc)
         val style = encounter.currentPhaseName
         val attacksBefore = npc.vars["varn.venenatis_attacks"]
@@ -195,7 +195,7 @@ constructor(
         }
     }
 
-    private suspend fun summonSpiderlings(access: StandardNpcAccess, npc: Npc, target: Player) {
+    private fun summonSpiderlings(access: StandardNpcAccess, npc: Npc, target: Player) {
         val encounter = deps.encounter(npc)
         val interpreter = EffectInterpreter(npc, target, spec, encounter, deps)
         val effect =

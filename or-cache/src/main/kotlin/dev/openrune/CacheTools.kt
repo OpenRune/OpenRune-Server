@@ -89,7 +89,7 @@ fun downloadRev(type: TaskType) {
 
     if (type == TaskType.FRESH_INSTALL) {
         freshInstall()
-        buildCache(TaskType.BUILD)
+        buildCache(TaskType.BUILD, force = true)
         return
     }
 
@@ -122,7 +122,7 @@ private fun freshInstall() {
     GamevalDumper.dumpGamevals(Cache.load(File(getCacheLocation()).toPath()), rev.first)
 }
 
-fun buildCache(type: TaskType) {
+fun buildCache(type: TaskType, force: Boolean = false) {
     GameValProvider.load("../")
 
     val packs = PluginPacks.discover(projectRoot)
@@ -136,7 +136,7 @@ fun buildCache(type: TaskType) {
         buildServerCache(packTasks, packs)
     }
 
-    finalizeServerCache()
+    finalizeServerCache(force)
 }
 
 private fun buildServerCache(packTasks: List<CacheTask>, packs: PluginPacks) {
@@ -153,7 +153,7 @@ private fun buildServerCache(packTasks: List<CacheTask>, packs: PluginPacks) {
     newCacheTool(TaskType.SERVER_CACHE_BUILD, serverOnly + serverTasks).initialize()
 }
 
-private fun finalizeServerCache() {
+private fun finalizeServerCache(force: Boolean = false) {
     MinifyServerCache().init(getServerCacheLocation())
 
     val cache = Cache.load(File(getServerCacheLocation()).toPath())
@@ -172,8 +172,8 @@ private fun finalizeServerCache() {
     val dbTables = mutableMapOf<Int, DBTableType>()
     OsrsCacheProvider.DBTableDecoder().load(cache, dbTables)
 
-    startGeneration(tableTypes, rows, enums, dbTables)
-    startEnumGeneration(enums)
+    startGeneration(tableTypes, rows, enums, dbTables, force)
+    startEnumGeneration(enums, force)
 }
 
 fun tablesToPack(): List<DBTable> = listOf(

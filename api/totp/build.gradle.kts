@@ -8,7 +8,8 @@ kotlin {
 
 dependencies {
     implementation(libs.apache.commons)
-    implementation(libs.bundles.logging)
+    implementation(libs.kotlin.inline.logger)
+    runtimeOnly(libs.logback.classic)
     implementation(libs.guice)
     implementation(libs.jackson.databind)
     implementation(libs.jackson.dataformat.yaml)

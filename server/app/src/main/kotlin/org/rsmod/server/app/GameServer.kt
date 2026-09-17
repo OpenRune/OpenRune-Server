@@ -42,9 +42,9 @@ import org.rsmod.map.CoordGrid
 import org.rsmod.plugin.module.PluginModule
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
+import org.rsmod.plugin.loader.ExternalPluginLoader
 import org.rsmod.server.install.GameNetworkRsaGenerator
 import org.rsmod.server.install.GameServerLogbackCopy
-import org.rsmod.server.shared.PluginConstants
 import org.rsmod.server.shared.loader.PluginModuleLoader
 import org.rsmod.server.shared.loader.PluginScriptLoader
 
@@ -53,9 +53,6 @@ fun main(args: Array<String>): Unit = GameServer().main(args)
 class GameServer(private val skipTypeVerificationOverride: Boolean? = null) :
     CliktCommand(name = "server") {
     private val logger = InlineLogger()
-
-    private val pluginPackages: Array<String>
-        get() = PluginConstants.searchPackages
 
     private val vanillaCacheDir: Path
         get() = DirectoryConstants.CACHE_PATH.resolve("LIVE")
@@ -117,7 +114,8 @@ class GameServer(private val skipTypeVerificationOverride: Boolean? = null) :
 
     private fun prepareGame(injector: Injector, phases: MutableMap<String, Duration>?) {
         serverConfig = timedPhase(phases, "config") { loadConfig(injector) }
-        val or2cache = timedPhase(phases, "cache") { ServerCacheManager.init(serverConfig.revision) }
+        val or2cache =
+            timedPhase(phases, "cache") { ServerCacheManager.init(serverConfig.revision) }
         timedPhase(phases, "map") { loadMap(or2cache, injector) }
         if (phases == null) {
             loadScripts(injector)
@@ -126,7 +124,8 @@ class GameServer(private val skipTypeVerificationOverride: Boolean? = null) :
 
     private fun loadModules(): Collection<AbstractModule> {
         logger.info { "Loading plugin modules..." }
-        return PluginModuleLoader.load(PluginModule::class.java, pluginPackages)
+        return PluginModuleLoader.load(PluginModule::class.java) +
+            ExternalPluginLoader.loadModulesAtBoot()
     }
 
     private fun loadMap(or2cache: Cache, injector: Injector) {
@@ -180,10 +179,21 @@ class GameServer(private val skipTypeVerificationOverride: Boolean? = null) :
     private fun loadScripts(injector: Injector) {
         logger.info { "Loading plugin scripts..." }
         val scriptLoader = injector.getInstance(PluginScriptLoader::class.java)
-        val scripts = scriptLoader.load(PluginScript::class.java, injector)
+        val scripts =
+            scriptLoader.load(PluginScript::class.java, injector) +
+                ExternalPluginLoader.loadScriptsAtBoot(injector)
         val scriptContext = injector.getInstance(ScriptContext::class.java)
+        val timings = mutableListOf<Pair<String, Duration>>()
         for (script in scripts) {
-            startupPluginScript(script, scriptContext)
+            val (_, duration) = measureTimedValue { startupPluginScript(script, scriptContext) }
+            timings += script::class.java.name to duration
+        }
+        logger.info {
+            val slowest =
+                timings.sortedByDescending { it.second }.take(10).joinToString { (name, dur) ->
+                    "$name=$dur"
+                }
+            "Slowest script startup() calls: $slowest"
         }
         // Map spawns are queued via addDelayed during loadMap so onNpcSpawn handlers exist
         // first. Flush them here before opening login so players never see entities pop in.
@@ -218,6 +228,14 @@ class GameServer(private val skipTypeVerificationOverride: Boolean? = null) :
         val total = bootMark.elapsedNow()
         val breakdown = phases.entries.joinToString { (name, duration) -> "$name=$duration" }
         logger.info { "Server ready in $total ($breakdown)" }
+
+        // Releases plugin jars from disk locks (Windows in particular) now that boot has fully
+        // loaded everything, so they can be rebuilt/replaced on disk without ::plugindisable-ing
+        // each one first. See ExternalPluginLoader.releaseAllClassLoaders for the trade-off.
+        val released = ExternalPluginLoader.releaseAllClassLoaders()
+        if (released > 0) {
+            logger.info { "Released $released external plugin classloader(s) after boot." }
+        }
 
         bootstrap.awaitShutdown(shutdownHook)
     }

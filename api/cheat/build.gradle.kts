@@ -7,7 +7,8 @@ kotlin {
 }
 
 dependencies {
-    implementation(libs.bundles.logging)
+    implementation(libs.kotlin.inline.logger)
+    runtimeOnly(libs.logback.classic)
     implementation(projects.api.playerOutput)
     implementation(projects.engine.game)
 }

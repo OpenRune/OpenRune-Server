@@ -4,7 +4,8 @@ plugins {
 
 dependencies {
     api(libs.guice)
-    api(libs.bundles.logging)
+    api(libs.kotlin.inline.logger)
+    runtimeOnly(libs.logback.classic)
     api(projects.api.areaChecker)
     api(projects.api.cache)
     api(projects.api.cheat)

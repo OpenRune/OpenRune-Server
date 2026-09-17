@@ -18,4 +18,23 @@ public class UnboundEventMap : EventMap<UnboundEvent, MutableList<UnboundEvent.(
         val list = events.getOrPut(type) { mutableListOf() }
         list.add(action as UnboundEvent.() -> Unit)
     }
+
+    /**
+     * Removes every subscriber whose backing lambda/method-reference class was defined by
+     * [loader]. Used to unregister an external plugin's handlers before reloading it — see
+     * `ExternalPluginLoader`.
+     */
+    public fun removeByClassLoader(loader: ClassLoader): Int {
+        var removed = 0
+        for (list in events.values) {
+            val iterator = list.iterator()
+            while (iterator.hasNext()) {
+                if (iterator.next().javaClass.classLoader === loader) {
+                    iterator.remove()
+                    removed++
+                }
+            }
+        }
+        return removed
+    }
 }

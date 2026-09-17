@@ -47,7 +47,7 @@ the module table at the bottom before reading a 0 as "nothing exists".
 
 | | Feature | Status | |
 |---|---|---|---|
-| 🟢 | <img src="https://oldschool.runescape.wiki/images/thumb/Amoxliatl.png/48px-Amoxliatl.png?01b12" height="20" alt=""> [Amoxliatl](content/bosses/amoxliatl) | 368 loc | [wiki](https://oldschool.runescape.wiki/w/Amoxliatl) |
+| 🟢 | <img src="https://oldschool.runescape.wiki/images/thumb/Amoxliatl.png/48px-Amoxliatl.png?01b12" height="20" alt=""> [Amoxliatl](content/bosses/amoxliatl) | 362 loc | [wiki](https://oldschool.runescape.wiki/w/Amoxliatl) |
 | 🟢 | <img src="https://oldschool.runescape.wiki/images/thumb/Commander_Zilyana.png/48px-Commander_Zilyana.png?c5eaa" height="20" alt=""> [Commander Zilyana](content/bosses/zilyana) | 165 loc | [wiki](https://oldschool.runescape.wiki/w/Commander_Zilyana) |
 | 🟢 | <img src="https://oldschool.runescape.wiki/images/thumb/General_Graardor.png/48px-General_Graardor.png?4dd90" height="20" alt=""> [General Graardor](content/bosses/graardor) | 166 loc | [wiki](https://oldschool.runescape.wiki/w/General_Graardor) |
 | 🟢 | <img src="https://oldschool.runescape.wiki/images/thumb/K%27ril_Tsutsaroth.png/48px-K%27ril_Tsutsaroth.png?73bda" height="20" alt=""> [K'ril Tsutsaroth](content/bosses/kril) | 191 loc | [wiki](https://oldschool.runescape.wiki/w/K'ril_Tsutsaroth) |
@@ -279,6 +279,7 @@ Found the same way `settings.gradle.kts` finds them: any dir with a `build.gradl
 
 | Module | Files | Lines | Tests | TODO | Last touched |
 |---|---:|---:|---:|---:|---|
+| `areas/city/draynor` | 7 | 781 | 4 | 0 | 2026-09-16 |
 | `areas/city/lumbridge` | 13 | 2,578 | 0 | 3 | 2026-08-04 |
 | `areas/city/prifddinas` | 1 | 82 | 0 | 0 | 2026-08-18 |
 | `areas/city/taverley` | 1 | 77 | 0 | 0 | 2026-06-25 |
@@ -288,7 +289,7 @@ Found the same way `settings.gradle.kts` finds them: any dir with a `build.gradl
 | `areas/misc/wizards_tower` | 2 | 580 | 0 | 0 | 2026-08-04 |
 | `areas/wilderness` | 18 | 1,315 | 0 | 0 | 2026-08-18 |
 | `areas/zeah` | 3 | 234 | 0 | 0 | 2026-08-18 |
-| `bosses/amoxliatl` | 2 | 368 | 0 | 0 | 2026-09-12 |
+| `bosses/amoxliatl` | 2 | 362 | 0 | 0 | 2026-09-15 |
 | `bosses/demonic-gorilla` | 1 | 308 | 0 | 0 | 2026-09-04 |
 | `bosses/desert-treasure-2` | 7 | 1,290 | 0 | 0 | 2026-09-12 |
 | `bosses/graardor` | 2 | 166 | 0 | 0 | 2026-08-03 |
@@ -297,7 +298,7 @@ Found the same way `settings.gradle.kts` finds them: any dir with a `build.gradl
 | `bosses/kril` | 2 | 191 | 0 | 0 | 2026-08-03 |
 | `bosses/muspah` | 1 | 31 | 0 | 0 | 2026-09-14 |
 | `bosses/scurrius` | 2 | 403 | 0 | 0 | 2026-07-07 |
-| `bosses/spindel` | 2 | 510 | 0 | 0 | 2026-09-09 |
+| `bosses/spindel` | 2 | 510 | 0 | 0 | 2026-09-15 |
 | `bosses/tormented-demon` | 2 | 556 | 0 | 0 | 2026-09-05 |
 | `bosses/zilyana` | 2 | 165 | 0 | 0 | 2026-08-03 |
 | `drops` | 257 | 14,412 | 0 | 0 | 2026-09-12 |
@@ -323,7 +324,7 @@ Found the same way `settings.gradle.kts` finds them: any dir with a `build.gradl
 | `interfaces/spellbook` | 1 | 45 | 0 | 0 | 2026-06-18 |
 | `interfaces/worldmap` | 1 | 104 | 0 | 0 | 2026-07-04 |
 | `interfaces/xp-drops` | 1 | 42 | 0 | 0 | 2026-08-19 |
-| `other/commands` | 4 | 1,223 | 0 | 0 | 2026-09-10 |
+| `other/commands` | 4 | 1,395 | 0 | 0 | 2026-09-16 |
 | `other/consumables` | 38 | 8,687 | 0 | 0 | 2026-08-04 |
 | `other/dave/pack` | 1 | 6 | 0 | 0 | 2026-08-27 |
 | `other/discord` | 2 | 80 | 0 | 0 | 2026-07-01 |
@@ -336,8 +337,8 @@ Found the same way `settings.gradle.kts` finds them: any dir with a `build.gradl
 | `other/special-attacks` | 4 | 466 | 0 | 0 | 2026-05-03 |
 | `other/special-weapons` | 11 | 1,111 | 0 | 1 | 2026-09-14 |
 | `other/windmill` | 1 | 43 | 0 | 0 | 2026-05-03 |
-| `quest` | 19 | 1,742 | 0 | 0 | 2026-09-12 |
-| `quest/pack` | 1 | 6 | 0 | 0 | 2026-09-12 |
+| `quest` | 21 | 2,185 | 0 | 0 | 2026-09-16 |
+| `quest/pack` | 1 | 6 | 0 | 0 | 2026-09-15 |
 | `skills/cooking` | 12 | 1,358 | 0 | 0 | 2026-06-14 |
 | `skills/crafting` | 30 | 3,673 | 0 | 0 | 2026-08-30 |
 | `skills/crafting/pack` | 2 | 2,699 | 0 | 0 | 2026-08-28 |

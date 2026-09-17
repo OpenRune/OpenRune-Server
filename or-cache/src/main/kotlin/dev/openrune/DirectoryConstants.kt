@@ -10,6 +10,7 @@ object DirectoryConstants {
     val CS2_PATH: Path = userAppDataDir()
         .resolve(projectAppName())
         .resolve("cs2")
+    val PLUGINS_PATH: Path = Paths.get("plugins")
 
     fun cleanCs2() {
         val dir = CS2_PATH.toFile()

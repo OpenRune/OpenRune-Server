@@ -25,4 +25,20 @@ public class CheatCommandMap {
     }
 
     public operator fun get(name: String): CheatHandler? = commands[name]
+
+    /**
+     * Removes every command whose [CheatHandler.registrant] is [loader]. Used to unregister an
+     * external plugin's commands before reloading it — see `ExternalPluginLoader`.
+     */
+    public fun removeByClassLoader(loader: ClassLoader): Int {
+        var removed = 0
+        val iterator = commands.entries.iterator()
+        while (iterator.hasNext()) {
+            if (iterator.next().value.registrant === loader) {
+                iterator.remove()
+                removed++
+            }
+        }
+        return removed
+    }
 }

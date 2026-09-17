@@ -15,7 +15,7 @@ private fun ScriptContext.onEngineQueue(
     action: suspend ProtectedAccess.(EngineQueueEvents.Labelled) -> Unit,
 ) {
     onProtectedEvent(EventBus.composeLongKey(label, type.id), action)
-    engineQueueCache.addLabelled(type, label)
+    engineQueueCache.addLabelled(type, label, action.javaClass.classLoader)
 }
 
 public fun ScriptContext.onArea(

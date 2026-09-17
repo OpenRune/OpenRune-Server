@@ -1,12 +1,9 @@
 [versions]
 apache-commons = "1.18.0"
-argon2-jvm = "2.12"
-bcrypt = "0.10.2"
 bouncycastle = "1.81"
 classgraph = "4.8.180"
 clikt = "5.0.3"
 fastutil = "8.5.16"
-flyway = "9.22.3"
 gradle-download = "5.6.0"
 guice = "7.0.0"
 inline-logger = "1.0.6"
@@ -32,25 +29,19 @@ embedded-postgres = "2.2.2"
 or2 = "3.0.0"
 openruneCentral = "2.0.1"
 or2ServerUtils = "0.8"
-jodatime = "2.14.0"
 
 [libraries]
 apache-commons = { module = "commons-codec:commons-codec", version.ref = "apache-commons" }
-argon2-jvm = { module = "de.mkammerer:argon2-jvm", version.ref = "argon2-jvm" }
-bcrypt = { module = "at.favre.lib:bcrypt", version.ref = "bcrypt" }
 bouncycastle-provider = { module = "org.bouncycastle:bcprov-jdk18on", version.ref = "bouncycastle" }
 classgraph = { module = "io.github.classgraph:classgraph", version.ref = "classgraph" }
 clikt = { module = "com.github.ajalt.clikt:clikt", version.ref = "clikt" }
 fastutil = { module = "it.unimi.dsi:fastutil", version.ref = "fastutil" }
-flyway-core = { module = "org.flywaydb:flyway-core", version.ref = "flyway" }
 guice = { module = "com.google.inject:guice", version.ref = "guice" }
 jackson-databind = { module = "com.fasterxml.jackson.core:jackson-databind", version.ref = "jackson" }
 jackson-module-kotlin = { module = "com.fasterxml.jackson.module:jackson-module-kotlin", version.ref = "jackson" }
 jackson-dataformat-yaml = { module = "com.fasterxml.jackson.dataformat:jackson-dataformat-yaml", version.ref = "jackson" }
 jackson-dataformat-toml = { module = "com.fasterxml.jackson.dataformat:jackson-dataformat-toml", version.ref = "jackson" }
 jmh-gradle-plugin = { module = "me.champeau.jmh:jmh-gradle-plugin", version.ref = "jmh-gradle-plugin" }
-jupiter-api = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junit" }
-jupiter-params = { module = "org.junit.jupiter:junit-jupiter-params", version.ref = "junit" }
 konsist = { module = "com.lemonappdev:konsist", version.ref = "konsist" }
 kotlin-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlin-coroutines" }
 kotlin-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlin-coroutines" }
@@ -77,7 +68,6 @@ or2-all-cache = { group = "dev.or2", name = "all", version.ref = "or2" }
 or2-tools = { group = "dev.or2", name = "tools", version.ref = "or2" }
 or2-server-utils = { group = "dev.or2", name = "server-utils", version.ref = "or2ServerUtils" }
 or2-wiki = { group = "dev.or2", name = "wiki", version.ref = "or2ServerUtils" }
-joda-time = { group = "joda-time", name = "joda-time", version.ref = "jodatime" }
 or2-definition = { group = "dev.or2", name = "definition", version.ref = "or2" }
 or2-filesystem = { group = "dev.or2", name = "filesystem", version.ref = "or2" }
 or2-filestore = { group = "dev.or2", name = "filestore", version.ref = "or2" }
@@ -85,9 +75,6 @@ or2-filestore = { group = "dev.or2", name = "filestore", version.ref = "or2" }
 openrune-central-common = { module = "dev.or2:central-common", version.ref = "openruneCentral" }
 openrune-central-worldlink = { module = "dev.or2:central-worldlink", version.ref = "openruneCentral" }
 openrune-central = { module = "dev.or2:openrune-central", version.ref = "openruneCentral" }
-
-[bundles]
-logging = ["logback-classic", "kotlin-inline-logger"]
 
 [plugins]
 shadow = { id = "com.gradleup.shadow", version.ref = "shadow" }
