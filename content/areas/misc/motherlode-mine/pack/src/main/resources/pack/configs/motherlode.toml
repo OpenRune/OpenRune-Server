@@ -1,0 +1,149 @@
+[[varp]]
+id = "varp.motherlode_unlocks"
+scope = "Perm"
+transmit = "Never"
+
+[[varbit]]
+id = "varbit.motherlode_upper_level_unlocked"
+varp = "varp.motherlode_unlocks"
+startBit = 0
+endBit = 0
+
+[[varbit]]
+id = "varbit.motherlode_upper_hopper_unlocked"
+varp = "varp.motherlode_unlocks"
+startBit = 1
+endBit = 1
+
+[[varp]]
+id = "varp.motherlode_sack_a"
+scope = "Perm"
+transmit = "Never"
+
+[[varbit]]
+id = "varbit.motherlode_sack_coal"
+varp = "varp.motherlode_sack_a"
+startBit = 0
+endBit = 7
+
+[[varbit]]
+id = "varbit.motherlode_sack_gold"
+varp = "varp.motherlode_sack_a"
+startBit = 8
+endBit = 15
+
+[[varbit]]
+id = "varbit.motherlode_sack_mithril"
+varp = "varp.motherlode_sack_a"
+startBit = 16
+endBit = 23
+
+[[varbit]]
+id = "varbit.motherlode_sack_adamantite"
+varp = "varp.motherlode_sack_a"
+startBit = 24
+endBit = 31
+
+[[varp]]
+id = "varp.motherlode_sack_b"
+scope = "Perm"
+transmit = "Never"
+
+[[varbit]]
+id = "varbit.motherlode_sack_runite"
+varp = "varp.motherlode_sack_b"
+startBit = 0
+endBit = 7
+
+[[varbit]]
+id = "varbit.motherlode_sack_nugget"
+varp = "varp.motherlode_sack_b"
+startBit = 8
+endBit = 15
+
+[[varp]]
+id = "varp.motherlode_cleaning_a"
+scope = "Perm"
+transmit = "Never"
+
+[[varbit]]
+id = "varbit.motherlode_cleaning_coal"
+varp = "varp.motherlode_cleaning_a"
+startBit = 0
+endBit = 7
+
+[[varbit]]
+id = "varbit.motherlode_cleaning_gold"
+varp = "varp.motherlode_cleaning_a"
+startBit = 8
+endBit = 15
+
+[[varbit]]
+id = "varbit.motherlode_cleaning_mithril"
+varp = "varp.motherlode_cleaning_a"
+startBit = 16
+endBit = 23
+
+[[varbit]]
+id = "varbit.motherlode_cleaning_adamantite"
+varp = "varp.motherlode_cleaning_a"
+startBit = 24
+endBit = 31
+
+[[varp]]
+id = "varp.motherlode_cleaning_b"
+scope = "Perm"
+transmit = "Never"
+
+[[varbit]]
+id = "varbit.motherlode_cleaning_runite"
+varp = "varp.motherlode_cleaning_b"
+startBit = 0
+endBit = 7
+
+[[varbit]]
+id = "varbit.motherlode_cleaning_nugget"
+varp = "varp.motherlode_cleaning_b"
+startBit = 8
+endBit = 15
+
+[[varp]]
+id = "varp.motherlode_held"
+scope = "Perm"
+transmit = "Never"
+
+[[varbit]]
+id = "varbit.motherlode_held_coal"
+varp = "varp.motherlode_held"
+startBit = 0
+endBit = 4
+
+[[varbit]]
+id = "varbit.motherlode_held_gold"
+varp = "varp.motherlode_held"
+startBit = 5
+endBit = 9
+
+[[varbit]]
+id = "varbit.motherlode_held_mithril"
+varp = "varp.motherlode_held"
+startBit = 10
+endBit = 14
+
+[[varbit]]
+id = "varbit.motherlode_held_adamantite"
+varp = "varp.motherlode_held"
+startBit = 15
+endBit = 19
+
+[[varbit]]
+id = "varbit.motherlode_held_runite"
+varp = "varp.motherlode_held"
+startBit = 20
+endBit = 24
+
+[[varbit]]
+id = "varbit.motherlode_held_nugget"
+varp = "varp.motherlode_held"
+startBit = 25
+endBit = 29

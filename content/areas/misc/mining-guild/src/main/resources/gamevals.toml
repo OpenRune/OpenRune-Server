@@ -1,0 +1,5 @@
+[gamevals.currency]
+unidentified_minerals = 65533
+
+[gamevals.dbrow]
+shop_currency_unidentified_minerals = 63501

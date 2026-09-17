@@ -1,0 +1,12 @@
+[[area]]
+name = "Motherlode Mine"
+area_id = "area.motherlode_mine"
+levels = [0]
+
+[[area.polygons]]
+vertices = [
+    [3712, 5632],
+    [3775, 5632],
+    [3775, 5695],
+    [3712, 5695],
+]
