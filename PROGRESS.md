@@ -285,6 +285,10 @@ Found the same way `settings.gradle.kts` finds them: any dir with a `build.gradl
 | `areas/city/taverley` | 1 | 77 | 0 | 0 | 2026-06-25 |
 | `areas/city/varrock` | 7 | 539 | 0 | 1 | 2026-08-04 |
 | `areas/godwars` | 2 | 154 | 0 | 0 | 2026-08-19 |
+| `areas/misc/dwarven-mine` | 3 | 621 | 0 | 0 | 2026-09-17 |
+| `areas/misc/mining-guild` | 8 | 714 | 0 | 0 | 2026-09-17 |
+| `areas/misc/motherlode-mine` | 13 | 1,402 | 0 | 0 | 2026-09-17 |
+| `areas/misc/motherlode-mine/pack` | 1 | 6 | 0 | 0 | 2026-09-17 |
 | `areas/misc/multiways` | 2 | 36 | 0 | 0 | 2026-05-03 |
 | `areas/misc/wizards_tower` | 2 | 580 | 0 | 0 | 2026-08-04 |
 | `areas/wilderness` | 18 | 1,315 | 0 | 0 | 2026-08-18 |
@@ -304,7 +308,7 @@ Found the same way `settings.gradle.kts` finds them: any dir with a `build.gradl
 | `drops` | 257 | 14,412 | 0 | 0 | 2026-09-12 |
 | `events/shooting-stars` | 9 | 1,261 | 0 | 0 | 2026-08-30 |
 | `events/shooting-stars/pack` | 2 | 440 | 0 | 0 | 2026-08-21 |
-| `generic/generic-locs` | 20 | 1,165 | 0 | 1 | 2026-07-19 |
+| `generic/generic-locs` | 21 | 1,204 | 0 | 1 | 2026-09-17 |
 | `generic/generic-npcs` | 7 | 1,183 | 0 | 2 | 2026-07-19 |
 | `generic/killcount` | 1 | 32 | 0 | 0 | 2026-09-12 |
 | `interfaces/bank` | 15 | 2,313 | 3 | 1 | 2026-08-19 |
