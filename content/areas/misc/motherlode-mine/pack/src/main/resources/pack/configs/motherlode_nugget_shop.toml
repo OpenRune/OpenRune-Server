@@ -1,5 +1,4 @@
 [[inventory]]
-isServerOnly = true
 id = "inv.motherlode_nugget_shop"
 name = "Prospector Percy's Nugget Shop"
 
