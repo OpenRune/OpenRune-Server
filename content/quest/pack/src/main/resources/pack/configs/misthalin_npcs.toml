@@ -1,0 +1,62 @@
+[[npc]]
+isServerOnly = true
+id = "npc.mistmyst_abigale"
+inherit = "npc.mistmyst_abigale"
+wanderRange = 0
+defaultMode = "None"
+moveRestrict = "NoMove"
+
+[[npc]]
+isServerOnly = true
+id = "npc.mistmyst_mirror"
+inherit = "npc.mistmyst_mirror"
+wanderRange = 0
+defaultMode = "None"
+moveRestrict = "NoMove"
+
+[[npc]]
+isServerOnly = true
+id = "npc.mistmyst_sid"
+inherit = "npc.mistmyst_sid"
+wanderRange = 0
+defaultMode = "None"
+
+[[npc]]
+isServerOnly = true
+id = "npc.mistmyst_tayten"
+inherit = "npc.mistmyst_tayten"
+wanderRange = 0
+defaultMode = "None"
+moveRestrict = "NoMove"
+
+[[npc]]
+isServerOnly = true
+id = "npc.mistmyst_lacey"
+inherit = "npc.mistmyst_lacey"
+wanderRange = 0
+defaultMode = "None"
+moveRestrict = "NoMove"
+
+[[npc]]
+isServerOnly = true
+id = "npc.mistmyst_mandy"
+inherit = "npc.mistmyst_mandy"
+wanderRange = 0
+defaultMode = "None"
+
+[[npc]]
+isServerOnly = true
+id = "npc.mistmyst_mandy_post"
+inherit = "npc.mistmyst_mandy_post"
+wanderRange = 0
+defaultMode = "None"
+moveRestrict = "NoMove"
+
+[[npc]]
+isServerOnly = true
+id = "npc.mistmyst_killer_background"
+inherit = "npc.mistmyst_killer_background"
+wanderRange = 0
+defaultMode = "None"
+moveRestrict = "NoMove"
+

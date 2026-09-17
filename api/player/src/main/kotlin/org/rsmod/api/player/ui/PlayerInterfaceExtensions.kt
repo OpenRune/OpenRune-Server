@@ -6,8 +6,6 @@ import dev.openrune.definition.type.widget.ComponentType
 import dev.openrune.definition.type.widget.IfEvent
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
-import dev.openrune.types.ItemServerType
-import dev.openrune.types.NpcServerType
 import dev.openrune.types.SequenceServerType
 import dev.openrune.types.aconverted.interf.IfSubType
 import java.awt.Color
@@ -19,6 +17,7 @@ import net.rsprot.protocol.game.outgoing.interfaces.IfSetAnim
 import net.rsprot.protocol.game.outgoing.interfaces.IfSetColour
 import net.rsprot.protocol.game.outgoing.interfaces.IfSetEventsV2
 import net.rsprot.protocol.game.outgoing.interfaces.IfSetHide
+import net.rsprot.protocol.game.outgoing.interfaces.IfSetModelV2
 import net.rsprot.protocol.game.outgoing.interfaces.IfSetNpcHead
 import net.rsprot.protocol.game.outgoing.interfaces.IfSetNpcHeadActive
 import net.rsprot.protocol.game.outgoing.interfaces.IfSetObject
@@ -649,4 +648,9 @@ private fun Player.ifSetPauseText(component: String, text: String) {
 
 private fun Player.ifSetObj(target: String, obj: Int, zoomOrCount: Int) {
     client.write(IfSetObject(target.asRSCM(RSCMType.COMPONENT), obj, zoomOrCount))
+}
+
+public fun Player.ifSetModel(internal: String, model: Int) {
+    val target = ServerCacheManager.fromComponent(internal.asRSCM(RSCMType.COMPONENT))
+    client.write(IfSetModelV2(target.interfaceId, target.component, model))
 }
