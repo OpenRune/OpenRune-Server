@@ -6,6 +6,7 @@ import net.rsprot.protocol.game.outgoing.misc.client.HideNpcOps
 import net.rsprot.protocol.game.outgoing.misc.client.HideObjOps
 import net.rsprot.protocol.game.outgoing.misc.client.MinimapToggle
 import org.rsmod.api.player.output.ClientScripts.ccDeleteAll
+import org.rsmod.api.player.output.ClientScripts.settingsSetDrawDistance
 import org.rsmod.api.player.output.runClientScript
 import org.rsmod.api.player.ui.ifCloseOverlay
 import org.rsmod.api.player.ui.ifOpenFullOverlay
@@ -18,6 +19,7 @@ import org.rsmod.events.EventBus
 import org.rsmod.game.entity.Player
 
 public object Cinematic {
+    private var Player.drawDistanceOverride by boolVarBit("varbit.draw_distance_max_override")
     private var Player.camMode by enumVarBit<CameraMode>("varbit.fov_clamp")
     private var Player.minimap by enumVarBit<MinimapState>("varbit.minimap_state")
     private var Player.hideTop by boolVarBit("varbit.cutscene_status")
@@ -241,5 +243,13 @@ public object Cinematic {
             IfSubType.Overlay,
             eventBus,
         )
+    }
+
+    public fun setMaxDrawDistance(player: Player, enabled: Boolean) {
+        player.drawDistanceOverride = enabled
+    }
+
+    public fun syncDrawDistance(player: Player) {
+        settingsSetDrawDistance(player)
     }
 }
