@@ -4691,21 +4691,6 @@ wanderRange = 0
 # Rimmington and the Crafting Guild
 
 [[npc]]
-id = "npc.master_crafter"
-inherit = "npc.master_crafter"
-moveRestrict = "Indoors"
-
-[[npc]]
-id = "npc.master_crafter_2"
-inherit = "npc.master_crafter_2"
-moveRestrict = "Indoors"
-
-[[npc]]
-id = "npc.master_crafter_3"
-inherit = "npc.master_crafter_3"
-moveRestrict = "Indoors"
-
-[[npc]]
 id = "npc.tanner"
 inherit = "npc.tanner"
 moveRestrict = "Indoors"

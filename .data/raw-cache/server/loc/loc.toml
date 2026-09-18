@@ -2184,16 +2184,6 @@ contentGroup = "content.dungeonladder_up"
 # Rimmington, the Crafting Guild and the air altar
 
 [[object]]
-id = "loc.sarim_spiralstairs"
-inherit = "loc.sarim_spiralstairs"
-contentGroup = "content.spiralstaircase_up"
-
-[[object]]
-id = "loc.sarim_spiralstairstop"
-inherit = "loc.sarim_spiralstairstop"
-contentGroup = "content.spiralstaircase_down"
-
-[[object]]
 id = "loc.jewellersladder"
 inherit = "loc.jewellersladder"
 contentGroup = "content.ladder_up"
