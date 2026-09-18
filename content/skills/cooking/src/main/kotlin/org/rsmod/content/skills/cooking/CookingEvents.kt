@@ -122,7 +122,11 @@ class CookingEvents @Inject constructor(
             }
 
         if (cookable.isEmpty()) {
-            mes("You have nothing to cook on this ${if (surface is CookingSurface.Range) "range" else "fire"}.")
+            if (surface is CookingSurface.Range) {
+                mesbox("You haven't got anything to cook.")
+            } else {
+                mes("You have nothing to cook on this fire.")
+            }
             return
         }
 

@@ -1,0 +1,14 @@
+[gamevals.varp]
+rimmington_makeover = 64860
+
+[gamevals.varbit]
+rimmington_makeover_bodytype = 64860
+rimmington_makeover_colour = 64861
+rimmington_makeover_mage = 64862
+rimmington_makeover_pronoun = 64863
+
+[gamevals.synth]
+wardrobe_open = 96
+wardrobe_close = 95
+iron_door_close = 68
+phials_exchange = 2417
