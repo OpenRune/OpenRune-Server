@@ -6,8 +6,6 @@ import dev.openrune.definition.type.widget.ComponentType
 import dev.openrune.definition.type.widget.IfEvent
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
-import dev.openrune.types.ItemServerType
-import dev.openrune.types.NpcServerType
 import dev.openrune.types.SequenceServerType
 import dev.openrune.types.aconverted.interf.IfSubType
 import java.awt.Color

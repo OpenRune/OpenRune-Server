@@ -24,11 +24,11 @@ import org.rsmod.api.table.cooking.CookingFoodsRow
 import org.rsmod.api.table.fishing.FishingMethodRow
 import org.rsmod.api.table.fishing.FishingSpotDefRow
 import org.rsmod.api.table.fishing.FishingSpotRow
+import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.content.skills.fishing.FishRow
 import org.rsmod.content.skills.fishing.FishingCatchLogic
-import org.rsmod.content.skills.fishing.HeronPet.rollHeron
-import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.content.skills.fishing.Gate
+import org.rsmod.content.skills.fishing.HeronPet.rollHeron
 import org.rsmod.game.MapClock
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.npc.NpcUid
