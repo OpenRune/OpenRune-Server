@@ -124,6 +124,9 @@ constructor(
         val attempt = prepare(spot, method, verbose = true) ?: return
 
         startAnim(attempt)
+        if (attempt.active.tool == SMALL_NET) {
+            spam("You cast out your net...")
+        }
 
         clearWeakQueue(CATCH_QUEUE)
         weakQueue(CATCH_QUEUE, rollDelay(attempt.bait), FishTask(npc, npc.uid, spot, method))
@@ -457,6 +460,7 @@ constructor(
 
         private const val CATCH_CYCLE = 5
         private const val ANIM_REFRESH = 4
+        private const val SMALL_NET = "obj.net"
         private const val HARPOON = "obj.harpoon"
         private const val DRAGON_HARPOON = "obj.dragon_harpoon"
         private const val DRAGON_HARPOON_LEVEL = 61

@@ -188,3 +188,55 @@ contentGroup = "content.closed_left_picketgate"
 [object.params]
 "param.next_loc_stage" = "loc.rustic_openfencegate_l"
 "param.opensound" = "synth.picketgate_open"
+
+[[object]]
+id = "loc.farmdoor"
+inherit = "loc.farmdoor"
+contentGroup = "content.closed_single_door"
+
+[object.params]
+"param.next_loc_stage" = "loc.farmdooropen"
+
+[[object]]
+id = "loc.farmdooropen"
+inherit = "loc.farmdooropen"
+contentGroup = "content.opened_single_door"
+
+[object.params]
+"param.next_loc_stage" = "loc.farmdoor"
+
+[[object]]
+id = "loc.farming_fencegate_l"
+inherit = "loc.farming_fencegate_l"
+contentGroup = "content.closed_left_picketgate"
+
+[object.params]
+"param.next_loc_stage" = "loc.farming_openfencegate_l"
+"param.opensound" = "synth.picketgate_open"
+
+[[object]]
+id = "loc.farming_fencegate_r"
+inherit = "loc.farming_fencegate_r"
+contentGroup = "content.closed_right_picketgate"
+
+[object.params]
+"param.next_loc_stage" = "loc.farming_openfencegate_r"
+"param.opensound" = "synth.picketgate_open"
+
+[[object]]
+id = "loc.farming_openfencegate_l"
+inherit = "loc.farming_openfencegate_l"
+contentGroup = "content.opened_left_picketgate"
+
+[object.params]
+"param.next_loc_stage" = "loc.farming_fencegate_l"
+"param.closesound" = "synth.door_close"
+
+[[object]]
+id = "loc.farming_openfencegate_r"
+inherit = "loc.farming_openfencegate_r"
+contentGroup = "content.opened_right_picketgate"
+
+[object.params]
+"param.next_loc_stage" = "loc.farming_fencegate_r"
+"param.closesound" = "synth.door_close"

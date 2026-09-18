@@ -4687,3 +4687,155 @@ id = "npc.motherlode_mother"
 inherit = "npc.motherlode_mother"
 moveRestrict = "NoMove"
 wanderRange = 0
+
+# Rimmington and the Crafting Guild
+
+[[npc]]
+id = "npc.master_crafter"
+inherit = "npc.master_crafter"
+moveRestrict = "Indoors"
+
+[[npc]]
+id = "npc.master_crafter_2"
+inherit = "npc.master_crafter_2"
+moveRestrict = "Indoors"
+
+[[npc]]
+id = "npc.master_crafter_3"
+inherit = "npc.master_crafter_3"
+moveRestrict = "Indoors"
+
+[[npc]]
+id = "npc.tanner"
+inherit = "npc.tanner"
+moveRestrict = "Indoors"
+
+[[npc]]
+id = "npc.rommik"
+inherit = "npc.rommik"
+moveRestrict = "Indoors"
+
+[[npc]]
+id = "npc.salesman_ranging"
+inherit = "npc.salesman_ranging"
+moveRestrict = "Indoors"
+
+[[npc]]
+id = "npc.hetty"
+inherit = "npc.hetty"
+moveRestrict = "Indoors"
+
+[[npc]]
+id = "npc.hw18_girl"
+inherit = "npc.hw18_girl"
+moveRestrict = "Indoors"
+
+[[npc]]
+id = "npc.hw18_boy"
+inherit = "npc.hw18_boy"
+moveRestrict = "Indoors"
+
+[[npc]]
+id = "npc.makeover_mage"
+inherit = "npc.makeover_mage"
+moveRestrict = "Indoors"
+timer = 17
+
+[[npc]]
+id = "npc.makeover_mage_female"
+inherit = "npc.makeover_mage_female"
+moveRestrict = "Indoors"
+timer = 17
+
+[[npc]]
+id = "npc.generalshopkeeper6"
+inherit = "npc.generalshopkeeper6"
+moveRestrict = "Indoors"
+
+[[npc]]
+id = "npc.generalassistant6"
+inherit = "npc.generalassistant6"
+moveRestrict = "Indoors"
+
+[[npc]]
+id = "npc.uncerter_rimmington"
+inherit = "npc.uncerter_rimmington"
+moveRestrict = "Indoors"
+
+[[npc]]
+id = "npc.chemist"
+inherit = "npc.chemist"
+moveRestrict = "Indoors"
+
+[[npc]]
+id = "npc.gerrant"
+inherit = "npc.gerrant"
+moveRestrict = "Indoors"
+
+[[npc]]
+id = "npc.wydin"
+inherit = "npc.wydin"
+moveRestrict = "Indoors"
+
+[[npc]]
+id = "npc.grum"
+inherit = "npc.grum"
+moveRestrict = "Indoors"
+
+[[npc]]
+id = "npc.betty"
+inherit = "npc.betty"
+moveRestrict = "Indoors"
+
+[[npc]]
+id = "npc.brian"
+inherit = "npc.brian"
+moveRestrict = "Indoors"
+
+[[npc]]
+id = "npc.rustyanchor_bartender"
+inherit = "npc.rustyanchor_bartender"
+moveRestrict = "Indoors"
+
+[[npc]]
+id = "npc.sarim_pub_drinker_1"
+inherit = "npc.sarim_pub_drinker_1"
+moveRestrict = "Indoors"
+
+[[npc]]
+id = "npc.sarim_pub_drinker_2"
+inherit = "npc.sarim_pub_drinker_2"
+moveRestrict = "Indoors"
+
+[[npc]]
+id = "npc.sarim_pub_sitting_patron"
+inherit = "npc.sarim_pub_sitting_patron"
+moveRestrict = "NoMove"
+wanderRange = 0
+respawnDir = "South"
+
+[[npc]]
+id = "npc.jail_guard_sleeping"
+inherit = "npc.jail_guard_sleeping"
+moveRestrict = "NoMove"
+wanderRange = 0
+respawnDir = "SouthWest"
+
+[[npc]]
+id = "npc.sailing_intro_anne_sarim"
+inherit = "npc.sailing_intro_anne_sarim"
+moveRestrict = "NoMove"
+wanderRange = 0
+respawnDir = "South"
+
+[[npc]]
+id = "npc.sailing_intro_will_sarim"
+inherit = "npc.sailing_intro_will_sarim"
+moveRestrict = "NoMove"
+wanderRange = 0
+respawnDir = "East"
+
+[[npc]]
+id = "npc.port_task_master_port_sarim"
+inherit = "npc.port_task_master_port_sarim"
+wanderRange = 1

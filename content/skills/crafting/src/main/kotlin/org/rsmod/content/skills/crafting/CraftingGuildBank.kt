@@ -31,7 +31,7 @@ class CraftingGuildBank : PluginScript() {
         if (player.canUseGuildBank()) {
             return true
         }
-        mes("Only master crafters or those who have completed the hard or elite tier of the Falador Diary may use this.")
+        mes("Only master crafters or those who have completed the hard or elite tier of the Falador diary may use this.")
         return false
     }
 }

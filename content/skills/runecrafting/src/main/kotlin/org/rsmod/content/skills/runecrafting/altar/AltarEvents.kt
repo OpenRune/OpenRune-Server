@@ -4,6 +4,7 @@ import dev.openrune.rscm.RSCM
 import dev.openrune.rscm.RSCMType
 import dev.openrune.util.Wearpos
 import jakarta.inject.Inject
+import org.rsmod.api.player.output.ChatType
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.vars.VarPlayerIntMapSetter
 import org.rsmod.api.script.advanced.onWearposChange
@@ -111,7 +112,7 @@ class AltarEvents @Inject constructor(
         for (ruin in altar.ruins) {
             onOpLoc1(ruin.internalName) {
                 if (canEnterRuinsWithoutTalisman(altar)) {
-                    telejump(entrance)
+                    enterRuins(entrance)
                     return@onOpLoc1
                 }
                 mes("You need a talisman to enter these ruins.")
@@ -119,13 +120,13 @@ class AltarEvents @Inject constructor(
 
             altar.talisman?.let { talisman ->
                 onOpLocU(ruin.internalName, talisman.internalName) {
-                    telejump(entrance)
+                    enterRuins(entrance)
                 }
             }
 
             altar.tiara?.let { tiaraDef ->
                 onOpLocU(ruin.internalName, tiaraDef.item.internalName) {
-                    telejump(entrance)
+                    enterRuins(entrance)
                 }
             }
         }
@@ -145,7 +146,9 @@ class AltarEvents @Inject constructor(
         val exitPortal = altar.exitPortal ?: return
         val exit = altar.exit ?: return
         onOpLoc1(exitPortal.internalName) {
+            mes("You step through the portal...", ChatType.Spam)
             telejump(exit)
+            soundSynth("synth.teleport_all")
         }
     }
 
@@ -174,6 +177,12 @@ class AltarEvents @Inject constructor(
         onOpHeld4(talisman.internalName) {
             locateAltar(entrance)
         }
+    }
+
+    private fun ProtectedAccess.enterRuins(entrance: CoordGrid) {
+        mes("You feel a powerful force take hold of you...", ChatType.Spam)
+        telejump(entrance)
+        soundSynth("synth.teleport_all")
     }
 
     private fun ProtectedAccess.locateAltar(altarCoords: CoordGrid) {

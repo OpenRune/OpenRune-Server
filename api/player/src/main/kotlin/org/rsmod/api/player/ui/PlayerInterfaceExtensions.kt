@@ -497,7 +497,7 @@ internal fun Player.ifObjbox(
     eventBus: EventBus,
 ) {
     mes(text, ChatType.Mesbox)
-    ifOpenChat("interface.objectbox", constants.modal_infinitewidthandheight, eventBus)
+    ifOpenChat("interface.objectbox", constants.modal_fixedwidthandheight, eventBus)
     objboxSetButtons(this, pauseText)
     if (pauseText.isNotBlank()) {
         ifSetEvents("component.objectbox:universe", 0..1, IfEvent.PauseButton)
@@ -585,7 +585,7 @@ internal fun Player.ifChatPlayer(
     eventBus: EventBus,
 ) {
     mes("$title|$text", ChatType.Dialogue)
-    ifOpenChat("interface.chat_right", constants.modal_fixedwidthandheight, eventBus)
+    ifOpenChat("interface.chat_right", constants.modal_infinitewidthandheight, eventBus)
     ifSetPlayerHead("component.chat_right:head")
     ifSetAnim("component.chat_right:head", expression)
     ifSetText("component.chat_right:name", title)
@@ -604,7 +604,7 @@ internal fun Player.ifChatNpcActive(
     eventBus: EventBus,
 ) {
     mes("$title|$text", ChatType.Dialogue)
-    ifOpenChat("interface.chat_left", constants.modal_fixedwidthandheight, eventBus)
+    ifOpenChat("interface.chat_left", constants.modal_infinitewidthandheight, eventBus)
     ifSetNpcHeadActive("component.chat_left:head", npcSlotId)
     ifSetAnim("component.chat_left:head", chatanim)
     ifSetText("component.chat_left:name", title)

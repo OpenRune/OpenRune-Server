@@ -47,8 +47,8 @@ class CraftingGuildMasterCrafter : PluginScript() {
                         "the Crafting Guild and it provides unlimited teleports here.",
                 )
                 chatNpc(
-                    happy,
-                    "If you should ever achieve level 99 Crafting come and talk to me and we'll see if " +
+                    neutral,
+                    " If you should ever achieve level 99 Crafting come and talk to me and we'll see if " +
                         "we can sort you out with one.",
                 )
             }
@@ -161,11 +161,11 @@ class CraftingGuildMasterCrafter : PluginScript() {
     }
 
     private suspend fun Dialogue.young() {
-        chatNpc(neutral, "Yeah?")
-        chatPlayer(neutral, "Hello.")
-        chatNpc(neutral, "Whassup?")
+        chatNpc(confused, "Yeah?")
+        chatPlayer(happy, "Hello.")
+        chatNpc(confused, "Whassup?")
         chatPlayer(quiz, "So... are you here to give crafting tips?")
-        chatNpc(neutral, "Dude, do I look like I wanna talk to you?")
+        chatNpc(confused, "Dude, do I look like I wanna talk to you?")
         chatPlayer(neutral, "I suppose not.")
         chatNpc(happy, "Right on!")
     }
