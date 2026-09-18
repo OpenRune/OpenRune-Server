@@ -21,3 +21,8 @@ id = "npc.master_crafter_3"
 inherit = "npc.master_crafter_3"
 moveRestrict = "NoMove"
 wanderRange = 0
+
+[[npc]]
+id = "npc.tanner"
+inherit = "npc.tanner"
+moveRestrict = "Indoors"

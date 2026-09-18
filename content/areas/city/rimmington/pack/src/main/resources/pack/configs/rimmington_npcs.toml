@@ -1,0 +1,56 @@
+[[npc]]
+id = "npc.rommik"
+inherit = "npc.rommik"
+moveRestrict = "Indoors"
+
+[[npc]]
+id = "npc.salesman_ranging"
+inherit = "npc.salesman_ranging"
+moveRestrict = "Indoors"
+
+[[npc]]
+id = "npc.hetty"
+inherit = "npc.hetty"
+moveRestrict = "Indoors"
+
+[[npc]]
+id = "npc.hw18_girl"
+inherit = "npc.hw18_girl"
+moveRestrict = "Indoors"
+
+[[npc]]
+id = "npc.hw18_boy"
+inherit = "npc.hw18_boy"
+moveRestrict = "Indoors"
+
+[[npc]]
+id = "npc.makeover_mage"
+inherit = "npc.makeover_mage"
+moveRestrict = "Indoors"
+timer = 17
+
+[[npc]]
+id = "npc.makeover_mage_female"
+inherit = "npc.makeover_mage_female"
+moveRestrict = "Indoors"
+timer = 17
+
+[[npc]]
+id = "npc.generalshopkeeper6"
+inherit = "npc.generalshopkeeper6"
+moveRestrict = "Indoors"
+
+[[npc]]
+id = "npc.generalassistant6"
+inherit = "npc.generalassistant6"
+moveRestrict = "Indoors"
+
+[[npc]]
+id = "npc.uncerter_rimmington"
+inherit = "npc.uncerter_rimmington"
+moveRestrict = "Indoors"
+
+[[npc]]
+id = "npc.chemist"
+inherit = "npc.chemist"
+moveRestrict = "Indoors"
