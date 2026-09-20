@@ -205,7 +205,7 @@ object InstanceSettingsTable {
         row("dbrow.instance_muspah") {
             column(KEY, "muspah")
             columnCoord(EXIT_COORD, CoordGrid(2909, 10317, 0))
-            columnCoord(ENTER_COORD, CoordGrid(2846, 4258, 0))
+            columnCoord(ENTER_COORD, CoordGrid(2859, 4259, 0))
             column(FEE, 0)
             column(MAX_PLAYERS, 1)
             column(TIME_LIMIT_MINUTES, 0)

@@ -57,3 +57,6 @@ id = "varn.muspah_damage_since_switch"
 
 [[varn]]
 id = "varn.skip_killcount"
+
+[[varn]]
+id = "varn.muspah_melee_still_ticks"

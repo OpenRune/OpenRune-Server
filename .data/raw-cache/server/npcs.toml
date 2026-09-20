@@ -4681,6 +4681,7 @@ defaultMode = "None"
 [npc.params]
 "param.killcount_varp"="varp.total_muspah_kills"
 "param.boss_hp_bar_mode"=2
+"param.death_anim"="seq.npc_muspah_death_02"
 
 [[npc]]
 id = "npc.muspah_melee"
@@ -4688,11 +4689,12 @@ inherit = "npc.muspah_melee"
 huntMode = 2
 huntRange = 15
 maxRange = 15
-attackRange = 10
+attackRange = 1
 defaultMode = "None"
 [npc.params]
 "param.killcount_varp"="varp.total_muspah_kills"
 "param.boss_hp_bar_mode"=2
+"param.death_anim"="seq.npc_muspah_death_02"
 
 [[npc]]
 id = "npc.muspah_teleport"
@@ -4705,6 +4707,7 @@ defaultMode = "None"
 [npc.params]
 "param.killcount_varp"="varp.total_muspah_kills"
 "param.boss_hp_bar_mode"=2
+"param.death_anim"="seq.npc_muspah_death_02"
 
 [[npc]]
 id = "npc.muspah_soulsplit"
@@ -4717,6 +4720,11 @@ defaultMode = "None"
 [npc.params]
 "param.killcount_varp"="varp.total_muspah_kills"
 "param.boss_hp_bar_mode"=2
+"param.death_anim"="seq.npc_muspah_death_02"
+"param.boss_hp_bar_colour_back"=1050656
+"param.boss_hp_bar_colour_sliding"=3678312
+"param.boss_hp_bar_colour_remaining"=7356616
+"param.headbar"="headbar.muspah_soulsplit"
 
 [[npc]]
 id = "npc.muspah_final"

@@ -6,56 +6,64 @@ import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import dev.openrune.types.NpcMode
 import dev.openrune.types.NpcServerType
-import dev.openrune.types.ProjAnimType
 import dev.openrune.types.aconverted.SpotanimType
 import jakarta.inject.Inject
+import org.rsmod.api.bossbar.plugin.BossHpBarScript
 import org.rsmod.api.bosses.dsl.*
 import org.rsmod.api.bosses.runtime.BossCombat
 import org.rsmod.api.bosses.runtime.BossDeps
 import org.rsmod.api.bosses.runtime.BossPluginScript
 import org.rsmod.api.bosses.runtime.encounter
-import org.rsmod.api.bosses.runtime.suppressAttacks
 import org.rsmod.api.bosses.spec.Condition
 import org.rsmod.api.bosses.spec.ProjectileConfig
-import org.rsmod.api.combat.commons.player.combatPlayDefendAnim
+import org.rsmod.api.bosses.spec.BossSpec
 import org.rsmod.api.combat.commons.player.finishNpcHit
-import org.rsmod.api.combat.commons.player.queueCombatRetaliate
-import org.rsmod.api.npc.access.StandardNpcAccess
+import org.rsmod.api.config.refs.done.hitmark_groups
+import org.rsmod.api.config.refs.params
 import org.rsmod.api.npc.heal
 import org.rsmod.api.npc.isValidTarget
 import org.rsmod.api.player.events.PlayerHitEvents
-import org.rsmod.api.player.hit.queueImpactHit
 import org.rsmod.api.player.isValidTarget
 import org.rsmod.api.player.output.Camera
 import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.stat.hitpoints
 import org.rsmod.api.repo.loc.LocRepository
 import org.rsmod.api.script.onEvent
+import org.rsmod.api.script.onNpcHit
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.NpcList
 import org.rsmod.game.entity.Player
 import org.rsmod.game.entity.npc.NpcStateEvents
-import org.rsmod.game.entity.npc.NpcUid
 import org.rsmod.game.entity.player.PlayerUid
 import org.rsmod.game.entity.util.EntityExactMove
 import org.rsmod.game.entity.util.PathingEntityCommon
+import org.rsmod.game.headbar.Headbar
+import org.rsmod.game.hit.Hit
 import org.rsmod.game.hit.HitBuilder
+import org.rsmod.game.hit.Hitmark
 import org.rsmod.game.hit.HitType
 import org.rsmod.game.loc.LocAngle
 import org.rsmod.game.loc.LocInfo
 import org.rsmod.game.loc.LocShape
+import org.rsmod.game.map.collision.get
 import org.rsmod.game.map.collision.isWalkBlocked
-import org.rsmod.game.proj.ProjAnim
 import org.rsmod.map.CoordGrid
 import org.rsmod.map.util.Translation
 import org.rsmod.plugin.scripts.ScriptContext
+import org.rsmod.routefinder.flag.CollisionFlag
+import org.rsmod.game.map.collision.add as addCollisionFlag
+import org.rsmod.game.map.collision.remove as removeCollisionFlag
 import kotlin.math.PI
 import kotlin.math.atan2
 
 class Muspah
 @Inject
-constructor(deps: BossDeps, private val locRepo: LocRepository, private val npcList: NpcList) :
-    BossPluginScript(deps) {
+constructor(
+    deps: BossDeps,
+    private val locRepo: LocRepository,
+    private val npcList: NpcList,
+    private val bossHpBar: BossHpBarScript,
+) : BossPluginScript(deps) {
 
     private val logger = InlineLogger()
 
@@ -70,9 +78,9 @@ constructor(deps: BossDeps, private val locRepo: LocRepository, private val npcL
         setOf(rangedId, meleeId, teleportId, soulsplitId, finalId)
     }
 
-    private val fights = mutableMapOf<NpcUid, MuspahFight>()
+    private val fights = mutableMapOf<Int, MuspahFight>()
 
-    private fun fightFor(npc: Npc): MuspahFight = fights.getOrPut(npc.uid) { MuspahFight() }
+    private fun fightFor(npc: Npc): MuspahFight = fights.getOrPut(npc.slotId) { MuspahFight() }
 
     override fun ScriptContext.startup() {
         BossCombat.register(
@@ -80,50 +88,101 @@ constructor(deps: BossDeps, private val locRepo: LocRepository, private val npcL
             spec,
             deps,
             onModifyHit = { onMuspahHit(npc, hit) },
-            onCombatTick = { target -> checkPendingTransition(this, target) },
+            onCombatTick = { target ->
+                updateMeleeStillness(npc)
+                countFinalPhaseAttacks(npc, target)
+            },
         )
 
-        onEvent<NpcStateEvents.Respawn> {
-            if (npc.visType.id in liveFormIds) fights.remove(npc.uid)?.let(::clearSpikes)
-        }
-        onEvent<NpcStateEvents.Delete> {
-            if (npc.visType.id in liveFormIds) fights.remove(npc.uid)?.let(::clearSpikes)
+        deps.extensionRegistry.register("muspah_melee_hit") { _, npc, target, _ ->
+            val stillTicks = npc.vars[MELEE_STILL_TICKS_VARN]
+            val stillBonus = (stillTicks * MELEE_STILL_DAMAGE_PER_TICK).coerceAtMost(MELEE_STILL_DAMAGE_CAP)
+            val penetration =
+                (stillTicks * MELEE_STILL_PENETRATION_PER_TICK).coerceAtMost(MELEE_STILL_PENETRATION_CAP)
+            val damage = deps.random.of(MELEE_MAX_HIT + stillBonus + 1)
+            target.finishNpcHit(npc, 1, HitType.Melee, damage, deps.playerHitModifier, penetration)
         }
 
-        deps.extensionRegistry.register("muspah_magic_projectile") { _, npc, target, _ ->
-            deps.worldQueues.add(MAGIC_PROJECTILE_WINDUP) {
-                if (npc.isValidTarget() && target.isValidTarget()) fireMagicProjectile(npc, target)
+        registerAbilityHandlers()
+
+        for (formId in liveFormIds) {
+            val type = ServerCacheManager.getNpc(formId) ?: continue
+            onNpcHit(type) {
+                if (formId == soulsplitId) resolveSoulsplitShield(npc)
+                if (npc.hitpoints <= 0) {
+                    deps.worldQueues.add(SPIKE_DEATH_CLEANUP_DELAY) {
+                        fights.remove(npc.slotId)?.let(::clearSpikes)
+                    }
+                }
             }
         }
-        onEvent<PlayerHitEvents.Impact> { logOutgoingHit(this) }
+
+        onEvent<NpcStateEvents.Respawn> {
+            if (npc.visType.id in liveFormIds) fights.remove(npc.slotId)?.let(::clearSpikes)
+        }
+        onEvent<NpcStateEvents.Delete> {
+            if (npc.visType.id in liveFormIds) fights.remove(npc.slotId)?.let(::clearSpikes)
+        }
+
+        onEvent<PlayerHitEvents.Impact> { onSoulsplitHit(hit) }
     }
 
-    private fun logOutgoingHit(event: PlayerHitEvents.Impact) {
-        val hit = event.hit
+    private fun onSoulsplitHit(hit: Hit) {
         if (!hit.isFromNpc) return
         val npc = hit.resolveNpcSource(npcList) ?: return
-        if (npc.visType.id !in liveFormIds) return
-        logger.info {
-            "[muspah] outgoing hit: form=${formName(npc.visType.id)} type=${hit.type} damage=${hit.damage}"
-        }
+        if (npc.visType.id != soulsplitId) return
+        drainShield(npc, SOULSPLIT_HIT_SELF_DRAIN)
+        soulSplitHeal(npc, hit.damage)
+        resolveSoulsplitShield(npc)
     }
-
-    private fun formName(visId: Int): String =
-        when (visId) {
-            rangedId -> "ranged"
-            meleeId -> "melee"
-            teleportId -> "teleport"
-            soulsplitId -> "soulsplit"
-            finalId -> "final"
-            else -> "unknown($visId)"
-        }
 
     private fun clearSpikes(fight: MuspahFight) {
-        fight.activeSpikes.forEach { locRepo.del(it, Int.MAX_VALUE) }
+        val spikes = fight.activeSpikes.toList()
         fight.activeSpikes.clear()
+        if (spikes.isEmpty()) return
+        val despawnSeqId = SPIKE_DESPAWN_SEQ.asRSCM(RSCMType.SEQ)
+        val despawnAnim = ServerCacheManager.getAnim(despawnSeqId)
+        val despawnTicks = despawnAnim?.tickDuration ?: 1
+        spikes.forEach {
+            deps.collision.removeCollisionFlag(it.coords, CollisionFlag.BLOCK_PLAYERS)
+            deps.worldRepo.locAnim(it, SPIKE_DESPAWN_SEQ)
+        }
+        deps.worldQueues.add(despawnTicks) {
+            spikes.forEach { locRepo.del(it, Int.MAX_VALUE) }
+        }
     }
 
-    override val spec =
+    private fun countFinalPhaseAttacks(npc: Npc, target: Player) {
+        if (npc.visType.id != finalId) return
+        val fight = fightFor(npc)
+        val lastAttack = deps.encounter(npc).lastAbilityTick
+        if (lastAttack == fight.lastCountedAttackTick) return
+        fight.lastCountedAttackTick = lastAttack
+        if (++fight.finalAttackCount % FINAL_SPIKE_ATTACK_INTERVAL != 0) return
+        if (target.isValidTarget()) beginSpikeSlam(npc, target)
+    }
+
+    private fun updateMeleeStillness(npc: Npc) {
+        val fight = fightFor(npc)
+        if (npc.coords == fight.lastCoords) {
+            npc.vars[MELEE_STILL_TICKS_VARN] =
+                (npc.vars[MELEE_STILL_TICKS_VARN] + 1).coerceAtMost(MELEE_STILL_TICKS_CAP)
+        } else {
+            fight.lastCoords = npc.coords
+            npc.vars[MELEE_STILL_TICKS_VARN] = 0
+        }
+    }
+
+    override val spec: BossSpec by lazy {
+        val teleportWindup =
+            (ServerCacheManager.getAnim(TELEPORT_DISAPPEAR_SEQ.asRSCM(RSCMType.SEQ))?.tickDuration ?: 1)
+                .coerceAtLeast(1)
+        val shockwaveWindup =
+            (ServerCacheManager.getAnim(FINAL_WINDUP_SEQ.asRSCM(RSCMType.SEQ))?.tickDuration
+                    ?: FINAL_WINDUP_FALLBACK_TICKS)
+                .coerceAtLeast(1)
+        val teleportDuration = teleportWindup + TELEPORT_STEP_TICKS * (TELEPORT_LOOP.size + 1) + 2
+
         boss("npc.muspah", "npc.muspah_melee", "npc.muspah_teleport", "npc.muspah_soulsplit", "npc.muspah_final") {
             stats(attackRate = ATTACK_RATE, aggressionRadius = AGGRO_RANGE)
 
@@ -144,39 +203,134 @@ constructor(deps: BossDeps, private val locRepo: LocRepository, private val npcL
             val meleeHit =
                 ability("melee_hit") {
                     anim("seq.npc_muspah_attack_melee_01")
-                    hit {
-                        damage(0..MELEE_MAX_HIT).roll()
-                        type(Melee)
-                    }
-                }
-
-            val meleeRanged =
-                ability("melee_ranged") {
-                    anim("seq.npc_muspah_attack_melee_01")
-                    projectile {
-                        spotanim = "spotanim.projectile_muspah_attack_ranged_01"
-                        hit {
-                            delay = RANGED_HIT_DELAY
-                            damage(0..MELEE_MAX_HIT).roll()
-                            type(Ranged)
-                        }
-                    }
+                    include(external("muspah_melee_hit"))
                 }
 
             val magicAttack =
                 ability("magic_attack") {
                     anim("seq.npc_muspah_attack_magic_01")
                     spotanim("spotanim.vfx_muspah_attack_magic_01")
-                    include(external("muspah_magic_projectile"))
+                    delay(MAGIC_PROJECTILE_WINDUP)
+                    projectile {
+                        spotanim = MAGIC_PROJECTILE_SPOTANIM
+                        config = MAGIC_PROJECTILE_CONFIG
+                        resolveOnImpact = true
+                        hit {
+                            damage(0..MAGIC_MAX_HIT).roll()
+                            type(Magic)
+                            spotanim(MAGIC_IMPACT_SPOTANIM)
+                        }
+                    }
                 }
 
-            val transformSoulsplit =
-                ability("transform_soulsplit") { include(transmog("npc.muspah_soulsplit", Int.MAX_VALUE)) }
+            val toMelee = ability(ABILITY_TO_MELEE, formTransform("npc.muspah_melee", PHASE_MELEE))
+            val toRanged = ability(ABILITY_TO_RANGED, formTransform("npc.muspah", PHASE_RANGED))
 
-            val transformFinal =
-                ability("transform_final") { include(transmog("npc.muspah_final", Int.MAX_VALUE)) }
+            val homingSpike =
+                ability(
+                    ABILITY_HOMING_SPIKE,
+                    sequence(anim(HOMING_SPIKE_SEQ), external("muspah_homing_spikes")),
+                )
+
+            val cloudTeleport =
+                ability(
+                    ABILITY_CLOUD_TELEPORT,
+                    sequence(
+                        external("muspah_teleport_begin", teleportDuration + SPECIAL_COOLDOWN_BUFFER),
+                        transmog("npc.muspah_teleport", Int.MAX_VALUE),
+                        anim(TELEPORT_DISAPPEAR_SEQ),
+                        spotanim(TELEPORT_DISAPPEAR_SPOTANIM),
+                        wait(teleportWindup),
+                        *TELEPORT_LOOP
+                            .map { (dx, dz) ->
+                                sequence(
+                                    wait(TELEPORT_STEP_TICKS),
+                                    teleport(spawnTile(dx, dz)),
+                                    faceTile(spawnTile(1, 0)),
+                                    anim("seq.npc_muspah_teleport_attack_01"),
+                                    spotanim("spotanim.vfx_muspah_teleport_attack_01"),
+                                    external("muspah_hazard_batch"),
+                                )
+                            }
+                            .toTypedArray(),
+                        wait(TELEPORT_STEP_TICKS),
+                        teleport(spawnTile(TELEPORT_RETURN_OFFSET.first, TELEPORT_RETURN_OFFSET.second)),
+                        anim(TELEPORT_APPEAR_SEQ),
+                        spotanim(TELEPORT_APPEAR_SPOTANIM),
+                        transmog("npc.muspah_melee", Int.MAX_VALUE),
+                        transitionTo(PHASE_MELEE),
+                        faceTarget(),
+                        wait(2),
+                    ),
+                )
+
+            val finalShockwave =
+                ability(
+                    ABILITY_FINAL_SHOCKWAVE,
+                    sequence(
+                        anim(TELEPORT_DISAPPEAR_SEQ),
+                        spotanim(TELEPORT_DISAPPEAR_SPOTANIM),
+                        wait(teleportWindup),
+                        teleport(spawnTile()),
+                        anim(TELEPORT_APPEAR_SEQ),
+                        spotanim(TELEPORT_APPEAR_SPOTANIM),
+                        wait(FINAL_TELEPORT_TO_WINDUP_DELAY),
+                        anim(FINAL_WINDUP_SEQ),
+                        spotanim(FINAL_WINDUP_SPOTANIM_START),
+                        wait(shockwaveWindup),
+                        spotanim(FINAL_WINDUP_SPOTANIM_RELEASE),
+                        external("muspah_shockwave_release"),
+                        wait(FINAL_SHOCKWAVE_RECOVER_TICKS),
+                        transmog("npc.muspah_soulsplit", Int.MAX_VALUE),
+                        external("muspah_soulsplit_enter"),
+                        transitionTo(PHASE_SOULSPLIT),
+                        faceTarget(),
+                    ),
+                )
+
+            val toFinal =
+                ability(
+                    ABILITY_TO_FINAL,
+                    sequence(
+                        transmog("npc.muspah_final", Int.MAX_VALUE),
+                        external("muspah_final_enter"),
+                        transitionTo(PHASE_FINAL),
+                    ),
+                )
+
+            val inRangedOrMelee = InPhase(PHASE_RANGED) or InPhase(PHASE_MELEE)
+            val shockwaveReady =
+                inRangedOrMelee and Condition.Custom { fightFor(it).finalPhaseTriggered }
+            val shieldBroken =
+                InPhase(PHASE_SOULSPLIT) and Condition.Custom { fightFor(it).soulsplitBroken }
+
+            val spikeUsed = Condition.AbilityUsed(ABILITY_HOMING_SPIKE)
+            val cloudUsed = Condition.AbilityUsed(ABILITY_CLOUD_TELEPORT)
+            val specialReady =
+                inRangedOrMelee and
+                    Condition.Custom { npc ->
+                        val fight = fightFor(npc)
+                        !fight.finalPhaseTriggered &&
+                            deps.mapClock.cycle >= fight.specialCooldownUntilCycle
+                    }
+            val meleeAtPrimary = InPhase(PHASE_MELEE) and HpBelow(SPECIAL_HP_PRIMARY)
+            val rangedAtPrimary = InPhase(PHASE_RANGED) and HpBelow(SPECIAL_HP_PRIMARY)
+            val atFallback = HpBelow(SPECIAL_HP_FALLBACK)
+
+            val spikeReady =
+                specialReady and ((meleeAtPrimary and Condition.Not(cloudUsed)) or atFallback)
+            val cloudReady =
+                specialReady and
+                    ((rangedAtPrimary and Condition.Not(spikeUsed)) or (atFallback and spikeUsed))
+
+            val rangedSwitchReady = switchReady(PHASE_RANGED, RANGED_SWITCH_DAMAGE)
+            val meleeSwitchReady = switchReady(PHASE_MELEE, MELEE_SWITCH_DAMAGE)
 
             phase(PHASE_RANGED) {
+                forceWhen(shockwaveReady, finalShockwave, once = true)
+                forceWhen(spikeReady, homingSpike, once = true)
+                forceWhen(cloudReady, cloudTeleport, once = true)
+                forceWhen(rangedSwitchReady, toMelee)
                 weightedSelectorRandom {
                     +random(rangedAttack, weight = RANGED_ATTACK_WEIGHT)
                     +random(magicAttack, weight = RANGED_MAGIC_WEIGHT)
@@ -184,58 +338,98 @@ constructor(deps: BossDeps, private val locRepo: LocRepository, private val npcL
             }
 
             phase(PHASE_MELEE) {
-                weightedSelectorRandom {
-                    +random(meleeHit, weight = 1, requires = WithinMeleeRange)
-                    +random(meleeRanged, weight = 1, requires = Condition.Not(WithinMeleeRange))
-                }
+                forceWhen(shockwaveReady, finalShockwave, once = true)
+                forceWhen(spikeReady, homingSpike, once = true)
+                forceWhen(cloudReady, cloudTeleport, once = true)
+                forceWhen(meleeSwitchReady, toRanged)
+                weightedSelectorRandom { +random(meleeHit, weight = 1, requires = WithinMeleeRange) }
             }
 
-            phase(PHASE_SOULSPLIT, entryHp = SOULSPLIT_HP_FRACTION) {
-                entry = transformSoulsplit.name
+            phase(PHASE_SOULSPLIT) {
+                forceWhen(shieldBroken, toFinal, once = true)
                 weightedSelectorRandom { +random(magicAttack, weight = 1) }
             }
 
-        }
-
-    private suspend fun checkPendingTransition(access: StandardNpcAccess, target: Player) {
-        val npc = access.npc
-        val fight = fightFor(npc)
-        when (fight.pendingTransition) {
-            Transition.TO_MELEE -> {
-                fight.pendingTransition = null
-                beginFormTransform(access, npc, target, meleeType(), PHASE_MELEE)
+            phase(PHASE_FINAL) {
+                weightedSelectorRandom { +random(magicAttack, weight = 1) }
             }
-            Transition.TO_RANGED -> {
-                fight.pendingTransition = null
-                beginFormTransform(access, npc, target, rangedType(), PHASE_RANGED)
-            }
-            Transition.TELEPORT_SPECIAL -> {
-                fight.pendingTransition = null
-                logger.info { "[muspah] transition applied: -> teleport special" }
-                beginTeleportSpecial(access, npc, target)
-            }
-            null -> {}
         }
     }
 
-    private fun beginFormTransform(
-        access: StandardNpcAccess,
-        npc: Npc,
-        target: Player,
-        type: NpcServerType,
-        phase: String,
-    ) {
-        npc.anim(TRANSFORM_DISAPPEAR_SEQ)
-        deps.worldQueues.add(TRANSFORM_ANIM_DELAY) {
-            if (!npc.isValidTarget()) return@add
-            access.changeType(type, Int.MAX_VALUE)
-            access.spotanim(TRANSFORM_APPEAR_SPOTANIM)
-            npc.anim(TRANSFORM_APPEAR_SEQ)
-            deps.encounter(npc).transitionTo(phase, deps.mapClock.cycle)
-            logger.info { "[muspah] transition applied: -> $phase" }
+    private fun formTransform(toNpc: String, phase: String) =
+        sequence(
+            external("muspah_switch_begin"),
+            anim(TRANSFORM_DISAPPEAR_SEQ),
+            wait(TRANSFORM_ANIM_DELAY),
+            transmog(toNpc, Int.MAX_VALUE),
+            spotanim(TRANSFORM_APPEAR_SPOTANIM),
+            anim(TRANSFORM_APPEAR_SEQ),
+            transitionTo(phase),
+            external("muspah_switch_end"),
+        )
 
-            if (target.isValidTarget()) beginSpikeSlam(npc, target)
+    private fun switchReady(phase: String, damageThreshold: Int) =
+        InPhase(phase) and
+            Condition.Custom { npc ->
+                val fight = fightFor(npc)
+                !fight.finalPhaseTriggered &&
+                    fight.hitsSinceSwitch >= SWITCH_MIN_HITS &&
+                    fight.damageSinceSwitch >= damageThreshold
+            }
+
+    private fun registerAbilityHandlers() {
+        val handlers = deps.extensionRegistry
+
+        handlers.register("muspah_switch_begin") { _, npc, _, _ ->
+            resetSwitchCounters(npc)
+            applySpecialCooldown(npc, TRANSFORM_ANIM_DELAY + SPECIAL_COOLDOWN_BUFFER)
         }
+        handlers.register("muspah_switch_end") { _, npc, target, _ ->
+            resetSwitchCounters(npc)
+            if (npc.isValidTarget() && target.isValidTarget()) beginSpikeSlam(npc, target)
+        }
+        handlers.register("muspah_homing_spikes") { _, npc, target, _ ->
+            if (npc.isValidTarget() && target.isValidTarget()) beginHomingSpikeAttack(npc, target)
+        }
+        handlers.register("muspah_teleport_begin") { _, npc, _, params ->
+            resetSwitchCounters(npc)
+            applySpecialCooldown(npc, params as Int)
+        }
+        handlers.register("muspah_hazard_batch") { _, npc, _, _ ->
+            if (npc.isValidTarget()) spawnHazardCloudBatch(npc.spawnCoords)
+        }
+        handlers.register("muspah_shockwave_release") { _, npc, _, _ -> unleashShockwave(npc) }
+        handlers.register("muspah_soulsplit_enter") { _, npc, _, _ ->
+            val fight = fightFor(npc)
+            fight.preSoulsplitHp = npc.hitpoints
+            fight.preSoulsplitMaxHp = npc.baseHitpointsLvl
+            fight.soulsplitBroken = false
+            setStyleImmunity(npc, true)
+            npc.baseHitpointsLvl = SOULSPLIT_SHIELD_POINTS
+            npc.hitpoints = SOULSPLIT_SHIELD_POINTS
+            fight.shieldHp = SOULSPLIT_SHIELD_POINTS
+            showShieldHeadbar(npc)
+            recolourBossBar(npc)
+            syncBossBar(npc)
+        }
+        handlers.register("muspah_final_enter") { _, npc, _, _ ->
+            val fight = fightFor(npc)
+            fight.finalAttackCount = 0
+            fight.lastCountedAttackTick = deps.encounter(npc).lastAbilityTick
+            recolourBossBar(npc)
+        }
+    }
+
+    private fun resetSwitchCounters(npc: Npc) {
+        val fight = fightFor(npc)
+        fight.damageSinceSwitch = 0
+        fight.hitsSinceSwitch = 0
+    }
+
+    private fun applySpecialCooldown(npc: Npc, ticks: Int) {
+        val fight = fightFor(npc)
+        val until = deps.mapClock.cycle + ticks
+        if (until > fight.specialCooldownUntilCycle) fight.specialCooldownUntilCycle = until
     }
 
     private fun onMuspahHit(npc: Npc, hit: HitBuilder) {
@@ -243,111 +437,221 @@ constructor(deps: BossDeps, private val locRepo: LocRepository, private val npcL
         if (visId !in liveFormIds || !hit.isFromPlayer) return
         val attacker = hit.sourceUid?.let { PlayerUid(it).resolve(deps.playerList) }
 
-        if (visId == soulsplitId || visId == finalId) {
-            val protected = attacker?.vars?.get(PROTECT_FROM_MAGIC) ?: 0
-            if (protected <= 0) {
-                hit.damage = (hit.damage * SOULSPLIT_MITIGATION).toInt()
-                attacker?.mes(SOULSPLIT_MESSAGE)
+        if (visId == soulsplitId) {
+            if (attacker?.vars["varbit.prayer_smite"] == 1) {
+                drainShield(npc, hit.damage * SMITE_SHIELD_DRAIN_PERCENT / 100)
             }
-            if (hit.damage > 0) npc.heal((hit.damage * SOULSPLIT_HEAL_FRACTION).toInt(), showHitsplat = true)
+            hit.damage = 0
             return
         }
 
+        if (visId == finalId) return
+
         val fight = fightFor(npc)
+        val hpAfterHit = npc.hitpoints - hit.damage
+        if (fight.finalPhaseTriggered || hpAfterHit < FINAL_PHASE_HP_THRESHOLD) {
+            if (!fight.finalPhaseTriggered) {
+                fight.finalPhaseTriggered = true
+                logger.info { "[muspah] final phase shockwave queued: hp=$hpAfterHit" }
+            }
+            hit.damage = hit.damage.coerceAtMost((npc.hitpoints - 1).coerceAtLeast(0))
+            return
+        }
+
         fight.damageSinceSwitch += hit.damage
         fight.hitsSinceSwitch++
-        logger.info {
-            "[muspah] incoming hit: form=${formName(visId)} damage=${hit.damage} " +
-                "damageSinceSwitch=${fight.damageSinceSwitch} hitsSinceSwitch=${fight.hitsSinceSwitch}"
-        }
-
-        val switchDue = fight.hitsSinceSwitch >= SWITCH_MIN_HITS
-        when (visId) {
-            rangedId ->
-                if (switchDue && fight.damageSinceSwitch >= RANGED_SWITCH_DAMAGE) {
-                    fight.damageSinceSwitch = 0
-                    fight.hitsSinceSwitch = 0
-                    fight.pendingTransition = Transition.TO_MELEE
-                    logger.info { "[muspah] transition queued: ranged -> melee" }
-                }
-            meleeId ->
-                if (switchDue && fight.damageSinceSwitch >= MELEE_SWITCH_DAMAGE) {
-                    fight.damageSinceSwitch = 0
-                    fight.hitsSinceSwitch = 0
-                    fight.pendingTransition =
-                        if (!fight.teleportSpecialUsed) {
-                            fight.teleportSpecialUsed = true
-                            Transition.TELEPORT_SPECIAL
-                        } else {
-                            Transition.TO_RANGED
-                        }
-                    logger.info { "[muspah] transition queued: melee -> ${fight.pendingTransition}" }
-                }
-        }
     }
 
-    private fun beginTeleportSpecial(access: StandardNpcAccess, npc: Npc, target: Player) {
-        access.changeType(teleportType(), Int.MAX_VALUE)
-        deps.suppressAttacks(npc, TELEPORT_STEP_TICKS * (TELEPORT_LOOP.size + 1) + 2)
+    private fun drainShield(npc: Npc, amount: Int) {
+        val fight = fightFor(npc)
+        val drained = minOf(amount, fight.shieldHp)
+        fight.shieldHp -= drained
+        if (fight.shieldHp <= 0) {
+            fight.soulsplitBroken = true
+            resolveSoulsplitShield(npc)
+        } else {
+            npc.hitpoints = fight.shieldHp
+        }
+        if (drained <= 0) return
+        showShieldHitmark(npc, hitmark_groups.prayer_drain.tint!!, drained)
+    }
 
-        val faceAnchor = npc.spawnCoords.translate(1, 0)
+    private fun soulSplitHeal(npc: Npc, damage: Int) {
+        val fight = fightFor(npc)
+        if (fight.soulsplitBroken) return
+        val healed = minOf(damage / 2, SOULSPLIT_SHIELD_POINTS - fight.shieldHp)
+        if (healed <= 0) return
+        fight.shieldHp += healed
+        npc.hitpoints = fight.shieldHp
+        showShieldHitmark(npc, hitmark_groups.heal.lit, healed)
+    }
 
-        TELEPORT_LOOP.forEachIndexed { index, offset ->
-            deps.worldQueues.add(TELEPORT_STEP_TICKS * (index + 1)) {
-                if (!npc.isValidTarget()) return@add
-                val dest = npc.spawnCoords.translate(offset.first, offset.second)
-                PathingEntityCommon.telejump(npc, deps.collision, dest)
-                npc.faceSquare(faceAnchor)
-                npc.resetFaceEntity()
-                npc.anim("seq.npc_muspah_teleport_attack_01")
-                access.spotanim("spotanim.vfx_muspah_teleport_attack_01")
-                fireTeleportHit(npc, target)
-                spawnHazardCloudBatch(npc.spawnCoords)
+    private fun showShieldHitmark(npc: Npc, hitmarkName: String, amount: Int) {
+        val hitmark = hitmarkName.asRSCM(RSCMType.HITMARK)
+        npc.showHitmark(
+            Hitmark.fromNoSource(
+                self = hitmark,
+                source = hitmark,
+                public = hitmark,
+                damage = amount,
+                delay = 0,
+            )
+        )
+    }
+
+    private fun recolourBossBar(npc: Npc) {
+        for (player in deps.playerList) {
+            if (player.coords.chebyshevDistance(npc.coords) <= BOSS_BAR_RADIUS) {
+                bossHpBar.onRecolour(player, npc)
             }
         }
+    }
 
-        deps.worldQueues.add(TELEPORT_STEP_TICKS * (TELEPORT_LOOP.size + 1)) {
-            if (!npc.isValidTarget()) return@add
-            val dest = npc.spawnCoords.translate(TELEPORT_RETURN_OFFSET.first, TELEPORT_RETURN_OFFSET.second)
-            PathingEntityCommon.telejump(npc, deps.collision, dest)
-            npc.faceSquare(faceAnchor)
-            npc.resetFaceEntity()
-            npc.anim("seq.npc_muspah_teleport_appear_01")
-            access.spotanim("spotanim.vfx_muspah_teleport_appear_01")
-            access.changeType(meleeType(), Int.MAX_VALUE)
-            deps.encounter(npc).transitionTo(PHASE_MELEE, deps.mapClock.cycle)
+    private fun resolveSoulsplitShield(npc: Npc) {
+        val fight = fightFor(npc)
+        if (fight.soulsplitBroken) {
+            setStyleImmunity(npc, false)
+            npc.baseHitpointsLvl = fight.preSoulsplitMaxHp
+            npc.hitpoints = fight.preSoulsplitHp
+        } else {
+            npc.hitpoints = fight.shieldHp
+            showShieldHeadbar(npc)
+        }
+        syncBossBar(npc)
+    }
+
+    private fun syncBossBar(npc: Npc) {
+        for (player in deps.playerList) {
+            if (player.coords.chebyshevDistance(npc.coords) <= BOSS_BAR_RADIUS) {
+                bossHpBar.onUpdate(player, npc)
+            }
         }
     }
 
-    private fun fireTeleportHit(npc: Npc, target: Player) {
-        if (!target.isValidTarget()) return
-        val damage = deps.random.of(TELEPORT_MAX_HIT + 1)
-        target.finishNpcHit(npc, RANGED_HIT_DELAY, HitType.Ranged, damage, deps.playerHitModifier)
+    private fun setStyleImmunity(npc: Npc, immune: Boolean) {
+        val value = if (immune) 1 else 0
+        npc.vars["varn.immune_melee"] = value
+        npc.vars["varn.immune_ranged"] = value
+        npc.vars["varn.immune_magic"] = value
     }
 
-    private fun fireMagicProjectile(npc: Npc, target: Player) {
-        val spotId = MAGIC_PROJECTILE_SPOTANIM.asRSCM(RSCMType.SPOTANIM)
-        val type =
-            ProjAnimType(
-                startHeight = MAGIC_PROJECTILE_CONFIG.startHeight,
-                endHeight = MAGIC_PROJECTILE_CONFIG.endHeight,
-                delay = MAGIC_PROJECTILE_CONFIG.startDelay,
-                angle = MAGIC_PROJECTILE_CONFIG.angle,
-                lengthAdjustment = MAGIC_PROJECTILE_CONFIG.travelTime,
-                progress = MAGIC_PROJECTILE_CONFIG.progress,
-                stepMultiplier = MAGIC_PROJECTILE_CONFIG.stepMultiplier,
+    private fun showShieldHeadbar(npc: Npc) {
+        val headbar = npc.visHeadbar(params.headbar)
+        val fill = npc.hitpoints * headbar.segments / SOULSPLIT_SHIELD_POINTS
+        npc.showHeadbar(
+            Headbar.fromNoSource(
+                self = headbar.id,
+                public = headbar.id,
+                startFill = fill,
+                endFill = fill,
+                startTime = 0,
+                endTime = 0,
             )
-        val projAnim = ProjAnim.fromNpcToPlayer(npc, target, spotId, type)
-        deps.worldRepo.projAnim(projAnim)
-
-        val damage = deps.random.of(MAGIC_MAX_HIT + 1)
-        if (damage > 0) {
-            target.spotanim(MAGIC_IMPACT_SPOTANIM, delay = projAnim.clientCycles)
-        }
-        target.queueCombatRetaliate(npc)
-        target.queueImpactHit(npc, projAnim.serverCycles, HitType.Magic, damage, deps.playerHitModifier)
-        target.combatPlayDefendAnim()
+        )
     }
+
+    private fun unleashShockwave(npc: Npc) {
+        val origin = npc.coords
+        val size = npc.size
+        val outerSpot = SpotanimType(SHOCKWAVE_SPOTANIM_OUTER.asRSCM(RSCMType.SPOTANIM))
+        val innerSpot = SpotanimType(SHOCKWAVE_SPOTANIM_INNER.asRSCM(RSCMType.SPOTANIM))
+
+        val alreadyHit = mutableSetOf<PlayerUid>()
+        for (endpoint in shockwavePerimeter(origin, size, SHOCKWAVE_RADIUS)) {
+            for (tile in shockwaveRayTiles(origin, size, endpoint)) {
+                val distance = bboxChebyshevDistance(origin, size, tile)
+                val delay = distance * SHOCKWAVE_DELAY_PER_TILE
+                deps.worldRepo.spotanimMap(outerSpot, tile, 0, delay)
+                deps.worldRepo.spotanimMap(innerSpot, tile, 0, delay + SHOCKWAVE_ECHO_OFFSET)
+
+                val occupant = deps.playerList.firstOrNull { it.coords == tile && it.hitpoints > 0 }
+                if (occupant != null && alreadyHit.add(occupant.uid)) {
+                    val ticks = (delay / CLIENT_CYCLES_PER_TICK).coerceAtLeast(1)
+                    deps.worldQueues.add(ticks) {
+                        if (occupant.isValidTarget()) {
+                            val damage = deps.random.of(SHOCKWAVE_MAX_HIT + 1)
+                            occupant.finishNpcHit(npc, 1, HitType.Typeless, damage, deps.playerHitModifier)
+                        }
+                    }
+                }
+
+                if (isShockwaveBlocked(tile)) break
+            }
+        }
+    }
+
+    private fun shockwavePerimeter(origin: CoordGrid, size: Int, radius: Int): List<CoordGrid> {
+        val center = origin.translate(size / 2, size / 2)
+        val tiles = mutableListOf<CoordGrid>()
+        for (dx in -radius..radius) {
+            tiles += center.translate(dx, -radius)
+            tiles += center.translate(dx, radius)
+        }
+        for (dz in -radius + 1 until radius) {
+            tiles += center.translate(-radius, dz)
+            tiles += center.translate(radius, dz)
+        }
+        return tiles
+    }
+
+    private fun shockwaveRayTiles(origin: CoordGrid, size: Int, endpoint: CoordGrid): List<CoordGrid> {
+        val center = origin.translate(size / 2, size / 2)
+        val tiles = mutableListOf<CoordGrid>()
+        var x = center.x
+        var z = center.z
+        val dx = kotlin.math.abs(endpoint.x - x)
+        val dz = kotlin.math.abs(endpoint.z - z)
+        val stepX = if (x < endpoint.x) 1 else -1
+        val stepZ = if (z < endpoint.z) 1 else -1
+        var err = dx - dz
+
+        fun addTile(tx: Int, tz: Int) {
+            val tile = CoordGrid(tx, tz, center.level)
+            if (bboxChebyshevDistance(origin, size, tile) > 0) tiles += tile
+        }
+
+        addTile(x, z)
+        while (x != endpoint.x || z != endpoint.z) {
+            val e2 = 2 * err
+            val stepsX = e2 > -dz
+            val stepsZ = e2 < dx
+            if (stepsX) {
+                err -= dz
+                x += stepX
+            }
+            if (stepsZ) {
+                err += dx
+                z += stepZ
+            }
+            if (stepsX && stepsZ) {
+                addTile(x - stepX, z)
+                addTile(x, z - stepZ)
+            }
+            addTile(x, z)
+        }
+        return tiles
+    }
+
+    private fun bboxChebyshevDistance(origin: CoordGrid, size: Int, tile: CoordGrid): Int {
+        val minX = origin.x
+        val maxX = origin.x + size - 1
+        val minZ = origin.z
+        val maxZ = origin.z + size - 1
+        val dx = when {
+            tile.x < minX -> minX - tile.x
+            tile.x > maxX -> tile.x - maxX
+            else -> 0
+        }
+        val dz = when {
+            tile.z < minZ -> minZ - tile.z
+            tile.z > maxZ -> tile.z - maxZ
+            else -> 0
+        }
+        return maxOf(dx, dz)
+    }
+
+    private fun isShockwaveBlocked(coord: CoordGrid): Boolean =
+        deps.collision.isWalkBlocked(coord) || deps.collision[coord] and CollisionFlag.BLOCK_PLAYERS != 0
 
     private fun spawnHazardCloudBatch(anchor: CoordGrid) {
         val type = ServerCacheManager.getNpc(projectileHazardId) ?: return
@@ -400,7 +704,6 @@ constructor(deps: BossDeps, private val locRepo: LocRepository, private val npcL
 
         val warningSpot = SpotanimType(SPIKE_WARNING_SPOTANIM.asRSCM(RSCMType.SPOTANIM))
         tiles.forEach { deps.worldRepo.spotanimMap(warningSpot, it) }
-        logger.info { "[muspah] spike slam: tiles=${tiles.size} guaranteed=${target.coords}" }
 
         deps.worldQueues.add(SPIKE_PRE_DELAY) {
             if (!npc.isValidTarget()) return@add
@@ -409,11 +712,10 @@ constructor(deps: BossDeps, private val locRepo: LocRepository, private val npcL
                 locRepo.add(it, SPIKE_TELEGRAPH_LOC, Int.MAX_VALUE, LocAngle.West, LocShape.CentrepieceStraight)
                 deps.worldRepo.spotanimMap(spawnSpot, it)
             }
-
+            shakeCameraNear(npc)
             deps.worldQueues.add(SPIKE_SOLIDIFY_DELAY) {
                 if (!npc.isValidTarget()) return@add
                 tiles.forEach { spawnSpike(npc, it) }
-                shakeCameraNear(npc)
             }
         }
     }
@@ -437,7 +739,9 @@ constructor(deps: BossDeps, private val locRepo: LocRepository, private val npcL
         val fight = fightFor(npc)
         val loc = locRepo.add(coord, SPIKE_LOC, Int.MAX_VALUE, LocAngle.West, LocShape.CentrepieceStraight)
         fight.activeSpikes += loc
-        logger.info { "[muspah] spike spawned: coord=$coord active=${fight.activeSpikes.size}" }
+
+        deps.collision.removeCollisionFlag(coord, SPIKE_LOC_COLLISION_MASK)
+        deps.collision.addCollisionFlag(coord, CollisionFlag.BLOCK_PLAYERS)
 
         deps.worldQueues.add(1) {
             if (!locRepo.findLoc(coord, SPIKE_LOC)) return@add
@@ -452,12 +756,11 @@ constructor(deps: BossDeps, private val locRepo: LocRepository, private val npcL
         val damage = SPIKE_DAMAGE_MIN + deps.random.of(SPIKE_DAMAGE_MAX - SPIKE_DAMAGE_MIN + 1)
         player.finishNpcHit(npc, 1, HitType.Typeless, damage, deps.playerHitModifier)
         npc.heal((damage * SPIKE_HEAL_FRACTION).toInt(), showHitsplat = true)
+        knockbackPlayer(player, coord)
+    }
 
+    private fun knockbackPlayer(player: Player, coord: CoordGrid): CoordGrid {
         val safeTile = randomAdjacentClearTile(coord) ?: coord
-        logger.info {
-            "[muspah] spike hit: coord=$coord damage=$damage heal=${(damage * SPIKE_HEAL_FRACTION).toInt()} " +
-                "knockbackTo=$safeTile"
-        }
         val lead = Translation.between(coord, safeTile)
         PathingEntityCommon.teleport(player, deps.collision, safeTile)
         player.pendingExactMove =
@@ -470,6 +773,90 @@ constructor(deps: BossDeps, private val locRepo: LocRepository, private val npcL
                 clientDelay2 = CLIENT_CYCLES_PER_TICK,
                 direction = bearing(lead.x, lead.z),
             )
+        return safeTile
+    }
+
+    private fun beginHomingSpikeAttack(npc: Npc, target: Player) {
+        repeat(HOMING_SPIKE_PAIR_COUNT) {
+            val origin = randomWalkableTile(target.coords, HOMING_SPIKE_ORIGIN_RADIUS) ?: target.coords
+            launchHomingSpikePair(npc, target, origin)
+        }
+    }
+
+    private fun launchHomingSpikePair(npc: Npc, target: Player, origin: CoordGrid) {
+        val warningSpot = SpotanimType(SPIKE_WARNING_SPOTANIM.asRSCM(RSCMType.SPOTANIM))
+        val coordA = origin
+        val coordB = origin.translate(0, -1)
+        deps.worldRepo.spotanimMap(warningSpot, coordA)
+        deps.worldRepo.spotanimMap(warningSpot, coordB)
+
+        deps.worldQueues.add(HOMING_SPIKE_TELEGRAPH_DELAY) {
+            if (npc.isValidTarget() && !fightFor(npc).finalPhaseTriggered) {
+                spawnHomingSpike(npc, target.uid, coordA)
+            }
+        }
+        deps.worldQueues.add(HOMING_SPIKE_TELEGRAPH_DELAY + HOMING_SPIKE_PAIR_OFFSET) {
+            if (npc.isValidTarget() && !fightFor(npc).finalPhaseTriggered) {
+                spawnHomingSpike(npc, target.uid, coordB)
+            }
+        }
+    }
+
+    private fun spawnHomingSpike(npc: Npc, targetUid: PlayerUid, coord: CoordGrid) {
+        val loc = locRepo.add(coord, HOMING_SPIKE_LOC, Int.MAX_VALUE, LocAngle.West, LocShape.CentrepieceStraight)
+        deps.worldRepo.spotanimMap(SpotanimType(HOMING_SPIKE_SPAWN_SPOTANIM.asRSCM(RSCMType.SPOTANIM)), coord)
+        hitHomingSpikeOccupant(npc, coord)
+        val expiryTick = deps.mapClock.cycle + HOMING_SPIKE_LIFETIME_TICKS
+        advanceHomingSpike(npc, targetUid, loc, expiryTick)
+    }
+
+    private fun advanceHomingSpike(npc: Npc, targetUid: PlayerUid, loc: LocInfo, expiryTick: Int) {
+        deps.worldQueues.add(HOMING_SPIKE_MOVE_INTERVAL) {
+            if (!npc.isValidTarget() || fightFor(npc).finalPhaseTriggered) {
+                locRepo.del(loc, Int.MAX_VALUE)
+                return@add
+            }
+
+            val target = targetUid.resolve(deps.playerList)
+            if (deps.mapClock.cycle >= expiryTick || target == null || !target.isValidTarget()) {
+                solidifyHomingSpike(npc, loc)
+                return@add
+            }
+
+            val next = stepToward(loc.coords, target.coords)
+            if (next == loc.coords) {
+                solidifyHomingSpike(npc, loc)
+                return@add
+            }
+
+            locRepo.del(loc, Int.MAX_VALUE)
+            val nextLoc =
+                locRepo.add(next, HOMING_SPIKE_LOC, Int.MAX_VALUE, LocAngle.West, LocShape.CentrepieceStraight)
+            deps.worldRepo.spotanimMap(SpotanimType(HOMING_SPIKE_SPAWN_SPOTANIM.asRSCM(RSCMType.SPOTANIM)), next)
+            hitHomingSpikeOccupant(npc, next)
+            advanceHomingSpike(npc, targetUid, nextLoc, expiryTick)
+        }
+    }
+
+    private fun solidifyHomingSpike(npc: Npc, loc: LocInfo) {
+        locRepo.del(loc, Int.MAX_VALUE)
+        spawnSpike(npc, loc.coords)
+    }
+
+    private fun stepToward(from: CoordGrid, to: CoordGrid): CoordGrid {
+        val dx = (to.x - from.x).coerceIn(-1, 1)
+        val dz = (to.z - from.z).coerceIn(-1, 1)
+        if (dx == 0 && dz == 0) return from
+        val next = from.translate(dx, dz)
+        return if (deps.collision.isWalkBlocked(next)) from else next
+    }
+
+    private fun hitHomingSpikeOccupant(npc: Npc, coord: CoordGrid) {
+        val occupant = deps.playerList.firstOrNull { it.coords == coord && it.hitpoints > 0 } ?: return
+        val damage = HOMING_SPIKE_DAMAGE_MIN + deps.random.of(HOMING_SPIKE_DAMAGE_MAX - HOMING_SPIKE_DAMAGE_MIN + 1)
+        occupant.finishNpcHit(npc, 1, HitType.Typeless, damage, deps.playerHitModifier)
+        npc.heal((damage * SPIKE_HEAL_FRACTION).toInt(), showHitsplat = true)
+        knockbackPlayer(occupant, coord)
     }
 
     private fun bearing(dx: Int, dz: Int): Int {
@@ -496,24 +883,19 @@ constructor(deps: BossDeps, private val locRepo: LocRepository, private val npcL
         return candidates[deps.random.of(candidates.size)]
     }
 
-    private fun meleeType() = ServerCacheManager.getNpc(meleeId)!!
-
-    private fun rangedType() = ServerCacheManager.getNpc(rangedId)!!
-
-    private fun teleportType() = ServerCacheManager.getNpc(teleportId)!!
-
-    private enum class Transition {
-        TO_MELEE,
-        TO_RANGED,
-        TELEPORT_SPECIAL,
-    }
-
     private class MuspahFight {
         var damageSinceSwitch: Int = 0
         var hitsSinceSwitch: Int = 0
-        var teleportSpecialUsed: Boolean = false
-        var pendingTransition: Transition? = null
         val activeSpikes: MutableList<LocInfo> = mutableListOf()
+        var lastCoords: CoordGrid? = null
+        var specialCooldownUntilCycle: Int = 0
+        var finalPhaseTriggered: Boolean = false
+        var preSoulsplitHp: Int = 0
+        var preSoulsplitMaxHp: Int = 0
+        var soulsplitBroken: Boolean = false
+        var shieldHp: Int = 0
+        var finalAttackCount: Int = 0
+        var lastCountedAttackTick: Int = -1
     }
 
     private companion object {
@@ -521,6 +903,13 @@ constructor(deps: BossDeps, private val locRepo: LocRepository, private val npcL
         private const val PHASE_MELEE = "melee"
         private const val PHASE_SOULSPLIT = "soulsplit"
         private const val PHASE_FINAL = "final"
+
+        private const val ABILITY_HOMING_SPIKE = "homing_spike"
+        private const val ABILITY_CLOUD_TELEPORT = "cloud_teleport"
+        private const val ABILITY_TO_MELEE = "to_melee"
+        private const val ABILITY_TO_RANGED = "to_ranged"
+        private const val ABILITY_FINAL_SHOCKWAVE = "final_shockwave"
+        private const val ABILITY_TO_FINAL = "to_final"
 
         private const val ATTACK_RATE = 6
         private const val AGGRO_RANGE = 15
@@ -534,26 +923,57 @@ constructor(deps: BossDeps, private val locRepo: LocRepository, private val npcL
         private const val MELEE_SWITCH_DAMAGE = 80
         private const val SWITCH_MIN_HITS = 4
 
-        private const val SOULSPLIT_HP_FRACTION = 75.0 / 850.0
-        private const val FINAL_HP_FRACTION = 0.025
-
-        private const val SOULSPLIT_MITIGATION = 0.2
-        private const val SOULSPLIT_HEAL_FRACTION = 0.5
-        private const val SOULSPLIT_MESSAGE =
-            "<col=ff3045>The Phantom Muspah's</col> <col=00e6e6>prayer shield</col> " +
-                "<col=ff3045>mitigates regular damage.</col>"
+        private const val SOULSPLIT_SHIELD_POINTS = 75
+        private const val SMITE_SHIELD_DRAIN_PERCENT = 25
+        private const val FINAL_SPIKE_ATTACK_INTERVAL = 4
+        private const val SOULSPLIT_HIT_SELF_DRAIN = 2
+        private const val BOSS_BAR_RADIUS = 30
 
         private const val RANGED_MAX_HIT = 61
         private const val MELEE_MAX_HIT = 34
         private const val MAGIC_MAX_HIT = 72
-        private const val TELEPORT_MAX_HIT = 20
+
+
+        private const val MELEE_STILL_TICKS_VARN = "varn.muspah_melee_still_ticks"
+        private const val MELEE_STILL_DAMAGE_PER_TICK = 1
+        private const val MELEE_STILL_DAMAGE_CAP = 20
+        private const val MELEE_STILL_PENETRATION_PER_TICK = 5
+        private const val MELEE_STILL_PENETRATION_CAP = 50
+        private const val MELEE_STILL_TICKS_CAP =
+            MELEE_STILL_DAMAGE_CAP / MELEE_STILL_DAMAGE_PER_TICK
 
         private const val TELEPORT_STEP_TICKS = 1
+        private const val TELEPORT_DISAPPEAR_SEQ = "seq.npc_muspah_teleport_disappear_01"
+        private const val TELEPORT_DISAPPEAR_SPOTANIM = "spotanim.vfx_muspah_teleport_disappear_01"
+        private const val TELEPORT_APPEAR_SEQ = "seq.npc_muspah_teleport_appear_01"
+        private const val TELEPORT_APPEAR_SPOTANIM = "spotanim.vfx_muspah_teleport_appear_01"
         private const val ARENA_RADIUS = 8
         private const val RANDOM_TILE_ATTEMPTS = 5
 
+        private const val FINAL_PHASE_HP_THRESHOLD = 127
+        private const val FINAL_TELEPORT_TO_WINDUP_DELAY = 2
+        private const val FINAL_WINDUP_SEQ = "seq.npc_muspah_attack_explosion_01"
+        private const val FINAL_WINDUP_SPOTANIM_START = "spotanim.vfx_muspah_attack_explosion_01"
+        private const val FINAL_WINDUP_SPOTANIM_RELEASE = "spotanim.vfx_muspah_attack_explosion_02"
+        private const val FINAL_WINDUP_FALLBACK_TICKS = 5
+        private const val FINAL_SHOCKWAVE_RECOVER_TICKS = 3
+
+        private const val SHOCKWAVE_SPOTANIM_OUTER = "spotanim.projectile_muspah_attack_explode_03_dark"
+        private const val SHOCKWAVE_SPOTANIM_INNER = "spotanim.projectile_muspah_attack_explode_03"
+        private const val SHOCKWAVE_RADIUS = 20
+        private const val SHOCKWAVE_DELAY_PER_TILE = 3
+        private const val SHOCKWAVE_ECHO_OFFSET = 15
+        private const val SHOCKWAVE_MAX_HIT = 80
+
         private const val SPIKE_LOC = "loc.muspah_spike"
         private const val SPIKE_TELEGRAPH_LOC = "loc.muspah_spike_pre"
+
+        private const val SPIKE_DEATH_CLEANUP_DELAY = 5
+
+        private const val SPIKE_LOC_COLLISION_MASK: Int =
+            CollisionFlag.LOC or CollisionFlag.LOC_PROJ_BLOCKER or CollisionFlag.LOC_ROUTE_BLOCKER
+
+        private const val SPIKE_DESPAWN_SEQ = "seq.npc_muspah_spike_despawn_01"
 
         private const val SPIKE_WARNING_SPOTANIM = "spotanim.vfx_muspah_spike_warning_01"
         private const val SPIKE_SPAWN_SPOTANIM = "spotanim.vfx_muspah_spike_spawn_01"
@@ -575,6 +995,24 @@ constructor(deps: BossDeps, private val locRepo: LocRepository, private val npcL
         private const val SPIKE_DAMAGE_MIN = 15
         private const val SPIKE_DAMAGE_MAX = 25
         private const val SPIKE_HEAL_FRACTION = 0.75
+
+        private const val SPECIAL_HP_PRIMARY = 0.75
+        private const val SPECIAL_HP_FALLBACK = 0.50
+        private const val SPECIAL_COOLDOWN_BUFFER = 5
+
+        private const val HOMING_SPIKE_SEQ = "seq.npc_muspah_attack_summon_01"
+        private const val HOMING_SPIKE_LOC = "loc.muspah_spike_follow"
+        private const val HOMING_SPIKE_SPAWN_SPOTANIM = "spotanim.vfx_muspah_spike_spawn_02"
+
+        private const val HOMING_SPIKE_PAIR_COUNT = 2
+        private const val HOMING_SPIKE_ORIGIN_RADIUS = 6
+        private const val HOMING_SPIKE_TELEGRAPH_DELAY = 2
+        private const val HOMING_SPIKE_PAIR_OFFSET = 1
+        private const val HOMING_SPIKE_MOVE_INTERVAL = 2
+        private const val HOMING_SPIKE_LIFETIME_TICKS = 34
+
+        private const val HOMING_SPIKE_DAMAGE_MIN = 8
+        private const val HOMING_SPIKE_DAMAGE_MAX = 16
 
         private val RANGED_PROJECTILE_CONFIG =
             ProjectileConfig(
@@ -625,10 +1063,6 @@ constructor(deps: BossDeps, private val locRepo: LocRepository, private val npcL
 
         private const val RANGED_HIT_DELAY = 3
 
-        private const val PROTECT_FROM_MAGIC = "varbit.prayer_protectfrommagic"
-
-        // Fixed 8-tile loop confirmed identical across multiple kills/captures, offsets relative
-        // to the boss's arena spawn tile.
         private val TELEPORT_LOOP =
             listOf(
                 10 to -1,
@@ -641,8 +1075,6 @@ constructor(deps: BossDeps, private val locRepo: LocRepository, private val npcL
                 -5 to -8,
             )
 
-        // The 9th, non-attacking recovery jump that follows the loop - identical destination
-        // confirmed across multiple captures.
         private val TELEPORT_RETURN_OFFSET = 6 to 5
     }
 }
