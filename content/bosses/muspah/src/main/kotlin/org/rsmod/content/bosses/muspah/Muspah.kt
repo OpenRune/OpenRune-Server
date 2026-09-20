@@ -5,18 +5,19 @@ import dev.openrune.ServerCacheManager
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import dev.openrune.types.NpcMode
-import dev.openrune.types.NpcServerType
 import dev.openrune.types.aconverted.SpotanimType
 import jakarta.inject.Inject
+import kotlin.math.PI
+import kotlin.math.atan2
 import org.rsmod.api.bossbar.plugin.BossHpBarScript
 import org.rsmod.api.bosses.dsl.*
 import org.rsmod.api.bosses.runtime.BossCombat
 import org.rsmod.api.bosses.runtime.BossDeps
 import org.rsmod.api.bosses.runtime.BossPluginScript
 import org.rsmod.api.bosses.runtime.encounter
+import org.rsmod.api.bosses.spec.BossSpec
 import org.rsmod.api.bosses.spec.Condition
 import org.rsmod.api.bosses.spec.ProjectileConfig
-import org.rsmod.api.bosses.spec.BossSpec
 import org.rsmod.api.combat.commons.player.finishNpcHit
 import org.rsmod.api.config.refs.done.hitmark_groups
 import org.rsmod.api.config.refs.params
@@ -25,7 +26,6 @@ import org.rsmod.api.npc.isValidTarget
 import org.rsmod.api.player.events.PlayerHitEvents
 import org.rsmod.api.player.isValidTarget
 import org.rsmod.api.player.output.Camera
-import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.stat.hitpoints
 import org.rsmod.api.repo.loc.LocRepository
 import org.rsmod.api.script.onEvent
@@ -40,21 +40,19 @@ import org.rsmod.game.entity.util.PathingEntityCommon
 import org.rsmod.game.headbar.Headbar
 import org.rsmod.game.hit.Hit
 import org.rsmod.game.hit.HitBuilder
-import org.rsmod.game.hit.Hitmark
 import org.rsmod.game.hit.HitType
+import org.rsmod.game.hit.Hitmark
 import org.rsmod.game.loc.LocAngle
 import org.rsmod.game.loc.LocInfo
 import org.rsmod.game.loc.LocShape
+import org.rsmod.game.map.collision.add as addCollisionFlag
 import org.rsmod.game.map.collision.get
 import org.rsmod.game.map.collision.isWalkBlocked
+import org.rsmod.game.map.collision.remove as removeCollisionFlag
 import org.rsmod.map.CoordGrid
 import org.rsmod.map.util.Translation
 import org.rsmod.plugin.scripts.ScriptContext
 import org.rsmod.routefinder.flag.CollisionFlag
-import org.rsmod.game.map.collision.add as addCollisionFlag
-import org.rsmod.game.map.collision.remove as removeCollisionFlag
-import kotlin.math.PI
-import kotlin.math.atan2
 
 class Muspah
 @Inject
@@ -932,7 +930,6 @@ constructor(
         private const val RANGED_MAX_HIT = 61
         private const val MELEE_MAX_HIT = 34
         private const val MAGIC_MAX_HIT = 72
-
 
         private const val MELEE_STILL_TICKS_VARN = "varn.muspah_melee_still_ticks"
         private const val MELEE_STILL_DAMAGE_PER_TICK = 1
