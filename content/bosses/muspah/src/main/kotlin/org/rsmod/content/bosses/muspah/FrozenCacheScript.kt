@@ -25,7 +25,8 @@ class FrozenCacheScript @Inject constructor(private val objRepo: ObjRepository) 
         }
 
         val preRoll = preRollTable.roll(player, ArgMap()).flatten()
-        val result = if (preRoll is RollResult.Nothing) mainTable.roll(player, ArgMap()).flatten() else preRoll
+        val preRollHit = preRoll is RollResult.Single && !preRoll.result.isNothing
+        val result = if (preRollHit) preRoll else mainTable.roll(player, ArgMap()).flatten()
         when (result) {
             is RollResult.Nothing -> Unit
             is RollResult.Single -> give(result.result)
