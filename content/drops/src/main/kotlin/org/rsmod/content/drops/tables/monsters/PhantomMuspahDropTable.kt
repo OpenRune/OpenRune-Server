@@ -19,6 +19,7 @@ import org.rsmod.game.entity.Player
 public val phantomMuspahDropTable: RSDropTable<Player, DropRollItem> = RSDropTable(
     tableIdentifier = "Phantom Muspah Drops",
     npcs = npcs("npc.muspah", "npc.muspah_final", "npc.muspah_melee", "npc.muspah_soulsplit", "npc.muspah_teleport"),
+    mainRolls = 2,
     mainTable = rsPlayerWeightedTable(total = 235) {
         name("Phantom Muspah Drops")
         10 weight "obj.cert_rune_kiteshield" count 3
@@ -85,10 +86,6 @@ public val phantomMuspahDropTable: RSDropTable<Player, DropRollItem> = RSDropTab
     },
     tertiaries = rsPlayerTertiaryTable {
         onBuilder { brimstoneKeyRoll() }
-        1 outOf 1 weight "obj.muspah_pet_morph" count 1 condition { player ->
-            // Drops Need Manual: Guaranteed reward for defeating the boss in under 3:00, provided that the player does not already have one in their possession, or has not already used one on the Muphin pet.
-             true
-        }
         1 outOf 2500 weight "obj.muspahpet" count 1
         1 outOf 28 weight "obj.trail_clue_hard_map001" count 1 transformObj { player ->
              player.clueScrollTransformObj("obj.trail_clue_hard_map001")
