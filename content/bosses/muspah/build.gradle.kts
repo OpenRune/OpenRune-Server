@@ -4,6 +4,8 @@ plugins {
 
 dependencies {
     implementation(projects.api.bosses)
+    implementation(projects.api.dropTable)
+    implementation(projects.api.dropTablePlugin)
     implementation(projects.api.pluginCommons)
     implementation(projects.api.player)
     implementation(projects.api.npc)
