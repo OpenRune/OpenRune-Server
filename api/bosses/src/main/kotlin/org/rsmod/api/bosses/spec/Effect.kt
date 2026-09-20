@@ -107,6 +107,10 @@ sealed interface Effect {
 
     data class Transmog(val to: String, val durationTicks: Int) : Effect
 
+    data class Teleport(val to: TargetExpr.Single) : Effect
+    data object FaceTarget : Effect
+    data class FaceTile(val at: TargetExpr.Single) : Effect
+
     data class Poison(val damage: Int, val chance: Int = 1, val outOf: Int = 1) : Effect
     data class Freeze(val ticks: Int, val chance: Int = 1, val outOf: Int = 1) : Effect
     data object DisablePrayers : Effect

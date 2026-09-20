@@ -187,6 +187,8 @@ object SpecValidator {
             is Effect.Debris -> listOf(effect.center)
             is Effect.Summon -> listOf(effect.centeredOn)
             is Effect.OnEach -> listOf(effect.targets)
+            is Effect.Teleport -> listOf(effect.to)
+            is Effect.FaceTile -> listOf(effect.at)
             else -> emptyList()
         }
 

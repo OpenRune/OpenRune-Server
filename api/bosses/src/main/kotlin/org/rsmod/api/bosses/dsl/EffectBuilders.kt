@@ -131,6 +131,14 @@ fun statDrain(vararg stats: String, amount: Int, odds: Odds): Effect =
 
 fun telegraph(spotanim: String, windup: Int): TelegraphSpec = TelegraphSpec(spotanim, windup)
 
+fun spawnTile(dx: Int = 0, dz: Int = 0): TargetExpr.Single = TargetExpr.SpawnTile(dx, dz)
+
+fun teleport(to: TargetExpr.Single): Effect = Effect.Teleport(to)
+
+fun faceTarget(): Effect = Effect.FaceTarget
+
+fun faceTile(at: TargetExpr.Single): Effect = Effect.FaceTile(at)
+
 fun randomWalkableTile(radius: Int, of: TargetExpr.Single = TargetExpr.Self): TargetExpr =
     TargetExpr.RandomWalkableTile(radius, of)
 
