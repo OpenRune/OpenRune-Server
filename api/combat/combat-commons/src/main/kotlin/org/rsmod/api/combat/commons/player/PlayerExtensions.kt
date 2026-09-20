@@ -63,9 +63,10 @@ public fun Player.finishNpcHit(
     type: HitType,
     damage: Int,
     modifier: PlayerHitModifier,
+    penetration: Int = 0,
 ): Hit {
     queueCombatRetaliate(source)
-    val hit = queueHit(source, delay, type, damage, modifier)
+    val hit = queueHit(source, delay, type, damage, modifier, penetration = penetration)
     combatPlayDefendAnim()
     return hit
 }

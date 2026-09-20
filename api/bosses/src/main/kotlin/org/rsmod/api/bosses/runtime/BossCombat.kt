@@ -108,6 +108,8 @@ object BossCombat {
         checkAutoTransitions(this, target, encounter, tick, spec, deps)
         checkTriggers(this, target, spec, deps, encounter)
 
+        if (tick < encounter.busyUntil) return
+
         val ticksSinceLastAttack = tick - encounter.lastAbilityTick
         val attackRate =
             encounter.attackRateOverride
@@ -115,11 +117,21 @@ object BossCombat {
                 ?: spec.stats.attackRate
         if (ticksSinceLastAttack < attackRate) return
 
+        val priority = encounter.selectPriorityAbility(tick, target)
+        if (priority != null) {
+            val effect = spec.abilities[priority] ?: return
+            encounter.usedAbilities += priority
+            encounter.lastAbilityTick = tick
+            EffectInterpreter(npc, target, spec, encounter, deps).run(this, effect)
+            return
+        }
+
         val phase = encounter.currentPhase ?: return
         val abilityName = encounter.selectAbility(phase.selector, tick, target) ?: return
         val effect = spec.abilities[abilityName] ?: return
 
         encounter.lastAbilityTick = tick
+        encounter.usedAbilities += abilityName
 
         val interpreter = EffectInterpreter(npc, target, spec, encounter, deps)
         interpreter.run(this, effect)

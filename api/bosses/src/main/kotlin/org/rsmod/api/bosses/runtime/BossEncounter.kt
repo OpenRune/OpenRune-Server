@@ -18,6 +18,10 @@ class BossEncounter(
     var damageScale: Double = 1.0
     var lethalHandled: Boolean = false
 
+    /** Tick until which multi-tick effects are still running; nothing new may start before it. */
+    var busyUntil: Int = 0
+    internal val usedAbilities = mutableSetOf<String>()
+
     /**
      * Per-encounter attack-rate override (ticks between ability uses). Takes precedence over
      * [PhaseSpec.attackRate] and [BossStats.attackRate]. Null by default and recreated with the
@@ -66,7 +70,7 @@ class BossEncounter(
         val phase = currentPhase ?: return null
 
         for (forced in phase.forceAbilities) {
-            if (forced.attackMin != null) continue
+            if (forced.condition != null || forced.attackMin != null) continue
             val lastFired = forcedTickLastFired[forced.ability] ?: phaseEnteredTick
             if (tick - lastFired >= forced.period) {
                 forcedTickLastFired[forced.ability] = tick
@@ -74,7 +78,8 @@ class BossEncounter(
             }
         }
 
-        val attackForced = phase.forceAbilities.firstOrNull { it.attackMin != null }
+        val attackForced =
+            phase.forceAbilities.firstOrNull { it.condition == null && it.attackMin != null }
         if (attackForced != null) {
             if (forceAttackThreshold < 0) {
                 forceAttackThreshold = randomThreshold(attackForced)
@@ -95,6 +100,17 @@ class BossEncounter(
             basicAttackCount++
         }
         return selected
+    }
+
+    fun selectPriorityAbility(tick: Int, target: Player?): String? {
+        if (tick < busyUntil) return null
+        val phase = currentPhase ?: return null
+        for (forced in phase.forceAbilities) {
+            val condition = forced.condition ?: continue
+            if (forced.once && forced.ability in usedAbilities) continue
+            if (evaluate(condition, target)) return forced.ability
+        }
+        return null
     }
 
     private fun randomThreshold(forced: ForcedAbility): Int {
@@ -153,6 +169,8 @@ class BossEncounter(
             }
             is Condition.HpExact -> npc.hitpoints == condition.hp
             is Condition.InPhase -> currentPhaseName == condition.phase
+            is Condition.AbilityUsed -> condition.ability in usedAbilities
+            is Condition.Custom -> condition.test(npc)
             is Condition.Not -> !evaluate(condition.c, target)
             is Condition.And -> evaluate(condition.a, target) && evaluate(condition.b, target)
             is Condition.Or -> evaluate(condition.a, target) || evaluate(condition.b, target)

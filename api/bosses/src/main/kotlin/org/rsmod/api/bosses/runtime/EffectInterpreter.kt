@@ -14,6 +14,7 @@ import org.rsmod.api.combat.commons.player.finishNpcHit
 import org.rsmod.api.combat.commons.player.queueCombatRetaliate
 import org.rsmod.api.combat.commons.types.MeleeAttackType
 import org.rsmod.api.npc.access.StandardNpcAccess
+import org.rsmod.api.npc.isValidTarget
 import org.rsmod.api.player.disablePrayers
 import org.rsmod.api.player.output.Camera
 import org.rsmod.api.player.hit.queueImpactHit
@@ -65,7 +66,6 @@ class EffectInterpreter(
                     }
                 }
             }
-            is Effect.Delay -> access.delay(effect.ticks)
             is Effect.Delay -> {
                 scheduleWait(effect.ticks, onComplete)
                 return
@@ -151,7 +151,7 @@ class EffectInterpreter(
     private fun scheduleWait(ticks: Int, onComplete: () -> Unit) {
         require(ticks > 0) { "`ticks` must be greater than 0. (ticks=$ticks)" }
         deps.suppressAttacks(npc, ticks)
-        deps.worldQueues.add(ticks) { onComplete() }
+        deps.worldQueues.add(ticks) { if (npc.isValidTarget()) onComplete() }
     }
 
     private fun runSequence(
@@ -220,7 +220,7 @@ class EffectInterpreter(
             if (damage > 0) {
                 hit.spotanim?.let { t.spotanim(it, height = hit.spotanimHeight) }
             }
-            t.finishNpcHit(npc, delay, hit.type.toEngine(), damage, deps.playerHitModifier)
+            t.finishNpcHit(npc, delay, hit.type.toEngine(), damage, deps.playerHitModifier, hit.penetration)
         }
     }
 
@@ -279,9 +279,23 @@ class EffectInterpreter(
                 hit.spotanim?.let { player.spotanim(it, delay = projAnim.clientCycles, height = hit.spotanimHeight) }
             }
             if (proj.resolveOnImpact) {
-                player.finishNpcImpactHit(npc, projAnim.serverCycles, hit.type.toEngine(), damage, deps.playerHitModifier)
+                player.finishNpcImpactHit(
+                    npc,
+                    projAnim.serverCycles,
+                    hit.type.toEngine(),
+                    damage,
+                    deps.playerHitModifier,
+                    hit.penetration,
+                )
             } else {
-                player.finishNpcHit(npc, projAnim.serverCycles, hit.type.toEngine(), damage, deps.playerHitModifier)
+                player.finishNpcHit(
+                    npc,
+                    projAnim.serverCycles,
+                    hit.type.toEngine(),
+                    damage,
+                    deps.playerHitModifier,
+                    hit.penetration,
+                )
             }
         }
     }
@@ -299,9 +313,10 @@ class EffectInterpreter(
         type: HitType,
         damage: Int,
         modifier: PlayerHitModifier,
+        penetration: Int = 0,
     ) {
         queueCombatRetaliate(source)
-        queueImpactHit(source, delay, type, damage, modifier)
+        queueImpactHit(source, delay, type, damage, modifier, penetration = penetration)
         combatPlayDefendAnim()
     }
 

@@ -40,6 +40,8 @@ sealed interface Effect {
         val delay: Int = 0,
         val spotanim: String? = null,
         val spotanimHeight: Int = 0,
+        /** Percentage (0-100) of a protection prayer's block this hit ignores. */
+        val penetration: Int = 0,
     ) : Effect
 
     data class Projectile(

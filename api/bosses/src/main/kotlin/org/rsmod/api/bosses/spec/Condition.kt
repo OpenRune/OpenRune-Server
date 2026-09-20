@@ -1,5 +1,7 @@
 package org.rsmod.api.bosses.spec
 
+import org.rsmod.game.entity.Npc
+
 sealed interface Condition {
     data class HpBelow(val fraction: Double) : Condition
     data class HpExact(val hp: Int) : Condition
@@ -9,6 +11,8 @@ sealed interface Condition {
     data class OnPhaseTick(val n: Int) : Condition
     data class TargetPraying(val type: HitType) : Condition
     data class InPhase(val phase: String) : Condition
+    data class AbilityUsed(val ability: String) : Condition
+    data class Custom(val test: (Npc) -> Boolean) : Condition
     data object OnSpawn : Condition
     data object OnDeath : Condition
     data object Always : Condition
