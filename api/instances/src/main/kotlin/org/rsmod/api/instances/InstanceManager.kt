@@ -57,6 +57,7 @@ constructor(
     private val ownerIndex = HashMap<Long, InstanceId>()
     private val playerIndex = HashMap<Long, InstanceId>()
     private val spawnedNpcs = HashMap<InstanceId, MutableList<Npc>>()
+
     // Keyed by slot, not uid: `changeType`/transmog reassigns an npc's uid, which would
     // otherwise orphan this entry under the pre-transmog uid for the rest of the npc's life.
     private val npcInstanceIndex = HashMap<Int, InstanceId>()

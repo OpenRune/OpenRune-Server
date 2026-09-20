@@ -26,7 +26,6 @@ import org.rsmod.game.entity.npc.NpcStateEvents
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
-
 @Singleton
 public class BossHpBarScript @Inject constructor(
     private val instances: InstanceManager,
@@ -113,7 +112,6 @@ public class BossHpBarScript @Inject constructor(
         }
     }
 
-
     @OptIn(InternalApi::class)
     public fun onClose(player: Player, npc: Npc, instant: Boolean = false) {
         if (instant) {
@@ -152,7 +150,7 @@ public class BossHpBarScript @Inject constructor(
 
     private fun openScripts(player: Player) {
         player.runClientScript(2887, commonComponents, 255)
-        player.runClientScript(2102, commonComponents,1)
+        player.runClientScript(2102, commonComponents, 1)
 
         player.runClientScript(
             2376,
@@ -199,5 +197,4 @@ public class BossHpBarScript @Inject constructor(
         public val ORIGINAL_COLORS: Array<Color> = arrayOf(Color(204, 0, 0), Color(149, 0, 0), Color(0, 245, 0))
         private val DEFAULT_REMAINING_COLOR = Color(0, 200, 0)
     }
-
 }

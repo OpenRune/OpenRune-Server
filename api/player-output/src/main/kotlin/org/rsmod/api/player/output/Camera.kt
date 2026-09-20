@@ -1,8 +1,6 @@
 package org.rsmod.api.player.output
 
-import net.rsprot.protocol.game.outgoing.camera.CamLookAt
 import net.rsprot.protocol.game.outgoing.camera.CamLookAtV2
-import net.rsprot.protocol.game.outgoing.camera.CamMoveTo
 import net.rsprot.protocol.game.outgoing.camera.CamMoveToV2
 import net.rsprot.protocol.game.outgoing.camera.CamReset
 import net.rsprot.protocol.game.outgoing.camera.CamShake
