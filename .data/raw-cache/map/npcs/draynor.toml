@@ -182,6 +182,18 @@ coords = "0_48_50_12_36"
 npc = "npc.young_dark_wizard"
 coords = "0_48_50_13_38"
 
+[[spawn]]
+npc = "npc.wgs_lucien_spy"
+coords = "0_48_51_28_0"
+
+[[spawn]]
+npc = "npc.wgs_lucien_spy"
+coords = "0_48_50_6_40"
+
+[[spawn]]
+npc = "npc.wgs_spy2"
+coords = "0_48_50_31_59"
+
 ## Draynor Aggies House
 
 [[spawn]]
