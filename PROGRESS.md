@@ -169,7 +169,7 @@ here so it at least shows up. Nothing is ticked until someone claims it.
 </details>
 
 <details>
-<summary>🔴 <b>Construction</b> — 24 sub-features</summary>
+<summary>🔴 <b>Construction</b> — 25 sub-features</summary>
 
 - [ ] How to start training Construction
 - [ ] Buying a house
@@ -184,6 +184,7 @@ here so it at least shows up. Nothing is ticked until someone claims it.
 - [ ] Phials for unnoting
 - [ ] Training methods
 - [ ] Mahogany Homes
+- [ ] Repair Kits and Hull Parts
 - [ ] Notable milestones
 - [ ] Rooms
 - [ ] POH locations

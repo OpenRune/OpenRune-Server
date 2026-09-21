@@ -408,6 +408,7 @@
         "Diaries Requiring Cooking",
         "Skill choice",
         "Level up messages",
+        "Changes",
         "See also"
       ],
       "image": "https://oldschool.runescape.wiki/images/Cooking_icon.png?a0156"
@@ -645,6 +646,7 @@
         "Phials for unnoting",
         "Training methods",
         "Mahogany Homes",
+        "Repair Kits and Hull Parts",
         "Notable milestones",
         "Rooms",
         "POH locations",
@@ -1684,5 +1686,5 @@
       "Volcanic Mine"
     ]
   },
-  "fetched": "2026-09-14"
+  "fetched": "2026-09-21"
 }
