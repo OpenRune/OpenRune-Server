@@ -138,3 +138,9 @@ coords = "0_47_51_9_31"
 
 ## South Falador Farm End
 
+
+## Gerrant's Fishy Business
+
+[[spawn]]
+obj = "obj.piratetreasure_apron"
+coords = "0_47_50_8_29"
