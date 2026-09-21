@@ -141,6 +141,12 @@ data class Quest(
         return newStage
     }
 
+    fun advanceQuestStageTo(access: ProtectedAccess, stage: Int): Int {
+        val current = getQuestStage(access.player)
+        if (stage <= current) return current
+        return advanceQuestStage(access, stage - current)
+    }
+
     fun <T> attribute(
         name: String,
         default: T,
