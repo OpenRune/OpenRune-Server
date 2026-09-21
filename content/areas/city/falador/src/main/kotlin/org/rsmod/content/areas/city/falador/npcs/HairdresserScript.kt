@@ -2,6 +2,8 @@ package org.rsmod.content.areas.city.falador.npcs
 
 import dev.openrune.ServerCacheManager
 import dev.openrune.definition.type.widget.IfEvent
+import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.rscm.RSCMType
 import dev.openrune.util.Wearpos
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.player.protect.ProtectedAccess
@@ -21,14 +23,14 @@ import org.rsmod.plugin.scripts.ScriptContext
 
 private enum class MakeoverType(
     val interfaceType: Int,
-    val stylesEnum: Int,
+    val stylesEnum: String,
     val kitSlot: Int,
     val request: String,
     val brochure: String,
 ) {
     Hair(
         interfaceType = 0,
-        stylesEnum = 496,
+        stylesEnum = "enum.makeover_hair_styles",
         kitSlot = 0,
         request = "I'd like a haircut please.",
         brochure = "Please select the hairstyle you would like from this brochure. " +
@@ -36,7 +38,7 @@ private enum class MakeoverType(
     ),
     FacialHair(
         interfaceType = 1,
-        stylesEnum = 2630,
+        stylesEnum = "enum.makeover_facial_hair_styles",
         kitSlot = 1,
         request = "I'd like a shave please.",
         brochure = "Please select the facial hair you would like from this brochure. " +
@@ -163,7 +165,8 @@ class HairdresserScript : PluginScript() {
     }
 
     private fun MakeoverType.styles(): List<MakeoverStyle> {
-        val enum = ServerCacheManager.getEnum(stylesEnum) ?: return emptyList()
+        val enum =
+            ServerCacheManager.getEnum(stylesEnum.asRSCM(RSCMType.ENUM)) ?: return emptyList()
         return enum.values.entries
             .sortedBy { it.key }
             .map { (_, row) ->
