@@ -435,10 +435,6 @@ npc = "npc.fred_the_farmer"
 coords = "0_49_51_53_9"
 
 [[spawn]]
-npc = "npc.ghostx"
-coords = "0_50_49_50_57"
-
-[[spawn]]
 npc = "npc.giantrat_grey"
 coords = "0_49_50_56_7"
 
