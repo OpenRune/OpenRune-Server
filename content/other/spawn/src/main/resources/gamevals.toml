@@ -5,6 +5,7 @@ spawn_menu = 1099
 spawn_menu_init = 45500
 spawn_menu_buttons = 45518
 spawn_menu_labels = 45524
+spawn_menu_search_stop = 45530
 
 [gamevals.inv]
 spawn_results = 1100
