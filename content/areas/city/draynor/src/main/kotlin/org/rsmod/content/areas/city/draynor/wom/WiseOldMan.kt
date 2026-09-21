@@ -1,5 +1,6 @@
 package org.rsmod.content.areas.city.draynor.wom
 
+import dev.openrune.types.MesAnimType
 import jakarta.inject.Inject
 import org.rsmod.api.config.Constants
 import org.rsmod.api.npc.interact.AiPlayerInteractions
@@ -38,6 +39,7 @@ constructor(
         onOpNpc1("npc.wom_multi") { startDialogue(it.npc) { wiseOldMan() } }
         onOpNpc1("npc.wom_bed_inactive") { kickBed(it.npc) }
         onOpLoc1("loc.wom_bookshelf_old_tall_double") { searchBookshelf() }
+        onOpLoc1("loc.wise_old_man_telescope") { observeTelescope() }
     }
 
     private suspend fun Dialogue.wiseOldMan() {
@@ -328,6 +330,39 @@ constructor(
             if (inv.count(book) == 0 && !inv.isFull()) invAdd(inv, book)
         }
     }
+
+    private suspend fun ProtectedAccess.observeTelescope() {
+        arriveDelay()
+        startDialogue {
+            chatPlayer(quiz, "I see you've got your telescope pointing at the Wizards' Tower.")
+            womSays(quiz, "Oh, do I? Well, why does that interest you?")
+            if (player.bankJob >= BANKJOB_WATCHED) {
+                chatPlayer(
+                    angry,
+                    "Well, you robbed a bank, and I bet you're now planning something to do with " +
+                        "that Tower!",
+                )
+                womSays(neutral, "No, no. I'm not planning anything like that again.")
+                chatPlayer(angry, "Well I'll be watching you...")
+                return@startDialogue
+            }
+            chatPlayer(neutral, "It just seems a bit odd.")
+            womSays(
+                neutral,
+                "Odd? There's nothing odd about a fascination with the magical arts. Besides, the " +
+                    "architecture of that Tower is truly remarkable, for one who studies such " +
+                    "things.",
+            )
+            chatPlayer(quiz, "So you're not planning to attack the Tower?")
+            womSays(shocked, "No, I wouldn't dream of doing anything of the sort!")
+            chatPlayer(neutral, "Hmmm...")
+        }
+    }
+
+    private suspend fun Dialogue.womSays(
+        mesanim: MesAnimType,
+        text: String,
+    ) = chatNpcSpecific("Wise Old Man", "npc.wise_old_man", mesanim, text)
 
     private suspend fun Dialogue.askSomething() {
         chatPlayer(quiz, "I'd just like to ask you something.")

@@ -4,6 +4,7 @@ import jakarta.inject.Inject
 import org.rsmod.api.config.Constants
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.player.protect.ProtectedAccess
+import org.rsmod.api.player.stat.baseFarmingLvl
 import org.rsmod.api.player.stat.baseWoodcuttingLvl
 import org.rsmod.api.player.vars.intVarBit
 import org.rsmod.api.script.onOpNpc1
@@ -39,6 +40,9 @@ class DraynorVillageNpcs @Inject constructor(private val shops: Shops) : PluginS
         onOpNpc3("npc.seed_merchant") { openSeedShop() }
         onOpNpc1("npc.forestry_forester") { startDialogue(it.npc) { forester() } }
         onOpNpc1("npc.diary_queen") { startDialogue(it.npc) { twiggy() } }
+        onOpNpc1("npc.aprilfoolshorsesalesman") { startDialogue(it.npc) { diango() } }
+        onOpNpc3("npc.aprilfoolshorsesalesman") { openToyShop() }
+        onOpNpc1("npc.martin_the_master_farmer") { startDialogue(it.npc) { martin() } }
     }
 
     private suspend fun Dialogue.morgan() {
@@ -966,6 +970,136 @@ class DraynorVillageNpcs @Inject constructor(private val shops: Shops) : PluginS
         }
     }
 
+    private suspend fun Dialogue.diango() {
+        chatNpc(
+            happy,
+            "Howdy there partner! Want to see my spinning plates? Or did ya want a holiday item " +
+                "back?",
+        )
+        val topic =
+            menu("Spinning plates?" to 0, "What else are you selling?" to 1, "I'm fine, thanks." to 2)
+        when (topic) {
+            0 -> {
+                chatPlayer(quiz, "Spinning plates?")
+                chatNpc(
+                    happy,
+                    "That's right. There's a funny story behind them, their shipment was held up " +
+                        "by thieves.",
+                )
+                chatNpc(
+                    laugh,
+                    "The crate was marked 'Dragon Plates'. Apparently they thought it was some " +
+                        "kind of armour, when really it's just a plate with a dragon on it!",
+                )
+                access.openToyShop()
+            }
+            1 -> {
+                chatPlayer(quiz, "What else are you selling?")
+                access.openToyShop()
+            }
+            else -> chatPlayer(neutral, "I'm fine, thanks.")
+        }
+    }
+
+    private fun ProtectedAccess.openToyShop() {
+        shops.open(
+            player = player,
+            title = "Diango's Toy Store",
+            shopInv = "inv.aprilfoolshorseshop",
+            buyPercentage = 50.0,
+            sellPercentage = 150.0,
+            changePercentage = 2.0,
+        )
+    }
+
+    private suspend fun Dialogue.martin() {
+        val topic =
+            menu(
+                buildList {
+                    add("Ask about the Skillcape of Farming." to 0)
+                    if (QuestRequirements.hasCompleted(player, FAIRYTALE_II)) {
+                        add("Ask about the quest." to 1)
+                    }
+                }
+            )
+        if (topic == 1) return martinQuest()
+        if (player.baseFarmingLvl < MAX_LEVEL) {
+            chatPlayer(quiz, "What is that cape you're wearing?")
+            chatNpc(
+                happy,
+                "This is a Skillcape of Farming, isn't it incredible? It's a symbol of my ability " +
+                    "as the finest farmer in the land and wearing it increases my herb yield!",
+            )
+            return
+        }
+        val hood = menu("Skillcape" to false, "Hood" to true)
+        if (hood) {
+            chatPlayer(quiz, "May I have another hood for my cape, please?")
+            if (access.inv.isFull()) return
+            access.invAdd(access.inv, FARMING_HOOD)
+            objbox(FARMING_HOOD, "Martin hands you another hood for your skillcape.")
+            return
+        }
+        chatPlayer(quiz, "Can I buy a Skillcape of Farming from you?")
+        chatNpc(
+            happy,
+            "Of course, fellow farmer. If you wear this cape you'll receive increased yields from " +
+                "your herbs. That'll be 99000 coins.",
+        )
+        if (!menu("I'm not paying that!" to false, "Sure, not many people own one." to true)) {
+            chatPlayer(angry, "I'm not paying that.")
+            chatNpc(
+                neutral,
+                "No skin off my teeth, but if you change your mind, the price will still be the " +
+                    "same.",
+            )
+            return
+        }
+        chatPlayer(happy, "Sure, not many people own one.")
+        val inv = access.inv
+        if (inv.count(COINS) < SKILLCAPE_PRICE) {
+            chatPlayer(sad, "But, unfortunately, I don't have enough money with me.")
+            chatNpc(neutral, "Well, come back and see me when you do.")
+            return
+        }
+        if (inv.freeSpace() < 2) {
+            chatNpc(
+                neutral,
+                "Unfortunately all Skillcapes are only available with a free hood, it's part of a " +
+                    "skill promotion deal; buy one get one free, you know. So you'll need to free " +
+                    "up some inventory space before I can sell you one.",
+            )
+            return
+        }
+        if (access.invDel(inv, COINS, SKILLCAPE_PRICE).failure) return
+        access.invAdd(inv, FARMING_CAPE)
+        access.invAdd(inv, FARMING_HOOD)
+        chatNpc(happy, "That's true; us Master Farmers are a unique breed.")
+    }
+
+    private suspend fun Dialogue.martinQuest() {
+        chatPlayer(
+            happy,
+            "Okay, this time I've really solved your problems! I've woken up the Fairy Queen!",
+        )
+        chatNpc(
+            neutral,
+            "Hmm, right. You'll forgive me if I reserve judgement on this until I actually have " +
+                "some crops grow.",
+        )
+        chatPlayer(
+            neutral,
+            "Of course. The problem was the Godfather, he wanted to take control of Zanaris " +
+                "himself, so he didn't give Fairy Nuff the Queen's secateurs!",
+        )
+        chatNpc(
+            angry,
+            "Godfather...Fairy Nuff...the Queen, I don't know what you're talking about and I " +
+                "don't care. I just want my crops to start growing again. Come back and claim " +
+                "your reward once they've had a chance to grow.",
+        )
+    }
+
     private fun Dialogue.isLad(): Boolean = player.appearance.bodyType == Constants.bodytype_a
 
     private enum class Dye(
@@ -1078,6 +1212,11 @@ class DraynorVillageNpcs @Inject constructor(private val shops: Shops) : PluginS
         const val WOOL_PER_ROPE = 4
         const val RECORDING_FEE = 50
         const val FORESTRY_LEVEL = 15
+        const val MAX_LEVEL = 99
+        const val SKILLCAPE_PRICE = 99000
+        const val FARMING_CAPE = "obj.skillcape_farming"
+        const val FARMING_HOOD = "obj.skillcape_farming_hood"
+        const val FAIRYTALE_II = "quest_fairytale2"
 
         const val BANKJOB_KNOWN = 1
         const val BANKJOB_WATCHED = 2
