@@ -7,6 +7,7 @@ dependencies {
     implementation(projects.api.attr)
     implementation(projects.api.pluginCommons)
     implementation(projects.content.quest)
+    implementation(projects.api.death)
     testImplementation(projects.content.generic.genericLocs)
     testImplementation(projects.api.hunt)
     testImplementation(libs.fastutil)
