@@ -29,16 +29,19 @@ internal class Stall(
     val loot: LootTable,
 )
 
+internal class CoinPouch(val obj: String, val coins: Int)
+
 internal class Pickpocket(
     val npcs: List<String>,
-    val displayName: String,
     val level: Int,
     val xp: Double,
     val lowChance: Int,
     val highChance: Int,
     val stunDamage: Int,
     val caughtShout: String,
-    val loot: LootTable,
+    val loot: LootTable? = null,
+    val pouch: CoinPouch? = null,
+    val lowercaseName: Boolean = false,
 )
 
 internal object ThievingTables {
@@ -158,8 +161,26 @@ internal object ThievingTables {
     val pickpockets: List<Pickpocket> =
         listOf(
             Pickpocket(
+                npcs =
+                    listOf(
+                        "npc.man",
+                        "npc.man2",
+                        "npc.man3",
+                        "npc.woman",
+                        "npc.woman2",
+                        "npc.woman3",
+                    ),
+                level = 1,
+                xp = 8.0,
+                lowChance = 180,
+                highChance = 240,
+                stunDamage = 1,
+                caughtShout = "What do you think you're doing?",
+                pouch = CoinPouch("obj.pickpocket_coin_pouch_citizen", coins = 3),
+                lowercaseName = true,
+            ),
+            Pickpocket(
                 npcs = listOf("npc.master_farmer_1", "npc.martin_the_master_farmer"),
-                displayName = "Master Farmer",
                 level = 38,
                 xp = 43.0,
                 lowChance = 90,

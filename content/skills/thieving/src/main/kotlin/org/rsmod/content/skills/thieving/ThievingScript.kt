@@ -10,6 +10,8 @@ import org.rsmod.api.player.output.ChatType
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.repo.loc.LocRepository
 import org.rsmod.api.repo.npc.NpcRepository
+import org.rsmod.api.script.onOpHeld1
+import org.rsmod.api.script.onOpHeld2
 import org.rsmod.api.script.onOpLoc2
 import org.rsmod.api.script.onOpNpc3
 import org.rsmod.game.entity.Npc
@@ -37,6 +39,9 @@ constructor(
             for (npc in target.npcs) {
                 onOpNpc3(npc) { pickpocket(it.npc, target) }
             }
+            val pouch = target.pouch ?: continue
+            onOpHeld1(pouch.obj) { openPouches(pouch, all = true) }
+            onOpHeld2(pouch.obj) { openPouches(pouch, all = false) }
         }
     }
 
@@ -104,34 +109,52 @@ constructor(
 
     private suspend fun ProtectedAccess.pickpocket(npc: Npc, target: Pickpocket) {
         if (player.isFrozen) return
-        val name = pocketOwner(npc)
+        val owner = pocketOwner(npc, target)
         if (stat(THIEVING) < target.level) {
-            mes("You need to be level ${target.level} to pickpocket the ${target.displayName}.")
+            mes("You need to be level ${target.level} to pickpocket $owner.")
             return
         }
-        if (inv.isFull()) {
+        val pouch = target.pouch
+        if (pouch != null && inv.count(pouch.obj) >= MAX_POUCHES) {
+            mes("You need to empty your coin pouches before you can continue pickpocketing.")
+            return
+        }
+        if (inv.isFull() && (pouch == null || inv.count(pouch.obj) == 0)) {
             mes("You don't have enough inventory space.")
             return
         }
         faceEntitySquare(npc)
-        mes("You attempt to pick $name pocket.", ChatType.Spam)
+        mes("You attempt to pick $owner's pocket.", ChatType.Spam)
         delay(1)
         if (!statRandom(THIEVING, target.lowChance, target.highChance, invisibleBoost = 0)) {
-            failPickpocket(npc, target, name)
+            failPickpocket(npc, target, owner)
             return
         }
-        mes("You pick $name pocket.", ChatType.Spam)
+        mes("You pick $owner's pocket.", ChatType.Spam)
         anim(PICKPOCKET_SEQ)
         soundSynth(PICK_SYNTH)
-        val loot = target.loot.roll(random)
-        val count = random.of(loot.min, loot.max)
-        invAdd(inv, loot.obj, count)
-        mes("You steal ${describe(loot.obj, count)}.", ChatType.Spam)
+        if (pouch != null) {
+            invAdd(inv, pouch.obj)
+        }
+        val loot = target.loot?.roll(random)
+        if (loot != null) {
+            val count = random.of(loot.min, loot.max)
+            invAdd(inv, loot.obj, count)
+            mes("You steal ${describe(loot.obj, count)}.", ChatType.Spam)
+        }
         statAdvance(THIEVING, target.xp)
     }
 
-    private suspend fun ProtectedAccess.failPickpocket(npc: Npc, target: Pickpocket, name: String) {
-        mes("You fail to pick $name pocket.", ChatType.Spam)
+    private fun ProtectedAccess.openPouches(pouch: CoinPouch, all: Boolean) {
+        val count = if (all) inv.count(pouch.obj) else 1
+        if (count == 0 || invDel(inv, pouch.obj, count).failure) return
+        invAdd(inv, COINS, count * pouch.coins)
+        val message = if (count > 1) "You open all of the pouches." else "You open the coin pouch."
+        mes(message, ChatType.Spam)
+    }
+
+    private suspend fun ProtectedAccess.failPickpocket(npc: Npc, target: Pickpocket, owner: String) {
+        mes("You fail to pick $owner's pocket.", ChatType.Spam)
         npc.say(target.caughtShout)
         npc.facePlayer(player)
         stun()
@@ -150,9 +173,9 @@ constructor(
         player.timer(FREEZE_TIMER, STUN_TICKS)
     }
 
-    private fun pocketOwner(npc: Npc): String {
-        val name = npc.visType.name
-        return if (name.contains(" the ")) "$name's" else "the $name's"
+    private fun pocketOwner(npc: Npc, target: Pickpocket): String {
+        val name = if (target.lowercaseName) npc.visType.name.lowercase() else npc.visType.name
+        return if (name.contains(" the ")) name else "the $name"
     }
 
     private fun describe(obj: String, count: Int): String {
@@ -176,5 +199,7 @@ constructor(
         const val STUN_SYNTH = "synth.thieving_stunned"
         const val STUN_TICKS = 9
         const val FREEZE_TIMER = "timer.combat_freeze"
+        const val MAX_POUCHES = 28
+        const val COINS = "obj.coins"
     }
 }
