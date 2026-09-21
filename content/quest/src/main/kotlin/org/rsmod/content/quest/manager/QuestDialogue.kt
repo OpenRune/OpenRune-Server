@@ -48,4 +48,7 @@ suspend fun <T> Dialogue.menu(
 }
 
 suspend fun Dialogue.startQuestPrompt(quest: Quest): Boolean =
-    choice2("Yes.", true, "No.", false, title = "Start the ${quest.displayName} quest?")
+    choice2("Yes.", true, "No.", false, title = startQuestTitle(quest.displayName))
+
+private fun startQuestTitle(name: String): String =
+    if (name.startsWith("The ")) "Start $name quest?" else "Start the $name quest?"

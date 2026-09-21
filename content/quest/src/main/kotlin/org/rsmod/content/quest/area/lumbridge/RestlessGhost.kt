@@ -684,14 +684,20 @@ constructor(
         locRepo.change(coffin, "loc.shutghostcoffin", Int.MAX_VALUE)
     }
 
-    private fun spawnGhost() {
-        val existing = ghost
-        if (existing != null && existing.isSlotAssigned) {
-            return
-        }
-        val spawned = Npc("npc.ghostx", GHOST_COORDS)
-        npcRepo.add(spawned, GHOST_DURATION)
+    private fun spawnGhost(coords: CoordGrid = GHOST_COORDS, duration: Int = GHOST_DURATION): Npc {
+        removeGhost()
+        val spawned = Npc("npc.ghostx", coords)
+        npcRepo.add(spawned, duration)
         ghost = spawned
+        return spawned
+    }
+
+    private fun removeGhost() {
+        val existing = ghost ?: return
+        if (existing.isSlotAssigned) {
+            npcRepo.del(existing, Int.MAX_VALUE)
+        }
+        ghost = null
     }
 
     private suspend fun ProtectedAccess.searchCoffin() {
@@ -712,19 +718,16 @@ constructor(
         anim("seq.human_pickuptable")
         invDel(inv, SKULL)
         player.coffinHasSkull = 1
-        val restless = ghost?.takeIf { it.isSlotAssigned }
-        if (restless != null) {
-            camMoveTo(CUTSCENE_CAMERA, height = 350, rate = 100, rate2 = 100)
-            camLookAt(CUTSCENE_LOOK, height = 200, rate = 100, rate2 = 100)
-            restless.say("Release! Thank you")
-            delay(2)
-            startDialogue(restless) { chatNpcNoAnim("Release! Thank you stranger..") }
-            restless.say("stranger..")
-            delay(4)
-            npcRepo.del(restless, Int.MAX_VALUE)
-            ghost = null
-            camReset()
-        }
+        val restless = spawnGhost(CUTSCENE_GHOST, CUTSCENE_TICKS)
+        camMoveTo(CUTSCENE_CAMERA, height = 350, rate = 100, rate2 = 100)
+        camLookAt(CUTSCENE_LOOK, height = 200, rate = 100, rate2 = 100)
+        restless.say("Release! Thank you")
+        delay(2)
+        startDialogue(restless) { chatNpcNoAnim("Release! Thank you stranger..") }
+        restless.say("stranger..")
+        delay(4)
+        removeGhost()
+        camReset()
         quest.advanceQuestStageTo(this, COMPLETE)
     }
 
@@ -787,10 +790,12 @@ constructor(
         const val COFFIN_OPEN_TICKS = 100
         const val GHOST_DURATION = 100
         const val SKELETON_DURATION = 300
+        const val CUTSCENE_TICKS = 20
 
         val GHOST_COORDS = CoordGrid(3250, 3195)
         val CUTSCENE_CAMERA = CoordGrid(3252, 3193)
         val CUTSCENE_LOOK = CoordGrid(3246, 3193)
+        val CUTSCENE_GHOST = CoordGrid(3248, 3193)
         val SKELETON_COORDS = CoordGrid(3120, 9569)
     }
 }
