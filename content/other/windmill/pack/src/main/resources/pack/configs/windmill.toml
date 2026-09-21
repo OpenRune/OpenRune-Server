@@ -1,0 +1,10 @@
+[[varp]]
+id = "varp.windmill_state"
+scope = "Perm"
+transmit = "Never"
+
+[[varbit]]
+id = "varbit.windmill_hopper_grain"
+varp = "varp.windmill_state"
+startBit = 0
+endBit = 0
