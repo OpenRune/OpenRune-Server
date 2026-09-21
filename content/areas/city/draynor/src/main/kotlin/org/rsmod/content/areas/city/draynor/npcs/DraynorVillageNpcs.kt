@@ -10,6 +10,8 @@ import org.rsmod.api.player.vars.intVarBit
 import org.rsmod.api.script.onOpNpc1
 import org.rsmod.api.script.onOpNpc3
 import org.rsmod.api.shops.Shops
+import org.rsmod.content.areas.city.draynor.npcs.DiangoHolidayItems.Companion.openHolidayItems
+import org.rsmod.content.interfaces.omnishop.openOmnishop
 import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.content.quest.manager.menu
 import org.rsmod.game.entity.Player
@@ -39,6 +41,7 @@ class DraynorVillageNpcs @Inject constructor(private val shops: Shops) : PluginS
         onOpNpc1("npc.seed_merchant") { startDialogue(it.npc) { olivia() } }
         onOpNpc3("npc.seed_merchant") { openSeedShop() }
         onOpNpc1("npc.forestry_forester") { startDialogue(it.npc) { forester() } }
+        onOpNpc3("npc.forestry_forester") { openOmnishop(FORESTRY_SHOP) }
         onOpNpc1("npc.diary_queen") { startDialogue(it.npc) { twiggy() } }
         onOpNpc1("npc.aprilfoolshorsesalesman") { startDialogue(it.npc) { diango() } }
         onOpNpc3("npc.aprilfoolshorsesalesman") { openToyShop() }
@@ -885,6 +888,7 @@ class DraynorVillageNpcs @Inject constructor(private val shops: Shops) : PluginS
             )
             chatPlayer(happy, "Yes please.")
             chatNpc(happy, "Excellent!")
+            access.openOmnishop(FORESTRY_SHOP)
             return
         }
         chatNpc(happy, "Hello again! How goes your forestry journey?")
@@ -898,6 +902,7 @@ class DraynorVillageNpcs @Inject constructor(private val shops: Shops) : PluginS
             0 -> {
                 chatPlayer(neutral, "I'd like to trade with you.")
                 chatNpc(happy, "Of course!")
+                access.openOmnishop(FORESTRY_SHOP)
             }
             1 -> {
                 chatPlayer(quiz, "Could you tell me more about forestry?")
@@ -916,6 +921,7 @@ class DraynorVillageNpcs @Inject constructor(private val shops: Shops) : PluginS
                 if (menu("Yes please." to true, "I'm good, thanks." to false)) {
                     chatPlayer(happy, "Yes please.")
                     chatNpc(happy, "Excellent!")
+                    access.openOmnishop(FORESTRY_SHOP)
                 } else {
                     chatPlayer(neutral, "I'm good, thanks.")
                     chatNpc(happy, "Very well.")
@@ -977,7 +983,12 @@ class DraynorVillageNpcs @Inject constructor(private val shops: Shops) : PluginS
                 "back?",
         )
         val topic =
-            menu("Spinning plates?" to 0, "What else are you selling?" to 1, "I'm fine, thanks." to 2)
+            menu(
+                "Spinning plates?" to 0,
+                "I'd like to check holiday items please!" to 3,
+                "What else are you selling?" to 1,
+                "I'm fine, thanks." to 2,
+            )
         when (topic) {
             0 -> {
                 chatPlayer(quiz, "Spinning plates?")
@@ -996,6 +1007,11 @@ class DraynorVillageNpcs @Inject constructor(private val shops: Shops) : PluginS
             1 -> {
                 chatPlayer(quiz, "What else are you selling?")
                 access.openToyShop()
+            }
+            3 -> {
+                chatPlayer(happy, "I'd like to check holiday items please!")
+                chatNpc(happy, "Sure thing, let me just see what you're missing.")
+                access.openHolidayItems()
             }
             else -> chatPlayer(neutral, "I'm fine, thanks.")
         }
@@ -1212,6 +1228,7 @@ class DraynorVillageNpcs @Inject constructor(private val shops: Shops) : PluginS
         const val WOOL_PER_ROPE = 4
         const val RECORDING_FEE = 50
         const val FORESTRY_LEVEL = 15
+        const val FORESTRY_SHOP = "dbrow.forestry_shop"
         const val MAX_LEVEL = 99
         const val SKILLCAPE_PRICE = 99000
         const val FARMING_CAPE = "obj.skillcape_farming"

@@ -13,6 +13,7 @@ import org.rsmod.api.player.vars.intVarp
 import org.rsmod.api.repo.npc.NpcRepository
 import org.rsmod.api.script.onOpLoc1
 import org.rsmod.api.script.onOpNpc1
+import org.rsmod.content.areas.city.draynor.wom.WomRecycling.Companion.openRecyclingCentre
 import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.content.quest.manager.menu
 import org.rsmod.game.entity.Npc
@@ -53,6 +54,7 @@ constructor(
         val topic =
             menu(
                 taskOption,
+                JUNK_OPTION to WomTopic.Junk,
                 "I'd just like to ask you something." to WomTopic.Ask,
                 title = WOM_MENU,
             )
@@ -66,6 +68,7 @@ constructor(
                 repeatTask()
             }
             WomTopic.Ask -> askSomething()
+            WomTopic.Junk -> checkJunk()
             else -> Unit
         }
     }
@@ -123,6 +126,7 @@ constructor(
                 "Could I have some free stuff, please?" to WomTopic.FreeStuff,
                 "I'd just like to ask you something." to WomTopic.Ask,
                 "Is there anything I can do for you?" to WomTopic.Favour,
+                JUNK_OPTION to WomTopic.Junk,
                 "Thanks, maybe some other time." to WomTopic.Leave,
             )
         when (topic) {
@@ -142,12 +146,18 @@ constructor(
                 }
             }
             WomTopic.Ask -> askSomething()
+            WomTopic.Junk -> checkJunk()
             WomTopic.Favour -> {
                 chatPlayer(happy, "Is there anything I can do for you?")
                 assignTask()
             }
             else -> chatPlayer(neutral, "Thanks, maybe some other time.")
         }
+    }
+
+    private suspend fun Dialogue.checkJunk() {
+        chatPlayer(happy, JUNK_OPTION)
+        access.openRecyclingCentre()
     }
 
     private suspend fun Dialogue.assignTask() {
@@ -1114,12 +1124,14 @@ constructor(
         Remind,
         Ask,
         FreeStuff,
+        Junk,
         Leave,
     }
 
     private companion object {
         const val WOM_MENU = "What would you like to say?"
         const val SEE_YOU_LATER = "Right, I'll see you later."
+        const val JUNK_OPTION = "Could you check my items for junk, please?"
 
         const val MIN_TASK_COUNT = 3
         const val MAX_TASK_COUNT = 15
