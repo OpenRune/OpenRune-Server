@@ -128,6 +128,7 @@ shared = "gem"
 [[main.separate_rolls]]
 numerator = 1
 denominator = 512
+boosted = true
 
 [[main.separate_rolls.entries]]
 weight = 1
@@ -137,6 +138,7 @@ count = 1
 [[main.separate_rolls]]
 numerator = 1
 denominator = 32000
+boosted = true
 
 [[main.separate_rolls.entries]]
 weight = 1

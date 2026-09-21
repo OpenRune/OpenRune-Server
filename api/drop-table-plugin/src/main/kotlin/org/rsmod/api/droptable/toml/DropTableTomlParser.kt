@@ -71,15 +71,17 @@ public object DropTableTomlParser {
         return rsPlayerWeightedTable(total = section.total) {
             section.name?.let { name(it) }
             for (entry in section.entries) {
-                appendTomlWeightedEntry(entry, resolver, sourcePath)
+                boostedIf(entry.boosted) { appendTomlWeightedEntry(entry, resolver, sourcePath) }
             }
             for (roll in section.separateRolls) {
                 require(roll.entries.isNotEmpty()) {
                     "Separate roll ${roll.numerator}/${roll.denominator} in '$sourcePath' must define entries."
                 }
-                roll.numerator outOf roll.denominator separate {
-                    for (entry in roll.entries) {
-                        appendTomlWeightedEntry(entry, resolver, sourcePath)
+                boostedIf(roll.boosted) {
+                    roll.numerator outOf roll.denominator separate {
+                        for (entry in roll.entries) {
+                            appendTomlWeightedEntry(entry, resolver, sourcePath)
+                        }
                     }
                 }
             }
@@ -131,7 +133,10 @@ public object DropTableTomlParser {
                 require(roll.entries.isNotEmpty()) {
                     "Pre-roll separate roll ${roll.numerator}/${roll.denominator} in '$sourcePath' must define entries."
                 }
-                roll.numerator outOf roll.denominator rolls buildSeparateRollTable(roll, resolver, sourcePath)
+                boostedIf(roll.boosted) {
+                    roll.numerator outOf roll.denominator rolls
+                        buildSeparateRollTable(roll, resolver, sourcePath)
+                }
             }
         }
     }
@@ -172,9 +177,25 @@ public object DropTableTomlParser {
         val item = buildItem(entry.obj, parseCount(entry), entry.toHooks(), resolver)
         val style = if (useRolls) ChanceRollStyle.Rolls else ChanceRollStyle.Chance
         // Always go through addRateFirstItem so clue scrolls get rate-boost wiring.
-        onBuilder {
-            addRateFirstItem(entry.numerator, entry.denominator, style, item)
+        boostedIf(entry.boosted) {
+            onBuilder {
+                addRateFirstItem(entry.numerator, entry.denominator, style, item)
+            }
         }
+    }
+
+    private fun DropWeightedTableScope.boostedIf(
+        condition: Boolean,
+        block: DropWeightedTableScope.() -> Unit,
+    ) {
+        if (condition) boosted(block) else block()
+    }
+
+    private fun DropChanceTableScope.boostedIf(
+        condition: Boolean,
+        block: DropChanceTableScope.() -> Unit,
+    ) {
+        if (condition) boosted(block) else block()
     }
 
     private fun buildItem(

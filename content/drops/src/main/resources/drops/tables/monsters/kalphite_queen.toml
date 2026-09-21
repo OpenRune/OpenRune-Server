@@ -229,18 +229,21 @@ count = 1
 [[tertiary]]
 numerator = 1
 denominator = 128
+boosted = true
 obj = "obj.dragon_chainbody"
 count = 1
 
 [[tertiary]]
 numerator = 1
 denominator = 256
+boosted = true
 obj = "obj.dragon_2h_sword"
 count = 1
 
 [[tertiary]]
 numerator = 1
 denominator = 400
+boosted = true
 obj = "obj.dragon_pickaxe"
 count = 1
 

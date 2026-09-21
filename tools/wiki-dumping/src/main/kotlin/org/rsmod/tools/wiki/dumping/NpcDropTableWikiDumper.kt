@@ -311,13 +311,15 @@ class NpcDropTableWikiDumper(
                         subtableAccesses = raw.subtableAccesses,
                     )
 
-                raw.copy(
-                    main = mainEntries,
-                    mainMaxRoll = reconciledMaxRoll,
-                    subtableAccesses = raw.subtableAccesses,
-                    separateRolls = separateRolls,
-                    preRoll = preRollEntries,
-                    preRollSeparateRolls = preRollSeparate,
+                BoostedDropAllowlist.apply(
+                    raw.copy(
+                        main = mainEntries,
+                        mainMaxRoll = reconciledMaxRoll,
+                        subtableAccesses = raw.subtableAccesses,
+                        separateRolls = separateRolls,
+                        preRoll = preRollEntries,
+                        preRollSeparateRolls = preRollSeparate,
+                    ),
                 )
             }
 

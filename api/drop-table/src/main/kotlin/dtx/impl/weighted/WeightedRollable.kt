@@ -9,6 +9,7 @@ public interface WeightedRollable<T, R>: Rollable<T, R> {
 
     public val weight: Double
     public val rollable: Rollable<T, R>
+    public val boosted: Boolean get() = false
 
     public operator fun component1(): Double {
         return weight
@@ -60,7 +61,8 @@ public interface WeightedRollable<T, R>: Rollable<T, R> {
 public data class WeightedRollableImpl<T, R>(
     override val weight: Double,
     override val rollable: Rollable<T, R>,
-    private val hooks: RollableHooks<T, R> = RollableHooks.Default()
+    private val hooks: RollableHooks<T, R> = RollableHooks.Default(),
+    override val boosted: Boolean = false,
 ): WeightedRollable<T, R>, RollableHooks<T, R> by hooks {
 
     override fun includeInRoll(onTarget: T, otherArgs: ArgMap): Boolean {

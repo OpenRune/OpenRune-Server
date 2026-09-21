@@ -44,7 +44,9 @@ public val spiritualMageDropTable: RSDropTable<Player, DropRollItem> = RSDropTab
         1 weight "obj.chaosrune" count 25
         6 weight "obj.cert_blankrune_high" count 90
         5 weight "obj.cert_3doseantipoison" count 5
-        1 weight "obj.dragon_boots" count 1
+        boosted {
+            1 weight "obj.dragon_boots" count 1
+        }
 
         2 weight SharedDropTables.gem
         2 weight nothing()

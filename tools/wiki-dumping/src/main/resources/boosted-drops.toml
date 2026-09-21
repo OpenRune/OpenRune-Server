@@ -1,0 +1,37 @@
+# Rolls the wiki dumper marks `boosted` (multiplied by the drop-rate modifiers). A roll is boosted
+# when any of its objs matches a rule. `npcs` (globs) and `rolls` (main, separate, pre_roll,
+# tertiary) narrow a rule; omit them to match every table and roll type.
+
+[[boosted]]
+objs = ["obj.abyssal_whip", "obj.abyssal_dagger"]
+npcs = ["npc.slayer_abyssal*", "npc.kourend_abyssal", "npc.wild_cave_abyssal"]
+
+[[boosted]]
+objs = ["obj.blowpipe_fang", "obj.magic_fang", "obj.serpentine_visage", "obj.uncut_onyx"]
+npcs = ["npc.snakeboss_boss_*"]
+
+[[boosted]]
+objs = ["obj.kraken_tentacle"]
+npcs = ["npc.slayer_kraken_boss*"]
+
+[[boosted]]
+objs = ["obj.dragon_chainbody", "obj.dragon_2h_sword", "obj.dragon_pickaxe"]
+npcs = ["npc.kalphite_queen", "npc.kalphite_flyingqueen"]
+
+[[boosted]]
+objs = ["obj.dragon_axe", "obj.berzerker_ring"]
+npcs = ["npc.dagcave_melee_boss"]
+
+[[boosted]]
+objs = ["obj.dragon_boots"]
+npcs = ["npc.godwars_spiritual_*"]
+rolls = ["main"]
+
+[[boosted]]
+objs = [
+    "obj.bandos_chestplate",
+    "obj.bandos_skirt",
+    "obj.bandos_boots",
+    "obj.godwars_godsword_hilt_bandos",
+]
+npcs = ["npc.godwars_bandos_avatar"]

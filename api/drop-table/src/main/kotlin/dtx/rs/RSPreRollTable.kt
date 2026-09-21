@@ -27,6 +27,8 @@ public class RSPreRollTable<T, R>(
 
 public class RSPrerollTableBuilder<T, R> : MultiChanceTableBuilder<T, R>() {
 
+    public var boostScope: Boolean = false
+
     public infix fun Int.outOf(other: Int): Percent = Percent((toDouble() / other.toDouble()) * 100.0)
 
     public infix fun Percent.rolls(rollable: Rollable<T, R>): RSPrerollTableBuilder<T, R> {
