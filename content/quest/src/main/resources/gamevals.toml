@@ -3,6 +3,7 @@ quest_available_set = 45550
 
 [gamevals.varp]
 pirates_treasure_state = 63601
+prince_ali_state = 63620
 
 [gamevals.varbit]
 pirates_treasure_crate_bananas = 63601
@@ -11,3 +12,6 @@ pirates_treasure_rum_shipped = 63603
 pirates_treasure_wydin_job = 63604
 pirates_treasure_crate_paid = 63605
 pirates_treasure_luthas_task = 63606
+prince_ali_keli_asked = 63620
+prince_ali_key_ordered = 63621
+prince_ali_met_leela = 63622
