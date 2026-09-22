@@ -279,8 +279,8 @@ Found the same way `settings.gradle.kts` finds them: any dir with a `build.gradl
 | `other/special-attacks` | 4 | 466 | 0 | 0 | 2026-05-03 |
 | `other/special-weapons` | 11 | 1,111 | 0 | 1 | 2026-09-14 |
 | `other/windmill` | 1 | 43 | 0 | 0 | 2026-05-03 |
-| `quest` | 21 | 2,185 | 0 | 0 | 2026-09-16 |
-| `quest/pack` | 1 | 6 | 0 | 0 | 2026-09-15 |
+| `quest` | 30 | 5,925 | 2 | 0 | 2026-09-22 |
+| `quest/pack` | 1 | 6 | 0 | 0 | 2026-09-22 |
 | `skills/cooking` | 12 | 1,362 | 0 | 0 | 2026-09-22 |
 | `skills/crafting` | 30 | 3,680 | 0 | 0 | 2026-09-22 |
 | `skills/crafting/pack` | 2 | 2,699 | 0 | 0 | 2026-09-22 |
