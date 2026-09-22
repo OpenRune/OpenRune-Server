@@ -388,6 +388,14 @@ constructor(
             chatNpc(angry, "What are you talking about? I can see you've got it with you!")
             return
         }
+        if (access.bank.count(AMULET) > 0) {
+            chatNpc(
+                angry,
+                "You come here wasting my time... Has it even occurred to you that you've got it " +
+                    "stored somewhere? Now GO AWAY!",
+            )
+            return
+        }
         if (player.inv.isFull()) {
             chatNpc(
                 angry,
