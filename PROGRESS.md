@@ -9,13 +9,13 @@ wiki, only that it exists.
 
 🟢 added · 🔴 not added
 
-Skills **17/23** · Bosses **11/169** · Raids **0/4** · Minigames **0/51**
+Skills **18/23** · Bosses **11/169** · Raids **0/4** · Minigames **0/51**
 
 These counts only cover skills, bosses, raids and minigames. Interfaces, areas,
 quests, drops and travel are real work that no category above points at, so check
 the module table at the bottom before reading a 0 as "nothing exists".
 
-### Skills <sup>17/23</sup>
+### Skills <sup>18/23</sup>
 
 | | Feature | Status | |
 |---|---|---|---|
@@ -39,7 +39,7 @@ the module table at the bottom before reading a 0 as "nothing exists".
 | 🔴 | <img src="https://oldschool.runescape.wiki/images/Thieving_icon.png?973fe" height="20" alt=""> Thieving | nothing yet | [wiki](https://oldschool.runescape.wiki/w/Thieving) |
 | 🟢 | <img src="https://oldschool.runescape.wiki/images/Crafting_icon.png?a1f71" height="20" alt=""> [Crafting](content/skills/crafting) | 6,372 loc | [wiki](https://oldschool.runescape.wiki/w/Crafting) |
 | 🔴 | <img src="https://oldschool.runescape.wiki/images/Fletching_icon.png?15cda" height="20" alt=""> Fletching | nothing yet | [wiki](https://oldschool.runescape.wiki/w/Fletching) |
-| 🔴 | <img src="https://oldschool.runescape.wiki/images/Construction_icon.png?f9bf7" height="20" alt=""> Construction | nothing yet | [wiki](https://oldschool.runescape.wiki/w/Construction) |
+| 🟢 | <img src="https://oldschool.runescape.wiki/images/Construction_icon.png?f9bf7" height="20" alt=""> Construction | no module, code in content/areas/city | [wiki](https://oldschool.runescape.wiki/w/Construction) |
 | 🔴 | <img src="https://oldschool.runescape.wiki/images/Farming_icon.png?558fa" height="20" alt=""> Farming | nothing yet | [wiki](https://oldschool.runescape.wiki/w/Farming) |
 | 🔴 | <img src="https://oldschool.runescape.wiki/images/Hunter_icon.png?8762f" height="20" alt=""> Hunter | nothing yet | [wiki](https://oldschool.runescape.wiki/w/Hunter) |
 
@@ -169,37 +169,6 @@ here so it at least shows up. Nothing is ticked until someone claims it.
 </details>
 
 <details>
-<summary>🔴 <b>Construction</b> — 25 sub-features</summary>
-
-- [ ] How to start training Construction
-- [ ] Buying a house
-- [ ] How to get to your house
-- [ ] How to build in your house
-- [ ] Materials
-- [ ] Equipment
-- [ ] Carpenter's outfit
-- [ ] Tools
-- [ ] Tips and tricks
-- [ ] Servants
-- [ ] Phials for unnoting
-- [ ] Training methods
-- [ ] Mahogany Homes
-- [ ] Repair Kits and Hull Parts
-- [ ] Notable milestones
-- [ ] Rooms
-- [ ] POH locations
-- [ ] Teleports
-- [ ] Pool
-- [ ] Spellbook altar
-- [ ] Shipbuilding
-- [ ] Miscellaneous
-- [ ] Cape of accomplishment
-- [ ] STASH units
-- [ ] Chambers of Xeric
-
-</details>
-
-<details>
 <summary>🔴 <b>Farming</b> — 32 sub-features</summary>
 
 - [ ] Compost
@@ -281,6 +250,8 @@ Found the same way `settings.gradle.kts` finds them: any dir with a `build.gradl
 | Module | Files | Lines | Tests | TODO | Last touched |
 |---|---:|---:|---:|---:|---|
 | `areas/city/draynor` | 7 | 781 | 4 | 0 | 2026-09-16 |
+| `areas/city/falador` | 7 | 1,354 | 0 | 0 | 2026-09-22 |
+| `areas/city/falador/pack` | 1 | 6 | 0 | 0 | 2026-09-22 |
 | `areas/city/lumbridge` | 13 | 2,578 | 0 | 3 | 2026-08-04 |
 | `areas/city/prifddinas` | 1 | 82 | 0 | 0 | 2026-08-18 |
 | `areas/city/taverley` | 1 | 77 | 0 | 0 | 2026-06-25 |
