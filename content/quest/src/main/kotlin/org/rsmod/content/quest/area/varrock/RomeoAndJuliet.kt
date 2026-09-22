@@ -369,7 +369,6 @@ class RomeoAndJuliet @Inject constructor(private val npcRepo: NpcRepository) :
             happy,
             "Romeo...great news...I've been in touch with Juliet! She's written a message for you...",
         )
-        access.mes("You hand over Juliet's message to Romeo.")
         objbox(MESSAGE, "You hand over Juliet's message to Romeo.")
         chatNpc(happy, "Oh, a message! A message! I've never had a message before...")
         chatPlayer(quiz, "Really?")
@@ -403,7 +402,6 @@ class RomeoAndJuliet @Inject constructor(private val npcRepo: NpcRepository) :
             "'Our only hope is that Father Lawrence, our long time confidant, can help us in some " +
                 "way.'",
         )
-        access.mes("Romeo folds the message away.")
         objbox(MESSAGE, "Romeo folds the message away.")
         chatNpc(sad, "Well, that's it then...we haven't got a chance...")
         chatPlayer(quiz, "What about Father Lawrence?")
@@ -696,7 +694,6 @@ class RomeoAndJuliet @Inject constructor(private val npcRepo: NpcRepository) :
 
     private suspend fun Dialogue.giveMessage(text: String) {
         access.invAdd(access.inv, MESSAGE)
-        access.mes(text)
         objbox(MESSAGE, text)
     }
 
@@ -749,7 +746,6 @@ class RomeoAndJuliet @Inject constructor(private val npcRepo: NpcRepository) :
         )
         chatNpc(angry, "Ok...if this is the best we can do...hand over the potion!")
         access.invDel(access.inv, POTION)
-        access.mes("You pass the suspicious potion to Juliet.")
         objbox(POTION, "You pass the suspicious potion to Juliet.")
         chatNpc(angry, "Wonderful! I just hope Romeo can remember to get me from the crypt.")
         chatNpc(
@@ -1489,11 +1485,9 @@ class RomeoAndJuliet @Inject constructor(private val npcRepo: NpcRepository) :
         access.invDel(access.inv, BERRIES)
         val handOver =
             "You hand over the berries, which the Apothecary shakes up in a vial of strange liquid."
-        access.mes(handOver)
         objbox(BERRIES, handOver)
         chatNpc(happy, "Phew! Here is what you need.")
         access.invAdd(access.inv, POTION)
-        access.mes("The Apothecary gives you a Cadava potion.")
         objbox(POTION, "The Apothecary gives you a Cadava potion.")
     }
 
@@ -1549,7 +1543,6 @@ class RomeoAndJuliet @Inject constructor(private val npcRepo: NpcRepository) :
             val defiance =
                 "In defiance of Father Lawrence's warnings, you drink the entire contents of the " +
                     "potion."
-            access.mes(defiance)
             objbox(POTION, defiance)
             access.anim("seq.human_eat")
             access.invReplace(access.inv, POTION, 1, "obj.vial_empty")
