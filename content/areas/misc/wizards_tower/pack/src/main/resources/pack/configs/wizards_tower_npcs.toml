@@ -1,0 +1,45 @@
+[[npc]]
+id = "npc.traiborn"
+inherit = "npc.traiborn"
+moveRestrict = "NoMove"
+
+[[npc]]
+id = "npc.wizard_mizgog"
+inherit = "npc.wizard_mizgog"
+moveRestrict = "NoMove"
+
+[[npc]]
+id = "npc.armourmaking_wizard"
+inherit = "npc.armourmaking_wizard"
+moveRestrict = "Indoors"
+wanderRange = 1
+
+[[npc]]
+id = "npc.wizard_grayzag"
+inherit = "npc.wizard_grayzag"
+moveRestrict = "Indoors"
+wanderRange = 1
+
+[[npc]]
+id = "npc.telecrystal_wizard"
+inherit = "npc.telecrystal_wizard"
+moveRestrict = "Indoors"
+wanderRange = 2
+
+[[npc]]
+id = "npc.head_wizard"
+inherit = "npc.head_wizard"
+moveRestrict = "Indoors"
+wanderRange = 2
+
+[[npc]]
+id = "npc.lesser_demon"
+inherit = "npc.lesser_demon"
+wanderRange = 2
+
+[[npc]]
+id = "npc.aluft_gnome_mage"
+inherit = "npc.aluft_gnome_mage"
+moveRestrict = "Outdoors"
+wanderRange = 5
+
