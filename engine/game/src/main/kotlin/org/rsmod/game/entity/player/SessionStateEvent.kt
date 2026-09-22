@@ -5,6 +5,9 @@ import org.rsmod.events.UnboundEvent
 import org.rsmod.game.entity.Player
 
 public class SessionStateEvent {
+    /** Restores saved scene exits before the initial map rebuild is sent. */
+    public data class PrepareLogin(val player: Player) : UnboundEvent
+
     /** Fired when a player is registered to the player list. */
     public data class Initialize(val player: Player) : UnboundEvent
 

@@ -1,0 +1,31 @@
+[[varp]]
+isServerOnly = true
+id = "varp.misthalin_return_tile"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+isServerOnly = true
+id = "varp.misthalin_mirror_blocker"
+scope = "Temp"
+transmit = "Never"
+
+[[varp]]
+isServerOnly = true
+id = "varp.misthalin_puzzle_state"
+scope = "Temp"
+transmit = "Never"
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.misthalin_reflections"
+varp = "varp.misthalin_puzzle_state"
+startBit = 0
+endBit = 1
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.misthalin_gem_row_slot"
+varp = "varp.misthalin_puzzle_state"
+startBit = 2
+endBit = 4

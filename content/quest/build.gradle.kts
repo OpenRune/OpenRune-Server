@@ -4,6 +4,8 @@ plugins {
 }
 
 dependencies {
+    testImplementation(projects.api.invPlugin)
+    testImplementation(projects.api.gameProcess)
     testImplementation(projects.api.invStorage)
     testImplementation(projects.api.registry)
     testImplementation(libs.fastutil)

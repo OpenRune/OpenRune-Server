@@ -7,10 +7,6 @@ npc = "npc.mistmyst_lacey"
 coords = "0_25_75_29_50"
 
 [[spawn]]
-npc = "npc.mistmyst_lacey_vis"
-coords = "0_25_75_29_50"
-
-[[spawn]]
 npc = "npc.mistmyst_mandy_post"
 coords = "0_25_75_36_17"
 
@@ -30,10 +26,6 @@ coords = "0_25_75_22_28"
 
 [[spawn]]
 npc = "npc.mistmyst_tayten"
-coords = "0_25_75_39_38"
-
-[[spawn]]
-npc = "npc.mistmyst_tayten_vis"
 coords = "0_25_75_39_38"
 
 ## Misthalin Mystery Manor End

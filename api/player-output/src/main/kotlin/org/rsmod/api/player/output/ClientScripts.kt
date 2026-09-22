@@ -1,6 +1,5 @@
 package org.rsmod.api.player.output
 
-import dev.openrune.definition.type.widget.ComponentType
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import dev.openrune.types.InventoryServerType
@@ -22,6 +21,8 @@ public fun Player.runClientScript(id: Int, args: List<Any>) {
 }
 
 public object ClientScripts {
+    public fun settingsSetDrawDistance(player: Player): Unit = player.runClientScript("clientscript.[clientscript,settings_set_draw_distance]".asRSCM(RSCMType.CLIENTSCRIPT))
+
     private const val LOOTTRACKER_ADD_LOOT_SCRIPT: Int = 7192
     private const val NOTIFICATION_DISPLAY_INIT_SCRIPT: Int = 3343
     private const val DEFAULT_NOTIFICATION_COLOUR: Int = 0xff981f

@@ -17,6 +17,7 @@ import net.rsprot.protocol.game.outgoing.interfaces.IfSetAnim
 import net.rsprot.protocol.game.outgoing.interfaces.IfSetColour
 import net.rsprot.protocol.game.outgoing.interfaces.IfSetEventsV2
 import net.rsprot.protocol.game.outgoing.interfaces.IfSetHide
+import net.rsprot.protocol.game.outgoing.interfaces.IfSetModelV2
 import net.rsprot.protocol.game.outgoing.interfaces.IfSetNpcHead
 import net.rsprot.protocol.game.outgoing.interfaces.IfSetNpcHeadActive
 import net.rsprot.protocol.game.outgoing.interfaces.IfSetObject
@@ -647,4 +648,9 @@ private fun Player.ifSetPauseText(component: String, text: String) {
 
 private fun Player.ifSetObj(target: String, obj: Int, zoomOrCount: Int) {
     client.write(IfSetObject(target.asRSCM(RSCMType.COMPONENT), obj, zoomOrCount))
+}
+
+public fun Player.ifSetModel(internal: String, model: Int) {
+    val target = ServerCacheManager.fromComponent(internal.asRSCM(RSCMType.COMPONENT))
+    client.write(IfSetModelV2(target.interfaceId, target.component, model))
 }

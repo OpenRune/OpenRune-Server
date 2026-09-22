@@ -1,14 +1,14 @@
 package org.rsmod.api.net.rsprot.player
 
 import com.github.michaelbull.logging.InlineLogger
+import dev.or2.central.account.AccountData
+import dev.or2.central.account.Rights
 import java.time.LocalDateTime
 import net.rsprot.protocol.api.login.GameLoginResponseHandler
 import net.rsprot.protocol.loginprot.incoming.util.AuthenticationType
 import net.rsprot.protocol.loginprot.incoming.util.LoginBlock
 import net.rsprot.protocol.loginprot.outgoing.LoginResponse
 import net.rsprot.protocol.loginprot.outgoing.util.AuthenticatorResponse
-import dev.or2.central.account.AccountData
-import dev.or2.central.account.Rights
 import org.rsmod.api.account.character.main.CharacterAccountRepository
 import org.rsmod.api.account.loader.request.AccountLoadAuth
 import org.rsmod.api.account.loader.request.AccountLoadCallback
@@ -300,7 +300,7 @@ class AccountLoadResponseHook(
 
     private fun Player.applyConfigTransforms(config: RealmConfig) {
         if (!newAccount) {
-            //This is very hacky but updating be weird
+            // This is very hacky but updating be weird
             val hasExit = attr[LOGIN_EXIT_COORD]
             if (hasExit != null) {
                 coords = CoordGrid(hasExit)
@@ -398,6 +398,7 @@ class AccountLoadResponseHook(
             return
         }
 
+        eventBus.publish(SessionStateEvent.PrepareLogin(player))
         val response = player.createLoginResponse(slotId, loadResponse.auth)
         val responseStart = System.nanoTime()
         val session = channelResponses.writeSuccessfulResponse(response, loginBlock)

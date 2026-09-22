@@ -8,6 +8,7 @@ import net.rsprot.protocol.game.outgoing.sound.MidiJingle
 import org.rsmod.api.attr.AttributeKey
 import org.rsmod.api.player.musicClocks
 import org.rsmod.api.player.protect.ProtectedAccess
+import org.rsmod.api.player.vars.VarPlayerIntMapSetter
 import org.rsmod.api.player.vars.intVarBit
 import org.rsmod.api.player.vars.intVarp
 import org.rsmod.api.table.QuestRow
@@ -23,18 +24,21 @@ data class ItemRewardDisplay(val item: String, val zoom: Int = 10)
 data class Quest(
     val id: Int,
     val key: String,
-    val rowID : Int,
+    val rowID: Int,
     val displayName: String,
     val mapElement: Int?,
     val startCoord: CoordGrid?,
     val maxSteps: Int,
     val questPoints: Int,
     val questVarp: String,
-    val rewards : QuestReward,
-    val itemDisplay : ItemRewardDisplay
+    val rewards: QuestReward,
+    val itemDisplay: ItemRewardDisplay,
+    val questVarbit: String? = null,
 ) {
 
-    private var Player.questState by intVarp(questVarp)
+    private var Player.questState: Int
+        get() = vars[questVarbit ?: questVarp]
+        set(value) { VarPlayerIntMapSetter.set(this, questVarbit ?: questVarp, value) }
     private var Player.questPoints by intVarp("varp.qp")
     private var Player.questsCompleted by intVarBit("varbit.quests_completed_count")
 
@@ -53,8 +57,9 @@ data class Quest(
         fun register(
             rowKey: String,
             varp: String,
-            itemDisplay : ItemRewardDisplay,
-            rewards : QuestReward
+            itemDisplay: ItemRewardDisplay,
+            rewards: QuestReward,
+            varbit: String? = null,
         ): Quest {
 
             val rowKeyID = "dbrow.${rowKey}".asRSCM()
@@ -69,6 +74,7 @@ data class Quest(
                 maxSteps = questRow.endstate,
                 questPoints = questRow.questpoints,
                 questVarp = varp,
+                questVarbit = varbit,
                 itemDisplay = itemDisplay,
                 rewards = rewards
             )
@@ -78,11 +84,13 @@ data class Quest(
     }
 
     fun getQuestStage(access: Player): Int {
+        if (questVarbit != null) return access.questState
         val stages = access.attr.getOrPut(QUEST_STAGE_MAP_ATTR) { mutableMapOf() }
         return stages[key] ?: 0
     }
 
-    private fun setQuestStage(access: ProtectedAccess, stage: Int) {
+    private fun storeQuestStage(access: ProtectedAccess, stage: Int) {
+        if (questVarbit != null) return
         val clampedStage = stage.coerceIn(0, maxSteps)
         val stages = access.player.attr.getOrPut(QUEST_STAGE_MAP_ATTR) { mutableMapOf() }
         stages[key] = clampedStage
@@ -110,9 +118,15 @@ data class Quest(
             throw IllegalStateException("Quest '$key' cannot advance past stage $maxSteps.")
         }
 
-        val newStage = attemptedStage.coerceIn(0, maxSteps)
-        val wasCompleted = currentStage >= maxSteps
-        setQuestStage(access, newStage)
+        return setQuestStage(access, attemptedStage.coerceIn(0, maxSteps))
+    }
+
+    fun completeQuest(access: ProtectedAccess): Int = setQuestStage(access, maxSteps)
+
+    fun setQuestStage(access: ProtectedAccess, newStage: Int): Int {
+        require(newStage in 0..maxSteps) { "Quest '$key' stage must be within 0..$maxSteps." }
+        val wasCompleted = getQuestStage(access.player) >= maxSteps
+        storeQuestStage(access, newStage)
 
         // Quest varps store the real stage (0..endstate). Multinpc / journal clients depend on
         // endstate (e.g. runemysteries=6) rather than a collapsed 0/1/2 progress flag.
@@ -174,14 +188,14 @@ data class Quest(
             val stat = ServerCacheManager.getStats(skill.asRSCM(RSCMType.STAT))
                 ?: error("No stat found for $skill")
 
-            access.statAdvance(skill,amount)
+            access.statAdvance(skill, amount)
             rewardLines.add("${amount.toInt()} ${stat.displayName} XP")
         }
 
         rewards.items.forEach { (item, amount) ->
-            access.invAdd(access.inv,item,amount)
-            val type = ServerCacheManager.getItem(item.asRSCM(RSCMType.OBJ))?: error("No item found for $item")
-            rewardLines.add("$amount x ${type.name}")
+            access.invAdd(access.inv, item, amount)
+            val type = ServerCacheManager.getItem(item.asRSCM(RSCMType.OBJ)) ?: error("No item found for $item")
+            rewardLines.add(rewards.itemLabels[item] ?: "$amount x ${type.name}")
         }
 
         rewards.extraText?.let {
@@ -195,7 +209,5 @@ data class Quest(
             val text = linesToShow.getOrNull(i) ?: ""
             access.ifSetText(componentId, text)
         }
-
     }
-
 }
