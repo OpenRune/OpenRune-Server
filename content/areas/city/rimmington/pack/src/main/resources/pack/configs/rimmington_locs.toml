@@ -1,0 +1,9 @@
+[[object]]
+id = "loc.rimmington_poor_range"
+inherit = "loc.rimmington_poor_range"
+contentGroup = "content.cooking_range_standard"
+
+[[object]]
+id = "loc.rimmington_sink"
+inherit = "loc.rimmington_sink"
+contentGroup = "content.water_source"

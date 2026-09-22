@@ -1,0 +1,28 @@
+[[varp]]
+id = "varp.rimmington_makeover"
+scope = "Temp"
+transmit = "Never"
+
+[[varbit]]
+id = "varbit.rimmington_makeover_bodytype"
+varp = "varp.rimmington_makeover"
+startBit = 0
+endBit = 0
+
+[[varbit]]
+id = "varbit.rimmington_makeover_colour"
+varp = "varp.rimmington_makeover"
+startBit = 1
+endBit = 8
+
+[[varbit]]
+id = "varbit.rimmington_makeover_mage"
+varp = "varp.rimmington_makeover"
+startBit = 9
+endBit = 9
+
+[[varbit]]
+id = "varbit.rimmington_makeover_pronoun"
+varp = "varp.rimmington_makeover"
+startBit = 10
+endBit = 11

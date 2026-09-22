@@ -66,7 +66,14 @@ private object LeatherManufacturerFlow : DialogueFlow {
     }
 
     private suspend fun Dialogue.leatherSalesPitch() {
-        val buyLeather = choice2("Can I buy some leather then?", true, "Leather is rather weak stuff.", false)
+        val buyLeather =
+            choice2(
+                "Can I buy some leather then?",
+                true,
+                "Leather is rather weak stuff.",
+                false,
+                title = "What would you like to say?",
+            )
         if (buyLeather) {
             chatPlayer(quiz, "Can I buy some leather then?")
             chatNpc(

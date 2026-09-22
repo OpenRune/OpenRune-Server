@@ -906,3 +906,15 @@ coords = "0_47_51_7_31"
 
 ## South Falador Farm End
 
+
+[[spawn]]
+npc = "npc.sailing_intro_anne_sarim"
+coords = "0_47_50_17_9"
+
+[[spawn]]
+npc = "npc.sailing_intro_will_sarim"
+coords = "0_47_50_16_8"
+
+[[spawn]]
+npc = "npc.port_task_master_port_sarim"
+coords = "0_47_49_21_58"

@@ -17,3 +17,6 @@ pickable_redberry=65350
 pickable_sweetcorn_1=65349
 pickable_sweetcorn_2=65348
 wheat=65347
+
+[gamevals.content]
+water_source = 65516
