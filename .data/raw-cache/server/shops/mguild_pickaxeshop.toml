@@ -1,7 +1,7 @@
 [[inventory]]
 isServerOnly = true
-id = "inv.pickaxeshop"
-name = "Nurmof's Pickaxe Shop."
+id = "inv.mguild_pickaxeshop"
+name = "Yarsul's Prodigious Pickaxes"
 
 scope = "Shared"
 stack = "Always"

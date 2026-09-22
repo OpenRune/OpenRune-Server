@@ -7,9 +7,9 @@ import dev.openrune.cache.tools.CacheEnvironment
 import dev.openrune.cache.tools.CacheTool
 import dev.openrune.cache.tools.cacheTool
 import dev.openrune.cache.tools.cs2.PackCs2
+import dev.openrune.cache.tools.iftype.PackIfType
 import dev.openrune.cache.tools.incremental.CacheVerification
 import dev.openrune.cache.tools.incremental.IncrementalSession
-import dev.openrune.cache.tools.iftype.PackIfType
 import dev.openrune.cache.tools.tasks.CacheTask
 import dev.openrune.cache.tools.tasks.TaskType
 import dev.openrune.codegen.startEnumGeneration
@@ -41,6 +41,7 @@ import dev.openrune.tables.skills.Cooking
 import dev.openrune.tables.skills.Firemaking
 import dev.openrune.tables.skills.Herblore
 import dev.openrune.tables.skills.Mining
+import dev.openrune.tables.skills.Motherlode
 import dev.openrune.tables.skills.Runecrafting
 import dev.openrune.tables.skills.Slayer
 import dev.openrune.tables.skills.Smithing
@@ -188,6 +189,7 @@ fun tablesToPack(): List<DBTable> = listOf(
     StatComponents.statsComponents(),
     PickableObjects.pickableObjects(),
     Mining.rocks(),
+    Motherlode.payDirt(),
     Cooking.foods(),
     Cooking.ales(),
     Herblore.unfinishedPotions(),

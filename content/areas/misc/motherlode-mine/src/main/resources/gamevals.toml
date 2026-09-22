@@ -1,0 +1,50 @@
+[gamevals.area]
+motherlode_mine = 59
+
+[gamevals.currency]
+golden_nugget = 65534
+
+[gamevals.dbtable]
+motherlode_paydirt = 63510
+
+[gamevals.dbrow]
+shop_currency_golden_nugget = 63500
+motherlode_paydirt_nugget = 63510
+motherlode_paydirt_runite = 63511
+motherlode_paydirt_adamantite = 63512
+motherlode_paydirt_mithril = 63513
+motherlode_paydirt_gold = 63514
+motherlode_paydirt_coal = 63515
+
+[gamevals.inv]
+motherlode_nugget_shop = 1101
+
+[gamevals.varp]
+motherlode_unlocks = 65400
+motherlode_sack_a = 65401
+motherlode_sack_b = 65402
+motherlode_cleaning_a = 65403
+motherlode_cleaning_b = 65404
+motherlode_held = 65405
+
+[gamevals.varbit]
+motherlode_upper_level_unlocked = 65400
+motherlode_upper_hopper_unlocked = 65401
+motherlode_sack_coal = 65402
+motherlode_sack_gold = 65403
+motherlode_sack_mithril = 65404
+motherlode_sack_adamantite = 65405
+motherlode_sack_runite = 65406
+motherlode_sack_nugget = 65407
+motherlode_cleaning_coal = 65408
+motherlode_cleaning_gold = 65409
+motherlode_cleaning_mithril = 65410
+motherlode_cleaning_adamantite = 65411
+motherlode_cleaning_runite = 65412
+motherlode_cleaning_nugget = 65413
+motherlode_held_coal = 65414
+motherlode_held_gold = 65415
+motherlode_held_mithril = 65416
+motherlode_held_adamantite = 65417
+motherlode_held_runite = 65418
+motherlode_held_nugget = 65419
