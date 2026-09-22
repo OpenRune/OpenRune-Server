@@ -13,3 +13,25 @@ contentGroup = "content.opened_single_door"
 
 [object.params]
 "param.next_loc_stage" = "loc.farming_shed_poordoor"
+
+[[varp]]
+id = "varp.lumbridge_tutor_claim"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.lumbridge_advisor_state"
+scope = "Perm"
+transmit = "Never"
+
+[[varbit]]
+id = "varbit.count_check_stronghold_teleport"
+varp = "varp.lumbridge_advisor_state"
+startBit = 0
+endBit = 0
+
+[[varbit]]
+id = "varbit.adventure_paths_opt_out"
+varp = "varp.lumbridge_advisor_state"
+startBit = 1
+endBit = 1
