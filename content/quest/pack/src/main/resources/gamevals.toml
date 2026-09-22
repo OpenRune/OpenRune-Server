@@ -12,6 +12,10 @@ ernest_clunk = 1565
 ernest_sprinkle = 1566
 fish_swim = 2601
 iron_door_open = 71
+romeo_juliet_collapse = 505
+romeo_juliet_crypt_door = 1816
+romeo_juliet_crypt_enter = 1815
+romeo_juliet_drink = 2401
 swan_rumble = 1790
 unlock = 2419
 
