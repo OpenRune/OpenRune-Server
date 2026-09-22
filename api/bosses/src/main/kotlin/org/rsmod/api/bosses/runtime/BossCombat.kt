@@ -24,6 +24,7 @@ object BossCombat {
         deps: BossDeps,
         onLethal: ((Npc) -> Unit)? = null,
         onModifyHit: (NpcHitEvents.Modify.() -> Unit)? = null,
+        onCombatTick: (suspend StandardNpcAccess.(Player) -> Unit)? = null,
     ) {
         val errors = SpecValidator.validate(spec)
         if (errors.isNotEmpty()) {
@@ -43,8 +44,8 @@ object BossCombat {
 
         with(ctx) {
             for (npcType in npcTypes) {
-                onAiOpPlayer2(npcType) { runCombatTick(it.target, spec, deps) }
-                onAiApPlayer2(npcType) { runCombatTick(it.target, spec, deps) }
+                onAiOpPlayer2(npcType) { runCombatTick(it.target, spec, deps, onCombatTick) }
+                onAiApPlayer2(npcType) { runCombatTick(it.target, spec, deps, onCombatTick) }
                 onModifyNpcHit(npcType) {
                     val encounter = deps.encounterRegistry.of(npc)
                     hit.damage =
@@ -93,7 +94,10 @@ object BossCombat {
         target: Player,
         spec: BossSpec,
         deps: BossDeps,
+        onCombatTick: (suspend StandardNpcAccess.(Player) -> Unit)?,
     ) {
+        onCombatTick?.invoke(this, target)
+
         val encounter = deps.encounterRegistry.of(npc)
         if (encounter.currentPhase == null) return
         val tick = deps.mapClock.cycle
@@ -104,6 +108,8 @@ object BossCombat {
         checkAutoTransitions(this, target, encounter, tick, spec, deps)
         checkTriggers(this, target, spec, deps, encounter)
 
+        if (tick < encounter.busyUntil) return
+
         val ticksSinceLastAttack = tick - encounter.lastAbilityTick
         val attackRate =
             encounter.attackRateOverride
@@ -111,11 +117,21 @@ object BossCombat {
                 ?: spec.stats.attackRate
         if (ticksSinceLastAttack < attackRate) return
 
+        val priority = encounter.selectPriorityAbility(tick, target)
+        if (priority != null) {
+            val effect = spec.abilities[priority] ?: return
+            encounter.usedAbilities += priority
+            encounter.lastAbilityTick = tick
+            EffectInterpreter(npc, target, spec, encounter, deps).run(this, effect)
+            return
+        }
+
         val phase = encounter.currentPhase ?: return
         val abilityName = encounter.selectAbility(phase.selector, tick, target) ?: return
         val effect = spec.abilities[abilityName] ?: return
 
         encounter.lastAbilityTick = tick
+        encounter.usedAbilities += abilityName
 
         val interpreter = EffectInterpreter(npc, target, spec, encounter, deps)
         interpreter.run(this, effect)

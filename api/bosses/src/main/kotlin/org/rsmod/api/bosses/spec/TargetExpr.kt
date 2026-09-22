@@ -11,6 +11,9 @@ sealed interface TargetExpr {
     data object LowestPrayer : Single
     data object RandomNearby : Single
 
+    /** The boss's spawn tile, shifted by ([dx], [dz]). */
+    data class SpawnTile(val dx: Int = 0, val dz: Int = 0) : Single
+
     data class RandomWalkableTile(val radius: Int, val of: Single = Self) : Single
 
     /**

@@ -17,3 +17,5 @@ guaranteed_hit=15
 venenatis_attacks=16
 awakened_state=17
 skip_killcount=18
+muspah_damage_since_switch=19
+muspah_melee_still_ticks=20

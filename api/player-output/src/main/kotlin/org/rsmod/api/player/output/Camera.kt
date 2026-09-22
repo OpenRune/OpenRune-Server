@@ -30,6 +30,10 @@ public object Camera {
         player.client.write(CamReset)
     }
 
+    public fun camShake(player: Player, axis: Int, random: Int, amplitude: Int, rate: Int) {
+        player.client.write(CamShake(axis, random, amplitude, rate))
+    }
+
     public fun camLookAt(player: Player, dest: CoordGrid, height: Int, rate: Int, rate2: Int) {
         player.client.write(CamLookAtV2(dest.x, dest.z, height, rate, rate2))
     }

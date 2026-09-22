@@ -67,6 +67,7 @@ public fun Player.queueHit(
     specific: Boolean = false,
     sourceWeapon: ItemServerType? = null,
     sourceSecondary: ItemServerType? = null,
+    penetration: Int = 0,
 ): Hit {
     val cappedDamage = min(hitpoints, damage)
     val builder =
@@ -80,6 +81,7 @@ public fun Player.queueHit(
             clientDelay = 0,
             specific = specific,
         )
+    builder.penetration = penetration
     return modifyAndStrongQueueHit(delay, builder, modifier)
 }
 
@@ -315,6 +317,7 @@ public fun Player.queueImpactHit(
     specific: Boolean = false,
     sourceWeapon: ItemServerType? = null,
     sourceSecondary: ItemServerType? = null,
+    penetration: Int = 0,
 ) {
     val builder =
         InternalPlayerHits.createBuilder(
@@ -327,6 +330,7 @@ public fun Player.queueImpactHit(
             clientDelay = 0,
             specific = specific,
         )
+    builder.penetration = penetration
     strongQueueImpactHit(delay, builder, modifier)
 }
 

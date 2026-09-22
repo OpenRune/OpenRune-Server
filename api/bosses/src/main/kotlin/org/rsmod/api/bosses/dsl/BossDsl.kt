@@ -97,6 +97,7 @@ class HitBuilder internal constructor() {
     var delay: Int = 0
     private var spotanimSpot: String? = null
     private var spotanimHeight: Int = 0
+    private var penetrationPercent: Int = 0
 
     fun damage(expr: DamageExpr) {
         damageExpr = expr
@@ -115,6 +116,11 @@ class HitBuilder internal constructor() {
         spotanimHeight = height
     }
 
+    /** Percentage (0-100) of a protection prayer's block this hit ignores. */
+    fun penetration(percent: Int) {
+        penetrationPercent = percent
+    }
+
     internal fun commitDamage(expr: DamageExpr) {
         damageExpr = expr
     }
@@ -130,6 +136,7 @@ class HitBuilder internal constructor() {
             delay = delay,
             spotanim = spotanimSpot,
             spotanimHeight = spotanimHeight,
+            penetration = penetrationPercent,
         )
 }
 
@@ -173,6 +180,10 @@ class AbilityBuilder {
 
     fun broadcastInArea(text: String, radius: Int = 15) {
         effects += Effect.Broadcast(text, radius)
+    }
+
+    fun camShake(axis: Int, random: Int, amplitude: Int = 0, rate: Int = 0, radius: Int = 15) {
+        effects += Effect.CamShake(axis, random, amplitude, rate, radius)
     }
 
     fun message(text: String, target: TargetExpr = TargetExpr.CurrentTarget) {
@@ -417,6 +428,14 @@ class PhaseBuilder(private val name: String) {
 
     fun forceEveryAttacks(min: Int, max: Int, ability: AbilityRef) {
         forceAbilities += ForcedAbility(period = 0, ability = ability.name, attackMin = min, attackMax = max)
+    }
+
+    fun forceWhen(condition: Condition, ability: String, once: Boolean = false) {
+        forceAbilities += ForcedAbility(period = 0, ability = ability, condition = condition, once = once)
+    }
+
+    fun forceWhen(condition: Condition, ability: AbilityRef, once: Boolean = false) {
+        forceWhen(condition, ability.name, once)
     }
 
     fun weightedSelectorRandom(

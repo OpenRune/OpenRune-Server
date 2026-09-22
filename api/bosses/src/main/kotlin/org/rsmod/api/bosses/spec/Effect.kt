@@ -18,6 +18,14 @@ sealed interface Effect {
     data class MapSpotanim(val spot: String, val at: TargetExpr, val height: Int = 0, val delay: Int = 0) : Effect
     data class Broadcast(val text: String, val radius: Int = 15) : Effect
 
+    data class CamShake(
+        val axis: Int,
+        val random: Int,
+        val amplitude: Int = 0,
+        val rate: Int = 0,
+        val radius: Int = 15,
+    ) : Effect
+
     data class Message(val text: String, val target: TargetExpr = TargetExpr.CurrentTarget) : Effect
 
     data class Delay(val ticks: Int) : Effect
@@ -32,6 +40,8 @@ sealed interface Effect {
         val delay: Int = 0,
         val spotanim: String? = null,
         val spotanimHeight: Int = 0,
+        /** Percentage (0-100) of a protection prayer's block this hit ignores. */
+        val penetration: Int = 0,
     ) : Effect
 
     data class Projectile(
@@ -96,6 +106,10 @@ sealed interface Effect {
     ) : Effect
 
     data class Transmog(val to: String, val durationTicks: Int) : Effect
+
+    data class Teleport(val to: TargetExpr.Single) : Effect
+    data object FaceTarget : Effect
+    data class FaceTile(val at: TargetExpr.Single) : Effect
 
     data class Poison(val damage: Int, val chance: Int = 1, val outOf: Int = 1) : Effect
     data class Freeze(val ticks: Int, val chance: Int = 1, val outOf: Int = 1) : Effect

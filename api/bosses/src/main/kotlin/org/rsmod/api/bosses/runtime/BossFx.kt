@@ -39,7 +39,8 @@ fun BossDeps.bossProjectile(
 }
 
 fun BossDeps.suppressAttacks(npc: Npc, ticks: Int) {
-    encounterRegistry.of(npc).lastAbilityTick = mapClock.cycle + ticks
+    val encounter = encounterRegistry.of(npc)
+    encounter.busyUntil = maxOf(encounter.busyUntil, mapClock.cycle + ticks)
 }
 
 fun BossDeps.encounter(npc: Npc): BossEncounter = encounterRegistry.of(npc)

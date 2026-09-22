@@ -48,9 +48,9 @@ object InstanceSettingsTable {
             column(MAX_PLAYERS, 20)
             column(TIME_LIMIT_MINUTES, 0)
             column(GRACE_MINUTES, 10)
-            columnRSCM(BOSS_NPC, "npc.rat_boss_normal","npc.rat_boss_instance")
+            columnRSCM(BOSS_NPC, "npc.rat_boss_normal", "npc.rat_boss_instance")
             column(BOSS_NAME, "Scurrius")
-            column(RECOMMENDED_COMBAT, 60,90)
+            column(RECOMMENDED_COMBAT, 60, 90)
             column(TEAM_SIZE, 20)
             column(LOOT_MULTIPLIER, "x1.0")
             column(DESCRIPTION, "King of the rats.")
@@ -68,7 +68,7 @@ object InstanceSettingsTable {
             column(GRACE_MINUTES, 10)
             columnRSCM(BOSS_NPC, "npc.king_dragon")
             column(BOSS_NAME, "King Black Dragon")
-            column(RECOMMENDED_COMBAT, 80,90)
+            column(RECOMMENDED_COMBAT, 80, 90)
             column(TEAM_SIZE, 1)
             column(LOOT_MULTIPLIER, "x1.0")
             column(DESCRIPTION, "King of the dragons.")
@@ -158,7 +158,7 @@ object InstanceSettingsTable {
             column(GRACE_MINUTES, 5)
             columnRSCM(BOSS_NPC, "npc.cowboss")
             column(BOSS_NAME, "Brutus")
-            column(RECOMMENDED_COMBAT, 30,30)
+            column(RECOMMENDED_COMBAT, 30, 30)
             column(TEAM_SIZE, 1)
             column(LOOT_MULTIPLIER, "x1.0")
             column(
@@ -200,6 +200,24 @@ object InstanceSettingsTable {
                 "loc.dt2_stranglewood_boss_entry_op",
             )
             columnRSCM(EXIT_OBJECT, "loc.vardorvis_exit")
+        }
+
+        row("dbrow.instance_muspah") {
+            column(KEY, "muspah")
+            columnCoord(EXIT_COORD, CoordGrid(2909, 10317, 0))
+            columnCoord(ENTER_COORD, CoordGrid(2859, 4259, 0))
+            column(FEE, 0)
+            column(MAX_PLAYERS, 1)
+            column(TIME_LIMIT_MINUTES, 0)
+            column(GRACE_MINUTES, 10)
+            columnRSCM(BOSS_NPC, "npc.muspah")
+            column(BOSS_NAME, "Phantom Muspah")
+            column(RECOMMENDED_COMBAT, 90, 126)
+            column(TEAM_SIZE, 1)
+            column(LOOT_MULTIPLIER, "x1.0")
+            column(DESCRIPTION, "A phantom creature bound between the mortal and abyssal planes.")
+            columnRSCM(ENTER_OBJECT, "loc.ghorrock_dungeon_cave_entry")
+            columnRSCM(EXIT_OBJECT, "loc.ghorrock_dungeon_cave_exit")
         }
 
         row("dbrow.instance_amoxliatl") {

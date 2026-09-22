@@ -14,13 +14,17 @@ import org.rsmod.api.combat.commons.player.finishNpcHit
 import org.rsmod.api.combat.commons.player.queueCombatRetaliate
 import org.rsmod.api.combat.commons.types.MeleeAttackType
 import org.rsmod.api.npc.access.StandardNpcAccess
+import org.rsmod.api.npc.isValidTarget
 import org.rsmod.api.player.disablePrayers
 import org.rsmod.api.player.hit.modifier.PlayerHitModifier
 import org.rsmod.api.player.hit.queueImpactHit
+import org.rsmod.api.player.isValidTarget
+import org.rsmod.api.player.output.Camera
 import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.stat.hitpoints
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
+import org.rsmod.game.entity.util.PathingEntityCommon
 import org.rsmod.game.hit.HitType
 import org.rsmod.game.map.collision.isWalkBlocked
 import org.rsmod.game.proj.ProjAnim
@@ -56,6 +60,13 @@ class EffectInterpreter(
                     }
                 }
             }
+            is Effect.CamShake -> {
+                for (player in deps.playerList) {
+                    if (player.coords.chebyshevDistance(npc.coords) <= effect.radius) {
+                        Camera.camShake(player, effect.axis, effect.random, effect.amplitude, effect.rate)
+                    }
+                }
+            }
             is Effect.Delay -> {
                 scheduleWait(effect.ticks, onComplete)
                 return
@@ -80,6 +91,24 @@ class EffectInterpreter(
                 val npcType = ServerCacheManager.getNpc(effect.to.asRSCM(RSCMType.NPC))
                 if (npcType != null) {
                     access.changeType(npcType, effect.durationTicks)
+                }
+            }
+
+            is Effect.Teleport -> {
+                if (npc.isValidTarget()) {
+                    PathingEntityCommon.telejump(npc, deps.collision, resolveTile(effect.to))
+                }
+            }
+            is Effect.FaceTarget -> {
+                if (npc.isValidTarget()) {
+                    npc.resetFaceEntity()
+                    if (target.isValidTarget()) npc.facePlayer(target)
+                }
+            }
+            is Effect.FaceTile -> {
+                if (npc.isValidTarget()) {
+                    npc.faceSquare(resolveTile(effect.at))
+                    npc.resetFaceEntity()
                 }
             }
 
@@ -141,7 +170,7 @@ class EffectInterpreter(
     private fun scheduleWait(ticks: Int, onComplete: () -> Unit) {
         require(ticks > 0) { "`ticks` must be greater than 0. (ticks=$ticks)" }
         deps.suppressAttacks(npc, ticks)
-        deps.worldQueues.add(ticks) { onComplete() }
+        deps.worldQueues.add(ticks) { if (npc.isValidTarget()) onComplete() }
     }
 
     private fun runSequence(
@@ -210,7 +239,7 @@ class EffectInterpreter(
             if (damage > 0) {
                 hit.spotanim?.let { t.spotanim(it, height = hit.spotanimHeight) }
             }
-            t.finishNpcHit(npc, delay, hit.type.toEngine(), damage, deps.playerHitModifier)
+            t.finishNpcHit(npc, delay, hit.type.toEngine(), damage, deps.playerHitModifier, hit.penetration)
         }
     }
 
@@ -269,9 +298,23 @@ class EffectInterpreter(
                 hit.spotanim?.let { player.spotanim(it, delay = projAnim.clientCycles, height = hit.spotanimHeight) }
             }
             if (proj.resolveOnImpact) {
-                player.finishNpcImpactHit(npc, projAnim.serverCycles, hit.type.toEngine(), damage, deps.playerHitModifier)
+                player.finishNpcImpactHit(
+                    npc,
+                    projAnim.serverCycles,
+                    hit.type.toEngine(),
+                    damage,
+                    deps.playerHitModifier,
+                    hit.penetration,
+                )
             } else {
-                player.finishNpcHit(npc, projAnim.serverCycles, hit.type.toEngine(), damage, deps.playerHitModifier)
+                player.finishNpcHit(
+                    npc,
+                    projAnim.serverCycles,
+                    hit.type.toEngine(),
+                    damage,
+                    deps.playerHitModifier,
+                    hit.penetration,
+                )
             }
         }
     }
@@ -289,9 +332,10 @@ class EffectInterpreter(
         type: HitType,
         damage: Int,
         modifier: PlayerHitModifier,
+        penetration: Int = 0,
     ) {
         queueCombatRetaliate(source)
-        queueImpactHit(source, delay, type, damage, modifier)
+        queueImpactHit(source, delay, type, damage, modifier, penetration = penetration)
         combatPlayDefendAnim()
     }
 
@@ -434,6 +478,7 @@ class EffectInterpreter(
             is TargetExpr.RandomNearby -> target
             is TargetExpr.RandomWalkableTile -> null
             is TargetExpr.ImpactTile -> null
+            is TargetExpr.SpawnTile -> null
         }
     }
 
@@ -447,6 +492,7 @@ class EffectInterpreter(
                 randomWalkableTile(center, expr.radius) ?: center
             }
             is TargetExpr.ImpactTile -> impactTile ?: npc.coords
+            is TargetExpr.SpawnTile -> npc.spawnCoords.translate(expr.dx, expr.dz)
             else -> npc.coords
         }
     }
