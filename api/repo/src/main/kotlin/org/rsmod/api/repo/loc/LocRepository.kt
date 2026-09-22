@@ -157,7 +157,6 @@ constructor(
     public fun findAll(coords: CoordGrid): Sequence<LocInfo> =
         findAll(ZoneKey.from(coords)).filter { it.coords == coords }
 
-
     public fun findLoc(coords: CoordGrid, type: String): Boolean =
         locReg.findType(coords, type.asRSCM(RSCMType.LOC)) != null
 
@@ -191,6 +190,7 @@ constructor(
     }
 
     private fun processDelDurations() {
+        val triggered = mutableListOf<() -> Unit>()
         val iterator = delDurations.iterator()
         while (iterator.hasNext()) {
             val duration = iterator.next()
@@ -199,13 +199,15 @@ constructor(
             }
             if (duration.isValid()) {
                 locReg.add(duration.loc)
-                duration.onTrigger?.invoke()
+                duration.onTrigger?.let(triggered::add)
             }
             iterator.remove()
         }
+        triggered.forEach { it() }
     }
 
     private fun processAddDurations() {
+        val triggered = mutableListOf<() -> Unit>()
         val iterator = addDurations.iterator()
         while (iterator.hasNext()) {
             val duration = iterator.next()
@@ -214,10 +216,11 @@ constructor(
             }
             if (duration.isValid()) {
                 locReg.del(duration.loc)
-                duration.onTrigger?.invoke()
+                duration.onTrigger?.let(triggered::add)
             }
             iterator.remove()
         }
+        triggered.forEach { it() }
     }
 
     private fun LocCycleDuration.shouldTrigger(): Boolean = mapClock >= triggerCycle
