@@ -27,14 +27,28 @@ class ImpCatcher :
     override fun ScriptContext.init() {
         onOpNpc1("npc.wizard_mizgog") { startDialogue(it.npc) { mizgog() } }
         onOpNpc3("npc.wizard_mizgog") { startDialogue(it.npc) { purchaseAmulet() } }
-        onOpNpc1("npc.wizard_grayzag") {
-            startDialogue(it.npc) {
+        onOpNpc1("npc.wizard_grayzag") { startDialogue(it.npc) { grayzag() } }
+    }
+
+    private suspend fun Dialogue.grayzag() {
+        when {
+            quest.isQuestCompleted(player) -> {
+                chatNpc(angry, "So you think finding those beads makes you clever, do you?")
+                chatPlayer(happy, "Well yes, actually.")
+                chatNpc(
+                    angry,
+                    "Well you'd better just watch your back, because when you least expect it " +
+                        "I'll be there. You shouldn't go sticking your nose into other people's " +
+                        "affairs, meddler.",
+                )
+            }
+            quest.isQuestInProgress(player) ->
                 chatNpc(
                     laugh,
                     "You're a fool, ${player.displayName}. Do you really think you'll find four " +
                         "imps out of thousands? Good luck. Ha!",
                 )
-            }
+            else -> chatNpc(angry, "Not now, I'm trying to concentrate on a very difficult spell!")
         }
     }
 
