@@ -2,6 +2,7 @@ package org.rsmod.content.quest.area.misthalin
 
 import kotlin.math.abs
 import org.rsmod.api.config.constants
+import org.rsmod.api.player.output.CamShakeAxis
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.repo.loc.LocRepository
 import org.rsmod.api.script.onOpHeld1
@@ -206,12 +207,12 @@ internal class MisthalinManor(
         }
 
         delay(2)
-        camShake(axis = 4, random = 4, amplitude = 0, rate = 1)
+        camShake(axis = CamShakeAxis.PAN_UP_DOWN, random = 4, amplitude = 0, rate = 1)
         delay(2)
         soundSynth("synth.explosion")
         quest.setQuestStage(this, MisthalinStage.WallBlown)
         delay(1)
-        camShakeReset(axis = 4)
+        camShakeReset(axis = CamShakeAxis.PAN_UP_DOWN)
     }
 
     private suspend fun ProtectedAccess.gemDoor(

@@ -74,6 +74,7 @@ import org.rsmod.api.player.isOutOfCombat
 import org.rsmod.api.player.mapMultiway
 import org.rsmod.api.player.midiJingle
 import org.rsmod.api.player.midiSong
+import org.rsmod.api.player.output.CamShakeAxis
 import org.rsmod.api.player.output.Camera
 import org.rsmod.api.player.output.ChatType
 import org.rsmod.api.player.output.ClientScripts
@@ -3740,11 +3741,11 @@ public class ProtectedAccess(
         Camera.camLookAtV3(player, dest, height, rate, rate2, heightRelative)
     }
 
-    public fun camShake(axis: Int, random: Int, amplitude: Int, rate: Int) {
+    public fun camShake(axis: CamShakeAxis, random: Int, amplitude: Int, rate: Int) {
         Camera.camShake(player, axis, random, amplitude, rate)
     }
 
-    public fun camShakeReset(axis: Int) {
+    public fun camShakeReset(axis: CamShakeAxis) {
         Camera.camShakeReset(player, axis)
     }
 
