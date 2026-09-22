@@ -35,10 +35,6 @@ npc = "npc.aide_tutor_woodsman"
 coords = "0_50_50_28_45"
 
 [[spawn]]
-npc = "npc.ap_guide_active"
-coords = "0_50_50_32_34"
-
-[[spawn]]
 npc = "npc.ap_guide_parent"
 coords = "0_50_50_32_35"
 

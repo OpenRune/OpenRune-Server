@@ -29,9 +29,3 @@ id = "varbit.count_check_stronghold_teleport"
 varp = "varp.lumbridge_advisor_state"
 startBit = 0
 endBit = 0
-
-[[varbit]]
-id = "varbit.adventure_paths_opt_out"
-varp = "varp.lumbridge_advisor_state"
-startBit = 1
-endBit = 1

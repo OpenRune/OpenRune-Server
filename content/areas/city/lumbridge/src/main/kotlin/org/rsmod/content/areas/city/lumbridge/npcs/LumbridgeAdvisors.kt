@@ -2,7 +2,9 @@ package org.rsmod.content.areas.city.lumbridge.npcs
 
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.player.vars.boolVarBit
+import org.rsmod.api.player.vars.intVarBit
 import org.rsmod.api.script.onOpNpc1
+import org.rsmod.api.script.onPlayerLogin
 import org.rsmod.content.quest.manager.menu
 import org.rsmod.game.entity.Player
 import org.rsmod.map.CoordGrid
@@ -10,11 +12,17 @@ import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
 private var Player.countCheckTeleport by boolVarBit("varbit.count_check_stronghold_teleport")
-private var Player.adventurePathsOptOut by boolVarBit("varbit.adventure_paths_opt_out")
+private var Player.adventurePaths by intVarBit("varbit.adventurepath_player_participating")
 
 /** The Doomsayer, Count Check, Nigel and Adventurer Jon, all north of Lumbridge Castle. */
 class LumbridgeAdvisors : PluginScript() {
     override fun ScriptContext.startup() {
+        // Adventurer Jon is only visible to players the varbit marks as taking part.
+        onPlayerLogin {
+            if (player.adventurePaths == ADVENTURE_PATHS_UNSET) {
+                player.adventurePaths = ADVENTURE_PATHS_PARTICIPATING
+            }
+        }
         for (doomsayer in listOf("npc.cws_doomsayer", "npc.doomsayer_normal")) {
             onOpNpc1(doomsayer) { startDialogue(it.npc) { doomsayer() } }
         }
@@ -22,7 +30,7 @@ class LumbridgeAdvisors : PluginScript() {
         for (nigel in listOf("npc.deadman_nigel", "npc.deadman_nigel_regular")) {
             onOpNpc1(nigel) { startDialogue(it.npc) { nigel() } }
         }
-        for (jon in listOf("npc.ap_guide_parent", "npc.ap_guide_active")) {
+        for (jon in listOf("npc.ap_guide_parent", "npc.ap_guide_active", "npc.ap_guide_opt_out")) {
             onOpNpc1(jon) { startDialogue(it.npc) { adventurerJon() } }
         }
     }
@@ -340,7 +348,7 @@ class LumbridgeAdvisors : PluginScript() {
     }
 
     private suspend fun Dialogue.adventurerJon() {
-        if (player.adventurePathsOptOut) {
+        if (player.adventurePaths == ADVENTURE_PATHS_OPTED_OUT) {
             chatNpc(neutral, "You are currently not participating in Adventure Paths. Would you like to join back in?")
             if (!menu("Yes please." to true, "No thanks." to false)) {
                 chatPlayer(neutral, "No thanks.")
@@ -353,7 +361,7 @@ class LumbridgeAdvisors : PluginScript() {
                     "Adventure Paths"
             )
             if (menu("Yes" to true, "No" to false, title = "Opt into Adventure Paths?")) {
-                player.adventurePathsOptOut = false
+                player.adventurePaths = ADVENTURE_PATHS_PARTICIPATING
                 mesbox("You have opted back into Adventure Paths.")
             }
             return
@@ -414,7 +422,7 @@ class LumbridgeAdvisors : PluginScript() {
                             "into Adventure Paths"
                     )
                     if (menu("Yes" to true, "No" to false, title = "Opt out of Adventure Paths?")) {
-                        player.adventurePathsOptOut = true
+                        player.adventurePaths = ADVENTURE_PATHS_OPTED_OUT
                         mesbox("You have now opted out of Adventure Paths.")
                     }
                     return
@@ -424,6 +432,10 @@ class LumbridgeAdvisors : PluginScript() {
     }
 
     private companion object {
+        const val ADVENTURE_PATHS_UNSET = 0
+        const val ADVENTURE_PATHS_PARTICIPATING = 1
+        const val ADVENTURE_PATHS_OPTED_OUT = 2
+
         val STRONGHOLD = CoordGrid(3081, 3421, 0)
     }
 }
