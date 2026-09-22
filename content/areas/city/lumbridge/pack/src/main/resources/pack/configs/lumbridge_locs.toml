@@ -1,0 +1,15 @@
+[[object]]
+id = "loc.farming_shed_poordoor"
+inherit = "loc.farming_shed_poordoor"
+contentGroup = "content.closed_single_door"
+
+[object.params]
+"param.next_loc_stage" = "loc.fai_barbarian_poordooropen"
+
+[[object]]
+id = "loc.fai_barbarian_poordooropen"
+inherit = "loc.fai_barbarian_poordooropen"
+contentGroup = "content.opened_single_door"
+
+[object.params]
+"param.next_loc_stage" = "loc.farming_shed_poordoor"
