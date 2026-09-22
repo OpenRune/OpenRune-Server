@@ -23,11 +23,13 @@ class DraynorManorStairs : PluginScript() {
     private suspend fun ProtectedAccess.enterCrypt() {
         arriveDelay()
         telejump(CryptCoord.translateX(cryptColumnOffset(CryptEntryX)))
+        softTimer(DraynorCryptCandles.TIMER, DraynorCryptCandles.INTERVAL)
     }
 
     private suspend fun ProtectedAccess.leaveCrypt() {
         arriveDelay()
         telejump(CryptExitCoord.translateX(cryptColumnOffset(CryptCoord.x)))
+        clearSoftTimer(DraynorCryptCandles.TIMER)
     }
 
     // Both staircases are two columns wide; preserve the approach column in the landing.
