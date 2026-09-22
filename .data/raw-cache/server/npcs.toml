@@ -4761,3 +4761,184 @@ id = "npc.motherlode_mother"
 inherit = "npc.motherlode_mother"
 moveRestrict = "NoMove"
 wanderRange = 0
+
+[[npc]]
+id = "npc.rd_teleporter_guy"
+inherit = "npc.rd_teleporter_guy"
+moveRestrict = "NoMove"
+wanderRange = 0
+respawnDir = "North"
+
+[[npc]]
+id = "npc.fai_falador_guard1"
+inherit = "npc.fai_falador_guard1"
+moveRestrict = "Outdoors"
+[npc.params]
+"param.attack_anim"="seq.human_sword_stab"
+
+[[npc]]
+id = "npc.fai_falador_guard1_f"
+inherit = "npc.fai_falador_guard1_f"
+moveRestrict = "Outdoors"
+[npc.params]
+"param.attack_anim"="seq.human_sword_stab"
+
+[[npc]]
+id = "npc.hairdresser"
+inherit = "npc.hairdresser"
+moveRestrict = "Indoors"
+
+[[npc]]
+id = "npc.generalshopkeeper4"
+inherit = "npc.generalshopkeeper4"
+moveRestrict = "Indoors"
+
+[[npc]]
+id = "npc.generalassistant4"
+inherit = "npc.generalassistant4"
+moveRestrict = "Indoors"
+
+[[npc]]
+id = "npc.cassie"
+inherit = "npc.cassie"
+moveRestrict = "Indoors"
+
+[[npc]]
+id = "npc.flynn"
+inherit = "npc.flynn"
+moveRestrict = "Indoors"
+
+[[npc]]
+id = "npc.wayne"
+inherit = "npc.wayne"
+moveRestrict = "Indoors"
+
+[[npc]]
+id = "npc.herquin"
+inherit = "npc.herquin"
+moveRestrict = "Indoors"
+
+[[npc]]
+id = "npc.poh_estate_agent"
+inherit = "npc.poh_estate_agent"
+moveRestrict = "Indoors"
+
+[[npc]]
+id = "npc.risingsun_barmaid"
+inherit = "npc.risingsun_barmaid"
+moveRestrict = "Indoors"
+
+[[npc]]
+id = "npc.risingsun_barmaid2"
+inherit = "npc.risingsun_barmaid2"
+moveRestrict = "Indoors"
+
+[[npc]]
+id = "npc.risingsun_barmaid3"
+inherit = "npc.risingsun_barmaid3"
+moveRestrict = "Indoors"
+
+[[npc]]
+id = "npc.partyroom_barmaid"
+inherit = "npc.partyroom_barmaid"
+moveRestrict = "Indoors"
+
+[[npc]]
+id = "npc.partyroom_barmaid2"
+inherit = "npc.partyroom_barmaid2"
+moveRestrict = "Indoors"
+
+[[npc]]
+id = "npc.partyroom_pete"
+inherit = "npc.partyroom_pete"
+moveRestrict = "Indoors"
+
+[[npc]]
+id = "npc.falador_man4"
+inherit = "npc.falador_man4"
+moveRestrict = "Indoors"
+
+[[npc]]
+id = "npc.falador_workman_fat"
+inherit = "npc.falador_workman_fat"
+moveRestrict = "Indoors"
+
+[[npc]]
+id = "npc.falador_workman_young"
+inherit = "npc.falador_workman_young"
+moveRestrict = "Indoors"
+
+[[npc]]
+id = "npc.con_contract_client_4"
+inherit = "npc.con_contract_client_4"
+moveRestrict = "Indoors"
+
+[[npc]]
+id = "npc.con_contract_client_5"
+inherit = "npc.con_contract_client_5"
+moveRestrict = "Indoors"
+
+[[npc]]
+id = "npc.aluft_gnome_diplomat_falador"
+inherit = "npc.aluft_gnome_diplomat_falador"
+moveRestrict = "Indoors"
+
+[[npc]]
+id = "npc.poh_herald_of_falador"
+inherit = "npc.poh_herald_of_falador"
+moveRestrict = "Indoors"
+
+[[npc]]
+id = "npc.sir_amik_varze"
+inherit = "npc.sir_amik_varze"
+moveRestrict = "Indoors"
+
+[[npc]]
+id = "npc.sir_vyvin"
+inherit = "npc.sir_vyvin"
+moveRestrict = "Indoors"
+
+[[npc]]
+id = "npc.fai_falador_guard1_variant01"
+inherit = "npc.fai_falador_guard1_variant01"
+moveRestrict = "Outdoors"
+
+[[npc]]
+id = "npc.fai_falador_guard1_variant02"
+inherit = "npc.fai_falador_guard1_variant02"
+moveRestrict = "Outdoors"
+
+[[npc]]
+id = "npc.fai_falador_guard2"
+inherit = "npc.fai_falador_guard2"
+moveRestrict = "Outdoors"
+
+[[npc]]
+id = "npc.fai_falador_guard2_f"
+inherit = "npc.fai_falador_guard2_f"
+moveRestrict = "Outdoors"
+
+[[npc]]
+id = "npc.fai_falador_guard3"
+inherit = "npc.fai_falador_guard3"
+moveRestrict = "Outdoors"
+
+[[npc]]
+id = "npc.fai_falador_guard3_f"
+inherit = "npc.fai_falador_guard3_f"
+moveRestrict = "Outdoors"
+
+[[npc]]
+id = "npc.fai_falador_guard4_f"
+inherit = "npc.fai_falador_guard4_f"
+moveRestrict = "Outdoors"
+
+[[npc]]
+id = "npc.fai_falador_guard5"
+inherit = "npc.fai_falador_guard5"
+moveRestrict = "Outdoors"
+
+[[npc]]
+id = "npc.fai_falador_guard6"
+inherit = "npc.fai_falador_guard6"
+moveRestrict = "Outdoors"

@@ -6,8 +6,6 @@ import dev.openrune.definition.type.widget.ComponentType
 import dev.openrune.definition.type.widget.IfEvent
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
-import dev.openrune.types.ItemServerType
-import dev.openrune.types.NpcServerType
 import dev.openrune.types.SequenceServerType
 import dev.openrune.types.aconverted.interf.IfSubType
 import java.awt.Color
@@ -19,6 +17,7 @@ import net.rsprot.protocol.game.outgoing.interfaces.IfSetAnim
 import net.rsprot.protocol.game.outgoing.interfaces.IfSetColour
 import net.rsprot.protocol.game.outgoing.interfaces.IfSetEventsV2
 import net.rsprot.protocol.game.outgoing.interfaces.IfSetHide
+import net.rsprot.protocol.game.outgoing.interfaces.IfSetModelV2
 import net.rsprot.protocol.game.outgoing.interfaces.IfSetNpcHead
 import net.rsprot.protocol.game.outgoing.interfaces.IfSetNpcHeadActive
 import net.rsprot.protocol.game.outgoing.interfaces.IfSetObject
@@ -497,7 +496,7 @@ internal fun Player.ifObjbox(
     eventBus: EventBus,
 ) {
     mes(text, ChatType.Mesbox)
-    ifOpenChat("interface.objectbox", constants.modal_infinitewidthandheight, eventBus)
+    ifOpenChat("interface.objectbox", constants.modal_fixedwidthandheight, eventBus)
     objboxSetButtons(this, pauseText)
     if (pauseText.isNotBlank()) {
         ifSetEvents("component.objectbox:universe", 0..1, IfEvent.PauseButton)
@@ -585,7 +584,7 @@ internal fun Player.ifChatPlayer(
     eventBus: EventBus,
 ) {
     mes("$title|$text", ChatType.Dialogue)
-    ifOpenChat("interface.chat_right", constants.modal_fixedwidthandheight, eventBus)
+    ifOpenChat("interface.chat_right", constants.modal_infinitewidthandheight, eventBus)
     ifSetPlayerHead("component.chat_right:head")
     ifSetAnim("component.chat_right:head", expression)
     ifSetText("component.chat_right:name", title)
@@ -604,7 +603,7 @@ internal fun Player.ifChatNpcActive(
     eventBus: EventBus,
 ) {
     mes("$title|$text", ChatType.Dialogue)
-    ifOpenChat("interface.chat_left", constants.modal_fixedwidthandheight, eventBus)
+    ifOpenChat("interface.chat_left", constants.modal_infinitewidthandheight, eventBus)
     ifSetNpcHeadActive("component.chat_left:head", npcSlotId)
     ifSetAnim("component.chat_left:head", chatanim)
     ifSetText("component.chat_left:name", title)
@@ -649,4 +648,9 @@ private fun Player.ifSetPauseText(component: String, text: String) {
 
 private fun Player.ifSetObj(target: String, obj: Int, zoomOrCount: Int) {
     client.write(IfSetObject(target.asRSCM(RSCMType.COMPONENT), obj, zoomOrCount))
+}
+
+public fun Player.ifSetModel(internal: String, model: Int) {
+    val target = ServerCacheManager.fromComponent(internal.asRSCM(RSCMType.COMPONENT))
+    client.write(IfSetModelV2(target.interfaceId, target.component, model))
 }

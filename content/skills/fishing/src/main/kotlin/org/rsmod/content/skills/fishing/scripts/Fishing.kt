@@ -24,11 +24,11 @@ import org.rsmod.api.table.cooking.CookingFoodsRow
 import org.rsmod.api.table.fishing.FishingMethodRow
 import org.rsmod.api.table.fishing.FishingSpotDefRow
 import org.rsmod.api.table.fishing.FishingSpotRow
+import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.content.skills.fishing.FishRow
 import org.rsmod.content.skills.fishing.FishingCatchLogic
-import org.rsmod.content.skills.fishing.HeronPet.rollHeron
-import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.content.skills.fishing.Gate
+import org.rsmod.content.skills.fishing.HeronPet.rollHeron
 import org.rsmod.game.MapClock
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.npc.NpcUid
@@ -124,6 +124,9 @@ constructor(
         val attempt = prepare(spot, method, verbose = true) ?: return
 
         startAnim(attempt)
+        if (attempt.active.tool == SMALL_NET) {
+            spam("You cast out your net...")
+        }
 
         clearWeakQueue(CATCH_QUEUE)
         weakQueue(CATCH_QUEUE, rollDelay(attempt.bait), FishTask(npc, npc.uid, spot, method))
@@ -457,6 +460,7 @@ constructor(
 
         private const val CATCH_CYCLE = 5
         private const val ANIM_REFRESH = 4
+        private const val SMALL_NET = "obj.net"
         private const val HARPOON = "obj.harpoon"
         private const val DRAGON_HARPOON = "obj.dragon_harpoon"
         private const val DRAGON_HARPOON_LEVEL = 61

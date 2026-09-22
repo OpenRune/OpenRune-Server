@@ -3,6 +3,7 @@ package org.rsmod.content.quest.manager
 import dev.openrune.definition.type.widget.IfEvent
 import org.rsmod.api.player.ui.ifSetEvents
 import org.rsmod.api.player.vars.intVarBit
+import org.rsmod.api.script.onIfOpen
 import org.rsmod.api.script.onPlayerLogin
 import org.rsmod.api.table.QuestRow
 import org.rsmod.game.entity.Player
@@ -25,7 +26,9 @@ class QuestEvents : PluginScript() {
         onPlayerLogin {
             player.questTotalCount = questCount
             player.questPointMax = questPointCap
+        }
 
+        onIfOpen("interface.questjournal_overview") {
             player.ifSetEvents(
                 "component.questjournal_overview:content_inner",
                 0..23,
@@ -34,7 +37,9 @@ class QuestEvents : PluginScript() {
                 IfEvent.Op3,
                 IfEvent.Op4,
             )
+        }
 
+        onIfOpen("interface.questlist") {
             player.ifSetEvents(
                 "component.questlist:list",
                 0..questCount,

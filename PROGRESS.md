@@ -9,13 +9,13 @@ wiki, only that it exists.
 
 🟢 added · 🔴 not added
 
-Skills **17/23** · Bosses **11/169** · Raids **0/4** · Minigames **0/51**
+Skills **19/23** · Bosses **11/169** · Raids **0/4** · Minigames **0/51**
 
 These counts only cover skills, bosses, raids and minigames. Interfaces, areas,
 quests, drops and travel are real work that no category above points at, so check
 the module table at the bottom before reading a 0 as "nothing exists".
 
-### Skills <sup>17/23</sup>
+### Skills <sup>19/23</sup>
 
 | | Feature | Status | |
 |---|---|---|---|
@@ -25,22 +25,22 @@ the module table at the bottom before reading a 0 as "nothing exists".
 | 🟢 | <img src="https://oldschool.runescape.wiki/images/Ranged_icon.png?01b0e" height="20" alt=""> Ranged | in `api/combat` | [wiki](https://oldschool.runescape.wiki/w/Ranged) |
 | 🟢 | <img src="https://oldschool.runescape.wiki/images/Hitpoints_icon.png?a4819" height="20" alt=""> Hitpoints | in `api/combat` | [wiki](https://oldschool.runescape.wiki/w/Hitpoints) |
 | 🟢 | <img src="https://oldschool.runescape.wiki/images/Magic_icon.png?334cf" height="20" alt=""> [Magic](content/skills/magic) | 1,031 loc | [wiki](https://oldschool.runescape.wiki/w/Magic) |
-| 🟢 | <img src="https://oldschool.runescape.wiki/images/Prayer_icon.png?7e70b" height="20" alt=""> [Prayer](content/skills/prayer) | 2,568 loc | [wiki](https://oldschool.runescape.wiki/w/Prayer) |
-| 🟢 | <img src="https://oldschool.runescape.wiki/images/Runecraft_icon.png?c278c" height="20" alt=""> [Runecraft](content/skills/runecrafting) | 2,556 loc | [wiki](https://oldschool.runescape.wiki/w/Runecraft) |
+| 🟢 | <img src="https://oldschool.runescape.wiki/images/Prayer_icon.png?7e70b" height="20" alt=""> [Prayer](content/skills/prayer) | 2,601 loc | [wiki](https://oldschool.runescape.wiki/w/Prayer) |
+| 🟢 | <img src="https://oldschool.runescape.wiki/images/Runecraft_icon.png?c278c" height="20" alt=""> [Runecraft](content/skills/runecrafting) | 2,565 loc | [wiki](https://oldschool.runescape.wiki/w/Runecraft) |
 | 🟢 | <img src="https://oldschool.runescape.wiki/images/Slayer_icon.png?cd34f" height="20" alt=""> [Slayer](content/skills/slayer) | 5,494 loc | [wiki](https://oldschool.runescape.wiki/w/Slayer) |
 | 🟢 | <img src="https://oldschool.runescape.wiki/images/Mining_icon.png?00870" height="20" alt=""> [Mining](content/skills/mining) | 1,050 loc | [wiki](https://oldschool.runescape.wiki/w/Mining) |
 | 🟢 | <img src="https://oldschool.runescape.wiki/images/Smithing_icon.png?d26c5" height="20" alt=""> [Smithing](content/skills/smithing) | 2,053 loc | [wiki](https://oldschool.runescape.wiki/w/Smithing) |
 | 🟢 | <img src="https://oldschool.runescape.wiki/images/Woodcutting_icon.png?6ead4" height="20" alt=""> [Woodcutting](content/skills/woodcutting) | 409 loc | [wiki](https://oldschool.runescape.wiki/w/Woodcutting) |
 | 🟢 | <img src="https://oldschool.runescape.wiki/images/Firemaking_icon.png?45ea0" height="20" alt=""> [Firemaking](content/skills/firemaking) | 589 loc | [wiki](https://oldschool.runescape.wiki/w/Firemaking) |
-| 🟢 | <img src="https://oldschool.runescape.wiki/images/Cooking_icon.png?a0156" height="20" alt=""> [Cooking](content/skills/cooking) | 1,358 loc | [wiki](https://oldschool.runescape.wiki/w/Cooking) |
+| 🟢 | <img src="https://oldschool.runescape.wiki/images/Cooking_icon.png?a0156" height="20" alt=""> [Cooking](content/skills/cooking) | 1,362 loc | [wiki](https://oldschool.runescape.wiki/w/Cooking) |
 | 🟢 | <img src="https://oldschool.runescape.wiki/images/Herblore_icon.png?ffa9e" height="20" alt=""> [Herblore](content/skills/herblore) | 1,248 loc | [wiki](https://oldschool.runescape.wiki/w/Herblore) |
-| 🟢 | <img src="https://oldschool.runescape.wiki/images/Fishing_icon.png?15a98" height="20" alt=""> [Fishing](content/skills/fishing) | 1,797 loc | [wiki](https://oldschool.runescape.wiki/w/Fishing) |
+| 🟢 | <img src="https://oldschool.runescape.wiki/images/Fishing_icon.png?15a98" height="20" alt=""> [Fishing](content/skills/fishing) | 1,801 loc | [wiki](https://oldschool.runescape.wiki/w/Fishing) |
 | 🔴 | <img src="https://oldschool.runescape.wiki/images/Agility_icon.png?389e0" height="20" alt=""> Agility | nothing yet | [wiki](https://oldschool.runescape.wiki/w/Agility) |
 | 🔴 | <img src="https://oldschool.runescape.wiki/images/Thieving_icon.png?973fe" height="20" alt=""> Thieving | nothing yet | [wiki](https://oldschool.runescape.wiki/w/Thieving) |
-| 🟢 | <img src="https://oldschool.runescape.wiki/images/Crafting_icon.png?a1f71" height="20" alt=""> [Crafting](content/skills/crafting) | 6,372 loc | [wiki](https://oldschool.runescape.wiki/w/Crafting) |
+| 🟢 | <img src="https://oldschool.runescape.wiki/images/Crafting_icon.png?a1f71" height="20" alt=""> [Crafting](content/skills/crafting) | 6,379 loc | [wiki](https://oldschool.runescape.wiki/w/Crafting) |
 | 🔴 | <img src="https://oldschool.runescape.wiki/images/Fletching_icon.png?15cda" height="20" alt=""> Fletching | nothing yet | [wiki](https://oldschool.runescape.wiki/w/Fletching) |
-| 🔴 | <img src="https://oldschool.runescape.wiki/images/Construction_icon.png?f9bf7" height="20" alt=""> Construction | nothing yet | [wiki](https://oldschool.runescape.wiki/w/Construction) |
-| 🔴 | <img src="https://oldschool.runescape.wiki/images/Farming_icon.png?558fa" height="20" alt=""> Farming | nothing yet | [wiki](https://oldschool.runescape.wiki/w/Farming) |
+| 🟢 | <img src="https://oldschool.runescape.wiki/images/Construction_icon.png?f9bf7" height="20" alt=""> Construction | no module, code in content/areas/city | [wiki](https://oldschool.runescape.wiki/w/Construction) |
+| 🟢 | <img src="https://oldschool.runescape.wiki/images/Farming_icon.png?558fa" height="20" alt=""> Farming | no module, code in content/areas/city | [wiki](https://oldschool.runescape.wiki/w/Farming) |
 | 🔴 | <img src="https://oldschool.runescape.wiki/images/Hunter_icon.png?8762f" height="20" alt=""> Hunter | nothing yet | [wiki](https://oldschool.runescape.wiki/w/Hunter) |
 
 ### Bosses <sup>11/169</sup>
@@ -169,75 +169,6 @@ here so it at least shows up. Nothing is ticked until someone claims it.
 </details>
 
 <details>
-<summary>🔴 <b>Construction</b> — 25 sub-features</summary>
-
-- [ ] How to start training Construction
-- [ ] Buying a house
-- [ ] How to get to your house
-- [ ] How to build in your house
-- [ ] Materials
-- [ ] Equipment
-- [ ] Carpenter's outfit
-- [ ] Tools
-- [ ] Tips and tricks
-- [ ] Servants
-- [ ] Phials for unnoting
-- [ ] Training methods
-- [ ] Mahogany Homes
-- [ ] Repair Kits and Hull Parts
-- [ ] Notable milestones
-- [ ] Rooms
-- [ ] POH locations
-- [ ] Teleports
-- [ ] Pool
-- [ ] Spellbook altar
-- [ ] Shipbuilding
-- [ ] Miscellaneous
-- [ ] Cape of accomplishment
-- [ ] STASH units
-- [ ] Chambers of Xeric
-
-</details>
-
-<details>
-<summary>🔴 <b>Farming</b> — 32 sub-features</summary>
-
-- [ ] Compost
-- [ ] Obtaining seeds
-- [ ] Growth and disease
-- [ ] Farming equipment
-- [ ] Tools
-- [ ] Magic secateurs
-- [ ] Farmer's outfit
-- [ ] Amulet of Nature
-- [ ] Seeds
-- [ ] Disease, payment, compost, and watering
-- [ ] Reducing disease risk
-- [ ] Eliminating disease risk
-- [ ] Compost
-- [ ] Crop types
-- [ ] Allotment, flower, and herb
-- [ ] Hops
-- [ ] Bushes
-- [ ] Trees
-- [ ] Fruit trees
-- [ ] Special patches
-- [ ] Farming Guild
-- [ ] Farming contracts
-- [ ] Hespori patch
-- [ ] Barbarian Farming
-- [ ] Tithe Farm
-- [ ] Requirements
-- [ ] Rewards
-- [ ] Mechanics
-- [ ] Growth timing
-- [ ] Variable crop yield
-- [ ] Average yield per crop type
-- [ ] Farming pet
-
-</details>
-
-<details>
 <summary>🔴 <b>Hunter</b> — 31 sub-features</summary>
 
 - [ ] Hunting techniques
@@ -281,8 +212,14 @@ Found the same way `settings.gradle.kts` finds them: any dir with a `build.gradl
 | Module | Files | Lines | Tests | TODO | Last touched |
 |---|---:|---:|---:|---:|---|
 | `areas/city/draynor` | 7 | 781 | 4 | 0 | 2026-09-16 |
+| `areas/city/falador` | 7 | 1,354 | 0 | 0 | 2026-09-22 |
+| `areas/city/falador/pack` | 1 | 6 | 0 | 0 | 2026-09-22 |
 | `areas/city/lumbridge` | 13 | 2,578 | 0 | 3 | 2026-08-04 |
+| `areas/city/port-sarim` | 13 | 1,971 | 0 | 0 | 2026-09-22 |
+| `areas/city/port-sarim/pack` | 1 | 6 | 0 | 0 | 2026-09-22 |
 | `areas/city/prifddinas` | 1 | 82 | 0 | 0 | 2026-08-18 |
+| `areas/city/rimmington` | 6 | 802 | 0 | 0 | 2026-09-22 |
+| `areas/city/rimmington/pack` | 1 | 6 | 0 | 0 | 2026-09-22 |
 | `areas/city/taverley` | 1 | 77 | 0 | 0 | 2026-06-25 |
 | `areas/city/varrock` | 7 | 539 | 0 | 1 | 2026-08-04 |
 | `areas/godwars` | 2 | 154 | 0 | 0 | 2026-08-19 |
@@ -309,7 +246,7 @@ Found the same way `settings.gradle.kts` finds them: any dir with a `build.gradl
 | `drops` | 257 | 14,412 | 0 | 0 | 2026-09-12 |
 | `events/shooting-stars` | 9 | 1,261 | 0 | 0 | 2026-08-30 |
 | `events/shooting-stars/pack` | 2 | 440 | 0 | 0 | 2026-08-21 |
-| `generic/generic-locs` | 21 | 1,204 | 0 | 1 | 2026-09-17 |
+| `generic/generic-locs` | 22 | 1,240 | 0 | 1 | 2026-09-22 |
 | `generic/generic-npcs` | 7 | 1,183 | 0 | 2 | 2026-07-19 |
 | `generic/killcount` | 1 | 32 | 0 | 0 | 2026-09-12 |
 | `interfaces/bank` | 15 | 2,313 | 3 | 1 | 2026-08-19 |
@@ -342,21 +279,21 @@ Found the same way `settings.gradle.kts` finds them: any dir with a `build.gradl
 | `other/special-attacks` | 4 | 466 | 0 | 0 | 2026-05-03 |
 | `other/special-weapons` | 11 | 1,111 | 0 | 1 | 2026-09-14 |
 | `other/windmill` | 1 | 43 | 0 | 0 | 2026-05-03 |
-| `quest` | 21 | 2,185 | 0 | 0 | 2026-09-16 |
-| `quest/pack` | 1 | 6 | 0 | 0 | 2026-09-15 |
-| `skills/cooking` | 12 | 1,358 | 0 | 0 | 2026-06-14 |
-| `skills/crafting` | 30 | 3,673 | 0 | 0 | 2026-08-30 |
-| `skills/crafting/pack` | 2 | 2,699 | 0 | 0 | 2026-08-28 |
+| `quest` | 30 | 5,925 | 2 | 0 | 2026-09-22 |
+| `quest/pack` | 1 | 6 | 0 | 0 | 2026-09-22 |
+| `skills/cooking` | 12 | 1,362 | 0 | 0 | 2026-09-22 |
+| `skills/crafting` | 30 | 3,680 | 0 | 0 | 2026-09-22 |
+| `skills/crafting/pack` | 2 | 2,699 | 0 | 0 | 2026-09-22 |
 | `skills/firemaking` | 6 | 589 | 0 | 0 | 2026-08-08 |
-| `skills/fishing` | 15 | 1,591 | 0 | 1 | 2026-08-26 |
+| `skills/fishing` | 15 | 1,595 | 0 | 1 | 2026-09-22 |
 | `skills/fishing/pack` | 3 | 206 | 0 | 0 | 2026-08-26 |
 | `skills/herblore` | 11 | 1,248 | 0 | 0 | 2026-06-14 |
 | `skills/magic/alchemy` | 1 | 253 | 0 | 0 | 2026-06-21 |
 | `skills/magic/spell-attacks` | 2 | 480 | 0 | 0 | 2026-07-28 |
 | `skills/magic/spell-teleports` | 1 | 298 | 0 | 0 | 2026-07-21 |
 | `skills/mining` | 11 | 1,050 | 0 | 0 | 2026-07-22 |
-| `skills/prayer` | 28 | 2,568 | 0 | 0 | 2026-08-20 |
-| `skills/runecrafting` | 24 | 2,556 | 0 | 0 | 2026-08-04 |
+| `skills/prayer` | 29 | 2,601 | 0 | 0 | 2026-09-22 |
+| `skills/runecrafting` | 24 | 2,565 | 0 | 0 | 2026-09-22 |
 | `skills/slayer` | 45 | 5,494 | 0 | 0 | 2026-08-04 |
 | `skills/smithing` | 15 | 2,053 | 0 | 0 | 2026-08-28 |
 | `skills/utils` | 2 | 316 | 0 | 0 | 2026-05-10 |

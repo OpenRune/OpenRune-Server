@@ -1,0 +1,22 @@
+[[varp]]
+id = "varp.falador_makeover"
+scope = "Temp"
+transmit = "Never"
+
+[[varbit]]
+id = "varbit.falador_makeover_active"
+varp = "varp.falador_makeover"
+startBit = 0
+endBit = 0
+
+[[varbit]]
+id = "varbit.falador_makeover_original_kit"
+varp = "varp.falador_makeover"
+startBit = 1
+endBit = 16
+
+[[varbit]]
+id = "varbit.falador_makeover_original_colour"
+varp = "varp.falador_makeover"
+startBit = 17
+endBit = 24
