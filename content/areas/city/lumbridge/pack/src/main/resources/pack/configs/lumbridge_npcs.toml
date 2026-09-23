@@ -1,0 +1,6 @@
+[[npc]]
+id = "npc.ap_guide_parent"
+inherit = "npc.ap_guide_parent"
+moveRestrict = "NoMove"
+wanderRange = 0
+respawnDir = "South"

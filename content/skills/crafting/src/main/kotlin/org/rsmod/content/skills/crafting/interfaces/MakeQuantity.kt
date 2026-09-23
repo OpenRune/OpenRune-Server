@@ -7,7 +7,7 @@ import org.rsmod.api.player.vars.intVarp
 import org.rsmod.content.skills.crafting.util.CraftingConstants
 import org.rsmod.game.entity.Player
 
-internal class MakeQuantityColumn(
+class MakeQuantityColumn(
     val component: (String) -> String,
     val countedObj: String,
     val stepX: Int,
@@ -18,7 +18,7 @@ internal class MakeQuantityColumn(
     val someButton: String by lazy { component("make_some") }
 }
 
-internal enum class MakeQuantity(val button: String, val amount: Int?) {
+enum class MakeQuantity(val button: String, val amount: Int?) {
     One("make_1", 1),
     Five("make_5", 5),
     Ten("make_10", 10),
@@ -28,13 +28,17 @@ internal enum class MakeQuantity(val button: String, val amount: Int?) {
 
 private var Player.makeQuantity by intVarp(CraftingConstants.VARP_MAKEX_CRAFTING)
 
-internal fun ProtectedAccess.resetMakeQuantity() {
+fun ProtectedAccess.resetMakeQuantity() {
     player.makeQuantity = 1
 }
 
-internal fun ProtectedAccess.makeQuantity(): Int = player.makeQuantity.coerceAtLeast(1)
+fun ProtectedAccess.setMakeQuantity(amount: Int) {
+    player.makeQuantity = amount.coerceIn(1, MAX_QUANTITY)
+}
 
-internal suspend fun ProtectedAccess.selectMakeQuantity(
+fun ProtectedAccess.makeQuantity(): Int = player.makeQuantity.coerceAtLeast(1)
+
+suspend fun ProtectedAccess.selectMakeQuantity(
     column: MakeQuantityColumn,
     quantity: MakeQuantity,
 ) {
@@ -68,4 +72,4 @@ private fun ProtectedAccess.refreshMakeQuantity(column: MakeQuantityColumn) {
 
 private const val SKILLMAIN_INIT = 2926
 
-internal const val MAX_QUANTITY = 28
+const val MAX_QUANTITY = 28

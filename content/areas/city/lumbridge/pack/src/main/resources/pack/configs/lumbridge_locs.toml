@@ -1,0 +1,47 @@
+[[object]]
+id = "loc.farming_shed_poordoor"
+inherit = "loc.farming_shed_poordoor"
+contentGroup = "content.closed_single_door"
+
+[object.params]
+"param.next_loc_stage" = "loc.fai_barbarian_poordooropen"
+
+[[object]]
+id = "loc.fai_barbarian_poordooropen"
+inherit = "loc.fai_barbarian_poordooropen"
+contentGroup = "content.opened_single_door"
+
+[object.params]
+"param.next_loc_stage" = "loc.farming_shed_poordoor"
+
+[[object]]
+id = "loc.qip_sheep_shearer_poordoor"
+inherit = "loc.qip_sheep_shearer_poordoor"
+contentGroup = "content.closed_single_door"
+
+[object.params]
+"param.next_loc_stage" = "loc.qip_sheep_shearer_poordooropen"
+
+[[object]]
+id = "loc.qip_sheep_shearer_poordooropen"
+inherit = "loc.qip_sheep_shearer_poordooropen"
+contentGroup = "content.opened_single_door"
+
+[object.params]
+"param.next_loc_stage" = "loc.qip_sheep_shearer_poordoor"
+
+[[varp]]
+id = "varp.lumbridge_tutor_claim"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.lumbridge_advisor_state"
+scope = "Perm"
+transmit = "Never"
+
+[[varbit]]
+id = "varbit.count_check_stronghold_teleport"
+varp = "varp.lumbridge_advisor_state"
+startBit = 0
+endBit = 0

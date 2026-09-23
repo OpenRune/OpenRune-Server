@@ -46,7 +46,7 @@ object FishingConfig {
 
         method("dbrow.fishing_method_net", 0, "obj.net", null, "seq.human_smallnet", "some", "You need a small fishing net to fish here.")
         method("dbrow.fishing_method_bait", 1, "obj.fishing_rod", "obj.fishing_bait", "seq.human_fishing_casting", "a", "You need a fishing rod to fish here.")
-        method("dbrow.fishing_method_lure", 2, "obj.fly_fishing_rod", "obj.feather", "seq.human_fishing_casting", "a", "You need a fly fishing rod to lure fish here.", altTool = "obj.fishingrod_pearl_fly")
+        method("dbrow.fishing_method_lure", 2, "obj.fly_fishing_rod", "obj.feather", "seq.human_fishing_casting", "a", "You need a fly fishing rod to lure these fish.", altTool = "obj.fishingrod_pearl_fly")
         method("dbrow.fishing_method_cage", 3, "obj.lobster_pot", null, "seq.human_lobster", "a", "You need a lobster pot to catch these fish.")
         method("dbrow.fishing_method_harpoon", 4, "obj.harpoon", null, "seq.human_harpoon", "a", "You need a harpoon to catch these fish.", fallback = 10)
         method("dbrow.fishing_method_big_net", 5, "obj.big_net", null, "seq.human_largenet", "a", "You need a big fishing net to catch these fish.")

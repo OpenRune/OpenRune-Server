@@ -64,7 +64,7 @@ class BarfyBill : PluginScript() {
         chatNpc(happy, "I don't get river sick!")
         chatNpc(quiz, "Would you like to know how to make a canoe?")
 
-        val askAboutCanoeing = choice2("Yes", true, "No", false)
+        val askAboutCanoeing = choice2("Yes.", true, "No.", false)
         if (askAboutCanoeing) {
             askAboutCanoeing()
         } else {
