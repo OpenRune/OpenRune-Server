@@ -29,15 +29,15 @@ the module table at the bottom before reading a 0 as "nothing exists".
 | 🟢 | <img src="https://oldschool.runescape.wiki/images/Runecraft_icon.png?c278c" height="20" alt=""> [Runecraft](content/skills/runecrafting) | 2,565 loc | [wiki](https://oldschool.runescape.wiki/w/Runecraft) |
 | 🟢 | <img src="https://oldschool.runescape.wiki/images/Slayer_icon.png?cd34f" height="20" alt=""> [Slayer](content/skills/slayer) | 5,494 loc | [wiki](https://oldschool.runescape.wiki/w/Slayer) |
 | 🟢 | <img src="https://oldschool.runescape.wiki/images/Mining_icon.png?00870" height="20" alt=""> [Mining](content/skills/mining) | 1,050 loc | [wiki](https://oldschool.runescape.wiki/w/Mining) |
-| 🟢 | <img src="https://oldschool.runescape.wiki/images/Smithing_icon.png?d26c5" height="20" alt=""> [Smithing](content/skills/smithing) | 2,053 loc | [wiki](https://oldschool.runescape.wiki/w/Smithing) |
+| 🟢 | <img src="https://oldschool.runescape.wiki/images/Smithing_icon.png?d26c5" height="20" alt=""> [Smithing](content/skills/smithing) | 2,076 loc | [wiki](https://oldschool.runescape.wiki/w/Smithing) |
 | 🟢 | <img src="https://oldschool.runescape.wiki/images/Woodcutting_icon.png?6ead4" height="20" alt=""> [Woodcutting](content/skills/woodcutting) | 409 loc | [wiki](https://oldschool.runescape.wiki/w/Woodcutting) |
 | 🟢 | <img src="https://oldschool.runescape.wiki/images/Firemaking_icon.png?45ea0" height="20" alt=""> [Firemaking](content/skills/firemaking) | 589 loc | [wiki](https://oldschool.runescape.wiki/w/Firemaking) |
 | 🟢 | <img src="https://oldschool.runescape.wiki/images/Cooking_icon.png?a0156" height="20" alt=""> [Cooking](content/skills/cooking) | 1,362 loc | [wiki](https://oldschool.runescape.wiki/w/Cooking) |
 | 🟢 | <img src="https://oldschool.runescape.wiki/images/Herblore_icon.png?ffa9e" height="20" alt=""> [Herblore](content/skills/herblore) | 1,248 loc | [wiki](https://oldschool.runescape.wiki/w/Herblore) |
-| 🟢 | <img src="https://oldschool.runescape.wiki/images/Fishing_icon.png?15a98" height="20" alt=""> [Fishing](content/skills/fishing) | 1,801 loc | [wiki](https://oldschool.runescape.wiki/w/Fishing) |
+| 🟢 | <img src="https://oldschool.runescape.wiki/images/Fishing_icon.png?15a98" height="20" alt=""> [Fishing](content/skills/fishing) | 1,813 loc | [wiki](https://oldschool.runescape.wiki/w/Fishing) |
 | 🔴 | <img src="https://oldschool.runescape.wiki/images/Agility_icon.png?389e0" height="20" alt=""> Agility | nothing yet | [wiki](https://oldschool.runescape.wiki/w/Agility) |
 | 🟢 | <img src="https://oldschool.runescape.wiki/images/Thieving_icon.png?973fe" height="20" alt=""> [Thieving](content/skills/thieving) | 400 loc | [wiki](https://oldschool.runescape.wiki/w/Thieving) |
-| 🟢 | <img src="https://oldschool.runescape.wiki/images/Crafting_icon.png?a1f71" height="20" alt=""> [Crafting](content/skills/crafting) | 6,379 loc | [wiki](https://oldschool.runescape.wiki/w/Crafting) |
+| 🟢 | <img src="https://oldschool.runescape.wiki/images/Crafting_icon.png?a1f71" height="20" alt=""> [Crafting](content/skills/crafting) | 6,383 loc | [wiki](https://oldschool.runescape.wiki/w/Crafting) |
 | 🔴 | <img src="https://oldschool.runescape.wiki/images/Fletching_icon.png?15cda" height="20" alt=""> Fletching | nothing yet | [wiki](https://oldschool.runescape.wiki/w/Fletching) |
 | 🟢 | <img src="https://oldschool.runescape.wiki/images/Construction_icon.png?f9bf7" height="20" alt=""> Construction | no module, code in content/areas/city | [wiki](https://oldschool.runescape.wiki/w/Construction) |
 | 🟢 | <img src="https://oldschool.runescape.wiki/images/Farming_icon.png?558fa" height="20" alt=""> Farming | no module, code in content/areas/city | [wiki](https://oldschool.runescape.wiki/w/Farming) |
@@ -196,7 +196,8 @@ Found the same way `settings.gradle.kts` finds them: any dir with a `build.gradl
 | `areas/city/draynor/pack` | 1 | 6 | 0 | 0 | 2026-09-23 |
 | `areas/city/falador` | 7 | 1,354 | 0 | 0 | 2026-09-22 |
 | `areas/city/falador/pack` | 1 | 6 | 0 | 0 | 2026-09-22 |
-| `areas/city/lumbridge` | 13 | 2,578 | 0 | 3 | 2026-08-04 |
+| `areas/city/lumbridge` | 25 | 6,164 | 0 | 3 | 2026-09-23 |
+| `areas/city/lumbridge/pack` | 1 | 6 | 0 | 0 | 2026-09-23 |
 | `areas/city/port-sarim` | 13 | 1,971 | 0 | 0 | 2026-09-22 |
 | `areas/city/port-sarim/pack` | 1 | 6 | 0 | 0 | 2026-09-22 |
 | `areas/city/prifddinas` | 1 | 82 | 0 | 0 | 2026-08-18 |
@@ -229,7 +230,7 @@ Found the same way `settings.gradle.kts` finds them: any dir with a `build.gradl
 | `drops` | 257 | 14,407 | 0 | 0 | 2026-09-22 |
 | `events/shooting-stars` | 9 | 1,261 | 0 | 0 | 2026-08-30 |
 | `events/shooting-stars/pack` | 2 | 440 | 0 | 0 | 2026-08-21 |
-| `generic/generic-locs` | 24 | 1,332 | 0 | 1 | 2026-09-23 |
+| `generic/generic-locs` | 25 | 1,382 | 0 | 1 | 2026-09-23 |
 | `generic/generic-npcs` | 7 | 1,183 | 0 | 2 | 2026-09-23 |
 | `generic/generic-npcs/pack` | 1 | 6 | 0 | 0 | 2026-09-23 |
 | `generic/killcount` | 1 | 32 | 0 | 0 | 2026-09-12 |
@@ -263,15 +264,16 @@ Found the same way `settings.gradle.kts` finds them: any dir with a `build.gradl
 | `other/spawn/pack` | 1 | 6 | 0 | 0 | 2026-09-23 |
 | `other/special-attacks` | 4 | 466 | 0 | 0 | 2026-05-03 |
 | `other/special-weapons` | 11 | 1,111 | 0 | 1 | 2026-09-14 |
-| `other/windmill` | 1 | 43 | 0 | 0 | 2026-05-03 |
+| `other/windmill` | 2 | 133 | 0 | 0 | 2026-09-23 |
+| `other/windmill/pack` | 1 | 6 | 0 | 0 | 2026-09-23 |
 | `quest` | 31 | 5,978 | 2 | 0 | 2026-09-23 |
 | `quest/pack` | 1 | 6 | 0 | 0 | 2026-09-22 |
 | `skills/cooking` | 12 | 1,362 | 0 | 0 | 2026-09-22 |
-| `skills/crafting` | 30 | 3,680 | 0 | 0 | 2026-09-22 |
+| `skills/crafting` | 30 | 3,684 | 0 | 0 | 2026-09-23 |
 | `skills/crafting/pack` | 2 | 2,699 | 0 | 0 | 2026-09-22 |
 | `skills/firemaking` | 6 | 589 | 0 | 0 | 2026-08-08 |
-| `skills/fishing` | 15 | 1,595 | 0 | 1 | 2026-09-22 |
-| `skills/fishing/pack` | 3 | 206 | 0 | 0 | 2026-08-26 |
+| `skills/fishing` | 15 | 1,607 | 0 | 1 | 2026-09-23 |
+| `skills/fishing/pack` | 3 | 206 | 0 | 0 | 2026-09-23 |
 | `skills/herblore` | 11 | 1,248 | 0 | 0 | 2026-06-14 |
 | `skills/magic/alchemy` | 1 | 253 | 0 | 0 | 2026-06-21 |
 | `skills/magic/spell-attacks` | 2 | 480 | 0 | 0 | 2026-07-28 |
@@ -280,7 +282,7 @@ Found the same way `settings.gradle.kts` finds them: any dir with a `build.gradl
 | `skills/prayer` | 29 | 2,601 | 0 | 0 | 2026-09-22 |
 | `skills/runecrafting` | 24 | 2,565 | 0 | 0 | 2026-09-22 |
 | `skills/slayer` | 45 | 5,494 | 0 | 0 | 2026-08-04 |
-| `skills/smithing` | 15 | 2,053 | 0 | 0 | 2026-08-28 |
+| `skills/smithing` | 15 | 2,076 | 0 | 0 | 2026-09-23 |
 | `skills/thieving` | 2 | 400 | 0 | 0 | 2026-09-23 |
 | `skills/utils` | 2 | 316 | 0 | 0 | 2026-05-10 |
 | `skills/woodcutting` | 5 | 409 | 2 | 2 | 2026-07-22 |
