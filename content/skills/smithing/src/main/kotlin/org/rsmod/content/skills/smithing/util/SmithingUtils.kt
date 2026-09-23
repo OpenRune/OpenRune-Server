@@ -1,11 +1,11 @@
 package org.rsmod.content.skills.smithing.util
 
 import dev.openrune.types.ItemServerType
+import kotlin.random.Random
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.stat.craftingLvl
 import org.rsmod.api.player.stat.smithingLvl
 import org.rsmod.game.entity.Player
-import kotlin.random.Random
 
 object SmithingUtils {
     private val smithsUniformPieces = listOf(
@@ -71,9 +71,9 @@ object SmithingUtils {
     fun anvilActionDelay(player: Player): Int {
         val piecesWorn = smithsUniformPieces.count { it in player.worn }
         return when {
-            piecesWorn >= 4 -> 2
-            piecesWorn > 0 && Random.nextDouble() < piecesWorn * 0.2 -> 2
-            else -> 3
+            piecesWorn >= 4 -> 4
+            piecesWorn > 0 && Random.nextDouble() < piecesWorn * 0.2 -> 4
+            else -> 5
         }
     }
 
