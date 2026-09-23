@@ -1,6 +1,7 @@
 package org.rsmod.api.bosses.spec
 
 import dev.openrune.types.NpcMode
+import org.rsmod.api.player.output.CamShakeAxis
 
 public data class StatDrainEntry(
     val stat: String,
@@ -19,7 +20,7 @@ sealed interface Effect {
     data class Broadcast(val text: String, val radius: Int = 15) : Effect
 
     data class CamShake(
-        val axis: Int,
+        val axis: CamShakeAxis,
         val random: Int,
         val amplitude: Int = 0,
         val rate: Int = 0,
