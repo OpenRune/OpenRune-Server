@@ -20,6 +20,8 @@ import java.io.File
 class PluginPacks(val projectRoot: File, val all: List<PluginPack>) {
     val active: List<PluginPack> = all.filter { it.shouldPack(projectRoot) }
 
+    private var cachedInterfaceTasks: List<PackIfType>? = null
+
     fun nameOf(pack: PluginPack): String =
         pack::class.java.name.substringAfterLast('.').removeSuffix("PluginPack").lowercase()
 
@@ -27,6 +29,24 @@ class PluginPacks(val projectRoot: File, val all: List<PluginPack>) {
 
     fun validate() {
         active.forEach { it.validate(projectRoot) }
+    }
+
+    // Cached: PackIfType consumes the DSL's inherit/edit/from registrations at construction time, so a
+    // second set would be built empty.
+    fun interfaceTasks(): List<PackIfType> {
+        cachedInterfaceTasks?.let { return it }
+
+        val dslInterfaces = active.flatMap { it.interfaces() }
+        val interfaceDirectories = active.mapNotNull { it.interfaceDirectory() }
+        val tasks =
+            if (dslInterfaces.isEmpty() && interfaceDirectories.isEmpty()) {
+                emptyList()
+            } else {
+                listOf(PackIfType(dslInterfaces, interfaceDirectories, DirectoryConstants.CS2_PATH.toFile()))
+            }
+
+        cachedInterfaceTasks = tasks
+        return tasks
     }
 
     fun buildPackTasks(baseTables: List<DBTable>, cs2Overrides: Cs2Overrides = Cs2Overrides()): List<CacheTask> {
@@ -46,11 +66,7 @@ class PluginPacks(val projectRoot: File, val all: List<PluginPack>) {
 
         tasks += active.flatMap { it.extraTasks() }
 
-
-        val interfaces = active.flatMap { it.interfaces() }
-        if (interfaces.isNotEmpty()) {
-            tasks += PackIfType(interfaces)
-        }
+        tasks += interfaceTasks()
 
         tasks += UnpackDefaultCs2(DirectoryConstants.CS2_PATH.toFile())
         tasks += PackCs2(DirectoryConstants.CS2_PATH.toFile(), cs2Overrides)
