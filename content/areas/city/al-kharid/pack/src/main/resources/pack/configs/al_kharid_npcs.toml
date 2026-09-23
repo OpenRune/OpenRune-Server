@@ -3,24 +3,28 @@ id = "npc.kharidbanker1"
 inherit = "npc.kharidbanker1"
 moveRestrict = "NoMove"
 wanderRange = 0
+respawnDir = "East"
 
 [[npc]]
 id = "npc.kharidbanker2"
 inherit = "npc.kharidbanker2"
 moveRestrict = "NoMove"
 wanderRange = 0
+respawnDir = "East"
 
 [[npc]]
 id = "npc.borderguard1"
 inherit = "npc.borderguard1"
 moveRestrict = "NoMove"
 wanderRange = 0
+respawnDir = "West"
 
 [[npc]]
 id = "npc.borderguard2"
 inherit = "npc.borderguard2"
 moveRestrict = "NoMove"
 wanderRange = 0
+respawnDir = "East"
 
 [[npc]]
 id = "npc.feud_ali_m"
@@ -33,6 +37,7 @@ id = "npc.farming_tools_leprechaun"
 inherit = "npc.farming_tools_leprechaun"
 moveRestrict = "NoMove"
 wanderRange = 0
+respawnDir = "West"
 
 [[npc]]
 id = "npc.tempoross_ferry_to_lobby_npc"
