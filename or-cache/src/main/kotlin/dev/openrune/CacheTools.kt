@@ -15,6 +15,7 @@ import dev.openrune.cache.tools.tasks.TaskType
 import dev.openrune.codegen.startEnumGeneration
 import dev.openrune.codegen.startGeneration
 import dev.openrune.definition.GameValGroupTypes
+import dev.openrune.definition.constants.ConstantProvider
 import dev.openrune.definition.dbtables.DBTable
 import dev.openrune.definition.type.DBRowType
 import dev.openrune.definition.type.DBTableType
@@ -127,9 +128,13 @@ fun buildCache(type: TaskType, force: Boolean = false) {
 
     val packs = PluginPacks.discover(projectRoot)
     packs.validate()
-    packs.syncCs2(DirectoryConstants.CS2_PATH.toFile())
 
-    val packTasks = packs.buildPackTasks(tablesToPack())
+    val cs2Overrides = packs.cs2Overrides(
+        DirectoryConstants.CS2_PATH.toFile(),
+        ConstantProvider.getCurrentProviders().filterIsInstance<GameValProvider>().firstOrNull(),
+    )
+
+    val packTasks = packs.buildPackTasks(tablesToPack(), cs2Overrides)
     newCacheTool(type, packTasks).initialize()
 
     if (type == TaskType.BUILD) {
@@ -219,9 +224,11 @@ fun tablesToPack(): List<DBTable> = listOf(
 
 private fun newCacheTool(type: TaskType, packTasks: List<CacheTask>): CacheTool {
     val rev = revision.first
+    val subRev = revision.second
     return cacheTool {
         taskType = type
         revision(rev)
+        subRevision(subRev)
         cache(getCacheLocation())
         serverCache(getServerCacheLocation())
         autoCert = true

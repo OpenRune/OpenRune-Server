@@ -7,11 +7,11 @@ import dev.openrune.cache.DEFAULTS
 import dev.openrune.cache.MODELS
 import dev.openrune.cache.MUSIC_JINGLES
 import dev.openrune.cache.MUSIC_PATCHES
-import dev.openrune.cache.MUSIC_SAMPLES
 import dev.openrune.cache.MUSIC_TRACKS
 import dev.openrune.cache.SKELETONS
 import dev.openrune.cache.SOUNDEFFECTS
 import dev.openrune.cache.TEXTURES
+import dev.openrune.cache.VORBIS
 import dev.openrune.cache.WORLDMAPAREAS
 import dev.openrune.cache.WORLDMAP_GEOGRAPHY
 import dev.openrune.cache.WORLDMAP_GROUND
@@ -28,7 +28,7 @@ class MinifyServerCache() {
         emptyArchive(MODELS, cache)
         emptyArchive(TEXTURES, cache)
         emptyArchive(MUSIC_JINGLES, cache)
-        emptyArchive(MUSIC_SAMPLES, cache)
+        emptyArchive(VORBIS, cache)
         emptyArchive(MUSIC_PATCHES, cache)
         emptyArchive(DEFAULTS, cache)
         emptyArchive(WORLDMAP_GEOGRAPHY, cache)
