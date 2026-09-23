@@ -3,6 +3,7 @@ package org.rsmod.api.bosses.dsl
 import dev.openrune.types.NpcMode
 import org.rsmod.api.bosses.spec.*
 import org.rsmod.api.bosses.validation.SpecValidator
+import org.rsmod.api.player.output.CamShakeAxis
 
 @DslMarker annotation class BossDsl
 
@@ -182,7 +183,7 @@ class AbilityBuilder {
         effects += Effect.Broadcast(text, radius)
     }
 
-    fun camShake(axis: Int, random: Int, amplitude: Int = 0, rate: Int = 0, radius: Int = 15) {
+    fun camShake(axis: CamShakeAxis, random: Int, amplitude: Int = 0, rate: Int = 0, radius: Int = 15) {
         effects += Effect.CamShake(axis, random, amplitude, rate, radius)
     }
 

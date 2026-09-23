@@ -3,6 +3,7 @@ package org.rsmod.api.bosses.dsl
 import dev.openrune.types.NpcMode
 import org.rsmod.api.bosses.spec.*
 import org.rsmod.api.combat.commons.types.MeleeAttackType as EngineMeleeAttackType
+import org.rsmod.api.player.output.CamShakeAxis
 
 fun anim(seq: String, delay: Int = 0): Effect = Effect.Anim(seq, delay)
 
@@ -15,7 +16,7 @@ fun delay(ticks: Int): Effect = Effect.Delay(ticks)
 
 fun wait(ticks: Int): Effect = Effect.Wait(ticks)
 
-fun camShake(axis: Int, random: Int, amplitude: Int = 0, rate: Int = 0, radius: Int = 15): Effect =
+fun camShake(axis: CamShakeAxis, random: Int, amplitude: Int = 0, rate: Int = 0, radius: Int = 15): Effect =
     Effect.CamShake(axis, random, amplitude, rate, radius)
 
 fun message(text: String, target: TargetExpr = TargetExpr.CurrentTarget): Effect =

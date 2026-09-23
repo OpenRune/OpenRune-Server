@@ -25,6 +25,8 @@ abstract class PluginPack {
 
     fun cs2Directory(): File? = resourceDirectory(CS2)
 
+    fun interfaceDirectory(): File? = resourceDirectory(INTERFACES)
+
     open fun dbTables(): List<DBTable> = emptyList()
 
     open fun interfaces(): List<InterfaceType> = emptyList()
@@ -63,5 +65,6 @@ abstract class PluginPack {
         const val MODELS = "models"
         const val SPRITES = "sprites"
         const val CS2 = "cs2"
+        const val INTERFACES = "interfaces"
     }
 }

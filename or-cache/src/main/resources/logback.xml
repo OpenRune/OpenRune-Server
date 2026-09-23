@@ -39,6 +39,10 @@
   <!-- Set to DEBUG to have every repacked unit report why it was considered stale. -->
   <logger name="dev.openrune.cache.tools.incremental" level="INFO" />
 
+  <!-- Neptune reports config loading, file counts and symbol bookkeeping at INFO on every compile. -->
+  <logger name="dev.openrune.clientscript" level="WARN" />
+  <logger name="me.filby.neptune" level="WARN" />
+
   <!-- "BZIP2 Compression found" on every read of an unconverted archive. -->
   <logger name="dev.openrune.filesystem.util.compress" level="WARN" />
   <logger name="org.openrs2.compress.bzip2" level="WARN" additivity="false" />
