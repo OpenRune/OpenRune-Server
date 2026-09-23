@@ -9,13 +9,13 @@ wiki, only that it exists.
 
 🟢 added · 🔴 not added
 
-Skills **19/23** · Bosses **11/169** · Raids **0/4** · Minigames **0/51**
+Skills **20/23** · Bosses **11/169** · Raids **0/4** · Minigames **0/51**
 
 These counts only cover skills, bosses, raids and minigames. Interfaces, areas,
 quests, drops and travel are real work that no category above points at, so check
 the module table at the bottom before reading a 0 as "nothing exists".
 
-### Skills <sup>19/23</sup>
+### Skills <sup>20/23</sup>
 
 | | Feature | Status | |
 |---|---|---|---|
@@ -36,7 +36,7 @@ the module table at the bottom before reading a 0 as "nothing exists".
 | 🟢 | <img src="https://oldschool.runescape.wiki/images/Herblore_icon.png?ffa9e" height="20" alt=""> [Herblore](content/skills/herblore) | 1,248 loc | [wiki](https://oldschool.runescape.wiki/w/Herblore) |
 | 🟢 | <img src="https://oldschool.runescape.wiki/images/Fishing_icon.png?15a98" height="20" alt=""> [Fishing](content/skills/fishing) | 1,801 loc | [wiki](https://oldschool.runescape.wiki/w/Fishing) |
 | 🔴 | <img src="https://oldschool.runescape.wiki/images/Agility_icon.png?389e0" height="20" alt=""> Agility | nothing yet | [wiki](https://oldschool.runescape.wiki/w/Agility) |
-| 🔴 | <img src="https://oldschool.runescape.wiki/images/Thieving_icon.png?973fe" height="20" alt=""> Thieving | nothing yet | [wiki](https://oldschool.runescape.wiki/w/Thieving) |
+| 🟢 | <img src="https://oldschool.runescape.wiki/images/Thieving_icon.png?973fe" height="20" alt=""> [Thieving](content/skills/thieving) | 400 loc | [wiki](https://oldschool.runescape.wiki/w/Thieving) |
 | 🟢 | <img src="https://oldschool.runescape.wiki/images/Crafting_icon.png?a1f71" height="20" alt=""> [Crafting](content/skills/crafting) | 6,379 loc | [wiki](https://oldschool.runescape.wiki/w/Crafting) |
 | 🔴 | <img src="https://oldschool.runescape.wiki/images/Fletching_icon.png?15cda" height="20" alt=""> Fletching | nothing yet | [wiki](https://oldschool.runescape.wiki/w/Fletching) |
 | 🟢 | <img src="https://oldschool.runescape.wiki/images/Construction_icon.png?f9bf7" height="20" alt=""> Construction | no module, code in content/areas/city | [wiki](https://oldschool.runescape.wiki/w/Construction) |
@@ -135,25 +135,6 @@ here so it at least shows up. Nothing is ticked until someone claims it.
 </details>
 
 <details>
-<summary>🔴 <b>Thieving</b> — 13 sub-features</summary>
-
-- [ ] Pickpocketing
-- [ ] Equipment
-- [ ] Other effects
-- [ ] Thievable NPCs
-- [ ] Stalls
-- [ ] Thievable stalls
-- [ ] Chests
-- [ ] Thievable chests
-- [ ] Doors
-- [ ] Pickable doors
-- [ ] Training strategies
-- [ ] Thieving minigames
-- [ ] Thieving pet
-
-</details>
-
-<details>
 <summary>🔴 <b>Fletching</b> — 9 sub-features</summary>
 
 - [ ] Materials used
@@ -211,14 +192,15 @@ Found the same way `settings.gradle.kts` finds them: any dir with a `build.gradl
 
 | Module | Files | Lines | Tests | TODO | Last touched |
 |---|---:|---:|---:|---:|---|
-| `areas/city/draynor` | 7 | 781 | 4 | 0 | 2026-09-16 |
+| `areas/city/draynor` | 16 | 3,706 | 4 | 0 | 2026-09-23 |
+| `areas/city/draynor/pack` | 1 | 6 | 0 | 0 | 2026-09-23 |
 | `areas/city/falador` | 7 | 1,354 | 0 | 0 | 2026-09-22 |
 | `areas/city/falador/pack` | 1 | 6 | 0 | 0 | 2026-09-22 |
 | `areas/city/lumbridge` | 13 | 2,578 | 0 | 3 | 2026-08-04 |
 | `areas/city/port-sarim` | 13 | 1,971 | 0 | 0 | 2026-09-22 |
 | `areas/city/port-sarim/pack` | 1 | 6 | 0 | 0 | 2026-09-22 |
 | `areas/city/prifddinas` | 1 | 82 | 0 | 0 | 2026-08-18 |
-| `areas/city/rimmington` | 6 | 802 | 0 | 0 | 2026-09-22 |
+| `areas/city/rimmington` | 6 | 773 | 0 | 0 | 2026-09-23 |
 | `areas/city/rimmington/pack` | 1 | 6 | 0 | 0 | 2026-09-22 |
 | `areas/city/taverley` | 1 | 77 | 0 | 0 | 2026-06-25 |
 | `areas/city/varrock` | 7 | 539 | 0 | 1 | 2026-08-04 |
@@ -228,7 +210,8 @@ Found the same way `settings.gradle.kts` finds them: any dir with a `build.gradl
 | `areas/misc/motherlode-mine` | 13 | 1,402 | 0 | 0 | 2026-09-17 |
 | `areas/misc/motherlode-mine/pack` | 1 | 6 | 0 | 0 | 2026-09-17 |
 | `areas/misc/multiways` | 2 | 36 | 0 | 0 | 2026-05-03 |
-| `areas/misc/wizards_tower` | 2 | 580 | 0 | 0 | 2026-08-04 |
+| `areas/misc/wizards_tower` | 4 | 1,123 | 0 | 0 | 2026-09-23 |
+| `areas/misc/wizards_tower/pack` | 1 | 6 | 0 | 0 | 2026-09-23 |
 | `areas/wilderness` | 18 | 1,315 | 0 | 0 | 2026-08-18 |
 | `areas/zeah` | 3 | 234 | 0 | 0 | 2026-08-18 |
 | `bosses/amoxliatl` | 2 | 362 | 0 | 0 | 2026-09-15 |
@@ -246,8 +229,9 @@ Found the same way `settings.gradle.kts` finds them: any dir with a `build.gradl
 | `drops` | 257 | 14,407 | 0 | 0 | 2026-09-22 |
 | `events/shooting-stars` | 9 | 1,261 | 0 | 0 | 2026-08-30 |
 | `events/shooting-stars/pack` | 2 | 440 | 0 | 0 | 2026-08-21 |
-| `generic/generic-locs` | 22 | 1,240 | 0 | 1 | 2026-09-22 |
-| `generic/generic-npcs` | 7 | 1,183 | 0 | 2 | 2026-07-19 |
+| `generic/generic-locs` | 24 | 1,332 | 0 | 1 | 2026-09-23 |
+| `generic/generic-npcs` | 7 | 1,183 | 0 | 2 | 2026-09-23 |
+| `generic/generic-npcs/pack` | 1 | 6 | 0 | 0 | 2026-09-23 |
 | `generic/killcount` | 1 | 32 | 0 | 0 | 2026-09-12 |
 | `interfaces/bank` | 15 | 2,313 | 3 | 1 | 2026-08-19 |
 | `interfaces/collection-log` | 4 | 543 | 0 | 0 | 2026-08-18 |
@@ -260,6 +244,7 @@ Found the same way `settings.gradle.kts` finds them: any dir with a `build.gradl
 | `interfaces/journal-tab` | 4 | 265 | 0 | 0 | 2026-08-18 |
 | `interfaces/logout-tab` | 1 | 30 | 0 | 0 | 2026-05-03 |
 | `interfaces/menu` | 1 | 23 | 0 | 1 | 2026-05-03 |
+| `interfaces/omnishop` | 2 | 266 | 0 | 0 | 2026-09-23 |
 | `interfaces/prayer-tab` | 10 | 771 | 0 | 0 | 2026-09-12 |
 | `interfaces/settings` | 10 | 1,127 | 0 | 0 | 2026-08-18 |
 | `interfaces/skill-guides` | 1 | 114 | 0 | 0 | 2026-07-04 |
@@ -274,12 +259,12 @@ Found the same way `settings.gradle.kts` finds them: any dir with a `build.gradl
 | `other/login` | 1 | 183 | 0 | 0 | 2026-07-14 |
 | `other/mapclock` | 1 | 49 | 0 | 0 | 2026-08-18 |
 | `other/sandstorm` | 2 | 364 | 0 | 0 | 2026-08-18 |
-| `other/spawn` | 1 | 332 | 0 | 0 | 2026-09-23 |
+| `other/spawn` | 1 | 333 | 0 | 0 | 2026-09-23 |
 | `other/spawn/pack` | 1 | 6 | 0 | 0 | 2026-09-23 |
 | `other/special-attacks` | 4 | 466 | 0 | 0 | 2026-05-03 |
 | `other/special-weapons` | 11 | 1,111 | 0 | 1 | 2026-09-14 |
 | `other/windmill` | 1 | 43 | 0 | 0 | 2026-05-03 |
-| `quest` | 30 | 5,926 | 2 | 0 | 2026-09-22 |
+| `quest` | 31 | 5,978 | 2 | 0 | 2026-09-23 |
 | `quest/pack` | 1 | 6 | 0 | 0 | 2026-09-22 |
 | `skills/cooking` | 12 | 1,362 | 0 | 0 | 2026-09-22 |
 | `skills/crafting` | 30 | 3,680 | 0 | 0 | 2026-09-22 |
@@ -296,6 +281,7 @@ Found the same way `settings.gradle.kts` finds them: any dir with a `build.gradl
 | `skills/runecrafting` | 24 | 2,565 | 0 | 0 | 2026-09-22 |
 | `skills/slayer` | 45 | 5,494 | 0 | 0 | 2026-08-04 |
 | `skills/smithing` | 15 | 2,053 | 0 | 0 | 2026-08-28 |
+| `skills/thieving` | 2 | 400 | 0 | 0 | 2026-09-23 |
 | `skills/utils` | 2 | 316 | 0 | 0 | 2026-05-10 |
 | `skills/woodcutting` | 5 | 409 | 2 | 2 | 2026-07-22 |
 | `travel/canoe` | 6 | 1,122 | 1 | 2 | 2026-07-22 |
