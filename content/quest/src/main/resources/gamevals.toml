@@ -4,6 +4,7 @@ quest_available_set = 45550
 [gamevals.varp]
 pirates_treasure_state = 63601
 prince_ali_state = 63620
+sheep_shearer_state = 63640
 
 [gamevals.varbit]
 pirates_treasure_crate_bananas = 63601
@@ -15,3 +16,4 @@ pirates_treasure_luthas_task = 63606
 prince_ali_keli_asked = 63620
 prince_ali_key_ordered = 63621
 prince_ali_met_leela = 63622
+sheep_shearer_met_the_thing = 63640

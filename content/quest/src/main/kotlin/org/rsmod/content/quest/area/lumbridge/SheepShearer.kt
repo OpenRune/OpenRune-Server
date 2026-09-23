@@ -2,14 +2,19 @@ package org.rsmod.content.quest.area.lumbridge
 
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.player.protect.ProtectedAccess
+import org.rsmod.api.player.vars.intVarBit
 import org.rsmod.api.script.onOpNpc1
+import org.rsmod.api.script.onOpNpc3
 import org.rsmod.content.quest.manager.ItemRewardDisplay
 import org.rsmod.content.quest.manager.QuestScript
 import org.rsmod.content.quest.manager.menu
 import org.rsmod.content.quest.manager.rewards
 import org.rsmod.content.quest.manager.startQuestPrompt
 import org.rsmod.game.entity.Npc
+import org.rsmod.game.entity.Player
 import org.rsmod.plugin.scripts.ScriptContext
+
+private var Player.metTheThing by intVarBit("varbit.sheep_shearer_met_the_thing")
 
 class SheepShearer :
     QuestScript(
@@ -24,6 +29,8 @@ class SheepShearer :
 
     override fun ScriptContext.init() {
         onOpNpc1("npc.fred_the_farmer") { startDialogue(it.npc) { fred(it.npc) } }
+        onOpNpc1(THE_THING) { shearTheThing(it.npc) }
+        onOpNpc3(THE_THING) { talkToTheThing(it.npc) }
     }
 
     override fun subTitle(): String =
@@ -271,9 +278,58 @@ class SheepShearer :
 
     private suspend fun Dialogue.fredAfterQuest() {
         chatNpc(angry, "What are you doing on my land?")
-        when (menu("I'm looking for something to kill." to 1, "I'm lost." to 2)) {
+        val options =
+            buildList {
+                add("I'm looking for something to kill." to 1)
+                add("I'm lost." to 2)
+                if (player.metTheThing != 0) {
+                    add("Fred! Fred! I've seen The Thing!" to 3)
+                }
+            }
+        when (menu(options)) {
             1 -> lookingToKill()
             2 -> lost()
+            3 -> seenTheThing()
+        }
+    }
+
+    private suspend fun Dialogue.seenTheThing() {
+        chatPlayer(happy, "Fred! Fred! I've seen The Thing!")
+        chatNpc(worried, "You ... you actually saw it?")
+        chatNpc(
+            worried,
+            "Run for the hills! ${player.displayName} grab as many chickens as you can! " +
+                "We have to ...",
+        )
+        chatPlayer(neutral, "Fred!")
+        chatNpc(worried, "... flee! Oh, woe is me! The shapeshifter is coming! We're all ... ")
+        chatPlayer(neutral, "FRED!")
+        chatNpc(confused, "... doomed. What!")
+        chatPlayer(neutral, "It's not a shapeshifter or any other kind of monster!")
+        chatNpc(quiz, "Well then what is it?")
+        chatPlayer(neutral, "Well ... it's just two Penguins; Penguins disguised as a sheep.")
+        chatNpc(confused, "...")
+        chatNpc(shocked, "Have you been out in the sun too long?")
+    }
+
+    private suspend fun ProtectedAccess.shearTheThing(npc: Npc) {
+        if (SHEARS !in inv) {
+            mes("You need a set of shears to do this.")
+            return
+        }
+        player.metTheThing = 1
+        faceEntitySquare(npc)
+        anim("seq.human_shearing")
+        soundSynth("synth.shear_sheep", delay = 10)
+        delay(2)
+        resetAnim()
+        mes("The... whatever it is... manages to get away from you!")
+    }
+
+    private suspend fun ProtectedAccess.talkToTheThing(npc: Npc) {
+        player.metTheThing = 1
+        startDialogue(npc) {
+            chatPlayer(confused, "That's a sheep...I think. I can't talk to sheep.")
         }
     }
 
@@ -297,5 +353,6 @@ class SheepShearer :
         const val BALL_OF_WOOL = "obj.ball_of_wool"
         const val WOOL = "obj.wool"
         const val SHEARS = "obj.shears"
+        const val THE_THING = "npc.sheep_shearer_the_thing"
     }
 }
