@@ -14,6 +14,22 @@ contentGroup = "content.opened_single_door"
 [object.params]
 "param.next_loc_stage" = "loc.farming_shed_poordoor"
 
+[[object]]
+id = "loc.qip_sheep_shearer_poordoor"
+inherit = "loc.qip_sheep_shearer_poordoor"
+contentGroup = "content.closed_single_door"
+
+[object.params]
+"param.next_loc_stage" = "loc.qip_sheep_shearer_poordooropen"
+
+[[object]]
+id = "loc.qip_sheep_shearer_poordooropen"
+inherit = "loc.qip_sheep_shearer_poordooropen"
+contentGroup = "content.opened_single_door"
+
+[object.params]
+"param.next_loc_stage" = "loc.qip_sheep_shearer_poordoor"
+
 [[varp]]
 id = "varp.lumbridge_tutor_claim"
 scope = "Perm"
