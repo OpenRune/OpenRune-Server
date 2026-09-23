@@ -25,6 +25,7 @@ import org.rsmod.api.npc.heal
 import org.rsmod.api.npc.isValidTarget
 import org.rsmod.api.player.events.PlayerHitEvents
 import org.rsmod.api.player.isValidTarget
+import org.rsmod.api.player.output.CamShakeAxis
 import org.rsmod.api.player.output.Camera
 import org.rsmod.api.player.stat.hitpoints
 import org.rsmod.api.repo.loc.LocRepository
@@ -721,9 +722,9 @@ constructor(
     private fun shakeCameraNear(npc: Npc) {
         val nearby = deps.playerList.filter { it.coords.chebyshevDistance(npc.coords) <= CAM_SHAKE_RADIUS }
         for (player in nearby) {
-            Camera.camShake(player, axis = 0, random = CAM_SHAKE_RANDOM_X, amplitude = 0, rate = 0)
-            Camera.camShake(player, axis = 1, random = CAM_SHAKE_RANDOM_Y, amplitude = 0, rate = 0)
-            Camera.camShake(player, axis = 2, random = CAM_SHAKE_RANDOM_Z, amplitude = 0, rate = 0)
+            Camera.camShake(player, axis = CamShakeAxis.LEFT_RIGHT, random = CAM_SHAKE_RANDOM_X, amplitude = 0, rate = 0)
+            Camera.camShake(player, axis = CamShakeAxis.UP_DOWN, random = CAM_SHAKE_RANDOM_Y, amplitude = 0, rate = 0)
+            Camera.camShake(player, axis = CamShakeAxis.FORWARDS_BACKWARDS, random = CAM_SHAKE_RANDOM_Z, amplitude = 0, rate = 0)
         }
         deps.worldQueues.add(CAM_SHAKE_DURATION) {
             for (player in nearby) {
