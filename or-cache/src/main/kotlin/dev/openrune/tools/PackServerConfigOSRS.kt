@@ -3,10 +3,11 @@ package dev.openrune.tools
 import dev.openrune.OsrsCacheProvider
 import dev.openrune.cache.*
 import dev.openrune.cache.filestore.definition.ConfigDefinitionDecoder
+import dev.openrune.cache.CacheDelegate
 import dev.openrune.cache.tools.TaskPriority
+import dev.openrune.cache.tools.incremental.PackUnit
 import dev.openrune.cache.tools.tasks.CacheTask
 import dev.openrune.cache.util.getFiles
-import dev.openrune.cache.util.progress
 import dev.openrune.codec.osrs.*
 import dev.openrune.codec.osrs.impl.*
 import dev.openrune.definition.Definition
@@ -41,6 +42,8 @@ data class PackType(
     val table: String,
     val tomlMapper: TomlMapper,
     val kType: KType,
+    /** Config archive this type writes (and, for merged types, reads its base definitions from). */
+    val archive: Int,
     val pack: PackServerConfig.(Cache, Map<String, List<Definition>>, String) -> Unit,
 )
 
@@ -287,12 +290,22 @@ class PackServerConfig(
     ): Map<Int, T> =
         parsedDefinitions[key]?.filterIsInstance<T>()?.associateBy { it.id } ?: emptyMap()
 
+    /**
+     * The live cache decoders and item render data are only needed when a type actually repacks, so a
+     * build where nothing changed does not pay for loading the whole live cache.
+     */
+    private val managers by lazy {
+        CacheManager.init(OsrsCacheProvider(Cache.load(Path.of(getCacheLocation())), revision))
+        ItemRenderDataManager.init()
+    }
+
+    internal fun ensureManagers() = managers
+
     @OptIn(InternalAPI::class)
     override fun init(cache: Cache) {
         val parsedDefinitions = mutableMapOf<String, MutableList<Definition>>()
-        CacheManager.init(OsrsCacheProvider(Cache.load(Path.of(getCacheLocation())), revision))
-
-        ItemRenderDataManager.init()
+        // Which files feed which type: a type only repacks when one of its own files changed.
+        val filesByTable = mutableMapOf<String, MutableSet<File>>()
 
         val files = (listOf(directory) + extraDirectories).flatMap { getFiles(it, "toml") }
 
@@ -304,17 +317,43 @@ class PackServerConfig(
                     packType.tomlMapper.decodeRuneScape(packType.kType, block.map.properties)
                         as Definition
                 parsedDefinitions.getOrPut(packType.table) { mutableListOf() }.add(def)
+                filesByTable.getOrPut(packType.table) { linkedSetOf() }.add(file)
             }
         }
 
         val parsed: Map<String, List<Definition>> = parsedDefinitions
-        val progress = progress("Packing Server Configs", packTypes.size)
+        val library = (cache as CacheDelegate).library
+        val sharedInputs = listOf(
+            File(directory, "slayer"),
+            File("../.data/raw-cache/examines/locs.csv"),
+            File("../.data/raw-cache/examines/npcs.csv"),
+        )
+
+        // One incremental unit per type. The engine draws the progress bar itself, so it only ever counts
+        // the types that are actually being repacked; an unchanged build shows nothing here.
         for (packType in packTypes.values) {
-            progress.extraMessage = packType.table
-            packType.pack(this, cache, parsed, packType.table)
-            progress.step()
+            // Merged types are rebuilt over the client archive they overlay, so its checksum is part of
+            // the fingerprint: repacking an npc on the live side changes the server npc rows too.
+            val baseArchive = library.index(CONFIGS).archives().firstOrNull { it.id == packType.archive }
+            incremental.run(
+                task = this,
+                scope = packType.table,
+                label = "Packing Server Configs",
+                cache = cache,
+                units = listOf(
+                    PackUnit(
+                        key = "all",
+                        sources = filesByTable[packType.table]?.toList().orEmpty(),
+                        label = packType.table,
+                    ),
+                ),
+                extraDeps = sharedInputs,
+                extraFingerprints = mapOf("base-archive" to "${baseArchive?.crc}:${baseArchive?.revision}"),
+            ) { packCache, _ ->
+                ensureManagers()
+                packType.pack(this, packCache, parsed, packType.table)
+            }
         }
-        progress.close()
     }
 
     companion object {
@@ -335,7 +374,7 @@ class PackServerConfig(
             crossinline codec: (Map<Int, B>) -> OpcodeDefinitionCodec<T>,
             noinline create: (Int) -> T,
         ) {
-            registerPackType<T>(table, tomlMapper) { cache, _, _ ->
+            registerPackType<T>(table, decoder.getArchive(0), tomlMapper) { cache, _, _ ->
                 val defs = baseDefinitions()
                 packDefs(cache, decoder.getArchive(0), defs.keys.sorted(), create, codec(defs))
             }
@@ -356,7 +395,7 @@ class PackServerConfig(
             crossinline codec: (Map<Int, B>, Map<Int, T>) -> OpcodeDefinitionCodec<T>,
             noinline create: (Int) -> T,
         ) {
-            registerPackType<T>(table, tomlMapper) { cache, parsed, _ ->
+            registerPackType<T>(table, decoder.getArchive(0), tomlMapper) { cache, parsed, _ ->
                 val base = mutableMapOf<Int, B>().apply { loadBaseInto(cache, this) }
                 val overlay = parsedById<T>(parsed, table)
                 val ids = (base.keys + overlay.keys).distinct().sorted()
@@ -372,7 +411,7 @@ class PackServerConfig(
             crossinline codec: (Map<Int, T>) -> OpcodeDefinitionCodec<T>,
             noinline create: (Int) -> T,
         ) {
-            registerPackType<T>(table, tomlMapper) { cache, parsed, _ ->
+            registerPackType<T>(table, decoder.getArchive(0), tomlMapper) { cache, parsed, _ ->
                 val overlay = parsedById<T>(parsed, table)
                 packDefs(
                     cache,
@@ -390,10 +429,11 @@ class PackServerConfig(
          */
         private inline fun <reified T : Definition> registerPackType(
             table: String,
+            archive: Int,
             tomlMapper: TomlMapper = tomlMapperDefault,
             noinline pack: PackServerConfig.(Cache, Map<String, List<Definition>>, String) -> Unit,
         ) {
-            packTypes[table] = PackType(table, tomlMapper, typeOf<List<T>>(), pack)
+            packTypes[table] = PackType(table, tomlMapper, typeOf<List<T>>(), archive, pack)
         }
     }
 }

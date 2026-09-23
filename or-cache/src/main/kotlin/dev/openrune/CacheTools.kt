@@ -7,7 +7,11 @@ import dev.openrune.cache.tools.CacheEnvironment
 import dev.openrune.cache.tools.CacheTool
 import dev.openrune.cache.tools.cacheTool
 import dev.openrune.cache.tools.cs2.PackCs2
+import dev.openrune.cache.tools.cs2.UnpackDefaultCs2
 import dev.openrune.cache.tools.iftype.PackIfType
+import dev.openrune.cache.tools.tasks.impl.PackModels
+import dev.openrune.cache.tools.tasks.impl.PackSprites
+import dev.openrune.cache.tools.tasks.impl.PackWorldMap
 import dev.openrune.cache.tools.incremental.CacheVerification
 import dev.openrune.cache.tools.incremental.IncrementalSession
 import dev.openrune.cache.tools.tasks.CacheTask
@@ -120,6 +124,7 @@ private fun freshInstall() {
         incrementalStateFile(TaskType.SERVER_CACHE_BUILD),
     )
 
+    logger.info { "Dumping gamevals from the fresh cache" }
     GamevalDumper.dumpGamevals(Cache.load(File(getCacheLocation()).toPath()), rev.first)
 }
 
@@ -145,7 +150,10 @@ fun buildCache(type: TaskType, force: Boolean = false) {
 }
 
 private fun buildServerCache(packTasks: List<CacheTask>, packs: PluginPacks) {
-    val serverTasks = packTasks.filterNot { it is PackCs2 || it is PackIfType }
+    val serverTasks = packTasks.filterNot {
+        it is PackCs2 || it is UnpackDefaultCs2 || it is PackIfType ||
+            it is PackModels || it is PackSprites || it is PackWorldMap
+    }
     val serverOnly = listOf(
         PackServerConfig(
             revision.first,
@@ -159,8 +167,6 @@ private fun buildServerCache(packTasks: List<CacheTask>, packs: PluginPacks) {
 }
 
 private fun finalizeServerCache(force: Boolean = false) {
-    MinifyServerCache().init(getServerCacheLocation())
-
     val cache = Cache.load(File(getServerCacheLocation()).toPath())
     GamevalDumper.dumpCols(cache, revision.first)
     GamevalDumper.dumpComponents(cache, revision.first)
@@ -231,7 +237,11 @@ private fun newCacheTool(type: TaskType, packTasks: List<CacheTask>): CacheTool 
         subRevision(subRev)
         cache(getCacheLocation())
         serverCache(getServerCacheLocation())
-        autoCert = true
+        autoCert = type == TaskType.BUILD
+
+        if (type == TaskType.SERVER_CACHE_BUILD) {
+            serverEmptyIndices = MinifyServerCache.STRIPPED_INDICES
+        }
 
         incremental = true
         incrementalDatabase(incrementalStateFile(type).path)

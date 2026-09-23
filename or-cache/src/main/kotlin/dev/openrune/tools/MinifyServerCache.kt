@@ -16,25 +16,17 @@ import dev.openrune.cache.WORLDMAPAREAS
 import dev.openrune.cache.WORLDMAP_GEOGRAPHY
 import dev.openrune.cache.WORLDMAP_GROUND
 
+/**
+ * Indices the server never reads. The server cache build leaves them empty while it is seeded from the
+ * live cache (see `serverEmptyIndices` on the cache tool), so [init] is only needed to strip an existing
+ * server cache by hand.
+ */
 class MinifyServerCache() {
 
     fun init(loc: String) {
         val cache = CacheLibrary(loc)
 
-        emptyArchive(ANIMATIONS, cache)
-        emptyArchive(SKELETONS, cache)
-        emptyArchive(SOUNDEFFECTS, cache)
-        emptyArchive(MUSIC_TRACKS, cache)
-        emptyArchive(MODELS, cache)
-        emptyArchive(TEXTURES, cache)
-        emptyArchive(MUSIC_JINGLES, cache)
-        emptyArchive(VORBIS, cache)
-        emptyArchive(MUSIC_PATCHES, cache)
-        emptyArchive(DEFAULTS, cache)
-        emptyArchive(WORLDMAP_GEOGRAPHY, cache)
-        emptyArchive(WORLDMAPAREAS, cache)
-        emptyArchive(WORLDMAP_GROUND, cache)
-        emptyArchive(ANIMAYAS, cache)
+        STRIPPED_INDICES.forEach { emptyArchive(it, cache) }
 
         val loc = java.io.File(loc)
         val temp = java.io.File(loc, "temp")
@@ -46,7 +38,29 @@ class MinifyServerCache() {
     }
 
     fun emptyArchive(id: Int, cache: CacheLibrary) {
-        cache.index(id).clear()
-        cache.index(id).update()
+        val index = cache.index(id)
+        index.clear()
+        // clear() does not flag the reference table; without this update() leaves it as it was.
+        index.flag()
+        index.update()
+    }
+
+    companion object {
+        val STRIPPED_INDICES: Set<Int> = setOf(
+            ANIMATIONS,
+            SKELETONS,
+            SOUNDEFFECTS,
+            MUSIC_TRACKS,
+            MODELS,
+            TEXTURES,
+            MUSIC_JINGLES,
+            VORBIS,
+            MUSIC_PATCHES,
+            DEFAULTS,
+            WORLDMAP_GEOGRAPHY,
+            WORLDMAPAREAS,
+            WORLDMAP_GROUND,
+            ANIMAYAS,
+        )
     }
 }
