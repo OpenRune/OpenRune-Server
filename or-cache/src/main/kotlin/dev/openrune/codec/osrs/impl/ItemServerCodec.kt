@@ -91,7 +91,7 @@ class ItemServerCodec(
 
     private fun intListOpcode(
         opcode: Int,
-        property: kotlin.reflect.KMutableProperty1<ItemServerType, MutableList<Int>?>,
+        property: kotlin.reflect.KMutableProperty1<ItemServerType, List<Int>?>,
     ) =
         DefinitionOpcode<ItemServerType>(
             opcode,

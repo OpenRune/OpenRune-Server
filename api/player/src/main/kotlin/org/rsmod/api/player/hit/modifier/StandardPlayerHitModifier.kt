@@ -28,7 +28,8 @@ public class StandardPlayerHitModifier @Inject constructor(private val eventBus:
             }
 
         if (protectionPrayer) {
-            val reduction = if (isFromPlayer) 40 else 100
+            val baseReduction = if (isFromPlayer) 40 else 100
+            val reduction = (baseReduction - penetration).coerceIn(0, 100)
             damage = (damage * (100 - reduction)) / 100
         }
 

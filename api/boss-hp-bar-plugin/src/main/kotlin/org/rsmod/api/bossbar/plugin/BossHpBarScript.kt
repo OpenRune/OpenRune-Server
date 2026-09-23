@@ -6,6 +6,7 @@ import jakarta.inject.Singleton
 import java.awt.Color
 import org.rsmod.annotations.InternalApi
 import org.rsmod.api.bossbar.BossHpBarMode
+import org.rsmod.api.config.aliases.ParamInt
 import org.rsmod.api.config.refs.params
 import org.rsmod.api.instances.InstanceManager
 import org.rsmod.api.instances.events.InstancePlayerJoinUnboundEvent
@@ -25,7 +26,6 @@ import org.rsmod.game.entity.npc.NpcStateEvents
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
-
 @Singleton
 public class BossHpBarScript @Inject constructor(
     private val instances: InstanceManager,
@@ -42,7 +42,7 @@ public class BossHpBarScript @Inject constructor(
     override fun ScriptContext.startup() {
         onEvent<InstancePlayerJoinUnboundEvent> {
             for (npc in instances.npcsForInstance(instanceId)) {
-                if (npcBarMode(npc) == BossHpBarMode.ON_ENTER && npc.hitpoints > 0) {
+                if (npcBarMode(npc) == BossHpBarMode.ON_ENTER && npc.isSlotAssigned && npc.hitpoints > 0) {
                     onOpen(player, npc)
                 }
             }
@@ -90,14 +90,27 @@ public class BossHpBarScript @Inject constructor(
         player.bossHudCurrentHp = npc.hitpoints
         player.bossHudBarSize = 1
 
-        player.setColour("component.hpbar_hud:inner",ORIGINAL_COLORS[0])
-        player.setColour("component.hpbar_hud:health_bar_back",ORIGINAL_COLORS[1])
-        player.setColour("component.hpbar_hud:health_bar_sliding",ORIGINAL_COLORS[2])
+        player.setColour("component.hpbar_hud:inner", ORIGINAL_COLORS[0])
+        applyColours(player, npc)
 
         player.runClientScript(2287, commonComponents, 0)
         openScripts(player)
     }
 
+    public fun onRecolour(player: Player, npc: Npc) {
+        if (player.bossHudDisabled) return
+        applyColours(player, npc, DEFAULT_REMAINING_COLOR)
+    }
+
+    private fun applyColours(player: Player, npc: Npc, remainingFallback: Color? = null) {
+        val backColour = npc.barColour(params.boss_hp_bar_colour_back) ?: ORIGINAL_COLORS[1]
+        val slidingColour = npc.barColour(params.boss_hp_bar_colour_sliding) ?: ORIGINAL_COLORS[2]
+        player.setColour("component.hpbar_hud:health_bar_back", backColour)
+        player.setColour("component.hpbar_hud:health_bar_sliding", slidingColour)
+        (npc.barColour(params.boss_hp_bar_colour_remaining) ?: remainingFallback)?.let {
+            player.setColour("component.hpbar_hud:health_bar_remaining", it)
+        }
+    }
 
     @OptIn(InternalApi::class)
     public fun onClose(player: Player, npc: Npc, instant: Boolean = false) {
@@ -129,9 +142,15 @@ public class BossHpBarScript @Inject constructor(
     private fun npcBarMode(npc: Npc): BossHpBarMode =
         BossHpBarMode.fromId(npc.visType.paramOrNull(params.boss_hp_bar_mode) ?: 0)
 
+    private fun Npc.barColour(param: ParamInt): Color? {
+        val packed = visType.paramOrNull(param) ?: return null
+        if (packed < 0) return null
+        return Color(packed)
+    }
+
     private fun openScripts(player: Player) {
         player.runClientScript(2887, commonComponents, 255)
-        player.runClientScript(2102, commonComponents,1)
+        player.runClientScript(2102, commonComponents, 1)
 
         player.runClientScript(
             2376,
@@ -176,6 +195,6 @@ public class BossHpBarScript @Inject constructor(
 
     public companion object {
         public val ORIGINAL_COLORS: Array<Color> = arrayOf(Color(204, 0, 0), Color(149, 0, 0), Color(0, 245, 0))
+        private val DEFAULT_REMAINING_COLOR = Color(0, 200, 0)
     }
-
 }

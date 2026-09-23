@@ -74,6 +74,7 @@ import org.rsmod.api.player.isOutOfCombat
 import org.rsmod.api.player.mapMultiway
 import org.rsmod.api.player.midiJingle
 import org.rsmod.api.player.midiSong
+import org.rsmod.api.player.output.CamShakeAxis
 import org.rsmod.api.player.output.Camera
 import org.rsmod.api.player.output.ChatType
 import org.rsmod.api.player.output.ClientScripts
@@ -124,6 +125,7 @@ import org.rsmod.api.player.ui.ifOpenSub
 import org.rsmod.api.player.ui.ifSetAnim
 import org.rsmod.api.player.ui.ifSetEvents
 import org.rsmod.api.player.ui.ifSetHide
+import org.rsmod.api.player.ui.ifSetModel
 import org.rsmod.api.player.ui.ifSetNpcHead
 import org.rsmod.api.player.ui.ifSetObj
 import org.rsmod.api.player.ui.ifSetPlayerHead
@@ -3723,6 +3725,57 @@ public class ProtectedAccess(
 
     override fun toString(): String {
         return "ProtectedAccess(player=$player, coroutine=$coroutine)"
+    }
+    public fun camMoveToV3(
+        dest: CoordGrid,
+        height: Int,
+        rate: Int,
+        rate2: Int,
+        heightRelative: Boolean = false,
+    ) {
+        Camera.camMoveToV3(player, dest, height, rate, rate2, heightRelative)
+    }
+
+    public fun camLookAtV3(
+        dest: CoordGrid,
+        height: Int,
+        rate: Int,
+        rate2: Int,
+        heightRelative: Boolean = false,
+    ) {
+        Camera.camLookAtV3(player, dest, height, rate, rate2, heightRelative)
+    }
+
+    public fun camShake(axis: CamShakeAxis, random: Int, amplitude: Int, rate: Int) {
+        Camera.camShake(player, axis, random, amplitude, rate)
+    }
+
+    public fun camShakeReset(axis: CamShakeAxis) {
+        Camera.camShakeReset(player, axis)
+    }
+
+    public fun camShakeResetAll() {
+        Camera.camShakeResetAll(player)
+    }
+
+    public fun camUnlock(unlock: Boolean) {
+        Camera.camUnlock(player, unlock)
+    }
+
+    public fun maxDrawDistance(enabled: Boolean) {
+        Cinematic.setMaxDrawDistance(player, enabled)
+    }
+
+    public fun syncDrawDistance() {
+        Cinematic.syncDrawDistance(player)
+    }
+
+    public fun closeFadeOverlayNow() {
+        Cinematic.closeFadeOverlay(player, context.eventBus)
+    }
+
+    public fun ifSetModel(target: String, model: Int) {
+        player.ifSetModel(target, model)
     }
 }
 

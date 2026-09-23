@@ -229,6 +229,7 @@
         "Where to slay monsters",
         "Boss Slayer",
         "Slayer reward points",
+        "Collection log",
         "Temporary boosts",
         "Quests",
         "Quests requiring Slayer",
@@ -407,6 +408,7 @@
         "Diaries Requiring Cooking",
         "Skill choice",
         "Level up messages",
+        "Changes",
         "See also"
       ],
       "image": "https://oldschool.runescape.wiki/images/Cooking_icon.png?a0156"
@@ -471,7 +473,7 @@
         "Static fishing spots",
         "Fishing Trawler",
         "Tempoross",
-        "Fishing pets",
+        "Collection log",
         "Temporary boosts",
         "Quests",
         "Quests requiring Fishing",
@@ -518,7 +520,7 @@
         "Shortcuts",
         "Other",
         "Official worlds",
-        "Giant squirrel pet",
+        "Collection log",
         "Temporary boosts",
         "Quests",
         "Quests requiring Agility",
@@ -644,6 +646,7 @@
         "Phials for unnoting",
         "Training methods",
         "Mahogany Homes",
+        "Repair Kits and Hull Parts",
         "Notable milestones",
         "Rooms",
         "POH locations",
@@ -1683,5 +1686,5 @@
       "Volcanic Mine"
     ]
   },
-  "fetched": "2026-09-07"
+  "fetched": "2026-09-21"
 }

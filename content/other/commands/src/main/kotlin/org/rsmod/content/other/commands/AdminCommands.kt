@@ -1,6 +1,7 @@
 package org.rsmod.content.other.commands
 
 import com.github.michaelbull.logging.InlineLogger
+import com.google.inject.Injector
 import dev.openrune.ServerCacheManager
 import dev.openrune.rscm.RSCM
 import dev.openrune.rscm.RSCM.asRSCM
@@ -32,6 +33,7 @@ import org.rsmod.api.player.ironman.setGamemode
 import org.rsmod.api.player.output.MiscOutput
 import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.output.soundSynth
+import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.protect.ProtectedAccessLauncher
 import org.rsmod.api.player.queueDeath
 import org.rsmod.api.player.stat.PlayerSkillXP
@@ -64,6 +66,8 @@ import org.rsmod.map.square.MapSquareKey
 import org.rsmod.map.zone.ZoneGrid
 import org.rsmod.map.zone.ZoneKey
 import org.rsmod.objtx.TransactionResult
+import org.rsmod.plugin.loader.ExternalPluginLoader
+import org.rsmod.plugin.loader.PluginStatus
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 import org.rsmod.routefinder.loc.LocLayerConstants
@@ -81,6 +85,7 @@ constructor(
     private val regions: RegionRegistry,
     private val deathKillHooks: Set<NpcDeathKillHook>,
     private val instanceRegistry: BossInstanceRegistry,
+    private val injector: Injector,
 ) : PluginScript() {
     private val logger = InlineLogger()
 
@@ -158,6 +163,35 @@ constructor(
         }
         onCommand("reboot", "Reboots the game world, applying packed changes", ::reboot)
         onCommand("slowreboot", "Reboots the game world, with a timer", ::slowReboot)
+        onCommand("loadplugin", "Hot-loads a plugin from the plugins/ directory", ::loadPlugin) {
+            invalidArgs = "Use as ::loadplugin name (jar or folder name, no extension needed)"
+        }
+        onCommand(
+            "pluginenable",
+            "Enables an external plugin, loading it now if the server is already running",
+            ::pluginEnable,
+        ) {
+            invalidArgs = "Use as ::pluginenable name"
+        }
+        onCommand(
+            "plugindisable",
+            "Disables an external plugin so it won't load again at next restart",
+            ::pluginDisable,
+        ) {
+            invalidArgs = "Use as ::plugindisable name"
+        }
+        onCommand(
+            "pluginreload",
+            "Loads an external plugin that isn't already running",
+            ::pluginReload,
+        ) {
+            invalidArgs = "Use as ::pluginreload name"
+        }
+        onCommand(
+            "plugins",
+            "Lists external plugins with a menu to enable/disable/load them",
+            ::openPluginsMenu,
+        )
         onCommand(
             "poison",
             "Test player poison (wiki initial damage, optional raw severity)",
@@ -181,7 +215,11 @@ constructor(
                 "Usage: ::die pvm|pvp [true|false]  (second arg = in Wilderness, default false)"
         }
         onCommand("god", "Toggle god mode (invincibility)", ::god)
-        onCommand("componentdebug", "Toggle interface component click debug output", ::componentDebug)
+        onCommand(
+            "componentdebug",
+            "Toggle interface component click debug output",
+            ::componentDebug,
+        )
         onCommand("maxhit", "Toggle always max hit", ::maxhit)
         onCommand("openbank", "Open the bank", ::bank)
         onCommand("transmog", "Transmog player to NPC appearance (no args to reset)", ::transmog) {
@@ -689,6 +727,140 @@ constructor(
                 MiscOutput.updateRebootTimer(p, cycles)
             }
         }
+
+    private fun loadPlugin(cheat: Cheat) =
+        with(cheat) {
+            val name = args[0]
+            val scriptContext = injector.getInstance(ScriptContext::class.java)
+            val scripts = ExternalPluginLoader.load(name, injector, scriptContext)
+            player.mes(pluginLoadResultMessage(name, scripts))
+        }
+
+    private fun pluginEnable(cheat: Cheat) =
+        with(cheat) {
+            val name = args[0]
+            ExternalPluginLoader.setEnabled(name, enabled = true)
+            val status = ExternalPluginLoader.listStatuses().find { it.id.equals(name, true) }
+            if (status?.loaded == true) {
+                player.mes("Enabled '$name' (already running).")
+            } else {
+                val scriptContext = injector.getInstance(ScriptContext::class.java)
+                val scripts = ExternalPluginLoader.load(name, injector, scriptContext)
+                player.mes(
+                    if (scripts != null) {
+                        "Enabled and loaded '$name': ${scripts.size} script(s) started."
+                    } else {
+                        pluginLoadResultMessage(name, scripts)
+                    },
+                )
+            }
+        }
+
+    private fun pluginDisable(cheat: Cheat) =
+        with(cheat) {
+            val name = args[0]
+            ExternalPluginLoader.setEnabled(name, enabled = false)
+            val scriptContext = injector.getInstance(ScriptContext::class.java)
+            val wasRunning = ExternalPluginLoader.unload(name, scriptContext)
+            player.mes(
+                if (wasRunning) {
+                    "Disabled and unloaded '$name'."
+                } else {
+                    "Disabled '$name'. It won't load at next boot or via ::loadplugin/" +
+                        "::pluginenable."
+                },
+            )
+        }
+
+    private fun pluginReload(cheat: Cheat) =
+        with(cheat) {
+            val name = args[0]
+            val scriptContext = injector.getInstance(ScriptContext::class.java)
+            val scripts = ExternalPluginLoader.load(name, injector, scriptContext)
+            player.mes(pluginLoadResultMessage(name, scripts))
+        }
+
+    private fun pluginLoadResultMessage(name: String, scripts: List<PluginScript>?): String =
+        if (scripts != null) {
+            "Loaded '$name': ${scripts.size} script(s) started."
+        } else {
+            "Could not load '$name' - not found, disabled, or missing plugin.properties. Check " +
+                "the server log."
+        }
+
+    private fun openPluginsMenu(cheat: Cheat) =
+        with(cheat) { protectedAccess.launch(player) { pluginsMenuFlow() } }
+
+    private suspend fun ProtectedAccess.pluginsMenuFlow() {
+        val statuses = ExternalPluginLoader.listStatuses()
+        if (statuses.isEmpty()) {
+            player.mes("No external plugins found in the plugins/ directory.")
+            return
+        }
+
+        val labels = statuses.map(::pluginStatusLabel)
+        val index = menu("Plugins", hotkeys = true, choices = labels)
+        val selected = statuses.getOrNull(index) ?: return
+
+        val actionLabels = listOf("Enable", "Disable", "Load", "Reload")
+        val actionIndex = menu(selected.id, hotkeys = true, choices = actionLabels)
+        val action = PluginMenuAction.entries.getOrNull(actionIndex) ?: return
+        runPluginMenuAction(selected, action)
+    }
+
+    private fun pluginStatusLabel(status: PluginStatus): String {
+        val state = if (status.enabled) "enabled" else "disabled"
+        val loaded = if (status.loaded) ", loaded" else ""
+        val displayName = status.manifest?.name ?: "${status.id} (no manifest)"
+        return "$displayName ($state$loaded)"
+    }
+
+    private suspend fun ProtectedAccess.runPluginMenuAction(
+        selected: PluginStatus,
+        action: PluginMenuAction,
+    ) {
+        val scriptContext = injector.getInstance(ScriptContext::class.java)
+        when (action) {
+            PluginMenuAction.Enable -> {
+                ExternalPluginLoader.setEnabled(selected.id, enabled = true)
+                if (selected.loaded) {
+                    player.mes("Enabled '${selected.id}' (already running).")
+                } else {
+                    val scripts = ExternalPluginLoader.load(selected.id, injector, scriptContext)
+                    player.mes(
+                        if (scripts != null) {
+                            "Enabled and loaded '${selected.id}': " +
+                                "${scripts.size} script(s) started."
+                        } else {
+                            pluginLoadResultMessage(selected.id, scripts)
+                        },
+                    )
+                }
+            }
+            PluginMenuAction.Disable -> {
+                ExternalPluginLoader.setEnabled(selected.id, enabled = false)
+                val wasRunning = ExternalPluginLoader.unload(selected.id, scriptContext)
+                player.mes(
+                    if (wasRunning) {
+                        "Disabled and unloaded '${selected.id}'."
+                    } else {
+                        "Disabled '${selected.id}'. It won't load at next boot."
+                    },
+                )
+            }
+            PluginMenuAction.Load, PluginMenuAction.Reload -> {
+                val scripts = ExternalPluginLoader.load(selected.id, injector, scriptContext)
+                player.mes(pluginLoadResultMessage(selected.id, scripts))
+            }
+        }
+    }
+
+    private enum class PluginMenuAction {
+        Enable,
+        Disable,
+        Load,
+        Reload,
+    }
 
     private fun dieTest(cheat: Cheat) =
         with(cheat) {

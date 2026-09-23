@@ -197,21 +197,6 @@ private fun dominantDbRowTable(
 // endregion
 // region Cleanup, enum metadata, `row.*(%S, %T)` format helpers
 
-/** Clears all `*.kt` under [root], then empty dirs, so each generator run starts clean. */
-private fun clearGeneratedTableSources(root: File) {
-    if (!root.exists()) {
-        root.mkdirs()
-        return
-    }
-    check(root.isDirectory) { "Table output path is not a directory: ${root.absolutePath}" }
-    root.walkBottomUp()
-        .filter { it.isFile && it.extension.equals("kt", ignoreCase = true) }
-        .forEach { it.delete() }
-    root.walkBottomUp()
-        .filter { it.isDirectory && it != root && it.listFiles().isNullOrEmpty() }
-        .forEach { it.delete() }
-}
-
 /**
  * `row.$fn(%S, %T, …)` through closing `)`; [afterClose] appends e.g. `.map { … }` (use extra `%T`
  * for row type).
@@ -247,17 +232,19 @@ private fun templateEnumId(table: DBTableType?, columnId: Int): Int? =
 private val tupleAritiesGlobal = mutableSetOf<Int>()
 
 /**
- * Emits typed row wrappers under [OUT_TABLES_KT]. Wipes prior `*.kt` there first, then writes
- * `Tuples.kt` once with all tuple helpers used by any table.
+ * Emits typed row wrappers under [OUT_TABLES_KT], rewriting only files whose content changed, then
+ * writes `Tuples.kt` once with all tuple helpers used by any table, and deletes any leftover
+ * `*.kt` from a prior run that wasn't regenerated (e.g. a removed dbtable).
  */
 fun startGeneration(
     elements: List<GameValElement>,
     rows: MutableMap<Int, DBRowType>,
     enums: MutableMap<Int, EnumType>,
     dbtables: Map<Int, DBTableType>,
+    force: Boolean = false,
 ) {
     val outDir = File(OUT_TABLES_KT).canonicalFile
-    clearGeneratedTableSources(outDir)
+    val tracker = GeneratedFileTracker(outDir, force)
     tupleAritiesGlobal.clear()
     val tableIdToName = dbtableIdToName(elements)
     for (el in elements) {
@@ -291,19 +278,20 @@ fun startGeneration(
             }
         generateTable(
             TableDef(table.name, rowWrapperClassName(table.name), columns, table.id),
-            outDir,
+            tracker,
             rows,
             enums,
             dbtables,
         )
     }
-    generateTupleHelpers(outDir, tupleAritiesGlobal)
+    generateTupleHelpers(tracker, tupleAritiesGlobal)
+    tracker.pruneStale()
 }
 
 /** Writes one `*Row` file + companion for a single dbtable. */
 fun generateTable(
     def: TableDef,
-    outputDir: File,
+    tracker: GeneratedFileTracker,
     rows: Map<Int, DBRowType>,
     enums: Map<Int, EnumType>,
     dbtables: Map<Int, DBTableType>,
@@ -375,7 +363,7 @@ fun generateTable(
         }
         .addType(rowSpec)
         .build()
-        .writeTo(outputDir)
+        .let(tracker::write)
 }
 
 // endregion
@@ -741,12 +729,12 @@ private class RowPropertyCodegen(
     }
 }
 
-fun generateTupleHelpers(outputDir: File, arities: MutableSet<Int>) {
+fun generateTupleHelpers(tracker: GeneratedFileTracker, arities: MutableSet<Int>) {
     FileSpec.builder(PKG_TABLES, "Tuples")
         .addFileComment("AUTO-GENERATED tuple helpers for db table rows — do not edit.")
         .apply { arities.forEach { addTupleArity(this, it) } }
         .build()
-        .writeTo(outputDir)
+        .let(tracker::write)
 }
 
 private fun addTupleArity(file: FileSpec.Builder, n: Int) {

@@ -8,6 +8,7 @@ instance_state=65490
 pending_instance_row=65526
 
 [gamevals.dbrow]
+instance_amoxliatl=58000
 instance_scurrius=64681
 instance_kbd=64680
 instance_cowboss=64679
@@ -15,3 +16,5 @@ instance_graardor=64594
 instance_kreearra=64593
 instance_zilyana=64592
 instance_kril=64591
+instance_vardorvis=63893
+instance_muspah=63221

@@ -40,6 +40,8 @@ data class ForcedAbility(
     val ability: String,
     val attackMin: Int? = null,
     val attackMax: Int? = null,
+    val condition: Condition? = null,
+    val once: Boolean = false,
 )
 
 data class TriggerSpec(val condition: Condition, val effect: Effect)

@@ -1,29 +1,37 @@
 package org.rsmod.server.shared.loader
 
-import io.github.classgraph.ClassGraph
+import com.github.michaelbull.logging.InlineLogger
+import kotlin.time.Duration
+import kotlin.time.measureTimedValue
 import org.rsmod.plugin.module.PluginModule
+import org.rsmod.plugin.scan.PluginClasspathScan
 
 object PluginModuleLoader {
-    /** @param packages package names which will be accepted; leave empty for default. */
-    fun <T : PluginModule> load(type: Class<T>, packages: Array<String>): Collection<T> {
+    private val logger = InlineLogger()
+
+    fun <T : PluginModule> load(type: Class<T>): Collection<T> {
         val modules = mutableListOf<T>()
-        ClassGraph()
-            .ignoreClassVisibility()
-            .enableClassInfo()
-            .disableNestedJarScanning()
-            .disableModuleScanning()
-            .rejectPackages(PluginModule::class.java.packageName)
-            .acceptPackages(*packages)
-            .scan()
-            .use { result ->
-                val infoList = result.getSubclasses(type).directOnly()
-                infoList.forEach { info ->
+        val timings = mutableListOf<Pair<String, Duration>>()
+        val infoList = PluginClasspathScan.scan.getSubclasses(type).directOnly()
+        for (info in infoList) {
+            val (instance, duration) =
+                measureTimedValue {
                     val clazz = info.loadClass(type)
                     val ctor = clazz.getConstructor()
-                    val instance = ctor.newInstance()
-                    modules += instance
+                    ctor.newInstance()
                 }
-            }
+            timings += info.name to duration
+            modules += instance
+        }
+        logger.info {
+            val constructTotal = timings.fold(Duration.ZERO) { acc, (_, dur) -> acc + dur }
+            val slowest =
+                timings.sortedByDescending { it.second }.take(10).joinToString { (name, dur) ->
+                    "$name=$dur"
+                }
+            "Loaded ${modules.size} plugin module(s); construction: $constructTotal " +
+                "(classpath scan is shared via PluginClasspathScan); slowest to construct: $slowest"
+        }
         return modules
     }
 }

@@ -19,6 +19,7 @@ public class RSDropTableBuilder<T, R> {
     public var mainTable: RSTable<T, R> = RSWeightedTable.Empty()
     public var tertiaries: RSTable<T, R> = RSPreRollTable.Empty()
     public var hooks: TableHooks<T, R> = TableHooks.Default()
+    public var mainRolls: Int = 1
 
     public fun npcs(vararg ids: String) {
         npcs = ids.toList()
@@ -44,6 +45,7 @@ public class RSDropTableBuilder<T, R> {
             mainTable = mainTable,
             tertiaries = tertiaries,
             hooks = hooks,
+            mainRolls = mainRolls,
         )
 }
 

@@ -1808,14 +1808,6 @@ coords = "0_17_51_40_57"
 npc = "npc.stranglewood_fishingspot_hmm"
 coords = "0_17_52_5_40"
 
-[[spawn]]
-npc = "npc.vardorvis_base"
-coords = "0_17_53_40_25"
-
-[[spawn]]
-npc = "npc.vardorvis_big_tentacle"
-coords = "0_17_53_35_25"
-
 ## The Windbreaker
 
 [[spawn]]

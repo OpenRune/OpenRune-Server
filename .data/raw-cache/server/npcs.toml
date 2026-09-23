@@ -1360,6 +1360,42 @@ huntRange = 10
 "param.death_anim"="seq.giant_rat_update_death"
 
 [[npc]]
+id = "npc.vardorvis"
+inherit = "npc.vardorvis"
+defaultMode = "None"
+maxRange = 40
+respawnRate = 30
+[npc.params]
+"param.killcount_varp"="varp.total_vardorvis_kills"
+"param.killcount_varp_awakened"="varp.total_vardorvis_awakened_kills"
+"param.boss_hp_bar_mode"=2
+"param.death_anim"="seq.npc_vardorvis_01_death_01"
+"param.melee_strength"=9
+
+[[npc]]
+id = "npc.vardorvis_head_tentacle"
+inherit = "npc.vardorvis_head_tentacle"
+defaultMode = "None"
+
+[[npc]]
+id = "npc.vardorvis_big_tentacle"
+inherit = "npc.vardorvis_big_tentacle"
+defaultMode = "None"
+blockWalk = "None"
+
+[[npc]]
+id = "npc.vardorvis_axe"
+inherit = "npc.vardorvis_axe"
+defaultMode = "None"
+blockWalk = "None"
+
+[[npc]]
+id = "npc.vardorvis_axe_static"
+inherit = "npc.vardorvis_axe_static"
+defaultMode = "None"
+blockWalk = "None"
+
+[[npc]]
 id = "npc.king_dragon"
 inherit = "npc.king_dragon"
 huntMode = 6
@@ -1672,8 +1708,16 @@ inherit = "npc.abyssalsire_sire_wandering"
 [[npc]]
 id = "npc.amoxliatl"
 inherit = "npc.amoxliatl"
+huntMode = 8
+huntRange = 8
 [npc.params]
 "param.killcount_varp"="varp.kc_amoxliatl"
+"param.death_anim"="seq.amoxliatl_death"
+"param.boss_hp_bar_mode"=2
+"param.boss_hp_bar_colour_back"=1581345
+"param.boss_hp_bar_colour_sliding"=5929868
+"param.boss_hp_bar_colour_remaining"=10872831
+"param.headbar"="headbar.amoxliatl"
 
 [[npc]]
 id = "npc.ancient_wyvern"
@@ -4627,6 +4671,80 @@ defaultMode = "Wander"
 "param.boss_hp_bar_mode"=1
 
 [[npc]]
+id = "npc.muspah"
+inherit = "npc.muspah"
+huntMode = 2
+huntRange = 15
+maxRange = 15
+attackRange = 10
+defaultMode = "None"
+[npc.params]
+"param.killcount_varp"="varp.total_muspah_kills"
+"param.boss_hp_bar_mode"=2
+"param.death_anim"="seq.npc_muspah_death_02"
+
+[[npc]]
+id = "npc.muspah_melee"
+inherit = "npc.muspah_melee"
+huntMode = 2
+huntRange = 15
+maxRange = 15
+attackRange = 1
+defaultMode = "None"
+[npc.params]
+"param.killcount_varp"="varp.total_muspah_kills"
+"param.boss_hp_bar_mode"=2
+"param.death_anim"="seq.npc_muspah_death_02"
+
+[[npc]]
+id = "npc.muspah_teleport"
+inherit = "npc.muspah_teleport"
+huntMode = 2
+huntRange = 15
+maxRange = 15
+attackRange = 10
+defaultMode = "None"
+[npc.params]
+"param.killcount_varp"="varp.total_muspah_kills"
+"param.boss_hp_bar_mode"=2
+"param.death_anim"="seq.npc_muspah_death_02"
+
+[[npc]]
+id = "npc.muspah_soulsplit"
+inherit = "npc.muspah_soulsplit"
+huntMode = 2
+huntRange = 15
+maxRange = 15
+attackRange = 10
+defaultMode = "None"
+[npc.params]
+"param.killcount_varp"="varp.total_muspah_kills"
+"param.boss_hp_bar_mode"=2
+"param.death_anim"="seq.npc_muspah_death_02"
+"param.boss_hp_bar_colour_back"=1050656
+"param.boss_hp_bar_colour_sliding"=3678312
+"param.boss_hp_bar_colour_remaining"=7356616
+"param.headbar"="headbar.muspah_soulsplit"
+
+[[npc]]
+id = "npc.muspah_final"
+inherit = "npc.muspah_final"
+huntMode = 2
+huntRange = 15
+maxRange = 15
+attackRange = 10
+defaultMode = "None"
+[npc.params]
+"param.killcount_varp"="varp.total_muspah_kills"
+"param.boss_hp_bar_mode"=2
+"param.death_anim"="seq.npc_muspah_death_02"
+
+[[npc]]
+id = "npc.muspah_projectile"
+inherit = "npc.muspah_projectile"
+defaultMode = "None"
+
+[[npc]]
 id = "npc.venenatis_spiderling"
 inherit = "npc.venenatis_spiderling"
 huntMode = 6
@@ -4746,3 +4864,190 @@ wanderRange = 0
 id = "npc.al_kharid_man"
 inherit = "npc.al_kharid_man"
 option1 = "Talk-to"
+
+[[npc]]
+id = "npc.motherlode_mother"
+inherit = "npc.motherlode_mother"
+moveRestrict = "NoMove"
+wanderRange = 0
+
+[[npc]]
+id = "npc.rd_teleporter_guy"
+inherit = "npc.rd_teleporter_guy"
+moveRestrict = "NoMove"
+wanderRange = 0
+respawnDir = "North"
+
+[[npc]]
+id = "npc.fai_falador_guard1"
+inherit = "npc.fai_falador_guard1"
+moveRestrict = "Outdoors"
+[npc.params]
+"param.attack_anim"="seq.human_sword_stab"
+
+[[npc]]
+id = "npc.fai_falador_guard1_f"
+inherit = "npc.fai_falador_guard1_f"
+moveRestrict = "Outdoors"
+[npc.params]
+"param.attack_anim"="seq.human_sword_stab"
+
+[[npc]]
+id = "npc.hairdresser"
+inherit = "npc.hairdresser"
+moveRestrict = "Indoors"
+
+[[npc]]
+id = "npc.generalshopkeeper4"
+inherit = "npc.generalshopkeeper4"
+moveRestrict = "Indoors"
+
+[[npc]]
+id = "npc.generalassistant4"
+inherit = "npc.generalassistant4"
+moveRestrict = "Indoors"
+
+[[npc]]
+id = "npc.cassie"
+inherit = "npc.cassie"
+moveRestrict = "Indoors"
+
+[[npc]]
+id = "npc.flynn"
+inherit = "npc.flynn"
+moveRestrict = "Indoors"
+
+[[npc]]
+id = "npc.wayne"
+inherit = "npc.wayne"
+moveRestrict = "Indoors"
+
+[[npc]]
+id = "npc.herquin"
+inherit = "npc.herquin"
+moveRestrict = "Indoors"
+
+[[npc]]
+id = "npc.poh_estate_agent"
+inherit = "npc.poh_estate_agent"
+moveRestrict = "Indoors"
+
+[[npc]]
+id = "npc.risingsun_barmaid"
+inherit = "npc.risingsun_barmaid"
+moveRestrict = "Indoors"
+
+[[npc]]
+id = "npc.risingsun_barmaid2"
+inherit = "npc.risingsun_barmaid2"
+moveRestrict = "Indoors"
+
+[[npc]]
+id = "npc.risingsun_barmaid3"
+inherit = "npc.risingsun_barmaid3"
+moveRestrict = "Indoors"
+
+[[npc]]
+id = "npc.partyroom_barmaid"
+inherit = "npc.partyroom_barmaid"
+moveRestrict = "Indoors"
+
+[[npc]]
+id = "npc.partyroom_barmaid2"
+inherit = "npc.partyroom_barmaid2"
+moveRestrict = "Indoors"
+
+[[npc]]
+id = "npc.partyroom_pete"
+inherit = "npc.partyroom_pete"
+moveRestrict = "Indoors"
+
+[[npc]]
+id = "npc.falador_man4"
+inherit = "npc.falador_man4"
+moveRestrict = "Indoors"
+
+[[npc]]
+id = "npc.falador_workman_fat"
+inherit = "npc.falador_workman_fat"
+moveRestrict = "Indoors"
+
+[[npc]]
+id = "npc.falador_workman_young"
+inherit = "npc.falador_workman_young"
+moveRestrict = "Indoors"
+
+[[npc]]
+id = "npc.con_contract_client_4"
+inherit = "npc.con_contract_client_4"
+moveRestrict = "Indoors"
+
+[[npc]]
+id = "npc.con_contract_client_5"
+inherit = "npc.con_contract_client_5"
+moveRestrict = "Indoors"
+
+[[npc]]
+id = "npc.aluft_gnome_diplomat_falador"
+inherit = "npc.aluft_gnome_diplomat_falador"
+moveRestrict = "Indoors"
+
+[[npc]]
+id = "npc.poh_herald_of_falador"
+inherit = "npc.poh_herald_of_falador"
+moveRestrict = "Indoors"
+
+[[npc]]
+id = "npc.sir_amik_varze"
+inherit = "npc.sir_amik_varze"
+moveRestrict = "Indoors"
+
+[[npc]]
+id = "npc.sir_vyvin"
+inherit = "npc.sir_vyvin"
+moveRestrict = "Indoors"
+
+[[npc]]
+id = "npc.fai_falador_guard1_variant01"
+inherit = "npc.fai_falador_guard1_variant01"
+moveRestrict = "Outdoors"
+
+[[npc]]
+id = "npc.fai_falador_guard1_variant02"
+inherit = "npc.fai_falador_guard1_variant02"
+moveRestrict = "Outdoors"
+
+[[npc]]
+id = "npc.fai_falador_guard2"
+inherit = "npc.fai_falador_guard2"
+moveRestrict = "Outdoors"
+
+[[npc]]
+id = "npc.fai_falador_guard2_f"
+inherit = "npc.fai_falador_guard2_f"
+moveRestrict = "Outdoors"
+
+[[npc]]
+id = "npc.fai_falador_guard3"
+inherit = "npc.fai_falador_guard3"
+moveRestrict = "Outdoors"
+
+[[npc]]
+id = "npc.fai_falador_guard3_f"
+inherit = "npc.fai_falador_guard3_f"
+moveRestrict = "Outdoors"
+
+[[npc]]
+id = "npc.fai_falador_guard4_f"
+inherit = "npc.fai_falador_guard4_f"
+moveRestrict = "Outdoors"
+
+[[npc]]
+id = "npc.fai_falador_guard5"
+inherit = "npc.fai_falador_guard5"
+moveRestrict = "Outdoors"
+
+[[npc]]
+id = "npc.fai_falador_guard6"
+inherit = "npc.fai_falador_guard6"
+moveRestrict = "Outdoors"

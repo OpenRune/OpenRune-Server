@@ -3,6 +3,7 @@ package org.rsmod.api.bosses.dsl
 import dev.openrune.types.NpcMode
 import org.rsmod.api.bosses.spec.*
 import org.rsmod.api.combat.commons.types.MeleeAttackType as EngineMeleeAttackType
+import org.rsmod.api.player.output.CamShakeAxis
 
 fun anim(seq: String, delay: Int = 0): Effect = Effect.Anim(seq, delay)
 
@@ -12,12 +13,24 @@ fun spotanim(spot: String, height: Int = 0, delay: Int = 0): Effect =
 fun say(text: String): Effect = Effect.Say(text)
 fun sound(synth: String, radius: Int = 10): Effect = Effect.Sound(synth, radius)
 fun delay(ticks: Int): Effect = Effect.Delay(ticks)
+
+fun wait(ticks: Int): Effect = Effect.Wait(ticks)
+
+fun camShake(axis: CamShakeAxis, random: Int, amplitude: Int = 0, rate: Int = 0, radius: Int = 15): Effect =
+    Effect.CamShake(axis, random, amplitude, rate, radius)
+
+fun message(text: String, target: TargetExpr = TargetExpr.CurrentTarget): Effect =
+    Effect.Message(text, target)
 fun sequence(vararg e: Effect): Effect = Effect.Sequence(e.toList())
 fun parallel(vararg e: Effect): Effect = Effect.Parallel(e.toList())
-fun repeat(times: Int, gap: Int = 0, effect: Effect): Effect = Effect.Repeat(times, effect, gap)
+fun repeat(times: Int, gap: Int = 0, effect: Effect): Effect = Effect.Repeat(times..times, effect, gap)
+
+fun repeat(times: IntRange, gap: Int = 0, effect: Effect): Effect = Effect.Repeat(times, effect, gap)
 fun whenever(condition: Condition, then: Effect, otherwise: Effect = Effect.NoOp): Effect =
     Effect.Whenever(condition, then, otherwise)
 fun onEach(targets: TargetExpr, effect: Effect): Effect = Effect.OnEach(targets, effect)
+
+fun choose(selector: Selector, branches: Map<String, Effect>): Effect = Effect.Choose(selector, branches)
 fun run(ability: String): Effect = Effect.Run(ability)
 
 fun run(ability: AbilityRef): Effect = Effect.Run(ability.name)
@@ -42,6 +55,12 @@ fun IntRange.roll(): DamageExpr.Roll = DamageExpr.Roll(this)
 /** Alias of [roll] for boss hit specs. */
 fun IntRange.randomRoll(): DamageExpr.Roll = DamageExpr.Roll(this)
 
+fun npcMaxHit(
+    meleeAttackType: MeleeAttackType? = null,
+    scale: Double = 1.0,
+    minHit: Int = 0,
+): DamageExpr.NpcMaxHit = DamageExpr.NpcMaxHit(meleeAttackType, scale, minHit)
+
 fun projectile(
     spotanim: String,
     travel: String? = null,
@@ -50,7 +69,10 @@ fun projectile(
     launch: String? = null,
     impact: String? = null,
     hit: Effect.Hit? = null,
-): Effect = Effect.Projectile(spotanim, travel, config, target, launch, impact, hit)
+    resolveOnImpact: Boolean = false,
+    onImpact: Effect? = null,
+): Effect =
+    Effect.Projectile(spotanim, travel, config, target, launch, impact, hit, resolveOnImpact, onImpact)
 
 fun tileAoE(
     center: TargetExpr,
@@ -79,7 +101,10 @@ fun summon(
     radius: Int = 3,
     centeredOn: TargetExpr = TargetExpr.Self,
     mode: NpcMode? = null,
-): Effect = Effect.Summon(npc, count, radius, centeredOn, mode)
+    duration: Int = 100,
+    onSummon: String? = null,
+    onSummonParams: Any? = null,
+): Effect = Effect.Summon(npc, count, radius, centeredOn, mode, duration, onSummon, onSummonParams)
 
 fun transmog(to: String, durationTicks: Int): Effect = Effect.Transmog(to, durationTicks)
 fun poison(damage: Int, chance: Int = 1, outOf: Int = 1): Effect = Effect.Poison(damage, chance, outOf)
@@ -89,6 +114,8 @@ fun poison(damage: Int, odds: Odds): Effect = Effect.Poison(damage, odds.chance,
 fun freeze(ticks: Int, chance: Int = 1, outOf: Int = 1): Effect = Effect.Freeze(ticks, chance, outOf)
 
 fun freeze(ticks: Int, odds: Odds): Effect = Effect.Freeze(ticks, odds.chance, odds.outOf)
+
+fun disablePrayers(): Effect = Effect.DisablePrayers
 fun statDrain(block: StatDrainBuilder.() -> Unit): Effect = StatDrainBuilder().apply(block).build()
 
 fun statDrain(vararg stats: String, amount: Int, chance: Int = 1, outOf: Int = 1): Effect =
@@ -104,6 +131,17 @@ fun statDrain(vararg stats: String, amount: Int, odds: Odds): Effect =
     Effect.StatDrain(stats.map { StatDrainEntry(it, amount, odds.chance, odds.outOf) })
 
 fun telegraph(spotanim: String, windup: Int): TelegraphSpec = TelegraphSpec(spotanim, windup)
+
+fun spawnTile(dx: Int = 0, dz: Int = 0): TargetExpr.Single = TargetExpr.SpawnTile(dx, dz)
+
+fun teleport(to: TargetExpr.Single): Effect = Effect.Teleport(to)
+
+fun faceTarget(): Effect = Effect.FaceTarget
+
+fun faceTile(at: TargetExpr.Single): Effect = Effect.FaceTile(at)
+
+fun randomWalkableTile(radius: Int, of: TargetExpr.Single = TargetExpr.Self): TargetExpr =
+    TargetExpr.RandomWalkableTile(radius, of)
 
 fun weightedRandom(
     noRepeatBias: Double = 0.5,
@@ -173,6 +211,7 @@ class RotationBuilder internal constructor() {
 typealias Roll = DamageExpr.Roll
 typealias Accuracy = DamageExpr.Accuracy
 typealias Fixed = DamageExpr.Fixed
+typealias NpcMaxHit = DamageExpr.NpcMaxHit
 typealias HpBelow = Condition.HpBelow
 typealias IncomingHitDamageAtLeast = Condition.IncomingHitDamageAtLeast
 typealias PlayerEnterRange = Condition.PlayerEnterRange
@@ -192,9 +231,10 @@ val OnDeath: Condition = Condition.OnDeath
 val OnSpawn: Condition = Condition.OnSpawn
 val Always: Condition = Condition.Always
 val WithinMeleeRange: Condition = Condition.WithinMeleeRange
-val CurrentTarget: TargetExpr = TargetExpr.CurrentTarget
-val CurrentTargetTile: TargetExpr = TargetExpr.CurrentTargetTile
-val Self: TargetExpr = TargetExpr.Self
+val CurrentTarget: TargetExpr.Single = TargetExpr.CurrentTarget
+val CurrentTargetTile: TargetExpr.Single = TargetExpr.CurrentTargetTile
+val Self: TargetExpr.Single = TargetExpr.Self
+val ImpactTile: TargetExpr.Single = TargetExpr.ImpactTile
 val Melee: HitType = HitType.Melee
 val Ranged: HitType = HitType.Ranged
 val Magic: HitType = HitType.Magic

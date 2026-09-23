@@ -7,7 +7,8 @@ kotlin {
 }
 
 dependencies {
-    implementation(libs.bundles.logging)
+    implementation(libs.kotlin.inline.logger)
+    runtimeOnly(libs.logback.classic)
     implementation(libs.guice)
     implementation(projects.api.areaChecker)
     implementation(projects.api.config)

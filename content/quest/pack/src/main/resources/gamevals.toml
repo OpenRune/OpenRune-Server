@@ -1,0 +1,63 @@
+[gamevals.synth]
+bigdoor_close = 45
+bigdoor_open = 46
+bookcase_open_and_close = 42
+chicken_into_human = 1564
+coffin_open = 54
+creakydoor_open = 56
+cupboard_open = 58
+deadtree_attack = 651
+digspade = 1470
+ernest_clunk = 1565
+ernest_sprinkle = 1566
+fish_swim = 2601
+iron_door_open = 71
+swan_rumble = 1790
+unlock = 2419
+
+locked = 2402
+pyramid_block = 1395
+throwingknife = 2707
+scythe_double = 2522
+human_hit = 513
+scream2 = 660
+godwars_godsword_special_attack = 3869
+barbarian_grunt_death = 3382
+paper_move = 1412
+tree_rustle_01 = 2073
+tree_rustle_02 = 2074
+skullball_scratchy = 1940
+ds_big_door_unlock = 2972
+explosion = 1487
+climb_wall = 2453
+grim_piano_c4 = 3696
+grim_piano_d4 = 3698
+grim_piano_e4 = 3700
+grim_piano_f4 = 3702
+grim_piano_g4 = 3704
+grim_piano_a4 = 3692
+grim_piano_b4 = 3694
+grim_piano_c5 = 3697
+grim_piano_d5 = 3699
+grim_piano_e5 = 3701
+grim_piano_f5 = 3703
+grim_piano_g5 = 3705
+grim_piano_a5 = 3693
+grim_piano_b5 = 3695
+
+[gamevals.varp]
+misthalin_return_tile = 63700
+misthalin_mirror_blocker = 63701
+misthalin_puzzle_state = 63702
+
+[gamevals.varbit]
+misthalin_reflections = 63700
+misthalin_gem_row_slot = 63701
+
+[gamevals.models]
+misthalin_gem_diamond = 32333
+misthalin_gem_onyx = 32342
+misthalin_gem_zenyte = 32349
+misthalin_gem_ruby = 2586
+misthalin_gem_sapphire = 32345
+misthalin_gem_emerald = 32334

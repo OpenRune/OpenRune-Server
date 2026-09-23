@@ -1,0 +1,58 @@
+[[inventory]]
+id = "inv.motherlode_nugget_shop"
+name = "Prospector Percy's Nugget Shop"
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1000
+buyMultiplier = 800
+delta = 0
+
+size = 8
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.motherlode_reward_hat"
+count = 100
+restockCycles = 1
+
+[[inventory.stock]]
+obj = "obj.motherlode_reward_top"
+count = 100
+restockCycles = 1
+
+[[inventory.stock]]
+obj = "obj.motherlode_reward_legs"
+count = 100
+restockCycles = 1
+
+[[inventory.stock]]
+obj = "obj.motherlode_reward_boots"
+count = 100
+restockCycles = 1
+
+[[inventory.stock]]
+obj = "obj.coal_bag"
+count = 1
+restockCycles = 1
+
+[[inventory.stock]]
+obj = "obj.gem_bag"
+count = 1
+restockCycles = 1
+
+[[inventory.stock]]
+obj = "obj.pack_softclay"
+count = 1000
+restockCycles = 1
+
+[[inventory.stock]]
+obj = "obj.reward_gem_bag"
+count = 100
+restockCycles = 1

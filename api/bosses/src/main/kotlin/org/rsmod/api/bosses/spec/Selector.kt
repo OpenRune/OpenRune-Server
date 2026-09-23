@@ -9,7 +9,7 @@ sealed interface Selector {
             this(entries.toList(), noRepeatBias)
     }
 
-    data class Rotation(val sequence: List<String>) : Selector
+    data class Rotation(val sequence: List<String>, val randomStart: Boolean = false) : Selector
 
     data class Conditional(
         val branches: List<Pair<Condition, String>>,

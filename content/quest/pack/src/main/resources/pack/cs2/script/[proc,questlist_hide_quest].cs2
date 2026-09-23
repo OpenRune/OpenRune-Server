@@ -1,0 +1,36 @@
+[proc,questlist_hide_quest](dbrow $dbrow, int $int, boolean $boolean2, boolean $boolean3, boolean $boolean4, boolean $boolean5, boolean $boolean6, boolean $boolean7)(boolean)
+// string means "no filter", so the list still draws if the server never sent one.
+if (string_length(%quest_available_ids) > 0 & string_indexof_string(%quest_available_ids, ",<tostring(db_getfield($dbrow, quest:id, 0))>,", 0) = -1) {
+    return(true);
+}
+if (db_getfield($dbrow, quest:release_type, 0) = 0) {
+    return(true);
+}
+if (db_getfield($dbrow, quest:type, 0) = 1 & $boolean7 = true) {
+    return(true);
+}
+if (db_getfield($dbrow, quest:type, 0) = 0 & %questlist_hide_quests = 1) {
+    return(true);
+}
+if ($boolean4 = true & %questlist_hide_unavailable = 1) {
+    return(true);
+}
+if ($boolean6 = true) {
+    return(true);
+}
+if ($int = 0 & %questlist_hide_in_progress = 1) {
+    return(true);
+}
+if ($int = 1 & %questlist_hide_not_started = 1) {
+    return(true);
+}
+if ($int = 2 & %questlist_hide_completed = 1) {
+    return(true);
+}
+if ($int = 1 & %questlist_hide_lackreqs = 2 & $boolean2 = false) {
+    return(true);
+}
+if ($int = 1 & %questlist_hide_lackrecs = 2 & $boolean3 = false) {
+    return(true);
+}
+return(false);

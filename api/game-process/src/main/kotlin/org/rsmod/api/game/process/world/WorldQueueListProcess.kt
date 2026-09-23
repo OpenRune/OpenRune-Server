@@ -11,12 +11,22 @@ public class WorldQueueListProcess @Inject constructor(private val queues: World
     }
 
     private fun WorldQueueList.process() {
+        decrementDelays()
+        fireExpired()
+    }
+
+    private fun WorldQueueList.decrementDelays() {
+        val iterator = iterator()
+        while (iterator.hasNext()) {
+            iterator.next().remainingCycles--
+        }
+        iterator.cleanUp()
+    }
+
+    private fun WorldQueueList.fireExpired() {
         val iterator = iterator()
         while (iterator.hasNext()) {
             val queue = iterator.next()
-
-            queue.remainingCycles--
-
             if (queue.remainingCycles <= 0) {
                 iterator.remove()
                 queue.action()

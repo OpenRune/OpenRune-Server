@@ -2,7 +2,6 @@ package org.rsmod.api.instances
 
 import org.rsmod.api.attr.AttributeKey
 import org.rsmod.api.player.vars.VarPlayerIntMapSetter
-import org.rsmod.api.player.vars.intVarBit
 import org.rsmod.game.entity.Player
 
 public object InstanceAttributes {

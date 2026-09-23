@@ -22,6 +22,7 @@ public class LocUOpScript @Inject private constructor(private val interactions: 
                 ServerCacheManager.getItems().values.firstOrNull { it.id == id.id }
             } ?: return resendSlot(inv, 0)
 
-        interactions.interactOp(this, op.vis, op.loc, op.type, objType, inv, op.comsub)
+        val baseType = checkNotNull(ServerCacheManager.getObject(op.loc.id))
+        interactions.interactOp(this, op.loc, op.loc, baseType, objType, inv, op.comsub)
     }
 }

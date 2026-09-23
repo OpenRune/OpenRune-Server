@@ -1,7 +1,7 @@
 package org.rsmod.game.queue
 
-import it.unimi.dsi.fastutil.ints.IntOpenHashSet
-import it.unimi.dsi.fastutil.longs.LongOpenHashSet
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
+import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap
 
 /**
  * Caches "default" and "labelled" script bindings for [EngineQueueType]s.
@@ -15,17 +15,17 @@ import it.unimi.dsi.fastutil.longs.LongOpenHashSet
  * simple solution to reduce lookup costs.
  */
 public class EngineQueueCache {
-    private val labelled = LongOpenHashSet()
-    private val defaults = IntOpenHashSet()
+    private val labelled = Long2ObjectOpenHashMap<ClassLoader?>()
+    private val defaults = Int2ObjectOpenHashMap<ClassLoader?>()
 
-    public fun addLabelled(type: EngineQueueType, label: Int) {
+    public fun addLabelled(type: EngineQueueType, label: Int, loader: ClassLoader? = null) {
         val packed = (type.id.toLong() shl 32) or label.toLong()
-        labelled.add(packed)
+        labelled[packed] = loader
     }
 
     private fun hasScript(type: Int, label: Int): Boolean {
         val packed = (type.toLong() shl 32) or label.toLong()
-        return labelled.contains(packed)
+        return labelled.containsKey(packed)
     }
 
     public fun hasScript(type: EngineQueueType, label: Int): Boolean {
@@ -36,12 +36,12 @@ public class EngineQueueCache {
         return hasScript(queue.type, queue.label)
     }
 
-    public fun addDefault(type: EngineQueueType) {
-        defaults.add(type.id)
+    public fun addDefault(type: EngineQueueType, loader: ClassLoader? = null) {
+        defaults[type.id] = loader
     }
 
     private fun hasScript(type: Int): Boolean {
-        return defaults.contains(type)
+        return defaults.containsKey(type)
     }
 
     public fun hasScript(type: EngineQueueType): Boolean {
@@ -49,6 +49,19 @@ public class EngineQueueCache {
     }
 
     public fun hasDefaultScript(queue: EngineQueueList.Queue): Boolean {
-        return defaults.contains(queue.type)
+        return defaults.containsKey(queue.type)
+    }
+
+    /**
+     * Removes every "has a script" flag that was added with [loader]. Used to keep this cache in
+     * sync when an external plugin's handlers are unregistered before a reload — see
+     * `ExternalPluginLoader`.
+     */
+    public fun removeByClassLoader(loader: ClassLoader): Int {
+        val labelledKeys = labelled.filterValues { it === loader }.keys
+        val defaultKeys = defaults.filterValues { it === loader }.keys
+        labelledKeys.forEach(labelled::remove)
+        defaultKeys.forEach(defaults::remove)
+        return labelledKeys.size + defaultKeys.size
     }
 }

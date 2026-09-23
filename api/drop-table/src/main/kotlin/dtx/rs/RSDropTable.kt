@@ -17,6 +17,7 @@ public class RSDropTable<T, R>(
     private val mainTable: RSTable<T, R> = RSWeightedTable.Empty(),
     private val tertiaries: RSTable<T, R> = RSPreRollTable.Empty(),
     private val hooks: TableHooks<T, R> = TableHooks.Default(),
+    public val mainRolls: Int = 1,
 ) : RSTable<T, R>, TableHooks<T, R> by hooks {
 
     private val separateRolls: RSTable<T, R> = mergeInlineSeparateRolls(separateRolls, mainTable)
@@ -29,7 +30,7 @@ public class RSDropTable<T, R>(
         results.add(guaranteed.roll(target, otherArgs))
         results.add(preRoll.roll(target, otherArgs))
         results.add(separateRolls.roll(target, otherArgs))
-        results.add(mainTable.roll(target, otherArgs))
+        repeat(mainRolls) { results.add(mainTable.roll(target, otherArgs)) }
         results.add(tertiaries.roll(target, otherArgs))
 
         return results.flattenToList()

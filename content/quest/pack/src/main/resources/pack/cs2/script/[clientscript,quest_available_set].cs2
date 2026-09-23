@@ -1,0 +1,2 @@
+[clientscript,quest_available_set](string $ids)
+%quest_available_ids = $ids;

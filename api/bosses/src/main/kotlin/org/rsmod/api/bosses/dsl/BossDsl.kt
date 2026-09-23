@@ -3,6 +3,7 @@ package org.rsmod.api.bosses.dsl
 import dev.openrune.types.NpcMode
 import org.rsmod.api.bosses.spec.*
 import org.rsmod.api.bosses.validation.SpecValidator
+import org.rsmod.api.player.output.CamShakeAxis
 
 @DslMarker annotation class BossDsl
 
@@ -97,6 +98,7 @@ class HitBuilder internal constructor() {
     var delay: Int = 0
     private var spotanimSpot: String? = null
     private var spotanimHeight: Int = 0
+    private var penetrationPercent: Int = 0
 
     fun damage(expr: DamageExpr) {
         damageExpr = expr
@@ -115,6 +117,11 @@ class HitBuilder internal constructor() {
         spotanimHeight = height
     }
 
+    /** Percentage (0-100) of a protection prayer's block this hit ignores. */
+    fun penetration(percent: Int) {
+        penetrationPercent = percent
+    }
+
     internal fun commitDamage(expr: DamageExpr) {
         damageExpr = expr
     }
@@ -130,6 +137,7 @@ class HitBuilder internal constructor() {
             delay = delay,
             spotanim = spotanimSpot,
             spotanimHeight = spotanimHeight,
+            penetration = penetrationPercent,
         )
 }
 
@@ -175,6 +183,14 @@ class AbilityBuilder {
         effects += Effect.Broadcast(text, radius)
     }
 
+    fun camShake(axis: CamShakeAxis, random: Int, amplitude: Int = 0, rate: Int = 0, radius: Int = 15) {
+        effects += Effect.CamShake(axis, random, amplitude, rate, radius)
+    }
+
+    fun message(text: String, target: TargetExpr = TargetExpr.CurrentTarget) {
+        effects += Effect.Message(text, target)
+    }
+
     fun run(ability: String) {
         effects += Effect.Run(ability)
     }
@@ -205,6 +221,10 @@ class AbilityBuilder {
 
     fun freeze(ticks: Int, odds: Odds) {
         effects += Effect.Freeze(ticks, odds.chance, odds.outOf)
+    }
+
+    fun disablePrayers() {
+        effects += Effect.DisablePrayers
     }
 
     fun statDrain(block: StatDrainBuilder.() -> Unit) {
@@ -254,8 +274,21 @@ class AbilityBuilder {
         launch: String? = null,
         impact: String? = null,
         hit: Effect.Hit? = null,
+        resolveOnImpact: Boolean = false,
+        onImpact: Effect? = null,
     ) {
-        effects += Effect.Projectile(spotanim, travel, config, target, launch, impact, hit)
+        effects +=
+            Effect.Projectile(
+                spotanim,
+                travel,
+                config,
+                target,
+                launch,
+                impact,
+                hit,
+                resolveOnImpact,
+                onImpact,
+            )
     }
 
     /**
@@ -275,6 +308,8 @@ class AbilityBuilder {
         var target: TargetExpr = TargetExpr.CurrentTarget
         var launch: String? = null
         var impact: String? = null
+        var resolveOnImpact: Boolean = false
+        var onImpact: Effect? = null
         private var hitPayload: Effect.Hit? = null
 
         fun hit(
@@ -299,6 +334,8 @@ class AbilityBuilder {
                 launch = launch,
                 impact = impact,
                 hit = hitPayload,
+                resolveOnImpact = resolveOnImpact,
+                onImpact = onImpact,
             )
     }
 
@@ -318,8 +355,21 @@ class AbilityBuilder {
         radius: Int = 3,
         centeredOn: TargetExpr = TargetExpr.Self,
         mode: NpcMode? = null,
+        duration: Int = 100,
+        onSummon: String? = null,
+        onSummonParams: Any? = null,
     ) {
-        effects += Effect.Summon(npc, count, radius, centeredOn, mode)
+        effects +=
+            Effect.Summon(
+                npc = npc,
+                count = count,
+                radius = radius,
+                centeredOn = centeredOn,
+                mode = mode,
+                duration = duration,
+                onSummon = onSummon,
+                onSummonParams = onSummonParams,
+            )
     }
 
     /**
@@ -379,6 +429,14 @@ class PhaseBuilder(private val name: String) {
 
     fun forceEveryAttacks(min: Int, max: Int, ability: AbilityRef) {
         forceAbilities += ForcedAbility(period = 0, ability = ability.name, attackMin = min, attackMax = max)
+    }
+
+    fun forceWhen(condition: Condition, ability: String, once: Boolean = false) {
+        forceAbilities += ForcedAbility(period = 0, ability = ability, condition = condition, once = once)
+    }
+
+    fun forceWhen(condition: Condition, ability: AbilityRef, once: Boolean = false) {
+        forceWhen(condition, ability.name, once)
     }
 
     fun weightedSelectorRandom(

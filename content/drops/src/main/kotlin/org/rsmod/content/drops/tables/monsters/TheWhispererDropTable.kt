@@ -9,6 +9,8 @@ import org.rsmod.api.droptable.rsPlayerWeightedTable
 import org.rsmod.api.droptable.DropRollItem
 import org.rsmod.content.drops.brimstoneKeyRoll
 import org.rsmod.content.drops.clueScrollTransformObj
+import org.rsmod.content.drops.vestigeProgressRoll
+import org.rsmod.content.drops.shouldDropSanguineTorvaKit
 import org.rsmod.api.droptable.nothing
 import org.rsmod.api.droptable.RegisterDropTable
 import org.rsmod.game.entity.Player
@@ -45,10 +47,8 @@ public val theWhispererDropTable: RSDropTable<Player, DropRollItem> = RSDropTabl
         1 weight "obj.chaosrune" count 1
         8 weight "obj.deathrune" count 1
         2 weight "obj.soulrune" count 1
-        1 outOf 512 separate rsPlayerWeightedTable {
-            1 weight "obj.bellator_vestige" count 1
-            1 weight "obj.soulreaper_axe_staff" count 1
-        }
+        1 outOf 512 separate "obj.soulreaper_axe_staff" count 1
+        3 outOf 512 separate vestigeProgressRoll("varp.whisperer_vestige_progress", "obj.bellator_vestige")
         3 outOf 512 separate "obj.chromium_ingot" count 1
         1 outOf 1536 separate rsPlayerWeightedTable {
             1 weight "obj.virtus_mask" count 1
@@ -70,9 +70,8 @@ public val theWhispererDropTable: RSDropTable<Player, DropRollItem> = RSDropTabl
     },
     tertiaries = rsPlayerTertiaryTable {
         onBuilder { brimstoneKeyRoll() }
-        1 outOf 1 weight "obj.dt2_sanguine_torva_kit" count 1 condition { player ->
-            // Drops Need Manual: Only when defeated in the awakened encounter as the '''last''' of the four.
-             true
+        1 outOf 1 weight "obj.dt2_sanguine_torva_kit" count 1 killCondition { player, npc, _ ->
+            player.shouldDropSanguineTorvaKit(npc, "obj.dt2_sanguine_torva_kit")
         }
         1 outOf 2000 weight "obj.whispererpet" count 1
         1 outOf 152 weight "obj.trail_clue_easy_simple001" count 1 transformObj { player ->

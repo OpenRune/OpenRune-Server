@@ -793,6 +793,27 @@ defaultInt = 0
 isMembers = true
 
 [[params]]
+id = "param.boss_hp_bar_colour_back"
+isServerOnly = true
+type = "INT"
+defaultInt = -1
+isMembers = true
+
+[[params]]
+id = "param.boss_hp_bar_colour_sliding"
+isServerOnly = true
+type = "INT"
+defaultInt = -1
+isMembers = true
+
+[[params]]
+id = "param.boss_hp_bar_colour_remaining"
+isServerOnly = true
+type = "INT"
+defaultInt = -1
+isMembers = true
+
+[[params]]
 id = "param.shop_inventory"
 isServerOnly = true
 type = "INT"
@@ -837,4 +858,10 @@ id = "param.killcount_notify"
 isServerOnly = true
 type = "BOOLEAN"
 defaultInt = 1
+isMembers = true
+
+[[params]]
+id = "param.killcount_varp_awakened"
+isServerOnly = true
+type = "VARP"
 isMembers = true

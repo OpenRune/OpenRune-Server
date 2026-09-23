@@ -8,7 +8,7 @@ import net.rsprot.protocol.game.outgoing.sound.MidiSongV2
 import org.rsmod.api.player.vars.intVarBit
 import org.rsmod.game.entity.Player
 
-internal var Player.musicClocks by intVarBit("varbit.music_curr_clocks")
+public var Player.musicClocks: Int by intVarBit("varbit.music_curr_clocks")
 
 /** @see [MidiJingle] */
 public fun Player.midiJingle(jingle: String) {

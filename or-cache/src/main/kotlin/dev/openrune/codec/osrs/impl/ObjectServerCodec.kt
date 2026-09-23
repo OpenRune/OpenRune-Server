@@ -61,7 +61,7 @@ class ObjectServerCodec(
         breakRouteFinding = obj.isHollow
         multiVarBit = obj.multiVarBit
         multiVarp = obj.multiVarp
-        transforms = obj.transforms
+        transforms = obj.transforms?.toMutableList()
         multiDefault = obj.multiDefault
 
         paramsRaw = obj.params

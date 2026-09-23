@@ -3,14 +3,14 @@ package org.rsmod.api.instances
 import jakarta.inject.Inject
 import kotlin.random.Random
 import org.rsmod.api.instances.events.InstanceEndedEvent
-import org.rsmod.api.instances.hook.InstanceEnterAction
-import org.rsmod.api.instances.hook.InstanceEnterPrelude
-import org.rsmod.api.instances.hook.InstanceObjectHookRegistry
 import org.rsmod.api.instances.events.InstancePlayerJoinEvent
 import org.rsmod.api.instances.events.InstancePlayerLeaveEvent
 import org.rsmod.api.instances.events.InstanceStartedEvent
 import org.rsmod.api.instances.events.InstanceTimeTickEvent
 import org.rsmod.api.instances.events.instanceEventId
+import org.rsmod.api.instances.hook.InstanceEnterAction
+import org.rsmod.api.instances.hook.InstanceEnterPrelude
+import org.rsmod.api.instances.hook.InstanceObjectHookRegistry
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.script.onEvent
 import org.rsmod.api.table.InstanceSettingsRow
@@ -23,7 +23,9 @@ public abstract class InstanceScript(
 ) : PluginScript() {
 
     @field:Inject private lateinit var objectHooks: InstanceObjectHookRegistry
+
     @field:Inject protected lateinit var manager: InstanceManager
+
     @field:Inject protected lateinit var worldClock: MapClock
 
     private val rowData: InstanceSettingsRow by lazy { InstanceSettingsRow.getRow(settingsRow()) }
@@ -134,12 +136,27 @@ public abstract class InstanceScript(
             return
         }
         val spec = registry.get(key) ?: run { mes("No instance available."); return }
+        if (spec.maxPlayers <= 1) {
+            privateOnlyInstanceEntry(spec)
+            return
+        }
         val ownedSession = player.uuid?.let { id -> manager.sessionOwnedBy(key, id) }
         if (ownedSession != null) {
             showMenuWithExistingInstance(spec, ownedSession)
         } else {
             showMenuNoInstance(spec)
         }
+    }
+
+    private suspend fun ProtectedAccess.privateOnlyInstanceEntry(spec: InstanceSpec) {
+        val owned = player.uuid?.let { manager.sessionOwnedBy(key, it) }
+        val result =
+            if (owned != null) {
+                manager.join(player, owned, worldClock.cycle, code = null, forceAccess = true)
+            } else {
+                manager.create(player, key, spec, InstanceAccess.Private, worldClock.cycle)
+            }
+        applyResult(result)
     }
 
     private suspend fun ProtectedAccess.showMenuNoInstance(spec: InstanceSpec) {

@@ -27,3 +27,8 @@ endBit = 17
 id = "varobj.snakeboss_blowpipe_flakes"
 startBit = 18
 endBit = 31
+
+[[varobj]]
+id = "varobj.venator_bow_charges"
+startBit = 0
+endBit = 15

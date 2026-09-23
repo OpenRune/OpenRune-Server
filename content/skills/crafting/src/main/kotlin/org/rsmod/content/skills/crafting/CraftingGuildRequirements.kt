@@ -8,8 +8,8 @@ import org.rsmod.content.skills.crafting.util.CraftingConstants
 import org.rsmod.game.entity.Player
 import org.rsmod.game.inv.InvObj
 
-private val Player.faladorHardDiaryComplete by boolVarBit("varbit.falador_diary_hard_complete")
-private val Player.faladorEliteDiaryComplete by boolVarBit("varbit.falador_diary_elite_complete")
+private val Player.faladorHardDiaryComplete by boolVarBit("varbit.falador_hard_reward")
+private val Player.faladorEliteDiaryComplete by boolVarBit("varbit.falador_elite_reward")
 
 private fun InvObj?.hasItemContent(content: String): Boolean {
     val obj = this ?: return false

@@ -12,7 +12,8 @@ application {
 }
 
 dependencies {
-    implementation(libs.bundles.logging)
+    implementation(libs.kotlin.inline.logger)
+    runtimeOnly(libs.logback.classic)
     implementation(libs.clikt)
     implementation(libs.guice)
     implementation(libs.kotlin.coroutines.core)
@@ -50,4 +51,5 @@ tasks.named<JavaExec>("run") {
 tasks.named<ShadowJar>("shadowJar") {
     archiveFileName.set("server.jar")
     mergeServiceFiles()
+    isZip64 = true
 }

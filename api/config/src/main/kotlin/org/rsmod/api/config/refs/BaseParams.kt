@@ -150,6 +150,9 @@ object BaseParams {
     val hitmark_max: ParamHitmark = param("hitmark_max")
     val headbar: ParamHeadbar = param("headbar")
     val boss_hp_bar_mode: ParamInt = param("boss_hp_bar_mode")
+    val boss_hp_bar_colour_back: ParamInt = param("boss_hp_bar_colour_back")
+    val boss_hp_bar_colour_sliding: ParamInt = param("boss_hp_bar_colour_sliding")
+    val boss_hp_bar_colour_remaining: ParamInt = param("boss_hp_bar_colour_remaining")
     val rewarditem: ParamObj = param("rewarditem")
     val next_npc_stage: ParamNpc = param("next_npc_stage")
     val bankside_extraop_flip: ParamBool = param("bankside_extraop_conditional_flip")
@@ -218,4 +221,5 @@ object BaseParams {
     val translate_level: ParamInt = param("translate_level")
     val killcount_varp: ParamVarp = param("killcount_varp")
     val killcount_notify: ParamBool = param("killcount_notify")
+    val killcount_varp_awakened: ParamVarp = param("killcount_varp_awakened")
 }

@@ -37,7 +37,7 @@ dependencies {
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.17.2")
     implementation("io.modelcontextprotocol:kotlin-sdk:0.12.0")
     implementation("io.ktor:ktor-client-cio:3.3.3")
-    implementation("ch.qos.logback:logback-classic:1.5.6")
+    runtimeOnly("ch.qos.logback:logback-classic:1.5.6")
     implementation("org.jsoup:jsoup:1.18.1")
     implementation(rootProject.libs.or2.all.cache)
 

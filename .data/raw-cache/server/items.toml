@@ -22890,6 +22890,7 @@ inherit = "obj.venator_bow"
 weaponCategory="Bow"
 tradeable = false
 [item.params]
+"param.uncharged_variant"=27612
 "param.bas_walk_l"="seq.human_weapon_bow_venator01_stepleft"
 "param.proj_type"="projanim.arrow"
 "param.bas_walk_r"="seq.human_weapon_bow_venator01_stepright"
@@ -22917,6 +22918,7 @@ id = "obj.venator_bow_uncharged"
 inherit = "obj.venator_bow_uncharged"
 weaponCategory="Bow"
 [item.params]
+"param.charged_variant"=27610
 "param.bas_walk_l"="seq.human_weapon_bow_venator01_stepleft"
 "param.proj_type"="projanim.arrow"
 "param.bas_walk_r"="seq.human_weapon_bow_venator01_stepright"
