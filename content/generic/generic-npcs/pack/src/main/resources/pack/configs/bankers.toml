@@ -1,0 +1,9 @@
+[[npc]]
+id = "npc.banker1"
+inherit = "npc.banker1"
+moveRestrict = "NoMove"
+
+[[npc]]
+id = "npc.banker2"
+inherit = "npc.banker2"
+moveRestrict = "NoMove"

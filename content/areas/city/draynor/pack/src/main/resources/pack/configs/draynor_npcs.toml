@@ -1,0 +1,84 @@
+[[npc]]
+id = "npc.wom_multi"
+inherit = "npc.wom_multi"
+moveRestrict = "NoMove"
+
+[[npc]]
+id = "npc.wom_gossip"
+inherit = "npc.wom_gossip"
+moveRestrict = "NoMove"
+
+[[npc]]
+id = "npc.forestry_forester"
+inherit = "npc.forestry_forester"
+moveRestrict = "NoMove"
+
+[[npc]]
+id = "npc.wom_bed_inactive"
+inherit = "npc.wom_bed_inactive"
+moveRestrict = "NoMove"
+
+[[npc]]
+id = "npc.morgan"
+inherit = "npc.morgan"
+moveRestrict = "Indoors"
+wanderRange = 1
+
+[[npc]]
+id = "npc.ned"
+inherit = "npc.ned"
+moveRestrict = "Indoors"
+wanderRange = 1
+
+[[npc]]
+id = "npc.aggie"
+inherit = "npc.aggie"
+moveRestrict = "Indoors"
+wanderRange = 3
+
+[[npc]]
+id = "npc.slayer_master_9"
+inherit = "npc.slayer_master_9"
+moveRestrict = "Indoors"
+wanderRange = 2
+
+[[npc]]
+id = "npc.wom_bankguard"
+inherit = "npc.wom_bankguard"
+wanderRange = 1
+
+[[npc]]
+id = "npc.diary_queen"
+inherit = "npc.diary_queen"
+wanderRange = 1
+
+[[npc]]
+id = "npc.diary_queen_pet"
+inherit = "npc.diary_queen_pet"
+wanderRange = 1
+
+[[npc]]
+id = "npc.leela"
+inherit = "npc.leela"
+wanderRange = 2
+
+[[npc]]
+id = "npc.rag_wine_merchant"
+inherit = "npc.rag_wine_merchant"
+wanderRange = 2
+
+[[npc]]
+id = "npc.pmod_town_crier_draynor"
+inherit = "npc.pmod_town_crier_draynor"
+wanderRange = 3
+
+[[npc]]
+id = "npc.wgs_lucien_spy"
+inherit = "npc.wgs_lucien_spy"
+wanderRange = 2
+
+[[npc]]
+id = "npc.wgs_spy2"
+inherit = "npc.wgs_spy2"
+wanderRange = 2
+

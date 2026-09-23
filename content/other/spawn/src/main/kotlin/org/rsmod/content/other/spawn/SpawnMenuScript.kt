@@ -251,6 +251,7 @@ class SpawnMenuScript @Inject constructor(private val protectedAccess: Protected
         val state = state(player)
         state.quantity =
             if (index == QTY_CUSTOM_INDEX) {
+                player.runClientScript("clientscript.spawn_menu_search_stop".asRSCM(RSCMType.CLIENTSCRIPT))
                 countDialog("Enter spawn quantity:").coerceAtLeast(1)
             } else {
                 QTY_PRESETS[index]

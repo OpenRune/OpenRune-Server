@@ -1,0 +1,21 @@
+[gamevals.synth]
+trapdoor_open = 91
+wom_recycle_remove = 1181
+
+[gamevals.enum]
+wom_recycling_tabs = 2070
+wom_recycling_free_quests = 2074
+wom_recycling_members_quests = 2075
+
+[gamevals.varp]
+diango_holiday_items_1 = 63610
+diango_holiday_items_2 = 63611
+diango_holiday_items_3 = 63612
+diango_holiday_items_4 = 63613
+diango_holiday_items_5 = 63614
+diango_holiday_items_6 = 63615
+diango_holiday_items_7 = 63616
+diango_holiday_items_8 = 63617
+
+[gamevals.timer]
+draynor_crypt_candles = 400

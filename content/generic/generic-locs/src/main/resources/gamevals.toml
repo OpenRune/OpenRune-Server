@@ -20,3 +20,6 @@ wheat=65347
 
 [gamevals.content]
 water_source = 65516
+
+[gamevals.synth]
+drawer_open = 64
