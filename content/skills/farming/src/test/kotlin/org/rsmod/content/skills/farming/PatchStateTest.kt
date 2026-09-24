@@ -39,6 +39,28 @@ class PatchStateTest {
             diseasedBase = 128,
         )
 
+    private val snapeGrass =
+        Crop(
+            kind = PatchKind.ALLOTMENT,
+            name = "snape grass",
+            seed = "obj.snape_grass_seed",
+            produce = "obj.snape_grass",
+            level = 61,
+            plantXp = 82.0,
+            harvestXp = 82.0,
+            growBase = 128,
+            stages = 7,
+            stageMinutes = 10,
+            seedsPerPlant = 3,
+            transmit =
+                listOf(
+                    128, 129, 130, 131, 132, 133, 134, 138,
+                    63, 64, 65, 66, 67, 68, 69, 138,
+                    196, 196, 197, 198, 202, 203, 204, 204,
+                    193, 193, 194, 195, 209, 210, 211, 211,
+                ),
+        )
+
     private val never: (Double) -> Boolean = { false }
     private val always: (Double) -> Boolean = { true }
 
@@ -105,6 +127,21 @@ class PatchStateTest {
         assertEquals(guam.growBase + 1, herb.transmit(guam))
         assertEquals(guam.diseasedBase, herb.copy(health = Health.DISEASED).transmit(guam))
         assertEquals(170, herb.copy(health = Health.DEAD).transmit(guam))
+    }
+
+    @Test
+    fun `a scattered crop transmits the slot the cache gave that state`() {
+        val growing = planted(snapeGrass).advance(snapeGrass, snapeGrass.stageMinutes, never)
+        assertEquals(129, growing.transmit(snapeGrass))
+        assertEquals(64, growing.copy(watered = true).transmit(snapeGrass))
+        assertEquals(196, growing.copy(health = Health.DISEASED).transmit(snapeGrass))
+        assertEquals(193, growing.copy(health = Health.DEAD).transmit(snapeGrass))
+
+        val late = growing.copy(stage = 5)
+        assertEquals(203, late.copy(health = Health.DISEASED).transmit(snapeGrass))
+        assertEquals(210, late.copy(health = Health.DEAD).transmit(snapeGrass))
+
+        assertEquals(138, growing.copy(stage = snapeGrass.stages).transmit(snapeGrass))
     }
 
     @Test

@@ -25,6 +25,7 @@ object FarmingTables {
     const val COL_STAGE_MINUTES = 11
     const val COL_DISEASED_BASE = 12
     const val COL_PROTECTION = 13
+    const val COL_TRANSMIT = 14
 
     const val PATCH_LOC = 0
     const val PATCH_KIND = 1
@@ -45,6 +46,24 @@ object FarmingTables {
      * Row order is load-bearing: a planted patch persists its crop as a one-based index into this
      * table, packed into seven bits of the patch varp. Append new crops, never insert.
      */
+    /**
+     * Snape grass is the one crop the base-plus-stage arithmetic cannot describe. It was added to
+     * the allotment patch long after the other seven, by which point the loc's four 64-slot banks
+     * were full, so its art sits in whatever slots were spare: the leftovers of potato's diseased
+     * and dead blocks. Healthy runs 128-134 but its grown form is at 138; watered runs 63-69;
+     * diseased and dead each break in half between stage three and four. The values repeat at the
+     * ends the way the cache's own table does, so every state a patch can reach resolves.
+     *
+     * Ordered healthy, watered, diseased, dead, each bank `stages + 1` long and indexed by stage.
+     */
+    private val SNAPE_GRASS_TRANSMIT =
+        listOf(
+            128, 129, 130, 131, 132, 133, 134, 138,
+            63, 64, 65, 66, 67, 68, 69, 138,
+            196, 196, 197, 198, 202, 203, 204, 204,
+            193, 193, 194, 195, 209, 210, 211, 211,
+        )
+
     fun crops() =
         productionTable(
             "dbtable.farming_crop",
@@ -57,6 +76,7 @@ object FarmingTables {
                 column("stage_minutes", COL_STAGE_MINUTES, VarType.INT)
                 column("diseased_base", COL_DISEASED_BASE, VarType.INT)
                 column("protection", COL_PROTECTION, VarType.DBROW)
+                column("transmit", COL_TRANSMIT, VarType.INT)
             },
         ) {
             fun crop(
@@ -73,6 +93,7 @@ object FarmingTables {
                 seeds: Int = 1,
                 diseasedBase: Int = -1,
                 protection: String? = null,
+                transmit: List<Int> = emptyList(),
             ) =
                 row("dbrow.farming_${name.replace(' ', '_')}") {
                     production {
@@ -89,6 +110,9 @@ object FarmingTables {
                     column(COL_STAGE_MINUTES, stageMinutes)
                     column(COL_DISEASED_BASE, diseasedBase)
                     protection?.let { columnRSCM(COL_PROTECTION, it) }
+                    if (transmit.isNotEmpty()) {
+                        column(COL_TRANSMIT, *transmit.toTypedArray())
+                    }
                 }
 
             fun allotment(
@@ -101,6 +125,7 @@ object FarmingTables {
                 growBase: Int,
                 stages: Int,
                 protection: String? = null,
+                transmit: List<Int> = emptyList(),
             ) =
                 crop(
                     name = name,
@@ -115,6 +140,7 @@ object FarmingTables {
                     stageMinutes = ALLOTMENT_MINUTES,
                     seeds = ALLOTMENT_SEEDS,
                     protection = protection,
+                    transmit = transmit,
                 )
 
             fun flower(
@@ -179,6 +205,17 @@ object FarmingTables {
                 growBase = 52,
                 stages = 8,
                 protection = "dbrow.farming_nasturtium",
+            )
+            allotment(
+                name = "snape grass",
+                seed = "obj.snape_grass_seed",
+                produce = "obj.snape_grass",
+                level = 61,
+                plantXp = 82.0,
+                harvestXp = 82.0,
+                growBase = 128,
+                stages = 7,
+                transmit = SNAPE_GRASS_TRANSMIT,
             )
 
             flower("marigold", "obj.marigold_seed", "obj.marigold", 2, 8.5, 47.0, 8)
