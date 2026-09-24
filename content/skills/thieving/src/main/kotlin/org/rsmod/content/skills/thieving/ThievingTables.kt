@@ -80,7 +80,7 @@ internal object ThievingTables {
             if (pouch != null && loot.obj == COINS) Loot(pouch.obj) else loot
         return Pickpocket(
             name = row.name,
-            symbolPrefixes = listOfNotNull(row.symbolPrefixes),
+            symbolPrefixes = row.symbolPrefixes,
             level = row.level,
             xp = row.xp / 10.0,
             lowChance = row.low,

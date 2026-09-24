@@ -73,6 +73,17 @@ class ThievingTableTest {
         }
     }
 
+    @Test
+    fun `no two targets claim the same npcs`() {
+        val prefixes = ThievingTables.pickpocketTargets.flatMap { it.symbolPrefixes }
+        assertEquals(prefixes.size, prefixes.toSet().size, "a symbol prefix is on two targets")
+        for (a in prefixes) {
+            for (b in prefixes) {
+                assertTrue(a == b || !b.startsWith(a), "'$a' also claims every '$b' npc")
+            }
+        }
+    }
+
     private fun target(name: String): PickpocketTarget =
         ThievingTables.pickpocketTargets.first { it.displayName == name }
 }
