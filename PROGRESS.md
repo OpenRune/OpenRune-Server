@@ -194,7 +194,7 @@ Found the same way `settings.gradle.kts` finds them: any dir with a `build.gradl
 |---|---:|---:|---:|---:|---|
 | `areas/city/draynor` | 16 | 3,706 | 4 | 0 | 2026-09-23 |
 | `areas/city/draynor/pack` | 1 | 6 | 0 | 0 | 2026-09-23 |
-| `areas/city/falador` | 7 | 1,354 | 0 | 0 | 2026-09-22 |
+| `areas/city/falador` | 7 | 1,354 | 0 | 0 | 2026-09-24 |
 | `areas/city/falador/pack` | 1 | 6 | 0 | 0 | 2026-09-22 |
 | `areas/city/lumbridge` | 25 | 6,164 | 0 | 3 | 2026-09-23 |
 | `areas/city/lumbridge/pack` | 1 | 6 | 0 | 0 | 2026-09-23 |
@@ -204,7 +204,7 @@ Found the same way `settings.gradle.kts` finds them: any dir with a `build.gradl
 | `areas/city/rimmington` | 6 | 773 | 0 | 0 | 2026-09-23 |
 | `areas/city/rimmington/pack` | 1 | 6 | 0 | 0 | 2026-09-22 |
 | `areas/city/taverley` | 1 | 77 | 0 | 0 | 2026-06-25 |
-| `areas/city/varrock` | 7 | 539 | 0 | 1 | 2026-08-04 |
+| `areas/city/varrock` | 8 | 579 | 0 | 1 | 2026-09-24 |
 | `areas/godwars` | 2 | 154 | 0 | 0 | 2026-08-19 |
 | `areas/misc/dwarven-mine` | 3 | 621 | 0 | 0 | 2026-09-17 |
 | `areas/misc/mining-guild` | 8 | 714 | 0 | 0 | 2026-09-17 |
