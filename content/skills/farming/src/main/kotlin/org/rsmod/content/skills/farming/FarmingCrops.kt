@@ -33,6 +33,10 @@ enum class PatchKind {
  * `transforms[growBase + stage]`. Allotments and flowers offset that by +64 watered, +128 diseased
  * and +192 dead; herb patches pack their diseased art separately, which is what [diseasedBase] is
  * for.
+ *
+ * [transmit] is the escape hatch for a crop whose art the cache scattered instead of laying out in
+ * one run. When it is set it replaces all of the above: healthy, watered, diseased and dead banks
+ * back to back, each [stages] + 1 long and indexed by stage.
  */
 data class Crop(
     val kind: PatchKind,
@@ -47,6 +51,7 @@ data class Crop(
     val stageMinutes: Int,
     val diseasedBase: Int = -1,
     val seedsPerPlant: Int = 1,
+    val transmit: List<Int> = emptyList(),
 )
 
 private fun FarmingCropRow.toCrop(): Crop =
@@ -63,6 +68,7 @@ private fun FarmingCropRow.toCrop(): Crop =
         stageMinutes = stageMinutes,
         diseasedBase = diseasedBase,
         seedsPerPlant = inputAmount,
+        transmit = transmit,
     )
 
 object FarmingCrops {

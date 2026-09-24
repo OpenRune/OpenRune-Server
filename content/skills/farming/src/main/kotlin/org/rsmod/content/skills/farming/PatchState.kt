@@ -84,6 +84,16 @@ data class PatchState(
     /** The value the client reads to pick this patch's appearance out of its transform table. */
     fun transmit(crop: Crop?): Int {
         if (crop == null) return weeds
+        if (crop.transmit.isNotEmpty()) {
+            val bank =
+                when {
+                    health == Health.DEAD -> 3
+                    health == Health.DISEASED -> 2
+                    watered -> 1
+                    else -> 0
+                }
+            return crop.transmit[bank * (crop.stages + 1) + stage.coerceIn(0, crop.stages)]
+        }
         return when (crop.kind) {
             PatchKind.HERB ->
                 when (health) {
