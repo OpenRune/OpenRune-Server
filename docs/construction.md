@@ -126,6 +126,11 @@ whether the player can afford it, then suspends on `pauseButton()`. Clicking **B
 
 Op-5 on a built hotspot removes the furniture after a confirmation.
 
+Op-5 on a doorway builds a room through it, or, when a room is already on the other side, offers to
+remove that room along with everything built in it. A room cannot be removed while the player
+stands in it, while a room sits directly above it, or when it is the last room on the ground floor.
+Like a new room, the change shows on re-entry.
+
 Built furniture that does something beyond standing there:
 
 - Portals and the portal nexus teleport (`PohPortals`, `PohNexus`), and the superior garden pools
