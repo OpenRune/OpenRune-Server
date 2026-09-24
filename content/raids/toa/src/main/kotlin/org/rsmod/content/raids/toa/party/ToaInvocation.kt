@@ -33,6 +33,7 @@ enum class ToaInvocationCategory {
  *  - param 1159 → index (bit position in the invocation bitmaps)
  *  - param 1161 → category (offset by 3 into [ToaInvocationCategory])
  *  - param 1162 → level modifier (raid level added when active)
+ *  - param 1346 → prerequisite invocation struct (optional)
  */
 data class ToaInvocation(
     val structId: Int,
@@ -40,7 +41,15 @@ data class ToaInvocation(
     val index: Int,
     val category: ToaInvocationCategory,
     val levelModifier: Int,
+    val prerequisiteStructId: Int?,
 ) {
+    /** The invocation that must be active before this one can be enabled. */
+    val prerequisite: ToaInvocation?
+        get() = prerequisiteStructId?.let { id -> ALL.firstOrNull { it.structId == id } }
+
+    /** Invocations that list this one as their prerequisite. */
+    val dependents: List<ToaInvocation>
+        get() = ALL.filter { it.prerequisiteStructId == structId }
     companion object {
         /** Cache enum that maps int keys → invocation struct IDs. */
         private const val INVOCATION_ENUM_ID = 4664
@@ -49,6 +58,7 @@ data class ToaInvocation(
         private const val PARAM_NAME = 1160
         private const val PARAM_CATEGORY = 1161
         private const val PARAM_LEVEL_MODIFIER = 1162
+        private const val PARAM_PREREQUISITE = 1346
 
         /** Cache category param values start at 3, not 0. */
         private const val CATEGORY_OFFSET = 3
@@ -85,12 +95,16 @@ data class ToaInvocation(
             val levelModifier = params[PARAM_LEVEL_MODIFIER] as? Int
                 ?: error("Struct ${struct.id} missing param $PARAM_LEVEL_MODIFIER")
 
+            // Only present on invocations that depend on another (e.g. Insanity → Overclocked 2)
+            val prerequisiteStructId = params[PARAM_PREREQUISITE] as? Int
+
             return ToaInvocation(
                 structId = struct.id,
                 name = name,
                 index = index,
                 category = category,
                 levelModifier = levelModifier,
+                prerequisiteStructId = prerequisiteStructId,
             )
         }
     }
