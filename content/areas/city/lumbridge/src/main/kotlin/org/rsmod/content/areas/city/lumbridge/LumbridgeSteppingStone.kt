@@ -28,13 +28,11 @@ class LumbridgeSteppingStone : PluginScript() {
         val dest = if (north) SOUTH_BANK else NORTH_BANK
         val facing = if (north) FACE_SOUTH else FACE_NORTH
 
-        // Hop 1: bank -> stone.
         exactMove(coords, STONE, delay1 = HOP1_START_CYCLES, delay2 = HOP1_END_CYCLES, dir = facing)
         anim("seq.human_spot_jump", delay = HOP1_ANIM_DELAY)
         soundSynth(JUMP_SOUND, delay = HOP1_SOUND_DELAY)
         delay(2)
 
-        // Hop 2: stone -> far bank.
         exactMove(coords, dest, delay1 = HOP2_START_CYCLES, delay2 = HOP2_END_CYCLES, dir = facing)
         anim("seq.human_spot_jump")
         soundSynth(JUMP_SOUND, delay = HOP2_SOUND_DELAY)
