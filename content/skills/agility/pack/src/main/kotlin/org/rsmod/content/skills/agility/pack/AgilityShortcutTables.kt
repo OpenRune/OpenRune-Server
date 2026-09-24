@@ -587,35 +587,6 @@ object AgilityShortcutTables {
                     ),
             ),
             ShortcutDecl(
-                row = "agility_sc_xbows_raft_br_grapple",
-                loc = "loc.xbows_raft_br",
-                option = "Grapple",
-                level = 8,
-                xp = 0.0,
-                ticks = 3,
-                links =
-                    listOf(
-                        LinkDecl(
-                            origin = CoordGrid(3246, 3179, 0),
-                            dest = CoordGrid(3259, 3179, 0),
-                            level = 8,
-                            ranged = 37,
-                            strength = 19,
-                            gear = GEAR_GRAPPLE,
-                            bareLevel = 48,
-                        ),
-                        LinkDecl(
-                            origin = CoordGrid(3259, 3179, 0),
-                            dest = CoordGrid(3246, 3179, 0),
-                            level = 8,
-                            ranged = 37,
-                            strength = 19,
-                            gear = GEAR_GRAPPLE,
-                            bareLevel = 48,
-                        ),
-                    ),
-            ),
-            ShortcutDecl(
                 row = "agility_sc_ds2_corsair_cove_shortcut_climb",
                 loc = "loc.ds2_corsair_cove_shortcut",
                 option = "Climb",
@@ -1192,38 +1163,6 @@ object AgilityShortcutTables {
                             origin = CoordGrid(2324, 3497, 0),
                             dest = CoordGrid(2322, 3502, 0),
                             level = 25,
-                        ),
-                    ),
-            ),
-            ShortcutDecl(
-                row = "agility_sc_falador_sc_castlewall_north_climb_into",
-                loc = "loc.falador_sc_castlewall_north",
-                option = "Climb-into",
-                level = 26,
-                xp = 0.0,
-                ticks = 3,
-                links =
-                    listOf(
-                        LinkDecl(
-                            origin = CoordGrid(2948, 3313, 0),
-                            dest = CoordGrid(2948, 3309, 0),
-                            level = 26,
-                        ),
-                    ),
-            ),
-            ShortcutDecl(
-                row = "agility_sc_falador_sc_castlewall_south_climb_into",
-                loc = "loc.falador_sc_castlewall_south",
-                option = "Climb-into",
-                level = 26,
-                xp = 0.0,
-                ticks = 3,
-                links =
-                    listOf(
-                        LinkDecl(
-                            origin = CoordGrid(2948, 3309, 0),
-                            dest = CoordGrid(2948, 3313, 0),
-                            level = 26,
                         ),
                     ),
             ),
@@ -1822,59 +1761,6 @@ object AgilityShortcutTables {
                             origin = CoordGrid(1396, 3323, 0),
                             dest = CoordGrid(1391, 3323, 0),
                             level = 41,
-                        ),
-                    ),
-            ),
-            ShortcutDecl(
-                row = "agility_sc_draynor_diary_under_wall_e_climb_into",
-                loc = "loc.draynor_diary_under_wall_e",
-                option = "Climb-into",
-                level = 42,
-                xp = 0.0,
-                ticks = 3,
-                links =
-                    listOf(
-                        LinkDecl(
-                            origin = CoordGrid(3070, 3257, 0),
-                            dest = CoordGrid(3066, 3257, 0),
-                            level = 42,
-                        ),
-                    ),
-            ),
-            ShortcutDecl(
-                row = "agility_sc_draynor_diary_under_wall_w_climb_into",
-                loc = "loc.draynor_diary_under_wall_w",
-                option = "Climb-into",
-                level = 42,
-                xp = 0.0,
-                ticks = 3,
-                links =
-                    listOf(
-                        LinkDecl(
-                            origin = CoordGrid(3066, 3257, 0),
-                            dest = CoordGrid(3070, 3257, 0),
-                            level = 42,
-                        ),
-                    ),
-            ),
-            ShortcutDecl(
-                row = "agility_sc_dwarf_mines_sc_wall_crack_squeeze_through",
-                loc = "loc.dwarf_mines_sc_wall_crack",
-                option = "Squeeze-through",
-                level = 42,
-                xp = 0.0,
-                ticks = 3,
-                links =
-                    listOf(
-                        LinkDecl(
-                            origin = CoordGrid(3028, 9806, 0),
-                            dest = CoordGrid(3035, 9806, 0),
-                            level = 42,
-                        ),
-                        LinkDecl(
-                            origin = CoordGrid(3035, 9806, 0),
-                            dest = CoordGrid(3028, 9806, 0),
-                            level = 42,
                         ),
                     ),
             ),
