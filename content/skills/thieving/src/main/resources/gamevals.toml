@@ -1,2 +1,47 @@
+[gamevals.dbtable]
+thieving_pickpocket = 65480
+thieving_stall = 65481
+
+[gamevals.dbrow]
+thieving_man = 62100
+thieving_woman = 62101
+thieving_citizen = 62102
+thieving_farmer = 62103
+thieving_male_h_a_m_member = 62104
+thieving_female_h_a_m_member = 62105
+thieving_h_a_m_member = 62106
+thieving_warrior_woman = 62107
+thieving_warrior = 62108
+thieving_workman = 62109
+thieving_villager = 62110
+thieving_rogue = 62111
+thieving_cave_goblin = 62112
+thieving_master_farmer = 62113
+thieving_guard = 62114
+thieving_fremennik_citizen = 62115
+thieving_bearded_pollnivnian_bandit = 62116
+thieving_wealthy_citizen = 62117
+thieving_desert_bandit = 62118
+thieving_knight_of_ardougne = 62119
+thieving_knight_of_varlamore = 62120
+thieving_pollnivnian_bandit = 62121
+thieving_watchman = 62122
+thieving_menaphite_thug = 62123
+thieving_paladin = 62124
+thieving_gnome = 62125
+thieving_hero = 62126
+thieving_vyre = 62127
+thieving_elf = 62128
+thieving_tzhaar_hur = 62129
+cakethiefstall_thieving = 62150
+tea_stall_thieving = 62151
+silkthiefstall_thieving = 62152
+furthiefstall_thieving = 62153
+silverthiefstall_thieving = 62154
+spicethiefstall_thieving = 62155
+gemthiefstall_thieving = 62156
+rag_market_stall_thieving = 62157
+seed_stall_thieving = 62158
+
 [gamevals.synth]
 thieving_stunned = 2727
