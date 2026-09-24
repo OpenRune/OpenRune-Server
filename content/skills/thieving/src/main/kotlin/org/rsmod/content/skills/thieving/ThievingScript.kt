@@ -1,6 +1,7 @@
 package org.rsmod.content.skills.thieving
 
 import dev.openrune.ServerCacheManager
+import dev.openrune.rscm.RSCM
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import jakarta.inject.Inject
@@ -12,8 +13,16 @@ import org.rsmod.api.repo.loc.LocRepository
 import org.rsmod.api.repo.npc.NpcRepository
 import org.rsmod.api.script.onOpHeld1
 import org.rsmod.api.script.onOpHeld2
+import org.rsmod.api.script.onOpLoc1
 import org.rsmod.api.script.onOpLoc2
+import org.rsmod.api.script.onOpLoc3
+import org.rsmod.api.script.onOpLoc4
+import org.rsmod.api.script.onOpLoc5
+import org.rsmod.api.script.onOpNpc1
+import org.rsmod.api.script.onOpNpc2
 import org.rsmod.api.script.onOpNpc3
+import org.rsmod.api.script.onOpNpc4
+import org.rsmod.api.script.onOpNpc5
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.hit.HitType
 import org.rsmod.game.loc.BoundLocInfo
@@ -33,17 +42,49 @@ constructor(
 
     override fun ScriptContext.startup() {
         for (stall in ThievingTables.stalls) {
-            onOpLoc2(stall.loc) { stealFromStall(it.loc, stall) }
-        }
-        for (target in ThievingTables.pickpockets) {
-            for (npc in target.npcs) {
-                onOpNpc3(npc) { pickpocket(it.npc, target) }
+            val type = ServerCacheManager.getObject(stall.loc.asRSCM(RSCMType.LOC)) ?: continue
+            when (opSlot { type.actions.getOpOrNull(it) == STEAL_OP }) {
+                1 -> onOpLoc1(stall.loc) { stealFromStall(it.loc, stall) }
+                2 -> onOpLoc2(stall.loc) { stealFromStall(it.loc, stall) }
+                3 -> onOpLoc3(stall.loc) { stealFromStall(it.loc, stall) }
+                4 -> onOpLoc4(stall.loc) { stealFromStall(it.loc, stall) }
+                5 -> onOpLoc5(stall.loc) { stealFromStall(it.loc, stall) }
             }
-            val pouch = target.pouch ?: continue
+        }
+        bindPickpockets()
+        for (pouch in ThievingTables.pickpockets.mapNotNull { it.pouch }.distinctBy { it.obj }) {
             onOpHeld1(pouch.obj) { openPouches(pouch, all = true) }
             onOpHeld2(pouch.obj) { openPouches(pouch, all = false) }
         }
     }
+
+    /**
+     * Binds every npc with a Pickpocket op to the target sharing its cache name, or to the target
+     * whose symbol prefix it carries when its name is its own (Prifddinas elves, Vallessia vyres).
+     */
+    private fun ScriptContext.bindPickpockets() {
+        val byName = ThievingTables.pickpockets.associateBy { it.name.lowercase() }
+        val byPrefix = ThievingTables.pickpockets.flatMap { t -> t.symbolPrefixes.map { it to t } }
+        for ((id, type) in ServerCacheManager.getNpcs()) {
+            val slot = opSlot { type.actions.getOpOrNull(it) == PICKPOCKET_OP } ?: continue
+            val symbol = runCatching { RSCM.getReverseMapping(RSCMType.NPC, id) }.getOrNull()
+            if (symbol.isNullOrBlank()) continue
+            val bare = symbol.removePrefix("npc.")
+            val target =
+                byName[type.name.lowercase()]
+                    ?: byPrefix.firstOrNull { bare.startsWith(it.first) }?.second
+                    ?: continue
+            when (slot) {
+                1 -> onOpNpc1(symbol) { pickpocket(it.npc, target) }
+                2 -> onOpNpc2(symbol) { pickpocket(it.npc, target) }
+                3 -> onOpNpc3(symbol) { pickpocket(it.npc, target) }
+                4 -> onOpNpc4(symbol) { pickpocket(it.npc, target) }
+                5 -> onOpNpc5(symbol) { pickpocket(it.npc, target) }
+            }
+        }
+    }
+
+    private fun opSlot(matches: (Int) -> Boolean): Int? = (0 until 5).firstOrNull(matches)?.plus(1)
 
     private suspend fun ProtectedAccess.stealFromStall(loc: BoundLocInfo, stall: Stall) {
         if (player.isFrozen) return
@@ -58,7 +99,7 @@ constructor(
             mes("You don't have enough inventory space.")
             return
         }
-        mes(stall.attemptMessage, ChatType.Spam)
+        stall.attemptMessage?.let { mes(it, ChatType.Spam) }
         val spotter = findSpotter(stall)
         if (spotter != null) {
             caughtAtStall(spotter, stall)
@@ -133,14 +174,12 @@ constructor(
         mes("You pick $owner's pocket.", ChatType.Spam)
         anim(PICKPOCKET_SEQ)
         soundSynth(PICK_SYNTH)
-        if (pouch != null) {
-            invAdd(inv, pouch.obj)
-        }
-        val loot = target.loot?.roll(random)
-        if (loot != null) {
+        for (loot in target.guaranteed + listOfNotNull(target.loot?.roll(random))) {
             val count = random.of(loot.min, loot.max)
             invAdd(inv, loot.obj, count)
-            mes("You steal ${describe(loot.obj, count)}.", ChatType.Spam)
+            if (loot.obj != pouch?.obj) {
+                mes("You steal ${describe(loot.obj, count)}.", ChatType.Spam)
+            }
         }
         statAdvance(THIEVING, target.xp)
     }
@@ -148,7 +187,7 @@ constructor(
     private fun ProtectedAccess.openPouches(pouch: CoinPouch, all: Boolean) {
         val count = if (all) inv.count(pouch.obj) else 1
         if (count == 0 || invDel(inv, pouch.obj, count).failure) return
-        invAdd(inv, COINS, count * pouch.coins)
+        invAdd(inv, COINS, (1..count).sumOf { random.of(pouch.min, pouch.max) })
         val message = if (count > 1) "You open all of the pouches." else "You open the coin pouch."
         mes(message, ChatType.Spam)
     }
@@ -157,7 +196,7 @@ constructor(
         mes("You fail to pick $owner's pocket.", ChatType.Spam)
         npc.say(target.caughtShout)
         npc.facePlayer(player)
-        stun()
+        stun(target.stunTicks)
         delay(1)
         spotanim(STUN_SPOTANIM, height = STUN_SPOTANIM_HEIGHT)
         anim(STUN_BLOCK_SEQ)
@@ -167,10 +206,11 @@ constructor(
         mes("You've been stunned!", ChatType.Spam)
     }
 
-    private fun ProtectedAccess.stun() {
+    private fun ProtectedAccess.stun(ticks: Int) {
         player.frozen = true
         player.routeDestination.clear()
-        player.timer(FREEZE_TIMER, STUN_TICKS)
+        // The freeze starts a tick before the stun spotanim lands; the table counts from the spotanim.
+        player.timer(FREEZE_TIMER, ticks + 1)
     }
 
     private fun pocketOwner(npc: Npc, target: Pickpocket): String {
@@ -197,9 +237,10 @@ constructor(
         const val STUN_SPOTANIM_HEIGHT = 124
         const val STUN_BLOCK_SEQ = "seq.human_unarmedblock"
         const val STUN_SYNTH = "synth.thieving_stunned"
-        const val STUN_TICKS = 9
         const val FREEZE_TIMER = "timer.combat_freeze"
         const val MAX_POUCHES = 28
         const val COINS = "obj.coins"
+        const val STEAL_OP = "Steal-from"
+        const val PICKPOCKET_OP = "Pickpocket"
     }
 }
