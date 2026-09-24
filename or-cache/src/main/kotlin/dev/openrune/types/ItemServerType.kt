@@ -61,6 +61,9 @@ data class ItemServerType(
 
     companion object {
         private val DEFAULT_OPTIONS: EntityOpsDefinition = EntityOpsBuilder().op(2, "Take").build()
+
+        /** Greegrees and a few tools say Hold rather than Wield, and still go in the weapon slot. */
+        private val EQUIP_OPS: Set<String> = setOf("Wield", "Wear", "Hold")
     }
 
     val internalName
@@ -116,7 +119,7 @@ data class ItemServerType(
         get() = cost * 40 / 100
 
     public val isEquipable: Boolean
-        get() = wearpos1 != -1 && (interfaceOptions[1] == "Wield" || interfaceOptions[1] == "Wear")
+        get() = wearpos1 != -1 && interfaceOptions[1] in EQUIP_OPS
 
     public fun hasOp(interactionOp: Int): Boolean {
         val text = options.getOpOrNull(interactionOp - 1) ?: return false

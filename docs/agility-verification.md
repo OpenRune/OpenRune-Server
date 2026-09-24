@@ -15,7 +15,7 @@ this checklist settled them.
 | Shayzien Basic | 7/7 | 153.5 | every landing exact |
 | Shayzien Advanced | 8/8 | 508.0 | every landing exact |
 | Werewolf | 5/5 (7 steps) | 350 | every obstacle fires |
-| Ape Atoll | blocked | - | see below |
+| Ape Atoll | not run | - | see below |
 
 **The shared-loc dispatch is proven, twice.** It is the part of the change no test can reach, and
 both halves of it behave:
@@ -25,11 +25,11 @@ both halves of it behave:
 - The Colossal Wyrm zipline paid **662** at the end of an advanced lap and **341.2** at the end of a
   basic one, so the lap in progress decides the payout rather than the player's level.
 
-**Ape Atoll cannot be run on this server yet.** The greegree gate works exactly as designed - the
-obstacles refuse with *Only the stealthiest and most agile monkey can use this!* and pay nothing -
-but the greegree itself cannot be equipped: holding one answers *Nothing interesting happens*,
-because the Monkey Madness transform content does not exist here. The course is correct as far as it
-can be checked and unreachable in practice until that lands.
+**Ape Atoll was not run in this pass.** The greegree gate works exactly as designed - the obstacles
+refuse with *Only the stealthiest and most agile monkey can use this!* and pay nothing - but the
+greegree could not be equipped: holding one answered *Nothing interesting happens*. The cause was
+`ItemServerType.isEquipable` accepting only Wield or Wear, where greegrees say Hold; fixed since, so
+the course is ready for its run. Holding a greegree still does not turn the player into a monkey.
 
 **Two defects the first pass missed, both found by playing rather than probing** and both fixed on
 the same day:

@@ -72,9 +72,11 @@ with no evidence behind it** - it is placed back beside the stepping stones so t
 
 **All of it was then run in a client** - see `docs/agility-verification.md`. Every obstacle on
 Shayzien, Colossal Wyrm and Werewolf binds, lands where it should and pays exactly the wiki's xp, and
-the shared-loc dispatch was confirmed both ways. Ape Atoll could not be run: its greegree gate works,
-but the greegree cannot be equipped on this server because the Monkey Madness transform content does
-not exist.
+the shared-loc dispatch was confirmed both ways. Ape Atoll could not be run then: its greegree gate
+works, but the greegree could not be equipped. That turned out to be `ItemServerType.isEquipable`
+accepting only a Wield or Wear op, where every greegree says Hold; it now accepts Hold too. The
+course still needs a client run, and holding a greegree does not yet turn the player into a monkey,
+which is Monkey Madness content.
 
 ### How a crossing is built
 
