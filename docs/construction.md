@@ -16,6 +16,7 @@ packed into a cache table of our own by
 | `dbtable.poh_hotspot` (112) | each hotspot's `builddata` — the furniture that can go in it |
 | `dbtable.furniture` | `model_obj` (build-menu icon), display name, `material_cost`, level requirement, `hidden_in_build_menu`, upgrade links |
 | `dbtable.construction_furniture_build` (ours) | per `model_obj`: the locs a build places, the loc each hotspot part gets, and the xp it awards |
+| `dbtable.construction_dispenser` (ours) | furniture that hands out items: what searching a larder, kitchen shelf or tool rack offers, and what a barrel or sink turns a used item into |
 | the static map | the actual hotspot and doorway positions inside each room's 8x8 source chunk |
 
 The generated row classes (`PohRoomRow`, `PohHotspotRow`, `FurnitureRow` in `api/generated`) are the
@@ -124,6 +125,15 @@ whether the player can afford it, then suspends on `pauseButton()`. Clicking **B
 `[clientscript,poh_furniture_creation_op]`, which resumes that pause button with the slot index.
 
 Op-5 on a built hotspot removes the furniture after a confirmation.
+
+Built furniture that does something beyond standing there:
+
+- Portals and the portal nexus teleport (`PohPortals`, `PohNexus`), and the superior garden pools
+  restore (`PohPools`).
+- Larders, kitchen shelves and workshop tool racks: op-1 Search offers their items one at a time
+  through a menu. Barrels and sinks take a used item: a beer glass becomes that barrel's drink, and a
+  bucket, jug, bowl, vial or kettle is filled with water (`PohDispensers`, over
+  `dbtable.construction_dispenser`). Barrel drinks are the house-only `poh_*` objs.
 
 ## Known gaps
 
