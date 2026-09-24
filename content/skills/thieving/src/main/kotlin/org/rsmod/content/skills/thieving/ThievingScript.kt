@@ -60,7 +60,7 @@ constructor(
 
     /**
      * Binds every npc with a Pickpocket op to the target sharing its cache name, or to the target
-     * whose symbol prefix it carries when its name is its own (Prifddinas elves, Vallessia vyres).
+     * whose symbol prefix it carries when its name is its own (Prifddinas elves, Darkmeyer vyres).
      */
     private fun ScriptContext.bindPickpockets() {
         val byName = ThievingTables.pickpockets.associateBy { it.name.lowercase() }

@@ -19,7 +19,9 @@ data class Loot(val obj: String, val amount: IntRange = 1..1, val weight: Int = 
  * success and [loot] is one weighted roll on top of it.
  *
  * [symbolPrefixes] binds npcs whose cache name is their own rather than the table's - every
- * Prifddinas citizen is an "Elf" target, every Vallessia a "Vyre" one.
+ * Prifddinas citizen is an "Elf" target, every named Darkmeyer resident a "Vyre", every named
+ * Rellekka citizen a "Fremennik citizen", and the "Bandit"s of Pollnivneach and the Bandit Camp
+ * are told apart by symbol.
  *
  * With a [pouch], every coins entry is handed over as one of that pouch instead, holding the
  * entry's amount when opened.
@@ -202,6 +204,12 @@ object ThievingTables {
                 1,
                 guaranteed = coins(3),
                 pouch = "obj.pickpocket_coin_pouch_citizen",
+                symbolPrefixes =
+                    listOf(
+                        "falador_doric_area_man",
+                        "falador_man",
+                        "rimmington_hengel",
+                    ),
             ),
             PickpocketTarget(
                 "Woman",
@@ -213,6 +221,10 @@ object ThievingTables {
                 1,
                 guaranteed = coins(3),
                 pouch = "obj.pickpocket_coin_pouch_citizen",
+                symbolPrefixes =
+                    listOf(
+                        "rimmington_anja",
+                    ),
             ),
             PickpocketTarget(
                 "Citizen",
@@ -264,6 +276,7 @@ object ThievingTables {
                 2,
                 guaranteed = coins(18),
                 pouch = "obj.pickpocket_coin_pouch_warrior",
+                symbolPrefixes = listOf("al_kharid_warrior"),
             ),
             PickpocketTarget(
                 displayName = "Workman",
@@ -337,6 +350,10 @@ object ThievingTables {
                 2,
                 guaranteed = coins(30),
                 pouch = "obj.pickpocket_coin_pouch_guard",
+                symbolPrefixes =
+                    listOf(
+                        "kourend_guard_",
+                    ),
             ),
             PickpocketTarget(
                 "Fremennik citizen",
@@ -348,6 +365,11 @@ object ThievingTables {
                 2,
                 guaranteed = coins(40),
                 pouch = "obj.pickpocket_coin_pouch_fremennik",
+                symbolPrefixes =
+                    listOf(
+                        "viking_man",
+                        "viking_woman",
+                    ),
             ),
             PickpocketTarget(
                 "Bearded Pollnivnian Bandit",
@@ -360,6 +382,10 @@ object ThievingTables {
                 guaranteed = coins(40),
                 pouch = "obj.pickpocket_coin_pouch_bandit2",
                 lowercaseName = false,
+                symbolPrefixes =
+                    listOf(
+                        "feud_arabian_guard2_",
+                    ),
             ),
             PickpocketTarget(
                 "Wealthy citizen",
@@ -388,6 +414,10 @@ object ThievingTables {
                     ),
                 pouch = "obj.pickpocket_coin_pouch_desertbandit",
                 lowercaseName = false,
+                symbolPrefixes =
+                    listOf(
+                        "fourdiamonds_sword_bandit",
+                    ),
             ),
             PickpocketTarget(
                 "Knight of Ardougne",
@@ -424,6 +454,10 @@ object ThievingTables {
                 guaranteed = coins(50),
                 pouch = "obj.pickpocket_coin_pouch_bandit",
                 lowercaseName = false,
+                symbolPrefixes =
+                    listOf(
+                        "feud_arabian_guard1_",
+                    ),
             ),
             PickpocketTarget(
                 displayName = "Watchman",
@@ -478,6 +512,11 @@ object ThievingTables {
                         Loot("obj.fire_orb", weight = 2),
                     ),
                 pouch = "obj.pickpocket_coin_pouch_gnome",
+                symbolPrefixes =
+                    listOf(
+                        "gnomechild",
+                        "gnomefemale",
+                    ),
             ),
             PickpocketTarget(
                 displayName = "Hero",
@@ -517,7 +556,38 @@ object ThievingTables {
                         Loot("obj.diamond", weight = 1),
                         Loot("obj.cooked_mystery_meat", weight = 1),
                     ),
-                symbolPrefixes = listOf("vallessia_"),
+                symbolPrefixes =
+                    listOf(
+                        "vallessia_",
+                        "alek_constantine",
+                        "caninelle_draynar",
+                        "carnivus_belamorta",
+                        "crimsonette_van_marr",
+                        "diphylla_bechstein",
+                        "draconis_sanguine",
+                        "episcula_helsing",
+                        "grigor_rasputin",
+                        "haemas_lamescus",
+                        "lasenna_rasputin",
+                        "misdrievus_shadum",
+                        "mort_nightshade",
+                        "mortina_daubenton",
+                        "nakasa_jovkai",
+                        "natalidae_shadum",
+                        "noctillion_lugosi",
+                        "pipistrelle_draynar",
+                        "remus_kaninus",
+                        "valentin_rasputin",
+                        "valentina_diaemus",
+                        "vampyressa_van_von",
+                        "vampyrus_diaemus",
+                        "violetta_sanguine",
+                        "vlad_bechstein",
+                        "vlad_diaemus",
+                        "von_van_von",
+                        "vonnetta_varnis",
+                        "vormar_vakan",
+                    ),
                 pouch = "obj.pickpocket_coin_pouch_vyre",
                 lowercaseName = false,
             ),
