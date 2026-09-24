@@ -50,6 +50,21 @@ class HouseLayout(
         variants.keys.removeIf { furnitureSlot(it) == slot }
     }
 
+    /** Why the room at [slot] cannot be taken out, or null when it can. */
+    fun removalRefusal(slot: Int): String? {
+        if (slot !in rooms) {
+            return "There is no room there to remove."
+        }
+        val level = slotLevel(slot)
+        if (level == LEVEL_GROUND && rooms.keys.count { slotLevel(it) == LEVEL_GROUND } == 1) {
+            return "You can't remove the last room on the ground floor."
+        }
+        if (level + 1 < HOUSE_LEVELS && slotKey(level + 1, slotX(slot), slotZ(slot)) in rooms) {
+            return "You need to remove the room above it first."
+        }
+        return null
+    }
+
     fun built(slot: Int, hotspot: Int): Int? = furniture[furnitureKey(slot, hotspot)]
 
     fun build(slot: Int, hotspot: Int, row: Int, variant: Int? = null) {

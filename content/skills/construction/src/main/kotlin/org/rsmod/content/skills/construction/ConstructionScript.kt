@@ -394,8 +394,12 @@ constructor(
             return
         }
         val destination = neighbour(door.slot, door.direction)
-        if (destination == null || destination in session.layout.rooms) {
+        if (destination == null) {
             mes("You can't build a room there.")
+            return
+        }
+        if (destination in session.layout.rooms) {
+            offerRoomRemoval(session, destination)
             return
         }
 
@@ -428,6 +432,25 @@ constructor(
         session.layout.place(destination, room.id, rotation)
         player.storeLayout(session.layout)
         mes("You build a ${room.name}. Re-enter your house to walk into it.")
+    }
+
+    private suspend fun ProtectedAccess.offerRoomRemoval(session: HouseSession, slot: Int) {
+        val room = session.layout.placed(slot)?.room?.let(catalogue::room) ?: return
+        session.layout.removalRefusal(slot)?.let {
+            mes(it)
+            return
+        }
+        if (session.slotAt(player.coords) == slot) {
+            mes("You can't remove a room while you are standing in it.")
+            return
+        }
+        val title = "Remove the ${room.name}? Anything built in it is lost."
+        if (menu(title, "Remove it", "Keep it") != 0) {
+            return
+        }
+        session.layout.remove(slot)
+        player.storeLayout(session.layout)
+        mes("You remove the ${room.name}. Re-enter your house to see it gone.")
     }
 
     private fun applyFurniture(session: HouseSession) {

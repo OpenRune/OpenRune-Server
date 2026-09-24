@@ -1,6 +1,7 @@
 package org.rsmod.content.skills.construction
 
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Test
 
@@ -39,6 +40,23 @@ class HouseLayoutTest {
 
         assertNull(layout.built(slot, 0))
         assertEquals(6030, layout.built(slotKey(LEVEL_GROUND, 2, 3), 0))
+    }
+
+    @Test
+    fun `a room holding up the house cannot be removed`() {
+        val layout = HouseLayout()
+        val garden = slotKey(LEVEL_GROUND, 4, 4)
+        val parlour = slotKey(LEVEL_GROUND, 4, 5)
+        val bedroom = slotKey(LEVEL_GROUND + 1, 4, 5)
+        layout.place(garden, room = 1, rotation = 0)
+        assertNotNull(layout.removalRefusal(garden), "the only ground floor room came out")
+        assertNotNull(layout.removalRefusal(parlour), "an empty slot came out")
+
+        layout.place(parlour, room = 2, rotation = 0)
+        layout.place(bedroom, room = 3, rotation = 0)
+        assertNotNull(layout.removalRefusal(parlour), "a room with a room above it came out")
+        assertNull(layout.removalRefusal(bedroom))
+        assertNull(layout.removalRefusal(garden))
     }
 
     @Test
