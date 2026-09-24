@@ -235,7 +235,9 @@ course without logging in. Level and xp still come off the wiki.
   The tiles come from the shortest-path RuneLite plugin's own dataset (BSD 2-Clause), levels from
   the same, and xp from the wiki matched by loc id - 36 of the 157 award any. Every loc id was
   resolved to a gameval symbol at generation time, so no raw id is in the file, and 116 rows for
-  locs the courses already bind were dropped rather than double-registering them.
+  locs the courses already bind were dropped rather than double-registering them. Six more are
+  left to the area scripts that already own them: the Falador castle wall crawl, the Draynor
+  under-wall tunnel, the Dwarven Mine crevice and the Lumbridge broken raft.
 
   Requirements ride on the link rather than the shortcut, because one loc id can be two shortcuts:
   both Catacombs of Kourend cracks are `loc.zeah_cata_crack` and both Slayer Tower spiked chains are
