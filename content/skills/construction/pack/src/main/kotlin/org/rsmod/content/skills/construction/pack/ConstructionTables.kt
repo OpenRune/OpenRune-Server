@@ -352,7 +352,7 @@ object ConstructionTables {
                 columnRSCM(LOCS, "loc.poh_altar_saradomin_6")
                 columnRSCM(PARTS, "loc.poh_chapel_2", "loc.poh_altar_saradomin_6")
             }
-            row("dbrow.build_poh_altar_marble+gilt") {
+            row("dbrow.build_poh_altar_marble_and_gilt") {
                 columnRSCM(MODEL_OBJ, "obj.poh_altar_marble+gilt")
                 column(XP, 22300)
                 columnRSCM(LOCS, "loc.poh_altar_saradomin_7")
@@ -1734,7 +1734,7 @@ object ConstructionTables {
                 columnRSCM(LOCS, "loc.poh_cage_dungeon_oak", "loc.poh_cage_dungeon_oak_door")
                 columnRSCM(PARTS, "loc.poh_oubliette_2_front", "loc.poh_cage_dungeon_oak", "loc.poh_oubliette_2_door", "loc.poh_cage_dungeon_oak_door")
             }
-            row("dbrow.build_poh_cage_dungeon_oak+steel") {
+            row("dbrow.build_poh_cage_dungeon_oak_and_steel") {
                 columnRSCM(MODEL_OBJ, "obj.poh_cage_dungeon_oak+steel")
                 column(XP, 8000)
                 columnRSCM(LOCS, "loc.poh_cage_dungeon_oak+steel", "loc.poh_cage_dungeon_oak+steel_door")
@@ -1746,7 +1746,7 @@ object ConstructionTables {
                 columnRSCM(LOCS, "loc.poh_cage_dungeon_steel", "loc.poh_cage_dungeon_steel_door")
                 columnRSCM(PARTS, "loc.poh_oubliette_2_front", "loc.poh_cage_dungeon_steel", "loc.poh_oubliette_2_door", "loc.poh_cage_dungeon_steel_door")
             }
-            row("dbrow.build_poh_cage_dungeon_steel+spikes") {
+            row("dbrow.build_poh_cage_dungeon_steel_and_spikes") {
                 columnRSCM(MODEL_OBJ, "obj.poh_cage_dungeon_steel+spikes")
                 column(XP, 5000)
                 columnRSCM(LOCS, "loc.poh_cage_dungeon_steel+spikes", "loc.poh_cage_dungeon_steel+spikes_door")
