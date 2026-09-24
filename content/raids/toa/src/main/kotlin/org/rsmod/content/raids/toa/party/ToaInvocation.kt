@@ -23,7 +23,7 @@ enum class ToaInvocationCategory {
     ZEBAK,
     BA_BA,
     THE_WARDENS,
-    // Newer categories may exist beyond this point.
+    BLAZING_TOMBS,
 }
 
 /**
@@ -57,10 +57,12 @@ data class ToaInvocation(
         val ALL: List<ToaInvocation> by lazy { loadAll() }
 
         private fun loadAll(): List<ToaInvocation> {
-            val invocationEnum = enum<Int, StructType>(INVOCATION_ENUM_ID)
+            val invocationEnum = enum<Int, Int>(INVOCATION_ENUM_ID)
             return invocationEnum.backing.entries
                 .sortedBy { it.key }
-                .mapNotNull { (_, struct) -> struct?.let(::fromStruct) }
+                .mapNotNull { (_, structId) ->
+                    structId?.let { ServerCacheManager.getStruct(it) }?.let(::fromStruct)
+                }
         }
 
         private fun fromStruct(struct: StructType): ToaInvocation {
