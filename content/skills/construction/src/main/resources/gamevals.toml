@@ -3,8 +3,34 @@ construction_build = 64
 construction_remove = 65
 [gamevals.dbtable]
 construction_furniture_build = 65482
+construction_dispenser = 65474
 
 [gamevals.dbrow]
+construction_dispenser_poh_larder_1 = 62740
+construction_dispenser_poh_larder_2 = 62741
+construction_dispenser_poh_larder_3 = 62742
+construction_dispenser_poh_kitchen_shelves_1 = 62743
+construction_dispenser_poh_kitchen_shelves_2 = 62744
+construction_dispenser_poh_kitchen_shelves_3 = 62745
+construction_dispenser_poh_kitchen_shelves_4 = 62746
+construction_dispenser_poh_kitchen_shelves_5 = 62747
+construction_dispenser_poh_kitchen_shelves_6 = 62748
+construction_dispenser_poh_kitchen_shelves_7 = 62749
+construction_dispenser_poh_tools1 = 62750
+construction_dispenser_poh_tools2 = 62751
+construction_dispenser_poh_tools3 = 62752
+construction_dispenser_poh_tools4 = 62753
+construction_dispenser_poh_tools5 = 62754
+construction_dispenser_poh_barrel_1 = 62755
+construction_dispenser_poh_barrel_2 = 62756
+construction_dispenser_poh_barrel_3 = 62757
+construction_dispenser_poh_barrel_4 = 62758
+construction_dispenser_poh_barrel_5 = 62759
+construction_dispenser_poh_barrel_6 = 62760
+construction_dispenser_poh_sink_1 = 62761
+construction_dispenser_poh_sink_2 = 62762
+construction_dispenser_poh_sink_3 = 62763
+construction_dispenser_poh_sink_4 = 62764
 build_poh_combat_ring_1 = 62300
 build_poh_combat_ring_2 = 62301
 build_poh_combat_ring_3 = 62302
