@@ -13,11 +13,16 @@ import org.rsmod.api.player.ui.ifSetText
 import org.rsmod.api.player.vars.intVarBit
 import org.rsmod.api.player.vars.intVarp
 import org.rsmod.api.script.onOpLoc1
+import org.rsmod.api.script.onPlayerLogout
 import org.rsmod.content.raids.toa.party.ToaPartyManager.appliedParty
 import org.rsmod.content.raids.toa.party.ToaPartyManager.currentParty
 import org.rsmod.content.raids.toa.party.ToaPartyManager.currentTab
+import org.rsmod.content.raids.toa.party.ToaPartyManager.VIEW_APPLICANT
+import org.rsmod.content.raids.toa.party.ToaPartyManager.VIEW_KICKED
+import org.rsmod.content.raids.toa.party.ToaPartyManager.VIEW_LEADER
+import org.rsmod.content.raids.toa.party.ToaPartyManager.VIEW_MEMBER
+import org.rsmod.content.raids.toa.party.ToaPartyManager.VIEW_NON_MEMBER
 import org.rsmod.content.raids.toa.party.ToaPartyManager.viewingParty
-import org.rsmod.content.raids.toa.party.ToaPartyManager.viewingValue
 import org.rsmod.game.entity.Player
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
@@ -34,12 +39,17 @@ private const val VARBIT_FRIENDS_FILTER = "varbit.toa_partylist_filter"
 private const val VARBIT_PARTY_STATUS = "varbit.toa_client_partystatus"
 private const val VARBIT_PRESET_SELECTED = "varbit.toa_preset_selected"
 
-// ---- View value constants (must match vanilla CS2 expectations) ----
-private const val VIEW_NON_MEMBER = 0
-private const val VIEW_MEMBER = 1
-private const val VIEW_LEADER = 2
-private const val VIEW_APPLICANT = 3
-private const val VIEW_KICKED = 4
+// ---- Sounds ----
+private const val SYNTH_INVOCATION_ON = 6589
+private const val SYNTH_INVOCATION_OFF = 6588
+
+// ---- Invocation categories where only one invocation may be active ----
+private val SINGLE_SELECT_CATEGORIES = setOf(
+    ToaInvocationCategory.ATTEMPTS,
+    ToaInvocationCategory.TIME_LIMIT,
+    ToaInvocationCategory.HELPFUL_SPIRIT,
+    ToaInvocationCategory.PATH_LEVEL,
+)
 
 class ToaPartyListScript @Inject constructor(
     private val protectedAccess: ProtectedAccessLauncher,
@@ -55,6 +65,10 @@ class ToaPartyListScript @Inject constructor(
     override fun ScriptContext.startup() {
         onOpLoc1("loc.toa_grouping_board") {
             partyListLoop()
+        }
+        onPlayerLogout {
+            ToaPartyManager.onLogout(player)
+            // TODO (#7): refresh remaining members' views / new leader's view
         }
     }
 
@@ -150,7 +164,7 @@ class ToaPartyListScript @Inject constructor(
         sb.append(settings.activeInvocations).append('|')
         sb.append(settings.raidLevel).append('|')
         sb.append(settings.mode).append('|')
-        sb.append(System.currentTimeMillis() - party.creationCycle).append('|')
+        sb.append(mapClock - party.creationCycle).append('|') // age in ticks
 
         return sb.toString()
     }
@@ -172,7 +186,7 @@ class ToaPartyListScript @Inject constructor(
         }
 
         val settings = ToaPartySettings() // TODO: copy from player's personal settings
-        val party = ToaPartyManager.createParty(player, settings) ?: return null
+        val party = ToaPartyManager.createParty(player, settings, mapClock) ?: return null
         player.clientPartyStatusVar = 1
         updateLobbyHud(party)
         player.viewingParty = party
@@ -248,7 +262,6 @@ class ToaPartyListScript @Inject constructor(
     }
 
     private fun ProtectedAccess.openAndPopulateDetails(party: ToaLobbyParty) {
-        player.viewingValue = resolveViewingValue(player, party)
 
         ifOpenMainModal("interface.toa_partydetails")
 
@@ -269,7 +282,7 @@ class ToaPartyListScript @Inject constructor(
         val bitmaps = settings.invocationBitmaps
         player.runClientScript(
             CS_MASTER_UPDATE,
-            player.viewingValue,
+            ToaPartyManager.resolveViewingValue(player, party),
             settings.kcRequirement,
             settings.activeInvocations,
             settings.raidLevel,
@@ -301,7 +314,7 @@ class ToaPartyListScript @Inject constructor(
      * Returns `true` to stay in the details loop, `false` to exit to list.
      */
     private suspend fun ProtectedAccess.handleActionButton(party: ToaLobbyParty): Boolean {
-        return when (player.viewingValue) {
+        return when (ToaPartyManager.resolveViewingValue(player, party)) {
             VIEW_NON_MEMBER -> handleApply(party)
             VIEW_MEMBER -> { handleLeave(party); false }
             VIEW_LEADER -> { handleDisband(party); false }
@@ -447,35 +460,45 @@ class ToaPartyListScript @Inject constructor(
         val settings = party.settings
 
         if (settings.isActive(invocation)) {
-            handleDeactivate(settings, invocation)
-        } else {
-            handleActivate(settings, invocation)
+            deactivateWithDependents(settings, invocation)
+            soundSynth(SYNTH_INVOCATION_OFF)
+        } else if (tryActivate(settings, invocation)) {
+            soundSynth(SYNTH_INVOCATION_ON)
         }
     }
 
-    private fun handleDeactivate(settings: ToaPartySettings, invocation: ToaInvocation) {
-        // TODO: dependency chains (OVERCLOCKED → OVERCLOCKED_2 → INSANITY)
-        // TODO: (NOT_JUST_A_HEAD → ARTERIAL_SPRAY, BLOOD_THINNERS)
+    /**
+     * Disables an invocation and, recursively, every active invocation
+     * that requires it (cache param 1346). Handles chains such as
+     * Overclocked → Overclocked 2 → Insanity.
+     */
+    private fun deactivateWithDependents(settings: ToaPartySettings, invocation: ToaInvocation) {
+        for (dependent in invocation.dependents) {
+            if (settings.isActive(dependent)) {
+                deactivateWithDependents(settings, dependent)
+            }
+        }
         settings.unflag(invocation)
     }
 
-    private fun handleActivate(settings: ToaPartySettings, invocation: ToaInvocation) {
+    /**
+     * Enables an invocation. Returns `false` (and tells the player why)
+     * if its prerequisite isn't active yet.
+     */
+    private fun ProtectedAccess.tryActivate(settings: ToaPartySettings, invocation: ToaInvocation): Boolean {
+        val prerequisite = invocation.prerequisite
+        if (prerequisite != null && !settings.isActive(prerequisite)) {
+            player.mes("You cannot activate this invocation without first enabling <col=ff0000>${prerequisite.name}</col>.")
+            return false
+        }
+
         val category = invocation.category
-        if (category == ToaInvocationCategory.ATTEMPTS ||
-            category == ToaInvocationCategory.TIME_LIMIT ||
-            category == ToaInvocationCategory.HELPFUL_SPIRIT ||
-            category == ToaInvocationCategory.PATH_LEVEL
-        ) {
+        if (category in SINGLE_SELECT_CATEGORIES) {
             settings.unflagCategory(category)
         }
 
-        // TODO: prerequisite checks
-        // INSANITY requires OVERCLOCKED_2
-        // OVERCLOCKED_2 requires OVERCLOCKED
-        // ARTERIAL_SPRAY requires NOT_JUST_A_HEAD
-        // BLOOD_THINNERS requires NOT_JUST_A_HEAD
-
         settings.flag(invocation)
+        return true
     }
 
     // ==================================================================
@@ -551,16 +574,6 @@ class ToaPartyListScript @Inject constructor(
     // ==================================================================
     // Shared helpers
     // ==================================================================
-
-    private fun resolveViewingValue(player: Player, party: ToaLobbyParty): Int {
-        return when {
-            party.isLeader(player) -> VIEW_LEADER
-            party.isMember(player) -> VIEW_MEMBER
-            party.isApplicant(player) -> VIEW_APPLICANT
-            party.isBlocked(player) -> VIEW_KICKED
-            else -> VIEW_NON_MEMBER
-        }
-    }
 
     private fun buildStatString(target: Player, highlight: Boolean): String {
         val sb = StringBuilder()

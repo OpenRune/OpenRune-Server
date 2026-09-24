@@ -22,22 +22,17 @@ object ToaPartyManager {
     /** The party this player has applied to. */
     private val APPLIED_PARTY = AttributeKey<ToaLobbyParty>()
 
-    /**
-     * The player's role relative to the party they're viewing.
-     * Determines which buttons/tabs the client shows.
-     */
-    private val VIEWING_VALUE = AttributeKey<Int>()
-
     /** Which tab the player has selected in the management interface. */
     private val CURRENT_TAB = AttributeKey<Int>()
 
     // ---- View value constants (sent to CS2 script 6729) ----
+    // Must match vanilla CS2 expectations. Single source of truth.
 
-    const val VIEW_LEADER = 0
+    const val VIEW_NON_MEMBER = 0
     const val VIEW_MEMBER = 1
-    const val VIEW_APPLICANT = 2
-    const val VIEW_KICKED = 3
-    const val VIEW_NON_MEMBER = 4
+    const val VIEW_LEADER = 2
+    const val VIEW_APPLICANT = 3
+    const val VIEW_KICKED = 4
 
     // ---- Global party list ----
 
@@ -81,10 +76,6 @@ object ToaPartyManager {
             if (value != null) attr[APPLIED_PARTY] = value else attr.remove(APPLIED_PARTY)
         }
 
-    var Player.viewingValue: Int
-        get() = attr.getOrDefault(VIEWING_VALUE, VIEW_NON_MEMBER)
-        set(value) { attr[VIEWING_VALUE] = value }
-
     var Player.currentTab: Int
         get() = attr.getOrDefault(CURRENT_TAB, 0)
         set(value) { attr[CURRENT_TAB] = value }
@@ -97,10 +88,10 @@ object ToaPartyManager {
      * Returns the party, or `null` if the lobby is full or the
      * player is already in a party.
      */
-    fun createParty(player: Player, settings: ToaPartySettings): ToaLobbyParty? {
+    fun createParty(player: Player, settings: ToaPartySettings, currentCycle: Int): ToaLobbyParty? {
         if (isLobbyFull()) return null
         if (player.currentParty != null) return null
-        val party = ToaLobbyParty(player)
+        val party = ToaLobbyParty(player, currentCycle)
         party.settings = settings
         player.currentParty = party
         addParty(party)
@@ -181,17 +172,17 @@ object ToaPartyManager {
      * Clears all party state for a player. Called on logout.
      */
     fun onLogout(player: Player) {
-        // Withdraw any application
-        val applied = player.appliedParty
-        if (applied != null) {
-            applied.withdraw(player)
-            player.appliedParty = null
+        // Drop every reference other parties hold to this player, so the
+        // global registry never keeps a logged-out Player alive.
+        for (party in lobbyParties) {
+            party.withdraw(player)
+            party.unblock(player)
         }
-        // Leave any party
+        player.appliedParty = null
+        // Leave any party (passes leadership on, or removes the party if now empty)
         leaveParty(player)
         // Clear viewing state
         player.viewingParty = null
         player.currentTab = 0
-        player.viewingValue = VIEW_NON_MEMBER
     }
 }

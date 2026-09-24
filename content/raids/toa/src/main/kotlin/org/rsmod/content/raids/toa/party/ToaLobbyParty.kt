@@ -8,7 +8,7 @@ import org.rsmod.game.entity.Player
  * Tracks members, applicants, blocked players, and the party's
  * invocation settings. The first player in [members] is the leader.
  */
-class ToaLobbyParty(leader: Player) {
+class ToaLobbyParty(leader: Player, creationCycle: Int) {
 
     /** Party members, in join order. Index 0 is always the leader. */
     val members: MutableList<Player> = mutableListOf()
@@ -26,8 +26,11 @@ class ToaLobbyParty(leader: Player) {
     var leaderName: String = leader.displayName
         private set
 
-    /** Server cycle when the party was created (for the "age" display). */
-    val creationCycle: Long = System.currentTimeMillis()
+    /**
+     * Server tick (map clock) when the party was created. The party list
+     * CS2 expects the age in ticks (it converts with scale(60, 100, ...)).
+     */
+    val creationCycle: Int = creationCycle
 
     init {
         members.add(leader)
