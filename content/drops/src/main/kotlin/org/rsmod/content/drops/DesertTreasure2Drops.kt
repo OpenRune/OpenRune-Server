@@ -9,6 +9,7 @@ import dtx.core.Rollable
 import dtx.core.singleRollable
 import org.rsmod.api.config.refs.BaseParams
 import org.rsmod.api.droptable.DropRollItem
+import org.rsmod.api.droptable.KillRollContext
 import org.rsmod.api.player.vars.VarPlayerIntMapSetter
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
@@ -39,6 +40,14 @@ private val DT2_AWAKENED_KILLCOUNT_VARPS: List<VarpServerType> by lazy {
 }
 
 public fun Npc.isDt2AwakenedEncounter(): Boolean = vars["varn.awakened_state"] == 1
+
+public fun dt2Drop(obj: String, regular: Int, awakened: Int): Rollable<Player, DropRollItem> =
+    singleRollable {
+        selectResult { _, otherArgs ->
+            val awakenedKill = otherArgs[KillRollContext.npc]?.isDt2AwakenedEncounter() == true
+            RollResult.Single(DropRollItem(obj, if (awakenedKill) awakened else regular))
+        }
+    }
 
 public fun Player.shouldDropSanguineTorvaKit(npc: Npc, kitObj: String): Boolean {
     if (!npc.isDt2AwakenedEncounter()) return false
