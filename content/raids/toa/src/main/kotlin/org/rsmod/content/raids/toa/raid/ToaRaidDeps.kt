@@ -1,6 +1,7 @@
 package org.rsmod.content.raids.toa.raid
 
 import jakarta.inject.Inject
+import net.rsprot.protocol.api.NetworkService
 import org.rsmod.api.bossbar.plugin.BossHpBarScript
 import org.rsmod.api.player.protect.ProtectedAccessLauncher
 import org.rsmod.api.random.GameRandom
@@ -10,6 +11,7 @@ import org.rsmod.api.repo.npc.NpcRepository
 import org.rsmod.api.repo.obj.ObjRepository
 import org.rsmod.api.repo.region.RegionRepository
 import org.rsmod.game.MapClock
+import org.rsmod.game.entity.Player
 import org.rsmod.game.queue.WorldQueueList
 
 /**
@@ -33,4 +35,6 @@ constructor(
     val launcher: ProtectedAccessLauncher,
     /** @Singleton script (safe to inject); shows boss-style progress bars such as the Crondis palm. */
     val bossHpBar: BossHpBarScript,
+    /** Singleton binding from NetworkModule; used for the raid's extended NPC view (ToaNpcView.kt). */
+    val network: NetworkService<Player>,
 )

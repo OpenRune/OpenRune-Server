@@ -118,6 +118,8 @@ object ToaRaidManager {
 
         player.currentRaid = raid
         raid.place(player, encounter)
+        // Offline_Scape TOARaidArea.enter: every room.
+        raid.deps.network.extendNpcView(player)
         player.toaController = encounter.controllerId
         player.kickedFromRaid = if (room.kind == ToaRoom.Kind.MAIN_HALL) 0 else 1
         player.hudCurrentPath = room.hudPath
@@ -167,6 +169,8 @@ object ToaRaidManager {
         raid.revive(player)
         raid.stopDying(player)
         removeRaidItems(player)
+        // Logout included: see resetNpcView for why the zone radius must not leak.
+        raid.deps.network.resetNpcView(player)
         player.currentRaid = null
         raid.remove(player)
         raid.players.remove(player)
