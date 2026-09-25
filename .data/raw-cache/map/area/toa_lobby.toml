@@ -1,0 +1,12 @@
+[[area]]
+name = "Tombs of Amascut Lobby"
+area_id = "area.toa_lobby"
+levels = [0]
+
+[[area.polygons]]
+vertices = [
+    [3340, 9100],
+    [3377, 9100],
+    [3377, 9132],
+    [3340, 9132],
+]
