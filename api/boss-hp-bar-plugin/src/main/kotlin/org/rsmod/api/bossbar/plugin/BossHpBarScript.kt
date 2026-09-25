@@ -11,6 +11,7 @@ import org.rsmod.api.config.refs.params
 import org.rsmod.api.instances.InstanceManager
 import org.rsmod.api.instances.events.InstancePlayerJoinUnboundEvent
 import org.rsmod.api.instances.events.InstancePlayerLeaveUnboundEvent
+import org.rsmod.api.player.output.ClientScripts
 import org.rsmod.api.player.output.runClientScript
 import org.rsmod.api.player.protect.ProtectedAccessLauncher
 import org.rsmod.api.player.ui.ifSetHide
@@ -61,6 +62,7 @@ public class BossHpBarScript @Inject constructor(
         }
 
         onEvent<NpcStateEvents.Delete> {
+            if (contributor.isClosingAfterDeath(npc)) return@onEvent
             when (npcBarMode(npc)) {
                 BossHpBarMode.ON_ATTACK -> {
                     for (player in contributor.removeTrackedForNpc(npc)) {
@@ -85,7 +87,7 @@ public class BossHpBarScript @Inject constructor(
     public fun onOpen(player: Player, npc: Npc) {
         if (player.bossHudDisabled) return
 
-        player.bossHudNpcID = npc.id
+        player.bossHudNpcID = npc.visType.id
         player.bossHudBaseHp = npc.baseHitpointsLvl
         player.bossHudCurrentHp = npc.hitpoints
         player.bossHudBarSize = 1
@@ -125,9 +127,22 @@ public class BossHpBarScript @Inject constructor(
         }
     }
 
+    public fun fadeOut(player: Player) {
+        player.runClientScript(2889, commonComponents, 0)
+    }
+
+    public fun onDeathClose(player: Player) {
+        player.bossHudNpcID = -1
+        player.bossHudBaseHp = 0
+        player.bossHudBarSize = 0
+        player.ifSetHide("component.hpbar_hud:hp", true)
+        ClientScripts.ccDeleteAll(player, "component.hpbar_hud:container")
+    }
+
     public fun onUpdate(player: Player, npc: Npc, currentHp: Int = npc.hitpoints, maxHp: Int = npc.baseHitpointsLvl) {
         if (player.bossHudDisabled) return
 
+        player.bossHudNpcID = npc.visType.id
         player.bossHudBaseHp = maxHp
         player.bossHudCurrentHp = currentHp
     }
@@ -140,7 +155,11 @@ public class BossHpBarScript @Inject constructor(
     }
 
     private fun npcBarMode(npc: Npc): BossHpBarMode =
-        BossHpBarMode.fromId(npc.visType.paramOrNull(params.boss_hp_bar_mode) ?: 0)
+        BossHpBarMode.fromId(
+            npc.visType.paramOrNull(params.boss_hp_bar_mode)
+                ?: npc.type.paramOrNull(params.boss_hp_bar_mode)
+                ?: 0,
+        )
 
     private fun Npc.barColour(param: ParamInt): Color? {
         val packed = visType.paramOrNull(param) ?: return null
