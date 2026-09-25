@@ -6,8 +6,8 @@ import dtx.core.Single
 import dtx.core.flatten
 import dtx.impl.chance.RateBoostChanceRollable
 import dtx.impl.chance.RateBoosts
-import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.parallel.Execution

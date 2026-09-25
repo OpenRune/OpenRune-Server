@@ -1,11 +1,11 @@
 package dtx.impl.weighted
 
 import dtx.core.ArgMap
+import dtx.core.RollResult
 import dtx.core.Rollable
 import dtx.core.RollableHooks
-import dtx.core.RollResult
 
-public interface WeightedRollable<T, R>: Rollable<T, R> {
+public interface WeightedRollable<T, R> : Rollable<T, R> {
 
     public val weight: Double
     public val rollable: Rollable<T, R>
@@ -19,7 +19,7 @@ public interface WeightedRollable<T, R>: Rollable<T, R> {
         return rollable
     }
 
-    private data object Empty: WeightedRollable<Any?, Any?> {
+    private data object Empty : WeightedRollable<Any?, Any?> {
 
         override fun includeInRoll(onTarget: Any?, otherArgs: ArgMap): Boolean {
             return false
@@ -63,7 +63,7 @@ public data class WeightedRollableImpl<T, R>(
     override val rollable: Rollable<T, R>,
     private val hooks: RollableHooks<T, R> = RollableHooks.Default(),
     override val boosted: Boolean = false,
-): WeightedRollable<T, R>, RollableHooks<T, R> by hooks {
+) : WeightedRollable<T, R>, RollableHooks<T, R> by hooks {
 
     override fun includeInRoll(onTarget: T, otherArgs: ArgMap): Boolean {
         return rollable.includeInRoll(onTarget, otherArgs)
@@ -78,7 +78,7 @@ public class WeightedCollectionRollable<T, R>(
     override val weight: Double,
     internal val rollables: Collection<WeightedRollable<T, R>>,
     internal val hooks: RollableHooks<T, R> = RollableHooks.Default(),
-): WeightedRollable<T, R>, RollableHooks<T, R> by hooks {
+) : WeightedRollable<T, R>, RollableHooks<T, R> by hooks {
 
     override fun includeInRoll(onTarget: T, otherArgs: ArgMap): Boolean {
         return rollables.any { it.includeInRoll(onTarget, otherArgs) }

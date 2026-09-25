@@ -1,16 +1,15 @@
 package org.rsmod.tools.wiki.dumping
 
+import dtx.rs.brimstoneRarityDenominator
 import org.rsmod.tools.wiki.dumping.wiki.HerbDropTableParser
 import org.rsmod.tools.wiki.dumping.wiki.HerbRollVariant
 import org.rsmod.tools.wiki.dumping.wiki.ParsedWikiDrop
 import org.rsmod.tools.wiki.dumping.wiki.WikiCompanionDropParser
+import org.rsmod.tools.wiki.dumping.wiki.WikiCompanionDropSpec
 import org.rsmod.tools.wiki.dumping.wiki.WikiDropNotes
+import org.rsmod.tools.wiki.dumping.wiki.WikiDropSection
 import org.rsmod.tools.wiki.dumping.wiki.WikiQuestDropMode
 import org.rsmod.tools.wiki.dumping.wiki.WikiQuestDropRequirement
-import org.rsmod.tools.wiki.dumping.wiki.WikiDropParser
-import org.rsmod.tools.wiki.dumping.wiki.WikiDropSection
-import org.rsmod.tools.wiki.dumping.wiki.WikiCompanionDropSpec
-import dtx.rs.brimstoneRarityDenominator
 
 data class UnknownDropRateEntry(
     val wikiPage: String,

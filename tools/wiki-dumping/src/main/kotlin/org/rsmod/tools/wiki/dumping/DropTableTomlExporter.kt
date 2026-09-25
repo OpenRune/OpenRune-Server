@@ -1,11 +1,11 @@
 package org.rsmod.tools.wiki.dumping
 
-import org.rsmod.api.droptable.toml.DropTableTomlWriter
 import java.nio.file.Path
 import kotlin.io.path.createDirectories
 import kotlin.io.path.writeText
-import org.rsmod.api.droptable.toml.TomlDropTableDef
+import org.rsmod.api.droptable.toml.DropTableTomlWriter
 import org.rsmod.api.droptable.toml.TomlChanceEntry
+import org.rsmod.api.droptable.toml.TomlDropTableDef
 import org.rsmod.api.droptable.toml.TomlGuaranteedEntry
 import org.rsmod.api.droptable.toml.TomlSeparateRoll
 import org.rsmod.api.droptable.toml.TomlWeightedEntry

@@ -1,7 +1,7 @@
 package org.rsmod.api.droptable
 
-import dtx.core.Single
 import dtx.core.Rollable
+import dtx.core.Single
 import dtx.impl.chance.RateBoostChanceRollable
 import dtx.impl.chance.RateBoosts
 import dtx.rs.RSPreRollTable
