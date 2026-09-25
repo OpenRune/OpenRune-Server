@@ -1,6 +1,7 @@
 package org.rsmod.content.raids.toa.raid
 
 import org.rsmod.annotations.InternalApi
+import org.rsmod.api.player.hook.TeleportType
 import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.content.raids.toa.party.ToaPartyManager
@@ -11,7 +12,11 @@ import org.rsmod.map.CoordGrid
 
 /*
  * Moving players between the lobby and the raid's rooms, and the dialogs shared by several
- * locs. These are top-level ProtectedAccess extensions rather than private functions of
+ * locs.
+ *
+ * Every teleport the raid does itself uses TeleportType.Exempt, like the standard death: they are
+ * scripted moves, not spells, so PlayerTeleportValidateHooks (teleblock, our ghost block in
+ * ToaTeleportHook) must not veto them. These are top-level ProtectedAccess extensions rather than private functions of
  * ToaRaidScript so that rooms (WardensFirstEncounter) and the debug cheats can use them too.
  */
 
@@ -103,7 +108,7 @@ internal suspend fun ProtectedAccess.travel(target: ToaEncounter, fromLobby: Boo
     val arrival = target.arrival()
     // Before the teleport: leaving the lobby area checks isInRaid() to keep the party.
     ToaRaidManager.moveTo(player, target)
-    telejump(arrival.coords)
+    telejump(arrival.coords, TeleportType.Exempt)
     arrival.facing?.let { faceDirection(it) }
 
     if (fromLobby) {
@@ -129,7 +134,7 @@ internal suspend fun ProtectedAccess.travel(target: ToaEncounter, fromLobby: Boo
     if (raid.isInside(player)) reopenHud(raid)
 }
 
-private fun ProtectedAccess.reopenHud(raid: ToaRaid) {
+internal fun ProtectedAccess.reopenHud(raid: ToaRaid) {
     ifOpenFullOverlay(TOA_HUD) // same slot as the fade, hence after closing it
     ToaRaidManager.sendHud(player, raid)
 }
@@ -145,7 +150,7 @@ internal suspend fun ProtectedAccess.exitRaid() {
     delay(2)
 
     ToaRaidManager.leave(player, logout = false)
-    telejump(TOA_OUTSIDE)
+    telejump(TOA_OUTSIDE, TeleportType.Exempt)
     faceDirection(Direction.North)
 
     delay(1)
@@ -236,7 +241,7 @@ internal fun Player.objectPronoun(): String =
         else -> "them"
     }
 
-private fun ProtectedAccess.fadeOut() =
+internal fun ProtectedAccess.fadeOut() =
     fadeOverlay(
         startColour = 0,
         startTransparency = 255,
@@ -245,7 +250,7 @@ private fun ProtectedAccess.fadeOut() =
         clientDuration = FADE_CYCLES,
     )
 
-private fun ProtectedAccess.fadeIn() =
+internal fun ProtectedAccess.fadeIn() =
     fadeOverlay(
         startColour = 0,
         startTransparency = 0,

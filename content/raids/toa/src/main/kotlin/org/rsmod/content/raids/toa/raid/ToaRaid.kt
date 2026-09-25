@@ -1,5 +1,8 @@
 package org.rsmod.content.raids.toa.raid
 
+import dev.openrune.ServerCacheManager
+import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.rscm.RSCMType
 import org.rsmod.content.raids.toa.party.ToaInvocation
 import org.rsmod.content.raids.toa.party.ToaLobbyParty
 import org.rsmod.content.raids.toa.party.ToaPartySettings
@@ -41,6 +44,10 @@ class ToaRaid(val lobbyParty: ToaLobbyParty, val settings: ToaPartySettings, val
     /** Every built, not yet destroyed room: [current] plus old ones that still hold stragglers. */
     private val encounters = ArrayList<ToaEncounter>()
 
+    /** Set once the raid is over (everyone left); stops the HUD refresh. */
+    var ended = false
+        internal set
+
     /** The room the party is heading into. */
     var current: ToaEncounter? = null
         private set
@@ -79,6 +86,33 @@ class ToaRaid(val lobbyParty: ToaLobbyParty, val settings: ToaPartySettings, val
             else -> null
         }
 
+    /**
+     * Offline_Scape TOARaidParty: the attempts invocations, i.e. how many team wipes end the
+     * raid. `null` (none active) means unlimited.
+     */
+    val permittedTeamDeaths: Int? =
+        when {
+            isActive("Try Again") -> 10
+            isActive("Persistence") -> 5
+            isActive("Softcore Run") -> 3
+            isActive("Hardcore Run") -> 1
+            else -> null
+        }
+
+    /** Wipes so far: every player in a started room dead at once (Offline_Scape teamDeaths). */
+    var teamDeaths = 0
+        internal set
+
+    /** Every death and every logout mid-challenge (the "Total deaths" in the messages). */
+    var totalDeaths = 0
+        internal set
+
+    /** Players who died in a started room and wait as ghosts until it ends or resets. */
+    private val ghosts = HashSet<Player>()
+
+    /** Players between their killing hit and their respawn (see ToaDeathScript). */
+    private val dying = HashSet<Player>()
+
     val timerStarted: Boolean
         get() = startCycle >= 0
 
@@ -89,6 +123,48 @@ class ToaRaid(val lobbyParty: ToaLobbyParty, val settings: ToaPartySettings, val
     fun isActive(name: String): Boolean {
         val invocation = ToaInvocation.ALL.firstOrNull { it.name == name } ?: return false
         return settings.isActive(invocation)
+    }
+
+    // ---- Deaths ----
+
+    fun isGhost(player: Player): Boolean = player in ghosts
+
+    fun isDying(player: Player): Boolean = player in dying
+
+    /** Marks [player] as dying. `false` if they already were: the extra death is ignored. */
+    internal fun startDying(player: Player): Boolean = dying.add(player)
+
+    internal fun stopDying(player: Player) {
+        dying.remove(player)
+    }
+
+    /**
+     * Whether the party may retry after [extraWipes] more wipes. With [extraWipes] = 1 this is
+     * "would the next wipe still allow another attempt", which picks the respawn message.
+     */
+    fun canRetryAfter(extraWipes: Int = 0): Boolean {
+        val permitted = permittedTeamDeaths ?: return true
+        return teamDeaths + extraWipes < permitted
+    }
+
+    /**
+     * Turns [player] into a ghost (Offline_Scape turnIntoDeadGhost): the toa_player_ghost NPC
+     * model, and state 30 on everyone's HUD.
+     *
+     * TODO: vanilla also hides the inventory and equipment tabs, but OpenRune's
+     * restoreToplevelTabs is still a stub, so there's no way to bring them back yet.
+     */
+    internal fun makeGhost(player: Player) {
+        if (!ghosts.add(player)) return
+        player.transmog = ServerCacheManager.getNpc(GHOST_NPC.asRSCM(RSCMType.NPC))
+        player.rebuildAppearance()
+    }
+
+    /** Undoes [makeGhost]. Safe to call for anyone. */
+    internal fun revive(player: Player) {
+        if (!ghosts.remove(player)) return
+        player.transmog = null
+        player.rebuildAppearance()
     }
 
     // ---- Party ----
@@ -209,6 +285,9 @@ class ToaRaid(val lobbyParty: ToaLobbyParty, val settings: ToaPartySettings, val
     fun totalChallengeTicks(): Int = challengeResults.sumOf { it.ticks }
 
     companion object {
+        /** Offline_Scape GHOST_PLAYER_NPC_ID 11695. */
+        private const val GHOST_NPC = "npc.toa_player_ghost"
+
         /** 100 ticks of 600 ms. */
         const val TICKS_PER_MINUTE = 100
 

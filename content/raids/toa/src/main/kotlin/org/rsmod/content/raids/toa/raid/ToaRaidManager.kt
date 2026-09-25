@@ -11,6 +11,7 @@ import org.rsmod.api.player.vars.intVarp
 import org.rsmod.content.raids.toa.party.ToaLobbyParty
 import org.rsmod.content.raids.toa.party.ToaPartyManager
 import org.rsmod.content.raids.toa.raid.encounter.ToaEncounter
+import org.rsmod.content.raids.toa.raid.encounter.ToaStage
 import org.rsmod.game.entity.Player
 
 /**
@@ -59,7 +60,10 @@ object ToaRaidManager {
     /** toa_client_p0..p7: 0 empty slot, 1..27 health, 30 dead, 31 not in this room. */
     private const val HUD_STATE_EMPTY = 0
     private const val HUD_STATE_FULL_HEALTH = 27
+    private const val HUD_STATE_DEAD = 30
     private const val HUD_STATE_ELSEWHERE = 31
+
+    private const val HUD_REFRESH_TICKS = 1
 
     private const val SCRIPT_HUD_STATUS_NAMES = 6585 // toa_hud_statusnames
     private const val SCRIPT_SPEEDRUN_TIME_UPDATE = 6580 // toa_speedrun_time_update
@@ -80,7 +84,22 @@ object ToaRaidManager {
         val raid = ToaRaid(party, party.settings.copy(), deps)
         raid.advanceTo(ToaRoom.MAIN_HALL) ?: return null
         raids[party] = raid
+        scheduleHudRefresh(raid)
         return raid
+    }
+
+    /**
+     * Refreshes every player's health orbs once a tick for the raid's lifetime. The hit events
+     * only cover damage (healing publishes nothing), and a varbit is only sent when its value
+     * changes, so a steady refresh costs almost nothing and catches both. A world queue re-armed
+     * each tick; it stops by itself when the raid ends.
+     */
+    private fun scheduleHudRefresh(raid: ToaRaid) {
+        raid.deps.worldQueues.add(HUD_REFRESH_TICKS) {
+            if (raid.ended) return@add
+            refreshHudStates(raid)
+            scheduleHudRefresh(raid)
+        }
     }
 
     /**
@@ -127,6 +146,24 @@ object ToaRaidManager {
      */
     fun leave(player: Player, logout: Boolean) {
         val raid = player.currentRaid ?: return
+        val room = raid.encounterOf(player)
+
+        // Offline_Scape TOARaidArea.onLogout: logging out inside a running challenge counts as a
+        // death. (Offline_Scape also let you rejoin after logging back in; we don't yet.)
+        if (logout && room != null && room.stage == ToaStage.STARTED && room.inChallengeArea(player)) {
+            raid.totalDeaths++
+            for (other in room.players) {
+                if (other !== player) {
+                    other.mes(
+                        "<col=ff0000>${player.displayName}</col> has logged out. " +
+                            "Total deaths: <col=ff0000>${raid.totalDeaths}</col>."
+                    )
+                }
+            }
+        }
+
+        raid.revive(player)
+        raid.stopDying(player)
         player.currentRaid = null
         raid.remove(player)
         raid.players.remove(player)
@@ -142,6 +179,8 @@ object ToaRaidManager {
 
         // Everyone else's HUD shifts up a slot, like generateHudPlayerList().
         refreshHud(raid)
+        // Offline_Scape TOARaidParty.leave: if only ghosts are left behind, the room resets.
+        room?.checkRoomReset()
         if (raid.players.isEmpty()) end(raid)
     }
 
@@ -160,6 +199,7 @@ object ToaRaidManager {
     }
 
     private fun end(raid: ToaRaid) {
+        raid.ended = true
         raids.remove(raid.lobbyParty)
         raid.destroyAll()
     }
@@ -236,6 +276,7 @@ object ToaRaidManager {
                 when {
                     member == null -> HUD_STATE_EMPTY
                     raid.encounterOf(member) !== viewerRoom -> HUD_STATE_ELSEWHERE
+                    raid.isGhost(member) -> HUD_STATE_DEAD
                     else -> healthState(member)
                 }
             VarPlayerIntMapSetter.set(viewer, "varbit.toa_client_p$i", state)
@@ -256,7 +297,7 @@ object ToaRaidManager {
     /**
      * Health orb value. Offline_Scape uses 1 + min(28, floor(hp/max * 28)), which gives 29 at
      * full health, but the vanilla capture shows 27 at full, so this is scaled to 1..27.
-     * TODO: re-check against a capture of a damaged player; refresh on HP change; 30 for ghosts.
+     * TODO: re-check the 1..27 scale against a capture of a damaged player.
      */
     private fun healthState(player: Player): Int {
         val max = player.baseHitpointsLvl.coerceAtLeast(1)
