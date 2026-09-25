@@ -1,4 +1,4 @@
-package org.rsmod.content.bosses.deserttreasure2.vardorvis
+package org.rsmod.content.bosses.vardorvis
 
 import kotlin.math.PI
 import kotlin.math.atan2
