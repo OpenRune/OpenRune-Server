@@ -91,7 +91,7 @@ constructor(
         val count = drop.rollCount(random)
         CollectionLog.grant(receiver, obj, count)
         val spawned = objRepo.add(obj, coords, duration, receiver, count)
-        ClientScripts.lootTrackerAddLoot(receiver, npc.id, eventId, spawned.type, spawned.count)
+        ClientScripts.lootTrackerAddLoot(receiver, npc.visType.id, eventId, spawned.type, spawned.count)
         for (bonus in drop.bonusDrops) {
             spawnDrop(bonus, coords, duration, receiver, npc, eventId)
         }
