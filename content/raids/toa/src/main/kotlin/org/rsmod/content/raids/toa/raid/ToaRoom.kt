@@ -7,7 +7,7 @@ import org.rsmod.map.CoordGrid
 
 /**
  * The raid's rooms and their static data. Each room is one map square (8x8 zones) of the static
- * map, copied on all 4 levels into its own small instance region.
+ * map, copied into its own small instance region (all 4 levels unless [levels] says otherwise).
  *
  * Source: Offline_Scape EncounterType (zone coords, spawns, challenge areas, Osmumten tile).
  * Deviations from it are marked "Capture:".
@@ -21,6 +21,7 @@ import org.rsmod.map.CoordGrid
  * @property challengeMax north-east corner of the challenge area (x/z only, inclusive).
  * @property osmumtenTile where Osmumten appears when a boss is beaten.
  * @property challengeName used in "Challenge started/complete: ..." messages.
+ * @property levels which floors of the map square the instance copies. All four by default.
  */
 enum class ToaRoom(
     val zoneX: Int,
@@ -34,6 +35,7 @@ enum class ToaRoom(
     val challengeMax: CoordGrid? = null,
     val osmumtenTile: CoordGrid? = null,
     val challengeName: String? = null,
+    val levels: IntRange = 0..3,
 ) {
     MAIN_HALL(440, 640, Kind.MAIN_HALL, CoordGrid(3550, 5161, 0), spawnSpreadX = 2),
 
@@ -60,6 +62,8 @@ enum class ToaRoom(
         challengeMin = CoordGrid(3924, 5151, 1),
         challengeMax = CoordGrid(3947, 5166, 1),
         challengeName = "The Wardens",
+        // Offline_Scape SecondWardenEncounter.constructRegion: copyPlanesMap(..., 0, 1).
+        levels = 0..1,
     ),
 
     // Capture: the Scabaras path landed on (3523, 5280). Offline_Scape has x = 3522.
@@ -207,18 +211,23 @@ enum class ToaRoom(
         spawn.translate(random.of(0, spawnSpreadX), random.of(0, spawnSpreadZ))
 
     /**
-     * The room's instance template: its map square on every level, placed at zone (4, 4) of a
-     * small (16x16-zone) region so the room is surrounded by void, like vanilla.
+     * The room's instance template: its map square on each of [levels], placed at zone (4, 4) of
+     * a small (16x16-zone) region so the room is surrounded by void, like vanilla.
      *
-     * TODO: Offline_Scape copies only levels 0-1 for the second Wardens room. Check a capture.
+     * One `copy` per level because the template DSL's level-range overload is private; only
+     * `copy` (one level) and `copyAllLevels` are public. Each copy keeps its level, so
+     * `region.normal[...]` still maps every copied level. Coordinates on a level that wasn't
+     * copied have no mapping and would throw, so rooms must only use their own levels.
      */
     val template: RegionStaticTemplate by lazy {
         RegionTemplate.create {
-            copyAllLevels(zoneX, zoneZ) {
-                regionZoneX = 4
-                regionZoneZ = 4
-                zoneWidth = ROOM_ZONE_LENGTH
-                zoneLength = ROOM_ZONE_LENGTH
+            for (level in levels) {
+                copy(zoneX, zoneZ, level) {
+                    regionZoneX = 4
+                    regionZoneZ = 4
+                    zoneWidth = ROOM_ZONE_LENGTH
+                    zoneLength = ROOM_ZONE_LENGTH
+                }
             }
         }
     }

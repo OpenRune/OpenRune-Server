@@ -1,0 +1,15 @@
+[[area]]
+name = "Tombs of Amascut Raid"
+area_id = "area.toa_raid"
+levels = [0, 1, 2, 3]
+
+# Every room's static map square: map squares x 55-61, z 80-84. The same bounds as the
+# existing "Tombs of Amascut: Multiway" polygon in multiway.toml. Instance coordinates are
+# normalised to these static coordinates for area checks, so this covers every raid instance.
+[[area.polygons]]
+vertices = [
+    [3520, 5120],
+    [3966, 5120],
+    [3966, 5438],
+    [3520, 5438],
+]

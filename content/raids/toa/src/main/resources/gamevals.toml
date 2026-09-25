@@ -10,3 +10,11 @@ toa_personal_kc_requirement = 65475
 # Explicit id, like the other area modules (rune_essence_mine 57, motherlode_mine 59).
 [gamevals.area]
 toa_lobby = 60
+# The raid's rooms (polygon in .data/raw-cache/map/area/toa_raid.toml). Leaving it by any
+# means other than our own exits (a teleport spell, a tablet) leaves the raid.
+toa_raid = 61
+
+# Our own death queue: a TOA death is swapped onto this before queue.death can run (see
+# ToaDeathScript). Explicit id; custom queues elsewhere use 40-60 and 65524-65535.
+[gamevals.queue]
+toa_death = 61
