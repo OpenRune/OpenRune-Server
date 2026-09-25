@@ -2,6 +2,7 @@ package org.rsmod.content.raids.toa.party
 
 import dev.openrune.definition.type.widget.IfEvent
 import jakarta.inject.Inject
+import jakarta.inject.Singleton
 import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.output.runClientScript
 import org.rsmod.api.player.protect.ProtectedAccess
@@ -9,7 +10,6 @@ import org.rsmod.api.player.protect.ProtectedAccessLauncher
 import org.rsmod.api.player.stat.statBase
 import org.rsmod.api.player.ui.ifOpenMainModal
 import org.rsmod.api.player.ui.ifSetEvents
-import org.rsmod.api.player.ui.ifSetText
 import org.rsmod.api.player.vars.intVarBit
 import org.rsmod.api.player.vars.intVarp
 import org.rsmod.api.script.onOpLoc1
@@ -59,6 +59,12 @@ private val SINGLE_SELECT_CATEGORIES = setOf(
     ToaInvocationCategory.PATH_LEVEL,
 )
 
+/**
+ * @Singleton because [ToaRaidScript][org.rsmod.content.raids.toa.raid.ToaRaidScript]
+ * injects this script to open the board from the raid entrance ("Form or join a
+ * party."). Without it Guice would build a second, separate instance.
+ */
+@Singleton
 class ToaPartyListScript @Inject constructor(
     private val protectedAccess: ProtectedAccessLauncher,
 ) : PluginScript() {
@@ -88,6 +94,11 @@ class ToaPartyListScript @Inject constructor(
     // ==================================================================
     // Interface 772 — Party list loop
     // ==================================================================
+
+    /** Opens the party board (772), as if the grouping board was clicked. */
+    internal suspend fun ProtectedAccess.openPartyList() {
+        partyListLoop()
+    }
 
     private suspend fun ProtectedAccess.partyListLoop() {
         while (true) {
@@ -126,7 +137,7 @@ class ToaPartyListScript @Inject constructor(
     }
 
     private fun ProtectedAccess.populateList() {
-        ifOpenMainModal("interface.toa_partylist")
+        ifOpenMainModal("interface.toa_partylist", transparency = -2)
 
         ifSetEvents(
             "component.toa_partylist:contents",
@@ -199,8 +210,8 @@ class ToaPartyListScript @Inject constructor(
         }
 
         val settings = ToaPartyManager.loadPersonalSettings(player)
+        // createParty also updates the lobby HUD (773) names list.
         val party = ToaPartyManager.createParty(player, settings, mapClock) ?: return null
-        updateLobbyHud(party)
         player.viewingParty = party
         player.currentTab = 1
         return party
@@ -288,7 +299,7 @@ class ToaPartyListScript @Inject constructor(
 
     private fun ProtectedAccess.openAndPopulateDetails(party: ToaLobbyParty) {
 
-        ifOpenMainModal("interface.toa_partydetails")
+        ifOpenMainModal("interface.toa_partydetails", transparency = -2)
 
         // First arg is the viewer's view value: the CS2 only makes member rows
         // hoverable/clickable (kick) when it is VIEW_LEADER.
@@ -658,12 +669,5 @@ class ToaPartyListScript @Inject constructor(
         // TODO: read from TOA kill count varps once the raid system is built
         sb.append("0 / 0 / 0")
         return sb.toString()
-    }
-
-    private fun updateLobbyHud(party: ToaLobbyParty) {
-        val text = party.buildPartyString()
-        for (member in party.members) {
-            member.ifSetText("component.toa_lobby:names", text)
-        }
     }
 }
