@@ -51,15 +51,6 @@ private const val SYNTH_PRESET_SAVE_LOAD = 2655
 private const val PRESET_SLOTS = 5
 private val PRESET_PARTS = listOf("a", "b", "c")
 
-// ---- Personal settings (server-only custom varps, see pack/configs/toa_vars.toml) ----
-// The invocations + completion requirement a player's next party starts with.
-private val PERSONAL_INVOCATION_VARPS = listOf(
-    "varp.toa_personal_invocations_a",
-    "varp.toa_personal_invocations_b",
-    "varp.toa_personal_invocations_c",
-)
-private const val VARP_PERSONAL_KC_REQUIREMENT = "varp.toa_personal_kc_requirement"
-
 // ---- Invocation categories where only one invocation may be active ----
 private val SINGLE_SELECT_CATEGORIES = setOf(
     ToaInvocationCategory.ATTEMPTS,
@@ -84,8 +75,7 @@ class ToaPartyListScript @Inject constructor(
             partyListLoop()
         }
         onPlayerLogout {
-            ToaPartyManager.onLogout(player)
-            // TODO (#7): refresh remaining members' views / new leader's view
+            ToaPartyManager.onLogout(player) // also refreshes the other party members' screens
         }
         onPlayerLogin {
             // OpenRune saves every varp by default, so without this a player who
@@ -208,9 +198,8 @@ class ToaPartyListScript @Inject constructor(
             return null
         }
 
-        val settings = loadPersonalSettings()
+        val settings = ToaPartyManager.loadPersonalSettings(player)
         val party = ToaPartyManager.createParty(player, settings, mapClock) ?: return null
-        player.clientPartyStatusVar = 1
         updateLobbyHud(party)
         player.viewingParty = party
         player.currentTab = 1
@@ -283,7 +272,15 @@ class ToaPartyListScript @Inject constructor(
 
             // Remember the leader's latest settings for their next party.
             if (party.isLeader(player)) {
-                savePersonalSettings(party.settings)
+                ToaPartyManager.savePersonalSettings(player, party.settings)
+            }
+
+            // Show the change to everyone else in the party. Tab switches and
+            // preset slot selection only affect this player's own screen.
+            val isPersonalOnly = input.component != "component.toa_partydetails:pausebuttons" ||
+                input.subcomponent in 8..11
+            if (!isPersonalOnly) {
+                ToaPartyManager.refreshViewers(party, exclude = player)
             }
             // Loop back → reopens and repopulates 774
         }
@@ -322,18 +319,19 @@ class ToaPartyListScript @Inject constructor(
             bitmaps[2],
         )
 
-        if (party.isLeader(player)) {
-            ifSetEvents(
-                "component.toa_partydetails:pausebuttons",
-                0..97,
-                IfEvent.PauseButton,
-            )
-            ifSetEvents(
-                "component.toa_partydetails:presets_button_click",
-                0..5,
-                IfEvent.PauseButton, // TODO: vanilla uses Op1+Op2 for select/clear
-            )
-        }
+        // Vanilla enables these for EVERY viewer, not just the leader. Without them the
+        // server silently drops the click (Apply, Leave, Back, Refresh, the client's own
+        // 10-second auto-refresh...). Leader-only actions are checked in their handlers.
+        ifSetEvents(
+            "component.toa_partydetails:pausebuttons",
+            0..97,
+            IfEvent.PauseButton,
+        )
+        ifSetEvents(
+            "component.toa_partydetails:presets_button_click",
+            0..5,
+            IfEvent.PauseButton, // TODO: vanilla uses Op1+Op2 for select/clear
+        )
     }
 
     // ==================================================================
@@ -362,6 +360,7 @@ class ToaPartyListScript @Inject constructor(
         if (previouslyApplied != null) {
             previouslyApplied.withdraw(player)
             player.appliedParty = null
+            ToaPartyManager.refreshViewers(previouslyApplied, exclude = player)
         }
 
         val existing = player.currentParty
@@ -373,13 +372,13 @@ class ToaPartyListScript @Inject constructor(
             )
             if (choice == 1) return true
             ToaPartyManager.leaveParty(player)
+            ToaPartyManager.refreshViewers(existing, exclude = player)
         }
 
         if (party.apply(player)) {
             player.appliedParty = party
             player.mes("You have applied to join the party of ${party.leaderName}.")
             if (player.currentTab != 1) player.currentTab = 1
-            // TODO: refresh the leader's applicant view
             return true
         } else {
             player.mes("That party is no longer recruiting.")
@@ -391,7 +390,7 @@ class ToaPartyListScript @Inject constructor(
         val leaderName = party.leaderName
         if (ToaPartyManager.leaveParty(player)) {
             player.mes("You have left the party of $leaderName.")
-            // TODO: refresh leader's view
+            ToaPartyManager.refreshViewers(party, exclude = player)
         }
     }
 
@@ -407,13 +406,17 @@ class ToaPartyListScript @Inject constructor(
         for (applicant in result.formerApplicants) {
             applicant.mes("The party to which you were applying has disbanded.")
         }
+
+        // Their loops see the party has no leader and drop back to the list.
+        for (other in result.formerMembers + result.formerApplicants + result.formerBlocked) {
+            if (other != player) ToaPartyManager.refreshDetailsView(other)
+        }
     }
 
     private fun ProtectedAccess.handleWithdraw(party: ToaLobbyParty) {
         if (party.withdraw(player)) {
             player.appliedParty = null
             player.mes("You have withdrawn your party application.")
-            // TODO: refresh leader's applicant view
         }
     }
 
@@ -434,8 +437,7 @@ class ToaPartyListScript @Inject constructor(
             return false
         }
 
-        party.removeMember(target)
-        target.currentParty = null
+        ToaPartyManager.kickMember(party, target)
         target.mes("You have been kicked from the party of ${player.displayName}.")
         player.mes("You have kicked ${target.displayName} from your party.")
         return true
@@ -461,9 +463,7 @@ class ToaPartyListScript @Inject constructor(
                 player.mes("Your party is full.")
                 return
             }
-            if (party.accept(target)) {
-                target.appliedParty = null
-                target.currentParty = party
+            if (ToaPartyManager.acceptApplicant(party, target)) {
                 player.mes("You have accepted ${target.displayName} into your party.")
                 target.mes("Your application to the party of ${party.leaderName} has been accepted.")
             }
@@ -472,6 +472,7 @@ class ToaPartyListScript @Inject constructor(
                 target.appliedParty = null
                 player.mes("You have declined the party application from ${target.displayName}.")
                 target.mes("Your application to the party of ${party.leaderName} has been declined.")
+                ToaPartyManager.refreshDetailsView(target)
             }
         }
     }
@@ -615,23 +616,6 @@ class ToaPartyListScript @Inject constructor(
         for (part in PRESET_PARTS.indices) {
             vars[presetVarp(slot, part)] = bitmaps[part]
         }
-    }
-
-    /** Builds a new party's settings from the player's saved personal settings. */
-    private fun ProtectedAccess.loadPersonalSettings(): ToaPartySettings {
-        val settings = ToaPartySettings()
-        settings.loadPreset(IntArray(PERSONAL_INVOCATION_VARPS.size) { vars[PERSONAL_INVOCATION_VARPS[it]] })
-        settings.kcRequirement = vars[VARP_PERSONAL_KC_REQUIREMENT]
-        return settings
-    }
-
-    /** Stores the given party settings as the player's personal settings. */
-    private fun ProtectedAccess.savePersonalSettings(settings: ToaPartySettings) {
-        val bitmaps = settings.invocationBitmaps
-        for (i in PERSONAL_INVOCATION_VARPS.indices) {
-            vars[PERSONAL_INVOCATION_VARPS[i]] = bitmaps[i]
-        }
-        vars[VARP_PERSONAL_KC_REQUIREMENT] = settings.kcRequirement
     }
 
     // ==================================================================
