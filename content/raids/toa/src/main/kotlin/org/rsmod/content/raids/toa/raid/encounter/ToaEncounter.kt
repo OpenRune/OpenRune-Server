@@ -54,6 +54,13 @@ open class ToaEncounter(
     var destroyed: Boolean = false
         private set
 
+    /**
+     * Party size when the challenge started (Offline_Scape `teamSize`). Rooms scale with it,
+     * e.g. how much water the Crondis palm needs.
+     */
+    var teamSize: Int = 1
+        private set
+
     /** Map cycle the challenge started at. */
     var startCycle: Int = 0
         private set
@@ -119,6 +126,7 @@ open class ToaEncounter(
         if (stage != ToaStage.NOT_STARTED) return
         stage = ToaStage.STARTED
         startCycle = deps.mapClock.cycle
+        teamSize = raid.players.size.coerceAtLeast(1)
         onStart()
         for (player in raid.players) {
             player.mes("Challenge started: $challengeName")
@@ -133,6 +141,7 @@ open class ToaEncounter(
         stage = ToaStage.STARTED
         startCycle = from.startCycle
         challengeName = from.challengeName
+        teamSize = from.teamSize
     }
 
     /** Offline_Scape `completeRoom`: records the time, sends the messages, runs [onComplete]. */

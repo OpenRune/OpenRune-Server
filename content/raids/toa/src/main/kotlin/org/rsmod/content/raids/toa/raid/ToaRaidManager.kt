@@ -1,5 +1,7 @@
 package org.rsmod.content.raids.toa.raid
 
+import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.rscm.RSCMType
 import org.rsmod.api.attr.AttributeKey
 import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.output.runClientScript
@@ -164,6 +166,7 @@ object ToaRaidManager {
 
         raid.revive(player)
         raid.stopDying(player)
+        removeRaidItems(player)
         player.currentRaid = null
         raid.remove(player)
         raid.players.remove(player)
@@ -202,6 +205,22 @@ object ToaRaidManager {
         raid.ended = true
         raids.remove(raid.lobbyParty)
         raid.destroyAll()
+    }
+
+    /**
+     * Offline_Scape TOAManager.removeTOAItems: items that only exist inside the raid are taken
+     * away when you leave it. Only the Crondis water container exists so far; the Het mirror,
+     * neutralising potion, supplies and honey locusts join this list with their rooms.
+     */
+    private fun removeRaidItems(player: Player) {
+        for (slot in player.inv.indices) {
+            val obj = player.inv[slot] ?: continue
+            if (obj.id in RAID_ITEM_IDS) player.inv[slot] = null
+        }
+    }
+
+    private val RAID_ITEM_IDS: Set<Int> by lazy {
+        setOf("obj.toa_crondis_water_container").mapTo(HashSet()) { it.asRSCM(RSCMType.OBJ) }
     }
 
     /**
