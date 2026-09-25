@@ -1,0 +1,191 @@
+[[varp]]
+id = "varp.pet_morph_unlocks"
+scope = "Perm"
+transmit = "Never"
+
+[[varbit]]
+id = "varbit.pet_beaver_funky_log"
+varp = "varp.pet_morph_unlocks"
+startBit = 0
+endBit = 0
+
+[[varbit]]
+id = "varbit.pet_beaver_fox"
+varp = "varp.pet_morph_unlocks"
+startBit = 1
+endBit = 1
+
+[[varbit]]
+id = "varbit.pet_beaver_pheasant"
+varp = "varp.pet_morph_unlocks"
+startBit = 2
+endBit = 2
+
+[[varbit]]
+id = "varbit.pet_muphin_forms"
+varp = "varp.pet_morph_unlocks"
+startBit = 3
+endBit = 3
+
+[[varbit]]
+id = "varbit.pet_nid_rax"
+varp = "varp.pet_morph_unlocks"
+startBit = 4
+endBit = 4
+
+[[varbit]]
+id = "varbit.pet_lil_zik_morphs"
+varp = "varp.pet_morph_unlocks"
+startBit = 5
+endBit = 5
+
+[[varbit]]
+id = "varbit.pet_phoenix_blue"
+varp = "varp.pet_morph_unlocks"
+startBit = 6
+endBit = 6
+
+[[varbit]]
+id = "varbit.pet_phoenix_green"
+varp = "varp.pet_morph_unlocks"
+startBit = 7
+endBit = 7
+
+[[varbit]]
+id = "varbit.pet_phoenix_purple"
+varp = "varp.pet_morph_unlocks"
+startBit = 8
+endBit = 8
+
+[[varbit]]
+id = "varbit.pet_phoenix_white"
+varp = "varp.pet_morph_unlocks"
+startBit = 9
+endBit = 9
+
+[[varbit]]
+id = "varbit.pet_gull_gulliver"
+varp = "varp.pet_morph_unlocks"
+startBit = 10
+endBit = 10
+
+[[varbit]]
+id = "varbit.pet_gull_fish_fed"
+varp = "varp.pet_morph_unlocks"
+startBit = 11
+endBit = 16
+
+[[varbit]]
+id = "varbit.pet_olmlet_morphs"
+varp = "varp.pet_morph_unlocks"
+startBit = 17
+endBit = 17
+
+[[varp]]
+id = "varp.pet_follower_state"
+scope = "Temp"
+transmit = "Never"
+
+[[varbit]]
+id = "varbit.pet_follower_stuck"
+varp = "varp.pet_follower_state"
+startBit = 0
+endBit = 3
+
+[[varbit]]
+id = "varbit.pet_emote_index"
+varp = "varp.pet_follower_state"
+startBit = 4
+endBit = 7
+
+[[varbit]]
+id = "varbit.pet_follower_busy"
+varp = "varp.pet_follower_state"
+startBit = 8
+endBit = 8
+
+[[varp]]
+id = "varp.pet_emote_cooldown"
+scope = "Temp"
+transmit = "Never"
+
+[[varp]]
+id = "varp.cat_growth"
+scope = "Perm"
+transmit = "Never"
+
+[[varbit]]
+id = "varbit.cat_growth_events"
+varp = "varp.cat_growth"
+startBit = 0
+endBit = 7
+
+[[varbit]]
+id = "varbit.cat_growth_ticks"
+varp = "varp.cat_growth"
+startBit = 8
+endBit = 15
+
+[[varbit]]
+id = "varbit.cat_rats_caught"
+varp = "varp.cat_growth"
+startBit = 16
+endBit = 23
+
+[[varbit]]
+id = "varbit.cat_original_colour"
+varp = "varp.cat_growth"
+startBit = 24
+endBit = 27
+
+[[varbit]]
+id = "varbit.cat_strokes"
+varp = "varp.cat_growth"
+startBit = 28
+endBit = 29
+
+[[varbit]]
+id = "varbit.cat_medal_given"
+varp = "varp.cat_growth"
+startBit = 30
+endBit = 30
+
+[[varp]]
+id = "varp.cat_care"
+scope = "Perm"
+transmit = "Never"
+
+[[varbit]]
+id = "varbit.cat_hunger"
+varp = "varp.cat_care"
+startBit = 0
+endBit = 12
+
+[[varbit]]
+id = "varbit.cat_attention"
+varp = "varp.cat_care"
+startBit = 13
+endBit = 25
+
+[[varp]]
+id = "varp.dog_growth"
+scope = "Perm"
+transmit = "Never"
+
+[[varbit]]
+id = "varbit.dog_growth_events"
+varp = "varp.dog_growth"
+startBit = 0
+endBit = 7
+
+[[varbit]]
+id = "varbit.dog_growth_ticks"
+varp = "varp.dog_growth"
+startBit = 8
+endBit = 15
+
+[[varbit]]
+id = "varbit.dog_fed_ticks"
+varp = "varp.dog_growth"
+startBit = 16
+endBit = 27
