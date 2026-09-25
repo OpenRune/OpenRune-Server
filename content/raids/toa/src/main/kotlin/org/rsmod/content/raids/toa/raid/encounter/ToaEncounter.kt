@@ -1,11 +1,15 @@
 package org.rsmod.content.raids.toa.raid.encounter
 
+import org.rsmod.annotations.InternalApi
+import org.rsmod.api.player.hook.TeleportType
 import org.rsmod.api.player.output.mes
 import org.rsmod.content.raids.toa.raid.ChallengeResult
 import org.rsmod.content.raids.toa.raid.ToaRaid
 import org.rsmod.content.raids.toa.raid.ToaRaidDeps
 import org.rsmod.content.raids.toa.raid.ToaRaidManager
 import org.rsmod.content.raids.toa.raid.ToaRoom
+import org.rsmod.content.raids.toa.raid.toaRestore
+import org.rsmod.content.raids.toa.raid.wipeAftermath
 import org.rsmod.game.entity.Player
 import org.rsmod.game.map.Direction
 import org.rsmod.game.region.Region
@@ -158,6 +162,7 @@ open class ToaEncounter(
             }
         }
 
+        recoverPlayers()
         stopTasks()
         onComplete()
         if (isEnd) {
@@ -181,7 +186,55 @@ open class ToaEncounter(
         }
     }
 
-    /** Offline_Scape `resetRoom`. TODO (v15): honey locusts, called from the death/wipe logic. */
+    /**
+     * Offline_Scape completeRoom's per-player part: ghosts come back to life, anyone outside the
+     * challenge area is brought into it, and after a boss (not a puzzle) everyone is fully
+     * restored.
+     *
+     * TODO: check the restore against a capture. Offline_Scape called `reset()` here, which
+     * restores stats; confirm vanilla does that after a boss.
+     */
+    @OptIn(InternalApi::class)
+    private fun recoverPlayers() {
+        val challengeSpawn = room.challengeSpawn
+        val restore = room.kind != ToaRoom.Kind.PUZZLE
+        for (player in players) {
+            raid.revive(player)
+            if (restore) player.toaRestore()
+            if (challengeSpawn != null && !inChallengeArea(player)) {
+                val dest = coords(challengeSpawn)
+                deps.launcher.launchLenient(player) { telejump(dest, TeleportType.Exempt) }
+            }
+        }
+        ToaRaidManager.refreshHudStates(raid)
+    }
+
+    /**
+     * Offline_Scape checkRoomReset. Once everyone left in a running room is a ghost (nobody alive,
+     * nobody still inside the challenge area), the party has wiped: it costs an attempt, the room
+     * resets, and each player gets [wipeAftermath]. With no attempts left the raid fails instead.
+     *
+     * Called after each death and whenever someone leaves the raid.
+     */
+    @OptIn(InternalApi::class)
+    fun checkRoomReset() {
+        if (destroyed || stage != ToaStage.STARTED) return
+        val inRoom = players
+        // Offline_Scape counted a wipe even for an empty room; nobody is left to see it, so don't.
+        if (inRoom.isEmpty()) return
+        if (inRoom.any { inChallengeArea(it) || !raid.isGhost(it) }) return
+
+        raid.teamDeaths++
+        val retry = raid.canRetryAfter()
+        val encounter = this
+        for (player in inRoom) {
+            // Forced, like a cutscene: must happen even if they have a dialog open.
+            deps.launcher.launchLenient(player) { wipeAftermath(encounter, retry) }
+        }
+        reset()
+    }
+
+    /** Offline_Scape `resetRoom`. TODO: honey locusts (4-6, unless On a Diet or the raid failed). */
     fun reset() {
         stage = ToaStage.NOT_STARTED
         stopTasks()

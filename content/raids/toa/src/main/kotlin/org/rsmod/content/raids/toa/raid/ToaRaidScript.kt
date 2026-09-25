@@ -1,8 +1,11 @@
 package org.rsmod.content.raids.toa.raid
 
 import jakarta.inject.Inject
+import org.rsmod.api.player.hook.TeleportType
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.protect.forcedWalk
+import org.rsmod.api.script.onApLoc1
+import org.rsmod.api.script.onAreaExit
 import org.rsmod.api.script.onEvent
 import org.rsmod.api.script.onOpLoc1
 import org.rsmod.api.script.onOpLoc2
@@ -20,6 +23,7 @@ import org.rsmod.content.raids.toa.raid.encounter.ToaBossEncounter
 import org.rsmod.content.raids.toa.raid.encounter.ToaStage
 import org.rsmod.content.raids.toa.raid.encounter.WardensSecondEncounter
 import org.rsmod.game.entity.player.SessionStateEvent
+import org.rsmod.game.loc.BoundLocInfo
 import org.rsmod.map.CoordGrid
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
@@ -71,7 +75,15 @@ constructor(
         }
         onOpNpc1(ToaBossEncounter.OSMUMTEN) { osmumten() }
         onOpNpc3(ToaBossEncounter.OSMUMTEN) { osmumten() }
-        onOpLoc1(WardensSecondEncounter.CRYSTAL) { rewardCrystal() }
+        // An ap (approach) op, not an op: the crystal can't be walked up to, so an op handler
+        // ends in "I can't reach that!". See rewardCrystal().
+        onApLoc1(WardensSecondEncounter.CRYSTAL) { rewardCrystal(it.loc) }
+
+        // Leaving the raid's map by anything other than our own exits (a teleport spell or tablet)
+        // leaves the raid. Offline_Scape TOARaidArea.leave did this when the next area wasn't a
+        // raid room. Our own exits call ToaRaidManager.leave before teleporting, so they no-op
+        // here; moving between rooms never leaves the area (all rooms normalise inside it).
+        onAreaExit(RAID_AREA) { leftRaidArea() }
 
         onPlayerLogout {
             // Keep toa_mycontroller set (logout = true): the player is saved at an instance
@@ -247,6 +259,7 @@ constructor(
     private suspend fun ProtectedAccess.barrier(barrier: CoordGrid, quick: Boolean) {
         arriveDelay()
         val raid = player.currentRaid ?: return
+        if (blockedAsGhost(raid)) return
         val room = raid.encounterOf(player) ?: return
         val inside = room.inChallengeArea(player)
 
@@ -285,6 +298,7 @@ constructor(
     private suspend fun ProtectedAccess.teleportCrystal(quick: Boolean) {
         arriveDelay()
         val raid = player.currentRaid ?: return
+        if (blockedAsGhost(raid)) return
         val room = raid.encounterOf(player) ?: return
         val challengeSpawn = room.room.challengeSpawn ?: return
 
@@ -296,7 +310,7 @@ constructor(
         }
         val dest = room.coords(challengeSpawn)
         faceSquare(dest)
-        telejump(dest)
+        telejump(dest, TeleportType.Exempt)
     }
 
     /**
@@ -329,9 +343,17 @@ constructor(
         proceed(raid, ToaRoom.MAIN_HALL, "has returned to the Nexus")
     }
 
-    /** The crystal after the Wardens (Offline_Scape RewardCrystalAction). */
-    private suspend fun ProtectedAccess.rewardCrystal() {
-        arriveDelay()
+    /**
+     * The crystal after the Wardens (Offline_Scape RewardCrystalAction).
+     *
+     * Offline_Scape overrode the route to walk to the tile 3 north of the crystal, because nothing
+     * next to it can be stood on. OpenRune's equivalent is an ap trigger: the engine runs it from a
+     * distance once the player is within ap range with line of sight. [isWithinApRange] narrows
+     * that range to [CRYSTAL_AP_RANGE]; while the player is further away it returns `false` and
+     * the engine keeps walking them in and re-runs this handler (the signpost pattern).
+     */
+    private suspend fun ProtectedAccess.rewardCrystal(crystal: BoundLocInfo) {
+        if (!isWithinApRange(crystal, CRYSTAL_AP_RANGE)) return
         val raid = player.currentRaid ?: return
         val room = raid.encounterOf(player) ?: return
         if (room.room != ToaRoom.WARDENS_SECOND_ROOM || room.stage != ToaStage.COMPLETED) return
@@ -345,11 +367,14 @@ constructor(
     /** Capture: mesbox, then the "Abandon the raid?" choice, then the fade out (see exitRaid). */
     private suspend fun ProtectedAccess.abandonRaid() {
         arriveDelay()
-        if (player.currentRaid == null) {
+        val raid = player.currentRaid
+        if (raid == null) {
             // Offline_Scape TOAExitAction: not in a raid (shouldn't happen) -> just out.
-            telejump(TOA_OUTSIDE)
+            telejump(TOA_OUTSIDE, TeleportType.Exempt)
             return
         }
+        // Offline_Scape startLeaveDialogue.
+        if (blockedAsGhost(raid)) return
 
         mesbox(
             "You are about to <col=ad2800>abandon the raid</col>. If you do this, you " +
@@ -369,10 +394,38 @@ constructor(
         exitRaid()
     }
 
+    /**
+     * The player left the raid's map while still in the raid (see the onAreaExit binding).
+     * Area exits are also forced on logout, before onPlayerLogout; that case belongs to the
+     * logout handler (it must keep toa_mycontroller set), so it's skipped here, as in
+     * ToaLobbyScript.
+     */
+    private fun ProtectedAccess.leftRaidArea() {
+        if (player.pendingLogout || player.loggingOut) return
+        if (player.currentRaid == null) return
+        ifCloseSub(TOA_HUD)
+        ToaRaidManager.leave(player, logout = false)
+    }
+
+    /**
+     * Offline_Scape: while you're a ghost the barrier, teleport crystals and exits refuse with
+     * this. Returns `true` if [player] is a ghost.
+     */
+    private suspend fun ProtectedAccess.blockedAsGhost(raid: ToaRaid): Boolean {
+        if (!raid.isGhost(player)) return false
+        mesbox("A mysterious force prevents you from doing that.")
+        return true
+    }
+
     private companion object {
+        const val RAID_AREA = "area.toa_raid"
+        const val TOA_HUD = "interface.toa_hud"
         const val WARDENS_DOOR_OPEN = "loc.toa_nexus_wardens_door_open"
         const val BARRIER = "loc.toa_path_barrier"
         const val BARRIER_STEP = 2
+
+        /** Offline_Scape RewardCrystalAction routes to the crystal's tile + (0, 3). */
+        const val CRYSTAL_AP_RANGE = 3
 
         /** Offline_Scape TOATeleportCrystalAction (45506, 45505, 45866, 45754, 45579). */
         val TELEPORT_CRYSTALS =
