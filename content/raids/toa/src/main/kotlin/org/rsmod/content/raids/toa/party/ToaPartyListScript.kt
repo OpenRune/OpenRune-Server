@@ -2,7 +2,6 @@ package org.rsmod.content.raids.toa.party
 
 import dev.openrune.definition.type.widget.IfEvent
 import jakarta.inject.Inject
-import jakarta.inject.Singleton
 import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.output.runClientScript
 import org.rsmod.api.player.protect.ProtectedAccess
@@ -59,12 +58,6 @@ private val SINGLE_SELECT_CATEGORIES = setOf(
     ToaInvocationCategory.PATH_LEVEL,
 )
 
-/**
- * @Singleton because [ToaRaidScript][org.rsmod.content.raids.toa.raid.ToaRaidScript]
- * injects this script to open the board from the raid entrance ("Form or join a
- * party."). Without it Guice would build a second, separate instance.
- */
-@Singleton
 class ToaPartyListScript @Inject constructor(
     private val protectedAccess: ProtectedAccessLauncher,
 ) : PluginScript() {
@@ -94,11 +87,6 @@ class ToaPartyListScript @Inject constructor(
     // ==================================================================
     // Interface 772 — Party list loop
     // ==================================================================
-
-    /** Opens the party board (772), as if the grouping board was clicked. */
-    internal suspend fun ProtectedAccess.openPartyList() {
-        partyListLoop()
-    }
 
     private suspend fun ProtectedAccess.partyListLoop() {
         while (true) {
