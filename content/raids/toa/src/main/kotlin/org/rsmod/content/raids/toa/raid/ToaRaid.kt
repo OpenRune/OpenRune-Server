@@ -114,6 +114,13 @@ class ToaRaid(val lobbyParty: ToaLobbyParty, val settings: ToaPartySettings, val
     /** Players between their killing hit and their respawn (see ToaDeathScript). */
     private val dying = HashSet<Player>()
 
+    /**
+     * Offline_Scape TOARaidParty.getDamageMultiplier: room hazards hit 0.4% harder per raid level,
+     * capped at 2.5x.
+     */
+    val damageMultiplier: Double
+        get() = (1.0 + settings.raidLevel * DAMAGE_PER_RAID_LEVEL).coerceAtMost(MAX_DAMAGE_MULTIPLIER)
+
     val timerStarted: Boolean
         get() = startCycle >= 0
 
@@ -289,6 +296,9 @@ class ToaRaid(val lobbyParty: ToaLobbyParty, val settings: ToaPartySettings, val
     companion object {
         /** Offline_Scape GHOST_PLAYER_NPC_ID 11695. */
         private const val GHOST_NPC = "npc.toa_player_ghost"
+
+        private const val DAMAGE_PER_RAID_LEVEL = 0.004
+        private const val MAX_DAMAGE_MULTIPLIER = 2.5
 
         /** 100 ticks of 600 ms. */
         const val TICKS_PER_MINUTE = 100

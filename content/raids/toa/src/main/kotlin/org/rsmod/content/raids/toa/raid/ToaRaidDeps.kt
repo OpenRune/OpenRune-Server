@@ -3,6 +3,8 @@ package org.rsmod.content.raids.toa.raid
 import jakarta.inject.Inject
 import net.rsprot.protocol.api.NetworkService
 import org.rsmod.api.bossbar.plugin.BossHpBarScript
+import org.rsmod.api.combat.formulas.AccuracyFormulae
+import org.rsmod.api.npc.interact.AiPlayerInteractions
 import org.rsmod.api.player.protect.ProtectedAccessLauncher
 import org.rsmod.api.random.GameRandom
 import org.rsmod.api.registry.region.RegionRegistry
@@ -10,6 +12,7 @@ import org.rsmod.api.repo.loc.LocRepository
 import org.rsmod.api.repo.npc.NpcRepository
 import org.rsmod.api.repo.obj.ObjRepository
 import org.rsmod.api.repo.region.RegionRepository
+import org.rsmod.api.repo.world.WorldRepository
 import org.rsmod.game.MapClock
 import org.rsmod.game.entity.Player
 import org.rsmod.game.queue.WorldQueueList
@@ -29,6 +32,12 @@ constructor(
     val locRepo: LocRepository,
     val npcRepo: NpcRepository,
     val objRepo: ObjRepository,
+    /** Loc animations, map spotanims and area sounds (room hazards). */
+    val worldRepo: WorldRepository,
+    /** For sending room NPCs into the engine's standard combat against a player (opPlayer2). */
+    val aiInteractions: AiPlayerInteractions,
+    /** Standard accuracy rolls for room NPCs with custom attacks (Crondis crocodiles). */
+    val accuracy: AccuracyFormulae,
     val worldQueues: WorldQueueList,
     val mapClock: MapClock,
     val random: GameRandom,

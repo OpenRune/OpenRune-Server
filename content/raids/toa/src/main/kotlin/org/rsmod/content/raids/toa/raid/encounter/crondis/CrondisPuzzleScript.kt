@@ -3,7 +3,12 @@ package org.rsmod.content.raids.toa.raid.encounter.crondis
 import dev.openrune.ServerCacheManager
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
+import jakarta.inject.Inject
+import org.rsmod.api.config.Constants
 import org.rsmod.api.player.protect.ProtectedAccess
+import org.rsmod.api.script.onAiOpPlayer2
+import org.rsmod.api.script.onAiTimer
+import org.rsmod.api.script.onNpcHit
 import org.rsmod.api.script.onOpHeld1
 import org.rsmod.api.script.onOpHeld2
 import org.rsmod.api.script.onOpLoc1
@@ -12,6 +17,7 @@ import org.rsmod.api.script.onOpNpc1
 import org.rsmod.api.script.onOpObj3
 import org.rsmod.content.raids.toa.raid.ToaRaidManager.currentRaid
 import org.rsmod.content.raids.toa.raid.encounter.ToaStage
+import org.rsmod.game.entity.PlayerList
 import org.rsmod.game.inv.InvObj
 import org.rsmod.game.loc.BoundLocInfo
 import org.rsmod.plugin.scripts.PluginScript
@@ -22,7 +28,7 @@ import org.rsmod.plugin.scripts.ScriptContext
  * (fill), WaterContainerAction (check, empty) and CrondisPuzzleEncounter.handleWaterfall /
  * waterPalm. Every handler first finds the player's room, so nothing here works outside it.
  */
-class CrondisPuzzleScript : PluginScript() {
+class CrondisPuzzleScript @Inject constructor(private val playerList: PlayerList) : PluginScript() {
 
     override fun ScriptContext.startup() {
         val containerType = ServerCacheManager.getItem(CrondisPuzzleEncounter.CONTAINER.asRSCM(RSCMType.OBJ))!!
@@ -40,6 +46,19 @@ class CrondisPuzzleScript : PluginScript() {
 
         for (palm in CrondisPuzzleEncounter.WATERABLE_PALMS) {
             onOpNpc1(palm) { waterPalm() }
+        }
+
+        // Every crocodile runs the room's AI once a tick (armed with aiTimer(1) at spawn).
+        onAiTimer(CrondisPuzzleEncounter.CROCODILE) { CrondisPuzzleEncounter.crocodileTick(npc) }
+
+        val crocodileType = ServerCacheManager.getNpc(CrondisPuzzleEncounter.CROCODILE.asRSCM(RSCMType.NPC))!!
+        // Its own attack. Binding this for the type replaces the default npc combat for it.
+        onAiOpPlayer2(crocodileType) { CrondisPuzzleEncounter.crocodileAttack(npc, it.target) }
+        // Remember who hits it: players without a container who did are its third priority.
+        onNpcHit(crocodileType) {
+            if (hit.isFromPlayer) {
+                hit.resolvePlayerSource(playerList)?.let { CrondisPuzzleEncounter.crocodileHitBy(npc, it) }
+            }
         }
     }
 
@@ -116,7 +135,8 @@ class CrondisPuzzleScript : PluginScript() {
         anim(SEQ_PICKUP)
         setCharges(slot, CrondisPuzzleEncounter.CONTAINER_FULL)
         room.drainWaterfall(waterfall)
-        // TODO: +20% run energy (Offline_Scape).
+        // Offline_Scape: +20% run energy. OpenRune stores run energy as 0..10_000.
+        player.runEnergy = (player.runEnergy + FILL_RUN_ENERGY).coerceAtMost(Constants.run_max_energy)
         delay(1) // Offline_Scape lock(1)
     }
 
@@ -166,12 +186,23 @@ class CrondisPuzzleScript : PluginScript() {
     private companion object {
         const val SEQ_PICKUP = "seq.human_pickupfloor" // Offline_Scape anim 827
 
-        // Offline_Scape sound ids. These synths have no names in the cache (the dump calls them
-        // synth_6522 etc.), so there is no gameval to use; the Int overload of soundSynth takes
-        // the id.
-        const val SYNTH_TAKE = 2582
+        /** 20% of Constants.run_max_energy. */
+        const val FILL_RUN_ENERGY = 2_000
+
+        /** Offline_Scape ITEM_TAKE_SOUND 2582, which does have a gameval. */
+        const val SYNTH_TAKE = "synth.pick2"
+
+        // The rest have no gameval name (the cache calls them synth_6522 etc.), so the Int
+        // overload of soundSynth plays them by id. Named after the labels in the cache's
+        // sound-list dbtable synth_pathofcrondis (osrs-dumps config/dump.dbrow).
+
+        /** toa_crondis_fill_container */
         const val SYNTH_FILL = 6522
+
+        /** toa_crondis_water_empty */
         const val SYNTH_DECLINE = 6524
+
+        /** toa_crondis_water_tree_02 */
         const val SYNTH_WATER_PALM = 6534
     }
 }
