@@ -13,6 +13,7 @@ import org.rsmod.api.player.ui.ifSetText
 import org.rsmod.api.player.vars.intVarBit
 import org.rsmod.api.player.vars.intVarp
 import org.rsmod.api.script.onOpLoc1
+import org.rsmod.api.script.onPlayerLogin
 import org.rsmod.api.script.onPlayerLogout
 import org.rsmod.content.raids.toa.party.ToaPartyManager.appliedParty
 import org.rsmod.content.raids.toa.party.ToaPartyManager.currentParty
@@ -42,6 +43,22 @@ private const val VARBIT_PRESET_SELECTED = "varbit.toa_preset_selected"
 // ---- Sounds ----
 private const val SYNTH_INVOCATION_ON = 6589
 private const val SYNTH_INVOCATION_OFF = 6588
+private const val SYNTH_PRESET_SAVE_LOAD = 2655
+
+// ---- Invocation presets ----
+// 5 slots x 3 bitmaps, vanilla varps 3680-3694:
+// varp.toa_invocations_preset_1a, _1b, _1c, _2a ... _5c
+private const val PRESET_SLOTS = 5
+private val PRESET_PARTS = listOf("a", "b", "c")
+
+// ---- Personal settings (server-only custom varps, see pack/configs/toa_vars.toml) ----
+// The invocations + completion requirement a player's next party starts with.
+private val PERSONAL_INVOCATION_VARPS = listOf(
+    "varp.toa_personal_invocations_a",
+    "varp.toa_personal_invocations_b",
+    "varp.toa_personal_invocations_c",
+)
+private const val VARP_PERSONAL_KC_REQUIREMENT = "varp.toa_personal_kc_requirement"
 
 // ---- Invocation categories where only one invocation may be active ----
 private val SINGLE_SELECT_CATEGORIES = setOf(
@@ -69,6 +86,12 @@ class ToaPartyListScript @Inject constructor(
         onPlayerLogout {
             ToaPartyManager.onLogout(player)
             // TODO (#7): refresh remaining members' views / new leader's view
+        }
+        onPlayerLogin {
+            // OpenRune saves every varp by default, so without this a player who
+            // logged out while in a party would log back in still flagged as in one.
+            player.currentPartyVar = -1
+            player.clientPartyStatusVar = 0
         }
     }
 
@@ -148,7 +171,7 @@ class ToaPartyListScript @Inject constructor(
 
         var leaderName = party.leaderName
         if (party.isMember(player)) {
-            leaderName = "<col=FFFFFF>$leaderName"
+            leaderName = "<col=ffffff>$leaderName</col>"
         }
         sb.append(leaderName).append('|')
 
@@ -164,7 +187,7 @@ class ToaPartyListScript @Inject constructor(
         sb.append(settings.activeInvocations).append('|')
         sb.append(settings.raidLevel).append('|')
         sb.append(settings.mode).append('|')
-        sb.append(mapClock - party.creationCycle).append('|') // age in ticks
+        sb.append(mapClock - party.creationCycle) // age in ticks, last field: no trailing pipe
 
         return sb.toString()
     }
@@ -185,7 +208,7 @@ class ToaPartyListScript @Inject constructor(
             return null
         }
 
-        val settings = ToaPartySettings() // TODO: copy from player's personal settings
+        val settings = loadPersonalSettings()
         val party = ToaPartyManager.createParty(player, settings, mapClock) ?: return null
         player.clientPartyStatusVar = 1
         updateLobbyHud(party)
@@ -257,6 +280,11 @@ class ToaPartyListScript @Inject constructor(
             } else if (input.component == "component.toa_partydetails:presets_button_click") {
                 handlePresetSelect(party, input.subcomponent)
             }
+
+            // Remember the leader's latest settings for their next party.
+            if (party.isLeader(player)) {
+                savePersonalSettings(party.settings)
+            }
             // Loop back → reopens and repopulates 774
         }
     }
@@ -265,17 +293,19 @@ class ToaPartyListScript @Inject constructor(
 
         ifOpenMainModal("interface.toa_partydetails")
 
+        // First arg is the viewer's view value: the CS2 only makes member rows
+        // hoverable/clickable (kick) when it is VIEW_LEADER.
+        val viewValue = ToaPartyManager.resolveViewingValue(player, party)
         for (i in 0 until ToaLobbyParty.MAX_PARTY_MEMBERS) {
             if (i >= party.members.size) {
-                player.runClientScript(CS_ADD_MEMBER, 2, "")
+                player.runClientScript(CS_ADD_MEMBER, viewValue, "")
             } else {
-                val member = party.members[i]
-                player.runClientScript(CS_ADD_MEMBER, 2, buildStatString(member, member == player))
+                player.runClientScript(CS_ADD_MEMBER, viewValue, buildStatString(party.members[i]))
             }
         }
 
         for (applicant in party.applicants) {
-            player.runClientScript(CS_ADD_APPLICANT, buildStatString(applicant, applicant == player))
+            player.runClientScript(CS_ADD_APPLICANT, buildStatString(applicant))
         }
 
         val settings = party.settings
@@ -535,9 +565,14 @@ class ToaPartyListScript @Inject constructor(
             player.mes("You do not have a valid preset selected to load from.")
             return
         }
-        // TODO: load preset bitmaps from player's persistent varps
-        // party.settings.loadPreset(presetBitmaps)
+        val preset = readPreset(slot)
+        if (preset.all { it == 0 }) {
+            player.mes("You do not have any invocations stored in this preset.")
+            return
+        }
+        party.settings.loadPreset(preset)
         player.mes("Your preset has been loaded.")
+        soundSynth(SYNTH_PRESET_SAVE_LOAD)
     }
 
     private suspend fun ProtectedAccess.handleSavePreset(party: ToaLobbyParty) {
@@ -549,9 +584,54 @@ class ToaPartyListScript @Inject constructor(
             player.mes("You do not have a valid preset selected to save to.")
             return
         }
-        // TODO: check if preset slot is non-empty and confirm overwrite
-        // TODO: save current bitmaps to player's persistent varps
+
+        if (readPreset(slot).any { it != 0 }) {
+            val choice = choice2(
+                "Save and overwrite this preset.", 1,
+                "Cancel", 2,
+                title = "You already have a preset saved in this slot.",
+            )
+            if (choice != 1) return
+        }
+
+        writePreset(slot, party.settings.invocationBitmaps)
         player.mes("Your preset has been saved.")
+        soundSynth(SYNTH_PRESET_SAVE_LOAD)
+    }
+
+    /** Varp name for one bitmap of a preset, e.g. slot 0, part 2 → varp.toa_invocations_preset_1c */
+    private fun presetVarp(slot: Int, part: Int): String =
+        "varp.toa_invocations_preset_${slot + 1}${PRESET_PARTS[part]}"
+
+    /** Reads all three bitmaps of a preset slot (0-based). */
+    private fun ProtectedAccess.readPreset(slot: Int): IntArray {
+        require(slot in 0 until PRESET_SLOTS) { "Invalid preset slot $slot" }
+        return IntArray(PRESET_PARTS.size) { part -> vars[presetVarp(slot, part)] }
+    }
+
+    /** Writes all three bitmaps of a preset slot (0-based). */
+    private fun ProtectedAccess.writePreset(slot: Int, bitmaps: IntArray) {
+        require(slot in 0 until PRESET_SLOTS) { "Invalid preset slot $slot" }
+        for (part in PRESET_PARTS.indices) {
+            vars[presetVarp(slot, part)] = bitmaps[part]
+        }
+    }
+
+    /** Builds a new party's settings from the player's saved personal settings. */
+    private fun ProtectedAccess.loadPersonalSettings(): ToaPartySettings {
+        val settings = ToaPartySettings()
+        settings.loadPreset(IntArray(PERSONAL_INVOCATION_VARPS.size) { vars[PERSONAL_INVOCATION_VARPS[it]] })
+        settings.kcRequirement = vars[VARP_PERSONAL_KC_REQUIREMENT]
+        return settings
+    }
+
+    /** Stores the given party settings as the player's personal settings. */
+    private fun ProtectedAccess.savePersonalSettings(settings: ToaPartySettings) {
+        val bitmaps = settings.invocationBitmaps
+        for (i in PERSONAL_INVOCATION_VARPS.indices) {
+            vars[PERSONAL_INVOCATION_VARPS[i]] = bitmaps[i]
+        }
+        vars[VARP_PERSONAL_KC_REQUIREMENT] = settings.kcRequirement
     }
 
     // ==================================================================
@@ -575,9 +655,13 @@ class ToaPartyListScript @Inject constructor(
     // Shared helpers
     // ==================================================================
 
-    private fun buildStatString(target: Player, highlight: Boolean): String {
+    /**
+     * Vanilla format: name|combat|7 stats|entry / normal / expert KC (no trailing pipe).
+     * No colour tags: the CS2 colours the viewer's own row white itself by comparing
+     * the name to chat_playername, and a tag would break that comparison.
+     */
+    private fun buildStatString(target: Player): String {
         val sb = StringBuilder()
-        if (highlight) sb.append("<col=FFFFFF>")
         sb.append(target.displayName).append('|')
         sb.append(target.combatLevel).append('|')
         sb.append(target.statBase("stat.attack")).append('|')
@@ -588,7 +672,7 @@ class ToaPartyListScript @Inject constructor(
         sb.append(target.statBase("stat.hitpoints")).append('|')
         sb.append(target.statBase("stat.prayer")).append('|')
         // TODO: read from TOA kill count varps once the raid system is built
-        sb.append("0 / 0 / 0|")
+        sb.append("0 / 0 / 0")
         return sb.toString()
     }
 

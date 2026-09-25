@@ -1,0 +1,27 @@
+# Personal TOA settings: the invocations and completion requirement a player's
+# next party starts with. Server-only (the real game never sends these to the
+# client), saved with the character.
+
+[[varp]]
+isServerOnly = true
+id = "varp.toa_personal_invocations_a"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+isServerOnly = true
+id = "varp.toa_personal_invocations_b"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+isServerOnly = true
+id = "varp.toa_personal_invocations_c"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+isServerOnly = true
+id = "varp.toa_personal_kc_requirement"
+scope = "Perm"
+transmit = "Never"
