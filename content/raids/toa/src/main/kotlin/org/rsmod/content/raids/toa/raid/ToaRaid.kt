@@ -11,6 +11,7 @@ import org.rsmod.content.raids.toa.raid.encounter.ToaBossEncounter
 import org.rsmod.content.raids.toa.raid.encounter.ToaEncounter
 import org.rsmod.content.raids.toa.raid.encounter.WardensFirstEncounter
 import org.rsmod.content.raids.toa.raid.encounter.WardensSecondEncounter
+import org.rsmod.content.raids.toa.raid.encounter.crondis.CrondisPuzzleEncounter
 import org.rsmod.game.entity.Player
 import org.rsmod.game.region.Region
 
@@ -221,8 +222,9 @@ class ToaRaid(val lobbyParty: ToaLobbyParty, val settings: ToaPartySettings, val
             room == ToaRoom.MAIN_HALL -> MainHallEncounter(this, room, region, controllerId)
             room == ToaRoom.WARDENS_FIRST_ROOM -> WardensFirstEncounter(this, room, region, controllerId)
             room == ToaRoom.WARDENS_SECOND_ROOM -> WardensSecondEncounter(this, room, region, controllerId)
+            room == ToaRoom.CRONDIS_PUZZLE -> CrondisPuzzleEncounter(this, room, region, controllerId)
             room.kind == ToaRoom.Kind.BOSS -> ToaBossEncounter(this, room, region, controllerId)
-            // Puzzles and the reward room: plain rooms until Phase B gives them content.
+            // Rooms without content yet: plain rooms until Phase B reaches them.
             else -> ToaEncounter(this, room, region, controllerId)
         }
 
