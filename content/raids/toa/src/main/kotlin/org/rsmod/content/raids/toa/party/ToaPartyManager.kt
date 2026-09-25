@@ -1,6 +1,9 @@
 package org.rsmod.content.raids.toa.party
 
 import org.rsmod.api.attr.AttributeKey
+import org.rsmod.api.player.input.ResumePauseButtonInput
+import org.rsmod.api.player.vars.intVarBit
+import org.rsmod.api.player.vars.intVarp
 import org.rsmod.game.entity.Player
 
 /**
@@ -24,6 +27,21 @@ object ToaPartyManager {
 
     /** Which tab the player has selected in the management interface. */
     private val CURRENT_TAB = AttributeKey<Int>()
+
+    // ---- Client lobby-HUD status (toa_lobby header: 0 = No Party, 1 = Party, 2 = Step Inside Now!) ----
+
+    const val PARTY_STATUS_NONE = 0
+    const val PARTY_STATUS_IN_PARTY = 1
+
+    private var Player.clientPartyStatus by intVarBit("varbit.toa_client_partystatus")
+
+    // ---- Personal settings (server-only custom varps, see pack/configs/toa_vars.toml) ----
+    // The invocations + completion requirement a player's next party starts with.
+
+    private var Player.personalInvocationsA by intVarp("varp.toa_personal_invocations_a")
+    private var Player.personalInvocationsB by intVarp("varp.toa_personal_invocations_b")
+    private var Player.personalInvocationsC by intVarp("varp.toa_personal_invocations_c")
+    private var Player.personalKcRequirement by intVarp("varp.toa_personal_kc_requirement")
 
     // ---- View value constants (sent to CS2 script 6729) ----
     // Must match vanilla CS2 expectations. Single source of truth.
@@ -94,8 +112,82 @@ object ToaPartyManager {
         val party = ToaLobbyParty(player, currentCycle)
         party.settings = settings
         player.currentParty = party
+        player.clientPartyStatus = PARTY_STATUS_IN_PARTY
         addParty(party)
         return party
+    }
+
+    /**
+     * Moves an applicant into the party. Returns `false` if they weren't
+     * an applicant (or the party is full).
+     */
+    fun acceptApplicant(party: ToaLobbyParty, target: Player): Boolean {
+        if (!party.accept(target)) return false
+        target.appliedParty = null
+        target.currentParty = party
+        target.clientPartyStatus = PARTY_STATUS_IN_PARTY
+        return true
+    }
+
+    /** Removes a member from the party at the leader's request. */
+    fun kickMember(party: ToaLobbyParty, target: Player) {
+        party.removeMember(target)
+        target.currentParty = null
+        target.clientPartyStatus = PARTY_STATUS_NONE
+        refreshDetailsView(target)
+    }
+
+    // ---- Cross-player refresh ----
+
+    /**
+     * Refreshes the party-details screen (774) of every member and applicant
+     * of [party], except [exclude] (normally the player who made the change,
+     * whose own loop reopens 774 anyway).
+     */
+    fun refreshViewers(party: ToaLobbyParty, exclude: Player? = null) {
+        // Copy first: a refreshed player's loop may change the party lists.
+        val viewers = party.members.toList() + party.applicants.toList()
+        for (viewer in viewers) {
+            if (viewer != exclude) refreshDetailsView(viewer)
+        }
+    }
+
+    /**
+     * Refreshes one player's 774 screen, if they have it open.
+     *
+     * Their loop is suspended in `pauseButton()`, so we resume it with the
+     * same input a real click on the Refresh button (774:1, sub 1) produces.
+     * Their loop then closes and reopens 774 with fresh data. If they are in
+     * a dialog instead (choice, count input), 774 is closed or the coroutine
+     * isn't waiting on a pause button, so nothing happens.
+     */
+    fun refreshDetailsView(viewer: Player) {
+        if (!viewer.ui.containsModal("interface.toa_partydetails")) return
+        val coroutine = viewer.activeCoroutine ?: return
+        if (!coroutine.isAwaiting(ResumePauseButtonInput::class)) return
+        viewer.resumeActiveCoroutine(ResumePauseButtonInput(REFRESH_COMPONENT, REFRESH_SUBCOMPONENT))
+    }
+
+    private const val REFRESH_COMPONENT = "component.toa_partydetails:pausebuttons"
+    private const val REFRESH_SUBCOMPONENT = 1
+
+    /** Builds a new party's settings from the player's saved personal settings. */
+    fun loadPersonalSettings(player: Player): ToaPartySettings {
+        val settings = ToaPartySettings()
+        settings.loadPreset(
+            intArrayOf(player.personalInvocationsA, player.personalInvocationsB, player.personalInvocationsC)
+        )
+        settings.kcRequirement = player.personalKcRequirement
+        return settings
+    }
+
+    /** Stores the given party settings as the player's personal settings. */
+    fun savePersonalSettings(player: Player, settings: ToaPartySettings) {
+        val bitmaps = settings.invocationBitmaps
+        player.personalInvocationsA = bitmaps[0]
+        player.personalInvocationsB = bitmaps[1]
+        player.personalInvocationsC = bitmaps[2]
+        player.personalKcRequirement = settings.kcRequirement
     }
 
     /**
@@ -121,10 +213,15 @@ object ToaPartyManager {
      */
     fun leaveParty(player: Player): Boolean {
         val party = player.currentParty ?: return false
+        val wasLeader = party.isLeader(player)
         party.removeMember(player)
         player.currentParty = null
+        player.clientPartyStatus = PARTY_STATUS_NONE
         if (party.members.isEmpty()) {
             removeParty(party)
+        } else if (wasLeader) {
+            // Leadership passed on: the party's settings become the new leader's own.
+            party.leader?.let { savePersonalSettings(it, party.settings) }
         }
         return true
     }
@@ -142,6 +239,7 @@ object ToaPartyManager {
 
         for (member in members) {
             member.currentParty = null
+            member.clientPartyStatus = PARTY_STATUS_NONE
         }
         for (applicant in applicants) {
             applicant.appliedParty = null
@@ -178,9 +276,13 @@ object ToaPartyManager {
             party.withdraw(player)
             party.unblock(player)
         }
+        val appliedTo = player.appliedParty
         player.appliedParty = null
+        appliedTo?.let { refreshViewers(it, exclude = player) }
         // Leave any party (passes leadership on, or removes the party if now empty)
+        val party = player.currentParty
         leaveParty(player)
+        party?.let { refreshViewers(it, exclude = player) }
         // Clear viewing state
         player.viewingParty = null
         player.currentTab = 0
