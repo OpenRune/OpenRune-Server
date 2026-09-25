@@ -21,6 +21,13 @@ class BossEncounter(
     /** Tick until which multi-tick effects are still running; nothing new may start before it. */
     var busyUntil: Int = 0
     internal val usedAbilities = mutableSetOf<String>()
+    private var queuedAbility: String? = null
+
+    /** Runs [ability] as the next priority ability once [busyUntil] has passed; replaces any earlier queue. */
+    fun forceNext(ability: String) {
+        require(ability in spec.abilities) { "Ability '$ability' does not exist in boss spec." }
+        queuedAbility = ability
+    }
 
     /**
      * Per-encounter attack-rate override (ticks between ability uses). Takes precedence over
@@ -48,6 +55,7 @@ class BossEncounter(
     fun transitionTo(phaseName: String, tick: Int) {
         val from = currentPhaseName
         currentPhaseName = phaseName
+        queuedAbility = null
         phaseEnteredTick = tick
         rotationCursor = 0
         rotationStarted = false
@@ -104,6 +112,10 @@ class BossEncounter(
 
     fun selectPriorityAbility(tick: Int, target: Player?): String? {
         if (tick < busyUntil) return null
+        queuedAbility?.let {
+            queuedAbility = null
+            return it
+        }
         val phase = currentPhase ?: return null
         for (forced in phase.forceAbilities) {
             val condition = forced.condition ?: continue
