@@ -1,0 +1,49 @@
+[[enum]]
+isServerOnly = true
+id = "enum.rock_golem_chance"
+keyType = "OBJ"
+valueType = "INT"
+
+[enum.values]
+"obj.rock" = 741600
+"obj.clay" = 741600
+"obj.copper_ore" = 741600
+"obj.tin_ore" = 741600
+"obj.blurite_ore" = 741600
+"obj.limestone" = 741600
+"obj.iron_ore" = 741600
+"obj.silver_ore" = 741600
+"obj.lead_ore" = 741600
+"obj.enakh_granite_tiny" = 741600
+"obj.enakh_granite_small" = 741600
+"obj.enakh_granite_medium" = 741600
+"obj.coal" = 290640
+"obj.gold_ore" = 296640
+"obj.mithril_ore" = 148320
+"obj.lovakite_ore" = 245562
+"obj.adamantite_ore" = 59328
+"obj.nickel_ore" = 247200
+"obj.runite_ore" = 42377
+"obj.amethyst" = 46350
+
+[[enum]]
+isServerOnly = true
+id = "enum.beaver_chance"
+keyType = "OBJ"
+valueType = "INT"
+
+[enum.values]
+"obj.logs" = 317647
+"obj.oak_logs" = 361146
+"obj.willow_logs" = 289286
+"obj.teak_logs" = 264336
+"obj.jatoba_logs" = 264336
+"obj.maple_logs" = 221918
+"obj.mahogany_logs" = 220623
+"obj.arctic_pine_log" = 145758
+"obj.yew_logs" = 145013
+"obj.camphor_logs" = 145013
+"obj.magic_logs" = 72321
+"obj.ironwood_logs" = 72321
+"obj.redwood_logs" = 72321
+"obj.rosewood_logs" = 72321
