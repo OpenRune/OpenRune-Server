@@ -1,6 +1,3 @@
-# Rolls the wiki dumper marks `boosted` (multiplied by the drop-rate modifiers). A roll is boosted
-# when any of its objs matches a rule. `npcs` (globs) and `rolls` (main, separate, pre_roll,
-# tertiary) narrow a rule; omit them to match every table and roll type.
 
 [[boosted]]
 objs = ["obj.abyssal_whip", "obj.abyssal_dagger"]

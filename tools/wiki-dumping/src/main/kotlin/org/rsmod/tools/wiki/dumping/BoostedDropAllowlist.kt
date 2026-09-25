@@ -32,11 +32,6 @@ data class BoostedDropRule(
 
 private data class BoostedDropRuleFile(val boosted: List<BoostedDropRule> = emptyList())
 
-/**
- * Marks which rolls of a freshly dumped table are boosted (see `boosted-drops.toml`). Applied to
- * the spec so the TOML exporter and the Kotlin generator both emit the flag, which keeps re-dumps
- * from erasing it.
- */
 object BoostedDropAllowlist {
     private const val RESOURCE = "boosted-drops.toml"
 
