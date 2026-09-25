@@ -6,8 +6,8 @@ import dtx.core.flatten
 import dtx.core.with
 import jakarta.inject.Inject
 import jakarta.inject.Singleton
-import org.rsmod.api.config.constants
 import org.rsmod.api.area.checker.AreaChecker
+import org.rsmod.api.config.constants
 import org.rsmod.api.death.NpcDeathKillContext
 import org.rsmod.api.death.NpcDeathKillHook
 import org.rsmod.api.droptable.DropRollItem

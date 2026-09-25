@@ -2,25 +2,23 @@ package org.rsmod.content.drops.tables.monsters
 
 import dtx.rs.RSDropTable
 import dtx.rs.npcs
-import dtx.rs.areas
-import org.rsmod.api.droptable.rsPlayerGuaranteedTable
+import org.rsmod.api.droptable.DropRollItem
+import org.rsmod.api.droptable.RegisterDropTable
+import org.rsmod.api.droptable.nothing
 import org.rsmod.api.droptable.rsPlayerTertiaryTable
 import org.rsmod.api.droptable.rsPlayerWeightedTable
-import org.rsmod.api.droptable.DropRollItem
 import org.rsmod.content.drops.brimstoneKeyRoll
 import org.rsmod.content.drops.clueScrollTransformObj
 import org.rsmod.content.drops.dt2Drop
-import org.rsmod.content.drops.vestigeProgressRoll
 import org.rsmod.content.drops.shouldDropSanguineTorvaKit
-import org.rsmod.api.droptable.nothing
-import org.rsmod.api.droptable.RegisterDropTable
+import org.rsmod.content.drops.vestigeProgressRoll
 import org.rsmod.game.entity.Player
 
 @field:RegisterDropTable
 @JvmField
 public val theWhispererDropTable: RSDropTable<Player, DropRollItem> = RSDropTable(
     tableIdentifier = "The Whisperer Drops",
-    npcs = npcs("npc.whisperer", "npc.whisperer_spawn","npc.whisperer_melee", "npc.whisperer_melee_quest", "npc.whisperer_quest"),
+    npcs = npcs("npc.whisperer", "npc.whisperer_spawn", "npc.whisperer_melee", "npc.whisperer_melee_quest", "npc.whisperer_quest"),
     mainTable = rsPlayerWeightedTable(total = 100) {
         name("The Whisperer Drops")
         1 weight dt2Drop("obj.cert_bronze_longsword", 16, 24)

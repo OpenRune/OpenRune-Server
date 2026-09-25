@@ -23,11 +23,11 @@ import org.rsmod.api.invtx.invAdd
 import org.rsmod.api.npc.apPlayer2
 import org.rsmod.api.npc.interact.AiPlayerInteractions
 import org.rsmod.api.player.isValidTarget
+import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.queueDeath
 import org.rsmod.api.player.stat.statSub
 import org.rsmod.api.player.ui.ifCloseOverlay
 import org.rsmod.api.player.ui.ifOpenFullOverlay
-import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.repo.loc.LocRepository
 import org.rsmod.api.script.onOpHeld1
 import org.rsmod.api.script.onOpHeld2
@@ -61,7 +61,6 @@ constructor(
 
     override fun area(): InstanceArea = INSTANCE
 
-
     override fun ScriptContext.configure() {
         onEnterPrelude { result, enter ->
             withInstanceEnterTransition(InstanceEnterTransition(), enter)
@@ -94,7 +93,6 @@ constructor(
 
         onOpNpc1(SPAWN_NPC) { awaken(it.npc) }
     }
-
 
     private fun hasFragment(player: Player): Boolean =
         FRAGMENT_OBJ in player.inv || FRAGMENT_ACTIVE_OBJ in player.inv

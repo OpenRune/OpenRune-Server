@@ -4,11 +4,13 @@ import dev.openrune.ServerCacheManager
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import dev.openrune.types.NpcMode
+import dev.openrune.types.NpcServerType
 import dev.openrune.types.aconverted.SpotanimType
 import jakarta.inject.Inject
 import java.util.IdentityHashMap
 import kotlin.math.abs
 import kotlin.math.sign
+import org.rsmod.annotations.InternalApi
 import org.rsmod.api.bosses.dsl.*
 import org.rsmod.api.bosses.runtime.BossCombat
 import org.rsmod.api.bosses.runtime.BossDeps
@@ -20,13 +22,12 @@ import org.rsmod.api.bosses.runtime.suppressAttacks
 import org.rsmod.api.bosses.spec.BossSpec
 import org.rsmod.api.bosses.spec.Condition
 import org.rsmod.api.bosses.spec.Effect
+import org.rsmod.api.combat.commons.player.finishNpcHit
 import org.rsmod.api.config.refs.params
 import org.rsmod.api.death.NpcDeath
-import org.rsmod.api.combat.commons.player.finishNpcHit
 import org.rsmod.api.instances.InstanceManager
 import org.rsmod.api.npc.hit.modifier.StandardNpcHitModifier
 import org.rsmod.api.npc.hit.queueHit
-import org.rsmod.annotations.InternalApi
 import org.rsmod.api.player.isValidTarget
 import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.protect.ProtectedAccessLauncher
@@ -36,14 +37,13 @@ import org.rsmod.api.repo.loc.LocRepository
 import org.rsmod.api.script.onEvent
 import org.rsmod.api.script.onNpcHit
 import org.rsmod.api.script.onNpcQueue
-import dev.openrune.types.NpcServerType
 import org.rsmod.game.entity.Npc
-import org.rsmod.game.headbar.Headbar
 import org.rsmod.game.entity.Player
 import org.rsmod.game.entity.npc.NpcStateEvents
+import org.rsmod.game.headbar.Headbar
 import org.rsmod.game.hit.HitBuilder
-import org.rsmod.game.hit.Hitmark
 import org.rsmod.game.hit.HitType as EngineHitType
+import org.rsmod.game.hit.Hitmark
 import org.rsmod.game.loc.LocAngle
 import org.rsmod.game.loc.LocShape
 import org.rsmod.game.map.collision.isWalkBlocked
@@ -1160,7 +1160,7 @@ constructor(
         private const val SCREECH_BIND_IN = 10
         private const val NO_NEXT_SPECIAL = 0.0
         private const val BIND_SKIP_HP_MARGIN = 50
-        private const val SEED_LOC ="loc.whisperer_seed_regular_realm_weak"
+        private const val SEED_LOC = "loc.whisperer_seed_regular_realm_weak"
         private const val SEED_SHADOW_SAFE_LOC = "loc.whisperer_seed_shadow_realm_weak"
         private const val SEED_SHADOW_DANGER_LOC = "loc.whisperer_seed_shadow_realm_danger"
         private const val SEED_SPAWN_SPOTANIM = "spotanim.npc_whisperer_egg_spawn"
