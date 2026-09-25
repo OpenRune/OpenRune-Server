@@ -15,7 +15,6 @@ import org.rsmod.api.script.onOpContentNpcU
 import org.rsmod.api.script.onOpHeldU
 import org.rsmod.api.stats.levelmod.InvisibleLevels
 import org.rsmod.api.stats.xpmod.XpModifiers
-import org.rsmod.content.skills.fishing.HeronPet.rollHeron
 import org.rsmod.game.MapClock
 import org.rsmod.game.entity.Npc
 import org.rsmod.plugin.scripts.PluginScript
@@ -95,7 +94,6 @@ constructor(
                     grantsExperience = true,
                     source = SkillingProductSource.Fishing(karambwanType),
                 )
-            rollHeron(RAW_KARAMBWAN)
             if (awardSkillingProduct(product) == SkillingAwardResult.Success) {
                 spam("You catch a karambwan!")
             }

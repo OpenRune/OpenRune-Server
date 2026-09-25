@@ -1,31 +1,48 @@
-package org.rsmod.content.skills.fishing.scripts
+package org.rsmod.content.other.pets.dialogue
 
 import dev.openrune.types.ItemServerType
 import jakarta.inject.Inject
 import org.rsmod.api.player.protect.ProtectedAccess
-import org.rsmod.api.script.onOpNpc1
-import org.rsmod.api.script.onOpNpc3
-import org.rsmod.api.script.onOpNpcU
 import org.rsmod.api.table.cooking.CookingFoodsRow
 import org.rsmod.api.table.fishing.FishingSpotRow
-import org.rsmod.content.skills.fishing.HeronPet
+import org.rsmod.content.other.pets.PetFollowers
+import org.rsmod.content.other.pets.Pets
+import org.rsmod.content.other.pets.onPetOp
+import org.rsmod.content.other.pets.onPetOpU
 import org.rsmod.game.entity.Npc
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
-class HeronDialogue @Inject constructor() : PluginScript() {
+class HeronDialogue @Inject constructor(private val followers: PetFollowers) : PluginScript() {
     private var cachedCookedFish: Set<String>? = null
     private var cachedRawFish: Set<String>? = null
 
     override fun ScriptContext.startup() {
-        onOpNpc1(HERON_NPC) { talkToHeron(it.npc) }
-        onOpNpc1(GREAT_BLUE_NPC) { talkToGreatBlue(it.npc) }
-        onOpNpc3(HERON_NPC) { becomeGreatBlue(it.npc) }
-        onOpNpc3(GREAT_BLUE_NPC) { becomeHeron(it.npc) }
-        onOpNpcU(GREAT_BLUE_NPC) { refuseOffering(it.npc, it.objType) }
+        onPetOp(HERON_NPC, TALK_OP) { talkToHeron(it) }
+        onPetOp(GREAT_BLUE_NPC, TALK_OP) { talkToGreatBlue(it) }
+        onPetOp(HERON_NPC, METAMORPHOSIS_OP) { unlockPrompt(it) }
+        onPetOp(GREAT_BLUE_NPC, METAMORPHOSIS_OP) { becomeHeron(it) }
+        onPetOpU(HERON_NPC) { offerFlakes(it.npc, it.objType) }
+        onPetOpU(GREAT_BLUE_NPC) { refuseOffering(it.npc, it.objType) }
     }
 
-    /** The great blue heron only eats raw fish, and is vocal about everything else. */
+    private suspend fun ProtectedAccess.unlockPrompt(npc: Npc) {
+        mesbox("You can unlock the pet Heron transmogrification for $FLAKES_REQUIRED x Spirit flakes.")
+        if (invTotal(inv, SPIRIT_FLAKES) < FLAKES_REQUIRED) {
+            menu(CHOOSE_OPTION, "Cancel")
+            return
+        }
+        if (menu(CHOOSE_OPTION, "Unlock", "Cancel") == 0) {
+            becomeGreatBlue(npc)
+        }
+    }
+
+    private suspend fun ProtectedAccess.offerFlakes(npc: Npc, offering: ItemServerType) {
+        if (offering.internalName == SPIRIT_FLAKES) {
+            becomeGreatBlue(npc)
+        }
+    }
+
     private suspend fun ProtectedAccess.refuseOffering(npc: Npc, offering: ItemServerType) {
         val name = offering.internalName
         when {
@@ -106,7 +123,7 @@ class HeronDialogue @Inject constructor() : PluginScript() {
                 }
             else -> {
                 invDel(inv, SPIRIT_FLAKES, FLAKES_REQUIRED)
-                invReplace(inv, HeronPet.PET_OBJ, 1, HeronPet.GREAT_BLUE_OBJ)
+                morph(GREAT_BLUE_OBJ)
                 startDialogue(npc) {
                     chatNpc(
                         happy,
@@ -137,8 +154,17 @@ class HeronDialogue @Inject constructor() : PluginScript() {
             return
         }
         invDel(inv, fish, 1)
-        invReplace(inv, HeronPet.GREAT_BLUE_OBJ, 1, HeronPet.PET_OBJ)
+        morph(PET_OBJ)
         startDialogue(npc) { chatNpc(happy, "Delicious. Back to white for me, then.") }
+    }
+
+    /**
+     * Every heron op targets the follower, so the swap has to respawn the pet. Replacing an
+     * inventory item would silently do nothing while the heron is out.
+     */
+    private fun ProtectedAccess.morph(obj: String) {
+        val form = Pets.forObj(obj)?.second ?: return
+        followers.spawn(player, form)
     }
 
     private fun ProtectedAccess.rawFishInInventory(): String? =
@@ -149,10 +175,15 @@ class HeronDialogue @Inject constructor() : PluginScript() {
             .mapTo(hashSetOf(RAW_KARAMBWAN)) { it.fish.internalName }.also { cachedRawFish = it }
 
     private companion object {
+        private const val PET_OBJ = "obj.skillpetfish"
+        private const val GREAT_BLUE_OBJ = "obj.skillpetfish_tempoross"
+        private const val TALK_OP = "Talk-to"
+        private const val METAMORPHOSIS_OP = "Metamorphosis"
         private const val HERON_NPC = "npc.skillpet_fish"
         private const val GREAT_BLUE_NPC = "npc.skillpet_fish_tempoross"
         private const val SPIRIT_FLAKES = "obj.spirit_flakes"
         private const val FLAKES_REQUIRED = 3000
+        private const val CHOOSE_OPTION = "Choose Option"
         private const val EEL_SUSHI = "obj.dorgesh_cave_eel_sushi"
         private const val RAW_KARAMBWAN = "obj.tbwt_raw_karambwan"
     }
