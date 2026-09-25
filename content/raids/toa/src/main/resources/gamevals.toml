@@ -1,0 +1,7 @@
+# Custom server-only varps for TOA. -1 = auto-assign: buildCache picks a free id
+# and writes it back into this file. Commit the file after that first build.
+[gamevals.varp]
+toa_personal_invocations_a = 65478
+toa_personal_invocations_b = 65477
+toa_personal_invocations_c = 65476
+toa_personal_kc_requirement = 65475
