@@ -2,8 +2,10 @@ package org.rsmod.content.raids.toa.party
 
 import org.rsmod.api.attr.AttributeKey
 import org.rsmod.api.player.input.ResumePauseButtonInput
+import org.rsmod.api.player.ui.ifSetText
 import org.rsmod.api.player.vars.intVarBit
 import org.rsmod.api.player.vars.intVarp
+import org.rsmod.content.raids.toa.raid.ToaRaidManager
 import org.rsmod.game.entity.Player
 
 /**
@@ -32,8 +34,19 @@ object ToaPartyManager {
 
     const val PARTY_STATUS_NONE = 0
     const val PARTY_STATUS_IN_PARTY = 1
+    /** 773 header "Step Inside Now!": your leader has started the raid. */
+    const val PARTY_STATUS_STEP_INSIDE = 2
 
     private var Player.clientPartyStatus by intVarBit("varbit.toa_client_partystatus")
+
+    // ---- Lobby HUD overlay (773) ----
+    // The header ("No Party" / "Party") is drawn by the client from the varbit above.
+    // The names list below it is plain text the server sends: 8 lines joined by <br>,
+    // "-" for an empty slot.
+
+    const val LOBBY_HUD = "interface.toa_lobby"
+    private const val LOBBY_HUD_NAMES = "component.toa_lobby:names"
+    private val EMPTY_PARTY_NAMES = Array(ToaLobbyParty.MAX_PARTY_MEMBERS) { "-" }.joinToString("<br>")
 
     // ---- Personal settings (server-only custom varps, see pack/configs/toa_vars.toml) ----
     // The invocations + completion requirement a player's next party starts with.
@@ -114,6 +127,7 @@ object ToaPartyManager {
         player.currentParty = party
         player.clientPartyStatus = PARTY_STATUS_IN_PARTY
         addParty(party)
+        sendLobbyHud(player)
         return party
     }
 
@@ -126,6 +140,7 @@ object ToaPartyManager {
         target.appliedParty = null
         target.currentParty = party
         target.clientPartyStatus = PARTY_STATUS_IN_PARTY
+        refreshLobbyHud(party) // includes the new member
         return true
     }
 
@@ -134,7 +149,32 @@ object ToaPartyManager {
         party.removeMember(target)
         target.currentParty = null
         target.clientPartyStatus = PARTY_STATUS_NONE
+        sendLobbyHud(target) // back to "-" lines
+        refreshLobbyHud(party)
         refreshDetailsView(target)
+    }
+
+    // ---- Lobby HUD ----
+
+    /**
+     * Sends [player]'s names list to their lobby HUD: their party's members,
+     * or eight "-" lines if they aren't in one.
+     *
+     * Does nothing if the HUD isn't open (the player is outside the lobby).
+     * The lobby script calls this again when they walk in, so they always get
+     * the current list then.
+     */
+    fun sendLobbyHud(player: Player) {
+        if (!player.ui.containsOverlay(LOBBY_HUD)) return
+        val text = player.currentParty?.buildPartyString() ?: EMPTY_PARTY_NAMES
+        player.ifSetText(LOBBY_HUD_NAMES, text)
+    }
+
+    /** Sends the names list to every member of [party]. */
+    fun refreshLobbyHud(party: ToaLobbyParty) {
+        for (member in party.members) {
+            sendLobbyHud(member)
+        }
     }
 
     // ---- Cross-player refresh ----
@@ -217,11 +257,18 @@ object ToaPartyManager {
         party.removeMember(player)
         player.currentParty = null
         player.clientPartyStatus = PARTY_STATUS_NONE
+        sendLobbyHud(player)
+        // If the party has a raid running, a member who never entered loses
+        // their raid slot too.
+        ToaRaidManager.onLeftParty(player, party)
         if (party.members.isEmpty()) {
             removeParty(party)
-        } else if (wasLeader) {
-            // Leadership passed on: the party's settings become the new leader's own.
-            party.leader?.let { savePersonalSettings(it, party.settings) }
+        } else {
+            refreshLobbyHud(party)
+            if (wasLeader) {
+                // Leadership passed on: the party's settings become the new leader's own.
+                party.leader?.let { savePersonalSettings(it, party.settings) }
+            }
         }
         return true
     }
@@ -240,6 +287,7 @@ object ToaPartyManager {
         for (member in members) {
             member.currentParty = null
             member.clientPartyStatus = PARTY_STATUS_NONE
+            sendLobbyHud(member)
         }
         for (applicant in applicants) {
             applicant.appliedParty = null
@@ -265,6 +313,67 @@ object ToaPartyManager {
         val formerApplicants: List<Player>,
         val formerBlocked: List<Player>,
     )
+
+    /**
+     * Called when a player leaves the lobby area (walking out, teleporting,
+     * or logging out). Mirrors Offline_Scape's TOALobbyArea.leave(): withdraws
+     * any application and removes them from their party.
+     *
+     * Returns `true` if they were removed from a party, so the caller can tell
+     * them why.
+     *
+     * Blocked lists are left alone: a declined player stays declined if they
+     * walk out and back in. Logout clears those separately (see [onLogout]).
+     */
+    fun onLeaveLobby(player: Player): Boolean {
+        val appliedTo = player.appliedParty
+        if (appliedTo != null) {
+            appliedTo.withdraw(player)
+            player.appliedParty = null
+            refreshViewers(appliedTo, exclude = player)
+        }
+
+        val party = player.currentParty
+        val left = leaveParty(player)
+        if (party != null && left) {
+            refreshViewers(party, exclude = player)
+        }
+
+        player.viewingParty = null
+        return left
+    }
+
+    // ---- Raid start ----
+
+    /** Sets the 773 header state (see the PARTY_STATUS_* constants). */
+    fun setPartyStatus(player: Player, status: Int) {
+        player.clientPartyStatus = status
+    }
+
+    /**
+     * Called when the leader starts the raid. Mirrors Offline_Scape's
+     * `currentLobbyParty.removeFromList()`:
+     * - the party leaves the 772 list, so nobody new can find or join it;
+     * - pending applicants are dropped (their 774 view refreshes);
+     * - the other members' 773 headers switch to "Step Inside Now!".
+     *
+     * Members stay in the party: vanilla keeps toa_client_partystatus at 1
+     * throughout the raid, and only leaving the raid removes you.
+     */
+    fun onRaidStarted(party: ToaLobbyParty) {
+        removeParty(party)
+        val applicants = party.applicants.toList()
+        for (applicant in applicants) {
+            party.withdraw(applicant)
+            if (applicant.appliedParty == party) applicant.appliedParty = null
+            refreshDetailsView(applicant)
+        }
+        for (member in party.members) {
+            if (!party.isLeader(member)) {
+                member.clientPartyStatus = PARTY_STATUS_STEP_INSIDE
+            }
+        }
+    }
 
     /**
      * Clears all party state for a player. Called on logout.
