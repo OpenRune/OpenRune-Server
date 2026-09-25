@@ -343,6 +343,9 @@ public class Npc(
     @InternalApi
     public fun setRespawnValues() {
         pendingTelejump = true
+        if (transmog != null) {
+            infoProtocol.resetTransmog(originalType = id)
+        }
         transmog = null
         cachedHitmark = null
         mode = defaultMode
@@ -411,6 +414,10 @@ public class Npc(
 
     public fun showHeadbar(headbar: Headbar) {
         infoProtocol.showHeadbar(headbar)
+    }
+
+    public fun removeHeadbar(id: Int) {
+        infoProtocol.removeHeadbar(id)
     }
 
     public fun showHitmark(hitmark: Hitmark) {
@@ -517,6 +524,10 @@ public class Npc(
 
     public fun setBodyModel(model: Int) {
         infoProtocol.setBodyModel(model)
+    }
+
+    public fun setBodyRecolours(recolours: List<Int>) {
+        infoProtocol.setBodyRecolours(recolours)
     }
 
     public fun resetBodyModel() {
