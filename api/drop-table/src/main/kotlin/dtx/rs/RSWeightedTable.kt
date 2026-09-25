@@ -66,11 +66,6 @@ public class RSWeightedTable<T, R>(
         return RollResult.Nothing()
     }
 
-    /**
-     * Each boosted entry takes `min(1, weight * multiplier / total)` of the probability mass; the
-     * remainder is shared among the other entries in proportion to their weights, so boosted rates
-     * match `floor(denominator / multiplier)` exactly instead of being diluted by a larger pool.
-     */
     private fun selectBoosted(
         target: T,
         otherArgs: ArgMap,
