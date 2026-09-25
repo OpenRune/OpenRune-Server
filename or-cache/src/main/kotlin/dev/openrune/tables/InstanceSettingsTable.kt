@@ -220,6 +220,24 @@ object InstanceSettingsTable {
             columnRSCM(EXIT_OBJECT, "loc.ghorrock_dungeon_cave_exit")
         }
 
+        row("dbrow.instance_whisperer") {
+            column(KEY, "whisperer")
+            columnCoord(EXIT_COORD, CoordGrid(2656, 6393, 0))
+            columnCoord(ENTER_COORD, CoordGrid(2656, 6382, 0))
+            column(FEE, 0)
+            column(MAX_PLAYERS, 1)
+            column(TIME_LIMIT_MINUTES, 0)
+            column(GRACE_MINUTES, 10)
+            columnRSCM(BOSS_NPC, "npc.whisperer_spawn", "npc.whisperer")
+            column(BOSS_NAME, "The Whisperer")
+            column(RECOMMENDED_COMBAT, 100, 126)
+            column(TEAM_SIZE, 1)
+            column(LOOT_MULTIPLIER, "x1.0")
+            column(DESCRIPTION, "A siren corrupted by the blackstone, submerged in the sunken cathedral.")
+            columnRSCM(ENTER_OBJECT, "loc.dt2_vault_whisperer_statue_normal")
+            columnRSCM(EXIT_OBJECT, "loc.whisperer_exit")
+        }
+
         row("dbrow.instance_amoxliatl") {
             column(KEY, "amoxliatl")
             columnCoord(EXIT_COORD, CoordGrid(1602, 9631, 0))

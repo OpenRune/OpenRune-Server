@@ -4942,3 +4942,48 @@ moveRestrict = "Outdoors"
 id = "npc.fai_falador_guard6"
 inherit = "npc.fai_falador_guard6"
 moveRestrict = "Outdoors"
+
+[[npc]]
+id = "npc.whisperer"
+inherit = "npc.whisperer"
+huntMode = 2
+huntRange = 15
+maxRange = 15
+attackRange = 10
+defaultMode = "None"
+respawnRate = 30
+[npc.params]
+"param.killcount_varp"="varp.total_whisperer_kills"
+"param.boss_hp_bar_mode"=1
+"param.death_anim"="seq.npc_whisperer_01_death_01"
+
+[[npc]]
+id = "npc.whisperer_tentacle"
+inherit = "npc.whisperer_tentacle"
+defaultMode = "None"
+
+[[npc]]
+id = "npc.whisperer_soul"
+inherit = "npc.whisperer_soul"
+defaultMode = "None"
+[npc.params]
+"param.death_anim"="seq.ghost_update_tendrill_death"
+
+[[npc]]
+id = "npc.whisperer_soul_vulnerable"
+inherit = "npc.whisperer_soul_vulnerable"
+defaultMode = "None"
+[npc.params]
+"param.death_anim"="seq.ghost_update_tendrill_death"
+
+[[npc]]
+id = "npc.whisperer_spawn"
+inherit = "npc.whisperer_spawn"
+maxRange = 15
+attackRange = 10
+defaultMode = "None"
+respawnRate = 30
+[npc.params]
+"param.killcount_varp"="varp.total_whisperer_kills"
+"param.boss_hp_bar_mode"=1
+"param.death_anim"="seq.npc_whisperer_01_death_01"

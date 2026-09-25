@@ -33,3 +33,6 @@ potion_moonlight=33
 food_delayed_heal=34
 heart_cooldown=35
 boss_hp_bar_check=114
+whisperer_sanity=115
+whisperer_insanity=116
+whisperer_fade=117

@@ -1832,7 +1832,7 @@
 [clientscript,sanity_bar_movement]=1831
 [proc,sanity_bar_movement]=1832
 [clientscript,sanity_fade]=1833
-[clientscript,script1834]=1834
+[clientscript,sanity_disable_fade]=1834
 [clientscript,dt2_infection_init]=1835
 [clientscript,dt2_infection_update]=1836
 [proc,dt2_infection_update]=1837
