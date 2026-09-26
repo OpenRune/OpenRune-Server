@@ -1,4 +1,4 @@
-package org.rsmod.content.raids.toa.raid.encounter.crondis
+package org.rsmod.content.raids.toa.raid.encounter.crondis.puzzle
 
 import dev.openrune.ServerCacheManager
 import dev.openrune.rscm.RSCM.asRSCM
@@ -14,6 +14,7 @@ import org.rsmod.api.script.onOpHeld2
 import org.rsmod.api.script.onOpLoc1
 import org.rsmod.api.script.onOpLocU
 import org.rsmod.api.script.onOpNpc1
+import org.rsmod.api.script.onOpNpcU
 import org.rsmod.api.script.onOpObj3
 import org.rsmod.content.raids.toa.raid.ToaRaidManager.currentRaid
 import org.rsmod.content.raids.toa.raid.encounter.ToaStage
@@ -25,39 +26,42 @@ import org.rsmod.plugin.scripts.ScriptContext
 
 /**
  * The Crondis puzzle's ops. Ports Offline_Scape ContainerFloorItem (take), ContainerOnWaterfall
- * (fill), WaterContainerAction (check, empty) and CrondisPuzzleEncounter.handleWaterfall /
- * waterPalm. Every handler first finds the player's room, so nothing here works outside it.
+ * (fill), WaterContainerAction (check, empty), PalmTreeAction (water) and
+ * CrondisPuzzleEncounter.handleWaterfall / waterPalm. Every handler first finds the player's
+ * room, so nothing here works outside it.
  */
 class CrondisPuzzleScript @Inject constructor(private val playerList: PlayerList) : PluginScript() {
 
     override fun ScriptContext.startup() {
-        val containerType = ServerCacheManager.getItem(CrondisPuzzleEncounter.CONTAINER.asRSCM(RSCMType.OBJ))!!
+        val containerType = ServerCacheManager.getItem(CrondisObjs.CONTAINER.asRSCM(RSCMType.OBJ))!!
         onOpObj3(containerType) { takeContainer() }
 
         // The waterfall's own op ("Fill") and using the container on it do the same.
-        onOpLoc1(CrondisPuzzleEncounter.WATER_SOURCE) { fill(it.loc) }
-        onOpLocU(CrondisPuzzleEncounter.WATER_SOURCE, CrondisPuzzleEncounter.CONTAINER) { fill(it.loc) }
-        onOpLocU(CrondisPuzzleEncounter.WATER_SOURCE_EMPTY, CrondisPuzzleEncounter.CONTAINER) {
-            fillFromEmpty()
-        }
+        onOpLoc1(CrondisLocs.WATER_SOURCE) { fill(it.loc) }
+        onOpLocU(CrondisLocs.WATER_SOURCE, CrondisObjs.CONTAINER) { fill(it.loc) }
+        onOpLocU(CrondisLocs.WATER_SOURCE_EMPTY, CrondisObjs.CONTAINER) { fillFromEmpty() }
 
-        onOpHeld1(CrondisPuzzleEncounter.CONTAINER) { checkContainer(it.obj) }
-        onOpHeld2(CrondisPuzzleEncounter.CONTAINER) { emptyContainer() }
+        onOpHeld1(CrondisObjs.CONTAINER) { checkContainer(it.obj) }
+        onOpHeld2(CrondisObjs.CONTAINER) { emptyContainer() }
 
-        for (palm in CrondisPuzzleEncounter.WATERABLE_PALMS) {
+        // Op1 "Water" and using the container on the palm do the same.
+        for (palm in CrondisNpcs.WATERABLE_PALMS) {
+            val palmType = ServerCacheManager.getNpc(palm.asRSCM(RSCMType.NPC))!!
             onOpNpc1(palm) { waterPalm() }
+            onOpNpcU(palmType, containerType) { waterPalm() }
         }
 
-        // Every crocodile runs the room's AI once a tick (armed with aiTimer(1) at spawn).
-        onAiTimer(CrondisPuzzleEncounter.CROCODILE) { CrondisPuzzleEncounter.crocodileTick(npc) }
+        // Every crocodile runs the room's AI once a tick (timer = 1 in toa_crondis.toml).
+        onAiTimer(CrondisNpcs.CROCODILE) { CrondisPuzzleEncounter.onCrocodileTick(npc) }
 
-        val crocodileType = ServerCacheManager.getNpc(CrondisPuzzleEncounter.CROCODILE.asRSCM(RSCMType.NPC))!!
+        val crocodileType = ServerCacheManager.getNpc(CrondisNpcs.CROCODILE.asRSCM(RSCMType.NPC))!!
         // Its own attack. Binding this for the type replaces the default npc combat for it.
-        onAiOpPlayer2(crocodileType) { CrondisPuzzleEncounter.crocodileAttack(npc, it.target) }
+        onAiOpPlayer2(crocodileType) { CrondisPuzzleEncounter.onCrocodileAttack(npc, it.target) }
         // Remember who hits it: players without a container who did are its third priority.
         onNpcHit(crocodileType) {
             if (hit.isFromPlayer) {
-                hit.resolvePlayerSource(playerList)?.let { CrondisPuzzleEncounter.crocodileHitBy(npc, it) }
+                val player = hit.resolvePlayerSource(playerList) ?: return@onNpcHit
+                CrondisPuzzleEncounter.onCrocodileHit(npc, player)
             }
         }
     }
@@ -77,7 +81,7 @@ class CrondisPuzzleScript @Inject constructor(private val playerList: PlayerList
             mes("You don't need a container right now.")
             return
         }
-        if (inv.contains(CrondisPuzzleEncounter.CONTAINER)) {
+        if (inv.contains(CrondisObjs.CONTAINER)) {
             mes("You already have a container.")
             return
         }
@@ -86,9 +90,9 @@ class CrondisPuzzleScript @Inject constructor(private val playerList: PlayerList
             return
         }
         // The String constructor: InvObj's Int one is @UncheckedType (opt-in only).
-        if (invAdd(inv, InvObj(CrondisPuzzleEncounter.CONTAINER, 1, vars = 0)).failure) return
-        soundSynth(SYNTH_TAKE)
-        anim(SEQ_PICKUP)
+        if (invAdd(inv, InvObj(CrondisObjs.CONTAINER, 1, vars = 0)).failure) return
+        soundSynth(CrondisSynths.TAKE)
+        anim(CrondisSeqs.PICKUP)
     }
 
     private fun ProtectedAccess.checkContainer(obj: InvObj) {
@@ -96,8 +100,7 @@ class CrondisPuzzleScript @Inject constructor(private val playerList: PlayerList
     }
 
     private suspend fun ProtectedAccess.emptyContainer() {
-        val slot = CrondisPuzzleEncounter.containerSlot(player) ?: return
-        if ((inv[slot]?.vars ?: 0) <= 0) {
+        if (player.containerWater() <= 0) {
             mes("It's already empty.")
             return
         }
@@ -105,8 +108,8 @@ class CrondisPuzzleScript @Inject constructor(private val playerList: PlayerList
             choice2("Yes, empty water container.", true, "No.", false, title = "Empty water container")
         if (!empty) return
         // Re-find the slot: the inventory may have changed while the dialog was open.
-        val current = CrondisPuzzleEncounter.containerSlot(player) ?: return
-        setCharges(current, 0)
+        val slot = player.containerSlot() ?: return
+        player.setContainerWater(slot, 0)
         // Offline_Scape said "Your empty your water container."
         mes("You empty your water container.")
     }
@@ -121,19 +124,19 @@ class CrondisPuzzleScript @Inject constructor(private val playerList: PlayerList
             mes("You don't need to do that right now.")
             return
         }
-        val slot = CrondisPuzzleEncounter.containerSlot(player)
+        val slot = player.containerSlot()
         if (slot == null) {
             mes("You don't have anything to fill.")
             return
         }
-        if ((inv[slot]?.vars ?: 0) >= CrondisPuzzleEncounter.CONTAINER_FULL) {
+        if ((inv[slot]?.vars ?: 0) >= CONTAINER_FULL) {
             mes("Your container is full.")
             return
         }
         mes("You fill your container.")
-        soundSynth(SYNTH_FILL)
-        anim(SEQ_PICKUP)
-        setCharges(slot, CrondisPuzzleEncounter.CONTAINER_FULL)
+        soundSynth(CrondisSynths.FILL)
+        anim(CrondisSeqs.PICKUP)
+        player.setContainerWater(slot, CONTAINER_FULL)
         room.drainWaterfall(waterfall)
         // Offline_Scape: +20% run energy. OpenRune stores run energy as 0..10_000.
         player.runEnergy = (player.runEnergy + FILL_RUN_ENERGY).coerceAtMost(Constants.run_max_energy)
@@ -144,7 +147,7 @@ class CrondisPuzzleScript @Inject constructor(private val playerList: PlayerList
         arriveDelay()
         if (room == null) return
         mes("It's empty.")
-        soundSynth(SYNTH_DECLINE)
+        soundSynth(CrondisSynths.DECLINE)
     }
 
     // ---- The palm ----
@@ -152,57 +155,28 @@ class CrondisPuzzleScript @Inject constructor(private val playerList: PlayerList
     /** Offline_Scape waterPalm: all of the container goes onto the palm. */
     private suspend fun ProtectedAccess.waterPalm() {
         val room = room ?: return
-        val slot = CrondisPuzzleEncounter.containerSlot(player)
-        val charges = slot?.let { inv[it]?.vars } ?: 0
-        if (slot == null || charges < 1) {
+        val slot = player.containerSlot()
+        val water = slot?.let { inv[it]?.vars } ?: 0
+        if (slot == null || water < 1) {
             mes("You have nothing to water the palm with.")
             return
         }
         val amount =
             when {
-                charges <= 25 -> "small amount"
-                charges <= 50 -> "reasonable amount"
+                water <= 25 -> "small amount"
+                water <= 50 -> "reasonable amount"
                 else -> "lot"
             }
         mes("You empty a $amount of water onto the palm.")
-        anim(SEQ_PICKUP)
-        soundSynth(SYNTH_WATER_PALM)
-        setCharges(slot, 0)
-        room.waterPalm(charges)
+        anim(CrondisSeqs.PICKUP)
+        soundSynth(CrondisSynths.WATER_PALM)
+        player.setContainerWater(slot, 0)
+        room.waterPalm(water)
         delay(1) // Offline_Scape lock(1)
     }
 
-    // ---- Helpers ----
-
-    /**
-     * The container's fill level lives in its obj vars (0..100). Rebuilt by name with the String
-     * constructor, since the slot is known to hold a container.
-     */
-    private fun ProtectedAccess.setCharges(slot: Int, charges: Int) {
-        val obj = inv[slot] ?: return
-        inv[slot] = InvObj(CrondisPuzzleEncounter.CONTAINER, obj.count, vars = charges)
-    }
-
     private companion object {
-        const val SEQ_PICKUP = "seq.human_pickupfloor" // Offline_Scape anim 827
-
         /** 20% of Constants.run_max_energy. */
         const val FILL_RUN_ENERGY = 2_000
-
-        /** Offline_Scape ITEM_TAKE_SOUND 2582, which does have a gameval. */
-        const val SYNTH_TAKE = "synth.pick2"
-
-        // The rest have no gameval name (the cache calls them synth_6522 etc.), so the Int
-        // overload of soundSynth plays them by id. Named after the labels in the cache's
-        // sound-list dbtable synth_pathofcrondis (osrs-dumps config/dump.dbrow).
-
-        /** toa_crondis_fill_container */
-        const val SYNTH_FILL = 6522
-
-        /** toa_crondis_water_empty */
-        const val SYNTH_DECLINE = 6524
-
-        /** toa_crondis_water_tree_02 */
-        const val SYNTH_WATER_PALM = 6534
     }
 }
