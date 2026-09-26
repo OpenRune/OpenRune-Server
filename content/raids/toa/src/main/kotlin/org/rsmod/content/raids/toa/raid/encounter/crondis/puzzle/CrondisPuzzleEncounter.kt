@@ -249,8 +249,9 @@ class CrondisPuzzleEncounter(raid: ToaRaid, room: ToaRoom, region: Region, contr
 
     /**
      * An acid or spear hit (Offline_Scape hit + spillWater + applyDebuffs): damage scaled by raid
-     * level, half the container spilled, 3 Defence and Agility drained. [ready] is the hazard's
-     * per-player cooldown, so a player standing in one isn't hit every tick.
+     * level, half the container spilled, 6 Defence and 3 Agility drained (capture; Offline_Scape
+     * drained 3 of each). [ready] is the hazard's per-player cooldown, so a player standing in one
+     * isn't hit every tick.
      */
     internal fun hazardHit(
         player: Player,
@@ -271,8 +272,8 @@ class CrondisPuzzleEncounter(raid: ToaRaid, room: ToaRoom, region: Region, contr
             damage = deps.random.of(min, min + DAMAGE_SPREAD),
             modifier = NoopPlayerHitModifier,
         )
-        player.statSub("stat.defence", constant = DEBUFF, percent = 0)
-        player.statSub("stat.agility", constant = DEBUFF, percent = 0)
+        player.statSub("stat.defence", constant = DEFENCE_DRAIN, percent = 0)
+        player.statSub("stat.agility", constant = AGILITY_DRAIN, percent = 0)
     }
 
     /** Offline_Scape spillWater: half the container (rounded up) is lost. */
@@ -342,7 +343,8 @@ class CrondisPuzzleEncounter(raid: ToaRaid, room: ToaRoom, region: Region, contr
 
         private const val HIT_DELAY = 1
         private const val DAMAGE_SPREAD = 8
-        private const val DEBUFF = 3
+        private const val DEFENCE_DRAIN = 6
+        private const val AGILITY_DRAIN = 3
         private const val END_BARRIER_LENGTH = 3
 
         /** osrs-dumps interface/hpbar_hud.if3, health_bar_remaining. */

@@ -7,13 +7,18 @@ import org.rsmod.game.entity.Player
 import org.rsmod.map.CoordGrid
 
 /**
- * The spear statues (Offline_Scape handleSpears / handleSpearColumn). Four statue rows, each with
- * a west and an east wall of five spears on a 10-tick cycle with its own delays. A spear is
- * dangerous on 3 ticks of the cycle, over a 3-tile strip.
+ * The spear statues (Offline_Scape handleSpears / handleSpearColumn, retimed to the
+ * zebak_0_invocation capture). Four statue rows, each with a west and an east wall of five spears.
+ * Each spear starts [FIRST] ticks after the first hazard tick, then repeats every 10. Within a
+ * cycle (tick 0 = the mouth activates):
+ * - 3: the spear comes out (spear anim and sound);
+ * - 4-6: it hurts, over a 3-tile strip;
+ * - 6-9: the spear idles, re-sent every tick; 7-9: the mouth idles, re-sent every tick.
+ * Both also idle on the 2 ticks before a spear's first cycle, as in the capture.
  */
 internal class CrondisSpears(private val room: CrondisPuzzleEncounter) {
     private val deps = room.raid.deps
-    private var cycleTick = 0
+    private var elapsed = 0
 
     /** Map cycle each player can be hit again (Offline_Scape temp attrs). */
     private val hitReady = HashMap<Player, Int>()
@@ -30,11 +35,11 @@ internal class CrondisSpears(private val room: CrondisPuzzleEncounter) {
                 room.hazardHit(player, hitReady, BASE_DAMAGE, HIT_COOLDOWN)
             }
         }
-        cycleTick = (cycleTick + 1) % CYCLE
+        elapsed++
     }
 
     fun clear() {
-        cycleTick = 0
+        elapsed = 0
         hitReady.clear()
     }
 
@@ -57,22 +62,29 @@ internal class CrondisSpears(private val room: CrondisPuzzleEncounter) {
     private fun wall(row: Int, east: Boolean, active: MutableList<CoordGrid>) {
         val origin = room.coords(CrondisCoords.SPEAR_ROWS[row])
         for (y in 0 until SPEARS_PER_WALL) {
-            val delay = DELAYS[row][y + if (east) SPEARS_PER_WALL else 0]
+            val first = FIRST[row][y + if (east) SPEARS_PER_WALL else 0]
             val dz = y * 2 + if (east) 1 else 0
             val mouth = origin.translate(if (east) 7 else 0, dz)
             val spear = origin.translate(if (east) 4 else 2, dz)
-            when (cycleTick) {
-                delay -> animLoc(CrondisLocs.ROW_TRAP, mouth, CrondisSeqs.TRAP_ACTIVATE)
-                (delay + 3) % CYCLE ->
-                    animLoc(CrondisLocs.ROW_TRAP_FIRE, spear, CrondisSeqs.TRAP_SPEAR)
-                (delay + 4) % CYCLE,
-                (delay + 5) % CYCLE -> active += spear
-                (delay + 6) % CYCLE -> {
+            if (elapsed < first) {
+                if (elapsed >= first - PRE_IDLE) {
+                    animLoc(CrondisLocs.ROW_TRAP, mouth, CrondisSeqs.TRAP_IDLE)
                     animLoc(CrondisLocs.ROW_TRAP_FIRE, spear, CrondisSeqs.TRAP_IDLE)
-                    active += spear
                 }
-                (delay + 7) % CYCLE -> animLoc(CrondisLocs.ROW_TRAP, mouth, CrondisSeqs.TRAP_IDLE)
+                continue
             }
+            val phase = (elapsed - first) % CYCLE
+            if (phase == 0) animLoc(CrondisLocs.ROW_TRAP, mouth, CrondisSeqs.TRAP_ACTIVATE)
+            if (phase >= MOUTH_IDLE) animLoc(CrondisLocs.ROW_TRAP, mouth, CrondisSeqs.TRAP_IDLE)
+            if (phase == SPEAR_OUT) {
+                animLoc(CrondisLocs.ROW_TRAP_FIRE, spear, CrondisSeqs.TRAP_SPEAR)
+                val sound = CrondisSynths.SPEAR_OUT
+                deps.worldRepo.soundArea(spear, sound, delay = SOUND_DELAY, radius = SOUND_RADIUS)
+            }
+            if (phase >= SPEAR_IDLE) {
+                animLoc(CrondisLocs.ROW_TRAP_FIRE, spear, CrondisSeqs.TRAP_IDLE)
+            }
+            if (phase in DANGER) active += spear
         }
     }
 
@@ -88,17 +100,28 @@ internal class CrondisSpears(private val room: CrondisPuzzleEncounter) {
 
     private companion object {
         const val CYCLE = 10
+        const val SPEAR_OUT = 3
+        const val SPEAR_IDLE = 6
+        const val MOUTH_IDLE = 7
+        const val PRE_IDLE = 2
+        val DANGER = 4..6
         const val SPEARS_PER_WALL = 5
         const val BASE_DAMAGE = 6
         const val HIT_COOLDOWN = 3
+        const val SOUND_DELAY = 14
+        const val SOUND_RADIUS = 5
 
-        /** Offline_Scape STATUE_SPEAR_DELAYS: per row, 5 west spears then 5 east spears. */
-        val DELAYS =
+        /**
+         * Capture: the tick of each spear's first activation after the first hazard tick, per row
+         * (the rows of CrondisCoords.SPEAR_ROWS), 5 west spears then 5 east spears. Offline_Scape
+         * had the same shapes (STATUE_SPEAR_DELAYS) but modulo 10 and without each row's offset.
+         */
+        val FIRST =
             arrayOf(
-                intArrayOf(0, 2, 4, 6, 8, 0, 2, 4, 6, 8),
-                intArrayOf(0, 3, 6, 9, 2, 0, 3, 6, 9, 2),
-                intArrayOf(2, 1, 1, 0, 0, 2, 2, 1, 1, 0),
-                intArrayOf(0, 1, 2, 3, 4, 4, 3, 2, 1, 0),
+                intArrayOf(2, 4, 6, 8, 10, 2, 4, 6, 8, 10),
+                intArrayOf(4, 7, 10, 13, 16, 4, 7, 10, 13, 16),
+                intArrayOf(4, 3, 3, 2, 2, 4, 4, 3, 3, 2),
+                intArrayOf(3, 4, 5, 6, 7, 7, 6, 5, 4, 3),
             )
     }
 }
