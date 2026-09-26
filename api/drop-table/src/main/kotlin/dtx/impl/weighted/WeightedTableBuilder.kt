@@ -9,9 +9,9 @@ import dtx.core.singleRollable
 import dtx.table.DefaultTableBuilder
 import dtx.table.TableHooks
 
-public open class WeightedTableBuilder<T, R, TT: WeightedTable<T, R>>(
+public open class WeightedTableBuilder<T, R, TT : WeightedTable<T, R>>(
     internal val impl: (String, Collection<WeightedRollable<T, R>>, TableHooks<T, R>) -> TT
-): DefaultTableBuilder<T, R, WeightedRollable<T, R>, TT>() {
+) : DefaultTableBuilder<T, R, WeightedRollable<T, R>, TT>() {
 
     init {
         construct {
@@ -26,8 +26,10 @@ public open class WeightedTableBuilder<T, R, TT: WeightedTable<T, R>>(
     override val entries: MutableCollection<WeightedRollable<T, R>> = mutableListOf()
     protected val weightedEntries: MutableList<WeightedRollable<T, R>> = mutableListOf()
 
+    public var boostScope: Boolean = false
+
     public infix fun Double.weight(rollable: Rollable<T, R>): WeightedTableBuilder<T, R, TT> {
-        val weightedRollable = WeightedRollableImpl(this, rollable)
+        val weightedRollable = WeightedRollableImpl(this, rollable, boosted = boostScope)
         weightedEntries.add(weightedRollable)
         return addEntry(weightedRollable) as WeightedTableBuilder<T, R, TT>
     }
@@ -44,7 +46,7 @@ public open class WeightedTableBuilder<T, R, TT: WeightedTable<T, R>>(
         return weight(singleRollable(block))
     }
 
-    public inline infix fun Int.weight(rollable: Rollable<T, R>): WeightedTableBuilder<T, R, TT>{
+    public inline infix fun Int.weight(rollable: Rollable<T, R>): WeightedTableBuilder<T, R, TT> {
         return toDouble().weight(rollable)
     }
 

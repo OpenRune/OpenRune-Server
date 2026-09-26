@@ -24,11 +24,13 @@ public data class TomlWeightedSection(
 public data class TomlSeparateRoll(
     val numerator: Int,
     val denominator: Int,
+    val boosted: Boolean = false,
     val entries: List<TomlWeightedEntry> = emptyList(),
 )
 
 public data class TomlWeightedEntry(
     val weight: Int,
+    val boosted: Boolean = false,
     val obj: String? = null,
     val shared: String? = null,
     val count: String? = null,
@@ -57,6 +59,7 @@ public data class TomlGuaranteedEntry(
 public data class TomlChanceEntry(
     val numerator: Int,
     val denominator: Int,
+    val boosted: Boolean = false,
     val obj: String,
     val count: String? = null,
     val countMin: Int? = null,
