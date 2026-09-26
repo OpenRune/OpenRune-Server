@@ -39,6 +39,12 @@ internal class ZebakBloodMagic(private val room: ZebakEncounter) {
         cast()
     }
 
+    /** Test cheat: casts now; the regular timer (if any) carries on. */
+    fun debugCast(barrage: Boolean) {
+        nextIsBarrage = barrage
+        cast()
+    }
+
     private fun cast() {
         val spot = spotanim(ZebakSpots.BLOOD_BARRAGE)
         for (tile in ZebakCoords.BLOOD_SPELL) deps.worldRepo.spotanimMap(spot, room.coords(tile))
