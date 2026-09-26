@@ -63,12 +63,14 @@ regenRate = 0
 
 # ---- Room npcs ----
 
-# Idle until the Tidal Waves special (v27) puts someone in the water; ZebakEncounter moves them.
+# They hunt players washed into the water by the Tidal Waves; timer = 1 runs
+# ZebakEncounter.crocTick every tick.
 [[npc]]
 id = "npc.toa_zebak_watercroc"
 inherit = "npc.toa_zebak_watercroc"
 defaultMode = "None"
 respawnDir = "South"
+timer = 1
 regenRate = 0
 
 # Blood clouds (Not Just a Head; the small ones with Blood Thinners). timer = 1 fires their
@@ -196,3 +198,26 @@ angle = 14
 lengthAdjustment = 10
 progress = 0
 stepMultiplier = 0
+
+# ---- Tidal Waves (v29) ----
+
+# The waves. They cross the arena a tile a tick (ZebakEncounter.waveTick, timer = 1), through
+# players and npcs (PassThru), blocking no one (Offline_Scape WaveNPC: isEntityClipped false).
+# A wave that hits a blood cloud turns into the bloody one; movement comes from the base type.
+[[npc]]
+id = "npc.toa_zebak_wave"
+inherit = "npc.toa_zebak_wave"
+defaultMode = "None"
+moveRestrict = "PassThru"
+blockWalk = "None"
+timer = 1
+regenRate = 0
+
+[[npc]]
+id = "npc.toa_zebak_wave_bloody"
+inherit = "npc.toa_zebak_wave_bloody"
+defaultMode = "None"
+moveRestrict = "PassThru"
+blockWalk = "None"
+timer = 1
+regenRate = 0

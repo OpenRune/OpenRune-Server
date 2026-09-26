@@ -1,6 +1,8 @@
 package org.rsmod.content.raids.toa.raid
 
+import org.rsmod.api.death.NpcAttackValidateHook
 import org.rsmod.api.player.hook.PlayerTeleportValidateHook
+import org.rsmod.content.raids.toa.raid.encounter.crondis.ZebakSwimAttackHook
 import org.rsmod.plugin.module.PluginModule
 
 /**
@@ -10,5 +12,7 @@ import org.rsmod.plugin.module.PluginModule
 class ToaRaidModule : PluginModule() {
     override fun bind() {
         addSetBinding<PlayerTeleportValidateHook>(ToaTeleportHook::class.java)
+        // Zebak's Tidal Waves: no starting combat while swimming (PvNCombat asks every hook).
+        addSetBinding<NpcAttackValidateHook>(ZebakSwimAttackHook::class.java)
     }
 }

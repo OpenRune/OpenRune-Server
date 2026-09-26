@@ -3,6 +3,7 @@ package org.rsmod.content.raids.toa.raid.encounter.crondis
 import dev.openrune.ServerCacheManager
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
+import dev.openrune.types.BasType
 import dev.openrune.types.aconverted.SpotanimType
 import kotlin.math.abs
 import kotlin.math.floor
@@ -20,6 +21,8 @@ import org.rsmod.api.player.hit.queueHit
 import org.rsmod.api.player.hit.queueImpactHit
 import org.rsmod.api.player.hook.TeleportType
 import org.rsmod.api.player.midiSong
+import org.rsmod.api.player.output.CamShakeAxis
+import org.rsmod.api.player.output.Camera
 import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.output.runClientScript
 import org.rsmod.api.player.output.soundSynth
@@ -43,6 +46,7 @@ import org.rsmod.game.proj.ProjAnim
 import org.rsmod.game.region.Region
 import org.rsmod.map.CoordGrid
 import org.rsmod.map.util.Bounds
+import org.rsmod.routefinder.StepValidator
 
 /**
  * Zebak, the Crondis boss. Port of Offline_Scape ZebakEncounter + Zebak, with the corrections from
@@ -56,9 +60,8 @@ import org.rsmod.map.util.Bounds
  * - The blood magic invocations (Not Just a Head, Arterial Spray, Blood Thinners).
  * - The enrage at 25%, the poison floor, death, reset.
  * - The Great Roar special (v27): acid, boulders and jugs, then the roar ([GreatRoar]).
- *
- * **Not yet:** the Tidal Waves special (waves, swimming, the water crocodiles attacking). Until it
- * exists every queued special is a Great Roar (see [startSpecial]).
+ * - The Tidal Waves special (v29): waves, swimming, the rock steps and the water crocodiles
+ *   ([TidalWaves]). The two specials alternate.
  *
  * **How Zebak is driven.** He never uses the engine's combat. His attacks come from this room's
  * tick loop, and ZebakScript binds onAiOpPlayer2 for his types to a no-op so that retaliation
@@ -121,6 +124,31 @@ class ZebakEncounter(raid: ToaRaid, room: ToaRoom, region: Region, controllerId:
 
     /** The Great Roar in progress, advanced once a tick by [tick]. */
     private var greatRoar: GreatRoar? = null
+
+    /** The Tidal Waves in progress, advanced once a tick by [tick]. */
+    private var tidalWaves: TidalWaves? = null
+
+    /** Offline_Scape `wavesFromSouth`: which edge the waves come from; alternates, starts random. */
+    private var wavesFromSouth = false
+
+    /** Waves on the move, with their direction (dz) and ticks left. */
+    private val waves = HashMap<Npc, WaveState>()
+
+    private class WaveState(val dz: Int, var ticksLeft: Int)
+
+    /** Offline_Scape WATER_RENDER_ANIMATION: ready 773 (human_swim_ready), every move 772 (human_swim). */
+    private val swimBas: BasType by lazy {
+        val swim = SEQ_SWIM.asRSCM(RSCMType.SEQ)
+        BasType(
+            readyAnim = SEQ_SWIM_READY.asRSCM(RSCMType.SEQ),
+            turnOnSpot = swim,
+            walkForward = swim,
+            walkBack = swim,
+            walkLeft = swim,
+            walkRight = swim,
+            running = swim,
+        )
+    }
 
     /** Jugs on the floor or rolling. */
     private val jugs = HashMap<Npc, JugState>()
@@ -194,6 +222,7 @@ class ZebakEncounter(raid: ToaRaid, room: ToaRoom, region: Region, controllerId:
 
     override fun onLeave(player: Player) {
         closeBar(player)
+        stopSwimming(player)
         bleeding.remove(player)
         lastCoords.remove(player)
         for (state in clouds.values) {
@@ -223,6 +252,9 @@ class ZebakEncounter(raid: ToaRaid, room: ToaRoom, region: Region, controllerId:
         removeClouds()
         removeJugs()
         removeBoulders()
+        removeWaves()
+        stopAllSwimming()
+        crocBiteCountdown.clear()
         clearPoison()
         bleeding.clear()
         lastCoords.clear()
@@ -246,6 +278,7 @@ class ZebakEncounter(raid: ToaRaid, room: ToaRoom, region: Region, controllerId:
         usingMage = deps.random.of(0, 1) == 0
         nextBloodIsBarrage = deps.random.of(0, 1) == 0
         cloudsFromSouth = deps.random.of(0, 1) == 0
+        wavesFromSouth = deps.random.of(0, 1) == 0
     }
 
     private fun removeZebak() {
@@ -260,20 +293,24 @@ class ZebakEncounter(raid: ToaRaid, room: ToaRoom, region: Region, controllerId:
 
     /**
      * Capture positions (low confidence, one capture; Offline_Scape's differ by 1-4 tiles, so vanilla
-     * may randomise them). Idle until the Tidal Waves special (v26) puts someone in the water.
+     * may randomise them). They hunt swimmers (see [crocTick]).
      */
     private fun spawnWaterCrocodiles() {
         removeWaterCrocodiles()
         for (tile in WATER_CROC_TILES) {
-            waterCrocodiles += addNpc(WATER_CROC, tile)
+            val croc = addNpc(WATER_CROC, tile)
+            owners[croc] = this
+            waterCrocodiles += croc
         }
     }
 
     private fun removeWaterCrocodiles() {
         for (croc in waterCrocodiles) {
+            owners.remove(croc)
             if (croc.isSlotAssigned) deps.npcRepo.del(croc, Int.MAX_VALUE)
         }
         waterCrocodiles.clear()
+        crocBiteCountdown.clear()
     }
 
     /**
@@ -378,6 +415,11 @@ class ZebakEncounter(raid: ToaRaid, room: ToaRoom, region: Region, controllerId:
         checkPoison(targets)
         checkBleeding(targets)
         greatRoar?.let { if (!it.step()) endSpecial() }
+        tidalWaves?.let { if (!it.step()) endSpecial() }
+        // Dead or ghost players climb out by themselves (Offline_Scape reset the render on death).
+        for (player in swimmers.toList()) {
+            if (raid.isGhost(player) || raid.isDying(player)) stopSwimming(player)
+        }
 
         if (targets.isNotEmpty() && boss.hitpoints > 0) {
             if (!usingSpecial && bloodCountdown != -1 && --bloodCountdown == 0) {
@@ -402,17 +444,23 @@ class ZebakEncounter(raid: ToaRaid, room: ToaRoom, region: Region, controllerId:
      * Offline_Scape: the queued special runs instead of an auto, and they alternate (`jugAttack`)
      * between the Great Roar (shootJugs) and Tidal Waves (landWaves).
      *
-     * TODO(v28): Tidal Waves. Until then its turn is a Great Roar too, so every threshold still
-     * gives a special; [nextSpecialIsJugs] already alternates for when it exists.
+     * The one due is started and runs its tick 0 now. The waves' side flips when they end.
      */
     private fun startSpecial(): Boolean {
         specialsQueued--
+        val roarTurn = nextSpecialIsJugs
         nextSpecialIsJugs = !nextSpecialIsJugs
-        val roar = GreatRoar()
-        greatRoar = roar
         usingSpecial = true
-        specialAttackSpeed = ROAR_ATTACK_SPEED
-        if (!roar.step()) endSpecial()
+        if (roarTurn) {
+            val roar = GreatRoar()
+            greatRoar = roar
+            specialAttackSpeed = ROAR_ATTACK_SPEED
+            if (!roar.step()) endSpecial()
+        } else {
+            val special = TidalWaves()
+            tidalWaves = special
+            if (!special.step()) endSpecial()
+        }
         return true
     }
 
@@ -422,6 +470,7 @@ class ZebakEncounter(raid: ToaRaid, room: ToaRoom, region: Region, controllerId:
      */
     private fun endSpecial() {
         greatRoar = null
+        tidalWaves = null
         usingSpecial = false
         specialAttackSpeed = null
     }
@@ -823,18 +872,8 @@ class ZebakEncounter(raid: ToaRaid, room: ToaRoom, region: Region, controllerId:
                 }
             }
             for (tile in boulderAcidTiles) addPoison(tile, spread = true, guaranteed = true)
-            for (tile in acidTiles) {
-                deps.worldRepo.soundArea(tile, SYNTH_ACID_LAND, radius = ROAR_SOUND_RADIUS)
-                addPoison(tile, spread = true, guaranteed = false)
-            }
-            val dust = spotanim(SPOT_ROAR_DUST)
-            for (tile in jugTiles) {
-                spawnJug(tile)
-                deps.worldRepo.spotanimMap(dust, tile)
-                for (player in targets) {
-                    if (player.coords == tile) hitTypeless(player, deps.random.of(LANDING_MIN, LANDING_MAX))
-                }
-            }
+            landAcid(acidTiles)
+            landJugs(jugTiles, targets)
         }
 
         private fun scream(boss: Npc) {
@@ -891,22 +930,14 @@ class ZebakEncounter(raid: ToaRaid, room: ToaRoom, region: Region, controllerId:
      * Offline_Scape pushPlayer(scream = true): up to 2 tiles east while the way is walkable, facing
      * west (towards Zebak); damage 20-30 scaled, typeless.
      */
-    @OptIn(InternalApi::class)
     private fun roarPush(player: Player) {
         var dest = player.coords
-        repeat(ROAR_PUSH_TILES) {
-            val next = dest.translate(1, 0)
-            if (!isOpenFloor(next)) return@repeat
-            dest = next
+        for (i in 0 until ROAR_PUSH_TILES) {
+            // Offline_Scape checkWalkStep: a step-by-step check, so walls between tiles count too.
+            if (!canStep(dest, 1, 0)) break
+            dest = dest.translate(1, 0)
         }
-        val moved = dest != player.coords
-        if (!moved) player.abortRoute()
-        deps.launcher.launchLenient(player) {
-            if (moved) telejump(dest, TeleportType.Exempt)
-            player.faceDirection(Direction.West)
-            anim(SEQ_PLAYER_PUSHED)
-        }
-        player.soundSynth(SYNTH_PLAYER_PUSHED)
+        movePushed(player, dest, facing = Direction.West, synth = SYNTH_PLAYER_PUSHED)
         val base = maxHit(ROAR_BASE_DAMAGE)
         hitTypeless(player, deps.random.of(base, base + ROAR_DAMAGE_SPREAD))
     }
@@ -1142,6 +1173,313 @@ class ZebakEncounter(raid: ToaRaid, room: ToaRoom, region: Region, controllerId:
             else -> Constants.em_face_northwest
         }
 
+    // ---- Tidal Waves (Offline_Scape Zebak.landWaves) ----
+
+    /**
+     * One Tidal Waves special, a tick at a time (Offline_Scape's task, same tick numbers):
+     * - **0**: Zebak spits 16 acid pools and 6-8 jugs (placed at random); his next auto is 16 ticks
+     *   away.
+     * - **4**: he calls the waves (tail attack animation).
+     * - **5**: the acid and jugs land.
+     * - **6**: rocks fall into the water on the wave side, the camera shakes (reset at **8**).
+     * - **13, 20, 27**: a row of 21 waves sets off across the arena from the south or the north
+     *   edge (the side alternates between specials), with a gap to walk through: 3 tiles wide,
+     *   one narrower every two path levels (OSRS Wiki), at least 1. The second row's gap mirrors
+     *   the first; the third is random again.
+     * - **47**: over.
+     */
+    private inner class TidalWaves {
+        private var ticks = -1
+        private var jugTiles: List<CoordGrid> = emptyList()
+        private var acidTiles: List<CoordGrid> = emptyList()
+
+        /** Offline_Scape `waveSkipX`: the previous row's gap, or -1 for a fresh random one. */
+        private var lastGap = -1
+
+        private val fromSouth = wavesFromSouth
+
+        fun step(): Boolean {
+            val boss = zebak ?: return false
+            if (boss.hitpoints <= 0) return false
+            ticks++
+            when (ticks) {
+                0 -> launch(boss)
+                WAVES_CALL_TICK -> {
+                    boss.anim(SEQ_CALL_WAVES)
+                    tail?.anim(SEQ_TAIL_CALL_WAVES)
+                }
+                WAVES_LAND_TICK -> if (!land()) return false
+                WAVES_ROCKS_TICK -> if (!rocksFall()) return false
+                WAVES_CAMERA_RESET_TICK -> {
+                    val targets = targets()
+                    if (targets.isEmpty()) return false
+                    for (player in targets) Camera.camShakeResetAll(player)
+                }
+                in WAVE_ROW_TICKS -> spawnRow()
+                WAVES_END_TICK -> {
+                    wavesFromSouth = !wavesFromSouth
+                    return false
+                }
+            }
+            return true
+        }
+
+        private fun launch(boss: Npc) {
+            boss.anim(SEQ_RANGED)
+            tail?.resetAnim()
+            attackCountdown = WAVES_NEXT_ATTACK
+            jugTiles = freeTiles(GROUND_MIN, GROUND_MAX, excludes = emptyList()).take(deps.random.of(JUGS_MIN, JUGS_MAX))
+            acidTiles = freeTiles(GROUND_MIN, GROUND_MAX, excludes = emptyList()).take(WAVES_ACID_POOLS)
+            val mouth = coords(PROJECTILE_START)
+            for (tile in acidTiles) lob(SPOT_ACID, mouth, tile)
+            for (tile in jugTiles) lob(SPOT_JUG, mouth, tile)
+        }
+
+        private fun land(): Boolean {
+            val targets = targets()
+            if (targets.isEmpty()) return false
+            landAcid(acidTiles)
+            landJugs(jugTiles, targets)
+            return true
+        }
+
+        private fun rocksFall(): Boolean {
+            val targets = targets()
+            if (targets.isEmpty()) return false
+            for (player in targets) {
+                for ((synth, delay) in WAVES_LAND_SOUNDS) player.soundSynth(synth, delay = delay)
+            }
+            val base = coords(if (fromSouth) WAVE_SOUTH_BASE else WAVE_NORTH_BASE)
+            val splash = spotanim(SPOT_WATER_SPLASH)
+            val rocks = spotanim(SPOT_ROCK_FALL)
+            for (i in 0 until WAVE_ROCK_SPOTS) {
+                val tile = base.translate(i * WAVE_ROCK_SPACING, 0)
+                deps.worldRepo.spotanimMap(splash, tile, delay = WAVE_SPLASH_DELAY)
+                deps.worldRepo.spotanimMap(rocks, tile)
+            }
+            for (player in targets) {
+                // Offline_Scape CameraShakeType LEFT_AND_RIGHT 7, UP_AND_DOWN 6, FRONT_AND_BACK 7.
+                Camera.camShakeResetAll(player)
+                Camera.camShake(player, CamShakeAxis.LEFT_RIGHT, random = 7, amplitude = 0, rate = 0)
+                Camera.camShake(player, CamShakeAxis.UP_DOWN, random = 6, amplitude = 0, rate = 0)
+                Camera.camShake(player, CamShakeAxis.FORWARDS_BACKWARDS, random = 7, amplitude = 0, rate = 0)
+                player.soundSynth(SYNTH_RUMBLING)
+            }
+            return true
+        }
+
+        private fun spawnRow() {
+            val base = coords(if (fromSouth) WAVE_SOUTH_BASE else WAVE_NORTH_BASE)
+            val gap = if (lastGap == -1) deps.random.of(0, WAVE_GAP_RANGE) else WAVE_GAP_RANGE - lastGap
+            val pathLevel = raid.pathLevels[ToaPath.CRONDIS.ordinal]
+            val gapWidth = WAVE_GAP_WIDTH - min(2, pathLevel / 2)
+            val dz = if (fromSouth) 1 else -1
+            for (x in 0 until WAVE_ROW_LENGTH) {
+                // The first 4 columns (by Zebak) never have the gap; it grows away from the middle.
+                if (x >= WAVE_SOLID_COLUMNS) {
+                    val column = x - WAVE_SOLID_COLUMNS
+                    val inGap = (0 until gapWidth).any { hole -> column == gap + if (gap < WAVE_GAP_RANGE / 2) hole else -hole }
+                    if (inGap) continue
+                }
+                spawnWave(base.translate(x, 0), dz)
+            }
+            lastGap = if (lastGap == -1) gap else -1
+        }
+    }
+
+    /** Acid landing from a special: a splat sound and a spreading pool (Offline_Scape spawnBasePoison). */
+    private fun landAcid(tiles: List<CoordGrid>) {
+        for (tile in tiles) {
+            deps.worldRepo.soundArea(tile, SYNTH_ACID_LAND, radius = ROAR_SOUND_RADIUS)
+            addPoison(tile, spread = true, guaranteed = false)
+        }
+    }
+
+    /** Jugs landing from a special; anyone underneath takes 2-5 (Offline_Scape spawnJugs). */
+    private fun landJugs(tiles: List<CoordGrid>, targets: List<Player>) {
+        val dust = spotanim(SPOT_ROAR_DUST)
+        for (tile in tiles) {
+            spawnJug(tile)
+            deps.worldRepo.spotanimMap(dust, tile)
+            for (player in targets) {
+                if (player.coords == tile) hitTypeless(player, deps.random.of(LANDING_MIN, LANDING_MAX))
+            }
+        }
+    }
+
+    // -- Waves (Offline_Scape WaveNPC) --
+
+    private fun spawnWave(tile: CoordGrid, dz: Int) {
+        val wave = addNpcAt(WAVE, tile)
+        owners[wave] = this
+        waves[wave] = WaveState(dz, WAVE_LIFETIME)
+    }
+
+    /**
+     * A wave, once a tick (config `timer = 1`), Offline_Scape WaveNPC.processNPC. It lives 23 ticks
+     * and moves a tile a tick. On its tile: players are washed along (and maybe into the water),
+     * acid is washed away 1 time in 4, blood clouds are destroyed (the wave turns bloody). A jug two
+     * tiles ahead is set rolling the same way.
+     */
+    private fun waveTick(wave: Npc) {
+        val state = waves[wave] ?: return
+        if (stage != ToaStage.STARTED || --state.ticksLeft <= 0) {
+            removeWave(wave)
+            return
+        }
+        val here = wave.coords
+        for (player in targets()) {
+            if (player.coords == here) washPlayer(player, state.dz)
+        }
+        val next = here.translate(0, state.dz)
+        val ahead = next.translate(0, state.dz)
+        for ((jug, jugState) in jugs) {
+            if (jug.coords != ahead) continue
+            if (jugState.dx == 0 && jugState.dz == 0) jug.transmog(npcType(JUG_ROLLING), Int.MAX_VALUE)
+            jugState.dx = 0
+            jugState.dz = state.dz
+        }
+        if (here in poison && deps.random.of(0, 3) == 0) removePoison(here)
+        val hitClouds = clouds.keys.filter { it.coords == here }
+        if (hitClouds.isNotEmpty()) {
+            for (cloud in hitClouds) removeCloud(cloud)
+            wave.transmog(npcType(WAVE_BLOODY), Int.MAX_VALUE)
+        }
+        moveOneTile(wave, next)
+    }
+
+    /**
+     * Offline_Scape moved waves without collision. Walking keeps the movement smooth; where the step
+     * is blocked (by Zebak's blocker, or the arena edge) it jumps instead, so a wave is never stuck.
+     */
+    private fun moveOneTile(npc: Npc, next: CoordGrid) {
+        val from = npc.coords
+        val open = steps.canTravel(from.level, from.x, from.z, next.x - from.x, next.z - from.z)
+        if (open) npc.walk(next) else npc.teleport(deps.collision, next)
+    }
+
+    private fun removeWave(wave: Npc) {
+        waves.remove(wave)
+        owners.remove(wave)
+        if (wave.isSlotAssigned) deps.npcRepo.del(wave, Int.MAX_VALUE)
+    }
+
+    private fun removeWaves() {
+        for (wave in waves.keys.toList()) removeWave(wave)
+    }
+
+    /**
+     * Offline_Scape pushPlayer(scream = false): up to 4 tiles along the wave while each step is
+     * possible. If the edge stops them, they're thrown into the water instead: the tile
+     * (5 - steps taken) further on, if it's walkable, and they start swimming. Damage: OSRS Wiki
+     * 6-10, scaled by invocation (Offline_Scape: 8-18 scaled).
+     */
+    private fun washPlayer(player: Player, dz: Int) {
+        var dest = player.coords
+        var intoWater = false
+        for (i in 0 until WAVE_PUSH_TILES) {
+            if (canStep(dest, 0, dz)) {
+                dest = dest.translate(0, dz)
+                continue
+            }
+            val water = dest.translate(0, dz * (WAVE_WATER_JUMP - i))
+            if (!deps.collision.isWalkBlocked(water)) {
+                dest = water
+                intoWater = true
+            }
+            break
+        }
+        movePushed(player, dest, facing = if (dz > 0) Direction.South else Direction.North, synth = SYNTH_WAVE_HIT)
+        hitTypeless(player, deps.random.of(maxHit(WAVE_MIN_DAMAGE), maxHit(WAVE_MAX_DAMAGE)))
+        if (intoWater) startSwimming(player)
+    }
+
+    // -- Swimming --
+
+    /** Players in the water, until they climb the rock steps out (or leave, die, the room ends). */
+    private val swimmers = HashSet<Player>()
+
+    fun isSwimming(player: Player): Boolean = player in swimmers
+
+    /** Offline_Scape: the swim render animation (773 ready, 772 moving) and silent running. */
+    private fun startSwimming(player: Player) {
+        if (!swimmers.add(player)) return
+        player.bas = swimBas
+        player.rebuildAppearance()
+    }
+
+    private fun stopSwimming(player: Player) {
+        if (!swimmers.remove(player)) return
+        player.bas = null
+        player.rebuildAppearance()
+    }
+
+    private fun stopAllSwimming() {
+        for (player in swimmers.toList()) stopSwimming(player)
+    }
+
+    /**
+     * Offline_Scape RockStepsAction: out of the water onto the tile beside the steps (north for
+     * angle 0, else south).
+     */
+    @OptIn(InternalApi::class)
+    private fun climbOut(player: Player, rock: CoordGrid, angleId: Int) {
+        if (!isSwimming(player)) {
+            player.mes("The eyes looking at you from below the surface make you reconsider going down there.")
+            return
+        }
+        val dest = rock.translate(0, if (angleId == 0) 1 else -1)
+        stopSwimming(player)
+        deps.launcher.launchLenient(player) { telejump(dest, TeleportType.Exempt) }
+        player.mes("You use the steps to get yourself back onto the island.")
+    }
+
+    // -- Water crocodiles (Offline_Scape WaterCrocodile) --
+
+    private val crocBiteCountdown = HashMap<Npc, Int>()
+
+    /**
+     * Once a tick (config `timer = 1`): each crocodile swims after the nearest swimmer within 16
+     * tiles and, every 2 ticks, bites one it's next to for 0-3.
+     */
+    private fun crocTick(croc: Npc) {
+        if (stage != ToaStage.STARTED || (zebak?.hitpoints ?: 0) <= 0) return
+        val target =
+            targets().filter { it in swimmers }.minByOrNull { chebyshev(it.coords, croc.coords) }
+                ?.takeIf { chebyshev(it.coords, croc.coords) < CROC_HUNT_RANGE }
+        if (target != null && !inMeleeRange(croc, target)) croc.walk(target.coords)
+        val countdown = (crocBiteCountdown[croc] ?: CROC_BITE_RATE) - 1
+        if (countdown > 0) {
+            crocBiteCountdown[croc] = countdown
+            return
+        }
+        crocBiteCountdown[croc] = CROC_BITE_RATE
+        if (target != null && inMeleeRange(croc, target)) {
+            croc.facePlayer(target)
+            target.queueHit(croc, 1, HitType.Typeless, deps.random.of(0, CROC_MAX_BITE), NoopPlayerHitModifier)
+        }
+    }
+
+    // -- Shared --
+
+    private val steps by lazy { StepValidator(deps.collision) }
+
+    private fun canStep(from: CoordGrid, dx: Int, dz: Int): Boolean =
+        steps.canTravel(from.level, from.x, from.z, dx, dz)
+
+    /** Moves a pushed player (if they moved), faces them, and plays the push animation and sound. */
+    @OptIn(InternalApi::class)
+    private fun movePushed(player: Player, dest: CoordGrid, facing: Direction, synth: String) {
+        val moved = dest != player.coords
+        if (!moved) player.abortRoute()
+        deps.launcher.launchLenient(player) {
+            if (moved) telejump(dest, TeleportType.Exempt)
+            player.faceDirection(facing)
+            anim(SEQ_PLAYER_PUSHED)
+        }
+        player.soundSynth(synth)
+    }
+
     // ---- Zebak taking damage ----
 
     /**
@@ -1227,11 +1565,14 @@ class ZebakEncounter(raid: ToaRaid, room: ToaRoom, region: Region, controllerId:
         private const val ZEBAK_TAIL = "npc.toa_zebak_tail"
         private const val ZEBAK_DEAD = "npc.toa_zebak_dead"
         private const val ZEBAK_TAIL_DEAD = "npc.toa_zebak_tail_dead"
-        private const val WATER_CROC = "npc.toa_zebak_watercroc"
+        const val WATER_CROC = "npc.toa_zebak_watercroc"
         private const val SPLIT_HELPER = "npc.spotanim_zebak_ranged01_npc" // 11744
         const val JUG = "npc.toa_zebak_jug" // 11735: Push, Pull, Hit
         const val JUG_ROLLING = "npc.toa_zebak_jug_rolling" // 11736: Attack
         const val BOULDER = "npc.toa_zebak_safespot" // 11737
+        const val WAVE = "npc.toa_zebak_wave" // 11738
+        const val WAVE_BLOODY = "npc.toa_zebak_wave_bloody" // 11739
+        const val CLIMBING_ROCK = "loc.toa_zebak_climbing_rock" // 45509, "Climb-up"
         private const val BOULDER_BLOCKER = "loc.invisible_type8_blocking_active" // 43876
 
         private const val BLOCKER = "loc.invisible_type8_blocking_size9" // 3192
@@ -1375,6 +1716,35 @@ class ZebakEncounter(raid: ToaRaid, room: ToaRoom, region: Region, controllerId:
         private const val ROAR_SOUND_RADIUS = 15
         private const val BOULDER_SOUND_RADIUS = 5
 
+        // -- Tidal Waves (Offline_Scape landWaves; tick numbers from its task) --
+        private const val WAVES_CALL_TICK = 4
+        private const val WAVES_LAND_TICK = 5
+        private const val WAVES_ROCKS_TICK = 6
+        private const val WAVES_CAMERA_RESET_TICK = 8
+        private val WAVE_ROW_TICKS = intArrayOf(13, 20, 27)
+        private const val WAVES_END_TICK = 47
+        private const val WAVES_NEXT_ATTACK = 16
+        private const val WAVES_ACID_POOLS = 16
+
+        /** Offline_Scape BASE_WAVE_SOUTH/NORTH_LOC: the west end of each wave row. */
+        private val WAVE_SOUTH_BASE = CoordGrid(3923, 5397, 0)
+        private val WAVE_NORTH_BASE = CoordGrid(3923, 5419, 0)
+        private const val WAVE_ROW_LENGTH = 21
+        private const val WAVE_SOLID_COLUMNS = 4
+        private const val WAVE_GAP_RANGE = 12
+        private const val WAVE_GAP_WIDTH = 3
+        private const val WAVE_LIFETIME = 23
+        private const val WAVE_ROCK_SPOTS = 7
+        private const val WAVE_ROCK_SPACING = 3
+        private const val WAVE_SPLASH_DELAY = 200
+        private const val WAVE_PUSH_TILES = 4
+        private const val WAVE_WATER_JUMP = 5
+        private const val WAVE_MIN_DAMAGE = 6
+        private const val WAVE_MAX_DAMAGE = 10
+        private const val CROC_HUNT_RANGE = 16
+        private const val CROC_BITE_RATE = 2
+        private const val CROC_MAX_BITE = 3
+
         /** OSRS Wiki: specials queued at 85, 70, 55 and 40%; enraged at ~25%. */
         private val SPECIAL_THRESHOLDS = doubleArrayOf(0.85, 0.70, 0.55, 0.40)
         private const val ENRAGE_THRESHOLD = 0.25
@@ -1393,6 +1763,10 @@ class ZebakEncounter(raid: ToaRaid, room: ToaRoom, region: Region, controllerId:
         private const val SEQ_PLAYER_PUSHED = "seq.warguild_parry_defend" // 4177
         private const val SEQ_PLAYER_KNOCKED = "seq.agilityarena_player_spikedback" // 1114
         private const val SEQ_PLAYER_MOVE_JUG = "seq.human_leverdown" // 834
+        private const val SEQ_CALL_WAVES = "seq.npc_zebak01_attack_tail" // 9630
+        private const val SEQ_TAIL_CALL_WAVES = "seq.npc_zebak02_attack_tail" // 9631
+        private const val SEQ_SWIM_READY = "seq.human_swim_ready" // 773
+        private const val SEQ_SWIM = "seq.human_swim" // 772
         private const val SEQ_DEATH = "seq.npc_zebak01_death" // 9634
         private const val SEQ_TAIL_DEATH = "seq.npc_zebak02_death" // 9635
 
@@ -1415,6 +1789,7 @@ class ZebakEncounter(raid: ToaRaid, room: ToaRoom, region: Region, controllerId:
         private const val SPOT_JUG_SPLASH = "spotanim.zebak_waterjug_splash_travel" // 2193
         private const val SPOT_ACID_CLEARED = "spotanim.waterstrike_impact" // 95
         private const val SPOT_WATER_SPLASH = "spotanim.watersplash" // 68
+        private const val SPOT_ROCK_FALL = "spotanim.zebak_rock_fall" // 2195
 
         // -- Projectile types (pack/.../configs/toa_zebak.toml) --
         private const val PROJ_INITIAL = "projanim.toa_zebak_initial"
@@ -1446,6 +1821,20 @@ class ZebakEncounter(raid: ToaRaid, room: ToaRoom, region: Region, controllerId:
         private const val SYNTH_ACID_LAND = "synth.toa_zebak_vomit_colours_projectile_splat_03" // 5909
         private const val SYNTH_BOULDER_LAND = "synth.toa_zebak_debris_impact_01" // 5913
         private const val SYNTH_PLAYER_PUSHED = "synth.toa_zebak_roar_single_tremor_03" // 5888
+
+        // Tidal Waves (Offline_Scape WAVES_LAND_SOUNDS, RUMBLING_SOUND, WAVE_HIT_SOUND).
+        private const val SYNTH_RUMBLING = "synth.rumbling" // 1678
+        private const val SYNTH_WAVE_HIT = "synth.toa_zebak_death_second_floor_hit_01" // 5868
+
+        /** Offline_Scape WAVES_LAND_SOUNDS: (synth, delay). */
+        private val WAVES_LAND_SOUNDS =
+            listOf(
+                "synth.toa_zebak_falling_rocks_sweep_01" to 0, // 5882
+                "synth.toa_zebak_fallling_rocks_water_impact_01" to 200, // 5843
+                "synth.toa_zebak_tidal_wave_7600ms_01" to 200, // 5852
+                "synth.toa_zebak_tidal_wave_7600ms_01" to 530,
+                "synth.toa_zebak_tidal_wave_7600ms_01" to 920,
+            )
 
         /** Offline_Scape SCREAM_SOUNDS: (synth, delay). */
         private val SCREAM_SOUNDS =
@@ -1523,6 +1912,28 @@ class ZebakEncounter(raid: ToaRaid, room: ToaRoom, region: Region, controllerId:
         /** ZebakScript's onAiTimer for the jugs (config `timer = 1`). */
         fun onJugTick(jug: Npc) {
             roomOf(jug)?.jugTick(jug)
+        }
+
+        /** ZebakScript's onAiTimer for the waves. */
+        fun onWaveTick(wave: Npc) {
+            roomOf(wave)?.waveTick(wave)
+        }
+
+        /** ZebakScript's onAiTimer for the water crocodiles. */
+        fun onCrocTick(croc: Npc) {
+            roomOf(croc)?.crocTick(croc)
+        }
+
+        /** ZebakScript: "Climb-up" on the rock steps (loc toa_zebak_climbing_rock). */
+        fun onClimbRock(player: Player, rock: CoordGrid, angleId: Int) {
+            val room = player.currentRaid?.encounterOf(player) as? ZebakEncounter ?: return
+            room.climbOut(player, rock, angleId)
+        }
+
+        /** ToaSwimAttackHook: may [player] start combat? Not while swimming. */
+        fun isSwimmingInRaid(player: Player): Boolean {
+            val room = player.currentRaid?.encounterOf(player) as? ZebakEncounter ?: return false
+            return room.isSwimming(player)
         }
 
         /** ZebakScript's death queue for the boulders (the third roar wave). */

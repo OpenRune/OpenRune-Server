@@ -43,6 +43,13 @@ toa_zebak_attack_roar_high_02 = 5904
 toa_zebak_attack_roar_bass_02 = 5838
 toa_zebak_attack_hand_stomp_final_01 = 5851
 toa_zebak_attack_jaw_shut_01 = 5863
+# Tidal Waves.
+toa_zebak_falling_rocks_sweep_01 = 5882
+toa_zebak_fallling_rocks_water_impact_01 = 5843
+toa_zebak_tidal_wave_7600ms_01 = 5852
+toa_zebak_death_second_floor_hit_01 = 5868
+# Offline_Scape RUMBLING_SOUND. Label from the cache dbtable (not a Zebak row).
+rumbling = 1678
 
 # Server-only projectile types (timings in pack/.../configs/toa_zebak.toml). Explicit ids from the
 # top of the range, like other modules' custom ids; .data/gamevals/projanim.rscm uses 0-17.
