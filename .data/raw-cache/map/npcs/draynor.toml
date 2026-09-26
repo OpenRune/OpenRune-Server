@@ -67,15 +67,7 @@ npc = "npc.joe"
 coords = "0_48_50_51_45"
 
 [[spawn]]
-npc = "npc.joe_vis"
-coords = "0_48_50_52_44"
-
-[[spawn]]
 npc = "npc.lady_keli"
-coords = "0_48_50_56_44"
-
-[[spawn]]
-npc = "npc.lady_keli_vis"
 coords = "0_48_50_56_44"
 
 [[spawn]]

@@ -1,0 +1,22 @@
+[[varp]]
+id = "varp.prince_ali_state"
+scope = "Perm"
+transmit = "Never"
+
+[[varbit]]
+id = "varbit.prince_ali_keli_asked"
+varp = "varp.prince_ali_state"
+startBit = 0
+endBit = 0
+
+[[varbit]]
+id = "varbit.prince_ali_key_ordered"
+varp = "varp.prince_ali_state"
+startBit = 1
+endBit = 1
+
+[[varbit]]
+id = "varbit.prince_ali_met_leela"
+varp = "varp.prince_ali_state"
+startBit = 2
+endBit = 2

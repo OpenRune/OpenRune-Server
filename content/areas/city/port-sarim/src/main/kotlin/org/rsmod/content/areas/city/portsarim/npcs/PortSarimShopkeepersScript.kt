@@ -55,8 +55,19 @@ class PortSarimShopkeepersScript @Inject constructor(private val shops: Shops) :
     }
 
     private suspend fun Dialogue.wydin() {
+        if (player.wydinJob) {
+            wydinEmployee { player.openShop(PortSarimShop.Food) }
+            return
+        }
         chatNpc(happy, "Welcome to my food store! Would you like to buy anything?")
-        when (choice3("Yes please.", 1, "No, thank you.", 2, "What can you recommend?", 3)) {
+        val options = buildList {
+            add("Yes please." to 1)
+            add("No, thank you." to 2)
+            add("What can you recommend?" to 3)
+            if (player.onPiratesTreasure()) add("Can I get a job here?" to 4)
+        }
+        when (menu(options)) {
+            4 -> askForJob()
             1 -> {
                 chatPlayer(happy, "Yes please.")
                 player.openShop(PortSarimShop.Food)

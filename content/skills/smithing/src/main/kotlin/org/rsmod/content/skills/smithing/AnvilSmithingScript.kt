@@ -12,6 +12,7 @@ import org.rsmod.api.script.onOpLocCategoryU
 import org.rsmod.api.script.onPlayerQueueWithArgs
 import org.rsmod.api.stats.xpmod.XpModifiers
 import org.rsmod.api.table.smithing.SmithingBarsRow
+import org.rsmod.content.quest.manager.QuestLocGates
 import org.rsmod.content.skills.crafting.interfaces.MakeQuantity
 import org.rsmod.content.skills.crafting.interfaces.MakeQuantityColumn
 import org.rsmod.content.skills.crafting.interfaces.makeQuantity
@@ -45,11 +46,13 @@ class AnvilSmithingScript @Inject constructor(private val xpMods: XpModifiers) :
 
         SmithingData.barOutputInternals.forEach { barInternal ->
             onOpLocCategoryU(SmithingData.ANVIL_CATEGORY, barInternal) {
+                if (!QuestLocGates.allows(this, it.type.id)) return@onOpLocCategoryU
                 SmithingData.barsByOutput[barInternal]?.let { queueOpenSmithing(it) }
             }
         }
 
         onOpLocCategory1(SmithingData.ANVIL_CATEGORY) {
+            if (!QuestLocGates.allows(this, it.type.id)) return@onOpLocCategory1
             val bar = selectedBar()
             if (bar == null) {
                 mesbox("You need a bronze bar and a hammer to smith equipment on this anvil.")

@@ -9,25 +9,10 @@ import org.rsmod.plugin.scripts.ScriptContext
 
 class RustyAnchorScript : PluginScript() {
     override fun ScriptContext.startup() {
-        onOpNpc1("npc.redbeard_frank") { startDialogue(it.npc) { redbeardFrank() } }
         onOpNpc1("npc.sarim_pub_sitting_patron") { startDialogue(it.npc) { ahab() } }
         onOpNpc1("npc.rustyanchor_bartender") { startDialogue(it.npc) { bartender() } }
         onOpNpc1(JACK_SEAGULL) { startDialogue(it.npc) { pirateDrinker(JACK_SEAGULL_NAME) } }
         onOpNpc1(LONGBOW_BEN) { startDialogue(it.npc) { pirateDrinker(LONGBOW_BEN_NAME) } }
-    }
-
-    private suspend fun Dialogue.redbeardFrank() {
-        chatNpc(laugh, "Arr, Matey!")
-        while (true) {
-            if (choice2("Arr!", true, "Do you have anything for trade?", false)) {
-                chatPlayer(laugh, "Arr!")
-                chatNpc(laugh, "Arr!")
-                continue
-            }
-            chatPlayer(quiz, "Do you have anything for trade?")
-            chatNpc(neutral, CUSTOMS_REPLY)
-            return
-        }
     }
 
     private suspend fun Dialogue.ahab() {
