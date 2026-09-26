@@ -127,6 +127,9 @@ fun statDrain(stats: List<String>, amount: Int, chance: Int = 1, outOf: Int = 1)
 fun statDrain(stats: List<String>, amount: Int, odds: Odds): Effect =
     Effect.StatDrain(stats.map { StatDrainEntry(it, amount, odds.chance, odds.outOf) })
 
+fun statDrainPercent(vararg stats: String, percent: Int): Effect =
+    Effect.StatDrain(stats.map { StatDrainEntry(it, amount = 0, percent = percent) })
+
 fun statDrain(vararg stats: String, amount: Int, odds: Odds): Effect =
     Effect.StatDrain(stats.map { StatDrainEntry(it, amount, odds.chance, odds.outOf) })
 
