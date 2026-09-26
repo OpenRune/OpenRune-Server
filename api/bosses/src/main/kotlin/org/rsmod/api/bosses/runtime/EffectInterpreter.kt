@@ -14,9 +14,8 @@ import org.rsmod.api.combat.commons.player.finishNpcHit
 import org.rsmod.api.combat.commons.player.queueCombatRetaliate
 import org.rsmod.api.combat.commons.types.MeleeAttackType
 import org.rsmod.api.npc.access.StandardNpcAccess
-import org.rsmod.api.npc.isValidTarget
-import org.rsmod.api.player.stat.statDrain
 import org.rsmod.api.npc.heal
+import org.rsmod.api.npc.isValidTarget
 import org.rsmod.api.player.disablePrayers
 import org.rsmod.api.player.hit.modifier.PlayerHitModifier
 import org.rsmod.api.player.hit.queueImpactHit
@@ -24,6 +23,7 @@ import org.rsmod.api.player.isValidTarget
 import org.rsmod.api.player.output.Camera
 import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.stat.hitpoints
+import org.rsmod.api.player.stat.statDrain
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.game.entity.util.PathingEntityCommon
