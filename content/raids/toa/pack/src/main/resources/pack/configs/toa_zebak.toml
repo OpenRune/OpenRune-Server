@@ -135,3 +135,64 @@ angle = 14
 lengthAdjustment = 30
 progress = 10
 stepMultiplier = 0
+
+# ---- Great Roar (v27) ----
+
+# Jugs. They roll once pushed or pulled (the standing jug is transmogged into the rolling one), so
+# they can move: no NoMove. timer = 1 runs ZebakEncounter.jugTick every tick. Offline_Scape
+# CrondisJug: isEntityClipped false, so they don't block anyone and nobody blocks them.
+#   moveRestrict = "PassThru": walks through players and npcs. Without it a pulled jug is stopped
+#   by the player who pulled it (it rolls towards them). An npc's movement rules come from its
+#   base type, so the standing jug's setting also covers it once transmogged into the rolling one.
+[[npc]]
+id = "npc.toa_zebak_jug"
+inherit = "npc.toa_zebak_jug"
+defaultMode = "None"
+moveRestrict = "PassThru"
+blockWalk = "None"
+timer = 1
+regenRate = 0
+
+[[npc]]
+id = "npc.toa_zebak_jug_rolling"
+inherit = "npc.toa_zebak_jug_rolling"
+defaultMode = "None"
+moveRestrict = "PassThru"
+blockWalk = "None"
+timer = 1
+regenRate = 0
+
+# The boulders. The tile is blocked by loc invisible_type8_blocking_active, placed with it.
+[[npc]]
+id = "npc.toa_zebak_safespot"
+inherit = "npc.toa_zebak_safespot"
+defaultMode = "None"
+moveRestrict = "NoMove"
+regenRate = 0
+
+# Every Great Roar throw from Zebak's mouth: acid (1555), acid behind a boulder (2194), boulders
+# (2172) and jugs (2173). Offline_Scape Projectile(…, 248, 0, 30, 35°, 120, 100, 0): lands after
+# 150 client cycles, the 5 ticks before they appear.
+[[projectile]]
+isServerOnly = true
+id = "projanim.toa_zebak_lob"
+startHeight = 248
+endHeight = 0
+delay = 30
+angle = 25
+lengthAdjustment = 120
+progress = 100
+stepMultiplier = 0
+
+# Water from a broken jug to each acid tile it clears. Offline_Scape CrondisJug SPREAD_PROJECTILE
+# (2193, 28, 0, 10, 20°, 10, 0, 0).
+[[projectile]]
+isServerOnly = true
+id = "projanim.toa_zebak_jug_splash"
+startHeight = 28
+endHeight = 0
+delay = 10
+angle = 14
+lengthAdjustment = 10
+progress = 0
+stepMultiplier = 0

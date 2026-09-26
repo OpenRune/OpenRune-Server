@@ -9,7 +9,6 @@ import org.rsmod.api.player.hit.modifier.PlayerHitModifier
 import org.rsmod.api.player.protect.ProtectedAccessLauncher
 import org.rsmod.api.random.GameRandom
 import org.rsmod.api.registry.region.RegionRegistry
-import org.rsmod.api.registry.zone.ZoneUpdateMap
 import org.rsmod.api.repo.loc.LocRepository
 import org.rsmod.api.repo.npc.NpcRepository
 import org.rsmod.api.repo.obj.ObjRepository
@@ -56,9 +55,4 @@ constructor(
     val playerHitModifier: PlayerHitModifier,
     /** Walkable-tile checks for room hazards (Zebak's poison spread). */
     val collision: CollisionFlagMap,
-    /**
-     * Raw zone updates. Only for area sounds whose synth has no gameval name (WorldRepository's
-     * soundArea takes a name); e.g. Zebak's synth_6590.
-     */
-    val zoneUpdates: ZoneUpdateMap,
 )
