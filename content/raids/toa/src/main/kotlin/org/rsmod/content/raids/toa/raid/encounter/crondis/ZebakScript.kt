@@ -9,6 +9,7 @@ import org.rsmod.api.script.onApNpc1
 import org.rsmod.api.script.onApNpc3
 import org.rsmod.api.script.onNpcHit
 import org.rsmod.api.script.onNpcQueue
+import org.rsmod.api.script.onOpLoc1
 import org.rsmod.api.script.onOpNpc4
 import org.rsmod.api.script.onPlayerHit
 import org.rsmod.plugin.scripts.PluginScript
@@ -73,6 +74,16 @@ class ZebakScript : PluginScript() {
             onAiTimer(name) { ZebakEncounter.onJugTick(npc) }
             onNpcHit(type) { if (hit.isFromPlayer) ZebakEncounter.onJugBroken(npc) }
             onNpcQueue(type, "queue.death") { ZebakEncounter.onJugBroken(npc) }
+        }
+
+        // Tidal Waves. Waves (and bloody waves, after hitting a blood cloud) move a tile a tick;
+        // the water crocodiles hunt swimmers. All have `timer = 1` in toa_zebak.toml.
+        onAiTimer(ZebakEncounter.WAVE) { ZebakEncounter.onWaveTick(npc) }
+        onAiTimer(ZebakEncounter.WAVE_BLOODY) { ZebakEncounter.onWaveTick(npc) }
+        onAiTimer(ZebakEncounter.WATER_CROC) { ZebakEncounter.onCrocTick(npc) }
+        // The rock steps out of the water. Swimming also blocks attacking: ZebakSwimAttackHook.
+        onOpLoc1(ZebakEncounter.CLIMBING_ROCK) {
+            ZebakEncounter.onClimbRock(player, it.loc.coords, it.loc.angle.id)
         }
 
         // Great Roar boulders: the third roar wave takes their 150 hitpoints.
