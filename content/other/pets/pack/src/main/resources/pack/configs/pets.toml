@@ -1,0 +1,10 @@
+[[enum]]
+isServerOnly = true
+id = "enum.pet_categories"
+keyType = "INT"
+valueType = "STRING"
+
+[enum.values]
+0 = "Boss"
+1 = "Skilling"
+2 = "Other"
