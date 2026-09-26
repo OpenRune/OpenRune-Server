@@ -3,24 +3,19 @@ name: Content progress
 permissions:
   contents: write
 
+# Runs on a 4-day schedule rather than on every push, so the report commit no
+# longer lands on top of each content change. The run is skipped entirely when
+# nothing touching the watched paths has landed since the last report.
 on:
-  push:
-    branches: [main]
-    paths:
-      - "content/**"
-      - "osrs-dumps/**"
-      - "tools/progress/**"
-      - ".github/workflows/content-progress.yml"
-  # Weekly run also refreshes the wiki section cache.
   schedule:
-    - cron: "0 8 * * 1"
+    - cron: "0 8 */4 * *"
   workflow_dispatch:
     inputs:
       fetch_wiki:
         description: "Refresh the wiki section cache"
         required: false
         type: boolean
-        default: false
+        default: true
 
 jobs:
   report:
@@ -30,18 +25,44 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v7
         with:
-          # Needed so the generator can read per-module last-commit dates.
+          # Needed so the generator can read per-module last-commit dates, and
+          # so the step below can look back to the previous report commit.
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Check for new commits since the last report
+        id: check
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "Manual run; skipping the new-commit check."
+            echo "run=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          last=$(git rev-list -1 --grep='^chore: refresh content progress report$' HEAD || true)
+          if [ -z "$last" ]; then
+            echo "No previous report commit found; running."
+            echo "run=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          count=$(git rev-list --count "$last..HEAD" -- content osrs-dumps tools/progress)
+          if [ "$count" -gt 0 ]; then
+            echo "$count new commit(s) since the last report; running."
+            echo "run=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "No new commits since the last report; skipping."
+            echo "run=false" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Set up Node
+        if: steps.check.outputs.run == 'true'
         uses: actions/setup-node@v7
         with:
           node-version: 22
 
-      # Push builds run offline from the committed wiki cache; only the weekly
-      # run (or a manual dispatch) hits the wiki API.
+      # The scheduled run is now the only regular one, so it also refreshes the
+      # wiki section cache.
       - name: Build progress report
+        if: steps.check.outputs.run == 'true'
         run: |
           if [ "${{ github.event_name }}" = "schedule" ] || [ "${{ inputs.fetch_wiki }}" = "true" ]; then
             node tools/progress/content-progress.mjs --fetch-wiki
@@ -50,6 +71,7 @@ jobs:
           fi
 
       - name: Commit changes
+        if: steps.check.outputs.run == 'true'
         run: |
           if git diff --quiet -- README.md PROGRESS.md tools/progress/wiki-cache.json; then
             echo "Progress report already up to date."
