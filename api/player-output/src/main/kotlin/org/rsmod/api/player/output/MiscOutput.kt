@@ -20,19 +20,19 @@ public object MiscOutput {
 
     /** @see [SetPlayerOp] */
     public fun setPlayerOp(player: Player, slot: Int, op: String?, priority: Boolean = false) {
-        player.options.add(slot ,op)
+        player.options.add(slot, op)
         player.client.write(SetPlayerOp(slot, priority, op))
     }
 
-    public fun findPlayerOption(player: Player,query: String): Int? {
+    public fun findPlayerOption(player: Player, query: String): Int? {
         val index = player.options.indexOfFirst { it == query }
         return if (index >= 0) index else null
     }
 
     public fun clearPlayerOp(player: Player, slot: Int, query: String) {
-        val optionIdx = findPlayerOption(player,query)
+        val optionIdx = findPlayerOption(player, query)
         if (optionIdx == slot) {
-            setPlayerOp(player,slot,null)
+            setPlayerOp(player, slot, null)
         }
     }
 
@@ -57,7 +57,7 @@ public object MiscOutput {
     }
 
     /** @see [UpdateRebootTimer] */
-    public fun updateRebootTimer(player: Player, cycles: Int, message : String = "") {
+    public fun updateRebootTimer(player: Player, cycles: Int, message: String = "") {
         require(cycles in 0..65535) { "`cycles` must be within range [0..65535]. (cycles=$cycles)" }
         if (message.isEmpty()) {
             player.client.write(UpdateRebootTimerV2(cycles, UpdateRebootTimerV2.SetUpdateMessage("")))
@@ -70,6 +70,4 @@ public object MiscOutput {
     public fun clearUpdateRebootTimer(player: Player) {
         updateRebootTimer(player, cycles = 0)
     }
-
-
 }

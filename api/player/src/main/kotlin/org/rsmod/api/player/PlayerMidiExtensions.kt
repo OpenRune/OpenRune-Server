@@ -2,7 +2,6 @@ package org.rsmod.api.player
 
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
-import dev.openrune.types.aconverted.MidiType
 import net.rsprot.protocol.game.outgoing.sound.MidiJingle
 import net.rsprot.protocol.game.outgoing.sound.MidiSongV2
 import org.rsmod.api.player.vars.intVarBit

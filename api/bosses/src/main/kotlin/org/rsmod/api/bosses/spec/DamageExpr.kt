@@ -1,7 +1,6 @@
 package org.rsmod.api.bosses.spec
 
 import org.rsmod.api.combat.commons.types.MeleeAttackType
-
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 
