@@ -19,10 +19,19 @@ toa_raid = 61
 [gamevals.queue]
 toa_death = 61
 
-# Names for Zebak's synths. The cache leaves them unnamed (synth_5823 etc.); these are the labels
-# from its sound-list dbtable synth_zabakboss (osrs-dumps config/dump.dbrow), the same way
+# Names for the raid's synths. The cache leaves them unnamed (synth_5823 etc.); these are the
+# labels from its sound-list dbtables (osrs-dumps config/dump.dbrow), the same way
 # .data/gamevals/synth.rscm and generic-locs name vanilla synths. Use them as "synth.<name>".
 [gamevals.synth]
+# Crondis puzzle (dbtable synth_pathofcrondis).
+toa_crondis_fill_container = 6522
+toa_crondis_water_empty = 6524
+toa_crondis_water_tree_02 = 6534
+toa_crondis_tree_grow_02 = 6516
+toa_crondis_water_lost_02 = 6529
+# Offline_Scape SPILL_SOUND. Label from dbtable synth_cooking.
+liquid = 2401
+# Zebak (dbtable synth_zabakboss).
 toa_zebak_red_projectile_04 = 5823
 toa_zebak_whoosh_projectile_02 = 5819
 toa_zebak_redirected_jug_break_01 = 5878

@@ -1,0 +1,84 @@
+# Crondis puzzle (Test of Resourcefulness). Server-side npc behaviour, packed into the server
+# cache by buildCache the same way as toa_zebak.toml. CrondisPuzzleEncounter drives these npcs, so
+# none of them wander or regenerate:
+#   defaultMode = "None"   no wandering/hunting of its own (was npc.noneMode() in code); also the
+#                          mode an npc falls back to after losing its target
+#   regenRate = 0          no regeneration (Offline_Scape: isCycleHealable false)
+#   respawnDir             the direction it faces when spawned
+
+# ---- The Palm of Resourcefulness ----
+# Each growth stage is its own npc type (CrondisPuzzleEncounter.spawnPalm replaces the npc).
+# Offline_Scape PalmOfResourcefulness: facing south, walk radius 0 (was npc.respawnDir in code).
+#
+# The waterable stages colour the progress bar (BossHpBarScript reads these params when the bar
+# opens). Offline_Scape PALM_HUD_COLOURS, in the client's 5-bit channels: back (0,4,4), sliding
+# (0,19,15), remaining (0,26,21). The params take 0xRRGGBB, and each channel is sent as value >> 3,
+# so value = 5-bit * 8: 0x002020, 0x009878, 0x00D0A8.
+
+[[npc]]
+id = "npc.toa_crondis_tree_1"
+inherit = "npc.toa_crondis_tree_1"
+defaultMode = "None"
+moveRestrict = "NoMove"
+respawnDir = "South"
+regenRate = 0
+[npc.params]
+"param.boss_hp_bar_colour_back" = 8224
+"param.boss_hp_bar_colour_sliding" = 39032
+"param.boss_hp_bar_colour_remaining" = 53416
+
+[[npc]]
+id = "npc.toa_crondis_tree_2"
+inherit = "npc.toa_crondis_tree_2"
+defaultMode = "None"
+moveRestrict = "NoMove"
+respawnDir = "South"
+regenRate = 0
+[npc.params]
+"param.boss_hp_bar_colour_back" = 8224
+"param.boss_hp_bar_colour_sliding" = 39032
+"param.boss_hp_bar_colour_remaining" = 53416
+
+[[npc]]
+id = "npc.toa_crondis_tree_3"
+inherit = "npc.toa_crondis_tree_3"
+defaultMode = "None"
+moveRestrict = "NoMove"
+respawnDir = "South"
+regenRate = 0
+[npc.params]
+"param.boss_hp_bar_colour_back" = 8224
+"param.boss_hp_bar_colour_sliding" = 39032
+"param.boss_hp_bar_colour_remaining" = 53416
+
+[[npc]]
+id = "npc.toa_crondis_tree_4"
+inherit = "npc.toa_crondis_tree_4"
+defaultMode = "None"
+moveRestrict = "NoMove"
+respawnDir = "South"
+regenRate = 0
+[npc.params]
+"param.boss_hp_bar_colour_back" = 8224
+"param.boss_hp_bar_colour_sliding" = 39032
+"param.boss_hp_bar_colour_remaining" = 53416
+
+[[npc]]
+id = "npc.toa_crondis_tree_5"
+inherit = "npc.toa_crondis_tree_5"
+defaultMode = "None"
+moveRestrict = "NoMove"
+respawnDir = "South"
+regenRate = 0
+
+# ---- Crocodiles ----
+# They walk (to players and the palm), so no NoMove. timer = 1 runs
+# CrondisCrocodiles.ai every tick from spawn (was npc.aiTimer(1) in code).
+# Offline_Scape CrondisCrocodile: spawned facing south.
+[[npc]]
+id = "npc.toa_crondis_crocodile"
+inherit = "npc.toa_crondis_crocodile"
+defaultMode = "None"
+respawnDir = "South"
+timer = 1
+regenRate = 0
