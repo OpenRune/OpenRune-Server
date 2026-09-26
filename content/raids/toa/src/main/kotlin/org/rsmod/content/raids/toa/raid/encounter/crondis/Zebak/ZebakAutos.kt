@@ -1,9 +1,19 @@
-package org.rsmod.content.raids.toa.raid.encounter.crondis.zebak
+package org.rsmod.content.raids.toa.raid.encounter.crondis.Zebak
 
 import org.rsmod.api.combat.commons.types.MeleeAttackType
 import org.rsmod.api.player.hit.queueImpactHit
 import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.output.soundSynth
+import org.rsmod.content.raids.toa.raid.encounter.crondis.zebak.ZebakCoords
+import org.rsmod.content.raids.toa.raid.encounter.crondis.zebak.ZebakEncounter
+import org.rsmod.content.raids.toa.raid.encounter.crondis.zebak.ZebakNpcs
+import org.rsmod.content.raids.toa.raid.encounter.crondis.zebak.ZebakProjs
+import org.rsmod.content.raids.toa.raid.encounter.crondis.zebak.ZebakSeqs
+import org.rsmod.content.raids.toa.raid.encounter.crondis.zebak.ZebakSpots
+import org.rsmod.content.raids.toa.raid.encounter.crondis.zebak.ZebakSynths
+import org.rsmod.content.raids.toa.raid.encounter.crondis.zebak.hitTypeless
+import org.rsmod.content.raids.toa.raid.encounter.crondis.zebak.isBeside
+import org.rsmod.content.raids.toa.raid.encounter.crondis.zebak.projectile
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.game.hit.HitType
