@@ -1,0 +1,137 @@
+# Zebak (Crondis boss room). Server-side npc behaviour and projectile timings, packed into the
+# server cache with the rest of .data/raw-cache/server by buildCache (PackServerConfig scans every
+# plugin pack's configs directory the same way).
+#
+# All of Zebak's npcs are driven by ZebakEncounter, so none of them wander, hunt or regenerate:
+#   defaultMode = "None"   no wandering/hunting of its own (was npc.noneMode() in code)
+#   regenRate = 0          NpcRegenProcessor skips regeneration (ToA npcs don't heal over time)
+#   moveRestrict = "NoMove" can never move (was npc.movementLocked in code)
+#   respawnDir             the direction it faces when spawned (was npc.respawnDir in code)
+
+# ---- Zebak (and the npcs he's transmogged into) ----
+
+[[npc]]
+id = "npc.toa_zebak"
+inherit = "npc.toa_zebak"
+defaultMode = "None"
+moveRestrict = "NoMove"
+respawnDir = "East"
+regenRate = 0
+
+# At 25% Zebak is transmogged into this one (OSRS Wiki: the enraged form).
+[[npc]]
+id = "npc.toa_zebak_enraged"
+inherit = "npc.toa_zebak_enraged"
+defaultMode = "None"
+moveRestrict = "NoMove"
+respawnDir = "East"
+regenRate = 0
+
+[[npc]]
+id = "npc.toa_zebak_dead"
+inherit = "npc.toa_zebak_dead"
+defaultMode = "None"
+moveRestrict = "NoMove"
+respawnDir = "East"
+regenRate = 0
+
+[[npc]]
+id = "npc.toa_zebak_tail"
+inherit = "npc.toa_zebak_tail"
+defaultMode = "None"
+moveRestrict = "NoMove"
+respawnDir = "East"
+regenRate = 0
+
+[[npc]]
+id = "npc.toa_zebak_tail_dead"
+inherit = "npc.toa_zebak_tail_dead"
+defaultMode = "None"
+moveRestrict = "NoMove"
+respawnDir = "East"
+regenRate = 0
+
+# The npc that shows the magic/ranged split spotanim (capture: T+4 to T+7 on each attack).
+[[npc]]
+id = "npc.spotanim_zebak_ranged01_npc"
+inherit = "npc.spotanim_zebak_ranged01_npc"
+defaultMode = "None"
+moveRestrict = "NoMove"
+respawnDir = "South"
+blockWalk = "None"
+regenRate = 0
+
+# ---- Room npcs ----
+
+# Idle until the Tidal Waves special (v27) puts someone in the water; ZebakEncounter moves them.
+[[npc]]
+id = "npc.toa_zebak_watercroc"
+inherit = "npc.toa_zebak_watercroc"
+defaultMode = "None"
+respawnDir = "South"
+regenRate = 0
+
+# Blood clouds (Not Just a Head; the small ones with Blood Thinners). timer = 1 fires their
+# onAiTimer every tick from spawn (was npc.aiTimer(1) in code). Offline_Scape BloodCloud:
+# isEntityClipped false, so they don't block movement.
+[[npc]]
+id = "npc.toa_zebak_blood_cloud"
+inherit = "npc.toa_zebak_blood_cloud"
+defaultMode = "None"
+respawnDir = "West"
+blockWalk = "None"
+timer = 1
+regenRate = 0
+
+[[npc]]
+id = "npc.toa_zebak_blood_cloud_small"
+inherit = "npc.toa_zebak_blood_cloud_small"
+defaultMode = "None"
+respawnDir = "West"
+blockWalk = "None"
+timer = 1
+regenRate = 0
+
+# ---- Projectiles ----
+# Offline_Scape Projectile(gfx, startHeight, endHeight, delay, angle, duration, offset, multiplier)
+# maps onto these as: delay -> delay, duration -> lengthAdjustment, offset -> progress,
+# multiplier -> stepMultiplier. Offline_Scape gave the angle in degrees (0-90); here it is the
+# client value, round(degrees * 64 / 90). End time = delay + lengthAdjustment + stepMultiplier * distance.
+# Ids are declared in src/main/resources/gamevals.toml [gamevals.projanim].
+
+# The pot / rock from Zebak's mouth to the middle of the arena. Offline_Scape (…, 200, 700, 60, 30°, 60, 0, 0).
+[[projectile]]
+isServerOnly = true
+id = "projanim.toa_zebak_initial"
+startHeight = 200
+endHeight = 700
+delay = 60
+angle = 21
+lengthAdjustment = 60
+progress = 0
+stepMultiplier = 0
+
+# The fragments from the split onto each player. Capture: angle 127, end height 90
+# (Offline_Scape: 1° and 88). Lands 90 client cycles after the split.
+[[projectile]]
+isServerOnly = true
+id = "projanim.toa_zebak_split"
+startHeight = 700
+endHeight = 90
+delay = 0
+angle = 127
+lengthAdjustment = 90
+progress = 0
+stepMultiplier = 0
+
+# Poison spreading to a neighbouring tile. Offline_Scape POISON_SPREAD_PROJECTILE (2194, 0, 0, 0, 20°, 30, 10, 0).
+[[projectile]]
+isServerOnly = true
+id = "projanim.toa_zebak_poison_spread"
+startHeight = 0
+endHeight = 0
+delay = 0
+angle = 14
+lengthAdjustment = 30
+progress = 10
+stepMultiplier = 0
