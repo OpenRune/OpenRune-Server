@@ -9,10 +9,10 @@ import java.util.concurrent.Executors
  * drop tables, ...), so the server doesn't pay for a separate full classpath walk over the same
  * `org.rsmod.api`/`org.rsmod.content` packages for each one.
  *
- * [scan] is computed once, lazily, on first access from any consumer, and is intentionally never
- * closed: plugin discovery only happens during boot, and keeping the scan's in-memory metadata
- * alive for the rest of the process is far cheaper than re-scanning or worrying about a second
- * consumer touching it after another closed it.
+ * [scan] is computed lazily on first access and can be dropped with [release] once boot-time
+ * discovery is done; the scan's class/annotation/field metadata for the whole plugin classpath is
+ * worth tens of MB of live heap that nothing reads after startup. A later access simply rebuilds
+ * it, so hot-loading an external plugin after release still works.
  */
 public object PluginClasspathScan {
     public val searchPackages: Array<String> = arrayOf("org.rsmod.api", "org.rsmod.content")
@@ -26,7 +26,32 @@ public object PluginClasspathScan {
             "org.rsmod.content.*.integration",
         )
 
-    public val scan: ScanResult by lazy { performScan() }
+    private val lock = Any()
+
+    @Volatile private var cached: ScanResult? = null
+
+    public val scan: ScanResult
+        get() {
+            cached?.let { return it }
+            synchronized(lock) {
+                cached?.let { return it }
+                return performScan().also { cached = it }
+            }
+        }
+
+    /**
+     * Closes and forgets the current scan, if any. Safe to call more than once, and safe to call
+     * while consumers still hold references to types they already resolved - only the scan's own
+     * metadata index is freed.
+     */
+    public fun release(): Boolean {
+        synchronized(lock) {
+            val current = cached ?: return false
+            cached = null
+            current.close()
+            return true
+        }
+    }
 
     private fun performScan(): ScanResult {
         val parallelism = Runtime.getRuntime().availableProcessors().coerceAtLeast(2)

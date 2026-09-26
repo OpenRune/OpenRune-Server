@@ -31,9 +31,6 @@ constructor(tomlResolver: DropTableTomlResolver) {
     private val logger = InlineLogger()
 
     init {
-        // Reuses the process-wide scan from PluginClasspathScan (also consulted by
-        // PluginModuleLoader/PluginScriptLoader at boot) instead of running a 4th full classpath
-        // walk here. It's never closed by any consumer, so it's safe to read from repeatedly.
         val scan = PluginClasspathScan.scan
         val (tomlCount, tomlDuration) = measureTimedValue { loadTomlTables(scan, tomlResolver) }
         val (annotatedCount, annotatedDuration) = measureTimedValue { loadAnnotatedTables(scan) }
