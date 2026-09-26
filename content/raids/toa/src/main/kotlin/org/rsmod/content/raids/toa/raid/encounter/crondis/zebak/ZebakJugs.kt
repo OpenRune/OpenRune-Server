@@ -26,6 +26,8 @@ internal class ZebakJugs(private val room: ZebakEncounter) {
         for (tile in tiles) {
             jugs[room.spawn(ZebakNpcs.JUG, tile)] = Roll()
             deps.worldRepo.spotanimMap(dust, tile)
+            // Capture: the same landing sound as a boulder.
+            deps.worldRepo.soundArea(tile, ZebakSynths.BOULDER_LAND, radius = LAND_SOUND_RADIUS)
             for (player in targets) {
                 if (player.coords != tile) continue
                 player.hitTypeless(deps.random.of(LANDING_MIN, LANDING_MAX))
@@ -118,10 +120,20 @@ internal class ZebakJugs(private val room: ZebakEncounter) {
     }
 
     companion object {
+        /**
+         * Server-only op2 so PvNCombat accepts the standing jug; the client still shows
+         * Push/Pull/Hit.
+         */
+        fun registerAttackOp() {
+            val jug = npcType(ZebakNpcs.JUG)
+            jug.actions = jug.actions.toBuilder().op(1, "Attack").build()
+        }
+
         /** How many jugs a special throws. */
         const val THROWN_MIN = 6
         const val THROWN_MAX = 8
         private const val LANDING_MIN = 2
         private const val LANDING_MAX = 5
+        private const val LAND_SOUND_RADIUS = 5
     }
 }

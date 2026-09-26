@@ -53,9 +53,13 @@ internal class ZebakAutos(private val room: ZebakEncounter) {
         }
     }
 
+    /**
+     * Capture: the normal ranged anims even when enraged. The *_enraged ranged anims are 60 client
+     * cycles long, so the projectile (released at cycle 60) would come out after they end.
+     */
     private fun projectile(boss: Npc, mage: Boolean) {
-        boss.anim(if (room.enraged) ZebakSeqs.RANGED_ENRAGED else ZebakSeqs.RANGED)
-        room.tail?.anim(if (room.enraged) ZebakSeqs.TAIL_RANGED_ENRAGED else ZebakSeqs.TAIL_RANGED)
+        boss.anim(ZebakSeqs.RANGED)
+        room.tail?.anim(ZebakSeqs.TAIL_RANGED)
         for (player in room.targets()) {
             player.soundSynth(if (mage) ZebakSynths.MAGE_SHOOT else ZebakSynths.RANGE_SHOOT)
             val split = if (mage) ZebakSynths.MAGE_SPLIT else ZebakSynths.RANGE_SPLIT
