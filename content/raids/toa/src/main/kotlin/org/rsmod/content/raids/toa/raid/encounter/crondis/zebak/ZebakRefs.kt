@@ -40,8 +40,6 @@ internal object ZebakSeqs {
     const val TAIL_MELEE_ENRAGED = "seq.npc_zebak02_attack_melee_enraged"
     const val RANGED = "seq.npc_zebak01_attack_ranged"
     const val TAIL_RANGED = "seq.npc_zebak02_attack_ranged"
-    const val RANGED_ENRAGED = "seq.npc_zebak01_attack_ranged_enraged"
-    const val TAIL_RANGED_ENRAGED = "seq.npc_zebak02_attack_ranged_enraged"
     const val ROAR = "seq.npc_zebak01_attack_roar"
     const val TAIL_ROAR = "seq.npc_zebak02_attack_roar"
     const val CALL_WAVES = "seq.npc_zebak01_attack_tail"
@@ -86,6 +84,7 @@ internal object ZebakProjs {
     const val SPLIT = "projanim.toa_zebak_split"
     const val POISON_SPREAD = "projanim.toa_zebak_poison_spread"
     const val LOB = "projanim.toa_zebak_lob"
+    const val LOB_FAR = "projanim.toa_zebak_lob_far"
     const val JUG_SPLASH = "projanim.toa_zebak_jug_splash"
 }
 

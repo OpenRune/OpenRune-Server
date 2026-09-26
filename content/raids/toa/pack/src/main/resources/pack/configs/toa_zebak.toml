@@ -9,6 +9,8 @@
 #   respawnDir             the direction it faces when spawned (was npc.respawnDir in code)
 
 # ---- Zebak (and the npcs he's transmogged into) ----
+# Capture: his bar colours are sent every time it opens: back (25,0,0), sliding (0,18,0),
+# remaining (0,25,0) in the client's 5-bit channels, i.e. 0xC80000, 0x009000, 0x00C800.
 
 [[npc]]
 id = "npc.toa_zebak"
@@ -17,6 +19,10 @@ defaultMode = "None"
 moveRestrict = "NoMove"
 respawnDir = "East"
 regenRate = 0
+[npc.params]
+"param.boss_hp_bar_colour_back" = 13107200
+"param.boss_hp_bar_colour_sliding" = 36864
+"param.boss_hp_bar_colour_remaining" = 51200
 
 # At 25% Zebak is transmogged into this one (OSRS Wiki: the enraged form).
 [[npc]]
@@ -26,6 +32,10 @@ defaultMode = "None"
 moveRestrict = "NoMove"
 respawnDir = "East"
 regenRate = 0
+[npc.params]
+"param.boss_hp_bar_colour_back" = 13107200
+"param.boss_hp_bar_colour_sliding" = 36864
+"param.boss_hp_bar_colour_remaining" = 51200
 
 [[npc]]
 id = "npc.toa_zebak_dead"
@@ -97,18 +107,18 @@ regenRate = 0
 # ---- Projectiles ----
 # Offline_Scape Projectile(gfx, startHeight, endHeight, delay, angle, duration, offset, multiplier)
 # maps onto these as: delay -> delay, duration -> lengthAdjustment, offset -> progress,
-# multiplier -> stepMultiplier. Offline_Scape gave the angle in degrees (0-90); here it is the
-# client value, round(degrees * 64 / 90). End time = delay + lengthAdjustment + stepMultiplier * distance.
+# multiplier -> stepMultiplier; its angle is the client value as-is (zebak_0_invocation capture).
+# End time = delay + lengthAdjustment + stepMultiplier * distance.
 # Ids are declared in src/main/resources/gamevals.toml [gamevals.projanim].
 
-# The pot / rock from Zebak's mouth to the middle of the arena. Offline_Scape (…, 200, 700, 60, 30°, 60, 0, 0).
+# The pot / rock from Zebak's mouth to the middle of the arena. Capture: 60 -> 120, angle 30.
 [[projectile]]
 isServerOnly = true
 id = "projanim.toa_zebak_initial"
 startHeight = 200
 endHeight = 700
 delay = 60
-angle = 21
+angle = 30
 lengthAdjustment = 60
 progress = 0
 stepMultiplier = 0
@@ -126,14 +136,14 @@ lengthAdjustment = 90
 progress = 0
 stepMultiplier = 0
 
-# Poison spreading to a neighbouring tile. Offline_Scape POISON_SPREAD_PROJECTILE (2194, 0, 0, 0, 20°, 30, 10, 0).
+# Poison spreading to a neighbouring tile. Capture: 0 -> 30, angle 20, progress 10.
 [[projectile]]
 isServerOnly = true
 id = "projanim.toa_zebak_poison_spread"
 startHeight = 0
 endHeight = 0
 delay = 0
-angle = 14
+angle = 20
 lengthAdjustment = 30
 progress = 10
 stepMultiplier = 0
@@ -172,29 +182,39 @@ defaultMode = "None"
 moveRestrict = "NoMove"
 regenRate = 0
 
-# Every Great Roar throw from Zebak's mouth: acid (1555), acid behind a boulder (2194), boulders
-# (2172) and jugs (2173). Offline_Scape Projectile(…, 248, 0, 30, 35°, 120, 100, 0): lands after
-# 150 client cycles, the 5 ticks before they appear.
+# Every special's throw from Zebak's mouth: acid (1555), acid behind a boulder (2194), boulders
+# (2172) and jugs (2173). Capture: 250 -> 0, angle 35, progress 100, starting at 30 and landing
+# 30 cycles per tile later, at most 150 (4 tiles and up). ZebakSupport.lob picks between these two.
 [[projectile]]
 isServerOnly = true
 id = "projanim.toa_zebak_lob"
-startHeight = 248
+startHeight = 250
 endHeight = 0
 delay = 30
-angle = 25
+angle = 35
+lengthAdjustment = 0
+progress = 100
+stepMultiplier = 30
+
+[[projectile]]
+isServerOnly = true
+id = "projanim.toa_zebak_lob_far"
+startHeight = 250
+endHeight = 0
+delay = 30
+angle = 35
 lengthAdjustment = 120
 progress = 100
 stepMultiplier = 0
 
-# Water from a broken jug to each acid tile it clears. Offline_Scape CrondisJug SPREAD_PROJECTILE
-# (2193, 28, 0, 10, 20°, 10, 0, 0).
+# Water from a broken jug to each acid tile it clears. Capture: 30 -> 0, 10 -> 20, angle 20.
 [[projectile]]
 isServerOnly = true
 id = "projanim.toa_zebak_jug_splash"
-startHeight = 28
+startHeight = 30
 endHeight = 0
 delay = 10
-angle = 14
+angle = 20
 lengthAdjustment = 10
 progress = 0
 stepMultiplier = 0

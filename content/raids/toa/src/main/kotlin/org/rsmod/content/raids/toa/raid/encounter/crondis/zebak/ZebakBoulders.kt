@@ -25,6 +25,8 @@ internal class ZebakBoulders(private val room: ZebakEncounter) {
         val shape = LocShape.CentrepieceStraight
         boulders[boulder] = deps.locRepo.add(tile, blocker, Int.MAX_VALUE, LocAngle.West, shape)
         deps.worldRepo.soundArea(tile, ZebakSynths.BOULDER_LAND, radius = LAND_SOUND_RADIUS)
+        // Capture: dust where it lands.
+        deps.worldRepo.spotanimMap(spotanim(ZebakSpots.DUST), tile)
     }
 
     fun remove(boulder: Npc) {

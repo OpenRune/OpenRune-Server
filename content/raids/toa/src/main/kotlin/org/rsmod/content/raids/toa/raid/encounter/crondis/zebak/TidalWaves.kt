@@ -11,37 +11,38 @@ import org.rsmod.game.map.Direction
 import org.rsmod.map.CoordGrid
 
 /**
- * Tidal Waves (Offline_Scape Zebak.landWaves; its tick numbers):
- * - 0: 16 acid pools and 6-8 jugs at random; next auto in 16 ticks;
- * - 4: the call animation; 5: they land;
- * - 6: rocks fall on the wave side and the camera shakes (reset at 8);
- * - 13, 20, 27: a row of 21 waves with a gap: 3 wide, one narrower every two path levels (wiki).
+ * Tidal Waves (zebak_0_invocation capture, T = the tick Zebak animates; Offline_Scape
+ * Zebak.landWaves had every step one tick earlier and the next auto at 16):
+ * - T: the throw animation; the next auto comes at T+15;
+ * - T+1: 16 acid pools and 6-8 jugs at random, landing by distance ([lob]);
+ * - T+5: the call animation;
+ * - T+7: rocks fall on the wave side and the camera shakes (reset at T+9);
+ * - T+14, 21, 28: a row of 21 waves with a gap: 3 wide, one narrower every two path levels (wiki).
  *   The second row's gap mirrors the first;
- * - 47: over; the next Tidal Waves comes from the other side.
+ * - T+46: over (the capture's next special started then); the next Tidal Waves comes from the
+ *   other side.
  */
 internal class TidalWaves(private val room: ZebakEncounter) : ZebakSpecial {
     private val deps = room.raid.deps
     private var ticks = -1
-    private var jugTiles: List<CoordGrid> = emptyList()
-    private var acidTiles: List<CoordGrid> = emptyList()
+    private val landings = ZebakLandings()
     private val fromSouth = room.waves.fromSouth
 
     /** Offline_Scape `waveSkipX`: the previous row's gap, or -1 for a fresh one. */
     private var lastGap = -1
 
-    override val attackSpeed: Int? = null
-
     override fun step(): Boolean {
         val boss = room.zebak ?: return false
         if (boss.hitpoints <= 0) return false
         ticks++
+        if (room.targets().isNotEmpty()) landings.run(ticks)
         when (ticks) {
-            0 -> launch(boss)
+            0 -> windUp(boss)
+            THROW_TICK -> launch()
             CALL_TICK -> {
                 boss.anim(ZebakSeqs.CALL_WAVES)
                 room.tail?.anim(ZebakSeqs.TAIL_CALL_WAVES)
             }
-            LAND_TICK -> if (!land()) return false
             ROCKS_TICK -> if (!rocksFall()) return false
             CAMERA_RESET_TICK -> {
                 val targets = room.targets()
@@ -57,29 +58,29 @@ internal class TidalWaves(private val room: ZebakEncounter) : ZebakSpecial {
         return true
     }
 
-    private fun launch(boss: Npc) {
+    private fun windUp(boss: Npc) {
         boss.anim(ZebakSeqs.RANGED)
         room.tail?.resetAnim()
         room.attackCountdown = NEXT_ATTACK
-        jugTiles = room.freeTiles(ZebakCoords.GROUND_MIN, ZebakCoords.GROUND_MAX, emptyList())
-            .take(deps.random.of(ZebakJugs.THROWN_MIN, ZebakJugs.THROWN_MAX))
-        acidTiles = room.freeTiles(ZebakCoords.GROUND_MIN, ZebakCoords.GROUND_MAX, emptyList())
-            .take(ACID_POOLS)
-        val mouth = room.coords(ZebakCoords.PROJECTILE_START)
-        for (tile in acidTiles) {
-            deps.worldRepo.projectile(ZebakSpots.ACID, mouth, tile, ZebakProjs.LOB)
-        }
-        for (tile in jugTiles) {
-            deps.worldRepo.projectile(ZebakSpots.JUG, mouth, tile, ZebakProjs.LOB)
-        }
     }
 
-    private fun land(): Boolean {
-        val targets = room.targets()
-        if (targets.isEmpty()) return false
-        room.poison.land(acidTiles)
-        room.jugs.land(jugTiles, targets)
-        return true
+    /** Capture: the throw sound plays here too (Offline_Scape had none for this special). */
+    private fun launch() {
+        val jugs = room.freeTiles(ZebakCoords.GROUND_MIN, ZebakCoords.GROUND_MAX, emptyList())
+            .take(deps.random.of(ZebakJugs.THROWN_MIN, ZebakJugs.THROWN_MAX))
+        val acid = room.freeTiles(ZebakCoords.GROUND_MIN, ZebakCoords.GROUND_MAX, emptyList())
+            .take(ACID_POOLS)
+        val middle = room.coords(ZebakCoords.MIDDLE)
+        deps.worldRepo.soundArea(middle, ZebakSynths.JUGS_SHOOT, radius = SOUND_RADIUS)
+        val mouth = room.coords(ZebakCoords.PROJECTILE_START)
+        for (tile in acid) {
+            val flight = deps.worldRepo.lob(ZebakSpots.ACID, mouth, tile)
+            landings.at(ticks + flight) { room.poison.land(listOf(tile)) }
+        }
+        for (tile in jugs) {
+            val flight = deps.worldRepo.lob(ZebakSpots.JUG, mouth, tile)
+            landings.at(ticks + flight) { room.jugs.land(listOf(tile), room.targets()) }
+        }
     }
 
     private fun rocksFall(): Boolean {
@@ -123,13 +124,14 @@ internal class TidalWaves(private val room: ZebakEncounter) : ZebakSpecial {
     }
 
     private companion object {
-        const val CALL_TICK = 4
-        const val LAND_TICK = 5
-        const val ROCKS_TICK = 6
-        const val CAMERA_RESET_TICK = 8
-        val ROW_TICKS = intArrayOf(13, 20, 27)
-        const val END_TICK = 47
-        const val NEXT_ATTACK = 16
+        const val THROW_TICK = 1
+        const val CALL_TICK = 5
+        const val ROCKS_TICK = 7
+        const val CAMERA_RESET_TICK = 9
+        val ROW_TICKS = intArrayOf(14, 21, 28)
+        const val END_TICK = 46
+        const val NEXT_ATTACK = 15
+        const val SOUND_RADIUS = 15
         const val ACID_POOLS = 16
         const val ROW_LENGTH = 21
         const val SOLID_COLUMNS = 4

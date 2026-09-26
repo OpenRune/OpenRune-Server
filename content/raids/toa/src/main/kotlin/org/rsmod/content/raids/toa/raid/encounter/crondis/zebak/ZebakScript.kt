@@ -4,10 +4,10 @@ import org.rsmod.api.script.onAiOpPlayer2
 import org.rsmod.api.script.onAiTimer
 import org.rsmod.api.script.onApNpc1
 import org.rsmod.api.script.onApNpc3
+import org.rsmod.api.script.onApNpc4
 import org.rsmod.api.script.onNpcHit
 import org.rsmod.api.script.onNpcQueue
 import org.rsmod.api.script.onOpLoc1
-import org.rsmod.api.script.onOpNpc4
 import org.rsmod.api.script.onPlayerHit
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
@@ -20,10 +20,12 @@ import org.rsmod.plugin.scripts.ScriptContext
  * - onAiOpPlayer2 for Zebak replaces the default npc combat: his attacks come from the room.
  * - The death queues replace the standard npc death.
  * - Push/Pull are ap handlers so they fire from a diagonal tile (op handlers need a cardinal one).
- *   "Hit" breaks the standing jug from melee range: it has no Attack op, which PvNCombat requires.
+ *   "Hit" starts a normal attack: ap4 hands off to op2 combat, and `ZebakJugs.registerAttackOp`
+ *   gives the standing jug the server-side op2 that PvNCombat requires.
  */
 class ZebakScript : PluginScript() {
     override fun ScriptContext.startup() {
+        ZebakJugs.registerAttackOp()
         for (name in listOf(ZebakNpcs.ZEBAK, ZebakNpcs.ZEBAK_ENRAGED)) {
             val type = npcType(name)
             onAiOpPlayer2(type) { npc.noneMode() }
@@ -42,7 +44,7 @@ class ZebakScript : PluginScript() {
         onApNpc3(ZebakNpcs.JUG) {
             if (isWithinApRange(it.npc, 1)) ZebakEncounter.onJugMoved(player, it.npc, push = false)
         }
-        onOpNpc4(ZebakNpcs.JUG) { ZebakEncounter.onJugBroken(it.npc) }
+        onApNpc4(ZebakNpcs.JUG) { opNpc2(it.npc) }
         for (name in listOf(ZebakNpcs.JUG, ZebakNpcs.JUG_ROLLING)) {
             val type = npcType(name)
             onAiTimer(name) { ZebakEncounter.onJugTick(npc) }

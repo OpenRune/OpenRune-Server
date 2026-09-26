@@ -68,3 +68,4 @@ toa_zebak_split = 65534
 toa_zebak_poison_spread = 65533
 toa_zebak_lob = 65532
 toa_zebak_jug_splash = 65531
+toa_zebak_lob_far = 65530

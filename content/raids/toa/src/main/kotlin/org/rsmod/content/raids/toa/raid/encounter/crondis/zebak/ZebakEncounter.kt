@@ -80,7 +80,6 @@ class ZebakEncounter(raid: ToaRaid, room: ToaRoom, region: Region, controllerId:
 
     internal val attackSpeed: Int
         get() {
-            special?.attackSpeed?.let { return it }
             val speed = if (enraged) pathAttackSpeed - ENRAGE_SPEEDUP else pathAttackSpeed
             return max(MIN_ATTACK_SPEED, speed)
         }

@@ -13,35 +13,33 @@ import org.rsmod.game.map.Direction
 import org.rsmod.map.CoordGrid
 
 /**
- * The Great Roar (Offline_Scape Zebak.shootJugs; its tick numbers):
- * - 0: acid, 2-3 boulders (3 solo) with acid behind each, 6-8 jugs, one lined up per boulder;
- * - 5: they land;
- * - 33: the roar animation;
- * - 36, 38, 40: roar waves. Anyone outside a boulder's safe strip (its row, the boulder to 3 tiles
- *   behind it) is knocked 2 tiles east for 20-30 (scaled). Boulders take 50 a wave; the first wave
- *   shatters every jug left;
- * - 49: over.
+ * The Great Roar (zebak_0_invocation capture, T = the tick Zebak animates):
+ * - T: the throw animation; the next auto comes at T+10, then at the normal speed;
+ * - T+1: acid, 2-3 boulders (3 solo) with acid behind each, 6-8 jugs, one lined up per boulder;
+ *   each lands and appears 2-5 ticks later by distance ([lob]);
+ * - T+33: the roar animation;
+ * - T+36, 38, 40: roar waves. Anyone outside a boulder's safe strip (its row, the boulder to 3
+ *   tiles behind it) is knocked 2 tiles east for 20-30 (scaled). Boulders take 50 a wave; the first
+ *   wave shatters every jug left;
+ * - T+49: over (Offline_Scape).
  *
- * Autos continue every 10 ticks. Offline_Scape kept that speed for the rest of the fight and never
- * ended the special if it couldn't place boulders; neither is copied.
+ * Offline_Scape threw on T, landed everything at T+5 and kept autos at 10 ticks; the capture
+ * disagrees on all three. It also never ended the special if it couldn't place boulders.
  */
 internal class GreatRoar(private val room: ZebakEncounter) : ZebakSpecial {
     private val deps = room.raid.deps
     private var ticks = -1
     private var boulderTiles: List<CoordGrid> = emptyList()
-    private var jugTiles: List<CoordGrid> = emptyList()
-    private var acidTiles: List<CoordGrid> = emptyList()
-    private val boulderAcidTiles = ArrayList<CoordGrid>()
-
-    override val attackSpeed: Int = ATTACK_SPEED
+    private val landings = ZebakLandings()
 
     override fun step(): Boolean {
         val boss = room.zebak ?: return false
         if (boss.hitpoints <= 0) return false
         ticks++
+        if (room.targets().isNotEmpty()) landings.run(ticks)
         when (ticks) {
-            0 -> return launch(boss)
-            LAND_TICK -> land()
+            0 -> windUp(boss)
+            THROW_TICK -> return launch()
             SCREAM_TICK -> scream(boss)
             in WAVE_TICKS -> roarWave(first = ticks == WAVE_TICKS.first())
             END_TICK -> {
@@ -52,51 +50,48 @@ internal class GreatRoar(private val room: ZebakEncounter) : ZebakSpecial {
         return true
     }
 
-    private fun launch(boss: Npc): Boolean {
+    private fun windUp(boss: Npc) {
         boss.anim(ZebakSeqs.RANGED)
         room.tail?.resetAnim()
-        val middle = room.coords(ZebakCoords.MIDDLE)
-        deps.worldRepo.soundArea(middle, ZebakSynths.JUGS_SHOOT, radius = SOUND_RADIUS)
+        room.attackCountdown = FIRST_AUTO
+    }
 
+    private fun launch(): Boolean {
         val boulders = boulderTiles() ?: return false
         val jugPlan = jugTiles(boulders) ?: return false
         boulderTiles = boulders
-        jugTiles = jugPlan
         val acid = room.freeTiles(ZebakCoords.GROUND_MIN, ZebakCoords.GROUND_MAX, boulders)
             .take(ACID_POOLS)
-            .toMutableList()
+        val middle = room.coords(ZebakCoords.MIDDLE)
+        deps.worldRepo.soundArea(middle, ZebakSynths.JUGS_SHOOT, radius = SOUND_RADIUS)
 
-        val mouth = room.coords(ZebakCoords.PROJECTILE_START)
-        for (tile in acid) deps.worldRepo.projectile(ZebakSpots.ACID, mouth, tile, ZebakProjs.LOB)
+        for (tile in acid) throwAt(ZebakSpots.ACID, tile) { room.poison.land(listOf(tile)) }
         for (boulder in boulders) {
             val behind = boulder.translate(BOULDER_ACID_DX, 0)
             if (behind in acid) continue
-            acid += behind
-            boulderAcidTiles += behind
-            deps.worldRepo.projectile(ZebakSpots.POISON_SPREAD, mouth, behind, ZebakProjs.LOB)
+            throwAt(ZebakSpots.POISON_SPREAD, behind) {
+                room.poison.add(behind, spread = true, guaranteed = true)
+            }
         }
-        acidTiles = acid
-        for (boulder in boulders) {
-            deps.worldRepo.projectile(ZebakSpots.BOULDER, mouth, boulder, ZebakProjs.LOB)
+        for (boulder in boulders) throwAt(ZebakSpots.BOULDER, boulder) { landBoulder(boulder) }
+        for (jug in jugPlan) {
+            throwAt(ZebakSpots.JUG, jug) { room.jugs.land(listOf(jug), room.targets()) }
         }
-        for (jug in jugPlan) deps.worldRepo.projectile(ZebakSpots.JUG, mouth, jug, ZebakProjs.LOB)
         return true
     }
 
-    private fun land() {
-        val targets = room.targets()
-        if (targets.isEmpty()) return
-        for (tile in boulderTiles) {
-            room.boulders.spawn(tile)
-            for (player in targets) {
-                if (player.coords != tile) continue
-                player.hitTypeless(deps.random.of(LANDING_MIN, LANDING_MAX))
-                knockOffBoulder(player, tile)
-            }
+    private fun throwAt(spot: String, tile: CoordGrid, landed: () -> Unit) {
+        val mouth = room.coords(ZebakCoords.PROJECTILE_START)
+        landings.at(ticks + deps.worldRepo.lob(spot, mouth, tile), landed)
+    }
+
+    private fun landBoulder(tile: CoordGrid) {
+        room.boulders.spawn(tile)
+        for (player in room.targets()) {
+            if (player.coords != tile) continue
+            player.hitTypeless(deps.random.of(LANDING_MIN, LANDING_MAX))
+            knockOffBoulder(player, tile)
         }
-        for (tile in boulderAcidTiles) room.poison.add(tile, spread = true, guaranteed = true)
-        room.poison.land(acidTiles)
-        room.jugs.land(jugTiles, targets)
     }
 
     private fun scream(boss: Npc) {
@@ -223,11 +218,11 @@ internal class GreatRoar(private val room: ZebakEncounter) : ZebakSpecial {
     }
 
     private companion object {
-        const val LAND_TICK = 5
+        const val THROW_TICK = 1
         const val SCREAM_TICK = 33
         val WAVE_TICKS = intArrayOf(36, 38, 40)
         const val END_TICK = 49
-        const val ATTACK_SPEED = 10
+        const val FIRST_AUTO = 10
         const val NEXT_ATTACK = 11
         const val ACID_POOLS = 6
         const val BOULDER_ACID_DX = 2

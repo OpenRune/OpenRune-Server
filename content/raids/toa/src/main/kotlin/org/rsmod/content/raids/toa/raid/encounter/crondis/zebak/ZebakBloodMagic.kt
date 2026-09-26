@@ -26,7 +26,12 @@ internal class ZebakBloodMagic(private val room: ZebakEncounter) {
     private var cloudsFromSouth = false
     private val clouds = HashMap<Npc, CloudState>()
 
-    private class CloudState(var switchTicks: Int, var startDelay: Int, var target: Player? = null)
+    private class CloudState(
+        var switchTicks: Int,
+        var startDelay: Int,
+        var last: CoordGrid,
+        var target: Player? = null,
+    )
 
     fun start() {
         val active = room.raid.isActive(ZebakInvocations.NOT_JUST_A_HEAD)
@@ -102,19 +107,24 @@ internal class ZebakBloodMagic(private val room: ZebakEncounter) {
 
     private fun spawnCloud(type: String, static: CoordGrid) {
         val cloud = room.spawn(type, room.coords(static))
-        clouds[cloud] = CloudState(deps.random.of(10, 20), CLOUD_START_DELAY)
+        clouds[cloud] = CloudState(deps.random.of(10, 20), CLOUD_START_DELAY, cloud.coords)
     }
 
     /**
      * Once a tick (config `timer = 1`). Follows the nearest player, re-picked every 10-20 ticks.
-     * After 4 ticks: 2 damage to each adjacent player and 2 heal, or 2 damage to itself if nobody
-     * is adjacent.
+     * OSRS Wiki: it takes 2 damage for every tile it moves (Offline_Scape: 2 a tick with nobody
+     * adjacent). After 4 ticks: 2 damage to each adjacent player, healing 2 for each.
      */
     fun cloudTick(cloud: Npc) {
         if (room.stage != ToaStage.STARTED) return
         if ((room.zebak?.hitpoints ?: 0) <= 0) return
         val state = clouds[cloud] ?: return
         if (state.startDelay > 0) state.startDelay--
+
+        // Last tick's walk step has been taken by now.
+        val moved = chebyshev(state.last, cloud.coords)
+        state.last = cloud.coords
+        if (moved > 0) cloud.queueNpcHit(1, HitType.Typeless, LEECH * moved, NOOP_NPC_MODIFIER)
 
         val targets = room.targets()
         state.switchTicks = max(0, state.switchTicks - 1)
@@ -128,14 +138,11 @@ internal class ZebakBloodMagic(private val room: ZebakEncounter) {
         if (target != null && !cloud.isBeside(target)) cloud.walk(target.coords)
         if (state.startDelay > 0) return
 
-        var leeched = false
         for (player in targets) {
             if (!cloud.isBeside(player)) continue
-            leeched = true
             player.hitTypeless(LEECH)
             cloud.heal(LEECH, showHitsplat = true)
         }
-        if (!leeched) cloud.queueNpcHit(1, HitType.Typeless, LEECH, NOOP_NPC_MODIFIER)
     }
 
     /** Offline_Scape: the nearest player other than the current target, random among ties. */
