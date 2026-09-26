@@ -31,6 +31,18 @@ toa_zebak_projectile_impact_01 = 5884
 toa_zebak_defend_01 = 6590
 # Offline_Scape FINAL_PHASE_SOUND. Label from dbtable (not a Zebak row): FI_trollking_roar.
 fi_trollking_roar = 3405
+# Great Roar.
+toa_zebak_vomit_colours_projectile_10 = 5908
+toa_zebak_vomit_colours_projectile_splat_03 = 5909
+toa_zebak_debris_impact_01 = 5913
+toa_zebak_roar_single_tremor_03 = 5888
+toa_zebak_attack_hand_stomp_first_01 = 5860
+toa_zebak_attack_roar_05 = 5836
+toa_zebak_attack_hand_stomp_01 = 5845
+toa_zebak_attack_roar_high_02 = 5904
+toa_zebak_attack_roar_bass_02 = 5838
+toa_zebak_attack_hand_stomp_final_01 = 5851
+toa_zebak_attack_jaw_shut_01 = 5863
 
 # Server-only projectile types (timings in pack/.../configs/toa_zebak.toml). Explicit ids from the
 # top of the range, like other modules' custom ids; .data/gamevals/projanim.rscm uses 0-17.
@@ -38,3 +50,5 @@ fi_trollking_roar = 3405
 toa_zebak_initial = 65535
 toa_zebak_split = 65534
 toa_zebak_poison_spread = 65533
+toa_zebak_lob = 65532
+toa_zebak_jug_splash = 65531
