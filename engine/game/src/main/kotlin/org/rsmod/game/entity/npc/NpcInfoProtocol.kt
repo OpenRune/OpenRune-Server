@@ -20,9 +20,13 @@ public interface NpcInfoProtocol {
 
     public fun setBodyModel(model: Int)
 
+    public fun setBodyRecolours(recolours: List<Int>)
+
     public fun resetBodyModel()
 
     public fun showHeadbar(headbar: Headbar)
+
+    public fun removeHeadbar(id: Int)
 
     public fun showHitmark(hitmark: Hitmark)
 
@@ -74,9 +78,13 @@ public data object NoopNpcInfo : NpcInfoProtocol {
 
     override fun setBodyModel(model: Int) {}
 
+    override fun setBodyRecolours(recolours: List<Int>) {}
+
     override fun resetBodyModel() {}
 
     override fun showHeadbar(headbar: Headbar) {}
+
+    override fun removeHeadbar(id: Int) {}
 
     override fun showHitmark(hitmark: Hitmark) {}
 

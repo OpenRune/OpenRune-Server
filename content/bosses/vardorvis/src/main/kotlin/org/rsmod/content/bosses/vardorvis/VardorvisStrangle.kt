@@ -1,4 +1,4 @@
-package org.rsmod.content.bosses.deserttreasure2.vardorvis
+package org.rsmod.content.bosses.vardorvis
 
 import dev.openrune.definition.type.widget.IfEvent
 import dev.openrune.rscm.RSCM.asRSCM

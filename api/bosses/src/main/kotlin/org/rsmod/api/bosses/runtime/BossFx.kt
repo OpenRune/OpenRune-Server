@@ -43,6 +43,10 @@ fun BossDeps.suppressAttacks(npc: Npc, ticks: Int) {
     encounter.busyUntil = maxOf(encounter.busyUntil, mapClock.cycle + ticks)
 }
 
+fun BossDeps.forceNext(npc: Npc, ability: String) {
+    encounterRegistry.of(npc).forceNext(ability)
+}
+
 fun BossDeps.encounter(npc: Npc): BossEncounter = encounterRegistry.of(npc)
 
 fun BossDeps.repeatTick(
