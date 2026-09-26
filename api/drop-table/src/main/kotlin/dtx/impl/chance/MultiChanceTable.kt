@@ -8,7 +8,7 @@ import dtx.table.TableHooks
 import dtx.util.NoTransform
 import kotlin.random.Random
 
-public interface MultiChanceTable<T, R>: Table<T, R> {
+public interface MultiChanceTable<T, R> : Table<T, R> {
 
     override val tableEntries: List<ChanceRollable<T, R>>
 
@@ -19,7 +19,7 @@ public open class MultiChanceTableImpl<T, R>(
     public override val tableIdentifier: String,
     entries: List<ChanceRollable<T, R>>,
     internal val hooks: TableHooks<T, R>,
-): MultiChanceTable<T, R>, TableHooks<T, R> by hooks {
+) : MultiChanceTable<T, R>, TableHooks<T, R> by hooks {
 
     public override val tableEntries: List<ChanceRollable<T, R>> = entries.map(NoTransform())
 

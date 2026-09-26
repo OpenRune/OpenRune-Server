@@ -1,16 +1,15 @@
 package org.rsmod.tools.wiki.dumping
 
+import dtx.rs.brimstoneRarityDenominator
 import org.rsmod.tools.wiki.dumping.wiki.HerbDropTableParser
 import org.rsmod.tools.wiki.dumping.wiki.HerbRollVariant
 import org.rsmod.tools.wiki.dumping.wiki.ParsedWikiDrop
 import org.rsmod.tools.wiki.dumping.wiki.WikiCompanionDropParser
+import org.rsmod.tools.wiki.dumping.wiki.WikiCompanionDropSpec
 import org.rsmod.tools.wiki.dumping.wiki.WikiDropNotes
+import org.rsmod.tools.wiki.dumping.wiki.WikiDropSection
 import org.rsmod.tools.wiki.dumping.wiki.WikiQuestDropMode
 import org.rsmod.tools.wiki.dumping.wiki.WikiQuestDropRequirement
-import org.rsmod.tools.wiki.dumping.wiki.WikiDropParser
-import org.rsmod.tools.wiki.dumping.wiki.WikiDropSection
-import org.rsmod.tools.wiki.dumping.wiki.WikiCompanionDropSpec
-import dtx.rs.brimstoneRarityDenominator
 
 data class UnknownDropRateEntry(
     val wikiPage: String,
@@ -38,6 +37,7 @@ data class ResolvedDropEntry(
     val bonusDrops: List<ResolvedBonusDrop> = emptyList(),
     val brimstoneCombatRoll: Boolean = false,
     val brimstoneKonarBonus: Boolean = false,
+    val boosted: Boolean = false,
 )
 
 data class ResolvedBonusDrop(
@@ -52,6 +52,7 @@ data class SeparateRollSpec(
     val accessNumerator: Int,
     val accessDenominator: Int,
     val entries: List<ResolvedDropEntry>,
+    val boosted: Boolean = false,
 )
 
 data class ResolvedSubtableAccess(
@@ -615,7 +616,19 @@ object DropTableCodeGenerator {
     private fun StringBuilder.appendPreRollLine(entry: ResolvedDropEntry, indent: String) {
         val weight = entry.weight ?: return
         val outOf = entry.outOf ?: entry.rollDenominator ?: return
-        appendRateFirstChanceLine(entry, weight, outOf, indent, fallbackRollKeyword = "rolls")
+        boostedIf(entry.boosted, indent) { inner ->
+            appendRateFirstChanceLine(entry, weight, outOf, inner, fallbackRollKeyword = "rolls")
+        }
+    }
+
+    private fun StringBuilder.boostedIf(boosted: Boolean, indent: String, emit: (String) -> Unit) {
+        if (!boosted) {
+            emit(indent)
+            return
+        }
+        appendLine("${indent}boosted {")
+        emit("$indent    ")
+        appendLine("$indent}")
     }
 
     private fun ResolvedDropEntry.canUseItemChainSyntax(): Boolean = bonusDrops.isEmpty()
@@ -640,6 +653,10 @@ object DropTableCodeGenerator {
     }
 
     private fun StringBuilder.appendInlinePreRollSeparate(roll: SeparateRollSpec, indent: String) {
+        boostedIf(roll.boosted, indent) { inner -> appendPreRollSeparateBody(roll, inner) }
+    }
+
+    private fun StringBuilder.appendPreRollSeparateBody(roll: SeparateRollSpec, indent: String) {
         if (roll.entries.size == 1) {
             val entry = roll.entries.first()
             appendRateFirstChanceLine(
@@ -675,10 +692,10 @@ object DropTableCodeGenerator {
         appendLine("        name(${tableIdentifier.kotlinString()})")
 
         for (entry in main) {
-            appendWeightedLine(entry, indent = "        ")
+            boostedIf(entry.boosted, "        ") { inner -> appendWeightedLine(entry, indent = inner) }
         }
         for (roll in separateRolls) {
-            appendInlineSeparateRoll(roll, indent = "        ")
+            boostedIf(roll.boosted, "        ") { inner -> appendInlineSeparateRoll(roll, indent = inner) }
         }
 
         if (subtableAccesses.isNotEmpty()) {
@@ -1006,13 +1023,15 @@ object DropTableCodeGenerator {
             }
         }
         for (export in exports) {
-            appendRateFirstChanceLine(
-                entry = entry,
-                numerator = weight,
-                outOf = export.denominator,
-                indent = indent,
-                clueRollModifier = export.modifier,
-            )
+            boostedIf(entry.boosted, indent) { inner ->
+                appendRateFirstChanceLine(
+                    entry = entry,
+                    numerator = weight,
+                    outOf = export.denominator,
+                    indent = inner,
+                    clueRollModifier = export.modifier,
+                )
+            }
         }
     }
 

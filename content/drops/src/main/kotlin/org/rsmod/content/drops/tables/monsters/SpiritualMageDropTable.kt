@@ -2,18 +2,14 @@ package org.rsmod.content.drops.tables.monsters
 
 import dtx.rs.RSDropTable
 import dtx.rs.npcs
-import dtx.rs.areas
-import org.rsmod.api.droptable.rsPlayerGuaranteedTable
+import org.rsmod.api.droptable.DropRollItem
+import org.rsmod.api.droptable.RegisterDropTable
+import org.rsmod.api.droptable.nothing
 import org.rsmod.api.droptable.rsPlayerTertiaryTable
 import org.rsmod.api.droptable.rsPlayerWeightedTable
-import org.rsmod.content.drops.tables.shared.SharedDropTables
-import org.rsmod.api.droptable.DropRollItem
-import org.rsmod.content.drops.shouldDropLootingBag
 import org.rsmod.content.drops.clueScrollTransformObj
-import org.rsmod.api.droptable.wearingRingOfWealth
-import org.rsmod.api.area.checker.isInWilderness
-import org.rsmod.api.droptable.nothing
-import org.rsmod.api.droptable.RegisterDropTable
+import org.rsmod.content.drops.shouldDropLootingBag
+import org.rsmod.content.drops.tables.shared.SharedDropTables
 import org.rsmod.game.entity.Player
 
 @field:RegisterDropTable
@@ -44,7 +40,9 @@ public val spiritualMageDropTable: RSDropTable<Player, DropRollItem> = RSDropTab
         1 weight "obj.chaosrune" count 25
         6 weight "obj.cert_blankrune_high" count 90
         5 weight "obj.cert_3doseantipoison" count 5
-        1 weight "obj.dragon_boots" count 1
+        boosted {
+            1 weight "obj.dragon_boots" count 1
+        }
 
         2 weight SharedDropTables.gem
         2 weight nothing()

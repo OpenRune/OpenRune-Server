@@ -1,7 +1,7 @@
 package org.rsmod.content.drops
 
-import org.rsmod.game.entity.Player
 import kotlin.math.floor
+import org.rsmod.game.entity.Player
 
 public const val X_MARKS_THE_SPOT_QUEST: String = "quest_xmarksthespot"
 

@@ -1,7 +1,9 @@
 package org.rsmod.api.droptable
 
-import dtx.core.Single
 import dtx.core.Rollable
+import dtx.core.Single
+import dtx.impl.chance.RateBoostChanceRollable
+import dtx.impl.chance.RateBoosts
 import dtx.rs.RSPreRollTable
 import dtx.rs.RSPrerollTableBuilder
 import org.rsmod.game.entity.Player
@@ -26,6 +28,15 @@ public class DropChanceTableScope internal constructor(
 
     public fun group(name: String, block: DropChanceTableScope.() -> Unit) {
         block()
+    }
+
+    public fun boosted(block: DropChanceTableScope.() -> Unit) {
+        flushPendingRateFirstItems()
+        val previous = builder.boostScope
+        builder.boostScope = true
+        block()
+        flushPendingRateFirstItems()
+        builder.boostScope = previous
     }
 
     public infix fun Int.outOf(denominator: Int): PendingRateFirstAccess =
@@ -61,15 +72,11 @@ public class PendingRateFirstAccess internal constructor(
     }
 
     public infix fun rolls(rollable: Rollable<Player, DropRollItem>) {
-        builder.apply {
-            (numerator outOf denominator) rolls rollable
-        }
+        builder.addRateFirstRollable(numerator, denominator, ChanceRollStyle.Rolls, rollable)
     }
 
     public infix fun rolls(item: DropRollItem) {
-        builder.apply {
-            (numerator outOf denominator) rolls item
-        }
+        builder.addRateFirstRollable(numerator, denominator, ChanceRollStyle.Rolls, Single(item))
     }
 }
 
@@ -132,23 +139,33 @@ public fun RSPrerollTableBuilder<Player, DropRollItem>.addRateFirstRollable(
     rollable: Rollable<Player, DropRollItem>,
     objHint: String? = null,
 ) {
-    when (style) {
-        ChanceRollStyle.Chance -> {
-            if (objHint != null && looksLikeClueScrollObj(objHint)) {
-                addEntry(
-                    RateBoostChanceRollable(
-                        numerator = numerator,
-                        denominator = denominator,
-                        rollable = rollable,
-                        boostPercent = DropRateBoosts.clueScrollBoostPercent,
-                    ),
-                )
-            } else {
-                (numerator outOf denominator) chance rollable
-            }
+    val boosted = boostScope
+    val clueScroll =
+        style == ChanceRollStyle.Chance && objHint != null && looksLikeClueScrollObj(objHint)
+    if (!boosted && !clueScroll) {
+        when (style) {
+            ChanceRollStyle.Chance -> (numerator outOf denominator) chance rollable
+            ChanceRollStyle.Rolls -> (numerator outOf denominator) rolls rollable
         }
-        ChanceRollStyle.Rolls -> (numerator outOf denominator) rolls rollable
+        return
     }
+    addEntry(
+        RateBoostChanceRollable(
+            numerator = numerator,
+            denominator = denominator,
+            rollable = rollable,
+            multiplier = { player, args ->
+                val clueFactor =
+                    if (clueScroll) {
+                        1.0 + DropRateBoosts.clueScrollBoostPercent(player, args).coerceAtLeast(0) / 100.0
+                    } else {
+                        1.0
+                    }
+                val boostFactor = if (boosted) RateBoosts.multiplierFor(player, args) else 1.0
+                clueFactor * boostFactor
+            },
+        ),
+    )
 }
 
 public fun rsPlayerTertiaryTable(

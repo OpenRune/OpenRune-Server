@@ -9,6 +9,7 @@ dependencies {
     implementation(projects.api.dropTablePlugin)
     implementation(projects.api.parsers.json)
     implementation(projects.api.parsers.toml)
+    implementation(libs.jackson.dataformat.toml)
     implementation(libs.jackson.module.kotlin)
     implementation(libs.or2.wiki)
     implementation("io.ktor:ktor-client-cio:3.3.3")
