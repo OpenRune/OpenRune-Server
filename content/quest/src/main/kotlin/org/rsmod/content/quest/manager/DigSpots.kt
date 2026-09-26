@@ -17,7 +17,8 @@ object DigSpots {
         handlers += handler
     }
 
-    internal suspend fun dig(access: ProtectedAccess): Boolean {
+    /** Runs the registered handlers for the player's tile; true when one claimed the dig. */
+    suspend fun dig(access: ProtectedAccess): Boolean {
         val coords = access.player.coords
         return handlers.any { it(access, coords) }
     }

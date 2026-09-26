@@ -11,6 +11,7 @@ import org.rsmod.content.other.pets.onPetOp
 import org.rsmod.content.other.pets.onPetOpIfPresent
 import org.rsmod.content.other.pets.onPetOpU
 import org.rsmod.content.other.pets.ticksToMinutes
+import org.rsmod.content.quest.manager.DigSpots
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.plugin.scripts.PluginScript
@@ -25,7 +26,7 @@ constructor(private val followers: PetFollowers, private val care: DogCare) : Pl
             onPetOp(dog.npc, PICK_UP_OP) { pickUp(it, dog) }
             onPetOpIfPresent(dog.npc, PET_OP) { pet(it, dog) }
             onPetOpIfPresent(dog.npc, INTERACT_OP) { interact(it, dog) }
-            onPetOpIfPresent(dog.npc, DIG_OP) { dig(it) }
+            onPetOpIfPresent(dog.npc, DIG_OP) { dig(it, dog) }
             onPetOpU(dog.npc) { useItem(it.npc, dog, it.objType) }
         }
     }
@@ -90,10 +91,16 @@ constructor(private val followers: PetFollowers, private val care: DogCare) : Pl
         }
     }
 
-    private fun ProtectedAccess.dig(npc: Npc) {
+    /** Adult dogs dig in place of a spade, sharing the quest dig-spot handlers. */
+    private suspend fun ProtectedAccess.dig(npc: Npc, dog: DogForm) {
         if (!followers.requireOwned(this, npc)) {
             return
         }
+        npc.anim(if (dog.breed.large) DIG_ANIM else DIG_ANIM_SMALL)
+        if (DigSpots.dig(this)) {
+            return
+        }
+        delay(1)
         mes("Nothing interesting happens.")
     }
 
@@ -119,5 +126,7 @@ constructor(private val followers: PetFollowers, private val care: DogCare) : Pl
         const val PET_OP = "Pet"
         const val INTERACT_OP = "Interact"
         const val DIG_OP = "Dig"
+        const val DIG_ANIM = "seq.dog_update_dig"
+        const val DIG_ANIM_SMALL = "seq.dog_update_dig_small"
     }
 }
