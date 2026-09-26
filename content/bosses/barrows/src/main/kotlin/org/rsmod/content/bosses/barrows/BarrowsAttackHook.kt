@@ -1,30 +1,21 @@
-package org.rsmod.content.slayer.superior
+package org.rsmod.content.bosses.barrows
 
-import jakarta.inject.Inject
 import org.rsmod.api.death.NpcAttackValidateHook
 import org.rsmod.api.death.NpcAttackValidateResult
-import org.rsmod.api.npc.owner.hasSpawnOwner
 import org.rsmod.api.npc.owner.isSpawnOwnedBy
 import org.rsmod.api.npc.owner.isSpawnOwnedByOther
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 
-class SlayerSuperiorAttackHook @Inject constructor(private val superiors: SlayerSuperiorManager) :
-    NpcAttackValidateHook {
+internal class BarrowsAttackHook : NpcAttackValidateHook {
     override fun validate(player: Player, npc: Npc): NpcAttackValidateResult {
-        if (!npc.hasSpawnOwner || !superiors.isSuperior(npc)) {
-            return NpcAttackValidateResult.Pass
-        }
+        if (!npc.isBarrowsNpc()) return NpcAttackValidateResult.Pass
         if (npc.isSpawnOwnedByOther(player)) {
-            return NpcAttackValidateResult.Deny(NOT_YOUR_SUPERIOR_MESSAGE)
+            return NpcAttackValidateResult.Deny("This is not your target.")
         }
         if (npc.isSpawnOwnedBy(player)) {
             return NpcAttackValidateResult.BypassSingleWayPvnRestriction
         }
         return NpcAttackValidateResult.Pass
-    }
-
-    private companion object {
-        const val NOT_YOUR_SUPERIOR_MESSAGE = "That is not your superior creature."
     }
 }

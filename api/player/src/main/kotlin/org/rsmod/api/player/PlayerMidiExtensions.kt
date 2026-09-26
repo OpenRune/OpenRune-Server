@@ -16,6 +16,11 @@ public fun Player.midiJingle(jingle: String) {
     client.write(MidiJingle(jingle.asRSCM(RSCMType.JINGLE)))
 }
 
+public fun Player.midiJingle(id: Int) {
+    musicClocks = 0
+    client.write(MidiJingle(id))
+}
+
 /** @see [MidiSongV2] */
 public fun Player.midiSong(
     midi: String,
