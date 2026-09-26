@@ -1,29 +1,11 @@
-package org.rsmod.content.raids.toa.raid.encounter.crondis
+package org.rsmod.content.raids.toa.raid.encounter.crondis.zebak
 
-import dev.openrune.ServerCacheManager
-import dev.openrune.rscm.RSCM.asRSCM
-import dev.openrune.rscm.RSCMType
-import dev.openrune.types.BasType
-import dev.openrune.types.aconverted.SpotanimType
-import kotlin.math.abs
 import kotlin.math.floor
 import kotlin.math.max
 import kotlin.math.min
 import org.rsmod.annotations.InternalApi
-import org.rsmod.api.combat.commons.types.MeleeAttackType
-import org.rsmod.api.config.Constants
-import org.rsmod.api.mechanics.toxins.impl.PlayerPoison
-import org.rsmod.api.npc.heal
-import org.rsmod.api.npc.hit.modifier.NpcHitModifier
-import org.rsmod.api.npc.hit.queueHit as queueNpcHit
-import org.rsmod.api.player.hit.modifier.NoopPlayerHitModifier
-import org.rsmod.api.player.hit.queueHit
-import org.rsmod.api.player.hit.queueImpactHit
 import org.rsmod.api.player.hook.TeleportType
 import org.rsmod.api.player.midiSong
-import org.rsmod.api.player.output.CamShakeAxis
-import org.rsmod.api.player.output.Camera
-import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.output.runClientScript
 import org.rsmod.api.player.output.soundSynth
 import org.rsmod.api.player.vars.intVarBit
@@ -36,343 +18,186 @@ import org.rsmod.content.raids.toa.raid.encounter.ToaStage
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.game.hit.Hit
-import org.rsmod.game.hit.HitType
 import org.rsmod.game.loc.LocAngle
-import org.rsmod.game.loc.LocInfo
 import org.rsmod.game.loc.LocShape
 import org.rsmod.game.map.Direction
 import org.rsmod.game.map.collision.isWalkBlocked
-import org.rsmod.game.proj.ProjAnim
 import org.rsmod.game.region.Region
 import org.rsmod.map.CoordGrid
-import org.rsmod.map.util.Bounds
 import org.rsmod.routefinder.StepValidator
 
 /**
- * Zebak, the Crondis boss. Port of Offline_Scape ZebakEncounter + Zebak, with the corrections from
- * Jesse's capture (zebak-capture-v2: solo, Entry Mode, raid level 25) and numbers from the OSRS
- * Wiki.
+ * Zebak, the Crondis boss. Port of Offline_Scape ZebakEncounter + Zebak, corrected by Jesse's
+ * capture (zebak-capture-v2) and the OSRS Wiki.
  *
- * **Covered:**
- * - Zebak, his tail and the water crocodiles; stats scaled by raid level, party size and path level.
- * - Auto attacks every [attackSpeed] ticks: melee (can bleed), or a magic / ranged projectile that
- *   splits over everyone in the challenge area.
- * - The blood magic invocations (Not Just a Head, Arterial Spray, Blood Thinners).
- * - The enrage at 25%, the poison floor, death, reset.
- * - The Great Roar special (v27): acid, boulders and jugs, then the roar ([GreatRoar]).
- * - The Tidal Waves special (v29): waves, swimming, the rock steps and the water crocodiles
- *   ([TidalWaves]). The two specials alternate.
+ * This class owns the fight's lifecycle, tick loop, scaling and special scheduling. Each mechanic
+ * lives in its own component: [autos], [poison], [bloodMagic], [boulders], [jugs], [waves],
+ * [water], plus the two specials [GreatRoar] and [TidalWaves].
  *
- * **How Zebak is driven.** He never uses the engine's combat. His attacks come from this room's
- * tick loop, and ZebakScript binds onAiOpPlayer2 for his types to a no-op so that retaliation
- * (players hitting him) doesn't start the default npc combat. Players still attack him normally.
- *
- * **Config lives in the module's pack**, not in code: `pack/.../configs/toa_zebak.toml` makes the
- * room's npcs stationary (moveRestrict NoMove), idle (defaultMode None), non-regenerating
- * (regenRate 0), sets their spawn facing, and gives the blood clouds a 1-tick AI timer. It also
- * holds the projectile timings ([[projectile]]). Synth and projanim names are declared in
- * `src/main/resources/gamevals.toml`.
- *
- * Timing notation from the capture: **T** is the tick Zebak animates an attack. A player hit queued
- * from npc/world code with delay `d` lands on T + d - 1.
+ * Zebak never uses the engine's combat: ZebakScript binds onAiOpPlayer2 to a no-op and his attacks
+ * come from [tick]. Npc behaviour (NoMove, no regen, AI timers) is in toa_zebak.toml.
  */
 class ZebakEncounter(raid: ToaRaid, room: ToaRoom, region: Region, controllerId: Int) :
     ToaBossEncounter(raid, room, region, controllerId) {
 
-    private var zebak: Npc? = null
-    private var tail: Npc? = null
-    private val waterCrocodiles = ArrayList<Npc>()
+    internal var zebak: Npc? = null
+        private set
 
-    // ---- Combat state (all reset by spawnZebak) ----
+    internal var tail: Npc? = null
+        private set
 
-    /** 7, one faster every two path levels (max 2 faster). Set by [applyScaling]. */
+    internal val autos = ZebakAutos(this)
+    internal val poison = ZebakPoison(this)
+    internal val bloodMagic = ZebakBloodMagic(this)
+    internal val boulders = ZebakBoulders(this)
+    internal val jugs = ZebakJugs(this)
+    internal val waves = ZebakWaves(this)
+    internal val water = ZebakWater(this)
+
+    /** Offline_Scape TOANPC.damageFactor. */
+    internal var damageFactor = 1.0
+        private set
+
+    internal var enraged = false
+        private set
+
+    internal var attackCountdown = 0
+
     private var pathAttackSpeed = BASE_ATTACK_SPEED
-
-    /** Overrides the attack speed while a special runs (Offline_Scape: 10 during the Great Roar). */
-    private var specialAttackSpeed: Int? = null
-
-    /** Ticks between attacks: the special's speed, else [pathAttackSpeed], 3 faster enraged. */
-    private val attackSpeed: Int
-        get() =
-            specialAttackSpeed
-                ?: if (enraged) max(MIN_ATTACK_SPEED, pathAttackSpeed - ENRAGE_SPEEDUP) else pathAttackSpeed
-
-    private var attackCountdown = 0
-
-    /** Offline_Scape damageFactor: max hits scale with raid level and path level, capped at 2.5x. */
-    private var damageFactor = 1.0
-
-    private var enraged = false
-
-    /** Offline_Scape `usingMage`; flips a third of the time before each attack. */
-    private var usingMage = false
-
-    /** Specials whose HP threshold has been crossed but haven't run yet (see [startSpecial]). */
+    private var special: ZebakSpecial? = null
     private var specialsQueued = 0
-
-    /** How many of [SPECIAL_THRESHOLDS] have been crossed. */
     private var specialsTriggered = 0
+    private var nextSpecialIsRoar = false
 
-    /** Offline_Scape `jugAttack`: the specials alternate, starting with a random one. */
-    private var nextSpecialIsJugs = false
+    internal val usingSpecial: Boolean
+        get() = special != null
 
-    /**
-     * A special is running (Offline_Scape `usingSpecial`): no other special and no blood magic
-     * meanwhile. Autos carry on, at [specialAttackSpeed].
-     */
-    private var usingSpecial = false
+    internal val attackSpeed: Int
+        get() {
+            special?.attackSpeed?.let { return it }
+            val speed = if (enraged) pathAttackSpeed - ENRAGE_SPEEDUP else pathAttackSpeed
+            return max(MIN_ATTACK_SPEED, speed)
+        }
 
-    /** The Great Roar in progress, advanced once a tick by [tick]. */
-    private var greatRoar: GreatRoar? = null
+    internal val pathLevel: Int
+        get() = raid.pathLevels[ToaPath.CRONDIS.ordinal]
 
-    /** The Tidal Waves in progress, advanced once a tick by [tick]. */
-    private var tidalWaves: TidalWaves? = null
+    private val steps by lazy { StepValidator(deps.collision) }
 
-    /** Offline_Scape `wavesFromSouth`: which edge the waves come from; alternates, starts random. */
-    private var wavesFromSouth = false
-
-    /** Waves on the move, with their direction (dz) and ticks left. */
-    private val waves = HashMap<Npc, WaveState>()
-
-    private class WaveState(val dz: Int, var ticksLeft: Int)
-
-    /** Offline_Scape WATER_RENDER_ANIMATION: ready 773 (human_swim_ready), every move 772 (human_swim). */
-    private val swimBas: BasType by lazy {
-        val swim = SEQ_SWIM.asRSCM(RSCMType.SEQ)
-        BasType(
-            readyAnim = SEQ_SWIM_READY.asRSCM(RSCMType.SEQ),
-            turnOnSpot = swim,
-            walkForward = swim,
-            walkBack = swim,
-            walkLeft = swim,
-            walkRight = swim,
-            running = swim,
-        )
-    }
-
-    /** Jugs on the floor or rolling. */
-    private val jugs = HashMap<Npc, JugState>()
-
-    /** Where a pushed/pulled jug is rolling to (one tile per tick), or 0/0 while standing. */
-    private class JugState(var dx: Int = 0, var dz: Int = 0)
-
-    /** The Great Roar's boulders and their blocking locs (instance coords). */
-    private val boulders = HashMap<Npc, LocInfo>()
-
-    // ---- Blood magic (Not Just a Head) ----
-
-    /** Ticks to the next blood spell, or -1 when the invocation is off. */
-    private var bloodCountdown = -1
-    private var nextBloodIsBarrage = false
-    private var cloudsFromSouth = false
-    private val clouds = HashMap<Npc, CloudState>()
-
-    private class CloudState(var switchTicks: Int, var startDelay: Int, var target: Player? = null)
-
-    // ---- Bleed (melee) ----
-
-    /** Map cycle each bleeding player stops bleeding. */
-    private val bleeding = HashMap<Player, Int>()
-
-    /** Where each player stood last tick, to notice movement while bleeding. */
-    private val lastCoords = HashMap<Player, CoordGrid>()
-
-    // ---- Poison floor (instance coords) ----
-
-    private val poison = HashMap<CoordGrid, LocInfo>()
-
-    /** Tiles that hurt. A new tile only starts hurting the tick after it lands (Offline_Scape). */
-    private val activePoison = HashSet<CoordGrid>()
-    private val pendingPoison = ArrayList<CoordGrid>()
-
-    // ---- Room lifecycle ----
+    // ---- Lifecycle ----
 
     override fun onBuilt() {
+        clearFight()
         spawnZebak()
-        spawnWaterCrocodiles()
+        water.spawnCrocodiles()
     }
 
     override fun onStart() {
         val boss = zebak ?: return
-        // Offline_Scape onRoomStart: setMaxHealth, now that the party size is known.
         applyScaling(boss, teamSize)
-        // Capture: size-9 blockers under Zebak and his tail, added when the challenge starts.
-        addLoc(BLOCKER, ZEBAK_TILE)
-        addLoc(BLOCKER, TAIL_TILE)
+        // Capture: size-9 blockers under Zebak and the tail from the challenge start.
+        addLoc(ZebakLocs.BLOCKER, ZebakCoords.ZEBAK)
+        addLoc(ZebakLocs.BLOCKER, ZebakCoords.TAIL)
         for (player in players) {
             openBar(player)
-            player.midiSong(MIDI_TOA_BOSS_ZEBAK)
+            player.midiSong(ZebakSynths.MIDI)
             player.toaDamageTakenCurrent = 0
         }
         attackCountdown = FIRST_ATTACK_DELAY
-        bloodCountdown = if (raid.isActive(NOT_JUST_A_HEAD)) attackSpeed * BLOOD_SPELL_EVERY - 1 else -1
+        bloodMagic.start()
         schedule(1) { tick() }
     }
 
-    /** Offline_Scape enter(): preload Zebak's animations (client script 1846 is `seq_prefetch`). */
     override fun onEnter(player: Player) {
-        for (seq in PRELOAD_SEQS) {
-            player.runClientScript(SCRIPT_SEQ_PREFETCH, seq)
-        }
+        for (seq in ZebakSeqs.PRELOAD) player.runClientScript(SCRIPT_SEQ_PREFETCH, seq)
         if (stage == ToaStage.STARTED) {
             openBar(player)
-            player.midiSong(MIDI_TOA_BOSS_ZEBAK)
+            player.midiSong(ZebakSynths.MIDI)
         }
     }
 
     override fun onLeave(player: Player) {
         closeBar(player)
-        stopSwimming(player)
-        bleeding.remove(player)
-        lastCoords.remove(player)
-        for (state in clouds.values) {
-            if (state.target === player) state.target = null
-        }
+        water.stopSwimming(player)
+        autos.forget(player)
+        bloodMagic.forget(player)
     }
 
     override fun onComplete() {
         for (player in players) closeBar(player)
-        clearFightState()
-        removeWaterCrocodiles()
+        clearFight()
+        water.removeCrocodiles()
         playDeath()
-        // Path completed + Osmumten.
         super.onComplete()
     }
 
     override fun onReset() {
         for (player in players) closeBar(player)
-        clearFightState()
-        // Offline_Scape onRoomReset: a fresh Zebak (full health, no queued specials).
+        clearFight()
         spawnZebak()
     }
 
-    /** Clouds, poison, bleeds, jugs, boulders and any special: everything the fight leaves behind. */
-    private fun clearFightState() {
+    private fun clearFight() {
         endSpecial()
-        removeClouds()
-        removeJugs()
-        removeBoulders()
-        removeWaves()
-        stopAllSwimming()
-        crocBiteCountdown.clear()
-        clearPoison()
-        bleeding.clear()
-        lastCoords.clear()
+        autos.clear()
+        bloodMagic.clear()
+        jugs.clear()
+        boulders.clear()
+        waves.clear()
+        water.clear()
+        poison.clear()
     }
 
-    // ---- Spawning ----
-
     private fun spawnZebak() {
-        removeZebak()
-        val boss = addNpc(ZEBAK, ZEBAK_TILE)
-        owners[boss] = this
+        zebak?.let(::despawn)
+        tail?.let(::despawn)
+        val boss = spawn(ZebakNpcs.ZEBAK, coords(ZebakCoords.ZEBAK))
         zebak = boss
-        tail = addNpc(ZEBAK_TAIL, TAIL_TILE)
-
+        tail = spawn(ZebakNpcs.TAIL, coords(ZebakCoords.TAIL))
         applyScaling(boss, raid.players.size.coerceAtLeast(1))
         enraged = false
         endSpecial()
         specialsQueued = 0
         specialsTriggered = 0
-        nextSpecialIsJugs = deps.random.of(0, 1) == 0
-        usingMage = deps.random.of(0, 1) == 0
-        nextBloodIsBarrage = deps.random.of(0, 1) == 0
-        cloudsFromSouth = deps.random.of(0, 1) == 0
-        wavesFromSouth = deps.random.of(0, 1) == 0
+        nextSpecialIsRoar = deps.random.of(0, 1) == 0
     }
 
-    private fun removeZebak() {
-        zebak?.let {
-            owners.remove(it)
-            if (it.isSlotAssigned) deps.npcRepo.del(it, Int.MAX_VALUE)
-        }
-        tail?.let { if (it.isSlotAssigned) deps.npcRepo.del(it, Int.MAX_VALUE) }
-        zebak = null
-        tail = null
-    }
-
-    /**
-     * Capture positions (low confidence, one capture; Offline_Scape's differ by 1-4 tiles, so vanilla
-     * may randomise them). They hunt swimmers (see [crocTick]).
-     */
-    private fun spawnWaterCrocodiles() {
-        removeWaterCrocodiles()
-        for (tile in WATER_CROC_TILES) {
-            val croc = addNpc(WATER_CROC, tile)
-            owners[croc] = this
-            waterCrocodiles += croc
-        }
-    }
-
-    private fun removeWaterCrocodiles() {
-        for (croc in waterCrocodiles) {
-            owners.remove(croc)
-            if (croc.isSlotAssigned) deps.npcRepo.del(croc, Int.MAX_VALUE)
-        }
-        waterCrocodiles.clear()
-        crocBiteCountdown.clear()
-    }
-
-    /**
-     * A room npc that stays until we remove it. Facing, mode and movement come from its config
-     * (toa_zebak.toml). `add(npc, Int.MAX_VALUE)` marks npcs as respawning, so that's switched off
-     * again: none of Zebak's npcs may come back by themselves.
-     */
-    private fun addNpc(type: String, static: CoordGrid): Npc = addNpcAt(type, coords(static))
-
-    /** [addNpc] for instance coords (tiles picked at runtime, e.g. boulders and jugs). */
-    private fun addNpcAt(type: String, tile: CoordGrid): Npc {
-        val npc = Npc(type, tile)
-        deps.npcRepo.add(npc, Int.MAX_VALUE)
-        npc.respawns = false
-        return npc
-    }
-
-    /**
-     * Death animation, then the dead models (Offline_Scape: 3 ticks later, `id + 3`, which are
-     * toa_zebak_dead / toa_zebak_tail_dead). Also covers `::toacomplete`.
-     */
     private fun playDeath() {
         val boss = zebak ?: return
         if (!boss.isSlotAssigned) return
         owners.remove(boss)
         boss.noneMode()
         boss.hideAllOps()
-        boss.anim(SEQ_DEATH)
-        tail?.anim(SEQ_TAIL_DEATH)
+        boss.anim(ZebakSeqs.DEATH)
+        tail?.anim(ZebakSeqs.TAIL_DEATH)
         val tailNpc = tail
-        // Scheduled after complete() dropped the old tasks, so this one still runs.
         schedule(DEATH_MODEL_DELAY) {
-            if (boss.isSlotAssigned) boss.transmog(npcType(ZEBAK_DEAD), Int.MAX_VALUE)
-            if (tailNpc != null && tailNpc.isSlotAssigned) tailNpc.transmog(npcType(ZEBAK_TAIL_DEAD), Int.MAX_VALUE)
+            if (boss.isSlotAssigned) boss.transmog(npcType(ZebakNpcs.ZEBAK_DEAD), Int.MAX_VALUE)
+            if (tailNpc != null && tailNpc.isSlotAssigned) {
+                tailNpc.transmog(npcType(ZebakNpcs.TAIL_DEAD), Int.MAX_VALUE)
+            }
         }
     }
 
-    // ---- Scaling ----
+    // ---- Scaling (OSRS Wiki, Tombs of Amascut) ----
 
     /**
-     * ToA npc scaling (OSRS Wiki, Tombs of Amascut):
-     * - raid level: +2% hitpoints, defence, accuracy and damage per 5 levels (0.4% per level);
-     * - party size: +90% hitpoints for each of the 2nd and 3rd players, +60% for each one after.
-     *   Offline_Scape used +90% for every extra player;
-     * - path level: Offline_Scape levelFactor, +8% at level 1 then +5% per level (TODO: check).
-     *
-     * Hitpoints are rounded to the nearest 10: the capture had 640 at raid level 25 solo, where
-     * Offline_Scape's floor gives 638.
-     *
-     * Accuracy is scaled through the attack, ranged and magic levels, because the standard accuracy
-     * rolls read those (Offline_Scape had a separate accuracy multiplier).
+     * Raid level +0.4% per level; party +90% hp for players 2-3, +60% after (Offline_Scape: +90%
+     * each); path level +8% then +5% per level (Offline_Scape, unverified). Hp rounds to the
+     * nearest 10 (capture: 640 at raid level 25 solo). Accuracy scales via the combat levels.
      */
     private fun applyScaling(npc: Npc, partySize: Int) {
         val type = npc.type
         val raidFactor = 1.0 + raid.settings.raidLevel * RAID_LEVEL_FACTOR
-        val pathLevel = raid.pathLevels[ToaPath.CRONDIS.ordinal]
-        val levelFactor = if (pathLevel > 0) PATH_LEVEL_FIRST + (pathLevel - 1) * PATH_LEVEL_EACH else 0.0
+        val levelFactor =
+            if (pathLevel > 0) PATH_LEVEL_FIRST + (pathLevel - 1) * PATH_LEVEL_EACH else 0.0
+        val extra = (partySize - 1).coerceAtLeast(0)
+        val first = min(extra, 2)
+        val teamFactor = 1.0 + first * TEAM_HP_FIRST + (extra - first) * TEAM_HP_REST
 
-        val hp = roundToTen(type.hitpoints * raidFactor * teamFactor(partySize) * (1.0 + levelFactor))
+        val hp = roundToTen(type.hitpoints * raidFactor * teamFactor * (1.0 + levelFactor))
         npc.baseHitpointsLvl = hp
         npc.hitpoints = hp
-
         val defence = floor(type.defence * raidFactor).toInt()
         npc.baseDefenceLvl = defence
         npc.defenceLvl = defence
@@ -387,49 +212,31 @@ class ZebakEncounter(raid: ToaRaid, room: ToaRoom, region: Region, controllerId:
         npc.magicLvl = magic
 
         damageFactor = min(MAX_DAMAGE_FACTOR, raidFactor + levelFactor)
-        // OSRS Wiki: every two path levels make his autos faster.
         pathAttackSpeed = BASE_ATTACK_SPEED - min(2, pathLevel / 2)
-    }
-
-    private fun teamFactor(partySize: Int): Double {
-        val extra = (partySize - 1).coerceAtLeast(0)
-        val first = min(extra, 2)
-        val rest = extra - first
-        return 1.0 + first * TEAM_HP_FIRST + rest * TEAM_HP_REST
     }
 
     private fun roundToTen(value: Double): Int = ((value + 5.0) / 10.0).toInt() * 10
 
-    /** Offline_Scape TOANPC.getMaxHit. */
-    private fun maxHit(base: Int): Int = floor(base * damageFactor).toInt()
+    internal fun maxHit(base: Int): Int = floor(base * damageFactor).toInt()
 
-    // ---- The tick loop (Offline_Scape Zebak.processNPC + ZebakEncounter.process) ----
+    // ---- Tick loop ----
 
     private fun tick() {
         if (stage != ToaStage.STARTED) return
         val boss = zebak ?: return
         val targets = targets()
 
-        activePoison += pendingPoison
-        pendingPoison.clear()
-        checkPoison(targets)
-        checkBleeding(targets)
-        greatRoar?.let { if (!it.step()) endSpecial() }
-        tidalWaves?.let { if (!it.step()) endSpecial() }
-        // Dead or ghost players climb out by themselves (Offline_Scape reset the render on death).
-        for (player in swimmers.toList()) {
-            if (raid.isGhost(player) || raid.isDying(player)) stopSwimming(player)
-        }
+        poison.tick(targets)
+        autos.tickBleeding(targets)
+        special?.let { if (!it.step()) endSpecial() }
+        water.dropDeadSwimmers()
 
         if (targets.isNotEmpty() && boss.hitpoints > 0) {
-            if (!usingSpecial && bloodCountdown != -1 && --bloodCountdown == 0) {
-                bloodCountdown = attackSpeed * (if (enraged) BLOOD_SPELL_EVERY_ENRAGED else BLOOD_SPELL_EVERY) - 1
-                castBloodMagic()
-            }
+            if (!usingSpecial) bloodMagic.tick()
             if (--attackCountdown <= 0) {
                 attackCountdown = attackSpeed
-                val special = !enraged && !usingSpecial && specialsQueued > 0 && startSpecial()
-                if (!special) normalAttack(boss, targets)
+                val started = !enraged && !usingSpecial && specialsQueued > 0 && startSpecial()
+                if (!started) autos.attack(boss, targets)
             }
         }
 
@@ -437,541 +244,104 @@ class ZebakEncounter(raid: ToaRaid, room: ToaRoom, region: Region, controllerId:
     }
 
     /** Players Zebak can hit: alive, not a ghost, inside the challenge area. */
-    private fun targets(): List<Player> =
+    internal fun targets(): List<Player> =
         players.filter { inChallengeArea(it) && !raid.isGhost(it) && !raid.isDying(it) }
 
-    /**
-     * Offline_Scape: the queued special runs instead of an auto, and they alternate (`jugAttack`)
-     * between the Great Roar (shootJugs) and Tidal Waves (landWaves).
-     *
-     * The one due is started and runs its tick 0 now. The waves' side flips when they end.
-     */
+    // ---- Specials ----
+
+    /** The queued special replaces an auto; they alternate, starting at random (Offline_Scape). */
     private fun startSpecial(): Boolean {
         specialsQueued--
-        val roarTurn = nextSpecialIsJugs
-        nextSpecialIsJugs = !nextSpecialIsJugs
-        usingSpecial = true
-        if (roarTurn) {
-            val roar = GreatRoar()
-            greatRoar = roar
-            specialAttackSpeed = ROAR_ATTACK_SPEED
-            if (!roar.step()) endSpecial()
-        } else {
-            val special = TidalWaves()
-            tidalWaves = special
-            if (!special.step()) endSpecial()
-        }
+        val next = if (nextSpecialIsRoar) GreatRoar(this) else TidalWaves(this)
+        nextSpecialIsRoar = !nextSpecialIsRoar
+        special = next
+        if (!next.step()) endSpecial()
         return true
     }
 
-    /**
-     * Back to normal attacks. Offline_Scape left `attackSpeed = 10` after its first Great Roar
-     * (and never reset `usingSpecial` when a roar couldn't place its boulders); both are undone here.
-     */
     private fun endSpecial() {
-        greatRoar = null
-        tidalWaves = null
-        usingSpecial = false
-        specialAttackSpeed = null
+        special = null
     }
 
-    // ---- Auto attacks (Offline_Scape handleNormalCombat) ----
+    // ---- Zebak taking damage ----
 
-    private fun normalAttack(boss: Npc, targets: List<Player>) {
-        // Offline_Scape Utils.random is inclusive: random(2) == 0 is a 1 in 3 chance.
-        if (deps.random.of(0, 2) == 0) usingMage = !usingMage
-        val meleeTargets = targets.filter { inMeleeRange(boss, it) }
-        when {
-            meleeTargets.isNotEmpty() && deps.random.of(0, 2) == 0 -> melee(boss, meleeTargets)
-            usingMage -> projectileAttack(boss, mage = true)
-            else -> projectileAttack(boss, mage = false)
+    /** Capture: area sound 6590 on damage. Wiki: specials at 85/70/55/40%, enrage at ~25%. */
+    private fun zebakHit(boss: Npc, hit: Hit) {
+        if (stage != ToaStage.STARTED || boss !== zebak) return
+        if (hit.damage > 0) {
+            val centre = coords(ZebakCoords.CENTRE)
+            deps.worldRepo.soundArea(centre, ZebakSynths.DAMAGED, radius = DAMAGED_SOUND_RADIUS)
         }
-    }
-
-    /**
-     * Hits everyone in melee range. Capture: Zebak plays 9620 and the tail 9621 (Offline_Scape played
-     * both on Zebak), and the hitsplat lands on T+1. Prayer is checked on impact.
-     *
-     * Bleed (Offline_Scape): a 1 in 4 chance per target, when the hit lands, for 10 ticks.
-     */
-    private fun melee(boss: Npc, meleeTargets: List<Player>) {
-        boss.anim(if (enraged) SEQ_MELEE_ENRAGED else SEQ_MELEE)
-        tail?.anim(if (enraged) SEQ_TAIL_MELEE_ENRAGED else SEQ_TAIL_MELEE)
-        for (player in meleeTargets) {
-            val success = deps.accuracy.rollMeleeAccuracy(boss, player, MeleeAttackType.Slash, deps.random)
-            val damage = if (success) deps.random.of(0, maxHit(MELEE_MAX_HIT)) else 0
-            player.queueImpactHit(boss, MELEE_HIT_DELAY, HitType.Melee, damage, deps.playerHitModifier)
+        updateBars()
+        if (enraged || boss.hitpoints <= 0) return
+        val max = boss.baseHitpointsLvl
+        // Offline_Scape: at most one special queued per hit.
+        val threshold = SPECIAL_THRESHOLDS.getOrNull(specialsTriggered)
+        if (threshold != null && boss.hitpoints <= max * threshold) {
+            specialsTriggered++
+            specialsQueued++
         }
-        schedule(1) {
-            val now = targets()
-            for (player in meleeTargets) {
-                if (player !in now || deps.random.of(0, 3) != 0) continue
-                player.mes("<col=ff3045>Zebak's fangs tear into your flesh, causing you to bleed.</col>")
-                bleeding[player] = deps.mapClock.cycle + BLEED_TICKS
-            }
-        }
+        if (boss.hitpoints <= max * ENRAGE_THRESHOLD) enrage(boss)
     }
 
-    /**
-     * The magic (pot, red orbs) or ranged (rock, fragments) attack. Offline_Scape shootNormalAttack
-     * with the capture's timing:
-     * - T: Zebak and the tail animate, the first projectile flies to the middle of the arena;
-     * - T+4: it splits. Helper npc 11744 shows the break spotanim (capture: spawned at T+4, gone at
-     *   T+7), and a fragment homes onto every player in the challenge area;
-     * - T+8: the hitsplat (queued at T+4 with delay 5). Prayer is checked on impact, so switching
-     *   after the split still blocks it.
-     */
-    private fun projectileAttack(boss: Npc, mage: Boolean) {
-        boss.anim(if (enraged) SEQ_RANGED_ENRAGED else SEQ_RANGED)
-        tail?.anim(if (enraged) SEQ_TAIL_RANGED_ENRAGED else SEQ_TAIL_RANGED)
-        for (player in targets()) {
-            player.soundSynth(if (mage) SYNTH_MAGE_SHOOT else SYNTH_RANGE_SHOOT)
-            player.soundSynth(if (mage) SYNTH_MAGE_SPLIT else SYNTH_RANGE_SPLIT, delay = SPLIT_SOUND_DELAY)
-        }
-        val base = coords(PROJECTILE_BASE)
-        val initial = if (mage) SPOT_MAGE_INITIAL else SPOT_RANGE_INITIAL
-        deps.worldRepo.projAnim(
-            ProjAnim.fromBoundsToCoord(Bounds(coords(PROJECTILE_START)), base, spotanimId(initial), PROJ_INITIAL)
-        )
-
-        schedule(SPLIT_DELAY) { split(boss, mage, base) }
+    /** Wiki: the enraged npc, faster attacks. Offline_Scape: -3 attack speed, no more specials. */
+    private fun enrage(boss: Npc) {
+        enraged = true
+        attackCountdown = min(attackCountdown, attackSpeed)
+        boss.transmog(npcType(ZebakNpcs.ZEBAK_ENRAGED), Int.MAX_VALUE)
+        for (player in targets()) player.soundSynth(ZebakSynths.FINAL_PHASE)
     }
 
-    private fun split(boss: Npc, mage: Boolean, base: CoordGrid) {
-        if (boss.hitpoints <= 0) return
-        val targets = targets()
-        if (targets.isEmpty()) return
+    // ---- Boss bar ----
 
-        // A lifetime of 3 ticks: the engine deletes it again at T+7.
-        val helper = Npc(SPLIT_HELPER, coords(SPLIT_HELPER_TILE))
-        deps.npcRepo.add(helper, SPLIT_HELPER_TICKS)
-        helper.spotanim(if (mage) SPOT_MAGE_SPLIT else SPOT_RANGE_SPLIT, height = SPLIT_HEIGHT)
-
-        for (player in targets) {
-            player.soundSynth(SYNTH_PROJECTILE_IMPACT, delay = IMPACT_SOUND_DELAY)
-            // Homes onto the player. Capture's angle 127 / end height 90 are in the projanim config.
-            val fragment = if (mage) SPOT_MAGE_FRAGMENT else SPOT_RANGE_FRAGMENT
-            deps.worldRepo.projAnim(ProjAnim.fromBoundsToPlayer(Bounds(base), player, spotanimId(fragment), PROJ_SPLIT))
-            player.spotanim(if (mage) SPOT_MAGE_IMPACT else SPOT_RANGE_IMPACT, delay = 90, height = 90)
-            val success =
-                if (mage) {
-                    deps.accuracy.rollMagicAccuracy(boss, player, deps.random)
-                } else {
-                    deps.accuracy.rollRangedAccuracy(boss, player, deps.random)
-                }
-            val damage = if (success) deps.random.of(0, maxHit(RANGED_MAGIC_MAX_HIT)) else 0
-            val type = if (mage) HitType.Magic else HitType.Ranged
-            player.queueImpactHit(boss, SPLIT_HIT_DELAY, type, damage, deps.playerHitModifier)
-        }
+    private fun openBar(player: Player) {
+        val npc = zebak ?: return
+        deps.bossHpBar.onOpen(player, npc)
+        deps.bossHpBar.onUpdate(player, npc)
     }
 
-    /** Cardinally next to [npc]'s square (no diagonals), on the same level. */
-    private fun inMeleeRange(npc: Npc, player: Player): Boolean {
-        val c = player.coords
-        if (c.level != npc.coords.level) return false
-        val minX = npc.coords.x
-        val minZ = npc.coords.z
-        val maxX = minX + npc.size - 1
-        val maxZ = minZ + npc.size - 1
-        return (c.x in minX..maxX && (c.z == minZ - 1 || c.z == maxZ + 1)) ||
-            (c.z in minZ..maxZ && (c.x == minX - 1 || c.x == maxX + 1))
+    internal fun updateBars() {
+        val npc = zebak ?: return
+        for (player in players) deps.bossHpBar.onUpdate(player, npc)
     }
 
-    // ---- Bleed ----
-
-    /**
-     * A bleeding player who moved this tick takes 5-12 (scaled), like Offline_Scape processMovement.
-     * Offline_Scape hit once per step, so running hit twice; this hits once per tick moved.
-     *
-     * TODO(v26): the blood splats (loc bloodsplatter1/2, ground decoration, 10 ticks). Needed for
-     * the bloody waves too.
-     */
-    private fun checkBleeding(targets: List<Player>) {
-        val now = deps.mapClock.cycle
-        bleeding.entries.removeIf { it.value <= now }
-        for (player in targets) {
-            val last = lastCoords.put(player, player.coords)
-            if (last == null || last == player.coords || player !in bleeding) continue
-            val base = maxHit(BLEED_BASE_DAMAGE)
-            player.queueHit(
-                delay = 1,
-                type = HitType.Typeless,
-                damage = deps.random.of(base, base + BLEED_DAMAGE_SPREAD),
-                modifier = NoopPlayerHitModifier,
-            )
-        }
+    private fun closeBar(player: Player) {
+        val npc = zebak ?: return
+        deps.bossHpBar.onClose(player, npc, instant = true)
     }
 
-    // ---- Poison floor (Offline_Scape ZebakEncounter.addPoison / process) ----
+    // ---- Shared helpers for the components ----
 
-    /**
-     * Standing on active poison while not already poisoned: a poison hit of 5-20 that also poisons
-     * (Offline_Scape: a POISON hit plus applyToxin). PlayerPoison respects antipoison and immunity
-     * gear (Serpentine helm, per the wiki).
-     */
-    private fun checkPoison(targets: List<Player>) {
-        if (activePoison.isEmpty()) return
-        for (player in targets) {
-            if (player.coords !in activePoison || PlayerPoison.isPoisoned(player)) continue
-            val base = deps.random.of(POISON_MIN, POISON_MAX)
-            PlayerPoison.tryPoison(player, initialDamage = deps.random.of(base, base + POISON_SPREAD))
-        }
+    /** A room npc owned by this room (for event routing) that never respawns by itself. */
+    internal fun spawn(type: String, tile: CoordGrid): Npc {
+        val npc = Npc(type, tile)
+        deps.npcRepo.add(npc, Int.MAX_VALUE)
+        npc.respawns = false
+        owners[npc] = this
+        return npc
     }
 
-    /**
-     * Puts a pool of poison on [tile] (instance coords). With [spread], neighbours within 1 tile (2
-     * with Upset Stomach) each get one with a 1 in 3 chance, a tick later, via a small projectile;
-     * [guaranteed] makes the tiles directly east and west certain. Used by the specials (v26).
-     */
-    fun addPoison(tile: CoordGrid, spread: Boolean, guaranteed: Boolean) {
-        if (tile in poison) return
-        val type = POISON_LOCS[deps.random.of(0, POISON_LOCS.lastIndex)]
-        val angle = LocAngle.entries[deps.random.of(0, LocAngle.entries.lastIndex)]
-        poison[tile] = deps.locRepo.add(tile, type, Int.MAX_VALUE, angle, LocShape.CentrepieceStraight)
-        pendingPoison += tile
-        if (!spread) return
-
-        val range = if (raid.isActive(UPSET_STOMACH)) 2 else 1
-        val spreadTiles = ArrayList<CoordGrid>()
-        for (dx in -range..range) {
-            for (dz in -range..range) {
-                if (dx == 0 && dz == 0) continue
-                if ((!guaranteed || dz != 0) && deps.random.of(0, 2) != 0) continue
-                val next = tile.translate(dx, dz)
-                if (next in poison || deps.collision.isWalkBlocked(next)) continue
-                deps.worldRepo.projAnim(
-                    ProjAnim.fromBoundsToCoord(Bounds(tile), next, spotanimId(SPOT_POISON_SPREAD), PROJ_POISON_SPREAD)
-                )
-                spreadTiles += next
-            }
-        }
-        if (spreadTiles.isNotEmpty()) {
-            schedule(1) { for (next in spreadTiles) addPoison(next, spread = false, guaranteed = false) }
-        }
+    internal fun despawn(npc: Npc) {
+        owners.remove(npc)
+        if (npc.isSlotAssigned) deps.npcRepo.del(npc, Int.MAX_VALUE)
     }
 
-    /** Removes the pool on [tile], if any (broken jugs and waves, v26). */
-    fun removePoison(tile: CoordGrid) {
-        val loc = poison.remove(tile) ?: return
-        activePoison.remove(tile)
-        pendingPoison.remove(tile)
-        deps.locRepo.del(loc, Int.MAX_VALUE)
+    private fun addLoc(type: String, static: CoordGrid) {
+        val shape = LocShape.CentrepieceStraight
+        deps.locRepo.add(coords(static), type, Int.MAX_VALUE, LocAngle.West, shape)
     }
 
-    private fun clearPoison() {
-        for (loc in poison.values) deps.locRepo.del(loc, Int.MAX_VALUE)
-        poison.clear()
-        activePoison.clear()
-        pendingPoison.clear()
-    }
+    /** Walkable with no centrepiece loc (Offline_Scape: no type-10 object, floor free). */
+    internal fun isOpenFloor(tile: CoordGrid): Boolean =
+        !deps.collision.isWalkBlocked(tile) &&
+            deps.locRepo.findExact(tile, LocShape.CentrepieceStraight) == null
 
-    // ---- Blood magic (Offline_Scape sendBloodSpell, Not Just a Head) ----
-
-    /**
-     * Every 6 attack cycles (8 once enraged), two blood spotanims by Zebak, then 2 ticks later either
-     * a blood barrage on everyone or blood clouds. They alternate, starting at random.
-     */
-    private fun castBloodMagic() {
-        val spotanim = SpotanimType(SPOT_BLOOD_BARRAGE.asRSCM(RSCMType.SPOTANIM))
-        for (tile in BLOOD_SPELL_TILES) deps.worldRepo.spotanimMap(spotanim, coords(tile))
-        schedule(BLOOD_SPELL_DELAY) {
-            val targets = targets()
-            if (targets.isEmpty()) return@schedule
-            if (nextBloodIsBarrage) bloodBarrage(targets) else spawnClouds()
-            nextBloodIsBarrage = !nextBloodIsBarrage
-        }
-    }
-
-    /**
-     * 7-14 magic damage (scaled by raid level) on every target, and the same again on each other
-     * player within 1 tile of them (2 with Arterial Spray). Zebak heals two thirds of every hit
-     * taken without Protect from Magic. Prayer blocks the damage as usual.
-     */
-    private fun bloodBarrage(targets: List<Player>) {
-        val boss = zebak ?: return
-        val base = floor(BARRAGE_BASE_DAMAGE * raid.damageMultiplier).toInt()
-        val radius = if (raid.isActive(ARTERIAL_SPRAY)) 2 else 1
-        var heal = 0
-        for (player in targets) {
-            val damage = deps.random.of(base, base + BARRAGE_DAMAGE_SPREAD)
-            heal += barrageHit(boss, player, damage)
-            player.spotanim(SPOT_BLOOD_BARRAGE)
-            for (other in targets) {
-                if (other === player || chebyshev(player.coords, other.coords) > radius) continue
-                heal += barrageHit(boss, other, damage)
-            }
-        }
-        if (heal > 0) {
-            boss.heal(heal, showHitsplat = true)
-            for (player in players) updateBar(player)
-        }
-        for (player in targets) player.soundSynth(SYNTH_BLOOD_BARRAGE)
-    }
-
-    /** One barrage hit; returns what Zebak heals from it. */
-    private fun barrageHit(boss: Npc, player: Player, damage: Int): Int {
-        // Delay 1 lands this tick (Offline_Scape delayHit 0).
-        player.queueImpactHit(boss, 1, HitType.Magic, damage, deps.playerHitModifier)
-        return if (player.vars[PROTECT_FROM_MAGIC] > 0) 0 else (damage * BARRAGE_HEAL_RATIO).toInt()
-    }
-
-    /** One blood cloud, or three small ones with Blood Thinners; the side alternates. */
-    private fun spawnClouds() {
-        val base = BLOOD_CLOUD_TILES[if (cloudsFromSouth) 1 else 0]
-        if (raid.isActive(BLOOD_THINNERS)) {
-            for (i in 0 until 3) {
-                val dz = if (cloudsFromSouth) i / 2 else -(i / 2)
-                spawnCloud(BLOOD_CLOUD_SMALL, base.translate(i, dz))
-            }
-        } else {
-            spawnCloud(BLOOD_CLOUD, base)
-        }
-        cloudsFromSouth = !cloudsFromSouth
-    }
-
-    private fun spawnCloud(type: String, static: CoordGrid) {
-        // Its 1-tick AI timer (cloudTick) comes from the config's `timer = 1`.
-        val cloud = addNpc(type, static)
-        clouds[cloud] = CloudState(switchTicks = deps.random.of(10, 20), startDelay = CLOUD_START_DELAY)
-        owners[cloud] = this
-    }
-
-    /**
-     * Offline_Scape BloodCloud.processNPC, once a tick. The cloud follows a player (the nearest,
-     * re-picked every 10-20 ticks). After 4 ticks it starts leeching: 2 damage to each player next
-     * to it and 2 heal for itself; when nobody is next to it, it loses 2 instead.
-     */
-    private fun cloudTick(cloud: Npc) {
-        if (stage != ToaStage.STARTED || (zebak?.hitpoints ?: 0) <= 0) return
-        val state = clouds[cloud] ?: return
-        if (state.startDelay > 0) state.startDelay--
-
-        val targets = targets()
-        state.switchTicks = max(0, state.switchTicks - 1)
-        val switch = state.switchTicks == 0 || state.target.let { it == null || it !in targets }
-        if (state.switchTicks == 0) state.switchTicks = deps.random.of(10, 20)
-        if (switch && targets.isNotEmpty()) {
-            // Offline_Scape: the nearest player other than the current target (random among ties).
-            var best: Player? = state.target
-            var bestDistance = Int.MAX_VALUE
-            for (player in shuffled(targets)) {
-                if (player === state.target) continue
-                val distance = chebyshev(player.coords, cloud.coords)
-                if (distance < bestDistance) {
-                    bestDistance = distance
-                    best = player
-                }
-            }
-            state.target = best
-        }
-
-        val target = state.target
-        if (target != null && !inMeleeRange(cloud, target)) cloud.walk(target.coords)
-
-        if (state.startDelay > 0) return
-        var leeched = false
-        for (player in targets) {
-            if (!inMeleeRange(cloud, player)) continue
-            leeched = true
-            player.queueHit(delay = 1, type = HitType.Typeless, damage = CLOUD_LEECH, modifier = NoopPlayerHitModifier)
-            cloud.heal(CLOUD_LEECH, showHitsplat = true)
-        }
-        if (!leeched) {
-            cloud.queueNpcHit(delay = 1, type = HitType.Typeless, damage = CLOUD_LEECH, modifier = NOOP_NPC_MODIFIER)
-        }
-    }
-
-    /** A cloud reached 0 hitpoints (its death queue, see ZebakScript). */
-    private fun removeCloud(cloud: Npc) {
-        clouds.remove(cloud)
-        owners.remove(cloud)
-        if (cloud.isSlotAssigned) deps.npcRepo.del(cloud, Int.MAX_VALUE)
-    }
-
-    private fun removeClouds() {
-        for (cloud in clouds.keys.toList()) removeCloud(cloud)
-    }
-
-    // ---- Great Roar (Offline_Scape Zebak.shootJugs) ----
-
-    /**
-     * One Great Roar, advanced a tick at a time by [step] (Offline_Scape's WorldTask, same tick
-     * numbers):
-     * - **0**: Zebak spits: 6 acid pools, 2-3 boulders (3 solo) each with acid 2 tiles behind them
-     *   (east), and 6-8 jugs, at least one placed so it can be pushed or pulled into each boulder.
-     * - **5**: they land. Boulders block the tile; the acid spreads; anyone underneath takes 2-5.
-     * - **33**: the roar animation. Players have had ~4 attacks' time to break jugs into boulders,
-     *   which clears the acid behind them.
-     * - **36, 38, 40**: three roar waves. Everyone not in a boulder's safe strip (the boulder's row,
-     *   its tile and the 3 behind it) is knocked 2 tiles east and hit hard. Boulders take 50 a
-     *   wave (150 hitpoints, so the third destroys them); the first wave breaks every jug left.
-     * - **49**: over.
-     */
-    private inner class GreatRoar {
-        private var ticks = -1
-        private var boulderTiles: List<CoordGrid> = emptyList()
-        private var jugTiles: List<CoordGrid> = emptyList()
-        private var acidTiles: List<CoordGrid> = emptyList()
-        private val boulderAcidTiles = ArrayList<CoordGrid>()
-
-        /** `false` once the special is over (or couldn't start). */
-        fun step(): Boolean {
-            val boss = zebak ?: return false
-            if (boss.hitpoints <= 0) return false
-            ticks++
-            when (ticks) {
-                0 -> return launch(boss)
-                ROAR_LAND_TICK -> land()
-                ROAR_SCREAM_TICK -> scream(boss)
-                in ROAR_WAVE_TICKS -> roarWave(first = ticks == ROAR_WAVE_TICKS.first())
-                ROAR_END_TICK -> {
-                    // The third wave already destroyed them; this only catches leftovers.
-                    removeBoulders()
-                    return false
-                }
-            }
-            return true
-        }
-
-        private fun launch(boss: Npc): Boolean {
-            boss.anim(SEQ_RANGED)
-            tail?.resetAnim()
-            deps.worldRepo.soundArea(coords(ZEBAK_MIDDLE), SYNTH_JUGS_SHOOT, radius = ROAR_SOUND_RADIUS)
-
-            // Offline_Scape stopped here (no boulders or no solvable jugs) and the attack was lost.
-            val boulders = boulderTiles() ?: return false
-            val jugPlan = jugSolveTiles(boulders) ?: return false
-            boulderTiles = boulders
-            jugTiles = jugPlan
-            val acid = freeTiles(GROUND_MIN, GROUND_MAX, excludes = boulders).take(ROAR_ACID_POOLS).toMutableList()
-
-            val mouth = coords(PROJECTILE_START)
-            for (tile in acid) lob(SPOT_ACID, mouth, tile)
-            for (boulder in boulders) {
-                val behind = boulder.translate(BOULDER_ACID_DX, 0)
-                if (behind in acid) continue
-                acid += behind
-                boulderAcidTiles += behind
-                lob(SPOT_POISON_SPREAD, mouth, behind)
-            }
-            acidTiles = acid
-            for (boulder in boulders) lob(SPOT_BOULDER, mouth, boulder)
-            for (jug in jugPlan) lob(SPOT_JUG, mouth, jug)
-            return true
-        }
-
-        private fun land() {
-            val targets = targets()
-            if (targets.isEmpty()) return
-            for (tile in boulderTiles) {
-                spawnBoulder(tile)
-                for (player in targets) {
-                    if (player.coords != tile) continue
-                    hitTypeless(player, deps.random.of(LANDING_MIN, LANDING_MAX))
-                    knockOffBoulder(player, tile)
-                }
-            }
-            for (tile in boulderAcidTiles) addPoison(tile, spread = true, guaranteed = true)
-            landAcid(acidTiles)
-            landJugs(jugTiles, targets)
-        }
-
-        private fun scream(boss: Npc) {
-            // Offline_Scape: the next auto comes 11 ticks after the scream starts.
-            attackCountdown = ROAR_NEXT_ATTACK
-            boss.anim(SEQ_ROAR)
-            tail?.anim(SEQ_TAIL_ROAR)
-            for (player in targets()) {
-                for ((synth, delay) in SCREAM_SOUNDS) player.soundSynth(synth, delay = delay)
-            }
-        }
-
-        private fun roarWave(first: Boolean) {
-            val min = coords(GROUND_MIN)
-            val max = coords(GROUND_MAX)
-            val middle = coords(ZEBAK_MIDDLE)
-            val dust = spotanim(SPOT_ROAR_DUST)
-            for (x in min.x..max.x) {
-                for (z in min.z..max.z) {
-                    val tile = CoordGrid(x, z, min.level)
-                    if (inSafeStrip(tile, includeBoulder = false) || !isOpenFloor(tile)) continue
-                    // Offline_Scape passed 1 + distance as the spotanim's height; it reads as the
-                    // intended ripple delay (client cycles) out from Zebak, so it's used as that.
-                    deps.worldRepo.spotanimMap(dust, tile, delay = 1 + chebyshev(tile, middle))
-                }
-            }
-            for (boulder in boulders.keys.toList()) {
-                boulder.queueNpcHit(delay = 1, type = HitType.Typeless, damage = BOULDER_ROAR_DAMAGE, modifier = NOOP_NPC_MODIFIER)
-            }
-            for (player in targets()) {
-                if (inSafeStrip(player.coords, includeBoulder = true)) continue
-                roarPush(player)
-            }
-            if (first) {
-                // Offline_Scape: 5 damage from Zebak to each jug, which breaks (clears acid) at 5 hp.
-                for (jug in jugs.keys.toList()) breakJug(jug, jug.coords)
-            }
-        }
-
-        /** Offline_Scape: same row as a boulder, from its tile (players) or the tile after it (dust), up to 3 behind. */
-        private fun inSafeStrip(tile: CoordGrid, includeBoulder: Boolean): Boolean =
-            boulderTiles.any { b ->
-                tile.z == b.z && tile.x <= b.x + SAFE_STRIP_LENGTH &&
-                    (tile.x > b.x || (includeBoulder && tile.x == b.x))
-            }
-    }
-
-    /** The Offline_Scape "lob" projectile used by every Great Roar throw (lands 5 ticks later). */
-    private fun lob(spot: String, from: CoordGrid, to: CoordGrid) {
-        deps.worldRepo.projAnim(ProjAnim.fromBoundsToCoord(Bounds(from), to, spotanimId(spot), PROJ_LOB))
-    }
-
-    /**
-     * Offline_Scape pushPlayer(scream = true): up to 2 tiles east while the way is walkable, facing
-     * west (towards Zebak); damage 20-30 scaled, typeless.
-     */
-    private fun roarPush(player: Player) {
-        var dest = player.coords
-        for (i in 0 until ROAR_PUSH_TILES) {
-            // Offline_Scape checkWalkStep: a step-by-step check, so walls between tiles count too.
-            if (!canStep(dest, 1, 0)) break
-            dest = dest.translate(1, 0)
-        }
-        movePushed(player, dest, facing = Direction.West, synth = SYNTH_PLAYER_PUSHED)
-        val base = maxHit(ROAR_BASE_DAMAGE)
-        hitTypeless(player, deps.random.of(base, base + ROAR_DAMAGE_SPREAD))
-    }
-
-    /** Offline_Scape movePlayer: a boulder landed on [player]; hop to the first free neighbour. */
-    @OptIn(InternalApi::class)
-    private fun knockOffBoulder(player: Player, boulder: CoordGrid) {
-        for (dx in -1..1) {
-            for (dz in -1..1) {
-                if (dx == 0 && dz == 0) continue
-                val next = boulder.translate(dx, dz)
-                if (!isOpenFloor(next)) continue
-                val start = player.coords
-                deps.launcher.launchLenient(player) {
-                    anim(SEQ_PLAYER_KNOCKED)
-                    exactMove(start, next, delay1 = 0, delay2 = KNOCK_OFF_CYCLES, dir = faceAngle(-dx, -dz), teleportType = TeleportType.Exempt)
-                }
-                return
-            }
-        }
-    }
-
-    private fun hitTypeless(player: Player, damage: Int) {
-        player.queueHit(delay = 1, type = HitType.Typeless, damage = damage, modifier = NoopPlayerHitModifier)
-    }
-
-    // -- Placement (Offline_Scape getFreeTiles / getBoulderLocations / getJugsSolveLocations) --
-
-    /** Walkable, no centrepiece loc on it (Offline_Scape: no type-10 object, floor free). */
-    private fun isOpenFloor(tile: CoordGrid): Boolean =
-        !deps.collision.isWalkBlocked(tile) && deps.locRepo.findExact(tile, LocShape.CentrepieceStraight) == null
-
-    /** Open, acid-free tiles in a static rectangle, shuffled; instance coords. */
-    private fun freeTiles(min: CoordGrid, max: CoordGrid, excludes: Collection<CoordGrid>): List<CoordGrid> {
+    /** Open, acid-free tiles in a static rectangle, shuffled, in instance coords. */
+    internal fun freeTiles(
+        min: CoordGrid,
+        max: CoordGrid,
+        excludes: Collection<CoordGrid>,
+    ): List<CoordGrid> {
         val from = coords(min)
         val to = coords(max)
         val tiles = ArrayList<CoordGrid>()
@@ -982,656 +352,27 @@ class ZebakEncounter(raid: ToaRaid, room: ToaRoom, region: Region, controllerId:
                 tiles += tile
             }
         }
-        return shuffled(tiles)
+        return deps.random.shuffled(tiles)
     }
 
-    /**
-     * Around a random tile of the boulder area, one candidate per row within 6 rows (a tile with a
-     * free tile east of it, within 3 columns). 2 boulders in a team, 3 solo. `null` if none fit.
-     */
-    private fun boulderTiles(): List<CoordGrid>? {
-        val free = freeTiles(BOULDER_MIN, BOULDER_MAX, excludes = emptyList())
-        if (free.isEmpty()) return null
-        val freeSet = free.toHashSet()
-        val base = free[0]
-        val candidates = ArrayList<CoordGrid>()
-        for (dz in -BOULDER_ROWS..BOULDER_ROWS) {
-            val row = ArrayList<CoordGrid>()
-            for (dx in -BOULDER_COLUMNS..BOULDER_COLUMNS) {
-                val tile = base.translate(dx, dz)
-                if (tile in freeSet && tile.translate(1, 0) in freeSet && tile !in candidates) row += tile
-            }
-            if (row.isNotEmpty()) candidates += row[deps.random.of(maxExclusive = row.size)]
-        }
-        if (candidates.isEmpty()) return null
-        val count = if (teamSize > 1) BOULDERS_TEAM else BOULDERS_SOLO
-        return shuffled(candidates).take(count)
-    }
-
-    /**
-     * Offline_Scape getJugsSolveLocations: first one jug per boulder on a tile that lines up with it
-     * (so it can be pushed or pulled into it), then up to as many "decoy" jugs, 6-8 in total.
-     * `null` if not every boulder can get a jug. Offline_Scape's edge check used the area's
-     * south-west corner for both edges; the north and east edges are excluded here as intended.
-     */
-    private fun jugSolveTiles(boulders: List<CoordGrid>): List<CoordGrid>? {
-        val min = coords(GROUND_MIN)
-        val max = coords(GROUND_MAX)
-        val solving = ArrayList<CoordGrid>()
-        val decoys = ArrayList<CoordGrid>()
-        for (tile in freeTiles(GROUND_MIN, GROUND_MAX, excludes = boulders)) {
-            if (tile.x == min.x || tile.z == min.z || tile.x == max.x || tile.z == max.z) continue
-            var lines = false
-            for (boulder in shuffled(boulders)) {
-                val dx = boulder.x - tile.x
-                val dz = boulder.z - tile.z
-                val adx = abs(dx)
-                val adz = abs(dz)
-                if ((adx == 0 || dx > 0) && adz == 0) continue
-                if (adz < 2 && dx > -4 && dx < 0) continue
-                if (adx > 10 || adz > 10) continue
-                if (abs(adz - adx) < 2 || dx in -2..0 || adz <= 1) {
-                    lines = true
-                    break
-                }
-            }
-            if (lines) solving += tile else decoys += tile
-        }
-        if (solving.size < boulders.size) return null
-        val total = deps.random.of(JUGS_MIN, JUGS_MAX)
-        val picked = ArrayList(solving.take(boulders.size))
-        picked += decoys.take(min(total - picked.size, picked.size))
-        return picked
-    }
-
-    // -- Boulders --
-
-    private fun spawnBoulder(tile: CoordGrid) {
-        val boulder = addNpcAt(BOULDER, tile)
-        owners[boulder] = this
-        boulders[boulder] = deps.locRepo.add(tile, BOULDER_BLOCKER, Int.MAX_VALUE, LocAngle.West, LocShape.CentrepieceStraight)
-        deps.worldRepo.soundArea(tile, SYNTH_BOULDER_LAND, radius = BOULDER_SOUND_RADIUS)
-    }
-
-    /** Its death queue (ZebakScript), or cleanup. */
-    private fun removeBoulder(boulder: Npc) {
-        val loc = boulders.remove(boulder) ?: return
-        owners.remove(boulder)
-        deps.locRepo.del(loc, Int.MAX_VALUE)
-        if (boulder.isSlotAssigned) deps.npcRepo.del(boulder, Int.MAX_VALUE)
-    }
-
-    private fun removeBoulders() {
-        for (boulder in boulders.keys.toList()) removeBoulder(boulder)
-    }
-
-    // -- Jugs (Offline_Scape CrondisJug / JugPushAction) --
-
-    private fun spawnJug(tile: CoordGrid) {
-        val jug = addNpcAt(JUG, tile)
-        owners[jug] = this
-        jugs[jug] = JugState()
-    }
-
-    /**
-     * Push (away from the player) or Pull (towards them). The jug becomes the rolling jug npc and
-     * rolls a tile a tick ([jugTick]). Diagonal if the player stands diagonally to it.
-     */
-    private fun moveJug(player: Player, jug: Npc, push: Boolean) {
-        val state = jugs[jug] ?: return
-        if (state.dx != 0 || state.dz != 0) return
-        var dx = Integer.signum(jug.coords.x - player.coords.x)
-        var dz = Integer.signum(jug.coords.z - player.coords.z)
-        if (!push) {
-            dx = -dx
-            dz = -dz
-        }
-        if (dx == 0 && dz == 0) return
-        state.dx = dx
-        state.dz = dz
-        jug.transmog(npcType(JUG_ROLLING), Int.MAX_VALUE)
-        player.anim(SEQ_PLAYER_MOVE_JUG)
-    }
-
-    /**
-     * A rolling jug, once a tick (its config `timer = 1`). Offline_Scape: rolling into a boulder
-     * breaks it there; rolling off the floor (into the water) is a splash and it's gone, without
-     * clearing anything.
-     *
-     * Offline_Scape moved the jug onto the boulder's tile and broke it there; the boulder's tile
-     * blocks walking here, so it breaks beside it with the splash centred on the boulder, which
-     * clears the same tiles.
-     *
-     * TODO: the OSRS Wiki's changelog says jugs "roll two tiles further before stopping", so
-     * vanilla stops them after some distance. Offline_Scape rolls until something stops them.
-     */
-    private fun jugTick(jug: Npc) {
-        val state = jugs[jug] ?: return
-        if (state.dx == 0 && state.dz == 0) return
-        val next = jug.coords.translate(state.dx, state.dz)
-        val boulder = boulders.values.any { it.coords == next }
-        when {
-            boulder -> breakJug(jug, next)
-            deps.collision.isWalkBlocked(next) -> {
-                deps.worldRepo.spotanimMap(spotanim(SPOT_WATER_SPLASH), next)
-                removeJug(jug)
-            }
-            else -> jug.walk(next)
-        }
-    }
-
-    /**
-     * Offline_Scape CrondisJug.sendDeath: the jug bursts at [centre]; water flies to every acid
-     * tile within 2 (1 with Upset Stomach, so 5x5 or 3x3), which is cleared a tick later.
-     */
-    private fun breakJug(jug: Npc, centre: CoordGrid) {
-        if (jugs.remove(jug) == null) return
-        removeJug(jug)
-        deps.worldRepo.spotanimMap(spotanim(SPOT_JUG_BREAK), centre)
-        val range = if (raid.isActive(UPSET_STOMACH)) 1 else 2
-        val cleared = ArrayList<CoordGrid>()
-        for (dx in -range..range) {
-            for (dz in -range..range) {
-                val tile = centre.translate(dx, dz)
-                if (tile !in poison) continue
-                cleared += tile
-                deps.worldRepo.projAnim(ProjAnim.fromBoundsToCoord(Bounds(centre), tile, spotanimId(SPOT_JUG_SPLASH), PROJ_JUG_SPLASH))
-            }
-        }
-        if (cleared.isEmpty()) return
-        schedule(1) {
-            val splash = spotanim(SPOT_ACID_CLEARED)
-            for (tile in cleared) {
-                removePoison(tile)
-                deps.worldRepo.spotanimMap(splash, tile)
-            }
-        }
-    }
-
-    private fun removeJug(jug: Npc) {
-        jugs.remove(jug)
-        owners.remove(jug)
-        if (jug.isSlotAssigned) deps.npcRepo.del(jug, Int.MAX_VALUE)
-    }
-
-    private fun removeJugs() {
-        for (jug in jugs.keys.toList()) removeJug(jug)
-    }
-
-    private fun spotanim(name: String): SpotanimType = SpotanimType(spotanimId(name))
-
-    /** An `em_face_*` angle for facing along (dx, dz). */
-    private fun faceAngle(dx: Int, dz: Int): Int =
-        when {
-            dx == 0 && dz > 0 -> Constants.em_face_north
-            dx > 0 && dz > 0 -> Constants.em_face_northeast
-            dx > 0 && dz == 0 -> Constants.em_face_east
-            dx > 0 -> Constants.em_face_southeast
-            dx == 0 -> Constants.em_face_south
-            dz < 0 -> Constants.em_face_southwest
-            dz == 0 -> Constants.em_face_west
-            else -> Constants.em_face_northwest
-        }
-
-    // ---- Tidal Waves (Offline_Scape Zebak.landWaves) ----
-
-    /**
-     * One Tidal Waves special, a tick at a time (Offline_Scape's task, same tick numbers):
-     * - **0**: Zebak spits 16 acid pools and 6-8 jugs (placed at random); his next auto is 16 ticks
-     *   away.
-     * - **4**: he calls the waves (tail attack animation).
-     * - **5**: the acid and jugs land.
-     * - **6**: rocks fall into the water on the wave side, the camera shakes (reset at **8**).
-     * - **13, 20, 27**: a row of 21 waves sets off across the arena from the south or the north
-     *   edge (the side alternates between specials), with a gap to walk through: 3 tiles wide,
-     *   one narrower every two path levels (OSRS Wiki), at least 1. The second row's gap mirrors
-     *   the first; the third is random again.
-     * - **47**: over.
-     */
-    private inner class TidalWaves {
-        private var ticks = -1
-        private var jugTiles: List<CoordGrid> = emptyList()
-        private var acidTiles: List<CoordGrid> = emptyList()
-
-        /** Offline_Scape `waveSkipX`: the previous row's gap, or -1 for a fresh random one. */
-        private var lastGap = -1
-
-        private val fromSouth = wavesFromSouth
-
-        fun step(): Boolean {
-            val boss = zebak ?: return false
-            if (boss.hitpoints <= 0) return false
-            ticks++
-            when (ticks) {
-                0 -> launch(boss)
-                WAVES_CALL_TICK -> {
-                    boss.anim(SEQ_CALL_WAVES)
-                    tail?.anim(SEQ_TAIL_CALL_WAVES)
-                }
-                WAVES_LAND_TICK -> if (!land()) return false
-                WAVES_ROCKS_TICK -> if (!rocksFall()) return false
-                WAVES_CAMERA_RESET_TICK -> {
-                    val targets = targets()
-                    if (targets.isEmpty()) return false
-                    for (player in targets) Camera.camShakeResetAll(player)
-                }
-                in WAVE_ROW_TICKS -> spawnRow()
-                WAVES_END_TICK -> {
-                    wavesFromSouth = !wavesFromSouth
-                    return false
-                }
-            }
-            return true
-        }
-
-        private fun launch(boss: Npc) {
-            boss.anim(SEQ_RANGED)
-            tail?.resetAnim()
-            attackCountdown = WAVES_NEXT_ATTACK
-            jugTiles = freeTiles(GROUND_MIN, GROUND_MAX, excludes = emptyList()).take(deps.random.of(JUGS_MIN, JUGS_MAX))
-            acidTiles = freeTiles(GROUND_MIN, GROUND_MAX, excludes = emptyList()).take(WAVES_ACID_POOLS)
-            val mouth = coords(PROJECTILE_START)
-            for (tile in acidTiles) lob(SPOT_ACID, mouth, tile)
-            for (tile in jugTiles) lob(SPOT_JUG, mouth, tile)
-        }
-
-        private fun land(): Boolean {
-            val targets = targets()
-            if (targets.isEmpty()) return false
-            landAcid(acidTiles)
-            landJugs(jugTiles, targets)
-            return true
-        }
-
-        private fun rocksFall(): Boolean {
-            val targets = targets()
-            if (targets.isEmpty()) return false
-            for (player in targets) {
-                for ((synth, delay) in WAVES_LAND_SOUNDS) player.soundSynth(synth, delay = delay)
-            }
-            val base = coords(if (fromSouth) WAVE_SOUTH_BASE else WAVE_NORTH_BASE)
-            val splash = spotanim(SPOT_WATER_SPLASH)
-            val rocks = spotanim(SPOT_ROCK_FALL)
-            for (i in 0 until WAVE_ROCK_SPOTS) {
-                val tile = base.translate(i * WAVE_ROCK_SPACING, 0)
-                deps.worldRepo.spotanimMap(splash, tile, delay = WAVE_SPLASH_DELAY)
-                deps.worldRepo.spotanimMap(rocks, tile)
-            }
-            for (player in targets) {
-                // Offline_Scape CameraShakeType LEFT_AND_RIGHT 7, UP_AND_DOWN 6, FRONT_AND_BACK 7.
-                Camera.camShakeResetAll(player)
-                Camera.camShake(player, CamShakeAxis.LEFT_RIGHT, random = 7, amplitude = 0, rate = 0)
-                Camera.camShake(player, CamShakeAxis.UP_DOWN, random = 6, amplitude = 0, rate = 0)
-                Camera.camShake(player, CamShakeAxis.FORWARDS_BACKWARDS, random = 7, amplitude = 0, rate = 0)
-                player.soundSynth(SYNTH_RUMBLING)
-            }
-            return true
-        }
-
-        private fun spawnRow() {
-            val base = coords(if (fromSouth) WAVE_SOUTH_BASE else WAVE_NORTH_BASE)
-            val gap = if (lastGap == -1) deps.random.of(0, WAVE_GAP_RANGE) else WAVE_GAP_RANGE - lastGap
-            val pathLevel = raid.pathLevels[ToaPath.CRONDIS.ordinal]
-            val gapWidth = WAVE_GAP_WIDTH - min(2, pathLevel / 2)
-            val dz = if (fromSouth) 1 else -1
-            for (x in 0 until WAVE_ROW_LENGTH) {
-                // The first 4 columns (by Zebak) never have the gap; it grows away from the middle.
-                if (x >= WAVE_SOLID_COLUMNS) {
-                    val column = x - WAVE_SOLID_COLUMNS
-                    val inGap = (0 until gapWidth).any { hole -> column == gap + if (gap < WAVE_GAP_RANGE / 2) hole else -hole }
-                    if (inGap) continue
-                }
-                spawnWave(base.translate(x, 0), dz)
-            }
-            lastGap = if (lastGap == -1) gap else -1
-        }
-    }
-
-    /** Acid landing from a special: a splat sound and a spreading pool (Offline_Scape spawnBasePoison). */
-    private fun landAcid(tiles: List<CoordGrid>) {
-        for (tile in tiles) {
-            deps.worldRepo.soundArea(tile, SYNTH_ACID_LAND, radius = ROAR_SOUND_RADIUS)
-            addPoison(tile, spread = true, guaranteed = false)
-        }
-    }
-
-    /** Jugs landing from a special; anyone underneath takes 2-5 (Offline_Scape spawnJugs). */
-    private fun landJugs(tiles: List<CoordGrid>, targets: List<Player>) {
-        val dust = spotanim(SPOT_ROAR_DUST)
-        for (tile in tiles) {
-            spawnJug(tile)
-            deps.worldRepo.spotanimMap(dust, tile)
-            for (player in targets) {
-                if (player.coords == tile) hitTypeless(player, deps.random.of(LANDING_MIN, LANDING_MAX))
-            }
-        }
-    }
-
-    // -- Waves (Offline_Scape WaveNPC) --
-
-    private fun spawnWave(tile: CoordGrid, dz: Int) {
-        val wave = addNpcAt(WAVE, tile)
-        owners[wave] = this
-        waves[wave] = WaveState(dz, WAVE_LIFETIME)
-    }
-
-    /**
-     * A wave, once a tick (config `timer = 1`), Offline_Scape WaveNPC.processNPC. It lives 23 ticks
-     * and moves a tile a tick. On its tile: players are washed along (and maybe into the water),
-     * acid is washed away 1 time in 4, blood clouds are destroyed (the wave turns bloody). A jug two
-     * tiles ahead is set rolling the same way.
-     */
-    private fun waveTick(wave: Npc) {
-        val state = waves[wave] ?: return
-        if (stage != ToaStage.STARTED || --state.ticksLeft <= 0) {
-            removeWave(wave)
-            return
-        }
-        val here = wave.coords
-        for (player in targets()) {
-            if (player.coords == here) washPlayer(player, state.dz)
-        }
-        val next = here.translate(0, state.dz)
-        val ahead = next.translate(0, state.dz)
-        for ((jug, jugState) in jugs) {
-            if (jug.coords != ahead) continue
-            if (jugState.dx == 0 && jugState.dz == 0) jug.transmog(npcType(JUG_ROLLING), Int.MAX_VALUE)
-            jugState.dx = 0
-            jugState.dz = state.dz
-        }
-        if (here in poison && deps.random.of(0, 3) == 0) removePoison(here)
-        val hitClouds = clouds.keys.filter { it.coords == here }
-        if (hitClouds.isNotEmpty()) {
-            for (cloud in hitClouds) removeCloud(cloud)
-            wave.transmog(npcType(WAVE_BLOODY), Int.MAX_VALUE)
-        }
-        moveOneTile(wave, next)
-    }
-
-    /**
-     * Offline_Scape moved waves without collision. Walking keeps the movement smooth; where the step
-     * is blocked (by Zebak's blocker, or the arena edge) it jumps instead, so a wave is never stuck.
-     */
-    private fun moveOneTile(npc: Npc, next: CoordGrid) {
-        val from = npc.coords
-        val open = steps.canTravel(from.level, from.x, from.z, next.x - from.x, next.z - from.z)
-        if (open) npc.walk(next) else npc.teleport(deps.collision, next)
-    }
-
-    private fun removeWave(wave: Npc) {
-        waves.remove(wave)
-        owners.remove(wave)
-        if (wave.isSlotAssigned) deps.npcRepo.del(wave, Int.MAX_VALUE)
-    }
-
-    private fun removeWaves() {
-        for (wave in waves.keys.toList()) removeWave(wave)
-    }
-
-    /**
-     * Offline_Scape pushPlayer(scream = false): up to 4 tiles along the wave while each step is
-     * possible. If the edge stops them, they're thrown into the water instead: the tile
-     * (5 - steps taken) further on, if it's walkable, and they start swimming. Damage: OSRS Wiki
-     * 6-10, scaled by invocation (Offline_Scape: 8-18 scaled).
-     */
-    private fun washPlayer(player: Player, dz: Int) {
-        var dest = player.coords
-        var intoWater = false
-        for (i in 0 until WAVE_PUSH_TILES) {
-            if (canStep(dest, 0, dz)) {
-                dest = dest.translate(0, dz)
-                continue
-            }
-            val water = dest.translate(0, dz * (WAVE_WATER_JUMP - i))
-            if (!deps.collision.isWalkBlocked(water)) {
-                dest = water
-                intoWater = true
-            }
-            break
-        }
-        movePushed(player, dest, facing = if (dz > 0) Direction.South else Direction.North, synth = SYNTH_WAVE_HIT)
-        hitTypeless(player, deps.random.of(maxHit(WAVE_MIN_DAMAGE), maxHit(WAVE_MAX_DAMAGE)))
-        if (intoWater) startSwimming(player)
-    }
-
-    // -- Swimming --
-
-    /** Players in the water, until they climb the rock steps out (or leave, die, the room ends). */
-    private val swimmers = HashSet<Player>()
-
-    fun isSwimming(player: Player): Boolean = player in swimmers
-
-    /** Offline_Scape: the swim render animation (773 ready, 772 moving) and silent running. */
-    private fun startSwimming(player: Player) {
-        if (!swimmers.add(player)) return
-        player.bas = swimBas
-        player.rebuildAppearance()
-    }
-
-    private fun stopSwimming(player: Player) {
-        if (!swimmers.remove(player)) return
-        player.bas = null
-        player.rebuildAppearance()
-    }
-
-    private fun stopAllSwimming() {
-        for (player in swimmers.toList()) stopSwimming(player)
-    }
-
-    /**
-     * Offline_Scape RockStepsAction: out of the water onto the tile beside the steps (north for
-     * angle 0, else south).
-     */
-    @OptIn(InternalApi::class)
-    private fun climbOut(player: Player, rock: CoordGrid, angleId: Int) {
-        if (!isSwimming(player)) {
-            player.mes("The eyes looking at you from below the surface make you reconsider going down there.")
-            return
-        }
-        val dest = rock.translate(0, if (angleId == 0) 1 else -1)
-        stopSwimming(player)
-        deps.launcher.launchLenient(player) { telejump(dest, TeleportType.Exempt) }
-        player.mes("You use the steps to get yourself back onto the island.")
-    }
-
-    // -- Water crocodiles (Offline_Scape WaterCrocodile) --
-
-    private val crocBiteCountdown = HashMap<Npc, Int>()
-
-    /**
-     * Once a tick (config `timer = 1`): each crocodile swims after the nearest swimmer within 16
-     * tiles and, every 2 ticks, bites one it's next to for 0-3.
-     */
-    private fun crocTick(croc: Npc) {
-        if (stage != ToaStage.STARTED || (zebak?.hitpoints ?: 0) <= 0) return
-        val target =
-            targets().filter { it in swimmers }.minByOrNull { chebyshev(it.coords, croc.coords) }
-                ?.takeIf { chebyshev(it.coords, croc.coords) < CROC_HUNT_RANGE }
-        if (target != null && !inMeleeRange(croc, target)) croc.walk(target.coords)
-        val countdown = (crocBiteCountdown[croc] ?: CROC_BITE_RATE) - 1
-        if (countdown > 0) {
-            crocBiteCountdown[croc] = countdown
-            return
-        }
-        crocBiteCountdown[croc] = CROC_BITE_RATE
-        if (target != null && inMeleeRange(croc, target)) {
-            croc.facePlayer(target)
-            target.queueHit(croc, 1, HitType.Typeless, deps.random.of(0, CROC_MAX_BITE), NoopPlayerHitModifier)
-        }
-    }
-
-    // -- Shared --
-
-    private val steps by lazy { StepValidator(deps.collision) }
-
-    private fun canStep(from: CoordGrid, dx: Int, dz: Int): Boolean =
+    /** One step, walls between tiles included (Offline_Scape checkWalkStep). */
+    internal fun canStep(from: CoordGrid, dx: Int, dz: Int): Boolean =
         steps.canTravel(from.level, from.x, from.z, dx, dz)
 
-    /** Moves a pushed player (if they moved), faces them, and plays the push animation and sound. */
+    /** Offline_Scape's knockbacks: move if [dest] differs, face [facing], push anim and [synth]. */
     @OptIn(InternalApi::class)
-    private fun movePushed(player: Player, dest: CoordGrid, facing: Direction, synth: String) {
+    internal fun pushPlayer(player: Player, dest: CoordGrid, facing: Direction, synth: String) {
         val moved = dest != player.coords
         if (!moved) player.abortRoute()
         deps.launcher.launchLenient(player) {
             if (moved) telejump(dest, TeleportType.Exempt)
             player.faceDirection(facing)
-            anim(SEQ_PLAYER_PUSHED)
+            anim(ZebakSeqs.PLAYER_PUSHED)
         }
         player.soundSynth(synth)
     }
 
-    // ---- Zebak taking damage ----
-
-    /**
-     * Every hit on Zebak (ZebakScript's onNpcHit): the damage sound (capture: area sound 6590,
-     * radius 10, at his centre), the bar, the special thresholds and the enrage.
-     */
-    private fun zebakHit(boss: Npc, hit: Hit) {
-        if (stage != ToaStage.STARTED || boss !== zebak) return
-        if (hit.damage > 0) {
-            deps.worldRepo.soundArea(coords(ZEBAK_CENTRE), SYNTH_ZEBAK_DAMAGED, radius = DAMAGED_SOUND_RADIUS)
-        }
-        for (player in players) updateBar(player)
-        if (enraged || boss.hitpoints <= 0) return
-
-        // Offline_Scape setHitpoints: at most one special queued per hit.
-        val max = boss.baseHitpointsLvl
-        if (specialsTriggered < SPECIAL_THRESHOLDS.size &&
-            boss.hitpoints <= max * SPECIAL_THRESHOLDS[specialsTriggered]
-        ) {
-            specialsTriggered++
-            specialsQueued++
-        }
-        if (boss.hitpoints <= max * ENRAGE_THRESHOLD) enrage(boss)
-    }
-
-    /**
-     * OSRS Wiki: at ~25% Zebak becomes enraged (npc toa_zebak_enraged, the enraged attack
-     * animations) and attacks much faster. Offline_Scape: attack speed -3 (min 2), no more specials,
-     * blood magic every 8 cycles, and a sound. Offline_Scape didn't change the npc.
-     */
-    private fun enrage(boss: Npc) {
-        enraged = true
-        attackCountdown = min(attackCountdown, attackSpeed)
-        boss.transmog(npcType(ZEBAK_ENRAGED), Int.MAX_VALUE)
-        for (player in targets()) player.soundSynth(SYNTH_FINAL_PHASE)
-    }
-
-    // ---- Boss bar ----
-
-    private fun openBar(player: Player) {
-        val npc = zebak ?: return
-        deps.bossHpBar.onOpen(player, npc)
-        updateBar(player)
-    }
-
-    private fun updateBar(player: Player) {
-        val npc = zebak ?: return
-        deps.bossHpBar.onUpdate(player, npc)
-    }
-
-    private fun closeBar(player: Player) {
-        val npc = zebak ?: return
-        deps.bossHpBar.onClose(player, npc, instant = true)
-    }
-
-    // ---- Helpers ----
-
-    private fun addLoc(type: String, static: CoordGrid) {
-        deps.locRepo.add(coords(static), type, Int.MAX_VALUE, LocAngle.West, LocShape.CentrepieceStraight)
-    }
-
-    private fun spotanimId(name: String): Int = name.asRSCM(RSCMType.SPOTANIM)
-
-    private fun chebyshev(a: CoordGrid, b: CoordGrid): Int = max(abs(a.x - b.x), abs(a.z - b.z))
-
-    /** Fisher-Yates through GameRandom (no `shuffled()`: randomness must go through deps.random). */
-    private fun <T> shuffled(list: List<T>): List<T> {
-        val copy = list.toMutableList()
-        for (i in copy.lastIndex downTo 1) {
-            val j = deps.random.of(maxExclusive = i + 1)
-            val swap = copy[i]
-            copy[i] = copy[j]
-            copy[j] = swap
-        }
-        return copy
-    }
-
     companion object {
-        const val ZEBAK = "npc.toa_zebak"
-        const val ZEBAK_ENRAGED = "npc.toa_zebak_enraged"
-        const val BLOOD_CLOUD = "npc.toa_zebak_blood_cloud"
-        const val BLOOD_CLOUD_SMALL = "npc.toa_zebak_blood_cloud_small"
-        private const val ZEBAK_TAIL = "npc.toa_zebak_tail"
-        private const val ZEBAK_DEAD = "npc.toa_zebak_dead"
-        private const val ZEBAK_TAIL_DEAD = "npc.toa_zebak_tail_dead"
-        const val WATER_CROC = "npc.toa_zebak_watercroc"
-        private const val SPLIT_HELPER = "npc.spotanim_zebak_ranged01_npc" // 11744
-        const val JUG = "npc.toa_zebak_jug" // 11735: Push, Pull, Hit
-        const val JUG_ROLLING = "npc.toa_zebak_jug_rolling" // 11736: Attack
-        const val BOULDER = "npc.toa_zebak_safespot" // 11737
-        const val WAVE = "npc.toa_zebak_wave" // 11738
-        const val WAVE_BLOODY = "npc.toa_zebak_wave_bloody" // 11739
-        const val CLIMBING_ROCK = "loc.toa_zebak_climbing_rock" // 45509, "Climb-up"
-        private const val BOULDER_BLOCKER = "loc.invisible_type8_blocking_active" // 43876
-
-        private const val BLOCKER = "loc.invisible_type8_blocking_size9" // 3192
-        private val POISON_LOCS =
-            listOf(
-                "loc.toa_zebak_vomit01",
-                "loc.toa_zebak_vomit02",
-                "loc.toa_zebak_vomit03",
-                "loc.toa_zebak_vomit04",
-                "loc.toa_zebak_vomit05",
-                "loc.toa_zebak_vomit06",
-            )
-
-        // Invocation names (cache struct param 1160).
-        private const val NOT_JUST_A_HEAD = "Not Just a Head"
-        private const val ARTERIAL_SPRAY = "Arterial Spray"
-        private const val BLOOD_THINNERS = "Blood Thinners"
-        private const val UPSET_STOMACH = "Upset Stomach"
-
-        // -- Coordinates (static) --
-        private val ZEBAK_TILE = CoordGrid(3918, 5404, 0)
-        private val TAIL_TILE = CoordGrid(3909, 5403, 0)
-        private val ZEBAK_CENTRE = CoordGrid(3922, 5408, 0)
-
-        /** Offline_Scape ZEBAK_MIDDLE_LOC: where roar sounds and dust ripples come from. */
-        private val ZEBAK_MIDDLE = CoordGrid(3926, 5408, 0)
-
-        /** Offline_Scape GROUND_MIN/MAX_LOCATION: the arena floor (acid, jugs, roar dust). */
-        private val GROUND_MIN = CoordGrid(3926, 5398, 0)
-        private val GROUND_MAX = CoordGrid(3942, 5418, 0)
-
-        /** Offline_Scape BOULDER_MIN/MAX_LOCATION. */
-        private val BOULDER_MIN = CoordGrid(3925, 5401, 0)
-        private val BOULDER_MAX = CoordGrid(3935, 5415, 0)
-        private val SPLIT_HELPER_TILE = CoordGrid(3930, 5405, 0)
-        private val PROJECTILE_START = CoordGrid(3925, 5408, 0)
-        private val PROJECTILE_BASE = CoordGrid(3933, 5408, 0)
-        private val BLOOD_SPELL_TILES = listOf(CoordGrid(3924, 5406, 0), CoordGrid(3925, 5410, 0))
-
-        /** Offline_Scape BLOOD_CLOUD_LOCATIONS: north side, south side. */
-        private val BLOOD_CLOUD_TILES = listOf(CoordGrid(3931, 5413, 0), CoordGrid(3934, 5401, 0))
-
-        /**
-         * Capture (low confidence). Offline_Scape: (3919,5403), (3921,5418), (3934,5423),
-         * (3936,5394), (3936,5395), (3938,5420), (3948,5408) x2.
-         */
-        private val WATER_CROC_TILES =
-            listOf(
-                CoordGrid(3948, 5408, 0),
-                CoordGrid(3948, 5408, 0),
-                CoordGrid(3935, 5422, 0),
-                CoordGrid(3934, 5420, 0),
-                CoordGrid(3921, 5418, 0),
-                CoordGrid(3937, 5396, 0),
-                CoordGrid(3937, 5395, 0),
-                CoordGrid(3919, 5403, 0),
-            )
-
-        // -- Scaling --
         private const val RAID_LEVEL_FACTOR = 0.004
         private const val TEAM_HP_FIRST = 0.9
         private const val TEAM_HP_REST = 0.6
@@ -1639,230 +380,21 @@ class ZebakEncounter(raid: ToaRaid, room: ToaRoom, region: Region, controllerId:
         private const val PATH_LEVEL_EACH = 0.05
         private const val MAX_DAMAGE_FACTOR = 2.5
 
-        // -- Timing --
         private const val BASE_ATTACK_SPEED = 7
         private const val MIN_ATTACK_SPEED = 2
         private const val ENRAGE_SPEEDUP = 3
 
-        /** Capture: the first attack is 10 ticks after "Challenge started" (Offline_Scape: 7). */
+        /** Capture: first attack 10 ticks after "Challenge started" (Offline_Scape: 7). */
         private const val FIRST_ATTACK_DELAY = 10
-
-        /** Capture: the magic/ranged split is at T+4. */
-        private const val SPLIT_DELAY = 4
-
-        /** Queued at T+4, lands T+8. */
-        private const val SPLIT_HIT_DELAY = 5
-
-        /** Lands T+1. */
-        private const val MELEE_HIT_DELAY = 2
-
-        /** Capture: helper npc 11744 from T+4 to T+7. */
-        private const val SPLIT_HELPER_TICKS = 3
-
-        /** Offline_Scape MAGE/RANGE_BREAK_GFX height. */
-        private const val SPLIT_HEIGHT = 750
         private const val DEATH_MODEL_DELAY = 3
+        private const val DAMAGED_SOUND_RADIUS = 10
+        private const val SCRIPT_SEQ_PREFETCH = 1846
 
-        // -- Damage (bases, before damageFactor) --
-        private const val MELEE_MAX_HIT = 38
-        private const val RANGED_MAGIC_MAX_HIT = 16
-        private const val BLEED_TICKS = 10
-        private const val BLEED_BASE_DAMAGE = 5
-        private const val BLEED_DAMAGE_SPREAD = 7
-        private const val POISON_MIN = 5
-        private const val POISON_MAX = 10
-        private const val POISON_SPREAD = 10
-
-        // -- Blood magic --
-        private const val BLOOD_SPELL_EVERY = 6
-        private const val BLOOD_SPELL_EVERY_ENRAGED = 8
-        private const val BLOOD_SPELL_DELAY = 2
-        private const val BARRAGE_BASE_DAMAGE = 7
-        private const val BARRAGE_DAMAGE_SPREAD = 7
-        private const val BARRAGE_HEAL_RATIO = 0.66
-        private const val CLOUD_START_DELAY = 4
-        private const val CLOUD_LEECH = 2
-        private const val PROTECT_FROM_MAGIC = "varbit.prayer_protectfrommagic"
-
-        // -- Great Roar (Offline_Scape shootJugs; tick numbers from its task) --
-        private const val ROAR_LAND_TICK = 5
-        private const val ROAR_SCREAM_TICK = 33
-        private val ROAR_WAVE_TICKS = intArrayOf(36, 38, 40)
-        private const val ROAR_END_TICK = 49
-
-        /** Offline_Scape set attackSpeed = 10 for the roar (and, by mistake, for good). */
-        private const val ROAR_ATTACK_SPEED = 10
-        private const val ROAR_NEXT_ATTACK = 11
-        private const val ROAR_ACID_POOLS = 6
-
-        /** The acid 2 tiles behind (east of) each boulder. */
-        private const val BOULDER_ACID_DX = 2
-        private const val BOULDER_ROWS = 6
-        private const val BOULDER_COLUMNS = 3
-        private const val BOULDERS_TEAM = 2
-        private const val BOULDERS_SOLO = 3
-        private const val BOULDER_ROAR_DAMAGE = 50
-        private const val JUGS_MIN = 6
-        private const val JUGS_MAX = 8
-
-        /** OSRS Wiki: safe within 3 tiles behind the stones. */
-        private const val SAFE_STRIP_LENGTH = 3
-        private const val ROAR_PUSH_TILES = 2
-        private const val ROAR_BASE_DAMAGE = 20
-        private const val ROAR_DAMAGE_SPREAD = 10
-        private const val LANDING_MIN = 2
-        private const val LANDING_MAX = 5
-        private const val KNOCK_OFF_CYCLES = 30
-        private const val ROAR_SOUND_RADIUS = 15
-        private const val BOULDER_SOUND_RADIUS = 5
-
-        // -- Tidal Waves (Offline_Scape landWaves; tick numbers from its task) --
-        private const val WAVES_CALL_TICK = 4
-        private const val WAVES_LAND_TICK = 5
-        private const val WAVES_ROCKS_TICK = 6
-        private const val WAVES_CAMERA_RESET_TICK = 8
-        private val WAVE_ROW_TICKS = intArrayOf(13, 20, 27)
-        private const val WAVES_END_TICK = 47
-        private const val WAVES_NEXT_ATTACK = 16
-        private const val WAVES_ACID_POOLS = 16
-
-        /** Offline_Scape BASE_WAVE_SOUTH/NORTH_LOC: the west end of each wave row. */
-        private val WAVE_SOUTH_BASE = CoordGrid(3923, 5397, 0)
-        private val WAVE_NORTH_BASE = CoordGrid(3923, 5419, 0)
-        private const val WAVE_ROW_LENGTH = 21
-        private const val WAVE_SOLID_COLUMNS = 4
-        private const val WAVE_GAP_RANGE = 12
-        private const val WAVE_GAP_WIDTH = 3
-        private const val WAVE_LIFETIME = 23
-        private const val WAVE_ROCK_SPOTS = 7
-        private const val WAVE_ROCK_SPACING = 3
-        private const val WAVE_SPLASH_DELAY = 200
-        private const val WAVE_PUSH_TILES = 4
-        private const val WAVE_WATER_JUMP = 5
-        private const val WAVE_MIN_DAMAGE = 6
-        private const val WAVE_MAX_DAMAGE = 10
-        private const val CROC_HUNT_RANGE = 16
-        private const val CROC_BITE_RATE = 2
-        private const val CROC_MAX_BITE = 3
-
-        /** OSRS Wiki: specials queued at 85, 70, 55 and 40%; enraged at ~25%. */
         private val SPECIAL_THRESHOLDS = doubleArrayOf(0.85, 0.70, 0.55, 0.40)
         private const val ENRAGE_THRESHOLD = 0.25
 
-        // -- Animations (cache names; Offline_Scape ids in comments) --
-        private const val SEQ_MELEE = "seq.npc_zebak01_attack_melee" // 9620
-        private const val SEQ_TAIL_MELEE = "seq.npc_zebak02_attack_melee" // 9621
-        private const val SEQ_MELEE_ENRAGED = "seq.npc_zebak01_attack_melee_enraged" // 9622
-        private const val SEQ_TAIL_MELEE_ENRAGED = "seq.npc_zebak02_attack_melee_enraged" // 9623
-        private const val SEQ_RANGED = "seq.npc_zebak01_attack_ranged" // 9624
-        private const val SEQ_TAIL_RANGED = "seq.npc_zebak02_attack_ranged" // 9625
-        private const val SEQ_RANGED_ENRAGED = "seq.npc_zebak01_attack_ranged_enraged" // 9626
-        private const val SEQ_TAIL_RANGED_ENRAGED = "seq.npc_zebak02_attack_ranged_enraged" // 9627
-        private const val SEQ_ROAR = "seq.npc_zebak01_attack_roar" // 9628
-        private const val SEQ_TAIL_ROAR = "seq.npc_zebak02_attack_roar" // 9629
-        private const val SEQ_PLAYER_PUSHED = "seq.warguild_parry_defend" // 4177
-        private const val SEQ_PLAYER_KNOCKED = "seq.agilityarena_player_spikedback" // 1114
-        private const val SEQ_PLAYER_MOVE_JUG = "seq.human_leverdown" // 834
-        private const val SEQ_CALL_WAVES = "seq.npc_zebak01_attack_tail" // 9630
-        private const val SEQ_TAIL_CALL_WAVES = "seq.npc_zebak02_attack_tail" // 9631
-        private const val SEQ_SWIM_READY = "seq.human_swim_ready" // 773
-        private const val SEQ_SWIM = "seq.human_swim" // 772
-        private const val SEQ_DEATH = "seq.npc_zebak01_death" // 9634
-        private const val SEQ_TAIL_DEATH = "seq.npc_zebak02_death" // 9635
+        // ---- Event routing (ZebakScript, ZebakSwimAttackHook) ----
 
-        // -- Spotanims (names from osrs-dumps config/dump.spot) --
-        private const val SPOT_MAGE_INITIAL = "spotanim.zebak_mage_projanim_initial" // 2176
-        private const val SPOT_RANGE_INITIAL = "spotanim.zebak_range_projanim_initial" // 2178
-        private const val SPOT_MAGE_SPLIT = "spotanim.zebak_mage_split" // 2186
-        private const val SPOT_RANGE_SPLIT = "spotanim.zebak_ranged_split" // 2185
-        private const val SPOT_MAGE_FRAGMENT = "spotanim.zebak_mage_projanim_split" // 2181
-        private const val SPOT_RANGE_FRAGMENT = "spotanim.zebak_ranged_fragment01" // 2187
-        private const val SPOT_MAGE_IMPACT = "spotanim.fireblast_impact" // 131
-        private const val SPOT_RANGE_IMPACT = "spotanim.darkbow_smoke_arrow_impact" // 1103
-        private const val SPOT_BLOOD_BARRAGE = "spotanim.spell_blood_barrage_impact" // 377
-        private const val SPOT_POISON_SPREAD = "spotanim.zebak_vomit_projectile0" // 2194
-        private const val SPOT_ACID = "spotanim.tob_xarpus_acidspit" // 1555
-        private const val SPOT_BOULDER = "spotanim.zebak_safespot_travel" // 2172
-        private const val SPOT_JUG = "spotanim.zebak_waterjug_travel" // 2173
-        private const val SPOT_ROAR_DUST = "spotanim.zebak_roar_wave_dust" // 2184
-        private const val SPOT_JUG_BREAK = "spotanim.zebak_waterjug_break" // 2192
-        private const val SPOT_JUG_SPLASH = "spotanim.zebak_waterjug_splash_travel" // 2193
-        private const val SPOT_ACID_CLEARED = "spotanim.waterstrike_impact" // 95
-        private const val SPOT_WATER_SPLASH = "spotanim.watersplash" // 68
-        private const val SPOT_ROCK_FALL = "spotanim.zebak_rock_fall" // 2195
-
-        // -- Projectile types (pack/.../configs/toa_zebak.toml) --
-        private const val PROJ_INITIAL = "projanim.toa_zebak_initial"
-        private const val PROJ_SPLIT = "projanim.toa_zebak_split"
-        private const val PROJ_POISON_SPREAD = "projanim.toa_zebak_poison_spread"
-        private const val PROJ_LOB = "projanim.toa_zebak_lob"
-        private const val PROJ_JUG_SPLASH = "projanim.toa_zebak_jug_splash"
-
-        // -- Sounds. Names declared in the module's gamevals.toml (the cache has none); they are
-        // the labels from the cache dbtable synth_zabakboss. Offline_Scape ids in comments. --
-        private const val SYNTH_MAGE_SHOOT = "synth.toa_zebak_red_projectile_04" // 5823
-        private const val SYNTH_RANGE_SHOOT = "synth.toa_zebak_whoosh_projectile_02" // 5819
-        private const val SYNTH_MAGE_SPLIT = "synth.toa_zebak_redirected_jug_break_01" // 5878
-        private const val SYNTH_RANGE_SPLIT = "synth.toa_zebak_redirected_projectile_02" // 5896
-        private const val SYNTH_PROJECTILE_IMPACT = "synth.toa_zebak_projectile_impact_01" // 5884
-
-        /** Capture: area sound when Zebak takes damage (loops 1, radius 10, at his centre). */
-        private const val SYNTH_ZEBAK_DAMAGED = "synth.toa_zebak_defend_01" // 6590
-        private const val DAMAGED_SOUND_RADIUS = 10
-
-        /** Offline_Scape FINAL_PHASE_SOUND. */
-        private const val SYNTH_FINAL_PHASE = "synth.fi_trollking_roar" // 3405
-
-        /** Offline_Scape BLOOD_BARRAGE_IMPACT_SOUND; already named in .data/gamevals/synth.rscm. */
-        private const val SYNTH_BLOOD_BARRAGE = "synth.blood_barrage_impact" // 102
-
-        // Great Roar (Offline_Scape JUGS_SHOOT, BASE_POISON_LAND, BOULDER_LAND, PLAYER_PUSHED).
-        private const val SYNTH_JUGS_SHOOT = "synth.toa_zebak_vomit_colours_projectile_10" // 5908
-        private const val SYNTH_ACID_LAND = "synth.toa_zebak_vomit_colours_projectile_splat_03" // 5909
-        private const val SYNTH_BOULDER_LAND = "synth.toa_zebak_debris_impact_01" // 5913
-        private const val SYNTH_PLAYER_PUSHED = "synth.toa_zebak_roar_single_tremor_03" // 5888
-
-        // Tidal Waves (Offline_Scape WAVES_LAND_SOUNDS, RUMBLING_SOUND, WAVE_HIT_SOUND).
-        private const val SYNTH_RUMBLING = "synth.rumbling" // 1678
-        private const val SYNTH_WAVE_HIT = "synth.toa_zebak_death_second_floor_hit_01" // 5868
-
-        /** Offline_Scape WAVES_LAND_SOUNDS: (synth, delay). */
-        private val WAVES_LAND_SOUNDS =
-            listOf(
-                "synth.toa_zebak_falling_rocks_sweep_01" to 0, // 5882
-                "synth.toa_zebak_fallling_rocks_water_impact_01" to 200, // 5843
-                "synth.toa_zebak_tidal_wave_7600ms_01" to 200, // 5852
-                "synth.toa_zebak_tidal_wave_7600ms_01" to 530,
-                "synth.toa_zebak_tidal_wave_7600ms_01" to 920,
-            )
-
-        /** Offline_Scape SCREAM_SOUNDS: (synth, delay). */
-        private val SCREAM_SOUNDS =
-            listOf(
-                "synth.toa_zebak_attack_hand_stomp_first_01" to 16, // 5860
-                "synth.toa_zebak_attack_roar_05" to 20, // 5836
-                "synth.toa_zebak_attack_hand_stomp_01" to 32, // 5845
-                "synth.toa_zebak_attack_roar_high_02" to 69, // 5904
-                "synth.toa_zebak_attack_roar_bass_02" to 70, // 5838
-                "synth.toa_zebak_attack_hand_stomp_final_01" to 79, // 5851
-                "synth.toa_zebak_attack_jaw_shut_01" to 260, // 5863
-            )
-
-        private const val SPLIT_SOUND_DELAY = 120
-        private const val IMPACT_SOUND_DELAY = 90
-
-        /** Capture: music track 736 from the challenge start. */
-        private const val MIDI_TOA_BOSS_ZEBAK = 736
-
-        private const val SCRIPT_SEQ_PREFETCH = 1846
-        private val PRELOAD_SEQS: List<Int> = (9618..9646).toList() + listOf(9532, 9533, 9534, 9541)
-
-        /** Blood clouds decay by themselves; no prayer or defence applies. */
-        private val NOOP_NPC_MODIFIER = NpcHitModifier {}
-
-        private fun npcType(name: String) = ServerCacheManager.getNpc(name.asRSCM(RSCMType.NPC))!!
-
-        /** Zebak and his clouds -> their room, for ZebakScript's handlers. */
         private val owners = HashMap<Npc, ZebakEncounter>()
 
         private fun roomOf(npc: Npc): ZebakEncounter? {
@@ -1874,91 +406,73 @@ class ZebakEncounter(raid: ToaRaid, room: ToaRoom, region: Region, controllerId:
             return room
         }
 
-        /** ZebakScript's onNpcHit for Zebak (both his types). */
-        fun onZebakHit(npc: Npc, hit: Hit) {
+        private fun roomOf(player: Player): ZebakEncounter? =
+            player.currentRaid?.encounterOf(player) as? ZebakEncounter
+
+        internal fun onZebakHit(npc: Npc, hit: Hit) {
             roomOf(npc)?.zebakHit(npc, hit)
         }
 
-        /** ZebakScript's death queue for Zebak: the room is won. */
-        fun onZebakDeath(npc: Npc) {
+        internal fun onZebakDeath(npc: Npc) {
             val room = roomOf(npc) ?: return
             if (npc === room.zebak) room.complete()
         }
 
-        /** ZebakScript's onAiTimer for the clouds. */
-        fun onCloudTick(npc: Npc) {
-            roomOf(npc)?.cloudTick(npc)
+        internal fun onCloudTick(npc: Npc) {
+            roomOf(npc)?.bloodMagic?.cloudTick(npc)
         }
 
-        /** ZebakScript's death queue for the clouds. */
-        fun onCloudDeath(npc: Npc) {
-            roomOf(npc)?.removeCloud(npc)
+        internal fun onCloudDeath(npc: Npc) {
+            roomOf(npc)?.bloodMagic?.removeCloud(npc)
         }
 
-        /** ZebakScript: a jug's Push (op1) or Pull (op3). */
-        fun onJugMoved(player: Player, jug: Npc, push: Boolean) {
-            roomOf(jug)?.moveJug(player, jug, push)
+        internal fun onJugMoved(player: Player, jug: Npc, push: Boolean) {
+            roomOf(jug)?.jugs?.move(player, jug, push)
         }
 
-        /**
-         * ZebakScript: a player broke a jug, by its "Hit" op (op4), or any hit landing on it (the
-         * rolling jug's "Attack" op2 uses normal combat). Offline_Scape CrondisJug.processHit: any
-         * hit not from Zebak breaks it, whatever the damage.
-         */
-        fun onJugBroken(jug: Npc) {
-            roomOf(jug)?.breakJug(jug, jug.coords)
+        internal fun onJugBroken(jug: Npc) {
+            roomOf(jug)?.jugs?.shatter(jug, jug.coords)
         }
 
-        /** ZebakScript's onAiTimer for the jugs (config `timer = 1`). */
-        fun onJugTick(jug: Npc) {
-            roomOf(jug)?.jugTick(jug)
+        internal fun onJugTick(jug: Npc) {
+            roomOf(jug)?.jugs?.tick(jug)
         }
 
-        /** ZebakScript's onAiTimer for the waves. */
-        fun onWaveTick(wave: Npc) {
-            roomOf(wave)?.waveTick(wave)
+        internal fun onBoulderDeath(boulder: Npc) {
+            roomOf(boulder)?.boulders?.remove(boulder)
         }
 
-        /** ZebakScript's onAiTimer for the water crocodiles. */
-        fun onCrocTick(croc: Npc) {
-            roomOf(croc)?.crocTick(croc)
+        internal fun onWaveTick(wave: Npc) {
+            roomOf(wave)?.waves?.tick(wave)
         }
 
-        /** ZebakScript: "Climb-up" on the rock steps (loc toa_zebak_climbing_rock). */
-        fun onClimbRock(player: Player, rock: CoordGrid, angleId: Int) {
-            val room = player.currentRaid?.encounterOf(player) as? ZebakEncounter ?: return
-            room.climbOut(player, rock, angleId)
+        internal fun onCrocTick(croc: Npc) {
+            roomOf(croc)?.water?.crocodileTick(croc)
         }
 
-        /** ToaSwimAttackHook: may [player] start combat? Not while swimming. */
-        fun isSwimmingInRaid(player: Player): Boolean {
-            val room = player.currentRaid?.encounterOf(player) as? ZebakEncounter ?: return false
-            return room.isSwimming(player)
+        internal fun onClimbRock(player: Player, rock: CoordGrid, angleId: Int) {
+            roomOf(player)?.water?.climbOut(player, rock, angleId)
         }
 
-        /** ZebakScript's death queue for the boulders (the third roar wave). */
-        fun onBoulderDeath(boulder: Npc) {
-            roomOf(boulder)?.removeBoulder(boulder)
-        }
+        internal fun isSwimming(player: Player): Boolean =
+            roomOf(player)?.water?.isSwimming(player) == true
 
         /**
-         * Capture: every damaging hit updates varbits toa_damage_taken (14323) and
-         * toa_damage_taken_current (14375); the second resets at the challenge start.
-         *
-         * Read here as damage the player takes, added up. TODO: confirm against the capture's
-         * values, and whether other rooms do this too (it may belong in the raid, not this room).
+         * Capture: every damaging hit updates toa_damage_taken and toa_damage_taken_current (reset
+         * at the challenge start). Read as the player's damage taken. TODO: confirm, and whether
+         * other rooms do this too.
          */
-        fun onPlayerDamaged(player: Player, damage: Int) {
-            val room = player.currentRaid?.encounterOf(player) as? ZebakEncounter ?: return
+        internal fun onPlayerDamaged(player: Player, damage: Int) {
+            val room = roomOf(player) ?: return
             if (room.stage != ToaStage.STARTED) return
-            player.toaDamageTaken = (player.toaDamageTaken + damage).coerceAtMost(DAMAGE_TAKEN_MAX)
+            player.toaDamageTaken = (player.toaDamageTaken + damage).coerceAtMost(TAKEN_MAX)
             player.toaDamageTakenCurrent =
-                (player.toaDamageTakenCurrent + damage).coerceAtMost(DAMAGE_TAKEN_CURRENT_MAX)
+                (player.toaDamageTakenCurrent + damage).coerceAtMost(TAKEN_CURRENT_MAX)
         }
 
-        /** Bits 0-15 and 15-29 of their varps (osrs-dumps config/dump.varbit). */
-        private const val DAMAGE_TAKEN_MAX = 65_535
-        private const val DAMAGE_TAKEN_CURRENT_MAX = 32_767
+        /** Their bit widths (osrs-dumps config/dump.varbit). */
+        private const val TAKEN_MAX = 65_535
+        private const val TAKEN_CURRENT_MAX = 32_767
     }
 }
 

@@ -12,7 +12,7 @@ import org.rsmod.content.raids.toa.raid.encounter.ToaEncounter
 import org.rsmod.content.raids.toa.raid.encounter.WardensFirstEncounter
 import org.rsmod.content.raids.toa.raid.encounter.WardensSecondEncounter
 import org.rsmod.content.raids.toa.raid.encounter.crondis.CrondisPuzzleEncounter
-import org.rsmod.content.raids.toa.raid.encounter.crondis.ZebakEncounter
+import org.rsmod.content.raids.toa.raid.encounter.crondis.zebak.ZebakEncounter
 import org.rsmod.game.entity.Player
 import org.rsmod.game.region.Region
 
