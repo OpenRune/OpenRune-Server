@@ -14,6 +14,7 @@ import kotlin.math.abs
 import kotlin.random.Random
 import org.rsmod.api.droptable.DropTableRegistry
 import org.rsmod.api.droptable.rollCount
+import org.rsmod.api.invtx.invAdd
 import org.rsmod.api.invtx.invAddOrDrop
 import org.rsmod.api.invtx.invClear
 import org.rsmod.api.obj.charges.ObjChargeManager
@@ -38,6 +39,7 @@ import org.rsmod.api.script.onPlayerLogout
 import org.rsmod.api.script.onPlayerQueueWithArgs
 import org.rsmod.api.script.onPlayerTimer
 import org.rsmod.content.interfaces.collectionlog.CollectionLog
+import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.events.EventBus
 import org.rsmod.game.entity.Player
 import org.rsmod.game.hit.HitType
@@ -118,7 +120,7 @@ constructor(
             camShake(CamShakeAxis.LEFT_RIGHT, 5, 0, 0)
         }
         player.refreshDoors(hasLockpick())
-        minimapHideMap()
+        if (!player.cryptMapStudied) minimapHideMap()
         player.refreshLadder()
         player.clearTimer(CRYPT_TIMER)
         timer(CRYPT_TIMER, CRYPT_TICK)
@@ -134,11 +136,27 @@ constructor(
         }
     }
 
-    private fun ProtectedAccess.dig() {
+    private suspend fun ProtectedAccess.dig() {
+        val mound = BarrowsBrother.entries.firstOrNull { inMound(it) }
+        if (mound != null && hfsInterruptsDig()) {
+            startDialogue {
+                chatNpcSpecific(
+                    "Strange Old Man",
+                    "npc.barrows_oldman",
+                    happy,
+                    "You want to dig? Good, good! But we talk first. Talk then dig!",
+                )
+            }
+            return
+        }
         anim("seq.human_dig")
         soundSynth("synth.digspade")
-        strongQueue(DIG_QUEUE, DIG_TICKS, args = BarrowsBrother.entries.firstOrNull { inMound(it) })
+        strongQueue(DIG_QUEUE, DIG_TICKS, args = mound)
     }
+
+    private fun ProtectedAccess.hfsInterruptsDig(): Boolean =
+        player.hfsStage == HFS_NOT_STARTED &&
+            QuestRequirements.hasCompleted(player, PRIEST_IN_PERIL)
 
     private fun ProtectedAccess.finishDig(mound: BarrowsBrother?) {
         resetAnim()
@@ -279,6 +297,10 @@ constructor(
 
         val rewardInv = player.invMap.getOrPut(REWARD_INV)
         invClear(rewardInv)
+        if (player.needsHfsIcon) {
+            invAdd(rewardInv, "obj.barrows_icon", 1)
+            player.hfsStage = HFS_ICON_LOOTED
+        }
         for (drop in drops) {
             if (drop.isNothing || !drop.condition(player)) continue
             invAdd(rewardInv, drop.transformObj(player) ?: drop.obj, drop.rollCount(random))
@@ -296,6 +318,10 @@ constructor(
     private fun deliverRewards(player: Player) {
         val rewardInv = player.invMap[REWARD_INV] ?: return
         for (obj in rewardInv.objs.filterNotNull()) {
+            if (obj.isType("obj.barrows_icon")) {
+                player.invAdd(player.inv, "obj.barrows_icon", obj.count)
+                continue
+            }
             val name = RSCM.getReverseMapping(RSCMType.OBJ, obj.id)
             CollectionLog.grant(player, name, obj.count)
             player.invAddOrDrop(objRepo, name, obj.count)
@@ -372,6 +398,7 @@ constructor(
         const val DIG_TICKS = 2
         const val LANDING_RADIUS = 3
         const val CHEST_JINGLE = 77
+        const val PRIEST_IN_PERIL = "quest_priestinperil"
         const val MAX_ROOM_ENEMIES = 11
         const val DOOR_ROLL = 128
         const val DOOR_BROTHER_WEIGHT = 12

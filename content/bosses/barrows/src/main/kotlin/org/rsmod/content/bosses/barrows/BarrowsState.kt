@@ -4,6 +4,7 @@ import org.rsmod.api.player.vars.VarPlayerIntMapSetter
 import org.rsmod.api.player.vars.boolVarBit
 import org.rsmod.api.player.vars.intVarBit
 import org.rsmod.api.player.vars.intVarp
+import org.rsmod.content.drops.hasObjInInventoryOrBank
 import org.rsmod.game.entity.Player
 import org.rsmod.map.CoordGrid
 
@@ -15,6 +16,15 @@ internal var Player.barrowsRolled by boolVarBit("varbit.barrows_rolled")
 internal var Player.monsterPotential by intVarBit("varbit.barrows_killed_monster")
 internal var Player.chestOpen by boolVarBit("varbit.barrows_chest_open")
 internal var Player.ladderVisible by boolVarBit("varbit.barrows_ladder_visible")
+internal var Player.hfsStage by intVarBit("varbit.hfs")
+internal val Player.cryptMapStudied by boolVarBit("varbit.barrows_map")
+
+internal val Player.needsHfsIcon: Boolean
+    get() = hfsStage in HFS_STARTED..HFS_ICON_LOOTED && !hasObjInInventoryOrBank("obj.barrows_icon")
+
+internal const val HFS_NOT_STARTED = 0
+internal const val HFS_STARTED = 2
+internal const val HFS_ICON_LOOTED = 4
 
 internal var Player.hiddenBrother: BarrowsBrother
     get() = BarrowsBrother.entries[hiddenBrotherIndex.coerceIn(0, 5)]

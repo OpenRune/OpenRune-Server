@@ -10,4 +10,5 @@ dependencies {
     implementation(projects.api.dropTablePlugin)
     implementation(projects.content.drops)
     implementation(projects.content.interfaces.collectionLog)
+    implementation(projects.content.quest)
 }
