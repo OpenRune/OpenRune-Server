@@ -2,12 +2,22 @@ package org.rsmod.api.player.output
 
 import net.rsprot.protocol.game.outgoing.logout.Logout
 import net.rsprot.protocol.game.outgoing.logout.LogoutWithReason
+import net.rsprot.protocol.game.outgoing.misc.client.HintArrow
 import net.rsprot.protocol.game.outgoing.misc.client.ServerTickEnd
 import net.rsprot.protocol.game.outgoing.misc.client.UpdateRebootTimerV2
 import net.rsprot.protocol.game.outgoing.misc.player.SetPlayerOp
 import org.rsmod.game.entity.Player
 
 public object MiscOutput {
+    /** @see [HintArrow] */
+    public fun hintArrowNpc(player: Player, npcSlot: Int) {
+        player.client.write(HintArrow(HintArrow.NpcHintArrow(npcSlot)))
+    }
+
+    public fun hintArrowReset(player: Player) {
+        player.client.write(HintArrow(HintArrow.ResetHintArrow))
+    }
+
     /** @see [SetPlayerOp] */
     public fun setPlayerOp(player: Player, slot: Int, op: String?, priority: Boolean = false) {
         player.options.add(slot ,op)

@@ -4987,3 +4987,162 @@ respawnRate = 30
 "param.killcount_varp"="varp.total_whisperer_kills"
 "param.boss_hp_bar_mode"=1
 "param.death_anim"="seq.npc_whisperer_01_death_01"
+
+[[npc]]
+id = "npc.barrows_ahrim"
+inherit = "npc.barrows_ahrim"
+attackRange = 10
+[npc.params]
+"param.attack_anim"="seq.human_castwave"
+"param.defend_anim"="seq.barrows_quarterstaff_defend"
+"param.death_anim"="seq.human_death"
+"param.npc_attack_type"="category.attacktype_magic"
+"param.proj_travel"="spotanim.firewave_travel"
+"param.proj_type"="projanim.magic_spell"
+
+[[npc]]
+id = "npc.barrows_dharok"
+inherit = "npc.barrows_dharok"
+[npc.params]
+"param.attack_anim"="seq.barrow_dharok_crush"
+"param.defend_anim"="seq.human_unarmedblock"
+"param.death_anim"="seq.human_death"
+"param.npc_attack_type"="category.attacktype_slash"
+
+[[npc]]
+id = "npc.barrows_guthan"
+inherit = "npc.barrows_guthan"
+[npc.params]
+"param.attack_anim"="seq.barrows_war_spear_stab"
+"param.defend_anim"="seq.barrow_guthan_defend"
+"param.death_anim"="seq.human_death"
+"param.npc_attack_type"="category.attacktype_crush"
+
+[[npc]]
+id = "npc.barrows_karil"
+inherit = "npc.barrows_karil"
+attackRange = 7
+[npc.params]
+"param.attack_anim"="seq.barrows_repeating_crossbow_fire"
+"param.defend_anim"="seq.human_unarmedblock"
+"param.death_anim"="seq.human_death"
+"param.npc_attack_type"="category.attacktype_heavy"
+"param.proj_travel"="spotanim.crossbowbolt_travel"
+"param.proj_type"="projanim.bolt"
+
+[[npc]]
+id = "npc.barrows_torag"
+inherit = "npc.barrows_torag"
+[npc.params]
+"param.attack_anim"="seq.barrow_torag_crush"
+"param.defend_anim"="seq.human_unarmedblock"
+"param.death_anim"="seq.human_death"
+"param.npc_attack_type"="category.attacktype_crush"
+
+[[npc]]
+id = "npc.barrows_verac"
+inherit = "npc.barrows_verac"
+[npc.params]
+"param.attack_anim"="seq.barrow_guthan_crush"
+"param.defend_anim"="seq.human_unarmedblock"
+"param.death_anim"="seq.human_death"
+"param.npc_attack_type"="category.attacktype_stab"
+
+[[npc]]
+id = "npc.barrows_bloodworm"
+inherit = "npc.barrows_bloodworm"
+[npc.params]
+"param.attack_anim"="seq.bloodworm_attack"
+"param.defend_anim"="seq.bloodworm_block"
+"param.death_anim"="seq.bloodworm_death"
+"param.npc_attack_type"="category.attacktype_stab"
+
+[[npc]]
+id = "npc.barrows_rat"
+inherit = "npc.barrows_rat"
+[npc.params]
+"param.attack_anim"="seq.rat_attack"
+"param.defend_anim"="seq.rat_block"
+"param.death_anim"="seq.rat_death"
+"param.npc_attack_type"="category.attacktype_stab"
+
+[[npc]]
+id = "npc.barrows_giantrat"
+inherit = "npc.barrows_giantrat"
+[npc.params]
+"param.attack_anim"="seq.giant_rat_update_attack"
+"param.defend_anim"="seq.giant_rat_update_defend"
+"param.death_anim"="seq.giant_rat_update_death"
+"param.npc_attack_type"="category.attacktype_stab"
+
+[[npc]]
+id = "npc.barrows_giantrat2"
+inherit = "npc.barrows_giantrat2"
+[npc.params]
+"param.attack_anim"="seq.giant_rat_update_attack"
+"param.defend_anim"="seq.giant_rat_update_defend"
+"param.death_anim"="seq.giant_rat_update_death"
+"param.npc_attack_type"="category.attacktype_stab"
+
+[[npc]]
+id = "npc.barrows_giantrat3"
+inherit = "npc.barrows_giantrat3"
+[npc.params]
+"param.attack_anim"="seq.giant_rat_update_attack"
+"param.defend_anim"="seq.giant_rat_update_defend"
+"param.death_anim"="seq.giant_rat_update_death"
+"param.npc_attack_type"="category.attacktype_stab"
+
+[[npc]]
+id = "npc.barrows_spider"
+inherit = "npc.barrows_spider"
+[npc.params]
+"param.attack_anim"="seq.small_spider_update_attack"
+"param.defend_anim"="seq.small_spider_update_defend"
+"param.death_anim"="seq.small_spider_update_death"
+"param.npc_attack_type"="category.attacktype_stab"
+
+[[npc]]
+id = "npc.barrows_giantspider"
+inherit = "npc.barrows_giantspider"
+[npc.params]
+"param.attack_anim"="seq.spider_update_attack"
+"param.defend_anim"="seq.spider_update_defend"
+"param.death_anim"="seq.spider_update_death"
+"param.npc_attack_type"="category.attacktype_stab"
+
+[[npc]]
+id = "npc.barrows_skeleton_unarmed"
+inherit = "npc.barrows_skeleton_unarmed"
+[npc.params]
+"param.attack_anim"="seq.skeleton_update_attack_weapon"
+"param.defend_anim"="seq.skeleton_update_defend"
+"param.death_anim"="seq.skeleton_update_death"
+"param.npc_attack_type"="category.attacktype_crush"
+
+[[npc]]
+id = "npc.barrows_skeleton_unarmed2"
+inherit = "npc.barrows_skeleton_unarmed2"
+[npc.params]
+"param.attack_anim"="seq.skeleton_update_attack_weapon"
+"param.defend_anim"="seq.skeleton_update_defend"
+"param.death_anim"="seq.skeleton_update_death"
+"param.npc_attack_type"="category.attacktype_crush"
+
+[[npc]]
+id = "npc.barrows_skeleton_armed"
+inherit = "npc.barrows_skeleton_armed"
+[npc.params]
+"param.attack_anim"="seq.skeleton_update_attack_sword"
+"param.defend_anim"="seq.skeleton_update_defend"
+"param.death_anim"="seq.skeleton_update_death"
+"param.npc_attack_type"="category.attacktype_slash"
+
+[[npc]]
+id = "npc.barrows_skeleton_armed2"
+inherit = "npc.barrows_skeleton_armed2"
+[npc.params]
+"param.attack_anim"="seq.skeleton_update_attack_sword"
+"param.defend_anim"="seq.skeleton_update_defend"
+"param.death_anim"="seq.skeleton_update_death"
+"param.npc_attack_type"="category.attacktype_slash"

@@ -57,3 +57,11 @@ scope = "Perm"
 stack = "Always"
 protect = false
 
+
+[[inventory]]
+isServerOnly = true
+id = "inv.trail_rewardinv"
+inherit = "inv.trail_rewardinv"
+scope = "Temp"
+stack = "Always"
+protect = false

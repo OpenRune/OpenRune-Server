@@ -1,0 +1,12 @@
+[[area]]
+name = "Barrows Crypt"
+area_id = "area.barrows_crypt"
+levels = [0, 1, 2, 3]
+
+[[area.polygons]]
+vertices = [
+    [3524, 9723],
+    [3524, 9667],
+    [3580, 9667],
+    [3580, 9724],
+]

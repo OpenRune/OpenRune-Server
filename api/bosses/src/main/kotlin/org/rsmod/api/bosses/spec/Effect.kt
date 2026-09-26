@@ -8,6 +8,7 @@ public data class StatDrainEntry(
     val amount: Int,
     val chance: Int = 1,
     val outOf: Int = 1,
+    val percent: Int = 0,
 )
 
 sealed interface Effect {
@@ -41,8 +42,12 @@ sealed interface Effect {
         val delay: Int = 0,
         val spotanim: String? = null,
         val spotanimHeight: Int = 0,
+        val spotanimDelay: Int? = null,
         /** Percentage (0-100) of a protection prayer's block this hit ignores. */
         val penetration: Int = 0,
+        val missSpotanim: String? = null,
+        val onHit: Effect? = null,
+        val lifesteal: Int = 0,
     ) : Effect
 
     data class Projectile(
