@@ -22,6 +22,9 @@ internal object ZebakLocs {
     const val BLOCKER = "loc.invisible_type8_blocking_size9"
     const val BOULDER_BLOCKER = "loc.invisible_type8_blocking_active"
     const val CLIMBING_ROCK = "loc.toa_zebak_climbing_rock"
+
+    /** Left by a bleeding player; a wave washing one away turns bloody. */
+    val BLOOD_SPLATS = listOf("loc.bloodsplatter1", "loc.bloodsplatter2", "loc.bloodsplatter3")
     val POISON =
         listOf(
             "loc.toa_zebak_vomit01",

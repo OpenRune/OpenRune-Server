@@ -29,8 +29,12 @@ toa_crondis_water_empty = 6524
 toa_crondis_water_tree_02 = 6534
 toa_crondis_tree_grow_02 = 6516
 toa_crondis_water_lost_02 = 6529
+toa_crondis_croc_spear_trap_spear_expand_04 = 6493
 # Offline_Scape SPILL_SOUND. Label from dbtable synth_cooking.
 liquid = 2401
+# Capture: the acid orbs' and the crocodiles' sounds (labels from their own dbtables).
+mory_vanstrom_orb_spawn = 4424
+crocodile_attack = 386
 # Zebak (dbtable synth_zabakboss).
 toa_zebak_red_projectile_04 = 5823
 toa_zebak_whoosh_projectile_02 = 5819

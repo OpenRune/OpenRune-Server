@@ -17,13 +17,16 @@ internal object CrondisCoords {
     /** The south tile of the end barrier on the west side; it runs north from here. */
     val END_BARRIER = CoordGrid(3922, 5279, 0)
 
-    /** Waves use the first ceil(teamSize / 2). */
+    /**
+     * Waves use the first ceil(teamSize / 2). Capture (solo): both crocodiles came from
+     * (3946, 5274), so it's first here; Offline_Scape listed it last. Group order unverified.
+     */
     val CROC_SPAWNS =
         listOf(
+            CoordGrid(3946, 5274, 0),
             CoordGrid(3925, 5285, 0),
             CoordGrid(3946, 5285, 0),
             CoordGrid(3925, 5274, 0),
-            CoordGrid(3946, 5274, 0),
         )
 
     /** Trails run south from the north basins and north from the south ones. */

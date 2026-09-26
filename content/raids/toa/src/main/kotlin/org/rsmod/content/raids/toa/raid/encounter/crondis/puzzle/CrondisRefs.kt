@@ -35,7 +35,8 @@ internal object CrondisSeqs {
     const val TRAP_IDLE = "seq.crondis_spear_trap_idle"
     const val TRAP_ACTIVATE = "seq.crondis_spear_trap_activate"
     const val TRAP_SPEAR = "seq.crondis_spear_trap_spear02"
-    const val CROC_ATTACK = "seq.croc_attack"
+    /** Capture: the merge variant, on the palm and on players. */
+    const val CROC_ATTACK = "seq.croc_attack_merge"
 }
 
 internal object CrondisSpots {
@@ -50,6 +51,9 @@ internal object CrondisSynths {
     const val PALM_GROW = "synth.toa_crondis_tree_grow_02"
     const val PALM_SHRINK = "synth.toa_crondis_water_lost_02"
     const val SPILL = "synth.liquid"
+    const val SPEAR_OUT = "synth.toa_crondis_croc_spear_trap_spear_expand_04"
+    const val ACID_ORB = "synth.mory_vanstrom_orb_spawn"
+    const val CROC_ATTACK = "synth.crocodile_attack"
 }
 
 internal object CrondisComponents {
