@@ -16,12 +16,15 @@ import org.rsmod.game.region.Region
 open class ToaBossEncounter(raid: ToaRaid, room: ToaRoom, region: Region, controllerId: Int) :
     ToaEncounter(raid, room, region, controllerId) {
 
+    /** Ticks from the boss's death to Osmumten appearing. */
+    protected open val osmumtenDelay: Int = 0
+
     override fun onComplete() {
         val path = room.path ?: return
         if (path !in raid.pathsCompleted) {
             raid.pathsCompleted += path
         }
-        spawnOsmumten()
+        if (osmumtenDelay > 0) schedule(osmumtenDelay) { spawnOsmumten() } else spawnOsmumten()
     }
 
     /** Offline_Scape `spawnTeleportNPC`. TODO: jingle 296. */

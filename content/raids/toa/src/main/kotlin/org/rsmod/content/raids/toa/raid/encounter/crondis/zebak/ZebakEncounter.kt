@@ -63,6 +63,12 @@ class ZebakEncounter(raid: ToaRaid, room: ToaRoom, region: Region, controllerId:
 
     internal var attackCountdown = 0
 
+    /** Offline_Scape: Osmumten appears with the dead models. */
+    override val osmumtenDelay: Int = DEATH_MODEL_DELAY
+
+    /** Set by [applyScaling]; see [holdDefenceFloor]. */
+    private var defenceFloor = 0
+
     private var pathAttackSpeed = BASE_ATTACK_SPEED
     private var special: ZebakSpecial? = null
     private var specialsQueued = 0
@@ -152,6 +158,7 @@ class ZebakEncounter(raid: ToaRaid, room: ToaRoom, region: Region, controllerId:
         zebak?.let(::despawn)
         tail?.let(::despawn)
         val boss = spawn(ZebakNpcs.ZEBAK, coords(ZebakCoords.ZEBAK))
+        lockFacingEast(boss)
         zebak = boss
         tail = spawn(ZebakNpcs.TAIL, coords(ZebakCoords.TAIL))
         applyScaling(boss, raid.players.size.coerceAtLeast(1))
@@ -160,6 +167,16 @@ class ZebakEncounter(raid: ToaRaid, room: ToaRoom, region: Region, controllerId:
         specialsQueued = 0
         specialsTriggered = 0
         nextSpecialIsRoar = deps.random.of(0, 1) == 0
+    }
+
+    /**
+     * Offline_Scape Zebak ignores every face request. Here the engine's retaliation would turn him
+     * towards whoever hits him, and a locked npc ignores facePlayer/faceNpc. The lock persists
+     * through the enraged and dead transmogs. lockFacingDirection isn't used: it aims at the tile
+     * east of his south-west corner, which is inside a size-9 npc, so the angle would be skewed.
+     */
+    private fun lockFacingEast(npc: Npc) {
+        npc.lockFacing(npc.coords.translate(npc.size, 0), targetWidth = 1, targetLength = npc.size)
     }
 
     private fun playDeath() {
@@ -201,6 +218,7 @@ class ZebakEncounter(raid: ToaRaid, room: ToaRoom, region: Region, controllerId:
         val defence = floor(type.defence * raidFactor).toInt()
         npc.baseDefenceLvl = defence
         npc.defenceLvl = defence
+        defenceFloor = floor((type.defence - MAX_DEFENCE_DRAIN) * raidFactor).toInt()
         val attack = floor(type.attack * raidFactor).toInt()
         npc.baseAttackLvl = attack
         npc.attackLvl = attack
@@ -217,6 +235,16 @@ class ZebakEncounter(raid: ToaRaid, room: ToaRoom, region: Region, controllerId:
 
     private fun roundToTen(value: Double): Int = ((value + 5.0) / 10.0).toInt() * 10
 
+    /**
+     * OSRS Wiki: his defence can be lowered by at most 20, to 50 before scaling (the floor scales
+     * with raid level like the level itself). Nothing restores it (regenRate = 0), matching the
+     * wiki's "does not reset his Defence". Drains come from whatever lowers `defenceLvl` (specs,
+     * spells), so this clamps after the fact: on every hit and once a tick.
+     */
+    private fun holdDefenceFloor(boss: Npc) {
+        if (boss.defenceLvl < defenceFloor) boss.defenceLvl = defenceFloor
+    }
+
     internal fun maxHit(base: Int): Int = floor(base * damageFactor).toInt()
 
     // ---- Tick loop ----
@@ -225,6 +253,7 @@ class ZebakEncounter(raid: ToaRaid, room: ToaRoom, region: Region, controllerId:
         if (stage != ToaStage.STARTED) return
         val boss = zebak ?: return
         val targets = targets()
+        holdDefenceFloor(boss)
 
         poison.tick(targets)
         autos.tickBleeding(targets)
@@ -268,6 +297,7 @@ class ZebakEncounter(raid: ToaRaid, room: ToaRoom, region: Region, controllerId:
     /** Capture: area sound 6590 on damage. Wiki: specials at 85/70/55/40%, enrage at ~25%. */
     private fun zebakHit(boss: Npc, hit: Hit) {
         if (stage != ToaStage.STARTED || boss !== zebak) return
+        holdDefenceFloor(boss)
         if (hit.damage > 0) {
             val centre = coords(ZebakCoords.CENTRE)
             deps.worldRepo.soundArea(centre, ZebakSynths.DAMAGED, radius = DAMAGED_SOUND_RADIUS)
@@ -310,10 +340,47 @@ class ZebakEncounter(raid: ToaRaid, room: ToaRoom, region: Region, controllerId:
         deps.bossHpBar.onClose(player, npc, instant = true)
     }
 
+    // ---- Test cheats (ZebakCheatScript). Each returns why it can't run, or null. ----
+
+    /** Starts the Great Roar ([roar]) or the Tidal Waves on Zebak's next attack. */
+    internal fun debugSpecial(roar: Boolean): String? {
+        if (stage != ToaStage.STARTED) return NOT_STARTED
+        if (enraged) return "Zebak is enraged: no more specials."
+        if (usingSpecial) return "A special is already running."
+        nextSpecialIsRoar = roar
+        specialsQueued++
+        attackCountdown = 1
+        return null
+    }
+
+    /** Casts a blood barrage or blood clouds now, even without Not Just a Head. */
+    internal fun debugBloodMagic(barrage: Boolean): String? {
+        if (stage != ToaStage.STARTED) return NOT_STARTED
+        bloodMagic.debugCast(barrage)
+        return null
+    }
+
+    /** Drops Zebak to the enrage threshold and enrages him. */
+    internal fun debugEnrage(): String? {
+        val boss = zebak ?: return NOT_STARTED
+        if (stage != ToaStage.STARTED) return NOT_STARTED
+        if (enraged) return "Zebak is already enraged."
+        boss.hitpoints = min(boss.hitpoints, (boss.baseHitpointsLvl * ENRAGE_THRESHOLD).toInt())
+        updateBars()
+        enrage(boss)
+        return null
+    }
+
     // ---- Shared helpers for the components ----
 
-    /** A room npc owned by this room (for event routing) that never respawns by itself. */
+    /**
+     * A room npc owned by this room (for event routing) that never respawns by itself. Rooms can be
+     * destroyed with npcs still registered (the tail after a kill, everything after a mid-fight
+     * exit), so entries of destroyed rooms are dropped here; otherwise the static map would keep
+     * whole raids alive.
+     */
     internal fun spawn(type: String, tile: CoordGrid): Npc {
+        owners.values.removeIf { it.destroyed }
         val npc = Npc(type, tile)
         deps.npcRepo.add(npc, Int.MAX_VALUE)
         npc.respawns = false
@@ -392,6 +459,8 @@ class ZebakEncounter(raid: ToaRaid, room: ToaRoom, region: Region, controllerId:
 
         private val SPECIAL_THRESHOLDS = doubleArrayOf(0.85, 0.70, 0.55, 0.40)
         private const val ENRAGE_THRESHOLD = 0.25
+        private const val MAX_DEFENCE_DRAIN = 20
+        private const val NOT_STARTED = "The fight hasn't started."
 
         // ---- Event routing (ZebakScript, ZebakSwimAttackHook) ----
 
