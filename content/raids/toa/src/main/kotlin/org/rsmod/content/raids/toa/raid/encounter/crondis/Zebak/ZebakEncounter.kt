@@ -15,6 +15,8 @@ import org.rsmod.content.raids.toa.raid.ToaRaidManager.currentRaid
 import org.rsmod.content.raids.toa.raid.ToaRoom
 import org.rsmod.content.raids.toa.raid.encounter.ToaBossEncounter
 import org.rsmod.content.raids.toa.raid.encounter.ToaStage
+import org.rsmod.content.raids.toa.raid.encounter.crondis.Zebak.GreatRoar
+import org.rsmod.content.raids.toa.raid.encounter.crondis.Zebak.ZebakAutos
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.game.hit.Hit
@@ -32,7 +34,7 @@ import org.rsmod.routefinder.StepValidator
  *
  * This class owns the fight's lifecycle, tick loop, scaling and special scheduling. Each mechanic
  * lives in its own component: [autos], [poison], [bloodMagic], [boulders], [jugs], [waves],
- * [water], plus the two specials [GreatRoar] and [TidalWaves].
+ * [water], plus the two specials [org.rsmod.content.raids.toa.raid.encounter.crondis.Zebak.GreatRoar] and [TidalWaves].
  *
  * Zebak never uses the engine's combat: ZebakScript binds onAiOpPlayer2 to a no-op and his attacks
  * come from [tick]. Npc behaviour (NoMove, no regen, AI timers) is in toa_zebak.toml.
