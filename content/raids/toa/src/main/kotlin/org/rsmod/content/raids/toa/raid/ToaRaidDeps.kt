@@ -5,9 +5,11 @@ import net.rsprot.protocol.api.NetworkService
 import org.rsmod.api.bossbar.plugin.BossHpBarScript
 import org.rsmod.api.combat.formulas.AccuracyFormulae
 import org.rsmod.api.npc.interact.AiPlayerInteractions
+import org.rsmod.api.player.hit.modifier.PlayerHitModifier
 import org.rsmod.api.player.protect.ProtectedAccessLauncher
 import org.rsmod.api.random.GameRandom
 import org.rsmod.api.registry.region.RegionRegistry
+import org.rsmod.api.registry.zone.ZoneUpdateMap
 import org.rsmod.api.repo.loc.LocRepository
 import org.rsmod.api.repo.npc.NpcRepository
 import org.rsmod.api.repo.obj.ObjRepository
@@ -16,6 +18,7 @@ import org.rsmod.api.repo.world.WorldRepository
 import org.rsmod.game.MapClock
 import org.rsmod.game.entity.Player
 import org.rsmod.game.queue.WorldQueueList
+import org.rsmod.routefinder.collision.CollisionFlagMap
 
 /**
  * Everything a raid and its rooms need from the engine. [ToaRaid] and the encounters are plain
@@ -46,4 +49,16 @@ constructor(
     val bossHpBar: BossHpBarScript,
     /** Singleton binding from NetworkModule; used for the raid's extended NPC view (ToaNpcView.kt). */
     val network: NetworkService<Player>,
+    /**
+     * The standard player hit modifier (protection prayers and the like), the same binding BossDeps
+     * injects. Boss attacks pass it to queueImpactHit so prayer is checked on impact.
+     */
+    val playerHitModifier: PlayerHitModifier,
+    /** Walkable-tile checks for room hazards (Zebak's poison spread). */
+    val collision: CollisionFlagMap,
+    /**
+     * Raw zone updates. Only for area sounds whose synth has no gameval name (WorldRepository's
+     * soundArea takes a name); e.g. Zebak's synth_6590.
+     */
+    val zoneUpdates: ZoneUpdateMap,
 )

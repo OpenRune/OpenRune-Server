@@ -18,3 +18,23 @@ toa_raid = 61
 # ToaDeathScript). Explicit id; custom queues elsewhere use 40-60 and 65524-65535.
 [gamevals.queue]
 toa_death = 61
+
+# Names for Zebak's synths. The cache leaves them unnamed (synth_5823 etc.); these are the labels
+# from its sound-list dbtable synth_zabakboss (osrs-dumps config/dump.dbrow), the same way
+# .data/gamevals/synth.rscm and generic-locs name vanilla synths. Use them as "synth.<name>".
+[gamevals.synth]
+toa_zebak_red_projectile_04 = 5823
+toa_zebak_whoosh_projectile_02 = 5819
+toa_zebak_redirected_jug_break_01 = 5878
+toa_zebak_redirected_projectile_02 = 5896
+toa_zebak_projectile_impact_01 = 5884
+toa_zebak_defend_01 = 6590
+# Offline_Scape FINAL_PHASE_SOUND. Label from dbtable (not a Zebak row): FI_trollking_roar.
+fi_trollking_roar = 3405
+
+# Server-only projectile types (timings in pack/.../configs/toa_zebak.toml). Explicit ids from the
+# top of the range, like other modules' custom ids; .data/gamevals/projanim.rscm uses 0-17.
+[gamevals.projanim]
+toa_zebak_initial = 65535
+toa_zebak_split = 65534
+toa_zebak_poison_spread = 65533
