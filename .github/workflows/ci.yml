@@ -75,7 +75,8 @@ jobs:
       # "Server ready" line within the timeout.
       - name: Boot server to ready
         run: |
-          ./gradlew generateRsa
+          ./gradlew generateRsa :example-plugin:jar
+          cp example-plugin/build/libs/example-plugin.jar plugins/example-plugin.jar
           [ -f game.yml ] || cp game.example.yml game.yml
           ./gradlew run -q > boot.log 2>&1 &
           GRADLE_PID=$!
@@ -104,6 +105,11 @@ jobs:
           if grep -Eq "NoClassDefFoundError|ClassNotFoundException" boot.log; then
             echo "Post-ready classloading failure detected"
             grep -E "NoClassDefFoundError|ClassNotFoundException" boot.log | tail -20
+            exit 1
+          fi
+          if ! grep -q "EXTERNAL_PLUGIN_DEFERRED_CLASS_OK" boot.log; then
+            echo "External plugin deferred-class probe did not execute"
+            tail -100 boot.log
             exit 1
           fi
 

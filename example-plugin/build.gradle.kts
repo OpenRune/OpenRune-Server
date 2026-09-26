@@ -4,6 +4,7 @@ plugins {
 
 dependencies {
     implementation(projects.api.pluginCommons)
+    implementation(projects.api.gameProcess)
 }
 
 // Fixed name (no version suffix) so ExternalPluginLoader always sees this as source
