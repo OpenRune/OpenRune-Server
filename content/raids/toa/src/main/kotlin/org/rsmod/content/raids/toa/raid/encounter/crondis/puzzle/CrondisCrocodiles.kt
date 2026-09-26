@@ -10,11 +10,14 @@ import org.rsmod.content.raids.toa.raid.encounter.ToaStage
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.game.hit.HitType
+import org.rsmod.game.movement.MoveSpeed
 import org.rsmod.map.CoordGrid
 
 /**
- * The crocodiles (OSRS Wiki: Crocodile (Tombs of Amascut)). A wave every 60 ticks (50 after a
- * reset), up to 8 alive. Targets, re-evaluated every tick:
+ * The crocodiles (OSRS Wiki: Crocodile (Tombs of Amascut)). Capture: the first wave 48 ticks after
+ * the first hazard tick, then one every 47 (Offline_Scape: 60, then 60); up to 8 alive. They crawl
+ * (a tile every 2 ticks) and wait 4 ticks after spawning before going for anything. Targets,
+ * re-evaluated every tick:
  * 1. a player with a non-empty water container within aggro range;
  * 2. the palm, while it has any growth;
  * 3. a player without a water container who has attacked this crocodile.
@@ -27,6 +30,7 @@ internal class CrondisCrocodiles(private val room: CrondisPuzzleEncounter) {
     private val deps = room.raid.deps
     private val crocodiles = ArrayList<Npc>()
     private val attackReady = HashMap<Npc, Int>()
+    private val wakeAt = HashMap<Npc, Int>()
     private var countdown = FIRST_DELAY
 
     /** What each crocodile is going for this tick: a [Player], [PalmTarget], or nothing. */
@@ -60,7 +64,10 @@ internal class CrondisCrocodiles(private val room: CrondisPuzzleEncounter) {
         hazardHits.clear()
     }
 
-    /** Offline_Scape onRoomReset: the next attempt's first wave comes a little sooner. */
+    /**
+     * Offline_Scape onRoomReset: the next attempt's first wave comes 10 ticks sooner than the
+     * first attempt's (unverified).
+     */
     fun reset() {
         clear()
         countdown = RESET_DELAY
@@ -73,7 +80,9 @@ internal class CrondisCrocodiles(private val room: CrondisPuzzleEncounter) {
         val count = minOf((room.teamSize + 1) / 2, CrondisCoords.CROC_SPAWNS.size)
         for (i in 0 until count) {
             val croc = room.spawnRouted(CrondisNpcs.CROCODILE, CrondisCoords.CROC_SPAWNS[i])
+            croc.defaultMoveSpeed = MoveSpeed.Crawl
             room.palm?.let { croc.faceSquare(it.coords, it.size, it.size) }
+            wakeAt[croc] = deps.mapClock.cycle + WAKE_TICKS
             crocodiles += croc
         }
     }
@@ -91,6 +100,7 @@ internal class CrondisCrocodiles(private val room: CrondisPuzzleEncounter) {
 
     private fun forget(croc: Npc) {
         attackReady.remove(croc)
+        wakeAt.remove(croc)
         targets.remove(croc)
         attackers.remove(croc)
     }
@@ -108,6 +118,7 @@ internal class CrondisCrocodiles(private val room: CrondisPuzzleEncounter) {
     /** Once a tick per crocodile (onAiTimer). */
     fun ai(croc: Npc) {
         if (room.stage != ToaStage.STARTED) return
+        if ((wakeAt[croc] ?: 0) > deps.mapClock.cycle) return
         val fightingPlayer = croc.mode == NpcMode.OpPlayer2 || croc.mode == NpcMode.ApPlayer2
 
         when (val target = chooseTarget(croc)) {
@@ -130,19 +141,28 @@ internal class CrondisCrocodiles(private val room: CrondisPuzzleEncounter) {
         }
     }
 
-    /** Walks next to the palm, then bites it: 2-5 growth every 7 ticks (attack speed 7). */
+    /**
+     * Crawls next to the palm, then bites it: 2-5 growth every 7 ticks (attack speed 7). Capture:
+     * it faces the palm the whole way (entity facing), and each bite plays the attack sound.
+     */
     private fun approachPalm(croc: Npc) {
         val palm = room.palm ?: return
+        croc.faceNpc(palm)
         if (!croc.isWithinDistance(palm, 1)) {
             croc.walk(besidePalm(croc, palm))
             return
         }
-        croc.faceSquare(palm.coords, palm.size, palm.size)
         val now = deps.mapClock.cycle
         if ((attackReady[croc] ?: 0) > now) return
         attackReady[croc] = now + ATTACK_RATE
         croc.anim(CrondisSeqs.CROC_ATTACK)
+        attackSound(croc)
         room.drainPalm(deps.random.of(MIN_DRAIN, MAX_DRAIN))
+    }
+
+    private fun attackSound(croc: Npc) {
+        val sound = CrondisSynths.CROC_ATTACK
+        deps.worldRepo.soundArea(croc.coords, sound, radius = ATTACK_SOUND_RADIUS)
     }
 
     /**
@@ -175,6 +195,7 @@ internal class CrondisCrocodiles(private val room: CrondisPuzzleEncounter) {
 
         croc.facePlayer(target)
         croc.anim(CrondisSeqs.CROC_ATTACK)
+        attackSound(croc)
         val accuracy = deps.accuracy
         val success = accuracy.rollMeleeAccuracy(croc, target, MeleeAttackType.Crush, deps.random)
         if (!success) {
@@ -216,9 +237,11 @@ internal class CrondisCrocodiles(private val room: CrondisPuzzleEncounter) {
     }
 
     private companion object {
-        const val FIRST_DELAY = 60
-        const val RESET_DELAY = 50
-        const val INTERVAL = 60
+        const val FIRST_DELAY = 48
+        const val RESET_DELAY = 38
+        const val INTERVAL = 46
+        const val WAKE_TICKS = 4
+        const val ATTACK_SOUND_RADIUS = 4
         const val MAX_ALIVE = 8
         const val AGGRO_RANGE = 3
         const val ATTACK_RATE = 7

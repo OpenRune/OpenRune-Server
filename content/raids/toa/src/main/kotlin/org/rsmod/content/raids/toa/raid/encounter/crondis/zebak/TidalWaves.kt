@@ -1,5 +1,7 @@
 package org.rsmod.content.raids.toa.raid.encounter.crondis.zebak
 
+import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.rscm.RSCMType
 import kotlin.math.min
 import org.rsmod.api.player.output.CamShakeAxis
 import org.rsmod.api.player.output.Camera
@@ -7,6 +9,7 @@ import org.rsmod.api.player.output.soundSynth
 import org.rsmod.content.raids.toa.raid.encounter.ToaStage
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
+import org.rsmod.game.loc.LocShape
 import org.rsmod.game.map.Direction
 import org.rsmod.map.CoordGrid
 
@@ -148,6 +151,9 @@ internal class TidalWaves(private val room: ZebakEncounter) : ZebakSpecial {
  * 23 ticks and moves a tile a tick; on its tile it washes players along (maybe into the water),
  * washes acid away 1 in 4, and destroys blood clouds (turning bloody). A jug two tiles ahead is set
  * rolling the same way.
+ *
+ * Capture: a wave also washes away the ground decoration on its tile, and turns bloody if that was
+ * blood (map splats in the arena, or a bleeding player's).
  */
 internal class ZebakWaves(private val room: ZebakEncounter) {
     private val deps = room.raid.deps
@@ -178,11 +184,18 @@ internal class ZebakWaves(private val room: ZebakEncounter) {
         for (jug in room.jugs.npcs.filter { it.coords == ahead }) room.jugs.roll(jug, wave.dz)
         if (here in room.poison && deps.random.of(0, 3) == 0) room.poison.remove(here)
         val clouds = room.bloodMagic.cloudsAt(here)
-        if (clouds.isNotEmpty()) {
-            for (cloud in clouds) room.bloodMagic.removeCloud(cloud)
+        for (cloud in clouds) room.bloodMagic.removeCloud(cloud)
+        if (clouds.isNotEmpty() or washDecor(here)) {
             npc.transmog(npcType(ZebakNpcs.WAVE_BLOODY), Int.MAX_VALUE)
         }
         step(npc, next)
+    }
+
+    /** Removes the ground decoration on [tile]; `true` if it was a blood splat. */
+    private fun washDecor(tile: CoordGrid): Boolean {
+        val decor = deps.locRepo.findExact(tile, LocShape.GroundDecor) ?: return false
+        deps.locRepo.del(decor, Int.MAX_VALUE)
+        return decor.id in bloodSplatIds
     }
 
     /** Walks where it can; jumps where the step is blocked (Offline_Scape ignored collision). */
@@ -230,6 +243,9 @@ internal class ZebakWaves(private val room: ZebakEncounter) {
     }
 
     private companion object {
+        val bloodSplatIds: Set<Int> by lazy {
+            ZebakLocs.BLOOD_SPLATS.mapTo(HashSet()) { it.asRSCM(RSCMType.LOC) }
+        }
         const val LIFETIME = 23
         const val PUSH_TILES = 4
         const val WATER_JUMP = 5

@@ -7,6 +7,8 @@ import org.rsmod.api.player.output.soundSynth
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.game.hit.HitType
+import org.rsmod.game.loc.LocAngle
+import org.rsmod.game.loc.LocShape
 import org.rsmod.map.CoordGrid
 
 /**
@@ -102,8 +104,10 @@ internal class ZebakAutos(private val room: ZebakEncounter) {
     }
 
     /**
-     * A bleeding player who moved this tick takes 5-12 (scaled). Offline_Scape hit per step (twice
-     * when running); this is once per tick moved. TODO: the blood splats (also make bloody waves).
+     * A bleeding player who moved this tick takes 5-12 (scaled) and leaves a blood splat for 10
+     * ticks where they stand, unless the tile already has ground decoration (Offline_Scape; OSRS
+     * Wiki: a wave that crosses one turns bloody). Offline_Scape hit per step (twice when running);
+     * this is once per tick moved.
      */
     fun tickBleeding(targets: List<Player>) {
         val now = deps.mapClock.cycle
@@ -113,7 +117,14 @@ internal class ZebakAutos(private val room: ZebakEncounter) {
             if (last == null || last == player.coords || player !in bleeding) continue
             val base = room.maxHit(BLEED_BASE_DAMAGE)
             player.hitTypeless(deps.random.of(base, base + BLEED_DAMAGE_SPREAD))
+            splat(player.coords)
         }
+    }
+
+    private fun splat(tile: CoordGrid) {
+        if (deps.locRepo.findExact(tile, LocShape.GroundDecor) != null) return
+        val type = ZebakLocs.BLOOD_SPLATS[deps.random.of(0, ZebakLocs.BLOOD_SPLATS.lastIndex)]
+        deps.locRepo.add(tile, type, SPLAT_TICKS, LocAngle.West, LocShape.GroundDecor)
     }
 
     fun forget(player: Player) {
@@ -141,5 +152,6 @@ internal class ZebakAutos(private val room: ZebakEncounter) {
         const val BLEED_TICKS = 10
         const val BLEED_BASE_DAMAGE = 5
         const val BLEED_DAMAGE_SPREAD = 7
+        const val SPLAT_TICKS = 10
     }
 }

@@ -43,6 +43,9 @@ internal class CrondisAcid(private val room: CrondisPuzzleEncounter) {
 
     private fun spawn(bases: List<CoordGrid>, moveNorth: Boolean) {
         for (base in bases) {
+            // Capture: one sound per basin, from its middle column.
+            val middle = room.coords(base.translate(ACID_COLUMNS_MIDDLE, 0))
+            deps.worldRepo.soundArea(middle, CrondisSynths.ACID_ORB, radius = ORB_SOUND_RADIUS)
             val columns = shuffledColumns()
             val count = deps.random.of(MIN_TRAILS, MAX_TRAILS)
             for (i in 0 until count) {
@@ -103,6 +106,8 @@ internal class CrondisAcid(private val room: CrondisPuzzleEncounter) {
     private companion object {
         const val INTERVAL = 5
         const val COLUMNS = 5
+        const val ACID_COLUMNS_MIDDLE = 2
+        const val ORB_SOUND_RADIUS = 14
         const val MIN_TRAILS = 2
         const val MAX_TRAILS = 3
         const val ORB_TICKS = 3
