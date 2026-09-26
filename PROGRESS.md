@@ -195,7 +195,7 @@ Found the same way `settings.gradle.kts` finds them: any dir with a `build.gradl
 | Module | Files | Lines | Tests | TODO | Last touched |
 |---|---:|---:|---:|---:|---|
 | `areas/city/ardougne` | 1 | 139 | 0 | 0 | 2026-09-25 |
-| `areas/city/draynor` | 16 | 3,706 | 4 | 0 | 2026-09-23 |
+| `areas/city/draynor` | 17 | 3,777 | 4 | 0 | 2026-09-26 |
 | `areas/city/draynor/pack` | 1 | 6 | 0 | 0 | 2026-09-23 |
 | `areas/city/falador` | 7 | 1,354 | 0 | 0 | 2026-09-24 |
 | `areas/city/falador/pack` | 1 | 6 | 0 | 0 | 2026-09-22 |
