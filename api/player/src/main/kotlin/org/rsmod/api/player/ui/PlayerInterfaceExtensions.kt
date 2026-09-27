@@ -23,6 +23,7 @@ import net.rsprot.protocol.game.outgoing.interfaces.IfSetNpcHead
 import net.rsprot.protocol.game.outgoing.interfaces.IfSetNpcHeadActive
 import net.rsprot.protocol.game.outgoing.interfaces.IfSetObject
 import net.rsprot.protocol.game.outgoing.interfaces.IfSetPlayerHead
+import net.rsprot.protocol.game.outgoing.interfaces.IfSetRotateSpeed
 import net.rsprot.protocol.game.outgoing.interfaces.IfSetText
 import net.rsprot.protocol.game.outgoing.misc.player.TriggerOnDialogAbort
 import org.rsmod.annotations.InternalApi
@@ -704,4 +705,9 @@ private fun Player.ifSetObj(target: String, obj: Int, zoomOrCount: Int) {
 public fun Player.ifSetModel(internal: String, model: Int) {
     val target = ServerCacheManager.fromComponent(internal.asRSCM(RSCMType.COMPONENT))
     client.write(IfSetModelV2(target.interfaceId, target.component, model))
+}
+
+public fun Player.ifSetRotateSpeed(internal: String, xSpeed: Int, ySpeed: Int) {
+    val target = ServerCacheManager.fromComponent(internal.asRSCM(RSCMType.COMPONENT))
+    client.write(IfSetRotateSpeed(target.interfaceId, target.component, xSpeed, ySpeed))
 }
