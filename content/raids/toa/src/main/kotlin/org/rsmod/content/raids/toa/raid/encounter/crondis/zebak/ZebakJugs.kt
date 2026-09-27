@@ -15,8 +15,8 @@ internal class ZebakJugs(private val room: ZebakEncounter) {
     private val deps = room.raid.deps
     private val jugs = HashMap<Npc, Roll>()
 
-    /** Rolling direction; 0/0 while standing. */
-    private class Roll(var dx: Int = 0, var dz: Int = 0)
+    /** Rolling direction (0/0 while standing) and the tiles it has left to roll. */
+    private class Roll(var dx: Int = 0, var dz: Int = 0, var left: Int = 0)
 
     val npcs: Collection<Npc>
         get() = jugs.keys
@@ -25,7 +25,11 @@ internal class ZebakJugs(private val room: ZebakEncounter) {
     fun land(tiles: List<CoordGrid>, targets: List<Player>) {
         val dust = spotanim(ZebakSpots.DUST)
         for (tile in tiles) {
-            jugs[room.spawn(ZebakNpcs.JUG, tile)] = Roll()
+            val jug = room.spawn(ZebakNpcs.JUG, tile)
+            // Capture: a hit jug never turns or moves toward its attacker. Without this, the
+            // standard retaliation paths it at the player in the tick before it breaks.
+            jug.ignoreCombatInteractions = true
+            jugs[jug] = Roll()
             deps.worldRepo.spotanimMap(dust, tile)
             // Capture: the same landing sound as a boulder.
             deps.worldRepo.soundArea(tile, ZebakSynths.BOULDER_LAND, radius = LAND_SOUND_RADIUS)
@@ -44,22 +48,33 @@ internal class ZebakJugs(private val room: ZebakEncounter) {
         val dx = Integer.signum(jug.coords.x - player.coords.x) * sign
         val dz = Integer.signum(jug.coords.z - player.coords.z) * sign
         if (dx == 0 && dz == 0) return
-        setRolling(jug, roll, dx, dz)
+        setRolling(jug, roll, dx, dz, ROLL_DISTANCE)
         player.anim(ZebakSeqs.PLAYER_MOVE_JUG)
     }
 
-    /** A wave sets [jug] rolling its way, even if it already rolls (Offline_Scape WaveNPC). */
+    /**
+     * A wave sets [jug] rolling its way, even if it already rolls (Offline_Scape WaveNPC).
+     * Capture: wave jugs rolled 11 and 18 tiles to the last row, so they have no limit.
+     */
     fun roll(jug: Npc, dz: Int) {
         val roll = jugs[jug] ?: return
-        setRolling(jug, roll, 0, dz)
+        setRolling(jug, roll, 0, dz, Int.MAX_VALUE)
     }
 
-    private fun setRolling(jug: Npc, roll: Roll, dx: Int, dz: Int) {
+    private fun setRolling(jug: Npc, roll: Roll, dx: Int, dz: Int, distance: Int) {
         if (roll.dx == 0 && roll.dz == 0) {
             jug.transmog(npcType(ZebakNpcs.JUG_ROLLING), Int.MAX_VALUE)
         }
         roll.dx = dx
         roll.dz = dz
+        roll.left = distance
+    }
+
+    /** Back to a standing jug, which can be pushed or pulled again. */
+    private fun stop(jug: Npc, roll: Roll) {
+        roll.dx = 0
+        roll.dz = 0
+        jug.resetTransmog()
     }
 
     /**
@@ -77,16 +92,23 @@ internal class ZebakJugs(private val room: ZebakEncounter) {
      * Once a tick (config `timer = 1`). The boulder's tile blocks walking, so a jug shatters beside
      * it with the splash centred on the boulder (Offline_Scape rolled onto it; same tiles cleared).
      * Capture: waves roll jugs to the last row (z 5397 / 5419), where they splash away on their own
-     * tile. TODO (Z8): vanilla jugs stop after some distance; Offline_Scape rolls until stopped.
+     * tile. A push or pull rolls [ROLL_DISTANCE] tiles and stops (Offline_Scape never stopped).
      */
     fun tick(jug: Npc) {
         val roll = jugs[jug] ?: return
         if (roll.dx == 0 && roll.dz == 0) return
+        if (roll.left <= 0) {
+            stop(jug, roll)
+            return
+        }
         val next = jug.coords.translate(roll.dx, roll.dz)
         when {
             room.boulders.isBoulder(next) -> shatter(jug, next)
             deps.collision.isWalkBlocked(next) || !onFloor(next) -> splashAway(jug)
-            else -> jug.walk(next)
+            else -> {
+                jug.walk(next)
+                roll.left--
+            }
         }
     }
 
@@ -159,5 +181,8 @@ internal class ZebakJugs(private val room: ZebakEncounter) {
         private const val BREAK_SOUND_RADIUS = 10
         private const val SPLASH_SOUND_RADIUS = 2
         private const val SPLASH_HEIGHT = 10
+
+        /** A push or pull (checked in game). */
+        private const val ROLL_DISTANCE = 8
     }
 }
