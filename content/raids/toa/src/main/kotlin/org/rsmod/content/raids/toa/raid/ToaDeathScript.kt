@@ -198,9 +198,12 @@ internal suspend fun ProtectedAccess.wipeAftermath(room: ToaEncounter, retry: Bo
  * Full restore after a death, a wipe or a beaten boss (Offline_Scape `player.reset()`). The
  * public pieces of the standard death's private `resetPlayerState`. [camReset] and
  * [ProtectedAccess.minimapReset] need access, so callers with access do those themselves.
+ *
+ * Capture (Zebak): a beaten boss restores stats but leaves prayers on; the player turned them
+ * off. Turning them off here let projectiles already in flight hit unprotected.
  */
-internal fun Player.toaRestore() {
-    disablePrayers()
+internal fun Player.toaRestore(prayersOff: Boolean = true) {
+    if (prayersOff) disablePrayers()
     cureAllToxins()
     deathResetTimers()
     statRestoreAll(ALL_STATS)

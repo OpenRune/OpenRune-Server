@@ -17,7 +17,8 @@ import org.rsmod.map.CoordGrid
  * - T: the throw animation; the next auto comes at T+10, then at the normal speed;
  * - T+1: acid, 2-3 boulders (3 solo) with acid behind each, 6-8 jugs, one lined up per boulder;
  *   each lands and appears 2-5 ticks later by distance ([lob]);
- * - T+33: the roar animation;
+ * - T+33: the roar animation; the next auto comes 11 ticks later (both captured roars). A second
+ *   roar in the capture came at T+28 instead, unexplained (Offline_Scape: always 33);
  * - T+36, 38, 40: roar waves. Anyone outside a boulder's safe strip (its row, the boulder to 3
  *   tiles behind it) is knocked 2 tiles east for 20-30 (scaled). Boulders take 50 a wave; the first
  *   wave shatters every jug left;
@@ -223,7 +224,11 @@ internal class GreatRoar(private val room: ZebakEncounter) : ZebakSpecial {
         val WAVE_TICKS = intArrayOf(36, 38, 40)
         const val END_TICK = 49
         const val FIRST_AUTO = 10
-        const val NEXT_ATTACK = 11
+        /**
+         * Set in the step, before the fight tick counts down that same tick: 12 gives the
+         * captured 11 (the roar at 233 and 333, the next autos at 244 and 344).
+         */
+        const val NEXT_ATTACK = 12
         const val ACID_POOLS = 6
         const val BOULDER_ACID_DX = 2
         const val BOULDER_ROWS = 6
