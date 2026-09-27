@@ -7,6 +7,7 @@ import org.rsmod.api.mechanics.toxins.Toxin.cureAllToxins
 import org.rsmod.api.player.death.DEATH_CAUSE_ATTR
 import org.rsmod.api.player.deathResetTimers
 import org.rsmod.api.player.disablePrayers
+import org.rsmod.api.player.hasProtectItemPrayer
 import org.rsmod.api.player.hook.TeleportType
 import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.protect.ProtectedAccess
@@ -53,6 +54,8 @@ class ToaDeathScript : PluginScript() {
         // Hits that land on a 0-hp player during the death animation queue another death; swallow
         // them. Offline_Scape did this with lock() and blockIncomingHits().
         if (!raid.startDying(player)) return
+        // Prayers go off before the raid can fail; the retrieval chest needs this one.
+        player.attr[ToaRetrieval.PROTECT_ITEM_AT_DEATH] = player.hasProtectItemPrayer()
         player.queue(TOA_DEATH_QUEUE, 1)
     }
 
@@ -158,8 +161,10 @@ private suspend fun ProtectedAccess.dieInRaid(raid: ToaRaid) {
  * then either another attempt, or, with no attempts left, the raid fails and they're put
  * outside the lobby.
  *
- * TODO: jingle 90; the failure's item retrieval chest (Offline_Scape ItemRetrievalService).
- * Until that exists, a failed raid keeps your items.
+ * A failed raid is a normal death: what isn't kept goes to the lobby's retrieval chest
+ * ([ToaRetrieval]). It can only fail with a death invocation on, which is when that applies.
+ *
+ * TODO: jingle 90.
  */
 internal suspend fun ProtectedAccess.wipeAftermath(room: ToaEncounter, retry: Boolean) {
     val raid = room.raid
@@ -183,7 +188,16 @@ internal suspend fun ProtectedAccess.wipeAftermath(room: ToaEncounter, retry: Bo
     } else {
         mes("You failed to survive the Tombs of Amascut.")
         minimapHideMap()
+        // leave() takes the raid's own items first (Offline_Scape triggerTOAFailure's order).
         ToaRaidManager.leave(player, logout = false)
+        val protectItem = player.attr[ToaRetrieval.PROTECT_ITEM_AT_DEATH] == true
+        val deps = raid.deps
+        if (ToaRetrieval.store(player, deps.deathDrops, deps.marketPrices, protectItem)) {
+            mes(
+                "A magical chest has retrieved some of your items. You can collect them from it " +
+                    "in the Tombs of Amascut lobby."
+            )
+        }
         telejump(TOA_OUTSIDE, TeleportType.Exempt)
         minimapReset()
     }

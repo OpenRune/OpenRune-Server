@@ -10,8 +10,20 @@ import org.rsmod.map.CoordGrid
 
 /**
  * The acid pools (Offline_Scape ZebakEncounter.addPoison / process). A pool hurts from the tick
- * after it lands: standing on one while not poisoned gives a 5-20 poison hit that also poisons
- * (PlayerPoison respects antipoison and immunity gear).
+ * after it lands.
+ *
+ * Capture (standonpool, solo, raid level 45, 14 ticks on pools):
+ * - every tick on a pool is a hit with the poison hitsplat (hitmark 65), 7-11 each time;
+ * - the tile is the one you stood on at the start of the tick, so moving off still takes that
+ *   tick's hit;
+ * - the first hit also poisons you: "You have been poisoned!" and poison varp 10 (2 damage),
+ *   on the same hitsplat, with no second one.
+ *
+ * Offline_Scape only hit players who weren't already poisoned, and rolled 5-20, so after the first
+ * pool the long poison made every pool harmless. The 7-11 fits a 6-10 roll scaled by raid level
+ * (1.18 at 45); one raid level can't show the scaling itself, so it uses Zebak's (`maxHit`).
+ * Poison protection only stops the poison: the pool still hits (OSRS Wiki, Strategies: a serpentine
+ * helm negates Zebak's poison).
  */
 internal class ZebakPoison(private val room: ZebakEncounter) {
     private val deps = room.raid.deps
@@ -26,10 +38,13 @@ internal class ZebakPoison(private val room: ZebakEncounter) {
         pending.clear()
         if (active.isEmpty()) return
         for (player in targets) {
-            if (player.coords !in active || PlayerPoison.isPoisoned(player)) continue
-            val base = deps.random.of(MIN_DAMAGE, MAX_DAMAGE)
-            val damage = deps.random.of(base, base + DAMAGE_SPREAD)
-            PlayerPoison.tryPoison(player, initialDamage = damage)
+            if (player.coords !in active) continue
+            val damage = room.maxHit(deps.random.of(MIN_DAMAGE, MAX_DAMAGE))
+            // tryPoison refuses antipoison, immunity gear and venom; the pool hits anyway.
+            val poisoned =
+                !PlayerPoison.isPoisoned(player) &&
+                    PlayerPoison.tryPoison(player, damage, severity = POISON_SEVERITY)
+            if (!poisoned) PlayerPoison.incidentalPoisonHit(player, damage)
         }
     }
 
@@ -95,9 +110,15 @@ internal class ZebakPoison(private val room: ZebakEncounter) {
     }
 
     private companion object {
-        const val MIN_DAMAGE = 5
+        /** Before scaling; the capture's 7-11 at raid level 45. */
+        const val MIN_DAMAGE = 6
         const val MAX_DAMAGE = 10
-        const val DAMAGE_SPREAD = 10
+
+        /**
+         * Capture: poison varp 10 after the first hit, i.e. 2 damage (ceil(severity / 5)).
+         * PlayerPoison takes one off for the hit it applies with, hence 11.
+         */
+        const val POISON_SEVERITY = 11
         const val LAND_SOUND_RADIUS = 15
         const val LAND_SOUND_DELAY = 1
     }
