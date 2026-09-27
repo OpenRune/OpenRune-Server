@@ -36,7 +36,13 @@ internal class ZebakPoison(private val room: ZebakEncounter) {
     /** Pools thrown by a special: a splat sound and a spreading pool on each tile. */
     fun land(tiles: List<CoordGrid>) {
         for (tile in tiles) {
-            deps.worldRepo.soundArea(tile, ZebakSynths.ACID_LAND, radius = LAND_SOUND_RADIUS)
+            // Capture: delay 1.
+            deps.worldRepo.soundArea(
+                tile,
+                ZebakSynths.ACID_LAND,
+                delay = LAND_SOUND_DELAY,
+                radius = LAND_SOUND_RADIUS,
+            )
             add(tile, spread = true, guaranteed = false)
         }
     }
@@ -93,5 +99,6 @@ internal class ZebakPoison(private val room: ZebakEncounter) {
         const val MAX_DAMAGE = 10
         const val DAMAGE_SPREAD = 10
         const val LAND_SOUND_RADIUS = 15
+        const val LAND_SOUND_DELAY = 1
     }
 }
