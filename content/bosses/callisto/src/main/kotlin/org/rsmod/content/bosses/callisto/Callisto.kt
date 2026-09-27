@@ -15,7 +15,6 @@ import org.rsmod.api.bosses.runtime.repeatTick
 import org.rsmod.api.bosses.spec.Condition
 import org.rsmod.api.bosses.spec.Effect
 import org.rsmod.api.bosses.spec.ProjectileConfig
-import org.rsmod.api.bosses.spec.TargetExpr
 import org.rsmod.api.npc.events.NpcHitEvents
 import org.rsmod.api.npc.isValidTarget
 import org.rsmod.api.player.hit.modifier.PlayerHitModifier
@@ -412,8 +411,6 @@ abstract class WildernessBear(
         private const val NORTH_EAST = 1280
         private const val EAST = 1536
         private const val SOUTH_EAST = 1792
-
-
 
         private val RANGED_PROJECTILE_CONFIG =
             ProjectileConfig(
