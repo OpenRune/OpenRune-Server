@@ -25,6 +25,7 @@ internal object ZebakLocs {
 
     /** Left by a bleeding player; a wave washing one away turns bloody. */
     val BLOOD_SPLATS = listOf("loc.bloodsplatter1", "loc.bloodsplatter2", "loc.bloodsplatter3")
+    /** Capture: all seven appear (Offline_Scape picked from the first six). */
     val POISON =
         listOf(
             "loc.toa_zebak_vomit01",
@@ -33,6 +34,7 @@ internal object ZebakLocs {
             "loc.toa_zebak_vomit04",
             "loc.toa_zebak_vomit05",
             "loc.toa_zebak_vomit06",
+            "loc.toa_zebak_vomit07",
         )
 }
 

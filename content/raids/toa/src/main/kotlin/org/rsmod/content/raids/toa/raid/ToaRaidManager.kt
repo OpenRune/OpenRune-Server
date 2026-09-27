@@ -3,6 +3,7 @@ package org.rsmod.content.raids.toa.raid
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import org.rsmod.api.attr.AttributeKey
+import org.rsmod.api.player.hasProtectItemPrayer
 import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.output.runClientScript
 import org.rsmod.api.player.stat.baseHitpointsLvl
@@ -154,7 +155,9 @@ object ToaRaidManager {
 
         // Offline_Scape TOARaidArea.onLogout: logging out inside a running challenge counts as a
         // death. (Offline_Scape also let you rejoin after logging back in; we don't yet.)
+        var unsafeLogout = false
         if (logout && room != null && room.stage == ToaStage.STARTED && room.inChallengeArea(player)) {
+            unsafeLogout = true
             raid.totalDeaths++
             for (other in room.players) {
                 if (other !== player) {
@@ -169,6 +172,15 @@ object ToaRaidManager {
         raid.revive(player)
         raid.stopDying(player)
         removeRaidItems(player)
+        // OSRS Wiki (Tombs of Amascut/Strategies): the logout is a wipe under the normal death
+        // rules, so with a death invocation on your items go to the retrieval chest. Done here, not
+        // at login as Offline_Scape did: the logout event comes before the save, and without rejoin
+        // there's no party to come back to. Rejoin will move the group case to login.
+        if (unsafeLogout && raid.permittedTeamDeaths != null) {
+            val deps = raid.deps
+            val protectItem = player.hasProtectItemPrayer()
+            ToaRetrieval.store(player, deps.deathDrops, deps.marketPrices, protectItem)
+        }
         // Logout included: see resetNpcView for why the zone radius must not leak.
         raid.deps.network.resetNpcView(player)
         player.currentRaid = null
