@@ -25,3 +25,20 @@ isServerOnly = true
 id = "varp.toa_personal_kc_requirement"
 scope = "Perm"
 transmit = "Never"
+
+# The lobby's item retrieval chest (ToaRetrieval). The cache's gravestone inv, the one interface
+# 602 shows, made persistent like the bank and tackle box in .data/raw-cache/server/inv.toml.
+# protect = false: items are stored from inside the raid's protected access (a failed raid).
+[[inventory]]
+isServerOnly = true
+id = "inv.gravestone"
+inherit = "inv.gravestone"
+scope = "Perm"
+protect = false
+
+# Whether the retrieval chest still needs its fee paid.
+[[varp]]
+isServerOnly = true
+id = "varp.toa_retrieval_locked"
+scope = "Perm"
+transmit = "Never"

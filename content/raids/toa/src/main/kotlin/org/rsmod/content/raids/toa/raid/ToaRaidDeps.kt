@@ -4,6 +4,8 @@ import jakarta.inject.Inject
 import net.rsprot.protocol.api.NetworkService
 import org.rsmod.api.bossbar.plugin.BossHpBarScript
 import org.rsmod.api.combat.formulas.AccuracyFormulae
+import org.rsmod.api.death.PlayerDeathDrops
+import org.rsmod.api.market.MarketPrices
 import org.rsmod.api.npc.interact.AiPlayerInteractions
 import org.rsmod.api.player.hit.modifier.PlayerHitModifier
 import org.rsmod.api.player.protect.ProtectedAccessLauncher
@@ -55,4 +57,8 @@ constructor(
     val playerHitModifier: PlayerHitModifier,
     /** Walkable-tile checks for room hazards (Zebak's poison spread). */
     val collision: CollisionFlagMap,
+    /** The normal death's keep/lose rules, for the retrieval chest (ToaRetrieval). */
+    val deathDrops: PlayerDeathDrops,
+    /** Item values for the retrieval chest's fee. */
+    val marketPrices: MarketPrices,
 )
