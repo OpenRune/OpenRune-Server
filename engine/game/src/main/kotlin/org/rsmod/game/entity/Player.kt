@@ -30,6 +30,7 @@ import org.rsmod.game.entity.player.Appearance
 import org.rsmod.game.entity.player.PlayerUid
 import org.rsmod.game.entity.player.PublicMessage
 import org.rsmod.game.entity.util.EntityFaceAngle
+import org.rsmod.game.entity.util.EntityTinting
 import org.rsmod.game.entity.util.PathingEntityCommon
 import org.rsmod.game.headbar.Headbar
 import org.rsmod.game.hero.HeroPoints
@@ -199,6 +200,7 @@ public class Player(
 
     public var publicMessage: PublicMessage? = null
     public var pendingSay: String? = null
+    public var pendingTinting: EntityTinting? = null
     public var pendingRunWeight: Boolean = false
     public val pendingStatUpdates: BitSet = BitSet()
     public val activeHitmarks: LongArrayList = LongArrayList()
@@ -490,6 +492,10 @@ public class Player(
 
     public fun say(text: String) {
         pendingSay = text
+    }
+
+    public fun tint(tinting: EntityTinting) {
+        pendingTinting = tinting
     }
 
     public fun showHeadbar(headbar: Headbar) {
