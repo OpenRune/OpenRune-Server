@@ -106,7 +106,8 @@ internal class CrondisSpears(private val room: CrondisPuzzleEncounter) {
         const val PRE_IDLE = 2
         val DANGER = 4..6
         const val SPEARS_PER_WALL = 5
-        const val BASE_DAMAGE = 6
+        /** Captures: spear hits as low as 5 at raid level 45 (Offline_Scape 6); see CrondisAcid. */
+        const val BASE_DAMAGE = 4
         const val HIT_COOLDOWN = 3
         const val SOUND_DELAY = 14
         const val SOUND_RADIUS = 5

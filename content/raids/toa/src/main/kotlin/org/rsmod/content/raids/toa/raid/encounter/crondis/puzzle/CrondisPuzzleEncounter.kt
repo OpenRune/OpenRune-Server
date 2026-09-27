@@ -4,9 +4,9 @@ import java.awt.Color
 import kotlin.math.floor
 import org.rsmod.api.player.hit.modifier.NoopPlayerHitModifier
 import org.rsmod.api.player.hit.queueHit
-import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.output.runClientScript
 import org.rsmod.api.player.output.soundSynth
+import org.rsmod.api.player.output.spam
 import org.rsmod.api.player.stat.statSub
 import org.rsmod.api.player.ui.setColour
 import org.rsmod.api.player.vars.intVarBit
@@ -52,6 +52,10 @@ class CrondisPuzzleEncounter(raid: ToaRaid, room: ToaRoom, region: Region, contr
 
     private var palmStage = 0
 
+    /** Picked when the room is built (see [CrondisCoords.CROC_SIDES]). */
+    internal var crocSide: CrocSide = CrondisCoords.CROC_SIDES.first()
+        private set
+
     /** Water poured onto the palm so far (Offline_Scape: the palm's missing hitpoints). */
     var water = 0
         private set
@@ -71,7 +75,9 @@ class CrondisPuzzleEncounter(raid: ToaRaid, room: ToaRoom, region: Region, contr
         }
         for (tile in CrondisCoords.STATUES_SOUTH) addLoc(CrondisLocs.STATUE, tile, LocAngle.West)
         for (tile in CrondisCoords.STATUES_NORTH) addLoc(CrondisLocs.STATUE, tile, LocAngle.East)
-        for ((tile, angle) in CrondisCoords.CROC_WALLS) addLoc(CrondisLocs.CROC_WALL, tile, angle)
+        val sides = CrondisCoords.CROC_SIDES
+        crocSide = sides[deps.random.of(maxExclusive = sides.size)]
+        for ((tile, angle) in crocSide.walls) addLoc(CrondisLocs.CROC_WALL, tile, angle)
         addLoc(CrondisLocs.PALM_BLOCKER, CrondisCoords.PALM, LocAngle.West)
         spawnPalm()
     }
@@ -134,6 +140,9 @@ class CrondisPuzzleEncounter(raid: ToaRaid, room: ToaRoom, region: Region, contr
         crocodiles.reset()
     }
 
+    /** Capture (solo, raid level 45): 8. */
+    override fun honeyLocusts(): Int = HONEY_LOCUSTS
+
     // ---- The palm ----
 
     /**
@@ -173,8 +182,23 @@ class CrondisPuzzleEncounter(raid: ToaRaid, room: ToaRoom, region: Region, contr
         }
     }
 
-    /** Offline_Scape getNpcId: stage i while water < goal * (i + 1) / 4. */
-    private fun stageFor(water: Int): Int = (water * FINAL_STAGE / goal).coerceAtMost(FINAL_STAGE)
+    /**
+     * The stage is a quarter of the headbar. Captures: 43 water (fill 30) kept tree_2 and 41
+     * (fill 28) dropped to tree_1; Offline_Scape's water * 4 / goal would drop at 43.
+     */
+    private fun stageFor(water: Int): Int {
+        val segments = CrondisMarks.PALM_HEADBAR_SEGMENTS
+        return (palmFill(water) * FINAL_STAGE / segments).coerceAtMost(FINAL_STAGE)
+    }
+
+    /**
+     * Headbar fill: 0 when dry, else 1 + water * (segments - 1) / goal. Matches all 22 capture
+     * samples (e.g. 2 -> 2, 50 -> 35, 143 -> 98, 175 -> 120); plain rounding matches few.
+     */
+    private fun palmFill(water: Int): Int {
+        if (water <= 0) return 0
+        return 1 + water * (CrondisMarks.PALM_HEADBAR_SEGMENTS - 1) / goal
+    }
 
     /** A new palm at the first stage (room built or reset). */
     private fun spawnPalm() {
@@ -202,13 +226,9 @@ class CrondisPuzzleEncounter(raid: ToaRaid, room: ToaRoom, region: Region, contr
         showPalmHeadbar()
     }
 
-    /**
-     * The engine's own headbar fill (rounded down). It matches the capture's samples except one:
-     * 50 water showed 35, where rounding down gives 34.
-     */
     private fun showPalmHeadbar() {
         val npc = palm ?: return
-        val fill = water * CrondisMarks.PALM_HEADBAR_SEGMENTS / goal
+        val fill = palmFill(water)
         val id = CrondisMarks.PALM_HEADBAR
         npc.showHeadbar(Headbar.fromNoSource(id, id, fill, fill, startTime = 0, endTime = 0))
     }
@@ -335,14 +355,35 @@ class CrondisPuzzleEncounter(raid: ToaRaid, room: ToaRoom, region: Region, contr
         player.statSub("stat.agility", constant = AGILITY_DRAIN, percent = 0)
     }
 
-    /** Offline_Scape spillWater: half the container (rounded up) is lost. */
+    /** Offline_Scape spillWater: a hazard hit spills half the container. */
     internal fun spillWater(player: Player) {
         val slot = player.containerSlot() ?: return
         val water = player.inv[slot]?.vars ?: return
         if (water <= 0) return
-        player.setContainerWater(slot, water - (water + 1) / 2)
-        player.mes("Water spills out of your container.")
+        val left =
+            if (deps.random.randomBoolean(SMALL_SPILL_CHANCE)) {
+                // OSRS Wiki: a slight chance to lose 16% instead, never going below 1%.
+                (water - water * SMALL_SPILL_PERCENT / 100).coerceAtLeast(1)
+            } else {
+                // Capture: half, rounded up, stays (25 -> 13 -> 7 -> 4). Offline_Scape: down.
+                (water + 1) / 2
+            }
+        player.setContainerWater(slot, left)
+        // Capture: a spam message.
+        player.spam("Water spills out of your container.")
         player.soundSynth(CrondisSynths.SPILL)
+    }
+
+    /**
+     * A crocodile's bite on [player]: half the container, or 10 once it's under 15 (OSRS Wiki).
+     * Capture: no message or sound, and 2% went to 0.
+     */
+    internal fun biteWater(player: Player) {
+        val slot = player.containerSlot() ?: return
+        val water = player.inv[slot]?.vars ?: return
+        if (water <= 0) return
+        val left = if (water < BITE_LOW_WATER) water - BITE_LOW_LOSS else (water + 1) / 2
+        player.setContainerWater(slot, left.coerceAtLeast(0))
     }
 
     // ---- Helpers ----
@@ -376,13 +417,17 @@ class CrondisPuzzleEncounter(raid: ToaRaid, room: ToaRoom, region: Region, contr
     }
 
     /**
-     * Capture: the barrier on the west side becomes invisible_type8_nonblocking (rotation 3);
-     * adding it in the same layer replaces the barrier.
+     * Capture: the barrier on the west side becomes invisible_type8_nonblocking (rotation 3).
+     * In an instance, adding a loc over a map loc in the same layer only overlays it: the map
+     * loc's collision stays. So the barrier is deleted first, which clears its collision.
      */
     private fun openEndBarrier() {
+        val shape = LocShape.CentrepieceStraight
         for (dz in 0 until END_BARRIER_LENGTH) {
-            val tile = CrondisCoords.END_BARRIER.translate(0, dz)
-            addLoc(CrondisLocs.BARRIER_OPEN, tile, LocAngle.South)
+            val static = CrondisCoords.END_BARRIER.translate(0, dz)
+            val barrier = deps.locRepo.findExact(coords(static), shape)
+            if (barrier != null) deps.locRepo.del(barrier, Int.MAX_VALUE)
+            addLoc(CrondisLocs.BARRIER_OPEN, static, LocAngle.South)
         }
     }
 
@@ -406,6 +451,16 @@ class CrondisPuzzleEncounter(raid: ToaRaid, room: ToaRoom, region: Region, contr
         private const val AGILITY_DRAIN = 3
         private const val END_BARRIER_LENGTH = 3
         private const val HEADBAR_INTERVAL = 2
+        private const val HONEY_LOCUSTS = 8
+        private const val BITE_LOW_WATER = 15
+
+        /**
+         * The wiki gives no rate for the 16% spill, and 13 captured spills were all halves; a
+         * 1-in-20 guess. Tune freely.
+         */
+        private const val SMALL_SPILL_CHANCE = 20
+        private const val SMALL_SPILL_PERCENT = 16
+        private const val BITE_LOW_LOSS = 10
         private const val BAR_FADE_DELAY = 5
         private const val BAR_CLEAR_DELAY = 9
         private const val BAR_NPC_NONE = -1

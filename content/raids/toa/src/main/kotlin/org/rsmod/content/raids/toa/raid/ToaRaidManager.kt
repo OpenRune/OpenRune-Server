@@ -224,7 +224,8 @@ object ToaRaidManager {
     }
 
     private val RAID_ITEM_IDS: Set<Int> by lazy {
-        setOf("obj.toa_crondis_water_container").mapTo(HashSet()) { it.asRSCM(RSCMType.OBJ) }
+        setOf("obj.toa_crondis_water_container", "obj.toa_honey_locust")
+            .mapTo(HashSet()) { it.asRSCM(RSCMType.OBJ) }
     }
 
     /**

@@ -138,9 +138,20 @@ class CrondisPuzzleScript @Inject constructor(private val playerList: PlayerList
         anim(CrondisSeqs.PICKUP)
         player.setContainerWater(slot, CONTAINER_FULL)
         room.drainWaterfall(waterfall)
-        // Offline_Scape: +20% run energy. OpenRune stores run energy as 0..10_000.
-        player.runEnergy = (player.runEnergy + FILL_RUN_ENERGY).coerceAtMost(Constants.run_max_energy)
+        drink()
         delay(1) // Offline_Scape lock(1)
+    }
+
+    /**
+     * Captures: the drink message only came on some fills, and Jesse was under 50% run energy each
+     * time. The +20% restore is Offline_Scape's (every fill, no message); it's tied to the drink
+     * here, since the message is what says you drank. Run energy is 0..10_000.
+     */
+    private fun ProtectedAccess.drink() {
+        if (player.runEnergy >= DRINK_BELOW_ENERGY) return
+        val energy = player.runEnergy + FILL_RUN_ENERGY
+        player.runEnergy = energy.coerceAtMost(Constants.run_max_energy)
+        spam("While you're there, you take a drink of refreshing water!")
     }
 
     private suspend fun ProtectedAccess.fillFromEmpty() {
@@ -179,5 +190,8 @@ class CrondisPuzzleScript @Inject constructor(private val playerList: PlayerList
     private companion object {
         /** 20% of Constants.run_max_energy. */
         const val FILL_RUN_ENERGY = 2_000
+
+        /** 50% of Constants.run_max_energy. */
+        const val DRINK_BELOW_ENERGY = 5_000
     }
 }

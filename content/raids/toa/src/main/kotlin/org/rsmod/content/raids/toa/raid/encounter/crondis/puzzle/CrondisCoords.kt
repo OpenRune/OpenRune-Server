@@ -15,29 +15,45 @@ internal object CrondisCoords {
     val WATERFALLS_SOUTH = listOf(CoordGrid(3926, 5250, 0), CoordGrid(3940, 5250, 0))
     val WATERFALLS_NORTH = listOf(CoordGrid(3926, 5306, 0), CoordGrid(3940, 5306, 0))
 
-    /**
-     * Capture: added when the room is built, beside the first crocodile spawn. Whether groups get
-     * walls at the other spawns is unverified.
-     */
-    val CROC_WALLS =
-        listOf(
-            CoordGrid(3950, 5273, 0) to LocAngle.West,
-            CoordGrid(3948, 5271, 0) to LocAngle.North,
-        )
-
     /** The south tile of the end barrier on the west side; it runs north from here. */
     val END_BARRIER = CoordGrid(3922, 5279, 0)
 
     /**
-     * Waves use the first ceil(teamSize / 2). Capture (solo): both crocodiles came from
-     * (3946, 5274), so it's first here; Offline_Scape listed it last. Group order unverified.
+     * The room picks a side when built. Waves use its first ceil(teamSize / 2) spawns, and its
+     * walls are added beside them. Solo captures: every crocodile came from (3946, 5274) with the
+     * east walls in one room, and from (3925, 5274) with the west walls (mirrored) in another. The
+     * group spawns and their order are unverified; the west list mirrors the east one.
      */
-    val CROC_SPAWNS =
+    val CROC_SIDES =
         listOf(
-            CoordGrid(3946, 5274, 0),
-            CoordGrid(3925, 5285, 0),
-            CoordGrid(3946, 5285, 0),
-            CoordGrid(3925, 5274, 0),
+            CrocSide(
+                spawns =
+                    listOf(
+                        CoordGrid(3946, 5274, 0),
+                        CoordGrid(3925, 5285, 0),
+                        CoordGrid(3946, 5285, 0),
+                        CoordGrid(3925, 5274, 0),
+                    ),
+                walls =
+                    listOf(
+                        CoordGrid(3950, 5273, 0) to LocAngle.West,
+                        CoordGrid(3948, 5271, 0) to LocAngle.North,
+                    ),
+            ),
+            CrocSide(
+                spawns =
+                    listOf(
+                        CoordGrid(3925, 5274, 0),
+                        CoordGrid(3946, 5285, 0),
+                        CoordGrid(3925, 5285, 0),
+                        CoordGrid(3946, 5274, 0),
+                    ),
+                walls =
+                    listOf(
+                        CoordGrid(3922, 5273, 0) to LocAngle.East,
+                        CoordGrid(3924, 5271, 0) to LocAngle.North,
+                    ),
+            ),
         )
 
     /** Trails run south from the north basins and north from the south ones. */
@@ -53,3 +69,6 @@ internal object CrondisCoords {
             CoordGrid(3939, 5258, 0),
         )
 }
+
+/** Where a room's crocodiles come from, and the walls added beside the first spawn. */
+internal class CrocSide(val spawns: List<CoordGrid>, val walls: List<Pair<CoordGrid, LocAngle>>)
