@@ -21,7 +21,9 @@ import org.rsmod.map.CoordGrid
  * - T+5: the call animation;
  * - T+7: rocks fall on the wave side and the camera shakes (reset at T+9);
  * - T+14, 21, 28: a row of 21 waves with a gap: 3 wide, one narrower every two path levels (wiki).
- *   The second row's gap mirrors the first;
+ *   The second row's gap mirrors the first. After the last row the next auto waits until T+32
+ *   (capture: autos at T+15, 22, 32, 39; one sample, the second Tidal Waves was cut by the
+ *   enrage);
  * - T+46: over (the capture's next special started then); the next Tidal Waves comes from the
  *   other side.
  */
@@ -52,7 +54,12 @@ internal class TidalWaves(private val room: ZebakEncounter) : ZebakSpecial {
                 if (targets.isEmpty()) return false
                 for (player in targets) Camera.camShakeResetAll(player)
             }
-            in ROW_TICKS -> spawnRow()
+            in ROW_TICKS -> {
+                spawnRow()
+                if (ticks == ROW_TICKS.last()) {
+                    room.attackCountdown = maxOf(room.attackCountdown, LAST_ROW_NEXT_ATTACK)
+                }
+            }
             END_TICK -> {
                 room.waves.fromSouth = !fromSouth
                 return false
@@ -134,6 +141,9 @@ internal class TidalWaves(private val room: ZebakEncounter) : ZebakSpecial {
         val ROW_TICKS = intArrayOf(14, 21, 28)
         const val END_TICK = 46
         const val NEXT_ATTACK = 15
+
+        /** Set in the step, before that tick's countdown: 5 at T+28 gives the auto at T+32. */
+        const val LAST_ROW_NEXT_ATTACK = 5
         const val SOUND_RADIUS = 15
         const val ACID_POOLS = 16
         const val ROW_LENGTH = 21
