@@ -225,6 +225,7 @@ typealias Rotation = Selector.Rotation
 typealias Run = Effect.Run
 typealias TransitionTo = Effect.TransitionTo
 typealias AllInRadius = TargetExpr.AllInRadius
+typealias FacingQuadrant = TargetExpr.FacingQuadrant
 typealias MeleeAttackType = EngineMeleeAttackType
 
 val OnDeath: Condition = Condition.OnDeath

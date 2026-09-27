@@ -5,6 +5,8 @@ import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import dev.openrune.types.ProjAnimType
 import dev.openrune.types.aconverted.SpotanimType
+import kotlin.math.abs
+import kotlin.math.sign
 import org.rsmod.api.bosses.spec.*
 import org.rsmod.api.bosses.spec.HitType as BossHitType
 import org.rsmod.api.combat.commons.CombatEffects
@@ -525,8 +527,30 @@ class EffectInterpreter(
                 }
             }
             is TargetExpr.TopN -> listOf(target)
+            is TargetExpr.FacingQuadrant -> playersInFacingQuadrant(expr.reach)
             is TargetExpr.Single -> listOfNotNull(resolveSingle(expr))
             else -> listOf(target)
+        }
+    }
+
+    private fun playersInFacingQuadrant(reach: Int): List<Player> {
+        val half = npc.size / 2
+        val centreX = npc.coords.x + half
+        val centreZ = npc.coords.z + half
+        val targetDx = target.coords.x - centreX
+        val targetDz = target.coords.z - centreZ
+        if (targetDx == 0 && targetDz == 0) return emptyList()
+
+        val vertical = abs(targetDz) >= abs(targetDx)
+        val sign = if (vertical) targetDz.sign else targetDx.sign
+        val limit = half + reach
+        return deps.playerList.filter { player ->
+            if (player.coords.level != npc.coords.level) return@filter false
+            val dx = player.coords.x - centreX
+            val dz = player.coords.z - centreZ
+            if (abs(dx) > limit || abs(dz) > limit) return@filter false
+            val (along, across) = if (vertical) dz to dx else dx to dz
+            along * sign > 0 && abs(across) <= abs(along)
         }
     }
 
