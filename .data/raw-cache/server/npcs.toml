@@ -5145,6 +5145,34 @@ defaultMode = "Wander"
 "param.boss_hp_bar_mode"=1
 
 [[npc]]
+id = "npc.callisto"
+inherit = "npc.callisto"
+huntMode = 1
+huntRange = 30
+maxRange = 30
+attackRange = 1
+respawnRate = 11
+defaultMode = "Wander"
+[npc.params]
+"param.death_anim"="seq.npc_callisto_death01"
+"param.killcount_varp"="varp.total_callisto_kills"
+"param.boss_hp_bar_mode"=1
+
+[[npc]]
+id = "npc.callisto_singles"
+inherit = "npc.callisto_singles"
+huntMode = 1
+huntRange = 30
+maxRange = 30
+attackRange = 1
+respawnRate = 11
+defaultMode = "Wander"
+[npc.params]
+"param.death_anim"="seq.npc_callisto_death01"
+"param.killcount_varp"="varp.total_artio_kills"
+"param.boss_hp_bar_mode"=1
+
+[[npc]]
 id = "npc.muspah"
 inherit = "npc.muspah"
 huntMode = 2

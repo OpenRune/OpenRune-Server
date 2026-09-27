@@ -839,3 +839,9 @@ isServerOnly = true
 id = "varp.drop_rate_multiplier"
 scope = "Perm"
 transmit = "Never"
+
+[[varp]]
+isServerOnly = true
+id = "varp.wilderness_boss_fee_nowarn"
+scope = "Perm"
+transmit = "Never"
