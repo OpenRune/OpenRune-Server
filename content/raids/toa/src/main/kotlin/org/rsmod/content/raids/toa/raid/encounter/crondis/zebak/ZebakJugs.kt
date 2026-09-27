@@ -1,7 +1,10 @@
 package org.rsmod.content.raids.toa.raid.encounter.crondis.zebak
 
+import org.rsmod.api.npc.hit.queueHit as queueNpcHit
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
+import org.rsmod.game.hit.HitType
+import org.rsmod.game.interact.InteractionNpc
 import org.rsmod.game.map.collision.isWalkBlocked
 import org.rsmod.map.CoordGrid
 
@@ -149,8 +152,43 @@ internal class ZebakJugs(private val room: ZebakEncounter) {
         }
     }
 
-    fun shatterAll() {
-        for (jug in jugs.keys.toList()) shatter(jug, jug.coords)
+    /**
+     * Capture: the roar's first wave (T+36) puts a 5 on every jug at T+37, and each breaks at T+38
+     * through [hit]. A real hit rather than a bare hitsplat, so the headbar drops too. The delay is
+     * 2 because this runs in the world tick, before npc queues count down that same tick.
+     */
+    fun roarHit() {
+        for (jug in jugs.keys) {
+            jug.queueNpcHit(ROAR_HIT_DELAY, HitType.Typeless, ROAR_DAMAGE, NOOP_NPC_MODIFIER)
+        }
+    }
+
+    /**
+     * One attack per click, with no attack delay afterwards. OSRS Wiki (Zebak, Changes):
+     * - 1 Sep 2022: jugs no longer have an attack delay if attacked before Zebak;
+     * - 28 Sep 2022: jugs got an attack delay so a player attacks them only once, saving ammo.
+     *   Without it, no delay meant attacking the jug again every tick until it broke.
+     *
+     * The capture's shots at ticks 216 and 217 rule out a normal weapon delay, so the later change
+     * is read as ending the attack on the jug rather than delaying the player: the attack delay is
+     * put back and the combat with that jug stops. An existing delay still holds the attack back
+     * (PvNCombat checks it first).
+     *
+     * PvNCombat asks the attack hooks ([ZebakJugAttackHook]) just before it sets the delay, so the
+     * state before the attack is saved here and restored at the start of the next tick, which runs
+     * before any player acts. A raised delay is the sign the attack happened: a player still
+     * waiting out an older delay keeps the interaction, so the attack goes ahead once it's over.
+     * Another click in between replaces the interaction, so only one still aimed at this jug is
+     * cleared.
+     */
+    fun attacking(player: Player, jug: Npc) {
+        if (jug !in jugs) return
+        val before = player.actionDelay
+        room.schedule(1) {
+            if (player.actionDelay <= before) return@schedule
+            player.actionDelay = before
+            if ((player.interaction as? InteractionNpc)?.target === jug) player.clearInteraction()
+        }
     }
 
     private fun remove(jug: Npc) {
@@ -181,6 +219,8 @@ internal class ZebakJugs(private val room: ZebakEncounter) {
         private const val BREAK_SOUND_RADIUS = 10
         private const val SPLASH_SOUND_RADIUS = 2
         private const val SPLASH_HEIGHT = 10
+        private const val ROAR_DAMAGE = 5
+        private const val ROAR_HIT_DELAY = 2
 
         /** A push or pull (checked in game). */
         private const val ROLL_DISTANCE = 8

@@ -70,6 +70,10 @@ class ZebakEncounter(raid: ToaRaid, room: ToaRoom, region: Region, controllerId:
 
     private var pathAttackSpeed = BASE_ATTACK_SPEED
     private var special: ZebakSpecial? = null
+
+    /** An attack slot went to a queued special, which starts the next tick ([tick]). */
+    private var specialDue = false
+
     private var specialsQueued = 0
     private var specialsTriggered = 0
     private var nextSpecialIsRoar = false
@@ -254,15 +258,20 @@ class ZebakEncounter(raid: ToaRaid, room: ToaRoom, region: Region, controllerId:
 
         poison.tick(targets)
         autos.tickBleeding(targets)
-        special?.let { if (!it.step()) endSpecial() }
+        val ended = special?.step() == false
+        if (ended) endSpecial()
         water.dropDeadSwimmers()
 
         if (targets.isNotEmpty() && boss.hitpoints > 0) {
             if (!usingSpecial) bloodMagic.tick()
-            if (--attackCountdown <= 0) {
-                attackCountdown = attackSpeed
-                val started = !enraged && !usingSpecial && specialsQueued > 0 && startSpecial()
-                if (!started) autos.attack(boss, targets)
+            // A special starting skips the countdown this tick: its first step sets the countdown
+            // as if it had run in the attack slot.
+            when {
+                specialDue || (ended && canStartSpecial()) -> startDueSpecial(boss, targets)
+                --attackCountdown <= 0 -> {
+                    attackCountdown = attackSpeed
+                    if (canStartSpecial()) specialDue = true else autos.attack(boss, targets)
+                }
             }
         }
 
@@ -275,18 +284,31 @@ class ZebakEncounter(raid: ToaRaid, room: ToaRoom, region: Region, controllerId:
 
     // ---- Specials ----
 
-    /** The queued special replaces an auto; they alternate, starting at random (Offline_Scape). */
-    private fun startSpecial(): Boolean {
+    private fun canStartSpecial(): Boolean = !enraged && !usingSpecial && specialsQueued > 0
+
+    /**
+     * Capture (zebak_0_invocation): a queued special takes the auto's slot but starts a tick after
+     * it (throws at 200, 259 and 359, each 8 ticks after an auto), or on the tick the previous
+     * special ends if one was queued meanwhile (305). If Zebak enraged in between, the skipped auto
+     * comes now instead.
+     */
+    private fun startDueSpecial(boss: Npc, targets: List<Player>) {
+        specialDue = false
+        if (canStartSpecial()) startSpecial() else autos.attack(boss, targets)
+    }
+
+    /** They alternate, starting at random (Offline_Scape). */
+    private fun startSpecial() {
         specialsQueued--
         val next = if (nextSpecialIsRoar) GreatRoar(this) else TidalWaves(this)
         nextSpecialIsRoar = !nextSpecialIsRoar
         special = next
         if (!next.step()) endSpecial()
-        return true
     }
 
     private fun endSpecial() {
         special = null
+        specialDue = false
     }
 
     // ---- Zebak taking damage ----
@@ -343,7 +365,7 @@ class ZebakEncounter(raid: ToaRaid, room: ToaRoom, region: Region, controllerId:
     internal fun debugSpecial(roar: Boolean): String? {
         if (stage != ToaStage.STARTED) return NOT_STARTED
         if (enraged) return "Zebak is enraged: no more specials."
-        if (usingSpecial) return "A special is already running."
+        if (usingSpecial || specialDue) return "A special is already running."
         nextSpecialIsRoar = roar
         specialsQueued++
         attackCountdown = 1
@@ -498,6 +520,10 @@ class ZebakEncounter(raid: ToaRaid, room: ToaRoom, region: Region, controllerId:
 
         internal fun onJugBroken(jug: Npc) {
             roomOf(jug)?.jugs?.hit(jug)
+        }
+
+        internal fun onJugAttack(player: Player, jug: Npc) {
+            roomOf(jug)?.jugs?.attacking(player, jug)
         }
 
         internal fun onJugTick(jug: Npc) {

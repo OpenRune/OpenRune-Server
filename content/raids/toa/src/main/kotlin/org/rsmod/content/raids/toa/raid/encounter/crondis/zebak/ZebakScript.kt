@@ -20,7 +20,8 @@ import org.rsmod.plugin.scripts.ScriptContext
  * - The death queues replace the standard npc death.
  * - Push/Pull are ap handlers so they fire from a diagonal tile (op handlers need a cardinal one).
  *   "Hit" starts a normal attack: ap4 hands off to op2 combat, and `ZebakJugs.registerAttackOp`
- *   gives the standing jug the server-side op2 that PvNCombat requires.
+ *   gives the standing jug the server-side op2 that PvNCombat requires. Both jugs' attacks then
+ *   go through PvNCombat, where ZebakJugAttackHook keeps them from setting the attack delay.
  */
 class ZebakScript : PluginScript() {
     override fun ScriptContext.startup() {
@@ -47,7 +48,8 @@ class ZebakScript : PluginScript() {
         for (name in listOf(ZebakNpcs.JUG, ZebakNpcs.JUG_ROLLING)) {
             val type = npcType(name)
             onAiTimer(name) { ZebakEncounter.onJugTick(npc) }
-            onNpcHit(type) { if (hit.isFromPlayer) ZebakEncounter.onJugBroken(npc) }
+            // Any hit breaks a jug: a player's, or the Great Roar's 5 (ZebakJugs.roarHit).
+            onNpcHit(type) { ZebakEncounter.onJugBroken(npc) }
             onNpcQueue(type, "queue.death") { ZebakEncounter.onJugBroken(npc) }
         }
 
