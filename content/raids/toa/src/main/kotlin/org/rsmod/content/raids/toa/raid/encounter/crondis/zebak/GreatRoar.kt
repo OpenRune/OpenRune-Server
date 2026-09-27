@@ -21,7 +21,7 @@ import org.rsmod.map.CoordGrid
  *   roar in the capture came at T+28 instead, unexplained (Offline_Scape: always 33);
  * - T+36, 38, 40: roar waves. Anyone outside a boulder's safe strip (its row, the boulder to 3
  *   tiles behind it) is knocked 2 tiles east for 20-30 (scaled). Boulders take 50 a wave; the first
- *   wave shatters every jug left;
+ *   wave hits every jug left for 5 at T+37, and they break at T+38 ([ZebakJugs.roarHit]);
  * - T+49: over (Offline_Scape).
  *
  * Offline_Scape threw on T, landed everything at T+5 and kept autos at 10 ticks; the capture
@@ -123,7 +123,7 @@ internal class GreatRoar(private val room: ZebakEncounter) : ZebakSpecial {
         for (player in room.targets()) {
             if (!inSafeStrip(player.coords, includeBoulder = true)) push(player)
         }
-        if (first) room.jugs.shatterAll()
+        if (first) room.jugs.roarHit()
     }
 
     private fun inSafeStrip(tile: CoordGrid, includeBoulder: Boolean): Boolean =
