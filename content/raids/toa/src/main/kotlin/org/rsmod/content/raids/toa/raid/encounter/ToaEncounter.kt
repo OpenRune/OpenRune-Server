@@ -117,6 +117,12 @@ open class ToaEncounter(
 
     protected open fun onReset() {}
 
+    /**
+     * Honey locusts each player gets after a wipe (OSRS Wiki: it varies by room). Offline_Scape
+     * gave 4-6 everywhere; rooms with a capture override this.
+     */
+    open fun honeyLocusts(): Int = deps.random.of(HONEY_LOCUSTS_MIN, HONEY_LOCUSTS_MAX)
+
     // ---- Challenge lifecycle ----
 
     /**
@@ -245,7 +251,7 @@ open class ToaEncounter(
         reset()
     }
 
-    /** Offline_Scape `resetRoom`. TODO: honey locusts (4-6, unless On a Diet or the raid failed). */
+    /** Offline_Scape `resetRoom`. Honey locusts are handed out in wipeAftermath. */
     fun reset() {
         stage = ToaStage.NOT_STARTED
         stopTasks()
@@ -290,4 +296,9 @@ open class ToaEncounter(
     }
 
     override fun toString(): String = "ToaEncounter(room=$room, controllerId=$controllerId, stage=$stage)"
+
+    private companion object {
+        const val HONEY_LOCUSTS_MIN = 4
+        const val HONEY_LOCUSTS_MAX = 6
+    }
 }

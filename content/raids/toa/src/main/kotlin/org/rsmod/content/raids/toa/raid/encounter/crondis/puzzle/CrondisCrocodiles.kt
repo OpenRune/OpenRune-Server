@@ -5,6 +5,7 @@ import org.rsmod.api.combat.commons.types.MeleeAttackType
 import org.rsmod.api.npc.opPlayer2
 import org.rsmod.api.player.hit.modifier.NoopPlayerHitModifier
 import org.rsmod.api.player.hit.queueHit
+import org.rsmod.api.player.output.soundSynth
 import org.rsmod.api.player.stat.statSub
 import org.rsmod.content.raids.toa.raid.encounter.ToaStage
 import org.rsmod.game.entity.Npc
@@ -31,7 +32,7 @@ internal class CrondisCrocodiles(private val room: CrondisPuzzleEncounter) {
     private val crocodiles = ArrayList<Npc>()
     private val attackReady = HashMap<Npc, Int>()
     private val wakeAt = HashMap<Npc, Int>()
-    private var countdown = FIRST_DELAY
+    private var countdown = nextCountdown()
 
     /** What each crocodile is going for this tick: a [Player], [PalmTarget], or nothing. */
     private val targets = HashMap<Npc, Any>()
@@ -46,10 +47,17 @@ internal class CrondisCrocodiles(private val room: CrondisPuzzleEncounter) {
 
     fun tick() {
         if (countdown-- <= 0) {
-            countdown = INTERVAL
+            countdown = nextCountdown()
             spawnWave()
         }
     }
+
+    /**
+     * Captures: waves 46-50 ticks apart (47, 50, 46, 48, 50 and 47), the first 47 and 49 ticks
+     * after the start. Offline_Scape used a fixed 48 then 46. The tick after the countdown hits 0
+     * spawns, hence the -1.
+     */
+    private fun nextCountdown(): Int = deps.random.of(MIN_WAVE_GAP, MAX_WAVE_GAP) - 1
 
     fun onHazardHit(player: Player, cycle: Int) {
         hazardHits.getOrPut(player) { ArrayDeque() }.addLast(cycle)
@@ -65,21 +73,22 @@ internal class CrondisCrocodiles(private val room: CrondisPuzzleEncounter) {
     }
 
     /**
-     * Offline_Scape onRoomReset: the next attempt's first wave comes 10 ticks sooner than the
-     * first attempt's (unverified).
+     * Offline_Scape onRoomReset: the next attempt's first wave comes 10 ticks sooner than a
+     * normal one (60 then 50 there), here on top of the captured spacing.
      */
     fun reset() {
         clear()
-        countdown = RESET_DELAY
+        countdown = nextCountdown() - RESET_SOONER
     }
 
     /** Offline_Scape process(): ceil(teamSize / 2) crocodiles (at most 4) per wave, max 8 alive. */
     private fun spawnWave() {
         pruneDead()
         if (crocodiles.size >= MAX_ALIVE) return
-        val count = minOf((room.teamSize + 1) / 2, CrondisCoords.CROC_SPAWNS.size)
+        val spawns = room.crocSide.spawns
+        val count = minOf((room.teamSize + 1) / 2, spawns.size)
         for (i in 0 until count) {
-            val croc = room.spawnRouted(CrondisNpcs.CROCODILE, CrondisCoords.CROC_SPAWNS[i])
+            val croc = room.spawnRouted(CrondisNpcs.CROCODILE, spawns[i])
             croc.defaultMoveSpeed = MoveSpeed.Crawl
             room.palm?.let { croc.faceSquare(it.coords, it.size, it.size) }
             wakeAt[croc] = deps.mapClock.cycle + WAKE_TICKS
@@ -171,7 +180,10 @@ internal class CrondisCrocodiles(private val room: CrondisPuzzleEncounter) {
      * - a success always hits 18, +3 for each hazard (acid or spear) that hit this player in the
      *   last 30 seconds, at most 36, regardless of raid level;
      * - through Protect from Melee a success still hits a third of that and drains 12 Prayer;
-     * - a success also spills half the player's water, like the hazards.
+     * - a success also spills water ([CrondisPuzzleEncounter.biteWater]).
+     *
+     * Capture: bites of 30 (4 recent hazard hits) and 24 (2), confirming the formula. The sound
+     * goes to the target (area sound only when biting the palm).
      *
      * The engine can also get here by itself: players who hit a crocodile make it retaliate. The
      * attack only goes ahead against the target the priority rules chose; otherwise it's
@@ -195,7 +207,7 @@ internal class CrondisCrocodiles(private val room: CrondisPuzzleEncounter) {
 
         croc.facePlayer(target)
         croc.anim(CrondisSeqs.CROC_ATTACK)
-        attackSound(croc)
+        target.soundSynth(CrondisSynths.CROC_ATTACK)
         val accuracy = deps.accuracy
         val success = accuracy.rollMeleeAccuracy(croc, target, MeleeAttackType.Crush, deps.random)
         if (!success) {
@@ -211,7 +223,7 @@ internal class CrondisCrocodiles(private val room: CrondisPuzzleEncounter) {
         }
         // NoopPlayerHitModifier: prayer is already accounted for above, not by the processor.
         target.queueHit(croc, HIT_DELAY, HitType.Melee, damage, NoopPlayerHitModifier)
-        room.spillWater(target)
+        room.biteWater(target)
     }
 
     fun hitBy(croc: Npc, player: Player) {
@@ -237,9 +249,9 @@ internal class CrondisCrocodiles(private val room: CrondisPuzzleEncounter) {
     }
 
     private companion object {
-        const val FIRST_DELAY = 48
-        const val RESET_DELAY = 38
-        const val INTERVAL = 46
+        const val RESET_SOONER = 10
+        const val MIN_WAVE_GAP = 46
+        const val MAX_WAVE_GAP = 50
         const val WAKE_TICKS = 4
         const val ATTACK_SOUND_RADIUS = 4
         const val MAX_ALIVE = 8

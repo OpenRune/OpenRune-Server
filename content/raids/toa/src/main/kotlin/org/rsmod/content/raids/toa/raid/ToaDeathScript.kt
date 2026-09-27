@@ -177,6 +177,8 @@ internal suspend fun ProtectedAccess.wipeAftermath(room: ToaEncounter, retry: Bo
                 "You have <col=ff0000>${limit - raid.teamDeaths}</col> attempts remaining..."
             }
         mes("Your party failed to complete the challenge. $attempts")
+        // Capture: after the failure message. None with On a Diet, or when the raid fails.
+        if (!raid.isActive(ON_A_DIET)) invAdd(inv, HONEY_LOCUST, room.honeyLocusts())
         ToaRaidManager.refreshHudStates(raid)
     } else {
         mes("You failed to survive the Tombs of Amascut.")
@@ -212,3 +214,6 @@ private var Player.specialAttackType by intVarp("varp.sa_attack")
 private val ALL_STATS: List<String> by lazy {
     ServerCacheManager.getStats().values.map { RSCM.getReverseMapping(RSCMType.STAT, it.id) }
 }
+
+private const val ON_A_DIET = "On a Diet"
+private const val HONEY_LOCUST = "obj.toa_honey_locust"

@@ -115,7 +115,8 @@ internal class CrondisAcid(private val room: CrondisPuzzleEncounter) {
         const val TRAIL_TICKS = 6
         const val TRAIL_LENGTH = 10
         const val SPLASH_CYCLES = 10
-        const val BASE_DAMAGE = 5
+        /** Captures: hazard hits of 4-12 at raid levels 25 and 45 (Offline_Scape 5). */
+        const val BASE_DAMAGE = 4
         const val HIT_COOLDOWN = 2
     }
 }
