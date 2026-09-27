@@ -242,6 +242,7 @@ object ToaRaidManager {
         for (path in ToaPath.entries) {
             VarPlayerIntMapSetter.set(player, path.levelVarbit, 0)
         }
+        ToaDamage.resetAll(player)
     }
 
     // ---- HUD (481) ----

@@ -1,5 +1,6 @@
 package org.rsmod.content.raids.toa.raid.encounter.crondis.puzzle
 
+import org.rsmod.game.loc.LocAngle
 import org.rsmod.map.CoordGrid
 
 /** Static coordinates of the Crondis puzzle (Offline_Scape). Convert with `coords()`. */
@@ -13,6 +14,16 @@ internal object CrondisCoords {
     val STATUES_NORTH = listOf(CoordGrid(3929, 5304, 0), CoordGrid(3943, 5304, 0))
     val WATERFALLS_SOUTH = listOf(CoordGrid(3926, 5250, 0), CoordGrid(3940, 5250, 0))
     val WATERFALLS_NORTH = listOf(CoordGrid(3926, 5306, 0), CoordGrid(3940, 5306, 0))
+
+    /**
+     * Capture: added when the room is built, beside the first crocodile spawn. Whether groups get
+     * walls at the other spawns is unverified.
+     */
+    val CROC_WALLS =
+        listOf(
+            CoordGrid(3950, 5273, 0) to LocAngle.West,
+            CoordGrid(3948, 5271, 0) to LocAngle.North,
+        )
 
     /** The south tile of the end barrier on the west side; it runs north from here. */
     val END_BARRIER = CoordGrid(3922, 5279, 0)

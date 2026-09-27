@@ -10,8 +10,11 @@ internal object ZebakCoords {
     /** Capture: where the damage sound plays. */
     val CENTRE = CoordGrid(3922, 5408, 0)
 
-    /** Where roar sounds and dust ripples start. */
+    /** Where dust ripples start. */
     val MIDDLE = CoordGrid(3926, 5408, 0)
+
+    /** Capture: where the throw sound of Great Roar and Tidal Waves plays. */
+    val THROW_SOUND = CoordGrid(3927, 5408, 0)
 
     val PROJECTILE_START = CoordGrid(3925, 5408, 0)
     val PROJECTILE_BASE = CoordGrid(3933, 5408, 0)
