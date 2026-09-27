@@ -217,7 +217,7 @@ open class ToaEncounter(
         val restore = room.kind != ToaRoom.Kind.PUZZLE
         for (player in players) {
             raid.revive(player)
-            if (restore) player.toaRestore()
+            if (restore) player.toaRestore(prayersOff = false)
             if (challengeSpawn != null && !inChallengeArea(player)) {
                 val dest = coords(challengeSpawn)
                 deps.launcher.launchLenient(player) { telejump(dest, TeleportType.Exempt) }
