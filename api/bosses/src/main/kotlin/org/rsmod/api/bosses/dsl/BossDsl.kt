@@ -102,6 +102,7 @@ class HitBuilder internal constructor() {
     private var penetrationPercent: Int = 0
     private var missSpot: String? = null
     private var onHitEffect: Effect? = null
+    private var onHitEvenOnMiss: Boolean = false
     private var lifestealPercent: Int = 0
 
     fun damage(expr: DamageExpr) {
@@ -131,8 +132,9 @@ class HitBuilder internal constructor() {
         missSpot = spot
     }
 
-    fun onHit(effect: Effect) {
+    fun onHit(effect: Effect, evenOnMiss: Boolean = false) {
         onHitEffect = effect
+        onHitEvenOnMiss = evenOnMiss
     }
 
     fun lifesteal(percent: Int) {
@@ -158,6 +160,7 @@ class HitBuilder internal constructor() {
             penetration = penetrationPercent,
             missSpotanim = missSpot,
             onHit = onHitEffect,
+            onHitEvenOnMiss = onHitEvenOnMiss,
             lifesteal = lifestealPercent,
         )
 }

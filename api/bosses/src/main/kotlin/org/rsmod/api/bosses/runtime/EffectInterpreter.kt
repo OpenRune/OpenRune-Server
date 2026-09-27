@@ -18,6 +18,7 @@ import org.rsmod.api.npc.heal
 import org.rsmod.api.npc.isValidTarget
 import org.rsmod.api.player.disablePrayers
 import org.rsmod.api.player.hit.modifier.PlayerHitModifier
+import org.rsmod.api.player.hit.modify
 import org.rsmod.api.player.hit.queueImpactHit
 import org.rsmod.api.player.isValidTarget
 import org.rsmod.api.player.output.Camera
@@ -304,18 +305,19 @@ class EffectInterpreter(
                     player.spotanim(it, delay = delay, height = hit.spotanimHeight)
                 }
             }
-            // Impact-resolved hits apply protection prayers on landing, so only the roll is known.
-            val landed = if (proj.resolveOnImpact) {
+            if (proj.resolveOnImpact) {
                 player.finishNpcImpactHit(
                     npc,
                     projAnim.serverCycles,
                     hit.type.toEngine(),
                     damage,
-                    deps.playerHitModifier,
+                    landingModifier(access, hit, damage),
                     hit.penetration,
                 )
-                damage
-            } else {
+                showMissSpotanim(hit, player, damage, projAnim.clientCycles)
+                return@let
+            }
+            val landed =
                 player.finishNpcHit(
                     npc,
                     projAnim.serverCycles,
@@ -324,7 +326,6 @@ class EffectInterpreter(
                     deps.playerHitModifier,
                     hit.penetration,
                 ).damage
-            }
             scheduleLanding(
                 access,
                 hit,
@@ -350,16 +351,39 @@ class EffectInterpreter(
         serverDelay: Int,
         clientDelay: Int,
     ) {
-        if (rolled <= 0) {
-            hit.missSpotanim?.let { t.spotanim(it, delay = clientDelay, height = hit.spotanimHeight) }
-        }
-        val onHit = hit.onHit?.takeIf { rolled > 0 }
+        showMissSpotanim(hit, t, rolled, clientDelay)
+        val onHit = landingEffect(hit, rolled)
         val heal = landed * hit.lifesteal / 100
         if (onHit == null && heal <= 0) return
         deps.worldQueues.add(serverDelay) {
             if (!npc.isValidTarget()) return@add
             if (heal > 0) npc.heal(heal)
             onHit?.let { run(access, it) }
+        }
+    }
+
+    private fun landingModifier(
+        access: StandardNpcAccess,
+        hit: Effect.Hit,
+        rolled: Int,
+    ): PlayerHitModifier {
+        val onHit = landingEffect(hit, rolled)
+        if (onHit == null && hit.lifesteal <= 0) return deps.playerHitModifier
+        return PlayerHitModifier { target ->
+            deps.playerHitModifier.modify(this, target)
+            if (!npc.isValidTarget()) return@PlayerHitModifier
+            val heal = damage * hit.lifesteal / 100
+            if (heal > 0) npc.heal(heal)
+            onHit?.let { EffectInterpreter(npc, target, spec, encounter, deps).run(access, it) }
+        }
+    }
+
+    private fun landingEffect(hit: Effect.Hit, rolled: Int): Effect? =
+        hit.onHit?.takeIf { hit.onHitEvenOnMiss || rolled > 0 }
+
+    private fun showMissSpotanim(hit: Effect.Hit, t: Player, rolled: Int, clientDelay: Int) {
+        if (rolled <= 0) {
+            hit.missSpotanim?.let { t.spotanim(it, delay = clientDelay, height = hit.spotanimHeight) }
         }
     }
 
