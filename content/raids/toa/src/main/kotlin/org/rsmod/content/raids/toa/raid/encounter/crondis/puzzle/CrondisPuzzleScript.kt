@@ -161,13 +161,14 @@ class CrondisPuzzleScript @Inject constructor(private val playerList: PlayerList
             mes("You have nothing to water the palm with.")
             return
         }
-        val amount =
+        // Capture: only the largest amount ends in "!".
+        val message =
             when {
-                water <= 25 -> "small amount"
-                water <= 50 -> "reasonable amount"
-                else -> "lot"
+                water <= 25 -> "You empty a small amount of water onto the palm."
+                water <= 50 -> "You empty a reasonable amount of water onto the palm."
+                else -> "You empty a lot of water onto the palm!"
             }
-        mes("You empty a $amount of water onto the palm.")
+        mes(message)
         anim(CrondisSeqs.PICKUP)
         soundSynth(CrondisSynths.WATER_PALM)
         player.setContainerWater(slot, 0)

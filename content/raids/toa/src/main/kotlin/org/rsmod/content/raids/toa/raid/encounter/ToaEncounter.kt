@@ -4,6 +4,7 @@ import org.rsmod.annotations.InternalApi
 import org.rsmod.api.player.hook.TeleportType
 import org.rsmod.api.player.output.mes
 import org.rsmod.content.raids.toa.raid.ChallengeResult
+import org.rsmod.content.raids.toa.raid.ToaDamage
 import org.rsmod.content.raids.toa.raid.ToaRaid
 import org.rsmod.content.raids.toa.raid.ToaRaidDeps
 import org.rsmod.content.raids.toa.raid.ToaRaidManager
@@ -130,6 +131,7 @@ open class ToaEncounter(
         onStart()
         for (player in raid.players) {
             player.mes("Challenge started: $challengeName")
+            ToaDamage.resetCurrent(player)
         }
     }
 

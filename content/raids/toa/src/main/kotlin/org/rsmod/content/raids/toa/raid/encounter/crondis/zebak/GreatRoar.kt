@@ -62,8 +62,8 @@ internal class GreatRoar(private val room: ZebakEncounter) : ZebakSpecial {
         boulderTiles = boulders
         val acid = room.freeTiles(ZebakCoords.GROUND_MIN, ZebakCoords.GROUND_MAX, boulders)
             .take(ACID_POOLS)
-        val middle = room.coords(ZebakCoords.MIDDLE)
-        deps.worldRepo.soundArea(middle, ZebakSynths.JUGS_SHOOT, radius = SOUND_RADIUS)
+        val source = room.coords(ZebakCoords.THROW_SOUND)
+        deps.worldRepo.soundArea(source, ZebakSynths.JUGS_SHOOT, radius = SOUND_RADIUS)
 
         for (tile in acid) throwAt(ZebakSpots.ACID, tile) { room.poison.land(listOf(tile)) }
         for (boulder in boulders) {

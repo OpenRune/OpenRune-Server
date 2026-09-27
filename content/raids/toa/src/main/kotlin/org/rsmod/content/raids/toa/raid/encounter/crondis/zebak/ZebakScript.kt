@@ -8,7 +8,6 @@ import org.rsmod.api.script.onApNpc4
 import org.rsmod.api.script.onNpcHit
 import org.rsmod.api.script.onNpcQueue
 import org.rsmod.api.script.onOpLoc1
-import org.rsmod.api.script.onPlayerHit
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
@@ -60,7 +59,5 @@ class ZebakScript : PluginScript() {
         onOpLoc1(ZebakLocs.CLIMBING_ROCK) {
             ZebakEncounter.onClimbRock(player, it.loc.coords, it.loc.angle.id)
         }
-
-        onPlayerHit { if (hit.damage > 0) ZebakEncounter.onPlayerDamaged(player, hit.damage) }
     }
 }

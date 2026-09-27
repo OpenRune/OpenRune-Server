@@ -73,8 +73,8 @@ internal class TidalWaves(private val room: ZebakEncounter) : ZebakSpecial {
             .take(deps.random.of(ZebakJugs.THROWN_MIN, ZebakJugs.THROWN_MAX))
         val acid = room.freeTiles(ZebakCoords.GROUND_MIN, ZebakCoords.GROUND_MAX, emptyList())
             .take(ACID_POOLS)
-        val middle = room.coords(ZebakCoords.MIDDLE)
-        deps.worldRepo.soundArea(middle, ZebakSynths.JUGS_SHOOT, radius = SOUND_RADIUS)
+        val source = room.coords(ZebakCoords.THROW_SOUND)
+        deps.worldRepo.soundArea(source, ZebakSynths.JUGS_SHOOT, radius = SOUND_RADIUS)
         val mouth = room.coords(ZebakCoords.PROJECTILE_START)
         for (tile in acid) {
             val flight = deps.worldRepo.lob(ZebakSpots.ACID, mouth, tile)

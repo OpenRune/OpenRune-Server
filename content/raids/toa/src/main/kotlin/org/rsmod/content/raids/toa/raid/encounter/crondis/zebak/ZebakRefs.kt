@@ -51,7 +51,8 @@ internal object ZebakSeqs {
     const val TAIL_DEATH = "seq.npc_zebak02_death"
     const val PLAYER_PUSHED = "seq.warguild_parry_defend"
     const val PLAYER_KNOCKED = "seq.agilityarena_player_spikedback"
-    const val PLAYER_MOVE_JUG = "seq.human_leverdown"
+    /** Capture: push and pull both. */
+    const val PLAYER_MOVE_JUG = "seq.human_pickuptable"
     const val SWIM_READY = "seq.human_swim_ready"
     const val SWIM = "seq.human_swim"
 
@@ -106,6 +107,8 @@ internal object ZebakSynths {
     const val PLAYER_PUSHED = "synth.toa_zebak_roar_single_tremor_03"
     const val RUMBLING = "synth.rumbling"
     const val WAVE_HIT = "synth.toa_zebak_death_second_floor_hit_01"
+    const val JUG_BREAK = "synth.watersplash"
+    const val JUG_OFF_FLOOR = "synth.toa_zebak_jug_break_02"
 
     /** (synth, delay) pairs, Offline_Scape SCREAM_SOUNDS. */
     val SCREAM =

@@ -1,8 +1,5 @@
 package org.rsmod.content.raids.toa.raid.encounter.crondis.puzzle
 
-import dev.openrune.ServerCacheManager
-import dev.openrune.rscm.RSCM.asRSCM
-import dev.openrune.rscm.RSCMType
 import java.awt.Color
 import kotlin.math.floor
 import org.rsmod.api.player.hit.modifier.NoopPlayerHitModifier
@@ -12,13 +9,18 @@ import org.rsmod.api.player.output.runClientScript
 import org.rsmod.api.player.output.soundSynth
 import org.rsmod.api.player.stat.statSub
 import org.rsmod.api.player.ui.setColour
+import org.rsmod.api.player.vars.intVarBit
+import org.rsmod.api.player.vars.intVarp
 import org.rsmod.content.raids.toa.raid.ToaRaid
 import org.rsmod.content.raids.toa.raid.ToaRoom
 import org.rsmod.content.raids.toa.raid.encounter.ToaEncounter
 import org.rsmod.content.raids.toa.raid.encounter.ToaStage
+import org.rsmod.content.raids.toa.raid.encounter.crondis.zebak.npcType
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
+import org.rsmod.game.headbar.Headbar
 import org.rsmod.game.hit.HitType
+import org.rsmod.game.hit.Hitmark
 import org.rsmod.game.loc.BoundLocInfo
 import org.rsmod.game.loc.LocAngle
 import org.rsmod.game.loc.LocShape
@@ -31,8 +33,8 @@ import org.rsmod.map.CoordGrid
  *
  * Players take water containers, fill them at the four waterfalls and water the Palm of
  * Resourcefulness. The palm needs 175 water, +125 per extra player (OSRS Wiki); it grows a stage
- * every 25% (npcs toa_crondis_tree_1..5), and at the fifth stage the room is complete and the end
- * barrier opens.
+ * every 25% by transforming into toa_crondis_tree_1..5, and at the fifth stage the room is
+ * complete and the end barrier opens.
  *
  * This file is the room's state: the palm and its progress bar, the waterfalls, and the hazard
  * tick that runs [CrondisAcid], [CrondisSpears] and [CrondisCrocodiles]. The ops (take, fill,
@@ -69,8 +71,9 @@ class CrondisPuzzleEncounter(raid: ToaRaid, room: ToaRoom, region: Region, contr
         }
         for (tile in CrondisCoords.STATUES_SOUTH) addLoc(CrondisLocs.STATUE, tile, LocAngle.West)
         for (tile in CrondisCoords.STATUES_NORTH) addLoc(CrondisLocs.STATUE, tile, LocAngle.East)
+        for ((tile, angle) in CrondisCoords.CROC_WALLS) addLoc(CrondisLocs.CROC_WALL, tile, angle)
         addLoc(CrondisLocs.PALM_BLOCKER, CrondisCoords.PALM, LocAngle.West)
-        spawnPalm(stage = 0)
+        spawnPalm()
     }
 
     override fun onStart() {
@@ -97,15 +100,22 @@ class CrondisPuzzleEncounter(raid: ToaRaid, room: ToaRoom, region: Region, contr
         player.removeContainers()
     }
 
+    /** Capture: the bar stays up, fades out 5 ticks after completion and is cleared 4 later. */
     override fun onComplete() {
-        for (player in players) {
-            closeBar(player)
-            player.removeContainers()
+        for (player in players) player.removeContainers()
+        schedule(BAR_FADE_DELAY) {
+            for (player in players) player.runClientScript(SCRIPT_HP_HUD_FADE_OUT, fadeArgs())
+        }
+        schedule(BAR_CLEAR_DELAY) {
+            for (player in players) {
+                closeBar(player)
+                player.clearBarVars()
+            }
         }
         for (obj in floorContainers) deps.objRepo.del(obj, Int.MAX_VALUE)
         floorContainers.clear()
         restoreWaterfalls()
-        removeEndBarrier()
+        openEndBarrier()
         resetHazards()
         spears.idle()
         crocodiles.clear()
@@ -117,7 +127,7 @@ class CrondisPuzzleEncounter(raid: ToaRaid, room: ToaRoom, region: Region, contr
             player.removeContainers()
         }
         water = 0
-        spawnPalm(stage = 0)
+        spawnPalm()
         restoreWaterfalls()
         resetHazards()
         spears.idle()
@@ -127,61 +137,98 @@ class CrondisPuzzleEncounter(raid: ToaRaid, room: ToaRoom, region: Region, contr
     // ---- The palm ----
 
     /**
-     * Adds [amount] water to the palm (Offline_Scape: a "shield charge" hit on the palm). Grows
-     * the palm when it crosses a 25% step; the last step completes the room.
+     * Adds [amount] water to the palm. Capture: the hitsplat shows everything poured, even past
+     * the goal. Grows the palm when it crosses a 25% step; the last step completes the room.
      */
     fun waterPalm(amount: Int) {
         if (stage != ToaStage.STARTED || amount <= 0) return
         water = (water + amount).coerceAtMost(goal)
         for (player in players) updateBar(player)
+        showPalmHit(CrondisMarks.PALM_WATERED, amount)
 
         val newStage = stageFor(water)
         if (newStage == palmStage) return
         for (player in players) player.soundSynth(CrondisSynths.PALM_GROW)
-        spawnPalm(newStage)
-        if (newStage == FINAL_STAGE) {
-            complete()
-        } else {
-            // The new palm is a new npc, so the bar is re-pointed at it.
-            for (player in players) openBar(player)
-        }
+        setPalmStage(newStage)
+        // Capture: the finished palm never gets the bar; it fades out instead (onComplete).
+        if (newStage == FINAL_STAGE) complete() else pointBarsAtPalm()
     }
 
     /**
      * A crocodile's bite: the palm loses water and shrinks back a stage if it drops below one
-     * (Offline_Scape PALM_LOWER hit). Never undoes completion: at the last stage the room is over.
+     * (Offline_Scape PALM_LOWER hit; the capture never drops below a stage). Never undoes
+     * completion: at the last stage the room is over.
      */
     internal fun drainPalm(amount: Int) {
         if (stage != ToaStage.STARTED || water <= 0) return
-        water = (water - amount).coerceAtLeast(0)
+        val drained = amount.coerceAtMost(water)
+        water -= drained
         for (player in players) updateBar(player)
+        showPalmHit(CrondisMarks.PALM_DRAINED, drained)
         val newStage = stageFor(water)
         if (newStage < palmStage) {
             for (player in players) player.soundSynth(CrondisSynths.PALM_SHRINK)
-            spawnPalm(newStage)
-            for (player in players) openBar(player)
+            setPalmStage(newStage)
+            pointBarsAtPalm()
         }
     }
 
     /** Offline_Scape getNpcId: stage i while water < goal * (i + 1) / 4. */
     private fun stageFor(water: Int): Int = (water * FINAL_STAGE / goal).coerceAtMost(FINAL_STAGE)
 
-    /**
-     * The palm stages are separate npc types, so a stage change replaces the npc (Offline_Scape
-     * transformed it).
-     */
-    private fun spawnPalm(stage: Int) {
+    /** A new palm at the first stage (room built or reset). */
+    private fun spawnPalm() {
         palm?.let(::despawn)
-        palm = spawnNpc(CrondisNpcs.PALMS[stage], CrondisCoords.PALM)
+        palm = spawnNpc(CrondisNpcs.PALMS[0], CrondisCoords.PALM)
+        palmStage = 0
+    }
+
+    /** Capture: the palm transforms (tree_1 -> 2 -> 4 -> 5 in one run); it isn't replaced. */
+    private fun setPalmStage(stage: Int) {
+        val npc = palm ?: return
         palmStage = stage
+        if (stage == 0) {
+            npc.resetTransmog()
+        } else {
+            npc.transmog(npcType(CrondisNpcs.PALMS[stage]), Int.MAX_VALUE)
+        }
+    }
+
+    // ---- The palm's headbar and hitsplats ----
+
+    private fun showPalmHit(hitmark: Int, amount: Int) {
+        val npc = palm ?: return
+        npc.showHitmark(Hitmark.fromNoSource(hitmark, hitmark, hitmark, amount, delay = 0))
+        showPalmHeadbar()
+    }
+
+    /**
+     * The engine's own headbar fill (rounded down). It matches the capture's samples except one:
+     * 50 water showed 35, where rounding down gives 34.
+     */
+    private fun showPalmHeadbar() {
+        val npc = palm ?: return
+        val fill = water * CrondisMarks.PALM_HEADBAR_SEGMENTS / goal
+        val id = CrondisMarks.PALM_HEADBAR
+        npc.showHeadbar(Headbar.fromNoSource(id, id, fill, fill, startTime = 0, endTime = 0))
     }
 
     // ---- Progress bar (Offline_Scape HpHud: 0 -> goal as the palm is watered) ----
 
+    /** onOpen points the bar at the base npc; the palm may already be transformed. */
     private fun openBar(player: Player) {
         val npc = palm ?: return
         deps.bossHpBar.onOpen(player, npc)
+        player.barNpc = npc.visType.id
         updateBar(player)
+    }
+
+    /** Capture: the bar's npc follows a transform a tick later, with no reopen. */
+    private fun pointBarsAtPalm() {
+        schedule(1) {
+            val npc = palm ?: return@schedule
+            for (player in players) player.barNpc = npc.visType.id
+        }
     }
 
     private fun updateBar(player: Player) {
@@ -199,6 +246,16 @@ class CrondisPuzzleEncounter(raid: ToaRaid, room: ToaRoom, region: Region, contr
         deps.bossHpBar.onClose(player, npc, instant = true)
         player.setColour(CrondisComponents.BAR_REMAINING, BAR_REMAINING_DEFAULT)
     }
+
+    private fun Player.clearBarVars() {
+        barNpc = BAR_NPC_NONE
+        barHp = 0
+        barBaseHp = 0
+        barBoss = 0
+    }
+
+    /** hp_hud_fade_out's arguments: the bar's components, then 0. */
+    private fun fadeArgs(): List<Any> = deps.bossHpBar.commonComponents.toList() + 0
 
     // ---- Waterfalls ----
 
@@ -231,6 +288,8 @@ class CrondisPuzzleEncounter(raid: ToaRaid, room: ToaRoom, region: Region, contr
      */
     private fun hazardTick() {
         if (stage != ToaStage.STARTED) return
+        // Capture: re-sent every 2 ticks from 2 ticks after the start, even when unchanged.
+        if ((deps.mapClock.cycle - startCycle) % HEADBAR_INTERVAL == 0) showPalmHeadbar()
         val targets = hazardTargets()
         acid.tick(targets)
         spears.tick(targets)
@@ -316,14 +375,14 @@ class CrondisPuzzleEncounter(raid: ToaRaid, room: ToaRoom, region: Region, contr
         if (npc.isSlotAssigned) deps.npcRepo.del(npc, Int.MAX_VALUE)
     }
 
-    /** Offline_Scape onRoomEnd: the barrier on the west side. */
-    private fun removeEndBarrier() {
-        val barrierId = CrondisLocs.BARRIER.asRSCM(RSCMType.LOC)
-        val barrier = ServerCacheManager.getObject(barrierId) ?: return
+    /**
+     * Capture: the barrier on the west side becomes invisible_type8_nonblocking (rotation 3);
+     * adding it in the same layer replaces the barrier.
+     */
+    private fun openEndBarrier() {
         for (dz in 0 until END_BARRIER_LENGTH) {
-            val tile = coords(CrondisCoords.END_BARRIER.translate(0, dz))
-            val loc = deps.locRepo.findExact(tile, barrier) ?: continue
-            deps.locRepo.del(loc, Int.MAX_VALUE)
+            val tile = CrondisCoords.END_BARRIER.translate(0, dz)
+            addLoc(CrondisLocs.BARRIER_OPEN, tile, LocAngle.South)
         }
     }
 
@@ -346,6 +405,13 @@ class CrondisPuzzleEncounter(raid: ToaRaid, room: ToaRoom, region: Region, contr
         private const val DEFENCE_DRAIN = 6
         private const val AGILITY_DRAIN = 3
         private const val END_BARRIER_LENGTH = 3
+        private const val HEADBAR_INTERVAL = 2
+        private const val BAR_FADE_DELAY = 5
+        private const val BAR_CLEAR_DELAY = 9
+        private const val BAR_NPC_NONE = -1
+
+        /** Client script 2889: `hp_hud_fade_out`. */
+        private const val SCRIPT_HP_HUD_FADE_OUT = 2889
 
         /** osrs-dumps interface/hpbar_hud.if3, health_bar_remaining. */
         private val BAR_REMAINING_DEFAULT = Color(0x00CC00)
@@ -382,3 +448,8 @@ class CrondisPuzzleEncounter(raid: ToaRaid, room: ToaRoom, region: Region, contr
         }
     }
 }
+
+private var Player.barNpc by intVarp("varp.hpbar_hud_npc")
+private var Player.barHp by intVarBit("varbit.hpbar_hud_hp")
+private var Player.barBaseHp by intVarBit("varbit.hpbar_hud_basehp")
+private var Player.barBoss by intVarBit("varbit.hpbar_hud_boss")

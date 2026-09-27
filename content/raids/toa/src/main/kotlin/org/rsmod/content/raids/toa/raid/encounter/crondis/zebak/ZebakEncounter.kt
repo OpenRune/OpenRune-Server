@@ -8,7 +8,6 @@ import org.rsmod.api.player.hook.TeleportType
 import org.rsmod.api.player.midiSong
 import org.rsmod.api.player.output.runClientScript
 import org.rsmod.api.player.output.soundSynth
-import org.rsmod.api.player.vars.intVarBit
 import org.rsmod.content.raids.toa.raid.ToaPath
 import org.rsmod.content.raids.toa.raid.ToaRaid
 import org.rsmod.content.raids.toa.raid.ToaRaidManager.currentRaid
@@ -106,7 +105,6 @@ class ZebakEncounter(raid: ToaRaid, room: ToaRoom, region: Region, controllerId:
         for (player in players) {
             openBar(player)
             player.midiSong(ZebakSynths.MIDI)
-            player.toaDamageTakenCurrent = 0
         }
         attackCountdown = FIRST_ATTACK_DELAY
         bloodMagic.start()
@@ -499,7 +497,7 @@ class ZebakEncounter(raid: ToaRaid, room: ToaRoom, region: Region, controllerId:
         }
 
         internal fun onJugBroken(jug: Npc) {
-            roomOf(jug)?.jugs?.shatter(jug, jug.coords)
+            roomOf(jug)?.jugs?.hit(jug)
         }
 
         internal fun onJugTick(jug: Npc) {
@@ -524,25 +522,5 @@ class ZebakEncounter(raid: ToaRaid, room: ToaRoom, region: Region, controllerId:
 
         internal fun isSwimming(player: Player): Boolean =
             roomOf(player)?.water?.isSwimming(player) == true
-
-        /**
-         * Capture: every damaging hit updates toa_damage_taken and toa_damage_taken_current (reset
-         * at the challenge start). Read as the player's damage taken. TODO: confirm, and whether
-         * other rooms do this too.
-         */
-        internal fun onPlayerDamaged(player: Player, damage: Int) {
-            val room = roomOf(player) ?: return
-            if (room.stage != ToaStage.STARTED) return
-            player.toaDamageTaken = (player.toaDamageTaken + damage).coerceAtMost(TAKEN_MAX)
-            player.toaDamageTakenCurrent =
-                (player.toaDamageTakenCurrent + damage).coerceAtMost(TAKEN_CURRENT_MAX)
-        }
-
-        /** Their bit widths (osrs-dumps config/dump.varbit). */
-        private const val TAKEN_MAX = 65_535
-        private const val TAKEN_CURRENT_MAX = 32_767
     }
 }
-
-private var Player.toaDamageTaken by intVarBit("varbit.toa_damage_taken")
-private var Player.toaDamageTakenCurrent by intVarBit("varbit.toa_damage_taken_current")
