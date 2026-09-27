@@ -7,8 +7,9 @@ import org.rsmod.map.CoordGrid
 
 /**
  * Jugs (Offline_Scape CrondisJug / JugPushAction). Push or Pull sets one rolling a tile a tick,
- * diagonally too; the standing jug becomes the rolling jug npc. It shatters on a boulder, splashes
- * away off the floor, and clears acid when it shatters: 5x5, or 3x3 with Upset Stomach.
+ * diagonally too; the standing jug becomes the rolling jug npc. It shatters on a boulder or a tick
+ * after a hit, splashes away at the floor's edge, and clears acid when it shatters: 5x5, or 3x3
+ * with Upset Stomach.
  */
 internal class ZebakJugs(private val room: ZebakEncounter) {
     private val deps = room.raid.deps
@@ -62,9 +63,21 @@ internal class ZebakJugs(private val room: ZebakEncounter) {
     }
 
     /**
+     * Capture: any hit breaks a jug, a tick after the hitsplat, where it stands; a rolling jug
+     * stops. Rolling jugs can be attacked too.
+     */
+    fun hit(jug: Npc) {
+        val roll = jugs[jug] ?: return
+        roll.dx = 0
+        roll.dz = 0
+        room.schedule(1) { shatter(jug, jug.coords) }
+    }
+
+    /**
      * Once a tick (config `timer = 1`). The boulder's tile blocks walking, so a jug shatters beside
      * it with the splash centred on the boulder (Offline_Scape rolled onto it; same tiles cleared).
-     * TODO: the wiki says vanilla jugs stop after some distance; Offline_Scape rolls until stopped.
+     * Capture: waves roll jugs to the last row (z 5397 / 5419), where they splash away on their own
+     * tile. TODO (Z8): vanilla jugs stop after some distance; Offline_Scape rolls until stopped.
      */
     fun tick(jug: Npc) {
         val roll = jugs[jug] ?: return
@@ -72,12 +85,19 @@ internal class ZebakJugs(private val room: ZebakEncounter) {
         val next = jug.coords.translate(roll.dx, roll.dz)
         when {
             room.boulders.isBoulder(next) -> shatter(jug, next)
-            deps.collision.isWalkBlocked(next) -> {
-                deps.worldRepo.spotanimMap(spotanim(ZebakSpots.WATER_SPLASH), next)
-                remove(jug)
-            }
+            deps.collision.isWalkBlocked(next) || !onFloor(next) -> splashAway(jug)
             else -> jug.walk(next)
         }
+    }
+
+    private fun onFloor(tile: CoordGrid): Boolean =
+        tile.z in room.coords(ZebakCoords.WAVE_SOUTH).z..room.coords(ZebakCoords.WAVE_NORTH).z
+
+    private fun splashAway(jug: Npc) {
+        val tile = jug.coords
+        deps.worldRepo.spotanimMap(spotanim(ZebakSpots.WATER_SPLASH), tile, height = SPLASH_HEIGHT)
+        deps.worldRepo.soundArea(tile, ZebakSynths.JUG_OFF_FLOOR, radius = SPLASH_SOUND_RADIUS)
+        remove(jug)
     }
 
     /** Water flies to each acid tile in range, cleared a tick later. */
@@ -85,6 +105,7 @@ internal class ZebakJugs(private val room: ZebakEncounter) {
         if (jug !in jugs) return
         remove(jug)
         deps.worldRepo.spotanimMap(spotanim(ZebakSpots.JUG_BREAK), centre)
+        deps.worldRepo.soundArea(centre, ZebakSynths.JUG_BREAK, radius = BREAK_SOUND_RADIUS)
         val range = if (room.raid.isActive(ZebakInvocations.UPSET_STOMACH)) 1 else 2
         val cleared = ArrayList<CoordGrid>()
         for (dx in -range..range) {
@@ -135,5 +156,8 @@ internal class ZebakJugs(private val room: ZebakEncounter) {
         private const val LANDING_MIN = 2
         private const val LANDING_MAX = 5
         private const val LAND_SOUND_RADIUS = 5
+        private const val BREAK_SOUND_RADIUS = 10
+        private const val SPLASH_SOUND_RADIUS = 2
+        private const val SPLASH_HEIGHT = 10
     }
 }

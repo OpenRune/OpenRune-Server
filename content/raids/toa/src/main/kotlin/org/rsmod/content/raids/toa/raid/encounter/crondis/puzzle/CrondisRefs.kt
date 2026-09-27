@@ -27,7 +27,8 @@ internal object CrondisLocs {
     const val ROW_TRAP_FIRE = "loc.toa_crondis_row_trap_fire"
     const val ACID_ORB = "loc.toa_crondis_orb"
     const val PALM_BLOCKER = "loc.invisible_type8_blocking_size5"
-    const val BARRIER = "loc.toa_path_barrier"
+    const val BARRIER_OPEN = "loc.invisible_type8_nonblocking"
+    const val CROC_WALL = "loc.toa_wall02_crocodiles04"
 }
 
 internal object CrondisSeqs {
@@ -58,6 +59,17 @@ internal object CrondisSynths {
 
 internal object CrondisComponents {
     const val BAR_REMAINING = "component.hpbar_hud:health_bar_remaining"
+}
+
+/** Unnamed in the cache (osrs-dumps config/dump.headbar, dump.hitmark). */
+internal object CrondisMarks {
+    /** standard_shield_120: the palm's headbar, 120 segments. */
+    const val PALM_HEADBAR = 11
+    const val PALM_HEADBAR_SEGMENTS = 120
+
+    /** On the palm: water poured, and water a crocodile drank. */
+    const val PALM_WATERED = 11
+    const val PALM_DRAINED = 15
 }
 
 internal object CrondisVarbits {
