@@ -1,14 +1,11 @@
 package org.rsmod.content.raids.toa.raid.supplies
 
+import org.rsmod.content.other.consumables.ActivityConsumable
 import org.rsmod.content.other.consumables.ConsumableActivityGate
+import org.rsmod.content.other.consumables.ConsumableType
 import org.rsmod.content.raids.toa.raid.ToaRaidManager.currentRaid
 import org.rsmod.game.entity.Player
 
-/**
- * Unlocks the consumables module's Tombs of Amascut supplies (potion key `tombs_of_amascut`)
- * inside the raid, and names a player's raid allies for tears of Elidinis. Ghosts aren't allies:
- * they're dead until the room ends.
- */
 class ToaConsumableGate : ConsumableActivityGate {
     override fun isInside(player: Player, activity: String): Boolean {
         if (activity != ACTIVITY) return false
@@ -23,7 +20,25 @@ class ToaConsumableGate : ConsumableActivityGate {
         }
     }
 
+    override fun refusal(player: Player, consumable: ActivityConsumable): String? {
+        val raid = player.currentRaid ?: return null
+        if (!raid.isInside(player)) return null
+        return when (consumable.type) {
+            ConsumableType.FOOD,
+            ConsumableType.COMBO_FOOD -> if (raid.isActive(ON_A_DIET)) NO_FOOD else null
+            ConsumableType.POTION ->
+                if (consumable.restoresHitpoints && raid.isActive(DEHYDRATION)) NO_POTION else null
+        }
+    }
+
     private companion object {
         const val ACTIVITY = "tombs_of_amascut"
+
+        const val ON_A_DIET = "On a Diet"
+        const val DEHYDRATION = "Dehydration"
+
+        const val NO_FOOD = "You've been prevented from consuming food within the Tombs of Amascut"
+        const val NO_POTION =
+            "You've been prevented from drinking this potion within the Tombs of Amascut"
     }
 }
