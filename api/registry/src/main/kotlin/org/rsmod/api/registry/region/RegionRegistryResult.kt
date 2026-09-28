@@ -21,6 +21,8 @@ public class RegionRegistryResult {
 
         public class CreateLarge(region: Region) : Success(region)
 
+        public class CreateWorldEntity(region: Region) : Success(region)
+
         public sealed class Failure : Add()
 
         public data object NoAvailableSlot : Failure()
@@ -32,6 +34,8 @@ public class RegionRegistryResult {
         public data object RemoveSmall : Success()
 
         public data object RemoveLarge : Success()
+
+        public data object RemoveWorldEntity : Success()
 
         public sealed class Failure : Delete()
 

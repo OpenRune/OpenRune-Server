@@ -1,6 +1,5 @@
 package org.rsmod.content.drops
 
-import org.rsmod.api.area.checker.isInWilderness
 import org.rsmod.api.area.checker.isInWildernessBasic
 import org.rsmod.game.entity.Player
 

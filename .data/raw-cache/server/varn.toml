@@ -60,3 +60,6 @@ id = "varn.skip_killcount"
 
 [[varn]]
 id = "varn.muspah_melee_still_ticks"
+
+[[varn]]
+id = "varn.callisto_roars"

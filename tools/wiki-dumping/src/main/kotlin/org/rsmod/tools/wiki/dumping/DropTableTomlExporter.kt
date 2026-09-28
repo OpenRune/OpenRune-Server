@@ -1,11 +1,11 @@
 package org.rsmod.tools.wiki.dumping
 
-import org.rsmod.api.droptable.toml.DropTableTomlWriter
 import java.nio.file.Path
 import kotlin.io.path.createDirectories
 import kotlin.io.path.writeText
-import org.rsmod.api.droptable.toml.TomlDropTableDef
+import org.rsmod.api.droptable.toml.DropTableTomlWriter
 import org.rsmod.api.droptable.toml.TomlChanceEntry
+import org.rsmod.api.droptable.toml.TomlDropTableDef
 import org.rsmod.api.droptable.toml.TomlGuaranteedEntry
 import org.rsmod.api.droptable.toml.TomlSeparateRoll
 import org.rsmod.api.droptable.toml.TomlWeightedEntry
@@ -197,12 +197,14 @@ private fun SeparateRollSpec.toTomlSeparateRoll(): TomlSeparateRoll =
     TomlSeparateRoll(
         numerator = accessNumerator,
         denominator = accessDenominator,
+        boosted = boosted,
         entries = entries.map { it.toTomlWeightedEntry() },
     )
 
 private fun ResolvedDropEntry.toTomlWeightedEntry(): TomlWeightedEntry =
     TomlWeightedEntry(
         weight = weight ?: error("Main entry '${obj}' is missing weight."),
+        boosted = boosted,
         obj = obj,
         count = formatTomlCount(),
         shouldDropLootingBag = requiresLootingBagCondition(),
@@ -236,6 +238,7 @@ private fun ResolvedDropEntry.toTomlChanceEntry(): TomlChanceEntry =
             exportClueDenominator(
                 chanceDenominator() ?: error("Chance entry '${obj}' is missing outOf."),
             ),
+        boosted = boosted,
         obj = obj,
         count = formatTomlCount(),
         shouldDropLootingBag = requiresLootingBagCondition(),

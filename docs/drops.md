@@ -276,6 +276,50 @@ Brimstone keys on **guaranteed** tables use `killCondition` (see above). Tertiar
 
 ---
 
+## Boosted drops (drop-rate modifiers)
+
+A roll marked **boosted** has its rate multiplied by the server-wide and per-player modifiers;
+unmarked rolls are never touched. The effective rate is `1 / floor(denominator / multiplier)`
+(1/512 at 2x → 1/256, at 5x → 1/102), matching the OSRS wiki's Demonic Pacts League table.
+Guaranteed drops are never boosted.
+
+| Roll type | What the flag applies to |
+|-----------|--------------------------|
+| Separate roll, pre-roll, tertiary | the whole `N outOf M` roll |
+| Main-table weighted entry | that entry — its share of the pool becomes `1 / floor(total / (weight × multiplier))` and the other entries share the remainder proportionally |
+
+**TOML:** `boosted = true` on a `[[main.entries]]`, `[[main.separate_rolls]]`, `[[pre_roll]]`,
+`[[pre_roll_separate_rolls]]` or `[[tertiary]]` block.
+
+**Kotlin:** wrap the lines in a `boosted { }` scope (inside `rsPlayerWeightedTable`,
+`rsPlayerPrerollTable` or `rsPlayerTertiaryTable`):
+
+```kotlin
+boosted {
+    1 outOf 512 separate "obj.abyssal_whip" count 1
+}
+boosted {
+    1 weight "obj.dragon_boots" count 1
+}
+```
+
+**Do not hand-maintain the flag on wiki-dumped tables.** The dumper overwrites those files, so it
+derives the flag from `tools/wiki-dumping/src/main/resources/boosted-drops.toml`. Each rule lists
+`objs`, optionally narrowed by `npcs` (globs) and `rolls` (`main`, `separate`, `pre_roll`,
+`tertiary`); a roll is boosted when any of its objs match. Add rules there, then re-dump.
+
+**Multipliers** multiply together:
+
+- Server-wide: `gameplay.drop-rates.multiplier` in `game.yml` (default `1.0`, must be positive).
+- Per player: permanent `varp.drop_rate_multiplier` in percent (`200` = 2x; `0` = unset = 1x).
+  For testing, `::varp drop_rate_multiplier 500`. Rebuild the cache (`buildCache`) after pulling
+  the varp definition.
+
+The clue-scroll boost from Mortimer's slayer modifier is separate and only applies to clue
+tertiaries; on a boosted clue tertiary it multiplies with the modifiers above.
+
+---
+
 ## Shared subtables
 
 Reusable tables in `content/drops/.../tables/shared/` — herb table, gem table, rare drop table, etc.

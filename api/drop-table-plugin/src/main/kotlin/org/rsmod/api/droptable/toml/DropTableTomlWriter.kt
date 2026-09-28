@@ -31,6 +31,7 @@ public object DropTableTomlWriter {
             sb.appendLine("[[pre_roll_separate_rolls]]")
             sb.appendLine("numerator = ${roll.numerator}")
             sb.appendLine("denominator = ${roll.denominator}")
+            appendBoosted(sb, roll.boosted)
             sb.appendLine()
             for (entry in roll.entries) {
                 sb.appendLine("[[pre_roll_separate_rolls.entries]]")
@@ -53,6 +54,7 @@ public object DropTableTomlWriter {
                 sb.appendLine("[[main.separate_rolls]]")
                 sb.appendLine("numerator = ${roll.numerator}")
                 sb.appendLine("denominator = ${roll.denominator}")
+                appendBoosted(sb, roll.boosted)
                 sb.appendLine()
                 for (entry in roll.entries) {
                     sb.appendLine("[[main.separate_rolls.entries]]")
@@ -87,6 +89,7 @@ public object DropTableTomlWriter {
     private fun appendChanceFields(sb: StringBuilder, entry: TomlChanceEntry) {
         sb.appendLine("numerator = ${entry.numerator}")
         sb.appendLine("denominator = ${entry.denominator}")
+        appendBoosted(sb, entry.boosted)
         sb.appendLine("obj = ${quote(entry.obj)}")
         appendCount(sb, entry.count, entry.countMin, entry.countMax)
         appendHooks(sb, entry.toHooks())
@@ -94,6 +97,7 @@ public object DropTableTomlWriter {
 
     private fun appendWeightedFields(sb: StringBuilder, entry: TomlWeightedEntry) {
         sb.appendLine("weight = ${entry.weight}")
+        appendBoosted(sb, entry.boosted)
         when {
             entry.nothing -> sb.appendLine("nothing = true")
             entry.shared != null -> sb.appendLine("shared = ${quote(entry.shared)}")
@@ -103,6 +107,12 @@ public object DropTableTomlWriter {
             }
         }
         appendHooks(sb, entry.toHooks())
+    }
+
+    private fun appendBoosted(sb: StringBuilder, boosted: Boolean) {
+        if (boosted) {
+            sb.appendLine("boosted = true")
+        }
     }
 
     private fun appendCount(

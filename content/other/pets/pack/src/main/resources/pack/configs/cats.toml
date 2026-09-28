@@ -1,0 +1,40 @@
+[[enum]]
+isServerOnly = true
+id = "enum.cat_stages"
+keyType = "INT"
+valueType = "STRING"
+
+[enum.values]
+0 = "Kitten"
+1 = "Cat"
+2 = "Overgrown cat"
+3 = "Wily cat"
+4 = "Lazy cat"
+
+[[enum]]
+isServerOnly = true
+id = "enum.cat_catch_chances"
+keyType = "INT"
+valueType = "INT"
+
+[enum.values]
+0 = 10
+1 = 50
+2 = 0
+3 = 50
+4 = 33
+
+[[enum]]
+isServerOnly = true
+id = "enum.cat_colours"
+keyType = "INT"
+valueType = "STRING"
+
+[enum.values]
+0 = "Grey and black"
+1 = "White"
+2 = "Brown"
+3 = "Black"
+4 = "Brown and grey"
+5 = "Blue and grey"
+6 = "Hell"

@@ -5,7 +5,7 @@ import dtx.core.RollResult
 import dtx.core.Rollable
 import dtx.core.RollableHooks
 
-public interface ChanceRollable<T, R>: Rollable<T, R> {
+public interface ChanceRollable<T, R> : Rollable<T, R> {
 
     public val chance: Double
     public val rollable: Rollable<T, R>
@@ -21,7 +21,7 @@ public interface ChanceRollable<T, R>: Rollable<T, R> {
         return rollable
     }
 
-    private data object Empty: ChanceRollable<Any?, Any?> {
+    private data object Empty : ChanceRollable<Any?, Any?> {
 
         override fun includeInRoll(onTarget: Any?, otherArgs: ArgMap): Boolean {
             return false
@@ -64,7 +64,7 @@ public class ChanceRollableImpl<T, R>(
     override val chance: Double,
     override val rollable: Rollable<T, R>,
     private val hooks: RollableHooks<T, R> = RollableHooks.Default()
-): ChanceRollable<T, R>, RollableHooks<T, R> by hooks {
+) : ChanceRollable<T, R>, RollableHooks<T, R> by hooks {
 
     override fun selectResult(target: T, otherArgs: ArgMap): RollResult<R> {
         return rollable.roll(target, otherArgs)

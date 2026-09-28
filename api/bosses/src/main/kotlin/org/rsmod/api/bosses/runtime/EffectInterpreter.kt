@@ -5,6 +5,8 @@ import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import dev.openrune.types.ProjAnimType
 import dev.openrune.types.aconverted.SpotanimType
+import kotlin.math.abs
+import kotlin.math.sign
 import org.rsmod.api.bosses.spec.*
 import org.rsmod.api.bosses.spec.HitType as BossHitType
 import org.rsmod.api.combat.commons.CombatEffects
@@ -14,14 +16,17 @@ import org.rsmod.api.combat.commons.player.finishNpcHit
 import org.rsmod.api.combat.commons.player.queueCombatRetaliate
 import org.rsmod.api.combat.commons.types.MeleeAttackType
 import org.rsmod.api.npc.access.StandardNpcAccess
+import org.rsmod.api.npc.heal
 import org.rsmod.api.npc.isValidTarget
 import org.rsmod.api.player.disablePrayers
 import org.rsmod.api.player.hit.modifier.PlayerHitModifier
+import org.rsmod.api.player.hit.modify
 import org.rsmod.api.player.hit.queueImpactHit
 import org.rsmod.api.player.isValidTarget
 import org.rsmod.api.player.output.Camera
 import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.stat.hitpoints
+import org.rsmod.api.player.stat.statDrain
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.game.entity.util.PathingEntityCommon
@@ -78,7 +83,7 @@ class EffectInterpreter(
             is Effect.NoOp -> {}
             is Effect.Message -> applyMessage(effect)
 
-            is Effect.Hit -> applyHit(effect)
+            is Effect.Hit -> applyHit(access, effect)
             is Effect.Projectile -> fireProjectile(access, effect)
             is Effect.TileAoE -> applyTileAoE(effect)
             is Effect.Debris -> applyDebris(effect)
@@ -223,7 +228,7 @@ class EffectInterpreter(
         step(deps.random.of(times))
     }
 
-    private fun applyHit(hit: Effect.Hit) {
+    private fun applyHit(access: StandardNpcAccess, hit: Effect.Hit) {
         val targets = when (val t = hit.target) {
             is TargetExpr.Single -> listOfNotNull(resolveSingle(t))
             is TargetExpr.Multi -> resolveMulti(t)
@@ -237,9 +242,11 @@ class EffectInterpreter(
                 damage = if (cap <= 0) 0 else deps.random.of(cap + 1)
             }
             if (damage > 0) {
-                hit.spotanim?.let { t.spotanim(it, height = hit.spotanimHeight) }
+                hit.spotanim?.let { t.spotanim(it, delay = hit.spotanimDelay ?: 0, height = hit.spotanimHeight) }
             }
-            t.finishNpcHit(npc, delay, hit.type.toEngine(), damage, deps.playerHitModifier, hit.penetration)
+            val landed =
+                t.finishNpcHit(npc, delay, hit.type.toEngine(), damage, deps.playerHitModifier, hit.penetration)
+            scheduleLanding(access, hit, t, damage, landed.damage, delay, clientDelay = 0)
         }
     }
 
@@ -295,7 +302,10 @@ class EffectInterpreter(
                 damage = if (cap <= 0) 0 else deps.random.of(cap + 1)
             }
             if (damage > 0) {
-                hit.spotanim?.let { player.spotanim(it, delay = projAnim.clientCycles, height = hit.spotanimHeight) }
+                hit.spotanim?.let {
+                    val delay = hit.spotanimDelay ?: projAnim.clientCycles
+                    player.spotanim(it, delay = delay, height = hit.spotanimHeight)
+                }
             }
             if (proj.resolveOnImpact) {
                 player.finishNpcImpactHit(
@@ -303,10 +313,13 @@ class EffectInterpreter(
                     projAnim.serverCycles,
                     hit.type.toEngine(),
                     damage,
-                    deps.playerHitModifier,
+                    landingModifier(access, hit, damage),
                     hit.penetration,
                 )
-            } else {
+                showMissSpotanim(hit, player, damage, projAnim.clientCycles)
+                return@let
+            }
+            val landed =
                 player.finishNpcHit(
                     npc,
                     projAnim.serverCycles,
@@ -314,8 +327,65 @@ class EffectInterpreter(
                     damage,
                     deps.playerHitModifier,
                     hit.penetration,
-                )
-            }
+                ).damage
+            scheduleLanding(
+                access,
+                hit,
+                player,
+                damage,
+                landed,
+                projAnim.serverCycles,
+                projAnim.clientCycles,
+            )
+        }
+    }
+
+    /**
+     * Schedules a hit's landing extras: the miss graphic (sent now with a client delay, like
+     * [Effect.Hit.spotanim]), and [Effect.Hit.onHit] / [Effect.Hit.lifesteal] once the hit lands.
+     */
+    private fun scheduleLanding(
+        access: StandardNpcAccess,
+        hit: Effect.Hit,
+        t: Player,
+        rolled: Int,
+        landed: Int,
+        serverDelay: Int,
+        clientDelay: Int,
+    ) {
+        showMissSpotanim(hit, t, rolled, clientDelay)
+        val onHit = landingEffect(hit, rolled)
+        val heal = landed * hit.lifesteal / 100
+        if (onHit == null && heal <= 0) return
+        deps.worldQueues.add(serverDelay) {
+            if (!npc.isValidTarget()) return@add
+            if (heal > 0) npc.heal(heal)
+            onHit?.let { run(access, it) }
+        }
+    }
+
+    private fun landingModifier(
+        access: StandardNpcAccess,
+        hit: Effect.Hit,
+        rolled: Int,
+    ): PlayerHitModifier {
+        val onHit = landingEffect(hit, rolled)
+        if (onHit == null && hit.lifesteal <= 0) return deps.playerHitModifier
+        return PlayerHitModifier { target ->
+            deps.playerHitModifier.modify(this, target)
+            if (!npc.isValidTarget()) return@PlayerHitModifier
+            val heal = damage * hit.lifesteal / 100
+            if (heal > 0) npc.heal(heal)
+            onHit?.let { EffectInterpreter(npc, target, spec, encounter, deps).run(access, it) }
+        }
+    }
+
+    private fun landingEffect(hit: Effect.Hit, rolled: Int): Effect? =
+        hit.onHit?.takeIf { hit.onHitEvenOnMiss || rolled > 0 }
+
+    private fun showMissSpotanim(hit: Effect.Hit, t: Player, rolled: Int, clientDelay: Int) {
+        if (rolled <= 0) {
+            hit.missSpotanim?.let { t.spotanim(it, delay = clientDelay, height = hit.spotanimHeight) }
         }
     }
 
@@ -463,7 +533,11 @@ class EffectInterpreter(
     private fun applyStatDrain(effect: Effect.StatDrain) {
         for (entry in effect.entries) {
             if (deps.random.of(entry.outOf) < entry.chance) {
-                CombatEffects.statDrain(target, listOf(entry.stat), entry.amount)
+                if (entry.percent == 0) {
+                    CombatEffects.statDrain(target, listOf(entry.stat), entry.amount)
+                } else {
+                    target.statDrain(entry.stat, entry.amount, entry.percent)
+                }
             }
         }
     }
@@ -525,8 +599,30 @@ class EffectInterpreter(
                 }
             }
             is TargetExpr.TopN -> listOf(target)
+            is TargetExpr.FacingQuadrant -> playersInFacingQuadrant(expr.reach)
             is TargetExpr.Single -> listOfNotNull(resolveSingle(expr))
             else -> listOf(target)
+        }
+    }
+
+    private fun playersInFacingQuadrant(reach: Int): List<Player> {
+        val half = npc.size / 2
+        val centreX = npc.coords.x + half
+        val centreZ = npc.coords.z + half
+        val targetDx = target.coords.x - centreX
+        val targetDz = target.coords.z - centreZ
+        if (targetDx == 0 && targetDz == 0) return emptyList()
+
+        val vertical = abs(targetDz) >= abs(targetDx)
+        val sign = if (vertical) targetDz.sign else targetDx.sign
+        val limit = half + reach
+        return deps.playerList.filter { player ->
+            if (player.coords.level != npc.coords.level) return@filter false
+            val dx = player.coords.x - centreX
+            val dz = player.coords.z - centreZ
+            if (abs(dx) > limit || abs(dz) > limit) return@filter false
+            val (along, across) = if (vertical) dz to dx else dx to dz
+            along * sign > 0 && abs(across) <= abs(along)
         }
     }
 
@@ -579,6 +675,7 @@ class EffectInterpreter(
                 if (max <= 0) 0 else lo + deps.random.of(max - lo + 1)
             }
             is DamageExpr.PercentOfTargetHp -> (t.hitpoints * expr.fraction).toInt()
+            is DamageExpr.Custom -> expr.roll(npc, t)
             is DamageExpr.Min -> minOf(evaluateDamage(expr.a, hitType, t), evaluateDamage(expr.b, hitType, t))
             is DamageExpr.Max -> maxOf(evaluateDamage(expr.a, hitType, t), evaluateDamage(expr.b, hitType, t))
         }

@@ -67,7 +67,7 @@ public class RSWeightedTableBuilder<T, R> :
     }
 
     private fun captureSeparateRoll(numerator: Int, denominator: Int, rollable: Rollable<T, R>) {
-        inlineSeparateRolls += InlineSeparateRoll(numerator, denominator, rollable)
+        inlineSeparateRolls += InlineSeparateRoll(numerator, denominator, rollable, boostScope)
     }
 
     internal fun hoistInlineSeparateRolls(other: RSWeightedTableBuilder<T, R>) {
@@ -97,6 +97,7 @@ public fun <T, R> RSWeightedTableBuilder<T, R>.group(
     block: RSWeightedTableBuilder<T, R>.() -> Unit,
 ): RSWeightedTableBuilder<T, R> {
     val subBuilder = RSWeightedTableBuilder<T, R>()
+    subBuilder.boostScope = boostScope
     subBuilder.apply(block)
     hoistInlineSeparateRolls(subBuilder)
     absorb(subBuilder)

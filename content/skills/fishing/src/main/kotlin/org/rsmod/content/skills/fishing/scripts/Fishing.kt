@@ -28,7 +28,6 @@ import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.content.skills.fishing.FishRow
 import org.rsmod.content.skills.fishing.FishingCatchLogic
 import org.rsmod.content.skills.fishing.Gate
-import org.rsmod.content.skills.fishing.HeronPet.rollHeron
 import org.rsmod.game.MapClock
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.npc.NpcUid
@@ -276,7 +275,6 @@ constructor(
                 source = SkillingProductSource.Fishing(type),
             )
         val item = product.item
-        rollHeron(item, sharkLureRarity(if (caught.fishId == rawSharkId.asRSCM()) lures else 0))
         if (awardSkillingProduct(product) != SkillingAwardResult.Success) {
             return
         }
@@ -430,15 +428,6 @@ constructor(
             5 -> 0.16
             3 -> 0.20
             else -> 0.25
-        }
-
-    /** Shark lures make the heron 4x, 5x or 6x rarer depending on how many are spent. */
-    private fun sharkLureRarity(lures: Int): Int =
-        when (lures) {
-            5 -> 6
-            3 -> 5
-            1 -> 4
-            else -> 1
         }
 
     /**

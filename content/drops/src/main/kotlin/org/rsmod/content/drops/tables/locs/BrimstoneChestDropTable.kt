@@ -57,8 +57,8 @@ public val brimstoneChestDropTable: RSDropTable<Player, DropRollItem> = RSDropTa
                 val fishing = player.statBase("stat.fishing")
                 val successChance = 1 + fishing / 33
                 fun roll(n: Int) = Random.nextInt(n) < successChance
-                fun fishOrLure(item: DropRollItem) : DropRollItem {
-                    val res = if (Random.nextBoolean())  DropRollItem("obj.shark_lure", 160..500) else item
+                fun fishOrLure(item: DropRollItem): DropRollItem {
+                    val res = if (Random.nextBoolean()) DropRollItem("obj.shark_lure", 160..500) else item
                     return res
                 }
                 RollResult.Single(

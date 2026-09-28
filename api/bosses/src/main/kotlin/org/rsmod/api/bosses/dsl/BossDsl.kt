@@ -98,7 +98,12 @@ class HitBuilder internal constructor() {
     var delay: Int = 0
     private var spotanimSpot: String? = null
     private var spotanimHeight: Int = 0
+    private var spotanimDelay: Int? = null
     private var penetrationPercent: Int = 0
+    private var missSpot: String? = null
+    private var onHitEffect: Effect? = null
+    private var onHitEvenOnMiss: Boolean = false
+    private var lifestealPercent: Int = 0
 
     fun damage(expr: DamageExpr) {
         damageExpr = expr
@@ -112,14 +117,28 @@ class HitBuilder internal constructor() {
     }
 
     /** Plays [spot] on the resolved target(s) when the hit lands, e.g. a magic impact graphic. */
-    fun spotanim(spot: String, height: Int = 0) {
+    fun spotanim(spot: String, height: Int = 0, delay: Int? = null) {
         spotanimSpot = spot
         spotanimHeight = height
+        spotanimDelay = delay
     }
 
     /** Percentage (0-100) of a protection prayer's block this hit ignores. */
     fun penetration(percent: Int) {
         penetrationPercent = percent
+    }
+
+    fun missSpotanim(spot: String) {
+        missSpot = spot
+    }
+
+    fun onHit(effect: Effect, evenOnMiss: Boolean = false) {
+        onHitEffect = effect
+        onHitEvenOnMiss = evenOnMiss
+    }
+
+    fun lifesteal(percent: Int) {
+        lifestealPercent = percent
     }
 
     internal fun commitDamage(expr: DamageExpr) {
@@ -137,7 +156,12 @@ class HitBuilder internal constructor() {
             delay = delay,
             spotanim = spotanimSpot,
             spotanimHeight = spotanimHeight,
+            spotanimDelay = spotanimDelay,
             penetration = penetrationPercent,
+            missSpotanim = missSpot,
+            onHit = onHitEffect,
+            onHitEvenOnMiss = onHitEvenOnMiss,
+            lifesteal = lifestealPercent,
         )
 }
 

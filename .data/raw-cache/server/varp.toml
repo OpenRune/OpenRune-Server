@@ -833,3 +833,27 @@ isServerOnly = true
 id = "varp.overhead_lock_expiration"
 scope = "Temp"
 transmit = "Never"
+
+[[varp]]
+isServerOnly = true
+id = "varp.drop_rate_multiplier"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+isServerOnly = true
+[[varp]]
+id = "varp.wilderness_boss_fee_nowarn"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.barrows_state"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+isServerOnly = true
+id = "varp.barrows_state"
+scope = "Perm"
+transmit = "Never"

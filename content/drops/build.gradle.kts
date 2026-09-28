@@ -13,6 +13,7 @@ dependencies {
     implementation(projects.api.playerOutput)
     implementation(projects.api.random)
     implementation(projects.api.repo)
+    implementation(projects.api.serverConfig)
     implementation(projects.content.interfaces.collectionLog)
     implementation(projects.content.skills.slayer)
     implementation(projects.content.quest)

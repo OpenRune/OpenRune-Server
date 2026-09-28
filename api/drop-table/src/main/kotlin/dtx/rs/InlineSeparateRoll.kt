@@ -6,6 +6,7 @@ public data class InlineSeparateRoll<T, R>(
     val numerator: Int,
     val denominator: Int,
     val rollable: Rollable<T, R>,
+    val boosted: Boolean = false,
 )
 
 public data class SeparateRollAccess(

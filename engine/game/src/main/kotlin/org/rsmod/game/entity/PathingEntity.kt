@@ -221,6 +221,29 @@ public sealed class PathingEntity {
         return coroutine
     }
 
+    /**
+     * Runs [block] in its own coroutine, leaving [activeCoroutine] and [delay] untouched.
+     *
+     * [launch] cancels the active coroutine before the new block gets to decide whether it is even
+     * allowed to run, so any protection check inside that block is evaluated after the script it
+     * was guarding has already been destroyed. This entry point exists for input that must be
+     * answered on the same cycle it arrives without disturbing a suspended script.
+     *
+     * Only [activeCoroutine] is advanced by the game loop, so a [block] that suspends is cancelled
+     * rather than left stranded.
+     *
+     * @return `false` if [block] suspended and had to be cancelled.
+     */
+    public fun launchBeside(block: suspend GameCoroutine.() -> Unit): Boolean {
+        val coroutine = GameCoroutine()
+        block.startCoroutine(coroutine, GameCoroutineSimpleCompletion)
+        if (coroutine.isSuspended) {
+            coroutine.cancel()
+            return false
+        }
+        return true
+    }
+
     public fun advanceActiveCoroutine() {
         try {
             activeCoroutine?.advance()

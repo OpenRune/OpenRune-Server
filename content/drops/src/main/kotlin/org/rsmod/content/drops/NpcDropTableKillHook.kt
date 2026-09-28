@@ -1,13 +1,18 @@
 package org.rsmod.content.drops
 
+import dev.openrune.ServerCacheManager
+import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.rscm.RSCMType
 import dtx.core.ArgMap
 import dtx.core.RollResult
 import dtx.core.flatten
 import dtx.core.with
 import jakarta.inject.Inject
 import jakarta.inject.Singleton
-import org.rsmod.api.config.constants
 import org.rsmod.api.area.checker.AreaChecker
+import org.rsmod.api.config.constants
+import org.rsmod.api.death.NpcDeathDropContext
+import org.rsmod.api.death.NpcDeathDropHook
 import org.rsmod.api.death.NpcDeathKillContext
 import org.rsmod.api.death.NpcDeathKillHook
 import org.rsmod.api.droptable.DropRollItem
@@ -30,6 +35,7 @@ constructor(
     private val areaChecker: AreaChecker,
     private val objRepo: ObjRepository,
     private val random: GameRandom,
+    private val deathDropHooks: Set<NpcDeathDropHook>,
 ) : NpcDeathKillHook {
 
     override fun onKill(context: NpcDeathKillContext) {
@@ -90,10 +96,27 @@ constructor(
         val obj = drop.transformObj(receiver) ?: drop.obj
         val count = drop.rollCount(random)
         CollectionLog.grant(receiver, obj, count)
-        val spawned = objRepo.add(obj, coords, duration, receiver, count)
-        ClientScripts.lootTrackerAddLoot(receiver, npc.id, eventId, spawned.type, spawned.count)
+        if (!consumedByHook(obj, count, coords, duration, receiver)) {
+            val spawned = objRepo.add(obj, coords, duration, receiver, count)
+            ClientScripts.lootTrackerAddLoot(receiver, npc.id, eventId, spawned.type, spawned.count)
+        }
         for (bonus in drop.bonusDrops) {
             spawnDrop(bonus, coords, duration, receiver, npc, eventId)
         }
+    }
+
+    private fun consumedByHook(
+        obj: String,
+        count: Int,
+        coords: CoordGrid,
+        duration: Int,
+        receiver: Player,
+    ): Boolean {
+        if (count != 1) {
+            return false
+        }
+        val type = ServerCacheManager.getItem(obj.asRSCM(RSCMType.OBJ)) ?: return false
+        val context = NpcDeathDropContext(receiver, type, coords, duration, objRepo)
+        return deathDropHooks.any { it.tryConsume(context) }
     }
 }

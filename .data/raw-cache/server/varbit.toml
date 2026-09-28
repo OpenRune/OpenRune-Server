@@ -571,3 +571,52 @@ id = "varbit.drew_sandstone_empty_buckets"
 varp = "varp.drew_sandstone"
 startBit = 16
 endBit = 32
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.barrows_hidden_brother"
+varp = "varp.barrows_state"
+startBit = 0
+endBit = 2
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.barrows_corner"
+varp = "varp.barrows_state"
+startBit = 3
+endBit = 4
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.barrows_looted"
+varp = "varp.barrows_state"
+startBit = 5
+endBit = 5
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.barrows_puzzle_solved"
+varp = "varp.barrows_state"
+startBit = 6
+endBit = 6
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.barrows_rolled"
+varp = "varp.barrows_state"
+startBit = 7
+endBit = 7
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.barrows_open_corner_door"
+varp = "varp.barrows_state"
+startBit = 8
+endBit = 9
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.barrows_open_center_door"
+varp = "varp.barrows_state"
+startBit = 10
+endBit = 11

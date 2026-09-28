@@ -56,6 +56,7 @@ object BaseParams {
     val statreq1_level: ParamInt = param("statreq1_level")
     val statreq2_skill: ParamStat = param("statreq2_skill")
     val statreq2_level: ParamInt = param("statreq2_level")
+
     /**
      * Unlike [statreq1_level] and [statreq2_level], this level requirement is not used when
      * equipping objs but applies to specific skill-related actions.
@@ -150,6 +151,7 @@ object BaseParams {
     val hitmark_max: ParamHitmark = param("hitmark_max")
     val headbar: ParamHeadbar = param("headbar")
     val boss_hp_bar_mode: ParamInt = param("boss_hp_bar_mode")
+    val hitpoints_locked: ParamBool = param("hitpoints_locked")
     val boss_hp_bar_colour_back: ParamInt = param("boss_hp_bar_colour_back")
     val boss_hp_bar_colour_sliding: ParamInt = param("boss_hp_bar_colour_sliding")
     val boss_hp_bar_colour_remaining: ParamInt = param("boss_hp_bar_colour_remaining")

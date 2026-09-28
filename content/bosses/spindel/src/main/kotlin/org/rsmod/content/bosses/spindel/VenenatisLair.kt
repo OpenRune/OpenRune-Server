@@ -6,6 +6,9 @@ import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.script.onOpLoc1
 import org.rsmod.api.script.onOpLoc2
+import org.rsmod.api.script.onOpLoc3
+import org.rsmod.content.areas.wilderness.checkWildernessBossFee
+import org.rsmod.content.areas.wilderness.tryPayWildernessBossFee
 import org.rsmod.game.entity.PlayerList
 import org.rsmod.game.loc.BoundLocInfo
 import org.rsmod.map.CoordGrid
@@ -46,13 +49,17 @@ constructor(private val playerList: PlayerList) : PluginScript() {
         for (entry in entries) {
             onOpLoc1(entry.enterLoc) { enterLair(entry) }
             onOpLoc2(entry.enterLoc) { peekLair(entry) }
+            onOpLoc3(entry.enterLoc) { checkFee() }
         }
         onOpLoc1(EXIT_LOC) { leaveLair(it.loc) }
     }
 
     private suspend fun ProtectedAccess.enterLair(entry: Entry) {
         arriveDelay()
-        telejump(entry.enter, TeleportType.Exempt)
+        tryPayWildernessBossFee(ENTRY_FEE) { source ->
+            mes("<col=ef1020>You enter the lair and $FEE_TEXT is taken from $source to pay the entry fee.")
+            telejump(entry.enter, TeleportType.Exempt)
+        }
     }
 
     private suspend fun ProtectedAccess.leaveLair(exit: BoundLocInfo) {
@@ -71,7 +78,13 @@ constructor(private val playerList: PlayerList) : PluginScript() {
         }
     }
 
+    private suspend fun ProtectedAccess.checkFee() {
+        checkWildernessBossFee(ENTRY_FEE)
+    }
+
     private companion object {
         private const val EXIT_LOC = "loc.wild_venanatis_exit"
+        private const val ENTRY_FEE = 50_000
+        private const val FEE_TEXT = "50,000 coins"
     }
 }
