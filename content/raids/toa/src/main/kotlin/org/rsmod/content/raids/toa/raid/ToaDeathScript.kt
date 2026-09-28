@@ -3,12 +3,15 @@ package org.rsmod.content.raids.toa.raid
 import dev.openrune.ServerCacheManager
 import dev.openrune.rscm.RSCM
 import dev.openrune.rscm.RSCMType
+import net.rsprot.protocol.game.outgoing.sound.MidiJingle
 import org.rsmod.api.mechanics.toxins.Toxin.cureAllToxins
 import org.rsmod.api.player.death.DEATH_CAUSE_ATTR
 import org.rsmod.api.player.deathResetTimers
 import org.rsmod.api.player.disablePrayers
 import org.rsmod.api.player.hasProtectItemPrayer
 import org.rsmod.api.player.hook.TeleportType
+import org.rsmod.api.player.midiSong
+import org.rsmod.api.player.musicClocks
 import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.stat.statRestoreAll
@@ -66,7 +69,17 @@ class ToaDeathScript : PluginScript() {
 }
 
 /**
- * Offline_Scape timeline: +1 death animation, +5 messages and respawn, +7 room reset check.
+ * The death, in ticks after the killing hit (K). The queue starts at K+1. Capture (Crondis
+ * puzzle, solo):
+ *
+ * | Tick | |
+ * |---|---|
+ * | K+1 | `tracking_deaths` + 1 |
+ * | K+3 | death animation, no sound |
+ * | K+7 | minimap reset |
+ * | K+8 | messages, restore, teleport, camera reset, ghost (tabs closed, HUD 30) |
+ * | K+10 | wipe check ([wipeAftermath]) |
+ *
  * Everything the standard death would have done for us (clearing the death cause, restoring the
  * player) happens here too.
  */
@@ -93,11 +106,12 @@ private suspend fun ProtectedAccess.raidDeath() {
 private suspend fun ProtectedAccess.dieInRaid(raid: ToaRaid) {
     stopAction()
     combatClearQueue()
-    camReset()
-    delay(1)
-    soundSynth("synth.human_death")
+    player.trackingDeaths++
+    delay(2)
     anim("seq.human_death")
     delay(4)
+    minimapReset()
+    delay(1)
     combatClearQueue()
     resetAnim()
 
@@ -121,7 +135,7 @@ private suspend fun ProtectedAccess.dieInRaid(raid: ToaRaid) {
         }
     }
     player.toaRestore()
-    minimapReset()
+    camReset()
 
     // Where you come back: the room's spawn tile, or inside the challenge area if the room is
     // already beaten. You're a ghost while the challenge is still running (not in the nexus).
@@ -159,35 +173,52 @@ private suspend fun ProtectedAccess.dieInRaid(raid: ToaRaid) {
 /**
  * What each player in a wiped room sees (Offline_Scape checkRoomReset's FadeScreen): a fade,
  * then either another attempt, or, with no attempts left, the raid fails and they're put
- * outside the lobby.
+ * outside the lobby. Ticks after the wipe (W), from the capture (Crondis puzzle, retry):
+ *
+ * | Tick | |
+ * |---|---|
+ * | W | message, fade out, music silenced, jingle 90 |
+ * | W+1 | minimap hidden |
+ * | W+2 | the raid's music again |
+ * | W+3 | revive (tabs back), honey locusts |
+ * | W+5 | fade in, minimap back, HUD |
+ * | W+7 | fade closed, `toa_hud` back |
+ *
+ * The failed raid isn't captured; it follows the same ticks, with the move outside at W+3 and no
+ * raid music.
  *
  * A failed raid is a normal death: what isn't kept goes to the lobby's retrieval chest
  * ([ToaRetrieval]). It can only fail with a death invocation on, which is when that applies.
- *
- * TODO: jingle 90.
  */
 internal suspend fun ProtectedAccess.wipeAftermath(room: ToaEncounter, retry: Boolean) {
     val raid = room.raid
-    fadeOut()
-    delay(2)
-
-    raid.revive(player)
-    player.toaRestore()
     if (retry) {
         val limit = raid.permittedTeamDeaths
         val attempts =
             if (limit == null) {
                 "You may try again..."
             } else {
-                "You have <col=ff0000>${limit - raid.teamDeaths}</col> attempts remaining..."
+                "You have <col=ef1020>${limit - raid.teamDeaths}</col> attempts remaining..."
             }
         mes("Your party failed to complete the challenge. $attempts")
-        // Capture: after the failure message. None with On a Diet, or when the raid fails.
-        if (!raid.isActive(ON_A_DIET)) invAdd(inv, HONEY_LOCUST, room.honeyLocusts())
-        ToaRaidManager.refreshHudStates(raid)
     } else {
         mes("You failed to survive the Tombs of Amascut.")
-        minimapHideMap()
+    }
+    fadeOut()
+    player.midiSong(STOP_MUSIC)
+    player.jingle(WIPE_JINGLE, WIPE_JINGLE_MILLIS)
+    delay(1)
+    minimapHideMap()
+    delay(1)
+    if (retry) player.midiSong(RAID_MIDI)
+    delay(1)
+
+    raid.revive(player)
+    player.toaRestore()
+    if (retry) {
+        // Capture: at the revive. None with On a Diet, or when the raid fails.
+        if (!raid.isActive(ON_A_DIET)) invAdd(inv, HONEY_LOCUST, room.honeyLocusts())
+    } else {
         // leave() takes the raid's own items first (Offline_Scape triggerTOAFailure's order).
         ToaRaidManager.leave(player, logout = false)
         val protectItem = player.attr[ToaRetrieval.PROTECT_ITEM_AT_DEATH] == true
@@ -199,13 +230,25 @@ internal suspend fun ProtectedAccess.wipeAftermath(room: ToaEncounter, retry: Bo
             )
         }
         telejump(TOA_OUTSIDE, TeleportType.Exempt)
-        minimapReset()
     }
+    delay(2)
 
+    minimapReset()
     fadeIn()
+    if (retry) ToaRaidManager.refreshHudStates(raid)
     delay(2)
     closeFadeOverlayNow()
     if (raid.isInside(player)) reopenHud(raid)
+}
+
+/**
+ * Plays jingle [id]. There's no gameval name for these jingles to pass to `midiJingle`, so this
+ * sends the packet itself and resets the music clock as `midiJingle` does. The capture sends the
+ * jingle's length too.
+ */
+private fun Player.jingle(id: Int, lengthMillis: Int) {
+    musicClocks = 0
+    client.write(MidiJingle(id, lengthMillis))
 }
 
 /**
@@ -228,9 +271,21 @@ internal fun Player.toaRestore(prayersOff: Boolean = true) {
 
 private var Player.specialAttackType by intVarp("varp.sa_attack")
 
+/** The account's total deaths. Capture: + 1 on the tick after the killing hit. */
+private var Player.trackingDeaths by intVarp("varp.tracking_deaths")
+
 private val ALL_STATS: List<String> by lazy {
     ServerCacheManager.getStats().values.map { RSCM.getReverseMapping(RSCMType.STAT, it.id) }
 }
 
 private const val ON_A_DIET = "On a Diet"
 private const val HONEY_LOCUST = "obj.toa_honey_locust"
+
+/** Midi 147, "silence" (osrs-dumps midi.sym). */
+private const val STOP_MUSIC = "midi.stop_music"
+
+/** Capture: the track before a challenge starts, in the nexus and the Crondis room. */
+private const val RAID_MIDI = 730
+
+private const val WIPE_JINGLE = 90
+private const val WIPE_JINGLE_MILLIS = 4_718
