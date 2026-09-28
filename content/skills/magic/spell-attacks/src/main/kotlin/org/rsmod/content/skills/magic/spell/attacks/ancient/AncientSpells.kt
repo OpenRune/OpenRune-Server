@@ -97,7 +97,8 @@ constructor(
             sceptre: Boolean,
         ) {
             val spellObj = attack.spell.obj
-            if (manager.rollSplash(this, target, attack, castResult)) {
+            val guaranteedFreeze = effects.claimGuaranteedFreeze(spell, target)
+            if (!guaranteedFreeze && manager.rollSplash(this, target, attack, castResult)) {
                 manager.playSplashFx(this, target, clientDelay, castSound = null, soundRadius = 8)
                 manager.queueSplashHit(this, target, spellObj, clientDelay, serverDelay)
                 return
@@ -118,7 +119,9 @@ constructor(
             manager.queueMagicHit(this, target, spellObj, damage, clientDelay, serverDelay)
 
             val caster = player
-            val effect = { effects.apply(spell, caster, target, damage, sceptre) }
+            val effect = {
+                effects.apply(spell, caster, target, damage, sceptre, guaranteedFreeze)
+            }
             val targetStillValid = target.validityCheck()
             worldQueues.add(serverDelay) {
                 if (targetStillValid() && caster.isSlotAssigned) {

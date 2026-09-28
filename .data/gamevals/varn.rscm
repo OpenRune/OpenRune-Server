@@ -23,3 +23,4 @@ callisto_roars=21
 poison_severity=22
 freeze_end_clock=23
 freeze_immunity_end_clock=24
+freeze_guaranteed=25

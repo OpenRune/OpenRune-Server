@@ -21,13 +21,25 @@ internal class AncientSpellEffects(private val random: GameRandom) {
         target: PathingEntity,
         damage: Int,
         sceptre: Boolean,
+        guaranteedFreeze: Boolean = false,
     ) {
         when (spell.element) {
             Element.Smoke -> applySmoke(spell, target, sceptre)
             Element.Shadow -> applyShadow(spell, target, sceptre)
             Element.Blood -> applyBlood(spell, caster, damage, sceptre)
-            Element.Ice -> applyIce(spell, target, sceptre)
+            Element.Ice -> applyIce(spell, target, sceptre, guaranteedFreeze)
         }
+    }
+
+    fun claimGuaranteedFreeze(spell: AncientSpell, target: PathingEntity): Boolean {
+        if (spell.element != Element.Ice || target !is Npc) {
+            return false
+        }
+        if (target.vars["varn.freeze_guaranteed"] != 1) {
+            return false
+        }
+        target.vars["varn.freeze_guaranteed"] = 0
+        return true
     }
 
     private fun applySmoke(spell: AncientSpell, target: PathingEntity, sceptre: Boolean) {
@@ -68,7 +80,12 @@ internal class AncientSpellEffects(private val random: GameRandom) {
         }
     }
 
-    private fun applyIce(spell: AncientSpell, target: PathingEntity, sceptre: Boolean) {
+    private fun applyIce(
+        spell: AncientSpell,
+        target: PathingEntity,
+        sceptre: Boolean,
+        guaranteed: Boolean,
+    ) {
         var ticks = spell.effectStrength
         if (sceptre) {
             ticks = ticks * 11 / 10
@@ -76,10 +93,10 @@ internal class AncientSpellEffects(private val random: GameRandom) {
         when (target) {
             is Npc -> {
                 val resistance = target.visType.paramOrNull(params.freeze_resistance) ?: 0
-                if (resistance > 0 && random.of(100) < resistance) {
+                if (!guaranteed && resistance > 0 && random.of(100) < resistance) {
                     return
                 }
-                CombatEffects.freeze(target, ticks)
+                CombatEffects.freeze(target, ticks, ignoreImmunity = guaranteed)
             }
             is Player -> {
                 if (target.vars["varbit.prayer_protectfrommagic"] > 0) {

@@ -205,6 +205,35 @@ internal class AncientSpellEffectsTest {
         }
 
         @Test
+        fun `guaranteed freeze bypasses resistance`() {
+            val target = npc("npc.gemstone_crab")
+            val effects = AncientSpellEffects(landing)
+            effects.apply(AncientSpell.IceBarrage, player(), target, 5, false, guaranteedFreeze = true)
+            assertTrue(CombatEffects.isFrozen(target))
+        }
+
+        @Test
+        fun `guaranteed freeze bypasses post-thaw immunity`() {
+            val target = npc("npc.man", clock = 100)
+            val effects = AncientSpellEffects(landing)
+            effects.apply(AncientSpell.IceRush, player(), target, 5, false)
+
+            target.currentMapClock = 110
+            effects.apply(AncientSpell.IceRush, player(), target, 5, false, guaranteedFreeze = true)
+            assertTrue(CombatEffects.isFrozen(target))
+        }
+
+        @Test
+        fun `guaranteed freeze is claimed once and only by ice spells`() {
+            val target = npc("npc.man")
+            target.vars["varn.freeze_guaranteed"] = 1
+            val effects = AncientSpellEffects(landing)
+            assertFalse(effects.claimGuaranteedFreeze(AncientSpell.SmokeBarrage, target))
+            assertTrue(effects.claimGuaranteedFreeze(AncientSpell.IceRush, target))
+            assertFalse(effects.claimGuaranteedFreeze(AncientSpell.IceRush, target))
+        }
+
+        @Test
         fun `freezes players`() {
             val target = player()
             AncientSpellEffects(landing).apply(AncientSpell.IceBarrage, player(), target, 5, false)

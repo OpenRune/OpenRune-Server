@@ -39,9 +39,9 @@ public object CombatEffects {
     public fun isFrozen(target: Npc): Boolean =
         target.vars["varn.freeze_end_clock"] > target.currentMapClock
 
-    public fun freeze(target: Npc, ticks: Int): Boolean {
+    public fun freeze(target: Npc, ticks: Int, ignoreImmunity: Boolean = false): Boolean {
         val clock = target.currentMapClock
-        if (target.vars["varn.freeze_immunity_end_clock"] > clock) return false
+        if (!ignoreImmunity && target.vars["varn.freeze_immunity_end_clock"] > clock) return false
         val end = clock + ticks
         target.vars["varn.freeze_end_clock"] = end
         target.vars["varn.freeze_immunity_end_clock"] = end + FREEZE_IMMUNITY_TICKS
