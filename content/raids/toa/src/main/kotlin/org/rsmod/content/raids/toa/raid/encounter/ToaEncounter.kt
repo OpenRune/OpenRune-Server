@@ -5,12 +5,14 @@ import org.rsmod.api.player.hook.TeleportType
 import org.rsmod.api.player.output.mes
 import org.rsmod.content.raids.toa.raid.ChallengeResult
 import org.rsmod.content.raids.toa.raid.ToaDamage
+import org.rsmod.content.raids.toa.raid.ToaKillCount
 import org.rsmod.content.raids.toa.raid.ToaRaid
 import org.rsmod.content.raids.toa.raid.ToaRaidDeps
 import org.rsmod.content.raids.toa.raid.ToaRaidManager
 import org.rsmod.content.raids.toa.raid.ToaRoom
 import org.rsmod.content.raids.toa.raid.toaRestore
 import org.rsmod.content.raids.toa.raid.wipeAftermath
+import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.game.map.Direction
 import org.rsmod.game.region.Region
@@ -123,6 +125,12 @@ open class ToaEncounter(
      */
     open fun honeyLocusts(): Int = deps.random.of(HONEY_LOCUSTS_MIN, HONEY_LOCUSTS_MAX)
 
+    /**
+     * Room points per damage dealt to [npc] (OSRS Wiki, Chest (Tombs of Amascut)): 1 for most
+     * npcs. Rooms with a boss or npc worth more or less override this.
+     */
+    open fun pointMultiplier(npc: Npc): Double = 1.0
+
     // ---- Challenge lifecycle ----
 
     /**
@@ -167,6 +175,7 @@ open class ToaEncounter(
         if (isEnd) {
             raid.finish(now)
         }
+        raid.points.completeRoom(teamSize)
 
         for (player in players) {
             if (!isEnd) {
@@ -187,13 +196,25 @@ open class ToaEncounter(
         }
     }
 
+    /**
+     * The end-of-raid messages, as the game words them (RuneLite ChatCommandsPluginTest): the
+     * challenge line and the challenge time in one message, then the raid time, then the kill
+     * count. Only the challenge time and the kill count name the mode, and not for Normal.
+     *
+     * Not reproduced: the personal-best suffixes ("(new personal best)", ". Personal best: m:ss");
+     * nothing records personal bests yet. The reward points aren't shown: they're hidden in the
+     * game (Offline_Scape printed them).
+     */
     private fun sendRaidCompleteMessages(player: Player, duration: String, total: String, now: Int) {
         val mode = raid.settings.mode
+        val name = "Tombs of Amascut${ToaKillCount.modeSuffix(mode)}"
         val raidTime = ToaRaid.formatTicks(raid.elapsedTicks(now))
-        player.mes("Challenge complete: $challengeName. Duration: <col=ef1020>$duration</col>")
-        player.mes("Tombs of Amascut: $mode Mode challenge completion time: <col=ef1020>$total</col>")
-        player.mes("Tombs of Amascut: $mode Mode total completion time: <col=ef1020>$raidTime</col>")
-        // TODO: "Tombs of Amascut: Your Points:" once points exist; kill count.
+        player.mes(
+            "Challenge complete: $challengeName. Duration: <col=ef1020>$duration</col><br>" +
+                "$name challenge completion time: <col=ef1020>$total</col>"
+        )
+        player.mes("Tombs of Amascut total completion time: <col=ef1020>$raidTime</col>")
+        ToaKillCount.record(player, mode)
         val limit = raid.timeLimitMinutes ?: return
         // Offline_Scape's copies of these two lines ended in a broken "</col".
         if (raid.failedTimeLimit) {

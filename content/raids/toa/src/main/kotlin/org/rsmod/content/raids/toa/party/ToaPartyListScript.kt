@@ -24,6 +24,7 @@ import org.rsmod.content.raids.toa.party.ToaPartyManager.VIEW_LEADER
 import org.rsmod.content.raids.toa.party.ToaPartyManager.VIEW_MEMBER
 import org.rsmod.content.raids.toa.party.ToaPartyManager.VIEW_NON_MEMBER
 import org.rsmod.content.raids.toa.party.ToaPartyManager.viewingParty
+import org.rsmod.content.raids.toa.raid.ToaKillCount
 import org.rsmod.game.entity.Player
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
@@ -666,8 +667,7 @@ class ToaPartyListScript @Inject constructor(
         sb.append(target.statBase("stat.defence")).append('|')
         sb.append(target.statBase("stat.hitpoints")).append('|')
         sb.append(target.statBase("stat.prayer")).append('|')
-        // TODO: read from TOA kill count varps once the raid system is built
-        sb.append("0 / 0 / 0")
+        sb.append(ToaKillCount.summary(target))
         return sb.toString()
     }
 }
