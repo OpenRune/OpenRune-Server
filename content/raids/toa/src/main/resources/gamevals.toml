@@ -5,7 +5,6 @@ toa_personal_invocations_a = 65478
 toa_personal_invocations_b = 65477
 toa_personal_invocations_c = 65476
 toa_personal_kc_requirement = 65475
-# -1: buildCache assigns a free id (65474 is taken by other modules) and writes it back.
 toa_retrieval_locked = 65474
 
 # TOA lobby area (polygon in .data/raw-cache/map/area/toa_lobby.toml).
