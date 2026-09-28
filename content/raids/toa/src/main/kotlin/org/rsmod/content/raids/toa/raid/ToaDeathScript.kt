@@ -136,6 +136,8 @@ private suspend fun ProtectedAccess.dieInRaid(raid: ToaRaid) {
         }
     }
     player.toaRestore()
+    // The supplies' timed effects end with the death (the consumables module's own guidance).
+    raid.deps.supplyEffects.clearSessionEffects(player)
     camReset()
 
     // Where you come back: the room's spawn tile, or inside the challenge area if the room is

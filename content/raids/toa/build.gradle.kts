@@ -18,4 +18,7 @@ dependencies {
     // NetworkService / NpcInfo: extended NPC view inside the raid (ToaNpcView.kt). Same
     // dependency content/quest and content/other/login already use.
     implementation(libs.rsprot.api)
+    // ConsumableActivityGate / ToaPotionEffect: unlocking the Helpful Spirit's supplies in the
+    // raid, and clearing their timed effects on death and on leaving.
+    implementation(projects.content.other.consumables)
 }

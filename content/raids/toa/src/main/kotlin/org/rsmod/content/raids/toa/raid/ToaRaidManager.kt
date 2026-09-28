@@ -176,6 +176,7 @@ object ToaRaidManager {
         raid.revive(player)
         raid.stopDying(player)
         removeRaidItems(player)
+        raid.deps.supplyEffects.clearSessionEffects(player)
         // OSRS Wiki (Tombs of Amascut/Strategies): the logout is a wipe under the normal death
         // rules, so with a death invocation on your items go to the retrieval chest. Done here, not
         // at login as Offline_Scape did: the logout event comes before the save, and without rejoin
