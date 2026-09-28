@@ -842,7 +842,13 @@ transmit = "Never"
 
 [[varp]]
 isServerOnly = true
+[[varp]]
 id = "varp.wilderness_boss_fee_nowarn"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.barrows_state"
 scope = "Perm"
 transmit = "Never"
 
