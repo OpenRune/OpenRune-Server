@@ -62,11 +62,13 @@ object ToaRaidManager {
 
     /** toa_client_p0..p7: 0 empty slot, 1..27 health, 30 dead, 31 not in this room. */
     private const val HUD_STATE_EMPTY = 0
+    private const val HUD_STATE_ZERO_HEALTH = 1
     private const val HUD_STATE_FULL_HEALTH = 27
     private const val HUD_STATE_DEAD = 30
     private const val HUD_STATE_ELSEWHERE = 31
 
-    private const val HUD_REFRESH_TICKS = 1
+    /** Capture: every orb change lands on a 3-tick beat, lagging the hit by up to 2 ticks. */
+    private const val HUD_REFRESH_TICKS = 3
 
     private const val SCRIPT_HUD_STATUS_NAMES = 6585 // toa_hud_statusnames
     private const val SCRIPT_SPEEDRUN_TIME_UPDATE = 6580 // toa_speedrun_time_update
@@ -92,10 +94,11 @@ object ToaRaidManager {
     }
 
     /**
-     * Refreshes every player's health orbs once a tick for the raid's lifetime. The hit events
-     * only cover damage (healing publishes nothing), and a varbit is only sent when its value
-     * changes, so a steady refresh costs almost nothing and catches both. A world queue re-armed
-     * each tick; it stops by itself when the raid ends.
+     * Refreshes every player's health orbs every [HUD_REFRESH_TICKS] for the raid's lifetime. The
+     * hit events only cover damage (healing publishes nothing), and a varbit is only sent when its
+     * value changes, so a steady refresh costs almost nothing and catches both. A re-armed world
+     * queue; it stops by itself when the raid ends. Deaths, revives and room moves still refresh
+     * at once (capture: 30 on the respawn tick, off the beat).
      */
     private fun scheduleHudRefresh(raid: ToaRaid) {
         raid.deps.worldQueues.add(HUD_REFRESH_TICKS) {
@@ -332,13 +335,15 @@ object ToaRaidManager {
     }
 
     /**
-     * Health orb value. Offline_Scape uses 1 + min(28, floor(hp/max * 28)), which gives 29 at
-     * full health, but the vanilla capture shows 27 at full, so this is scaled to 1..27.
-     * TODO: re-check the 1..27 scale against a capture of a damaged player.
+     * Health orb value: 1 at 0 hp, else 1 + floor(hp * 26 / max), but at least 2. Fits every
+     * sample in the death capture at 99 max hp (hp to orb: 95 25, 84 23, 78 21, 72 19, 65 18,
+     * 54 15, 43 12, 30 8, 22 6, 2 2, 0 1). Offline_Scape's formula gives 29 at full health.
      */
     private fun healthState(player: Player): Int {
+        if (player.hitpoints <= 0) return HUD_STATE_ZERO_HEALTH
         val max = player.baseHitpointsLvl.coerceAtLeast(1)
-        val scaled = 1 + (player.hitpoints * (HUD_STATE_FULL_HEALTH - 1)) / max
-        return scaled.coerceIn(1, HUD_STATE_FULL_HEALTH)
+        val steps = HUD_STATE_FULL_HEALTH - HUD_STATE_ZERO_HEALTH
+        val scaled = (player.hitpoints * steps / max).coerceIn(1, steps)
+        return HUD_STATE_ZERO_HEALTH + scaled
     }
 }
