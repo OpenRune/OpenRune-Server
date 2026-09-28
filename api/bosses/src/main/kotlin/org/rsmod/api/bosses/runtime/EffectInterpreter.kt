@@ -683,6 +683,7 @@ class EffectInterpreter(
             is DamageExpr.Custom -> expr.roll(npc, t)
             is DamageExpr.Min -> minOf(evaluateDamage(expr.a, hitType, t), evaluateDamage(expr.b, hitType, t))
             is DamageExpr.Max -> maxOf(evaluateDamage(expr.a, hitType, t), evaluateDamage(expr.b, hitType, t))
+            is DamageExpr.Custom -> expr.roll(npc, t)
         }
     }
 

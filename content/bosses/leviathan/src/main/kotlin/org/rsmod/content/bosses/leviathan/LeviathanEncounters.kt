@@ -335,7 +335,7 @@ constructor(
             Camera.camShake(player, CamShakeAxis.LEFT_RIGHT, deps.random.of(5, 8), 0, 0)
             Camera.camShake(player, CamShakeAxis.UP_DOWN, deps.random.of(5, 8), 0, 0)
             Camera.camShake(player, CamShakeAxis.FORWARDS_BACKWARDS, deps.random.of(5, 8), 0, 0)
-            player.queueHit(npc, 1, HitType.Typeless, deps.random.of(ROCKFALL_CHIP), deps.playerHitModifier)
+            player.queueHit(npc, 2, HitType.Typeless, deps.random.of(ROCKFALL_CHIP), deps.playerHitModifier)
             deps.worldQueues.add(ROCKFALL_RECOVERY) { if (player.isValidTarget()) Camera.camReset(player) }
         }
     }
@@ -754,6 +754,7 @@ constructor(
         fight.enraged = true
         fight.shotsFired = 0
         npc.clearIdleAnim()
+        deps.suppressAttacks(npc, ROCKFALL_RECOVERY)
         rockfall(fight, withHints = false, animated = true)
         deps.encounter(npc).attackRateOverride =
             if (fight.awakened) ENRAGED_INTERVAL_AWAKENED else ENRAGED_INTERVAL
