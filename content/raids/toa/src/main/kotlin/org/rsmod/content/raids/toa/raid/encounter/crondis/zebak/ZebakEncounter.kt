@@ -136,6 +136,8 @@ class ZebakEncounter(raid: ToaRaid, room: ToaRoom, region: Region, controllerId:
      */
     override fun pointMultiplier(npc: Npc): Double = if (npc === zebak) ZEBAK_POINTS else 1.0
 
+    override val roomPointsCap: Int = ZEBAK_POINTS_CAP
+
     override fun onComplete() {
         for (player in players) closeBar(player)
         clearFight()
@@ -479,6 +481,7 @@ class ZebakEncounter(raid: ToaRaid, room: ToaRoom, region: Region, controllerId:
         /** Capture: first attack 10 ticks after "Challenge started" (Offline_Scape: 7). */
         private const val FIRST_ATTACK_DELAY = 10
         private const val ZEBAK_POINTS = 1.5
+        private const val ZEBAK_POINTS_CAP = 10_000
         private const val DEATH_MODEL_DELAY = 3
         private const val DAMAGED_SOUND_RADIUS = 10
         private const val SCRIPT_SEQ_PREFETCH = 1846

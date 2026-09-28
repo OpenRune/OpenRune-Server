@@ -56,7 +56,7 @@ class ToaDamageContributor @Inject constructor() : NpcDamageContributor {
         ToaDamage.addDone(source, damage)
         val raid = source.currentRaid ?: return
         val room = raid.encounterOf(source) ?: return
-        raid.points.addDamage(source, damage, room.pointMultiplier(npc))
+        raid.points.addDamage(source, damage, room.pointMultiplier(npc), room.roomPointsCap)
     }
 }
 

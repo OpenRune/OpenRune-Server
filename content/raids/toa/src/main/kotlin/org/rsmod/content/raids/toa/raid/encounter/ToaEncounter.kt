@@ -6,10 +6,12 @@ import org.rsmod.api.player.output.mes
 import org.rsmod.content.raids.toa.raid.ChallengeResult
 import org.rsmod.content.raids.toa.raid.ToaDamage
 import org.rsmod.content.raids.toa.raid.ToaKillCount
+import org.rsmod.content.raids.toa.raid.ToaPath
 import org.rsmod.content.raids.toa.raid.ToaRaid
 import org.rsmod.content.raids.toa.raid.ToaRaidDeps
 import org.rsmod.content.raids.toa.raid.ToaRaidManager
 import org.rsmod.content.raids.toa.raid.ToaRoom
+import org.rsmod.content.raids.toa.raid.personalContribution
 import org.rsmod.content.raids.toa.raid.toaRestore
 import org.rsmod.content.raids.toa.raid.wipeAftermath
 import org.rsmod.game.entity.Npc
@@ -131,6 +133,15 @@ open class ToaEncounter(
      */
     open fun pointMultiplier(npc: Npc): Double = 1.0
 
+    open val roomPointsCap: Int
+        get() = if (room.kind == ToaRoom.Kind.WARDENS) WARDENS_POINTS_CAP else ROOM_POINTS_CAP
+
+    private val awardsMvp: Boolean
+        get() = room.kind == ToaRoom.Kind.PUZZLE || room.kind == ToaRoom.Kind.BOSS
+
+    private val completionPoints: Int
+        get() = if (room.kind == ToaRoom.Kind.PUZZLE) PUZZLE_POINTS[room.path] ?: 0 else 0
+
     // ---- Challenge lifecycle ----
 
     /**
@@ -175,7 +186,12 @@ open class ToaEncounter(
         if (isEnd) {
             raid.finish(now)
         }
-        raid.points.completeRoom(teamSize)
+        raid.points.completeRoom(teamSize, completionPoints, awardsMvp)
+        if (isEnd) {
+            for (player in raid.players) {
+                player.personalContribution = raid.points.lootPoints(player)
+            }
+        }
 
         for (player in players) {
             if (!isEnd) {
@@ -263,6 +279,7 @@ open class ToaEncounter(
         if (inRoom.any { inChallengeArea(it) || !raid.isGhost(it) }) return
 
         raid.teamDeaths++
+        raid.points.resetRoom()
         val retry = raid.canRetryAfter()
         val encounter = this
         for (player in inRoom) {
@@ -321,5 +338,10 @@ open class ToaEncounter(
     private companion object {
         const val HONEY_LOCUSTS_MIN = 4
         const val HONEY_LOCUSTS_MAX = 6
+
+        const val ROOM_POINTS_CAP = 20_000
+        const val WARDENS_POINTS_CAP = 60_000
+        val PUZZLE_POINTS =
+            mapOf(ToaPath.SCABARAS to 300, ToaPath.APMEKEN to 450, ToaPath.CRONDIS to 400)
     }
 }
