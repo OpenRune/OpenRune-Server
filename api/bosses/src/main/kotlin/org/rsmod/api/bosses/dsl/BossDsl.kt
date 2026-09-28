@@ -139,6 +139,7 @@ class HitBuilder internal constructor() {
     private var penetrationPercent: Int = 0
     private var penetrationWhen: Condition? = null
     private var hazardHit: Boolean = false
+    private var resolveOnImpactFlag: Boolean = false
     private var missSpot: String? = null
     private var onHitEffect: Effect? = null
     private var onHitEvenOnMiss: Boolean = false
@@ -178,6 +179,10 @@ class HitBuilder internal constructor() {
         hazardHit = true
     }
 
+    fun resolveOnImpact() {
+        resolveOnImpactFlag = true
+    }
+
     fun missSpotanim(spot: String) {
         missSpot = spot
     }
@@ -215,6 +220,7 @@ class HitBuilder internal constructor() {
             spotanimUnlessPraying = spotanimUnlessPraying,
             penetrationWhen = penetrationWhen,
             hazard = hazardHit,
+            resolveOnImpact = resolveOnImpactFlag,
         )
 }
 
@@ -263,8 +269,14 @@ class AbilityBuilder {
     }
 
     /** Plays [spot] on the caster (the boss npc itself), not on the target. */
-    fun spotanim(spot: String, height: Int = 0, delay: Int = 0, slot: Int = 0) {
-        effects += Effect.Spotanim(spot, height, delay, slot)
+    fun spotanim(
+        spot: String,
+        height: Int = 0,
+        delay: Int = 0,
+        slot: Int = 0,
+        target: TargetExpr? = null,
+    ) {
+        effects += Effect.Spotanim(spot, height, delay, slot, target)
     }
 
     fun say(text: String) {

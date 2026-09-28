@@ -49,7 +49,13 @@ sealed interface Effect {
         val loops: Int = 1,
         val delay: Int = 0,
     ) : Effect
-    data class Spotanim(val spot: String, val height: Int = 0, val delay: Int = 0, val slot: Int = 0) : Effect
+    data class Spotanim(
+        val spot: String,
+        val height: Int = 0,
+        val delay: Int = 0,
+        val slot: Int = 0,
+        val target: TargetExpr? = null,
+    ) : Effect
     data class MapSpotanim(val spot: String, val at: TargetExpr.Single, val height: Int = 0, val delay: Int = 0) : Effect
     data class Broadcast(val text: String, val radius: Int = 15) : Effect
 
@@ -102,6 +108,7 @@ sealed interface Effect {
         val penetrationWhen: Condition? = null,
         /** Environmental damage (falling rocks etc.): no retaliation and no defend anim. */
         val hazard: Boolean = false,
+        val resolveOnImpact: Boolean = false,
     ) : Effect
 
     data class Projectile(

@@ -418,6 +418,7 @@ object SpecValidator {
                 is Effect.SoundTo -> target(effect.target, scope, name)
                 is Effect.Sound -> effect.at?.let { target(it, scope, name) }
                 is Effect.MapSpotanim -> target(effect.at, scope, name)
+                is Effect.Spotanim -> effect.target?.let { target(it, scope, name) }
                 is Effect.CamShake -> effect.target?.let { target(it, scope, name) }
                 is Effect.CamReset -> target(effect.target, scope, name)
                 is Effect.Debris -> target(effect.center, scope, name)
