@@ -41,7 +41,7 @@ constructor(
     private var nextLocationIndex = -1
     private var burrowCycle = -1
     private var burrowStartCycle = -1
-    private var cycleStartCycle = -1
+    private var activeLifetime = 0
     private var remainsExpireCycle = -1
     private var remainsDisintegrating = false
     private var remainsSpotCycle = -1
@@ -49,6 +49,9 @@ constructor(
 
     private val barOpenPlayers: MutableSet<Player> = Collections.newSetFromMap(IdentityHashMap())
     private val claimedMiners: MutableSet<Long> = mutableSetOf()
+
+    public val isCrabActive: Boolean
+        get() = liveNpc != null && burrowStartCycle == -1
 
     public fun isEligibleMiner(uuid: Long): Boolean = uuid in eligibleMiners
 
@@ -70,7 +73,6 @@ constructor(
                 tickBurrow(live)
                 return
             }
-            live.hitpoints = (burrowCycle - mapClock.cycle).coerceIn(0, live.baseHitpointsLvl)
             for (player in barOpenPlayers) {
                 updateBar(player, live)
             }
@@ -99,8 +101,7 @@ constructor(
     }
 
     public fun caveExitFor(cave: CoordGrid): CoordGrid? {
-        val crabActive = liveNpc != null && burrowStartCycle == -1
-        val index = if (crabActive) currentLocationIndex else nextLocationIndex
+        val index = if (isCrabActive) currentLocationIndex else nextLocationIndex
         val destination = SPOTS.getOrNull(index) ?: return null
         return destination.caveExit.takeIf { destination.cave != cave }
     }
@@ -128,13 +129,11 @@ constructor(
         nextLocationIndex = -1
         val npc = Npc(resolveNpc("npc.gemstone_crab"), SPOTS[currentLocationIndex].crab)
         val lifetime = ACTIVE_DURATION_CYCLES.random()
-        npc.baseHitpointsLvl = lifetime
-        npc.hitpoints = lifetime
         npcRepo.add(npc, Int.MAX_VALUE)
         npc.anim("seq.crab_boss_spawn")
-        npc.spotanim("spotanim.vfx_crab_boss_death")
+        npc.spotanim("spotanim.vfx_crab_boss_spawn")
         liveNpc = npc
-        cycleStartCycle = mapClock.cycle
+        activeLifetime = lifetime
         burrowCycle = mapClock.cycle + lifetime
     }
 
@@ -155,7 +154,7 @@ constructor(
                 .filterIsInstance<DamageContributor.ByPlayer>()
                 .take(TOP_DAMAGE_DEALERS)
 
-        live.hitpoints = 0
+        burrowCycle = mapClock.cycle
         for (player in barOpenPlayers) {
             updateBar(player, live)
         }
@@ -177,7 +176,7 @@ constructor(
 
         val names = topDealers.take(3).mapNotNull { it.resolve(playerList)?.displayName }
         if (names.isNotEmpty()) {
-            broadcast("The top three crab crushers were ${joinNames(names)}!")
+            broadcast(topDealerMessage(names))
         }
 
         for (dealer in topDealers) {
@@ -209,11 +208,7 @@ constructor(
         remainsNpc = remains
         remainsSpotCycle = mapClock.cycle + REMAINS_FIRST_SPOT_DELAY_CYCLES
         remainsDisintegrating = false
-        remainsExpireCycle =
-            (cycleStartCycle + SPAWN_INTERVAL_CYCLES).coerceIn(
-                mapClock.cycle + DISINTEGRATE_CYCLES,
-                mapClock.cycle + REMAINS_MAX_CYCLES,
-            )
+        remainsExpireCycle = mapClock.cycle + REMAINS_CYCLES
     }
 
     private fun disintegrateRemains(remains: Npc) {
@@ -231,7 +226,8 @@ constructor(
     }
 
     private fun updateBar(player: Player, npc: Npc) {
-        hpBar.onUpdate(player, npc)
+        val remaining = (burrowCycle - mapClock.cycle).coerceIn(0, activeLifetime)
+        hpBar.onUpdate(player, npc, remaining, activeLifetime)
     }
 
     private fun broadcast(text: String) {
@@ -239,6 +235,13 @@ constructor(
             player.mes(text, ChatType.Broadcast)
         }
     }
+
+    private fun topDealerMessage(names: List<String>): String =
+        when (names.size) {
+            1 -> "The top crab crusher was ${names[0]}!"
+            2 -> "The top two crab crushers were ${joinNames(names)}!"
+            else -> "The top three crab crushers were ${joinNames(names)}!"
+        }
 
     private fun joinNames(names: List<String>): String =
         when (names.size) {
@@ -269,11 +272,9 @@ constructor(
                     caveExit = CoordGrid(1247, 3038, 0),
                 ),
             )
-        private const val SPAWN_INTERVAL_CYCLES = 1000
         private val ACTIVE_DURATION_CYCLES = 918..967
+        private const val REMAINS_CYCLES = 150
         private const val DISINTEGRATE_CYCLES = 4
-        private val REMAINS_MAX_CYCLES =
-            SPAWN_INTERVAL_CYCLES - ACTIVE_DURATION_CYCLES.first - BURROW_REMOVE_DELAY_CYCLES
         private const val TOP_DAMAGE_DEALERS = 16
         private const val BURROW_ANNOUNCE_DELAY_CYCLES = 2
         private const val BURROW_REMOVE_DELAY_CYCLES = 4
