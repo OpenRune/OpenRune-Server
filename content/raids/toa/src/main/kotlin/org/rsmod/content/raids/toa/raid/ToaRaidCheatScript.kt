@@ -18,6 +18,8 @@ import org.rsmod.plugin.scripts.ScriptContext
  *   first Wardens room it moves everyone on to the second.
  * - `::toanext` takes the room's way forward without reaching its loc (useful while a puzzle's
  *   end barrier still blocks the exit).
+ * - `::toapoints` shows your hidden reward points: total, loot (total minus the starting 5,000)
+ *   and the current room's.
  */
 class ToaRaidCheatScript @Inject constructor(private val launcher: ProtectedAccessLauncher) :
     PluginScript() {
@@ -33,6 +35,23 @@ class ToaRaidCheatScript @Inject constructor(private val launcher: ProtectedAcce
             desc = "Move on to the next Tombs of Amascut room"
             cheat { nextRoom() }
         }
+        onCommand("toapoints") {
+            requiredRights = Rights.ADMINISTRATOR
+            desc = "Show your Tombs of Amascut reward points"
+            cheat { showPoints() }
+        }
+    }
+
+    private fun Cheat.showPoints() {
+        val points = player.currentRaid?.points
+        if (points == null) {
+            player.mes("You are not in a Tombs of Amascut raid.")
+            return
+        }
+        player.mes(
+            "Points: total ${points.total(player)}, loot ${points.lootPoints(player)}, " +
+                "room ${points.roomPoints(player)}."
+        )
     }
 
     private fun Cheat.completeRoom() {
