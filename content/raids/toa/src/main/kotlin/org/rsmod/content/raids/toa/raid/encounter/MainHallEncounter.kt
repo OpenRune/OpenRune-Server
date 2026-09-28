@@ -25,17 +25,11 @@ import org.rsmod.map.CoordGrid
 class MainHallEncounter(raid: ToaRaid, room: ToaRoom, region: Region, controllerId: Int) :
     ToaEncounter(raid, room, region, controllerId) {
 
-    /** The path the leader picked in this visit, or `null`. */
     var selectedPath: ToaPath? = null
         private set
 
-    /** Path levels added by this visit, for the "rumbling" messages. */
     private val levelIncreases = IntArray(ToaPath.entries.size)
 
-    /**
-     * First visit: the capture's spawn, facing south. Coming back from a path: next to that path's
-     * door, facing away from it (Offline_Scape TOAManager.enter).
-     */
     override fun arrival(): Arrival {
         val path = raid.lastPath
         if (path != null && raid.pathsCompleted.isNotEmpty()) {
@@ -49,6 +43,13 @@ class MainHallEncounter(raid: ToaRaid, room: ToaRoom, region: Region, controller
         addPathLevels()
         if (raid.supplies.offerIfDue(raid)) {
             deps.npcRepo.add(Npc(SPIRIT, coords(SPIRIT_TILE)), Int.MAX_VALUE)
+            deps.locRepo.add(
+                coords(DEPOSIT_POT_TILE),
+                DEPOSIT_POT,
+                Int.MAX_VALUE,
+                LocAngle.West,
+                LocShape.CentrepieceStraight,
+            )
         }
         for (path in ToaPath.entries) {
             val door = if (path in raid.pathsCompleted) path.doorClosed else path.doorOpen
@@ -88,10 +89,6 @@ class MainHallEncounter(raid: ToaRaid, room: ToaRoom, region: Region, controller
         raid.supplies.forfeit(player)
     }
 
-    /**
-     * The leader chose [path]: the other open doors become "unselected" (Offline_Scape
-     * `setStartedPath`).
-     */
     fun select(path: ToaPath) {
         selectedPath = path
         raid.lastPath = path
@@ -112,11 +109,6 @@ class MainHallEncounter(raid: ToaRaid, room: ToaRoom, region: Region, controller
         )
     }
 
-    /**
-     * Offline_Scape `constructed`: Pathseeker/finder/master raise every path once, on the first
-     * visit. Walk the Path raises random unfinished paths after the 1st (+2), 2nd (+1) and
-     * 3rd (+1) path.
-     */
     private fun addPathLevels() {
         if (!raid.pathLevelsInitialised) {
             raid.pathLevelsInitialised = true
@@ -163,5 +155,8 @@ class MainHallEncounter(raid: ToaRaid, room: ToaRoom, region: Region, controller
 
         /** Offline_Scape SUPPLY_NPC_LOCATION. */
         val SPIRIT_TILE = CoordGrid(3548, 5154, 0)
+
+        const val DEPOSIT_POT = "loc.toa_pottery_bankdeposit"
+        val DEPOSIT_POT_TILE = CoordGrid(3546, 5154, 0)
     }
 }
