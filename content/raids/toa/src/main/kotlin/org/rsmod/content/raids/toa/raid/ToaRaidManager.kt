@@ -15,6 +15,7 @@ import org.rsmod.content.raids.toa.party.ToaLobbyParty
 import org.rsmod.content.raids.toa.party.ToaPartyManager
 import org.rsmod.content.raids.toa.raid.encounter.ToaEncounter
 import org.rsmod.content.raids.toa.raid.encounter.ToaStage
+import org.rsmod.content.raids.toa.raid.supplies.ToaSupply
 import org.rsmod.game.entity.Player
 
 /**
@@ -228,20 +229,28 @@ object ToaRaidManager {
 
     /**
      * Offline_Scape TOAManager.removeTOAItems: items that only exist inside the raid are taken
-     * away when you leave it. Only the Crondis water container exists so far; the Het mirror,
-     * neutralising potion, supplies and honey locusts join this list with their rooms.
+     * away when you leave it, the supplies bag's contents included. The Het mirror and the
+     * neutralising potion join this list with their rooms.
      */
     private fun removeRaidItems(player: Player) {
         for (slot in player.inv.indices) {
             val obj = player.inv[slot] ?: continue
             if (obj.id in RAID_ITEM_IDS) player.inv[slot] = null
         }
+        val bag = player.invMap.getOrPut(SUPPLY_BAG_INV)
+        for (slot in bag.indices) bag[slot] = null
     }
 
+    private const val SUPPLY_BAG_INV = "inv.toa_midraidloot_bag"
+
     private val RAID_ITEM_IDS: Set<Int> by lazy {
-        setOf("obj.toa_crondis_water_container", "obj.toa_honey_locust")
-            .mapTo(HashSet()) { it.asRSCM(RSCMType.OBJ) }
+        val names =
+            listOf("obj.toa_crondis_water_container", "obj.toa_honey_locust", SUPPLY_BAG) +
+                ToaSupply.ALL_OBJS
+        names.mapTo(HashSet()) { it.asRSCM(RSCMType.OBJ) }
     }
+
+    private const val SUPPLY_BAG = "obj.toa_midraidloot_bag"
 
     /**
      * Clears a player's raid vars. Also used at login, since every var is saved.
