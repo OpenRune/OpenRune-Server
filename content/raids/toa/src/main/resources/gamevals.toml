@@ -1,11 +1,11 @@
-# Custom server-only varps for TOA. -1 = auto-assign: buildCache picks a free id
-# and writes it back into this file. Commit the file after that first build.
+# Custom server-only varps for TOA. The block 64000-64009 is reserved for TOA, the same way
+# other modules claim a round block (windmill 63600, motherlode 65400).
 [gamevals.varp]
-toa_personal_invocations_a = 65478
-toa_personal_invocations_b = 65477
-toa_personal_invocations_c = 65476
-toa_personal_kc_requirement = 65475
-toa_retrieval_locked = 65474
+toa_personal_invocations_a = 64000
+toa_personal_invocations_b = 64001
+toa_personal_invocations_c = 64002
+toa_personal_kc_requirement = 64003
+toa_retrieval_locked = 64004
 
 # TOA lobby area (polygon in .data/raw-cache/map/area/toa_lobby.toml).
 # Explicit id, like the other area modules (rune_essence_mine 57, motherlode_mine 59).
