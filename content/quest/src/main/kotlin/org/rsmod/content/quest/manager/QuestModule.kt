@@ -11,4 +11,3 @@ public class QuestModule : PluginModule() {
         addSetBinding<SpellQuestRequirement>(PolicySpellQuestRequirement::class.java)
     }
 }
-

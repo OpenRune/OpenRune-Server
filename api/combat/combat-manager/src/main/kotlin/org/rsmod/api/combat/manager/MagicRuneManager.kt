@@ -1,6 +1,5 @@
 package org.rsmod.api.combat.manager
 
-import dev.openrune.definition.type.VarBitType
 import dev.openrune.types.ItemServerType
 import jakarta.inject.Inject
 import kotlin.collections.any
