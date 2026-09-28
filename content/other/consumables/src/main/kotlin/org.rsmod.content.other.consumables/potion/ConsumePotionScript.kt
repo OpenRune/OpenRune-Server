@@ -10,6 +10,7 @@ import org.rsmod.api.script.onOpHeld2
 import org.rsmod.api.script.onOpHeld3
 import org.rsmod.api.script.onOpHeld4
 import org.rsmod.api.table.PotionRow
+import org.rsmod.content.other.consumables.ActivityConsumable
 import org.rsmod.content.other.consumables.ConsumableActivityAccess
 import org.rsmod.content.other.consumables.ConsumableDelayState
 import org.rsmod.content.other.consumables.ConsumableType
@@ -198,6 +199,21 @@ constructor(
             return
         }
 
+        val refusal =
+            activityAccess.refusal(
+                player = player,
+                consumable =
+                    ActivityConsumable(
+                        type = ConsumableType.POTION,
+                        restoresHitpoints = potion.restoresHitpoints(),
+                    ),
+            )
+
+        if (refusal != null) {
+            mes(refusal)
+            return
+        }
+
         if (!effects.canApply(this, potion.effect)) {
             return
         }
@@ -297,6 +313,10 @@ constructor(
                 postfix = "]",
             )
 
+    // Mixes heal through `heal`; the rest heal through their handler. Silk dressing isn't drunk.
+    private fun PotionRow.restoresHitpoints(): Boolean =
+        heal > 0 || effect.handler in HITPOINTS_RESTORING_HANDLERS
+
     private fun restrictedActivityMessage(
         minigameOnly: String,
         raidOnly: String,
@@ -336,6 +356,15 @@ constructor(
     )
 
     private companion object {
+        val HITPOINTS_RESTORING_HANDLERS: Set<String> =
+            setOf(
+                "saradomin_brew",
+                "armadyl_brew",
+                "guthix_rest",
+                "toa_nectar",
+                "toa_ambrosia",
+            )
+
         const val DRINK_SOUND: Int =
             2401
 
