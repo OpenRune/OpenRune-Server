@@ -95,7 +95,16 @@ class EffectInterpreter internal constructor(
                     }
                 }
             }
-            is Effect.Spotanim -> npc.spotanim(effect.spot, effect.delay, effect.height, effect.slot)
+            is Effect.Spotanim -> {
+                val onTargets = effect.target
+                if (onTargets == null) {
+                    npc.spotanim(effect.spot, effect.delay, effect.height, effect.slot)
+                } else {
+                    for (t in resolvePlayers(onTargets)) {
+                        t.spotanim(effect.spot, delay = effect.delay, height = effect.height)
+                    }
+                }
+            }
             is Effect.MapSpotanim -> {
                 val coord = resolveTile(effect.at)
                 val spot = SpotanimType(effect.spot.asRSCM(RSCMType.SPOTANIM))
@@ -360,6 +369,19 @@ class EffectInterpreter internal constructor(
             }
             if (hit.hazard) {
                 t.queueHit(npc, delay, hit.type.toEngine(), damage, deps.playerHitModifier)
+                continue
+            }
+            if (hit.resolveOnImpact) {
+                t.queueCombatRetaliate(npc, delay)
+                t.queueImpactHit(
+                    npc,
+                    delay,
+                    hit.type.toEngine(),
+                    damage,
+                    impactModifier(access, hit, damage),
+                    penetration = if (hit.penetrationWhen != null) 0 else hit.penetration,
+                )
+                showMissSpotanim(hit, t, damage, clientDelay = 0)
                 continue
             }
             val landed =
