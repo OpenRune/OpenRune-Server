@@ -63,3 +63,12 @@ id = "varn.muspah_melee_still_ticks"
 
 [[varn]]
 id = "varn.callisto_roars"
+
+[[varn]]
+id = "varn.poison_severity"
+
+[[varn]]
+id = "varn.freeze_end_clock"
+
+[[varn]]
+id = "varn.freeze_immunity_end_clock"

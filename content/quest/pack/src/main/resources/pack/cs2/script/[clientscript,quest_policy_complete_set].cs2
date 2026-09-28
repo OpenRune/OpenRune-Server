@@ -1,0 +1,2 @@
+[clientscript,quest_policy_complete_set](string $ids)
+%quest_policy_complete_ids = $ids;
