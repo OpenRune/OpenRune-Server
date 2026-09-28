@@ -198,10 +198,10 @@ class EffectInterpreter(
     private fun scheduleWait(
         ticks: Int,
         onComplete: () -> Unit,
-        suppressAttacks: Boolean = true,
+        holdAttacks: Boolean = true,
     ) {
         require(ticks > 0) { "`ticks` must be greater than 0. (ticks=$ticks)" }
-        if (suppressAttacks) deps.suppressAttacks(npc, ticks)
+        if (holdAttacks) deps.suppressAttacks(npc, ticks)
         deps.worldQueues.add(ticks) { if (npc.isValidTarget()) onComplete() }
     }
 
