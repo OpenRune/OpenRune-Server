@@ -12,6 +12,8 @@ import org.rsmod.api.script.onOpHeld2
 import org.rsmod.api.script.onOpHeld3
 import org.rsmod.api.script.onOpHeld4
 import org.rsmod.api.table.FoodRow
+import org.rsmod.content.other.consumables.ActivityConsumable
+import org.rsmod.content.other.consumables.ConsumableActivityAccess
 import org.rsmod.content.other.consumables.ConsumableDelayState
 import org.rsmod.content.other.consumables.ConsumableType
 import org.rsmod.content.other.consumables.restoreRunEnergy
@@ -25,6 +27,7 @@ constructor(
     private val areaChecker: AreaChecker,
     private val effects: FoodEffectService,
     private val specialEffects: FoodSpecialEffectService,
+    private val activityAccess: ConsumableActivityAccess,
 ) : PluginScript() {
     override fun ScriptContext.startup() {
         val registrations =
@@ -189,6 +192,21 @@ constructor(
                 type = consumableType,
             )
         ) {
+            return
+        }
+
+        val refusal =
+            activityAccess.refusal(
+                player = player,
+                consumable =
+                    ActivityConsumable(
+                        type = ConsumableType.FOOD,
+                        restoresHitpoints = true,
+                    ),
+            )
+
+        if (refusal != null) {
+            mes(refusal)
             return
         }
 

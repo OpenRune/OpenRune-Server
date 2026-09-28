@@ -22,6 +22,9 @@ class ConsumableActivityAccess @Inject constructor(private val gates: Set<Consum
         return true
     }
 
+    fun refusal(player: Player, consumable: ActivityConsumable): String? =
+        gates.firstNotNullOfOrNull { it.refusal(player, consumable) }
+
     fun allies(player: Player, activity: String): List<Player> =
         gates.flatMap { it.allies(player, activity) }
 
