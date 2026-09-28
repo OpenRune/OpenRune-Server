@@ -181,7 +181,9 @@ object SpecValidator {
         when (effect) {
             is Effect.Message -> listOf(effect.target)
             is Effect.Hit -> listOf(effect.target)
-            is Effect.Projectile -> listOf(effect.target)
+            is Effect.Projectile -> listOfNotNull(effect.target, effect.source)
+            is Effect.Sound -> listOfNotNull(effect.target)
+            is Effect.Spotanim -> listOfNotNull(effect.target)
             is Effect.MapSpotanim -> listOf(effect.at)
             is Effect.TileAoE -> listOf(effect.center)
             is Effect.Debris -> listOf(effect.center)

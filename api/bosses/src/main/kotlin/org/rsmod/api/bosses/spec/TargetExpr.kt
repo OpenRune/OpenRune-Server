@@ -1,5 +1,8 @@
 package org.rsmod.api.bosses.spec
 
+import org.rsmod.game.entity.Npc
+import org.rsmod.game.entity.Player
+
 sealed interface TargetExpr {
     sealed interface Single : TargetExpr
     sealed interface Multi : TargetExpr
@@ -26,4 +29,6 @@ sealed interface TargetExpr {
     data class TopN(val n: Int, val by: Single) : Multi
 
     data class FacingQuadrant(val reach: Int = 1) : Multi
+
+    data class Custom(val resolve: (Npc, Player) -> List<Player>) : Multi
 }

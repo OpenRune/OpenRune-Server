@@ -15,8 +15,20 @@ sealed interface Effect {
 
     data class Anim(val seq: String, val delay: Int = 0) : Effect
     data class Say(val text: String) : Effect
-    data class Sound(val synth: String, val radius: Int = 10) : Effect
-    data class Spotanim(val spot: String, val height: Int = 0, val delay: Int = 0) : Effect
+    data class Sound(
+        val synth: String,
+        val radius: Int = 10,
+        val delay: Int = 0,
+        val target: TargetExpr? = null,
+    ) : Effect
+
+    data class Spotanim(
+        val spot: String,
+        val height: Int = 0,
+        val delay: Int = 0,
+        val target: TargetExpr? = null,
+    ) : Effect
+
     data class MapSpotanim(val spot: String, val at: TargetExpr, val height: Int = 0, val delay: Int = 0) : Effect
     data class Broadcast(val text: String, val radius: Int = 15) : Effect
 
@@ -32,7 +44,7 @@ sealed interface Effect {
 
     data class Delay(val ticks: Int) : Effect
 
-    data class Wait(val ticks: Int) : Effect
+    data class Wait(val ticks: Int, val suppressAttacks: Boolean = true) : Effect
     data object NoOp : Effect
 
     data class Hit(
@@ -49,6 +61,7 @@ sealed interface Effect {
         val onHit: Effect? = null,
         val onHitEvenOnMiss: Boolean = false,
         val lifesteal: Int = 0,
+        val resolveOnImpact: Boolean = false,
     ) : Effect
 
     data class Projectile(
@@ -66,6 +79,7 @@ sealed interface Effect {
          * `onImpact = summon("npc.ice_block", centeredOn = ImpactTile)`.
          */
         val onImpact: Effect? = null,
+        val source: TargetExpr.Single? = null,
     ) : Effect
 
     data class TileAoE(

@@ -7,14 +7,20 @@ import org.rsmod.api.player.output.CamShakeAxis
 
 fun anim(seq: String, delay: Int = 0): Effect = Effect.Anim(seq, delay)
 
-/** Plays [spot] on the caster (the boss npc itself), not on the target. */
-fun spotanim(spot: String, height: Int = 0, delay: Int = 0): Effect =
-    Effect.Spotanim(spot, height, delay)
+/** Plays [spot] on the caster (the boss npc itself), or on each player [target] resolves to. */
+fun spotanim(spot: String, height: Int = 0, delay: Int = 0, target: TargetExpr? = null): Effect =
+    Effect.Spotanim(spot, height, delay, target)
+
+fun mapSpotanim(spot: String, at: TargetExpr, height: Int = 0, delay: Int = 0): Effect =
+    Effect.MapSpotanim(spot, at, height, delay)
+
 fun say(text: String): Effect = Effect.Say(text)
-fun sound(synth: String, radius: Int = 10): Effect = Effect.Sound(synth, radius)
+fun sound(synth: String, radius: Int = 10, delay: Int = 0, target: TargetExpr? = null): Effect =
+    Effect.Sound(synth, radius, delay, target)
+
 fun delay(ticks: Int): Effect = Effect.Delay(ticks)
 
-fun wait(ticks: Int): Effect = Effect.Wait(ticks)
+fun wait(ticks: Int, suppressAttacks: Boolean = true): Effect = Effect.Wait(ticks, suppressAttacks)
 
 fun camShake(axis: CamShakeAxis, random: Int, amplitude: Int = 0, rate: Int = 0, radius: Int = 15): Effect =
     Effect.CamShake(axis, random, amplitude, rate, radius)
@@ -71,8 +77,20 @@ fun projectile(
     hit: Effect.Hit? = null,
     resolveOnImpact: Boolean = false,
     onImpact: Effect? = null,
+    source: TargetExpr.Single? = null,
 ): Effect =
-    Effect.Projectile(spotanim, travel, config, target, launch, impact, hit, resolveOnImpact, onImpact)
+    Effect.Projectile(
+        spotanim,
+        travel,
+        config,
+        target,
+        launch,
+        impact,
+        hit,
+        resolveOnImpact,
+        onImpact,
+        source,
+    )
 
 fun tileAoE(
     center: TargetExpr,

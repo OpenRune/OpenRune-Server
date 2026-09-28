@@ -1,6 +1,7 @@
 package org.rsmod.api.bosses.runtime
 
 import dev.openrune.types.aconverted.SpotanimType
+import org.rsmod.api.npc.access.StandardNpcAccess
 import org.rsmod.api.player.stat.hitpoints
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
@@ -48,6 +49,15 @@ fun BossDeps.forceNext(npc: Npc, ability: String) {
 }
 
 fun BossDeps.encounter(npc: Npc): BossEncounter = encounterRegistry.of(npc)
+
+fun BossDeps.runAbility(access: StandardNpcAccess, target: Player, ability: String) {
+    val encounter = encounter(access.npc)
+    val effect =
+        requireNotNull(encounter.spec.abilities[ability]) {
+            "Ability '$ability' does not exist in boss spec."
+        }
+    EffectInterpreter(access.npc, target, encounter.spec, encounter, this).run(access, effect)
+}
 
 fun BossDeps.repeatTick(
     ticks: Int,

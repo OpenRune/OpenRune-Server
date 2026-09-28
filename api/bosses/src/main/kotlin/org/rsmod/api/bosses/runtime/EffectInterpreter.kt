@@ -25,6 +25,7 @@ import org.rsmod.api.player.hit.queueImpactHit
 import org.rsmod.api.player.isValidTarget
 import org.rsmod.api.player.output.Camera
 import org.rsmod.api.player.output.mes
+import org.rsmod.api.player.output.soundSynth
 import org.rsmod.api.player.stat.hitpoints
 import org.rsmod.api.player.stat.statDrain
 import org.rsmod.game.entity.Npc
@@ -34,6 +35,7 @@ import org.rsmod.game.hit.HitType
 import org.rsmod.game.map.collision.isWalkBlocked
 import org.rsmod.game.proj.ProjAnim
 import org.rsmod.map.CoordGrid
+import org.rsmod.map.util.Bounds
 
 class EffectInterpreter(
     private val npc: Npc,
@@ -49,9 +51,30 @@ class EffectInterpreter(
             is Effect.Anim -> access.anim(effect.seq)
             is Effect.Say -> access.say(effect.text)
             is Effect.Sound -> {
-                deps.worldRepo.soundArea(npc.coords, effect.synth, radius = effect.radius)
+                val listeners = effect.target
+                if (listeners == null) {
+                    deps.worldRepo.soundArea(
+                        npc.coords,
+                        effect.synth,
+                        delay = effect.delay,
+                        radius = effect.radius,
+                    )
+                } else {
+                    resolveMulti(listeners).forEach {
+                        it.soundSynth(effect.synth, delay = effect.delay)
+                    }
+                }
             }
-            is Effect.Spotanim -> access.spotanim(effect.spot, effect.delay, effect.height)
+            is Effect.Spotanim -> {
+                val onTargets = effect.target
+                if (onTargets == null) {
+                    access.spotanim(effect.spot, effect.delay, effect.height)
+                } else {
+                    resolveMulti(onTargets).forEach {
+                        it.spotanim(effect.spot, delay = effect.delay, height = effect.height)
+                    }
+                }
+            }
             is Effect.MapSpotanim -> {
                 val coord = resolveTile(effect.at)
                 val spot = SpotanimType(effect.spot.asRSCM(RSCMType.SPOTANIM))
@@ -77,7 +100,7 @@ class EffectInterpreter(
                 return
             }
             is Effect.Wait -> {
-                scheduleWait(effect.ticks, onComplete)
+                scheduleWait(effect.ticks, onComplete, effect.suppressAttacks)
                 return
             }
             is Effect.NoOp -> {}
@@ -172,9 +195,13 @@ class EffectInterpreter(
         onComplete()
     }
 
-    private fun scheduleWait(ticks: Int, onComplete: () -> Unit) {
+    private fun scheduleWait(
+        ticks: Int,
+        onComplete: () -> Unit,
+        suppressAttacks: Boolean = true,
+    ) {
         require(ticks > 0) { "`ticks` must be greater than 0. (ticks=$ticks)" }
-        deps.suppressAttacks(npc, ticks)
+        if (suppressAttacks) deps.suppressAttacks(npc, ticks)
         deps.worldQueues.add(ticks) { if (npc.isValidTarget()) onComplete() }
     }
 
@@ -244,6 +271,13 @@ class EffectInterpreter(
             if (damage > 0) {
                 hit.spotanim?.let { t.spotanim(it, delay = hit.spotanimDelay ?: 0, height = hit.spotanimHeight) }
             }
+            if (hit.resolveOnImpact) {
+                val modifier = landingModifier(access, hit, damage)
+                val type = hit.type.toEngine()
+                t.finishNpcImpactHit(npc, delay, type, damage, modifier, hit.penetration)
+                showMissSpotanim(hit, t, damage, clientDelay = 0)
+                continue
+            }
             val landed =
                 t.finishNpcHit(npc, delay, hit.type.toEngine(), damage, deps.playerHitModifier, hit.penetration)
             scheduleLanding(access, hit, t, damage, landed.damage, delay, clientDelay = 0)
@@ -274,11 +308,12 @@ class EffectInterpreter(
 
         proj.launch?.let { access.spotanim(it) }
 
+        val source = proj.source?.let { resolveTile(it) }
         val projAnim =
-            if (player != null) {
-                ProjAnim.fromNpcToPlayer(npc, player, spotId, type)
-            } else {
-                ProjAnim.fromNpcToCoord(npc, destCoord, spotId, type)
+            when {
+                source != null -> projAnimFrom(source, player, destCoord, spotId, type)
+                player != null -> ProjAnim.fromNpcToPlayer(npc, player, spotId, type)
+                else -> ProjAnim.fromNpcToCoord(npc, destCoord, spotId, type)
             }
         deps.worldRepo.projAnim(projAnim)
 
@@ -307,7 +342,7 @@ class EffectInterpreter(
                     player.spotanim(it, delay = delay, height = hit.spotanimHeight)
                 }
             }
-            if (proj.resolveOnImpact) {
+            if (proj.resolveOnImpact || hit.resolveOnImpact) {
                 player.finishNpcImpactHit(
                     npc,
                     projAnim.serverCycles,
@@ -389,6 +424,29 @@ class EffectInterpreter(
         }
     }
 
+    private fun projAnimFrom(
+        source: CoordGrid,
+        player: Player?,
+        dest: CoordGrid,
+        spotanim: Int,
+        type: ProjAnimType,
+    ): ProjAnim {
+        val distance = Bounds(source).distanceTo(player?.bounds() ?: Bounds(dest))
+        return ProjAnim(
+            spotanim = spotanim,
+            startHeight = type.startHeight,
+            endHeight = type.endHeight,
+            startTime = type.delay,
+            endTime = ProjAnim.calculateEndTime(type, distance),
+            angle = type.angle,
+            progress = type.progress,
+            sourceIndex = 0,
+            targetIndex = player?.let { -(it.slotId + 1) } ?: 0,
+            startCoord = source,
+            endCoord = player?.coords ?: dest,
+        )
+    }
+
     private fun runWithImpactTile(coord: CoordGrid, block: () -> Unit) {
         val previous = impactTile
         impactTile = coord
@@ -468,15 +526,15 @@ class EffectInterpreter(
         // Only consider tiles that are walkable
         val spawnTiles =
             buildList {
-                    for (dx in -radius..radius) {
-                        for (dz in -radius..radius) {
-                            val origin = center.translate(dx, dz)
-                            if (canStand(origin, npcType.size)) {
-                                add(origin)
-                            }
+                for (dx in -radius..radius) {
+                    for (dz in -radius..radius) {
+                        val origin = center.translate(dx, dz)
+                        if (canStand(origin, npcType.size)) {
+                            add(origin)
                         }
                     }
                 }
+            }
                 .toMutableList()
 
         repeat(summon.count) {
@@ -600,6 +658,7 @@ class EffectInterpreter(
             }
             is TargetExpr.TopN -> listOf(target)
             is TargetExpr.FacingQuadrant -> playersInFacingQuadrant(expr.reach)
+            is TargetExpr.Custom -> expr.resolve(npc, target)
             is TargetExpr.Single -> listOfNotNull(resolveSingle(expr))
             else -> listOf(target)
         }

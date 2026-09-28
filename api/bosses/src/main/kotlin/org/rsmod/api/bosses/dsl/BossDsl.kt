@@ -104,6 +104,7 @@ class HitBuilder internal constructor() {
     private var onHitEffect: Effect? = null
     private var onHitEvenOnMiss: Boolean = false
     private var lifestealPercent: Int = 0
+    private var resolveOnImpactFlag: Boolean = false
 
     fun damage(expr: DamageExpr) {
         damageExpr = expr
@@ -141,6 +142,10 @@ class HitBuilder internal constructor() {
         lifestealPercent = percent
     }
 
+    fun resolveOnImpact() {
+        resolveOnImpactFlag = true
+    }
+
     internal fun commitDamage(expr: DamageExpr) {
         damageExpr = expr
     }
@@ -162,6 +167,7 @@ class HitBuilder internal constructor() {
             onHit = onHitEffect,
             onHitEvenOnMiss = onHitEvenOnMiss,
             lifesteal = lifestealPercent,
+            resolveOnImpact = resolveOnImpactFlag,
         )
 }
 
@@ -186,17 +192,17 @@ class AbilityBuilder {
         effects += Effect.Anim(seq, delay)
     }
 
-    /** Plays [spot] on the caster (the boss npc itself), not on the target. */
-    fun spotanim(spot: String, height: Int = 0, delay: Int = 0) {
-        effects += Effect.Spotanim(spot, height, delay)
+    /** Plays [spot] on the caster (the boss npc itself), or on each player [target] resolves to. */
+    fun spotanim(spot: String, height: Int = 0, delay: Int = 0, target: TargetExpr? = null) {
+        effects += Effect.Spotanim(spot, height, delay, target)
     }
 
     fun say(text: String) {
         effects += Effect.Say(text)
     }
 
-    fun sound(synth: String, radius: Int = 10) {
-        effects += Effect.Sound(synth, radius)
+    fun sound(synth: String, radius: Int = 10, delay: Int = 0, target: TargetExpr? = null) {
+        effects += Effect.Sound(synth, radius, delay, target)
     }
 
     fun delay(ticks: Int) {
@@ -300,6 +306,7 @@ class AbilityBuilder {
         hit: Effect.Hit? = null,
         resolveOnImpact: Boolean = false,
         onImpact: Effect? = null,
+        source: TargetExpr.Single? = null,
     ) {
         effects +=
             Effect.Projectile(
@@ -312,6 +319,7 @@ class AbilityBuilder {
                 hit,
                 resolveOnImpact,
                 onImpact,
+                source,
             )
     }
 
@@ -334,6 +342,7 @@ class AbilityBuilder {
         var impact: String? = null
         var resolveOnImpact: Boolean = false
         var onImpact: Effect? = null
+        var source: TargetExpr.Single? = null
         private var hitPayload: Effect.Hit? = null
 
         fun hit(
@@ -360,6 +369,7 @@ class AbilityBuilder {
                 hit = hitPayload,
                 resolveOnImpact = resolveOnImpact,
                 onImpact = onImpact,
+                source = source,
             )
     }
 
