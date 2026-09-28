@@ -1,27 +1,30 @@
 package org.rsmod.content.other.consumables
 
+import jakarta.inject.Inject
 import jakarta.inject.Singleton
 import org.rsmod.game.entity.Player
 
 @Singleton
-class ConsumableActivityAccess {
+class ConsumableActivityAccess @Inject constructor(private val gates: Set<ConsumableActivityGate>) {
     fun canConsume(
         player: Player,
         minigameOnly: String,
         raidOnly: String,
     ): Boolean {
-        /**
-         *  Activity consumables remain locked behind this class
-         *  until the minigame/raid structures are added.
-         */
-        if (minigameOnly.isNotBlank()) {
+        if (minigameOnly.isNotBlank() && !isInside(player, minigameOnly)) {
             return false
         }
 
-        if (raidOnly.isNotBlank()) {
+        if (raidOnly.isNotBlank() && !isInside(player, raidOnly)) {
             return false
         }
 
         return true
     }
+
+    fun allies(player: Player, activity: String): List<Player> =
+        gates.flatMap { it.allies(player, activity) }
+
+    private fun isInside(player: Player, activity: String): Boolean =
+        gates.any { it.isInside(player, activity) }
 }

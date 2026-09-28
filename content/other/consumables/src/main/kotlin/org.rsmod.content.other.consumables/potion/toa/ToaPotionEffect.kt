@@ -4,9 +4,12 @@ import jakarta.inject.Inject
 import jakarta.inject.Singleton
 import org.rsmod.api.config.constants
 import org.rsmod.api.player.output.UpdateRun
+import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.stat.stat
 import org.rsmod.api.player.stat.statBase
+import org.rsmod.api.player.stat.statHeal
+import org.rsmod.content.other.consumables.ConsumableActivityAccess
 import org.rsmod.api.table.PotionEffectRow
 import org.rsmod.content.other.consumables.potion.drainCurrentStats
 import org.rsmod.content.other.consumables.potion.restoreIfDrained
@@ -19,6 +22,7 @@ constructor(
     private val smellingSalts: ToaSmellingSaltsEffect,
     private val liquidAdrenaline: ToaLiquidAdrenalineEffect,
     private val overTimeEffects: ToaOverTimeEffect,
+    private val activityAccess: ConsumableActivityAccess,
 ) {
     fun handles(handler: String): Boolean =
         handler in HANDLERS
@@ -158,12 +162,28 @@ constructor(
             constant = TEARS_PRAYER_CONSTANT,
             percent = TEARS_PRAYER_PERCENT,
         )
+
+        restoreAlliesPrayer()
+    }
+
+    private fun ProtectedAccess.restoreAlliesPrayer() {
+        val coords = player.coords
+        for (ally in activityAccess.allies(player, TOMBS_OF_AMASCUT)) {
+            val near =
+                ally.coords.level == coords.level &&
+                    ally.coords.chebyshevDistance(coords) <= TEARS_ALLY_RANGE
+            if (!near || ally.stat(PRAYER) >= ally.statBase(PRAYER)) {
+                continue
+            }
+            ally.statHeal(PRAYER, TEARS_ALLY_PRAYER_CONSTANT, TEARS_ALLY_PRAYER_PERCENT)
+            ally.mes("${player.displayName} has restored some of your prayer points.")
+        }
     }
 
     companion object {
         private const val NECTAR_HEAL_CONSTANT: Int = 3
         private const val NECTAR_HEAL_PERCENT: Int = 15
-        private const val NECTAR_DRAIN_PERCENT: Int = 20
+        private const val NECTAR_DRAIN_PERCENT: Int = 5
         private const val NECTAR_DRAIN_CONSTANT: Int = 5
 
         private const val AMBROSIA_HITPOINTS_PERCENT: Int = 25
@@ -175,6 +195,12 @@ constructor(
         private const val TEARS_STAT_PERCENT: Int = 25
         private const val TEARS_PRAYER_CONSTANT: Int = 10
         private const val TEARS_PRAYER_PERCENT: Int = 25
+        private const val TEARS_ALLY_PRAYER_CONSTANT: Int = 10
+        private const val TEARS_ALLY_PRAYER_PERCENT: Int = 10
+        private const val TEARS_ALLY_RANGE: Int = 1
+
+        private const val TOMBS_OF_AMASCUT: String =
+            "tombs_of_amascut"
 
         private const val HITPOINTS: String =
             "stat.hitpoints"
