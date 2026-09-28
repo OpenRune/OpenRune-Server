@@ -4,6 +4,8 @@ import org.rsmod.api.player.output.mes
 import org.rsmod.content.raids.toa.raid.ToaPath
 import org.rsmod.content.raids.toa.raid.ToaRaid
 import org.rsmod.content.raids.toa.raid.ToaRoom
+import org.rsmod.content.raids.toa.raid.supplies.ToaSupplies
+import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.game.loc.LocAngle
 import org.rsmod.game.loc.LocShape
@@ -17,7 +19,8 @@ import org.rsmod.map.CoordGrid
  * Built fresh every time the party comes back (see [ToaRaid]), so its doors always show the
  * raid's progress: completed paths closed, the Wardens door open once all four are done.
  *
- * Not ported yet: the helpful spirit and its supplies (after 2 and 4 paths).
+ * After 2 and 4 paths the Helpful Spirit waits here ([ToaSupplies]); leaving without taking a
+ * bundle forfeits it.
  */
 class MainHallEncounter(raid: ToaRaid, room: ToaRoom, region: Region, controllerId: Int) :
     ToaEncounter(raid, room, region, controllerId) {
@@ -44,6 +47,9 @@ class MainHallEncounter(raid: ToaRaid, room: ToaRoom, region: Region, controller
 
     override fun onBuilt() {
         addPathLevels()
+        if (raid.supplies.offerIfDue(raid)) {
+            deps.npcRepo.add(Npc(SPIRIT, coords(SPIRIT_TILE)), Int.MAX_VALUE)
+        }
         for (path in ToaPath.entries) {
             val door = if (path in raid.pathsCompleted) path.doorClosed else path.doorOpen
             spawnDoor(path, door)
@@ -68,6 +74,18 @@ class MainHallEncounter(raid: ToaRaid, room: ToaRoom, region: Region, controller
                 player.mes("You hear a mysterious rumbling coming from the Path of ${path.pathName}.")
             }
         }
+        // Offline_Scape's message; the wiki doesn't quote one.
+        if (raid.supplies.announce(player)) {
+            player.mes("<col=0000b2>A helpful spirit has arrived with some supplies.")
+        }
+    }
+
+    /**
+     * OSRS Wiki (Helpful Spirit): moving on without a bundle forfeits it. The game warns first;
+     * that warning's wording isn't known, so it isn't sent.
+     */
+    override fun onLeave(player: Player) {
+        raid.supplies.forfeit(player)
     }
 
     /**
@@ -140,5 +158,10 @@ class MainHallEncounter(raid: ToaRaid, room: ToaRoom, region: Region, controller
         /** Capture: toa_nexus_wardens_door at (3548, 5134), angle 2. */
         val WARDENS_DOOR_TILE = CoordGrid(3548, 5134, 0)
         const val WARDENS_DOOR_DELAY = 3
+
+        const val SPIRIT = "npc.toa_midraidloot_trader"
+
+        /** Offline_Scape SUPPLY_NPC_LOCATION. */
+        val SPIRIT_TILE = CoordGrid(3548, 5154, 0)
     }
 }
