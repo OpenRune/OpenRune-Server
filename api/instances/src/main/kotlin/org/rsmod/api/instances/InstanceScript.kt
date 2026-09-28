@@ -11,6 +11,7 @@ import org.rsmod.api.instances.events.instanceEventId
 import org.rsmod.api.instances.hook.InstanceEnterAction
 import org.rsmod.api.instances.hook.InstanceEnterPrelude
 import org.rsmod.api.instances.hook.InstanceObjectHookRegistry
+import org.rsmod.api.player.hook.TeleportType
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.script.onEvent
 import org.rsmod.api.table.InstanceSettingsRow
@@ -112,7 +113,7 @@ public abstract class InstanceScript(
                     else -> return
                 }
                 val enter: InstanceEnterAction = {
-                    telejump(enterCoord)
+                    telejump(enterCoord, TeleportType.Exempt)
                     manager.finalizeEntry(player, session, worldClock.cycle)
                 }
                 if (runPreludeWhen(result)) {
@@ -255,7 +256,7 @@ public abstract class InstanceScript(
             return
         }
         val exit = manager.leave(player, session, worldClock.cycle)
-        telejump(exit)
+        telejump(exit, TeleportType.Exempt)
     }
 
     protected suspend fun ProtectedAccess.enterPublicRoom(area: InstanceArea) {

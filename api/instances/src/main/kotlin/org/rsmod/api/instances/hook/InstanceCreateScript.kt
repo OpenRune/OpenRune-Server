@@ -10,6 +10,7 @@ import org.rsmod.api.instances.InstanceSession
 import org.rsmod.api.instances.InstanceSpec
 import org.rsmod.api.instances.enterLocObjects
 import org.rsmod.api.instances.exitLocObjects
+import org.rsmod.api.player.hook.TeleportType
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.script.onOpLoc1
 import org.rsmod.api.table.InstanceSettingsRow
@@ -189,19 +190,19 @@ internal class InstanceCreateScript @Inject constructor(
             return
         }
         val exit = manager.leave(player, session, worldClock.cycle)
-        telejump(exit)
+        telejump(exit, TeleportType.Exempt)
     }
 
     private suspend fun ProtectedAccess.applyResult(result: InstanceManager.Result, success: String) {
         when (result) {
             is InstanceManager.Result.Created -> {
                 mes(success)
-                telejump(result.enter)
+                telejump(result.enter, TeleportType.Exempt)
                 manager.finalizeEntry(player, result.session, worldClock.cycle)
             }
             is InstanceManager.Result.Joined -> {
                 mes(success)
-                telejump(result.enter)
+                telejump(result.enter, TeleportType.Exempt)
                 manager.finalizeEntry(player, result.session, worldClock.cycle)
             }
             is InstanceManager.Result.Failed -> mes(result.reason)
