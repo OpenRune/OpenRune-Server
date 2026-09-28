@@ -118,6 +118,9 @@ class ToaRaid(val lobbyParty: ToaLobbyParty, val settings: ToaPartySettings, val
     /** Players between their killing hit and their respawn (see ToaDeathScript). */
     private val dying = HashSet<Player>()
 
+    /** Everyone's hidden reward points; members who leave keep theirs. */
+    val points = ToaPoints(players)
+
     /**
      * Offline_Scape TOARaidParty.getDamageMultiplier: room hazards hit 0.4% harder per raid level,
      * capped at 2.5x.

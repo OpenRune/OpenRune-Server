@@ -46,10 +46,17 @@ internal object ToaDamage {
     private const val CURRENT_MAX = 32_767
 }
 
-/** Damage dealt: the npc hit processor reports every player hit on any npc. */
+/**
+ * Damage dealt: the npc hit processor reports every player hit on any npc, already capped at the
+ * npc's remaining hitpoints. It also earns room points ([ToaPoints]) at the room's multiplier.
+ */
 class ToaDamageContributor @Inject constructor() : NpcDamageContributor {
     override fun onPlayerDamageNpc(npc: Npc, source: Player, damage: Int) {
-        if (ToaDamage.counts(source)) ToaDamage.addDone(source, damage)
+        if (!ToaDamage.counts(source)) return
+        ToaDamage.addDone(source, damage)
+        val raid = source.currentRaid ?: return
+        val room = raid.encounterOf(source) ?: return
+        raid.points.addDamage(source, damage, room.pointMultiplier(npc))
     }
 }
 

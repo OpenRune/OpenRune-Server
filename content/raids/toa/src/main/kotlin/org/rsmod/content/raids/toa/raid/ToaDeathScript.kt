@@ -42,7 +42,7 @@ import org.rsmod.plugin.scripts.ScriptContext
  * `statSub` (doesn't happen in TOA) and admin `::die` (calls `queueDeath()` directly, so it
  * still sends you to Lumbridge).
  *
- * Not ported yet: points lost on death (no points system), Retribution, Ba-Ba's pit fall.
+ * Not ported yet: Retribution, Ba-Ba's pit fall.
  */
 class ToaDeathScript : PluginScript() {
     override fun ScriptContext.startup() {
@@ -123,6 +123,7 @@ private suspend fun ProtectedAccess.dieInRaid(raid: ToaRaid) {
     }
 
     raid.totalDeaths++
+    raid.points.onDeath(player)
     mes("You have died. Total deaths: <col=ff0000>${raid.totalDeaths}</col>.")
     val othersFighting =
         room.stage == ToaStage.STARTED &&
