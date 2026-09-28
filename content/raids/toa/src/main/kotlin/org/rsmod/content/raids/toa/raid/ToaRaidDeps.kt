@@ -16,6 +16,7 @@ import org.rsmod.api.repo.npc.NpcRepository
 import org.rsmod.api.repo.obj.ObjRepository
 import org.rsmod.api.repo.region.RegionRepository
 import org.rsmod.api.repo.world.WorldRepository
+import org.rsmod.content.other.consumables.potion.toa.ToaPotionEffect
 import org.rsmod.events.EventBus
 import org.rsmod.game.MapClock
 import org.rsmod.game.entity.Player
@@ -64,4 +65,6 @@ constructor(
     val marketPrices: MarketPrices,
     /** Opening and closing overlays outside protected access (a ghost's tabs). */
     val eventBus: EventBus,
+    /** The supplies' timed effects, cleared on death and on leaving the raid. */
+    val supplyEffects: ToaPotionEffect,
 )
