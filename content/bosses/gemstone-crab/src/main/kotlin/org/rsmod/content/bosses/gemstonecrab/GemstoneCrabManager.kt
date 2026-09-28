@@ -49,6 +49,8 @@ constructor(
 
     private val barOpenPlayers: MutableSet<Player> = Collections.newSetFromMap(IdentityHashMap())
     private val claimedMiners: MutableSet<Long> = mutableSetOf()
+    private val playersInSpotArea: Array<MutableSet<Player>> =
+        Array(SPOTS.size) { Collections.newSetFromMap(IdentityHashMap()) }
 
     public val isCrabActive: Boolean
         get() = liveNpc != null && burrowStartCycle == -1
@@ -124,6 +126,22 @@ constructor(
         barOpenPlayers.remove(player)
     }
 
+    public fun enterSpotArea(player: Player, spotIndex: Int) {
+        playersInSpotArea[spotIndex].add(player)
+        val live = liveNpc ?: return
+        if (currentLocationIndex == spotIndex) {
+            openBarFor(player, live)
+        }
+    }
+
+    public fun exitSpotArea(player: Player, spotIndex: Int) {
+        playersInSpotArea[spotIndex].remove(player)
+        val live = liveNpc ?: return
+        if (barOpenPlayers.remove(player)) {
+            hpBar.onClose(player, live)
+        }
+    }
+
     private fun spawnNext() {
         currentLocationIndex = if (nextLocationIndex != -1) nextLocationIndex else pickNextLocation()
         nextLocationIndex = -1
@@ -135,6 +153,10 @@ constructor(
         liveNpc = npc
         activeLifetime = lifetime
         burrowCycle = mapClock.cycle + lifetime
+
+        for (player in playersInSpotArea[currentLocationIndex]) {
+            openBarFor(player, npc)
+        }
     }
 
     private fun pickNextLocation(): Int {
