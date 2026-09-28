@@ -16,6 +16,7 @@ import org.rsmod.content.raids.toa.raid.encounter.WardensFirstEncounter
 import org.rsmod.content.raids.toa.raid.encounter.WardensSecondEncounter
 import org.rsmod.content.raids.toa.raid.encounter.crondis.puzzle.CrondisPuzzleEncounter
 import org.rsmod.content.raids.toa.raid.encounter.crondis.zebak.ZebakEncounter
+import org.rsmod.content.raids.toa.raid.supplies.ToaSupplies
 import org.rsmod.game.entity.Player
 import org.rsmod.game.region.Region
 
@@ -120,6 +121,9 @@ class ToaRaid(val lobbyParty: ToaLobbyParty, val settings: ToaPartySettings, val
 
     /** Everyone's hidden reward points; members who leave keep theirs. */
     val points = ToaPoints(players)
+
+    /** The Helpful Spirit's offers after 2 and 4 paths. */
+    val supplies = ToaSupplies()
 
     /**
      * Offline_Scape TOARaidParty.getDamageMultiplier: room hazards hit 0.4% harder per raid level,
