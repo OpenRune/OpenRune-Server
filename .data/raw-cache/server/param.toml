@@ -865,3 +865,10 @@ id = "param.killcount_varp_awakened"
 isServerOnly = true
 type = "VARP"
 isMembers = true
+
+[[params]]
+id = "param.hitpoints_locked"
+isServerOnly = true
+type = "BOOLEAN"
+defaultInt = 0
+isMembers = true

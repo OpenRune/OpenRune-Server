@@ -27,7 +27,7 @@ constructor(
 ) : NpcHitProcessor {
     override fun StandardNpcAccess.process(hit: Hit) {
         var changedDamage: Int? = null
-        if (hit.damage > npc.hitpoints) {
+        if (!npc.hitpointsLocked && hit.damage > npc.hitpoints) {
             changedDamage = npc.hitpoints
         }
 
@@ -71,12 +71,15 @@ constructor(
     }
 
     private fun StandardNpcAccess.takeHit(hit: Hit) {
-        check(hit.damage <= npc.hitpoints) {
-            "Expected hit damage to be less than or equal to available hitpoints: " +
-                "health=${npc.hitpoints}, hit=$hit"
-        }
         // TODO(combat): Process recoils, retribution(?), etc.
-        npc.hitpoints -= hit.damage
+        val locked = npc.hitpointsLocked
+        if (!locked) {
+            check(hit.damage <= npc.hitpoints) {
+                "Expected hit damage to be less than or equal to available hitpoints: " +
+                    "health=${npc.hitpoints}, hit=$hit"
+            }
+            npc.hitpoints -= hit.damage
+        }
 
         if (hit.damage > 0 && hit.isFromPlayer) {
             hit.resolvePlayerSource(playerList)?.let { source ->
@@ -89,7 +92,7 @@ constructor(
 
         playDefendSound(hit)
 
-        val queueDeath = npc.hitpoints == 0 && "queue.death" !in npc.queueList
+        val queueDeath = !locked && npc.hitpoints == 0 && "queue.death" !in npc.queueList
         if (queueDeath) {
             queueDeath()
         }
@@ -102,6 +105,9 @@ constructor(
 
         npc.publishHitEvent(hit)
     }
+
+    private val Npc.hitpointsLocked: Boolean
+        get() = type.paramOrNull(params.hitpoints_locked) == true
 
     private fun StandardNpcAccess.playDefendSound(hit: Hit) {
         val source = if (hit.isFromPlayer) hit.resolvePlayerSource(playerList) else null

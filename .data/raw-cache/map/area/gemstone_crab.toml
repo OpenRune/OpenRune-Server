@@ -1,0 +1,38 @@
+[[area]]
+name = "Gemstone Crab (Spot 1)"
+area_id = "area.gemstone_crab_spot_1"
+levels = [0]
+
+[[area.polygons]]
+vertices = [
+    [1258, 3158],
+    [1284, 3158],
+    [1284, 3184],
+    [1258, 3184],
+]
+
+[[area]]
+name = "Gemstone Crab (Spot 2)"
+area_id = "area.gemstone_crab_spot_2"
+levels = [0]
+
+[[area.polygons]]
+vertices = [
+    [1338, 3096],
+    [1364, 3096],
+    [1364, 3124],
+    [1338, 3124],
+]
+
+[[area]]
+name = "Gemstone Crab (Spot 3)"
+area_id = "area.gemstone_crab_spot_3"
+levels = [0]
+
+[[area.polygons]]
+vertices = [
+    [1224, 3029],
+    [1250, 3029],
+    [1250, 3055],
+    [1224, 3055],
+]

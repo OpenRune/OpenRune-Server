@@ -24,4 +24,6 @@ sealed interface TargetExpr {
 
     data class AllInRadius(val radius: Int, val of: Single = Self) : Multi
     data class TopN(val n: Int, val by: Single) : Multi
+
+    data class FacingQuadrant(val reach: Int = 1) : Multi
 }
