@@ -3,6 +3,9 @@ package org.rsmod.content.raids.toa.raid
 import dev.openrune.ServerCacheManager
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
+import dev.openrune.types.aconverted.interf.IfSubType
+import org.rsmod.api.player.ui.ifCloseOverlay
+import org.rsmod.api.player.ui.ifOpenSub
 import org.rsmod.content.raids.toa.party.ToaInvocation
 import org.rsmod.content.raids.toa.party.ToaLobbyParty
 import org.rsmod.content.raids.toa.party.ToaPartySettings
@@ -158,15 +161,17 @@ class ToaRaid(val lobbyParty: ToaLobbyParty, val settings: ToaPartySettings, val
 
     /**
      * Turns [player] into a ghost (Offline_Scape turnIntoDeadGhost): the toa_player_ghost NPC
-     * model, and state 30 on everyone's HUD.
+     * model, state 30 on everyone's HUD, and no inventory or equipment tab (capture: both closed
+     * on the respawn tick, reopened when the ghost comes back).
      *
-     * TODO: vanilla also hides the inventory and equipment tabs, but OpenRune's
-     * restoreToplevelTabs is still a stub, so there's no way to bring them back yet.
+     * The overlays are closed and opened directly rather than through `restoreToplevelTabs`,
+     * which is still a stub. Both calls translate the target to the player's gameframe.
      */
     internal fun makeGhost(player: Player) {
         if (!ghosts.add(player)) return
         player.transmog = ServerCacheManager.getNpc(GHOST_NPC.asRSCM(RSCMType.NPC))
         player.rebuildAppearance()
+        for ((interf, _) in GHOST_TABS) player.ifCloseOverlay(interf, deps.eventBus)
     }
 
     /** Undoes [makeGhost]. Safe to call for anyone. */
@@ -174,6 +179,9 @@ class ToaRaid(val lobbyParty: ToaLobbyParty, val settings: ToaPartySettings, val
         if (!ghosts.remove(player)) return
         player.transmog = null
         player.rebuildAppearance()
+        for ((interf, target) in GHOST_TABS) {
+            player.ifOpenSub(interf, target, IfSubType.Overlay, deps.eventBus)
+        }
     }
 
     // ---- Party ----
@@ -298,6 +306,13 @@ class ToaRaid(val lobbyParty: ToaLobbyParty, val settings: ToaPartySettings, val
     companion object {
         /** Offline_Scape GHOST_PLAYER_NPC_ID 11695. */
         private const val GHOST_NPC = "npc.toa_player_ghost"
+
+        /** The tabs a ghost loses: interface to its gameframe slot. */
+        private val GHOST_TABS =
+            listOf(
+                "interface.inventory" to "component.toplevel_osrs_stretch:side3",
+                "interface.wornitems" to "component.toplevel_osrs_stretch:side4",
+            )
 
         private const val DAMAGE_PER_RAID_LEVEL = 0.004
         private const val MAX_DAMAGE_MULTIPLIER = 2.5

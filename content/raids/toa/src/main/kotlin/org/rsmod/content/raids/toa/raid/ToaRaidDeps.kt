@@ -16,6 +16,7 @@ import org.rsmod.api.repo.npc.NpcRepository
 import org.rsmod.api.repo.obj.ObjRepository
 import org.rsmod.api.repo.region.RegionRepository
 import org.rsmod.api.repo.world.WorldRepository
+import org.rsmod.events.EventBus
 import org.rsmod.game.MapClock
 import org.rsmod.game.entity.Player
 import org.rsmod.game.queue.WorldQueueList
@@ -61,4 +62,6 @@ constructor(
     val deathDrops: PlayerDeathDrops,
     /** Item values for the retrieval chest's fee. */
     val marketPrices: MarketPrices,
+    /** Opening and closing overlays outside protected access (a ghost's tabs). */
+    val eventBus: EventBus,
 )
