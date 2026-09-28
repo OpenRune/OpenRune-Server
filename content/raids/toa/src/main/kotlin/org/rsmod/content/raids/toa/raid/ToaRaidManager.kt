@@ -258,6 +258,7 @@ object ToaRaidManager {
      */
     fun resetClientVars(player: Player) {
         player.toaController = CONTROLLER_NONE
+        player.personalContribution = 0
         player.hudPartySlot = 0
         player.hudRaidLevel = 0
         player.hudCurrentPath = 0

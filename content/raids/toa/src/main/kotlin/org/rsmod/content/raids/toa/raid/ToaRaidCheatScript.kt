@@ -48,10 +48,10 @@ class ToaRaidCheatScript @Inject constructor(private val launcher: ProtectedAcce
             player.mes("You are not in a Tombs of Amascut raid.")
             return
         }
-        player.mes(
-            "Points: total ${points.total(player)}, loot ${points.lootPoints(player)}, " +
-                "room ${points.roomPoints(player)}."
-        )
+        val room = points.roomPoints(player)
+        val loot = points.lootPoints(player)
+        player.mes("Points: total ${points.total(player)}, loot $loot, room $room.")
+        player.mes("TOA plugin should show: Total ${loot + room}, Room $room.")
     }
 
     private fun Cheat.completeRoom() {
