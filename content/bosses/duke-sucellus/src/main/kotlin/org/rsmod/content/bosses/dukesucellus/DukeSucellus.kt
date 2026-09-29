@@ -6,7 +6,6 @@ import dev.openrune.rscm.RSCMType
 import dev.openrune.types.NpcMode
 import dev.openrune.types.aconverted.SpotanimType
 import jakarta.inject.Inject
-import java.util.IdentityHashMap
 import org.rsmod.api.bosses.dsl.*
 import org.rsmod.api.bosses.runtime.BossCombat
 import org.rsmod.api.bosses.runtime.BossDeps
@@ -30,7 +29,6 @@ import org.rsmod.events.EventBus
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.game.entity.npc.NpcStateEvents
-import org.rsmod.game.entity.util.PathingEntityCommon
 import org.rsmod.game.hit.HitType as EngineHitType
 import org.rsmod.map.CoordGrid
 import org.rsmod.plugin.scripts.ScriptContext
@@ -66,9 +64,7 @@ constructor(
         }
         deps.extensionRegistry.register(GAZE_RESOLVE) { _, npc, target, _ ->
             if (isFighting(npc) && target.isValidTarget()) resolveGaze(npc, target)
-        }
-        deps.extensionRegistry.register(BLACK_ORB_SWEEP) { _, npc, _, _ -> fireBlackOrbSweep(npc) }
-    }
+        }    }
 
     private val bossNpcIds: Set<Int> by lazy {
         listOf(BOSS_NPC, SLEEP_NPC).map { it.asRSCM(RSCMType.NPC) }.toSet()
@@ -204,46 +200,6 @@ constructor(
         deps.worldRepo.spotanimMap(SpotanimType(spot.asRSCM(RSCMType.SPOTANIM)), coords)
     }
 
-    private val orbSweepEastward: MutableMap<Npc, Boolean> = IdentityHashMap()
-
-    private fun fireBlackOrbSweep(npc: Npc) {
-        val eastward = orbSweepEastward.getOrDefault(npc, true)
-        orbSweepEastward[npc] = !eastward
-        val startX = if (eastward) BLACK_ORB_WEST_X else BLACK_ORB_EAST_X
-        val endX = if (eastward) BLACK_ORB_EAST_X else BLACK_ORB_WEST_X
-        val step = if (eastward) 1 else -1
-        val level = npc.coords.level
-
-        val orbType = ServerCacheManager.getNpc(BLACK_ORB_NPC.asRSCM(RSCMType.NPC)) ?: return
-        val spawnCoord = CoordGrid(startX, BLACK_ORB_ROW, level)
-        val orb = Npc(orbType, spawnCoord)
-        orb.mode = NpcMode.None
-        val travelTicks = kotlin.math.abs(endX - startX)
-        deps.npcRepo.add(orb, travelTicks + 2)
-
-        strikeOrbTile(npc, spawnCoord)
-
-        var x = startX
-        for (tick in 1..travelTicks) {
-            x += step
-            val dest = CoordGrid(x, BLACK_ORB_ROW, level)
-            deps.worldQueues.add(tick) {
-                if (!orb.isSlotAssigned || !isFighting(npc)) return@add
-                PathingEntityCommon.teleport(orb, deps.collision, dest) // non-jump -> rsprox `[teleport]`
-                strikeOrbTile(npc, dest)
-            }
-        }
-    }
-
-    private fun strikeOrbTile(npc: Npc, tile: CoordGrid) {
-        for (player in deps.playerList) {
-            if (!player.isValidTarget() || player.coords != tile) continue
-            val damage = BLACK_ORB_DAMAGE.first + deps.random.of(BLACK_ORB_DAMAGE.last - BLACK_ORB_DAMAGE.first + 1)
-            player.finishNpcHit(npc, 1, EngineHitType.Typeless, damage, deps.playerHitModifier)
-            for (stat in BLACK_ORB_DRAIN_STATS) player.statSub(stat, BLACK_ORB_STAT_DRAIN, 0)
-        }
-    }
-
     private fun tilesInFront(npc: Npc): List<CoordGrid> =
         List(npc.size) { npc.coords.translate(it, -1) }
 
@@ -325,23 +281,6 @@ constructor(
 
     private val flareDueCondition: Condition = Condition.Custom { flareDue(it) }
 
-    private fun blackOrb(): Effect =
-        sequence(anim(GAZE_SEQ), message(BLACK_ORB_MESSAGE), external(BLACK_ORB_SWEEP))
-
-    private fun bile(): Effect =
-        sequence(
-            anim(MAGIC_SEQ),
-            message(BILE_MESSAGE),
-            hit {
-                damage(BILE_DAMAGE)
-                type(Typeless)
-                spotanim(MAGIC_IMPACT_SPOTANIM)
-            },
-            poison(BILE_POISON_DAMAGE),
-        )
-
-    private val awakenedCondition: Condition = Condition.Custom { it.vars["varn.awakened_state"] == 1 }
-
     override val spec: BossSpec by lazy {
         boss(BOSS_NPC, SLEEP_NPC) {
             stats(attackRate = ATTACK_RATE, aggressionRadius = AGGRESSION_RADIUS)
@@ -349,8 +288,6 @@ constructor(
             val melee = ability("melee", melee())
             val rangedMagic = ability("ranged_magic", rangedMagic())
             val special = ability("gaze_special", gazeSpecial())
-            val blackOrb = ability("black_orb", blackOrb())
-            val bile = ability("bile", bile())
             val gasFlare = ability("gas_flare", gasFlare())
 
             phase("main") {
@@ -359,8 +296,6 @@ constructor(
                     +random(rangedMagic, weight = 1, requires = Condition.Not(WithinMeleeRange))
                 }
                 forceEveryAttacks(SPECIAL_MIN_ATTACKS, SPECIAL_MAX_ATTACKS, special)
-                forceWhen(Condition.HpBelow(BLACK_ORB_HP) and awakenedCondition, blackOrb, once = true)
-                forceWhen(Condition.HpBelow(BILE_HP) and awakenedCondition, bile, once = true)
                 forceWhen(flareDueCondition, gasFlare)
             }
 
@@ -476,24 +411,6 @@ constructor(
         private const val GAS_PRAYER_DRAIN = 4
         private const val GAS_HIT_DELAY = 1
         private val GAS_DAMAGE = 0..12
-
-        private const val BLACK_ORB_HP = 0.7
-        private const val BLACK_ORB_SWEEP = "duke_sucellus.black_orb_sweep"
-        private const val BLACK_ORB_NPC = "npc.toa_het_orb"
-        private const val BLACK_ORB_ROW = 6451
-        private const val BLACK_ORB_WEST_X = 3034
-        private const val BLACK_ORB_EAST_X = 3044
-        private val BLACK_ORB_DAMAGE = 10..27
-        private const val BLACK_ORB_STAT_DRAIN = 8
-        private val BLACK_ORB_DRAIN_STATS =
-            listOf("stat.attack", "stat.strength", "stat.defence", "stat.ranged", "stat.magic")
-        private const val BLACK_ORB_MESSAGE = "<col=ff00ff>A black orb begins to sweep across the room...</col>"
-
-        private const val BILE_HP = 0.4
-        private val BILE_DAMAGE = (10..24).roll()
-        private const val BILE_POISON_DAMAGE = 4
-        private const val BILE_MESSAGE =
-            "<col=ff3045>Duke Sucellus covers you in bile. It slowly drips off your body and onto the floor."
 
         private val VENT_OFFSETS: List<Pair<Int, Int>> =
             buildList {
