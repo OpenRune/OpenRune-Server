@@ -91,19 +91,33 @@ object FletchingDefinitions {
             "obj.stymphike_feather",
         )
 
+    const val FLETCHING_KNIFE = "obj.fletching_knife"
+
     /**
-     * Items that stand in for the tool a row names. Only the hammer has any, matching
-     * SmithingUtils.hasHammer - without them, requiring a hammer for crossbow assembly would lock
-     * out players carrying an Imcando one.
-     *
-     * The Forestry fletching knife is deliberately absent. It speeds fletching up but does not
-     * replace the knife: "the wielder will still need a knife in their inventory to use on logs to
-     * initiate the cutting". https://oldschool.runescape.wiki/w/Fletching_knife
+     * Items that stand in for the tool a row names, so carrying one never locks a recipe out. The
+     * hammer list matches SmithingUtils.hasHammer. Tools are checked in the inventory only, so an
+     * equipped fletching knife does not start a cut on its own.
      */
     private val TOOL_VARIANTS: Map<String, Set<String>> =
         mapOf(
-            "obj.hammer" to setOf("obj.hammer", "obj.imcando_hammer", "obj.imcando_hammer_offhand")
+            "obj.hammer" to setOf("obj.hammer", "obj.imcando_hammer", "obj.imcando_hammer_offhand"),
+            "obj.knife" to setOf("obj.knife", FLETCHING_KNIFE),
         )
+
+    private val NO_KNIFE_SPEEDUP: Set<String> =
+        setOf(
+            "obj.camphor_blowpipe_empty",
+            "obj.ironwood_blowpipe_empty",
+            "obj.rosewood_blowpipe_empty",
+            "obj.blisterwood_stake",
+            "obj.blisterwood_sickle",
+            "obj.blisterwood_sickle_enhanced",
+            "obj.brew_scrapey_bark",
+        )
+
+    /** https://oldschool.runescape.wiki/w/Fletching_knife */
+    fun speedsUpWithFletchingKnife(recipe: FletchingRecipe) =
+        recipe.tool == "obj.knife" && recipe.output.internalName !in NO_KNIFE_SPEEDUP
 
     fun toolVariants(tool: String): Set<String> = TOOL_VARIANTS[tool] ?: setOf(tool)
 }
@@ -151,8 +165,11 @@ fun byToolAndPrimary(
     recipes
         .mapNotNull { recipe ->
             val tool = recipe.tool ?: return@mapNotNull null
-            (recipe.inputs.first().obj.internalName to tool) to recipe
+            FletchingDefinitions.toolVariants(tool).map {
+                (recipe.inputs.first().obj.internalName to it) to recipe
+            }
         }
+        .flatten()
         .groupBy({ it.first }, { it.second })
 
 /**

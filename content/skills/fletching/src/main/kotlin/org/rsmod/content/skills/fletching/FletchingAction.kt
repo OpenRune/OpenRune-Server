@@ -110,6 +110,14 @@ suspend fun ProtectedAccess.openFletchMenu(
     }
 }
 
+private fun ProtectedAccess.knifeSpeedup(recipe: FletchingRecipe): Int {
+    if (!FletchingDefinitions.speedsUpWithFletchingKnife(recipe) || recipe.ticks < 2) return 0
+    val owned =
+        inv.contains(FletchingDefinitions.FLETCHING_KNIFE) ||
+            worn.contains(FletchingDefinitions.FLETCHING_KNIFE)
+    return if (owned) 1 else 0
+}
+
 private suspend fun ProtectedAccess.processFletchTick(task: FletchingTask) {
     val recipe = task.recipe
 
@@ -156,7 +164,7 @@ private suspend fun ProtectedAccess.processFletchTick(task: FletchingTask) {
         // cycle, so a re-queue arrives a cycle sooner than the opening one in startFletching.
         weakQueue(
             FLETCH_QUEUE,
-            if (recipe.ticks > 0) recipe.ticks + 1 else 1,
+            if (recipe.ticks > 0) recipe.ticks + 1 - knifeSpeedup(recipe) else 1,
             FletchingTask(recipe, task.amount, created),
         )
     } else if (looping) {
