@@ -2,15 +2,14 @@ package org.rsmod.content.drops.tables.monsters
 
 import dtx.rs.RSDropTable
 import dtx.rs.npcs
-import dtx.rs.areas
+import org.rsmod.api.droptable.DropRollItem
+import org.rsmod.api.droptable.RegisterDropTable
+import org.rsmod.api.droptable.nothing
 import org.rsmod.api.droptable.rsPlayerGuaranteedTable
 import org.rsmod.api.droptable.rsPlayerTertiaryTable
 import org.rsmod.api.droptable.rsPlayerWeightedTable
-import org.rsmod.api.droptable.DropRollItem
 import org.rsmod.content.drops.brimstoneKeyRoll
 import org.rsmod.content.drops.clueScrollTransformObj
-import org.rsmod.api.droptable.nothing
-import org.rsmod.api.droptable.RegisterDropTable
 import org.rsmod.game.entity.Player
 
 @field:RegisterDropTable
@@ -45,12 +44,16 @@ public val generalGraardorDropTable: RSDropTable<Player, DropRollItem> = RSDropT
             // Drops Need Manual: Coins come from rolls on the unique tables, including the hilt table and the godsword shard table.
              true
         }
-        1 outOf 381 separate rsPlayerWeightedTable {
-            1 weight "obj.bandos_chestplate" count 1
-            1 weight "obj.bandos_skirt" count 1
-            1 weight "obj.bandos_boots" count 1
+        boosted {
+            1 outOf 381 separate rsPlayerWeightedTable {
+                1 weight "obj.bandos_chestplate" count 1
+                1 weight "obj.bandos_skirt" count 1
+                1 weight "obj.bandos_boots" count 1
+            }
         }
-        1 outOf 508 separate "obj.godwars_godsword_hilt_bandos" count 1
+        boosted {
+            1 outOf 508 separate "obj.godwars_godsword_hilt_bandos" count 1
+        }
         1 outOf 762 separate rsPlayerWeightedTable {
             1 weight "obj.godwars_godsword_blade1" count 1
             1 weight "obj.godwars_godsword_blade2" count 1

@@ -22,7 +22,6 @@ private const val COLOUR_SETTINGS_URL =
 private const val KEYBIND_SETTINGS_URL =
     "https://raw.githubusercontent.com/Joshua-F/osrs-dumps/refs/heads/master/script/%5Bproc%2Csettings_get_keybind%5D.cs2"
 
-
 /* ---------------- MODEL ---------------- */
 
 private data class SettingMapping(
@@ -188,7 +187,6 @@ fun main() {
     val keybindMappings =
         URL(KEYBIND_SETTINGS_URL).readText().let(::parseKeybindMappings)
 
-
     val mappings = (toggleMappings + dropdownMappings + numberMappings + colourMappings + keybindMappings)
         .groupBy { it.id }
         .map { (_, list) ->
@@ -307,8 +305,6 @@ fun main() {
     println("Wrote ${tableFile.absolutePath}")
     println("Updated ${gameValsFile.absolutePath}")
 }
-
-
 
 /* ---------------- GAMEVALS ---------------- */
 

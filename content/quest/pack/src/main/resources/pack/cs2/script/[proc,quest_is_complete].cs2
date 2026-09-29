@@ -1,0 +1,12 @@
+[proc,quest_is_complete](dbrow $dbrow)(boolean)
+// Server quest-requirement policy: "*" means every quest counts as complete.
+if (string_indexof_string(%quest_policy_complete_ids, "*", 0) ! -1) {
+    return(true);
+}
+if (string_indexof_string(%quest_policy_complete_ids, ",<tostring(db_getfield($dbrow, quest:id, 0))>,", 0) ! -1) {
+    return(true);
+}
+if (~quest_status_get($dbrow) = 2) {
+    return(true);
+}
+return(false);

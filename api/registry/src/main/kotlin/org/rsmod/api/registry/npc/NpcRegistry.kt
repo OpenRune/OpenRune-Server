@@ -82,6 +82,7 @@ constructor(
         npc.lastProcessedZone = respawnZone
 
         npc.addBlockWalkCollision(collision, npc.coords)
+        npc.setRespawnValues()
         eventBus.publish(NpcStateEvents.Respawn(npc))
         npc.hidden = false
         npc.revealAvatar()

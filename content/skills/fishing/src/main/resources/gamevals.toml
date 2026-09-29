@@ -7,7 +7,6 @@ fishing_spot_def =65475
 fishing_catch=65527
 
 [gamevals.enum]
-heron_pet_chance=65473
 tackle_box_storable=65472
 
 [gamevals.dbrow]

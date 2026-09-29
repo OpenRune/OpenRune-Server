@@ -7,6 +7,7 @@ import org.rsmod.api.config.aliases.ParamBool
 import org.rsmod.api.config.aliases.ParamCategory
 import org.rsmod.api.config.aliases.ParamComponent
 import org.rsmod.api.config.aliases.ParamCoord
+import org.rsmod.api.config.aliases.ParamDbRow
 import org.rsmod.api.config.aliases.ParamHeadbar
 import org.rsmod.api.config.aliases.ParamHitmark
 import org.rsmod.api.config.aliases.ParamInt
@@ -41,6 +42,7 @@ object BaseParams {
     val spell_drain_stat: ParamStat = param("spell_drain_stat")
     val spell_drain_stat_amount: ParamInt = param("spell_drain_stat_amount")
     val spell_maxhit: ParamInt = param("spell_maxhit")
+    val spell_questreq: ParamDbRow = param("spell_questreq_struct")
     val attackrate: ParamInt = param("attackrate")
     val wear_op_index: ParamInt = param("wear_op_index")
     val wear_op1: ParamStr = param("wear_op1")
@@ -56,6 +58,7 @@ object BaseParams {
     val statreq1_level: ParamInt = param("statreq1_level")
     val statreq2_skill: ParamStat = param("statreq2_skill")
     val statreq2_level: ParamInt = param("statreq2_level")
+
     /**
      * Unlike [statreq1_level] and [statreq2_level], this level requirement is not used when
      * equipping objs but applies to specific skill-related actions.
@@ -150,6 +153,7 @@ object BaseParams {
     val hitmark_max: ParamHitmark = param("hitmark_max")
     val headbar: ParamHeadbar = param("headbar")
     val boss_hp_bar_mode: ParamInt = param("boss_hp_bar_mode")
+    val hitpoints_locked: ParamBool = param("hitpoints_locked")
     val boss_hp_bar_colour_back: ParamInt = param("boss_hp_bar_colour_back")
     val boss_hp_bar_colour_sliding: ParamInt = param("boss_hp_bar_colour_sliding")
     val boss_hp_bar_colour_remaining: ParamInt = param("boss_hp_bar_colour_remaining")

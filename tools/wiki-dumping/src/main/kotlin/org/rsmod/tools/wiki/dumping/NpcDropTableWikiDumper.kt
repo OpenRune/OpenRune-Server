@@ -5,7 +5,6 @@ import java.nio.file.Path
 import kotlin.io.path.Path
 import kotlin.io.path.createDirectories
 import kotlin.io.path.deleteIfExists
-import kotlin.io.path.writeText
 import kotlin.system.exitProcess
 import kotlin.system.measureTimeMillis
 import kotlinx.coroutines.runBlocking
@@ -13,10 +12,10 @@ import org.rsmod.tools.wiki.dumping.wiki.ParsedNpcDropTable
 import org.rsmod.tools.wiki.dumping.wiki.ParsedWikiDrop
 import org.rsmod.tools.wiki.dumping.wiki.SubtableKey
 import org.rsmod.tools.wiki.dumping.wiki.WikiClient
-import org.rsmod.tools.wiki.dumping.wiki.WikiDropParser
-import org.rsmod.tools.wiki.dumping.wiki.WikiInfoboxIds
-import org.rsmod.tools.wiki.dumping.wiki.WikiDropSection
 import org.rsmod.tools.wiki.dumping.wiki.WikiCompanionDropParser
+import org.rsmod.tools.wiki.dumping.wiki.WikiDropParser
+import org.rsmod.tools.wiki.dumping.wiki.WikiDropSection
+import org.rsmod.tools.wiki.dumping.wiki.WikiInfoboxIds
 
 private const val DEFAULT_OUTPUT_DIR = "content/drops/src/main/kotlin/org/rsmod/content/drops/tables"
 
@@ -311,13 +310,15 @@ class NpcDropTableWikiDumper(
                         subtableAccesses = raw.subtableAccesses,
                     )
 
-                raw.copy(
-                    main = mainEntries,
-                    mainMaxRoll = reconciledMaxRoll,
-                    subtableAccesses = raw.subtableAccesses,
-                    separateRolls = separateRolls,
-                    preRoll = preRollEntries,
-                    preRollSeparateRolls = preRollSeparate,
+                BoostedDropAllowlist.apply(
+                    raw.copy(
+                        main = mainEntries,
+                        mainMaxRoll = reconciledMaxRoll,
+                        subtableAccesses = raw.subtableAccesses,
+                        separateRolls = separateRolls,
+                        preRoll = preRollEntries,
+                        preRollSeparateRolls = preRollSeparate,
+                    ),
                 )
             }
 

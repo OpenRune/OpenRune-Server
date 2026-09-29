@@ -15,7 +15,6 @@ import org.rsmod.api.instances.events.InstancePlayerLeaveUnboundEvent
 import org.rsmod.api.instances.events.InstanceStartedEvent
 import org.rsmod.api.instances.events.InstanceTimeTickEvent
 import org.rsmod.api.instances.region.InstanceAreaResolver
-import org.rsmod.api.instances.region.OsrsInstancing
 import org.rsmod.api.instances.region.enterCoord
 import org.rsmod.api.instances.region.localCoord
 import org.rsmod.api.instances.timer.InstanceKillTimer
@@ -409,11 +408,10 @@ constructor(
     private fun reconcileOccupants(currentTick: Int) {
         for (session in sessions.values.toList()) {
             val region = regions[session.id] ?: continue
-            val center = session.enterCoord(region)
             val leavers =
                 session.occupants.filter { occupant ->
                     val player = playerList.firstOrNull { it.uuid == occupant }
-                    player == null || player.coords.chebyshevDistance(center) > REGION_RADIUS
+                    player == null || !player.coords.isWithin(region.southWest, region.northEast)
                 }
             for (occupant in leavers) {
                 val player = playerList.firstOrNull { it.uuid == occupant } ?: continue
@@ -776,7 +774,9 @@ constructor(
             player.username.equals(name, ignoreCase = true)
 
     private companion object {
-        private const val REGION_RADIUS = OsrsInstancing.PADDING_BETWEEN_INSTANCES
         private const val SERVER_OWNER_ID: Long = 0L
     }
 }
+
+private fun CoordGrid.isWithin(southWest: CoordGrid, northEast: CoordGrid): Boolean =
+    x in southWest.x..northEast.x && z in southWest.z..northEast.z

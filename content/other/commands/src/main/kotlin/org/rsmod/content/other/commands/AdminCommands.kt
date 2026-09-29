@@ -145,6 +145,10 @@ constructor(
             invalidArgs = "Use as ::npcadd duration npcDebugNameOrId (ex: 100 prison_pete)"
         }
 
+        onCommand("npcgrid", "Spawn a 3x3 grid of immobile npcs", ::npcGrid) {
+            invalidArgs = "Use as ::npcgrid npcDebugName [duration] (ex: ::npcgrid goblin 500)"
+        }
+
         onCommand("invadd", "Spawn obj into inv", ::invAdd)
         onCommand("item", "Spawn obj into inv (ex: ::item 995 100 or ::item coins 100)", ::invAdd)
 
@@ -576,6 +580,25 @@ constructor(
             npc.mode = NpcMode.None
             npcRepo.add(npc, duration)
             player.mes("Spawned npc `${args[1]}` (duration: $duration cycles)")
+        }
+
+    private fun npcGrid(cheat: Cheat) =
+        with(cheat) {
+            val type = ServerCacheManager.getNpc("npc.${args[0]}".asRSCM())
+            if (type == null) {
+                player.mes("That npc does not exist: npc.${args[0]}")
+                return
+            }
+            val duration = args.getOrNull(1)?.toIntOrNull() ?: 500
+            val step = type.size
+            val origin = player.coords.translate(-step, step * 2)
+            for (dx in 0 until 3) {
+                for (dz in 0 until 3) {
+                    val npc = Npc(type, origin.translate(dx * step, dz * step))
+                    npcRepo.add(npc, duration)
+                }
+            }
+            player.mes("Spawned 3x3 grid of `${args[0]}` (duration: $duration cycles)")
         }
 
     private fun testLoot(cheat: Cheat) =

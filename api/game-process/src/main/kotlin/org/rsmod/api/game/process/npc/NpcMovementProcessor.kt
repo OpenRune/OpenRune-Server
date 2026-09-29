@@ -24,7 +24,7 @@ constructor(
     private val eventBus: EventBus,
 ) {
     public fun process(npc: Npc) {
-        if (npc.movementLocked) {
+        if (npc.movementLocked || npc.isFrozen()) {
             npc.routeRequest = null
             npc.routeDestination.clear()
             return
@@ -46,6 +46,8 @@ constructor(
         routeDestination.clear()
         routeDestination.add(dest)
     }
+
+    private fun Npc.isFrozen(): Boolean = vars["varn.freeze_end_clock"] > currentMapClock
 
     private fun Npc.processMovement() {
         val collision = collisionStrategy

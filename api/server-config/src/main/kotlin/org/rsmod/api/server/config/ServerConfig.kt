@@ -36,6 +36,13 @@ public data class PostgresDbYaml(
 public data class GameplayConfig(
     @JsonProperty("quest-requirements")
     val questRequirements: QuestRequirementsYaml = QuestRequirementsYaml(),
+    @JsonProperty("drop-rates")
+    val dropRates: DropRatesYaml = DropRatesYaml(),
+)
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+public data class DropRatesYaml(
+    val multiplier: Double = 1.0,
 )
 
 @JsonIgnoreProperties(ignoreUnknown = true)

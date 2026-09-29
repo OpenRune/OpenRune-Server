@@ -64,6 +64,15 @@ public class DropWeightedTableScope internal constructor(
         builder.name(tableName)
     }
 
+    public fun boosted(block: DropWeightedTableScope.() -> Unit) {
+        flushPendingItems()
+        val previous = builder.boostScope
+        builder.boostScope = true
+        block()
+        flushPendingItems()
+        builder.boostScope = previous
+    }
+
     public fun group(tableName: String, block: DropWeightedTableScope.() -> Unit) {
         builder.group(tableName) {
             DropWeightedTableScope(this).apply {

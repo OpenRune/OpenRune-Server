@@ -6,16 +6,25 @@ An instance is a private copy of one or more map regions allocated at runtime fo
 
 ## OSRS map instancing (Jagex)
 
-Runtime region slots follow the layout described in [OSRS instancing mechanics](https://osrs-docs.com/docs/mechanics/instancing/):
+Runtime region slots follow the live layout as observed post-Sailing. Instanced space is split into
+vertical bands by `x`, each spanning the full `z` axis — not by `z`, as the pre-Sailing
+[OSRS instancing mechanics](https://osrs-docs.com/docs/mechanics/instancing/) page still describes:
 
 | Rule | Value |
 |------|--------|
 | Static map | `x < 6400` |
 | Instance map | `x >= 6400` |
-| Small build slot | 128×128 squares; world `z < 5248`; up to **1377** concurrent |
-| Large build slot | 320×320 squares; world `z >= 5248`; up to **700** concurrent |
+| Large build slot | 320×320 squares; world `x` 6400–10239; 10×42, up to **420** concurrent |
+| Small build slot | 128×128 squares; world `x` 10240–14079; 20×85, up to **1700** concurrent |
+| World entity slot | 64×64 squares; world `x` 14080–16383; 36×256, up to **9216** concurrent |
 | Padding | **64** empty squares between neighbouring build areas (32 per side) |
 | Copy unit | 8×8 zones (Rebuild Region), rotatable 0° / 90° / 180° / 270° |
+
+Large slots back Soul Wars, Last Man Standing and the Whisperer area; small slots back virtually
+everything else. World entity slots are reserved for player-owned boats and are packed with no
+padding. They also differ in lifecycle: the inactivity sweep that reclaims empty small and large
+slots does not touch them, so whoever allocates one via `RegionRegistry.registerWorldEntity` owns
+releasing it with `unregister`.
 
 Constants and helpers for content code: `org.rsmod.api.instances.region.OsrsInstancing`. Allocation is implemented in `RegionRegistry` (`api/registry`).
 

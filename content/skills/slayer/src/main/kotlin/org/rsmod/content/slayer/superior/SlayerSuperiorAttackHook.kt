@@ -9,9 +9,10 @@ import org.rsmod.api.npc.owner.isSpawnOwnedByOther
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 
-class SlayerSuperiorAttackHook @Inject constructor() : NpcAttackValidateHook {
+class SlayerSuperiorAttackHook @Inject constructor(private val superiors: SlayerSuperiorManager) :
+    NpcAttackValidateHook {
     override fun validate(player: Player, npc: Npc): NpcAttackValidateResult {
-        if (!npc.hasSpawnOwner) {
+        if (!npc.hasSpawnOwner || !superiors.isSuperior(npc)) {
             return NpcAttackValidateResult.Pass
         }
         if (npc.isSpawnOwnedByOther(player)) {
