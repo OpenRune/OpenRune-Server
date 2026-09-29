@@ -30,4 +30,5 @@ class BossDeps @Inject constructor(
     val maxHit: MaxHitFormulae,
     val playerHitModifier: PlayerHitModifier,
     val hazards: BossHazards,
+    val bleeds: BossBleeds,
 )

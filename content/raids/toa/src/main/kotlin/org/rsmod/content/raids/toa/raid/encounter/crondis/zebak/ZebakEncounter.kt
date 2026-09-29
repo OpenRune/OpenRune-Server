@@ -128,7 +128,7 @@ class ZebakEncounter(raid: ToaRaid, room: ToaRoom, region: Region, controllerId:
     override fun onLeave(player: Player) {
         closeBar(player)
         water.stopSwimming(player)
-        autos.forget(player)
+        zebak?.let { deps.bossDeps.bleeds.remove(it, player) }
         bloodMagic.forget(player)
     }
 
@@ -154,6 +154,7 @@ class ZebakEncounter(raid: ToaRaid, room: ToaRoom, region: Region, controllerId:
         hazardsDoneCycle = -1
         landings.clear()
         pendingAfterHazards.clear()
+        zebak?.let { deps.bossDeps.bleeds.clear(it) }
         autos.clear()
         bloodMagic.clear()
         jugs.clear()
@@ -249,14 +250,14 @@ class ZebakEncounter(raid: ToaRaid, room: ToaRoom, region: Region, controllerId:
 
     internal fun rollScaled(base: Int): Int = deps.random.of(0, maxHit(base))
 
+    internal fun rollScaled(min: Int, base: Int): Int = deps.random.of(min, maxHit(base).coerceAtLeast(min))
+
     private fun tick() {
         if (stage != ToaStage.STARTED) return
         val boss = zebak ?: return
         val targets = targets()
         val cycle = deps.mapClock.cycle
-        autos.rollBleeds(targets)
         holdDefenceFloor(boss)
-        autos.tickBleeding(targets)
         val landed = landings.take(cycle)
         if (targets.isNotEmpty() && boss.hitpoints > 0) for (action in landed) action()
         hazardsDoneCycle = cycle
