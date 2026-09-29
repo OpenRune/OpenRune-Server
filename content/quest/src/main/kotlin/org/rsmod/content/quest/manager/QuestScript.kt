@@ -78,9 +78,20 @@ abstract class QuestScript(
     val rewards: QuestReward,
     val completedQuestItemDisplay: ItemRewardDisplay,
     val questVarbit: String? = null,
+    val closeDialogue: QuestClose = QuestClose.OnFinished,
+    val closeScroll: QuestClose = QuestClose.Never,
 ) : PluginScript() {
 
-    val quest = Quest.register(questKey, questVarp, completedQuestItemDisplay, rewards, questVarbit)
+    val quest =
+        Quest.register(
+            questKey,
+            questVarp,
+            completedQuestItemDisplay,
+            rewards,
+            questVarbit,
+            closeDialogue,
+            closeScroll,
+        )
 
     abstract fun subTitle(): String
 
