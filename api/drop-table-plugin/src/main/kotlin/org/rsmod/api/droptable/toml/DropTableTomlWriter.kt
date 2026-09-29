@@ -8,6 +8,9 @@ public object DropTableTomlWriter {
         if (def.areas.isNotEmpty()) {
             sb.appendLine("areas = ${quoteList(def.areas)}")
         }
+        if (def.mainRolls != 1) {
+            sb.appendLine("main_rolls = ${def.mainRolls}")
+        }
         if (def.brimstoneKeyRoll) {
             sb.appendLine("brimstone_key_roll = true")
             if (def.brimstoneKeyRollKonarBonus) {

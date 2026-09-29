@@ -12,6 +12,7 @@ public data class TomlDropTableDef(
     val brimstoneKeyRoll: Boolean = false,
     val brimstoneKeyRollKonarBonus: Boolean = false,
     val notes: List<String> = emptyList(),
+    val mainRolls: Int = 1,
 )
 
 public data class TomlWeightedSection(

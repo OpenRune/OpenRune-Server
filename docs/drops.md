@@ -14,7 +14,7 @@ When an NPC dies, the server rolls several **independent** loot stages:
 
 1. **Guaranteed** — always rolled first; every entry that passes its checks is given.
 2. **Pre-roll** — optional extra rolls before the main table (uncommon on monsters).
-3. **Main table** — one weighted pick from the pool (plus optional **separate** rolls).
+3. **Main table** — `main_rolls` weighted picks from the pool (one by default), plus optional **separate** rolls once per kill.
 4. **Tertiary** — rare independent rolls (clues, pets, brimstone keys, etc.).
 
 Think of it like OSRS: common loot comes from the main weight table; rare stuff is often a separate `1 outOf N` roll.
@@ -63,6 +63,7 @@ clue_scroll_box = true
 | TOML | Meaning |
 |------|---------|
 | `[main]` / `[[main.entries]]` | Weighted main table (`total` = pool size) |
+| `main_rolls = 2` | Root-level positive number of main weighted picks; defaults to 1. Guaranteed, pre-roll, separate and tertiary stages still run once per kill |
 | `[[main.separate_rolls]]` | Inline `N outOf M separate { ... }` rolls |
 | `[[guaranteed]]` | Always-dropped items |
 | `[[pre_roll]]` / `[[tertiary]]` | `numerator` / `denominator` chance rolls |

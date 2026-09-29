@@ -28,6 +28,9 @@ public object DropTableTomlParser {
         require(def.npcs.isNotEmpty()) {
             "Drop table '${def.id}' in '$sourcePath' must define at least one npc."
         }
+        require(def.mainRolls > 0) {
+            "Drop table '${def.id}' in '$sourcePath' must have a positive main_rolls value."
+        }
 
         return RSDropTable(
             tableIdentifier = def.id,
@@ -37,6 +40,7 @@ public object DropTableTomlParser {
             preRoll = buildPreRoll(def.preRoll, def.preRollSeparateRolls, resolver, sourcePath),
             mainTable = buildMain(def.main, resolver, sourcePath),
             tertiaries = buildTertiary(def, resolver),
+            mainRolls = def.mainRolls,
         )
     }
 

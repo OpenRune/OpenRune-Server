@@ -47,6 +47,7 @@ public class PlayerQueueList {
     }
 
     private fun remove(node: Node) {
+        iterator?.removed(node)
         val prev = node.prev
         val next = node.next
 
@@ -91,6 +92,21 @@ public class PlayerQueueList {
 
         check(startSize - count == size)
         return count
+    }
+
+    /** Removes matching queues without resetting an iterator used by queue dispatch. */
+    public fun removeIf(predicate: (Queue) -> Boolean): Int {
+        var removed = 0
+        var current = first
+        while (current != null) {
+            val next = current.next
+            if (predicate(current.queue)) {
+                remove(current)
+                removed++
+            }
+            current = next
+        }
+        return removed
     }
 
     public fun count(type: String): Int {
@@ -193,6 +209,15 @@ public class PlayerQueueList {
         public fun cleanUp() {
             this.next = null
             this.curr = null
+        }
+
+        internal fun removed(node: Node) {
+            if (next === node) {
+                next = node.next
+            }
+            if (curr === node) {
+                curr = null
+            }
         }
 
         internal fun reset(first: Node?) {

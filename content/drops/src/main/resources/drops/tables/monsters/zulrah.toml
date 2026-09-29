@@ -1,5 +1,6 @@
 id = "Zulrah Drops"
 npcs = ["npc.snakeboss_boss_ranged", "npc.snakeboss_boss_melee", "npc.snakeboss_boss_magic"]
+main_rolls = 2
 brimstone_key_roll = true
 
 [[guaranteed]]

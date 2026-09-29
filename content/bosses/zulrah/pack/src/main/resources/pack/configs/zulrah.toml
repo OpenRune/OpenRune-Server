@@ -1,0 +1,191 @@
+[[npc]]
+id = "npc.snakeboss_boss_ranged"
+inherit = "npc.snakeboss_boss_ranged"
+hitpoints = 500
+attack = 1
+strength = 1
+defence = 300
+magic = 300
+ranged = 300
+size = 5
+moveRestrict = "NoMove"
+blockWalk = "None"
+attackRange = 32
+defaultMode = "None"
+wanderRange = 0
+huntRange = 0
+giveChase = false
+regenRate = 0
+
+[npc.params]
+"param.attack_anim" = "seq.snakeboss_attack_acidx1"
+"param.defend_anim" = "seq.snakeboss_defend"
+"param.death_anim" = "seq.snakeboss_death"
+"param.boss_hp_bar_mode" = 1
+"param.killcount_varp" = "varp.total_snakeboss_kills"
+"param.attack_magic" = 50
+"param.attack_ranged" = 50
+"param.ranged_strength" = 20
+"param.npc_magic_damage_bonus" = 20
+"param.defence_stab" = 0
+"param.defence_slash" = 0
+"param.defence_crush" = 0
+"param.defence_magic" = -45
+"param.defence_light" = 50
+"param.defence_standard" = 50
+"param.defence_heavy" = 50
+"param.poison_immunity" = 1
+"param.venom_immunity" = 1
+"param.dropped_remains" = -1
+
+[[npc]]
+id = "npc.snakeboss_boss_melee"
+inherit = "npc.snakeboss_boss_melee"
+hitpoints = 500
+attack = 1
+strength = 1
+defence = 300
+magic = 300
+ranged = 300
+size = 5
+moveRestrict = "NoMove"
+blockWalk = "None"
+attackRange = 32
+defaultMode = "None"
+wanderRange = 0
+huntRange = 0
+giveChase = false
+regenRate = 0
+
+[npc.params]
+"param.attack_anim" = "seq.snakeboss_attack_acidx1"
+"param.defend_anim" = "seq.snakeboss_defend"
+"param.death_anim" = "seq.snakeboss_death"
+"param.boss_hp_bar_mode" = 1
+"param.killcount_varp" = "varp.total_snakeboss_kills"
+"param.attack_magic" = 50
+"param.attack_ranged" = 50
+"param.ranged_strength" = 20
+"param.npc_magic_damage_bonus" = 20
+"param.defence_stab" = 0
+"param.defence_slash" = 0
+"param.defence_crush" = 0
+"param.defence_magic" = 0
+"param.defence_light" = 300
+"param.defence_standard" = 300
+"param.defence_heavy" = 300
+"param.poison_immunity" = 1
+"param.venom_immunity" = 1
+"param.dropped_remains" = -1
+
+[[npc]]
+id = "npc.snakeboss_boss_magic"
+inherit = "npc.snakeboss_boss_magic"
+hitpoints = 500
+attack = 1
+strength = 1
+defence = 300
+magic = 300
+ranged = 300
+size = 5
+moveRestrict = "NoMove"
+blockWalk = "None"
+attackRange = 32
+defaultMode = "None"
+wanderRange = 0
+huntRange = 0
+giveChase = false
+regenRate = 0
+
+[npc.params]
+"param.attack_anim" = "seq.snakeboss_attack_acidx1"
+"param.defend_anim" = "seq.snakeboss_defend"
+"param.death_anim" = "seq.snakeboss_death"
+"param.boss_hp_bar_mode" = 1
+"param.killcount_varp" = "varp.total_snakeboss_kills"
+"param.attack_magic" = 50
+"param.attack_ranged" = 50
+"param.ranged_strength" = 20
+"param.npc_magic_damage_bonus" = 20
+"param.defence_stab" = 0
+"param.defence_slash" = 0
+"param.defence_crush" = 0
+"param.defence_magic" = 300
+"param.defence_light" = 0
+"param.defence_standard" = 0
+"param.defence_heavy" = 0
+"param.poison_immunity" = 1
+"param.venom_immunity" = 1
+"param.dropped_remains" = -1
+
+[[npc]]
+id = "npc.snakeboss_minion_melee"
+inherit = "npc.snakeboss_minion_melee"
+hitpoints = 1
+attack = 140
+strength = 138
+defence = 1
+magic = 1
+ranged = 1
+attackRange = 1
+defaultMode = "None"
+wanderRange = 0
+huntRange = 0
+
+[npc.params]
+"param.attack_anim" = "seq.snakeboss_pet_attack"
+"param.defend_anim" = "seq.snakeboss_pet_defend"
+"param.death_anim" = "seq.snakeboss_pet_death"
+"param.attack_melee" = 120
+"param.attack_magic" = 0
+"param.npc_magic_damage_bonus" = -20
+"param.defence_stab" = -40
+"param.defence_slash" = -40
+"param.defence_crush" = -40
+"param.defence_magic" = -40
+"param.defence_light" = -40
+"param.defence_standard" = -40
+"param.defence_heavy" = -40
+"param.poison_immunity" = 1
+"param.venom_immunity" = 1
+"param.dropped_remains" = -1
+
+[[npc]]
+id = "npc.snakeboss_minion_magic"
+inherit = "npc.snakeboss_minion_magic"
+hitpoints = 1
+attack = 1
+strength = 1
+defence = 1
+magic = 185
+ranged = 1
+attackRange = 7
+defaultMode = "None"
+wanderRange = 0
+huntRange = 0
+
+[npc.params]
+"param.attack_anim" = "seq.snakeboss_pet_attack"
+"param.defend_anim" = "seq.snakeboss_pet_defend"
+"param.death_anim" = "seq.snakeboss_pet_death"
+"param.attack_melee" = 0
+"param.attack_magic" = 80
+"param.npc_magic_damage_bonus" = -20
+"param.defence_stab" = -40
+"param.defence_slash" = -40
+"param.defence_crush" = -40
+"param.defence_magic" = -40
+"param.defence_light" = -40
+"param.defence_standard" = -40
+"param.defence_heavy" = -40
+"param.poison_immunity" = 1
+"param.venom_immunity" = 1
+"param.dropped_remains" = -1
+
+[[object]]
+id = "loc.snakeboss_poisoncloud"
+inherit = "loc.snakeboss_poisoncloud"
+width = 3
+length = 3
+blockWalk = 0
+blockRange = false

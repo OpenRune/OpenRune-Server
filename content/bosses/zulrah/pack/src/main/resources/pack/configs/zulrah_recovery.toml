@@ -1,0 +1,7 @@
+[[inventory]]
+id = "inv.zulrah_recovery"
+size = 56
+scope = "Perm"
+stack = "Normal"
+protect = false
+uimBlocked = false

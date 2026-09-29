@@ -1,20 +1,20 @@
 package org.rsmod.api.death
 
-import dev.or2.central.account.Rights
 import dev.openrune.ServerCacheManager
 import dev.openrune.rscm.RSCM
 import dev.openrune.rscm.RSCMType
+import dev.or2.central.account.Rights
 import jakarta.inject.Inject
 import jakarta.inject.Singleton
 import org.rsmod.api.area.checker.AreaChecker
 import org.rsmod.api.area.checker.isInWildernessBasic
+import org.rsmod.api.mechanics.toxins.Toxin.cureAllToxins
 import org.rsmod.api.player.death.DEATH_CAUSE_ATTR
 import org.rsmod.api.player.death.DeathCause
-import org.rsmod.api.player.hasProtectItemPrayer
-import org.rsmod.api.player.hook.TeleportType
-import org.rsmod.api.mechanics.toxins.Toxin.cureAllToxins
 import org.rsmod.api.player.deathResetTimers
 import org.rsmod.api.player.disablePrayers
+import org.rsmod.api.player.hasProtectItemPrayer
+import org.rsmod.api.player.hook.TeleportType
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.vars.boolVarBit
 import org.rsmod.api.player.vars.intVarp
@@ -29,6 +29,7 @@ constructor(
     private val mapClock: MapClock,
     private val drops: PlayerDeathDrops,
     private val handlingResolver: PlayerDeathHandlingResolver,
+    private val dropHooks: Set<PlayerDeathDropHook>,
     private val cleanupHooks: Set<PlayerDeathCleanupHook>,
     private val areaChecker: AreaChecker,
 ) {
@@ -91,7 +92,10 @@ constructor(
         val context = buildContext(player, deathCoords, killer)
         val handling = handlingResolver.resolve(context)
 
-        val result = drops.selectDrops(player, context, handling)
+        var result = drops.selectDrops(player, context, handling)
+        for (hook in dropHooks) {
+            result = hook.processDrops(context, handling, result)
+        }
         drops.applyDrops(player, result, handling, deathCoords)
         drops.spawnRemains(deathCoords, handling)
 

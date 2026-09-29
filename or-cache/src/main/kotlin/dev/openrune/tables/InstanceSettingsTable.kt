@@ -238,6 +238,28 @@ object InstanceSettingsTable {
             columnRSCM(EXIT_OBJECT, "loc.whisperer_exit")
         }
 
+        row("dbrow.instance_zulrah") {
+            column(KEY, "zulrah")
+            columnCoord(EXIT_COORD, CoordGrid(2212, 3056, 0))
+            columnCoord(ENTER_COORD, CoordGrid(2268, 3069, 0))
+            column(FEE, 0)
+            column(MAX_PLAYERS, 1)
+            column(TIME_LIMIT_MINUTES, 0)
+            column(GRACE_MINUTES, 10)
+            columnRSCM(
+                BOSS_NPC,
+                "npc.snakeboss_boss_ranged",
+                "npc.snakeboss_boss_melee",
+                "npc.snakeboss_boss_magic",
+            )
+            column(BOSS_NAME, "Zulrah")
+            column(RECOMMENDED_COMBAT, 90, 126)
+            column(TEAM_SIZE, 1)
+            column(LOOT_MULTIPLIER, "x1.0")
+            column(DESCRIPTION, "The serpent of the Poison Waste.")
+            columnRSCM(ENTER_OBJECT, "loc.snakeboss_boat")
+            columnRSCM(EXIT_OBJECT, "loc.snakeboss_exit")
+        }
         row("dbrow.instance_amoxliatl") {
             column(KEY, "amoxliatl")
             columnCoord(EXIT_COORD, CoordGrid(1602, 9631, 0))

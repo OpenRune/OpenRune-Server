@@ -6,6 +6,7 @@ import dev.openrune.rscm.RSCMType
 import dev.openrune.types.NpcServerType
 import jakarta.inject.Inject
 import jakarta.inject.Singleton
+import java.util.IdentityHashMap
 import java.util.concurrent.atomic.AtomicLong
 import org.rsmod.api.instances.events.InstanceEndedEvent
 import org.rsmod.api.instances.events.InstancePlayerJoinEvent
@@ -57,9 +58,7 @@ constructor(
     private val playerIndex = HashMap<Long, InstanceId>()
     private val spawnedNpcs = HashMap<InstanceId, MutableList<Npc>>()
 
-    // Keyed by slot, not uid: `changeType`/transmog reassigns an npc's uid, which would
-    // otherwise orphan this entry under the pre-transmog uid for the rest of the npc's life.
-    private val npcInstanceIndex = HashMap<Int, InstanceId>()
+    private val npcInstanceIndex = IdentityHashMap<Npc, InstanceId>()
 
     public sealed interface Result {
         public data class Created(val session: InstanceSession, val enter: CoordGrid) : Result
@@ -97,6 +96,7 @@ constructor(
             if (spec.fee > 0) owner.invAdd(owner.inv, "obj.coins", spec.fee)
             return Result.Failed("No instance space available, try again shortly.")
         }
+        regionRepo.protect(region)
 
         val instanceId = allocateId()
         val session =
@@ -114,15 +114,21 @@ constructor(
         registerRegion(instanceId, region.uid)
         ownerIndex[ownerId] = instanceId
 
-        startSession(session, currentTick)
+        try {
+            startSession(session, currentTick)
 
-        val spawned = mutableListOf<Npc>()
-        if (!spec.spawnOnFirstJoin) {
-            spawnSessionNpcs(session, region, spawned, currentTick)
+            val spawned = mutableListOf<Npc>()
+            spawnedNpcs[instanceId] = spawned
+            if (!spec.spawnOnFirstJoin) {
+                spawnSessionNpcs(session, region, spawned, currentTick)
+            }
+
+            return Result.Created(session, session.enterCoord(region))
+        } catch (failure: Exception) {
+            destroy(session)
+            if (spec.fee > 0) owner.invAdd(owner.inv, "obj.coins", spec.fee)
+            throw failure
         }
-        spawnedNpcs[instanceId] = spawned
-
-        return Result.Created(session, session.enterCoord(region))
     }
 
     public fun createServerOwned(
@@ -218,7 +224,7 @@ constructor(
     public fun contributionsFor(id: InstanceId): DamageContributions? =
         sessionForId(id)?.damageContributions
 
-    public fun instanceForNpc(npc: Npc): InstanceId? = npcInstanceIndex[npc.slotId]
+    public fun instanceForNpc(npc: Npc): InstanceId? = npcInstanceIndex[npc]
 
     public fun npcsForInstance(id: InstanceId): List<Npc> = spawnedNpcs[id] ?: emptyList()
 
@@ -237,6 +243,13 @@ constructor(
     public fun attachNpc(instanceId: InstanceId, npc: Npc) {
         spawnedNpcs.getOrPut(instanceId) { mutableListOf() }.add(npc)
         indexNpc(instanceId, npc)
+    }
+
+    public fun detachNpc(instanceId: InstanceId, npc: Npc) {
+        val removed = spawnedNpcs[instanceId]?.removeAll { it === npc } == true
+        if (removed && npcInstanceIndex[npc] == instanceId) {
+            npcInstanceIndex.remove(npc)
+        }
     }
 
     public fun registerSessionNpc(player: Player, npc: Npc): Boolean {
@@ -631,7 +644,7 @@ constructor(
             regionToInstance.remove(regionId, session.id)
         }
         val region = regions.remove(session.id)
-        if (session.isServerOwned && region != null) {
+        if (region != null) {
             regionRepo.unprotect(region)
         }
         ownerIndex.remove(session.owner)
@@ -742,13 +755,11 @@ constructor(
 
     private fun indexNpc(instanceId: InstanceId, npc: Npc) {
         if (!npc.isSlotAssigned) return
-        npcInstanceIndex[npc.slotId] = instanceId
+        npcInstanceIndex[npc] = instanceId
     }
 
     private fun untagAndDelete(npc: Npc) {
-        if (npc.isSlotAssigned) {
-            npcInstanceIndex.remove(npc.slotId)
-        }
+        npcInstanceIndex.remove(npc)
         if (!npc.isSlotAssigned) {
             return
         }

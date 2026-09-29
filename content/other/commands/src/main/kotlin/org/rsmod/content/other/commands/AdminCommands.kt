@@ -245,7 +245,7 @@ constructor(
             ::testLoot,
         ) {
             invalidArgs =
-                "Use as ::testloot npcName [count] (ex: ::testloot godwars_bandos_avatar 100)"
+                "Use as ::testloot npcName [count] (ex: ::testloot Zulrah 100)"
         }
         onCommand(
             "instanceexit",
@@ -605,11 +605,12 @@ constructor(
         with(cheat) {
             if (args.isEmpty()) {
                 player.mes(
-                    "Use as ::testloot npcName [count] (ex: ::testloot godwars_bandos_avatar 100)"
+                    "Use as ::testloot npcName [count] (ex: ::testloot Zulrah 100)"
                 )
                 return
             }
-            val typeId = "npc.${args[0]}".asRSCM()
+            val npcName = if (args[0].equals("zulrah", ignoreCase = true)) "snakeboss_boss_ranged" else args[0]
+            val typeId = "npc.$npcName".asRSCM()
             val type = ServerCacheManager.getNpc(typeId)
             if (type == null) {
                 player.mes("That npc does not exist: npc.${args[0]}")
@@ -623,7 +624,7 @@ constructor(
                     hook.onKill(context)
                 }
             }
-            player.mes("Fired death-kill hooks for `npc.${args[0]}` x$count.")
+            player.mes("Fired death-kill hooks for `npc.$npcName` x$count.")
         }
 
     private fun invAdd(cheat: Cheat) =
