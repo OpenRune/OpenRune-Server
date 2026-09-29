@@ -1,17 +1,10 @@
 package org.rsmod.content.bosses.leviathan
 
-import kotlin.math.PI
 import kotlin.math.abs
-import kotlin.math.atan2
-import kotlin.math.cos
-import kotlin.math.roundToInt
-import kotlin.math.sin
+import org.rsmod.api.bosses.runtime.Angles
+import org.rsmod.api.bosses.spec.TargetExpr
 import org.rsmod.map.CoordGrid
 
-/**
- * Static (non-instanced) arena geometry taken from live captures. [Arena] translates it into the
- * copied instance region, which is a pure translation of region 8291.
- */
 internal object LeviathanArena {
     val BOSS_SPAWN = CoordGrid(2078, 6369, 0)
     const val BOSS_SIZE = 7
@@ -71,39 +64,20 @@ internal object LeviathanArena {
             "spotanim.vfx_leviathan_explosion_02",
         )
 
-    /** Smoke-blast wave delay in client cycles; fitted to the captured per-tile delays. */
+    fun relative(static: CoordGrid): TargetExpr.Single = relative(static.x, static.z)
+
+    fun relative(x: Int, z: Int): TargetExpr.Single = TargetExpr.SpawnTile(x - BOSS_SPAWN.x, z - BOSS_SPAWN.z)
+
     fun smokeDelay(centre: CoordGrid, tile: CoordGrid): Int {
         val manhattan = abs(tile.x - centre.x) + abs(tile.z - centre.z)
         return (manhattan * 3 - 6).coerceAtLeast(0)
     }
 
-    /** Octant-specific explosion variant, each authored to blow outward from the boss. */
     fun smokeSpotanim(centre: CoordGrid, tile: CoordGrid): String {
-        val angle = bearing(tile.x - centre.x, tile.z - centre.z)
+        val angle = Angles.bearing(centre, tile)
         val octant = ((angle + 128) / 256) % 8
         return EXPLOSION_SPOTANIMS[octant]
     }
-
-    /** Jagex bearing (0 = south, 512 = west, 1024 = north, 1536 = east). */
-    fun bearing(dx: Int, dz: Int): Int {
-        if (dx == 0 && dz == 0) return 0
-        val turns = (atan2(-dx.toDouble(), -dz.toDouble()) / (2 * PI) * ANGLE_STEPS).roundToInt()
-        return ((turns % ANGLE_STEPS) + ANGLE_STEPS) % ANGLE_STEPS
-    }
-
-    fun step(from: CoordGrid, angle: Int, distance: Double): CoordGrid {
-        val theta = angle * 2 * PI / ANGLE_STEPS
-        val dx = (-sin(theta) * distance).roundToInt()
-        val dz = (-cos(theta) * distance).roundToInt()
-        return from.translate(dx, dz)
-    }
-
-    fun angleDelta(a: Int, b: Int): Int {
-        val d = ((a - b) % ANGLE_STEPS + ANGLE_STEPS) % ANGLE_STEPS
-        return if (d > ANGLE_STEPS / 2) d - ANGLE_STEPS else d
-    }
-
-    const val ANGLE_STEPS = 2048
 }
 
 internal class Arena(private val dx: Int, private val dz: Int, private val level: Int) {

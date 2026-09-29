@@ -1,9 +1,11 @@
 package org.rsmod.api.bosses.runtime
 
+import kotlin.math.abs
 import kotlin.random.Random
 import org.rsmod.api.bosses.spec.*
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
+import org.rsmod.map.CoordGrid
 
 class BossEncounter(
     val npc: Npc,
@@ -20,6 +22,42 @@ class BossEncounter(
 
     /** Tick until which multi-tick effects are still running; nothing new may start before it. */
     var busyUntil: Int = 0
+
+    private val ownedLocs = mutableMapOf<CoordGrid, OwnedLoc>()
+
+    fun ownsLocAt(tile: CoordGrid): Boolean = tile in ownedLocs
+
+    internal fun addOwnedLoc(tile: CoordGrid, loc: OwnedLoc) {
+        ownedLocs[tile] = loc
+    }
+
+    private val ownedNpcs = mutableListOf<Npc>()
+
+    internal fun addOwnedNpc(npc: Npc) {
+        ownedNpcs += npc
+    }
+
+    fun releaseOwnedNpcs(): List<Npc> {
+        val released = ownedNpcs.toList()
+        ownedNpcs.clear()
+        return released
+    }
+
+    /** Hands over every loc this encounter spawned, e.g. to remove them on a delay after death. */
+    fun releaseOwnedLocs(): Map<CoordGrid, OwnedLoc> {
+        val released = ownedLocs.toMap()
+        ownedLocs.clear()
+        return released
+    }
+
+    /** Bumped by [interrupt]; deferred ability steps started under an older epoch are dropped. */
+    var epoch: Int = 0
+        private set
+
+    fun interrupt(tick: Int) {
+        epoch++
+        busyUntil = tick
+    }
     internal val usedAbilities = mutableSetOf<String>()
     private var queuedAbility: String? = null
 
@@ -99,16 +137,23 @@ class BossEncounter(
             }
         }
 
-        val selected = when (selector) {
-            is Selector.WeightedRandom -> selectWeightedRandom(selector, tick, target)
-            is Selector.Rotation -> selectRotation(selector)
-            is Selector.Conditional -> null
-        }
+        val selected = pick(selector, tick, target)
         if (selected != null && attackForced != null) {
             basicAttackCount++
         }
         return selected
     }
+
+    /**
+     * Picks a key from [selector] alone, ignoring the phase's forced abilities; used by
+     * [Effect.Choose] so a nested branch pick can't consume a phase-level force.
+     */
+    fun pick(selector: Selector, tick: Int, target: Player? = null): String? =
+        when (selector) {
+            is Selector.WeightedRandom -> selectWeightedRandom(selector, tick, target)
+            is Selector.Rotation -> selectRotation(selector)
+            is Selector.Conditional -> null
+        }
 
     fun selectPriorityAbility(tick: Int, target: Player?): String? {
         if (tick < busyUntil) return null
@@ -147,7 +192,6 @@ class BossEncounter(
             roll -= ref.weight
             if (roll < 0) {
                 cooldowns[ref.ability] = tick
-                lastAbilityName = ref.ability
                 return ref.ability
             }
         }
@@ -182,7 +226,17 @@ class BossEncounter(
             is Condition.HpExact -> npc.hitpoints == condition.hp
             is Condition.InPhase -> currentPhaseName == condition.phase
             is Condition.AbilityUsed -> condition.ability in usedAbilities
-            is Condition.Custom -> condition.test(npc)
+            is Condition.VarnIn -> npc.vars[condition.varn] in condition.range
+            is Condition.LastAbility -> lastAbilityName == condition.ability
+            is Condition.TargetWithin -> {
+                target != null && target.coords.chebyshevDistance(tileOf(condition.of, target)) <= condition.distance
+            }
+            is Condition.TargetInArc -> {
+                val wanted = Angles.normalise(npc.vars[condition.bearingVarn] + condition.offset)
+                target != null &&
+                    abs(Angles.delta(Angles.bearing(npc.centreTile, target.coords), wanted)) <= condition.halfArc
+            }
+            is Condition.Custom -> condition.test(npc, target)
             is Condition.Not -> !evaluate(condition.c, target)
             is Condition.And -> evaluate(condition.a, target) && evaluate(condition.b, target)
             is Condition.Or -> evaluate(condition.a, target) || evaluate(condition.b, target)
@@ -193,6 +247,16 @@ class BossEncounter(
             is Condition.TargetPraying -> target != null && target.isProtectingFrom(condition.type)
         }
     }
+
+    private fun tileOf(expr: TargetExpr.Single, target: Player): CoordGrid =
+        when (expr) {
+            is TargetExpr.CurrentTarget,
+            is TargetExpr.CurrentTargetTile -> target.coords
+            is TargetExpr.Centre -> npc.centreTile
+            is TargetExpr.SpawnTile -> npc.spawnCoords.translate(expr.dx, expr.dz)
+            is TargetExpr.Toward -> resolveToward(expr) { tileOf(it, target) }
+            else -> npc.coords
+        }
 
     private fun Player.isProtectingFrom(type: HitType): Boolean =
         when (type) {

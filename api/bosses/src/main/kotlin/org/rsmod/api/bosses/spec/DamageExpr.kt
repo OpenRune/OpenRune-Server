@@ -9,7 +9,6 @@ sealed interface DamageExpr {
 
     data class Fixed(val value: Int) : DamageExpr
     data class Roll(val range: IntRange) : DamageExpr
-    data class Custom(val roll: (Npc, Player) -> Int) : DamageExpr
 
     data class Accuracy(
         val on: DamageExpr,
