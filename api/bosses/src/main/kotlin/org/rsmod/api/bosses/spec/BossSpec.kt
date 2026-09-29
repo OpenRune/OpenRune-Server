@@ -6,6 +6,8 @@ data class BossSpec(
     val abilities: Map<String, Effect>,
     val phases: Map<String, PhaseSpec>,
     val triggers: List<TriggerSpec>,
+    val hitReactions: List<HitReaction> = emptyList(),
+    val incomingRules: List<IncomingRule> = emptyList(),
 )
 
 data class BossStats(
@@ -56,4 +58,30 @@ data class ProjectileConfig(
     val angle: Int = 10,
     val progress: Int = 15,
     val stepMultiplier: Int = 5,
-)
+) {
+    companion object {
+        /** Timing that ignores distance: waits [delay] cycles, then flies for [travel]. */
+        fun fixed(
+            startHeight: Int,
+            endHeight: Int,
+            delay: Int,
+            travel: Int,
+            angle: Int,
+            progress: Int = 0,
+        ) = ProjectileConfig(startHeight, endHeight, delay, travel, angle, progress, stepMultiplier = 0)
+    }
+}
+
+/**
+ * Which tick a projectile's hit, [Effect.Projectile.impact] and [Effect.Projectile.onImpact]
+ * resolve on when its flight ends part-way through a tick. They only differ when the flight isn't
+ * a whole number of ticks (30 cycles): a 54-cycle flight resolves on tick 2 with [Down] and tick 3
+ * with [Up] (never sooner than tick 2).
+ */
+enum class ImpactRounding {
+    /** The tick the projectile finishes in, as `ProjAnim.serverCycles` has always done. */
+    Down,
+
+    /** The first whole tick after it finishes. */
+    Up,
+}
