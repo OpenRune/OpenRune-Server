@@ -1,12 +1,12 @@
 package org.rsmod.api.bosses.dsl
 
-import org.rsmod.game.entity.Npc
-import org.rsmod.game.entity.Player
-import org.rsmod.map.CoordGrid
 import dev.openrune.types.NpcMode
 import org.rsmod.api.bosses.spec.*
 import org.rsmod.api.combat.commons.types.MeleeAttackType as EngineMeleeAttackType
 import org.rsmod.api.player.output.CamShakeAxis
+import org.rsmod.game.entity.Npc
+import org.rsmod.game.entity.Player
+import org.rsmod.map.CoordGrid
 
 fun anim(seq: String, delay: Int = 0): Effect = Effect.Anim(seq, delay)
 

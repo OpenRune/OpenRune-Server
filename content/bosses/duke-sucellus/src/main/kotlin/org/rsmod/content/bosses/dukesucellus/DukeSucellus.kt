@@ -64,7 +64,7 @@ constructor(
         }
         deps.extensionRegistry.register(GAZE_RESOLVE) { _, npc, target, _ ->
             if (isFighting(npc) && target.isValidTarget()) resolveGaze(npc, target)
-        }    }
+        } }
 
     private val bossNpcIds: Set<Int> by lazy {
         listOf(BOSS_NPC, SLEEP_NPC).map { it.asRSCM(RSCMType.NPC) }.toSet()

@@ -1,6 +1,5 @@
 package org.rsmod.content.bosses.dukesucellus
 
-import kotlin.math.abs
 import dev.openrune.ServerCacheManager
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
@@ -9,12 +8,12 @@ import dev.openrune.types.aconverted.SpotanimType
 import jakarta.inject.Inject
 import java.util.Collections
 import java.util.IdentityHashMap
+import kotlin.math.abs
 import org.rsmod.annotations.InternalApi
 import org.rsmod.api.bosses.runtime.BossDeps
 import org.rsmod.api.bosses.runtime.suppressAttacks
 import org.rsmod.api.combat.commons.player.finishNpcHit
 import org.rsmod.api.death.NpcDeath
-import org.rsmod.api.npc.access.StandardNpcAccess
 import org.rsmod.api.instances.BossInstanceRegistry
 import org.rsmod.api.instances.InstanceArea
 import org.rsmod.api.instances.InstanceEnterTransition
@@ -26,11 +25,12 @@ import org.rsmod.api.instances.InstanceSession
 import org.rsmod.api.instances.withInstanceEnterTransition
 import org.rsmod.api.instances.withInstanceLeaveTransition
 import org.rsmod.api.invtx.invAdd
+import org.rsmod.api.npc.access.StandardNpcAccess
 import org.rsmod.api.npc.apPlayer2
 import org.rsmod.api.npc.interact.AiPlayerInteractions
-import org.rsmod.api.player.isValidTarget
 import org.rsmod.api.player.events.skilling.SkillingActionCompleteEvent
 import org.rsmod.api.player.events.skilling.SkillingActionContext
+import org.rsmod.api.player.isValidTarget
 import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.output.soundSynth
 import org.rsmod.api.player.protect.ProtectedAccess
@@ -42,7 +42,6 @@ import org.rsmod.api.script.onNpcQueue
 import org.rsmod.api.script.onOpHeldU
 import org.rsmod.api.script.onOpLoc1
 import org.rsmod.api.script.onOpLoc3
-import org.rsmod.api.script.onOpLoc4
 import org.rsmod.api.script.onOpLoc5
 import org.rsmod.api.script.onOpLocU
 import org.rsmod.api.script.onOpNpc1
