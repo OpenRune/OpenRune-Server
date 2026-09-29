@@ -1,0 +1,18 @@
+[[varp]]
+isServerOnly = true
+id = "varp.restless_ghost_rising_tile"
+scope = "Temp"
+transmit = "Never"
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.restless_ghost_progress"
+varp = "varp.prieststart"
+startBit = 0
+endBit = 2
+
+[[varp]]
+isServerOnly = true
+id = "varp.restless_ghost_return_tile"
+scope = "Perm"
+transmit = "Never"
