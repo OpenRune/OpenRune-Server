@@ -1,0 +1,10 @@
+[[varp]]
+id = "varp.sheep_shearer_state"
+scope = "Perm"
+transmit = "Never"
+
+[[varbit]]
+id = "varbit.sheep_shearer_met_the_thing"
+varp = "varp.sheep_shearer_state"
+startBit = 0
+endBit = 0

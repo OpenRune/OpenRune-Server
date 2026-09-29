@@ -12,6 +12,10 @@ ernest_clunk = 1565
 ernest_sprinkle = 1566
 fish_swim = 2601
 iron_door_open = 71
+romeo_juliet_collapse = 505
+romeo_juliet_crypt_door = 1816
+romeo_juliet_crypt_enter = 1815
+romeo_juliet_drink = 2401
 swan_rumble = 1790
 unlock = 2419
 
@@ -61,3 +65,6 @@ misthalin_gem_zenyte = 32349
 misthalin_gem_ruby = 2586
 misthalin_gem_sapphire = 32345
 misthalin_gem_emerald = 32334
+
+[gamevals.queue]
+vampyre_slayer_stake = 65400

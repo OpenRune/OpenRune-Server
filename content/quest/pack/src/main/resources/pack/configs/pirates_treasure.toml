@@ -1,0 +1,40 @@
+[[varp]]
+id = "varp.pirates_treasure_state"
+scope = "Perm"
+transmit = "Never"
+
+[[varbit]]
+id = "varbit.pirates_treasure_crate_bananas"
+varp = "varp.pirates_treasure_state"
+startBit = 0
+endBit = 3
+
+[[varbit]]
+id = "varbit.pirates_treasure_crate_rum"
+varp = "varp.pirates_treasure_state"
+startBit = 4
+endBit = 4
+
+[[varbit]]
+id = "varbit.pirates_treasure_rum_shipped"
+varp = "varp.pirates_treasure_state"
+startBit = 5
+endBit = 5
+
+[[varbit]]
+id = "varbit.pirates_treasure_wydin_job"
+varp = "varp.pirates_treasure_state"
+startBit = 6
+endBit = 6
+
+[[varbit]]
+id = "varbit.pirates_treasure_crate_paid"
+varp = "varp.pirates_treasure_state"
+startBit = 7
+endBit = 7
+
+[[varbit]]
+id = "varbit.pirates_treasure_luthas_task"
+varp = "varp.pirates_treasure_state"
+startBit = 8
+endBit = 8

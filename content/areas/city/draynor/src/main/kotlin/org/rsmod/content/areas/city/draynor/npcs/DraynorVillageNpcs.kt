@@ -12,6 +12,9 @@ import org.rsmod.api.script.onOpNpc3
 import org.rsmod.api.shops.Shops
 import org.rsmod.content.areas.city.draynor.npcs.DiangoHolidayItems.Companion.openHolidayItems
 import org.rsmod.content.interfaces.omnishop.openOmnishop
+import org.rsmod.content.quest.area.alkharid.PrinceAliHelpers.aggieSkinPaste
+import org.rsmod.content.quest.area.alkharid.PrinceAliHelpers.nedOtherThings
+import org.rsmod.content.quest.area.alkharid.PrinceAliRescue
 import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.content.quest.manager.menu
 import org.rsmod.game.entity.Player
@@ -19,20 +22,17 @@ import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
 class DraynorVillageNpcs @Inject constructor(private val shops: Shops) : PluginScript() {
-    private var Player.morganThanked by intVarBit("varbit.morgan_postquest_dialogue")
     private var Player.metAggie by intVarBit("varbit.gobdip_met_aggie")
     private var Player.bankJob by intVarBit("varbit.wom_bankjob")
     private var Player.metForester by intVarBit("varbit.forestry_forester_met")
 
     override fun ScriptContext.startup() {
-        onOpNpc1("npc.morgan") { startDialogue(it.npc) { morgan() } }
         onOpNpc1("npc.wgs_lucien_spy") { startDialogue(it.npc) { shadyStranger() } }
         onOpNpc1("npc.wgs_spy2") { startDialogue(it.npc) { suspiciousOutsider() } }
         onOpNpc1("npc.aggie") { startDialogue(it.npc) { aggie() } }
         onOpNpc3("npc.aggie") { startDialogue(it.npc) { aggieDyes() } }
         onOpNpc1("npc.ned") { startDialogue(it.npc) { ned() } }
         onOpNpc3("npc.ned") { startDialogue(it.npc) { nedRope() } }
-        onOpNpc1("npc.leela") { startDialogue(it.npc) { leela() } }
         onOpNpc1("npc.wom_gossip") { startDialogue(it.npc) { missSchism() } }
         onOpNpc1("npc.wom_bankguard") { startDialogue(it.npc) { bankGuard() } }
         onOpNpc1("npc.rag_wine_merchant") { startDialogue(it.npc) { fortunato() } }
@@ -46,26 +46,6 @@ class DraynorVillageNpcs @Inject constructor(private val shops: Shops) : PluginS
         onOpNpc1("npc.aprilfoolshorsesalesman") { startDialogue(it.npc) { diango() } }
         onOpNpc3("npc.aprilfoolshorsesalesman") { openToyShop() }
         onOpNpc1("npc.martin_the_master_farmer") { startDialogue(it.npc) { martin() } }
-    }
-
-    private suspend fun Dialogue.morgan() {
-        if (!QuestRequirements.hasCompleted(player, VAMPYRE_SLAYER)) {
-            chatNpc(worried, "Please, please help us, bold adventurer!")
-            return
-        }
-        if (player.morganThanked == 0) {
-            chatPlayer(happy, "I have some good news. Count Draynor is no more!")
-            player.morganThanked = 1
-            chatNpc(
-                happy,
-                "He's really gone? Finally, we can live without fear! Thank you, thank you! " +
-                    "You're a true hero!",
-            )
-            chatPlayer(happy, "I'm happy to have helped.")
-            return
-        }
-        chatNpc(happy, "Once again, thank you for slaying that vampyre! You will always be a hero!")
-        chatPlayer(happy, "Don't mention it.")
     }
 
     private suspend fun Dialogue.shadyStranger() {
@@ -87,12 +67,18 @@ class DraynorVillageNpcs @Inject constructor(private val shops: Shops) : PluginS
             else "Can you make dyes for me, please?" to AggieTopic.MakeDyes
         val topic =
             menu(
-                "Cool, do you turn people into frogs?" to AggieTopic.Frogs,
-                dyes,
-                "You mad old witch, you can't help me." to AggieTopic.Insult,
-                "I'm okay, thanks." to AggieTopic.Leave,
+                buildList {
+                    add("Cool, do you turn people into frogs?" to AggieTopic.Frogs)
+                    add(dyes)
+                    if (PrinceAliRescue.inProgress(player)) {
+                        add("Can you make skin paste?" to AggieTopic.SkinPaste)
+                    }
+                    add("You mad old witch, you can't help me." to AggieTopic.Insult)
+                    add("I'm okay, thanks." to AggieTopic.Leave)
+                }
             )
         when (topic) {
+            AggieTopic.SkinPaste -> aggieSkinPaste()
             AggieTopic.Frogs -> {
                 chatPlayer(happy, "Cool, do you turn people into frogs?")
                 chatNpc(
@@ -262,10 +248,20 @@ class DraynorVillageNpcs @Inject constructor(private val shops: Shops) : PluginS
                     "was a man of the sea, but it's past me now. Could I be making or selling " +
                     "you some rope?",
             )
-            if (menu("Yes, I would like some rope." to true, NED_DECLINE to false)) {
-                nedRope()
-            } else {
-                nedDecline()
+            val topic =
+                menu(
+                    buildList {
+                        if (PrinceAliRescue.inProgress(player)) {
+                            add("Could you make other things apart from rope?" to NedTopic.OtherThings)
+                        }
+                        add("Yes, I would like some rope." to NedTopic.Rope)
+                        add(NED_DECLINE to NedTopic.Leave)
+                    }
+                )
+            when (topic) {
+                NedTopic.OtherThings -> nedOtherThings()
+                NedTopic.Rope -> nedRope()
+                else -> nedDecline()
             }
             return
         }
@@ -276,11 +272,17 @@ class DraynorVillageNpcs @Inject constructor(private val shops: Shops) : PluginS
         )
         val topic =
             menu(
-                "How did you get back from Crandor?" to NedTopic.Crandor,
-                "Yes, I would like some rope." to NedTopic.Rope,
-                NED_DECLINE to NedTopic.Leave,
+                buildList {
+                    if (PrinceAliRescue.inProgress(player)) {
+                        add("Could you make other things apart from rope?" to NedTopic.OtherThings)
+                    }
+                    add("How did you get back from Crandor?" to NedTopic.Crandor)
+                    add("Yes, I would like some rope." to NedTopic.Rope)
+                    add(NED_DECLINE to NedTopic.Leave)
+                }
             )
         when (topic) {
+            NedTopic.OtherThings -> nedOtherThings()
             NedTopic.Crandor -> {
                 chatPlayer(quiz, "How did you get back from Crandor?")
                 chatNpc(neutral, "I got towed back by a passing friendly whale.")
@@ -301,7 +303,7 @@ class DraynorVillageNpcs @Inject constructor(private val shops: Shops) : PluginS
                         )
                     }
                     NedTopic.Rope -> nedRope()
-                    NedTopic.Leave -> nedDecline()
+                    else -> nedDecline()
                 }
             }
             NedTopic.Rope -> nedRope()
@@ -433,26 +435,6 @@ class DraynorVillageNpcs @Inject constructor(private val shops: Shops) : PluginS
             "Well, old Neddy is always here if you do. Tell your friends. I can always be using " +
                 "the business.",
         )
-    }
-
-    private suspend fun Dialogue.leela() {
-        if (!QuestRequirements.hasCompleted(player, PRINCE_ALI_RESCUE)) {
-            chatPlayer(quiz, "What are you waiting here for?")
-            chatNpc(neutral, "That is no concern of yours, adventurer.")
-            return
-        }
-        chatNpc(
-            happy,
-            "Al Kharid will forever owe you for your help in saving Prince Ali. It's good to know " +
-                "that we have you as a friend.",
-        )
-        chatPlayer(quiz, "It's no problem. So how come you're still out here?")
-        chatNpc(
-            neutral,
-            "We still don't know why Keli and her bandits took the Prince. I'm hoping I can find " +
-                "out. The place where they imprisoned him seems a good starting point.",
-        )
-        chatPlayer(happy, "Well if you need help, you know where I am. Good luck.")
     }
 
     private suspend fun Dialogue.missSchism() {
@@ -1172,6 +1154,7 @@ class DraynorVillageNpcs @Inject constructor(private val shops: Shops) : PluginS
         Frogs,
         WhatCanYouMake,
         MakeDyes,
+        SkinPaste,
         Insult,
         Leave,
     }
@@ -1185,6 +1168,7 @@ class DraynorVillageNpcs @Inject constructor(private val shops: Shops) : PluginS
     }
 
     private enum class NedTopic {
+        OtherThings,
         Crandor,
         Rope,
         Leave,
@@ -1211,9 +1195,7 @@ class DraynorVillageNpcs @Inject constructor(private val shops: Shops) : PluginS
     }
 
     private companion object {
-        const val VAMPYRE_SLAYER = "quest_vampyreslayer"
         const val DRAGON_SLAYER = "quest_dragonslayer1"
-        const val PRINCE_ALI_RESCUE = "quest_princealirescue"
         const val FREMENNIK_ISLES = "quest_fremennikisles"
 
         const val COINS = "obj.coins"

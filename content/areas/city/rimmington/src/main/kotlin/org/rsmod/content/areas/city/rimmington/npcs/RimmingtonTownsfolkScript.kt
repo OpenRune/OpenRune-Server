@@ -10,18 +10,11 @@ class RimmingtonTownsfolkScript : PluginScript() {
     override fun ScriptContext.startup() {
         onOpNpc1("npc.hw18_girl") { startDialogue(it.npc) { chatNpc(shifty, "We don't talk to strangers.") } }
         onOpNpc1("npc.hw18_boy") { startDialogue(it.npc) { chatNpc(shifty, "Sorry, we don't talk to strangers.") } }
-        onOpNpc1("npc.hetty") { startDialogue(it.npc) { hetty() } }
         onOpNpc1("npc.chemist") { startDialogue(it.npc) { chemist() } }
         onOpNpc1("npc.rimmington_anja") { startDialogue(it.npc) { householder(it.npc, "Eeeek!") } }
         onOpNpc1("npc.rimmington_hengel") {
             startDialogue(it.npc) { householder(it.npc, "Aaaarrgh!") }
         }
-    }
-
-    private suspend fun Dialogue.hetty() {
-        chatNpc(happy, "How's your magic coming along?")
-        chatPlayer(happy, "I'm practicing and slowly getting better.")
-        chatNpc(happy, "Good, good.")
     }
 
     private suspend fun Dialogue.chemist() {

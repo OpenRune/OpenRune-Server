@@ -3,16 +3,32 @@ package org.rsmod.content.other.pets.dialogue
 import dev.openrune.types.ItemServerType
 import jakarta.inject.Inject
 import org.rsmod.api.player.protect.ProtectedAccess
+import org.rsmod.content.other.pets.PetFollowers
 import org.rsmod.content.other.pets.onPetOp
+import org.rsmod.content.other.pets.onPetOpIfPresent
 import org.rsmod.content.other.pets.onPetOpU
+import org.rsmod.content.quest.manager.DigSpots
 import org.rsmod.game.entity.Npc
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
-class BloodhoundDialogue @Inject constructor() : PluginScript() {
+class BloodhoundDialogue @Inject constructor(private val followers: PetFollowers) : PluginScript() {
     override fun ScriptContext.startup() {
         onPetOp(NPC, "Talk-to") { talk(it) }
+        onPetOpIfPresent(NPC, DIG_OP) { dig(it) }
         onPetOpU(NPC) { useItem(it.npc, it.objType) }
+    }
+
+    /** Digs in place of a spade, sharing the quest dig-spot handlers. */
+    private suspend fun ProtectedAccess.dig(npc: Npc) {
+        if (!followers.requireOwned(this, npc)) {
+            return
+        }
+        if (DigSpots.dig(this)) {
+            return
+        }
+        delay(1)
+        mes("Nothing interesting happens.")
     }
 
     private suspend fun ProtectedAccess.talk(npc: Npc) =
@@ -54,5 +70,6 @@ class BloodhoundDialogue @Inject constructor() : PluginScript() {
 
     private companion object {
         const val NPC = "npc.bloodhoundpet"
+        const val DIG_OP = "Dig"
     }
 }

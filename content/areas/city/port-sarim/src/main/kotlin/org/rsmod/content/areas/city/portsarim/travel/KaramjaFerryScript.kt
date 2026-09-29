@@ -15,7 +15,13 @@ class KaramjaFerryScript : PluginScript() {
             onOpNpc3(sailor) { payAndSail(MUSA_POINT, MUSA_POINT_NAME) }
         }
         onOpNpc1(CUSTOMS_OFFICER) { startDialogue(it.npc) { customsOfficer() } }
-        onOpNpc3(CUSTOMS_OFFICER) { payAndSail(PORT_SARIM, PORT_SARIM_NAME) }
+        onOpNpc3(CUSTOMS_OFFICER) {
+            if (inv.count(KARAMJA_RUM) > 0) {
+                startDialogue(it.npc) { confiscateRum() }
+                return@onOpNpc3
+            }
+            payAndSail(PORT_SARIM, PORT_SARIM_NAME)
+        }
     }
 
     private suspend fun Dialogue.offerTrip() {
@@ -47,16 +53,8 @@ class KaramjaFerryScript : PluginScript() {
         when (topic) {
             CustomsTopic.Journey -> {
                 chatPlayer(quiz, "Can I journey on this ship?")
-                chatNpc(
-                    neutral,
-                    "You can, but you'll need to pay a boarding charge of $FARE coins.",
-                )
-                if (choice2("Okay.", true, "Oh, I'll not bother then.", false)) {
-                    chatPlayer(neutral, "Okay.")
-                    board(PORT_SARIM, PORT_SARIM_NAME)
-                } else {
-                    chatPlayer(neutral, "Oh, I'll not bother then.")
-                }
+                chatNpc(neutral, "You need to be searched before you can board.")
+                customsSearch()
             }
             CustomsTopic.Customs -> {
                 chatPlayer(quiz, "What unusual customs do they have here?")
@@ -64,6 +62,61 @@ class KaramjaFerryScript : PluginScript() {
             }
             CustomsTopic.Leave -> chatPlayer(neutral, "I'm good, thanks.")
         }
+    }
+
+    private suspend fun Dialogue.customsSearch() {
+        while (true) {
+            val choice =
+                choice3(
+                    "Why?",
+                    1,
+                    "Search away. I have nothing to hide.",
+                    2,
+                    "You're not putting your hands on my things!",
+                    3,
+                )
+            when (choice) {
+                1 -> {
+                    chatPlayer(quiz, "Why?")
+                    chatNpc(
+                        neutral,
+                        "Because Asgarnia has banned the import of intoxicating spirits.",
+                    )
+                }
+                2 -> {
+                    chatPlayer(neutral, "Search away. I have nothing to hide.")
+                    if (player.inv.count(KARAMJA_RUM) > 0) {
+                        confiscateRum()
+                        return
+                    }
+                    chatNpc(
+                        neutral,
+                        "Well you've got some odd stuff, but it's all legal. Now you need to pay a " +
+                            "boarding charge of $FARE coins.",
+                    )
+                    if (choice2("Okay.", true, "Oh, I'll not bother then.", false)) {
+                        chatPlayer(neutral, "Okay.")
+                        board(PORT_SARIM, PORT_SARIM_NAME)
+                    } else {
+                        chatPlayer(neutral, "Oh, I'll not bother then.")
+                    }
+                    return
+                }
+                else -> {
+                    chatPlayer(angry, "You're not putting your hands on my things!")
+                    chatNpc(neutral, "You're not getting on this ship then.")
+                    return
+                }
+            }
+        }
+    }
+
+    private suspend fun Dialogue.confiscateRum() {
+        chatNpc(angry, "Aha, trying to smuggle rum are we?")
+        chatPlayer(shifty, "Umm... it's for personal use?")
+        access.invDel(access.inv, KARAMJA_RUM, player.inv.count(KARAMJA_RUM))
+        access.mes("The customs officer confiscates your rum.")
+        access.mes("You will need to find some way to smuggle it off the island...")
     }
 
     private suspend fun Dialogue.board(dest: CoordGrid, destName: String) {
@@ -91,6 +144,7 @@ class KaramjaFerryScript : PluginScript() {
     private companion object {
         const val FARE = 30
         const val CUSTOMS_OFFICER = "npc.customs_officer"
+        const val KARAMJA_RUM = "obj.karamja_rum"
         const val MUSA_POINT_NAME = "Musa Point"
         const val PORT_SARIM_NAME = "Port Sarim"
 

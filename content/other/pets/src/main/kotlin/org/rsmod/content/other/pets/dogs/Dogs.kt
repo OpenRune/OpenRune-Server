@@ -11,6 +11,7 @@ class DogBreed(row: PuppyColoursRow) {
     val id: Int = row.rowId
     val key: String = RSCM.getReverseMapping(RSCMType.DBROW, row.rowId).removePrefix("dbrow.")
     val name: String = row.name
+    val large: Boolean = row.large
     val unlock: String? = row.unlockBit?.let { "varbit.dog_unlock_$it" }
 
     fun unlocked(player: Player): Boolean {
