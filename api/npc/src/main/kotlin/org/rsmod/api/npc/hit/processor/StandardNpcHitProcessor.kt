@@ -81,9 +81,11 @@ constructor(
             npc.hitpoints -= hit.damage
         }
 
-        if (hit.damage > 0 && hit.isFromPlayer) {
+        if (hit.isFromPlayer) {
             hit.resolvePlayerSource(playerList)?.let { source ->
-                npc.recordDamage(source, hit.damage)
+                if (hit.damage > 0) {
+                    npc.recordDamage(source, hit.damage)
+                }
                 for (contributor in damageContributors) {
                     contributor.onPlayerDamageNpc(npc, source, hit.damage)
                 }

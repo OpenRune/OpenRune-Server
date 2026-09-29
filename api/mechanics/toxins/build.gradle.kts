@@ -10,6 +10,7 @@ dependencies {
     implementation(libs.guice)
     implementation(projects.api.attr)
     implementation(projects.api.config)
+    implementation(projects.api.npc)
     implementation(projects.api.player)
     implementation(projects.api.playerOutput)
     implementation(projects.api.script)

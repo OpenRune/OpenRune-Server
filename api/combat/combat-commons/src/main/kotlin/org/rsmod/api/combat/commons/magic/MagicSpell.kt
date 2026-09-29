@@ -13,6 +13,7 @@ public data class MagicSpell(
     public val levelReq: Int,
     public val castXp: Double,
     public val objReqs: List<ObjRequirement>,
+    public val questReq: String? = null,
 ) {
     public data class ObjRequirement(val obj: ItemServerType, val count: Int, val wornSlot: Int?)
 }
