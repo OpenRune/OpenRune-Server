@@ -6,7 +6,6 @@ import dev.openrune.rscm.RSCMType
 import jakarta.inject.Inject
 import org.rsmod.api.config.Constants
 import org.rsmod.api.player.protect.ProtectedAccess
-import org.rsmod.api.script.onAiOpPlayer2
 import org.rsmod.api.script.onAiTimer
 import org.rsmod.api.script.onNpcHit
 import org.rsmod.api.script.onOpHeld1
@@ -55,8 +54,6 @@ class CrondisPuzzleScript @Inject constructor(private val playerList: PlayerList
         onAiTimer(CrondisNpcs.CROCODILE) { CrondisPuzzleEncounter.onCrocodileTick(npc) }
 
         val crocodileType = ServerCacheManager.getNpc(CrondisNpcs.CROCODILE.asRSCM(RSCMType.NPC))!!
-        // Its own attack. Binding this for the type replaces the default npc combat for it.
-        onAiOpPlayer2(crocodileType) { CrondisPuzzleEncounter.onCrocodileAttack(npc, it.target) }
         // Remember who hits it: players without a container who did are its third priority.
         onNpcHit(crocodileType) {
             if (hit.isFromPlayer) {

@@ -543,9 +543,8 @@ class ZebakEncounter(raid: ToaRaid, room: ToaRoom, region: Region, controllerId:
             roomOf(croc)?.water?.crocodileTick(croc)
         }
 
-        internal fun onCrocBite(croc: Npc, target: Player) {
-            roomOf(croc)?.water?.bite(croc, target)
-        }
+        internal fun onCrocCombatTick(croc: Npc, target: Player): Boolean =
+            roomOf(croc)?.water?.mayBite(target) ?: false
 
         internal fun onClimbRock(player: Player, rock: CoordGrid, angleId: Int) {
             roomOf(player)?.water?.climbOut(player, rock, angleId)

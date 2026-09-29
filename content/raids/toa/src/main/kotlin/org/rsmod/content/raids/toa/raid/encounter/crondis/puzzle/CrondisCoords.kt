@@ -21,8 +21,9 @@ internal object CrondisCoords {
     /**
      * The room picks a side when built. Waves use its first ceil(teamSize / 2) spawns, and its
      * walls are added beside them. Solo captures: every crocodile came from (3946, 5274) with the
-     * east walls in one room, and from (3925, 5274) with the west walls (mirrored) in another. The
-     * group spawns and their order are unverified; the west list mirrors the east one.
+     * east walls in one room, from (3925, 5274) with the west walls (mirrored) in another, and from
+     * (3925, 5285) with the north-west walls in a third. The group spawns and their order are
+     * unverified; the west and north-west lists mirror the east one.
      */
     val CROC_SIDES =
         listOf(
@@ -52,6 +53,20 @@ internal object CrondisCoords {
                     listOf(
                         CoordGrid(3922, 5273, 0) to LocAngle.East,
                         CoordGrid(3924, 5271, 0) to LocAngle.North,
+                    ),
+            ),
+            CrocSide(
+                spawns =
+                    listOf(
+                        CoordGrid(3925, 5285, 0),
+                        CoordGrid(3946, 5274, 0),
+                        CoordGrid(3925, 5274, 0),
+                        CoordGrid(3946, 5285, 0),
+                    ),
+                walls =
+                    listOf(
+                        CoordGrid(3922, 5287, 0) to LocAngle.East,
+                        CoordGrid(3923, 5289, 0) to LocAngle.South,
                     ),
             ),
         )

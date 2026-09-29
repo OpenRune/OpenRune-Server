@@ -113,6 +113,7 @@ sealed interface Effect {
         val hazard: Boolean = false,
         val resolveOnImpact: Boolean = false,
         val reactOnLanding: Boolean = false,
+        val react: Boolean = true,
     ) : Effect
 
     data class Projectile(

@@ -145,6 +145,7 @@ class HitBuilder internal constructor() {
     private var hazardHit: Boolean = false
     private var resolveOnImpactFlag: Boolean = false
     private var reactOnLandingFlag: Boolean = false
+    private var reactFlag: Boolean = true
     private var missSpot: String? = null
     private var missSoundSynth: String? = null
     private var onHitEffect: Effect? = null
@@ -211,6 +212,10 @@ class HitBuilder internal constructor() {
         lifestealPercent = percent
     }
 
+    fun noReaction() {
+        reactFlag = false
+    }
+
     internal fun commitDamage(expr: DamageExpr) {
         damageExpr = expr
     }
@@ -238,6 +243,7 @@ class HitBuilder internal constructor() {
             hazard = hazardHit,
             resolveOnImpact = resolveOnImpactFlag,
             reactOnLanding = reactOnLandingFlag,
+            react = reactFlag,
         )
 }
 

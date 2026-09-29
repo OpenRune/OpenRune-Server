@@ -494,8 +494,14 @@ class CrondisPuzzleEncounter(raid: ToaRaid, room: ToaRoom, region: Region, contr
             roomOf(croc)?.crocodiles?.ai(croc)
         }
 
-        internal fun onCrocodileAttack(croc: Npc, target: Player) {
-            roomOf(croc)?.crocodiles?.attack(croc, target)
+        internal fun onCrocodileCombatTick(croc: Npc, target: Player): Boolean =
+            roomOf(croc)?.crocodiles?.mayBite(croc, target) ?: false
+
+        internal fun crocodileBiteDamage(croc: Npc, target: Player): Int =
+            roomOf(croc)?.crocodiles?.biteDamage(target) ?: 0
+
+        internal fun onCrocodileBite(croc: Npc, target: Player) {
+            roomOf(croc)?.biteWater(target)
         }
 
         internal fun onCrocodileHit(croc: Npc, player: Player) {
