@@ -15,6 +15,7 @@ import org.rsmod.game.entity.PlayerList
 import org.rsmod.game.queue.EngineQueueCache
 import org.rsmod.game.region.RegionListLarge
 import org.rsmod.game.region.RegionListSmall
+import org.rsmod.game.region.RegionListWorldEntity
 import org.rsmod.module.ExtendedModule
 import org.rsmod.server.shared.module.EventModule
 
@@ -29,6 +30,7 @@ object GameModule : ExtendedModule() {
         bindInstance<ControllerList>()
         bindInstance<RegionListSmall>()
         bindInstance<RegionListLarge>()
+        bindInstance<RegionListWorldEntity>()
         bindInstance<KeyedEventMap>()
         bindInstance<SuspendEventMap>()
         bindInstance<UnboundEventMap>()

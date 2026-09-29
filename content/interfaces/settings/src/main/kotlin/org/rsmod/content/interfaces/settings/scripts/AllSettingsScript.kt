@@ -123,6 +123,10 @@ class AllSettingsScript @Inject constructor(private val protectedAccess: Protect
         }
 
         onIfOverlayButton("component.settings_side:settings_open") {
+            if (player.isAccessProtected) {
+                mes("Please finish what you are doing before opening the settings menu.")
+                return@onIfOverlayButton
+            }
             ifOpenOverlay("interface.settings")
             player.selectCategory(0)
             player.settingsCategory = 0

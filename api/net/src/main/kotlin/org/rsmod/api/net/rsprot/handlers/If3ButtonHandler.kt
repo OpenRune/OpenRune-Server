@@ -73,7 +73,7 @@ constructor(private val eventBus: EventBus, private val protectedAccess: Protect
                     buttonOp,
                 )
             logger.debug { "[Overlay] If3Button: $message (event=$event)" }
-            protectedAccess.launchLenient(player) { eventBus.publish(this, event) }
+            protectedAccess.launchBeside(player) { eventBus.publish(this, event) }
             return
         }
 

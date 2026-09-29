@@ -993,14 +993,6 @@ npc = "npc.brownbear"
 coords = "0_48_57_53_45"
 
 [[spawn]]
-npc = "npc.callisto"
-coords = "0_51_60_27_9"
-
-[[spawn]]
-npc = "npc.callisto_singles"
-coords = "0_48_57_44_29"
-
-[[spawn]]
 npc = "npc.canoeing_marten"
 coords = "0_49_56_17_45"
 

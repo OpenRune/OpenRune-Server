@@ -81,6 +81,7 @@ import org.rsmod.game.map.LocZoneStorage
 import org.rsmod.game.queue.EngineQueueCache
 import org.rsmod.game.region.RegionListLarge
 import org.rsmod.game.region.RegionListSmall
+import org.rsmod.game.region.RegionListWorldEntity
 import org.rsmod.game.seq.EntitySeq
 import org.rsmod.map.CoordGrid
 import org.rsmod.plugin.scripts.ScriptContext
@@ -409,7 +410,8 @@ class MisthalinManorInteractionTest {
             val normal = LocRegistryNormal(updates, collision, storage)
             val npcs = NpcList()
             val npcRegistry = NpcRegistry(npcs, collision, events)
-            regions = RegionRegistry(RegionListSmall(), RegionListLarge(), normal, collision, storage,
+            regions = RegionRegistry(RegionListSmall(), RegionListLarge(), RegionListWorldEntity(),
+                normal, collision, storage,
                 npcRegistry, ControllerRegistry(clock, ControllerList()), ZonePlayerActivityBitSet())
             val locs = LocRepository(clock, LocRegistry(storage, normal,
                 LocRegistryRegion(updates, collision, storage, regions)), regions)

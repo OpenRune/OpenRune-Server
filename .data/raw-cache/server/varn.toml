@@ -69,3 +69,18 @@ id = "varn.duke_flare_threshold"
 
 [[varn]]
 id = "varn.duke_after_gaze"
+
+[[varn]]
+id = "varn.callisto_roars"
+
+[[varn]]
+id = "varn.poison_severity"
+
+[[varn]]
+id = "varn.freeze_end_clock"
+
+[[varn]]
+id = "varn.freeze_immunity_end_clock"
+
+[[varn]]
+id = "varn.freeze_guaranteed"

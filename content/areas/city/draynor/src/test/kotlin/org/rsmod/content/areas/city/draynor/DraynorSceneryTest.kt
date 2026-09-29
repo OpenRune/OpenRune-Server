@@ -62,6 +62,7 @@ import org.rsmod.game.map.LocZoneStorage
 import org.rsmod.game.queue.EngineQueueCache
 import org.rsmod.game.region.RegionListLarge
 import org.rsmod.game.region.RegionListSmall
+import org.rsmod.game.region.RegionListWorldEntity
 import org.rsmod.map.CoordGrid
 import org.rsmod.map.square.MapSquareKey
 import org.rsmod.map.zone.ZoneKey
@@ -166,7 +167,7 @@ class DraynorSceneryTest {
         private val players = PlayerRegistry(PlayerList(), collision, activity, events)
         private val normal = LocRegistryNormal(updates, collision, zones)
         private val regions = RegionRegistry(
-            RegionListSmall(), RegionListLarge(), normal, collision, zones, npcs,
+            RegionListSmall(), RegionListLarge(), RegionListWorldEntity(), normal, collision, zones, npcs,
             ControllerRegistry(clock, ControllerList()), activity,
         )
         private val locRegistry = LocRegistry(zones, normal, LocRegistryRegion(updates, collision, zones, regions))

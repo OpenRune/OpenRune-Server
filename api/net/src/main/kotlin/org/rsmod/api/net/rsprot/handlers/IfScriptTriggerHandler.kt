@@ -48,6 +48,6 @@ constructor(
                 args = args,
             )
 
-        protectedAccess.launchLenient(player) { eventBus.publish(this, event) }
+        protectedAccess.launchBeside(player) { eventBus.publish(this, event) }
     }
 }

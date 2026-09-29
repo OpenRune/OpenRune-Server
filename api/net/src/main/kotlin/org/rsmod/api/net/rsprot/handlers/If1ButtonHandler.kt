@@ -51,7 +51,7 @@ constructor(private val eventBus: EventBus, private val protectedAccess: Protect
         if (player.ui.containsOverlay(interfaceType) || player.ui.containsTopLevel(interfaceType)) {
             val event = IfOverlayButton(componentType, comsub = -1, obj = null, op = IfButtonOp.Op1)
             logger.debug { "[Overlay] If1Button: $message (event=$event)" }
-            protectedAccess.launchLenient(player) { eventBus.publish(this, event) }
+            protectedAccess.launchBeside(player) { eventBus.publish(this, event) }
             return
         }
 

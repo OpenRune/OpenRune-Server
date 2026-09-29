@@ -1,6 +1,7 @@
 package org.rsmod.api.config.aliases
 
 import dev.openrune.TypedParamType
+import dev.openrune.definition.type.DBRowType
 import dev.openrune.definition.type.HitSplatType
 import dev.openrune.definition.type.VarBitType
 import dev.openrune.definition.type.widget.ComponentType
@@ -18,6 +19,8 @@ import dev.openrune.types.varp.VarpServerType
 import org.rsmod.map.CoordGrid
 
 typealias ParamInt = TypedParamType<Int>
+
+typealias ParamDbRow = TypedParamType<DBRowType>
 
 typealias ParamStr = TypedParamType<String>
 
