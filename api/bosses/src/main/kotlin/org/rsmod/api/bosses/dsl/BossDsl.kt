@@ -110,6 +110,7 @@ class HitBuilder internal constructor() {
     private var lifestealPercent: Int = 0
     private var resolveOnImpactFlag: Boolean = false
     private var reactOnLandingFlag: Boolean = false
+    private var reactFlag: Boolean = true
 
     fun damage(expr: DamageExpr) {
         damageExpr = expr
@@ -155,6 +156,10 @@ class HitBuilder internal constructor() {
         reactOnLandingFlag = true
     }
 
+    fun noReaction() {
+        reactFlag = false
+    }
+
     internal fun commitDamage(expr: DamageExpr) {
         damageExpr = expr
     }
@@ -178,6 +183,7 @@ class HitBuilder internal constructor() {
             lifesteal = lifestealPercent,
             resolveOnImpact = resolveOnImpactFlag,
             reactOnLanding = reactOnLandingFlag,
+            react = reactFlag,
         )
 }
 

@@ -303,6 +303,12 @@ class EffectInterpreter(
                 scheduleLanding(access, hit, t, damage, landed, delay, clientDelay = 0)
                 continue
             }
+            if (!hit.react) {
+                val modifier = landingModifier(access, hit, damage)
+                t.queueHit(npc, delay, hit.type.toEngine(), damage, modifier, penetration = hit.penetration)
+                showMissSpotanim(hit, t, damage, clientDelay = 0)
+                continue
+            }
             val landed =
                 t.finishNpcHit(npc, delay, hit.type.toEngine(), damage, deps.playerHitModifier, hit.penetration)
             scheduleLanding(access, hit, t, damage, landed.damage, delay, clientDelay = 0)

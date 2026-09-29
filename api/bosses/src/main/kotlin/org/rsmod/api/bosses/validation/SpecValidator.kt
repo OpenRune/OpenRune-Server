@@ -163,8 +163,19 @@ object SpecValidator {
             }
             is Effect.OnEach -> validateEffect(effect.effect, abilityNames, phaseNames, errors, context, insideImpact)
             is Effect.Projectile -> {
+                if (effect.hit?.react == false) {
+                    errors += ValidationError("${prefix(context)}Projectile hit cannot use noReaction.")
+                }
                 effect.onImpact?.let {
                     validateEffect(it, abilityNames, phaseNames, errors, context, insideImpact = true)
+                }
+            }
+            is Effect.Hit -> {
+                if (!effect.react && (effect.resolveOnImpact || effect.reactOnLanding)) {
+                    errors +=
+                        ValidationError(
+                            "${prefix(context)}Hit noReaction cannot be combined with resolveOnImpact or reactOnLanding.",
+                        )
                 }
             }
             is Effect.Hazard -> {
