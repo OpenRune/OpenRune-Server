@@ -167,7 +167,6 @@ class ZebakEncounter(raid: ToaRaid, room: ToaRoom, region: Region, controllerId:
         tail?.let(::despawn)
         val boss = spawn(ZebakNpcs.ZEBAK, coords(ZebakCoords.ZEBAK))
         boss.ignoreCombatInteractions = true
-        boss.apRangeOverride = AP_RANGE
         boss.apRequiresLineOfSight = false
         lockFacingEast(boss)
         zebak = boss
@@ -465,7 +464,6 @@ class ZebakEncounter(raid: ToaRaid, room: ToaRoom, region: Region, controllerId:
         private const val MIN_ATTACK_SPEED = 2
         private const val ENRAGE_SPEEDUP = 3
         private const val FIRST_ATTACK_DELAY = 10
-        private const val AP_RANGE = 32
         private const val ZEBAK_POINTS = 1.5
         private const val ZEBAK_POINTS_CAP = 10_000
         private const val DEATH_SHAKE_DELAY = 2

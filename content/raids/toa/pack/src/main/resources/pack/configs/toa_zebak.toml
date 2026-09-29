@@ -7,6 +7,11 @@
 #   regenRate = 0          NpcRegenProcessor skips regeneration (ToA npcs don't heal over time)
 #   moveRestrict = "NoMove" can never move (was npc.movementLocked in code)
 #   respawnDir             the direction it faces when spawned (was npc.respawnDir in code)
+#
+# Zebak's combat (ZebakBoss) needs his ap interaction to reach the whole challenge area:
+#   attackRange = 40       his ap range, from his 9x9 bounds (farthest challenge tile: 36)
+#   maxRange = 10          the engine drops an npc's player interaction beyond maxRange +
+#                          attackRange from its spawn tile (his south-west corner; farthest: 44)
 
 # ---- Zebak (and the npcs he's transmogged into) ----
 # Capture: his bar colours are sent every time it opens: back (25,0,0), sliding (0,18,0),
@@ -19,6 +24,8 @@ defaultMode = "None"
 moveRestrict = "NoMove"
 respawnDir = "East"
 regenRate = 0
+maxRange = 10
+attackRange = 40
 [npc.params]
 "param.boss_hp_bar_colour_back" = 13107200
 "param.boss_hp_bar_colour_sliding" = 36864
@@ -32,6 +39,8 @@ defaultMode = "None"
 moveRestrict = "NoMove"
 respawnDir = "East"
 regenRate = 0
+maxRange = 10
+attackRange = 40
 [npc.params]
 "param.boss_hp_bar_colour_back" = 13107200
 "param.boss_hp_bar_colour_sliding" = 36864
