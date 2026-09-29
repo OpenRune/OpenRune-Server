@@ -434,7 +434,7 @@ class ZebakBoss @Inject constructor(deps: BossDeps) : BossPluginScript(deps) {
         private const val ROCK_SPACING = 3
         private const val SPLASH_DELAY = 200
 
-        private const val BLOOD_CAST_DELAY = 2
+        private const val BLOOD_CAST_DELAY = 3
         private const val SMALL_CLOUDS = 3
 
         private fun offset(tile: CoordGrid): TargetExpr.Single =

@@ -7,6 +7,7 @@ import org.rsmod.api.script.onArea
 import org.rsmod.api.script.onAreaExit
 import org.rsmod.api.script.onOpLoc1
 import org.rsmod.api.script.onPlayerLogin
+import org.rsmod.content.interfaces.bank.tryOpenBank
 import org.rsmod.content.raids.toa.party.ToaPartyManager
 import org.rsmod.content.raids.toa.raid.ToaRaidManager
 import org.rsmod.game.entity.Player
@@ -44,6 +45,7 @@ class ToaLobbyScript : PluginScript() {
         // "open" variant rather than the base loc.
         onOpLoc1("loc.toa_entrance_open") { travel(INSIDE_DEST, Direction.South) }
         onOpLoc1("loc.toa_lobby_exit") { travel(OUTSIDE_DEST, Direction.NorthWest) }
+        onOpLoc1("loc.toa_bank_camel") { tryOpenBank() }
 
         onPlayerLogin {
             // TEMPORARY: OpenRune has no Beneath Cursed Sands quest yet, so

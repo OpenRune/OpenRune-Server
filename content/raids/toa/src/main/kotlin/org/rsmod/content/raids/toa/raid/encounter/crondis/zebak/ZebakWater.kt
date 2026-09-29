@@ -4,6 +4,7 @@ import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import dev.openrune.types.BasType
 import org.rsmod.annotations.InternalApi
+import org.rsmod.api.npc.opPlayer2
 import org.rsmod.api.player.hit.modifier.NoopPlayerHitModifier
 import org.rsmod.api.player.hit.queueHit
 import org.rsmod.api.player.hook.TeleportType
@@ -12,6 +13,7 @@ import org.rsmod.content.raids.toa.raid.encounter.ToaStage
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.game.hit.HitType
+import org.rsmod.game.interact.InteractionPlayer
 import org.rsmod.game.map.collision.isWalkBlocked
 import org.rsmod.map.CoordGrid
 
@@ -24,7 +26,6 @@ internal class ZebakWater(private val room: ZebakEncounter) {
     private val deps = room.raid.deps
     private val swimmers = HashSet<Player>()
     private val crocodiles = ArrayList<Npc>()
-    private val biteCountdown = HashMap<Npc, Int>()
 
     private val swimBas: BasType by lazy {
         val swim = ZebakSeqs.SWIM.asRSCM(RSCMType.SEQ)
@@ -88,42 +89,41 @@ internal class ZebakWater(private val room: ZebakEncounter) {
     fun removeCrocodiles() {
         for (croc in crocodiles) room.despawn(croc)
         crocodiles.clear()
-        biteCountdown.clear()
     }
 
-    /** Once a tick (config `timer = 1`): chase the nearest swimmer within 16; bite 0-3 per 2 ticks. */
     fun crocodileTick(croc: Npc) {
-        if (room.stage != ToaStage.STARTED || (room.zebak?.hitpoints ?: 0) <= 0) return
-        val target =
-            room.targets()
-                .filter { it in swimmers }
-                .map { it to it.coords.chebyshevDistance(croc.coords) }
-                .filter { it.second < HUNT_RANGE }
-                .minByOrNull { it.second }
-                ?.first
-        if (target != null && !croc.isBeside(target)) croc.walk(target.coords)
-
-        val countdown = (biteCountdown[croc] ?: BITE_RATE) - 1
-        if (countdown > 0) {
-            biteCountdown[croc] = countdown
+        val prey = if (hunting()) prey(croc) else null
+        val current = (croc.interaction as? InteractionPlayer)?.target
+        if (prey == null) {
+            if (current != null) croc.defaultMode()
             return
         }
-        biteCountdown[croc] = BITE_RATE
-        if (target != null && croc.isBeside(target)) {
-            croc.facePlayer(target)
-            val damage = deps.random.of(0, MAX_BITE)
-            target.queueHit(croc, 1, HitType.Typeless, damage, NoopPlayerHitModifier)
-        }
+        if (current !== prey) croc.opPlayer2(prey, deps.aiInteractions)
     }
+
+    fun bite(croc: Npc, target: Player) {
+        if (!hunting() || target !in swimmers) return
+        val damage = deps.random.of(0, MAX_BITE)
+        target.queueHit(croc, 1, HitType.Typeless, damage, NoopPlayerHitModifier)
+    }
+
+    private fun hunting(): Boolean =
+        room.stage == ToaStage.STARTED && (room.zebak?.hitpoints ?: 0) > 0
+
+    private fun prey(croc: Npc): Player? =
+        room.targets()
+            .filter { it in swimmers }
+            .map { it to it.coords.chebyshevDistance(croc.coords) }
+            .filter { it.second < HUNT_RANGE }
+            .minByOrNull { it.second }
+            ?.first
 
     fun clear() {
         for (player in swimmers.toList()) stopSwimming(player)
-        biteCountdown.clear()
     }
 
     private companion object {
         const val HUNT_RANGE = 16
-        const val BITE_RATE = 2
         const val MAX_BITE = 3
     }
 }
