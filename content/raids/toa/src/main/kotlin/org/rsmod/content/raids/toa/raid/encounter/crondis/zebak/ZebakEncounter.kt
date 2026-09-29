@@ -22,6 +22,7 @@ import org.rsmod.content.raids.toa.raid.ToaRaidManager.currentRaid
 import org.rsmod.content.raids.toa.raid.ToaRoom
 import org.rsmod.content.raids.toa.raid.encounter.ToaBossEncounter
 import org.rsmod.content.raids.toa.raid.encounter.ToaStage
+import org.rsmod.content.raids.toa.raid.shuffled
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.game.hit.Hit
@@ -255,7 +256,6 @@ class ZebakEncounter(raid: ToaRaid, room: ToaRoom, region: Region, controllerId:
         val cycle = deps.mapClock.cycle
         autos.rollBleeds(targets)
         holdDefenceFloor(boss)
-        poison.tick(targets)
         autos.tickBleeding(targets)
         val landed = landings.take(cycle)
         if (targets.isNotEmpty() && boss.hitpoints > 0) for (action in landed) action()

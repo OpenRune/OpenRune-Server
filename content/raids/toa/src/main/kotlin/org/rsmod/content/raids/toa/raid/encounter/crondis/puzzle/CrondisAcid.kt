@@ -4,6 +4,7 @@ import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import dev.openrune.types.aconverted.SpotanimType
 import kotlin.math.abs
+import org.rsmod.content.raids.toa.raid.shuffled
 import org.rsmod.game.entity.Player
 import org.rsmod.game.loc.LocAngle
 import org.rsmod.game.loc.LocShape
@@ -46,7 +47,7 @@ internal class CrondisAcid(private val room: CrondisPuzzleEncounter) {
             // Capture: one sound per basin, from its middle column.
             val middle = room.coords(base.translate(ACID_COLUMNS_MIDDLE, 0))
             deps.worldRepo.soundArea(middle, CrondisSynths.ACID_ORB, radius = ORB_SOUND_RADIUS)
-            val columns = shuffledColumns()
+            val columns = deps.random.shuffled((0 until COLUMNS).toList())
             val count = deps.random.of(MIN_TRAILS, MAX_TRAILS)
             for (i in 0 until count) {
                 val tile = room.coords(base.translate(columns[i], 0))
@@ -56,18 +57,6 @@ internal class CrondisAcid(private val room: CrondisPuzzleEncounter) {
                 room.schedule(TRAIL_DELAY) { start(trail) }
             }
         }
-    }
-
-    /** 0..4 in random order. Hand-rolled because randomness must go through GameRandom. */
-    private fun shuffledColumns(): IntArray {
-        val columns = IntArray(COLUMNS) { it }
-        for (i in columns.lastIndex downTo 1) {
-            val j = deps.random.of(maxExclusive = i + 1)
-            val swap = columns[i]
-            columns[i] = columns[j]
-            columns[j] = swap
-        }
-        return columns
     }
 
     private fun start(trail: Trail) {

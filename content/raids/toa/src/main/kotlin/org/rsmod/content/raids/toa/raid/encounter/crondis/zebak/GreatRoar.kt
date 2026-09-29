@@ -5,6 +5,7 @@ import kotlin.math.min
 import org.rsmod.annotations.InternalApi
 import org.rsmod.api.npc.hit.queueHit as queueNpcHit
 import org.rsmod.api.player.hook.TeleportType
+import org.rsmod.content.raids.toa.raid.shuffled
 import org.rsmod.game.entity.Player
 import org.rsmod.game.hit.HitType
 import org.rsmod.game.map.Direction
@@ -64,7 +65,7 @@ internal class GreatRoar(private val room: ZebakEncounter) {
             for (z in min.z..max.z) {
                 val tile = CoordGrid(x, z, min.level)
                 if (inSafeStrip(tile, includeBoulder = false) || !room.isOpenFloor(tile)) continue
-                deps.worldRepo.spotanimMap(dust, tile, delay = 1 + chebyshev(tile, middle))
+                deps.worldRepo.spotanimMap(dust, tile, delay = 1 + tile.chebyshevDistance(middle))
             }
         }
         for (boulder in room.boulders.npcs.toList()) {
