@@ -1,4 +1,6 @@
 [gamevals.synth]
+mizgog_placebeads = 1632
+mizgog_beads = 1633
 coffin_close = 53
 rg_ghost_approach = 1743
 bigghost_appear = 1595
@@ -64,6 +66,7 @@ misthalin_puzzle_state = 63702
 
 [gamevals.varbit]
 restless_ghost_progress = 63702
+imp_catcher_progress = 63703
 misthalin_reflections = 63700
 misthalin_gem_row_slot = 63701
 

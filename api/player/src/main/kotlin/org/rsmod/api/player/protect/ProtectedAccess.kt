@@ -107,6 +107,7 @@ import org.rsmod.api.player.ui.ifChatNpcSpecific
 import org.rsmod.api.player.ui.ifChatPlayer
 import org.rsmod.api.player.ui.ifChoice
 import org.rsmod.api.player.ui.ifClose
+import org.rsmod.api.player.ui.ifCloseChat
 import org.rsmod.api.player.ui.ifCloseSub
 import org.rsmod.api.player.ui.ifConfirmDestroy
 import org.rsmod.api.player.ui.ifConfirmOverlay
@@ -3262,6 +3263,10 @@ public class ProtectedAccess(
 
     public fun ifCloseSub(interf: String) {
         player.ifCloseSub(interf, context.eventBus)
+    }
+
+    public fun ifCloseChat() {
+        player.ifCloseChat(context.eventBus)
     }
 
     public fun ifOpenSide(interf: String) {
