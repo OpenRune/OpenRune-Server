@@ -78,7 +78,22 @@ regenRate = 0
 [[npc]]
 id = "npc.toa_crondis_crocodile"
 inherit = "npc.toa_crondis_crocodile"
-defaultMode = "None"
+defaultMode = "Wander"
+wanderRange = 12
+attackRange = 0
 respawnDir = "South"
 timer = 1
 regenRate = 0
+# This entry replaces the one in .data/raw-cache/server/npcs.toml (the last entry for an id
+# wins), so its elemental weakness is repeated here. Anims and synths: osrs-dumps seq.sym
+# croc_death (2038) / croc_parry (2035); synth labels from dump.dbrow crocodile_death (387) /
+# crocodile_hit (388). Immunities: OSRS Wiki.
+[npc.params]
+"param.elemental_weakness_type"=2
+"param.elemental_weakness_percent"=40
+"param.death_anim"="seq.croc_death"
+"param.defend_anim"="seq.croc_parry"
+"param.death_sound"=387
+"param.defend_sound"=388
+"param.poison_immunity"=1
+"param.venom_immunity"=2

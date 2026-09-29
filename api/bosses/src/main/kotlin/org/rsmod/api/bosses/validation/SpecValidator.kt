@@ -443,6 +443,12 @@ object SpecValidator {
         private fun hit(hit: Effect.Hit, scope: Scope, projectile: Effect.Projectile?) {
             target(hit.target, scope, "Hit")
             hit.penetrationWhen?.let { condition(it, scope) }
+            if (!hit.react && (hit.resolveOnImpact || hit.reactOnLanding)) {
+                error("${scope.prefix}Hit noReaction cannot be combined with resolveOnImpact or reactOnLanding.")
+            }
+            if (!hit.react && projectile != null) {
+                error("${scope.prefix}Projectile hit cannot use noReaction.")
+            }
             val resolvedOnImpact = projectile?.resolveOnImpact == true
             if (!resolvedOnImpact && hit.penetrationWhen != null) {
                 error(

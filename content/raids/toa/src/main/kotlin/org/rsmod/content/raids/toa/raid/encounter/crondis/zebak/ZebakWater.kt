@@ -5,14 +5,11 @@ import dev.openrune.rscm.RSCMType
 import dev.openrune.types.BasType
 import org.rsmod.annotations.InternalApi
 import org.rsmod.api.npc.opPlayer2
-import org.rsmod.api.player.hit.modifier.NoopPlayerHitModifier
-import org.rsmod.api.player.hit.queueHit
 import org.rsmod.api.player.hook.TeleportType
 import org.rsmod.api.player.output.mes
 import org.rsmod.content.raids.toa.raid.encounter.ToaStage
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
-import org.rsmod.game.hit.HitType
 import org.rsmod.game.interact.InteractionPlayer
 import org.rsmod.game.map.collision.isWalkBlocked
 import org.rsmod.map.CoordGrid
@@ -101,11 +98,7 @@ internal class ZebakWater(private val room: ZebakEncounter) {
         if (current !== prey) croc.opPlayer2(prey, deps.aiInteractions)
     }
 
-    fun bite(croc: Npc, target: Player) {
-        if (!hunting() || target !in swimmers) return
-        val damage = deps.random.of(0, MAX_BITE)
-        target.queueHit(croc, 1, HitType.Typeless, damage, NoopPlayerHitModifier)
-    }
+    fun mayBite(target: Player): Boolean = hunting() && target in swimmers
 
     private fun hunting(): Boolean =
         room.stage == ToaStage.STARTED && (room.zebak?.hitpoints ?: 0) > 0
@@ -124,6 +117,5 @@ internal class ZebakWater(private val room: ZebakEncounter) {
 
     private companion object {
         const val HUNT_RANGE = 16
-        const val MAX_BITE = 3
     }
 }

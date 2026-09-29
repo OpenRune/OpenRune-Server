@@ -400,6 +400,12 @@ class EffectInterpreter internal constructor(
                 scheduleLanding(access, hit, t, damage, landed, delay, clientDelay = 0)
                 continue
             }
+            if (!hit.react) {
+                val type = hit.type.toEngine()
+                val queued = t.queueHit(npc, delay, type, damage, deps.playerHitModifier, penetration = hit.penetration)
+                scheduleLanding(access, hit, t, damage, queued.damage, delay, clientDelay = 0)
+                continue
+            }
             val landed =
                 t.finishNpcHit(npc, delay, hit.type.toEngine(), damage, deps.playerHitModifier, hit.penetration)
             scheduleLanding(access, hit, t, damage, landed.damage, delay, clientDelay = 0)
@@ -635,7 +641,7 @@ class EffectInterpreter internal constructor(
         }
     }
 
-    private fun applyBleed(access: StandardNpcAccess, bleed: Effect.Bleed) {
+    private fun applyBleed(access: StandardNpcAccess?,bleed: Effect.Bleed) {
         deps.bleeds.apply(
             owner = npc,
             player = target,
