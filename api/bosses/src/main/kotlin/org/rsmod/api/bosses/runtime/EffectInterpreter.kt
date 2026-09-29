@@ -38,8 +38,8 @@ import org.rsmod.game.entity.util.PathingEntityCommon
 import org.rsmod.game.hit.HitType
 import org.rsmod.game.map.collision.isWalkBlocked
 import org.rsmod.game.proj.ProjAnim
-import org.rsmod.map.util.Bounds
 import org.rsmod.map.CoordGrid
+import org.rsmod.map.util.Bounds
 
 /** The [BossEncounter.epoch] one ability run belongs to, shared with the interpreters it spawns. */
 class AbilityRun internal constructor(internal var epoch: Int)

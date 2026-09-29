@@ -26,6 +26,7 @@ sealed interface Effect {
     /** Queues [ability] as the boss's next attack, once nothing else is holding it up. */
     data class ForceNext(val ability: String) : Effect
     data class Say(val text: String) : Effect
+
     /** Plays [synth] to everyone within [radius] of [at] (the caster when null). */
     data class Sound(
         val synth: String,

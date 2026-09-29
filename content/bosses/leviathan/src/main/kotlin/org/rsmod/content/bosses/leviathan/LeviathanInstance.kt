@@ -29,7 +29,6 @@ import org.rsmod.game.map.collision.isWalkBlocked
 import org.rsmod.map.CoordGrid
 import org.rsmod.plugin.scripts.ScriptContext
 
-
 class LeviathanInstance
 @Inject
 internal constructor(registry: BossInstanceRegistry, private val fights: LeviathanFights) :
