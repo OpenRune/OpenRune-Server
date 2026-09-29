@@ -109,6 +109,7 @@ sealed interface Effect {
         /** Environmental damage (falling rocks etc.): no retaliation and no defend anim. */
         val hazard: Boolean = false,
         val resolveOnImpact: Boolean = false,
+        val reactOnLanding: Boolean = false,
     ) : Effect
 
     data class Projectile(

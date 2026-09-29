@@ -3,6 +3,7 @@ package org.rsmod.content.raids.toa.raid
 import jakarta.inject.Inject
 import net.rsprot.protocol.api.NetworkService
 import org.rsmod.api.bossbar.plugin.BossHpBarScript
+import org.rsmod.api.bosses.runtime.BossDeps
 import org.rsmod.api.combat.formulas.AccuracyFormulae
 import org.rsmod.api.death.PlayerDeathDrops
 import org.rsmod.api.market.MarketPrices
@@ -67,4 +68,5 @@ constructor(
     val eventBus: EventBus,
     /** The supplies' timed effects, cleared on death and on leaving the raid. */
     val supplyEffects: ToaPotionEffect,
+    val bossDeps: BossDeps,
 )

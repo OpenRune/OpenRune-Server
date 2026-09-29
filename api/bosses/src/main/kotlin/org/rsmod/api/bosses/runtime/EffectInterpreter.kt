@@ -31,6 +31,7 @@ import org.rsmod.api.player.output.soundSynth
 import org.rsmod.api.player.stat.hitpoints
 import org.rsmod.api.player.stat.statDrain
 import org.rsmod.game.entity.Npc
+import org.rsmod.game.hit.HitType
 import org.rsmod.game.entity.Player
 import org.rsmod.game.entity.util.EntityExactMove
 import org.rsmod.game.entity.util.PathingEntityCommon
@@ -382,6 +383,11 @@ class EffectInterpreter internal constructor(
                 showMissSpotanim(hit, t, damage, clientDelay = 0)
                 continue
             }
+            if (hit.reactOnLanding) {
+                val landed = t.finishNpcHitOnLanding(npc, delay, hit.type.toEngine(), damage, hit.penetration)
+                scheduleLanding(access, hit, t, damage, landed, delay, clientDelay = 0)
+                continue
+            }
             val landed =
                 t.finishNpcHit(npc, delay, hit.type.toEngine(), damage, deps.playerHitModifier, hit.penetration)
             scheduleLanding(access, hit, t, damage, landed.damage, delay, clientDelay = 0)
@@ -503,9 +509,31 @@ class EffectInterpreter internal constructor(
             return
         }
         val hitType = hit.type.toEngine()
+        if (hit.reactOnLanding) {
+            val landed = player.finishNpcHitOnLanding(npc, ticks, hitType, damage, hit.penetration)
+            scheduleLanding(access, hit, player, damage, landed, ticks, projAnim.clientCycles)
+            return
+        }
         val landed =
             player.finishNpcHit(npc, ticks, hitType, damage, deps.playerHitModifier, hit.penetration).damage
         scheduleLanding(access, hit, player, damage, landed, ticks, projAnim.clientCycles)
+    }
+
+    private fun Player.finishNpcHitOnLanding(
+        source: Npc,
+        delay: Int,
+        type: HitType,
+        damage: Int,
+        penetration: Int,
+    ): Int {
+        queueCombatRetaliate(source, delay)
+        val hit = queueHit(source, delay, type, damage, deps.playerHitModifier, penetration = penetration)
+        if (delay <= 2) {
+            combatPlayDefendAnim()
+        } else {
+            deps.worldQueues.add(delay - 2) { if (isValidTarget()) combatPlayDefendAnim() }
+        }
+        return hit.damage
     }
 
     /** Resolves prayer, penetration, the defend anim and lifesteal/on-hit on the impact tick. */
