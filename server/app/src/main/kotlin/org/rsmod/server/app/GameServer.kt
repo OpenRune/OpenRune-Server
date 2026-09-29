@@ -136,9 +136,7 @@ class GameServer(private val skipTypeVerificationOverride: Boolean? = null) :
         val sink =
             object : GameMapSpawnSink {
                 override fun onNpcSpawn(def: MapNpcDefinition, coords: CoordGrid) {
-                    val type =
-                        ServerCacheManager.getNpc(def.id)
-                            ?: error("Invalid npc type: $def ($coords)")
+                    val type = ServerCacheManager.getObject(loc.id) ?: return
                     val npc = Npc(type, coords)
                     npcRepo.addDelayed(npc, spawnDelay = 0, duration = Int.MAX_VALUE)
                 }
