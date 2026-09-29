@@ -1,6 +1,8 @@
 package org.rsmod.api.bosses.spec
 
+import dev.openrune.types.HitmarkTypeGroup
 import dev.openrune.types.NpcMode
+import org.rsmod.api.config.refs.done.hitmark_groups
 import org.rsmod.api.player.output.CamShakeAxis
 
 public data class StatDrainEntry(
@@ -121,6 +123,29 @@ sealed interface Effect {
         init {
             require(armDelay > 0) { "Hazard armDelay must be greater than 0." }
             require(duration > 0) { "Hazard duration must be greater than 0." }
+        }
+    }
+
+    data class Bleed(
+        val duration: Int,
+        val movingDamage: DamageExpr,
+        val applyDamage: DamageExpr? = null,
+        val stillDamage: DamageExpr? = null,
+        val stillInterval: Int = 0,
+        val hitmark: HitmarkTypeGroup = hitmark_groups.regular_damage,
+        val chance: Int = 1,
+        val outOf: Int = 1,
+        val onApply: Effect? = null,
+        val onMovingHit: Effect? = null,
+        val otherwise: Effect = NoOp,
+    ) : Effect {
+        init {
+            require(duration > 0) { "Bleed duration must be greater than 0." }
+            require(stillInterval >= 0) { "Bleed stillInterval must not be negative." }
+            require((stillInterval > 0) == (stillDamage != null)) {
+                "Bleed stillDamage and stillInterval must be set together."
+            }
+            require(outOf > 0) { "Bleed outOf must be greater than 0." }
         }
     }
 

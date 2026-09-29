@@ -170,6 +170,11 @@ object SpecValidator {
             is Effect.Hazard -> {
                 effect.onStand?.let { validateEffect(it, abilityNames, phaseNames, errors, context) }
             }
+            is Effect.Bleed -> {
+                effect.onApply?.let { validateEffect(it, abilityNames, phaseNames, errors, context) }
+                effect.onMovingHit?.let { validateEffect(it, abilityNames, phaseNames, errors, context) }
+                validateEffect(effect.otherwise, abilityNames, phaseNames, errors, context, insideImpact)
+            }
             is Effect.Choose -> {
                 validateSelector(effect.selector, context, effect.branches.keys, errors)
                 effect.branches.values.forEach {

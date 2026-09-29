@@ -82,6 +82,7 @@ object BossCombat {
     private fun resetBoss(npc: Npc, deps: BossDeps) {
         deps.encounterRegistry.remove(npc)
         deps.hazards.clear(npc)
+        deps.bleeds.clear(npc)
         npc.movementLocked = false
         npc.apRangeOverride = null
         npc.apRequiresLineOfSight = true

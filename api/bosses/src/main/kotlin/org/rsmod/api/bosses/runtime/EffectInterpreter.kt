@@ -3,6 +3,7 @@ package org.rsmod.api.bosses.runtime
 import dev.openrune.ServerCacheManager
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
+import dev.openrune.types.HitmarkTypeGroup
 import dev.openrune.types.ProjAnimType
 import dev.openrune.types.aconverted.SpotanimType
 import kotlin.math.abs
@@ -19,6 +20,7 @@ import org.rsmod.api.npc.access.StandardNpcAccess
 import org.rsmod.api.npc.heal
 import org.rsmod.api.npc.isValidTarget
 import org.rsmod.api.player.disablePrayers
+import org.rsmod.api.player.hit.modifier.NoopPlayerHitModifier
 import org.rsmod.api.player.hit.modifier.PlayerHitModifier
 import org.rsmod.api.player.hit.modify
 import org.rsmod.api.player.hit.queueHit
@@ -113,6 +115,13 @@ class EffectInterpreter(
             is Effect.Debris -> applyDebris(effect)
             is Effect.Summon -> summon(access, effect)
             is Effect.Hazard -> placeHazard(access, effect)
+            is Effect.Bleed -> {
+                if (deps.random.of(effect.outOf) >= effect.chance) {
+                    run(access, effect.otherwise, onComplete)
+                    return
+                }
+                applyBleed(access, effect)
+            }
             is Effect.Poison -> applyPoison(effect)
             is Effect.Freeze -> applyFreeze(effect)
             is Effect.DisablePrayers -> target.disablePrayers()
@@ -537,6 +546,41 @@ class EffectInterpreter(
             }
             hazard.onStand?.let { EffectInterpreter(npc, player, spec, encounter, deps).run(access, it) }
         }
+    }
+
+    private fun applyBleed(access: StandardNpcAccess, bleed: Effect.Bleed) {
+        deps.bleeds.apply(
+            owner = npc,
+            player = target,
+            duration = bleed.duration,
+            stillInterval = bleed.stillInterval,
+            onApply = { player ->
+                if (npc.isValidTarget()) {
+                    bleed.applyDamage?.let { bleedHit(player, it, bleed.hitmark) }
+                    bleed.onApply?.let { EffectInterpreter(npc, player, spec, encounter, deps).run(access, it) }
+                }
+            },
+            onStill = { player ->
+                if (npc.isValidTarget()) bleed.stillDamage?.let { bleedHit(player, it, bleed.hitmark) }
+            },
+            onMoving = { player ->
+                if (npc.isValidTarget()) {
+                    bleedHit(player, bleed.movingDamage, bleed.hitmark)
+                    bleed.onMovingHit?.let { EffectInterpreter(npc, player, spec, encounter, deps).run(access, it) }
+                }
+            },
+        )
+    }
+
+    private fun bleedHit(player: Player, expr: DamageExpr, hitmark: HitmarkTypeGroup) {
+        val damage = evaluateDamage(expr, BossHitType.Typeless, player)
+        player.queueHit(
+            delay = 1,
+            type = HitType.Typeless,
+            damage = damage,
+            modifier = NoopPlayerHitModifier,
+            hitmark = hitmark,
+        )
     }
 
     private fun applyDebris(effect: Effect.Debris) {
