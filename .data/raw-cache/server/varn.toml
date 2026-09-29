@@ -84,3 +84,24 @@ id = "varn.freeze_immunity_end_clock"
 
 [[varn]]
 id = "varn.freeze_guaranteed"
+
+[[varn]]
+id = "varn.leviathan_volley_stage"
+
+[[varn]]
+id = "varn.leviathan_volleys"
+
+[[varn]]
+id = "varn.leviathan_stuns"
+
+[[varn]]
+id = "varn.leviathan_stunned"
+
+[[varn]]
+id = "varn.leviathan_in_special"
+
+[[varn]]
+id = "varn.leviathan_next_special"
+
+[[varn]]
+id = "varn.leviathan_stun_bearing"

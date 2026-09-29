@@ -79,10 +79,11 @@ class Amoxliatl @Inject constructor(deps: BossDeps, private val locRepo: LocRepo
         }
 
         deps.extensionRegistry.register("amoxliatl.track_ice_block") { access, block, _, _ ->
+            val owner = access?.npc ?: return@register
             block.movementLocked = true
             block.lockFacing(block.coords)
             block.anim(UNSTABLE_ICE_SPAWN_SEQ)
-            iceBlockOwner[block] = access.npc
+            iceBlockOwner[block] = owner
             deps.worldQueues.add(UNSTABLE_ICE_TIMEOUT_TICKS) {
                 if (block.hitpoints > 0) explodeIceBlock(block, block.coords, heal = true)
             }

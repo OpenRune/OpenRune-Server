@@ -299,15 +299,15 @@ constructor(
 
             val inRangedOrMelee = InPhase(PHASE_RANGED) or InPhase(PHASE_MELEE)
             val shockwaveReady =
-                inRangedOrMelee and Condition.Custom { fightFor(it).finalPhaseTriggered }
+                inRangedOrMelee and Condition.Custom { npc, _ -> fightFor(npc).finalPhaseTriggered }
             val shieldBroken =
-                InPhase(PHASE_SOULSPLIT) and Condition.Custom { fightFor(it).soulsplitBroken }
+                InPhase(PHASE_SOULSPLIT) and Condition.Custom { npc, _ -> fightFor(npc).soulsplitBroken }
 
             val spikeUsed = Condition.AbilityUsed(ABILITY_HOMING_SPIKE)
             val cloudUsed = Condition.AbilityUsed(ABILITY_CLOUD_TELEPORT)
             val specialReady =
                 inRangedOrMelee and
-                    Condition.Custom { npc ->
+                    Condition.Custom { npc, _ ->
                         val fight = fightFor(npc)
                         !fight.finalPhaseTriggered &&
                             deps.mapClock.cycle >= fight.specialCooldownUntilCycle
@@ -369,7 +369,7 @@ constructor(
 
     private fun switchReady(phase: String, damageThreshold: Int) =
         InPhase(phase) and
-            Condition.Custom { npc ->
+            Condition.Custom { npc, _ ->
                 val fight = fightFor(npc)
                 !fight.finalPhaseTriggered &&
                     fight.hitsSinceSwitch >= SWITCH_MIN_HITS &&

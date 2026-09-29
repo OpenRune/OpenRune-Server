@@ -17,19 +17,50 @@ public data class StatDrainEntry(
 sealed interface Effect {
 
     data class Anim(val seq: String, val delay: Int = 0) : Effect
+
+    /** Sets (or with a null [seq], clears) the anim the caster holds while idle. */
+    data class IdleAnim(val seq: String?) : Effect
+
+    data object ResetAnim : Effect
+
+    /** Queues [ability] as the boss's next attack, once nothing else is holding it up. */
+    data class ForceNext(val ability: String) : Effect
     data class Say(val text: String) : Effect
-    data class Sound(val synth: String, val radius: Int = 10) : Effect
+
+    /** Plays [synth] to everyone within [radius] of [at] (the caster when null). */
+    data class Sound(
+        val synth: String,
+        val radius: Int = 10,
+        val at: TargetExpr.Single? = null,
+        val delay: Int = 0,
+    ) : Effect
+
+    /** Plays [synth] to [target] only, rather than to the area around the caster like [Sound]. */
+    data class SoundTo(
+        val synth: String,
+        val target: TargetExpr = TargetExpr.CurrentTarget,
+        val loops: Int = 1,
+        val delay: Int = 0,
+    ) : Effect
     data class Spotanim(val spot: String, val height: Int = 0, val delay: Int = 0) : Effect
     data class MapSpotanim(val spot: String, val at: TargetExpr, val height: Int = 0, val delay: Int = 0) : Effect
     data class Broadcast(val text: String, val radius: Int = 15) : Effect
 
+    /**
+     * Shakes the camera of [target] (everyone within [radius] of the caster when null). With
+     * [randomMax], each player's shake strength is rolled from `random..randomMax`.
+     */
     data class CamShake(
         val axis: CamShakeAxis,
         val random: Int,
         val amplitude: Int = 0,
         val rate: Int = 0,
         val radius: Int = 15,
+        val target: TargetExpr? = null,
+        val randomMax: Int? = null,
     ) : Effect
+
+    data class CamReset(val target: TargetExpr = TargetExpr.CurrentTarget) : Effect
 
     data class Message(val text: String, val target: TargetExpr = TargetExpr.CurrentTarget) : Effect
 
@@ -52,6 +83,18 @@ sealed interface Effect {
         val onHit: Effect? = null,
         val onHitEvenOnMiss: Boolean = false,
         val lifesteal: Int = 0,
+        /**
+         * Show [spotanim] only when the target isn't praying against [type], even on a 0. Needs a
+         * projectile with [Projectile.resolveOnImpact].
+         */
+        val spotanimUnlessPraying: Boolean = false,
+        /**
+         * When set, [penetration] only applies if this holds for the target on impact. Needs a
+         * projectile with [Projectile.resolveOnImpact].
+         */
+        val penetrationWhen: Condition? = null,
+        /** Environmental damage (falling rocks etc.): no retaliation and no defend anim. */
+        val hazard: Boolean = false,
     ) : Effect
 
     data class Projectile(
@@ -62,6 +105,11 @@ sealed interface Effect {
         val launch: String? = null,
         val impact: String? = null,
         val hit: Hit? = null,
+        /**
+         * Resolves [hit] when the projectile lands instead of at launch: retaliation, the defend
+         * anim, prayer and [Hit.penetrationWhen] are all decided on the impact tick, and
+         * [Hit.spotanimUnlessPraying] becomes available.
+         */
         val resolveOnImpact: Boolean = false,
         /**
          * Runs once the projectile lands, in addition to [impact]/[hit]. [TargetExpr.ImpactTile]
@@ -69,6 +117,9 @@ sealed interface Effect {
          * `onImpact = summon("npc.ice_block", centeredOn = ImpactTile)`.
          */
         val onImpact: Effect? = null,
+        /** Launch tile, without an entity anchor; the caster itself when null. */
+        val from: TargetExpr.Single? = null,
+        val impactRounding: ImpactRounding = ImpactRounding.Down,
     ) : Effect
 
     data class TileAoE(
@@ -112,6 +163,8 @@ sealed interface Effect {
          */
         val onSummon: String? = null,
         val onSummonParams: Any? = null,
+        /** Owned by the encounter: removed when the boss is deleted or respawns. */
+        val owned: Boolean = false,
     ) : Effect
 
     data class Transmog(val to: String, val durationTicks: Int) : Effect
@@ -148,6 +201,43 @@ sealed interface Effect {
     data class Repeat(val times: IntRange, val effect: Effect, val gap: Int = 0) : Effect
     data class Whenever(val condition: Condition, val then: Effect, val otherwise: Effect = NoOp) : Effect
     data class OnEach(val targets: TargetExpr, val effect: Effect) : Effect
+
+    data class SetVarn(val varn: String, val value: VarExpr) : Effect
+
+    /** Runs the case matching [varn]'s current value, or [otherwise] if none does. */
+    data class Switch(val varn: String, val cases: Map<Int, Effect>, val otherwise: Effect = NoOp) : Effect
+
+    /**
+     * Cancels every other ability still running on this boss: their pending [Wait]s and [Repeat]
+     * gaps never resume, and the attack lockout they set is cleared. Projectiles and hits already
+     * in flight still land. The ability running this effect carries on.
+     */
+    data object Interrupt : Effect
+
+    /** Runs [effect] once for every tile in [tiles], with [TargetExpr.EachTile] bound to it. */
+    data class OnTiles(val tiles: TileSet, val effect: Effect) : Effect
+
+    /**
+     * Schedules [effect] [ticks] from now without holding up the ability or the boss's next
+     * attack, unlike [Wait]. Not cancelled by [Interrupt]; dropped if the boss has died unless
+     * [requireAlive] is off (e.g. clean-up such as resetting a shaken camera).
+     */
+    data class After(val ticks: Int, val effect: Effect, val requireAlive: Boolean = true) : Effect
+
+    /**
+     * Spawns [loc] at [at], owned by the encounter: the tile stops counting as free for
+     * [TileSet]s and the loc is removed when the encounter ends. Skipped if the encounter already
+     * owns a loc there. [blockPlayersOnly] swaps the loc's collision for a player-only block.
+     */
+    data class SpawnLoc(
+        val loc: String,
+        val at: TargetExpr.Single,
+        val angle: Int = 0,
+        val blockPlayersOnly: Boolean = false,
+    ) : Effect
+
+    /** Shoves the target one tile to a random free neighbour inside [within], playing [anim]. */
+    data class Knockback(val anim: String, val within: Area) : Effect
 }
 
 enum class HitType {

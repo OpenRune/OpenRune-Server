@@ -279,7 +279,7 @@ constructor(
             ),
         )
 
-    private val flareDueCondition: Condition = Condition.Custom { flareDue(it) }
+    private val flareDueCondition: Condition = Condition.Custom { npc, _ -> flareDue(npc) }
 
     override val spec: BossSpec by lazy {
         boss(BOSS_NPC, SLEEP_NPC) {

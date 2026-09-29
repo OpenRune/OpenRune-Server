@@ -23,6 +23,8 @@ class BossSpecBuilder(private val npcTypes: List<String>) {
     private val abilities = mutableMapOf<String, Effect>()
     private val phases = mutableMapOf<String, PhaseSpec>()
     private val triggers = mutableListOf<TriggerSpec>()
+    private val hitReactions = mutableListOf<HitReaction>()
+    private val incomingRules = mutableListOf<IncomingRule>()
 
     fun stats(
         attackRate: Int = 4,
@@ -77,8 +79,22 @@ class BossSpecBuilder(private val npcTypes: List<String>) {
         TriggerBuilder(triggers).apply(block)
     }
 
+    /** See [HitReaction]. */
+    fun onIncomingHit(
+        ability: AbilityRef,
+        withObj: List<String> = emptyList(),
+        requires: Condition = Condition.Always,
+    ) {
+        hitReactions += HitReaction(Effect.Run(ability.name), withObj, requires)
+    }
+
+    /** Ordered, first-match rules for player hits landing on the boss; see [IncomingRule]. */
+    fun incoming(block: IncomingRulesBuilder.() -> Unit) {
+        IncomingRulesBuilder(incomingRules).apply(block)
+    }
+
     fun build(): BossSpec {
-        val spec = BossSpec(npcTypes, stats, abilities, phases, triggers)
+        val spec = BossSpec(npcTypes, stats, abilities, phases, triggers, hitReactions, incomingRules)
         val errors = SpecValidator.validate(spec)
         if (errors.isNotEmpty()) {
             throw IllegalStateException(
@@ -102,7 +118,10 @@ class HitBuilder internal constructor() {
     private var spotanimSpot: String? = null
     private var spotanimHeight: Int = 0
     private var spotanimDelay: Int? = null
+    private var spotanimUnlessPraying: Boolean = false
     private var penetrationPercent: Int = 0
+    private var penetrationWhen: Condition? = null
+    private var hazardHit: Boolean = false
     private var missSpot: String? = null
     private var onHitEffect: Effect? = null
     private var onHitEvenOnMiss: Boolean = false
@@ -119,16 +138,27 @@ class HitBuilder internal constructor() {
         hitType = t
     }
 
-    /** Plays [spot] on the resolved target(s) when the hit lands, e.g. a magic impact graphic. */
-    fun spotanim(spot: String, height: Int = 0, delay: Int? = null) {
+    /**
+     * Plays [spot] on the resolved target(s) when the hit lands, e.g. a magic impact graphic. By
+     * default only on a non-zero hit; with [unlessPraying], whenever the target isn't praying
+     * against this hit's type.
+     */
+    fun spotanim(spot: String, height: Int = 0, delay: Int? = null, unlessPraying: Boolean = false) {
         spotanimSpot = spot
         spotanimHeight = height
         spotanimDelay = delay
+        spotanimUnlessPraying = unlessPraying
     }
 
-    /** Percentage (0-100) of a protection prayer's block this hit ignores. */
-    fun penetration(percent: Int) {
+    /** Percentage (0-100) of a protection prayer's block this hit ignores, optionally only [whenever]. */
+    fun penetration(percent: Int, whenever: Condition? = null) {
         penetrationPercent = percent
+        penetrationWhen = whenever
+    }
+
+    /** Environmental damage: no retaliation and no defend anim. */
+    fun hazard() {
+        hazardHit = true
     }
 
     fun missSpotanim(spot: String) {
@@ -165,6 +195,9 @@ class HitBuilder internal constructor() {
             onHit = onHitEffect,
             onHitEvenOnMiss = onHitEvenOnMiss,
             lifesteal = lifestealPercent,
+            spotanimUnlessPraying = spotanimUnlessPraying,
+            penetrationWhen = penetrationWhen,
+            hazard = hazardHit,
         )
 }
 
@@ -189,6 +222,22 @@ class AbilityBuilder {
         effects += Effect.Anim(seq, delay)
     }
 
+    fun idleAnim(seq: String) {
+        effects += Effect.IdleAnim(seq)
+    }
+
+    fun clearIdleAnim() {
+        effects += Effect.IdleAnim(null)
+    }
+
+    fun resetAnim() {
+        effects += Effect.ResetAnim
+    }
+
+    fun forceNext(ability: AbilityRef) {
+        effects += Effect.ForceNext(ability.name)
+    }
+
     /** Plays [spot] on the caster (the boss npc itself), not on the target. */
     fun spotanim(spot: String, height: Int = 0, delay: Int = 0) {
         effects += Effect.Spotanim(spot, height, delay)
@@ -202,8 +251,24 @@ class AbilityBuilder {
         effects += Effect.Sound(synth, radius)
     }
 
+    fun soundTo(synth: String, target: TargetExpr = TargetExpr.CurrentTarget, loops: Int = 1, delay: Int = 0) {
+        effects += Effect.SoundTo(synth, target, loops, delay)
+    }
+
     fun delay(ticks: Int) {
         effects += Effect.Delay(ticks)
+    }
+
+    fun wait(ticks: Int) {
+        effects += Effect.Wait(ticks)
+    }
+
+    fun faceTarget() {
+        effects += Effect.FaceTarget
+    }
+
+    fun faceTile(at: TargetExpr.Single) {
+        effects += Effect.FaceTile(at)
     }
 
     fun broadcastInArea(text: String, radius: Int = 15) {
@@ -224,6 +289,22 @@ class AbilityBuilder {
 
     fun run(ability: AbilityRef) {
         effects += Effect.Run(ability.name)
+    }
+
+    fun setVarn(varn: String, value: Int) {
+        effects += org.rsmod.api.bosses.dsl.setVarn(varn, value)
+    }
+
+    fun setVarn(varn: String, value: VarExpr) {
+        effects += org.rsmod.api.bosses.dsl.setVarn(varn, value)
+    }
+
+    fun addVarn(varn: String, delta: Int, max: Int? = null) {
+        effects += org.rsmod.api.bosses.dsl.addVarn(varn, delta, max)
+    }
+
+    fun interrupt() {
+        effects += Effect.Interrupt
     }
 
     fun transitionTo(phase: String) {
@@ -303,6 +384,8 @@ class AbilityBuilder {
         hit: Effect.Hit? = null,
         resolveOnImpact: Boolean = false,
         onImpact: Effect? = null,
+        from: TargetExpr.Single? = null,
+        impactRounding: ImpactRounding = ImpactRounding.Down,
     ) {
         effects +=
             Effect.Projectile(
@@ -315,6 +398,8 @@ class AbilityBuilder {
                 hit,
                 resolveOnImpact,
                 onImpact,
+                from,
+                impactRounding,
             )
     }
 
@@ -337,6 +422,8 @@ class AbilityBuilder {
         var impact: String? = null
         var resolveOnImpact: Boolean = false
         var onImpact: Effect? = null
+        var from: TargetExpr.Single? = null
+        var impactRounding: ImpactRounding = ImpactRounding.Down
         private var hitPayload: Effect.Hit? = null
 
         fun hit(
@@ -363,6 +450,8 @@ class AbilityBuilder {
                 hit = hitPayload,
                 resolveOnImpact = resolveOnImpact,
                 onImpact = onImpact,
+                from = from,
+                impactRounding = impactRounding,
             )
     }
 
@@ -384,6 +473,7 @@ class AbilityBuilder {
         duration: Int = 100,
         onSummon: String? = null,
         onSummonParams: Any? = null,
+        owned: Boolean = false,
     ) {
         effects +=
             Effect.Summon(
@@ -395,6 +485,7 @@ class AbilityBuilder {
                 duration = duration,
                 onSummon = onSummon,
                 onSummonParams = onSummonParams,
+                owned = owned,
             )
     }
 
@@ -474,6 +565,34 @@ class PhaseBuilder(private val name: String) {
 
     fun rotationSelector(block: RotationBuilder.() -> Unit) {
         selector = rotation(block)
+    }
+}
+
+@BossDsl
+class IncomingRulesBuilder internal constructor(private val rules: MutableList<IncomingRule>) {
+    fun rule(condition: Condition, block: IncomingActionsBuilder.() -> Unit) {
+        rules += IncomingRule(condition, IncomingActionsBuilder().apply(block).actions)
+    }
+}
+
+@BossDsl
+class IncomingActionsBuilder internal constructor() {
+    internal val actions = mutableListOf<IncomingAction>()
+
+    fun cap(max: Int, style: HitType? = null) {
+        actions += IncomingAction.Cap(max, style)
+    }
+
+    fun scalePercent(percent: Int, style: HitType? = null) {
+        actions += IncomingAction.ScalePercent(percent, style)
+    }
+
+    fun floorPercentOfMaxHit(percent: Int, style: HitType) {
+        actions += IncomingAction.FloorPercentOfMaxHit(percent, style)
+    }
+
+    fun run(ability: AbilityRef) {
+        actions += IncomingAction.Run(Effect.Run(ability.name))
     }
 }
 
