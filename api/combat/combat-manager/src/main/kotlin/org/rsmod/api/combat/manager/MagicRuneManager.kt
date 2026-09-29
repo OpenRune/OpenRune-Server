@@ -1,11 +1,11 @@
 package org.rsmod.api.combat.manager
 
-import dev.openrune.definition.type.VarBitType
 import dev.openrune.types.ItemServerType
 import jakarta.inject.Inject
 import kotlin.collections.any
 import kotlin.contracts.contract
 import org.rsmod.api.combat.commons.magic.MagicSpell
+import org.rsmod.api.combat.commons.magic.SpellQuestRequirement
 import org.rsmod.api.combat.commons.magic.Spellbook
 import org.rsmod.api.config.refs.BaseParams
 import org.rsmod.api.invtx.invDelAll
@@ -20,6 +20,7 @@ import org.rsmod.api.spells.runes.fake.FakeRuneRepository
 import org.rsmod.api.spells.runes.staves.StaffSubstituteRepository
 import org.rsmod.api.spells.runes.subs.RuneSubstituteRepository
 import org.rsmod.api.spells.runes.unlimited.UnlimitedRuneRepository
+import org.rsmod.api.table.QuestRow
 import org.rsmod.game.entity.Player
 import org.rsmod.game.inv.InvObj
 import org.rsmod.game.inv.isAnyType
@@ -34,6 +35,7 @@ constructor(
     private val unlimited: UnlimitedRuneRepository,
     private val staffSubs: StaffSubstituteRepository,
     private val runeSubs: RuneSubstituteRepository,
+    private val questRequirements: Set<SpellQuestRequirement>,
 ) {
     private val Player.spellbook by enumVarBit<Spellbook>("varbit.spellbook")
 
@@ -235,6 +237,12 @@ constructor(
             player.mes("Your Magic level is not high enough for this spell.")
             return CastResult.Failure.MissingLevelRequirement
         }
+        val quest = spell.questReq
+        if (quest != null && questRequirements.any { !it.hasCompleted(player, quest) }) {
+            val name = QuestRow.getRow("dbrow.$quest").displayname
+            player.mes("You need to complete $name to cast this spell.")
+            return CastResult.Failure.MissingQuestRequirement
+        }
         return null
     }
 
@@ -363,6 +371,8 @@ constructor(
             public object MissingObjRequirements : Failure()
 
             public object MissingLevelRequirement : Failure()
+
+            public object MissingQuestRequirement : Failure()
 
             public object IncorrectSpellbook : Failure()
         }

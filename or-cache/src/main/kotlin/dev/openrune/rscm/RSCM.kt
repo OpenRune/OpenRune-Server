@@ -103,6 +103,11 @@ object RSCM {
         }
     }
 
+    fun getRSCMOrNull(entity: String, type: RSCMType): Int? {
+        if (extractPrefix(entity) != type.prefix) return null
+        return cache[entity] ?: ConstantProvider.getMappingOrNull(entity)?.also { cache[entity] = it }
+    }
+
     private fun extractPrefix(entity: String): String {
         val idx = entity.indexOf('.')
         return if (idx == -1) entity else entity.substring(0, idx)

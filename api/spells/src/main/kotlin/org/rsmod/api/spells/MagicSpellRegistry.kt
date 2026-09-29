@@ -83,6 +83,10 @@ public class MagicSpellRegistry {
         val maxHit = unpacked.param(BaseParams.spell_maxhit)
         val levelReq = unpacked.param(BaseParams.spell_levelreq)
         val experience = unpacked.paramOrNull(BaseParams.spell_castxp)
+        val questReq =
+            unpacked.paramOrNull(BaseParams.spell_questreq)?.let {
+                RSCM.getReverseMapping(RSCMType.DBROW, it.id).removePrefix("dbrow.")
+            }
 
         checkNotNull(experience) {
             "Cast xp not defined for spell obj: '${RSCM.getReverseMapping(RSCMType.OBJ, id)}' ($id)"
@@ -128,6 +132,7 @@ public class MagicSpellRegistry {
             levelReq = levelReq,
             castXp = experience / 10.0,
             objReqs = sortedObjReqs,
+            questReq = questReq,
         )
     }
 

@@ -7,6 +7,7 @@ import org.rsmod.api.config.aliases.ParamBool
 import org.rsmod.api.config.aliases.ParamCategory
 import org.rsmod.api.config.aliases.ParamComponent
 import org.rsmod.api.config.aliases.ParamCoord
+import org.rsmod.api.config.aliases.ParamDbRow
 import org.rsmod.api.config.aliases.ParamHeadbar
 import org.rsmod.api.config.aliases.ParamHitmark
 import org.rsmod.api.config.aliases.ParamInt
@@ -41,6 +42,7 @@ object BaseParams {
     val spell_drain_stat: ParamStat = param("spell_drain_stat")
     val spell_drain_stat_amount: ParamInt = param("spell_drain_stat_amount")
     val spell_maxhit: ParamInt = param("spell_maxhit")
+    val spell_questreq: ParamDbRow = param("spell_questreq_struct")
     val attackrate: ParamInt = param("attackrate")
     val wear_op_index: ParamInt = param("wear_op_index")
     val wear_op1: ParamStr = param("wear_op1")

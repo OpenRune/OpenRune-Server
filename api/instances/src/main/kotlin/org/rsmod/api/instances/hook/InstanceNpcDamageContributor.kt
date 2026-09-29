@@ -13,6 +13,7 @@ internal class InstanceNpcDamageContributor
 @Inject
 constructor(private val instances: InstanceManager) : NpcDamageContributor {
     override fun onPlayerDamageNpc(npc: Npc, source: Player, damage: Int) {
+        if (damage <= 0) return
         val instanceId = source.currentInstanceId() ?: instances.instanceForNpc(npc) ?: return
         instances.contributionsFor(instanceId)?.record(source, damage)
     }
