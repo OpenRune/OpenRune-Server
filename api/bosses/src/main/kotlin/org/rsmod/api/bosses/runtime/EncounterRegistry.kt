@@ -20,7 +20,5 @@ class EncounterRegistry {
         }
     }
 
-    fun remove(npc: Npc) {
-        encounters.remove(npc.slotId)
-    }
+    fun remove(npc: Npc): BossEncounter? = encounters.remove(npc.slotId)
 }

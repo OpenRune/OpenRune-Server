@@ -238,6 +238,46 @@ object InstanceSettingsTable {
             columnRSCM(EXIT_OBJECT, "loc.whisperer_exit")
         }
 
+        row("dbrow.instance_duke_sucellus") {
+            column(KEY, "duke_sucellus")
+            columnCoord(EXIT_COORD, CoordGrid(3039, 6432, 0))
+            columnCoord(ENTER_COORD, CoordGrid(3039, 6435, 0))
+            column(FEE, 0)
+            column(MAX_PLAYERS, 1)
+            column(TIME_LIMIT_MINUTES, 0)
+            column(GRACE_MINUTES, 10)
+            columnRSCM(BOSS_NPC, "npc.duke_sucellus_asleep", "npc.duke_sucellus_awake")
+            column(BOSS_NAME, "Duke Sucellus")
+            column(RECOMMENDED_COMBAT, 100, 126)
+            column(TEAM_SIZE, 1)
+            column(LOOT_MULTIPLIER, "x1.0")
+            column(DESCRIPTION, "The frozen, slumbering duke of the Ghorrock asylum.")
+            columnRSCM(ENTER_OBJECT, "loc.dt2_ghorrock_gate_boss")
+            columnRSCM(EXIT_OBJECT, "loc.duke_sucellus_escape")
+        }
+
+        row("dbrow.instance_leviathan") {
+            column(KEY, "leviathan")
+            columnCoord(EXIT_COORD, CoordGrid(2064, 6436, 0))
+            columnCoord(ENTER_COORD, CoordGrid(2067, 6370, 0))
+            column(FEE, 0)
+            column(MAX_PLAYERS, 1)
+            column(TIME_LIMIT_MINUTES, 0)
+            column(GRACE_MINUTES, 10)
+            columnRSCM(BOSS_NPC, "npc.leviathan")
+            column(BOSS_NAME, "The Leviathan")
+            column(RECOMMENDED_COMBAT, 100, 126)
+            column(TEAM_SIZE, 1)
+            column(LOOT_MULTIPLIER, "x1.0")
+            column(DESCRIPTION, "A colossal sea serpent lurking beneath the waters of the Scar.")
+            columnRSCM(ENTER_OBJECT, "loc.dt2_scar_boat_camp")
+            columnRSCM(
+                EXIT_OBJECT,
+                "loc.dt2_scar_boat_island_escape",
+                "loc.dt2_scar_boat_island_leave",
+            )
+        }
+
         row("dbrow.instance_amoxliatl") {
             column(KEY, "amoxliatl")
             columnCoord(EXIT_COORD, CoordGrid(1602, 9631, 0))

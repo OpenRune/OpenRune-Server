@@ -1,4 +1,16 @@
 [gamevals.synth]
+mizgog_placebeads = 1632
+mizgog_beads = 1633
+coffin_close = 53
+rg_ghost_approach = 1743
+bigghost_appear = 1595
+rg_place_skull = 1744
+rg_skeleton_awake = 1746
+destroy_object = 2381
+shade_sigh = 748
+skeleton_attack = 776
+skelly_hit = 779
+skeleton_death = 777
 bigdoor_close = 45
 bigdoor_open = 46
 bookcase_open_and_close = 42
@@ -46,11 +58,15 @@ grim_piano_a5 = 3693
 grim_piano_b5 = 3695
 
 [gamevals.varp]
+restless_ghost_rising_tile = 63703
+restless_ghost_return_tile = 63704
 misthalin_return_tile = 63700
 misthalin_mirror_blocker = 63701
 misthalin_puzzle_state = 63702
 
 [gamevals.varbit]
+restless_ghost_progress = 63702
+imp_catcher_progress = 63703
 misthalin_reflections = 63700
 misthalin_gem_row_slot = 63701
 
@@ -61,3 +77,7 @@ misthalin_gem_zenyte = 32349
 misthalin_gem_ruby = 2586
 misthalin_gem_sapphire = 32345
 misthalin_gem_emerald = 32334
+
+[gamevals.timer]
+restless_ghost_coffin_ghost = 123
+restless_skeleton_attack = 124

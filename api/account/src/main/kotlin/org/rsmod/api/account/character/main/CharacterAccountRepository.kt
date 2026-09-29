@@ -301,7 +301,9 @@ constructor(
             ps.executeQuery().use { rs ->
                 buildMap {
                     while (rs.next()) {
-                        val varpId = GamePersistenceRscmKeys.decodeVarpKey(rs.getString("varp_key"))
+                        val varpId =
+                            GamePersistenceRscmKeys.decodeVarpKey(rs.getString("varp_key"))
+                                ?: continue
                         put(varpId, rs.getInt("value"))
                     }
                 }

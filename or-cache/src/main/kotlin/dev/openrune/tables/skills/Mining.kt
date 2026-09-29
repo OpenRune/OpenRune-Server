@@ -673,5 +673,22 @@ object Mining {
                 column(COL_MINING_CAPE, false)
                 column(COL_CELESTIAL_RING, false)
             }
+
+            row("dbrow.mining_dukesalt") {
+                columnRSCM(COL_ROCK_OBJECT, "loc.duke_sucellus_salt")
+                column(COL_LEVEL, 1)
+                column(COL_XP, 50)
+                columnRSCM(COL_ORE_ITEM, "obj.duke_sucellus_salt")
+                column(COL_RESPAWN_CYCLES, 0)
+                column(COL_SUCCESS_RATE_LOW, 255)
+                column(COL_SUCCESS_RATE_HIGH, 255)
+                column(COL_DEPLETE_MECHANIC, 3)
+                column(COL_CLUE_BASE_CHANCE, 0)
+                column(COL_MINING_WALL, false)
+                column(COL_MINING_GLOVES, 0)
+                column(COL_VARROCK_ARMOUR, 0)
+                column(COL_MINING_CAPE, false)
+                column(COL_CELESTIAL_RING, false)
+            }
         }
 }

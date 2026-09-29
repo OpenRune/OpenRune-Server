@@ -281,6 +281,16 @@ public fun Player.ifCloseModal(interf: String, eventBus: EventBus) {
     closeModal(interf, eventBus)
 }
 
+public fun Player.ifCloseChat(eventBus: EventBus) {
+    val target =
+        ServerCacheManager.fromComponent("component.chatbox:chatmodal".asRSCM(RSCMType.COMPONENT))
+            .toIdComponent()
+    if (target !in ui.modals) {
+        return
+    }
+    closeModal(ui.modals[target], target, eventBus)
+}
+
 public fun Player.ifCloseOverlay(interf: String, eventBus: EventBus) {
     closeOverlay(interf, eventBus)
 }

@@ -1,0 +1,6 @@
+[[npc]]
+isServerOnly = true
+id = "npc.wizard_mizgog"
+inherit = "npc.wizard_mizgog"
+moveRestrict = "NoMove"
+wanderRange = 0

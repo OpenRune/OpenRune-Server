@@ -11,6 +11,12 @@ sealed interface TargetExpr {
     data object LowestPrayer : Single
     data object RandomNearby : Single
 
+    /** The caster's centre tile (its south-west tile shifted by half its size). */
+    data object Centre : Single
+
+    /** The tile [distance] tiles from [from] along the bearing towards [to]. */
+    data class Toward(val from: Single, val to: Single, val distance: Double) : Single
+
     /** The boss's spawn tile, shifted by ([dx], [dz]). */
     data class SpawnTile(val dx: Int = 0, val dz: Int = 0) : Single
 
@@ -21,6 +27,13 @@ sealed interface TargetExpr {
      * [Effect.Projectile.onImpact]. Resolves to the caster's tile if used anywhere else.
      */
     data object ImpactTile : Single
+
+    /** The tile an [Effect.OnTiles] is currently running its effect for. */
+    data object EachTile : Single
+
+    data class PlayersIn(val area: Area) : Multi
+
+    data class PlayersOn(val tile: Single) : Multi
 
     data class AllInRadius(val radius: Int, val of: Single = Self) : Multi
     data class TopN(val n: Int, val by: Single) : Multi
