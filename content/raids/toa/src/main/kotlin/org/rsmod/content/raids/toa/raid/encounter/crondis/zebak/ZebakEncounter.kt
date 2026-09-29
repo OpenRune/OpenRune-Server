@@ -393,8 +393,9 @@ class ZebakEncounter(raid: ToaRaid, room: ToaRoom, region: Region, controllerId:
         return null
     }
 
-    internal fun spawn(type: String, tile: CoordGrid): Npc {
+    internal fun spawn(type: String, tile: CoordGrid, facing: Direction? = null): Npc {
         val npc = Npc(type, tile)
+        if (facing != null) npc.respawnDir = facing
         deps.npcRepo.add(npc, Int.MAX_VALUE)
         adopt(npc)
         return npc
@@ -539,6 +540,10 @@ class ZebakEncounter(raid: ToaRaid, room: ToaRoom, region: Region, controllerId:
 
         internal fun onCrocTick(croc: Npc) {
             roomOf(croc)?.water?.crocodileTick(croc)
+        }
+
+        internal fun onCrocBite(croc: Npc, target: Player) {
+            roomOf(croc)?.water?.bite(croc, target)
         }
 
         internal fun onClimbRock(player: Player, rock: CoordGrid, angleId: Int) {
