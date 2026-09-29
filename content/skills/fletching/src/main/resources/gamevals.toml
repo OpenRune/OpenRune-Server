@@ -12,7 +12,7 @@ fletching_assembly=65497
 fletching_produce = 61
 
 [gamevals.dbrow]
-fletching_arrow_shaft_from_logs=63893
+fletching_arrow_shaft_from_logs=63689
 fletching_brew_scrapey_bark_from_brew_scrapey_logs=63892
 fletching_seeking_arrow_shaft_from_sap_treated_logs=63891
 fletching_javelin_shaft_from_logs=63890
