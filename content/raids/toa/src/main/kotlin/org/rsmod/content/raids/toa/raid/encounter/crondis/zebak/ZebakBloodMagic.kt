@@ -2,6 +2,7 @@ package org.rsmod.content.raids.toa.raid.encounter.crondis.zebak
 
 import kotlin.math.floor
 import kotlin.math.max
+import org.rsmod.api.combat.commons.player.combatPlayDefendAnim
 import org.rsmod.api.npc.heal
 import org.rsmod.api.npc.hit.queueHit as queueNpcHit
 import org.rsmod.api.player.hit.queueImpactHit
@@ -70,6 +71,7 @@ internal class ZebakBloodMagic(private val room: ZebakEncounter) {
             val damage = deps.random.of(base, base + BARRAGE_DAMAGE_SPREAD)
             heal += barrageHit(boss, player, damage)
             player.spotanim(ZebakSpots.BLOOD_BARRAGE)
+            player.combatPlayDefendAnim()
             for (other in targets) {
                 if (other === player || player.coords.chebyshevDistance(other.coords) > radius) continue
                 heal += barrageHit(boss, other, damage)
@@ -84,7 +86,7 @@ internal class ZebakBloodMagic(private val room: ZebakEncounter) {
 
     private fun barrageHit(boss: Npc, player: Player, damage: Int): Int {
         player.queueImpactHit(boss, 1, HitType.Magic, damage, deps.playerHitModifier)
-        return if (player.vars[PROTECT_FROM_MAGIC] > 0) 0 else (damage * BARRAGE_HEAL_RATIO).toInt()
+        return if (player.vars[PROTECT_FROM_MAGIC] > 0) 0 else BARRAGE_HEAL
     }
 
     fun registerCloud(cloud: Npc) {
@@ -159,9 +161,9 @@ internal class ZebakBloodMagic(private val room: ZebakEncounter) {
     private companion object {
         const val EVERY = 6
         const val EVERY_ENRAGED = 8
-        const val BARRAGE_BASE_DAMAGE = 7
-        const val BARRAGE_DAMAGE_SPREAD = 7
-        const val BARRAGE_HEAL_RATIO = 0.66
+        const val BARRAGE_BASE_DAMAGE = 3
+        const val BARRAGE_DAMAGE_SPREAD = 2
+        const val BARRAGE_HEAL = 5
         const val CLOUD_START_DELAY = 4
         const val LEECH = 2
         const val PROTECT_FROM_MAGIC = "varbit.prayer_protectfrommagic"

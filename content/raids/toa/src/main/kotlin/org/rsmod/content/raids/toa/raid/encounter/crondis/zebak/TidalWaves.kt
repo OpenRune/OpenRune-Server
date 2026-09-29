@@ -94,10 +94,11 @@ internal class ZebakWaves(private val room: ZebakEncounter) {
 
     private class Wave(val dz: Int, var ticksLeft: Int)
 
-    var fromSouth = false
+    var fromSouth = true
 
     fun spawn(tile: CoordGrid, dz: Int) {
-        waves[room.spawn(ZebakNpcs.WAVE, tile)] = Wave(dz, LIFETIME)
+        val facing = if (dz > 0) Direction.North else Direction.South
+        waves[room.spawn(ZebakNpcs.WAVE, tile, facing)] = Wave(dz, LIFETIME)
     }
 
     fun tick(npc: Npc) {
@@ -164,7 +165,7 @@ internal class ZebakWaves(private val room: ZebakEncounter) {
 
     fun clear() {
         for (npc in waves.keys.toList()) remove(npc)
-        fromSouth = deps.random.of(0, 1) == 0
+        fromSouth = true
     }
 
     private companion object {
