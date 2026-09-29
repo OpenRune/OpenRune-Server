@@ -20,30 +20,30 @@ public val dukeSucellusDropTable: RSDropTable<Player, DropRollItem> = RSDropTabl
     npcs = npcs("npc.duke_sucellus_asleep", "npc.duke_sucellus_asleep_quest", "npc.duke_sucellus_awake", "npc.duke_sucellus_awake_quest", "npc.duke_sucellus_dead", "npc.duke_sucellus_dead_quest", "npc.duke_sucellus_inactive", "npc.duke_sucellus_inactive_quest"),
     mainTable = rsPlayerWeightedTable(total = 100) {
         name("Duke Sucellus Drops")
-        1 weight "obj.cert_bronze_chainbody" count 1
-        1 weight "obj.cert_mithril_chainbody" count 1
-        1 weight "obj.cert_adamant_chainbody" count 1
-        1 weight "obj.dragon_platelegs" count 1
-        1 weight "obj.cert_blankrune_high" count 1
-        1 weight "obj.cert_iron_ore" count 1
-        8 weight "obj.cert_coal" count 1
-        1 weight "obj.cert_mithril_ore" count 1
-        8 weight "obj.cert_adamantite_ore" count 1
-        2 weight "obj.cert_runite_ore" count 1
-        1 weight "obj.cert_sapphire" count 1
-        1 weight "obj.cert_emerald" count 1
-        1 weight "obj.cert_ruby" count 1
-        5 weight "obj.cert_uncut_ruby" count 1
-        5 weight "obj.cert_uncut_diamond" count 1
-        1 weight "obj.cert_bronze_bar" count 1
-        2 weight "obj.dragon_arrowheads" count 1
-        8 weight "obj.rune_javelin_head" count 1
-        8 weight "obj.dragon_javelin_head" count 1
-        1 weight "obj.cert_raw_seaturtle" count 1
-        1 weight "obj.airrune" count 1
-        8 weight "obj.mistrune" count 1
-        9 weight "obj.chaosrune" count 1
-        2 weight "obj.soulrune" count 1
+        1 weight "obj.cert_bronze_chainbody" count 11
+        1 weight "obj.cert_mithril_chainbody" count 5
+        1 weight "obj.cert_adamant_chainbody" count 6
+        1 weight "obj.dragon_platelegs" count 5
+        1 weight "obj.cert_blankrune_high" count 200
+        1 weight "obj.cert_iron_ore" count 63
+        8 weight "obj.cert_coal" count 216
+        1 weight "obj.cert_mithril_ore" count 33
+        8 weight "obj.cert_adamantite_ore" count 75
+        2 weight "obj.cert_runite_ore" count 30
+        1 weight "obj.cert_sapphire" count 28
+        1 weight "obj.cert_emerald" count 28
+        1 weight "obj.cert_ruby" count 28
+        5 weight "obj.cert_uncut_ruby" count 41
+        5 weight "obj.cert_uncut_diamond" count 41
+        1 weight "obj.cert_bronze_bar" count 63
+        2 weight "obj.dragon_arrowheads" count 166
+        8 weight "obj.rune_javelin_head" count 60
+        8 weight "obj.dragon_javelin_head" count 60
+        1 weight "obj.cert_raw_seaturtle" count 200
+        1 weight "obj.airrune" count 200
+        8 weight "obj.mistrune" count 100
+        9 weight "obj.chaosrune" count 100
+        2 weight "obj.soulrune" count 666
         1 outOf 720 separate "obj.soulreaper_axe_eye" count 1
         3 outOf 720 separate vestigeProgressRoll("varp.duke_sucellus_vestige_progress", "obj.magus_vestige")
         3 outOf 720 separate "obj.chromium_ingot" count 1
