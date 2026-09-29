@@ -143,6 +143,7 @@ class EffectInterpreter internal constructor(
             is Effect.TileAoE -> applyTileAoE(effect)
             is Effect.Debris -> applyDebris(effect)
             is Effect.Summon -> summon(access, effect)
+            is Effect.Hazard -> placeHazard(access, effect)
             is Effect.Poison -> applyPoison(effect)
             is Effect.Freeze -> applyFreeze(effect)
             is Effect.DisablePrayers ->
@@ -609,6 +610,18 @@ class EffectInterpreter internal constructor(
             }
         }
         if (windup > 0) deps.worldQueues.add(windup) { strike() } else strike()
+    }
+
+    private fun placeHazard(access: StandardNpcAccess?, hazard: Effect.Hazard) {
+        val tile = resolveTile(hazard.at)
+        deps.hazards.place(npc, tile, hazard.loc, hazard.armDelay, hazard.duration) { player ->
+            if (!npc.isValidTarget()) return@place
+            hazard.damage?.let {
+                val damage = evaluateDamage(it, hazard.type, player)
+                player.finishNpcHit(npc, 1, hazard.type.toEngine(), damage, deps.playerHitModifier)
+            }
+            hazard.onStand?.let { EffectInterpreter(npc, player, spec, encounter, deps).run(access, it) }
+        }
     }
 
     private fun applyDebris(effect: Effect.Debris) {

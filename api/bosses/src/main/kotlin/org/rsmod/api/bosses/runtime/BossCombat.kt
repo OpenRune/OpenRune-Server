@@ -105,8 +105,8 @@ object BossCombat {
                     onModifyHit?.invoke(this)
                     if (
                         onLethal != null &&
-                            !encounter.lethalHandled &&
-                            npc.hitpoints - hit.damage <= 0
+                        !encounter.lethalHandled &&
+                        npc.hitpoints - hit.damage <= 0
                     ) {
                         encounter.lethalHandled = true
                         onLethal(npc)
@@ -134,6 +134,7 @@ object BossCombat {
      */
     private fun resetBoss(npc: Npc, deps: BossDeps) {
         deps.encounterRegistry.remove(npc)?.let(deps::disposeOwned)
+        deps.hazards.clear(npc)
         npc.movementLocked = false
         npc.apRangeOverride = null
         npc.apRequiresLineOfSight = true
