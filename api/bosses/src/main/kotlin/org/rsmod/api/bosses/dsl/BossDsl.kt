@@ -49,6 +49,7 @@ class BossSpecBuilder(private val npcTypes: List<String>) {
         nextPhase: String? = null,
         idleAnim: String? = null,
         attackRate: Int? = null,
+        keepFacingLock: Boolean = false,
         block: PhaseBuilder.() -> Unit,
     ): PhaseRef {
         val builder = PhaseBuilder(name).apply(block)
@@ -66,6 +67,7 @@ class BossSpecBuilder(private val npcTypes: List<String>) {
                 exit = builder.exit,
                 selector = builder.selector,
                 forceAbilities = builder.forceAbilities,
+                keepFacingLock = keepFacingLock,
             )
         return PhaseRef(name)
     }
@@ -105,6 +107,7 @@ class HitBuilder internal constructor() {
     private var onHitEvenOnMiss: Boolean = false
     private var lifestealPercent: Int = 0
     private var resolveOnImpactFlag: Boolean = false
+    private var reactOnLandingFlag: Boolean = false
 
     fun damage(expr: DamageExpr) {
         damageExpr = expr
@@ -146,6 +149,10 @@ class HitBuilder internal constructor() {
         resolveOnImpactFlag = true
     }
 
+    fun reactOnLanding() {
+        reactOnLandingFlag = true
+    }
+
     internal fun commitDamage(expr: DamageExpr) {
         damageExpr = expr
     }
@@ -168,6 +175,7 @@ class HitBuilder internal constructor() {
             onHitEvenOnMiss = onHitEvenOnMiss,
             lifesteal = lifestealPercent,
             resolveOnImpact = resolveOnImpactFlag,
+            reactOnLanding = reactOnLandingFlag,
         )
 }
 

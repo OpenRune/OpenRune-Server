@@ -9,8 +9,10 @@ dependencies {
     implementation(projects.api.areaChecker)
     // BossHpBarScript: the Palm of Resourcefulness progress bar (Crondis puzzle).
     implementation(projects.api.bossHpBarPlugin)
+    implementation(projects.api.bosses)
     // AccuracyFormulae: the Crondis crocodiles' accuracy roll.
     implementation(projects.api.combat.combatFormulas)
+    implementation(projects.api.combat.combatCommons)
     // RegionRegistry.normalizeCoords (instance -> static coords, for challenge areas).
     implementation(projects.api.registry)
     // cureAllToxins on respawn, like the standard death.

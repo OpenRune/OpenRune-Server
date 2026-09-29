@@ -33,6 +33,7 @@ data class PhaseSpec(
     val exit: String? = null,
     val selector: Selector = Selector.WeightedRandom(),
     val forceAbilities: List<ForcedAbility> = emptyList(),
+    val keepFacingLock: Boolean = false,
 )
 
 data class ForcedAbility(

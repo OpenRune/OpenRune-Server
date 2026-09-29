@@ -71,7 +71,7 @@ class BossEncounter(
 
         npc.movementLocked = phase?.lockMovement == true
 
-        npc.clearFacingLock()
+        if (phase?.keepFacingLock != true) npc.clearFacingLock()
     }
 
     fun selectAbility(selector: Selector, tick: Int, target: Player? = null): String? {

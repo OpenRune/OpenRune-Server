@@ -21,6 +21,7 @@ import org.rsmod.api.npc.isValidTarget
 import org.rsmod.api.player.disablePrayers
 import org.rsmod.api.player.hit.modifier.PlayerHitModifier
 import org.rsmod.api.player.hit.modify
+import org.rsmod.api.player.hit.queueHit
 import org.rsmod.api.player.hit.queueImpactHit
 import org.rsmod.api.player.isValidTarget
 import org.rsmod.api.player.output.Camera
@@ -274,8 +275,22 @@ class EffectInterpreter(
             if (hit.resolveOnImpact) {
                 val modifier = landingModifier(access, hit, damage)
                 val type = hit.type.toEngine()
-                t.finishNpcImpactHit(npc, delay, type, damage, modifier, hit.penetration)
+                t.finishNpcImpactHit(
+                    npc,
+                    delay,
+                    type,
+                    damage,
+                    modifier,
+                    hit.penetration,
+                    hit.reactOnLanding,
+                )
                 showMissSpotanim(hit, t, damage, clientDelay = 0)
+                continue
+            }
+            if (hit.reactOnLanding) {
+                val type = hit.type.toEngine()
+                val landed = t.finishNpcHitOnLanding(npc, delay, type, damage, hit.penetration)
+                scheduleLanding(access, hit, t, damage, landed, delay, clientDelay = 0)
                 continue
             }
             val landed =
@@ -350,8 +365,17 @@ class EffectInterpreter(
                     damage,
                     landingModifier(access, hit, damage),
                     hit.penetration,
+                    hit.reactOnLanding,
                 )
                 showMissSpotanim(hit, player, damage, projAnim.clientCycles)
+                return@let
+            }
+            if (hit.reactOnLanding) {
+                val delay = projAnim.serverCycles
+                val hitType = hit.type.toEngine()
+                val landed =
+                    player.finishNpcHitOnLanding(npc, delay, hitType, damage, hit.penetration)
+                scheduleLanding(access, hit, player, damage, landed, delay, projAnim.clientCycles)
                 return@let
             }
             val landed =
@@ -461,10 +485,33 @@ class EffectInterpreter(
         damage: Int,
         modifier: PlayerHitModifier,
         penetration: Int = 0,
+        reactOnLanding: Boolean = false,
     ) {
-        queueCombatRetaliate(source)
+        queueCombatRetaliate(source, if (reactOnLanding) delay else 1)
         queueImpactHit(source, delay, type, damage, modifier, penetration = penetration)
-        combatPlayDefendAnim()
+        if (reactOnLanding) defendBeforeLanding(delay) else combatPlayDefendAnim()
+    }
+
+    private fun Player.finishNpcHitOnLanding(
+        source: Npc,
+        delay: Int,
+        type: HitType,
+        damage: Int,
+        penetration: Int,
+    ): Int {
+        queueCombatRetaliate(source, delay)
+        val modifier = deps.playerHitModifier
+        val hit = queueHit(source, delay, type, damage, modifier, penetration = penetration)
+        defendBeforeLanding(delay)
+        return hit.damage
+    }
+
+    private fun Player.defendBeforeLanding(delay: Int) {
+        if (delay <= 2) {
+            combatPlayDefendAnim()
+            return
+        }
+        deps.worldQueues.add(delay - 2) { if (isValidTarget()) combatPlayDefendAnim() }
     }
 
     private fun applyTileAoE(aoe: Effect.TileAoE) {

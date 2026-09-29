@@ -62,6 +62,7 @@ sealed interface Effect {
         val onHitEvenOnMiss: Boolean = false,
         val lifesteal: Int = 0,
         val resolveOnImpact: Boolean = false,
+        val reactOnLanding: Boolean = false,
     ) : Effect
 
     data class Projectile(
