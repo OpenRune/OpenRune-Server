@@ -5,64 +5,25 @@ import kotlin.math.min
 import org.rsmod.annotations.InternalApi
 import org.rsmod.api.npc.hit.queueHit as queueNpcHit
 import org.rsmod.api.player.hook.TeleportType
-import org.rsmod.api.player.output.soundSynth
-import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.game.hit.HitType
 import org.rsmod.game.map.Direction
 import org.rsmod.map.CoordGrid
 
-/**
- * The Great Roar (zebak_0_invocation capture, T = the tick Zebak animates):
- * - T: the throw animation; the next auto comes at T+10, then at the normal speed;
- * - T+1: acid, 2-3 boulders (3 solo) with acid behind each, 6-8 jugs, one lined up per boulder;
- *   each lands and appears 2-5 ticks later by distance ([lob]);
- * - T+33: the roar animation; the next auto comes 11 ticks later (both captured roars). A second
- *   roar in the capture came at T+28 instead, unexplained (Offline_Scape: always 33);
- * - T+36, 38, 40: roar waves. Anyone outside a boulder's safe strip (its row, the boulder to 3
- *   tiles behind it) is knocked 2 tiles east for 20-30 (scaled). Boulders take 50 a wave; the first
- *   wave hits every jug left for 5 at T+37, and they break at T+38 ([ZebakJugs.roarHit]);
- * - T+49: over (Offline_Scape).
- *
- * Offline_Scape threw on T, landed everything at T+5 and kept autos at 10 ticks; the capture
- * disagrees on all three. It also never ended the special if it couldn't place boulders.
- */
-internal class GreatRoar(private val room: ZebakEncounter) : ZebakSpecial {
+internal class GreatRoar(private val room: ZebakEncounter) {
     private val deps = room.raid.deps
-    private var ticks = -1
     private var boulderTiles: List<CoordGrid> = emptyList()
-    private val landings = ZebakLandings()
 
-    override fun step(): Boolean {
-        val boss = room.zebak ?: return false
-        if (boss.hitpoints <= 0) return false
-        ticks++
-        if (room.targets().isNotEmpty()) landings.run(ticks)
-        when (ticks) {
-            0 -> windUp(boss)
-            THROW_TICK -> return launch()
-            SCREAM_TICK -> scream(boss)
-            in WAVE_TICKS -> roarWave(first = ticks == WAVE_TICKS.first())
-            END_TICK -> {
-                room.boulders.clear()
-                return false
-            }
-        }
-        return true
-    }
+    var launched = false
+        private set
 
-    private fun windUp(boss: Npc) {
-        boss.anim(ZebakSeqs.RANGED)
-        room.tail?.resetAnim()
-        room.attackCountdown = FIRST_AUTO
-    }
-
-    private fun launch(): Boolean {
-        val boulders = boulderTiles() ?: return false
-        val jugPlan = jugTiles(boulders) ?: return false
+    fun launch() {
+        val boulders = boulderTiles() ?: return
+        val jugPlan = jugTiles(boulders) ?: return
         boulderTiles = boulders
-        val acid = room.freeTiles(ZebakCoords.GROUND_MIN, ZebakCoords.GROUND_MAX, boulders)
-            .take(ACID_POOLS)
+        launched = true
+        val floor = room.freeTiles(ZebakCoords.GROUND_MIN, ZebakCoords.GROUND_MAX, boulders)
+        val acid = floor.take(ACID_POOLS)
         val source = room.coords(ZebakCoords.THROW_SOUND)
         deps.worldRepo.soundArea(source, ZebakSynths.JUGS_SHOOT, radius = SOUND_RADIUS)
 
@@ -78,12 +39,11 @@ internal class GreatRoar(private val room: ZebakEncounter) : ZebakSpecial {
         for (jug in jugPlan) {
             throwAt(ZebakSpots.JUG, jug) { room.jugs.land(listOf(jug), room.targets()) }
         }
-        return true
     }
 
     private fun throwAt(spot: String, tile: CoordGrid, landed: () -> Unit) {
         val mouth = room.coords(ZebakCoords.PROJECTILE_START)
-        landings.at(ticks + deps.worldRepo.lob(spot, mouth, tile), landed)
+        room.landings.at(deps.mapClock.cycle + deps.worldRepo.lob(spot, mouth, tile), landed)
     }
 
     private fun landBoulder(tile: CoordGrid) {
@@ -95,16 +55,7 @@ internal class GreatRoar(private val room: ZebakEncounter) : ZebakSpecial {
         }
     }
 
-    private fun scream(boss: Npc) {
-        room.attackCountdown = NEXT_ATTACK
-        boss.anim(ZebakSeqs.ROAR)
-        room.tail?.anim(ZebakSeqs.TAIL_ROAR)
-        for (player in room.targets()) {
-            for ((synth, delay) in ZebakSynths.SCREAM) player.soundSynth(synth, delay = delay)
-        }
-    }
-
-    private fun roarWave(first: Boolean) {
+    fun roarWave(first: Boolean) {
         val min = room.coords(ZebakCoords.GROUND_MIN)
         val max = room.coords(ZebakCoords.GROUND_MAX)
         val middle = room.coords(ZebakCoords.MIDDLE)
@@ -113,17 +64,22 @@ internal class GreatRoar(private val room: ZebakEncounter) : ZebakSpecial {
             for (z in min.z..max.z) {
                 val tile = CoordGrid(x, z, min.level)
                 if (inSafeStrip(tile, includeBoulder = false) || !room.isOpenFloor(tile)) continue
-                // Offline_Scape passed 1 + distance as the height; used as the ripple delay.
                 deps.worldRepo.spotanimMap(dust, tile, delay = 1 + chebyshev(tile, middle))
             }
         }
         for (boulder in room.boulders.npcs.toList()) {
             boulder.queueNpcHit(1, HitType.Typeless, BOULDER_DAMAGE, NOOP_NPC_MODIFIER)
         }
-        for (player in room.targets()) {
-            if (!inSafeStrip(player.coords, includeBoulder = true)) push(player)
+        room.afterHazards {
+            for (player in room.targets()) {
+                if (!inSafeStrip(player.coords, includeBoulder = true)) push(player)
+            }
         }
         if (first) room.jugs.roarHit()
+    }
+
+    fun end() {
+        room.boulders.clear()
     }
 
     private fun inSafeStrip(tile: CoordGrid, includeBoulder: Boolean): Boolean =
@@ -144,7 +100,6 @@ internal class GreatRoar(private val room: ZebakEncounter) : ZebakSpecial {
         player.hitTypeless(deps.random.of(base, base + ROAR_DAMAGE_SPREAD))
     }
 
-    /** Offline_Scape movePlayer: a boulder landed on [player]; hop to the first open neighbour. */
     @OptIn(InternalApi::class)
     private fun knockOffBoulder(player: Player, boulder: CoordGrid) {
         for (dx in -1..1) {
@@ -163,9 +118,6 @@ internal class GreatRoar(private val room: ZebakEncounter) : ZebakSpecial {
         }
     }
 
-    // ---- Placement (Offline_Scape getBoulderLocations / getJugsSolveLocations) ----
-
-    /** One candidate per row within 6 rows of a random tile, each with an open tile east of it. */
     private fun boulderTiles(): List<CoordGrid>? {
         val free = room.freeTiles(ZebakCoords.BOULDER_MIN, ZebakCoords.BOULDER_MAX, emptyList())
         if (free.isEmpty()) return null
@@ -186,10 +138,6 @@ internal class GreatRoar(private val room: ZebakEncounter) : ZebakSpecial {
         return deps.random.shuffled(candidates).take(count)
     }
 
-    /**
-     * One jug per boulder on a tile lined up with it, then up to as many decoys, 6-8 in total.
-     * Offline_Scape's edge check compared both edges to the south-west corner; fixed here.
-     */
     private fun jugTiles(boulders: List<CoordGrid>): List<CoordGrid>? {
         val min = room.coords(ZebakCoords.GROUND_MIN)
         val max = room.coords(ZebakCoords.GROUND_MAX)
@@ -219,16 +167,6 @@ internal class GreatRoar(private val room: ZebakEncounter) : ZebakSpecial {
     }
 
     private companion object {
-        const val THROW_TICK = 1
-        const val SCREAM_TICK = 33
-        val WAVE_TICKS = intArrayOf(36, 38, 40)
-        const val END_TICK = 49
-        const val FIRST_AUTO = 10
-        /**
-         * Set in the step, before the fight tick counts down that same tick: 12 gives the
-         * captured 11 (the roar at 233 and 333, the next autos at 244 and 344).
-         */
-        const val NEXT_ATTACK = 12
         const val ACID_POOLS = 6
         const val BOULDER_ACID_DX = 2
         const val BOULDER_ROWS = 6

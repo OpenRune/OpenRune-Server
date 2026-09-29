@@ -58,16 +58,18 @@ internal fun WorldRepository.lob(spot: String, from: CoordGrid, to: CoordGrid): 
 
 private const val LOB_MAX_TILES = 4
 
-/** What lands on which tick of a special: each lob's object appears when it lands. */
+/** What lands on which map cycle: each lob's object appears when it lands. */
 internal class ZebakLandings {
-    private val byTick = HashMap<Int, MutableList<() -> Unit>>()
+    private val byCycle = HashMap<Int, MutableList<() -> Unit>>()
 
-    fun at(tick: Int, action: () -> Unit) {
-        byTick.getOrPut(tick) { ArrayList() } += action
+    fun at(cycle: Int, action: () -> Unit) {
+        byCycle.getOrPut(cycle) { ArrayList() } += action
     }
 
-    fun run(tick: Int) {
-        byTick.remove(tick)?.forEach { it() }
+    fun take(cycle: Int): List<() -> Unit> = byCycle.remove(cycle).orEmpty()
+
+    fun clear() {
+        byCycle.clear()
     }
 }
 
